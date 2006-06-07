@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "defun.h"
 #include "error.h"
+#include "oct-lvalue.h"
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-usr-fcn.h"
@@ -75,25 +76,6 @@ tree_argument_list::append (const element_type& s)
 
   if (! list_includes_magic_end && s && s->has_magic_end ())
     list_includes_magic_end = true;
-}
-
-int
-tree_argument_list::nargout_count (void) const
-{
-  int retval = 0;
-
-  for (const_iterator p = begin (); p != end (); p++)
-    {
-      tree_expression *elt = *p;
-
-      // FIXME -- need to be able to determine whether elt is
-      // an expression that could evaluate to a cs-list object, and if
-      // so, how many elements are in that list.  Ugly!
-
-      retval++;
-    }
-
-  return retval;
 }
 
 bool
@@ -258,6 +240,23 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
     unwind_protect::run_frame ("convert_to_const_vector");
 
   return args;
+}
+
+std::list<octave_lvalue>
+tree_argument_list::lvalue_list (void)
+{
+  std::list<octave_lvalue> retval;
+
+  for (tree_argument_list::iterator p = begin ();
+       p != end ();
+       p++)
+    {
+      tree_expression *elt = *p;
+
+      retval.push_back (elt->lvalue ());
+    }
+
+  return retval;
 }
 
 string_vector

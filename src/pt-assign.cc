@@ -200,10 +200,17 @@ tree_multi_assignment::rvalue (int)
 
   if (rhs)
     {
-      int n_out = lhs->nargout_count ();
+      std::list<octave_lvalue> lvalue_list = lhs->lvalue_list ();
 
       if (error_state)
 	return retval;
+
+      int n_out = 0;
+
+      for (std::list<octave_lvalue>::const_iterator p = lvalue_list.begin ();
+	   p != lvalue_list.end ();
+	   p++)
+	n_out += p->numel ();
 
       octave_value_list rhs_val = rhs->rvalue (n_out);
 
@@ -212,15 +219,18 @@ tree_multi_assignment::rvalue (int)
 
       if (rhs_val.empty ())
 	{
-	  error ("value on right hand side of assignment is undefined");
-	  eval_error ();
-	  return retval;
+	  if (n_out > 0)
+	    {
+	      error ("value on right hand side of assignment is undefined");
+	      eval_error ();
+	      return retval;
+	    }
 	}
       else
 	{
-	  int k = 0;
+	  octave_idx_type k = 0;
 
-	  int n = rhs_val.length ();
+	  octave_idx_type n = rhs_val.length ();
 
 	  if (n == 1)
 	    {
@@ -236,22 +246,52 @@ tree_multi_assignment::rvalue (int)
 
 	  retval.resize (n, octave_value ());
 
-	  for (tree_argument_list::iterator p = lhs->begin ();
-	       p != lhs->end ();
+	  tree_argument_list::iterator q = lhs->begin ();
+
+	  for (std::list<octave_lvalue>::iterator p = lvalue_list.begin ();
+	       p != lvalue_list.end ();
 	       p++)
 	    {
-	      tree_expression *lhs_elt = *p;
+	      tree_expression *lhs_elt = *q++;
 
-	      if (lhs_elt)
+	      octave_lvalue ult = *p;
+
+	      octave_idx_type nel = ult.numel ();
+
+	      if (nel > 1)
 		{
-		  octave_lvalue ult = lhs_elt->lvalue ();
-
-		  if (error_state)
+		  if (k + nel <= n)
 		    {
-		      eval_error ();
-		      break;
+		      if (etype == octave_value::op_asn_eq)
+			{
+			  octave_value_list ovl (nel, octave_value ());
+
+			  for (octave_idx_type j = 0; j < nel; j++)
+			    ovl(j) = rhs_val(k+j);
+
+			  ult.assign (etype, octave_value (ovl, true));
+
+			  if (! error_state)
+			    {
+			      for (octave_idx_type j = 0; j < nel; j++)
+				retval(k+j) = rhs_val(k+j);
+
+			      k += nel;
+			    }
+			}
+		      else
+			{
+			  std::string op = octave_value::assign_op_as_string (etype);
+			  error ("operator %s unsupported for comma-separated list assignment",
+				 op.c_str ());
+			}
 		    }
-		  else if (k < n)
+		  else
+		    error ("some elements undefined in return list");
+		}
+	      else
+		{
+		  if (k < n)
 		    {
 		      ult.assign (etype, rhs_val(k));
 
@@ -261,39 +301,38 @@ tree_multi_assignment::rvalue (int)
 			    retval(k) = rhs_val(k);
 			  else
 			    retval(k) = ult.value ();
+
+			  k++;
 			}
 		    }
 		  else
 		    error ("element number %d undefined in return list", k+1);
-
-		  if (error_state)
-		    {
-		      eval_error ();
-		      break;
-		    }
-		  else if (print_result ())
-		    {
-		      // We clear any index here so that we can get
-		      // the new value of the referenced object below,
-		      // instead of the indexed value (which should be
-		      // the same as the right hand side value).
-
-		      ult.clear_index ();
-
-		      octave_value lhs_val = ult.value ();
-
-		      if (! error_state)
-			lhs_val.print_with_name (octave_stdout,
-						 lhs_elt->name ());
-		    }
 		}
-	      else
-		eval_error ();
+
+	      if (error_state)
+		{
+		  eval_error ();
+		  break;
+		}
+	      else if (print_result ())
+		{
+		  // We clear any index here so that we can get
+		  // the new value of the referenced object below,
+		  // instead of the indexed value (which should be
+		  // the same as the right hand side value).
+
+		  ult.clear_index ();
+
+		  octave_value lhs_val = ult.value ();
+
+		  if (! error_state)
+		    lhs_val.print_with_name (octave_stdout,
+					     lhs_elt->name ());
+		}
 
 	      if (error_state)
 		break;
 
-	      k++;
 	    }
 	}
     }

@@ -427,7 +427,47 @@ tree_index_expression::lvalue (void)
 	      break;
 
 	    case '{':
-	      idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
+	      {
+		octave_value_list tidx
+		  = make_value_list (*p_args, *p_arg_nm, &tmp);
+
+		idx.push_back (tidx);
+
+		if (i == n-1)
+		  {
+		    // Last indexing element.  Will this result in a
+		    // comma-separated list?
+
+		    if (tidx.has_magic_colon ())
+		      {
+			octave_value_list tmp_list
+			  = first_retval_object.subsref (type, idx, 1);
+
+			if (! error_state)
+			  {
+			    octave_value val = tmp_list(0);
+
+			    if (val.is_cs_list ())
+			      retval.numel (val.numel ());
+			  }
+		      }
+		    else
+		      {
+			octave_idx_type nel = 1;
+
+			octave_idx_type nidx = tidx.length ();
+
+			for (octave_idx_type j = 0; j < nidx; j++)
+			  {
+			    octave_value val = tidx(j);
+
+			    nel *= val.numel ();
+			  }
+
+			retval.numel (nel);
+		      }
+		  }
+	      }
 	      break;
 
 	    case '.':

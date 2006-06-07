@@ -45,11 +45,11 @@ public:
 
   octave_lvalue (octave_value *v = &dummy_val,
 		 symbol_record::change_function f = 0)
-    : val (v), type (), idx (), chg_fcn (f), index_set (false) { }
+    : val (v), type (), idx (), chg_fcn (f), nel (1), index_set (false) { }
 
   octave_lvalue (const octave_lvalue& vr)
     : val (vr.val), type (vr.type), idx (vr.idx), chg_fcn (vr.chg_fcn),
-      index_set (vr.index_set) { }
+      nel (vr.nel), index_set (vr.index_set) { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
     {
@@ -59,6 +59,7 @@ public:
 	  type = vr.type;
 	  idx = vr.idx;
 	  chg_fcn = vr.chg_fcn;
+	  nel = vr.nel;
 	  index_set = vr.index_set;
 	}
 
@@ -76,6 +77,10 @@ public:
   void define (const octave_value& v) { *val = v; }
 
   void assign (octave_value::assign_op, const octave_value&);
+
+  void numel (octave_idx_type n) { nel = n; }
+
+  octave_idx_type numel (void) const { return nel; }
 
   void set_index (const std::string& t, const std::list<octave_value_list>& i);
 
@@ -96,6 +101,8 @@ private:
   std::list<octave_value_list> idx;
 
   symbol_record::change_function chg_fcn;
+
+  octave_idx_type nel;
 
   bool index_set;
 };

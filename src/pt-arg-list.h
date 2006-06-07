@@ -24,10 +24,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_tree_arg_list_h)
 #define octave_tree_arg_list_h 1
 
+#include <list>
+
 class octave_value_list;
-
+class octave_lvalue;
 class tree_expression;
-
 class tree_walker;
 
 #include "str-vec.h"
@@ -65,8 +66,6 @@ public:
 
   void append (const element_type& s);
 
-  int nargout_count (void) const;
-
   void mark_as_simple_assign_lhs (void) { simple_assign_lhs = true; }
 
   bool is_simple_assign_lhs (void) { return simple_assign_lhs; }
@@ -74,6 +73,8 @@ public:
   bool all_elements_are_constant (void) const;
 
   octave_value_list convert_to_const_vector (const octave_value *object = 0);
+
+  std::list<octave_lvalue> lvalue_list (void);
 
   string_vector get_arg_names (void) const;
 

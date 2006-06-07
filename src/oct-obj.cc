@@ -168,9 +168,21 @@ octave_value_list::all_strings_p (void) const
 
   for (octave_idx_type i = 0; i < n; i++)
     if (! elem(i).is_string ())
-      return 0;
+      return false;
 
-  return 1;
+  return true;
+}
+
+bool
+octave_value_list::has_magic_colon (void) const
+{
+  octave_idx_type n = length ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    if (elem(i).is_magic_colon ())
+      return true;
+
+  return false;
 }
 
 string_vector

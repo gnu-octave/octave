@@ -78,8 +78,8 @@ AC_DEFUN(OCTAVE_STRING_NPOS,
 [AC_CACHE_CHECK([whether including <string> defines NPOS],
 octave_cv_string_npos,
 [AC_LANG_PUSH(C++)
-AC_TRY_COMPILE([#include <string>],
-[size_t foo = NPOS],
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <string>]],
+[[size_t foo = NPOS]])],
 octave_cv_string_npos=yes, octave_cv_string_npos=no)])
 if test $octave_cv_string_npos = no; then
   AC_DEFINE(NPOS, [std::string::npos], [Define (to string::npos) if <string> doesn't])
@@ -93,8 +93,8 @@ AC_DEFUN(OCTAVE_PLACEMENT_DELETE,
 [AC_CACHE_CHECK([whether <new> defines placement delete operator],
 octave_cv_placement_delete,
 [AC_LANG_PUSH(C++)
-AC_TRY_COMPILE([#include <new>],
-[operator delete((void *)0, (void *)0);],
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <new>]],
+[[operator delete((void *)0, (void *)0);]])],
 octave_cv_placement_delete=yes, octave_cv_placement_delete=no)])
 if test $octave_cv_placement_delete = yes; then
 AC_DEFINE(HAVE_PLACEMENT_DELETE,1,[Define if C++ supports operator delete(void *, void *)])
@@ -108,8 +108,8 @@ AC_DEFUN(OCTAVE_DYNAMIC_AUTO_ARRAYS,
 [AC_CACHE_CHECK([whether C++ supports dynamic auto arrays],
 octave_cv_dynamic_auto_arrays,
 [AC_LANG_PUSH(C++)
-AC_TRY_COMPILE(,
-[void test(char *); int length(); char x[length()]; test(x);],
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]],
+[[void test(char *); int length(); char x[length()]; test(x);]])],
 octave_cv_dynamic_auto_arrays=yes, octave_cv_dynamic_auto_arrays=no)])
 if test $octave_cv_dynamic_auto_arrays = yes; then
 AC_DEFINE(HAVE_DYNAMIC_AUTO_ARRAYS,1,[Define if C++ supports dynamic auto arrays])
@@ -128,7 +128,7 @@ dnl doesn't hurt.
 AC_DEFUN(OCTAVE_SMART_PUTENV,
 [AC_MSG_CHECKING(whether putenv uses malloc)
 AC_CACHE_VAL(octave_cv_func_putenv_malloc,
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #define VAR	"YOW_VAR"
 #define STRING1 "GabbaGabbaHey"
 #define STRING2 "Yow!!"		/* should be shorter than STRING1 */
@@ -177,7 +177,7 @@ main ()
           printf ("#undef SMART_PUTENV\n");
 #endif
   exit (rstr1 == rstr2 ? 0 : 1);
-}], octave_cv_func_putenv_malloc=yes, octave_cv_func_putenv_malloc=no,
+}]])], octave_cv_func_putenv_malloc=yes, octave_cv_func_putenv_malloc=no,
     octave_cv_func_putenv_malloc=no)])dnl
 AC_MSG_RESULT($octave_cv_func_putenv_malloc)
 if test $octave_cv_func_putenv_malloc = yes; then
@@ -208,12 +208,12 @@ AC_CACHE_VAL(octave_cv_signal_vintage,
          sigpause (mask);]])],
        [octave_cv_signal_vintage=4.2bsd],
        [AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <signal.h>
-          RETSIGTYPE foo() { }]])],
+          RETSIGTYPE foo() { }]],
           [[int mask = sigmask (SIGINT);
 	    sigset (SIGINT, foo);
             sigrelse (SIGINT);
 	    sighold (SIGINT);
-            sigpause (SIGINT);]],
+            sigpause (SIGINT);]])],
           [octave_cv_signal_vintage=svr3],
           [octave_cv_signal_vintage=v7])])])])
 AC_MSG_RESULT($octave_cv_signal_vintage)
@@ -231,7 +231,7 @@ AC_DEFUN(OCTAVE_REINSTALL_SIGHANDLERS,
 AC_REQUIRE([OCTAVE_SIGNAL_CHECK])
 AC_MSG_CHECKING([if signal handlers must be reinstalled when invoked])
 AC_CACHE_VAL(octave_cv_must_reinstall_sighandlers,
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <signal.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -269,7 +269,9 @@ main()
   kill((int)getpid(), SIGINT);
   exit(nsigint != 2);
 }
-], octave_cv_must_reinstall_sighandlers=no, octave_cv_must_reinstall_sighandlers=yes,
+]])],
+  octave_cv_must_reinstall_sighandlers=no,
+  octave_cv_must_reinstall_sighandlers=yes,
 if test "$octave_cv_signal_vintage" = svr3; then
   octave_cv_must_reinstall_sighandlers=yes
 else
@@ -711,8 +713,7 @@ dnl Determine if mkdir accepts only one argument instead dnl of the usual 2.
 dnl
 AC_DEFUN(OCTAVE_MKDIR_TAKES_ONE_ARG,
 [AC_CACHE_CHECK([if mkdir takes one argument], octave_cv_mkdir_takes_one_arg,
-[AC_TRY_COMPILE([
-#include <sys/types.h>
+[AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 #ifdef HAVE_SYS_STAT_H
 # include <sys/stat.h>
 #endif
@@ -721,7 +722,7 @@ AC_DEFUN(OCTAVE_MKDIR_TAKES_ONE_ARG,
 #endif
 #ifdef HAVE_DIRECT_H
 # include <direct.h>
-#endif], [mkdir ("foo", 0);],
+#endif]], [[mkdir ("foo", 0);]])],
         octave_cv_mkdir_takes_one_arg=no, octave_cv_mkdir_takes_one_arg=yes)])
 if test $octave_cv_mkdir_takes_one_arg = yes ; then
   AC_DEFINE(MKDIR_TAKES_ONE_ARG, 1, [Define if host mkdir takes a single argument.])
@@ -814,7 +815,7 @@ dnl
 AC_DEFUN([OCTAVE_IEEE754_DATA_FORMAT],
 [AC_MSG_CHECKING([for IEEE 754 data format])
 AC_CACHE_VAL(octave_cv_ieee754_data_format,
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 int
 main (void) 
 {
@@ -824,7 +825,7 @@ main (void)
   ieeebytes b = {0x43, 0x11, 0x8b, 0x54, 0xf2, 0x6e, 0xbc, 0x1c};
 
   return l.d != 1234567891234567.0 && b.d != 1234567891234567.0;
-}],
+}]])],
   octave_cv_ieee754_data_format=yes,
   octave_cv_ieee754_data_format=no,
   octave_cv_ieee754_data_format=no)])
@@ -847,7 +848,7 @@ dnl
 AC_DEFUN([OCTAVE_UMFPACK_SEPERATE_SPLIT],
 [AC_MSG_CHECKING([for UMFPACK seperate complex matrix and rhs split])
 AC_CACHE_VAL(octave_cv_umfpack_seperate_split,
-[AC_TRY_RUN([
+[AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <stdlib.h>
 #if defined (HAVE_UFSPARSE_UMFPACK_h)
 #include <ufsparse/umfpack.h>
@@ -880,7 +881,7 @@ int main (void)
       return (1);
   return (0) ;
 }
-],
+]])],
   octave_cv_umfpack_seperate_split=yes,
   octave_cv_umfpack_seperate_split=no,
   octave_cv_umfpack_seperate_split=no)])

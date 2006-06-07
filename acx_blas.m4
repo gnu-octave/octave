@@ -38,7 +38,7 @@ AC_REQUIRE([AC_F77_LIBRARY_LDFLAGS])
 acx_blas_ok=no
 
 AC_ARG_WITH(blas,
-	[AC_HELP_STRING([--with-blas=<lib>], [use BLAS library <lib>])])
+	[AS_HELP_STRING([--with-blas=<lib>], [use BLAS library <lib>])])
 case $with_blas in
 	yes | "") ;;
 	no) acx_blas_ok=disable ;;
@@ -58,7 +58,8 @@ if test $acx_blas_ok = no; then
 if test "x$BLAS_LIBS" != x; then
 	save_LIBS="$LIBS"; LIBS="$BLAS_LIBS $LIBS"
 	AC_MSG_CHECKING([for $sgemm in $BLAS_LIBS])
-	AC_TRY_LINK_FUNC($sgemm, [acx_blas_ok=yes], [BLAS_LIBS=""])
+	AC_LINK_IFELSE([AC_LANG_CALL([], [$sgemm])],
+		       [acx_blas_ok=yes], [BLAS_LIBS=""])
 	AC_MSG_RESULT($acx_blas_ok)
 	LIBS="$save_LIBS"
 fi
@@ -87,8 +88,9 @@ if test $acx_blas_ok = no; then
 	vlib_flags="-framework vecLib"
 	save_LIBS="$LIBS"; LIBS="$vlib_flags $LIBS"
 	AC_MSG_CHECKING([for $sgemm in $vlib_flags])
-	AC_TRY_LINK_FUNC($sgemm, [acx_blas_ok=yes; BLAS_LIBS="$vlib_flags"],
-			 [BLAS_LIBS=""])
+	AC_LINK_IFELSE([AC_LANG_CALL([], [$sgemm])],
+                       [acx_blas_ok=yes; BLAS_LIBS="$vlib_flags"],
+		       [BLAS_LIBS=""])
 	AC_MSG_RESULT($acx_blas_ok)
 	LIBS="$save_LIBS"
 fi

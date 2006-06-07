@@ -1,3 +1,14 @@
+2006-06-06  John W. Eaton  <jwe@octave.org>
+
+	* sighandlers.cc (generic_sig_handler, sigint_handler):
+	Use strsignal instead of accessing sys_siglist directly.
+	* siglist.h: Use HAVE_DECL_SYS_SIGLIST instead of SYS_SIGLIST_DECLARED.
+	* siglist.c: Update sys_siglist.
+	(init_signals, strsignal): New functions.
+	* octave.cc (octave_main): Call init_signals here.
+
+	* toplev.cc (Foctave_config_info): Delete LIBPLPLOT from struct.
+
 2006-06-05  John W. Eaton  <jwe@octave.org>
 
 	* pt-assign.cc (Vprint_rhs_assign_val): Delete variable.

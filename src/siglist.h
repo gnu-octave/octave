@@ -29,10 +29,16 @@ extern "C"
 {
 #endif
 
-/* This is taken directly from Emacs 19: */
+/* This is borrowed from Emacs.  */
 
-#ifndef SYS_SIGLIST_DECLARED
+#if ! defined (HAVE_DECL_SYS_SIGLIST)
 extern char *sys_siglist[];
+#endif
+
+extern void init_signals (void);
+
+#if ! defined (HAVE_STRSIGNAL)
+extern char *strsignal (int);
 #endif
 
 #ifdef __cplusplus

@@ -1,8 +1,25 @@
 2006-06-06  John W. Eaton  <jwe@octave.org>
 
-	* configure.in, aclocal.m4:
-	Use AS_HELP_STRING instead of AC_HELP_STRING.
+	* Makeconf.in (datarootdir): New variable.
+
+	* acx_lapack.m4 (acx_lapack_ok): 
 	Use AC_LINK_IFELSE+AC_LANG_PROGRAM instead of AC_TRY_LINK
+
+	* aclocal.m4: Use AC_RUN_IFELSE+AC_LANG_SOURCE instead of AC_TRY_RUN.
+
+	* acx_blas.m4, acx_lapack.m4, configure.in, aclocal.m4:
+	Use AS_HELP_STRING instead of AC_HELP_STRING.
+
+	* configure.in: Outside of other macros, use AC_MSG_NOTICE instad
+	of AC_MSG_RESULT.  Check for sys_siglist using method from
+	autoconf manual.
+
+	* configure.in, Makeconf.in: octMakefile.in: Delete plplot cruft.
+
+	* configure.in, aclocal.m4:
+	Use AC_LINK_IFELSE+AC_LANG_PROGRAM instead of AC_TRY_LINK
+	Use AC_COMPILE_IFELSE+AC_LANG_PROGRAM instead of AC_TRY_COMPILE.
+	Use AS_HELP_STRING consistently with AC_ARG_WITH and AC_ARG_ENABLE.
 
 2006-05-23  John W. Eaton  <jwe@octave.org>
 

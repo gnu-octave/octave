@@ -36,8 +36,7 @@ DISTFILES = $(CONF_DISTFILES) \
 DISTDIRS = # plplot
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = @PLPLOT_DIR@ @DLFCN_DIR@ \
-	libcruft liboctave src scripts doc examples
+SUBDIRS = @DLFCN_DIR@ libcruft liboctave src scripts doc examples
 
 # Subdirectories in which to run `make all'.
 INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples

@@ -184,7 +184,6 @@ FLIBS = @FLIBS@
 
 LIBDLFCN = @LIBDLFCN@
 LIBGLOB = @LIBGLOB@
-LIBPLPLOT = @LIBPLPLOT@
 LIBOCTINTERP = @LIBOCTINTERP@
 LIBOCTAVE = @LIBOCTAVE@
 LIBCRUFT = @LIBCRUFT@
@@ -230,6 +229,10 @@ bindir = @bindir@
 # Normally the directory for installing executables that system
 # administrators run.  This is the same as libexecdir on Cygwin systems.
 sbindir = @sbindir@
+
+# The root of the directory tree for read-only
+# architecture-independent data files.
+datarootdir = @datarootdir@
 
 # Where to install architecture-independent data files.  ${fcnfiledir}
 # and ${localfcnfiledir} are subdirectories of this.
@@ -459,7 +462,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LIBGLOB%|\"${LIBGLOB}\"|" \
   -e "s|%OCTAVE_CONF_LIBOCTAVE%|\"${LIBOCTAVE}\"|" \
   -e "s|%OCTAVE_CONF_LIBOCTINTERP%|\"${LIBOCTINTERP}\"|" \
-  -e "s|%OCTAVE_CONF_LIBPLPLOT%|\"${LIBPLPLOT}\"|" \
   -e "s|%OCTAVE_CONF_LIBREADLINE%|\"${LIBREADLINE}\"|" \
   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \

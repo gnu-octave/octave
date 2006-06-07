@@ -512,6 +512,8 @@ octave_main (int argc, char **argv, int embedded)
   // options are processed because some command line options override
   // defaults by calling bind_internal_variable.
 
+  init_signals ();
+
   sysdep_init ();
 
   // The idea here is to force xerbla to be referenced so that we will

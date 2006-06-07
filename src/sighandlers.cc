@@ -221,7 +221,7 @@ octave_set_signal_handler (int sig, sig_handler *handler,
 static RETSIGTYPE
 generic_sig_handler (int sig)
 {
-  my_friendly_exit (sys_siglist[sig], sig);
+  my_friendly_exit (strsignal (sig), sig);
 
   SIGHANDLER_RETURN (0);
 }
@@ -410,11 +410,11 @@ sigint_handler (int sig)
 
 #ifdef USE_W32_SIGINT
   if (w32_in_main_thread ())
-    user_abort (sys_siglist[sig], sig);
+    user_abort (strsignal (sig), sig);
   else
     w32_raise (sig);
 #else
-  user_abort (sys_siglist[sig], sig);
+  user_abort (strsignal (sig), sig);
 #endif
 
   SIGHANDLER_RETURN (0);

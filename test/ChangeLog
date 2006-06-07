@@ -1,3 +1,7 @@
+2006-06-07  John W. Eaton  <jwe@octave.org>
+
+	* fntests.m: Keep track of files with tests and report total.
+
 2006-06-01  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m (print_test_file_name, print_pass_fail): New functions.

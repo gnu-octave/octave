@@ -1,6 +1,7 @@
 clear all;
 
 global files_with_no_tests = {};
+global files_with_tests = {};
 global topsrcdir;
 
 currdir = canonicalize_file_name (".");
@@ -49,6 +50,7 @@ function y = hastests (f)
 endfunction
 
 function [dp, dn] = run_test_dir (fid, d);
+  global files_with_tests;
   global files_with_no_tests;
   lst = dir (d);
   dp = dn = 0;
@@ -57,12 +59,14 @@ function [dp, dn] = run_test_dir (fid, d);
     if (length (nm) > 5 && strcmp (nm(1:5), "test_")
 	&& strcmp (nm((end-1):end), ".m"))
       p = n = 0;
-      if (hastests (fullfile (d, nm)))
+      ffnm = fullfile (d, nm);
+      if (hastests (ffnm))
 	print_test_file_name (nm);
 	[p, n] = test (nm(1:(end-2)), "quiet", fid);
 	print_pass_fail (n, p);
+	files_with_tests(end+1) = ffnm;
       else
-	files_with_no_tests(end+1) = fullfile (d, nm);
+	files_with_no_tests(end+1) = ffnm;
       endif
       dp += p;
       dn += n;
@@ -71,6 +75,7 @@ function [dp, dn] = run_test_dir (fid, d);
 endfunction
 
 function [dp, dn] = run_test_script (fid, d);
+  global files_with_tests;
   global files_with_no_tests;
   global topsrcdir;
   lst = dir (d);
@@ -97,6 +102,7 @@ function [dp, dn] = run_test_script (fid, d);
 	print_pass_fail (n, p);
 	dp += p;
 	dn += n;
+	files_with_tests(end+1) = f;
       else
 	files_with_no_tests(end+1) = f;
       endif
@@ -148,7 +154,9 @@ try
   printf ("\nSummary:\n\n  PASS %6d\n", dp);
   nfail = dn - dp;
   printf ("  FAIL %6d\n", nfail);
-  printf ("\n%d files have no tests\n", length (files_with_no_tests));
+  n_files_with_no_tests = length (files_with_no_tests);
+  n_files = n_files_with_no_tests + length (files_with_tests);
+  printf ("\n%d (of %d) files have no tests\n", n_files_with_no_tests, n_files);
   fprintf (fid, "\nFiles with no tests:\n\n%s",
 	  list_in_columns (files_with_no_tests, 80));
   fclose (fid);

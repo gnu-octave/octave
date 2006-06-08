@@ -60,7 +60,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-list.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
-#include "ov-va-args.h"
 #include "ov-builtin.h"
 #include "ov-mapper.h"
 #include "ov-dld-fcn.h"
@@ -675,11 +674,6 @@ octave_value::octave_value (const octave_value_list& l, bool is_csl)
 
 octave_value::octave_value (octave_value::magic_colon)
   : rep (new octave_magic_colon ())
-{
-}
-
-octave_value::octave_value (octave_value::all_va_args)
-  : rep (new octave_all_va_args ())
 {
 }
 
@@ -1842,7 +1836,6 @@ install_types (void)
   octave_struct::register_type ();
   octave_list::register_type ();
   octave_cs_list::register_type ();
-  octave_all_va_args::register_type ();
   octave_magic_colon::register_type ();
   octave_builtin::register_type ();
   octave_mapper::register_type ();

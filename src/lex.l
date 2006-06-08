@@ -540,26 +540,6 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
   }
 
 %{
-// An ellipsis not at the end of a line is not a continuation, but
-// does have another meaning.
-%}
-
-{EL} {
-    if (lexer_flags.looking_at_parameter_list)
-      {
-	warning ("`...' is deprecated; use varargin instead");
-	COUNT_TOK_AND_RETURN (VARARGIN);
-      }
-    else if (lexer_flags.looking_at_return_list)
-      {
-	warning ("`...' is deprecated; use varargout instead");
-	COUNT_TOK_AND_RETURN (VARARGOUT);
-      }
-    else
-      return LEXICAL_ERROR;
-  }
-
-%{
 // End of file.
 %}
 

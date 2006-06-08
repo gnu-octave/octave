@@ -41,7 +41,6 @@ enum octave_kw_id
 
 struct octave_kw { const char *name; int tok; octave_kw_id kw_id; };
 %%
-all_va_args, ALL_VA_ARGS, all_va_args_kw
 break, BREAK, break_kw
 case, CASE, case_kw
 catch, CATCH, catch_kw

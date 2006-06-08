@@ -316,7 +316,7 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
 	  if (len > 0)
 	    os << ", ";
 
-	  os << "...";
+	  os << "varargout";
 	}
 
       if (len > 1 || takes_var_return)
@@ -353,7 +353,7 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
 	  if (len > 0)
 	    os << ", ";
 
-	  os << "...";
+	  os << "varargin";
 	}
 
       if (len > 0 || takes_varargs)

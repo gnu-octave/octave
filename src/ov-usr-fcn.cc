@@ -78,15 +78,11 @@ octave_user_function::octave_user_function
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (0),
     num_named_args (0), nested_function (false),
-    args_passed (), num_args_passed (0),
-    curr_va_arg_number (0), vr_list (0), symtab_entry (0),
+    args_passed (), num_args_passed (0), symtab_entry (0),
     argn_sr (0), nargin_sr (0), nargout_sr (0), varargin_sr (0)
 {
   if (param_list)
-    {
-      num_named_args = param_list->length ();
-      curr_va_arg_number = num_named_args;
-    }
+    num_named_args = param_list->length ();
 }
 
 octave_user_function::~octave_user_function (void)
@@ -95,7 +91,6 @@ octave_user_function::~octave_user_function (void)
   delete ret_list;
   delete sym_tab;
   delete cmd_list;
-  delete vr_list;
   delete lead_comm;
   delete trail_comm;
 }
@@ -105,9 +100,6 @@ octave_user_function::define_ret_list (tree_parameter_list *t)
 {
   ret_list = t;
 
-  if (ret_list && ret_list->takes_varargs ())
-    vr_list = new tree_va_return_list;
- 
   return this;
 }
 
@@ -146,18 +138,10 @@ octave_user_function::takes_varargs (void) const
   return (param_list && param_list->takes_varargs ());
 }
 
-octave_value
-octave_user_function::octave_va_arg (void)
+bool
+octave_user_function::takes_var_return (void) const
 {
-  octave_value retval;
-
-  if (curr_va_arg_number < num_args_passed)
-    retval = args_passed (curr_va_arg_number++);
-  else
-    ::error ("va_arg: error getting arg number %d -- only %d provided",
-	     curr_va_arg_number + 1, num_args_passed);
-
-  return retval;
+  return (ret_list && ret_list->takes_varargs ());
 }
 
 octave_value_list
@@ -179,69 +163,6 @@ octave_user_function::octave_all_va_args (void)
   return retval;
 }
 
-bool
-octave_user_function::takes_var_return (void) const
-{
-  return (ret_list && ret_list->takes_varargs ());
-}
-
-void
-octave_user_function::octave_vr_val (const octave_value& val)
-{
-  // Use != here to avoid possible conversion to int of smaller type
-  // than the vr_list pointer.
-
-  assert (vr_list != 0);
-
-  vr_list->append (val);
-}
-
-void
-octave_user_function::varargout_to_vr_val (void)
-{
-  assert (vr_list && vr_list->empty ());
-
-  symbol_record *sr = sym_tab->lookup ("varargout");
-
-  if (sr && sr->is_variable ())
-    {
-      octave_value v = sr->def ();
-
-      Cell c = v.cell_value ();
-
-      if (! error_state)
-	{
-	  // FIXME -- should varargout be required to be a
-	  // cell array with a single row or column?  If not, should
-	  // we have a cleaner way of doing this operation?
-
-	  int n = c.length ();
-
-	  const octave_value *d = c.data ();
-
-	  for (int i = 0; i < n; i++)
-	    vr_list->append (d[i]);
-	}
-      else
-	error ("expecting varargout to be a cell array object");
-    }
-}
-
-bool
-octave_user_function::has_varargout (void) const
-{
-  bool retval = false;
-
-  if (takes_var_return ())
-    {
-      symbol_record *sr = sym_tab->lookup ("varargout");
-
-      retval = (sr && sr->is_variable ());
-    }
-
-  return retval;
-}
-
 // For unwind protect.
 
 static void
@@ -249,14 +170,6 @@ pop_symbol_table_context (void *table)
 {
   symbol_table *tmp = static_cast<symbol_table *> (table);
   tmp->pop_context ();
-}
-
-static void
-delete_vr_list (void *list)
-{
-  tree_va_return_list *tmp = static_cast<tree_va_return_list *> (list);
-  tmp->clear ();
-  delete tmp;
 }
 
 static void
@@ -366,23 +279,7 @@ octave_user_function::do_multi_index_op (int nargout,
     {
       sym_tab->push_context ();
       unwind_protect::add (pop_symbol_table_context, sym_tab);
-
-      if (vr_list)
-	{
-	  // Push new vr_list.
-
-	  unwind_protect_ptr (vr_list);
-	  vr_list = new tree_va_return_list;
-
-	  // Clear and delete the new one before restoring the old
-	  // one.
-
-	  unwind_protect::add (delete_vr_list, vr_list);
-	}
     }
-
-  if (vr_list)
-    vr_list->clear ();
 
   install_automatic_vars ();
 
@@ -422,10 +319,6 @@ octave_user_function::do_multi_index_op (int nargout,
 
   unwind_protect_int (num_args_passed);
   num_args_passed = nargin;
-
-  unwind_protect_int (curr_va_arg_number);
-
-  curr_va_arg_number = num_named_args;
 
   if (param_list && ! param_list->varargs_only ())
     {
@@ -491,10 +384,22 @@ octave_user_function::do_multi_index_op (int nargout,
       {
 	ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
 
-	if (has_varargout ())
-	  varargout_to_vr_val ();
+	Cell varargout;
 
-	retval = ret_list->convert_to_const_vector (vr_list);
+	symbol_record *sr = sym_tab->lookup ("varargout");
+
+	if (sr && sr->is_variable ())
+	  {
+	    octave_value v = sr->def ();
+
+	    varargout = v.cell_value ();
+
+	    if (error_state)
+	      error ("expecting varargout to be a cell array object");
+	  }
+
+	if (! error_state)
+	  retval = ret_list->convert_to_const_vector (varargout);
       }
   }
 
@@ -722,142 +627,6 @@ At the top level, @code{nargout} is undefined.\n\
 	}
       else
 	error ("nargout: invalid call at top level");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUNX ("va_arg", Fva_arg, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} va_arg ()\n\
-Return the value of the next available argument and move the internal\n\
-pointer to the next argument.  It is an error to call @code{va_arg}\n\
-when ther eare no more arguments available, or in a function that\n\
-has not been declared to take a variable number of parameters.\n\
-@end deftypefn")
-{
-  static bool warned = false;
-
-  if (! warned)
-    {
-      ::warning ("va_arg is deprecated; use varargin instead");
-      warned = true;
-    }
-
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      octave_user_function *fcn = octave_call_stack::caller_user_function ();
-
-      if (fcn)
-	{
-	  if (fcn->takes_varargs ())
-	    retval = fcn->octave_va_arg ();
-	  else
-	    {
-	      ::error ("va_arg only valid within function taking variable");
-	      ::error ("number of arguments");
-	    }
-	}
-      else
-	::error ("va_arg only valid within function body");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (va_start, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} va_start ()\n\
-Position an internal pointer to the first unnamed argument in\n\
-functions that have been declared to accept a variable number of\n\
-arguments.  It is an error to call @code{va_start} in a function\n\
-that has not been declared to take a variable number of parameters.\n\
-@end deftypefn")
-{
-  static bool warned = false;
-
-  if (! warned)
-    {
-      ::warning ("va_start is deprecated; use varargin instead");
-      warned = true;
-    }
-
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 0)
-    {
-      octave_user_function *fcn = octave_call_stack::caller_user_function ();
-
-      if (fcn)
-	{
-	  if (fcn->takes_varargs ())
-	    fcn->octave_va_start ();
-	  else
-	    {
-	      ::error ("va_start only valid within function taking variable");
-	      ::error ("number of arguments");
-	    }
-	}
-      else
-	::error ("va_start only valid within function body");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (vr_val, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} vr_val (@var{x})\n\
-Each time this function is called, it places the value of its argument\n\
-at the end of the list of values to return from the current\n\
-function.  Once @code{vr_val} has been called, there is no way to go\n\
-back to the beginning of the list and rewrite any of the return\n\
-values.  This function may only be called within functions that have\n\
-been declared to return an unspecified number of output arguments.\n\
-@end deftypefn")
-{
-  static bool warned = false;
-
-  if (! warned)
-    {
-      ::warning ("vr_val is deprecated; use varargout instead");
-      warned = true;
-    }
-
-  octave_value_list retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    {
-      octave_user_function *fcn = octave_call_stack::caller_user_function ();
-
-      if (fcn)
-	{
-	  if (fcn->has_varargout ())
-	    ::error ("vr_val and varargout cannot both be used in the same function");
-	  else if (fcn->takes_var_return ())
-	    fcn->octave_vr_val (args(0));
-	  else
-	    {
-	      ::error ("vr_val only valid within function declared to");
-	      ::error ("produce a variable number of values");
-	    }
-	}
-      else
-	::error ("vr_val only valid within function body");
     }
   else
     print_usage ();

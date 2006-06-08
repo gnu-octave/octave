@@ -1,5 +1,43 @@
 2006-06-08  John W. Eaton  <jwe@octave.org>
 
+	* ov-usr-fcn.cc (function::do_multi_index_op): Append contents of
+	varargout to ret_list before calling convert_to_const_vector.
+
+	* pt-arg-list.cc (tree_argument_list::convert_to_const_vector):
+	No need to handle all_va_args here.
+
+	* ov-va-args.h, ov-va-args.cc: Delete files.
+	* Makefile.in (OV_INCLUDES, OV_SRC): Delete from the lists.
+
+	* ov.cc (install_types): Don't register octave_all_va_args type.
+	* ov.h, ov.cc (octave_value::octave_value (octave_value::all_va_args)):
+	Delete.
+	* ov.h (octave_value::is_all_va_args): Delete.
+	(octave_value::enum all_va_args): Delete.
+
+	* pt-pr-code.cc	(tree_print_code::visit_octave_user_function_header):
+	Print "varargout" and "varargin" instead of "...".
+
+	* pt-misc.h, pt-misc.cc	(tree_parameter_list::convert_to_const_vector):
+	Arg is now const Cell& instead of tree_va_return_list*.
+
+	* ov-usr-fcn.h, ov-usr-fcn.cc (octave_user_function::vr_list,
+	octave_user_function::curr_va_arg_number):
+	Delete variables and all uses.
+	(octave_function::octave_va_start, octave_function::octave_va_arg,
+	octave_function::octave_vr_val,	octave_function::has_varargout):
+	Delete functions and all uses.
+
+	* ov-fcn.h (octave_function::octave_va_start,
+	octave_function::octave_va_arg, octave_function::octave_vr_val,
+	octave_function::has_varargout): Delete.
+
+	* ov-usr-fcn.cc (Fva_arg, Fva_start, Fvr_val): Delete.
+
+	* lex.l ({EL}): Don't handle "..." as varargin or varargout.
+	* octave.gperf (all_va_args, ALL_VA_ARGS, all_va_args_kw): Delete.
+	* parse.y (ALL_VA_ARGS): Delete token and all uses.
+
 	* defaults.h.in (OCTAVE_DATAROOTDIR): Substitute here.
 	* toplev.cc (octave_config_info): Add datarootdir to the struct.
 

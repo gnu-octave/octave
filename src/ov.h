@@ -137,7 +137,6 @@ public:
 				  const octave_value& rhs = octave_value ());
 
   enum magic_colon { magic_colon_t };
-  enum all_va_args { all_va_args_t };
 
   octave_value (void);
   octave_value (short int i);
@@ -217,7 +216,6 @@ public:
   octave_value (const streamoff_array& off);
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
-  octave_value (octave_value::all_va_args);
 
   octave_value (octave_base_value *new_rep);
 
@@ -434,9 +432,6 @@ public:
 
   bool is_magic_colon (void) const
     { return rep->is_magic_colon (); }
-
-  bool is_all_va_args (void) const
-    { return rep->is_all_va_args (); }
 
   // Are any or all of the elements in this constant nonzero?
 

@@ -25,6 +25,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include "Cell.h"
+
 #include "defun.h"
 #include "error.h"
 #include "ov.h"
@@ -143,15 +145,13 @@ tree_parameter_list::undefine (void)
 }
 
 octave_value_list
-tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
+tree_parameter_list::convert_to_const_vector (const Cell& varargout)
 {
-  int nout = length ();
+  octave_idx_type vlen = varargout.numel ();
 
-  if (vr_list)
-    nout += vr_list->length ();
+  int nout = length () + vlen;
 
-  octave_value_list retval;
-  retval.resize (nout);
+  octave_value_list retval (nout, octave_value ());
 
   int i = 0;
 
@@ -162,15 +162,8 @@ tree_parameter_list::convert_to_const_vector (tree_va_return_list *vr_list)
       retval(i++) = elt->is_defined () ? elt->rvalue () : octave_value ();
     }
 
-  if (vr_list)
-    {
-      for (tree_va_return_list::iterator p = vr_list->begin ();
-	   p != vr_list->end ();
-	   p++)
-	{
-	  retval(i++) = *p;
-	}
-    }
+  for (octave_idx_type j = 0; j < vlen; j++)
+    retval(i++) = varargout(j);
 
   return retval;
 }

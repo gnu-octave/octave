@@ -394,7 +394,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN VARARGIN VARARGOUT ALL_VA_ARGS
+%token FCN VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
 // Nonterminals we construct.
@@ -665,12 +665,6 @@ arg_list	: expression
 		  { $$ = new tree_argument_list ($1); }
 		| magic_colon
 		  { $$ = new tree_argument_list ($1); }
-		| ALL_VA_ARGS
-		  {
-		    octave_value tmp (octave_value::all_va_args_t);
-		    tree_constant *all_va_args = new tree_constant (tmp);
-		    $$ = new tree_argument_list (all_va_args);
-		  }
 		| arg_list ',' magic_colon
 		  {
 		    $1->append ($3);
@@ -679,13 +673,6 @@ arg_list	: expression
 		| arg_list ',' expression
 		  {
 		    $1->append ($3);
-		    $$ = $1;
-		  }
-		| arg_list ',' ALL_VA_ARGS
-		  {
-		    octave_value tmp (octave_value::all_va_args_t);
-		    tree_constant *all_va_args = new tree_constant (tmp);
-		    $1->append (all_va_args);
 		    $$ = $1;
 		  }
 		;

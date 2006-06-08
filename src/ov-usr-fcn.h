@@ -136,19 +136,9 @@ public:
 
   bool takes_varargs (void) const;
 
-  void octave_va_start (void) { curr_va_arg_number = num_named_args; }
-
-  octave_value octave_va_arg (void);
-
-  octave_value_list octave_all_va_args (void);
-
   bool takes_var_return (void) const;
 
-  void octave_vr_val (const octave_value& val);
-
-  void varargout_to_vr_val (void);
-
-  bool has_varargout (void) const;
+  octave_value_list octave_all_va_args (void);
 
   void stash_function_name (const std::string& s) { my_name = s; }
 
@@ -259,13 +249,6 @@ private:
   // The number of arguments passed in.
   int num_args_passed;
 
-  // Used to keep track of the current offset into the list of va_args.
-  int curr_va_arg_number;
-
-  // The list of return values when an unspecified number can be
-  // returned.
-  tree_va_return_list *vr_list;
-
   // The symbol record for this function.
   symbol_record *symtab_entry;
 
@@ -289,7 +272,6 @@ private:
 
   void bind_automatic_vars (const string_vector& arg_names, int nargin,
 			    int nargout, const octave_value_list& va_args);
-
 
   // No copying!
 

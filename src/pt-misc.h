@@ -24,6 +24,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_tree_misc_h)
 #define octave_tree_misc_h 1
 
+class Cell;
+
 class octave_value;
 class octave_value_list;
 
@@ -71,7 +73,7 @@ public:
 
   bool is_defined (void);
 
-  octave_value_list convert_to_const_vector (tree_va_return_list *vr_list);
+  octave_value_list convert_to_const_vector (const Cell& varargout);
 
   void accept (tree_walker& tw);
 

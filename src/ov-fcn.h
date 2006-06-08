@@ -76,18 +76,7 @@ public:
 
   virtual bool takes_varargs (void) const { return false; }
 
-  virtual void octave_va_start (void) { }
-
-  virtual octave_value octave_va_arg (void) { return octave_value (); }
-
-  virtual octave_value_list octave_all_va_args (void)
-    { return octave_value_list (); }
-
   virtual bool takes_var_return (void) const { return false; }
-
-  virtual void octave_vr_val (const octave_value&) { }
-
-  virtual bool has_varargout (void) const { return false; }
 
   std::string name (void) const { return my_name; }
 

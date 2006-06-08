@@ -160,10 +160,6 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 
   int len = length ();
 
-  // FIXME -- would be nice to know in advance how largs args
-  // needs to be even when we have a list containing an all_va_args
-  // token.
-
   octave_value_list args;
   int args_len = len;
   args.resize (args_len);
@@ -193,28 +189,7 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
 	    }
 	  else
 	    {
-	      if (tmp.is_all_va_args ())
-		{
-		  octave_function *fcn = octave_call_stack::current ();
-
-		  if (fcn)
-		    {
-		      octave_value_list tva;
-		      tva = fcn->octave_all_va_args ();
-		      int n = tva.length ();
-		      args_len += n - 1;
-		      args.resize (args_len);
-		      for (int i = 0; i < n; i++)
-			args(j++) = tva(i);
-		    }
-		  else
-		    {
-		      ::error ("all_va_args is only valid inside functions");
-		      args = octave_value_list ();
-		      break;
-		    }
-		}
-	      else if (tmp.is_cs_list ())
+	      if (tmp.is_cs_list ())
 		{
 		  octave_value_list tl = tmp.list_value ();
 		  int n = tl.length ();

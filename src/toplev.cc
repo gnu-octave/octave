@@ -787,6 +787,7 @@ specified option.\n\
       "canonical_host_type", OCTAVE_CANONICAL_HOST_TYPE,
       "config_opts", OCTAVE_CONF_config_opts,
       "datadir", OCTAVE_DATADIR,
+      "datarootdir", OCTAVE_DATAROOTDIR,
       "exec_prefix", OCTAVE_EXEC_PREFIX,
       "fcnfiledir", OCTAVE_FCNFILEDIR,
       "imagedir", OCTAVE_IMAGEDIR,

@@ -501,6 +501,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_BINDIR%|\"${bindir}\"|" \
   -e "s|%OCTAVE_CANONICAL_HOST_TYPE%|\"${canonical_host_type}\"|" \
   -e "s|%OCTAVE_DATADIR%|\"${datadir}\"|" \
+  -e "s|%OCTAVE_DATAROOTDIR%|\"${datarootdir}\"|" \
   -e "s|%OCTAVE_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
   -e "s|%OCTAVE_EXEC_PREFIX%|\"${exec_prefix}\"|" \
   -e "s|%OCTAVE_FCNFILEDIR%|\"${fcnfiledir}\"|" \

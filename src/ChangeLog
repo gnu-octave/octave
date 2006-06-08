@@ -1,3 +1,8 @@
+2006-06-08  John W. Eaton  <jwe@octave.org>
+
+	* defaults.h.in (OCTAVE_DATAROOTDIR): Substitute here.
+	* toplev.cc (octave_config_info): Add datarootdir to the struct.
+
 2006-06-07  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.cc (octave_cell::subsasgn): Handle c-s list object on

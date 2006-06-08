@@ -49,6 +49,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCTAVE_DATADIR %OCTAVE_DATADIR%
 #endif
 
+#ifndef OCTAVE_DATAROOTDIR
+#define OCTAVE_DATAROOTDIR %OCTAVE_DATAROOTDIR%
+#endif
+
 #ifndef OCTAVE_EXEC_PREFIX
 #define OCTAVE_EXEC_PREFIX %OCTAVE_EXEC_PREFIX%
 #endif

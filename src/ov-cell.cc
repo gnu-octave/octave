@@ -25,6 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -791,15 +792,18 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   // Recursively add each element of the cell to this group.
 
   Cell tmp = cell_value ();
-  
-  for (octave_idx_type i = 0; i < dv.numel (); i++)
+
+  octave_idx_type nel = dv.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
     {
       std::ostringstream buf;
-      buf << "_" << i;
+      int digits = static_cast<int> (floor (log10 (nel) + 1.0));
+      buf << "_" << std::setw (digits) << std::setfill ('0') << i;
       std::string s = buf.str ();
 
-      if (! add_hdf5_data(data_hid, tmp.elem (i), s.c_str (), "", false,
-			  save_as_floats))
+      if (! add_hdf5_data (data_hid, tmp.elem (i), s.c_str (), "", false,
+			   save_as_floats))
 	{
 	  H5Gclose (data_hid);
 	  return false;

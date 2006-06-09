@@ -1,3 +1,13 @@
+2006-06-09  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.6.
+	(OCTAVE_API_VERSION): Now api-v19.
+	(OCTAVE_RELEASE_DATE): Now 2006-06-09.
+
+	* ov-cell.cc (cell::save_hdf5): Use leading zeros to keep elements
+	correctly sorted in the HDF file.
+	From Stephen Fegan <sfegan@astro.ucla.edu>.
+
 2006-06-08  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr-fcn.cc (function::do_multi_index_op): Append contents of

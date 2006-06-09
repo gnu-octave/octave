@@ -25,7 +25,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
-#include "Array-flags.h"
 #include "data-conv.h"
 #include "quit.h"
 #include "str-vec.h"

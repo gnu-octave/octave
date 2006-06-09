@@ -29,7 +29,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iostream>
 
-#include "Array-flags.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "so-array.h"

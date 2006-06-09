@@ -23,7 +23,6 @@ or function names:
 
 @example
 @group
-all_va_args             endwhile
 break                   for
 case                    function
 catch                   global
@@ -37,6 +36,7 @@ endfor                  try
 endfunction             unwind_protect
 endif                   unwind_protect_cleanup
 endswitch               while
+endwhile                
 @end group
 @end example
 

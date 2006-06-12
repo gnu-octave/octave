@@ -125,6 +125,10 @@ public:
   unwind_protect::save_ptr (reinterpret_cast<void **> (&(p)), \
                             reinterpret_cast<void *> (p))
 
+#define unwind_protect_fptr(p) \
+  unwind_protect::save_ptr (reinterpret_cast<void **> (&(p)), \
+                            FCN_PTR_CAST (void *, p))
+
 #define unwind_protect_const_ptr(p) \
   unwind_protect::save_ptr (const_cast<void **> (reinterpret_cast<const void **> (&(p))), \
                             const_cast<void *> (reinterpret_cast<const void *> (p)))

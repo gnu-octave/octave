@@ -424,7 +424,7 @@ load_path::do_set (const std::string& p)
 
   // Temporarily disable add hook.
 
-  unwind_protect_ptr (add_hook);
+  unwind_protect_fptr (add_hook);
 
   add_hook = 0;
 

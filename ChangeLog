@@ -1,3 +1,9 @@
+2006-06-12  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_CXX_BROKEN_REINTERPRET_CAST): New macro.
+	* configure.in: Use it.
+	* AH_BOTTOM: Conditionally define FCN_PTR_CAST here.
+
 2006-06-08  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-subst-default-vals): Also substitute

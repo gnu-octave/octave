@@ -709,6 +709,27 @@ EOF
   AC_DEFINE_UNQUOTED(CXX_ABI, $octave_cv_cxx_abi, [Define to the C++ ABI your compiler uses.])
 ])
 dnl
+dnl Check to see if C++ reintrepret cast works for function pointers.
+dnl
+dnl OCTAVE_CXX_BROKEN_REINTERPRET_CAST
+dnl
+AC_DEFUN(OCTAVE_CXX_BROKEN_REINTERPRET_CAST, [
+  AC_REQUIRE([AC_PROG_CXX])
+  AC_LANG_PUSH(C++)
+  AC_CACHE_CHECK([for broken C++ reinterpret_cast],
+    octave_cv_cxx_broken_reinterpret_cast, [
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <cmath>]], [[
+      typedef double (*fptr) (double);
+      fptr psin = sin;
+      void *vptr = reinterpret_cast<void *> (psin);
+      psin = reinterpret_cast<fptr> (vptr);]])],
+      octave_cv_cxx_broken_reinterpret_cast=no,
+      octave_cv_cxx_broken_reinterpret_cast=yes)])
+  if test $octave_cv_cxx_broken_reinterpret_cast = yes ; then
+    AC_DEFINE(CXX_BROKEN_REINTERPRET_CAST, 1, [Define if C++ reinterpret_cast fails for function pointers.])
+fi
+  AC_LANG_POP(C++)])
+dnl
 dnl Determine if mkdir accepts only one argument instead dnl of the usual 2.
 dnl
 AC_DEFUN(OCTAVE_MKDIR_TAKES_ONE_ARG,

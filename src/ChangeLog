@@ -1,3 +1,11 @@
+2006-06-12  John W. Eaton  <jwe@octave.org>
+
+	* unwind-prot.h (unwind_protect_fptr): New macro.
+	* load-path.cc (load_path::do_set): Use it instead of
+	unwind_protect_ptr when protecting add_hook function pointer.
+	* dynamic-ld.cc (octave_dynamic_loader::do_load): Use FCN_PTR_CAST
+	here instead of reinterpret_cast.
+
 2006-06-09  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.5+.

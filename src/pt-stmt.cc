@@ -154,42 +154,58 @@ tree_statement_list::eval (bool silent, int nargout)
 {
   octave_value_list retval;
 
+  static octave_value_list empty_list;
+
   if (error_state)
     return retval;
 
-  for (iterator p = begin (); p != end (); p++)
+  iterator p = begin ();
+
+  if (p != end ())
     {
-      tree_statement *elt = *p;
-
-      if (elt)
+      while (true)
 	{
-	  OCTAVE_QUIT;
+	  tree_statement *elt = *p++;
 
-	  // Clear preivous values before next statement is evaluated
-	  // so that we aren't holding an extra reference to a value
-	  // that may be used next.  For example, in code like this:
-	  //
-	  //   X = rand (N);  ## refcount should be 1 after this statement.
-	  //   X(idx) = val;  ## no extra copy should be needed, but
-	  //                  ## we will be faked out if retval is not
-	  //                  ## cleared between statements here.
+	  if (elt)
+	    {
+	      OCTAVE_QUIT;
 
-	  retval = octave_value_list ();
+	      retval = elt->eval (silent, nargout, function_body);
 
-	  retval = elt->eval (silent, nargout, function_body);
+	      if (error_state)
+		break;
 
-	  if (error_state)
-	    break;
+	      if (tree_break_command::breaking
+		  || tree_continue_command::continuing)
+		break;
 
-	  if (tree_break_command::breaking
-	      || tree_continue_command::continuing)
-	    break;
+	      if (tree_return_command::returning)
+		break;
 
-	  if (tree_return_command::returning)
-	    break;
+	      if (p == end ())
+		break;
+	      else
+		{
+		  // Clear preivous values before next statement is
+		  // evaluated so that we aren't holding an extra
+		  // reference to a value that may be used next.  For
+		  // example, in code like this:
+		  //
+		  //   X = rand (N);  ## refcount for X should be 1
+		  //                  ## after this statement
+		  //
+		  //   X(idx) = val;  ## no extra copy of X should be
+		  //                  ## needed, but we will be faked
+		  //                  ## out if retval is not cleared
+		  //                  ## between statements here
+
+		  retval = empty_list;
+		}
+	    }
+	  else
+	    error ("invalid statement found in statement list!");
 	}
-      else
-	error ("invalid statement found in statement list!");
     }
 
   return retval;

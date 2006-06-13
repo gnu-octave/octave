@@ -356,12 +356,7 @@ octave_user_function::do_multi_index_op (int nargout,
     unwind_protect_bool (evaluating_function_body);
     evaluating_function_body = true;
 
-    octave_value_list tmp = cmd_list->eval ();
-
-    octave_value last_computed_value;
-
-    if (! tmp.empty ())
-      last_computed_value = tmp(0);
+    cmd_list->eval ();
 
     if (echo_commands)
       print_code_function_trailer ();

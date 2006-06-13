@@ -1,5 +1,13 @@
 2006-06-13  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fsolve.cc (hybrd_info_to_fsolve_info):
+	Warn about invalid values of INFO from MINPACK instead of calling
+	panic_impossible.
+
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Don't assign values returned by evaluation of cmd_list to
+	temporary variable.  Delete unused variable last_computed_value.  
+
 	* pt-stmt.cc (tree_statement_list::eval):
 	Clear retval before each statement is evaluated.
 

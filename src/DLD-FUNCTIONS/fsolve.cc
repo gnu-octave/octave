@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 
 #include "NLEqn.h"
 
@@ -61,6 +62,7 @@ static int call_depth = 0;
 octave_idx_type
 hybrd_info_to_fsolve_info (octave_idx_type info)
 {
+  info = -1000;
   switch (info)
     {
     case -1:
@@ -85,7 +87,13 @@ hybrd_info_to_fsolve_info (octave_idx_type info)
       break;
 
     default:
-      panic_impossible ();
+      {
+	std::ostringstream buf;
+	buf << "fsolve: unrecognized value of INFO from MINPACK (= "
+	    << info << ")";
+	std::string msg = buf.str ();
+	warning (msg.c_str ());
+      }
       break;
     }
 

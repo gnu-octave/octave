@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.514 $)
+AC_REVISION($Revision: 1.515 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -143,7 +143,7 @@ USE_64_BIT_IDX_T=false
 OCTAVE_IDX_TYPE=int
 AC_ARG_ENABLE(64,
   [AS_HELP_STRING([--enable-64],
-     [use 64-bit integer for array dimensions and indexing])],
+     [(EXPERIMENTAL) use 64-bit integers for array dimensions and indexing])],
   [if test "$enableval" = yes; then USE_64_BIT_IDX_T=true; fi], [])
 if $USE_64_BIT_IDX_T; then
   AC_CHECK_SIZEOF(void *)
@@ -156,7 +156,8 @@ if $USE_64_BIT_IDX_T; then
       OCTAVE_IDX_TYPE=long
       AC_DEFINE(IDX_TYPE_LONG, 1, [Define to 1 if octave index type is long])
     else
-      AC_MSG_WARN([no suitable type found for octave_idx_type so disabling 64-bit features])    
+      warn_64_bit="no suitable type found for octave_idx_type so disabling 64-bit features"
+      AC_MSG_WARN($warn_64_bit)
       USE_64_BIT_IDX_T=false
     fi
   else
@@ -1918,8 +1919,15 @@ if test -n "$warn_gnuplot"; then
   warn_msg_printed=true
 fi
 
-if $warn_msg_printed; then
-  AC_MSG_NOTICE([])
+if $USE_64_BIT_IDX_T; then
+  AC_MSG_WARN([You used the EXPERIMENTAL --enable-64 option.])
+  AC_MSG_WARN([Are you sure that is what you want to do?])
+  AC_MSG_WARN([])
+  AC_MSG_WARN([You must ensure that the Fortran compiler generates])
+  AC_MSG_WARN([code with 8 byte signed INTEGER values, and that your])
+  AC_MSG_WARN([BLAS and LAPACK libraries are compiled to use 8 byte])
+  AC_MSG_WARN([signed integers for array indexing.])
+  warn_msg_printed=true
 fi
 
 ### End of configure.

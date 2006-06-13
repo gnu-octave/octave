@@ -1,3 +1,9 @@
+2006-06-13  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (--enable-64): Include "(EXPERIMENTAL)" in help text.
+	Also set warn_64_bit if no suitable type for octave_idx_type is found.
+	If --enable-64 is specified, print warning in summary message.
+
 2006-06-12  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_CXX_BROKEN_REINTERPRET_CAST): New macro.

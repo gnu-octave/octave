@@ -165,6 +165,17 @@ tree_statement_list::eval (bool silent, int nargout)
 	{
 	  OCTAVE_QUIT;
 
+	  // Clear preivous values before next statement is evaluated
+	  // so that we aren't holding an extra reference to a value
+	  // that may be used next.  For example, in code like this:
+	  //
+	  //   X = rand (N);  ## refcount should be 1 after this statement.
+	  //   X(idx) = val;  ## no extra copy should be needed, but
+	  //                  ## we will be faked out if retval is not
+	  //                  ## cleared between statements here.
+
+	  retval = octave_value_list ();
+
 	  retval = elt->eval (silent, nargout, function_body);
 
 	  if (error_state)
@@ -179,8 +190,6 @@ tree_statement_list::eval (bool silent, int nargout)
 	}
       else
 	error ("invalid statement found in statement list!");
-
-
     }
 
   return retval;

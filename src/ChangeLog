@@ -1,3 +1,8 @@
+2006-06-13  John W. Eaton  <jwe@octave.org>
+
+	* pt-stmt.cc (tree_statement_list::eval):
+	Clear retval before each statement is evaluated.
+
 2006-06-12  John W. Eaton  <jwe@octave.org>
 
 	* unwind-prot.h (unwind_protect_fptr): New macro.

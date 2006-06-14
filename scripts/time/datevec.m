@@ -152,8 +152,12 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     ++y(m > 12);
     m(m > 12) -= 12;
 
-    ## Convert hour-minute-seconds
-    s = 86400 * (date - floor (date));
+    ## Convert hour-minute-seconds.  Attempt to account for precision of
+    ## datenum format.
+
+    fracd = date - floor (date);
+    srnd = 10 .^ floor (log10 (365.25*y));
+    s = round (86400*fracd.*srnd) ./ srnd;
     h = floor (s / 3600);
     s = s - 3600 * h;
     mi = floor (s / 60);

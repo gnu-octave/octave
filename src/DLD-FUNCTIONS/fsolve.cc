@@ -62,7 +62,6 @@ static int call_depth = 0;
 octave_idx_type
 hybrd_info_to_fsolve_info (octave_idx_type info)
 {
-  info = -1000;
   switch (info)
     {
     case -1:

@@ -1,3 +1,7 @@
+2006-06-14  John W. Eaton  <jwe@octave.org>
+
+	* time/datevec.m: Attempt to account for precision of datenum format.
+
 2006-06-01  Quentin H. Spencer <qspencer@ieee.org>
 
 	* audio/wavread.m: Fix file range error and add read support for

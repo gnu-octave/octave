@@ -158,6 +158,19 @@ tree_simple_assignment::oper (void) const
   return octave_value::assign_op_as_string (etype);
 }
 
+tree_expression *
+tree_simple_assignment::dup (symbol_table *sym_tab)
+{
+  tree_simple_assignment *new_sa
+    = new tree_simple_assignment (lhs ? lhs->dup (sym_tab) : 0,
+				  rhs ? rhs->dup (sym_tab) : 0,
+				  preserve, etype);
+
+  new_sa->copy_base (*this);
+
+  return new_sa;
+}
+
 void
 tree_simple_assignment::accept (tree_walker& tw)
 {
@@ -357,6 +370,19 @@ std::string
 tree_multi_assignment::oper (void) const
 {
   return octave_value::assign_op_as_string (etype);
+}
+
+tree_expression *
+tree_multi_assignment::dup (symbol_table *sym_tab)
+{
+  tree_multi_assignment *new_ma
+    = new tree_multi_assignment (lhs ? lhs->dup (sym_tab) : 0,
+				 rhs ? rhs->dup (sym_tab) : 0,
+				 preserve, etype);
+
+  new_ma->copy_base (*this);
+
+  return new_ma;
 }
 
 void

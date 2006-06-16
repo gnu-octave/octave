@@ -30,6 +30,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // No-op.
 
+tree_command *
+tree_no_op_command::dup (symbol_table *sym_tab)
+{
+  return new tree_no_op_command (orig_cmd, line (), column ());
+}
+
 void
 tree_no_op_command::accept (tree_walker& tw)
 {

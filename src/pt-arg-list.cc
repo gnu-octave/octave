@@ -253,6 +253,24 @@ tree_argument_list::get_arg_names (void) const
   return retval;
 }
 
+tree_argument_list *
+tree_argument_list::dup (symbol_table *sym_tab)
+{
+  tree_argument_list *new_list = new tree_argument_list ();
+
+  new_list->list_includes_magic_end = list_includes_magic_end;
+  new_list->simple_assign_lhs = simple_assign_lhs;
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_expression *elt = *p;
+
+      new_list->append (elt ? elt->dup (sym_tab) : 0);
+    }
+
+  return new_list;
+}
+
 void
 tree_argument_list::accept (tree_walker& tw)
 {

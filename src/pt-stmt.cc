@@ -143,6 +143,22 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
   return retval;
 }
 
+tree_statement *
+tree_statement::dup (symbol_table *sym_tab)
+{
+  tree_statement *new_stmt = new tree_statement ();
+
+  new_stmt->cmd = cmd ? cmd->dup (sym_tab) : 0;
+
+  new_stmt->expr = expr ? expr->dup (sym_tab) : 0;
+
+  new_stmt->comm = comm ? comm->dup () : 0;
+
+  new_stmt->print_flag = print_flag;
+
+  return new_stmt;
+}
+
 void
 tree_statement::accept (tree_walker& tw)
 {
@@ -249,6 +265,23 @@ tree_statement_list::list_breakpoints (void)
   accept (tbp);
 
   return tbp.get_list ();
+}
+
+tree_statement_list *
+tree_statement_list::dup (symbol_table *sym_tab)
+{
+  tree_statement_list *new_list = new tree_statement_list ();
+
+  new_list->function_body = function_body;
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_statement *elt = *p;
+
+      new_list->append (elt ? elt->dup (sym_tab) : 0);
+    }
+
+  return new_list;
 }
 
 void

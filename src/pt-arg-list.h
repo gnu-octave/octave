@@ -78,6 +78,8 @@ public:
 
   string_vector get_arg_names (void) const;
 
+  tree_argument_list *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:

@@ -295,6 +295,19 @@ symbol_record::mark_as_formal_parameter (void)
 }
 
 void
+symbol_record::mark_as_automatic_variable (void)
+{
+  if (is_linked_to_global ())
+    error ("can't mark global variable `%s' as automatic variable",
+	   nm.c_str ());
+  else if (is_static ())
+    error ("can't mark static variable `%s' as automatic variable",
+	   nm.c_str ());
+  else
+    automatic_variable = 1;
+}
+
+void
 symbol_record::mark_as_linked_to_global (void)
 {
   if (is_formal_parameter ())
@@ -1646,6 +1659,73 @@ symbol_table::pop_context (void)
       while (ptr)
 	{
 	  ptr->pop_context ();
+	  ptr = ptr->next ();
+	}
+    }
+}
+
+// Create a new symbol table with the same entries.  Only the symbol
+// names and some attributes are copied, not values.
+
+symbol_table *
+symbol_table::dup (void)
+{
+  symbol_table *new_sym_tab = new symbol_table (table_size);
+
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  std::string nm = ptr->name ();
+
+	  symbol_record *sr = new_sym_tab->lookup (nm, true);
+
+	  if (sr)
+	    {
+	      if (ptr->is_formal_parameter ())
+		sr->mark_as_formal_parameter ();
+
+	      if (ptr->is_automatic_variable ())
+		sr->mark_as_automatic_variable ();
+
+	      if (ptr->is_static ())
+		sr->mark_as_static ();
+	    }
+
+	  ptr = ptr->next ();
+	}
+    }
+
+  return new_sym_tab;
+}
+
+void
+symbol_table::inherit (symbol_table *parent_sym_tab)
+{
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  std::string nm = ptr->name ();
+
+	  if (! (nm == "__retval__"
+		 || ptr->is_automatic_variable ()
+		 || ptr->is_formal_parameter ()))
+	    {
+	      symbol_record *sr = parent_sym_tab->lookup (nm);
+
+	      if (sr)
+		{
+		  ptr->define (sr->variable_value ());
+
+		  ptr->mark_as_static ();
+		}
+	    }
+
 	  ptr = ptr->next ();
 	}
     }

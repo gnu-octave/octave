@@ -70,6 +70,17 @@ tree_constant::rvalue (int nargout)
   return retval;
 }
 
+tree_expression *
+tree_constant::dup (symbol_table *sym_tab)
+{
+  tree_constant *new_tc
+    = new tree_constant (val, orig_text, line (), column ());
+
+  new_tc->copy_base (*this);
+
+  return new_tc;
+}
+
 void
 tree_constant::accept (tree_walker& tw)
 {

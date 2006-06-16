@@ -41,6 +41,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Index expressions.
 
+tree_index_expression::tree_index_expression (int l, int c)
+  : tree_expression (l, c), expr (), args (), type (),
+    arg_nm (), dyn_field () { }
+
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      tree_argument_list *lst,
 					      int l, int c, char t)
@@ -517,6 +521,49 @@ tree_index_expression::eval_error (void) const
     ::error ("evaluating %s near line %d, column %d", type_str, l, c);
   else
     ::error ("evaluating %s", type_str);
+}
+
+tree_index_expression *
+tree_index_expression::dup (symbol_table *sym_tab)
+{
+  tree_index_expression *new_idx_expr
+    = new tree_index_expression (line (), column ());
+
+  new_idx_expr->expr = expr ? expr->dup (sym_tab) : 0;
+
+  std::list<tree_argument_list *> new_args;
+
+  for (std::list<tree_argument_list *>::iterator p = args.begin ();
+       p != args.end ();
+       p++)
+    {
+      tree_argument_list *elt = *p;
+
+      new_args.push_back (elt ? elt->dup (sym_tab) : 0);
+    }
+
+  new_idx_expr->args = new_args;
+  
+  new_idx_expr->type = type;
+
+  new_idx_expr->arg_nm = arg_nm;
+
+  std::list<tree_expression *> new_dyn_field;
+
+  for (std::list<tree_expression *>::iterator p = dyn_field.begin ();
+       p != dyn_field.end ();
+       p++)
+    {
+      tree_expression *elt = *p;
+
+      new_dyn_field.push_back (elt ? elt->dup (sym_tab) : 0);
+    }
+
+  new_idx_expr->dyn_field = new_dyn_field;
+
+  new_idx_expr->copy_base (*this);
+  
+  return new_idx_expr;
 }
 
 void

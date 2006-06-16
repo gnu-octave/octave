@@ -49,6 +49,10 @@ public:
   tree_constant (const octave_value& v, int l = -1, int c = -1)
     : tree_expression (l, c), val (v), orig_text () { }
 
+  tree_constant (const octave_value& v, const std::string& ot,
+		 int l = -1, int c = -1)
+    : tree_expression (l, c), val (v), orig_text (ot) { }
+
   ~tree_constant (void) { }
 
   bool has_magic_end (void) const { return false; }
@@ -78,6 +82,8 @@ public:
     }
 
   octave_value_list rvalue (int nargout);
+
+  tree_expression *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

@@ -28,6 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 class octave_value;
 class octave_lvalue;
+class symbol_table;
 
 #include "pt.h"
 
@@ -45,6 +46,8 @@ public:
   virtual ~tree_expression (void) { }
 
   virtual bool has_magic_end (void) const = 0;
+
+  virtual tree_expression *dup (symbol_table *) = 0;
 
   virtual bool is_constant (void) const { return false; }
 
@@ -102,6 +105,13 @@ public:
     {
       print_flag = print;
       return this;
+    }
+
+  virtual void copy_base (tree_expression& e)
+    {
+      num_parens = e.num_parens;
+      postfix_indexed = e.postfix_indexed;
+      print_flag = e.print_flag;
     }
 
 protected:

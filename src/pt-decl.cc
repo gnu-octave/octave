@@ -45,6 +45,13 @@ tree_decl_elt::~tree_decl_elt (void)
   delete expr;
 }
 
+tree_decl_elt *
+tree_decl_elt::dup (symbol_table *sym_tab)
+{
+  return new tree_decl_elt (id ? id->dup (sym_tab) : 0,
+			    expr ? expr->dup (sym_tab) : 0);
+}
+
 void
 tree_decl_elt::accept (tree_walker& tw)
 {
@@ -65,6 +72,21 @@ tree_decl_init_list::eval (tree_decl_elt::eval_fcn f)
       if (error_state)
 	break;
     }
+}
+
+tree_decl_init_list *
+tree_decl_init_list::dup (symbol_table *sym_tab)
+{
+  tree_decl_init_list *new_dil = new tree_decl_init_list ();
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_decl_elt *elt = *p;
+
+      new_dil->append (elt ? elt->dup (sym_tab) : 0);
+    }
+  
+  return new_dil;
 }
 
 void
@@ -133,6 +155,13 @@ tree_global_command::eval (void)
 	     line (), column ());
 }
 
+tree_command *
+tree_global_command::dup (symbol_table *sym_tab)
+{
+  return new tree_global_command (init_list ? init_list->dup (sym_tab) : 0,
+				  line (), column ());
+}
+
 // Static.
 
 void
@@ -177,6 +206,13 @@ tree_static_command::eval (void)
 	::error ("evaluating static command near line %d, column %d",
 		 line (), column ());
     }
+}
+
+tree_command *
+tree_static_command::dup (symbol_table *sym_tab)
+{
+  return new tree_static_command (init_list ? init_list->dup (sym_tab) : 0,
+				  line (), column ());
 }
 
 /*

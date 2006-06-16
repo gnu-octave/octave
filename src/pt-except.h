@@ -64,6 +64,8 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
+  tree_command *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -123,6 +125,8 @@ public:
   octave_comment_list *middle_comment (void) { return mid_comm; }
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
+
+  tree_command *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

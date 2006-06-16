@@ -36,6 +36,30 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "pt-all.h"
 
 void
+tree_print_code::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
+{
+  indent ();
+
+  print_parens (afh, "(");
+
+  os << "@(";
+
+  tree_parameter_list *param_list = afh.parameter_list ();
+
+  if (param_list)
+    param_list->accept (*this);
+
+  os << ") ";
+
+  tree_statement_list *body = afh.body ();
+
+  if (body)
+    body->accept (*this);
+
+  print_parens (afh, ")");
+}
+
+void
 tree_print_code::visit_argument_list (tree_argument_list& lst)
 {
   tree_argument_list::iterator p = lst.begin ();

@@ -120,6 +120,18 @@ tree_prefix_expression::eval_error (void)
 	   oper () . c_str (), line (), column ());
 }
 
+tree_expression *
+tree_prefix_expression::dup (symbol_table *sym_tab)
+{
+  tree_prefix_expression *new_pe
+    = new tree_prefix_expression (op ? op->dup (sym_tab) : 0,
+				  line (), column (), etype);
+
+  new_pe->copy_base (*this);
+
+  return new_pe;
+}
+
 void
 tree_prefix_expression::accept (tree_walker& tw)
 {
@@ -203,6 +215,18 @@ tree_postfix_expression::eval_error (void)
 {
   ::error ("evaluating postfix operator `%s' near line %d, column %d",
 	   oper () . c_str (), line (), column ());
+}
+
+tree_expression *
+tree_postfix_expression::dup (symbol_table *sym_tab)
+{
+  tree_postfix_expression *new_pe
+    = new tree_postfix_expression (op ? op->dup (sym_tab) : 0,
+				   line (), column (), etype);
+
+  new_pe->copy_base (*this);
+
+  return new_pe;
 }
 
 void

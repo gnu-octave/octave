@@ -89,6 +89,8 @@ public:
 
   void eval_undefined_error (void);
 
+  tree_identifier *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:

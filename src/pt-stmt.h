@@ -82,6 +82,8 @@ public:
 
   void set_expression (tree_expression *e) { expr = e; }
 
+  tree_statement *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -138,6 +140,8 @@ public:
   void delete_breakpoint (int line);
 
   octave_value_list list_breakpoints (void);
+
+  tree_statement_list *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

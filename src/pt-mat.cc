@@ -933,6 +933,23 @@ done:
   return retval;
 }
 
+tree_expression *
+tree_matrix::dup (symbol_table *sym_tab)
+{
+  tree_matrix *new_matrix = new tree_matrix (0, line (), column ());
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_argument_list *elt = *p;
+
+      append (elt ? elt->dup (sym_tab) : 0);
+    }
+
+  new_matrix->copy_base (*this);
+
+  return new_matrix;
+}
+
 void
 tree_matrix::accept (tree_walker& tw)
 {

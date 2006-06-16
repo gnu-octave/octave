@@ -158,7 +158,7 @@ static tree_fcn_handle *
 make_fcn_handle (token *tok_val);
 
 // Build an anonymous function handle.
-static tree_constant *
+static tree_anon_fcn_handle *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt);
 
 // Build a binary expression.
@@ -347,6 +347,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
   tree_expression *tree_expression_type;
   tree_constant *tree_constant_type;
   tree_fcn_handle *tree_fcn_handle_type;
+  tree_anon_fcn_handle *tree_anon_fcn_handle_type;
   tree_identifier *tree_identifier_type;
   tree_index_expression *tree_index_expression_type;
   tree_colon_expression *tree_colon_expression_type;
@@ -401,7 +402,8 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <comment_type> stash_comment function_beg
 %type <sep_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
-%type <tree_constant_type> string constant magic_colon anon_fcn_handle
+%type <tree_constant_type> string constant magic_colon
+%type <tree_anon_fcn_handle_type> anon_fcn_handle
 %type <tree_fcn_handle_type> fcn_handle
 %type <tree_matrix_type> matrix_rows matrix_rows1
 %type <tree_cell_type> cell_rows cell_rows1
@@ -1756,7 +1758,7 @@ make_fcn_handle (token *tok_val)
 
 // Make an anonymous function handle.
 
-static tree_constant *
+static tree_anon_fcn_handle *
 make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 {
   // FIXME -- need to get these from the location of the @ symbol.
@@ -1766,9 +1768,18 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   tree_parameter_list *ret_list = 0;
 
+  symbol_table *fcn_sym_tab = curr_sym_tab;
+
+  if (symtab_context.empty ())
+    panic_impossible ();
+
+  curr_sym_tab = symtab_context.top ();
+
+  symtab_context.pop ();
+
   if (stmt && stmt->is_expression ())
     {
-      symbol_record *sr = curr_sym_tab->lookup ("__retval__", true);
+      symbol_record *sr = fcn_sym_tab->lookup ("__retval__", true);
 
       tree_expression *e = stmt->expression ();
 
@@ -1793,18 +1804,8 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   body->mark_as_function_body ();
 
-  octave_value fcn (new octave_user_function (param_list, ret_list,
-					      body, curr_sym_tab));
-
-  if (symtab_context.empty ())
-    panic_impossible ();
-
-  curr_sym_tab = symtab_context.top ();
-  symtab_context.pop ();
-
-  octave_value fh (new octave_fcn_handle (fcn, "@<anonymous>"));
-
-  tree_constant *retval = new tree_constant (fh, l, c);
+  tree_anon_fcn_handle *retval
+    = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_sym_tab, l, c);
 
   return retval;
 }

@@ -126,6 +126,17 @@ tree_try_catch_command::eval (void)
     }
 }
 
+tree_command *
+tree_try_catch_command::dup (symbol_table *sym_tab)
+{
+  return new tree_try_catch_command (try_code ? try_code->dup (sym_tab) : 0,
+				     catch_code ? catch_code->dup (sym_tab) : 0,
+				     lead_comm ? lead_comm->dup () : 0,
+				     mid_comm ? mid_comm->dup () : 0,
+				     trail_comm ? trail_comm->dup () : 0,
+				     line (), column ());
+}
+
 void
 tree_try_catch_command::accept (tree_walker& tw)
 {
@@ -229,6 +240,18 @@ tree_unwind_protect_command::eval (void)
     unwind_protect_code->eval ();
 
   unwind_protect::run ();
+}
+
+tree_command *
+tree_unwind_protect_command::dup (symbol_table *sym_tab)
+{
+  return new tree_unwind_protect_command
+    (unwind_protect_code ? unwind_protect_code->dup (sym_tab) : 0,
+     cleanup_code ? cleanup_code->dup (sym_tab) : 0,
+     lead_comm ? lead_comm->dup () : 0,
+     mid_comm ? mid_comm->dup () : 0,
+     trail_comm ? trail_comm->dup () : 0,
+     line (), column ());
 }
 
 void

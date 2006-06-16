@@ -105,6 +105,19 @@ tree_binary_expression::oper (void) const
   return octave_value::binary_op_as_string (etype);
 }
 
+tree_expression *
+tree_binary_expression::dup (symbol_table *sym_tab)
+{
+  tree_binary_expression *new_be
+    = new tree_binary_expression (op_lhs ? op_lhs->dup (sym_tab) : 0,
+				  op_rhs ? op_rhs->dup (sym_tab) : 0,
+				  line (), column (), etype);
+
+  new_be->copy_base (*this);
+
+  return new_be;
+}
+
 void
 tree_binary_expression::accept (tree_walker& tw)
 {
@@ -217,6 +230,19 @@ tree_boolean_expression::oper (void) const
     }
 
   return retval;
+}
+
+tree_expression *
+tree_boolean_expression::dup (symbol_table *sym_tab)
+{
+  tree_boolean_expression *new_be
+    = new tree_boolean_expression (op_lhs ? op_lhs->dup (sym_tab) : 0,
+				   op_rhs ? op_rhs->dup (sym_tab) : 0,
+				   line (), column (), etype);
+
+  new_be->copy_base (*this);
+
+  return new_be;
 }
 
 /*

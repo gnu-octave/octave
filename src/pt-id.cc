@@ -212,6 +212,18 @@ tree_identifier::lvalue (void)
   return sym->variable_reference ();
 }
 
+tree_identifier *
+tree_identifier::dup (symbol_table *sym_tab)
+{
+  symbol_record *sr = (sym_tab && sym) ? sym_tab->lookup (sym->name ()) : 0;
+
+  tree_identifier *new_id = new tree_identifier (sr, line (), column ());
+
+  new_id->copy_base (*this);
+
+  return new_id;
+}
+
 void
 tree_identifier::accept (tree_walker& tw)
 {

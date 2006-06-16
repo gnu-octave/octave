@@ -89,6 +89,8 @@ public:
 
   void eval_error (void) const;
 
+  tree_index_expression *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -108,6 +110,8 @@ private:
 
   // The list of dynamic field names, if any.
   std::list<tree_expression *> dyn_field;
+
+  tree_index_expression (int l = -1, int c = -1);
 
   Octave_map make_arg_struct (void) const;
 

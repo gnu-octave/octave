@@ -187,6 +187,24 @@ tree_parameter_list::is_defined (void)
   return status;
 }
 
+tree_parameter_list *
+tree_parameter_list::dup (symbol_table *sym_tab)
+{
+  tree_parameter_list *new_list = new tree_parameter_list ();
+
+  if (takes_varargs ())
+    new_list->mark_varargs ();
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_identifier *elt = *p;
+
+      new_list->append (elt->dup (sym_tab));
+    }
+
+  return new_list;
+}
+
 void
 tree_parameter_list::accept (tree_walker& tw)
 {
@@ -203,6 +221,21 @@ tree_return_list::~tree_return_list (void)
       delete *p;
       erase (p);
     }
+}
+
+tree_return_list *
+tree_return_list::dup (symbol_table *sym_tab)
+{
+  tree_return_list *new_list = new tree_return_list ();
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_index_expression *elt = *p;
+
+      new_list->append (elt->dup (sym_tab));
+    }
+
+  return new_list;
 }
 
 void

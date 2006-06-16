@@ -54,6 +54,8 @@ public:
 
   tree_expression *expression (void) { return expr; }
 
+  tree_decl_elt *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -91,6 +93,8 @@ public:
     }
 
   void eval (tree_decl_elt::eval_fcn);
+
+  tree_decl_init_list *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 
@@ -162,6 +166,8 @@ public:
 
   void eval (void);
 
+  tree_command *dup (symbol_table *sym_tab);
+
 private:
 
   static void do_init (tree_decl_elt& elt);
@@ -189,6 +195,8 @@ public:
   ~tree_static_command (void) { }
 
   void eval (void);
+
+  tree_command *dup (symbol_table *sym_tab);
 
 private:
 

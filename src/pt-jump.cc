@@ -48,6 +48,12 @@ tree_break_command::eval (void)
     breaking = 1;
 }
 
+tree_command *
+tree_break_command::dup (symbol_table *)
+{
+  return new tree_break_command (line (), column ());
+}
+
 void
 tree_break_command::accept (tree_walker& tw)
 {
@@ -68,6 +74,12 @@ tree_continue_command::eval (void)
     continuing = 1;
 }
 
+tree_command *
+tree_continue_command::dup (symbol_table *)
+{
+  return new tree_continue_command (line (), column ());
+}
+
 void
 tree_continue_command::accept (tree_walker& tw)
 {
@@ -86,6 +98,12 @@ tree_return_command::eval (void)
 
   if (! error_state)
     returning = 1;
+}
+
+tree_command *
+tree_return_command::dup (symbol_table *)
+{
+  return new tree_return_command (line (), column ());
 }
 
 void

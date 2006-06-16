@@ -209,6 +209,20 @@ tree_colon_expression::column (void) const
 		: -1)));
 }
 
+tree_expression *
+tree_colon_expression::dup (symbol_table *sym_tab)
+{
+  tree_colon_expression *new_ce
+    = new tree_colon_expression (op_base ? op_base->dup (sym_tab) : 0,
+				 op_limit ? op_limit->dup (sym_tab) : 0,
+				 op_increment ? op_increment->dup (sym_tab) : 0,
+				 line (), column ());
+
+  new_ce->copy_base (*new_ce);
+
+  return new_ce;
+}
+
 void
 tree_colon_expression::accept (tree_walker& tw)
 {

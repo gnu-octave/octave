@@ -306,6 +306,11 @@ tree_checker::visit_no_op_command (tree_no_op_command& /* cmd */)
 }
 
 void
+tree_checker::visit_anon_fcn_handle (tree_anon_fcn_handle& /* afh */)
+{
+}
+
+void
 tree_checker::visit_constant (tree_constant& /* val */)
 {
 }

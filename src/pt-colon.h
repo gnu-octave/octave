@@ -49,6 +49,11 @@ public:
     : tree_expression (l, c), op_base (e), op_limit (0),
       op_increment (0), save_base (false) { }
 
+  tree_colon_expression (tree_expression *bas, tree_expression *lim,
+			 tree_expression *inc, int l = -1, int c = -1)
+    : tree_expression (l, c), op_base (bas), op_limit (lim),
+      op_increment (inc), save_base (false) { }
+
   ~tree_colon_expression (void)
     {
       if (! save_base)
@@ -85,6 +90,8 @@ public:
 
   int line (void) const;
   int column (void) const;
+
+  tree_expression *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

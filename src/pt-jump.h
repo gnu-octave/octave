@@ -42,6 +42,8 @@ public:
 
   void eval (void);
 
+  tree_command *dup (symbol_table *);
+
   void accept (tree_walker& tw);
 
   static int breaking;
@@ -69,6 +71,8 @@ public:
 
   void eval (void);
 
+  tree_command *dup (symbol_table *);
+
   void accept (tree_walker& tw);
 
   static int continuing;
@@ -95,6 +99,8 @@ public:
   ~tree_return_command (void) { }
 
   void eval (void);
+
+  tree_command *dup (symbol_table *);
 
   void accept (tree_walker& tw);
 

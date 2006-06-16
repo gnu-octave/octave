@@ -53,6 +53,8 @@ public:
 
   ~tree_print_code (void) { }
 
+  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
+
   void visit_argument_list (tree_argument_list&);
 
   void visit_binary_expression (tree_binary_expression&);

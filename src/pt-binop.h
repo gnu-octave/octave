@@ -82,6 +82,8 @@ public:
   tree_expression *lhs (void) { return op_lhs; }
   tree_expression *rhs (void) { return op_rhs; }
 
+  tree_expression *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 protected:
@@ -136,6 +138,8 @@ public:
   std::string oper (void) const;
 
   type op_type (void) const { return etype; }
+
+  tree_expression *dup (symbol_table *sym_tab);
 
 private:
 

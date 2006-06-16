@@ -125,6 +125,16 @@ tree_while_command::eval_error (void)
 	   line (), column ());
 }
 
+tree_command *
+tree_while_command::dup (symbol_table *sym_tab)
+{
+  return new tree_while_command (expr ? expr->dup (sym_tab) : 0,
+				 list ? list->dup (sym_tab) : 0,
+				 lead_comm ? lead_comm->dup () : 0,
+				 trail_comm ? trail_comm->dup (): 0,
+				 line (), column ());
+}
+
 void
 tree_while_command::accept (tree_walker& tw)
 {
@@ -176,6 +186,16 @@ tree_do_until_command::eval_error (void)
 {
   ::error ("evaluating do-until command near line %d, column %d",
 	   line (), column ());
+}
+
+tree_command *
+tree_do_until_command::dup (symbol_table *sym_tab)
+{
+  return new tree_do_until_command (expr ? expr->dup (sym_tab) : 0,
+				    list ? list->dup (sym_tab) : 0,
+				    lead_comm ? lead_comm->dup () : 0,
+				    trail_comm ? trail_comm->dup (): 0,
+				    line (), column ());
 }
 
 void
@@ -462,6 +482,17 @@ tree_simple_for_command::eval_error (void)
 	   line (), column ());
 }
 
+tree_command *
+tree_simple_for_command::dup (symbol_table *sym_tab)
+{
+  return new tree_simple_for_command (lhs ? lhs->dup (sym_tab) : 0,
+				      expr ? expr->dup (sym_tab) : 0,
+				      list ? list->dup (sym_tab) : 0,
+				      lead_comm ? lead_comm->dup () : 0,
+				      trail_comm ? trail_comm->dup () : 0,
+				      line (), column ());
+}
+
 void
 tree_simple_for_command::accept (tree_walker& tw)
 {
@@ -570,6 +601,17 @@ tree_complex_for_command::eval_error (void)
 {
   ::error ("evaluating for command near line %d, column %d",
 	   line (), column ());
+}
+
+tree_command *
+tree_complex_for_command::dup (symbol_table *sym_tab)
+{
+  return new tree_complex_for_command (lhs ? lhs->dup (sym_tab) : 0,
+				      expr ? expr->dup (sym_tab) : 0,
+				      list ? list->dup (sym_tab) : 0,
+				      lead_comm ? lead_comm->dup () : 0,
+				      trail_comm ? trail_comm->dup () : 0,
+				      line (), column ());
 }
 
 void

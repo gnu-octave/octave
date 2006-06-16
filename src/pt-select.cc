@@ -59,6 +59,14 @@ tree_if_clause::eval (void)
   return 0;
 }
 
+tree_if_clause *
+tree_if_clause::dup (symbol_table *sym_tab)
+{
+  return new tree_if_clause (expr ? expr->dup (sym_tab) : 0,
+			     list ? list->dup (sym_tab) : 0,
+			     lead_comm ? lead_comm->dup () : 0);
+}
+
 void
 tree_if_clause::accept (tree_walker& tw)
 {
@@ -77,6 +85,21 @@ tree_if_command_list::eval (void)
       if (t->eval () || error_state)
 	break;
     }
+}
+
+tree_if_command_list *
+tree_if_command_list::dup (symbol_table *sym_tab)
+{
+  tree_if_command_list *new_icl = new tree_if_command_list ();
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_if_clause *elt = *p;
+
+      new_icl->append (elt ? elt->dup (sym_tab) : 0);
+    }
+
+  return new_icl;
 }
 
 void
@@ -103,6 +126,15 @@ tree_if_command::eval (void)
   if (error_state)
     ::error ("evaluating if command near line %d, column %d",
 	     line (), column ());
+}
+
+tree_command *
+tree_if_command::dup (symbol_table *sym_tab)
+{
+  return new tree_if_command (list ? list->dup (sym_tab) : 0,
+			      lead_comm ? lead_comm->dup () : 0,
+			      trail_comm ? trail_comm->dup () : 0,
+			      line (), column ());
 }
 
 void
@@ -210,6 +242,14 @@ tree_switch_case::eval_error (void)
   ::error ("evaluating switch case label");
 }
 
+tree_switch_case *
+tree_switch_case::dup (symbol_table *sym_tab)
+{
+  return new tree_switch_case (label ? label->dup (sym_tab) : 0,
+			       list ? list->dup (sym_tab) : 0,
+			       lead_comm ? lead_comm->dup () : 0);
+}
+
 void
 tree_switch_case::accept (tree_walker& tw)
 {
@@ -228,6 +268,21 @@ tree_switch_case_list::eval (const octave_value& val)
       if (t->eval (val) || error_state)
 	break;
     }
+}
+
+tree_switch_case_list *
+tree_switch_case_list::dup (symbol_table *sym_tab)
+{
+  tree_switch_case_list *new_scl = new tree_switch_case_list ();
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_switch_case *elt = *p;
+
+      new_scl->append (elt ? elt->dup (sym_tab) : 0);
+    }
+  
+  return new_scl;
 }
 
 void
@@ -274,6 +329,16 @@ tree_switch_command::eval_error (void)
 {
   ::error ("evaluating switch command near line %d, column %d",
 	   line (), column ());
+}
+
+tree_command *
+tree_switch_command::dup (symbol_table *sym_tab)
+{
+  return new tree_switch_command (expr ? expr->dup (sym_tab) : 0,
+				  list ? list->dup (sym_tab) : 0,
+				  lead_comm ? lead_comm->dup () : 0,
+				  trail_comm ? trail_comm->dup () : 0,
+				  line (), column ());
 }
 
 void

@@ -256,19 +256,19 @@ public:
   typedef int (*change_function) (void);
 
   symbol_record (void)
-    : formal_param (false), linked_to_global (false),
-      tagged_static (false), can_hide_function (true),
-      visible (true), nm (), chg_fcn (0),
+    : formal_param (false), automatic_variable (false),
+      linked_to_global (false), tagged_static (false),
+      can_hide_function (true), visible (true), nm (), chg_fcn (0),
       definition (new symbol_def ()), next_elem (0) { }
 
   // FIXME -- kluge alert!  We obviously need a better way of
   // handling allow_shadow!
 
   symbol_record (const std::string& n, symbol_record *nxt)
-    : formal_param (false), linked_to_global (false),
-      tagged_static (false), can_hide_function (n != "__end__"),
-      visible (true), nm (n), chg_fcn (0),
-      definition (new symbol_def ()), next_elem (nxt) { }
+    : formal_param (false), automatic_variable (false),
+      linked_to_global (false), tagged_static (false),
+      can_hide_function (n != "__end__"), visible (true), nm (n),
+      chg_fcn (0), definition (new symbol_def ()), next_elem (nxt) { }
 
   ~symbol_record (void)
     {
@@ -359,6 +359,9 @@ public:
   void mark_as_formal_parameter (void);
   bool is_formal_parameter (void) const { return formal_param; }
 
+  void mark_as_automatic_variable (void);
+  bool is_automatic_variable (void) const { return automatic_variable; }
+
   void mark_as_linked_to_global (void);
   bool is_linked_to_global (void) const { return linked_to_global; }
 
@@ -433,6 +436,7 @@ public:
 private:
 
   unsigned int formal_param : 1;
+  unsigned int automatic_variable : 1;
   unsigned int linked_to_global : 1;
   unsigned int tagged_static : 1;
   unsigned int can_hide_function : 1;
@@ -580,6 +584,13 @@ public:
   void push_context (void);
 
   void pop_context (void);
+
+  // Create a new symbol table with the same entries.  Only the symbol
+  // names and some attributes are copied, not values.
+  symbol_table *dup (void);
+
+  // Inherit some values from the parent_sym_tab.
+  void inherit (symbol_table *parent_sym_tab);
 
   void print_info (std::ostream& os) const;
 

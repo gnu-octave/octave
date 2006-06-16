@@ -94,6 +94,8 @@ tree_breakpoint : public tree_walker
 
   void visit_no_op_command (tree_no_op_command&);
 
+  void visit_anon_fcn_handle (tree_anon_fcn_handle&);
+
   void visit_constant (tree_constant&);
 
   void visit_fcn_handle (tree_fcn_handle&);

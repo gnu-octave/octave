@@ -86,12 +86,16 @@ octave_comment_list : public octave_base_list<octave_comment_elt>
 {
 public:
 
+  octave_comment_list (void) { }
+
   void append (const octave_comment_elt& elt)
     { octave_base_list<octave_comment_elt>::append (elt); }
 
   void append (const std::string& s,
 	       octave_comment_elt::comment_type t = octave_comment_elt::unknown)
     { append (octave_comment_elt (s, t)); }
+
+  octave_comment_list *dup (void);
 };
 
 class
@@ -100,7 +104,7 @@ octave_comment_buffer
 public:
 
   octave_comment_buffer (void)
-    : comment_list (new octave_comment_list) { }
+    : comment_list (new octave_comment_list ()) { }
   
   static bool instance_ok (void);
 

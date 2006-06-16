@@ -74,6 +74,8 @@ public:
 
   tree_expression *right_hand_side (void) { return rhs; }
 
+  tree_expression *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -141,6 +143,8 @@ public:
   tree_argument_list *left_hand_side (void) { return lhs; }
 
   tree_expression *right_hand_side (void) { return rhs; }
+
+  tree_expression *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

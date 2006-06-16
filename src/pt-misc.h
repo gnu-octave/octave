@@ -75,6 +75,8 @@ public:
 
   octave_value_list convert_to_const_vector (const Cell& varargout);
 
+  tree_parameter_list *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -101,6 +103,8 @@ public:
   tree_return_list (tree_index_expression *t) { append (t); }
 
   ~tree_return_list (void);
+
+  tree_return_list *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

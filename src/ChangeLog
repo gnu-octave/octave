@@ -1,3 +1,110 @@
+2006-06-16  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (%union): New type, anon_fcn_handle_type.
+	(anon_fcn_handle): Now anon_fcn_handle_type, not tree_constant_type.
+	(make_anon_fcn_handle):	Return tree_anon_fcn_handle, not tree_constant.
+
+	* comment-list.cc (octave_comment_list::dup): New function.
+	* comment-list.h: Provide decl.
+
+	* pt-cmd.cc (tree_no_op_command::dup): New function.
+	* pt-cmd.h: Provide decl.
+	(tree_command::dup): New pure virtual function.
+
+	* pt-loop.cc (tree_while_command::dup, tree_do_until_command::dup,
+	tree_simple_for_command::dup, tree_complex_for_command::dup):
+	New functions.
+	* pt-loop.h: Provide decls.
+
+	* pt-jump.cc (tree_break_command::dup, tree_continue_command::dup,
+	tree_return_command::dup): New functions.
+	* pt-jump.h: Provide decls.
+
+	* pt-except.cc (tree_try_catch_command::dup,
+	tree_unwind_protect_command::dup): New functions.
+	* pt-except.h: Provide decls.
+
+	* pt-select.cc (tree_if_clause::dup, tree_if_command_list::dup,
+	tree_if_command::dup, tree_switch_case::dup,
+	tree_switch_case_list::dup, tree_switch_command::dup):
+	New functions.
+	* pt-select.h: Provide decls.
+
+	* pt-decl.cc (tree_decl_elt::dup, tree_decl_init_list::dup,
+	tree_global_command::dup, tree_static_command::dup): New functions.
+	* pt-decl.h: Provide decls.
+	
+	* pt-exp.h (tree_expression::copy_base): New function.
+	(tree_expression::dup): New pure virtual function.
+	
+	* pt-fcn-handle.cc, pt-fcn-handle.h (tree_anon_fcn_handle): New class.
+
+	* pt-fcn-handle.cc (tree_function_handle::dup): New function.
+	* pt-fcn-handle.h: Provide decl.
+
+	* pt-colon.cc (tree_colon_expression::dup): New function.
+	* pt-colon.h: Provide decl.
+	(tree_colon_expression::tree_colon_expression (tree_expression *,
+	tree_expression *, tree_expression *, int, int)): New constructor.
+	
+	* pt-const.cc (tree_constant::dup): New function.
+	(tree_constant::tree_constant (const octave_value&, const
+	std::string&, int, int)): New constructor.
+	* pt-const.h: Provide decls.
+
+	* pt-idx.cc (tree_index_expression::dup): New functoin.
+	(tree_index_expression::tree_index_expression (int, int)):
+	New constructor.
+	* pt-idx.h: Provide decls.
+
+	* pt-arg-list.cc (tree_argument_list::dup): New function.
+	* pt-arg-list.h: Provide decl.
+
+	* pt-id.cc (tree_identifier::dup): New function.
+	* pt-id.h: Provide decl.
+
+	* pt-cell.cc (tree_cell::dup): New function.
+	* pt-cell.h: Provide decl.
+
+	* pt-mat.cc (tree_matrix::dup): New function.
+	* pt-mat.h: Provide decl.
+
+	* pt-assign.cc (tree_simple_assignment::dup,
+	tree_multi_assignment::dup): New functions.
+	* pt-assign.h: Provide decls.
+
+	* pt-binop.cc (tree_binary_expression::dup,
+	tree_boolean_expression::dup): New functions.
+	* pt-binop.h: Provide decls.
+	
+	* pt-unop.cc (tree_prefix_expression::dup,
+	tree_postfix_expression::dup): New functions.
+	* pt-unop.h: Provide decls.
+
+	* pt-stmt.cc (tree_statement::dup, tree_statement_list::dup):
+	New functions.
+	* pt-stmt.h: Provide decls.
+
+	* pt-misc.cc (tree_parameter_list::dup,
+	tree_return_list::dup): New functions.
+	* pt-misc.h: Provide decls.
+
+	* symtab.cc (symbol_table::dup, symbol_table::inherit,
+	symbol_record:is_automatic_variable): New functions.
+	* symtab.h: Provide decls.
+	(symbol_record::automatic_variable): New data member.
+	(symbol_record::symbol_record): Initialize it.
+	(symbol_record::mark_as_automatic_variable): New function.
+
+	* pt-walk.h (tree_walker::visit_anon_fcn_handle):
+	New pure virtual function.
+	* pt-pr-code.cc (tree_print_code::visit_anon_fcn_handle): New function.
+	* pt-pr-code.h: Provide decl.
+	* pt-bp.cc (tree_breakpoint::visit_anon_fcn_handle): New function.
+	* pt-bp.h: Provide decl.
+	* pt-check.cc (tree_checker::visit_anon_fcn_handle): New function.
+	* pt-check.h: Provide decl.
+
 2006-06-13  John W. Eaton  <jwe@octave.org>
 
 	* pt-stmt.cc (tree_statement_list::eval): Revise previous change

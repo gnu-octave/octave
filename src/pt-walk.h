@@ -24,6 +24,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_tree_walker_h)
 #define octave_tree_walker_h 1
 
+class tree_anon_fcn_handle;
 class tree_argument_list;
 class tree_binary_expression;
 class tree_break_command;
@@ -66,6 +67,9 @@ class
 tree_walker
 {
 public:
+
+  virtual void
+  visit_anon_fcn_handle (tree_anon_fcn_handle&) = 0;
 
   virtual void
   visit_argument_list (tree_argument_list&) = 0;

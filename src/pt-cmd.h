@@ -27,6 +27,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <string>
 
 class tree_walker;
+class symbol_table;
 
 #include "pt.h"
 #include "pt-bp.h"
@@ -44,6 +45,8 @@ public:
   virtual ~tree_command (void) { }
 
   virtual void eval (void) = 0;
+
+  virtual tree_command *dup (symbol_table *) = 0;
 
 private:
 
@@ -67,6 +70,8 @@ public:
   ~tree_no_op_command (void) { }
 
   void eval (void) { MAYBE_DO_BREAKPOINT; }
+
+  tree_command *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

@@ -29,6 +29,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "pt-bp.h"
 #include "pt-exp.h"
+#include "pt-misc.h"
+#include "pt-stmt.h"
 
 class octave_value_list;
 
@@ -65,6 +67,8 @@ public:
 
   octave_value_list rvalue (int nargout);
 
+  tree_expression *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -77,6 +81,60 @@ private:
   tree_fcn_handle (const tree_fcn_handle&);
 
   tree_fcn_handle& operator = (const tree_fcn_handle&);
+};
+
+class
+tree_anon_fcn_handle : public tree_expression
+{
+public:
+
+  tree_anon_fcn_handle (int l = -1, int c = -1)
+    : tree_expression (l, c), param_list (0), cmd_list (0),
+      ret_list (0), sym_tab (0) { }
+
+  tree_anon_fcn_handle (tree_parameter_list *p, tree_parameter_list *r,
+			tree_statement_list *cl, symbol_table *st,
+			int l = -1, int c = -1)
+    : tree_expression (l, c), param_list (p), cmd_list (cl),
+      ret_list (r), sym_tab (st) { }
+
+  ~tree_anon_fcn_handle (void);
+
+  bool has_magic_end (void) const { return false; }
+
+  bool rvalue_ok (void) const { return true; }
+
+  octave_value rvalue (void);
+
+  octave_value_list rvalue (int nargout);
+
+  tree_parameter_list *parameter_list (void) { return param_list; }
+
+  tree_statement_list *body (void) { return cmd_list; }
+
+  tree_expression *dup (symbol_table *sym_tab);
+
+  void accept (tree_walker& tw);
+
+private:
+
+  // The parameter list.
+  tree_parameter_list *param_list;
+
+  // The statement that makes up the body of the function.
+  tree_statement_list *cmd_list;
+
+  // The list of return values.
+  tree_parameter_list *ret_list;
+
+  // The symbol table.
+  symbol_table *sym_tab;
+
+  // No copying!
+
+  tree_anon_fcn_handle (const tree_anon_fcn_handle&);
+
+  tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&);
 };
 
 #endif

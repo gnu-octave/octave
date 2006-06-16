@@ -32,6 +32,21 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 octave_comment_buffer *octave_comment_buffer::instance = 0;
 
+octave_comment_list *
+octave_comment_list::dup (void)
+{
+  octave_comment_list *new_cl = new octave_comment_list ();
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      octave_comment_elt elt = *p;
+
+      new_cl->append (elt);
+    }
+
+  return new_cl;
+}
+
 bool
 octave_comment_buffer::instance_ok (void)
 {

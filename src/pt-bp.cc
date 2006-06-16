@@ -430,6 +430,16 @@ tree_breakpoint::visit_no_op_command (tree_no_op_command& cmd)
     take_action (cmd);
 }
 
+void
+tree_breakpoint::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
+{
+  if (found)
+    return;
+
+  if (afh.line () >= line)
+    take_action (afh);
+}
+
 void 
 tree_breakpoint::visit_constant (tree_constant& cmd)
 {

@@ -78,6 +78,8 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
+  tree_command *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 protected:
@@ -131,6 +133,8 @@ public:
 
   void eval_error (void);
 
+  tree_command *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -176,6 +180,8 @@ public:
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
+
+  tree_command *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 
@@ -238,6 +244,8 @@ public:
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
+
+  tree_command *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

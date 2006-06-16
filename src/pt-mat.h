@@ -63,6 +63,8 @@ public:
 
   octave_value_list rvalue (int nargout);
 
+  tree_expression *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:

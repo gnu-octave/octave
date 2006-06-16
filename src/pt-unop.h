@@ -101,6 +101,8 @@ public:
 
   void eval_error (void);
 
+  tree_expression *dup (symbol_table *sym_tab);
+
   void accept (tree_walker& tw);
 
 private:
@@ -136,6 +138,8 @@ public:
   octave_value_list rvalue (int nargout);
 
   void eval_error (void);
+
+  tree_expression *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
 

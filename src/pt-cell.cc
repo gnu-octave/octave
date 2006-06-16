@@ -101,6 +101,23 @@ tree_cell::rvalue (int nargout)
   return retval;
 }
 
+tree_expression *
+tree_cell::dup (symbol_table *sym_tab)
+{
+  tree_cell *new_cell = new tree_cell (0, line (), column ());
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_argument_list *elt = *p;
+
+      append (elt ? elt->dup (sym_tab) : 0);
+    }
+
+  new_cell->copy_base (*this);
+
+  return new_cell;
+}
+
 void
 tree_cell::accept (tree_walker& tw)
 {

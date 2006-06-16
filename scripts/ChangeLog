@@ -1,3 +1,7 @@
+2006-06-16  John W. Eaton  <jwe@octave.org>
+
+	* time/datevec.m: Avoid computing log of non-positive values.
+
 2006-06-14  John W. Eaton  <jwe@octave.org>
 
 	* time/datevec.m: Attempt to account for precision of datenum format.

@@ -156,7 +156,10 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     ## datenum format.
 
     fracd = date - floor (date);
-    srnd = 10 .^ floor (log10 (365.25*y));
+    ## Special case for total days <= 0.
+    tmpd = abs (365.25*y);
+    tmpd(tmpd == 0) = 1;
+    srnd = 10 .^ floor (log10 (tmpd));
     s = round (86400*fracd.*srnd) ./ srnd;
     h = floor (s / 3600);
     s = s - 3600 * h;
@@ -300,7 +303,7 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, f, p)
 %!assert(all(datenum(datevec([-1e4:1e4]))==[-1e4:1e4]'))
 %!test
 %! t = linspace (-2e5, 2e5, 10993);
-%! assert (all (datenum (datevec (t)) == t'));
+%! assert (all (abs (datenum (datevec (t)) - t') < 1e-5));
 # demos
 %!demo
 %! datevec (now ())

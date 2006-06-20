@@ -201,54 +201,46 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
   dim_vector dv = dims ();
-  int nel = dv.numel ();
+  octave_idx_type nel = dv.numel ();
 
-  if (nel == 0)
-    {
-      char s = '\0';
-      retval = octave_value (&s, type);
-    }
-  else
-    {
-      charNDArray chm (dv);
-	  
-      bool warned = false;
+  charNDArray chm (dv);
 
-      for (octave_idx_type i = 0; i < nel; i++)
+  bool warned = false;
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+
+      double d = matrix (i);
+
+      if (xisnan (d))
 	{
-	  OCTAVE_QUIT;
-
-	  double d = matrix (i);
-
-	  if (xisnan (d))
-	    {
-	      ::error ("invalid conversion from NaN to character");
-	      return retval;
-	    }
-	  else
-	    {
-	      int ival = NINT (d);
-
-	      if (ival < 0 || ival > UCHAR_MAX)
-		{
-		  // FIXME -- is there something
-		  // better we could do?
-
-		  ival = 0;
-
-		  if (! warned)
-		    {
-		      ::warning ("range error for conversion to character value");
-		      warned = true;
-		    }
-		}
-
-	      chm (i) = static_cast<char> (ival);
-	    }
+	  ::error ("invalid conversion from NaN to character");
+	  return retval;
 	}
+      else
+	{
+	  int ival = NINT (d);
 
-      retval = octave_value (chm, true, type);
+	  if (ival < 0 || ival > UCHAR_MAX)
+	    {
+	      // FIXME -- is there something
+	      // better we could do?
+
+	      ival = 0;
+
+	      if (! warned)
+		{
+		  ::warning ("range error for conversion to character value");
+		  warned = true;
+		}
+	    }
+
+	  chm (i) = static_cast<char> (ival);
+	}
     }
+
+  retval = octave_value (chm, true, type);
 
   return retval;
 }

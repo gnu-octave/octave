@@ -229,15 +229,17 @@ This is just the opposite of the corresponding C library function.\n\
 	      cell = args(0).cell_value ();
 	    }
 
-	  if (r == 1)
+	  if (r == 0 || r == 1)
 	    {
 	      // Broadcast the string.
 
 	      boolNDArray output (cell.dimensions);
 
+	      std::string s = r == 0 ? std::string () : str[0];
+
 	      for (int i = 0; i < cell.length (); i++)
 		if (cell(i).is_string ())
-		  output(i) = (cell(i).string_value () == str[0]);
+		  output(i) = (cell(i).string_value () == s);
 		else
 		  output(i) = false;
 
@@ -373,6 +375,49 @@ This is just the opposite of the corresponding C library function.\n\
 
   return retval;
 }
+
+/*
+%!shared x
+%!  x = char (zeros (0, 2));
+%!assert (strcmp ('', x) == false);
+%!assert (strcmp (x, '') == false);
+%!assert (strcmp (x, x) == true);
+%!assert (strcmp ({''}, x) == false);
+%!assert (strcmp ({x}, '') == false);
+%!assert (strcmp ({x}, x) == true);
+%!assert (strcmp ('', {x}) == false);
+%!assert (strcmp (x, {''}) == false);
+%!assert (strcmp (x, {x}) == true);
+%!assert (all (strcmp ({x; x}, '') == [false; false]));
+%!assert (all (strcmp ({x; x}, {''}) == [false; false]));
+%!assert (all (strcmp ('', {x; x}) == [false; false]));
+%!assert (all (strcmp ({''}, {x; x}) == [false; false]));
+%!assert (strcmp ({'foo'}, x) == false);
+%!assert (strcmp ({'foo'}, 'foo') == true);
+%!assert (strcmp ({'foo'}, x) == false);
+%!assert (strcmp (x, {'foo'}) == false);
+%!assert (strcmp ('foo', {'foo'}) == true);
+%!assert (strcmp (x, {'foo'}) == false);
+%!shared y
+%!  y = char (zeros (2, 0));
+%!assert (strcmp ('', y) == false);
+%!assert (strcmp (y, '') == false);
+%!assert (strcmp (y, y) == true);
+%!assert (all (strcmp ({''}, y) == [true; true]));
+%!assert (strcmp ({y}, '') == true);
+%!assert (all (strcmp ({y}, y) == [true; true]));
+%!assert (all (strcmp ('', {y}) == [true; true]));
+%!assert (all (strcmp (y, {''}) == [true; true]));
+%!assert (all (strcmp (y, {y}) == [true; true]));
+%!assert (all (strcmp ({y; y}, '') == [false; false]));
+%!assert (all (strcmp ({y; y}, {''}) == [false; false]));
+%!assert (all (strcmp ('', {y; y}) == [false; false]));
+%!assert (all (strcmp ({''}, {y; y}) == [false; false]));
+%!assert (all (strcmp ({'foo'}, y) == [false; false]));
+%!assert (all (strcmp ({'foo'}, y) == [false; false]));
+%!assert (all (strcmp (y, {'foo'}) == [false; false]));
+%!assert (all (strcmp (y, {'foo'}) == [false; false]));
+*/
 
 DEFUN (list_in_columns, args, ,
   "-*- texinfo -*-\n\

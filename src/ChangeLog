@@ -1,3 +1,10 @@
+2006-06-20  John W. Eaton  <jwe@octave.org>
+
+	* ov-re-mat.cc (octave_matrix::convert_to_str_internal):
+	Don't lose empty dimensions on conversion to char.
+
+	* strfns.cc (Fstrcmp): Handle comparison of cellstr and empty string.
+
 2006-06-16  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (%union): New type, anon_fcn_handle_type.

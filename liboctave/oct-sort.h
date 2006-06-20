@@ -83,13 +83,6 @@ The Python license is
 #if !defined (octave_sort_h)
 #define octave_sort_h 1
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "lo-mappers.h"
-#include "quit.h"
-
 /* The maximum number of entries in a MergeState's pending-runs stack.
  * This is enough to sort arrays of size up to about
  *     32 * phi ** MAX_MERGE_PENDING

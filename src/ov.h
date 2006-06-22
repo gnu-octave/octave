@@ -498,6 +498,9 @@ public:
   bool is_dld_function (void) const
     { return rep->is_dld_function (); }
 
+  bool is_mex_function (void) const
+    { return rep->is_mex_function (); }
+
   // Values.
 
   octave_value eval (void) { return *this; }

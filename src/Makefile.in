@@ -80,8 +80,8 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-streamoff.h ov-str-mat.h ov-bool-mat.h ov-bool.h \
 	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
-	ov-mapper.h ov-usr-fcn.h ov-fcn-handle.h ov-fcn-inline.h \
-	ov-typeinfo.h ov-type-conv.h \
+	ov-mapper.h ov-mex-fcn.cc ov-usr-fcn.h ov-fcn-handle.h \
+	ov-fcn-inline.h ov-typeinfo.h ov-type-conv.h \
 	$(OV_INTTYPE_INC)
 
 OV_SPARSE_INCLUDES := \
@@ -98,6 +98,7 @@ INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	error.h file-io.h gripes.h help.h input.h \
 	lex.h load-path.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \
+	matrix.h mex.h mexproto.h \
 	oct-errno.h oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
 	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h zfstream.h \
 	oct-strstrm.h oct-lvalue.h oct.h octave.h ops.h pager.h \
@@ -151,7 +152,8 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-streamoff.cc ov-struct.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
-	ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc ov-typeinfo.cc \
+	ov-mex-fcn.cc ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc \
+	ov-typeinfo.cc \
 	$(OV_INTTYPE_SRC) \
 	$(OV_SPARSE_SRC)
 
@@ -167,7 +169,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	help.cc input.cc lex.l load-path.cc load-save.cc ls-hdf5.cc \
 	ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \
-	oct-fstrm.cc oct-hist.cc oct-iostrm.cc oct-map.cc \
+	mex.cc oct-fstrm.cc oct-hist.cc oct-iostrm.cc oct-map.cc \
 	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc oct-stream.cc \
 	octave.cc zfstream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \

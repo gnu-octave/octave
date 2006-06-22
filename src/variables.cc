@@ -821,7 +821,8 @@ symbol_exist (const std::string& name, const std::string& type)
 	    {
 	      if (type == "any" || type == "file")
 		{
-		  if (len > 4 && file_name.substr (len-4) == ".oct")
+		  if (len > 4 && (file_name.substr (len-4) == ".oct"
+				  || file_name.substr (len-4) == ".mex"))
 		    retval = 3;
 		  else
 		    retval = 2;
@@ -886,8 +887,8 @@ DEFUN (exist, args, ,
 @deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
 Return 1 if the name exists as a variable, 2 if the name (after\n\
 appending @samp{.m}) is a function file in Octave's @code{path}, 3 if the\n\
-name is a @samp{.oct} file in Octave's @code{path}, 5 if the name is a\n\
-built-in function, 7 if the name is a directory, or 103\n\
+name is a @samp{.oct} or @samp{.mex} file in Octave's @code{path},\n\
+5 if the name is a built-in function, 7 if the name is a directory, or 103\n\
 if the name is a function not associated with a file (entered on\n\
 the command line).\n\
 \n\
@@ -1014,7 +1015,8 @@ symbol_out_of_date (symbol_record *sr)
 		  std::string file;
 
 		  if (octave_env::absolute_pathname (nm)
-		      && ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
+		      && ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
+					  || nm.substr (nm_len-4) == ".mex"))
 			  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
 		    {
 		      file = nm;
@@ -1605,6 +1607,7 @@ do_who (int argc, const string_vector& argv, int return_list)
       Array<symbol_record *> s5 (dv);
       Array<symbol_record *> s6 (dv);
       Array<symbol_record *> s7 (dv);
+      Array<symbol_record *> s8 (dv);
 
       if (show_builtins)
 	{
@@ -1619,14 +1622,17 @@ do_who (int argc, const string_vector& argv, int return_list)
 
 	  s5 = fbi_sym_tab->symbol_list (pats, symbol_record::USER_FUNCTION,
 					 SYMTAB_ALL_SCOPES);
+
+	  s6 = fbi_sym_tab->symbol_list (pats, symbol_record::MEX_FUNCTION,
+					 SYMTAB_ALL_SCOPES);
 	}
 
       if (show_variables)
 	{
-	  s6 = curr_sym_tab->symbol_list (pats, symbol_record::USER_VARIABLE,
+	  s7 = curr_sym_tab->symbol_list (pats, symbol_record::USER_VARIABLE,
 					  SYMTAB_LOCAL_SCOPE);
 
-	  s7 = curr_sym_tab->symbol_list (pats, symbol_record::USER_VARIABLE,
+	  s8 = curr_sym_tab->symbol_list (pats, symbol_record::USER_VARIABLE,
 					  SYMTAB_GLOBAL_SCOPE);
 	}
 
@@ -1635,8 +1641,10 @@ do_who (int argc, const string_vector& argv, int return_list)
       octave_idx_type s5_len = s5.length ();
       octave_idx_type s6_len = s6.length ();
       octave_idx_type s7_len = s7.length ();
+      octave_idx_type s8_len = s8.length ();
 
-      octave_idx_type symbols_len = s3_len + s4_len + s5_len + s6_len + s7_len;
+      octave_idx_type symbols_len
+	= s3_len + s4_len + s5_len + s6_len + s7_len + s8_len;
 
       Array<symbol_record *> symbols (dim_vector (symbols_len, 1));
 
@@ -1651,6 +1659,8 @@ do_who (int argc, const string_vector& argv, int return_list)
       symbols.insert (s6, k, 0);
       k += s6_len;
       symbols.insert (s7, k, 0);
+      k += s7_len;
+      symbols.insert (s8, k, 0);
 
       symbols.qsort (symbol_record_name_compare);
 
@@ -1739,6 +1749,11 @@ do_who (int argc, const string_vector& argv, int return_list)
 	  pad_after += fbi_sym_tab->maybe_list
 	    ("*** currently compiled functions:", pats,
 	     octave_stdout, show_verbose, symbol_record::USER_FUNCTION,
+	     SYMTAB_ALL_SCOPES);
+
+	  pad_after += fbi_sym_tab->maybe_list
+	    ("*** mex functions:", pats,
+	     octave_stdout, show_verbose, symbol_record::MEX_FUNCTION,
 	     SYMTAB_ALL_SCOPES);
 	}
 

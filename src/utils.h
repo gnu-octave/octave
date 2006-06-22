@@ -58,6 +58,7 @@ search_path_for_all_files (const std::string&, const string_vector&);
 extern std::string file_in_path (const std::string&, const std::string&);
 extern std::string fcn_file_in_path (const std::string&);
 extern std::string oct_file_in_path (const std::string&);
+extern std::string mex_file_in_path (const std::string&);
 
 extern std::string do_string_escapes (const std::string& s);
 

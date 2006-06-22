@@ -39,6 +39,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "utils.h"
 #include "variables.h"
 
+#define STRINGIFY(s) STRINGIFY1(s)
+#define STRINGIFY1(s) #s
+
 class
 octave_shlib_list
 {
@@ -169,6 +172,98 @@ octave_shlib_list::search (const std::string& fcn_name, octave_shlib& shl,
   return (instance_ok ()) ? instance->do_search (fcn_name, shl, mangler) : 0;
 }
 
+class
+octave_mex_file_list
+{
+public:
+
+  static void append (const octave_shlib& shl);
+
+  static void remove (octave_shlib& shl);
+
+private:
+
+  octave_mex_file_list (void) { }
+
+  ~octave_mex_file_list (void) { }
+
+  void do_append (const octave_shlib& shl);
+
+  void do_remove (octave_shlib& shl);
+
+  static octave_mex_file_list *instance;
+
+  static bool instance_ok (void);
+
+  // List of libraries we have loaded.
+  std::list<octave_shlib> file_list;
+
+  // No copying!
+
+  octave_mex_file_list (const octave_mex_file_list&);
+
+  octave_mex_file_list& operator = (const octave_mex_file_list&);
+};
+
+octave_mex_file_list *octave_mex_file_list::instance = 0;
+
+void
+octave_mex_file_list::do_append (const octave_shlib& shl)
+{
+  file_list.push_back (shl);
+}
+
+void
+octave_mex_file_list::do_remove (octave_shlib& shl)
+{
+  
+  for (std::list<octave_shlib>::iterator p = file_list.begin ();
+       p != file_list.end ();
+       p++)
+    {
+      if (*p == shl)
+	{
+	  shl.close ();
+
+	  file_list.erase (p);
+
+	  break;
+	}
+    }
+}
+
+bool
+octave_mex_file_list::instance_ok (void)
+{
+  bool retval = true;
+
+  if (! instance)
+    instance = new octave_mex_file_list ();
+
+  if (! instance)
+    {
+      ::error ("unable to create shared library list object!");
+
+      retval = false;
+    }
+
+  return retval;
+}
+
+void
+octave_mex_file_list::append (const octave_shlib& shl)
+{
+  if (instance_ok ())
+    instance->do_append (shl);
+}
+
+void
+octave_mex_file_list::remove (octave_shlib& shl)
+{
+  if (instance_ok ())
+    instance->do_remove (shl);
+}
+
 octave_dynamic_loader *octave_dynamic_loader::instance = 0;
 
 bool octave_dynamic_loader::doing_load = false;
@@ -205,8 +300,8 @@ void do_clear_function (const std::string& fcn_name)
 }
 
 bool
-octave_dynamic_loader::do_load (const std::string& fcn_name,
-				const std::string& file_name)
+octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
+				    const std::string& file_name)
 {
   bool retval = false;
 
@@ -259,6 +354,7 @@ octave_dynamic_loader::do_load (const std::string& fcn_name,
 			     oct_file_name.c_str ());
 		}
 	    }
+
 	}
     }
 
@@ -270,8 +366,69 @@ octave_dynamic_loader::do_load (const std::string& fcn_name,
       retval = f (oct_file);
 
       if (! retval)
-	::error ("failed to install dld function `%s'", fcn_name.c_str ());
+	::error ("failed to install .oct file function `%s'",
+		 fcn_name.c_str ());
     }
+  
+  unwind_protect::run_frame ("octave_dynamic_loader::do_load");
+
+  return retval;
+}
+
+bool
+octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
+				    const std::string& file_name)
+{
+  bool retval = false;
+
+  octave_shlib mex_file;
+
+  unwind_protect::begin_frame ("octave_dynamic_loader::do_load");
+
+  unwind_protect_bool (octave_dynamic_loader::doing_load);
+
+  doing_load = true;
+
+  std::string mex_file_name
+    = file_name.empty () ? mex_file_in_path (fcn_name) : file_name;
+
+  void *function = 0;
+
+  bool have_fmex = false;
+
+  if (! mex_file_name.empty ())
+    {
+      mex_file.open (mex_file_name);
+
+      if (! error_state)
+	{
+	  if (mex_file)
+	    {
+	      octave_mex_file_list::append (mex_file);
+
+	      function = mex_file.search ("mexFunction");
+
+	      if (! function)
+		{
+		  function = mex_file.search (STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION)));
+		  if (function)
+		    have_fmex = true;
+		}
+	    }
+	  else
+	    ::error ("%s is not a valid shared library",
+		     mex_file_name.c_str ());
+	}
+    }
+
+  if (function)
+    {
+      install_mex_function (function, have_fmex, fcn_name, mex_file);
+
+      retval = true;
+    }
+  else
+    ::error ("failed to install .mex file function `%s'", fcn_name.c_str ());
   
   unwind_protect::run_frame ("octave_dynamic_loader::do_load");
 
@@ -298,10 +455,17 @@ octave_dynamic_loader::do_remove (const std::string& fcn_name, octave_shlib& shl
 }
 
 bool
-octave_dynamic_loader::load (const std::string& fcn_name,
-			     const std::string& file_name)
+octave_dynamic_loader::load_oct (const std::string& fcn_name,
+				 const std::string& file_name)
 {
-  return (instance_ok ()) ? instance->do_load (fcn_name, file_name) : false;
+  return (instance_ok ()) ? instance->do_load_oct (fcn_name, file_name) : false;
+}
+
+bool
+octave_dynamic_loader::load_mex (const std::string& fcn_name,
+				 const std::string& file_name)
+{
+  return (instance_ok ()) ? instance->do_load_mex (fcn_name, file_name) : false;
 }
 
 bool
@@ -309,9 +473,6 @@ octave_dynamic_loader::remove (const std::string& fcn_name, octave_shlib& shl)
 {
   return (instance_ok ()) ? instance->do_remove (fcn_name, shl) : false;
 }
-
-#define STRINGIFY(s) STRINGIFY1(s)
-#define STRINGIFY1(s) #s
 
 std::string
 octave_dynamic_loader::mangle_name (const std::string& name)

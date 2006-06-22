@@ -38,6 +38,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-dld-fcn.h"
 #include "ov-fcn.h"
 #include "ov-mapper.h"
+#include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "oct-obj.h"
 #include "pager.h"
@@ -176,6 +177,29 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
   sym_rec->unprotect ();
   sym_rec->define (new octave_dld_function (f, shl, name, doc), t);
   sym_rec->document (doc);
+
+  // Also insert the full name in the symbol table.  This way, we can
+  // properly cope with changes to LOAD_PATH.
+
+  symbol_record *full_sr = fbi_sym_tab->lookup (shl.file_name (), true);
+
+  full_sr->alias (sym_rec, true);
+  full_sr->hide ();
+}
+
+void
+install_mex_function (void *fptr, bool fmex, const std::string& name,
+		      const octave_shlib& shl, bool is_text_fcn)
+{
+  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
+
+  unsigned int t = symbol_record::MEX_FUNCTION;
+
+  if (is_text_fcn)
+    t |= symbol_record::COMMAND;
+
+  sym_rec->unprotect ();
+  sym_rec->define (new octave_mex_function (fptr, fmex, shl, name), t);
 
   // Also insert the full name in the symbol table.  This way, we can
   // properly cope with changes to LOAD_PATH.

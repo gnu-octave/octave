@@ -87,6 +87,8 @@ SYMBOL_DEF::type_as_string (void) const
     retval = "built-in function";
   else if (is_dld_function ())
     retval = "dynamically-linked function";
+  else if (is_mex_function ())
+    retval = "dynamically-linked mex function";
 
   return retval;
 }
@@ -148,7 +150,7 @@ SYMBOL_DEF::which (const std::string& name)
 {
   std::string retval;
 
-  if (is_user_function () || is_dld_function ())
+  if (is_user_function () || is_dld_function () || is_mex_function ())
     {
       octave_function *defn = definition.function_value ();
 
@@ -166,7 +168,7 @@ SYMBOL_DEF::which (std::ostream& os, const std::string& name)
 {
   os << name;
 
-  if (is_user_function () || is_dld_function ())
+  if (is_user_function () || is_dld_function () || is_mex_function ())
     {
       octave_function *defn = definition.function_value ();
 
@@ -827,7 +829,9 @@ symbol_table::clear_functions (void)
 
       while (ptr)
 	{
-	  if (ptr->is_user_function () || ptr->is_dld_function ())
+	  if (ptr->is_user_function ()
+	      || ptr->is_dld_function ()
+	      || ptr->is_mex_function ())
 	    ptr->clear ();
 
 	  ptr = ptr->next ();
@@ -927,7 +931,9 @@ symbol_table::clear_function (const std::string& nm)
   while (ptr)
     {
       if (ptr->name () == nm
-	  && (ptr->is_user_function () || ptr->is_dld_function ()))
+	  && (ptr->is_user_function ()
+	      || ptr->is_dld_function ()
+	      || ptr->is_mex_function ()))
 	{
 	  ptr->clear ();
 	  return true;
@@ -1011,7 +1017,9 @@ symbol_table::clear_function_pattern (const std::string& pat)
 
       while (ptr)
 	{
-	  if (ptr->is_user_function () || ptr->is_dld_function ())
+	  if (ptr->is_user_function ()
+	      || ptr->is_dld_function ()
+	      || ptr->is_mex_function ())
 	    {
 	      glob_match pattern (pat);
 

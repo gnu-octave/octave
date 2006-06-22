@@ -146,7 +146,7 @@ load_path::dir_info::get_file_list (const std::string& d)
 		    {
 		      std::string ext = fname.substr (pos);
 
-		      if (ext == ".m" || ext == ".oct")
+		      if (ext == ".m" || ext == ".oct" || ext == ".mex")
 			{
 			  std::string base = fname.substr (0, pos);
 
@@ -203,6 +203,8 @@ load_path::dir_info::get_private_function_map (const std::string& d)
 		    t = load_path::M_FILE;
 		  else if (ext == ".oct")
 		    t = load_path::OCT_FILE;
+		  else if (ext == ".mex")
+		    t = load_path::MEX_FILE;
 
 		  private_function_map[base] |= t;
 		}
@@ -630,11 +632,64 @@ load_path::do_find_fcn (const std::string& fcn, int type) const
 		  break;
 		}
 	    }
+	  else if (type == load_path::MEX_FILE)
+	    {
+	      if ((type & t) == load_path::MEX_FILE)
+		{
+		  retval += ".mex";
+		  break;
+		}
+	    }
 	  else if (type == (load_path::M_FILE | load_path::OCT_FILE))
 	    {
 	      if (t & load_path::OCT_FILE)
 		{
 		  retval += ".oct";
+		  break;
+		}
+	      else if (t & load_path::M_FILE)
+		{
+		  retval += ".m";
+		  break;
+		}
+	    }
+	  else if (type == (load_path::M_FILE | load_path::MEX_FILE))
+	    {
+	      if (t & load_path::MEX_FILE)
+		{
+		  retval += ".mex";
+		  break;
+		}
+	      else if (t & load_path::M_FILE)
+		{
+		  retval += ".m";
+		  break;
+		}
+	    }
+	  else if (type == (load_path::OCT_FILE | load_path::MEX_FILE))
+	    {
+	      if (t & load_path::OCT_FILE)
+		{
+		  retval += ".oct";
+		  break;
+		}
+	      else if (t & load_path::MEX_FILE)
+		{
+		  retval += ".mex";
+		  break;
+		}
+	    }
+	  else if (type == (load_path::M_FILE | load_path::OCT_FILE
+			    | load_path::MEX_FILE))
+	    {
+	      if (t & load_path::OCT_FILE)
+		{
+		  retval += ".oct";
+		  break;
+		}
+	      else if (t & load_path::MEX_FILE)
+		{
+		  retval += ".mex";
 		  break;
 		}
 	      else if (t & load_path::M_FILE)
@@ -928,6 +983,14 @@ load_path::do_display (std::ostream& os) const
 		  printed_type = true;
 		}
 
+	      if (types & load_path::MEX_FILE)
+		{
+		  if (printed_type)
+		    os << "|";
+		  os << "mex";
+		  printed_type = true;
+		}
+
 	      if (types & load_path::M_FILE)
 		{
 		  if (printed_type)
@@ -965,6 +1028,14 @@ load_path::do_display (std::ostream& os) const
 	  if (p->types & load_path::OCT_FILE)
 	    {
 	      os << "oct";
+	      printed_type = true;
+	    }
+
+	  if (p->types & load_path::MEX_FILE)
+	    {
+	      if (printed_type)
+		os << "|";
+	      os << "mex";
 	      printed_type = true;
 	    }
 
@@ -1026,6 +1097,8 @@ load_path::add_to_fcn_map (const dir_info& di, bool at_end) const
 	t = load_path::M_FILE;
       else if (ext == ".oct")
 	t = load_path::OCT_FILE;
+      else if (ext == ".mex")
+	t = load_path::MEX_FILE;
 
       if (p == file_info_list.end ())
 	{

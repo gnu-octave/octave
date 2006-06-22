@@ -1,3 +1,10 @@
+2006-06-21  John W. Eaton  <jwe@octave.org>
+
+	* examples/myfeval.c, examples/myfevalf.f, examples/myhello.c,
+	examples/myset.c, examples/mystruct.c: New files.
+
+	* mkoctfile.in: New option, --mex.
+
 2006-06-13  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (--enable-64): Include "(EXPERIMENTAL)" in help text.

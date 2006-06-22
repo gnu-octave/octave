@@ -1,3 +1,9 @@
+2006-06-21  John W. Eaton  <jwe@octave.org>
+
+	* oct-shlib.cc (octave_dlopen_shlib::close,
+	octave_shl_load_shlib::close, octave_w32_shlib::close):
+	Skip do_close_hook if cl_hook is 0.
+
 2006-06-16  John W. Eaton  <jwe@octave.org>
 
 	* oct-sort.h: Don't include config.h, lo-mappers.h, or quit.h.

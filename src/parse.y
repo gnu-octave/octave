@@ -3389,6 +3389,7 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
 
   if (octave_env::absolute_pathname (nm)
       && ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
+	  || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
 	  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
     {
       file = nm;
@@ -3413,7 +3414,12 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
 
   if (len > 4 && file.substr (len-4, len-1) == ".oct")
     {
-      if (octave_dynamic_loader::load (nm, file))
+      if (octave_dynamic_loader::load_oct (nm, file))
+        force_link_to_function (nm);
+    }
+  else if (len > 4 && file.substr (len-4, len-1) == ".mex")
+    {
+      if (octave_dynamic_loader::load_mex (nm, file))
         force_link_to_function (nm);
     }
   else if (len > 2)

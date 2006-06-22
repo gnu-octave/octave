@@ -104,6 +104,12 @@ public:
       instance->do_find_fcn (fcn, OCT_FILE) : std::string ();
   }
 
+  static std::string find_mex_file (const std::string& fcn)
+  {
+    return instance_ok () ?
+      instance->do_find_fcn (fcn, MEX_FILE) : std::string ();
+  }
+
   static std::string find_file (const std::string& file)
   {
     return instance_ok ()
@@ -170,6 +176,7 @@ private:
 
   static const int M_FILE = 1;
   static const int OCT_FILE = 2;
+  static const int MEX_FILE = 4;
 
   class dir_info
   {
@@ -302,7 +309,7 @@ private:
   void do_update (void) const;
 
   std::string do_find_fcn (const std::string& fcn,
-			   int type = M_FILE | OCT_FILE) const;
+			   int type = M_FILE | OCT_FILE | MEX_FILE) const;
 
   std::string do_find_file (const std::string& file) const;
 

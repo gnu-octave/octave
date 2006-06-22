@@ -99,8 +99,8 @@ tree_identifier::eval_undefined_error (void)
 //   * If the identifier is still undefined, try looking for an
 //     function file to parse.
 //
-//   * On systems that support dynamic linking, we prefer .oct files
-//     over .m files.
+//   * On systems that support dynamic linking, we prefer .oct files,
+//     then .mex files, then .m files.
 
 octave_value
 tree_identifier::do_lookup (bool& script_file_executed, bool exec_script)

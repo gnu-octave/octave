@@ -74,7 +74,8 @@ public:
       BUILTIN_FUNCTION = 8,
       COMMAND = 16,
       RAWCOMMAND = 32,
-      MAPPER_FUNCTION = 64
+      MAPPER_FUNCTION = 64,
+      MEX_FUNCTION = 128,
     };
 
 private:
@@ -103,6 +104,7 @@ private:
       {
 	return (symbol_type & symbol_record::USER_FUNCTION
 		|| symbol_type & symbol_record::DLD_FUNCTION
+		|| symbol_type & symbol_record::MEX_FUNCTION
 		|| symbol_type & symbol_record::BUILTIN_FUNCTION);
       }
 
@@ -140,6 +142,9 @@ private:
 
     bool is_dld_function (void) const
       { return (symbol_type & symbol_record::DLD_FUNCTION); }
+
+    bool is_mex_function (void) const
+      { return (symbol_type & symbol_record::MEX_FUNCTION); }
 
     // FIXME
     bool is_map_element (const std::string& /* elts */) const
@@ -317,6 +322,9 @@ public:
   bool is_dld_function (void) const
     { return definition->is_dld_function (); }
 
+  bool is_mex_function (void) const
+    { return definition->is_mex_function (); }
+
   bool is_variable (void) const
     { return definition->is_variable (); }
 
@@ -485,7 +493,8 @@ private:
 			  | symbol_record::BUILTIN_FUNCTION \
 			  | symbol_record::COMMAND \
   			  | symbol_record::RAWCOMMAND \
-			  | symbol_record::MAPPER_FUNCTION)
+			  | symbol_record::MAPPER_FUNCTION \
+			  | symbol_record::MEX_FUNCTION)
 
 #define SYMTAB_VARIABLES (symbol_record::USER_VARIABLE)
 
@@ -555,7 +564,7 @@ public:
     {
       return name_list
 	(string_vector (), false,
-	 symbol_record::USER_FUNCTION|symbol_record::DLD_FUNCTION,
+	 symbol_record::USER_FUNCTION|symbol_record::DLD_FUNCTION|symbol_record::MEX_FUNCTION,
 	 SYMTAB_ALL_SCOPES);
     }
 

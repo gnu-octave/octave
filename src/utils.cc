@@ -433,7 +433,7 @@ fcn_file_in_path (const std::string& name)
   return retval;
 }
 
-// See if there is an octave file in the path.  If so, return the
+// See if there is a .oct file in the path.  If so, return the
 // full path to the file.
 
 std::string
@@ -457,6 +457,35 @@ oct_file_in_path (const std::string& name)
 	retval = load_path::find_oct_file (name.substr (0, len-4));
       else
 	retval = load_path::find_oct_file (name);
+    }
+
+  return retval;
+}
+
+// See if there is a .mex file in the path.  If so, return the
+// full path to the file.
+
+std::string
+mex_file_in_path (const std::string& name)
+{
+  std::string retval;
+
+  int len = name.length ();
+  
+  if (len > 0)
+    {
+      if (octave_env::absolute_pathname (name))
+	{
+	  file_stat fs (name);
+
+	  if (fs.exists ())
+	    retval = name;
+	}
+      else if (len > 4 && name [len - 4] == '.' && name [len - 3] == 'm'
+	       && name [len - 2] == 'e' && name [len - 1] == 'x')
+	retval = load_path::find_mex_file (name.substr (0, len-4));
+      else
+	retval = load_path::find_mex_file (name);
     }
 
   return retval;

@@ -53,6 +53,10 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const std::string& doc, bool is_text_fcn = false);
 
 extern void
+install_mex_function (void *fptr, bool fmex, const std::string& name,
+		      const octave_shlib& shl, bool is_text_fcn = false);
+
+extern void
 alias_builtin (const std::string& alias, const std::string& name);
 
 #define DECLARE_FUNX(name, args_name, nargout_name) \

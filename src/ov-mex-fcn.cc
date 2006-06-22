@@ -25,23 +25,57 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include "oct-shlib.h"
+
+#include <defaults.h>
+#include "dynamic-ld.h"
 #include "error.h"
 #include "oct-obj.h"
-#include "ov-builtin.h"
+#include "ov-mex-fcn.h"
 #include "ov.h"
 #include "toplev.h"
 #include "unwind-prot.h"
 
-DEFINE_OCTAVE_ALLOCATOR (octave_builtin);
+DEFINE_OCTAVE_ALLOCATOR (octave_mex_function);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_builtin,
-				     "built-in function",
-				     "built-in function");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
+				     "mex function", "mex function");
+
+octave_mex_function::octave_mex_function
+  (void *fptr, bool fmex, const octave_shlib& shl,
+   const std::string& nm)
+  : octave_function (nm), mex_fcn_ptr (fptr), have_fmex (fmex), sh_lib (shl)
+{
+  mark_fcn_file_up_to_date (time_parsed ());
+
+  std::string file_name = fcn_file_name ();
+
+  system_fcn_file
+    = (! file_name.empty ()
+       && Voct_file_dir == file_name.substr (0, Voct_file_dir.length ()));
+}
+
+octave_mex_function::~octave_mex_function (void)
+{
+  octave_dynamic_loader::remove (my_name, sh_lib);
+}
+
+std::string
+octave_mex_function::fcn_file_name (void) const
+{
+  return sh_lib.file_name ();
+}
+
+octave_time
+octave_mex_function::time_parsed (void) const
+{
+  return sh_lib.time_loaded ();
+}
 
 octave_value_list
-octave_builtin::subsref (const std::string& type,
-			 const std::list<octave_value_list>& idx,
-			 int nargout)
+octave_mex_function::subsref (const std::string& type,
+			      const std::list<octave_value_list>& idx,
+			      int nargout)
 {
   octave_value_list retval;
 
@@ -83,8 +117,15 @@ octave_builtin::subsref (const std::string& type,
   return retval;
 }
 
+extern octave_value_list
+C_mex (void *f, const octave_value_list& args, int nargout);
+
+extern octave_value_list
+Fortran_mex (void *f, const octave_value_list& args, int nargout);
+
 octave_value_list
-octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
+octave_mex_function::do_multi_index_op (int nargout,
+					const octave_value_list& args)
 {
   octave_value_list retval;
 
@@ -95,15 +136,17 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
     ::error ("invalid use of colon in function argument list");
   else
     {
-      unwind_protect::begin_frame ("builtin_func_eval");
+      unwind_protect::begin_frame ("mex_func_eval");
 
       octave_call_stack::push (this);
 
       unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
-      retval = (*f) (args, nargout);
+      retval = have_fmex
+	? Fortran_mex (mex_fcn_ptr, args, nargout)
+	: C_mex (mex_fcn_ptr, args, nargout);
 
-      unwind_protect::run_frame ("builtin_func_eval");
+      unwind_protect::run_frame ("mex_func_eval");
     }
 
   return retval;

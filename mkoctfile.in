@@ -83,6 +83,7 @@ strip=false
 no_oct_file_strip_on_this_platform=%NO_OCT_FILE_STRIP%
 link=true
 link_stand_alone=false
+output_ext=".oct"
 depend=false
 compile=true
 
@@ -150,7 +151,8 @@ Options:
   -c, --compile           Compile, but do not link.
 
   -o FILE, --output FILE  Output file name.  Default extension is .oct
-                          unless linking a stand-alone executable.
+                          (or .mex if --mex is specified) unless linking
+                          a stand-alone executable.
 
   -p VAR, --print VAR     Print configuration variable VAR.  Recognized
                           variables are:
@@ -177,6 +179,9 @@ Options:
 			    FFLAGS
 
   --link-stand-alone      Link a stand-alone executable file.
+
+  --mex                   Assume we are creating a MEX file.  Set the
+                          default output extension to ".mex".
 
   -s, --strip             Strip output file.
 
@@ -247,6 +252,9 @@ EOF
     --link-stand-alone)
       link_stand_alone=true
     ;;
+    --mex)
+      output_ext=".mex"
+    ;;
     -W*)
       pass_on_options="$pass_on_options $1"
     ;;
@@ -271,7 +279,7 @@ else
   if [ -n "$outputfile" ]; then
     octfile="$outputfile"
   else
-    octfile=`echo $octfile | $SED 's,\.[^.]*$,,'`.oct
+    octfile=`echo $octfile | $SED 's,\.[^.]*$,,'`$output_ext
   fi
 fi
 

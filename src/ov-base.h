@@ -264,6 +264,8 @@ public:
 
   virtual bool is_dld_function (void) const { return false; }
 
+  virtual bool is_mex_function (void) const { return false; }
+
   virtual short int short_value (bool = false, bool = false) const;
 
   virtual unsigned short int ushort_value (bool = false, bool = false) const;

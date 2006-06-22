@@ -39,8 +39,11 @@ public:
 
   virtual ~octave_dynamic_loader (void) { }
 
-  static bool load (const std::string& fcn_name,
-		    const std::string& file_name = std::string ());
+  static bool load_oct (const std::string& fcn_name,
+			const std::string& file_name = std::string ());
+
+  static bool load_mex (const std::string& fcn_name,
+			const std::string& file_name = std::string ());
 
   static bool remove (const std::string& fcn_name, octave_shlib& shl);
 
@@ -56,8 +59,11 @@ private:
 
   static bool instance_ok (void);
 
-  bool do_load (const std::string& fcn_name,
-		const std::string& file_name = std::string ());
+  bool do_load_oct (const std::string& fcn_name,
+		    const std::string& file_name = std::string ());
+
+  bool do_load_mex (const std::string& fcn_name,
+		    const std::string& file_name = std::string ());
 
   bool do_remove (const std::string& fcn_name, octave_shlib& shl);
 

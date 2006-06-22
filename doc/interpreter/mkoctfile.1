@@ -36,7 +36,8 @@ Generate dependency files (.d) for C and C++ source files.
 Compile but do not link.
 .TP 8
 .B \-o FILE|\-\-output FILE
-Output file name; default extension is .oct.
+Output file name; default extension is .oct (or .mex if --mex is
+specified) unless linking a stand-alone executable.
 .TP
 .B \-p VAR|\-\-print VAR
 Print configuration variable VAR.  Recognized variables are:
@@ -65,6 +66,9 @@ Print configuration variable VAR.  Recognized variables are:
 .TP 8
 .B \-\-link-stand-alone
 Link a stand-alone executable file.
+.B \-\-mex
+Assume we are creating a MEX file.  Set the default output extension
+to .mex.
 .TP 8
 .B \-s|--strip
 Strip the output file.

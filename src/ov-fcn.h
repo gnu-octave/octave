@@ -90,7 +90,8 @@ public:
 
 protected:
 
-  octave_function (const std::string& nm, const std::string& ds)
+  octave_function (const std::string& nm,
+		   const std::string& ds = std::string ())
     : my_name (nm), doc (ds) { }
 
   // The name of this function.

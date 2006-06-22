@@ -1,3 +1,55 @@
+2006-06-21  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (do_who): Handle mex.
+
+	* symtab.cc (SYMBOL_DEF::type_as_string, SYMBOL_DEF::which,
+	symbol_table::clear_functions, table::clear_function,
+	symbol_table::clear_function_pattern): 
+	Handle mex.
+	* symtab.h (symbol_record::is_mex_function,
+	symbol_record::symbol_def::is_mex_function): New functions.
+	(symbol_record::TYPE): New value, MEX_FUNCTION.
+	(symbol_record::is_function, symbol_table::user_function_name_list,
+	SYMTAB_ALL_TYPES): Handle MEX_FUNCTION.
+
+	* ov-fcn.h (octave_function::octave_function):
+	Provide default for doc string arg.
+
+	* defun.cc (install_mex_function): New function.
+	* defun-int.h: Provide decl.
+
+	* ov-builtin.cc (any_arg_is_magic_colon): Delete.
+	(octave_builtin::do_multi_index_op): Call has_magic_colon method
+	for args instead of any_arg_is_magic_colon.
+
+	* ov-base.h (octave_base_value::is_mex_function): New function.
+	* ov.h (octave_value::is_mex_function): New function.
+
+	* ov-mex-fcn.h, ov-mex-fcn.cc: New files.
+
+	* parse.y (load_fcn_from_file): Also handle .mex files.
+
+	* dynamic-ld.cc (octave_dynamic_loader::load_oct): Rename from load.
+	(octave_dynamic_loader::do_load_oct): Rename from do_load.
+	* dynamic-ld.h: Fix decls.
+
+	* utils.cc (mex_file_in_path): New function.
+	* utils.h: Provide decl.
+
+	* variables.cc (symbol_out_of_date): Also handle mex files.
+
+	* load-path.cc (load_path::dir_info::get_file_list,
+	load_path::dir_info::get_private_function_map,
+	load_path::do_find_fcn, load_path::add_to_fcn_map,
+	load_path::do_display): Also handle mex files.
+	* load-path.h (load_path::find_mex_file): New static function.
+	(load_path::MEX_FILE): New static data member.
+	(load_path::do_find_fcn): By default, also look for mex files.
+
+	* matrix.h, mex.h, mex.cc: New files from Octave Forge
+	* mexproto.h: New file, extracted from mex.h.
+	* Makefile.in: Add them to the appropriate lists.
+
 2006-06-20  John W. Eaton  <jwe@octave.org>
 
 	* ov-re-mat.cc (octave_matrix::convert_to_str_internal):

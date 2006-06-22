@@ -299,7 +299,8 @@ octave_dlopen_shlib::close (octave_shlib::close_hook cl_hook)
 {
   if (is_open ())
     {
-      do_close_hook (cl_hook);
+      if (cl_hook)
+	do_close_hook (cl_hook);
 
       dlclose (library);
 
@@ -402,7 +403,8 @@ octave_shl_load_shlib::close (octave_shlib::close_hook cl_hook)
 {
   if (is_open ())
     {
-      do_close_hook (cl_hook);
+      if (cl_hook)
+	do_close_hook (cl_hook);
 
       shl_unload (library);
 
@@ -530,7 +532,8 @@ octave_w32_shlib::close (octave_shlib::close_hook cl_hook)
 {
   if (is_open ())
     {
-      do_close_hook (cl_hook);
+      if (cl_hook)
+	do_close_hook (cl_hook);
 
       FreeLibrary (handle);
 

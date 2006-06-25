@@ -8,7 +8,8 @@ for f in "$@"; do
     ## Compute and print the autoloads.
   
     base=`basename $f | $SED 's/\.df$//'`
-    fcns=`$SED -n -e 's/XDEFUN\(X\|\)_DLD_INTERNAL *( *\("\|\)\([^", ]*\)[", ].*$/\3/p' $f | \
+    fcns=`$SED -n -e 's/^ *XDEFUN_DLD_INTERNAL *( *\([^, ]*\)[, ].*$/\1/p' \
+                  -e 's/^ *XDEFUNX_DLD_INTERNAL *( *"\([^"]*\)".*$/\1/p' $f | \
 	  sort -u`
     if [ -n "$fcns" ]; then
       for n in $fcns; do

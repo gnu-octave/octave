@@ -1,3 +1,15 @@
+2006-06-28  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list):
+	Avoid bug in older versions of g++.
+
+2006-06-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (clean): Also remove $(DLD_OBJ).
+
+	* sighandlers.cc (install_signal_handlers): Don't handle SIGPROF.
+	From Geoffrey Knauth <geoff@knauth.org>.
+
 2006-06-25  John W. Eaton  <jwe@octave.org>
 
 	* mk-pkg-add: Avoid apparently non-portable sed patterns.

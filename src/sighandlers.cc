@@ -630,10 +630,7 @@ install_signal_handlers (void)
   octave_set_signal_handler (SIGPOLL, SIG_IGN);
 #endif
 
-#ifdef SIGPROF
-  octave_set_signal_handler (SIGPROF, generic_sig_handler);
-#endif
-
+  // SIGPROF
   // SIGPWR
 
 #ifdef SIGQUIT

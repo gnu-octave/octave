@@ -426,7 +426,8 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
 	      idx += match[0].rm_eo;
 
-	      regexp_elem new_elem (string_vector (), t, m, te, s, e);
+	      string_vector sv;
+	      regexp_elem new_elem (sv, t, m, te, s, e);
 	      lst.push_back (new_elem);
 	      sz++;
 

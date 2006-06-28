@@ -62,7 +62,7 @@ mostlyclean:
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile test_sparse.m
 .PHONY: distclean
 
 maintainer-clean: distclean

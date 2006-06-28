@@ -1,3 +1,7 @@
+2006-06-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (distclean): Also remove test_sparse.m.
+
 2006-06-07  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m: Keep track of files with tests and report total.

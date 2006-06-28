@@ -55,7 +55,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile
+	rm -f Makefile PKG_ADD
 .PHONY: distclean
 
 maintainer-clean: distclean

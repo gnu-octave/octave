@@ -133,12 +133,8 @@ html-dir:
 check: all
 .PHONY: check
 
-install install-strip uninstall clean mostlyclean distclean maintainer-clean::
+install install-strip: all
 	@$(subdir-for-command)
-.PHONY: install install-strip uninstall
-.PHONY: clean mostlyclean distclean maintainer-clean
-
-install install-strip:: all
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(man1dir) $(DESTDIR)$(infodir)
 	@if test -d $(DESTDIR)$(man1dir); then \
 	  for f in $(MAN_BASE); do \
@@ -177,10 +173,13 @@ install install-strip:: all
 	    $(INSTALL_DATA) $(srcdir)/dir $(DESTDIR)$(infodir)/dir; \
 	  fi; \
 	fi
+.PHONY: install install-strip
 
-uninstall::
+uninstall:
+	@$(subdir-for-command)
 	rm -f $(infodir)/octave.info*
 	for f in $(MAN_BASE); do rm -f $(DESTDIR)$(man1dir)/$$f$(man1ext); done
+.PHONY: uninstall
 
 tags: $(SOURCES)
 	ctags $(SOURCES)
@@ -191,20 +190,25 @@ TAGS: $(SOURCES)
 spell: $(SPELL)
 .PHONY: spell
 
-mostlyclean clean::
+mostlyclean clean:
+	@$(subdir-for-command)
 	rm -f octave.cp octave.fn octave.in \
 	octave.ky octave.op octave.pg octave.rd octave.tp octave.vr \
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
-	munge-texi$(BUILD_EXEEXT) munge-texi.o \
+	munge-texi$(BUILD_EXEEXT) munge-texi.o
+.PHONY: mostlyclean clean 
 
-distclean:: clean
+distclean: clean
+	@$(subdir-for-command)
 	rm -f Makefile 
+.PHONY: distclean
 
-maintainer-clean:: clean-texi
+maintainer-clean: clean-texi
 	rm -f Makefile tags TAGS $(FORMATTED)
 	rm -rf HTML
+.PHONY: maintainer-clean
 
 clean-texi:
 	rm -f $(SUB_TEXINFO)

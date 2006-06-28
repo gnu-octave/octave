@@ -1,3 +1,7 @@
+2006-06-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in: Finish renaming of OBJECTS -> LIBOCTAVE_OBJECTS.
+
 2006-06-21  John W. Eaton  <jwe@octave.org>
 
 	* oct-shlib.cc (octave_dlopen_shlib::close,

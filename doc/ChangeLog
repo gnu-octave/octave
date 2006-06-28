@@ -1,3 +1,7 @@
+2006-06-27  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in: Elminate double-colon rules.
+
 2006-05-31  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/images/Makefile.in (run-octave):

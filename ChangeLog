@@ -1,3 +1,9 @@
+2006-06-27  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (maintainer-clean distclean): Remove
+	$(SHELL_SCRIPTS) instead of naming files individually.
+	Also remove .gdbinit.
+
 2006-06-21  John W. Eaton  <jwe@octave.org>
 
 	* examples/myfeval.c, examples/myfevalf.f, examples/myhello.c,

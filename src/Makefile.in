@@ -466,7 +466,7 @@ TAGS: $(SOURCES) $(DLD_SRC)
 clean:
 	rm -f liboctinterp.$(LIBEXT)
 	rm -f liboctinterp.$(SHLEXT_VER) liboctinterp.$(SHLEXT)
-	rm -f $(OBJECTS) $(MAKEDEPS) $(DOC_FILES) $(OCT_FILES)
+	rm -f $(OBJECTS) $(DLD_OBJ) $(MAKEDEPS) $(DOC_FILES) $(OCT_FILES)
 	rm -f $(PICOBJ) $(DLD_PICOBJ) stmp-pic gendoc$(EXEEXT)
 	rm -f builtins.cc ops.cc defaults.h oct-conf.h def-files
 	rm -f PKG_ADD

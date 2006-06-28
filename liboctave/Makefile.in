@@ -186,7 +186,7 @@ endif
 all: libraries
 .PHONY: all
 
-objects: $(OBJECTS)
+objects: $(LIBOCTAVE_OBJECTS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \
@@ -309,7 +309,7 @@ TAGS: $(SOURCES)
 
 clean:
 	rm -f liboctave.$(LIBEXT) liboctave.$(SHLEXT_VER) liboctave.$(SHLEXT)
-	rm -f  $(OBJECTS) $(MAKEDEPS) $(LIBOCTAVE_PICOBJ) stmp-pic
+	rm -f $(LIBOCTAVE_OBJECTS) $(MAKEDEPS) $(LIBOCTAVE_PICOBJ) stmp-pic
 	-rmdir pic
 .PHONY: clean
 

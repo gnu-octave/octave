@@ -57,22 +57,22 @@ public:
       instance->do_clear ();
   }
 
-  static void set (const std::string& p)
+  static void set (const std::string& p, bool warn = false)
   {
     if (instance_ok ())
-      instance->do_set (p);
+      instance->do_set (p, warn);
   }
 
-  static void append (const std::string& dir)
+  static void append (const std::string& dir, bool warn = false)
   {
     if (instance_ok ())
-      instance->do_append (dir);
+      instance->do_append (dir, warn);
   }
 
-  static void prepend (const std::string& dir)
+  static void prepend (const std::string& dir, bool warn = false)
   {
     if (instance_ok ())
-      instance->do_prepend (dir);
+      instance->do_prepend (dir, warn);
   }
 
   static bool remove (const std::string& dir)
@@ -298,11 +298,13 @@ private:
 
   void do_clear (void);
 
-  void do_set (const std::string& p);
+  void do_set (const std::string& p, bool warn);
 
-  void do_append (const std::string& dir);
+  void do_append (const std::string& dir, bool warn);
 
-  void do_prepend (const std::string& dir);
+  void do_prepend (const std::string& dir, bool warn);
+
+  void do_add (const std::string& dir, bool at_end, bool warn);
 
   bool do_remove (const std::string& dir);
 

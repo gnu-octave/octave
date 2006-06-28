@@ -1,5 +1,18 @@
 2006-06-28  John W. Eaton  <jwe@octave.org>
 
+	* load-path.cc (Faddpath): Don't treat "." specially here.
+	Don't check directory status here.
+	(Fpath): Handle all args.  Don't treat "." specially here.
+	(Faddpath, Frmpath): Delete unused variable xpath.
+	(load_path::do_add): New function.
+	(load_path::do_prepend, load_path::do_append): Use it.
+	(load_path::do_remove): Really prevent removal of ".".
+	(load_path::do_clear): Clearing doesn't remove ".".
+	(load_path::append, load_path::prepend, load_path::do_append,
+	load_path::do_prepend): New arg, warn.
+
+	* load-path.h: Fix decls.
+
 	* DLD-FUNCTIONS/regexp.cc (octregexp_list):
 	Avoid bug in older versions of g++.
 

@@ -374,7 +374,7 @@ load_path::do_initialize (void)
   if (Vsystem_path != ":")
     xpath += Vsystem_path;
 
-  do_set (xpath + ":::");
+  do_set (xpath + ":::", false);
 }
 
 void
@@ -382,6 +382,8 @@ load_path::do_clear (void)
 {
   dir_info_list.clear ();
   fcn_map.clear ();
+
+  do_append (".", false);
 }
 
 static std::list<std::string>
@@ -418,7 +420,7 @@ split_path (const std::string& p)
 }
 
 void
-load_path::do_set (const std::string& p)
+load_path::do_set (const std::string& p, bool warn)
 {
   do_clear ();
 
@@ -433,7 +435,7 @@ load_path::do_set (const std::string& p)
   for (std::list<std::string>::const_iterator i = elts.begin ();
        i != elts.end ();
        i++)
-    do_append (*i);
+    do_append (*i, warn);
 
   // Restore add hook and execute for all newly added directories.
 
@@ -449,64 +451,72 @@ load_path::do_set (const std::string& p)
 }
 
 void
-load_path::do_append (const std::string& dir)
+load_path::do_append (const std::string& dir, bool warn)
 {
   if (! dir.empty ())
-    {
-      dir_info_list_iterator i = find_dir_info (dir);
-
-      if (i != dir_info_list.end ())
-	move (i, true);
-      else
-	{
-	  dir_info di (dir);
-
-	  if (! error_state)
-	    {
-	      dir_info_list.push_back (di);
-
-	      add_to_fcn_map (di, true);
-
-	      if (add_hook)
-		add_hook (dir);
-	    }
-	}
-    }
+    do_add (dir, true, warn);
 }
 
 void
-load_path::do_prepend (const std::string& dir)
+load_path::do_prepend (const std::string& dir, bool warn)
 {
   if (! dir.empty ())
+    do_add (dir, false, warn);
+}
+
+void
+load_path::do_add (const std::string& dir, bool at_end, bool warn)
+{
+  dir_info_list_iterator i = find_dir_info (dir);
+
+  if (i != dir_info_list.end ())
+    move (i, at_end);
+  else
     {
-      dir_info_list_iterator i = find_dir_info (dir);
+      file_stat fs (dir);
 
-      if (i != dir_info_list.end ())
-	move (i, false);
-      else
+      if (fs)
 	{
-	  dir_info di (dir);
-
-	  if (! error_state)
+	  if (fs.is_dir ())
 	    {
-	      dir_info_list.push_front (di);
+	      dir_info di (dir);
 
-	      add_to_fcn_map (di, false);
+	      if (! error_state)
+		{
+		  if (at_end)
+		    dir_info_list.push_back (di);
+		  else
+		    dir_info_list.push_front (di);
 
-	      if (add_hook)
-		add_hook (dir);
+		  add_to_fcn_map (di, true);
+
+		  if (add_hook)
+		    add_hook (dir);
+		}
 	    }
+	  else if (warn)
+	    warning ("addpath: %s: not a directory", dir.c_str ());
 	}
-
-      // FIXME -- is there a better way to do this?
-
-      i = find_dir_info (".");
-
-      if (i != dir_info_list.end ())
-	move (i, false);
-      else
-	panic_impossible ();
+      else if (warn)
+	{
+	  std::string msg = fs.error ();
+	  warning ("addpath: %s: %s", dir.c_str (), msg.c_str ());
+	}
     }
+
+  // FIXME -- is there a better way to do this?
+
+  i = find_dir_info (".");
+
+  if (i != dir_info_list.end ())
+    {
+      if (i != dir_info_list.begin () && warn)
+	warning ("addpath: \".\" is always first in the path");
+
+      move (i, false);
+    }
+  else
+    panic_impossible ();
 }
 
 bool
@@ -517,55 +527,62 @@ load_path::do_remove (const std::string& dir)
   if (! dir.empty ())
     {
       if (dir == ".")
-	warning ("rmpath: can't remove \".\" from path");
-
-      dir_info_list_iterator i = find_dir_info (dir);
-
-      if (i != dir_info_list.end ())
 	{
+	  warning ("rmpath: can't remove \".\" from path");
+
+	  // Avoid additional warnings.
 	  retval = true;
+	}
+      else
+	{
+	  dir_info_list_iterator i = find_dir_info (dir);
 
-	  string_vector fcn_files = i->fcn_files;
-
-	  dir_info_list.erase (i);
-
-	  octave_idx_type len = fcn_files.length ();
-
-	  for (octave_idx_type k = 0; k < len; k++)
+	  if (i != dir_info_list.end ())
 	    {
-	      std::string fname = fcn_files[k];
+	      retval = true;
 
-	      std::string ext;
-	      std::string base = fname;
+	      string_vector fcn_files = i->fcn_files;
 
-	      size_t pos = fname.rfind ('.');
+	      dir_info_list.erase (i);
 
-	      if (pos != NPOS)
+	      octave_idx_type len = fcn_files.length ();
+
+	      for (octave_idx_type k = 0; k < len; k++)
 		{
-		  base = fname.substr (0, pos);
-		  ext = fname.substr (pos);
-		}
+		  std::string fname = fcn_files[k];
 
-	      std::list<file_info>& file_info_list = fcn_map[base];
+		  std::string ext;
+		  std::string base = fname;
 
-	      for (std::list<file_info>::iterator p = file_info_list.begin ();
-		   p != file_info_list.end ();
-		   p++)
-		{
-		  if (p->dir_name == dir)
+		  size_t pos = fname.rfind ('.');
+
+		  if (pos != NPOS)
 		    {
-		      file_info_list.erase (p);
+		      base = fname.substr (0, pos);
+		      ext = fname.substr (pos);
+		    }
 
-		      if (file_info_list.empty ())
-			fcn_map.erase (fname);
+		  std::list<file_info>& file_info_list = fcn_map[base];
 
-		      break;
+		  for (std::list<file_info>::iterator p = file_info_list.begin ();
+		       p != file_info_list.end ();
+		       p++)
+		    {
+		      if (p->dir_name == dir)
+			{
+			  file_info_list.erase (p);
+
+			  if (file_info_list.empty ())
+			    fcn_map.erase (fname);
+
+			  break;
+			}
 		    }
 		}
-	    }
 
-	  if (remove_hook)
-	    remove_hook (dir);
+	      if (remove_hook)
+		remove_hook (dir);
+	    }
 	}
     }
 
@@ -1289,16 +1306,9 @@ No checks are made for duplicate elements.\n\
 	  std::string path = argv[1];
 
 	  for (int i = 2; i < argc; i++)
-	    path += dir_path::path_sep_str;
+	    path += dir_path::path_sep_str + argv[i];
 
-	  size_t plen = path.length ();
-
-	  if (! ((plen == 1 && path[0] == ':')
-		 || (plen > 1
-		     && path.substr (0, 2) == ("." + dir_path::path_sep_str))))
-	    path = "." + dir_path::path_sep_str + path;
-
-	  load_path::set (path);
+	  load_path::set (path, true);
 	}
 
       if (nargout > 0)
@@ -1381,12 +1391,6 @@ Directories added to the path must exist.\n\
 	    }
 	}
 
-      std::list<std::string> xpath = load_path::dir_list ();
-
-      // Strip "." for now.  Calling path to set the path will restore it.
-
-      xpath.remove (".");
-
       for (int i = 0; i < nargin; i++)
 	{
 	  std::string arg = args(i).string_value ();
@@ -1404,28 +1408,10 @@ Directories added to the path must exist.\n\
 		  //dir = regexprep (dir_elts{j}, "//+", "/");
 		  //dir = regexprep (dir, "/$", "");
 
-		  if (dir == "." && append)
-		    warning ("addpath: \".\" is always first in the path");
-
-		  file_stat fs (dir);
-
-		  if (fs)
-		    {
-		      if (fs.is_dir ())
-			{
-			  if (append)
-			    load_path::append (dir);
-			  else
-			    load_path::prepend (dir);
-			}
-		      else
-			warning ("addpath: %s: not a directory", dir.c_str ());
-		    }
+		  if (append)
+		    load_path::append (dir, true);
 		  else
-		    {
-		      std::string msg = fs.error ();
-		      warning ("addpath: %s: %s", dir.c_str (), msg.c_str ());
-		    }
+		    load_path::prepend (dir, true);
 		}
 	    }
 	  else
@@ -1458,8 +1444,6 @@ Remove @var{dir1}, @dots{} from the current function search path.\n\
 
   if (nargin > 0)
     {
-      std::list<std::string> xpath = load_path::dir_list ();
-
       for (int i = 0; i < nargin; i++)
 	{
 	  std::string arg = args(i).string_value ();

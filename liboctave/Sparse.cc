@@ -59,7 +59,7 @@ Sparse<T>::SparseRep::elem (octave_idx_type _r, octave_idx_type _c)
 
       // Ok, If we've gotten here, we're in trouble.. Have to create a 
       // new element in the sparse array. This' gonna be slow!!!
-      if (c[ncols+1] == nzmx)
+      if (c[ncols] == nzmx)
 	{
 	  (*current_liboctave_error_handler)
 	    ("Sparse::SparseRep::elem (octave_idx_type, octave_idx_type): sparse matrix filled");

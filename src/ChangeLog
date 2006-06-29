@@ -219,7 +219,7 @@
 
 2006-06-09  John W. Eaton  <jwe@octave.org>
 
-	* version.h (OCTAVE_VERSION): Now 2.9.5+.
+	* version.h (OCTAVE_VERSION): Now 2.9.6+.
 
 2006-06-09  John W. Eaton  <jwe@octave.org>
 

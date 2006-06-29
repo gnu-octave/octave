@@ -1,3 +1,8 @@
+2006-06-29  Atsushi Kajita  <a-kajita@mizar.freemail.ne.jp>
+
+	* Sparse.cc (Sparse<T>::SparseRep::elem): Avoid out of bounds
+	array access.
+	
 2006-06-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in: Finish renaming of OBJECTS -> LIBOCTAVE_OBJECTS.

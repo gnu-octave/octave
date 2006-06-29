@@ -37,12 +37,11 @@ function dump_prefs (file)
   ## remember to update it each time the list of preference variables
   ## changes
 
-  var_list = ["DEFAULT_EXEC_PATH";
-	      "DEFAULT_LOADPATH";
-	      "EDITOR";
+  ## Note that these are no longer variables.
+
+  sym_list = ["EDITOR";
               "EXEC_PATH";
-              "IMAGEPATH";
-              "LOADPATH";
+              "IMAGE_PATH";
               "PAGER";
               "PS1";
               "PS2";
@@ -51,7 +50,6 @@ function dump_prefs (file)
               "beep_on_error";
               "completion_append_char";
               "crash_dumps_octave_core";
-              "default_save_format";
               "echo_executing_commands";
               "fixed_point_format";
               "gnuplot_binary";
@@ -62,7 +60,6 @@ function dump_prefs (file)
               "gnuplot_command_title";
               "gnuplot_command_using";
               "gnuplot_command_with";
-              "gnuplot_has_frames";
               "history_file";
               "history_size";
               "ignore_function_time_stamp";
@@ -76,8 +73,6 @@ function dump_prefs (file)
               "page_screen_output";
               "print_answer_id_name";
               "print_empty_dimensions";
-              "print_rhs_assign_val";
-              "return_last_computed_value";
               "save_precision";
               "saving_history";
               "sighup_dumps_octave_core";
@@ -86,30 +81,18 @@ function dump_prefs (file)
               "split_long_rows";
               "string_fill_char";
               "struct_levels_to_print";
-              "suppress_verbose_help_message";
-              "warn_assign_as_truth_value";
-              "warn_divide_by_zero";
-              "warn_empty_list_elements";
-              "warn_fortran_indexing";
-              "warn_function_name_clash";
-              "warn_future_time_stamp";
-              "warn_imag_to_real";
-              "warn_missing_semicolon";
-              "warn_neg_dim_as_zero";
-              "warn_num_to_str";
-              "warn_resize_on_range_error";
-              "warn_separator_insert";
-              "warn_single_quote_string";
-              "warn_str_to_num";
-              "warn_undefined_return_values";
-              "warn_variable_switch_label"];
+              "suppress_verbose_help_message"];
 
-  for i = 1:rows(var_list)
-    var = deblank (var_list(i,:));
+  for i = 1:rows(sym_list)
+    sym = deblank (sym_list(i,:));
     try
-      fprintf (file, "  %s = %s\n", var, type ("-q", var));
+      val = feval (sym);
+      if (isnumeric (val))
+	val = sprintf ("%g", val);
+      endif
+      fprintf (file, "  %s = %s\n", sym, val);
     catch
-      fprintf (file, "# %s = <no value or error in displaying it>\n", var);
+      fprintf (file, "# %s = <no value or error in displaying it>\n", sym);
     end_try_catch
   endfor
 

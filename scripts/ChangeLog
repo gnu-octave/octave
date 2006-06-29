@@ -1,3 +1,9 @@
+2006-06-29  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/dump_prefs.m: Remove obsolete symbols from the list.
+	Use feval instead of "type -q" to get values now that all the
+	symbols are functions.
+
 2006-06-16  John W. Eaton  <jwe@octave.org>
 
 	* time/datevec.m: Avoid computing log of non-positive values.

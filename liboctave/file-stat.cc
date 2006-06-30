@@ -35,6 +35,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
+#include "file-ops.h"
 #include "file-stat.h"
 #include "statdefs.h"
 
@@ -196,8 +197,10 @@ file_stat::update_internal (bool force)
     {
       initialized = false;
       fail = false;
+      
+      std::string full_file_name = file_ops::tilde_expand (file_name);
 
-      const char *cname = file_name.c_str ();
+      const char *cname = full_file_name.c_str ();
 
       struct stat buf;
 

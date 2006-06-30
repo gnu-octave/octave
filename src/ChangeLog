@@ -1,3 +1,8 @@
+2006-06-30  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (genpath): Don't perform tilde expansion on name.
+	(load_path::do_add): Don't warn about moving "." to front of list.
+
 2006-06-28  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (Faddpath): Don't treat "." specially here.

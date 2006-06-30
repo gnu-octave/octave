@@ -509,12 +509,7 @@ load_path::do_add (const std::string& dir, bool at_end, bool warn)
   i = find_dir_info (".");
 
   if (i != dir_info_list.end ())
-    {
-      if (i != dir_info_list.begin () && warn)
-	warning ("addpath: \".\" is always first in the path");
-
-      move (i, false);
-    }
+    move (i, false);
   else
     panic_impossible ();
 }
@@ -1140,9 +1135,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 {
   std::string retval;
 
-  std::string full_dirname = file_ops::tilde_expand (dirname);
-
-  dir_entry dir (full_dirname);
+  dir_entry dir (dirname);
 
   if (dir)
     {
@@ -1172,7 +1165,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 
 	      if (! skip_p)
 		{
-		  std::string nm = full_dirname + file_ops::dir_sep_str + elt;
+		  std::string nm = dirname + file_ops::dir_sep_str + elt;
 
 		  file_stat fs (nm);
 

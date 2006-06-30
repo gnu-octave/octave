@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "sysdir.h"
 
 #include "dir-ops.h"
+#include "file-ops.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
 #include "str-vec.h"
@@ -47,8 +48,10 @@ dir_entry::open (const std::string& n)
   if (! name.empty ())
     {
       close ();
+      
+      std::string fullname = file_ops::tilde_expand (name);
 
-      dir = static_cast<void *> (opendir (name.c_str ()));
+      dir = static_cast<void *> (opendir (fullname.c_str ()));
 
       if (dir)
 	fail = false;

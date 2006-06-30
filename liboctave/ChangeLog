@@ -1,5 +1,8 @@
 2006-06-30  John W. Eaton  <jwe@octave.org>
 
+	* dir-ops.cc (dir_entry::open): Perform tilde expansion here.
+	* file-stat.cc (stat::update_internal): Ditto.
+
 	* data-conv.cc (data_conv::string_to_data_type):
 	Correctly handle leading "*".
 

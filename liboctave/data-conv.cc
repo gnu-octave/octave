@@ -297,15 +297,21 @@ oct_data_conv::string_to_data_type
     {
       if (s[pos+1] == '>')
 	{
+	  std::string s1;
+
 	  if (input_is_output)
 	    {
 	      input_is_output = false;
 
+	      s1 = s.substr (1, pos-1);
+
 	      (*current_liboctave_warning_handler)
 		("warning: ignoring leading * in fread precision");
 	    }
+	  else
+	    s1 = s.substr (0, pos);
 
-	  input_type = string_to_data_type (s.substr (0, pos));
+	  input_type = string_to_data_type (s1);
 	  output_type = string_to_data_type (s.substr (pos+2));
 	}
       else
@@ -314,6 +320,9 @@ oct_data_conv::string_to_data_type
     }
   else
     {
+      if (input_is_output)
+	s = s.substr (1);
+
       input_type = string_to_data_type (s);
 
       if (input_is_output)

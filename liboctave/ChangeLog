@@ -1,3 +1,8 @@
+2006-06-30  John W. Eaton  <jwe@octave.org>
+
+	* data-conv.cc (data_conv::string_to_data_type):
+	Correctly handle leading "*".
+
 2006-06-29  Atsushi Kajita  <a-kajita@mizar.freemail.ne.jp>
 
 	* Sparse.cc (Sparse<T>::SparseRep::elem): Avoid out of bounds

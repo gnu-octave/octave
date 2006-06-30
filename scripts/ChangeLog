@@ -1,3 +1,8 @@
+2006-06-30  John W. Eaton  <jwe@octave.org>
+
+	* time/datevec.m: Make another attempt to account for precision of
+	datenum format.
+
 2006-06-29  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/dump_prefs.m: Remove obsolete symbols from the list.

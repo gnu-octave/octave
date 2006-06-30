@@ -156,11 +156,10 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     ## datenum format.
 
     fracd = date - floor (date);
-    ## Special case for total days <= 0.
-    tmpd = abs (365.25*y);
-    tmpd(tmpd == 0) = 1;
-    srnd = 10 .^ floor (log10 (tmpd));
-    s = round (86400*fracd.*srnd) ./ srnd;
+    tmps = abs (eps*86400*date);
+    tmps(tmps == 0) = 1;
+    srnd = 2 .^ floor (- log2 (tmps));
+    s = round (86400 * fracd .* srnd) ./ srnd;
     h = floor (s / 3600);
     s = s - 3600 * h;
     mi = floor (s / 60);
@@ -169,7 +168,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
   endif
 
   if (nargout <= 1)
-    y = [y m d h mi s];
+    y = [y, m, d, h, mi, s];
   endif
 
 ### endfunction

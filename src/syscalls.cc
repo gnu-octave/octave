@@ -561,7 +561,7 @@ See stat.\n\
 
   if (args.length () == 1)
     {
-      std::string fname = file_ops::tilde_expand (args(0).string_value ());
+      std::string fname = args(0).string_value ();
 
       if (! error_state)
 	{
@@ -798,7 +798,7 @@ For example,\n\
 
   if (args.length () == 1)
     {
-      std::string fname = file_ops::tilde_expand (args(0).string_value ());
+      std::string fname = args(0).string_value ();
 
       if (! error_state)
 	{

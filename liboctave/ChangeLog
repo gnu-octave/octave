@@ -1,7 +1,10 @@
 2006-06-30  John W. Eaton  <jwe@octave.org>
 
-	* dir-ops.cc (dir_entry::open): Perform tilde expansion here.
+	* lo-sysdep.cc (octave_chdir): Perform tilde expansion here.
+	* cmd-edit.cc (editor::read_init_file): Ditto.
+	* dir-ops.cc (dir_entry::open): Ditto.
 	* file-stat.cc (stat::update_internal): Ditto.
+	* cmd-hist.cc (command_history::set_file): Ditto.
 
 	* data-conv.cc (data_conv::string_to_data_type):
 	Correctly handle leading "*".

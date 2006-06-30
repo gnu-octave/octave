@@ -41,6 +41,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"
+#include "file-ops.h"
 #include "lo-error.h"
 #include "lo-utils.h"
 #include "oct-env.h"
@@ -833,10 +834,14 @@ command_editor::restore_event_hook (void)
 }
 
 void
-command_editor::read_init_file (const std::string& file)
+command_editor::read_init_file (const std::string& file_arg)
 {
   if (instance_ok ())
-    instance->do_read_init_file (file);
+    {
+      std::string file = file_ops::tilde_expand (file_arg);
+
+      instance->do_read_init_file (file);
+    }
 }
 
 bool

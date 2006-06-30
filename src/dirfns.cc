@@ -121,7 +121,7 @@ directory is not changed.\n\
 
   if (argc > 1)
     {
-      std::string dirname = file_ops::tilde_expand (argv[1]);
+      std::string dirname = argv[1];
 
       if (dirname.length () > 0
 	  && ! octave_change_to_directory (dirname))
@@ -266,7 +266,7 @@ system-dependent error message.\n\
 	gripe_wrong_type_arg ("readdir", args(0));
       else
 	{
-	  dir_entry dir (file_ops::tilde_expand (dirname));
+	  dir_entry dir (dirname);
 
 	  if (dir)
 	    {

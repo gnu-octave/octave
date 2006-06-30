@@ -35,6 +35,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
+#include "file-ops.h"
 #include "lo-error.h"
 #include "pathlen.h"
 
@@ -64,8 +65,10 @@ octave_getcwd (void)
 }
 
 int
-octave_chdir (const std::string& path)
+octave_chdir (const std::string& path_arg)
 {
+  std::string path = file_ops::tilde_expand (path_arg);
+
 #if defined (__EMX__)
   int retval = -1;
 

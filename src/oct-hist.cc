@@ -173,10 +173,7 @@ do_history (int argc, const string_vector& argv)
 	  || option == "-n")
 	{
 	  if (i < argc - 1)
-	    {
-	      std::string file = file_ops::tilde_expand (argv[i+1]);
-	      command_history::set_file (file);
-	    }
+	    command_history::set_file (argv[i+1]);
 
 	  if (option == "-a")
 	    // Append `new' lines to file.
@@ -551,7 +548,7 @@ do_run_history (int argc, const string_vector& argv)
 void
 initialize_history (void)
 {
-  command_history::set_file (file_ops::tilde_expand (Vhistory_file));
+  command_history::set_file (Vhistory_file);
   command_history::set_size (Vhistory_size);
 
   command_history::read (false);
@@ -719,7 +716,7 @@ variable @code{OCTAVE_HISTFILE}.\n\
   octave_value retval = SET_INTERNAL_VARIABLE (history_file);
 
   if (Vhistory_file != saved_history_file)
-    command_history::set_file (file_ops::tilde_expand (Vhistory_file));
+    command_history::set_file (Vhistory_file);
 
   return retval;
 }

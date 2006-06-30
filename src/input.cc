@@ -1042,7 +1042,7 @@ Read the readline library initialiazation file @var{file}.  If\n\
     command_editor::read_init_file ();
   else if (nargin == 1)
     {
-      std::string file = file_ops::tilde_expand (args(0).string_value ());
+      std::string file = args(0).string_value ();
 
       if (! error_state)
 	command_editor::read_init_file (file);

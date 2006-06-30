@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "cmd-edit.h"
 #include "cmd-hist.h"
+#include "file-ops.h"
 #include "lo-error.h"
 #include "str-vec.h"
 
@@ -413,10 +414,14 @@ command_history::make_command_history (void)
 }
 
 void
-command_history::set_file (const std::string& f)
+command_history::set_file (const std::string& f_arg)
 {
   if (instance_ok ())
-    instance->do_set_file (f);
+    {
+      std::string f = file_ops::tilde_expand (f_arg);
+
+      instance->do_set_file (f);
+    }
 }
 
 std::string

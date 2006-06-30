@@ -1,5 +1,12 @@
 2006-06-30  John W. Eaton  <jwe@octave.org>
 
+	* oct-hist.cc (do_history, initialize_history, Fhistory_file):
+	Don't perform tilde expansion on history file name.
+
+	* syscalls.cc (Flstat, Fstat): Don't perform tilde expansion on arg.
+	* input.cc (Fread_readline_init_file): Likewise.
+	* dirfns.cc (Fcd, Freaddir): Likewise.
+
 	* load-path.cc (genpath): Don't perform tilde expansion on name.
 	(load_path::do_add): Don't warn about moving "." to front of list.
 

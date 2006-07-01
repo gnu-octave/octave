@@ -2789,9 +2789,7 @@ finish_matrix (tree_matrix *m)
 static tree_expression *
 finish_cell (tree_cell *c)
 {
-  // For now, this doesn't do anything.
-
-  return c;
+  return finish_matrix (c);
 }
 
 static void

@@ -1,5 +1,8 @@
 2006-06-30  John W. Eaton  <jwe@octave.org>
 
+	* ov-base.cc (octave_base_value::numeric_assign):
+	Avoid memory leak when converting LHS.
+
 	* oct-hist.cc (do_history, initialize_history, Fhistory_file):
 	Don't perform tilde expansion on history file name.
 

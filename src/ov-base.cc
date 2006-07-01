@@ -934,11 +934,13 @@ octave_base_value::numeric_assign (const std::string& type,
 
 	  if (cf)
 	    {
-	      octave_base_value *tmp (cf (*this));
+	      octave_base_value *tmp = cf (*this);
 
 	      if (tmp)
 		{
-		  retval = tmp->subsasgn (type, idx, rhs);
+		  octave_value val (tmp);
+
+		  retval = val.subsasgn (type, idx, rhs);
 
 		  done = (! error_state);
 		}

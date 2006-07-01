@@ -858,9 +858,9 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 		      if (typ == MatrixType::Upper)
 			colUp = cidx(j+1) - 1;
 		      else
-			colUp = cidx(j) - 1;
+			colUp = cidx(j);
 		      double pivot = data(colUp);
-		      if (pivot == 0. || colUp != j) 
+		      if (pivot == 0. || ridx(colUp) != j) 
 			{
 			  (*current_liboctave_error_handler) 
 			    ("division by zero");
@@ -886,9 +886,9 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 		  if (typ == MatrixType::Upper)
 		    colUp = cidx(i+1) - 1;
 		  else
-		    colUp = cidx(i) - 1;
+		    colUp = cidx(i);
 		  double pivot = data(colUp);
-		  if (pivot == 0. || colUp != i) 
+		  if (pivot == 0. || ridx(colUp) != i) 
 		    {
 		      (*current_liboctave_error_handler) ("division by zero");
 		      goto inverse_singular;
@@ -954,7 +954,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 		      if (typ == MatrixType::Permuted_Upper)
 			pivot = data(cidx(jidx+1) - 1);
 		      else
-			pivot = data(cidx(jidx) - 1);
+			pivot = data(cidx(jidx));
 		      if (pivot == 0.) 
 			{
 			  (*current_liboctave_error_handler) 
@@ -970,7 +970,7 @@ SparseMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 		  if (typ == MatrixType::Permuted_Upper)
 		    colUp = cidx(perm[iidx]+1) - 1;
 		  else
-		    colUp = cidx(perm[iidx]) - 1;		  
+		    colUp = cidx(perm[iidx]);
 
 		  double pivot = data(colUp);
 		  if (pivot == 0.)

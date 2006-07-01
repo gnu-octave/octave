@@ -750,6 +750,14 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 		      octave_idx_type colXp = retval.xcidx(i);
 		      octave_idx_type colUp = cidx(j);
 		      octave_idx_type rpX, rpU;
+
+		      if (cidx(j) == cidx(j+1))
+			{
+			  (*current_liboctave_error_handler) 
+			    ("division by zero");
+			  goto inverse_singular;
+			}
+
 		      do
 			{
 			  OCTAVE_QUIT;
@@ -769,12 +777,19 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 			} while ((rpX<j) && (rpU<j) && 
 				 (colXp<cx) && (colUp<nz));
 
+
 		      // get A(m,m)
-		      colUp = cidx(j+1) - 1;
+		      if (typ == MatrixType::Upper)
+			colUp = cidx(j+1) - 1;
+		      else
+			colUp = cidx(j) - 1;
 		      Complex pivot = data(colUp);
-		      if (pivot == 0.) 
-			(*current_liboctave_error_handler) 
-			  ("division by zero");
+		      if (pivot == 0. || colUp != j) 
+			{
+			  (*current_liboctave_error_handler) 
+			    ("division by zero");
+			  goto inverse_singular;
+			}
 
 		      if (v != 0.)
 			{
@@ -791,10 +806,17 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 		    }
 
 		  // get A(m,m)
-		  octave_idx_type colUp = cidx(i+1) - 1;
+		  octave_idx_type colUp;
+		  if (typ == MatrixType::Upper)
+		    colUp = cidx(i+1) - 1;
+		  else
+		    colUp = cidx(i) - 1;
 		  Complex pivot = data(colUp);
-		  if (pivot == 0.) 
-		    (*current_liboctave_error_handler) ("division by zero");
+		  if (pivot == 0. || colUp != i) 
+		    {
+		      (*current_liboctave_error_handler) ("division by zero");
+		      goto inverse_singular;
+		    }
 
 		  if (pivot != 1.0)
 		    for (octave_idx_type j = cx_colstart; j < cx; j++)
@@ -852,20 +874,35 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
 			}
 
 		      // get A(m,m)
-		      Complex pivot = data(cidx(jidx+1) - 1);
+		      Complex pivot;
+		      if (typ == MatrixType::Permuted_Upper)
+			pivot = data(cidx(jidx+1) - 1);
+		      else
+			pivot = data(cidx(jidx) - 1);
 		      if (pivot == 0.) 
-			(*current_liboctave_error_handler) 
-			  ("division by zero");
+			{
+			  (*current_liboctave_error_handler) 
+			    ("division by zero");
+			  goto inverse_singular;
+			}
 
 		      work[j] = v / pivot;
 		    }
 
 		  // get A(m,m)
-		  octave_idx_type colUp = cidx(perm[iidx]+1) - 1;
-		  Complex pivot = data(colUp);
-		  if (pivot == 0.) 
-		    (*current_liboctave_error_handler) 
-		      ("division by zero");
+		  octave_idx_type colUp;
+		  if (typ == MatrixType::Permuted_Upper)
+		    colUp = cidx(perm[iidx]+1) - 1;
+		  else
+		    colUp = cidx(perm[iidx]) - 1;		  
+
+  		  Complex pivot = data(colUp);
+		  if (pivot == 0.)
+		    {
+		      (*current_liboctave_error_handler) 
+			("division by zero");
+		      goto inverse_singular;
+		    }
 
 		  octave_idx_type new_cx = cx;
 		  for (octave_idx_type j = iidx; j < nr; j++)
@@ -916,6 +953,9 @@ SparseComplexMatrix::tinverse (MatrixType &mattyp, octave_idx_type& info,
     }
 
   return retval;
+
+ inverse_singular:
+  return SparseComplexMatrix();
 }
 
 SparseComplexMatrix

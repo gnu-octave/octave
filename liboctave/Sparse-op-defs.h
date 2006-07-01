@@ -1548,7 +1548,7 @@ Boston, MA 02110-1301, USA.
   else \
     { \
       OCTAVE_LOCAL_BUFFER (octave_idx_type, w, nr); \
-      RET_TYPE retval (nr, a_nc, 0); \
+      RET_TYPE retval (nr, a_nc, static_cast<octave_idx_type> (0)); \
       for (octave_idx_type i = 0; i < nr; i++) \
 	w[i] = 0; \
       retval.xcidx(0) = 0; \

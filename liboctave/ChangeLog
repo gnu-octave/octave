@@ -1,3 +1,12 @@
+2006-07-01  David Bateman  <dbateman@free.fr>
+
+	* dSparse.cc (tinverse): Check for rows with no elements and zero
+	elements on the diagonal. Allow both Upper and Lower triangular
+	matrices to be treated.
+	* CSparse.cc (tinverse): ditto.
+	* Sparse-op-defs.h (SPARSE_SPARSE_MUL): Take into account 64-bit
+	constant assignment.
+	
 2006-06-30  John W. Eaton  <jwe@octave.org>
 
 	* lo-sysdep.cc (octave_chdir): Perform tilde expansion here.

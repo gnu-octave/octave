@@ -1533,7 +1533,7 @@ static void
 maybe_warn_variable_switch_label (tree_expression *expr)
 {
   if (! expr->is_constant ())
-    warning_with_id ("Octave:warn-variable-switch-label",
+    warning_with_id ("Octave:variable-switch-label",
     		     "variable switch label");
 }
 

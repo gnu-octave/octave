@@ -176,7 +176,7 @@ octave_char_matrix_str::valid_as_scalar_index (void) const
     gripe_invalid_conversion ("string", TNAME); \
   else \
     { \
-      warning_with_id ("Octave:warn-str-to-num", \
+      warning_with_id ("Octave:str-to-num", \
 		       "implicit conversion from %s to %s", \
 		       "string", TNAME); \
  \

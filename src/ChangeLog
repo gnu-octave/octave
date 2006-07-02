@@ -1,3 +1,8 @@
+2006-07-02  John W. Eaton  <jwe@octave.org>
+
+	* ov-str-mat.cc (CHAR_MATRIX_CONV): Omit "warn-" from label.
+	* parse.y (maybe_warn_variable_switch_label): Likewise.
+
 2006-07-01  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (finish_cell): Use finish_matrix to do constant folding.

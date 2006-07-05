@@ -54,9 +54,9 @@ extern "C" {
 #endif
 
 /* Floating point representation.  */
-extern int mxIsNaN (double v);
 extern int mxIsFinite (double v);
 extern int mxIsInf (double v);
+extern int mxIsNaN (double v);
 extern double mxGetEps (void);
 extern double mxGetInf (void);
 extern double mxGetNaN (void);
@@ -70,11 +70,13 @@ extern int mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 extern void mexSetTrapFlag (int flag);
 extern int mexEvalString (const char *s);
 extern void mexErrMsgTxt (const char *s);
+extern void mexErrMsgIdAndTxt (const char *id, const char *s);
 extern void mexWarnMsgTxt (const char *s);
+extern void mexWarnMsgIdAndTxt (const char *id, const char *s);
 extern void mexPrintf (const char *fmt, ...);
   
-extern mxArray *mexGetArray (const char *name, const char *space);
-extern mxArray *mexGetArrayPtr (const char *name, const char *space);
+extern mxArray *mexGetVariable (const char *space, const char *name);
+extern const mxArray *mexGetVariablePtr (const char *space, const char *name);
 
 extern int mexPutVariable (const char *space, const char *name, mxArray *ptr);
 
@@ -95,23 +97,24 @@ extern void mxDestroyArray (mxArray *v);
 extern mxArray *mxDuplicateArray (const mxArray *v);
 
 extern int mxIsChar (const mxArray *ptr);
-
+extern int mxIsComplex (const mxArray *ptr);
+extern int mxIsDouble (const mxArray *ptr);
+extern int mxIsEmpty (const mxArray *ptr);
+extern int mxIsFull (const mxArray *ptr);
+extern int mxIsLogicalScalar (const mxArray *ptr);
+extern int mxIsNumeric (const mxArray *ptr);
 extern int mxIsSparse (const mxArray *ptr);
 extern int mxIsStruct (const mxArray *ptr);
-extern int mxIsFull (const mxArray *ptr);
-extern int mxIsDouble (const mxArray *ptr);
-extern int mxIsNumeric (const mxArray *ptr);
-extern int mxIsComplex (const mxArray *ptr);
-extern int mxIsEmpty (const mxArray *ptr);
-extern int mxIsLogicalScalar (const mxArray *ptr);
+
 extern int mxGetM (const mxArray *ptr);
 extern int mxGetN (const mxArray *ptr);
 extern int mxGetNumberOfDimensions (const mxArray *ptr);
 extern int mxGetNumberOfElements (const mxArray *ptr);
+
 extern double *mxGetPr (const mxArray *ptr);
+extern double *mxGetPi (const mxArray *ptr);
 
 /* Structure support.  */
-extern int mxIsStruct (const mxArray *ptr);
 extern mxArray *mxGetField (const mxArray *ptr, int index, const char *key);
 extern void mxSetField (mxArray *ptr, int index, const char *key, mxArray *val);
 extern int mxGetNumberOfFields (const mxArray *ptr);
@@ -122,12 +125,7 @@ extern void mxSetFieldByNumber (mxArray *ptr, int index, int key_num,
 				mxArray *val);
 extern mxArray *mxCreateStructMatrix (int rows, int cols, int num_keys,
 				      const char **keys);
-#if 0
-extern mxArray *mxCreateStructArray (int num_dims, const int  *dims, 
-				     int numkeys, const char **keys);
-#endif
 
-extern double *mxGetPi (const mxArray *ptr);
 extern void mxSetM (mxArray *ptr, int M);
 extern void mxSetN (mxArray *ptr, int N);
 extern void mxSetPr (mxArray *ptr, double *pr);
@@ -139,6 +137,68 @@ extern mxArray *mxCreateString (const char *str);
   
 extern double mxGetScalar (const mxArray *ptr);
   
+#if 0
+/* Not implemented.  */
+extern int mxAddField (mxArray *ptr, const char *field_name);
+extern void mxAssert (int expr, char *msg);
+extern void mxAssertS (int expr, char *msg);
+extern int mxCalcSingleSubscript (const mxArray *ptr, int nsubs, int *subs);
+extern void *mxCalloc (size_t n, size_t size);
+extern mxArray *mxCreateCellArray (int ndim, const int *dims);
+extern mxArray *mxCreateCellMatrix (int m, int n);
+extern mxArray *mxCreateCharArray (int ndim, const int *dims);
+extern mxArray *mxCreateCharMatrixFromStrings (int m, const char **str);
+extern mxArray *mxCreateLogicalArray (int ndim, const int *dims);
+extern mxArray *mxCreateLogicalMatrix (int m, int n);
+extern mxArray *mxCreateNumericArray (int ndim, const int *dims, mxClassID class, mxComplexity flag);
+extern mxArray *mxCreateNumericMatrix (int m, int n, mxClassID class, mxComplexity flag);
+extern mxArray *mxCreateSparse (int m, int n, int nzmax, mxComplexity flag);
+extern mxArray *mxCreateSparseLogicalMatrix (int m, int n, int nzmax);
+extern mxArray *mxGetCell (const mxArray *ptr, int idx);
+extern mxChar *mxGetChars (const mxArray *ptr);
+extern mxClassID mxGetClassID (const mxArray *ptr);
+extern const char *mxGetClassName (const mxArray *ptr);
+extern void mxGetData (const mxArray *ptr);
+extern int *mxGetDimensions (const mxArray *ptr);
+extern int mxGetElementSize (const mxArray *ptr);
+extern void *mxGetImagData (const mxArray *ptr);
+extern int *mxGetIr (const mxArray *ptr);
+extern int *mxGetJc (const mxArray *ptr);
+extern mxLogical *mxGetLogicals (const mxArray *ptr);
+extern int mxGetNzmax (const mxArray *ptr);
+extern int mxIsCell (const mxArray *ptr);
+extern int mxIsClass (const mxArray *ptr, const char *name);
+extern int mxIsFromGlobalWS (const mxArray *ptr);
+extern int mxIsInt16 (const mxArray *ptr);
+extern int mxIsInt32 (const mxArray *ptr);
+extern int mxIsInt64 (const mxArray *ptr);
+extern int mxIsInt8 (const mxArray *ptr);
+extern int mxIsLogical (const mxArray *ptr);
+extern int mxIsLogicalScalarTrue (const mxArray *ptr);
+extern int mxIsSingle (const mxArray *ptr);
+extern int mxIsUint16 (const mxArray *ptr);
+extern int mxIsUint32 (const mxArray *ptr);
+extern int mxIsUint64 (const mxArray *ptr);
+extern int mxIsUint8 (const mxArray *ptr);
+extern void mxRemoveField (mxArray *ptr, int num);
+extern void mxSetCell (mxArray *ptr, int idx, mxArray *val);
+extern void mxSetClassName (mxArray *ptr, const char *name);
+extern void mxSetData (mxArray *ptr, void *data);
+extern void mxSetDimensions (mxArray *ptr, int *dims, int ndim);
+extern void mxSetImagData (mxArray *ptr, void *pi);
+extern void mxSetIr (mxArray *ptr, int *ir);
+extern void mxSetJc (mxArray *ptr, int *ir);
+extern void mxSetNzmax (mxArray *ptr, int nzmax);
+
+extern int mexAtExit (void (*f) (void));
+extern const mxArray *mexGet (double handle, const char *property);
+extern int mexIsGlobal (const mxArray *ptr);
+extern int mexIsLocked (void);
+extern void mexLock (void);
+extern int mexSet (double handle, const char *property, mxArray *val);
+extern void mexUnlock (void);
+#endif
+
 #if defined (__cplusplus)
 }
 #endif

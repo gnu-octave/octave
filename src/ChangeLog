@@ -1,3 +1,14 @@
+2006-07-05  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mexGetVariable): Rename from mexGetArray, swap arguments.
+	(mexGetVariablePtr): Rename from mexGetArrayPtr, swap arguments.
+	(mexErrMsgIdAndTxt, mexWarnMsgIdAndTxt): New functions.
+	* mexproto.h: Provide decls.
+	Include decls for as yet unsupported functions.
+	* mex.h: Add enum for class ids.
+	(mexGetArray): Define using mexGetVariable.
+	(mexGetArrayPtr): Define using mexGetVariablePtr.
+
 2006-07-02  John W. Eaton  <jwe@octave.org>
 
 	* ov-str-mat.cc (CHAR_MATRIX_CONV): Omit "warn-" from label.

@@ -22,7 +22,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 */
 
 // This code was originally distributed as part of Octave Forge under
-// the follwoing terms:
+// the following terms:
 //
 // Author: Paul Kienzle
 // I grant this code to the public domain.
@@ -77,7 +77,7 @@ typedef std::set<Pix> MemSet;
 // the mex function invocation.
 class mxArray;
 
-// Prototypes for external funcitons.  Must declare mxArray as a class
+// Prototypes for external functions.  Must declare mxArray as a class
 // before including this file.
 #include "mexproto.h"
 
@@ -759,7 +759,7 @@ void
 mexErrMsgTxt (const char *s)
 {
   if (s && strlen (s) > 0)
-    error("%s: %s", mexFunctionName (), s);
+    error ("%s: %s", mexFunctionName (), s);
   else
     // Just set the error state; don't print msg.
     error ("");
@@ -767,7 +767,29 @@ mexErrMsgTxt (const char *s)
   __mex->abort();
 }
 
-void mexWarnMsgTxt (const char *s) { warning("%s", s); }
+void
+mexErrMsgIdAndTxt (const char *id, const char *s)
+{
+  if (s && strlen (s) > 0)
+    error_with_id (id, "%s: %s", mexFunctionName (), s);
+  else
+    // Just set the error state; don't print msg.
+    error ("");
+
+  __mex->abort();
+}
+
+void
+mexWarnMsgTxt (const char *s)
+{
+  warning ("%s", s);
+}
+
+void
+mexWarnMsgIdAndTxt (const char *id, const char *s)
+{
+  warning_with_id (id, "%s", s);
+}
 
 void
 mexPrintf (const char *fmt, ...)
@@ -780,9 +802,9 @@ mexPrintf (const char *fmt, ...)
 
 // Floating point representation.
 
-int mxIsNaN (const double v) { return lo_ieee_isnan (v) != 0; }
 int mxIsFinite (const double v) { return lo_ieee_finite (v) != 0; }
 int mxIsInf (const double v) { return lo_ieee_isinf (v) != 0; }
+int mxIsNaN (const double v) { return lo_ieee_isnan (v) != 0; }
 
 double mxGetEps (void) { return DBL_EPSILON; }
 double mxGetInf (void) { return lo_ieee_inf_value (); }
@@ -1055,7 +1077,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
 }
 
 mxArray *
-mexGetArray (const char *name, const char *space)
+mexGetVariable (const char *space, const char *name)
 {
   mxArray *retval = 0;
 
@@ -1070,9 +1092,9 @@ mexGetArray (const char *name, const char *space)
   else if (! strcmp (space, "caller"))
     sr = curr_sym_tab->lookup (name);
   else if (! strcmp (space, "base"))
-    mexErrMsgTxt ("mexGetArray: 'base' symbol table not implemented");
+    mexErrMsgTxt ("mexGetVariable: 'base' symbol table not implemented");
   else
-    mexErrMsgTxt ("mexGetArray: symbol table does not exist");
+    mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
 
   if (sr)
     {
@@ -1088,10 +1110,10 @@ mexGetArray (const char *name, const char *space)
   return retval;
 }
 
-mxArray *
-mexGetArrayPtr (const char *name, const char *space)
+const mxArray *
+mexGetVariablePtr (const char *space, const char *name)
 {
-  return mexGetArray (name, space);
+  return mexGetVariable (space, name);
 }
 
 const char *mxGetName (const mxArray *ptr) { return ptr->name (); }
@@ -1132,11 +1154,13 @@ mxGetFieldNumber (const mxArray *ptr, const char *key)
 {
   return ptr->key (key);
 }
+
 mxArray *
 mxGetFieldByNumber (const mxArray *ptr, int index, int key_num)
 {
   return ptr->field (key_num, index);
 }
+
 void
 mxSetFieldByNumber (mxArray *ptr, int index, int key_num, mxArray *val)
 {
@@ -1169,12 +1193,13 @@ void F77_FUNC (mexprintf, MEXPRINTF) (const char *s, long slen)
   mexPrintf ("%.*s\n", slen, s);
 }
 
-double F77_FUNC (mexgeteps, MEXGETEPS) (void) { return mxGetEps (); }
-double F77_FUNC (mexgetinf, MEXGETINF) (void) { return mxGetInf (); }
-double F77_FUNC (mexgetnan, MEXGETNAN) (void) { return mxGetNaN (); }
 int F77_FUNC (mexisfinite, MEXISFINITE) (double v) { return mxIsFinite (v); }
 int F77_FUNC (mexisinf, MEXISINF) (double v) { return mxIsInf (v); }
 int F77_FUNC (mexisnan, MEXISNAN) (double v) { return mxIsNaN (v); }
+
+double F77_FUNC (mexgeteps, MEXGETEPS) (void) { return mxGetEps (); }
+double F77_FUNC (mexgetinf, MEXGETINF) (void) { return mxGetInf (); }
+double F77_FUNC (mexgetnan, MEXGETNAN) (void) { return mxGetNaN (); }
 
 // Array access:
 

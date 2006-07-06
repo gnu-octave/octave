@@ -416,10 +416,6 @@ octave_struct::print (std::ostream& os, bool) const
 void
 octave_struct::print_raw (std::ostream& os, bool) const
 {
-  // FIXME -- would be nice to print the output in some
-  // standard order.  Maybe all substructures first, maybe
-  // alphabetize entries, etc.
-
   unwind_protect::begin_frame ("octave_struct_print");
 
   unwind_protect_int (Vstruct_levels_to_print);
@@ -450,10 +446,13 @@ octave_struct::print_raw (std::ostream& os, bool) const
 	  increment_indent_level ();
 	}
 
-      for (Octave_map::const_iterator p = map.begin (); p != map.end (); p++)
+      string_vector key_list = map.keys ();
+
+      for (octave_idx_type i = 0; i < key_list.length (); i++)
 	{
-	  std::string key = map.key (p);
-	  Cell val = map.contents (p);
+	  std::string key = key_list[i];
+
+	  Cell val = map.contents (key);
 
 	  octave_value tmp = (n == 1) ? val(0) : octave_value (val, true);
 

@@ -40,6 +40,20 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #include "lo-utils.h"
 #include "str-vec.h"
 
+string_vector::string_vector (const std::list<std::string>& lst)
+{
+  size_t n = lst.size ();
+
+  resize (n);
+
+  octave_idx_type i = 0;
+
+  for (std::list<std::string>::const_iterator p = lst.begin ();
+       p != lst.end ();
+       p++)
+    elem(i++) = *p;
+}
+
 // Create a string vector from a NULL terminated list of C strings.
 
 string_vector::string_vector (const char * const *s)

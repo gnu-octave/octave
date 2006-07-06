@@ -25,6 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define octave_str_vec_h 1
 
 #include <iostream>
+#include <list>
 #include <string>
 
 #include "Array.h"
@@ -43,6 +44,8 @@ public:
   string_vector (const std::string& s) : Array<std::string> (1, s) { }
 
   string_vector (const string_vector& s) : Array<std::string> (s) { }
+
+  string_vector (const std::list<std::string>& lst);
 
   string_vector (const char * const *s);
 

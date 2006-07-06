@@ -39,30 +39,44 @@ Octave_map
   typedef std::map<std::string, Cell>::iterator iterator;
   typedef std::map<std::string, Cell>::const_iterator const_iterator;
 
+  typedef std::list<std::string>::iterator key_list_iterator;
+  typedef std::list<std::string>::const_iterator const_key_list_iterator;
+
   // Warning!  You should always use at least two dimensions.
 
-  Octave_map (const dim_vector& dv = dim_vector (0, 0))
-    : map (), dimensions (dv) { }
+  Octave_map (const dim_vector& dv = dim_vector (0, 0),
+	      const string_vector& key_list_arg = string_vector ());
 
   Octave_map (const std::string& k, const octave_value& value)
-    : map (), dimensions (1, 1)
-    { map[k] = value; }
+    : map (), key_list (), dimensions (1, 1)
+  {
+    map[k] = value;
+    key_list.push_back (k);
+  }
 
   Octave_map (const std::string& k, const Cell& vals)
-    : map (), dimensions (vals.dims ())
-    { map[k] = vals; }
+    : map (), key_list (), dimensions (vals.dims ())
+  {
+    map[k] = vals;
+    key_list.push_back (k);
+  }
 
   Octave_map (const std::string& k, const octave_value_list& val_list)
-    : map (), dimensions (1, val_list.length ())
-  { map[k] = val_list; }
+    : map (), key_list (), dimensions (1, val_list.length ())
+  {
+    map[k] = val_list;
+    key_list.push_back (k);
+  }
 
-  Octave_map (const Octave_map& m) : map (m.map), dimensions (m.dimensions) { }
+  Octave_map (const Octave_map& m)
+    : map (m.map), key_list (m.key_list), dimensions (m.dimensions) { }
 
   Octave_map& operator = (const Octave_map& m)
     {
       if (this != &m)
 	{
 	  map = m.map;
+	  key_list = m.key_list;
 	  dimensions = m.dimensions;
 	}
 
@@ -81,6 +95,10 @@ Octave_map
       iterator p = map.find (k);
       if (p != map.end ())
 	map.erase (p);
+
+      key_list_iterator q = find (key_list.begin (), key_list.end (), k);
+      if (q != key_list.end ())
+	key_list.erase (q);
     }
 
   iterator begin (void) { return iterator (map.begin ()); }
@@ -151,8 +169,20 @@ private:
   // The map of names to values.
   std::map<std::string, Cell> map;
 
+  // An extra list of keys, so we can keep track of the order the keys
+  // are added for compatibility with you know what.
+  std::list<std::string> key_list;
+
   // The current size.
   mutable dim_vector dimensions;
+
+  void maybe_add_to_key_list (const std::string& k)
+  {
+    key_list_iterator p = find (key_list.begin (), key_list.end (), k);
+
+    if (p == key_list.end ())
+      key_list.push_back (k);
+  }
 };
 
 #endif

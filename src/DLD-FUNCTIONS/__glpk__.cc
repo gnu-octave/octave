@@ -431,7 +431,7 @@ You should be using using the @code{glpk} function instead.\n\
 
   //-- 1nd Input. A column array containing the objective function
   //--            coefficients.
-  int mrowsc = args(0).rows();
+  volatile int mrowsc = args(0).rows();
 
   Matrix C (args(0).matrix_value ());
 

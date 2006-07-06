@@ -31,9 +31,25 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-map.h"
 #include "utils.h"
 
+Octave_map::Octave_map (const dim_vector& dv,
+			const string_vector& key_list_arg)
+  : map (), key_list (), dimensions (dv)
+{
+  Cell c (dv);
+
+  for (octave_idx_type i = 0; i < key_list_arg.length (); i++)
+    {
+      std::string k = key_list_arg[i];
+      map[k] = c;
+      key_list.push_back (k);
+    }
+}
+
 Cell&
 Octave_map::contents (const std::string& k)
 {
+  maybe_add_to_key_list (k);
+
   return map[k];
 }
 
@@ -75,15 +91,14 @@ Octave_map::stringfield (const std::string& k,
 string_vector
 Octave_map::keys (void) const
 {
-  octave_idx_type len = length ();
+  if (length () != key_list.size ())
+    {
+      std::cerr << "length () = " << length () << std::endl;
+      std::cerr << "key_list.size () = " << key_list.size () << std::endl;
+      abort ();
+    }
 
-  string_vector names (len);
-
-  octave_idx_type i = 0;
-  for (const_iterator p = begin (); p != end (); p++)
-    names[i++] = key (p);
-
-  return names;
+  return string_vector (key_list);
 }
 
 Octave_map
@@ -326,6 +341,8 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
 
       dimensions = new_dims;
 
+      maybe_add_to_key_list (k);
+
       map[k] = tmp;
     }
 
@@ -337,6 +354,8 @@ Octave_map::assign (const std::string& k, const octave_value& rhs)
 {
   if (empty ())
     {
+      maybe_add_to_key_list (k);
+
       map[k] = Cell (rhs);
 
       dimensions = dim_vector (1, 1);
@@ -346,7 +365,11 @@ Octave_map::assign (const std::string& k, const octave_value& rhs)
       dim_vector dv = dims ();
 
       if (dv.all_ones ())
-	map[k] = Cell (rhs);
+	{
+	  maybe_add_to_key_list (k);
+
+	  map[k] = Cell (rhs);
+	}
       else
 	error ("invalid structure assignment");
     }
@@ -359,6 +382,8 @@ Octave_map::assign (const std::string& k, const Cell& rhs)
 {
   if (empty ())
     {
+      maybe_add_to_key_list (k);
+
       map[k] = rhs;
 
       dimensions = rhs.dims ();
@@ -366,7 +391,11 @@ Octave_map::assign (const std::string& k, const Cell& rhs)
   else
     {
       if (dims () == rhs.dims ())
-	map[k] = rhs;
+	{
+	  maybe_add_to_key_list (k);
+
+	  map[k] = rhs;
+	}
       else
 	error ("invalid structure assignment");
     }

@@ -1,3 +1,9 @@
+2006-07-06  John W. Eaton  <jwe@octave.org>
+
+	* str-vec.cc (string_vector::string_vector (std::list<std::string>&)):
+	New constructor.
+	* str-vec.h: Provide decl.
+
 2006-07-01  David Bateman  <dbateman@free.fr>
 
 	* dSparse.cc (tinverse): Check for rows with no elements and zero

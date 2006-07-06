@@ -1,3 +1,25 @@
+2006-07-06  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Declare mrowsc volatile.
+
+	* ov-struct.cc (octave_struct::print_raw): Print keys in key_list
+	order.
+
+	* oct-map.h (Octave_map::key_list): New data member.
+	(Octave_map::maybe_add_to_key_list): New function.
+	(Octave_map::key_list_iterator, Octave_map::const_key_list_iterator):
+	New typedefs.
+	(Octave_map::del): Also delete key from key_list.
+	* oct-map.cc (Octave_map::keys): Compute return value from
+	key_list instead of map.
+	(Octave_map::assign, Octave_map::contents): Call maybe_add_to_key_list.
+	* oct-map.h, oct-map.cc (Octave_map::Octave_map):
+	Insert keys in key_list.
+
+	* oct-map.h (Octave_map::Octave_map (const dim_vector&,
+	const string_vector&)): New arg, key_list_arg.
+	* oct-map.cc: Move definition here.
+
 2006-07-05  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mexGetVariable): Rename from mexGetArray, swap arguments.

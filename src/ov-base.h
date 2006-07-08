@@ -204,6 +204,8 @@ public:
 
   virtual bool is_complex_matrix (void) const { return false; }
 
+  virtual bool is_bool_scalar (void) const { return false; }
+
   virtual bool is_bool_matrix (void) const { return false; }
 
   virtual bool is_char_matrix (void) const { return false; }

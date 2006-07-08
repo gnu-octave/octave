@@ -93,12 +93,17 @@ Octave_map
   void del (const std::string& k)
     {
       iterator p = map.find (k);
-      if (p != map.end ())
-	map.erase (p);
 
-      key_list_iterator q = find (key_list.begin (), key_list.end (), k);
-      if (q != key_list.end ())
-	key_list.erase (q);
+      if (p != map.end ())
+	{
+	  map.erase (p);
+
+	  key_list_iterator q = find (key_list.begin (), key_list.end (), k);
+
+	  assert (q != key_list.end ());
+
+	  key_list.erase (q);
+	}
     }
 
   iterator begin (void) { return iterator (map.begin ()); }
@@ -178,9 +183,7 @@ private:
 
   void maybe_add_to_key_list (const std::string& k)
   {
-    key_list_iterator p = find (key_list.begin (), key_list.end (), k);
-
-    if (p == key_list.end ())
+    if (! contains (k))
       key_list.push_back (k);
   }
 };

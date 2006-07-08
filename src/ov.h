@@ -400,6 +400,9 @@ public:
   bool is_complex_matrix (void) const
     { return rep->is_complex_matrix (); }
 
+  bool is_bool_scalar (void) const
+    { return rep->is_bool_scalar (); }
+
   bool is_bool_matrix (void) const
     { return rep->is_bool_matrix (); }
 

@@ -1,3 +1,19 @@
+2006-07-07  John W. Eaton  <jwe@octave.org>
+
+	* ov.h (octave_value::is_bool_scalar): New function.
+	* ov-base.h (octave_base_value::is_bool_scalar): New function.
+	* ov-bool.h (octave_bool::is_bool_scalar): New function.
+
+	* oct-map.cc (Octave_map::keys): Use assert.
+	(Octave_map::assign): Avoid inserting new key in map unless
+	assignment to cell succeeds.
+
+	* oct-map.h (Octave_map::del): Only touch key_list if map contains key.
+	Assert that key_list contains key.
+
+	* oct-map.h (Octave_map::maybe_add_to_key_list): For efficiency,
+	check map, not key_list.  From Paul Kienzle  <pkienzle@users.sf.net>.
+
 2006-07-06  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Declare mrowsc volatile.

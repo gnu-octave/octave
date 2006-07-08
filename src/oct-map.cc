@@ -98,6 +98,8 @@ Octave_map::keys (void) const
       abort ();
     }
 
+  assert (length () == key_list.size ());
+
   return string_vector (key_list);
 }
 
@@ -183,9 +185,9 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
 
   if (length() == rb.length())
     {
-      for (Octave_map::const_iterator pa = begin (); pa != end (); pa++)
+      for (const_iterator pa = begin (); pa != end (); pa++)
 	{
-	  Octave_map::const_iterator pb = rb.seek (key(pa));
+	  const_iterator pb = rb.seek (key(pa));
 
 	  if (pb == rb.end ())
 	    {
@@ -240,7 +242,7 @@ Octave_map::maybe_delete_elements (const octave_value_list& idx)
 	{
 	  std::string k = t_keys[i];
 
-	  map[k] = contents (k).assign (idx, Cell());
+	  map[k] = contents(k).assign (idx, Cell());
 
 	  if (error_state)
 	    break;
@@ -314,7 +316,10 @@ Octave_map&
 Octave_map::assign (const octave_value_list& idx, const std::string& k,
 		    const Cell& rhs)
 {
-  Cell tmp = map[k];
+  Cell tmp;
+
+  if (contains (k))
+    tmp = map[k];
 
   octave_value fill_value = Matrix ();
 

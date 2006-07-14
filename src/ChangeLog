@@ -4,6 +4,7 @@
 
 	* ov-str-mat.h (octave_char_matrix_sq_str::resize):
 	Include fill arg to match base class.
+	* ov-struct.h (octave_struct::resize): Likewise.
 
 	* ov-base-mat.cc, ov-base-mat.h, ov-base-sparse.cc,
 	ov-base-sparse.h, ov-base.cc, ov-base.h, ov-bool.cc,

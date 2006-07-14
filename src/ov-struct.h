@@ -90,7 +90,7 @@ public:
   octave_value reshape (const dim_vector& new_dims) const
     { return map.reshape (new_dims); }
 
-  octave_value resize (const dim_vector& dv) const
+  octave_value resize (const dim_vector& dv, bool = false) const
     { Octave_map tmap = map; tmap.resize (dv); return tmap; }
 
   bool is_defined (void) const { return true; }

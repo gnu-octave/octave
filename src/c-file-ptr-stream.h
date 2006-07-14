@@ -104,7 +104,7 @@ c_file_ptr_stream : public STREAM_T
 public:
 
   c_file_ptr_stream (FILE_T f, typename BUF_T::close_fcn cf = BUF_T::fclose)
-    : STREAM_T (0), buf (new BUF_T (f, cf)) { init (buf); }
+    : STREAM_T (0), buf (new BUF_T (f, cf)) { STREAM_T::init (buf); }
 
   ~c_file_ptr_stream (void) { delete buf; buf = 0; }
 

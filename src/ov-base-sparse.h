@@ -101,10 +101,8 @@ octave_base_sparse : public octave_base_value
 
   dim_vector dims (void) const { return matrix.dims (); }
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
-
-  octave_value do_index_op (const octave_value_list& idx)
-    { return do_index_op (idx, 0); }
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   octave_value reshape (const dim_vector& new_dims) const
     { return T (matrix.reshape (new_dims)); }

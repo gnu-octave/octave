@@ -67,7 +67,8 @@ public:
 
   type_conv_fcn numeric_conversion_function (void) const;
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

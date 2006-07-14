@@ -1,5 +1,13 @@
 2006-07-14  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-mat.cc, ov-base-mat.h, ov-base-sparse.cc,
+	ov-base-sparse.h, ov-base.cc, ov-base.h, ov-bool.cc,
+	ov-bool.h, ov-complex.cc, ov-complex.h, ov-intx.h, ov-list.cc,
+	ov-list.h, ov-range.cc, ov-range.h, ov-scalar.cc, ov-scalar.h,
+	ov-str-mat.cc, ov-str-mat.h, ov.h (do_index_op):
+	Declare	resize_ok arg as bool, not int.
+	Provide default value for resize_ok.
+
 	* c-file-ptr-stream.h (c_file_ptr_stream::c_file_ptr_stream):
 	Qualify init.
 

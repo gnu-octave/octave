@@ -75,7 +75,8 @@ public:
 
   octave_base_value *try_narrowing_conversion (void);
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   octave_value any (int = 0) const
     {

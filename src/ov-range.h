@@ -93,10 +93,8 @@ public:
       return octave_value_list ();
     }
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
-
-  octave_value do_index_op (const octave_value_list& idx)
-    { return do_index_op (idx, 0); }
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   idx_vector index_vector (void) const { return idx_vector (range); }
 

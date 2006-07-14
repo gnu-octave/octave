@@ -71,7 +71,8 @@ public:
   // undefined), A will be empty instead of a 1x1 object.
   octave_base_value *empty_clone (void) const { return new octave_matrix (); }
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 

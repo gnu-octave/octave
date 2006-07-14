@@ -77,7 +77,7 @@ valid_scalar_indices (const octave_value_list& args)
 }
 
 octave_value
-octave_bool::do_index_op (const octave_value_list& idx, int resize_ok)
+octave_bool::do_index_op (const octave_value_list& idx, bool resize_ok)
 {
   octave_value retval;
 

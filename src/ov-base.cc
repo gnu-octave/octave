@@ -92,17 +92,11 @@ octave_base_value::subsref (const std::string&,
 }
 
 octave_value
-octave_base_value::do_index_op (const octave_value_list&, int)
+octave_base_value::do_index_op (const octave_value_list&, bool)
 {
   std::string nm = type_name ();
   error ("can't perform indexing operations for %s type", nm.c_str ());
   return octave_value ();
-}
-
-octave_value
-octave_base_value::do_index_op (const octave_value_list& idx)
-{
-  return do_index_op (idx, 0);
 }
 
 octave_value_list

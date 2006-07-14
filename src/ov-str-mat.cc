@@ -83,7 +83,7 @@ octave_char_matrix_str::numeric_conversion_function (void) const
 
 octave_value
 octave_char_matrix_str::do_index_op_internal (const octave_value_list& idx,
-					      int resize_ok, char type)
+					      bool resize_ok, char type)
 {
   octave_value retval;
 

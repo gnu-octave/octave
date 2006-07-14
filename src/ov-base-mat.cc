@@ -128,7 +128,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
 template <class MT>
 octave_value
 octave_base_matrix<MT>::do_index_op (const octave_value_list& idx,
-				     int resize_ok)
+				     bool resize_ok)
 {
   octave_value retval;
 

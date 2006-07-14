@@ -74,7 +74,8 @@ public:
 			     const std::list<octave_value_list>& idx,
 			     int nargout);
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,

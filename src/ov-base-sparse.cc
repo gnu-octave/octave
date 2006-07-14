@@ -45,7 +45,7 @@ Boston, MA 02110-1301, USA.
 template <class T>
 octave_value
 octave_base_sparse<T>::do_index_op (const octave_value_list& idx, 
-				    int resize_ok)
+				    bool resize_ok)
 {
   octave_value retval;
 

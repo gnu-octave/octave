@@ -94,10 +94,8 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
-  octave_value do_index_op (const octave_value_list& idx, int resize_ok);
-
-  octave_value do_index_op (const octave_value_list& idx)
-    { return do_index_op (idx, 0); }
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
 
   void assign (const octave_value_list& idx, const MT& rhs);
 

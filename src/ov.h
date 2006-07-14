@@ -299,11 +299,8 @@ public:
 				  size_t skip = 1);
 
   octave_value do_index_op (const octave_value_list& idx,
-				    int resize_ok)
+			    bool resize_ok = false)
     { return rep->do_index_op (idx, resize_ok); }
-
-  octave_value do_index_op (const octave_value_list& idx)
-    { return do_index_op (idx, 0); }
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& idx);

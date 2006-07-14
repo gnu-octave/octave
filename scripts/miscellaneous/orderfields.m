@@ -54,14 +54,14 @@ function [t, p] = orderfields (s1, s2)
       ## Two structures: return the fields in the order of s2.
       names = fieldnames (s2);
       if (! isequal (sort (fieldnames (s1)), sort (names)))
-	error ("orderfields: s1 and s2 do not have same fields");
+	error ("orderfields: structures do not have same fields");
       endif
     elseif (iscellstr (s2))
       ## A structure and a list of fields: order by the list of fields.
       t1 = sort (fieldnames (s1));
       t2 = sort (s2(:));
       if (! isequal (t1, t2))
-	error ("orderfields: invalid cell array of field names");
+	error ("orderfields: name list does not match structure fields");
       endif
       names = s2;
     elseif (isvector (s2))

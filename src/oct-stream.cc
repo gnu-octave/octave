@@ -3448,6 +3448,38 @@ do_write (std::ostream& os, const T& val, oct_data_conv::data_type output_type,
   return retval;
 }
 
+template bool
+do_write (std::ostream&, const octave_int8&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
+template bool
+do_write (std::ostream&, const octave_uint8&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
+template bool
+do_write (std::ostream&, const octave_int16&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
+template bool
+do_write (std::ostream&, const octave_uint16&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
+template bool
+do_write (std::ostream&, const octave_int32&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
+template bool
+do_write (std::ostream&, const octave_uint32&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
+template bool
+do_write (std::ostream&, const octave_int64&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
+template bool
+do_write (std::ostream&, const octave_uint64&, oct_data_conv::data_type,
+	  oct_mach_info::float_format, bool, bool);
+
 template <class T>
 octave_idx_type
 octave_stream::write (const Array<T>& data, octave_idx_type block_size,

@@ -1,5 +1,7 @@
 2006-07-14  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (do_write): Include explicit instantiations.
+
 	* ov-str-mat.h (octave_char_matrix_sq_str::resize):
 	Include fill arg to match base class.
 

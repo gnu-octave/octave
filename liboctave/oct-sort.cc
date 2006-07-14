@@ -84,6 +84,8 @@ The Python license is
 #include <config.h>
 #endif
 
+#include <cassert>
+
 #include "lo-mappers.h"
 #include "quit.h"
 #include "oct-sort.h"

@@ -98,7 +98,8 @@ Octave_map
 	{
 	  map.erase (p);
 
-	  key_list_iterator q = find (key_list.begin (), key_list.end (), k);
+	  key_list_iterator q
+	    = std::find (key_list.begin (), key_list.end (), k);
 
 	  assert (q != key_list.end ());
 

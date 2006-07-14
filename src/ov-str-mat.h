@@ -207,7 +207,7 @@ public:
   octave_value permute (const Array<int>& vec, bool inv = false) const
     { return octave_value (charNDArray (matrix.permute (vec, inv)), true, '\''); }
 
-  octave_value resize (const dim_vector& dv) const
+  octave_value resize (const dim_vector& dv, bool fill = false) const
     {
       charNDArray retval (matrix);
       retval.resize (dv);

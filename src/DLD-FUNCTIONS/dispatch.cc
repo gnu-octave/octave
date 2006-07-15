@@ -64,7 +64,7 @@ public:
 
   octave_function *function_value (bool) { return this; }
 
-  octave_value do_index_op (const octave_value_list&, int)
+  octave_value do_index_op (const octave_value_list&, bool = false)
   {
     error ("dispatch: do_index_op");
     return octave_value ();

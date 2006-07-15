@@ -39,7 +39,7 @@ octave_errno::octave_errno (void)
   struct errno_struct
   {
     const char *name;
-    const int value;
+    int value;
   };
 
   static errno_struct errno_codes[] =

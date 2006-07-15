@@ -35,14 +35,14 @@ Boston, MA 02110-1301, USA.
 
 // FIXME There is a large code duplication here
 
-MatrixType::MatrixType (void) : typ (MatrixType::Unknown), full (false),
-				nperm (0)
-{
-  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
-} 
+MatrixType::MatrixType (void)
+  : typ (MatrixType::Unknown),
+    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    bandden (0), upper_band (0), lower_band (0), dense (false),
+    full (false), nperm (0), perm (0) { }
 
-MatrixType::MatrixType (const MatrixType &a) : typ (a.typ), 
-    sp_bandden (a.sp_bandden), bandden (a.bandden), 
+MatrixType::MatrixType (const MatrixType &a)
+  : typ (a.typ), sp_bandden (a.sp_bandden), bandden (a.bandden), 
     upper_band (a.upper_band), lower_band (a.lower_band), 
     dense (a.dense), full (a.full), nperm (a.nperm)
 { 
@@ -55,11 +55,12 @@ MatrixType::MatrixType (const MatrixType &a) : typ (a.typ),
 }
 
 MatrixType::MatrixType (const Matrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (true), nperm (0), perm (0)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
-  nperm = 0;
-  full = true;
 
   if (ncols == nrows)
     {
@@ -112,11 +113,12 @@ MatrixType::MatrixType (const Matrix &a)
 }
 
 MatrixType::MatrixType (const ComplexMatrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (true), nperm (0), perm (0)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
-  nperm = 0;
-  full = true;
 
   if (ncols == nrows)
     {
@@ -173,18 +175,18 @@ MatrixType::MatrixType (const ComplexMatrix &a)
 }
 
 MatrixType::MatrixType (const SparseMatrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (false), nperm (0), perm (0)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
   octave_idx_type nnz = a.nzmax ();
-  full = false;
 
   if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 
       ("Calculating Sparse Matrix Type");
-
-  nperm = 0;
 
   sp_bandden = Voctave_sparse_controls.get_key ("bandden");
   bool maybe_hermitian = false;
@@ -499,19 +501,19 @@ MatrixType::MatrixType (const SparseMatrix &a)
 }
 
 MatrixType::MatrixType (const SparseComplexMatrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (false), nperm (0), perm (0)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
   octave_idx_type nnz = a.nzmax ();
-  full = false;
 
   if (Voctave_sparse_controls.get_key ("spumoni") != 0.)  full = true;
 
     (*current_liboctave_warning_handler) 
       ("Calculating Sparse Matrix Type");
-
-  nperm = 0;
 
   sp_bandden = Voctave_sparse_controls.get_key ("bandden");
   bool maybe_hermitian = false;
@@ -824,12 +826,12 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
 	}
     }
 }
-MatrixType::MatrixType (const matrix_type t, bool _full) : 
-  typ (MatrixType::Unknown), nperm (0)
+MatrixType::MatrixType (const matrix_type t, bool _full)
+  : typ (MatrixType::Unknown),
+    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (_full), nperm (0), perm (0)
 {
-  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
-  full = _full;
-
   if (t == MatrixType::Full || t == MatrixType::Diagonal ||
       t == MatrixType::Permuted_Diagonal || t == MatrixType::Upper ||
       t == MatrixType::Lower || t == MatrixType::Tridiagonal ||
@@ -840,12 +842,12 @@ MatrixType::MatrixType (const matrix_type t, bool _full) :
 }
 
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
-			const octave_idx_type *p, bool _full) : 
-  typ (MatrixType::Unknown), nperm (0)
+			const octave_idx_type *p, bool _full)
+  : typ (MatrixType::Unknown),
+    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (_full), nperm (0), perm (0)
 {
-  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
-  full = _full;
-
   if (t == MatrixType::Permuted_Upper || t == MatrixType::Permuted_Lower)
     {
       typ = t;
@@ -859,12 +861,12 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
 }
 
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
-			const octave_idx_type kl, bool _full) : 
-  typ (MatrixType::Unknown), nperm (0)
+			const octave_idx_type kl, bool _full)
+  : typ (MatrixType::Unknown),
+    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (_full), nperm (0), perm (0)
 {
-  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
-  full = _full;
-
   if (t == MatrixType::Banded || t == MatrixType::Banded_Hermitian)
     {
       typ = t;

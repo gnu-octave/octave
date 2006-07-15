@@ -1,3 +1,10 @@
+2006-07-15  John W. Eaton  <jwe@octave.org>
+
+	* data-conv.cc: Instantiante swap_bytes templates here.
+
+	* MatrixType.cc (MatrixType::MatrixType):
+	Use complete initializer lists in constructors.
+
 2006-07-06  John W. Eaton  <jwe@octave.org>
 
 	* str-vec.cc (string_vector::string_vector (std::list<std::string>&)):

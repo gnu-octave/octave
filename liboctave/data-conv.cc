@@ -34,6 +34,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "data-conv.h"
 #include "lo-error.h"
 
+template void swap_bytes<2> (volatile void *, int);
+template void swap_bytes<4> (volatile void *, int);
+template void swap_bytes<8> (volatile void *, int);
+
 #if defined HAVE_LONG_LONG_INT
 #define FIND_SIZED_INT_TYPE(VAL, BITS, TQ, Q) \
   do \

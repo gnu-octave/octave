@@ -60,6 +60,9 @@ INSTANTIATE_ARRAY (octave_value_typeinfo::assign_op_fcn);
 template class Array2<octave_value_typeinfo::assign_op_fcn>;
 template class Array3<octave_value_typeinfo::assign_op_fcn>;
 
+INSTANTIATE_ARRAY (octave_value_typeinfo::assignany_op_fcn);
+template class Array2<octave_value_typeinfo::assignany_op_fcn>;
+
 INSTANTIATE_ARRAY (octave_base_value::type_conv_fcn);
 template class Array2<octave_base_value::type_conv_fcn>;
 

@@ -1,5 +1,7 @@
 2006-07-15  John W. Eaton  <jwe@octave.org>
 
+	* ov-typeinfo.cc: Also instantiate arrays of assignany_ops.
+
 	* oct-errno.cc.in (octave_errno::octave_errno): VALUE field in
 	errno_struct no longer const.
 

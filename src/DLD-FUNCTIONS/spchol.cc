@@ -398,7 +398,7 @@ factorization as determined by @var{typ}.\n\
   cholmod_common *cm = &Common;
   CHOLMOD_NAME(start) (cm);
 
-  double spu = Voctave_sparse_controls.get_key ("spumoni");
+  double spu = octave_sparse_params::get_key ("spumoni");
   if (spu == 0.)
     {
       cm->print = -1;

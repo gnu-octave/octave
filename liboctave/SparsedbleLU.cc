@@ -51,7 +51,7 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
   double *control = Control.fortran_vec ();
   UMFPACK_DNAME (defaults) (control);
 
-  double tmp = Voctave_sparse_controls.get_key ("spumoni");
+  double tmp = octave_sparse_params::get_key ("spumoni");
   if (!xisnan (tmp))
     Control (UMFPACK_PRL) = tmp;
 
@@ -63,7 +63,7 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
     }
   else
     {
-      tmp = Voctave_sparse_controls.get_key ("piv_tol");
+      tmp = octave_sparse_params::get_key ("piv_tol");
       if (!xisnan (tmp))
 	{
 	  Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -72,7 +72,7 @@ SparseLU::SparseLU (const SparseMatrix& a, double piv_thres)
     }
 
   // Set whether we are allowed to modify Q or not
-  tmp = Voctave_sparse_controls.get_key ("autoamd");
+  tmp = octave_sparse_params::get_key ("autoamd");
   if (!xisnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
@@ -228,7 +228,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
       double *control = Control.fortran_vec ();
       UMFPACK_DNAME (defaults) (control);
 
-      double tmp = Voctave_sparse_controls.get_key ("spumoni");
+      double tmp = octave_sparse_params::get_key ("spumoni");
       if (!xisnan (tmp))
 	Control (UMFPACK_PRL) = tmp;
       if (piv_thres >= 0.)
@@ -239,7 +239,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 	}
       else
 	{
-	  tmp = Voctave_sparse_controls.get_key ("piv_tol");
+	  tmp = octave_sparse_params::get_key ("piv_tol");
 	  if (!xisnan (tmp))
 	    {
 	      Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -256,7 +256,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 	Control (UMFPACK_FIXQ) = 1.0;
       else
 	{
-	  tmp = Voctave_sparse_controls.get_key ("autoamd");
+	  tmp = octave_sparse_params::get_key ("autoamd");
 	  if (!xisnan (tmp))
 	    Control (UMFPACK_FIXQ) = tmp;
 	}

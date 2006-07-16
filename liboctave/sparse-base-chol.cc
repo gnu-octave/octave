@@ -99,7 +99,7 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   CHOLMOD_NAME(start) (cm);
   cm->prefer_zomplex = false;
 
-  double spu = Voctave_sparse_controls.get_key ("spumoni");
+  double spu = octave_sparse_params::get_key ("spumoni");
   if (spu == 0.)
     {
       cm->print = -1;

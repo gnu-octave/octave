@@ -1061,11 +1061,11 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
       double *control = Control.fortran_vec ();
       UMFPACK_ZNAME (defaults) (control);
 
-      double tmp = Voctave_sparse_controls.get_key ("spumoni");
+      double tmp = octave_sparse_params::get_key ("spumoni");
       if (!xisnan (tmp))
 	Control (UMFPACK_PRL) = tmp;
 
-      tmp = Voctave_sparse_controls.get_key ("piv_tol");
+      tmp = octave_sparse_params::get_key ("piv_tol");
       if (!xisnan (tmp))
 	{
 	  Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -1073,7 +1073,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 	}
 
       // Set whether we are allowed to modify Q or not
-      tmp = Voctave_sparse_controls.get_key ("autoamd");
+      tmp = octave_sparse_params::get_key ("autoamd");
       if (!xisnan (tmp))
 	Control (UMFPACK_FIXQ) = tmp;
 
@@ -5544,10 +5544,10 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
   double *control = Control.fortran_vec ();
   UMFPACK_ZNAME (defaults) (control);
 
-  double tmp = Voctave_sparse_controls.get_key ("spumoni");
+  double tmp = octave_sparse_params::get_key ("spumoni");
   if (!xisnan (tmp))
     Control (UMFPACK_PRL) = tmp;
-  tmp = Voctave_sparse_controls.get_key ("piv_tol");
+  tmp = octave_sparse_params::get_key ("piv_tol");
   if (!xisnan (tmp))
     {
       Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
@@ -5555,7 +5555,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
     }
 
   // Set whether we are allowed to modify Q or not
-  tmp = Voctave_sparse_controls.get_key ("autoamd");
+  tmp = octave_sparse_params::get_key ("autoamd");
   if (!xisnan (tmp))
     Control (UMFPACK_FIXQ) = tmp;
 
@@ -5675,7 +5675,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 	  CHOLMOD_NAME(start) (cm);
 	  cm->prefer_zomplex = false;
 
-	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  double spu = octave_sparse_params::get_key ("spumoni");
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
@@ -5932,7 +5932,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  CHOLMOD_NAME(start) (cm);
 	  cm->prefer_zomplex = false;
 
-	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  double spu = octave_sparse_params::get_key ("spumoni");
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
@@ -6240,7 +6240,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  CHOLMOD_NAME(start) (cm);
 	  cm->prefer_zomplex = false;
 
-	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  double spu = octave_sparse_params::get_key ("spumoni");
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
@@ -6479,7 +6479,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  CHOLMOD_NAME(start) (cm);
 	  cm->prefer_zomplex = false;
 
-	  double spu = Voctave_sparse_controls.get_key ("spumoni");
+	  double spu = octave_sparse_params::get_key ("spumoni");
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;

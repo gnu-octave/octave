@@ -20,97 +20,189 @@ Boston, MA 02110-1301, USA.
 
 */
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "lo-error.h"
 #include "lo-ieee.h"
 
 #include "oct-spparms.h"
 
-SparseParams Voctave_sparse_controls;
+octave_sparse_params *octave_sparse_params::instance = 0;
 
-void
-SparseParams::defaults (void)
+bool
+octave_sparse_params::instance_ok (void)
 {
-  Voctave_sparse_controls (0) = 0;    // spumoni
-  Voctave_sparse_controls (1) = 1;    // ths_rel
-  Voctave_sparse_controls (2) = 1;    // ths_abs
-  Voctave_sparse_controls (3) = 0;    // exact_d
-  Voctave_sparse_controls (4) = 3;    // supernd
-  Voctave_sparse_controls (5) = 3;    // rreduce
-  Voctave_sparse_controls (6) = 0.5;  // wh_frac
-  Voctave_sparse_controls (7) = 1;    // autommd
-  Voctave_sparse_controls (8) = 1;    // autoamd
-  Voctave_sparse_controls (9) = 0.1;  // piv_tol
-  Voctave_sparse_controls (10) = 0.5; // bandden
-  Voctave_sparse_controls (11) = 1;   // umfpack
+  bool retval = true;
+
+  if (! instance)
+    instance = new octave_sparse_params ();
+
+  if (! instance)
+    {
+      (*current_liboctave_error_handler)
+	("unable to create octave_sparse_params object!");
+
+      retval = false;
+    }
+
+  return retval;
 }
 
 void
-SparseParams::tight (void)
+octave_sparse_params::defaults (void)
 {
-  Voctave_sparse_controls (0) = 0;    // spumoni
-  Voctave_sparse_controls (1) = 1;    // ths_rel
-  Voctave_sparse_controls (2) = 0;    // ths_abs
-  Voctave_sparse_controls (3) = 1;    // exact_d
-  Voctave_sparse_controls (4) = 1;    // supernd
-  Voctave_sparse_controls (5) = 1;    // rreduce
-  Voctave_sparse_controls (6) = 0.5;  // wh_frac
-  Voctave_sparse_controls (7) = 1;    // autommd
-  Voctave_sparse_controls (8) = 1;    // autoamd
-  Voctave_sparse_controls (9) = 0.1;  // piv_tol
-  Voctave_sparse_controls (10) = 0.5; // bandden
-  Voctave_sparse_controls (11) = 1;   // umfpack
+  if (instance_ok ())
+    instance->do_defaults ();
 }
-  
+
 void
-SparseParams::init_keys (void)
+octave_sparse_params::tight (void)
 {
-  keys (0) = "spumoni";
-  keys (1) = "ths_rel";
-  keys (2) = "ths_abs";
-  keys (3) = "exact_d";
-  keys (4) = "supernd";
-  keys (5) = "rreduce";
-  keys (6) = "wh_frac";
-  keys (7) = "autommd";
-  keys (8) = "autoamd";
-  keys (9) = "piv_tol";
-  keys (10) = "bandden";
-  keys (11) = "umfpack";
+  if (instance_ok ())
+    instance->do_tight ();
 }
 
-SparseParams& 
-SparseParams::operator = (const SparseParams& a)
+string_vector
+octave_sparse_params::get_keys (void)
 {
-  for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
-    params (i) = a.params (i);
+  return instance_ok () ? instance->do_get_keys () : string_vector ();
+}
 
-  return *this;
+ColumnVector
+octave_sparse_params::get_vals (void)
+{
+  return instance_ok () ? instance->do_get_vals () : ColumnVector ();
 }
 
 bool
-SparseParams::set_key (const std::string key, const double& val)
+octave_sparse_params::set_vals (const NDArray& vals)
+{
+  return instance_ok () ? instance->do_set_vals (vals) : false;
+}
+
+bool
+octave_sparse_params::set_key (const std::string& key, const double& val)
+{
+  return instance_ok () ? instance->do_set_key (key, val) : false;
+}
+
+double
+octave_sparse_params::get_key (const std::string& key)
+{
+  return instance_ok () ? instance->do_get_key (key) : octave_NaN;
+}
+
+void
+octave_sparse_params::print_info (std::ostream& os, const std::string& prefix)
+{
+  if (instance_ok ())
+    instance->do_print_info (os, prefix);
+}
+
+void
+octave_sparse_params::do_defaults (void)
+{
+  params(0) = 0;    // spumoni
+  params(1) = 1;    // ths_rel
+  params(2) = 1;    // ths_abs
+  params(3) = 0;    // exact_d
+  params(4) = 3;    // supernd
+  params(5) = 3;    // rreduce
+  params(6) = 0.5;  // wh_frac
+  params(7) = 1;    // autommd
+  params(8) = 1;    // autoamd
+  params(9) = 0.1;  // piv_tol
+  params(10) = 0.5; // bandden
+  params(11) = 1;   // umfpack
+}
+
+void
+octave_sparse_params::do_tight (void)
+{
+  params(0) = 0;    // spumoni
+  params(1) = 1;    // ths_rel
+  params(2) = 0;    // ths_abs
+  params(3) = 1;    // exact_d
+  params(4) = 1;    // supernd
+  params(5) = 1;    // rreduce
+  params(6) = 0.5;  // wh_frac
+  params(7) = 1;    // autommd
+  params(8) = 1;    // autoamd
+  params(9) = 0.1;  // piv_tol
+  params(10) = 0.5; // bandden
+  params(11) = 1;   // umfpack
+}
+  
+void
+octave_sparse_params::init_keys (void)
+{
+  keys(0) = "spumoni";
+  keys(1) = "ths_rel";
+  keys(2) = "ths_abs";
+  keys(3) = "exact_d";
+  keys(4) = "supernd";
+  keys(5) = "rreduce";
+  keys(6) = "wh_frac";
+  keys(7) = "autommd";
+  keys(8) = "autoamd";
+  keys(9) = "piv_tol";
+  keys(10) = "bandden";
+  keys(11) = "umfpack";
+}
+
+bool
+octave_sparse_params::do_set_vals (const NDArray& vals)
+{
+  octave_idx_type len = vals.length ();
+
+  if (len > OCTAVE_SPARSE_CONTROLS_SIZE)
+    {
+      (*current_liboctave_error_handler)
+	("octave_sparse_params::do_set_vals: too many values");
+
+      return false;
+    }
+  else
+    {
+      for (int i = 0; i < len; i++)
+	params(i) = vals(i);
+
+      return true;
+    }
+}
+
+bool
+octave_sparse_params::do_set_key (const std::string& key, const double& val)
 {
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
-    if (keys (i) == key)
-      {
-	params(i) = val;
-	return true;
-      }
+    {
+      if (keys (i) == key)
+	{
+	  params(i) = val;
+	  return true;
+	}
+    }
+
   return false;
 }
 
 double
-SparseParams::get_key (const std::string key)
+octave_sparse_params::do_get_key (const std::string& key)
 {
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
-    if (keys (i) == key)
+    {
+      if (keys (i) == key)
 	return params(i);
+    }
 
   return octave_NaN;
 }
 
 void
-SparseParams::print_info (std::ostream& os, const std::string& prefix) const
+octave_sparse_params::do_print_info (std::ostream& os,
+				     const std::string& prefix) const
 {
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
     os << prefix << keys(i) << ": " << params(i) << "\n";

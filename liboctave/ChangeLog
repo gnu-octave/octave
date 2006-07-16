@@ -1,3 +1,15 @@
+2006-07-16  John W. Eaton  <jwe@octave.org>
+
+	* oct-spparms.h, oct-spparms.cc (class octave_sparse_params):
+	Rename from SparseParams.  Use same implementation method as other
+	singleton classes in Octave.  Change all uses of
+	Voctave_sparse_controls to use static functions from
+	octave_sparse_params class instead.
+
+	* oct-spparms.h, oct-spparms.cc (SparseParams::set_key,
+	SparseParams::get_key): Pass std::string arg by const reference,
+	not const value.
+
 2006-07-15  John W. Eaton  <jwe@octave.org>
 
 	* data-conv.cc: Instantiante swap_bytes templates here.

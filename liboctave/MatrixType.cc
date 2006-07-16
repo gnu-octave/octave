@@ -37,7 +37,7 @@ Boston, MA 02110-1301, USA.
 
 MatrixType::MatrixType (void)
   : typ (MatrixType::Unknown),
-    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    sp_bandden (octave_sparse_params::get_key ("bandden")),
     bandden (0), upper_band (0), lower_band (0), dense (false),
     full (false), nperm (0), perm (0) { }
 
@@ -184,11 +184,11 @@ MatrixType::MatrixType (const SparseMatrix &a)
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
   octave_idx_type nnz = a.nzmax ();
 
-  if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+  if (octave_sparse_params::get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 
       ("Calculating Sparse Matrix Type");
 
-  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
+  sp_bandden = octave_sparse_params::get_key ("bandden");
   bool maybe_hermitian = false;
   typ = MatrixType::Full;
 
@@ -510,12 +510,12 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
   octave_idx_type nnz = a.nzmax ();
 
-  if (Voctave_sparse_controls.get_key ("spumoni") != 0.)  full = true;
+  if (octave_sparse_params::get_key ("spumoni") != 0.)  full = true;
 
     (*current_liboctave_warning_handler) 
       ("Calculating Sparse Matrix Type");
 
-  sp_bandden = Voctave_sparse_controls.get_key ("bandden");
+  sp_bandden = octave_sparse_params::get_key ("bandden");
   bool maybe_hermitian = false;
   typ = MatrixType::Full;
 
@@ -828,7 +828,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
 }
 MatrixType::MatrixType (const matrix_type t, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    sp_bandden (octave_sparse_params::get_key ("bandden")),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
@@ -844,7 +844,7 @@ MatrixType::MatrixType (const matrix_type t, bool _full)
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
 			const octave_idx_type *p, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    sp_bandden (octave_sparse_params::get_key ("bandden")),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
@@ -863,7 +863,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
 MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
 			const octave_idx_type kl, bool _full)
   : typ (MatrixType::Unknown),
-    sp_bandden (Voctave_sparse_controls.get_key ("bandden")),
+    sp_bandden (octave_sparse_params::get_key ("bandden")),
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
@@ -914,10 +914,10 @@ int
 MatrixType::type (bool quiet)
 {
   if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == Voctave_sparse_controls.get_key ("bandden")))
+      sp_bandden == octave_sparse_params::get_key ("bandden")))
     {
       if (!quiet &&
-	  Voctave_sparse_controls.get_key ("spumoni") != 0.)
+	  octave_sparse_params::get_key ("spumoni") != 0.)
   	(*current_liboctave_warning_handler) 
   	  ("Using Cached Matrix Type");
       
@@ -925,7 +925,7 @@ MatrixType::type (bool quiet)
     }
 
   if (typ != MatrixType::Unknown && 
-      Voctave_sparse_controls.get_key ("spumoni") != 0.)
+      octave_sparse_params::get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 
       ("Invalidating Matrix Type");
 
@@ -938,9 +938,9 @@ int
 MatrixType::type (const SparseMatrix &a)
 {
   if (typ != MatrixType::Unknown && (full ||
-      sp_bandden == Voctave_sparse_controls.get_key ("bandden")))
+      sp_bandden == octave_sparse_params::get_key ("bandden")))
     {
-      if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+      if (octave_sparse_params::get_key ("spumoni") != 0.)
   	(*current_liboctave_warning_handler) 
   	  ("Using Cached Matrix Type");
       
@@ -971,9 +971,9 @@ int
 MatrixType::type (const SparseComplexMatrix &a)
 {
   if (typ != MatrixType::Unknown && (full || 
-      sp_bandden == Voctave_sparse_controls.get_key ("bandden")))
+      sp_bandden == octave_sparse_params::get_key ("bandden")))
     {
-      if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+      if (octave_sparse_params::get_key ("spumoni") != 0.)
   	(*current_liboctave_warning_handler) 
   	  ("Using Cached Matrix Type");
       
@@ -1004,7 +1004,7 @@ MatrixType::type (const Matrix &a)
 {
   if (typ != MatrixType::Unknown)
     {
-      if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+      if (octave_sparse_params::get_key ("spumoni") != 0.)
   	(*current_liboctave_warning_handler) 
   	  ("Using Cached Matrix Type");
       
@@ -1031,7 +1031,7 @@ MatrixType::type (const ComplexMatrix &a)
 {
   if (typ != MatrixType::Unknown)
     {
-      if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+      if (octave_sparse_params::get_key ("spumoni") != 0.)
   	(*current_liboctave_warning_handler) 
   	  ("Using Cached Matrix Type");
       
@@ -1056,7 +1056,7 @@ MatrixType::type (const ComplexMatrix &a)
 void
 MatrixType::info () const
 {
-  if (Voctave_sparse_controls.get_key ("spumoni") != 0.)
+  if (octave_sparse_params::get_key ("spumoni") != 0.)
     {
       if (typ == MatrixType::Unknown)
 	(*current_liboctave_warning_handler) 

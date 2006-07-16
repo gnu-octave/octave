@@ -91,13 +91,13 @@ time.\n\
   if (nargin == 0)
     {
       if (nargout == 0)
-	Voctave_sparse_controls.print_info (octave_stdout, "");
+	octave_sparse_params::print_info (octave_stdout, "");
       else if (nargout == 1)
-	retval(0) =  Voctave_sparse_controls.get_vals ();
+	retval(0) =  octave_sparse_params::get_vals ();
       else if (nargout == 2)
 	{
-	  retval (0) = Voctave_sparse_controls.get_keys ();
-	  retval (1) = Voctave_sparse_controls.get_vals ();
+	  retval (0) = octave_sparse_params::get_keys ();
+	  retval (1) = octave_sparse_params::get_vals ();
 	}
       else
 	error ("spparms: too many output arguments"); 
@@ -112,12 +112,12 @@ time.\n\
 	    str [i] = tolower (str [i]);
 
 	  if (str == "defaults")
-	    Voctave_sparse_controls.defaults ();
+	    octave_sparse_params::defaults ();
 	  else if (str == "tight")
-	    Voctave_sparse_controls.tight ();
+	    octave_sparse_params::tight ();
 	  else
 	    {
-	      double val = Voctave_sparse_controls.get_key (str);
+	      double val = octave_sparse_params::get_key (str);
 	      if (xisnan (val))
 		error ("spparams: unrecognized key");
 	      else
@@ -133,8 +133,7 @@ time.\n\
 	  else if (vals.numel () > OCTAVE_SPARSE_CONTROLS_SIZE)
 	    error ("spparams: too many elements in values vector");
 	  else
-	    for (int i = 0; i < vals.length (); i++)
-	      Voctave_sparse_controls (i) = vals (i);
+	    octave_sparse_params::set_vals (vals);
 	}
     }
   else if (nargin == 2)
@@ -149,7 +148,7 @@ time.\n\
 	    error ("spparms: second argument must be a real scalar");
           else if (str == "umfpack")
 	    warning ("spparms: request to disable umfpack solvers ignored");
-	  else if (!Voctave_sparse_controls.set_key (str, val))
+	  else if (!octave_sparse_params::set_key (str, val))
 	    error ("spparms: key not found");
 	}
       else

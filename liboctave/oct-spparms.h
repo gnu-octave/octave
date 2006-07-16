@@ -30,45 +30,69 @@ Boston, MA 02110-1301, USA.
 
 #include "str-vec.h"
 #include "dColVector.h"
+#include "dNDArray.h"
 
 #define OCTAVE_SPARSE_CONTROLS_SIZE 12
 
 class
-SparseParams
+octave_sparse_params
 {
- public:
-  SparseParams (void) : params (ColumnVector (OCTAVE_SPARSE_CONTROLS_SIZE)), 
-    keys (string_vector (OCTAVE_SPARSE_CONTROLS_SIZE)) 
-    { defaults (); init_keys (); }
+protected:
+
+  octave_sparse_params (void)
+    : params (OCTAVE_SPARSE_CONTROLS_SIZE),
+      keys (OCTAVE_SPARSE_CONTROLS_SIZE) 
+  {
+    init_keys ();
+    do_defaults ();
+  }
+
+public:
+
+  static bool instance_ok (void);
+
+  static void defaults (void);
+
+  static void tight (void);
   
-  void defaults (void);
+  static string_vector get_keys (void);
 
-  void tight (void);
-  
-  SparseParams& operator = (const SparseParams& a);
-  
-  double& operator () (int n) { return params (n); }
-  double operator () (int n) const { return params (n); }
+  static ColumnVector get_vals (void);
 
-  string_vector get_keys (void) const { return keys; }
+  static bool set_vals (const NDArray& vals);
 
-  ColumnVector get_vals (void) const { return params; }
+  static bool set_key (const std::string& key, const double& val);
 
-  bool set_key (const std::string key, const double& val);
+  static double get_key (const std::string& key);
 
-  double get_key (const std::string key);
+  static void print_info (std::ostream& os, const std::string& prefix);
 
-  void print_info (std::ostream& os, const std::string& prefix) const;
-  
- private:
-  void init_keys (void);
+private:
 
   ColumnVector params;
 
   string_vector keys;
-};
 
-extern SparseParams Voctave_sparse_controls;
+  static octave_sparse_params *instance;
+
+  void do_defaults (void);
+
+  void do_tight (void);
+  
+  string_vector do_get_keys (void) const { return keys; }
+
+  ColumnVector do_get_vals (void) const { return params; }
+
+  bool do_set_vals (const NDArray& vals);
+
+  bool do_set_key (const std::string& key, const double& val);
+
+  double do_get_key (const std::string& key);
+
+  void do_print_info (std::ostream& os, const std::string& prefix) const;
+  
+  void init_keys (void);
+};
 
 #endif
 

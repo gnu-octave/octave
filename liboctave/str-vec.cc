@@ -41,6 +41,7 @@ function distributed in the GNU file utilities, copyright (C) 85, 88,
 #include "str-vec.h"
 
 string_vector::string_vector (const std::list<std::string>& lst)
+  : Array<std::string> ()
 {
   size_t n = lst.size ();
 

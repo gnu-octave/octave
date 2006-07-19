@@ -972,14 +972,15 @@ octave_base_value::numeric_assign (const std::string& type,
 	  octave_base_value::type_conv_fcn cf_this
 	    = numeric_conversion_function ();
 
-	  octave_base_value *tmp_lhs = this;
+	  count++;
+	  octave_value tmp_lhs = octave_value (this);
 
 	  if (cf_this)
 	    {
 	      octave_base_value *tmp = cf_this (*this);
 
 	      if (tmp)
-		tmp_lhs = tmp;
+		tmp_lhs = octave_value (tmp);
 	      else
 		{
 		  gripe_assign_conversion_failed (type_name (),
@@ -990,7 +991,7 @@ octave_base_value::numeric_assign (const std::string& type,
 
 	  if (cf_this || cf_rhs)
 	    {
-	      retval = tmp_lhs->subsasgn (type, idx, tmp_rhs);
+	      retval = tmp_lhs.subsasgn (type, idx, tmp_rhs);
 
 	      done = (! error_state);
 	    }

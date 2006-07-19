@@ -1,3 +1,8 @@
+2006-07-19  John W. Eaton  <jwe@octave.org>
+
+	* ov-base.cc (octave_base_value::numeric_assign):
+	Avoid memory leak when converting LHS.
+
 2006-07-18  John W. Eaton  <jwe@octave.org>
 
 	* ov.h (octave_value::is_int8_type, octave_value::is_int16_type,

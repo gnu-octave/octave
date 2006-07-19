@@ -31,9 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-scalar.h"
-#include "ov-range.h"
 #include "ov-re-mat.h"
-#include "ov-re-sparse.h"
 #include "ov-str-mat.h"
 #include "ov-int8.h"
 #include "ov-int16.h"
@@ -90,10 +88,6 @@ install_bm_b_ops (void)
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool, assign);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_scalar, conv_and_assign);
-
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_range, conv_and_assign);
-
-  INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_sparse_matrix, conv_and_assign);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int8_scalar, conv_and_assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_int16_scalar, conv_and_assign);

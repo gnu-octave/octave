@@ -127,6 +127,8 @@ public:
 
   bool is_real_type (void) const { return true; }
 
+  bool is_double_type (void) const { return true; }
+
   bool valid_as_scalar_index (void) const
     {
       double b = range.base ();

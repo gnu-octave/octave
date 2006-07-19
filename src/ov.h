@@ -441,6 +441,40 @@ public:
   octave_value any (int dim = 0) const
     { return rep->any (dim); }
 
+  // Floating point types.
+
+  bool is_double_type (void) const
+    { return rep->is_double_type (); }
+
+  bool is_single_type (void) const
+    { return rep->is_single_type (); }
+
+  // Integer types.
+
+  bool is_int8_type (void) const
+    { return rep->is_int8_type (); }
+
+  bool is_int16_type (void) const
+    { return rep->is_int16_type (); }
+
+  bool is_int32_type (void) const
+    { return rep->is_int32_type (); }
+
+  bool is_int64_type (void) const
+   { return rep->is_int64_type (); }
+
+  bool is_uint8_type (void) const
+    { return rep->is_uint8_type (); }
+
+  bool is_uint16_type (void) const
+    { return rep->is_uint16_type (); }
+
+  bool is_uint32_type (void) const
+    { return rep->is_uint32_type (); }
+
+  bool is_uint64_type (void) const
+    { return rep->is_uint64_type (); }
+
   // Other type stuff.
 
   bool is_bool_type (void) const

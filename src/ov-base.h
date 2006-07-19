@@ -229,6 +229,26 @@ public:
 
   virtual octave_value any (int = 0) const;
 
+  virtual bool is_double_type (void) const { return false; }
+
+  virtual bool is_single_type (void) const { return false; }
+
+  virtual bool is_int8_type (void) const { return false; }
+
+  virtual bool is_int16_type (void) const { return false; }
+
+  virtual bool is_int32_type (void) const { return false; }
+
+  virtual bool is_int64_type (void) const { return false; }
+
+  virtual bool is_uint8_type (void) const { return false; }
+
+  virtual bool is_uint16_type (void) const { return false; }
+
+  virtual bool is_uint32_type (void) const { return false; }
+
+  virtual bool is_uint64_type (void) const { return false; }
+
   virtual bool is_bool_type (void) const { return false; }
 
   virtual bool is_real_type (void) const { return false; }

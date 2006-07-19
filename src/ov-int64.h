@@ -32,6 +32,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCTAVE_INT_T octave_int64
 #define OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION int64_scalar_value
 
+#define OCTAVE_TYPE_PREDICATE_FUNCTION is_int64_type
+
 #include "ov-intx.h"
 
 #undef OCTAVE_VALUE_INT_MATRIX_T
@@ -41,6 +43,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #undef OCTAVE_VALUE_INT_SCALAR_T
 #undef OCTAVE_INT_T
 #undef OCTAVE_VALUE_INT_SCALAR_EXTRACTOR_FUNCTION
+
+#undef OCTAVE_TYPE_PREDICATE_FUNCTION
 
 #endif
 

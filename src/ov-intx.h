@@ -58,6 +58,8 @@ public:
   octave_base_value *empty_clone (void) const
     { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
+  bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) { return true; }
+
   int8NDArray
   int8_array_value (void) const { return int8NDArray (matrix); }
 
@@ -202,6 +204,8 @@ public:
 
       return retval;
     }
+
+  bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) { return true; }
 
   octave_int8
   int8_scalar_value (void) const { return octave_int8 (scalar); }

@@ -1,3 +1,35 @@
+2006-07-18  John W. Eaton  <jwe@octave.org>
+
+	* ov.h (octave_value::is_int8_type, octave_value::is_int16_type,
+	octave_value::is_int32_type, octave_value::is_int64_type,
+	octave_value::is_uint8_type, octave_value::is_uint16_type,
+	octave_value::is_uint32_type, octave_value::is_uint64_type):
+	New functions. 
+	* ov-base.h (octave_base_value::is_int8_type,
+	octave_base_value::is_int16_type,
+	octave_base_value::is_int32_type,
+	octave_base_value::is_int64_type,
+	octave_base_value::is_uint8_type,
+	octave_base_value::is_uint16_type,
+	octave_base_value::is_uint32_type,
+	octave_base_value::is_uint64_type): New functions.
+	* ov-int8.h, ov-int16.h, ov-int32.h, ov-int16.h, ov-uint8.h,
+	ov-uint16.h, ov-uint32.h, ov-uint16.h: Define OCTAVE_BASE_INT_T.
+	* ov-intx.h: Use OCTAVE_BASE_INT_T to define type-specific predicate.
+
+	* ov.h (octave_value::is_double_type, octave_value::is_single_type):
+	New functions.
+	* ov-base.h (octave_base_value::is_double_type,
+	octave_base_value::is_single_type): New functions.
+	* ov-re-mat.h (octave_matrix::is_double_type): New function.
+	* ov-cx-mat.h (octave_matrix::is_double_type): New function.
+	* ov-scalar.h (octave_scalar::is_double_type): New function.
+	* ov-complex.h (octave_complex::is_double_type): New function.
+	* ov-range.h (octave_range::is_double_type): New function.
+	* ov-re-sparse.h (octave_sparse_matrix::is_double_type): New function.
+	* ov-cx-sparse.h (octave_sparse_complex_matrix::is_double_type):
+	New function.
+	
 2006-07-15  John W. Eaton  <jwe@octave.org>
 
 	* ov-typeinfo.cc: Also instantiate arrays of assignany_ops.

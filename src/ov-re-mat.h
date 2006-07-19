@@ -135,6 +135,8 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const;
    
+  boolNDArray bool_array_value (void) const;
+
   charNDArray char_array_value (bool = false) const;
   
   NDArray array_value (bool = false) const { return matrix; }

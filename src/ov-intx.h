@@ -125,6 +125,19 @@ public:
       return retval;
     }
 
+  boolNDArray
+  bool_array_value (void) const
+  {
+    boolNDArray retval (dims ());
+
+    octave_idx_type nel = numel ();
+  
+    for (octave_idx_type i = 0; i < nel; i++)
+      retval(i) = static_cast<bool>(matrix(i));
+
+    return retval;
+  }
+
   charNDArray
   char_array_value (bool = false) const
   {
@@ -300,6 +313,14 @@ public:
       retval(0) = Complex (double (scalar));
       return retval;
     }
+
+  boolNDArray
+  bool_array_value (void) const
+  {
+    boolNDArray retval (dim_vector (1, 1));
+    retval(0) = static_cast<bool>(scalar);
+    return retval;
+  }
 
   charNDArray
   char_array_value (bool = false) const

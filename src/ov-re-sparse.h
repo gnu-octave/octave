@@ -101,6 +101,8 @@ public:
 
   Complex complex_value (bool = false) const;
 
+  boolNDArray bool_array_value (void) const;
+
   ComplexMatrix complex_matrix_value (bool = false) const;
 
   ComplexNDArray complex_array_value (bool = false) const;

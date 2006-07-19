@@ -1,3 +1,7 @@
+2006-07-19  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_int::operator bool (void)): New function.
+
 2006-07-16  John W. Eaton  <jwe@octave.org>
 
 	* oct-spparms.h, oct-spparms.cc (class octave_sparse_params):

@@ -247,6 +247,8 @@ public:
       OCTAVE_INT_FIT_TO_RANGE (- static_cast<double> (ival), T) : 0;
   }
 
+  operator bool (void) const { return static_cast<bool> (value ()); }
+
   operator char (void) const { return static_cast<char> (value ()); }
 
   operator double (void) const { return static_cast<double> (value ()); }

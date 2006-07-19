@@ -145,6 +145,12 @@ octave_matrix::complex_array_value (bool) const
   return ComplexNDArray (matrix);
 }
 
+boolNDArray
+octave_matrix::bool_array_value (void) const
+{
+  return boolNDArray (matrix);
+}
+  
 charNDArray
 octave_matrix::char_array_value (bool) const
 {

@@ -1,5 +1,18 @@
 2006-07-19  John W. Eaton  <jwe@octave.org>
 
+	* OPERATORS/op-bm-bm.cc (oct_assignop_conv_and_assign): New function.
+	(install_bm_bm_ops): Install it for various types.
+	* OPERATORS/op-bm-b.cc (oct_assignop_conv_and_assign): New function.
+	(install_bm_b_ops): Install it for various types.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::bool_array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::bool_array_value): New functions.
+	* ov-range.h (octave_range::bool_array_value): New function.
+	* ov-re-sparse.cc (octave_sparse_matrix::bool_array_value):
+	New function.
+	* ov-re-sparse.h: Provide decl.
+	* ov-re-mat.cc (octave_matrix::bool_array_value): New function.
+	* ov-re-mat.h: Provide decl.
+
 	* ov-base.cc (octave_base_value::numeric_assign):
 	Avoid memory leak when converting LHS.
 

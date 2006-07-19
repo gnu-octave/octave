@@ -160,6 +160,9 @@ public:
 
   Complex complex_value (bool = false) const;
 
+  boolNDArray bool_array_value (void) const
+    { return boolNDArray (range.matrix_value ()); }
+
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (range.matrix_value ()); }
 

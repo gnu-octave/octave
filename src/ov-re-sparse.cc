@@ -136,6 +136,12 @@ octave_sparse_matrix::matrix_value (bool) const
   return matrix.matrix_value ();
 }
 
+boolNDArray
+octave_sparse_matrix::bool_array_value (void) const
+{
+  return boolNDArray (matrix.matrix_value ());
+}
+
 ComplexMatrix
 octave_sparse_matrix::complex_matrix_value (bool) const
 {

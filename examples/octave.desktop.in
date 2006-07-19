@@ -7,5 +7,5 @@ Exec=%OCTAVE_PREFIX%/bin/octave
 Icon=%OCTAVE_IMAGEDIR%/octave-sombrero.png
 Terminal=true
 Type=Application
-Categories=Development; Science;
+Categories=Development;Math;Science;
 StartupNotify=false

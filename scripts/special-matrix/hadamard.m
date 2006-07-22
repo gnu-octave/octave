@@ -161,7 +161,10 @@ function h = h28 ()
        '--++-++++-+-+----+++-----+--';
        '+--++-+-++-+-+----+++-----+-';
        '++--++-+-++-+-+----++------+'];
-  h = (s=='+');
+  ## Without this, the assignment of -1 will not work properly
+  ## (compatibility forces LHS(idx) = ANY_VAL to keep the LHS logical
+  ## instead of widening to a type that can represent ANY_VAL).
+  h = double (s=='+');
   h(!h) = -1;
 endfunction
 

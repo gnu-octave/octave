@@ -87,6 +87,16 @@ public:
 
   size_t byte_size (void) const;
 
+  // This is the number of elements in each field.  The total number
+  // of elements is numel () * nfields ().
+  octave_idx_type numel (void) const
+  {
+    dim_vector dv = dims ();
+    return dv.numel ();
+  }
+
+  octave_idx_type nfields (void) const { return map.length (); }
+
   octave_value reshape (const dim_vector& new_dims) const
     { return map.reshape (new_dims); }
 
@@ -122,6 +132,8 @@ public:
 
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
+
+  mxArray *as_mxArray (void) const;
 
 private:
 

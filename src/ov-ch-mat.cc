@@ -98,6 +98,23 @@ octave_char_matrix::print_raw (std::ostream& os,
 			 current_print_indent_level ());
 }
 
+mxArray *
+octave_char_matrix::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (mxCHAR_CLASS, dims (), mxREAL);
+
+  mxChar *pr = static_cast<mxChar *> (retval->get_data ());
+
+  int nel = numel ();
+
+  const char *p = matrix.data ();
+
+  for (int i = 0; i < nel; i++)
+    pr[i] = p[i];
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

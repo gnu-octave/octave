@@ -294,6 +294,18 @@ octave_scalar::load_hdf5 (hid_t loc_id, const char *name,
 
 #endif
 
+mxArray *
+octave_scalar::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (mxDOUBLE_CLASS, 1, 1, mxREAL);
+
+  double *pr = static_cast<double *> (retval->get_data ());
+
+  pr[0] = scalar;
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

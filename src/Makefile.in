@@ -98,7 +98,7 @@ INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	error.h file-io.h gripes.h help.h input.h \
 	lex.h load-path.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \
-	matrix.h mex.h mexproto.h \
+	matrix.h mex.h mexproto.h mxarray.h \
 	oct-errno.h oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
 	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h zfstream.h \
 	oct-strstrm.h oct-lvalue.h oct.h octave.h ops.h pager.h \

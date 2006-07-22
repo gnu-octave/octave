@@ -337,6 +337,7 @@ octave_sparse_complex_matrix::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_sparse_complex_matrix::save_hdf5 (hid_t loc_id, const char *name, 
 					 bool save_as_floats)
@@ -757,6 +758,13 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 }
 
 #endif
+
+mxArray *
+octave_sparse_complex_matrix::as_mxArray (void) const
+{
+  // FIXME
+  return 0;
+}
 
 /*
 ;;; Local Variables: ***

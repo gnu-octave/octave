@@ -24,7 +24,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 /*
 
 This code was originally distributed as part of Octave Forge under
-the follwoing terms:
+the following terms:
 
 Author: Paul Kienzle
 I grant this code to the public domain.
@@ -53,43 +53,9 @@ SUCH DAMAGE.
 
 typedef void mxArray;
 
-enum mxComplexity
-  {
-    mxREAL = 0,
-    mxCOMPLEX = 1
-  };
-
-typedef enum
-  {
-    mxUNKNOWN_CLASS = 0,
-    mxCELL_CLASS,
-    mxSTRUCT_CLASS,
-    mxLOGICAL_CLASS,
-    mxCHAR_CLASS,
-    mxUNUSED_CLASS,
-    mxDOUBLE_CLASS,
-    mxSINGLE_CLASS,
-    mxINT8_CLASS,
-    mxUINT8_CLASS,
-    mxINT16_CLASS,
-    mxUINT16_CLASS,
-    mxINT32_CLASS,
-    mxUINT32_CLASS,
-    mxINT64_CLASS,
-    mxUINT64_CLASS,
-    mxFUNCTION_CLASS,
-  } mxClassID;
-
-#if 0
-/* typedef Uint16 mxChar; */
-typedef unsigned short mxChar;
-#endif
-
 #if ! defined (__cplusplus)
 typedef int bool;
 #endif
-
-typedef int mxLOGICAL;
 
 /* -V4 stuff */
 #if defined (V4)

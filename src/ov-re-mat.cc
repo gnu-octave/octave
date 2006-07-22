@@ -665,6 +665,23 @@ octave_matrix::print_raw (std::ostream& os,
 			 current_print_indent_level ());
 }
 
+mxArray *
+octave_matrix::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (mxDOUBLE_CLASS, dims (), mxREAL);
+
+  double *pr = static_cast<double *> (retval->get_data ());
+
+  int nel = numel ();
+
+  const double *p = matrix.data ();
+
+  for (int i = 0; i < nel; i++)
+    pr[i] = p[i];
+
+  return retval;
+}
+
 DEFUN (double, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} double (@var{x})\n\

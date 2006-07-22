@@ -91,13 +91,6 @@ Octave_map::stringfield (const std::string& k,
 string_vector
 Octave_map::keys (void) const
 {
-  if (length () != key_list.size ())
-    {
-      std::cerr << "length () = " << length () << std::endl;
-      std::cerr << "key_list.size () = " << key_list.size () << std::endl;
-      abort ();
-    }
-
   assert (length () == key_list.size ());
 
   return string_vector (key_list);

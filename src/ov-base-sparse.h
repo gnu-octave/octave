@@ -146,6 +146,14 @@ octave_base_sparse : public octave_base_value
 
   bool load_ascii (std::istream& is);
 
+  // Unsafe.  These functions exists to support the MEX interface.
+  // You should not use them anywhere else.
+  void *mex_get_data (void) const { return matrix.mex_get_data (); }
+
+  octave_idx_type *mex_get_ir (void) const { return matrix.mex_get_ir (); }
+
+  octave_idx_type *mex_get_jc (void) const { return matrix.mex_get_jc (); }
+
 protected:
 
   T matrix;

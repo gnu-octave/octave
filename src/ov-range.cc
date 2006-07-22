@@ -471,6 +471,25 @@ octave_range::load_hdf5 (hid_t loc_id, const char *name,
 
 #endif
 
+mxArray *
+octave_range::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (mxDOUBLE_CLASS, dims (), mxREAL);
+
+  double *pr = static_cast<double *> (retval->get_data ());
+
+  int nel = numel ();
+
+  Matrix m = matrix_value ();
+
+  const double *p = m.data ();
+
+  for (int i = 0; i < nel; i++)
+    pr[i] = p[i];
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

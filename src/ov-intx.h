@@ -162,6 +162,22 @@ public:
 	     oct_mach_info::float_format flt_fmt) const
     { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
+  mxArray *as_mxArray (void) const
+  {
+    mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, dims (), mxREAL);
+
+    OCTAVE_INT_T::val_type *pr = static_cast<OCTAVE_INT_T::val_type *> (retval->get_data ());
+
+    int nel = numel ();
+
+    const OCTAVE_INT_T *p = matrix.data ();
+
+    for (int i = 0; i < nel; i++)
+      pr[i] = p[i].value ();
+
+    return retval;
+  }
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR
@@ -343,6 +359,21 @@ public:
       return os.write (OCTAVE_VALUE_INT_NDARRAY_EXTRACTOR_FUNCTION (),
 		       block_size, output_type, skip, flt_fmt);
     }
+
+  // Unsafe.  This function exists to support the MEX interface.
+  // You should not use it anywhere else.
+  void *mex_get_data (void) const { return scalar.mex_get_data (); }
+
+  mxArray *as_mxArray (void) const
+  {
+    mxArray *retval = new mxArray (OCTAVE_INT_MX_CLASS, 1, 1, mxREAL);
+
+    OCTAVE_INT_T::val_type *pr = static_cast<OCTAVE_INT_T::val_type *> (retval->get_data ());
+
+    pr[0] = scalar.value ();
+
+    return retval;
+  }
 
 private:
 

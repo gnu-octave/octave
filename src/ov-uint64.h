@@ -34,6 +34,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #define OCTAVE_TYPE_PREDICATE_FUNCTION is_uint64_type
 
+#define OCTAVE_INT_MX_CLASS mxUINT64_CLASS
+
 #include "ov-intx.h"
 
 #undef OCTAVE_VALUE_INT_MATRIX_T
@@ -46,6 +48,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #undef OCTAVE_TYPE_PREDICATE_FUNCTION
 
+#undef OCTAVE_INT_MX_CLASS
+
 #endif
 
 /*
@@ -53,4 +57,3 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ;;; mode: C++ ***
 ;;; End: ***
 */
-

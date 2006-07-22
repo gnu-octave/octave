@@ -38,6 +38,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "data-conv.h"
 #include "idx-vector.h"
 #include "mach-info.h"
+#include "mxarray.h"
 #include "mx-base.h"
 #include "oct-alloc.h"
 #include "oct-time.h"
@@ -347,6 +348,8 @@ public:
   octave_idx_type nnz (void) const { return rep->nnz (); }
 
   octave_idx_type nzmax (void) const { return rep->nzmax (); }
+
+  octave_idx_type nfields (void) const { return rep->nfields (); }
 
   octave_value reshape (const dim_vector& dv) const
     { return rep->reshape (dv); }
@@ -803,6 +806,16 @@ public:
 		     oct_mach_info::float_format flt_fmt) const;
 
   octave_base_value *internal_rep (void) const { return rep; }
+
+  // Unsafe.  These functions exist to support the MEX interface.
+  // You should not use them anywhere else.
+  void *mex_get_data (void) const { return rep->mex_get_data (); }
+
+  octave_idx_type *mex_get_ir (void) const { return rep->mex_get_ir (); }
+
+  octave_idx_type *mex_get_jc (void) const { return rep->mex_get_jc (); }
+
+  mxArray *as_mxArray (void) const { return rep->as_mxArray (); }
 
 protected:
 

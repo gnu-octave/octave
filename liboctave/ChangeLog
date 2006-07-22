@@ -1,3 +1,13 @@
+2006-07-22  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.h (Sparse<T>::mex_get_data, Sparse<T>::mex_get_ir,
+	Sparse<T>::mex_get_jc): New functions.
+
+2006-07-21  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_int<T>::mex_get_data): New function.
+	* Array.h (Array<T>::mex_get_data): New function.
+
 2006-07-19  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (octave_int::operator bool (void)): New function.

@@ -120,6 +120,8 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  mxArray *as_mxArray (void) const;
+
 protected:
 
   DECLARE_OCTAVE_ALLOCATOR

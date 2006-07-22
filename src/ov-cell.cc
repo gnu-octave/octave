@@ -1167,6 +1167,23 @@ cell array will have a dimension vector corresponding to\n\
   return retval;
 }
 
+mxArray *
+octave_cell::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (dims ());
+
+  mxArray **elts = static_cast<mxArray **> (retval->get_data ());
+
+  int nel = numel ();
+
+  const octave_value *p = matrix.data ();
+
+  for (int i = 0; i < nel; i++)
+    elts[i] = new mxArray (p[i]);
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

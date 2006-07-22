@@ -470,6 +470,23 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
 #endif
 
+mxArray *
+octave_bool_matrix::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (mxLOGICAL_CLASS, dims (), mxREAL);
+
+  bool *pr = static_cast<bool *> (retval->get_data ());
+
+  int nel = numel ();
+
+  const bool *p = matrix.data ();
+
+  for (int i = 0; i < nel; i++)
+    pr[i] = p[i];
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

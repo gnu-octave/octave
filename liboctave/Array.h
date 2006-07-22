@@ -132,6 +132,8 @@ protected:
 
 public:
 
+  typedef T element_type;
+
   // !!! WARNING !!! -- these should be protected, not public.  You
   // should not access these data members directly!
 
@@ -534,6 +536,10 @@ public:
   //  static T resize_fill_value (void) { return T (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const;
+
+  // Unsafe.  This function exists to support the MEX interface.
+  // You should not use it anywhere else.
+  void *mex_get_data (void) const { return const_cast<T *> (data ()); }
 };
 
 // NOTE: these functions should be friends of the Array<T> class and

@@ -1,3 +1,58 @@
+2006-07-22  John W. Eaton  <jwe@octave.org>
+
+	* mxarray.h: New file.
+	* mex.h, mexproto.h, mex.cc: New implementation of mxArray and MEX
+	interface.
+
+	* ov.h (octave_value::mex_get_ir, octave_value::mex_get_jc):
+	New functions.
+	* ov-base.h (octave_base_value::mex_get_ir,
+	octave_base_value::mex_get_jc): New virtual functions.
+	* ov-base-sparse.h (octave_base_sparse<T>::mex_get_ir,
+	octave_base_sparse<T>::mex_get_jc): New functions.
+
+	* ov-intx.h (OCTAVE_VALUE_INT_SCALAR_T::as_mxArray,
+	OCTAVE_VALUE_INT_MATRIX_T::as_mxArray): New functions.
+	* ov-int8.h, ov-int16.h, ov-int32.h, ov-int64.h, ov-uint8.h,
+	ov-uint16.h, ov-uint32.h, ov-uint64.h: Define OCTAVE_INT_MX_CLASS
+	before including ov-intx.h.  Undef it after.
+	* ov-range.cc (octave_range::as_mxArray): New function.
+	* ov-range.h: Provide decl.
+	* ov-scalar.cc (octave_scalar::as_mxArray): New function.
+	* ov-scalar.h: Provide decl.
+	* ov-complex.cc (octave_complex::as_mxArray): New function.
+	* ov-complex.h: Provide decl.
+	* ov-re-mat.cc (octave_matrix::as_mxArray): New function.
+	* ov-re-mat.h: Provide decl.
+	* ov-cx-mat.cc (octave_complex_matrix::as_mxArray): New function.
+	* ov-cx-mat.h: Provide decl.
+	* ov-ch-mat.cc (octave_char_matrix::as_mxArray): New function.
+	* ov-ch-mat.h: Provide decl.
+	* ov-bool-mat.cc (octave_bool_matrix::as_mxArray): New function.
+	* ov-bool-mat.h: Provide decl.
+	* ov-bool.cc (octave_bool::as_mxArray): New function.
+	* ov-bool.h: Provide decl.
+
+	* ov-struct.h (octave_struct::numel): New function.
+
+	* ls-mat5.cc (arrayclasstype): Use "MAT_FILE_" instead of "mx" as
+	prefix for element names.
+
+	* ov.h (octave_value::as_mxArray): New function.
+	* ov-base.cc (octave_base_value::as_mxArray): New function.
+	* ov-base.h: Provide decl.
+
+	* ov.h (octave_value::mex_get_data): New function.
+	* ov-base.h (octave_base_value::mex_get_data): New function.
+	* ov-base-scalar.h (octave_base_scalar<ST>::mex_get_data): New function.
+	* ov-base-matrix.h (octave_base_matrix<MT>::mex_get_data): New function.
+	* ov-intx.h (OCTAVE_VALUE_INT_SCALAR_T::mex_get_data): New function.
+
+	* ov.h (octave_value::nfields): New function.
+	* ov-base.cc (octave_base_value::nfields): New virtual function.
+	* ov-base.h: Provide decl.
+	* ov-struct.h (octave_struct::nfields): New function.
+
 2006-07-19  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-bm-bm.cc (oct_assignop_conv_and_assign): New function.

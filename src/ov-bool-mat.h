@@ -185,6 +185,8 @@ public:
 	     oct_mach_info::float_format flt_fmt) const
     { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
+  mxArray *as_mxArray (void) const;
+
 protected:
 
   DECLARE_OCTAVE_ALLOCATOR

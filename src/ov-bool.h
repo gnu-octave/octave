@@ -180,6 +180,8 @@ public:
 		       skip, flt_fmt);
     }
 
+  mxArray *as_mxArray (void) const;
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR

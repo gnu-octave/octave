@@ -241,6 +241,18 @@ octave_bool::load_hdf5 (hid_t loc_id, const char *name,
 
 #endif
 
+mxArray *
+octave_bool::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (mxLOGICAL_CLASS, 1, 1, mxREAL);
+
+  bool *pr = static_cast<bool *> (retval->get_data ());
+
+  pr[0] = scalar;
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

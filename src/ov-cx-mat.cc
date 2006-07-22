@@ -655,6 +655,27 @@ octave_complex_matrix::print_raw (std::ostream& os,
 			 current_print_indent_level ());
 }
 
+mxArray *
+octave_complex_matrix::as_mxArray (void) const
+{
+  mxArray *retval = new mxArray (mxDOUBLE_CLASS, dims (), mxCOMPLEX);
+
+  double *pr = static_cast<double *> (retval->get_data ());
+  double *pi = static_cast<double *> (retval->get_imag_data ());
+
+  int nel = numel ();
+
+  const Complex *p = matrix.data ();
+
+  for (int i = 0; i < nel; i++)
+    {
+      pr[i] = real (p[i]);
+      pi[i] = imag (p[i]);
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -309,6 +309,10 @@ public:
 
   static int byte_size (void) { return sizeof(T); }
 
+  // Unsafe.  This function exists to support the MEX interface.
+  // You should not use it anywhere else.
+  void *mex_get_data (void) const { return const_cast<T *> (&ival); }
+
 private:
 
   T ival;

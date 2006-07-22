@@ -206,6 +206,8 @@ public:
 		       flt_fmt);
     }
 
+  mxArray *as_mxArray (void) const;
+
 private:
 
   Range range;

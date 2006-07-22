@@ -1275,6 +1275,37 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
 
 #endif
 
+mxArray *
+octave_struct::as_mxArray (void) const
+{
+  int nf = nfields ();
+  string_vector kv = map_keys ();
+  const char **f = static_cast<const char **> (mxArray::malloc (nf * sizeof (const char *)));
+  for (int i = 0; i < nf; i++)
+    f[i] = mxArray::strsave (kv[i].c_str ());
+
+  mxArray *retval = new mxArray (dims (), nf, f);
+
+  mxArray **elts = static_cast<mxArray **> (retval->get_data ());
+
+  int nel = numel ();
+
+  int ntot = nf * nel;
+
+  for (int i = 0; i < nf; i++)
+    {
+      Cell c = map.contents (kv[i]);
+
+      const octave_value *p = c.data ();
+
+      int k = 0;
+      for (int j = i; j < ntot; j += nf)
+	elts[j] = new mxArray (p[k++]);
+    }
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

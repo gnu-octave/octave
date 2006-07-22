@@ -460,6 +460,7 @@ public:
   T& xdata (octave_idx_type i) { return rep->data (i); }
 
   T data (octave_idx_type i) const { return rep->data (i); }
+  // FIXME -- shouldn't this be returning const T*?
   T* data (void) const { return rep->d; }
 
   octave_idx_type* ridx (void) { make_unique (); return rep->r; }
@@ -468,6 +469,7 @@ public:
   octave_idx_type& xridx (octave_idx_type i) { return rep->ridx (i); }
 
   octave_idx_type ridx (octave_idx_type i) const { return rep->cridx (i); }
+  // FIXME -- shouldn't this be returning const octave_idx_type*?
   octave_idx_type* ridx (void) const { return rep->r; }
 
   octave_idx_type* cidx (void) { make_unique (); return rep->c; }
@@ -476,6 +478,7 @@ public:
   octave_idx_type& xcidx (octave_idx_type i) { return rep->cidx (i); }
 
   octave_idx_type cidx (octave_idx_type i) const { return rep->ccidx (i); }
+  // FIXME -- shouldn't this be returning const octave_idx_type*?
   octave_idx_type* cidx (void) const { return rep->c; }
 
   octave_idx_type ndims (void) const { return dimensions.length (); }
@@ -504,6 +507,13 @@ public:
 
   void print_info (std::ostream& os, const std::string& prefix) const;
 
+  // Unsafe.  These functions exist to support the MEX interface.
+  // You should not use them anywhere else.
+  void *mex_get_data (void) const { return const_cast<T *> (data ()); }
+
+  octave_idx_type *mex_get_ir (void) const { return const_cast<octave_idx_type *> (ridx ()); }
+
+  octave_idx_type *mex_get_jc (void) const { return const_cast<octave_idx_type *> (cidx ()); }
 };
 
 // NOTE: these functions should be friends of the Sparse<T> class and

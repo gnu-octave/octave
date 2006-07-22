@@ -222,6 +222,13 @@ octave_base_value::nzmax (void) const
   return -1;
 }
 
+octave_idx_type
+octave_base_value::nfields (void) const
+{
+  gripe_wrong_type_arg ("octave_base_value::nfields ()", type_name ());
+  return -1;
+}
+
 octave_value
 octave_base_value::reshape (const dim_vector&) const
 {
@@ -863,6 +870,14 @@ octave_base_value::write (octave_stream&, int, oct_data_conv::data_type,
   gripe_wrong_type_arg ("octave_base_value::write()", type_name ());
 
   return false;
+}
+
+mxArray *
+octave_base_value::as_mxArray (void) const
+{
+  gripe_wrong_type_arg ("octave_base_value::as_mxArray ()", type_name ());
+
+  return 0;
 }
 
 static void

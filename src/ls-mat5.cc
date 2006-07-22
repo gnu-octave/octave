@@ -77,24 +77,31 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define PAD(l) (((l)<=4)?4:(((l)+7)/8)*8)
 #define TAGLENGTH(l) ((l)<=4?4:8)
 
+// FIXME -- the following enum values should be the same as the
+// mxClassID values in mexproto.h, but it seems they have also changed
+// over time.  What is the correct way to handle this and maintain
+// backward compatibility with old MAT files?  For now, use
+// "MAT_FILE_" instead of "mx" as the prefix for these names to avoid
+// conflict with the mxClassID enum in mexproto.h.
+
 enum arrayclasstype
   {
-    mxCELL_CLASS=1,		// cell array
-    mxSTRUCT_CLASS,		// structure
-    mxOBJECT_CLASS,		// object
-    mxCHAR_CLASS,		// character array
-    mxSPARSE_CLASS,		// sparse array
-    mxDOUBLE_CLASS,		// double precision array
-    mxSINGLE_CLASS,		// single precision floating point
-    mxINT8_CLASS,		// 8 bit signed integer
-    mxUINT8_CLASS,		// 8 bit unsigned integer
-    mxINT16_CLASS,		// 16 bit signed integer
-    mxUINT16_CLASS,		// 16 bit unsigned integer
-    mxINT32_CLASS,		// 32 bit signed integer
-    mxUINT32_CLASS,		// 32 bit unsigned integer
-    mxINT64_CLASS,		// 64 bit signed integer
-    mxUINT64_CLASS,		// 64 bit unsigned integer
-    mxFUNCTION_CLASS            // Function handle
+    MAT_FILE_CELL_CLASS=1,		// cell array
+    MAT_FILE_STRUCT_CLASS,		// structure
+    MAT_FILE_OBJECT_CLASS,		// object
+    MAT_FILE_CHAR_CLASS,		// character array
+    MAT_FILE_SPARSE_CLASS,		// sparse array
+    MAT_FILE_DOUBLE_CLASS,		// double precision array
+    MAT_FILE_SINGLE_CLASS,		// single precision floating point
+    MAT_FILE_INT8_CLASS,		// 8 bit signed integer
+    MAT_FILE_UINT8_CLASS,		// 8 bit unsigned integer
+    MAT_FILE_INT16_CLASS,		// 16 bit signed integer
+    MAT_FILE_UINT16_CLASS,		// 16 bit unsigned integer
+    MAT_FILE_INT32_CLASS,		// 32 bit signed integer
+    MAT_FILE_UINT32_CLASS,		// 32 bit unsigned integer
+    MAT_FILE_INT64_CLASS,		// 64 bit signed integer
+    MAT_FILE_UINT64_CLASS,		// 64 bit unsigned integer
+    MAT_FILE_FUNCTION_CLASS            // Function handle
   };
 
 // Read COUNT elements of data from IS in the format specified by TYPE,
@@ -546,7 +553,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   switch (arrayclass)
     {
-    case mxCELL_CLASS:
+    case MAT_FILE_CELL_CLASS:
       {
 	Cell cell_array (dims);
 
@@ -572,11 +579,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       }
       break;
 
-    case mxOBJECT_CLASS:
+    case MAT_FILE_OBJECT_CLASS:
       warning ("load: objects are not implemented");
       goto skip_ahead;
 
-    case mxSPARSE_CLASS:
+    case MAT_FILE_SPARSE_CLASS:
 #if SIZEOF_INT != SIZEOF_OCTAVE_IDX_TYPE
       warning ("load: sparse objects are not implemented");
       goto skip_ahead;
@@ -711,11 +718,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       break;
 #endif
 
-    case mxFUNCTION_CLASS:
+    case MAT_FILE_FUNCTION_CLASS:
       warning ("load: function handles are not implemented");
       goto skip_ahead;
 
-    case mxSTRUCT_CLASS:
+    case MAT_FILE_STRUCT_CLASS:
       {
 	Octave_map m;
 	int32_t fn_type;
@@ -786,16 +793,17 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       }
       break;
 
-    case mxINT8_CLASS:
+    case MAT_FILE_INT8_CLASS:
       OCTAVE_MAT5_INTEGER_READ (int8NDArray);
       break;
 
-    case mxUINT8_CLASS:
+    case MAT_FILE_UINT8_CLASS:
       {
 	OCTAVE_MAT5_INTEGER_READ (uint8NDArray);
 
-	// logical variables can either be mxUINT8_CLASS or mxDOUBLE_CLASS,
-	// so chek if we have a logical variable and convert it
+	// Logical variables can either be MAT_FILE_UINT8_CLASS or
+	// MAT_FILE_DOUBLE_CLASS, so check if we have a logical
+	// variable and convert it.
 
 	if (logicalvar)
 	  {
@@ -811,35 +819,35 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
       }
       break;
 
-    case mxINT16_CLASS:
+    case MAT_FILE_INT16_CLASS:
       OCTAVE_MAT5_INTEGER_READ (int16NDArray);
       break;
 
-    case mxUINT16_CLASS:
+    case MAT_FILE_UINT16_CLASS:
       OCTAVE_MAT5_INTEGER_READ (uint16NDArray);
       break;
 
-    case mxINT32_CLASS:
+    case MAT_FILE_INT32_CLASS:
       OCTAVE_MAT5_INTEGER_READ (int32NDArray);
       break;
 
-    case mxUINT32_CLASS:
+    case MAT_FILE_UINT32_CLASS:
       OCTAVE_MAT5_INTEGER_READ (uint32NDArray);
       break;
 
-    case mxINT64_CLASS:
+    case MAT_FILE_INT64_CLASS:
       OCTAVE_MAT5_INTEGER_READ (int64NDArray);
       break;
 
-    case mxUINT64_CLASS:
+    case MAT_FILE_UINT64_CLASS:
       OCTAVE_MAT5_INTEGER_READ (uint64NDArray);
       break;
 
-    case mxCHAR_CLASS:
+    case MAT_FILE_CHAR_CLASS:
       // handle as a numerical array to start with
 
-    case mxDOUBLE_CLASS:
-    case mxSINGLE_CLASS:
+    case MAT_FILE_DOUBLE_CLASS:
+    case MAT_FILE_SINGLE_CLASS:
     default:
       {
 	NDArray re (dims);
@@ -869,8 +877,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	if (logicalvar)
 	  {
-	    // logical variables can either be mxUINT8_CLASS or mxDOUBLE_CLASS,
-	    // so chek if we have a logical variable and convert it
+	    // Logical variables can either be MAT_FILE_UINT8_CLASS or
+	    // MAT_FILE_DOUBLE_CLASS, so check if we have a logical
+	    // variable and convert it.
 
 	    boolNDArray out (dims);
 	    
@@ -911,7 +920,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  }
 	else
 	  {
-	    if (arrayclass == mxCHAR_CLASS)
+	    if (arrayclass == MAT_FILE_CHAR_CLASS)
 	      {
 		if (type == miUTF16 || type == miUTF32)
 		  {
@@ -1518,26 +1527,26 @@ save_mat5_binary_element (std::ostream& os,
     flags |= 0x0800;
 
   if (tc.is_string ())
-    flags |= mxCHAR_CLASS;
+    flags |= MAT_FILE_CHAR_CLASS;
   else if (cname == "int8")
-    flags |= mxINT8_CLASS;
+    flags |= MAT_FILE_INT8_CLASS;
   else if (cname == "int16")
-    flags |= mxINT16_CLASS;
+    flags |= MAT_FILE_INT16_CLASS;
   else if (cname == "int32")
-    flags |= mxINT32_CLASS;
+    flags |= MAT_FILE_INT32_CLASS;
   else if (cname == "int64")
-    flags |= mxINT64_CLASS;
+    flags |= MAT_FILE_INT64_CLASS;
   else if (cname == "uint8" || tc.is_bool_type ())
-    flags |= mxUINT8_CLASS;
+    flags |= MAT_FILE_UINT8_CLASS;
   else if (cname == "uint16")
-    flags |= mxUINT16_CLASS;
+    flags |= MAT_FILE_UINT16_CLASS;
   else if (cname == "uint32")
-    flags |= mxUINT32_CLASS;
+    flags |= MAT_FILE_UINT32_CLASS;
   else if (cname == "uint64")
-    flags |= mxUINT64_CLASS;
+    flags |= MAT_FILE_UINT64_CLASS;
   else if (cname == "sparse")
     {
-      flags |= mxSPARSE_CLASS;
+      flags |= MAT_FILE_SPARSE_CLASS;
       if (tc.is_complex_type ())
 	{
 	  SparseComplexMatrix scm = tc.sparse_complex_matrix_value ();
@@ -1550,17 +1559,17 @@ save_mat5_binary_element (std::ostream& os,
 	}
     }
   else if (tc.is_real_scalar ())
-    flags |= mxDOUBLE_CLASS;
+    flags |= MAT_FILE_DOUBLE_CLASS;
   else if (tc.is_real_matrix () || tc.is_range ())
-    flags |= mxDOUBLE_CLASS;
+    flags |= MAT_FILE_DOUBLE_CLASS;
   else if (tc.is_complex_scalar ())
-    flags |= mxDOUBLE_CLASS;
+    flags |= MAT_FILE_DOUBLE_CLASS;
   else if (tc.is_complex_matrix ())
-    flags |= mxDOUBLE_CLASS;
+    flags |= MAT_FILE_DOUBLE_CLASS;
   else if (tc.is_map ()) 
-    flags |= mxSTRUCT_CLASS;
+    flags |= MAT_FILE_STRUCT_CLASS;
   else if (tc.is_cell ())
-    flags |= mxCELL_CLASS;
+    flags |= MAT_FILE_CELL_CLASS;
   else
     {
       gripe_wrong_type_arg ("save", tc, false);

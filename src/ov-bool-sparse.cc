@@ -315,6 +315,7 @@ octave_sparse_bool_matrix::load_binary (std::istream& is, bool swap,
 }
 
 #if defined (HAVE_HDF5)
+
 bool
 octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
 {
@@ -686,7 +687,15 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   return retval;
 }
+
 #endif
+
+mxArray *
+octave_sparse_bool_matrix::as_mxArray (void) const
+{
+  // FIXME
+  return 0;
+}
 
 /*
 ;;; Local Variables: ***

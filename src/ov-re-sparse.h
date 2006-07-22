@@ -137,6 +137,8 @@ public:
   bool load_hdf5 (hid_t loc_id, const char *name, bool have_h5giterate_bug);
 #endif
 
+  mxArray *as_mxArray (void) const;
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR

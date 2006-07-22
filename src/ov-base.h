@@ -36,6 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "Range.h"
 #include "data-conv.h"
+#include "mxarray.h"
 #include "mx-base.h"
 #include "str-vec.h"
 
@@ -174,6 +175,8 @@ public:
   virtual octave_idx_type nnz (void) const;
 
   virtual octave_idx_type nzmax (void) const;
+
+  virtual octave_idx_type nfields (void) const;
 
   virtual octave_value reshape (const dim_vector&) const;
 
@@ -433,6 +436,14 @@ public:
   write (octave_stream& os, int block_size,
 	 oct_data_conv::data_type output_type, int skip,
 	 oct_mach_info::float_format flt_fmt) const;
+
+  virtual void *mex_get_data (void) const { return 0; }
+
+  virtual octave_idx_type *mex_get_ir (void) const { return 0; }
+
+  virtual octave_idx_type *mex_get_jc (void) const { return 0; }
+
+  virtual mxArray *as_mxArray (void) const;
 
 protected:
 

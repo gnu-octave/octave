@@ -453,7 +453,7 @@ public:
   int *get_ir (void) const
   {
 #if SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_INT
-    return val.mex_get_jc ();
+    return val.mex_get_ir ();
 #else
     request_mutation ();
     return 0;
@@ -1445,7 +1445,10 @@ public:
 
 	int k = 0;
 	for (int j = i; j < ntot; j += nfields)
-	  p[k++] = data[j]->as_octave_value ();
+	  {
+	    mxArray *t = data[j];
+	    p[k++] = t ? t->as_octave_value () : octave_value (Matrix ());
+	  }
 
 	m.assign (keys[i], c);
       }
@@ -1655,7 +1658,10 @@ public:
     octave_value *p = c.fortran_vec ();
 
     for (int i = 0; i < nel; i++)
-      p[i] = data[i]->as_octave_value ();
+      {
+	mxArray *t = data[i];
+	p[i] = t ? t->as_octave_value () : octave_value (Matrix ());
+      }
 
     return c;
   }
@@ -2723,9 +2729,8 @@ call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
 	{
 	  if (argout[i])
 	    {
-	      retval(i) = argout[i]->as_octave_value ();
-
-	      //	      mxDestroyArray (argout[i]);
+	      mxArray *t = argout[i];
+	      retval(i) = t ? t->as_octave_value () : octave_value (Matrix ());
 	    }
 	}
     }
@@ -2771,7 +2776,10 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin, mxArray *argin[],
   args.resize (nargin);
 
   for (int i = 0; i < nargin; i++)
-    args(i) = argin[i]->as_octave_value ();
+    {
+      mxArray *t = argin[i];
+      args(i) = t ? t->as_octave_value () : octave_value (Matrix ());
+    }
 
   octave_value_list retval = feval (fname, args, nargout);
 

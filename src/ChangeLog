@@ -1,3 +1,10 @@
+2006-07-25  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mxArray_struct::as_octave_value, call_mex,
+	mexCallMATLAB, mxArray_cell::as_octave_value):
+	Convert NULL mxArray* pointers to empty matrix values.
+	(mxArray_octave_value:get_ir): Fix typo.
+
 2006-07-22  John W. Eaton  <jwe@octave.org>
 
 	* mxarray.h: New file.

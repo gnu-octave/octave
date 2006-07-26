@@ -1,3 +1,7 @@
+2006-07-25  David Bateman  <dbateman@free.fr>
+
+	* mysparse.c: New file.
+
 2006-06-27  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (maintainer-clean distclean): Remove

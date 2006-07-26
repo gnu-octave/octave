@@ -762,8 +762,26 @@ octave_sparse_complex_matrix::load_hdf5 (hid_t loc_id, const char *name,
 mxArray *
 octave_sparse_complex_matrix::as_mxArray (void) const
 {
-  // FIXME
-  return 0;
+  int nz = nzmax ();
+  mxArray *retval = new mxArray (mxDOUBLE_CLASS, rows (), columns (),
+				 nz, mxCOMPLEX);
+  double *pr = static_cast<double *> (retval->get_data ());
+  double *pi = static_cast<double *> (retval->get_imag_data ());
+  int *ir = retval->get_ir ();
+  int *jc = retval->get_jc ();
+
+  for (int i = 0; i < nz; i++)
+    {
+      Complex val = matrix.data(i);
+      pr[i] = real (val);
+      pi[i] = imag (val);
+      ir[i] = matrix.ridx(i);
+    }
+
+  for (int i = 0; i < columns() + 1; i++)
+    jc[i] = matrix.cidx(i);
+
+  return retval;
 }
 
 /*

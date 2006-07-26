@@ -1,3 +1,16 @@
+2006-07-25  David Bateman  <dbateman@free.fr>
+
+	* mex.cc (mxArray_octave_value::get_class_id): Handle sparse.
+	(class mxArray_sparse): Derive from mxArray_matlab, not
+	mxArray_number.
+	(mxArray_sparse::as_octave_value): Implement function.
+	* ov-bool-sparse.cc (octave_sparse_bool_matrix::as_mxArray):
+	Implement function.
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::as_mxArray):
+	Implement function.	
+	* ov-re-sparse.cc (octave_sparse_matrix::as_mxArray):
+	Implement function.
+
 2006-07-25  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_struct::as_octave_value, call_mex,

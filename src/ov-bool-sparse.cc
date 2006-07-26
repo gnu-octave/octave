@@ -693,8 +693,23 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 mxArray *
 octave_sparse_bool_matrix::as_mxArray (void) const
 {
-  // FIXME
-  return 0;
+  int nz = nzmax ();
+  mxArray *retval = new mxArray (mxLOGICAL_CLASS, rows (), columns (), 
+				 nz, mxREAL);
+  bool *pr = static_cast<bool *> (retval->get_data ());
+  int *ir = retval->get_ir ();
+  int *jc = retval->get_jc ();
+
+  for (int i = 0; i < nz; i++)
+    {
+      pr[i] = matrix.data(i);
+      ir[i] = matrix.ridx(i);
+    }
+
+  for (int i = 0; i < columns () + 1; i++)
+    jc[i] = matrix.cidx(i);
+
+  return retval;
 }
 
 /*

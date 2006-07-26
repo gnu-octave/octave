@@ -50,8 +50,13 @@
 ## @item -c
 ## Compile but do not link.
 ##
-## @item -o FILE|--output FILE
-## Output file name; by default extension is .oct.
+## @item -g
+## Enable debugging options for compilers.
+##
+## @item -o FILE|--output FILE  
+## Output file name.  Default extension is .oct
+## (or .mex if --mex is specified) unless linking
+## a stand-alone executable.
 ##
 ## @item -p VAR|--print VAR
 ## Print the configuration variable VAR.  Recognized variables are: 
@@ -81,6 +86,10 @@
 ##
 ## @item --link-stand-alone
 ## Link a stand-alone executable file.
+##
+## @item --mex
+## Assume we are creating a MEX file.  Set the default output extension 
+## to ".mex".
 ##
 ## @item -s|--strip
 ## Strip the output file.

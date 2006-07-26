@@ -492,7 +492,8 @@ maximum_braindamage (void)
 			 "%%-- %D %I:%M %p --%%");
   bind_internal_variable ("page_screen_output", false);
   bind_internal_variable ("print_empty_dimensions", false);
-  bind_internal_variable ("warn_function_name_clash", false);
+
+  disable_warning ("Octave:function-name-clash");
 }
 
 // You guessed it.

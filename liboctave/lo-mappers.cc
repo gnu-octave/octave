@@ -41,10 +41,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "f77-fcn.h"
 
-#ifndef M_LOG10E
-#define M_LOG10E 0.43429448190325182765
-#endif
-
 // double -> double mappers.
 
 double
@@ -98,6 +94,38 @@ signum (double x)
     tmp = 1.0;
 
   return xisnan (x) ? octave_NaN : tmp;
+}
+
+double
+xlog2 (double x)
+{
+#if defined (HAVE_LOG2)
+  return log2 (x);
+#else
+#if defined (M_LN2)
+  static double ln2 = M_LN2;
+#else
+  static double ln2 = log2 (2);
+#endif
+
+  return log (x) / ln2;
+#endif
+}
+
+double
+xexp2 (double x)
+{
+#if defined (HAVE_EXP2)
+  return exp2 (x);
+#else
+#if defined (M_LN2)
+  static double ln2 = M_LN2;
+#else
+  static double ln2 = log2 (2);
+#endif
+
+  return exp (x * ln2);
+#endif
 }
 
 // double -> bool mappers.

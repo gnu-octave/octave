@@ -1076,7 +1076,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
   return retval;
 }
 
-static void
+void
 disable_warning (const std::string& id)
 {
   octave_value_list args;

@@ -1,3 +1,21 @@
+2006-07-26  John W. Eaton  <jwe@octave.org>
+
+	* dbleDET.cc (DET::initialize10, DET::value_will_underflow,
+	DET::value_will_overflow): Use xlog2 instead of log2.
+	(DET::initialize2, DET::initialize10): Use xround instead of round.
+	(DET::initialize2, DET::value): Use xexp2 instead of exp2.
+	* CmplxDET.cc (ComplexDET::initialize10,
+	ComplexDET::value_will_underflow,
+	ComplexDET::value_will_overflow): Use xlog2 instead of log2.
+	(ComplexDET::initialize2, ComplexDET::initialize10):
+	Use xround instead of round.
+	(ComplexDET::initialize2, ComplexDET::value):
+	Use xexp2 instead of exp2.
+
+	* lo-mappers.cc (M_LOG10E): Delete unused macro.
+	(xlog2, xexp2): New functions.
+	* lo-mappers.h: Provide decls.
+
 2006-07-22  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.h (Sparse<T>::mex_get_data, Sparse<T>::mex_get_ir,

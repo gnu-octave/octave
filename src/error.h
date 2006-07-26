@@ -60,6 +60,7 @@ extern void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 // Helper function for print_usage defined in defun.cc.
 extern void defun_usage_message (const std::string& msg);
 
+extern void disable_warning (const std::string& id);
 extern void initialize_default_warning_state (void);
 
 // Current error state.

@@ -1,3 +1,10 @@
+2006-07-26  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (maximum_braindamage): Use disable_warning instead of
+	bind_internal_variable to disable function-name-clash warning.
+	* error.cc (disable_warning): No longer static.
+	* error.h: Provide decl.
+
 2006-07-25  David Bateman  <dbateman@free.fr>
 
 	* mex.cc (mxArray_octave_value::get_class_id): Handle sparse.

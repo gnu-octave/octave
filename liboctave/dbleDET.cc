@@ -29,12 +29,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cmath>
 
 #include "dbleDET.h"
+#include "lo-mappers.h"
 
 bool
 DET::value_will_overflow (void) const
 {
   return base2
-    ? (e2 + 1 > log2 (DBL_MAX) ? 1 : 0)
+    ? (e2 + 1 > xlog2 (DBL_MAX) ? 1 : 0)
     : (e10 + 1 > log10 (DBL_MAX) ? 1 : 0);
 }
 
@@ -42,7 +43,7 @@ bool
 DET::value_will_underflow (void) const
 {
   return base2
-    ? (e2 - 1 < log2 (DBL_MIN) ? 1 : 0)
+    ? (e2 - 1 < xlog2 (DBL_MIN) ? 1 : 0)
     : (e10 - 1 < log10 (DBL_MIN) ? 1 : 0);
 }
 
@@ -51,8 +52,8 @@ DET::initialize10 (void)
 {
   if (c2 != 0.0)
     {
-      double etmp = e2 / log2 (10);
-      e10 = static_cast<int> (round (etmp));
+      double etmp = e2 / xlog2 (10);
+      e10 = static_cast<int> (xround (etmp));
       etmp -= e10;
       c10 = c2 * pow (10.0, etmp);
     }
@@ -64,16 +65,16 @@ DET::initialize2 (void)
   if (c10 != 0.0)
     {
       double etmp = e10 / log10 (2);
-      e2 = static_cast<int> (round (etmp));
+      e2 = static_cast<int> (xround (etmp));
       etmp -= e2;
-      c2 = c10 * exp2 (etmp);
+      c2 = c10 * xexp2 (etmp);
     }
 }
 
 double
 DET::value (void) const
 {
-  return base2 ? c2 * exp2 (e2) : c10 * pow (10.0, e10);
+  return base2 ? c2 * xexp2 (e2) : c10 * pow (10.0, e10);
 }
 
 /*

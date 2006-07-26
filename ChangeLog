@@ -1,3 +1,9 @@
+2006-07-26  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in (Options): Accept -g.
+
+	* configure.in: Check for exp2 and log2.
+
 2006-07-25  David Bateman  <dbateman@free.fr>
 
 	* mysparse.c: New file.

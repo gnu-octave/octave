@@ -1,5 +1,15 @@
 2006-07-26  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (xfree): New function.
+	(mex::free): Use it.
+	(mxArray_struct::~mxArray_struct, mxArray_cell::~mxArray_cell):
+	Delete elements with delete, not mxDestroyArray.
+	(mex::cleanup): Don't call mex::free or mex::free_value.
+	(mex::free_value): Add debug warning.
+	(mex::mark, mex::unmark): Fix debug warning.
+	(call_mex): Use unwind_protect frame.
+	(mexUnlock): Use iterator to remove item from mex_lock_count.
+
 	* octave.cc (maximum_braindamage): Use disable_warning instead of
 	bind_internal_variable to disable function-name-clash warning.
 	* error.cc (disable_warning): No longer static.

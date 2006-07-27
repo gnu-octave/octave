@@ -105,6 +105,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __close_fid = 1;
     endif
     fprintf (__fid, "%sprocessing %s\n", __signal_file, __name);
+    fflush (__fid);
   else
     __fid = stdout;
   endif
@@ -137,6 +138,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     fprintf (__fid, "# The result may be an unexpected failure (in which\n");
     fprintf (__fid, "# case an error will be reported) or an unexpected\n");
     fprintf (__fid, "# success (in which case no error will be reported).\n");
+    fflush (__fid);
     if (__close_fid) fclose(__fid); endif
     return;
   else
@@ -157,6 +159,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __ret2 = [];
     else
       fprintf(__fid, "%s%s does not exist in path\n", __signal_empty, __name);
+      fflush (__fid);
       if (nargout > 0) __ret1 = __ret2 = 0; endif
     endif
     if (__close_fid) fclose(__fid); endif
@@ -172,6 +175,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __ret2 = [];
     else
       fprintf(__fid, "%s%s has no tests available\n", __signal_empty, __file);
+      fflush (__fid);
       if (nargout > 0) __ret1 = __ret2 = 0; endif
     endif
     if (__close_fid) fclose(__fid); endif
@@ -210,6 +214,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     ## let the user/logfile know what is happening
     if (__verbose)
       fprintf (__fid, "%s%s\n", __signal_block, __block);
+      fflush (__fid);
     endif
 
     ## split __block into __type and __code
@@ -424,12 +429,15 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       ## make sure the user knows what caused the error
       if (!__verbose)
       	fprintf (__fid, "%s%s\n", __signal_block, __block);
+	fflush (__fid);
       endif
       fputs (__fid, __msg);
+      fflush (__fid);
       ## show the variable context
-      if !strcmp(__type, "error") && !all(__shared==" ")
+      if (!strcmp(__type, "error") && !all(__shared==" "))
 	fputs(__fid, "shared variables ");
 	eval (sprintf("fdisp(__fid,bundle(%s));", __shared)); 
+	fflush (__fid);
       endif
     endif
     if (__success == 0)

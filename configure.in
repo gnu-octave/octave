@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.516 $)
+AC_REVISION($Revision: 1.517 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -84,6 +84,8 @@ OCTAVE_SET_DEFAULT(archlibdir,
   '$(libexecdir)/octave/$(version)/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localarchlibdir,
   '$(libexecdir)/octave/site/exec/$(canonical_host_type)')
+OCTAVE_SET_DEFAULT(localapiarchlibdir,
+  '$(libexecdir)/octave/$(api_version)/site/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(localverarchlibdir,
   '$(libexecdir)/octave/$(version)/site/exec/$(canonical_host_type)')
 OCTAVE_SET_DEFAULT(octfiledir,

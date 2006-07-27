@@ -1,3 +1,12 @@
+2006-07-27  John W. Eaton  <jwe@octave.org>
+
+	* defaults.cc (Vlocal_api_arch_lib_dir): New variable.
+	(set_default_local_api_arch_lib_dir): New function.
+	(install_defaults): Call it.
+	(set_exec_path): Put Vlocal_api_arch_lib_dir in the list.
+	* toplev.cc (localapiarchlibdir): Include it in the list.
+	* defaults.h.in (OCTAVE_LOCALAPIARCHLIBDIR): Substitute here.
+
 2006-07-26  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray::as_octave_value (mxArray *)): New static function.

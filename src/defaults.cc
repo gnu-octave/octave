@@ -67,6 +67,7 @@ std::string Vdata_dir;
 std::string Vlibexec_dir;
 std::string Varch_lib_dir;
 std::string Vlocal_arch_lib_dir;
+std::string Vlocal_api_arch_lib_dir;
 std::string Vlocal_ver_arch_lib_dir;
 
 std::string Vlocal_ver_oct_file_dir;
@@ -159,6 +160,12 @@ set_default_local_arch_lib_dir (void)
 }
 
 static void
+set_default_local_api_arch_lib_dir (void)
+{
+  Vlocal_api_arch_lib_dir = subst_octave_home (OCTAVE_LOCALAPIARCHLIBDIR);
+}
+
+static void
 set_default_local_ver_arch_lib_dir (void)
 {
   Vlocal_ver_arch_lib_dir = subst_octave_home (OCTAVE_LOCALVERARCHLIBDIR);
@@ -228,6 +235,7 @@ void
 set_exec_path (const std::string& path)
 {
   VEXEC_PATH = Vlocal_ver_arch_lib_dir + dir_path::path_sep_str
+    + Vlocal_api_arch_lib_dir + dir_path::path_sep_str
     + Vlocal_arch_lib_dir + dir_path::path_sep_str
     + Varch_lib_dir + dir_path::path_sep_str
     + Vbin_dir;
@@ -356,9 +364,9 @@ install_defaults (void)
 
   set_default_arch_lib_dir ();
 
-  set_default_local_arch_lib_dir ();
-
   set_default_local_ver_arch_lib_dir ();
+  set_default_local_api_arch_lib_dir ();
+  set_default_local_arch_lib_dir ();
 
   set_default_local_ver_oct_file_dir ();
   set_default_local_api_oct_file_dir ();

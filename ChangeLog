@@ -1,3 +1,16 @@
+2006-07-27  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (localapiarchlibdir): Substitute it here.
+	(do-subst-default-vals): Include it in the sed command here.
+	* configure.in (localapiarchlibdir): New variable.
+	* octave-config.in: Don't quote %VAR% values.
+	(LOCALAPIARCHLIBDIR): New variable.
+
+2006-07-27  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* octave-config.in (OCTAVE_FCNFILEPATH, OCTAVE_IMAGEPATH,
+	OCTAVE_LOCALFCNFILEPATH, OCTAVE_LOCALOCTFILEPATH): Delete variables.
+
 2006-07-26  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in (Options): Accept -g.

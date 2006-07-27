@@ -802,6 +802,7 @@ specified option.\n\
       "localfcnfiledir", OCTAVE_LOCALFCNFILEDIR,
       "localoctfiledir", OCTAVE_LOCALOCTFILEDIR,
       "localstartupfiledir", OCTAVE_LOCALSTARTUPFILEDIR,
+      "localapiarchlibdir", OCTAVE_LOCALAPIARCHLIBDIR,
       "localverarchlibdir", OCTAVE_LOCALVERARCHLIBDIR,
       "localverfcnfiledir", OCTAVE_LOCALVERFCNFILEDIR,
       "localveroctfiledir", OCTAVE_LOCALVEROCTFILEDIR,

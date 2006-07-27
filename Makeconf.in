@@ -300,6 +300,7 @@ archlibdir = @archlibdir@
 # Where to put executables to be run by Octave rather than by the
 # user that are specific to this site.
 localarchlibdir = @localarchlibdir@
+localapiarchlibdir = @localapiarchlibdir@
 localverarchlibdir = @localverarchlibdir@
 
 # Where to put object files that will by dynamically loaded.
@@ -517,6 +518,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_LOCALFCNFILEDIR%|\"${localfcnfiledir}\"|" \
   -e "s|%OCTAVE_LOCALOCTFILEDIR%|\"${localoctfiledir}\"|" \
   -e "s|%OCTAVE_LOCALSTARTUPFILEDIR%|\"${localstartupfiledir}\"|" \
+  -e "s|%OCTAVE_LOCALAPIARCHLIBDIR%|\"${localapiarchlibdir}\"|" \
   -e "s|%OCTAVE_LOCALVERARCHLIBDIR%|\"${localverarchlibdir}\"|" \
   -e "s|%OCTAVE_LOCALVERFCNFILEDIR%|\"${localverfcnfiledir}\"|" \
   -e "s|%OCTAVE_LOCALVEROCTFILEDIR%|\"${localveroctfiledir}\"|" \

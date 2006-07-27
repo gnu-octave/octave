@@ -1562,7 +1562,7 @@ are too large to fit in the specified precision.\n\
   return retval;
 }
 
-DEFUN (feof, args, ,
+DEFUNX ("feof", Ffeof, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} feof (@var{fid})\n\
 Return 1 if an end-of-file condition has been encountered for a given\n\
@@ -1589,7 +1589,7 @@ result in an end-of-file condition.\n\
   return retval;
 }
 
-DEFUN (ferror, args, ,
+DEFUNX ("ferror", Fferror, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ferror (@var{fid})\n\
 Return 1 if an error condition has been encountered for a given file\n\

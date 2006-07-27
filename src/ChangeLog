@@ -1,5 +1,7 @@
 2006-07-26  John W. Eaton  <jwe@octave.org>
 
+	* file-io.cc (Ffeof, Fferror): Use DEFUNX instead of DEFUN.
+
 	* mex.cc (xfree): New function.
 	(mex::free): Use it.
 	(mxArray_struct::~mxArray_struct, mxArray_cell::~mxArray_cell):

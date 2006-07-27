@@ -162,8 +162,6 @@ public:
 
   virtual ~mxArray (void);
 
-  virtual octave_value as_octave_value (void) const;
-
   void mark_persistent (void) const { persistent = true; }
 
   void unmark_persistent (void) const { persistent = false; }
@@ -308,7 +306,11 @@ public:
     return retval;
   }
 
+  static octave_value as_octave_value (mxArray *ptr);
+
 protected:
+
+  virtual octave_value as_octave_value (void) const;
 
   mxArray (const xmxArray&) : rep (0), name (0), persistent (false) { }
 

@@ -98,8 +98,6 @@ public:
 
   ~mxArray_base (void) { }
 
-  octave_value as_octave_value (void) const = 0;
-
   bool is_octave_value (void) const { return false; }
 
   int is_cell (void) const = 0;
@@ -235,6 +233,8 @@ public:
 
 protected:
 
+  octave_value as_octave_value (void) const = 0;
+
   mxArray_base (const mxArray_base&) : mxArray (xmxArray ()) { }
 
   void invalid_type_error (void) const
@@ -275,8 +275,6 @@ public:
     mxFree (class_name);
     mxFree (dims);
   }
-
-  octave_value as_octave_value (void) const { return val; }
 
   bool is_octave_value (void) const { return true; }
 
@@ -640,6 +638,8 @@ public:
   mxArray *mutate (void) const { return val.as_mxArray (); }
 
 protected:
+
+  octave_value as_octave_value (void) const { return val; }
 
   mxArray_octave_value (const mxArray_octave_value& arg)
     : mxArray_base (arg), val (arg.val), mutate_flag (arg.mutate_flag),
@@ -1123,6 +1123,59 @@ public:
     mxFree (pi);
   }
 
+  int is_complex (void) const { return pi != 0; }
+
+  void *get_data (void) const { return pr; }
+
+  void *get_imag_data (void) const { return pi; }
+
+  void set_data (void *pr_arg) { pr = pr_arg; }
+
+  void set_imag_data (void *pi_arg) { pi = pi_arg; }
+
+  int get_string (char *buf, int buflen) const
+  {
+    int retval = 1;
+
+    int n = get_number_of_elements ();
+
+    if (n < buflen)
+      {
+	mxChar *ptr = static_cast<mxChar *> (pr);
+
+	for (int i = 0; i < n; i++)
+	  buf[i] = static_cast<char> (ptr[i]);
+
+	buf[n] = 0;
+      }
+
+    return retval;
+  }
+
+  char *array_to_string (void) const
+  {
+    // FIXME -- this is suposed to handle multi-byte character
+    // strings.
+
+    int nel = get_number_of_elements ();
+
+    char *buf = static_cast<char *> (malloc (nel + 1));
+
+    if (buf)
+      {
+	mxChar *ptr = static_cast<mxChar *> (pr);
+
+	for (int i = 0; i < nel; i++)
+	  buf[i] = static_cast<char> (ptr[i]);
+
+	buf[nel] = '\0';
+      }
+
+    return buf;
+  }
+
+protected:
+
   template <typename ELT_T, typename ARRAY_T, typename ARRAY_ELT_T>
   octave_value
   int_to_ov (const dim_vector& dv) const
@@ -1255,70 +1308,18 @@ public:
     return retval;
   }
 
-  int is_complex (void) const { return pi != 0; }
-
-  void *get_data (void) const { return pr; }
-
-  void *get_imag_data (void) const { return pi; }
-
-  void set_data (void *pr_arg) { pr = pr_arg; }
-
-  void set_imag_data (void *pi_arg) { pi = pi_arg; }
-
-  int get_string (char *buf, int buflen) const
-  {
-    int retval = 1;
-
-    int n = get_number_of_elements ();
-
-    if (n < buflen)
-      {
-	mxChar *ptr = static_cast<mxChar *> (pr);
-
-	for (int i = 0; i < n; i++)
-	  buf[i] = static_cast<char> (ptr[i]);
-
-	buf[n] = 0;
-      }
-
-    return retval;
-  }
-
-  char *array_to_string (void) const
-  {
-    // FIXME -- this is suposed to handle multi-byte character
-    // strings.
-
-    int nel = get_number_of_elements ();
-
-    char *buf = static_cast<char *> (malloc (nel + 1));
-
-    if (buf)
-      {
-	mxChar *ptr = static_cast<mxChar *> (pr);
-
-	for (int i = 0; i < nel; i++)
-	  buf[i] = static_cast<char> (ptr[i]);
-
-	buf[nel] = '\0';
-      }
-
-    return buf;
-  }
-
-protected:
-
   mxArray_number (const mxArray_number& val)
     : mxArray_matlab (val),
       pr (malloc (get_number_of_elements () * get_element_size ())),
       pi (val.pi ? malloc (get_number_of_elements () * get_element_size ()) : 0)
   {
-    int ntot = get_number_of_elements () * get_element_size ();
+    size_t nbytes = get_number_of_elements () * get_element_size ();
 
-    memcpy (pr, val.pr, ntot);
+    if (pr)
+      memcpy (pr, val.pr, nbytes);
 
     if (pi)
-      memcpy (pi, val.pi, ntot);
+      memcpy (pi, val.pi, nbytes);
   }
 
 private:
@@ -1352,6 +1353,32 @@ public:
     mxFree (ir);
     mxFree (jc);
   }
+
+  int is_complex (void) const { return pi != 0; }
+
+  int is_sparse (void) const { return 1; }
+
+  void *get_data (void) const { return pr; }
+
+  void *get_imag_data (void) const { return pi; }
+
+  void set_data (void *pr_arg) { pr = pr_arg; }
+
+  void set_imag_data (void *pi_arg) { pi = pi_arg; }
+
+  int *get_ir (void) const { return ir; }
+
+  int *get_jc (void) const { return jc; }
+
+  int get_nzmax (void) const { return nzmax; }
+
+  void set_ir (int *ir_arg) { ir = ir_arg; }
+
+  void set_jc (int *jc_arg) { jc = jc_arg; }
+
+  void set_nzmax (int nzmax_arg) { nzmax = nzmax_arg; }
+
+protected:
 
   octave_value as_octave_value (void) const
   {
@@ -1431,30 +1458,6 @@ public:
     return retval;
   }
 
-  int is_complex (void) const { return pi != 0; }
-
-  int is_sparse (void) const { return 1; }
-
-  void *get_data (void) const { return pr; }
-
-  void *get_imag_data (void) const { return pi; }
-
-  void set_data (void *pr_arg) { pr = pr_arg; }
-
-  void set_imag_data (void *pi_arg) { pi = pi_arg; }
-
-  int *get_ir (void) const { return ir; }
-
-  int *get_jc (void) const { return jc; }
-
-  int get_nzmax (void) const { return nzmax; }
-
-  void set_ir (int *ir_arg) { ir = ir_arg; }
-
-  void set_jc (int *jc_arg) { jc = jc_arg; }
-
-  void set_nzmax (int nzmax_arg) { nzmax = nzmax_arg; }
-
 private:
 
   int nzmax;
@@ -1469,13 +1472,19 @@ private:
       ir (static_cast<int *> (malloc (nzmax * sizeof (int)))),
       jc (static_cast<int *> (malloc (nzmax * sizeof (int))))
   {
-    int ntot = nzmax * get_element_size ();
+    size_t nbytes = nzmax * get_element_size ();
 
-    memcpy (pr, val.pr, ntot);
-    memcpy (ir, val.ir, nzmax * sizeof(int));
-    memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (int));
+    if (pr)
+      memcpy (pr, val.pr, nbytes);
+
     if (pi)
-      memcpy (pi, val.pi, ntot);
+      memcpy (pi, val.pi, nbytes);
+
+    if (ir)
+      memcpy (ir, val.ir, nzmax * sizeof (int));
+
+    if (jc)
+      memcpy (jc, val.jc, (val.get_n () + 1) * sizeof (int));
   }
 };
 
@@ -1531,35 +1540,6 @@ public:
       delete data[i];
 
     mxFree (data);
-  }
-
-  octave_value as_octave_value (void) const
-  {
-    dim_vector dv = dims_to_dim_vector ();
-
-    string_vector keys (fields, nfields);
-
-    Octave_map m;
-
-    int ntot = nfields * get_number_of_elements ();
-
-    for (int i = 0; i < nfields; i++)
-      {
-	Cell c (dv);
-
-	octave_value *p = c.fortran_vec ();
-
-	int k = 0;
-	for (int j = i; j < ntot; j += nfields)
-	  {
-	    mxArray *t = data[j];
-	    p[k++] = t ? t->as_octave_value () : octave_value (Matrix ());
-	  }
-
-	m.assign (keys[i], c);
-      }
-
-    return m;
   }
 
   int add_field (const char *key)
@@ -1700,6 +1680,34 @@ public:
 
   void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
 
+protected:
+
+  octave_value as_octave_value (void) const
+  {
+    dim_vector dv = dims_to_dim_vector ();
+
+    string_vector keys (fields, nfields);
+
+    Octave_map m;
+
+    int ntot = nfields * get_number_of_elements ();
+
+    for (int i = 0; i < nfields; i++)
+      {
+	Cell c (dv);
+
+	octave_value *p = c.fortran_vec ();
+
+	int k = 0;
+	for (int j = i; j < ntot; j += nfields)
+	  p[k++] = mxArray::as_octave_value (data[j]);
+
+	m.assign (keys[i], c);
+      }
+
+    return m;
+  }
+
 private:
 
   int nfields;
@@ -1753,6 +1761,16 @@ public:
     mxFree (data);
   }
 
+  mxArray *get_cell (int idx) const { return data[idx]; }
+
+  void set_cell (int idx, mxArray *val) { data[idx] = val; }
+
+  void *get_data (void) const { return data; }
+
+  void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
+
+protected:
+
   octave_value as_octave_value (void) const
   {
     dim_vector dv = dims_to_dim_vector ();
@@ -1764,21 +1782,10 @@ public:
     octave_value *p = c.fortran_vec ();
 
     for (int i = 0; i < nel; i++)
-      {
-	mxArray *t = data[i];
-	p[i] = t ? t->as_octave_value () : octave_value (Matrix ());
-      }
+      p[i] = mxArray::as_octave_value (data[i]);
 
     return c;
   }
-
-  mxArray *get_cell (int idx) const { return data[idx]; }
-
-  void set_cell (int idx, mxArray *val) { data[idx] = val; }
-
-  void *get_data (void) const { return data; }
-
-  void set_data (void *data_arg) { data = static_cast<mxArray **> (data_arg); }
 
 private:
 
@@ -1849,17 +1856,23 @@ mxArray::~mxArray (void)
   delete rep;
 }
 
-octave_value
-mxArray::as_octave_value (void) const
-{
-  return rep->as_octave_value ();
-}
-
 void
 mxArray::set_name (const char *name_arg)
 {
   mxFree (name);
   name = strsave (name_arg);
+}
+
+octave_value
+mxArray::as_octave_value (mxArray *ptr)
+{
+  return ptr ? ptr->as_octave_value () : octave_value (Matrix ());
+}
+
+octave_value
+mxArray::as_octave_value (void) const
+{
+  return rep->as_octave_value ();
 }
 
 void
@@ -2855,13 +2868,7 @@ call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
       retval.resize (nargout);
 
       for (int i = 0; i < nargout; i++)
-	{
-	  if (argout[i])
-	    {
-	      mxArray *t = argout[i];
-	      retval(i) = t ? t->as_octave_value () : octave_value (Matrix ());
-	    }
-	}
+	retval(i) = mxArray::as_octave_value (argout[i]);
     }
 
   // Clean up mex resources.
@@ -2905,10 +2912,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin, mxArray *argin[],
   args.resize (nargin);
 
   for (int i = 0; i < nargin; i++)
-    {
-      mxArray *t = argin[i];
-      args(i) = t ? t->as_octave_value () : octave_value (Matrix ());
-    }
+    args(i) = mxArray::as_octave_value (argin[i]);
 
   octave_value_list retval = feval (fname, args, nargout);
 
@@ -3082,7 +3086,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
     return 1;
 
   if (! strcmp (space, "global"))
-    set_global_value (name, ptr->as_octave_value ());
+    set_global_value (name, mxArray::as_octave_value (ptr));
   else
     {
       // FIXME -- this belongs in variables.cc.
@@ -3097,7 +3101,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
 	mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
 
       if (sr)
-	sr->define (ptr->as_octave_value ());
+	sr->define (mxArray::as_octave_value (ptr));
       else
 	panic_impossible ();
     }

@@ -1,5 +1,16 @@
 2006-07-26  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (mxArray::as_octave_value (mxArray *)): New static function.
+	(call_mex, mexPutVariable, mexCallMATLAB,
+	mxArray_cell::as_octave_value, mxArray_struct::as_octave_value):
+	Use static version of as_octave_value here.
+	(mxArray_sparse::mxArray_sparse (const mxArray_sparse&)):
+	Check pr, ir, and jc before calling memcpy.
+	(mxArray_number::mxArray_number): Check pr before calling memcpy
+
+	* mxarray.h (mxArray::as_octave_value (mxArray *)): Provide decl.
+	(mxArray::as_octave_value): Now protected.
+
 	* file-io.cc (Ffeof, Fferror): Use DEFUNX instead of DEFUN.
 
 	* mex.cc (xfree): New function.

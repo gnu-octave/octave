@@ -155,6 +155,10 @@ maintainer-clean::
 dist-info-files: INSTALL.OCTAVE BUGS
 .PHONY: dist-info-files
 
+# The dist target depends on all because we use Octave to build some
+# figures for the manual.  It's best to create those figures with the
+# version of Octave that we are distributing (it may even be required).
+
 dist: all dist-info-files
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`

@@ -1,5 +1,9 @@
 2006-07-28  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.7.
+	(OCTAVE_API_VERSION): Now api-v20.
+	(OCTAVE_RELEASE_DATE): Now 2006-07-28.
+
 	* load-path.cc (path::do_add): Warn for trailing "//".
 
 	* strfns.cc: Comment out some tests for snapshot.

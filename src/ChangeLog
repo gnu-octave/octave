@@ -1,3 +1,9 @@
+2006-07-28  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (path::do_add): Warn for trailing "//".
+
+	* strfns.cc: Comment out some tests for snapshot.
+
 2006-07-27  John W. Eaton  <jwe@octave.org>
 
 	* defaults.cc (Vlocal_api_arch_lib_dir): New variable.

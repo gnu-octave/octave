@@ -467,6 +467,12 @@ load_path::do_prepend (const std::string& dir, bool warn)
 void
 load_path::do_add (const std::string& dir, bool at_end, bool warn)
 {
+  size_t len = dir.length ();
+
+  if (len > 1 && dir.substr (len-2) == "//")
+    warning_with_id ("Octave:recursive-path-search",
+		     "trailing `//' is no longer special in search path elements");
+
   dir_info_list_iterator i = find_dir_info (dir);
 
   if (i != dir_info_list.end ())

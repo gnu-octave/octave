@@ -80,7 +80,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-colon.h ov-base.h ov-base-mat.h ov-base-scalar.h \
 	ov-streamoff.h ov-str-mat.h ov-bool-mat.h ov-bool.h \
 	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
-	ov-mapper.h ov-mex-fcn.cc ov-usr-fcn.h ov-fcn-handle.h \
+	ov-mapper.h ov-mex-fcn.h ov-usr-fcn.h ov-fcn-handle.h \
 	ov-fcn-inline.h ov-typeinfo.h ov-type-conv.h \
 	$(OV_INTTYPE_INC)
 

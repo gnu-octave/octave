@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mex [options] file ...
 ## Compile source code written in C, C++, or Fortran, to a MEX file.
-## This is equivalent to @code {mkoctfile --mex [options] file}.
+## This is equivalent to @code{mkoctfile --mex [options] file}.
 ## @seealso{mkoctfile}
 ## @end deftypefn
 

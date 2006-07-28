@@ -37,7 +37,7 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h \
 	boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
 	Sparse.h sparse-base-lu.h SparseCmplxLU.h SparsedbleLU.h \
-	sparse-base-chol.h sparse-dmsolve.cc SparseCmplxCHOL.h \
+	sparse-base-chol.h SparseCmplxCHOL.h \
 	SparsedbleCHOL.h SparseCmplxQR.h SparseQR.h Sparse-op-defs.h \
 	MatrixType.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
@@ -158,7 +158,7 @@ EXTRAS := mx-inlines.cc kpse.cc intNDArray.cc
 INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
 DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
-	sparse-mk-ops.awk sparse-mx-ops oct-sparse.h.in oct-types.h.in \
+	sparse-mk-ops.awk sparse-mx-ops oct-types.h.in \
 	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)
 
 # Complete directory trees to distribute.

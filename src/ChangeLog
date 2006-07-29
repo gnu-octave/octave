@@ -1,3 +1,10 @@
+2006-07-29  John W. Eaton  <jwe@octave.org>
+
+	* matrix.h: Delete to avoid conflict with liboctave/Matrix.h on
+	case-insensitive filesystems.
+
+	* version.h (OCTAVE_VERSION): Now 2.9.7+.
+
 2006-07-28  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.7.

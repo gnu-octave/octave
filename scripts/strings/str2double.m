@@ -195,7 +195,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
     ix = 1;
     ## while (ix < sl) & any(abs(s(ix))==[rdelim,cdelim]),
     while (ix < sl && CD(ix))
-      ix++
+      ix++;
     endwhile
     ta = ix;
     te = [];

@@ -1,3 +1,7 @@
+2006-08-14  John W. Eaton  <jwe@octave.org>
+
+	* strings/str2double.m: Fix missing semicolon.
+
 2006-07-27  Jim Peterson  <jpeterson@annapmicro.com>
 
 	* plot/plot3.m: Accept one complex or one real and one complex

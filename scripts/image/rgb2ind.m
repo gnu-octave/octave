@@ -18,7 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{r}, @var{g}, @var{b})
+## @deftypefn  {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{rgb})
+## @deftypefnx {Function File} {[@var{x}, @var{map}] =} rgb2ind (@var{r}, @var{g}, @var{b})
 ## Convert and RGB image to an Octave indexed image.
 ## @seealso{ind2rgb, rgb2ntsc}
 ## @end deftypefn
@@ -31,8 +32,19 @@
 
 function [X, map] = rgb2ind (R, G, B)
 
-  if (nargin != 3)
-    usage ("[X, map] = rgb2ind (R, G, B)");
+  if (nargin != 1 && nargin != 3)
+    print_usage ();
+  endif
+  
+  if (nargin == 1)
+    rgb = R;
+    if (length (size (rgb)) == 3 && size (rgb, 3) == 3)
+      R = rgb(:,:,1);
+      G = rgb(:,:,2);
+      B = rgb(:,:,3);
+    else
+      error ("rgb2ind: argument is not an RGB image");
+    endif
   endif
 
   if (size (R) != size (G) || size (R) != size (B))

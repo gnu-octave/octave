@@ -49,4 +49,4 @@ contact @email{bug@@octave.org}.
 
 @DOCSTRING(saveimage)
 
-@DOCSTRING(IMAGEPATH)
+@DOCSTRING(IMAGE_PATH)

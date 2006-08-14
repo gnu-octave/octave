@@ -36,7 +36,7 @@ function [img_retval, map_retval] = loadimage (filename)
     error ("loadimage: expecting filename as a string");
   endif
 
-  file = file_in_path (IMAGEPATH, filename);
+  file = file_in_path (IMAGE_PATH, filename);
 
   if (isempty (file))
     error ("loadimage: unable to find image file");

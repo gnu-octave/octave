@@ -30,7 +30,7 @@ function spy(S)
 
   arp = automatic_replot;
   unwind_protect
-    automatic_replot = 0;
+    automatic_replot (0);
 
     eval(sprintf('__gnuplot_set__ nokey'))
     eval(sprintf('__gnuplot_set__ yrange [0:%d] reverse',m+1))
@@ -46,6 +46,6 @@ function spy(S)
     __gnuplot_set__ yrange [0:1] noreverse
     axis;
   unwind_protect_cleanup
-    automatic_replot = arp;
+    automatic_replot (arp);
   end_unwind_protect
 endfunction

@@ -20,7 +20,7 @@ endfunction
 ## print since print() resets output to stdout (unfortunately, gnpulot
 ## can't pop output as it can the terminal type).
 function bury_output ()
-  automatic_replot = false;
+  automatic_replot(0);
   __gnuplot_set__ term dumb
   [status, dummy] = fileattrib("/dev/null");
   if (status)

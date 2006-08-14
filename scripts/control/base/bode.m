@@ -147,7 +147,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
     ## Plot the information
     save_automatic_replot = automatic_replot;
     unwind_protect
-      automatic_replot = 0;
+      automatic_replot(0);
       oneplot();
       __gnuplot_set__ autoscale;
       __gnuplot_set__ nokey;
@@ -204,7 +204,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 	oneplot();
       endif
     unwind_protect_cleanup
-      automatic_replot = save_automatic_replot;
+      automatic_replot(save_automatic_replot);
     end_unwind_protect
   else
     mag_r = mag;

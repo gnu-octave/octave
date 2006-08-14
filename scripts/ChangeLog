@@ -1,3 +1,8 @@
+2006-08-14  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
+
+	* sparse/spy.m, control/base/bode.m, control/base/__stepimp__.m,
+	signal/freqz_plot.m: Adapt to new automatic_replot definition.
+	
 2006-08-14  Søren Hauberg  <hauberg@gmail.com>
 
 	* strings/bin2dec.m: Ignore spaces in input for compatibility.

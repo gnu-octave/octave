@@ -42,7 +42,7 @@ function freqz_plot(w,h)
       ## Protect graph state.
 
       replot_state = automatic_replot;
-      automatic_replot = 0;
+      automatic_replot(0);
 
       subplot (311);
       __gnuplot_set__ lmargin 10;
@@ -88,7 +88,7 @@ function freqz_plot(w,h)
       __gnuplot_set__ tmargin;
       oneplot ();
 
-      automatic_replot = replot_state;
+      automatic_replot(replot_state);
 
     end_unwind_protect
 

@@ -216,7 +216,7 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
   
   save_automatic_replot = automatic_replot;
   unwind_protect
-    automatic_replot = 0;
+    automatic_replot(0);
     if(nargout == 0)
       ## Plot the information
       oneplot();
@@ -272,6 +272,6 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
     endif
     ## printf("##STEPIMP-DEBUG: gratulations, successfull completion.\n");
   unwind_protect_cleanup
-    automatic_replot = save_automatic_replot;
+    automatic_replot(save_automatic_replot);
   end_unwind_protect
 endfunction  

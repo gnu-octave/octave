@@ -39,10 +39,10 @@
 
 function cmap = colormap (map)
 
-  global __current_color_map__ = gray ();
+  persistent current_color_map = gray ();
 
   if (nargin > 1)
-    usage ("colormap (map)");
+    print_usage ();
   endif
 
   if (nargin == 1)
@@ -63,12 +63,12 @@ function cmap = colormap (map)
         error ("colormap: map must have values in [0,1]");
       endif
       ## Set the new color map
-      __current_color_map__ = map;
+      current_color_map = map;
     endif
 
   endif
 
   ## Return current color map.
-  cmap = __current_color_map__;
+  cmap = current_color_map;
 
 endfunction

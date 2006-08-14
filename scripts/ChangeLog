@@ -1,5 +1,7 @@
 2006-08-14  Søren Hauberg  <hauberg@gmail.com>
 
+        * colormap.m: Change global variable to persistent.
+
 	* rgb2ind.m: Handle single 3-d array as rgb image.
 
 2006-08-14  John W. Eaton  <jwe@octave.org>

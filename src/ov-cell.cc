@@ -176,7 +176,7 @@ octave_cell::subsasgn (const std::string& type,
 
 		    tmp.make_unique ();
 
-		    if (! tmp.is_defined () || tmp.is_empty ())
+		    if (! tmp.is_defined () || tmp.is_zero_by_zero ())
 		      tmp = octave_value::empty_conv (type.substr (1), rhs);
 
 		    if (! error_state)

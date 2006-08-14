@@ -1,5 +1,8 @@
 2006-08-14  John W. Eaton  <jwe@octave.org>
 
+	* ov-cell.cc (octave_cell::subsasgn): Call empty_conv for 0x0
+	objects, not just empty objects.
+
 	* oct-map.h (Octave_map::clear): Also clear key_list.
 
 	* load-path.cc (load_path::find_dir_info, load_path::do_add,

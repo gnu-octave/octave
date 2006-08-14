@@ -30,7 +30,7 @@
 function [local_packages, global_packages] = pkg(varargin)
     ## Handle input
     if (length(varargin) == 0 || !iscellstr(varargin))
-        print_usage("pkg");
+        print_usage();
     endif
     files = {};
     deps = true;
@@ -79,7 +79,6 @@ function [local_packages, global_packages] = pkg(varargin)
 endfunction
 
 function install(files, handle_deps)
-%disp("function: install")
     ## Set parameters depending on wether or not the installation
     ## is system-wide (global) or local.
     local_list = tilde_expand("~/.octave_packages");
@@ -143,7 +142,7 @@ function install(files, handle_deps)
 
             ## Uncompress the package
             untar(tgz, tmpdir);
-  
+
             ## Get the name of the directory produced by tar
             [dirlist, err, msg] = readdir(tmpdir);
             if (err)
@@ -154,11 +153,11 @@ function install(files, handle_deps)
 
             ## Make sure the package contains necessary files
             verify_directory(packdir);
-    
+
             ## Read the DESCRIPTION file
             filename = [packdir "DESCRIPTION"];
             desc = get_description(filename);
-            
+
             ## Set default installation directory
             desc.dir = [prefix "/" desc.name "-" desc.version];
             
@@ -178,7 +177,7 @@ function install(files, handle_deps)
         ## Something went wrong, delete tmpdirs
         for i = 1:length(tmpdirs)
             tmpdirs{i}
-            rmdir(tmpdirs{i}, "s");
+            rm_rf(tmpdirs{i});
         endfor
         error(lasterr()(8:end));
     end_try_catch
@@ -222,7 +221,7 @@ function install(files, handle_deps)
     catch
         ## Something went wrong, delete tmpdirs
         for i = 1:length(tmpdirs)
-            rmdir(tmpdirs{i}, "s");
+            rm_rf(tmpdirs{i});
         endfor
         error(lasterr()(8:end));
     end_try_catch
@@ -235,7 +234,7 @@ function install(files, handle_deps)
     catch
         ## Something went wrong, delete tmpdirs
         for i = 1:length(tmpdirs)
-            rmdir(tmpdirs{i}, "s");
+            rm_rf(tmpdirs{i});
         endfor
         error(lasterr()(8:end));
     end_try_catch
@@ -251,7 +250,7 @@ function install(files, handle_deps)
     catch
         ## Something went wrong, delete tmpdirs
         for i = 1:length(tmpdirs)
-            rmdir(tmpdirs{i}, "s");
+            rm_rf(tmpdirs{i});
         endfor
         error(lasterr()(8:end));
     end_try_catch
@@ -270,10 +269,10 @@ function install(files, handle_deps)
     catch
         ## Something went wrong, delete tmpdirs
         for i = 1:length(tmpdirs)
-            rmdir(tmpdirs{i}, "s");
+            rm_rf(tmpdirs{i});
         endfor
         for i = 1:length(descriptions)
-            rmdir(descriptions{i}.dir, "s");
+            rm_rf(descriptions{i}.dir);
         endfor
         if (global_install)
             error("Couldn't append to %s: %s\n", global_list, lasterr()(8:end));
@@ -284,7 +283,7 @@ function install(files, handle_deps)
 
     ## All is well, let's clean up
     for i = 1:length(tmpdirs)
-        [status, msg] = rmdir(tmpdirs{i}, "s");
+        [status, msg] = rm_rf(tmpdirs{i});
         if (status != 1)
             warning("Couldn't clean up after my self: %s\n", msg);
         endif
@@ -296,13 +295,10 @@ function install(files, handle_deps)
     for i = 1:length(descriptions)
         dirs{i} = descriptions{i}.dir;
     endfor
-    # XXX: I guess it would be better to use addpath
-    # (assuming it gets included in Octave)
-    path(LOADPATH, dirs{:});
+    addpath(dirs{:});
 endfunction
 
 function uninstall(pkgnames, handle_deps)
-%disp("function: uninstall")
     local_list = tilde_expand("~/.octave_packages");
     global_list = [OCTAVE_HOME "share/octave/octave_packages"];
     ## Get the list of installed packages
@@ -374,7 +370,8 @@ function uninstall(pkgnames, handle_deps)
             end_try_catch
         endif
         ## Do the actual deletion
-        [status, msg] = rmdir(desc.dir, "s");
+        rmpath(desc.dir);
+        [status, msg] = rm_rf(desc.dir);
         if (status != 1)
             error("Couldn't delete directory %s: %s\n", desc.dir, msg);
         endif
@@ -404,7 +401,6 @@ endfunction
 ##########################################################
 
 function prepare_installation(desc, packdir)
-%disp("function: function: prepare_installation")
     ## Is there a pre_install to call?
     if (exist([packdir "pre_install.m"], "file"))
         wd = pwd();
@@ -428,37 +424,36 @@ function prepare_installation(desc, packdir)
 	if (!exist([packdir "inst"], "dir"))
         [status, msg] = mkdir([packdir "inst"]);
         if (status != 1)
-            rmdir(desc.dir, "s");
+            rm_rf(desc.dir);
             error("The 'inst' directory did not exist and could not be created: %s\n", msg);
         endif
     endif
 endfunction
 
 function configure_make (desc, packdir)   
-%disp("function: function: configure_make")
 	## Perform ./configure, make, make install in "src"
     if (exist([packdir "src"], "dir"))
         src = [packdir "src/"];
         ## configure
         if (exist([src "configure"], "file"))
-            [output, status] = system(["cd " src " ;./configure --prefix=" desc.dir]);
+            [status, output] = system(["cd " src " ;./configure --prefix=" desc.dir]);
             if (status != 0)
-                rmdir(desc.dir, "s");
+                rm_rf(desc.dir);
                 error("The configure script returned the following error: %s\n", output);
             endif
         endif
 
         ## make
         if (exist([src "Makefile"], "file"))
-            [output, status] = system(["export INSTALLDIR=" desc.dir "; make -C " src]);
+            [status, output] = system(["export INSTALLDIR=" desc.dir "; make -C " src]);
             if (status != 0)
-                rmdir(desc.dir, "s");
+                rm_rf(desc.dir);
                 error("'make' returned the following error: %s\n", output);
             endif
             %# make install
-            %[output, status] = system(["export INSTALLDIR=" desc.dir "; make install -C " src]);
+            %[status, output] = system(["export INSTALLDIR=" desc.dir "; make install -C " src]);
             %if (status != 0)
-            %    rmdir(desc.dir, "s");
+            %    rm_rf(desc.dir);
             %    error("'make install' returned the following error: %s\n", output);
             %endif
         endif
@@ -470,35 +465,37 @@ function configure_make (desc, packdir)
             if (fid < 0)
                 error("Couldn't open %s: %s\n", files, msg);
             endif
-            filenames = char(fread(fid));
+            filenames = char(fread(fid))';
             filenames = strrep(filenames, "\n", " ");
-            [output, status] = system(["cd " src "; cp " filenames " " packdir "inst/"]);
+            [status, output] = system(["cd " src "; cp " filenames " " packdir "inst/"]);
             fclose(fid);
         else
             m = dir([src "*.m"]);
             oct = dir([src "*.oct"]);
             f = "";
             if (length(m) > 0)
-                f = sprintf("%s ", m.name);
+                f = sprintf([src "%s "], m.name);
             endif
             if (length(oct) > 0)
-                f = [f " " sprintf("%s ", oct.name)];
+                f = [f " " sprintf([src "%s "], oct.name)];
             endif
-            [output, status] = system(["cp " f " " packdir "inst/"]);
+            
+            if (!all(isspace(f)))
+                [status, output] = system(["cp -R " f " " packdir "inst/"]);
+            endif
         endif
         if (status != 0)
-            rmdir(desc.dir, "s");
+            rm_rf(desc.dir);
             error("Couldn't copy files from 'src' to 'inst': %s\n", output);
         endif
     endif
 endfunction
 
-function copy_files	(desc, packdir)
-%disp("function: function: copy_files")
+function copy_files (desc, packdir)
     ## Copy the files from "inst" to installdir
-    [output, status] = system(["cp -R " packdir "inst/* " desc.dir]);
+    [status, output] = system(["cp -R " packdir "inst/* " desc.dir]);
     if (status != 0)
-        rmdir(desc.dir, "s");
+        rm_rf(desc.dir);
         error("Couldn't copy files to the installation directory\n");
     endif
 
@@ -506,45 +503,44 @@ function copy_files	(desc, packdir)
     packinfo = [desc.dir "/packinfo/"];
     [status, msg] = mkdir (packinfo);
     if (status != 1)
-        rmdir(desc.dir, "s");
+        rm_rf(desc.dir);
         error("Couldn't create packinfo directory: %s\n", msg);
     endif
 
     ## Copy DESCRIPTION
-    [output, status] = system(["cp " packdir "DESCRIPTION " packinfo]);
+    [status, output] = system(["cp " packdir "DESCRIPTION " packinfo]);
     if (status != 0)
-       rmdir(desc.dir, "s");
+       rm_rf(desc.dir);
        error("Couldn't copy DESCRIPTION: %s\n", output);
     endif
 
     ## Is there an INDEX file to copy or should we generate one?
     if (exist([packdir "INDEX"], "file"))
-        [output, status] = system(["cp " packdir "INDEX " packinfo]);
+        [status, output] = system(["cp " packdir "INDEX " packinfo]);
         if (status != 0)
-            rmdir(desc.dir, "s");
+            rm_rf(desc.dir);
             error("Couldn't copy INDEX file: %s\n", output);
         endif
     else
         try
             write_INDEX(desc, [packdir "inst"], [packinfo "INDEX"]);
         catch
-            rmdir(desc.dir, "s");
+            rm_rf(desc.dir);
             error(lasterr);
         end_try_catch
     endif
     
     ## Is there an 'on_uninstall.m' to install?
     if (exist([packdir "on_uninstall.m"], "file"))
-        [output, status] = system(["cp " packdir "on_uninstall.m " packinfo]);
+        [status, output] = system(["cp " packdir "on_uninstall.m " packinfo]);
         if (status != 0)
-            rmdir(desc.dir, "s");
+            rm_rf(desc.dir);
             error("Couldn't copy on_uninstall.m: %s\n", output);
         endif
     endif
 endfunction
 
 function finish_installation (desc, packdir)
-%disp("function: finish_installation")
     ## Is there a post-install to call?
     if (exist([packdir "post_install.m"], "file"))
         wd = pwd();
@@ -554,21 +550,19 @@ function finish_installation (desc, packdir)
             cd(wd);
         catch
             cd(wd);
-            rmdir(desc.dir, "s");
+            rm_rf(desc.dir);
             error("The post_install function returned the following error: %s\n", lasterr);
         end_try_catch
     endif
 endfunction
 
 function out = issuperuser()
-%disp("function: issuperuser")
     out = strcmp(getenv("USER"), "root");
 endfunction
 
 ## This function makes sure the package contains the
 ## essential files.
 function verify_directory(dir)
-%disp("function: verify_directory")
     needed_files = {"COPYING", "DESCRIPTION"};
     for f = needed_files
         if (!exist([dir "/" f{1}], "file"))
@@ -579,7 +573,6 @@ endfunction
 
 ## This function parses the DESCRIPTION file
 function desc = get_description(filename)
-%disp("function: get_description")
     fid = fopen(filename, "r");
     if (fid == -1)
         error("The DESCRIPTION file %s could not be read\n", filename);
@@ -637,7 +630,6 @@ endfunction
 ## Makes sure the version string v is a valid x.y.z version string
 ## Examples: "0.1" => "0.1.0", "monkey" => error(...)
 function out = fix_version(v)
-%disp("function: fix_version")
     dots = find(v == ".");
     if (length(dots) == 1)
         major = str2num(v(1:dots-1));
@@ -662,7 +654,6 @@ endfunction
 ## This function returns a cell of structures with the following fields:
 ##   package, version, operator
 function deps_cell = fix_depends(depends)
-%disp("function: fix_depends")
     deps = split_by(tolower(depends), ",");
     deps_cell = cell(1, length(deps));
     
@@ -709,7 +700,6 @@ endfunction
 ## Strips the text of spaces from the right
 ## Example: "  hello world  " => "  hello world" (XXX: is this the same as deblank?)
 function text = rstrip(text)
-%disp("function: rstrip")
     chars = find(!isspace(text));
     if (length(chars) > 0)
         text = text(chars(1):end); # XXX: shouldn't it be text = text(1:chars(end));
@@ -721,7 +711,6 @@ endfunction
 ## Strips the text of spaces from the left and the right
 ## Example: "  hello world  " => "hello world"
 function text = strip(text)
-%disp("function: strip")
     chars = find(!isspace(text));
     if (length(chars) > 0)
         text = text(chars(1):chars(end));
@@ -733,7 +722,6 @@ endfunction
 ## Splits the text into a cell array of strings by sep
 ## Example: "A, B" => {"A", "B"} (with sep = ",")
 function out = split_by(text, sep)
-%disp("function: split_by")
     text_matrix = split(text, sep);
     num_words = size(text_matrix,1);
     out = cell(num_words, 1);
@@ -747,7 +735,6 @@ endfunction
 ##   'dir'   is the 'inst' direcotyr in temporary directory.
 ##   'INDEX' is the name (including path) of resulting INDEX file.
 function write_INDEX(desc, dir, INDEX)
-%disp("function: write_index")
     ## Get names of functions in dir
     [files, err, msg] = readdir(dir);
     if (err)
@@ -786,7 +773,6 @@ function write_INDEX(desc, dir, INDEX)
 endfunction
 
 function bad_deps = get_unsatisfied_deps(desc, installed_packages)
-%disp("function: get_unsatisfied_deps")
     bad_deps = {};
 
     ## For each dependency
@@ -820,7 +806,6 @@ endfunction
 ## Example: v1="0.1.0", v2="0.0.9", operator=">=" => true
 ## TODO: This function is very long and complex! Can't it be simplified?
 function out = compare_versions(v1, v2, operator)
-%disp("function: compare_versions")
     dot1 = find(v1 == ".");
     dot2 = find(v2 == ".");
     if (length(dot1) != 2 || length(dot2) != 2)
@@ -859,8 +844,6 @@ function out = compare_versions(v1, v2, operator)
 endfunction
 
 function [out1, out2] = installed_packages()
-%disp("function: installed_packages")
-
     local_list = tilde_expand("~/.octave_packages");
     global_list = [OCTAVE_HOME "share/octave/octave_packages"];
     ## Get the list of installed packages
@@ -924,7 +907,6 @@ function [out1, out2] = installed_packages()
 endfunction
 
 function load_packages(files, handle_deps)
-%disp("function: load_packages")
     installed_packages = installed_packages();
     num_packages = length(installed_packages);
     
@@ -947,7 +929,21 @@ function load_packages(files, handle_deps)
             error("Package %s is not installed\n", files{j});
         endfor
     endif
-    # XXX: I guess it would be better to use addpath
-    # (assuming it gets included in Octave)
-    path(LOADPATH, dirs{:});
+    addpath(dirs{:});
+endfunction
+
+function [status_out, msg_out] = rm_rf (dir)
+  crr = confirm_recursive_rmdir ();
+  unwind_protect
+    confirm_recursive_rmdir (false);
+    [status, msg] = rmdir (dir, "s");
+  unwind_protect_cleanup
+    confirm_recursive_rmdir (crr);
+  end_unwind_protect
+  if (nargout > 0)
+    status_out = status;
+  endif
+  if (nargout > 1)
+    msg_out = msg;
+  endif
 endfunction

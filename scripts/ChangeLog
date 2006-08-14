@@ -1,9 +1,19 @@
+2006-08-14  John W. Eaton  <jwe@octave.org>
+
+	* pkg/Makefile.in (script_sub_dir): Change from plot to pkg.
+
 2006-08-14  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
 
 	* sparse/spy.m, control/base/bode.m, control/base/__stepimp__.m,
 	signal/freqz_plot.m: Adapt to new automatic_replot definition.
 	
-2006-08-14  Søren Hauberg  <hauberg@gmail.com>
+2006-08-14  Søren Hauberg  <soren@hauberg.org>
+
+        * pkg/pkg.m: Don't pass function name to print_usage.
+	Use addpath and rmpath instead of manipulating LOADPATH.
+	Handle changes to system function.
+	(rm_rf): New subfunction.  Use it to avoid confirmation dialog for
+	recursive directory removal.
 
 	* strings/bin2dec.m: Ignore spaces in input for compatibility.
 

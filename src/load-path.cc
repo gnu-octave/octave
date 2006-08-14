@@ -237,8 +237,10 @@ load_path::instance_ok (void)
 }
 
 load_path::const_dir_info_list_iterator
-load_path::find_dir_info (const std::string& dir) const
+load_path::find_dir_info (const std::string& dir_arg) const
 {
+  std::string dir = file_ops::tilde_expand (dir_arg);
+
   const_dir_info_list_iterator retval = dir_info_list.begin ();
 
   while (retval != dir_info_list.end ())
@@ -253,8 +255,10 @@ load_path::find_dir_info (const std::string& dir) const
 }
 
 load_path::dir_info_list_iterator
-load_path::find_dir_info (const std::string& dir)
+load_path::find_dir_info (const std::string& dir_arg)
 {
+  std::string dir = file_ops::tilde_expand (dir_arg);
+
   dir_info_list_iterator retval = dir_info_list.begin ();
 
   while (retval != dir_info_list.end ())
@@ -465,13 +469,15 @@ load_path::do_prepend (const std::string& dir, bool warn)
 }
 
 void
-load_path::do_add (const std::string& dir, bool at_end, bool warn)
+load_path::do_add (const std::string& dir_arg, bool at_end, bool warn)
 {
-  size_t len = dir.length ();
+  size_t len = dir_arg.length ();
 
-  if (len > 1 && dir.substr (len-2) == "//")
+  if (len > 1 && dir_arg.substr (len-2) == "//")
     warning_with_id ("Octave:recursive-path-search",
 		     "trailing `//' is no longer special in search path elements");
+
+  std::string dir = file_ops::tilde_expand (dir_arg);
 
   dir_info_list_iterator i = find_dir_info (dir);
 
@@ -501,12 +507,12 @@ load_path::do_add (const std::string& dir, bool at_end, bool warn)
 		}
 	    }
 	  else if (warn)
-	    warning ("addpath: %s: not a directory", dir.c_str ());
+	    warning ("addpath: %s: not a directory", dir_arg.c_str ());
 	}
       else if (warn)
 	{
 	  std::string msg = fs.error ();
-	  warning ("addpath: %s: %s", dir.c_str (), msg.c_str ());
+	  warning ("addpath: %s: %s", dir_arg.c_str (), msg.c_str ());
 	}
     }
 
@@ -521,13 +527,13 @@ load_path::do_add (const std::string& dir, bool at_end, bool warn)
 }
 
 bool
-load_path::do_remove (const std::string& dir)
+load_path::do_remove (const std::string& dir_arg)
 {
   bool retval = false;
 
-  if (! dir.empty ())
+  if (! dir_arg.empty ())
     {
-      if (dir == ".")
+      if (dir_arg == ".")
 	{
 	  warning ("rmpath: can't remove \".\" from path");
 
@@ -536,6 +542,8 @@ load_path::do_remove (const std::string& dir)
 	}
       else
 	{
+	  std::string dir = file_ops::tilde_expand (dir_arg);
+
 	  dir_info_list_iterator i = find_dir_info (dir);
 
 	  if (i != dir_info_list.end ())

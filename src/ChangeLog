@@ -1,3 +1,8 @@
+2006-08-14  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::find_dir_info, load_path::do_add,
+	load_path::do_remove): Perform tilde expansion on directory here.
+
 2006-07-29  John W. Eaton  <jwe@octave.org>
 
 	* matrix.h: Delete to avoid conflict with liboctave/Matrix.h on

@@ -1,5 +1,7 @@
 2006-08-14  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (symbol_record_name_compare): Fix casts.
+
 	* ov-cell.cc (octave_cell::subsasgn): Call empty_conv for 0x0
 	objects, not just empty objects.
 

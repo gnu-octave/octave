@@ -1527,8 +1527,8 @@ Set the documentation string for @var{symbol} to @var{text}.\n\
 static int
 symbol_record_name_compare (const void *a_arg, const void *b_arg)
 {
-  const symbol_record *a = static_cast<const symbol_record *> (a_arg);
-  const symbol_record *b = static_cast<const symbol_record *> (b_arg);
+  const symbol_record *a = *(static_cast<symbol_record *const*> (a_arg));
+  const symbol_record *b = *(static_cast<symbol_record *const*> (b_arg));
 
   std::string a_nm = a->name ();
   std::string b_nm = b->name ();

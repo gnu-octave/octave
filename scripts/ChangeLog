@@ -1,5 +1,7 @@
 2006-08-14  Søren Hauberg  <hauberg@gmail.com>
 
+	* strings/bin2dec.m: Ignore spaces in input for compatibility.
+
         * colormap.m: Change global variable to persistent.
 
 	* rgb2ind.m: Handle single 3-d array as rgb image.

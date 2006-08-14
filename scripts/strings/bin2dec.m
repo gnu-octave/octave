@@ -37,10 +37,16 @@
 
 function d = bin2dec (h)
 
-  if (nargin != 1)
-    usage ("bin2dec (b)");
+  if (nargin == 1 && ischar (h))
+    n = rows (h);
+    d = zeros (n, 1);
+    for i = 1:n
+      s = h(i,:);
+      s = s(! isspace (s));
+      d(i) = base2dec (s, 2);
+    endfor
   else
-    d = base2dec (h, 2);
+    print_usage ();
   endif
 
 endfunction

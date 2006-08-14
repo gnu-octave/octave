@@ -135,7 +135,11 @@ Octave_map
   bool contains (const std::string& k) const
     { return (seek (k) != map.end ()); }
 
-  void clear (void) { map.clear (); }
+  void clear (void)
+    {
+      map.clear ();
+      key_list.clear ();
+    }
 
   string_vector keys (void) const;
 
@@ -183,10 +187,10 @@ private:
   mutable dim_vector dimensions;
 
   void maybe_add_to_key_list (const std::string& k)
-  {
-    if (! contains (k))
-      key_list.push_back (k);
-  }
+    {
+      if (! contains (k))
+	key_list.push_back (k);
+    }
 };
 
 #endif

@@ -1,3 +1,7 @@
+2006-08-15  John W. Eaton  <jwe@octave.org>
+
+	* deprecated/is_global.m: Delete.
+
 2006-08-14  John W. Eaton  <jwe@octave.org>
 
 	* pkg/Makefile.in (script_sub_dir): Change from plot to pkg.

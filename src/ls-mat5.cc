@@ -477,7 +477,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   if (type != miMATRIX)
     {
-      error ("load: invalid element type");
+      error ("load: invalid element type = %d", type);
       goto early_read_error;
     }
 

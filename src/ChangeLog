@@ -1,3 +1,9 @@
+2006-08-15  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (do_isglobal): New function.
+	(Fisglobal): Use it.
+	(Fis_global): New function.
+
 2006-08-14  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_record_name_compare): Fix casts.

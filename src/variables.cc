@@ -706,20 +706,8 @@ looks_like_struct (const std::string& text)
   return retval;
 }
 
-DEFUN (isglobal, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} isglobal (@var{name})\n\
-Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For\n\
-example,\n\
-\n\
-@example\n\
-@group\n\
-global x\n\
-isglobal (\"x\")\n\
-     @result{} 1\n\
-@end group\n\
-@end example\n\
-@end deftypefn")
+static octave_value
+do_isglobal (const octave_value_list& args)
 {
   octave_value retval = false;
 
@@ -744,6 +732,33 @@ isglobal (\"x\")\n\
   retval = (sr && sr->is_linked_to_global ());
 
   return retval;
+}
+
+DEFUN (isglobal, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isglobal (@var{name})\n\
+Return 1 if @var{name} is globally visible.  Otherwise, return 0.  For\n\
+example,\n\
+\n\
+@example\n\
+@group\n\
+global x\n\
+isglobal (\"x\")\n\
+     @result{} 1\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
+{
+  return do_isglobal (args);
+}
+
+DEFUN (is_global, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isglobal (@var{name})\n\
+This function has been deprecated.  Use isglobal instead.\n\
+@end deftypefn")
+{
+  return do_isglobal (args);
 }
 
 int

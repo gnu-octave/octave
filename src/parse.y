@@ -3003,14 +3003,28 @@ text_getc (FILE *f)
 // grab them all at once.  If UPDATE_POS is TRUE, line and column
 // number information is updated.  If SAVE_COPYRIGHT is TRUE, then
 // comments that are recognized as a copyright notice are saved in the
-// comment buffer.
+// comment buffer.  If SKIP_CODE is TRUE, then ignore code, otherwise
+// stop at the first non-whitespace character that is not part of a
+// comment.
+
+// FIXME -- skipping code will fail for something like this:
+//
+//   function foo (x)
+//     fprintf ('%d\n', x);
+//
+//   % This is the help for foo.
+//
+// because we recognize the '%' in the fprintf format as a comment
+// character.  Fixing this will probably require actually parsing the
+// file properly.
 
 // FIXME -- grab_help_text() in lex.l duplicates some of this
 // code!
 
 static std::string
 gobble_leading_white_space (FILE *ffile, bool in_parts,
-			    bool update_pos, bool save_copyright)
+			    bool update_pos, bool save_copyright,
+			    bool skip_code)
 {
   std::string help_txt;
 
@@ -3111,10 +3125,15 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 	      continue;
 
 	    default:
-	      if (update_pos)
-		current_input_column--;
-	      ungetc (c, ffile);
-	      goto done;
+	      if (skip_code)
+		continue;
+	      else
+		{
+		  if (update_pos)
+		    current_input_column--;
+		  ungetc (c, ffile);
+		  goto done;
+		}
 	    }
 	}
     }
@@ -3132,8 +3151,8 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 	}
 
       if (in_parts && help_txt.empty ())
-	help_txt = gobble_leading_white_space (ffile, in_parts,
-					       update_pos, false);
+	help_txt = gobble_leading_white_space (ffile, in_parts, update_pos,
+					       false, skip_code);
     }
 
   return help_txt;
@@ -3157,7 +3176,7 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 	{
 	  unwind_protect::add (safe_fclose, fptr);
 
-	  retval = gobble_leading_white_space (fptr, true, true, false);
+	  retval = gobble_leading_white_space (fptr, true, true, false, true);
 
 	  unwind_protect::run ();
 	}
@@ -3180,7 +3199,7 @@ is_function_file (FILE *ffile)
 
   long pos = ftell (ffile);
 
-  gobble_leading_white_space (ffile, false, false, false);
+  gobble_leading_white_space (ffile, false, false, false, false);
 
   char buf [10];
   fgets (buf, 10, ffile);
@@ -3280,14 +3299,14 @@ parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = fal
 	  reset_parser ();
 
 	  std::string txt
-	    = gobble_leading_white_space (ffile, true, true, true);
+	    = gobble_leading_white_space (ffile, true, true, true, false);
 
 	  help_buf.push (txt);
 
 	  octave_comment_buffer::append (txt);
 
 	  // FIXME -- this should not be necessary.
-	  gobble_leading_white_space (ffile, false, true, false);
+	  gobble_leading_white_space (ffile, false, true, false, false);
 
 	  int status = yyparse ();
 

@@ -1,5 +1,12 @@
 2006-08-15  John W. Eaton  <jwe@octave.org>
 
+	* help.cc (help_from_file): Call get_help_from_file with new file
+	arg.  Print file info here.
+
+	* parse.y (get_help_from_file): Delete include_file_info arg.
+	Provide two versions, one that returns the file found in a
+	reference arg and one that does not.
+
 	* variables.cc (do_isglobal): New function.
 	(Fisglobal): Use it.
 	(Fis_global): New function.

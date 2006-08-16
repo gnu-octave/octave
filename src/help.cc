@@ -1002,10 +1002,13 @@ help_from_file (std::ostream& os, const std::string& nm, bool& symbol_found)
 {
   bool retval = false;
 
-  std::string h = get_help_from_file (nm, symbol_found, true);
+  std::string file;
+
+  std::string h = get_help_from_file (nm, symbol_found, file);
 
   if (h.length () > 0)
     {
+      os << nm << " is the file " << file << "\n\n";
       display_help_text (os, h);
       os << "\n";
       retval = true;

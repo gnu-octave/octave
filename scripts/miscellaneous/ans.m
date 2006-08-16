@@ -13,5 +13,5 @@
 
 ## FIXME -- we should be able to get formatted help for empty scripts,
 ## not just functions.
-function ans ()
-endfunction
+##function ans ()
+##endfunction

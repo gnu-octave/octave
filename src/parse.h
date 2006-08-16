@@ -91,7 +91,10 @@ parse_and_execute (const std::string& s, bool verbose = false,
 
 extern std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
-		    bool include_file_info = false);
+		    std::string& file);
+
+extern std::string
+get_help_from_file (const std::string& nm, bool& symbol_found);
 
 extern std::string lookup_autoload (const std::string& nm);
 

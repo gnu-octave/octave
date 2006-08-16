@@ -3141,11 +3141,11 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 
 std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
-		    bool include_file_info)
+		    std::string& file)
 {
   std::string retval;
 
-  std::string file = fcn_file_in_path (nm);
+  file = fcn_file_in_path (nm);
 
   if (! file.empty ())
     {
@@ -3159,14 +3159,18 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 
 	  retval = gobble_leading_white_space (fptr, true, true, false);
 
-	  if (! retval.empty () && include_file_info)
-	    retval = nm + " is the file: " + file + "\n\n" + retval;
-
 	  unwind_protect::run ();
 	}
     }
 
   return retval;
+}
+
+std::string
+get_help_from_file (const std::string& nm, bool& symbol_found)
+{
+  std::string file;
+  return get_help_from_file (nm, symbol_found, file);
 }
 
 static int

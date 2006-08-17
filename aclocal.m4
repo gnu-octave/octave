@@ -560,6 +560,58 @@ foo" | $GPERF -t -C -D -E -G -L C++ -H octave_kw_hash -N octave_kw_lookup > /dev
   AC_SUBST(GPERF)
 ])
 dnl
+dnl Is ghostscript installed?
+dnl
+dnl OCTAVE_PROG_GHOSTSCRIPT
+AC_DEFUN(OCTAVE_PROG_GHOSTSCRIPT, [
+  AC_CHECK_PROG(GHOSTSCRIPT, gs, gs, [])
+  if test -z "$GHOSTSCRIPT"; then
+    GHOSTSCRIPT='$(top_srcdir)/missing gs'
+    warn_ghostscript="I didn't find ghostscript, but it's only a problem if you need to reconstruct figures for the manual"
+    AC_MSG_WARN($warn_ghostscript)
+  fi
+  AC_SUBST(GHOSTSCRIPT)
+])
+dnl
+dnl Is makeinfo installed?
+dnl
+dnl OCTAVE_PROG_MAKEINFO
+AC_DEFUN(OCTAVE_PROG_MAKEINFO, [
+  AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, [])
+  if test -z "$MAKEINFO"; then
+    MAKEINFO='$(top_srcdir)/missing makeinfo'
+    warn_makeinfo="I didn't find makeinfo, but it's only a problem if you need to reconstruct the Info version of the manual"
+    AC_MSG_WARN($warn_makeinfo)
+  fi
+  AC_SUBST(MAKEINFO)
+])
+dnl
+dnl Is texi2dvi installed?
+dnl
+dnl OCTAVE_PROG_TEXI2DVI
+AC_DEFUN(OCTAVE_PROG_TEXI2DVI, [
+  AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
+  if test -z "$TEXI2DVI"; then
+    TEXI2DVI='$(top_srcdir)/missing texi2dvi'
+    warn_texi2dvi="I didn't find texi2dvi, but it's only a problem if you need to reconstruct the DVI version of the manual"
+    AC_MSG_WARN($warn_texi2dvi)
+  fi
+  AC_SUBST(TEXI2DVI)
+])
+dnl
+dnl Is texi2pdf installed?
+dnl
+dnl OCTAVE_PROG_TEXI2PDF
+AC_DEFUN(OCTAVE_PROG_TEXI2PDF, [
+  AC_CHECK_PROG(TEXI2PDF, texi2pdf, texi2pdf, [])
+  if test -z "$TEXI2PDF"; then
+    TEXI2PDF='$(top_srcdir)/missing texi2pdf'
+    warn_texi2pdf="I didn't find texi2pdf, but it's only a problem if you need to reconstruct the PDF version of the manual"
+    AC_MSG_WARN($warn_texi2pdf)
+  fi
+  AC_SUBST(TEXI2PDF)
+])
+dnl
 dnl Find nm.
 dnl
 dnl OCTAVE_PROG_NM

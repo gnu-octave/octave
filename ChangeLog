@@ -1,3 +1,9 @@
+2006-08-17  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_PROG_GHOSTSCRIPT, OCTAVE_PROG_MAKEINFO,
+	OCTAVE_PROG_TEXI2DVI, OCTAVE_PROG_TEXI2PDF): New macros.
+	* configure.in: Use them.  Maybe print warnings in summary.
+
 2006-07-27  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (localapiarchlibdir): Substitute it here.

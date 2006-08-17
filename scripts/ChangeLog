@@ -1,3 +1,7 @@
+2006-08-14  Søren Hauberg  <soren@hauberg.org>
+
+	* image/imshow.m: New Matlab-compatible version.
+
 2006-08-15  John W. Eaton  <jwe@octave.org>
 
 	* deprecated/is_global.m: Delete.

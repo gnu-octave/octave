@@ -12,8 +12,10 @@ SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
 SPARSEIMAGES = \
   $(addsuffix .eps, $(SPARSEIMAGES_1)) \
   $(addsuffix .png, $(SPARSEIMAGES_1)) \
-  $(addsuffix .txt, $(SPARSEIMAGES_1))
-IMAGES += $(SPARSEIMAGES) $(addsuffix .pdf, $(SPARSEIMAGES_1))
+  $(addsuffix .txt, $(SPARSEIMAGES_1)) \
+  $(addsuffix .pdf, $(SPARSEIMAGES_1))
+
+IMAGES = $(SPARSEIMAGES)
 
 DISTFILES = Makefile.in $(SOURCES) $(IMAGES)
 
@@ -29,7 +31,7 @@ $(SPARSEIMAGES): sparseimages.m
 	$(run-octave)
 
 %.pdf : %.eps
-	if [ -f $< ] ; then gs -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$@ $< ; fi
+	if [ -f $< ] ; then $(GHOSTSCRIPT) -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$@ $< ; fi
 
 install install-strip:
 .PHONY: install install-strip

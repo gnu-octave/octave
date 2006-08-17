@@ -1,3 +1,8 @@
+2006-08-17  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/images/Makefile.in (%.pdf : %eps):
+	Use $(GHOSTSCRIPT) instead of gs.
+
 2006-08-14  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
 
 	* interpreter/images/sparseimages.m: Adapt to new automatic_replot

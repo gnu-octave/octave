@@ -1,5 +1,5 @@
-## Copyright (C) 1996, 1997 John W. Eaton
-##
+## Copyright (C) 2005 Soren Hauberg
+## 
 ## This file is part of Octave.
 ##
 ## Octave is free software; you can redistribute it and/or modify it
@@ -18,172 +18,149 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} imshow (@var{i})
-## @deftypefnx {Function File} {} imshow (@var{x}, @var{map})
-## @deftypefnx {Function File} {} imshow (@var{i}, @var{n})
-## @deftypefnx {Function File} {} imshow (@var{r}, @var{g}, @var{b})
-## Display an image.
+## @deftypefn {Function File} {} imshow (@var{im})
+## @deftypefnx {Function File} {} imshow (@var{im}, @var{limits})
+## @deftypefnx {Function File} {} imshow (@var{im}, @var{map})
+## @deftypefnx {Function File} {} imshow (@var{R}, @var{G}, @var{B}, @dots{})
+## @deftypefnx {Function File} {} imshow (@var{filename})
+## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, ...)
+## Display the image @var{im}, where @var{im} can a 2-dimensional
+## (gray-scale image) or a 3-dimensional (RGB image) matrix. If three matrices
+## of the same size are given as arguments, they will be concatenated into
+## a 3-dimensional (RGB image) matrix.
 ##
-## @code{imshow (@var{x})} displays an image @var{x}.
-## The numerical class of the image determines its bit-depth: 1 for
-## @code{logical}, 8 for @code{uint8} and @code{logical}, and 16 for
-## @code{double} or @code{uint16}.  If @var{x} has dimensions MxNx3, the
-## three matrices represent the red, green and blue components of the
-## image.
+## If @var{limits} is a 2-element vector @code{[@var{low}, @var{high}]},
+## the image is shown using a display range between @var{low} and
+## @var{high}.  If an empty matrix is passed for @var{limits}, the
+## display range is computed as the range between the minimal and the
+## maximal value in the image.
 ##
-## @code{imshow (@var{x}, @var{map})} displays an indexed image using the
-## specified colormap.
+## If @var{map} is a valid color map, the image will be shown as an indexed
+## image using the supplied color map.
 ##
-## @code{imshow (@var{i}, @var{n})} displays a gray scale intensity image of
-## N levels.
+## If a file name is given instead of an image, the file will be read and
+## shown.
 ##
-## @code{imshow (@var{r}, @var{g}, @var{b})} displays an RGB image.
+## If given, the parameter @var{string_param1} has value
+## @var{value1}. @var{string_param1} can be any of the following:
+## @table @samp
+## @item "display_range"
+## @var{value1} is the display range as described above.
 ##
-## The character string @code{"truesize"} can always be used as an
-## optional final argument to prevent automatic zooming of the image.
+## @item "InitialMagnification"
+## @var{value1} sets the zoom level in percent. 
+## If @var{value1} is 100 the image is showed unscaled.
+## @end table
 ## @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: July 1994
+## Author: Soren Hauberg <hauberg at gmail dot com>
 ## Adapted-By: jwe
 
-function imshow (varargin)
+function imshow (im, varargin)
 
-  usage_str = "imshow (x) or imshow (x, map) or imshow (i, N) or imshow (r, g, b)";
-
-  if (nargin == 0 || nargin > 4)
-    usage (usage_str);
-  endif
-  
-  ## Count nr of matrix arguments.
-  mvars = 0;
-  while (mvars < nargin && ismatrix (varargin{mvars+1}))
-    mvars++;
-  endwhile
-  
-  if (mvars < 1 || mvars > 3)
-    usage (usage_str);
-  endif
-    
-  ## Determine image depth
-  imclass = class (varargin{1});
-  s = __im_numeric_limits__ (imclass);
-  if (!isfield (s, "max"))
-    error ("imshow: cannot handle image class '%s'", imclass);
+  if (nargin == 0)
+    print_usage ();
   endif
 
-  ## Maximum bit-depth is 16
-  if (s.max > 65535)
-    s.max = 65535;
+  ## Get the image
+  if (ischar (im))
+    im = loadimage (im); # It would be better to use imread from octave-forge
+  elseif (! ismatrix (im))
+    error ("imshow: first argument must be an image or the filename of an image");
+  endif
+  
+  ## Is the function called with 3 matrices (i.e., imshow (R, G, B))?
+  if (nargin >= 3
+      && ndims (im) == 2
+      && ndims (varargin{1}) == 2
+      && ndims (varargin{2}) == 2
+      && size (im) == size (varargin{1})
+      && size (im) == size (varargin{2}))
+    im(:,:,3) = varargin{2};
+    im(:,:,2) = varargin{1};
+    varargin(1:2) = [];
   endif
 
-  imdepth = log (s.max+1) / log (2);
-  if (imdepth - floor (imdepth) != 0)
-    error ("imshow: cannot determine image colour depth");
-  endif
-  
-  ## Remove complex parts of arguments
-  realwarning = false;
-  for i = 1:mvars
-    if (iscomplex (varargin{i}))
-      if (!realwarning)
-        warning ("imshow: displaying real part of complex image");
-        realwarning = true;
-      endif
-      varargin{i} = real (varargin{i});
-    endif
-  endfor
-  
-  ## Pack r,g,b image into ND-matrix if necessary
-  if (mvars == 3)
-    I = [];
-    try
-      I = cat (3, varargin{1:3});
-    catch
-      error ("imshow: r, g and b matrix dimensions must agree");
-    end_try_catch
-  else
-    I = varargin{1};
-  endif
-  I = double (I);
-  
-  ## Is the image specified as MxNx3 colour?
-  iscolour = false;
-  if (size (I,3) == 3)
-    iscolour = true;
-  endif
-
-  ## Is the image indexed?
-  isindexed = false;
-  if (mvars == 2)
-    isindexed = true;
-    if (iscolour)
-      error ("imshow: cannot provide colour image and colourmap");
-    endif
-  endif
-  
-  ## Scale images of class "double" appropriately
-  if (!isindexed)
-    if (strcmp (imclass, "double") == 1)
-      if (max (I(:)) <= 1)
-        ## image in [0-1]; scale to [0 - 2^imdepth]
-        I = I * 2^imdepth;
-      else
-        ## image outside [0-1]; this is unexpected: scale to [0 - 2^imdepth]
-        I = I / max (I(:)) * 2^imdepth;
-      endif
-    endif
-  endif
-  
-  ## Generate colour map
-  if (isindexed)
-    M = varargin{2};
-    if (isscalar (M))
-      M = gray (M);
-    endif
-  elseif (iscolour)
-    I = I / 2^imdepth;
-    [I, M] = rgb2ind (I(:,:,1), I(:,:,2), I(:,:,3));
-  else
-    I = I+1; ## index into colourmap
-    M = gray (2^imdepth);
-  endif
-  
-  ## Check for "truesize".
-  zoom = [];
-  for i = mvars+1:nargin
-    if (ischar (varargin{i}) && strcmp (varargin{i}, "truesize"))
-      zoom = 1;
-    endif
-  endfor
-
-  colormap (M);
-  image (I, zoom);
-
-endfunction
-
-function s = __im_numeric_limits__ (cname)  
-  s = struct ();
-  switch (cname)
-    case ("double")
-      s.max = realmax;
-    case ("char")
-      s.max = 255;
-    case ("logical")
-      s.max = 1;
+  ## Set default display range.
+  switch class (im)
+    case {"uint8"}
+      display_range = [0, 255];
+    case {"uint16"}
+      display_range = [0, 65535];
+    case {"double", "single", "logical"}
+      display_range = [0, 1];
     otherwise
-      try
-        s.max = double (intmax (cname));
-      catch
-      end_try_catch
-  endswitch 
+      error ("imshow: currently only images whos class is uint8, uint16, logical, or double are supported");
+  endswitch
+
+  ## Set other default parameters.
+  isindexed = false;
+  initial_magnification = 100;
+  old_colormap = color_map = colormap ();
+  
+  ## Handle the rest of the arguments.
+  narg = 1;
+  while (narg <= length (varargin))
+    arg = varargin{narg};
+    if (ismatrix (arg) && ndims (arg) == 2)
+      display_range = arg;
+    elseif (isempty (arg))
+      display_range = [min(im(:)), max(im(:))];
+    elseif (ismatrix (arg) && size (arg, 2) == 3)
+      color_map = arg;
+      isindexed = true;
+    elseif (ischar (arg) && strcmpi (arg, "truesize"))
+      initial_magnification = 100;
+    elseif (ischar (arg) && strcmpi (arg, "displayrange"))
+      narg++;
+      display_range = varargin{narg};
+    elseif (ischar (arg) && strcmpi (arg, "initialmagnification"))
+      narg++;
+      initial_magnification = varargin{narg};
+    else
+      warning ("imshow: input argument number %d is unsupported", narg) 
+    endif
+    narg++;
+  endwhile
+
+  ## Check for complex images
+  if (iscomplex (im))
+    warning ("imshow: only showing real part of complex image");
+    im = real (im);
+  endif
+  
+  ## Scale the image to the interval [0, 1] according to display_range.
+  if (! isindexed)
+    low = display_range(1);
+    high = display_range(2);
+    im = (double (im) - low)/(high-low);
+    im(im < 0) = 0;
+    im(im > 1) = 1;
+  endif
+  
+  ## Convert to indexed image
+  dim = ndims (im);
+  if (dim == 2)
+    im = round ((size (color_map, 1) - 1) * im);
+  elseif (dim == 3 && size (im, 3) == 3)
+    [im, color_map] = rgb2ind (im(:,:,1), im(:,:,2), im(:,:,3));
+    #[im, color_map] = rgb2ind (im); # Change rgb2ind to support ND-arrays and then use this line
+  else
+    error ("imshow: input image must be a 2D or 3D matrix");
+  endif
+  
+  ## And now, we show the image
+  colormap (color_map);
+  image (im, initial_magnification/100);
+  colormap (old_colormap);
+
 endfunction
 
 %!error imshow ()                           # no arguments
-%!error imshow (1, 2, 3, 4, 5)              # too many arguments
-%!error imshow ([1,2], [2,3], [3,4], [4,5]) # too many matrix arguments
-%!error imshow ("image.png")                # filename not accepted as argument
+%!error imshow ({"cell"})                   # No image or filename given
+%!error imshow (int8(1))                    # Unsupported image class
+%!error imshow (ones(4,4,4))                # Too many dimensions in image
 
 %!demo
 %!  imshow (loadimage ("default.img"));
@@ -198,13 +175,8 @@ endfunction
 
 %!demo
 %!  [I, M] = loadimage ("default.img");
-%!  imshow (I, I*0.5, I*0.8);
+%!  imshow (cat(3, I, I*0.5, I*0.8));
 
 %!demo
-%!  [I, M] = loadimage ("default.img");
-%!  X = [];
-%!  X = cat (3, X, I*0.8);
-%!  X = cat (3, X, I*0.8);
-%!  X = cat (3, X, I);
-%!  imshow (X);
-
+%!  I = loadimage("default.img");
+%!  imshow(I, I, I);

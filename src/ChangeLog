@@ -1,3 +1,9 @@
+2006-08-17  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (save_mat5_element_length): Correctly compute element
+	length for character data.  Handle N-d character data
+	(save_mat5_binary_element): Handle N-d character data.
+
 2006-08-16  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (gobble_leading_white_space): New arg, SKIP_CODE.

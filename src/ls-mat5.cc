@@ -1352,10 +1352,10 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
   
   if (tc.is_string ())
     {
-      charMatrix chm = tc.char_matrix_value ();
+      charNDArray chm = tc.char_array_value ();
       ret += 8;
-      if (chm.nelem () > 1)
-	ret += PAD (2 * chm.rows () * chm.cols ());
+      if (chm.nelem () > 2)
+	ret += PAD (2 * chm.nelem ());
     }
   else if (cname == "sparse")
     {
@@ -1618,27 +1618,26 @@ save_mat5_binary_element (std::ostream& os,
   // data element
   if (tc.is_string ())
     {
-      charMatrix chm = tc.char_matrix_value ();
-      int nr = chm.rows ();
-      int nc = chm.cols ();
-      int len = nr*nc*2;
-      int paddedlength = PAD (nr*nc*2);
+      charNDArray chm = tc.char_array_value ();
+      int nel = chm.nelem ();
+      int len = nel*2;
+      int paddedlength = PAD (len);
 
-      OCTAVE_LOCAL_BUFFER (int16_t, buf, nc*nr+3);
+      OCTAVE_LOCAL_BUFFER (int16_t, buf, nel+3);
       write_mat5_tag (os, miUINT16, len);
 
-      for (int i = 0; i < nr; i++)
-	{
-	  std::string tstr = chm.row_as_string (i);
-	  const char *s = tstr.data ();
+      const char *s = chm.data ();
 
-	  for (int j = 0; j < nc; j++)
-	    buf[j*nr+i] = *s++ & 0x00FF;
-	}
-      os.write (reinterpret_cast<char *> (buf), nr*nc*2);
+      for (int i = 0; i < nel; i++)
+	buf[i] = *s++ & 0x00FF;
+
+      os.write (reinterpret_cast<char *> (buf), len);
       
       if (paddedlength > len)
-	os.write (reinterpret_cast<char *> (buf), paddedlength - len);
+	{
+	  static char padbuf[9]="\x00\x00\x00\x00\x00\x00\x00\x00";
+	  os.write (padbuf, paddedlength - len);
+	}
     }
   else if (cname == "sparse")
     {

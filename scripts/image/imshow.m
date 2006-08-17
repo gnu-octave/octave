@@ -63,7 +63,7 @@ function imshow (im, varargin)
     print_usage ();
   endif
 
-  ## Get the image
+  ## Get the image.
   if (ischar (im))
     im = loadimage (im); # It would be better to use imread from octave-forge
   elseif (! ismatrix (im))
@@ -124,7 +124,7 @@ function imshow (im, varargin)
     narg++;
   endwhile
 
-  ## Check for complex images
+  ## Check for complex images.
   if (iscomplex (im))
     warning ("imshow: only showing real part of complex image");
     im = real (im);
@@ -139,18 +139,17 @@ function imshow (im, varargin)
     im(im > 1) = 1;
   endif
   
-  ## Convert to indexed image
+  ## Convert to indexed image.
   dim = ndims (im);
   if (dim == 2)
     im = round ((size (color_map, 1) - 1) * im);
   elseif (dim == 3 && size (im, 3) == 3)
-    [im, color_map] = rgb2ind (im(:,:,1), im(:,:,2), im(:,:,3));
-    #[im, color_map] = rgb2ind (im); # Change rgb2ind to support ND-arrays and then use this line
+    [im, color_map] = rgb2ind (im);
   else
     error ("imshow: input image must be a 2D or 3D matrix");
   endif
   
-  ## And now, we show the image
+  ## And now, we show the image.
   colormap (color_map);
   image (im, initial_magnification/100);
   colormap (old_colormap);

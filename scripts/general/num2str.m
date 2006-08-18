@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} int2str (@var{n})
+## @deftypefn {Function File} {} num2str (@var{n})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
 ## Convert a number to a string.  These functions are not very flexible,
@@ -79,7 +79,7 @@ function retval = num2str (x, arg)
     idx{2} = perm;
     x = horzcat (real(x), imag(x));
     x = x(idx{:});
-    
+
     fmt = strcat (deblank (repmat (fmt, 1, nc)), "\n");
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
 

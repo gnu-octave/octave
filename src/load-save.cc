@@ -649,12 +649,10 @@ compatiability. Octave now overwrites variables currently in memory with\n\
 the same name as those found in the file.\n\
 \n\
 @item -ascii\n\
-Force Octave to assume the file is in Octave's text format.\n\
-\n\
-@strong{WARNING: the meaning of this option will change in a future\n\
-version of Octave to be compatible with @sc{Matlab}.  To keep the\n\
-meaning of your code the same across this change, use the @code{-text}\n\
-option instead.}\n\
+Force Octave to assume the file contains columns of numbers in text format\n\
+without any header or other information.  Data in the file will be loaded\n\
+as a single numeric matrix with the name of the variable derived from the\n\
+name of the file.\n\
 \n\
 @item -binary\n\
 Force Octave to assume the file is in Octave's binary format.\n\
@@ -732,12 +730,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 	}
       else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
-	  warning ("the meaning of this option will change in a future");
-	  warning ("version of Octave to be compatible with Matlab.");
-	  warning ("To keep the meaning of your code the same across");
-	  warning ("this change, use the -text option instead.");
-
-	  format = LS_ASCII;
+	  format = LS_MAT_ASCII;
 	}
       else if (argv[i] == "-binary" || argv[i] == "-b")
 	{
@@ -1007,6 +1000,12 @@ do_save (std::ostream& os, const octave_value& tc,
       save_binary_data (os, tc, name, help, global, save_as_floats);
       break;
 
+    case LS_MAT_ASCII:
+    case LS_MAT_ASCII_LONG:
+      if (! save_mat_ascii_data (os, tc, fmt == LS_MAT_ASCII ? 8 : 16))
+	warning ("save: unable to save %s in ASCII format", name.c_str ());
+      break;
+
     case LS_MAT_BINARY:
       save_mat_binary_data (os, tc, name);
       break;
@@ -1096,12 +1095,7 @@ parse_save_options (const string_vector &argv, int argc,
 	}
       else if (argv[i] == "-ascii" || argv[i] == "-a")
 	{
-	  warning ("the meaning of this option will change in a future");
-	  warning ("version of Octave to be compatible with Matlab.");
-	  warning ("To keep the meaning of your code the same across");
-	  warning ("this change, use the -text option instead.");
-
-	  format = LS_ASCII;
+	  format = LS_MAT_ASCII;
 	}
       else if (argv[i] == "-text" || argv[i] == "-t")
 	{
@@ -1461,12 +1455,7 @@ then the @var{options}, @var{file}, and variable name arguments\n\
 \n\
 @table @code\n\
 @item -ascii\n\
-Save the data in Octave's text data format.\n\
-\n\
-@strong{WARNING: the meaning of this option will change in a future\n\
-version of Octave to be compatible with @sc{Matlab}.  To keep the\n\
-meaning of your code the same across this change, use the @code{-text}\n\
-option instead.}\n\
+Save a single matrix in a text file.\n\
 \n\
 @item -binary\n\
 Save the data in Octave's binary data format.\n\

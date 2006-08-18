@@ -1,3 +1,11 @@
+2006-08-18  John W. Eaton  <jwe@octave.org>
+
+	* load-save.h (enum load_save_format): New element, LS_MAT_ASCII_LONG.
+	* load-save.cc (Fload, Fsave): Make -ascii Matlab compatible.
+	(do_save): Handle LS_MAT_ASCII.
+	* ls-mat-ascii.cc (save_mat_ascii_data): New function.
+	* ls-mat-ascii.h: Provide decl.
+
 2006-08-17  John W. Eaton  <jwe@octave.org>
 
 	* ls-mat5.cc (save_mat5_element_length): Correctly compute element

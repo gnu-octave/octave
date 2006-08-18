@@ -328,6 +328,34 @@ read_mat_ascii_data (std::istream& is, const std::string& filename,
   return retval;
 }
 
+bool
+save_mat_ascii_data (std::ostream& os, const octave_value& val,
+		     int precision)
+{
+  bool success = true;
+
+  long old_precision = os.precision ();
+  os.precision (precision);
+
+  if (val.is_complex_type ())
+    warning ("save: omitting imaginary part for ASCII file");
+
+  Matrix m = val.matrix_value (true);
+
+  if (error_state)
+    {
+      success = false;
+
+      error_state = 0;
+    }
+  else
+    os << m;
+
+  os.precision (old_precision);
+
+  return (os && success);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

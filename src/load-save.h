@@ -35,6 +35,7 @@ enum load_save_format
     LS_ASCII,
     LS_BINARY,
     LS_MAT_ASCII,
+    LS_MAT_ASCII_LONG,
     LS_MAT_BINARY,
     LS_MAT5_BINARY,
     LS_MAT7_BINARY,

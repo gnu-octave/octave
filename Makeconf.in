@@ -541,13 +541,12 @@ endef
 define do-subst-texinfo-vals
 echo "making $@ from $<"
 $(SED) < $< \
-  -e "s|%CANONICAL_HOST_TYPE%|${canonical_host_type}|" \
   -e "s|%OCTAVE_HOME%|${prefix}|" \
   -e "s|%OCTAVE_VERSION%|${version}|" \
   -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
   -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
   -e "s|%TEXINFO_UMFPACK%|${TEXINFO_UMFPACK}|" | \
-  $(SED)  -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
+  $(SED) -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
 $(top_srcdir)/move-if-change $@-t $@
 endef
 

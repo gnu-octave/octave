@@ -224,7 +224,7 @@ the following table @var{octave-home} stands for the root directory
 where all of Octave is installed (the default is @file{@value{OCTAVEHOME}},
 @var{version} stands for the Octave version number (for example,
 @value{VERSION}) and @var{arch} stands for the type of system for which
-Octave was compiled (for example, @code{@value{TARGETHOSTTYPE}}).
+Octave was compiled (for example, @code{x86_64-unknown-linux-gnu}).
 
 @vtable @code
 @item DEFAULT_LOADPATH

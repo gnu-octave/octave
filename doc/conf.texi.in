@@ -3,7 +3,6 @@
 @c For copying conditions, see the file gpl.texi.
 
 @set OCTAVE_MANUAL
-@set TARGETHOSTTYPE %CANONICAL_HOST_TYPE%
 @set OCTAVEHOME %OCTAVE_HOME%
 @set VERSION %OCTAVE_VERSION%
 %TEXINFO_COLAMD%

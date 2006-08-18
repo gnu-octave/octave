@@ -1,3 +1,8 @@
+2006-08-18  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-subst-texinfo-vals): Don't substitute
+	%CANONICAL_HOST_TYPE%.
+
 2006-08-17  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_PROG_GHOSTSCRIPT, OCTAVE_PROG_MAKEINFO,

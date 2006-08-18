@@ -1,5 +1,10 @@
 2006-08-18  John W. Eaton  <jwe@octave.org>
 
+	* pr-output.cc (set_real_matrix_format): Also always include space
+	for sign if values are int, inf, or nan.
+	(set_complex_format, set_complex_matrix_format): Always include
+	space for sign in real format, but never in imaginary format.
+
 	* gripes.cc (gripe_logical_conversion): New function.
 	* gripes.h: Provide decl.
 	* ov.h (octave_value::bool_value, octave_value::bool_matrix_value,

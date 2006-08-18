@@ -19,6 +19,14 @@
 	* OPERATORS/op-bm-b.cc (oct_assignop_conv_and_assign):
 	Ask for warning from bool_array_value.
 	* OPERATORS/op-bm-bm.cc (oct_assignop_conv_and_assign): Likewise.
+	* ov-bool.h (octave_bool::bool_value,
+	octave_bool::bool_matrix_value, octave_bool::bool_array_value):
+	Likewise.
+	* ov-bool-mat.h (octave_bool_matrix::bool_matrix_value,
+	octave_bool_matrix::bool_array_value): Likewise.
+	* ov-bool-sparse.cc, ov-bool-sparse.h
+	(octave_sparse_bool_matrix::bool_matrix_value,
+	octave_sparse_bool_matrix::bool_array_value): Likewise.
 
 2006-08-18  Benjamin Lindner  <lindnerben@gmx.net>
 

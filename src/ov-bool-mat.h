@@ -145,10 +145,10 @@ public:
     return retval;
   }
 
-  boolMatrix bool_matrix_value (void) const
+  boolMatrix bool_matrix_value (bool = false) const
     { return matrix.matrix_value (); }
 
-  boolNDArray bool_array_value (void) const
+  boolNDArray bool_array_value (bool = false) const
     { return matrix; }
 
   SparseMatrix sparse_matrix_value (bool = false) const

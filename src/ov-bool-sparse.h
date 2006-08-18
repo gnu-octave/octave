@@ -110,9 +110,9 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const;
 
-  boolMatrix bool_matrix_value (void) const;
+  boolMatrix bool_matrix_value (bool = false) const;
 
-  boolNDArray bool_array_value (void) const;
+  boolNDArray bool_array_value (bool = false) const;
 
   SparseMatrix sparse_matrix_value (bool = false) const;
 

@@ -166,13 +166,13 @@ octave_sparse_bool_matrix::array_value (bool) const
 }
 
 boolMatrix 
-octave_sparse_bool_matrix::bool_matrix_value (void) const
+octave_sparse_bool_matrix::bool_matrix_value (bool) const
 { 
   return matrix.matrix_value (); 
 }
 
 boolNDArray 
-octave_sparse_bool_matrix::bool_array_value (void) const
+octave_sparse_bool_matrix::bool_array_value (bool) const
 { 
   return boolNDArray (matrix.matrix_value ()); 
 }

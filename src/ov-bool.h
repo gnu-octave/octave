@@ -144,12 +144,12 @@ public:
     return retval;
   }
 
-  bool bool_value (void) const { return scalar; }
+  bool bool_value (bool = false) const { return scalar; }
 
-  boolMatrix bool_matrix_value (void) const
+  boolMatrix bool_matrix_value (bool = false) const
     { return boolMatrix (1, 1, scalar); }
 
-  boolNDArray bool_array_value (void) const
+  boolNDArray bool_array_value (bool = false) const
     { return boolNDArray (dim_vector (1, 1), scalar); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;

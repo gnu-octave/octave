@@ -160,8 +160,15 @@ public:
 
   Complex complex_value (bool = false) const;
 
-  boolNDArray bool_array_value (void) const
-    { return boolNDArray (range.matrix_value ()); }
+  boolNDArray bool_array_value (bool warn = false) const
+  {
+    Matrix m = range.matrix_value ();
+
+    if (warn && m.any_element_not_one_or_zero ())
+      gripe_logical_conversion ();
+
+    return boolNDArray (m);
+  }
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (range.matrix_value ()); }

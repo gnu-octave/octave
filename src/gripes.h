@@ -103,6 +103,9 @@ gripe_implicit_conversion (const std::string& id, const std::string& from,
 extern void
 gripe_divide_by_zero (void);
 
+extern void
+gripe_logical_conversion (void);
+
 #endif
 
 /*

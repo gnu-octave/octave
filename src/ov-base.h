@@ -319,11 +319,11 @@ public:
 
   virtual ComplexNDArray complex_array_value (bool = false) const;
 
-  virtual bool bool_value (void) const;
+  virtual bool bool_value (bool = false) const;
 
-  virtual boolMatrix bool_matrix_value (void) const;
+  virtual boolMatrix bool_matrix_value (bool = false) const;
 
-  virtual boolNDArray bool_array_value (void) const;
+  virtual boolNDArray bool_array_value (bool = false) const;
 
   virtual charMatrix char_matrix_value (bool force = false) const;
 

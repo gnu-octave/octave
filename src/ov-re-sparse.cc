@@ -137,9 +137,14 @@ octave_sparse_matrix::matrix_value (bool) const
 }
 
 boolNDArray
-octave_sparse_matrix::bool_array_value (void) const
+octave_sparse_matrix::bool_array_value (bool warn) const
 {
-  return boolNDArray (matrix.matrix_value ());
+  NDArray m = matrix.matrix_value ();
+
+  if (warn && m.any_element_not_one_or_zero ())
+    gripe_logical_conversion ();
+
+  return boolNDArray (m);
 }
 
 ComplexMatrix

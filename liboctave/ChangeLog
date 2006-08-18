@@ -1,5 +1,13 @@
 2006-08-18  John W. Eaton  <jwe@octave.org>
 
+	* dMatrix.cc (Matrix::any_element_not_one_or_zero): New function.
+	* dMatrix.h: Provide decl.
+	* dNDArray.cc (NDArray::any_element_not_one_or_zero): New function.
+	* dNDArray.h: Provide decl.
+	* intNDArray.cc (intNDArray<T>::any_element_not_one_or_zero):
+	New function.
+	* intNDArray.h: Provide decl.
+
 	* Array.cc (Array<T>::permute): Only rearrange values if array is
 	not empty.
 

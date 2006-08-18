@@ -1,3 +1,25 @@
+2006-08-18  John W. Eaton  <jwe@octave.org>
+
+	* gripes.cc (gripe_logical_conversion): New function.
+	* gripes.h: Provide decl.
+	* ov.h (octave_value::bool_value, octave_value::bool_matrix_value,
+	octave_value::bool_array_value): New arg, warn.
+	* ov-base.cc, ov-base.h (octave_base_value::bool_value,
+	octave_base_value::bool_matrix_value, 
+	octave_base_value::bool_array_value): Likewise.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::bool_array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::bool_array_value): Likewise.
+	* ov-range.h (octave_range::bool_array_value): Likewise.
+	* ov-re-mat.cc, ov-re-mat.h (octave_matrix::bool_array_value):
+	Likewise.
+	* ov-re-sparse.cc, ov-re-sparse.h
+	(octave_sparse_matrix::bool_array_value): Likewise.
+	* ov-scalar.h (octave_scalar::bool_value,
+	octave_scalar::bool_array_value): Likewise.
+	* OPERATORS/op-bm-b.cc (oct_assignop_conv_and_assign):
+	Ask for warning from bool_array_value.
+	* OPERATORS/op-bm-bm.cc (oct_assignop_conv_and_assign): Likewise.
+
 2006-08-18  Benjamin Lindner  <lindnerben@gmx.net>
 
 	* ls-mat5.cc (read_mat5_tag): Declare type as int32_t, not int.

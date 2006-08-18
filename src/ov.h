@@ -591,14 +591,14 @@ public:
   ComplexNDArray complex_array_value (bool frc_str_conv = false) const
     { return rep->complex_array_value (frc_str_conv); }
 
-  bool bool_value (void) const
-    { return rep->bool_value (); }
+  bool bool_value (bool warn = false) const
+    { return rep->bool_value (warn); }
 
-  boolMatrix bool_matrix_value (void) const
-    { return rep->bool_matrix_value (); }
+  boolMatrix bool_matrix_value (bool warn = false) const
+    { return rep->bool_matrix_value (warn); }
 
-  boolNDArray bool_array_value (void) const
-    { return rep->bool_array_value (); }
+  boolNDArray bool_array_value (bool warn = false) const
+    { return rep->bool_array_value (warn); }
 
   charMatrix char_matrix_value (bool frc_str_conv = false) const
     { return rep->char_matrix_value (frc_str_conv); }

@@ -44,6 +44,23 @@ intNDArray<T>::operator ! (void) const
   return b;
 }
 
+template <class T>
+bool
+intNDArray<T>::any_element_not_one_or_zero (void) const
+{
+  octave_idx_type nel = this->nelem ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      T val = this->elem (i);
+
+      if (val != 0.0 && val != 1.0)
+	return true;
+    }
+
+  return false;
+}
+
 // FIXME -- this is not quite the right thing.
 
 template <class T>

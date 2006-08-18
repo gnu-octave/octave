@@ -36,6 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-alloc.h"
 #include "str-vec.h"
 
+#include "gripes.h"
 #include "ov-base.h"
 #include "ov-re-mat.h"
 #include "ov-base-scalar.h"
@@ -159,10 +160,21 @@ public:
     return retval;
   }
 
-  bool bool_value (void) const { return scalar; }
+  bool bool_value (bool warn = false) const
+  {
+    if (warn && scalar != 0 && scalar != 1)
+      gripe_logical_conversion ();
 
-  boolNDArray bool_array_value (void) const
-    { return boolNDArray (dim_vector (1, 1), scalar); }
+    return scalar;
+  }
+
+  boolNDArray bool_array_value (bool warn = false) const
+  {
+    if (warn && scalar != 0 && scalar != 1)
+      gripe_logical_conversion ();
+
+    return boolNDArray (dim_vector (1, 1), scalar);
+  }
 
   std::streamoff streamoff_value (void) const;
 

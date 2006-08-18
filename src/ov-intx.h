@@ -126,12 +126,15 @@ public:
     }
 
   boolNDArray
-  bool_array_value (void) const
+  bool_array_value (bool warn = false) const
   {
     boolNDArray retval (dims ());
 
     octave_idx_type nel = numel ();
-  
+
+    if (warn && matrix.any_element_not_one_or_zero ())
+      gripe_logical_conversion ();
+
     for (octave_idx_type i = 0; i < nel; i++)
       retval(i) = static_cast<bool>(matrix(i));
 
@@ -331,10 +334,15 @@ public:
     }
 
   boolNDArray
-  bool_array_value (void) const
+  bool_array_value (bool warn = false) const
   {
     boolNDArray retval (dim_vector (1, 1));
+
+    if (warn && scalar != 0.0 && scalar != 1.0)
+      gripe_logical_conversion ();
+
     retval(0) = static_cast<bool>(scalar);
+
     return retval;
   }
 

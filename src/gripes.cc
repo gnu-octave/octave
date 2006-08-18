@@ -184,6 +184,13 @@ gripe_divide_by_zero (void)
   warning_with_id ("Octave:divide-by-zero", "division by zero");
 }
 
+extern void
+gripe_logical_conversion (void)
+{
+  warning_with_id ("Octave:logical-conversion",
+		   "value not equal to 1 or 0 converted to logical 1");
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

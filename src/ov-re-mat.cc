@@ -146,8 +146,11 @@ octave_matrix::complex_array_value (bool) const
 }
 
 boolNDArray
-octave_matrix::bool_array_value (void) const
+octave_matrix::bool_array_value (bool warn) const
 {
+  if (warn && matrix.any_element_not_one_or_zero ())
+    gripe_logical_conversion ();
+
   return boolNDArray (matrix);
 }
   

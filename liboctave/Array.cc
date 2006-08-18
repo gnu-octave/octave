@@ -515,49 +515,52 @@ Array<T>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) const
 
   retval.resize (dv_new);
 
-  Array<octave_idx_type> cp (nd+1, 1);
-  for (octave_idx_type i = 1; i < nd+1; i++)
-    cp(i) = cp(i-1) * dv(i-1);
-
-  octave_idx_type incr = cp(perm_vec(0));
-
-  Array<octave_idx_type> base_delta (nd-1, 0);
-  Array<octave_idx_type> base_delta_max (nd-1);
-  Array<octave_idx_type> base_incr (nd-1);
-  for (octave_idx_type i = 0; i < nd-1; i++)
+  if (numel () > 0)
     {
-      base_delta_max(i) = dv_new(i+1);
-      base_incr(i) = cp(perm_vec(i+1));
-    }
+      Array<octave_idx_type> cp (nd+1, 1);
+      for (octave_idx_type i = 1; i < nd+1; i++)
+	cp(i) = cp(i-1) * dv(i-1);
 
-  octave_idx_type nr_new = dv_new(0);
-  octave_idx_type nel_new = dv_new.numel ();
-  octave_idx_type n = nel_new / nr_new;
+      octave_idx_type incr = cp(perm_vec(0));
 
-  octave_idx_type k = 0;
-
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      octave_idx_type iidx = 0;
-      for (octave_idx_type kk = 0; kk < nd-1; kk++)
-	iidx += base_delta(kk) * base_incr(kk);
-
-      for (octave_idx_type j = 0; j < nr_new; j++)
+      Array<octave_idx_type> base_delta (nd-1, 0);
+      Array<octave_idx_type> base_delta_max (nd-1);
+      Array<octave_idx_type> base_incr (nd-1);
+      for (octave_idx_type i = 0; i < nd-1; i++)
 	{
-	  OCTAVE_QUIT;
-
-	  retval(k++) = elem(iidx);
-	  iidx += incr;
+	  base_delta_max(i) = dv_new(i+1);
+	  base_incr(i) = cp(perm_vec(i+1));
 	}
 
-      base_delta(0)++;
+      octave_idx_type nr_new = dv_new(0);
+      octave_idx_type nel_new = dv_new.numel ();
+      octave_idx_type n = nel_new / nr_new;
 
-      for (octave_idx_type kk = 0; kk < nd-2; kk++)
+      octave_idx_type k = 0;
+
+      for (octave_idx_type i = 0; i < n; i++)
 	{
-	  if (base_delta(kk) == base_delta_max(kk))
+	  octave_idx_type iidx = 0;
+	  for (octave_idx_type kk = 0; kk < nd-1; kk++)
+	    iidx += base_delta(kk) * base_incr(kk);
+
+	  for (octave_idx_type j = 0; j < nr_new; j++)
 	    {
-	      base_delta(kk) = 0;
-	      base_delta(kk+1)++;
+	      OCTAVE_QUIT;
+
+	      retval(k++) = elem(iidx);
+	      iidx += incr;
+	    }
+
+	  base_delta(0)++;
+
+	  for (octave_idx_type kk = 0; kk < nd-2; kk++)
+	    {
+	      if (base_delta(kk) == base_delta_max(kk))
+		{
+		  base_delta(kk) = 0;
+		  base_delta(kk+1)++;
+		}
 	    }
 	}
     }

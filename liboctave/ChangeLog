@@ -1,3 +1,8 @@
+2006-08-18  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::permute): Only rearrange values if array is
+	not empty.
+
 2006-07-26  John W. Eaton  <jwe@octave.org>
 
 	* dbleDET.cc (DET::initialize10, DET::value_will_underflow,

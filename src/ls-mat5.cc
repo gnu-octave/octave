@@ -342,7 +342,7 @@ template void read_mat5_integer_data (std::istream& is, int *m,
 // place the type code in TYPE and the byte count in BYTES
 // return nonzero on error
 static int
-read_mat5_tag (std::istream& is, bool swap, int& type, int& bytes)
+read_mat5_tag (std::istream& is, bool swap, int32_t& type, int& bytes)
 {
   unsigned int upper;
   int32_t temp;
@@ -404,15 +404,15 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   // initialization of variable.
 
   oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
-  int type = 0;
+  int32_t type = 0;
   bool imag;
   bool logicalvar;
   enum arrayclasstype arrayclass;
   int32_t nzmax;
   int32_t flags;
   dim_vector dims;
-  int len;
-  int element_length;
+  int32_t len;
+  int32_t element_length;
   std::streampos pos;
   int16_t number;
   number = *(int16_t *)"\x00\x01";
@@ -1646,8 +1646,10 @@ save_mat5_binary_element (std::ostream& os,
 	  SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
 	  int nc = m.cols ();
 
-	  write_mat5_integer_data (os, m.ridx (), - sizeof(int), nnz);
-	  write_mat5_integer_data (os, m.cidx (), - sizeof(int), nc + 1);
+	  int tmp = sizeof (int);
+
+	  write_mat5_integer_data (os, m.ridx (), -tmp, nnz);
+	  write_mat5_integer_data (os, m.cidx (), -tmp, nc + 1);
 
 	  NDArray buf (dim_vector (nnz, 1));
 
@@ -1666,8 +1668,10 @@ save_mat5_binary_element (std::ostream& os,
 	  SparseMatrix m = tc.sparse_matrix_value ();
 	  int nc = m.cols ();
 
-	  write_mat5_integer_data (os, m.ridx (), - sizeof(int), nnz);
-	  write_mat5_integer_data (os, m.cidx (), - sizeof(int), nc + 1);
+	  int tmp = sizeof (int);
+
+	  write_mat5_integer_data (os, m.ridx (), -tmp, nnz);
+	  write_mat5_integer_data (os, m.cidx (), -tmp, nc + 1);
 
 	  // FIXME
 	  // Is there a way to easily do without this buffer

@@ -164,7 +164,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     elseif (size (param, 2) == 4 && char (param) == "size")
       ## size of the file is requested
       fclose (fid);
-      y = [ck_size/channels/bits_per_sample/8, channels];
+      y = [ck_size/channels/(bits_per_sample/8), channels];
       return
     else
       fclose (fid);

@@ -1,3 +1,7 @@
+2006-08-17  John W. Eaton  <jwe@octave.org>
+
+	* audio/wavread.m: Fix calculation of sample count.
+
 2006-08-14  Søren Hauberg  <soren@hauberg.org>
 
 	* image/imshow.m: New Matlab-compatible version.

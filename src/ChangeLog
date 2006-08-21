@@ -1,3 +1,8 @@
+2006-08-21  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-handle.cc (DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA):	
+	For compatibility, set class to function_handle.
+
 2006-08-18  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (set_real_matrix_format): Also always include space

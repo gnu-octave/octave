@@ -109,6 +109,7 @@ function s = mat2str (x, n, cls)
     s = ["[", s];
     s(end) = "]";
     ind = find (s == ",");
+    nc = columns (x);
     s(ind(nc:nc:end)) = ";";
   endif
 

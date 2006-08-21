@@ -56,7 +56,7 @@ DEFINE_OCTAVE_ALLOCATOR (octave_fcn_handle);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 				     "function handle",
-				     "function handle");
+				     "function_handle");
 
 void
 octave_fcn_handle::reload_warning (const std::string& fcn_type) const

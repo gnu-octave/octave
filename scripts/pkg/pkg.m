@@ -27,6 +27,9 @@
 ## @deftypefnx{Command} pkg load -nodeps @var{pkg-name} ...
 ## XXX: Where's the docs?
 ## @end deftypefn
+
+## PKG_ADD: mark_as_command pkg
+
 function [local_packages, global_packages] = pkg(varargin)
     ## Handle input
     if (length(varargin) == 0 || !iscellstr(varargin))
@@ -89,7 +92,11 @@ function install(files, handle_deps)
     if (issuperuser())
         global_install = true;
         if (!prefix_exist)
-            OCTAVE_PACKAGE_PREFIX = [OCTAVE_HOME "share/octave/packages/"];
+	    if (strcmp(OCTAVE_HOME()(end),"/"))
+                OCTAVE_PACKAGE_PREFIX = [OCTAVE_HOME "share/octave/packages/"];
+	    else
+		OCTAVE_PACKAGE_PREFIX = [OCTAVE_HOME "/share/octave/packages/"];
+           endif
         endif
     else
         global_install = false;
@@ -123,9 +130,7 @@ function install(files, handle_deps)
     endif
    
     ## Uncompress the packages and read the DESCRIPTION files
-    tmpdirs = cell(1, length(files));
-    packdirs = cell(1, length(files));
-    descriptions = cell(1, length(files));
+    tmpdirs = packdirs = descriptions = {};
     try
         ## Unpack the package files and read the DESCRIPTION files
         packages_to_uninstall = [];
@@ -134,7 +139,7 @@ function install(files, handle_deps)
             
             ## Create a temporary directory 
             tmpdir = tmpnam();
-            tmpdirs{i} = tmpdir;
+            tmpdirs{end+1} = tmpdir;
             [status, msg] = mkdir(tmpdir);
             if (status != 1)
                 error("Couldn't create temporary directory: %s\n", msg);
@@ -143,35 +148,37 @@ function install(files, handle_deps)
             ## Uncompress the package
             untar(tgz, tmpdir);
 
-            ## Get the name of the directory produced by tar
+            ## Get the name of the directories produced by tar
             [dirlist, err, msg] = readdir(tmpdir);
             if (err)
                 error("Couldn't read directory produced by tar: %s\n", msg);
             endif
-            packdir = [tmpdir "/" dirlist{end} "/"];
-            packdirs{i} = packdir;
-
-            ## Make sure the package contains necessary files
-            verify_directory(packdir);
-
-            ## Read the DESCRIPTION file
-            filename = [packdir "DESCRIPTION"];
-            desc = get_description(filename);
-
-            ## Set default installation directory
-            desc.dir = [prefix "/" desc.name "-" desc.version];
             
-            ## Save desc
-            descriptions{i} = desc;
+            for k = 3:length(dirlist) # the two first entries of dirlist are "." and ".."
+                packdir = [tmpdir "/" dirlist{k} "/"];
+                packdirs{end+1} = packdir;
 
-            ## Are any of the new packages already installed?
-            ## If so we'll remove the old version.
-            for j = 1:length(packages)
-                if (strcmp(packages{j}.name, desc.name))
-                    packages_to_uninstall(end+1) = j;
-                endif
-            endfor
+                ## Make sure the package contains necessary files
+                verify_directory(packdir);
+
+                ## Read the DESCRIPTION file
+                filename = [packdir "DESCRIPTION"];
+                desc = get_description(filename);
+
+                ## Set default installation directory
+                desc.dir = [prefix "/" desc.name "-" desc.version];
             
+                ## Save desc
+                descriptions{end+1} = desc;
+
+                ## Are any of the new packages already installed?
+                ## If so we'll remove the old version.
+                for j = 1:length(packages)
+                    if (strcmp(packages{j}.name, desc.name))
+                        packages_to_uninstall(end+1) = j;
+                    endif
+                endfor
+            endfor        
         endfor
     catch
         ## Something went wrong, delete tmpdirs

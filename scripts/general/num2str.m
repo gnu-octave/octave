@@ -32,15 +32,14 @@
 function retval = num2str (x, arg)
 
   if (nargin != 1 && nargin != 2)
-    usage ("num2str (x) or num2str (x, precision) or num2str (x, fmt)");
+    print_usage ();
   endif
 
   if (ischar (x))
     retval = x;
-    return;
-  endif
-
-  if (iscomplex (x))
+  elseif (isempty (x))
+    retval = "";
+  elseif (iscomplex (x))
     if (nargin == 2)
       if (ischar (arg))
 	fmt = strcat (arg, "%-+", arg(2:end), "i");

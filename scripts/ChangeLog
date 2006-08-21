@@ -1,3 +1,14 @@
+2006-08-21  Søren Hauberg  <soren@hauberg.org>
+
+	* pkg/pkg.m: Handle multiple packages in a single file.
+	Insert directory separator between OCTAVE_HOME and rest of package
+	installation directory.
+
+2006-08-21  John W. Eaton  <jwe@octave.org>
+
+	* general/num2str.m: Early return if arg is empty.
+	From Thomas Treichl <Thomas.Treichl@gmx.net>.
+
 2006-08-21  David Bateman  <dbateman@free.fr>
 
 	* strings/mat2str.m: Compute NC before using.

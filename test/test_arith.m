@@ -143,7 +143,8 @@
 %! fail("lcm (s)");
 
 %% test/octave.test/arith/max-1.m
-%!assert(max ([1, 4, 2, 3]) == 4 && max ([1; -10; 5; -2]) == 5);
+%!assert (max ([1, 4, 2, 3]) == 4);
+%!assert (max ([1; -10; 5; -2]) == 5);
 
 %% test/octave.test/arith/max-2.m
 %!assert(all (max ([4, i 4.999; -2, 2, 3+4i]) == [4, 2, 3+4i]));
@@ -155,7 +156,8 @@
 %!error <Invalid call to max.*> max (1, 2, 3, 4);
 
 %% test/octave.test/arith/min-1.m
-%!assert(min ([1, 4, 2, 3]) == 1 && min ([1; -10; 5; -2]) == -10);
+%!assert (min ([1, 4, 2, 3]) == 1);
+%!assert (min ([1; -10; 5; -2]) == -10);
 
 %% test/octave.test/arith/min-2.m
 %!assert(all (min ([4, i; -2, 2]) == [-2, i]));
@@ -700,24 +702,29 @@
 %!error <Invalid call to sum.*> sum ();
 
 %% test/octave.test/arith/sum-4.m
-%!assert((all (sum ([1, 2; 3, 4], 1) == [4, 6])
-%! && all (sum ([1, 2; 3, 4], 2) == [3; 7])
-%! && sum (zeros (1, 0)) == 0
-%! && all (size (sum (zeros (1, 0), 1)) == [1, 0])
-%! && sum (zeros (1, 0), 2) == 0
-%! && sum (zeros (0, 1)) == 0
-%! && sum (zeros (0, 1), 1) == 0
-%! && all (size (sum (zeros (0, 1), 2)) == [0, 1])
-%! && all (size (sum (zeros (2, 0))) == [1, 0])
-%! && all (size (sum (zeros (2, 0), 1)) == [1, 0])
-%! && all (sum (zeros (2, 0), 2) == [0; 0])
-%! && all (sum (zeros (0, 2)) == [0, 0])
-%! && all (sum (zeros (0, 2), 1) == [0, 0])
-%! && all (size (sum (zeros (0, 2), 2)) == [0, 1])));
+%!assert (all (sum ([1, 2; 3, 4], 1) == [4, 6]));
+%!assert (all (sum ([1, 2; 3, 4], 2) == [3; 7]));
+%!assert (sum (zeros (1, 0)) == 0);
+%!assert (all (size (sum (zeros (1, 0), 1)) == [1, 0]));
+%!assert (sum (zeros (1, 0), 2) == 0);
+%!assert (sum (zeros (0, 1)) == 0);
+%!assert (sum (zeros (0, 1), 1) == 0);
+%!assert (all (size (sum (zeros (0, 1), 2)) == [0, 1]));
+%!assert (all (size (sum (zeros (2, 0))) == [1, 0]));
+%!assert (all (size (sum (zeros (2, 0), 1)) == [1, 0]));
+%!assert (all (sum (zeros (2, 0), 2) == [0; 0]));
+%!assert (all (sum (zeros (0, 2)) == [0, 0]));
+%!assert (all (sum (zeros (0, 2), 1) == [0, 0]));
+%!assert (all (size (sum (zeros (0, 2), 2)) == [0, 1]));
+%!assert (all (size (sum (zeros (2, 2, 0, 3))) == [1, 2, 0, 3]));
+%!assert (all (size (sum (zeros (2, 2, 0, 3), 2)) == [2, 1, 0, 3]));
+%!assert (all (size (sum (zeros (2, 2, 0, 3), 3)) == [2, 2, 1, 3]));
+%!assert (all (size (sum (zeros (2, 2, 0, 3), 4)) == [2, 2, 0]));
+%!assert (all (size (sum (zeros (2, 2, 0, 3), 7)) == [2, 2, 0, 3]));
 
 %% test/octave.test/arith/prod-1.m
-%!assert((prod ([1, 2, 3]) == 6 && prod ([-1; -2; -3]) == -6
-%! && prod ([i, 2+i, -3+2i, 4]) == -4-32i));
+%!assert (prod ([1, 2, 3]) == 6 && prod ([-1; -2; -3]) == -6);
+%!assert (prod ([i, 2+i, -3+2i, 4]) == -4-32i);
 
 %% test/octave.test/arith/prod-2.m
 %!assert(all (all (prod ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])
@@ -727,24 +734,25 @@
 %!error <Invalid call to prod.*> prod ();
 
 %% test/octave.test/arith/prod-4.m
-%!assert((all (prod ([1, 2; 3, 4], 1) == [3, 8])
-%! && all (prod ([1, 2; 3, 4], 2) == [2; 12])
-%! && prod (zeros (1, 0)) == 1
-%! && all (size (prod (zeros (1, 0), 1)) == [1, 0])
-%! && prod (zeros (1, 0), 2) == 1
-%! && prod (zeros (0, 1)) == 1
-%! && prod (zeros (0, 1), 1) == 1
-%! && all (size (prod (zeros (0, 1), 2)) == [0, 1])
-%! && all (size (prod (zeros (2, 0))) == [1, 0])
-%! && all (size (prod (zeros (2, 0), 1)) == [1, 0])
-%! && all (prod (zeros (2, 0), 2) == [1; 1])
-%! && all (prod (zeros (0, 2)) == [1, 1])
-%! && all (prod (zeros (0, 2), 1) == [1, 1])
-%! && all (size (prod (zeros (0, 2), 2)) == [0, 1])));
+%!assert (all (prod ([1, 2; 3, 4], 1) == [3, 8]));
+%!assert (all (prod ([1, 2; 3, 4], 2) == [2; 12]));
+%!assert (prod (zeros (1, 0)) == 1);
+%!assert (all (size (prod (zeros (1, 0), 1)) == [1, 0]));
+%!assert (prod (zeros (1, 0), 2) == 1);
+%!assert (prod (zeros (0, 1)) == 1);
+%!assert (prod (zeros (0, 1), 1) == 1);
+%!assert (all (size (prod (zeros (0, 1), 2)) == [0, 1]));
+%!assert (all (size (prod (zeros (2, 0))) == [1, 0]));
+%!assert (all (size (prod (zeros (2, 0), 1)) == [1, 0]));
+%!assert (all (prod (zeros (2, 0), 2) == [1; 1]));
+%!assert (all (prod (zeros (0, 2)) == [1, 1]));
+%!assert (all (prod (zeros (0, 2), 1) == [1, 1]));
+%!assert (all (size (prod (zeros (0, 2), 2)) == [0, 1]));
 
 %% test/octave.test/arith/cumsum-1.m
-%!assert((cumsum ([1, 2, 3]) == [1, 3, 6] && cumsum ([-1; -2; -3]) == [-1; -3; -6]
-%! && cumsum ([i, 2+i, -3+2i, 4]) == [i, 2+2i, -1+4i, 3+4i]));
+%!assert (cumsum ([1, 2, 3]) == [1, 3, 6]);
+%!assert (cumsum ([-1; -2; -3]) == [-1; -3; -6]);
+%!assert (cumsum ([i, 2+i, -3+2i, 4]) == [i, 2+2i, -1+4i, 3+4i]);
 
 %% test/octave.test/arith/cumsum-2.m
 %!assert(all (all (cumsum ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])
@@ -754,12 +762,13 @@
 %!error <Invalid call to cumsum.*> cumsum ();
 
 %% test/octave.test/arith/cumsum-4.m
-%!assert((all (cumsum ([1, 2; 3, 4], 1) == [1, 2; 4, 6])
-%! && all (cumsum ([1, 2; 3, 4], 2) == [1, 3; 3, 7])));
+%!assert (all (cumsum ([1, 2; 3, 4], 1) == [1, 2; 4, 6]));
+%!assert (all (cumsum ([1, 2; 3, 4], 2) == [1, 3; 3, 7]));
 
 %% test/octave.test/arith/cumprod-1.m
-%!assert((cumprod ([1, 2, 3]) == [1, 2, 6] && cumprod ([-1; -2; -3]) == [-1; 2; -6]
-%! && cumprod ([i, 2+i, -3+2i, 4]) == [i, -1+2i, -1-8i, -4-32i]));
+%!assert (cumprod ([1, 2, 3]) == [1, 2, 6]);
+%!assert (cumprod ([-1; -2; -3]) == [-1; 2; -6]);
+%!assert (cumprod ([i, 2+i, -3+2i, 4]) == [i, -1+2i, -1-8i, -4-32i]);
 
 %% test/octave.test/arith/cumprod-2.m
 %!assert(all (all (cumprod ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])
@@ -769,8 +778,8 @@
 %!error <Invalid call to cumprod.*> cumprod ();
 
 %% test/octave.test/arith/cumprod-4.m
-%!assert((all (cumprod ([2, 3; 4, 5], 1) == [2, 3; 8, 15])
-%! && all (cumprod ([2, 3; 4, 5], 2) == [2, 6; 4, 20])));
+%!assert (all (cumprod ([2, 3; 4, 5], 1) == [2, 3; 8, 15]));
+%!assert (all (cumprod ([2, 3; 4, 5], 2) == [2, 6; 4, 20]));
 
 %% test/octave.test/arith/sumsq-1.m
 %!assert(sumsq ([1, 2, 3]) == 14 && sumsq ([-1; -2; 4i]) == 21);
@@ -782,8 +791,8 @@
 %!error <Invalid call to sumsq.*> sumsq ();
 
 %% test/octave.test/arith/sumsq-4.m
-%!assert((all (sumsq ([1, 2; 3, 4], 1) == [10, 20])
-%! && all (sumsq ([1, 2; 3, 4], 2) == [5; 25])));
+%!assert (all (sumsq ([1, 2; 3, 4], 1) == [10, 20]));
+%!assert (all (sumsq ([1, 2; 3, 4], 2) == [5; 25]));
 
 %% test/octave.test/arith/bincoeff-1.m
 %!assert(bincoeff (5, 2) == 10 && bincoeff (50, 6) == 15890700);

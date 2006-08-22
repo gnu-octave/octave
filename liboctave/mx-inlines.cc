@@ -372,22 +372,15 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   dim_vector dv = this->dims (); \
   int nd = this->ndims (); \
  \
-  int empty = true; \
+  int empty = false; \
  \
   for (int i = 0; i < nd; i++) \
     { \
-      if (dv(i) > 0) \
+      if (dv(i) == 0) \
         { \
-          empty = false; \
+          empty = true; \
           break; \
         } \
-    } \
- \
-  if (empty) \
-    { \
-      dim_vector retval_dv (1, 1); \
-      retval.resize (retval_dv, INIT_VAL); \
-      return retval; \
     } \
  \
   /* We need to find first non-singleton dim.  */ \
@@ -435,36 +428,39 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   retval.resize (dv, INIT_VAL); \
  \
-  octave_idx_type nel = dv.numel (); \
- \
-  octave_idx_type k = 1; \
- \
-  for (octave_idx_type result_idx = 0; result_idx < nel; result_idx++) \
+  if (! empty) \
     { \
-      OCTAVE_QUIT; \
+      octave_idx_type nel = dv.numel (); \
  \
-      for (octave_idx_type j = 0; j < n_elts; j++) \
+      octave_idx_type k = 1; \
+ \
+      for (octave_idx_type result_idx = 0; result_idx < nel; result_idx++) \
 	{ \
-          OCTAVE_QUIT; \
+	  OCTAVE_QUIT; \
  \
-	  EVAL_EXPR; \
+          for (octave_idx_type j = 0; j < n_elts; j++) \
+	    { \
+              OCTAVE_QUIT; \
  \
-	  iter_idx += incr; \
+	      EVAL_EXPR; \
+ \
+	      iter_idx += incr; \
+	    } \
+ \
+          if (k == reset_at) \
+	    { \
+	      base = next_base; \
+	      next_base += base_incr; \
+	      iter_idx = base; \
+	      k = 1; \
+	    } \
+	  else \
+	    { \
+	      base++; \
+	      iter_idx = base; \
+	      k++; \
+	     } \
 	} \
- \
-      if (k == reset_at) \
-        { \
-	  base = next_base; \
-	  next_base += base_incr; \
-	  iter_idx = base; \
-	  k = 1; \
-        } \
-      else \
-	{ \
-	  base++; \
-	  iter_idx = base; \
-	  k++; \
-         } \
     } \
  \
   retval.chop_trailing_singletons (); \
@@ -487,22 +483,15 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
   dim_vector dv = this->dims (); \
   int nd = this->ndims (); \
  \
-  int empty = true; \
+  bool empty = false; \
  \
   for (int i = 0; i < nd; i++) \
     { \
-      if (dv(i) > 0) \
+      if (dv(i) == 0) \
         { \
-          empty = false; \
+          empty = true; \
           break; \
         } \
-    } \
- \
-  if (empty) \
-    { \
-      dim_vector retval_dv (1, 1); \
-      retval.resize (retval_dv, INIT_VAL); \
-      return retval; \
     } \
  \
   /* We need to find first non-singleton dim.  */ \
@@ -548,47 +537,50 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
  \
   retval.resize (dv, INIT_VAL); \
  \
-  octave_idx_type nel = dv.numel () / n_elts; \
- \
-  octave_idx_type k = 1; \
- \
-  for (octave_idx_type i = 0; i < nel; i++) \
+  if (! empty) \
     { \
-      OCTAVE_QUIT; \
+      octave_idx_type nel = dv.numel () / n_elts; \
  \
-      ACC_TYPE prev_val = INIT_VAL; \
+      octave_idx_type k = 1; \
  \
-      for (octave_idx_type j = 0; j < n_elts; j++) \
+      for (octave_idx_type i = 0; i < nel; i++) \
 	{ \
-          OCTAVE_QUIT; \
+	  OCTAVE_QUIT; \
  \
-	  if (j == 0) \
+          ACC_TYPE prev_val = INIT_VAL; \
+ \
+	  for (octave_idx_type j = 0; j < n_elts; j++) \
 	    { \
-	      retval(iter_idx) = elem (iter_idx); \
-	      prev_val = retval(iter_idx); \
+	      OCTAVE_QUIT; \
+ \
+	      if (j == 0) \
+		{ \
+		  retval(iter_idx) = elem (iter_idx); \
+		  prev_val = retval(iter_idx); \
+		} \
+	      else \
+		{ \
+		  prev_val = prev_val OP elem (iter_idx); \
+		  retval(iter_idx) = prev_val; \
+		} \
+ \
+	      iter_idx += incr; \
+	    } \
+ \
+	  if (k == reset_at) \
+	    { \
+	      base = next_base; \
+	      next_base += base_incr; \
+	      iter_idx = base; \
+	      k = 1; \
 	    } \
 	  else \
 	    { \
-	      prev_val = prev_val OP elem (iter_idx); \
-	      retval(iter_idx) = prev_val; \
-	    } \
- \
-	  iter_idx += incr; \
+	      base++; \
+	      iter_idx = base; \
+	      k++; \
+	     } \
 	} \
- \
-      if (k == reset_at) \
-        { \
-	  base = next_base; \
-	  next_base += base_incr; \
-	  iter_idx = base; \
-	  k = 1; \
-        } \
-      else \
-	{ \
-	  base++; \
-	  iter_idx = base; \
-	  k++; \
-         } \
     } \
  \
   retval.chop_trailing_singletons (); \

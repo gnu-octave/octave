@@ -1,3 +1,10 @@
+2006-08-22  John W. Eaton  <jwe@octave.org>
+
+	* mx-inlines.cc (MX_ND_CUMULATIVE_OP): Correctly detect empty arrays.
+	If array is empty, return value is same size as array.
+	(MX_ND_REDUCTION): Correctly detect empty arrays.
+	If array is empty, produce correctly sized return value.
+
 2006-08-18  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc (Matrix::any_element_not_one_or_zero): New function.

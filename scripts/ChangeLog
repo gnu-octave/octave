@@ -1,3 +1,10 @@
+2006-08-22  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (extract_pkgadd, create_pkgadd): New functions to 
+	Search inst/*.m and src/*.m files in the package for
+	PKG_ADD directives and append user supplied PKG_ADD.
+	(pkg): Call create_pkgadd after copying files.
+
 2006-08-21  Søren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Handle multiple packages in a single file.

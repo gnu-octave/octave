@@ -252,6 +252,7 @@ function install(files, handle_deps)
             desc = descriptions{i};
             pdir = packdirs{i};
             copy_files(desc, pdir);
+	    create_pkgadd(desc, pdir);
             finish_installation (desc, pdir)
         endfor
     catch
@@ -496,6 +497,61 @@ function configure_make (desc, packdir)
             error("Couldn't copy files from 'src' to 'inst': %s\n", output);
         endif
     endif
+endfunction
+
+function pkgadd = extract_pkgadd (nm, pat)
+  fid = fopen (nm, "rt");
+  pkgadd = "";
+  if (fid >= 0)
+    while (! feof(fid))
+      ln = fgetl (fid);
+      if (ln > 0)
+	t = regexp(ln, pat, "tokens","dotexceptnewline");
+	if (!isempty(t))
+          pkgadd = [pkgadd, "\n", t{1}{1}];
+	endif
+      endif
+    endwhile
+    if (!isempty(pkgadd))
+      pkgadd = [pkgadd, "\n"];
+    endif
+    fclose (fid);
+  endif
+endfunction
+
+function create_pkgadd (desc, packdir)
+  pkgadd = [desc.dir "/PKG_ADD"];
+  fid = fopen(pkgadd, "wt");
+  if (fid >= 0)
+    ## Search all dot-m files for PKG_ADD commands
+    lst = dir ([packdir "inst/*.m"]);
+    for i=1:length(lst)
+      nm = lst(i).name;
+      fwrite (fid, extract_pkgadd (nm, '^[#%][#%]* *PKG_ADD: *(.*)$'));
+    endfor
+
+    ## Search all C++ source files for PKG_ADD commands
+    lst = dir ([packdir "src/*.cc"]);
+    for i=1:length(lst)
+      nm = lst(i).name;
+      fwrite (fid, extract_pkgadd (nm, '^//* *PKG_ADD: *(.*)$'));
+      fwrite (fid, extract_pkgadd (nm, '^/\** *PKG_ADD: *(.*) *\*/$'));
+    endfor
+
+    ## Add developer included PKG_ADD commands
+    if (exist([packdir "PKG_ADD"],"file"))
+      fid2 = fopen([packdir "PKG_ADD"],"rt");
+      if (fid2 >= 0)
+        while (! feof(fid2))
+          ln = fgets (fid2);
+          if (ln > 0)
+            fwrite(fid, ln);
+          endif
+        endwhile
+      endif
+    endif
+    fclose(fid);
+  endif
 endfunction
 
 function copy_files (desc, packdir)

@@ -2851,6 +2851,74 @@ Matrix::column_max (Array<octave_idx_type>& idx_arg) const
   return result;
 }
 
+// Used when converting Inf to something that gnuplot can read.
+
+#ifndef OCT_RBV
+#define OCT_RBV DBL_MAX / 100.0
+#endif
+
+std::ostream&
+Matrix::save_ascii (std::ostream& os, bool& infnan_warned,
+		    int strip_nan_and_inf)
+{
+  if (strip_nan_and_inf)
+    {
+      octave_idx_type nr = rows ();
+      octave_idx_type nc = columns ();
+
+      for (octave_idx_type i = 0; i < nr; i++)
+	{
+	  if (strip_nan_and_inf)
+	    {
+	      for (octave_idx_type j = 0; j < nc; j++)
+		{
+		  double d = elem (i, j);
+
+		  if (xisnan (d))
+		    {
+		      if (strip_nan_and_inf == 1)
+			goto next_row;
+		      else if (strip_nan_and_inf == 2)
+			goto next_row_with_newline;
+		    }
+		}
+	    }
+
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    {
+	      double d = elem (i, j);
+
+	      if (strip_nan_and_inf)
+		{
+		  if (xisinf (d))
+		    d = d > 0 ? OCT_RBV : -OCT_RBV;
+		}
+	      else if (! infnan_warned && (xisnan (d) || xisinf (d)))
+		{
+		  (*current_liboctave_warning_handler)
+		    ("save: Inf or NaN values may not be reloadable");
+
+		  infnan_warned = true;
+		}
+
+	      octave_write_double (os, d);
+
+	      os << " ";
+	    }
+
+	next_row_with_newline:
+	  os << "\n";
+
+	next_row:
+	  continue;
+	}
+    }
+  else
+    os << *this;
+
+  return os;
+}
+
 std::ostream&
 operator << (std::ostream& os, const Matrix& a)
 {

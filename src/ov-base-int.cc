@@ -70,7 +70,7 @@ octave_base_int_matrix<T>::try_narrowing_conversion (void)
 
 template <class T>
 bool
-octave_base_int_matrix<T>::save_ascii (std::ostream& os, bool&, bool)
+octave_base_int_matrix<T>::save_ascii (std::ostream& os, bool&, int)
 {
   dim_vector d = this->dims ();
 
@@ -331,7 +331,7 @@ octave_base_int_matrix<T>::print_raw (std::ostream& os,
 
 template <class T>
 bool
-octave_base_int_scalar<T>::save_ascii (std::ostream& os, bool& , bool)
+octave_base_int_scalar<T>::save_ascii (std::ostream& os, bool& , int)
 {
   os << this->scalar << "\n";
   return true;

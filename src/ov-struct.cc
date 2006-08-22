@@ -1017,7 +1017,7 @@ named fields.\n\
 
 bool
 octave_struct::save_ascii (std::ostream& os, bool& infnan_warned, 
-			   bool strip_nan_and_inf)
+			   int strip_nan_and_inf)
 {
   Octave_map m = map_value ();
   os << "# length: " << m.length () << "\n";

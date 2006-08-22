@@ -1,5 +1,44 @@
 2006-08-22  John W. Eaton  <jwe@octave.org>
 
+	* ov.h (octave_value::save_ascii): strip_nan_and_inf is now int,
+	not bool.
+	* ov-base.h, ov-base.cc (octave_base_value::save_ascii): Likewise.
+	* ov-base-int.h, ov-base-int.cc	(octave_base_int_matrix<T>::save_ascii,
+	octave_base_int_scalar<T>::save_ascii, ): Likewise.
+	* ov-base-sparse.cc, ov-base-sparse.h
+	(octave_base_sparse<T>::save_ascii): Likewise.
+	* ov-bool-mat.cc, ov-bool-mat.h (octave_bool_matrix::save_ascii):
+	Likewise.
+	* ov-bool.cc, ov-bool.h (octave_bool::save_ascii): Likewise.
+	* ov-cell.cc, ov-cell.h (octave_cell::save_ascii): Likewise.
+	* ov-complex.cc, ov-complex.h (octave_complex::save_ascii): Likewise.
+	* ov-fcn-handle.cc, ov-fcn-handle.h (octave_fcn_handle::save_ascii):
+	Likewise.
+	* ov-fcn-inline.cc, ov-fcn-inline.h (octave_fcn_inline::save_ascii):
+	Likewise.
+	* ov-list.cc, ov-list.h (octave_list::save_ascii): Likewise.
+	* ov-range.cc, ov-range.h (octave_range::save_ascii): Likewise.
+	* ov-scalar.cc, ov-scalar.h (octave_scalar::save_ascii): Likewise.
+	* ov-str-mat.cc, ov-str-mat.h (octave_char_matrix_str::save_ascii):
+	Likewise.
+	* ov-struct.cc, ov-struct.h (octave_struct::save_ascii): Likewise.
+	* ov-re-mat.cc, ov-re-mat.cc (octave_matrix::save_ascii): Likewise.
+	* ov-cx-mat.cc, ov-cx-mat.cc (octave_complex_matrix::save_ascii): Likewise.
+
+	* ov-cx-mat.cc, ov-cx-mat.cc (octave_complex_matrix::save_ascii):
+	Don't strip Inf and NaN here.  Call ComplexMatrix::save_ascii to
+	do the real work.
+	* ov-re-mat.cc, ov-re-mat.cc (octave_matrix::save_ascii):
+	Don't strip Inf and NaN here.  Call Matrix::save_ascii to do the
+	real work.
+
+	* ov-re-mat.cc, ov-cx-mat.cc (strip_infnan): Delete.
+	* ls-oct-ascii.cc, ls-oct-ascii.h (save_ascii_data):
+	strip_nan_and_inf is now int, not bool.
+	(strip_infnan): Delete.
+	(save_ascii_data_for_plotting): Call save_ascii_data with
+	strip_nan_and_inf = 2.
+
 	* Makefile.in (INCLUDES): Remove matrix.h from the list.
 
 2006-08-22  David Bateman  <dbateman@free.fr>

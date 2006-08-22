@@ -415,7 +415,7 @@ public:
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 
   virtual bool save_ascii (std::ostream& os, bool& infnan_warned,
-			   bool strip_nan_and_inf);
+			   int strip_nan_and_inf);
 
   virtual bool load_ascii (std::istream& is);
 

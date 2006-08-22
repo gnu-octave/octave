@@ -1,5 +1,8 @@
 2006-08-22  John W. Eaton  <jwe@octave.org>
 
+	* CMatrix.cc (ComplexMatrix::save_ascii): New function.
+	* dMatrix.cc (Matrix::save_ascii): New function.
+
 	* mx-inlines.cc (MX_ND_CUMULATIVE_OP): Correctly detect empty arrays.
 	If array is empty, return value is same size as array.
 	(MX_ND_REDUCTION): Correctly detect empty arrays.

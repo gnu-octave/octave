@@ -51,7 +51,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 extern bool
 save_ascii_data (std::ostream& os, const octave_value& val_arg,
 		 const std::string& name, bool& infnan_warned,
-		 bool strip_nan_and_inf, bool mark_as_global,
+		 int strip_nan_and_inf, bool mark_as_global,
 		 int precision);
 
 extern bool

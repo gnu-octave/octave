@@ -434,7 +434,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
 
 bool 
 octave_cell::save_ascii (std::ostream& os, bool& infnan_warned, 
-			       bool strip_nan_and_inf)
+			 int strip_nan_and_inf)
 {
   dim_vector d = dims ();
   if (d.length () > 2)

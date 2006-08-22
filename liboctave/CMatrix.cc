@@ -3464,6 +3464,82 @@ ComplexMatrix::column_max (Array<octave_idx_type>& idx_arg) const
 
 // i/o
 
+// Used when converting Inf to something that gnuplot can read.
+
+#ifndef OCT_RBV
+#define OCT_RBV DBL_MAX / 100.0
+#endif
+
+std::ostream&
+ComplexMatrix::save_ascii (std::ostream& os, bool& infnan_warned,
+			   int strip_nan_and_inf)
+{
+  if (strip_nan_and_inf)
+    {
+      octave_idx_type nr = rows ();
+      octave_idx_type nc = columns ();
+
+      for (octave_idx_type i = 0; i < nr; i++)
+	{
+	  if (strip_nan_and_inf)
+	    {
+	      for (octave_idx_type j = 0; j < nc; j++)
+		{
+		  Complex c = elem (i, j);
+
+		  if (xisnan (c))
+		    {
+		      if (strip_nan_and_inf == 1)
+			goto next_row;
+		      else if (strip_nan_and_inf == 2)
+			goto next_row_with_newline;
+		    }
+		}
+	    }
+
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    {
+	      Complex c = elem (i, j);
+
+	      if (strip_nan_and_inf)
+		{
+		  double re = std::real (c);
+		  double im = std::imag (c);
+
+		  if (xisinf (re))
+		    re = re > 0 ? OCT_RBV : -OCT_RBV;
+
+		  if (xisinf (im))
+		    im = im > 0 ? OCT_RBV : -OCT_RBV;
+
+		  c = Complex (re, im);
+		}
+	      else if (! infnan_warned && (xisnan (c) || xisinf (c)))
+		{
+		  (*current_liboctave_warning_handler)
+		    ("save: Inf or NaN values may not be reloadable");
+
+		  infnan_warned = true;
+		}
+
+	      octave_write_complex (os, c);
+
+	      os << " ";
+	    }
+
+	next_row_with_newline:
+	  os << "\n";
+
+	next_row:
+	  continue;
+	}
+    }
+  else
+    os << *this;
+
+  return os;
+}
+
 std::ostream&
 operator << (std::ostream& os, const ComplexMatrix& a)
 {

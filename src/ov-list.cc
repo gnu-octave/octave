@@ -539,7 +539,7 @@ is equivalent to @code{append (@var{list_1}, @var{list_2})}.\n\
 
 bool 
 octave_list::save_ascii (std::ostream& os, bool& infnan_warned, 
-			   bool strip_nan_and_inf)
+			 int strip_nan_and_inf)
 {
   octave_value_list lst = list_value ();
   os << "# length: " << lst.length () << "\n";

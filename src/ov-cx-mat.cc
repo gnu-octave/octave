@@ -200,48 +200,9 @@ octave_complex_matrix::sparse_complex_matrix_value (bool) const
   return SparseComplexMatrix (matrix.matrix_value ());
 }
 
-static ComplexMatrix
-strip_infnan (const ComplexMatrix& m)
-{
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  ComplexMatrix retval (nr, nc);
-
-  octave_idx_type k = 0;
-  for (octave_idx_type i = 0; i < nr; i++)
-    {
-      for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  Complex c = m (i, j);
-	  if (xisnan (c))
-	    goto next_row;
-	  else
-	    {
-	      double re = std::real (c);
-	      double im = std::imag (c);
-
-	      re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
-	      im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
-
-	      retval (k, j) = Complex (re, im);
-	    }
-	}
-      k++;
-
-    next_row:
-      continue;
-    }
-
-  if (k > 0)
-    retval.resize (k, nc);
-
-  return retval;
-}
-
 bool 
 octave_complex_matrix::save_ascii (std::ostream& os, bool& infnan_warned, 
-			       bool strip_nan_and_inf)
+				   int strip_nan_and_inf)
 {
   dim_vector d = dims ();
   if (d.length () > 2)
@@ -276,15 +237,7 @@ octave_complex_matrix::save_ascii (std::ostream& os, bool& infnan_warned,
 
       ComplexMatrix tmp = complex_matrix_value ();
 
-      if (strip_nan_and_inf)
-	tmp = strip_infnan (tmp);
-      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
-	{
-	  warning ("save: Inf or NaN values may not be reloadable");
-	  infnan_warned = true;
-	}
-
-      os << tmp;
+      tmp.save_ascii (os, infnan_warned, strip_nan_and_inf);
     }
 
   return true;

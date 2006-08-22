@@ -286,7 +286,7 @@ skip_comments (std::istream& is)
 
 bool 
 octave_range::save_ascii (std::ostream& os, bool& /* infnan_warned */,
-			  bool /* strip_nan_and_inf */)
+			  int /* strip_nan_and_inf */)
 {
   Range r = range_value ();
   double base = r.base ();

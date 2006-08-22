@@ -157,7 +157,7 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
 
 bool 
 octave_scalar::save_ascii (std::ostream& os, bool& infnan_warned, 
-			   bool strip_nan_and_inf)
+			   int strip_nan_and_inf)
 {
   double d = double_value ();
 

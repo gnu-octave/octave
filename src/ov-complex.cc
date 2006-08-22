@@ -177,7 +177,7 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
 
 bool 
 octave_complex::save_ascii (std::ostream& os, bool& infnan_warned, 
-			    bool strip_nan_and_inf)
+			    int strip_nan_and_inf)
 {
   Complex c = complex_value ();
 

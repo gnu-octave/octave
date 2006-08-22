@@ -254,40 +254,9 @@ octave_matrix::convert_to_str_internal (bool, bool, char type) const
   return retval;
 }
 
-static Matrix
-strip_infnan (const Matrix& m)
-{
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  Matrix retval (nr, nc);
-
-  octave_idx_type k = 0;
-  for (octave_idx_type i = 0; i < nr; i++)
-    {
-      for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  double d = m (i, j);
-	  if (xisnan (d))
-	    goto next_row;
-	  else
-	    retval (k, j) = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
-	}
-      k++;
-
-    next_row:
-      continue;
-    }
-
-  if (k > 0)
-    retval.resize (k, nc);
-
-  return retval;
-}
-
 bool 
 octave_matrix::save_ascii (std::ostream& os, bool& infnan_warned, 
-			       bool strip_nan_and_inf)
+			   int strip_nan_and_inf)
 {
   dim_vector d = dims ();
   if (d.length () > 2)
@@ -322,15 +291,7 @@ octave_matrix::save_ascii (std::ostream& os, bool& infnan_warned,
 
       Matrix tmp = matrix_value ();
 
-      if (strip_nan_and_inf)
-	tmp = strip_infnan (tmp);
-      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
-	{
-	  warning ("save: Inf or NaN values may not be reloadable");
-	  infnan_warned = true;
-	}
-
-      os << tmp;
+      tmp.save_ascii (os, infnan_warned, strip_nan_and_inf);
     }
 
   return true;

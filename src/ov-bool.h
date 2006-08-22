@@ -157,7 +157,7 @@ public:
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   bool save_ascii (std::ostream& os, bool& infnan_warned,
-		 bool strip_nan_and_inf);
+		   int strip_nan_and_inf);
 
   bool load_ascii (std::istream& is);
 

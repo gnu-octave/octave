@@ -414,7 +414,11 @@ print_real_mapper_test() {
 %! wn2s = warning ("query", "Octave:num-to-str");
 %! warning ("off", "Octave:num-to-str");
 %! if isreal(af)
-%!    assert($1(as),sparse($1(af),1))
+%!   if ($2)
+%!     assert($1(as),sparse($1(af),1))
+%!   else
+%!     assert($1(as),$1(af))
+%!   endif
 %! endif
 %! warning (wn2s.state, "Octave:num-to-str");
 
@@ -466,22 +470,22 @@ EOF
 
 gen_real_mapper_tests() {
 echo "%% Unary matrix tests (uses af,as)">>$TESTS
-print_real_mapper_test erf
-print_real_mapper_test erfc
-#print_real_mapper_test gamma
-print_real_mapper_test isalnum
-print_real_mapper_test isalpha
-print_real_mapper_test isascii
-print_real_mapper_test iscntrl
-print_real_mapper_test isdigit
-print_real_mapper_test isgraph
-print_real_mapper_test islower
-print_real_mapper_test isprint
-print_real_mapper_test ispunct
-print_real_mapper_test isspace
-print_real_mapper_test isupper
-print_real_mapper_test isxdigit
-#print_real_mapper_test lgamma
+print_real_mapper_test erf 1
+print_real_mapper_test erfc 1
+#print_real_mapper_test gamma 1
+print_real_mapper_test isalnum 0
+print_real_mapper_test isalpha 0
+print_real_mapper_test isascii 0
+print_real_mapper_test iscntrl 0
+print_real_mapper_test isdigit 0
+print_real_mapper_test isgraph 0
+print_real_mapper_test islower 0
+print_real_mapper_test isprint 0
+print_real_mapper_test ispunct 0
+print_real_mapper_test isspace 0
+print_real_mapper_test isupper 0
+print_real_mapper_test isxdigit 0
+#print_real_mapper_test lgamma 1
 
 # Specific tests for certain mapper functions
     cat >>$TESTS <<EOF

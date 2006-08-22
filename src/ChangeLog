@@ -1,3 +1,8 @@
+2006-08-22  David Bateman  <dbateman@free.fr>
+
+	* sparse-xpow.cc: Replace all uses of pow by std::pow.
+	(elem_pow): Simplify for two sparse matrices arguments.
+
 2006-08-22  John W. Eaton  <jwe@octave.org>
 
 	* ls-oct-ascii.cc: Increase default value of save_precision to 16.

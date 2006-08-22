@@ -157,16 +157,13 @@ read_mat5_binary_data (std::istream& is, double *data,
     case miRESERVE3:
       break;
 
+    // FIXME -- how are the 64-bit cases supposed to work here?
     case miINT64:
-#ifdef int64_t
       read_doubles (is, data, LS_LONG, count, swap, flt_fmt);
-#endif
       break;
 
     case miUINT64:
-#ifdef int64_t
       read_doubles (is, data, LS_U_LONG, count, swap, flt_fmt);
-#endif
       break;
 
     case miMATRIX:
@@ -230,15 +227,11 @@ read_mat5_integer_data (std::istream& is, T *m, int count, bool swap,
       break;
 
     case miINT64:
-#ifdef int64_t
       READ_INTEGER_DATA (int64_t, swap, m, 8, count, is);
-#endif
       break;
 
     case miUINT64:
-#ifdef int64_t
       READ_INTEGER_DATA (uint64_t, swap, m, 8, count, is);
-#endif
       break;
 
     case miMATRIX:
@@ -1104,13 +1097,9 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 	MAT5_DO_WRITE (uint32_t, data, nel, os);
 	break;
 	
-	// provide for 64 bit ints, even though get_save_type does
-	// not yet implement them
-#ifdef int64_t
       case LS_U_LONG:
 	MAT5_DO_WRITE (uint64_t, data, nel, os);
 	break;
-#endif
 
       case LS_CHAR:
 	MAT5_DO_WRITE (int8_t, data, nel, os);
@@ -1124,11 +1113,9 @@ write_mat5_array (std::ostream& os, const NDArray& m, bool save_as_floats)
 	MAT5_DO_WRITE (int32_t, data, nel, os);
 	break;
 
-#ifdef int64_t
       case LS_LONG:
 	MAT5_DO_WRITE (int64_t, data, nel, os);
 	break;
-#endif
 
       case LS_FLOAT:
 	MAT5_DO_WRITE (float, data, nel, os);

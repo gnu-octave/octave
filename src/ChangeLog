@@ -1,5 +1,8 @@
 2006-08-21  John W. Eaton  <jwe@octave.org>
 
+	* ls-mat5.cc (read_mat5_binary_data, read_mat5_integer_data,
+	write_mat5_array): Unconditionally enable code for 64-bit int types.
+
 	* ov-fcn-handle.cc (DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA):	
 	For compatibility, set class to function_handle.
 

@@ -334,9 +334,6 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
 {
   bool success = true;
 
-  long old_precision = os.precision ();
-  os.precision (precision);
-
   if (val.is_complex_type ())
     warning ("save: omitting imaginary part for ASCII file");
 
@@ -349,9 +346,20 @@ save_mat_ascii_data (std::ostream& os, const octave_value& val,
       error_state = 0;
     }
   else
-    os << m;
+    {
+      long old_precision = os.precision ();
 
-  os.precision (old_precision);
+      os.precision (precision);
+
+      std::ios::fmtflags oflags
+	= os.flags (static_cast<std::ios::fmtflags> (std::ios::scientific));
+
+      os << m;
+
+      os.flags (oflags);
+
+      os.precision (old_precision);
+    }
 
   return (os && success);
 }

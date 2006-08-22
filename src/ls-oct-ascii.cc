@@ -68,7 +68,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ls-oct-ascii.h"
 
 // The number of decimal digits to use when writing ascii data.
-static int Vsave_precision = 15;
+static int Vsave_precision = 16;
 
 // Functions for reading ascii data.
 
@@ -357,14 +357,8 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
 {
   bool success = true;
 
-  if (! precision)
-    precision = Vsave_precision;
-
   if (! name.empty ())
     os << "# name: " << name << "\n";
-
-  long old_precision = os.precision ();
-  os.precision (precision);
 
   octave_value val = val_arg;
 
@@ -373,7 +367,13 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
   else
     os << "# type: " << val.type_name() << "\n";
 
-  success = val . save_ascii(os, infnan_warned, strip_nan_and_inf);
+  if (! precision)
+    precision = Vsave_precision;
+
+  long old_precision = os.precision ();
+  os.precision (precision);
+
+  success = val . save_ascii (os, infnan_warned, strip_nan_and_inf);
 
   os.precision (old_precision);
 

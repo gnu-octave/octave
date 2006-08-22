@@ -1,3 +1,9 @@
+2006-08-22  John W. Eaton  <jwe@octave.org>
+
+	* ls-oct-ascii.cc: Increase default value of save_precision to 16.
+
+	* ls-mat-ascii.cc (save_mat5_ascii_data): Use scientific format.
+
 2006-08-21  John W. Eaton  <jwe@octave.org>
 
 	* ls-mat5.cc (read_mat5_binary_data, read_mat5_integer_data,

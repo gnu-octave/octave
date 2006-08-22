@@ -80,97 +80,99 @@
 %!
 %!      file = f{1};
 %!
-%!      eval(["load -force " file]);
+%!      load (file);
 %!
-%!      if (a1 != b1)
-%!	  error(["failed: " file " scalar"])
+%!      if (! isequal (a1, b1))
+%!	  error ("failed: %s scalar", file)
 %!      endif
-%!      if (a2 != b2)
-%!	  error(["failed: " file " matrix"]);
+%!
+%!      if (! isequal (a2, b2))
+%!	  error ("failed: %s matrix", file);
 %!      endif
-%!      if (a3 != b3)
-%!  	  error(["failed: " file " complex scalar"]);
+%!
+%!      if (! isequal (a3, b3))
+%!  	  error ("failed: %s complex scalar", file);
 %!      endif
-%!      if (a4 != b4)
-%!	  error(["failed: " file " complex matrix"]);
+%!
+%!      if (! isequal (a4, b4))
+%!	  error ("failed: %s complex matrix", file);
 %!      endif
-%!      if (a5 != b5)
-%!	  error(["failed: " file " boolean"]);
+%!
+%!      if (! isequal (a5, b5))
+%!	  error ("failed: %s boolean", file);
 %!      endif
-%!      if (!strcmp (file,"mat5") && !strcmp(file,"mat7"))
-%!        if (a6 != b6)
-%!	    error(["failed: " file " boolean matrix"]);
+%!
+%!      if (! strcmp (file, "mat5") && ! strcmp (file, "mat7"))
+%!        if (! isequal (a6, b6))
+%!	    error ("failed: %s boolean matrix", file);
 %!        endif
 %!      endif
-%!      if (a7 != b7)
-%!	  error(["failed: " file " range"]);
+%!
+%!      if (! isequal (a7, b7))
+%!	  error ("failed: %s range", file);
 %!      endif
 %!
-%!      ## != not implemented for structs!!!!
-%!      if (!isstruct(a8) || (length(fieldnames(a8)) != 2) || !isfield(a8,"a")
-%!	  || !isfield(a8,"b") || (a8.a != b8.a) || (a8.b != b8.b))
-%!	  error(["failed: " file " struct"]);
+%!      if (! isequal (a8, b8))
+%!	  error ("failed: %s struct", file);
 %!      endif
 %!      
-%!      ## != not implemented for cell arrays!!!!
-%!      if (!iscell(a9) || (size(a9) != size(b9)) || (a9{1} != b9{1})
-%!	  || (a9{2} != b9{2}))
-%!	  error(["failed: " file " cell"]);
+%!      if (! isequal (a9, b9))
+%!	  error ("failed: %s cell", file);
 %!      endif
 %!      
-%!      if (a10 != b10)
-%!	  error(["failed: " file " string"]);
+%!      if (! isequal (a10, b10))
+%!	  error ("failed: %s string", file);
 %!      endif
 %!
-%!      if (a11 != b11)
-%!	  error(["failed: " file " int8"]);
+%!      if (! isequal (a11, b11))
+%!	  error ("failed: %s int8", file);
 %!      endif
 %!
-%!      if (a12 != b12)
-%!	  error(["failed: " file " int16"]);
+%!      if (! isequal (a12, b12))
+%!	  error ("failed: %s int16", file);
 %!      endif
 %!
-%!      if (a13 != b13)
-%!	  error(["failed: " file " int32"]);
+%!      if (! isequal (a13, b13))
+%!	  error ("failed: %s int32", file);
 %!      endif
 %!
-%!      if (a14 != b14)
-%!	  error(["failed: " file " int64"]);
+%!      if (! isequal (a14, b14))
+%!	  error ("failed: %s int64", file);
 %!      endif
 %!
-%!      if (a15 != b15)
-%!	  error(["failed: " file " uint8"]);
+%!      if (! isequal (a15, b15))
+%!	  error ("failed: %s uint8", file);
 %!      endif
 %!
-%!      if (a16 != b16)
-%!	  error(["failed: " file " uint16"]);
+%!      if (! isequal (a16, b16))
+%!	  error ("failed: %s uint16", file);
 %!      endif
 %!
-%!      if (a17 != b17)
-%!	  error(["failed: " file " uint32"]);
+%!      if (! isequal (a17, b17))
+%!	  error ("failed: %s uint32", file);
 %!      endif
 %!
-%!      if (a18 != b18)
-%!	  error(["failed: " file " uint64"]);
+%!      if (! isequal (a18, b18))
+%!	  error ("failed: %s uint64", file);
 %!      endif
 %!
-%!      if (a19 != b19)
-%!	  error(["failed: " file " sparse"]);
+%!      if (! isequal (a19, b19))
+%!	  error ("failed: %s sparse", file);
 %!      endif
 %!
-%!      if (a20 != b20)
-%!	  error(["failed: " file " complex sparse"]);
+%!      if (! isequal (a20, b20))
+%!	  error ("failed: %s complex sparse", file);
 %!      endif
 %!
 %!      ## Test for global flags
-%!      if (!isglobal("a1") || isglobal("a2") || isglobal("a3") || 
-%!	  isglobal("a4") || isglobal("a5") || isglobal("a6") || 
-%!	  isglobal("a7") || isglobal("a8") || isglobal("a9") || 
-%!	  isglobal("a10") || isglobal("a11") || isglobal("a12") ||
-%!	  isglobal("a13") || isglobal("a14") || isglobal("a15") ||
-%!	  isglobal("a16") || isglobal("a17") || isglobal("a18") ||
-%!	  isglobal("a19") || isglobal("a20"))
-%!	  error (["failed: " file " global test"]); 
+%!      if (! isglobal ("a1") || isglobal ("a2") || isglobal ("a3")
+%!          || isglobal ("a4") || isglobal ("a5") || isglobal ("a6")
+%!          || isglobal ("a7") || isglobal ("a8") || isglobal ("a9")
+%!          || isglobal ("a10") || isglobal ("a11") || isglobal ("a12")
+%!          || isglobal ("a13") || isglobal ("a14") || isglobal ("a15")
+%!          || isglobal ("a16") || isglobal ("a17") || isglobal ("a18")
+%!          || isglobal ("a19") || isglobal ("a20"))
+%!	  error ("failed: %s global test", file); 
 %!      endif
 %!    endfor
 %!  endif

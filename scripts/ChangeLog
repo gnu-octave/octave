@@ -1,3 +1,7 @@
+2006-08-23  Quentin Spencer  <qspencer@ieee.org>
+
+	* control/system/tf2zp.m: Simplify gain calculation.
+
 2006-08-23  John W. Eaton  <jwe@octave.org>
 
 	* plot/__plt__.m: Insert using clauses for all plots.

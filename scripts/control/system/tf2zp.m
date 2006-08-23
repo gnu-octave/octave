@@ -43,10 +43,9 @@ function [zer, pol, k] = tf2zp (num, den)
       zer = [];
     endif
   else
-    error ("Incorrect number of input arguments");
+    print_usage ();
   endif
 
-  [a, b, c, d] = tf2ss (num, den);
-  [dum, k] = tzero (a, b, c, d);
+  k = num(1) / den(1);
 
 endfunction

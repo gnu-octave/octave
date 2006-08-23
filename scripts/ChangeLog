@@ -1,3 +1,8 @@
+2006-08-23  A S Hodel  <hodelas@auburn.edu>
+
+	* control/system/sysscale.m: Call tf and zp with correct number of
+	args.
+
 2006-08-22  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (extract_pkgadd, create_pkgadd): New functions to 

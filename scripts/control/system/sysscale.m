@@ -104,12 +104,12 @@ function sys = sysscale (sys, outscale, inscale, outname, inname)
   if strcmp(sysgettype(sys),"tf")
     [num,den,tsam,innam,outnam] = sys2tf(sys);
     num = num*inscale*outscale;
-    sys = tf(num,den,tsam,innam,outnam,find(sysyd));
+    sys = tf(num,den,tsam,innam,outnam);
     return
   elseif strcmp(sysgettype(sys),"zp")
     [zer,pol,kk,tsam,innam,outnam] = sys2zp(sys);
     kk = kk*inscale*outscale;
-    sys = zp(zer,pol,k,tsam,innam,outnam,find(sysyd));
+    sys = zp(zer,pol,k,tsam,innam,outnam);
     return
   endif
 

@@ -156,36 +156,19 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
 }
 
 bool 
-octave_scalar::save_ascii (std::ostream& os, bool& infnan_warned, 
-			   int strip_nan_and_inf)
+octave_scalar::save_ascii (std::ostream& os, bool& infnan_warned)
 {
   double d = double_value ();
 
-  if (strip_nan_and_inf)
+  if (! infnan_warned && (xisnan (d) || xisinf (d)))
     {
-      if (xisnan (d))
-	{
-	  error ("only value to plot is NaN");
-	  return false;
-	}
-      else
-	{
-	  d = xisinf (d) ? (d > 0 ? OCT_RBV : -OCT_RBV) : d;
-	  octave_write_double (os, d);
-	  os << "\n";
-	}
+      warning ("save: Inf or NaN values may not be reloadable");
+      infnan_warned = true;
     }
-  else
-    {
-      if (! infnan_warned && (xisnan (d) || xisinf (d)))
-	{
-	  warning ("save: Inf or NaN values may not be reloadable");
-	  infnan_warned = true;
-	}
 
-      octave_write_double (os, d);
-      os << "\n";
-    }
+  octave_write_double (os, d);
+
+  os << "\n";
 
   return true;
 }

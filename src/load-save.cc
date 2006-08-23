@@ -993,7 +993,7 @@ do_save (std::ostream& os, const octave_value& tc,
   switch (fmt)
     {
     case LS_ASCII:
-      save_ascii_data (os, tc, name, infnan_warned, false, global, 0);
+      save_ascii_data (os, tc, name, infnan_warned, global, 0);
       break;
 
     case LS_BINARY:

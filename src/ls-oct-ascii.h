@@ -51,12 +51,15 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 extern bool
 save_ascii_data (std::ostream& os, const octave_value& val_arg,
 		 const std::string& name, bool& infnan_warned,
-		 int strip_nan_and_inf, bool mark_as_global,
-		 int precision);
+		 bool mark_as_global, int precision);
 
 extern bool
 save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 			      const std::string& name);
+
+extern bool
+save_three_d (std::ostream& os, const octave_value& t,
+	      bool parametric = false);
 
 // Match KEYWORD on stream IS, placing the associated value in VALUE,
 // returning TRUE if successful and FALSE otherwise.

@@ -269,9 +269,7 @@ octave_char_matrix_str::print_raw (std::ostream& os, bool pr_as_read_syntax) con
 }
 
 bool 
-octave_char_matrix_str::save_ascii (std::ostream& os,
-				    bool& /* infnan_warned */, 
-				    int /* strip_nan_and_inf */)
+octave_char_matrix_str::save_ascii (std::ostream& os, bool& /* infnan_warned */)
 {
   dim_vector d = dims ();
   if (d.length () > 2)

@@ -186,8 +186,7 @@ public:
 
   bool print_name_tag (std::ostream& os, const std::string& name) const;
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		   int strip_nan_and_inf);
+  bool save_ascii (std::ostream& os, bool& infnan_warned);
 
   bool load_ascii (std::istream& is);
 

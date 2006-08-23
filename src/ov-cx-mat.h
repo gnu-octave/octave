@@ -120,8 +120,7 @@ public:
 
   void decrement (void) { matrix -= Complex (1.0); }
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		   int strip_nan_and_inf);
+  bool save_ascii (std::ostream& os, bool& infnan_warned);
 
   bool load_ascii (std::istream& is);
 

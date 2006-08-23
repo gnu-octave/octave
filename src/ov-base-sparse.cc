@@ -295,7 +295,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
 
 template <class T>
 bool
-octave_base_sparse<T>::save_ascii (std::ostream& os, bool&, int)
+octave_base_sparse<T>::save_ascii (std::ostream& os, bool&)
 {
   dim_vector dv = this->dims ();
 

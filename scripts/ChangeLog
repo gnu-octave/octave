@@ -1,3 +1,7 @@
+2006-08-23  John W. Eaton  <jwe@octave.org>
+
+	* plot/__plt__.m: Insert using clauses for all plots.
+
 2006-08-23  A S Hodel  <hodelas@auburn.edu>
 
 	* control/system/sysscale.m: Call tf and zp with correct number of

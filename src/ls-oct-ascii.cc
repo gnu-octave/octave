@@ -307,12 +307,6 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 // flag MARK_AS_GLOBAL on stream OS in the plain text format described
 // above for load_ascii_data.  If NAME is empty, the name: line is not
 // generated.  PRECISION specifies the number of decimal digits to print. 
-// If STRIP_NAN_AND_INF is 1, rows containing NaNs are deleted,
-// and Infinite values are converted to +/-OCT_RBV (A Real Big Value,
-// but not so big that gnuplot can't handle it when trying to compute
-// axis ranges, etc.).  If STRIP_NAN_AND_INF is 2, rows containing
-// NaNs are converted to blank lines in the output file and infinite
-// values are converted to +/-OCT_RBV.
 //
 // Assumes ranges and strings cannot contain Inf or NaN values.
 //
@@ -323,8 +317,7 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 bool
 save_ascii_data (std::ostream& os, const octave_value& val_arg,
 		 const std::string& name, bool& infnan_warned,
-		 int strip_nan_and_inf, bool mark_as_global,
-		 int precision)
+		 bool mark_as_global, int precision)
 {
   bool success = true;
 
@@ -344,7 +337,7 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
   long old_precision = os.precision ();
   os.precision (precision);
 
-  success = val . save_ascii (os, infnan_warned, strip_nan_and_inf);
+  success = val . save_ascii (os, infnan_warned);
 
   os.precision (old_precision);
 
@@ -357,7 +350,7 @@ save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 {
   bool infnan_warned = true;
 
-  return save_ascii_data (os, t, name, infnan_warned, 2, false, 0);
+  return save_ascii_data (os, t, name, infnan_warned, false, 0);
 }
 
 // Maybe this should be a static function in tree-plot.cc?

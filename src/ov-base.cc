@@ -815,7 +815,7 @@ octave_base_value::list_value (void) const
 }
 
 bool 
-octave_base_value::save_ascii (std::ostream&, bool&, int)
+octave_base_value::save_ascii (std::ostream&, bool&)
 {
   gripe_wrong_type_arg ("octave_base_value::save_ascii()", type_name ());
   return false;

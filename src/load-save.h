@@ -45,14 +45,6 @@ enum load_save_format
     LS_UNKNOWN
   };
 
-extern bool
-save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
-			      const std::string& name = std::string ());
-
-extern bool
-save_three_d (std::ostream& os, const octave_value& t,
-	      bool parametric = false);
-
 extern void dump_octave_core (void);
 
 extern int

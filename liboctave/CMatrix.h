@@ -319,9 +319,6 @@ public:
 
   // i/o
 
-  std::ostream& save_ascii (std::ostream& os, bool& infnan_warned,
-			    int strip_nan_and_inf);
-
   friend std::ostream& operator << (std::ostream& os, const ComplexMatrix& a);
   friend std::istream& operator >> (std::istream& is, ComplexMatrix& a);
 

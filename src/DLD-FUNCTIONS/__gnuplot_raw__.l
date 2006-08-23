@@ -57,7 +57,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "defun-dld.h"
 #include "file-io.h"
 #include "gripes.h"
-#include "load-save.h"
+#include "ls-oct-ascii.h"
 #include "parse.h"
 #include "procstream.h"
 #include "sighandlers.h"
@@ -76,6 +76,7 @@ enum _toktype
     SEMICOLON,
     COMMA,
     QUOTE,
+    DOLLAR,
     IDENT,
     NUMBER,
     BINOP,
@@ -193,6 +194,12 @@ UNOP    ((\+\+)|(\-\-)|(\.'))
         return handle_string ('\'');
       }
     }
+
+"$" {
+    gpt_quote_is_transpose = false;
+    return DOLLAR;
+    }
+
 
 "\"" {
     return handle_string ('"');
@@ -577,13 +584,18 @@ handle_using (int& lasttok)
     {
       expr_str = read_until (colon_plottok_or_end_p, tok);
 
-      tmp_data = eval_string (expr_str, true, status);
-      if (status != 0 || ! tmp_data.is_real_scalar ())
-	throw gpt_parse_error ();
+      if (! expr_str.empty () &&  expr_str[0] == '(')
+	retstr += expr_str;
+      else
+	{
+	  tmp_data = eval_string (expr_str, true, status);
+	  if (status != 0 || ! tmp_data.is_real_scalar ())
+	    throw gpt_parse_error ();
 
-      std::ostringstream tmp_buf;
-      tmp_data.print_raw (tmp_buf);
-      retstr += tmp_buf.str ();
+	  std::ostringstream tmp_buf;
+	  tmp_data.print_raw (tmp_buf);
+	  retstr += tmp_buf.str ();
+	}
 
       if (tok == COLON)
 	retstr += ":";

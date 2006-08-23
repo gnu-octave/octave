@@ -65,8 +65,7 @@ public:
 
   octave_value convert_to_str_internal (bool, bool, char) const;
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		   int strip_nan_and_inf);
+  bool save_ascii (std::ostream& os, bool& infnan_warned);
 
   bool load_ascii (std::istream& is);
 

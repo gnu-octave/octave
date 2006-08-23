@@ -144,7 +144,7 @@ octave_fcn_handle::subsref (const std::string& type,
 }
 
 bool
-octave_fcn_handle::save_ascii (std::ostream& os, bool&, int)
+octave_fcn_handle::save_ascii (std::ostream& os, bool&)
 {
   os << nm << "\n";
 

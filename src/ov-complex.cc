@@ -176,43 +176,19 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
 }
 
 bool 
-octave_complex::save_ascii (std::ostream& os, bool& infnan_warned, 
-			    int strip_nan_and_inf)
+octave_complex::save_ascii (std::ostream& os, bool& infnan_warned)
 {
   Complex c = complex_value ();
 
-  if (strip_nan_and_inf)
+  if (! infnan_warned && (xisnan (c) || xisinf (c)))
     {
-      if (xisnan (c))
-	{
-	  error ("only value to plot is NaN");
-	  return false;
-	}
-      else
-	{
-	  double re = real (c);
-	  double im = imag (c);
-
-	  re = xisinf (re) ? (re > 0 ? OCT_RBV : -OCT_RBV) : re;
-	  im = xisinf (im) ? (im > 0 ? OCT_RBV : -OCT_RBV) : im;
-
-	  c = Complex (re, im);
-
-	  octave_write_complex (os, c);
-	  os << "\n";
-	}
+      warning ("save: Inf or NaN values may not be reloadable");
+      infnan_warned = true;
     }
-  else
-    {
-      if (! infnan_warned && (xisnan (c) || xisinf (c)))
-	{
-	  warning ("save: Inf or NaN values may not be reloadable");
-	  infnan_warned = true;
-	}
       
-      octave_write_complex (os, c);
-      os << "\n";
-    }
+  octave_write_complex (os, c);
+
+  os << "\n";
 
   return true;
 }

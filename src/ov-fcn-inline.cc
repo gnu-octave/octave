@@ -90,7 +90,7 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
 }
 
 bool
-octave_fcn_inline::save_ascii (std::ostream& os, bool&, int)
+octave_fcn_inline::save_ascii (std::ostream& os, bool&)
 {
   os << "# nargs: " <<  ifargs.length () << "\n";
   for (int i = 0; i < ifargs.length (); i++)

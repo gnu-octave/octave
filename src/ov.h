@@ -778,9 +778,8 @@ public:
   void print_info (std::ostream& os,
 			   const std::string& prefix = std::string ()) const;
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned,
-		   int strip_nan_and_inf) 
-    { return rep->save_ascii (os, infnan_warned, strip_nan_and_inf); }
+  bool save_ascii (std::ostream& os, bool& infnan_warned)
+    { return rep->save_ascii (os, infnan_warned); }
 
   bool load_ascii (std::istream& is)
     { return rep->load_ascii (is); }

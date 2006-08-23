@@ -1,3 +1,50 @@
+2006-08-23  John W. Eaton  <jwe@octave.org>
+
+	* ov.h (octave_value::save_ascii): Delete strip_nan_and_inf arg.
+	* ov-base.h, ov-base.cc (octave_base_value::save_ascii): Likewise.
+	* ov-base-int.h, ov-base-int.cc	(octave_base_int_matrix<T>::save_ascii,
+	octave_base_int_scalar<T>::save_ascii, ): Likewise.
+	* ov-base-sparse.cc, ov-base-sparse.h
+	(octave_base_sparse<T>::save_ascii): Likewise.
+	* ov-bool-mat.cc, ov-bool-mat.h (octave_bool_matrix::save_ascii):
+	Likewise.
+	* ov-bool.cc, ov-bool.h (octave_bool::save_ascii): Likewise.
+	* ov-cell.cc, ov-cell.h (octave_cell::save_ascii): Likewise.
+	* ov-complex.cc, ov-complex.h (octave_complex::save_ascii): Likewise.
+	* ov-fcn-handle.cc, ov-fcn-handle.h (octave_fcn_handle::save_ascii):
+	Likewise.
+	* ov-fcn-inline.cc, ov-fcn-inline.h (octave_fcn_inline::save_ascii):
+	Likewise.
+	* ov-list.cc, ov-list.h (octave_list::save_ascii): Likewise.
+	* ov-range.cc, ov-range.h (octave_range::save_ascii): Likewise.
+	* ov-scalar.cc, ov-scalar.h (octave_scalar::save_ascii): Likewise.
+	* ov-str-mat.cc, ov-str-mat.h (octave_char_matrix_str::save_ascii):
+	Likewise.
+	* ov-struct.cc, ov-struct.h (octave_struct::save_ascii): Likewise.
+	* ov-re-mat.cc, ov-re-mat.cc (octave_matrix::save_ascii): Likewise.
+	* ov-cx-mat.cc, ov-cx-mat.cc (octave_complex_matrix::save_ascii):
+	Likewise.
+	* ov-cx-mat.cc, ov-cx-mat.cc (octave_complex_matrix::save_ascii):
+	Likewise.
+	* ov-re-mat.cc, ov-re-mat.cc (octave_matrix::save_ascii): Likewise.
+
+	* ls-oct-ascii.cc, ls-oct-ascii.h (save_ascii_data):
+	Delete strip_nan_and_inf arg.
+	(save_ascii_data_for_plotting): Delete strip_nan_and_inf arg from
+	call to save_ascii_data.
+
+	* DLD-FUNCTIONS/__gnuplot_raw__.l (handle_using): Accept "(EXPR)"
+	as components of using clauses.
+	(enum _toktype): New element DOLLAR.
+	Accept "$" in lexer.
+
+	* ls-oct-ascii.cc (save_ascii_data): Delete arg strip_nan_and_inf.
+	Change all uses.
+
+	* ls-oct-ascii.h (save_three_d): Provide decl.
+	* load-save.h (save_ascii_data_for_plotting, save_three_d):
+	Delete decls.
+
 2006-08-22  John W. Eaton  <jwe@octave.org>
 
 	* ov.h (octave_value::save_ascii): strip_nan_and_inf is now int,
@@ -23,7 +70,8 @@
 	Likewise.
 	* ov-struct.cc, ov-struct.h (octave_struct::save_ascii): Likewise.
 	* ov-re-mat.cc, ov-re-mat.cc (octave_matrix::save_ascii): Likewise.
-	* ov-cx-mat.cc, ov-cx-mat.cc (octave_complex_matrix::save_ascii): Likewise.
+	* ov-cx-mat.cc, ov-cx-mat.cc (octave_complex_matrix::save_ascii):
+	Likewise.
 
 	* ov-cx-mat.cc, ov-cx-mat.cc (octave_complex_matrix::save_ascii):
 	Don't strip Inf and NaN here.  Call ComplexMatrix::save_ascii to

@@ -201,21 +201,14 @@ octave_complex_matrix::sparse_complex_matrix_value (bool) const
 }
 
 bool 
-octave_complex_matrix::save_ascii (std::ostream& os, bool& infnan_warned, 
-				   int strip_nan_and_inf)
+octave_complex_matrix::save_ascii (std::ostream& os, bool& infnan_warned)
 {
   dim_vector d = dims ();
   if (d.length () > 2)
     {
       ComplexNDArray tmp = complex_array_value ();
 
-      if (strip_nan_and_inf)
-	{
-	  warning ("save: Can not strip Inf or NaN values");
-	  warning ("save: Inf or NaN values may not be reloadable");
-	  infnan_warned = true;
-	}
-      else if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
+      if (! infnan_warned && tmp.any_element_is_inf_or_nan ())
 	{
 	  warning ("save: Inf or NaN values may not be reloadable");
 	  infnan_warned = true;
@@ -235,9 +228,7 @@ octave_complex_matrix::save_ascii (std::ostream& os, bool& infnan_warned,
       os << "# rows: " << rows () << "\n"
 	 << "# columns: " << columns () << "\n";
 
-      ComplexMatrix tmp = complex_matrix_value ();
-
-      tmp.save_ascii (os, infnan_warned, strip_nan_and_inf);
+      os << complex_matrix_value ();
     }
 
   return true;

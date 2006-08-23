@@ -200,7 +200,6 @@ UNOP    ((\+\+)|(\-\-)|(\.'))
     return DOLLAR;
     }
 
-
 "\"" {
     return handle_string ('"');
     }

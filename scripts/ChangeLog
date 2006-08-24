@@ -5,8 +5,11 @@
 
 2006-08-24  Søren Hauberg  <soren@hauberg.org>
 
-	* miscellaneous/bincoeff.m: Use logical indexing instead of
-	indices computed by calling find on the logical index.
+	* miscellaneous/bincoeff.m, set/setdiff.m, specfun/factorial.m:
+	Use logical indexing instead of indices computed by calling find
+	on the logical index.
+
+	* linear-algebra/krylov.m: Delete unused local var nzidx.
 
 2006-08-23  Quentin Spencer  <qspencer@ieee.org>
 

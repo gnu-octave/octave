@@ -56,7 +56,7 @@ function c = setdiff (a, b, byrows)
       [dummy, idx] = sortrows ([c; b]);
       ## Eliminate those elements of a that are the same as in b.
       n = length (dummy);
-      c(idx(find (dummy(1:n-1) == dummy(2:n))), :) = [];
+      c(idx(dummy(1:n-1) == dummy(2:n)), :) = [];
     endif
   else
     c = unique (a);
@@ -66,7 +66,7 @@ function c = setdiff (a, b, byrows)
       [dummy, idx] = sort ([c(:); b(:)]);
       ## Eliminate those elements of a that are the same as in b.
       n = length (dummy);
-      c(idx(find (dummy(1:n-1) == dummy(2:n)))) = [];
+      c(idx(dummy(1:n-1) == dummy(2:n))) = [];
       ## Reshape if necessary.
       if (size (c, 1) != 1 && size (b, 1) == 1)
 	c = c.';

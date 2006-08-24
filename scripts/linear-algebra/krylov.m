@@ -95,7 +95,6 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
   # identify trivial null space
   abm = max (abs ([A, V]'));
-  nzidx = find (abm != 0);
   zidx = find (abm == 0);
 
   # set up vector of pivot points

@@ -31,7 +31,7 @@ function x = factorial (n)
   if (isscalar (n))
     x = prod (2:n);
   else
-    n (find (n < 1)) = 1;
+    n (n < 1) = 1;
     m = max (n(:));
     c = cumprod (1:m);
     x = c(floor (n));

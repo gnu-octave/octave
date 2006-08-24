@@ -1,3 +1,8 @@
+2006-08-24  Søren Hauberg  <soren@hauberg.org>
+
+	* miscellaneous/bincoeff.m: Use logical indexing instead of
+	indices computed by calling find on the logical index.
+
 2006-08-23  Quentin Spencer  <qspencer@ieee.org>
 
 	* control/system/tf2zp.m: Simplify gain calculation.

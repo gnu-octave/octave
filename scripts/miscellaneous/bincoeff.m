@@ -68,33 +68,23 @@ function b = bincoeff (n, k)
   sz = size (n);
   b   = zeros (sz);
 
-  ind = find (! (k >= 0) | (k != real (round (k))) | isnan (n));
-  if (any (ind))
-    b(ind) = NaN;
-  endif
+  ind = (! (k >= 0) | (k != real (round (k))) | isnan (n));
+  b(ind) = NaN;
+  
+  ind = (k == 0);
+  b(ind) = 1;
 
-  ind = find (k == 0);
-  if (any (ind))
-    b(ind) = 1;
-  endif
+  ind = ((k > 0) & ((n == real (round (n))) & (n < 0)));
+  b(ind) = (-1) .^ k(ind) .* exp (gammaln (abs (n(ind)) + k(ind)) ...
+         - gammaln (k(ind) + 1) - gammaln (abs (n(ind))));
 
-  ind = find ((k > 0) & ((n == real (round (n))) & (n < 0)));
-  if any (ind)
-    b(ind) = (-1) .^ k(ind) .* exp (gammaln (abs (n(ind)) + k(ind)) ...
-        - gammaln (k(ind) + 1) - gammaln (abs (n(ind))));
-  endif
-
-  ind = find ((k > 0) & ((n != real (round (n))) | (n >= k)));
-  if (length (ind) > 0)
-    b(ind) = exp (gammaln (n(ind) + 1) - gammaln (k(ind) + 1) ...
-        - gammaln (n(ind) - k(ind) + 1));
-  endif
-
+  ind = ((k > 0) & ((n != real (round (n))) | (n >= k)));
+  b(ind) = exp (gammaln (n(ind) + 1) - gammaln (k(ind) + 1) ...
+         - gammaln (n(ind) - k(ind) + 1));
+ 
   ## clean up rounding errors
-  ind = find (n == round (n));
-  if (any (ind))
-    b(ind) = round (b(ind));
-  endif
-
+  ind = (n == round (n));
+  b(ind) = round (b(ind));
+  
 endfunction
 

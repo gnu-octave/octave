@@ -5,7 +5,7 @@
 
 2006-08-24  Søren Hauberg  <soren@hauberg.org>
 
-	* miscellaneous/bincoeff.m, set/setdiff.m, specfun/factorial.m:
+	* miscellaneous/bincoeff.m, specfun/factorial.m:
 	Use logical indexing instead of indices computed by calling find
 	on the logical index.
 

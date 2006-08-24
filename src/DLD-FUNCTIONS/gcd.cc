@@ -240,6 +240,9 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
     }
   else
     {
+      // FIXME -- we need to handle a possible mixture of scalar and
+      // array values here.
+
       NDArray g = args(0).array_value ();
 
       OCTAVE_LOCAL_BUFFER (NDArray, v, nargin);

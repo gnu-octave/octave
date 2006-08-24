@@ -1,3 +1,8 @@
+2006-08-24  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/images/Makefile.in (SPARSEIMAGES_PDF): New macro.
+	Keep PDF images out of IMAGES list.
+
 2006-08-18  John W. Eaton  <jwe@octave.org>
 
 	* conf.texi.in: Eliminate TARGETHOSTTYPE variable.

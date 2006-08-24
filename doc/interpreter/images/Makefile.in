@@ -12,10 +12,14 @@ SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
 SPARSEIMAGES = \
   $(addsuffix .eps, $(SPARSEIMAGES_1)) \
   $(addsuffix .png, $(SPARSEIMAGES_1)) \
-  $(addsuffix .txt, $(SPARSEIMAGES_1)) \
+  $(addsuffix .txt, $(SPARSEIMAGES_1))
+
+# These are kept separate from the rest because they are generated
+# from the EPS files instead of directly from the sparseimages.m script.
+SPARSEIMAGES_PDF = \
   $(addsuffix .pdf, $(SPARSEIMAGES_1))
 
-IMAGES = $(SPARSEIMAGES)
+IMAGES = $(SPARSEIMAGES) $(SPARSEIMAGES_PDF)
 
 DISTFILES = Makefile.in $(SOURCES) $(IMAGES)
 

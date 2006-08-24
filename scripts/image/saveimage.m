@@ -125,11 +125,8 @@ function saveimage (filename, img, img_form, map)
 
   map = reshape (map, map_sz, 1);
 
-  idx = find (map > 1);
-  map (idx) = ones (size (idx));
-
-  idx = find (map < 0);
-  map (idx) = zeros (size (idx));
+  map (map > 1) = 1;
+  map (map < 0) = 0;
 
   map = round (255 * map);
 
@@ -143,11 +140,8 @@ function saveimage (filename, img, img_form, map)
   img_sz = img_nr * img_nc;
   img = reshape (img, img_sz, 1);
 
-  idx = find (img > map_nr);
-  img (idx) = ones (size (idx)) * map_nr;
-
-  idx = find (img <= 0);
-  img (idx) = ones (size (idx));
+  img (img > map_nr) = map_nr;
+  img (img <= 0) = 1;
 
   if (strcmp (img_form, "ppm"))
 

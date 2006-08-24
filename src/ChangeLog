@@ -1,3 +1,9 @@
+2006-08-24  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.8.
+	(OCTAVE_API_VERSION): Now api-v21.
+	(OCTAVE_RELEASE_DATE): Now 2006-08-24.
+
 2006-08-23  John W. Eaton  <jwe@octave.org>
 
 	* ov.h (octave_value::save_ascii): Delete strip_nan_and_inf arg.

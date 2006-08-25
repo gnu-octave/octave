@@ -1,3 +1,14 @@
+2006-08-25  David Bateman <dbateman@free.fr>
+
+	* pkg/pkg.m (install): Verify that package name correponds to the
+	archive name. Treat both PKG_ADD and PKG_DEL and remove them if
+	they are empty. If package directory is empty, remove it to fail
+	gracefully for system specific packages.
+	(extract_pkgadd, create_pkgadd): delete.
+	(extract_pkg, create_pkg): Generalized versions of deleted functions
+	(copy_files): Install both bin/ and doc/ directories, adding the
+	bin/ to the EXEC_PATH when the package is loaded.
+	
 2006-08-24  John W. Eaton  <jwe@octave.org>
 
 	* image/saveimage.m: Use logical indexing instead of

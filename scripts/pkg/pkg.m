@@ -165,6 +165,13 @@ function install(files, handle_deps)
                 filename = [packdir "DESCRIPTION"];
                 desc = get_description(filename);
 
+		## Verify that package name corresponds with filename
+		[dummy, nm] = fileparts(tgz); 
+		if ((length(nm) >= length(desc.name)) &&
+		    ! strcmp(desc.name,nm(1:length(desc.name))))
+		  error("Package name doesn't correspond to its filename");
+		endif
+
                 ## Set default installation directory
                 desc.dir = [prefix "/" desc.name "-" desc.version];
             
@@ -183,7 +190,6 @@ function install(files, handle_deps)
     catch
         ## Something went wrong, delete tmpdirs
         for i = 1:length(tmpdirs)
-            tmpdirs{i}
             rm_rf(tmpdirs{i});
         endfor
         error(lasterr()(8:end));
@@ -251,8 +257,9 @@ function install(files, handle_deps)
         for i = 1:length(descriptions)
             desc = descriptions{i};
             pdir = packdirs{i};
-            copy_files(desc, pdir);
-	    create_pkgadd(desc, pdir);
+	    copy_files(desc, pdir);
+	    create_pkgadddel(desc, pdir, "PKG_ADD");
+	    create_pkgadddel(desc, pdir, "PKG_DEL");
             finish_installation (desc, pdir)
         endfor
     catch
@@ -260,10 +267,22 @@ function install(files, handle_deps)
         for i = 1:length(tmpdirs)
             rm_rf(tmpdirs{i});
         endfor
+        for i = 1:length(descriptions)
+            rm_rf(descriptions{i}.dir);
+        endfor
         error(lasterr()(8:end));
     end_try_catch
 
-	## Add the packages to the package list
+    ## Check if the installed directory is empty. If it is remove it
+    ## from the list
+    for i = length(descriptions):-1:1
+      if (dirempty(descriptions{i}.dir,{"packinfo","doc"}))
+	rm_rf(descriptions{i}.dir);
+	descriptions(i) = [];
+      endif
+    endfor
+
+    ## Add the packages to the package list
     try
 	    if (global_install)
             idx = complement(packages_to_uninstall, 1:length(global_packages));
@@ -298,12 +317,14 @@ function install(files, handle_deps)
     endfor
 
     ## Add the newly installed packages to the path, so the user
-    ## can begin the using.
-    dirs = cell(1, length(descriptions));
-    for i = 1:length(descriptions)
+    ## can begin usings them.
+    if (length(descriptions) > 0)
+      dirs = cell(1, length(descriptions));
+      for i = 1:length(descriptions)
         dirs{i} = descriptions{i}.dir;
-    endfor
-    addpath(dirs{:});
+      endfor
+      addpath(dirs{:});
+    endif
 endfunction
 
 function uninstall(pkgnames, handle_deps)
@@ -499,48 +520,48 @@ function configure_make (desc, packdir)
     endif
 endfunction
 
-function pkgadd = extract_pkgadd (nm, pat)
+function pkg = extract_pkg (nm, pat)
   fid = fopen (nm, "rt");
-  pkgadd = "";
+  pkg = "";
   if (fid >= 0)
     while (! feof(fid))
       ln = fgetl (fid);
       if (ln > 0)
 	t = regexp(ln, pat, "tokens","dotexceptnewline");
 	if (!isempty(t))
-          pkgadd = [pkgadd, "\n", t{1}{1}];
+          pkg = [pkg, "\n", t{1}{1}];
 	endif
       endif
     endwhile
-    if (!isempty(pkgadd))
-      pkgadd = [pkgadd, "\n"];
+    if (!isempty(pkg))
+      pkg = [pkg, "\n"];
     endif
     fclose (fid);
   endif
 endfunction
 
-function create_pkgadd (desc, packdir)
-  pkgadd = [desc.dir "/PKG_ADD"];
-  fid = fopen(pkgadd, "wt");
+function create_pkgadddel (desc, packdir, nm)
+  pkg = [desc.dir "/" nm];
+  fid = fopen(pkg, "wt");
   if (fid >= 0)
-    ## Search all dot-m files for PKG_ADD commands
+    ## Search all dot-m files for PKG commands
     lst = dir ([packdir "inst/*.m"]);
     for i=1:length(lst)
       nm = lst(i).name;
-      fwrite (fid, extract_pkgadd (nm, '^[#%][#%]* *PKG_ADD: *(.*)$'));
+      fwrite (fid, extract_pkg (nm, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
-    ## Search all C++ source files for PKG_ADD commands
+    ## Search all C++ source files for PKG commands
     lst = dir ([packdir "src/*.cc"]);
     for i=1:length(lst)
       nm = lst(i).name;
-      fwrite (fid, extract_pkgadd (nm, '^//* *PKG_ADD: *(.*)$'));
-      fwrite (fid, extract_pkgadd (nm, '^/\** *PKG_ADD: *(.*) *\*/$'));
+      fwrite (fid, extract_pkg (nm, ['^//* *' nm ': *(.*)$']));
+      fwrite (fid, extract_pkg (nm, ['^/\** *' nm ': *(.*) *\*/$']));
     endfor
 
-    ## Add developer included PKG_ADD commands
-    if (exist([packdir "PKG_ADD"],"file"))
-      fid2 = fopen([packdir "PKG_ADD"],"rt");
+    ## Add developer included PKG commands
+    if (exist([packdir nm],"file"))
+      fid2 = fopen([packdir nm],"rt");
       if (fid2 >= 0)
         while (! feof(fid2))
           ln = fgets (fid2);
@@ -548,18 +569,27 @@ function create_pkgadd (desc, packdir)
             fwrite(fid, ln);
           endif
         endwhile
+        fclose(fid2);
       endif
     endif
     fclose(fid);
+
+    ## If the file is empty remove it
+    t = dir (pkg);
+    if (t.bytes <= 0)
+      unlink (pkg);
+    endif
   endif
 endfunction
 
-function copy_files (desc, packdir)
+function copy_files (desc, packdir, bindir)
     ## Copy the files from "inst" to installdir
-    [status, output] = system(["cp -R " packdir "inst/* " desc.dir]);
-    if (status != 0)
-        rm_rf(desc.dir);
-        error("Couldn't copy files to the installation directory\n");
+    if (! dirempty([packdir "inst"]))
+      [status, output] = system(["cp -R " packdir "inst/* " desc.dir]);
+      if (status != 0)
+          rm_rf(desc.dir);
+          error("Couldn't copy files to the installation directory\n");
+      endif
     endif
 
     ## Create the "packinfo" directory
@@ -600,6 +630,16 @@ function copy_files (desc, packdir)
             rm_rf(desc.dir);
             error("Couldn't copy on_uninstall.m: %s\n", output);
         endif
+    endif
+
+    ## Is there a doc/ directory that needs to be installed
+    if (exist([packdir "doc"], "dir") && !dirempty([packdir "doc"]))
+       [status, output] = system(["cp -pR " packdir "doc " desc.dir]);
+    endif
+
+    ## Is there a bin/ directory that needs to be installed
+    if (exist([packdir "bin"], "dir") && !dirempty([packdir "bin"]))
+       [status, output] = system(["cp -pR " packdir "bin " desc.dir]);
     endif
 endfunction
 
@@ -987,12 +1027,22 @@ function load_packages(files, handle_deps)
             for i = 1:num_packages
                 if (strcmp(installed_packages{i}.name, files{j}))
                     dirs{j} = installed_packages{i}.dir;
+		    break;
                 endif
             endfor
-            error("Package %s is not installed\n", files{j});
+	    if (isempty(dirs{j}))
+              error("Package %s is not installed\n", files{j});
+            endif
         endfor
     endif
     addpath(dirs{:});
+
+    ## Add local binaries, if any, to the EXEC_PATH
+    for i = 1:length(dirs)
+       if (exist ([dirs{i} "/bin"],"dir"))
+         EXEC_PATH ([dirs{i} "/bin:" EXEC_PATH()]);
+       endif
+    endfor
 endfunction
 
 function [status_out, msg_out] = rm_rf (dir)
@@ -1009,4 +1059,28 @@ function [status_out, msg_out] = rm_rf (dir)
   if (nargout > 1)
     msg_out = msg;
   endif
+endfunction
+
+function emp = dirempty (nm, ign)
+  if (nargin < 2)
+    ign = {".",".."};
+  else
+    ign = [{".",".."},ign];
+  endif
+  l = dir (nm);
+  for i=1:length(l)
+    found = false;
+    for j=1:length(ign)
+      if (strcmp(l(i).name,ign{j}))
+        found = true;
+        break;
+      endif
+    endfor
+    if (!found)
+      emp = false;
+      return
+    endif
+  endfor
+  emp = true;
+  return;
 endfunction

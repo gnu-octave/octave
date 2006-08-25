@@ -10,62 +10,58 @@
 %!    input = 0;
 %!  endif
 %!
-%!  ## Force the random seed to be the same
-%!  rand("seed",1);
-%!
 %!  ## Setup some variable to be saved or compared to loaded variables
 %!
 %!  ## scalar
 %!  a1 = 1;
 %!  ## matrix
-%!  a2 = hilb(3);
+%!  persistent a2 = hilb(3);
 %!  ## complex scalar
-%!  a3 = 1 + 1i;
+%!  persistent a3 = 1 + 1i;
 %!  ## complex matrix
-%!  a4 = hilb(3) + 1i*hilb(3);
+%!  persistent a4 = hilb(3) + 1i*hilb(3);
 %!  ## bool
-%!  a5 = (1 == 1);
+%!  persistent a5 = (1 == 1);
 %!  ## bool matrix
-%!  a6 = ([ones(1,5), zeros(1,5)] == ones(1,10));
+%!  persistent a6 = ([ones(1,5), zeros(1,5)] == ones(1,10));
 %!  ## range
-%!  a7 = 1:10;
+%!  persistent a7 = 1:10;
 %!  ## structure
-%!  a8.a = a1;
-%!  a8.b = a3;
+%!  persistent a8 = struct ("a", a1, "b", a3);
 %!  ## cell array
-%!  a9{1} = a1;
-%!  a9{2} = a3; 
+%!  persistent a9 = {a1, a3};
 %!  ## string
-%!  a10 = ["test"; "strings"];
+%!  persistent a10 = ["test"; "strings"];
 %!  ## int8 array
-%!  a11 = int8(floor(256*rand(2,2)));
+%!  persistent a11 = int8(floor(256*rand(2,2)));
 %!  ## int16 array
-%!  a12 = int16(floor(65536*rand(2,2)));
+%!  persistent a12 = int16(floor(65536*rand(2,2)));
 %!  ## int32 array
-%!  a13 = int32(floor(1e6*rand(2,2)));
+%!  persistent a13 = int32(floor(1e6*rand(2,2)));
 %!  ## int64 array
-%!  a14 = int64(floor(10*rand(2,2)));
+%!  persistent a14 = int64(floor(10*rand(2,2)));
 %!  ## uint8 array
-%!  a15 = uint8(floor(256*rand(2,2)));
+%!  persistent a15 = uint8(floor(256*rand(2,2)));
 %!  ## uint16 array
-%!  a16 = uint16(floor(65536*rand(2,2)));
+%!  persistent a16 = uint16(floor(65536*rand(2,2)));
 %!  ## int32 array
-%!  a17 = uint32(floor(1e6*rand(2,2)));
+%!  persistent a17 = uint32(floor(1e6*rand(2,2)));
 %!  ## uint64 array
-%!  a18 = uint64(floor(10*rand(2,2)));
+%!  persistent a18 = uint64(floor(10*rand(2,2)));
 %!  ## sparse
-%!  a19 = sprandn(100,100,0.01);
+%!  persistent a19 = sprandn(100,100,0.01);
 %!  ## complex sparse
-%!  a20 = sprandn(100,100,0.01) + 1i * sprandn(100,100,0.01);
+%!  persistent a20 = sprandn(100,100,0.01) + 1i * sprandn(100,100,0.01);
 %!
 %!  ret = 0;
 %!
 %!  files = {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"};
 %!  opts = {"-z -text", "-z -binary", "-z -mat", "-v7"};
+%!  tols = {2*eps, 0, 0, 0};
 %!
 %!  vars = "a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a18 a19 a20";
 %!  if (! input)
-%!    for i = 1:length(files)
+%!    for i = 1:length (files)
 %!      eval (sprintf ("save %s %s %s", opts{i}, files{i}, vars));
 %!    endfor
 %!  else
@@ -74,29 +70,19 @@
 %!    b10 = a10; b11 = a11; b12 = a12; b13 = a13; b14 = a14; b15 = a15;
 %!    b16 = a16; b17 = a17; b18 = a18; b19 = a19; b20 = a20;
 %!
-%!    for f = files
+%!    for i = length (files)
 %!
 %!      clear a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 a11 a12 a13 a14 a15 a16 a17 a19 a20;
 %!
-%!      file = f{1};
+%!      file = files{i};
+%!      tol = tols{i};
 %!
 %!      load (file);
 %!
-%!      if (! isequal (a1, b1))
-%!	  error ("failed: %s scalar", file)
-%!      endif
-%!
-%!      if (! isequal (a2, b2))
-%!	  error ("failed: %s matrix", file);
-%!      endif
-%!
-%!      if (! isequal (a3, b3))
-%!  	  error ("failed: %s complex scalar", file);
-%!      endif
-%!
-%!      if (! isequal (a4, b4))
-%!	  error ("failed: %s complex matrix", file);
-%!      endif
+%!      assert (a1, b1, tol);
+%!      assert (a2, b2, tol);
+%!      assert (a3, b3, tol);
+%!      assert (a4, b4, tol);
 %!
 %!      if (! isequal (a5, b5))
 %!	  error ("failed: %s boolean", file);
@@ -108,9 +94,7 @@
 %!        endif
 %!      endif
 %!
-%!      if (! isequal (a7, b7))
-%!	  error ("failed: %s range", file);
-%!      endif
+%!      assert ([a7], [b7], tol);
 %!
 %!      if (! isequal (a8, b8))
 %!	  error ("failed: %s struct", file);
@@ -156,13 +140,8 @@
 %!	  error ("failed: %s uint64", file);
 %!      endif
 %!
-%!      if (! isequal (a19, b19))
-%!	  error ("failed: %s sparse", file);
-%!      endif
-%!
-%!      if (! isequal (a20, b20))
-%!	  error ("failed: %s complex sparse", file);
-%!      endif
+%!      assert (a19, b19, tol);
+%!      assert (a20, b20, tol);
 %!
 %!      ## Test for global flags
 %!      if (! isglobal ("a1") || isglobal ("a2") || isglobal ("a3")

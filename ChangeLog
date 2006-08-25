@@ -1,3 +1,8 @@
+2006-08-25  Alexander Barth  <abarth@marine.usf.edu>
+
+	* mkoctfile.in: Accept .f90 and .F90 as Fortran files.
+	Pass $incflags and $defs to Fortran compiler.
+
 2006-08-18  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-subst-texinfo-vals): Don't substitute

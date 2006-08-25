@@ -112,7 +112,7 @@ while [ $# -gt 0 ]; do
       file=$1
       ccfiles="$ccfiles $file"
     ;;
-    *.f | *.F)
+    *.f | *.F | *.f90 | *.F90)
       file=$1
       f77files="$f77files $file"
     ;;
@@ -195,8 +195,10 @@ Options:
                             .cc   C++ source
                             .C    C++ source
                             .cpp  C++ source
-                            .f    Fortran source
-                            .F    Fortran source
+                            .f    Fortran source (fixed form)
+                            .F    Fortran source (fixed form)
+                            .f90  Fortran source (free form)
+                            .F90  Fortran source (free form)
                             .o    object file
 
 EOF
@@ -344,6 +346,12 @@ if [ -n "$f77files" ]; then
       *.F)
         b=`echo $f | $SED 's,\.F$,,'`
       ;;
+      *.f90)
+        b=`echo $f | $SED 's,\.f90$,,'`
+      ;;
+      *.F90)
+        b=`echo $f | $SED 's,\.F90$,,'`
+      ;;
     esac
     if [ -n "$F77" ]; then
       if [ -n "$outputfile" ]; then
@@ -356,7 +364,7 @@ if [ -n "$f77files" ]; then
         o=$b.o
       fi
       objfiles="$objfiles $o"
-      cmd="$F77 -c $FPICFLAG $ALL_FFLAGS $pass_on_options $f -o $o"
+      cmd="$F77 -c $FPICFLAG $ALL_FFLAGS $incflags $defs $pass_on_options $f -o $o"
       $dbg $cmd
       eval $cmd
     elif [ -n "$F2C" ]; then

@@ -1,3 +1,7 @@
+2006-08-25  John W. Eaton  <jwe@octave.org>
+
+	* mx-inlines.cc (MX_ND_REDUCTION): Special case for 0x0 arrays.
+
 2006-08-23  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc, dMatrix.h (Matrix::save_ascii): Delete function and decl.

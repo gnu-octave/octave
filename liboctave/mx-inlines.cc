@@ -383,6 +383,12 @@ OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
         } \
     } \
  \
+  if (nd == 2 && dv(0) == 0 && dv(1) == 0) \
+    { \
+      retval.resize (dim_vector (1, 1), INIT_VAL); \
+      return retval; \
+    } \
+ \
   /* We need to find first non-singleton dim.  */ \
  \
   if (dim == -1) \

@@ -1,3 +1,8 @@
+2006-08-26  David Bateman <dbateman@free.fr>
+
+	* pkg/pkg.m (install, uninstall, installed_packages): Allow for
+	absence of trailing "/" in OCTAVE_HOME.
+
 2006-08-25  Alexander Barth  <abarth@marine.usf.edu>
 
 	* time/datenum.m: Allow arg to be character string.

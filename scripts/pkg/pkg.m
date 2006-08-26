@@ -85,7 +85,11 @@ function install(files, handle_deps)
     ## Set parameters depending on wether or not the installation
     ## is system-wide (global) or local.
     local_list = tilde_expand("~/.octave_packages");
-    global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    if (strcmp(OCTAVE_HOME()(end),"/"))
+      global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    else
+      global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
+    endif
     global OCTAVE_PACKAGE_PREFIX;
     prefix_exist = (length(OCTAVE_PACKAGE_PREFIX) != 0 && ischar(OCTAVE_PACKAGE_PREFIX));
 
@@ -329,7 +333,11 @@ endfunction
 
 function uninstall(pkgnames, handle_deps)
     local_list = tilde_expand("~/.octave_packages");
-    global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    if (strcmp(OCTAVE_HOME()(end),"/"))
+      global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    else 
+      global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
+    endif
     ## Get the list of installed packages
     [local_packages, global_packages] = installed_packages();
     if (issuperuser())
@@ -948,7 +956,11 @@ endfunction
 
 function [out1, out2] = installed_packages()
     local_list = tilde_expand("~/.octave_packages");
-    global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    if (strcmp(OCTAVE_HOME()(end),"/"))
+      global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+    else 
+      global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
+    endif
     ## Get the list of installed packages
     try
         local_packages = load(local_list).local_packages;

@@ -1,3 +1,7 @@
+2006-08-25  Alexander Barth  <abarth@marine.usf.edu>
+
+	* time/datenum.m: Allow arg to be character string.
+
 2006-08-25  David Bateman <dbateman@free.fr>
 
 	* pkg/pkg.m (install): Verify that package name correponds to the

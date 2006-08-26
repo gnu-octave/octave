@@ -73,8 +73,7 @@ function [days, secs] = datenum (Y, M, D, h, m, s)
     if (nargin < 2)
       M = [];
     endif
-    error ("string form of dates not yet supported");
-    ## [Y, M, D, h, m, s] = datevec (Y, M);
+    [Y, M, D, h, m, s] = datevec (Y, M);
   else
     if (nargin < 6) s = 0; endif
     if (nargin < 5) m = 0; endif

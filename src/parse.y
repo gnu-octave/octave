@@ -3527,7 +3527,7 @@ currently autoloaded functions.\n\
 }
 
 void
-source_file (const std::string file_name)
+source_file (const std::string& file_name, const std::string& context)
 {
   std::string file_full_name = file_ops::tilde_expand (file_name);
 
@@ -3539,11 +3539,26 @@ source_file (const std::string file_name)
   curr_fcn_file_name = file_name;
   curr_fcn_file_full_name = file_full_name;
 
-  parse_fcn_file (file_full_name, true, true);
+  if (! context.empty ())
+    {
+      unwind_protect_ptr (curr_sym_tab);
 
-  if (error_state)
-    error ("source: error sourcing file `%s'",
-	   file_full_name.c_str ());
+      if (context == "caller")
+	curr_sym_tab = curr_caller_sym_tab;
+      else if (context == "base")
+	curr_sym_tab = top_level_sym_tab;
+      else
+	error ("source: context must be \"caller\" or \"base\"");
+    }      
+
+  if (! error_state)
+    {
+      parse_fcn_file (file_full_name, true, true);
+
+      if (error_state)
+	error ("source: error sourcing file `%s'",
+	       file_full_name.c_str ());
+    }
 
   unwind_protect::run_frame ("source_file");
 }
@@ -3629,12 +3644,22 @@ be named @file{@var{file}.m}.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 1 || nargin == 2)
     {
       std::string file_name = args(0).string_value ();
 
       if (! error_state)
-        source_file (file_name);
+	{
+	  std::string context;
+
+	  if (nargin == 2)
+	    context = args(1).string_value ();
+
+	  if (! error_state)
+	    source_file (file_name, context);
+	  else
+	    error ("source: expecting context to be character string");
+	}
       else
 	error ("source: expecting file name as argument");
     }

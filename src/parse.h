@@ -109,7 +109,8 @@ extern bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
 extern void
-source_file (const std::string file_name);
+source_file (const std::string& file_name,
+	     const std::string& context = std::string ());
 
 extern octave_value_list
 feval (const std::string& name,

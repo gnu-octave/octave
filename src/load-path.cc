@@ -1211,7 +1211,7 @@ execute_pkg_add_or_del (const std::string& dir,
   file_stat fs = file_stat (file);
 
   if (fs.exists ())
-    source_file (file);
+    source_file (file, "base");
 
   unwind_protect::run_frame ("execute_pkg_add_or_del");
 }

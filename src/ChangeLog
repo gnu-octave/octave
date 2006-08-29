@@ -1,3 +1,10 @@
+2006-08-29  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (execute_pkg_add_or_del):
+	Source PKG_ADD or PKG_DEL in base workspace.
+	* parse.y (source_file): New optional arg, context.
+	* parse.h (source_file): Fix decl.
+
 2006-08-25  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.8+.

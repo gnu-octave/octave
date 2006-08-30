@@ -394,6 +394,7 @@ get_file_format (std::istream& file)
 
   return retval;
 }
+
 static load_save_format
 get_file_format (const std::string& fname, const std::string& orig_fname, 
 		 bool &use_zlib)
@@ -413,6 +414,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
     {
       retval = get_file_format (file);
       file.close ();
+
 #ifdef HAVE_ZLIB
       if (retval == LS_UNKNOWN && check_gzip_magic (fname))	
 	{
@@ -425,6 +427,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 	      gzfile.close ();
 	    }
 	}
+#endif
 
       if (retval == LS_UNKNOWN)
 	{
@@ -437,8 +440,6 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
 	  retval = LS_MAT_ASCII;
 	}
-
-#endif
     }
   else
     gripe_file_open ("load", orig_fname);

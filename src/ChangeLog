@@ -1,3 +1,7 @@
+2006-08-30  John W. Eaton  <jwe@octave.org>
+
+	* load-save.cc (get_file_format): Fix misplaced #endif.
+
 2006-08-29  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (execute_pkg_add_or_del):

@@ -551,20 +551,21 @@ endfunction
 function create_pkgadddel (desc, packdir, nm)
   pkg = [desc.dir "/" nm];
   fid = fopen(pkg, "wt");
+
   if (fid >= 0)
     ## Search all dot-m files for PKG commands
     lst = dir ([packdir "inst/*.m"]);
     for i=1:length(lst)
-      nm = lst(i).name;
-      fwrite (fid, extract_pkg (nm, ['^[#%][#%]* *' nm ': *(.*)$']));
+      nam = [packdir "inst/" lst(i).name];
+      fwrite (fid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
     ## Search all C++ source files for PKG commands
     lst = dir ([packdir "src/*.cc"]);
     for i=1:length(lst)
-      nm = lst(i).name;
-      fwrite (fid, extract_pkg (nm, ['^//* *' nm ': *(.*)$']));
-      fwrite (fid, extract_pkg (nm, ['^/\** *' nm ': *(.*) *\*/$']));
+      nam = [packdir "src/" lst(i).name];
+      fwrite (fid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
+      fwrite (fid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
     endfor
 
     ## Add developer included PKG commands

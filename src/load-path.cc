@@ -1208,7 +1208,7 @@ execute_pkg_add_or_del (const std::string& dir,
 
   std::string file = dir + file_ops::dir_sep_str + script_file;
 
-  file_stat fs = file_stat (file);
+  file_stat fs (file);
 
   if (fs.exists ())
     source_file (file, "base");

@@ -72,7 +72,7 @@ static bool Vconfirm_recursive_rmdir = true;
 static int
 octave_change_to_directory (const std::string& newdir)
 {
-  int cd_ok = octave_env::chdir (newdir);
+  int cd_ok = octave_env::chdir (file_ops::tilde_expand (newdir));
 
   if (cd_ok)
     {
@@ -223,21 +223,7 @@ Return the current working directory.\n\
 @seealso{dir, ls}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
-  std::string directory = octave_env::getcwd ();
-
-  if (directory.empty ())
-    warning ("pwd: can't find working directory!");
-  else
-    {
-      if (nargout == 0)
-	octave_stdout << directory << "\n";
-      else
-	retval = directory;
-    }
-
-  return retval;
+  return octave_value (octave_env::getcwd ());
 }
 
 DEFUN (readdir, args, ,

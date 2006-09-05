@@ -1392,7 +1392,8 @@ protected:
 	{
 	  bool *ppr = static_cast<bool *> (pr);
 
-	  SparseBoolMatrix val (get_m (), get_n (), nzmax);
+	  SparseBoolMatrix val (get_m (), get_n (),
+				static_cast<octave_idx_type> (nzmax));
 
 	  for (int i = 0; i < nzmax; i++)
 	    {
@@ -1418,7 +1419,8 @@ protected:
 	      double *ppr = static_cast<double *> (pr);
 	      double *ppi = static_cast<double *> (pi);
 
-	      SparseComplexMatrix val (get_m (), get_n (), nzmax);
+	      SparseComplexMatrix val (get_m (), get_n (),
+				       static_cast<octave_idx_type> (nzmax));
 
 	      for (int i = 0; i < nzmax; i++)
 		{
@@ -1435,7 +1437,8 @@ protected:
 	    {
 	      double *ppr = static_cast<double *> (pr);
 
-	      SparseMatrix val (get_m (), get_n (), nzmax);
+	      SparseMatrix val (get_m (), get_n (),
+				static_cast<octave_idx_type> (nzmax));
 
 	      for (int i = 0; i < nzmax; i++)
 		{

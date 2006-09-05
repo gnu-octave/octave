@@ -1,3 +1,7 @@
+2006-09-05  Alexander Barth  <abarth93@users.sourceforge.net>
+
+	* miscellaneous/parseparams.m: New function.
+
 2006-09-05  Rafael Laboissiere  <rafael@debian.org>
 
 	* miscellaneous/doc.m: Swap order of --file and --directory

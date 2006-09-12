@@ -37,9 +37,9 @@
 ## @group
 ## x = ones (1, 2, 3);
 ## size (shiftdim (x, -1))
-##      @result{} [2, 3, 1]
-## size (shiftdim (x, 1))
 ##      @result{} [1, 1, 2, 3]
+## size (shiftdim (x, 1))
+##      @result{} [2, 3]
 ## [b, ns] = shiftdim (x);
 ##      @result{} b =  [1, 1, 1; 1, 1, 1]
 ##      @result{} ns = 1
@@ -77,7 +77,9 @@ function [y, ns]  = shiftdim (x, n)
     singleton_dims = ones (1, -n);
     y = reshape (x, [singleton_dims, orig_dims]);
   elseif (n > 0)
-    y = reshape (x, [orig_dims(n+1:nd), orig_dims(1:n)]);
+    ## We need permute here instead of reshape to shift values in a
+    ## compatible way.
+    y = permute (x, [n+1:ndims(x) 1:n]);
   else
     y = x;
   endif

@@ -1,3 +1,7 @@
+2006-09-11  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
+
+	* general/shiftdim.m: Use permute instead of reshape.
+
 2006-09-05  Alexander Barth  <abarth93@users.sourceforge.net>
 
 	* miscellaneous/parseparams.m: New function.

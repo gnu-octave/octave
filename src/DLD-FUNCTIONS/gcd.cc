@@ -36,7 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 static inline bool
 is_integer_value (double x)
 {
-  return x == static_cast<double> (static_cast<long> (x));
+  return x == std::floor (x);
 }
 
 DEFUN_DLD (gcd, args, nargout,
@@ -166,7 +166,7 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
 
 	  while (y(0) > 0)
 	    {
-	      RowVector r = x - y * (static_cast<int> ( x(0) / y(0)));
+	      RowVector r = x - y * std::floor (x(0) / y(0));
 	      x = y;
 	      y = r;
 	    }
@@ -184,9 +184,9 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
     }
   else if (all_args_scalar && nargout < 3)
     {
-      double g = args(0).int_value (true);
+      double g = args(0).double_value ();
 
-      if (error_state)
+      if (error_state || ! is_integer_value (g))
 	{
 	  error ("gcd: all arguments must be integer");
 	  return retval;
@@ -206,7 +206,7 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
 	  x(1) = 1;
 	  x(2) = 0;
 
-	  y(0) = args(k).int_value (true);
+	  y(0) = args(k).double_value ();
 	  y(1) = 0;
 	  y(2) = 1;
 
@@ -214,7 +214,7 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
 
 	  y(0) = std::abs (y(0));
 
-	  if (error_state)
+	  if (error_state || ! is_integer_value (g))
 	    {
 	      error ("gcd: all arguments must be integer");
 	      return retval;
@@ -222,7 +222,7 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
 
 	  while (y(0) > 0)
 	    {
-	      RowVector r = x - y * (static_cast<int> (x(0) / y(0)));
+	      RowVector r = x - y * std::floor (x(0) / y(0));
 	      x = y;
 	      y = r;
 	    }
@@ -290,7 +290,7 @@ all of the values of @var{v1}, @var{...} is acceptable.\n\
 
 	      while (y(0) > 0)
 		{
-		  RowVector r = x - y * (static_cast<int> (x(0) / y(0)));
+		  RowVector r = x - y * std::floor (x(0) / y(0));
 		  x = y;
 		  y = r;
 		}

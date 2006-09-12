@@ -1,3 +1,8 @@
+2006-09-11  Yozo Hida  <yozo@cs.berkeley.edu>
+
+	* DLD-FUNCTIONS/gcd.cc (Fgcd): Extend range by using std::floor
+	instead of converting to int.
+
 2006-09-05  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_sparse::as_octave_value): Cast nzmax to

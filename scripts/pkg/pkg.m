@@ -157,6 +157,10 @@ function install(files, handle_deps)
             if (err)
                 error("Couldn't read directory produced by tar: %s\n", msg);
             endif
+
+	    if (length(dirlist) > 3)
+	      error("Bundles of packages are not allowed")
+	    endif
             
             for k = 3:length(dirlist) # the two first entries of dirlist are "." and ".."
                 packdir = [tmpdir "/" dirlist{k} "/"];
@@ -173,7 +177,8 @@ function install(files, handle_deps)
 		[dummy, nm] = fileparts(tgz); 
 		if ((length(nm) >= length(desc.name)) &&
 		    ! strcmp(desc.name,nm(1:length(desc.name))))
-		  error("Package name doesn't correspond to its filename");
+		  error(["Package name '",desc.name,"' doesn't correspond",
+			 "to its filename '",nm,"'"]);
 		endif
 
                 ## Set default installation directory
@@ -992,32 +997,37 @@ function [out1, out2] = installed_packages()
         return;
     endif
     
-    ## Print a header
+    ## Compute the maximal lengths of name, version, and dir
     h1 = "Package Name";
     h2 = "Version";
     h3 = "Installation directory";
+    max_name_length = length(h1); 
+    max_version_length = length(h2);
+    names = cell(num_packages,1); 
+    for i = 1:num_packages
+        max_name_length    = max(max_name_length, 
+                                 length(installed_packages{i}.name));
+        max_version_length = max(max_version_length,
+                                 length(installed_packages{i}.version));
+	names{i} = installed_packages{i}.name;
+    endfor
+    h1 = postpad (h1, max_name_length,' ');
+    h2 = postpad (h2, max_version_length, ' ');;
+    
+    ## Print a header
     header = sprintf("%s | %s | %s\n", h1, h2, h3);
     printf(header);
     tmp = sprintf(repmat("-", 1, length(header)-1));
     tmp(length(h1)+2) = "+"; tmp(length(h1)+length(h2)+5) = "+";
     printf("%s\n", tmp);
     
-    ## Compute the maximal lengths of name, version, and dir
-    max_name_length = length(h1); 
-    max_version_length = length(h2);
-    for i = 1:num_packages
-        max_name_length    = max(max_name_length, 
-                                 length(installed_packages{i}.name));
-        max_version_length = max(max_version_length,
-                                 length(installed_packages{i}.version));
-    endfor
-    
     ## Print the packages
     format = sprintf("%%%ds | %%%ds | %%s\n", max_name_length, max_version_length);
+    [dummy, idx] = sort(names);
     for i = 1:num_packages
-        cur_name    = installed_packages{i}.name;
-        cur_version = installed_packages{i}.version;
-        cur_dir     = installed_packages{i}.dir;
+        cur_name    = installed_packages{idx(i)}.name;
+        cur_version = installed_packages{idx(i)}.version;
+        cur_dir     = installed_packages{idx(i)}.dir;
         printf(format, cur_name, cur_version, cur_dir);
     endfor
 endfunction

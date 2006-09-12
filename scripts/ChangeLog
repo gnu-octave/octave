@@ -1,3 +1,12 @@
+2006-09-11  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* signal/freqz.m: Update tests.
+
+2006-09-11  Ken Kouno  <kouno@mk.ecei.tohoku.ac.jp>
+
+	* signal/freqz.m: Corretly postpad arrays.
+	Don't call fliplr on a column vector.
+
 2006-09-11  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
 
 	* general/shiftdim.m: Use permute instead of reshape.

@@ -122,8 +122,9 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     if (nargin == 4)  ## Sampling rate Fs was specified
       w = 2*pi*f/Fs;
     endif
-    hb = polyval (fliplr(b), exp(j*w));
-    ha = polyval (fliplr(a), exp(j*w));
+    k = max (length (b), length (a));
+    hb = polyval (postpad (b, k), exp (j*w));
+    ha = polyval (postpad (a, k), exp (j*w));
   elseif (strcmp (region, "whole"))
     f = Fs * (0:n-1)' / n;
     ## polyval(fliplr(P),exp(jw)) is O(p n) and fft(x) is O(n log(n)),
@@ -168,11 +169,11 @@ endfunction
 %! assert(w(1:16),w2,20*eps);
 
 %!test # Sampling frequency properly interpreted
-%! b = [1 1 1]/3;
-%! [h,f] = freqz(b,1,16,320);
+%! b = [1 1 1]/3; a = [1 0.2];
+%! [h,f] = freqz(b,a,16,320);
 %! assert(f,[0:15]'*10,10*eps);
-%! [h2,f2] = freqz(b,1,[0:15]*10,320);
+%! [h2,f2] = freqz(b,a,[0:15]*10,320);
 %! assert(f2,[0:15]*10,10*eps);
-%! assert(h,h2',20*eps);
-%! [h3,f3] = freqz(b,1,32,'whole',320);
+%! assert(h,h2.',20*eps);
+%! [h3,f3] = freqz(b,a,32,'whole',320);
 %! assert(f3,[0:31]'*10,10*eps);

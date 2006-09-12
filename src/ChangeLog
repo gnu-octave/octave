@@ -1,3 +1,12 @@
+2006-08-22  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Allow matlab compatiable
+	'UniformOutput' and 'ErrorHandler' options. Change output when
+	called with function handler or inline function to by default have
+	'UniformOutput' set to true. Allow functions with multiple inputs
+	and outputs. Add test code. Replace some int with octave_idx_type.
+	(Fnum2cell): Replace some int with octave_idx_type. Add test code.
+	
 2006-09-11  Yozo Hida  <yozo@cs.berkeley.edu>
 
 	* DLD-FUNCTIONS/gcd.cc (Fgcd): Extend range by using std::floor

@@ -45,6 +45,10 @@ extern "C"
 			   const Complex*, const octave_idx_type&, const Complex*,
 			   const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (xzdotu, XZDOTU) (const octave_idx_type&, const Complex*, const octave_idx_type&,
+			     const Complex*, const octave_idx_type&, Complex&);
 }
 
 // Complex Row Vector class
@@ -488,18 +492,16 @@ operator * (const ComplexRowVector& v, const ColumnVector& a)
 Complex
 operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
 {
+  Complex retval (0.0, 0.0);
+
   octave_idx_type len = v.length ();
 
   octave_idx_type a_len = a.length ();
 
   if (len != a_len)
-    {
-      gripe_nonconformant ("operator *", len, a_len);
-      return 0.0;
-    }
-
-  Complex retval (0.0, 0.0);
-
+    gripe_nonconformant ("operator *", len, a_len);
+  else if (len != 0)
+    F77_FUNC (xzdotu, XZDOTU) (len, v.data (), 1, a.data (), 1, retval);
   for (octave_idx_type i = 0; i < len; i++)
     retval += v.elem (i) * a.elem (i);
 

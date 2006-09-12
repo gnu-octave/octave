@@ -45,9 +45,9 @@ extern "C"
 			   const double*, const octave_idx_type&, const double*,
 			   const octave_idx_type&, const double&, double*, const octave_idx_type&
 			   F77_CHAR_ARG_LEN_DECL);
-
-  double F77_FUNC (ddot, DDOT) (const octave_idx_type&, const double*, const octave_idx_type&,
-				const double*, const octave_idx_type&);
+  F77_RET_T
+  F77_FUNC (xddot, XDDOT) (const octave_idx_type&, const double*, const octave_idx_type&,
+			   const double*, const octave_idx_type&, double&);
 }
 
 // Row Vector class.
@@ -365,7 +365,7 @@ operator * (const RowVector& v, const ColumnVector& a)
   if (len != a_len)
     gripe_nonconformant ("operator *", len, a_len);
   else if (len != 0)
-    retval = F77_FUNC (ddot, DDOT) (len, v.data (), 1, a.data (), 1);
+    F77_FUNC (xddot, XDDOT) (len, v.data (), 1, a.data (), 1, retval);
 
   return retval;
 }

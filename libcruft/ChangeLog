@@ -1,3 +1,7 @@
+2006-09-11  John W. Eaton  <jwe@octave.org>
+
+	* blas-xtra/xddot.f, blas-xtra/xzdotu.f: New files.
+
 2006-06-01  David Bateman  <dbateman@free.fr>
 
 	* slatec-fn/dpchim.f, slatec-fn/dpchst.f: New files.

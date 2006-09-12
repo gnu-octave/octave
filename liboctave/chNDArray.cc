@@ -37,13 +37,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 boolNDArray
 charNDArray::all (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (elem (iter_idx) == ' '), true);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (elem (iter_idx) == '\0'), true);
 }
 
 boolNDArray
 charNDArray::any (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (elem (iter_idx) != ' '), false);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (elem (iter_idx) != '\0'), false);
 }
 
 charNDArray

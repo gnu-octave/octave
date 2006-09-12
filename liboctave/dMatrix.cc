@@ -83,6 +83,18 @@ extern "C"
 			   F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
+  F77_FUNC (dgemv, DGEMV) (F77_CONST_CHAR_ARG_DECL,
+			   const octave_idx_type&, const octave_idx_type&, const double&,
+			   const double*, const octave_idx_type&, const double*,
+			   const octave_idx_type&, const double&, double*,
+			   const octave_idx_type&
+			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (xddot, XDDOT) (const octave_idx_type&, const double*, const octave_idx_type&,
+			   const double*, const octave_idx_type&, double&);
+
+  F77_RET_T
   F77_FUNC (dgetrf, DGETRF) (const octave_idx_type&, const octave_idx_type&, double*, const octave_idx_type&,
 		      octave_idx_type*, octave_idx_type&);
 
@@ -2993,12 +3005,23 @@ operator * (const Matrix& m, const Matrix& a)
 	  retval.resize (nr, a_nc);
 	  double *c = retval.fortran_vec ();
 
-	  F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
-				   F77_CONST_CHAR_ARG2 ("N", 1),
-				   nr, a_nc, nc, 1.0, m.data (),
-				   ld, a.data (), lda, 0.0, c, nr
-				   F77_CHAR_ARG_LEN (1)
-				   F77_CHAR_ARG_LEN (1)));
+	  if (a_nc == 1)
+	    {
+	      if (nr == 1)
+		F77_FUNC (xddot, XDDOT) (nc, m.data (), 1, a.data (), 1, *c);
+	      else
+		F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+					 nr, nc, 1.0,  m.data (), ld,
+					 a.data (), 1, 0.0, c, 1
+					 F77_CHAR_ARG_LEN (1)));
+            }
+	  else
+	    F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+				     F77_CONST_CHAR_ARG2 ("N", 1),
+				     nr, a_nc, nc, 1.0, m.data (),
+				     ld, a.data (), lda, 0.0, c, nr
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

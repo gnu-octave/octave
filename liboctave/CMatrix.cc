@@ -86,6 +86,17 @@ extern "C"
 			   F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
+  F77_FUNC (zgemv, ZGEMV) (F77_CONST_CHAR_ARG_DECL,
+                           const octave_idx_type&, const octave_idx_type&, const Complex&,
+                           const Complex*, const octave_idx_type&, const Complex*,
+                           const octave_idx_type&, const Complex&, Complex*, const octave_idx_type&
+                           F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (xzdotu, XZDOTU) (const octave_idx_type&, const Complex*, const octave_idx_type&,
+			     const Complex*, const octave_idx_type&, Complex&);
+
+  F77_RET_T
   F77_FUNC (zgetrf, ZGETRF) (const octave_idx_type&, const octave_idx_type&, Complex*, const octave_idx_type&,
 			     octave_idx_type*, octave_idx_type&);
 
@@ -3619,12 +3630,23 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 	  retval.resize (nr, a_nc);
 	  Complex *c = retval.fortran_vec ();
 
-	  F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
-				   F77_CONST_CHAR_ARG2 ("N", 1),
-				   nr, a_nc, nc, 1.0, m.data (),
-				   ld, a.data (), lda, 0.0, c, nr
-				   F77_CHAR_ARG_LEN (1)
-				   F77_CHAR_ARG_LEN (1)));
+	  if (a_nc == 1)
+	    {
+	      if (nr == 1)
+		F77_FUNC (xzdotu, XZDOTU) (nc, m.data (), 1, a.data (), 1, *c);
+	      else
+		F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+					 nr, nc, 1.0,  m.data (), ld,
+					 a.data (), 1, 0.0, c, 1
+					 F77_CHAR_ARG_LEN (1)));
+	    }
+	  else
+	    F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+				     F77_CONST_CHAR_ARG2 ("N", 1),
+				     nr, a_nc, nc, 1.0, m.data (),
+				     ld, a.data (), lda, 0.0, c, nr
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)

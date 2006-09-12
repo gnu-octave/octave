@@ -1,3 +1,22 @@
+2006-09-11  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.cc (operator * (const Matrix&, const Matrix&))):
+	Handle M*v and rv*cv special cases. 
+	* CMatrix.cc (operator * (const ComplexMatrix&, const
+	ComplexMatrix&))): Likewise.
+	From Luis F. Ortiz <lortiz@interactivesupercomputing.com>.
+
+	* dRowVector.cc (operator * (const RowVector&, const
+	ColumnVector&)): Call xddot here instead of using a Fortran
+	function directly.
+	* CRowVector.cc (operator * (const ComplexRowVector&, const
+	ComplexColumnVector&)): Call xzdotu here.
+
+2006-09-05  John W. Eaton  <jwe@octave.org>
+
+	* chNDArray.cc (charNDArray::any, charNDArray::all): Compare
+	elements to '\0', not ' '.
+
 2006-08-25  John W. Eaton  <jwe@octave.org>
 
 	* mx-inlines.cc (MX_ND_REDUCTION): Special case for 0x0 arrays.

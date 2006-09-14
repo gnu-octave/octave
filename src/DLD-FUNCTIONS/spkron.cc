@@ -95,10 +95,19 @@ For example,\n\
 \n\
 @example\n\
 @group\n\
-kron (1:4, ones (3, 1))\n\
-      @result{}  1  2  3  4\n\
-          1  2  3  4\n\
-          1  2  3  4\n\
+kron(speye(3),spdiag([1,2,3]))\n\
+@result{}\n\
+Compressed Column Sparse (rows = 9, cols = 9, nnz = 9)\n\
+\n\
+  (1, 1) ->  1\n\
+  (2, 2) ->  2\n\
+  (3, 3) ->  3\n\
+  (4, 4) ->  1\n\
+  (5, 5) ->  2\n\
+  (6, 6) ->  3\n\
+  (7, 7) ->  1\n\
+  (8, 8) ->  2\n\
+  (9, 9) ->  3\n\
 @end group\n\
 @end example\n\
 @end deftypefn")

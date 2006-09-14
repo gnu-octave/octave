@@ -1,3 +1,7 @@
+2006-09-13  John W. Eaton  <jwe@octave.org>
+
+	* general/blkdiag.m: Adjust to new cellfun rules.
+
 2006-08-30  David Bateman <dbateman@free.fr>
 
 	* pkg/pkg.m (install): Disallow bundles of packages. More verbose

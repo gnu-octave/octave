@@ -1,3 +1,8 @@
+2006-09-13  Christopher Hulbert  <cchgroupmail@gmail.com>
+
+	* run-octave.in (LD_LIBRARY_PATH): Also append LD_LIBRARY_PATH
+	from environment.
+
 2006-08-25  Alexander Barth  <abarth@marine.usf.edu>
 
 	* mkoctfile.in: Accept .f90 and .F90 as Fortran files.

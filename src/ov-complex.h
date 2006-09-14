@@ -104,6 +104,12 @@ public:
 
   NDArray array_value (bool = false) const;
 
+  SparseMatrix sparse_matrix_value (bool = false) const
+    { return SparseMatrix (matrix_value ()); }
+
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
+    { return SparseComplexMatrix (complex_matrix_value ()); }
+
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   Complex complex_value (bool = false) const;

@@ -142,6 +142,13 @@ public:
   NDArray array_value (bool = false) const
     { return NDArray (dim_vector (1, 1), scalar); }
 
+  SparseMatrix sparse_matrix_value (bool = false) const
+    { return SparseMatrix (Matrix (1, 1, scalar)); }
+
+  // XXX FIXME XXX Need SparseComplexMatrix (Matrix) constructor!!!
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
+    { return SparseComplexMatrix (sparse_matrix_value ()); }
+
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 
   Complex complex_value (bool = false) const { return scalar; }

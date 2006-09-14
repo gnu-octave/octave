@@ -1,11 +1,28 @@
-2006-08-22  David Bateman  <dbateman@free.fr>
+2006-09-13  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/cellfun.cc: Improve error message for uniform
+	output case when results are not scalars.  Avoid shadow decls.
+
+2006-09-13  David Bateman <dbateman@free.fr>
+
+	* ov-scalar.h (octave_scalar::sparse_matrix_value,
+	octave_scalar::sparse_complex_matrix_value): New extractor functions.
+	* ov-complex.h (octave_complex::sparse_matrix_value,
+	octave_complex::sparse_complex_matrix_value): Ditto.
+	* DLD-FUNCTIONS/spkron.cc (Fspkron): Change example in help.
+
+2006-09-12  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (warning_1): Call error_2, not error.
+
+2006-09-12  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Allow matlab compatiable
-	'UniformOutput' and 'ErrorHandler' options. Change output when
+	'UniformOutput' and 'ErrorHandler' options.  Change output when
 	called with function handler or inline function to by default have
-	'UniformOutput' set to true. Allow functions with multiple inputs
-	and outputs. Add test code. Replace some int with octave_idx_type.
-	(Fnum2cell): Replace some int with octave_idx_type. Add test code.
+	'UniformOutput' set to true.  Allow functions with multiple inputs
+	and outputs. Add test code.  Replace some int with octave_idx_type.
+	(Fnum2cell): Replace some int with octave_idx_type.  Add test code.
 	
 2006-09-11  Yozo Hida  <yozo@cs.berkeley.edu>
 

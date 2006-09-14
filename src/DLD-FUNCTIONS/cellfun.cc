@@ -274,7 +274,6 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 	{
 	  octave_value_list idx;
 	  octave_value_list inputlist;
-	  octave_value_list errlist;
 	  bool UniformOutput = true;
 	  bool haveErrorHandler = false;
 	  std::string err_name;
@@ -358,8 +357,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 	      for (octave_idx_type count = 0; count < k ; count++)
 		{
-		  for (int i = 0; i < nargin-offset; i++)
-		    inputlist(i) = inputs[i](count);
+		  for (int j = 0; j < nargin-offset; j++)
+		    inputlist(j) = inputs[j](count);
 
 		  octave_value_list tmp = feval (func, inputlist, nargout);
 
@@ -394,26 +393,36 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 		  if (count == 0)
 		    {
-		      for (int i = 0; i < nargout; i++)
+		      for (int j = 0; j < nargout; j++)
 			{
 			  octave_value val;
-			  val = tmp(i);
+			  val = tmp(j);
 
 			  if (error_state)
 			    goto cellfun_err;
 
 			  val.resize(f_args.dims());
-			  retval(i) = val;
+			  retval(j) = val;
 			}
 		    }
 		  else
 		    {
 		      idx(0) = octave_value (static_cast<double>(count+1));
-		      for (int i = 0; i < nargout; i++)
-			retval(i) = 
-			  retval(i).subsasgn ("(", 
-					      std::list<octave_value_list> 
-					      (1, idx(0)), tmp(i));
+		      for (int j = 0; j < nargout; j++)
+			{
+			  // FIXME -- need an easier way to express
+			  // this test.
+			  octave_value val = tmp(j);
+
+			  if (val.ndims () == 2
+			      && val.rows () == 1 && val.columns () == 1)
+			    retval(j) = 
+			      retval(j).subsasgn ("(", 
+						  std::list<octave_value_list> 
+						  (1, idx(0)), val);
+			  else
+			    error ("cellfun: expecting all values to be scalars for UniformOutput = true");
+			}
 		    }
 
 		  if (error_state)
@@ -423,13 +432,13 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 	  else
 	    {
 	      OCTAVE_LOCAL_BUFFER (Cell, results, nargout);
-	      for (int i = 0; i < nargout; i++)
-		results[i].resize(f_args.dims());
+	      for (int j = 0; j < nargout; j++)
+		results[j].resize(f_args.dims());
 
 	      for (octave_idx_type count = 0; count < k ; count++)
 		{
-		  for (int i = 0; i < nargin-offset; i++)
-		    inputlist(i) = inputs[i](count);
+		  for (int j = 0; j < nargin-offset; j++)
+		    inputlist(j) = inputs[j](count);
 
 		  octave_value_list tmp = feval (func, inputlist, nargout);
 
@@ -463,13 +472,13 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 		    break;
 
 
-		  for (int i = 0; i < nargout; i++)
-		    results[i](count) = tmp(i);
+		  for (int j = 0; j < nargout; j++)
+		    results[j](count) = tmp(j);
 		}
 
 	      retval.resize(nargout);
-	      for (int i = 0; i < nargout; i++)
-		retval(i) = results[i];
+	      for (int j = 0; j < nargout; j++)
+		retval(j) = results[j];
 	    }
 
 	cellfun_err:

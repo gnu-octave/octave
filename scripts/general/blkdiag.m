@@ -32,7 +32,7 @@ function retval = blkdiag (varargin)
     usage ("blkdiag (a, b, c, ...)");
   endif
 
-  if (! all (cell2mat (cellfun (@isnumeric, varargin))))
+  if (! all (cellfun (@isnumeric, varargin)))
     error ("blkdiag: all arguments must be numeric");
   endif
 
@@ -43,7 +43,8 @@ function retval = blkdiag (varargin)
 
   ## size is an option for cellfun, but it's a bit different from
   ## calling size directly.
-  csz = cumsum ([0 0; (cell2mat (cellfun (@size, varargin')))], 1);
+  tmp = cell2mat (cellfun (@size, varargin', "UniformOutput", false));
+  csz = cumsum ([0 0; tmp], 1);
   retval = zeros (csz(end,:));
 
   for p = 1:nargin

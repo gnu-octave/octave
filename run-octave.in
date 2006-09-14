@@ -28,6 +28,6 @@ if [ $# -gt 0 ]; then
   fi
 fi
 OCTAVE_SITE_INITFILE=$top_srcdir/scripts/startup/main-rcfile \
-LD_LIBRARY_PATH="$builddir/src:$builddir/liboctave:$builddir/libcruft" \
+LD_LIBRARY_PATH="$builddir/src:$builddir/liboctave:$builddir/libcruft:$LD_LIBRARY_PATH" \
   exec $driver $builddir/src/octave $args "$@"
 

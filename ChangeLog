@@ -1,3 +1,7 @@
+2006-09-15  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Check for locale.h and setlocale.
+
 2006-09-13  Christopher Hulbert  <cchgroupmail@gmail.com>
 
 	* run-octave.in (LD_LIBRARY_PATH): Also append LD_LIBRARY_PATH

@@ -1,3 +1,10 @@
+2006-09-15  David Bateman <dbateman@free.fr>
+
+	* pkg/pkg.m (prepare_installation): Don't create package
+	installation directory here.
+	(copy_files): Create it here instead, to avoid issues with
+	upgrades. Also install the COPYING file in packinfo.
+
 2006-09-13  John W. Eaton  <jwe@octave.org>
 
 	* general/blkdiag.m: Adjust to new cellfun rules.

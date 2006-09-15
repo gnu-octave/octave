@@ -456,14 +456,8 @@ function prepare_installation(desc, packdir)
         end_try_catch
     endif
 
-    ## Create the installation directory
-    [status, msg] = mkdir(desc.dir);
-    if (status != 1)
-        error("Couldn't create installation directory: %s\n", msg);
-    endif
-
-	## If the directory "inst" doesn't exist, we create it
-	if (!exist([packdir "inst"], "dir"))
+    ## If the directory "inst" doesn't exist, we create it
+    if (!exist([packdir "inst"], "dir"))
         [status, msg] = mkdir([packdir "inst"]);
         if (status != 1)
             rm_rf(desc.dir);
@@ -599,6 +593,13 @@ endfunction
 function copy_files (desc, packdir, bindir)
     ## Copy the files from "inst" to installdir
     if (! dirempty([packdir "inst"]))
+      if (! exist (desc.dir, "dir"))
+	[status, output] = mkdir (desc.dir);
+        if (status != 1)
+	   error("Couldn't create installation directory %s : %s\n", 
+	         desc.dir, output);
+        endif
+      endif
       [status, output] = system(["cp -R " packdir "inst/* " desc.dir]);
       if (status != 0)
           rm_rf(desc.dir);
@@ -619,6 +620,13 @@ function copy_files (desc, packdir, bindir)
     if (status != 0)
        rm_rf(desc.dir);
        error("Couldn't copy DESCRIPTION: %s\n", output);
+    endif
+
+    ## Copy COPYING
+    [status, output] = system(["cp " packdir "COPYING " packinfo]);
+    if (status != 0)
+       rm_rf(desc.dir);
+       error("Couldn't copy COPYING: %s\n", output);
     endif
 
     ## Is there an INDEX file to copy or should we generate one?

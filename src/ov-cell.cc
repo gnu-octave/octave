@@ -164,7 +164,7 @@ octave_cell::subsasgn (const std::string& type,
 
 	    if (! error_state)
 	      {
-		Cell tcell = tmp.cell_value ();
+		const Cell tcell = tmp.cell_value ();
 
 		if (! error_state && tcell.length () == 1)
 		  {

@@ -67,6 +67,8 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  octave_value convert_to_str_internal (bool, bool, char type) const;
+
   bool save_ascii (std::ostream& os, bool& infnan_warned);
 
   bool load_ascii (std::istream& is);
@@ -107,6 +109,8 @@ public:
   //  void increment (void) { scalar += 1; }
 
   //  void decrement (void) { scalar -= 1; }
+
+  octave_value convert_to_str_internal (bool, bool, char type) const;
 
   bool save_ascii (std::ostream& os, bool&);
 

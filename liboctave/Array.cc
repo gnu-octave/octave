@@ -2358,7 +2358,7 @@ Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 
 template <class T>
 Array<T>
-Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
+Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
 {
   // This function handles all calls with more than one idx.
   // For (3x3x3), the call can be A(2,5), A(2,:,:), A(3,2,3) etc.
@@ -2381,14 +2381,17 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
       else
 	trim_trailing_singletons = false;
 
-      for (octave_idx_type i = 0; i < iidx.capacity (); i++)
-	if (iidx (i) != 0)
-	  {
-	    (*current_liboctave_error_handler)
-	      ("index exceeds N-d array dimensions");
-	    
-	    return retval;
-	  }
+      if (! resize_ok)
+	{
+	  for (octave_idx_type i = 0; i < iidx.capacity (); i++)
+	    if (iidx (i) != 0)
+	      {
+		(*current_liboctave_error_handler)
+		  ("index exceeds N-d array dimensions");
+
+		return retval;
+	      }
+	}
     }
 
   ra_idx.resize (ra_idx_len);
@@ -2437,9 +2440,8 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T&) const
 
 	      octave_idx_type numelem_elt = get_scalar_idx (elt_idx, new_dims);
 
-	      if (numelem_elt > length () || numelem_elt < 0)
-		(*current_liboctave_error_handler)
-		  ("invalid N-d array index");
+	      if (numelem_elt >= length () || numelem_elt < 0)
+		retval.elem (i) = rfv;
 	      else
 		retval.elem (i) = elem (numelem_elt);
 

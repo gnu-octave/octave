@@ -69,6 +69,48 @@ octave_base_int_matrix<T>::try_narrowing_conversion (void)
 }
 
 template <class T>
+octave_value
+octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
+{
+  octave_value retval;
+  dim_vector dv = this->dims ();
+  octave_idx_type nel = dv.numel ();
+
+  charNDArray chm (dv);
+
+  bool warned = false;
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+
+      typename T::elt_type tmp = this->matrix(i);
+
+      typename T::elt_type::val_type ival = tmp.value ();
+
+      if (ival < 0 || ival > UCHAR_MAX)
+	{
+	  // FIXME -- is there something better we could do?
+
+	  ival = 0;
+
+	  if (! warned)
+	    {
+
+	      ::warning ("range error for conversion to character value");
+	      warned = true;
+	    }
+	}
+      else
+	chm (i) = static_cast<char> (ival);
+    }
+
+  retval = octave_value (chm, true, type);
+
+  return retval;
+}
+
+template <class T>
 bool
 octave_base_int_matrix<T>::save_ascii (std::ostream& os, bool&)
 {
@@ -327,6 +369,30 @@ octave_base_int_matrix<T>::print_raw (std::ostream& os,
 {
   octave_print_internal (os, this->matrix, pr_as_read_syntax,
    			 this->current_print_indent_level ());
+}
+
+template <class T>
+octave_value
+octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
+{
+  octave_value retval;
+
+  T tmp = this->scalar;
+
+  typename T::val_type ival = tmp.value ();
+
+  if (ival < 0 || ival > UCHAR_MAX)
+    {
+      // FIXME -- is there something better we could do?
+
+      ival = 0;
+
+      ::warning ("range error for conversion to character value");
+    }
+  else
+    retval = octave_value (std::string (1, static_cast<char> (ival)), type);
+
+  return retval;
 }
 
 template <class T>

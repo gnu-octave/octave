@@ -32,6 +32,8 @@ class
 intNDArray : public MArrayN<T>
 {
 public:
+
+  typedef T elt_type;
   
   intNDArray (void) : MArrayN<T> () { }
 

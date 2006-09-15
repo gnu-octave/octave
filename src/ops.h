@@ -218,8 +218,8 @@ extern void install_ops (void);
 #define DEFSTRINTCONVFN(name, tto) \
   DEFCONVFNX(name, char_matrix_str, tto ## _matrix, tto, char_)
 
-#define DEFSTRDBLCONVFN(name) \
-  DEFCONVFNX(name, char_matrix_str, matrix, , char_)
+#define DEFSTRDBLCONVFN(name, tfrom) \
+  DEFCONVFNX(name, tfrom, matrix, , char_)
 
 #define DEFCONVFN(name, tfrom, tto) \
   DEFCONVFNX (name, tfrom, tto ## _matrix, tto, )

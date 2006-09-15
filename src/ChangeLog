@@ -1,3 +1,14 @@
+2006-09-15  John W. Eaton  <jwe@octave.org>
+
+	* ops.h (DEFSTRDBLCONVFN): New arg, TFROM.
+	* OPERATORS/op-double-conv.cc: Declare and install sq_string
+	conversions too.
+
+	* ov-base-int.cc (octave_base_int_scalar<T>::convert_to_str_internal,
+	octave_base_int_matrix<T>::convert_to_str_internal):
+	New functions.
+	* ov-base-int.h: Provide decls.
+
 2006-09-15  Soren Hauberg  <soren@hauberg.org>.
 
 	* data.cc (Fsize): If nargout > ndims, fill with 1.

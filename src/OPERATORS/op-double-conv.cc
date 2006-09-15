@@ -77,7 +77,8 @@ DEFDBLCONVFN (sparse_bool_matrix_to_double_matrix, sparse_bool_matrix, array)
 
 DEFDBLCONVFN (range_to_double_matrix, range, array)
 
-DEFSTRDBLCONVFN(char_matrix_str_to_double_matrix)
+DEFSTRDBLCONVFN(char_matrix_str_to_double_matrix, char_matrix_str)
+DEFSTRDBLCONVFN(char_matrix_sq_str_to_double_matrix, char_matrix_sq_str)
 
 DEFDBLCONVFN (double_scalar_to_double_matrix, scalar, array)
 
@@ -113,6 +114,7 @@ install_double_conv_ops (void)
   INSTALL_CONVOP (octave_range, octave_matrix, range_to_double_matrix);
 
   INSTALL_CONVOP (octave_char_matrix_str, octave_matrix, char_matrix_str_to_double_matrix);
+  INSTALL_CONVOP (octave_char_matrix_sq_str, octave_matrix, char_matrix_sq_str_to_double_matrix);
 
   INSTALL_CONVOP (octave_scalar, octave_matrix, double_scalar_to_double_matrix);
 }

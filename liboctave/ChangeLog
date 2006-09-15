@@ -1,3 +1,10 @@
+2006-09-15  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::index (Array<idx_vector>&, int, const T&) const): 
+	Handle resizing.
+
+	* intNDArray.h (intNDArray<T>:elt_type): New typedef.
+
 2006-09-11  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc (operator * (const Matrix&, const Matrix&))):

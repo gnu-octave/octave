@@ -1040,6 +1040,9 @@ returns the number of columns in the given matrix.\n\
 
       if (nargout > 1)
 	{
+	  for (int i = nargout-1; i >= ndims; i--)
+	    retval(i) = 1;
+
 	  while (ndims--)
 	    retval(ndims) = dimensions(ndims);
 	}

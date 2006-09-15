@@ -1,3 +1,7 @@
+2006-09-15  Soren Hauberg  <soren@hauberg.org>.
+
+	* data.cc (Fsize): If nargout > ndims, fill with 1.
+
 2006-09-15  John W. Eaton  <jwe@octave.org>
 
 	* octave.cc: Fix xerbla decl.

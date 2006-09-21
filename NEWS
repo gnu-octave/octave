@@ -92,4 +92,14 @@ Summary of important user-visible changes for version 3.0:
       endif
 
 
+ ** For compatibility with Matlab, the output order of Octave's
+    "system" function has changed from
+
+      [output, status] = system (cmd);
+
+    to
+
+      [status, output] = system (cmd);
+
+
 See NEWS.2 for old news.

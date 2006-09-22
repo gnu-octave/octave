@@ -18,26 +18,28 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} [@var{reg}, @var{prop}] = parseparams (@var{params})
+## @deftypefn {Function File} {[@var{reg}, @var{prop}] =} parseparams (@var{params})
 ## Return in @var{reg} the cell elements of @var{param} up to the first
 ## string element and in @var{prop} all remaining elements beginning
 ## with the first string element.  For example
 ##
 ## @example
+## @group
 ## [reg, prop] = parseparams (@{1, 2, "linewidth", 10@})
 ## reg =
-## {
+## @{
 ##   [1,1] = 1
 ##   [1,2] = 2
-## }
+## @}
 ## prop =
-## {
+## @{
 ##   [1,1] = linewidth
 ##   [1,2] = 10
-## }
+## @}
+## @end group
 ## @end example
 ##
-## The parseparams function may be used to separate "regular"
+## The parseparams function may be used to separate 'regular'
 ## arguments and additional arguments given as property/value pairs of
 ## the @var{varargin} cell array.
 ## @seealso{varargin}

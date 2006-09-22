@@ -510,8 +510,7 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
   octave_idx_type nm = (ncols < nrows ? ncols : nrows);
   octave_idx_type nnz = a.nzmax ();
 
-  if (octave_sparse_params::get_key ("spumoni") != 0.)  full = true;
-
+  if (octave_sparse_params::get_key ("spumoni") != 0.)
     (*current_liboctave_warning_handler) 
       ("Calculating Sparse Matrix Type");
 

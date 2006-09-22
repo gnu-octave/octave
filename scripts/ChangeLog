@@ -1,3 +1,15 @@
+2006-09-22  Michael Creel <michael.creel@uab.es>
+
+	* deprecated/chisquare_pdf.m: Typo in documentation.
+
+2006-09-22  Søren Hauberg  <soren@hauberg.org>
+
+	* signal/filter2.m: Correct texinfo doc.
+
+2006-09-22  David Bateman <dbateman@free.fr>
+
+	* miscellaneous/parseparams.m: Correct texinfo doc.
+	
 2006-09-15  David Bateman <dbateman@free.fr>
 
 	* pkg/pkg.m (prepare_installation): Don't create package

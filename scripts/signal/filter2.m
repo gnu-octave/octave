@@ -17,6 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
+## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{y} =} filter2 (@var{b, @var{x}})
 ## @deftypefnx {Function File} {@var{y} =} filter2 (@var{b, @var{x}}, @var{shape})
 ## Apply the 2-D FIR filter @var{b} to @var{x}. If the argument
@@ -35,7 +36,7 @@
 ## Note this is just a variation on convolution, with the parameters
 ## reversed and @var{b} rotated 180 degrees.
 ## @seealso{conv2}
-## @end{deftypefn}
+## @end deftypefn
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 ## 2001-02-08 

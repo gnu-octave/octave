@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} chisquare_pdf (@var{x}, @var{n})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the chisquare distribution with @var{n} degrees
-## of freedom.
+## of freedom. 
 ## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>

@@ -1,7 +1,7 @@
 2006-09-22  David Bateman <dbateman@free.fr>
 
 	* MatrixType.h (MatrixType::MatrixType(const SparseComplexMatrix&)): 
-	Remove spurious warning.
+	Remove spurious warning. 
 
 2006-09-15  John W. Eaton  <jwe@octave.org>
 

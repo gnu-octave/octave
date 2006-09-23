@@ -61,7 +61,7 @@ MatrixType::MatrixType (const Matrix &a)
 {
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
-
+ 
   if (ncols == nrows)
     {
       bool upper = true;

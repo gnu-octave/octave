@@ -118,6 +118,10 @@ find_nonzero_elem_idx (const T& nda, int nargout, octave_idx_type n_to_find,
       // Search for elements to return.  Only search the region where
       // there are elements to be found using the count that we want
       // to find.
+
+      // For compatibility, all N-d arrays are handled as if they are
+      // 2-d, with the number of columns equal to "prod (dims (2:end))".
+
       for (k = start_el; k < end_el; k++)
 	{
 	  OCTAVE_QUIT;
@@ -126,8 +130,9 @@ find_nonzero_elem_idx (const T& nda, int nargout, octave_idx_type n_to_find,
 	    {
 	      idx(count) = k + 1;
 
-	      i_idx(count) = i + 1;
-	      j_idx(count) = j + 1;
+	      octave_idx_type xr = k % nr;
+	      i_idx(count) = xr + 1;
+	      j_idx(count) = (k - xr) / nr + 1;
 
 	      val(count) = nda(k);
 
@@ -135,13 +140,6 @@ find_nonzero_elem_idx (const T& nda, int nargout, octave_idx_type n_to_find,
 	    }
 
 	  i++;
-
-	  if (i == nr)
-	    {
-	      i = 0;
-
-	      j++;
-	    }
 	}
     }
   else if (scalar_arg)

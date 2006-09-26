@@ -63,9 +63,6 @@
 %% test/octave.test/matrix/find-3.m
 %!error <Invalid call to find.*> find ();
 
-%% test/octave.test/matrix/find-4.m
-%!error <Invalid call to find.*> find (1, 2);
-
 %% test/octave.test/matrix/fliplr-1.m
 %!assert((fliplr ([1, 2; 3, 4]) == [2, 1; 4, 3]
 %! && fliplr ([1, 2; 3, 4; 5, 6]) == [2, 1; 4, 3; 6, 5]

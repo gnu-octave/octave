@@ -429,6 +429,48 @@ pr_where (const char *name, bool print_code = true)
     }
 }
 
+static void
+error_2 (const char *id, const char *fmt, va_list args)
+{
+  int init_state = error_state;
+
+  error_1 (std::cerr, "error", id, fmt, args);
+
+  if ((interactive || forced_interactive)
+      && Vdebug_on_error && init_state == 0
+      && octave_call_stack::caller_user_script_or_function ())
+    {
+      unwind_protect_bool (Vdebug_on_error);
+      Vdebug_on_error = false;
+
+      pr_where ("error");
+
+      error_state = 0;
+
+      do_keyboard (octave_value_list ());
+
+      unwind_protect::run ();
+    }
+}
+
+void
+error (const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_2 ("", fmt, args);
+  va_end (args);
+}
+
+void
+error_with_id (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_2 (id, fmt, args);
+  va_end (args);
+}
+
 static int
 check_state (const std::string& state)
 {
@@ -567,48 +609,6 @@ warning_with_id (const char *id, const char *fmt, ...)
   va_list args;
   va_start (args, fmt);
   warning_1 (id, fmt, args);
-  va_end (args);
-}
-
-static void
-error_2 (const char *id, const char *fmt, va_list args)
-{
-  int init_state = error_state;
-
-  error_1 (std::cerr, "error", id, fmt, args);
-
-  if ((interactive || forced_interactive)
-      && Vdebug_on_error && init_state == 0
-      && octave_call_stack::caller_user_script_or_function ())
-    {
-      unwind_protect_bool (Vdebug_on_error);
-      Vdebug_on_error = false;
-
-      pr_where ("error");
-
-      error_state = 0;
-
-      do_keyboard (octave_value_list ());
-
-      unwind_protect::run ();
-    }
-}
-
-void
-error (const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  error_2 ("", fmt, args);
-  va_end (args);
-}
-
-void
-error_with_id (const char *id, const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  error_2 (id, fmt, args);
   va_end (args);
 }
 

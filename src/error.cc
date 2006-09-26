@@ -524,7 +524,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
     {
       // Handle this warning as an error.
 
-      error (id, fmt, args);
+      error_2 (id, fmt, args);
     }
   else if (warn_opt == 1)
     {

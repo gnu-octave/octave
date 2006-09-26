@@ -37,7 +37,7 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
   __plot_globals__;
 
-  __setup_plot__;
+  __setup_plot__ ("__gnuplot_plot__");
 
   if (nargin < 3 || nargin > 7) # at least three data arguments needed
     usage ("__errplot__ (fmt, arg1, ...)");

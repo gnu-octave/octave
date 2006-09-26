@@ -1,3 +1,20 @@
+2006-09-26  David Bateman  <dbateman@free.fr>
+
+	* __plt3__.m: Using global variables __plot_data__,
+	__plot_data_offset__ and __plot_command__ to store plots and
+	correctly handle multiplots, and hold state. Only accept a single
+	data parameter plus, using, format and with strings. Remove
+	setting of gnuplot parameters.
+	* __make_using_clause__.m: New function extracted from __plt__.m.
+	* __setup_plot__.m: Convert to a function and pass the plotting
+	command to use.
+	* __plt__.m: Change call to __setup_plot__ and __make_using_clause__.
+	* contour.m: Use unwind protect on the parametric state of plot
+	and __plt3__ instead of calling __gnuplot_splot__ directly.
+	* mesh.m: ditto.
+	* plot3.m: Error checking, setting of parametric state and
+	formation of matrix to plot moved from old __plt3__.
+
 2006-09-22  Michael Creel <michael.creel@uab.es>
 
 	* deprecated/chisquare_pdf.m: Typo in documentation. 

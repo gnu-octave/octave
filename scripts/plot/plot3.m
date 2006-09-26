@@ -200,7 +200,35 @@ function plot3 (varargin)
 	  endif
 	endif
 	fmt = __pltopt__ ("plot3", new);
-	__plt3__ (x, y, z, fmt);
+
+	if (isvector (x) && isvector (y))
+	  if (isvector (z))
+	    x = x(:);
+	    y = y(:);
+	    z = z(:);
+	  elseif (length (x) == rows (z) && length (y) == columns (z))
+	    error ("plot3: [length(x), length(y)] must match size(z)");
+	  else
+	    [x, y] = meshgrid (x, y);
+	  endif
+	endif
+
+	if (any (size (x) != size (y)) || any (size (x) != size (z)))
+	  error ("plot3: x, y, and z must have the same shape");
+	endif
+
+	unwind_protect
+          __gnuplot_raw__ ("set nohidden3d;\n")
+	  __gnuplot_set__ parametric; 
+
+	  __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
+		   ([y; NaN*ones(1,size(y,2))])(:), ...
+		   ([z; NaN*ones(1,size(z,2))])(:)], "", fmt);
+
+	unwind_protect_cleanup
+	  __gnuplot_set__ noparametric; 
+	end_unwind_protect
+
 	hold ("on");
 	x_set = 0;
 	y_set = 0;
@@ -215,7 +243,34 @@ function plot3 (varargin)
 	z = new;
 	z_set = 1;
       else
-	__plt3__ (x, y, z, "");
+	if (isvector (x) && isvector (y))
+	  if (isvector (z))
+	    x = x(:);
+	    y = y(:);
+	    z = z(:);
+	  elseif (length (x) == rows (z) && length (y) == columns (z))
+	    error ("plot3: [length(x), length(y)] must match size(z)");
+	  else
+	    [x, y] = meshgrid (x, y);
+	  endif
+	endif
+
+	if (any (size (x) != size (y)) || any (size (x) != size (z)))
+	  error ("plot3: x, y, and z must have the same shape");
+	endif
+
+	unwind_protect
+          __gnuplot_raw__ ("set nohidden3d;\n")
+	  __gnuplot_set__ parametric; 
+
+	  __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
+		     ([y; NaN*ones(1,size(y,2))])(:), ...
+		     ([z; NaN*ones(1,size(z,2))])(:)]);
+
+	unwind_protect_cleanup
+	  __gnuplot_set__ noparametric; 
+	end_unwind_protect
+
 	hold ("on");
 	x = new;
 	y_set = 0;
@@ -244,7 +299,33 @@ function plot3 (varargin)
           x = 1:columns(x);
         endif
       endif
-      __plt3__ (x, y, z, "");
+
+      if (isvector (x) && isvector (y))
+	if (isvector (z))
+	  x = x(:);
+	  y = y(:);
+	  z = z(:);
+	elseif (length (x) == rows (z) && length (y) == columns (z))
+	  error ("plot3: [length(x), length(y)] must match size(z)");
+	else
+	  [x, y] = meshgrid (x, y);
+	endif
+      endif
+
+      if (any (size (x) != size (y)) || any (size (x) != size (z)))
+	error ("plot3: x, y, and z must have the same shape");
+      endif
+
+      unwind_protect
+        __gnuplot_raw__ ("set nohidden3d;\n")
+	__gnuplot_set__ parametric; 
+
+	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
+		   ([y; NaN*ones(1,size(y,2))])(:), ...
+		   ([z; NaN*ones(1,size(z,2))])(:)]);
+      unwind_protect_cleanup
+	__gnuplot_set__ noparametric; 
+      end_unwind_protect
     endif
     
   unwind_protect_cleanup

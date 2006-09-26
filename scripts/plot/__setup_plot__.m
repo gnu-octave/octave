@@ -17,16 +17,21 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-if (ishold ())
-  if (isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
-    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = "__gnuplot_plot__";
-    __plot_command_sep__ = "";
+function __setup_plot__ (plotcmd)
+
+  __plot_globals__
+
+  if (ishold ())
+    if (isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
+      __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = plotcmd;
+      __plot_command_sep__ = "";
+    else
+      __plot_command_sep__ = ",\\\n";
+    endif
   else
-    __plot_command_sep__ = ",\\\n";
+    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = plotcmd;
+    __plot_command_sep__ = "";
+    __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
+    __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
   endif
-else
-  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = "__gnuplot_plot__";
-  __plot_command_sep__ = "";
-  __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
-  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
-endif
+endfunction

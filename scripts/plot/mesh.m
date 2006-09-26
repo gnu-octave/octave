@@ -46,7 +46,7 @@ function mesh (x, y, z)
       __gnuplot_set__ noparametric;
       __gnuplot_raw__ ("set nologscale;\n");
       __gnuplot_raw__ ("set view 60, 30, 1, ;\n");
-      __gnuplot_splot__ (z');
+      __plt3__ (z');
     else
       error ("mesh: argument must be a matrix");
     endif
@@ -67,17 +67,20 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        __gnuplot_raw__ ("set hidden3d;\n");
-        __gnuplot_raw__ ("set data style lines;\n");
-        __gnuplot_raw__ ("set surface;\n");
-        __gnuplot_raw__ ("set nocontour;\n");
-        __gnuplot_raw__ ("set nologscale;\n");
-        __gnuplot_set__ parametric;
-        __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-        __gnuplot_raw__ ("set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
-        __gnuplot_raw__ ("set nocolorbox;\n");
-        __gnuplot_splot__ zz with line palette;
-        __gnuplot_set__ noparametric;
+	unwind_protect
+          __gnuplot_raw__ ("set hidden3d;\n");
+          __gnuplot_raw__ ("set data style lines;\n");
+          __gnuplot_raw__ ("set surface;\n");
+          __gnuplot_raw__ ("set nocontour;\n");
+          __gnuplot_raw__ ("set nologscale;\n");
+          __gnuplot_set__ parametric;
+          __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
+          __gnuplot_raw__ ("set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+          __gnuplot_raw__ ("set nocolorbox;\n");
+	  __plt3__ (zz, "", "", [gnuplot_command_with " line palette"]);
+	unwind_protect_cleanup
+	  __gnuplot_set__ noparametric;
+	end_unwind_protect
       else
         msg = "mesh: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
@@ -97,15 +100,17 @@ function mesh (x, y, z)
           zz(:,i+2) = z(:,k);
           k++;
         endfor
-        __gnuplot_raw__ ("set hidden3d;\n")
-        __gnuplot_raw__ ("set data style lines;\n");
-        __gnuplot_raw__ ("set surface;\n");
-        __gnuplot_raw__ ("set nocontour;\n");
-        __gnuplot_raw__ ("set nologscale;\n");
-        __gnuplot_set__ parametric;
-        __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-        __gnuplot_splot__ (zz);
-        __gnuplot_set__ noparametric;
+	unwind_protect
+          __gnuplot_raw__ ("set data style lines;\n");
+          __gnuplot_raw__ ("set surface;\n");
+          __gnuplot_raw__ ("set nocontour;\n");
+          __gnuplot_raw__ ("set nologscale;\n");
+          __gnuplot_set__ parametric;
+          __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
+          __plt3__ (zz);
+	unwind_protect_cleanup
+	  __gnuplot_set__ noparametric;
+	end_unwind_protect
       else
         error ("mesh: x, y, and z must have same dimensions");
       endif

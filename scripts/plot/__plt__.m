@@ -27,7 +27,7 @@ function __plt__ (caller, varargin)
 
   __plot_globals__;
 
-  __setup_plot__;
+  __setup_plot__ ("__gnuplot_plot__");
 
   nargs = nargin ();
 
@@ -93,7 +93,7 @@ function __plt__ (caller, varargin)
       if (have_data)
 	if (iscell (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}))
 	  for i = 1:length (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j})
-	    usingstr = make_using_clause (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}{i});
+	    usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}{i});
 	    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
 		= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}{%d} %s %s",
 			   __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
@@ -101,7 +101,7 @@ function __plt__ (caller, varargin)
 	    __plot_command_sep__ = ",\\\n";
 	  endfor
 	else
-	  usingstr = make_using_clause (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j});
+	  usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j});
 	  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
 	    = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s %s",
 		       __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
@@ -129,16 +129,4 @@ function __plt__ (caller, varargin)
     usage (msg);
   endif
 
-## endfunction
-
-function usingstr = make_using_clause (x)
-  cols = columns (x);
-  if (cols > 0)
-    usingstr = strcat (gnuplot_command_using, " ($1)");
-    for k = 2:cols
-      usingstr = sprintf ("%s:($%d)", usingstr, k);
-    endfor
-  else
-    usingstr = "";
-  endif
-## endfunction
+endfunction

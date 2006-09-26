@@ -33,34 +33,57 @@
 ## David Bateman <dbateman@free.fr>
 ## May 25, 2006
 
-function __plt3__ (x, y, z, fmt)
+function __plt3__ (x, usingstr, fmtstr, withstr)
 
-  if (isvector (x) && isvector (y))
-    if (isvector (z))
-      x = x(:);
-      y = y(:);
-      z = z(:);
-    elseif (length (x) == rows (z) && length (y) == columns (z))
-      error ("plot3: [length(x), length(y)] must match size(z)");
-    else
-      [x, y] = meshgrid (x, y);
+  if (nargin < 2)
+    usingstr = "";
+  endif
+  if (nargin < 3)
+    fmtstr = "";
+  endif
+  if (nargin < 4)
+    withstr = "";
+  endif
+
+  __plot_globals__;
+
+  __setup_plot__ ("__gnuplot_splot__");
+
+  j = __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__);
+
+  __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j} = x;
+
+  if (iscell (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}))
+    for i = 1:length (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j})
+    if (! isempty(usingstr))
+      length(usingstr)
+	usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}{i});
+      endif
+      __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
+	  = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}{%d} %s %s",
+		     __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
+		     __plot_command_sep__, j, i, usingstr, fmtstr{i});
+      __plot_command_sep__ = ",\\\n";
+    endfor
+  else
+    if (! isempty(usingstr))
+      length(usingstr)
+      usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j});
     endif
+    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
+	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s %s %s",
+		   __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
+		   __plot_command_sep__, j, usingstr, fmtstr, withstr);
+    __plot_command_sep__ = ",\\\n";
   endif
 
-  if (any (size (x) != size (y)) || any (size (x) != size (z)))
-    error ("plot3: x, y, and z must have the same shape");
+  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = ++j;
+
+  if (__multiplot_mode__)
+    __gnuplot_raw__ ("clear\n");
   endif
 
-  unwind_protect
-    __gnuplot_set__ parametric;
-    __gnuplot_raw__ ("set nohidden3d;\n");
-
-    tmp = [([x; NaN*ones(1,size(x,2))])(:), ...
-	   ([y; NaN*ones(1,size(y,2))])(:), ...
-	   ([z; NaN*ones(1,size(z,2))])(:)];
-
-    eval (sprintf ("__gnuplot_splot__ tmp %s\n", fmt));
-  unwind_protect_cleanup
-    __gnuplot_set__ noparametric; 
-  end_unwind_protect
+  if (! strcmp (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}, "__gnuplot_splot__"))
+    eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
+  endif
 endfunction

@@ -1,3 +1,8 @@
+2006-05-17  Bill Denney  <bill@givebillmoney.com>
+
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx, Ffind):
+	Handle direction and limit on number of elements to find.
+
 2006-09-26  John W. Eaton  <jwe@octave.org>
 
 	* error.cc (warning_1): Call error_2, not error.

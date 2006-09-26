@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.520 $)
+AC_REVISION($Revision: 1.521 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1744,8 +1744,7 @@ typedef int sig_atomic_t;
 ### Do the substitutions in all the Makefiles.
 
 AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile \
-  dlfcn/Makefile doc/Makefile doc/faq/Makefile \
-  doc/interpreter/Makefile doc/interpreter/images/Makefile \
+  dlfcn/Makefile doc/Makefile doc/faq/Makefile doc/interpreter/Makefile 
   doc/liboctave/Makefile doc/refcard/Makefile emacs/Makefile \
   examples/Makefile liboctave/Makefile liboctave/oct-types.h \
   src/Makefile libcruft/Makefile libcruft/Makerules \

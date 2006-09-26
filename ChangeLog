@@ -1,3 +1,8 @@
+2006-09-26  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AC_CONFIG_FILES):
+	Remove doc/interpreter/images/Makefile from the list.
+
 2006-09-16  John W. Eaton  <jwe@octave.org>
 
 	* octave-bug.in: Delete LIBPLPLOT variables.

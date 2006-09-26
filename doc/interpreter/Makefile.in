@@ -18,7 +18,21 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-IMAGEDIR = images
+SCRIPT_SOURCES = sparseimages.m
+
+SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
+
+SPARSEIMAGES_EPS = $(addsuffix .eps, $(SPARSEIMAGES_1))
+SPARSEIMAGES_PDF = $(addsuffix .pdf, $(SPARSEIMAGES_1))
+SPARSEIMAGES_PNG = $(addsuffix .png, $(SPARSEIMAGES_1))
+SPARSEIMAGES_TXT = $(addsuffix .txt, $(SPARSEIMAGES_1))
+
+IMAGES_EPS = $(SPARSEIMAGES_EPS)
+IMAGES_PDF = $(SPARSEIMAGES_PDF)
+IMAGES_PNG = $(SPARSEIMAGES_PNG)
+IMAGES_TXT = $(SPARSEIMAGES_TXT)
+  
+IMAGES = $(IMAGES_EPS) $(IMAGES_PDF) $(IMAGES_PNG) $(IMAGES_TXT)
 
 SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	container.txi control.txi cp-idx.txi data.txi \
@@ -31,7 +45,7 @@ SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	stmt.txi stream.txi strings.txi struct.txi system.txi \
 	testfun.txi tips.txi var.txi vr-idx.txi
 
-SOURCES := $(SUB_SOURCE)
+SOURCES := $(SUB_SOURCE) $(SCRIPT_SOURCES)
 
 MAIN_TEXINFO := $(srcdir)/octave.texi
 
@@ -47,13 +61,13 @@ MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
 # FIXME -- need to include generated figures here...
 DISTFILES = Makefile.in dir munge-texi.cc $(MAN_SRC) \
-  $(SOURCES) $(TEXINFO) $(FORMATTED)
+  $(SOURCES) $(TEXINFO) $(FORMATTED) $(IMAGES)
 
 DISTDIRS = HTML
 
-DISTSUBDIRS = $(IMAGEDIR)
+DISTSUBDIRS :=
 
-SUBDIRS := $(IMAGEDIR)
+SUBDIRS :=
 
 # Look for version.h to get version information.
 xfiles := $(TOPDIR)/src/version.h $(srcdir)/$(TOPDIR)/src/version.h
@@ -90,21 +104,17 @@ scripts-DOCSTRINGS:
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
 	@$(top_srcdir)/move-if-change $@.t $@
 
-stamp-images:
-	$(MAKE) -C images
-.PHONY: stamp-images
+octave.info: $(IMAGES_TXT) $(TEXINFO)
+	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
-octave.info: stamp-images $(TEXINFO)
-	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. -I$(IMAGEDIR) $(MAIN_TEXINFO)
-
-octave.dvi: stamp-images $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(IMAGEDIR):$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
+octave.dvi: $(IMAGES_EPS) $(TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
-octave.pdf: stamp-images $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(IMAGEDIR):$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
+octave.pdf: $(IMAGES_PDF) $(TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
@@ -121,14 +131,25 @@ octave.pdf: stamp-images $(TEXINFO)
 	mv BUGS ../../BUGS
 
 HTML/index.html: html-figs $(TEXINFO)
-	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. -I$(IMAGEDIR) $(MAIN_TEXINFO)
+	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
-html-figs: stamp-images html-dir
-	$(INSTALL_DATA) images/*.png HTML
+html-figs: $(IMAGES_PNG) html-dir
+	$(INSTALL_DATA) $(IMAGES_PNG) HTML
 .PHONY: html-figs
 
 html-dir:
 	if [ -d HTML ]; then true; else mkdir HTML; fi
+
+define run-octave
+  $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
+    --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))')"
+endef
+
+$(SPARSEIMAGES_EPS) $(SPARSEIMAGES_PNG) $(SPARSEIMAGES_TXT): sparseimages.m
+	$(run-octave)
+
+$(IMAGES_PDF) : %.pdf : %.eps
+	if [ -f $< ] ; then $(GHOSTSCRIPT) -dBATCH -dEPSCrop -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$@ $< ; fi
 
 check: all
 .PHONY: check
@@ -206,7 +227,7 @@ distclean: clean
 .PHONY: distclean
 
 maintainer-clean: clean-texi
-	rm -f Makefile tags TAGS $(FORMATTED)
+	rm -f Makefile tags TAGS $(FORMATTED) $(IMAGES)
 	rm -rf HTML
 .PHONY: maintainer-clean
 

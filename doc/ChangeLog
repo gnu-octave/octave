@@ -1,3 +1,23 @@
+2006-09-26  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (stamp-images): Delete.
+	(octave.info): Depend on $(IMAGES_TXT), not stamp-images.
+	(octave.dvi): Depend on $(IMAGES_EPS), not stamp-images.
+	(octave.pdf): Depend on $(IMAGES_PDF), not stamp-images.
+	(html-figs): Depend on $(IMAGES_PNG), not stamp-images.
+	(SCRIPT_SOURCES, SPARSEIMAGES_1, SPARSEIMAGES_EPS,
+	SPARSEIMAGES_PDF, SPARSEIMAGES_PNG, SPARSE_IMAGES_TXT, IMAGES_EPS,
+	IMAGES_PDF, IMAGES_PNG, IMAGES_TXT, and IMAGES): New variables.
+	(SOURCES): Include $(SCRIPT_SOURCES) in the list.
+	(DISTFILES): Include $(IMAGES) in the list.
+	(maintainer-clean): Delete $(IMAGES) here.
+	(DISTSUBDIRS, SUBDIRS): Remove $(IMAGEDIR) from list.
+	(octave.dvi, octave.info, octave.pdf, HTML/index.html):
+	Don't include $(IMAGEDIR) in list of directories to search
+	* sparseimages.m: Move here from images/sparseimages.m.
+	* images/Makefile.in: Delete.
+	* images: Delete directory.
+
 2006-08-24  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/images/Makefile.in (SPARSEIMAGES_PDF): New macro.

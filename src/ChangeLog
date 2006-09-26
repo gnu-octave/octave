@@ -1,3 +1,7 @@
+2006-09-26  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (warning_1): Call error_2, not error.
+
 2006-09-15  John W. Eaton  <jwe@octave.org>
 
 	* ops.h (DEFSTRDBLCONVFN): New arg, TFROM.
@@ -29,10 +33,6 @@
 	* ov-complex.h (octave_complex::sparse_matrix_value,
 	octave_complex::sparse_complex_matrix_value): Ditto.
 	* DLD-FUNCTIONS/spkron.cc (Fspkron): Change example in help.
-
-2006-09-12  John W. Eaton  <jwe@octave.org>
-
-	* error.cc (warning_1): Call error_2, not error.
 
 2006-09-12  David Bateman  <dbateman@free.fr>
 

@@ -1,3 +1,8 @@
+2006-09-27  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (abs): New template function.  Instantiate for
+	unsigned types.
+
 2006-09-27  David Bateman  <dbateman@free.fr>
 
 	* file-io.cc (Fsprintf): If fmt is an sq_string, return an sq_string.

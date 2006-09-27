@@ -2206,6 +2206,20 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 }
 
 template <class T>
+static inline T
+abs (T x)
+{
+  return x;
+}
+
+#define INSTANTIATE_ABS(T) template static inline T abs (T x)
+
+INSTANTIATE_ABS (unsigned int);
+INSTANTIATE_ABS (unsigned short);
+INSTANTIATE_ABS (unsigned long);
+INSTANTIATE_ABS (unsigned long long);
+
+template <class T>
 void
 octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 		       bool pr_as_read_syntax, int extra_indent)

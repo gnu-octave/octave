@@ -51,7 +51,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc \
 	givens.cc hess.cc inv.cc kron.cc lpsolve.cc lsode.cc \
 	lu.cc luinc.cc matrix_type.cc minmax.cc pinv.cc qr.cc \
 	quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc sparse.cc \
-	spchol.cc spdet.cc spkron.cc splu.cc spparms.cc spqr.cc \
+	spchol.cc spdet.cc spfind.cc spkron.cc splu.cc spparms.cc spqr.cc \
 	sqrtm.cc svd.cc syl.cc time.cc \
 	__gnuplot_raw__.l __glpk__.cc __pchip_deriv__.cc __qp__.cc
 

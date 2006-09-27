@@ -1,4 +1,11 @@
-2006-05-17  Bill Denney  <bill@givebillmoney.com>
+2006-09-27  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sparse.cc (spfind, sparse_find): Delete.
+	* DLD-FUNCTIONS/spfind.cc: New file implementating compatible
+	sparse find function.
+	* Makefile.in (DLD_XSRC): Add spfind.cc.
+	
+2006-09-26  Bill Denney  <bill@givebillmoney.com>
 
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx, Ffind):
 	Handle direction and limit on number of elements to find.

@@ -938,7 +938,9 @@ converted.\n\
 
       if (os.is_valid ())
 	{
-	  if (args(0).is_string ())
+	  octave_value fmt_arg = args(0);
+
+	  if (fmt_arg.is_string ())
 	    {
 	      octave_value_list tmp_args;
 
@@ -950,9 +952,10 @@ converted.\n\
 		    tmp_args(i-1) = args(i);
 		}
 
-	      retval(2) = os.printf (args(0), tmp_args, who);
+	      retval(2) = os.printf (fmt_arg, tmp_args, who);
 	      retval(1) = os.error ();
-	      retval(0) = ostr->str ();
+	      retval(0) = octave_value (ostr->str (),
+					fmt_arg.is_sq_string () ? '\'' : '"');
 	    }
 	  else
 	    ::error ("%s: format must be a string", who.c_str ());

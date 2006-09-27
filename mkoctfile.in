@@ -262,6 +262,7 @@ EOF
       link_stand_alone=true
     ;;
     --mex)
+      incflags="$incflags -I."
       output_ext=".mex"
     ;;
     -W*)

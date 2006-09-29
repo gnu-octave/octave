@@ -4,6 +4,8 @@
 	(OCTAVE_API_VERSION): Now api-v22.
 	(OCTAVE_RELEASE_DATE): Now 2006-09-29.
 
+	* Makefile.in (DEP_5): Include oct-errno.cc in the list.
+
 2006-09-27  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (abs): New template function.  Instantiate for

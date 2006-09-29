@@ -204,7 +204,7 @@ endif
 
 # Ugh.
 
-DEP_5 := $(SOURCES) $(DLD_SRC) builtins.cc ops.cc main.c
+DEP_5 := $(SOURCES) $(DLD_SRC) builtins.cc oct-errno.cc ops.cc main.c
 DEP_4 := $(notdir $(DEP_5))
 DEP_3 := $(patsubst %.l, %.cc, $(DEP_4))
 DEP_2 := $(patsubst %.y, %.cc, $(DEP_3))

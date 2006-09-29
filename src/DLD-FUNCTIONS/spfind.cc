@@ -130,7 +130,7 @@ sparse_find_non_zero_elem_idx (const T& v, M& val, int nargout,
 	      continue;
 	    i_idx (cx) = static_cast<double> (v.ridx(i) + 1);
 	    j_idx (cx) = static_cast<double> (j + 1);
-	    idx (cx) = j * nc + v.ridx(i) + 1; 
+	    idx (cx) = j * nr + v.ridx(i) + 1; 
 	    val (cx) = v.data(i);
 	    cx++;
 	    if (cx == count)

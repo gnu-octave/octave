@@ -94,13 +94,13 @@ function ret = spline (x, y, xi)
   szy = size (y);
   if (ndy == 2 && (szy(1) == 1 || szy(2) == 1))
     if (szy(1) == 1)
-      a = y';
+      a = y.';
     else
       a = y;
       szy = fliplr (szy);
     endif
   else
-    a = reshape (y, [prod(szy(1:end-1)), szy(end)])';
+    a = reshape (y, [prod(szy(1:end-1)), szy(end)]).';
   endif
   complete = false;
   if (size (a, 1) == n + 2)
@@ -227,3 +227,13 @@ endfunction
 %!assert (isempty(spline(x',y',[])));
 %!assert (isempty(spline(x,y,[])));
 %!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)])
+%! y = cos(x) + i*sin(x);
+%!assert ( spline(x,y,x), y )
+%!assert ( real(spline(x,y,x)), real(y) );
+%!assert ( real(spline(x,y,x.')), real(y).' );
+%!assert ( real(spline(x.',y.',x.')), real(y).' );
+%!assert ( real(spline(x.',y,x)), real(y) );
+%!assert ( imag(spline(x,y,x)), imag(y) );
+%!assert ( imag(spline(x,y,x.')), imag(y).' );
+%!assert ( imag(spline(x.',y.',x.')), imag(y).' );
+%!assert ( imag(spline(x.',y,x)), imag(y) );

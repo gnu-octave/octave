@@ -41,13 +41,13 @@ function yi = ppval (pp, xi)
     xi = xi(:);
     xn = length (xi);
     idx = lookup (pp.x(2:pp.n), xi) + 1;
-    dx = (xi - pp.x(idx))';
+    dx = (xi - pp.x(idx)).';
     dx = reshape (dx(ones(1,prod(pp.d)),:),[pp.d,xn]);
     c = reshape (pp.P(:,1), pp.n, prod (pp.d));
-    yi = reshape (c(idx,:)', [pp.d, xn]);
+    yi = reshape (c(idx,:).', [pp.d, xn]);
     for i  = 2 : pp.k;
       c = reshape (pp.P(:,i), pp.n, prod (pp.d));
-      yi = yi .* dx + reshape (c(idx,:)', [pp.d, xn]);
+      yi = yi .* dx + reshape (c(idx,:).', [pp.d, xn]);
     endfor
     if (transposed && isscalar (pp.d) && pp.d == 1)
       yi = yi.';

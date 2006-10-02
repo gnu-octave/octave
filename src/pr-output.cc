@@ -1629,7 +1629,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
 
 template <>
 static inline void
-pr_plus_format (std::ostream& os, const Complex& c)
+pr_plus_format<> (std::ostream& os, const Complex& c)
 {
   double rp = c.real ();
   double ip = c.imag ();

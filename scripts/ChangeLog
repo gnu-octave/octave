@@ -1,3 +1,7 @@
+2006-10-02  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (copy_files): always create installation directory.
+
 2006-10-02  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* miscellaneous/doc.m: Swap file and directory args to info.

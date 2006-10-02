@@ -591,15 +591,17 @@ function create_pkgadddel (desc, packdir, nm)
 endfunction
 
 function copy_files (desc, packdir, bindir)
+    ## Create the installation directory
+    if (! exist (desc.dir, "dir"))
+      [status, output] = mkdir (desc.dir);
+      if (status != 1)
+	error("Couldn't create installation directory %s : %s\n", 
+	      desc.dir, output);
+      endif
+    endif
+
     ## Copy the files from "inst" to installdir
     if (! dirempty([packdir "inst"]))
-      if (! exist (desc.dir, "dir"))
-	[status, output] = mkdir (desc.dir);
-        if (status != 1)
-	   error("Couldn't create installation directory %s : %s\n", 
-	         desc.dir, output);
-        endif
-      endif
       [status, output] = system(["cp -R " packdir "inst/* " desc.dir]);
       if (status != 0)
           rm_rf(desc.dir);

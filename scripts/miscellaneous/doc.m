@@ -73,8 +73,12 @@ function retval = doc (fname)
       info_file_name = info_file ();
     endif
 
-    cmd = sprintf ("\"%s\" --directory \"%s\" --file \"%s\"",
-		   info_program (), info_dir, info_file_name);
+    ## FIXME -- don't change the order of the arguments below because
+    ## the info-emacs-info script currently expects --directory DIR as
+    ## the third and fourth arguments.  Someone should fix that.
+
+    cmd = sprintf ("\"%s\" --file \"%s\" --directory \"%s\"",
+		   info_program (), info_file_name, info_dir);
 
     if (! isempty (fname))
       cmd = sprintf ("%s --index-search %s", cmd, fname);

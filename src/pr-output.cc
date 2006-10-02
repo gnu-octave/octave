@@ -1379,7 +1379,7 @@ pr_col_num_header (std::ostream& os, octave_idx_type total_width, int max_width,
 }
 
 template <class T>
-static inline void
+/* static */ inline void
 pr_plus_format (std::ostream& os, const T& val)
 {
   if (val > T (0))
@@ -1628,7 +1628,7 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
 }
 
 template <>
-static inline void
+/* static */ inline void
 pr_plus_format<> (std::ostream& os, const Complex& c)
 {
   double rp = c.real ();
@@ -2141,7 +2141,7 @@ PRINT_CONV (octave_uint8, octave_uint16);
 #undef PRINT_CONV
 
 template <class T>
-static inline void
+/* static */ inline void
 pr_int (std::ostream& os, const T& d, int fw = 0)
 {
   size_t sz = d.byte_size();
@@ -2206,13 +2206,13 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
 }
 
 template <class T>
-static inline T
+/* static */ inline T
 abs (T x)
 {
   return x;
 }
 
-#define INSTANTIATE_ABS(T) template static inline T abs (T x)
+#define INSTANTIATE_ABS(T) template /* static */ inline T abs (T x)
 
 INSTANTIATE_ABS (unsigned int);
 INSTANTIATE_ABS (unsigned short);

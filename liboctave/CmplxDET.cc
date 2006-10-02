@@ -66,7 +66,7 @@ ComplexDET::initialize2 (void)
 {
   if (c10 != 0.0)
     {
-      double etmp = e10 / log10 (2);
+      double etmp = e10 / log10 (2.0);
       e2 = static_cast<int> (xround (etmp));
       etmp -= e2;
       c2 = c10 * xexp2 (etmp);

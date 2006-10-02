@@ -2874,6 +2874,12 @@ call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
 	retval(i) = mxArray::as_octave_value (argout[i]);
     }
 
+  // Is it always safe to do this?  Are users required to use one of
+  // the mxCreateXYZ functions to create the values that are put in
+  // the output array?
+  for (int i = 0; i < nout; i++)
+    delete argout[i];
+
   // Clean up mex resources.
   unwind_protect::run_frame ("call_mex");
 

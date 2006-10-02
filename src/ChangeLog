@@ -1,8 +1,17 @@
-2006-09-29  John W. Eaton  <jwe@octave.org>
+2006-10-02  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.9.
 	(OCTAVE_API_VERSION): Now api-v22.
 	(OCTAVE_RELEASE_DATE): Now 2006-09-29.
+
+	* pr-output.cc (pr_plus_format): Use "inline" instead of "static
+	inline" for template functions to avoid problems when not
+	compiling with 	g++.
+
+	* mex.cc (call_mex): Delete elements of argout.
+	From Kai Labusch <labusch@inb.uni-luebeck.de>.
+
+2006-09-29  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/spfind.cc (sparse_find_non_zero_elem_idx):
 	Leading dimension is NR, not NC.

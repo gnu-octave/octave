@@ -1,3 +1,8 @@
+2006-10-02  John W. Eaton  <jwe@octave.org>
+
+	* dbleDET.cc (DET::initialize2): Ensure arg to log10 is double.
+	* CmplxDET.cc (ComplexDET::initialize2): Likewise.
+
 2006-09-22  David Bateman <dbateman@free.fr>
 
 	* MatrixType.h (MatrixType::MatrixType(const SparseComplexMatrix&)): 

@@ -103,19 +103,20 @@
 ## @example
 ## @group
 ## __gnuplot_set__ terminal postscript
-## __gnuplot_set__ output "foo.ps"
+## __gnuplot_raw__ ("set output \"foo.ps\"\n");
 ## subplot (2, 1, 1);
 ## sombrero (21);
 ## subplot (2, 1, 2);
 ## sombrero (41);
-## oneplot
+## oneplot ();
 ## __gnuplot_set__ terminal x11
-## __gnuplot_set__ output
+## __gnuplot_raw__ ("set output\n");
 ## @end group
 ## @end example
 ##
 ## will save both figures on a single page in the PostScript file
-## @file{foo.ps}.
+## @file{foo.ps}.  All labeling commands should appear before the plot
+## command for each subplot.
 ## @end deftypefn
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>

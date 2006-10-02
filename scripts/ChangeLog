@@ -1,3 +1,11 @@
+2006-10-02  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* miscellaneous/doc.m: Swap file and directory args to info.
+
+2006-10-01  Arno Onken  <whyly@gmx.net>
+
+	* statistics/distributions/exprnd.m: Fix typo.
+
 2006-09-30  Benjamin Lindner  <lindnerben@gmx.net>
 
 	* polynomial/ppval.m: Use .' instead of '.

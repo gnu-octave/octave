@@ -73,7 +73,7 @@ function retval = doc (fname)
       info_file_name = info_file ();
     endif
 
-    cmd = sprintf ("\"%s\" --file \"%s\" --directory \"%s\"",
+    cmd = sprintf ("\"%s\" --directory \"%s\" --file \"%s\"",
 		   info_program (), info_dir, info_file_name);
 
     if (! isempty (fname))

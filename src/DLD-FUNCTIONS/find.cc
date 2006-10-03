@@ -113,7 +113,6 @@ find_nonzero_elem_idx (const T& nda, int nargout, octave_idx_type n_to_find,
       octave_idx_type nr = nda.rows ();
 
       octave_idx_type i = 0;
-      octave_idx_type j = 0;
 
       // Search for elements to return.  Only search the region where
       // there are elements to be found using the count that we want

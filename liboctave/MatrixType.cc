@@ -847,7 +847,8 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type np,
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
-  if (t == MatrixType::Permuted_Upper || t == MatrixType::Permuted_Lower)
+  if ((t == MatrixType::Permuted_Upper || t == MatrixType::Permuted_Lower) &&
+      np > 0 && p != 0)
     {
       typ = t;
       nperm = np;

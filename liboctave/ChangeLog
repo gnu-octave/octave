@@ -1,3 +1,8 @@
+2006-10-03  David Bateman <dbateman@free.fr>
+
+	* MatrixType.cc (MatrixType::MatrixType): Avoid crash if np == 0
+	or p == 0.
+
 2006-10-02  John W. Eaton  <jwe@octave.org>
 
 	* dbleDET.cc (DET::initialize2): Ensure arg to log10 is double.

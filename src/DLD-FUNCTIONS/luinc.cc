@@ -168,13 +168,16 @@ are the same as for @dfn{lu}.\n\
 			SparseLU fact (sm, Qinit, thresh, true, droptol,
 				       milu, udiag);
 
-			SparseMatrix P = fact.Pr ();
-			SparseMatrix L = P.transpose () * fact.L ();
-			retval(1) = octave_value (fact.U (),
-				  MatrixType (MatrixType::Upper));
-			retval(0) = octave_value (L, MatrixType 
-						  (MatrixType::Permuted_Lower, 
-						   sm_nr, fact.row_perm ()));
+			if (! error_state)
+			  {
+			    SparseMatrix P = fact.Pr ();
+			    SparseMatrix L = P.transpose () * fact.L ();
+			    retval(1) = octave_value (fact.U (),
+						      MatrixType (MatrixType::Upper));
+			    retval(0) = octave_value (L, MatrixType 
+						      (MatrixType::Permuted_Lower, 
+						       sm_nr, fact.row_perm ()));
+			  }
 		      }
 		      break;
 
@@ -183,11 +186,14 @@ are the same as for @dfn{lu}.\n\
 			SparseLU fact (sm, Qinit, thresh, true, droptol,
 				       milu, udiag);
 
-			retval(2) = fact.Pr ();
-			retval(1) = octave_value (fact.U (),
-				  MatrixType (MatrixType::Upper));
-			retval(0) = octave_value (fact.L (),
-				  MatrixType (MatrixType::Lower));
+			if (! error_state)
+			  {
+			    retval(2) = fact.Pr ();
+			    retval(1) = octave_value (fact.U (),
+						      MatrixType (MatrixType::Upper));
+			    retval(0) = octave_value (fact.L (),
+						      MatrixType (MatrixType::Lower));
+			  }
 		      }
 		      break;
 
@@ -197,12 +203,15 @@ are the same as for @dfn{lu}.\n\
 			SparseLU fact (sm, Qinit, thresh, false, droptol,
 				       milu, udiag);
 
-			retval(3) = fact.Pc ();
-			retval(2) = fact.Pr ();
-			retval(1) = octave_value (fact.U (),
-				  MatrixType (MatrixType::Upper));
-			retval(0) = octave_value (fact.L (),
-				  MatrixType (MatrixType::Lower));
+			if (! error_state)
+			  {
+			    retval(3) = fact.Pc ();
+			    retval(2) = fact.Pr ();
+			    retval(1) = octave_value (fact.U (),
+						      MatrixType (MatrixType::Upper));
+			    retval(0) = octave_value (fact.L (),
+						      MatrixType (MatrixType::Lower));
+			  }
 		      }
 		      break;
 		    }
@@ -230,13 +239,17 @@ are the same as for @dfn{lu}.\n\
 			SparseComplexLU fact (sm, Qinit, thresh, true, 
 					      droptol, milu, udiag);
 
-			SparseMatrix P = fact.Pr ();
-			SparseComplexMatrix L = P.transpose () * fact.L ();
-			retval(1) = octave_value (fact.U (),
-				  MatrixType (MatrixType::Upper));
-			retval(0) = octave_value (L, MatrixType 
-						  (MatrixType::Permuted_Lower, 
-						   sm_nr, fact.row_perm ()));
+
+			if (! error_state)
+			  {
+			    SparseMatrix P = fact.Pr ();
+			    SparseComplexMatrix L = P.transpose () * fact.L ();
+			    retval(1) = octave_value (fact.U (),
+						      MatrixType (MatrixType::Upper));
+			    retval(0) = octave_value (L, MatrixType 
+						      (MatrixType::Permuted_Lower, 
+						       sm_nr, fact.row_perm ()));
+			  }
 		      }
 		      break;
 
@@ -245,11 +258,14 @@ are the same as for @dfn{lu}.\n\
 			SparseComplexLU fact (sm, Qinit, thresh, true,
 					      droptol, milu, udiag);
 
-			retval(2) = fact.Pr ();
-			retval(1) = octave_value (fact.U (),
-				  MatrixType (MatrixType::Upper));
-			retval(0) = octave_value (fact.L (),
-				  MatrixType (MatrixType::Lower));
+			if (! error_state)
+			  {
+			    retval(2) = fact.Pr ();
+			    retval(1) = octave_value (fact.U (),
+						      MatrixType (MatrixType::Upper));
+			    retval(0) = octave_value (fact.L (),
+						      MatrixType (MatrixType::Lower));
+			  }
 		      }
 		      break;
 
@@ -259,12 +275,15 @@ are the same as for @dfn{lu}.\n\
 			SparseComplexLU fact (sm, Qinit, thresh, false,
 					      droptol, milu, udiag);
 
-			retval(3) = fact.Pc ();
-			retval(2) = fact.Pr ();
-			retval(1) = octave_value (fact.U (),
-				  MatrixType (MatrixType::Upper));
-			retval(0) = octave_value (fact.L (),
-				  MatrixType (MatrixType::Lower));
+			if (! error_state)
+			  {
+			    retval(3) = fact.Pc ();
+			    retval(2) = fact.Pr ();
+			    retval(1) = octave_value (fact.U (),
+						      MatrixType (MatrixType::Upper));
+			    retval(0) = octave_value (fact.L (),
+						      MatrixType (MatrixType::Lower));
+			  }
 		      }
 		      break;
 		    }

@@ -1,5 +1,8 @@
 2006-10-03  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/luinc.cc (Fluinc): Avoid crash if SparseLU or
+	SparseComplexLU constructor fails.
+
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx):
 	Delete unused variable.
 

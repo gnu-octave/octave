@@ -1,3 +1,7 @@
+2006-10-03  Rafael Laboissiere <rafael@debian.org>
+
+	* interpreter/mkoctfile.1: Fix indentation for --mex description.
+
 2006-09-26  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in (stamp-images): Delete.

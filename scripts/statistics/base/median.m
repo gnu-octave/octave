@@ -53,7 +53,7 @@ function retval = median (a, dim)
     usage ("median (a, dim)");
   endif
   if (nargin < 2)
-    dim = min (find (size (a) > 1));
+    dim = find (size (a) > 1, 1);
     if (isempty (dim))
       dim = 1;
     endif

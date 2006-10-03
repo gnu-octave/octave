@@ -1,3 +1,8 @@
+2006-10-03  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (OCT_LINK_DEPS) Include $(CAMD_LIBS) in the list.
+	(octave$(EXEEXT)): Include $(CAMD_LIBS) in link command.
+
 2006-10-02  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.9.

@@ -1,3 +1,12 @@
+2006-10-03  Bill Denney  <denney@seas.upenn.edu>
+
+ 	* audio/loadaudio.m, control/base/nyquist.m,
+ 	control/system/__zp2ssg2__.m, linear-algebra/cross.m,
+ 	linear-algebra/krylov.m, statistics/base/center.m,
+ 	statistics/base/median.m, statistics/base/std.m,
+ 	statistics/base/var.m, testfun/test.m: 	Use the new find syntax to
+	find first or last element matching a condition.
+
 2006-10-02  Bill Denney  <denney@seas.upenn.edu>
 
 	* strings/deblank.m, strings/upper.m, strings/lower.m,

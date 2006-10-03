@@ -479,12 +479,12 @@ function pos = function_name(def)
   pos = [];
 
   ## Find the end of the name
-  right = min(find(def=='('));
+  right = find(def=='(', 1);
   if isempty(right), return; endif
-  right = max(find(def(1:right-1) != ' '));
+  right = find(def(1:right-1) != ' ', 1, "last");
 
   ## Find the beginning of the name
-  left = max([find(def(1:right)==' '),find(def(1:right)=='=')]);
+  left = max([find(def(1:right)==' ', 1, "last"),find(def(1:right)=='=', 1, "last")]);
   if isempty(left), return; endif
   left++;
 

@@ -66,7 +66,7 @@ function retval = std (a, opt, dim)
     usage ("std (a, opt, dim)");
   endif
   if nargin < 3
-    dim = min(find(size(a)>1));
+    dim = find (size (a) > 1, 1);
     if isempty(dim), dim=1; endif;
   endif
   if ((nargin < 2) || isempty(opt))

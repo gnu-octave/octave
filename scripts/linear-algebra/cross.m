@@ -59,7 +59,7 @@ function z = cross (x, y, dim)
   endif
 
   if (nargin == 2)
-     dim = min (find (size (x) == 3));
+     dim = find (size (x) == 3, 1);
      if (isempty (dim)) 
        error ("cross: must have at least one dimension with 3 elements");
      endif

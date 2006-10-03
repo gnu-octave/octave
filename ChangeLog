@@ -1,3 +1,13 @@
+2006-10-03  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Include CAMD_LIBS, AMD_LIBS, and REGEX_LIBS in the
+	summary.
+
+2006-10-03  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Check for libcamd.
+	* Makeconf.in (CAMD_LIBS): New variable.
+
 2006-09-27  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in [--mex]: Include -I. in incflags.

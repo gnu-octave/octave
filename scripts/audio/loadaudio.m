@@ -67,7 +67,7 @@ function X = loadaudio (name, ext, bit)
 	  || strcmp (ext, "snd") || strcmp(ext, "ul"))
     [Y, c] = fread (num, inf, "uchar");
     ## remove file header
-    m = max (find (Y(1:64) == 0));
+    m = find (Y(1:64) == 0, 1, "last");
     if (! isempty (m))
       Y(1:m) = [];
     endif

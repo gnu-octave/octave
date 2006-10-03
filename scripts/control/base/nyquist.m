@@ -166,7 +166,7 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
 
         ## check for asymptotes
         fmax = max(abs(f));
-        fi = max(find(abs(f) == fmax));
+        fi = find(abs(f) == fmax, 1, "last");
 
         ## compute angles from point to point
         df = diff(f);

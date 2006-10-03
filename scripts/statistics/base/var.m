@@ -47,7 +47,7 @@ function y = var (x, opt, dim)
     usage ("var (x, opt, sim)");
   endif
   if (nargin < 3)
-    dim = min (find (size (x) > 1));
+    dim = find (size (x) > 1, 1);
     if (isempty (dim))
       dim = 1;
     endif

@@ -133,12 +133,12 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
           ## locate max magnitude element in short_q
           asq = abs (short_q);
           maxv = max (asq);
-          maxidx = find (asq == maxv);
-          pivot_idx = short_pv(maxidx(1));
+          maxidx = find (asq == maxv, 1);
+          pivot_idx = short_pv(maxidx);
 
 	  ## see if need to change the pivot list
           if (pivot_idx != pivot_vec(nu))
-            swapidx = maxidx(1) + (nu-1);
+            swapidx = maxidx + (nu-1);
             [pivot_vec(nu), pivot_vec(swapidx)] = ...
 		swap (pivot_vec(nu), pivot_vec(swapidx));
           endif

@@ -35,10 +35,7 @@ function retval = upper (s)
   if (ischar (s))
     retval = toupper (s);
   elseif (iscellstr (s))
-    retval = cell (size (s));
-    for i = 1:(numel (s))
-      retval{i} = toupper(s{i});
-    endfor
+    retval = cellfun (@toupper, s, "UniformOutput", false);
   else
     error ("upper: `s' must be a string or cell array of strings");
   endif

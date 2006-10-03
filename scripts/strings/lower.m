@@ -35,10 +35,7 @@ function retval = lower (s)
   if (ischar (s))
     retval = tolower (s);
   elseif (iscellstr (s))
-    retval = cell (size (s));
-    for i = 1:(numel (s))
-      retval{i} = tolower(s{i});
-    endfor
+    retval = cellfun (@tolower, s, "UniformOutput", false);
   else
     error ("lower: `s' must be a string or cell array of strings");
   endif

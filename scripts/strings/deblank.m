@@ -45,9 +45,7 @@ function s = deblank (s)
 
   elseif (iscell(s))
 
-    for i = 1:numel (s)
-      s{i} = deblank (s{i});
-    endfor
+    s = cellfun (@deblank, s, "UniformOutput", false);
 
   else
     error ("deblank: expecting string argument");

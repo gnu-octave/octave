@@ -54,11 +54,10 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
     n_x = length (fieldnames (x));
 
-    t = true;
-    for argn = 1:l_v
-      y = varargin{argn};
-      t = t && isstruct (y) && (n_x == length (fieldnames (y)));
-    endfor
+    t = all (cellfun (@isstruct, varargin)) && ...
+	all (n_x == cellfun (@length,
+			     cellfun (@fieldnames, varargin,
+				      "UniformOutput", false))); 
     if (!t)
       return;
     endif
@@ -79,16 +78,13 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       endif
     endfor
 
-  elseif ((iscell (x)) || (islist (x)))
+  elseif (iscell (x) || islist (x))
 
     x = x(:);
     l_x = length (x);
 
-    t = true;
-    for argn = 1:l_v
-      y = varargin{argn}(:);
-      t = t && (iscell (y) || islist (y)) && (l_x == length (y));
-    endfor
+    t = all ((cellfun (@iscell, varargin) | cellfun (@islist, varargin)) && ...
+             all (l_x == cellfun (@length, varargin)));
     if (!t)
       return;
     endif

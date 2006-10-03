@@ -1068,7 +1068,9 @@ function load_packages(files, handle_deps)
             endif
         endfor
     endif
-    addpath(dirs{:});
+    if (length(dirs) > 0)
+        addpath(dirs{:});
+    endif
 
     ## Add local binaries, if any, to the EXEC_PATH
     for i = 1:length(dirs)

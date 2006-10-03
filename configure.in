@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.522 $)
+AC_REVISION($Revision: 1.523 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -416,6 +416,9 @@ if test $WITH_PCRE = yes ; then
     else
       REGEX_LIBS="-lpcre"
     fi
+  else
+    warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
+    AC_MSG_WARN($warn_pcre)
   fi
 fi
 AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
@@ -1902,6 +1905,11 @@ fi
 
 if test -n "$warn_hdf5"; then
   AC_MSG_WARN($warn_hdf5)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_pcre"; then
+  AC_MSG_WARN($warn_pcre)
   warn_msg_printed=true
 fi
 

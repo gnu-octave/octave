@@ -1,5 +1,7 @@
 2006-10-03  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Warn if PCRE library is not found.
+
 	* configure.in: Include CAMD_LIBS, AMD_LIBS, and REGEX_LIBS in the
 	summary.
 

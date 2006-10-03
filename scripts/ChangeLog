@@ -1,3 +1,7 @@
+2006-10-03  Søren Hauberg  <soren@hauberg.org>
+
+	* pkg/pkg.m: Avoid calling addpath with no args.
+
 2006-10-03  Bill Denney  <denney@seas.upenn.edu>
 
  	* audio/loadaudio.m, control/base/nyquist.m,

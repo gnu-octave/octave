@@ -1,5 +1,7 @@
 2006-10-04  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.9+.
+
 	* DLD-FUNCTIONS/__gnuplot_raw__.l (F__clear_plot_window__):
 	Rename from Fclearplot.  Only clear plot window.
 

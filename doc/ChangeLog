@@ -1,3 +1,10 @@
+2006-10-04  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (HTML_IMAGES_PNG): New variable.
+	(HTML/index.html): Depend on $(HTML_IMAGES_PNG) instead of html-figs.
+	($(HTML_IMAGES_PNG): HTML/%.png : %.png): New pattern rule.
+	(html-dir): Delete target.
+
 2006-10-03  Rafael Laboissiere <rafael@debian.org>
 
 	* interpreter/mkoctfile.1: Fix indentation for --mex description.

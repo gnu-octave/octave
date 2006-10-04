@@ -31,6 +31,8 @@ IMAGES_EPS = $(SPARSEIMAGES_EPS)
 IMAGES_PDF = $(SPARSEIMAGES_PDF)
 IMAGES_PNG = $(SPARSEIMAGES_PNG)
 IMAGES_TXT = $(SPARSEIMAGES_TXT)
+
+HTML_IMAGES_PNG = $(addprefix HTML/, $(IMAGES_PNG))
   
 IMAGES = $(IMAGES_EPS) $(IMAGES_PDF) $(IMAGES_PNG) $(IMAGES_TXT)
 
@@ -130,15 +132,17 @@ octave.pdf: $(IMAGES_PDF) $(TEXINFO)
 	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
-HTML/index.html: html-figs $(TEXINFO)
+HTML/index.html: $(HTML_IMAGES_PNG) $(TEXINFO)
 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
-html-figs: $(IMAGES_PNG) html-dir
-	$(INSTALL_DATA) $(IMAGES_PNG) HTML
-.PHONY: html-figs
-
-html-dir:
-	if [ -d HTML ]; then true; else mkdir HTML; fi
+$(HTML_IMAGES_PNG): HTML/%.png : %.png
+	@if [ -d HTML ]; then \
+	  true; \
+	else \
+	  echo "creating HTML directory"; \
+	  mkdir HTML; \
+	fi
+	$(INSTALL_DATA) $(filter-out html-dir, $<) HTML
 
 define run-octave
   $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \

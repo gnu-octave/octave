@@ -70,12 +70,42 @@
 ##   @noindent
 ##   splits the list of installed packages into those who are installed by
 ##   the current user, and those installed by the system administrator.
+## @item prefix
+##   Set the installation prefix directory. For example,
+##   @example
+##   pkg prefix ~/my_octave_packages
+##   @end example
+##   @noindent
+##   sets the installation prefix to @code{~/my_octave_packages}.
+##   Packages will be installed in this directory. 
+##
+##   It is possible to get the current installation prefix by requesting an
+##   output argument.  For example,
+##   @example
+##   p = pkg prefix
+##   @end example
 ## @end table
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command pkg
 
 function [local_packages, global_packages] = pkg(varargin)
+    ## Installation prefix
+    persistent prefix = -1;
+    if (prefix == -1)
+        if (issuperuser())
+            ## XXX: Is this really needed?
+            if (strcmp(OCTAVE_HOME()(end),"/"))
+                prefix = [OCTAVE_HOME "share/octave/packages/"];
+            else
+                prefix = [OCTAVE_HOME "/share/octave/packages/"];
+            endif
+        else
+            prefix = "~/octave/";
+        endif
+    endif
+    prefix = tilde_expand(prefix);
+    
     ## Handle input
     if (length(varargin) == 0 || !iscellstr(varargin))
         print_usage();
@@ -87,7 +117,7 @@ function [local_packages, global_packages] = pkg(varargin)
         switch (varargin{i})
             case "-nodeps"
                 deps = false;
-            case {"list", "install", "uninstall", "load"}
+            case {"list", "install", "uninstall", "load", "prefix"}
                 action = varargin{i};
             otherwise
                 files{end+1} = varargin{i};
@@ -110,7 +140,7 @@ function [local_packages, global_packages] = pkg(varargin)
             if (length(files) == 0)
                 error("You must specify at least one filename when calling 'pkg install'\n");
             endif
-            install(files, deps);
+            install(files, deps, prefix);
         case "uninstall"
             if (length(files) == 0)
                 error("You must specify at least one package when calling 'pkg uninstall'\n");
@@ -121,43 +151,33 @@ function [local_packages, global_packages] = pkg(varargin)
                 error("You must specify at least one package or 'all' when calling 'pkg load'\n");
             endif
             load_packages(files, deps);
+        case "prefix"
+            if (length(files) == 0 && nargout == 0)
+                printf(prefix);
+            elseif (length(files) == 0 && nargout == 1)
+                local_packages = prefix;
+            elseif (length(files) == 1 && nargout == 0 && ischar(files{1}))
+                prefix = files{1};
+                if (!strcmp(prefix(end), "/")) prefix(end+1) = "/"; endif
+            else
+                error("You must specify a prefix directory, or request an output arguement");
+            endif
         otherwise
             error("You must specify a valid action for 'pkg'. See 'help pkg' for details\n");
     endswitch
 endfunction
 
-function install(files, handle_deps)
+function install(files, handle_deps, prefix)
     ## Set parameters depending on wether or not the installation
     ## is system-wide (global) or local.
     local_list = tilde_expand("~/.octave_packages");
     if (strcmp(OCTAVE_HOME()(end),"/"))
-      global_list = [OCTAVE_HOME "share/octave/octave_packages"];
+        global_list = [OCTAVE_HOME "share/octave/octave_packages"];
     else
-      global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
+        global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
     endif
-    global OCTAVE_PACKAGE_PREFIX;
-    prefix_exist = (length(OCTAVE_PACKAGE_PREFIX) != 0 && ischar(OCTAVE_PACKAGE_PREFIX));
-
-    if (issuperuser())
-        global_install = true;
-        if (!prefix_exist)
-	    if (strcmp(OCTAVE_HOME()(end),"/"))
-                OCTAVE_PACKAGE_PREFIX = [OCTAVE_HOME "share/octave/packages/"];
-	    else
-		OCTAVE_PACKAGE_PREFIX = [OCTAVE_HOME "/share/octave/packages/"];
-           endif
-        endif
-    else
-        global_install = false;
-        if (!prefix_exist)
-            OCTAVE_PACKAGE_PREFIX = "~/octave/";
-        endif
-    endif
-    prefix = tilde_expand(OCTAVE_PACKAGE_PREFIX);
-    if (!prefix_exist)
-        warning(["You have not defined an installation prefix, " ...
-                 "so the following will be used: %s"], prefix);
-    endif
+    
+    global_install = issuperuser();
  
     # Check that the directory in prefix exist. If it doesn't: create it!
     if (!exist(prefix, "dir"))

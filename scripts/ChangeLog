@@ -1,6 +1,7 @@
 2006-10-04  Søren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Update docs.
+	Handle prefix option.
 
 2006-10-04  John W. Eaton  <jwe@octave.org>
 

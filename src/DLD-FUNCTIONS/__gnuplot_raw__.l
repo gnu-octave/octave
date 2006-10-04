@@ -1601,8 +1601,10 @@ Clear the plot window and any titles or axis labels.  The name\n\
   octave_value_list args;
 
   args(0) = "off";
-
   feval ("hold", args);
+
+  args.resize (0);
+  feval ("__clear_plot__", args);
 
   return octave_value_list ();
 }

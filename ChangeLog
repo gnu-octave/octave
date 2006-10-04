@@ -1,3 +1,9 @@
+2006-10-04  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (library_path_var): Substitute value from configure.
+	(do-subst-script-vals): Add library_path_var to the list.
+	* run-octave.in: Substitute value here.
+
 2006-10-03  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Warn if PCRE library is not found.

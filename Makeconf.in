@@ -330,6 +330,9 @@ canonical_host_type = @canonical_host_type@
 startupfiledir = ${fcnfiledir}/startup
 localstartupfiledir = ${localfcnfiledir}/startup
 
+# LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PATH, ...
+library_path_var = @library_path_var@
+
 # The -I flags to use for the mkoctfile script.
 ifeq ($(includedir),/usr/include)
  MKOCTFILE_INCFLAGS = \
@@ -554,6 +557,7 @@ endef
 define do-subst-script-vals
 echo "making $@ from $<"
 $(SED) < $< \
+  -e "s|%library_path_var%|${library_path_var}|g" \
   -e "s|%srcdir%|${srcdir}|" \
   -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \

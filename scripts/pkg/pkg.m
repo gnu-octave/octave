@@ -15,17 +15,65 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 ## -*- texinfo -*-
-## @deftypefn {Command} pkg list
-## @deftypefnx{Command} @var{installed_packages} = pkg list
-## @deftypefnx{Command} [@var{user_packages}, @var{system_packages}] = pkg list
-## @deftypefnx{Command} pkg install @var{pkg-name} ...
-## @deftypefnx{Command} pkg install -nodeps @var{pkg-name} ...
-## @deftypefnx{Command} pkg uninstall @var{pkg-name} ...
-## @deftypefnx{Command} pkg uninstall -nodeps @var{pkg-name} ...
-## @deftypefnx{Command} pkg load all
-## @deftypefnx{Command} pkg load @var{pkg-name} ...
-## @deftypefnx{Command} pkg load -nodeps @var{pkg-name} ...
-## XXX: Where's the docs?
+## @deftypefn  {Command} pkg @var{command} @var{pkg_name}
+## @deftypefnx {Command} pkg @var{command} @var{option} @var{pkg_name}
+## This command interacts with the package manager. Different actions will
+## be taking depending on the value of @var{command}.
+##
+## @table @samp
+## @item install
+##   Any packages given after the @code{install} keyword will be installed.
+##   The command
+##   @example
+##   pkg install image-1.0.0.tar.gz
+##   @end example
+##   @noindent
+##   will install the package found in the file @code{image-1.0.0.tar.gz}.
+##   
+##   If @var{option} is @code{-nodeps} the package manager will disable the
+##   dependency checking. That way it is possible to install a package even
+##   if it depends on another package that's not installed on the system.
+##   @strong{Use this option with care.}
+## @item uninstall
+##   Any packages named after the @code{uninstall} keyword will be uninstalled.
+##   The command
+##   @example
+##   pkg uninstall image
+##   @end example
+##   @noindent
+##   will remove the @code{image} package from the system. If another installed
+##   package depends on the @code{image} package an error will be issued.
+##   The package can be uninstalled anyway by using the @code{-nodeps} option.
+## @item load
+##   Any packages named after the @code{load} keyword will be added to the
+##   path. After loading a package it is possible to use the functions provided
+##   by the package. The command
+##   @example
+##   pkg load image
+##   @end example
+##   @noindent
+##   will add the @code{image} package to the path. It is possible to load all
+##   installed packages at once by typing
+##   @example
+##   pkg load all
+##   @end example
+## @item list
+##   Shows a list of the currently installed packages. By requesting one or two
+##   output argument it is possible to get a list of the currently installed
+##   packages. The command
+##   @example
+##   installed_packages = pkg list;
+##   @end example
+##   @noindent
+##   will return a cell array containing a structure for each installed package.
+##   The command
+##   @example
+##   [@var{user_packages}, @var{system_packages}] = pkg list
+##   @end example
+##   @noindent
+##   will split the list of installed packages into those who are installed by
+##   the current user, and those installed by the system administrator.
+## @end table
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command pkg

@@ -1,4 +1,4 @@
-## Copyright (C) 2005 John W. Eaton
+## Copyright (C) 2006 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,18 +17,26 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} clf
-## Clear the plot window and any titles or axis labels.  This function
-## is equivalent to @code{clearplot}.
-## @end deftypefn
+function __init_plot_vars__ (cmd, sep, clear_data)
 
-function clf ()
+  __plot_globals__
 
-  __clear_plot_window__ ();
+  if (nargin < 3)
+    clear_data = true;
+    if (nargin < 2)
+      sep = "";
+      if (nargin < 1)
+	cmd = "";
+      endif
+    endif
+  endif
 
-  hold ("off");
+  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = cmd;
+  __plot_command_sep__ = sep;
 
-  __init_plot_vars__ ();
+  if (clear_data)
+    __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
+    __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
+  endif
 
 endfunction

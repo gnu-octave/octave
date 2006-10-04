@@ -1,7 +1,10 @@
 2006-10-04  John W. Eaton  <jwe@octave.org>
 
-	* plot/__clear_plot__.m: New function.
-	* plot/__setup_plot__.m: Use __clear_plot__.
+	* deprecated/clearplot.m, deprecated/clg.m: New functions.
+
+	* plot/clg.m: Delete.
+	* plot/__init_plot_vars__.m: New function.
+	* plot/__setup_plot__.m: Use __init_plot_vars__.
 
 2006-10-03  Søren Hauberg  <soren@hauberg.org>
 

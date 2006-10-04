@@ -36,6 +36,6 @@ function __setup_plot__ (plotcmd)
     clear_data = true;
   endif
 
-  __clear_plot__ (cmd, sep, clear_data);
+  __init_plot_vars__ (cmd, sep, clear_data);
 
 endfunction

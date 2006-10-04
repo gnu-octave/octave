@@ -1587,24 +1587,14 @@ variable is set when Octave starts.\n\
   return SET_INTERNAL_VARIABLE (gnuplot_use_title_option);
 }
 
-DEFUN_DLD (clearplot, , ,
+DEFUN_DLD (__clear_plot_window__, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} clearplot\n\
 @deftypefnx {Loadable Function} {} clg\n\
-Clear the plot window and any titles or axis labels.  The name\n\
-@code{clg} is aliased to @code{clearplot} for compatibility with\n\
-@sc{Matlab}.\n\
+Clear the plot window and any titles or axis labels.\n\
 @end deftypefn")
 {
   gnuplot::clear ();
-
-  octave_value_list args;
-
-  args(0) = "off";
-  feval ("hold", args);
-
-  args.resize (0);
-  feval ("__clear_plot__", args);
 
   return octave_value_list ();
 }

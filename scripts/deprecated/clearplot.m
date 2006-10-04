@@ -1,4 +1,4 @@
-## Copyright (C) 2005 John W. Eaton
+## Copyright (C) 2006 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,13 +18,14 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} clg
-## Clear the plot window and any titles or axis labels.  This function
-## is equivalent to @code{clearplot}.
+## @deftypefn {Function File} {} clearplot ()
+## This function has been deprecated.  Use clf instead.
 ## @end deftypefn
 
-function clg ()
+## Author: jwe
 
-  clearplot ();
+function clearplot ()
+
+  clf ();
 
 endfunction

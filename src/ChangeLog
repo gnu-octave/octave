@@ -1,7 +1,7 @@
 2006-10-04  John W. Eaton  <jwe@octave.org>
 
-	* DLD-FUNCTIONS/__gnuplot_raw__.l (Fclearplot):
-	Also call __clear_plot__.
+	* DLD-FUNCTIONS/__gnuplot_raw__.l (F__clear_plot_window__):
+	Rename from Fclearplot.  Only clear plot window.
 
 2006-10-03  John W. Eaton  <jwe@octave.org>
 

@@ -153,7 +153,7 @@ function [local_packages, global_packages] = pkg(varargin)
             load_packages(files, deps);
         case "prefix"
             if (length(files) == 0 && nargout == 0)
-                printf(prefix);
+                disp(prefix);
             elseif (length(files) == 0 && nargout == 1)
                 local_packages = prefix;
             elseif (length(files) == 1 && nargout == 0 && ischar(files{1}))

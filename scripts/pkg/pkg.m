@@ -94,12 +94,7 @@ function [local_packages, global_packages] = pkg(varargin)
     persistent prefix = -1;
     if (prefix == -1)
         if (issuperuser())
-            ## XXX: Is this really needed?
-            if (strcmp(OCTAVE_HOME()(end),"/"))
-                prefix = [OCTAVE_HOME "share/octave/packages/"];
-            else
-                prefix = [OCTAVE_HOME "/share/octave/packages/"];
-            endif
+	    prefix = fullfile (OCTAVE_HOME (), "/share/octave/packages/");
         else
             prefix = "~/octave/";
         endif
@@ -171,11 +166,7 @@ function install(files, handle_deps, prefix)
     ## Set parameters depending on wether or not the installation
     ## is system-wide (global) or local.
     local_list = tilde_expand("~/.octave_packages");
-    if (strcmp(OCTAVE_HOME()(end),"/"))
-        global_list = [OCTAVE_HOME "share/octave/octave_packages"];
-    else
-        global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
-    endif
+    global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
     
     global_install = issuperuser();
  
@@ -403,11 +394,7 @@ endfunction
 
 function uninstall(pkgnames, handle_deps)
     local_list = tilde_expand("~/.octave_packages");
-    if (strcmp(OCTAVE_HOME()(end),"/"))
-      global_list = [OCTAVE_HOME "share/octave/octave_packages"];
-    else 
-      global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
-    endif
+    global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
     ## Get the list of installed packages
     [local_packages, global_packages] = installed_packages();
     if (issuperuser())
@@ -1037,11 +1024,7 @@ endfunction
 
 function [out1, out2] = installed_packages()
     local_list = tilde_expand("~/.octave_packages");
-    if (strcmp(OCTAVE_HOME()(end),"/"))
-      global_list = [OCTAVE_HOME "share/octave/octave_packages"];
-    else 
-      global_list = [OCTAVE_HOME "/share/octave/octave_packages"];
-    endif
+    global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
     ## Get the list of installed packages
     try
         local_packages = load(local_list).local_packages;

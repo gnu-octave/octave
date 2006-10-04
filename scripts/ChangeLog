@@ -1,3 +1,7 @@
+2006-10-04  John W. Eaton  <jwe@octave.org>
+
+	* pkg/pkg.m: Use fullfile to concatenate directory and file names.
+
 2006-10-04  Søren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m: Update docs.

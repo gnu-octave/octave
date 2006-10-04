@@ -1094,28 +1094,44 @@ function load_packages(files, handle_deps)
     installed_packages = installed_packages();
     num_packages = length(installed_packages);
     
+    ## Read package names and installdirs into a more convenient format
+    pnames = pdirs = cell(1, num_packages);
+    for i = 1:num_packages
+        pnames{i} = installed_packages{i}.name;
+        pdirs{i} = installed_packages{i}.dir;
+        pdeps{i} = installed_packages{i}.depends;
+    endfor
+    
+    ## load all
     if (length(files) == 1 && strcmp(files{1}, "all"))
-        dirs = cell(1, num_packages);
-        for i = 1:num_packages
-            dirs{i} = installed_packages{i}.dir;
-        endfor
-    elseif (handle_deps)
-        # XXX: implement this
-        error("Currently you need to call load_packages with 'all' or '-nodeps'. This is a bug!\n");
+        dirs = pdirs;
+    ## load package_name1 ...
     else
-        dirs = cell(1, length(files));
-        for j = 1:length(files)
-            for i = 1:num_packages
-                if (strcmp(installed_packages{i}.name, files{j}))
-                    dirs{j} = installed_packages{i}.dir;
-		    break;
-                endif
-            endfor
-	    if (isempty(dirs{j}))
-              error("Package %s is not installed\n", files{j});
+        dirs = {};
+        for i = 1:length(files)
+            idx = strcmp(pnames, files{i});
+            if (!any(idx))
+                error("Package %s is not installed\n", files{i});
+            endif
+            dirs{end+1} = pdirs{idx};
+            if (handle_deps)
+                pdep = pdeps{idx};
+                for j = 1:length(pdep)
+                    depname = pdep{j}.package;
+                    if (strcmp(depname, "octave")) continue; endif
+                    idx = strcmp(pnames, depname);
+                    if (!any(idx))
+                        error("Package %s could not be loaded since it depends on %s", ...
+                              files{i}, depname);
+                    endif
+                    dirs{end+1} = pdirs{idx};
+                endfor
             endif
         endfor
+        dirs = unique(dirs);
     endif
+
+    ## Load the packages
     if (length(dirs) > 0)
         addpath(dirs{:});
     endif

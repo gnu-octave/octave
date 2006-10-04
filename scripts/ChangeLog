@@ -4,8 +4,8 @@
 
 2006-10-04  Søren Hauberg  <soren@hauberg.org>
 
-	* pkg/pkg.m: Update docs.
-	Handle prefix option.
+	* pkg/pkg.m: Update docs.  Handle prefix option.
+	Handle dependencies for load option.
 
 2006-10-04  John W. Eaton  <jwe@octave.org>
 

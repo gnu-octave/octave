@@ -22,56 +22,53 @@
 ##
 ## @table @samp
 ## @item install
-##   Any packages given after the @code{install} keyword will be installed.
-##   The command
+##   Install named packages.  For example,
 ##   @example
 ##   pkg install image-1.0.0.tar.gz
 ##   @end example
 ##   @noindent
-##   will install the package found in the file @code{image-1.0.0.tar.gz}.
+##   installs the package found in the file @code{image-1.0.0.tar.gz}.
 ##   
 ##   If @var{option} is @code{-nodeps} the package manager will disable the
 ##   dependency checking. That way it is possible to install a package even
 ##   if it depends on another package that's not installed on the system.
 ##   @strong{Use this option with care.}
 ## @item uninstall
-##   Any packages named after the @code{uninstall} keyword will be uninstalled.
-##   The command
+##   Uninstall named packages.  For example,
 ##   @example
 ##   pkg uninstall image
 ##   @end example
 ##   @noindent
-##   will remove the @code{image} package from the system. If another installed
+##   removes the @code{image} package from the system.  If another installed
 ##   package depends on the @code{image} package an error will be issued.
 ##   The package can be uninstalled anyway by using the @code{-nodeps} option.
 ## @item load
-##   Any packages named after the @code{load} keyword will be added to the
-##   path. After loading a package it is possible to use the functions provided
-##   by the package. The command
+##   Add named packages to the path.  After loading a package it is
+##   possible to use the functions provided by the package.  For example,
 ##   @example
 ##   pkg load image
 ##   @end example
 ##   @noindent
-##   will add the @code{image} package to the path. It is possible to load all
-##   installed packages at once by typing
+##   adds the @code{image} package to the path. It is possible to load all
+##   installed packages at once with the command
 ##   @example
 ##   pkg load all
 ##   @end example
 ## @item list
-##   Shows a list of the currently installed packages. By requesting one or two
+##   Show a list of the currently installed packages.  By requesting one or two
 ##   output argument it is possible to get a list of the currently installed
-##   packages. The command
+##   packages.  For example,
 ##   @example
 ##   installed_packages = pkg list;
 ##   @end example
 ##   @noindent
-##   will return a cell array containing a structure for each installed package.
+##   returns a cell array containing a structure for each installed package.
 ##   The command
 ##   @example
 ##   [@var{user_packages}, @var{system_packages}] = pkg list
 ##   @end example
 ##   @noindent
-##   will split the list of installed packages into those who are installed by
+##   splits the list of installed packages into those who are installed by
 ##   the current user, and those installed by the system administrator.
 ## @end table
 ## @end deftypefn

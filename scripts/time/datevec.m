@@ -63,7 +63,18 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
     std_formats{++nfmt} = "HH:MM";                  # 15
     std_formats{++nfmt} = "HH:MM PM";               # 16
     std_formats{++nfmt} = "mm/dd/yyyy";             # 23
-    # custom formats
+    std_formats{++nfmt} = "mmm-dd-yyyy HH:MM:SS"; 
+    std_formats{++nfmt} = "mmm-dd-yyyy";
+    std_formats{++nfmt} = "dd mmm yyyy HH:MM:SS";
+    std_formats{++nfmt} = "dd mmm yyyy";
+    std_formats{++nfmt} = "mmm dd yyyy HH:MM:SS";
+    std_formats{++nfmt} = "mmm dd yyyy";
+    std_formats{++nfmt} = "dd.mmm.yyyy HH:MM:SS";
+    std_formats{++nfmt} = "dd.mmm.yyyy";
+    std_formats{++nfmt} = "mmm.dd.yyyy HH:MM:SS";
+    std_formats{++nfmt} = "mmm.dd.yyyy";
+
+   # custom formats
     std_formats{++nfmt} = "mmmyy";                  # 12
     std_formats{++nfmt} = "mm/dd/yyyy HH:MM";
   endif

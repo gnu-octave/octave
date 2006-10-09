@@ -1,3 +1,7 @@
+2006-10-09  David Bateman  <dbateman@free.fr>
+
+	* time/datevec.m: Add additional compatible default parsing strings.
+
 2006-10-09  Bill Denney  <denney@seas.upenn.edu>
 
 	* pkg/pkg.m: Remove trailing "\n" from error messages.

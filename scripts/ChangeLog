@@ -1,5 +1,11 @@
 2006-10-09  Bill Denney  <denney@seas.upenn.edu>
 
+	* pkg/pkg.m: Remove trailing "\n" from error messages.
+	Remove compare_versions subfunction.
+
+	* miscellaneous/compare_versions.m: New function to compare
+	version numbers as strings with any boolean operators.
+
 	* miscellaneous/untar.m: Check more rigorously to see if the tar
 	file exists.
 

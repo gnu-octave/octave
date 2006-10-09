@@ -129,21 +129,21 @@ function [local_packages, global_packages] = pkg(varargin)
             elseif (nargout == 2)
                 [local_packages, global_packages] = installed_packages();
             else
-                error("Too many output arguments requested.\n");
+                error("Too many output arguments requested.");
             endif
         case "install"
             if (length(files) == 0)
-                error("You must specify at least one filename when calling 'pkg install'\n");
+                error("You must specify at least one filename when calling 'pkg install'");
             endif
             install(files, deps, prefix);
         case "uninstall"
             if (length(files) == 0)
-                error("You must specify at least one package when calling 'pkg uninstall'\n");
+                error("You must specify at least one package when calling 'pkg uninstall'");
             endif
             uninstall(files, deps);
         case "load"
             if (length(files) == 0)
-                error("You must specify at least one package or 'all' when calling 'pkg load'\n");
+                error("You must specify at least one package or 'all' when calling 'pkg load'");
             endif
             load_packages(files, deps);
         case "prefix"
@@ -158,7 +158,7 @@ function [local_packages, global_packages] = pkg(varargin)
                 error("You must specify a prefix directory, or request an output arguement");
             endif
         otherwise
-            error("You must specify a valid action for 'pkg'. See 'help pkg' for details\n");
+            error("You must specify a valid action for 'pkg'. See 'help pkg' for details");
     endswitch
 endfunction
 
@@ -175,7 +175,7 @@ function install(files, handle_deps, prefix)
         warning("Creating installation directory %s", prefix);
         [status, msg] = mkdir(prefix);
         if (status != 1)
-            error("Could not create installation directory: %s\n", msg);
+            error("Could not create installation directory: %s", msg);
         endif
     endif
 
@@ -202,7 +202,7 @@ function install(files, handle_deps, prefix)
             tmpdirs{end+1} = tmpdir;
             [status, msg] = mkdir(tmpdir);
             if (status != 1)
-                error("Couldn't create temporary directory: %s\n", msg);
+                error("Couldn't create temporary directory: %s", msg);
             endif
 
             ## Uncompress the package
@@ -211,7 +211,7 @@ function install(files, handle_deps, prefix)
             ## Get the name of the directories produced by tar
             [dirlist, err, msg] = readdir(tmpdir);
             if (err)
-                error("Couldn't read directory produced by tar: %s\n", msg);
+                error("Couldn't read directory produced by tar: %s", msg);
             endif
 
 	    if (length(dirlist) > 3)
@@ -233,8 +233,7 @@ function install(files, handle_deps, prefix)
 		[dummy, nm] = fileparts(tgz); 
 		if ((length(nm) >= length(desc.name)) &&
 		    ! strcmp(desc.name,nm(1:length(desc.name))))
-		  error(["Package name '",desc.name,"' doesn't correspond",
-			 "to its filename '",nm,"'"]);
+		  error("Package name '%s' doesn't correspond to its filename '%s'", desc.name, nm);
 		endif
 
                 ## Set default installation directory
@@ -367,9 +366,9 @@ function install(files, handle_deps, prefix)
             rm_rf(descriptions{i}.dir);
         endfor
         if (global_install)
-            error("Couldn't append to %s: %s\n", global_list, lasterr()(8:end));
+            error("Couldn't append to %s: %s", global_list, lasterr()(8:end));
         else
-            error("Couldn't append to %s: %s\n", local_list, lasterr()(8:end));
+            error("Couldn't append to %s: %s", local_list, lasterr()(8:end));
         endif
     end_try_catch
 
@@ -402,7 +401,7 @@ function uninstall(pkgnames, handle_deps)
     else
         installed_packages = local_packages;
     endif
-    
+
     num_packages = length(installed_packages);
     delete_idx = [];
     for i = 1:num_packages
@@ -411,11 +410,11 @@ function uninstall(pkgnames, handle_deps)
             delete_idx(end+1) = i;
         endif
     endfor
-    
+
     ## Are all the packages that should be uninstalled already installed?
     if (length(delete_idx) != length(pkgnames))
         # XXX: We should have a better error message
-        error("Some of the packages you want to uninstall are not installed.\n");
+        error("Some of the packages you want to uninstall are not installed.");
     endif
 
     ## Compute the packages that will remain installed
@@ -424,7 +423,6 @@ function uninstall(pkgnames, handle_deps)
     
     ## Check dependencies
     if (handle_deps)
-        ok = true;
         error_text = "";
         for i = 1:length(remaining_packages)
             desc = remaining_packages{i};
@@ -432,7 +430,6 @@ function uninstall(pkgnames, handle_deps)
             
             ## Will the uninstallation break any dependencies?
             if (!isempty(bad_deps))
-                ok = false;
                 for i = 1:length(bad_deps)
                     dep = bad_deps{i};
                     error_text = [error_text "  " desc.name " needs " ...
@@ -442,7 +439,7 @@ function uninstall(pkgnames, handle_deps)
             endif
         endfor
 
-        if (!ok)
+        if (! isempty(error_text))
             error("The following dependencies where unsatisfied:\n  %s", error_text);
         endif
     endif
@@ -459,7 +456,7 @@ function uninstall(pkgnames, handle_deps)
                 cd(wd);
             catch
                 # XXX: Should this rather be an error?
-                warning("The 'on_uninstall' script returned the following error: %s", lasterr);
+                warning("The 'on_uninstall' script retsurned the following error: %s", lasterr);
                 cd(wd);
             end_try_catch
         endif
@@ -467,7 +464,7 @@ function uninstall(pkgnames, handle_deps)
         rmpath(desc.dir);
         [status, msg] = rm_rf(desc.dir);
         if (status != 1)
-            error("Couldn't delete directory %s: %s\n", desc.dir, msg);
+            error("Couldn't delete directory %s: %s", desc.dir, msg);
         endif
     endfor
 
@@ -504,7 +501,7 @@ function prepare_installation(desc, packdir)
             cd(wd);
         catch
             cd(wd);
-            error("The pre-install function returned the following error: %s\n", lasterr);
+            error("The pre-install function returned the following error: %s", lasterr);
         end_try_catch
     endif
 
@@ -513,7 +510,7 @@ function prepare_installation(desc, packdir)
         [status, msg] = mkdir([packdir "inst"]);
         if (status != 1)
             rm_rf(desc.dir);
-            error("The 'inst' directory did not exist and could not be created: %s\n", msg);
+            error("The 'inst' directory did not exist and could not be created: %s", msg);
         endif
     endif
 endfunction
@@ -527,7 +524,7 @@ function configure_make (desc, packdir)
             [status, output] = system(["cd " src " ;./configure --prefix=" desc.dir]);
             if (status != 0)
                 rm_rf(desc.dir);
-                error("The configure script returned the following error: %s\n", output);
+                error("The configure script returned the following error: %s", output);
             endif
         endif
 
@@ -536,13 +533,13 @@ function configure_make (desc, packdir)
             [status, output] = system(["export INSTALLDIR=" desc.dir "; make -C " src]);
             if (status != 0)
                 rm_rf(desc.dir);
-                error("'make' returned the following error: %s\n", output);
+                error("'make' returned the following error: %s", output);
             endif
             %# make install
             %[status, output] = system(["export INSTALLDIR=" desc.dir "; make install -C " src]);
             %if (status != 0)
             %    rm_rf(desc.dir);
-            %    error("'make install' returned the following error: %s\n", output);
+            %    error("'make install' returned the following error: %s", output);
             %endif
         endif
 
@@ -551,7 +548,7 @@ function configure_make (desc, packdir)
         if (exist(files, "file"))
             [fid, msg] = fopen(files, "r");
             if (fid < 0)
-                error("Couldn't open %s: %s\n", files, msg);
+                error("Couldn't open %s: %s", files, msg);
             endif
             filenames = char(fread(fid))';
             filenames = strrep(filenames, "\n", " ");
@@ -574,7 +571,7 @@ function configure_make (desc, packdir)
         endif
         if (status != 0)
             rm_rf(desc.dir);
-            error("Couldn't copy files from 'src' to 'inst': %s\n", output);
+            error("Couldn't copy files from 'src' to 'inst': %s", output);
         endif
     endif
 endfunction
@@ -647,7 +644,7 @@ function copy_files (desc, packdir, bindir)
     if (! exist (desc.dir, "dir"))
       [status, output] = mkdir (desc.dir);
       if (status != 1)
-	error("Couldn't create installation directory %s : %s\n", 
+	error("Couldn't create installation directory %s : %s", 
 	      desc.dir, output);
       endif
     endif
@@ -657,7 +654,7 @@ function copy_files (desc, packdir, bindir)
       [status, output] = system(["cp -R " packdir "inst/* " desc.dir]);
       if (status != 0)
           rm_rf(desc.dir);
-          error("Couldn't copy files to the installation directory\n");
+          error("Couldn't copy files to the installation directory");
       endif
     endif
 
@@ -666,21 +663,21 @@ function copy_files (desc, packdir, bindir)
     [status, msg] = mkdir (packinfo);
     if (status != 1)
         rm_rf(desc.dir);
-        error("Couldn't create packinfo directory: %s\n", msg);
+        error("Couldn't create packinfo directory: %s", msg);
     endif
 
     ## Copy DESCRIPTION
     [status, output] = system(["cp " packdir "DESCRIPTION " packinfo]);
     if (status != 0)
        rm_rf(desc.dir);
-       error("Couldn't copy DESCRIPTION: %s\n", output);
+       error("Couldn't copy DESCRIPTION: %s", output);
     endif
 
     ## Copy COPYING
     [status, output] = system(["cp " packdir "COPYING " packinfo]);
     if (status != 0)
        rm_rf(desc.dir);
-       error("Couldn't copy COPYING: %s\n", output);
+       error("Couldn't copy COPYING: %s", output);
     endif
 
     ## Is there an INDEX file to copy or should we generate one?
@@ -688,7 +685,7 @@ function copy_files (desc, packdir, bindir)
         [status, output] = system(["cp " packdir "INDEX " packinfo]);
         if (status != 0)
             rm_rf(desc.dir);
-            error("Couldn't copy INDEX file: %s\n", output);
+            error("Couldn't copy INDEX file: %s", output);
         endif
     else
         try
@@ -704,7 +701,7 @@ function copy_files (desc, packdir, bindir)
         [status, output] = system(["cp " packdir "on_uninstall.m " packinfo]);
         if (status != 0)
             rm_rf(desc.dir);
-            error("Couldn't copy on_uninstall.m: %s\n", output);
+            error("Couldn't copy on_uninstall.m: %s", output);
         endif
     endif
 
@@ -730,7 +727,7 @@ function finish_installation (desc, packdir)
         catch
             cd(wd);
             rm_rf(desc.dir);
-            error("The post_install function returned the following error: %s\n", lasterr);
+            error("The post_install function returned the following error: %s", lasterr);
         end_try_catch
     endif
 endfunction
@@ -752,9 +749,9 @@ endfunction
 
 ## This function parses the DESCRIPTION file
 function desc = get_description(filename)
-    fid = fopen(filename, "r");
+    [fid, msg] = fopen(filename, "r");
     if (fid == -1)
-        error("The DESCRIPTION file %s could not be read\n", filename);
+        error("The DESCRIPTION file %s could not be read: %s", filename, msg);
     endif
 
     desc = struct();
@@ -780,7 +777,7 @@ function desc = get_description(filename)
                 value   = strip(line(colon+1:end));
                 if (length(value) == 0)
                     fclose(fid);
-                    error("The keyword %s have empty value\n", desc.keywords{end});
+                    error("The keyword %s have empty value", desc.keywords{end});
                 endif
                 desc.(keyword) = value;
             endif
@@ -794,7 +791,7 @@ function desc = get_description(filename)
                      "author", "maintainer", "description"};
     for f = needed_fields
         if (!isfield(desc, f{1}))
-            error("Description is missing needed field %s\n", f{1});
+            error("Description is missing needed field %s", f{1});
         endif
     endfor
     desc.version = fix_version(desc.version);
@@ -826,7 +823,7 @@ function out = fix_version(v)
             return
         endif
     endif
-    error("Bad version string: %s\n", v);
+    error("Bad version string: %s", v);
 endfunction
 
 ## Makes sure the depends field is of the right format.
@@ -860,7 +857,7 @@ function deps_cell = fix_depends(depends)
             endif
             operator = parts{idx(1)};
             if (!any(strcmp(operator, {">=", "<=", "=="}))) ## XXX: I belive we also support ">" and "<" 
-                error("Unsupported operator: %s\n", operator);
+                error("Unsupported operator: %s", operator);
             endif
             version  = fix_version(parts{idx(2)});
              
@@ -917,7 +914,7 @@ function write_INDEX(desc, dir, INDEX)
     ## Get names of functions in dir
     [files, err, msg] = readdir(dir);
     if (err)
-        error("Couldn't read directory %s: %s\n", dir, msg);
+        error("Couldn't read directory %s: %s", dir, msg);
     endif
     
     functions = {};
@@ -933,17 +930,17 @@ function write_INDEX(desc, dir, INDEX)
     
     ## Does desc have a categories field?
     if (!isfield(desc, "categories"))
-        error("The DESCRIPTION file must have a Categories field, when no INDEX file is given.\n");
+        error("The DESCRIPTION file must have a Categories field, when no INDEX file is given.");
     endif
     categories = split_by(desc.categories, ",");
     if (length(categories) < 1)
-        error("The Category field is empty.\n");
+        error("The Category field is empty.");
     endif
     
     ## Write INDEX
     fid = fopen(INDEX, "w");
     if (fid == -1)
-        error("Couldn't open %s for writing.\n", INDEX);
+        error("Couldn't open %s for writing.", INDEX);
     endif
     fprintf(fid, "%s >> %s\n", desc.name, desc.title);
     fprintf(fid, "%s\n", categories{1});
@@ -979,47 +976,6 @@ function bad_deps = get_unsatisfied_deps(desc, installed_packages)
             endif
         endif
     endfor
-endfunction
-
-## Compares to version string using the given operator
-## Example: v1="0.1.0", v2="0.0.9", operator=">=" => true
-## TODO: This function is very long and complex! Can't it be simplified?
-function out = compare_versions(v1, v2, operator)
-    dot1 = find(v1 == ".");
-    dot2 = find(v2 == ".");
-    if (length(dot1) != 2 || length(dot2) != 2)
-        error("Given version strings are not valid: %s %s", v1, v2);
-    endif
-    
-    major1 = str2num( v1( 1:dot1(1)-1 ) );
-    minor1 = str2num( v1( dot1(1)+1:dot1(2)-1 ) );
-    rev1   = str2num( v1( dot1(2)+1:end ) );
-    major2 = str2num( v2( 1:dot2(1)-1 ) );
-    minor2 = str2num( v2( dot2(1)+1:dot2(2)-1 ) );
-    rev2   = str2num( v2( dot2(2)+1:end) );
-    mmr = [sign(major1-major2), sign(minor1-minor2), sign(rev1-rev2)];
-    
-    if (length(operator) > 1 && operator(2) == "=" && !any(mmr))
-        out = 1;
-        return;
-    elseif (operator(1) == "<")
-        mmr = -mmr;
-    endif
-    
-    ## Now we ony need to decide if v1 > v2
-    if (mmr(1) == 1)
-        out = 1;
-    elseif (mmr(1) == -1)
-        out = 0;
-    elseif (mmr(2) == 1)
-        out = 1;
-    elseif (mmr(2) == -1)
-        out = 0;
-    elseif (mmr(3) == 1)
-        out = 1;
-    else
-        out = 0;
-    endif
 endfunction
 
 function [out1, out2] = installed_packages()
@@ -1111,7 +1067,7 @@ function load_packages(files, handle_deps)
         for i = 1:length(files)
             idx = strcmp(pnames, files{i});
             if (!any(idx))
-                error("Package %s is not installed\n", files{i});
+                error("Package %s is not installed", files{i});
             endif
             dirs{end+1} = pdirs{idx};
             if (handle_deps)

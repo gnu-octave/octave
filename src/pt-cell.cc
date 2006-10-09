@@ -110,7 +110,7 @@ tree_cell::dup (symbol_table *sym_tab)
     {
       tree_argument_list *elt = *p;
 
-      append (elt ? elt->dup (sym_tab) : 0);
+      new_cell->append (elt ? elt->dup (sym_tab) : 0);
     }
 
   new_cell->copy_base (*this);

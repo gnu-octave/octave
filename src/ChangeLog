@@ -1,3 +1,8 @@
+2006-10-09  John W. Eaton  <jwe@octave.org>
+
+	* pt-mat.cc (tree_matrix::dup): Append new elements to new matrix.
+	* pt-cell.cc (tree_cell::dup): Append new elements to new cell array.
+
 2006-10-04  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.9+.

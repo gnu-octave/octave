@@ -1,40 +1,47 @@
 function sparseimages(nm,typ)
+  if (! isempty (findstr (octave_config_info ("DEFS"), "HAVE_COLAMD"))
+      && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_CHOLMOD"))
+      && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_UMFPACK")))
   if (strcmp(typ,"txt"))
-    txtimages(nm,15,typ);
+    txtimages (nm, 15, typ);
   else
     if (strcmp (nm, "gplot"))
-      gplotimages("gplot",typ);
+      gplotimages ("gplot", typ);
     elseif (strcmp (nm, "grid"))
-      femimages("grid",typ);
+      femimages ("grid", typ);
     else
-      otherimages(nm,200,typ);
+      otherimages (nm, 200, typ);
     endif
   endif
   ## Kluge to give gnuplot enough time to process last figure before we
   ## exit.  Otherwise, Octave will delete the temporary data files when
   ## it exits and gnuplot will fail...
   sleep (1);
+  else ## There is no sparse matrix implementation available because
+       ## of missing libraries, plot sombreros instead
+    sombreroimage (nm, typ);
+  endif
 endfunction
 
 ## Use this function before plotting commands and after every call to
 ## print since print() resets output to stdout (unfortunately, gnpulot
 ## can't pop output as it can the terminal type).
 function bury_output ()
-  automatic_replot(0);
+  automatic_replot (0);
   __gnuplot_set__ term dumb
-  [status, dummy] = fileattrib("/dev/null");
+  [status, dummy] = fileattrib ("/dev/null");
   if (status)
     __gnuplot_raw__ ("set output \"/dev/null\"\n");
   endif
 endfunction
 
-function gplotimages(nm,typ)
+function gplotimages (nm, typ)
   bury_output ();
-  A = sparse([2,6,1,3,2,4,3,5,4,6,1,5],
-	     [1,1,2,2,3,3,4,4,5,5,6,6],1,6,6);
+  A = sparse ([2,6,1,3,2,4,3,5,4,6,1,5],
+	      [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
-  gplot(A,xy)
-  print(strcat(nm,".",typ),strcat("-d",typ))
+  gplot (A, xy)
+  print (strcat (nm, ".", typ), strcat ("-d", typ))
   bury_output ();
 endfunction
 
@@ -216,6 +223,58 @@ function femimages (nm,typ)
       bury_output ();
     unwind_protect_cleanup
       __gnuplot_set__ noparametric; 
+    end_unwind_protect
+  endif
+endfunction
+
+## There is no sparse matrix implementation available because of missing
+## libraries, plot sombreros instead. Also plot a nice title that we are
+## sorry about that.
+function sombreroimage (nm, typ)
+  if (strcmp (typ, "txt"))
+    fid = fopen (sprintf ("%s.txt", nm), "wt");
+    fputs (fid, "+---------------------------------------+\n");
+    fputs (fid, "| Image unavailable because of a        |\n");
+    fputs (fid, "| missing sparse matrix implementation. |\n");
+    fputs (fid, "+---------------------------------------+\n");
+    fclose (fid);
+    return;
+  else ## if (!strcmp (typ, "txt"))
+
+    bury_output ();
+
+    x = y = linspace (-8, 8, 41)';
+    [xx, yy] = meshgrid (x, y);
+    r = sqrt (xx .^ 2 + yy .^ 2) + eps;
+    z = sin (r) ./ r;
+    xlen = length (x);
+    ylen = length (y);
+    len = 3 * xlen;
+    zz = zeros (ylen, len);
+    k = 1;
+    for i = 1:3:len
+      zz(:,i)   = x(k) * ones (ylen, 1);
+      zz(:,i+1) = y;
+      zz(:,i+2) = z(:,k);
+      k++;
+    endfor
+    unwind_protect
+      __gnuplot_raw__ ("set hidden3d;\n");
+      __gnuplot_raw__ ("set data style lines;\n");
+      __gnuplot_raw__ ("set surface;\n");
+      __gnuplot_raw__ ("set nocontour;\n");
+      __gnuplot_raw__ ("set nologscale;\n");
+      __gnuplot_set__ parametric;
+      __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
+      __gnuplot_raw__ ("set nokey;\n");
+      __gnuplot_raw__ ("set nocolorbox;\n");
+      msg = strcat ("");
+      __gnuplot_raw__ ("set title \"Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.\";\n");
+      __plt3__ (zz, "", "");
+    unwind_protect_cleanup
+      __gnuplot_set__ noparametric;
+      print (strcat (nm, ".", typ), strcat ("-d", typ));
+      bury_output ();
     end_unwind_protect
   endif
 endfunction

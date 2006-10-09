@@ -24,32 +24,34 @@
 ## Author: Søren Hauberg <hauberg@gmail.com>
 ## Adapted-By: jwe
 
-function files = untar (tarfile, dir)
+function files = untar (tarfile, directory)
 
   if (nargin == 1 || nargin == 2)
 
     if (nargin == 1)
-      dir = ".";
+      directory = ".";
     endif
 
-    if (ischar (tarfile) && ischar (dir))
+    ## The file must exist (and be a file) and the directory must be a
+    ## string.
+    if (exist (tarfile, "file") && ischar (directory))
 
       orig_dir = pwd ();
 
       tarfile = canonicalize_file_name (tarfile);
 
-      s = stat (dir);
+      s = stat (directory);
       if (isempty (s))
-	[status, msg] = mkdir (dir);
+	[status, msg] = mkdir (directory);
 	if (! status)
-	  error ("untar: mkdir failed to create %s: %s", dir, msg);
+	  error ("untar: mkdir failed to create %s: %s", directory, msg);
 	endif
       elseif (! S_ISDIR (s.mode))
-	error ("untar: %s: not a directory", dir);
+	error ("untar: %s: not a directory", directory);
       endif
 
       unwind_protect
-	chdir (dir);
+	chdir (directory);
 	[status, output] = system (sprintf ("tar -x -v -f %s", tarfile));
       unwind_protect_cleanup
 	chdir (orig_dir);
@@ -58,8 +60,8 @@ function files = untar (tarfile, dir)
       if (status == 0)
 	if (nargout > 0)
 	  fs = filesep ();
-	  if (dir(end) != fs)
-	    dir = strcat (dir, fs);
+	  if (directory(end) != fs)
+	    directory = strcat (directory, fs);
 	  endif
 	  ## Sadly not reliable if a filename contains a newline
 	  ## character!
@@ -67,10 +69,10 @@ function files = untar (tarfile, dir)
 	    output(end) = [];
 	  endif
 	  files = cellstr (split (output, "\n"));
-	  if (! strcmp (dir, "."))
+	  if (! strcmp (directory, "."))
 	    nf = length (files);
 	    for i = 1:nf
-	      files{i} = strcat (dir, files{i});
+	      files{i} = strcat (directory, files{i});
 	    endfor
 	  endif
 	  files = files';

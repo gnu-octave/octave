@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.523 $)
+AC_REVISION($Revision: 1.524 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -544,6 +544,28 @@ if test -n "$glpk_lib"; then
       AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])])])
 fi
 AC_SUBST(GLPK_LIBS)
+
+# Checks for CURL header and library.
+
+AC_ARG_WITH(curl,
+  [AS_HELP_STRING([--without-curl], [don't use CURL])],
+  with_curl=$withval, with_curl=yes)
+
+curl_lib=
+if test "$with_curl" = yes; then
+  curl_lib="curl"
+elif test "$with_curl" != no; then
+  curl_lib="$with_curl"
+fi
+
+CURL_LIBS=
+if test -n "$curl_lib"; then
+  AC_CHECK_LIB($curl_lib, curl_global_init, [
+    AC_CHECK_HEADERS(curl/curl.h, [
+      CURL_LIBS="-l$curl_lib"
+      AC_DEFINE(HAVE_CURL, 1, [Define if CURL is available.])])])
+fi
+AC_SUBST(CURL_LIBS)
 
 OCTAVE_IEEE754_DATA_FORMAT
 
@@ -1798,6 +1820,7 @@ Octave is now configured for $canonical_host_type
   CHOLMOD libraries:    $CHOLMOD_LIBS
   CXSPARSE libraries:   $CXSPARSE_LIBS
   HDF5 libraries:       $HDF5_LIBS
+  CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER

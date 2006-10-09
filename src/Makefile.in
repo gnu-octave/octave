@@ -52,7 +52,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc \
 	lu.cc luinc.cc matrix_type.cc minmax.cc pinv.cc qr.cc \
 	quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc sparse.cc \
 	spchol.cc spdet.cc spfind.cc spkron.cc splu.cc spparms.cc spqr.cc \
-	sqrtm.cc svd.cc syl.cc time.cc \
+	sqrtm.cc svd.cc syl.cc time.cc urlwrite.cc \
 	__gnuplot_raw__.l __glpk__.cc __pchip_deriv__.cc __qp__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
@@ -573,11 +573,15 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   ifdef CXXPICFLAG
     regexp.oct : pic/regexp.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
+    urlwrite.oct : pic/urlwrite.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(CURL_LIBS)
     __glpk__.oct : pic/__glpk__.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
   else
     regexp.oct : regexp.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
+    urlwrite.oct : urlwrite.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(CURL_LIBS)
     __glpk__.oct : __glpk__.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
   endif

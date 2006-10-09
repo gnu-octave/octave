@@ -1,5 +1,14 @@
 2006-10-09  John W. Eaton  <jwe@octave.org>
 
+	* oct-conf.h.in (OCTAVE_CONF_CURL_LIBS): Substitute.
+	* toplev.cc (octave_config_info): Add CURL_LIBS to the list.
+
+2006-10-09  Alexander Barth  <abarth@marine.usf.edu>
+
+	* DLD-FUNCTIONS/urlwrite.cc: New file providing urlwrite and urlread.
+
+2006-10-09  John W. Eaton  <jwe@octave.org>
+
 	* pt-mat.cc (tree_matrix::dup): Append new elements to new matrix.
 	* pt-cell.cc (tree_cell::dup): Append new elements to new cell array.
 

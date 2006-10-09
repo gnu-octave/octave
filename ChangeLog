@@ -1,3 +1,10 @@
+2006-10-09  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (CURL_LIBS, do-subst-config-vals):
+	Substitute CURL_LIBS.
+
+	* configure.in: Check for libcurl.
+
 2006-10-04  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (library_path_var): Substitute value from configure.

@@ -27,7 +27,7 @@ function retval = ispc ()
   if (nargin == 0)
     retval = octave_config_info ("windows");
   else
-    usage ("ispc ()");
+    print_usage ();
   endif
 
 endfunction

@@ -37,7 +37,7 @@
 function y = polyvalm (c, x)
 
   if (nargin != 2)
-    usage ("polyvalm (c, x)");
+    print_usage ();
   endif
 
   if (! (isvector (c) || isempty (c)))

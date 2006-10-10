@@ -42,7 +42,7 @@
 function rho = spearman (x, y)
 
   if ((nargin < 1) || (nargin > 2))
-    usage ("spearman (x, y)");
+    print_usage ();
   endif
 
   if (rows (x) == 1)

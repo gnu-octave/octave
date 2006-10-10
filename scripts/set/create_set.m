@@ -36,7 +36,7 @@
 function y = create_set(x)
 
   if (nargin != 1)
-    usage ("create_set(x)");
+    print_usage ();
   endif
 
   if (isempty(x))

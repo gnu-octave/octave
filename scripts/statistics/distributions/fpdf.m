@@ -30,7 +30,7 @@
 function pdf = fpdf (x, m, n)
 
   if (nargin != 3)
-    usage ("fpdf (x, m, n)");
+    print_usage ();
   endif
 
   if (!isscalar (m) || !isscalar (n))

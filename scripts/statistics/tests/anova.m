@@ -48,7 +48,7 @@
 function [pval, f, df_b, df_w] = anova (y, g)
 
   if ((nargin < 1) || (nargin > 2))
-    usage ("anova (y, g)");
+    print_usage ();
   elseif (nargin == 1)
     if (isvector (y))
       error ("anova: for `anova (y)', y must not be a vector");

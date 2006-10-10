@@ -44,7 +44,7 @@
 function l = lcm (varargin)
 
   if (nargin == 0)
-    usage ("lcm (a, ...)");
+    print_usage ();
   endif
 
   if (nargin == 1)

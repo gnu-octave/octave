@@ -30,7 +30,7 @@
 function e = eomday (y, m)
 
   if (nargin != 2)
-    usage ("e = eomday (y, m)");
+    print_usage ();
   endif
 
   eom = [31, 28, 31, 30 ,31, 30, 31, 31, 30, 31, 30, 31];

@@ -38,7 +38,7 @@ function [xx, yy] = meshdom (x, y)
       error ("meshdom: arguments must be vectors");
     endif
   else
-    usage ("[xx, yy] = meshdom (x, y)");
+    print_usage ();
   endif
 
 endfunction

@@ -38,7 +38,7 @@ function [idxvec,errmsg]  = listidx(listvar,strlist)
   error("listidx: don't use this anymore, ok?\n");
 
 if(nargin != 2)
-  usage("idxvec = listidx(listvar,strlist)");
+  print_usage ();
 endif
 
 if(ischar(strlist))

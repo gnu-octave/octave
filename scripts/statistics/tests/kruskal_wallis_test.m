@@ -42,7 +42,7 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
 
   m = nargin;
   if (m < 2)
-    usage ("[pval, k, df] = kruskal_wallis_test (x1, ...)");
+    print_usage ();
   endif
 
   n = [];

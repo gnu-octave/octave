@@ -96,7 +96,7 @@
 function retsys = syssetsignals (sys, opt, names, sig_idx)
 
   if (nargin < 3 | nargin > 4)
-    usage("retsys=syssetsignals(sys,opt,names{,sig_idx})");
+    print_usage ();
   elseif (!isstruct(sys))
     error("sys must be a system data structure");
   elseif (isempty(opt))

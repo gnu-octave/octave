@@ -30,7 +30,7 @@
 function cdf = discrete_cdf (x, v, p)
 
   if (nargin != 3)
-    usage ("discrete_cdf (x, v, p)");
+    print_usage ();
   endif
 
   sz = size (x);

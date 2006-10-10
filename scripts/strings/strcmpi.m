@@ -48,7 +48,7 @@ function retval = strcmpi (s1, s2)
       retval = false;
     endif
   else
-    usage ("strcmpi (s1, s2)");
+    print_usage ();
   endif
 
 endfunction

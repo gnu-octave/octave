@@ -40,7 +40,7 @@ function z = trapz (x, y, dim)
 	
 
   if (nargin < 1) || (nargin > 3)
-    usage ("trapz (x, y, dim)");
+    print_usage ();
   endif
 
   nd = ndims (x);

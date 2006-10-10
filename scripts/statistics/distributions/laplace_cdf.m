@@ -29,7 +29,7 @@
 function cdf = laplace_cdf (x)
 
   if (nargin != 1)
-    usage ("laplace_cdf (x)");
+    print_usage ();
   endif
 
   cdf = zeros (size (x));

@@ -54,7 +54,7 @@ function image (x, y, A, zoom)
   elseif (nargin == 3)
     zoom = [];
   elseif (nargin > 4)
-    usage ("image (matrix, zoom) or image (x, y, matrix, zoom)");
+    print_usage ();
   endif
 
   if isempty(zoom)

@@ -34,7 +34,7 @@
 function [x, y] = gplot (A, xy, line_style)
 
   if (nargin < 2 || nargin > 3 || nargout > 2)
-    usage ("gplot (a, xy, line_style)");
+    print_usage ();
   endif
 
   if (nargin == 2)

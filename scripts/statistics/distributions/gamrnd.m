@@ -73,7 +73,7 @@ function rnd = gamrnd (a, b, r, c)
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("gamrnd (a, b, r, c)");
+    print_usage ();
   endif
 
   rnd = zeros (sz);

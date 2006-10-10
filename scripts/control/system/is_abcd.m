@@ -91,7 +91,7 @@ function retval = is_abcd (a, b, c, d)
         return;
       endif
     otherwise
-      usage("retval = is_abcd(a [, b, c, d])")
+      print_usage ();
   endswitch
   ## all tests passed, signal ok.
   retval = 1;

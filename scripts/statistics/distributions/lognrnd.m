@@ -74,7 +74,7 @@ function rnd = lognrnd (mu, sigma, r, c)
   elseif (nargin == 2)
     sz = size(mu);
   else
-    usage ("lognrnd (mu, sigma, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (mu) && isscalar (sigma))

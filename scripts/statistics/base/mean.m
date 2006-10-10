@@ -81,10 +81,10 @@ function y = mean (x, opt1, opt2)
       opt = opt2;
       dim = opt1;
     else
-      usage ("mean: expecting opt to be a string");
+      error ("mean: expecting opt to be a string");
     endif
   else
-    usage ("mean (x, dim, opt) or mean (x, dim, opt)");
+    print_usage ();
   endif
 
   if (need_dim)

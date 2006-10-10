@@ -30,7 +30,7 @@
 function [y, iterations] = erfinv (x)
 
   if (nargin != 1)
-    usage ("erfinv (x)");
+    print_usage ();
   endif
 
   maxit = 100;

@@ -88,7 +88,7 @@ function sys = fir2sys (num, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
   if (nargin < 1 | nargin > 4)
-    usage ("sys = fir2sys(num [, tsam, inname, outname])");
+    print_usage ();
   endif
 
   ## let tf do the argument checking

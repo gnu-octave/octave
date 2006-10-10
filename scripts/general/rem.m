@@ -36,7 +36,7 @@
 function r = rem (x, y)
 
   if (nargin != 2)
-    usage ("rem (x, y)");
+    print_usage ();
   endif
 
   if (((ndims (x) != ndims (y)) || any (size (x) != size (y))) &&

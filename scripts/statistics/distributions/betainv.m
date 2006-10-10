@@ -30,7 +30,7 @@
 function inv = betainv (x, a, b)
 
   if (nargin != 3)
-    usage ("betainv (x, a, b)");
+    print_usage ();
   endif
 
   if (!isscalar (a) || !isscalar(b))

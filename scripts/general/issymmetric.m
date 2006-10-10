@@ -44,7 +44,7 @@ function retval = issymmetric (x,tol)
       endif
     endif
   else
-    usage ("issymmetric (x {,tol})");
+    print_usage ();
   endif
 
 endfunction

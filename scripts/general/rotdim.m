@@ -55,7 +55,7 @@
 function y = rotdim (x, k, plane)
   
   if (nargin < 1 || nargin > 3)
-    usage ("rotdim (x, k, plane)");
+    print_usage ();
   endif
 
   if (nargin > 1 && ! isempty(k))

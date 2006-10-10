@@ -30,7 +30,7 @@
 function inv = wblinv (x, scale, shape)
 
   if (nargin < 1 || nargin > 3)
-    usage ("wblinv (x, scale, shape)");
+    print_usage ();
   endif
 
   if (nargin < 3)

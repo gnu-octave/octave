@@ -30,7 +30,7 @@ function retval = isscalar (x)
   if (nargin == 1)
     retval = prod (size (x)) == 1;
   else
-    usage ("isscalar (x)");
+    print_usage ();
   endif
 
 endfunction

@@ -35,7 +35,7 @@
 function retval = cor (x, y)
 
   if (nargin < 1 || nargin > 2)
-    usage ("cor (x, y)");
+    print_usage ();
   endif
 
   if (nargin == 2)

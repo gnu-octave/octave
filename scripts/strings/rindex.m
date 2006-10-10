@@ -38,7 +38,7 @@ function n = rindex (s, t)
   ## This is patterned after the AWK function of the same name.
 
   if (nargin != 2)
-    usage ("rindex (s, t)");
+    print_usage ();
   endif
 
   if (!ischar (s) || !ischar (t) || all (size (s) > 1) || all (size (t) > 1) )

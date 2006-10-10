@@ -30,7 +30,7 @@
 function cdf = fcdf (x, m, n)
 
   if (nargin != 3)
-    usage ("fcdf (x, m, n)");
+    print_usage ();
   endif
 
   if (!isscalar (m) || !isscalar (n))

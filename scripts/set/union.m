@@ -36,7 +36,7 @@
 function y = union(a,b)
 
   if (nargin != 2)
-    usage ("union(a,b)");
+    print_usage ();
   endif
 
   if (isempty (a))

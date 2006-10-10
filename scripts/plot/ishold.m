@@ -43,7 +43,7 @@ function retval = ishold ()
   if (nargin == 0)
     retval = __hold_state__(__current_figure__);
   else
-    usage ("ishold ()");
+    print_usage ();
   endif
 
 endfunction

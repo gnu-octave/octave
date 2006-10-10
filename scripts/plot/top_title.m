@@ -30,7 +30,7 @@
 function top_title (text)
 
   if (nargin != 1)
-    usage ("top_title (text)");
+    print_usage ();
   endif
 
   if (ischar (text))

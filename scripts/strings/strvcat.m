@@ -38,7 +38,7 @@
 function retval = strvcat (varargin)
 
   if (nargin == 0)
-    usage ("strvcat (s1, ...)");
+    print_usage ();
   endif
 
   nr = zeros (nargin, 1);

@@ -40,7 +40,7 @@
 function [f, e] = log2 (x)
 
   if (nargin != 1)
-    usage ("y = log2 (x) or [f, e] = log2 (x)");
+    print_usage ();
   endif
 
   if (nargout < 2)

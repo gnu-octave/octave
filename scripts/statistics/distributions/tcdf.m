@@ -30,7 +30,7 @@
 function cdf = tcdf (x, n)
 
   if (nargin != 2)
-    usage ("tcdf (x, n)");
+    print_usage ();
   endif
 
   if (!isscalar (n))

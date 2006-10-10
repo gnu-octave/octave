@@ -69,7 +69,7 @@
 function retval = invhilb (n)
 
   if (nargin != 1)
-    usage ("invhilb (n)");
+    print_usage ();
   endif
 
   nmax = length (n);

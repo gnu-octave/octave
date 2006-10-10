@@ -42,7 +42,7 @@
 
 function retval = betaln (a, b)
   if (nargin != 2)
-    usage ("betaln (a, b)");
+    print_usage ();
   endif
 
   retval = gammaln (a) + gammaln (b) - gammaln (a + b);

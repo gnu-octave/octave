@@ -29,7 +29,7 @@
 function retsys = syschtsam (sys, tsam)
 
   if (nargin != 2)
-    usage ("retsys = syschtsam (sys, tsam)");
+    print_usage ();
   elseif (! isstruct (sys))
     error ("sys must be in system data structure form");
   elseif (! isscalar (tsam))

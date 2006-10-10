@@ -28,7 +28,7 @@ function [xopt, fopt, status, extra] = glpkmex (varargin)
 
   ## If there is no input output the version and syntax
   if (nargin < 4 || nargin > 11)
-    usage ("[xopt, fopt, status, extra] = glpkmex (sense, c, a, b, ctype, lb, ub, vartype, param, lpsolver, savepb");
+    print_usage ();
     return;
   endif
 

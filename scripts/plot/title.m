@@ -29,7 +29,7 @@
 function h = title (text)
 
   if (nargin != 1)
-    usage ("title (text)");
+    print_usage ();
   endif
 
   if (ischar (text))

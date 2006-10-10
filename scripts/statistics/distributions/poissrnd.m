@@ -61,7 +61,7 @@ function rnd = poissrnd (l, r, c)
   elseif (nargin == 1)
     sz = size (l);
   else
-    usage ("poissrnd (lambda, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (l))

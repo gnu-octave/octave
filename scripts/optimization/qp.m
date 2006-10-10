@@ -275,7 +275,7 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     INFO.info = info;
 
   else
-    usage ("[x, obj, info, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, Ain, A_ub)");
+    print_usage ();
   endif
 
 endfunction

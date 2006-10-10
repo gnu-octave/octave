@@ -26,7 +26,7 @@
 function [data, fmtstr] = __plt2vm__ (x, y, fmt)
 
   if (nargin < 2 || nargin > 3 || nargout != 2)
-    usage ("[data, fmtstr] = __plt2vm__ (x, y, fmt)");
+    print_usage ();
   elseif (nargin == 2 || isempty (fmt))
     fmt = " ";  ## Yes, this is intentionally not an empty string!
   endif

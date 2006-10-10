@@ -33,7 +33,7 @@
 function v = vec (x)
 
   if (nargin != 1)
-    usage ("vec (x)");
+    print_usage ();
   endif
 
   v = x(:);

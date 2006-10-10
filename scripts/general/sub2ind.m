@@ -64,7 +64,7 @@ function ind = sub2ind (dims, varargin)
       error ("sub2ind: expecting dims to be an integer vector");
     endif
   else
-    usage ("sub2ind (dims, i1, i2, ..., iN)");
+    print_usage ();
   endif
 
 

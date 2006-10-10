@@ -170,7 +170,7 @@ function [r, p, k, e] = residue (b, a, toler)
   ## We then solve for the residues using matrix division.
 
   if (nargin < 2 || nargin > 3)
-    usage ("residue (b, a, toler)");
+    print_usage ();
   endif
 
   if (nargin == 2)

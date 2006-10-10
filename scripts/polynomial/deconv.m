@@ -37,7 +37,7 @@
 function [b, r] = deconv (y, a)
 
   if (nargin != 2)
-    usage ("deconv (y, a)");
+    print_usage ();
   endif
 
   if (! (isvector (y) && isvector (a)))

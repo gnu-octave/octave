@@ -44,7 +44,7 @@
 function sysp = parallel (Asys, Bsys)
 
   if(nargin != 2)
-    usage("sysp = parallel(Asys,Bsys)");
+    print_usage ();
   endif
   if(! isstruct(Asys) )
     error("1st input argument is not a system data structure")

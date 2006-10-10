@@ -63,7 +63,7 @@ function rnd = geornd (p, r, c)
   elseif (nargin == 1)
     sz = size(n);
   elseif (nargin != 1)
-    usage ("geornd (p, r, c)");
+    print_usage ();
   endif
 
 

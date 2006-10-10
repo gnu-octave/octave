@@ -54,7 +54,7 @@ function polar (x1, x2, fmt)
     fmt = "";
     __plr1__ (x1, fmt);
   else
-    usage ("polar (theta, rho, fmt)");
+    print_usage ();
   endif
 
 endfunction

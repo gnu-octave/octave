@@ -42,7 +42,7 @@
 
 function pp = mkpp (x, P, d)
   if (nargin < 2 || nargin > 3)
-    usage ("pp = mkpp(x,P,d)");
+    print_usage ();
   endif
   pp.x = x(:);
   pp.P = P;

@@ -34,7 +34,7 @@
 function X = bitset (A, n, value)
 
   if (nargin < 2 || nargin > 3)
-    usage ("bitset (A, n, v)");
+    print_usage ();
   endif
 
   if (nargin == 2)

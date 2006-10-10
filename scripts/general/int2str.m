@@ -53,7 +53,7 @@ function retval = int2str (x)
     tmp(end) = "";
     retval = split (tmp, "\n");
   else
-    usage ("int2str (x)");
+    print_usage ();
   endif
 
 endfunction

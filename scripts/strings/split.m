@@ -95,7 +95,7 @@ function m = split (s, t, n)
       error ("split: both s and t must be strings");
     endif
   else
-    usage ("split (s, t, n)");
+    print_usage ();
   endif
 
 endfunction

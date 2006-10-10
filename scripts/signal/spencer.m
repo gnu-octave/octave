@@ -29,7 +29,7 @@
 function retval = spencer (X)
 
   if (nargin != 1)
-    usage ("spencer (X)");
+    print_usage ();
   endif
 
   [xr, xc] = size(X);

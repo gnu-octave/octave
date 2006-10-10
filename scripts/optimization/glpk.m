@@ -396,7 +396,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
 
   ## If there is no input output the version and syntax
   if (nargin < 3 || nargin > 9)
-    usage ("[xopt, fopt, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, sense, param)");
+    print_usage ();
     return;
   endif
 

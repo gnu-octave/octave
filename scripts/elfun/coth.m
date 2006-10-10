@@ -27,7 +27,7 @@
 function w = coth (z)
 
   if (nargin != 1)
-    usage ("coth (z)");
+    print_usage ();
   endif
 
   w = 1 ./ tanh (z);

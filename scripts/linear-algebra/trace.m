@@ -27,7 +27,7 @@
 function y = trace (x)
 
   if (nargin != 1)
-    usage ("trace (x)");
+    print_usage ();
   endif
 
   [nr, nc] = size (x);

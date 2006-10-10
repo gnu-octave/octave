@@ -29,7 +29,7 @@
 function yi = ppval (pp, xi)
 
   if (nargin != 2)
-    usage ("yi = ppval(pp, xi)")
+    print_usage ();
   endif
   if (! isstruct (pp))
     error ("ppval: expects a pp structure");

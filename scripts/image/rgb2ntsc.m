@@ -29,7 +29,7 @@
 function yiq = rgb2ntsc (rgb)
 
   if (nargin != 1)
-    usage ("rgb2ntsc (rgb)");
+    print_usage ();
   endif
 
   trans = [ 0.299,  0.596,  0.211;

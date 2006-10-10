@@ -71,7 +71,7 @@ function rnd = cauchy_rnd (l, scale, r, c)
   elseif (nargin == 2)
     sz = size(l);
   else
-    usage ("cauchy_rnd (lambda, sigma, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (l) && isscalar (scale)) 

@@ -30,7 +30,7 @@
 function H = hurst (x)
 
   if (nargin != 1)
-    usage ("hurst (x)");
+    print_usage ();
   endif
 
   if (isscalar (x))

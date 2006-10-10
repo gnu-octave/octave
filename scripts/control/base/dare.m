@@ -119,7 +119,7 @@ function x = dare (a, b, q, r, opt)
     n2 = 2*n;
     x = u (n1:n2, 1:n)/u(1:n, 1:n);
   else
-    usage ("x = dare (a, b, q, r {,opt})");
+    print_usage ();
   endif
 
 endfunction

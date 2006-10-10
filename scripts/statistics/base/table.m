@@ -52,7 +52,7 @@ function [t, v, w] = table (x, y)
       endfor
     endfor
   else
-    usage ("[t, l_x, ...] = table (x, ...)");
+    print_usage ();
   endif
 
 endfunction

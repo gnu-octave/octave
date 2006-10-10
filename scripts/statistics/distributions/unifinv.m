@@ -31,7 +31,7 @@
 function inv = unifinv (x, a, b)
 
   if (nargin != 1 && nargin != 3)
-    usage ("unifinv (x, a, b)");
+    print_usage ();
   endif
 
   if (nargin == 1)

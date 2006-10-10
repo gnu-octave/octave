@@ -46,7 +46,7 @@ function [directory, name, extension, version] = fileparts (filename)
       error ("fileparts: expecting filename argument to be a string");
     endif
   else
-    usage ("fileparts (filename)");
+    print_usage ();
   endif
 
 endfunction

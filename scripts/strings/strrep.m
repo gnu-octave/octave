@@ -35,7 +35,7 @@
 function t = strrep (s, x, y)
 
   if (nargin != 3)
-    usage ("strrep (s, x, y)");
+    print_usage ();
   endif
 
   if (! (ischar (s) && ischar (x) && ischar (y)))

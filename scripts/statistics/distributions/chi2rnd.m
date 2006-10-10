@@ -62,7 +62,7 @@ function rnd = chi2rnd (n, r, c)
   elseif (nargin == 1)
     sz = size(n);
   else
-    usage ("chi2rnd (n, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (n))

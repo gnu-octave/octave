@@ -115,7 +115,7 @@ function x = are (a, b, c, opt)
     n2 = 2 * n;
     x = u (n1:n2, 1:n) / u (1:n, 1:n);
   else
-    usage ("x = are (a, b, c)")
+    print_usage ();
   endif
 
 endfunction

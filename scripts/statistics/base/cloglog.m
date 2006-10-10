@@ -32,7 +32,7 @@
 function y = cloglog (x)
 
   if (nargin != 1)
-    usage ("cloglog (x)");
+    print_usage ();
   endif
 
   y = - log (- log (x));

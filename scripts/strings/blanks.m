@@ -28,7 +28,7 @@
 function s = blanks (n)
 
   if (nargin != 1)
-    usage ("blanks (n)");
+    print_usage ();
   endif
 
   if (isscalar (n) && n == round (n))

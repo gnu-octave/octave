@@ -31,7 +31,7 @@
 function gm = dcgain (sys, tol)
 
   if((nargin < 1) || (nargin > 2) || (nargout > 1))
-    usage("[gm, ok] = dcgain(sys[, tol])");
+    print_usage ();
   endif
   if(!isstruct(sys))
     error("dcgain: first argument is not a system data structure.")

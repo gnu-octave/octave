@@ -30,7 +30,7 @@ function beep ()
   if (nargin == 0)
     puts ("\a");
   else
-    usage ("beep ()");
+    print_usage ();
   endif
 
 endfunction

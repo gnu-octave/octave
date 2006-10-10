@@ -33,7 +33,7 @@
 function t = studentize (x, dim)
 
   if (nargin != 1 && nargin != 2)
-    usage ("studentize (x, dim)");
+    print_usage ();
   endif
 
   nd = ndims (x);

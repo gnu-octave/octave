@@ -55,7 +55,7 @@ function [pval, t, df] = t_test_regression (y, X, R, r, alt)
       alt = "!=";
     endif
   elseif (! (nargin == 5))
-    usage ("[pval, t, df] = t_test_regression (y, X, R, r, alt)");
+    print_usage ();
   endif
 
   if (! isscalar (r))

@@ -35,7 +35,7 @@ function X = record (sec, sampling_rate)
   if (nargin == 1)
     sampling_rate = 8000;
   elseif (nargin != 2)
-    usage ("X = record (sec [, sampling_rate])");
+    print_usage ();
   endif
 
   unwind_protect

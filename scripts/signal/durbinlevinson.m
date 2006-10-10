@@ -36,7 +36,7 @@
 function [newphi, newv] = durbinlevinson (c, oldphi, oldv)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("durbinlevinson (c, oldphi, oldv)");
+    print_usage ();
   endif
 
   if (columns (c) > 1)

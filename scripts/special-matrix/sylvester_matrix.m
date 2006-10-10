@@ -36,7 +36,7 @@
 function retval = sylvester_matrix (k)
 
   if (nargin != 1)
-    usage ("sylvester_matrix (n)");
+    print_usage ();
   endif
 
   if (isscalar (k))

@@ -42,7 +42,7 @@ function subwindow (xn, yn)
   ## check calling argument count
 
   if (nargin != 2)
-    usage ("subwindow (xn, yn)");
+    print_usage ();
   endif
 
   ## check for scalar inputs

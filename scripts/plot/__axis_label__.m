@@ -27,7 +27,7 @@
 function h = __axis_label__ (caller, text)
 
   if (nargin == 0)
-    usage ("__axis_label__ (caller, text)");
+    print_usage ();
   elseif (nargin == 2)
     if (ischar (text))
       __gnuplot_raw__ (sprintf ("set %s \"%s\";\n", caller,

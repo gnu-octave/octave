@@ -27,7 +27,7 @@
 function w = acoth (z)
 
   if (nargin != 1)
-    usage ("acoth (z)");
+    print_usage ();
   endif
 
   w = atanh (1 ./ z);

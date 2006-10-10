@@ -27,7 +27,7 @@
 function w = cot (z)
 
   if (nargin != 1)
-    usage ("cot (z)");
+    print_usage ();
   endif
 
   w = 1 ./ tan(z);

@@ -78,7 +78,7 @@ function retval = tril (x, k)
       error ("tril: requested diagonal out of range");
     endif
   else
-    usage ("tril (x, k)");
+    print_usage ();
   endif
 
   for j = 1 : min (nc, nr+k)

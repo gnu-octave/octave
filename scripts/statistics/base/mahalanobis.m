@@ -32,7 +32,7 @@
 function retval = mahalanobis (X, Y)
 
   if (nargin != 2)
-    usage ("mahalanobis (X, Y)");
+    print_usage ();
   endif
 
   [xr, xc] = size (X);

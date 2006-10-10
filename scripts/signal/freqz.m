@@ -73,7 +73,7 @@
 function [h_r, f_r] = freqz (b, a, n, region, Fs)
 
   if (nargin < 1 || nargin > 5)
-    usage ("[h, w] = freqz (b, a, n [, \"whole\"] [, Fs])");
+    print_usage ();
   elseif (nargin == 1)
     ## Response of an FIR filter.
     a = n = region = Fs = [];

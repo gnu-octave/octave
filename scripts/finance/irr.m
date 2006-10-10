@@ -34,7 +34,7 @@ function r = irr (p, i)
   if (nargin == 1)
     i = 0;
   elseif (! (nargin == 2))
-    usage ("irr (p, i)");
+    print_usage ();
   endif
 
   if (! (isvector (p)))

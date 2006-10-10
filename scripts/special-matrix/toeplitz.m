@@ -61,7 +61,7 @@ function retval = toeplitz (c, r)
   if (nargin == 1)
     r = c;
   elseif (nargin != 2)
-    usage ("toeplitz (c, r)");
+    print_usage ();
   endif
 
   [c_nr, c_nc] = size (c);

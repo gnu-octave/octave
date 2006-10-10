@@ -18,7 +18,7 @@
 
 function [count,mean,var] = spstats(S,j)
   if nargin < 1 || nargin > 2
-    usage("[count, mean, var] = spstats(S)  OR  spstats(x,j)");
+    print_usage ();
   endif
 
   if nargin == 1

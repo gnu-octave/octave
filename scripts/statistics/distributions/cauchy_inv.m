@@ -31,7 +31,7 @@
 function inv = cauchy_inv (x, location, scale)
 
   if (! (nargin == 1 || nargin == 3))
-    usage ("cauchy_inv (x, lambda, sigma)");
+    print_usage ();
   endif
 
   if (nargin == 1)

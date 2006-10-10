@@ -48,7 +48,7 @@
 function m = moment (x, p, opt1, opt2)
 
   if ((nargin < 2) || (nargin > 4))
-    usage ("moment (x, p, type, dim)");
+    print_usage ();
   endif
 
   need_dim = 0;
@@ -72,10 +72,10 @@ function m = moment (x, p, opt1, opt2)
       opt = opt2;
       dim = opt1;
     else
-      usage ("moment: expecting opt to be a string");
+      error ("moment: expecting opt to be a string");
     endif
   else
-    usage ("moment (x, p, dim, opt)");
+    print_usage ();
   endif
 
   if (need_dim)

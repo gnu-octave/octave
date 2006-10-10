@@ -86,7 +86,7 @@ function [q, r] = polyderiv (p, a)
       q = p(1:(lp-1)) .* [(lp-1):-1:1];
     endif
   else
-    usage ("q = polyderiv (p) or q = polyderiv (b, a) or [q, r] = polyderiv (b, a)");
+    print_usage ();
   endif
 
 

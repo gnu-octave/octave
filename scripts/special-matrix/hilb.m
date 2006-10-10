@@ -51,7 +51,7 @@ function retval = hilb (n)
 
 
   if (nargin != 1)
-    usage ("hilb (n)");
+    print_usage ();
   endif
 
   nmax = length (n);

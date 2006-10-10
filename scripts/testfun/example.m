@@ -36,7 +36,7 @@
 function [code_r, idx_r] = example(name, n)
 
   if (nargin < 1 || nargin > 2)
-    usage("example('name')  or example('name', n)");
+    print_usage ();
   endif
   if (nargin < 2)
     n = 0;

@@ -30,7 +30,7 @@
 function cdf = chi2cdf (x, n)
 
   if (nargin != 2)
-    usage ("chi2cdf (x, n)");
+    print_usage ();
   endif
 
   if (!isscalar (n))

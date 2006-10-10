@@ -36,7 +36,7 @@
 function idx = strfind (text, pattern)
 
   if (nargin != 2)
-    usage ("idx = strfind (text, pattern)");
+    print_usage ();
   elseif (! ischar (pattern))
     error ("strfind: pattern must be a string value");
   endif

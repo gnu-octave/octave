@@ -48,7 +48,7 @@
 function str_val = __outlist__ (name_list, tabchar, yd, ilist)
 
   if( nargin < 1 | nargin > 4 )
-    usage("str_val = outlist(x[,tabchar,yd,ilist])");
+    print_usage ();
   endif
 
   m = length(name_list);

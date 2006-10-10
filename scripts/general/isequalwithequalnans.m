@@ -29,7 +29,7 @@ function retval = isequalwithequalnans (x, varargin)
   if (nargin > 1)
     retval = __isequal__ (1, x, varargin{:});
   else
-    usage ("isequalwithequalnans (x1, x2, ...)");
+    print_usage ();
   endif
 
 endfunction

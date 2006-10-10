@@ -44,7 +44,7 @@
 function [pval, z] = prop_test_2 (x1, n1, x2, n2, alt)
 
   if ((nargin < 4) || (nargin > 5))
-        usage ("[pval, z] = prop_test_2 (x1, n1, x2, n2, alt)");
+        print_usage ();
   endif
 
   ## Could do sanity checking on x1, n1, x2, n2 here

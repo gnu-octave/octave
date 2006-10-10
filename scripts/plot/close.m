@@ -60,7 +60,7 @@ function retval = close (arg1, arg2)
 	  && ischar (arg2) && strcmp (arg2, "hidden"))
     closeplot;
   else
-    usage ("close [all]");
+    print_usage ();
   endif
 
   if (nargout > 0)

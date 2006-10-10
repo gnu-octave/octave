@@ -38,7 +38,7 @@ function retval = triu (x, k)
       error ("triu: requested diagonal out of range");
     endif
   else
-    usage ("triu (x, k)");
+    print_usage ();
   endif
 
   for j = max (1, k+1) : nc

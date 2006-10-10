@@ -50,7 +50,7 @@
 function retval = dec2base (n, base, len)
 
   if (nargin < 2 || nargin > 3)
-    usage ("dec2base (n, base [, len])");
+    print_usage ();
   endif
 
   if (prod (size (n)) != length (n))

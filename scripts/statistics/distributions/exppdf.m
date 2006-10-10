@@ -29,7 +29,7 @@
 function pdf = exppdf (x, l)
 
   if (nargin != 2)
-    usage ("exppdf (x, lambda)");
+    print_usage ();
   endif
 
   if (!isscalar (x) && !isscalar(l))

@@ -40,7 +40,7 @@
 function n = nper (r, p, a, l, m)
 
   if ((nargin < 3) || (nargin > 5))
-    usage ("nper (r, p, a, l, method)");
+    print_usage ();
   endif
 
   if (! (isscalar (r) && (r > -1)))

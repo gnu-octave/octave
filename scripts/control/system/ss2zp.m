@@ -33,7 +33,7 @@
 function [zer, pol, k] = ss2zp (a, b, c, d)
 
   if(nargin != 4)
-    usage("[zer,pol,k] = ss2zp(a,b,c,d)");
+    print_usage ();
   endif
 
   [n,m,p] = abcddim(a,b,c,d);

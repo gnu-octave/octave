@@ -35,7 +35,7 @@ function t = dezero (s)
   error("dezero is no longer supported.");
 
   if (nargin != 1)
-    usage ("dezero (s)");
+    print_usage ();
   elseif (ischar (s))
 
     [nr, nc] = size (s);

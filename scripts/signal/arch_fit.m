@@ -52,7 +52,7 @@
 function [a, b] = arch_fit (y, X, p, ITER, gamma, a0, b0)
 
   if ((nargin < 3) || (nargin == 6) || (nargin > 7))
-    usage ("arch_fit (y, X, p, ITER, gamma, a0, b0)");
+    print_usage ();
   endif
 
   if (! (isvector (y)))

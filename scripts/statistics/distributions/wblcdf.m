@@ -37,7 +37,7 @@
 function cdf = wblcdf (x, scale, shape)
 
   if (nargin < 1 || nargin > 3)
-    usage ("wblcdf (x, scale, shape)");
+    print_usage ();
   endif
 
   if (nargin < 3)

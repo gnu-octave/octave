@@ -30,7 +30,7 @@
 function inv = poissinv (x, l)
 
   if (nargin != 2)
-    usage ("poissinv (x, lambda)");
+    print_usage ();
   endif
 
   if (!isscalar (l))

@@ -31,7 +31,7 @@
 function perror (name, err)
 
   if (nargin != 2)
-    usage ("perror (name, err)");
+    print_usage ();
   else
     printf (strerror (name, err));
   endif

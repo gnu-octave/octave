@@ -46,7 +46,7 @@
 function [nn, xx] = hist (y, x, norm)
 
   if (nargin < 1 || nargin > 3)
-    usage ("[nn, xx] = hist (y, x, norm)");
+    print_usage ();
   endif
 
   arg_is_vector = isvector (y);

@@ -44,7 +44,7 @@
 function y = var (x, opt, dim)
 
   if (nargin < 1 || nargin > 3)
-    usage ("var (x, opt, sim)");
+    print_usage ();
   endif
   if (nargin < 3)
     dim = find (size (x) > 1, 1);

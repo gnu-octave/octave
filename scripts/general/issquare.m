@@ -40,7 +40,7 @@ function retval = issquare (x)
       endif
     endif
   else
-    usage ("issquare (x)");
+    print_usage ();
   endif
 
 endfunction

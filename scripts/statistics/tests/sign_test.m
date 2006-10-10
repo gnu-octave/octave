@@ -46,7 +46,7 @@
 function [pval, b, n] = sign_test (x, y, alt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("[pval, b, n] = sign_test (x, y, alt)");
+    print_usage ();
   endif
 
   if (! (isvector (x) && isvector (y) && (length (x) == length (y))))

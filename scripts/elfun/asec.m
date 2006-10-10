@@ -27,7 +27,7 @@
 function w = asec (z)
 
   if (nargin != 1)
-    usage ("asec (z)");
+    print_usage ();
   endif
 
   w = acos (1 ./ z);

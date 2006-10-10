@@ -30,7 +30,7 @@
 function pdf = chi2pdf (x, n)
 
   if (nargin != 2)
-    usage ("chi2pdf (x, n)");
+    print_usage ();
   endif
 
   if (!isscalar (n))

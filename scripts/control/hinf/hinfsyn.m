@@ -132,7 +132,7 @@
 function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol, tol)
 
   if( (nargin < 1) | (nargin > 8) )
-    usage("[K,g,GW,Xinf,Yinf] = hinfsyn(Asys,nu,ny,gmin,gmax,gtol,ptol,tol)");
+    print_usage ();
   endif
   ## set default arguments
   if(nargin < 8)

@@ -26,7 +26,7 @@
 function __plr1__ (theta, fmt)
 
   if (nargin != 2)
-    usage ("__plr1__ (theta, fmt)");
+    print_usage ();
   endif
 
   [nr, nc] = size (theta);

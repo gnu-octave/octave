@@ -31,8 +31,6 @@
 
 function playaudio (name, ext)
 
-  usage_msg = "playaudio (name, ext)  or  playaudio (X)";
-
   if (nargin == 1 && isvector (name) && ! ischar (name))
     ## play a vector
     [nr, nc] = size (name);
@@ -61,7 +59,7 @@ function playaudio (name, ext)
     elseif (nargin == 2)
       name = [name, ".", ext];
     else
-      usage (usage_msg);
+      print_usage ();
     endif
     if (strcmp (ext, "lin") || strcmp (ext, "raw"))
       system (sprintf ("cat \"%s\" > /dev/dsp", name));
@@ -72,7 +70,7 @@ function playaudio (name, ext)
       error ("playaudio does not support given extension");
     endif
   else
-    usage (usage_msg);
+    print_usage ();
   endif
 
 endfunction

@@ -34,7 +34,7 @@ function retval = gammai (a, x)
   if (nargin == 2)
     retval = gammainc (x, a);
   else
-    usage ("gammai (a, x)");
+    print_usage ();
   endif
 
 endfunction

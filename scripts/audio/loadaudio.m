@@ -40,7 +40,7 @@
 function X = loadaudio (name, ext, bit)
 
   if (nargin == 0 || nargin > 3)
-    usage ("loadaudio (name, ext, bit)");
+    print_usage ();
   endif
 
   if (nargin == 1)

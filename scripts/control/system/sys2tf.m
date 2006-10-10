@@ -40,7 +40,7 @@
 function [num, den, tsam, inname, outname] = sys2tf (Asys)
 
   if(nargin != 1)
-    usage("[num,den,tsam,inname,outname] = sys2tf(Asys)");
+    print_usage ();
   endif
 
   if( !isstruct(Asys))

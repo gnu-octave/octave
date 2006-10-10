@@ -33,7 +33,7 @@
 
 function [c, ia, ib] = intersect (a, b)
   if (nargin != 2)
-    usage ("intersect (a, b)");
+    print_usage ();
   endif
 
   if (isempty (a) || isempty (b))

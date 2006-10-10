@@ -45,7 +45,7 @@
 function Y = filter2 (B, X, shape)
 
   if (nargin < 2 || nargin > 3)
-    usage ("Y = filter2 (B, X [, 'shape'])");
+    print_usage ();
   endif
   if (nargin < 3)
     shape = "same";

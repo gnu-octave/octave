@@ -29,7 +29,7 @@
 function cdf = stdnormal_cdf (x)
 
   if (nargin != 1)
-    usage ("stdnormal_cdf (x)");
+    print_usage ();
   endif
 
   sz = size (x);

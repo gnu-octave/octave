@@ -44,7 +44,7 @@
 function ret = imagesc (x, y, A, zoom, limits)
 
   if (nargin < 1 || nargin > 5)
-    usage ("B = imagesc ([x, y,] matrix [,limits] [,zoom])");
+    print_usage ();
   elseif (nargin == 1)
     A = x;
     zoom = x = y = limits = [];

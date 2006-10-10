@@ -33,7 +33,7 @@
 function outsys = ugain (n)
 
   if (nargin != 1 || nargout > 1)
-    usage ("outsys = ugain(n)");
+    print_usage ();
   endif
   outsys = ss ([], [], [], eye (n));
 

@@ -34,7 +34,7 @@
 function [status, text] = dos (cmd, echo_arg)
 
   if (nargin < 1 || nargin > 2)
-    usage ( "[status, text] = dos (cmd, '-echo')");
+    print_usage ();
   elseif (! isunix ())
     [status, text] = system (cmd);
     if (nargin > 1 || nargout == 0)

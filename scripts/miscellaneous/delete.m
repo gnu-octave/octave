@@ -31,7 +31,7 @@ function delete (file)
   if (nargin == 1)
     unlink (file);
   else
-    usage ("delete (file)");
+    print_usage ();
   endif
 
 endfunction

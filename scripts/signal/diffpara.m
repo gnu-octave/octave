@@ -43,7 +43,7 @@
 function [d, D] = diffpara (X, a, b)
 
   if ((nargin < 1) || (nargin > 3))
-    usage ("[d, D] = diffpara (X, a, b)");
+    print_usage ();
   else
     if (isvector (X))
       n = length (X);

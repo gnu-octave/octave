@@ -54,8 +54,6 @@ function hold (arg)
     __hold_state__(__current_figure__) = false;
   endif
 
-  usage_msg = "hold (\"on\") or hold (\"off\")";
-
   if (nargin == 0)
     __hold_state__(__current_figure__) = ! __hold_state__(__current_figure__);
   elseif (nargin == 1)
@@ -64,10 +62,10 @@ function hold (arg)
     elseif (strcmp (arg, "off"))
       __hold_state__(__current_figure__) = false;
     else
-      usage (usage_msg);
+      print_usage ();
     endif
   else
-    usage (usage_msg);
+    print_usage ();
   endif
 
 endfunction

@@ -39,7 +39,7 @@ function retval = ctime (t)
   if (nargin == 1)
     retval = asctime (localtime (t));
   else
-    usage ("ctime (TIME)");
+    print_usage ();
   endif
 
 endfunction

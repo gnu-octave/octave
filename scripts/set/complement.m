@@ -36,7 +36,7 @@
 function y = complement (a, b)
 
   if (nargin != 2)
-    usage ("complement(a,b)");
+    print_usage ();
   endif
 
   if (isempty (a))

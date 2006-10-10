@@ -29,7 +29,7 @@
 function cdf = binocdf (x, n, p)
 
   if (nargin != 3)
-    usage ("binocdf (x, n, p)");
+    print_usage ();
   endif
 
   if (!isscalar (n) || !isscalar (p))

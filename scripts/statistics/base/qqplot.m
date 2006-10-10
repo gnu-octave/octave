@@ -48,7 +48,7 @@
 function [q, s] = qqplot (x, dist, varargin)
 
   if (nargin < 1)
-    usage ("qqplot (x, dist, params)");
+    print_usage ();
   endif
 
   if (! (isvector(x)))

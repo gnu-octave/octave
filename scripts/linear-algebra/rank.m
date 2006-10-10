@@ -48,7 +48,7 @@ function retval = rank (A, tol)
     sigma = svd (A);
     tolerance = tol;
   else
-    usage ("rank (A)");
+    print_usage ();
   endif
 
   retval = sum (sigma > tolerance);

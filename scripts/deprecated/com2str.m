@@ -36,7 +36,7 @@
 function retval = com2str (zz, flg)
 
   if (nargin < 1 || nargin > 2)
-    usage ("com2str (zz, flg)");
+    print_usage ();
   endif
   if (nargin == 1)
     flg = 0;

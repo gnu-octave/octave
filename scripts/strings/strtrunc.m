@@ -29,7 +29,7 @@
 function s = strtrunc (s, n)
 
   if (nargin != 2)
-    usage ("strtrunc (s, n)");
+    print_usage ();
   endif
 
   if (ischar (s))

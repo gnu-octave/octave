@@ -50,7 +50,7 @@
 function h2gain = h2norm (sys)
 
   if((nargin != 1))
-    usage("h2gain = h2norm(sys)");
+    print_usage ();
   elseif(!isstruct(sys))
     error("Sys must be in system data structure");
   end

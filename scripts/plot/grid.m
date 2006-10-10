@@ -43,8 +43,6 @@ function grid (x, y)
   persistent minor_on = false;
   persistent minor_tics = 5;
 
-  usage_msg = "grid (\"on\" | \"off\")";
-
   do_replot = false;
 
   if (nargin == 0)
@@ -84,7 +82,7 @@ function grid (x, y)
 	endif
 	do_replot = true;
       else
-	usage (usage_msg);
+	print_usage ();
       endif
     else
       error ("grid: argument must be a string");
@@ -109,7 +107,7 @@ function grid (x, y)
             __gnuplot_raw__ ("set grid xtics mxtics ytics mxtics;\n");
 	    minor_on = true;
 	  else
-	    usage (usage_msg);
+	    print_usage ();
 	  endif
 	  do_replot = true;
 	else
@@ -123,17 +121,17 @@ function grid (x, y)
 	    minor_on = true;
 	    do_replot = true;
 	  else
-	    usage (usage_msg);
+	    print_usage ();;
 	  endif
 	endif
       else
-	usage (usage_msg);
+	print_usage ();;
       endif
     else
-      usage (usage_msg);
+      print_usage ();;
     endif    
   else
-    usage (usage_msg);
+    print_usage ();;
   endif    
 
   if (do_replot && automatic_replot)

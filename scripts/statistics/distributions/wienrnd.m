@@ -40,7 +40,7 @@ function retval = wienrnd (t, d, n)
   elseif (nargin == 2)
     n = 1000;
   elseif (nargin > 3)
-    usage ("wienrnd (t, d, n)");
+    print_usage ();
   endif
 
   if (!isscalar (t) || !isscalar (d) || !isscalar (n))

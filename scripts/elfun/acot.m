@@ -27,7 +27,7 @@
 function w = acot (z)
 
   if (nargin != 1)
-    usage ("acot (z)");
+    print_usage ();
   endif
 
   w = atan (1./z);

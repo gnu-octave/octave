@@ -42,7 +42,7 @@
 function y = arch_rnd (a, b, T)
 
   if (nargin != 3)
-    usage ("arch_rnd (a, b, T)");
+    print_usage ();
   endif
 
   if (! ((min (size (a)) == 1) && (min (size (b)) == 1)))

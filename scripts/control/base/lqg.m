@@ -71,7 +71,7 @@
 function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
 
   if ( (nargin < 5) | (nargin > 6))
-    usage("[K,Q1,P1,Ee,Er] = lqg(sys,Sigw, Sigv,Q,R{,input_list})");
+    print_usage ();
 
   elseif(!isstruct(sys) )
     error("sys must be in system data structure");

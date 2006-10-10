@@ -29,7 +29,7 @@
 function cdf = geocdf (x, p)
 
   if (nargin != 2)
-    usage ("geocdf (x, p)");
+    print_usage ();
   endif
 
   if (!isscalar (x) && !isscalar (p))

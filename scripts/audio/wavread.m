@@ -49,7 +49,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   BYTEORDER         = "ieee-le";
 
   if (nargin < 1 || nargin > 2)
-    usage ("wavread (filename, param)");
+    print_usage ();
   endif
 
   if (! ischar (filename))

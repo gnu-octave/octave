@@ -30,7 +30,7 @@
 function c = ismember (a, S)
 
   if (nargin != 2)
-    usage ("ismember (A, S)");
+    print_usage ();
   endif
 
   [ra, ca] = size (a);

@@ -36,7 +36,7 @@
 function retval = is_leap_year (year)
 
   if (nargin > 1)
-    usage ("is_leap_year (year)");
+    print_usage ();
   endif
 
   if (nargin == 0)

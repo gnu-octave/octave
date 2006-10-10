@@ -35,7 +35,7 @@ function retval = autocor (X, h)
   elseif (nargin == 2)
     retval = autocov (X, h);
   else
-    usage ("autocor (X, h)");
+    print_usage ();
   endif
 
   if (min (retval (1,:)) != 0)

@@ -64,7 +64,7 @@
 function t = cor_test (X, Y, ALTERNATIVE, METHOD)
 
   if ((nargin < 2) || (nargin > 4))
-    usage ("cor_test (X, Y, ALTERNATIVE, METHOD)")
+    print_usage ();
   endif
 
   if (!isvector (X) || !isvector (Y) || length (X) != length (Y))

@@ -69,7 +69,7 @@
 function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, min_k, max_k)
 
   if (nargin < 1) | (nargin > 4)
-    usage("rlocus(sys[,inc,mink,maxk])");
+    print_usage ();
   endif
 
   ## Convert the input to a transfer function if necessary

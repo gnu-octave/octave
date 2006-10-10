@@ -89,10 +89,10 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   endif
   if (nargin < 1 || nargin > 3 ...
       || (!ischar(__name) && !isempty(__name)) || !ischar(__flag))
-    usage("success = test('name', ['quiet'|'normal'|'verbose'], fid)");
+    print_usage ();
   endif
   if (isempty(__name) && (nargin != 3 || !strcmp(__flag, "explain")))
-    usage("test([], 'explain', fid)");
+    print_usage ();
   endif
   __batch = (!isempty(__fid));
 

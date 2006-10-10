@@ -80,6 +80,6 @@ function y = circshift (x, n)
     endfor
     y = x(idx{:});
   else
-    usage ("circshift (x, n)");
+    print_usage ();
   endif
 endfunction

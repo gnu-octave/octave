@@ -62,7 +62,7 @@
 function A = compan (c)
 
   if (nargin != 1)
-    usage ("compan (vector)");
+    print_usage ();
   endif
 
   if (! isvector (c))

@@ -31,7 +31,7 @@
 function retval = run_count (x, n, dim)
 
   if (nargin != 2 && nargin != 3)
-    usage ("run_count (x, n) or run_count (x, n, dim)");
+    print_usage ();
   endif
 
   nd = ndims (x);

@@ -81,7 +81,7 @@ function [Y, c] = stft(X, win, inc, coef, w_type)
       endif
     endif
   else
-    usage ("[Y, c] = stft(X, win_size, inc, num_coef, w_type)");
+    print_usage ();
   endif
 
   ## check whether X is a vector

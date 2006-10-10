@@ -45,7 +45,7 @@
 function [pval, t, df] = t_test (x, m, alt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("[pval, t, df] = t_test (x, m, alt)");
+    print_usage ();
   endif
 
   if (! isvector (x))

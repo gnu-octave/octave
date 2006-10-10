@@ -53,7 +53,7 @@
 function retval = vander (c)
 
   if (nargin != 1)
-    usage ("vander (c)");
+    print_usage ();
   endif
 
   if (isvector (c))

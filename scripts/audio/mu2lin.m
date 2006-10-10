@@ -40,7 +40,7 @@ function y = mu2lin (x, bit)
       error ("mu2lin: bit must be either 0, 8 or 16");
     endif
   else
-    usage ("y = mu2lin (x, bit)");
+    print_usage ();
   endif
 
   ulaw = [32124, 31100, 30076, 29052, 28028, 27004, 25980, 24956, \

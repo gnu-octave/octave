@@ -28,7 +28,7 @@
 function x = strjust (x, just)
 
   if (nargin < 1 || nargin > 2)
-    usage ("strjust (s, ['left'|'right'|'center'])");
+    print_usage ();
   endif
 
   if (nargin == 1)

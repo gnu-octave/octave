@@ -49,7 +49,7 @@
 function [pval, ks, d] = kolmogorov_smirnov_test_2 (x, y, alt)
 
   if (nargin < 2 || nargin > 3)
-    usage ("[pval, ks] = kolmogorov_smirnov_test_2 (x, y, tol)");
+    print_usage ();
   endif
 
   if (! (isvector (x) && isvector (y)))

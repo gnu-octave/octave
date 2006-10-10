@@ -133,7 +133,7 @@ function contour (x, y, z, n)
       error ("contour: x and y must be vectors and z must be a matrix");
     endif
   else
-    usage ("contour (x, y, z, levels) or contour (z, levels)");
+    print_usage ();
   endif
 
 endfunction

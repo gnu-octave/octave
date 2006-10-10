@@ -42,7 +42,7 @@ function y = detrend (x, p)
       error ("detrend: p must be a nonnegative integer");
     endif
   else
-    usage ("detrend (x, p)");
+    print_usage ();
   endif
 
   [m, n] = size (x);

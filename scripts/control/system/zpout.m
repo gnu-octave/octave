@@ -31,7 +31,7 @@
 function zpout (zer, pol, k, x)
 
   if (nargin < 3 ) | (nargin > 4) | (nargout != 0 )
-    usage("zpout(zer,pol,k[,x])");
+    print_usage ();
   endif
 
   if( !(isvector(zer) | isempty(zer)) | !(isvector(pol) | isempty(pol)) )

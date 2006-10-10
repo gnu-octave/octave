@@ -41,7 +41,7 @@
 function y = flipud (x)
 
   if (nargin != 1)
-    usage ("flipud (x)");
+    print_usage ();
   endif
 
   if (ndims (x) > 2)

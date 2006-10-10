@@ -38,7 +38,7 @@ function retval = is_duplicate_entry (x)
       error ("is_duplicate_entry: expecting matrix argument");
     endif
   else
-    usage ("is_duplicate_entry (x)");
+    print_usage ();
   endif
 
 endfunction

@@ -34,7 +34,7 @@
 function p = polyinteg (p)
 
   if(nargin != 1)
-    usage ("polyinteg (vector)");
+    print_usage ();
   endif
 
   if (! (isvector (p) || isempty (p)))

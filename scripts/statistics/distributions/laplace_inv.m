@@ -29,7 +29,7 @@
 function inv = laplace_inv (x)
 
   if (nargin != 1)
-    usage ("laplace_inv (x)");
+    print_usage ();
   endif
 
   inv = (-Inf) * ones (size (x));

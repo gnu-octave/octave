@@ -46,7 +46,7 @@
 function [p, y] = ppplot (x, dist, varargin)
 
   if (nargin < 1)
-    usage ("ppplot (x, dist, params)");
+    print_usage ();
   endif
 
   if (! isvector (x))

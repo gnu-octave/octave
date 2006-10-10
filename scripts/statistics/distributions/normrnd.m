@@ -72,7 +72,7 @@ function rnd = normrnd (m, v, r, c)
   elseif (nargin == 2)
     sz = size(m);
   else
-    usage ("normrnd (m, v, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (m) && isscalar (v))

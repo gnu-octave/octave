@@ -28,7 +28,7 @@ function retval = not (val)
   if (nargin == 1)
     retval = ! val;
   else
-    usage ("not (val)");
+    print_usage ();
   endif
 
 endfunction

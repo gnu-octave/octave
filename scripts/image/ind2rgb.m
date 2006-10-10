@@ -31,7 +31,7 @@
 function [R, G, B] = ind2rgb (X, map)
 
   if (nargin < 1 || nargin > 2)
-    usage ("ind2rgb (X, map)");
+    print_usage ();
   elseif (nargin == 1)
     map = colormap ();
   endif

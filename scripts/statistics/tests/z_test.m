@@ -45,7 +45,7 @@
 function [pval, z] = z_test (x, m, v, alt)
 
   if ((nargin < 3) || (nargin > 4))
-    usage ("[pval, z] = z_test (x, m, v, alt)");
+    print_usage ();
   endif
 
   if (! isvector (x))

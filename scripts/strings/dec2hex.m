@@ -45,7 +45,7 @@ function retval = dec2hex (n, len)
   elseif (nargin == 2)
     retval = dec2base (n, 16, len);
   else
-    usage ("dec2hex (n [, len])");
+    print_usage ();
   endif
 
 endfunction

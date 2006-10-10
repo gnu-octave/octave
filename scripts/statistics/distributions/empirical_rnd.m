@@ -41,7 +41,7 @@ function rnd = empirical_rnd (data, r, c)
       r = 1;
     endif
   elseif (nargin != 3)
-    usage ("empirical_rnd (n, data) | empirical_rnd (data, r, c)");
+    print_usage ();
   endif
 
   if (! isvector (data))

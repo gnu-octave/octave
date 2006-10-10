@@ -47,7 +47,7 @@
 function sys = sysadd (varargin)
 
   if(nargin < 1)
-    usage("sysadd: sys = sysysadd(Gsys{,Hsys, ...})");
+    print_usage ();
   endif
 
   ## collect all arguments

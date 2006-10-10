@@ -31,7 +31,7 @@
 function tfout (num, denom, x)
 
   if (nargin < 2 ) | (nargin > 3) | (nargout != 0 )
-    usage("tfout(num,denom[,x])");
+    print_usage ();
   endif
 
   if ( (!isvector(num)) | (!isvector(denom)) )

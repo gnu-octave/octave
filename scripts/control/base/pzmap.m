@@ -40,7 +40,7 @@
 function [zer, pol]=pzmap (sys)
 
   if(nargin != 1)
-    usage("pzmap(sys) or [zer,pol] = pzmap(sys)");
+    print_usage ();
   elseif (!isstruct(sys));
     error("sys must be in system format");
   endif

@@ -43,7 +43,7 @@
 function loglogerr (varargin)
 
   if (nargin < 2)
-    usage ("loglogerr(...)");
+    print_usage ();
   endif
 
   __gnuplot_raw__ ("set logscale x;\n");

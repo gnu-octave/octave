@@ -37,7 +37,7 @@
 function r = rate (n, p, v, l, m)
 
   if ((nargin < 3) || (nargin > 5))
-    usage ("rate (n, p, v, l, method)");
+    print_usage ();
   endif
 
   if (! (isscalar (n) && (n > 0)))

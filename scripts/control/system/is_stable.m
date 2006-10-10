@@ -48,7 +48,7 @@
 
 function retval = is_stable (a, tol, disc)
 
-  if( (nargin < 1) | (nargin > 3) )   usage("is_stable(a {,tol,disc})");
+  if( (nargin < 1) | (nargin > 3) )   print_usage ();
   elseif(isstruct(a))
     ## system was passed
     if(nargin < 3)                      disc = is_digital(a);

@@ -32,7 +32,7 @@
 function retval = center (x, varargin)
 
   if (nargin != 1 && nargin != 2)
-    usage ("center (x)");
+    print_usage ();
   endif
 
   if (isvector (x))

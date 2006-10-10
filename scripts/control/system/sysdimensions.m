@@ -69,9 +69,9 @@
 function [n, nz, m, p, yd] = sysdimensions (sys, opt)
 
   if(nargout > 5 | nargin < 1 | nargin > 2)
-    usage("[n,nz,m,p[,yd]] = sysdimensions(sys{,opt})");
+    print_usage ();
   elseif(!isstruct(sys))
-    usage("[n,nz,m,p] = sysdimensions(sys)");
+    print_usage ();
   elseif(nargin == 1)
     opt = "all";
   endif

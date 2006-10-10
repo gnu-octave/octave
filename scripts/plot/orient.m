@@ -42,7 +42,7 @@ function retval = orient (orientation)
       error ("orient: unknown orientation");
     endif
   else
-    usage("orient ([\"portrait\"|\"landscape\"])  OR  ret = orient ()");
+    print_usage ();
   endif
 
 endfunction

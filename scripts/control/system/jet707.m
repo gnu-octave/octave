@@ -44,10 +44,10 @@
 function outsys = jet707 ()
 
   if (nargin != 0)
-    usage("outsys = jet707()")
+    print_usage ();
   endif
   if (nargin > 1)
-    usage("outsys = jet707()")
+    print_usage ();
   endif
 
   a = [ -0.46E-01,            0.10681415316, 0.0,   -0.17121680433;

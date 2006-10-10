@@ -32,7 +32,7 @@
 function pdf = normpdf (x, m, v)
 
   if (nargin != 1 && nargin != 3)
-    usage ("normpdf (x, m, v)");
+    print_usage ();
   endif
 
   if (nargin == 1)

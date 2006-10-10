@@ -49,7 +49,7 @@
 function out = base2dec (d, base)
 
   if (nargin != 2)
-    usage ("n = base2dec('d', base)");
+    print_usage ();
   endif
 
   symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

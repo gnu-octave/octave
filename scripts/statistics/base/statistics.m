@@ -32,7 +32,7 @@
 function S = statistics (X, dim)
 
   if (nargin != 1 && nargin != 2)
-    usage ("S = statistics (X, dim)");
+    print_usage ();
   endif
 
   nd = ndims (X);

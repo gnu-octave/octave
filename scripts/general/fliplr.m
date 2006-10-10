@@ -40,7 +40,7 @@
 function y = fliplr (x)
 
   if (nargin != 1)
-    usage ("fliplr (x)");
+    print_usage ();
   endif
 
   if (ndims (x) > 2)

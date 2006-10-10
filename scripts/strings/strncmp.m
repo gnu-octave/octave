@@ -39,7 +39,7 @@ function retval = strncmp (s1, s2, n)
   if (nargin == 3)
     retval = strcmp (strtrunc (s1, n), strtrunc (s2, n));
   else
-    usage ("strncmp (s1, s2, n)");
+    print_usage ();
   endif
 
 endfunction

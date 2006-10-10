@@ -58,7 +58,7 @@ function sys = sysupdate (sys, opt)
 
   ## check for correct number of inputs
   if (nargin != 2)
-    usage("newsys = sysupdate(sys,opt)");
+    print_usage ();
   elseif(! isstruct(sys) )
    error("1st argument must be system data structure")
   elseif(! (strcmp(opt,"tf") + strcmp(opt,"zp") + ...

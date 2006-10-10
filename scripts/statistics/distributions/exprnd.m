@@ -63,7 +63,7 @@ function rnd = exprnd (l, r, c)
   elseif (nargin == 1)
     sz = size (l);
   else
-    usage ("exprnd (lambda, r, c)");
+    print_usage ();
   endif
 
 

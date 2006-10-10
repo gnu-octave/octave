@@ -84,7 +84,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
 
   ## check input arguments
   if ( (nargin < 2) | (nargin > 7) | (!isstruct(sys)))
-    usage("retsys = sysappend(sys,b,c[,d,outname,inname,yd]) ");
+    print_usage ();
   elseif(!isstruct(sys))
     error("sys must be a system data structure");
   endif

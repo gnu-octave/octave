@@ -72,7 +72,7 @@ function rnd = binornd (n, p, r, c)
   elseif (nargin == 2)
     sz = size(n);
   else
-    usage ("binornd (n, p, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (n) && isscalar (p))

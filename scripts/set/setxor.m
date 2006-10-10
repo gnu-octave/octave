@@ -29,7 +29,7 @@
 
 function c = setxor (a, b)
   if (nargin != 2)
-    usage ("setxor(a,b)");
+    print_usage ();
   endif
 
   ## Form A and B into sets.

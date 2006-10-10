@@ -76,7 +76,7 @@
 function d = duplication_matrix (n)
 
   if (nargin != 1)
-    usage ("duplication_matrix (n)");
+    print_usage ();
   endif
 
   if (! (isscalar (n) && n == round (n) && n > 0))

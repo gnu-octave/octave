@@ -111,7 +111,7 @@ function [xb, yb] = bar (x, y)
       error ("bar: arguments must be vectors");
     endif
   else
-    usage ("[xb, yb] = bar (x, y)");
+    print_usage ();
   endif
 
   if (nargout == 0)

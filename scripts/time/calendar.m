@@ -58,7 +58,7 @@ function varargout = calendar (varargin)
       m = varargin{2};
       d = [];
     otherwise
-      usage ("calendar () or c = calendar (d) or c = calendar (y, m)");
+      print_usage ();
   endswitch
 
   c = zeros (7, 6);

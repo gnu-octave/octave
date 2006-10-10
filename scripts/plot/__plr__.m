@@ -130,7 +130,7 @@ function __plr__ (theta, rho, fmt)
       endif
     endif
   else
-    usage ("__plr__ (x, y)");
+    print_usage ();
   endif
 
 endfunction

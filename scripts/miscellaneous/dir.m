@@ -53,7 +53,7 @@ function retval = dir (file)
   if (nargin == 0)
     file = ".";
   elseif (nargin > 1)
-    usage ("dir (file)");
+    print_usage ();
   endif
 
   ## Prep the retval.

@@ -27,7 +27,7 @@
 function w = sech (z)
 
 if (nargin != 1)
-    usage ("sech (z)");
+    print_usage ();
   endif
 
   w = 1 ./ cosh(z);

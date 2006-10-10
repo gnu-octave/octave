@@ -31,7 +31,7 @@ function y = logit (p)
   if (nargin == 1)
     y = logistic_inv (p);
   else
-    usage ("logit (p)");
+    print_usage ();
   endif
 
 endfunction

@@ -38,7 +38,7 @@ function z = xor (x, y)
       error ("xor: x and y must be of common size or scalars");
     endif
   else
-    usage ("xor (x, y)");
+    print_usage ();
   endif
 
 endfunction

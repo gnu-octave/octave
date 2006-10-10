@@ -46,7 +46,7 @@
 function retsys = __zgpbal__ (Asys)
 
   if( (nargin != 1) | (!isstruct(Asys)))
-    usage("retsys = __zgpbal__ (Asys)");
+    print_usage ();
   endif
 
   Asys = sysupdate(Asys,"ss");

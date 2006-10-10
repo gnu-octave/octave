@@ -48,7 +48,7 @@ function rnd = logistic_rnd (r, c)
       error ("logistic_rnd: r must be a postive integer or vector");
     endif
   else
-    usage ("logistic_rnd (r, c)");
+    print_usage ();
   endif
 
   rnd = - log (1 ./ rand (sz) - 1);

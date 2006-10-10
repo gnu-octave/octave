@@ -42,7 +42,7 @@ function y = fftfilt (b, x, N)
   ## one blocks, but if the user knows better ...
 
   if (nargin < 2 || nargin > 3)
-    usage (" fftfilt (b, x, N)");
+    print_usage ();
   endif
 
   transpose = (rows (x) == 1);

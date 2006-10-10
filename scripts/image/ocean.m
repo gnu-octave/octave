@@ -36,7 +36,7 @@ function map = ocean (number)
       error ("ocean: argument must be a scalar");
     endif
   else
-    usage ("ocean (number)");
+    print_usage ();
   endif
 
   cutin = fix (number/3);

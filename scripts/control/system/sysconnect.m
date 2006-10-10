@@ -76,7 +76,7 @@
 function sys = sysconnect (sys, output_list, input_list, order, tol)
 
   if( (nargin < 3) | (nargin > 5) )
-    usage("retsys = sysconnect(sys,output_list,input_list[,order,tol])");
+    print_usage ();
   endif
 
   ## check order

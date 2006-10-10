@@ -118,7 +118,7 @@ function mesh (x, y, z)
       error ("mesh: x and y must be vectors and z must be a matrix");
     endif
   else
-    usage ("mesh (z)");
+    print_usage ();
   endif
 
 endfunction

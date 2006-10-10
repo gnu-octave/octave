@@ -47,7 +47,7 @@
 function [pval, z] = u_test (x, y, alt)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("[pval, z] = u_test (x, y, alt)");
+    print_usage ();
   endif
 
   if (! (isvector (x) && isvector (y)))

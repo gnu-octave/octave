@@ -37,7 +37,7 @@
 function p = pmt (r, n, a, l, m)
 
   if (nargin < 3 || nargin > 5)
-    usage ("pmt (r, n, a, l, method)");
+    print_usage ();
   endif
 
   if (! (isscalar (r) && r > -1))

@@ -71,7 +71,7 @@ function rnd = unifrnd (a, b, r, c)
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("unifrnd (a, b, r, c)");
+    print_usage ();
   endif
 
   if (isscalar(a) && isscalar(b))

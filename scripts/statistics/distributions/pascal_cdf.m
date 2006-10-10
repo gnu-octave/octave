@@ -33,7 +33,7 @@
 function cdf = pascal_cdf (x, n, p)
 
   if (nargin != 3)
-    usage ("pascal_cdf (x, n, p)");
+    print_usage ();
   endif
 
   if (!isscalar(n) || !isscalar(p)) 

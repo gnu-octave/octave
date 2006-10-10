@@ -41,7 +41,7 @@
 function v = findstr (s, t, overlap)
 
   if (nargin < 2 || nargin > 3)
-    usage ("findstr (s, t, overlap)");
+    print_usage ();
   endif
 
   if (all (size (s) > 1) || all (size (t) > 1))

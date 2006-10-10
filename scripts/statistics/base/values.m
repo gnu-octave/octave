@@ -29,7 +29,7 @@
 function v = values (x)
 
   if (nargin != 1)
-    usage ("values (x)");
+    print_usage ();
   endif
 
   if (! (isvector (x)))

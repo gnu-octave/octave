@@ -74,7 +74,7 @@ function rnd = wblrnd (scale, shape, r, c)
   elseif (nargin == 2)
     sz = size(shape);
   else
-    usage ("wblrnd (alpha, sigma, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (shape) && isscalar (scale))

@@ -28,7 +28,7 @@
 function retval = flops ()
 
   if (nargin > 1)
-    usage ("flops () or flops (n)");
+    print_usage ();
   endif
 
   warning ("flops is a flop, always returning zero");

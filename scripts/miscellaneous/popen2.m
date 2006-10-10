@@ -121,7 +121,7 @@ function [in, out, pid] = popen2 (command, args)
       error ("popen2: file name must be a string");
     endif
   else
-    usage ("[in, out, pid] = popen2 (command, args)");
+    print_usage ();
   endif
 
 endfunction

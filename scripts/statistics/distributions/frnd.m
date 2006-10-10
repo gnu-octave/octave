@@ -74,7 +74,7 @@ function rnd = frnd (m, n, r, c)
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("frnd (m, n, r, c)");
+    print_usage ();
   endif
 
 

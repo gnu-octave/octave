@@ -30,7 +30,7 @@
 function z = dot (x, y, dim)
 
   if (nargin != 2 && nargin != 3)
-    usage ("dot (x, y, dim)");
+    print_usage ();
   endif
 
   if (nargin < 3)

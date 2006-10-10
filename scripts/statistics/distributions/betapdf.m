@@ -29,7 +29,7 @@
 function pdf = betapdf (x, a, b)
 
   if (nargin != 3)
-    usage ("betapdf (a, b, x)");
+    print_usage ();
   endif
   
   if (!isscalar (a) || !isscalar(b))

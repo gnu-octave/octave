@@ -26,7 +26,7 @@
 function [data, fmtstr] = __plt1__ (x1, fmt)
 
   if (nargin < 1 || nargin > 2 || nargout != 2)
-    usage ("[data, fmtstr] = __plt1__ (x1, fmt)");
+    print_usage ();
   endif
 
   if (nargin == 1)

@@ -36,7 +36,7 @@ function m = str2num (s)
       m = [];
     endif
   else
-    usage ("str2num (s)");
+    print_usage ();
   endif
 
 endfunction

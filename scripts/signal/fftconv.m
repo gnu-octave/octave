@@ -35,7 +35,7 @@
 function c = fftconv (a, b, N)
 
   if (nargin < 2 || nargin > 3)
-    usage ("fftconv (b, x, N)");
+    print_usage ();
   endif
 
   if (! (isvector (a) && isvector (b)))

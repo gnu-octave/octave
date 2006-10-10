@@ -30,7 +30,7 @@
 function rnd = stdnormal_rnd (r, c)
 
   if (nargin != 1 && nargin != 2)
-    usage ("stdnormal_rnd (r, c)");
+    print_usage ();
   endif
 
   if (nargin == 2)

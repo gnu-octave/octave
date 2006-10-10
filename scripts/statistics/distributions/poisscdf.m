@@ -30,7 +30,7 @@
 function cdf = poisscdf (x, l)
 
   if (nargin != 2)
-    usage ("poisscdf (x, lambda)");
+    print_usage ();
   endif
 
   if (!isscalar (l))

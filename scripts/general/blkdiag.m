@@ -29,7 +29,7 @@
 function retval = blkdiag (varargin)
 
   if (nargin < 1)
-    usage ("blkdiag (a, b, c, ...)");
+    print_usage ();
   endif
 
   if (! all (cellfun (@isnumeric, varargin)))

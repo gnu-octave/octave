@@ -33,7 +33,7 @@
 function y = iqr (x, dim)
 
   if (nargin != 1 && nargin != 2)
-    usage ("iqr (x, dim)");
+    print_usage ();
   endif
 
   nd = ndims (x);

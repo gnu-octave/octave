@@ -62,7 +62,7 @@
 function retsys = sysdup (Asys, output_list, input_list)
 
   if( nargin != 3)
-    usage("retsys = sysdup(Asys,output_list,input_list)");
+    print_usage ();
   endif
 
   if( !isstruct(Asys))

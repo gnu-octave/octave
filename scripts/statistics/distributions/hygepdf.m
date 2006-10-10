@@ -34,7 +34,7 @@
 function pdf = hygepdf (x, m, t, n)
 
   if (nargin != 4)
-    usage ("hygepdf (x, m, t, n)");
+    print_usage ();
   endif
 
   if (!isscalar (m) || !isscalar (t) || !isscalar (n))

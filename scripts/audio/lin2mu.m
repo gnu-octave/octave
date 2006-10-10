@@ -49,7 +49,7 @@ function y = lin2mu (x, bit)
       error ("lin2mu: bit must be either 0, 8 or 16");
     endif
   else
-    usage ("y = lin2mu (x, bit)");
+    print_usage ();
   endif
 
   ## Transform real and n-bit format to 16-bit.

@@ -39,7 +39,7 @@
 function [pval, Tsq] = hotelling_test (x, m)
 
   if (nargin != 2)
-    usage ("hotelling_test (x, m)");
+    print_usage ();
   endif
 
   if (isvector (x))

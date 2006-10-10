@@ -29,7 +29,7 @@
 function [X, map] = gray2ind (I, n)
 
   if (nargin < 1 || nargin > 2)
-    usage ("gray2ind (I, n)");
+    print_usage ();
   elseif (nargin == 1)
     n = 64;
   endif

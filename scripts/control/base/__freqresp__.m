@@ -49,7 +49,7 @@ function [ff, w] = __freqresp__ (sys, USEW, w);
 
   ## Check Args
   if ((nargin < 2) || (nargin > 4))
-    usage ("[ff, w] = __freqresp__ (sys, USEW, w)");
+    print_usage ();
   elseif (USEW & (nargin < 3) )
     error ("USEW = 1 but w was not passed.");
   elseif (USEW & isempty(w))

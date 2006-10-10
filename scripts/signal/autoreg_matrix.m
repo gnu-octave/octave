@@ -33,7 +33,7 @@
 function X = autoreg_matrix (y, k)
 
   if (nargin != 2)
-    usage ("autoreg_matrix (y, k)");
+    print_usage ();
   endif
 
   if (! (isvector (y)))

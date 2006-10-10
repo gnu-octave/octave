@@ -86,7 +86,7 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
 
   ## check number of input arguments given
   if (nargin < 1 | nargin > 4)
-    usage("[mag,phase,w] = nichols(sys[,w,outputs,inputs])");
+    print_usage ();
   endif
   if(nargin < 2)
     w = [];

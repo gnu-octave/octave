@@ -34,7 +34,7 @@
 function pdf = lognpdf (x, mu, sigma)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("lognpdf (x, mu, sigma)");
+    print_usage ();
   endif
 
   if (nargin == 1)

@@ -41,7 +41,7 @@
 function [y, x] = lsim (sys, u, t, x0)
 
   if((nargin < 3)||(nargin > 4))
-    usage("[y,x] = lsim(sys,u,t[,x0])");
+    print_usage ();
   endif
 
   if(!isstruct(sys))

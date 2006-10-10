@@ -34,7 +34,7 @@ function retval = betai (a, b, x)
   if (nargin == 3)
     retval = betainc (x, a, b);
   else
-    usage ("betai (a, b, x)");
+    print_usage ();
   endif
 
 endfunction

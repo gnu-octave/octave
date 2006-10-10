@@ -63,7 +63,7 @@ function rnd = discrete_rnd (v, p, r, c)
       endif
     endif
   else
-    usage ("discrete_rnd (n, v, p) | discrete_rnd (v, p, r, c)");
+    print_usage ();
   endif
 
   if (! isvector (v))

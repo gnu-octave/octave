@@ -28,7 +28,7 @@
 function idxvec = sysidx (sys, sigtype, signamelist)
 
   if (nargin != 3)
-    usage ("idxvec = sysidx (sys, sigtype, signamelist)");
+    print_usage ();
   elseif (! isstruct (sys))
     error ("sys must be a system data structure");
   elseif (! ischar (sigtype))

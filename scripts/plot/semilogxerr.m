@@ -43,7 +43,7 @@
 function semilogxerr (varargin)
 
   if (nargin < 2)
-    usage ("semilogxerr (...)");
+    print_usage ();
   endif
 
   __gnuplot_raw__ ("set logscale x;\n");

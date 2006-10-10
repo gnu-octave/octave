@@ -109,7 +109,7 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 
   ## check number of input arguments given
   if (nargin < 1 | nargin > 5)
-    usage("[mag,phase,w] = bode(sys[,w,outputs,inputs,plot_style])");
+    print_usage ();
   endif
   if(nargin < 2)
     w = [];

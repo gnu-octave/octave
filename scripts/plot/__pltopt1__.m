@@ -61,7 +61,7 @@ function fmt = __pltopt1__ (caller, opt)
   TITLE = "title";
 
   if (nargin != 2)
-    usage ("__pltopt1__ (caller, opt)");
+    print_usage ();
   endif
 
   if (! ischar (opt))

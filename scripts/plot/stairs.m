@@ -95,7 +95,7 @@ function [xs, ys] = stairs (x, y)
       error ("stairs: arguments must be vectors");
     endif
   else
-    usage ("[xs, ys] = stairs (x, y)");
+    print_usage ();
   endif
 
   if (nargout == 0)

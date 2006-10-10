@@ -48,7 +48,7 @@
 function retval = kurtosis (x, dim)
 
   if (nargin != 1 && nargin != 2)
-    usage ("kurtosis (x, dim)");
+    print_usage ();
   endif
 
   nd = ndims (x);

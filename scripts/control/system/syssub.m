@@ -48,7 +48,7 @@
 function sys = syssub (varargin)
 
   if(nargin < 1)
-    usage("syssub: sys = syssub(Gsys{,Hsys,...})");
+    print_usage ();
   endif
 
   ## collect all arguments

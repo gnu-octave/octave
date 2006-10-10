@@ -34,7 +34,7 @@
 function retval = str2mat (varargin)
 
   if (nargin == 0)
-    usage ("str2mat (s1, ...)");
+    print_usage ();
   endif
 
   nc = 0;

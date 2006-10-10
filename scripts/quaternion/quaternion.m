@@ -70,12 +70,12 @@ function [a, b, c, d] = quaternion (w, x, y, z)
 	  a = vv;
 	  b = theta;
 	otherwise
-	  usage ("[a, b, c, d] = quaternion (w) or [vv, theta] = quaternion (w)");
+	  print_usage ();
       endswitch
 
   case(2)
     if (nargout != 1)
-      usage ("w = quaterion (vv, theta)");
+      print_usage ();
     endif
     vv = w;
     theta = x;
@@ -101,7 +101,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
 
   case(4)
     if (nargout != 1)
-      usage ("w = quaterion (a, b, c, d)");
+      print_usage ();
     endif
     if (! (isscalar (w) && isscalar (x) && isscalar (y) && isscalar (z)))
       error ("input values must be scalars");
@@ -109,7 +109,7 @@ function [a, b, c, d] = quaternion (w, x, y, z)
     a = [w, x, y, z];
 
   otherwise
-    usage ("[a, b, c, d] = quaternion (w) or a = quaternion (w, x, y, z)");
+    print_usage ();
 
   endswitch
 

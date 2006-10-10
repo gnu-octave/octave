@@ -39,17 +39,17 @@
 function [retval, U] = is_observable (a, c, tol)
 
   if( nargin < 1)
-    usage("[retval,U] = is_observable(a , c {, tol})");
+    print_usage ();
   elseif(isstruct(a))
     ## system form
     if(nargin == 2)
       tol = c;
     elseif(nargin > 2)
-      usage("[retval,U] = is_observable(sys {, tol})");
+      print_usage ();
     endif
     [a,b,c] = sys2ss(a);
   elseif(nargin > 3)
-    usage("[retval,U] = is_observable(a , c {, tol})");
+    print_usage ();
   endif
   if(exist("tol"))
     [retval,U] = is_controllable (a', c', tol);

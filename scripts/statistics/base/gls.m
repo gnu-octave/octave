@@ -69,7 +69,7 @@
 function [BETA, v, R] = gls (Y, X, O)
 
   if (nargin != 3)
-    usage ("[BETA, v, R] = gls (Y, X, O)");
+    print_usage ();
   endif
 
   [rx, cx] = size (X);

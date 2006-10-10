@@ -67,10 +67,10 @@ function outsys = ord2 (nfreq, damp, gain)
   ## Updates
 
   if(nargin != 2 & nargin != 3)
-    usage("outsys = ord2(nfreq, damp[, gain])")
+    print_usage ();
   endif
   if (nargout > 1)
-    usage("outsys = ord2(nfreq, damp[, gain])")
+    print_usage ();
   endif
   if (nargin == 2)
     gain = 1.0;

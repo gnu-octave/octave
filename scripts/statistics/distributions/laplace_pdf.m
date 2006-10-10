@@ -29,7 +29,7 @@
 function pdf = laplace_pdf (x)
 
   if (nargin != 1)
-    usage ("laplace_pdf (x)");
+    print_usage ();
   endif
 
   pdf = zeros (size (x));

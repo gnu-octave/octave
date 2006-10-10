@@ -47,7 +47,7 @@ function rnd = laplace_rnd (r, c)
       error ("laplace_rnd: r must be a postive integer or vector");
     endif
   else
-    usage ("laplace_rnd (r, c)");
+    print_usage ();
   endif
 
   tmp = rand (sz);

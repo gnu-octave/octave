@@ -53,7 +53,7 @@ function retval = hankel (c, r)
   if (nargin == 1)
     r = resize (resize (c, 0), size(c));
   elseif (nargin != 2)
-    usage ("hankel (c, r)");
+    print_usage ();
   endif
 
   [c_nr, c_nc] = size (c);

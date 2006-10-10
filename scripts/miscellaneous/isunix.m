@@ -27,7 +27,7 @@ function retval = isunix ()
   if (nargin == 0)
     retval = octave_config_info ("unix");
   else
-    usage ("isunix ()");
+    print_usage ();
   endif
 
 endfunction

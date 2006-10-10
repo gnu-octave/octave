@@ -34,7 +34,7 @@
 function cdf = logncdf (x, mu, sigma)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("logncdf (x, mu, sigma)");
+    print_usage ();
   endif
 
   if (nargin == 1)

@@ -86,7 +86,7 @@ function subplot (rows, columns, index)
   __plot_globals__;
 
   if (nargin != 3 && nargin != 1)
-    usage ("subplot (rows, columns, index) or subplot (rcn)");
+    print_usage ();
   endif
 
   if (nargin == 1)

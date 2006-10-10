@@ -36,7 +36,7 @@
 function X = bitcmp (A, n)
   
   if (nargin < 1 || nargin > 2)
-    usage ("bitcmp (A, n)");
+    print_usage ();
   endif
 
   if (isa (A, "double"))

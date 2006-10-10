@@ -53,7 +53,7 @@ function f = figure (n)
       warning ("figure: setting figure properties is unsupported");
     endif
   else
-    usage ("figure (n)");
+    print_usage ();
   endif
 
 endfunction

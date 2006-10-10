@@ -35,7 +35,7 @@
 function y = conv (a, b)
 
   if (nargin != 2)
-    usage ("conv(a, b)");
+    print_usage ();
   endif
 
   if (! (isvector (a) && isvector (b)))

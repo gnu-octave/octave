@@ -31,7 +31,7 @@
 function c = blackman (m)
 
   if (nargin != 1)
-    usage ("blackman (m)");
+    print_usage ();
   endif
 
   if (! (isscalar (m) && (m == round (m)) && (m > 0)))

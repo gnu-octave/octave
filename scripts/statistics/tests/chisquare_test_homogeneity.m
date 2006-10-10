@@ -40,7 +40,7 @@
 function [pval, chisq, df] = chisquare_test_homogeneity (x, y, c)
 
   if (nargin != 3)
-    usage ("[pval, chisq, df] = chisquare_test_homogeneity (x, y, c)");
+    print_usage ();
   endif
 
   if (! (isvector(x) && isvector(y) && isvector(c)))

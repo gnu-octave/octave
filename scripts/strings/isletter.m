@@ -28,7 +28,7 @@
 function retval = isletter (s)
 
   if (nargin != 1)
-    usage ("isletter (s)");
+    print_usage ();
   endif
 
   retval = isalpha (s);

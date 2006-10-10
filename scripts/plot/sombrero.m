@@ -47,7 +47,7 @@ function sombrero (n)
       error ("sombrero: number of grid lines must be greater than 1");
     endif
   else
-    usage ("sombrero (n)");
+    print_usage ();
   endif
 
 endfunction

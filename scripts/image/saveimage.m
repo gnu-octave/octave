@@ -77,7 +77,7 @@
 function saveimage (filename, img, img_form, map)
 
   if (nargin < 2 || nargin > 4)
-    usage ("saveimage (filename, matrix, [format, [colormap]])");
+    print_usage ();
   endif
 
   if (nargin < 4)

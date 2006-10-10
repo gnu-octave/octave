@@ -46,7 +46,7 @@ function y = logical (x)
       error ("logical not defined for type `%s'", typeinfo (x));
     endif
   else
-    usage ("logical (x)");
+    print_usage ();
   endif
 
 endfunction

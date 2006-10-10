@@ -32,7 +32,7 @@
 function y = meansq (x, varargin)
 
   if (nargin != 1 && nargin != 2)
-    usage ("meansq (x)");
+    print_usage ();
   endif
 
   y = mean (x.^2, varargin{:});

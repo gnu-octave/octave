@@ -49,7 +49,7 @@
 function assert(cond, expected, tol)
 
   if (nargin < 1 || nargin > 3)
-    usage("assert (cond) or assert (v, expected_v [,tol])");
+    print_usage ();
   endif
 
   if (nargin < 3)

@@ -34,7 +34,7 @@
 function [pval, chisq] = run_test (x)
 
   if (nargin != 1)
-    usage ("run_test (x)");
+    print_usage ();
   endif
 
   A = [4529.4,  9044.9, 13568,  18091,  22615,  27892;

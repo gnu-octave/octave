@@ -39,7 +39,7 @@
 function [pval, f, df_num, df_den] = f_test_regression (y, X, R, r)
 
   if (nargin < 3 || nargin > 4)
-    usage ("[pval, f, df_num, df_den] = f_test_regression (y, X, R, r)");
+    print_usage ();
   endif
 
   [T, k] = size (X);

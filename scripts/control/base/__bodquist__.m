@@ -55,7 +55,7 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
 
   ## check number of input arguments given
   if (nargin != 5)
-    usage ("[f, w] = __bodquist__ (sys, w, outputs, inputs, rname)");
+    print_usage ();
   endif
 
   ## check each argument to see if it's in the correct form

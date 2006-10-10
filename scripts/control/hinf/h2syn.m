@@ -80,7 +80,7 @@
 function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
 
   if ((nargin < 3) | (nargin > 4))
-    usage("[K,gain, Kc, Kf, Pc, Pf] = h2syn(Asys,nu,ny[,tol])");
+    print_usage ();
   elseif(nargin == 3 )
     [chkdgkf,dgs] = is_dgkf(Asys,nu,ny);
   elseif(nargin == 4)

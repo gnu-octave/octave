@@ -33,7 +33,7 @@
 function [X, Y, Z] = sph2cart (Theta, Phi, R)
 
   if (nargin != 3)
-    usage ("[X, Y, Z] = sph2cart (Theta, Phi, R)");
+    print_usage ();
   endif
 
   if ((! (ismatrix (Theta) && ismatrix (Phi) && ismatrix (R)))

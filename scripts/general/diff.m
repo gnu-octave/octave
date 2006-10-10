@@ -54,7 +54,7 @@
 function x = diff (x, k, dim)
 
   if (nargin < 1 || nargin > 3)
-    usage ("diff (x, k");
+    print_usage ();
   endif
 
   if (nargin < 2 || isempty(k))

@@ -29,7 +29,7 @@
 function inv = logistic_inv (x)
 
   if (nargin != 1)
-    usage ("logistic_inv (x)");
+    print_usage ();
   endif
 
   inv = zeros (size (x));

@@ -44,7 +44,7 @@ function multiplot (xn, yn)
   global __multiplot_yi__;
 
   if (nargin != 2)
-    usage ("multiplot (xn, yn)");
+    print_usage ();
   endif
 
   if (! (isscalar (xn) && isscalar (yn)))

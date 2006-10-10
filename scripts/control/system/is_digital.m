@@ -54,7 +54,7 @@ function DIGITAL = is_digital (sys, eflg)
       error("invalid value of eflg=%d (%e)",eflg,eflg);
     endif
   otherwise,
-    usage("DIGITAL = is_digital(sys{,eflg})");
+    print_usage ();
   endswitch
 
   ## checked for sampled data system (mixed)

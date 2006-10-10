@@ -57,7 +57,7 @@
 function b = bincoeff (n, k)
 
   if (nargin != 2)
-    usage ("bincoeff (n, k)");
+    print_usage ();
   endif
 
   [retval, n, k] = common_size (n, k);

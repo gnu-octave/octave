@@ -57,11 +57,11 @@
 function wsys = wgt1o (vl, vh, fc)
 
   if (nargin != 3)
-    usage("wsys = wgt1o(vl, vh, fc)");
+    print_usage ();
   endif
 
   if(nargout > 1)
-    usage("wsys = wgt1o(vl, vh, fc)");
+    print_usage ();
   endif
 
   if (vl == vh)

@@ -31,7 +31,7 @@ function y = probit (p)
   if (nargin == 1)
     y = stdnormal_inv (p);
   else
-    usage ("probit (p)");
+    print_usage ();
   endif
 
 endfunction

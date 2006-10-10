@@ -40,7 +40,7 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
   __setup_plot__ ("__gnuplot_plot__");
 
   if (nargin < 3 || nargin > 7) # at least three data arguments needed
-    usage ("__errplot__ (fmt, arg1, ...)");
+    print_usage ();
   endif
 
   j = __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__);

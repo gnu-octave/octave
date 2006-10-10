@@ -31,7 +31,7 @@
 function x = repmat (a, m, n)
 
   if (nargin < 2 || nargin > 3)
-    usage ("repmat (a, m, n)");
+    print_usage ();
   endif
 
   if (nargin == 3)

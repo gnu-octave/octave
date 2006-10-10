@@ -41,7 +41,7 @@ function retval = strncmpi (s1, s2, n)
     ## handle cell arrays of strings.
     retval = strcmp (lower (strtrunc (s1, n)), lower (strtrunc (s2, n)));
   else
-    usage ("strncmpi (s1, s2, n)");
+    print_usage ();
   endif
 
 endfunction

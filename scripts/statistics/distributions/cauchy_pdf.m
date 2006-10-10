@@ -31,7 +31,7 @@
 function pdf = cauchy_pdf (x, location, scale)
 
   if (! (nargin == 1 || nargin == 3))
-    usage ("cauchy_pdf (x, lambda, sigma)");
+    print_usage ();
   endif
 
   if (nargin == 1)

@@ -29,7 +29,7 @@
 function pdf = logistic_pdf (x)
 
   if (nargin != 1)
-    usage ("logistic_pdf (x)");
+    print_usage ();
   endif
 
   cdf = logistic_cdf (x);

@@ -62,7 +62,7 @@ function outsys = tf (num, den, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
   if ((nargin < 2) || (nargin > 5))
-    usage ("outsys = tf (num, den [, tsam, inname, outname])");
+    print_usage ();
     return
   endif
 

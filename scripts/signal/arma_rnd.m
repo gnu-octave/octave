@@ -49,7 +49,7 @@ function x = arma_rnd (a, b, v, t, n)
       error ("arma_rnd: n must be a scalar");
     endif
   else
-    usage ("arma_rnd (a, b, v, t, n)");
+    print_usage ();
   endif
 
   if ((min (size (a)) > 1) || (min (size (b)) > 1))

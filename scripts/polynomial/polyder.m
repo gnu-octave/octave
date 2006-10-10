@@ -37,7 +37,7 @@ function [q, r] = polyder (p, a)
       q = polyderiv (p, a);
     endif
   else
-    usage ("q = polyder (p) or q = polyder (b, a) or [q, r] = polyder (b, a)");
+    print_usage ();
   endif
 
 endfunction

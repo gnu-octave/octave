@@ -72,7 +72,7 @@ function rnd = betarnd (a, b, r, c)
   elseif (nargin == 2)
     sz = size(a);
   else
-    usage ("betarnd (a, b, r, c)");
+    print_usage ();
   endif
 
   if (isscalar(a) && isscalar(b))

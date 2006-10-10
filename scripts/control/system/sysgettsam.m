@@ -25,7 +25,7 @@
 function T = sysgettsam (sys)
 
   if (! isstruct (sys))
-    usage ("T = sysgettsam (sys)");
+    print_usage ();
   endif
 
   T = sys.tsam;

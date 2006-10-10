@@ -44,7 +44,7 @@
 function manova (Y, g)
 
   if (nargin != 2)
-    usage ("manova (Y, g)");
+    print_usage ();
   endif
 
   if (isvector (Y))

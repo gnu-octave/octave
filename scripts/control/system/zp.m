@@ -60,7 +60,7 @@ function outsys = zp (zer, pol, k, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
   if ((nargin < 3) || (nargin > 6))
-    usage("outsys = zp(zer,pol,k[,tsam,inname,outname])");
+    print_usage ();
   endif
 
   ## check input format

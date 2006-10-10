@@ -32,7 +32,7 @@
 function retval = nargchk (nargin_min, nargin_max, n)
 
   if (nargin != 3)
-    usage ("nargchk (nargin_min, nargin_max, n)");
+    print_usage ();
   endif
 
   if (nargin_min > nargin_max)

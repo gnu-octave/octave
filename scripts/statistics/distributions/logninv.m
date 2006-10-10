@@ -34,7 +34,7 @@
 function inv = logninv (x, mu, sigma)
 
   if (! ((nargin == 1) || (nargin == 3)))
-    usage ("logninv (x, mu, sigma)");
+    print_usage ();
   endif
 
   if (nargin == 1)

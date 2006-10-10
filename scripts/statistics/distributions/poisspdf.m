@@ -29,7 +29,7 @@
 function pdf = poisspdf (x, l)
 
   if (nargin != 2)
-    usage ("poisspdf (x, lambda)");
+    print_usage ();
   endif
 
   if (!isscalar (l))

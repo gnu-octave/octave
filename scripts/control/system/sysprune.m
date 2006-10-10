@@ -61,7 +61,7 @@
 function sys = sysprune (sys, output_idx, input_idx, state_idx)
 
   if( nargin < 3 | nargin > 4  )
-    usage("retsys = sysprune(sys,output_idx,input_idx{,state_idx})");
+    print_usage ();
   elseif(nargin < 4)
     state_idx = [];
   endif

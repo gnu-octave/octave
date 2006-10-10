@@ -32,7 +32,7 @@
 function c = bartlett (m)
 
   if (nargin != 1)
-    usage ("bartlett (m)");
+    print_usage ();
   endif
 
   if (! (isscalar (m) && (m == round (m)) && (m > 0)))

@@ -36,7 +36,7 @@
 function [y, i, j] = unique (x, r)
 
   if (nargin < 1 || nargin > 2 || (nargin == 2 && ! strcmp (r, "rows")))
-    usage ("unique (x) or unique (x, 'rows')");
+    print_usage ();
   endif
 
   if (nargin == 1)

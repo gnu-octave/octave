@@ -29,7 +29,7 @@
 function retval = upper (s)
 
   if (nargin != 1)
-    usage ("upper (s)");
+    print_usage ();
   endif
 
   if (ischar (s))

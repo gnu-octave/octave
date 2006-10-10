@@ -33,7 +33,7 @@ function retval = isvector (x)
     sz = size (x);
     retval = (ndims (x) == 2 && (sz(1) == 1 || sz(2) == 1));
   else
-    usage ("isvector (x)");
+    print_usage ();
   endif
 
 endfunction

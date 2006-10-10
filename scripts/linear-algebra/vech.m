@@ -34,7 +34,7 @@
 function v = vech (x)
 
   if (nargin != 1)
-    usage ("vech (x)");
+    print_usage ();
   endif
 
   if (! issquare (x))

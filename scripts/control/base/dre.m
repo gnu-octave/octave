@@ -98,7 +98,7 @@
 function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 
   if(nargin < 6 | nargin > 8 | nargout != 2)
-    usage("[tvals,Plist] = dre(sys,Q,R,Qf,t0,tf{,Ptol})");
+    print_usage ();
   elseif(!isstruct(sys))
     error("sys must be a system data structure")
   elseif(is_digital(sys))

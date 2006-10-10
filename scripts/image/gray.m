@@ -33,7 +33,7 @@ function map = gray (number)
   if (nargin == 0)
     number = 64;
   elseif (nargin > 1)
-    usage ("gray (number)");
+    print_usage ();
   endif
 
   gr = [0:(number-1)]';

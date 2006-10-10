@@ -32,7 +32,7 @@
 function cdf = expcdf (x, l)
 
   if (nargin != 2)
-    usage ("expcdf (x, lambda)");
+    print_usage ();
   endif
 
   if (!isscalar (x) && !isscalar(l))

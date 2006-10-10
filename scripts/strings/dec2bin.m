@@ -45,7 +45,7 @@ function retval = dec2bin (n, len)
   elseif (nargin == 2)
     retval = dec2base (n, 2, len);
   else
-    usage ("dec2bin (n [, len])");
+    print_usage ();
   endif
 
 endfunction

@@ -63,7 +63,7 @@
 function retval = std (a, opt, dim)
 
   if (nargin < 1 || nargin > 3)
-    usage ("std (a, opt, dim)");
+    print_usage ();
   endif
   if nargin < 3
     dim = find (size (a) > 1, 1);

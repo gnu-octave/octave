@@ -36,7 +36,7 @@
 function hsval = rgb2hsv (rgb)
 
   if (nargin != 1)
-    usage ("hsv_map = rgb2hsv (rgb_map)");
+    print_usage ();
   endif
 
   if (! ismatrix (rgb) || columns (rgb) != 3)

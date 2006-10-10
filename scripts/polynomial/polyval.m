@@ -37,7 +37,7 @@
 function y = polyval (c, x)
 
   if (nargin != 2)
-    usage ("polyval (c, x)");
+    print_usage ();
   endif
 
   if (! (isvector (c) || isempty (c)))

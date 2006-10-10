@@ -55,7 +55,7 @@ function [retsys, nc, no, cflg, oflg] = sysmin (sys, flg)
   case(1), flg = 0;
   case(2), jnk = flg;    # dummy operation
   otherwise,
-    usage("[retsys,nc,no] = sysmin(sys{,flg})");
+    print_usage ();
   endswitch
   dflg = is_digital(sys,2);
   [n,nz,m,p] = sysdimensions(sys);

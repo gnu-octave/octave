@@ -70,7 +70,7 @@
 function tau = kendall (x, y)
 
   if ((nargin < 1) || (nargin > 2))
-    usage ("kendall (x, y)");
+    print_usage ();
   endif
 
   if (rows (x) == 1)

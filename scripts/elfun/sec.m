@@ -27,7 +27,7 @@
 function w = sec (z)
 
   if (nargin != 1)
-    usage ("sec (z)");
+    print_usage ();
   endif
 
   w = 1 ./ cos(z);

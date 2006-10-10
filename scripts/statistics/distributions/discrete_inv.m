@@ -30,7 +30,7 @@
 function inv = discrete_inv (x, v, p)
 
   if (nargin != 3)
-    usage ("discrete_inv (x, v, p)");
+    print_usage ();
   endif
 
   sz = size (x);

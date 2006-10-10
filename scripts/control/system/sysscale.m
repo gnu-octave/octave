@@ -60,7 +60,7 @@
 function sys = sysscale (sys, outscale, inscale, outname, inname)
 
   if( (nargin < 3) || (nargin > 5)  )
-    usage("retsys = sysscale(Asys,output_list,input_list{,inname,outname})");
+    print_usage ();
   elseif (!isstruct(sys))
     error("sys must be a structured system");
   endif

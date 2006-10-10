@@ -45,7 +45,7 @@
 function t = __isequal__ (nans_compare_equal, x, varargin)
 
   if (nargin < 3)
-    usage ("__isequal__ (nans_compare_equal, x1, x2, ...)");
+    print_usage ();
   endif
 
   l_v = nargin - 2;

@@ -29,7 +29,7 @@
 function pdf = stdnormal_pdf (x)
 
   if (nargin != 1)
-    usage ("stdnormal_pdf (x)");
+    print_usage ();
   endif
 
   sz = size(x);

@@ -191,7 +191,7 @@ function retsys = ss (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
 
   ## Test for correct number of inputs
   if ((nargin < 3) | (nargin > 11))
-    usage("retsys = ss  (a,b,c{,d,tsam,n,nz,stname,inname,outname,outlist})");
+    print_usage ();
   endif
 
   ## verify A, B, C, D arguments

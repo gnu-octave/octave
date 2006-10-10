@@ -61,7 +61,7 @@ function [p, s, mu] = polyfit (x, y, n)
 
 
   if (nargin != 3)
-    usage ("polyfit (x, y, n)");
+    print_usage ();
   endif
 
   if (! (isvector (x) && isvector (y) && size (x) == size (y)))

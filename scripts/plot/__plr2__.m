@@ -26,7 +26,7 @@
 function __plr2__ (theta, rho, fmt)
 
   if (nargin != 3)
-    usage ("__plr2__ (theta, rho, fmt)");
+    print_usage ();
   endif
 
   if (any (imag (theta)))

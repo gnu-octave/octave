@@ -34,7 +34,7 @@
 function saveaudio (name, X, ext, bit)
 
   if (nargin < 2 || nargin > 4)
-    usage ("saveaudio (X, name, ext, bit)");
+    print_usage ();
   endif
 
   if (nargin == 2)

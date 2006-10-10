@@ -67,7 +67,7 @@ function x = polygcd (b, a, tol)
       endwhile
     endif
   else
-    usage ("x = polygcd (b, a [,tol])");
+    print_usage ();
   endif
 
 endfunction

@@ -27,7 +27,7 @@
 function B = logm (A)
 
   if (nargin != 1)
-    usage ("B = logm (A)");
+    print_usage ();
   endif
 
   [V, D] = eig (A);

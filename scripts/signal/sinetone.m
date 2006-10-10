@@ -41,7 +41,7 @@ function retval = sinetone (f, r, s, a)
   elseif (nargin == 3)
     a = 64;
   elseif ((nargin < 1) || (nargin > 4))
-    usage ("sinetone (freq, rate, sec, ampl)");
+    print_usage ();
   endif
 
   [err, f, a] = common_size (f, a);

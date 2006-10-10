@@ -47,20 +47,20 @@
 function retval = is_stabilizable (a, b, tol, dflg)
 
   if(nargin < 1)        
-    usage("[retval,U] = is_stabilizable(a {, b ,tol, dflg})");
+    print_usage ();
   elseif(isstruct(a))
     ## system passed.
     if(nargin == 2)
       tol = b;          % get tolerance
     elseif(nargin > 2)
-      usage("retval = is_stabilizable(sys{,tol})");
+      print_usage ();
     endif
     disc = is_digital(a);
     [a,b] = sys2ss(a);
   else
     ## a,b arguments sent directly.
     if ((nargin > 4)||(nargin == 1))
-      usage("retval = is_stabilizable(a {, b ,tol, dflg})");
+      print_usage ();
     endif
     if(exist("dflg"))
       disc = dflg;

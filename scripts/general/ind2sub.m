@@ -68,7 +68,7 @@ function varargout = ind2sub (dims, ind)
       error ("ind2sub: expecting dims to be an integer vector");
     endif
   else
-    usage ("ind2sub (dims, ind)");
+    print_usage ();
   endif
 
 

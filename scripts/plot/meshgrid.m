@@ -37,7 +37,7 @@
 function [xx, yy, zz] = meshgrid (x, y, z)
 
   if (nargin == 0 || nargin > 3)
-    usage ("[xx, yy, zz] = meshgrid (x, y, z)");
+    print_usage ();
   endif
 
   if (nargin < 2)

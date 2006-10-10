@@ -60,7 +60,7 @@
 function sys = sysgroup (varargin)
 
   if(nargin < 1)
-    usage("sys = sysgroup(Asys{,Bsys,...})");
+    print_usage ();
   endif
 
   ## collect all arguments

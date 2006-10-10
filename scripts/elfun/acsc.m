@@ -27,7 +27,7 @@
 function w = acsc (z)
 
   if (nargin != 1)
-    usage ("acsc (z)");
+    print_usage ();
   endif
 
   w = asin (1 ./ z);

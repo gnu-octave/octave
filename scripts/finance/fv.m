@@ -40,7 +40,7 @@
 function v = fv (r, n, p, l, m)
 
   if ((nargin < 3) || (nargin > 5))
-    usage ("fv (r, n, p, l, method)");
+    print_usage ();
   endif
 
   if (! (isscalar (r) && (r > -1)))

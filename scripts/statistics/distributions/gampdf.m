@@ -31,7 +31,7 @@
 function pdf = gampdf (x, a, b)
 
   if (nargin != 3)
-    usage ("gampdf (x, a, b)");
+    print_usage ();
   endif
 
   if (!isscalar (a) || !isscalar(b))

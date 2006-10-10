@@ -36,7 +36,7 @@
 function [pval, chisq, df] = chisquare_test_independence (X)
 
   if (nargin != 1)
-    usage ("chisquare_test_independence (X)");
+    print_usage ();
   endif
 
   [r, s] = size (X);

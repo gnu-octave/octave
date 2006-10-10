@@ -48,7 +48,7 @@ function retval = fftshift (V, dim)
   retval = 0;
 
   if (nargin != 1 && nargin != 2)
-    usage ("usage: fftshift (X, dim)");
+    print_usage ();
   endif
 
   if (nargin == 2)

@@ -73,9 +73,9 @@ function [zer, gain] = tzero (A, B, C, D)
   if(nargin == 4)
     Asys = ss(A,B,C,D);
   elseif( (nargin == 1) && (! isstruct(A)))
-    usage("[zer,gain] = tzero(A,B,C,D) or zer = tzero(Asys)");
+    print_usage ();
   elseif(nargin != 1)
-    usage("[zer,gain] = tzero(A,B,C,D) or zer = tzero(Asys)");
+    print_usage ();
   else
     Asys = A;
     [A,B,C,D] = sys2ss(Asys);

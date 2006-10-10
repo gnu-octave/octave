@@ -37,7 +37,7 @@
 function [idxvec,errmsg]  = cellidx(listvar,strlist)
 
 if(nargin != 2)
-  usage("idxvec = cellidx(listvar,strlist)");
+  print_usage ();
 endif
 
 if(ischar(strlist))

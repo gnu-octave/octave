@@ -77,7 +77,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   ## parse input arguments
   if(nargin != 4 | nargout > 2)
-    usage("[dsys,fidx] = dmr2d (sys, idx, sprefix, Ts2 {,cuflg})");
+    print_usage ();
 
   elseif (!isstruct(sys))
     error("sys must be in system data structure form");

@@ -39,7 +39,7 @@
 function secs = etime (t1, t0)
 
   if (nargin != 2)
-    usage ("etime (t1, t0)");
+    print_usage ();
   endif
 
   [d1, s1] = datenum (t1);

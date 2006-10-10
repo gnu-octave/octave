@@ -35,7 +35,7 @@
 
 function fplot (fn, limits, n)
   if (nargin < 2 || nargin > 3)
-    usage ("fplot (fn, limits, n)");
+    print_usage ();
   endif
 
   if (nargin < 3) 

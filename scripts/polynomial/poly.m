@@ -33,7 +33,7 @@
 function y = poly (x)
 
   if (nargin != 1)
-    usage ("poly (x)");
+    print_usage ();
   endif
 
   m = min (size (x));
@@ -46,7 +46,7 @@ function y = poly (x)
   elseif (m == n)
     v = eig (x);
   else
-    usage ("poly (x), where x is a vector or a square matrix");
+    print_usage ();
   endif
 
   y = zeros (1, n+1);

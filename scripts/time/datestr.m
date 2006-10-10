@@ -184,7 +184,7 @@ function retval = datestr (date, f, p)
   endif
 
   if (nargin < 1 || nargin > 3)
-    usage("str = datestr (date, [f, [p]])");
+    print_usage ();
   endif
 
   if (nargin < 2)

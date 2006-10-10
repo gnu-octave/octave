@@ -51,7 +51,7 @@
 function y = cplxpair (z, tol, dim)
 
   if nargin < 1 || nargin > 3
-    usage ("z = cplxpair (z, tol, dim);"); 
+    print_usage ();
   endif
 
   if (length (z) == 0)

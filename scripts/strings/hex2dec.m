@@ -40,7 +40,7 @@
 function d = hex2dec (h)
 
   if (nargin != 1)
-    usage ("hex2dec (b)");
+    print_usage ();
   else
     d = base2dec (h, 16);
   endif

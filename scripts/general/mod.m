@@ -41,7 +41,7 @@
 function r = mod (x, y)
 
   if (nargin != 2)
-    usage ("r = mod (x, y)");
+    print_usage ();
   endif
 
   if (((ndims (x) != ndims (y)) || any (size (x) != size (y))) &&

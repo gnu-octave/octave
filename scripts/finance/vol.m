@@ -34,7 +34,7 @@
 function retval = vol (X, m, n)
 
   if (nargin < 2)
-    usage ("vol (X, m, n)");
+    print_usage ();
   endif
 
   [xr, xc] = size (X);

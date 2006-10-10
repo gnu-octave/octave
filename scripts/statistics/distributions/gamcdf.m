@@ -31,7 +31,7 @@
 function cdf = gamcdf (x, a, b)
 
   if (nargin != 3)
-    usage ("gamcdf (x, a, b)");
+    print_usage ();
   endif
 
   if (!isscalar (a) || !isscalar(b))

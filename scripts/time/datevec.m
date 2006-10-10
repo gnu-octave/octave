@@ -80,7 +80,7 @@ function [y, m, d, h, mi, s] = datevec (date, varargin)
   endif
 
   if (nargin < 1 || nargin > 3)
-    usage("v = datevec (...) or [y, m, d, h, mi, s] = datevec (...)");
+    print_usage ();
   endif
 
   switch (nargin)

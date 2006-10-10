@@ -40,7 +40,7 @@
 function z = cumtrapz (x, y, dim)	
 
   if (nargin < 1) || (nargin > 3)
-    usage ("cumtrapz (x, y, dim)");
+    print_usage ();
   endif
 
   nd = ndims (x);

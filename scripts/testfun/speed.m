@@ -144,7 +144,7 @@
 function [__order, __test_n, __tnew, __torig] ...
 	= speed (__f1, __init, __max_n, __f2, __tol)
   if nargin < 1 || nargin > 6, 
-    usage("speed_test(f, init, max_n, f2, tol)");
+    print_usage ();
   endif
   if nargin < 2 || isempty(__init), 
     __init = "x = randn(n, 1);";

@@ -83,7 +83,7 @@
 function x = lyap (a, b, c)
 
   if (nargin != 3 && nargin != 2)
-    usage ("lyap (a, b {,c})");
+    print_usage ();
   endif
 
   if ((n = issquare(a)) == 0)

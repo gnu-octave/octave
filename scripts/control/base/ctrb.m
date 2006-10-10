@@ -52,7 +52,7 @@ function Qs = ctrb (sys, b)
     sysupdate(sys,"ss");
     [a,b] = sys2ss(sys);
   else
-    usage("ctrb(sys [, b])")
+    print_usage ();
   endif
 
   if (!is_abcd(a,b))

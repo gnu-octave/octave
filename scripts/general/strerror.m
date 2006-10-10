@@ -30,7 +30,7 @@
 function msg = strerror (name, err)
 
   if (nargin != 2)
-    usage ("strerror (name, err)");
+    print_usage ();
   endif
 
   if (! ischar (name))

@@ -132,7 +132,7 @@ function [status, msg, msgid] = fileattrib (file)
       endif
     endif
   else
-    usage ("fileattrib (file)");
+    print_usage ();
   endif
 
 endfunction

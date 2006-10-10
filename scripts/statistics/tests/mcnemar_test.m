@@ -38,7 +38,7 @@
 function [pval, chisq, df] = mcnemar_test (x)
 
   if (nargin != 1)
-    usage ("mcnemar_test (x)");
+    print_usage ();
   endif
 
   if (! (min (size (x)) > 1) && issquare (x))

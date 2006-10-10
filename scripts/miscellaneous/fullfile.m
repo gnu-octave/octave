@@ -44,7 +44,7 @@ function filename = fullfile (varargin)
       filename = strcat (filename, filesep, tmp);
     endfor
   else
-    usage ("fullfile (dir1, dir2, ..., file)");
+    print_usage ();
   endif
 
 endfunction

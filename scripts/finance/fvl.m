@@ -33,7 +33,7 @@
 function v = fvl (r, n, l)
 
   if (nargin != 3)
-    usage ("fvl (r, n, l)");
+    print_usage ();
   endif
 
   if (! (isscalar (r) && (r > -1)))

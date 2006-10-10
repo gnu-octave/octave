@@ -39,7 +39,7 @@ function [pval, chisq, df] = bartlett_test (varargin)
 
   k = nargin;
   if (k < 2)
-    usage ("[pval, chisq, df] = bartlett_test (x1, ...)");
+    print_usage ();
   endif
 
   f = zeros (k, 1);

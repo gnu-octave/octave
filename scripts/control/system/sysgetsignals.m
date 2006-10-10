@@ -147,9 +147,9 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
   ## Adapted from ss
 
   if(nargin < 1 | nargin > 4 | nargout > 4)
-    usage("[stname{,inname,outname,yd}] = sysgetsignals(sys{,sigid,signum})")
+    print_usage ();
   elseif(nargin > 1 & nargout > 1)
-    usage("sig = sysgetsignals(sys,sigid{,signum,strflg})")
+    print_usage ();
   elseif( ! isstruct(sys) )
     error("input argument must be a system data structure");
   endif

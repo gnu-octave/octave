@@ -48,7 +48,7 @@
 
 function [x, P, n, k, d] = unmkpp (pp)
   if (nargin == 0)
-    usage ("[x, P, n, k, d] = unmkpp(pp)")
+    print_usage ();
   endif
   if (! isstruct (pp))
     error ("unmkpp: expecting piecewise polynomial structure");

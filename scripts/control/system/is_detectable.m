@@ -39,19 +39,19 @@
 function [retval, U] = is_detectable (a, c, tol, dflg)
 
   if( nargin < 1)
-    usage("retval = is_detectable(a , {c , tol, dlfg})");
+    print_usage ();
   elseif(isstruct(a))
     ## system form
     if(nargin == 2)
       tol = c;
     elseif(nargin > 2)
-      usage("retval = is_detectable(sys {, tol})");
+      print_usage ();
     endif
     dflg = is_digital(a);
     [a,b,c] = sys2ss(a);
   else
     if ((nargin > 4)||(nargin == 1))
-      usage("retval = is_detectable(a , {c , tol, dflg})");
+      print_usage ();
     endif
     if (~exist("dflg"))
       dflg = 0;

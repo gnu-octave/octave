@@ -116,7 +116,7 @@
 function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
 
   if((nargin == 0) || (nargin > 4))
-    usage("[g gmin gmax] = hinfnorm(sys[,tol,gmin,gmax,ptol])");
+    print_usage ();
   elseif(!isstruct(sys))
     error("Sys must be a system data structure");
   endif

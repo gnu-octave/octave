@@ -30,7 +30,7 @@
 function inv = chi2inv (x, n)
 
   if (nargin != 2)
-    usage ("chi2inv (x, n)");
+    print_usage ();
   endif
 
   if (!isscalar (n))

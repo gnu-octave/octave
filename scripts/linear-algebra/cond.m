@@ -51,7 +51,7 @@ function retval = cond (a)
       endif
     endif
   else
-    usage ("cond (a)");
+    print_usage ();
   endif
 
 endfunction

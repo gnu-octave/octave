@@ -30,7 +30,7 @@
 function cdf = betacdf (x, a, b)
 
   if (nargin != 3)
-    usage ("betacdf (a, b, x)");
+    print_usage ();
   endif
 
   if (!isscalar (a) || !isscalar(b))

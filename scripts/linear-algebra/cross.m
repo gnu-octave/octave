@@ -42,7 +42,7 @@
 function z = cross (x, y, dim)
 	
   if (nargin != 2 && nargin != 3)
-    usage ("cross (x, y, dim)");
+    print_usage ();
   endif
 
   if (ndims (x) < 3 && ndims (y) < 3 && nargin < 3)

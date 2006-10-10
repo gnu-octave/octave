@@ -46,7 +46,7 @@
 function cdf = kolmogorov_smirnov_cdf (x, tol)
 
   if (nargin < 1 || nargin > 2)
-    usage ("kolmogorov_smirnov_cdf (x, tol)");
+    print_usage ();
   endif
 
   if (nargin == 1)

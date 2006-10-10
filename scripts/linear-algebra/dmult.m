@@ -29,7 +29,7 @@
 function M = dmult (a, B)
 
   if (nargin != 2)
-    usage ("dmult (a, B)");
+    print_usage ();
   endif
  if (! isvector (a))
     error ("dmult: a must be a vector of length rows (B)");

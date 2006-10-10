@@ -35,7 +35,7 @@ function setaudio (w_type, value)
   elseif (nargin == 2)
     system (sprintf ("mixer %s %d", w_type, value));
   else
-    usage ("setaudio (w_type, value)");
+    print_usage ();
   endif
 
 endfunction

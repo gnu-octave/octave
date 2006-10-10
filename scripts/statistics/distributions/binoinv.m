@@ -29,7 +29,7 @@
 function inv = binoinv (x, n, p)
 
   if (nargin != 3)
-    usage ("binoinv (x, n, p)");
+    print_usage ();
   endif
 
   if (!isscalar (n) || !isscalar (p))

@@ -58,7 +58,7 @@ function Qb = obsv (sys, c)
     sysupdate(sys,"ss");
     [a,b,c] = sys2ss(sys);
   else
-    usage("obsv(sys [, c])")
+    print_usage ();
   endif
 
   if (!is_abcd(a,c'))

@@ -37,7 +37,7 @@
 function pdf = wblpdf (x, scale, shape)
 
   if (nargin < 1 || nargin > 3)
-    usage ("wblpdf (x, scale, shape)");
+    print_usage ();
   endif
 
   if (nargin < 3)

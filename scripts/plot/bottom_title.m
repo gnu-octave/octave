@@ -28,7 +28,7 @@
 function bottom_title (text)
 
   if (nargin != 1)
-    usage ("bottom_title (text)");
+    print_usage ();
   endif
 
   if (ischar (text))

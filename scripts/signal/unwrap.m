@@ -33,7 +33,7 @@
 function retval = unwrap (a, tol, dim)
         
   if (nargin < 1 || nargin > 3)
-    usage ("unwrap (a [, tol [, dim]])")
+    print_usage ();
   endif
 
   nd = ndims (a);

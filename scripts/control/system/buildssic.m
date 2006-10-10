@@ -161,7 +161,7 @@
 function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8)
 
   if((nargin < 5) || (nargin > 12))
-    usage("sys = buildssic(Clst,Ulst,Olst,Ilst,s1,s2,s3,s4,s5,s6,s7,s8)");
+    print_usage ();
   endif
   if (nargin >= 5)
     if (!isstruct(s1))

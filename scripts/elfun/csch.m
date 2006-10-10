@@ -27,7 +27,7 @@
 function w = csch (z)
 
   if (nargin != 1)
-    usage ("csch (z)");
+    print_usage ();
   endif
 
   w = 1 ./ sinh(z);

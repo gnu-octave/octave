@@ -33,7 +33,7 @@
 function num = menu (t, varargin)
 
   if (nargin < 2)
-    usage ("menu (title, opt1, ...)");
+    print_usage ();
   endif
 
   ## Force pending output to appear before the menu.

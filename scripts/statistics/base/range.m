@@ -35,7 +35,7 @@
 function y = range (x, varargin)
 
   if (nargin != 1 && nargin != 2)
-    usage ("range (x, dim)");
+    print_usage ();
   endif
 
   y = max (x, varargin{:}) - min (x, varargin{:});

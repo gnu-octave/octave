@@ -29,7 +29,7 @@
 function cdf = logistic_cdf (x)
 
   if (nargin != 1)
-    usage ("logistic_cdf (x)");
+    print_usage ();
   endif
 
   cdf = 1 ./ (1 + exp (- x));

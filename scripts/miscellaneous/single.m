@@ -31,7 +31,7 @@ function retval = single (val)
   if (nargin == 1 && isnumeric (val))
     retval = val;
   else
-    usage ("single (val)");
+    print_usage ();
   endif
 
 endfunction

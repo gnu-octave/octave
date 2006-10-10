@@ -65,7 +65,7 @@
 function [varargout] = deal (varargin)
 
   if (nargin == 0)
-    usage ("[a, b, c, d] = deal (x, y, z, a)");
+    print_usage ();
   elseif (nargin == 1 || nargin == nargout)
     varargout(1:nargout) = varargin;
   else

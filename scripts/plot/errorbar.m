@@ -112,7 +112,7 @@
 function errorbar (varargin)
 
   if (nargin < 2)
-    usage ("errorbar (...)");
+    print_usage ();
   endif
 
   __gnuplot_raw__ ("set nologscale x;\n");

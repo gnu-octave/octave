@@ -31,7 +31,7 @@
 function [img_retval, map_retval] = loadimage (filename)
 
   if (nargin != 1)
-    usage ("[img, map] = loadimage (filename)");
+    print_usage ();
   elseif (! ischar (filename))
     error ("loadimage: expecting filename as a string");
   endif

@@ -29,7 +29,7 @@
 function inv = stdnormal_inv (x)
 
   if (nargin != 1)
-    usage ("stdnormal_inv (x)");
+    print_usage ();
   endif
 
   inv = sqrt (2) * erfinv (2 * x - 1);

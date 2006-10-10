@@ -31,7 +31,7 @@
 ## PKG_ADD mark_as_command fail
 function ret=fail(code,pattern,warning_pattern)
   if nargin < 1 || nargin > 3
-    usage("fail(code [, 'warning'] [, pattern])");
+    print_usage ();
   endif
 
   ## sort out arguments

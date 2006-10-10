@@ -27,7 +27,7 @@
 function m = cell2mat (c)
 
   if (nargin != 1)
-    usage ("m = cell2mat (c)");
+    print_usage ();
   endif
 
   if (! iscell (c))

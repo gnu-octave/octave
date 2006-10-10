@@ -33,7 +33,7 @@
 function idx = strmatch (s, A, exact)
 
   if (nargin < 2 || nargin > 3)
-    usage ("strmatch (s, A, \"exact\")");
+    print_usage ();
   endif
 
   [nr, nc] = size (A);

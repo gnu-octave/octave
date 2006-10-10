@@ -80,7 +80,7 @@
 function [BETA, SIGMA, R] = ols (Y, X)
 
   if (nargin != 2)
-    usage ("[BETA, SIGMA, R] = ols (Y, X)");
+    print_usage ();
   endif
 
   [nr, nc] = size (X);

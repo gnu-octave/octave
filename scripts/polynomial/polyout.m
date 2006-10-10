@@ -44,7 +44,7 @@
 function y = polyout (c, x)
 
   if (nargin < 1) || (nargin > 2) || (nargout < 0) || (nargout > 1)
-    usage("polyout (c, x)");
+    print_usage ();
   endif
 
   if (! isvector (c))

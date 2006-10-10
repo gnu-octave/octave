@@ -36,7 +36,7 @@
 function X = synthesis (Y, c)
 
   if (nargin != 2)
-    usage ("X = synthesis (Y, c)");
+    print_usage ();
   endif
 
   [nr, nc] = size (c);

@@ -33,7 +33,7 @@
 function [Theta, Phi, R] = cart2sph (X, Y, Z)
 
   if (nargin != 3)
-    usage ("[Theta, Phi, R] = cart2sph (X, Y, Z)")
+    print_usage ();
   endif
 
   if ((! (ismatrix (X) && ismatrix (Y) && ismatrix (Z)))

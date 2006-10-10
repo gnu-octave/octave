@@ -34,7 +34,7 @@
 function inv = tinv (x, n)
 
   if (nargin != 2)
-    usage ("tinv (x, n)");
+    print_usage ();
   endif
 
   if (!isscalar (n))

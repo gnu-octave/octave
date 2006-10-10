@@ -63,7 +63,7 @@ function rnd = trnd (n, r, c)
   elseif (nargin == 1)
     sz = size (n);
   else
-    usage ("trnd (n, r, c)");
+    print_usage ();
   endif
 
   if (isscalar (n))

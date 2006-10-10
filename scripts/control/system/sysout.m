@@ -46,7 +46,7 @@
 function retsys = sysout (sys, opt)
 
   if( (nargin < 1) || (nargin > 2) )
-    usage("sysout(sys[,opt])");
+    print_usage ();
   endif
 
   if(isempty(sys))

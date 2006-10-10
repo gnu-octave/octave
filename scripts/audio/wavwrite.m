@@ -39,7 +39,7 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
   BYTEORDER = "ieee-le";
   
   if (nargin < 2 || nargin > 4)
-    usage ("wavwrite (filename, y, samples_per_sec, bits_per_sample)");
+    print_usage ();
   endif
 
   ## parse arguments

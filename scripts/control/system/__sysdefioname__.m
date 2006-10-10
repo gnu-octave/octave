@@ -40,7 +40,7 @@
 function ioname = __sysdefioname__ (n, str, m)
 
   if (nargin < 2 | nargin > 3)
-    usage ("ioname = __sysdefioname__ (n, str, m)");
+    print_usage ();
   endif
 
   if (nargin == 2)           m = min(1,n);            endif

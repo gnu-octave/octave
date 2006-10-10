@@ -47,7 +47,7 @@
 function retval = skewness (x, dim)
 
   if (nargin != 1 && nargin != 2)
-    usage ("skewness (x, dim)");
+    print_usage ();
   endif
 
   nd = ndims (x);

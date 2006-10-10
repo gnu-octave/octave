@@ -53,7 +53,7 @@
 function [pval, ks] = kolmogorov_smirnov_test (x, dist, varargin)
 
   if (nargin < 2)
-    usage ("[pval, ks] = kolmogorov_smirnov_test (x, dist,, params, alt)");
+    print_usage ();
   endif
 
   if (! isvector (x))

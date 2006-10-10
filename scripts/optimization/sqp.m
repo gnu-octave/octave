@@ -421,7 +421,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif)
 
   else
 
-    usage ("[x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif)");
+    print_usage ();
 
   endif
 

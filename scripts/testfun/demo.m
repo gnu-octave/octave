@@ -78,7 +78,7 @@
 function demo(name, n)
 
   if (nargin < 1 || nargin > 2)
-    usage("demo('name')  or demo('name, n)");
+    print_usage ();
   endif
 
   if (nargin < 2)

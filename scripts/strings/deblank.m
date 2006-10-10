@@ -31,7 +31,7 @@
 function s = deblank (s)
 
   if (nargin != 1)
-    usage ("deblank (s)");
+    print_usage ();
   endif
 
   if (ischar (s))

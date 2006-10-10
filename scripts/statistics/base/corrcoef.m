@@ -33,7 +33,7 @@
 function retval = corrcoef (x, y)
 
   if (nargin < 1 || nargin > 2)
-    usage ("corrcoef (x, y)");
+    print_usage ();
   endif
 
   if (nargin == 2)

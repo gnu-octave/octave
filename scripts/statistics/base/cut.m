@@ -38,7 +38,7 @@
 function group = cut (X, BREAKS)
 
   if (nargin != 2)
-    usage ("cut (X, BREAKS)");
+    print_usage ();
   endif
 
   if (! isvector (X))

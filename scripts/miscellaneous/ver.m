@@ -30,7 +30,7 @@
 function ver ()
 
   if (nargin > 0)
-    usage ("ver");
+    print_usage ();
   endif
 
   octave_license = license ();

@@ -35,7 +35,7 @@
 function y = shift (x, b, dim)
 
   if (nargin != 2 && nargin != 3)
-    usage ("shift (X, b, dim)");
+    print_usage ();
   endif
 
   if (! (isscalar (b) && b == round (b)))

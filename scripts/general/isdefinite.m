@@ -51,7 +51,7 @@ function retval = isdefinite (x, tol)
       error ("isdefinite: matrix x must be symmetric");
     endif
   else
-    usage ("isdefinite (x,tol)");
+    print_usage ();
   endif
 
 endfunction

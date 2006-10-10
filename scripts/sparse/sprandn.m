@@ -44,6 +44,6 @@ function S = sprandn(m,n,d)
       S = sparse(i,j+1,randn(k,1),m,n);
     endif
   else
-    usage("sprandn(m,n,density) OR sprandn(S)");
+    print_usage ();
   endif
 endfunction

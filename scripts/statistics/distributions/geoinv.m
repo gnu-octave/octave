@@ -29,7 +29,7 @@
 function inv = geoinv (x, p)
 
   if (nargin != 2)
-    usage ("geoinv (x, p)");
+    print_usage ();
   endif
 
   if (!isscalar (x) && !isscalar (p))

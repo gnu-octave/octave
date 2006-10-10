@@ -40,7 +40,7 @@
 function n = nextpow2 (x)
 
   if (nargin != 1)
-    usage ("nextpow2 (x)");
+    print_usage ();
   endif
 
   if (! (isscalar (x) || isvector (x)))

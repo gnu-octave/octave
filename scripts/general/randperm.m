@@ -35,7 +35,7 @@ function retval = randperm (n)
       error ("randperm: argument must be non-negative");
     endif
   else
-    usage ("randperm (n)");
+    print_usage ();
   endif
 
 endfunction

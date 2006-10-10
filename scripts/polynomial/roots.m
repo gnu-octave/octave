@@ -44,7 +44,7 @@
 function r = roots (v)
 
   if (min (size (v)) > 1 || nargin != 1)
-    usage ("roots (v), where v is a vector");
+    print_usage ();
   endif
 
   n = length (v);

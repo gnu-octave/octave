@@ -50,7 +50,7 @@
 function retval = median (a, dim)
 
   if (nargin != 1 && nargin != 2)
-    usage ("median (a, dim)");
+    print_usage ();
   endif
   if (nargin < 2)
     dim = find (size (a) > 1, 1);

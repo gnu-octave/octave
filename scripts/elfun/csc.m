@@ -27,7 +27,7 @@
 function w = csc (z)
 
   if (nargin != 1)
-    usage ("csc (z)");
+    print_usage ();
   endif
 
   w = 1 ./ sin(z);

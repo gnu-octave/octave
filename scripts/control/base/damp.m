@@ -36,7 +36,7 @@ function damp (p, tsam)
   ## assume a continuous system
   DIGITAL = 0;
   if(nargin < 1 || nargin > 2)
-    usage("damp(p,[ tsamp])")
+    print_usage ();
   endif
   if(isstruct(p))
     if (nargin != 1)

@@ -67,7 +67,7 @@ function csys = d2c (sys, opt)
   ## SYS_INTERNAL accesses members of system data structure
 
   if( (nargin != 1) & (nargin != 2) )
-    usage("csys = d2c(sys[,tol]), csys = d2c(sys,opt)");
+    print_usage ();
   elseif (!isstruct(sys))
     error("sys must be in system data structure");
   elseif(nargin == 1)

@@ -52,7 +52,7 @@ function st = strcat (s, varargin)
       endif
     endwhile
   else
-    usage ("strcat (s, t, ...)");
+    print_usage ();
   endif
 
   st = tmpst;

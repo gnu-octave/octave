@@ -43,7 +43,7 @@
 function semilogyerr (varargin)
 
   if (nargin < 2)
-    usage ("semilogyerr (...)");
+    print_usage ();
   endif
 
   __gnuplot_raw__ ("set nologscale x;\n");

@@ -32,7 +32,7 @@
 function p = polyreduce (p)
 
   if (nargin != 1)
-    usage ("polyreduce (p)");
+    print_usage ();
   endif
 
   if (! (isvector (p) || isempty (p)))

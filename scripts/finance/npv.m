@@ -39,7 +39,7 @@
 function v = npv (r, p, i)
 
   if ((nargin < 2) || (nargin > 3))
-    usage ("npv (r, p, i");
+    print_usage ();
   endif
 
   if (! (isvector (p)))

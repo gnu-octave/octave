@@ -25,7 +25,7 @@
 
 function t = spfun(f,s)
   if (nargin != 2)
-    usage ("spfun(f,s)")
+    print_usage ();
   endif
 
   if issparse(s)

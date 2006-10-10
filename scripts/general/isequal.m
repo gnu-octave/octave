@@ -28,7 +28,7 @@ function retval = isequal (x, varargin)
   if (nargin > 1)
     retval = __isequal__ (0, x, varargin{:});
   else
-    usage ("isequal (x1, x2, ...)");
+    print_usage ();
   endif
 
 endfunction

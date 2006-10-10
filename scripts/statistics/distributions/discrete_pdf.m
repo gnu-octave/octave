@@ -30,7 +30,7 @@
 function pdf = discrete_pdf (x, v, p)
 
   if (nargin != 3)
-    usage ("discrete_pdf (x, v, p)");
+    print_usage ();
   endif
 
   sz = size (x);

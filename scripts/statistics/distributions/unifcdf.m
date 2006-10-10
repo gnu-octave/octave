@@ -31,7 +31,7 @@
 function cdf = unifcdf (x, a, b)
 
   if (nargin != 1 && nargin != 3)
-    usage ("unifcdf (x, a, b)");
+    print_usage ();
   endif
 
   if (nargin == 1)

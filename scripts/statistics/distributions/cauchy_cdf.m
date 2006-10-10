@@ -31,7 +31,7 @@
 function cdf = cauchy_cdf (x, location, scale)
 
   if (! (nargin == 1 || nargin == 3))
-    usage ("cauchy_cdf (x, lambda, sigma)");
+    print_usage ();
   endif
 
   if (nargin == 1)

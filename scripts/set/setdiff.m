@@ -35,7 +35,7 @@
 function c = setdiff (a, b, byrows)
 
   if (nargin < 2 || nargin > 3)
-    usage ("setdiff (a, b) or setdiff (a, b, \"rows\")");
+    print_usage ();
   endif
 
   if (nargin == 3)

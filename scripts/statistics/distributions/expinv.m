@@ -30,7 +30,7 @@
 function inv = expinv (x, l)
 
   if (nargin != 2)
-    usage ("expinv (x, lambda)");
+    print_usage ();
   endif
 
   if (!isscalar (x) && !isscalar(l))

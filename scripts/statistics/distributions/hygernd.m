@@ -57,7 +57,7 @@ function rnd = hygernd (m, t, n, r, c)
       error ("hygernd: r must be a vector of positive integers");
     endif
   else
-    usage ("hygernd (N, m, t, n) | hygernd (m, t, n, r, c)");
+    print_usage ();
   endif
 
   if (!isscalar (m) || !isscalar (t) || !isscalar (n))

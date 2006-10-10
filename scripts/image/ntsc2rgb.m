@@ -29,7 +29,7 @@
 function rgb = ntsc2rgb (yiq)
 
   if (nargin != 1)
-    usage ("ntsc2rgb (yiq)");
+    print_usage ();
   endif
 
   trans = [ 1.0,      1.0,      1.0;

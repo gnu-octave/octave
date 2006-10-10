@@ -106,7 +106,7 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
 
   ## check number of input arguments given
   if (nargin < 1 | nargin > 5)
-    usage("[realp,imagp,w] = nyquist(sys[,w,outputs,inputs,atol])");
+    print_usage ();
   endif
   if(nargin < 2)
     w = [];

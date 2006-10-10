@@ -39,7 +39,7 @@ function retval = asctime (t)
   if (nargin == 1)
     retval = strftime ("%a %b %d %H:%M:%S %Y\n", t);
   else
-    usage ("asctime (TMSTRUCT)");
+    print_usage ();
   endif
 
 endfunction

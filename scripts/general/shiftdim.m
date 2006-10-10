@@ -51,7 +51,7 @@
 function [y, ns]  = shiftdim (x, n)
 
   if (nargin < 1 || nargin > 2)
-    usage ("shiftdim (x, n) or [b, ns] = shiftdim (x)");
+    print_usage ();
   endif
 
   nd = ndims (x);

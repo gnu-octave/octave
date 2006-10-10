@@ -32,7 +32,7 @@
 function X = bitget (A, n)
 
   if (nargin != 2)
-    usage ("bitget (A, n)");
+    print_usage ();
   endif
 
   if (isa (A, "double"))

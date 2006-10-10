@@ -34,7 +34,7 @@ function rgb_map = hsv2rgb (hsv_map)
 ## each color with f_r(hue-2/3) = f_g(hue) = f_b(hue-1/3)
 
   if (nargin != 1)
-    usage ("rgb_map = hsv2rgb (hsv_map)");
+    print_usage ();
   endif
 
   if (! ismatrix (hsv_map) || columns (hsv_map) != 3)

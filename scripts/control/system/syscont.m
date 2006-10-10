@@ -46,7 +46,7 @@
 function [csys, Acd, Ccd] = syscont (sys)
 
   if (nargin != 1)
-    usage("[csys,Acd,Ccd,Dcd] = syscont(sys)");
+    print_usage ();
   elseif (!isstruct(sys))
     error("sys must be in system data structure form");
   endif

@@ -70,6 +70,6 @@ function S = sprandsym(n,d)
       S = S + tril(S,-1)';
     endif
   else
-    usage("sprandsym(n,density) OR sprandsym(S)");
+    print_usage ();
   endif
 endfunction

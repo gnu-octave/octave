@@ -40,7 +40,7 @@ function x = sinewave (m, n, d)
     endif
     x = sin (((1 : m) + d - 1) * 2 * pi / n);
   else
-    usage ("sinewave (m, n, d)");
+    print_usage ();
   endif
 
 endfunction

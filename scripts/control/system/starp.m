@@ -54,7 +54,7 @@
 function sys = starp (P, K, ny, nu);
 
   if((nargin != 2) && (nargin != 4))
-    usage("sys = starp(P, K, ny, nu)");
+    print_usage ();
   endif
   if (!isstruct(P))
     error("---> P must be in system data structure");

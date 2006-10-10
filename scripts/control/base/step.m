@@ -58,11 +58,11 @@
 function [y, t] = step (sys, inp, tstop, n)
 
   if ((nargin < 1) || (nargin > 4))
-    usage ("[y, u] = step(sys, inp, tstop, n)");
+    print_usage ();
   endif
 
   if (nargout > 2)
-    usage ("[y, u] = step (sys, inp, tstop, n)");
+    print_usage ();
   endif
 
   if (! isstruct (sys))

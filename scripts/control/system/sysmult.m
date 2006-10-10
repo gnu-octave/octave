@@ -40,7 +40,7 @@
 function sys = sysmult (varargin)
 
   if(nargin < 1)
-    usage("sysmult: sys = sysmult(Asys{,Bsys,...})");
+    print_usage ();
   endif
 
   ## collect all arguments

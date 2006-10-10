@@ -26,7 +26,7 @@
 function [data, fmtstr] = __plt2vv__ (x, y, fmt)
 
   if (nargin < 2 || nargin > 3 || nargout != 2)
-    usage ("[data, fmtstr] = __plt2vv__ (x, y, fmt)");
+    print_usage ();
   elseif (nargin == 2)
     fmt = "";
   elseif (rows (fmt) > 1)

@@ -27,7 +27,7 @@
 function w = asech (z)
 
   if (nargin != 1)
-    usage ("acosh (z)");
+    print_usage ();
   endif
 
   w = acosh (1 ./ z);

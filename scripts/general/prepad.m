@@ -41,7 +41,7 @@
 function y = prepad (x, l, c, dim)
 
   if (nargin < 2 || nargin > 4)
-    usage ("prepad (x, l, [c, [dim]])");
+    print_usage ();
   endif
 
   if (nargin < 3 || isempty (c))

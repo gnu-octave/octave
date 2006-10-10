@@ -30,7 +30,7 @@
 function pdf = tpdf (x, n)
 
   if (nargin != 2)
-    usage ("tpdf (x, n)");
+    print_usage ();
   endif
 
   if (!isscalar (n))

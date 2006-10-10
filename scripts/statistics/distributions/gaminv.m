@@ -31,7 +31,7 @@
 function inv = gaminv (x, a, b)
 
   if (nargin != 3)
-    usage ("gaminv (x, a, b)");
+    print_usage ();
   endif
 
   if (!isscalar (a) || !isscalar(b))

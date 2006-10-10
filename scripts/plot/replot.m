@@ -36,7 +36,7 @@ function replot ()
       eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
     endif
   else
-    usage ("replot ()");
+    print_usage ();
   endif
 
 endfunction

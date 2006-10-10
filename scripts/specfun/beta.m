@@ -42,7 +42,7 @@
 function retval = beta (a, b)
 
   if (nargin != 2)
-    usage ("beta (a, b)");
+    print_usage ();
   endif
 
   retval = exp (gammaln (a) + gammaln (b) - gammaln (a+b));

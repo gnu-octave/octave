@@ -34,7 +34,7 @@
 function inv = pascal_inv (x, n, p)
 
   if (nargin != 3)
-    usage ("pascal_inv (x, n, p)");
+    print_usage ();
   endif
 
   if (!isscalar(n) || !isscalar(p)) 

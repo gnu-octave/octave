@@ -66,14 +66,13 @@ function [retval, U] = is_controllable (a, b, tol)
 
   deftol = 1;    # assume default tolerance
   if(nargin < 1 | nargin > 3)
-    usage("[retval,U] = %s\n\t%s", "is_controllable(a {, b, tol})", ...
-        "is_controllable(sys{,tol})");
+    print_usage ();
   elseif(isstruct(a))
     ## system structure passed.
     sys = sysupdate(a,"ss");
     [a,bs] = sys2ss(sys);
     if(nargin > 2)
-      usage("[retval,U] = is_controllable(sys{,tol})");
+      print_usage ();
     elseif(nargin == 2)
       tol = b;          % get tolerance
       deftol = 0;
@@ -82,7 +81,7 @@ function [retval, U] = is_controllable (a, b, tol)
   else
     ## a,b arguments sent directly.
     if(nargin < 2)
-      usage("[retval,U] = is_controllable(a {, b ,tol})");
+      print_usage ();
     else
       deftol = 1;
     endif

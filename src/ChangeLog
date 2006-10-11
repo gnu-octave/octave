@@ -1,3 +1,10 @@
+2006-10-11  John W. Eaton  <jwe@octave.org>
+
+	* mex.h (UINT64_T, uint64_T, INT64_T, int64_T, UINT32_T, uint32_T,
+	INT32_T, int32_T, UINT16_T, uint16_T, INT16_T, int16_T, UINT8_T,
+	uint8_T, INT8_T, int8_T): Conditionally define.
+	From Andy Adler <adler@site.uottawa.ca>.
+
 2006-10-09  John W. Eaton  <jwe@octave.org>
 
 	* oct-conf.h.in (OCTAVE_CONF_CURL_LIBS): Substitute.

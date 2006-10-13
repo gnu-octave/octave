@@ -30,7 +30,7 @@
 
 ## Author: jwe
 
-function sombrero (n)
+function [x, y, z] = sombrero (n)
 
   if (nargin == 0)
     n = 41;
@@ -42,7 +42,9 @@ function sombrero (n)
       [xx, yy] = meshgrid (x, y);
       r = sqrt (xx .^ 2 + yy .^ 2) + eps;
       z = sin (r) ./ r;
-      mesh (x, y, z);
+      if (nargout == 0)
+        mesh (x, y, z);
+      end
     else
       error ("sombrero: number of grid lines must be greater than 1");
     endif

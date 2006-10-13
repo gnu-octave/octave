@@ -1,3 +1,10 @@
+2006-10-12  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (AH_BOTTOM): Don't unconditionally #define
+	OCTAVE_HAVE_POSIX_FILESYSTEM followed by a conditional #undef
+	OCTAVE_HAVE_POSIX_FILESYSTEM since autoconf is commenting out the
+	#undef.
+
 2006-10-09  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (CURL_LIBS, do-subst-config-vals):

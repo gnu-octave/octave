@@ -81,6 +81,7 @@ SHLBIN_VER = @SHLBIN_VER@
 SHLLINKEXT=
 
 LIBEXT = a
+LIBPRE = @LIBPRE@
 
 # Fortran to C translator and associated flags.
 

@@ -1,3 +1,7 @@
+2006-10-13  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Makefile.in: Adapt rules to use $(LIBPRE).
+
 2006-09-11  John W. Eaton  <jwe@octave.org>
 
 	* blas-xtra/xddot.f, blas-xtra/xzdotu.f: New files.

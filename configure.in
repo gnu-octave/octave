@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.525 $)
+AC_REVISION($Revision: 1.526 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -952,6 +952,7 @@ SHLEXT_VER='$(SHLEXT).$(version)'
 SHLLIB_VER='$(SHLLIB).$(version)'
 SHLBIN_VER='$(SHLBIN).$(version)'
 SHLLINKEXT=
+LIBPRE=lib
 SH_LD='$(CXX)'
 SH_LDFLAGS=-shared
 DL_LD='$(SH_LD)'
@@ -1007,6 +1008,17 @@ case "$canonical_host_type" in
     SHLLINKEXT=.dll
     SONAME_FLAGS='-Wl,--out-implib=$@.a'
     library_path_var=PATH
+  ;;
+  *-*-msdos)
+    DL_LDFLAGS="-shared -g"
+    CPICFLAG=
+    CXXPICFLAG=
+    FPICFLAG=
+    SHLEXT=dll
+    SHLLIB=lib
+    SHLBIN=dll
+    LIBPRE=
+    SH_LDFLAGS="-shared -g"
   ;;
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
@@ -1097,6 +1109,7 @@ AC_MSG_NOTICE([defining SHLEXT_VER to be $SHLEXT_VER])
 AC_MSG_NOTICE([defining SHLLIB_VER to be $SHLLIB_VER])
 AC_MSG_NOTICE([defining SHLBIN_VER to be $SHLBIN_VER])
 AC_MSG_NOTICE([defining SHLLINKEXT to be $SHLLINKEXT])
+AC_MSG_NOTICE([defining LIBPRE to be $LIBPRE])
 AC_MSG_NOTICE([defining DLFCN_DIR to be $DLFCN_DIR])
 AC_MSG_NOTICE([defining SH_LD to be $SH_LD])
 AC_MSG_NOTICE([defining SH_LDFLAGS to be $SH_LDFLAGS])
@@ -1119,6 +1132,7 @@ AC_SUBST(SHLEXT_VER)
 AC_SUBST(SHLLIB_VER)
 AC_SUBST(SHLBIN_VER)
 AC_SUBST(SHLLINKEXT)
+AC_SUBST(LIBPRE)
 AC_SUBST(DLFCN_DIR)
 AC_SUBST(SH_LD)
 AC_SUBST(SH_LDFLAGS)
@@ -1763,6 +1777,15 @@ typedef int sig_atomic_t;
 #define SIZEOF_OCTAVE_IDX_TYPE 8
 #else
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
+#endif
+
+#if defined (_MSC_VER)
+/* missing parameters in macros */
+#pragma warning (disable: 4003)
+/* missing implementations in template instantiation */
+#pragma warning (disable: 4996)
+/* deprecated function names (FIXME?) */
+#pragma warning (disable: 4661)
 #endif
 
 #include "oct-types.h"

@@ -1,3 +1,7 @@
+2006-10-13  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Makefile.in: Adapt rules to use $(LIBPRE).
+
 2006-10-11  John W. Eaton  <jwe@octave.org>
 
 	* mex.h (UINT64_T, uint64_T, INT64_T, int64_T, UINT32_T, uint32_T,

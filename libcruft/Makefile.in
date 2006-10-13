@@ -20,7 +20,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 # List of the directories that contain Fortran source.  Simply copying
 # a new .f file into one of these directories is sufficient to have it
-# added to libcruft.a.  If you add a new directory here, you also need
+# added to $(LIBPRE)cruft.a.  If you add a new directory here, you also need
 # generate a new configure script in the top-level directory (edit
 # configure.in and run autoconf).
 
@@ -75,13 +75,13 @@ endif
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = libcruft.$(LIBEXT) libcruft.$(SHLEXT_VER)
+    LIBRARIES = $(LIBPRE)cruft.$(LIBEXT) $(LIBPRE)cruft.$(SHLEXT_VER)
   else
-    LIBRARIES = libcruft.$(SHLEXT_VER)
+    LIBRARIES = $(LIBPRE)cruft.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    LIBRARIES = libcruft.$(LIBEXT)
+    LIBRARIES = $(LIBPRE)cruft.$(LIBEXT)
   else
     LIBRARIES =
   endif
@@ -91,16 +91,16 @@ libraries: $(SUBDIRS)
 	$(MAKE) $(LIBRARIES)
 .PHONY: libraries
 
-libcruft.$(LIBEXT): $(CRUFT_OBJ)
+$(LIBPRE)cruft.$(LIBEXT): $(CRUFT_OBJ)
 	rm -f $@
 	$(AR) $(ARFLAGS) $@ $^
 	$(RANLIB) $@
 
-libcruft.$(SHLEXT_VER): libcruft.$(SHLEXT)
+$(LIBPRE)cruft.$(SHLEXT_VER): $(LIBPRE)cruft.$(SHLEXT)
 	rm -f $@
 	$(LN_S) $< $@
 
-libcruft.$(SHLEXT): $(CRUFT_PICOBJ)
+$(LIBPRE)cruft.$(SHLEXT): $(CRUFT_PICOBJ)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(LINK_DEPS)
 
@@ -118,22 +118,22 @@ clean mostlyclean distclean maintainer-clean::
 install::
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octlibdir)
 	if $(STATIC_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT) ; \
-	  $(INSTALL_DATA) libcruft.$(LIBEXT) \
-	    $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT) ; \
-	  $(RANLIB) $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT) ; \
+	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT) ; \
+	  $(INSTALL_DATA) $(LIBPRE)cruft.$(LIBEXT) \
+	    $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT) ; \
+	  $(RANLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT) ; \
 	fi
 	if $(SHARED_LIBS); then \
-	  rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB_VER); \
 	  $(INSTALL) \
-	    libcruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB_VER); \
-	  rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB); \
+	    $(LIBPRE)cruft.$(SHLLIB) $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB_VER); \
+	  rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB); \
 	  (cd $(DESTDIR)$(octlibdir); \
-	  $(LN_S) libcruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB)); \
+	  $(LN_S) $(LIBPRE)cruft.$(SHLLIB_VER) $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB)); \
 	  if  test x$(SHLBIN) != x ; then \
-	    rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
+	    rm -f $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN); \
 	    $(INSTALL_PROGRAM) \
-	      libcruft.$(SHLBIN) $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
+	      $(LIBPRE)cruft.$(SHLBIN) $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN); \
 	  fi; \
 	fi
 
@@ -141,12 +141,12 @@ install-strip::
 	$(MAKE) INSTALL_PROGRAM="$(INSTALL_PROGRAM) -s" install
 
 uninstall::
-	rm -f $(DESTDIR)$(octlibdir)/libcruft.$(LIBEXT)
-	rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB)
-	rm -f $(DESTDIR)$(octlibdir)/libcruft.$(SHLLIB_VER)
+	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(LIBEXT)
+	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB)
+	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)cruft.$(SHLLIB_VER)
 	if test x$(SHLBIN) != x; then \
-	  rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN); \
-	  rm -f $(DESTDIR)$(bindir)/libcruft.$(SHLBIN_VER); \
+	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN); \
+	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)cruft.$(SHLBIN_VER); \
 	fi
 
 tags TAGS:: $(SOURCES)
@@ -159,8 +159,9 @@ TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
 clean mostlyclean distclean::
-	rm -f libcruft.$(LIBEXT) $(CRUFT_OBJ)
-	rm -f libcruft.$(SHLEXT_VER) libcruft.$(SHLEXT)
+	rm -f $(LIBPRE)cruft.$(LIBEXT) $(CRUFT_OBJ)
+	rm -f $(LIBPRE)cruft.$(SHLEXT_VER) $(LIBPRE)cruft.$(SHLEXT)
+	rm -f cruft.def
 
 distclean maintainer-clean::
 	rm -f Makefile Makerules so_locations

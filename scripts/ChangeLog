@@ -1,3 +1,7 @@
+2006-10-13  John W. Eaton  <jwe@octave.org>
+
+	* plot/box.m: New function.
+
 2006-10-13  Etienne Grossmann  <etienne@tyzx.com>
 
 	* general/ind2sub.m, general/sub2ind.m: Handle empty indices.

@@ -30,7 +30,7 @@
 function ind = sub2ind (dims, varargin)
 
   if (nargin > 1)
-    if (isvector (dims) && round (dims) == dims)
+    if (isvector (dims) && all (round (dims) == dims))
       nd = length (dims);
       vlen = length (varargin);
       dims(vlen) = prod (dims(vlen:nd));
@@ -38,16 +38,16 @@ function ind = sub2ind (dims, varargin)
       scale = cumprod (dims(:));
       for i = 1:vlen
 	arg = varargin{i};
-	if (isnumeric (arg) && round (arg) == arg)
+	if (isnumeric (arg) && all (round (arg) == arg))
 	  if (i == 1)
-	    if (arg > 0 & arg <= dims(i))
+	    if (all (arg > 0 & arg <= dims(i)))
 	      ind = first_arg = arg;
 	    else
 	      error ("sub2ind: index out of range");
 	    endif
 	  else
             if (prod (size (first_arg)) == prod (size (arg)))
-	      if ((i > nd && arg == 1) || (arg > 0 & arg <= dims(i)))
+	      if ((i > nd && arg == 1) || all (arg > 0 & arg <= dims(i)))
 		ind(:) += scale(i-1) * (arg(:) - 1);
 	      else
 		error ("sub2ind: index out of range");

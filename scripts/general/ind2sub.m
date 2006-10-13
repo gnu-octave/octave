@@ -29,10 +29,10 @@
 function varargout = ind2sub (dims, ind)
 
   if (nargin == 2)
-    if (isvector (dims) && round (dims) == dims)
-      if (isnumeric (ind) && round (ind) == ind)
+    if (isvector (dims) && all (round (dims) == dims))
+      if (isnumeric (ind) && all (round (ind) == ind))
 	ntot = prod (dims);
-	if (ind > 0 & ind <= ntot)
+	if (all (ind > 0 & ind <= ntot))
 	  nd = length (dims);
 	  if (nargout > 0)
 	    vlen = nargout;

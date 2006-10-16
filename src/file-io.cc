@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 //   sync_system   (now merged with system)
 //   async_system  (now merged with system)
 
-// Completely rewritten by John W. Eaton <jwe@bevo.che.wics.edu>,
+// Extensively revised by John W. Eaton <jwe@bevo.che.wics.edu>,
 // April 1996.
 
 #ifdef HAVE_CONFIG_H

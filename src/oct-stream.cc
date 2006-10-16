@@ -4045,10 +4045,27 @@ octave_stream_list::do_remove (const octave_value& fid, const std::string& who)
 {
   int retval = -1;
 
-  int i = get_file_number (fid);
+  if (fid.is_string () && fid.string_value () == "all")
+    {
+      // Skip stdin, stdout, and stderr.
 
-  if (! error_state)
-    retval = do_remove (i, who);
+      for (int i = 3; i < curr_len; i++)
+	{
+	  octave_stream os = list(i);
+
+	  if (os.is_valid ())
+	    do_remove (i, who);
+	}
+
+      retval = 0;
+    }
+  else
+    {
+      int i = get_file_number (fid);
+
+      if (! error_state)
+	retval = do_remove (i, who);
+    }
 
   return retval;
 }

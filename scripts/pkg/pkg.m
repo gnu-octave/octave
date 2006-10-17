@@ -462,10 +462,14 @@ function uninstall(pkgnames, handle_deps)
         endif
         ## Do the actual deletion
         rmpath(desc.dir);
-        [status, msg] = rm_rf(desc.dir);
-        if (status != 1)
+	if (exist (desc.dir, "dir"))
+          [status, msg] = rm_rf(desc.dir);
+          if (status != 1)
             error("Couldn't delete directory %s: %s", desc.dir, msg);
-        endif
+          endif
+	else
+	  warning("Directory %s previously lost", desc.dir);
+	endif
     endfor
 
     ## Write a new ~/.octave_packages

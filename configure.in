@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.526 $)
+AC_REVISION($Revision: 1.527 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -560,7 +560,7 @@ fi
 
 CURL_LIBS=
 if test -n "$curl_lib"; then
-  AC_CHECK_LIB($curl_lib, curl_global_init, [
+  AC_CHECK_LIB($curl_lib, curl_easy_escape, [
     AC_CHECK_HEADERS(curl/curl.h, [
       CURL_LIBS="-l$curl_lib"
       AC_DEFINE(HAVE_CURL, 1, [Define if CURL is available.])])])

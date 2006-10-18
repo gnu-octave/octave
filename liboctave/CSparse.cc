@@ -505,7 +505,7 @@ SparseComplexMatrix&
 SparseComplexMatrix::insert (const SparseMatrix& a, octave_idx_type r, octave_idx_type c)
 {
   SparseComplexMatrix tmp (a);
-  return insert (a, r, c);
+  return insert (tmp /*a*/, r, c);
 }
 
 SparseComplexMatrix&

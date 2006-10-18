@@ -309,10 +309,11 @@ pid_t
 octave_syscalls::waitpid (pid_t pid, int *status, int options,
 			  std::string& msg)
 {
+  pid_t retval = -1;
   msg = std::string ();
 
 #if defined (HAVE_WAITPID)
-  pid_t retval = ::octave_waitpid (pid, status, options);
+  retval = ::octave_waitpid (pid, status, options);
 
   if (retval < 0)
     {

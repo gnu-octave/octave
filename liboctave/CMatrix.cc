@@ -2170,7 +2170,7 @@ ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rco
 		      solve_singularity_handler sing_handler) const
 {
   MatrixType mattype (*this);
-  return solve (b, info, rcond, sing_handler);
+  return solve (mattype, b, info, rcond, sing_handler);
 }
 
 ComplexColumnVector

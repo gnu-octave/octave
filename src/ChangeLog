@@ -1,5 +1,8 @@
 2006-10-18  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (mexUnlock): Don't warn if unlocking a function that is
+	not locked.
+
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::dup):
 	Correctly duplicate symbol table info.
 

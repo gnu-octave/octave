@@ -3204,9 +3204,7 @@ mexUnlock (void)
 
       std::map<std::string,int>::iterator p = mex_lock_count.find (fname);
 
-      if (p == mex_lock_count.end ())
-	warning ("mexUnlock: funtion `%s' is not locked", fname);
-      else
+      if (p != mex_lock_count.end ())
 	{
 	  int count = --mex_lock_count[fname];
 

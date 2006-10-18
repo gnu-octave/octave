@@ -1,6 +1,8 @@
-2006-10-13  Michael Goffioul  <michael.goffioul@swing.be>
+2006-10-17  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* oct-types.h.in: Include limits.h, for CHAR_BIT.
+
+2006-10-13  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in: Adapt rules to use $(LIBPRE).
 

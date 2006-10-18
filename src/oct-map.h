@@ -24,6 +24,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_oct_map_h)
 #define octave_oct_map_h 1
 
+#include <algorithm>
 #include <map>
 
 #include "Cell.h"

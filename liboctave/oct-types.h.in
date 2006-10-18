@@ -32,6 +32,10 @@ typedef @OCTAVE_IDX_TYPE@ octave_idx_type;
 #include <inttypes.h>
 #else
 
+#if defined (HAVE_LIMITS_H)
+#include <limits.h>
+#endif
+
 #if CHAR_BIT == 8
 typedef signed char int8_t;
 typedef unsigned char uint8_t;

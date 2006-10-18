@@ -62,7 +62,7 @@ XCC = $(patsubst -O%, , $(CC))
 XALL_CFLAGS = $(patsubst -O%, , $(ALL_CFLAGS))
 
 machar.o: $(srcdir)/machar.c
-	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $<
+	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $< -o $@
 
 pic/machar.o: $(srcdir)/machar.c
 	$(XCC) -c $(CPPFLAGS) $(CPICFLAG) $(XALL_CFLAGS) -DDP $< -o $@

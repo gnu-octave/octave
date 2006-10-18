@@ -633,7 +633,7 @@ AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE, [
 bool FSmy_dld_fcn (void) { return false; }
 EOF
     if AC_TRY_EVAL(ac_compile); then
-      if test "`${NM-nm} conftest.o | grep _FSmy_dld_fcn`" != ""; then
+      if test "`${NM-nm} conftest.$ac_objext | grep _FSmy_dld_fcn`" != ""; then
         octave_cv_cxx_prepends_underscore=yes
       fi
     else
@@ -742,13 +742,13 @@ AC_DEFUN(OCTAVE_CXX_ABI, [
 bool FSmy_dld_fcn (void) { return false; }
 EOF
     if AC_TRY_EVAL(ac_compile); then
-      if test "`${NM-nm} conftest.o | grep FSmy_dld_fcn__Fv`" != ""; then
+      if test "`${NM-nm} conftest.$ac_objext | grep FSmy_dld_fcn__Fv`" != ""; then
         octave_cv_cxx_abi='gnu_v2'
       fi
-      if test "`${NM-nm} conftest.o | grep _Z12FSmy_dld_fcnv`" != ""; then
+      if test "`${NM-nm} conftest.$ac_objext | grep _Z12FSmy_dld_fcnv`" != ""; then
         octave_cv_cxx_abi='gnu_v3'
       fi
-      if test "`${NM-nm} conftest.o | grep __1cMFSmy_dld_fcn6F_b_`" != ""; then
+      if test "`${NM-nm} conftest.$ac_objext | grep __1cMFSmy_dld_fcn6F_b_`" != ""; then
         octave_cv_cxx_abi='sun_v5'
       fi
     else

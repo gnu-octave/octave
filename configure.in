@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.527 $)
+AC_REVISION($Revision: 1.528 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1452,6 +1452,7 @@ case "$canonical_host_type" in
   ;;
   *)
     AC_CHECK_FUNCS(finite isnan isinf copysign signbit)
+    AC_CHECK_FUNCS(_finite _isnan _copysign)
     AC_CHECK_DECLS(signbit, , , [#include <math.h>])
   ;;
 esac

@@ -478,7 +478,7 @@ dnl Does gnuplot exist?  Is it a recent version?
 dnl
 AC_DEFUN(OCTAVE_PROG_GNUPLOT, [
 case "$canonical_host_type" in
-  *-*-cygwin*|*-*-mingw32*)
+  *-*-cygwin* | *-*-mingw32* | *-*-msdos)
     gp_names="pgnuplot pipe-gnuplot gnuplot"
     gp_default=pgnuplot
   ;;

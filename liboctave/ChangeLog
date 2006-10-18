@@ -1,4 +1,15 @@
+2006-10-17  John W. Eaton  <jwe@octave.org>
+
+	* lo-cieee.c: If isnan is not available but _isnan is, then define
+	isnan to be _isnan, and define HAVE_ISNAN.  Likewise for _finite
+	and _copysign.
+
 2006-10-17  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* oct-syscalls.cc (syscalls::waitpid): Always declare and define retval.
+
+	* liboctave/CMatrix.cc (ComplexMatrix::solve): Avoid infinite recursion. 
+	* Index: liboctave/CSparse.cc (SparseComplexMatrix::insert): Likewise.
 
 	* oct-types.h.in: Include limits.h, for CHAR_BIT.
 

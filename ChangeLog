@@ -1,7 +1,13 @@
+2006-10-17  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Check for _isnan, _finite, and _copysign.
+
 2006-10-17  Michael Goffioul  <michael.goffioul@swing.be>
 
-	* (OCTAVE_CXX_PREPENDS_UNDERSCORE, OCTAVE_CXX_ABI): Use $ac_objext
-	instead of assuming .o.
+	* aclocal.m4 (OCTAVE_CXX_PREPENDS_UNDERSCORE, OCTAVE_CXX_ABI): Use
+	$ac_objext instead of assuming .o.
+	(OCTAVE_PROG_GNUPLOT): Handle *-*-msdos the same as *-*-cygwin*
+	and *-*-mingw32*.
 
 2006-10-17  John W. Eaton  <jwe@octave.org>
 

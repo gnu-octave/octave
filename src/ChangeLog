@@ -1,3 +1,8 @@
+2006-10-18  John W. Eaton  <jwe@octave.org>
+
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::dup):
+	Correctly duplicate symbol table info.
+
 2006-10-17  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* oct-map.h: Include <algorithm>.

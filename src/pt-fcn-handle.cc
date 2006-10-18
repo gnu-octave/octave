@@ -141,12 +141,16 @@ tree_anon_fcn_handle::rvalue (int nargout)
 tree_expression *
 tree_anon_fcn_handle::dup (symbol_table *st)
 {
+  symbol_table *new_sym_tab = sym_tab ? sym_tab->dup () : 0;
+
+  if (new_sym_tab)
+    new_sym_tab->inherit (st);
+
   tree_anon_fcn_handle *new_afh
-    = new tree_anon_fcn_handle (param_list ? param_list->dup (st) : 0,
-				ret_list ? ret_list->dup (st) : 0,
-				cmd_list ? cmd_list->dup (st) : 0,
-				sym_tab ? sym_tab->dup () : 0,
-				line (), column ());
+    = new tree_anon_fcn_handle (param_list ? param_list->dup (new_sym_tab) : 0,
+				ret_list ? ret_list->dup (new_sym_tab) : 0,
+				cmd_list ? cmd_list->dup (new_sym_tab) : 0,
+				new_sym_tab, line (), column ());
 
   new_afh->copy_base (*this);
 

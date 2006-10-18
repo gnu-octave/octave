@@ -48,6 +48,21 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "lo-ieee.h"
 
+#if ! defined (HAVE_ISNAN) && defined (HAVE__ISNAN)
+#define isnan _isnan
+#define HAVE_ISNAN 1
+#endif
+
+#if ! defined (HAVE_FINITE) && defined (HAVE__FINITE)
+#define finite _finite
+#define HAVE_FINITE 1
+#endif
+
+#if ! defined (HAVE_COPYSIGN) && defined (HAVE__COPYSIGN)
+#define copysign _copysign
+#define HAVE_COPYSIGN 1
+#endif
+
 #if defined (_AIX) && defined (__GNUG__)
 #undef finite
 #define finite(x) ((x) < DBL_MAX && (x) > -DBL_MAX)
@@ -118,7 +133,7 @@ lo_ieee_isinf (double x)
 int
 lo_ieee_is_NA (double x)
 {
-#if defined HAVE_ISNAN
+#if defined (HAVE_ISNAN)
   lo_ieee_double t;
   t.value = x;
   return (isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;

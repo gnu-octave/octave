@@ -1,5 +1,13 @@
 2006-10-18  John W. Eaton  <jwe@octave.org>
 
+	* dynamic-ld.cc (octave_shlib_list::remove,
+	octave_shlib_list::do_remove, octave_mex_file_list::remove,
+	octave_mex_file_list::do_remove): New arg, cl_hook.
+	(octave_shlib_list::do_remove): Pass cl_hook to octave_shlib close
+	function.
+	(octave_dynamic_loader::do_load_oct): Don't call close on shl
+	directly.  Pass do_clear_function to octave_shlib_list::remove.  
+
 	* mex.cc (mexUnlock): Don't warn if unlocking a function that is
 	not locked.
 

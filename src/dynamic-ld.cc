@@ -49,7 +49,7 @@ public:
 
   static void append (const octave_shlib& shl);
 
-  static void remove (octave_shlib& shl);
+  static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
 
   static void *search (const std::string& fcn_name, octave_shlib& shl,
 		       octave_shlib::name_mangler mangler = 0);
@@ -62,7 +62,7 @@ private:
 
   void do_append (const octave_shlib& shl);
 
-  void do_remove (octave_shlib& shl);
+  void do_remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
 
   void *do_search (const std::string& fcn_name, octave_shlib& shl,
 		   octave_shlib::name_mangler mangler = 0);
@@ -90,16 +90,16 @@ octave_shlib_list::do_append (const octave_shlib& shl)
 }
 
 void
-octave_shlib_list::do_remove (octave_shlib& shl)
+octave_shlib_list::do_remove (octave_shlib& shl,
+			      octave_shlib::close_hook cl_hook)
 {
-  
   for (std::list<octave_shlib>::iterator p = lib_list.begin ();
        p != lib_list.end ();
        p++)
     {
       if (*p == shl)
 	{
-	  shl.close ();
+	  shl.close (cl_hook);
 
 	  lib_list.erase (p);
 
@@ -159,10 +159,11 @@ octave_shlib_list::append (const octave_shlib& shl)
 }
 
 void
-octave_shlib_list::remove (octave_shlib& shl)
+octave_shlib_list::remove (octave_shlib& shl,
+			   octave_shlib::close_hook cl_hook)
 {
   if (instance_ok ())
-    instance->do_remove (shl);
+    instance->do_remove (shl, cl_hook);
 }
 
 void *
@@ -179,7 +180,7 @@ public:
 
   static void append (const octave_shlib& shl);
 
-  static void remove (octave_shlib& shl);
+  static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
 
 private:
 
@@ -189,7 +190,7 @@ private:
 
   void do_append (const octave_shlib& shl);
 
-  void do_remove (octave_shlib& shl);
+  void do_remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
 
   static octave_mex_file_list *instance;
 
@@ -214,7 +215,8 @@ octave_mex_file_list::do_append (const octave_shlib& shl)
 }
 
 void
-octave_mex_file_list::do_remove (octave_shlib& shl)
+octave_mex_file_list::do_remove (octave_shlib& shl,
+				 octave_shlib::close_hook cl_hook)
 {
   
   for (std::list<octave_shlib>::iterator p = file_list.begin ();
@@ -223,7 +225,7 @@ octave_mex_file_list::do_remove (octave_shlib& shl)
     {
       if (*p == shl)
 	{
-	  shl.close ();
+	  shl.close (cl_hook);
 
 	  file_list.erase (p);
 
@@ -258,10 +260,11 @@ octave_mex_file_list::append (const octave_shlib& shl)
 }
 
 void
-octave_mex_file_list::remove (octave_shlib& shl)
+octave_mex_file_list::remove (octave_shlib& shl,
+			      octave_shlib::close_hook cl_hook)
 {
   if (instance_ok ())
-    instance->do_remove (shl);
+    instance->do_remove (shl, cl_hook);
 }
 
 octave_dynamic_loader *octave_dynamic_loader::instance = 0;
@@ -327,7 +330,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 			     "reloading %s clears the following functions:",
 			     oct_file.file_name().c_str ());
 
-	  oct_file.close (do_clear_function);
+	  octave_shlib_list::remove (oct_file, do_clear_function);
 
 	  function = 0;
 	}

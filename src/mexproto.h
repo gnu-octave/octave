@@ -24,7 +24,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 /*
 
 This code was originally distributed as part of Octave Forge under
-the follwoing terms:
+the following terms:
 
 Author: Paul Kienzle
 I grant this code to the public domain.

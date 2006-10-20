@@ -2318,12 +2318,12 @@ handle_identifier (void)
 	{
 	  force_local_variable (tok);
 	}
-      else if (! next_tok_is_paren)
+      else if (! (next_tok_is_paren || lexer_flags.looking_at_object_index))
 	{
 	  BEGIN (COMMAND_START);
 	}
 
-      if (is_rawcommand_name (tok))
+      if (is_rawcommand_name (tok) && ! lexer_flags.looking_at_object_index)
 	{
 	  lexer_flags.doing_rawcommand = true;
 	  BEGIN (COMMAND_START);

@@ -157,16 +157,10 @@ public:
   {
     mxArray *new_rep = rep->clone ();
 
-    return new mxArray (new_rep, name, persistent);
+    return new mxArray (new_rep, name);
   }
 
   virtual ~mxArray (void);
-
-  void mark_persistent (void) const { persistent = true; }
-
-  void unmark_persistent (void) const { persistent = false; }
-
-  bool is_persistent (void) const { return persistent; }
 
   virtual bool is_octave_value (void) const { return rep->is_octave_value (); }
 
@@ -312,7 +306,7 @@ protected:
 
   virtual octave_value as_octave_value (void) const;
 
-  mxArray (const xmxArray&) : rep (0), name (0), persistent (false) { }
+  mxArray (const xmxArray&) : rep (0), name (0) { }
 
 private:
 
@@ -320,10 +314,8 @@ private:
 
   char *name;
 
-  mutable bool persistent;
-
-  mxArray (mxArray *r, const char *n, bool p)
-    : rep (r), name (strsave (n)), persistent (p) { }
+  mxArray (mxArray *r, const char *n)
+    : rep (r), name (strsave (n)) { }
 
   void maybe_mutate (void) const;
 

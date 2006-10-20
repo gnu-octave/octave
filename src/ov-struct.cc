@@ -1278,9 +1278,11 @@ octave_struct::as_mxArray (void) const
 {
   int nf = nfields ();
   string_vector kv = map_keys ();
-  const char **f = static_cast<const char **> (mxArray::malloc (nf * sizeof (const char *)));
+
+  OCTAVE_LOCAL_BUFFER (const char *, f, nf);
+
   for (int i = 0; i < nf; i++)
-    f[i] = mxArray::strsave (kv[i].c_str ());
+    f[i] = kv[i].c_str ();
 
   mxArray *retval = new mxArray (dims (), nf, f);
 

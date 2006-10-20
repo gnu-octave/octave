@@ -32,10 +32,6 @@ class mxArray;
 static void
 xfree (void *ptr)
 {
-#ifdef DEBUG
-  std::cerr << "free: " << ptr << std::endl;
-#endif
-
   ::free (ptr);
 }
 
@@ -1808,49 +1804,49 @@ private:
 // ------------------------------------------------------------------
 
 mxArray::mxArray (const octave_value& ov)
-  : rep (new mxArray_octave_value (ov)), name (0), persistent (false) { }
+  : rep (new mxArray_octave_value (ov)), name (0) { }
 
 mxArray::mxArray (mxClassID id, int ndims, const int *dims, mxComplexity flag)
-  : rep (new mxArray_number (id, ndims, dims, flag)), name (0), persistent (false) { }
+  : rep (new mxArray_number (id, ndims, dims, flag)), name (0) { }
 
 mxArray::mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag)
-  : rep (new mxArray_number (id, dv, flag)), name (0), persistent (false) { }
+  : rep (new mxArray_number (id, dv, flag)), name (0) { }
 
 mxArray::mxArray (mxClassID id, int m, int n, mxComplexity flag)
-  : rep (new mxArray_number (id, m, n, flag)), name (0), persistent (false) { }
+  : rep (new mxArray_number (id, m, n, flag)), name (0) { }
 
 mxArray::mxArray (mxClassID id, double val)
-  : rep (new mxArray_number (id, val)), name (0), persistent (false) { }
+  : rep (new mxArray_number (id, val)), name (0) { }
 
 mxArray::mxArray (mxClassID id, mxLogical val)
-  : rep (new mxArray_number (id, val)), name (0), persistent (false) { }
+  : rep (new mxArray_number (id, val)), name (0) { }
 
 mxArray::mxArray (const char *str)
-  : rep (new mxArray_number (str)), name (0), persistent (false) { }
+  : rep (new mxArray_number (str)), name (0) { }
 
 mxArray::mxArray (int m, const char **str)
-  : rep (new mxArray_number (m, str)), name (0), persistent (false) { }
+  : rep (new mxArray_number (m, str)), name (0) { }
 
 mxArray::mxArray (mxClassID id, int m, int n, int nzmax, mxComplexity flag)
-  : rep (new mxArray_sparse (id, m, n, nzmax, flag)), name (0), persistent (false) { }
+  : rep (new mxArray_sparse (id, m, n, nzmax, flag)), name (0) { }
 
 mxArray::mxArray (int ndims, const int *dims, int num_keys, const char **keys)
-  : rep (new mxArray_struct (ndims, dims, num_keys, keys)), name (0), persistent (false) { }
+  : rep (new mxArray_struct (ndims, dims, num_keys, keys)), name (0) { }
 
 mxArray::mxArray (const dim_vector& dv, int num_keys, const char **keys)
-  : rep (new mxArray_struct (dv, num_keys, keys)), name (0), persistent (false) { }
+  : rep (new mxArray_struct (dv, num_keys, keys)), name (0) { }
 
 mxArray::mxArray (int m, int n, int num_keys, const char **keys)
-  : rep (new mxArray_struct (m, n, num_keys, keys)), name (0), persistent (false) { }
+  : rep (new mxArray_struct (m, n, num_keys, keys)), name (0) { }
 
 mxArray::mxArray (int ndims, const int *dims)
-  : rep (new mxArray_cell (ndims, dims)), name (0), persistent (false) { }
+  : rep (new mxArray_cell (ndims, dims)), name (0) { }
 
 mxArray::mxArray (const dim_vector& dv)
-  : rep (new mxArray_cell (dv)), name (0), persistent (false) { }
+  : rep (new mxArray_cell (dv)), name (0) { }
 
 mxArray::mxArray (int m, int n)
-  : rep (new mxArray_cell (m, n)), name (0), persistent (false) { }
+  : rep (new mxArray_cell (m, n)), name (0) { }
 
 mxArray::~mxArray (void)
 {
@@ -1927,10 +1923,10 @@ public:
 	if (fcn)
 	  {
 	    std::string nm = fcn->name ();
-	    fname = strsave (nm.c_str ());
+	    fname = mxArray::strsave (nm.c_str ());
 	  }
 	else
-	  fname = strsave ("unknown");
+	  fname = mxArray::strsave ("unknown");
       }
 
     return fname;
@@ -1967,10 +1963,6 @@ public:
   void *malloc_unmarked (size_t n)
   {
     void *ptr = ::malloc (n);
-
-#ifdef DEBUG
-    std::cerr << "malloc " << n << " bytes: " << ptr << std::endl;
-#endif
 
     if (! ptr)
       {
@@ -2021,10 +2013,6 @@ public:
   {
     void *v = ::realloc (ptr, n);
 
-#ifdef DEBUG
-    std::cerr << "realloc: " << n << " bytes: " << ptr << std::endl;
-#endif
-
     std::set<void *>::iterator p = memlist.find (ptr);
 
     if (v && p != memlist.end ())
@@ -2067,22 +2055,29 @@ public:
   // Mark a pointer so that it will not be freed on exit.
   void persistent (void *ptr) { unmark (ptr); }
 
-  // Make a new array value and initialize from an octave value; it will be
-  // freed on exit unless marked as persistent.
-  mxArray *make_value (const octave_value& ov)
+  mxArray *mark_array (mxArray *ptr)
   {
-    mxArray *ptr = new mxArray (ov);
     arraylist.insert (ptr);
     return ptr;
   }
 
-  // Free an array and its contents.
-  void free_value (mxArray *ptr)
+  // Make a new array value and initialize from an octave value; it will be
+  // freed on exit unless marked as persistent.
+  mxArray *make_value (const octave_value& ov)
   {
+    return mark_array (new mxArray (ov));
+  }
+
+  // Free an array and its contents.
+  bool free_value (mxArray *ptr)
+  {
+    bool inlist = false;
+
     std::set<mxArray *>::iterator p = arraylist.find (ptr);
 
     if (p != arraylist.end ())
       {
+	inlist = true;
 	arraylist.erase (p);
 	delete ptr;
       }
@@ -2090,12 +2085,17 @@ public:
     else
       warning ("mex::free_value: skipping memory not allocated by mex::make_value");
 #endif
+
+    return inlist;
   }
 
-  // Mark an array and its contents so it will not be freed on exit.
+  // Remove PTR from the list of arrays to be free on exit.
   void persistent (mxArray *ptr)
   {
-    ptr->mark_persistent ();
+    std::set<mxArray *>::iterator p = arraylist.find (ptr);
+
+    if (p != arraylist.end ())
+      arraylist.erase (p);
   }
 
   // 1 if error should be returned to MEX file, 0 if abort.
@@ -2180,13 +2180,13 @@ mex *mex_context = 0;
 void *
 mxArray::malloc (size_t n)
 {
-  return mex_context ? mex_context->malloc_unmarked (n) : malloc (n);
+  return mex_context ? mex_context->malloc_unmarked (n) : ::malloc (n);
 }
 
 void *
 mxArray::calloc (size_t n, size_t t)
 {
-  return mex_context ? mex_context->calloc_unmarked (n, t) : calloc (n, t);
+  return mex_context ? mex_context->calloc_unmarked (n, t) : ::calloc (n, t);
 }
 
 // ------------------------------------------------------------------
@@ -2258,123 +2258,124 @@ mxFree (void *ptr)
   else
     free (ptr);
 }
+
+static inline mxArray *
+maybe_mark_array (mxArray *ptr)
+{
+  return mex_context ? mex_context->mark_array (ptr) : ptr;
+}
   
 // Constructors.
 mxArray *
 mxCreateCellArray (int ndims, const int *dims)
 {
-  return new mxArray (ndims, dims);
+  return maybe_mark_array (new mxArray (ndims, dims));
 }
 
 mxArray *
 mxCreateCellMatrix (int m, int n)
 {
-  return new mxArray (m, n);
+  return maybe_mark_array (new mxArray (m, n));
 }
 
 mxArray *
 mxCreateCharArray (int ndims, const int *dims)
 {
-  return new mxArray (mxCHAR_CLASS, ndims, dims);
+  return maybe_mark_array (new mxArray (mxCHAR_CLASS, ndims, dims));
 }
 
 mxArray *
 mxCreateCharMatrixFromStrings (int m, const char **str)
 {
-  return new mxArray (m, str);
+  return maybe_mark_array (new mxArray (m, str));
 }
 
 mxArray *
 mxCreateDoubleMatrix (int m, int n, mxComplexity flag)
 {
-  return new mxArray (mxDOUBLE_CLASS, m, n, flag);
+  return maybe_mark_array (new mxArray (mxDOUBLE_CLASS, m, n, flag));
 }
 
 mxArray *
 mxCreateDoubleScalar (double val)
 {
-  return new mxArray (mxDOUBLE_CLASS, val);
+  return maybe_mark_array (new mxArray (mxDOUBLE_CLASS, val));
 }
 
 mxArray *
 mxCreateLogicalArray (int ndims, const int *dims)
 {
-  return new mxArray (mxLOGICAL_CLASS, ndims, dims);
+  return maybe_mark_array (new mxArray (mxLOGICAL_CLASS, ndims, dims));
 }
 
 mxArray *
 mxCreateLogicalMatrix (int m, int n)
 {
-  return new mxArray (mxLOGICAL_CLASS, m, n);
+  return maybe_mark_array (new mxArray (mxLOGICAL_CLASS, m, n));
 }
 
 mxArray *
 mxCreateLogicalScalar (int val)
 {
-  return new mxArray (mxLOGICAL_CLASS, val);
+  return maybe_mark_array (new mxArray (mxLOGICAL_CLASS, val));
 }
 
 mxArray *
 mxCreateNumericArray (int ndims, const int *dims, mxClassID class_id,
 		      mxComplexity flag)
 {
-  return new mxArray (class_id, ndims, dims, flag);
+  return maybe_mark_array (new mxArray (class_id, ndims, dims, flag));
 }
 
 mxArray *
 mxCreateNumericMatrix (int m, int n, mxClassID class_id, mxComplexity flag)
 {
-  return new mxArray (class_id, m, n, flag);
+  return maybe_mark_array (new mxArray (class_id, m, n, flag));
 }
 
 mxArray *
 mxCreateSparse (int m, int n, int nzmax, mxComplexity flag)
 {
-  return new mxArray (mxDOUBLE_CLASS, m, n, nzmax, flag);
+  return maybe_mark_array (new mxArray (mxDOUBLE_CLASS, m, n, nzmax, flag));
 }
 
 mxArray *
 mxCreateSparseLogicalMatrix (int m, int n, int nzmax)
 {
-  return new mxArray (mxLOGICAL_CLASS, m, n, nzmax);
+  return maybe_mark_array (new mxArray (mxLOGICAL_CLASS, m, n, nzmax));
 }
 
 mxArray *
 mxCreateString (const char *str)
 {
-  return new mxArray (str);
+  return maybe_mark_array (new mxArray (str));
 }
 
 mxArray *
 mxCreateStructArray (int ndims, int *dims, int num_keys, const char **keys)
 {
-  return new mxArray (ndims, dims, num_keys, keys);
+  return maybe_mark_array (new mxArray (ndims, dims, num_keys, keys));
 }
 
 mxArray *
 mxCreateStructMatrix (int m, int n, int num_keys, const char **keys)
 {
-  return new mxArray (m, n, num_keys, keys);
+  return maybe_mark_array (new mxArray (m, n, num_keys, keys));
 }
 
 // Copy constructor.
 mxArray *
 mxDuplicateArray (const mxArray *ptr)
 {
-  return ptr->clone ();
+  return maybe_mark_array (ptr->clone ());
 }
 
 // Destructor.
 void
 mxDestroyArray (mxArray *ptr)
 {
-  if (! ptr->is_persistent ())
-    {
-      if (mex_context)
-	mex_context->free_value (ptr);
-      else
-	delete ptr;
-    }
+  if (! (mex_context && mex_context->free_value (ptr)))
+    delete ptr;
 }
 
 // Type Predicates.
@@ -2873,12 +2874,6 @@ call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
       for (int i = 0; i < nargout; i++)
 	retval(i) = mxArray::as_octave_value (argout[i]);
     }
-
-  // Is it always safe to do this?  Are users required to use one of
-  // the mxCreateXYZ functions to create the values that are put in
-  // the output array?
-  for (int i = 0; i < nout; i++)
-    delete argout[i];
 
   // Clean up mex resources.
   unwind_protect::run_frame ("call_mex");

@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{entries} =} zip (@var{zipfile},@var{files})
-## @deftypefnx {Function File} {@var{entries} =} zip (@var{zipfile},@var{files},@var{rootdir})
+## @deftypefn {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files})
+## @deftypefnx {Function File} {@var{entries} =} zip (@var{zipfile}, @var{files}, @var{rootdir})
 ## Compress the list of files and/or directories specified in @var{files} 
 ## into the archive @var{zipfiles} in the same directory. If @var{rootdir} 
 ## is defined the @var{files} is located relative to @var{rootdir} rather 

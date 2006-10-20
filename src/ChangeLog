@@ -1,3 +1,31 @@
+2006-10-19  John W. Eaton  <jwe@octave.org>
+
+	* ov-struct.cc (octave_struct::as_mxArrary):
+	Use OCTAVE_LOCAL_BUFFER to allocate tempoarary array of field names.
+
+	* mxarray.h (mxArray::persistent): Delete var and all uses.
+	(mxArray::mark_persistent, mxArray::unmark_persistent,
+	mxArray::is_persistent): Delete functions.
+	* mex.cc (mex::function_name): Use mxArray::strsave, not strsave.
+	(mex::mark_array): New function.
+	(mex::make_value): Use it.
+	(mex::free_value): Return true if we found ptr in arraylist.
+	(mex::persistent (mxArray *)): Remove ptr from arraylist instead
+	of marking it as persistent.
+	(mxArray::malloc): Call ::malloc instead of malloc.
+	(mxArray::calloc): Call ::calloc instead of calloc.
+	(maybe_mark_array): New function.
+	(mxCreateCellArray, mxCreateCellMatrix, mxCreateCharArray,
+	mxCreateCharMatrixFromStrings, mxCreateDoubleMatrix,
+	mxCreateDoubleScalar, mxCreateLogicalArray, mxCreateLogicalMatrix,
+	mxCreateLogicalScalar, mxCreateNumericArray,
+	mxCreateNumericMatrix, mxCreateSparse,
+	mxCreateSparseLogicalMatrix, mxCreateString, mxCreateStructArray,
+	mxCreateStructMatrix, mxDuplicateArray): Use it.
+	(mxDestroyArray): No need to check persistence now.
+	Also delete ptr if mex_context->free_value does not.
+	(call_mex): No need to delete elements of argout now.
+
 2006-10-18  John W. Eaton  <jwe@octave.org>
 
 	* dynamic-ld.cc (octave_shlib_list::remove,

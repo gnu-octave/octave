@@ -617,6 +617,11 @@ do_octave_atexit (void)
     {
       deja_vu = true;
 
+      // Do this explicitly so that destructors for mex file objects
+      // are called, so that functions registered with mexAtExit are
+      // called.
+      delete_symbol_tables ();
+
       command_editor::restore_terminal_state ();
 
       // FIXME -- is this needed?  Can it cause any trouble?

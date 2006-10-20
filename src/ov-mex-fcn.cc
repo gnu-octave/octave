@@ -44,7 +44,8 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_mex_function,
 octave_mex_function::octave_mex_function
   (void *fptr, bool fmex, const octave_shlib& shl,
    const std::string& nm)
-  : octave_function (nm), mex_fcn_ptr (fptr), have_fmex (fmex), sh_lib (shl)
+  : octave_function (nm), mex_fcn_ptr (fptr), exit_fcn_ptr (0),
+    have_fmex (fmex), sh_lib (shl)
 {
   mark_fcn_file_up_to_date (time_parsed ());
 
@@ -57,6 +58,9 @@ octave_mex_function::octave_mex_function
 
 octave_mex_function::~octave_mex_function (void)
 {
+  if (exit_fcn_ptr)
+    (*exit_fcn_ptr) ();
+
   octave_dynamic_loader::remove (my_name, sh_lib);
 }
 
@@ -118,10 +122,8 @@ octave_mex_function::subsref (const std::string& type,
 }
 
 extern octave_value_list
-C_mex (void *f, const octave_value_list& args, int nargout);
-
-extern octave_value_list
-Fortran_mex (void *f, const octave_value_list& args, int nargout);
+call_mex (bool have_fmex, void *f, const octave_value_list& args,
+	  int nargout, octave_mex_function *curr_mex_fcn);
 
 octave_value_list
 octave_mex_function::do_multi_index_op (int nargout,
@@ -142,9 +144,7 @@ octave_mex_function::do_multi_index_op (int nargout,
 
       unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
-      retval = have_fmex
-	? Fortran_mex (mex_fcn_ptr, args, nargout)
-	: C_mex (mex_fcn_ptr, args, nargout);
+      retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
 
       unwind_protect::run_frame ("mex_func_eval");
     }

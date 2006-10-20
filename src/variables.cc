@@ -104,6 +104,14 @@ initialize_symbol_tables (void)
   curr_caller_sym_tab = curr_sym_tab = top_level_sym_tab;
 }
 
+void
+delete_symbol_tables (void)
+{
+  delete fbi_sym_tab;
+  delete global_sym_tab;
+  delete top_level_sym_tab;
+}
+
 // Attributes of variables and functions.
 
 // Is this a command-style function?

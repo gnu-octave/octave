@@ -19,6 +19,7 @@ class mxArray;
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "parse.h"
@@ -1904,7 +1905,8 @@ class mex
 {
 public:
 
-  mex (void) : memlist (), arraylist (), fname (0) { }
+  mex (octave_mex_function *f)
+    : curr_mex_fcn (f), memlist (), arraylist (), fname (0) { }
 
   ~mex (void)
   {
@@ -2098,6 +2100,11 @@ public:
       arraylist.erase (p);
   }
 
+  octave_mex_function *current_mex_function (void) const
+  {
+    return curr_mex_fcn;
+  }
+
   // 1 if error should be returned to MEX file, 0 if abort.
   int trap_feval_error;
 
@@ -2108,6 +2115,9 @@ public:
   void abort (void) { longjmp (jump, 1); }
 
 private:
+
+  // Pointer to the mex function that corresponds to this mex context.
+  octave_mex_function *curr_mex_fcn;
 
   // List of memory resources that need to be freed upon exit.
   std::set<void *> memlist;
@@ -2791,26 +2801,10 @@ mxGetElementSize (const mxArray *ptr)
 typedef void (*cmex_fptr) (int nlhs, mxArray **plhs, int nrhs, mxArray **prhs);
 typedef F77_RET_T (*fmex_fptr) (int& nlhs, mxArray **plhs, int& nrhs, mxArray **prhs);
 
-enum callstyle { use_fortran, use_C };
-
 octave_value_list
-call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
+call_mex (bool have_fmex, void *f, const octave_value_list& args,
+	  int nargout, octave_mex_function *curr_mex_fcn)
 {
-#if 0
-  // Don't bother trapping stop/exit
-  // FIXME -- should really push "mex_exit" onto the octave
-  // atexit stack before we start and pop it when we are through, but
-  // the stack handle isn't exported from toplev.cc, so we can't.  mex_exit
-  // would have to be declared as DEFUN(mex_exit,,,"") of course.
-  static bool unregistered = true;
-
-  if (unregistered)
-    {
-      atexit (mex_exit);
-      unregistered = false;
-    }
-#endif
-
   // Use at least 1 for nargout since even for zero specified args,
   // still want to be able to return an ans.
 
@@ -2829,7 +2823,7 @@ call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
   // Save old mex pointer.
   unwind_protect_ptr (mex_context);
 
-  mex context;
+  mex context (curr_mex_fcn);
 
   unwind_protect::add (mex::cleanup, static_cast<void *> (&context));
 
@@ -2840,7 +2834,7 @@ call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
     {
       mex_context = &context;
 
-      if (cs == use_fortran)
+      if (have_fmex)
 	{
 	  fmex_fptr fcn = FCN_PTR_CAST (fmex_fptr, f);
 
@@ -2879,18 +2873,6 @@ call_mex (callstyle cs, void *f, const octave_value_list& args, int nargout)
   unwind_protect::run_frame ("call_mex");
 
   return retval;
-}
-
-octave_value_list
-Fortran_mex (void *f, const octave_value_list& args, int nargout)
-{
-  return call_mex (use_fortran, f, args, nargout);
-}
-
-octave_value_list
-C_mex (void *f, const octave_value_list& args, int nargout)
-{
-  return call_mex (use_C, f, args, nargout);
 }
 
 // C interface to mex functions:
@@ -3128,10 +3110,17 @@ mexMakeMemoryPersistent (void *ptr)
 }
 
 int
-mexAtExit (void (*/*f*/) (void))
+mexAtExit (void (*f) (void))
 {
-  // FIXME
-  error ("mexAtExit: not implemented");
+  if (mex_context)
+    {
+      octave_mex_function *curr_mex_fcn = mex_context->current_mex_function ();
+
+      assert (curr_mex_fcn);
+
+      curr_mex_fcn->atexit (f);
+    }
+
   return 0;
 }
 

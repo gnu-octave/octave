@@ -1,3 +1,32 @@
+2006-10-20  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* ov-mex-fcn.h (octave_mex_function::atexit): New function.
+	(octave_mex_function::exit_fcn_ptr): New data member.
+	* ov-mex-fcn.cc (octave_mex_function::exit_fcn_ptr): New data member.
+	(octave_mex_function::octave_mex_function): Initialize it.
+	(octave_mex_function::~octave_mex_function):
+	If we have an exit function, call it.
+
+2006-10-20  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (delete_symbol_tables): New function.
+	* variables.h: Provide decl.
+	* toplev.cc (do_octave_atexit): Call it.
+
+	* mex.cc (mex::mex): New arg, a pointer to the current mex function.
+	(mex::curr_mex_fcn): New data member.
+	(mex::current_mex_function): New function.
+	(mexAtExit): Set exit function pointer in current mex file object.
+
+2006-10-20  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* mex.cc (enum callstyle): Delete enum definition.
+	(Fortran_mex, C_mex): Delete functions.
+	(call_mex): First arg is now bool.
+	* ov-mex-fcn.cc (call_mex): Fix decl to match new definition.
+	(Fortran_mex, C_mex): Delete decls.
+	(octave_mex_function::do_multi_index_op): Simplify call to call_mex.
+
 2006-10-20  John W. Eaton  <jwe@octave.org>
 
 	* lex.l (handle_identifier): If a command name is found, skip

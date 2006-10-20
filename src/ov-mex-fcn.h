@@ -81,9 +81,13 @@ public:
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
 
+  void atexit (void (*fcn) (void)) { exit_fcn_ptr = fcn; }
+
 private:
 
   void *mex_fcn_ptr;
+
+  void (*exit_fcn_ptr) (void);
 
   bool have_fmex;
 

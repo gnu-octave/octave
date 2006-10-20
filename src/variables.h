@@ -48,6 +48,7 @@ class string_vector;
 extern bool at_top_level (void);
 
 extern void initialize_symbol_tables (void);
+extern void delete_symbol_tables (void);
 
 extern bool is_command_name (const std::string&);
 

@@ -230,39 +230,11 @@ put_int (octave_idx_type *p, octave_idx_type n)
   return ret;
 }
 
-DEFUN_DLD (dmperm, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{p} =} dmperm (@var{s})\n\
-@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{s}] =} dmperm (@var{s})\n\
-\n\
-@cindex Dulmage-Mendelsohn decomposition\n\
-Perform a Deulmage-Mendelsohn permutation on the sparse matrix @var{s}.\n\
-With a single output argument @dfn{dmperm} performs the row permutations\n\
-@var{p} such that @code{@var{s} (@var{p},:)} has no zero elements on the\n\
-diagonal.\n\
-\n\
-Called with two or more output arguments, returns the row and column\n\
-permutations, such that @code{@var{s} (@var{p}, @var{q})} is in block\n\
-triangular form. The values of @var{r} and @var{s} define the boundaries\n\
-of the blocks. If @var{s} is square then @code{@var{r} == @var{s}}.\n\
-\n\
-The method used is described in: A. Pothen & C.-J. Fan. Computing the block\n\
-triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
-16(4):303-324, 1990.\n\
-@seealso{colamd, ccolamd}\n\
-@end deftypefn")
-{
-  int nargin = args.length();
-  octave_value_list retval;
-  
 #if HAVE_CXSPARSE
-  if (nargin != 1)
-    {
-      print_usage ();
-      return retval;
-    }
-
-  octave_value arg = args(0);
+static octave_value_list
+dmperm_internal (bool rank, const octave_value arg, int nargout)
+{
+  octave_value_list retval;
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
   SparseMatrix m;
@@ -290,14 +262,23 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
 
   if (!error_state)
     {
-      if (nargout <= 1)
+      if (nargout <= 1 || rank)
 	{
 #if defined(CS_VER) && (CS_VER >= 2)
 	  octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm, 0);
 #else
 	  octave_idx_type *jmatch = CXSPARSE_NAME (_maxtrans) (&csm);
 #endif
-	  retval(0) = put_int (jmatch + nr, nc);
+	  if (rank)
+	    {
+	      octave_idx_type r = 0;
+	      for (octave_idx_type i = 0; i < nc; i++)
+		if (jmatch[nr+i] >= 0)
+		  r++;
+	      retval(0) = static_cast<double>(r);
+	    }
+	  else
+	    retval(0) = put_int (jmatch + nr, nc);
 	  CXSPARSE_NAME (_free) (jmatch);
 	}
       else
@@ -307,6 +288,7 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
 #else
 	  CXSPARSE_NAME (d) *dm = CXSPARSE_NAME(_dmperm) (&csm);
 #endif
+
 	  //retval(5) = put_int (dm->rr, 5);
 	  //retval(4) = put_int (dm->cc, 5);
 #if defined(CS_VER) && (CS_VER >= 2)
@@ -323,6 +305,43 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
 	  CXSPARSE_NAME (_dfree) (dm);
 	}
     }
+  return retval;
+}
+#endif
+
+DEFUN_DLD (dmperm, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{p} =} dmperm (@var{s})\n\
+@deftypefnx {Loadable Function} {[@var{p}, @var{q}, @var{r}, @var{s}] =} dmperm (@var{s})\n\
+\n\
+@cindex Dulmage-Mendelsohn decomposition\n\
+Perform a Dulmage-Mendelsohn permutation on the sparse matrix @var{s}.\n\
+With a single output argument @dfn{dmperm} performs the row permutations\n\
+@var{p} such that @code{@var{s} (@var{p},:)} has no zero elements on the\n\
+diagonal.\n\
+\n\
+Called with two or more output arguments, returns the row and column\n\
+permutations, such that @code{@var{s} (@var{p}, @var{q})} is in block\n\
+triangular form. The values of @var{r} and @var{s} define the boundaries\n\
+of the blocks. If @var{s} is square then @code{@var{r} == @var{s}}.\n\
+\n\
+The method used is described in: A. Pothen & C.-J. Fan. Computing the block\n\
+triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
+16(4):303-324, 1990.\n\
+@seealso{colamd, ccolamd}\n\
+@end deftypefn")
+{
+  int nargin = args.length();
+  octave_value_list retval;
+  
+  if (nargin != 1)
+    {
+      print_usage ();
+      return retval;
+    }
+
+#if HAVE_CXSPARSE
+  retval = dmperm_internal (false, args(0), nargout);
 #else
   error ("dmperm: not available in this version of Octave");
 #endif
@@ -330,7 +349,7 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
   return retval;
 }
 
-/*
+/* 
 
 %!test
 %! n=20;
@@ -347,6 +366,45 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
 
 */
 
+DEFUN_DLD (sprank, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{p} =} sprank (@var{s})\n\
+\n\
+@cindex Structural Rank\n\
+Calculates the structural rank of a sparse matrix @var{s}. Note that\n\
+only the structure of the matrix is used in this calculation based on\n\
+a Dulmage-Mendelsohn to block triangular form. As such the numerical\n\
+rank of the matrix @var{s} is bounded by @code{sprank (@var{s}) >=\n\
+rank (@var{s})}. Ignoring floating point errors @code{sprank (@var{s}) ==\n\
+rank (@var{s})}.\n\
+@seealso{dmperm}\n\
+@end deftypefn")
+{
+  int nargin = args.length();
+  octave_value_list retval;
+  
+  if (nargin != 1)
+    {
+      print_usage ();
+      return retval;
+    }
+
+#if HAVE_CXSPARSE
+  retval = dmperm_internal (true, args(0), nargout);
+#else
+  error ("sprank: not available in this version of Octave");
+#endif
+
+  return retval;
+}
+
+/* 
+
+%!error(sprank(1,2));
+%!assert(sprank(speye(20)), 20)
+%!assert(sprank([1,0,2,0;2,0,4,0]),2)
+
+*/
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

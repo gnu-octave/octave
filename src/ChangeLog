@@ -1,3 +1,11 @@
+2006-10-20  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTION/spqr.cc (dmperm_internal): New function with core
+	of Fdmperm.
+	(Fdmperm): Call dmperm_internal rather then calculating loally.
+	(Fsprank): New function to calculate the strutural rank also using
+	dmperm_internal.
+
 2006-10-19  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_struct::as_mxArrary):

@@ -42,7 +42,15 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     else
       cmd = "/bin/mv";
     endif
-    [err, msg] = system (sprintf ("%s %s %s", cmd, f1, f2));
+
+    ## Allow cell input and protect the file name(s).
+    if (iscellstr (f1))
+      f1 = sprintf("\"%s\" ", f1{:});
+    else
+      f1 = sprintf("\"%s\" ", f1);
+    endif
+
+    [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, f1, f2));
     if (err < 0)
       status = false;
       msgid = "movefile";

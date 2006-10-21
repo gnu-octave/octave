@@ -1,3 +1,8 @@
+2006-10-20  Bill Denney  <denney@seas.upenn.edu>
+
+	* movefile.m, copyfile.m: Handle cellstr lists of files.
+	Quote filenames in shell commands.
+
 2006-10-17  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (uninstall): Allow the uninstall to proceed even if

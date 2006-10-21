@@ -1,3 +1,18 @@
+2006-10-21  John W. Eaton  <jwe@octave.org>
+
+	* ov-intx.h
+	(OCTAVE_VALUE_INT_MATRIX_T::OCTAVE_TYPE_PREDICATE_FUNCTION,
+	(OCTAVE_VALUE_INT_SCALAR_T::OCTAVE_TYPE_PREDICATE_FUNCTION):
+	Function is now const, so it properly overloads method in base
+	class.
+
+	* mex.cc (mxArray_octave_value::is_uint32):
+	Call val.is_uint32_type, not val.is_int32_type.
+	(mxArray_octave_value::is_uint64):
+	Call val.is_uint64_type, not val.is_int64_type.
+	(mxArray_octave_value::is_uint8):
+	Call val.is_uint8_type, not val.is_int8_type.
+
 2006-10-20  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* ov-mex-fcn.h (octave_mex_function::atexit): New function.

@@ -303,11 +303,11 @@ public:
 
   int is_uint16 (void) const { return val.is_uint16_type (); }
 
-  int is_uint32 (void) const { return val.is_int32_type (); }
+  int is_uint32 (void) const { return val.is_uint32_type (); }
 
-  int is_uint64 (void) const { return val.is_int64_type (); }
+  int is_uint64 (void) const { return val.is_uint64_type (); }
 
-  int is_uint8 (void) const { return val.is_int8_type (); }
+  int is_uint8 (void) const { return val.is_uint8_type (); }
 
   int is_range (void) const { return val.is_range (); }
 

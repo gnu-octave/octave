@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{status}, @var{text}] =} dos (@var{command})
 ## @deftypefnx {Function File} {[@var{status}, @var{text}] =} dos (@var{command}, "-echo")
-## Execute a system command if running under a Windos-like operating
+## Execute a system command if running under a Windows-like operating
 ## system, otherwise do nothing.  Return the exit status of the program
 ## in @var{status} and any output sent to the standard output in
 ## @var{text}.  If the optional second argument @code{"-echo"} is given,

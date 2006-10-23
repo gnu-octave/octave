@@ -1646,12 +1646,7 @@ public:
     return data[idx];
   }
 
-  void set_field_by_number (int index, int key_num, mxArray *val)
-  {
-    int idx = nfields * index + key_num;
-
-    data[idx] = val;
-  }
+  void set_field_by_number (int index, int key_num, mxArray *val);
 
   int get_number_of_fields (void) const { return nfields; }
 
@@ -1763,7 +1758,7 @@ public:
 
   mxArray *get_cell (int idx) const { return data[idx]; }
 
-  void set_cell (int idx, mxArray *val) { data[idx] = val; }
+  void set_cell (int idx, mxArray *val);
 
   void *get_data (void) const { return data; }
 
@@ -1961,7 +1956,7 @@ public:
     context->arraylist.clear ();
   }
 
-  // allocate a pointer, and mark it to be freed on exit
+  // Allocate memory.
   void *malloc_unmarked (size_t n)
   {
     void *ptr = ::malloc (n);
@@ -1981,6 +1976,7 @@ public:
     return ptr;
   }
 
+  // Allocate memory to be freed on exit.
   void *malloc (size_t n)
   {
     void *ptr = malloc_unmarked (n);
@@ -1990,7 +1986,7 @@ public:
     return ptr;
   }
 
-  // Allocate a pointer to be freed on exit, and initialize to 0.
+  // Allocate memory and initialize to 0.
   void *calloc_unmarked (size_t n, size_t t)
   {
     void *ptr = malloc_unmarked (n*t);
@@ -2000,6 +1996,7 @@ public:
     return ptr;
   }
 
+  // Allocate memory to be freed on exit and initialize to 0.
   void *calloc (size_t n, size_t t)
   {
     void *ptr = calloc_unmarked (n, t);
@@ -2063,6 +2060,14 @@ public:
     return ptr;
   }
 
+  void unmark_array (mxArray *ptr)
+  {
+    std::set<mxArray *>::iterator p = arraylist.find (ptr);
+
+    if (p != arraylist.end ())
+      arraylist.erase (p);
+  }
+
   // Make a new array value and initialize from an octave value; it will be
   // freed on exit unless marked as persistent.
   mxArray *make_value (const octave_value& ov)
@@ -2092,13 +2097,7 @@ public:
   }
 
   // Remove PTR from the list of arrays to be free on exit.
-  void persistent (mxArray *ptr)
-  {
-    std::set<mxArray *>::iterator p = arraylist.find (ptr);
-
-    if (p != arraylist.end ())
-      arraylist.erase (p);
-  }
+  void persistent (mxArray *ptr) { unmark_array (ptr); }
 
   octave_mex_function *current_mex_function (void) const
   {
@@ -2128,14 +2127,14 @@ private:
   mutable char *fname;
 
   // Mark a pointer to be freed on exit.
-  void mark (void *p)
+  void mark (void *ptr)
   {
 #ifdef DEBUG
-    if (memlist.find (p) != memlist.end ())
+    if (memlist.find (ptr) != memlist.end ())
       warning ("%s: double registration ignored", function_name ());
 #endif
 
-    memlist.insert (p);
+    memlist.insert (ptr);
   }
 
   // Unmark a pointer to be freed on exit, either because it was
@@ -2197,6 +2196,29 @@ void *
 mxArray::calloc (size_t n, size_t t)
 {
   return mex_context ? mex_context->calloc_unmarked (n, t) : ::calloc (n, t);
+}
+
+static inline mxArray *
+maybe_unmark_array (mxArray *ptr)
+{
+  if (mex_context)
+    mex_context->unmark_array (ptr);
+
+  return ptr;
+}
+
+void
+mxArray_struct::set_field_by_number (int index, int key_num, mxArray *val)
+{
+  int idx = nfields * index + key_num;
+
+  data[idx] = maybe_unmark_array (val);
+}
+
+void
+mxArray_cell::set_cell (int idx, mxArray *val)
+{
+  data[idx] = maybe_unmark_array (val);
 }
 
 // ------------------------------------------------------------------
@@ -2266,7 +2288,7 @@ mxFree (void *ptr)
   if (mex_context)
     mex_context->free (ptr);
   else
-    free (ptr);
+    xfree (ptr);
 }
 
 static inline mxArray *

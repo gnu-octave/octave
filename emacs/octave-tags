@@ -2,7 +2,7 @@
 
 # Generate a TAGS file from a set of Octave .m files for use with Emacs.
 #
-# Run as '$ otags' in the given Octave directory to generate a
+# Run as '$ octave-tags' in the given Octave directory to generate a
 # TAGS file.  If you want to include another directory, add a line
 # prior to the "*.m" line containing something like
 #  `--include=/path/to/other/directory/TAGS" \'.

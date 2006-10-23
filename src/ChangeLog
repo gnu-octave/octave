@@ -1,3 +1,13 @@
+2006-10-23  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mex::unmark_array): New function.
+	(mex::persistent): Define with unmark_array.
+	(maybe_unmark_array): New function.
+	(mxArray_struct::set_field_by_number, mxArray_cell::set_cell):
+	Call maybe_unmark_array on val to avoid freeing val twice on exit
+	from mex function.
+	(mxFree): Call xfree, not free.
+
 2006-10-21  John W. Eaton  <jwe@octave.org>
 
 	* ov-intx.h

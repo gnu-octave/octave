@@ -21,19 +21,19 @@ INSTALL_DATA = @INSTALL_DATA@
 
 EL_FILES = octave-hlp.el octave-inf.el octave-mod.el
 
-SOURCES = $(EL_FILES) otags
+SOURCES = $(EL_FILES) octave-tags
 
-DISTFILES = Makefile.in $(EL_FILES) otags otags.1 NEWS TODO README
+DISTFILES = Makefile.in $(EL_FILES) octave-tags octave-tags.1 NEWS TODO README
 
 all:
 .PHONY: all
 
 install install-strip:
-	$(INSTALL_SCRIPT) otags $(DESTDIR)$(bindir)/otags
+	$(INSTALL_SCRIPT) octave-tags $(DESTDIR)$(bindir)/octave-tags
 .PHONY: install install-strip
 
 uninstall:
-	rm -f $(DESTDIR)$(bindir)/otags
+	rm -f $(DESTDIR)$(bindir)/octave-tags
 .PHONY: uninstall
 
 tags:

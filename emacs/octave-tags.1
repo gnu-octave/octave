@@ -1,19 +1,19 @@
 .\" Man page contributed by Dirk Eddelbuettel <edd@debian.org>
 .\" and released under the GNU GPL
-.TH OTAGS 1 "31 October 2001" "GNU Octave"
+.TH OCTAVE-TAGS 1 "31 October 2001" "GNU Octave"
 .SH NAME
-OTAGS - Generate Emacs tags file from GNU Octave code
+OCTAVE-TAGS - Generate Emacs tags file from GNU Octave code
 .SH SYNOPSIS
-.BR otags\  [--include\ dir]
+.BR octave-tags\  [--include\ dir]
 \fIfile\fP .\|.\|.  
 .SH DESCRIPTION
 .PP
-.B otags
+.B octave-tags
 program is used to create a tag table file, in a format understood by 
 .BR emacs (1)
 and
 .BR xemacs (1).
-.B otags
+.B octave-tags
 reads the files specified on the command line, and write a tag table  
 (defaults: `TAGS') in the current working directory. Files specified with
 relative file names will be  recorded in the tag table with file names

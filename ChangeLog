@@ -1,3 +1,9 @@
+2006-10-23  John W. Eaton  <jwe@octave.org>
+
+	* emacs/Makefile.in (SOURCES, DISTFILES, install, install-strip,
+	uninstall): Handle otags name change.
+	* emacs/octave-tags, emacs/octave-tags.1: Rename from otags.
+
 2006-10-17  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for _isnan, _finite, and _copysign.

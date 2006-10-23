@@ -22,68 +22,68 @@
 ##
 ## @table @samp
 ## @item install
-##   Install named packages.  For example,
-##   @example
-##   pkg install image-1.0.0.tar.gz
-##   @end example
-##   @noindent
-##   installs the package found in the file @code{image-1.0.0.tar.gz}.
-##   
-##   If @var{option} is @code{-nodeps} the package manager will disable the
-##   dependency checking. That way it is possible to install a package even
-##   if it depends on another package that's not installed on the system.
-##   @strong{Use this option with care.}
-## @item uninstall
-##   Uninstall named packages.  For example,
-##   @example
-##   pkg uninstall image
-##   @end example
-##   @noindent
-##   removes the @code{image} package from the system.  If another installed
-##   package depends on the @code{image} package an error will be issued.
-##   The package can be uninstalled anyway by using the @code{-nodeps} option.
-## @item load
-##   Add named packages to the path.  After loading a package it is
-##   possible to use the functions provided by the package.  For example,
-##   @example
-##   pkg load image
-##   @end example
-##   @noindent
-##   adds the @code{image} package to the path. It is possible to load all
-##   installed packages at once with the command
-##   @example
-##   pkg load all
-##   @end example
-## @item list
-##   Show a list of the currently installed packages.  By requesting one or two
-##   output argument it is possible to get a list of the currently installed
-##   packages.  For example,
-##   @example
-##   installed_packages = pkg list;
-##   @end example
-##   @noindent
-##   returns a cell array containing a structure for each installed package.
-##   The command
-##   @example
-##   [@var{user_packages}, @var{system_packages}] = pkg list
-##   @end example
-##   @noindent
-##   splits the list of installed packages into those who are installed by
-##   the current user, and those installed by the system administrator.
-## @item prefix
-##   Set the installation prefix directory. For example,
-##   @example
-##   pkg prefix ~/my_octave_packages
-##   @end example
-##   @noindent
-##   sets the installation prefix to @code{~/my_octave_packages}.
-##   Packages will be installed in this directory. 
+## Install named packages.  For example,
+## @example
+## pkg install image-1.0.0.tar.gz
+## @end example
+## @noindent
+## installs the package found in the file @code{image-1.0.0.tar.gz}.
 ##
-##   It is possible to get the current installation prefix by requesting an
-##   output argument.  For example,
-##   @example
-##   p = pkg prefix
-##   @end example
+## If @var{option} is @code{-nodeps} the package manager will disable the
+## dependency checking. That way it is possible to install a package even
+## if it depends on another package that's not installed on the system.
+## @strong{Use this option with care.}
+## @item uninstall
+## Uninstall named packages.  For example,
+## @example
+## pkg uninstall image
+## @end example
+## @noindent
+## removes the @code{image} package from the system. If another installed
+## package depends on the @code{image} package an error will be issued.
+## The package can be uninstalled anyway by using the @code{-nodeps} option.
+## @item load
+## Add named packages to the path. After loading a package it is
+## possible to use the functions provided by the package. For example,
+## @example
+## pkg load image
+## @end example
+## @noindent
+## adds the @code{image} package to the path. It is possible to load all
+## installed packages at once with the command
+## @example
+## pkg load all
+## @end example
+## @item list
+## Show a list of the currently installed packages. By requesting one or two
+## output argument it is possible to get a list of the currently installed
+## packages. For example,
+## @example
+## installed_packages = pkg list;
+## @end example
+## @noindent
+## returns a cell array containing a structure for each installed package.
+## The command
+## @example
+## [@var{user_packages}, @var{system_packages}] = pkg list
+## @end example
+## @noindent
+## splits the list of installed packages into those who are installed by
+## the current user, and those installed by the system administrator.
+## @item prefix
+## Set the installation prefix directory. For example,
+## @example
+## pkg prefix ~/my_octave_packages
+## @end example
+## @noindent
+## sets the installation prefix to @code{~/my_octave_packages}.
+## Packages will be installed in this directory.
+##
+## It is possible to get the current installation prefix by requesting an
+## output argument.  For example,
+## @example
+## p = pkg prefix
+## @end example
 ## @end table
 ## @end deftypefn
 

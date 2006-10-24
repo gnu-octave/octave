@@ -9,7 +9,6 @@ for d in $dirs; do
 done
 LOADPATH=$(echo $LOADPATH | sed 's|^:||')
 IMAGEPATH="$top_srcdir/scripts/image"
-echo $LOADPATH
 args="--path=$LOADPATH --image-path=$IMAGEPATH"
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then

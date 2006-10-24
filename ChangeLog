@@ -1,3 +1,8 @@
+2006-10-24  John W. Eaton  <jwe@octave.org>
+
+	* run-octave.in: Only modify .gdbinit if -g option is given.
+	Use $(/bin/pwd) instead of $(pwd).
+
 2006-10-23  John W. Eaton  <jwe@octave.org>
 
 	* emacs/Makefile.in (SOURCES, DISTFILES, install, install-strip,

@@ -9,14 +9,15 @@ for d in $dirs; do
 done
 LOADPATH=$(echo $LOADPATH | sed 's|^:||')
 IMAGEPATH="$top_srcdir/scripts/image"
+echo $LOADPATH
 args="--path=$LOADPATH --image-path=$IMAGEPATH"
-if [ $(pwd) = "$builddir" ]; then
-  sed "s|^set args.*$|set args $args|" .gdbinit > .gdbinit-tmp
-  mv .gdbinit-tmp .gdbinit
-fi
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb"
+    if [ $(/bin/pwd) = "$builddir" ]; then
+      sed "s|^set args.*$|set args $args|" .gdbinit > .gdbinit-tmp
+      mv .gdbinit-tmp .gdbinit
+    fi
     args=""
     shift
   elif [ "x$1" = "x-valgrind" ]; then

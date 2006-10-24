@@ -223,7 +223,8 @@ function plot3 (varargin)
 
 	  __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
 		   ([y; NaN*ones(1,size(y,2))])(:), ...
-		   ([z; NaN*ones(1,size(z,2))])(:)], "", fmt);
+		   ([z; NaN*ones(1,size(z,2))])(:)],
+		    "u($1):($2):($3)", fmt);
 
 	unwind_protect_cleanup
 	  __gnuplot_set__ noparametric; 

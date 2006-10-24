@@ -1,5 +1,8 @@
 2006-10-24  John W. Eaton  <jwe@octave.org>
 
+	* plot/plot3.m: If we have a format string, then also pass using
+	string to __plt3__.
+
 	* plot/sombrero.m: Don't return anything if nargout == 0.
 
 	* plot/__plt3__.m: Create using clause if none is supplied.

@@ -36,6 +36,7 @@
 function __plt3__ (x, usingstr, fmtstr, withstr)
 
   if (nargin < 2)
+    have_usingstr = false;
     usingstr = "";
   endif
   if (nargin < 3)
@@ -55,8 +56,7 @@ function __plt3__ (x, usingstr, fmtstr, withstr)
 
   if (iscell (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}))
     for i = 1:length (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j})
-    if (! isempty(usingstr))
-      length(usingstr)
+    if (! have_usingstr)
 	usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}{i});
       endif
       __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
@@ -66,8 +66,7 @@ function __plt3__ (x, usingstr, fmtstr, withstr)
       __plot_command_sep__ = ",\\\n";
     endfor
   else
-    if (! isempty(usingstr))
-      length(usingstr)
+    if (! have_usingstr)
       usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j});
     endif
     __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \

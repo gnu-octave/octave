@@ -93,7 +93,9 @@ global gvar = 2
 @end example
 
 @noindent
-the value of the global variable @code{gvar} is 1, not 2.
+the value of the global variable @code{gvar} is 1, not 2.  Issuing a
+@samp{clear a} command does not change the above behavior, but
+@samp{clear all} does.
 
 It is necessary declare a variable as global within a function body in
 order to access it.  For example,

@@ -1,6 +1,9 @@
 2006-10-24  John W. Eaton  <jwe@octave.org>
 
+	* plot/sombrero.m: Don't return anything if nargout == 0.
+
 	* plot/__plt3__.m: Create using clause if none is supplied.
+	* plot/mesh.m: Always pass empty using string to __plt3__.
 
 2006-10-20  Bill Denney  <denney@seas.upenn.edu>
 

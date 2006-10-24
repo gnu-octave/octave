@@ -46,7 +46,7 @@ function mesh (x, y, z)
       __gnuplot_set__ noparametric;
       __gnuplot_raw__ ("set nologscale;\n");
       __gnuplot_raw__ ("set view 60, 30, 1, ;\n");
-      __plt3__ (z');
+      __plt3__ (z', "");
     else
       error ("mesh: argument must be a matrix");
     endif
@@ -107,7 +107,7 @@ function mesh (x, y, z)
           __gnuplot_raw__ ("set nologscale;\n");
           __gnuplot_set__ parametric;
           __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-          __plt3__ (zz);
+          __plt3__ (zz, "");
 	unwind_protect_cleanup
 	  __gnuplot_set__ noparametric;
 	end_unwind_protect

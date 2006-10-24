@@ -38,6 +38,8 @@ function __plt3__ (x, usingstr, fmtstr, withstr)
   if (nargin < 2)
     have_usingstr = false;
     usingstr = "";
+  else
+    have_usingstr = true;
   endif
   if (nargin < 3)
     fmtstr = "";

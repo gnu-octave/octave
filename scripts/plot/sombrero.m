@@ -19,13 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sombrero (@var{n})
-##
 ## Draw a `sombrero' in three dimensions using @var{n} grid lines.  The
 ## function plotted is
 ##
 ## @example
 ##   z = sin (sqrt (x^2 + y^2)) / (sqrt (x^2 + y^2))
 ## @end example
+## @seealso{mesh, meshgrid}
 ## @end deftypefn
 
 ## Author: jwe
@@ -38,13 +38,17 @@ function [x, y, z] = sombrero (n)
 
   if (nargin < 2)
     if (n > 1)
-      x = y = linspace (-8, 8, n)';
-      [xx, yy] = meshgrid (x, y);
+      tx = ty = linspace (-8, 8, n)';
+      [xx, yy] = meshgrid (tx, ty);
       r = sqrt (xx .^ 2 + yy .^ 2) + eps;
-      z = sin (r) ./ r;
+      tz = sin (r) ./ r;
       if (nargout == 0)
-        mesh (x, y, z);
-      end
+        mesh (tx, ty, tz);
+      else
+	x = tx;
+	y = ty;
+	z = tz;
+      endif
     else
       error ("sombrero: number of grid lines must be greater than 1");
     endif

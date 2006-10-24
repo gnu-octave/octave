@@ -1,5 +1,14 @@
 2006-10-23  John W. Eaton  <jwe@octave.org>
 
+	* symtab.cc (symbol_table::clear_mex_functions): New function.
+	* symtab.h: Provide decl.
+	* vriables.cc (clear_mex_functions): New function.
+	* variables.h Provide decl.
+	* toplev.cc: Call clear_mex_functions instead of delete_symbol_tables.
+
+	* variables.cc (delete_symbol_tables): Delete.
+	* variables.h: Delete decl.
+
 	* mex.cc (mex::unmark_array): New function.
 	(mex::persistent): Define with unmark_array.
 	(maybe_unmark_array): New function.

@@ -339,9 +339,9 @@ can be indexed).
 
 @cindex TAGS
 @cindex Emacs TAGS files
-@cindex @code{otags}
+@cindex @code{octave-tags}
 You can generate TAGS files for Emacs from Octave @file{.m} files using
-the shell script @code{otags} that is installed alongside your copy of
+the shell script @code{octave-tags} that is installed alongside your copy of
 Octave.
 
 Customization of Octave mode can be performed by modification of the

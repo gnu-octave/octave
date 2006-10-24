@@ -529,6 +529,7 @@ public:
 
   void clear_variables (void);
   void clear_functions (void);
+  void clear_mex_functions (void);
   void clear_globals (void);
 
   bool clear (const std::string& nm);

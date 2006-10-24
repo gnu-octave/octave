@@ -87,6 +87,8 @@ extern int f77_exception_encountered;
 #if defined (F77_USES_CRAY_CALLING_CONVENTION)
 
 #include <fortran.h>
+
+/* Use these macros to pass character strings from C to Fortran.  */
 #define F77_CHAR_ARG(x) octave_make_cray_ftn_ch_dsc (x, strlen (x))
 #define F77_CONST_CHAR_ARG(x) \
   octave_make_cray_const_ftn_ch_dsc (x, strlen (x))
@@ -98,6 +100,15 @@ extern int f77_exception_encountered;
 #define F77_CHAR_ARG_DECL octave_cray_ftn_ch_dsc
 #define F77_CONST_CHAR_ARG_DECL octave_cray_ftn_ch_dsc
 #define F77_CHAR_ARG_LEN_DECL
+
+/* Use these macros to write C-language functions that accept
+   Fortran-style character strings.  */
+#define F77_CHAR_ARG_DEF(s, len) octave_cray_ftn_ch_dsc s
+#define F77_CONST_CHAR_ARG_DEF(s, len) octave_cray_ftn_ch_dsc s
+#define F77_CHAR_ARG_LEN_DEF(len) 
+#define F77_CHAR_ARG_USE(s) s.ptr
+#define F77_CHAR_ARG_LEN_USE(s, len) (s.mask.len>>3)
+
 #define F77_RET_T int
 #define F77_RETURN(retval) return retval;
 
@@ -148,6 +159,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 #elif defined (F77_USES_VISUAL_FORTRAN_CALLING_CONVENTION)
 
+/* Use these macros to pass character strings from C to Fortran.  */
 #define F77_CHAR_ARG(x) x, strlen (x)
 #define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
 #define F77_CHAR_ARG2(x, l) x, l
@@ -157,6 +169,15 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CHAR_ARG_DECL char *, int
 #define F77_CONST_CHAR_ARG_DECL const char *, int
 #define F77_CHAR_ARG_LEN_DECL
+
+/* Use these macros to write C-language functions that accept
+   Fortran-style character strings.  */
+#define F77_CHAR_ARG_DEF(s, len) char *s, int len
+#define F77_CONST_CHAR_ARG_DEF(s, len) const char *s, int len
+#define F77_CHAR_ARG_LEN_DEF(len) 
+#define F77_CHAR_ARG_USE(s) s
+#define F77_CHAR_ARG_LEN_USE(s, len) len
+
 #define F77_RET_T void
 #define F77_RETURN(retval)
 
@@ -164,6 +185,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 
 /* Assume f2c-compatible calling convention.  */
 
+/* Use these macros to pass character strings from C to Fortran.  */
 #define F77_CHAR_ARG(x) x
 #define F77_CONST_CHAR_ARG(x) F77_CHAR_ARG (x)
 #define F77_CHAR_ARG2(x, l) x
@@ -173,10 +195,32 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
 #define F77_CHAR_ARG_DECL char *
 #define F77_CONST_CHAR_ARG_DECL const char *
 #define F77_CHAR_ARG_LEN_DECL , long
+
+/* Use these macros to write C-language functions that accept
+   Fortran-style character strings.  */
+#define F77_CHAR_ARG_DEF(s, len) char *s
+#define F77_CONST_CHAR_ARG_DEF(s, len) const char *s
+#define F77_CHAR_ARG_LEN_DEF(len) , long len
+#define F77_CHAR_ARG_USE(s) s
+#define F77_CHAR_ARG_LEN_USE(s, len) len
+
 #define F77_RET_T int
 #define F77_RETURN(retval) return retval;
 
 #endif
+
+
+/* Build a C string local variable CS from the Fortran string parameter S
+   declared as F77_CHAR_ARG_DEF(s, len) or F77_CONST_CHAR_ARG_DEF(s, len).
+   The string will be cleaned up at the end of the current block.  
+   Needs to include <cstring> and <vector>.  */
+
+#define F77_CSTRING(s, len, cs) \
+ OCTAVE_LOCAL_BUFFER (char, F77_CHAR_ARG_USE (s), \
+		      F77_CHAR_ARG_LEN_USE (s, len) + 1); \
+ memcpy (cs, F77_CHAR_ARG_USE (s), F77_CHAR_ARG_LEN_USE (s, len)); \
+ cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0' 
+
 
 extern F77_RET_T
 F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL

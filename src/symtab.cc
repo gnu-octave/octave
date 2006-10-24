@@ -840,6 +840,23 @@ symbol_table::clear_functions (void)
 }
 
 void
+symbol_table::clear_mex_functions (void)
+{
+  for (unsigned int i = 0; i < table_size; i++)
+    {
+      symbol_record *ptr = table[i].next ();
+
+      while (ptr)
+	{
+	  if (ptr->is_mex_function ())
+	    ptr->clear ();
+
+	  ptr = ptr->next ();
+	}
+    }
+}
+
+void
 symbol_table::clear_globals (void)
 {
   for (unsigned int i = 0; i < table_size; i++)

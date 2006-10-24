@@ -105,11 +105,9 @@ initialize_symbol_tables (void)
 }
 
 void
-delete_symbol_tables (void)
+clear_mex_functions (void)
 {
-  delete fbi_sym_tab;
-  delete global_sym_tab;
-  delete top_level_sym_tab;
+  fbi_sym_tab->clear_mex_functions ();
 }
 
 // Attributes of variables and functions.

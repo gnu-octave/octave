@@ -620,7 +620,7 @@ do_octave_atexit (void)
       // Do this explicitly so that destructors for mex file objects
       // are called, so that functions registered with mexAtExit are
       // called.
-      delete_symbol_tables ();
+      clear_mex_functions ();
 
       command_editor::restore_terminal_state ();
 

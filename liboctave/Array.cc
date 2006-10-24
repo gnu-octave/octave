@@ -2691,6 +2691,27 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			}
 		    }
 		}
+	      else if ((n == 1 || m == 1)
+		       && (rhs_nr == 1 || rhs_nc == 1)
+		       && n * m == rhs_nr * rhs_nc)
+		{
+		  if (n > 0 && m > 0)
+		    {
+		      MAYBE_RESIZE_LHS;
+
+		      octave_idx_type k = 0;
+
+		      for (octave_idx_type j = 0; j < m; j++)
+			{
+			  octave_idx_type jj = idx_j.elem (j);
+			  for (octave_idx_type i = 0; i < n; i++)
+			    {
+			      octave_idx_type ii = idx_i.elem (i);
+			      lhs.elem (ii, jj) = xrhs.elem (k++);
+			    }
+			}
+		    }
+		}
 	      else if (n == rhs_nr && m == rhs_nc)
 		{
 		  if (n > 0 && m > 0)

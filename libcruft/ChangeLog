@@ -1,3 +1,10 @@
+2006-10-23  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* misc/f77-fcn.h (F77_CHAR_ARG_DEF, F77_CONST_CHAR_ARG_DEF,
+	F77_CHAR_ARG_LEN_DEF, F77_CHAR_ARG_USE, F77_CHAR_ARG_LEN_USE,
+	F77_CSTRING): New macros to handle passing C character strings to
+	Fortran.
+
 2006-10-17  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* lapack-xtra/xdlamch.f: Begin lines with spaces, not tabs.

@@ -146,6 +146,7 @@ maintainer-clean distclean::
 	rm -f config.cache config.h config.log config.status
 	rm -rf autom4te.cache
 	rm -f $(SHELL_SCRIPTS) .gdbinit
+	rm -f unistd.h
 
 maintainer-clean::
 	rm -f configure config.h.in BUGS INSTALL.OCTAVE

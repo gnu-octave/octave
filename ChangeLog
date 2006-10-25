@@ -20,6 +20,11 @@
 	Add "-MD" to CFLAGS.  Add "-MD" to CONFLIB_ARG when checking for
 	libf2c.
 
+	* configure.in (*-*-msdosmsvc): Generate replacement unistd.h.
+	* octMakefile.in (maintainer-clean, distclean): Also remove unistd.h.
+
+	* configure.in (*-*-msdosmsvc): Default sepchar is ';'.
+
 2006-10-25  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in (OCTAVE_VERSION): No need to quote replacement here.

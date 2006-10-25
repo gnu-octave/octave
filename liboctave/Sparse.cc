@@ -2471,6 +2471,11 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 		      Sparse<LT> stmp (new_nr, new_nc, new_nzmx);
 
+		      // Started with an empty matrix. Now that we know
+		      // the assignment will succeed, resize lhs 
+		      if (lhs_nr <= 0 || lhs_nc <= 0)
+			lhs = Sparse<RT>(n, m);
+
 		      octave_idx_type jji = 0;
 		      octave_idx_type jj = idx_j.elem (jji);
 		      octave_idx_type kk = 0;
@@ -2622,6 +2627,11 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      octave_idx_type new_nzmx = lhs.nnz() + rhs.nnz();
 
 		      Sparse<LT> stmp (new_nr, new_nc, new_nzmx);
+
+		      // Started with an empty matrix. Now that we know
+		      // the assignment will succeed, resize lhs 
+		      if (lhs_nr <= 0 || lhs_nc <= 0)
+			lhs = Sparse<RT>(n, m);
 
 		      octave_idx_type jji = 0;
 		      octave_idx_type jj = idx_j.elem (jji);

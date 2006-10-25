@@ -1,3 +1,9 @@
+2006-10-24  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)): Resize the
+	lhs at the point we know the assignment can succeed if the lhs is
+	empty.
+
 2006-10-23  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assign2): Don't require vector assignments to be oriented.

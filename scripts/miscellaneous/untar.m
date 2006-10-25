@@ -21,75 +21,22 @@
 ## @deftypefn {Function File} untar (@var{tarfile}, @var{dir})
 ## Unpack the TAR archive @var{tarfile} to the directory @var{dir}.
 ## If @var{dir} is not specified, it defaults to the current directory.
-## @seealso{tar, gzip, gunzip, zip, unzip}
+## @seealso{unpack, bzip2, bunzip2, tar, gzip, gunzip, zip, unzip}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>
-## Adapted-By: jwe
+## Adapted-By: jwe, Bill Denney
 
-function files = untar (tarfile, directory)
+function varargout = untar (files, outputdir)
 
-  if (nargin == 1 || nargin == 2)
-
-    if (nargin == 1)
-      directory = ".";
-    endif
-
-    ## The file must exist (and be a file) and the directory must be a
-    ## string.
-    if (exist (tarfile, "file") && ischar (directory))
-
-      orig_dir = pwd ();
-
-      tarfile = canonicalize_file_name (tarfile);
-
-      s = stat (directory);
-      if (isempty (s))
-	[status, msg] = mkdir (directory);
-	if (! status)
-	  error ("untar: mkdir failed to create %s: %s", directory, msg);
-	endif
-      elseif (! S_ISDIR (s.mode))
-	error ("untar: %s: not a directory", directory);
-      endif
-
-      unwind_protect
-	chdir (directory);
-	[status, output] = system (sprintf ("tar -x -v -f %s", tarfile));
-      unwind_protect_cleanup
-	chdir (orig_dir);
-      end_unwind_protect
-
-      if (status == 0)
-	if (nargout > 0)
-	  fs = filesep ();
-	  if (directory(end) != fs)
-	    directory = strcat (directory, fs);
-	  endif
-	  ## Sadly not reliable if a filename contains a newline
-	  ## character!
-	  if (output(end) == "\n")
-	    output(end) = [];
-	  endif
-	  files = cellstr (split (output, "\n"));
-	  if (! strcmp (directory, "."))
-	    nf = length (files);
-	    for i = 1:nf
-	      files{i} = strcat (directory, files{i});
-	    endfor
-	  endif
-	  files = files';
-	endif
-      else
-	error ("tar: tar exited with status = %s", status);
-      endif
-
-    else
-      error ("untar: expecting arguments to be character strings");
-    endif
-
-  else
-    print_usage ("untar");
+  if ! (nargin == 1 || nargin == 2)
+    print_usage ();
   endif
+
+  if (nargin == 1)
+    outputdir = ".";
+  endif
+  varargout = cell (1, nargout);
+  [varargout{:}] = unpack (files, outputdir, mfilename ());
 
 endfunction

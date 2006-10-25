@@ -1,3 +1,10 @@
+2006-10-24  Bill Denney  <denney@seas.upenn.edu>
+
+	* miscellaneous/unpack.m, miscellaneous/bunzip2.m,
+	miscellaneous/gunzip.m: New files.
+	* miscellaneous/untar.m, miscellaneous/unzip.m:
+	Call unpack to do the real work.
+
 2006-10-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/plot3.m: If we have a format string, then also pass using

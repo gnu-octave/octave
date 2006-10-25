@@ -21,42 +21,22 @@
 ## @deftypefn {Function File} unzip (@var{zipfile}, @var{dir})
 ## Unpack the ZIP archive @var{zipfile} to the directory @var{dir}.
 ## If @var{dir} is not specified, it defaults to the current directory.
-## @seealso{tar, untar, gzip, gunzip, zip}
+## @seealso{unpack, bzip2, bunzip2, tar, untar, gzip, gunzip, zip}
 ## @end deftypefn
 
 ## Author: Søren Hauberg <hauberg@gmail.com>
-## Adapted-By: jwe
+## Adapted-By: jwe, Bill Denney
 
-function files = unzip (zipfile, dir)
+function varargout = unzip (files, outputdir)
 
-  if (nargin == 1 || nargin == 2)
-
-    if (nargin == 1)
-      dir = ".";
-    endif
-
-    if (ischar (zipfile) && ischar (dir))
-
-      [status, output] = system (sprintf ("unzip %s -d %s", zipfile, dir));
-
-      if (status == 0)
-	if (nargout > 0)
-	  ## Create list of extracted files.  It blows that there seems
-	  ## to be no way to get unzip to print a simple list of file
-	  ## names.
-	  files = strrep (output, "  inflating: ", "");
-	  files = cellstr (split (files, "\n"));
-	  files = files(2:end-1,:);
-	  files = files';
-	endif
-      else
-	error ("unzip: unzip exited with status = %d", status);
-      endif
-    endif
-
-  else
-    print_usage ("unzip");
+  if ! (nargin == 1 || nargin == 2)
+    print_usage ();
   endif
 
-endfunction
+  if (nargin == 1)
+    outputdir = ".";
+  endif
+  varargout = cell (1, nargout);
+  [varargout{:}] = unpack (files, outputdir, mfilename ());
 
+endfunction

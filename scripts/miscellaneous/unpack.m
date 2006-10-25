@@ -235,13 +235,15 @@ function files = __parse_gzip__ (output)
   for i = 1:length (output)
     colons = strfind (output{i}, ":");
     if (isempty (colons))
-      warning ("unpack:parsing", "Unable to parse line (gzip missing colon):\n%s", output{i});
+      warning ("unpack:parsing",
+	       "Unable to parse line (gzip missing colon):\n%s", output{i});
     else
       midcolon = colons(ceil (length (colons)/2));
       thisstr = output{i}(midcolon+2:length(output{i}));
       idx = index (thisstr, "with") + 5;
       if (isempty (idx))
-	warning ("unpack:parsing", "Unable to parse line (gzip missing with):\n%s", output{i});
+	warning ("unpack:parsing",
+		 "Unable to parse line (gzip missing with):\n%s", output{i});
       else
 	files{i} = thisstr(idx:length (thisstr));
       endif

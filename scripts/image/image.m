@@ -43,6 +43,7 @@ function image (x, y, A, zoom)
     ## Load Bobbie Jo Richardson (Born 3/16/94)
     A = loadimage ("default.img");
     zoom = 2;
+    x = y = [];
   elseif (nargin == 1)
     A = x;
     zoom = [];
@@ -57,35 +58,40 @@ function image (x, y, A, zoom)
     print_usage ();
   endif
 
-  if isempty(zoom)
-    ## Find an integer scale factor which sets the image to
-    ## approximately the size of the screen.
-    zoom = min ([350/rows(A), 600/columns(A), 4]);
-    if (zoom >= 1)
-      zoom = floor (zoom);
-    else
-      zoom = 1 / ceil (1/zoom);
+  if (compare_versions (__gnuplot_version__ (), "4.0", ">"))
+    __img__ (x, y, A);
+  else
+
+    if (isempty (zoom))
+      ## Find an integer scale factor which sets the image to
+      ## approximately the size of the screen.
+      zoom = min ([350/rows(A), 600/columns(A), 4]);
+      if (zoom >= 1)
+	zoom = floor (zoom);
+      else
+	zoom = 1 / ceil (1/zoom);
+      endif
     endif
-  endif
-  ppm_name = tmpnam ();
+    ppm_name = tmpnam ();
 
-  saveimage (ppm_name, A, "ppm");
+    saveimage (ppm_name, A, "ppm");
 
-  ## Start the viewer.  Try display, xv, then xloadimage.
+    ## Start the viewer.  Try display, xv, then xloadimage.
 
-  xv = sprintf ("xv -raw -expand %f \"%s\"", zoom, ppm_name);
+    xv = sprintf ("xv -raw -expand %f \"%s\"", zoom, ppm_name);
 
-  xloadimage = sprintf ("xloadimage -zoom %f \"%s\"", zoom*100, ppm_name);
+    xloadimage = sprintf ("xloadimage -zoom %f \"%s\"", zoom*100, ppm_name);
 
-  ## ImageMagick:
-  im_display = sprintf ("display -geometry %f%% \"%s\"", zoom*100, ppm_name);
+    ## ImageMagick:
+    im_display = sprintf ("display -geometry %f%% \"%s\"", zoom*100, ppm_name);
   
-  rm = sprintf ("rm -f \"%s\"", ppm_name);
+    rm = sprintf ("rm -f \"%s\"", ppm_name);
 
-  ## Need to let the shell clean up the tmp file because we are putting
-  ## the viewer in the background.
+    ## Need to let the shell clean up the tmp file because we are putting
+    ## the viewer in the background.
 
-  system (sprintf ("( %s || %s || %s && %s ) > /dev/null 2>&1 &",
-                   im_display, xv, xloadimage, rm));
+    system (sprintf ("( %s || %s || %s && %s ) > /dev/null 2>&1 &",
+                     im_display, xv, xloadimage, rm));
+  endif
 
 endfunction

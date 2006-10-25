@@ -1,5 +1,15 @@
 2006-10-25  John W. Eaton  <jwe@octave.org>
 
+	* image/image.m: Set x = y = [] when nargin == 0;
+
+2006-10-25  Quentin Spencer  <qspencer@ieee.org>
+
+	* image/image.m: Call __img__ if gnuplot version is > 4.0.
+	* image/__img__.m: New file, originally from
+	Daniel J Sebald <daniel.sebald@ieee.org>.
+
+2006-10-25  John W. Eaton  <jwe@octave.org>
+
 	* plot/__gnuplot_version__.m: New function, originally from
 	Daniel J Sebald <daniel.sebald@ieee.org> by way of 
 	Quentin Spencer <qspencer@ieee.org>.

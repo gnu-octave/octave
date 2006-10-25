@@ -7,7 +7,7 @@
 
 set -e
 
-OCTAVE_VERSION="%OCTAVE_CONF_VERSION%"
+OCTAVE_VERSION=%OCTAVE_CONF_VERSION%
 
 # Default values for these variables are filled in when Octave is
 # compiled. 

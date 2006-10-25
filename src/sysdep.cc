@@ -112,7 +112,7 @@ w32_set_octave_home (void)
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
   int n = 1024;
 
-  std::string bin_dir (' ', n);
+  std::string bin_dir (n, '\0');
 
   while (true)
     {

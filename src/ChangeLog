@@ -1,3 +1,16 @@
+2006-10-24  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Makefile.in: Filter out $(XTRA_CXXDEFS) from $(ALL_CXXFLAGS) for
+	$(DLD_PICOBJ).
+
+2006-10-24  John W. Eaton  <jwe@octave.org>
+
+	* sysdep.cc (MSC_init): New function.
+	(sysdep_init): Call it.
+	(w32_set_octave_home): New function, based on code from Michael
+	Goffioul <michael.goffioul@swing.be>.
+	(MINGW_init): Call w32_set_octave_home here too.
+
 2006-10-23  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (symbol_table::clear_mex_functions): New function.

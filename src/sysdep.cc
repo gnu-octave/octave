@@ -106,6 +106,40 @@ BSD_init (void)
 }
 #endif
 
+static void
+w32_set_octave_home (void)
+{
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
+  int n = 1024;
+
+  std::string bin_dir (' ', n);
+
+  while (true)
+    {
+      int status = GetModuleFileName (0, &bin_dir[0], n);
+
+      if (status < n)
+	{
+	  bin_dir.resize (status);
+	  break;
+	}
+      else
+	{
+	  n *= 2;
+	  bin_dir.resize (n);
+	}
+    }
+
+  if (! bin_dir.empty ())
+    {
+      size_t pos = bin_dir.rfind ("\\bin\\");
+
+      if (pos != NPOS)
+	octave_env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
+    }
+#endif
+}
+
 void
 w32_set_quiet_shutdown (void)
 {
@@ -132,10 +166,20 @@ MINGW_signal_cleanup (void)
 static void
 MINGW_init (void)
 {
+  w32_set_octave_home ();
+
   // Init mutex to protect setjmp/longjmp and get main thread context
   w32_sigint_init ();
 
   w32_set_quiet_shutdown ();
+}
+#endif
+
+#if defined (_MSC_VER)
+static void
+MSVC_init (void)
+{
+  w32_set_octave_home ();
 }
 #endif
 
@@ -236,6 +280,8 @@ sysdep_init (void)
   CYGWIN_init ();
 #elif defined (__MINGW32__)
   MINGW_init ();
+#elif defined (_MSC_VER)
+  MSVC_init ();
 #elif defined (NeXT)
   NeXT_init ();
 #elif defined (__EMX__)

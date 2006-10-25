@@ -2,6 +2,7 @@
 
 	* configure.in (INCLUDE_DEPS): Set and substitute.
 	(DEPEND_FLAGS, DEPEND_EXTRA_SED_PATTERN): Rearrange way these are set.
+
 	* Makeconf.in (INCLUDE_DEPS): Substitute here, and use to set default
 	value for omit_deps.
 
@@ -14,6 +15,10 @@
 	XTRA_OCTINTERP_DEFS): Define and substitute.
 	(AH_BOTTOM) [_MSC_VER]: include definitions for CRUFT_API,
 	OCTAVE_API, and OCTINTERP_API.
+
+	* configure.in (*-*-msdosmsvc): Add "-EHs -MD" to CXXFLAGS.
+	Add "-MD" to CFLAGS.  Add "-MD" to CONFLIB_ARG when checking for
+	libf2c.
 
 2006-10-25  John W. Eaton  <jwe@octave.org>
 

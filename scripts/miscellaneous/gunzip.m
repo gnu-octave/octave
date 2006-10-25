@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Søren Hauberg
+## Copyright (C) 2006 Bill Denney
 ## 
 ## This file is part of Octave.
 ##
@@ -18,16 +18,17 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} untar (@var{tarfile}, @var{dir})
-## Unpack the TAR archive @var{tarfile} to the directory @var{dir}.
-## If @var{dir} is not specified, it defaults to the current directory.
-## @seealso{unpack, bzip2, bunzip2, tar, gzip, gunzip, zip, unzip}
+## @deftypefn {Function File} gunzip (@var{gzfile}, @var{dir})
+## Unpack the gzip archive @var{gzfile} to the directory @var{dir}. If
+## @var{dir} is not specified, it defaults to the current directory. If
+## the @var{gzfile} is a directory, all files in the directory will be
+## recursively gunzipped.
+## @seealso{unpack, bzip2, bunzip2, tar, untar, gzip, gunzip, zip, unzip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
-## Adapted-By: jwe, Bill Denney
+## Author: Bill Denney <denney@seas.upenn.edu>
 
-function varargout = untar (files, outputdir)
+function varargout = gunzip (files, outputdir)
 
   if (! (nargin == 1 || nargin == 2))
     print_usage ();

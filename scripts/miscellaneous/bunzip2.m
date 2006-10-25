@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Søren Hauberg
+## Copyright (C) 2006 Bill Denney
 ## 
 ## This file is part of Octave.
 ##
@@ -18,16 +18,15 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} untar (@var{tarfile}, @var{dir})
-## Unpack the TAR archive @var{tarfile} to the directory @var{dir}.
-## If @var{dir} is not specified, it defaults to the current directory.
-## @seealso{unpack, bzip2, bunzip2, tar, gzip, gunzip, zip, unzip}
+## @deftypefn {Function File} bunzip2 (@var{bzfile}, @var{dir})
+## Unpack the bzip2 archive @var{bzfile} to the directory @var{dir}. If
+## @var{dir} is not specified, it defaults to the current directory.
+## @seealso{unpack, bzip2, tar, untar, gzip, gunzip, zip, unzip}
 ## @end deftypefn
 
-## Author: Søren Hauberg <hauberg@gmail.com>
-## Adapted-By: jwe, Bill Denney
+## Author: Bill Denney <denney@seas.upenn.edu>
 
-function varargout = untar (files, outputdir)
+function varargout = bunzip2 (files, outputdir)
 
   if (! (nargin == 1 || nargin == 2))
     print_usage ();

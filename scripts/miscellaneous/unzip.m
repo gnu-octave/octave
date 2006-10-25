@@ -29,7 +29,7 @@
 
 function varargout = unzip (files, outputdir)
 
-  if ! (nargin == 1 || nargin == 2)
+  if (! (nargin == 1 || nargin == 2))
     print_usage ();
   endif
 

@@ -183,7 +183,7 @@ function filelist = unpack (file, directory, filetype)
 	   status, output);
   endif
 
-  if (needmove || nargout > 0)
+  if (nargout > 0 || needmove)
     ## Trim the last cr if needed.
     ## FIXME -- will this need to change to a check for "\r\n" for windows?
     if (output(length (output)) == "\n")

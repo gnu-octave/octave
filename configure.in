@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.532 $)
+AC_REVISION($Revision: 1.533 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1202,6 +1202,9 @@ case "$canonical_host_type" in
    AC_CHECK_LIB(wsock32, gethostname)
    LIBS="$LIBS -lwsock32"
   ;;
+  *-*-msdosmsvc*)
+  LIBS="$LIBS -lws2_32 -lkernel32"
+  ;;
 esac
 
 ### Type stuff.
@@ -1380,7 +1383,7 @@ if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
   ## autoconf test for LoadLibrary appears broken. Bypass for cygwin/mingw 
   if !($dlopen_api || $shl_load_api || $loadlibrary_api || $dyld_api); then
     case "$canonical_host_type" in
-      *-*-cygwin* | *-*-mingw*)
+      *-*-cygwin* | *-*-mingw* | *-*-msdosmsvc)
        loadlibrary_api=true;
       ;;
     esac
@@ -1824,6 +1827,7 @@ typedef int sig_atomic_t;
 #endif
 
 #if defined (_MSC_VER)
+#define __WIN32__
 /* missing parameters in macros */
 #pragma warning (disable: 4003)
 /* missing implementations in template instantiation */

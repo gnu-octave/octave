@@ -24,6 +24,10 @@
 	* octMakefile.in (maintainer-clean, distclean): Also remove unistd.h.
 
 	* configure.in (*-*-msdosmsvc): Default sepchar is ';'.
+	Define default LIBS (link against kernel32 and ws2_32).
+	Force having LoadLibrary API.
+
+	* configure.in (AH_BOTTOM) [_MSC_VER]: Define __WIN32__.
 
 2006-10-25  John W. Eaton  <jwe@octave.org>
 

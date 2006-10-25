@@ -10,6 +10,9 @@
 # University of Wisconsin-Madison
 # Department of Chemical Engineering
 
+XTRA_CDEFS = @XTRA_CRUFT_DEFS@
+XTRA_CXXDEFS = @XTRA_CRUFT_DEFS@
+
 SOURCES = *.f
 
 DISTFILES = Makefile.in $(SOURCES) $(SPECIAL)

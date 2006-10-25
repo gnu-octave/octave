@@ -1,3 +1,7 @@
+2006-10-25  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Makefile.in (XTRA_CDEFS, XTRA_CXXDEFS): Substitute here.
+
 2006-10-24  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)): Resize the

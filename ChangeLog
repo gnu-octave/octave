@@ -1,5 +1,22 @@
 2006-10-25  John W. Eaton  <jwe@octave.org>
 
+	* configure.in (INCLUDE_DEPS): Set and substitute.
+	(DEPEND_FLAGS, DEPEND_EXTRA_SED_PATTERN): Rearrange way these are set.
+	* Makeconf.in (INCLUDE_DEPS): Substitute here, and use to set default
+	value for omit_deps.
+
+2006-10-25  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Makeconf.in (ALL_CFLAGS): Include $(XTRA_CDEFS) in the list.
+	(ALL_CXXFLAGS): Include $(XTRA_CXXDEFS) in the list.
+
+	* configure.in (XTRA_CRUFT_DEFS, XTRA_OCTAVE_DEFS,
+	XTRA_OCTINTERP_DEFS): Define and substitute.
+	(AH_BOTTOM) [_MSC_VER]: include definitions for CRUFT_API,
+	OCTAVE_API, and OCTINTERP_API.
+
+2006-10-25  John W. Eaton  <jwe@octave.org>
+
 	* mkoctfile.in (OCTAVE_VERSION): No need to quote replacement here.
 
 2006-10-24  John W. Eaton  <jwe@octave.org>

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.528 $)
+AC_REVISION($Revision: 1.529 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -249,18 +249,23 @@ AC_SUBST(CC_VERSION)
 ### The flag to create dependency varies depending on the compier.
 
 # Assume GCC.
+INCLUDE_DEPS=true
 DEPEND_FLAGS="-M"
 DEPEND_EXTRA_SED_PATTERN=""
-case "$canonical_host_type" in
-  sparc-sun-solaris2* | i386-pc-solaris2*)
-    if test "$GCC" = yes; then
-      true
-    else
+if test "$GCC" = yes; then
+  true
+else
+  case "$canonical_host_type" in
+    sparc-sun-solaris2* | i386-pc-solaris2*)
       DEPEND_FLAGS="-xM1"
       DEPEND_EXTRA_SED_PATTERN="-e '/\/opt\/SUNWspro/d'"
-    fi
-  ;;
-esac
+    ;;
+    *)
+      INCLUDE_DEPS=false
+    ;;
+  esac
+fi
+AC_SUBST(INCLUDE_DEPS)
 AC_SUBST(DEPEND_FLAGS)
 AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
@@ -963,6 +968,9 @@ RLD_FLAG=
 NO_OCT_FILE_STRIP=false
 TEMPLATE_AR='$(AR)'
 TEMPLATE_ARFLAGS="$ARFLAGS"
+XTRA_CRUFT_DEFS=
+XTRA_OCTAVE_DEFS=
+XTRA_OCTINTERP_DEFS=
 library_path_var=LD_LIBRARY_PATH
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-openbsd* | *-*-netbsd*)
@@ -1019,6 +1027,10 @@ case "$canonical_host_type" in
     SHLBIN=dll
     LIBPRE=
     SH_LDFLAGS="-shared -g"
+    ## Extra compilation flags.
+    XTRA_CRUFT_DEFS="-DCRUFT_DLL"
+    XTRA_OCTAVE_DEFS="-DOCTAVE_DLL"
+    XTRA_OCTINTERP_DEFS="-DOCTINTERP_DLL"
   ;;
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
@@ -1081,7 +1093,7 @@ case "$canonical_host_type" in
       SH_LDFLAGS=-G
     fi
     RLD_FLAG='-R $(octlibdir)'
-    # Template closures in archive libraries need a different mechanism.
+    ## Template closures in archive libraries need a different mechanism.
     if test "$GXX" = yes; then
       true
     else
@@ -1121,6 +1133,9 @@ AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
 AC_MSG_NOTICE([defining RLD_FLAG to be $RLD_FLAG])
 AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
+AC_MSG_NOTICE([defining XTRA_CRUFT_DEFS to be $XTRA_CRUFT_DEFS])
+AC_MSG_NOTICE([defining XTRA_OCTAVE_DEFS to be $XTRA_OCTAVE_DEFS])
+AC_MSG_NOTICE([defining XTRA_OCTINTERP_DEFS to be $XTRA_OCTINTERP_DEFS])
 AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
@@ -1144,6 +1159,9 @@ AC_SUBST(NO_OCT_FILE_STRIP)
 AC_SUBST(RLD_FLAG)
 AC_SUBST(TEMPLATE_AR)
 AC_SUBST(TEMPLATE_ARFLAGS)
+AC_SUBST(XTRA_CRUFT_DEFS)
+AC_SUBST(XTRA_OCTAVE_DEFS)
+AC_SUBST(XTRA_OCTINTERP_DEFS)
 AC_SUBST(library_path_var)
 
 ### special checks for odd OS specific things.
@@ -1293,7 +1311,7 @@ dyld_api=false
 
 if $SHARED_LIBS || $ENABLE_DYNAMIC_LINKING; then
 
-  ### Check for dyld first since OS X can have a non-standard libdl	
+  ## Check for dyld first since OS X can have a non-standard libdl	
 
   AC_CHECK_HEADER(mach-o/dyld.h)  
   if test "$ac_cv_header_mach_o_dyld_h" = yes; then
@@ -1787,6 +1805,29 @@ typedef int sig_atomic_t;
 #pragma warning (disable: 4996)
 /* deprecated function names (FIXME?) */
 #pragma warning (disable: 4661)
+/* API macro for libcruft */
+#ifdef CRUFT_DLL
+#define CRUFT_API __declspec(dllexport)
+#else
+#define CRUFT_API __declspec(dllimport)
+#endif
+/* API macro for liboctave */
+#ifdef OCTAVE_DLL
+#define OCTAVE_API __declspec(dllexport)
+#else
+#define OCTAVE_API __declspec(dllimport)
+#endif
+/* API macro for src */
+#ifdef OCTINTERP_DLL
+#define OCTINTERP_API __declspec(dllexport)
+#else
+#define OCTINTERP_API __declspec(dllimport)
+#endif
+#else
+/* All other compilers */
+#define OCTAVE_API
+#define OCTINTERP_API
+#define CRUFT_API
 #endif
 
 #include "oct-types.h"

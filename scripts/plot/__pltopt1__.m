@@ -147,19 +147,31 @@ function fmt = __pltopt1__ (caller, opt)
     elseif (strcmp (char, "*"))
       set_points = 1;
       set_symbol = 1;
-      symbol = "6";
+      symbol = "3";
     elseif (strcmp (char, "+"))
       set_points = 1;
       set_symbol = 1;
-      symbol = "2";
+      symbol = "1";
     elseif (strcmp (char, "o"))
       set_points = 1;
       set_symbol = 1;
-      symbol = "1";
+      symbol = "6";
     elseif (strcmp (char, "x"))
       set_points = 1;
       set_symbol = 1;
+      symbol = "2";
+    elseif (strcmp (char, "s"))
+      set_points = 1;
+      set_symbol = 1;
       symbol = "4";
+    elseif (strcmp (char, "d"))
+      set_points = 1;
+      set_symbol = 1;
+      symbol = "12";
+    elseif (strcmp (char, "v"))
+      set_points = 1;
+      set_symbol = 1;
+      symbol = "10";
     elseif (strcmp (char, ";"))  # title mode.
       working = 1;
       while (working)

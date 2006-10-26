@@ -29,6 +29,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-prcstrm.h"
 
+#if defined (_MSC_VER)
+#define popen _popen
+#define pclose _pclose
+#endif
+
 static int
 cxx_pclose (FILE *f)
 {

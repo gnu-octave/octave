@@ -12,6 +12,8 @@
 	(octave_procbuf::open, octave_procbuf::close) [_MSC_VER]:
 	Use the same code as for __MINGW32__ and __CYGWIN__.
 
+	* oct-prcstrm.cc [_MSC_VER]: Define popen and pclose.
+
 2006-10-25  John W. Eaton  <jwe@octave.org>
 
 	* sysdep.cc (w32_set_octave_home): Correctly initialize bin_dir.

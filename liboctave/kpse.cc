@@ -50,7 +50,9 @@ extern "C" {
 #include <dirent.h>
 #elif defined(WIN32)
 #define __STDC__ 1
+#ifndef _MSC_VER
 #include "win32lib.h"
+#endif
 #endif /* not WIN32 */
 
 #ifdef __DJGPP__

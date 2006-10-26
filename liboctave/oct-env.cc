@@ -375,8 +375,8 @@ octave_env::do_get_home_directory (void) const
 {
   std::string hd = do_getenv ("HOME");
 
-#if defined (__MINGW32__)
-  // Maybe we are started directly from cmd.exe
+#if defined (__MINGW32__) || defined (_MSC_VER)
+  // Maybe we are started directly from cmd.exe.
   if (hd.empty ())
     {
       std::string drv = do_getenv ("HOMEDRIVE");

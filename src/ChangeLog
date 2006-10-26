@@ -7,6 +7,11 @@
 
 	* Makefile.in (XTRA_CDEFS, XTRA_CXXDEFS): Substitute here.
 
+	* oct-procbuf.cc [_MSC_VER]: Define W32POPEN and W32PCLOSE the
+	same as for __MINGW32__.
+	(octave_procbuf::open, octave_procbuf::close) [_MSC_VER]:
+	Use the same code as for __MINGW32__ and __CYGWIN__.
+
 2006-10-25  John W. Eaton  <jwe@octave.org>
 
 	* sysdep.cc (w32_set_octave_home): Correctly initialize bin_dir.

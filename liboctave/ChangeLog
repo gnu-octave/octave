@@ -17,6 +17,13 @@
 
 	* Makefile.in (XTRA_CDEFS, XTRA_CXXDEFS): Substitute here.
 
+	* oct-env.cc (octave_env::do_get_home_directory) [_MSC_VER]: Use
+	same code as __MINGW32__.
+	* syswait.h [_MSC_VER]: Define HAVE_WAITPID, WAITPID, and WNOHANG
+	the same as for __MINGW32__.
+
+	* randpoisson.c: Undefine INFINITE before redefining.
+
 2006-10-24  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (assign (Sparse<LT>&, const Sparse<RT>&)): Resize the

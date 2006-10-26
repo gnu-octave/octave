@@ -75,7 +75,7 @@ extern "C" {
   (((stat_val) & 0177) != 0177 && ((stat_val) & 0177) != 0)
 #endif
 
-#if defined (__MINGW32__)
+#if defined (__MINGW32__) || defined (_MSC_VER)
 #define HAVE_WAITPID 1
 #include <process.h>
 #define WAITPID(a, b, c) _cwait (b, a, c)

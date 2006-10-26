@@ -54,7 +54,7 @@ static octave_procbuf *octave_procbuf_list = 0;
 #if defined (__CYGWIN__)
 #define W32POPEN popen
 #define W32PCLOSE pclose
-#elif defined (__MINGW32__)
+#elif defined (__MINGW32__) || defined (_MSC_VER)
 #define W32POPEN _popen
 #define W32PCLOSE _pclose
 #endif
@@ -66,7 +66,7 @@ static octave_procbuf *octave_procbuf_list = 0;
 octave_procbuf *
 octave_procbuf::open (const char *command, int mode)
 {
-#if defined (__CYGWIN__) || defined (__MINGW32__)
+#if defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)
 
   if (is_open ()) 
     return 0;
@@ -172,9 +172,7 @@ octave_procbuf::open (const char *command, int mode)
 octave_procbuf *
 octave_procbuf::close (void)
 {
-
-
-#if defined (__CYGWIN__) || defined (__MINGW32__)
+#if defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)
 
   if (f)
     {

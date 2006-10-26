@@ -23,6 +23,7 @@
 
 #undef NAN
 #define NAN octave_NaN
+#undef INFINITE
 #define INFINITE lo_ieee_isinf
 #define RUNI oct_randu()
 #define RNOR oct_randn()

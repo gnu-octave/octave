@@ -4,7 +4,10 @@
 	Check for _WIN32_WINNT >= 0x0403.  Define _USE_MATH_DEFINES if it
 	is needed.
 	(XTRA_CRUFT_LINK_DEPS): New variable.  Substitute it.
-	
+
+	* aclocal.m4 (OCTAVE_MKDIR_TAKES_ONE_ARG): Perform check with C++
+	compiler.
+
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_PROG_PAGER): Also check for more.com for

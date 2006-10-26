@@ -78,7 +78,7 @@ extern "C" {
   while (0)
 
 /* So we can check to see if an exception has occurred. */
-extern int f77_exception_encountered;
+CRUFT_API extern int f77_exception_encountered;
 
 #if !defined (F77_FCN)
 #define F77_FCN(f, F) F77_FUNC (f, F)
@@ -222,7 +222,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
  cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0' 
 
 
-extern F77_RET_T
+extern CRUFT_API F77_RET_T
 F77_FUNC (xstopx, XSTOPX) (F77_CONST_CHAR_ARG_DECL
 			   F77_CHAR_ARG_LEN_DECL) GCC_ATTR_NORETURN;
 

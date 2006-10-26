@@ -7,6 +7,24 @@
 	(cruft.def): New target.
 	(libraries): Depend on cruft.def.
 
+	* misc/f77-fcn.h (f77_exception_encountered, xstopx):
+	Tag with CRUFT_API.
+	* misc/lo-error.h (current_liboctave_error_handler,
+	current_liboctave_warning_handler,
+	current_liboctave_warning_with_id_handler,
+	set_liboctave_error_handler, set_liboctave_warning_handler,
+	set_liboctave_warning_with_id_handler): Likewise.
+	* misc/quit.h (w32_sigint_init, w32_raise_final,
+	w32_raise, w32_in_main_thread, current_context,
+	octave_save_current_context, octave_restore_current_context,
+	octave_jump_to_enclosing_context, octave_save_signal_mask,
+	octave_restore_signal_mask, octave_interrupt_immediately,
+	octave_interrupt_state, octave_allocation_error,
+	octave_signal_caught, octave_handle_signal,
+	octave_throw_interrupt_exception, octave_throw_bad_alloc,
+	octave_signal_hook, octave_interrupt_hook, octave_bad_alloc_hook):
+	Likewise.
+	
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in ($(CRUFT_DEFS)): Depend on $(SUBDIRS).

@@ -38,10 +38,10 @@ extern "C" {
 
 #include <windows.h>
 
-extern void w32_sigint_init (void);   /* setup */
-extern void w32_raise_final (void);   /* tear down */
-extern void w32_raise (int sig);      /* raise signal in main thread */
-extern int w32_in_main_thread (void); /* return true if in main thread */
+CRUFT_API extern void w32_sigint_init (void);   /* setup */
+CRUFT_API extern void w32_raise_final (void);   /* tear down */
+CRUFT_API extern void w32_raise (int sig);      /* raise signal in main thread */
+CRUFT_API extern int w32_in_main_thread (void); /* return true if in main thread */
 
 #endif
 
@@ -59,17 +59,17 @@ typedef jmp_buf octave_jmp_buf;
 
 #endif
 
-extern octave_jmp_buf current_context;
+CRUFT_API extern octave_jmp_buf current_context;
 
-extern void octave_save_current_context (void *);
+CRUFT_API extern void octave_save_current_context (void *);
 
-extern void octave_restore_current_context (void *);
+CRUFT_API extern void octave_restore_current_context (void *);
 
-extern void octave_jump_to_enclosing_context (void) GCC_ATTR_NORETURN;
+CRUFT_API extern void octave_jump_to_enclosing_context (void) GCC_ATTR_NORETURN;
 
-extern void octave_save_signal_mask (void);
+CRUFT_API extern void octave_save_signal_mask (void);
 
-extern void octave_restore_signal_mask (void);
+CRUFT_API extern void octave_restore_signal_mask (void);
 
 #ifdef __cplusplus
 class
@@ -78,24 +78,24 @@ octave_interrupt_exception
 };
 #endif
 
-extern sig_atomic_t octave_interrupt_immediately;
+CRUFT_API extern sig_atomic_t octave_interrupt_immediately;
 
 /*
   > 0: interrupt pending
     0: no interrupt pending
   < 0: handling interrupt
 */
-extern sig_atomic_t octave_interrupt_state;
+CRUFT_API extern sig_atomic_t octave_interrupt_state;
 
-extern sig_atomic_t octave_allocation_error;
+CRUFT_API extern sig_atomic_t octave_allocation_error;
 
-extern sig_atomic_t octave_signal_caught;
+CRUFT_API extern sig_atomic_t octave_signal_caught;
 
-extern void octave_handle_signal (void);
+CRUFT_API extern void octave_handle_signal (void);
 
-extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
+CRUFT_API extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
 
-extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
+CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 
 #define OCTAVE_QUIT \
   do \
@@ -185,9 +185,9 @@ extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 /* These should only be declared for C++ code, and should also be
    outside of any extern "C" block.  */
 
-extern void (*octave_signal_hook) (void);
-extern void (*octave_interrupt_hook) (void);
-extern void (*octave_bad_alloc_hook) (void);
+extern CRUFT_API void (*octave_signal_hook) (void);
+extern CRUFT_API void (*octave_interrupt_hook) (void);
+extern CRUFT_API void (*octave_bad_alloc_hook) (void);
 
 #endif
 

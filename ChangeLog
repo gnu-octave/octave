@@ -1,4 +1,20 @@
+2006-10-26  John W. Eaton  <jwe@octave.org>
+
+	* emacs/octave-inf.el (inferior-octave-has-built-in-variables):
+	New defvar.
+	(inferior-octave-resync-dirs): Check to see whether Octave has
+	built-in variables and set inferior-octave-has-built-in-variables.
+	Check inferior-octave-has-built-in-variables to decide whether to
+	send commands that set built-in variables or call functions to
+	change Octave's behavior.
+	Send "disp (pwd ())" to Octave instead of just "pwd".
+	(inferior-octave-startup): Send "more off" to Octave instead of
+	"page_screen_output = 0".
+
 2006-10-25  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (RETSIGTYPE_IS_VOID): Define if
+	"$ac_cv_type_signal" = "void".
 
 	* configure.in (*-*-msdosmsvc): Don't check for strftime.
 

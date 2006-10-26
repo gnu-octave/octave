@@ -29,6 +29,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-prcstrm.h"
 
+// FIXME -- perhaps this should be handled more globally.  See also
+// oct-procbuf.cc.
+
 #if defined (_MSC_VER)
 #define popen _popen
 #define pclose _pclose

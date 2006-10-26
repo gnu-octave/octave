@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.534 $)
+AC_REVISION($Revision: 1.535 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1572,6 +1572,9 @@ AC_CHECK_DECLS([sys_siglist], [], [],
 ])
 OCTAVE_SIGNAL_CHECK
 OCTAVE_REINSTALL_SIGHANDLERS
+if test "$ac_cv_type_signal" = "void"; then
+  AC_DEFINE(RETSIGTYPE_IS_VOID, 1, [Define if this if RETSIGTYPE is defined to be void.  Needed because preprocessor comparisons to void fail on some systems.])
+fi
 
 ### A system dependent kluge or two.
 

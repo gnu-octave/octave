@@ -51,6 +51,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 static octave_procbuf *octave_procbuf_list = 0;
 
+// FIXME -- perhaps this should be handled more globally.  See also
+// oct-prcstrm.cc.
+
 #if defined (__CYGWIN__)
 #define W32POPEN popen
 #define W32PCLOSE pclose

@@ -72,7 +72,7 @@ static bool Vsighup_dumps_octave_core = true;
 // Similar to Vsighup_dumps_octave_core, but for SIGTERM signal.
 static bool Vsigterm_dumps_octave_core = true;
 
-#if RETSIGTYPE == void
+#if defined (RETSIGTYPE_IS_VOID)
 #define SIGHANDLER_RETURN(status) return
 #else
 #define SIGHANDLER_RETURN(status) return status

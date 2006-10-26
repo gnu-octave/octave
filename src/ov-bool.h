@@ -136,6 +136,16 @@ public:
   ComplexNDArray complex_array_value (bool = false) const
     { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
 
+  SparseMatrix sparse_matrix_value (bool = false) const
+    { return SparseMatrix (Matrix (1, 1, scalar)); }
+
+  // XXX FIXME XXX Need SparseComplexMatrix (Matrix) constructor!!!
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
+    { return SparseComplexMatrix (sparse_matrix_value ()); }
+
+  SparseBoolMatrix sparse_bool_matrix_value (bool = false) const
+    { return SparseBoolMatrix (boolMatrix (1, 1, scalar)); }
+
   charNDArray
   char_array_value (bool = false) const
   {

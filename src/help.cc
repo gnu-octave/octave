@@ -779,7 +779,9 @@ display_help_text (std::ostream& os, const std::string& msg)
 
       std::ostringstream buf;
 
-      buf << "sed -e 's/^[#%][#%]* *//' -e 's/^ *@/@/' | "
+      // Use double quotes to quote the sed patterns for Windows.
+
+      buf << "sed -e \"s/^[#%][#%]* *//\" -e \"s/^ *@/@/\" | "
 	  << "\"" << Vmakeinfo_program << "\""
 	  << " -D \"VERSION " << OCTAVE_VERSION << "\""
 	  << " -D \"OCTAVEHOME " << OCTAVE_PREFIX << "\""

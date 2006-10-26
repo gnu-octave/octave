@@ -9,6 +9,9 @@
 
 2006-10-25  Michael Goffioul  <michael.goffioul@swing.be>
 
+	* glob-match.h (glob_match::glob_match (const std::string&,
+	unsigned int)): Delete initializer for first arg.
+
 	* lo-sysdep.cc (opendir, readdir, rewinddir, closedir):
 	New functions.
 

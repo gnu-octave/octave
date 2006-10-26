@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.535 $)
+AC_REVISION($Revision: 1.536 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1052,6 +1052,7 @@ case "$canonical_host_type" in
     SHLBIN=dll
     LIBPRE=
     SH_LDFLAGS="-shared -g"
+    library_path_var=PATH
     ## Extra compilation flags.
     XTRA_CRUFT_DEFS="-DCRUFT_DLL"
     XTRA_OCTAVE_DEFS="-DOCTAVE_DLL"

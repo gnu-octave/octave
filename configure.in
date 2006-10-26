@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.536 $)
+AC_REVISION($Revision: 1.537 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -292,6 +292,12 @@ AC_SUBST(DEPEND_EXTRA_SED_PATTERN)
 
 ieee_fp_flag=
 case "$canonical_host_type" in
+  ## Keep this pattern first, so that it is preferred over the
+  ## following pattern for x86.
+  *-*-msdosmsvc)
+    CXXFLAGS="$CXXFLAGS -EHs -MD"
+    CFLAGS="$CFLAGS -MD"
+  ;;
   i[[3456789]]86-*-*)
     if test "$GCC" = yes; then
       OCTAVE_CC_FLAG(-mieee-fp, [
@@ -346,10 +352,6 @@ case "$canonical_host_type" in
 
     OCTAVE_CXX_FLAG(-mminimal-toc, [
       XTRA_CXXFLAGS="$XTRA_CXXFLAGS -mminimal-toc"])
-  ;;
-  *-*-msdosmsvc)
-    CXXFLAGS="$CXXFLAGS -EHs -MD"
-    CFLAGS="$CFLAGS -MD"
   ;;
 esac
 
@@ -638,6 +640,9 @@ AC_PROG_F77
 have_fortran_compiler=false
 have_f2c=false
 
+F77_TOLOWER=true
+F77_APPEND_UNDERSCORE=true
+F77_APPEND_EXTRA_UNDERSCORE=true
 if $use_f2c; then
   have_f2c=true
 else
@@ -645,6 +650,16 @@ else
     AC_F77_LIBRARY_LDFLAGS
     AC_F77_DUMMY_MAIN
     AC_F77_WRAPPERS
+    case "$ac_cv_f77_mangling" in
+      "upper case") F77_TOLOWER=false ;;
+    esac
+    case "$ac_cv_f77_mangling" in
+      "no underscore") F77_APPEND_UNDERSCORE=false ;;
+    esac
+    case "$ac_cv_f77_mangling" in
+      "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=false ;;
+    esac
+
     case "$canonical_host_type" in
       i[[3456789]]86-*-*)
         if test "$ac_cv_f77_compiler_gnu" = yes; then
@@ -677,6 +692,9 @@ else
     fi
   fi
 fi
+AC_SUBST(F77_TOLOWER)
+AC_SUBST(F77_APPEND_UNDERSCORE)
+AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
 
 f77_rules_frag=/dev/null
 if $have_fortran_compiler; then
@@ -742,6 +760,15 @@ else
   AC_MSG_WARN([Fortran compiler or f2c installed and in your path.])
   AC_MSG_ERROR([See the file INSTALL for more information.])
 fi
+
+XTRA_CRUFT_LINK_DEPS=
+case "$canonical_host_type" in
+  *-*-msdosmsvc)
+    FLIBS="$FLIBS -lkernel32"
+    XTRA_CRUFT_LINK_DEPS="-Wl,-def:cruft.def"
+  ;;
+esac
+AC_SUBST(XTRA_CRUFT_LINK_DEPS)
 
 FC=$F77
 AC_SUBST(FC)

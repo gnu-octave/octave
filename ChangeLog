@@ -1,8 +1,15 @@
 2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* configure.in (*-*-msdosmsvc): Set library_path_var.
+	(XTRA_CRUFT_LINK_DEPS): New variable.  Substitute it.
 
 2006-10-26  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (F77_TOLOWER, F77_APPEND_UNDERSCORE,
+	F77_APPEND_EXTRA_UNDERSCORE): New variables.  Substitute them.
+	* Makeconf.in (F77_TOLOWER, F77_APPEND_UNDERSCORE,
+	F77_APPEND_EXTRA_UNDERSCORE): Substitute here.
+	(do-subst-f77-mangling): New macro.
 
 	* emacs/octave-inf.el (inferior-octave-has-built-in-variables):
 	New defvar.

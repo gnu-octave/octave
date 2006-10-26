@@ -17,11 +17,13 @@ SOURCES = *.f
 
 DISTFILES = Makefile.in $(SOURCES) $(SPECIAL)
 
-CRUFT_SRC = $(wildcard $(srcdir)/*.f) \
-             $(wildcard $(srcdir)/*.c) \
-             $(wildcard $(srcdir)/*.cc)
+CRUFT_FSRC = $(wildcard $(srcdir)/*.f)
+CRUFT_CSRC = $(wildcard $(srcdir)/*.c)
+CRUFT_CXXSRC = $(wildcard $(srcdir)/*.cc)
+CRUFT_SRC = $(CRUFT_FSRC) $(CRUFT_CSRC) $(CRUFT_CXXSRC)
 CRUFT_BASE = $(basename $(notdir $(CRUFT_SRC)) )
 CRUFT_OBJ = $(addsuffix .o, $(CRUFT_BASE) )
+CRUFT_DEFS = $(patsubst %.f, %.def, $(notdir $(CRUFT_FSRC)))
 
 ifeq ($(SHARED_LIBS), true)
   ifdef FPICFLAG
@@ -40,7 +42,7 @@ ifeq ($(STATIC_LIBS), true)
   LIBCRUFT_DEPEND := $(LIBCRUFT_OBJS)
 endif
 
-all: pic $(LIBCRUFT_DEPEND) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
+all: pic $(CRUFT_DEFS) $(LIBCRUFT_DEPEND) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
 	@echo "warning: run make in parent directory to update libraries"
 .PHONY: all
 
@@ -64,6 +66,13 @@ pic:
 
 $(CRUFT_PICOBJ): stmp-pic
 
+$(CRUFT_DEFS): $(TOPDIR)/libcruft/mkf77def
+
+%.def : %.f
+	@echo "making $@ from $<"
+	@$(TOPDIR)/libcruft/mkf77def < $< > $@.t
+	$(top_srcdir)/move-if-change $@.t $@
+
 install:: all
 .PHONY: install
 
@@ -80,7 +89,7 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean mostlyclean distclean maintainer-clean::
-	rm -f $(MAKEDEPS) $(CRUFT_OBJ) $(CRUFT_PICOBJ)
+	rm -f $(MAKEDEPS) $(CRUFT_OBJ) $(CRUFT_PICOBJ) $(CRUFT_DEFS)
 	-rmdir pic
 	rm -f stmp-pic
 .PHONY: clean mostlyclean

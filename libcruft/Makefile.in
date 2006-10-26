@@ -39,15 +39,21 @@ DISTSUBDIRS = $(sort $(CRUFT_DIRS) blas fftpack lapack)
 
 CLEAN_SUBDIRS = $(DISTSUBDIRS)
 
-DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) STOP.patch
+DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) \
+	STOP.patch mkf77def.in
 
-# include BLAS and FFTW just in case some of libcruft depends on them
-LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
+# Include BLAS and FFTW just in case some of libcruft depends on them
+XTRA_CRUFT_LINK_DEPS = @XTRA_CRUFT_LINK_DEPS@
+LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS) $(XTRA_CRUFT_LINK_DEPS)
 
 all: libraries
 .PHONY: all
 
-$(SUBDIRS):
+mkf77def: mkf77def.in $(TOPDIR)/Makeconf
+	@$(do-subst-f77-mangling)
+	chmod a+rx $@
+
+$(SUBDIRS): mkf77def
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
@@ -61,6 +67,7 @@ CRUFT_FSRC := $(foreach dir, $(SUBDIRS), $(wildcard $(srcdir)/$(dir)/*.f))
 CRUFT_OBJ2 := $(patsubst $(srcdir)/%, %, $(CRUFT_FSRC))
 CRUFT_OBJ1 := $(patsubst %.f, %.o, $(CRUFT_OBJ2))
 CRUFT_OBJ := $(CRUFT_OBJ1) $(MISC_OBJ)
+CRUFT_DEFS := $(patsubst %.f, %.def, $(CRUFT_OBJ2))
 
 ifeq ($(SHARED_LIBS), true)
   ifdef FPICFLAG
@@ -87,7 +94,13 @@ else
   endif
 endif
 
-libraries: $(SUBDIRS)
+$(CRUFT_DEFS): $(SUBDIRS)
+
+cruft.def: $(CRUFT_DEFS)
+	echo "EXPORTS" > $@
+	cat $(CRUFT_DEFS) >> $@
+
+libraries: cruft.def
 	$(MAKE) $(LIBRARIES)
 .PHONY: libraries
 
@@ -161,7 +174,7 @@ TAGS:: $(SOURCES)
 clean mostlyclean distclean::
 	rm -f $(LIBPRE)cruft.$(LIBEXT) $(CRUFT_OBJ)
 	rm -f $(LIBPRE)cruft.$(SHLEXT_VER) $(LIBPRE)cruft.$(SHLEXT)
-	rm -f cruft.def
+	rm -f $(CRUFT_DEFS) cruft.def
 
 distclean maintainer-clean::
 	rm -f Makefile Makerules so_locations

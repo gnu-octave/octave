@@ -97,6 +97,10 @@ FPICFLAG = @FPICFLAG@
 ALL_FFLAGS = $(FFLAGS)
 F77_FLOAT_STORE_FLAG = @F77_FLOAT_STORE_FLAG@
 
+F77_TOLOWER=@F77_TOLOWER@
+F77_APPEND_UNDERSCORE=@F77_TOLOWER@
+F77_APPEND_EXTRA_UNDERSCORE=@F77_TOLOWER@
+
 # cc and associated flags.
 
 DLFCN_INCFLAGS = @DLFCN_INCFLAGS@
@@ -569,6 +573,15 @@ $(SED) < $< \
   -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
   -e "s|%builddir%|$(shell pwd)|" > $@-t
+$(top_srcdir)/move-if-change $@-t $@
+endef
+
+define do-subst-f77-mangling
+echo "making $@ from $<"
+$(SED) < $< \
+  -e "s|%F77_TOLOWER%|${F77_TOLOWER}|g" \
+  -e "s|%F77_APPEND_UNDERSCORE%|${F77_APPEND_UNDERSCORE}|" \
+  -e "s|%F77_APPEND_EXTRA_UNDERSCORE%|${F77_APPEND_EXTRA_UNDERSCORE}|" > $@-t
 $(top_srcdir)/move-if-change $@-t $@
 endef
 

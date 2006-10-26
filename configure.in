@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.533 $)
+AC_REVISION($Revision: 1.534 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1318,9 +1318,20 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   lstat memmove mkdir mkfifo mkstemp on_exit pipe poll putenv raise \
   readlink rename resolvepath rindex rmdir round select setgrent \
   setlocale setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
-  sigsuspend stat strcasecmp strdup strerror strftime stricmp \
+  sigsuspend stat strcasecmp strdup strerror stricmp \
   strncasecmp strnicmp strptime strsignal symlink tempnam umask \
   uname unlink usleep vfprintf vsprintf vsnprintf waitpid)
+
+case "$canonical_host_type" in
+  *-*-msdosmsvc)
+    ## The %T format specifier for strftime is reportedly broken,
+    ## so use our version.  We could use an actual configure test
+    ## for this.
+  ;;
+  *)
+    AC_CHECK_FUNCS(strftime)
+  ;;
+esac
 
 OCTAVE_SMART_PUTENV
 

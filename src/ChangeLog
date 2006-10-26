@@ -1,3 +1,8 @@
+2006-10-25  John W. Eaton  <jwe@octave.org>
+
+	* oct-procbuf.cc (BUFSIZ): Define if not already defined.
+	(octave_procbuf::open): Pass BUFSIZ as size argument to setvbuf.
+
 2006-10-25  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in (XTRA_CDEFS, XTRA_CXXDEFS): Substitute here.

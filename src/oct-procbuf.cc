@@ -59,6 +59,10 @@ static octave_procbuf *octave_procbuf_list = 0;
 #define W32PCLOSE _pclose
 #endif
 
+#ifndef BUFSIZ
+#define BUFSIZ 1024
+#endif
+
 octave_procbuf *
 octave_procbuf::open (const char *command, int mode)
 {
@@ -79,7 +83,7 @@ octave_procbuf::open (const char *command, int mode)
   open_p = true;
 
   if (mode & std::ios::out)
-    ::setvbuf (f, 0, _IOLBF, 0);
+    ::setvbuf (f, 0, _IOLBF, BUFSIZ);
 
   return this;
   
@@ -149,7 +153,7 @@ octave_procbuf::open (const char *command, int mode)
   f = ::fdopen (parent_end, (mode & std::ios::in) ? "r" : "w");
 
   if (mode & std::ios::out)
-    ::setvbuf (f, 0, _IOLBF, 0);
+    ::setvbuf (f, 0, _IOLBF, BUFSIZ);
 
   open_p = true;
 

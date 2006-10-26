@@ -92,6 +92,77 @@ octave_chdir (const std::string& path_arg)
 #endif
 }
 
+#ifdef _MSC_VER
+
+// FIXME -- it would probably be better to adapt the versions of
+// opendir, readdir, and closedir from Emacs as they appear to be more
+// complete implementations (do the functions below work for network
+// paths, for example)?  We can probably get along without rewinddir.
+
+#include <windows.h>
+
+struct direct
+{
+  char *d_name;
+};
+
+typedef struct
+{
+  HANDLE hnd;
+  WIN32_FIND_DATA fd;
+  int dirty;
+  struct direct d;
+  const char* current;
+} DIR;
+
+DIR *
+opendir (const char *name)
+{
+  DIR *d = static_cast<DIR *> (malloc (sizeof (DIR)));
+  static char buffer[MAX_PATH];
+
+  strncpy (buffer, name, MAX_PATH);
+  strncat (buffer, "\\*", MAX_PATH);
+  d->current = buffer;
+  d->hnd = FindFirstFile (buffer, &(d->fd));
+  if (d->hnd == INVALID_HANDLE_VALUE)
+    return 0;
+  d->dirty = 1;
+  return d;
+}
+
+void
+rewinddir (DIR* d)
+{
+  if (d->hnd != INVALID_HANDLE_VALUE)
+    FindClose (d->hnd);
+  d->hnd = FindFirstFile (d->current, &(d->fd));
+  d->dirty = 1;
+}
+
+void
+closedir (DIR *d)
+{
+  if (d->hnd != INVALID_HANDLE_VALUE)
+    FindClose (d->hnd);
+  free (d);
+}
+
+struct direct *
+readdir (DIR *d)
+{
+  if (! d->dirty)
+    {
+      if (! FindNextFile(d->hnd, &(d->fd)))
+	return 0;
+    }
+  d->d.d_name = d->fd.cFileName;
+  d->dirty = 0;
+  return &(d->d);
+}
+
+#endif
+ 
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -102,8 +102,8 @@ INSTANTIATE_INTTYPE (uint32_t);
 INSTANTIATE_INTTYPE (uint64_t);
 
 #define INSTANTIATE_INTTYPE_BIN_OP(T1, T2, OP) \
-  template octave_int<octave_int_binop_traits<T1, T2>::TR> \
-  operator OP (const octave_int<T1>&, const octave_int<T2>&)
+  template OCTAVE_API octave_int<octave_int_binop_traits<T1, T2>::TR> \
+  operator OP<T1, T2> (const octave_int<T1>&, const octave_int<T2>&)
 
 #define INSTANTIATE_INTTYPE_BIN_OPS(T1, T2) \
   INSTANTIATE_INTTYPE_BIN_OP (T1, T2, +); \

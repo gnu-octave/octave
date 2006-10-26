@@ -461,7 +461,7 @@ AC_DEFUN(OCTAVE_PROG_PAGER,
 else
   octave_possible_pagers="less more page pg"
   case "$canonical_host_type" in
-    *-*-cygwin*)
+    *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
       octave_possible_pagers="$octave_possible_pagers more.com"
     ;;
   esac
@@ -478,7 +478,7 @@ dnl Does gnuplot exist?  Is it a recent version?
 dnl
 AC_DEFUN(OCTAVE_PROG_GNUPLOT, [
 case "$canonical_host_type" in
-  *-*-cygwin* | *-*-mingw32* | *-*-msdos)
+  *-*-cygwin* | *-*-mingw32* | *-*-msdosmsvc)
     gp_names="pgnuplot pipe-gnuplot gnuplot"
     gp_default=pgnuplot
   ;;

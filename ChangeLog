@@ -1,9 +1,14 @@
 2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* configure.in (*-*-msdosmsvc): Set library_path_var.
+	Check for _WIN32_WINNT >= 0x0403.  Define _USE_MATH_DEFINES if it
+	is needed.
 	(XTRA_CRUFT_LINK_DEPS): New variable.  Substitute it.
-
+	
 2006-10-26  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_PROG_PAGER): Also check for more.com for
+	*-*-mingw* and *-*-msdosmsvc systems.
 
 	* configure.in (F77_TOLOWER, F77_APPEND_UNDERSCORE,
 	F77_APPEND_EXTRA_UNDERSCORE): New variables.  Substitute them.

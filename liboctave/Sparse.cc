@@ -870,13 +870,13 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
 
 	  if (c > nc)
 	    {
-	      for (octave_idx_type i = 0; i < nc; i++)
+	      for (octave_idx_type i = 0; i < nc + 1; i++)
 		tmpval.cidx(i) = xcidx(i);
-	      for (octave_idx_type i = nc+2; i < c; i++)
+	      for (octave_idx_type i = nc + 1; i < c + 1; i++)
 		tmpval.cidx(i) = tmpval.cidx(i-1);
 	    }
 	  else if (c <= nc)
-	    for (octave_idx_type i = 0; i < c; i++)
+	    for (octave_idx_type i = 0; i < c + 1; i++)
 	      tmpval.cidx(i) = xcidx(i);
 	  
 	  for (octave_idx_type i = 0; i < n; i++)
@@ -888,7 +888,8 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
       else
 	{
 	  // Count how many non zero terms before we do anything
-	  for (octave_idx_type i = 0; i < c; i++)
+	  octave_idx_type min_nc = (c < nc ? c : nc);
+	  for (octave_idx_type i = 0; i < min_nc; i++)
 	    for (octave_idx_type j = xcidx(i); j < xcidx(i+1); j++)
 	      if (xridx(j) < r)
 		n++;
@@ -899,7 +900,7 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
 	      tmpval = Sparse<T> (r, c, n);
 
 	      tmpval.cidx(0);
-	      for (octave_idx_type i = 0, ii = 0; i < c; i++)
+	      for (octave_idx_type i = 0, ii = 0; i < min_nc; i++)
 		{
 		  for (octave_idx_type j = xcidx(i); j < xcidx(i+1); j++)
 		    if (xridx(j) < r)
@@ -909,6 +910,9 @@ Sparse<T>::resize_no_fill (octave_idx_type r, octave_idx_type c)
 		      }
 		  tmpval.cidx(i+1) = ii;
 		}
+	      if (c > min_nc)
+		for (octave_idx_type i = nc; i < c; i++)
+		  tmpval.cidx(i+1) = tmpval.cidx(i);
 	    }
 	  else
 	    tmpval = Sparse<T> (r, c);

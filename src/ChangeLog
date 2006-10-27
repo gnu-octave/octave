@@ -1,5 +1,18 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
+	* dirfns.cc (Fls, cleanup_iprocstream): Delete.
+
+	* sysdep.cc (Ftilde_expand): If arg is cellstr, return cellstr.
+
+	* ov.h (octave_value::is_cellstr): New function.
+	* ov-base.h (octave_base_value::is_cellstr): New function.
+	* ov-cell.h (octave_cell::is_cellstr): New function.
+	* ov-cell.cc (Fiscellstr): Implement with is_cellstr.
+	* Cell.cc (Cell::Cell (const dim_vector&, const string_vector&, bool)): 
+	New constructor.
+	(Cell::is_cellstr): New function.
+	* Cell.h: Provide decls.
+
 	* defaults.cc (subst_octave_home): If dir_sep_char is not '/',
 	replace before returning.
 	From Michael Goffioul <michael.goffioul@swing.be>.

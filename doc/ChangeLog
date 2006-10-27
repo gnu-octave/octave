@@ -1,3 +1,14 @@
+2006-10-27  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (run-octave):
+	Unset DISPLAY while running Octave.
+	From Michael Goffioul <michael.goffioul@swing.be>.
+
+	* interpreter/Makefile.in (octave.dvi, octave.pdf):
+	Use $(UNSETCOMSPEC) in command.
+	* faq/Makefile.in (Octave-FAQ.dvi, Octave-FAQ.pdf): Likewise.
+	* liboctave/Makefile.in (liboctave.dvi, liboctave.pdf): Likewise.
+
 2006-10-09  Thomas Treichl <Thomas.Treichl@gmx.net>
 
 	* interpreter/sparseimages.m: Plot sombrero images if sparse

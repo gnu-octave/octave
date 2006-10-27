@@ -67,8 +67,12 @@ public:
 
   Cell (const string_vector& sv, bool trim = false);
 
+  Cell (const dim_vector& dv, const string_vector& sv, bool trim = false);
+
   Cell (const Cell& c)
     : ArrayN<octave_value> (c) { }
+
+  bool is_cellstr (void) const;
 
   Cell index (const octave_value_list& idx, bool resize_ok = false) const;
 

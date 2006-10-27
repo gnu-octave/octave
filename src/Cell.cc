@@ -56,6 +56,52 @@ Cell::Cell (const string_vector& sv, bool trim)
     }
 }
 
+// Set size to DV, filling with [].  Then fill with as many elements of
+// SV as possible.
+Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
+  : ArrayN<octave_value> (dv)
+{
+  octave_idx_type n = sv.length ();
+
+  if (n > 0)
+    {
+      octave_idx_type m = numel ();
+
+      octave_idx_type len = n > m ? m : n;
+
+      for (octave_idx_type i = 0; i < len; i++)
+	{
+	  std::string s = sv[i];
+
+	  if (trim)
+	    {
+	      size_t pos = s.find_last_not_of (' ');
+
+	      s = (pos == NPOS) ? "" : s.substr (0, pos+1);
+	    }
+
+	  elem(i) = s;
+	}
+    }
+}
+
+bool
+Cell::is_cellstr (void) const
+{
+  bool retval = true;
+
+  for (int i = 0; i < numel (); i++)
+    {
+      if (! elem(i).is_string ())
+	{
+	  retval = false;
+	  break;
+	}
+    }
+
+  return retval;
+}
+
 Cell
 Cell::index (const octave_value_list& idx_arg, bool resize_ok) const
 {

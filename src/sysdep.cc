@@ -775,7 +775,23 @@ tilde_expand (\"~/bin\")\n\
   int nargin = args.length ();
 
   if (nargin == 1)
-    retval = file_ops::tilde_expand (args(0).all_strings ());
+    {
+      octave_value arg = args(0);
+
+      string_vector sv = arg.all_strings ();
+
+      if (! error_state)
+	{
+	  sv = file_ops::tilde_expand (sv);
+
+	  if (arg.is_cellstr ())
+	    retval = Cell (arg.dims (), sv);
+	  else
+	    retval = sv;
+	}
+      else
+	error ("tilde_expand: expecting argument to be char or cellstr object");
+    }
   else
     print_usage ();
 

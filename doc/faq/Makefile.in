@@ -42,13 +42,15 @@ Octave-FAQ.info: $(TEXINFO)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $<
 
 Octave-FAQ.dvi: $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $<
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+	  $(UNSETCOMSPEC) $(TEXI2DVI) $<
 
 Octave-FAQ.ps: Octave-FAQ.dvi
 	-dvips -o $@ $<
 
 Octave-FAQ.pdf: $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $<
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+	  $(UNSETCOMSPEC) $(TEXI2PDF) $<
 
 HTML/index.html: $(TEXINFO)
 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $<

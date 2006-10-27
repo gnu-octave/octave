@@ -1014,32 +1014,7 @@ character string\n\
   octave_value retval;
 
   if (args.length () == 1)
-    {
-      retval = true;
-
-      octave_value arg = args (0);
-
-      if (arg.is_cell ())
-	{
-	  Cell c = args(0).cell_value ();
-
-	  if (! error_state)
-	    {
-	      for (int i = 0; i < c.length (); i++)
-		{
-		  if (! c(i).is_string ())
-		    {
-		      retval = false;
-		      break;
-		    }
-		}
-	    }
-	  else
-	    retval = false;
-	}
-      else
-	retval = false;
-    }
+    retval = args(0).is_cellstr ();
   else
     print_usage ();
 

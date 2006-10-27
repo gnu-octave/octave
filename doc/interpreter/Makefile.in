@@ -110,13 +110,15 @@ octave.info: $(IMAGES_TXT) $(TEXINFO)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
 octave.dvi: $(IMAGES_EPS) $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2DVI) $(MAIN_TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+	  $(UNSETCOMSPEC) $(TEXI2DVI) $(MAIN_TEXINFO)
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
 octave.pdf: $(IMAGES_PDF) $(TEXINFO)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" $(TEXI2PDF) $(MAIN_TEXINFO)
+	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+	  $(UNSETCOMSPEC) $(TEXI2PDF) $(MAIN_TEXINFO)
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
@@ -144,8 +146,10 @@ $(HTML_IMAGES_PNG): HTML/%.png : %.png
 	fi
 	$(INSTALL_DATA) $(filter-out html-dir, $<) HTML
 
+## Unset DISPLAY here to avoid problems with the -title option for
+## gnuplot (it doesn't work if we are calling pgnuplot).
 define run-octave
-  $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
+  DISPLAY= $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
     --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))')"
 endef
 

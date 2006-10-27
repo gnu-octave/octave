@@ -386,6 +386,9 @@ public:
   bool is_cell (void) const
     { return rep->is_cell (); }
 
+  bool is_cellstr (void) const
+    { return rep->is_cellstr (); }
+
   bool is_real_scalar (void) const
     { return rep->is_real_scalar (); }
 

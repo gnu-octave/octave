@@ -195,6 +195,8 @@ public:
 
   virtual bool is_cell (void) const { return false; }
 
+  virtual bool is_cellstr (void) const { return false; }
+
   virtual bool is_real_scalar (void) const { return false; }
 
   virtual bool is_real_matrix (void) const { return false; }

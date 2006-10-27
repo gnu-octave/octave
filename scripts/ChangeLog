@@ -1,3 +1,8 @@
+2006-10-27  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/ls.m, miscellaneous/ls_command.m: New files.
+	* miscellaneous/dir.m: Mark as a command.
+
 2006-10-27  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
 
 	* miscellaneous/unpack.m: Fix missing comma in strcat call.

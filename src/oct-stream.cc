@@ -53,6 +53,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-obj.h"
 #include "utils.h"
 
+#undef OCTAVE_API
+#define OCTAVE_API
+
 // Possible values for conv_err:
 //
 //   1 : not a real scalar

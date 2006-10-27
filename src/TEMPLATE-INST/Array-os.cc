@@ -35,6 +35,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 typedef scanf_format_elt* scanf_format_elt_ptr;
 typedef printf_format_elt* printf_format_elt_ptr;
 
+#undef OCTAVE_API
+#define OCTAVE_API
+
 INSTANTIATE_ARRAY (scanf_format_elt_ptr);
 
 INSTANTIATE_ARRAY (printf_format_elt_ptr);

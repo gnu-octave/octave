@@ -40,7 +40,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-obj.h"
 
-template<>
+template<> OCTINTERP_API
 octave_value
 resize_fill_value<octave_value> (const octave_value&)
 {
@@ -48,13 +48,16 @@ resize_fill_value<octave_value> (const octave_value&)
   return retval;
 }
 
-template class Array<octave_value>;
+template class OCTINTERP_API Array<octave_value>;
+
+#undef OCTAVE_API
+#define OCTAVE_API OCTINTERP_API
 
 INSTANTIATE_ARRAY_ASSIGN (octave_value, octave_value);
 
-template class Array2<octave_value>;
+template class OCTINTERP_API Array2<octave_value>;
 
-template class ArrayN<octave_value>;
+template class OCTINTERP_API ArrayN<octave_value>;
 
 /*
 ;;; Local Variables: ***

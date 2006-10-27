@@ -82,53 +82,53 @@ extern std::string parent_function_name;
 // Keep a count of how many END tokens we expect.
 extern int end_tokens_expected;
 
-extern void
+extern OCTINTERP_API void
 parse_and_execute (FILE *f);
 
-extern void
+extern OCTINTERP_API void
 parse_and_execute (const std::string& s, bool verbose = false,
 		   const char *warn_for = 0);
 
-extern std::string
+extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
 		    std::string& file);
 
-extern std::string
+extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found);
 
-extern std::string lookup_autoload (const std::string& nm);
+extern OCTINTERP_API std::string lookup_autoload (const std::string& nm);
 
-extern string_vector autoloaded_functions (void);
+extern OCTINTERP_API string_vector autoloaded_functions (void);
 
-extern string_vector reverse_lookup_autoload (const std::string& nm);
+extern OCTINTERP_API string_vector reverse_lookup_autoload (const std::string& nm);
 
-extern bool
+extern OCTINTERP_API bool
 load_fcn_from_file (const std::string& nm, bool exec_script);
 
-extern bool
+extern OCTINTERP_API bool
 load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
 
-extern void
+extern OCTINTERP_API void
 source_file (const std::string& file_name,
 	     const std::string& context = std::string ());
 
-extern octave_value_list
+extern OCTINTERP_API octave_value_list
 feval (const std::string& name,
        const octave_value_list& args = octave_value_list (),
        int nargout = 0);
 
-extern octave_value_list
+extern OCTINTERP_API octave_value_list
 feval (octave_function *fcn,
        const octave_value_list& args = octave_value_list (),
        int nargout = 0);
 
-extern octave_value_list
+extern OCTINTERP_API octave_value_list
 feval (const octave_value_list& args, int nargout = 0);
 
-extern octave_value_list
+extern OCTINTERP_API octave_value_list
 eval_string (const std::string&, bool silent, int& parse_status, int hargout);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 eval_string (const std::string&, bool silent, int& parse_status);
 
 #endif

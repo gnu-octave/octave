@@ -35,6 +35,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 typedef symbol_record* symbol_record_ptr;
 
+#undef OCTAVE_API
+#define OCTAVE_API
+
 INSTANTIATE_ARRAY (symbol_record_ptr);
 
 /*

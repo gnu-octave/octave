@@ -28,7 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 extern "C" {
 #endif
 
-extern int octave_main (int argc, char **argv, int embedded);
+extern OCTINTERP_API int octave_main (int argc, char **argv, int embedded);
 
 #ifdef	__cplusplus
 }

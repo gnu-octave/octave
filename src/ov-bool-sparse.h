@@ -48,6 +48,7 @@ class octave_value_list;
 class tree_walker;
 
 class
+OCTINTERP_API
 octave_sparse_bool_matrix : public octave_base_sparse<SparseBoolMatrix>
 {
 public:

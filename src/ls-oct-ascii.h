@@ -40,24 +40,24 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCT_RBV DBL_MAX / 100.0
 #endif
 
-extern std::string
+extern OCTINTERP_API std::string
 extract_keyword (std::istream& is, const char *keyword, 
 		 const bool next_only = false);
 
-extern std::string
+extern OCTINTERP_API std::string
 read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 		 octave_value& tc, octave_idx_type count);
 
-extern bool
+extern OCTINTERP_API bool
 save_ascii_data (std::ostream& os, const octave_value& val_arg,
 		 const std::string& name, bool& infnan_warned,
 		 bool mark_as_global, int precision);
 
-extern bool
+extern OCTINTERP_API bool
 save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 			      const std::string& name);
 
-extern bool
+extern OCTINTERP_API bool
 save_three_d (std::ostream& os, const octave_value& t,
 	      bool parametric = false);
 

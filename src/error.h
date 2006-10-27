@@ -30,55 +30,55 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   panic ("impossible state reached in file `%s' at line %d", \
 	 __FILE__, __LINE__)
 
-extern void reset_error_handler (void);
+extern OCTINTERP_API void reset_error_handler (void);
 
-extern int warning_enabled (const std::string& id);
+extern OCTINTERP_API int warning_enabled (const std::string& id);
 
-extern void message (const char *name, const char *fmt, ...);
-extern void usage (const char *fmt, ...);
-extern void warning (const char *fmt, ...);
-extern void error (const char *fmt, ...);
-extern void parse_error (const char *fmt, ...);
+extern OCTINTERP_API void message (const char *name, const char *fmt, ...);
+extern OCTINTERP_API void usage (const char *fmt, ...);
+extern OCTINTERP_API void warning (const char *fmt, ...);
+extern OCTINTERP_API void error (const char *fmt, ...);
+extern OCTINTERP_API void parse_error (const char *fmt, ...);
 
-extern void
+extern OCTINTERP_API void
 message_with_id (const char *id, const char *name, const char *fmt, ...);
 
-extern void
+extern OCTINTERP_API void
 usage_with_id (const char *id, const char *fmt, ...);
 
-extern void
+extern OCTINTERP_API void
 warning_with_id (const char *id, const char *fmt, ...);
 
-extern void
+extern OCTINTERP_API void
 error_with_id (const char *id, const char *fmt, ...);
 
-extern void
+extern OCTINTERP_API void
 parse_error_with_id (const char *id, const char *fmt, ...);
 
-extern void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
+extern OCTINTERP_API void panic (const char *fmt, ...) GCC_ATTR_NORETURN;
 
 // Helper function for print_usage defined in defun.cc.
-extern void defun_usage_message (const std::string& msg);
+extern OCTINTERP_API void defun_usage_message (const std::string& msg);
 
-extern void disable_warning (const std::string& id);
-extern void initialize_default_warning_state (void);
+extern OCTINTERP_API void disable_warning (const std::string& id);
+extern OCTINTERP_API void initialize_default_warning_state (void);
 
 // Current error state.
-extern int error_state;
+extern OCTINTERP_API int error_state;
 
 // Current warning state.
-extern int warning_state;
+extern OCTINTERP_API int warning_state;
 
 // Tell the error handler whether to print messages, or just store
 // them for later.  Used for handling errors in eval() and
 // the `unwind_protect' statement.
-extern int buffer_error_messages;
+extern OCTINTERP_API int buffer_error_messages;
 
 // TRUE means error messages are turned off.
-extern bool discard_error_messages;
+extern OCTINTERP_API bool discard_error_messages;
 
 // TRUE means warning messages are turned off.
-extern bool discard_warning_messages;
+extern OCTINTERP_API bool discard_warning_messages;
 
 #endif
 

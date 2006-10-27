@@ -63,6 +63,7 @@ class octave_lvalue;
 class octave_value;
 
 class
+OCTINTERP_API
 octave_value
 {
 public:
@@ -755,7 +756,7 @@ public:
 
   // Unary and binary operations.
 
-  friend octave_value do_unary_op (unary_op op,
+  friend OCTINTERP_API octave_value do_unary_op (unary_op op,
 				   const octave_value& a);
 
   const octave_value& do_non_const_unary_op (unary_op op);
@@ -765,11 +766,11 @@ public:
   octave_value do_non_const_unary_op (unary_op op, const std::string& type,
 				      const std::list<octave_value_list>& idx);
 
-  friend octave_value do_binary_op (binary_op op,
+  friend OCTINTERP_API octave_value do_binary_op (binary_op op,
 				    const octave_value& a,
 				    const octave_value& b);
 
-  friend octave_value do_cat_op (const octave_value& a,
+  friend OCTINTERP_API octave_value do_cat_op (const octave_value& a,
 				 const octave_value& b,
 				 const Array<int>& ra_idx);
 
@@ -832,10 +833,10 @@ private:
 
 // Publish externally used friend functions.
 
-extern octave_value
+extern OCTINTERP_API octave_value
 do_unary_op (octave_value::unary_op op, const octave_value& a);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 do_binary_op (octave_value::binary_op op,
 	      const octave_value& a, const octave_value& b);
 
@@ -912,7 +913,7 @@ OV_BINOP_FN (op_el_or)
 
 OV_BINOP_FN (op_struct_ref)
 
-extern void install_types (void);
+extern OCTINTERP_API void install_types (void);
 
 // FIXME -- these trait classes probably belong somehwere else...
 

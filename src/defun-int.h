@@ -34,33 +34,33 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 class octave_value;
 
-extern void print_usage (void);
-extern void print_usage (const std::string&) GCC_ATTR_DEPRECATED;
+extern OCTINTERP_API void print_usage (void);
+extern OCTINTERP_API void print_usage (const std::string&) GCC_ATTR_DEPRECATED;
 
-extern void check_version (const std::string& version, const std::string& fcn);
+extern OCTINTERP_API void check_version (const std::string& version, const std::string& fcn);
 
-extern void
+extern OCTINTERP_API void
 install_builtin_mapper (octave_mapper *mf);
 
-extern void
+extern OCTINTERP_API void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
 			  const std::string& doc, bool is_text_fcn = false,
 			  bool can_hide_function = true);
 
-extern void
+extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
 		      const std::string& doc, bool is_text_fcn = false);
 
-extern void
+extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
 		      const octave_shlib& shl, bool is_text_fcn = false);
 
-extern void
+extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
 
 #define DECLARE_FUNX(name, args_name, nargout_name) \
-  octave_value_list \
+  OCTAVE_EXPORT octave_value_list \
   name (const octave_value_list& args_name, int nargout_name)
 
 #define DECLARE_FUN(name, args_name, nargout_name) \
@@ -89,6 +89,7 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
 
 #define DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, doc, cxx_abi) \
   extern "C" \
+  OCTAVE_EXPORT \
   bool \
   fsname ## _ ## cxx_abi (const octave_shlib& shl) \
   { \

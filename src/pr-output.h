@@ -43,67 +43,67 @@ class Cell;
 #include "intNDArray.h"
 #include "oct-inttypes.h"
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, double d,
 		       bool pr_as_read_syntax = false);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Matrix& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const NDArray& nda,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Complex& c,
 		       bool pr_as_read_syntax = false);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Range& r,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const boolMatrix& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const boolNDArray& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const charMatrix& chm,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0,
 		       bool pr_as_string = false);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const charNDArray& nda,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0,
 		       bool pr_as_string = false);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const std::string& s,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const ArrayN<std::string>& sa,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
@@ -119,7 +119,7 @@ extern void
 octave_print_internal (std::ostream& os, const octave_int<T>& sa,
 		       bool pr_as_read_syntax = false);
 
-extern void
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Cell& cell,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0,

@@ -34,6 +34,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-procbuf.h"
 
 class
+OCTINTERP_API
 procstreambase : virtual public std::ios
 {
 public:
@@ -69,6 +70,7 @@ private:
 };
 
 class
+OCTINTERP_API
 iprocstream : public std::istream, public procstreambase
 // iprocstream : public procstreambase, public std::istream
 {
@@ -98,6 +100,7 @@ private:
 };
 
 class
+OCTINTERP_API
 oprocstream : public std::ostream, public procstreambase
 // oprocstream : public procstreambase, public std::ostream
 {
@@ -127,6 +130,7 @@ private:
 };
 
 class
+OCTINTERP_API
 procstream : public std::iostream, public procstreambase
 // procstream : public procstreambase, public std::iostream
 {

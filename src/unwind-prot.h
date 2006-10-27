@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <stack>
 
 class
+OCTINTERP_API
 unwind_elem
 {
 public:
@@ -75,6 +76,7 @@ private:
 };
 
 class
+OCTINTERP_API
 unwind_protect
 {
 public:

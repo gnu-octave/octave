@@ -98,6 +98,7 @@ class tree_walker;
 // octave_value).
 
 class
+OCTINTERP_API
 octave_base_value
 {
 public:

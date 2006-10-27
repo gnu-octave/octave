@@ -47,6 +47,7 @@ class tree_walker;
 // strings.
 
 class
+OCTINTERP_API
 octave_char_matrix_str : public octave_char_matrix
 {
 public:

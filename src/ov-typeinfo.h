@@ -35,6 +35,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 class string_vector;
 
 class
+OCTINTERP_API
 octave_value_typeinfo
 {
 public:

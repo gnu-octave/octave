@@ -8,6 +8,17 @@
 
 	* file-io.cc: Include file-io.h.
 
+	* TEMPLATE-INST/Array-os.cc, TEMPLATE-INST/Array-sym.cc,
+	TEMPLATE-INST/Array-tc.cc, defun-int.h, error.h, file-io.h,
+	gripes.h, ls-oct-ascii.h, mexproto.h, oct-map.h, oct-obj.h,
+	oct-stream.cc, oct-stream.h, octave.h, ov-base.h,
+	ov-bool-sparse.cc, ov-bool-sparse.h, ov-cx-sparse.cc,
+	ov-cx-sparse.h, ov-fcn.h, ov-re-sparse.cc, ov-re-sparse.h,
+	ov-str-mat.h, ov-typeinfo.cc, ov-typeinfo.h, ov.h, pager.h,
+	parse.h, pr-output.cc, pr-output.h, procstream.h, sighandlers.h,
+	symtab.h, unwind-prot.h, utils.h, variables.h:
+	Sprinkle with OCTINTERP_API as needed.
+
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
 	* ov-bool.h (octave_bool::sparse_matrix_value,

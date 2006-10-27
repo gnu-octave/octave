@@ -39,6 +39,7 @@ class octave_value_list;
 #include "mach-info.h"
 
 class
+OCTINTERP_API
 scanf_format_elt
 {
 public:
@@ -97,6 +98,7 @@ public:
 };
 
 class
+OCTINTERP_API
 scanf_format_list
 {
 public:
@@ -237,6 +239,7 @@ public:
 };
 
 class
+OCTINTERP_API
 printf_format_list
 {
 public:
@@ -317,6 +320,7 @@ private:
 // Provide an interface for Octave streams.
 
 class
+OCTINTERP_API
 octave_base_stream
 {
 friend class octave_stream;
@@ -475,6 +479,7 @@ private:
 };
 
 class
+OCTINTERP_API
 octave_stream
 {
 public:
@@ -614,6 +619,7 @@ private:
 };
 
 class
+OCTINTERP_API
 octave_stream_list
 {
 protected:

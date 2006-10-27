@@ -45,90 +45,90 @@ class string_vector;
 #include "ov-builtin.h"
 #include "symtab.h"
 
-extern bool at_top_level (void);
+extern OCTINTERP_API bool at_top_level (void);
 
-extern void initialize_symbol_tables (void);
-extern void clear_mex_functions (void);
+extern OCTINTERP_API void initialize_symbol_tables (void);
+extern OCTINTERP_API void clear_mex_functions (void);
 
-extern bool is_command_name (const std::string&);
+extern OCTINTERP_API bool is_command_name (const std::string&);
 
 // The next three are here temporarily...
-extern bool is_marked_as_rawcommand (const std::string& s);
-extern void mark_as_rawcommand (const std::string& s);
-extern void unmark_rawcommand (const std::string& s);
+extern OCTINTERP_API bool is_marked_as_rawcommand (const std::string& s);
+extern OCTINTERP_API void mark_as_rawcommand (const std::string& s);
+extern OCTINTERP_API void unmark_rawcommand (const std::string& s);
 
-extern bool is_rawcommand_name (const std::string&);
-extern bool is_mapper_function_name (const std::string&);
-extern bool is_builtin_function_name (const std::string&);
-extern bool is_globally_visible (const std::string&);
+extern OCTINTERP_API bool is_rawcommand_name (const std::string&);
+extern OCTINTERP_API bool is_mapper_function_name (const std::string&);
+extern OCTINTERP_API bool is_builtin_function_name (const std::string&);
+extern OCTINTERP_API bool is_globally_visible (const std::string&);
 
-extern octave_function *
+extern OCTINTERP_API octave_function *
 is_valid_function (const octave_value&, const std::string& = std::string (),
 		   bool warn = false); 
 
-extern octave_function *
+extern OCTINTERP_API octave_function *
 is_valid_function (const std::string&, const std::string& = std::string (),
 		   bool warn = false); 
 
-extern octave_function *
+extern OCTINTERP_API octave_function *
 extract_function (const octave_value& arg, const std::string& warn_for,
 		  const std::string& fname, const std::string& header,
 		  const std::string& trailer);
 
-extern string_vector
+extern OCTINTERP_API string_vector
 get_struct_elts (const std::string& text);
 
-extern string_vector
+extern OCTINTERP_API string_vector
 generate_struct_completions (const std::string& text, std::string& prefix,
 			     std::string& hint);
 
-extern bool
+extern OCTINTERP_API bool
 looks_like_struct (const std::string& text);
 
-extern int
+extern OCTINTERP_API int
 symbol_exist (const std::string& name, const std::string& type = "any");
 
-extern std::string
+extern OCTINTERP_API std::string
 unique_symbol_name (const std::string& basename);
 
-extern bool
+extern OCTINTERP_API bool
 fcn_out_of_date (octave_function *fcn, const std::string& ff, time_t tp);
 
-extern bool lookup (symbol_record *s, bool exec_script = true);
+extern OCTINTERP_API bool lookup (symbol_record *s, bool exec_script = true);
 
-extern symbol_record *
+extern OCTINTERP_API symbol_record *
 lookup_by_name (const std::string& nm, bool exec_script = true);
 
-extern octave_value lookup_function (const std::string& nm);
+extern OCTINTERP_API octave_value lookup_function (const std::string& nm);
 
-extern octave_value lookup_user_function (const std::string& nm);
+extern OCTINTERP_API octave_value lookup_user_function (const std::string& nm);
 
-extern octave_value lookup_function_handle (const std::string& nm);
+extern OCTINTERP_API octave_value lookup_function_handle (const std::string& nm);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 get_global_value (const std::string& nm, bool silent = false);
 
-extern void set_global_value (const std::string& nm, const octave_value& val);
+extern OCTINTERP_API void set_global_value (const std::string& nm, const octave_value& val);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 set_internal_variable (bool& var, const octave_value_list& args,
 		       int nargout, const char *nm);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 set_internal_variable (char& var, const octave_value_list& args,
 		       int nargout, const char *nm);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 set_internal_variable (int& var, const octave_value_list& args,
 		       int nargout, const char *nm,
 		       int minval = INT_MIN, int maxval = INT_MAX);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 set_internal_variable (double& var, const octave_value_list& args,
 		       int nargout, const char *nm,
 		       double minval = DBL_MIN, double maxval = DBL_MAX);
 
-extern octave_value
+extern OCTINTERP_API octave_value
 set_internal_variable (std::string& var, const octave_value_list& args,
 		       int nargout, const char *nm, bool empty_ok = true);
 
@@ -141,42 +141,42 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 #define SET_INTERNAL_VARIABLE_WITH_LIMITS(NM, MINVAL, MAXVAL) \
   set_internal_variable (V ## NM, args, nargout, #NM, MINVAL, MAXVAL)
 
-extern std::string builtin_string_variable (const std::string&);
-extern int builtin_real_scalar_variable (const std::string&, double&);
-extern octave_value builtin_any_variable (const std::string&);
+extern OCTINTERP_API std::string builtin_string_variable (const std::string&);
+extern OCTINTERP_API int builtin_real_scalar_variable (const std::string&, double&);
+extern OCTINTERP_API octave_value builtin_any_variable (const std::string&);
 
-extern void link_to_global_variable (symbol_record *sr);
-extern void link_to_builtin_or_function (symbol_record *sr);
+extern OCTINTERP_API void link_to_global_variable (symbol_record *sr);
+extern OCTINTERP_API void link_to_builtin_or_function (symbol_record *sr);
 
-extern void force_link_to_function (const std::string&);
+extern OCTINTERP_API void force_link_to_function (const std::string&);
 
-extern void bind_ans (const octave_value& val, bool print);
+extern OCTINTERP_API void bind_ans (const octave_value& val, bool print);
 
-extern void
+extern OCTINTERP_API void
 bind_internal_variable (const std::string& fname, const octave_value& val);
 
-extern void mlock (const std::string&);
-extern void munlock (const std::string&);
-extern bool mislocked (const std::string&);
+extern OCTINTERP_API void mlock (const std::string&);
+extern OCTINTERP_API void munlock (const std::string&);
+extern OCTINTERP_API bool mislocked (const std::string&);
 
-extern bool clear_function (const std::string& nm);
-extern bool clear_variable (const std::string& nm);
-extern bool clear_symbol (const std::string& nm);
+extern OCTINTERP_API bool clear_function (const std::string& nm);
+extern OCTINTERP_API bool clear_variable (const std::string& nm);
+extern OCTINTERP_API bool clear_symbol (const std::string& nm);
 
 // Symbol table for symbols at the top level.
-extern symbol_table *top_level_sym_tab;
+extern OCTINTERP_API symbol_table *top_level_sym_tab;
 
 // Symbol table for the current scope.
-extern symbol_table *curr_sym_tab;
+extern OCTINTERP_API symbol_table *curr_sym_tab;
 
 // Symbol table for the current caller scope.
-extern symbol_table *curr_caller_sym_tab;
+extern OCTINTERP_API symbol_table *curr_caller_sym_tab;
 
 // Symbol table for global symbols.
-extern symbol_table *global_sym_tab;
+extern OCTINTERP_API symbol_table *global_sym_tab;
 
 // Symbol table for functions and built-in symbols.
-extern symbol_table *fbi_sym_tab;
+extern OCTINTERP_API symbol_table *fbi_sym_tab;
 
 #endif
 

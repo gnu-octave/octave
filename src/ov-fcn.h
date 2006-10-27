@@ -39,6 +39,7 @@ class tree_walker;
 // Functions.
 
 class
+OCTINTERP_API
 octave_function : public octave_base_value
 {
 public:

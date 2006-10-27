@@ -43,6 +43,9 @@ octave_value_typeinfo::instance (0);
 
 #include <Array.cc>
 
+#undef OCTAVE_API
+#define OCTAVE_API
+
 INSTANTIATE_ARRAY (octave_value_typeinfo::unary_op_fcn);
 template class Array2<octave_value_typeinfo::unary_op_fcn>;
 

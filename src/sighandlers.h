@@ -97,18 +97,18 @@ extern int pipe_handler_error_count;
 // TRUE means we can be interrupted.
 extern bool can_interrupt;
 
-extern sig_handler *octave_set_signal_handler (int, sig_handler *,
+extern OCTINTERP_API sig_handler *octave_set_signal_handler (int, sig_handler *,
 					       bool restart_syscalls = true);
 
-extern void install_signal_handlers (void);
+extern OCTINTERP_API void install_signal_handlers (void);
 
-extern void octave_signal_handler (void);
+extern OCTINTERP_API void octave_signal_handler (void);
 
-extern octave_interrupt_handler octave_catch_interrupts (void);
+extern OCTINTERP_API octave_interrupt_handler octave_catch_interrupts (void);
 
-extern octave_interrupt_handler octave_ignore_interrupts (void);
+extern OCTINTERP_API octave_interrupt_handler octave_ignore_interrupts (void);
 
-extern octave_interrupt_handler
+extern OCTINTERP_API octave_interrupt_handler
 octave_set_interrupt_handler (const volatile octave_interrupt_handler&,
 			      bool restart_syscalls = true);
 
@@ -117,6 +117,7 @@ octave_set_interrupt_handler (const volatile octave_interrupt_handler&,
 // Maybe this should be in a separate file?
 
 class
+OCTINTERP_API
 octave_child
 {
 public:
@@ -165,6 +166,7 @@ public:
 };
 
 class
+OCTINTERP_API
 octave_child_list
 {
 protected:

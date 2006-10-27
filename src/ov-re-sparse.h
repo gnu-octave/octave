@@ -50,6 +50,7 @@ class octave_value_list;
 class tree_walker;
 
 class
+OCTINTERP_API
 octave_sparse_matrix : public octave_base_sparse<SparseMatrix>
 {
 public:

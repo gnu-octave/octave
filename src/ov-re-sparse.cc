@@ -42,7 +42,7 @@ Boston, MA 02110-1301, USA.
 
 #include "ov-bool-sparse.h"
 
-template class octave_base_sparse<SparseMatrix>;
+template class OCTINTERP_API octave_base_sparse<SparseMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_sparse_matrix);
 

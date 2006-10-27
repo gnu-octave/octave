@@ -26,13 +26,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_file_io_h)
 #define octave_file_io_h 1
 
-extern void initialize_file_io (void);
+extern OCTINTERP_API void initialize_file_io (void);
 
-extern void close_files (void);
+extern OCTINTERP_API void close_files (void);
 
-extern void mark_for_deletion (const std::string&);
+extern OCTINTERP_API void mark_for_deletion (const std::string&);
 
-extern void cleanup_tmp_files (void);
+extern OCTINTERP_API void cleanup_tmp_files (void);
 
 #endif
 

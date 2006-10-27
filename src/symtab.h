@@ -58,6 +58,7 @@ whos_parameter
 // Individual records in a symbol table.
 
 class
+OCTINTERP_API
 symbol_record
 {
 public:
@@ -499,6 +500,7 @@ private:
 #define SYMTAB_VARIABLES (symbol_record::USER_VARIABLE)
 
 class
+OCTINTERP_API
 symbol_table
 {
 public:

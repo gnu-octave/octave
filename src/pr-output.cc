@@ -2467,35 +2467,35 @@ pr_int (std::ostream&, const octave_uint32&, int);
 template void
 pr_int (std::ostream&, const octave_uint64&, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_int8>&,
 		       bool, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_int16>&,
 		       bool, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_int32>&,
 		       bool, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_int64>&,
 		       bool, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_uint8>&,
 		       bool, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_uint16>&,
 		       bool, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_uint32>&,
 		       bool, int);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const intNDArray<octave_uint64>&,
 		       bool, int);
 
@@ -2518,28 +2518,28 @@ octave_print_internal (std::ostream& os, const octave_int<T>& val, bool)
 
 // FIXME -- this is not the right spot for this...
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_int8&, bool);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_int16&, bool);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_int32&, bool);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_int64&, bool);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_uint8&, bool);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_uint16&, bool);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_uint32&, bool);
 
-template void
+template OCTINTERP_API void
 octave_print_internal (std::ostream&, const octave_uint64&, bool);
 
 extern void

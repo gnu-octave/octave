@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov.h"
 
 class
+OCTINTERP_API
 octave_value_list
 {
 public:

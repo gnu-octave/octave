@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 class
+OCTINTERP_API
 octave_pager_buf : public std::stringbuf
 {
 public:
@@ -53,6 +54,7 @@ private:
 };
 
 class
+OCTINTERP_API
 octave_pager_stream : public std::ostream
 {
 protected:
@@ -83,6 +85,7 @@ private:
 };
 
 class
+OCTINTERP_API
 octave_diary_buf : public std::stringbuf
 {
 public:
@@ -95,6 +98,7 @@ protected:
 };
 
 class
+OCTINTERP_API
 octave_diary_stream : public std::ostream
 {
 protected:
@@ -124,7 +128,7 @@ private:
 
 #define octave_diary (octave_diary_stream::stream ())
 
-extern void flush_octave_stdout (void);
+extern OCTINTERP_API void flush_octave_stdout (void);
 
 #endif
 

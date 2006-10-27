@@ -1,5 +1,12 @@
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
+	* cutils.c (octave_strcasecmp, octave-strncasecmp):
+	Move to liboctave/lo-cutils.c.
+	* utils.h: Delete decls.
+	* strcasecmp.c: Move to liboctave/strcasecmp.c.
+	* strncase.c: Move to liboctave/strncase.c.
+	* Makefile.in (DIST_SRC): Delete them from the list.
+
 	* bitfcns.cc (bitshift): If A < 0, return -bitshift (-A, N, MASK).
 
 2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>

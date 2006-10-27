@@ -114,18 +114,6 @@ octave_usleep (unsigned int useconds)
 }
 
 int
-octave_strcasecmp (const char *s1, const char *s2)
-{
-  return strcasecmp (s1, s2);
-}
-
-int
-octave_strncasecmp (const char *s1, const char *s2, size_t n)
-{
-  return strncasecmp (s1, s2, n);
-}
-
-int
 octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args)
 {
   return vsnprintf (buf, n, fmt, args);

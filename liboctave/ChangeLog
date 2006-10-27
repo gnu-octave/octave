@@ -1,3 +1,12 @@
+2006-10-26  John W. Eaton  <jwe@octave.org>
+
+	* lo-cutils.c (octave_strcasecmp, octave-strncasecmp):
+	Move here from src/cutils.c.
+	* lo-utils.h: Provide decls.
+	* strcasecmp.c: Move here from src/strcasecmp.c.
+	* strncase.c: Move here from src/strncase.c.
+	* Makefile.in (LIBOCTAVE_C_SOURCES): Add them to the list.
+
 2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* kpse.cc [! MSVC]: Don't include win32lib.h.

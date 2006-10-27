@@ -176,10 +176,9 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	oct-obj.cc oct-prcstrm.cc oct-procbuf.cc oct-stream.cc \
 	octave.cc zfstream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
-	siglist.c sparse-xdiv.cc sparse-xpow.cc strcasecmp.c \
-	strncase.c strfns.cc symtab.cc syscalls.cc sysdep.cc \
-	token.cc toplev.cc unwind-prot.cc utils.cc variables.cc \
-	xdiv.cc xpow.cc \
+	siglist.c sparse-xdiv.cc sparse-xpow.cc strfns.cc \
+	symtab.cc syscalls.cc sysdep.cc token.cc toplev.cc \
+	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
 	$(OV_SRC) \
 	$(PT_SRC)
 

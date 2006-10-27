@@ -134,7 +134,8 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c getopt.c getopt1.c \
 	lo-cieee.c lo-cutils.c mkdir.c oct-getopt.c \
 	randgamma.c randmtzig.c randpoisson.c rename.c \
-	rmdir.c strftime.c strptime.c tempname.c tempnam.c
+	rmdir.c strftime.c strptime.c strcasecmp.c strncase.c \
+	tempname.c tempnam.c \
 
 LIBOCTAVE_SOURCES := $(LIBOCTAVE_CXX_SOURCES) $(LIBOCTAVE_C_SOURCES)
 

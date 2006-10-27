@@ -55,6 +55,10 @@ extern "C" OCTAVE_API void octave_qsort (void *base, size_t n, size_t size,
 extern "C" OCTAVE_API char *oct_strptime (const char *buf, const char *format,
 			       struct tm *tm);
 
+extern "C" OCTINTERP_API int octave_strcasecmp (const char *s1, const char *s2);
+
+extern "C" OCTINTERP_API int octave_strncasecmp (const char *s1, const char *s2, size_t n);
+
 extern OCTAVE_API double octave_read_double (std::istream& is);
 extern OCTAVE_API Complex octave_read_complex (std::istream& is);
 

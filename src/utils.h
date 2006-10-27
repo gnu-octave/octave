@@ -99,10 +99,6 @@ extern "C" OCTINTERP_API void octave_sleep (unsigned int seconds);
 
 extern "C" OCTINTERP_API void octave_usleep (unsigned int useconds);
 
-extern "C" OCTINTERP_API int octave_strcasecmp (const char *s1, const char *s2);
-
-extern "C" OCTINTERP_API int octave_strncasecmp (const char *s1, const char *s2, size_t n);
-
 extern "C" OCTINTERP_API int octave_raw_vsnprintf (char *buf, size_t n, const char *fmt,
 				     va_list args);
 

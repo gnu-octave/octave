@@ -1,5 +1,8 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/ls_command.m: Use /D instead of /w.
+	From Michael Goffioul <michael.goffioul@swing.be>.
+
 	* miscellaneous/ls.m, miscellaneous/ls_command.m: New files.
 	* miscellaneous/dir.m: Mark as a command.
 

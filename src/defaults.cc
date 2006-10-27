@@ -27,6 +27,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <cstdlib>
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 
@@ -117,6 +118,9 @@ subst_octave_home (const std::string& s)
 	  start += len;
 	}
     }
+
+  if (file_ops::dir_sep_char != '/')
+    std::replace (retval.begin (), retval.end (), '/', file_ops::dir_sep_char);
 
   return retval;
 }

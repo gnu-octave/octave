@@ -1,3 +1,9 @@
+2006-10-27  John W. Eaton  <jwe@octave.org>
+
+	* defaults.cc (subst_octave_home): If dir_sep_char is not '/',
+	replace before returning.
+	From Michael Goffioul <michael.goffioul@swing.be>.
+
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
 	* cutils.c (octave_strcasecmp, octave-strncasecmp):

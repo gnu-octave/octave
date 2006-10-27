@@ -1,3 +1,7 @@
+2006-10-27  William Poetra Yoga Hadisoeseno  <williampoetra@gmail.com>
+
+	* miscellaneous/unpack.m: Fix missing comma in strcat call.
+
 2006-10-25  John W. Eaton  <jwe@octave.org>
 
 	* image/image.m: Set x = y = [] when nargin == 0;

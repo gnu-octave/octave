@@ -173,7 +173,7 @@ function filelist = unpack (file, directory, filetype)
 
   unwind_protect
     cd (directory);
-    [status, output] = system (sprintf (strcat (command " 2>&1"), file));
+    [status, output] = system (sprintf (strcat (command, " 2>&1"), file));
   unwind_protect_cleanup
     cd (origdir);
   end_unwind_protect

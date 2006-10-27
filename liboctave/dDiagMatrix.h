@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-defs.h"
 
 class
+OCTAVE_API
 DiagMatrix : public MDiagArray2<double>
 {
 friend class SVD;

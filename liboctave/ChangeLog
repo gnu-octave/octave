@@ -2,6 +2,52 @@
 
 	* kpse.cc [! MSVC]: Don't include win32lib.h.
 
+	* liboctave/Array-C.cc, liboctave/Array-b.cc,
+	liboctave/Array-ch.cc, liboctave/Array-i.cc,
+	liboctave/Array-util.h, liboctave/Array.h, liboctave/CColVector.h,
+	liboctave/CMatrix.h, liboctave/CNDArray.h, liboctave/CRowVector.h,
+	liboctave/CSparse.h, liboctave/CmplxAEPBAL.h,
+	liboctave/CmplxCHOL.h, liboctave/CmplxDET.h,
+	liboctave/CmplxHESS.h, liboctave/CmplxLU.h, liboctave/CmplxQR.h,
+	liboctave/CmplxQRP.h, liboctave/CmplxSCHUR.h,
+	liboctave/CmplxSVD.h, liboctave/CollocWt.h, liboctave/DAE.h,
+	liboctave/DASPK.h, liboctave/DASRT.h, liboctave/DASSL.h,
+	liboctave/EIG.h, liboctave/LSODE.h, liboctave/MArray-C.cc,
+	liboctave/MArray-defs.h, liboctave/MSparse-C.cc,
+	liboctave/MSparse-d.cc, liboctave/MSparse-defs.h,
+	liboctave/MatrixType.h, liboctave/NLEqn.h, liboctave/Quad.h,
+	liboctave/Range.h, liboctave/Sparse-op-defs.h, liboctave/Sparse.h,
+	liboctave/SparseCmplxCHOL.h, liboctave/SparseCmplxLU.h,
+	liboctave/SparseCmplxQR.h, liboctave/SparseQR.h,
+	liboctave/SparsedbleCHOL.h, liboctave/SparsedbleLU.h,
+	liboctave/boolMatrix.h, liboctave/boolNDArray.h,
+	liboctave/boolSparse.h, liboctave/chMatrix.h,
+	liboctave/chNDArray.h, liboctave/cmd-edit.h, liboctave/cmd-hist.h,
+	liboctave/dColVector.h, liboctave/dDiagMatrix.h,
+	liboctave/dMatrix.h, liboctave/dNDArray.h, liboctave/dRowVector.h,
+	liboctave/dSparse.h, liboctave/data-conv.h,
+	liboctave/dbleAEPBAL.h, liboctave/dbleCHOL.h, liboctave/dbleDET.h,
+	liboctave/dbleHESS.h, liboctave/dbleLU.h, liboctave/dbleQR.h,
+	liboctave/dbleQRP.h, liboctave/dbleSCHUR.h, liboctave/dbleSVD.h,
+	liboctave/dir-ops.h, liboctave/file-ops.h, liboctave/file-stat.h,
+	liboctave/glob-match.h, liboctave/idx-vector.h,
+	liboctave/int16NDArray.cc, liboctave/int32NDArray.cc,
+	liboctave/int64NDArray.cc, liboctave/int8NDArray.cc,
+	liboctave/lo-cutils.c, liboctave/lo-ieee.h,
+	liboctave/lo-mappers.h, liboctave/lo-specfun.h,
+	liboctave/lo-utils.h, liboctave/mach-info.h,
+	liboctave/mx-op-defs.h, liboctave/oct-alloc.h,
+	liboctave/oct-env.h, liboctave/oct-group.h,
+	liboctave/oct-inttypes.cc, liboctave/oct-inttypes.h,
+	liboctave/oct-passwd.h, liboctave/oct-rand.h,
+	liboctave/oct-shlib.h, liboctave/oct-spparms.h,
+	liboctave/oct-syscalls.h, liboctave/oct-time.h,
+	liboctave/oct-uname.h, liboctave/pathsearch.h,
+	liboctave/prog-args.h, liboctave/so-array.h, liboctave/str-vec.h,
+	liboctave/uint16NDArray.cc, liboctave/uint32NDArray.cc,
+	liboctave/uint64NDArray.cc, liboctave/uint8NDArray.cc:
+	Sprinkle with OCTAVE_API as needed.
+
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.cc (INSTANTIATE_INTTYPE_BIN_OP): Provide explicit

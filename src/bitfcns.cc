@@ -291,6 +291,10 @@ Return the bitwise XOR of nonnegative integers.\n\
 static int64_t
 bitshift (double a, int n, int64_t mask)
 {
+  // In the name of bug-for-bug compatibility.
+  if (a < 0)
+    return -bitshift (-a, n, mask);
+
   if (n > 0)
     return (static_cast<int64_t> (a) << n) & mask;
   else if (n < 0)

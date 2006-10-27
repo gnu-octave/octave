@@ -553,7 +553,7 @@ OCTAVE_INT_CMP_OP (!=)
 // type and compare).
 
 #define OCTAVE_US_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
-  bool operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
+  bool OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
 
 #define OCTAVE_US_TYPE1_CMP_OP_DECLS(UT, ST) \
   OCTAVE_US_TYPE1_CMP_OP_DECL (<, false, UT, ST) \
@@ -564,7 +564,7 @@ OCTAVE_INT_CMP_OP (!=)
   OCTAVE_US_TYPE1_CMP_OP_DECL (!=, true, UT, ST)
 
 #define OCTAVE_SU_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
-  bool operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
+  bool OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
 
 #define OCTAVE_SU_TYPE1_CMP_OP_DECLS(ST, UT) \
   OCTAVE_SU_TYPE1_CMP_OP_DECL (<, true, ST, UT) \
@@ -592,7 +592,7 @@ OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int64_t)
 // compare if the signed value is positive).
 
 #define OCTAVE_US_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
-  bool operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
+  bool OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
 
 #define OCTAVE_US_TYPE2_CMP_OP_DECLS(ST, UT) \
   OCTAVE_US_TYPE2_CMP_OP_DECL (<, false, ST, UT) \
@@ -603,7 +603,7 @@ OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int64_t)
   OCTAVE_US_TYPE2_CMP_OP_DECL (!=, true, ST, UT)
 
 #define OCTAVE_SU_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
-  bool operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
+  bool OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
 
 #define OCTAVE_SU_TYPE2_CMP_OP_DECLS(ST, UT) \
   OCTAVE_SU_TYPE2_CMP_OP_DECL (<, true, ST, UT) \

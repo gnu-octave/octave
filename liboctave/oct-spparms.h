@@ -35,6 +35,7 @@ Boston, MA 02110-1301, USA.
 #define OCTAVE_SPARSE_CONTROLS_SIZE 12
 
 class
+OCTAVE_API
 octave_sparse_params
 {
 protected:

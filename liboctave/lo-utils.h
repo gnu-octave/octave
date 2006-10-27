@@ -33,41 +33,43 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-types.h"
 #include "syswait.h"
 
-extern octave_idx_type NINTbig (double x);
-extern int NINT (double x);
-extern double D_NINT (double x);
+extern OCTAVE_API octave_idx_type NINTbig (double x);
+extern OCTAVE_API int NINT (double x);
+extern OCTAVE_API double D_NINT (double x);
 
-extern char *strsave (const char *);
+extern OCTAVE_API char *strsave (const char *);
 
-extern void octave_putenv (const std::string&, const std::string&);
+extern OCTAVE_API void octave_putenv (const std::string&, const std::string&);
 
-extern std::string octave_fgets (std::FILE *);
-extern std::string octave_fgetl (std::FILE *);
+extern OCTAVE_API std::string octave_fgets (std::FILE *);
+extern OCTAVE_API std::string octave_fgetl (std::FILE *);
 
-extern std::string octave_fgets (std::FILE *, bool& eof);
-extern std::string octave_fgetl (std::FILE *, bool& eof);
+extern OCTAVE_API std::string octave_fgets (std::FILE *, bool& eof);
+extern OCTAVE_API std::string octave_fgetl (std::FILE *, bool& eof);
 
-extern "C" int octave_gethostname (char *, int);
+extern "C" OCTAVE_API int octave_gethostname (char *, int);
 
-extern "C" void octave_qsort (void *base, size_t n, size_t size,
+extern "C" OCTAVE_API void octave_qsort (void *base, size_t n, size_t size,
 			      int (*cmp) (const void *, const void *));
 
-extern "C" char *oct_strptime (const char *buf, const char *format,
+extern "C" OCTAVE_API char *oct_strptime (const char *buf, const char *format,
 			       struct tm *tm);
 
-extern double octave_read_double (std::istream& is);
-extern Complex octave_read_complex (std::istream& is);
+extern OCTAVE_API double octave_read_double (std::istream& is);
+extern OCTAVE_API Complex octave_read_complex (std::istream& is);
 
-extern void octave_write_double (std::ostream& os, double dval);
-extern void octave_write_complex (std::ostream& os, const Complex& cval);
+extern OCTAVE_API void octave_write_double (std::ostream& os, double dval);
+extern OCTAVE_API void octave_write_complex (std::ostream& os, const Complex& cval);
 
 #ifdef HAVE_LOADLIBRARY_API
 #include <windows.h>
-extern "C" void * octave_w32_library_search (HINSTANCE handle, const char *name);
+extern "C" OCTAVE_API void * octave_w32_library_search (HINSTANCE handle, const char *name);
+#undef min
+#undef max
 #endif
 #endif
 
-extern "C" pid_t octave_waitpid (pid_t pid, int *status, int options);
+extern "C" OCTAVE_API pid_t octave_waitpid (pid_t pid, int *status, int options);
 
 /*
 ;;; Local Variables: ***

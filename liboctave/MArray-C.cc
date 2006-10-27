@@ -32,28 +32,28 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "MArray.h"
 #include "MArray.cc"
 
-template class MArray<Complex>;
+template class OCTAVE_API MArray<Complex>;
 
 INSTANTIATE_MARRAY_FRIENDS (Complex)
 
 #include "MArray2.h"
 #include "MArray2.cc"
 
-template class MArray2<Complex>;
+template class OCTAVE_API MArray2<Complex>;
 
 INSTANTIATE_MARRAY2_FRIENDS (Complex)
 
 #include "MArrayN.h"
 #include "MArrayN.cc"
 
-template class MArrayN<Complex>;
+template class OCTAVE_API MArrayN<Complex>;
 
 INSTANTIATE_MARRAYN_FRIENDS (Complex)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 
-template class MDiagArray2<Complex>;
+template class OCTAVE_API MDiagArray2<Complex>;
 
 INSTANTIATE_MDIAGARRAY2_FRIENDS (Complex)
 

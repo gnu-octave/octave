@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-defs.h"
 
 class
+OCTAVE_API
 ColumnVector : public MArray<double>
 {
 public:
@@ -63,8 +64,8 @@ public:
 
   RowVector transpose (void) const;
 
-  friend ColumnVector real (const ComplexColumnVector& a);
-  friend ColumnVector imag (const ComplexColumnVector& a);
+  friend OCTAVE_API ColumnVector real (const ComplexColumnVector& a);
+  friend OCTAVE_API ColumnVector imag (const ComplexColumnVector& a);
 
   // resize is the destructive equivalent for this one
 
@@ -74,11 +75,11 @@ public:
 
   // matrix by column vector -> column vector operations
 
-  friend ColumnVector operator * (const Matrix& a, const ColumnVector& b);
+  friend OCTAVE_API ColumnVector operator * (const Matrix& a, const ColumnVector& b);
 
   // diagonal matrix by column vector -> column vector operations
 
-  friend ColumnVector operator * (const DiagMatrix& a, const ColumnVector& b);
+  friend OCTAVE_API ColumnVector operator * (const DiagMatrix& a, const ColumnVector& b);
 
   // other operations
 
@@ -91,8 +92,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const ColumnVector& a);
-  friend std::istream& operator >> (std::istream& is, ColumnVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ColumnVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, ColumnVector& a);
 
 private:
 
@@ -101,8 +102,8 @@ private:
 
 // Publish externally used friend functions.
 
-extern ColumnVector real (const ComplexColumnVector& a);
-extern ColumnVector imag (const ComplexColumnVector& a);
+extern OCTAVE_API ColumnVector real (const ComplexColumnVector& a);
+extern OCTAVE_API ColumnVector imag (const ComplexColumnVector& a);
 
 MARRAY_FORWARD_DEFS (MArray, ColumnVector, double)
 

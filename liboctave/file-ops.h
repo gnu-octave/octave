@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "str-vec.h"
 
 struct
+OCTAVE_API
 file_ops
 {
   static int mkdir (const std::string&, mode_t);

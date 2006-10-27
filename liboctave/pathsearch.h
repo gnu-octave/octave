@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "str-vec.h"
 
 class
+OCTAVE_API
 dir_path
 {
 public:

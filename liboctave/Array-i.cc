@@ -50,12 +50,12 @@ INSTANTIATE_ARRAY_AND_ASSIGN (octave_uint64);
 
 #include "Array2.h"
 
-template class Array2<int>;
+template class OCTAVE_API Array2<int>;
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
-template class DiagArray2<int>;
+template class OCTAVE_API DiagArray2<int>;
 
 /*
 ;;; Local Variables: ***

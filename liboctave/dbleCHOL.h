@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dMatrix.h"
 
 class
+OCTAVE_API
 CHOL
 {
 public:
@@ -54,7 +55,7 @@ public:
   // Compute the inverse of a matrix using the Cholesky factorization.
   Matrix inverse (void) const;
 
-  friend std::ostream& operator << (std::ostream& os, const CHOL& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const CHOL& a);
 
 private:
 
@@ -63,7 +64,7 @@ private:
   octave_idx_type init (const Matrix& a);
 };
 
-Matrix chol2inv (const Matrix& r);
+Matrix OCTAVE_API chol2inv (const Matrix& r);
 
 #endif
 

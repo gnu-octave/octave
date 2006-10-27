@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dNDArray.h"
 
 struct
+OCTAVE_API
 octave_rand
 {
   // Return the current seed.

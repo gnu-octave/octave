@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "CMatrix.h"
 
 class
+OCTAVE_API
 ComplexLU : public base_lu <ComplexMatrix, Complex, Matrix, double>
 {
 public:

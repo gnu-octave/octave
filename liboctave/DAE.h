@@ -28,6 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "base-dae.h"
 
 class
+OCTAVE_API
 DAE : public base_diff_alg_eqn, public DAEFunc
 {
 public:

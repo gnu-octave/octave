@@ -27,6 +27,7 @@ Boston, MA 02110-1301, USA.
 #include "dSparse.h"
 
 class
+OCTAVE_API
 SparseCHOL : public sparse_base_chol <SparseMatrix, double, SparseMatrix>
 {
 public:
@@ -79,7 +80,7 @@ public:
        inverse (); }
 };
 
-SparseMatrix chol2inv (const SparseMatrix& r);
+SparseMatrix OCTAVE_API chol2inv (const SparseMatrix& r);
 
 #endif
 

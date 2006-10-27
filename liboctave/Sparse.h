@@ -48,7 +48,7 @@ protected:
   // The real representation of all Sparse arrays.
   //--------------------------------------------------------------------
 
-  class SparseRep
+  class OCTAVE_API SparseRep
   {
   public:
 
@@ -529,11 +529,11 @@ template <class LT, class RT>
 assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs);
 
 #define INSTANTIATE_SPARSE_ASSIGN(LT, RT) \
-  template int assign (Sparse<LT>&, const Sparse<RT>&); \
-  template int assign1 (Sparse<LT>&, const Sparse<RT>&);
+  template OCTAVE_API int assign (Sparse<LT>&, const Sparse<RT>&); \
+  template OCTAVE_API int assign1 (Sparse<LT>&, const Sparse<RT>&);
 
 #define INSTANTIATE_SPARSE(T) \
-  template class Sparse<T>;
+  template class OCTAVE_API Sparse<T>;
 
 #define INSTANTIATE_SPARSE_AND_ASSIGN(T) \
   INSTANTIATE_SPARSE (T); \

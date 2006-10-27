@@ -1,6 +1,12 @@
+2006-10-26  John W. Eaton  <jwe@octave.org>
+
+	* bitfcns.cc (bitshift): If A < 0, return -bitshift (-A, N, MASK).
+
 2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* help.cc (display_help_text): Quote sed patterns with ".
+
+	* file-io.cc: Include file-io.h.
 
 2006-10-26  John W. Eaton  <jwe@octave.org>
 

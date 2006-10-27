@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dbleQR.h"
 
 class
+OCTAVE_API
 QRP : public QR
 {
 public:

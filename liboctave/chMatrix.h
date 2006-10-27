@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "str-vec.h"
 
 class
+OCTAVE_API
 charMatrix : public MArray2<char>
 {
 friend class ComplexMatrix;

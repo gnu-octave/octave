@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // FIXME -- we could use templates here; compare with dbleDET.h
 
 class
+OCTAVE_API
 ComplexDET
 {
 friend class ComplexMatrix;

@@ -25,6 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define octave_oct_alloc_h 1
 
 class
+OCTAVE_API
 octave_allocator
 {
 public:

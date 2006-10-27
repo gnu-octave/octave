@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // octave_shlib objects.
 
 class
+OCTAVE_API
 octave_xshlib
 {
 public:
@@ -40,6 +41,7 @@ public:
 };
 
 class
+OCTAVE_API
 octave_shlib
 {
 public:

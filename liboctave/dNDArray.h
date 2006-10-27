@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-op-defs.h"
 
 class
+OCTAVE_API
 NDArray : public MArrayN<double>
 {
 public:
@@ -102,8 +103,8 @@ public:
   ComplexNDArray fourierNd (void) const;
   ComplexNDArray ifourierNd (void) const;
 
-  friend NDArray real (const ComplexNDArray& a);
-  friend NDArray imag (const ComplexNDArray& a);
+  friend OCTAVE_API NDArray real (const ComplexNDArray& a);
+  friend OCTAVE_API NDArray imag (const ComplexNDArray& a);
 
   Matrix matrix_value (void) const;
 
@@ -118,8 +119,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const NDArray& a);
-  friend std::istream& operator >> (std::istream& is, NDArray& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const NDArray& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, NDArray& a);
 
   static double resize_fill_value (void) { return 0; }
 
@@ -130,16 +131,16 @@ private:
 
 // Publish externally used friend functions.
 
-extern NDArray real (const ComplexNDArray& a);
-extern NDArray imag (const ComplexNDArray& a);
+extern OCTAVE_API NDArray real (const ComplexNDArray& a);
+extern OCTAVE_API NDArray imag (const ComplexNDArray& a);
 
-extern NDArray min (double d, const NDArray& m);
-extern NDArray min (const NDArray& m, double d);
-extern NDArray min (const NDArray& a, const NDArray& b);
+extern OCTAVE_API NDArray min (double d, const NDArray& m);
+extern OCTAVE_API NDArray min (const NDArray& m, double d);
+extern OCTAVE_API NDArray min (const NDArray& a, const NDArray& b);
 
-extern NDArray max (double d, const NDArray& m);
-extern NDArray max (const NDArray& m, double d);
-extern NDArray max (const NDArray& a, const NDArray& b);
+extern OCTAVE_API NDArray max (double d, const NDArray& m);
+extern OCTAVE_API NDArray max (const NDArray& m, double d);
+extern OCTAVE_API NDArray max (const NDArray& a, const NDArray& b);
 
 NDS_CMP_OP_DECLS (NDArray, double)
 NDS_BOOL_OP_DECLS (NDArray, double)

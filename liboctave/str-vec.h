@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "Array.h"
 
 class
+OCTAVE_API
 string_vector : public Array<std::string>
 {
 public:

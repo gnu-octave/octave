@@ -34,6 +34,7 @@ long_options
 };
 
 class
+OCTAVE_API
 prog_args
 {
 public:

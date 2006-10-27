@@ -28,6 +28,7 @@ Boston, MA 02110-1301, USA.
 #include "Sparse-op-defs.h"
 
 class
+OCTAVE_API
 SparseBoolMatrix : public Sparse<bool>
 {
 public:
@@ -108,8 +109,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const SparseBoolMatrix& a);
-  friend std::istream& operator >> (std::istream& is, SparseBoolMatrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const SparseBoolMatrix& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, SparseBoolMatrix& a);
 };
 
 SPARSE_SMS_EQNE_OP_DECLS (SparseBoolMatrix, bool)

@@ -26,48 +26,48 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "oct-cmplx.h"
 
-extern double arg (double x);
-extern double conj (double x);
-extern double fix (double x);
-extern double imag (double x);
-extern double real (double x);
-extern double xround (double x);
-extern double signum (double x);
-extern double xlog2 (double x); 
-extern double xexp2 (double x);
+extern OCTAVE_API double arg (double x);
+extern OCTAVE_API double conj (double x);
+extern OCTAVE_API double fix (double x);
+extern OCTAVE_API double imag (double x);
+extern OCTAVE_API double real (double x);
+extern OCTAVE_API double xround (double x);
+extern OCTAVE_API double signum (double x);
+extern OCTAVE_API double xlog2 (double x); 
+extern OCTAVE_API double xexp2 (double x);
 
-extern bool xisnan (double x);
-extern bool xfinite (double x);
-extern bool xisinf (double x);
+extern OCTAVE_API bool xisnan (double x);
+extern OCTAVE_API bool xfinite (double x);
+extern OCTAVE_API bool xisinf (double x);
 
-extern bool octave_is_NA (double x);
-extern bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
+extern OCTAVE_API bool octave_is_NA (double x);
+extern OCTAVE_API bool octave_is_NaN_or_NA (double x) GCC_ATTR_DEPRECATED;
 
-extern double xmin (double x, double y);
-extern double xmax (double x, double y);
+extern OCTAVE_API double xmin (double x, double y);
+extern OCTAVE_API double xmax (double x, double y);
 
-extern Complex acos (const Complex& x);
-extern Complex acosh (const Complex& x);
-extern Complex asin (const Complex& x);
-extern Complex asinh (const Complex& x);
-extern Complex atan (const Complex& x);
-extern Complex atanh (const Complex& x);
+extern OCTAVE_API Complex acos (const Complex& x);
+extern OCTAVE_API Complex acosh (const Complex& x);
+extern OCTAVE_API Complex asin (const Complex& x);
+extern OCTAVE_API Complex asinh (const Complex& x);
+extern OCTAVE_API Complex atan (const Complex& x);
+extern OCTAVE_API Complex atanh (const Complex& x);
 
-extern Complex ceil (const Complex& x);
-extern Complex fix (const Complex& x);
-extern Complex floor (const Complex& x);
-extern Complex xround (const Complex& x);
-extern Complex signum (const Complex& x);
+extern OCTAVE_API Complex ceil (const Complex& x);
+extern OCTAVE_API Complex fix (const Complex& x);
+extern OCTAVE_API Complex floor (const Complex& x);
+extern OCTAVE_API Complex xround (const Complex& x);
+extern OCTAVE_API Complex signum (const Complex& x);
 
-extern bool xisnan (const Complex& x);
-extern bool xfinite (const Complex& x);
-extern bool xisinf (const Complex& x);
+extern OCTAVE_API bool xisnan (const Complex& x);
+extern OCTAVE_API bool xfinite (const Complex& x);
+extern OCTAVE_API bool xisinf (const Complex& x);
 
-extern bool octave_is_NA (const Complex& x);
-extern bool octave_is_NaN_or_NA (const Complex& x);
+extern OCTAVE_API bool octave_is_NA (const Complex& x);
+extern OCTAVE_API bool octave_is_NaN_or_NA (const Complex& x);
 
-extern Complex xmin (const Complex& x, const Complex& y);
-extern Complex xmax (const Complex& x, const Complex& y);
+extern OCTAVE_API Complex xmin (const Complex& x, const Complex& y);
+extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
 
 #endif
 

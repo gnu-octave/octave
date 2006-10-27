@@ -29,19 +29,19 @@ extern "C" {
 #endif
 
 /*  Octave's idea of infinity.  */
-extern double octave_Inf;
+extern OCTAVE_API double octave_Inf;
 
 /* Octave's idea of a missing value.  */
-extern double octave_NA;
+extern OCTAVE_API double octave_NA;
 
 /* Octave's idea of not a number.  */
-extern double octave_NaN;
+extern OCTAVE_API double octave_NaN;
 
 /* FIXME -- this code assumes that a double has twice the
    number of bits as an int */
 
-extern int lo_ieee_hw;
-extern int lo_ieee_lw;
+extern OCTAVE_API int lo_ieee_hw;
+extern OCTAVE_API int lo_ieee_lw;
 
 typedef union
 {
@@ -52,25 +52,25 @@ typedef union
 #define LO_IEEE_NA_HW 0x7ff00000
 #define LO_IEEE_NA_LW 1954
 
-extern void octave_ieee_init (void);
+extern OCTAVE_API void octave_ieee_init (void);
 
 #if defined (SCO)
 extern int isnan (double);
 extern int isinf (double);
 #endif
 
-extern int lo_ieee_isnan (double x);
-extern int lo_ieee_finite (double x);
-extern int lo_ieee_isinf (double x);
+extern OCTAVE_API int lo_ieee_isnan (double x);
+extern OCTAVE_API int lo_ieee_finite (double x);
+extern OCTAVE_API int lo_ieee_isinf (double x);
 
-extern int lo_ieee_is_NA (double);
-extern int lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
+extern OCTAVE_API int lo_ieee_is_NA (double);
+extern OCTAVE_API int lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
 
-extern double lo_ieee_inf_value (void);
-extern double lo_ieee_na_value (void);
-extern double lo_ieee_nan_value (void);
+extern OCTAVE_API double lo_ieee_inf_value (void);
+extern OCTAVE_API double lo_ieee_na_value (void);
+extern OCTAVE_API double lo_ieee_nan_value (void);
 
-extern int lo_ieee_signbit (double);
+extern OCTAVE_API int lo_ieee_signbit (double);
 
 #ifdef	__cplusplus
 }

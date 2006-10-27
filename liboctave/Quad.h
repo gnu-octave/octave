@@ -40,11 +40,12 @@ typedef double (*integrand_fcn) (double x);
 // variable.
 // Nonzero means an error occurred in the calculation of the integrand
 // function, and the user wants us to quit.
-extern int quad_integration_error;
+extern OCTAVE_API int quad_integration_error;
 
 #include "Quad-opts.h"
 
 class
+OCTAVE_API
 Quad : public Quad_options
 {
  public:
@@ -87,6 +88,7 @@ Quad : public Quad_options
 };
 
 class
+OCTAVE_API
 DefQuad : public Quad
 {
  public:
@@ -119,6 +121,7 @@ DefQuad : public Quad
 };
 
 class
+OCTAVE_API
 IndefQuad : public Quad
 {
  public:

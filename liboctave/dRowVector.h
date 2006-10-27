@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-defs.h"
 
 class
+OCTAVE_API
 RowVector : public MArray<double>
 {
 public:
@@ -63,8 +64,8 @@ public:
 
   ColumnVector transpose (void) const;
 
-  friend RowVector real (const ComplexRowVector& a);
-  friend RowVector imag (const ComplexRowVector& a);
+  friend OCTAVE_API RowVector real (const ComplexRowVector& a);
+  friend OCTAVE_API RowVector imag (const ComplexRowVector& a);
 
   // resize is the destructive equivalent for this one
 
@@ -74,7 +75,7 @@ public:
 
   // row vector by matrix -> row vector
 
-  friend RowVector operator * (const RowVector& a, const Matrix& b);
+  friend OCTAVE_API RowVector operator * (const RowVector& a, const Matrix& b);
 
   // other operations
 
@@ -87,8 +88,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const RowVector& a);
-  friend std::istream& operator >> (std::istream& is, RowVector& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const RowVector& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, RowVector& a);
 
 private:
 
@@ -97,13 +98,13 @@ private:
 
 // row vector by column vector -> scalar
 
-double operator * (const RowVector& a, const ColumnVector& b);
+double OCTAVE_API operator * (const RowVector& a, const ColumnVector& b);
 
-Complex operator * (const RowVector& a, const ComplexColumnVector& b);
+Complex OCTAVE_API operator * (const RowVector& a, const ComplexColumnVector& b);
 
 // other operations
 
-RowVector linspace (double x1, double x2, octave_idx_type n);
+OCTAVE_API RowVector linspace (double x1, double x2, octave_idx_type n);
 
 MARRAY_FORWARD_DEFS (MArray, RowVector, double)
 

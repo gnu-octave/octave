@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dColVector.h"
 
 class
+OCTAVE_API
 CollocWt
 {
 public:

@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "CmplxQR.h"
 
 class
+OCTAVE_API
 ComplexQRP : public ComplexQR
 {
 public:

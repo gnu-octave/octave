@@ -62,6 +62,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-ieee.h"
 
 #include "defun.h"
+#include "file-io.h"
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"
 #include "oct-map.h"

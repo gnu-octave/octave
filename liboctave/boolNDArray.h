@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "boolMatrix.h"
 
 class
+OCTAVE_API
 boolNDArray : public ArrayN<bool>
 {
 public:

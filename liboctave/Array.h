@@ -570,16 +570,16 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 }
 
 #define INSTANTIATE_ARRAY_ASSIGN(LT, RT) \
-  template int assign (Array<LT>&, const Array<RT>&, const LT&); \
-  template int assign1 (Array<LT>&, const Array<RT>&, const LT&); \
-  template int assign2 (Array<LT>&, const Array<RT>&, const LT&); \
-  template int assignN (Array<LT>&, const Array<RT>&, const LT&); \
-  template int assign (Array<LT>&, const Array<RT>&)
+  template OCTAVE_API int assign (Array<LT>&, const Array<RT>&, const LT&); \
+  template OCTAVE_API int assign1 (Array<LT>&, const Array<RT>&, const LT&); \
+  template OCTAVE_API int assign2 (Array<LT>&, const Array<RT>&, const LT&); \
+  template OCTAVE_API int assignN (Array<LT>&, const Array<RT>&, const LT&); \
+  template OCTAVE_API int assign (Array<LT>&, const Array<RT>&)
 
 
 #define INSTANTIATE_ARRAY(T) \
-  template class Array<T>; \
-  template T resize_fill_value (const T&); \
+  template class OCTAVE_API Array<T>; \
+  template OCTAVE_API T resize_fill_value (const T&); \
 
 #define INSTANTIATE_ARRAY_AND_ASSIGN(T) \
   INSTANTIATE_ARRAY (T); \

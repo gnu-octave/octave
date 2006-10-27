@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "CMatrix.h"
 
 class
+OCTAVE_API
 ComplexCHOL
 {
 public:
@@ -57,7 +58,7 @@ public:
 
   ComplexMatrix inverse (void) const;
 
-  friend std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
 
 private:
 
@@ -66,7 +67,7 @@ private:
   octave_idx_type init (const ComplexMatrix& a);
 };
 
-ComplexMatrix chol2inv (const ComplexMatrix& r);
+ComplexMatrix OCTAVE_API chol2inv (const ComplexMatrix& r);
 
 #endif
 

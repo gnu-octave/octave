@@ -36,11 +36,13 @@ class NDArray;
 class Range;
 
 class
+OCTAVE_API
 idx_vector
 {
 private:
 
   class
+  OCTAVE_API
   idx_vector_rep
   {
   public:

@@ -62,7 +62,7 @@
 
 // Generate forward declarations for OP= operators.
 #define MARRAY_OP_ASSIGN_FWD_DECLS(A_T, RHS_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T>, , RHS_T)
+  MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T> OCTAVE_API, , RHS_T)
 
 // Generate friend declarations for the OP= operators.
 #define MARRAY_OP_ASSIGN_FRIENDS(A_T, RHS_T) \
@@ -70,7 +70,7 @@
 
 // Instantiate the OP= operators.
 #define MARRAY_OP_ASSIGN_DEFS(A_T, E_T, RHS_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, , RHS_T)
+  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template OCTAVE_API, , RHS_T)
 
 // A function that can be used to forward OP= operations from derived
 // classes back to us.
@@ -98,7 +98,7 @@
 
 // Generate forward declarations for unary operators.
 #define MARRAY_UNOP_FWD_DECLS(A_T) \
-  MARRAY_UNOP_DECLS (A_T, T, template <typename T>, )
+  MARRAY_UNOP_DECLS (A_T, T, template <typename T> OCTAVE_API, )
 
 // Generate friend declarations for the unary operators.
 #define MARRAY_UNOP_FRIENDS(A_T) \
@@ -106,7 +106,7 @@
 
 // Instantiate the unary operators.
 #define MARRAY_UNOP_DEFS(A_T, E_T) \
-  MARRAY_UNOP_DECLS (A_T, E_T, template, )
+  MARRAY_UNOP_DECLS (A_T, E_T, template OCTAVE_API, )
 
 // A function that can be used to forward unary operations from derived
 // classes back to us.
@@ -156,9 +156,9 @@
 
 // Generate forward declarations for binary operators.
 #define MARRAY_BINOP_FWD_DECLS(A_T) \
-  MARRAY_BINOP_DECLS (A_T, T, template <typename T>, , A_T<T>, T) \
-  MARRAY_BINOP_DECLS (A_T, T, template <typename T>, , T, A_T<T>) \
-  MARRAY_AA_BINOP_DECLS (A_T, T, template <typename T>, )
+  MARRAY_BINOP_DECLS (A_T, T, template <typename T> OCTAVE_API, , A_T<T>, T) \
+  MARRAY_BINOP_DECLS (A_T, T, template <typename T> OCTAVE_API, , T, A_T<T>) \
+  MARRAY_AA_BINOP_DECLS (A_T, T, template <typename T> OCTAVE_API, )
 
 #define MDIAGARRAY2_BINOP_FWD_DECLS(A_T) \
   MDIAGARRAY2_DAS_BINOP_DECLS (A_T, T, template <typename T>, , A_T<T>, T) \
@@ -178,14 +178,14 @@
 
 // Instantiate the binary operators.
 #define MARRAY_BINOP_DEFS(A_T, E_T) \
-  MARRAY_BINOP_DECLS (A_T, E_T, template, , A_T<E_T>, E_T) \
-  MARRAY_BINOP_DECLS (A_T, E_T, template, , E_T, A_T<E_T>) \
-  MARRAY_AA_BINOP_DECLS (A_T, E_T, template, )
+  MARRAY_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , A_T<E_T>, E_T) \
+  MARRAY_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , E_T, A_T<E_T>) \
+  MARRAY_AA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, )
 
 #define MDIAGARRAY2_BINOP_DEFS(A_T, E_T) \
-  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, E_T, template, , A_T<E_T>, E_T) \
-  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, E_T, template, , E_T, A_T<E_T>) \
-  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, E_T, template, )
+  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , A_T<E_T>, E_T) \
+  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , E_T, A_T<E_T>) \
+  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, )
 
 // A function that can be used to forward binary operations from derived
 // classes back to us.

@@ -38,256 +38,256 @@ class ComplexColumnVector;
 class Range;
 
 #if !defined (HAVE_ACOSH)
-extern double acosh (double);
+extern OCTAVE_API double acosh (double);
 #endif
 
 #if !defined (HAVE_ASINH)
-extern double asinh (double);
+extern OCTAVE_API double asinh (double);
 #endif
 
 #if !defined (HAVE_ATANH)
-extern double atanh (double);
+extern OCTAVE_API double atanh (double);
 #endif
 
 #if !defined (HAVE_ERF)
-extern double erf (double);
+extern OCTAVE_API double erf (double);
 #endif
 
 #if !defined (HAVE_ERFC)
-extern double erfc (double);
+extern OCTAVE_API double erfc (double);
 #endif
 
-extern double xgamma (double x);
-extern double xlgamma (double x);
+extern OCTAVE_API double xgamma (double x);
+extern OCTAVE_API double xlgamma (double x);
 
-extern Complex
+extern OCTAVE_API Complex
 besselj (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
-extern Complex
+extern OCTAVE_API Complex
 bessely (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
-extern Complex
+extern OCTAVE_API Complex
 besseli (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
-extern Complex
+extern OCTAVE_API Complex
 besselk (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
-extern Complex
+extern OCTAVE_API Complex
 besselh1 (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
-extern Complex
+extern OCTAVE_API Complex
 besselh2 (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselj (double alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 bessely (double alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besseli (double alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselk (double alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh1 (double alpha, const ComplexMatrix& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh2 (double alpha, const ComplexMatrix& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselj (const Matrix& alpha, const Complex& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 bessely (const Matrix& alpha, const Complex& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besseli (const Matrix& alpha, const Complex& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselk (const Matrix& alpha, const Complex& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh1 (const Matrix& alpha, const Complex& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh2 (const Matrix& alpha, const Complex& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselj (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 bessely (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besseli (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselk (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh1 (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh2 (const Matrix& alpha, const ComplexMatrix& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselj (double alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 bessely (double alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besseli (double alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselk (double alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselh1 (double alpha, const ComplexNDArray& x, bool scaled,
 	  ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselh2 (double alpha, const ComplexNDArray& x, bool scaled,
 	  ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselj (const NDArray& alpha, const Complex& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 bessely (const NDArray& alpha, const Complex& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besseli (const NDArray& alpha, const Complex& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselk (const NDArray& alpha, const Complex& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselh1 (const NDArray& alpha, const Complex& x, bool scaled,
 	  ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselh2 (const NDArray& alpha, const Complex& x, bool scaled,
 	  ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselj (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 bessely (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besseli (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselk (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
 	 ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselh1 (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
 	  ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 besselh2 (const NDArray& alpha, const ComplexNDArray& x, bool scaled,
 	  ArrayN<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselj (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 bessely (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besseli (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselk (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
 	 Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh1 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 besselh2 (const RowVector& alpha, const ComplexColumnVector& x, bool scaled,
 	  Array2<octave_idx_type>& ierr);
 
-extern Complex airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
-extern Complex biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
+extern OCTAVE_API Complex airy (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
+extern OCTAVE_API Complex biry (const Complex& z, bool deriv, bool scaled, octave_idx_type& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 airy (const ComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_type>& ierr);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 biry (const ComplexMatrix& z, bool deriv, bool scaled, Array2<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 airy (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr);
 
-extern ComplexNDArray
+extern OCTAVE_API ComplexNDArray
 biry (const ComplexNDArray& z, bool deriv, bool scaled, ArrayN<octave_idx_type>& ierr);
 
-extern double betainc (double x, double a, double b);
-extern Matrix betainc (double x, double a, const Matrix& b);
-extern Matrix betainc (double x, const Matrix& a, double b);
-extern Matrix betainc (double x, const Matrix& a, const Matrix& b);
+extern OCTAVE_API double betainc (double x, double a, double b);
+extern OCTAVE_API Matrix betainc (double x, double a, const Matrix& b);
+extern OCTAVE_API Matrix betainc (double x, const Matrix& a, double b);
+extern OCTAVE_API Matrix betainc (double x, const Matrix& a, const Matrix& b);
 
-extern NDArray betainc (double x, double a, const NDArray& b);
-extern NDArray betainc (double x, const NDArray& a, double b);
-extern NDArray betainc (double x, const NDArray& a, const NDArray& b);
+extern OCTAVE_API NDArray betainc (double x, double a, const NDArray& b);
+extern OCTAVE_API NDArray betainc (double x, const NDArray& a, double b);
+extern OCTAVE_API NDArray betainc (double x, const NDArray& a, const NDArray& b);
 
-extern Matrix betainc (const Matrix& x, double a, double b);
-extern Matrix betainc (const Matrix& x, double a, const Matrix& b);
-extern Matrix betainc (const Matrix& x, const Matrix& a, double b);
-extern Matrix betainc (const Matrix& x, const Matrix& a, const Matrix& b);
+extern OCTAVE_API Matrix betainc (const Matrix& x, double a, double b);
+extern OCTAVE_API Matrix betainc (const Matrix& x, double a, const Matrix& b);
+extern OCTAVE_API Matrix betainc (const Matrix& x, const Matrix& a, double b);
+extern OCTAVE_API Matrix betainc (const Matrix& x, const Matrix& a, const Matrix& b);
 
-extern NDArray betainc (const NDArray& x, double a, double b);
-extern NDArray betainc (const NDArray& x, double a, const NDArray& b);
-extern NDArray betainc (const NDArray& x, const NDArray& a, double b);
-extern NDArray betainc (const NDArray& x, const NDArray& a, const NDArray& b);
+extern OCTAVE_API NDArray betainc (const NDArray& x, double a, double b);
+extern OCTAVE_API NDArray betainc (const NDArray& x, double a, const NDArray& b);
+extern OCTAVE_API NDArray betainc (const NDArray& x, const NDArray& a, double b);
+extern OCTAVE_API NDArray betainc (const NDArray& x, const NDArray& a, const NDArray& b);
 
-extern double gammainc (double x, double a, bool& err);
-extern Matrix gammainc (double x, const Matrix& a);
-extern Matrix gammainc (const Matrix& x, double a);
-extern Matrix gammainc (const Matrix& x, const Matrix& a);
+extern OCTAVE_API double gammainc (double x, double a, bool& err);
+extern OCTAVE_API Matrix gammainc (double x, const Matrix& a);
+extern OCTAVE_API Matrix gammainc (const Matrix& x, double a);
+extern OCTAVE_API Matrix gammainc (const Matrix& x, const Matrix& a);
 
-extern NDArray gammainc (double x, const NDArray& a);
-extern NDArray gammainc (const NDArray& x, double a);
-extern NDArray gammainc (const NDArray& x, const NDArray& a);
+extern OCTAVE_API NDArray gammainc (double x, const NDArray& a);
+extern OCTAVE_API NDArray gammainc (const NDArray& x, double a);
+extern OCTAVE_API NDArray gammainc (const NDArray& x, const NDArray& a);
 
 inline double gammainc (double x, double a)
 {

@@ -33,6 +33,7 @@ class string_vector;
 #endif
 
 struct
+OCTAVE_API
 octave_syscalls
 {
   static int dup2 (int, int);

@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "CColVector.h"
 
 class
+OCTAVE_API
 EIG
 {
 friend class Matrix;

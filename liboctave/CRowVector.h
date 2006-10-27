@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-defs.h"
 
 class
+OCTAVE_API
 ComplexRowVector : public MArray<Complex>
 {
 friend class ComplexColumnVector;
@@ -121,7 +122,7 @@ Complex operator * (const ComplexRowVector& a, const ComplexColumnVector& b);
 
 // other operations
 
-ComplexRowVector linspace (const Complex& x1, const Complex& x2, octave_idx_type n);
+OCTAVE_API ComplexRowVector linspace (const Complex& x1, const Complex& x2, octave_idx_type n);
 
 MARRAY_FORWARD_DEFS (MArray, ComplexRowVector, Complex)
 

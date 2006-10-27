@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "NLEqn-opts.h"
 
 class
+OCTAVE_API
 NLEqn : public NLFunc, public NLEqn_options
 {
 public:

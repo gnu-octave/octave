@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-op-defs.h"
 
 class
+OCTAVE_API
 ComplexNDArray : public MArrayN<Complex>
 {
 public:
@@ -108,8 +109,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const ComplexNDArray& a);
-  friend std::istream& operator >> (std::istream& is, ComplexNDArray& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexNDArray& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexNDArray& a);
 
   static Complex resize_fill_value (void) { return Complex (0.0, 0.0); }
 
@@ -122,13 +123,13 @@ private:
     : MArrayN<Complex> (d, dv) { }
 };
 
-extern ComplexNDArray min (const Complex& c, const ComplexNDArray& m);
-extern ComplexNDArray min (const ComplexNDArray& m, const Complex& c);
-extern ComplexNDArray min (const ComplexNDArray& a, const ComplexNDArray& b);
+extern OCTAVE_API ComplexNDArray min (const Complex& c, const ComplexNDArray& m);
+extern OCTAVE_API ComplexNDArray min (const ComplexNDArray& m, const Complex& c);
+extern OCTAVE_API ComplexNDArray min (const ComplexNDArray& a, const ComplexNDArray& b);
 
-extern ComplexNDArray max (const Complex& c, const ComplexNDArray& m);
-extern ComplexNDArray max (const ComplexNDArray& m, const Complex& c);
-extern ComplexNDArray max (const ComplexNDArray& a, const ComplexNDArray& b);
+extern OCTAVE_API ComplexNDArray max (const Complex& c, const ComplexNDArray& m);
+extern OCTAVE_API ComplexNDArray max (const ComplexNDArray& m, const Complex& c);
+extern OCTAVE_API ComplexNDArray max (const ComplexNDArray& a, const ComplexNDArray& b);
 
 NDS_CMP_OP_DECLS (ComplexNDArray, Complex)
 NDS_BOOL_OP_DECLS (ComplexNDArray, Complex)

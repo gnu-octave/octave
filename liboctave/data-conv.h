@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mach-info.h"
 
 class
+OCTAVE_API
 oct_data_conv
 {
 public:
@@ -91,28 +92,28 @@ enum save_type
     LS_LONG    = 9
   };
 
-extern void
+extern OCTAVE_API void
 do_double_format_conversion (void *data, int len,
 			     oct_mach_info::float_format from_fmt,
 			     oct_mach_info::float_format to_fmt
 			       = oct_mach_info::native_float_format ());
 
-extern void
+extern OCTAVE_API void
 do_float_format_conversion (void *data, int len,
 			    oct_mach_info::float_format from_fmt,
 			    oct_mach_info::float_format to_fmt
 			      = oct_mach_info::native_float_format ());
 
-extern void
+extern OCTAVE_API void
 do_float_format_conversion (void *data, size_t sz, int len,
 			    oct_mach_info::float_format from_fmt,
 			    oct_mach_info::float_format to_fmt
 			      = oct_mach_info::native_float_format ());
 
-extern void
+extern OCTAVE_API void
 read_doubles (std::istream& is, double *data, save_type type, int len,
 	      bool swap, oct_mach_info::float_format fmt);
-extern void
+extern OCTAVE_API void
 write_doubles (std::ostream& os, const double *data, save_type type, int len);
 
 #endif

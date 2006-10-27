@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "LSODE-opts.h"
 
 class
+OCTAVE_API
 LSODE : public ODE, public LSODE_options
 {
 public:

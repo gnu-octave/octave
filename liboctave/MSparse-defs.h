@@ -45,7 +45,7 @@ Boston, MA 02110-1301, USA.
 
 // Instantiate the OP= operators.
 #define SPARSE_OP_ASSIGN_DEFS(A_T, E_T, RHS_T) \
-  SPARSE_OP_ASSIGN_DECLS (A_T, E_T, template, , RHS_T)
+  SPARSE_OP_ASSIGN_DECLS (A_T, E_T, template OCTAVE_API, , RHS_T)
 
 // A function that can be used to forward OP= operations from derived
 // classes back to us.
@@ -81,7 +81,7 @@ Boston, MA 02110-1301, USA.
 
 // Instantiate the unary operators.
 #define SPARSE_UNOP_DEFS(A_T, E_T) \
-  SPARSE_UNOP_DECLS (A_T, E_T, template, )
+  SPARSE_UNOP_DECLS (A_T, E_T, template OCTAVE_API, )
 
 // A function that can be used to forward unary operations from derived
 // classes back to us.
@@ -131,9 +131,9 @@ Boston, MA 02110-1301, USA.
 
 // Instantiate the binary operators.
 #define SPARSE_BINOP_DEFS(A_T, F_T, E_T) \
-  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template, , A_T<E_T>, E_T)	\
-  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template, , E_T, A_T<E_T>)	\
-  SPARSE_AA_BINOP_DECLS (A_T, E_T, template, )
+  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template OCTAVE_API, , A_T<E_T>, E_T)	\
+  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template OCTAVE_API, , E_T, A_T<E_T>)	\
+  SPARSE_AA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, )
 
 // A function that can be used to forward binary operations from derived
 // classes back to us.

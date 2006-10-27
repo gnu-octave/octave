@@ -39,6 +39,7 @@ class SparseComplexMatrix;
 class SparseBoolMatrix;
 
 class
+OCTAVE_API
 SparseMatrix : public MSparse<double>
 {
  public:
@@ -101,12 +102,12 @@ SparseMatrix : public MSparse<double>
   SparseComplexMatrix concat (const SparseComplexMatrix& rb,
 			      const Array<octave_idx_type>& ra_idx);
 
-  friend SparseMatrix real (const SparseComplexMatrix& a);
-  friend SparseMatrix imag (const SparseComplexMatrix& a);
+  friend OCTAVE_API SparseMatrix real (const SparseComplexMatrix& a);
+  friend OCTAVE_API SparseMatrix imag (const SparseComplexMatrix& a);
 
-  friend SparseMatrix atan2 (const double& x, const SparseMatrix& y);
-  friend SparseMatrix atan2 (const SparseMatrix& x, const double& y);
-  friend SparseMatrix atan2 (const SparseMatrix& x, const SparseMatrix& y);
+  friend OCTAVE_API SparseMatrix atan2 (const double& x, const SparseMatrix& y);
+  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const double& y);
+  friend OCTAVE_API SparseMatrix atan2 (const SparseMatrix& x, const SparseMatrix& y);
 
   SparseMatrix transpose (void) const 
     { 
@@ -406,31 +407,31 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const SparseMatrix& a);
-  friend std::istream& operator >> (std::istream& is, SparseMatrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const SparseMatrix& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, SparseMatrix& a);
 };
 
 // Publish externally used friend functions.
 
-extern SparseMatrix real (const SparseComplexMatrix& a);
-extern SparseMatrix imag (const SparseComplexMatrix& a);
+extern OCTAVE_API SparseMatrix real (const SparseComplexMatrix& a);
+extern OCTAVE_API SparseMatrix imag (const SparseComplexMatrix& a);
 
 // Other operators.
 
-extern SparseMatrix operator * (const SparseMatrix& a, 
+extern OCTAVE_API SparseMatrix operator * (const SparseMatrix& a, 
 				const SparseMatrix& b);
-extern Matrix operator * (const Matrix& a, 
+extern OCTAVE_API Matrix operator * (const Matrix& a, 
 				const SparseMatrix& b);
-extern Matrix operator * (const SparseMatrix& a, 
+extern OCTAVE_API Matrix operator * (const SparseMatrix& a, 
 				const Matrix& b);
 
-extern SparseMatrix min (double d, const SparseMatrix& m);
-extern SparseMatrix min (const SparseMatrix& m, double d);
-extern SparseMatrix min (const SparseMatrix& a, const SparseMatrix& b);
+extern OCTAVE_API SparseMatrix min (double d, const SparseMatrix& m);
+extern OCTAVE_API SparseMatrix min (const SparseMatrix& m, double d);
+extern OCTAVE_API SparseMatrix min (const SparseMatrix& a, const SparseMatrix& b);
 
-extern SparseMatrix max (double d, const SparseMatrix& m);
-extern SparseMatrix max (const SparseMatrix& m, double d);
-extern SparseMatrix max (const SparseMatrix& a, const SparseMatrix& b);
+extern OCTAVE_API SparseMatrix max (double d, const SparseMatrix& m);
+extern OCTAVE_API SparseMatrix max (const SparseMatrix& m, double d);
+extern OCTAVE_API SparseMatrix max (const SparseMatrix& a, const SparseMatrix& b);
 
 SPARSE_SMS_CMP_OP_DECLS (SparseMatrix, double)
 SPARSE_SMS_BOOL_OP_DECLS (SparseMatrix, double)

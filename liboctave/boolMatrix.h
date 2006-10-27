@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-op-defs.h"
 
 class
+OCTAVE_API
 boolMatrix : public Array2<bool>
 {
 public:

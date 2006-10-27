@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-cmplx.h"
 
 class
+OCTAVE_API
 ComplexMatrix : public MArray2<Complex>
 {
 public:
@@ -319,8 +320,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const ComplexMatrix& a);
-  friend std::istream& operator >> (std::istream& is, ComplexMatrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexMatrix& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, ComplexMatrix& a);
 
   static Complex resize_fill_value (void) { return Complex (0.0, 0.0); }
 
@@ -331,32 +332,32 @@ private:
 
 // column vector by row vector -> matrix operations
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 operator * (const ColumnVector& a, const ComplexRowVector& b);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 operator * (const ComplexColumnVector& a, const RowVector& b);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 operator * (const ComplexColumnVector& a, const ComplexRowVector& b);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 Givens (const Complex&, const Complex&);
 
-extern ComplexMatrix
+extern OCTAVE_API ComplexMatrix
 Sylvester (const ComplexMatrix&, const ComplexMatrix&, const ComplexMatrix&);
 
-extern ComplexMatrix operator * (const Matrix&,        const ComplexMatrix&);
-extern ComplexMatrix operator * (const ComplexMatrix&, const Matrix&);
-extern ComplexMatrix operator * (const ComplexMatrix&, const ComplexMatrix&);
+extern OCTAVE_API ComplexMatrix operator * (const Matrix&,        const ComplexMatrix&);
+extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&, const Matrix&);
+extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&, const ComplexMatrix&);
 
-extern ComplexMatrix min (const Complex& c, const ComplexMatrix& m);
-extern ComplexMatrix min (const ComplexMatrix& m, const Complex& c);
-extern ComplexMatrix min (const ComplexMatrix& a, const ComplexMatrix& b);
+extern OCTAVE_API ComplexMatrix min (const Complex& c, const ComplexMatrix& m);
+extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& m, const Complex& c);
+extern OCTAVE_API ComplexMatrix min (const ComplexMatrix& a, const ComplexMatrix& b);
 
-extern ComplexMatrix max (const Complex& c, const ComplexMatrix& m);
-extern ComplexMatrix max (const ComplexMatrix& m, const Complex& c);
-extern ComplexMatrix max (const ComplexMatrix& a, const ComplexMatrix& b);
+extern OCTAVE_API ComplexMatrix max (const Complex& c, const ComplexMatrix& m);
+extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& m, const Complex& c);
+extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& a, const ComplexMatrix& b);
 
 MS_CMP_OP_DECLS (ComplexMatrix, Complex)
 MS_BOOL_OP_DECLS (ComplexMatrix, Complex)

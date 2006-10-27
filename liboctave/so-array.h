@@ -33,7 +33,7 @@ class boolNDArray;
 
 // Stream offsets.
 
-class streamoff_array : public ArrayN<std::streamoff>
+class OCTAVE_API streamoff_array : public ArrayN<std::streamoff>
 {
 public:
 
@@ -88,11 +88,11 @@ public:
   static std::streamoff resize_fill_value (void) { return 0; }
 };
 
-streamoff_array& operator += (streamoff_array& l, const std::streamoff& r);
-streamoff_array& operator -= (streamoff_array& l, const std::streamoff& r);
+OCTAVE_API streamoff_array& operator += (streamoff_array& l, const std::streamoff& r);
+OCTAVE_API streamoff_array& operator -= (streamoff_array& l, const std::streamoff& r);
 
-streamoff_array& operator += (streamoff_array& l, const streamoff_array& r);
-streamoff_array& operator -= (streamoff_array& l, const streamoff_array& r);
+OCTAVE_API streamoff_array& operator += (streamoff_array& l, const streamoff_array& r);
+OCTAVE_API streamoff_array& operator -= (streamoff_array& l, const streamoff_array& r);
 
 NDCMP_OP_DECL (mx_el_eq, std::streamoff, streamoff_array);
 NDCMP_OP_DECL (mx_el_ne, std::streamoff, streamoff_array);

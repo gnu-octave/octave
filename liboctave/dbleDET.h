@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // FIXME -- we could use templates here; compare with CmplxDET.h
 
 class
+OCTAVE_API
 DET
 {
 friend class Matrix;

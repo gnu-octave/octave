@@ -53,14 +53,14 @@ Software Foundation, Inc.
 
 #include "syswait.h"
 
-void
+OCTAVE_API void
 octave_qsort (void *base, size_t n, size_t size,
 	      int (*cmp) (const void *, const void *))
 {
   qsort (base, n, size, cmp);
 }
 
-char *
+OCTAVE_API char *
 oct_strptime (const char *buf, const char *format, struct tm *tm)
 {
   return (char *) strptime (buf, format, tm);
@@ -92,7 +92,7 @@ gethostname (char *name, int namelen)
 
 #endif
 
-int
+OCTAVE_API int
 octave_gethostname (char *name, int namelen)
 {
   return gethostname (name, namelen);
@@ -102,14 +102,14 @@ octave_gethostname (char *name, int namelen)
 #include <windows.h>
 
 /* Need this since in C++ can't cast from int(*)() to void* */
-void *
+OCTAVE_API void *
 octave_w32_library_search (HINSTANCE handle, const char * name)
 {
   return (GetProcAddress (handle, name));
 }
 #endif
 
-pid_t
+OCTAVE_API pid_t
 octave_waitpid (pid_t pid, int *status, int options)
 {
   return WAITPID (pid, status, options);

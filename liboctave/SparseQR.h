@@ -37,6 +37,7 @@ Boston, MA 02110-1301, USA.
 #endif
 
 class
+OCTAVE_API
 SparseQR
 {
 protected:

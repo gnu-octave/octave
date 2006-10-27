@@ -30,6 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "DASSL-opts.h"
 
 class
+OCTAVE_API
 DASSL : public DAE, public DASSL_options
 {
 public:

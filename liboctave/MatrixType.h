@@ -29,6 +29,7 @@ class SparseMatrix;
 class SparseComplexMatrix;
 
 class
+OCTAVE_API
 MatrixType
 {
 public:

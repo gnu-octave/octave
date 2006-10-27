@@ -26,13 +26,13 @@ Boston, MA 02110-1301, USA.
 #include "Array-util.h"
 
 #define SPARSE_BIN_OP_DECL(R, OP, X, Y) \
-  extern R OP (const X&, const Y&)
+  extern OCTAVE_API R OP (const X&, const Y&)
 
 #define SPARSE_CMP_OP_DECL(OP, X, Y) \
-  extern SparseBoolMatrix OP (const X&, const Y&)
+  extern OCTAVE_API SparseBoolMatrix OP (const X&, const Y&)
 
 #define SPARSE_BOOL_OP_DECL(OP, X, Y) \
-  extern SparseBoolMatrix OP (const X&, const Y&)
+  extern OCTAVE_API SparseBoolMatrix OP (const X&, const Y&)
 
 // matrix by scalar operations.
 

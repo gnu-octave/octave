@@ -28,6 +28,7 @@ Boston, MA 02110-1301, USA.
 #include "CSparse.h"
 
 class
+OCTAVE_API
 SparseComplexLU 
   : public sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double>
 {

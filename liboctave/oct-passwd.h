@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 class
+OCTAVE_API
 octave_passwd
 {
 public:

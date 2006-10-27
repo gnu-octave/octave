@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 class octave_base_tm;
 
 class
+OCTAVE_API
 octave_time
 {
 public:
@@ -140,6 +141,7 @@ operator >= (const octave_time& t1, const octave_time& t2)
 }
 
 class
+OCTAVE_API
 octave_base_tm
 {
 public:
@@ -247,6 +249,7 @@ protected:
 };
 
 class
+OCTAVE_API
 octave_localtime : public octave_base_tm
 {
 public:
@@ -274,6 +277,7 @@ private:
 };
 
 class
+OCTAVE_API
 octave_gmtime : public octave_base_tm
 {
 public:
@@ -298,6 +302,7 @@ private:
 };
 
 class
+OCTAVE_API
 octave_strptime : public octave_base_tm
 {
 public:

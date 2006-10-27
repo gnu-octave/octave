@@ -67,6 +67,7 @@ private:
 };
 
 class
+OCTAVE_API
 DASRT : public DAERT, public DASRT_options
 {
 public:

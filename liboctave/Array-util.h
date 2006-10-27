@@ -31,61 +31,61 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "idx-vector.h"
 #include "lo-error.h"
 
-extern bool index_in_bounds (const Array<octave_idx_type>& ra_idx,
+extern OCTAVE_API bool index_in_bounds (const Array<octave_idx_type>& ra_idx,
 			     const dim_vector& dimensions);
 
-extern void increment_index (Array<octave_idx_type>& ra_idx,
+extern OCTAVE_API void increment_index (Array<octave_idx_type>& ra_idx,
 			     const dim_vector& dimensions,
 			     int start_dimension = 0);
 
-extern octave_idx_type get_scalar_idx (Array<octave_idx_type>& idx, dim_vector& dims);
+extern OCTAVE_API octave_idx_type get_scalar_idx (Array<octave_idx_type>& idx, dim_vector& dims);
 
-extern octave_idx_type num_ones (const Array<octave_idx_type>& ra_idx);
+extern OCTAVE_API octave_idx_type num_ones (const Array<octave_idx_type>& ra_idx);
 
-extern bool is_scalar (const dim_vector& dim);
+extern OCTAVE_API bool is_scalar (const dim_vector& dim);
 
-extern bool any_ones (const Array<octave_idx_type>& arr);
+extern OCTAVE_API bool any_ones (const Array<octave_idx_type>& arr);
 
-extern octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims);
+extern OCTAVE_API octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims);
 
-extern Array<octave_idx_type> conv_to_int_array (const Array<idx_vector>& a);
+extern OCTAVE_API Array<octave_idx_type> conv_to_int_array (const Array<idx_vector>& a);
 
-extern Array<idx_vector> conv_to_array (const idx_vector *tmp, const octave_idx_type len);
+extern OCTAVE_API Array<idx_vector> conv_to_array (const idx_vector *tmp, const octave_idx_type len);
 
-extern dim_vector freeze (Array<idx_vector>& ra_idx,
+extern OCTAVE_API dim_vector freeze (Array<idx_vector>& ra_idx,
 			  const dim_vector& dimensions, int resize_ok);
 
-extern bool vector_equivalent (const dim_vector& dv);
+extern OCTAVE_API bool vector_equivalent (const dim_vector& dv);
 
-extern bool all_ok (const Array<idx_vector>& ra_idx);
+extern OCTAVE_API bool all_ok (const Array<idx_vector>& ra_idx);
 
-extern bool any_orig_empty (const Array<idx_vector>& ra_idx);
+extern OCTAVE_API bool any_orig_empty (const Array<idx_vector>& ra_idx);
 
-extern bool all_colon_equiv (const Array<idx_vector>& ra_idx,
+extern OCTAVE_API bool all_colon_equiv (const Array<idx_vector>& ra_idx,
 			     const dim_vector& frozen_lengths);
 
-extern bool is_in (octave_idx_type num, const idx_vector& idx);
+extern OCTAVE_API bool is_in (octave_idx_type num, const idx_vector& idx);
 
-extern octave_idx_type how_many_lgt (const octave_idx_type num, idx_vector& idxv);
+extern OCTAVE_API octave_idx_type how_many_lgt (const octave_idx_type num, idx_vector& idxv);
 
-extern bool all_ones (const Array<octave_idx_type>& arr);
+extern OCTAVE_API bool all_ones (const Array<octave_idx_type>& arr);
 
-extern Array<octave_idx_type> get_elt_idx (const Array<idx_vector>& ra_idx,
+extern OCTAVE_API Array<octave_idx_type> get_elt_idx (const Array<idx_vector>& ra_idx,
 			       const Array<octave_idx_type>& result_idx);
 
-extern Array<octave_idx_type> get_ra_idx (octave_idx_type idx, const dim_vector& dims);
+extern OCTAVE_API Array<octave_idx_type> get_ra_idx (octave_idx_type idx, const dim_vector& dims);
 
-extern dim_vector short_freeze (Array<idx_vector>& ra_idx,
+extern OCTAVE_API dim_vector short_freeze (Array<idx_vector>& ra_idx,
 				const dim_vector& dimensions,
 				int resize_ok);
 
-extern void gripe_nonconformant (const char *op, int op1_len, int op2_len);
+extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_len, int op2_len);
 
-extern void gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
+extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_nr, int op1_nc,
 				 int op2_nr, int op2_nc);
 
 
-extern void gripe_nonconformant (const char *op, dim_vector& op1_dims,
+extern void OCTAVE_API gripe_nonconformant (const char *op, dim_vector& op1_dims,
 				 dim_vector& op2_dims);
 
 #endif

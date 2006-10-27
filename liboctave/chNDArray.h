@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-op-defs.h"
 
 class
+OCTAVE_API
 charNDArray : public MArrayN<char>
 {
 public:

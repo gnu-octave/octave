@@ -28,7 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-inttypes.h"
 
 #define INSTANTIATE_INT_DOUBLE_BIN_OP(T, OP) \
-  template octave_int<T> operator OP (const octave_int<T>&, double)
+  template OCTAVE_API octave_int<T> operator OP (const octave_int<T>&, double)
 
 #define INSTANTIATE_INT_DOUBLE_BIN_OPS(T) \
   INSTANTIATE_INT_DOUBLE_BIN_OP (T, +); \
@@ -37,7 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   INSTANTIATE_INT_DOUBLE_BIN_OP (T, /)
 
 #define INSTANTIATE_DOUBLE_INT_BIN_OP(T, OP) \
-  template octave_int<T> operator OP (double, const octave_int<T>&)
+  template OCTAVE_API octave_int<T> operator OP (double, const octave_int<T>&)
 
 #define INSTANTIATE_DOUBLE_INT_BIN_OPS(T) \
   INSTANTIATE_DOUBLE_INT_BIN_OP (T, +); \
@@ -46,7 +46,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   INSTANTIATE_DOUBLE_INT_BIN_OP (T, /)
 
 #define INSTANTIATE_INT_DOUBLE_CMP_OP(T, OP) \
-  template bool operator OP (const octave_int<T>&, const double&)
+  template OCTAVE_API bool operator OP (const octave_int<T>&, const double&)
 
 #define INSTANTIATE_INT_DOUBLE_CMP_OPS(T) \
   INSTANTIATE_INT_DOUBLE_CMP_OP (T, <); \
@@ -57,7 +57,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   INSTANTIATE_INT_DOUBLE_CMP_OP (T, !=)
 
 #define INSTANTIATE_DOUBLE_INT_CMP_OP(T, OP) \
-  template bool operator OP (const double&, const octave_int<T>&)
+  template OCTAVE_API bool operator OP (const double&, const octave_int<T>&)
 
 #define INSTANTIATE_DOUBLE_INT_CMP_OPS(T) \
   INSTANTIATE_DOUBLE_INT_CMP_OP (T, <); \
@@ -68,7 +68,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   INSTANTIATE_DOUBLE_INT_CMP_OP (T, !=)
 
 #define INSTANTIATE_INT_BITCMP_OP(T, OP) \
-  template octave_int<T> \
+  template OCTAVE_API octave_int<T> \
   operator OP (const octave_int<T>&, const octave_int<T>&)
 
 #define INSTANTIATE_INT_BITCMP_OPS(T) \
@@ -77,13 +77,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
   INSTANTIATE_INT_BITCMP_OP (T, ^)
 
 #define INSTANTIATE_INTTYPE(T) \
-  template class octave_int<T>; \
-  template octave_int<T> pow (const octave_int<T>&, const octave_int<T>&); \
-  template octave_int<T> pow (double, const octave_int<T>&); \
-  template octave_int<T> pow (const octave_int<T>&, double b); \
-  template std::ostream& operator << (std::ostream&, const octave_int<T>&); \
-  template std::istream& operator >> (std::istream&, octave_int<T>&); \
-  template octave_int<T> \
+  template class OCTAVE_API octave_int<T>; \
+  template OCTAVE_API octave_int<T> pow (const octave_int<T>&, const octave_int<T>&); \
+  template OCTAVE_API octave_int<T> pow (double, const octave_int<T>&); \
+  template OCTAVE_API octave_int<T> pow (const octave_int<T>&, double b); \
+  template OCTAVE_API std::ostream& operator << (std::ostream&, const octave_int<T>&); \
+  template OCTAVE_API std::istream& operator >> (std::istream&, octave_int<T>&); \
+  template OCTAVE_API octave_int<T> \
   bitshift (const octave_int<T>&, int, const octave_int<T>&); \
   INSTANTIATE_INT_DOUBLE_BIN_OPS (T); \
   INSTANTIATE_DOUBLE_INT_BIN_OPS (T); \
@@ -184,7 +184,7 @@ INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, uint32_t);
 INSTANTIATE_INTTYPE_BIN_OPS (uint64_t, uint64_t);
 
 #define INSTANTIATE_INTTYPE_SHIFT_OP(T, OP) \
-  template octave_int<T> operator OP (const octave_int<T>&, const int&)
+  template OCTAVE_API octave_int<T> operator OP (const octave_int<T>&, const int&)
 
 #define INSTANTIATE_INTTYPE_SHIFT_OPS(T) \
   INSTANTIATE_INTTYPE_SHIFT_OP (T, <<); \
@@ -200,7 +200,7 @@ INSTANTIATE_INTTYPE_SHIFT_OPS (uint32_t);
 INSTANTIATE_INTTYPE_SHIFT_OPS (uint64_t);
 
 #define INSTANTIATE_OCTAVE_INT_CMP_OP(OP, T1, T2) \
-  template bool operator OP (const octave_int<T1>&, const octave_int<T2>&)
+  template OCTAVE_API bool operator OP (const octave_int<T1>&, const octave_int<T2>&)
 
 #define INSTANTIATE_OCTAVE_INT_CMP_OPS(T1, T2) \
   INSTANTIATE_OCTAVE_INT_CMP_OP (<, T1, T2); \

@@ -27,7 +27,7 @@ Boston, MA 02110-1301, USA.
 #include "MSparse.h"
 #include "MSparse.cc"
 
-template class MSparse<double>;
+template class OCTAVE_API MSparse<double>;
 
 INSTANTIATE_SPARSE_FRIENDS (double);
 

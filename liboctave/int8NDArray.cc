@@ -30,13 +30,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "intNDArray.cc"
 
-template class intNDArray<octave_int8>;
+template class OCTAVE_API intNDArray<octave_int8>;
 
-template
+template OCTAVE_API
 std::ostream&
 operator << (std::ostream& os, const intNDArray<octave_int8>& a);
 
-template
+template OCTAVE_API
 std::istream&
 operator >> (std::istream& is, intNDArray<octave_int8>& a);
 

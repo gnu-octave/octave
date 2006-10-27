@@ -40,6 +40,7 @@ class SparseMatrix;
 class SparseBoolMatrix;
 
 class
+OCTAVE_API
 SparseComplexMatrix : public MSparse<Complex>
 {
 public:
@@ -421,45 +422,45 @@ public:
   SparseComplexMatrix diag (octave_idx_type k = 0) const;
 
   // i/o
-  friend std::ostream& operator << (std::ostream& os, 
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, 
 				    const SparseComplexMatrix& a);
-  friend std::istream& operator >> (std::istream& is, 
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, 
 				    SparseComplexMatrix& a);
 };
 
-extern SparseComplexMatrix operator * (const SparseMatrix&,        
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&,        
 				       const SparseComplexMatrix&);
-extern SparseComplexMatrix operator * (const SparseComplexMatrix&, 
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&, 
 				       const SparseMatrix&);
-extern SparseComplexMatrix operator * (const SparseComplexMatrix&, 
+extern OCTAVE_API SparseComplexMatrix operator * (const SparseComplexMatrix&, 
 				       const SparseComplexMatrix&);
 
-extern ComplexMatrix operator * (const Matrix&,        
+extern OCTAVE_API ComplexMatrix operator * (const Matrix&,        
 				       const SparseComplexMatrix&);
-extern ComplexMatrix operator * (const ComplexMatrix&, 
+extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&, 
 				       const SparseMatrix&);
-extern ComplexMatrix operator * (const ComplexMatrix&, 
+extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&, 
 				       const SparseComplexMatrix&);
 
-extern ComplexMatrix operator * (const SparseMatrix&,        
+extern OCTAVE_API ComplexMatrix operator * (const SparseMatrix&,        
 				       const ComplexMatrix&);
-extern ComplexMatrix operator * (const SparseComplexMatrix&, 
+extern OCTAVE_API ComplexMatrix operator * (const SparseComplexMatrix&, 
 				       const Matrix&);
-extern ComplexMatrix operator * (const SparseComplexMatrix&, 
+extern OCTAVE_API ComplexMatrix operator * (const SparseComplexMatrix&, 
 				       const ComplexMatrix&);
 
-extern SparseComplexMatrix min (const Complex& c, 
+extern OCTAVE_API SparseComplexMatrix min (const Complex& c, 
 				const SparseComplexMatrix& m);
-extern SparseComplexMatrix min (const SparseComplexMatrix& m, 
+extern OCTAVE_API SparseComplexMatrix min (const SparseComplexMatrix& m, 
 				const Complex& c);
-extern SparseComplexMatrix min (const SparseComplexMatrix& a, 
+extern OCTAVE_API SparseComplexMatrix min (const SparseComplexMatrix& a, 
 				const SparseComplexMatrix& b);
 
-extern SparseComplexMatrix max (const Complex& c, 
+extern OCTAVE_API SparseComplexMatrix max (const Complex& c, 
 				const SparseComplexMatrix& m);
-extern SparseComplexMatrix max (const SparseComplexMatrix& m, 
+extern OCTAVE_API SparseComplexMatrix max (const SparseComplexMatrix& m, 
 				const Complex& c);
-extern SparseComplexMatrix max (const SparseComplexMatrix& a, 
+extern OCTAVE_API SparseComplexMatrix max (const SparseComplexMatrix& a, 
 				const SparseComplexMatrix& b);
 
 SPARSE_SMS_CMP_OP_DECLS (SparseComplexMatrix, Complex)

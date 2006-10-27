@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-op-defs.h"
 
 class
+OCTAVE_API
 Matrix : public MArray2<double>
 {
 public:
@@ -89,8 +90,8 @@ public:
   Matrix stack (const ColumnVector& a) const;
   Matrix stack (const DiagMatrix& a) const;
 
-  friend Matrix real (const ComplexMatrix& a);
-  friend Matrix imag (const ComplexMatrix& a);
+  friend OCTAVE_API Matrix real (const ComplexMatrix& a);
+  friend OCTAVE_API Matrix imag (const ComplexMatrix& a);
 
   Matrix transpose (void) const { return MArray2<double>::transpose (); }
 
@@ -274,8 +275,8 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const Matrix& a);
-  friend std::istream& operator >> (std::istream& is, Matrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const Matrix& a);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, Matrix& a);
 
   static double resize_fill_value (void) { return 0; }
 
@@ -286,28 +287,28 @@ private:
 
 // Publish externally used friend functions.
 
-extern Matrix real (const ComplexMatrix& a);
-extern Matrix imag (const ComplexMatrix& a);
+extern OCTAVE_API Matrix real (const ComplexMatrix& a);
+extern OCTAVE_API Matrix imag (const ComplexMatrix& a);
 
 // column vector by row vector -> matrix operations
 
-extern Matrix operator * (const ColumnVector& a, const RowVector& b);
+extern OCTAVE_API Matrix operator * (const ColumnVector& a, const RowVector& b);
 
 // Other functions.
 
-extern Matrix Givens (double, double);
+extern OCTAVE_API Matrix Givens (double, double);
 
-extern Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
+extern OCTAVE_API Matrix Sylvester (const Matrix&, const Matrix&, const Matrix&);
 
-extern Matrix operator * (const Matrix& a, const Matrix& b);
+extern OCTAVE_API Matrix operator * (const Matrix& a, const Matrix& b);
 
-extern Matrix min (double d, const Matrix& m);
-extern Matrix min (const Matrix& m, double d);
-extern Matrix min (const Matrix& a, const Matrix& b);
+extern OCTAVE_API Matrix min (double d, const Matrix& m);
+extern OCTAVE_API Matrix min (const Matrix& m, double d);
+extern OCTAVE_API Matrix min (const Matrix& a, const Matrix& b);
 
-extern Matrix max (double d, const Matrix& m);
-extern Matrix max (const Matrix& m, double d);
-extern Matrix max (const Matrix& a, const Matrix& b);
+extern OCTAVE_API Matrix max (double d, const Matrix& m);
+extern OCTAVE_API Matrix max (const Matrix& m, double d);
+extern OCTAVE_API Matrix max (const Matrix& a, const Matrix& b);
 
 MS_CMP_OP_DECLS (Matrix, double)
 MS_BOOL_OP_DECLS (Matrix, double)

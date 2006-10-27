@@ -27,22 +27,22 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "mx-inlines.cc"
 
 #define BIN_OP_DECL(R, OP, X, Y) \
-  extern R OP (const X&, const Y&)
+  extern OCTAVE_API R OP (const X&, const Y&)
 
 class boolMatrix;
 class boolNDArray;
 
 #define CMP_OP_DECL(OP, X, Y) \
-  extern boolMatrix OP (const X&, const Y&)
+  extern OCTAVE_API boolMatrix OP (const X&, const Y&)
 
 #define NDCMP_OP_DECL(OP, X, Y) \
-  extern boolNDArray OP (const X&, const Y&)
+  extern OCTAVE_API boolNDArray OP (const X&, const Y&)
 
 #define BOOL_OP_DECL(OP, X, Y) \
-  extern boolMatrix OP (const X&, const Y&)
+  extern OCTAVE_API boolMatrix OP (const X&, const Y&)
 
 #define NDBOOL_OP_DECL(OP, X, Y) \
-  extern boolNDArray OP (const X&, const Y&)
+  extern OCTAVE_API boolNDArray OP (const X&, const Y&)
 
 // vector by scalar operations.
 

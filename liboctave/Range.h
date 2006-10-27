@@ -28,6 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dMatrix.h"
 
 class
+OCTAVE_API
 Range
 {
  public:
@@ -88,8 +89,8 @@ Range
       }
   }
 
-  friend std::ostream& operator << (std::ostream& os, const Range& r);
-  friend std::istream& operator >> (std::istream& is, Range& r);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const Range& r);
+  friend OCTAVE_API std::istream& operator >> (std::istream& is, Range& r);
 
   void print_range (void);
 
@@ -108,7 +109,7 @@ Range
   void clear_cache (void) const { cache.resize (0, 0); }
 };
 
-extern Range operator - (const Range& r);
+extern OCTAVE_API Range operator - (const Range& r);
 
 #endif
 

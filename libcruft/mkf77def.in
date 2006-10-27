@@ -27,5 +27,5 @@ fi
 
 $SED -n \
   -e 'y/ABCDEFGHIJLKMNOPQRSTUVWXYZ/abcdefghijlkmnopqrstuvwxyz/' \
-  -e 's/^\(      \|\t\)[ \t]*\(.*function\|subroutine\|entry\)[ \t]*\([^ \t(]*\).*$/\3/p' | \
+  -e 's/^\(      \|	\)[ 	]*\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$/\3/p' | \
   eval $awkcmd

@@ -3,6 +3,7 @@
 	* mkf77def.in: Downcase all input to simplify matching.
 	Match only lines beginning with whitespace.
 	Match function return types.
+	Use literal TAB characters instead of \t in sed patterns.
 	From Michael Goffioul <michael.goffioul@swing.be>.
 
 2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>

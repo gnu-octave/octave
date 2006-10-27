@@ -1,3 +1,9 @@
+2006-10-26  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (OCTAVE_EXPORT, OCTAVE_IMPORT): New macros
+	(CRUFT_API, OCTAVE_API, OCTINTERP_API): Define using OCTAVE_EXPORT
+	and OCTAVE_IMPORT.
+
 2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* configure.in (*-*-msdosmsvc): Set library_path_var.

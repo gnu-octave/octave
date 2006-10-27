@@ -37,6 +37,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #include <windows.h>
+#undef min
+#undef max
 #endif
 
 #include "lo-error.h"

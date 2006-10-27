@@ -1,3 +1,8 @@
+2006-10-27  John W. Eaton  <jwe@octave.org>
+
+	* oct-time.cc: Undefine min and max after including windows.h.
+	From Michael Goffioul  <michael.goffioul@swing.be>.
+
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
 	* lo-cutils.c (octave_strcasecmp, octave-strncasecmp):

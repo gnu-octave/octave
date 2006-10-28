@@ -49,6 +49,8 @@ extern int dlclose (void *);
 #include <dl.h>
 #elif defined (HAVE_LOADLIBRARY_API)
 #include <windows.h>
+#undef min
+#undef max
 #endif
 }
 

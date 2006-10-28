@@ -273,7 +273,7 @@ int
 octave_syscalls::pipe (int *fildes)
 {
   std::string msg;
-  return pipe (fildes);
+  return pipe (fildes, msg);
 }
 
 int

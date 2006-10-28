@@ -38,6 +38,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "file-ops.h"
 #include "lo-error.h"
 #include "pathlen.h"
+#include "lo-sysdep.h"
 
 std::string
 octave_getcwd (void)
@@ -92,7 +93,7 @@ octave_chdir (const std::string& path_arg)
 #endif
 }
 
-#ifdef _MSC_VER
+#if defined (_MSC_VER)
 
 // FIXME -- it would probably be better to adapt the versions of
 // opendir, readdir, and closedir from Emacs as they appear to be more
@@ -101,19 +102,14 @@ octave_chdir (const std::string& path_arg)
 
 #include <windows.h>
 
-struct direct
-{
-  char *d_name;
-};
-
-typedef struct
+struct __DIR
 {
   HANDLE hnd;
   WIN32_FIND_DATA fd;
   int dirty;
   struct direct d;
-  const char* current;
-} DIR;
+  const char *current;
+};
 
 DIR *
 opendir (const char *name)
@@ -132,7 +128,7 @@ opendir (const char *name)
 }
 
 void
-rewinddir (DIR* d)
+rewinddir (DIR *d)
 {
   if (d->hnd != INVALID_HANDLE_VALUE)
     FindClose (d->hnd);

@@ -36,6 +36,27 @@ extern int octave_chdir (const std::string&);
 extern int gethostname (char *, int);
 #endif
 
+#if defined (_MSC_VER)
+
+// FIXME -- it would probably be better to adapt the versions of
+// opendir, readdir, and closedir from Emacs as they appear to be more
+// complete implementations.  We can probably get along without
+// rewinddir.
+
+struct direct
+{
+  char *d_name;
+};
+
+typedef struct __DIR DIR;
+
+extern DIR* opendir (const char *name);
+extern void rewinddir (DIR *d);
+extern void closedir (DIR *d);
+extern struct direct *readdir (DIR *d);
+
+#endif
+
 #endif
 
 /*

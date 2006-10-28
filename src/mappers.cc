@@ -610,6 +610,10 @@ Compute tangent of each element of @var{x}.\n\
 Compute hyperbolic tangent of each element of @var{x}.\n\
 @end deftypefn");
 
+#ifdef toascii
+#undef toascii
+#endif
+
   DEFUN_MAPPER (toascii, xtoascii, 0, 0, 0, 0, 0, 0.0, 0.0, 1, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} toascii (@var{s})\n\

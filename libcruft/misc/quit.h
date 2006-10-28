@@ -37,6 +37,8 @@ extern "C" {
 #if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 
 #include <windows.h>
+#undef min
+#undef max
 
 CRUFT_API extern void w32_sigint_init (void);   /* setup */
 CRUFT_API extern void w32_raise_final (void);   /* tear down */

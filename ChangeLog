@@ -1,4 +1,4 @@
-2006-10-27  Michael Goffioul  <michael.goffioul@swing.be>
+2006-10-28  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* configure.in (AH_BOTTOM): If using MSVC, define __WIN32__ before
 	other #ifdefs that use it.

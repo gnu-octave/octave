@@ -1,3 +1,8 @@
+2006-10-28  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* mappers.cc (install_mapper_functions): Undefine toascii before
+	the DEFUN_MAPPER for it.
+
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
 	* mexproto.h: Include oct-dlldefs.h.

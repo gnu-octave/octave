@@ -1,5 +1,9 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
+	* pr-output.cc (SPECIALIZE_UABS): New macro.
+	Use it to generate specializations of abs for unsigned int types.
+	Instantiate abs for signed int types.
+
 	* load-path.cc (load_path::do_initialize):
 	Use dir_path::path_sep_str instead of ":".
 	Don't append ":::" to xpath when calling do_set.

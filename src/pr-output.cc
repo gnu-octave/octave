@@ -2205,19 +2205,41 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
     }
 }
 
+// FIXME -- all this mess with abs is an attempt to avoid seeing
+//
+//   warning: comparison of unsigned expression < 0 is always false
+//
+// from GCC.  Isn't there a better way
+
 template <class T>
 /* static */ inline T
 abs (T x)
 {
-  return x;
+  return x < 0 ? -x : x;
 }
 
-#define INSTANTIATE_ABS(T) template /* static */ inline T abs (T x)
+#define INSTANTIATE_ABS(T) \
+  template /* static */ inline T abs (T)
 
-INSTANTIATE_ABS (unsigned int);
-INSTANTIATE_ABS (unsigned short);
-INSTANTIATE_ABS (unsigned long);
-INSTANTIATE_ABS (unsigned long long);
+INSTANTIATE_ABS(signed char);
+INSTANTIATE_ABS(short);
+INSTANTIATE_ABS(int);
+INSTANTIATE_ABS(long);
+INSTANTIATE_ABS(long long);
+
+#define SPECIALIZE_UABS(T) \
+  template <> \
+  /* static */ inline unsigned T \
+  abs (unsigned T x) \
+  { \
+    return x; \
+  }
+
+SPECIALIZE_UABS(char)
+SPECIALIZE_UABS(short)
+SPECIALIZE_UABS(int)
+SPECIALIZE_UABS(long)
+SPECIALIZE_UABS(long long)
 
 template <class T>
 void

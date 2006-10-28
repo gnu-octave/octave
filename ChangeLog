@@ -1,5 +1,8 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
+	* configure.in (AH_BOTTOM): Move DLL defs to
+	libcruft/misc/oct-dlldefs.h and include it here.
+
 	* aclocal.m4 (OCTAVE_PROG_TEXI2PDF): Require OCTAVE_PROG_TEXI2DVI.
 	If texi2pdf is not found but texi2dvi is available, set TEXI2PDF
 	to "$TEXI2DVI --pdf".

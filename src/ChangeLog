@@ -1,5 +1,7 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
+	* mexproto.h: Include oct-dlldefs.h.
+
 	* pr-output.cc (SPECIALIZE_UABS): New macro.
 	Use it to generate specializations of abs for unsigned int types.
 	Instantiate abs for signed int types.

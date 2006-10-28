@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.539 $)
+AC_REVISION($Revision: 1.540 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1896,33 +1896,9 @@ typedef int sig_atomic_t;
 #pragma warning (disable: 4996)
 /* deprecated function names (FIXME?) */
 #pragma warning (disable: 4661)
-#define OCTAVE_EXPORT __declspec(dllexport)
-#define OCTAVE_IMPORT __declspec(dllimport)
-#else
-/* All other compilers */
-#define OCTAVE_EXPORT
-#define OCTAVE_IMPORT
 #endif
 
-/* API macro for libcruft */
-#ifdef CRUFT_DLL
-#define CRUFT_API OCTAVE_EXPORT
-#else
-#define CRUFT_API OCTAVE_IMPORT
-#endif
-/* API macro for liboctave */
-#ifdef OCTAVE_DLL
-#define OCTAVE_API OCTAVE_EXPORT
-#else
-#define OCTAVE_API OCTAVE_IMPORT
-#endif
-/* API macro for src */
-#ifdef OCTINTERP_DLL
-#define OCTINTERP_API OCTAVE_EXPORT
-#else
-#define OCTINTERP_API OCTAVE_IMPORT
-#endif
-
+#include "oct-dlldefs.h"
 #include "oct-types.h"
 ])
 

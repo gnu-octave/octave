@@ -1,5 +1,7 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
+	* misc/oct-dlldefs.h: New file.
+
 	* mkf77def.in: Downcase all input to simplify matching.
 	Match only lines beginning with whitespace.
 	Match function return types.

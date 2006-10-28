@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.540 $)
+AC_REVISION($Revision: 1.541 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1825,6 +1825,16 @@ typedef int sigset_t;
 typedef int sig_atomic_t;
 #endif
 
+#if defined (_MSC_VER)
+#define __WIN32__
+/* missing parameters in macros */
+#pragma warning (disable: 4003)
+/* missing implementations in template instantiation */
+#pragma warning (disable: 4996)
+/* deprecated function names (FIXME?) */
+#pragma warning (disable: 4661)
+#endif
+
 #if defined (__WIN32__) && ! defined (__CYGWIN__)
 #define OCTAVE_HAVE_WINDOWS_FILESYSTEM 1
 #elif defined (__CYGWIN__)
@@ -1886,16 +1896,6 @@ typedef int sig_atomic_t;
 #define SIZEOF_OCTAVE_IDX_TYPE 8
 #else
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
-#endif
-
-#if defined (_MSC_VER)
-#define __WIN32__
-/* missing parameters in macros */
-#pragma warning (disable: 4003)
-/* missing implementations in template instantiation */
-#pragma warning (disable: 4996)
-/* deprecated function names (FIXME?) */
-#pragma warning (disable: 4661)
 #endif
 
 #include "oct-dlldefs.h"

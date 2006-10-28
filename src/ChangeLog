@@ -1,3 +1,8 @@
+2006-10-28  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (Fatexit): Push function names on the stack even if we
+	don't have atexit or on_exit.
+
 2006-10-28  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* mappers.cc (install_mapper_functions): Undefine toascii before

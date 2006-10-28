@@ -1,6 +1,6 @@
 # types
 #
-# key typename object-type header fwd-decl-ok scalar-zero
+# key typename object-type header fwd-decl-ok scalar-zero core-type
 #
 # object-type is one of
 #
@@ -8,6 +8,9 @@
 #   M:  matrix
 #   DM: diagonal matrix
 #   ND: N-d array
+#
+# core-type is only used for the octave_int types, and is the template
+# parameter: octave_int8 is octave_int<int8_t>
 #
 x NONE NONE NONE NO 0
 b bool S NONE NO false
@@ -21,22 +24,22 @@ dm DiagMatrix DM dDiagMatrix.h YES 0.0
 m Matrix M dMatrix.h YES 0.0
 nda NDArray ND dNDArray.h YES 0.0
 s double S NONE NO 0.0
-i8 octave_int8 S oct-inttypes.h YES octave_int8(0)
-ui8 octave_uint8 S oct-inttypes.h YES octave_uint8(0)
-i16 octave_int16 S oct-inttypes.h YES octave_int16(0)
-ui16 octave_uint16 S oct-inttypes.h YES octave_uint16(0)
-i32 octave_int32 S oct-inttypes.h YES octave_int32(0)
-ui32 octave_uint32 S oct-inttypes.h YES octave_uint32(0)
-i64 octave_int64 S oct-inttypes.h YES octave_int64(0)
-ui64 octave_uint64 S oct-inttypes.h YES octave_uint64(0)
-i8nda int8NDArray ND int8NDArray.h YES octave_int8(0)
-ui8nda uint8NDArray ND uint8NDArray.h YES octave_uint8(0)
-i16nda int16NDArray ND int16NDArray.h YES octave_int16(0)
-ui16nda uint16NDArray ND uint16NDArray.h YES octave_uint16(0)
-i32nda int32NDArray ND int32NDArray.h YES octave_int32(0)
-ui32nda uint32NDArray ND uint32NDArray.h YES octave_uint32(0)
-i64nda int64NDArray ND int64NDArray.h YES octave_int64(0)
-ui64nda uint64NDArray ND uint64NDArray.h YES octave_uint64(0)
+i8 octave_int8 S oct-inttypes.h YES octave_int8(0) int8_t
+ui8 octave_uint8 S oct-inttypes.h YES octave_uint8(0) uint8_t
+i16 octave_int16 S oct-inttypes.h YES octave_int16(0) int16_t
+ui16 octave_uint16 S oct-inttypes.h YES octave_uint16(0) uint16_t
+i32 octave_int32 S oct-inttypes.h YES octave_int32(0) int32_t
+ui32 octave_uint32 S oct-inttypes.h YES octave_uint32(0) uint32_t
+i64 octave_int64 S oct-inttypes.h YES octave_int64(0) int64_t
+ui64 octave_uint64 S oct-inttypes.h YES octave_uint64(0) uint64_t
+i8nda int8NDArray ND int8NDArray.h YES octave_int8(0) int8_t
+ui8nda uint8NDArray ND uint8NDArray.h YES octave_uint8(0) uint8_t
+i16nda int16NDArray ND int16NDArray.h YES octave_int16(0) int16_t
+ui16nda uint16NDArray ND uint16NDArray.h YES octave_uint16(0) uint16_t
+i32nda int32NDArray ND int32NDArray.h YES octave_int32(0) int32_t
+ui32nda uint32NDArray ND uint32NDArray.h YES octave_uint32(0) uint32_t
+i64nda int64NDArray ND int64NDArray.h YES octave_int64(0) int64_t
+ui64nda uint64NDArray ND uint64NDArray.h YES octave_uint64(0) uint64_t
 # ops
 # result_t lhs_t rhs_t op-type lhs_conv rhs_conv headers ...
 #

@@ -354,7 +354,7 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
 void
 load_path::do_initialize (void)
 {
-  Vsystem_path = ":";
+  Vsystem_path = dir_path::path_sep_str;
 
   maybe_add_path_elts (Vsystem_path, Vlocal_ver_oct_file_dir);
   maybe_add_path_elts (Vsystem_path, Vlocal_api_oct_file_dir);
@@ -375,10 +375,10 @@ load_path::do_initialize (void)
   if (! tpath.empty ())
     xpath += dir_path::path_sep_str + tpath;
 
-  if (Vsystem_path != ":")
+  if (Vsystem_path != dir_path::path_sep_str)
     xpath += Vsystem_path;
 
-  do_set (xpath + ":::", false);
+  do_set (xpath, false);
 }
 
 void

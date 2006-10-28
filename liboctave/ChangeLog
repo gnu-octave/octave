@@ -1,9 +1,16 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
-	* oct-time.cc: Undefine min and max after including windows.h.
-	From Michael Goffioul  <michael.goffioul@swing.be>.
+	* oct-time.cc [! HAVE_STRFTIME]: Declare strftime.
+
+2006-10-26  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* mx-op-defs.h (NDS_CMP_OP1, NDS_CMP_OPS1, NDS_CMP_OP2,
+	NDS_CMP_OPS2): New macros.
 
 2006-10-26  John W. Eaton  <jwe@octave.org>
+
+	* mx-ops (core-type): New field for integer types.
+	* mk-ops.awk: Handle core-type for integer comparison ops.
 
 	* lo-cutils.c (octave_strcasecmp, octave-strncasecmp):
 	Move here from src/cutils.c.

@@ -538,7 +538,7 @@ dnl Is gperf installed?
 dnl
 dnl OCTAVE_PROG_GPERF
 AC_DEFUN(OCTAVE_PROG_GPERF, [
-  AC_CHECK_PROG(GPERF, gperf)
+  AC_CHECK_PROG(GPERF, gperf, gperf, [])
   if test -n "$GPERF"; then
     if echo "%{
 enum octave_kw_id { a_kw };
@@ -585,7 +585,7 @@ dnl Is makeinfo installed?
 dnl
 dnl OCTAVE_PROG_MAKEINFO
 AC_DEFUN(OCTAVE_PROG_MAKEINFO, [
-  AC_CHECK_PROG(MAKEINFO, makeinfo)
+  AC_CHECK_PROG(MAKEINFO, makeinfo, makeinfo, [])
   if test -z "$MAKEINFO"; then
     MAKEINFO='$(top_srcdir)/missing makeinfo'
     warn_makeinfo="I didn't find makeinfo, but it's only a problem if you need to reconstruct the Info version of the manual"
@@ -598,7 +598,7 @@ dnl Is texi2dvi installed?
 dnl
 dnl OCTAVE_PROG_TEXI2DVI
 AC_DEFUN(OCTAVE_PROG_TEXI2DVI, [
-  AC_CHECK_PROG(TEXI2DVI, texi2dvi)
+  AC_CHECK_PROG(TEXI2DVI, texi2dvi, texi2dvi, [])
   if test -z "$TEXI2DVI"; then
     TEXI2DVI='$(top_srcdir)/missing texi2dvi'
     warn_texi2dvi="I didn't find texi2dvi, but it's only a problem if you need to reconstruct the DVI version of the manual"
@@ -612,7 +612,7 @@ dnl
 dnl OCTAVE_PROG_TEXI2PDF
 AC_DEFUN(OCTAVE_PROG_TEXI2PDF, [
   AC_REQUIRE([OCTAVE_PROG_TEXI2DVI])
-  AC_CHECK_PROG(TEXI2PDF, texi2pdf)
+  AC_CHECK_PROG(TEXI2PDF, texi2pdf, texi2pdf, [])
   if test -z "$TEXI2PDF"; then
     missing=true;
     if test -n "$TEXI2DVI"; then
@@ -883,7 +883,7 @@ dnl Find Perl.
 dnl
 dnl OCTAVE_PROG_PERL
 AC_DEFUN(OCTAVE_PROG_PERL,
-[AC_CHECK_PROG(PERL, perl)
+[AC_CHECK_PROG(PERL, perl, perl, [])
   AC_SUBST(PERL)
 ])
 dnl
@@ -891,7 +891,7 @@ dnl Find Python.
 dnl
 dnl OCTAVE_PROG_PYTHON
 AC_DEFUN(OCTAVE_PROG_PYTHON,
-[AC_CHECK_PROG(PYTHON, python)
+[AC_CHECK_PROG(PYTHON, python, python, [])
   AC_SUBST(PYTHON)
 ])
 dnl
@@ -899,7 +899,7 @@ dnl Find desktop-file-install.
 dnl
 dnl OCTAVE_PROG_DESKTOP_FILE_INSTALL
 AC_DEFUN(OCTAVE_PROG_DESKTOP_FILE_INSTALL,
-[AC_CHECK_PROG(DESKTOP_FILE_INSTALL, desktop-file-install)
+[AC_CHECK_PROG(DESKTOP_FILE_INSTALL, desktop-file-install, desktop-file-install, [])
   AC_SUBST(DESKTOP_FILE_INSTALL)
 ])
 dnl

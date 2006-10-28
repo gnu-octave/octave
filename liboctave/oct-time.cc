@@ -45,6 +45,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-utils.h"
 #include "oct-time.h"
 
+#ifndef HAVE_STRFTIME
+// Override any previous definition and use local version.
+extern "C" size_t
+strftime (char *s, size_t maxsize, const char *format, const struct tm *tp);
+#endif
+
 octave_time::octave_time (const octave_base_tm& tm)
 {
   struct tm t;

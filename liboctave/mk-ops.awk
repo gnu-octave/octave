@@ -26,8 +26,11 @@ BEGIN {
     {
       ntypes++;
 
-      if (NF == 6)
+      if (NF == 6 || NF == 7)
         {
+	  if (NF == 7)
+	    core_type[ntypes] = $7;
+
           scalar_zero_val[ntypes] = $6;
           fwd_decl_ok[ntypes] = $5 == "YES";
           header[ntypes] = $4 == "NONE" ? "" : $4;
@@ -97,6 +100,9 @@ BEGIN {
 	  result_type = type[result_num];
 	  lhs_type = type[lhs_num];
           rhs_type = type[rhs_num];
+
+	  lhs_core_type = core_type[lhs_num];
+	  rhs_core_type = core_type[rhs_num];
 
 	  result_scalar_zero_val = scalar_zero_val[result_num];
           lhs_scalar_zero_val = scalar_zero_val[lhs_num];
@@ -196,8 +202,38 @@ BEGIN {
             }
 
           if (cmp_ops)
-            printf ("%s%s_CMP_OPS (%s, %s, %s, %s)\n", lhs_class, rhs_class,
-	            lhs_type, lhs_conv, rhs_type, rhs_conv) >> cc_file
+	    {
+	      if (lhs_class == "S" || rhs_class == "S")
+	        {
+		  if (lhs_core_type)
+		    {
+		      if (rhs_core_type)
+			printf ("%s%s_CMP_OPS2 (%s, %s, %s, %s, %s, %s)\n",
+				lhs_class, rhs_class, lhs_type, lhs_conv,
+				rhs_type, rhs_conv,
+				lhs_core_type, rhs_core_type) >> cc_file
+		      else
+			printf ("%s%s_CMP_OPS1 (%s, %s, %s, %s, %s)\n",
+				lhs_class, rhs_class, lhs_type, lhs_conv,
+				rhs_type, rhs_conv, lhs_core_type) >> cc_file
+		    }
+		  else
+		    {
+		      if (rhs_core_type)
+			printf ("%s%s_CMP_OPS1 (%s, %s, %s, %s, %s)\n",
+				lhs_class, rhs_class, lhs_type, lhs_conv,
+				rhs_type, rhs_conv, rhs_core_type) >> cc_file
+		      else
+			printf ("%s%s_CMP_OPS (%s, %s, %s, %s)\n",
+				lhs_class, rhs_class, lhs_type, lhs_conv,
+				rhs_type, rhs_conv) >> cc_file
+		    }
+		}
+	      else
+		printf ("%s%s_CMP_OPS (%s, %s, %s, %s)\n",
+			lhs_class, rhs_class, lhs_type, lhs_conv,
+			rhs_type, rhs_conv) >> cc_file
+	    }
 
           if (bool_ops)
             printf ("%s%s_BOOL_OPS2 (%s, %s, %s, %s)\n", lhs_class, rhs_class,

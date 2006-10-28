@@ -1,5 +1,9 @@
 2006-10-27  John W. Eaton  <jwe@octave.org>
 
+	* load-path.cc (load_path::do_initialize):
+	Use dir_path::path_sep_str instead of ":".
+	Don't append ":::" to xpath when calling do_set.
+
 	* dirfns.cc (Fls, cleanup_iprocstream): Delete.
 
 	* sysdep.cc (Ftilde_expand): If arg is cellstr, return cellstr.

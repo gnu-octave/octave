@@ -3,11 +3,8 @@
 	* aclocal.m4 (OCTAVE_PROG_TEXI2PDF): Require OCTAVE_PROG_TEXI2DVI.
 	If texi2pdf is not found but texi2dvi is available, set TEXI2PDF
 	to "$TEXI2DVI --pdf".
-	(OCTAVE_PROG_GPERF, OCTAVE_PROG_GHOSTSCRIPT, OCTAVE_PROG_MAKEINFO,
-	OCTAVE_PROG_TEXI2DVI, OCTAVE_PROG_TEXI2PDF, OCTAVE_PROG_PERL,
-	OCTAVE_PROG_PYTHON, OCTAVE_PROG_DESKTOP_FILE_INSTALL): Simplify
-	calls to AC_CHECK_PROG.
 	(OCTAVE_PROG_GHOSTSCRIPT): Also check for gswin32 on Windows systems.
+
 	* Makeconf.in (UNSETCOMSPEC): Define if COMSPEC is defined.
 	From Michael Goffioul <michael.goffioul@swing.be>.
 

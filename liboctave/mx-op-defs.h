@@ -541,6 +541,54 @@ class boolNDArray;
   NDS_CMP_OP (mx_el_eq, ==, ND,    , S,   ) \
   NDS_CMP_OP (mx_el_ne, !=, ND,    , S,   )
 
+#define NDS_CMP_OP1(F, OP, ND, NDC, S, SC, SPEC) \
+  boolNDArray \
+  F (const ND& m, const S& s) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    r.resize (m.dims ()); \
+ \
+    for (int i = 0; i < len; i++) \
+      r.elem(i) = operator OP <SPEC> (NDC (m.elem(i)), SC (s)); \
+ \
+    return r; \
+  }
+
+#define NDS_CMP_OPS1(ND, NDC, S, SC, SPEC) \
+  NDS_CMP_OP1 (mx_el_lt, <,  ND, NDC, S, SC, SPEC) \
+  NDS_CMP_OP1 (mx_el_le, <=, ND, NDC, S, SC, SPEC) \
+  NDS_CMP_OP1 (mx_el_ge, >=, ND, NDC, S, SC, SPEC) \
+  NDS_CMP_OP1 (mx_el_gt, >,  ND, NDC, S, SC, SPEC) \
+  NDS_CMP_OP1 (mx_el_eq, ==, ND,    , S,   , SPEC) \
+  NDS_CMP_OP1 (mx_el_ne, !=, ND,    , S,   , SPEC)
+
+#define NDS_CMP_OP2(F, OP, ND, NDC, S, SC, SPEC1, SPEC2) \
+  boolNDArray \
+  F (const ND& m, const S& s) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    r.resize (m.dims ()); \
+ \
+    for (int i = 0; i < len; i++) \
+      r.elem(i) = operator OP <SPEC1,SPEC2> (NDC (m.elem(i)), SC (s)); \
+ \
+    return r; \
+  }
+
+#define NDS_CMP_OPS2(ND, NDC, S, SC, SPEC1, SPEC2) \
+  NDS_CMP_OP2 (mx_el_lt, <,  ND, NDC, S, SC, SPEC1, SPEC2) \
+  NDS_CMP_OP2 (mx_el_le, <=, ND, NDC, S, SC, SPEC1, SPEC2) \
+  NDS_CMP_OP2 (mx_el_ge, >=, ND, NDC, S, SC, SPEC1, SPEC2) \
+  NDS_CMP_OP2 (mx_el_gt, >,  ND, NDC, S, SC, SPEC1, SPEC2) \
+  NDS_CMP_OP2 (mx_el_eq, ==, ND,    , S,   , SPEC1, SPEC2) \
+  NDS_CMP_OP2 (mx_el_ne, !=, ND,    , S,   , SPEC1, SPEC2)
+
 #define NDS_BOOL_OP_DECLS(ND, S) \
   NDBOOL_OP_DECL (mx_el_and, ND, S); \
   NDBOOL_OP_DECL (mx_el_or,  ND, S);
@@ -635,6 +683,54 @@ class boolNDArray;
   SND_CMP_OP (mx_el_gt, >,  S, CS, ND, CND) \
   SND_CMP_OP (mx_el_eq, ==, S,   , ND,    ) \
   SND_CMP_OP (mx_el_ne, !=, S,   , ND,    )
+
+#define SND_CMP_OP1(F, OP, S, SC, ND, NDC, SPEC) \
+  boolNDArray \
+  F (const S& s, const ND& m) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    r.resize (m.dims ()); \
+ \
+    for (int i = 0; i < len; i++) \
+      r.elem(i) = operator OP <SPEC> (SC (s), NDC (m.elem(i))); \
+ \
+    return r; \
+  }
+
+#define SND_CMP_OPS1(S, CS, ND, CND, SPEC) \
+  SND_CMP_OP1 (mx_el_lt, <,  S, CS, ND, CND, SPEC) \
+  SND_CMP_OP1 (mx_el_le, <=, S, CS, ND, CND, SPEC) \
+  SND_CMP_OP1 (mx_el_ge, >=, S, CS, ND, CND, SPEC) \
+  SND_CMP_OP1 (mx_el_gt, >,  S, CS, ND, CND, SPEC) \
+  SND_CMP_OP1 (mx_el_eq, ==, S,   , ND,    , SPEC) \
+  SND_CMP_OP1 (mx_el_ne, !=, S,   , ND,    , SPEC)
+
+#define SND_CMP_OP2(F, OP, S, SC, ND, NDC, SPEC1, SPEC2) \
+  boolNDArray \
+  F (const S& s, const ND& m) \
+  { \
+    boolNDArray r; \
+ \
+    int len = m.length (); \
+ \
+    r.resize (m.dims ()); \
+ \
+    for (int i = 0; i < len; i++) \
+      r.elem(i) = operator OP <SPEC1, SPEC2> (SC (s), NDC (m.elem(i))); \
+ \
+    return r; \
+  }
+
+#define SND_CMP_OPS2(S, CS, ND, CND, SPEC1, SPEC2) \
+  SND_CMP_OP2 (mx_el_lt, <,  S, CS, ND, CND, SPEC1, SPEC2) \
+  SND_CMP_OP2 (mx_el_le, <=, S, CS, ND, CND, SPEC1, SPEC2) \
+  SND_CMP_OP2 (mx_el_ge, >=, S, CS, ND, CND, SPEC1, SPEC2) \
+  SND_CMP_OP2 (mx_el_gt, >,  S, CS, ND, CND, SPEC1, SPEC2) \
+  SND_CMP_OP2 (mx_el_eq, ==, S,   , ND,    , SPEC1, SPEC2) \
+  SND_CMP_OP2 (mx_el_ne, !=, S,   , ND,    , SPEC1, SPEC2)
 
 #define SND_BOOL_OP_DECLS(S, ND) \
   NDBOOL_OP_DECL (mx_el_and, S, ND); \

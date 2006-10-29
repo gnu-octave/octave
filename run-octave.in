@@ -1,15 +1,33 @@
 #! /bin/sh
-top_srcdir=%abs_top_srcdir%
-builddir=%builddir%
-## FIXME -- this will fail for filenames with embedded spaces...
-dirs="$top_srcdir/test $top_srcdir/scripts $builddir/scripts $builddir/src"
-dirs=$(find $dirs -type d -a ! \( \( -name CVS -o -name private \) -a -prune \))
-for d in $dirs; do
-  LOADPATH=$LOADPATH:$d
-done
-LOADPATH=$(echo $LOADPATH | sed 's|^:||')
+
+AWK=${AWK:-'awk'}
+
+# FIXME -- is there a better way to handle the possibility of spaces
+# in these names? 
+
+top_srcdir="%abs_top_srcdir%"
+builddir="%builddir%"
+
+d1="$top_srcdir/test"
+d2="$top_srcdir/scripts"
+d3="$builddir/scripts"
+d4="$builddir/src"
+
+d1_list=$(find "$d1" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
+d2_list=$(find "$d2" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
+d3_list=$(find "$d3" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
+d4_list=$(find "$d4" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
+
+d1_path=$(echo "$d1_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
+d2_path=$(echo "$d2_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
+d3_path=$(echo "$d3_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
+d4_path=$(echo "$d4_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
+
+LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
-args="--path=$LOADPATH --image-path=$IMAGEPATH"
+
+args="--path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\""
+
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb"
@@ -27,7 +45,8 @@ if [ $# -gt 0 ]; then
     shift
   fi
 fi
-OCTAVE_SITE_INITFILE=$top_srcdir/scripts/startup/main-rcfile \
+
+OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
 %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
-  exec $driver $builddir/src/octave $args "$@"
+  exec $driver "$builddir/src/octave" "$args" "$@"
 

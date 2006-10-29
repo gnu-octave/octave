@@ -335,7 +335,7 @@ template void read_mat5_integer_data (std::istream& is, int *m,
 // place the type code in TYPE and the byte count in BYTES
 // return nonzero on error
 static int
-read_mat5_tag (std::istream& is, bool swap, int32_t& type, int& bytes)
+read_mat5_tag (std::istream& is, bool swap, int32_t& type, int32_t& bytes)
 {
   unsigned int upper;
   int32_t temp;

@@ -1,3 +1,7 @@
+2006-10-29  Juhani Saastamoinen  <juhani@cs.joensuu.fi>
+
+	* ls-mat5.cc (read_mat5_tag): Declare bytes as int32_t, not just int. 
+
 2006-10-28  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (Fatexit): Push function names on the stack even if we

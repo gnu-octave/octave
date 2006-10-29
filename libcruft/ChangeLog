@@ -1,3 +1,7 @@
+2006-10-29  John W. Eaton  <jwe@octave.org>
+
+	* misc/Makefile.in (SPECIAL_INCLUDE): Add oct-dlldefs.h to the list.
+
 2006-10-28  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* misc/quit.h: Undefine min and max after including windows.h.

@@ -31,7 +31,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-INCLUDES := f77-fcn.h lo-error.h quit.h
+INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG

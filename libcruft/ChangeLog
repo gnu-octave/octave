@@ -1,3 +1,7 @@
+2006-10-31  John W. Eaton  <jwe@octave.org>
+
+	* misc/Makefile.in (INCLUDES): Add oct-dlldefs.h to the list.
+
 2006-10-29  John W. Eaton  <jwe@octave.org>
 
 	* misc/Makefile.in (SPECIAL_INCLUDE): Add oct-dlldefs.h to the list.

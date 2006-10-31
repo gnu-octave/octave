@@ -1,22 +1,18 @@
-function sparseimages(nm,typ)
+function sparseimages (nm, typ)
   if (! isempty (findstr (octave_config_info ("DEFS"), "HAVE_COLAMD"))
       && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_CHOLMOD"))
       && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_UMFPACK")))
-  if (strcmp(typ,"txt"))
-    txtimages (nm, 15, typ);
-  else
-    if (strcmp (nm, "gplot"))
-      gplotimages ("gplot", typ);
-    elseif (strcmp (nm, "grid"))
-      femimages ("grid", typ);
+    if (strcmp(typ,"txt"))
+      txtimages (nm, 15, typ);
     else
-      otherimages (nm, 200, typ);
+      if (strcmp (nm, "gplot"))
+	gplotimages ("gplot", typ);
+      elseif (strcmp (nm, "grid"))
+	femimages ("grid", typ);
+      else
+	otherimages (nm, 200, typ);
+      endif
     endif
-  endif
-  ## Kluge to give gnuplot enough time to process last figure before we
-  ## exit.  Otherwise, Octave will delete the temporary data files when
-  ## it exits and gnuplot will fail...
-  sleep (1);
   else ## There is no sparse matrix implementation available because
        ## of missing libraries, plot sombreros instead
     sombreroimage (nm, typ);

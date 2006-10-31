@@ -147,10 +147,12 @@ $(HTML_IMAGES_PNG): HTML/%.png : %.png
 	$(INSTALL_DATA) $(filter-out html-dir, $<) HTML
 
 ## Unset DISPLAY here to avoid problems with the -title option for
-## gnuplot (it doesn't work if we are calling pgnuplot).
+## gnuplot (it doesn't work if we are calling pgnuplot).  Sleep for
+## a second to allow gnuplot to finish writing its output before
+## Octave exits.
 define run-octave
   DISPLAY= $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
-    --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))')"
+    --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))'); sleep (1);"
 endef
 
 $(SPARSEIMAGES_EPS) $(SPARSEIMAGES_PNG) $(SPARSEIMAGES_TXT): sparseimages.m

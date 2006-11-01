@@ -5,8 +5,8 @@ AWK=${AWK:-'awk'}
 # FIXME -- is there a better way to handle the possibility of spaces
 # in these names? 
 
-top_srcdir="%abs_top_srcdir%"
-builddir="%builddir%"
+top_srcdir='%abs_top_srcdir%'
+builddir='%builddir%'
 
 d1="$top_srcdir/test"
 d2="$top_srcdir/scripts"
@@ -26,7 +26,8 @@ d4_path=$(echo "$d4_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 
-args="--path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\""
+args="--path=$LOADPATH --image-path=$IMAGEPATH"
+qargs="--path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\""
 
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
@@ -46,6 +47,12 @@ if [ $# -gt 0 ]; then
   fi
 fi
 
-OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
-%library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
-  eval exec $driver "$builddir/src/octave" "$args" "$@"
+if [ -n "$args" ]; then
+  OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
+  %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
+    exec $driver "$builddir/src/octave" "$args" "$@"
+else
+  OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
+  %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
+    exec $driver "$builddir/src/octave" "$@"
+fi

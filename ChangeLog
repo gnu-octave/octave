@@ -1,6 +1,6 @@
 2006-11-01  John W. Eaton  <jwe@octave.org>
 
-	* run-octave.in: eval the exec, to avoid passing "" on the command line.
+	* run-octave.in: Handle quoted args properly in exec call?
 
 2006-10-29  John W. Eaton  <jwe@octave.org>
 

@@ -33,7 +33,7 @@ if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb"
     if [ $(/bin/pwd) = "$builddir" ]; then
-      sed "s|^set args.*$|set args $args|" .gdbinit > .gdbinit-tmp
+      sed "s|^set args.*$|set args $qargs|" .gdbinit > .gdbinit-tmp
       mv .gdbinit-tmp .gdbinit
     fi
     args=""

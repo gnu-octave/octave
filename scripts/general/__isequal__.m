@@ -1,4 +1,4 @@
-## Copyright (C) 2000 Paul Kienzle
+## Copyright (C) 2000, 2006 Paul Kienzle
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -50,129 +50,165 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
   l_v = nargin - 2;
 
-  if (isstruct (x))
+  ## Generic tests.
 
-    n_x = length (fieldnames (x));
+  ## Give an error for a list (that will make the code simpler and lists
+  ## are deprecated anyway.
+  if (islist (x))
+    error ("__isequal__: list objects are deprecated and cannot be tested for equality here; use cell arrays instead");
+  endif
 
-    t = all (cellfun (@isstruct, varargin)) && ...
-	all (n_x == cellfun (@length,
-			     cellfun (@fieldnames, varargin,
-				      "UniformOutput", false))); 
-    if (!t)
-      return;
-    endif
-
-    for argn = 1:l_v
-      y = varargin{argn};
-      for [v, k] = x
-	if (iscell (k))
-	  fld = y (k{:});
-	else
-	  fld = y.(k);
-	endif
-        t = t && struct_contains (y, k) \
-              && __isequal__ (nans_compare_equal, v, fld);
-      endfor
-      if (!t)
-        return;
-      endif
-    endfor
-
-  elseif (iscell (x) || islist (x))
-
-    x = x(:);
-    l_x = length (x);
-
-    t = all ((cellfun (@iscell, varargin) | cellfun (@islist, varargin)) && ...
-             all (l_x == cellfun (@length, varargin)));
-    if (!t)
-      return;
-    endif
-
-    for argn = 1:l_v
-      y = varargin{argn}(:);
-      for p = 1:l_x
-        t = t && __isequal__ (nans_compare_equal, x{p}, y{p});
-      endfor
-      if (!t)
-        return;
-      endif
-    endfor
-
-  elseif (ischar (x))
-
-    l_x = size (x);
-
-    t = true;
-    for argn = 1:l_v
-      y = varargin{argn};
-      t = t && ischar (y) && (l_x == size (y));
-    endfor
-    if (!t)
-      return;
-    endif
-
-    for argn = 1:l_v
-      t = t && strcmp (x, varargin{argn});
-    endfor
-
-  else
-
+  ## Test that everything is the same class.
+  ## NOTE: sparse and numeric matrices that are otherwise equal will
+  ## compare as different here.
+  t = all (strcmp (class(x),
+		   cellfun (@class, varargin, "UniformOutput", false)));
+  if (t)
+    ## Test that everything has the same number of dimensions.
     s_x = size (x);
+    s_v = cellfun (@size, varargin, "UniformOutput", false);
+    t = all (length (s_x) == cellfun (@length, s_v));
+  endif
 
-    t = true;
-    for argn = 1:l_v
-      y = varargin{argn};
-      t = t && (! (isstruct (y) || iscell (y) || islist (y) || ischar (y))) \
-            && (s_x == size (y));
-    endfor
-    if (!t)
-      return;
-    endif
+  if (t)
+    ## Test that everything is the same size since it has the same
+    ## dimensionality.
+    l_x = length (s_x);
+    s_v = reshape ([s_v{:}], length (s_x), []);
+    idx = 0;
+    while (t && idx < l_x)
+      idx++;
+      t = all (s_x(idx) == s_v(idx, :));
+    endwhile
+  endif
 
-    if (issparse (x))
-      f_x = spfind (x);
+  if (t)
+    ## Check individual classes.
+    if (isstruct (x))
+      ## Test the number of fields.
+      fn_x = fieldnames (x);
+      l_fn_x = length (fn_x);
+      fn_v = cellfun (@fieldnames, varargin, "UniformOutput", false);
+      t = all (l_fn_x == cellfun (@length, fn_v));
+
+      ## Test that all the names are equal.
+      idx = 0;
+      s_fn_x = sort (fn_x);
+      while (t && idx < l_v)
+	idx++;
+	## We'll allow the fieldnames to be in a different order.
+	t = all (strcmp (s_fn_x, sort (fn_v{idx})));
+      endwhile
+
+      idx = 0;
+      while (t && idx < l_fn_x)
+	## Test that all field values are equal.
+	idx++;
+	args = {nans_compare_equal, x.(fn_x{idx})};
+	for argn = 1:l_v
+	  args{argn+2} = varargin{argn}.(fn_x{idx});
+	endfor
+	## Minimize function calls by calling for all the arguments at
+	## once.
+        t = __isequal__ (args{:});
+      endwhile
+
+    elseif (iscell (x))
+      ## Check that each element of a cell is equal.
+      l_x = numel (x);
+      idx = 0;
+      while (t && idx < l_x)
+	idx++;
+	args = {nans_compare_equal, x{idx}};
+	for p = 1:l_v
+	  args{p+2} = varargin{p}{idx};
+	endfor
+        t = __isequal__ (args{:});
+      endwhile
+
+    elseif (ischar (x))
+
+      ## Sizes are equal already, so we can just make everything into a
+      ## row and test the rows.
+      for i = 1:l_v
+	strings{i} = reshape (varargin{i}, 1, []);
+      endfor
+      t = all (strcmp (reshape (x, 1, []), strings));
+
     else
-      f_x = find (x);
-    endif
-    l_f_x = length (f_x);
-    x = x(f_x);
-    for argn = 1:l_v
-      y = varargin{argn};
-      if (issparse (y))
-        f_y = spfind (y);
+      ## Check the numeric types.
+
+      ## NOTE: sparse and nonsparse will compare equally here, but they
+      ## won't compare equally at the class check at the top.
+
+      if (issparse (x))
+	f_x = spfind (x);
       else
-        f_y = find (y);
+	f_x = find (x);
       endif
+      l_f_x = length (f_x);
+      x = x(f_x);
+      for argn = 1:l_v
+	y = varargin{argn};
+	if (issparse (y))
+          f_y = spfind (y);
+	else
+          f_y = find (y);
+	endif
 
-      t = (l_f_x == length (f_y)) && all (f_x == f_y);
-      if (!t)
-        return;
-      endif
-
-      y = y(f_y);
-      m = (x == y);
-      t = all (m);
-
-      if (!t)
-        if (nans_compare_equal)
-          t = isnan (x(!m)) && isnan (y(!m));
-        else
+	t = (l_f_x == length (f_y)) && all (f_x == f_y);
+	if (!t)
           return;
-        endif
-      endif
-    endfor
+	endif
 
+	y = y(f_y);
+	m = (x == y);
+	t = all (m);
+
+	if (!t)
+          if (nans_compare_equal)
+            t = isnan (x(!m)) && isnan (y(!m));
+          else
+            return;
+          endif
+	endif
+      endfor
+
+    endif
   endif
 
 endfunction
 
-# test for equality
-%!assert(__isequal__(0,[1,2,3,4],[1,2,3,4]))
-%!assert(__isequal__(1,{1,2,NaN,4},{1,2,NaN,4}))
-%!assert(__isequal__(1,[1,2,NaN,4],[1,2,NaN,4]))
-%!assert(__isequal__(0,['a','b','c','d'],['a','b','c','d']))
-# test for inequality
+## test size and shape
+%!assert(__isequal__(0,[1,2,3,4],[1,2,3,4]), true)
+%!assert(__isequal__(0,[1;2;3;4],[1;2;3;4]), true)
+%!assert(__isequal__(0,[1,2,3,4],[1;2;3;4]), false)
+%!assert(__isequal__(0,[1,2,3,4],[1,2;3,4]), false)
+%!assert(__isequal__(0,[1,2,3,4],[1,3;2,4]), false)
+
+%!test
+%! A = 1:8;
+%! B = reshape (A, 2, 2, 2);
+%! assert (__isequal__ (0, A, B), false);
+
+%!test
+%! A = reshape (1:8, 2, 2, 2);
+%! B = A;
+%! assert (__isequal__ (0, A, B), true);
+
+%!test
+%! A = reshape (1:8, 2, 4);
+%! B = reshape (A, 2, 2, 2);
+%! assert (__isequal__ (0, A, B), false);
+
+## test for equality
+%!assert(__isequal__(0,[1,2,3,4],[1,2,3,4]), true)
+%!assert(__isequal__(1,{1,2,NaN,4},{1,2,NaN,4}), true)
+%!assert(__isequal__(1,[1,2,NaN,4],[1,2,NaN,4]), true)
+%!assert(__isequal__(0,['a','b','c','d'],['a','b','c','d']), true)
+## Test multi-line strings
+%!assert(__isequal__(0,["test";"strings"],["test";"strings"],["test";"strings"]), true)
+## test for inequality
 %!assert(__isequal__(0,[1,2,3,4],[1;2;3;4]),false)
 %!assert(__isequal__(0,{1,2,3,4},[1,2,3,4]),false)
 %!assert(__isequal__(0,[1,2,3,4],{1,2,3,4}),false)
@@ -180,27 +216,12 @@ endfunction
 %!assert(__isequal__(1,[1,2,NaN,4],[1,NaN,3,4]),false)
 %!assert(__isequal__(1,[1,2,NaN,4],[1,2,3,4]),false)
 %!assert(__isequal__(0,['a','b','c','d'],['a';'b';'c';'d']),false)
-# test for equality (struct)
-%!test
-%! A = struct ();
-%! A.char1 = "abcd";
-%! A.int1 = 123;
-%! B = struct ();
-%! B.char1 = "abcd";
-%! B.int1 = 123;
-%! C = struct ();
-%! C.char1 = "abcd";
-%! C.int1 = 123;
-%! assert (__isequal__ (0, A, B, C));
-# test for inequality (struct)
-%!test
-%! A = struct ();
-%! A.char1 = "abcd";
-%! A.int1 = NaN;
-%! B = struct ();
-%! B.char1 = "abcd";
-%! B.int1 = NaN;
-%! C = struct ();
-%! C.char1 = "abcd";
-%! C.int1 = NaN;
-%! assert (__isequal__ (0, A, B, C), false);
+%!assert(__isequal__(0,{'a','b','c','d'},{'a';'b';'c';'d'}),false)
+## test for equality (struct)
+%!assert(__isequal__(0,struct('a',1,'b',2),struct('a',1,'b',2)),true)
+%!assert(__isequal__(0,struct('a',1,'b',2),struct('a',1,'b',2),struct('a',1,'b',2)),true)
+%!assert(__isequal__(0,struct('a','abc','b',2),struct('a','abc','b',2)),true)
+%!assert(__isequal__(1,struct('a',NaN,'b',2),struct('a',NaN,'b',2),struct('a',NaN,'b',2)),true)
+## test for inequality (struct)
+%!assert(__isequal__(0,struct('a',NaN,'b',2),struct('a',NaN,'b',2),struct('a',NaN,'b',2)),false)
+

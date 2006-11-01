@@ -1,3 +1,8 @@
+2006-10-31  John W. Eaton  <jwe@octave.org>
+
+	* ov-range.h (octave_range::empty_clone): Return octave_matrix
+	object instead of octave_range.
+
 2006-10-29  Juhani Saastamoinen  <juhani@cs.joensuu.fi>
 
 	* ls-mat5.cc (read_mat5_tag): Declare bytes as int32_t, not just int. 

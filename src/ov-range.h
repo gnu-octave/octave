@@ -40,6 +40,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "error.h"
 #include "oct-stream.h"
 #include "ov-base.h"
+#include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -77,7 +78,11 @@ public:
   ~octave_range (void) { }
 
   octave_base_value *clone (void) const { return new octave_range (*this); }
-  octave_base_value *empty_clone (void) const { return new octave_range (); }
+
+  // A range is really just a special kind of real matrix object.  In
+  // the places where we need to call empty_clone, it makes more sense
+  // to create an empty matrix (0x0) instead of an empty range (1x0).
+  octave_base_value *empty_clone (void) const { return new octave_matrix (); }
 
   type_conv_fcn numeric_conversion_function (void) const;
 

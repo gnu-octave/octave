@@ -46,7 +46,10 @@ if [ $# -gt 0 ]; then
   fi
 fi
 
+if [ -n "$args" ]; then
+  set - "$args" "$@"
+fi
+
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
 %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
-  exec $driver "$builddir/src/octave" "$args" "$@"
-
+  exec $driver "$builddir/src/octave" "$@"

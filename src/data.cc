@@ -1465,7 +1465,7 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 
 	for (int i = 0; i < nargin; i++)
 	  {
-	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
+	    dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
 
 	    if (error_state)
 	      {
@@ -1582,7 +1582,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 
 	for (int i = 0; i < nargin; i++)
 	  {
-	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
+	    dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
 
 	    if (error_state)
 	      {
@@ -1660,7 +1660,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 
 	for (int i = 0; i < nargin; i++)
 	  {
-	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
+	    dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
 
 	    if (error_state)
 	      {
@@ -1724,7 +1724,7 @@ fill_matrix (const octave_value_list& args, bool val, const char *fcn)
 
 	for (int i = 0; i < nargin; i++)
 	  {
-	    dims(i) = args(i).is_empty () ? 0 : args(i).int_value ();
+	    dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
 
 	    if (error_state)
 	      {
@@ -2266,7 +2266,7 @@ The @code{linspace} function always returns a row vector.\n\
 
   int nargin = args.length ();
 
-  int npoints = 100;
+  octave_idx_type npoints = 100;
 
   if (nargin != 2 && nargin != 3)
     {
@@ -2275,7 +2275,7 @@ The @code{linspace} function always returns a row vector.\n\
     }
 
   if (nargin == 3)
-    npoints = args(2).int_value ();
+    npoints = args(2).idx_type_value ();
 
   if (! error_state)
     {
@@ -2425,7 +2425,7 @@ by an empty argument.\n\
 	      }
 	  else
 	    {
-	      new_size(i-1) = args(i).int_value ();
+	      new_size(i-1) = args(i).idx_type_value ();
 
 	      if (error_state)
 		break;

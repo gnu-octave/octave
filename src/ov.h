@@ -572,6 +572,18 @@ public:
   ulong_value (bool req_int = false, bool frc_str_conv = false) const
     { return rep->ulong_value (req_int, frc_str_conv); }
 
+  octave_idx_type
+  idx_type_value (bool req_int = false, bool frc_str_conv = false) const
+    {
+#if SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_LONG
+      return long_value (req_int, frc_str_conv);
+#elif SIZEOF_OCTAVE_IDX_TYPE == SIZEOF_INT
+      return int_value (req_int, frc_str_conv);
+#else
+#error "no octave_value extractor for octave_idx_type"
+#endif
+    }
+
   double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }
 

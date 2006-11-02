@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.541 $)
+AC_REVISION($Revision: 1.542 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -434,6 +434,16 @@ if test $WITH_PCRE = no ; then
     WITH_PCRE=yes
   fi
 fi
+AC_CACHE_CHECK([whether pcre.h has the macros we need],
+	       [ac_cv_pcre_h_macros_present],
+               [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
+#include <pcre.h>
+#if defined (PCRE_INFO_NAMECOUNT) \
+  && defined (PCRE_INFO_NAMEENTRYSIZE) \
+  && defined (PCRE_INFO_NAMETABLE)
+PCRE_HAS_MACROS_WE_NEED
+#endif], ac_cv_pcre_h_macros_present=yes, ac_cv_pcre_h_macros_present=no)])
+WITH_PCRE="$ac_cv_pcre_h_macros_present"
 if test $WITH_PCRE = yes ; then
   AC_CHECK_LIB(pcre, pcre_compile, WITH_PCRE=yes, WITH_PCRE=no)
   if test $WITH_PCRE = yes ; then
@@ -443,10 +453,11 @@ if test $WITH_PCRE = yes ; then
     else
       REGEX_LIBS="-lpcre"
     fi
-  else
-    warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
-    AC_MSG_WARN($warn_pcre)
   fi
+fi
+if test $WITH_PCRE = no; then
+  warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
+  AC_MSG_WARN($warn_pcre)
 fi
 AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
   AC_CHECK_LIB(regex, regexec, WITH_REGEX=yes, WITH_REGEX=no)])
@@ -456,6 +467,10 @@ if test $WITH_REGEX = yes ; then
     AC_CHECK_FUNCS(regexec, REGEX_LIBS= , [
       AC_CHECK_LIB(regex, regexec, REGEX_LIBS="-lregex")])
   fi
+fi
+if test $WITH_REGEX = no; then
+  warn_regex="regular expression functions not found.  The regular expression matching functions will be disabled."
+  AC_MSG_WARN($warn_regex)
 fi
 
 ### Check for ZLIB library.
@@ -515,9 +530,11 @@ if $WITH_ZLIB; then
     true
   else
     warn_hdf5="HDF5 library not found.  Octave will not be able to save or load HDF5 data files."
+    AC_MSG_WARN($warn_hdf5)
   fi
 else
   warn_zlib="ZLIB library not found.  Octave will not be able to save or load compressed data files or HDF5 files."
+  AC_MSG_WARN($warn_zlib)
 fi
 
 
@@ -548,6 +565,9 @@ fi
 if test "$with_fftw" = yes && test "$with_fftw3" = yes; then
   FFT_DIR=''
   AC_DEFINE(HAVE_FFTW3, 1, [Define if the FFTW3 library is used.])
+else
+  warn_fftw="FFTW library not found.  Octave will use the (slower) FFTPACK library instead."
+  AC_MSG_RESULT($warn_fftw)
 fi
 
 # Checks for GLPK header and library.
@@ -568,9 +588,13 @@ if test -n "$glpk_lib"; then
   AC_CHECK_LIB($glpk_lib, glp_lpx_simplex, [
     AC_CHECK_HEADERS(glpk.h, [
       GLPK_LIBS="-l$glpk_lib"
-      AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])])])
+      AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])], [
+      glpk_missing=yes])])
 fi
 AC_SUBST(GLPK_LIBS)
+if test "$glpk_missing" = yes; then
+  warn_glpk="GLPK library not found.  The glpk function for solving linear programs will be disabled."
+fi
 
 # Checks for CURL header and library.
 
@@ -590,9 +614,14 @@ if test -n "$curl_lib"; then
   AC_CHECK_LIB($curl_lib, curl_easy_escape, [
     AC_CHECK_HEADERS(curl/curl.h, [
       CURL_LIBS="-l$curl_lib"
-      AC_DEFINE(HAVE_CURL, 1, [Define if CURL is available.])])])
+      AC_DEFINE(HAVE_CURL, 1, [Define if CURL is available.])], [
+      curl_missing=yes])])
 fi
 AC_SUBST(CURL_LIBS)
+if test "$curl_missing" = yes; then
+  warn_curl="cURL library not found.  The urlread and urlwrite functions will be disabled."
+fi
+
 
 OCTAVE_IEEE754_DATA_FORMAT
 
@@ -837,6 +866,9 @@ if test "$with_umfpack" = yes && test "$with_amd" = yes; then
     fi
     break])
 fi
+if test -n "$warn_umfpack"; then
+  AC_MSG_WARN($warn_umfpack)
+fi
 
 AC_SUBST(TEXINFO_UMFPACK)
 
@@ -860,6 +892,9 @@ if test "$with_colamd" = yes; then
     fi
     break])
 fi 
+if test -n "$warn_colamd"; then
+  AC_MSG_WARN($warn_colamd)
+fi
 
 AC_SUBST(TEXINFO_COLAMD)
 
@@ -882,6 +917,9 @@ if test "$with_ccolamd" = yes; then
     fi
     break])
 fi 
+if test -n "$warn_ccolamd"; then
+  AC_MSG_WARN($warn_ccolamd)
+fi
 
 CHOLMOD_LIBS=
 AC_SUBST(CHOLMOD_LIBS)
@@ -924,7 +962,10 @@ if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
       warn_cholmod=
     fi
     break])
-fi 
+fi
+if test -n "$warn_cholmod"; then
+  AC_MSG_WARN($warn_cholmod)
+fi
 
 AC_SUBST(TEXINFO_CHOLMOD)
 
@@ -946,6 +987,9 @@ if test "$with_cxsparse" = yes; then
       warn_cxsparse=
     fi
     break])
+fi
+if test -n "$warn_cxsparse"; then
+  AC_MSG_WARN($warn_cxsparse)
 fi
 
 ### Handle shared library options.
@@ -2057,8 +2101,23 @@ if test -n "$warn_cxsparse"; then
   warn_msg_printed=true
 fi
 
+if test -n "$warn_fftw"; then
+  AC_MSG_WARN($warn_fftw)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_glpk"; then
+  AC_MSG_WARN($warn_glpk)
+  warn_msg_printed=true
+fi
+
 if test -n "$warn_hdf5"; then
   AC_MSG_WARN($warn_hdf5)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_regex"; then
+  AC_MSG_WARN($warn_regex)
   warn_msg_printed=true
 fi
 

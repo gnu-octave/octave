@@ -1,3 +1,9 @@
+2006-11-01  John W. Eaton  <jwe@octave.org>
+
+	* ov.h (octave_value::idx_type_value): New function.
+	* data.cc (fill_matrix, Flinspace, Freshape): Use idx_type_value
+	instead of int_value to extract size args.
+
 2006-10-31  John W. Eaton  <jwe@octave.org>
 
 	* ov-range.h (octave_range::empty_clone): Return octave_matrix

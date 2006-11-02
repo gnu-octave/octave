@@ -1,5 +1,9 @@
 2006-11-01  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Check for PCRE macros we use.  Warn if regex
+	library is not found.  Print hdf5, zlib, umfpack, colamd, ccolamd,
+	cholmod, and cxsparse warnings when we detect the problems.
+
 	* run-octave.in: Handle quoted args properly in exec call?
 
 2006-10-29  John W. Eaton  <jwe@octave.org>

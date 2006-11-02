@@ -180,6 +180,11 @@ static void
 MSVC_init (void)
 {
   w32_set_octave_home ();
+  
+  // Init mutex to protect setjmp/longjmp and get main thread context
+  w32_sigint_init ();
+
+  w32_set_quiet_shutdown ();
 }
 #endif
 

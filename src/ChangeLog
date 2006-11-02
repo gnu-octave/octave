@@ -1,3 +1,8 @@
+2006-11-02  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* sysdep.cc (MSVC_init): Also cal w32_sigint_init and
+	w32_set_quiet_shutdown.
+
 2006-11-01  John W. Eaton  <jwe@octave.org>
 
 	* ov.h (octave_value::idx_type_value): New function.

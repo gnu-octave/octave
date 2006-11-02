@@ -1,3 +1,9 @@
+2006-11-02  John W. Eaton  <jwe@octave.org>
+
+	* README.Cygwin: Rename from README.Windows.
+	* README.MSVC: New file.
+	* README.Windows: Point to the README.Cygwin and README.MSVC files.
+
 2006-11-01  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for PCRE macros we use.  Warn if regex

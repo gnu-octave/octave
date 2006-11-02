@@ -258,8 +258,8 @@ character strings.  Otherwise, @var{status} is 0, @var{msg} contains a\n\
 system-dependent error message, and @var{msgid} contains a unique\n\
 message identifier.\n\
 \n\
-If the optional second parameter is suplied, recursively remove all\n\
-subdirectories as well.\n\
+If the optional second parameter is suplied with value @code{\"s\"},\n\
+recursively remove all subdirectories as well.\n\
 @seealso{mkdir, confirm_recursive_rmdir}\n\
 @end deftypefn")
 {

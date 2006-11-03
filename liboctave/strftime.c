@@ -50,7 +50,7 @@
 #endif
 
 #if HAVE_TZNAME
-extern char *tzname[];
+extern OCTAVE_IMPORT char *tzname[];
 #endif
 
 /* Do multibyte processing if multibytes are supported, unless

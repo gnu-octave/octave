@@ -14,8 +14,8 @@ VPATH = @srcdir@:@srcdir@/DLD-FUNCTIONS:@srcdir@/OPERATORS:@srcdir@/TEMPLATE-INS
 
 include $(TOPDIR)/Makeconf
 
-XTRA_CDEFS = @XTRA_OCTINTERP_DEFS@
-XTRA_CXXDEFS = @XTRA_OCTINTERP_DEFS@
+DLL_CDEFS = @OCTINTERP_DLL_DEFS@
+DLL_CXXDEFS = @OCTINTERP_DLL_DEFS@
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -267,7 +267,7 @@ lex.o parse.o __gnuplot_raw__.o pic/lex.o pic/parse.o pic/__gnuplot_raw__.o: \
 	ALL_CXXFLAGS := $(filter-out -Wold-style-cast, $(ALL_CXXFLAGS))
 
 $(DLD_PICOBJ): \
-	ALL_CXXFLAGS := $(filter-out $(XTRA_CXXDEFS), $(ALL_CXXFLAGS))
+	ALL_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(ALL_CXXFLAGS))
 
 XERBLA = ../libcruft/blas-xtra/xerbla.o
 ifdef FPICFLAG

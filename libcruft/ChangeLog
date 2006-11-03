@@ -1,3 +1,11 @@
+2006-11-03  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (DLL_CXXDEFS): Rename from XTRA_CXXDEFS.
+	(DLL_CDEFS): Rename from XTRA_CDEFS.
+	Substitute CRUFT_DLL_DEFS, not XTRA_CRUFT_DEFS.
+	(XTRA_CRUFT_SH_LDFLAGS): Rename from XTRA_CRUFT_LINK_DEPS.
+	Add $(XTRA_CRUFT_SH_LDFLAGS) to SH_LDFLAGS instead of to LINK_DEPS.
+
 2006-10-31  John W. Eaton  <jwe@octave.org>
 
 	* misc/Makefile.in (INCLUDES): Add oct-dlldefs.h to the list.

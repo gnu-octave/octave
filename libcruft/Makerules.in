@@ -10,8 +10,8 @@
 # University of Wisconsin-Madison
 # Department of Chemical Engineering
 
-XTRA_CDEFS = @XTRA_CRUFT_DEFS@
-XTRA_CXXDEFS = @XTRA_CRUFT_DEFS@
+DLL_CDEFS = @CRUFT_DLL_DEFS@
+DLL_CXXDEFS = @CRUFT_DLL_DEFS@
 
 SOURCES = *.f
 

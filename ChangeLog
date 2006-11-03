@@ -1,3 +1,10 @@
+2006-11-03  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (CRUFT_DLL_DEFS): Rename from XTRA_CRUFT_DEFS.
+	(OCTAVE_DLL_DEFS): Rename from XTRA_OCTAVE_DEFS.
+	(OCTINTERP_DLL_DEFS): Rename from XTRA_OCTINTERP_DEFS.
+	(XTRA_CRUFT_LINK_FLAGS): Rename from XTRA_CRUFT_LINK_DEPS.
+
 2006-11-02  John W. Eaton  <jwe@octave.org>
 
 	* README.Cygwin: Rename from README.Windows.

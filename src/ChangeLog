@@ -1,3 +1,9 @@
+2006-11-03  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (DLL_CXXDEFS): Rename from XTRA_CXXDEFS.
+	(DLL_CDEFS): Rename from XTRA_CDEFS.
+	Substitute OCTINTERP_DLL_DEFS, not XTRA_OCTINTERP_DEFS.
+
 2006-11-02  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* sysdep.cc (MSVC_init): Also cal w32_sigint_init and

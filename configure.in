@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.542 $)
+AC_REVISION($Revision: 1.543 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -790,14 +790,14 @@ else
   AC_MSG_ERROR([See the file INSTALL for more information.])
 fi
 
-XTRA_CRUFT_LINK_DEPS=
+XTRA_CRUFT_SH_LDFLAGS=
 case "$canonical_host_type" in
   *-*-msdosmsvc)
     FLIBS="$FLIBS -lkernel32"
-    XTRA_CRUFT_LINK_DEPS="-Wl,-def:cruft.def"
+    XTRA_CRUFT_SH_LDFLAGS="-Wl,-def:cruft.def"
   ;;
 esac
-AC_SUBST(XTRA_CRUFT_LINK_DEPS)
+AC_SUBST(XTRA_CRUFT_SH_LDFLAGS)
 
 FC=$F77
 AC_SUBST(FC)
@@ -1064,9 +1064,9 @@ RLD_FLAG=
 NO_OCT_FILE_STRIP=false
 TEMPLATE_AR='$(AR)'
 TEMPLATE_ARFLAGS="$ARFLAGS"
-XTRA_CRUFT_DEFS=
-XTRA_OCTAVE_DEFS=
-XTRA_OCTINTERP_DEFS=
+CRUFT_DLL_DEFS=
+OCTAVE_DLL_DEFS=
+OCTINTERP_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-openbsd* | *-*-netbsd*)
@@ -1125,9 +1125,9 @@ case "$canonical_host_type" in
     SH_LDFLAGS="-shared -g"
     library_path_var=PATH
     ## Extra compilation flags.
-    XTRA_CRUFT_DEFS="-DCRUFT_DLL"
-    XTRA_OCTAVE_DEFS="-DOCTAVE_DLL"
-    XTRA_OCTINTERP_DEFS="-DOCTINTERP_DLL"
+    CRUFT_DLL_DEFS="-DCRUFT_DLL"
+    OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
+    OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
   ;;
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
@@ -1230,9 +1230,9 @@ AC_MSG_NOTICE([defining NO_OCT_FILE_STRIP to be $NO_OCT_FILE_STRIP])
 AC_MSG_NOTICE([defining RLD_FLAG to be $RLD_FLAG])
 AC_MSG_NOTICE([defining TEMPLATE_AR to be $TEMPLATE_AR])
 AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
-AC_MSG_NOTICE([defining XTRA_CRUFT_DEFS to be $XTRA_CRUFT_DEFS])
-AC_MSG_NOTICE([defining XTRA_OCTAVE_DEFS to be $XTRA_OCTAVE_DEFS])
-AC_MSG_NOTICE([defining XTRA_OCTINTERP_DEFS to be $XTRA_OCTINTERP_DEFS])
+AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
 AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)

@@ -42,9 +42,11 @@ CLEAN_SUBDIRS = $(DISTSUBDIRS)
 DISTFILES = Makefile.in ChangeLog Makerules.in $(SOURCES) \
 	STOP.patch mkf77def.in
 
+XTRA_CRUFT_SH_LDFLAGS = @XTRA_CRUFT_SH_LDFLAGS@
+SH_LDFLAGS += $(XTRA_CRUFT_SH_LDFLAGS)
+
 # Include BLAS and FFTW just in case some of libcruft depends on them
-XTRA_CRUFT_LINK_DEPS = @XTRA_CRUFT_LINK_DEPS@
-LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS) $(XTRA_CRUFT_LINK_DEPS)
+LINK_DEPS = $(BLAS_LIBS) $(FFTW_LIBS) $(FLIBS)
 
 all: libraries
 .PHONY: all

@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Kurt Hornik
+## Copyright (C) 1996, 2006 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -19,6 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} index (@var{s}, @var{t})
+## @deftypefnx {Function File} {} index (@var{s}, @var{t}, @var{direction})
 ## Return the position of the first occurrence of the string @var{t} in the
 ## string @var{s}, or 0 if no occurrence is found.  For example,
 ##
@@ -27,74 +28,103 @@
 ##      @result{} 4
 ## @end example
 ##
-## @strong{Caution:}  This function does not work for arrays of strings.
+## If @var{direction} is @samp{"first"}, return the first element found.
+## If @var{direction} is @samp{"last"}, return the last element found.
+## The @code{rindex} function is equivalent to @code{index} with
+## @var{direction} set to @samp{"last"}.
+##
+## @strong{Caution:}  This function does not work for arrays of
+## character strings.
+## @seealso{find, rindex}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ## Adapted-By: jwe
 
-function n = index (s, t)
+function n = index (s, t, direction)
 
   ## This is patterned after the AWK function of the same name.
 
-  if (nargin != 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
+  elseif (nargin < 3)
+    direction = "first";
   endif
-  
-  if (!ischar (s) || !ischar (t) || all (size (s) > 1) || all (size (t) > 1) )
-    error ("index: expecting string arguments");
+  direction = lower (direction);
+
+  if (! (ischar (s) && ischar (t) && isvector (s) && isvector (t)))
+    error ("index: expecting character string arguments");
+  elseif (! strcmp (direction, {"first", "last"}))
+    error ("index: direction must be either \"first\" or \"last\"");
   endif
 
   l_s = length (s);
   l_t = length (t);
-  
-  if ( l_s == 0 || l_s < l_t )
+
+  n = 0;
+  if (l_s == 0 || l_s < l_t)
     ## zero length source, or target longer than source
+    ## return 0
     v = [];
-    
-  elseif ( l_t == 0 )
+
+  elseif (l_t == 0)
     ## zero length target: return first
     v = 1;
-    
-  elseif ( l_t == 1 )
+
+  elseif (l_t == 1)
     ## length one target: simple find
-    v = find (s==t);
-    
-  elseif ( l_t == 2 )
+    v = find (s==t, 1, direction);
+
+  elseif (l_t == 2)
     ## length two target: find first at i and second at i+1
-    v = find (s (1 : l_s-1) == t (1) & s (2 : l_s) == t (2));
-    
+    v = find (s (1:l_s-1) == t(1) & s(2:l_s) == t(2), 1, direction);
+
   else
     ## length three or more: match the first three by find then go through
     ## the much smaller list to determine which of them are real matches
     limit = l_s - l_t + 1;
-    v = find (s (1 : limit) == t(1) & s (2 : limit+1) == t (2)
-	      & s (3 : limit+2) == t(3) );
+    v = find (s (1:limit) == t(1)
+	      & s (2:limit+1) == t(2)
+	      & s (3:limit+2) == t(3));
+    if (strcmp (direction, "last"))
+      v = v(length(v):-1:1);
+    endif
+
+    if (l_t > 3)
+
+      ## force strings to be both row vectors or both column vectors
+      if (all (size (s) != size (t)))
+	t = t.';
+      endif
+
+      ## search index vector for a match
+      ind = 0:l_t-1;
+      ## return 0 if loop terminates without finding any match
+      for idx = 1:length(v)
+	if (s (v(idx) + ind) == t)
+	  n = v(idx);
+	  break;
+	endif
+      endfor
+    endif
+
   endif
 
-  if (l_t > 3)
-    
-    ## force strings to be both row vectors or both column vectors
-    if (all (size (s) != size (t)))
-      t = t.';
-    endif
-    
-    ## search index vector for a match
-    ind = 0 : l_t - 1;
-    n = 0; # return 0 if loop terminates without finding any match
-    for idx = 1:length(v)
-      if (s (v(idx) + ind) == t)
-	n = v(idx);
-	break;
-      endif
-    endfor
-
-  elseif (length(v) > 0)
+  if (n == 0 && ! isempty (v))
+    ## return the first found if n is not already set and v is not empty
     n = v(1);
-
-  else
-    n = 0;
-
   endif
 
 endfunction
+
+## Test the function out
+%!assert(index("astringbstringcstring", "s"), 2)
+%!assert(index("astringbstringcstring", "st"), 2)
+%!assert(index("astringbstringcstring", "str"), 2)
+%!assert(index("astringbstringcstring", "string"), 2)
+
+## test everything out in reverse
+%!assert(index("astringbstringcstring", "s", "last"), 16)
+%!assert(index("astringbstringcstring", "st", "last"), 16)
+%!assert(index("astringbstringcstring", "str", "last"), 16)
+%!assert(index("astringbstringcstring", "string", "last"), 16)

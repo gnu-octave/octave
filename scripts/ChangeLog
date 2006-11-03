@@ -1,5 +1,8 @@
 2006-11-03  Bill Denney  <denney@seas.upenn.edu>
 
+	* strings/index.m: New arg, direction.  Simplify and speed up.
+	* strings/rindex.m: Implement using index (..., "last");
+
 	* scripts/blanks.m, scripts/strcat.m: Simplify.  Add tests.
 
 2006-11-01  Bill Denney  <denney@seas.upenn.edu>

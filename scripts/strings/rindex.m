@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Kurt Hornik
+## Copyright (C) 1996, 2006 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -19,15 +19,18 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rindex (@var{s}, @var{t})
-## Return the position of the last occurrence of the string @var{t} in the
-## string @var{s}, or 0 if no occurrence is found.  For example,
+## Return the position of the last occurrence of the character string
+## @var{t} in the character string @var{s}, or 0 if no occurrence is
+## found.  For example,
 ##
 ## @example
 ## rindex ("Teststring", "t")
 ##      @result{} 6
 ## @end example
 ##
-## @strong{Caution:}  This function does not work for arrays of strings.
+## @strong{Caution:}  This function does not work for arrays of
+## character strings.
+## @seealso{find, index}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
@@ -41,60 +44,6 @@ function n = rindex (s, t)
     print_usage ();
   endif
 
-  if (!ischar (s) || !ischar (t) || all (size (s) > 1) || all (size (t) > 1) )
-    error ("rindex: expecting string arguments");
-  endif
-
-  l_s = length (s);
-  l_t = length (t);
-
-  if ( l_s == 0 || l_s < l_t )
-    ## zero length source, or target longer than source
-    v = [];
-    
-  elseif ( l_t == 0 )
-    ## zero length target: return last
-    v = l_s;
-    
-  elseif ( l_t == 1 )
-    ## length one target: simple find
-    v = find (s==t);
-    
-  elseif ( l_t == 2 )
-    ## length two target: find first at i and second at i+1
-    v = find (s (1 : l_s-1) == t (1) & s (2 : l_s) == t (2));
-    
-  else
-    ## length three or more: match the first three by find then go through
-    ## the much smaller list to determine which of them are real matches
-    limit = l_s - l_t + 1;
-    v = find (s (1 : limit) == t(1) & s (2 : limit+1) == t (2)
-	      & s (3 : limit+2) == t(3) );
-  endif
-
-  if (l_t > 3)
-    
-    ## force strings to be both row vectors or both column vectors
-    if (all (size (s) != size (t)))
-      t = t.';
-    endif
-    
-    ## search index vector for a match
-    ind = 0 : l_t - 1;
-    n = 0; # return 0 if loop terminates without finding any match
-    for idx = length(v):-1:1
-      if (s (v(idx) + ind) == t)
-	n = v(idx);
-	break;
-      endif
-    endfor
-
-  elseif (length(v) > 0)
-    n = v(length(v));
-
-  else
-    n = 0;
-
-  endif
+  n = index (s, t, "last");
 
 endfunction

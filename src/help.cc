@@ -452,7 +452,12 @@ endswitch\n\
     "-*- texinfo -*-\n\
 @deffn Keyword try\n\
 Begin a try-catch block.\n\
-@seealso{catch}\n\
+\n\
+If an error occurs within a try block, then the catch code will be run and\n\
+execution will proceed after the catch block (though it is often\n\
+recommended to use the lasterr function to re-throw the error after cleanup\n\
+is completed).\n\
+@seealso{catch,unwind_protect}\n\
 @end deffn", }, 
 
   { "until",
@@ -466,7 +471,14 @@ End a do-until loop.\n\
     "-*- texinfo -*-\n\
 @deffn Keyword unwind_protect\n\
 Begin an unwind_protect block.\n\
-@seealso{unwind_protect_cleanup}\n\
+\n\
+If an error occurs within the first part of an unwind_protect block\n\
+the commands within the unwind_protect_cleanup block are executed before\n\
+the error is thrown.  If an error is not thrown, then the\n\
+unwind_protect_cleanup block is still executed (in other words, the\n\
+unwind_protect_cleanup will be run with or without an error in the\n\
+unwind_protect block).\n\
+@seealso{unwind_protect_cleanup,try}\n\
 @end deffn", }, 
 
   { "unwind_protect_cleanup",

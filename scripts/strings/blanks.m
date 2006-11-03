@@ -1,4 +1,4 @@
-## Copyright (C) 1996 Kurt Hornik
+## Copyright (C) 1996, 2006 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} blanks (@var{n})
 ## Return a string of @var{n} blanks.
+## @seealso{repmat}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
@@ -29,12 +30,15 @@ function s = blanks (n)
 
   if (nargin != 1)
     print_usage ();
-  endif
-
-  if (isscalar (n) && n == round (n))
-    s = char (ones (1, n) * toascii (" "));
-  else
+  elseif (! (isscalar (n) && n == round (n)))
     error ("blanks: n must be a non-negative integer");
   endif
 
+  s(1,1:n) = " ";
+
 endfunction
+
+## There really isn't that much to test here
+%!assert(blanks (0), "")
+%!assert(blanks (5), "     ")
+%!assert(blanks (10), "          ")

@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 1996, 1997, 2006 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -33,28 +33,20 @@
 
 ## Author: jwe
 
-function st = strcat (s, varargin)
+function st = strcat (varargin)
 
-  if (nargin > 0)
-    if (ischar (s))
-      tmpst = s;
-    else
-      error ("strcat: all arguments must be strings");
-    endif
-    n = nargin - 1;
-    k = 1;
-    while (n--)
-      tmp = varargin{k++};
-      if (ischar (tmp))
-	tmpst = [tmpst, tmp];
-      else
-	error ("strcat: all arguments must be strings");
-      endif
-    endwhile
-  else
+  if (nargin < 1)
     print_usage ();
+  elseif (! iscellstr (varargin))
+    error ("strcat: all arguments must be strings");
   endif
 
-  st = tmpst;
+  st = [varargin{:}];
 
 endfunction
+
+## test the dimensionality
+## 1d
+%!assert(strcat("ab ", "ab "), "ab ab ")
+## 2d
+%!assert(strcat(["ab ";"cde"], ["ab ";"cde"]), ["ab ab ";"cdecde"])

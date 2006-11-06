@@ -33,6 +33,7 @@ function __img__ (x, y, A)
   endif
 
   __gnuplot_raw__ ("set nokey\n");
+  __gnuplot_raw__ ("set size ratio -1;\n");
   __current_color_map__ = colormap ();
   palette_size = size (__current_color_map__, 1);
   __gnuplot_raw__ (sprintf ("set palette positive color model RGB maxcolors %i\n", palette_size));

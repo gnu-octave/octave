@@ -1,3 +1,7 @@
+2006-11-06  Søren Hauberg  <soren@hauberg.org>
+
+	* image/__img__.m: Send "set size ratio -1" before plotting.
+
 2006-11-03  Bill Denney  <denney@seas.upenn.edu>
 
 	* strings/index.m: New arg, direction.  Simplify and speed up.

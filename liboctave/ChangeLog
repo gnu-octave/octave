@@ -1,3 +1,7 @@
+2006-11-06  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assignN): Exit early if invalid indices are found.
+
 2006-11-03  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* strftime.c [HAVE_TZNAME]: Tag tzname with OCTAVE_IMPORT.

@@ -3134,6 +3134,16 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	      frozen_len = freeze (idx, new_dims, true);
 
+	      for (int i = 0; i < idx.length (); i++)
+		{
+		  if (! idx(i))
+		    {
+		      retval = 0;
+		      lhs.clear_index ();
+		      return retval;
+		    }
+		}
+
 	      if (rhs_is_scalar)
 		{
 		  if (n_idx < orig_lhs_dims_len)

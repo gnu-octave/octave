@@ -84,15 +84,7 @@ default_history_file (void)
   std::string env_file = octave_env::getenv ("OCTAVE_HISTFILE");
 
   if (! env_file.empty ())
-    {
-      std::fstream f (env_file.c_str (), (std::ios::in | std::ios::out));
-
-      if (f)
-	{
-	  file = env_file;
-	  f.close ();
-	}
-    }
+    file = env_file;
 
   if (file.empty ())
     {

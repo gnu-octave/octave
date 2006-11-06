@@ -1,3 +1,10 @@
+2006-11-06  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* configure.in (CRUFT_DLL_DEFS, OCTAVE_DLL_DEFS, OCTINTERP_DLL_DEFS):
+	Also rename in AC_SUBST calls.
+	* Makeconf.in (ALL_CFLAGS): Use DLL_CDEFS instead of XTRA_CDEFS.
+	(ALL_CXXFLAGS): Use DLL_CDEFS instead of XTRA_CXXDEFS.
+
 2006-11-03  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (CRUFT_DLL_DEFS): Rename from XTRA_CRUFT_DEFS.

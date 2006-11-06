@@ -1,5 +1,8 @@
 2006-11-06  Søren Hauberg  <soren@hauberg.org>
 
+	* pkg/pkg.m (extract_pkg): No need to pass "dotexceptnewline"
+	option to regexp.
+
 	* image/__img__.m: Send "set size ratio -1" before plotting.
 
 2006-11-03  Bill Denney  <denney@seas.upenn.edu>

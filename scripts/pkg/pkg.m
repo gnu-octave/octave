@@ -587,7 +587,7 @@ function pkg = extract_pkg (nm, pat)
     while (! feof(fid))
       ln = fgetl (fid);
       if (ln > 0)
-	t = regexp(ln, pat, "tokens","dotexceptnewline");
+	t = regexp(ln, pat, "tokens");
 	if (!isempty(t))
           pkg = [pkg, "\n", t{1}{1}];
 	endif

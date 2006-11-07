@@ -64,19 +64,7 @@ default_pager (void)
 
 #ifdef OCTAVE_DEFAULT_PAGER
   if (pager_binary.empty ())
-    {
-      pager_binary = std::string (OCTAVE_DEFAULT_PAGER);
-
-      if (pager_binary == "less")
-	{
-	  pager_binary.append (" -e");
-
-	  std::string lessflags = octave_env::getenv ("LESS");
-	  if (lessflags.empty ())
-	    pager_binary.append
-	      (" -X -P'-- less ?pB(%pB\\%):--. (f)orward, (b)ack, (q)uit$'");
-	}
-    }
+    pager_binary = OCTAVE_DEFAULT_PAGER;
 #endif
 
   return pager_binary;
@@ -84,6 +72,9 @@ default_pager (void)
 
 // The shell command to run as the pager.
 static std::string VPAGER = default_pager ();
+
+// The options to pass to the pager.
+static std::string VPAGER_FLAGS;
 
 // TRUE means that if output is going to the pager, it is sent as soon
 // as it is available.  Otherwise, it is buffered and only sent to the
@@ -137,6 +128,17 @@ pager_event_handler (pid_t pid, int status)
   return retval;
 }
 
+static std::string
+pager_command (void)
+{
+  std::string cmd = VPAGER;
+
+  if (! (cmd.empty () || VPAGER_FLAGS.empty ()))
+    cmd += " " + VPAGER_FLAGS;
+
+  return cmd;
+}
+
 static void
 do_sync (const char *msg, int len, bool bypass_pager)
 {
@@ -151,7 +153,7 @@ do_sync (const char *msg, int len, bool bypass_pager)
 	{
 	  if (! external_pager)
 	    {
-	      std::string pgr = VPAGER;
+	      std::string pgr = pager_command ();
 
 	      if (! pgr.empty ())
 		{
@@ -576,10 +578,22 @@ to display terminal output on your system.  The default value is\n\
 normally @code{\"less\"}, @code{\"more\"}, or\n\
 @code{\"pg\"}, depending on what programs are installed on your system.\n\
 @xref{Installation}.\n\
-@seealso{page_screen_output, page_output_immediately}\n\
+@seealso{more, page_screen_output, page_output_immediately, PAGER_FLAGS}\n\
 @end deftypefn")
 {
   return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER);
+}
+
+DEFUN (PAGER_FLAGS, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} PAGER_FLAGS ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} PAGER_FLAGS (@var{new_val})\n\
+Query or set the internal variable that specifies the options to pass\n\
+to the pager.\n\
+@seealso{PAGER}\n\
+@end deftypefn")
+{
+  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (PAGER_FLAGS);
 }
 
 /*

@@ -399,8 +399,6 @@ file_in_path (const std::string& name, const std::string& suffix)
   if (! suffix.empty ())
     nm.append (suffix);
 
-  return std::string ();
-
   return octave_env::make_absolute
     (load_path::find_file (nm), octave_env::getcwd ());
 }

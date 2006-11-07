@@ -1,3 +1,13 @@
+2006-11-07  John W. Eaton  <jwe@octave.org>
+
+	* utils.cc (file_in_path): Don't unconditionally return "".
+
+	* pager.cc (default_pager): Don't append options here.
+	(pager_command): New function.
+	(do_sync): Use it.
+	(VPAGER_FLAGS): New variable.
+	(FPAGER_FLAGS): New function.
+
 2006-11-06  John W. Eaton  <jwe@octave.org>
 
 	* oct-hist.cc (default_history_file): If env_file is not empty,

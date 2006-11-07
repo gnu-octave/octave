@@ -1,3 +1,7 @@
+2006-11-07  John W. Eaton  <jwe@octave.org>
+
+	* startup/main-rcfile: Conditionally set PAGER_FLAGS.
+
 2006-11-06  Søren Hauberg  <soren@hauberg.org>
 
 	* pkg/pkg.m (extract_pkg): No need to pass "dotexceptnewline"

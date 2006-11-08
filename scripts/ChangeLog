@@ -1,3 +1,8 @@
+2006-11-08  John W. Eaton  <jwe@octave.org>
+
+	* strings/strcat.m: Disable Octave:empty-list-elements warning
+	whle concatenating args.
+
 2006-11-07  John W. Eaton  <jwe@octave.org>
 
 	* startup/main-rcfile: Conditionally set PAGER_FLAGS.

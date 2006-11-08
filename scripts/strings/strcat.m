@@ -41,7 +41,13 @@ function st = strcat (varargin)
     error ("strcat: all arguments must be strings");
   endif
 
-  st = [varargin{:}];
+  unwind_protect
+    tmp = warning ("query", "Octave:empty-list-elements");
+    warning ("off", "Octave:empty-list-elements");
+    st = [varargin{:}];
+  unwind_protect_cleanup
+    warning (tmp.state, "Octave:empty-list-elements");
+  end_unwind_protect
 
 endfunction
 

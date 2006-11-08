@@ -70,6 +70,10 @@ dir_entry::open (const std::string& n)
 string_vector
 dir_entry::read (void)
 {
+  static octave_idx_type grow_size = 100;
+
+  octave_idx_type len = 0;
+
   string_vector dirlist;
 
   if (ok ())
@@ -79,21 +83,24 @@ dir_entry::read (void)
       struct dirent *dir_ent;
 
       while ((dir_ent = readdir (static_cast<DIR *> (dir))))
-	count++;
-
-      rewinddir (static_cast<DIR *> (dir));
-
-      dirlist.resize (count);
-
-      for (int i = 0; i < count; i++)
 	{
-	  dir_ent = readdir (static_cast<DIR *> (dir));
-
 	  if (dir_ent)
-	    dirlist[i] = dir_ent->d_name;
+	    {
+	      if (count >= len)
+		{
+		  len += grow_size;
+		  dirlist.resize (len);
+		}
+
+	      dirlist[count] = dir_ent->d_name;
+
+	      count++;
+	    }
 	  else
 	    break;
 	}
+
+      dirlist.resize (count);
     }
 
   return dirlist;

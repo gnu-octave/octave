@@ -1,3 +1,7 @@
+2006-11-08  John W. Eaton  <jwe@octave.org>
+
+	* dir-ops.cc (dir_entry::read): Avoid rewinddir.
+
 2006-11-06  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assignN): Exit early if invalid indices are found.

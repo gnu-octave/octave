@@ -76,10 +76,10 @@ octave_user_function::octave_user_function
     sym_tab (st), lead_comm (), trail_comm (), file_name (),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
-    system_fcn_file (false), call_depth (0),
-    num_named_args (0), nested_function (false),
-    args_passed (), num_args_passed (0), symtab_entry (0),
-    argn_sr (0), nargin_sr (0), nargout_sr (0), varargin_sr (0)
+    system_fcn_file (false), call_depth (0), num_named_args (0),
+    nested_function (false), inline_function (false), args_passed (),
+    num_args_passed (0), symtab_entry (0), argn_sr (0),
+    nargin_sr (0), nargout_sr (0), varargin_sr (0)
 {
   if (param_list)
     num_named_args = param_list->length ();
@@ -303,7 +303,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
   unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
-  if (! is_nested_function ())
+  if (! (is_nested_function () || is_inline_function ()))
     {
       unwind_protect_ptr (curr_parent_function);
       curr_parent_function = this;

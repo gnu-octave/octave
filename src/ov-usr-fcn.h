@@ -146,6 +146,10 @@ public:
 
   bool is_nested_function (void) const { return nested_function; }
 
+  void mark_as_inline_function (void) { inline_function = true; }
+
+  bool is_inline_function (void) const { return inline_function; }
+
   void save_args_passed (const octave_value_list& args)
     {
       if (call_depth > 1)
@@ -239,6 +243,9 @@ private:
 
   // TRUE means this is a nested function.
   bool nested_function;
+
+  // TRUE means this is an inline function.
+  bool inline_function;
 
   // The values that were passed as arguments.
   octave_value_list args_passed;

@@ -325,7 +325,7 @@ load_path::move (dir_info_list_iterator i, bool at_end)
 		{
 		  if (p->dir_name == dir)
 		    {
-		      file_info& fi = *p;
+		      file_info fi = *p;
 
 		      file_info_list.erase (p);
 

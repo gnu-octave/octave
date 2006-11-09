@@ -118,6 +118,8 @@ tree_anon_fcn_handle::rvalue (void)
     = new octave_user_function (new_param_list, new_ret_list,
 				new_cmd_list, new_sym_tab);
 
+  uf->mark_as_inline_function ();
+
   octave_value fcn (uf);
 
   octave_value fh (new octave_fcn_handle (fcn, "@<anonymous>"));

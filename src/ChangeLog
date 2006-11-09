@@ -1,3 +1,22 @@
+2006-11-09  John W. Eaton  <jwe@octave.org>
+
+	* ov-usr-fcn.h (octave_user_function::inline_function):
+	 New data member.
+	(octave_user_function::mark_as_inline_function): Set it.
+	(octave_user_function::is_inline_function): Check it.
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Also skip setting curr_parent_fucntion if evaluating an inline
+	function.
+	(octave_user_function::octave_user_function):
+	 Initialize inline_function.
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue):
+	Mark user function as inline here.
+
+2006-11-09  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* load-path.cc (load_path::move): Don't use reference to file_info
+	object that will be erased.
+
 2006-11-07  John W. Eaton  <jwe@octave.org>
 
 	* utils.cc (file_in_path): Don't unconditionally return "".

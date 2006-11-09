@@ -1,5 +1,40 @@
 2006-11-08  John W. Eaton  <jwe@octave.org>
 
+	* plot/legend.m: New function, adapted from Octave Forge.
+
+	* plot/__do_legend__.m: New function.
+	* plot/__errplot__.m, plot/__plt3__.m, plot/__plt__.m,
+	plot/replot.m: Call it before plotting.
+
+	* plot/plot3.m, plot/mesh.m, plot/contour.m: Don't send "set
+	noparametric" to gnuplot..
+	
+	* plot/__plotopt__.m, plot/__pltopt1__.m, plot/__plt1__.m,
+	plot/__plt2__.m, plot/__plt2mm__.m, plot/__plt2mv__.m,
+	plot/__plt2ss__.m, plot/__plt2vm__.m, plot/__plt2vv__.m: Accept
+	and return key title separate from line format.  Accept format and
+	key as cellstr.  Always return data as cell array.  Return format
+	and key title as cellstr.
+	* plot/__errplot__.m, plot/__plt3__.m, plot/__plt__.m:
+	Handle line format and key titles separately.
+	* plot/__plt3__.m, plot/__plt__.m: Handle data as cell array only.
+
+	* plot/__plot_globals__.m (__plot_line_offset__,
+	__plot_key_labels__, __plot_key_properties__): New global
+	variables.  Initialize them.
+	* plot/__init_plot_vars__.m (__plot_line_offset__,
+	__plot_key_labels__, __plot_key_properties__): Initialize.
+	* plot/__errplot__.m, plot/__plt3__.m, plot/__plt__.m
+	(__plot_line_offset__, __plot_key_labels__,
+	__plot_key_properties__): Store information about plot key titles.
+
+	* plot/__errplot__.m, plot/__init_plot_vars__.m, plot/__plt3__.m,
+	plot/__plt__.m: Use cf, mxi, and myi as shorthand for
+	__current_figure__, __multiplot_xi__, and __multiplot_yi__,
+	respectively.
+
+	* plot/__errcomm__.m: Allow fmt to be cellstr.
+
 	* strings/strcat.m: Disable Octave:empty-list-elements warning
 	whle concatenating args.
 

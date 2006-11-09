@@ -37,20 +37,33 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
   __plot_globals__;
 
+  cf = __current_figure__;
+  mxi = __multiplot_xi__;
+  myi = __multiplot_yi__;
+
   __setup_plot__ ("__gnuplot_plot__");
 
   if (nargin < 3 || nargin > 7) # at least three data arguments needed
     print_usage ();
   endif
 
-  j = __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__);
+  j = __plot_data_offset__{cf}(mxi,myi);
 
-  fmt = __pltopt__ ("__errplot__", fstr);
+  loff = __plot_line_offset__{cf}(mxi,myi);
+
+  [fmt, key] = __pltopt__ ("__errplot__", fstr);
+
+  nkey = numel (key);
 
   nplots = size (a1, 2);
   len = size (a1, 1);
   for i = 1:nplots
-    ifmt = fmt(1+mod(i,size(fmt,1)), :);
+    ifmt = fmt{1+mod(i-1,numel(fmt))};
+    if (i <= nkey)
+      __plot_key_labels__{cf}{mxi,myi}{loff} = key{i};
+    else
+      __plot_key_labels__{cf}{mxi,myi}{loff} = "";
+    endif
     switch (nargin - 1)
       case 2
 	tmp = [(1:len)', a1(:,i), a2(:,i)];
@@ -73,25 +86,29 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 	       a2(:,i)-a5(:,i), a2(:,i)+a6(:,i)];
     endswitch
 
-    __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j} = tmp;
+    __plot_data__{cf}{mxi,myi}{j} = tmp;
 
-    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
-	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s",
-		   __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
-		   __plot_command_sep__, j, ifmt);
+    __plot_command__{cf}{mxi,myi} \
+	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}",
+		   __plot_command__{cf}{mxi,myi},
+		   __plot_command_sep__, j, ifmt,
+		   gnuplot_command_title, loff);
     __plot_command_sep__ = ",\\\n";
 
     j++;
+    loff++;
 
   endfor
 
-  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = j;
+  __plot_data_offset__{cf}(mxi,myi) = j;
+  __plot_line_offset__{cf}(mxi,myi) = loff;
 
-  if (! isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
-      if (__multiplot_mode__)
-	__gnuplot_raw__ ("clear\n");
-      endif
-    eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
+  if (! isempty (__plot_command__{cf}{mxi,myi}))
+    if (__multiplot_mode__)
+      __gnuplot_raw__ ("clear\n");
+    endif
+    __do_legend__ ();
+    eval (__plot_command__{cf}{mxi,myi});
   endif
 
 endfunction

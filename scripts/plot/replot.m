@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} replot ()
-## Refressh the plot window.
+## Refresh the plot window.
 ## @end deftypefn
 
 ## Author: jwe
@@ -33,6 +33,7 @@ function replot ()
       if (__multiplot_mode__)
 	__gnuplot_raw__ ("clear\n");
       endif
+      __do_legend__ ();
       eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
     endif
   else

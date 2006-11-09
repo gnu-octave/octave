@@ -33,7 +33,7 @@
 ## David Bateman <dbateman@free.fr>
 ## May 25, 2006
 
-function __plt3__ (x, usingstr, fmtstr, withstr)
+function __plt3__ (x, usingstr, fmtstr, keystr, withstr)
 
   if (nargin < 2)
     have_usingstr = false;
@@ -45,46 +45,46 @@ function __plt3__ (x, usingstr, fmtstr, withstr)
     fmtstr = "";
   endif
   if (nargin < 4)
+    keystr = "";
+  endif
+  if (nargin < 5)
     withstr = "";
   endif
 
   __plot_globals__;
 
+  cf = __current_figure__;
+  mxi = __multiplot_xi__;
+  myi = __multiplot_yi__;
+
   __setup_plot__ ("__gnuplot_splot__");
 
-  j = __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__);
+  j = __plot_data_offset__{cf}(mxi,myi);
+  loff = __plot_line_offset__{cf}(mxi,myi);
+  loff1 = loff;
 
-  __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j} = x;
+  __plot_data__{cf}{mxi,myi}{j} = x;
+  __plot_key_labels__{cf}{mxi,myi}{loff1++} = keystr;
 
-  if (iscell (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}))
-    for i = 1:length (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j})
-    if (! have_usingstr)
-	usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j}{i});
-      endif
-      __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
-	  = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}{%d} %s %s",
-		     __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
-		     __plot_command_sep__, j, i, usingstr, fmtstr{i});
-      __plot_command_sep__ = ",\\\n";
-    endfor
-  else
-    if (! have_usingstr)
-      usingstr = __make_using_clause__ (__plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{j});
-    endif
-    __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} \
-	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s %s %s",
-		   __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__},
-		   __plot_command_sep__, j, usingstr, fmtstr, withstr);
-    __plot_command_sep__ = ",\\\n";
+  if (! have_usingstr)
+    usingstr = __make_using_clause__ (__plot_data__{cf}{mxi,myi}{j});
   endif
 
-  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = ++j;
+  __plot_command__{cf}{mxi,myi} ...
+      = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s",
+		 __plot_command__{cf}{mxi,myi},
+		 __plot_command_sep__, j++, usingstr, fmtstr,
+		 gnuplot_command_title, loff++, withstr);
+  __plot_command_sep__ = ",\\\n";
+
+  __plot_data_offset__{cf}(mxi,myi) = j;
+  __plot_line_offset__{cf}(mxi,myi) = loff;
 
   if (__multiplot_mode__)
     __gnuplot_raw__ ("clear\n");
   endif
 
-  if (! strcmp (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}, "__gnuplot_splot__"))
-    eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
+  if (! strcmp (__plot_command__{cf}{mxi,myi}, "__gnuplot_splot__"))
+    eval (__plot_command__{cf}{mxi,myi});
   endif
 endfunction

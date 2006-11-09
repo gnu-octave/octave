@@ -108,17 +108,28 @@
 
 ## Author: jwe
 
-function fmt = __pltopt__ (caller, opt)
+function [fmt, keystr] = __pltopt__ (caller, opt)
 
-  if (! ischar (opt))
+  if (nargin == 2 && nargout == 2)
+    if (ischar (opt))
+      nel = rows (opt);
+    elseif (iscellstr (opt))
+      nel = numel (opt);
+    else
+      error ("__pltopt__: expecting argument to be character string or cell array of character strings");
+    endif
+    fmt = cell (nel, 1);
+    keystr = cell (nel, 1);
+    if (ischar (opt))
+      opt = cellstr (opt);
+    endif
+    for i = 1:nel
+      [tfmt, tkey]  = __pltopt1__ (caller, opt{i});
+      fmt{i} = tfmt;
+      keystr{i} = tkey;
+    endfor
+  else
     print_usage ();
   endif
-
-  nr = rows (opt);
-  fmt = "";
-  for i = 1:nr
-    t = __pltopt1__ (caller, deblank (opt(i,:)));
-    fmt(i,1:length(t)) = t;
-  endfor
 
 endfunction

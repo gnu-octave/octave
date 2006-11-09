@@ -27,7 +27,7 @@
 ## Adapted-By: jwe
 ## Maintainer: jwe
 
-function fmt = __pltopt1__ (caller, opt)
+function [fmt, keystr] = __pltopt1__ (caller, opt)
 
   set_color = 0;
   set_symbol = 0;
@@ -41,7 +41,8 @@ function fmt = __pltopt1__ (caller, opt)
   set_xerrbars = 0;
   set_linestyle = "solid";
 
-  key_title = "";
+  fmt = "";
+  keystr = "";
 
   more_opts = 1;
 
@@ -65,7 +66,7 @@ function fmt = __pltopt1__ (caller, opt)
   endif
 
   if (! ischar (opt))
-    error ("__pltopt1__: argument must be a string");
+    return;
   endif
 
   while (more_opts)
@@ -189,14 +190,10 @@ function fmt = __pltopt1__ (caller, opt)
         if strcmp (char, ";")
           working = 0;
         else
-          if (isempty (key_title))  # needs this to avoid empty matrix warning.
-            key_title = char;
-          else
-            key_title = strcat (key_title, char);
-          endif
+          keystr = strcat (keystr, char);
         endif
       endwhile
-      key_title = undo_string_escapes (key_title);
+      keystr = undo_string_escapes (keystr);
     elseif (strcmp (char, " "))
     elseif (isempty(char))
       ## whitespace -- do nothing.
@@ -257,7 +254,5 @@ function fmt = __pltopt1__ (caller, opt)
   elseif (set_symbol)
     fmt = strcat (fmt, " 1 ", symbol);
   endif
-
-  fmt = sprintf ("%s %s \"%s\" ", fmt, TITLE, key_title);
 
 endfunction

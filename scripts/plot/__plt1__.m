@@ -23,18 +23,26 @@
 
 ## Author: jwe
 
-function [data, fmtstr] = __plt1__ (x1, fmt)
+function [data, fmtstr, key] = __plt1__ (x1, fmt, keystr)
 
-  if (nargin < 1 || nargin > 2 || nargout != 2)
+  if (nargin < 1 || nargin > 3 || nargout < 2 || nargout > 3)
     print_usage ();
   endif
 
-  if (nargin == 1)
-    fmt = "";
+  if (nargin < 2)
+    fmt = {""};
   endif
 
-  if (! ischar (fmt))
-    error ("__plt1__: fmt must be a string");
+  if (nargin < 3)
+    keystr = {""};
+  endif
+
+  if (! iscellstr (fmt))
+    error ("__plt1__: fmt must be a cell array of character strings");
+  endif
+
+  if (! iscell (keystr))
+    error ("__plt1__: fmt must be a cell array");
   endif
 
   [nr, nc] = size (x1);
@@ -53,6 +61,6 @@ function [data, fmtstr] = __plt1__ (x1, fmt)
     x1 = (1:nr)';
   endif
 
-  [data, fmtstr] = __plt2__ (x1, x2, fmt);
+  [data, fmtstr, key] = __plt2__ (x1, x2, fmt, keystr);
 
 endfunction

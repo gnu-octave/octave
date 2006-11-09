@@ -44,9 +44,12 @@ endif
 
 global __current_figure__;
 global __plot_data_offset__;
+global __plot_line_offset__;
 global __plot_command__;
 global __plot_command_sep__;
 global __plot_data__;
+global __plot_key_labels__;
+global __plot_key_properties__;
 
 if (isempty (__current_figure__))
   __current_figure__ = 1;
@@ -58,6 +61,12 @@ if (length (__plot_data_offset__) < __current_figure__
   __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
 endif
 
+if (length (__plot_line_offset__) < __current_figure__
+    || any (size (__plot_line_offset__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+
+  __plot_line_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
+endif
+
 if (length (__plot_command__) < __current_figure__
     || any (size (__plot_command__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
   __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = "";
@@ -66,4 +75,14 @@ endif
 if (length (__plot_data__) < __current_figure__
     || any (size (__plot_data__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
   __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
+endif
+
+if (length (__plot_key_labels__) < __current_figure__
+    || any (size (__plot_key_labels__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+  __plot_key_labels__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
+endif
+
+if (length (__plot_key_properties__) < __current_figure__
+    || any (size (__plot_key_properties__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+  __plot_key_properties__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = struct ("visible", true, "box", false, "position", 0);
 endif

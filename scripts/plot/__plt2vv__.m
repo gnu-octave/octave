@@ -23,14 +23,26 @@
 
 ## Author: jwe
 
-function [data, fmtstr] = __plt2vv__ (x, y, fmt)
+function [data, fmtstr, key] = __plt2vv__ (x, y, fmt, keystr)
 
-  if (nargin < 2 || nargin > 3 || nargout != 2)
+  if (nargin < 2 || nargin > 4 || nargout < 2 || nargout > 3)
     print_usage ();
-  elseif (nargin == 2)
-    fmt = "";
-  elseif (rows (fmt) > 1)
-    fmt = fmt (1, :);
+  endif
+
+  if (nargin < 3)
+    fmt = {""};
+  endif
+
+  if (nargin < 4)
+    keystr = {""};
+  endif
+
+  if (rows (fmt) > 1)
+    fmt = fmt(1);
+  endif
+
+  if (rows (keystr) > 1)
+    keystr = keystr(1);
   endif
 
   [x_nr, x_nc] = size (x);
@@ -54,7 +66,8 @@ function [data, fmtstr] = __plt2vv__ (x, y, fmt)
     error ("__plt2vv__: vector lengths must match");
   endif
 
-  data = [x, y];
+  data = {[x, y]};
   fmtstr = fmt;
+  key = keystr;
 
 endfunction

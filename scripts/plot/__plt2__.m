@@ -23,18 +23,26 @@
 
 ## Author: jwe
 
-function [data, fmtstr] = __plt2__ (x1, x2, fmt)
+function [data, fmtstr, key] = __plt2__ (x1, x2, fmt, keystr)
 
-  if (nargin < 2 || nargin > 3 || nargout != 2)
+  if (nargin < 2 || nargin > 4 || nargout < 2 || nargout > 3)
     print_usage ();
   endif
 
-  if (nargin == 2)
-    fmt = "";
+  if (nargin < 3)
+    fmt = {""};
   endif
 
-  if (! ischar (fmt))
-    error ("__plt2__: fmt must be a string");
+  if (nargin < 4)
+    keystr = {""};
+  endif
+
+  if (! iscellstr (fmt))
+    error ("__plt1__: fmt must be a cell array of character strings");
+  endif
+
+  if (! iscell (keystr))
+    error ("__plt1__: fmt must be a cell array");
   endif
 
   if (any (any (imag (x1))))
@@ -47,29 +55,30 @@ function [data, fmtstr] = __plt2__ (x1, x2, fmt)
 
   if (isscalar (x1))
     if (isscalar (x2))
-      [data, fmtstr] = __plt2ss__ (x1, x2, fmt);
+      [data, fmtstr, key] = __plt2ss__ (x1, x2, fmt, keystr);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
     if (isvector (x2))
-      [data, fmtstr] = __plt2vv__ (x1, x2, fmt);
+      [data, fmtstr, key] = __plt2vv__ (x1, x2, fmt, keystr);
     elseif (ismatrix (x2))
-      [data, fmtstr] = __plt2vm__ (x1, x2, fmt);
+      [data, fmtstr, key] = __plt2vm__ (x1, x2, fmt, keystr);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (ismatrix (x1))
     if (isvector (x2))
-      [data, fmtstr] = __plt2mv__ (x1, x2, fmt);
+      [data, fmtstr, key] = __plt2mv__ (x1, x2, fmt, keystr);
     elseif (ismatrix (x2))
-      [data, fmtstr] = __plt2mm__ (x1, x2, fmt);
+      [data, fmtstr, key] = __plt2mm__ (x1, x2, fmt, keystr);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isempty (x1) && isempty (x2))
-    data = [];
-    fmtstr = "";
+    data = {};
+    fmtstr = {};
+    key = {};
   else
     error ("__plt2__: invalid data for plotting");
   endif

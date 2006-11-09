@@ -23,23 +23,35 @@
 
 ## Author: jwe
 
-function [data, fmtstr] = __plt2ss__ (x, y, fmt)
+function [data, fmtstr, key] = __plt2ss__ (x, y, fmt, keystr)
 
-  if (nargin < 2 || nargin > 3 || nargout != 2)
+  if (nargin < 2 || nargin > 4 || nargout < 2 || nargout > 3)
     print_usage ();
-  elseif (nargin == 2)
-    fmt = "";
-  elseif (rows (fmt) > 1)
-    fmt = fmt (1, :);
+  endif
+
+  if (nargin < 3)
+    fmt = {""};
+  endif
+
+  if (nargin < 4)
+    keystr = {""};
+  endif
+
+  if (rows (fmt) > 1)
+    fmt = fmt(1);
+  endif
+
+  if (rows (keystr) > 1)
+    keystr = keystr(1);
   endif
 
   [x_nr, x_nc] = size (x);
   [y_nr, y_nc] = size (y);
 
   if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
-    tmp = [x, y];
-    data = tmp;
+    data = {[x, y]};
     fmtstr = fmt;
+    key = keystr;
   else
     error ("__plt2ss__: arguments must be scalars");
   endif

@@ -42,29 +42,24 @@ function contour (x, y, z, n)
       n = y; 
     endif
     if (ismatrix (z))
-      unwind_protect
-	__gnuplot_raw__ ("set nosurface;\n");
-	__gnuplot_raw__ ("set contour;\n");
-	__gnuplot_raw__ ("set cntrparam bspline;\n");
-	if (isscalar (n))
-          command = sprintf ("set cntrparam levels %d;\n", n);
-	elseif (isvector (n))
-          tmp = sprintf ("%f", n(1));
-          for i = 2:length (n)
-            tmp = sprintf ("%s, %f", tmp, n(i));
-          endfor
-          command = sprintf ("set cntrparam levels discrete %s;\n", tmp);
-	else
-	  error ("contour: levels must be a scalar or vector") ;
-	endif
-	__gnuplot_raw__ (command);
-	__gnuplot_set__ parametric;
-	__gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
-	__plt3__ (z, "", "", [gnuplot_command_with, " l 1"]);
-      unwind_protect_cleanup
-	__gnuplot_set__ noparametric;
-      end_unwind_protect
-
+      __gnuplot_raw__ ("set nosurface;\n");
+      __gnuplot_raw__ ("set contour;\n");
+      __gnuplot_raw__ ("set cntrparam bspline;\n");
+      if (isscalar (n))
+	command = sprintf ("set cntrparam levels %d;\n", n);
+      elseif (isvector (n))
+	tmp = sprintf ("%f", n(1));
+	for i = 2:length (n)
+	  tmp = sprintf ("%s, %f", tmp, n(i));
+	endfor
+	command = sprintf ("set cntrparam levels discrete %s;\n", tmp);
+      else
+	error ("contour: levels must be a scalar or vector") ;
+      endif
+      __gnuplot_raw__ (command);
+      __gnuplot_set__ parametric;
+      __gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
+      __plt3__ (z, "", "", "", [gnuplot_command_with, " l 1"]);
     else
       error ("contour: z of contour (z, levels) must be a matrix");
     endif
@@ -107,28 +102,24 @@ function contour (x, y, z, n)
 	  error (size_msg);
 	endif
       endif
-      unwind_protect
-	__gnuplot_raw__ ("set nosurface;\n");
-	__gnuplot_raw__ ("set contour;\n");
-	__gnuplot_raw__ ("set cntrparam bspline;\n");
-	if (isscalar (n))
-          command = sprintf ("set cntrparam levels %d;\n", n);
-	elseif (isvector (n))
-          tmp = sprintf ("%f", n(1));
-          for i = 2:length (n)
-            tmp = sprintf ("%s, %f", tmp, n(i));
-          endfor
-          command = sprintf ("set cntrparam levels discrete %s;\n", tmp);
-	else
-	  error ("contour: levels must be a scalar or vector") ;
-	endif
-	__gnuplot_raw__ (command);
-	__gnuplot_set__ parametric;
-	__gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
-	__plt3__ (zz, "", "", [gnuplot_command_with, " l 1"]);
-      unwind_protect_cleanup
-	__gnuplot_set__ noparametric;
-      end_unwind_protect
+      __gnuplot_raw__ ("set nosurface;\n");
+      __gnuplot_raw__ ("set contour;\n");
+      __gnuplot_raw__ ("set cntrparam bspline;\n");
+      if (isscalar (n))
+	command = sprintf ("set cntrparam levels %d;\n", n);
+      elseif (isvector (n))
+	tmp = sprintf ("%f", n(1));
+	for i = 2:length (n)
+	  tmp = sprintf ("%s, %f", tmp, n(i));
+	endfor
+	command = sprintf ("set cntrparam levels discrete %s;\n", tmp);
+      else
+	error ("contour: levels must be a scalar or vector") ;
+      endif
+      __gnuplot_raw__ (command);
+      __gnuplot_set__ parametric;
+      __gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
+      __plt3__ (zz, "", "", "", [gnuplot_command_with, " l 1"]);
     else
       error ("contour: x and y must be vectors and z must be a matrix");
     endif

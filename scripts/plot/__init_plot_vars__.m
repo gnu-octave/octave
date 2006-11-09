@@ -19,7 +19,11 @@
 
 function __init_plot_vars__ (cmd, sep, clear_data)
 
-  __plot_globals__
+  __plot_globals__;
+
+  cf = __current_figure__;
+  mxi = __multiplot_xi__;
+  myi = __multiplot_yi__;
 
   if (nargin < 3)
     clear_data = true;
@@ -31,12 +35,14 @@ function __init_plot_vars__ (cmd, sep, clear_data)
     endif
   endif
 
-  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = cmd;
+  __plot_command__{cf}{mxi,myi} = cmd;
   __plot_command_sep__ = sep;
 
   if (clear_data)
-    __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
-    __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
+    __plot_data__{cf}{mxi,myi} = [];
+    __plot_data_offset__{cf}(mxi,myi) = 1;
+    __plot_line_offset__{cf}(mxi,myi) = 1;
+    __plot_key_labels__{cf}{mxi,myi} = [];
   endif
 
 endfunction

@@ -23,12 +23,18 @@
 
 ## Author: jwe
 
-function [data, fmtstr] = __plt2mv__ (x, y, fmt)
+function [data, fmtstr, key] = __plt2mv__ (x, y, fmt, keystr)
 
-  if (nargin < 2 || nargin > 3 || nargout != 2)
+  if (nargin < 2 || nargin > 4 || nargout < 2 || nargou > 3)
     print_usage ();
-  elseif (nargin == 2 || isempty (fmt))
-    fmt = " ";  ## Yes, this is intentionally not an empty string!
+  endif
+
+  if (nargin < 3 || isempty (fmt))
+    fmt = {""};
+  endif
+
+  if (nargin < 3 || isempty (keystr))
+    keystr = {""};
   endif
 
   [x_nr, x_nc] = size (x);
@@ -56,15 +62,21 @@ function [data, fmtstr] = __plt2mv__ (x, y, fmt)
     if (rows (fmt) == 1)
       fmt = repmat (fmt, x_nc, 1);
     endif
+    if (rows (keystr) == 1)
+      keystr = repmat (keystr, x_nc, 1);
+    endif
     tmp = [x, y];
     dtmp = cell (x_nc, 1);
     ftmp = cell (x_nc, 1);
+    ktmp = cell (x_nc, 1);
     for i = 1:x_nc
       dtmp{i} = tmp(:,[i,x_nc+1]);
-      ftmp{i} = deblank (fmt(i,:));
+      ftmp{i} = deblank (fmt{i});
+      ktmp{i} = deblank (keystr{i});
     endfor
     data = dtmp;
     fmtstr = ftmp;
+    key = ktmp;
   else
     error ("__plt2mv__: arguments must be a matrices");
   endif

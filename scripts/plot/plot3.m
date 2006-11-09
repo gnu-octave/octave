@@ -59,7 +59,7 @@
 ## An optional format argument can be given as
 ##
 ## @example
-## plot3 (@var{x}, @var{y}, @var{y}, @var{fmt})
+## plot3 (@var{x}, @var{y}, @var{z}, @var{fmt})
 ## @end example
 ##
 ## If the @var{fmt} argument is supplied, it is interpreted as
@@ -132,7 +132,7 @@
 ## Arguments can also be given in groups of three as
 ##
 ## @example
-## plot3 (@var{x1}, @var{y1}, @var{y1}, @var{x2}, @var{y2}, @var{y2}, @dots{})
+## plot3 (@var{x1}, @var{y1}, @var{z1}, @var{x2}, @var{y2}, @var{z2}, @dots{})
 ## @end example
 ## 
 ## @noindent
@@ -199,7 +199,7 @@ function plot3 (varargin)
 	    z_set = 1;
 	  endif
 	endif
-	fmt = __pltopt__ ("plot3", new);
+	[fmt, key] = __pltopt__ ("plot3", new);
 
 	if (isvector (x) && isvector (y))
 	  if (isvector (z))
@@ -217,18 +217,13 @@ function plot3 (varargin)
 	  error ("plot3: x, y, and z must have the same shape");
 	endif
 
-	unwind_protect
-          __gnuplot_raw__ ("set nohidden3d;\n")
-	  __gnuplot_set__ parametric; 
+	__gnuplot_raw__ ("set nohidden3d;\n")
+	__gnuplot_set__ parametric; 
 
-	  __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
-		   ([y; NaN*ones(1,size(y,2))])(:), ...
-		   ([z; NaN*ones(1,size(z,2))])(:)],
-		    "u($1):($2):($3)", fmt);
-
-	unwind_protect_cleanup
-	  __gnuplot_set__ noparametric; 
-	end_unwind_protect
+	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
+		 ([y; NaN*ones(1,size(y,2))])(:), ...
+		 ([z; NaN*ones(1,size(z,2))])(:)],
+		  "u($1):($2):($3)", fmt{1}, key{1});
 
 	hold ("on");
 	x_set = 0;
@@ -260,17 +255,12 @@ function plot3 (varargin)
 	  error ("plot3: x, y, and z must have the same shape");
 	endif
 
-	unwind_protect
-          __gnuplot_raw__ ("set nohidden3d;\n")
-	  __gnuplot_set__ parametric; 
+	__gnuplot_raw__ ("set nohidden3d;\n")
+	__gnuplot_set__ parametric; 
 
-	  __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
-		     ([y; NaN*ones(1,size(y,2))])(:), ...
-		     ([z; NaN*ones(1,size(z,2))])(:)]);
-
-	unwind_protect_cleanup
-	  __gnuplot_set__ noparametric; 
-	end_unwind_protect
+	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
+		   ([y; NaN*ones(1,size(y,2))])(:), ...
+		   ([z; NaN*ones(1,size(z,2))])(:)]);
 
 	hold ("on");
 	x = new;
@@ -317,16 +307,12 @@ function plot3 (varargin)
 	error ("plot3: x, y, and z must have the same shape");
       endif
 
-      unwind_protect
-        __gnuplot_raw__ ("set nohidden3d;\n")
-	__gnuplot_set__ parametric; 
+      __gnuplot_raw__ ("set nohidden3d;\n")
+      __gnuplot_set__ parametric; 
 
-	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
-		   ([y; NaN*ones(1,size(y,2))])(:), ...
-		   ([z; NaN*ones(1,size(z,2))])(:)]);
-      unwind_protect_cleanup
-	__gnuplot_set__ noparametric; 
-      end_unwind_protect
+      __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
+		 ([y; NaN*ones(1,size(y,2))])(:), ...
+		 ([z; NaN*ones(1,size(z,2))])(:)]);
     endif
     
   unwind_protect_cleanup

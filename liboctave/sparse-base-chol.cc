@@ -260,7 +260,7 @@ sparse_base_chol_rep::Q (void) const
   for (octave_idx_type i = 0; i < n; i++)
     {
       p.xcidx(i) = i;
-      p.xridx(i) = static_cast<int>(perms(i));
+      p.xridx(i) = static_cast<octave_idx_type>(perms(i));
       p.xdata(i) = 1;
     }
   p.xcidx(n) = n;

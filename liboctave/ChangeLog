@@ -1,3 +1,8 @@
+2006-11-09  David Bateman  <dbateman@free.fr>
+
+	* sparse-base-chol.cc (sparse_base_chol_rep::Q): Cast perms(i) to
+	octave_idx_type, not int.
+
 2006-11-08  John W. Eaton  <jwe@octave.org>
 
 	* dir-ops.cc (dir_entry::read): Avoid rewinddir.

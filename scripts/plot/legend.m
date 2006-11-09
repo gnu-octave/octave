@@ -126,6 +126,10 @@ function legend (varargin)
     endif
   endif
 
+  if (nargs > 0 && isempty (__plot_data__{cf}{mxi,myi}))
+    warning ("legend: plot data is empty; setting key labels has no effect");
+  endif
+
   for i = 1:nargs
     arg = varargin{i};
     if (ischar (arg))

@@ -1,3 +1,9 @@
+2006-11-10  John W. Eaton  <jwe@octave.org>
+
+	* ov-str-mat.cc (octave_char_matrix_str::load_ascii,
+	octave_char_matrix_str::load_binary):
+	Use chMatrix as buffer instead of C string.
+
 2006-11-09  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr-fcn.h (octave_user_function::inline_function):

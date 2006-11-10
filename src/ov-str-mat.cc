@@ -370,10 +370,13 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 		  int len;
 		  if (extract_keyword (is, "length", len) && len >= 0)
 		    {
-		      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
-		  
-		      if (len > 0 && ! 
-			  is.read (tmp, len))
+		      // Use this instead of a C-style character
+		      // buffer so that we can properly handle
+		      // embedded NUL characters.
+		      charMatrix tmp (1, len);
+		      char *ptmp = tmp.fortran_vec ();
+
+		      if (len > 0 && ! is.read (ptmp, len))
 			{
 			  error ("load: failed to load string constant");
 			  success = false;
@@ -381,12 +384,12 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 			}
 		      else
 			{
-			  tmp [len] = '\0';
 			  if (len > max_len)
 			    {
 			      max_len = len;
 			      chm.resize (elements, max_len, 0);
 			    }
+
 			  chm.insert (tmp, i, 0);
 			}
 		    }
@@ -416,18 +419,19 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 	      // This is cruft for backward compatiability, 
 	      // but relatively harmless.
 
-	      OCTAVE_LOCAL_BUFFER (char, tmp, len+1);
+	      // Use this instead of a C-style character buffer so
+	      // that we can properly handle embedded NUL characters.
+	      charMatrix tmp (1, len);
+	      char *ptmp = tmp.fortran_vec ();
 
-	      if (len > 0 && ! is.read (tmp, len))
+	      if (len > 0 && ! is.read (ptmp, len))
 		{
 		  error ("load: failed to load string constant");
 		}
 	      else
 		{
-		  tmp [len] = '\0';
-		  
 		  if (is)
-		    matrix = charMatrix (tmp);
+		    matrix = tmp;
 		  else
 		    error ("load: failed to load string constant");
 		}
@@ -524,15 +528,15 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
 	    return false;
 	  if (swap)
 	    swap_bytes<4> (&len);
-	  OCTAVE_LOCAL_BUFFER (char, btmp, len+1);
-	  if (! is.read (reinterpret_cast<char *> (btmp), len))
+	  charMatrix btmp (1, len);
+	  char *pbtmp = btmp.fortran_vec ();
+	  if (! is.read (pbtmp, len))
 	    return false;
 	  if (len > max_len)
 	    {
 	      max_len = len;
 	      chm.resize (elements, max_len, 0);
 	    }
-	  btmp [len] = '\0';
 	  chm.insert (btmp, i, 0);
 	}
       matrix = chm;

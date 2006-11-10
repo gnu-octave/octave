@@ -57,6 +57,18 @@ install install-strip:
 	fi
 .PHONY: install install-strip
 
+uninstall:
+	for f in $(SCRIPTS); do \
+	  rm -f $(srcdir)/$$f $(DESTDIR)$(archlibdir)/$$f; \
+	done
+	for f in $(IMAGE_FILES_NO_DIR); do \
+	  rm -f $(DESTDIR)$(imagedir)/$$f; \
+	done
+	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
+	  rm -f $(DESTDIR)$(datadir)/applications/octave.desktop \
+	fi
+.PHONY: uninstall
+
 tags:
 	ctags $(SOURCES)
 

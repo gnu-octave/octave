@@ -429,6 +429,26 @@ define subdir-for-command
 $(foreach d, $(SUBDIRS), $(do-subdir-for-command))
 endef
 
+define simple-move-if-change-rule
+if [ -s $@-t ]; then \
+  $(top_srcdir)/move-if-change $@-t $@; \
+else \
+  echo "$@-t is empty!" 1>&2; \
+  rm -f $@-t; \
+  exit 1; \
+fi
+endef
+
+define builddir-move-if-change-rule
+if [ -s $(@F)-t ]; then \
+  $(top_srcdir)/move-if-change $(@F)-t $(@F); \
+else \
+  echo "$(@F)-t is empty!" 1>&2; \
+  rm -f $(@F)-t; \
+  exit 1; \
+fi
+endef
+
 # Yes, the second sed command near the end is needed, to avoid limits
 # in command lengths for some versions of sed.  UGLY_DEFS is often
 # quite large, so it makes sense to split this command there.
@@ -517,7 +537,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_YFLAGS%|\"${YFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_config_opts%|\"${config_opts}\"|" | \
   $(SED)  -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
-$(top_srcdir)/move-if-change $@-t $@
+$(simple-move-if-change-rule)
 endef
 
 define do-subst-default-vals
@@ -558,7 +578,7 @@ $(SED) < $< > $@-t \
   -e "s|%OCTAVE_API_VERSION%|\"${api_version}\"|" \
   -e "s|%OCTAVE_RELEASE%|\"${OCTAVE_RELEASE}\"|" \
   -e "s|%OCTAVE_VERSION%|\"${version}\"|"
-$(top_srcdir)/move-if-change $@-t $@
+$(simple-move-if-change-rule)
 endef
 
 define do-subst-texinfo-vals
@@ -570,7 +590,7 @@ $(SED) < $< \
   -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
   -e "s|%TEXINFO_UMFPACK%|${TEXINFO_UMFPACK}|" | \
   $(SED) -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
-$(top_srcdir)/move-if-change $@-t $@
+$(simple-move-if-change-rule)
 endef
 
 define do-subst-script-vals
@@ -581,7 +601,7 @@ $(SED) < $< \
   -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \
   -e "s|%builddir%|$(shell pwd)|" > $@-t
-$(top_srcdir)/move-if-change $@-t $@
+$(simple-move-if-change-rule)
 endef
 
 define do-subst-f77-mangling
@@ -590,7 +610,7 @@ $(SED) < $< \
   -e "s|%F77_TOLOWER%|${F77_TOLOWER}|g" \
   -e "s|%F77_APPEND_UNDERSCORE%|${F77_APPEND_UNDERSCORE}|" \
   -e "s|%F77_APPEND_EXTRA_UNDERSCORE%|${F77_APPEND_EXTRA_UNDERSCORE}|" > $@-t
-$(top_srcdir)/move-if-change $@-t $@
+$(simple-move-if-change-rule)
 endef
 
 define do-mkpkgadd

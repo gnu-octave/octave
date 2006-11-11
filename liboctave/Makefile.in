@@ -338,7 +338,7 @@ dist: stamp-prereq
 $(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
 	@perl $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
-	@$(top_srcdir)/move-if-change $@-t $@
+	@$(simple-move-if-change-rule)
 
 $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=vx $(srcdir)/vx-ops
@@ -351,7 +351,7 @@ $(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC) : $(srcdir)/sparse-mk-ops.awk sparse-mx-
 
 mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t
-	$(top_srcdir)/move-if-change $@-t $@
+	$(simple-move-if-change-rule)
 
 
 # If missing, GNU make attempts to create them in the reverse of the

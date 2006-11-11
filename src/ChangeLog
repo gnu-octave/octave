@@ -1,3 +1,14 @@
+2006-11-11  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (parse.cc): Avoid creating empty files.
+	(%.df : %cc, builtins.cc, mkbuiltins, PKG_ADD, DOCSTRINGS,
+	doc-files, gendoc.cc, ops.cc, $(OPT_HANDLERS), oct-errno.cc,
+	oct-gperf.h): Use $(simple-move-if-change-rule) here.
+	(lex.cc, __gnuplot_raw__.cc):
+	Use $(destdir-move-if-change-rule) here.
+	(ifndef omit_deps): Don't include stamp-prereq here.
+	($(DEF_FILES), $(MAKEDEPS)): Also depend on stamp-prereq.
+
 2006-11-10  John W. Eaton  <jwe@octave.org>
 
 	* ov-str-mat.cc (octave_char_matrix_str::load_ascii,

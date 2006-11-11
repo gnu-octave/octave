@@ -40,7 +40,7 @@ octave.desktop: octave.desktop.in Makefile ../Makeconf
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
-	$(top_srcdir)/move-if-change $@-t $@
+	$(simple-move-if-change-rule)
 
 install install-strip:
 	for f in $(SCRIPTS); do \
@@ -65,7 +65,7 @@ uninstall:
 	  rm -f $(DESTDIR)$(imagedir)/$$f; \
 	done
 	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
-	  rm -f $(DESTDIR)$(datadir)/applications/octave.desktop \
+	  rm -f $(DESTDIR)$(datadir)/applications/octave.desktop; \
 	fi
 .PHONY: uninstall
 

@@ -70,8 +70,8 @@ $(CRUFT_DEFS): $(TOPDIR)/libcruft/mkf77def
 
 %.def : %.f
 	@echo "making $@ from $<"
-	@$(TOPDIR)/libcruft/mkf77def < $< > $@.t
-	$(top_srcdir)/move-if-change $@.t $@
+	@$(TOPDIR)/libcruft/mkf77def < $< > $@-t
+	@$(simple-move-if-change-rule)
 
 install:: all
 .PHONY: install

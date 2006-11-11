@@ -103,8 +103,8 @@ scripts-DOCSTRINGS:
 	@echo making $@ from $<
 	@./munge-texi \
 	  -d $(TOPDIR)/src/DOCSTRINGS \
-	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@.t
-	@$(top_srcdir)/move-if-change $@.t $@
+	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@-t
+	@$(simple-move-if-change-rule)
 
 octave.info: $(IMAGES_TXT) $(TEXINFO)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)

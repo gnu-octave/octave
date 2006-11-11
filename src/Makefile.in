@@ -29,7 +29,7 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 	@(egrep '^(///*|/\*) *PKG_ADD:' $< ; \
 	  $(CXXCPP) $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_BUILTINS $< \
 	    | $(srcdir)/mkdefs) > $@-t
-	@mv $@-t $@
+	@$(simple-move-if-change-rule)
 
 # How to make a .oct file from a .o file:
 
@@ -343,26 +343,26 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo DEF_FILES = $(DEF_FILES)
 	@echo $(DEF_FILES) > def-files
 	@$(srcdir)/mkbuiltins def-files > $@-t
-	@$(top_srcdir)/move-if-change $@-t $@
+	@$(simple-move-if-change-rule)
 
 PKG_ADD: $(DLD_DEF_FILES)
 	$(srcdir)/mk-pkg-add $(DLD_DEF_FILES) > $@-t
-	mv $@-t $@
+	@$(simple-move-if-change-rule)
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	./gendoc > $@-t
-	mv $@-t $@
+	@$(simple-move-if-change-rule)
 
 doc-files: $(DOC_FILES)
 	@echo making $@
 	@echo DOC_FILES = $(DOC_FILES)
 	@echo $(DOC_FILES) > $@-t
-	@mv $@-t $@
+	@$(simple-move-if-change-rule)
 
 gendoc.cc: doc-files mkgendoc
 	@echo making $@
 	@$(srcdir)/mkgendoc doc-files > $@-t
-	@$(top_srcdir)/move-if-change $@-t $@
+	@$(simple-move-if-change-rule)
 
 gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
@@ -370,15 +370,15 @@ gendoc$(BUILD_EXEEXT): gendoc.cc
 ops.cc: $(OP_SRC) mkops
 	@echo making $@ from $(OP_SRC)
 	@$(srcdir)/mkops $(OP_SRC) > $@-t
-	@$(top_srcdir)/move-if-change $@-t $@
+	@$(simple-move-if-change-rule)
 
 stamp-liboctave-prereq:
 	$(MAKE) -C ../liboctave stamp-prereq
 	touch stamp-liboctave-prereq
 
-$(DEF_FILES): stamp-liboctave-prereq mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
+$(DEF_FILES): stamp-prereq stamp-liboctave-prereq mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
 
-$(MAKEDEPS): stamp-liboctave-prereq defaults.h oct-gperf.h oct-conf.h
+$(MAKEDEPS): stamp-prereq stamp-liboctave-prereq defaults.h oct-gperf.h oct-conf.h
 
 @bsd_gcc_kluge_targets_frag@
 
@@ -518,18 +518,26 @@ conf-dist:
 $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
 	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
-	@$(top_srcdir)/move-if-change $@-t $@
+	@$(simple-move-if-change-rule)
 
 parse.cc : parse.y
 	@echo "expect 14 shift/reduce conflicts"
 	$(YACC) $(YFLAGS) $<
-	@$(top_srcdir)/move-if-change y.tab.c $(@F)
+	@if [ -s y.tab.c ]; then \
+	  $(top_srcdir)/move-if-change y.tab.c $(@F); \
+	else \
+	  echo "y.tab.c is empty!" 1>&2; \
+	  rm -f y.tab.c; \
+	  exit 1; \
+	fi
 
 lex.cc : lex.l
-	$(LEX) $(LFLAGS) $< > $(@F)
+	$(LEX) $(LFLAGS) $< > $(@F)-t
+	@$(builddir-move-if-change-rule)
 
 __gnuplot_raw__.cc : DLD-FUNCTIONS/__gnuplot_raw__.l
-	$(LEX) $(LFLAGS) $< > $(@F)
+	$(LEX) $(LFLAGS) $< > $(@F)-t
+	@$(builddir-move-if-change-rule)
 
 ## We want to force an update of defaults.h and oct-conf.h every
 ## time make is run because some values may come from the command
@@ -555,22 +563,14 @@ oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
 	fi
-	@if [ -s $@-t ]; then \
-	  $(top_srcdir)/move-if-change $@-t $@; \
-	else \
-	  exit 1; \
-	fi
+	@$(simple-move-if-change-rule)
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"
 	@$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< | \
 	  $(SED) 's,lookup\[,gperf_lookup[,' > $@-t \
 	  || (rm -f $@-t; exit 1)
-	@if [ -s $@-t ]; then \
-	  $(top_srcdir)/move-if-change $@-t $@; \
-	else \
-	  exit 1; \
-	fi
+	@$(simple-move-if-change-rule)
 
 # How to make a .oct file from a .o file:
 
@@ -595,11 +595,6 @@ endif
 check: all
 .PHONY: check
 
-# If missing, GNU make attempts to create them in the reverse of the
-# order in which they are listed here.  We rely on that fact to ensure
-# that defaults.h is created before trying to create the .d files.
-# Hmm.  I wonder if we can count on that...
-
 ifndef omit_deps
--include $(MAKEDEPS) stamp-prereq
+-include $(MAKEDEPS)
 endif

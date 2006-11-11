@@ -1,3 +1,7 @@
+2006-11-11  Søren Hauberg  <soren@hauberg.org>
+
+	* miscellaneous/copyfile.m: Fix docs to match function.
+
 2006-11-08  John W. Eaton  <jwe@octave.org>
 
 	* plot/legend.m: New function, adapted from Octave Forge.

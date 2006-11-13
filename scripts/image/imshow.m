@@ -75,8 +75,8 @@ function imshow (im, varargin)
       && ndims (im) == 2
       && ndims (varargin{1}) == 2
       && ndims (varargin{2}) == 2
-      && size (im) == size (varargin{1})
-      && size (im) == size (varargin{2}))
+      && size_equal (im, varargin{1})
+      && size_equal (im, varargin{2}))
     im(:,:,3) = varargin{2};
     im(:,:,2) = varargin{1};
     varargin(1:2) = [];

@@ -37,8 +37,8 @@ function [X, Y, Z] = sph2cart (Theta, Phi, R)
   endif
 
   if ((! (ismatrix (Theta) && ismatrix (Phi) && ismatrix (R)))
-      || size (Theta) != size (Phi)
-      || size (Theta) != size (R))
+      || (! size_equal (Theta, Phi))
+      || (! size_equal (Theta, R)))
     error ("sph2cart: arguments must be matrices of same size");
   endif
 

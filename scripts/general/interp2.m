@@ -164,10 +164,10 @@ function ZI = interp2 (varargin)
   ## If X and Y vectors produce a grid from them
   if (isvector (X) && isvector (Y))
     [X, Y] = meshgrid (X, Y);
-  elseif (! all (size (X) == size (Y)))
+  elseif (! size_equal (X, Y))
     error ("X and Y must be matrices of same size");
   endif
-  if (any (size (X) != size (Z)))
+  if (! size_equal (X, Z))
     error ("X and Y size must match Z dimensions");
   endif
 
@@ -175,7 +175,7 @@ function ZI = interp2 (varargin)
   if ((rows (XI) == 1 && columns (YI) == 1)
       || (columns (XI) == 1 && rows (YI) == 1))
     [XI, YI] = meshgrid (XI, YI);
-  elseif (any (size (XI) != size (YI)))
+  elseif (! size_equal (XI, YI))
     error ("XI and YI must be matrices of same size");
   endif
 

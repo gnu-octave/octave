@@ -47,7 +47,7 @@ function [X, map] = rgb2ind (R, G, B)
     endif
   endif
 
-  if (size (R) != size (G) || size (R) != size (B))
+  if (! size_equal (R, G) || ! size_equal (R, B))
     error ("rgb2ind: arguments must all have the same size");
   endif
 

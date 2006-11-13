@@ -64,7 +64,7 @@ function [p, s, mu] = polyfit (x, y, n)
     print_usage ();
   endif
 
-  if (! (isvector (x) && isvector (y) && size (x) == size (y)))
+  if (! (isvector (x) && isvector (y) && size_equal (x, y)))
     error ("polyfit: x and y must be vectors of the same size");
   endif
 

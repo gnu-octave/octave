@@ -53,7 +53,7 @@ function z = trapz (x, y, dim)
     have_dim = true;
   endif
   if (nargin == 2)
-    if (size (x) != size (y) && isscalar (y))
+    if (! size_equal (x, y) && isscalar (y))
       dim = y;
       have_dim = true;
     else
@@ -90,7 +90,7 @@ function z = trapz (x, y, dim)
   if (! have_x)
     z = 0.5 * sum (x(idx1{:}) + x(idx2{:}), dim);
   else
-    if (size (x) != size (y))
+    if (! size_equal (x, y))
       error ("cumtrapz: x and y must have same shape");
     endif
     z = 0.5 * sum ((x(idx1{:}) - x(idx2{:})) .* 

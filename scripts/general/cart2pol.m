@@ -41,7 +41,7 @@ function [Theta, R, Z] = cart2pol (X, Y, Z)
   endif
 
   if ((! (ismatrix (X) && ismatrix (Y)))
-      || (size (X) != size (Y))
+      || (! size_equal (X, Y))
       || (nargin == 3 && (! (size (X) == size (Z) && ismatrix (Z)))))
     error ("cart2pol: arguments must be matrices of same size");
   endif

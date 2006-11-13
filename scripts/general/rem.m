@@ -39,8 +39,7 @@ function r = rem (x, y)
     print_usage ();
   endif
 
-  if (((ndims (x) != ndims (y)) || any (size (x) != size (y))) &&
-	 ! (isscalar (x) || isscalar (y)))
+  if (! size_equal (x, y) && ! (isscalar (x) || isscalar (y)))
     error ("rem: argument sizes must agree");
   endif
 

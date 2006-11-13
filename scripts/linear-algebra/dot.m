@@ -40,12 +40,12 @@ function z = dot (x, y, dim)
     if isvector (y)
       y = y(:);
     endif
-    if (size (x) != size (y))
+    if (! size_equal (x, y))
       error ("dot: sizes of arguments must match")
     endif
     z = sum(x .* y);
   else
-    if (size (x) != size (y))
+    if (! size_equal (x, y))
       error ("dot: sizes of arguments must match")
     endif
     z = sum(x .* y, dim);

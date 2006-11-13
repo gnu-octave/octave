@@ -70,7 +70,7 @@ function F = bicubic (X, Y, Z, XI, YI, spline_alpha)
       if (rz != length (Y) || cz != length (X))
 	error ("length of X and Y must match the size of Z");
       endif
-    elseif (size(X) == size(Y) && size(X) == size(Z))
+    elseif (size_equal (X, Y) && size_equal (X, Z))
       X = X(1,:);
       Y = Y(:,1);
     else

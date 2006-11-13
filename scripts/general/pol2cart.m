@@ -41,8 +41,8 @@ function [X, Y, Z] = pol2cart (Theta, R, Z)
   endif
 
   if ((! (ismatrix (Theta) && ismatrix (R)))
-      || (size (Theta) != size (R))
-      || (nargin == 3 && (! (size (R) == size (Z) && ismatrix (Z)))))
+      || (! size_equal (Theta, R))
+      || (nargin == 3 && ! (size_equal (R, Z) && ismatrix (Z))))
     error ("pol2cart: arguments must be matrices of same size");
   endif
 

@@ -107,7 +107,7 @@ function __plr2__ (theta, rho, fmt)
       y = diag_r * sin (theta);
       __plt__ ("polar", x, y, fmt);
     elseif (ismatrix (rho))
-      if (size (rho) != size (theta))
+      if (! size_equal (rho, theta))
         error ("__plr2__: matrix dimensions must match");
       endif
       x = rho .* cos (theta);

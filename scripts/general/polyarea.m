@@ -51,7 +51,7 @@
 function a = polyarea (x, y, dim)
   if (nargin != 2 && nargin != 3)
     print_usage ();
-  elseif (ndims (x) == ndims (y) && size (x) == size (y))
+  elseif (size_equal (x, y))
     if (nargin == 2)
       a = abs (sum (x .* (shift (y, -1) - shift (y, 1)))) / 2;
     else

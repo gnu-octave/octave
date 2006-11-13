@@ -80,7 +80,7 @@ function z = cross (x, y, dim)
   idx2(dim) = 2;
   idx3(dim) = 3;
 
-  if (size (x) == size (y))
+  if (size_equal (x, y))
     z = cat (dim, 
 	     (x(idx2{:}) .* y(idx3{:}) - x(idx3{:}) .* y(idx2{:})),
              (x(idx3{:}) .* y(idx1{:}) - x(idx1{:}) .* y(idx3{:})),

@@ -92,7 +92,7 @@ function contour (x, y, z, n)
 	endif
       else
 	z_size = size (z);
-	if (z_size == size (x) && z_size == size (y))
+	if (size_equal (z, x) && size_equal (z, y))
 	  nc = 3*z_size(1);
 	  zz = zeros (z_size(2), nc);
 	  zz(:,1:3:nc) = x';

@@ -1962,6 +1962,7 @@ fields @samp{type} and @samp{subs}.  Valid values for @samp{type}\n\
 are @samp{\"()\"}, @samp{\"@{@}\", and @samp{\".\"}.\n\
 The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
 of index values.\n\
+@seealso{subsasgn, substruct}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1993,6 +1994,7 @@ fields @samp{type} and @samp{subs}.  Valid values for @samp{type}\n\
 are @samp{\"()\"}, @samp{\"@{@}\", and @samp{\".\"}.\n\
 The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
 of index values.\n\
+@seealso{subsref, substruct}\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -1,5 +1,29 @@
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/substruct.m: New function.
+
+	* testfun/assert.m: Force orientation to match when comparing
+	struct elements.
+
+	* general/__isequal__.m: Avoid assignment of comma-separated lists
+	when comparing structs.
+
+2006-11-13  Søren Hauberg  <hauberg@gmail.com>
+
+	* scripts/general/bicubic.m, scripts/general/cart2pol.m
+	scripts/general/cart2sph.m, scripts/plot/contour.m,
+	scripts/linear-algebra/cross.m, scripts/general/cumtrapz.m,
+	scripts/linear-algebra/dot.m, scripts/image/imshow.m,
+	scripts/general/interp2.m, scripts/general/mod.m,
+	scripts/plot/plot3.m, scripts/plot/__plr2__.m,
+	scripts/plot/__plr__.m, scripts/general/pol2cart.m,
+	scripts/general/polyarea.m, scripts/polynomial/polyfit.m,
+	scripts/general/rem.m, scripts/image/rgb2ind.m,
+	scripts/general/sph2cart.m, scripts/general/trapz.m,
+	scripts/miscellaneous/xor.m: Use size_equal
+
+2006-11-13  John W. Eaton  <jwe@octave.org>
+
 	* plot/mesh.m: Use size_equal to compare dimensions.
 
 2006-11-13  Søren Hauberg  <soren@hauberg.org>

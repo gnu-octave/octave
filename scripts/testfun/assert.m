@@ -110,10 +110,11 @@ function assert(cond, expected, tol)
 	for [v,k] = cond
 	  if !struct_contains(expected,k), error; endif
 	  if empty, v = cell(1,0); endif
-	  if normal, v = {v}; endif
-	  assert(v,{expected.(k)},tol);
+	  if normal, v = {v}; else v = v(:)'; endif
+	  assert(v,{expected.(k)},tol)
 	endfor
       catch
+	"catch"
 	iserror = 1;
       end
     endif

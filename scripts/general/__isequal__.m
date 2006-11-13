@@ -104,9 +104,9 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
       while (t && idx < l_fn_x)
 	## Test that all field values are equal.
 	idx++;
-	args = {nans_compare_equal, x.(fn_x{idx})};
+	args = {nans_compare_equal, {x.(fn_x{idx})}};
 	for argn = 1:l_v
-	  args{argn+2} = varargin{argn}.(fn_x{idx});
+	  args{argn+2} = {varargin{argn}.(fn_x{idx})};
 	endfor
 	## Minimize function calls by calling for all the arguments at
 	## once.

@@ -213,7 +213,7 @@ function plot3 (varargin)
 	  endif
 	endif
 
-	if (any (size (x) != size (y)) || any (size (x) != size (z)))
+	if (! size_equal (x, y) || ! size_equal (x, z))
 	  error ("plot3: x, y, and z must have the same shape");
 	endif
 
@@ -251,7 +251,7 @@ function plot3 (varargin)
 	  endif
 	endif
 
-	if (any (size (x) != size (y)) || any (size (x) != size (z)))
+	if (! size_equal (x, y) || ! size_equal (x, z))
 	  error ("plot3: x, y, and z must have the same shape");
 	endif
 
@@ -303,7 +303,7 @@ function plot3 (varargin)
 	endif
       endif
 
-      if (any (size (x) != size (y)) || any (size (x) != size (z)))
+      if (! size_equal (x, y) || ! size_equal (x, z))
 	error ("plot3: x, y, and z must have the same shape");
       endif
 

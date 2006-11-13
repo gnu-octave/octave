@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} mesh (@var{x}, @var{y}, @var{z})
-## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshdom} and
+## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
@@ -32,78 +32,26 @@
 
 function mesh (x, y, z)
 
-  ## FIXME -- the plot states should really just be set
-  ## temporarily, probably inside an unwind_protect block, but there is
-  ## no way to determine their current values.
-
   if (nargin == 1)
     z = x;
     if (ismatrix (z))
-      __gnuplot_raw__ ("set hidden3d;\n");
-      __gnuplot_raw__ ("set data style lines;\n");
-      __gnuplot_raw__ ("set surface;\n");
-      __gnuplot_raw__ ("set nocontour;\n");
-      __gnuplot_set__ noparametric;
-      __gnuplot_raw__ ("set nologscale;\n");
-      __gnuplot_raw__ ("set view 60, 30, 1, ;\n");
-      __plt3__ (z', "");
+      [x, y] = meshgrid(0:columns(z)-1, 0:rows(z)-1);
     else
       error ("mesh: argument must be a matrix");
     endif
   elseif (nargin == 3)
     if (isvector (x) && isvector (y) && ismatrix (z))
-      xlen = length (x);
-      ylen = length (y);
-      if (xlen == columns (z) && ylen == rows (z))
-        if (rows (y) == 1)
-          y = y';
-        endif
-        len = 3 * xlen;
-        zz = zeros (ylen, len);
-        k = 1;
-        for i = 1:3:len
-          zz(:,i)   = x(k) * ones (ylen, 1);
-          zz(:,i+1) = y;
-          zz(:,i+2) = z(:,k);
-          k++;
-        endfor
-	__gnuplot_raw__ ("set hidden3d;\n");
-	__gnuplot_raw__ ("set data style lines;\n");
-	__gnuplot_raw__ ("set surface;\n");
-	__gnuplot_raw__ ("set nocontour;\n");
-	__gnuplot_raw__ ("set nologscale;\n");
-	__gnuplot_set__ parametric;
-	__gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-	__gnuplot_raw__ ("set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
-	__gnuplot_raw__ ("set nocolorbox;\n");
-	__plt3__ (zz, "", "", "", [gnuplot_command_with " line palette"]);
+      if (rows (z) == length (y) && columns (z) == length (x))
+        x = repmat(x(:)', length (y), 1);
+        y = repmat(y(:), 1, length (x));
       else
         msg = "mesh: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
         error (msg);
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
-      xlen = columns (z);
-      ylen = rows (z);
-      if (xlen == columns (x) && xlen == columns (y) &&
-        ylen == rows (x) && ylen == rows(y))
-        len = 3 * xlen;
-        zz = zeros (ylen, len);
-        k = 1;
-        for i = 1:3:len
-          zz(:,i)   = x(:,k);
-          zz(:,i+1) = y(:,k);
-          zz(:,i+2) = z(:,k);
-          k++;
-        endfor
-	__gnuplot_raw__ ("set data style lines;\n");
-	__gnuplot_raw__ ("set surface;\n");
-	__gnuplot_raw__ ("set nocontour;\n");
-	__gnuplot_raw__ ("set nologscale;\n");
-	__gnuplot_set__ parametric;
-	__gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-	__plt3__ (zz, "");
-      else
+      if (ndims (x) != ndims (y) || ndims (x) != ndims (z)
+	  || size (x) != size (y) || size (x) != size (z))
         error ("mesh: x, y, and z must have same dimensions");
       endif
     else
@@ -111,6 +59,35 @@ function mesh (x, y, z)
     endif
   else
     print_usage ();
+  endif
+
+  ## Show the mesh.
+  xlen = columns (z);
+  ylen = rows (z);
+  if (xlen == columns (x) && xlen == columns (y)
+      && ylen == rows (x) && ylen == rows (y))
+    len = 3 * xlen;
+    zz = zeros (ylen, len);
+    k = 1;
+    for i = 1:3:len
+      zz(:,i)   = x(:,k);
+      zz(:,i+1) = y(:,k);
+      zz(:,i+2) = z(:,k);
+      k++;
+    endfor
+    __gnuplot_raw__ ("set hidden3d;\n");
+    __gnuplot_raw__ ("set data style lines;\n");
+    __gnuplot_raw__ ("set surface;\n");
+    __gnuplot_raw__ ("set nocontour;\n");
+    __gnuplot_raw__ ("set nologscale;\n");
+    __gnuplot_set__ parametric;
+    __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
+    __gnuplot_raw__ ("set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+    __gnuplot_raw__ ("set nocolorbox;\n");
+    __plt3__ (zz, "", "", "",
+	      sprintf ("%s line palette", gnuplot_command_with ()));
+  else
+    error ("mesh: x, y, and z must have same dimensions");
   endif
 
 endfunction

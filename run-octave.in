@@ -8,6 +8,10 @@ AWK=${AWK:-'awk'}
 top_srcdir='%abs_top_srcdir%'
 builddir='%builddir%'
 
+liboctinterp="$builddir/src/%liboctinterp%"
+liboctave="$builddir/liboctave/%liboctave%"
+libcruft="$builddir/libcruft/%libcruft%"
+
 d1="$top_srcdir/test"
 d2="$top_srcdir/scripts"
 d3="$builddir/scripts"
@@ -49,6 +53,7 @@ fi
 
 if [ -n "$args" ]; then
   OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
+  LD_PRELOAD="$liboctinterp $liboctave $libcruft" \
   %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
     exec $driver "$builddir/src/octave" "$args" "$@"
 else

@@ -597,6 +597,9 @@ define do-subst-script-vals
 echo "making $@ from $<"
 $(SED) < $< \
   -e "s|%library_path_var%|${library_path_var}|g" \
+  -e "s|%liboctinterp%|${LIBPRE}octinterp.${SHLEXT}|g" \
+  -e "s|%liboctave%|${LIBPRE}octave.${SHLEXT}|g" \
+  -e "s|%libcruft%|${LIBPRE}cruft.${SHLEXT}|g" \
   -e "s|%srcdir%|${srcdir}|" \
   -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%abs_top_srcdir%|${abs_top_srcdir}|" \

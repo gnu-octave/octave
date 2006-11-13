@@ -1,3 +1,10 @@
+2006-11-13  John W. Eaton  <jwe@octave.org>
+
+	* run-octave.in: Substitute liboctinterp, liboctave, and libcruft.
+	Use them to set LD_PRELOAD.
+	* Makeconf.in (do-subst-script-vals): Also substitute
+	liboctinterp, liboctave, and libcruft.
+
 2006-11-13  Rafael Laboissiere  <rafael@debian.org>
 
 	* mkoctfile.in: Add -Wl,... options to ldflags, not pass_on_flags.

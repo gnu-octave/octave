@@ -1,5 +1,7 @@
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
+	* plot/mesh.m: Use proper dimensions for y in call to repmat.
+
 	* miscellaneous/substruct.m: New function.
 
 	* testfun/assert.m: Force orientation to match when comparing

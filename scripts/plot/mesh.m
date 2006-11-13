@@ -42,8 +42,8 @@ function mesh (x, y, z)
   elseif (nargin == 3)
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
-        x = repmat(x(:)', length (y), 1);
-        y = repmat(y(:), 1, length (x));
+        x = repmat(x(:)', rows (z), 1);
+        y = repmat(y(:), 1, columns (z));
       else
         msg = "mesh: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);

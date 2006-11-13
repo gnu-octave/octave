@@ -50,8 +50,7 @@ function mesh (x, y, z)
         error (msg);
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
-      if (ndims (x) != ndims (y) || ndims (x) != ndims (z)
-	  || size (x) != size (y) || size (x) != size (z))
+      if (! (size_equal (x, y) && size_equal (x, z)))
         error ("mesh: x, y, and z must have same dimensions");
       endif
     else

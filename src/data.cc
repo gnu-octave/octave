@@ -1081,10 +1081,36 @@ returns the number of columns in the given matrix.\n\
   return retval;
 }
 
+DEFUN (size_equal, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b})\n\
+Return true if the dimensions of @var{a} and @var{b} agree.\n\
+Trailing singleton dimensions are ignored.\n\
+@seealso{size, numel}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    {
+      dim_vector a_dims = args(0).dims ();
+      dim_vector b_dims = args(1).dims ();
+
+      a_dims.chop_trailing_singletons ();
+      b_dims.chop_trailing_singletons ();
+
+      retval = a_dims == b_dims;
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUN (nnz, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{scalar} =} nnz (@var{a})\n\
-returns number of non zero elements in @var{a}.\n\
+@deftypefn {Built-in Function} {@var{scalar} =} nnz (@var{a})\n\
+Returns the number of non zero elements in @var{a}.\n\
 @seealso{sparse}\n\
 @end deftypefn")
 {
@@ -1100,7 +1126,7 @@ returns number of non zero elements in @var{a}.\n\
 
 DEFUN (nzmax, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{scalar} =} nzmax (@var{SM})\n\
+@deftypefn {Built-in Function} {@var{scalar} =} nzmax (@var{SM})\n\
 Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
 Note that Octave tends to crop unused memory at the first oppurtunity\n\
 for sparse objects. There are some cases of user created sparse objects\n\

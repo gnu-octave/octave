@@ -1,3 +1,7 @@
+2006-11-13  John W. Eaton  <jwe@octave.org>
+
+	* plot/mesh.m: Use size_equal to compare dimensions.
+
 2006-11-13  Søren Hauberg  <soren@hauberg.org>
 
 	* plot/mesh.m: Simplify.  Set hidden3d for the plot.

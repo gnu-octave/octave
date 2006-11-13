@@ -146,7 +146,9 @@ Options:
 
   -RDIR                   Add -RDIR to link command.
 
-  -W                      Pass flags though the compiler like -Wl,-rpath=...
+  -Wl,...                 Pass flags though the linker like -Wl,-rpath=...
+
+  -W...                   Pass flags though the compiler like -Wa,OPTION.
 
   -c, --compile           Compile, but do not link.
 
@@ -218,7 +220,7 @@ EOF
     -D*)
       defs="$defs $1"
     ;;
-    -[lLR]*)
+    -[lLR]* | -Wl,*)
       ldflags="$ldflags $1"
     ;;
     -M | --depend)

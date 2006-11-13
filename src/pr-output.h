@@ -130,7 +130,7 @@ octave_print_internal (std::ostream& os, const Cell& cell,
 extern bool Vprint_empty_dimensions;
 
 // How many levels of structure elements should we print?
-extern int Vstruct_levels_to_print;
+extern OCTINTERP_API int Vstruct_levels_to_print;
 
 #endif
 

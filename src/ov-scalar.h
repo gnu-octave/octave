@@ -50,6 +50,7 @@ class tree_walker;
 // Real scalar values.
 
 class
+OCTINTERP_API
 octave_scalar : public octave_base_scalar<double>
 {
 public:

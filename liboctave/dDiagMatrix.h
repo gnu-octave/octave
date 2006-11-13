@@ -72,8 +72,8 @@ public:
 
   DiagMatrix transpose (void) const;
 
-  friend DiagMatrix real (const ComplexDiagMatrix& a);
-  friend DiagMatrix imag (const ComplexDiagMatrix& a);
+  friend OCTAVE_API DiagMatrix real (const ComplexDiagMatrix& a);
+  friend OCTAVE_API DiagMatrix imag (const ComplexDiagMatrix& a);
 
   // resize is the destructive analog for this one
 
@@ -97,7 +97,7 @@ public:
 
   // i/o
 
-  friend std::ostream& operator << (std::ostream& os, const DiagMatrix& a);
+  friend OCTAVE_API std::ostream& operator << (std::ostream& os, const DiagMatrix& a);
 
 private:
 

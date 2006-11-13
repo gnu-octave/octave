@@ -38,19 +38,19 @@ INSTANTIATE_ARRAY_ASSIGN (double, char);
 
 #include "Array2.h"
 
-template class Array2<double>;
+template class OCTAVE_API Array2<double>;
 
 #include "ArrayN.h"
 #include "ArrayN.cc"
 
-template class ArrayN<double>;
+template class OCTAVE_API ArrayN<double>;
 
-template std::ostream& operator << (std::ostream&, const ArrayN<double>&);
+template OCTAVE_API std::ostream& operator << (std::ostream&, const ArrayN<double>&);
 
 #include "DiagArray2.h"
 #include "DiagArray2.cc"
 
-template class DiagArray2<double>;
+template class OCTAVE_API DiagArray2<double>;
 
 /*
 ;;; Local Variables: ***

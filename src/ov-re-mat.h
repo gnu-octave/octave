@@ -50,6 +50,7 @@ class tree_walker;
 // Real matrix values.
 
 class
+OCTINTERP_API
 octave_matrix : public octave_base_matrix<NDArray>
 {
 public:

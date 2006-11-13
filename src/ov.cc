@@ -1880,6 +1880,139 @@ Return the size of @var{val} in bytes\n\
   return retval;
 }
 
+static void
+decode_subscripts (const char* name, const octave_value& arg,
+		   std::string& type_string,
+		   std::list<octave_value_list>& idx)
+{
+  Octave_map m = arg.map_value ();
+
+  if (! error_state
+      && m.length () == 2 && m.contains ("type") && m.contains ("subs"))
+    {
+      Cell& type = m.contents ("type");
+      Cell& subs = m.contents ("subs");
+
+      type_string = std::string (type.length(), '\0');
+
+      for (int k = 0; k < type.length (); k++)
+	{
+	  std::string item = type(k).string_value ();
+
+	  if (! error_state)
+	    {
+	      if (item == "{}")
+		type_string[k] = '{';
+	      else if (item == "()")
+		type_string[k] = '(';
+	      else if (item == ".")
+		type_string[k] = '.';
+	      else
+		{
+		  error("%s: invalid indexing type `%s'", name, item.c_str ());
+		  return;
+		}
+	    }
+	  else
+	    {
+	      error ("%s: expecting type(%d) to be a character string",
+		     name, k+1);
+	      return;
+	    }
+
+	  octave_value_list idx_item;
+
+	  if (subs(k).is_string ())
+	    idx_item(0) = subs(k);
+	  else if (subs(k).is_cell ())
+	    {
+	      Cell subs_cell = subs(k).cell_value ();
+
+	      for (int n = 0; n < subs_cell.length (); n++)
+		{
+		  if (subs_cell(n).is_string ()
+		      && subs_cell(n).string_value () == ":")
+		    idx_item(n) = octave_value(octave_value::magic_colon_t);
+		  else
+		    idx_item(n) = subs_cell(n);
+		}
+	    }
+	  else
+	    {
+	      error ("%s: expecting subs(%d) to be a character string or cell array",
+		     name, k+1);
+	      return;
+	    }
+
+	  idx.push_back (idx_item);
+	}
+    }
+  else
+    error ("%s: second argument must be a structure with fields `type' and `subs'", name);
+}
+
+DEFUN (subsref, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} subsref (@var{val}, @var{idx})\n\
+Perform the subscripted element selection operation according to\n\
+the subscript specified by @var{idx}.\n\
+\n\
+The subscript @var{idx} is expected to be a structure array with\n\
+fields @samp{type} and @samp{subs}.  Valid values for @samp{type}\n\
+are @samp{\"()\"}, @samp{\"@{@}\", and @samp{\".\"}.\n\
+The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
+of index values.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 2)
+    {
+      std::string type;
+      std::list<octave_value_list> idx;
+
+      decode_subscripts ("subsref", args(1), type, idx);
+
+      if (! error_state)
+	retval = args(0).subsref (type, idx, nargout);
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (subsasgn, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} subsasgn (@var{val}, @var{idx}, @var{rhs})\n\
+Perform the subscripted assignment operation according to\n\
+the subscript specified by @var{idx}.\n\
+\n\
+The subscript @var{idx} is expected to be a structure array with\n\
+fields @samp{type} and @samp{subs}.  Valid values for @samp{type}\n\
+are @samp{\"()\"}, @samp{\"@{@}\", and @samp{\".\"}.\n\
+The @samp{subs} field may be either @samp{\":\"} or a cell array\n\
+of index values.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 3)
+    {
+      std::string type;
+      std::list<octave_value_list> idx;
+
+      decode_subscripts ("subsasgn", args(1), type, idx);
+
+      if (! error_state)
+	retval = args(0).subsasgn (type, idx, args(2));
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

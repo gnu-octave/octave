@@ -1,3 +1,7 @@
+2006-11-13  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Array-d.cc, dDiagMatrix.h: Sprinkle with OCTAVE_API as needed.
+
 2006-11-11  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in ($(OPTS_INC), mx-ops.h):

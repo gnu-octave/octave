@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.545 $)
+AC_REVISION($Revision: 1.546 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -2161,6 +2161,7 @@ if test -n "$warn_gnuplot"; then
   ## If you change this text, be sure to also change the corresponding
   ## set of warnings above.
 
+  AC_MSG_WARN([])
   AC_MSG_WARN([I didn't find gnuplot.  It isn't necessary to have gnuplot])
   AC_MSG_WARN([installed, but you won't be able to use any of Octave's])
   AC_MSG_WARN([plotting commands without it.])
@@ -2171,10 +2172,12 @@ if test -n "$warn_gnuplot"; then
   AC_MSG_WARN([gnuplot_binary = "/full/path/to/gnuplot/binary"])
   AC_MSG_WARN([])
   AC_MSG_WARN([at the Octave prompt.])
+  AC_MSG_WARN([])
   warn_msg_printed=true
 fi
 
 if $USE_64_BIT_IDX_T; then
+  AC_MSG_WARN([])
   AC_MSG_WARN([You used the EXPERIMENTAL --enable-64 option.])
   AC_MSG_WARN([Are you sure that is what you want to do?])
   AC_MSG_WARN([])
@@ -2182,7 +2185,16 @@ if $USE_64_BIT_IDX_T; then
   AC_MSG_WARN([code with 8 byte signed INTEGER values, and that your])
   AC_MSG_WARN([BLAS and LAPACK libraries are compiled to use 8 byte])
   AC_MSG_WARN([signed integers for array indexing.])
+  AC_MSG_WARN([])
   warn_msg_printed=true
+fi
+
+if $warn_message_printed; then
+  AC_MSG_NOTICE([
+
+NOTE: libraries may be skipped if a library is not found OR
+      if the library on your system is missing required features.
+])
 fi
 
 ### End of configure.

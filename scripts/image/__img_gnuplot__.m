@@ -16,15 +16,17 @@
 ## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __img__ (@var{x}, @var{y}, @var{A})
+## @deftypefn {Function File} {} __img_gnuplot__ (@var{x}, @var{y}, @var{A})
 ## Display an image using @code{gnuplot}, where vectors @var{x} and
 ## @var{y} define the axes and the matrix @var{A} contains the image
 ## data.
 ## @end deftypefn
 
-function __img__ (x, y, A)
+function __img_gnuplot__ (x, y, A, zoom)
 
-  if (nargin != 3)
+  ## ZOOM is ignored.
+
+  if (nargin < 3)
     print_usage ();
   endif
 

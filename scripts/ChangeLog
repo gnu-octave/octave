@@ -1,5 +1,21 @@
 2006-11-14  John W. Eaton  <jwe@octave.org>
 
+	* image/image_viewer.m: Set default values here.
+	* image/image.m: Not here.
+
+	* image/image_viewer.m: Always return old values.  Check arguments.
+	* image/__img_gnuplot__.m: Rename from __img__m.
+
+2006-11-14  Søren Hauberg  <soren@hauberg.org>
+
+	* image/image_viewer.m: New function.
+	* image/__img_via_file__.m: New function.
+	* image/image.m: Use image_viewer to determine which program to
+	use for image viewing.
+	* scripts/image/__img__.m: Silently accept more than 3 args.
+
+2006-11-14  John W. Eaton  <jwe@octave.org>
+
 	* plot/__do_legend__.m, plot/__errplot__.m,
 	plot/__init_plot_vars__.m, plot/__plot_globals__.m,
 	plot/__plt3__.m, plot/__plt__.m, plot/__setup_plot__.m,

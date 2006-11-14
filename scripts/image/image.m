@@ -25,12 +25,15 @@
 ## length of the colormap.  If @var{zoom} is omitted, the image will be
 ## scaled to fit within 600x350 (to a max of 4).
 ##
-## It first tries to use @code{display} from @code{ImageMagick} then
-## @code{xv} and then @code{xloadimage}.
+## It first tries to use @code{gnuplot}, then @code{display} from 
+## @code{ImageMagick}, then @code{xv}, and then @code{xloadimage}.
+## The actual program used can be changed using the @code{image_viewer}
+## function.
 ##
 ## The axis values corresponding to the matrix elements are specified in
-## @var{x} and @var{y}. At present they are ignored.
-## @seealso{imshow, imagesc, colormap}
+## @var{x} and @var{y}. If you're not using gnuplot 4.2 or later, these
+## variables are ignored.
+## @seealso{imshow, imagesc, colormap, image_viewer}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -55,43 +58,24 @@ function image (x, y, A, zoom)
   elseif (nargin == 3)
     zoom = [];
   elseif (nargin > 4)
-    print_usage ();
+    usage ("image (matrix, zoom) or image (x, y, matrix, zoom)");
   endif
 
-  if (compare_versions (__gnuplot_version__ (), "4.0", ">"))
-    __img__ (x, y, A);
-  else
-
-    if (isempty (zoom))
-      ## Find an integer scale factor which sets the image to
-      ## approximately the size of the screen.
-      zoom = min ([350/rows(A), 600/columns(A), 4]);
-      if (zoom >= 1)
-	zoom = floor (zoom);
-      else
-	zoom = 1 / ceil (1/zoom);
-      endif
+  if (isempty (zoom))
+    ## Find an integer scale factor which sets the image to
+    ## approximately the size of the screen.
+    zoom = min ([350/rows(A), 600/columns(A), 4]);
+    if (zoom >= 1)
+      zoom = floor (zoom);
+    else
+      zoom = 1 / ceil (1/zoom);
     endif
-    ppm_name = tmpnam ();
-
-    saveimage (ppm_name, A, "ppm");
-
-    ## Start the viewer.  Try display, xv, then xloadimage.
-
-    xv = sprintf ("xv -raw -expand %f \"%s\"", zoom, ppm_name);
-
-    xloadimage = sprintf ("xloadimage -zoom %f \"%s\"", zoom*100, ppm_name);
-
-    ## ImageMagick:
-    im_display = sprintf ("display -geometry %f%% \"%s\"", zoom*100, ppm_name);
-  
-    rm = sprintf ("rm -f \"%s\"", ppm_name);
-
-    ## Need to let the shell clean up the tmp file because we are putting
-    ## the viewer in the background.
-
-    system (sprintf ("( %s || %s || %s && %s ) > /dev/null 2>&1 &",
-                     im_display, xv, xloadimage, rm));
   endif
+
+  ## Get the image viewer.
+  [view_cmd, view_fcn, view_zoom] = image_viewer ();
+
+  ## Show the image.
+  view_fcn (x, y, A, zoom*view_zoom, view_cmd);
 
 endfunction

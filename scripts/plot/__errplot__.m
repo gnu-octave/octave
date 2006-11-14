@@ -38,8 +38,8 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
   __plot_globals__;
 
   cf = __current_figure__;
-  mxi = __multiplot_xi__;
-  myi = __multiplot_yi__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
 
   __setup_plot__ ("__gnuplot_plot__");
 
@@ -89,7 +89,7 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
     __plot_data__{cf}{mxi,myi}{j} = tmp;
 
     __plot_command__{cf}{mxi,myi} \
-	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d} %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}",
+	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d} %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d}",
 		   __plot_command__{cf}{mxi,myi},
 		   __plot_command_sep__, j, ifmt,
 		   gnuplot_command_title, loff);
@@ -104,7 +104,7 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
   __plot_line_offset__{cf}(mxi,myi) = loff;
 
   if (! isempty (__plot_command__{cf}{mxi,myi}))
-    if (__multiplot_mode__)
+    if (__multiplot_mode__(cf))
       __gnuplot_raw__ ("clear\n");
     endif
     __do_legend__ ();

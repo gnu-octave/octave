@@ -21,27 +21,6 @@
 
 ## global variables to keep track of multiplot options
 
-global __multiplot_mode__ = 0;
-global __multiplot_xsize__;
-global __multiplot_ysize__;
-global __multiplot_xn__;
-global __multiplot_yn__;
-global __multiplot_xi__;
-global __multiplot_yi__;
-global __multiplot_scale__;
-
-if (isempty (__multiplot_scale__))
-  __multiplot_scale__ = [1, 1];
-endif
-
-if (isempty (__multiplot_xi__))
-  __multiplot_xi__ = 1;
-endif
-
-if (isempty (__multiplot_yi__))
-  __multiplot_yi__ = 1;
-endif
-
 global __current_figure__;
 global __plot_data_offset__;
 global __plot_line_offset__;
@@ -50,39 +29,74 @@ global __plot_command_sep__;
 global __plot_data__;
 global __plot_key_labels__;
 global __plot_key_properties__;
+global __multiplot_mode__;
+global __multiplot_xsize__;
+global __multiplot_ysize__;
+global __multiplot_xn__;
+global __multiplot_yn__;
+global __multiplot_xi__;
+global __multiplot_yi__;
 
 if (isempty (__current_figure__))
   __current_figure__ = 1;
 endif
 
-if (length (__plot_data_offset__) < __current_figure__
-    || any (size (__plot_data_offset__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+if (length (__multiplot_mode__) < __current_figure__)
+  __multiplot_mode__(__current_figure__) = false;
+endif
 
-  __plot_data_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
+if (length (__multiplot_xsize__) < __current_figure__)
+  __multiplot_xsize__(__current_figure__) = 1;
+endif
+
+if (length (__multiplot_ysize__) < __current_figure__)
+  __multiplot_ysize__(__current_figure__) = 1;
+endif
+
+if (length (__multiplot_xn__) < __current_figure__)
+  __multiplot_xn__(__current_figure__) = 1;
+endif
+
+if (length (__multiplot_yn__) < __current_figure__)
+  __multiplot_yn__(__current_figure__) = 1;
+endif
+
+if (length (__multiplot_xi__) < __current_figure__)
+  __multiplot_xi__(__current_figure__) = 1;
+endif
+
+if (length (__multiplot_yi__) < __current_figure__)
+  __multiplot_yi__(__current_figure__) = 1;
+endif
+
+if (length (__plot_data_offset__) < __current_figure__
+    || any (size (__plot_data_offset__{__current_figure__}) != [__multiplot_xi__(__current_figure__), __multiplot_yi__(__current_figure__)]))
+
+  __plot_data_offset__{__current_figure__}(__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)) = 1;
 endif
 
 if (length (__plot_line_offset__) < __current_figure__
-    || any (size (__plot_line_offset__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
+    || any (size (__plot_line_offset__{__current_figure__}) != [__multiplot_xi__(__current_figure__), __multiplot_yi__(__current_figure__)]))
 
-  __plot_line_offset__{__current_figure__}(__multiplot_xi__,__multiplot_yi__) = 1;
+  __plot_line_offset__{__current_figure__}(__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)) = 1;
 endif
 
 if (length (__plot_command__) < __current_figure__
-    || any (size (__plot_command__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
-  __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = "";
+    || any (size (__plot_command__{__current_figure__}) != [__multiplot_xi__(__current_figure__), __multiplot_yi__(__current_figure__)]))
+  __plot_command__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)} = "";
 endif
 
 if (length (__plot_data__) < __current_figure__
-    || any (size (__plot_data__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
-  __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
+    || any (size (__plot_data__{__current_figure__}) != [__multiplot_xi__(__current_figure__), __multiplot_yi__(__current_figure__)]))
+  __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)} = [];
 endif
 
 if (length (__plot_key_labels__) < __current_figure__
-    || any (size (__plot_key_labels__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
-  __plot_key_labels__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = [];
+    || any (size (__plot_key_labels__{__current_figure__}) != [__multiplot_xi__(__current_figure__), __multiplot_yi__(__current_figure__)]))
+  __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)} = [];
 endif
 
 if (length (__plot_key_properties__) < __current_figure__
-    || any (size (__plot_key_properties__{__current_figure__}) != [__multiplot_xi__, __multiplot_yi__]))
-  __plot_key_properties__{__current_figure__}{__multiplot_xi__,__multiplot_yi__} = struct ("visible", true, "box", false, "position", 0);
+    || any (size (__plot_key_properties__{__current_figure__}) != [__multiplot_xi__(__current_figure__), __multiplot_yi__(__current_figure__)]))
+  __plot_key_properties__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)} = struct ("visible", true, "box", false, "position", 0);
 endif

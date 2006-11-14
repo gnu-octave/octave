@@ -21,8 +21,12 @@ function __setup_plot__ (plotcmd)
 
   __plot_globals__
 
+  cf = __current_figure__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
+
   if (ishold ())
-    cmd = __plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__};
+    cmd = __plot_command__{cf}{mxi,myi};
     if (isempty (cmd))
       cmd = plotcmd;
       sep = "";

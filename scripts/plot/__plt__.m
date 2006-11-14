@@ -28,8 +28,8 @@ function __plt__ (caller, varargin)
   __plot_globals__;
 
   cf = __current_figure__;
-  mxi = __multiplot_xi__;
-  myi = __multiplot_yi__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
 
   __setup_plot__ ("__gnuplot_plot__");
 
@@ -106,7 +106,7 @@ function __plt__ (caller, varargin)
 	for i = 1:length (__plot_data__{cf}{mxi,myi}{j})
 	  usingstr = __make_using_clause__ (__plot_data__{cf}{mxi,myi}{j}{i});
 	  __plot_command__{cf}{mxi,myi} ...
-	      = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}{%d} %s %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}{%d}",
+	      = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d}{%d} %s %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d}",
 			 __plot_command__{cf}{mxi,myi},
 			 __plot_command_sep__, j, i, usingstr,
 			 fmtstr{i}, gnuplot_command_title, loff++);
@@ -120,7 +120,7 @@ function __plt__ (caller, varargin)
     __plot_data_offset__{cf}(mxi,myi) = j;
     __plot_line_offset__{cf}(mxi,myi) = loff;
 
-    if (__multiplot_mode__)
+    if (__multiplot_mode__(cf))
       __gnuplot_raw__ ("clear\n");
     endif
 

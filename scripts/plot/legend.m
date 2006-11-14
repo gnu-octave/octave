@@ -75,8 +75,8 @@ function legend (varargin)
   __plot_globals__;
 
   cf = __current_figure__;
-  mxi = __multiplot_xi__;
-  myi = __multiplot_yi__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
 
   nargs = nargin;
 

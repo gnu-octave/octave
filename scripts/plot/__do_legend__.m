@@ -3,8 +3,8 @@ function __do_legend__ ()
   __plot_globals__;
 
   cf = __current_figure__;
-  mxi = __multiplot_xi__;
-  myi = __multiplot_yi__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
 
   props = __plot_key_properties__{cf}{mxi,myi};
 

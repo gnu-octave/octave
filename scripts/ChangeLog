@@ -1,3 +1,13 @@
+2006-11-14  John W. Eaton  <jwe@octave.org>
+
+	* plot/__do_legend__.m, plot/__errplot__.m,
+	plot/__init_plot_vars__.m, plot/__plot_globals__.m,
+	plot/__plt3__.m, plot/__plt__.m, plot/__setup_plot__.m,
+	plot/legend.m, plot/mplot.m, plot/multiplot.m, plot/oneplot.m,
+	plot/replot.m, plot/subplot.m, plot/subwindow.m:
+	Use __plot_globals__ for multiplot variables.  Keep track of
+	multiplot info for each figure.  Eliminate __multiplot_xscale__.
+
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
 	* plot/mesh.m: Use proper dimensions for y in call to repmat.

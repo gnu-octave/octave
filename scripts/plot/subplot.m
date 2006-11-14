@@ -23,14 +23,6 @@
 ## Sets @code{gnuplot} in multiplot mode and plots in location
 ## given by index (there are @var{cols} by @var{rows} subwindows).
 ##
-## The global variable @var{__multiplot_scale__} should be used when the
-## command @code{__gnuplot_set__ size xsize, ysize} has been used prior to calling
-## @code{subplot}.
-##
-## The value of @var{__multiplot_scale__} should be a vector with two
-## elements, the first set equal to @var{xsize} and the second to
-## @var{ysize}.
-##
 ## Input:
 ##
 ## @table @var
@@ -85,6 +77,8 @@ function subplot (rows, columns, index)
 
   __plot_globals__;
 
+  cf = __current_figure__;
+
   if (nargin != 3 && nargin != 1)
     print_usage ();
   endif
@@ -124,42 +118,41 @@ function subplot (rows, columns, index)
 
     oneplot ();
 
-    ## FIXME -- do we really need to reset these here?
-
-    __multiplot_xn__ = 1;
-    __multiplot_yn__ = 1;
+    __multiplot_xn__(cf) = 1;
+    __multiplot_yn__(cf) = 1;
 
   else
 
     ## doing multiplot plots
 
-    if (! __multiplot_mode__
-        || __multiplot_xn__ != columns
-        || __multiplot_yn__ != rows)
+    if (! __multiplot_mode__(cf)
+        || __multiplot_xn__(cf) != columns
+        || __multiplot_yn__(cf) != rows)
 
-      __multiplot_mode__ = 1;
-      __multiplot_xn__ = columns;
-      __multiplot_yn__ = rows;
-      __multiplot_xsize__ = __multiplot_scale__(1) ./ columns;
-      __multiplot_ysize__ = __multiplot_scale__(2) ./ rows;
+      __multiplot_mode__(cf) = true;
+      __multiplot_xn__(cf) = columns;
+      __multiplot_yn__(cf) = rows;
+      __multiplot_xsize__(cf) = 1 / columns;
+      __multiplot_ysize__(cf) = 1 / rows;
 
       __gnuplot_raw__ ("set multiplot;\n");
 
       __gnuplot_raw__ (sprintf ("set size %g, %g;\n",
-				__multiplot_xsize__, __multiplot_ysize__));
+				__multiplot_xsize__(cf),
+				__multiplot_ysize__(cf)));
     endif
 
     ## get the sub plot location
 
     yp = fix ((index-1)/columns);
     xp = index - yp*columns - 1;
-    __multiplot_xi__ = ++xp;
-    __multiplot_yi__ = ++yp;
+    __multiplot_xi__(cf) = ++xp;
+    __multiplot_yi__(cf) = ++yp;
 
     ## set the origin
 
-    xo = (xp - 1.0) * __multiplot_xsize__;
-    yo = (rows - yp) * __multiplot_ysize__;
+    xo = (xp - 1.0) * __multiplot_xsize__(cf);
+    yo = (rows - yp) * __multiplot_ysize__(cf);
 
     __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 

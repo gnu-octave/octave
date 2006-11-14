@@ -22,8 +22,8 @@ function __init_plot_vars__ (cmd, sep, clear_data)
   __plot_globals__;
 
   cf = __current_figure__;
-  mxi = __multiplot_xi__;
-  myi = __multiplot_yi__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
 
   if (nargin < 3)
     clear_data = true;

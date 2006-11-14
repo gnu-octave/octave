@@ -28,13 +28,19 @@ function replot ()
 
   __plot_globals__;
 
+  cf = __current_figure__;
+  mpmode = __multiplot_mode__(cf);
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
+  cmd = __plot_command__{cf}{mxi,myi};
+
   if (nargin == 0)
-    if (! isempty (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__}))
-      if (__multiplot_mode__)
+    if (! isempty (cmd))
+      if (mpmode)
 	__gnuplot_raw__ ("clear\n");
       endif
       __do_legend__ ();
-      eval (__plot_command__{__current_figure__}{__multiplot_xi__,__multiplot_yi__});
+      eval (cmd);
     endif
   else
     print_usage ();

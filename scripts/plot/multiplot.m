@@ -33,15 +33,9 @@
 
 function multiplot (xn, yn)
 
-  ## global variables to keep track of multiplot options
+  plot_globals;
 
-  global __multiplot_mode__ = 0;
-  global __multiplot_xsize__;
-  global __multiplot_ysize__;
-  global __multiplot_xn__;
-  global __multiplot_yn__;
-  global __multiplot_xi__;
-  global __multiplot_yi__;
+  cf = __current_figure__;
 
   if (nargin != 2)
     print_usage ();
@@ -58,14 +52,12 @@ function multiplot (xn, yn)
 
     oneplot ();
 
-    ## FIXME -- do we really need to reset these here?
-
-    __multiplot_xsize__ = 1;
-    __multiplot_ysize__ = 1;
-    __multiplot_xn__ = 1;
-    __multiplot_yn__ = 1;
-    __multiplot_xi__ = 1;
-    __multiplot_yi__ = 1;
+    __multiplot_xsize__(cf) = 1;
+    __multiplot_ysize__(cf) = 1;
+    __multiplot_xn__(cf) = 1;
+    __multiplot_yn__(cf) = 1;
+    __multiplot_xi__(cf) = 1;
+    __multiplot_yi__(cf) = 1;
 
   else
 
@@ -85,13 +77,13 @@ function multiplot (xn, yn)
 
     __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 
-    __multiplot_mode__ = 1;
-    __multiplot_xsize__ = xsize;
-    __multiplot_ysize__ = ysize;
-    __multiplot_xn__ = xn;
-    __multiplot_yn__ = yn;
-    __multiplot_xi__ = 1;
-    __multiplot_yi__ = 1;
+    __multiplot_mode__(cf) = true;
+    __multiplot_xsize__(cf) = xsize;
+    __multiplot_ysize__(cf) = ysize;
+    __multiplot_xn__(cf) = xn;
+    __multiplot_yn__(cf) = yn;
+    __multiplot_xi__(cf) = 1;
+    __multiplot_yi__(cf) = 1;
 
     gnuplot_command_replot = "cle;rep";
 

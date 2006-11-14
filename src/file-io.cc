@@ -59,10 +59,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "error.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "lo-ieee.h"
+#include "oct-env.h"
 
 #include "defun.h"
 #include "file-io.h"
+#include "load-path.h"
 #include "oct-fstrm.h"
 #include "oct-iostrm.h"
 #include "oct-map.h"
@@ -391,6 +394,26 @@ do_stream_open (const std::string& name, const std::string& mode,
 
       if (! error_state)
 	{
+	  std::string fname = file_ops::tilde_expand (name);
+
+	  if (! (md & std::ios::out || octave_env::absolute_pathname (fname)))
+	    {
+	      file_stat fs (fname);
+
+	      if (! fs.exists ())
+		{
+		  std::string tmp = octave_env::make_absolute
+		    (load_path::find_file (fname), octave_env::getcwd ());
+
+		  if (! tmp.empty ())
+		    {
+		      warning_with_id ("Octave:fopen-file-in-path",
+				       "fopen: file found in load path");
+		      fname = tmp;
+		    }
+		}
+	    }
+
 #if defined (HAVE_ZLIB)
 	  std::string tmode = mode;
 
@@ -400,10 +423,10 @@ do_stream_open (const std::string& name, const std::string& mode,
 	    {
 	      tmode.erase (pos, 1);
 
-	      gzFile fptr = ::gzopen (name.c_str (), tmode.c_str ());
+	      gzFile fptr = ::gzopen (fname.c_str (), tmode.c_str ());
 
 	      if (fptr)
-		retval = octave_zstdiostream::create (name, fptr, md, flt_fmt);
+		retval = octave_zstdiostream::create (fname, fptr, md, flt_fmt);
 	      else
 		{
 		  using namespace std;
@@ -413,9 +436,9 @@ do_stream_open (const std::string& name, const std::string& mode,
 	  else
 #endif
 	    {
-	      FILE *fptr = ::fopen (name.c_str (), mode.c_str ());
+	      FILE *fptr = ::fopen (fname.c_str (), mode.c_str ());
 
-	      retval = octave_stdiostream::create (name, fptr, md, flt_fmt);
+	      retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 
 	      if (! fptr)
 		{

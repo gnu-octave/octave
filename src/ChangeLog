@@ -1,5 +1,13 @@
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
+	* load-save.cc (find_file_to_load): New function.
+	(Fload): Call find_file_to_load to search load path for file.
+
+	* file-io.cc (Ffopen): Search load path for file.
+
+	* load-path.cc (path::do_find_first_of, path::do_find_file):
+	Break out of all loops once file is found, not just innermost one.
+
 	* data.cc (Fsize_equal): New function.
 
 2006-11-13  Michael Goffioul  <michael.goffioul@swing.be>

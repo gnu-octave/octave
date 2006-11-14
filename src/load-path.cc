@@ -761,10 +761,13 @@ load_path::do_find_file (const std::string& file) const
 	  if (all_files[i] == file)
 	    {
 	      dir_name = p->dir_name;
-	      break;
+
+	      goto done;
 	    }
 	}
     }
+
+ done:
 
   if (! dir_name.empty ())
     retval = dir_name + file_ops::dir_sep_str + file;
@@ -810,18 +813,20 @@ load_path::do_find_first_of (const string_vector& flist) const
 
       for (octave_idx_type i = 0; i < len; i++)
 	{
-	  
 	  for (octave_idx_type j = 0; j < rel_flen; j++)
 	    {
 	      if (all_files[i] == rel_flist[j])
 		{
 		  dir_name = p->dir_name;
 		  file_name = rel_flist[j];
-		  break;
+
+		  goto done;
 		}
 	    }
 	}
     }
+
+ done:
 
   if (! dir_name.empty ())
     retval = dir_name + file_ops::dir_sep_str + file_name;

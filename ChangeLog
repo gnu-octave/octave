@@ -1,5 +1,8 @@
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc (maximum_braindamage): Disable
+	Octave:fopen-file-in-path and Octave:load-file-in-path warnings.
+
 	* run-octave.in: Substitute liboctinterp, liboctave, and libcruft.
 	Use them to set LD_PRELOAD.
 	* Makeconf.in (do-subst-script-vals): Also substitute

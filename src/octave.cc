@@ -495,7 +495,9 @@ maximum_braindamage (void)
   bind_internal_variable ("page_screen_output", false);
   bind_internal_variable ("print_empty_dimensions", false);
 
+  disable_warning ("Octave:fopen-file-in-path");
   disable_warning ("Octave:function-name-clash");
+  disable_warning ("Octave:load-file-in-path");
 }
 
 // You guessed it.

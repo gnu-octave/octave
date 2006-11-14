@@ -46,6 +46,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "byte-swap.h"
 #include "data-conv.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
 #include "mach-info.h"
@@ -58,6 +59,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
+#include "load-path.h"
 #include "load-save.h"
 #include "oct-obj.h"
 #include "oct-map.h"
@@ -586,6 +588,52 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
   return retval;
 }
 
+std::string
+find_file_to_load (const std::string& name, const std::string& orig_name)
+{
+  std::string fname = name;
+
+  if (! octave_env::absolute_pathname (fname))
+    {
+      file_stat fs (fname);
+
+      if (! fs.exists ())
+	{
+	  std::string tmp = octave_env::make_absolute
+	    (load_path::find_file (fname), octave_env::getcwd ());
+
+	  if (! tmp.empty ())
+	    {
+	      warning_with_id ("Octave:load-file-in-path",
+			       "load: file found in load path");
+	      fname = tmp;
+	    }
+	}
+    }
+
+  if (fname.rfind (".") == NPOS)
+    {
+      file_stat fs (fname);
+
+      if (! fs.exists ())
+	fname = find_file_to_load (fname + ".mat", orig_name);
+    }
+  else
+    {
+      file_stat fs (fname);
+  
+      if (! fs.exists ())
+	{
+	  fname = "";
+
+	  error ("load: unable to find file %s", orig_name.c_str ());
+	}
+    }
+
+  return fname;
+}
+
+
 // HDF5 load/save documentation is included in the Octave manual
 // regardless, but if HDF5 is not linked in we also include a
 // sentence noting this, so the user understands that the features
@@ -646,7 +694,7 @@ Valid options for @code{load} are listed in the following table.\n\
 @table @code\n\
 @item -force\n\
 The @samp{-force} option is accepted but ignored for backward\n\
-compatiability. Octave now overwrites variables currently in memory with\n\
+compatibility. Octave now overwrites variables currently in memory with\n\
 the same name as those found in the file.\n\
 \n\
 @item -ascii\n\
@@ -685,7 +733,7 @@ HAVE_HDF5_HELP_STRING
 
 "\n\
 @item -import\n\
-The @samp{-import} is accepted but ignored for backward compatiability.\n\
+The @samp{-import} is accepted but ignored for backward compatibility.\n\
 Octave can now support multi-dimensional HDF data and automatically\n\
 modifies variable names if they are invalid Octave identifiers.\n\
 \n\
@@ -810,25 +858,13 @@ Force Octave to assume the file is in Octave's text format.\n\
   else
     {
       std::string fname = file_ops::tilde_expand (argv[i]);
-      bool use_zlib = false;
 
-      // Check if file exists, if it doesn't then also check with a 
-      // .mat extension
-      std::ifstream file_exist (fname.c_str ());
-      if (file_exist)
-	file_exist.close ();
-      else
-	{
-	  fname.append (".mat");
-	  std::ifstream file_mat_exist (fname.c_str ());
-	  if (file_mat_exist)
-	    file_mat_exist.close ();
-	  else
-	    {
-	      gripe_file_open ("load", orig_fname);
-	      return retval;
-	    }
-	}
+      fname = find_file_to_load (fname, orig_fname);
+
+      if (error_state)
+	return retval;
+
+      bool use_zlib = false;
 
       if (format == LS_UNKNOWN)
 	format = get_file_format (fname, orig_fname, use_zlib);

@@ -82,28 +82,41 @@ function [ocmd, ofcn, ozoom] = image_viewer (cmd, fcn, zoom)
     print_usage ();
   endif
 
-  ocmd = view_cmd;
-  ofcn = view_fcn;
-  ozoom = view_zoom;
+  if (nargout > 0)
+    ocmd = view_cmd;
+    ofcn = view_fcn;
+    ozoom = view_zoom;
+  endif
 
   if (nargin > 0)
+
+    if (nargin < 3)
+      zoom = 1;
+      if (nargin < 2)
+	fcn = [];
+      endif
+    endif
+
     view_cmd = cmd;
-  endif
+    view_fcn = fcn;
+    view_zoom = zoom;
 
-  if (nargin > 1)
-    if (isa (fcn, "function_handle"))
-      view_fcn = fcn;
-    else
-      error ("image_viewer: expecting second argument to be a function handle");
+    if (nargin > 1)
+      if (isa (fcn, "function_handle"))
+	view_fcn = fcn;
+      else
+	error ("image_viewer: expecting second argument to be a function handle");
+      endif
     endif
-  endif
 
-  if (nargin > 2)
-    if (isnumeric (zoom) && isscalar (zoom) && isreal (zoom))
-      view_zoom = zoom;
-    else
-      error ("image_viewer: expecting third argument to be a real scalar");
+    if (nargin > 2)
+      if (isnumeric (zoom) && isscalar (zoom) && isreal (zoom))
+	view_zoom = zoom;
+      else
+	error ("image_viewer: expecting third argument to be a real scalar");
+      endif
     endif
+
   endif
 
 endfunction

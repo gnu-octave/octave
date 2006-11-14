@@ -23,7 +23,8 @@ endif
 
 src_tree = canonicalize_file_name (fullfile (topsrcdir, "src"));
 script_tree = canonicalize_file_name (fullfile (topsrcdir, "scripts"));
-fundirs = {src_tree, script_tree};
+liboctave_tree = canonicalize_file_name (fullfile (topsrcdir, "liboctave"));
+fundirs = {src_tree, liboctave_tree, script_tree};
 
 function print_test_file_name (nm)
   filler = repmat (".", 1, 55-length (nm));

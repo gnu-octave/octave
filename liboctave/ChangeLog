@@ -1,3 +1,7 @@
+2006-11-14  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
+
+	* CMatrix.cc, dMatrix.cc: New tests.
+
 2006-11-13  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Array-d.cc, dDiagMatrix.h: Sprinkle with OCTAVE_API as needed.

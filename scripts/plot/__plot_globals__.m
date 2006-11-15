@@ -17,10 +17,6 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## This is a script file shared by __plt__ and __errplot__.
-
-## global variables to keep track of multiplot options
-
 global __current_figure__;
 global __plot_data_offset__;
 global __plot_line_offset__;

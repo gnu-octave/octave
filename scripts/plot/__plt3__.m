@@ -71,14 +71,12 @@ function __plt3__ (x, usingstr, fmtstr, keystr, withstr)
   endif
 
   __plot_command__{cf}{mxi,myi} ...
-      = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d} %s %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d} %s",
-		 __plot_command__{cf}{mxi,myi},
-		 __plot_command_sep__, j++, usingstr, fmtstr,
-		 gnuplot_command_title, loff++, withstr);
+      = __build_plot_command__ (j, usingstr, fmtstr, loff, withstr);
+
   __plot_command_sep__ = ",\\\n";
 
-  __plot_data_offset__{cf}(mxi,myi) = j;
-  __plot_line_offset__{cf}(mxi,myi) = loff;
+  __plot_data_offset__{cf}(mxi,myi) = ++j;
+  __plot_line_offset__{cf}(mxi,myi) = ++loff;
 
   if (__multiplot_mode__(cf))
     __gnuplot_raw__ ("clear\n");

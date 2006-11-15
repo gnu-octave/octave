@@ -106,11 +106,9 @@ function __plt__ (caller, varargin)
 	for i = 1:length (__plot_data__{cf}{mxi,myi}{j})
 	  usingstr = __make_using_clause__ (__plot_data__{cf}{mxi,myi}{j}{i});
 	  __plot_command__{cf}{mxi,myi} ...
-	      = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d}{%d} %s %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d}",
-			 __plot_command__{cf}{mxi,myi},
-			 __plot_command_sep__, j, i, usingstr,
-			 fmtstr{i}, gnuplot_command_title, loff++);
+	      = __build_plot_command__ ([j, i], usingstr, fmtstr{i}, loff, "");
 	  __plot_command_sep__ = ",\\\n";
+	  loff++;
 	endfor
 	j++;
       endif

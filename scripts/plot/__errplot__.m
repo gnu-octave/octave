@@ -58,7 +58,7 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
   nplots = size (a1, 2);
   len = size (a1, 1);
   for i = 1:nplots
-    ifmt = fmt{1+mod(i-1,numel(fmt))};
+    fmtstr = fmt{1+mod(i-1,numel(fmt))};
     if (i <= nkey)
       __plot_key_labels__{cf}{mxi,myi}{loff} = key{i};
     else
@@ -70,9 +70,9 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
       case 3
 	tmp = [a1(:,i), a2(:,i), a3(:,i)];
       case 4
-	if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
+	if (index (fmtstr, "boxxy") || index (fmtstr, "xyerr"))
 	  tmp = [a1(:,i), a2(:,i), a3(:,i), a4(:,i)];
-	elseif (index (ifmt, "xerr"))
+	elseif (index (fmtstr, "xerr"))
 	  tmp = [a1(:,i), a2(:,i), a1(:,i)-a3(:,i), a1(:,i)+a4(:,i)];
 	else
 	  tmp = [a1(:,i), a2(:,i), a2(:,i)-a3(:,i), a2(:,i)+a4(:,i)];
@@ -88,11 +88,9 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
     __plot_data__{cf}{mxi,myi}{j} = tmp;
 
-    __plot_command__{cf}{mxi,myi} \
-	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d} %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d}",
-		   __plot_command__{cf}{mxi,myi},
-		   __plot_command_sep__, j, ifmt,
-		   gnuplot_command_title, loff);
+    __plot_command__{cf}{mxi,myi} ...
+	= __build_plot_command__ (j, "", fmtstr, loff, "");
+
     __plot_command_sep__ = ",\\\n";
 
     j++;

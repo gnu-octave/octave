@@ -1,5 +1,10 @@
 2006-11-14  John W. Eaton  <jwe@octave.org>
 
+	* plot/bottom_title.m, plot/top_title.m: Delete.
+
+	* plot/__build_plot_command__.m: New function.
+	* plot/__plt__.m, plot/__plt3__.m, plot/__errplot__.m: Use it.
+
 	* image/image_viewer.m: Set default values here.
 	* image/image.m: Not here.
 

@@ -643,8 +643,38 @@ handle_axes (int& lasttok)
   return Vgnuplot_command_axes + " " + read_until (plottok_or_end_p, lasttok);
 }
 
+static void
+write_data (std::ostream& os, const octave_value& val,
+	    int ndim = 2, bool parametric = false,
+	    const std::string& name = std::string ())
+{
+  switch (ndim)
+    {
+    case 2:
+      save_ascii_data_for_plotting (os, val, name);
+      break;
+
+    case 3:
+      save_three_d (os, val, parametric);
+      break;
+
+    default:
+      gripe_2_or_3_dim_plot ();
+      break;
+    }
+}
+
+static void
+write_inline_data (std::ostream& os, const octave_value& val,
+		   int ndim = 2, bool parametric = false)
+{
+  write_data (os, val, ndim, parametric);
+  os << "e" << std::endl;
+}
+
 static std::string
-save_in_tmp_file (const octave_value& t, int ndim = 2, bool parametric = false)
+save_in_tmp_file (const octave_value& val, int ndim = 2,
+		  bool parametric = false)
 {
   std::string name = file_ops::tempnam ("", "oct-");
 
@@ -653,22 +683,7 @@ save_in_tmp_file (const octave_value& t, int ndim = 2, bool parametric = false)
       std::ofstream file (name.c_str ());
 
       if (file)
-	{
-	  switch (ndim)
-	    {
-	    case 2:
-	      save_ascii_data_for_plotting (file, t, name);
-	      break;
-
-	    case 3:
-	      save_three_d (file, t, parametric);
-	      break;
-
-	    default:
-	      gripe_2_or_3_dim_plot ();
-	      break;
-	    }
-	}
+	write_data (file, val, ndim, parametric, name);
       else
 	{
 	  error ("couldn't open temporary output file `%s'", name.c_str ());
@@ -677,6 +692,46 @@ save_in_tmp_file (const octave_value& t, int ndim = 2, bool parametric = false)
     }
 
   return name;
+}
+
+DEFUN_DLD (__gnuplot_save_data__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __gnuplot_save_data__ (@var{data}, @var{ndim}, @var{parametric})\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 0 && nargin < 4)
+    {
+      int ndim = 2;
+      bool parametric = false;
+
+      if (nargin > 1)
+	{
+	  ndim = args(1).int_value ();
+
+	  if (! error_state)
+	    {
+	      if (nargin > 2)
+		parametric = args(2).bool_value ();
+	    }
+	}
+
+      if (! error_state)
+	{
+	  std::string file = save_in_tmp_file (args(0), ndim, parametric);
+
+	  mark_for_deletion (file);
+
+	  retval = file;
+	}
+    }
+  else
+    print_usage ();
+
+  return retval;
 }
 
 static int
@@ -733,6 +788,13 @@ public:
   {
     if (ensure_plot_stream ())
       instance->do_send_raw (cmd);
+  }
+
+  static void send_inline_data (const octave_value& val, int ndim,
+				bool parametric)
+  {
+    if (ensure_plot_stream ())
+      instance->do_send_inline_data (val, ndim, parametric);
   }
 
   static void clear (void)
@@ -814,6 +876,9 @@ private:
   void do_send (const std::string& cmd);
 
   void do_send_raw (const std::string& cmd);
+
+  void do_send_inline_data (const octave_value& val, int ndim,
+			    bool parametric);
 
   void do_clear (void);
 
@@ -1091,6 +1156,18 @@ gnuplot::do_send_raw (const std::string& cmd)
   if (plot_stream && *plot_stream)
     {
       *plot_stream << cmd;
+
+      plot_stream->flush ();
+    }
+}
+
+void
+gnuplot::do_send_inline_data (const octave_value& val, int ndim,
+			      bool parametric)
+{
+  if (plot_stream && *plot_stream)
+    {
+      write_inline_data (*plot_stream, val, ndim, parametric);
 
       plot_stream->flush ();
     }
@@ -1646,6 +1723,41 @@ Send @var{string} directly to gnuplot subprocess.\n\
     print_usage ();
 
   return octave_value_list ();
+}
+
+DEFUN_DLD (__gnuplot_send_inline_data__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} __gnuplot_send_inline_data__ (@var{string})\n\
+Send @var{val} to gnuplot subprocess as inline data.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin > 0 && nargin < 4)
+    {
+      int ndim = 2;
+      bool parametric = false;
+
+      if (nargin > 1)
+	{
+	  ndim = args(1).int_value ();
+
+	  if (! error_state)
+	    {
+	      if (nargin > 2)
+		parametric = args(2).bool_value ();
+	    }
+	}
+
+      if (! error_state)
+	gnuplot::send_inline_data (args(0), ndim, parametric);
+    }
+  else
+    print_usage ();
+
+  return retval;
 }
 
 DEFUN_DLD (__gnuplot_set__, args, ,

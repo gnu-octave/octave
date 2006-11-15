@@ -1,3 +1,17 @@
+2006-11-15  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__gnuplot_raw__.l (write_data, write_inline_data):
+	New functions.
+	(save_in_tmp_file): Use write_data.
+	(gnuplot::send_inline_data, gnuplot_do_send_inline_data):
+	New functions.
+	(F__gnuplot_send_inline_data__, F__gnuplot_save_data__):
+	New functions.
+
+	* ls-oct-ascii.cc (save_ascii_data_for_plotting):
+	Call save_ascii_data with precision = 4.
+	(save_three_d): Temporarily set precision to 4 for output stream.
+
 2006-11-15  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Cell.h (Cell): Tag class with OCTINTERP_API.

@@ -350,7 +350,7 @@ save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 {
   bool infnan_warned = true;
 
-  return save_ascii_data (os, t, name, infnan_warned, false, 0);
+  return save_ascii_data (os, t, name, infnan_warned, false, 4);
 }
 
 // Maybe this should be a static function in tree-plot.cc?
@@ -373,6 +373,9 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 	 << "# type: matrix\n"
 	 << "# total rows: " << nr << "\n"
 	 << "# total columns: " << nc << "\n";
+
+      long old_precision = os.precision ();
+      os.precision (4);
 
       if (parametric)
 	{
@@ -402,6 +405,8 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 		os << "\n";
 	    }
 	}
+
+      os.precision (old_precision);
     }
   else
     {

@@ -33,21 +33,24 @@
 ## David Bateman <dbateman@free.fr>
 ## May 25, 2006
 
-function __plt3__ (x, usingstr, fmtstr, keystr, withstr)
+function __plt3__ (x, parametric, usingstr, fmtstr, keystr, withstr)
 
   if (nargin < 2)
+    parametric = false;
+  endif
+  if (nargin < 3)
     have_usingstr = false;
     usingstr = "";
   else
     have_usingstr = true;
   endif
-  if (nargin < 3)
+  if (nargin < 4)
     fmtstr = "";
   endif
-  if (nargin < 4)
+  if (nargin < 5)
     keystr = "";
   endif
-  if (nargin < 5)
+  if (nargin < 6)
     withstr = "";
   endif
 
@@ -57,34 +60,25 @@ function __plt3__ (x, usingstr, fmtstr, keystr, withstr)
   mxi = __multiplot_xi__(cf);
   myi = __multiplot_yi__(cf);
 
-  __setup_plot__ ("__gnuplot_splot__");
+  __setup_plot__ ("splot");
 
   j = __plot_data_offset__{cf}(mxi,myi);
-  loff = __plot_line_offset__{cf}(mxi,myi);
-  loff1 = loff;
 
-  __plot_data__{cf}{mxi,myi}{j} = x;
-  __plot_key_labels__{cf}{mxi,myi}{loff1++} = keystr;
+  __plot_data__{cf}{mxi,myi}{j}{1} = x;
+  __plot_data_type__{cf}{mxi,myi}(j) = 3;
+  __plot_data_parametric__{cf}{mxi,myi}{j}{1} = parametric;
+  __plot_key_labels__{cf}{mxi,myi}{j}{1} = keystr;
 
-  if (! have_usingstr)
-    usingstr = __make_using_clause__ (__plot_data__{cf}{mxi,myi}{j});
+  __plot_fmtstr__{cf}{mxi,myi}{j}{1} = fmtstr;
+  if (have_usingstr)
+    __plot_usingstr__{cf}{mxi,myi}{j}{1} = usingstr;
+  else
+    __plot_usingstr__{cf}{mxi,myi}{j}{1} = __make_using_clause__(x);
   endif
+  __plot_withstr__{cf}{mxi,myi}{j}{1} = withstr;
 
-  __plot_command__{cf}{mxi,myi} ...
-      = sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d} %s %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d} %s",
-		 __plot_command__{cf}{mxi,myi},
-		 __plot_command_sep__, j++, usingstr, fmtstr,
-		 gnuplot_command_title, loff++, withstr);
-  __plot_command_sep__ = ",\\\n";
+  __plot_data_offset__{cf}(mxi,myi) = ++j;
 
-  __plot_data_offset__{cf}(mxi,myi) = j;
-  __plot_line_offset__{cf}(mxi,myi) = loff;
+  __render_plot__ ();
 
-  if (__multiplot_mode__(cf))
-    __gnuplot_raw__ ("clear\n");
-  endif
-
-  if (! strcmp (__plot_command__{cf}{mxi,myi}, "__gnuplot_splot__"))
-    eval (__plot_command__{cf}{mxi,myi});
-  endif
 endfunction

@@ -17,7 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-function __init_plot_vars__ (cmd, sep, clear_data)
+function __init_plot_vars__ (clear_data)
 
   __plot_globals__;
 
@@ -25,24 +25,20 @@ function __init_plot_vars__ (cmd, sep, clear_data)
   mxi = __multiplot_xi__(cf);
   myi = __multiplot_yi__(cf);
 
-  if (nargin < 3)
+  if (nargin < 1)
     clear_data = true;
-    if (nargin < 2)
-      sep = "";
-      if (nargin < 1)
-	cmd = "";
-      endif
-    endif
   endif
-
-  __plot_command__{cf}{mxi,myi} = cmd;
-  __plot_command_sep__ = sep;
 
   if (clear_data)
     __plot_data__{cf}{mxi,myi} = [];
     __plot_data_offset__{cf}(mxi,myi) = 1;
-    __plot_line_offset__{cf}(mxi,myi) = 1;
-    __plot_key_labels__{cf}{mxi,myi} = [];
+    __plot_data_type__{cf}{mxi,myi} = [];
+    __plot_data_parametric__{cf}{mxi,myi} = [];
+    __plot_image_colormap__{cf}{mxi,myi} = [];
+    __plot_image_dims__{cf}{mxi,myi} = [];
+    __plot_fmtstr__{cf}{mxi,myi} = [];
+    __plot_usingstr__{cf}{mxi,myi} = [];
+    __plot_withstr__{cf}{mxi,myi} = [];
   endif
 
 endfunction

@@ -49,21 +49,12 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
   j = __plot_data_offset__{cf}(mxi,myi);
 
-  loff = __plot_line_offset__{cf}(mxi,myi);
-
   [fmt, key] = __pltopt__ ("__errplot__", fstr);
 
-  nkey = numel (key);
+  [len, nplots] = size (a1);
 
-  nplots = size (a1, 2);
-  len = size (a1, 1);
   for i = 1:nplots
-    ifmt = fmt{1+mod(i-1,numel(fmt))};
-    if (i <= nkey)
-      __plot_key_labels__{cf}{mxi,myi}{loff} = key{i};
-    else
-      __plot_key_labels__{cf}{mxi,myi}{loff} = "";
-    endif
+    ifmt = fmt{1+mod(i-1,numel(fmt))}
     switch (nargin - 1)
       case 2
 	tmp = [(1:len)', a1(:,i), a2(:,i)];
@@ -86,29 +77,17 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 	       a2(:,i)-a5(:,i), a2(:,i)+a6(:,i)];
     endswitch
 
-    __plot_data__{cf}{mxi,myi}{j} = tmp;
-
-    __plot_command__{cf}{mxi,myi} \
-	= sprintf ("%s%s __plot_data__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d} %s %s __plot_key_labels__{__current_figure__}{__multiplot_xi__(__current_figure__),__multiplot_yi__(__current_figure__)}{%d}",
-		   __plot_command__{cf}{mxi,myi},
-		   __plot_command_sep__, j, ifmt,
-		   gnuplot_command_title, loff);
-    __plot_command_sep__ = ",\\\n";
-
-    j++;
-    loff++;
+    __plot_data__{cf}{mxi,myi}{j}{i} = tmp;
+    __plot_data_type__{cf}{mxi,myi}(j) = 2;
+    __plot_fmtstr__{cf}{mxi,myi}{j}{i} = ifmt;
+    __plot_key_labels__{cf}{mxi,myi}{j} = key;
+    __plot_usingstr__{cf}{mxi,myi}{j}{i} = "";
+    __plot_withstr__{cf}{mxi,myi}{j}{i} = "";
 
   endfor
 
-  __plot_data_offset__{cf}(mxi,myi) = j;
-  __plot_line_offset__{cf}(mxi,myi) = loff;
+  __plot_data_offset__{cf}(mxi,myi) = ++j;
 
-  if (! isempty (__plot_command__{cf}{mxi,myi}))
-    if (__multiplot_mode__(cf))
-      __gnuplot_raw__ ("clear\n");
-    endif
-    __do_legend__ ();
-    eval (__plot_command__{cf}{mxi,myi});
-  endif
+  __render_plot__ ();
 
 endfunction

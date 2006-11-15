@@ -30,9 +30,11 @@
 
 function contour (x, y, z, n)
 
-  ## FIXME -- these plot states should really just be set
-  ## temporarily, probably inside an unwind_protect block, but there is
-  ## no way to determine their current values.
+  __plot_globals__;
+
+  cf = __current_figure__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
 
   if (nargin == 1 || nargin == 2)
     z = x;
@@ -57,9 +59,8 @@ function contour (x, y, z, n)
 	error ("contour: levels must be a scalar or vector") ;
       endif
       __gnuplot_raw__ (command);
-      __gnuplot_set__ parametric;
       __gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
-      __plt3__ (z, "", "", "", [gnuplot_command_with, " l 1"]);
+      __plt3__ (z, true, "", "", "", [gnuplot_command_with, " l 1"]);
     else
       error ("contour: z of contour (z, levels) must be a matrix");
     endif
@@ -117,9 +118,8 @@ function contour (x, y, z, n)
 	error ("contour: levels must be a scalar or vector") ;
       endif
       __gnuplot_raw__ (command);
-      __gnuplot_set__ parametric;
       __gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
-      __plt3__ (zz, "", "", "", [gnuplot_command_with, " l 1"]);
+      __plt3__ (zz, true, "", "", "", [gnuplot_command_with, " l 1"]);
     else
       error ("contour: x and y must be vectors and z must be a matrix");
     endif

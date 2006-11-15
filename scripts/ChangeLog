@@ -1,3 +1,30 @@
+2006-11-15  John W. Eaton  <jwe@octave.org>
+
+	* image/__img_gnuplot__.m: Store more info in global plot
+	structures and use __render_plot__ to build plot command to
+	display image.
+
+	* plot/__plt3__.m: New arg, parametric.  Change all callers.
+
+	* plot/__plot_globals__.m (__plot_line_offset__, __plot_command__,
+	__plot_command_sep__): Delete.
+	(__plot_data_type__, __plot_data_parametric__,
+	__plot_image_colormap__, __plot_image_dims__, __plot_fmtstr__,
+	__plot_usingstr__, __plot_withstr__): New variables.
+	* plot/__init_plot_vars__.m: Initialize them.
+
+	* plot/__init_plot_vars__.m, plot/__setup_plot__.m:
+	Don't handle sep or cmd.
+
+	* plot/__render_plot__.m: New function.
+	* plot/__plt__.m, plot/__plt3__.m, plot/__errplot__.m:
+	Store more info in global plot structures and use __render_plot__
+	to build plot command.
+	* plot/replot.m: Simply call __render_plot__.
+
+	* plot/contour.m, plot/mesh.m, plot/plot3.m:
+	Set __plot_data_parametric__ here.
+
 2006-11-14  John W. Eaton  <jwe@octave.org>
 
 	* plot/bottom_title.m, plot/top_title.m: Delete.

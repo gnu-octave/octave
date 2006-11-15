@@ -19,27 +19,6 @@
 
 function __setup_plot__ (plotcmd)
 
-  __plot_globals__
-
-  cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
-
-  if (ishold ())
-    cmd = __plot_command__{cf}{mxi,myi};
-    if (isempty (cmd))
-      cmd = plotcmd;
-      sep = "";
-    else
-      sep = ",\\\n";
-    endif
-    clear_data = false;
-  else
-    cmd = plotcmd;
-    sep = "";
-    clear_data = true;
-  endif
-
-  __init_plot_vars__ (cmd, sep, clear_data);
+  __init_plot_vars__ (! ishold ());
 
 endfunction

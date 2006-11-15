@@ -165,6 +165,12 @@
 
 function plot3 (varargin)
 
+  __plot_globals__;
+
+  cf = __current_figure__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
+
   hold_state = ishold ();
   
   unwind_protect
@@ -218,12 +224,11 @@ function plot3 (varargin)
 	endif
 
 	__gnuplot_raw__ ("set nohidden3d;\n")
-	__gnuplot_set__ parametric; 
 
 	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
 		 ([y; NaN*ones(1,size(y,2))])(:), ...
 		 ([z; NaN*ones(1,size(z,2))])(:)],
-		  "u($1):($2):($3)", fmt{1}, key{1});
+		  true, "u($1):($2):($3)", fmt{1}, key{1});
 
 	hold ("on");
 	x_set = 0;
@@ -256,11 +261,10 @@ function plot3 (varargin)
 	endif
 
 	__gnuplot_raw__ ("set nohidden3d;\n")
-	__gnuplot_set__ parametric; 
 
 	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
 		   ([y; NaN*ones(1,size(y,2))])(:), ...
-		   ([z; NaN*ones(1,size(z,2))])(:)]);
+		   ([z; NaN*ones(1,size(z,2))])(:)], true);
 
 	hold ("on");
 	x = new;
@@ -308,11 +312,10 @@ function plot3 (varargin)
       endif
 
       __gnuplot_raw__ ("set nohidden3d;\n")
-      __gnuplot_set__ parametric; 
 
       __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
 		 ([y; NaN*ones(1,size(y,2))])(:), ...
-		 ([z; NaN*ones(1,size(z,2))])(:)]);
+		 ([z; NaN*ones(1,size(z,2))])(:)], true);
     endif
     
   unwind_protect_cleanup

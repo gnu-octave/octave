@@ -32,6 +32,12 @@
 
 function mesh (x, y, z)
 
+  __plot_globals__;
+
+  cf = __current_figure__;
+  mxi = __multiplot_xi__(cf);
+  myi = __multiplot_yi__(cf);
+
   if (nargin == 1)
     z = x;
     if (ismatrix (z))
@@ -79,11 +85,10 @@ function mesh (x, y, z)
     __gnuplot_raw__ ("set surface;\n");
     __gnuplot_raw__ ("set nocontour;\n");
     __gnuplot_raw__ ("set nologscale;\n");
-    __gnuplot_set__ parametric;
     __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
     __gnuplot_raw__ ("set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
     __gnuplot_raw__ ("set nocolorbox;\n");
-    __plt3__ (zz, "", "", "",
+    __plt3__ (zz, true, "", "", "",
 	      sprintf ("%s line palette", gnuplot_command_with ()));
   else
     error ("mesh: x, y, and z must have same dimensions");

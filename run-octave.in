@@ -58,6 +58,7 @@ if [ -n "$args" ]; then
     exec $driver "$builddir/src/octave" "$args" "$@"
 else
   OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
+  LD_PRELOAD="$liboctinterp $liboctave $libcruft" \
   %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
     exec $driver "$builddir/src/octave" "$@"
 fi

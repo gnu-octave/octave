@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-obj.h"
 
 class
+OCTINTERP_API
 Cell : public ArrayN<octave_value>
 {
 public:

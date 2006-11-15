@@ -1,3 +1,7 @@
+2006-11-15  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Cell.h (Cell): Tag class with OCTINTERP_API.
+
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
 	* load-save.cc (find_file_to_load): New function.
@@ -16,7 +20,7 @@
 	New functions.
 
 	* ov-re-mat.h, ov-scalar.h, pr-output.h:
-	Sprinkle with OCTAVE_API as needed.
+	Sprinkle with OCTINTERP_API as needed.
 
 2006-11-11  John W. Eaton  <jwe@octave.org>
 

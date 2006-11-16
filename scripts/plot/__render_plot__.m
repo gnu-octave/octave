@@ -27,18 +27,29 @@ function __render_plot__ ()
 
   if (! isempty (__plot_data__{cf}{mxi,myi}))
 
-    if (__multiplot_mode__(cf))
-      __gnuplot_raw__ ("clear\n");
-    endif
-
     have_image = false;
 
     for j = 1:length (__plot_data__{cf}{mxi,myi})
       if (__plot_data_type__{cf}{mxi,myi}(j) == 1)
 	have_image = true;
-	break;
+      endif
+      ## Do this check before sending any commands to gnuplot so that if
+      ## there is an error, we don't leave things in a bad state.
+      if (j == 1)
+	first_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
+	this_plot_data_type = first_plot_data_type;
+      else
+	this_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
+	if ((first_plot_data_type != 3 && this_plot_data_type == 3)
+	    || (first_plot_data_type == 3 && this_plot_data_type != 3))
+	  error ("can't mix 2-d and 3-d data in the same plot");
+	endif
       endif
     endfor
+
+    if (__multiplot_mode__(cf))
+      __gnuplot_raw__ ("clear\n");
+    endif
 
     if (have_image)
       __gnuplot_raw__ ("set size ratio -1;\n");
@@ -64,16 +75,7 @@ function __render_plot__ ()
 
     for j = 1:length (__plot_data__{cf}{mxi,myi})
 
-      if (j == 1)
-	first_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
-	this_plot_data_type = first_plot_data_type;
-      else
-	this_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
-	if ((first_plot_data_type != 3 && this_plot_data_type == 3)
-	    || (first_plot_data_type == 3 && this_plot_data_type != 3))
-	  error ("can't mix 2-d and 3-d data in the same plot");
-	endif
-      endif
+      this_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
 
       for i = 1:length (__plot_data__{cf}{mxi,myi}{j})
 

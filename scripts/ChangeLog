@@ -1,3 +1,7 @@
+2006-11-16  Francesco Potorti`  <Potorti@isti.cnr.it>
+
+	* plot/plot.m: Fix doc string.
+
 2006-11-16  John W. Eaton  <jwe@octave.org>
 
 	* plot/__render_plot__.m: Check for mix of 2-d and 3-d plots

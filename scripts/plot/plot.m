@@ -52,13 +52,13 @@
 ## the elements, starting with 1.
 ##
 ## @item
-## If the first argument is a vector and the second is a matrix, the
-## the vector is plotted versus the columns (or rows) of the matrix.
+## If the @var{x} is a vector and @var{y} is a matrix, the
+## the columns (or rows) of @var{y} are plotted versus @var{x}.
 ## (using whichever combination matches, with columns tried first.)
 ##
 ## @item
-## If the first argument is a matrix and the second is a vector, the
-## the columns (or rows) of the matrix are plotted versus the vector.
+## If the @var{x} is a matrix and @var{y} is a vector,
+## @var{y} is plotted versus the columns (or rows) of @var{x}.
 ## (using whichever combination matches, with columns tried first.)
 ##
 ## @item
@@ -107,9 +107,9 @@
 ## valid in combination with the @code{@@} or @code{-@@} specifiers.
 ##
 ## @item @var{c}
-## If @var{c} is one of @code{"k"}, @code{"r"}, @code{"g"}, @code{"b"},
-## @code{"m"}, @code{"c"}, or @code{"w"}, it is interpreted as the plot
-## color (black, red, green, blue, magenta, cyan, or white).
+## If @var{c} is one of @code{"k"} (black), @code{"r"} (red), @code{"g"}
+## (green), @code{"b"} (blue), @code{"m"} (magenta), @code{"c"} (cyan),
+## or @code{"w"} (white), it is interpreted as the line plot color.
 ##
 ## @item ";title;"
 ## Here @code{"title"} is the label for the key.

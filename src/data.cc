@@ -2351,7 +2351,7 @@ DEFUN (resize, args, ,
 Destructively resize @var{x}.\n\
 \n\
 @strong{Values in @var{x} are not preserved as they are with\n\
-@code{reshape}}.\n\
+@code{reshape}.}\n\
 \n\
 If only @var{m} is supplied and it is a scalar, the dimension of the\n\
 result is @var{m}-by-@var{m}.  If @var{m} is a vector, then the\n\

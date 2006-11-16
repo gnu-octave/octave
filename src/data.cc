@@ -2348,11 +2348,17 @@ DEFUN (resize, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} resize (@var{x}, @var{m})\n\
 @deftypefnx {Built-in Function} {} resize (@var{x}, @var{m}, @var{n})\n\
-Resize @var{x} to be dimension @var{m}-by-@var{n} where @var{m}\n\
-and @var{n} are scalar. If @var{n} is not supplied, then resize @var{x}\n\
-to be dimension @var{m}-by-@var{m} if @var{m} is scalar, or if\n\
-@var{m} is a vector, then the values of this vector respresent the\n\
-dimensions of the resized matrix.\n\
+Destructively resize @var{x}.\n\
+\n\
+@strong{Values in @var{x} are not preserved as they are with\n\
+@code{reshape}}.\n\
+\n\
+If only @var{m} is supplied and it is a scalar, the dimension of the\n\
+result is @var{m}-by-@var{m}.  If @var{m} is a vector, then the\n\
+dimensions of the result are given by the elements of @var{m}.\n\
+If both @var{m} and @var{n} are scalars, then the dimensions of\n\
+the result are @var{m}-by-@var{n}.\n\
+@seealso{reshape}\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -208,18 +208,11 @@ function femimages (nm,typ)
     velems = reshape( V(elemx), 4, E);
 
     sz = size(xelems,2);
-    ## FIXME How can I do this without a gnuplot specific commands? plot3 anyone?
-    unwind_protect
-      __gnuplot_set__  parametric;
-      __gnuplot_raw__ ("set nohidden3d;\n");
-      tmp = [([xelems; NaN*ones(1,sz)])(:), ([yelems; NaN*ones(1,sz)])(:), ([velems; NaN*ones(1,sz)])(:)];
-      __gnuplot_splot__(tmp);
-      __gnuplot_raw__ ("set view 80,10;\n")
-      print(strcat(nm,".",typ),strcat("-d",typ))
-      bury_output ();
-    unwind_protect_cleanup
-      __gnuplot_set__ noparametric; 
-    end_unwind_protect
+
+    __gnuplot_raw__ ("set view 80,10;\n")
+    plot3 (xelems, yelems, velems);
+    print(strcat(nm,".",typ),strcat("-d",typ))
+    bury_output ();
   endif
 endfunction
 

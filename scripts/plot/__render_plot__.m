@@ -22,138 +22,34 @@ function __render_plot__ ()
   __plot_globals__;
 
   cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
+  mxn = __multiplot_xn__(cf);
+  myn = __multiplot_yn__(cf);
 
-  if (! isempty (__plot_data__{cf}{mxi,myi}))
+  if (__multiplot_mode__(cf))
+    __gnuplot_raw__ ("set size 1, 1;\n");
+    __gnuplot_raw__ ("set origin 0, 0;\n");
+    __gnuplot_raw__ ("set multiplot;\n");
+    for mxi = 1:mxn
+      for myi = 1:myn
 
-    have_image = false;
+	columns = __multiplot_xn__(cf);
+	rows = __multiplot_yn__(cf);
+	__gnuplot_raw__ (sprintf ("set size %g, %g;\n",
+				  __multiplot_xsize__(cf),
+				  __multiplot_ysize__(cf)));
 
-    for j = 1:length (__plot_data__{cf}{mxi,myi})
-      if (__plot_data_type__{cf}{mxi,myi}(j) == 1)
-	have_image = true;
-      endif
-      ## Do this check before sending any commands to gnuplot so that if
-      ## there is an error, we don't leave things in a bad state.
-      if (j == 1)
-	first_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
-	this_plot_data_type = first_plot_data_type;
-      else
-	this_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
-	if ((first_plot_data_type != 3 && this_plot_data_type == 3)
-	    || (first_plot_data_type == 3 && this_plot_data_type != 3))
-	  error ("can't mix 2-d and 3-d data in the same plot");
-	endif
-      endif
-    endfor
+	xo = (mxi - 1.0) * __multiplot_xsize__(cf);
+	yo = (rows - myi) * __multiplot_ysize__(cf);
 
-    if (__multiplot_mode__(cf))
-      __gnuplot_raw__ ("clear\n");
-    endif
+	__gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 
-    if (have_image)
-      __gnuplot_raw__ ("set size ratio -1;\n");
+	__render_plot1__ (mxi, myi)
 
-      cmap = __plot_image_colormap__{cf}{mxi,myi};
-
-      palette_size = rows (cmap);
-      __gnuplot_raw__ (sprintf ("set palette positive color model RGB maxcolors %i\n",
-				palette_size));
-
-      __gnuplot_raw__ ("set palette file \"-\"\n");
-      tmp = round (1000 * cmap) / 1000;
-      tmp_rows = rows (tmp);
-      idx = (0:tmp_rows-1)';
-      __gnuplot_raw__ (sprintf ("%d %.4g %.4g %.4g\n", [idx, tmp]'));
-      __gnuplot_raw__("e\n");
-
-      __gnuplot_raw__ ("set autoscale fix\n"); # "fix" is helpful for "a" hotkey
-      __gnuplot_raw__ ("set tics out\n");
-    endif
-
-    first = true;
-
-    for j = 1:length (__plot_data__{cf}{mxi,myi})
-
-      this_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
-
-      for i = 1:length (__plot_data__{cf}{mxi,myi}{j})
-
-	if (first)
-	  first = false;
-	  __do_legend__ ();
-	  if (first_plot_data_type == 3)
-	    cmd = gnuplot_command_splot;
-	  else
-	    cmd = gnuplot_command_plot;
-	  endif
-	  __gnuplot_raw__ (sprintf ("%s ", cmd));
-	else
-	  __gnuplot_raw__ (",\\\n");
-	endif
-
-	if (this_plot_data_type == 1)
-	  label = undo_string_escapes (__plot_key_labels__{cf}{mxi,myi}{j}{i});
-
-	  tmp = __plot_image_dims__{cf}{mxi,myi}{j}{i};
-
-	  x_dim = tmp(1);
-	  y_dim = tmp(2);
-	  x_origin = tmp(3);
-	  y_origin = tmp(4);
-	  dx = tmp(5);
-	  dy = tmp(6);
-
-	  A = __plot_data__{cf}{mxi,myi}{j}{i};
-
-	  ## Let the file be deleted when Octave exits or
-	  ## `purge_tmp_files' is called.
-	  [fid, binary_file_name, msg] ...
-	      = mkstemp (strcat (P_tmpdir, "/gpimageXXXXXX"), 1);
-
-	  ## Gnuplot reads binary files very quickly.  However, the
-	  ## 'fwrite' below is much slower than using the current
-	  ## '__gnuplot_plot__' command.
-	  fwrite (fid, A(:), "float");
-	  fclose (fid);
-
-	  __gnuplot_raw__ (sprintf ("\"%s\" binary array=%dx%d scan=yx flipy origin=(%g,%g) dx=%g dy=%g using 1 %s '%s' with image",
-				    binary_file_name, x_dim, y_dim, x_origin,
-				    y_origin, dx, dy,
-				    gnuplot_command_title, label));
-	else
-	  usingstr = __plot_usingstr__{cf}{mxi,myi}{j}{i};
-	  fmtstr = __plot_fmtstr__{cf}{mxi,myi}{j}{i};
-	  withstr = __plot_withstr__{cf}{mxi,myi}{j}{i};
-
-	  label = undo_string_escapes (__plot_key_labels__{cf}{mxi,myi}{j}{i});
-
-	  __gnuplot_raw__ (sprintf ("'-' %s %s '%s' %s %s %s", usingstr,
-				    gnuplot_command_title, label, fmtstr,
-				    withstr));
-	endif
       endfor
     endfor
-
-    for j = 1:length (__plot_data__{cf}{mxi,myi})
-      for i = 1:length (__plot_data__{cf}{mxi,myi}{j})
-	this_plot_data_type = __plot_data_type__{cf}{mxi,myi}(j);
-	if (this_plot_data_type != 1)
-	  if (this_plot_data_type == 3)
-	    parametric = __plot_data_parametric__{cf}{mxi,myi}{j}{i};
-	  else
-	    parametric = false;
-	  endif
-	  __gnuplot_send_inline_data__ (__plot_data__{cf}{mxi,myi}{j}{i},
-					this_plot_data_type, parametric);
-	endif
-      endfor
-    endfor
-
-    if (! first)
-      __gnuplot_raw__ ("\n");
-    endif
-
+    __gnuplot_raw__ ("unset multiplot;\n");
+  else
+    __render_plot1__ (1, 1);
   endif
 
 endfunction

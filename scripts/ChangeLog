@@ -1,3 +1,10 @@
+2006-11-16  John W. Eaton  <jwe@octave.org>
+
+	* plot/__render_plot1__.m: New file.
+	* plot/__render_plot__.m: Use it.  Loop over multiplots.
+	* plot/print.m, plot/subplot.m: Don't send "set multiplot" to
+	gnuplot.  Let __render_plot__ do that.
+
 2006-11-16  Francesco Potorti`  <Potorti@isti.cnr.it>
 
 	* plot/plot.m: Fix doc string.

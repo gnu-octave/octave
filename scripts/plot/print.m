@@ -126,6 +126,10 @@
 
 function print (varargin)
 
+  __plot_globals__;
+
+  mpmode = __multiplot_mode__(__current_figure__);
+
   orientation = orient ();
   use_color = 0; # 0=default, -1=mono, +1=color
   force_solid = 0; # 0=default, -1=dashed, +1=solid
@@ -249,9 +253,7 @@ function print (varargin)
 	options = strcat (options, " ", fontsize);
       endif
 
-      __gnuplot_raw__ ("set terminal push;\n");
-      __gnuplot_raw__ (sprintf ("set terminal postscript %s;\n", options));
-
+      new_terminal = strcat ("postscript ", options);
 
     elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
       ## Adobe Illustrator, CorelDraw
@@ -267,8 +269,7 @@ function print (varargin)
 	options = strcat (options, " ", fontsize);
       endif
 
-      __gnuplot_raw__ ("set terminal push;\n");
-      __gnuplot_raw__ (sprintf ("set terminal %s %s;\n", dev, options));
+      new_terminal = strcat (dev, " ", options);
 
     elseif (strcmp (dev, "fig"))
       ## XFig
@@ -281,8 +282,8 @@ function print (varargin)
       if (! isempty (fontsize))
 	options = strcat (options, " fontsize ", fontsize);
       endif
-      __gnuplot_raw__ ("set terminal push;\n");
-      __gnuplot_raw__ (sprintf ("set terminal fig %s;\n", options));
+
+      new_terminal = strcat ("fig ", options);
 
     elseif (strcmp (dev, "emf"))
       ## Enhanced Metafile format
@@ -301,8 +302,8 @@ function print (varargin)
       if (! isempty (fontsize))
 	options = strcat (options, " ", fontsize);
       endif
-      __gnuplot_raw__ ("set terminal push;\n");
-      __gnuplot_raw__ (sprintf ("set terminal emf %s;\n", options));
+
+      new_terminal = strcat ("emf ", options);
 
     elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
       ## Portable network graphics, PBMplus
@@ -320,25 +321,27 @@ function print (varargin)
       ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
       ##endif
 
-      __gnuplot_raw__ ("set terminal push;\n");
-      __gnuplot_raw__ ("set terminal png large;\n")
+      new_terminal = "png large";
 
     elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
       ## AutoCad DXF, METAFONT, HPGL
-      __gnuplot_raw__ ("set terminal push;\n");
-      __gnuplot_raw__ (sprintf ("set terminal %s;\n", dev));
+      new_terminal = dev;
     endif
 
-    ## Gnuplot expects " around output file name
+    __gnuplot_raw__ ("set terminal push;\n");
+    __gnuplot_raw__ (sprintf ("set terminal %s;\n", new_terminal));
 
+    ## Gnuplot expects " around output file name
     __gnuplot_raw__ (sprintf ("set output \"%s\";\n", name));
-    __gnuplot_replot__
+
+    replot ();
 
   unwind_protect_cleanup
 
-    ## Restore init state
     __gnuplot_raw__ ("set terminal pop;\n");
     __gnuplot_raw__ ("set output;\n")
+
+    replot ();
 
   end_unwind_protect
 

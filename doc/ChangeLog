@@ -1,3 +1,7 @@
+2006-11-16  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/sparseimages.m (femimages): Use plot3.
+
 2006-11-11  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in (%.texi : %.txi):

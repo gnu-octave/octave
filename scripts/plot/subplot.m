@@ -129,17 +129,17 @@ function subplot (rows, columns, index)
         || __multiplot_xn__(cf) != columns
         || __multiplot_yn__(cf) != rows)
 
+      if (__multiplot_xn__(cf) < columns
+	  || __multiplot_yn__(cf) < rows)
+	__plot_data__{cf}{columns,rows} = [];
+      endif
+
       __multiplot_mode__(cf) = true;
       __multiplot_xn__(cf) = columns;
       __multiplot_yn__(cf) = rows;
       __multiplot_xsize__(cf) = 1 / columns;
       __multiplot_ysize__(cf) = 1 / rows;
 
-      __gnuplot_raw__ ("set multiplot;\n");
-
-      __gnuplot_raw__ (sprintf ("set size %g, %g;\n",
-				__multiplot_xsize__(cf),
-				__multiplot_ysize__(cf)));
     endif
 
     ## get the sub plot location
@@ -153,8 +153,6 @@ function subplot (rows, columns, index)
 
     xo = (xp - 1.0) * __multiplot_xsize__(cf);
     yo = (rows - yp) * __multiplot_ysize__(cf);
-
-    __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
 
   endif
 

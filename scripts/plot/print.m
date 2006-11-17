@@ -92,31 +92,6 @@
 ## @end table
 ##
 ## The filename and options can be given in any order.
-##
-## @strong{Note}, the print function does not work with gnuplot's
-## muplitplot mode.  This problem is a known bug, and it will be fixed
-## in a future version of Octave, but there is no simple fix (or it
-## would have been fixed long ago).  You can work around the bug by
-## setting the terminal type and output yourself, then executing the
-## multiplot plotting commands.  For example
-##
-## @example
-## @group
-## __gnuplot_set__ terminal postscript
-## __gnuplot_raw__ ("set output \"foo.ps\"\n");
-## subplot (2, 1, 1);
-## sombrero (21);
-## subplot (2, 1, 2);
-## sombrero (41);
-## oneplot ();
-## __gnuplot_set__ terminal x11
-## __gnuplot_raw__ ("set output\n");
-## @end group
-## @end example
-##
-## will save both figures on a single page in the PostScript file
-## @file{foo.ps}.  All labeling commands should appear before the plot
-## command for each subplot.
 ## @end deftypefn
 
 ## Author: Daniel Heiserer <Daniel.heiserer@physik.tu-muenchen.de>
@@ -218,132 +193,115 @@ function print (varargin)
     name = strcat (tmpnam, ".eps");
   endif
 
-  unwind_protect
+  if (strcmp (dev, "ps") || strcmp (dev, "ps2") ...
+      || strcmp (dev, "psc")  || strcmp (dev, "psc2")
+      || strcmp (dev, "epsc") || strcmp (dev, "epsc2")
+      || strcmp (dev, "eps")  || strcmp (dev, "eps2"))
+    ## Various postscript options
+    if (dev(1) == "e")
+      options = "eps ";
+    else
+      options = strcat (orientation, " ");
+    endif
+    options = strcat (options, "enhanced ");
 
-    if (strcmp (dev, "ps") || strcmp (dev, "ps2") ...
-	|| strcmp (dev, "psc")  || strcmp (dev, "psc2")
-	|| strcmp (dev, "epsc") || strcmp (dev, "epsc2")
-	|| strcmp (dev, "eps")  || strcmp (dev, "eps2"))
-      ## Various postscript options
-      if (dev(1) == "e")
-	options = "eps ";
+    if (any (dev == "c") || use_color > 0)
+      if (force_solid < 0)
+	options = strcat (options, "color dashed ");
       else
-	options = strcat (orientation, " ");
+	options = strcat (options, "color solid ");
       endif
-      options = strcat (options, "enhanced ");
-
-      if (any (dev == "c") || use_color > 0)
-        if (force_solid < 0)
-	  options = strcat (options, "color dashed ");
-	else
-          options = strcat (options, "color solid ");
-        endif
+    else
+      if (force_solid > 0)
+	options = strcat (options, "mono solid ");
       else
-        if (force_solid > 0)
-	  options = strcat (options, "mono solid ");
-	else
-	  options = strcat (options, "mono dashed ");
-        endif
+	options = strcat (options, "mono dashed ");
       endif
-
-      if (! isempty (font))
-	options = strcat (options, "\"", font, "\" ");
-      endif
-      if (! isempty (fontsize))
-	options = strcat (options, " ", fontsize);
-      endif
-
-      new_terminal = strcat ("postscript ", options);
-
-    elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
-      ## Adobe Illustrator, CorelDraw
-      if (use_color >= 0)
-	options = " color";
-      else
-	options = " mono";
-      endif
-      if (! isempty (font))
-	options = strcat (options, " \"", font, "\"");
-      endif
-      if (! isempty (fontsize))
-	options = strcat (options, " ", fontsize);
-      endif
-
-      new_terminal = strcat (dev, " ", options);
-
-    elseif (strcmp (dev, "fig"))
-      ## XFig
-      options = orientation;
-      if (use_color >= 0)
-	options = " color";
-      else
-	options = " mono";
-      endif
-      if (! isempty (fontsize))
-	options = strcat (options, " fontsize ", fontsize);
-      endif
-
-      new_terminal = strcat ("fig ", options);
-
-    elseif (strcmp (dev, "emf"))
-      ## Enhanced Metafile format
-      options = " ";
-      if (use_color >= 0)
-	options = " color";
-      else
-	options = " mono";
-      endif
-      if (force_solid >= 0)
-	options = strcat (options, " solid");
-      endif
-      if (! isempty (font))
-	options = strcat (options, " \"", font, "\"");
-      endif
-      if (! isempty (fontsize))
-	options = strcat (options, " ", fontsize);
-      endif
-
-      new_terminal = strcat ("emf ", options);
-
-    elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
-      ## Portable network graphics, PBMplus
-
-      ## FIXME -- New PNG interface takes color as "xRRGGBB"
-      ## where x is the literal character 'x' and 'RRGGBB' are the red,
-      ## green and blue components in hex.  For now we just ignore it
-      ## and use default.  The png terminal now is so rich with options,
-      ## that one perhaps has to write a separate printpng.m function.
-      ## DAS
-
-      ## if (use_color >= 0)
-      ##	eval (sprintf ("__gnuplot_set__ term %s color medium", dev));
-      ##else
-      ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
-      ##endif
-
-      new_terminal = "png large";
-
-    elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
-      ## AutoCad DXF, METAFONT, HPGL
-      new_terminal = dev;
     endif
 
-    __gnuplot_raw__ ("set terminal push;\n");
-    __gnuplot_raw__ (sprintf ("set terminal %s;\n", new_terminal));
+    if (! isempty (font))
+      options = strcat (options, "\"", font, "\" ");
+    endif
+    if (! isempty (fontsize))
+      options = strcat (options, " ", fontsize);
+    endif
 
-    ## Gnuplot expects " around output file name
-    __gnuplot_raw__ (sprintf ("set output \"%s\";\n", name));
+    new_terminal = strcat ("postscript ", options);
 
-    replot ();
+  elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
+    ## Adobe Illustrator, CorelDraw
+    if (use_color >= 0)
+      options = " color";
+    else
+      options = " mono";
+    endif
+    if (! isempty (font))
+      options = strcat (options, " \"", font, "\"");
+    endif
+    if (! isempty (fontsize))
+      options = strcat (options, " ", fontsize);
+    endif
 
-  unwind_protect_cleanup
+    new_terminal = strcat (dev, " ", options);
 
-    __gnuplot_raw__ ("set terminal pop;\n");
-    __gnuplot_raw__ ("set output;\n")
+  elseif (strcmp (dev, "fig"))
+    ## XFig
+    options = orientation;
+    if (use_color >= 0)
+      options = " color";
+    else
+      options = " mono";
+    endif
+    if (! isempty (fontsize))
+      options = strcat (options, " fontsize ", fontsize);
+    endif
 
-    replot ();
+    new_terminal = strcat ("fig ", options);
 
-  end_unwind_protect
+  elseif (strcmp (dev, "emf"))
+    ## Enhanced Metafile format
+    options = " ";
+    if (use_color >= 0)
+      options = " color";
+    else
+      options = " mono";
+    endif
+    if (force_solid >= 0)
+      options = strcat (options, " solid");
+    endif
+    if (! isempty (font))
+      options = strcat (options, " \"", font, "\"");
+    endif
+    if (! isempty (fontsize))
+      options = strcat (options, " ", fontsize);
+    endif
+
+    new_terminal = strcat ("emf ", options);
+
+  elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
+    ## Portable network graphics, PBMplus
+
+    ## FIXME -- New PNG interface takes color as "xRRGGBB"
+    ## where x is the literal character 'x' and 'RRGGBB' are the red,
+    ## green and blue components in hex.  For now we just ignore it
+    ## and use default.  The png terminal now is so rich with options,
+    ## that one perhaps has to write a separate printpng.m function.
+    ## DAS
+
+    ## if (use_color >= 0)
+    ##	eval (sprintf ("__gnuplot_set__ term %s color medium", dev));
+    ##else
+    ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
+    ##endif
+
+    new_terminal = "png large";
+
+  elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
+    ## AutoCad DXF, METAFONT, HPGL
+    new_terminal = dev;
+  endif
+
+  __render_plot__ (new_terminal, name);
 
   if (! isempty (convertname))
     command = sprintf ("convert '%s' '%s'", name, convertname);

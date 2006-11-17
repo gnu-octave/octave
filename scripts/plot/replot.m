@@ -25,7 +25,7 @@
 ## Author: jwe
 
 function replot ()
-
+  
   if (nargin == 0)
     __render_plot__ ();
   else

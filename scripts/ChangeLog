@@ -1,3 +1,9 @@
+2006-11-17  John W. Eaton  <jwe@octave.org>
+
+	* plot/__render_plot__.m: New args, terminal and output.
+	* plot/print.m: Don't set output and term here.  Instead, call
+	__render_plot__ with terminal and output.
+
 2006-11-16  John W. Eaton  <jwe@octave.org>
 
 	* plot/__render_plot1__.m: New file.

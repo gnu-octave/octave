@@ -17,7 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-function __render_plot__ ()
+function __render_plot__ (terminal, output)
 
   __plot_globals__;
 
@@ -25,31 +25,57 @@ function __render_plot__ ()
   mxn = __multiplot_xn__(cf);
   myn = __multiplot_yn__(cf);
 
-  if (__multiplot_mode__(cf))
-    __gnuplot_raw__ ("set size 1, 1;\n");
-    __gnuplot_raw__ ("set origin 0, 0;\n");
-    __gnuplot_raw__ ("set multiplot;\n");
-    for mxi = 1:mxn
-      for myi = 1:myn
+  set_terminal = nargin > 0;
+  set_output = nargin > 1;
 
-	columns = __multiplot_xn__(cf);
-	rows = __multiplot_yn__(cf);
-	__gnuplot_raw__ (sprintf ("set size %g, %g;\n",
-				  __multiplot_xsize__(cf),
-				  __multiplot_ysize__(cf)));
+  unwind_protect
 
-	xo = (mxi - 1.0) * __multiplot_xsize__(cf);
-	yo = (rows - myi) * __multiplot_ysize__(cf);
+    if (set_terminal)
+      __gnuplot_raw__ ("set terminal push;\n");
+      __gnuplot_raw__ (sprintf ("set terminal %s;\n", terminal));
+    endif
 
-	__gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
+    if (set_output)
+      __gnuplot_raw__ (sprintf ("set output \"%s\";\n", output));
+    endif
 
-	__render_plot1__ (mxi, myi)
+    if (__multiplot_mode__(cf))
+      __gnuplot_raw__ ("set size 1, 1;\n");
+      __gnuplot_raw__ ("set origin 0, 0;\n");
+      __gnuplot_raw__ ("set multiplot;\n");
+      for mxi = 1:mxn
+	for myi = 1:myn
 
+	  columns = __multiplot_xn__(cf);
+	  rows = __multiplot_yn__(cf);
+	  __gnuplot_raw__ (sprintf ("set size %g, %g;\n",
+				    __multiplot_xsize__(cf),
+				    __multiplot_ysize__(cf)));
+
+	  xo = (mxi - 1.0) * __multiplot_xsize__(cf);
+	  yo = (rows - myi) * __multiplot_ysize__(cf);
+
+	  __gnuplot_raw__ (sprintf ("set origin %g, %g;\n", xo, yo));
+
+	  __render_plot1__ (mxi, myi)
+
+	endfor
       endfor
-    endfor
-    __gnuplot_raw__ ("unset multiplot;\n");
-  else
-    __render_plot1__ (1, 1);
-  endif
+      __gnuplot_raw__ ("unset multiplot;\n");
+    else
+      __render_plot1__ (1, 1);
+    endif
+
+  unwind_protect_cleanup
+
+    if (set_terminal)
+      __gnuplot_raw__ ("set terminal pop;\n");
+    endif
+
+    if (set_output)
+      __gnuplot_raw__ ("set output;\n")
+    endif
+
+  end_unwind_protect
 
 endfunction

@@ -253,15 +253,12 @@ function sombreroimage (nm, typ)
       __gnuplot_raw__ ("set surface;\n");
       __gnuplot_raw__ ("set nocontour;\n");
       __gnuplot_raw__ ("set nologscale;\n");
-      __gnuplot_set__ parametric;
       __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
       __gnuplot_raw__ ("set nokey;\n");
       __gnuplot_raw__ ("set nocolorbox;\n");
-      msg = strcat ("");
       __gnuplot_raw__ ("set title \"Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.\";\n");
-      __plt3__ (zz, "", "");
+      __plt3__ (zz, true, "", "", "", "");
     unwind_protect_cleanup
-      __gnuplot_set__ noparametric;
       print (strcat (nm, ".", typ), strcat ("-d", typ));
       bury_output ();
     end_unwind_protect

@@ -1727,7 +1727,7 @@ Send @var{string} directly to gnuplot subprocess.\n\
 
 DEFUN_DLD (__gnuplot_send_inline_data__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __gnuplot_send_inline_data__ (@var{string})\n\
+@deftypefn {Loadable Function} {} __gnuplot_send_inline_data__ (@var{data}, @var{ndim}, @var{parametric})\n\
 Send @var{val} to gnuplot subprocess as inline data.\n\
 @end deftypefn")
 {

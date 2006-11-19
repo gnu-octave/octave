@@ -61,6 +61,7 @@ function __render_plot1__ (mxi, myi)
       __gnuplot_raw__ (sprintf ("%d %.4g %.4g %.4g\n", [idx, tmp]'));
       __gnuplot_raw__("e\n");
 
+      __gnuplot_raw__ ("set yrange [:] reverse;\n");
       __gnuplot_raw__ ("set autoscale fix\n"); # "fix" is helpful for "a" hotkey
       __gnuplot_raw__ ("set tics out\n");
     endif

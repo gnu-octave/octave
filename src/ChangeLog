@@ -1,3 +1,11 @@
+2006-11-21  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_find_file,
+	load_path::do_find_first_of, load_path::do_find_all_first_of): 
+	Call rooted_pathname instead of absolute_pathname.
+	* utils.cc (fcn_file_in_path, oct_file_in_path, mex_file_in_path):
+	Likewise.
+
 2006-11-16  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* oct-hist.cc (default_history_file): Instead of appending

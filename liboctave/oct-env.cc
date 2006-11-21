@@ -400,9 +400,6 @@ octave_env::do_get_home_directory (void) const
 std::string
 octave_env::do_get_user_name (void) const
 {
-  // FIXME -- is it possible for this to change while Octave
-  // is running?
-
   if (user_name.empty ())
     {
       octave_passwd pw = octave_passwd::getpwuid (octave_syscalls::getuid ());
@@ -416,9 +413,6 @@ octave_env::do_get_user_name (void) const
 std::string
 octave_env::do_get_host_name (void) const
 {
-  // FIXME -- is it possible for this to change while Octave
-  // is running?
-
   if (host_name.empty ())
     {
       char hostname[256];

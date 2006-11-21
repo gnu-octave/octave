@@ -1,3 +1,7 @@
+2006-11-21  John W. Eaton  <jwe@octave.org>
+
+	* oct-env.cc (do_absolute_pathname): Undo previous change.
+
 2006-11-20  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (octave_env::do_absolute_pathname): Also return true

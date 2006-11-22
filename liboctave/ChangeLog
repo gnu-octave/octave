@@ -1,3 +1,12 @@
+2006-11-22  David Bateman  <dbateman@free.fr>
+
+        * dSparse.cc (SparseMatrix SparseMatrix::inverse(...)): Transpose
+	the matrix type as well when calling tinverse for lower
+	triangular
+	matrices
+        * CSparse.cc (SparseComplexMatrix SparseComplexMatrix::inverse(...)):
+        ditto.
+					
 2006-11-21  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (do_absolute_pathname): Undo previous change.

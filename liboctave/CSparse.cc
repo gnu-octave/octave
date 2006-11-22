@@ -973,7 +973,10 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
   else if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
     ret = tinverse (mattype, info, rcond, true, calc_cond).transpose();
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
-    ret = transpose().tinverse (mattype, info, rcond, true, calc_cond);
+    { 
+      MatrixType newtype = mattype.transpose();
+      ret = transpose().tinverse (newtype, info, rcond, true, calc_cond);
+    }
   else if (typ != MatrixType::Rectangular)
     {
       if (mattype.is_hermitian())

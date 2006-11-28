@@ -32,7 +32,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 extern "C" {
 #endif
 
-#if defined (HAVE_UFSPARSE_UMFPACK_H)
+#if defined (HAVE_SPARSESUITE_UMFPACK_H)
+#include <sparsesuite/umfpack.h>
+#elif defined (HAVE_UFSPARSE_UMFPACK_H)
 #include <ufsparse/umfpack.h>
 #elif defined (HAVE_UMFPACK_UMFPACK_H)
 #include <umfpack/umfpack.h>
@@ -40,7 +42,9 @@ extern "C" {
 #include <umfpack.h>
 #endif
 
-#if defined (HAVE_UFSPARSE_COLAMD_H)
+#if defined (HAVE_SPARSESUITE_COLAMD_H)
+#include <sparsesuite/colamd.h>
+#elif defined (HAVE_UFSPARSE_COLAMD_H)
 #include <ufsparse/colamd.h>
 #elif defined (HAVE_COLAMD_COLAMD_H)
 #include <colamd/colamd.h>
@@ -48,7 +52,9 @@ extern "C" {
 #include <colamd.h>
 #endif
 
-#if defined (HAVE_UFSPARSE_CCOLAMD_H)
+#if defined (HAVE_SPARSESUITE_CCOLAMD_H)
+#include <sparsesuite/ccolamd.h>
+#elif defined (HAVE_UFSPARSE_CCOLAMD_H)
 #include <ufsparse/ccolamd.h>
 #elif defined (HAVE_CCOLAMD_CCOLAMD_H)
 #include <ccolamd/ccolamd.h>
@@ -56,7 +62,9 @@ extern "C" {
 #include <ccolamd.h>
 #endif
 
-#if defined (HAVE_UFSPARSE_METIS_H)
+#if defined (HAVE_SPARSESUITE_METIS_H)
+#include <sparsesuite/metis.h>
+#elif defined (HAVE_UFSPARSE_METIS_H)
 #include <ufsparse/metis.h>
 #elif defined (HAVE_METIS_METIS_H)
 #include <metis/metis.h>
@@ -64,7 +72,9 @@ extern "C" {
 #include <metis.h>
 #endif
 
-#if defined (HAVE_UFSPARSE_CHOLMOD_H)
+#if defined (HAVE_SPARSESUITE_CHOLMOD_H)
+#include <sparsesuite/cholmod.h>
+#elif defined (HAVE_UFSPARSE_CHOLMOD_H)
 #include <ufsparse/cholmod.h>
 #elif defined (HAVE_UMFPACK_CHOLMOD_H)
 #include <cholmod/cholmod.h>
@@ -72,7 +82,9 @@ extern "C" {
 #include <cholmod.h>
 #endif
 
-#if defined (HAVE_UFSPARSE_CS_H)
+#if defined (HAVE_SPARSESUITE_CS_H)
+#include <sparsesuite/cs.h>
+#elif defined (HAVE_UFSPARSE_CS_H)
 #include <ufsparse/cs.h>
 #elif defined (HAVE_CXSPARSE_CS_H)
 #include <cxsparse/cs.h>
@@ -80,7 +92,8 @@ extern "C" {
 #include <cs.h>
 #endif
 
-#if (defined (HAVE_UFSPARSE_CHOLMOD_H) \
+#if (defined (HAVE_SPARSESUITE_CHOLMOD_H) \
+     || defined (HAVE_UFSPARSE_CHOLMOD_H) \
      || defined (HAVE_UMFPACK_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_H))
 #ifdef IDX_TYPE_LONG

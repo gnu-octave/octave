@@ -1,3 +1,9 @@
+2006-10-03  David Bateman  <dbateman@free.fr>
+
+	* configure.in: Check for sparse header files in the sparsesuite
+	sub-directory. In the cholmod tests, include the camd libraries, as
+	this might be a dependency for cholmod.
+
 2006-11-15  John W. Eaton  <jwe@octave.org>
 
 	* run-octave.in: Don't forget LD_PRELOAD if there are args.

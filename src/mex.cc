@@ -320,7 +320,18 @@ public:
 
   int get_m (void) const { return val.rows (); }
 
-  int get_n (void) const { return val.columns (); }
+  int get_n (void) const 
+  {
+    int n = 1;
+
+    // Force dims and ndims to be cached.
+    get_dimensions();
+
+    for (int i = ndims - 1; i > 0; i--)
+      n *= dims[i];
+
+    return n;
+  }
 
   int *get_dimensions (void) const
   {
@@ -781,7 +792,15 @@ public:
 
   int get_m (void) const { return dims[0]; }
 
-  int get_n (void) const { return dims[1]; }
+  int get_n (void) const
+  {
+    int n = 1;
+
+    for (int i = ndims - 1 ; i > 0 ; i--)
+      n *= dims[i];
+
+    return n;
+  }
 
   int *get_dimensions (void) const { return dims; }
 
@@ -1641,9 +1660,8 @@ public:
 
   mxArray *get_field_by_number (int index, int key_num) const
   {
-    int idx = nfields * index + key_num;
-
-    return data[idx];
+    return key_num >= 0 && key_num < nfields
+      ? : data[nfields * index + key_num] : 0;
   }
 
   void set_field_by_number (int index, int key_num, mxArray *val);
@@ -1756,7 +1774,10 @@ public:
     mxFree (data);
   }
 
-  mxArray *get_cell (int idx) const { return data[idx]; }
+  mxArray *get_cell (int idx) const
+  {
+    return idx >= 0 && idx < get_number_of_elements () ? data[idx] : 0;
+  }
 
   void set_cell (int idx, mxArray *val);
 
@@ -2210,15 +2231,15 @@ maybe_unmark_array (mxArray *ptr)
 void
 mxArray_struct::set_field_by_number (int index, int key_num, mxArray *val)
 {
-  int idx = nfields * index + key_num;
-
-  data[idx] = maybe_unmark_array (val);
+  if (key_num >= 0 && key_num < nfields)
+    data[nfields * index + key_num] = maybe_unmark_array (val);
 }
 
 void
 mxArray_cell::set_cell (int idx, mxArray *val)
 {
-  data[idx] = maybe_unmark_array (val);
+  if (idx >= 0 && idx < get_number_of_elements ())
+    data[idx] = maybe_unmark_array (val);
 }
 
 // ------------------------------------------------------------------

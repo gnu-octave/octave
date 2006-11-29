@@ -1676,6 +1676,28 @@ eat_whitespace (void)
 		goto done;
 	    }
 
+	case '\r':
+	  if (in_comment)
+	    comment_buf += static_cast<char> (c);
+	  c = yyinput ();
+	  if (c == EOF)
+	    break;
+	  else if (c == '\n')
+	    {
+	      retval |= ATE_NEWLINE;
+	      if (in_comment)
+		{
+		  comment_buf += static_cast<char> (c);
+		  octave_comment_buffer::append (comment_buf);
+		  in_comment = false;
+		  beginning_of_comment = false;
+		}
+	      current_input_column = 0;
+	      break;
+	    }
+
+	  // Fall through...
+
 	default:
 	  if (in_comment)
 	    {

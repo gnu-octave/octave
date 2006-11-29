@@ -291,6 +291,7 @@ else
   if [ -n "$outputfile" ]; then
     octfile="$outputfile"
   else
+    octfile=`basename $octfile`
     octfile=`echo $octfile | $SED 's,\.[^.]*$,,'`$output_ext
   fi
 fi

@@ -1,3 +1,23 @@
+2006-11-28  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mxArray_struct::get_field_by_number):
+	Return 0 if key_num is out of range.
+	(mxArray_struct::set_field_by_number):
+	Do nothing if key_num is out of range.
+	(mxArray_cell::get_cell, mxArray_cell::set_cell):
+	Avoid out-of-bounds indexing
+
+2006-11-28  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
+
+	* mex.cc (mxArray_matlab::get_n, mxArray_octave_value::get_n):
+	Return product of last N-1 dims.
+
+2006-11-28  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (eat_whitespace): Also handle CRLF as EOL.
+
+	* dirfns.cc (Fmkdir): Handle "mkdir (parent, dir)".
+
 2006-11-21  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_find_file,

@@ -1,4 +1,9 @@
-2006-10-03  David Bateman  <dbateman@free.fr>
+2006-11-28  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in: Construct default output file from basename of
+	input file name.
+
+2006-11-28  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Check for sparse header files in the sparsesuite
 	sub-directory. In the cholmod tests, include the camd libraries, as

@@ -204,6 +204,7 @@ system-dependent error message.\n\
 DEFCMD (mkdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
+@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})\n\
 Create a directory named @var{dir}.\n\
 \n\
 If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\
@@ -219,27 +220,48 @@ message identifier.\n\
   retval(1) = std::string ();
   retval(0) = false;
 
-  if (args.length () == 1)
+  int nargin = args.length ();
+
+  std::string dirname;
+
+  if (nargin == 2)
     {
-      std::string dirname = args(0).string_value ();
+      std::string parent = args(0).string_value ();
+      std::string dir = args(1).string_value ();
 
       if (error_state)
-	gripe_wrong_type_arg ("mkdir", args(0));
-      else
 	{
-	  std::string msg;
+	  gripe_wrong_type_arg ("mkdir", args(0));
+	  return retval;
+	}
+      else
+	dirname = parent + file_ops::dir_sep_char + dir;
+    }
+  else
+    {
+      dirname = args(0).string_value ();
 
-	  int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
+      if (error_state)
+	{
+	  gripe_wrong_type_arg ("mkdir", args(0));
+	  return retval;
+	}
+    }
+
+  if (nargin == 1 || nargin == 2)
+    {
+      std::string msg;
+
+      int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
 					0777, msg);
 
-	  if (status < 0)
-	    {
-	      retval(2) = "mkdir";
-	      retval(1) = msg;
-	    }
-	  else
-	    retval(0) = true;
+      if (status < 0)
+	{
+	  retval(2) = "mkdir";
+	  retval(1) = msg;
 	}
+      else
+	retval(0) = true;
     }
   else
     print_usage ();

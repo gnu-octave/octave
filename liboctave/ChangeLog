@@ -1,9 +1,7 @@
-2006-11-22  David Bateman  <dbateman@free.fr>
+2006-11-28  David Bateman  <dbateman@free.fr>
 
 	* oct-sparse.h: Allow sparse headers to also be in a sparsesuite
 	sub-directory.
-
-2006-11-22  David Bateman  <dbateman@free.fr>
 
         * dSparse.cc (SparseMatrix SparseMatrix::inverse(...)): Transpose
 	the matrix type as well when calling tinverse for lower

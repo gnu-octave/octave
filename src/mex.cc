@@ -1661,7 +1661,7 @@ public:
   mxArray *get_field_by_number (int index, int key_num) const
   {
     return key_num >= 0 && key_num < nfields
-      ? : data[nfields * index + key_num] : 0;
+      ? data[nfields * index + key_num] : 0;
   }
 
   void set_field_by_number (int index, int key_num, mxArray *val);

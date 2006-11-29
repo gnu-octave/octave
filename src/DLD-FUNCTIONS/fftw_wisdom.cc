@@ -31,6 +31,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <sstream>
 
+#include "file-stat.h"
+
 #include "defaults.h"
 #include "defun-dld.h"
 #include "error.h"
@@ -110,37 +112,56 @@ Octave.\n\
 	    overwrite = true;
 	}
 
-      std::string str = args(0).string_value ();
-      std::string wisdom = octave_env::make_absolute
-	(load_path::find_file (str), octave_env::getcwd ());
+      std::string name = args(0).string_value ();
 
-      // FIXME -- should probably protect FILE* resources with
-      // auto_ptr or similar...
+      std::string wisdom = file_ops::tilde_expand (name);
 
-      if (wisdom.empty () || overwrite)
+      if (! (overwrite || octave_env::absolute_pathname (wisdom)))
 	{
-	  if (str.empty ())
-	    error ("fftw_wisdom: can not save to file");
+	  file_stat fs (wisdom);
+
+	  if (! fs.exists ())
+	    {
+	      std::string tmp = octave_env::make_absolute
+		(load_path::find_file (wisdom), octave_env::getcwd ());
+
+	      if (! tmp.empty ())
+		{
+		  warning_with_id ("Octave:fftw-wisdom-file-in-path",
+				   "fftw_wisdom: file found in load path");
+		  wisdom = tmp;
+		}
+	    }
+	}
+
+      if (overwrite)
+	{
+	  FILE *ofile = fopen (wisdom.c_str (), "wb");
+
+	  if (! ofile)
+	    error ("fftw_wisdom: unable to open file `%s' for writing",
+		   wisdom.c_str());
 	  else
 	    {
-	      FILE *ofile = fopen (str.c_str (), "wb");
-	      if (! ofile)
-		error ("fftw_wisdom: can not save to file %s", str.c_str());
-	      else
-		{
-		  fftw_export_wisdom_to_file (ofile);
-		  fclose (ofile);
-		}
+	      fftw_export_wisdom_to_file (ofile);
+	      fclose (ofile);
 	    }
 	}
       else
 	{
 	  FILE *ifile = fopen (wisdom.c_str (), "r");
-	  if (! fftw_import_wisdom_from_file (ifile))
-	    error ("fftw_wisdom: can not import wisdom from file"); 
-	  fclose (ifile);
-	}
 
+	  if (! ifile)
+	    error ("fftw_wisdom: unable to open file `%s' for reading",
+		   wisdom.c_str ());
+	  else
+	    {
+	      if (! fftw_import_wisdom_from_file (ifile))
+		error ("fftw_wisdom: can not import wisdom from file"); 
+
+	      fclose (ifile);
+	    }
+	}
     } 
   else 
     {

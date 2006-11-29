@@ -1,3 +1,8 @@
+2006-11-29  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fftw_wisdom.cc (Ffftw_wisdom): Look in load-path
+	if reading wisdom file, but not if writing.
+
 2006-11-28  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_struct::get_field_by_number):

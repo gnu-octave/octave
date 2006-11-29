@@ -84,6 +84,28 @@
 ## @example
 ## p = pkg prefix
 ## @end example
+## @item local_list
+## Set the file in which to look for information on the locally
+## installed packages. Locally installed packages are those that are
+## typically available only to the current user. For example
+## @example
+## pkg local_list ~/.octave_packages
+## @end example
+## It is possible to get the current value of local_list with the following
+## @example
+## pkg local_list
+## @end example
+## @item global_list
+## Set the file in which to look for, for information on the globally
+## installed packages. Globally installed packages are those that are
+## typically available to all users. For example
+## @example
+## pkg global_list /usr/share/octave/octave_packages
+## @end example
+## It is possible to get the current value of global_list with the following
+## @example
+## pkg global_list
+## @end example
 ## @end table
 ## @end deftypefn
 
@@ -92,6 +114,9 @@
 function [local_packages, global_packages] = pkg(varargin)
     ## Installation prefix
     persistent prefix = -1;
+    persistent local_list = tilde_expand("~/.octave_packages");
+    persistent global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
+
     if (prefix == -1)
         if (issuperuser())
 	    prefix = fullfile (OCTAVE_HOME (), "/share/octave/packages/");
@@ -100,7 +125,7 @@ function [local_packages, global_packages] = pkg(varargin)
         endif
     endif
     prefix = tilde_expand(prefix);
-    
+
     ## Handle input
     if (length(varargin) == 0 || !iscellstr(varargin))
         print_usage();
@@ -112,7 +137,7 @@ function [local_packages, global_packages] = pkg(varargin)
         switch (varargin{i})
             case "-nodeps"
                 deps = false;
-            case {"list", "install", "uninstall", "load", "prefix"}
+            case {"list", "install", "uninstall", "load", "prefix", "local_list", "global_list"}
                 action = varargin{i};
             otherwise
                 files{end+1} = varargin{i};
@@ -123,11 +148,11 @@ function [local_packages, global_packages] = pkg(varargin)
     switch (action)
         case "list"
             if (nargout == 0)
-                installed_packages();
+                installed_packages(local_list, global_list);
             elseif (nargout == 1)
-                local_packages = installed_packages();
+                local_packages = installed_packages(local_list, global_list);
             elseif (nargout == 2)
-                [local_packages, global_packages] = installed_packages();
+                [local_packages, global_packages] = installed_packages(local_list, global_list);
             else
                 error("Too many output arguments requested.");
             endif
@@ -135,17 +160,17 @@ function [local_packages, global_packages] = pkg(varargin)
             if (length(files) == 0)
                 error("You must specify at least one filename when calling 'pkg install'");
             endif
-            install(files, deps, prefix);
+            install(files, deps, prefix, local_list, global_list);
         case "uninstall"
             if (length(files) == 0)
                 error("You must specify at least one package when calling 'pkg uninstall'");
             endif
-            uninstall(files, deps);
+            uninstall(files, deps, local_list, global_list);
         case "load"
             if (length(files) == 0)
                 error("You must specify at least one package or 'all' when calling 'pkg load'");
             endif
-            load_packages(files, deps);
+            load_packages(files, deps, local_list, global_list);
         case "prefix"
             if (length(files) == 0 && nargout == 0)
                 disp(prefix);
@@ -155,19 +180,34 @@ function [local_packages, global_packages] = pkg(varargin)
                 prefix = files{1};
                 if (!strcmp(prefix(end), "/")) prefix(end+1) = "/"; endif
             else
-                error("You must specify a prefix directory, or request an output arguement");
+                error("You must specify a prefix directory, or request an output argument");
+            endif
+        case "local_list"
+            if (length(files) == 0 && nargout == 0)
+                disp(local_list);
+            elseif (length(files) == 0 && nargout == 1)
+                local_packages = local_list;
+            elseif (length(files) == 1 && nargout == 0 && ischar(files{1}))
+                local_list = files{1};
+            else
+                error("You must specify a local_list file, or request an output argument");
+            endif
+        case "global_list"
+            if (length(files) == 0 && nargout == 0)
+                disp(global_list);
+            elseif (length(files) == 0 && nargout == 1)
+                local_packages = global_list;
+            elseif (length(files) == 1 && nargout == 0 && ischar(files{1}))
+                global_list = files{1};
+            else
+                error("You must specify a global_list file, or request an output argument");
             endif
         otherwise
             error("You must specify a valid action for 'pkg'. See 'help pkg' for details");
     endswitch
 endfunction
 
-function install(files, handle_deps, prefix)
-    ## Set parameters depending on wether or not the installation
-    ## is system-wide (global) or local.
-    local_list = tilde_expand("~/.octave_packages");
-    global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
-    
+function install(files, handle_deps, prefix, local_list, global_list)
     global_install = issuperuser();
  
     # Check that the directory in prefix exist. If it doesn't: create it!
@@ -180,8 +220,9 @@ function install(files, handle_deps, prefix)
     endif
 
     ## Get the list of installed packages
-    [local_packages, global_packages] = installed_packages();
-    installed_packages = {local_packages{:} global_packages{:}};        
+    [local_packages, global_packages] = installed_packages(local_list, 
+							   global_list);
+    installed_packages = {local_packages{:}, global_packages{:}};        
     
     if (global_install)
         packages = global_packages;
@@ -306,7 +347,8 @@ function install(files, handle_deps, prefix)
     ## Uninstall the packages that will be replaced
     try
         for i = packages_to_uninstall
-            uninstall({installed_packages{i}.name}, false);
+            uninstall({installed_packages{i}.name}, false, local_list, 
+		      global_list);
         endfor
     catch
         ## Something went wrong, delete tmpdirs
@@ -391,13 +433,12 @@ function install(files, handle_deps, prefix)
     endif
 endfunction
 
-function uninstall(pkgnames, handle_deps)
-    local_list = tilde_expand("~/.octave_packages");
-    global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
+function uninstall(pkgnames, handle_deps, local_list, global_list)
     ## Get the list of installed packages
-    [local_packages, global_packages] = installed_packages();
+    [local_packages, global_packages] = installed_packages(local_list, 
+							   global_list);
     if (issuperuser())
-        installed_packages = global_packages;
+        installed_packages = {local_packages{:}, global_packages{:}};
     else
         installed_packages = local_packages;
     endif
@@ -413,8 +454,29 @@ function uninstall(pkgnames, handle_deps)
 
     ## Are all the packages that should be uninstalled already installed?
     if (length(delete_idx) != length(pkgnames))
-        # XXX: We should have a better error message
-        error("Some of the packages you want to uninstall are not installed.");
+      delete_idx
+      pkgnames
+
+      if (issuperuser())
+	## Try again for a locally installed package
+	installed_packages = local_packages
+
+	num_packages = length(installed_packages);
+	delete_idx = [];
+	for i = 1:num_packages
+          cur_name = installed_packages{i}.name;
+          if (any(strcmp(cur_name, pkgnames)))
+            delete_idx(end+1) = i;
+          endif
+	endfor
+	if (length(delete_idx) != length(pkgnames))
+	  ## XXX: We should have a better error message
+          error("Some of the packages you want to uninstall are not installed.");
+	endif
+      else
+	## XXX: We should have a better error message
+	error("Some of the packages you want to uninstall are not installed.");
+      endif
     endif
 
     ## Compute the packages that will remain installed
@@ -982,9 +1044,7 @@ function bad_deps = get_unsatisfied_deps(desc, installed_packages)
     endfor
 endfunction
 
-function [out1, out2] = installed_packages()
-    local_list = tilde_expand("~/.octave_packages");
-    global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
+function [out1, out2] = installed_packages(local_list, global_list)
     ## Get the list of installed packages
     try
         local_packages = load(local_list).local_packages;
@@ -992,7 +1052,11 @@ function [out1, out2] = installed_packages()
         local_packages = {};
     end_try_catch
     try
-        global_packages = load(global_list).global_packages;
+	if (strcmp(local_list, global_list))
+	    global_packages = {};
+	else
+            global_packages = load(global_list).global_packages;
+        endif
     catch
         global_packages = {};
     end_try_catch
@@ -1050,8 +1114,8 @@ function [out1, out2] = installed_packages()
     endfor
 endfunction
 
-function load_packages(files, handle_deps)
-    installed_packages = installed_packages();
+function load_packages(files, handle_deps, local_list, global_list)
+    installed_packages = installed_packages(local_list, global_list);
     num_packages = length(installed_packages);
     
     ## Read package names and installdirs into a more convenient format

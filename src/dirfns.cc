@@ -204,7 +204,7 @@ system-dependent error message.\n\
 DEFCMD (mkdir, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{dir})\n\
-@deftypefn {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})\n\
+@deftypefnx {Built-in Function} {[@var{status}, @var{msg}, @var{msgid}] =} mkdir (@var{parent}, @var{dir})\n\
 Create a directory named @var{dir}.\n\
 \n\
 If successful, @var{status} is 1, with @var{msg} and @var{msgid} empty\n\

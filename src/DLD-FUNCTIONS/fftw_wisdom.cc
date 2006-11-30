@@ -47,26 +47,17 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 DEFUN_DLD (fftw_wisdom, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} fftw_wisdom (@var{file}, @var{ow})\n\
+@deftypefn {Loadable Function} {} fftw_wisdom (@var{file}, @var{mode})\n\
+Save or load FFTW wisdom data to @var{file}.  The optional argument\n\
+@var{mode} may be either @samp{\"r\"} or @samp{\"w\"}.  The default\n\
+value is @samp{\"r\"}.\n\
+\n\
 @deftypefnx {Loadable Function} {} fftw_wisdom (@var{n})\n\
-\n\
-This function is used to manipulate the FFTW wisdom data. It can\n\
-be used to load previously stored wisdom from a file, create wisdom\n\
-needed by Octave and to save the current wisdom to a file. Wisdom\n\
-data can be used to significantly accelerate the calculation of the FFTs,\n\
-but is only profitable if the same FFT is called many times due to the\n\
-overhead in calculating the wisdom data.\n\
-\n\
-Called with a single string argument, @code{fftw_wisdom (@var{file})}\n\
-will load the wisdom data found in @var{file}. If @var{file} does\n\
-not exist, then the current wisdom used by FFTW is saved to this\n\
-file. If the flag @var{ow} is non-zero, then even if @var{file}\n\
-exists, it will be overwritten.\n\
-\n\
-It is assumed that each row of @var{n} represents the size of a FFT for\n\
+Pre-calculate FFTW wisdom data for an FFT of size @var{n}.\n\
+Each row of @var{n} represents the size of an FFT for\n\
 which it is desired to pre-calculate the wisdom needed to accelerate it.\n\
 Any value of the matrix that is less than 1, is assumed to indicate an\n\
-absent dimension. That is\n\
+absent dimension.  For example,\n\
 \n\
 @example\n\
 fftw_wisdom ([102, 0, 0; 103, 103, 0; 102, 103, 105]);\n\
@@ -77,11 +68,15 @@ c = fftn (rand ([102, 103, 105]));\n\
 \n\
 calculates the wisdom necessary to accelerate the 103, 102x102 and\n\
 the 102x103x105 FFTs. Note that calculated wisdom will be lost when\n\
-restarting Octave. However, if it is saved as discussed above, it\n\
-can be reloaded. Also, any system-wide wisdom file that has been found\n\
-will also be used. Saved wisdom files should not be used on different\n\
-platforms since they will not be efficient and the point of calculating\n\
-the wisdom is lost.\n\
+restarting Octave. However, the wisdom data can be reloaded if it is\n\
+saved to a file as described above.  Also, any system-wide wisdom\n\
+file that has been found will also be used. Saved wisdom files\n\
+should not be used on different platforms since they will not be\n\
+efficient and the point of calculating the wisdom is lost.\n\
+\n\
+Wisdom data can be used to significantly accelerate the calculation\n\
+of the FFTs but is only profitable if the same FFT is called many\n\
+times due to the overhead in calculating the wisdom data.\n\
 \n\
 Note that the program @code{fftw-wisdom} supplied with FFTW can equally\n\
 be used to create a file containing wisdom that can be imported into\n\
@@ -103,20 +98,26 @@ Octave.\n\
 
   if (args(0).is_string ())
     {
-      bool overwrite = false;
+      bool write_wisdom = false;
 
-      if (nargin != 1)
+      if (nargin == 2)
 	{
-	  double dval = args (1).double_value ();
-	  if (NINTbig (dval) != 0)
-	    overwrite = true;
+	  std::string mode = args(1).string_value ();
+
+	  if (! error_state && (mode == "r" || mode == "w"))
+	    write_wisdom = mode == "w";
+	  else
+	    {
+	      error ("fftw_wisdom: expecting second argument to be \"r\" or \"w\"");
+	      return retval;
+	    }
 	}
 
       std::string name = args(0).string_value ();
 
       std::string wisdom = file_ops::tilde_expand (name);
 
-      if (! (overwrite || octave_env::absolute_pathname (wisdom)))
+      if (! (write_wisdom || octave_env::absolute_pathname (wisdom)))
 	{
 	  file_stat fs (wisdom);
 
@@ -134,7 +135,7 @@ Octave.\n\
 	    }
 	}
 
-      if (overwrite)
+      if (write_wisdom)
 	{
 	  FILE *ofile = fopen (wisdom.c_str (), "wb");
 

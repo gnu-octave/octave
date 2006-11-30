@@ -1,3 +1,7 @@
+2006-11-30  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/mexext.m: New file.
+
 2006-11-29  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m: Add local_list and global_list options that allow the

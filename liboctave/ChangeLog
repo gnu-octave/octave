@@ -1,3 +1,8 @@
+2006-11-30  John W. Eaton  <jwe@octave.org>
+
+	* lo-utils.cc (octave_read_double, read_inf_nan_na):
+	Also recognize [+-][Ii]nf.
+
 2006-11-28  David Bateman  <dbateman@free.fr>
 
 	* oct-sparse.h: Allow sparse headers to also be in a sparsesuite

@@ -210,7 +210,7 @@ octave_fgetl (FILE *f, bool& eof)
 }
 
 static inline double
-read_inf_nan_na (std::istream& is, char c)
+read_inf_nan_na (std::istream& is, char c, char sign = '+')
 {
   double d = 0.0;
 
@@ -223,7 +223,7 @@ read_inf_nan_na (std::istream& is, char c)
 	  {
 	    is >> c;
 	    if (c == 'f' || c == 'F')
-	      d = octave_Inf;
+	      d = sign == '-' ? -octave_Inf : octave_Inf;
 	    else
 	      is.putback (c);
 	  }
@@ -263,18 +263,46 @@ octave_read_double (std::istream& is)
 {
   double d = 0.0;
 
-  char c = 0;
+  char c1 = 0;
 
-  is >> c;
-  switch (c)
+  is >> c1;
+  switch (c1)
     {
+    case '-':
+      {
+	char c2 = 0;
+	is >> c2;
+	if (c2 == 'i' || c2 == 'I')
+	  d = read_inf_nan_na (is, c2, c1);
+	else
+	  {
+	    is.putback (c2);
+	    is.putback (c1);
+	  }
+      }
+      break;
+
+    case '+':
+      {
+	char c2 = 0;
+	is >> c2;
+	if (c2 == 'i' || c2 == 'I')
+	  d = read_inf_nan_na (is, c2, c1);
+	else
+	  {
+	    is.putback (c2);
+	    is.putback (c1);
+	  }
+      }
+      break;
+
     case 'i': case 'I':
     case 'n': case 'N':
-      d = read_inf_nan_na (is, c);
+      d = read_inf_nan_na (is, c1);
       break;
 
     default:
-      is.putback (c);
+      is.putback (c1);
       is >> d;
     }
 

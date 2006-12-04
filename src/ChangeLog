@@ -1,5 +1,9 @@
 2006-12-04  David Bateman  <dbateman@free.fr>
 
+	* data.cc (Fdata): If ndims is greater than nargout and
+	nargout is greater than 1, then collect size of trailing
+	dimensions into retval(end).
+
 	* load-path.cc (load_path::do_find_fcn): Return empty string if
 	tests fail.
 

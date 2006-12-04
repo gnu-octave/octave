@@ -1043,6 +1043,16 @@ returns the number of columns in the given matrix.\n\
 	  for (int i = nargout-1; i >= ndims; i--)
 	    retval(i) = 1;
 
+	  if (ndims > nargout)
+	    {
+	      octave_idx_type d = 1;
+
+	      while (ndims >= nargout)
+		d *= dimensions(--ndims);
+	      
+	      retval(ndims) = d;
+	    }
+
 	  while (ndims--)
 	    retval(ndims) = dimensions(ndims);
 	}

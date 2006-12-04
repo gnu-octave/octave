@@ -199,6 +199,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
     matrix.set_index (idx(i).index_vector ());
 
   ::assign (matrix, rhs, MT::resize_fill_value ());
+
+
+  // Invalidate the matrix type
+  typ.invalidate_type ();
 }
 
 template <class MT>

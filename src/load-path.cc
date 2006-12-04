@@ -727,6 +727,9 @@ load_path::do_find_fcn (const std::string& fcn, int type) const
 	  else
 	    error ("load_path::do_find_fcn: %s: invalid type code = %d",
 		   fcn.c_str (), type);
+ 
+ 	  // Reset the return string, in case the above tesst fail.
+ 	  retval = std::string ();
 	}
     }
 

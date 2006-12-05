@@ -400,7 +400,7 @@ oct_fill_randp (double L, octave_idx_type n, double *p)
     {
       /* normal approximation: from Phys. Rev. D (1994) v50 p1284 */
       const double sqrtL = sqrt(L);
-      for (i = 0; i < L; i++) 
+      for (i = 0; i < n; i++) 
 	{
 	  p[i] = floor(RNOR*sqrtL + L + 0.5);
 	  if (p[i] < 0.0) 

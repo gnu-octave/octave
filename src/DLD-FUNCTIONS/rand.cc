@@ -809,7 +809,7 @@ D 50 p1284, 1994\n\
 %!assert(randp([-inf,-1,0,inf,nan]),[nan,nan,0,nan,nan]); % *** Please report
 %!test
 %! % statistical tests may fail occasionally.
-%! for a=[5 15]
+%! for a=[5 15 1e9]
 %!   x = randp(a,100000,1);
 %!   assert(min(x)>=0); % *** Please report this!!! ***
 %!   assert(mean(x),a,0.03);
@@ -819,7 +819,7 @@ D 50 p1284, 1994\n\
 %! end
 %!test
 %! % statistical tests may fail occasionally.
-%! for a=[5 15]
+%! for a=[5 15 1e9]
 %!   x = randp(a*ones(100000,1),100000,1);
 %!   assert(min(x)>=0); % *** Please report this!!! ***
 %!   assert(mean(x),a,0.03);
@@ -832,7 +832,7 @@ D 50 p1284, 1994\n\
 %!assert(randp([-inf,-1,0,inf,nan]),[nan,nan,0,nan,nan]); % *** Please report
 %!test
 %! % statistical tests may fail occasionally.
-%! for a=[5 15]
+%! for a=[5 15 1e9]
 %!   x = randp(a,100000,1);
 %!   assert(min(x)>=0); % *** Please report this!!! ***
 %!   assert(mean(x),a,0.03);
@@ -842,7 +842,7 @@ D 50 p1284, 1994\n\
 %! end
 %!test
 %! % statistical tests may fail occasionally.
-%! for a=[5 15]
+%! for a=[5 15 1e9]
 %!   x = randp(a*ones(100000,1),100000,1);
 %!   assert(min(x)>=0); % *** Please report this!!! ***
 %!   assert(mean(x),a,0.03);

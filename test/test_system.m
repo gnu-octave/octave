@@ -239,7 +239,7 @@
 %!error <Invalid call to mkdir.*> mkdir ();
 
 %% test/octave.test/system/mkdir-2.m
-%!error <Invalid call to mkdir.*> mkdir ("foo", 1);
+%!error <Invalid call to mkdir.*> mkdir ("foo", 1, 2);
 
 %% test/octave.test/system/rmdir-1.m
 %!error <Invalid call to rmdir.*> rmdir ();

@@ -1,3 +1,13 @@
+2006-12-05  John W. Eaton  <jwe@octave.org>
+
+	* pt-mat.cc (tm_row_const::empty): New function.
+	(tm_const::init): Don't append anything if tmp tm_row_const object
+	is empty.
+	(tree_matrix::rvalue): Default return value is Matrix().
+	Don't do anything if tmp tm_const object is empty.
+
+	* dirfns.cc (Fmkdir): Fix thinko in previous change.
+
 2006-12-05  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* DLD-FUNCTIONS/rand.cc: Test for Poisson generator with lambda > 1e8.

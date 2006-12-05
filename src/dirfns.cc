@@ -237,7 +237,7 @@ message identifier.\n\
       else
 	dirname = parent + file_ops::dir_sep_char + dir;
     }
-  else
+  else if (nargin == 1)
     {
       dirname = args(0).string_value ();
 
@@ -253,7 +253,7 @@ message identifier.\n\
       std::string msg;
 
       int status = file_ops::mkdir (file_ops::tilde_expand (dirname),
-					0777, msg);
+				    0777, msg);
 
       if (status < 0)
 	{

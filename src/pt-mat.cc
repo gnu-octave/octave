@@ -156,6 +156,8 @@ public:
   octave_idx_type rows (void) { return rep->dv(0); }
   octave_idx_type cols (void) { return rep->dv(1); }
 
+  bool empty (void) const { return rep->empty (); }
+
   dim_vector dims (void) { return rep->dv; }
 
   bool all_strings_p (void) const { return rep->all_str; }
@@ -511,7 +513,7 @@ tm_const::init (const tree_matrix& tm)
 
       tm_row_const tmp (*elt);
 
-      if (tmp)
+      if (tmp && ! tmp.empty ())
 	{
 	  if (all_str && ! tmp.all_strings_p ())
 	    all_str = false;
@@ -758,7 +760,7 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 octave_value
 tree_matrix::rvalue (void)
 {
-  octave_value retval;
+  octave_value retval = Matrix ();
 
   bool all_strings_p = false;
   bool all_sq_strings_p = false;
@@ -771,7 +773,7 @@ tree_matrix::rvalue (void)
 
   tm_const tmp (*this);
 
-  if (tmp)
+  if (tmp && ! tmp.empty ())
     {
       dim_vector dv = tmp.dims ();
       all_strings_p = tmp.all_strings_p ();

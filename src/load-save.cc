@@ -360,6 +360,7 @@ get_file_format (std::istream& file)
     retval = LS_BINARY;
   else
     {
+      file.clear ();
       file.seekg (0, std::ios::beg);
 
       int32_t mopt, nr, nc, imag, len;

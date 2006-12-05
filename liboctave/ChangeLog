@@ -1,3 +1,9 @@
+2006-12-05  John W. Eaton  <jwe@octave.org>
+
+	* lo-utils.cc (octave_read_double): If we see '+' or '-' but not
+	followed by 'I' or 'i', try reading number after putting
+	characters back on input stream.
+
 2006-12-05  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* randpoisson.c (oct_fill_randp): For lambda > 1e8, upper limit of

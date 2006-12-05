@@ -278,6 +278,7 @@ octave_read_double (std::istream& is)
 	  {
 	    is.putback (c2);
 	    is.putback (c1);
+	    is >> d;
 	  }
       }
       break;
@@ -292,6 +293,7 @@ octave_read_double (std::istream& is)
 	  {
 	    is.putback (c2);
 	    is.putback (c1);
+	    is >> d;
 	  }
       }
       break;

@@ -121,6 +121,11 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 	    }
 	  else if (next_only)
 	    break;
+	  else
+	    {
+	      while (is.get (c) && c != '\n')
+		; // Skip to end of line.
+	    }
 	}
     }
 

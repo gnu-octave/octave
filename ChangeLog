@@ -1,3 +1,7 @@
+2006-12-05  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Don't check for strptime on *-apple-darwin* systems.
+
 2006-11-28  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in: Construct default output file from basename of

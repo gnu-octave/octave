@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.548 $)
+AC_REVISION($Revision: 1.549 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1391,7 +1391,7 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   readlink rename resolvepath rindex rmdir round select setgrent \
   setlocale setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
   sigsuspend stat strcasecmp strdup strerror stricmp \
-  strncasecmp strnicmp strptime strsignal symlink tempnam umask \
+  strncasecmp strnicmp strsignal symlink tempnam umask \
   uname unlink usleep vfprintf vsprintf vsnprintf waitpid)
 
 case "$canonical_host_type" in
@@ -1402,6 +1402,18 @@ case "$canonical_host_type" in
   ;;
   *)
     AC_CHECK_FUNCS(strftime)
+  ;;
+esac
+
+case "$canonical_host_type" in
+  *-apple-darwin*)
+    ## The weekday function, which uses strptime, is broken because
+    ## strptime is apparently not setting wday correctly for formats
+    ## like "%d-%m-%Y", so use our version.  We could use an actual
+    ## configure test for this.
+  ;;
+  *)
+    AC_CHECK_FUNCS(strptime)
   ;;
 esac
 

@@ -114,7 +114,6 @@ function assert(cond, expected, tol)
 	  assert(v,{expected.(k)},tol)
 	endfor
       catch
-	"catch"
 	iserror = 1;
       end
     endif

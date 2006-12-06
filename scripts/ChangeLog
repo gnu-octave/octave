@@ -1,3 +1,10 @@
+2006-12-06  Søren Hauberg  <hauberg@gmail.com>
+
+	* pkg/pkg.m (unload_packages): New function.
+	(pkg): Handle unload action.
+
+	* __errplot__.m: Add missing semicolon.
+
 2006-11-30  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/mexext.m: New file.

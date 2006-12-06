@@ -54,6 +54,10 @@
 ## @example
 ## pkg load all
 ## @end example
+## @item unload
+## Removes named packages from the path. After unloading a package it is
+## no longer possible to use the functions provided by the package.
+## This command behaves like the @code{load} command.
 ## @item list
 ## Show a list of the currently installed packages. By requesting one or two
 ## output argument it is possible to get a list of the currently installed
@@ -137,7 +141,8 @@ function [local_packages, global_packages] = pkg(varargin)
         switch (varargin{i})
             case "-nodeps"
                 deps = false;
-            case {"list", "install", "uninstall", "load", "prefix", "local_list", "global_list"}
+            case {"list", "install", "uninstall", "load", "unload", ...
+                  "prefix", "local_list", "global_list"}
                 action = varargin{i};
             otherwise
                 files{end+1} = varargin{i};
@@ -171,6 +176,11 @@ function [local_packages, global_packages] = pkg(varargin)
                 error("You must specify at least one package or 'all' when calling 'pkg load'");
             endif
             load_packages(files, deps, local_list, global_list);
+        case "unload"
+            if (length(files) == 0)
+                error("You must specify at least one package or 'all' when calling 'pkg unload'");
+            endif
+            unload_packages(files, deps, local_list, global_list);
         case "prefix"
             if (length(files) == 0 && nargout == 0)
                 disp(prefix);
@@ -1165,6 +1175,47 @@ function load_packages(files, handle_deps, local_list, global_list)
        if (exist ([dirs{i} "/bin"],"dir"))
          EXEC_PATH ([dirs{i} "/bin:" EXEC_PATH()]);
        endif
+    endfor
+endfunction
+
+function unload_packages(files, handle_deps, local_list, global_list)
+    installed_packages = installed_packages(local_list, global_list);
+    num_packages = length(installed_packages);
+    
+    ## Read package names and installdirs into a more convenient format
+    pnames = pdirs = cell(1, num_packages);
+    for i = 1:num_packages
+        pnames{i} = installed_packages{i}.name;
+        pdirs{i} = installed_packages{i}.dir;
+        pdeps{i} = installed_packages{i}.depends;
+    endfor
+    
+    ## Get the current octave path
+    p = split_by(path(), pathsep());
+
+    ## unload all
+    if (length(files) == 1 && strcmp(files{1}, "all"))
+        dirs = pdirs;
+    ## unload package_name1 ...
+    else
+        dirs = {};
+        for i = 1:length(files)
+            idx = strcmp(pnames, files{i});
+            if (!any(idx))
+                error("Package %s is not installed", files{i});
+            endif
+            dirs{end+1} = pdirs{idx};
+        endfor
+    endif
+
+    ## Unload the packages
+    for i = 1:length(dirs)
+        d = dirs{i};
+        idx = strcmp(p, d);
+        if (any(idx))
+            rmpath(d);
+            # XXX: We should also check if we need to remove items from EXEC_PATH
+        endif
     endfor
 endfunction
 

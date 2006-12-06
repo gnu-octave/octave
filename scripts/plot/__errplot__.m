@@ -54,7 +54,7 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
   [len, nplots] = size (a1);
 
   for i = 1:nplots
-    ifmt = fmt{1+mod(i-1,numel(fmt))}
+    ifmt = fmt{1+mod(i-1,numel(fmt))};
     switch (nargin - 1)
       case 2
 	tmp = [(1:len)', a1(:,i), a2(:,i)];

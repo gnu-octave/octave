@@ -180,12 +180,33 @@ SparseComplexMatrix::is_hermitian (void) const
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (is_square () && nr > 0)
+  if (nr == nc && nr > 0)
     {
-      for (octave_idx_type i = 0; i < nr; i++)
-	for (octave_idx_type j = i; j < nc; j++)
-	  if (elem (i, j) != conj (elem (j, i)))
-	    return false;
+      for (octave_idx_type j = 0; j < nc; j++)
+	{
+	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+	    {
+	      octave_idx_type ri = ridx(i);
+
+	      if (ri != j)
+		{
+		  bool found = false;
+
+		  for (octave_idx_type k = cidx(ri); k < cidx(ri+1); k++)
+		    {
+		      if (ridx(k) == j)
+			{
+			  if (data(i) == conj(data(k)))
+			    found = true;
+			  break;
+			}
+		    }
+
+		  if (! found)
+		    return false;
+		}
+	    }
+	}
 
       return true;
     }

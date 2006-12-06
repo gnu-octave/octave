@@ -41,6 +41,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "CmplxDET.h"
 #include "CmplxSCHUR.h"
 #include "CmplxSVD.h"
+#include "CmplxCHOL.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
@@ -139,6 +140,13 @@ extern "C"
 			     const octave_idx_type&, const Complex*, 
 			     const octave_idx_type&, Complex*, 
 			     const octave_idx_type&, octave_idx_type&
+			     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (ztrtri, ZTRTRI) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
+			     const octave_idx_type&, const Complex*, 
+			     const octave_idx_type&, octave_idx_type& 
+			     F77_CHAR_ARG_LEN_DECL
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
@@ -959,19 +967,94 @@ ComplexMatrix::inverse (void) const
 {
   octave_idx_type info;
   double rcond;
-  return inverse (info, rcond, 0, 0);
+  MatrixType mattype (*this);
+  return inverse (mattype, info, rcond, 0, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (octave_idx_type& info) const
+ComplexMatrix::inverse (MatrixType &mattype) const
+{
+  octave_idx_type info;
+  double rcond;
+  return inverse (mattype, info, rcond, 0, 0);
+}
+
+ComplexMatrix
+ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 {
   double rcond;
-  return inverse (info, rcond, 0, 0);
+  return inverse (mattype, info, rcond, 0, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (octave_idx_type& info, double& rcond, int force, 
-			int calc_cond) const
+ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
+			 double& rcond, int force, int calc_cond) const
+{
+  ComplexMatrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr != nc || nr == 0 || nc == 0)
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
+  else
+    {
+      int typ = mattype.type ();
+      char uplo = (typ == MatrixType::Lower ? 'L' : 'U');
+      char udiag = 'N';
+      retval = *this;
+      Complex *tmp_data = retval.fortran_vec ();
+
+      F77_XFCN (ztrtri, ZTRTRI, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+				 F77_CONST_CHAR_ARG2 (&udiag, 1),
+				 nr, tmp_data, nr, info 
+				 F77_CHAR_ARG_LEN (1)
+				 F77_CHAR_ARG_LEN (1)));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in ztrtri");
+      else
+	{
+	  // Throw-away extra info LAPACK gives so as to not change output.
+	  rcond = 0.0;
+	  if (info != 0) 
+	    info = -1;
+	  else if (calc_cond) 
+	    {
+	      octave_idx_type ztrcon_info = 0;
+	      char job = '1';
+
+	      OCTAVE_LOCAL_BUFFER (Complex, cwork, 2 * nr);
+	      OCTAVE_LOCAL_BUFFER (double, rwork, nr);
+
+	      F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 F77_CONST_CHAR_ARG2 (&uplo, 1),
+					 F77_CONST_CHAR_ARG2 (&udiag, 1),
+					 nr, tmp_data, nr, rcond, 
+					 cwork, rwork, ztrcon_info 
+					 F77_CHAR_ARG_LEN (1)
+					 F77_CHAR_ARG_LEN (1)
+					 F77_CHAR_ARG_LEN (1)));
+
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in ztrcon");
+
+	      if (ztrcon_info != 0) 
+		info = -1;
+	    }
+	}
+
+      if (info == -1 && ! force)
+	retval = *this; // Restore matrix contents.
+    }
+
+  return retval;
+}
+
+ComplexMatrix
+ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
+			 double& rcond, int force, int calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1062,9 +1145,42 @@ ComplexMatrix::inverse (octave_idx_type& info, double& rcond, int force,
 		info = -1;
 	    }
 	}
+
+      if (info != 0)
+	mattype.mark_as_rectangular();
     }
   
   return retval;
+}
+
+ComplexMatrix
+ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
+			double& rcond, int force, int calc_cond) const
+{
+  int typ = mattype.type (false);
+  ComplexMatrix ret;
+
+  if (typ == MatrixType::Unknown)
+    typ = mattype.type (*this);
+
+  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+    ret = tinverse (mattype, info, rcond, force, calc_cond);
+  else if (typ != MatrixType::Rectangular)
+    {
+      if (mattype.is_hermitian ())
+	{
+	  ComplexCHOL chol (*this, info);
+	  if (info == 0)
+	    ret = chol.inverse ();
+	  else
+	    mattype.mark_as_unsymmetric ();
+	}
+
+      if (!mattype.is_hermitian ())
+	ret = finverse(mattype, info, rcond, force, calc_cond);
+    }
+
+  return ret;
 }
 
 ComplexMatrix

@@ -74,10 +74,14 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
       if (! error_state)
 	{
+	  MatrixType mattyp = args(0).matrix_type ();
+
 	  octave_idx_type info;
 	  double rcond = 0.0;
 
-	  Matrix result = m.inverse (info, rcond, 1);
+	  Matrix result = m.inverse (mattyp, info, rcond, 1);
+
+	  args(0).matrix_type (mattyp);
 
 	  if (nargout > 1)
 	    retval(1) = rcond;
@@ -97,10 +101,14 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
 
       if (! error_state)
 	{
+	  MatrixType mattyp = args(0).matrix_type ();
+
 	  octave_idx_type info;
 	  double rcond = 0.0;
 
-	  ComplexMatrix result = m.inverse (info, rcond, 1);
+	  ComplexMatrix result = m.inverse (mattyp, info, rcond, 1);
+
+	  args(0).matrix_type (mattyp);
 
 	  if (nargout > 1)
 	    retval(1) = rcond;

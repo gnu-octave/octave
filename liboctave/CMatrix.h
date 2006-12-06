@@ -135,9 +135,19 @@ public:
 
   ComplexColumnVector column (octave_idx_type i) const;
 
+private:
+  ComplexMatrix tinverse (MatrixType &mattype, octave_idx_type& info,
+			  double& rcond, int force, int calc_cond) const;
+
+  ComplexMatrix finverse (MatrixType &mattype, octave_idx_type& info,
+			  double& rcond, int force, int calc_cond) const;
+
+public:
   ComplexMatrix inverse (void) const;
-  ComplexMatrix inverse (octave_idx_type& info) const;
-  ComplexMatrix inverse (octave_idx_type& info, double& rcond, int force = 0,
+  ComplexMatrix inverse (MatrixType &mattype) const;
+  ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
+  ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,
+			 double& rcond, int force = 0, 
 			 int calc_cond = 1) const;
 
   ComplexMatrix pseudo_inverse (double tol = 0.0) const;

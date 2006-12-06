@@ -192,8 +192,9 @@ xpow (const Matrix& a, double b)
 
 		  octave_idx_type info;
 		  double rcond = 0.0;
+		  MatrixType mattype (a);
 
-		  atmp = a.inverse (info, rcond, 1);
+		  atmp = a.inverse (mattype, info, rcond, 1);
 
 		  if (info == -1)
 		    warning ("inverse: matrix singular to machine\
@@ -388,8 +389,9 @@ xpow (const ComplexMatrix& a, double b)
 
 		  octave_idx_type info;
 		  double rcond = 0.0;
+		  MatrixType mattype (a);
 
-		  atmp = a.inverse (info, rcond, 1);
+		  atmp = a.inverse (mattype, info, rcond, 1);
 
 		  if (info == -1)
 		    warning ("inverse: matrix singular to machine\

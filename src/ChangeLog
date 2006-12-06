@@ -1,3 +1,10 @@
+2006-12-04  David Bateman  <dbateman@free.fr>
+
+	* xpow.cc (xpow (const Matrix&, double)): Add matrix type probing
+        to matrix inverse.
+        (xpow (const ComplexMatrix&, double)): ditto.
+        * DLD-FUNCTIONS/inv.cc (Finv): Add matrix type probing.
+
 2006-12-06  John W. Eaton  <jwe@octave.org>
 
 2006-12-06  Michael Goffioul  <michael.goffioul@swing.be>

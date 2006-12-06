@@ -1,3 +1,17 @@
+2006-12-06  David Bateman  <dbateman@free.fr>
+
+	* dSparse.cc (SparseMatrix::is_symmetric(void) const): Faster
+	implementation.
+	* CSparse.cc (SparseComplexMatrix::is_symmetric(void) const): ditto.
+
+	* dMatrrix.cc (finverse): Old inverse method renamed inverse.
+        (tinverse): New method for triangular matrices.
+        (inverse): New function with matrix type probing.
+        * dMatrix.h (finverse, tinverse, inverse): New and modified
+        declarations.
+        * CMatrix.cc: ditto.
+        * CMatrix.h: ditto.
+
 2006-12-06  John W. Eaton  <jwe@octave.org>
 
 	* strptime.c (day_of_the_week): Use code from current glibc sources.

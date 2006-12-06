@@ -170,12 +170,36 @@ SparseMatrix::operator != (const SparseMatrix& a) const
 bool
 SparseMatrix::is_symmetric (void) const
 {
-  if (is_square () && rows () > 0)
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr == nc && nr > 0)
     {
-      for (octave_idx_type i = 0; i < rows (); i++)
-	for (octave_idx_type j = i+1; j < cols (); j++)
-	  if (elem (i, j) != elem (j, i))
-	    return false;
+      for (octave_idx_type j = 0; j < nc; j++)
+	{
+	  for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+	    {
+	      octave_idx_type ri = ridx(i);
+
+	      if (ri != j)
+		{
+		  bool found = false;
+
+		  for (octave_idx_type k = cidx(ri); k < cidx(ri+1); k++)
+		    {
+		      if (ridx(k) == j)
+			{
+			  if (data(i) == data(k))
+			    found = true;
+			  break;
+			}
+		    }
+
+		  if (! found)
+		    return false;
+		}
+	    }
+	}
 
       return true;
     }

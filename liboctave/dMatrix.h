@@ -107,10 +107,19 @@ public:
 
   ColumnVector column (octave_idx_type i) const;
 
+private:
+  Matrix tinverse (MatrixType &mattype, octave_idx_type& info, double& rcond, 
+		   int force, int calc_cond) const;
+
+  Matrix finverse (MatrixType &mattype, octave_idx_type& info, double& rcond, 
+		   int force, int calc_cond) const;
+
+public:
   Matrix inverse (void) const;
-  Matrix inverse (octave_idx_type& info) const;
-  Matrix inverse (octave_idx_type& info, double& rcond, int force = 0, 
-		  int calc_cond = 1) const;
+  Matrix inverse (MatrixType &mattype) const;
+  Matrix inverse (MatrixType &mattype, octave_idx_type& info) const;
+  Matrix inverse (MatrixType &mattype, octave_idx_type& info, double& rcond,
+		  int force = 0, int calc_cond = 1) const;
 
   Matrix pseudo_inverse (double tol = 0.0) const;
 

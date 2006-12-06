@@ -37,6 +37,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dbleDET.h"
 #include "dbleSCHUR.h"
 #include "dbleSVD.h"
+#include "dbleCHOL.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
@@ -137,6 +138,12 @@ extern "C"
 			     const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
 
+  F77_RET_T
+  F77_FUNC (dtrtri, DTRTRI) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
+			     const octave_idx_type&, const double*, 
+			     const octave_idx_type&, octave_idx_type&
+			     F77_CHAR_ARG_LEN_DECL
+			     F77_CHAR_ARG_LEN_DECL);
   F77_RET_T
   F77_FUNC (dtrcon, DTRCON) (F77_CONST_CHAR_ARG_DECL, F77_CONST_CHAR_ARG_DECL, 
 			     F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
@@ -628,18 +635,95 @@ Matrix::inverse (void) const
 {
   octave_idx_type info;
   double rcond;
-  return inverse (info, rcond, 0, 0);
+  MatrixType mattype (*this);
+  return inverse (mattype, info, rcond, 0, 0);
 }
 
 Matrix
-Matrix::inverse (octave_idx_type& info) const
+Matrix::inverse (MatrixType& mattype) const
+{
+  octave_idx_type info;
+  double rcond;
+  return inverse (mattype, info, rcond, 0, 0);
+}
+
+Matrix
+Matrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 {
   double rcond;
-  return inverse (info, rcond, 0, 0);
+  return inverse (mattype, info, rcond, 0, 0);
 }
 
 Matrix
-Matrix::inverse (octave_idx_type& info, double& rcond, int force, int calc_cond) const
+Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcond, 
+		  int force, int calc_cond) const
+{
+  Matrix retval;
+
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr != nc || nr == 0 || nc == 0)
+    (*current_liboctave_error_handler) ("inverse requires square matrix");
+  else
+    {
+      int typ = mattype.type ();
+      char uplo = (typ == MatrixType::Lower ? 'L' : 'U');
+      char udiag = 'N';
+      retval = *this;
+      double *tmp_data = retval.fortran_vec ();
+
+      F77_XFCN (dtrtri, DTRTRI, (F77_CONST_CHAR_ARG2 (&uplo, 1),
+				 F77_CONST_CHAR_ARG2 (&udiag, 1),
+				 nr, tmp_data, nr, info 
+				 F77_CHAR_ARG_LEN (1)
+				 F77_CHAR_ARG_LEN (1)));
+
+      if (f77_exception_encountered)
+	(*current_liboctave_error_handler) ("unrecoverable error in dtrtri");
+      else
+	{
+	  // Throw-away extra info LAPACK gives so as to not change output.
+	  rcond = 0.0;
+	  if (info != 0) 
+	    info = -1;
+	  else if (calc_cond) 
+	    {
+	      octave_idx_type dtrcon_info = 0;
+	      char job = '1';
+
+	      OCTAVE_LOCAL_BUFFER (double, work, 3 * nr);
+	      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, nr);
+
+	      F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 F77_CONST_CHAR_ARG2 (&uplo, 1),
+					 F77_CONST_CHAR_ARG2 (&udiag, 1),
+					 nr, tmp_data, nr, rcond, 
+					 work, iwork, dtrcon_info 
+					 F77_CHAR_ARG_LEN (1)
+					 F77_CHAR_ARG_LEN (1)
+					 F77_CHAR_ARG_LEN (1)));
+
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler) 
+		  ("unrecoverable error in dtrcon");
+
+	      if (dtrcon_info != 0) 
+		info = -1;
+	    }
+	}
+
+      if (info == -1 && ! force)
+	retval = *this; // Restore matrix contents.
+    }
+
+  return retval;
+}
+
+
+Matrix
+Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcond, 
+		  int force, int calc_cond) const
 {
   Matrix retval;
 
@@ -730,9 +814,42 @@ Matrix::inverse (octave_idx_type& info, double& rcond, int force, int calc_cond)
 		info = -1;
 	    }
 	}
+
+      if (info != 0)
+	mattype.mark_as_rectangular();
     }
 
   return retval;
+}
+
+Matrix
+Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcond, 
+		 int force, int calc_cond) const
+{
+  int typ = mattype.type (false);
+  Matrix ret;
+
+  if (typ == MatrixType::Unknown)
+    typ = mattype.type (*this);
+
+  if (typ == MatrixType::Upper || typ == MatrixType::Lower)
+    ret = tinverse (mattype, info, rcond, force, calc_cond);
+  else if (typ != MatrixType::Rectangular)
+    {
+      if (mattype.is_hermitian ())
+	{
+	  CHOL chol (*this, info);
+	  if (info == 0)
+	    ret = chol.inverse ();
+	  else
+	    mattype.mark_as_unsymmetric ();
+	}
+
+      if (!mattype.is_hermitian ())
+	ret = finverse(mattype, info, rcond, force, calc_cond);
+    }
+
+  return ret;
 }
 
 Matrix

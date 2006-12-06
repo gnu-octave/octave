@@ -47,8 +47,13 @@ case $with_blas in
 esac
 
 # Get fortran linker names of BLAS functions to check for.
-AC_F77_FUNC(sgemm)
-AC_F77_FUNC(dgemm)
+if $have_fortran_compiler; then 
+  AC_F77_FUNC(sgemm)
+  AC_F77_FUNC(dgemm)
+elif $have_f2c; then
+  sgemm=sgemm_
+  dgemm=dgemm_
+fi
 
 acx_blas_save_LIBS="$LIBS"
 LIBS="$LIBS $FLIBS"

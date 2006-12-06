@@ -77,6 +77,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-env.h"
 #include "quit.h"
 
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "input.h"

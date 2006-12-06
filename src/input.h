@@ -31,6 +31,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <string>
 
 #include "oct-time.h"
+#include "oct-obj.h"
 #include "pager.h"
 
 class octave_value;

@@ -44,7 +44,11 @@ case $with_lapack in
 esac
 
 # Get fortran linker name of LAPACK function to check for.
-AC_F77_FUNC(cheev)
+if $have_fortran_compiler; then
+  AC_F77_FUNC(cheev)
+elif $have_f2c; then
+  cheev=cheev_
+fi
 
 # We cannot use LAPACK if BLAS is not found
 if test "x$acx_blas_ok" != xyes; then

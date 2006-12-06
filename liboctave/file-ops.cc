@@ -438,7 +438,7 @@ extern int errno;
 
   size_t resolved_size = absolute_name.length ();
 
-  while (1)
+  while (true)
     {
       resolved_size = 2 * resolved_size + 1;
 
@@ -455,6 +455,31 @@ extern int errno;
 	  retval = resolved;
 	  break;
 	}
+    }
+
+#elif defined (__WIN32__)
+
+  int n = 1024;
+
+  std::string win_path (n, '\0');
+
+  while (true)
+    {
+      int status = GetFullPathName (name.c_str (), n, &win_path[0], NULL);
+
+      if (status == 0)
+        break;
+      else if (status < n)
+        {
+          win_path.resize (status);
+	  retval = win_path;
+	  break;
+        }
+      else
+        {
+          n *= 2;
+	  win_path.resize (n);
+        }
     }
 
 #else

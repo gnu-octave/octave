@@ -118,7 +118,10 @@ opendir (const char *name)
   static char buffer[MAX_PATH];
 
   strncpy (buffer, name, MAX_PATH);
-  strncat (buffer, "\\*", MAX_PATH);
+  if (buffer[strnlen(buffer, MAX_PATH)-1] != '\\')
+    strncat (buffer, "\\*", MAX_PATH);
+  else
+    strncat (buffer, "*", MAX_PATH);
   d->current = buffer;
   d->hnd = FindFirstFile (buffer, &(d->fd));
   if (d->hnd == INVALID_HANDLE_VALUE)

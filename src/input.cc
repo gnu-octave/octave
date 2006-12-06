@@ -283,7 +283,7 @@ get_user_input (void)
 
 	  size_t len = retval.length ();
 
-	  if (retval[len-1] != '\n')
+	  if (len > 0 && retval[len-1] != '\n')
 	    retval.append ("\n");
 	}
     }

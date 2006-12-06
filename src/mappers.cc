@@ -414,6 +414,10 @@ Return true for characters that are letters (@code{isupper (@var{s})}\n\
 or @code{islower (@var{s})} is true).\n\
 @end deftypefn");
 
+#ifdef isascii
+#undef isascii
+#endif
+
   DEFUN_MAPPER (isascii, xisascii, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isascii (@var{s})\n\

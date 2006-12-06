@@ -1,3 +1,7 @@
+2006-12-06  John W. Eaton  <jwe@octave.org>
+
+	* strptime.c (day_of_the_week): Use code from current glibc sources.
+
 2006-12-05  John W. Eaton  <jwe@octave.org>
 
 	* lo-utils.cc (octave_read_double): If we see '+' or '-' but not

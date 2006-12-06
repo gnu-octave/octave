@@ -239,7 +239,7 @@ day_of_the_week (struct tm *tm)
 	      + (((corr_year / 4) / 25) / 4)
 	      + __mon_yday[0][tm->tm_mon]
 	      + tm->tm_mday - 1);
-  tm->tm_wday = wday % 7;
+  tm->tm_wday = ((wday % 7) + 7) % 7;
 }
 
 /* Compute the day of the year.  */

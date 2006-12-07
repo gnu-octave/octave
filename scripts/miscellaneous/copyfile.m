@@ -37,11 +37,20 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   msg = "";
   msgid = "";
 
+  ## FIXME -- maybe use the same method as in ls to allow users control
+  ## over the command that is executed.
+
+  if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "cp")))
+    cmd = "cmd /C xcopy /E";
+    cmd_force_flag = "/Y";
+  else
+    cmd = "cp -r";
+    cmd_force_flag = "-f";
+  endif
+
   if (nargin == 2 || nargin == 3)
     if (nargin == 3 && strcmp (force, "f"))
-      cmd = "/bin/cp -rf";
-    else
-      cmd = "/bin/cp -r";
+      cmd = strcat (cmd, " ", cmd_force_flag);
     endif
 
     ## Allow cell input and protect the file name(s).

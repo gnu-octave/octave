@@ -36,11 +36,20 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   msg = "";
   msgid = "";
 
+  ## FIXME -- maybe use the same method as in ls to allow users control
+  ## over the command that is executed.
+
+  if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "mv")))
+    cmd = "cmd /C move";
+    cmd_force_flag = "/Y";
+  else
+    cmd = "mv";
+    cmd_force_flag = "-f";
+  endif
+
   if (nargin == 2 || nargin == 3)
     if (nargin == 3 && strcmp (force, "f"))
-      cmd = "/bin/mv -f";
-    else
-      cmd = "/bin/mv";
+      cmd = strcat (cmd, " ", cmd_force_flag);
     endif
 
     ## Allow cell input and protect the file name(s).
@@ -58,47 +67,5 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   else
     print_usage ();
   endif
-
-###   status = true;
-###   msg = "";
-###   msgid = "movefile";
-### 
-###   if (nargin == 2)
-### 
-###     flist = glob (f1);
-###     nfiles = numel (flist);
-###     if (nfiles > 1)
-###       [f2info, err, msg] = stat (f2);
-###       if (err < 0)
-### 	status = false;
-###       else
-### 	if (S_ISDIR (f2info.mode))
-### 	  for i = 1:nfiles
-### 	    [err, msg] = rename (flist{i}, f2);
-### 	    if (err < 0)
-### 	      status = false;
-### 	      break;
-### 	    endif
-### 	  endfor
-### 	else
-### 	  status = false;
-### 	  msg = "when moving multiple files, destination must be a directory";
-### 	endif
-###       endif
-###     else
-###       [err, msg] = rename (f1, f2);
-###       if (err < 0)
-### 	status = false;
-### 	break;
-###       endif
-###     endif
-### 
-###   else
-###     usage ("movefile (f1, f2)");
-###   endif
-### 
-###   if (status)
-###     msgid = "";
-###   endif
 
 endfunction

@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cfloat>
 
 #include <iostream>
+#include <vector>
 
 // FIXME
 #ifdef HAVE_SYS_TYPES_H

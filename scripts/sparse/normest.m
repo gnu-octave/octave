@@ -67,7 +67,7 @@ function [e1, c] = normest(A, tol)
 	c = c + 1;
       endwhile
     else
-      B = B * Bt
+      B = B * Bt;
       while (abs(e1 - e0) > tol * e1)
 	e0 = e1;
 	x = B * x;

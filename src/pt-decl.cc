@@ -45,6 +45,28 @@ tree_decl_elt::~tree_decl_elt (void)
   delete expr;
 }
 
+bool
+tree_decl_elt::eval (void)
+{
+  bool retval = false;
+
+  if (id && expr)
+    {
+      octave_lvalue ult = id->lvalue ();
+
+      octave_value init_val = expr->rvalue ();
+
+      if (! error_state)
+	{
+	  ult.assign (octave_value::op_asn_eq, init_val);
+
+	  retval = true;
+	}
+    }
+
+  return retval;
+}
+
 tree_decl_elt *
 tree_decl_elt::dup (symbol_table *sym_tab)
 {

@@ -470,7 +470,7 @@ tree_breakpoint::visit_parameter_list (tree_parameter_list& lst)
 
   while (p != lst.end ())
     {
-      tree_identifier *elt = *p++;
+      tree_decl_elt *elt = *p++;
 
       if (elt)
 	elt->accept (*this);

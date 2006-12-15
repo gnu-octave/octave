@@ -32,7 +32,9 @@ class tree_walker;
 #include <string>
 
 #include "base-list.h"
+#include "oct-lvalue.h"
 #include "pt-cmd.h"
+#include "pt-id.h"
 
 // List of expressions that make up a declaration statement.
 
@@ -48,7 +50,26 @@ public:
 
   ~tree_decl_elt (void);
 
-  void eval (void);
+  bool eval (void);
+
+  bool is_defined (void) { return id ? id->is_defined () : false; }
+
+  void mark_as_formal_parameter (void)
+  {
+    if (id)
+      id->mark_as_formal_parameter ();
+  }
+
+  bool lvalue_ok (void) { return id ? id->lvalue_ok () : false; }
+
+  octave_value rvalue (void) { return id ? id->rvalue () : octave_value (); }
+
+  octave_value_list rvalue (int nargout)
+  {
+    return id ? id->rvalue (nargout) : octave_value_list ();
+  }
+
+  octave_lvalue lvalue (void) { return id ? id->lvalue () : octave_lvalue (); }
 
   tree_identifier *ident (void) { return id; }
 

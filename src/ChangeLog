@@ -1,3 +1,36 @@
+2006-12-14  John W. Eaton  <jwe@octave.org>
+
+	* pt-decl.cc (tree_decl_elt::eval): New function.
+	* pt-decl.h (tree_decl_elt::eval): Provide decl.
+	(tree_decl_elt::is_defined, tree_decl_elt::lvalue_ok, 
+	tree_decl_elt::mark_as_formal_parameter, tree_decl_elt::rvalue,
+	tree_decl_elt::lvalue): New functions.
+
+	* pt-misc.h (class tree_parameter_list): Derive from
+	octave_base_list<tree_decl_elt *> instead of
+	octave_base_list<tree_identifier *>.
+	(tree_parameter_list::tree_parameter_list (tree_identifier *)): Delete.
+	(tree_parameter_list::tree_parameter_list (tree_decl_elt *)):
+	New function.
+	* pt-misc.cc (tree_parameter_list::mark_as_formal_parameters,
+	tree_parameter_list::initialize_undefined_elements,
+	tree_parameter_list::undefine, tree_parameter_list::dup,
+	tree_parameter_list::convert_to_const_vector,
+	tree_parameter_list::is_defined): Handle argument list elements
+	as tree_decl_list objects instead of tree_identifier objects.
+	(tree_parameter_list::define_from_arg_vector): Likewise.
+	Always process entire list, setting default values if possible.
+	Accept ":" to mean "use default argument".
+
+	* parse.y (param_list2): Use decl2 to recognize
+	"identifier '=' expression" in addition to "identifier".
+
+	* parse.y (return_list1, make_anon_fcn_handle, finish_function):
+	Adapt to new definition of tree_parameter_list.
+	* pt-bp.cc (tree_breakpoint::visit_parameter_list): Likewise.
+	* pt-check.cc (tree_checker::visit_parameter_list): Likewise.
+	* pt-pr-code.cc (tree_print_code::visit_parameter_list): Likewise.
+
 2006-12-08  John W. Eaton  <jwe@octave.org>
 
 	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::array_value, 

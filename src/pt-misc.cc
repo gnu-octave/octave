@@ -54,7 +54,7 @@ tree_parameter_list::mark_as_formal_parameters (void)
 {
   for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = *p;
+      tree_decl_elt *elt = *p;
       elt->mark_as_formal_parameter ();
     }
 }
@@ -73,7 +73,7 @@ tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
       if (++count > nargout)
 	break;
 
-      tree_identifier *elt = *p;
+      tree_decl_elt *elt = *p;
 
       if (! elt->is_defined ())
 	{
@@ -99,16 +99,13 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 {
   int nargin = args.length ();
 
-  if (nargin <= 0)
-    return;
-
   int expected_nargin = length ();
 
   iterator p = begin ();
 
   for (int i = 0; i < expected_nargin; i++)
     {
-      tree_identifier *elt = *p++;
+      tree_decl_elt *elt = *p++;
 
       octave_lvalue ref = elt->lvalue ();
 
@@ -116,14 +113,17 @@ tree_parameter_list::define_from_arg_vector (const octave_value_list& args)
 	{
 	  if (args(i).is_defined () && args(i).is_magic_colon ())
 	    {
-	      ::error ("invalid use of colon in function argument list");
-	      return;
+	      if (! elt->eval ())
+		{
+		  ::error ("no default value for argument %d\n", i+1);
+		  return;
+		}
 	    }
-
-	  ref.assign (octave_value::op_asn_eq, args(i));
+	  else
+	    ref.assign (octave_value::op_asn_eq, args(i));
 	}
       else
-	ref.assign (octave_value::op_asn_eq, octave_value ());
+	elt->eval ();
     }
 }
 
@@ -136,7 +136,7 @@ tree_parameter_list::undefine (void)
 
   for (int i = 0; i < len; i++)
     {
-      tree_identifier *elt = *p++;
+      tree_decl_elt *elt = *p++;
 
       octave_lvalue ref = elt->lvalue ();
 
@@ -157,7 +157,7 @@ tree_parameter_list::convert_to_const_vector (const Cell& varargout)
 
   for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = *p;
+      tree_decl_elt *elt = *p;
 
       retval(i++) = elt->is_defined () ? elt->rvalue () : octave_value ();
     }
@@ -175,7 +175,7 @@ tree_parameter_list::is_defined (void)
 
   for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = *p;
+      tree_decl_elt *elt = *p;
 
       if (! elt->is_defined ())
 	{
@@ -197,7 +197,7 @@ tree_parameter_list::dup (symbol_table *sym_tab)
 
   for (iterator p = begin (); p != end (); p++)
     {
-      tree_identifier *elt = *p;
+      tree_decl_elt *elt = *p;
 
       new_list->append (elt->dup (sym_tab));
     }

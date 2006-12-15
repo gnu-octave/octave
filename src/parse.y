@@ -1165,9 +1165,9 @@ param_list1	: // empty
 		  }
 		;
 
-param_list2	: identifier
+param_list2	: decl2
 		  { $$ = new tree_parameter_list ($1); }
-		| param_list2 ',' identifier
+		| param_list2 ',' decl2
 		  {
 		    $1->append ($3);
 		    $$ = $1;
@@ -1214,10 +1214,10 @@ return_list	: return_list_beg return_list_end
 		;
 
 return_list1	: identifier
-		  { $$ = new tree_parameter_list ($1); }
+		  { $$ = new tree_parameter_list (new tree_decl_elt ($1)); }
 		| return_list1 ',' identifier
 		  {
-		    $1->append ($3);
+		    $1->append (new tree_decl_elt ($3));
 		    $$ = $1;
 		  }
 		;
@@ -1796,8 +1796,9 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
       // created so we don't have to create a new statement at all.
 
       id = new tree_identifier (sr);
+      tree_decl_elt *elt = new tree_decl_elt (id);
 
-      ret_list = new tree_parameter_list (id);
+      ret_list = new tree_parameter_list (elt);
     }
 
   tree_statement_list *body = new tree_statement_list (stmt);
@@ -2585,7 +2586,9 @@ static octave_user_function *
 finish_function (tree_identifier *id, octave_user_function *fcn,
 		 octave_comment_list *lc)
 {
-  tree_parameter_list *tpl = new tree_parameter_list (id);
+  tree_decl_elt *tmp = new tree_decl_elt (id);
+
+  tree_parameter_list *tpl = new tree_parameter_list (tmp);
 
   tpl->mark_as_formal_parameters ();
 

@@ -36,20 +36,21 @@ class tree_va_return_list;
 class tree_walker;
 
 #include "base-list.h"
+#include "pt-decl.h"
 
 // Parameter lists.  Used to hold the list of input and output
 // parameters in a function definition.  Elements are identifiers
 // only.
 
 class
-tree_parameter_list : public octave_base_list<tree_identifier *>
+tree_parameter_list : public octave_base_list<tree_decl_elt *>
 {
 public:
 
   tree_parameter_list (void)
     : marked_for_varargs (0) { }
 
-  tree_parameter_list (tree_identifier *t)
+  tree_parameter_list (tree_decl_elt *t)
     : marked_for_varargs (0) { append (t); }
 
   ~tree_parameter_list (void);

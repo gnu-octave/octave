@@ -1,3 +1,7 @@
+2006-12-22  David Bateman  <dbateman@free.fr>
+
+	* boolSparse.cc (SparseBoolMatrix::operator !): Fix off-by-one error.
+
 2006-12-22  John W. Eaton  <jwe@octave.org>
 
 	* dim-vector.h (dim_vector::dim_vector): Always start with at
@@ -9,7 +13,7 @@
 	* lo-sysdep.cc (opendir): Avoid passing \\* to FindFirstFile.
 
 	* file-ops.cc (ops::canonicalize_file_name): Provide partial
-	implementatino for Windows.
+	implementation for Windows.
 
 2006-12-06  David Bateman  <dbateman@free.fr>
 

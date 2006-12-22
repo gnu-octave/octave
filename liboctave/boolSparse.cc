@@ -96,6 +96,7 @@ SparseBoolMatrix::operator ! (void) const
    
   octave_idx_type ii = 0;
   octave_idx_type jj = 0;
+  r.cidx (0) = 0;
   for (octave_idx_type i = 0; i < nc; i++)
     {
       for (octave_idx_type j = 0; j < nr; j++)
@@ -108,7 +109,7 @@ SparseBoolMatrix::operator ! (void) const
 	      r.ridx(ii++) = j;
 	    }
 	}
-      r.cidx (i) = ii;
+      r.cidx (i+1) = ii;
     }
 
   return r;

@@ -28,6 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <sstream>
 #include <string>
 
+#include "lo-error.h"
 #include "oct-types.h"
 
 class
@@ -43,14 +44,23 @@ protected:
     int ndims;
     int count;
 
-    dim_vector_rep (void) : dims (0), ndims (0), count (1) { }
-
-    dim_vector_rep (octave_idx_type n) : dims (new octave_idx_type [1]), ndims (1), count (1)
+    dim_vector_rep (void)
+      : dims (new octave_idx_type [2]), ndims (2), count (1)
     {
-      dims[0] = n;
+      dims[0] = 0;
+      dims[1] = 0;
     }
 
-    dim_vector_rep (octave_idx_type r, octave_idx_type c) : dims (new octave_idx_type [2]), ndims (2), count (1)
+
+    dim_vector_rep (octave_idx_type n)
+      : dims (new octave_idx_type [2]), ndims (2), count (1)
+    {
+      dims[0] = n;
+      dims[1] = 1;
+    }
+
+    dim_vector_rep (octave_idx_type r, octave_idx_type c)
+      : dims (new octave_idx_type [2]), ndims (2), count (1)
     {
       dims[0] = r;
       dims[1] = c;
@@ -75,7 +85,8 @@ protected:
 	}
     }
 
-    dim_vector_rep (octave_idx_type n, const dim_vector_rep *dv, int fill_value = 0)
+    dim_vector_rep (octave_idx_type n, const dim_vector_rep *dv,
+		    int fill_value = 0)
       : dims ((dv && n > 0) ? new octave_idx_type [n] : 0),
 	ndims (n > 0 ? n : 0), count (1)
     {
@@ -200,6 +211,13 @@ public:
 
     if (n != len)
       {
+	if (n < 2)
+	  {
+	    (*current_liboctave_error_handler)
+	      ("unable to resize object to fewer than 2 dimensions");
+	    return;
+	  }
+
 	dim_vector_rep *old_rep = rep;
 
 	rep = new dim_vector_rep (n, old_rep, fill_value);

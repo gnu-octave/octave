@@ -130,6 +130,13 @@ function imshow (im, varargin)
     im = real (im);
   endif
   
+  nans = isnan (im(:));
+  if (any (nans))
+    warning ("Octave:imshow-NaN",
+	     "imshow: pixel with NaN or NA values are set to zero");
+    im(nans) = display_range(1);
+  endif
+
   ## Scale the image to the interval [0, 1] according to display_range.
   if (! isindexed)
     low = display_range(1);

@@ -1,3 +1,7 @@
+2006-12-27  Søren Hauberg  <hauberg@gmail.com>
+
+	* image/imshow.m: Strip NaNs from image.
+
 2006-12-08  David Bateman  <dbateman@free.fr>
 
 	* sparse/normest.m: New file.

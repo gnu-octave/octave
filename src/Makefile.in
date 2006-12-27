@@ -26,7 +26,8 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 
 %.df : %.cc
 	@echo making $@ from $<
-	@(egrep '^(///*|/\*) *PKG_ADD:' $< ; \
+	@(echo "// DO NOT EDIT!  Generated automatically by mkdefs." ; \
+	  egrep '^(///*|/\*) *PKG_ADD:' $< ; \
 	  $(CXXCPP) $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_BUILTINS $< \
 	    | $(srcdir)/mkdefs) > $@-t
 	@$(simple-move-if-change-rule)

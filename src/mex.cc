@@ -413,7 +413,7 @@ public:
       id = mxINT64_CLASS;
     else if (cn == "uint64")
       id = mxUINT64_CLASS;
-    else if (cn == "function handle")
+    else if (cn == "function_handle")
       id = mxFUNCTION_CLASS;
 
     return id;
@@ -848,7 +848,7 @@ public:
       case mxUINT32_CLASS: return "uint32";
       case mxINT64_CLASS: return "int64";
       case mxUINT64_CLASS: return "uint64";
-      case mxFUNCTION_CLASS: return "function handle";
+      case mxFUNCTION_CLASS: return "function_handle";
       default: return "unknown";
       }
   }

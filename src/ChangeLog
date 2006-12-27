@@ -1,3 +1,12 @@
+2006-12-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (%.df : %.cc): Insert a "do not edit" notice in the
+	.df files.
+
+	* mex.cc (mxArray_matlab::get_class_name,
+	mxArray_octave_value::get_class_id): Use "function_handle", not
+	"function handle".
+
 2006-12-14  John W. Eaton  <jwe@octave.org>
 
 	* pt-decl.cc (tree_decl_elt::eval): New function.

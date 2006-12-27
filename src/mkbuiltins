@@ -1,4 +1,4 @@
-#!/bin/sh
+#! /bin/sh
 
 if test $# -ne 1; then
   echo "usage: mkbuiltins f1" 1>&2

@@ -470,7 +470,7 @@ otherwise.  For example,\n\
 \n\
 @example\n\
 @group\n\
-is_NA ([13, Inf, NA, NaN])\n\
+isna ([13, Inf, NA, NaN])\n\
      @result{} [ 0, 0, 1, 0 ]\n\
 @end group\n\
 @end example\n\

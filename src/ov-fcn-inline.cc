@@ -51,7 +51,7 @@ DEFINE_OCTAVE_ALLOCATOR (octave_fcn_inline);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_inline,
 				     "inline function",
-				     "inline function");
+				     "function_handle");
 
 octave_fcn_inline::octave_fcn_inline (const std::string& f,
 				      const string_vector& a,

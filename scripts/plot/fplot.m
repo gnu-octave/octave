@@ -44,8 +44,7 @@ function fplot (fn, limits, n)
 
   x = linspace (limits(1), limits(2), n)';
 
-  if (strcmp (class (fn), "inline function")
-      || strcmp (class (fn), "function handle"))
+  if (isa (fn, "inline function") || isa (fn, "function_handle"))
     y = fn (x);
   elseif (all (isalnum (fn)))
     y = feval (fn, x);

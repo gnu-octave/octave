@@ -487,6 +487,9 @@ public:
   bool is_bool_type (void) const
     { return rep->is_bool_type (); }
 
+  bool is_integer_type (void) const
+    { return rep->is_integer_type (); }
+
   bool is_real_type (void) const
     { return rep->is_real_type (); }
 

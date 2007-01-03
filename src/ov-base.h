@@ -257,6 +257,8 @@ public:
 
   virtual bool is_bool_type (void) const { return false; }
 
+  virtual bool is_integer_type (void) const { return false; }
+
   virtual bool is_real_type (void) const { return false; }
 
   virtual bool is_complex_type (void) const { return false; }

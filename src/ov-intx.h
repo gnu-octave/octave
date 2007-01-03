@@ -60,6 +60,8 @@ public:
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
 
+  bool is_integer_type (void) const { return true; }
+
   int8NDArray
   int8_array_value (void) const { return int8NDArray (matrix); }
 
@@ -278,6 +280,8 @@ public:
     }
 
   bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
+
+  bool is_integer_type (void) const { return true; }
 
   octave_int8
   int8_scalar_value (void) const { return octave_int8 (scalar); }

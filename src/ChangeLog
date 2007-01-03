@@ -1,3 +1,11 @@
+2007-01-03  John W. Eaton  <jwe@octave.org>
+
+	* data.cc (Fisinteger): New function.
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::is_integer_type,
+	OCTAVE_VALUE_INT_SCALAR_T::is_integer_type): New function.
+	* ov.h (octave_value::is_integer_type): New function.
+	* ov-base.h (octave_base_value::is_integer_type): New virtual function.
+
 2007-01-03  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* toplev.cc (Fsystem): Handle async calls on Windows systems.

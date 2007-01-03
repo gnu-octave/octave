@@ -1,3 +1,29 @@
+2007-01-03  David Bateman  <dbateman@free.fr>
+
+	* (OPERATORS/op-cm-scm.cc, OPERATORS/op-cm-sm.cc, 
+	OPERATORS/op-cs-scm.cc, OPERATORS/op-cs-sm.cc, 
+	OPERATORS/op-m-scm.cc, OPERATORS/op-m-sm.cc, 
+	OPERATORS/op-scm-cm.cc, OPERATORS/op-scm-cs.cc, 
+	OPERATORS/op-scm-m.cc, OPERATORS/op-scm-s.cc, 
+	OPERATORS/op-scm-scm.cc, OPERATORS/op-scm-sm.cc, 
+	OPERATORS/op-sm-cm.cc, OPERATORS/op-sm-cs.cc, 
+	OPERATORS/op-sm-m.cc, OPERATORS/op-sm-s.cc, 
+	OPERATORS/op-sm-scm.cc, OPERATORS/op-sm-sm.cc, 
+	OPERATORS/op-s-scm.cc, OPERATORS/op-s-sm.cc):
+	Modify div and ldiv functions so that scalars stored as sparse 
+	matrices are special cased.
+
+	* ov-re-sparse.cc (double_value, complex_value): Scalar can be
+	stored as a sparse matrix and so don't warn on implicit conversion
+	to a scalar.
+	* ov-cx-sparse.cc (double_value, complex_value): ditto.
+	* ov-bool-sparse.cc (double_value, complex_value): ditto.
+
+2007-01-03  John W. Eaton  <jwe@octave.org>
+
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_mex): Also check
+	for _mexFunction.
+
 2006-12-30  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-inline.cc: For compatibility, class id is

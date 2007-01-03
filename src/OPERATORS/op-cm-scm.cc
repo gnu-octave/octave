@@ -40,8 +40,8 @@ Boston, MA 02110-1301, USA.
 
 // complex matrix by sparse complex matrix ops.
 
-DEFBINOP_OP (add, complex_matrix, sparse_complex_matrix,+)
-DEFBINOP_OP (sub, complex_matrix, sparse_complex_matrix,-)
+DEFBINOP_OP (add, complex_matrix, sparse_complex_matrix, +)
+DEFBINOP_OP (sub, complex_matrix, sparse_complex_matrix, -)
 
 DEFBINOP_OP (mul, complex_matrix, sparse_complex_matrix, *)
 
@@ -49,14 +49,26 @@ DEFBINOP (div, complex_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_complex_matrix&,
 		   const octave_sparse_complex_matrix&);
-  
-  MatrixType typ = v2.matrix_type ();
 
-  ComplexMatrix ret = xdiv (v1.complex_matrix_value (), 
-			    v2.sparse_complex_matrix_value (), typ);
+  if (v2.rows() == 1 && v2.columns() == 1)
+    {
+      Complex d = v2.complex_value ();
 
-  v2.matrix_type (typ);
-  return ret;
+      if (d == 0.0)
+	gripe_divide_by_zero ();
+
+      return octave_value (v1.complex_array_value () / d);
+    }
+  else
+    {
+      MatrixType typ = v2.matrix_type ();
+
+      ComplexMatrix ret = xdiv (v1.complex_matrix_value (), 
+				v2.sparse_complex_matrix_value (), typ);
+
+      v2.matrix_type (typ);
+      return ret;
+    }
 }
 
 DEFBINOPX (pow, complex_matrix, sparse_complex_matrix)

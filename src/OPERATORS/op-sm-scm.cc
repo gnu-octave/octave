@@ -47,12 +47,25 @@ DEFBINOP_OP (mul, sparse_matrix, sparse_complex_matrix, *)
 DEFBINOP (div, sparse_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_sparse_complex_matrix&);
-  MatrixType typ = v2.matrix_type ();
-  SparseComplexMatrix ret = xdiv (v1.sparse_matrix_value (), 
+
+  if (v2.rows() == 1 && v2.columns() == 1)
+    {
+      Complex d = v2.complex_value ();
+
+      if (d == 0.0)
+	gripe_divide_by_zero ();
+
+      return octave_value (v1.sparse_matrix_value () / d);
+    }
+  else
+    {
+      MatrixType typ = v2.matrix_type ();
+      SparseComplexMatrix ret = xdiv (v1.sparse_matrix_value (), 
 				  v2.sparse_complex_matrix_value (), typ);
   
-  v2.matrix_type (typ);
-  return ret;
+      v2.matrix_type (typ);
+      return ret;
+    }
 }
 
 DEFBINOPX (pow, sparse_matrix, sparse_complex_matrix)
@@ -64,13 +77,27 @@ DEFBINOPX (pow, sparse_matrix, sparse_complex_matrix)
 DEFBINOP (ldiv, sparse_matrix, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_sparse_matrix&, const octave_sparse_complex_matrix&);
-  MatrixType typ = v1.matrix_type ();
 
-  SparseComplexMatrix ret = xleftdiv (v1.sparse_matrix_value (), 
-				      v2.sparse_complex_matrix_value (), typ);
+  if (v1.rows() == 1 && v1.columns() == 1)
+    {
+      double d = v1.scalar_value ();
 
-  v1.matrix_type (typ);
-  return ret;
+      if (d == 0.0)
+	gripe_divide_by_zero ();
+
+      return octave_value (v2.sparse_complex_matrix_value () / d);
+    }
+  else
+    {
+      MatrixType typ = v1.matrix_type ();
+
+      SparseComplexMatrix ret = 
+	xleftdiv (v1.sparse_matrix_value (), 
+		  v2.sparse_complex_matrix_value (), typ);
+
+      v1.matrix_type (typ);
+      return ret;
+    }
 }
 
 DEFBINOP_FN (lt, sparse_matrix, sparse_complex_matrix, mx_el_lt)

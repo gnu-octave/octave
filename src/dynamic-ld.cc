@@ -413,9 +413,17 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
 	      if (! function)
 		{
-		  function = mex_file.search (STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION)));
-		  if (function)
-		    have_fmex = true;
+		  // FIXME -- can we determine this C mangling scheme
+		  // automatically at run time or configure time?
+
+		  function = mex_file.search ("_mexFunction");
+
+		  if (! function)
+		    {
+		      function = mex_file.search (STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION)));
+		      if (function)
+			have_fmex = true;
+		    }
 		}
 	    }
 	  else

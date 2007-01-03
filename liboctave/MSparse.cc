@@ -288,7 +288,49 @@ SPARSE_SA2_OP_2 (/)
     octave_idx_type b_nr = b.rows (); \
     octave_idx_type b_nc = b.cols (); \
  \
-    if (a_nr != b_nr || a_nc != b_nc) \
+    if (a_nr == 1 && a_nc == 1) \
+      { \
+        if (a.elem(0,0) == 0.) \
+          r = MSparse<T> (b); \
+        else \
+          { \
+	    r = MSparse<T> (b_nr, b_nc, a.data(0) OP 0.); \
+            \
+            for (octave_idx_type j = 0 ; j < b_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * b_nr; \
+                for (octave_idx_type i = b.cidx(j) ; i < b.cidx(j+1) ; i++) \
+                  { \
+                   OCTAVE_QUIT; \
+                   r.data(idxj + b.ridx(i)) = a.data(0) OP b.data(i); \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (b_nr == 1 && b_nc == 1) \
+      { \
+        if (b.elem(0,0) == 0.) \
+          r = MSparse<T> (a); \
+        else \
+          { \
+	    r = MSparse<T> (a_nr, a_nc, 0. OP b.data(0)); \
+            \
+            for (octave_idx_type j = 0 ; j < a_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * a_nr; \
+                for (octave_idx_type i = a.cidx(j) ; i < a.cidx(j+1) ; i++) \
+                  { \
+                    OCTAVE_QUIT; \
+                    r.data(idxj + a.ridx(i)) = a.data(i) OP b.data(0); \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (a_nr != b_nr || a_nc != b_nc) \
       gripe_nonconformant ("operator " # OP, a_nr, a_nc, b_nr, b_nc); \
     else \
       { \
@@ -363,7 +405,41 @@ SPARSE_SA2_OP_2 (/)
     octave_idx_type b_nr = b.rows (); \
     octave_idx_type b_nc = b.cols (); \
  \
-    if (a_nr != b_nr || a_nc != b_nc) \
+    if (a_nr == 1 && a_nc == 1) \
+      { \
+        if (a.elem(0,0) == 0.) \
+          r = MSparse<T> (b_nr, b_nc); \
+        else \
+          { \
+	    r = MSparse<T> (b); \
+            octave_idx_type b_nnz = b.nnz(); \
+            \
+            for (octave_idx_type i = 0 ; i < b_nnz ; i++) \
+              { \
+                OCTAVE_QUIT; \
+                r.data (i) = a.data(0) OP r.data(i); \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (b_nr == 1 && b_nc == 1) \
+      { \
+        if (b.elem(0,0) == 0.) \
+          r = MSparse<T> (a_nr, a_nc); \
+        else \
+          { \
+	    r = MSparse<T> (a); \
+            octave_idx_type a_nnz = a.nnz(); \
+            \
+            for (octave_idx_type i = 0 ; i < a_nnz ; i++) \
+              { \
+                OCTAVE_QUIT; \
+                r.data (i) = r.data(i) OP b.data(0); \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (a_nr != b_nr || a_nc != b_nc) \
       gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
     else \
       { \
@@ -429,7 +505,63 @@ SPARSE_SA2_OP_2 (/)
     octave_idx_type b_nr = b.rows (); \
     octave_idx_type b_nc = b.cols (); \
  \
-    if (a_nr != b_nr || a_nc != b_nc) \
+    if (a_nr == 1 && a_nc == 1) \
+      { \
+        T val = a.elem (0,0); \
+        T fill = val OP T(); \
+        if (fill == T()) \
+          { \
+            octave_idx_type b_nnz = b.nnz(); \
+            r = MSparse<T> (b); \
+            for (octave_idx_type i = 0 ; i < b_nnz ; i++) \
+              r.data (i) = val OP r.data(i); \
+            r.maybe_compress (); \
+          } \
+        else \
+          { \
+            r = MSparse<T> (b_nr, b_nc, fill); \
+            for (octave_idx_type j = 0 ; j < b_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * b_nr; \
+                for (octave_idx_type i = b.cidx(j) ; i < b.cidx(j+1) ; i++) \
+                  { \
+                    OCTAVE_QUIT; \
+                    r.data(idxj + b.ridx(i)) = val OP b.data(i); \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (b_nr == 1 && b_nc == 1) \
+      { \
+        T val = b.elem (0,0); \
+        T fill = T() OP val; \
+        if (fill == T()) \
+          { \
+            octave_idx_type a_nnz = a.nnz(); \
+            r = MSparse<T> (a); \
+            for (octave_idx_type i = 0 ; i < a_nnz ; i++) \
+              r.data (i) = r.data(i) OP val; \
+            r.maybe_compress (); \
+          } \
+        else \
+          { \
+            r = MSparse<T> (a_nr, a_nc, fill); \
+            for (octave_idx_type j = 0 ; j < a_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * a_nr; \
+                for (octave_idx_type i = a.cidx(j) ; i < a.cidx(j+1) ; i++) \
+                  { \
+                    OCTAVE_QUIT; \
+                    r.data(idxj + a.ridx(i)) = a.data(i) OP val; \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (a_nr != b_nr || a_nc != b_nc) \
       gripe_nonconformant (#FCN, a_nr, a_nc, b_nr, b_nc); \
     else \
       { \

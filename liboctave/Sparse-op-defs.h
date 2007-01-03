@@ -24,6 +24,7 @@ Boston, MA 02110-1301, USA.
 #define octave_sparse_op_defs_h 1
 
 #include "Array-util.h"
+#include "mx-ops.h"
 
 #define SPARSE_BIN_OP_DECL(R, OP, X, Y) \
   extern OCTAVE_API R OP (const X&, const Y&)
@@ -473,7 +474,49 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
  \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      { \
+        if (m1.elem(0,0) == 0.) \
+          r = R (m2); \
+        else \
+          { \
+	    r = R (m2_nr, m2_nc, m1.data(0) OP 0.); \
+            \
+            for (octave_idx_type j = 0 ; j < m2_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * m2_nr; \
+                for (octave_idx_type i = m2.cidx(j) ; i < m2.cidx(j+1) ; i++) \
+                  { \
+                    OCTAVE_QUIT; \
+                    r.data(idxj + m2.ridx(i)) = m1.data(0) OP m2.data(i); \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (m2_nr == 1 && m2_nc == 1) \
+      { \
+        if (m2.elem(0,0) == 0.) \
+          r = R (m1); \
+        else \
+          { \
+	    r = R (m1_nr, m1_nc, 0. OP m2.data(0)); \
+            \
+            for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * m1_nr; \
+                for (octave_idx_type i = m1.cidx(j) ; i < m1.cidx(j+1) ; i++) \
+                  { \
+                    OCTAVE_QUIT; \
+                    r.data(idxj + m1.ridx(i)) = m1.data(i) OP m2.data(0); \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
@@ -547,7 +590,41 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
  \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      { \
+        if (m1.elem(0,0) == 0.) \
+          r = R (m2_nr, m2_nc); \
+        else \
+          { \
+	    r = R (m2); \
+            octave_idx_type m2_nnz = m2.nnz(); \
+            \
+            for (octave_idx_type i = 0 ; i < m2_nnz ; i++) \
+              { \
+                OCTAVE_QUIT; \
+                r.data (i) = m1.data(0) OP r.data(i); \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (m2_nr == 1 && m2_nc == 1) \
+      { \
+        if (m2.elem(0,0) == 0.) \
+          r = R (m1_nr, m1_nc); \
+        else \
+          { \
+	    r = R (m1); \
+            octave_idx_type m1_nnz = m1.nnz(); \
+            \
+            for (octave_idx_type i = 0 ; i < m1_nnz ; i++) \
+              { \
+                OCTAVE_QUIT; \
+                r.data (i) = r.data(i) OP m2.data(0); \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
@@ -611,7 +688,59 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
  \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      { \
+        if ((m1.elem (0,0) OP Complex()) == Complex()) \
+          { \
+            octave_idx_type m2_nnz = m2.nnz(); \
+            r = R (m2); \
+            for (octave_idx_type i = 0 ; i < m2_nnz ; i++) \
+              r.data (i) = m1.elem(0,0) OP r.data(i); \
+            r.maybe_compress (); \
+          } \
+        else \
+          { \
+            r = R (m2_nr, m2_nc, m1.elem(0,0) OP Complex ()); \
+            for (octave_idx_type j = 0 ; j < m2_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * m2_nr; \
+                for (octave_idx_type i = m2.cidx(j) ; i < m2.cidx(j+1) ; i++) \
+                  { \
+                    OCTAVE_QUIT; \
+                    r.data(idxj + m2.ridx(i)) = m1.elem(0,0) OP m2.data(i); \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (m2_nr == 1 && m2_nc == 1) \
+      { \
+        if ((Complex() OP m1.elem (0,0)) == Complex()) \
+          { \
+            octave_idx_type m1_nnz = m1.nnz(); \
+            r = R (m1); \
+            for (octave_idx_type i = 0 ; i < m1_nnz ; i++) \
+              r.data (i) = r.data(i) OP m2.elem(0,0); \
+            r.maybe_compress (); \
+          } \
+        else \
+          { \
+            r = R (m1_nr, m1_nc, Complex() OP m2.elem(0,0)); \
+            for (octave_idx_type j = 0 ; j < m1_nc ; j++) \
+              { \
+                OCTAVE_QUIT; \
+                octave_idx_type idxj = j * m1_nr; \
+                for (octave_idx_type i = m1.cidx(j) ; i < m1.cidx(j+1) ; i++) \
+                  { \
+                    OCTAVE_QUIT; \
+                    r.data(idxj + m1.ridx(i)) = m1.data(i) OP m2.elem(0,0); \
+		  } \
+              } \
+            r.maybe_compress (); \
+          } \
+      } \
+    else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
@@ -698,7 +827,19 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
     \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      { \
+        extern OCTAVE_API SparseBoolMatrix F (const double&, const M2&); \
+        extern OCTAVE_API SparseBoolMatrix F (const Complex&, const M2&); \
+        r = F (m1.elem(0,0), m2); \
+      } \
+    else if (m2_nr == 1 && m2_nc == 1) \
+      { \
+        extern OCTAVE_API SparseBoolMatrix F (const M1&, const double&); \
+        extern OCTAVE_API SparseBoolMatrix F (const M1&, const Complex&); \
+        r = F (m1, m2.elem(0,0)); \
+      } \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
@@ -764,7 +905,19 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
     \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      { \
+        extern OCTAVE_API SparseBoolMatrix F (const double&, const M2&); \
+        extern OCTAVE_API SparseBoolMatrix F (const Complex&, const M2&); \
+        r = F (m1.elem(0,0), m2); \
+      } \
+    else if (m2_nr == 1 && m2_nc == 1) \
+      { \
+        extern OCTAVE_API SparseBoolMatrix F (const M1&, const double&); \
+        extern OCTAVE_API SparseBoolMatrix F (const M1&, const Complex&); \
+        r = F (m1, m2.elem(0,0)); \
+      } \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
@@ -836,7 +989,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
  \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
+    if (m2_nr == 1 && m2_nc == 1) \
+      r = R (m1 OP m2.elem(0,0)); \
+    else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
@@ -861,7 +1016,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
  \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
+    if (m2_nr == 1 && m2_nc == 1) \
+      r = R (m1 OP m2.elem(0,0)); \
+    else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
@@ -924,7 +1081,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
     \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+    if (m2_nr == 1 && m2_nc == 1) \
+      r = SparseBoolMatrix (F (m1, m2.elem(0,0))); \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
@@ -990,7 +1149,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
     \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+    if (m2_nr == 1 && m2_nc == 1) \
+      r = SparseBoolMatrix  (F (m1, m2.elem(0,0))); \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
@@ -1062,7 +1223,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
  \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      r = R (m1.elem(0,0) OP m2); \
+    else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
@@ -1087,7 +1250,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
  \
-    if (m1_nr != m2_nr || m1_nc != m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      r = R (m1.elem(0,0) OP m2); \
+    else if (m1_nr != m2_nr || m1_nc != m2_nc) \
       gripe_nonconformant (#F, m1_nr, m1_nc, m2_nr, m2_nc); \
     else \
       { \
@@ -1150,7 +1315,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
     \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      r = SparseBoolMatrix (F (m1.elem(0,0), m2)); \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
@@ -1216,7 +1383,9 @@ Boston, MA 02110-1301, USA.
     octave_idx_type m2_nr = m2.rows (); \
     octave_idx_type m2_nc = m2.cols (); \
     \
-    if (m1_nr == m2_nr && m1_nc == m2_nc) \
+    if (m1_nr == 1 && m1_nc == 1) \
+      r = SparseBoolMatrix (F (m1.elem(0,0), m2)); \
+    else if (m1_nr == m2_nr && m1_nc == m2_nc) \
       { \
 	if (m1_nr != 0 || m1_nc != 0) \
 	  { \
@@ -1540,7 +1709,49 @@ Boston, MA 02110-1301, USA.
   octave_idx_type a_nr = a.rows (); \
   octave_idx_type a_nc = a.cols (); \
   \
-  if (nc != a_nr) \
+  if (nr == 1 && nc == 1) \
+   { \
+     RET_EL_TYPE s = m.elem(0,0); \
+     octave_idx_type nz = a.nnz(); \
+     RET_TYPE r (a_nr, a_nc, nz); \
+     \
+     for (octave_idx_type i = 0; i < nz; i++) \
+       { \
+         OCTAVE_QUIT; \
+	 r.data(i) = s * a.data(i); \
+	 r.ridx(i) = a.ridx(i); \
+       } \
+     for (octave_idx_type i = 0; i < a_nc + 1; i++) \
+       { \
+         OCTAVE_QUIT; \
+         r.cidx(i) = a.cidx(i); \
+       } \
+     \
+     r.maybe_compress (true); \
+     return r; \
+   } \
+  else if (a_nr == 1 && a_nc == 1) \
+   { \
+     RET_EL_TYPE s = a.elem(0,0); \
+     octave_idx_type nz = m.nnz(); \
+     RET_TYPE r (nr, nc, nz); \
+     \
+     for (octave_idx_type i = 0; i < nz; i++) \
+       { \
+         OCTAVE_QUIT; \
+	 r.data(i) = m.data(i) * s; \
+	 r.ridx(i) = m.ridx(i); \
+       } \
+     for (octave_idx_type i = 0; i < nc + 1; i++) \
+       { \
+         OCTAVE_QUIT; \
+         r.cidx(i) = m.cidx(i); \
+       } \
+     \
+     r.maybe_compress (true); \
+     return r; \
+   } \
+  else if (nc != a_nr) \
     { \
       gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
       return RET_TYPE (); \
@@ -1667,7 +1878,20 @@ Boston, MA 02110-1301, USA.
   octave_idx_type a_nr = a.rows (); \
   octave_idx_type a_nc = a.cols (); \
   \
-  if (nc != a_nr) \
+  if (nr == 1 && nc == 1) \
+    { \
+      RET_TYPE retval (a_nr, a_nc, ZERO); \
+      for (octave_idx_type i = 0; i < a_nc ; i++) \
+	{ \
+	  for (octave_idx_type j = 0; j < a_nr; j++) \
+	    { \
+              OCTAVE_QUIT; \
+	      retval.elem (j,i) += a.elem(j,i) * m.elem(0,0); \
+	    } \
+        } \
+      return retval; \
+    } \
+  else if (nc != a_nr) \
     { \
       gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
       return RET_TYPE (); \
@@ -1697,7 +1921,20 @@ Boston, MA 02110-1301, USA.
   octave_idx_type a_nr = a.rows (); \
   octave_idx_type a_nc = a.cols (); \
   \
-  if (nc != a_nr) \
+  if (a_nr == 1 && a_nc == 1) \
+    { \
+      RET_TYPE retval (nr, nc, ZERO); \
+      for (octave_idx_type i = 0; i < nc ; i++) \
+	{ \
+	  for (octave_idx_type j = 0; j < nr; j++) \
+	    { \
+              OCTAVE_QUIT; \
+	      retval.elem (j,i) += a.elem(0,0) * m.elem(j,i); \
+	    } \
+        } \
+      return retval; \
+    } \
+  else if (nc != a_nr) \
     { \
       gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc); \
       return RET_TYPE (); \

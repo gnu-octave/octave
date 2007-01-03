@@ -50,13 +50,24 @@ DEFBINOP (div, scalar, sparse_complex_matrix)
 {
   CAST_BINOP_ARGS (const octave_scalar&, const octave_sparse_complex_matrix&);
 
-  MatrixType typ = v2.matrix_type ();
-  Matrix m1 = Matrix (1, 1, v1.scalar_value ());
-  SparseComplexMatrix m2 = v2.sparse_complex_matrix_value ();
-  ComplexMatrix ret = xdiv (m1, m2, typ);
-  v2.matrix_type (typ);
+  if (v2.rows() == 1 && v2.columns() == 1)
+    {
+      Complex d = v2.complex_value ();
 
-  return ret;
+      if (d == 0.0)
+	gripe_divide_by_zero ();
+
+      return octave_value (v1.scalar_value () / d);
+    }
+  else
+    {
+      MatrixType typ = v2.matrix_type ();
+      Matrix m1 = Matrix (1, 1, v1.scalar_value ());
+      SparseComplexMatrix m2 = v2.sparse_complex_matrix_value ();
+      ComplexMatrix ret = xdiv (m1, m2, typ);
+      v2.matrix_type (typ);
+      return ret;
+    }
 }
 
 DEFBINOP (pow, scalar, sparse_complex_matrix)

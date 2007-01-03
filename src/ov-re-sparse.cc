@@ -98,8 +98,9 @@ octave_sparse_matrix::double_value (bool) const
 
   if (numel () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "real sparse matrix", "real scalar");
+      if (numel () > 1)
+	gripe_implicit_conversion ("Octave:array-as-scalar",
+				   "real sparse matrix", "real scalar");
 
       retval = matrix (0, 0);
     }
@@ -119,8 +120,9 @@ octave_sparse_matrix::complex_value (bool) const
   // FIXME -- maybe this should be a function, valid_as_scalar()
   if (rows () > 0 && columns () > 0)
     {
-      gripe_implicit_conversion ("Octave:array-as-scalar",
-				 "real sparse matrix", "complex scalar");
+      if (numel () > 1)
+	gripe_implicit_conversion ("Octave:array-as-scalar",
+				   "real sparse matrix", "complex scalar");
 
       retval = matrix (0, 0);
     }

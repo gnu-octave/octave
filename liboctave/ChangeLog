@@ -1,3 +1,19 @@
+2007-01-03  David Bateman  <dbateman@free.fr>
+
+	* MSparse.cc (SPARSE_A2A2_OP, SPARSE_A2A2_FCN_1,
+	SPARSE_A2A2_FCN_1): Modify macros so that scalars stored as
+	sparse matrices are special cased.
+
+	* Sparse-op-defs.h: Include mx-ops.h to have access to mixed
+	matrix, sparse matrix operations.
+	(SPARSE_SMSM_BIN_OP_1, SPARSE_SMSM_BIN_OP_2, SPARSE_SMSM_BIN_OP_3,
+	SPARSE_SMSM_CMP_OP, SPARSE_SMSM_BOOL_OP, SPARSE_MSM_BIN_OP_1,
+	SPARSE_MSM_BIN_OP_2, SPARSE_MSM_CMP_OP, SPARSE_MSM_BOOL_OP,
+	SPARSE_SMM_BIN_OP_1, SPARSE_SMM_BIN_OP_2, SPARSE_SMM_CMP_OP, 
+	SPARSE_SMM_BOOL_OP, SPARSE_SPARSE_MUL, SPARSE_FULL_MUL, 
+	FULL_SPARSE_MUL): Modify macros so that scalars stored as
+	sparse matrices are special cased.
+
 2006-12-22  David Bateman  <dbateman@free.fr>
 
 	* boolSparse.cc (SparseBoolMatrix::operator !): Fix off-by-one error.

@@ -1,5 +1,4 @@
-## Copyright (C) 2006 David Bateman
-## Copyright (C) 2006 Marco Caliari
+## Copyright (C) 2006 David Bateman and Marco Caliari
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -18,10 +17,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{n}, @var{c}] =} normest (@var{a}, @var{tol})
-##
-## Estimates the 2-norm of the matrix @var{a} using a power series
+## Estimate the 2-norm of the matrix @var{a} using a power series
 ## analysis. This is typically used for large matrices, where the cost
-## of calculating the @code{norm{@var{a})} is prohibitive and an approximation
+## of calculating the @code{norm (@var{a})} is prohibitive and an approximation
 ## to the 2-norm is acceptable.
 ##
 ## @var{tol} is the tolerance to which the 2-norm is calculated. By default

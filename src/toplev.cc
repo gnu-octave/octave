@@ -542,6 +542,7 @@ variable @code{status} to the integer @samp{2}.\n\
 	{
 	  if (type == et_async)
 	    {
+	      // FIXME -- maybe this should go in sysdep.cc?
 #ifdef HAVE_FORK
 	      pid_t pid = fork ();
 
@@ -559,6 +560,22 @@ variable @code{status} to the integer @samp{2}.\n\
 		}
 	      else
 		retval(0) = pid;
+#elif defined (__WIN32__)
+              STARTUPINFO si;
+              PROCESS_INFORMATION pi;
+              ZeroMemory (&si, sizeof (si));
+              ZeroMemory (&pi, sizeof (pi));
+	      OCTAVE_LOCAL_BUFFER (char, xcmd_str, cmd_str.length()+1);
+	      strcpy (xcmd_str, cmd_str.c_str ())
+
+              if (! CreateProcess (0, xcmd_str, 0, 0, FALSE, 0, 0, 0, &si, &pi))
+                error ("system: CreateProcess failed -- can't create child process");
+              else
+                {
+                  retval(0) = pi.dwProcessId;
+                  CloseHandle (pi.hProcess);
+                  CloseHandle (pi.hThread);
+                }
 #else
  	      error ("asynchronous system calls are not supported");
 #endif

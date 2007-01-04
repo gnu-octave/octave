@@ -206,7 +206,10 @@ octave_fcn_handle::load_ascii (std::istream& is)
     {
       fcn = lookup_function (nm);
       if (! fcn.is_function ())
-	return false;
+	{
+	  error ("function handle points to non-existent function");
+	  return false;
+	}
     }
 
   return true;
@@ -275,7 +278,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
     {
       fcn = lookup_function (nm);
       if (! fcn.is_function ())
-	return false;
+	{
+	  error ("function handle points to non-existent function");
+	  return false;
+	}
     }
   return true;
 }
@@ -504,7 +510,10 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
     {
       fcn = lookup_function (nm);
       if (! fcn.is_function ())
-	return false;
+	{
+	  error ("function handle points to non-existent function");
+	  return false;
+	}
     }
 
   return true;

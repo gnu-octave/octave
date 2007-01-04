@@ -1,3 +1,9 @@
+2007-01-04  David Bateman  <dbateman@free.fr>
+
+	* ov-fcn-handle.cc (octave_fcn_handle::load_ascii,
+	octave_fcn_handle::load_binary):
+	Throw error if handle can't be created.
+
 2007-01-04  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
 
 	* mex.cc (mxArray_number::mxArray_number (int, const char **)):

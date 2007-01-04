@@ -1124,10 +1124,10 @@ public:
 	int tmp_len = strlen (ptr);
 
 	for (int i = 0; i < tmp_len; i++)
-	  cpr[i] = static_cast<mxChar> (ptr[i]);
+	  cpr[m*i+j] = static_cast<mxChar> (ptr[i]);
 
 	for (int i = tmp_len; i < nc; i++)
-	  cpr[i] = static_cast<mxChar> (' ');
+	  cpr[m*i+j] = static_cast<mxChar> (' ');
       }	
   }
 

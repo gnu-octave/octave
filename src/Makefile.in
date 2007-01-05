@@ -50,7 +50,7 @@ OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc \
 	ccolamd.cc colamd.cc colloc.cc conv2.cc daspk.cc dasrt.cc \
 	dassl.cc det.cc dispatch.cc eig.cc expm.cc fft.cc fft2.cc \
-	fftn.cc fftw.cc fftw_wisdom.cc filter.cc find.cc fsolve.cc \
+	fftn.cc fftw.cc filter.cc find.cc fsolve.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc inv.cc kron.cc lpsolve.cc lsode.cc \
 	lu.cc luinc.cc matrix_type.cc minmax.cc pinv.cc qr.cc \

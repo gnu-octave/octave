@@ -1,3 +1,13 @@
+2007-01-05  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (DLD_XSRC): Add fftw.cc and remove fftw_wisdom.cc
+	* DLD-FUNCTIONS/fftw.cc: New file.
+	* DLD-FUNCTIONS/fftw_wisdom.cc: Delete.
+	* defaults.cc (Vfftw_wisdom_program): Delete variable.
+	(set_default_fftw_wisdom_prog): Delete function that sets it.
+	(install_defaults): Delete set_default_fftw_prog from defaults.
+	(Ffftw_wisdom_program): Delete.
+
 2007-01-04  David Bateman  <dbateman@free.fr>
 
 	* ov-fcn-handle.cc (octave_fcn_handle::load_ascii,

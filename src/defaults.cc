@@ -96,9 +96,6 @@ static std::string VIMAGE_PATH;
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
 
-// Name of the FFTW wisdom program.
-std::string Vfftw_wisdom_program;
-
 static std::string
 subst_octave_home (const std::string& s)
 {
@@ -304,17 +301,6 @@ set_default_info_prog (void)
 }
 
 static void
-set_default_fftw_wisdom_prog (void)
-{
-  std::string oct_wisdom_prog = octave_env::getenv ("OCTAVE_FFTW_WISDOM_PROGRAM");
-
-  if (oct_wisdom_prog.empty ())
-    Vfftw_wisdom_program = "fftw-wisdom";
-  else
-    Vfftw_wisdom_program = std::string (oct_wisdom_prog);
-}
-
-static void
 set_default_editor (void)
 {
   VEDITOR = "emacs";
@@ -395,8 +381,6 @@ install_defaults (void)
 
   set_default_info_prog ();
 
-  set_default_fftw_wisdom_prog ();
-
   set_default_editor ();
 
   set_local_site_defaults_file ();
@@ -443,20 +427,6 @@ care to preserve these additional directories.\n\
     octave_env::putenv ("PATH", VEXEC_PATH);
 
   return retval;
-}
-
-DEFUN (fftw_wisdom_program, args, nargout,
-    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} FFTW_WISDOM_PROGRAM ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} FFTW_WISDOM_PROGRAM (@var{new_val})\n\
-Query or set the internal variable that specifies the FFTW wisdom\n\
-program to use to create wisdom data to accelerate Fourier transforms.\n\
-If the environment variable @code{OCTAVE_WISDOM_PROGRAM} is set when\n\
-Octave starts, its value is used as the default. Otherwise,\n\
-@code{WISDOM_PROGRAM} is set to @code{\"fftw-wisdom\"}.\n\
-@end deftypefn")
-{
-  return SET_NONEMPTY_INTERNAL_STRING_VARIABLE (fftw_wisdom_program);
 }
 
 DEFUN (IMAGE_PATH, args, nargout,

@@ -29,6 +29,82 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dim-vector.h"
 
 class
+octave_fftw_planner
+{
+public:
+
+  octave_fftw_planner (void);
+
+  fftw_plan create_plan (int dir, const int rank, const dim_vector dims, 
+			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
+			 const Complex *in, Complex *out);
+
+  fftw_plan create_plan (const int rank, const dim_vector dims, 
+			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
+			 const double *in, Complex *out);
+
+  enum FftwMethod {
+    UNKNOWN = -1,
+    ESTIMATE,
+    MEASURE,
+    PATIENT,
+    EXHAUSTIVE,
+    HYBRID
+  };
+
+  FftwMethod method (void);
+
+  FftwMethod method (FftwMethod _meth);
+
+private:
+
+  FftwMethod meth;
+
+  // FIXME -- perhaps this should be split into two classes?
+
+  // Plan for fft and ifft of complex values
+  fftw_plan plan[2];
+
+  // dist
+  octave_idx_type d[2];
+
+  // stride
+  octave_idx_type s[2];
+
+  // rank
+  int r[2];
+
+  // howmany
+  octave_idx_type h[2];
+
+  // dims
+  dim_vector n[2];
+
+  bool simd_align[2];
+  bool inplace[2];
+
+  // Plan for fft of real values
+  fftw_plan rplan;
+
+  // dist
+  octave_idx_type rd;
+
+  // stride
+  octave_idx_type rs;
+
+  // rank
+  int rr;
+
+  // howmany
+  octave_idx_type rh;
+
+  // dims
+  dim_vector rn;
+
+  bool rsimd_align;
+};
+
+class
 octave_fftw
 {
 public:

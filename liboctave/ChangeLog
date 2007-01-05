@@ -1,3 +1,14 @@
+2007-01-05  David Bateman  <dbateman@free.fr>
+
+	* oct-fftw.cc: (octave_fftw_planner::method (void), 
+	octave_fftw_planner (FftwMethod)): New methods to interrogate and
+	set the FFTW wisdom method used.
+	(octave_fftw_planner::create_plan) Modify to allow different 
+	methods to be used.
+	(octave_fftw_planner): Move class definition from here.
+	* oct-fftw.h (octave_fftw_planner): To here. Add method methods
+	and FftwMethod enum.
+
 2007-01-03  David Bateman  <dbateman@free.fr>
 
 	* MSparse.cc (SPARSE_A2A2_OP, SPARSE_A2A2_FCN_1,

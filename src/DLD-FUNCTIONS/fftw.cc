@@ -1,0 +1,240 @@
+/*
+
+Copyright (C) 2006 David Bateman
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2, or (at your option) any
+later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, write to the Free
+Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301, USA.
+
+*/
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <algorithm>
+#include "ov.h"
+#include "defun-dld.h"
+#include "error.h"
+
+#if defined (HAVE_FFTW3)
+#include "oct-fftw.h"
+#endif
+
+extern octave_fftw_planner fftw_planner;
+
+DEFUN_DLD (fftw, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{method} =} fftw ('planner')\n\
+@deftypefnx {Loadable Function} {} fftw ('planner', @var{method})\n\
+@deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom')\n\
+@deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom', @var{wisdom})\n\
+\n\
+Manage FFTW wisdom data. Wisdom data can be used to significantly\n\
+accelerate the calculation of the FFTs but implies a initial cost\n\
+in its calculation. The wisdom used by Octave can be imported directly,\n\
+usually from a file /etc/fftw/wisdom, or @dfn{fftw} can be used\n\
+to import wisdom. For example\n\
+\n\
+@example\n\
+@var{wisdom} = fftw ('dwisdom')\n\
+@end example\n\
+\n\
+will save the existing wisdom used by Octave to the string @var{wisdom}.\n\
+This string can then be saved in the usual manner. This existing wisdom\n\
+can be reimported as follows\n\
+\n\
+@example\n\
+fftw ('dwisdom', @var{wisdom})\n\
+@end example \n\
+\n\
+If @var{wisdom} is an empty matrix, then the wisdom used is cleared.\n\
+\n\
+During the calculation of fourier transforms further wisdom is generated.\n\
+The fashion in which this wisdom is generated is equally controlled by\n\
+the @dfn{fftw} function. There are five different manners in which the\n\
+wisdom can be treated, these being\n\
+\n\
+@table @asis\n\
+@item 'estimate'\n\
+This specifies that no run-time measurement of the optimal means of\n\
+calculating a particular is performed, and a simple heuristic is used\n\
+to pick a (probably sub-optimal) plan. The advantage of this method is\n\
+that there is little or no overhead in the generation of the plan, which\n\
+is appropriate for a fourier transform that will be calculated once.\n\
+\n\
+@item 'measure'\n\
+In this case a range of algorithms to perform the transform is considered\n\
+and the best is selected based on their execution time.\n\
+\n\
+@item 'patient'\n\
+This is like 'measure', but a wider range of algorithms is considered.\n\
+\n\
+@item 'exhasutive'\n\
+This is like 'meaure', but all possible algorithms that may be used to\n\
+treat the transform are considered.\n\
+\n\
+@item 'hybrid'\n\
+As run-time measurement of the algorithm can be expensive, this is a\n\
+compromise where 'measure' is used for transforms upto the size of 8192\n\
+and beyond that the 'estimate' method is used.\n\
+@end table\n\
+\n\
+The default method is 'estimate', and the method currently being used can\n\
+be probed with\n\
+\n\
+@example\n\
+@var{method} = fftw ('planner')\n\
+@end example\n\
+\n\
+and the method used can be set using\n\
+\n\
+@example\n\
+fftw ('planner', @var{method})\n\
+@end example\n\
+\n\
+Note that calculated wisdom will be lost when restarting Octave. However,\n\
+the wisdom data can be reloaded if it is saved to a file as described\n\
+above.  Also, any system-wide wisdom file that has been found will\n\
+also be used. Saved wisdom files should not be used on different\n\
+platforms since they will not be efficient and the point of calculating\n\
+the wisdom is lost.\n\
+@seealso{fft, ifft, fft2, ifft2, fftn, ifftn}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length();
+
+  if (nargin < 1 || nargin > 2)
+    {
+      print_usage ();
+      return retval;
+    }
+
+#if defined (HAVE_FFTW3)
+  if (args(0).is_string ())
+    {
+      std::string arg0 = args(0).string_value ();
+
+      if (!error_state)
+	{
+	  // Use STL function to convert to lower case
+	  std::transform (arg0.begin (), arg0.end (), arg0.begin (), tolower);
+	  
+	  if (nargin == 2)
+	    {
+	      std::string arg1 = args(1).string_value ();
+	      if (!error_state)
+		{
+		  if (arg0 == "planner")
+		    {
+		      std::transform (arg1.begin (), arg1.end (), 
+				      arg1.begin (), tolower);
+		      octave_fftw_planner::FftwMethod meth;
+
+		      if (arg1 == "estimate")
+			meth = fftw_planner.method
+			  (octave_fftw_planner::ESTIMATE);
+		      else if (arg1 == "measure")
+			meth = fftw_planner.method 
+			  (octave_fftw_planner::MEASURE);
+		      else if (arg1 == "patient")
+			meth = fftw_planner.method 
+			  (octave_fftw_planner::PATIENT);
+		      else if (arg1 == "exhaustive")
+			meth = fftw_planner.method 
+			  (octave_fftw_planner::EXHAUSTIVE);
+		      else if (arg1 == "hybrid")
+			meth = fftw_planner.method 
+			  (octave_fftw_planner::HYBRID);
+		      else
+			error ("unrecognized planner method");
+
+		      if (!error_state)
+			{
+			  if (meth == octave_fftw_planner::MEASURE)
+			    retval = octave_value ("measure");
+			  else if (meth == octave_fftw_planner::PATIENT)
+			    retval = octave_value ("patient");
+			  else if (meth == octave_fftw_planner::EXHAUSTIVE)
+			    retval = octave_value ("exhaustive");
+			  else if (meth == octave_fftw_planner::HYBRID)
+			    retval = octave_value ("hybrid");
+			  else
+			    retval = octave_value ("estimate");
+			}
+		    }
+		  else if (arg0 == "dwisdom")
+		    {
+		      char *str = fftw_export_wisdom_to_string ();
+
+		      if (arg1.length() < 1)
+			fftw_forget_wisdom ();
+		      else if (! fftw_import_wisdom_from_string (arg1.c_str()))
+			error ("could not import supplied wisdom");
+
+		      if (!error_state)
+			retval = octave_value (std::string (str));
+
+		      free (str);
+		    }
+		  else if (arg0 == "swisdom")
+		    error ("single precision wisdom is not supported");
+		  else
+		    error ("unrecognized argument");
+		}
+	    }
+	  else
+	    {
+	      if (arg0 == "planner")
+		{
+		  octave_fftw_planner::FftwMethod meth = 
+		    fftw_planner.method ();
+
+		  if (meth == octave_fftw_planner::MEASURE)
+		    retval = octave_value ("measure");
+		  else if (meth == octave_fftw_planner::PATIENT)
+		    retval = octave_value ("patient");
+		  else if (meth == octave_fftw_planner::EXHAUSTIVE)
+		    retval = octave_value ("exhaustive");
+		  else if (meth == octave_fftw_planner::HYBRID)
+		    retval = octave_value ("hybrid");
+		  else
+		    retval = octave_value ("estimate");
+		}
+	      else if (arg0 == "dwisdom")
+		{
+		  char *str = fftw_export_wisdom_to_string ();
+		  retval = octave_value (std::string (str));
+		  free (str);
+		}
+	      else if (arg0 == "swisdom")
+		error ("single precision wisdom is not supported");
+	      else
+		error ("unrecognized argument");
+	    }
+	}
+    }
+#else
+
+  warning ("fftw: this copy of Octave was not configured to use FFTW3");
+
+#endif
+
+  return retval;
+}
+

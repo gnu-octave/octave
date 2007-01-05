@@ -33,15 +33,16 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "quit.h"
 
 // Helper class to create and cache fftw plans for both 1d and
-// 2d. This implementation uses FFTW_ESTIMATE to create the plans,
-// which in theory is suboptimal, but provides quite reasonable
-// performance.
+// 2d. This implementation defaults to using FFTW_ESTIMATE to create
+// the plans, which in theory is suboptimal, but provides quit
+// reasonable performance.
 
 // Also note that if FFTW_ESTIMATE is not used the planner in FFTW3
-// destroys the input and output arrays. So with the form of the
-// current code we definitely want FFTW_ESTIMATE!! However, we use any
-// wsidom that is available, either in a FFTW3 system wide file or as
-// supplied by the user.
+// destroys the input and output arrays. We must therefore create a
+// temporary input array with the same size and 16-byte alignment as
+// the original array and use that for the planner. Note that we also
+// use any wisdom that is available, either in a FFTW3 system wide file
+//  or as supplied by the user.
 
 // FIXME -- if we can ensure 16 byte alignment in Array<T>
 // (<T> *data) the FFTW3 can use SIMD instructions for further
@@ -50,72 +51,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // Note that it is profitable to store the FFTW3 plans, for small
 // ffts.
 
-class
-octave_fftw_planner
-{
-public:
-
-  octave_fftw_planner (void);
-
-  fftw_plan create_plan (int dir, const int rank, const dim_vector dims, 
-			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
-			 const Complex *in, Complex *out);
-
-  fftw_plan create_plan (const int rank, const dim_vector dims, 
-			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
-			 const double *in, Complex *out);
-
-private:
-
-  int plan_flags;
-
-  // FIXME -- perhaps this should be split into two classes?
-
-  // Plan for fft and ifft of complex values
-  fftw_plan plan[2];
-
-  // dist
-  octave_idx_type d[2];
-
-  // stride
-  octave_idx_type s[2];
-
-  // rank
-  int r[2];
-
-  // howmany
-  octave_idx_type h[2];
-
-  // dims
-  dim_vector n[2];
-
-  bool simd_align[2];
-  bool inplace[2];
-
-  // Plan for fft of real values
-  fftw_plan rplan;
-
-  // dist
-  octave_idx_type rd;
-
-  // stride
-  octave_idx_type rs;
-
-  // rank
-  int rr;
-
-  // howmany
-  octave_idx_type rh;
-
-  // dims
-  dim_vector rn;
-
-  bool rsimd_align;
-};
-
 octave_fftw_planner::octave_fftw_planner (void)
 {
-  plan_flags = FFTW_ESTIMATE;
+  meth = ESTIMATE;
 
   plan[0] = plan[1] = 0;
   d[0] = d[1] = s[0] = s[1] = r[0] = r[1] = h[0] = h[1] = 0;
@@ -130,6 +68,37 @@ octave_fftw_planner::octave_fftw_planner (void)
   
   // If we have a system wide wisdom file, import it.
   fftw_import_system_wisdom ();
+}
+
+octave_fftw_planner::FftwMethod
+octave_fftw_planner::method (void)
+{
+  return meth;
+}
+
+octave_fftw_planner::FftwMethod
+octave_fftw_planner::method (FftwMethod _meth)
+{
+  FftwMethod ret = meth;
+  if (_meth == ESTIMATE || _meth == MEASURE || 
+      _meth == PATIENT || _meth == EXHAUSTIVE ||
+      _meth == HYBRID)
+    {
+      if (meth != _meth) 
+	{
+	  meth = _meth;
+	  if (rplan)
+	    fftw_destroy_plan (rplan);
+	  if (plan[0])
+	    fftw_destroy_plan (plan[0]);
+	  if (plan[1])
+	    fftw_destroy_plan (plan[1]);
+	  rplan = plan[0] = plan[1] = 0;
+	}
+    }
+  else
+    ret = UNKNOWN;
+  return ret;
 }
 
 #define CHECK_SIMD_ALIGNMENT(x) \
@@ -178,6 +147,46 @@ octave_fftw_planner::create_plan (int dir, const int rank,
       inplace[which] = ioinplace;
       n[which] = dims;
 
+      // Note reversal of dimensions for column major storage in FFTW.
+      octave_idx_type nn = 1;
+      OCTAVE_LOCAL_BUFFER (int, tmp, rank);
+
+      for (int i = 0, j = rank-1; i < rank; i++, j--)
+	{
+	  tmp[i] = dims(j);
+	  nn *= dims(j);
+	}
+
+      int plan_flags = 0;
+      bool plan_destroys_in = true;
+
+      switch (meth) 
+	{
+	case UNKNOWN:
+	case ESTIMATE:
+	  plan_flags |= FFTW_ESTIMATE;
+	  plan_destroys_in = false;
+	  break;
+	case MEASURE:
+	  plan_flags |= FFTW_MEASURE;
+	  break;
+	case PATIENT:
+	  plan_flags |= FFTW_PATIENT;
+	  break;
+	case EXHAUSTIVE:
+	  plan_flags |= FFTW_EXHAUSTIVE;
+	  break;
+	case HYBRID:
+	  if (nn < 8193)
+	    plan_flags |= FFTW_MEASURE;
+	  else
+	    {
+	      plan_flags |= FFTW_ESTIMATE;
+	      plan_destroys_in = false;
+	    }
+	  break;
+	}
+
       if (ioalign)
 	plan_flags &= ~FFTW_UNALIGNED;
       else
@@ -186,18 +195,28 @@ octave_fftw_planner::create_plan (int dir, const int rank,
       if (*cur_plan_p)
 	fftw_destroy_plan (*cur_plan_p);
 
-      // Note reversal of dimensions for column major storage in FFTW.
+      if (plan_destroys_in)
+	{
+	  // Create matrix with the same size and 16-byte alignment as input
+	  OCTAVE_LOCAL_BUFFER (Complex, itmp, nn * howmany + 32);
+	  itmp = reinterpret_cast<Complex *>
+	    (((reinterpret_cast<ptrdiff_t>(itmp) + 15) & ~ 0xF) + 
+	     ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-      OCTAVE_LOCAL_BUFFER (int, tmp, rank);
-
-      for (int i = 0, j = rank-1; i < rank; i++, j--)
-	tmp[i] = dims(j);
-
-      *cur_plan_p =
-	fftw_plan_many_dft (rank, tmp, howmany,
+	  *cur_plan_p =
+	    fftw_plan_many_dft (rank, tmp, howmany,
+	      reinterpret_cast<fftw_complex *> (itmp),
+	      0, stride, dist, reinterpret_cast<fftw_complex *> (out),
+	      0, stride, dist, dir, plan_flags);
+	}
+      else
+	{
+	  *cur_plan_p =
+	    fftw_plan_many_dft (rank, tmp, howmany,
 	      reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
 	      0, stride, dist, reinterpret_cast<fftw_complex *> (out),
 	      0, stride, dist, dir, plan_flags);
+	}
 
       if (*cur_plan_p == 0)
 	(*current_liboctave_error_handler) ("Error creating fftw plan");
@@ -243,6 +262,46 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
       rsimd_align = ioalign;
       rn = dims;
 
+      // Note reversal of dimensions for column major storage in FFTW.
+      octave_idx_type nn = 1;
+      OCTAVE_LOCAL_BUFFER (int, tmp, rank);
+
+      for (int i = 0, j = rank-1; i < rank; i++, j--)
+	{
+	  tmp[i] = dims(j);
+	  nn *= dims(j);
+	}
+
+      int plan_flags = 0;
+      bool plan_destroys_in = true;
+
+      switch (meth) 
+	{
+	case UNKNOWN:
+	case ESTIMATE:
+	  plan_flags |= FFTW_ESTIMATE;
+	  plan_destroys_in = false;
+	  break;
+	case MEASURE:
+	  plan_flags |= FFTW_MEASURE;
+	  break;
+	case PATIENT:
+	  plan_flags |= FFTW_PATIENT;
+	  break;
+	case EXHAUSTIVE:
+	  plan_flags |= FFTW_EXHAUSTIVE;
+	  break;
+	case HYBRID:
+	  if (nn < 8193)
+	    plan_flags |= FFTW_MEASURE;
+	  else
+	    {
+	      plan_flags |= FFTW_ESTIMATE;
+	      plan_destroys_in = false;
+	    }
+	  break;
+	}
+
       if (ioalign)
 	plan_flags &= ~FFTW_UNALIGNED;
       else
@@ -251,18 +310,27 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
       if (*cur_plan_p)
 	fftw_destroy_plan (*cur_plan_p);
 
-      // Note reversal of dimensions for column major storage in FFTW.
+      if (plan_destroys_in)
+	{
+	  // Create matrix with the same size and 16-byte alignment as input
+	  OCTAVE_LOCAL_BUFFER (double, itmp, nn + 32);
+	  itmp = reinterpret_cast<double *>
+	    (((reinterpret_cast<ptrdiff_t>(itmp) + 15) & ~ 0xF) + 
+	     ((reinterpret_cast<ptrdiff_t> (in)) & 0xF));
 
-      OCTAVE_LOCAL_BUFFER (int, tmp, rank);
-
-      for (int i = 0, j = rank-1; i < rank; i++, j--)
-	tmp[i] = dims(j);
-
-      *cur_plan_p =
-	fftw_plan_many_dft_r2c (rank, tmp, howmany,
+	  *cur_plan_p =
+	    fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
+	      0, stride, dist, reinterpret_cast<fftw_complex *> (out),
+	      0, stride, dist, plan_flags);
+	}
+      else
+	{
+	  *cur_plan_p =
+	    fftw_plan_many_dft_r2c (rank, tmp, howmany,
 	      (const_cast<double *> (in)),
 	      0, stride, dist, reinterpret_cast<fftw_complex *> (out),
 	      0, stride, dist, plan_flags);
+	}
 
       if (*cur_plan_p == 0)
 	(*current_liboctave_error_handler) ("Error creating fftw plan");
@@ -271,7 +339,7 @@ octave_fftw_planner::create_plan (const int rank, const dim_vector dims,
   return *cur_plan_p;
 }
 
-static octave_fftw_planner fftw_planner;
+octave_fftw_planner fftw_planner;
 
 static inline void
 convert_packcomplex_1d (Complex *out, size_t nr, size_t nc,

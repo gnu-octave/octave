@@ -66,10 +66,13 @@ function retval = optimset (varargin)
     ## to ensure that the field names are expected?
     old = varargin{1};
     new = varargin{2};
+    fnames = fieldnames (old);
     for [val, key] = new
-      if (! isempty (val))
-	old.(key) = val;
+      mask = strcmpi (fnames, key);
+      if (any (mask))
+	key = fnames (mask);
       endif
+      old.(key) = val;
     endfor
     retval = old;
   elseif (rem (nargs, 2) && isstruct (varargin{1}))

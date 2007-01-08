@@ -32,8 +32,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 extern "C" {
 #endif
 
-#if defined (HAVE_SPARSESUITE_UMFPACK_H)
-#include <sparsesuite/umfpack.h>
+#if defined (HAVE_SUITESPARSE_UMFPACK_H)
+#include <suitesparse/umfpack.h>
 #elif defined (HAVE_UFSPARSE_UMFPACK_H)
 #include <ufsparse/umfpack.h>
 #elif defined (HAVE_UMFPACK_UMFPACK_H)
@@ -42,8 +42,8 @@ extern "C" {
 #include <umfpack.h>
 #endif
 
-#if defined (HAVE_SPARSESUITE_COLAMD_H)
-#include <sparsesuite/colamd.h>
+#if defined (HAVE_SUITESPARSE_COLAMD_H)
+#include <suitesparse/colamd.h>
 #elif defined (HAVE_UFSPARSE_COLAMD_H)
 #include <ufsparse/colamd.h>
 #elif defined (HAVE_COLAMD_COLAMD_H)
@@ -52,8 +52,8 @@ extern "C" {
 #include <colamd.h>
 #endif
 
-#if defined (HAVE_SPARSESUITE_CCOLAMD_H)
-#include <sparsesuite/ccolamd.h>
+#if defined (HAVE_SUITESPARSE_CCOLAMD_H)
+#include <suitesparse/ccolamd.h>
 #elif defined (HAVE_UFSPARSE_CCOLAMD_H)
 #include <ufsparse/ccolamd.h>
 #elif defined (HAVE_CCOLAMD_CCOLAMD_H)
@@ -62,8 +62,8 @@ extern "C" {
 #include <ccolamd.h>
 #endif
 
-#if defined (HAVE_SPARSESUITE_METIS_H)
-#include <sparsesuite/metis.h>
+#if defined (HAVE_SUITESPARSE_METIS_H)
+#include <suitesparse/metis.h>
 #elif defined (HAVE_UFSPARSE_METIS_H)
 #include <ufsparse/metis.h>
 #elif defined (HAVE_METIS_METIS_H)
@@ -72,8 +72,8 @@ extern "C" {
 #include <metis.h>
 #endif
 
-#if defined (HAVE_SPARSESUITE_CHOLMOD_H)
-#include <sparsesuite/cholmod.h>
+#if defined (HAVE_SUITESPARSE_CHOLMOD_H)
+#include <suitesparse/cholmod.h>
 #elif defined (HAVE_UFSPARSE_CHOLMOD_H)
 #include <ufsparse/cholmod.h>
 #elif defined (HAVE_UMFPACK_CHOLMOD_H)
@@ -82,8 +82,8 @@ extern "C" {
 #include <cholmod.h>
 #endif
 
-#if defined (HAVE_SPARSESUITE_CS_H)
-#include <sparsesuite/cs.h>
+#if defined (HAVE_SUITESPARSE_CS_H)
+#include <suitesparse/cs.h>
 #elif defined (HAVE_UFSPARSE_CS_H)
 #include <ufsparse/cs.h>
 #elif defined (HAVE_CXSPARSE_CS_H)
@@ -92,7 +92,7 @@ extern "C" {
 #include <cs.h>
 #endif
 
-#if (defined (HAVE_SPARSESUITE_CHOLMOD_H) \
+#if (defined (HAVE_SUITESPARSE_CHOLMOD_H) \
      || defined (HAVE_UFSPARSE_CHOLMOD_H) \
      || defined (HAVE_UMFPACK_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_H))

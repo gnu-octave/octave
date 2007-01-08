@@ -1,3 +1,8 @@
+2007-01-08  David Bateman  <dbateman@free.fr>
+
+	* oct-sparse.h: Replace sparsesuite with suitesparse and
+	SPARSESUITE with SUITESPARSE to match upstream name.
+
 2007-01-05  David Bateman  <dbateman@free.fr>
 
 	* oct-fftw.cc: (octave_fftw_planner::method (void), 

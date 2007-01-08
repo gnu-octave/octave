@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.549 $)
+AC_REVISION($Revision: 1.550 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -842,7 +842,7 @@ AC_ARG_WITH(umfpack,
 warn_umfpack="UMFPACK not found.  This will result in some lack of functionality for sparse matrices."
 if test "$with_umfpack" = yes && test "$with_amd" = yes; then
   with_umfpack=no
-  AC_CHECK_HEADERS([sparsesuite/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h], [
+  AC_CHECK_HEADERS([suitesparse/umfpack.h ufsparse/umfpack.h umfpack/umfpack.h umfpack.h], [
     AC_CHECK_LIB(umfpack, umfpack_zi_get_determinant, [
       UMFPACK_LIBS="-lumfpack"; with_umfpack=yes], [
         ## Invalidate the cache.
@@ -883,7 +883,7 @@ AC_ARG_WITH(colamd,
 warn_colamd="COLAMD not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_colamd" = yes; then
   with_colamd=no
-  AC_CHECK_HEADERS([sparsesuite/colamd.h ufsparse/colamd.h colamd/colamd.h colamd.h], [
+  AC_CHECK_HEADERS([suitesparse/colamd.h ufsparse/colamd.h colamd/colamd.h colamd.h], [
     AC_CHECK_LIB(colamd, colamd, [COLAMD_LIBS="-lcolamd"; with_colamd=yes])
     if test "$with_colamd" = yes; then
       AC_DEFINE(HAVE_COLAMD, 1, [Define if the COLAMD library is used.])
@@ -909,7 +909,7 @@ AC_ARG_WITH(ccolamd,
 warn_ccolamd="CCOLAMD not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_ccolamd" = yes; then
   with_ccolamd=no
-  AC_CHECK_HEADERS([sparsesuite/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h ccolamd.h], [
+  AC_CHECK_HEADERS([suitesparse/ccolamd.h ufsparse/ccolamd.h ccolamd/ccolamd.h ccolamd.h], [
     AC_CHECK_LIB(ccolamd, ccolamd, [CCOLAMD_LIBS="-lccolamd"; with_ccolamd=yes])
     if test "$with_ccolamd" = yes; then
       AC_DEFINE(HAVE_CCOLAMD, 1, [Define if the CCOLAMD library is used.])
@@ -933,8 +933,8 @@ warn_cholmod="CHOLMOD not found. This will result in some lack of functionality 
 if test "$with_cholmod" = yes && test "$with_colamd" = yes &&
 	test "$with_ccolamd" = yes && test "$with_amd" = yes; then
   with_cholmod=no
-  AC_CHECK_HEADERS([sparsesuite/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h], [
-    AC_CHECK_HEADERS([sparsesuite/metis.h ufsparse/metis.h metis/metis.h metis.h], [
+  AC_CHECK_HEADERS([suitesparse/cholmod.h ufsparse/cholmod.h cholmod/cholmod.h cholmod.h], [
+    AC_CHECK_HEADERS([suitesparse/metis.h ufsparse/metis.h metis/metis.h metis.h], [
       AC_CHECK_LIB(metis, METIS_NodeND, with_metis=yes, with_metis=no)
       break],
       with_metis=no)
@@ -980,7 +980,7 @@ AC_ARG_WITH(cxsparse,
 warn_cxsparse="CXSparse not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_cxsparse" = yes; then
   with_cxsparse=no
-  AC_CHECK_HEADERS([sparsesuite/cs.h ufsparse/cs.h cxsparse/cs.h cs.h], [
+  AC_CHECK_HEADERS([suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h], [
     AC_CHECK_LIB(cxsparse, cs_di_sqr, [CXSPARSE_LIBS="-lcxsparse"; with_cxsparse=yes])
     if test "$with_cxsparse" = yes; then
       AC_DEFINE(HAVE_CXSPARSE, 1, [Define if the CXSparse library is used.])
@@ -991,6 +991,35 @@ fi
 if test -n "$warn_cxsparse"; then
   AC_MSG_WARN($warn_cxsparse)
 fi
+
+WITH_ARPACK=true
+AC_ARG_WITH(arpack,
+  [AS_HELP_STRING([--without-arpack], [don't use arpack])],
+  with_arpack=$withval, with_arpack=yes)
+
+arpack_lib=
+if test "$with_arpack" = yes; then
+  arpack_lib="arpack"
+elif test "$with_arpack" != no; then
+  arpack_lib="$with_arpack"
+fi
+
+ARPACK_LIBS=
+AC_SUBST(ARPACK_LIBS)
+WITH_ARPACK=false
+if test -n "$arpack_lib"; then
+  AC_CHECK_LIB($arpack_lib, F77_FUNC(dseupd,DSEUPD), [
+	WITH_ARPACK=true
+        ARPACK_LIBS="-l$arpack_lib"
+        FLIBS="$ARPACK_LIBS $FLIBS"
+        AC_DEFINE(HAVE_ARPACK, 1, [Define if ARPACK is available.])], , 
+	$BLAS_LIBS $FLIBS)
+fi
+if test $WITH_ARPACK = no; then
+  warn_arpack="arpack not found. This will result in a lack of the eigs function."
+  AC_MSG_WARN($warn_arpack)
+fi
+
 
 ### Handle shared library options.
 
@@ -2006,6 +2035,7 @@ Octave is now configured for $canonical_host_type
   CCOLAMD libraries:    $CCOLAMD_LIBS
   CHOLMOD libraries:    $CHOLMOD_LIBS
   CXSPARSE libraries:   $CXSPARSE_LIBS
+  ARPACK libraries:     $ARPACK_LIBS
   HDF5 libraries:       $HDF5_LIBS
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
@@ -2110,6 +2140,11 @@ fi
 
 if test -n "$warn_cxsparse"; then
   AC_MSG_WARN($warn_cxsparse)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_arpack"; then
+  AC_MSG_WARN($warn_arpack)
   warn_msg_printed=true
 fi
 

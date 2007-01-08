@@ -1,3 +1,10 @@
+2007-01-06  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_CONFIG_STATEMENT): New macro
+	(OCTAVE_NAME_AND_VERSION): Remove config info.
+	(OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY):
+	Use OCTAVE_CONFIG_STATEMENT here.
+
 2007-01-05  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (DLD_XSRC): Add fftw.cc and remove fftw_wisdom.cc

@@ -31,11 +31,16 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #define OCTAVE_RELEASE_DATE "2006-10-02"
 
-#define OCTAVE_COPYRIGHT \
-  "Copyright (C) 2006 John W. Eaton."
+#define OCTAVE_COPYRIGHT "Copyright (C) 2006 John W. Eaton."
 
-#define OCTAVE_NAME_AND_VERSION \
-  "GNU Octave, version " OCTAVE_VERSION " (" OCTAVE_CANONICAL_HOST_TYPE ")"
+// This is the first line printed by --version.  The GNU coding
+// standards say that the version number should follow the last space
+// on the line.
+
+#define OCTAVE_NAME_AND_VERSION "GNU Octave, version " OCTAVE_VERSION
+
+#define OCTAVE_CONFIG_STATEMENT \
+  "Octave was configured for \"" OCTAVE_CANONICAL_HOST_TYPE "\"."
 
 #define OCTAVE_COPYING_STATEMENT \
   "This is free software; see the source code for copying conditions."
@@ -56,13 +61,14 @@ For more information, visit http://www.octave.org/help-wanted.html"
 http://www.octave.org/bugs.html to learn how to write a helpful report)."
 
 #define OCTAVE_NAME_VERSION_AND_COPYRIGHT \
-  OCTAVE_NAME_AND_VERSION ".\n" \
+  OCTAVE_NAME_AND_VERSION "\n" \
   OCTAVE_COPYRIGHT
 
 #define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
   OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n" \
   OCTAVE_COPYING_STATEMENT "\n" \
-  OCTAVE_WARRANTY_STATEMENT
+  OCTAVE_WARRANTY_STATEMENT "\n\n" \
+  OCTAVE_CONFIG_STATEMENT
 
 #define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS(ARG) \
   OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \

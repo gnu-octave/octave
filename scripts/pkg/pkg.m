@@ -245,6 +245,7 @@ function install(files, handle_deps, prefix, local_list, global_list)
     tmpdirs = packdirs = descriptions = {};
     try
         ## Unpack the package files and read the DESCRIPTION files
+        files = glob(files);
         packages_to_uninstall = [];
         for i = 1:length(files)
             tgz = files{i};

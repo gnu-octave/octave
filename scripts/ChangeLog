@@ -1,3 +1,7 @@
+2007-01-09  Søren Hauberg  <hauberg@gmail.com>
+
+         * pkg/pkg.m: Allow filenames to contain glob patterns.
+
 2007-01-08  Søren Hauberg  <hauberg@gmail.com>
 
 	* pkg/pkg.m: Use copyfile instead of calling system.  Use fullfile

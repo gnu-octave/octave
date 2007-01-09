@@ -40,6 +40,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   ## over the command that is executed.
 
   if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "mv")))
+    ## Windows.
     cmd = "cmd /C move";
     cmd_force_flag = "/Y";
   else
@@ -48,17 +49,29 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   endif
 
   if (nargin == 2 || nargin == 3)
+    ## Input type check.
+    if (! (ischar (f1) || iscellstr (f1)))
+      error ("copyfile: first argument must be a character string or a cell array of character strings");
+    endif
+
+    if (! ischar (f2))
+      error ("copyfile: second argument must be a character string");
+    endif
+
     if (nargin == 3 && strcmp (force, "f"))
       cmd = strcat (cmd, " ", cmd_force_flag);
     endif
 
-    ## Allow cell input and protect the file name(s).
-    if (iscellstr (f1))
-      f1 = sprintf("\"%s\" ", f1{:});
-    else
-      f1 = sprintf("\"%s\" ", f1);
+    ## If f1 isn't a cellstr convert it to one.
+    if (ischar (f1))
+      f1 = cellstr (f1);
     endif
+    
+    ## Protect the file name(s).
+    f1 = glob (f1);
+    f1 = sprintf ("\"%s\" ", f1{:});
 
+    ## Move the file(s).
     [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, f1, f2));
     if (err < 0)
       status = false;

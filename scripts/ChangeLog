@@ -1,3 +1,15 @@
+2007-01-08  Søren Hauberg  <hauberg@gmail.com>
+
+	* pkg/pkg.m: Use copyfile instead of calling system.  Use fullfile
+	instead of concatenating with "/".  Use mlock to ensure that
+	persistent variables are not clobbered if user types clear all.
+
+2007-01-08  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/copyfile.m, miscellaneous/movefile.m:
+	Improve handling of file names containing globbing characters.
+	From Søren Hauberg <hauberg@gmail.com>.
+
 2007-01-05  John W. Eaton  <jwe@octave.org>
 
 	* optimization/optimset.m, optimization/__fsolve_defopts__.m:

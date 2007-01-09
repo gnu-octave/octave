@@ -116,16 +116,17 @@
 ## PKG_ADD: mark_as_command pkg
 
 function [local_packages, global_packages] = pkg(varargin)
-    ## Installation prefix
+    ## Installation prefix (XXX: what should these be on windows?)
     persistent prefix = -1;
     persistent local_list = tilde_expand("~/.octave_packages");
     persistent global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
+    mlock;
 
     if (prefix == -1)
         if (issuperuser())
-	    prefix = fullfile (OCTAVE_HOME (), "/share/octave/packages/");
+            prefix = fullfile (OCTAVE_HOME (), "/share/octave/packages");
         else
-            prefix = "~/octave/";
+            prefix = "~/octave";
         endif
     endif
     prefix = tilde_expand(prefix);
@@ -188,7 +189,7 @@ function [local_packages, global_packages] = pkg(varargin)
                 local_packages = prefix;
             elseif (length(files) == 1 && nargout == 0 && ischar(files{1}))
                 prefix = files{1};
-                if (!strcmp(prefix(end), "/")) prefix(end+1) = "/"; endif
+                #if (!strcmp(prefix(end), "/")) prefix(end+1) = "/"; endif
             else
                 error("You must specify a prefix directory, or request an output argument");
             endif
@@ -270,25 +271,25 @@ function install(files, handle_deps, prefix, local_list, global_list)
 	    endif
             
             for k = 3:length(dirlist) # the two first entries of dirlist are "." and ".."
-                packdir = [tmpdir "/" dirlist{k} "/"];
+                packdir = fullfile(tmpdir, dirlist{k});
                 packdirs{end+1} = packdir;
 
                 ## Make sure the package contains necessary files
                 verify_directory(packdir);
 
                 ## Read the DESCRIPTION file
-                filename = [packdir "DESCRIPTION"];
+                filename = fullfile(packdir, "DESCRIPTION");
                 desc = get_description(filename);
 
-		## Verify that package name corresponds with filename
-		[dummy, nm] = fileparts(tgz); 
-		if ((length(nm) >= length(desc.name)) &&
-		    ! strcmp(desc.name,nm(1:length(desc.name))))
-		  error("Package name '%s' doesn't correspond to its filename '%s'", desc.name, nm);
-		endif
+                ## Verify that package name corresponds with filename
+                [dummy, nm] = fileparts(tgz); 
+                if ((length(nm) >= length(desc.name)) &&
+                    ! strcmp(desc.name,nm(1:length(desc.name))))
+                    error("Package name '%s' doesn't correspond to its filename '%s'", desc.name, nm);
+                endif
 
                 ## Set default installation directory
-                desc.dir = [prefix "/" desc.name "-" desc.version];
+                desc.dir = fullfile(prefix, [desc.name "-" desc.version]);
             
                 ## Save desc
                 descriptions{end+1} = desc;
@@ -464,29 +465,26 @@ function uninstall(pkgnames, handle_deps, local_list, global_list)
 
     ## Are all the packages that should be uninstalled already installed?
     if (length(delete_idx) != length(pkgnames))
-      delete_idx
-      pkgnames
+        if (issuperuser())
+            ## Try again for a locally installed package
+            installed_packages = local_packages
 
-      if (issuperuser())
-	## Try again for a locally installed package
-	installed_packages = local_packages
-
-	num_packages = length(installed_packages);
-	delete_idx = [];
-	for i = 1:num_packages
-          cur_name = installed_packages{i}.name;
-          if (any(strcmp(cur_name, pkgnames)))
-            delete_idx(end+1) = i;
-          endif
-	endfor
-	if (length(delete_idx) != length(pkgnames))
-	  ## XXX: We should have a better error message
-          error("Some of the packages you want to uninstall are not installed.");
-	endif
-      else
-	## XXX: We should have a better error message
-	error("Some of the packages you want to uninstall are not installed.");
-      endif
+            num_packages = length(installed_packages);
+            delete_idx = [];
+            for i = 1:num_packages
+                cur_name = installed_packages{i}.name;
+                if (any(strcmp(cur_name, pkgnames)))
+                    delete_idx(end+1) = i;
+                endif
+            endfor
+            if (length(delete_idx) != length(pkgnames))
+                ## XXX: We should have a better error message
+                error("Some of the packages you want to uninstall are not installed.");
+            endif
+        else
+            ## XXX: We should have a better error message
+            error("Some of the packages you want to uninstall are not installed.");
+        endif
     endif
 
     ## Compute the packages that will remain installed
@@ -520,10 +518,10 @@ function uninstall(pkgnames, handle_deps, local_list, global_list)
     for i = delete_idx
         desc = installed_packages{i};
         ## If an 'on_uninstall.m' exist, call it!
-        if (exist([desc.dir "/packinfo/on_uninstall.m"], "file"))
+        if (exist(fullfile(desc.dir, "packinfo", "on_uninstall.m"), "file"))
             try
                 wd = pwd();
-                cd([desc.dir "/packinfo"]);
+                cd(fullfile(desc.dir, "packinfo"));
                 on_uninstall(desc);
                 cd(wd);
             catch
@@ -534,14 +532,14 @@ function uninstall(pkgnames, handle_deps, local_list, global_list)
         endif
         ## Do the actual deletion
         rmpath(desc.dir);
-	if (exist (desc.dir, "dir"))
-          [status, msg] = rm_rf(desc.dir);
-          if (status != 1)
-            error("Couldn't delete directory %s: %s", desc.dir, msg);
-          endif
-	else
-	  warning("Directory %s previously lost", desc.dir);
-	endif
+        if (exist (desc.dir, "dir"))
+            [status, msg] = rm_rf(desc.dir);
+            if (status != 1)
+                error("Couldn't delete directory %s: %s", desc.dir, msg);
+            endif
+        else
+            warning("Directory %s previously lost", desc.dir);
+        endif
     endfor
 
     ## Write a new ~/.octave_packages
@@ -596,7 +594,7 @@ function configure_make (desc, packdir)
     if (exist([packdir "src"], "dir"))
         src = [packdir "src/"];
         ## configure
-        if (exist([src "configure"], "file"))
+        if (exist(fullfile(src, "configure"), "file"))
             [status, output] = system(["cd " src " ;./configure --prefix=" desc.dir]);
             if (status != 0)
                 rm_rf(desc.dir);
@@ -605,7 +603,7 @@ function configure_make (desc, packdir)
         endif
 
         ## make
-        if (exist([src "Makefile"], "file"))
+        if (exist(fullfile(src, "Makefile"), "file"))
             [status, output] = system(["export INSTALLDIR=" desc.dir "; make -C " src]);
             if (status != 0)
                 rm_rf(desc.dir);
@@ -620,34 +618,41 @@ function configure_make (desc, packdir)
         endif
 
         ## Copy files to "inst" (this is instead of 'make install')
-        files = [src "FILES"];
+        files = fullfile(src, "FILES");
+        instdir = fullfile(packdir, "inst");
         if (exist(files, "file"))
+            ## Get file names
             [fid, msg] = fopen(files, "r");
             if (fid < 0)
                 error("Couldn't open %s: %s", files, msg);
             endif
             filenames = char(fread(fid))';
-            filenames = strrep(filenames, "\n", " ");
-            [status, output] = system(["cd " src "; cp " filenames " " packdir "inst/"]);
             fclose(fid);
+            ## Copy the files
+            fn = split_by(filenames, "\n");
+            for i = 1:length(fn)
+              fn{i} = fullfile(src, fn{i});
+            endfor
+            filenames = sprintf("%s ", fn{:});
         else
-            m = dir([src "*.m"]);
-            oct = dir([src "*.oct"]);
-            f = "";
+            m = dir(fullfile(src, "*.m"));
+            oct = dir(fullfile(src, "*.oct"));
+            filenames = "";
             if (length(m) > 0)
-                f = sprintf([src "%s "], m.name);
+                filenames = sprintf([src "%s "], m.name);
             endif
             if (length(oct) > 0)
-                f = [f " " sprintf([src "%s "], oct.name)];
-            endif
-            
-            if (!all(isspace(f)))
-                [status, output] = system(["cp -R " f " " packdir "inst/"]);
+                filenames = [filenames " " sprintf([src "%s "], oct.name)];
             endif
         endif
-        if (status != 0)
-            rm_rf(desc.dir);
-            error("Couldn't copy files from 'src' to 'inst': %s", output);
+            
+        if (!all(isspace(filenames)))
+            mkdir(instdir);
+            [status, output] = copyfile(filenames, instdir);
+            if (status != 1)
+                rm_rf(desc.dir);
+                error("Couldn't copy files from 'src' to 'inst': %s", output);
+            endif
         endif
     endif
 endfunction
@@ -673,28 +678,29 @@ function pkg = extract_pkg (nm, pat)
 endfunction
 
 function create_pkgadddel (desc, packdir, nm)
-  pkg = [desc.dir "/" nm];
+  pkg = fullfile(desc.dir, nm);
   fid = fopen(pkg, "wt");
 
   if (fid >= 0)
     ## Search all dot-m files for PKG commands
-    lst = dir ([packdir "inst/*.m"]);
+    lst = dir (fullfile(packdir, "inst", "*.m"));
     for i=1:length(lst)
-      nam = [packdir "inst/" lst(i).name];
+      nam = fullfile(packdir, "inst", lst(i).name);
       fwrite (fid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
     ## Search all C++ source files for PKG commands
-    lst = dir ([packdir "src/*.cc"]);
+    lst = dir (fullfile(packdir, "src", "*.cc"));
     for i=1:length(lst)
-      nam = [packdir "src/" lst(i).name];
+      nam = fullfile(packdir, "src", lst(i).name);
       fwrite (fid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
       fwrite (fid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
     endfor
 
     ## Add developer included PKG commands
-    if (exist([packdir nm],"file"))
-      fid2 = fopen([packdir nm],"rt");
+    packdirnm = fullfile(packdir, "nm");
+    if (exist(packdirnm, "file"))
+      fid2 = fopen(packdirnm,"rt");
       if (fid2 >= 0)
         while (! feof(fid2))
           ln = fgets (fid2);
@@ -718,24 +724,25 @@ endfunction
 function copy_files (desc, packdir, bindir)
     ## Create the installation directory
     if (! exist (desc.dir, "dir"))
-      [status, output] = mkdir (desc.dir);
-      if (status != 1)
-	error("Couldn't create installation directory %s : %s", 
-	      desc.dir, output);
-      endif
+        [status, output] = mkdir (desc.dir);
+        if (status != 1)
+            error("Couldn't create installation directory %s : %s", 
+            desc.dir, output);
+        endif
     endif
 
     ## Copy the files from "inst" to installdir
-    if (! dirempty([packdir "inst"]))
-      [status, output] = system(["cp -R " packdir "inst/* " desc.dir]);
-      if (status != 0)
+    instdir = fullfile(packdir, "inst");
+    if (!dirempty(instdir))
+      [status, output] = copyfile(fullfile(instdir, "*"), desc.dir);
+      if (status != 1)
           rm_rf(desc.dir);
           error("Couldn't copy files to the installation directory");
       endif
     endif
 
     ## Create the "packinfo" directory
-    packinfo = [desc.dir "/packinfo/"];
+    packinfo = fullfile(desc.dir, "packinfo");
     [status, msg] = mkdir (packinfo);
     if (status != 1)
         rm_rf(desc.dir);
@@ -743,29 +750,30 @@ function copy_files (desc, packdir, bindir)
     endif
 
     ## Copy DESCRIPTION
-    [status, output] = system(["cp " packdir "DESCRIPTION " packinfo]);
-    if (status != 0)
+    [status, output] = copyfile(fullfile(packdir, "DESCRIPTION"), packinfo);
+    if (status != 1)
        rm_rf(desc.dir);
        error("Couldn't copy DESCRIPTION: %s", output);
     endif
 
     ## Copy COPYING
-    [status, output] = system(["cp " packdir "COPYING " packinfo]);
-    if (status != 0)
+    [status, output] = copyfile(fullfile(packdir, "COPYING"), packinfo);
+    if (status != 1)
        rm_rf(desc.dir);
        error("Couldn't copy COPYING: %s", output);
     endif
 
     ## Is there an INDEX file to copy or should we generate one?
-    if (exist([packdir "INDEX"], "file"))
-        [status, output] = system(["cp " packdir "INDEX " packinfo]);
-        if (status != 0)
+    fINDEX = fullfile(packdir, "INDEX");
+    if (exist(fINDEX, "file"))
+        [status, output] = copyfile(fINDEX, packinfo);
+        if (status != 1)
             rm_rf(desc.dir);
             error("Couldn't copy INDEX file: %s", output);
         endif
     else
         try
-            write_INDEX(desc, [packdir "inst"], [packinfo "INDEX"]);
+            write_INDEX(desc, fullfile(packdir, "inst"), fINDEX);
         catch
             rm_rf(desc.dir);
             error(lasterr);
@@ -773,22 +781,25 @@ function copy_files (desc, packdir, bindir)
     endif
     
     ## Is there an 'on_uninstall.m' to install?
-    if (exist([packdir "on_uninstall.m"], "file"))
-        [status, output] = system(["cp " packdir "on_uninstall.m " packinfo]);
-        if (status != 0)
+    fon_uninstall = fullfile(packdir, "on_uninstall.m");
+    if (exist(fon_uninstall, "file"))
+        [status, output] = copyfile(fon_uninstall, packinfo);
+        if (status != 1)
             rm_rf(desc.dir);
             error("Couldn't copy on_uninstall.m: %s", output);
         endif
     endif
 
     ## Is there a doc/ directory that needs to be installed
-    if (exist([packdir "doc"], "dir") && !dirempty([packdir "doc"]))
-       [status, output] = system(["cp -pR " packdir "doc " desc.dir]);
+    docdir = fullfile(packdir, "doc");
+    if (exist(docdir, "dir") && !dirempty(docdir))
+       [status, output] = copyfile(docdir, desc.dir);
     endif
 
     ## Is there a bin/ directory that needs to be installed
-    if (exist([packdir "bin"], "dir") && !dirempty([packdir "bin"]))
-       [status, output] = system(["cp -pR " packdir "bin " desc.dir]);
+    bindir = fullfile(packdir, "bin");
+    if (exist(bindir, "dir") && !dirempty(bindir))
+       [status, output] = copyfile(bindir, desc.dir);
     endif
 endfunction
 
@@ -817,7 +828,7 @@ endfunction
 function verify_directory(dir)
     needed_files = {"COPYING", "DESCRIPTION"};
     for f = needed_files
-        if (!exist([dir "/" f{1}], "file"))
+        if (!exist(fullfile(dir, f{1}), "file"))
             error("Package is missing file: %s", f{1});
         endif
     endfor
@@ -1172,8 +1183,8 @@ function load_packages(files, handle_deps, local_list, global_list)
 
     ## Add local binaries, if any, to the EXEC_PATH
     for i = 1:length(dirs)
-       if (exist ([dirs{i} "/bin"],"dir"))
-         EXEC_PATH ([dirs{i} "/bin:" EXEC_PATH()]);
+       if (exist (fullfile(dirs{i}, "bin"), "dir"))
+         EXEC_PATH ([fullfile(dirs{i}, "bin") ":" EXEC_PATH()]);
        endif
     endfor
 endfunction

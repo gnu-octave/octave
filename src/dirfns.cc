@@ -577,7 +577,7 @@ filename pattern matching.  For example,\n\
 \n\
 @example\n\
 @group\n\
-fnmatch (\"a*b\", [\"ab\"; \"axyzb\"; \"xyzab\"])\n\
+fnmatch (\"a*b\", @{\"ab\"; \"axyzb\"; \"xyzab\"@})\n\
      @result{} [ 1; 1; 0 ]\n\
 @end group\n\
 @end example\n\

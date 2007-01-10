@@ -1,3 +1,8 @@
+2007-01-10  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (load_fcn_from_file): Only compare last two characters
+	when looking for ".m".
+
 2007-01-06  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_CONFIG_STATEMENT): New macro

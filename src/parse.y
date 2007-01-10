@@ -3414,7 +3414,7 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
   if (octave_env::absolute_pathname (nm)
       && ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
 	  || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
-	  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
+	  || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
     {
       file = nm;
     }

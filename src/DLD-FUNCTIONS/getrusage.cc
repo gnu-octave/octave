@@ -35,7 +35,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <sys/resource.h>
 #endif
 
-#if defined (__MINGW32__)
+#if defined (__WIN32__)
 #include <windows.h>
 #endif
 
@@ -196,7 +196,7 @@ elements @code{sec} (seconds) @code{usec} (microseconds).\n\
   tv_tmp.assign ("usec", static_cast<double> (fraction * 1e6 / HZ));
   m.assign ("stime", octave_value (tv_tmp));
 
-#elif defined (__MINGW32__)
+#elif defined (__WIN32__)
   HANDLE hProcess = GetCurrentProcess ();
   FILETIME ftCreation, ftExit, ftUser, ftKernel;
   GetProcessTimes (hProcess, &ftCreation, &ftExit, &ftKernel, &ftUser);

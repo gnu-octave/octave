@@ -1,3 +1,7 @@
+2007-01-10  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* DLD-FUNCTIONS/getrusage.cc: Use #ifdef __WIN32__, not __MINGW32__.
+
 2007-01-10  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (load_fcn_from_file): Only compare last two characters

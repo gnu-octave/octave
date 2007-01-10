@@ -1,3 +1,10 @@
+2007-01-10  David Bateman  <dbateman@free.fr>
+
+	* elfun/acosd.m, elfun/acotd.m, elfun/acscd.m, elfun/asecd.m,
+	elfun/asind.m, elfun/atand.m, elfun/cosd.m, elfun/cotd.m,
+	elfun/cscd.m, elfun/secd.m, elfun/sind.m, elfun/tand.m:
+	New files.
+
 2007-01-09  Søren Hauberg  <hauberg@gmail.com>
 
          * pkg/pkg.m: Allow filenames to contain glob patterns.

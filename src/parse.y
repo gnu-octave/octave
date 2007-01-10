@@ -3399,15 +3399,15 @@ reverse_lookup_autoload (const std::string& nm)
 }
 
 bool
-load_fcn_from_file (const std::string& nm, bool exec_script)
+load_fcn_from_file (const std::string& nm_arg, bool exec_script)
 {
   unwind_protect::begin_frame ("load_fcn_from_file");
 
   bool script_file_executed = false;
 
-  string_vector names (2);
+  std::string nm = nm_arg;
 
-  int nm_len = nm.length ();
+  size_t nm_len = nm.length ();
 
   std::string file;
 
@@ -3417,6 +3417,9 @@ load_fcn_from_file (const std::string& nm, bool exec_script)
 	  || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
     {
       file = nm;
+
+      nm = octave_env::base_pathname (file);
+      nm = nm.substr (0, nm.find_last_of ('.'));
     }
   else
     {

@@ -1,3 +1,8 @@
+2007-01-10  John W. Eaton  <jwe@octave.org>
+
+	* oct-sparse.h: Use HAVE_CHOLMOD_CHOLMOD_H, not
+	HAVE_UMFPACK_CHOLMOD_H for case of "cholmod/cholmod.h".
+
 2007-01-08  David Bateman  <dbateman@free.fr>
 
 	* oct-sparse.h: Replace sparsesuite with suitesparse and

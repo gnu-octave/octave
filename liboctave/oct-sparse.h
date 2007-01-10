@@ -76,7 +76,7 @@ extern "C" {
 #include <suitesparse/cholmod.h>
 #elif defined (HAVE_UFSPARSE_CHOLMOD_H)
 #include <ufsparse/cholmod.h>
-#elif defined (HAVE_UMFPACK_CHOLMOD_H)
+#elif defined (HAVE_CHOLMOD_CHOLMOD_H)
 #include <cholmod/cholmod.h>
 #elif defined (HAVE_CHOLMOD_H)
 #include <cholmod.h>
@@ -94,7 +94,7 @@ extern "C" {
 
 #if (defined (HAVE_SUITESPARSE_CHOLMOD_H) \
      || defined (HAVE_UFSPARSE_CHOLMOD_H) \
-     || defined (HAVE_UMFPACK_CHOLMOD_H) \
+     || defined (HAVE_CHOLMOD_CHOLMOD_H) \
      || defined (HAVE_CHOLMOD_H))
 #ifdef IDX_TYPE_LONG
 #define CHOLMOD_NAME(name) cholmod_l_ ## name

@@ -1,5 +1,7 @@
 2007-01-11  Michael Goffioul  <michael.goffioul@swing.be>
 
+	* load-path.h (class load_path): Tag with OCTINTERP_API.
+
 	* ls-oct-binary.cc (read_binary_data): Use unsigned char, not
 	char, for reading flags and data types.
 

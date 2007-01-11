@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "str-vec.h"
 
 class
+OCTINTERP_API
 load_path
 {
 protected:

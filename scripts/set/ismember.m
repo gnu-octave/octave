@@ -33,9 +33,8 @@ function c = ismember (a, S)
     print_usage ();
   endif
 
-  [ra, ca] = size (a);
   if (isempty (a) || isempty (S))
-    c = zeros (ra, ca);
+    c = zeros (size (a));
   else
     if (iscell (a) && ! iscell (S))
       tmp{1} = S;
@@ -96,7 +95,7 @@ function c = ismember (a, S)
       ## preserves the relative order of identical elements.
       [v, p] = sort ([S(2:lt); a(:)]);
       idx(p) = cumsum (p <= lt-1) + 1;
-      idx = idx(lt:lt+ra*ca-1);
+      idx = idx(lt:end);
       if (iscell (a) || iscell (S))
         c = (cellfun ("length", a)
 	     == reshape (cellfun ("length", S(idx)), size (a)));

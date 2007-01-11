@@ -1,3 +1,7 @@
+2007-01-10  Baylis Shanks  <bshanks3@hotmail.com>
+
+	* set/ismember.m: Handle N-d arrays.
+
 2007-01-10  David Bateman  <dbateman@free.fr>
 
 	* elfun/acosd.m, elfun/acotd.m, elfun/acscd.m, elfun/asecd.m,

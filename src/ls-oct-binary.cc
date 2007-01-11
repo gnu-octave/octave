@@ -139,7 +139,7 @@ read_binary_data (std::istream& is, bool swap,
 {
   std::string retval;
 
-  char tmp = 0;
+  unsigned char tmp = 0;
 
   int32_t name_len = 0;
   int32_t doc_len = 0;

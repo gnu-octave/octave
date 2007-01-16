@@ -59,8 +59,10 @@ Boston, MA 02110-1301, USA.
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dgbtrf, DGBTRF) (const octave_idx_type&, const int&, const octave_idx_type&, 
-			     const octave_idx_type&, double*, const octave_idx_type&, octave_idx_type*, octave_idx_type&);
+  F77_FUNC (dgbtrf, DGBTRF) (const octave_idx_type&, const octave_idx_type&,
+			     const octave_idx_type&, const octave_idx_type&,
+			     double*, const octave_idx_type&,
+			     octave_idx_type*, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (dgbtrs, DGBTRS) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
@@ -4536,9 +4538,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
       if (typ == MatrixType::Banded)
 	{
 	  // Create the storage for the banded form of the sparse matrix
-	  int n_upper = mattype.nupper ();
-	  int n_lower = mattype.nlower ();
-	  int ldm = n_upper + 2 * n_lower + 1;
+	  octave_idx_type n_upper = mattype.nupper ();
+	  octave_idx_type n_lower = mattype.nlower ();
+	  octave_idx_type ldm = n_upper + 2 * n_lower + 1;
 
 	  Matrix m_band (ldm, nc);
 	  double *tmp_data = m_band.fortran_vec ();
@@ -4692,8 +4694,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
 	{
-	  int n_lower = mattype.nlower ();
-	  int ldm = n_lower + 1;
+	  octave_idx_type n_lower = mattype.nlower ();
+	  octave_idx_type ldm = n_lower + 1;
 
 	  Matrix m_band (ldm, nc);
 	  double *tmp_data = m_band.fortran_vec ();
@@ -5206,9 +5208,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
       if (typ == MatrixType::Banded)
 	{
 	  // Create the storage for the banded form of the sparse matrix
-	  int n_upper = mattype.nupper ();
-	  int n_lower = mattype.nlower ();
-	  int ldm = n_upper + 2 * n_lower + 1;
+	  octave_idx_type n_upper = mattype.nupper ();
+	  octave_idx_type n_lower = mattype.nlower ();
+	  octave_idx_type ldm = n_upper + 2 * n_lower + 1;
 
 	  Matrix m_band (ldm, nc);
 	  double *tmp_data = m_band.fortran_vec ();
@@ -5390,8 +5392,8 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 
       if (typ == MatrixType::Banded_Hermitian)
 	{
-	  int n_lower = mattype.nlower ();
-	  int ldm = n_lower + 1;
+	  octave_idx_type n_lower = mattype.nlower ();
+	  octave_idx_type ldm = n_lower + 1;
 
 	  Matrix m_band (ldm, nc);
 	  double *tmp_data = m_band.fortran_vec ();
@@ -5584,9 +5586,9 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
       if (typ == MatrixType::Banded)
 	{
 	  // Create the storage for the banded form of the sparse matrix
-	  int n_upper = mattype.nupper ();
-	  int n_lower = mattype.nlower ();
-	  int ldm = n_upper + 2 * n_lower + 1;
+	  octave_idx_type n_upper = mattype.nupper ();
+	  octave_idx_type n_lower = mattype.nlower ();
+	  octave_idx_type ldm = n_upper + 2 * n_lower + 1;
 
 	  Matrix m_band (ldm, nc);
 	  double *tmp_data = m_band.fortran_vec ();

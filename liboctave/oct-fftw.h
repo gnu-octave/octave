@@ -104,6 +104,9 @@ private:
   bool rsimd_align;
 };
 
+// FIXME -- maybe octave_fftw_planner should be a singleton object?
+extern octave_fftw_planner fftw_planner;
+
 class
 octave_fftw
 {

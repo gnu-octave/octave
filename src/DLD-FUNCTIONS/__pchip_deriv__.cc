@@ -34,9 +34,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 extern "C"
 {
-  extern int F77_FUNC (dpchim, DPCHIM)
-    (const int &n, double *x, double *f, double *d, const int &incfd,
-     int *ierr);
+  F77_RET_T
+  F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, double *x, double *f,
+			     double *d, const octave_idx_type &incfd,
+			     octave_idx_type *ierr);
 }
 
 DEFUN_DLD(__pchip_deriv__, args, ,
@@ -54,9 +55,9 @@ piecewise polynomials.  You should be using @code{pchip} function instead.\n\
       ColumnVector xvec (args(0).vector_value ());
       Matrix ymat (args(1).matrix_value ());
 
-      int nx = xvec.length ();
-      int nyr = ymat.rows ();
-      int nyc = ymat.columns ();
+      octave_idx_type nx = xvec.length ();
+      octave_idx_type nyr = ymat.rows ();
+      octave_idx_type nyc = ymat.columns ();
 
       if (nx != nyr)
         {
@@ -67,8 +68,8 @@ piecewise polynomials.  You should be using @code{pchip} function instead.\n\
       ColumnVector dvec (nx), yvec (nx);
       Matrix dmat (nyr, nyc);
 
-      int ierr;
-      const int incfd = 1;
+      octave_idx_type ierr;
+      const octave_idx_type incfd = 1;
       for (int c = 0; c < nyc; c++)
         {
           for (int r = 0; r < nx; r++)

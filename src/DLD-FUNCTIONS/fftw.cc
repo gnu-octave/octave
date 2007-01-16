@@ -34,8 +34,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-fftw.h"
 #endif
 
-extern octave_fftw_planner fftw_planner;
-
 DEFUN_DLD (fftw, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{method} =} fftw ('planner')\n\

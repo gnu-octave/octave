@@ -1,3 +1,10 @@
+2007-01-16  John W. Eaton  <jwe@octave.org>
+
+	* dSparse.cc: Fix dgbtrf decl for --enable-64.
+	(SparseMatrix::bsolve): Fix call to dgbtrf for --enable-64
+
+	* oct-fftw.h (fftw_planner): Provide decl.
+
 2007-01-11  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in (LINK_DEPS): Include $(CAMD_LIBS) in the list.

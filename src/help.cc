@@ -889,8 +889,8 @@ display_usage_text (std::ostream& os, const std::string& msg)
 }
 
 static bool
-help_from_list (std::ostream& os, const help_list *list,
-		const std::string& nm, int usage, bool& symbol_found)
+raw_help_from_list (const help_list *list, const std::string& nm, 
+		    std::string& h, bool& symbol_found)
 {
   bool retval = false;
 
@@ -902,27 +902,45 @@ help_from_list (std::ostream& os, const help_list *list,
 	{
 	  symbol_found = true;
 
-	  std::string h = list->help;
+	  h = list->help;
 
 	  if (h.length () > 0)
-	    {
-	      if (usage)
-		os << "\nusage: ";
-	      else
-		os << "\n*** " << nm << ":\n\n";
+	    retval = true;
 
-	      display_help_text (os, h);
-
-	      os << "\n";
-
-	      retval = true;
-	    }
 	  break;
 	}
       list++;
     }
 
   return retval;;
+}
+
+static bool
+help_from_list (std::ostream& os, const help_list *list,
+		const std::string& nm, int usage, bool& symbol_found)
+{
+  bool retval = false;
+
+  std::string h;
+
+  if (raw_help_from_list (list, nm, h, symbol_found))
+    {
+      if (h.length () > 0)
+	{
+	  if (usage)
+	    os << "\nusage: ";
+	  else
+	    os << "\n*** " << nm << ":\n\n";
+
+	  display_help_text (os, h);
+
+	  os << "\n";
+
+	  retval = true;
+	}
+    }
+
+  return retval;
 }
 
 std::string
@@ -981,8 +999,8 @@ extract_help_from_dispatch (const std::string& nm)
 }
 
 static bool
-help_from_symbol_table (std::ostream& os, const std::string& nm,
-			bool& symbol_found)
+raw_help_from_symbol_table (const std::string& nm, std::string& h, 
+			    std::string& w, bool& symbol_found)
 {
   bool retval = false;
 
@@ -992,21 +1010,58 @@ help_from_symbol_table (std::ostream& os, const std::string& nm,
     {
       symbol_found = true;
 
-      std::string h = sym_rec->help ();
+      h = sym_rec->help ();
 
       if (h.length () > 0)
 	{
-	  h = extract_help_from_dispatch (nm) + h;
-	  display_help_text (os, h);
-	  if (! Vsuppress_verbose_help_message)
-	    {
-	      sym_rec->which (os);
-	      os << "\n";
-	    }
-	  os << "\n";
+	  w = sym_rec->which ();
+
 	  retval = true;
 	}
     }
+
+  return retval;
+}
+
+static bool
+help_from_symbol_table (std::ostream& os, const std::string& nm,
+			bool& symbol_found)
+{
+  bool retval = false;
+
+  std::string h;
+  std::string w;
+
+  if (raw_help_from_symbol_table (nm, h, w, symbol_found))
+    {
+      if (h.length () > 0)
+	{
+	  h = extract_help_from_dispatch (nm) + h;
+
+	  display_help_text (os, h);
+
+	  if (w.length () > 0 && ! Vsuppress_verbose_help_message)
+	    os << w << "\n";
+
+	  os << "\n";
+
+	  retval = true;
+	}
+    }
+
+  return retval;
+}
+
+static bool
+raw_help_from_file (const std::string& nm, std::string& h, 
+		    std::string& file, bool& symbol_found)
+{
+  bool retval = false;
+
+  h = get_help_from_file (nm, symbol_found, file);
+
+  if (h.length () > 0)
+    retval = true;
 
   return retval;
 }
@@ -1016,19 +1071,39 @@ help_from_file (std::ostream& os, const std::string& nm, bool& symbol_found)
 {
   bool retval = false;
 
+  std::string h;
   std::string file;
 
-  std::string h = get_help_from_file (nm, symbol_found, file);
-
-  if (h.length () > 0)
+  if (raw_help_from_file (nm, h, file, symbol_found))
     {
-      os << nm << " is the file " << file << "\n\n";
-      display_help_text (os, h);
-      os << "\n";
-      retval = true;
+      if (h.length () > 0)
+	{
+	  os << nm << " is the file " << file << "\n\n";
+
+	  display_help_text (os, h);
+
+	  os << "\n";
+
+	  retval = true;
+	}
     }
 
   return retval;
+}
+
+std::string
+raw_help (const std::string& nm, bool &symbol_found)
+{
+  std::string h;
+  std::string w;
+  std::string f;
+
+  (raw_help_from_list (operator_help (), nm, h, symbol_found)
+   || raw_help_from_list (keyword_help (), nm, h, symbol_found)
+   || raw_help_from_symbol_table (nm, h, w, symbol_found)
+   || raw_help_from_file (nm, h, f, symbol_found));
+
+  return h;
 }
 
 static void

@@ -39,6 +39,8 @@ extern void display_usage_text (std::ostream&, const std::string&);
 
 extern void additional_help_message (std::ostream&);
 
+extern std::string raw_help (const std::string&, bool&);
+
 // Name of the info file specified on command line.
 // (--info-file file)
 extern std::string Vinfo_file;

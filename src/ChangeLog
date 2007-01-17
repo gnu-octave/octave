@@ -1,3 +1,14 @@
+2007-01-17  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (help_from_file, help_from_symbol_table, help_from_list):
+	Rewrite using raw_ versions.
+
+2007-01-17  David Bateman  <dbateman@free.fr>
+
+	* help.cc (raw_help, raw_help_from_file,
+	raw_help_from_symbol_table, raw_help_from_list): New functions.
+	* help.h (raw_help): Provide decl.
+
 2007-01-16  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__pchip_deriv__.cc: Fix dpchim decl for --enable-64.

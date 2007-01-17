@@ -89,6 +89,12 @@ octave_chdir (const std::string& path_arg)
 
   return retval;
 #else
+
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  if (path.length() == 2 && path[1] == ':')
+    path += "\\";
+#endif
+
   return chdir (path.c_str ());
 #endif
 }

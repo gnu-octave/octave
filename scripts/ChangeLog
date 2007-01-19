@@ -1,5 +1,8 @@
 2007-01-18  Søren Hauberg  <hauberg@gmail.com>
 
+	* image/ind2rgb.m: Better input checking.  Return 3-d array if
+	nargout is 1.  Handle colormaps that have too few colors.
+
 	* pkg/pkg.m (create_pkgadddel): Call fullfile with nm, not "nm".
 	(configure_make): Use fullfile instead of concatenating with "/".
 

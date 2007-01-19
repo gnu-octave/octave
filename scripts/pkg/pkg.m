@@ -592,8 +592,8 @@ endfunction
 
 function configure_make (desc, packdir)   
 	## Perform ./configure, make, make install in "src"
-    if (exist([packdir "src"], "dir"))
-        src = [packdir "src/"];
+    if (exist(fullfile(packdir, "src"), "dir"))
+        src = fullfile(packdir, "src");
         ## configure
         if (exist(fullfile(src, "configure"), "file"))
             [status, output] = system(["cd " src " ;./configure --prefix=" desc.dir]);
@@ -640,12 +640,13 @@ function configure_make (desc, packdir)
             oct = dir(fullfile(src, "*.oct"));
             filenames = "";
             if (length(m) > 0)
-                filenames = sprintf([src "%s "], m.name);
+                filenames = sprintf(fullfile(src, "%s "), m.name);
             endif
             if (length(oct) > 0)
-                filenames = [filenames " " sprintf([src "%s "], oct.name)];
+                filenames = [filenames " " sprintf(fullfile(src, "%s "), oct.name)];
             endif
         endif
+        filenames = split_by(filenames, " ");
             
         if (!all(isspace(filenames)))
             mkdir(instdir);

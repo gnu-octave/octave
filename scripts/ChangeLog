@@ -1,6 +1,7 @@
 2007-01-18  Søren Hauberg  <hauberg@gmail.com>
 
 	* pkg/pkg.m (create_pkgadddel): Call fullfile with nm, not "nm".
+	(configure_make): Use fullfile instead of concatenating with "/".
 
 2007-01-10  Baylis Shanks  <bshanks3@hotmail.com>
 

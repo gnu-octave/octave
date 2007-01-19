@@ -360,7 +360,7 @@ function install(files, handle_deps, prefix, local_list, global_list)
     try
         for i = packages_to_uninstall
             uninstall({installed_packages{i}.name}, false, local_list, 
-		      global_list);
+            global_list);
         endfor
     catch
         ## Something went wrong, delete tmpdirs
@@ -375,9 +375,9 @@ function install(files, handle_deps, prefix, local_list, global_list)
         for i = 1:length(descriptions)
             desc = descriptions{i};
             pdir = packdirs{i};
-	    copy_files(desc, pdir);
-	    create_pkgadddel(desc, pdir, "PKG_ADD");
-	    create_pkgadddel(desc, pdir, "PKG_DEL");
+            copy_files(desc, pdir);
+            create_pkgadddel(desc, pdir, "PKG_ADD");
+            create_pkgadddel(desc, pdir, "PKG_DEL");
             finish_installation (desc, pdir)
         endfor
     catch
@@ -395,8 +395,8 @@ function install(files, handle_deps, prefix, local_list, global_list)
     ## from the list
     for i = length(descriptions):-1:1
       if (dirempty(descriptions{i}.dir,{"packinfo","doc"}))
-	rm_rf(descriptions{i}.dir);
-	descriptions(i) = [];
+        rm_rf(descriptions{i}.dir);
+        descriptions(i) = [];
       endif
     endfor
 
@@ -699,7 +699,7 @@ function create_pkgadddel (desc, packdir, nm)
     endfor
 
     ## Add developer included PKG commands
-    packdirnm = fullfile(packdir, "nm");
+    packdirnm = fullfile(packdir, nm);
     if (exist(packdirnm, "file"))
       fid2 = fopen(packdirnm,"rt");
       if (fid2 >= 0)

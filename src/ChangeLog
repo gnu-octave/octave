@@ -11032,7 +11032,7 @@
 	add_hdf5_data): Use 0, not NULL in calls to HDF routines.
 
 	* oct-procbuf.cc (octave_procbuf::open): Use NULL, not 0 as last
-	arg in call to execl.xo
+	arg in call to execl.
 
 	* debug.cc (get_user_function): Initialise dbg_fcn to 0, not NULL.
 

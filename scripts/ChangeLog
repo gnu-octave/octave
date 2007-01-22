@@ -1,3 +1,7 @@
+2007-01-22  Bob Weigel <rweigel@gmu.edu>
+
+	* testfun/test.m: Check for all files in path, use first found.
+
 2007-01-22  David Bateman  <dbateman@free.fr>
 
 	* polynomial/spline.m: Make DG a column instead of a row vector.

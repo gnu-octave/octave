@@ -146,12 +146,16 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   endif
 
   ## locate the file to test
-  __file = file_in_loadpath (__name);
-  if (isempty (__file)) 
-    __file = file_in_loadpath ([__name, ".m"]);
+  __file = file_in_loadpath (__name, "all");
+  if (isempty (__file))
+    __file = file_in_loadpath ([__name, ".m"], "all");
   endif
   if (isempty (__file))
-    __file = file_in_loadpath ([__name, ".cc"]);
+    __file = file_in_loadpath ([__name, ".cc"], "all");
+  endif
+  if (iscell (__file))
+    ## If repeats, return first in path.
+    __file = __file{1};
   endif
   if (isempty (__file))
     if (__grabdemo)

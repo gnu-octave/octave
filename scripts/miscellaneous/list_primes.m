@@ -25,7 +25,7 @@
 ## The algorithm used is from page 218 of the
 ## @iftex
 ## @tex
-##  \TeXbook.
+##  {\TeX}book.
 ## @end tex
 ## @end iftex
 ## @ifinfo

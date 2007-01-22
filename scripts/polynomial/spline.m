@@ -174,7 +174,7 @@ function ret = spline (x, y, xi)
 
     elseif (n == 4)
 
-      dg = [h(1) + 2 * h(2), 2 * h(2) + h(3)];
+      dg = [h(1) + 2 * h(2); 2 * h(2) + h(3)];
       ldg = h(2) - h(3);
       udg = h(2) - h(1);
       c(2:n-1,:) = spdiags ([[ldg(:);0], dg, [0; udg(:)]],

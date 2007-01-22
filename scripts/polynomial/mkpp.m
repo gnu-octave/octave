@@ -35,7 +35,7 @@
 ##
 ## @var{d} specifies the shape of the matrix @var{p} for all except the
 ## last dimension. If @var{d} is not specified it will be computed as
-## @code{round (rows (@var{p}) / (length (@var{x}) - 1)) instead.
+## @code{round (rows (@var{p}) / (length (@var{x}) - 1))} instead.
 ##
 ## @seealso{unmkpp, ppval, spline}
 ## @end deftypefn

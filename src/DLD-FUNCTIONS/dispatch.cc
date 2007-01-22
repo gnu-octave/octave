@@ -433,7 +433,7 @@ Replace the function @var{f} with a dispatch so that function @var{r}\n\
 is called when @var{f} is called with the first argument of the named\n\
 @var{type}. If the type is @var{any} then call @var{r} if no other type\n\
 matches.  The original function @var{f} is accessible using\n\
-@code{builtin (@var{f}, @dots{}).\n\
+@code{builtin (@var{f}, @dots{})}.\n\
 \n\
 If @var{r} is omitted, clear dispatch function associated with @var{type}.\n\
 \n\

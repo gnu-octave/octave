@@ -229,7 +229,7 @@
 ## costs of non-basic variables (in the case of dual simplex) are allowed
 ## to slightly violate their bounds, but not more than
 ## @code{relax*tolbnd} or @code{relax*toldj (thus, @code{relax} is a
-## percentage of @code{tolbnd} or @code{toldj}).
+## percentage of @code{tolbnd} or @code{toldj}}.
 ## 
 ## @item tolbnd (@code{LPX_K_TOLBND}, default: 10e-7)
 ## Relative tolerance used to check if the current basic solution is primal

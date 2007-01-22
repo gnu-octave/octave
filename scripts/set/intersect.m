@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} intersect(@var{a}, @var{b})
-## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] = } intersect (@var{a}, @var{b})
+## @deftypefn {Function File} {} intersect (@var{a}, @var{b})
+## @deftypefnx {Function File} {[@var{c}, @var{ia}, @var{ib}] =} intersect (@var{a}, @var{b})
 ##
 ## Return the elements in both @var{a} and @var{b}, sorted in ascending
 ## order. If @var{a} and @var{b} are both column vectors return a column

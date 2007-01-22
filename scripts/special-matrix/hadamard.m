@@ -35,7 +35,7 @@
 ## @code{kron (@var{Hm}, @var{Hn})} is a Hadamard matrix of size 
 ## @var{m}-by-@var{n}.
 ## @item
-## @code{Hn * Hn' == @var{n) * eye (@var{n})}.
+## @code{Hn * Hn' == @var{n} * eye (@var{n})}.
 ## @item
 ## The rows of @var{Hn} are orthogonal.
 ## @item

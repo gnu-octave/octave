@@ -26,7 +26,7 @@
 ##
 ## With two output arguments, returns the uniques primes @var{p} and
 ## their mulyiplicities. That is @code{prod (@var{p} .^ @var{n}) ==
-## @var{q}).
+## @var{q}}.
 ## 
 ## @end deftypefn
 

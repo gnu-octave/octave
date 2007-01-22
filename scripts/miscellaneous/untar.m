@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} untar (@var{tarfile}, @var{dir})
+## @deftypefn {Function File} {} untar (@var{tarfile}, @var{dir})
 ## Unpack the TAR archive @var{tarfile} to the directory @var{dir}.
 ## If @var{dir} is not specified, it defaults to the current directory.
 ## @seealso{unpack, bzip2, bunzip2, tar, gzip, gunzip, zip, unzip}

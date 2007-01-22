@@ -18,15 +18,15 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wavwrite(@var{filename}, @var{y})
+## @deftypefn {Function File} {} wavwrite (@var{filename}, @var{y})
 ## Write @var{y} to the canonical RIFF/WAVE sound file @var{filename}. A sample 
 ## rate of 8000 Hz and 16-bit samples are assumed. Each column of the data 
 ## represents a separate channel.
 ##
-## @deftypefnx {Function File} {} wavwrite(@var{filename}, @var{y}, @var{fs})
+## @deftypefnx {Function File} {} wavwrite (@var{filename}, @var{y}, @var{fs})
 ## Set the sample rate to @var{fs} Hz.
 ##
-## @deftypefnx {Function File} {} wavwrite(@var{filename}, @var{y}, @var{fs}, @var{bits})
+## @deftypefnx {Function File} {} wavwrite (@var{filename}, @var{y}, @var{fs}, @var{bits})
 ## Set the sample rate to @var{fs} Hz and resolution to @var{bits} bits.
 ## @seealso{wavread}
 ## @end deftypefn

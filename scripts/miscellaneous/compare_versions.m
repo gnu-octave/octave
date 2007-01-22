@@ -15,7 +15,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 ## -*- texinfo -*-
-## @deftypefn {Command} compare_versions(@var{v1}, @var{v2}, @var{operator})
+## @deftypefn {Function File} {} compare_versions (@var{v1}, @var{v2}, @var{operator})
 ## Compares to version strings using the given @var{operator}.
 ##
 ## This function assumes that versions @var{v1} and @var{v2} are

@@ -18,7 +18,7 @@
 ## 02110-1301 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} strappend (@var{strlist}, @var{suffix})
+## @deftypefn {Function File} {} strappend (@var{strlist}, @var{suffix})
 ## Append string @var{suffix} to each string in the list @var{strlist}.
 ## @end deftypefn
 

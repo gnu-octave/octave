@@ -26,7 +26,7 @@
 ##
 ## Two-dimensional interpolation. @var{x}, @var{y} and @var{z} describe a
 ## surface function. If @var{x} and @var{y} are vectors their length
-## must correspondent to the size of @var{z}. @var{x} and @var{Yy must be
+## must correspondent to the size of @var{z}. @var{x} and @var{Yy} must be
 ## monotonic. If they are matrices they  must have the @code{meshgrid} 
 ## format. 
 ##

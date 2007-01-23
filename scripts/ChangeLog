@@ -1,8 +1,8 @@
 2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
 
-	* strings/strncmp.m: Delete.
-
 	* strings/strncmpi.m: Use strncmp instead of calling strtrunc on args.
+
+	* strings/strncmp.m: Delete (we now have a built-in version).
 
 2007-01-22  Bob Weigel <rweigel@gmu.edu>
 

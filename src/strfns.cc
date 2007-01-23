@@ -238,10 +238,12 @@ This is just the opposite of the corresponding C library function.\n\
 	      std::string s = r == 0 ? std::string () : str[0];
 
 	      for (int i = 0; i < cell.length (); i++)
-		if (cell(i).is_string ())
-		  output(i) = (cell(i).string_value () == s);
-		else
-		  output(i) = false;
+		{
+		  if (cell(i).is_string ())
+		    output(i) = (cell(i).string_value () == s);
+		  else
+		    output(i) = false;
+		}
 
 	      retval = output;
 	    }
@@ -278,10 +280,12 @@ This is just the opposite of the corresponding C library function.\n\
 		  if (cell.length () == r)
 		    {
 		      for (int i = 0; i < r; i++)
-			if (cell(i).is_string ())
-			  output(i) = (str[i] == cell(i).string_value ());
-			else
-			  output(i) = false;
+			{
+			  if (cell(i).is_string ())
+			    output(i) = (str[i] == cell(i).string_value ());
+			  else
+			    output(i) = false;
+			}
 
 		      retval = output;
 		    }
@@ -418,6 +422,305 @@ This is just the opposite of the corresponding C library function.\n\
 %!assert (all (strcmp (y, {'foo'}) == [false; false]));
 %!assert (all (strcmp (y, {'foo'}) == [false; false]));
 */
+
+DEFUN (strncmp, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
+Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are the same,\n\
+and 0 otherwise.\n\
+\n\
+@example\n\
+@group\n\
+strncmp (\"abce\", \"abcd\", 3)\n\
+     @result{} 1\n\
+@end group\n\
+@end example\n\
+\n\
+If either @var{s1} or @var{s2} is a cell array of strings, then an array\n\
+of the same size is returned, containing the values described above for\n\
+every member of the cell array. The other argument may also be a cell\n\
+array of strings (of the same size or with only one element), char matrix\n\
+or character string.\n\
+\n\
+@example\n\
+@group\n\
+strncmp (\"abce\", {\"abcd\", \"bca\", \"abc\"}, 3)\n\
+     @result{} [1, 0, 1]\n\
+@end group\n\
+@end example\n\
+\n\
+@strong{Caution:} For compatibility with @sc{Matlab}, Octave's strncmp\n\
+function returns 1 if the character strings are equal, and 0 otherwise.\n\
+This is just the opposite of the corresponding C library function.\n\
+@seealso{strncmpi, strcmp, strcmpi}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 3)
+    {
+      bool s1_string = args(0).is_string ();
+      bool s1_cell = args(0).is_cell ();
+      bool s2_string = args(1).is_string ();
+      bool s2_cell = args(1).is_cell ();
+
+      // Match only first n strings.
+      int  n = args(2).int_value ();
+
+      if (n <= 0)
+	{
+	  error ("strncmp: N must be greater than 0");
+	  return retval;
+	}
+
+      if (s1_string && s2_string)
+	{
+	  // The only restriction here is that each string has equal or 
+	  // greater than n characters
+
+	  const dim_vector dv1 = args(0).dims ();
+	  const dim_vector dv2 = args(1).dims ();
+
+	  if (dv1.numel () >= n && dv2.numel () >= n)
+	    {
+	      // Follow Matlab in the sense that the first n characters of 
+	      // the two strings (in column major order) need to be the same.
+	      charNDArray s1 = args(0).char_array_value ();
+	      charNDArray s2 = args(1).char_array_value ();
+	      
+	      for (int i = 0; i < n; i++)
+		{
+		  if (s1(i) != s2(i))
+		    {
+		      retval = false;
+		      return retval;
+		    }
+		}
+
+	      retval = true;
+	    }
+	  else
+	    retval = false;
+	}
+      else if ((s1_string && s2_cell) || (s1_cell && s2_string))
+	{
+	  string_vector str;
+	  Cell cell;
+	  int r, c;
+
+	  if (s1_string)
+	    {
+	      str = args(0).all_strings ();
+	      r = args(0).rows ();
+	      c = args(0).columns ();
+	      cell = args(1).cell_value ();
+	    }
+	  else
+	    {
+	      str = args(1).all_strings ();
+	      r = args(1).rows ();
+	      c = args(1).columns ();
+	      cell = args(0).cell_value ();
+	    }
+
+	  if (r == 1)
+	    {
+	      // Broadcast the string.
+
+	      boolNDArray output (cell.dimensions);
+
+	      if (c < n)
+		{
+		  for (int i = 0; i < cell.length (); i++)
+		    output(i) = false;
+		}
+	      else
+		{
+		  for (int i = 0; i < cell.length (); i++)
+		    {
+		      if (cell(i).is_string ())
+			{
+			  const std::string str2 = cell(i).string_value ();
+
+			  if (str2.length() >= n) 
+			    {
+			      if (str2.compare (0, n, str[0], 0, n) == 0)
+				output(i) = true;
+			      else
+				output(i) = false;
+			    }
+			  else
+			    output(i) = false;
+			}
+		    }
+		}
+
+	      retval = output;
+	    }
+	  else if (r > 1)
+	    {
+	      if (cell.length () == 1)
+		{
+		  // Broadcast the cell.
+
+		  const dim_vector dv (r, 1);
+		  boolNDArray output (dv);
+
+		  if (cell(0).is_string () && c >= n)
+		    {
+		      const std::string str2 = cell(0).string_value ();
+		      
+		      if (str2.length () >= n)
+			{
+			  for (int i = 0; i < r; i++)
+			    {
+			      if (str[i].compare (0, n, str2, 0, n) == 0)
+				output(i) = true;
+			      else
+				output(i) = false;
+			    }
+			}
+		      else
+			{
+			  for (int i = 0; i < r; i++)
+			    output(i) = false;
+			}
+		    }
+		  else
+		    {
+		      for (int i = 0; i < r; i++)
+			output(i) = false;
+		    }
+
+		  retval = output;
+		}
+	      else
+		{
+		  // Must match in all dimensions.
+
+		  boolNDArray output (cell.dimensions);
+
+		  if (cell.numel () == r)
+		    {
+		      for (int i = 0; i < r; i++)
+			{
+			  output(i) = false;
+
+			  if (cell(i).is_string () && c >= n)
+			    {
+			      std::string str2 = cell(i).string_value ();
+
+			      if (str2.length () >= n
+				  && str2.compare (0, n, str[i], 0, n) == 0)
+				output(i) = true;
+			    }
+			}
+
+		      retval = output;
+		    }
+		  else
+		    {
+		      error ("strncmp: the number of rows of the string matrix must match the number of elements in the cell");
+		      return retval;
+		    }
+		}
+	    }
+	}
+      else if (s1_cell && s2_cell)
+	{
+	  Cell cell1;
+	  Cell cell2;
+
+	  int r1 = args(0).numel ();
+	  int r2;
+
+	  if (r1 == 1)
+	    {
+	      // Make the singleton cell2.
+
+	      cell1 = args(1).cell_value ();
+	      cell2 = args(0).cell_value ();
+	      r1 = cell1.length ();
+	      r2 = 1;
+	    }
+	  else
+	    {
+	      cell1 = args(0).cell_value ();
+	      cell2 = args(1).cell_value ();
+	      r2 = cell2.length ();
+	    }
+
+	  const dim_vector size1 = cell1.dimensions;
+	  const dim_vector size2 = cell2.dimensions;
+
+	  boolNDArray output (size1);
+
+	  if (r2 == 1)
+	    {
+	      // Broadcast cell2.
+
+	      if (! cell2(0).is_string ())
+		{
+		  for (int i = 0; i < r1; i++)
+		    output(i) = false;
+		}
+	      else
+		{
+		  const std::string str2 = cell2(0).string_value ();
+
+		  for (int i = 0; i < r1; i++)
+		    {
+		      if (cell1(i).is_string ())
+			{
+			  const std::string str1 = cell1(i).string_value ();
+
+			  if (str1.length () >= n && str2.length () >= n
+			      && str1.compare (0, n, str2, 0, n) == 0)
+			    output(i) = true;
+			  else
+			    output(i) = false;
+			}
+		      else
+			output(i) = false;
+		    }
+		}
+	    }
+	  else
+	    {
+	      if (size1 != size2)
+		{
+		  error ("strncmp: nonconformant cell arrays");
+		  return retval;
+		}
+
+	      for (int i = 0; i < r1; i++)
+		{
+		  if (cell1(i).is_string () && cell2(i).is_string ())
+		    {
+		      const std::string str1 = cell1(i).string_value ();
+		      const std::string str2 = cell2(i).string_value ();
+
+		      if (str1.length () >= n && str2.length () >= n
+			  && str1.compare (0, n, str2, 0, n) == 0)
+			output(i) = true;
+		      else
+			output(i) = false;
+		    }
+		  else
+		    output(i) = false;
+		}
+	    }
+
+	  retval = output;
+	}
+      else
+	retval = false;
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
 
 DEFUN (list_in_columns, args, ,
   "-*- texinfo -*-\n\

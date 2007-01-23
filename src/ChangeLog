@@ -1,3 +1,7 @@
+2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
+
+	* strfns.cc (Fstrncmp): New function.
+
 2007-01-17  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (help_from_file, help_from_symbol_table, help_from_list):

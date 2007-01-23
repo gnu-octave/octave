@@ -1,3 +1,9 @@
+2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
+
+	* strings/strncmp.m: Delete.
+
+	* strings/strncmpi.m: Use strncmp instead of calling strtrunc on args.
+
 2007-01-22  Bob Weigel <rweigel@gmu.edu>
 
 	* testfun/test.m: Check for all files in path, use first found.

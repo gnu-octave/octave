@@ -1,3 +1,8 @@
+2007-01-24  Alexander Barth  <abarth@marine.usf.edu>
+
+	* misc/f77-fcn.h (F77_CSTRING): Call OCTAVE_LOCAL_BUFFER with cs,
+	not F77_CHAR_ARG_USE (s).
+
 2006-11-11  John W. Eaton  <jwe@octave.org>
 
 	* Makerules.in (%.def : %.f): Use $(simple-move-if-change-rule) here.

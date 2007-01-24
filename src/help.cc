@@ -43,6 +43,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "cmd-edit.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "oct-env.h"
 #include "str-vec.h"
 
@@ -1078,6 +1079,18 @@ help_from_file (std::ostream& os, const std::string& nm, bool& symbol_found)
     {
       if (h.length () > 0)
 	{
+	  // Strip extension
+	  size_t l = file.length ();
+	  if (l > 2 && file.substr (l-2) == ".m")
+	    {
+	      std::string tmp = file.substr (0, l - 2);
+
+	      if (file_stat (tmp + ".oct"))
+		file = tmp + ".oct";
+	      else if (file_stat (tmp + ".mex"))
+		file = tmp + ".mex";
+	    }
+
 	  os << nm << " is the file " << file << "\n\n";
 
 	  display_help_text (os, h);

@@ -1,3 +1,20 @@
+2007-01-24  John W. Eaton  <jwe@octave.org>
+
+	* pt-assgn.cc (former_built_in_variables): New static data.
+	(maybe_warn_former_built_in_variable): New static function.
+	(tree_simple_assignment::tree_simple_assignment,
+	tree_multi_assignment::tree_multi_assignment):
+	Move definition here from pt-assign.h
+	Maybe warn about assignment to obsolete built-in variables.
+
+	* version.h (OCTAVE_STARTUP_MESSAGE): Mention "news" function.
+
+	* pt-stmt.cc (tree_statement::eval): Use dynamic_cast, not
+	static_cast.
+
+	* help.cc (help_from_file): Show .oct or .mex file name if one
+	exists in the same directory as the .m file.
+
 2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
 
 	* strfns.cc (Fstrncmp): New function.

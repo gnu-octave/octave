@@ -216,8 +216,7 @@ octave_make_cray_const_ftn_ch_dsc (const char *ptr_arg, unsigned long len_arg)
    Needs to include <cstring> and <vector>.  */
 
 #define F77_CSTRING(s, len, cs) \
- OCTAVE_LOCAL_BUFFER (char, F77_CHAR_ARG_USE (s), \
-		      F77_CHAR_ARG_LEN_USE (s, len) + 1); \
+ OCTAVE_LOCAL_BUFFER (char, cs, F77_CHAR_ARG_LEN_USE (s, len) + 1); \
  memcpy (cs, F77_CHAR_ARG_USE (s), F77_CHAR_ARG_LEN_USE (s, len)); \
  cs[F77_CHAR_ARG_LEN_USE(s, len)] = '\0' 
 

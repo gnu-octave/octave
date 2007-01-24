@@ -119,7 +119,7 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 
 	  if (expr->is_identifier ())
 	    {
-	      tree_identifier *id = static_cast<tree_identifier *> (expr);
+	      tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
 	      id->do_lookup (script_file_executed, true);
 

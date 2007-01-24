@@ -775,7 +775,8 @@ function copy_files (desc, packdir, bindir)
         endif
     else
         try
-            write_INDEX(desc, fullfile(packdir, "inst"), fINDEX);
+            write_INDEX(desc, fullfile(packdir, "inst"), fullfile(packinfo, "IND
+EX"));
         catch
             rm_rf(desc.dir);
             error(lasterr);

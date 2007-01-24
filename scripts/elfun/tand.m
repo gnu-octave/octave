@@ -18,7 +18,7 @@
 ## @deftypefn {Function File} {} tand (@var{x})
 ## Compute the tangent of an angle in degrees.  Returns zero for elements
 ## of for which @code{@var{x}/180} is an integer and @code{Inf} for elements
-## where @code{(@var{x}-90}/180} is an integer.
+## where @code{(@var{x}-90)/180} is an integer.
 ## @seealso{tan, cosd, sind, acosd, asind, atand}
 ## @end deftypefn
 

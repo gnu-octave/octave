@@ -1,3 +1,11 @@
+2007-01-24  David Bateman  <dbateman@free.fr>
+
+	* sparse/sprandsym.m: Make work for even values of N.
+
+2007-01-24  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/news.m: New file.
+
 2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
 
 	* strings/strncmpi.m: Use strncmp instead of calling strtrunc on args.
@@ -13,6 +21,9 @@
 	* polynomial/spline.m: Make DG a column instead of a row vector.
 
 2007-01-18  Søren Hauberg  <hauberg@gmail.com>
+
+	* pkg/pkg.m (copy_files): Call write_INDEX with correct target
+	file name.
 
 	* image/ind2rgb.m: Better input checking.  Return 3-d array if
 	nargout is 1.  Handle colormaps that have too few colors.

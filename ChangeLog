@@ -1,3 +1,7 @@
+2007-01-29  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* configure.in (*-*-msdosmsvc): Set NO_OCT_FILE_STRIP to true.
+
 2007-01-24  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (install): Install NEWS file.

@@ -153,11 +153,7 @@ find_nonzero_elem_idx (const T& nda, int nargout, octave_idx_type n_to_find,
 
   switch (nargout)
     {
-    case 0:
-    case 1:
-      retval(0) = idx;
-      break;
-
+    default:
     case 3:
       retval(2) = val;
       // Fall through!
@@ -167,8 +163,9 @@ find_nonzero_elem_idx (const T& nda, int nargout, octave_idx_type n_to_find,
       retval(0) = i_idx;
       break;
 
-    default:
-      panic_impossible ();
+    case 1:
+    case 0:
+      retval(0) = idx;
       break;
     }
 

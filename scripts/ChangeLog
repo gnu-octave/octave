@@ -1,5 +1,8 @@
 2007-01-24  David Bateman  <dbateman@free.fr>
 
+	* pkg/pkg.m: Install ChangeLog file if it exists.
+	Delete bare newline in string passed to write_INDEX.
+
 	* sparse/sprandsym.m: Make work for even values of N.
 
 2007-01-24  John W. Eaton  <jwe@octave.org>

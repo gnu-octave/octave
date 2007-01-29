@@ -1,3 +1,8 @@
+2007-01-29  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Don't panic if
+	nargout is greater than 3.
+
 2007-01-24  John W. Eaton  <jwe@octave.org>
 
 	* pt-assgn.cc (former_built_in_variables): New static data.

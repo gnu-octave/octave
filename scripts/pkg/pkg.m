@@ -765,6 +765,16 @@ function copy_files (desc, packdir, bindir)
        error("Couldn't copy COPYING: %s", output);
     endif
 
+    ## If the file ChangeLog exists, copy it
+    fChangeLog = fullfile(packdir, "ChangeLog");
+    if (exist(fChangeLog, "file"))
+        [status, output] = copyfile(fChangeLog, packinfo);
+        if (status != 1)
+            rm_rf(desc.dir);
+            error("Couldn't copy ChangeLog file: %s", output);
+        endif
+    endif
+
     ## Is there an INDEX file to copy or should we generate one?
     fINDEX = fullfile(packdir, "INDEX");
     if (exist(fINDEX, "file"))
@@ -775,8 +785,7 @@ function copy_files (desc, packdir, bindir)
         endif
     else
         try
-            write_INDEX(desc, fullfile(packdir, "inst"), fullfile(packinfo, "IND
-EX"));
+            write_INDEX(desc, fullfile(packdir, "inst"), fullfile(packinfo, "INDEX"));
         catch
             rm_rf(desc.dir);
             error(lasterr);

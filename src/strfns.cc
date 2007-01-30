@@ -444,7 +444,7 @@ or character string.\n\
 \n\
 @example\n\
 @group\n\
-strncmp (\"abce\", {\"abcd\", \"bca\", \"abc\"}, 3)\n\
+strncmp (\"abce\", @{\"abcd\", \"bca\", \"abc\"@}, 3)\n\
      @result{} [1, 0, 1]\n\
 @end group\n\
 @end example\n\

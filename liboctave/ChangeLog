@@ -1,3 +1,7 @@
+2007-01-29  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* oct-fftw.h: Sprinkle with OCTAVE_API as needed.
+
 2007-01-17  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* lo-sysdep.cc (octave_chdir): Handle directory names like "C:" on

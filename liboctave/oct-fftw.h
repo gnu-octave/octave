@@ -29,6 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "dim-vector.h"
 
 class
+OCTAVE_API
 octave_fftw_planner
 {
 public:
@@ -105,7 +106,7 @@ private:
 };
 
 // FIXME -- maybe octave_fftw_planner should be a singleton object?
-extern octave_fftw_planner fftw_planner;
+extern OCTAVE_API octave_fftw_planner fftw_planner;
 
 class
 octave_fftw

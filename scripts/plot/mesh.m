@@ -30,26 +30,22 @@
 
 ## Author: jwe
 
-function mesh (x, y, z)
-
-  __plot_globals__;
-
-  cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
+function h = mesh (x, y, z)
 
   if (nargin == 1)
     z = x;
     if (ismatrix (z))
-      [x, y] = meshgrid(0:columns(z)-1, 0:rows(z)-1);
+      [nr, nc] = size (z);
+      x = 1:nc;
+      y = (1:nr)';
     else
       error ("mesh: argument must be a matrix");
     endif
   elseif (nargin == 3)
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
-        x = repmat(x(:)', rows (z), 1);
-        y = repmat(y(:), 1, columns (z));
+        x = x(:)';
+        y = y(:);
       else
         msg = "mesh: rows (z) must be the same as length (y) and";
         msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
@@ -66,32 +62,24 @@ function mesh (x, y, z)
     print_usage ();
   endif
 
-  ## Show the mesh.
-  xlen = columns (z);
-  ylen = rows (z);
-  if (xlen == columns (x) && xlen == columns (y)
-      && ylen == rows (x) && ylen == rows (y))
-    len = 3 * xlen;
-    zz = zeros (ylen, len);
-    k = 1;
-    for i = 1:3:len
-      zz(:,i)   = x(:,k);
-      zz(:,i+1) = y(:,k);
-      zz(:,i+2) = z(:,k);
-      k++;
-    endfor
-    __gnuplot_raw__ ("set hidden3d;\n");
-    __gnuplot_raw__ ("set data style lines;\n");
-    __gnuplot_raw__ ("set surface;\n");
-    __gnuplot_raw__ ("set nocontour;\n");
-    __gnuplot_raw__ ("set nologscale;\n");
-    __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-    __gnuplot_raw__ ("set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
-    __gnuplot_raw__ ("set nocolorbox;\n");
-    __plt3__ (zz, true, "", "", "",
-	      sprintf ("%s line palette", gnuplot_command_with ()));
-  else
-    error ("mesh: x, y, and z must have same dimensions");
+  ## make a default line object, and make it the current axes for the
+  ## current figure.
+  ca = gca ();
+
+  s = __uiobject_surface_ctor__ (ca);
+
+  s.xdata = x;
+  s.ydata = y;
+  s.zdata = z;
+
+  set (ca, "view", [-37.5, 30]);
+
+  tmp = __uiobject_make_handle__ (s);
+
+  __uiobject_adopt__ (ca, tmp);
+
+  if (nargout > 0)
+    h = tmp;
   endif
 
 endfunction

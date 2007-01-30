@@ -38,6 +38,6 @@ function map = gray (number)
 
   gr = [0:(number-1)]';
 
-  map = [ gr, gr, gr ] / (number - 1);
+  map = colormap ([ gr, gr, gr ] / (number - 1));
 
 endfunction

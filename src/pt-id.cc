@@ -120,7 +120,12 @@ tree_identifier::link_to_global (void)
       if (! sym->is_linked_to_global ())
 	{
 	  if (sym->is_defined () && sym->is_variable ())
-	    warning ("local variable value may have changed to match global");
+	    {
+	      std::string nm = sym->name ();
+
+	      warning ("value of local variable `%s' may have changed to match global",
+		       nm.c_str ());
+	    }
 
 	  link_to_global_variable (sym);
 	}

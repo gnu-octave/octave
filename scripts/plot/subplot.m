@@ -59,11 +59,14 @@
 ## @ifinfo
 ## @display
 ## @group
+## @example
+##
 ## +-----+-----+-----+-----+
 ## |  1  |  2  |  3  |  4  |
 ## +-----+-----+-----+-----+
 ## |  5  |  6  |  7  |  8  |
 ## +-----+-----+-----+-----+
+## @end example
 ## @end group
 ## @end display
 ## @end ifinfo
@@ -73,11 +76,7 @@
 ## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
 ## Adapted-By: jwe
 
-function subplot (rows, columns, index)
-
-  __plot_globals__;
-
-  cf = __current_figure__;
+function h = subplot (rows, columns, index)
 
   if (nargin != 3 && nargin != 1)
     print_usage ();
@@ -112,48 +111,42 @@ function subplot (rows, columns, index)
     error ("subplot: columns,rows,index must be be positive");
   endif
 
-  if (columns*rows == 1)
+  xsize = 1 / columns;
+  ysize = 1 / rows;
 
-    ## switching to single plot ?
+  yp = fix ((index-1)/columns);
+  xp = index - yp*columns - 1;
 
-    oneplot ();
+  xorigin = xp * xsize;
+  yorigin = (rows - yp - 1) * ysize;
 
-    __multiplot_xn__(cf) = 1;
-    __multiplot_yn__(cf) = 1;
+  pos = [xorigin, yorigin, xsize, ysize];
 
-  else
+  cf = gcf ();
 
-    ## doing multiplot plots
+  set (cf, "nextplot", "add");
 
-    if (! __multiplot_mode__(cf)
-        || __multiplot_xn__(cf) != columns
-        || __multiplot_yn__(cf) != rows)
+  obj = get (cf);
 
-      if (__multiplot_xn__(cf) < columns
-	  || __multiplot_yn__(cf) < rows)
-	__plot_data__{cf}{columns,rows} = [];
+  found = false;
+  for child = obj.children
+    obj = get (child);
+    if (strcmp (obj.type, "axes"))
+      if (obj.outerposition == pos)
+	found = true;
+	tmp = child;
+	axes (h);
+	break;
       endif
-
-      __multiplot_mode__(cf) = true;
-      __multiplot_xn__(cf) = columns;
-      __multiplot_yn__(cf) = rows;
-      __multiplot_xsize__(cf) = 1 / columns;
-      __multiplot_ysize__(cf) = 1 / rows;
-
     endif
+  endfor
 
-    ## get the sub plot location
+  if (! found)
+    tmp = axes ("outerposition", pos);
+  endif
 
-    yp = fix ((index-1)/columns);
-    xp = index - yp*columns - 1;
-    __multiplot_xi__(cf) = ++xp;
-    __multiplot_yi__(cf) = ++yp;
-
-    ## set the origin
-
-    xo = (xp - 1.0) * __multiplot_xsize__(cf);
-    yo = (rows - yp) * __multiplot_ysize__(cf);
-
+  if (nargout > 0)
+    h = tmp;
   endif
 
 endfunction

@@ -33,21 +33,11 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
+function __errplot__ (fstr, h, a1, a2, a3, a4, a5, a6)
 
-  __plot_globals__;
-
-  cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
-
-  __setup_plot__ ("__gnuplot_plot__");
-
-  if (nargin < 3 || nargin > 7) # at least three data arguments needed
+  if (nargin < 4 || nargin > 8) # at least two data arguments needed
     print_usage ();
   endif
-
-  j = __plot_data_offset__{cf}(mxi,myi);
 
   [fmt, key] = __pltopt__ ("__errplot__", fstr);
 
@@ -55,39 +45,47 @@ function __errplot__ (fstr, a1, a2, a3, a4, a5, a6)
 
   for i = 1:nplots
     ifmt = fmt{1+mod(i-1,numel(fmt))};
-    switch (nargin - 1)
+    s = __uiobject_line_ctor__ (h);
+    switch (nargin - 2)
       case 2
-	tmp = [(1:len)', a1(:,i), a2(:,i)];
+	s.xdata = (1:len)';
+	s.ydata = a1(:,i);
+	s.ldata = a2(:,i);
+	s.udata = a2(:,i);
       case 3
-	tmp = [a1(:,i), a2(:,i), a3(:,i)];
+	s.xdata = a1(:,i);
+	s.ydata = a2(:,i);
+	s.ldata = a3(:,i);
+	s.udata = a3(:,i);
       case 4
+	s.xdata = a1(:,i);
+	s.ydata = a2(:,i);
+
 	if (index (ifmt, "boxxy") || index (ifmt, "xyerr"))
-	  tmp = [a1(:,i), a2(:,i), a3(:,i), a4(:,i)];
+	  s.xldata = a3(:,i);
+	  s.xudata = a3(:,i);
+	  s.ldata = a4(:,i);
+	  s.udata = a4(:,i);
 	elseif (index (ifmt, "xerr"))
-	  tmp = [a1(:,i), a2(:,i), a1(:,i)-a3(:,i), a1(:,i)+a4(:,i)];
+	  s.xldata = a3(:,i);
+	  s.xudata = a4(:,i);
 	else
-	  tmp = [a1(:,i), a2(:,i), a2(:,i)-a3(:,i), a2(:,i)+a4(:,i)];
+	  s.ldata = a3(:,i);
+	  s.udata = a4(:,i);
 	endif
       case 5
 	error ("error plot requires 2, 3, 4 or 6 columns");
-	## tmp = [a1(:,i), a2(:,i), a3(:,i), a4(:,i), a5(:,i)];
       case 6
-	tmp = [a1(:,i), a2(:,i), ...
-	       a1(:,i)-a3(:,i), a1(:,i)+a4(:,i), ...
-	       a2(:,i)-a5(:,i), a2(:,i)+a6(:,i)];
+	s.xdata = a1(:,i);
+	s.ydata = a2(:,i);
+	s.xldata = a3(:,i);
+	s.xudata = a4(:,i);
+	s.ldata = a5(:,i);
+	s.udata = a6(:,i);
     endswitch
 
-    __plot_data__{cf}{mxi,myi}{j}{i} = tmp;
-    __plot_data_type__{cf}{mxi,myi}(j) = 2;
-    __plot_fmtstr__{cf}{mxi,myi}{j}{i} = ifmt;
-    __plot_key_labels__{cf}{mxi,myi}{j} = key;
-    __plot_usingstr__{cf}{mxi,myi}{j}{i} = "";
-    __plot_withstr__{cf}{mxi,myi}{j}{i} = "";
+    __uiobject_adopt__ (h, __uiobject_make_handle__ (s));
 
   endfor
-
-  __plot_data_offset__{cf}(mxi,myi) = ++j;
-
-  __render_plot__ ();
 
 endfunction

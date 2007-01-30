@@ -18,12 +18,11 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} image (@var{x}, @var{zoom})
-## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{A}, @var{zoom})
+## @deftypefn {Function File} {} image (@var{img})
+## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
 ## Display a matrix as a color image.  The elements of @var{x} are indices
 ## into the current colormap and should have values between 1 and the
-## length of the colormap.  If @var{zoom} is omitted, the image will be
-## scaled to fit within 600x350 (to a max of 4).
+## length of the colormap.
 ##
 ## It first tries to use @code{gnuplot}, then @code{display} from 
 ## @code{ImageMagick}, then @code{xv}, and then @code{xloadimage}.
@@ -40,42 +39,53 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function image (x, y, A, zoom)
+function image (x, y, img)
+
+  newplot ();
 
   if (nargin == 0)
     ## Load Bobbie Jo Richardson (Born 3/16/94)
-    A = loadimage ("default.img");
-    zoom = 2;
+    img = loadimage ("default.img");
     x = y = [];
   elseif (nargin == 1)
-    A = x;
-    zoom = [];
+    img = x;
     x = y = [];
-  elseif (nargin == 2)
-    A = x;
-    zoom = y;
-    x = y = [];
-  elseif (nargin == 3)
-    zoom = [];
-  elseif (nargin > 4)
-    usage ("image (matrix, zoom) or image (x, y, matrix, zoom)");
+  elseif (nargin > 3)
+    print_usage ();
   endif
 
-  if (isempty (zoom))
-    ## Find an integer scale factor which sets the image to
-    ## approximately the size of the screen.
-    zoom = min ([350/rows(A), 600/columns(A), 4]);
-    if (zoom >= 1)
-      zoom = floor (zoom);
-    else
-      zoom = 1 / ceil (1/zoom);
-    endif
+  if (isempty (img))
+    error ("image: matrix is empty");
   endif
 
-  ## Get the image viewer.
-  [view_cmd, view_fcn, view_zoom] = image_viewer ();
+  ## Use the newly added mode of "plot" called "with image".
+  if (isempty (x))
+    x = [1, columns(img)];
+  endif
 
-  ## Show the image.
-  view_fcn (x, y, A, zoom*view_zoom, view_cmd);
+  if (isempty (y))
+    y = [1, rows(img)];
+  endif
+
+  ca = gca ();
+
+  s = __uiobject_image_ctor__ (ca);
+
+  s.cdata = img;
+
+  tmp = __uiobject_make_handle__ (s);
+
+  __uiobject_adopt__ (ca, tmp);
+
+  xlim = [x(1), x(end)];
+  ylim = [y(1), y(end)];
+
+  set (ca, "view", [0, 90], "xlim", xlim, "ylim", ylim);
+
+  if (nargout > 0)
+    h = tmp;
+  endif
+
+  drawnow ();
 
 endfunction

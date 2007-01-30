@@ -18,30 +18,30 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[data, fmtstr] =} __plt1__ (@var{x1}, @var{fmt})
+## @deftypefn {Function File} {} __plt1__ (@var{h}, @var{x1}, @var{fmt}, @var{key})
 ## @end deftypefn
 
 ## Author: jwe
 
-function [data, fmtstr, key] = __plt1__ (x1, fmt, keystr)
+function __plt1__ (h, x1, fmt, key)
 
-  if (nargin < 1 || nargin > 3 || nargout < 2 || nargout > 3)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
-  if (nargin < 2)
+  if (nargin < 3 || isempty (fmt))
     fmt = {""};
   endif
 
-  if (nargin < 3)
-    keystr = {""};
+  if (nargin < 4 || isempty (key))
+    key = {""};
   endif
 
   if (! iscellstr (fmt))
     error ("__plt1__: fmt must be a cell array of character strings");
   endif
 
-  if (! iscell (keystr))
+  if (! iscell (key))
     error ("__plt1__: fmt must be a cell array");
   endif
 
@@ -61,6 +61,6 @@ function [data, fmtstr, key] = __plt1__ (x1, fmt, keystr)
     x1 = (1:nr)';
   endif
 
-  [data, fmtstr, key] = __plt2__ (x1, x2, fmt, keystr);
+  __plt2__ (h, x1, x2, fmt, key);
 
 endfunction

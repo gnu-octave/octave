@@ -1,130 +1,85 @@
-## Copyright (C) 1996, 1997, 2002 John W. Eaton
+## Copyright (C) 2003 Shai Ayal
 ##
-## This file is part of Octave.
-##
-## Octave is free software; you can redistribute it and/or modify it
+## This program is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
 ## the Free Software Foundation; either version 2, or (at your option)
 ## any later version.
 ##
-## Octave is distributed in the hope that it will be useful, but
+## OctPlot is distributed in the hope that it will be useful, but
 ## WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with Octave; see the file COPYING.  If not, write to the Free
-## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-## 02110-1301, USA.
+## along with OctPlot; see the file COPYING.  If not, write to the Free
+## Software Foundation, 59 Temple Place - Suite 330, Boston, MA
+## 02111-1307, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} contour (@var{z}, @var{n})
-## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z}, @var{n})
-## Make a contour plot of the three-dimensional surface described by
-## @var{z}.  Someone needs to improve @code{gnuplot}'s contour routines
-## before this will be very useful.
-## @seealso{plot, mesh, meshgrid}
+## @deftypefn {Function File} {} {@var{c}} = contour (@var{x},@var{y},@var{z},@var{vv})
+## Compute isolines (countour lines) of the matrix @var{z}. 
+## parameters @var{x}, @var{y} and @var{vn} are optional.
+##
+## The return value @var{c} is a 2 by @var{n} matrix containing the
+## contour lines in the following format
+##
+## @example
+## @var{c} = [lev1 , x1 , x2 , ... , levn , x1 , x2 , ... 
+##      len1   , y1 , y2 , ... , lenn   , y1 , y2 , ...  ]
+## @end example
+##
+## @noindent
+## in which contour line @var{n} has a level (height) of @var{levn} and
+## length of @var{lenn}.
+## 
+## If @var{x} and @var{y} are omitted they are taken as the row/column 
+## index of @var{z}.  @var{vn} is either a scalar denoting the number of
+## lines to compute or a vector containing the values of the lines.  If
+## only one value is wanted, set @code{@var{vn} = [val, val]}.  If
+## @var{vn} is omitted it defaults to 10.
+##
+## @example
+## @var{c}=contourc (@var{x}, @var{y}, @var{z}, linspace(0,2*pi,10))
+## @end example
+## @seealso{contourc,line,plot}
 ## @end deftypefn
 
-## Author: jwe
 
-function contour (x, y, z, n)
+## Author: shaia
 
-  __plot_globals__;
+function retval = contour (varargin)
 
-  cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
+  [c, lev] = contourc (varargin{:});
 
-  if (nargin == 1 || nargin == 2)
-    z = x;
-    if (nargin == 1) 
-      n = 10;
-    else
-      n = y; 
-    endif
-    if (ismatrix (z))
-      __gnuplot_raw__ ("set nosurface;\n");
-      __gnuplot_raw__ ("set contour;\n");
-      __gnuplot_raw__ ("set cntrparam bspline;\n");
-      if (isscalar (n))
-	command = sprintf ("set cntrparam levels %d;\n", n);
-      elseif (isvector (n))
-	tmp = sprintf ("%f", n(1));
-	for i = 2:length (n)
-	  tmp = sprintf ("%s, %f", tmp, n(i));
-	endfor
-	command = sprintf ("set cntrparam levels discrete %s;\n", tmp);
-      else
-	error ("contour: levels must be a scalar or vector") ;
-      endif
-      __gnuplot_raw__ (command);
-      __gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
-      __plt3__ (z, true, "", "", "", [gnuplot_command_with, " l 1"]);
-    else
-      error ("contour: z of contour (z, levels) must be a matrix");
-    endif
-  elseif (nargin == 3 || nargin == 4)
-    if (nargin == 3)
-      n = 10;
-    endif
-    if (ismatrix (z))
-      size_msg = ["contour: columns(z) must be the same as length(x) and\n" \
-		  "rows(z) must be the same as length(y),\n" \
-		  "or x, y, and z must be matrices with the same size"];
-      if (isvector (x) && isvector (y))
-	xlen = length (x);
-	ylen = length (y);
-	if (xlen == columns (z) && ylen == rows (z))
-          if (rows (x) == 1)
-            x = x';
-          endif
-          len = 3 * ylen;
-          zz = zeros (xlen, len);
-          k = 1;
-          for i = 1:3:len
-            zz(:,i)   = x;
-            zz(:,i+1) = y(k) * ones (xlen, 1);
-            zz(:,i+2) = z(k,:)';
-            k++;
-          endfor
-	else
-          error (size_msg);
-	endif
-      else
-	z_size = size (z);
-	if (size_equal (z, x) && size_equal (z, y))
-	  nc = 3*z_size(1);
-	  zz = zeros (z_size(2), nc);
-	  zz(:,1:3:nc) = x';
-	  zz(:,2:3:nc) = y';
-	  zz(:,3:3:nc) = z';
-	else
-	  error (size_msg);
-	endif
-      endif
-      __gnuplot_raw__ ("set nosurface;\n");
-      __gnuplot_raw__ ("set contour;\n");
-      __gnuplot_raw__ ("set cntrparam bspline;\n");
-      if (isscalar (n))
-	command = sprintf ("set cntrparam levels %d;\n", n);
-      elseif (isvector (n))
-	tmp = sprintf ("%f", n(1));
-	for i = 2:length (n)
-	  tmp = sprintf ("%s, %f", tmp, n(i));
-	endfor
-	command = sprintf ("set cntrparam levels discrete %s;\n", tmp);
-      else
-	error ("contour: levels must be a scalar or vector") ;
-      endif
-      __gnuplot_raw__ (command);
-      __gnuplot_raw__ ("set view 0, 0, 1, 1;\n");
-      __plt3__ (zz, true, "", "", "", [gnuplot_command_with, " l 1"]);
-    else
-      error ("contour: x and y must be vectors and z must be a matrix");
-    endif
-  else
-    print_usage ();
+  cmap = get (gcf(), "colormap");
+  
+  levx = linspace (min (lev), max (lev), size (cmap, 1));
+
+  newplot ();
+
+  ## decode contourc output format
+  i1 = 1;
+  while (i1 < length (c))
+    clev = c(1,i1);
+    clen = c(2,i1);
+
+    ccr = interp1 (levx, cmap(:,1), clev);
+    ccg = interp1 (levx, cmap(:,2), clev);
+    ccb = interp1 (levx, cmap(:,3), clev);
+
+    ii = i1+1:i1+clen;
+    line (c(1,ii), c(2,ii), "color", [ccr, ccg, ccb, 1]);
+
+    i1 += c(2,i1)+1;
+  endwhile
+  
+  drawnow ();
+
+  ## folowing DM's suggestion to surpress output if none asked for
+  if (nargout > 0)
+    retval = c;
   endif
 
 endfunction
+
+

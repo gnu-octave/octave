@@ -33,24 +33,21 @@
 ## David Bateman <dbateman@free.fr>
 ## May 25, 2006
 
-function __plt3__ (x, parametric, usingstr, fmtstr, keystr, withstr)
+function __plt3__ (x, usingstr, fmt, key, withstr)
 
   if (nargin < 2)
-    parametric = false;
-  endif
-  if (nargin < 3)
     have_usingstr = false;
     usingstr = "";
   else
     have_usingstr = true;
   endif
-  if (nargin < 4)
-    fmtstr = "";
+  if (nargin < 3 || isempty (fmt))
+    fmt = "";
+  endif
+  if (nargin < 4 || isempty (key))
+    key = "";
   endif
   if (nargin < 5)
-    keystr = "";
-  endif
-  if (nargin < 6)
     withstr = "";
   endif
 

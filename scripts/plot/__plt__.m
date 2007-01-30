@@ -23,29 +23,20 @@
 
 ## Author: jwe
 
-function __plt__ (caller, varargin)
+function __plt__ (caller, h, varargin)
 
-  __plot_globals__;
+  nargs = nargin - 2;
 
-  cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
-
-  __setup_plot__ ("plot");
-
-  nargs = nargin ();
-
-  if (nargs > 1)
+  if (nargs > 0)
 
     k = 1;
-    j = __plot_data_offset__{cf}(mxi,myi);
 
     x_set = false;
     y_set = false;
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
-    while (--nargs > 0 || x_set)
+    while (nargs > 0 || x_set)
 
       if (nargs == 0)
 	## Force the last plot when input variables run out.
@@ -54,25 +45,15 @@ function __plt__ (caller, varargin)
 	next_arg = varargin{k++};
       endif
 
+      nargs--;
+
       if (ischar (next_arg) || iscellstr (next_arg))
 	if (x_set)
-	  [fmt, keystr] = __pltopt__ (caller, next_arg);
+	  [fmt, key] = __pltopt__ (caller, next_arg);
 	  if (y_set)
-	    [tdata, tfmtstr, key] = __plt2__ (x, y, fmt, keystr);
+	    __plt2__ (h, x, y, fmt, key);
 	  else
-	    [tdata, tfmtstr, key] = __plt1__ (x, fmt, keystr);
-	  endif
-	  if (! isempty (tdata))
-	    for i = 1:numel (tdata)
-	      __plot_usingstr__{cf}{mxi,myi}{j}{i} ...
-		  = __make_using_clause__ (tdata{i});
-	      __plot_withstr__{cf}{mxi,myi}{j}{i} = "";
-	    endfor
-	    __plot_data__{cf}{mxi,myi}{j} = tdata;
-	    __plot_data_type__{cf}{mxi,myi}(j) = 2;
-	    __plot_fmtstr__{cf}{mxi,myi}{j} = tfmtstr;
-	    __plot_key_labels__{cf}{mxi,myi}{j} = key;
-	    j++;
+	    __plt1__ (h, x, fmt, key);
 	  endif
 	  x_set = false;
 	  y_set = false;
@@ -81,20 +62,8 @@ function __plt__ (caller, varargin)
 	endif
       elseif (x_set)
 	if (y_set)
-	  [fmt, keystr] = __pltopt__ (caller, {""});
-	  [tdata, tfmtstr, key] = __plt2__ (x, y, fmt, keystr);
-	  if (! isempty (tdata))
-	    for i = 1:numel (tdata)
-	      __plot_usingstr__{cf}{mxi,myi}{j}{i} ...
-		  = __make_using_clause__ (tdata{i});
-	      __plot_withstr__{cf}{mxi,myi}{j}{i} = "";
-	    endfor
-	    __plot_data__{cf}{mxi,myi}{j} = tdata;
-	    __plot_data_type__{cf}{mxi,myi}(j) = 2;
-	    __plot_fmtstr__{cf}{mxi,myi}{j} = tfmtstr;
-	    __plot_key_labels__{cf}{mxi,myi}{j} = key;
-	    j++;
-	  endif
+	  [fmt, key] = __pltopt__ (caller, {""});
+	  __plt2__ (h, x, y, fmt, key);
 	  x = next_arg;
 	  y_set = false;
 	else
@@ -108,9 +77,7 @@ function __plt__ (caller, varargin)
 
     endwhile
 
-    __plot_data_offset__{cf}(mxi,myi) = j;
-
-    __render_plot__ ();
+    drawnow ();
 
   else
     msg = sprintf ("%s (y)\n", caller);

@@ -173,13 +173,11 @@
 
 function plot (varargin)
 
-  ## FIXME -- these plot states should really just be set
-  ## temporarily, probably inside an unwind_protect block, but there is
-  ## no way to determine their current values.
+  newplot ();
 
-  __gnuplot_raw__ ("set nologscale;\n");
-  __gnuplot_raw__ ("set nopolar;\n");
+  ## [h, varargin] = __plt_get_axis_arg__ ("plot", varargin{:});
+  h = gca ();
 
-  __plt__ ("plot", varargin{:});
+  __plt__ ("plot", h, varargin{:});
 
 endfunction

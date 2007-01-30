@@ -18,23 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[data, fmtstr] =} __plt2vm__ (@var{x}, @var{y}, @var{fmt})
+## @deftypefn {Function File} {} __plt2vm__ (@var{h}, @var{x}, @var{y}, @var{fmt}, @var{key})
 ## @end deftypefn
 
 ## Author: jwe
 
-function [data, fmtstr, key] = __plt2vm__ (x, y, fmt, keystr)
+function __plt2vm__ (h, x, y, fmt, key)
 
-  if (nargin < 2 || nargin > 4 || nargout < 2 || nargout > 3)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
-  if (nargin < 3 || isempty (fmt))
+  if (nargin < 4 || isempty (fmt))
     fmt = {""};
   endif
 
-  if (nargin < 4 || isempty (keystr))
-    keystr = {""};
+  if (nargin < 5 || isempty (key))
+    key = {""};
   endif
 
   [x_nr, x_nc] = size (x);
@@ -62,21 +62,17 @@ function [data, fmtstr, key] = __plt2vm__ (x, y, fmt, keystr)
     if (rows (fmt) == 1)
       fmt = repmat (fmt, y_nc, 1);
     endif
-    if (rows (keystr) == 1)
-      keystr = repmat (keystr, y_nc, 1);
+    if (rows (key) == 1)
+      key = repmat (key, y_nc, 1);
     endif
-    tmp = [x, y];
-    dtmp = cell (y_nc, 1);
-    ftmp = cell (y_nc, 1);
-    ktmp = cell (y_nc, 1);
     for i = 1:y_nc
-      dtmp{i} = tmp(:,[1,i+1]);
-      ftmp{i} = deblank (fmt{i});
-      ktmp{i} = deblank (keystr{i});
+      tkey = key{i};
+      if (! isempty (tkey))
+	set (h, "key", "on");
+      endif
+      ## FIXME -- need to handle labels and line format.
+      line (x, y(:,i), "keylabel", tkey);
     endfor
-    data = dtmp;
-    fmtstr = ftmp;
-    key = ktmp;
   else
     error ("__plt2vm__: arguments must be a matrices");
   endif

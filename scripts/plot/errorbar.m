@@ -111,14 +111,11 @@
 
 function errorbar (varargin)
 
-  if (nargin < 2)
-    print_usage ();
-  endif
+  newplot ();
 
-  __gnuplot_raw__ ("set nologscale x;\n");
-  __gnuplot_raw__ ("set nologscale y;\n");
-  __gnuplot_raw__ ("set nopolar;\n");
+  ## [h, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
+  h = gca ();
 
-  __errcomm__ ("errorbar", varargin{:});
+  __errcomm__ ("errorbar", h, varargin{:});
 
 endfunction

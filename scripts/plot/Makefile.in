@@ -20,14 +20,113 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES_M = \
+  __axis_label__.m \
+  __errcomm__.m \
+  __default_colormap__.m \
+  __errplot__.m \
+  __plr1__.m \
+  __plr2__.m \
+  __plt1__.m \
+  __plt2__.m \
+  __plt2mm__.m \
+  __plt2mv__.m \
+  __plt2ss__.m \
+  __plt2vm__.m \
+  __plt2vv__.m \
+  __plt3__.m \
+  __plt__.m \
+  __plt_get_axis_arg__.m \
+  __pltopt1__.m \
+  __pltopt__.m \
+  __uiobject_adopt__.m \
+  __uiobject_axes_ctor__.m \
+  __uiobject_axes_dtor__.m \
+  __uiobject_delete__.m \
+  __uiobject_draw_axes__.m \
+  __uiobject_draw_figure__.m \
+  __uiobject_figure_ctor__.m \
+  __uiobject_globals__.m \
+  __uiobject_image_ctor__.m \
+  __uiobject_line_ctor__.m \
+  __uiobject_root_figure_ctor__.m \
+  __uiobject_surface_ctor__.m \
+  __uiobject_text_ctor__.m \
+  axes.m \
+  axis.m \
+  bar.m \
+  box.m \
+  clf.m \
+  close.m \
+  closereq.m \
+  contour.m \
+  contourc.m \
+  drawnow.m \
+  errorbar.m \
+  figure.m \
+  fplot.m \
+  gca.m \
+  gcf.m \
+  grid.m \
+  hist.m \
+  hold.m \
+  isfigure.m \
+  ishandle.m \
+  ishold.m \
+  legend.m \
+  line.m \
+  loglog.m \
+  loglogerr.m \
+  mesh.m \
+  meshdom.m \
+  meshgrid.m \
+  ndgrid.m \
+  newplot.m \
+  orient.m \
+  plot.m \
+  plot3.m \
+  polar.m \
+  print.m \
+  replot.m \
+  semilogx.m \
+  semilogxerr.m \
+  semilogy.m \
+  semilogyerr.m \
+  shg.m \
+  sombrero.m \
+  stairs.m \
+  subplot.m \
+  text.m \
+  title.m \
+  view.m \
+  xlabel.m \
+  ylabel.m \
+  zlabel.m
 
-DISTFILES = Makefile.in $(SOURCES)
+SOURCES_IN = \
+  __uiobject_alloc__.in \
+  __uiobject_axes_init__.in \
+  __uiobject_figures__.in \
+  __uiobject_free__.in \
+  __uiobject_get_handle__.in \
+  __uiobject_grow_list__.in \
+  __uiobject_handle2idx__.in \
+  __uiobject_init_figure__.in \
+  __uiobject_init_root_figure__.in \
+  __uiobject_make_handle__.in \
+  get.in \
+  set.in
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+GEN_M = $(SOURCES_IN:.in=.m)
+
+SOURCES = $(SOURCES_M) $(SOURCES_IN)
+
+DISTFILES = Makefile.in include-globals.awk $(SOURCES)
+
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES_M)) $(GEN_M)
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
-all: PKG_ADD
+all: $(GEN_M) PKG_ADD
 .PHONY: all
 
 install install-strip:
@@ -65,3 +164,7 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/plot
 .PHONY: dist
+
+$(GEN_M) : %.m : %.in __uiobject_globals__.m
+	$(AWK) -f $(srcdir)/include-globals.awk file=$(srcdir)/__uiobject_globals__.m $< > $@-t
+	$(simple-move-if-change-rule)

@@ -1,4 +1,4 @@
-## Copyright (C) 2006 John W. Eaton
+## Copyright (C) 2005 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -17,14 +17,24 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-function usingstr = __make_using_clause__ (x)
-  cols = columns (x);
-  if (cols > 0)
-    usingstr = strcat (gnuplot_command_using, " ($1)");
-    for k = 2:cols
-      usingstr = sprintf ("%s:($%d)", usingstr, k);
-    endfor
+## -*- texinfo -*-
+## @deftypefn {Function File} {} gcf ()
+## Return the current figure handle.
+## @end deftypefn
+
+## Author: jwe, Bill Denney
+
+function h = gcf ()
+
+  if (nargin == 0)
+    h = get (0, "currentfigure");
+    if (isempty (h) || h == 0)
+      ## We only have a root figure object, so create a new figure
+      ## object and make it the current figure.
+      h = figure (1);
+    endif
   else
-    usingstr = "";
+    print_usage ();
   endif
+
 endfunction

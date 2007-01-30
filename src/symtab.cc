@@ -249,7 +249,7 @@ symbol_record::clear (void)
 {
   if (is_defined ())
     {
-      if (! tagged_static)
+      if (! (tagged_static || is_eternal ()))
 	{
 	  while (! aliases_to_clear.empty ())
 	    {

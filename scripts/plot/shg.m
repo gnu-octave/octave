@@ -34,6 +34,6 @@ function shg ()
     warning ("shg: ignoring extra arguments");
   endif
 
-  replot ();
+  drawnow ();
 
 endfunction

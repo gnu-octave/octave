@@ -101,10 +101,6 @@
 
 function print (varargin)
 
-  __plot_globals__;
-
-  mpmode = __multiplot_mode__(__current_figure__);
-
   orientation = orient ();
   use_color = 0; # 0=default, -1=mono, +1=color
   force_solid = 0; # 0=default, -1=dashed, +1=solid
@@ -301,7 +297,7 @@ function print (varargin)
     new_terminal = dev;
   endif
 
-  __render_plot__ (new_terminal, name);
+  drawnow (new_terminal, name);
 
   if (! isempty (convertname))
     command = sprintf ("convert '%s' '%s'", name, convertname);

@@ -25,23 +25,8 @@
 
 function retval = ishold ()
 
-  global __current_figure__;
-  global __hold_state__;
-
-  if (isempty (__current_figure__))
-    __current_figure__ = 1;
-  endif
-
-  if (isempty (__hold_state__))
-    __hold_state__ = false;
-  endif
-
-  if (length (__hold_state__) < __current_figure__)
-    __hold_state__(__current_figure__) = false;
-  endif
-
   if (nargin == 0)
-    retval = __hold_state__(__current_figure__);
+    retval = strcmp (get (gca (), "nextplot"), "add");
   else
     print_usage ();
   endif

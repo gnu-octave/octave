@@ -23,12 +23,8 @@ endfunction
 ## print since print() resets output to stdout (unfortunately, gnpulot
 ## can't pop output as it can the terminal type).
 function bury_output ()
-  automatic_replot (0);
-  __gnuplot_set__ term dumb
-  [status, dummy] = fileattrib ("/dev/null");
-  if (status)
-    __gnuplot_raw__ ("set output \"/dev/null\"\n");
-  endif
+  f = figure (1);
+  set (f, "visible", "off");
 endfunction
 
 function gplotimages (nm, typ)
@@ -209,8 +205,8 @@ function femimages (nm,typ)
 
     sz = size(xelems,2);
 
-    __gnuplot_raw__ ("set view 80,10;\n")
     plot3 (xelems, yelems, velems);
+    view (10, 10);
     print(strcat(nm,".",typ),strcat("-d",typ))
     bury_output ();
   endif
@@ -236,28 +232,9 @@ function sombreroimage (nm, typ)
     [xx, yy] = meshgrid (x, y);
     r = sqrt (xx .^ 2 + yy .^ 2) + eps;
     z = sin (r) ./ r;
-    xlen = length (x);
-    ylen = length (y);
-    len = 3 * xlen;
-    zz = zeros (ylen, len);
-    k = 1;
-    for i = 1:3:len
-      zz(:,i)   = x(k) * ones (ylen, 1);
-      zz(:,i+1) = y;
-      zz(:,i+2) = z(:,k);
-      k++;
-    endfor
     unwind_protect
-      __gnuplot_raw__ ("set hidden3d;\n");
-      __gnuplot_raw__ ("set data style lines;\n");
-      __gnuplot_raw__ ("set surface;\n");
-      __gnuplot_raw__ ("set nocontour;\n");
-      __gnuplot_raw__ ("set nologscale;\n");
-      __gnuplot_raw__ ("set view 60, 30, 1, 1;\n");
-      __gnuplot_raw__ ("set nokey;\n");
-      __gnuplot_raw__ ("set nocolorbox;\n");
-      __gnuplot_raw__ ("set title \"Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.\";\n");
-      __plt3__ (zz, true, "", "", "", "");
+      mesh (x, y, z);
+      title ("Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.");
     unwind_protect_cleanup
       print (strcat (nm, ".", typ), strcat ("-d", typ));
       bury_output ();

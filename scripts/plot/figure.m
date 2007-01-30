@@ -19,39 +19,45 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} figure (@var{n})
-## Set the current plot window to plot window @var{n}.  This function
-## currently requires X11 and a version of gnuplot that supports multiple
-## frames.  If @var{n} is not specified, the next available window
-## number is chosen.
+## Set the current plot window to plot window @var{n}.  If @var{n} is
+## not specified, the next available window number is chosen.
 ## @end deftypefn
 
-## Author: jwe
+## Author: jwe, Bill Denney
 
-function f = figure (n)
+function h = figure (varargin)
 
-  __plot_globals__;
+  nargs = nargin;
 
-  static figure_list = create_set (0);
-  static figure_called = 0;
-
-  if (nargin == 0)
-    f = max (figure_list) + 1;
-  else
-    f = n;
+  if (nargs == 0)
+    f = __uiobject_init_figure__ ();
+  elseif (mod (nargs, 2) == 1)
+    tmp = varargin{1};
+    if (ishandle (tmp) && strcmp (get (tmp, "type"), "figure"))
+      f = tmp;
+      varargin(1) = [];
+      nargs--;
+    elseif (isnumeric (tmp) && tmp > 0 && round (tmp) == tmp)
+      f = tmp;
+      __uiobject_init_figure__ (f);
+      varargin(1) = [];
+      nargs--;
+    else
+      error ("figure: expecting figure handle or figure number");
+    endif
   endif
 
-  if (nargin < 2)
-    if (isnumeric (f) && f > 0 && round (f) == f)
-      __current_figure__ = f;
-    else
-      error ("figure: expecting positive integer");
+  if (nargout > 0)
+    h = f;
+  endif
+
+  if (rem (nargs, 2) == 0)
+    if (nargs > 0)
+      set (f, varargin{:});
     endif
-    figure_list = union (figure_list, f);
-  elseif (rem (nargin, 2) == 0)
-    if (! figure_called)
-      figure_called = 1;
-      warning ("figure: setting figure properties is unsupported");
-    endif
+    __uiobject_adopt__ (0, f);
+    set (0, "currentfigure", f);
+    drawnow ();
   else
     print_usage ();
   endif

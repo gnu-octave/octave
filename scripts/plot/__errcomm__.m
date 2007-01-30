@@ -28,62 +28,54 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function __errcomm__ (caller, varargin)
+function __errcomm__ (caller, h, varargin)
 
-  if (nargin < 3)
-    usage ("%s (x, y, dy, \"fmt\", ...)", caller);
+  if (nargin < 4)
+    print_usage ();
   endif
 
   nargs = length (varargin);
-  save_hold = ishold;
-  unwind_protect
-    if (! ishold)
-      clg
+
+  k = 1;
+  data = cell(6,1);
+  while (k <= nargs)
+    a = varargin{k++};
+    if (isvector (a))
+      a = a(:);
+    elseif (ismatrix (a))
+      ;
+    else
+      usage ("%s (...)", caller);
     endif
-    hold on;
-    k = 1;
-    data = cell(6,1);
+    sz = size (a);
+    ndata = 1;
+    data{ndata} = a;
     while (k <= nargs)
       a = varargin{k++};
-      if (isvector (a))
-        a = a(:);
+      if (ischar (a) || iscellstr (a))
+	__errplot__ (a, h, data{1:ndata});
+	break;
+      elseif (isvector (a))
+	a = a(:);
       elseif (ismatrix (a))
-        ;
+	;
       else
-        usage ("%s (...)", caller);
+	error ("wrong argument types");
       endif
-      sz = size (a);
-      ndata = 1;
-      data{ndata} = a;
-      while (k <= nargs)
-	a = varargin{k++};
-	if (ischar (a) || iscellstr (a))
-	  __errplot__ (a, data{1:ndata});
-	  break;
-	elseif (isvector (a))
-	  a = a(:);
-	elseif (ismatrix (a))
-	  ;
-	else
-	  error ("wrong argument types");
-	endif
-	if (size (a) != sz)
-	  error ("argument sizes do not match");
-	endif
-	data{++ndata} = a;
-	if (ndata > 6)
-	  error ("too many arguments to a plot");
-	endif
-      endwhile
+      if (size (a) != sz)
+	error ("argument sizes do not match");
+      endif
+      data{++ndata} = a;
+      if (ndata > 6)
+	error ("too many arguments to a plot");
+      endif
     endwhile
+  endwhile
 
-    if (! (ischar (a) || iscellstr (a)))
-      __errplot__ ("~", data{1:ndata});
-    endif
-  unwind_protect_cleanup
-    if (! save_hold)
-      hold off;
-    endif
-  end_unwind_protect
+  if (! (ischar (a) || iscellstr (a)))
+    __errplot__ ("~", h, data{1:ndata});
+  endif
+
+  drawnow ();
 
 endfunction

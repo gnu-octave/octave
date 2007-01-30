@@ -18,30 +18,30 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[data, fmtstr] =} __plt2__ (@var{x1}, @var{x2}, @var{fmt})
+## @deftypefn {Function File} {} __plt2__ (@var{h}, @var{x1}, @var{x2}, @var{fmt}, @var{key})
 ## @end deftypefn
 
 ## Author: jwe
 
-function [data, fmtstr, key] = __plt2__ (x1, x2, fmt, keystr)
+function __plt2__ (h, x1, x2, fmt, key)
 
-  if (nargin < 2 || nargin > 4 || nargout < 2 || nargout > 3)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
-  if (nargin < 3)
+  if (nargin < 4 || isempty (fmt))
     fmt = {""};
   endif
 
-  if (nargin < 4)
-    keystr = {""};
+  if (nargin < 5 || isempty (key))
+    key = {""};
   endif
 
   if (! iscellstr (fmt))
     error ("__plt1__: fmt must be a cell array of character strings");
   endif
 
-  if (! iscell (keystr))
+  if (! iscell (key))
     error ("__plt1__: fmt must be a cell array");
   endif
 
@@ -55,30 +55,29 @@ function [data, fmtstr, key] = __plt2__ (x1, x2, fmt, keystr)
 
   if (isscalar (x1))
     if (isscalar (x2))
-      [data, fmtstr, key] = __plt2ss__ (x1, x2, fmt, keystr);
+      __plt2ss__ (h, x1, x2, fmt, key);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
     if (isvector (x2))
-      [data, fmtstr, key] = __plt2vv__ (x1, x2, fmt, keystr);
+      __plt2vv__ (h, x1, x2, fmt, key);
     elseif (ismatrix (x2))
-      [data, fmtstr, key] = __plt2vm__ (x1, x2, fmt, keystr);
+      __plt2vm__ (h, x1, x2, fmt, key);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (ismatrix (x1))
     if (isvector (x2))
-      [data, fmtstr, key] = __plt2mv__ (x1, x2, fmt, keystr);
+      __plt2mv__ (h, x1, x2, fmt, key);
     elseif (ismatrix (x2))
-      [data, fmtstr, key] = __plt2mm__ (x1, x2, fmt, keystr);
+      __plt2mm__ (h, x1, x2, fmt, key);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isempty (x1) && isempty (x2))
-    data = {};
-    fmtstr = {};
-    key = {};
+    ## FIXME -- should we do nothing, or should we create a line object
+    ## with empty xdata and ydata properties?
   else
     error ("__plt2__: invalid data for plotting");
   endif

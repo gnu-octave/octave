@@ -51,6 +51,6 @@ function map = ocean (number)
 
   b = [0:(number-1)]';
 
-  map = [ r, g, b ] / (number - 1);
+  map = colormap ([ r, g, b ] / (number - 1));
 
 endfunction

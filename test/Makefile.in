@@ -20,8 +20,6 @@ DISTFILES = ChangeLog Makefile.in build_sparse_tests.sh fntests.m $(SOURCES)
 
 OCTAVE_BINARY = ../src/octave
 
-OCTAVE_SCRIPT_PATH = .//:$(TOPDIR)/src//:$(srcdir):$(srcdir)/../scripts//
-
 ifeq ($(SHARED_LIBS), true)
   OCTAVE_LD_LIBRARY_PATH = `pwd`/../src:`pwd`/../liboctave:`pwd`/../libcruft
   ifeq ($(@library_path_var@),)

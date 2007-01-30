@@ -18,17 +18,24 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} clf
-## Clear the plot window and any titles or axis labels.  This function
-## is equivalent to @code{clearplot}.
+## @deftypefn {Function File} {} clf ()
+## Clear the current figure.
 ## @end deftypefn
+
+## Author: jwe
 
 function clf ()
 
-  __clear_plot_window__ ();
-
-  hold ("off");
-
-  __init_plot_vars__ ();
+  if (nargin == 0)
+    f = gcf ();
+    obj = get (f);
+    for child = obj.children
+      delete (child);
+    endfor
+    set (f, "currentaxes", []);
+    drawnow ();
+  else
+    print_usage ();
+  endif
 
 endfunction

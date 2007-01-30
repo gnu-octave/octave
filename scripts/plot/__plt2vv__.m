@@ -18,31 +18,31 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[data, fmtstr] =} __plt2vv__ (@var{x}, @var{y}, @var{fmt})
+## @deftypefn {Function File} {} __plt2vv__ (@var{h}, @var{x}, @var{y}, @var{fmt}, @var{key})
 ## @end deftypefn
 
 ## Author: jwe
 
-function [data, fmtstr, key] = __plt2vv__ (x, y, fmt, keystr)
+function __plt2vv__ (h, x, y, fmt, key)
 
-  if (nargin < 2 || nargin > 4 || nargout < 2 || nargout > 3)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
-  if (nargin < 3)
+  if (nargin < 4 || isempty (fmt))
     fmt = {""};
   endif
 
-  if (nargin < 4)
-    keystr = {""};
+  if (nargin < 5 || isempty (key))
+    key = {""};
   endif
 
   if (rows (fmt) > 1)
     fmt = fmt(1);
   endif
 
-  if (rows (keystr) > 1)
-    keystr = keystr(1);
+  if (rows (key) > 1)
+    key = key(1);
   endif
 
   [x_nr, x_nc] = size (x);
@@ -62,12 +62,15 @@ function [data, fmtstr, key] = __plt2vv__ (x, y, fmt, keystr)
     y_nc = tmp;
   endif
 
-  if (x_nr != y_nr)
+  if (x_nr == y_nr)
+    key = key{1};
+    if (! isempty (key))
+      set (h, "key", "on");
+    endif
+    ## FIXME -- need to handle labels and line format.
+    line (x, y, "keylabel", key);
+  else
     error ("__plt2vv__: vector lengths must match");
   endif
-
-  data = {[x, y]};
-  fmtstr = fmt;
-  key = keystr;
 
 endfunction

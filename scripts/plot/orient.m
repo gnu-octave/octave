@@ -29,15 +29,24 @@
 
 ## PKG_ADD: mark_as_command orient
 
-function retval = orient (orientation)
+function retval = orient (varargin)
 
-  static __print_orientation__ = "landscape";
+  nargs = nargin;
 
-  if (nargin == 0)
-    retval = __print_orientation__;
+  if (nargs > 0 && ishandle (varargin{1}))
+    cf = varargin{1};
+    varargin(1) = [];
+    nargs--;
+  else
+    cf = gcf ();
+  endif
+
+  if (nargs == 0)
+    retval = get (cf, "paperorientation");
   elseif (nargin == 1)
+    orientation = varargin{1};
     if (strcmp (orientation, "landscape") || strcmp (orientation, "portrait"))
-      __print_orientation__ = orientation;
+      set (cf, "paperorientation", orientation)
     else
       error ("orient: unknown orientation");
     endif
@@ -47,10 +56,10 @@ function retval = orient (orientation)
 
 endfunction
 
-%!assert(orient,"landscape") # default
-%!test orient('portrait')
-%!assert(orient,"portrait")  # change to portrait
+%!assert(orient,"portrait") # default
 %!test orient('landscape')
 %!assert(orient,"landscape") # change to landscape
+%!test orient('portrait')
+%!assert(orient,"portrait")  # change to portrait
 %!fail("orient('nobody')","unknown orientation")
-%!assert(orient,"landscape") # errors don't change the state
+%!assert(orient,"portrait") # errors don't change the state

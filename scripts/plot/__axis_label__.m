@@ -24,30 +24,21 @@
 
 ## Author: jwe
 
-function h = __axis_label__ (caller, text)
+function retval = __axis_label__ (caller, txt)
 
-  if (nargin == 0)
-    print_usage ();
-  elseif (nargin == 2)
-    if (ischar (text))
-      __gnuplot_raw__ (sprintf ("set %s \"%s\";\n", caller,
-				undo_string_escapes (text)));
-      if (automatic_replot)
-	replot ();
+  ## If we have an even number of arguments, they should be
+  ## property-value pirs.
+
+  if (nargin == 2)
+    if (ischar (txt))
+      ca = gca ();
+      set (ca, caller, txt);
+      if (nargout > 0)
+	retval = get (ca, caller);
       endif
-    else
-      error ("%s: text must be a string", caller);
     endif
   else
-    usage ("%s (text)", caller);
-  endif
-
-  ## FIXME -- eventually, we will return a graphics handle.  For
-  ## now, return something, so that calls that expect a handle won't
-  ## fail (at least immediately).
-
-  if (nargout > 0)
-    h = -1;
+    print_usage ();
   endif
 
 endfunction

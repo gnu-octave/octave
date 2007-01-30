@@ -18,18 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} delete (file)
-## Delete the named file.  Delete is a wrapper for @code{unlink}.
+## @deftypefn {Function File} {} delete (@var{file})
+## @deftypefnx {Function File} {} delete (@var{h})
+## Delete the named file or figure handle.
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command delete
 
 ## Author: jwe
 
-function delete (file)
+function delete (arg)
 
   if (nargin == 1)
-    unlink (file);
+    if (ischar (arg))
+      unlink (arg);
+    else
+      __uiobject_delete__ (arg);
+    endif
   else
     print_usage ();
   endif

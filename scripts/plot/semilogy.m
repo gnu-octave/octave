@@ -30,14 +30,13 @@
 
 function semilogy (varargin)
 
-  ## FIXME -- these plot states should really just be set
-  ## temporarily, probably inside an unwind_protect block, but there is
-  ## no way to determine their current values.
+  newplot ();
 
-  __gnuplot_raw__ ("set nologscale x;\n");
-  __gnuplot_raw__ ("set logscale y;\n");
-  __gnuplot_raw__ ("set nopolar;\n");
+  ## [h, varargin] = __plt_get_axis_arg__ ("semilogy", varargin{:});
+  h = gca ();
 
-  __plt__ ("semilogy", varargin{:});
+  set (h, "yscale", "log");
+
+  __plt__ ("semilogy", h, varargin{:});
 
 endfunction

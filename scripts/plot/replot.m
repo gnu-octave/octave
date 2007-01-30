@@ -27,7 +27,7 @@
 function replot ()
   
   if (nargin == 0)
-    __render_plot__ ();
+    drawnow ();
   else
     print_usage ();
   endif

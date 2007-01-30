@@ -72,25 +72,26 @@
 
 function legend (varargin)
 
-  __plot_globals__;
-
-  cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
-
   nargs = nargin;
+
+  ca = gca ();
 
   if (nargs > 0)
     pos = varargin{nargs};
     if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
       if (pos >= -3 && pos <= 4)
-	__plot_key_properties__{cf}{mxi,myi}.position = pos;
+	set (ca, "keypos", pos);
 	nargs--;
       else
 	error ("legend: invalid position specified");
       endif
     endif
   endif
+
+  kids = get (ca, "children");
+  nkids = numel (kids);
+  k = 1;
+  turn_on_legend = false;
 
   if (nargs == 1)
     arg = varargin{1};
@@ -99,19 +100,30 @@ function legend (varargin)
 	str = tolower (deblank (arg));
 	switch (str)
 	  case {"off", "hide"}
-	    __plot_key_properties__{cf}{mxi,myi}.visible = false;
+	    set (ca, "key", "off");
 	  case "show"
-	    __plot_key_properties__{cf}{mxi,myi}.visible = true;
+	    set (ca, "key", "on");
 	  case "toggle"
-	    __plot_key_properties__{cf}{mxi,myi}.visible ...
-	      = ! __plot_key_properties__{cf}{mxi,myi}.visible;
+	    val = get (ca, "key");
+	    if (strcmp (val, "on"))
+	      set (ca, "key", "off");
+	    else
+	      set (ca, "key", "on");
+	    endif
 	  case "boxon"
-	    __plot_key_properties__{cf}{mxi,myi}.visible = true;
-	    __plot_key_properties__{cf}{mxi,myi}.box = true;
+	    set (ca, "key", "on", "keybox", "on");
 	  case "boxoff"
-	    __plot_key_properties__{cf}{mxi,myi}.box = false;
+	    set (ca, "keybox", "off");
 	  otherwise
-	    __plot_key_labels__{cf}{mxi,myi}{1} = arg;
+	    while (k <= nkids && ! strcmp (get (kids(k), "type"), "line"))
+	      k++;
+	    endwhile
+	    if (k <= nkids)
+	      turn_on_legend = true;
+	      set (kids(k), "keylabel", arg);
+	    else
+	      warning ("legend: ignoring extra labels");
+	    endif
 	endswitch
 	nargs--;
       else
@@ -133,14 +145,23 @@ function legend (varargin)
   for i = 1:nargs
     arg = varargin{i};
     if (ischar (arg))
-      __plot_key_labels__{cf}{mxi,myi}{i} = arg;
+      while (k <= nkids && ! strcmp (get (kids(k), "type"), "line"))
+	k++;
+      endwhile
+      if (k <= nkids)
+	set (kids(k), "keylabel", arg);
+	turn_on_legend = true;
+      elseif (! warned)
+	warned = true;
+	warning ("legend: ignoring extra labels");
+      endif
     else
       error ("legend: expecting argument to be a character string");
     endif
   endfor
 
-  if (automatic_replot)
-    replot ();
+  if (turn_on_legend)
+    set (ca, "key", "on");
   endif
 
 endfunction

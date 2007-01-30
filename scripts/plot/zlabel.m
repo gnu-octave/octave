@@ -22,15 +22,9 @@
 ## See xlabel.
 ## @end deftypefn
 
-## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
-## Created: 3 July 95
-## Adapted-By: jwe
+## Author: jwe
 
 function h = zlabel (varargin)
-
-  ## FIXME -- eventually, we will return a graphics handle.  For
-  ## now, return something, so that calls that expect a handle won't
-  ## fail (at least immediately).
 
   if (nargout > 0)
     h = __axis_label__ ("zlabel", varargin{:});

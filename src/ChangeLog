@@ -1,3 +1,4 @@
+<<<<<<< ChangeLog
 2007-01-29  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/find.cc (find_nonzero_elem_idx): Don't panic if
@@ -194,6 +195,40 @@
 	OCTAVE_VALUE_INT_MATRIX_T::comlex_array_value):
 	Use octave_idx_type instead of int for indexing.
 
+=======
+2007-01-26  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__contourc__.cc: New function.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
+2007-01-25  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (Vdrawnow_requested): New static variable.
+	(F__request_drawnow__): New function.
+	(interactive_input): New function.  Update Vlast_prompt_time here.
+	(octave_gets, get_user_input, octave_yes_or_no):
+	Call interactive_input instead of gnu_readline.
+
+	* symtab.h (symbol_record::eternal): New data member.
+	(symbol_record::symbol_record): Initialize it.
+	(symbol_record::make_eternal, symbol_record::is_eternal):
+	Don't forward to symbol_def functions.
+	(symbol_record::symbol_def::make_eternal,
+	symbol_record::symbol_def::is_eternal): Delete.
+	(symbol_record::symbol_def::eternal): Delete data member.
+	(symbol_record::symbol_def::symbol_def): Delete initialization.
+
+	* pt-id.cc (tree_identifier::link_to_global): Include variable
+	name in warning message.
+
+	* variables.cc (F__lock_global__): New function.
+
+2007-01-11  John W. Eaton  <jwe@octave.org>
+
+	* ls-oct-ascii.cc (save_ascii_data_for_plotting, save_three_d):
+	Set precision to 6 instead of 4.
+
+>>>>>>> 1.1602.2.4
 2006-12-04  David Bateman  <dbateman@free.fr>
 
 	* xpow.cc (xpow (const Matrix&, double)): Add matrix type probing

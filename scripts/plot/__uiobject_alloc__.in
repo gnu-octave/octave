@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2005 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,24 +18,25 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} oneplot ()
-## If in multiplot mode, switches to single plot mode.
+## @deftypefn {Function File} {} __uiobject_alloc__ ()
+## Return an index that points to an unused element of
+## @code{__uiobject_list__}.
 ## @end deftypefn
 
-## Author: Vinayak Dutt <Dutt.Vinayak@mayo.EDU>
-## Created: 3 July 95
-## Adapted-By: jwe
+## Author: jwe
 
-function oneplot ()
+function idx = __uiobject_alloc__ ()
 
-  plot_globals;
+  __uiobject_globals__;
 
-  if (__multiplot_mode__(__current_figure__))
-    __gnuplot_raw__ ("set nomultiplot;\n");
-    __gnuplot_raw__ ("set size 1, 1;\n");
-    __gnuplot_raw__ ("set origin 0, 0;\n");
-    __multiplot_mode__(__current_figure__) = false;
-    gnuplot_command_replot = "rep";
+  if (nargin == 0)
+    if (! __uiobject_head__)
+      __uiobject_grow_list__ ();
+    endif
+    idx = __uiobject_head__;
+    __uiobject_list__(__uiobject_head__).in_use = true;
+    __uiobject_head__ = __uiobject_list__(__uiobject_head__).next;
+  else
+    print_usage ();
   endif
-
 endfunction

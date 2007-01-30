@@ -19,7 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} {} close
+## @deftypefnx {Command} {} close (@var{n})
 ## @deftypefnx {Command} {} close all
+## @deftypefnx {Command} {} close all hidden
 ## Close the plot window(s).
 ## @end deftypefn
 
@@ -29,39 +31,30 @@
 
 function retval = close (arg1, arg2)
 
-  static warned_all = false;
-  static warned_name = false;
-  static warned_handle = false;
-
   if (nargin == 0)
-    if (! warned_all)
-      warned_all = true;
-      warning ("close: unable to close only current plot window");
-    endif
-    closeplot;
+    ## Close current figure.
+    figs = gcf ();
   elseif (nargin == 1)
-    if (ischar (arg1))
-      if (strcmp (arg1, "all"))
-	closeplot;
-      else
-	if (! warned_name)
-	  warned_name = true;
-	  warning ("close: unable to close plot windows by name");
-	endif
-      endif
+    if (ischar (arg1) && strcmp (arg1, "all"))
+      ## Close all figures.
+      figs = __uiobject_figures__ ();
+    elseif (isfigure (arg1))
+      figs = arg1;
     else
-      if (! warned_handle)
-	warned_handle = true;
-	warning ("close: unable to close plot windows by handle");
-      endif
+      error ("close: expecting argument to be \"all\" or a figure handle");
     endif
   elseif (nargin == 2
 	  && ischar (arg1) && strcmp (arg1, "all")
 	  && ischar (arg2) && strcmp (arg2, "hidden"))
-    closeplot;
+    figs = __uiobject_figures__ ();
   else
     print_usage ();
   endif
+
+  for h = figs
+    set (0, "currentfigure", h);
+    feval (get (h, "closerequestfcn"));
+  endfor
 
   if (nargout > 0)
     retval = 1;

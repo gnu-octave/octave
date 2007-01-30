@@ -42,14 +42,13 @@
 
 function semilogyerr (varargin)
 
-  if (nargin < 2)
-    print_usage ();
-  endif
+  newplot ();
 
-  __gnuplot_raw__ ("set nologscale x;\n");
-  __gnuplot_raw__ ("set logscale y;\n");
-  __gnuplot_raw__ ("set nopolar;\n");
+  ## [h, varargin] = __plt_get_axis_arg__ ("loglog", varargin{:});
+  h = gca ();
 
-  __errcomm__ ("semilogyerr", varargin{:});
+  set (h, "yscale", "log");
+
+  __errcomm__ ("semilogyerr", h, varargin{:});
 
 endfunction

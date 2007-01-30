@@ -40,7 +40,7 @@ function __img_via_file__ (x, y, im, zoom, command)
     ## Different image viewer commands.
     xv = sprintf ("xv -raw -expand %f \"%s\"", zoom, ppm_name);
     xloadimage = sprintf ("xloadimage -zoom %f \"%s\"", zoom*100, ppm_name);
-    im_display = sprintf ("display -geometry %f%% \"%s\"", zoom*100, ppm_name);
+    im_display = sprintf ("display -resize %f%% \"%s\"", zoom*100, ppm_name);
   
     ## Need to let the shell clean up the tmp file because we are putting
     ## the viewer in the background.
@@ -53,7 +53,7 @@ function __img_via_file__ (x, y, im, zoom, command)
     else
       command = sprintf (command, ppm_name);
     endif
-    status = system (sprintf ("( %s && %s) > /dev/null 2>&1 &", command, rm));
+    status = system (sprintf ("( %s && %s) > /dev/null 2>&1 &", command, rm))
   endif
   
   ## Did the system call fail?

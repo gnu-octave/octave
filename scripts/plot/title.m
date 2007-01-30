@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2005 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,36 +18,28 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} title (@var{string})
-## Specify a title for a plot.
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, ylabel}
+## @deftypefn {Function File} {} title (@var{title})
+## Create a title object and return a handle to it.
 ## @end deftypefn
 
 ## Author: jwe
 
-function h = title (text)
+function retval = title (varargin)
 
-  if (nargin != 1)
-    print_usage ();
+  nargs = nargin;
+
+  if (nargs == 0)
+    varargin{1} = "";
+    nargs++;
   endif
 
-  if (ischar (text))
-    __gnuplot_raw__ (sprintf ("set title \"%s\";\n",
-			      undo_string_escapes (text)));
-    if (automatic_replot)
-      replot ();
+  if (nargs == 1)
+    set (gca, "title", varargin{1});
+    if (nargout > 0)
+      retval = h;
     endif
   else
-    error ("title: text must be a string");
-  endif
-
-  ## FIXME -- eventually, we will return a graphics handle.  For
-  ## now, return something, so that calls that expect a handle won't
-  ## fail (at least immediately).
-
-  if (nargout > 0)
-    h = -1;
+    print_usage ();
   endif
 
 endfunction

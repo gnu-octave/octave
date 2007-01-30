@@ -355,7 +355,7 @@ save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 {
   bool infnan_warned = true;
 
-  return save_ascii_data (os, t, name, infnan_warned, false, 4);
+  return save_ascii_data (os, t, name, infnan_warned, false, 6);
 }
 
 // Maybe this should be a static function in tree-plot.cc?
@@ -380,7 +380,7 @@ save_three_d (std::ostream& os, const octave_value& tc, bool parametric)
 	 << "# total columns: " << nc << "\n";
 
       long old_precision = os.precision ();
-      os.precision (4);
+      os.precision (6);
 
       if (parametric)
 	{

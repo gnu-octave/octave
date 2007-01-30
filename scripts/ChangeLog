@@ -1,3 +1,4 @@
+<<<<<<< ChangeLog
 2007-01-24  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m: Install ChangeLog file if it exists.
@@ -79,6 +80,231 @@
 
 	* sparse/normest.m: New file.
 
+=======
+2007-01-29  John W. Eaton  <jwe@octave.org>
+
+	* plot/subplot.m: Set nextplot property of current figure to "add".
+
+	* plot/__uiobject_draw_axes__.m: Only handle outerposition
+	property if it exists.
+
+2007-01-26  John W. Eaton  <jwe@octave.org>
+
+	* plot/__uiobject_draw_axes__.m: Move initialization of max and
+	min values outside of loop over child objects.
+
+	* plot/contour.m, plot/contourc.m: New files.
+	* plot/Makefile.in (SOURCES_M): Add them to the list.
+
+	* image/image_viewer.m: Set view_fcn to "gnuplot_internal" if we
+	find a gnuplot version newer than 4.0.
+	* image/__img_gnuplot__.m: Delete.
+	* image/image.m: Create image graphics object.
+	Call newplot to setup and drawnow to finish.
+	Eliminate ZOOM arg.
+
+	* plot/__uiobject_draw_axes__.m: Handle image data.
+
+	* plot/legend.m: Eliminate useless variable "warned".
+
+	* plot/__uiobject_image_ctor__.m: New file.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+
+	* plot/gcf.m: Also create new figure if currentfigure is 0.
+	* plot/drawnow.m: Use get (0, "currentfigure") instead of gcf.
+
+	* plot/__uiobject_root_figure_ctor__.m: Set visible property.
+
+	* plot/__default_colormap__.m: New file.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+	* plot/__uiobject_figure_ctor__.m: Use it to set default colormap
+	property.
+	* image/colormap.m: Use colormap property of current figure
+	to store colormap instead of using persistent variable.
+	Call __default_colormap__ to get default map value.
+	* image/ocean.m, image/gray.m: Set colormap for current figure.
+
+	* plot/__uiobject_draw_axes__.m: Handle aspect ratio property.
+	Handle some tick mark options.
+
+	* plot/__uiobject_axes_setr__.m: If we see xtick, ytick, or ztick,
+	set corresponding *mode to "manual".  If we set dataaspectratio,
+	set dataaspectratiomode to "manual".
+
+	* plot/__uiobject_axes_init__.m: Include *tick, *tickmode,
+	*ticklabelmode, dataaspectratio, dataaspectratiomode properties.
+
+	* plot/axis.m: New file.
+	* plot/Makefile.in (SOURCES_M): Include it in the list.
+
+	* plot/__uiobject_axes_setr__.m: If we see xlim, ylim, or zlim,
+	set corresponding *limmode to "manual".
+	* plot/__uiobject_draw_axes__.m	(get_axis_limits): New subfunction.
+	Use it to compute autosclaled limits.
+	Arg is now handle, not object.  Change all callers.
+	Compute data limits.
+
+2007-01-25  John W. Eaton  <jwe@octave.org>
+
+	* plot/drawnow: Fix visibility check for zero args.
+
+	* plot/text.m: New file.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+	* plot/__uiobject_draw_axes__.m: Handle text objects.
+	* plot/__uiobject_text_ctor__.m: Include units, position, and
+	horizontalalignment properties.
+
+	* plot/figure.m: Set options for f we just constructed or were
+	given as an argument, not gcf.  Only return handle if nargout > 0.	
+
+	* plot/drawnow.m: Handle visible field for figure here.
+	* plot/__uiobject_figure_ctor__.m: Set default visible field.
+
+	* plot/__uiobject_draw_axes__.m: Call undo_string_escapes on
+	title and axis labels.
+
+	* plot/plot3.m, plot/mesh.m: Set default 3-d view here.
+	* plot/__uiobject_draw_axes__.m: Handle view for 3-d plots.
+	* plot/__uiobject_axes_init__.in: Set default view field for object.
+	* plot/view.m: New file.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+
+	* plot/__uiobject_make_handle__.in, plot/set.m, plot/drawnow.m:
+	Call __request_drawnow__.
+
+	* plot/newplot.m: For "replace" action, call __uiobject_axes_init__.
+
+	* plot/__uiobject_axes_ctor__.m, plot/__uiobject_text_ctor__.m:
+	Call set to set properties.  Return handle instead of structure.
+	Change all callers.
+
+	* plot/__uiobject_axes_setr__.m: New file.
+	* plot/set.in: Check for __setter__ field.
+
+	* plot/__uiobject_axes_init__.in:
+	Rename from plot/__uiobject_axes_init__.m.
+	Include __uiobject_globals__.
+	Accept handle as arg instead of structure
+	* plot/Makefile.in (SOURCES_M): Remove __uiobject_axes_init__.m
+	from the list.
+	(SOURCES_IN): Add __uiobject_axes_init__.in to the list.
+
+2007-01-24  John W. Eaton  <jwe@octave.org>
+
+	* plot/Makefile.in ($(GEN_M)): Depend on __uiobject_globals__.m.
+
+	* plot/__uiobject_globals__.m: Call __lock_global__ when
+	initializing each global variable.
+
+2007-01-18  John W. Eaton  <jwe@octave.org>
+
+	* plot/__uiobject_globals__.m (__uiobject_handles_free_list__,
+	__uiobject_figure_handles_free_list__): New global variables.
+	* plot/__uiobject_get_handle__.m, plot/__uiobject_free__.m:
+	Place unused handles on the free list.
+
+	* plot/__uiobject_get_figure_handle__.in: Delete.
+	* plot/Makefile.in: Delete it from the SOURCES_IN list.
+
+	* plot/__uiobject_init_figure__.in: Perform allocation of figure
+	handles here.  Return figure handle.
+	* plot/figure.m: Call __uiobject_init_figure__ to allocate handle.
+
+2007-01-11  John W. Eaton  <jwe@octave.org>
+
+	* plot/__uiobject_draw_axes__.m: Use "%g", not "%.4g" when writing
+	data for gnuplot.
+
+	* plot/Makefile.in (SOURCES_M, SOURCES_IN, GEN_M): New lists of
+	files.
+	(SOURCES): Include $(SOURCES_M) and $(SOURCES_M) in the list.
+	(DISTFILES): Include include-globals.awk in the list.
+	(FCN_FILES): Define using $(SOURCES_M) and $(GEN_M).
+	($(GEN_M) : %.m : %.in): New rule.
+
+	* include-globals.awk: New file.
+
+	* plot/__uiobject_alloc__.in, plot/__uiobject_figures__.in, 
+	plot/__uiobject_free__.in, plot/__uiobject_get_figure_handle__.in, 
+	plot/__uiobject_get_handle__.in, plot/__uiobject_grow_list__.in, 
+	plot/__uiobject_handle2idx__.in, plot/__uiobject_init_figure__.in, 
+	plot/__uiobject_init_root_figure__.in,
+	plot/__uiobject_make_handle__.in,  plot/get.in, plot/set.in:
+	Rename from corresponding .m files.
+
+	* move-if-change: New file.
+
+	* plot/__uiobject_delete__.m: New file.
+	* plot/delete.m, plot/__uiobject_delete_children__.m,
+	plot/__uiobject_delete_child__.m: Delete.
+	* miscellaneous/delete.m: Forward to __uiobject_delete__ if arg is
+	not a character string.
+	* plot/__plt2mm__.m, plot/__plt2mv__.m, plot/__plt2vm__.m:
+	Fix assignment to tmp key value in loop.
+	* plot/__uiobject_axes_dtor__.m: No need to Call __uiobject_free__
+	for obj.title, obj.xlabel, obj.ylabel, obj.zlabel.
+	* plot/__uiobject_axes_dtor__.m, plot/__uiobject_axis_init__.m:
+	Inline code to delete children.
+	* plot/__uiobject_free__.m: Arg is now handle, not index into
+	__uiobject_list__.
+	* plot/clf.m, plot/closereq.m, plot/newplot.m: No need to remove
+	and free child.
+
+2006-12-08  John W. Eaton  <jwe@octave.org>
+
+	* plot/gcf.m: Check if the root figure object's currentfigure
+	handle is empty, not 0.
+	* plot/__uiobject_root_figure_ctor__.m:
+	Set currentfigure to [], not 0.
+
+	* plot/stairs.m: Handle matrix arguments.  Improve compatibility.
+
+2006-12-07  John W. Eaton  <jwe@octave.org>
+
+	* plot/__plt_get_axis_arg__.m, plot/__uiobject_adopt__.m,
+	plot/__uiobject_alloc__.m, plot/__uiobject_axes_ctor__.m,
+	plot/__uiobject_axes_dtor__.m, plot/__uiobject_axes_init__.m,
+	plot/__uiobject_delete_children__.m,
+	plot/__uiobject_draw_axes__.m, plot/__uiobject_draw_figure__.m,
+	plot/__uiobject_figure_ctor__.m, plot/__uiobject_figures__.m,
+	plot/__uiobject_free__.m, plot/__uiobject_get_figure_handle__.m,
+	plot/__uiobject_get_handle__.m, plot/__uiobject_globals__.m,
+	plot/__uiobject_grow_list__.m, plot/__uiobject_handle2idx__.m,
+	plot/__uiobject_init_figure__.m,
+	plot/__uiobject_init_root_figure__.m,
+	plot/__uiobject_line_ctor__.m, plot/__uiobject_make_handle__.m,
+	plot/__uiobject_remove_child__.m,
+	plot/__uiobject_root_figure_ctor__.m,
+	plot/__uiobject_surface_ctor__.m, plot/__uiobject_text_ctor__.m,
+	plot/axes.m, plot/box.m, plot/closereq.m, plot/delete.m,
+	plot/drawnow.m, plot/gca.m, plot/gcf.m, plot/get.m,
+	plot/isfigure.m, plot/ishandle.m, plot/line.m, plot/newplot.m,
+	plot/set.m: New files.
+
+	* plot/__plt3__.m, plot/errorbar.m, plot/__axis_label__.m,
+	plot/__plr1__.m, plot/__errcomm__.m, plot/print.m, plot/zlabel.m,
+	plot/__plt1__.m, plot/__plt2__.m, plot/sombrero.m, plot/shg.m,
+	plot/fplot.m, plot/ndgrid.m, plot/clf.m, plot/hold.m,
+	plot/ishold.m, plot/meshdom.m, plot/ylabel.m, plot/__plt2ss__.m,
+	plot/__plt2vv__.m, plot/__plr2__.m, plot/__plt2mm__.m,
+	plot/__pltopt1__.m, plot/meshgrid.m, plot/__plt2mv__.m,
+	plot/figure.m, plot/xlabel.m, plot/stairs.m, plot/__plt2vm__.m,
+	plot/bar.m, plot/__errplot__.m, plot/semilogx.m, plot/semilogy.m,
+	plot/loglog.m, plot/polar.m, plot/legend.m, plot/orient.m,
+	plot/title.m, plot/__pltopt__.m, plot/grid.m, plot/hist.m,
+	plot/subplot.m, plot/plot.m, plot/mesh.m, plot/__plt__.m,
+	plot/close.m, plot/loglogerr.m, plot/plot3.m, plot/semilogxerr.m,
+	plot/semilogyerr.m, plot/replot.m:
+	Adapt to new graphics data structure.
+
+	* plot/__do_legend__.m, plot/__gnuplot_version__.m,
+	plot/__init_plot_vars__.m, plot/__make_using_clause__.m,
+	plot/__plot_globals__.m, plot/__plr__.m, plot/__render_plot1__.m,
+	plot/__render_plot__.m, plot/__setup_plot__.m, plot/axis.m,
+	plot/contour.m, plot/mplot.m, plot/multiplot.m, plot/oneplot.m,
+	plot/plot_border.m, plot/subwindow.m: Delete.
+
+>>>>>>> 1.656.2.18
 2006-12-06  Michael Goffioul  <michael.goffioul@swing.be>.
 
 	* miscellaneous/copyfile.m, miscellaneous/movefile.m:

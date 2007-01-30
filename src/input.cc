@@ -140,6 +140,10 @@ std::string current_input_line;
 // TRUE after a call to completion_matches.
 bool octave_completion_matches_called = false;
 
+// TRUE if the plotting system has requested a call to drawnow at
+// the next user prompt.
+static bool Vdrawnow_requested = false;
+
 static void
 do_input_echo (const std::string& input_string)
 {
@@ -206,6 +210,21 @@ gnu_readline (const std::string& s, bool force_readline)
   return retval;
 }
 
+static inline std::string
+interactive_input (const std::string& s, bool force_readline = false)
+{
+  Vlast_prompt_time.stamp ();
+
+  if (Vdrawnow_requested && (interactive || forced_interactive))
+    {
+      feval ("drawnow");
+
+      Vdrawnow_requested = false;
+    }
+
+  return gnu_readline (s, force_readline);
+}
+
 static std::string
 octave_gets (void)
 {
@@ -229,9 +248,7 @@ octave_gets (void)
 
       octave_diary << prompt;
 
-      Vlast_prompt_time.stamp ();
-
-      retval = gnu_readline (prompt);
+      retval = interactive_input (prompt);
 
       // There is no need to update the load_path cache if there is no
       // user input.
@@ -606,7 +623,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
   octave_diary << prompt;
 
-  std::string input_buf = gnu_readline (prompt.c_str (), true);
+  std::string input_buf = interactive_input (prompt.c_str (), true);
 
   if (! input_buf.empty ())
     {
@@ -753,7 +770,7 @@ octave_yes_or_no (const std::string& prompt)
 
   while (1)
     {
-      std::string input_buf = gnu_readline (prompt_string);
+      std::string input_buf = interactive_input (prompt_string);
 
       if (input_buf == "yes")
 	return true;
@@ -1228,6 +1245,27 @@ command and the command line option @code{--echo-input}.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (echo_executing_commands);
+}
+
+DEFUN (__request_drawnow__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __request_drawnow__ ()\n\
+@deftypefnx {Built-in Function} {} __request_drawnow__ (@var{flag})\n\
+Request a call drawnow at the next user prompt.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    Vdrawnow_requested = true;
+  else if (nargin == 1)
+    Vdrawnow_requested = args(0).bool_value ();
+  else
+    print_usage ();
+
+  return retval;
 }
 
 /*

@@ -23,8 +23,6 @@
 ## Control the display of a border around the plot.
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
 ## omitted, the the current box state is toggled.
-##
-## Note, this function currently has no effect.
 ## @seealso{grid}
 ## @end deftypefn
 
@@ -32,6 +30,40 @@
 
 ## PKG_ADD: mark_as_command box
 
-function box ()
+function box (varargin)
+
+  ## [h, varargin] = __plt_get_axis_arg__ ("box", varargin{:});
+  h = gca ();
+
+  box_state = get (h, "box");
+
+  nargs = numel (varargin);
+
+  if (nargs == 0)
+    if (strcmp (box_state, "on"))
+      box_state = "off";
+    else
+      box_state = "on";
+    endif
+  elseif (nargs == 1)
+    state = varargin{1};
+    if (ischar (state))
+      if (strcmp ("off", state))
+	box_state = "off";
+      elseif (strcmp ("on", state))
+	box_state = "on";
+      else
+	print_usage ();
+      endif
+    endif
+  else
+    print_usage ();
+  endif
+
+  set (h, "box", box_state);
+
+endfunction
+
+  
 
 endfunction

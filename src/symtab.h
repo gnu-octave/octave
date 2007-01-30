@@ -89,7 +89,7 @@ private:
 
     symbol_def (const octave_value& val = octave_value (),
 		unsigned int sym_type = 0)
-      : symbol_type (sym_type), eternal (0), read_only (0), help_string (),
+      : symbol_type (sym_type), read_only (0), help_string (),
 	definition (val), count (1) { }
 
     ~symbol_def (void) { }
@@ -157,9 +157,6 @@ private:
     bool is_read_only (void) const
       { return read_only; }
 
-    bool is_eternal (void) const
-      { return eternal; }
-
     bool is_matrix_type (void) const 
       { return definition.is_matrix_type (); }
 
@@ -211,8 +208,6 @@ private:
 
     void unprotect (void) { read_only = 0; }
 
-    void make_eternal (void) { eternal = 1; }
-
     octave_value& def (void) { return definition; }
 
     std::string help (void) const { return help_string; }
@@ -231,9 +226,6 @@ private:
 
     // The type of this symbol (see the enum above).
     unsigned int symbol_type : 9;
-
-    // Nonzero means this variable cannot be cleared.
-    unsigned int eternal : 1;
 
     // Nonzero means this variable cannot be given a new value.
     unsigned int read_only : 1;
@@ -264,8 +256,8 @@ public:
   symbol_record (void)
     : formal_param (false), automatic_variable (false),
       linked_to_global (false), tagged_static (false),
-      can_hide_function (true), visible (true), nm (), chg_fcn (0),
-      definition (new symbol_def ()), next_elem (0) { }
+      can_hide_function (true), visible (true), eternal (false),
+      nm (), chg_fcn (0), definition (new symbol_def ()), next_elem (0) { }
 
   // FIXME -- kluge alert!  We obviously need a better way of
   // handling allow_shadow!
@@ -273,8 +265,9 @@ public:
   symbol_record (const std::string& n, symbol_record *nxt)
     : formal_param (false), automatic_variable (false),
       linked_to_global (false), tagged_static (false),
-      can_hide_function (n != "__end__"), visible (true), nm (n),
-      chg_fcn (0), definition (new symbol_def ()), next_elem (nxt) { }
+      can_hide_function (n != "__end__"), visible (true),
+      eternal (false), nm (n), chg_fcn (0),
+      definition (new symbol_def ()), next_elem (nxt) { }
 
   ~symbol_record (void)
     {
@@ -341,13 +334,13 @@ public:
 
   bool is_read_only (void) const { return definition->is_read_only (); }
 
-  bool is_eternal (void) const { return definition->is_eternal (); }
+  bool is_eternal (void) const { return eternal; }
 
   void protect (void) { definition->protect (); }
 
   void unprotect (void) { definition->unprotect (); }
 
-  void make_eternal (void) { definition->make_eternal (); }
+  void make_eternal (void) { eternal = 1; }
 
   void hide (void) { visible = false; }
   void show (void) { visible = true; }
@@ -450,6 +443,7 @@ private:
   unsigned int tagged_static : 1;
   unsigned int can_hide_function : 1;
   unsigned int visible : 1;
+  unsigned int eternal : 1;
 
   std::string nm;
   change_function chg_fcn;

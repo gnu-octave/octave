@@ -49,54 +49,61 @@
 
 function [xs, ys] = stairs (x, y)
 
-
-  if (nargin == 1)
-    if (isvector (x))
-      len = 2 * length (x);
-      tmp_xs = tmp_ys = zeros (len, 1);
-      k = 0;
-      for i = 1:2:len
-        tmp_xs(i) = k++;
-        tmp_ys(i) = x(k);
-        tmp_ys(i+1) = x(k);
-        tmp_xs(i+1) = k;
-      endfor
-    else
-      error ("stairs: argument must be a vector");
-    endif
-  elseif (nargin == 2)
-    if (isvector (x) && isvector (y))
-      xlen = length (x);
-      ylen = length (y);
-      if (xlen == ylen)
-        len = 2 * xlen;
-        tmp_xs = tmp_ys = zeros (len, 1);
-        k = 1;
-        len_m2 = len - 2;
-        for i = 1:2:len_m2
-          tmp_xs(i) = x(k);
-          tmp_ys(i) = y(k);
-          tmp_ys(i+1) = y(k);
-          k++;
-          tmp_xs(i+1) = x(k);
-          if (x(k) < x(k-1))
-            error ("stairs: x vector values must be in ascending order");
-          endif
-        endfor
-        tmp_xs(len-1) = x(xlen);
-        delta = x(xlen) - x(xlen-1);
-        tmp_xs(len) = x(xlen) + delta;
-        tmp_ys(len-1) = y(ylen);
-        tmp_ys(len) = y(ylen);
-      else
-        error ("stairs: arguments must be the same length");
-      endif
-    else
-      error ("stairs: arguments must be vectors");
-    endif
-  else
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
+
+  if (nargin == 1)
+    if (ismatrix (x))
+      if (isvector (x))
+	x = x(:);
+      endif
+      y = x;
+      x = 1:rows (y);
+    endif
+  endif
+
+  if (ndims (x) > 2 || ndims (y) > 2)
+    error ("stairs: expecting 2-d arguments");
+  endif
+
+  vec_x = isvector (x);
+
+  if (vec_x)
+    x = x(:);
+  endif
+
+  if (isvector (y))
+    y = y(:);
+  endif
+
+  if (ismatrix (y))
+    [nr, nc] = size (y);
+    if (vec_x)
+      x = repmat (x, [1, nc]);
+    else
+      [x_nr, x_nc] = size (x);
+      if (x_nr != nr || x_nc != nc)
+	error ("stairs: argument size mismatch");
+      endif
+    endif
+  endif
+
+  len = 2*nr - 1;
+
+  tmp_xs = tmp_ys = zeros (len, nc);
+
+  tmp_xs(1,:) = x(1,:);
+  tmp_ys(1,:) = y(1,:);
+
+  tmp_x = x(2:nr,:);
+  ridx = 2:2:len-1;
+  tmp_xs(ridx,:) = tmp_x;
+  tmp_ys(ridx,:) = y(1:nr-1,:);
+
+  ridx = 3:2:len;
+  tmp_xs(ridx,:) = tmp_x;
+  tmp_ys(ridx,:) = y(2:nr,:);
 
   if (nargout == 0)
     plot (tmp_xs, tmp_ys);

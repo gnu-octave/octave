@@ -39,8 +39,6 @@
 
 function cmap = colormap (map)
 
-  persistent current_color_map = gray ();
-
   if (nargin > 1)
     print_usage ();
   endif
@@ -49,9 +47,9 @@ function cmap = colormap (map)
 
     if (ischar (map))
       if (strcmp (map, "default"))
-        map = gray ();
+        map = __default_colormap__ ();
       else
-        map = eval (map);
+        map = feval (map);
       endif
     endif
 
@@ -63,12 +61,12 @@ function cmap = colormap (map)
         error ("colormap: map must have values in [0,1]");
       endif
       ## Set the new color map
-      current_color_map = map;
+      set (gcf (), "colormap", map);
     endif
 
   endif
 
   ## Return current color map.
-  cmap = current_color_map;
+  cmap = get (gcf (), "colormap");
 
 endfunction

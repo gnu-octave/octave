@@ -29,30 +29,30 @@
 
 ## Author: jwe
 
-function polar (x1, x2, fmt)
+function polar (varargin)
 
-  ## FIXME -- these plot states should really just be set
-  ## temporarily, probably inside an unwind_protect block, but there is
-  ## no way to determine their current values.
+  newplot ();
 
-  __gnuplot_raw__ ("set nologscale;\n");
-  __gnuplot_raw__ ("set nopolar;\n");
+  ## [h, varargin] = __plt_get_axis_arg__ ("semilogx", varargin{:});
+  h = gca ();
 
-  if (nargin == 3)
-    if (! ischar (fmt))
+  nargs = numel (varargin);
+
+  if (nargs == 3)
+    if (! ischar (varargin{3}))
       error ("polar: third argument must be a string");
     endif
-    __plr2__ (x1, x2, fmt);
+    __plr2__ (h, varargin{:});
   elseif (nargin == 2)
-    if (ischar (x2))
-      __plr1__ (x1, x2);
+    if (ischar (varargin{2}))
+      __plr1__ (h, varargin{:});
     else
       fmt = "";
-      __plr2__ (x1, x2, fmt);
+      __plr2__ (h, varargin{:}, fmt);
     endif
   elseif (nargin == 1)
     fmt = "";
-    __plr1__ (x1, fmt);
+    __plr1__ (h, varargin{:}, fmt);
   else
     print_usage ();
   endif

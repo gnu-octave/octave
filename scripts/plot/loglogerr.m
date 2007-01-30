@@ -42,14 +42,13 @@
 
 function loglogerr (varargin)
 
-  if (nargin < 2)
-    print_usage ();
-  endif
+  newplot ();
 
-  __gnuplot_raw__ ("set logscale x;\n");
-  __gnuplot_raw__ ("set logscale y;\n");
-  __gnuplot_raw__ ("set nopolar;\n");
+  ## [h, varargin] = __plt_get_axis_arg__ ("loglog", varargin{:});
+  h = gca ();
 
-  __errcomm__ ("loglogerr", varargin{:});
+  set (h, "xscale", "log", "yscale", "log");
+
+  __errcomm__ ("loglogerr", h, varargin{:});
 
 endfunction

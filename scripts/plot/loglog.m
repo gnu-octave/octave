@@ -30,14 +30,13 @@
 
 function loglog (varargin)
 
-  ## FIXME -- these plot states should really just be set
-  ## temporarily, probably inside an unwind_protect block, but there is
-  ## no way to determine their current values.
+  newplot ();
 
-  __gnuplot_raw__ ("set logscale x;\n");
-  __gnuplot_raw__ ("set logscale y;\n");
-  __gnuplot_raw__ ("set nopolar;\n");
+  ## [h, varargin] = __plt_get_axis_arg__ ("loglog", varargin{:});
+  h = gca ();
 
-  __plt__ ("loglog", varargin{:});
+  set (h, "xscale", "log", "yscale", "log");
+
+  __plt__ ("loglog", h, varargin{:});
 
 endfunction

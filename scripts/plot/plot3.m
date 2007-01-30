@@ -165,135 +165,37 @@
 
 function plot3 (varargin)
 
-  __plot_globals__;
+  x_set = 0;
+  y_set = 0;
+  z_set = 0;
 
-  cf = __current_figure__;
-  mxi = __multiplot_xi__(cf);
-  myi = __multiplot_yi__(cf);
+  ## Gather arguments, decode format, and plot lines.
+  for arg = 1:nargin
+    new = varargin{arg};
 
-  hold_state = ishold ();
-  
-  unwind_protect
-
-    x_set = 0;
-    y_set = 0;
-    z_set = 0;
-    
-    ## Gather arguments, decode format, and plot lines.
-    for arg = 1:nargin
-      new = varargin{arg};
-      
-      if (ischar (new))
-	if (! z_set)
-	  if (! y_set)
-	    if (! x_set)
-	      error ("plot3: needs x, [ y, [ z ] ]");
-	    else
-	      z = imag (x);
-	      y = real (x);
-	      y_set = 1;
-	      z_set = 1;
-	      if (rows(x) > 1)
-	        x = repmat ((1:rows(x))', 1, columns(x));
-	      else
-	        x = 1:columns(x);
-	      endif
-	    endif
+    if (ischar (new))
+      if (! z_set)
+	if (! y_set)
+	  if (! x_set)
+	    error ("plot3: needs x, [ y, [ z ] ]");
 	  else
-	    z = imag (y);
-	    y = real (y);
+	    z = imag (x);
+	    y = real (x);
+	    y_set = 1;
 	    z_set = 1;
+	    if (rows(x) > 1)
+	      x = repmat ((1:rows(x))', 1, columns(x));
+	    else
+	      x = 1:columns(x);
+	    endif
 	  endif
+	else
+	  z = imag (y);
+	  y = real (y);
+	  z_set = 1;
 	endif
-	[fmt, key] = __pltopt__ ("plot3", new);
-
-	if (isvector (x) && isvector (y))
-	  if (isvector (z))
-	    x = x(:);
-	    y = y(:);
-	    z = z(:);
-	  elseif (length (x) == rows (z) && length (y) == columns (z))
-	    error ("plot3: [length(x), length(y)] must match size(z)");
-	  else
-	    [x, y] = meshgrid (x, y);
-	  endif
-	endif
-
-	if (! size_equal (x, y) || ! size_equal (x, z))
-	  error ("plot3: x, y, and z must have the same shape");
-	endif
-
-	__gnuplot_raw__ ("set nohidden3d;\n")
-
-	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
-		 ([y; NaN*ones(1,size(y,2))])(:), ...
-		 ([z; NaN*ones(1,size(z,2))])(:)],
-		  true, "u($1):($2):($3)", fmt{1}, key{1});
-
-	hold ("on");
-	x_set = 0;
-	y_set = 0;
-	z_set = 0;
-      elseif (! x_set)
-	x = new;
-	x_set = 1;
-      elseif (! y_set)
-	y = new;
-	y_set = 1;
-      elseif (! z_set)
-	z = new;
-	z_set = 1;
-      else
-	if (isvector (x) && isvector (y))
-	  if (isvector (z))
-	    x = x(:);
-	    y = y(:);
-	    z = z(:);
-	  elseif (length (x) == rows (z) && length (y) == columns (z))
-	    error ("plot3: [length(x), length(y)] must match size(z)");
-	  else
-	    [x, y] = meshgrid (x, y);
-	  endif
-	endif
-
-	if (! size_equal (x, y) || ! size_equal (x, z))
-	  error ("plot3: x, y, and z must have the same shape");
-	endif
-
-	__gnuplot_raw__ ("set nohidden3d;\n")
-
-	__plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
-		   ([y; NaN*ones(1,size(y,2))])(:), ...
-		   ([z; NaN*ones(1,size(z,2))])(:)], true);
-
-	hold ("on");
-	x = new;
-	y_set = 0;
-	z_set = 0;
       endif
-       
-    endfor
-    
-    ## Handle last plot.
-    
-    if (x_set)
-      if (y_set)
-        if (! z_set)
-          z = imag (y);
-          y = real (y);
-          z_set = 1;
-        endif
-      else
-        z = imag (x);
-        y = real (x);
-        y_set = 1;
-        z_set = 1;
-        if (rows (x) > 1)
-          x = repmat ((1:rows (x))', 1, columns(x));
-        else
-          x = 1:columns(x);
-        endif
-      endif
+      [fmt, key] = __pltopt__ ("plot3", new);
 
       if (isvector (x) && isvector (y))
 	if (isvector (z))
@@ -311,19 +213,90 @@ function plot3 (varargin)
 	error ("plot3: x, y, and z must have the same shape");
       endif
 
-      __gnuplot_raw__ ("set nohidden3d;\n")
+      line (x(:), y(:), z(:));
 
-      __plt3__ ([([x; NaN*ones(1,size(x,2))])(:), ...
-		 ([y; NaN*ones(1,size(y,2))])(:), ...
-		 ([z; NaN*ones(1,size(z,2))])(:)], true);
+      ## FIXME -- what about fmt and key?
+      ## fmt{1}, key{1});
+
+      x_set = 0;
+      y_set = 0;
+      z_set = 0;
+    elseif (! x_set)
+      x = new;
+      x_set = 1;
+    elseif (! y_set)
+      y = new;
+      y_set = 1;
+    elseif (! z_set)
+      z = new;
+      z_set = 1;
+    else
+      if (isvector (x) && isvector (y))
+	if (isvector (z))
+	  x = x(:);
+	  y = y(:);
+	  z = z(:);
+	elseif (length (x) == rows (z) && length (y) == columns (z))
+	  error ("plot3: [length(x), length(y)] must match size(z)");
+	else
+	  [x, y] = meshgrid (x, y);
+	endif
+      endif
+
+      if (! size_equal (x, y) || ! size_equal (x, z))
+	error ("plot3: x, y, and z must have the same shape");
+      endif
+
+      line (x(:), y(:), z(:));
+
+      x = new;
+      y_set = 0;
+      z_set = 0;
     endif
-    
-  unwind_protect_cleanup
-    
-    if (! hold_state)
-      hold ("off");
+
+  endfor
+
+  ## Handle last plot.
+
+  if (x_set)
+    if (y_set)
+      if (! z_set)
+	z = imag (y);
+	y = real (y);
+	z_set = 1;
+      endif
+    else
+      z = imag (x);
+      y = real (x);
+      y_set = 1;
+      z_set = 1;
+      if (rows (x) > 1)
+	x = repmat ((1:rows (x))', 1, columns(x));
+      else
+	x = 1:columns(x);
+      endif
     endif
-    
-  end_unwind_protect
+
+    if (isvector (x) && isvector (y))
+      if (isvector (z))
+	x = x(:);
+	y = y(:);
+	z = z(:);
+      elseif (length (x) == rows (z) && length (y) == columns (z))
+	error ("plot3: [length(x), length(y)] must match size(z)");
+      else
+	[x, y] = meshgrid (x, y);
+      endif
+    endif
+
+    if (! size_equal (x, y) || ! size_equal (x, z))
+      error ("plot3: x, y, and z must have the same shape");
+    endif
+
+    line (x(:), y(:), z(:));
+
+  endif
+
+  set (gca (), "view", [-37.5, 30]);
 
 endfunction

@@ -18,14 +18,14 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plr1__ (@var{theta}, @var{fmt})
+## @deftypefn {Function File} {} __plr1__ (@var{h}, @var{theta}, @var{fmt})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plr1__ (theta, fmt)
+function __plr1__ (h, theta, fmt)
 
-  if (nargin != 2)
+  if (nargin != 3)
     print_usage ();
   endif
 
@@ -45,6 +45,6 @@ function __plr1__ (theta, fmt)
     theta = (1:nr)';
   endif
 
-  __plr2__ (theta, rho, fmt);
+  __plr2__ (h, theta, rho, fmt);
 
 endfunction

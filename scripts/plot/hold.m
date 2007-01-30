@@ -37,35 +37,35 @@
 
 ## PKG_ADD: mark_as_command hold
 
-function hold (arg)
+function hold (varargin)
 
-  global __current_figure__;
-  global __hold_state__;
+  [h, varargin] = __plt_get_axis_arg__ ("hold", varargin{:});
 
-  if (isempty (__current_figure__))
-    __current_figure__ = 1;
-  endif
+  hold_state = get (h, "nextplot");
 
-  if (isempty (__hold_state__))
-    __hold_state__ = false;
-  endif
+  nargs = numel (varargin);
 
-  if (length (__hold_state__) < __current_figure__)
-    __hold_state__(__current_figure__) = false;
-  endif
-
-  if (nargin == 0)
-    __hold_state__(__current_figure__) = ! __hold_state__(__current_figure__);
-  elseif (nargin == 1)
-    if (strcmp (arg, "on"))
-      __hold_state__(__current_figure__) = true;
-    elseif (strcmp (arg, "off"))
-      __hold_state__(__current_figure__) = false;
+  if (nargs == 0)
+    if (strcmp (hold_state, "add"))
+      hold_state = "replace";
     else
-      print_usage ();
+      hold_state = "add";
+    endif
+  elseif (nargs == 1)
+    state = varargin{1};
+    if (ischar (state))
+      if (strcmp ("off", state))
+	hold_state = "replace";
+      elseif (strcmp ("on", state))
+	hold_state = "add";
+      else
+	print_usage ();
+      endif
     endif
   else
     print_usage ();
   endif
+
+  set (h, "nextplot", hold_state);
 
 endfunction

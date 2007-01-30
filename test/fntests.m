@@ -3,6 +3,7 @@ clear all;
 global files_with_no_tests = {};
 global files_with_tests = {};
 global topsrcdir;
+global topbuilddir;
 
 currdir = canonicalize_file_name (".");
 
@@ -14,6 +15,7 @@ endif
 
 srcdir = canonicalize_file_name (xdir);
 topsrcdir = canonicalize_file_name (fullfile (xdir, ".."));
+topbuilddir = canonicalize_file_name (fullfile (currdir, ".."));
 
 if (strcmp (currdir, srcdir))
   testdirs = {srcdir};
@@ -22,9 +24,15 @@ else
 endif
 
 src_tree = canonicalize_file_name (fullfile (topsrcdir, "src"));
-script_tree = canonicalize_file_name (fullfile (topsrcdir, "scripts"));
 liboctave_tree = canonicalize_file_name (fullfile (topsrcdir, "liboctave"));
+script_tree = canonicalize_file_name (fullfile (topsrcdir, "scripts"));
+local_script_tree = canonicalize_file_name (fullfile (currdir, "../scripts"));
+
 fundirs = {src_tree, liboctave_tree, script_tree};
+
+if (! strcmp (currdir, srcdir))
+  fundirs{end+1} = local_script_tree;
+endif
 
 function print_test_file_name (nm)
   filler = repmat (".", 1, 55-length (nm));
@@ -79,6 +87,7 @@ function [dp, dn] = run_test_script (fid, d);
   global files_with_tests;
   global files_with_no_tests;
   global topsrcdir;
+  global topbuilddir;
   lst = dir (d);
   dp = dn = 0;
   for i = 1:length (lst)
@@ -98,7 +107,9 @@ function [dp, dn] = run_test_script (fid, d);
       p = n = 0;
       ## Only run if it contains %!test, %!assert %!error or %!warning
       if (hastests (f))
-	print_test_file_name (strrep (f, [topsrcdir, "/"], ""));
+	tmp = strrep (f, [topsrcdir, "/"], "");
+	tmp = strrep (tmp, [topbuilddir, "/"], "../");
+	print_test_file_name (tmp);
 	[p, n] = test (f, "quiet", fid);
 	print_pass_fail (n, p);
 	dp += p;

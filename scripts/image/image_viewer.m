@@ -72,7 +72,7 @@ function [ocmd, ofcn, ozoom] = image_viewer (cmd, fcn, zoom)
   if (isempty (view_fcn))
     if (isempty (view_cmd)
 	&& compare_versions (__gnuplot_version__ (), "4.0", ">"))
-      view_fcn = @__img_gnuplot__;
+      view_fcn = "gnuplot_internal";
     else
       view_fcn = @__img_via_file__;
     endif

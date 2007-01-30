@@ -18,40 +18,43 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[data, fmtstr] =} __plt2ss__ (@var{x}, @var{y}, @var{fmt})
+## @deftypefn {Function File} {} __plt2ss__ (@var{h}, @var{x}, @var{y}, @var{fmt}, @var{key})
 ## @end deftypefn
 
 ## Author: jwe
 
-function [data, fmtstr, key] = __plt2ss__ (x, y, fmt, keystr)
+function __plt2ss__ (h, x, y, fmt, key)
 
-  if (nargin < 2 || nargin > 4 || nargout < 2 || nargout > 3)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
-  if (nargin < 3)
+  if (nargin < 4 || isempty (fmt))
     fmt = {""};
   endif
 
-  if (nargin < 4)
-    keystr = {""};
+  if (nargin < 5 || isempty (key))
+    key = {""};
   endif
 
   if (rows (fmt) > 1)
     fmt = fmt(1);
   endif
 
-  if (rows (keystr) > 1)
-    keystr = keystr(1);
+  if (rows (key) > 1)
+    key = key(1);
   endif
 
   [x_nr, x_nc] = size (x);
   [y_nr, y_nc] = size (y);
 
   if (x_nr == 1 && x_nr == y_nr && x_nc == 1 && x_nc == y_nc)
-    data = {[x, y]};
-    fmtstr = fmt;
-    key = keystr;
+    key = key{1};
+    if (! isempty (key))
+      set (h, "key", "on");
+    endif
+    ## FIXME -- need to handle labels and line format.
+    line (x, y, "keylabel", key);
   else
     error ("__plt2ss__: arguments must be scalars");
   endif

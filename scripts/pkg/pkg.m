@@ -33,6 +33,14 @@
 ## dependency checking. That way it is possible to install a package even
 ## if it depends on another package that's not installed on the system.
 ## @strong{Use this option with care.}
+##
+## If @var{option} is @code{-noauto} the package manager will not
+## automatically load the installed package when starting Octave,
+## even if the package requests that it is.
+##
+## If @var{option} is @code{-auto} the package manager will
+## automatically load the installed package when starting Octave,
+## even if the package requests that it isn't.
 ## @item uninstall
 ## Uninstall named packages.  For example,
 ## @example
@@ -114,6 +122,7 @@
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command pkg
+## PKG_ADD: pkg ("load", "auto");
 
 function [local_packages, global_packages] = pkg(varargin)
     ## Installation prefix (XXX: what should these be on windows?)
@@ -137,11 +146,16 @@ function [local_packages, global_packages] = pkg(varargin)
     endif
     files = {};
     deps = true;
+    auto = 0;
     action = "none";
     for i = 1:length(varargin)
         switch (varargin{i})
             case "-nodeps"
                 deps = false;
+            case "-noauto"
+	        auto = -1;
+            case "-auto"
+	        auto = 1;
             case {"list", "install", "uninstall", "load", "unload", ...
                   "prefix", "local_list", "global_list"}
                 action = varargin{i};
@@ -166,7 +180,7 @@ function [local_packages, global_packages] = pkg(varargin)
             if (length(files) == 0)
                 error("You must specify at least one filename when calling 'pkg install'");
             endif
-            install(files, deps, prefix, local_list, global_list);
+            install(files, deps, auto, prefix, local_list, global_list);
         case "uninstall"
             if (length(files) == 0)
                 error("You must specify at least one package when calling 'pkg uninstall'");
@@ -174,7 +188,7 @@ function [local_packages, global_packages] = pkg(varargin)
             uninstall(files, deps, local_list, global_list);
         case "load"
             if (length(files) == 0)
-                error("You must specify at least one package or 'all' when calling 'pkg load'");
+              error("You must specify at least one package, 'all' or 'auto' when calling 'pkg load'");
             endif
             load_packages(files, deps, local_list, global_list);
         case "unload"
@@ -218,7 +232,21 @@ function [local_packages, global_packages] = pkg(varargin)
     endswitch
 endfunction
 
-function install(files, handle_deps, prefix, local_list, global_list)
+function auto = isautoload(desc)
+  auto = false;
+  if (isfield(desc{1},"autoload"))
+    a = desc{1}.autoload;
+    if ((isnumeric(a) && a > 0) || 
+	(ischar(a) && (strcmp(tolower(a),"true") || 
+		       strcmp(tolower(a),"on") || 
+		       strcmp(tolower(a),"yes") ||
+		       strcmp(tolower(a),"1"))))
+      auto = true;
+    endif
+  endif
+endfunction
+
+function install(files, handle_deps, autoload, prefix, local_list, global_list)
     global_install = issuperuser();
  
     # Check that the directory in prefix exist. If it doesn't: create it!
@@ -397,6 +425,15 @@ function install(files, handle_deps, prefix, local_list, global_list)
       if (dirempty(descriptions{i}.dir,{"packinfo","doc"}))
         rm_rf(descriptions{i}.dir);
         descriptions(i) = [];
+      endif
+    endfor
+
+    ## If the package requested that it is autoloaded, or the installer
+    ## requested that it is, then mark the package as autoloaded.
+    for i = length(descriptions):-1:1
+      if (autoload > 0 || (autoload == 0 && isautoload(descriptions(i))))
+	fclose(fopen(fullfile(descriptions{i}.dir, "packinfo", 
+			      ".autoload"),"wt"));
       endif
     endfor
 
@@ -1094,7 +1131,27 @@ function [out1, out2] = installed_packages(local_list, global_list)
         global_packages = {};
     end_try_catch
     installed_packages = {local_packages{:} global_packages{:}};        
-    
+
+    ## Eliminate duplicates in the installed package list.
+    ## Locally installed packages take precedence
+    dup = [];
+    for i=1:length(installed_packages)
+      if (find(dup,i))
+	continue;
+      endif
+      for j=(i+1):length(installed_packages)
+        if (find(dup,j))
+	  continue;
+        endif
+        if (strcmp(installed_packages{i}.name,installed_packages{j}.name))
+	  dup = [dup, j];
+	endif
+      endfor
+    endfor
+    if (! isempty(dup))
+      installed_packages(dup) = [];
+    endif  
+  
     ## Should we return something?
     if (nargout == 2)
         out1 = local_packages;
@@ -1162,6 +1219,14 @@ function load_packages(files, handle_deps, local_list, global_list)
     ## load all
     if (length(files) == 1 && strcmp(files{1}, "all"))
         dirs = pdirs;
+    ## load auto
+    elseif (length(files) == 1 && strcmp(files{1}, "auto"))
+      dirs = {};
+      for i = 1:length(installed_packages)
+        if (exist(fullfile(pdirs{i}, "packinfo", ".autoload"), "file"))
+	  dirs{end+1} = pdirs{i};
+        endif
+      endfor
     ## load package_name1 ...
     else
         dirs = {};

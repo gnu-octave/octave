@@ -1,86 +1,10 @@
-<<<<<<< ChangeLog
-2007-01-24  David Bateman  <dbateman@free.fr>
+2007-01-30  David Bateman  <dbateman@free.fr>
 
-	* pkg/pkg.m: Install ChangeLog file if it exists.
-	Delete bare newline in string passed to write_INDEX.
+	* pkg/pkg.m (pkg, isautoload, install, load_packages): Add ability
+	to flag a package as to be autoloaded. Add install flags -noauto, 
+	-auto to force autoload behavior.
+	(installed_packages): Make list of installed packages unique.
 
-	* sparse/sprandsym.m: Make work for even values of N.
-
-2007-01-24  John W. Eaton  <jwe@octave.org>
-
-	* miscellaneous/news.m: New file.
-
-2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
-
-	* strings/strncmpi.m: Use strncmp instead of calling strtrunc on args.
-
-	* strings/strncmp.m: Delete (we now have a built-in version).
-
-2007-01-22  Bob Weigel <rweigel@gmu.edu>
-
-	* testfun/test.m: Check for all files in path, use first found.
-
-2007-01-22  David Bateman  <dbateman@free.fr>
-
-	* polynomial/spline.m: Make DG a column instead of a row vector.
-
-2007-01-18  Søren Hauberg  <hauberg@gmail.com>
-
-	* pkg/pkg.m (copy_files): Call write_INDEX with correct target
-	file name.
-
-	* image/ind2rgb.m: Better input checking.  Return 3-d array if
-	nargout is 1.  Handle colormaps that have too few colors.
-
-	* pkg/pkg.m (create_pkgadddel): Call fullfile with nm, not "nm".
-	(configure_make): Use fullfile instead of concatenating with "/".
-
-2007-01-10  Baylis Shanks  <bshanks3@hotmail.com>
-
-	* set/ismember.m: Handle N-d arrays.
-
-2007-01-10  David Bateman  <dbateman@free.fr>
-
-	* elfun/acosd.m, elfun/acotd.m, elfun/acscd.m, elfun/asecd.m,
-	elfun/asind.m, elfun/atand.m, elfun/cosd.m, elfun/cotd.m,
-	elfun/cscd.m, elfun/secd.m, elfun/sind.m, elfun/tand.m:
-	New files.
-
-2007-01-09  Søren Hauberg  <hauberg@gmail.com>
-
-         * pkg/pkg.m: Allow filenames to contain glob patterns.
-
-2007-01-08  Søren Hauberg  <hauberg@gmail.com>
-
-	* pkg/pkg.m: Use copyfile instead of calling system.  Use fullfile
-	instead of concatenating with "/".  Use mlock to ensure that
-	persistent variables are not clobbered if user types clear all.
-
-2007-01-08  John W. Eaton  <jwe@octave.org>
-
-	* miscellaneous/copyfile.m, miscellaneous/movefile.m:
-	Improve handling of file names containing globbing characters.
-	From Søren Hauberg <hauberg@gmail.com>.
-
-2007-01-05  John W. Eaton  <jwe@octave.org>
-
-	* optimization/optimset.m, optimization/__fsolve_defopts__.m:
-	New files.
-
-2006-12-30  John W. Eaton  <jwe@octave.org>
-
-	* sparse/spfun.m: Check for "function_handle" not "function handle".
-	* plot/fplot.m: Likewise.  Use isa instead of strcmp + class.
-
-2006-12-27  Søren Hauberg  <hauberg@gmail.com>
-
-	* image/imshow.m: Strip NaNs from image.
-
-2006-12-08  David Bateman  <dbateman@free.fr>
-
-	* sparse/normest.m: New file.
-
-=======
 2007-01-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/subplot.m: Set nextplot property of current figure to "add".
@@ -196,6 +120,31 @@
 	* plot/__uiobject_globals__.m: Call __lock_global__ when
 	initializing each global variable.
 
+2007-01-24  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m: Install ChangeLog file if it exists.
+	Delete bare newline in string passed to write_INDEX.
+
+	* sparse/sprandsym.m: Make work for even values of N.
+
+2007-01-24  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/news.m: New file.
+
+2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
+
+	* strings/strncmpi.m: Use strncmp instead of calling strtrunc on args.
+
+	* strings/strncmp.m: Delete (we now have a built-in version).
+
+2007-01-22  Bob Weigel <rweigel@gmu.edu>
+
+	* testfun/test.m: Check for all files in path, use first found.
+
+2007-01-22  David Bateman  <dbateman@free.fr>
+
+	* polynomial/spline.m: Make DG a column instead of a row vector.
+
 2007-01-18  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_globals__.m (__uiobject_handles_free_list__,
@@ -209,6 +158,17 @@
 	* plot/__uiobject_init_figure__.in: Perform allocation of figure
 	handles here.  Return figure handle.
 	* plot/figure.m: Call __uiobject_init_figure__ to allocate handle.
+
+2007-01-18  Søren Hauberg  <hauberg@gmail.com>
+
+	* pkg/pkg.m (copy_files): Call write_INDEX with correct target
+	file name.
+
+	* image/ind2rgb.m: Better input checking.  Return 3-d array if
+	nargout is 1.  Handle colormaps that have too few colors.
+
+	* pkg/pkg.m (create_pkgadddel): Call fullfile with nm, not "nm".
+	(configure_make): Use fullfile instead of concatenating with "/".
 
 2007-01-11  John W. Eaton  <jwe@octave.org>
 
@@ -249,6 +209,51 @@
 	__uiobject_list__.
 	* plot/clf.m, plot/closereq.m, plot/newplot.m: No need to remove
 	and free child.
+
+2007-01-10  Baylis Shanks  <bshanks3@hotmail.com>
+
+	* set/ismember.m: Handle N-d arrays.
+
+2007-01-10  David Bateman  <dbateman@free.fr>
+
+	* elfun/acosd.m, elfun/acotd.m, elfun/acscd.m, elfun/asecd.m,
+	elfun/asind.m, elfun/atand.m, elfun/cosd.m, elfun/cotd.m,
+	elfun/cscd.m, elfun/secd.m, elfun/sind.m, elfun/tand.m:
+	New files.
+
+2007-01-09  Søren Hauberg  <hauberg@gmail.com>
+
+         * pkg/pkg.m: Allow filenames to contain glob patterns.
+
+2007-01-08  Søren Hauberg  <hauberg@gmail.com>
+
+	* pkg/pkg.m: Use copyfile instead of calling system.  Use fullfile
+	instead of concatenating with "/".  Use mlock to ensure that
+	persistent variables are not clobbered if user types clear all.
+
+2007-01-08  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/copyfile.m, miscellaneous/movefile.m:
+	Improve handling of file names containing globbing characters.
+	From Søren Hauberg <hauberg@gmail.com>.
+
+2007-01-05  John W. Eaton  <jwe@octave.org>
+
+	* optimization/optimset.m, optimization/__fsolve_defopts__.m:
+	New files.
+
+2006-12-30  John W. Eaton  <jwe@octave.org>
+
+	* sparse/spfun.m: Check for "function_handle" not "function handle".
+	* plot/fplot.m: Likewise.  Use isa instead of strcmp + class.
+
+2006-12-27  Søren Hauberg  <hauberg@gmail.com>
+
+	* image/imshow.m: Strip NaNs from image.
+
+2006-12-08  David Bateman  <dbateman@free.fr>
+
+	* sparse/normest.m: New file.
 
 2006-12-08  John W. Eaton  <jwe@octave.org>
 
@@ -304,7 +309,6 @@
 	plot/contour.m, plot/mplot.m, plot/multiplot.m, plot/oneplot.m,
 	plot/plot_border.m, plot/subwindow.m: Delete.
 
->>>>>>> 1.656.2.18
 2006-12-06  Michael Goffioul  <michael.goffioul@swing.be>.
 
 	* miscellaneous/copyfile.m, miscellaneous/movefile.m:

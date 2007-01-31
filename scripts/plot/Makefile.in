@@ -42,6 +42,7 @@ SOURCES_M = \
   __uiobject_adopt__.m \
   __uiobject_axes_ctor__.m \
   __uiobject_axes_dtor__.m \
+  __uiobject_axes_setr__.m \
   __uiobject_delete__.m \
   __uiobject_draw_axes__.m \
   __uiobject_draw_figure__.m \

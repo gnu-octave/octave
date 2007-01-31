@@ -47,7 +47,9 @@ function image (x, y, img)
     ## Load Bobbie Jo Richardson (Born 3/16/94)
     img = loadimage ("default.img");
     x = y = [];
-  elseif (nargin == 1)
+  elseif (nargin == 1 || nargin == 2)
+    ## FIXME -- should we handle the old zoom argument?  How?  What
+    ## figure property should we be setting?
     img = x;
     x = y = [];
   elseif (nargin > 3)

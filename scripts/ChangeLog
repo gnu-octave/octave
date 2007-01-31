@@ -1,3 +1,7 @@
+2007-01-31  John W. Eaton  <jwe@octave.org>
+
+	* image/image.m: Accept 2 args, but ignore the second for now.
+
 2007-01-30  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (pkg, isautoload, install, load_packages): Add ability
@@ -5,14 +9,18 @@
 	-auto to force autoload behavior.
 	(installed_packages): Make list of installed packages unique.
 
-2007-01-29  John W. Eaton  <jwe@octave.org>
+2007-01-30  John W. Eaton  <jwe@octave.org>
+
+	* Merge of changes from graphics-branch:
+
+	2007-01-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/subplot.m: Set nextplot property of current figure to "add".
 
 	* plot/__uiobject_draw_axes__.m: Only handle outerposition
 	property if it exists.
 
-2007-01-26  John W. Eaton  <jwe@octave.org>
+	2007-01-26  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_draw_axes__.m: Move initialization of max and
 	min values outside of loop over child objects.
@@ -68,7 +76,7 @@
 	Arg is now handle, not object.  Change all callers.
 	Compute data limits.
 
-2007-01-25  John W. Eaton  <jwe@octave.org>
+	2007-01-25  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow: Fix visibility check for zero args.
 
@@ -113,39 +121,14 @@
 	from the list.
 	(SOURCES_IN): Add __uiobject_axes_init__.in to the list.
 
-2007-01-24  John W. Eaton  <jwe@octave.org>
+	2007-01-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/Makefile.in ($(GEN_M)): Depend on __uiobject_globals__.m.
 
 	* plot/__uiobject_globals__.m: Call __lock_global__ when
 	initializing each global variable.
 
-2007-01-24  David Bateman  <dbateman@free.fr>
-
-	* pkg/pkg.m: Install ChangeLog file if it exists.
-	Delete bare newline in string passed to write_INDEX.
-
-	* sparse/sprandsym.m: Make work for even values of N.
-
-2007-01-24  John W. Eaton  <jwe@octave.org>
-
-	* miscellaneous/news.m: New file.
-
-2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
-
-	* strings/strncmpi.m: Use strncmp instead of calling strtrunc on args.
-
-	* strings/strncmp.m: Delete (we now have a built-in version).
-
-2007-01-22  Bob Weigel <rweigel@gmu.edu>
-
-	* testfun/test.m: Check for all files in path, use first found.
-
-2007-01-22  David Bateman  <dbateman@free.fr>
-
-	* polynomial/spline.m: Make DG a column instead of a row vector.
-
-2007-01-18  John W. Eaton  <jwe@octave.org>
+	2007-01-18  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_globals__.m (__uiobject_handles_free_list__,
 	__uiobject_figure_handles_free_list__): New global variables.
@@ -159,18 +142,7 @@
 	handles here.  Return figure handle.
 	* plot/figure.m: Call __uiobject_init_figure__ to allocate handle.
 
-2007-01-18  Søren Hauberg  <hauberg@gmail.com>
-
-	* pkg/pkg.m (copy_files): Call write_INDEX with correct target
-	file name.
-
-	* image/ind2rgb.m: Better input checking.  Return 3-d array if
-	nargout is 1.  Handle colormaps that have too few colors.
-
-	* pkg/pkg.m (create_pkgadddel): Call fullfile with nm, not "nm".
-	(configure_make): Use fullfile instead of concatenating with "/".
-
-2007-01-11  John W. Eaton  <jwe@octave.org>
+	2007-01-11  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_draw_axes__.m: Use "%g", not "%.4g" when writing
 	data for gnuplot.
@@ -209,6 +181,96 @@
 	__uiobject_list__.
 	* plot/clf.m, plot/closereq.m, plot/newplot.m: No need to remove
 	and free child.
+
+	2006-12-08  John W. Eaton  <jwe@octave.org>
+
+	* plot/gcf.m: Check if the root figure object's currentfigure
+	handle is empty, not 0.
+	* plot/__uiobject_root_figure_ctor__.m:
+	Set currentfigure to [], not 0.
+
+	* plot/stairs.m: Handle matrix arguments.  Improve compatibility.
+
+	2006-12-07  John W. Eaton  <jwe@octave.org>
+
+	* plot/__plt_get_axis_arg__.m, plot/__uiobject_adopt__.m,
+	plot/__uiobject_alloc__.m, plot/__uiobject_axes_ctor__.m,
+	plot/__uiobject_axes_dtor__.m, plot/__uiobject_axes_init__.m,
+	plot/__uiobject_delete_children__.m,
+	plot/__uiobject_draw_axes__.m, plot/__uiobject_draw_figure__.m,
+	plot/__uiobject_figure_ctor__.m, plot/__uiobject_figures__.m,
+	plot/__uiobject_free__.m, plot/__uiobject_get_figure_handle__.m,
+	plot/__uiobject_get_handle__.m, plot/__uiobject_globals__.m,
+	plot/__uiobject_grow_list__.m, plot/__uiobject_handle2idx__.m,
+	plot/__uiobject_init_figure__.m,
+	plot/__uiobject_init_root_figure__.m,
+	plot/__uiobject_line_ctor__.m, plot/__uiobject_make_handle__.m,
+	plot/__uiobject_remove_child__.m,
+	plot/__uiobject_root_figure_ctor__.m,
+	plot/__uiobject_surface_ctor__.m, plot/__uiobject_text_ctor__.m,
+	plot/axes.m, plot/box.m, plot/closereq.m, plot/delete.m,
+	plot/drawnow.m, plot/gca.m, plot/gcf.m, plot/get.m,
+	plot/isfigure.m, plot/ishandle.m, plot/line.m, plot/newplot.m,
+	plot/set.m: New files.
+
+	* plot/__plt3__.m, plot/errorbar.m, plot/__axis_label__.m,
+	plot/__plr1__.m, plot/__errcomm__.m, plot/print.m, plot/zlabel.m,
+	plot/__plt1__.m, plot/__plt2__.m, plot/sombrero.m, plot/shg.m,
+	plot/fplot.m, plot/ndgrid.m, plot/clf.m, plot/hold.m,
+	plot/ishold.m, plot/meshdom.m, plot/ylabel.m, plot/__plt2ss__.m,
+	plot/__plt2vv__.m, plot/__plr2__.m, plot/__plt2mm__.m,
+	plot/__pltopt1__.m, plot/meshgrid.m, plot/__plt2mv__.m,
+	plot/figure.m, plot/xlabel.m, plot/stairs.m, plot/__plt2vm__.m,
+	plot/bar.m, plot/__errplot__.m, plot/semilogx.m, plot/semilogy.m,
+	plot/loglog.m, plot/polar.m, plot/legend.m, plot/orient.m,
+	plot/title.m, plot/__pltopt__.m, plot/grid.m, plot/hist.m,
+	plot/subplot.m, plot/plot.m, plot/mesh.m, plot/__plt__.m,
+	plot/close.m, plot/loglogerr.m, plot/plot3.m, plot/semilogxerr.m,
+	plot/semilogyerr.m, plot/replot.m:
+	Adapt to new graphics data structure.
+
+	* plot/__do_legend__.m, plot/__gnuplot_version__.m,
+	plot/__init_plot_vars__.m, plot/__make_using_clause__.m,
+	plot/__plot_globals__.m, plot/__plr__.m, plot/__render_plot1__.m,
+	plot/__render_plot__.m, plot/__setup_plot__.m, plot/axis.m,
+	plot/contour.m, plot/mplot.m, plot/multiplot.m, plot/oneplot.m,
+	plot/plot_border.m, plot/subwindow.m: Delete.
+
+2007-01-24  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m: Install ChangeLog file if it exists.
+	Delete bare newline in string passed to write_INDEX.
+
+	* sparse/sprandsym.m: Make work for even values of N.
+
+2007-01-24  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/news.m: New file.
+
+2007-01-23  Luis F. Ortiz  <lortiz@interactivesupercomputing.com>
+
+	* strings/strncmpi.m: Use strncmp instead of calling strtrunc on args.
+
+	* strings/strncmp.m: Delete (we now have a built-in version).
+
+2007-01-22  Bob Weigel <rweigel@gmu.edu>
+
+	* testfun/test.m: Check for all files in path, use first found.
+
+2007-01-22  David Bateman  <dbateman@free.fr>
+
+	* polynomial/spline.m: Make DG a column instead of a row vector.
+
+2007-01-18  Søren Hauberg  <hauberg@gmail.com>
+
+	* pkg/pkg.m (copy_files): Call write_INDEX with correct target
+	file name.
+
+	* image/ind2rgb.m: Better input checking.  Return 3-d array if
+	nargout is 1.  Handle colormaps that have too few colors.
+
+	* pkg/pkg.m (create_pkgadddel): Call fullfile with nm, not "nm".
+	(configure_make): Use fullfile instead of concatenating with "/".
 
 2007-01-10  Baylis Shanks  <bshanks3@hotmail.com>
 
@@ -254,60 +316,6 @@
 2006-12-08  David Bateman  <dbateman@free.fr>
 
 	* sparse/normest.m: New file.
-
-2006-12-08  John W. Eaton  <jwe@octave.org>
-
-	* plot/gcf.m: Check if the root figure object's currentfigure
-	handle is empty, not 0.
-	* plot/__uiobject_root_figure_ctor__.m:
-	Set currentfigure to [], not 0.
-
-	* plot/stairs.m: Handle matrix arguments.  Improve compatibility.
-
-2006-12-07  John W. Eaton  <jwe@octave.org>
-
-	* plot/__plt_get_axis_arg__.m, plot/__uiobject_adopt__.m,
-	plot/__uiobject_alloc__.m, plot/__uiobject_axes_ctor__.m,
-	plot/__uiobject_axes_dtor__.m, plot/__uiobject_axes_init__.m,
-	plot/__uiobject_delete_children__.m,
-	plot/__uiobject_draw_axes__.m, plot/__uiobject_draw_figure__.m,
-	plot/__uiobject_figure_ctor__.m, plot/__uiobject_figures__.m,
-	plot/__uiobject_free__.m, plot/__uiobject_get_figure_handle__.m,
-	plot/__uiobject_get_handle__.m, plot/__uiobject_globals__.m,
-	plot/__uiobject_grow_list__.m, plot/__uiobject_handle2idx__.m,
-	plot/__uiobject_init_figure__.m,
-	plot/__uiobject_init_root_figure__.m,
-	plot/__uiobject_line_ctor__.m, plot/__uiobject_make_handle__.m,
-	plot/__uiobject_remove_child__.m,
-	plot/__uiobject_root_figure_ctor__.m,
-	plot/__uiobject_surface_ctor__.m, plot/__uiobject_text_ctor__.m,
-	plot/axes.m, plot/box.m, plot/closereq.m, plot/delete.m,
-	plot/drawnow.m, plot/gca.m, plot/gcf.m, plot/get.m,
-	plot/isfigure.m, plot/ishandle.m, plot/line.m, plot/newplot.m,
-	plot/set.m: New files.
-
-	* plot/__plt3__.m, plot/errorbar.m, plot/__axis_label__.m,
-	plot/__plr1__.m, plot/__errcomm__.m, plot/print.m, plot/zlabel.m,
-	plot/__plt1__.m, plot/__plt2__.m, plot/sombrero.m, plot/shg.m,
-	plot/fplot.m, plot/ndgrid.m, plot/clf.m, plot/hold.m,
-	plot/ishold.m, plot/meshdom.m, plot/ylabel.m, plot/__plt2ss__.m,
-	plot/__plt2vv__.m, plot/__plr2__.m, plot/__plt2mm__.m,
-	plot/__pltopt1__.m, plot/meshgrid.m, plot/__plt2mv__.m,
-	plot/figure.m, plot/xlabel.m, plot/stairs.m, plot/__plt2vm__.m,
-	plot/bar.m, plot/__errplot__.m, plot/semilogx.m, plot/semilogy.m,
-	plot/loglog.m, plot/polar.m, plot/legend.m, plot/orient.m,
-	plot/title.m, plot/__pltopt__.m, plot/grid.m, plot/hist.m,
-	plot/subplot.m, plot/plot.m, plot/mesh.m, plot/__plt__.m,
-	plot/close.m, plot/loglogerr.m, plot/plot3.m, plot/semilogxerr.m,
-	plot/semilogyerr.m, plot/replot.m:
-	Adapt to new graphics data structure.
-
-	* plot/__do_legend__.m, plot/__gnuplot_version__.m,
-	plot/__init_plot_vars__.m, plot/__make_using_clause__.m,
-	plot/__plot_globals__.m, plot/__plr__.m, plot/__render_plot1__.m,
-	plot/__render_plot__.m, plot/__setup_plot__.m, plot/axis.m,
-	plot/contour.m, plot/mplot.m, plot/multiplot.m, plot/oneplot.m,
-	plot/plot_border.m, plot/subwindow.m: Delete.
 
 2006-12-06  Michael Goffioul  <michael.goffioul@swing.be>.
 

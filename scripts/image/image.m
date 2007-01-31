@@ -88,6 +88,4 @@ function image (x, y, img)
     h = tmp;
   endif
 
-  drawnow ();
-
 endfunction

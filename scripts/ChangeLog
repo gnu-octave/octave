@@ -1,5 +1,7 @@
 2007-01-31  John W. Eaton  <jwe@octave.org>
 
+	* image/image.m: Don't call drawnow.
+
 	* plot/__gnuplot_version__.m: Restore from CVS Attic.
 	* plot/Makefile.in (SOURCES_M): Add it to the list.
 

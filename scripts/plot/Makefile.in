@@ -25,6 +25,7 @@ SOURCES_M = \
   __errcomm__.m \
   __default_colormap__.m \
   __errplot__.m \
+  __gnuplot_version__.m \
   __plr1__.m \
   __plr2__.m \
   __plt1__.m \

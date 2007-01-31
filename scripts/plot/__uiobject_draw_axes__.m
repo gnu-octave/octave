@@ -428,7 +428,6 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	      k++;
 	    endfor
 	    data{data_idx} = zz;
-	    h = __gnuplot_save_data__ (zz, 3, false);
 	  endif
 	  usingclause{data_idx} = "using ($1):($2):($3)";
 	  withclause{data_idx} = "with line palette";

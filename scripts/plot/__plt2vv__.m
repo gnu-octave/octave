@@ -67,6 +67,7 @@ function __plt2vv__ (h, x, y, fmt, key)
     if (! isempty (key))
       set (h, "key", "on");
     endif
+    fmt{1}
     ## FIXME -- need to handle labels and line format.
     line (x, y, "keylabel", key);
   else

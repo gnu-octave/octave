@@ -175,9 +175,6 @@ function plot (varargin)
 
   newplot ();
 
-  ## [h, varargin] = __plt_get_axis_arg__ ("plot", varargin{:});
-  h = gca ();
-
-  __plt__ ("plot", h, varargin{:});
+  __plt__ ("plot", gca (), varargin{:});
 
 endfunction

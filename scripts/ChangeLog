@@ -1,6 +1,11 @@
 2007-01-31  John W. Eaton  <jwe@octave.org>
 
-	* image/image.m: Don't call drawnow.
+	* plot/__uiobject_draw_axes__.m: Set defaults for color,
+	linestyle, linewidth, marker, and markersize properties.
+	* plot/__uiobject_draw_axes__.m: Attempt to handle line and marker
+	colors and widths, and line styles.
+
+	* plot/__plt__.m, image/image.m: Don't call drawnow.
 
 	* plot/__gnuplot_version__.m: Restore from CVS Attic.
 	* plot/Makefile.in (SOURCES_M): Add it to the list.

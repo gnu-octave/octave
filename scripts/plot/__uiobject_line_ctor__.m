@@ -41,7 +41,12 @@ function s = __uiobject_line_ctor__ (p)
     s.xldata = [];
     s.xudata = [];
 
-    s.color = [];
+    s.color = [0, 0, 1];
+    s.linestyle = "-";
+    s.linewidth = 0.5;
+
+    s.marker = "none";
+    s.markersize = 1;
 
     s.keylabel = "";
 

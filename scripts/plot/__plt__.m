@@ -77,8 +77,6 @@ function __plt__ (caller, h, varargin)
 
     endwhile
 
-    drawnow ();
-
   else
     msg = sprintf ("%s (y)\n", caller);
     msg = sprintf ("%s       %s (x, y, ...)\n", msg, caller);

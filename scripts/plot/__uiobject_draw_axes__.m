@@ -248,8 +248,10 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	  else
 	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
 	  endif
+	  style = do_linestyle_command (obj, data_idx, plot_stream);
 	  usingclause{data_idx} = "";
-	  withclause{data_idx} = "";
+	  withclause{data_idx} = sprintf ("with %s linestyle %d",
+					  style, data_idx);
 	  parametric(i) = true;
 	  if (! isempty (obj.zdata))
 	    nd = 3;
@@ -321,7 +323,8 @@ function __uiobject_draw_axes__ (h, plot_stream)
 		endif
 		data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4):($5):($6)";
-		withclause{data_idx} = "with xyerrorbars";
+		withclause{data_idx} = sprintf ("with xyerrorbars linestyle %d",
+						data_idx);
 	      else
 		if (xautoscale)
 		  xmin = min (xmin, min (xdat));
@@ -330,7 +333,8 @@ function __uiobject_draw_axes__ (h, plot_stream)
 		endif
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4)";
-		withclause{data_idx} = "with yerrorbars";
+		withclause{data_idx} = sprintf ("with yerrorbars linestyle %d",
+						data_idx);
 	      endif
 	    elseif (xerr)
 	      xlo = xdat-xldat;
@@ -348,7 +352,8 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
 	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
-	      withclause{data_idx} = "with xerrorbars";
+	      withclause{data_idx} = sprintf ("with xerrorbars linestyle %d",
+					      data_idx);
 	    else
 	      if (xautoscale)
 		xmin = min (xmin, min (xdat));
@@ -367,13 +372,15 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
 	case "surface"
 	  data_idx++;
+	  style = do_linestyle_command (obj, data_idx, plot_stream);
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "";
 	  else
 	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
 	  endif
 	  usingclause{data_idx} = "";
-	  withclause{data_idx} = "";
+	  withclause{data_idx} = sprintf ("with %s linestyle %d",
+					  style, data_idx);
 	  parametric(i) = false;
 	  nd = 3;
 	  xdat = obj.xdata;
@@ -651,5 +658,104 @@ function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
   endif
 
   lim = [min_val, max_val];
+
+endfunction
+
+function style = do_linestyle_command (obj, idx, plot_stream)
+
+  fprintf (plot_stream, "set style line %d default;\n", idx);
+  fprintf (plot_stream, "set style line %d", idx);
+
+  found_style = false;
+
+  if (isfield (obj, "color"))
+    color = obj.color;
+    if (isnumeric (color))
+      fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+	       round (255*color));
+    endif
+    found_style = true;
+  endif
+
+  if (isfield (obj, "linestyle"))
+    switch (obj.linestyle)
+      case "-"
+	lt = "lines";
+      case "--"
+	lt = "";
+      case ":"
+	lt = "";
+      case "-."
+	lt = "";
+      case "none"
+	lt = "";
+      otherwise
+	lt = "";
+    endswitch
+  endif
+
+  if (isfield (obj, "linewidth"))
+    fprintf (plot_stream, " linewidth %f", obj.linewidth);
+    found_style = true;
+  endif
+
+  if (isfield (obj, "marker"))
+    switch (obj.marker)
+      case "+"
+	pt = "1";
+      case "o"
+	pt = "7";
+      case "*"
+	pt = "3";
+      case "."
+	pt = "dots";
+      case "x"
+	pt = "2";
+      case {"square", "s"}
+	pt = "5";
+      case {"diamond", "d"}
+	pt = "13";
+      case "^"
+	pt = "9";
+      case "v"
+	pt = "11";
+      case ">"
+	pt = "8";
+      case "<"
+	pt = "10";
+      case {"pentagram", "p"}
+	pt = "4";
+      case {"hexagram", "h"'}
+	pt = "6";
+      case "none"
+	pt = "";
+      otherwise
+	pt = "";
+    endswitch
+    if (! isempty (pt))
+      fprintf (plot_stream, " pointtype %s", pt);
+      found_style = true;
+    endif
+  endif
+
+  if (isfield (obj, "markersize"))
+    fprintf (plot_stream, " pointsize %f", obj.markersize);
+    found_style = true;
+  endif
+
+  style = "lines";
+  if (isempty (lt))
+    if (! isempty (pt))
+      style = "points"
+    endif
+  elseif (! isempty (pt))
+    style = "linespoints";
+  endif
+
+  if (! found_style)
+    fputs (plot_stream, " default");
+  endif
+
+  fputs (plot_stream, "\n;");
 
 endfunction

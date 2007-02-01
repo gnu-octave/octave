@@ -21,67 +21,61 @@
 ## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
 ## Decode plot option strings.
 ##
-## If @var{opt} is a valid option string, return a string of the form
-## @code{"w l 2"} ("with lines 2").  Uses abbreviations for the options
-## to avoid overrunning gnuplot's command line buffer unnecessarily.
-##
 ## @var{opt} can currently be some combination of the following:
 ##
 ## @table @code
 ## @item "-"
-## For lines plot style (default).
+## For solid linestyle (default).
 ##
-## @item "."
-## For dots plot style.
+## @item "--"
+## For dashed line style.
 ##
-## @item "@@"
-## For points plot style.
-##
-## @item "-@@"
+## @item "-."
 ## For linespoints plot style.
 ##
-## @item "^"
-## For impulses plot style.
+## @item ":"
+## For dots plot style.
 ##
-## @item "L"
-## For steps plot style.
+## @item "r"
+## Red line color.
 ##
-## @item "#"
-## For boxes plot style.
+## @item "g"
+## Green line color.
 ##
-## @item "~"
-## For yerrorbars plot style.
+## @item "b"
+## Blue line color.
 ##
-## @item ">"
-## For xerrorbars plot style.
+## @item "c"
+## Cyan line color.
 ##
-## @item "~>"
-## For xyerrorbars plot style.
+## @item "m"
+## Magenta line color.
 ##
-## @item "#~"
-## For boxerrorbars plot style.
+## @item "y"
+## Yellow line color.
 ##
-## @item "#~>"
-## For boxxyerrorbars plot style.
+## @item "k"
+## Black line color.
 ##
-## @item "n"
-## With @code{n} in 1-6 (wraps at 8), plot color
-##
-## @item "nm"
-## With @code{m} in 1-6 (wraps at 6), point style (only valid for @code{"@@"} or
-## @code{"-@@"})
-##
-## @item @var{c}
-## Where @var{c} is one of @code{"r"}, @code{"g"}, @code{"b"}, @code{"m"},
-## @code{"c"}, or @code{"w"} colors.
+## @item "w"
+## White line color.
 ##
 ## @item ";title;"
 ## Here @code{"title"} is the label for the key.
 ##
-## @item +
-## @itemx *
-## @itemx o
-## @itemx x
+## @item "+"
+## @itemx "o"
+## @itemx "*"
+## @itemx "."
+## @itemx "x"
+## @itemx "s"
+## @itemx "d"
+## @itemx "^"
+## @itemx "v"
+## @itemx ">"
+## @itemx "<"
+## @itemx "p"
+## @itemx "h"
 ## Used in combination with the points or linespoints styles, set the point
 ## style.
 ## @end table
@@ -89,20 +83,6 @@
 ## The legend may be fixed to include the name of the variable
 ## plotted in some future version of Octave.
 ##
-## The colors, line styles, and point styles have the following
-## meanings for X11 and Postscript terminals under Gnuplot 3.6.
-##
-## @example
-## Number ------ Color -------  Line Style      ---- Points Style ----
-##        x11       postscript  postscript      x11         postscript
-## =====================================================================
-##   1    red       green       solid           "o"         "+"
-##   2    green     blue        long dash       "+"         "x"
-##   3    blue      red         short dash     square       "*"
-##   4    magenta   magenta     dotted          "x"        open square
-##   5    cyan      cyan        dot long dash  triangle    filled square
-##   6    brown     yellow      dot short dash  "*"         "o"
-## @end example
 ## @seealso{__pltopt1__}
 ## @end deftypefn
 

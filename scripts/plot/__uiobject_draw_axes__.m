@@ -468,7 +468,9 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     endfor
 
-    if (xautoscale)
+    have_data = ! isempty (data);
+
+    if (xautoscale && have_data)
       xlim = get_axis_limits (xmin, xmax, xminp, xlogscale);
       set (h, "xlim", xlim);
     else
@@ -476,7 +478,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
     endif
     fprintf (plot_stream, "set xrange [%g:%g];\n", xlim);
 
-    if (yautoscale)
+    if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
       set (h, "ylim", ylim);
     else
@@ -485,7 +487,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
     fprintf (plot_stream, "set yrange [%g:%g];\n", ylim);
 
     if (nd == 3)
-      if (zautoscale)
+      if (zautoscale && have_data)
 	zlim = get_axis_limits (zmin, zmax, zminp, zlogscale);
 	set (h, "zlim", zlim);
       else

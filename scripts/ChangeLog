@@ -1,5 +1,8 @@
 2007-02-01  John W. Eaton  <jwe@octave.org>
 
+	* plot/__uiobject_draw_axes__.m:
+	Don't try to set axis limits unless we have data.
+
 	*  plot/__plt1__.m, plot/__plt2__.m, plot/__plt2mm__.m,
 	plot/__plt2mv__.m, plot/__plt2ss__.m, plot/__plt2vm__.m,
 	plot/__plt2vv__.m, plot/__plt__.m, plot/__pltopt1__.m,

@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2007 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,41 +18,37 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt1__ (@var{h}, @var{x1}, @var{fmt}, @var{key})
+## @deftypefn {Function File} {} __next_line_color__ (@var{reset})
+## Return the next line color in the rotation.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt1__ (h, x1, options)
+function rgb = __next_line_color__ (reset)
 
-  if (nargin < 2 || nargin > 3)
+  persistent color_rotation = [ 0,    0,    1;
+				0,    0.5,  0;
+				1,    0,    0;
+				0,    0.75, 0.75;
+				0.75, 0,    0.75;
+				0.75, 0.75, 0;
+				0.25, 0.25, 0.25];
+
+  persistent num_colors = rows (color_rotation);
+  persistent color_index = 1;
+
+  if (nargin < 2)
+    if (nargin == 1 && reset)
+      color_index = 1;
+    else
+      color_index
+      rgb = color_rotation(color_index,:)
+      if (++color_index > num_colors)
+	color_index = 1;
+      endif
+    endif
+  else
     print_usage ();
   endif
-
-  if (nargin < 3 || isempty (options))
-    options = __default_plot_options__ ();
-  endif
-
-  if (! isstruct (options))
-    error ("__plt1__: options must be a struct array");
-  endif
-
-  [nr, nc] = size (x1);
-  if (nr == 1)
-    x1 = x1.';
-    tmp = nr;
-    nr = nc;
-    nc = tmp;
-  endif
-  x1_i = imag (x1);
-  if (any (any (x1_i)))
-    x2 = x1_i;
-    x1 = real (x1);
-  else
-    x2 = x1;
-    x1 = (1:nr)';
-  endif
-
-  __plt2__ (h, x1, x2, options);
 
 endfunction

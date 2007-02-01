@@ -1,3 +1,23 @@
+2007-02-01  John W. Eaton  <jwe@octave.org>
+
+	*  plot/__plt1__.m, plot/__plt2__.m, plot/__plt2mm__.m,
+	plot/__plt2mv__.m, plot/__plt2ss__.m, plot/__plt2vm__.m,
+	plot/__plt2vv__.m, plot/__plt__.m, plot/__pltopt1__.m,
+	plot/__pltopt__.m, plot/plot3.m: Set and use options struct
+	instead of of key and fmt strings.
+
+	* plot/__pltopt1__.m: Greatly simplify.
+
+	* plot/__next_line_color__.m: New file.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+	* plot/newplot.m: Call __next_line_color__ here to reset rotation.
+
+	* plot/__default_plot_options__.m: New file.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+
+	* plot/__plt3__.m: Delete.
+	* plot/Makefile.in (SOURCES_M): Remove it from the list.
+
 2007-01-31  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_draw_axes__.m: Set defaults for color,

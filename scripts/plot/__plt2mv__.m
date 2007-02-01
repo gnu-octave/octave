@@ -18,23 +18,19 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2mv__ (@var{h}, @var{x}, @var{y}, @var{fmt}, @var{key})
+## @deftypefn {Function File} {} __plt2mv__ (@var{h}, @var{x}, @var{y}, @var{options})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt2mv__ (h, x, y, fmt, key)
+function __plt2mv__ (h, x, y, options)
 
-  if (nargin < 3 || nargin > 5)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 
-  if (nargin < 4 || isempty (fmt))
-    fmt = {""};
-  endif
-
-  if (nargin < 5 || isempty (key))
-    key = {""};
+  if (nargin < 4 || isempty (options))
+    options = __default_plot_options__ ();
   endif
 
   [x_nr, x_nc] = size (x);
@@ -59,19 +55,21 @@ function __plt2mv__ (h, x, y, fmt, key)
   endif
 
   if (x_nc > 0)
-    if (rows (fmt) == 1)
-      fmt = repmat (fmt, x_nc, 1);
-    endif
-    if (rows (key) == 1)
-      key = repmat (key, x_nc, 1);
+    if (numel (options) == 1)
+      options = repmat (options(:), x_nc, 1);
     endif
     for i = 1:x_nc
-      ## FIXME -- need to handle labels and line format.
-      tkey = key{i};
+      tkey = options(i).key;
       if (! isempty (tkey))
 	set (h, "key", "on");
       endif
-      line (x(:,i), y, "keylabel", tkey);
+      color = options(i).color;
+      if (isempty (color))
+	color = __next_line_color__ ();
+      endif
+      line (x(:,i), y, "keylabel", tkey, "color", color,
+	    "linestyle", options(i).linestyle,
+	    "marker", options(i).marker);
     endfor
   else
     error ("__plt2mv__: arguments must be a matrices");

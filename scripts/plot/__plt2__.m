@@ -18,31 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2__ (@var{h}, @var{x1}, @var{x2}, @var{fmt}, @var{key})
+## @deftypefn {Function File} {} __plt2__ (@var{h}, @var{x1}, @var{x2}, @var{options})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt2__ (h, x1, x2, fmt, key)
+function __plt2__ (h, x1, x2, options)
 
-  if (nargin < 3 || nargin > 5)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 
-  if (nargin < 4 || isempty (fmt))
-    fmt = {""};
+  if (nargin < 4 || isempty (options))
+    options = __default_plot_options__ ();
   endif
 
-  if (nargin < 5 || isempty (key))
-    key = {""};
-  endif
-
-  if (! iscellstr (fmt))
-    error ("__plt1__: fmt must be a cell array of character strings");
-  endif
-
-  if (! iscell (key))
-    error ("__plt1__: fmt must be a cell array");
+  if (! isstruct (options))
+    error ("__plt1__: options must be a struct array");
   endif
 
   if (any (any (imag (x1))))
@@ -55,23 +47,23 @@ function __plt2__ (h, x1, x2, fmt, key)
 
   if (isscalar (x1))
     if (isscalar (x2))
-      __plt2ss__ (h, x1, x2, fmt, key);
+      __plt2ss__ (h, x1, x2, options);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
     if (isvector (x2))
-      __plt2vv__ (h, x1, x2, fmt, key);
+      __plt2vv__ (h, x1, x2, options);
     elseif (ismatrix (x2))
-      __plt2vm__ (h, x1, x2, fmt, key);
+      __plt2vm__ (h, x1, x2, options);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (ismatrix (x1))
     if (isvector (x2))
-      __plt2mv__ (h, x1, x2, fmt, key);
+      __plt2mv__ (h, x1, x2, options);
     elseif (ismatrix (x2))
-      __plt2mm__ (h, x1, x2, fmt, key);
+      __plt2mm__ (h, x1, x2, options);
     else
       error ("__plt2__: invalid data for plotting");
     endif

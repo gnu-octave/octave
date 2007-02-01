@@ -41,6 +41,7 @@ function newplot ()
       case "add"
       case "replacechildren"
       case "replace"
+	__next_line_color__ (true);
 	__uiobject_axes_init__ (ca);
       otherwise
 	error ("newplot: unrecognized nextplot property for current axes");

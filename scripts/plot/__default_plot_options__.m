@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2007 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,41 +18,18 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt1__ (@var{h}, @var{x1}, @var{fmt}, @var{key})
+## @deftypefn {Function File} {} __default_plot_options__ ()
+## Return a default options structure for __pltopt__.
+## @seealso{__pltopt__}
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt1__ (h, x1, options)
+function options = __default_plot_options__ ()
 
-  if (nargin < 2 || nargin > 3)
-    print_usage ();
-  endif
-
-  if (nargin < 3 || isempty (options))
-    options = __default_plot_options__ ();
-  endif
-
-  if (! isstruct (options))
-    error ("__plt1__: options must be a struct array");
-  endif
-
-  [nr, nc] = size (x1);
-  if (nr == 1)
-    x1 = x1.';
-    tmp = nr;
-    nr = nc;
-    nc = tmp;
-  endif
-  x1_i = imag (x1);
-  if (any (any (x1_i)))
-    x2 = x1_i;
-    x1 = real (x1);
-  else
-    x2 = x1;
-    x1 = (1:nr)';
-  endif
-
-  __plt2__ (h, x1, x2, options);
+  options.key = "";
+  options.color = [];
+  options.linestyle = "-";
+  options.marker = "none";
 
 endfunction

@@ -108,9 +108,9 @@
 
 ## Author: jwe
 
-function [fmt, keystr] = __pltopt__ (caller, opt)
+function options = __pltopt__ (caller, opt)
 
-  if (nargin == 2 && nargout == 2)
+  if (nargin == 2 && nargout == 1)
     if (ischar (opt))
       nel = rows (opt);
     elseif (iscellstr (opt))
@@ -118,15 +118,11 @@ function [fmt, keystr] = __pltopt__ (caller, opt)
     else
       error ("__pltopt__: expecting argument to be character string or cell array of character strings");
     endif
-    fmt = cell (nel, 1);
-    keystr = cell (nel, 1);
     if (ischar (opt))
       opt = cellstr (opt);
     endif
-    for i = 1:nel
-      [tfmt, tkey]  = __pltopt1__ (caller, opt{i});
-      fmt{i} = tfmt;
-      keystr{i} = tkey;
+    for i = nel:-1:1
+      options(i) = __pltopt1__ (caller, opt{i});
     endfor
   else
     print_usage ();

@@ -22,10 +22,12 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES_M = \
   __axis_label__.m \
-  __errcomm__.m \
   __default_colormap__.m \
+  __default_plot_options__.m \
+  __errcomm__.m \
   __errplot__.m \
   __gnuplot_version__.m \
+  __next_line_color__.m \
   __plr1__.m \
   __plr2__.m \
   __plt1__.m \
@@ -35,7 +37,6 @@ SOURCES_M = \
   __plt2ss__.m \
   __plt2vm__.m \
   __plt2vv__.m \
-  __plt3__.m \
   __plt__.m \
   __plt_get_axis_arg__.m \
   __pltopt1__.m \

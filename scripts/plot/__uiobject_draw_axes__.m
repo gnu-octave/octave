@@ -725,7 +725,7 @@ function style = do_linestyle_command (obj, idx, plot_stream)
 	pt = "10";
       case {"pentagram", "p"}
 	pt = "4";
-      case {"hexagram", "h"'}
+      case {"hexagram", "h"}
 	pt = "6";
       case "none"
 	pt = "";

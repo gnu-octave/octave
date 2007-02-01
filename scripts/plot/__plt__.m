@@ -49,11 +49,11 @@ function __plt__ (caller, h, varargin)
 
       if (ischar (next_arg) || iscellstr (next_arg))
 	if (x_set)
-	  [fmt, key] = __pltopt__ (caller, next_arg);
+	  options = __pltopt__ (caller, next_arg);
 	  if (y_set)
-	    __plt2__ (h, x, y, fmt, key);
+	    __plt2__ (h, x, y, options);
 	  else
-	    __plt1__ (h, x, fmt, key);
+	    __plt1__ (h, x, options);
 	  endif
 	  x_set = false;
 	  y_set = false;
@@ -62,8 +62,8 @@ function __plt__ (caller, h, varargin)
 	endif
       elseif (x_set)
 	if (y_set)
-	  [fmt, key] = __pltopt__ (caller, {""});
-	  __plt2__ (h, x, y, fmt, key);
+	  options = __pltopt__ (caller, {""});
+	  __plt2__ (h, x, y, options);
 	  x = next_arg;
 	  y_set = false;
 	else

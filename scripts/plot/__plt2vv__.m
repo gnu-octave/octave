@@ -18,31 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2vv__ (@var{h}, @var{x}, @var{y}, @var{fmt}, @var{key})
+## @deftypefn {Function File} {} __plt2vv__ (@var{h}, @var{x}, @var{y}, @var{options})
 ## @end deftypefn
 
 ## Author: jwe
 
-function __plt2vv__ (h, x, y, fmt, key)
+function __plt2vv__ (h, x, y, options)
 
-  if (nargin < 3 || nargin > 5)
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 
-  if (nargin < 4 || isempty (fmt))
-    fmt = {""};
+  if (nargin < 4 || isempty (options))
+    options = __default_plot_options__ ();
   endif
 
-  if (nargin < 5 || isempty (key))
-    key = {""};
-  endif
-
-  if (rows (fmt) > 1)
-    fmt = fmt(1);
-  endif
-
-  if (rows (key) > 1)
-    key = key(1);
+  if (numel (options) > 1)
+    options = options(1);
   endif
 
   [x_nr, x_nc] = size (x);
@@ -63,13 +55,17 @@ function __plt2vv__ (h, x, y, fmt, key)
   endif
 
   if (x_nr == y_nr)
-    key = key{1};
+    key = options.key;
     if (! isempty (key))
       set (h, "key", "on");
     endif
-    fmt{1}
-    ## FIXME -- need to handle labels and line format.
-    line (x, y, "keylabel", key);
+    color = options.color;
+    if (isempty (color))
+      color = __next_line_color__ ();
+    endif
+    line (x, y, "keylabel", key, "color", color,
+	  "linestyle", options.linestyle,
+	  "marker", options.marker);
   else
     error ("__plt2vv__: vector lengths must match");
   endif

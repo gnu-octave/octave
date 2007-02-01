@@ -195,7 +195,7 @@ function plot3 (varargin)
 	  z_set = 1;
 	endif
       endif
-      [fmt, key] = __pltopt__ ("plot3", new);
+      options = __pltopt__ ("plot3", new);
 
       if (isvector (x) && isvector (y))
 	if (isvector (z))
@@ -213,10 +213,15 @@ function plot3 (varargin)
 	error ("plot3: x, y, and z must have the same shape");
       endif
 
-      line (x(:), y(:), z(:));
+      key = options.key;
+      if (! isempty (key))
+	set (gca (), "key", "on");
+      endif
 
-      ## FIXME -- what about fmt and key?
-      ## fmt{1}, key{1});
+      line (x(:), y(:), z(:), "keylabel", key,
+	    "color", options.color,
+	    "linestyle", options.linestyle,
+	    "marker", options.marker);
 
       x_set = 0;
       y_set = 0;

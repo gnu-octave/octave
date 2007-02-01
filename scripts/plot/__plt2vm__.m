@@ -59,7 +59,7 @@ function __plt2vm__ (h, x, y, options)
       options = repmat (options(:), y_nc, 1);
     endif
     for i = 1:y_nc
-      tkey = options(i).key
+      tkey = options(i).key;
       if (! isempty (tkey))
 	set (h, "key", "on");
       endif

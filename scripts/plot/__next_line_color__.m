@@ -41,8 +41,7 @@ function rgb = __next_line_color__ (reset)
     if (nargin == 1 && reset)
       color_index = 1;
     else
-      color_index
-      rgb = color_rotation(color_index,:)
+      rgb = color_rotation(color_index,:);
       if (++color_index > num_colors)
 	color_index = 1;
       endif

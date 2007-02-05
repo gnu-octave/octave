@@ -1,3 +1,8 @@
+2007-02-05  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* plot/__uiobject_draw_axes__.m (do_linestyle_command):
+	Always set lt and pt.
+
 2007-02-05  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* plot/contourc.m: Correctly compute X and Y.

@@ -694,6 +694,8 @@ function style = do_linestyle_command (obj, idx, plot_stream)
       otherwise
 	lt = "";
     endswitch
+  else
+    lt = "";
   endif
 
   if (isfield (obj, "linewidth"))
@@ -738,6 +740,8 @@ function style = do_linestyle_command (obj, idx, plot_stream)
       fprintf (plot_stream, " pointtype %s", pt);
       found_style = true;
     endif
+  else
+    pt = "";
   endif
 
   if (isfield (obj, "markersize"))

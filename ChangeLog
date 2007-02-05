@@ -1,3 +1,7 @@
+2007-02-05  John W. Eaton  <jwe@octave.org>
+
+	* demo.m: Delete obsolete file.
+
 2007-01-29  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* configure.in (*-*-msdosmsvc): Set NO_OCT_FILE_STRIP to true.

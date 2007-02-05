@@ -244,7 +244,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	case "line"
 	  data_idx++;
 	  if (isempty (obj.keylabel))
-	    titlespec{data_idx} = "";
+	    titlespec{data_idx} = "title \"\"";
 	  else
 	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
 	  endif
@@ -374,7 +374,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	  data_idx++;
 	  style = do_linestyle_command (obj, data_idx, plot_stream);
 	  if (isempty (obj.keylabel))
-	    titlespec{data_idx} = "";
+	    titlespec{data_idx} = "title \"\"";
 	  else
 	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
 	  endif
@@ -472,7 +472,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     if (xautoscale && have_data)
       xlim = get_axis_limits (xmin, xmax, xminp, xlogscale);
-      set (h, "xlim", xlim);
+      set (h, "xlim", xlim, "xlimmode", "auto");
     else
       xlim = axis_obj.xlim;
     endif
@@ -480,7 +480,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
-      set (h, "ylim", ylim);
+      set (h, "ylim", ylim, "ylimmode", "auto");
     else
       ylim = axis_obj.ylim;
     endif
@@ -489,7 +489,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
     if (nd == 3)
       if (zautoscale && have_data)
 	zlim = get_axis_limits (zmin, zmax, zminp, zlogscale);
-	set (h, "zlim", zlim);
+	set (h, "zlim", zlim, "zlimmode", "auto");
       else
 	zlim = axis_obj.zlim;
       endif

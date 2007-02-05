@@ -1,4 +1,3 @@
-#define OCTAVE_STD std
 /*
 
 Copyright (C) 1996, 1997 John W. Eaton
@@ -49,6 +48,7 @@ class tree_walker;
 // Complex scalar values.
 
 class
+OCTAVE_API
 octave_complex : public octave_base_scalar<Complex>
 {
 public:
@@ -81,8 +81,8 @@ public:
   octave_value any (int = 0) const
     {
       return (scalar != Complex (0, 0)
-	      && ! (lo_ieee_isnan (OCTAVE_STD::real (scalar))
-		    || lo_ieee_isnan (OCTAVE_STD::imag (scalar))));
+	      && ! (lo_ieee_isnan (std::real (scalar))
+		    || lo_ieee_isnan (std::imag (scalar))));
     }
 
   bool is_complex_scalar (void) const { return true; }

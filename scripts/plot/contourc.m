@@ -52,13 +52,13 @@ function [c, lev] = contourc (varargin)
   if (nargin == 1)
     vn = 10;
     z = varargin{1};
-    x = 1:size(z,1);
-    y = 1:size(z,2);
+    x = 1:size(z,2);
+    y = 1:size(z,1);
   elseif (nargin == 2)
     vn = varargin{2};
     z = varargin{1};
-    x = 1:size(z,1);
-    y = 1:size(z,2);
+    x = 1:size(z,2);
+    y = 1:size(z,1);
   elseif (nargin == 3)
     vn = 10;
     x = varargin{1};

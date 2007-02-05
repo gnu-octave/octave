@@ -1,3 +1,12 @@
+2007-02-05  John W. Eaton  <jwe@octave.org>
+
+	* ov-complex.h (octave_complex): Use std instead of OCTAVE_STD
+	since the latter was unconditionally defined to be std anyway.
+
+2007-02-05  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* ov-complex.h: Tag octave_complex class with OCTINTERP_API.
+
 2007-01-30  John W. Eaton  <jwe@octave.org>
 
 	* Merge of changes from graphics-branch:

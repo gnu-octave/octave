@@ -712,7 +712,7 @@ function style = do_linestyle_command (obj, idx, plot_stream)
       case "*"
 	pt = "3";
       case "."
-	pt = "dots";
+	pt = "0";
       case "x"
 	pt = "2";
       case {"square", "s"}
@@ -762,6 +762,6 @@ function style = do_linestyle_command (obj, idx, plot_stream)
     fputs (plot_stream, " default");
   endif
 
-  fputs (plot_stream, "\n;");
+  fputs (plot_stream, ";\n");
 
 endfunction

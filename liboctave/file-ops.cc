@@ -496,13 +496,8 @@ extern int errno;
 
   OCTAVE_LOCAL_BUFFER (char, buf, PATH_MAX);
 
-  char *tmp = ::realpath (name.c_str (), buf);
-
-  if (tmp)
-    {
-      retval = tmp;
-      ::free (tmp);
-    }
+  if (::realpath (name.c_str (), buf))
+    retval = buf;
 
 #else
 

@@ -1,5 +1,7 @@
 2007-02-05  John W. Eaton  <jwe@octave.org>
 
+	* configure.in: Check for realpath function.
+
 	* demo.m: Delete obsolete file.
 
 2007-01-29  Michael Goffioul  <michael.goffioul@swing.be>

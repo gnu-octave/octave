@@ -1249,7 +1249,36 @@ protected:
 	break;
 
       case mxSINGLE_CLASS:
-	error ("single precision data type not supported");
+	{
+	  int nel = get_number_of_elements ();
+
+	  float *ppr = static_cast<float *> (pr);
+
+	  if (pi)
+	    {
+	      ComplexNDArray val (dv);
+
+	      Complex *ptr = val.fortran_vec ();
+
+	      float *ppi = static_cast<float *> (pi);
+
+	      for (int i = 0; i < nel; i++)
+		ptr[i] = Complex (ppr[i], ppi[i]);
+
+	      retval = val;
+	    }
+	  else
+	    {
+	      NDArray val (dv);
+
+	      double *ptr = val.fortran_vec ();
+
+	      for (int i = 0; i < nel; i++)
+		ptr[i] = ppr[i];
+
+	      retval = val;
+	    }
+	}
 	break;
 
       case mxDOUBLE_CLASS:
@@ -1425,7 +1454,7 @@ protected:
 	break;
 
       case mxSINGLE_CLASS:
-	error ("single precision data type not supported");
+	error ("single precision sparse data type not supported");
 	break;
 
       case mxDOUBLE_CLASS:

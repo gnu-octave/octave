@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.551 $)
+AC_REVISION($Revision: 1.552 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1418,7 +1418,7 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   getgid getgrent getgrgid getgrnam getpgrp getpid getppid getpwent \
   getpwuid gettimeofday getuid getwd _kbhit kill link localtime_r \
   lstat memmove mkdir mkfifo mkstemp on_exit pipe poll putenv raise \
-  readlink rename resolvepath rindex rmdir round select setgrent \
+  readlink realpath rename resolvepath rindex rmdir round select setgrent \
   setlocale setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
   sigsuspend stat strcasecmp strdup strerror stricmp \
   strncasecmp strnicmp strsignal symlink tempnam umask \

@@ -1,3 +1,8 @@
+2007-02-05  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* file-ops.cc (file_ops::canonicalize_file_name):
+	Provide implementation if realpath function is available.
+
 2007-01-29  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* oct-fftw.h: Sprinkle with OCTAVE_API as needed.

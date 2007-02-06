@@ -1,5 +1,9 @@
 2007-02-05  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (mxArray_number::as_octave_value): Fake mxSINGLE_CLASS
+	by returning double-precision values.
+	(mxArray_sparse::as_octave_value): Clarify error message.
+
 	* ov-complex.h (octave_complex): Use std instead of OCTAVE_STD
 	since the latter was unconditionally defined to be std anyway.
 

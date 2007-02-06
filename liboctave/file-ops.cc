@@ -482,6 +482,28 @@ extern int errno;
         }
     }
 
+#elif defined (HAVE_REALPATH)
+
+#if !defined (__set_errno)
+# define __set_errno(Val) errno = (Val)
+#endif
+
+  if (name.empty ())
+    {
+      __set_errno (ENOENT);
+      return retval;
+    }
+
+  OCTAVE_LOCAL_BUFFER (char, buf, PATH_MAX);
+
+  char *tmp = ::realpath (name.c_str (), buf);
+
+  if (tmp)
+    {
+      retval = tmp;
+      ::free (tmp);
+    }
+
 #else
 
   // FIXME -- provide replacement here...

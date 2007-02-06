@@ -1,3 +1,11 @@
+2007-02-05  Rafael Laboissiere  <rafael@debian.org>
+
+	* plot/print.m: Avoid error message from cellidx.
+
+2007-02-05  John W. Eaton  <jwe@octave.org>
+
+	* plot/legend.m: Fix check for data.
+
 2007-02-05  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* plot/__uiobject_draw_axes__.m (do_linestyle_command):

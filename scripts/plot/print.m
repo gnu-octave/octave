@@ -178,7 +178,7 @@ function print (varargin)
   dev_list = {"aifm" "corel" "fig" "png" "pbm" "dxf" "mf" "hpgl", ...
 	      "ps" "ps2" "psc" "psc2" "eps" "eps2" "epsc" "epsc2" "emf"};
   convertname = "";
-  idx = cellidx (dev_list, dev);
+  [idx, errmsg] = cellidx (dev_list, dev);
   if (! idx)
     if (! isempty (devopt))
       convertname = strcat (devopt, ":", name);

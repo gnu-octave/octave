@@ -138,8 +138,17 @@ function legend (varargin)
     endif
   endif
 
-  if (nargs > 0 && isempty (__plot_data__{cf}{mxi,myi}))
-    warning ("legend: plot data is empty; setting key labels has no effect");
+  if (nargs > 0)
+    have_data = false;
+    for i = 1:nkids
+      if (strcmp (get (kids(k), "type"), "line"))
+	have_data = true;
+	break;
+      endif
+    endfor
+    if (! have_data)
+      warning ("legend: plot data is empty; setting key labels has no effect");
+    endif
   endif
 
   for i = 1:nargs

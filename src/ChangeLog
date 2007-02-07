@@ -1,5 +1,21 @@
 2007-02-07  John W. Eaton  <jwe@octave.org>
 
+	* defaults.cc (subst_octave_home):
+	Only substitute at beginning of string.
+
+	* ls-hdf5.cc (save_hdf5_empty): Use OCTAVE_LOCAL_BUFFER.
+	* ov-bool-mat.cc (octave_bool_matrix::save_hdf5,
+	octave_bool_matrix::load_hdf5): Likewise.
+	* ov-bool-sparse.cc (octave_sparse_bool_matrix::save_hdf5,
+	octave_sparse_bool_matrix::load_hdf5): Likewise.
+
+2007-02-07  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* ov-cell.cc (octave_cell::save_hdf5): Correct test for H5Dwrite
+	return value.
+
+2007-02-07  John W. Eaton  <jwe@octave.org>
+
 	* zfstream.cc (gzfilebuf::open_mode): Always append "b" to c_mode.
 
 	* toplev.cc (Foctave_config_info): Use struct for conf_info.

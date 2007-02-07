@@ -391,7 +391,7 @@ octave_bool_matrix::save_hdf5 (hid_t loc_id, const char *name,
 
   octave_idx_type nel = m.nelem ();
   bool *mtmp = m.fortran_vec ();
-  hbool_t htmp[nel];
+  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
   
   for (octave_idx_type i = 0; i < nel; i++)
     htmp[i] = mtmp[i];
@@ -449,9 +449,9 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
     }
 
   octave_idx_type nel = dv.numel ();
-  hbool_t htmp[nel];
+  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
   if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, htmp) >= 0) 
+	       H5P_DEFAULT, &htmp[0]) >= 0) 
     {
       retval = true;
 

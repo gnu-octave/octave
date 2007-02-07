@@ -987,3 +987,21 @@ if test "$octave_cv_umfpack_seperate_split" = yes; then
   AC_DEFINE(UMFPACK_SEPARATE_SPLIT, 1, [Define if the UMFPACK Complex solver allow matrix and RHS to be split independently])
 fi
 ])
+dnl
+dnl Check whether using HDF5 DLL under Windows. This is done by
+dnl testing for a data symbol in the HDF5 library, which would
+dnl requires the definition of _HDF5USEDL_ under MSVC compiler.
+dnl
+AC_DEFUN([OCTAVE_HDF5_DLL], [
+  AC_CACHE_CHECK([if _HDF5USEDLL_ needs to be defined],octave_cv_hdf5_dll, [
+    AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE;],
+      octave_cv_hdf5_dll=no, [
+      CFLAGS_old=$CFLAGS
+      CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
+      AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE;],
+        octave_cv_hdf5_dll=yes,
+	octave_cv_hdf5_dll=no)
+      CFLAGS=$CFLAGS_old])])
+  if test "$octave_cv_hdf5_dll" = yes; then
+    AC_DEFINE(_HDF5USEDLL_, 1, [Define if using HDF5 dll (Win32)])
+  fi])

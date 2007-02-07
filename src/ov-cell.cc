@@ -775,8 +775,8 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
       return false;
     }
 
-  if (! H5Dwrite (size_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
-		  H5P_DEFAULT, hdims) < 0)
+  if (H5Dwrite (size_hid, H5T_NATIVE_IDX, H5S_ALL, H5S_ALL,
+		H5P_DEFAULT, hdims) < 0)
     {
       H5Dclose (size_hid);
       H5Sclose (space_hid);
@@ -796,7 +796,7 @@ octave_cell::save_hdf5 (hid_t loc_id, const char *name, bool save_as_floats)
   for (octave_idx_type i = 0; i < nel; i++)
     {
       std::ostringstream buf;
-      int digits = static_cast<int> (floor (log10 (nel) + 1.0));
+      int digits = static_cast<int> (floor (log10 (static_cast<double> (nel)) + 1.0));
       buf << "_" << std::setw (digits) << std::setfill ('0') << i;
       std::string s = buf.str ();
 

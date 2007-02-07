@@ -624,7 +624,7 @@ int
 save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d)
 {
   hsize_t sz = d.length ();
-  octave_idx_type dims[sz];
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, dims, sz);
   bool empty = false;
   hid_t space_hid = -1, data_hid = -1;
   int retval;

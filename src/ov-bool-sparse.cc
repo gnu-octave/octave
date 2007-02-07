@@ -479,13 +479,13 @@ octave_sparse_bool_matrix::save_hdf5 (hid_t loc_id, const char *name, bool)
       H5Gclose (group_hid);
       return false;
     }
-  
-  hbool_t htmp[m.nzmax ()];
+
+  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, m.nzmax ());  
   for (int i = 0; i < m.nzmax (); i++)
     htmp[i] = m.xdata(i);
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL,
-		     H5P_DEFAULT, htmp) >= 0;
+		     H5P_DEFAULT, &htmp[0]) >= 0;
   H5Dclose (data_hid);
   H5Sclose (space_hid);
   H5Gclose (group_hid);
@@ -671,9 +671,13 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
+#ifndef _MSC_VER
   hbool_t htmp[nz];
+#else
+  std::vector<hbool_t> htmp (nz);
+#endif
   bool retval = false;
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, &htmp[0]) >= 0) 
     {
       retval = true;
 

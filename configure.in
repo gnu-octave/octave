@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.552 $)
+AC_REVISION($Revision: 1.553 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -527,6 +527,11 @@ if $WITH_ZLIB; then
   fi
 
   if $WITH_HDF5; then
+    case "$canonical_host_type" in
+      *-*-msdosmsvc)
+        OCTAVE_HDF5_DLL
+        ;;
+    esac
     true
   else
     warn_hdf5="HDF5 library not found.  Octave will not be able to save or load HDF5 data files."
@@ -1913,6 +1918,7 @@ typedef int sig_atomic_t;
 
 #if defined (_MSC_VER)
 #define __WIN32__
+#define WIN32
 /* missing parameters in macros */
 #pragma warning (disable: 4003)
 /* missing implementations in template instantiation */

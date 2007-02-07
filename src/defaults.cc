@@ -108,12 +108,9 @@ subst_octave_home (const std::string& s)
   if (Voctave_home != prefix)
     {
       octave_idx_type len = prefix.length ();
-      size_t start = 0;
-      while ((start = retval.find (prefix, start)) != NPOS)
-	{
-	  retval.replace (start, len, Voctave_home);
-	  start += len;
-	}
+
+      if (s.substr (0, len) == prefix)
+	retval.replace (0, len, Voctave_home);
     }
 
   if (file_ops::dir_sep_char != '/')

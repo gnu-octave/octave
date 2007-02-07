@@ -44,6 +44,7 @@ function [x, y, z] = sombrero (n)
       tz = sin (r) ./ r;
       if (nargout == 0)
         mesh (tx, ty, tz);
+	box ("off");
       else
 	x = tx;
 	y = ty;

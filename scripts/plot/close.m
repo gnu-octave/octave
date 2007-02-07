@@ -32,8 +32,12 @@
 function retval = close (arg1, arg2)
 
   if (nargin == 0)
-    ## Close current figure.
-    figs = gcf ();
+    ## Close current figure.  Don't use gcf because that will open a new
+    ## plot window if one doesn't exist.
+    figs = get (0, "currentfigure");
+    if (! isempty (figs) && figs == 0)
+      figs = [];
+    endif
   elseif (nargin == 1)
     if (ischar (arg1) && strcmp (arg1, "all"))
       ## Close all figures.

@@ -1,3 +1,12 @@
+2007-02-07  John W. Eaton  <jwe@octave.org>
+
+	* plot/sombrero.m: Call box ("off") after mesh.
+
+	* plot/__uiobject_draw_axes__.m: Avoid rgb colors and "set style
+	line default" commands with older versions of gnuplot.
+
+	* plot/close.m: Use get (0, "currentifgure") instead of gcf.
+
 2007-02-06  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_draw_axes__.m: Set pt to 0 if marker is ".".

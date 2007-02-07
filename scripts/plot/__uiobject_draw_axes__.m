@@ -271,7 +271,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	    if (zautoscale)
 	      zmin = min (zmin, min (zdat));
 	      zmax = max (zmax, max (zdat));
-	      zminp = min (zminp, min (zdat(ydat>0)));
+	      zminp = min (zminp, min (zdat(zdat>0)));
 	    endif
 	    data{data_idx} = [xdat, ydat, zdat]';
 	    usingclause{data_idx} = "using ($1):($2):($3)";
@@ -399,9 +399,9 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	    yminp = min (yminp, min (ty(ty>0)));
 	  endif
 	  if (zautoscale)
-	    tz = xdat(:);
-	    zmin = min (ymin, min (tz));
-	    zmax = max (ymax, max (tz));
+	    tz = zdat(:);
+	    zmin = min (zmin, min (tz));
+	    zmax = max (zmax, max (tz));
 	    zminp = min (zminp, min (tz(tz>0)));
 	  endif
 	  err = false;
@@ -665,12 +665,16 @@ endfunction
 
 function style = do_linestyle_command (obj, idx, plot_stream)
 
-  fprintf (plot_stream, "set style line %d default;\n", idx);
+  have_newer_gnuplot = compare_versions (__gnuplot_version__ (), "4.0", ">");
+
+  if (have_newer_gnuplot)
+    fprintf (plot_stream, "set style line %d default;\n", idx);
+  endif
   fprintf (plot_stream, "set style line %d", idx);
 
   found_style = false;
 
-  if (isfield (obj, "color"))
+  if (isfield (obj, "color") && have_newer_gnuplot)
     color = obj.color;
     if (isnumeric (color))
       fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
@@ -758,7 +762,7 @@ function style = do_linestyle_command (obj, idx, plot_stream)
     style = "linespoints";
   endif
 
-  if (! found_style)
+  if (have_newer_gnuplot && ! found_style)
     fputs (plot_stream, " default");
   endif
 

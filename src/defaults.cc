@@ -96,7 +96,7 @@ static std::string VIMAGE_PATH;
 std::string Vlocal_site_defaults_file;
 std::string Vsite_defaults_file;
 
-static std::string
+std::string
 subst_octave_home (const std::string& s)
 {
   std::string retval;

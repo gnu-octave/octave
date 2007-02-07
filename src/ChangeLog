@@ -1,3 +1,10 @@
+2007-02-07  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (Foctave_config_info): Use struct for conf_info.
+	Call subst_octave_home on selected values when initializing map.
+	* defaults.cc (subst_octave_home): Now extern.
+	* defaults.h.in: Provide decl.
+
 2007-02-05  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_number::as_octave_value): Fake mxSINGLE_CLASS

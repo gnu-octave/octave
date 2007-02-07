@@ -197,6 +197,8 @@ extern std::string Vsite_defaults_file;
 // Name of the FFTW wisdom program.
 extern std::string Vfftw_wisdom_program;
 
+extern std::string subst_octave_home (const std::string&);
+
 extern void install_defaults (void);
 
 extern void set_exec_path (const std::string& path = std::string ());

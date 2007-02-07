@@ -193,11 +193,22 @@ components can be downloaded from http://www.netlib.org/f2c/msdos/ and
 http://www.netlib.org/f2c/libf2c.zip.
 
 To compile libf2c, use makefile.vc and NMAKE.EXE.  To be usable within
-Octave, first edit makefile.vc and add "-MD" as compilation flag (to
-the CFLAGS variable).  Finally, install f2c.h and vcf2c.lib at
-locations where they can be found by the MSVC tools (adjust the
-INCLUDE and LIB variables).  Note that you must rename vcf2c.lib into
-f2c.lib so that Octave's configure script will find it.
+Octave, the following modifications needs to be done:
+  1) edit makefile.vc and add "-MD" as compilation flag (to
+     the CFLAGS variable).
+  2) edit fio.h and comment the declaration of isatty (around line 112).
+     This means replacing the line:
+
+		extern int isatty(int);
+
+     with
+
+		/* extern int isatty(int); */
+
+After compilation, install f2c.h and vcf2c.lib at locations where they
+can be found by the MSVC tools (adjust the INCLUDE and LIB variables).
+Note that you must rename vcf2c.lib into f2c.lib so that Octave's
+configure script will find it.
 
 
 2. Compilation

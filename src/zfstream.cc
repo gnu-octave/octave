@@ -187,8 +187,9 @@ gzfilebuf::open_mode(std::ios_base::openmode mode,
   // Mode string should be empty for invalid combination of flags
   if (strlen(c_mode) == 0)
     return false;
-  if (testb)
-    strcat(c_mode, "b");
+
+  strcat(c_mode, "b");
+
   return true;
 }
 

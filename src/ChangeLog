@@ -1,5 +1,7 @@
 2007-02-07  John W. Eaton  <jwe@octave.org>
 
+	* zfstream.cc (gzfilebuf::open_mode): Always append "b" to c_mode.
+
 	* toplev.cc (Foctave_config_info): Use struct for conf_info.
 	Call subst_octave_home on selected values when initializing map.
 	* defaults.cc (subst_octave_home): Now extern.

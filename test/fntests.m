@@ -168,7 +168,9 @@ try
   printf ("  FAIL %6d\n", nfail);
   n_files_with_no_tests = length (files_with_no_tests);
   n_files = n_files_with_no_tests + length (files_with_tests);
-  printf ("\n%d (of %d) files have no tests\n", n_files_with_no_tests, n_files);
+  printf ("\n%d (of %d) files have no tests.  Please help improve Octave by\n",
+	  n_files_with_no_tests, n_files);
+  printf ("contributing tests for these files (see the list in the file fntests.log).\n");
   fprintf (fid, "\nFiles with no tests:\n\n%s",
 	  list_in_columns (files_with_no_tests, 80));
   fclose (fid);

@@ -20,11 +20,17 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = DEMOcontrol.m __bodquist__.m __freqresp__.m \
+  __stepimp__.m analdemo.m are.m bddemo.m bode.m bode_bounds.m \
+  controldemo.m ctrb.m damp.m dare.m dcgain.m dgram.m dkalman.m \
+  dlqe.m dlqr.m dlyap.m dre.m frdemo.m freqchkw.m gram.m \
+  impulse.m lqe.m lqg.m lqr.m lsim.m ltifr.m lyap.m nichols.m \
+  nyquist.m obsv.m place.m pzmap.m rldemo.m rlocus.m step.m \
+  tzero.m tzero2.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

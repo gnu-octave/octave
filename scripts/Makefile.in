@@ -20,7 +20,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = # *.m
+SOURCES =
 
 ALL_M_FILES1 := $(shell find $(srcdir) -name '*.m' -print)
 ALL_M_FILES := $(patsubst $(srcdir)/%, %, $(ALL_M_FILES1))

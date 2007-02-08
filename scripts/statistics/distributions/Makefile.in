@@ -20,11 +20,27 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = betacdf.m betainv.m betapdf.m betarnd.m binocdf.m \
+  binoinv.m binopdf.m binornd.m cauchy_cdf.m cauchy_inv.m \
+  cauchy_pdf.m cauchy_rnd.m chi2cdf.m chi2inv.m chi2pdf.m \
+  chi2rnd.m discrete_cdf.m discrete_inv.m discrete_pdf.m \
+  discrete_rnd.m empirical_cdf.m empirical_inv.m empirical_pdf.m \
+  empirical_rnd.m expcdf.m expinv.m exppdf.m exprnd.m fcdf.m \
+  finv.m fpdf.m frnd.m gamcdf.m gaminv.m gampdf.m gamrnd.m \
+  geocdf.m geoinv.m geopdf.m geornd.m hygecdf.m hygeinv.m \
+  hygepdf.m hygernd.m kolmogorov_smirnov_cdf.m laplace_cdf.m \
+  laplace_inv.m laplace_pdf.m laplace_rnd.m logistic_cdf.m \
+  logistic_inv.m logistic_pdf.m logistic_rnd.m logncdf.m \
+  logninv.m lognpdf.m lognrnd.m normcdf.m norminv.m normpdf.m \
+  normrnd.m pascal_cdf.m pascal_inv.m pascal_pdf.m pascal_rnd.m \
+  poisscdf.m poissinv.m poisspdf.m poissrnd.m stdnormal_cdf.m \
+  stdnormal_inv.m stdnormal_pdf.m stdnormal_rnd.m tcdf.m tinv.m \
+  tpdf.m trnd.m unifcdf.m unifinv.m unifpdf.m unifrnd.m wblcdf.m \
+  wblinv.m wblpdf.m wblrnd.m wienrnd.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

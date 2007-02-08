@@ -29,9 +29,9 @@ function h = figure (varargin)
 
   nargs = nargin;
 
-  if (nargs == 0)
-    f = __uiobject_init_figure__ ();
-  elseif (mod (nargs, 2) == 1)
+  f = [];
+
+  if (mod (nargs, 2) == 1)
     tmp = varargin{1};
     if (ishandle (tmp) && strcmp (get (tmp, "type"), "figure"))
       f = tmp;
@@ -47,19 +47,21 @@ function h = figure (varargin)
     endif
   endif
 
-  if (nargout > 0)
-    h = f;
-  endif
-
   if (rem (nargs, 2) == 0)
+    if (isempty (f))
+      f = __uiobject_init_figure__ ();
+    endif
     if (nargs > 0)
       set (f, varargin{:});
     endif
     __uiobject_adopt__ (0, f);
     set (0, "currentfigure", f);
-    drawnow ();
   else
     print_usage ();
+  endif
+
+  if (nargout > 0)
+    h = f;
   endif
 
 endfunction

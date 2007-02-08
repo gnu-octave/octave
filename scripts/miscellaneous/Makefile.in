@@ -20,11 +20,20 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m comma.m \
+  compare_versions.m computer.m copyfile.m cputime.m \
+  default_ls_command.m delete.m dir.m doc.m dos.m dump_prefs.m \
+  fileattrib.m fileparts.m flops.m fullfile.m getfield.m gunzip.m \
+  inputname.m ispc.m isunix.m license.m list_primes.m ls.m \
+  ls_command.m menu.m mex.m mexext.m mkoctfile.m movefile.m \
+  news.m not.m orderfields.m pack.m paren.m parseparams.m \
+  popen2.m semicolon.m setfield.m single.m substruct.m tar.m \
+  tempdir.m tempname.m texas_lotto.m unix.m unpack.m untar.m \
+  unzip.m ver.m version.m warning_ids.m xor.m zip.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

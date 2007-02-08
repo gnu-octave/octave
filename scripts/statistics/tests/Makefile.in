@@ -20,11 +20,17 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = anova.m bartlett_test.m chisquare_test_homogeneity.m \
+  chisquare_test_independence.m cor_test.m f_test_regression.m \
+  hotelling_test.m hotelling_test_2.m kolmogorov_smirnov_test.m \
+  kolmogorov_smirnov_test_2.m kruskal_wallis_test.m manova.m \
+  mcnemar_test.m prop_test_2.m run_test.m sign_test.m t_test.m \
+  t_test_2.m t_test_regression.m u_test.m var_test.m welch_test.m \
+  wilcoxon_test.m z_test.m z_test_2.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

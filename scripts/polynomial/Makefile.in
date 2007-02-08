@@ -20,11 +20,14 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = compan.m conv.m deconv.m mkpp.m pchip.m poly.m \
+  polyder.m polyderiv.m polyfit.m polygcd.m polyinteg.m \
+  polyout.m polyreduce.m polyval.m polyvalm.m ppval.m residue.m \
+  roots.m spline.m unmkpp.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

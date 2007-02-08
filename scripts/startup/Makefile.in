@@ -20,12 +20,12 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = main-rcfile local-rcfile inputrc # *.m
+SOURCES = main-rcfile local-rcfile inputrc
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = # $(wildcard $(srcdir)/*.m)
-FCN_FILES_NO_DIR = # $(notdir $(FCN_FILES))
+FCN_FILES =
+FCN_FILES_NO_DIR =
 
 all: PKG_ADD
 .PHONY: all

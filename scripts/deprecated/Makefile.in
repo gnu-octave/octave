@@ -20,11 +20,28 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = beta_cdf.m beta_inv.m beta_pdf.m beta_rnd.m \
+  binomial_cdf.m binomial_inv.m binomial_pdf.m binomial_rnd.m \
+  chisquare_cdf.m chisquare_inv.m chisquare_pdf.m chisquare_rnd.m \
+  clearplot.m clg.m com2str.m exponential_cdf.m exponential_inv.m \
+  exponential_pdf.m exponential_rnd.m f_cdf.m f_inv.m f_pdf.m \
+  f_rnd.m gamma_cdf.m gamma_inv.m gamma_pdf.m gamma_rnd.m \
+  geometric_cdf.m geometric_inv.m geometric_pdf.m geometric_rnd.m \
+  hypergeometric_cdf.m hypergeometric_inv.m hypergeometric_pdf.m \
+  hypergeometric_rnd.m intersection.m is_bool.m is_complex.m \
+  is_list.m is_matrix.m is_scalar.m is_square.m is_stream.m \
+  is_struct.m is_symmetric.m is_vector.m isstr.m lognormal_cdf.m \
+  lognormal_inv.m lognormal_pdf.m lognormal_rnd.m normal_cdf.m \
+  normal_inv.m normal_pdf.m normal_rnd.m poisson_cdf.m \
+  poisson_inv.m poisson_pdf.m poisson_rnd.m setstr.m \
+  struct_contains.m struct_elements.m t_cdf.m t_inv.m t_pdf.m \
+  t_rnd.m uniform_cdf.m uniform_inv.m uniform_pdf.m uniform_rnd.m \
+  weibcdf.m weibinv.m weibpdf.m weibrnd.m weibull_cdf.m \
+  weibull_inv.m weibull_pdf.m weibull_rnd.m wiener_rnd.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

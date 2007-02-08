@@ -20,11 +20,13 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = commutation_matrix.m cond.m cross.m dmult.m dot.m \
+  duplication_matrix.m housh.m krylov.m krylovb.m logm.m norm.m \
+  null.m orth.m qzhess.m rank.m rref.m trace.m vec.m vech.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

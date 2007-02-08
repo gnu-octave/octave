@@ -20,11 +20,13 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = *.m
+SOURCES = dgkfdemo.m dhinfdemo.m h2norm.m h2syn.m hinf_ctr.m \
+  hinfdemo.m hinfnorm.m hinfsyn.m hinfsyn_chk.m hinfsyn_ric.m \
+  is_dgkf.m wgt1o.m
 
 DISTFILES = Makefile.in $(SOURCES)
 
-FCN_FILES = $(wildcard $(srcdir)/*.m)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

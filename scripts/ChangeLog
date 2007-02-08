@@ -1,5 +1,8 @@
 2007-02-07  John W. Eaton  <jwe@octave.org>
 
+	* plot/__uiobject_draw_axes__.m: Handle xdir, ydir, and zdir axis
+	properties.
+
 	* plot/sombrero.m: Call box ("off") after mesh.
 
 	* plot/__uiobject_draw_axes__.m: Avoid rgb colors and "set style

@@ -476,7 +476,12 @@ function __uiobject_draw_axes__ (h, plot_stream)
     else
       xlim = axis_obj.xlim;
     endif
-    fprintf (plot_stream, "set xrange [%g:%g];\n", xlim);
+    if (strcmp (axis_obj.xdir, "reverse"))
+      xdir = "reverse";
+    else
+      xdir = "noreverse";
+    endif
+    fprintf (plot_stream, "set xrange [%g:%g] %s;\n", xlim, xdir);
 
     if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
@@ -484,7 +489,12 @@ function __uiobject_draw_axes__ (h, plot_stream)
     else
       ylim = axis_obj.ylim;
     endif
-    fprintf (plot_stream, "set yrange [%g:%g];\n", ylim);
+    if (strcmp (axis_obj.ydir, "reverse"))
+      ydir = "reverse";
+    else
+      ydir = "noreverse";
+    endif
+    fprintf (plot_stream, "set yrange [%g:%g] %s;\n", ylim, ydir);
 
     if (nd == 3)
       if (zautoscale && have_data)
@@ -493,7 +503,12 @@ function __uiobject_draw_axes__ (h, plot_stream)
       else
 	zlim = axis_obj.zlim;
       endif
-      fprintf (plot_stream, "set zrange [%g:%g];\n", zlim);
+      if (strcmp (axis_obj.zdir, "reverse"))
+	zdir = "reverse";
+      else
+	zdir = "noreverse";
+      endif
+      fprintf (plot_stream, "set zrange [%g:%g] %s;\n", zlim, zdir);
     endif
 
     if (strcmp (axis_obj.box, "on"))

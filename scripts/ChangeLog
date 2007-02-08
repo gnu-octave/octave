@@ -1,5 +1,7 @@
 2007-02-08  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (DISTFILES): Add move-if-change to the list.
+
 	* audio/Makefile.in, control/base/Makefile.in,
 	control/hinf/Makefile.in, control/obsolete/Makefile.in,
 	control/system/Makefile.in, control/util/Makefile.in,

@@ -27,7 +27,7 @@ ALL_M_FILES := $(patsubst $(srcdir)/%, %, $(ALL_M_FILES1))
 
 DISTFILES = Makefile.in ChangeLog $(SOURCES) configure.in \
 	configure mkinstalldirs mkdoc mkpkgadd gethelp.cc \
-	skip-autoheader DOCSTRINGS
+	skip-autoheader DOCSTRINGS move-if-change
 
 SUBDIRS = audio control deprecated elfun finance general image io \
 	linear-algebra miscellaneous optimization path pkg plot polynomial \

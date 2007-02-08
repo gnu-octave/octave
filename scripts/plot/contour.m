@@ -68,7 +68,7 @@ function retval = contour (varargin)
     ccb = interp1 (levx, cmap(:,3), clev);
 
     ii = i1+1:i1+clen;
-    line (c(1,ii), c(2,ii), "color", [ccr, ccg, ccb, 1]);
+    line (c(1,ii), c(2,ii), "color", [ccr, ccg, ccb]);
 
     i1 += c(2,i1)+1;
   endwhile

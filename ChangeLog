@@ -1,3 +1,9 @@
+2007-02-07  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-script-install): Use $(FCN_FILES) for list of
+	files instead of $(FCN_FILES_NO_DIR).  Use basename to get
+	filename with no directory part.
+
 2007-02-07  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* aclocal.m4 (OCTAVE_HDF5_DLL): New macro.

@@ -628,9 +628,10 @@ endef
 define do-script-install
 $(top_srcdir)/mkinstalldirs \
   $(addprefix $(DESTDIR), $(fcnfiledir)/$(script_sub_dir))
-for f in $(FCN_FILES_NO_DIR); do \
-  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
-  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
+for f in $(FCN_FILES); do \
+  fbase=`basename $$f`; \
+  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$fbase; \
+  $(INSTALL_DATA) $$f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$fbase; \
 done
 $(top_srcdir)/mkpkgadd $(DESTDIR)$(fcnfiledir)/$(script_sub_dir) > $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t
 if [ -n "`cat $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD.t`" ]; then \

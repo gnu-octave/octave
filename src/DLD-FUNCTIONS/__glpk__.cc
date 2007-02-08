@@ -40,6 +40,15 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 extern "C" {
 #include <glpk.h>
+#ifndef _GLPLIB_H
+#include <glplib.h>
+#endif
+#ifndef lib_set_fault_hook
+#define lib_set_fault_hook lib_fault_hook
+#endif
+#ifndef lib_set_print_hook
+#define lib_set_print_hook lib_print_hook
+#endif
 }
 
 #define NIntP 17

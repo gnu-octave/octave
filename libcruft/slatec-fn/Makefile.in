@@ -16,4 +16,10 @@ EXTERNAL_DISTFILES = $(DISTFILES)
 
 include $(TOPDIR)/Makeconf
 
+FSRC = d9gmit.f d9lgic.f d9lgit.f d9lgmc.f dacosh.f dasinh.f datanh.f \
+  dbetai.f dcsevl.f derf.f derfc.f dgami.f dgamit.f dgamlm.f dgamma.f \
+  dgamr.f dlbeta.f dlgams.f dlngam.f dlnrel.f dpchim.f dpchst.f \
+  initds.f xdacosh.f xdasinh.f xdatanh.f xdbetai.f xderf.f xderfc.f \
+  xdgami.f xdgamit.f xdgamma.f xgmainc.f
+
 include ../Makerules

@@ -16,4 +16,7 @@ EXTERNAL_DISTFILES = $(DISTFILES)
 
 include $(TOPDIR)/Makeconf
 
+FSRC = fdump.f ixsav.f j4save.f xerclr.f xercnt.f xerhlt.f xermsg.f \
+  xerprn.f xerrwd.f xersve.f xgetf.f xgetua.f xsetf.f xsetua.f
+
 include ../Makerules

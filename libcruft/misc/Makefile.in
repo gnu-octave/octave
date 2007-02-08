@@ -25,6 +25,8 @@ SPECIAL_DEPEND := machar.o f77-extern.o f77-fcn.o lo-error.o quit.o
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
+FSRC = d1mach.f i1mach.f
+
 include $(TOPDIR)/Makeconf
 
 INSTALL = @INSTALL@

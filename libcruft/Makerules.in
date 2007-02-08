@@ -13,17 +13,16 @@
 DLL_CDEFS = @CRUFT_DLL_DEFS@
 DLL_CXXDEFS = @CRUFT_DLL_DEFS@
 
-SOURCES = *.f
+CRUFT_FSRC = $(addprefix $(srcdir)/, $(FSRC))
+CRUFT_CSRC = $(addprefix $(srcdir)/, $(CSRC))
+CRUFT_CXXSRC = $(addprefix $(srcdir)/, $(CXXSRC))
 
-DISTFILES = Makefile.in $(SOURCES) $(SPECIAL)
-
-CRUFT_FSRC = $(wildcard $(srcdir)/*.f)
-CRUFT_CSRC = $(wildcard $(srcdir)/*.c)
-CRUFT_CXXSRC = $(wildcard $(srcdir)/*.cc)
 CRUFT_SRC = $(CRUFT_FSRC) $(CRUFT_CSRC) $(CRUFT_CXXSRC)
 CRUFT_BASE = $(basename $(notdir $(CRUFT_SRC)) )
 CRUFT_OBJ = $(addsuffix .o, $(CRUFT_BASE) )
 CRUFT_DEFS = $(patsubst %.f, %.def, $(notdir $(CRUFT_FSRC)))
+
+DISTFILES = Makefile.in $(CRUFT_SRC) $(SPECIAL)
 
 ifeq ($(SHARED_LIBS), true)
   ifdef FPICFLAG

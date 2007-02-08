@@ -14,6 +14,10 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES) fftpack.doc
 
+FSRC = cfftb.f cfftb1.f cfftf.f cfftf1.f cffti.f cffti1.f passb.f \
+  passb2.f passb3.f passb4.f passb5.f passf.f passf2.f passf3.f \
+  passf4.f passf5.f
+
 include $(TOPDIR)/Makeconf
 
 include ../Makerules

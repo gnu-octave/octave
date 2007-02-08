@@ -1,3 +1,15 @@
+2007-02-07  John W. Eaton  <jwe@octave.org>
+
+	* Makerules.in: Don't use wildcard function to generate source
+	efile list.
+	* amos/Makefile.in, blas-xtra/Makefile.in, blas/Makefile.in,
+	daspk/Makefile.in, dasrt/Makefile.in, dassl/Makefile.in,
+	fftpack/Makefile.in, lapack-xtra/Makefile.in, lapack/Makefile.in,
+	minpack/Makefile.in, misc/Makefile.in, odepack/Makefile.in,
+	ordered-qz/Makefile.in, quadpack/Makefile.in, ranlib/Makefile.in,
+	slatec-err/Makefile.in, slatec-fn/Makefile.in, villad/Makefile.in:
+	Explicitly list source files.
+
 2007-01-24  Alexander Barth  <abarth@marine.usf.edu>
 
 	* misc/f77-fcn.h (F77_CSTRING): Call OCTAVE_LOCAL_BUFFER with cs,

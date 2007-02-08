@@ -14,6 +14,8 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
+FSRC = cfode.f dlsode.f ewset.f intdy.f prepj.f solsy.f stode.f vnorm.f
+
 include $(TOPDIR)/Makeconf
 
 include ../Makerules

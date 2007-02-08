@@ -39,7 +39,7 @@ function drawnow (term, file)
     if (isempty (plot_stream))
       cmd = gnuplot_binary ();
       if (gnuplot_use_title_option ())
-        cmd = sprintf ("%s -title \"Figure\" %s", cmd, h);
+        cmd = sprintf ("%s -title \"Figure %d\"", cmd, h);
       endif
       plot_stream = popen (cmd, "w");
       if (plot_stream < 0)

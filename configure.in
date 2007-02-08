@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.554 $)
+AC_REVISION($Revision: 1.555 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -590,11 +590,15 @@ fi
 
 GLPK_LIBS=
 if test -n "$glpk_lib"; then
-  AC_CHECK_LIB($glpk_lib, glp_lpx_simplex, [
+  AC_CHECK_LIB($glpk_lib, glp_lpx_simplex, [GLPK_LIBS="-l$glpk_lib"], [
+    AC_CHECK_LIB($glpk_lib, _glp_lpx_simplex, [GLPK_LIBS="-l$glpk_lib"], [])])
+  if test -n "$GLPK_LIBS"; then
     AC_CHECK_HEADERS(glpk.h, [
       GLPK_LIBS="-l$glpk_lib"
       AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])], [
-      glpk_missing=yes])])
+        GLPK_LIBS=
+        glpk_missing=yes])
+  fi
 fi
 AC_SUBST(GLPK_LIBS)
 if test "$glpk_missing" = yes; then

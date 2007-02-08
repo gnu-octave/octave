@@ -1,6 +1,7 @@
 2007-02-08  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Rewrite if !( X ) ... fi as if X; true; else ... fi.
+	Also check for _glp_lpx_simplex.
 
 2007-02-07  John W. Eaton  <jwe@octave.org>
 

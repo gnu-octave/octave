@@ -37,7 +37,11 @@ function drawnow (term, file)
     plot_stream = f.__plot_stream__;
 
     if (isempty (plot_stream))
-      plot_stream = popen (sprintf ("gnuplot -title \"Figure %d\"", h), "w");
+      cmd = gnuplot_binary ();
+      if (gnuplot_use_title_option ())
+        cmd = sprintf ("%s -title \"Figure\" %s", cmd, h);
+      endif
+      plot_stream = popen (cmd, "w");
       if (plot_stream < 0)
 	error ("drawnow: failed to open connection to gnuplot");
       else

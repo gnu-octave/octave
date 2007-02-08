@@ -58,7 +58,7 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
 
 SHELL_SCRIPTS = octave-bug octave-config mkoctfile run-octave
 
-all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS))
+all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-files
 .PHONY: all
 
 src: liboctave
@@ -162,7 +162,7 @@ dist-info-files: INSTALL.OCTAVE BUGS
 # figures for the manual.  It's best to create those figures with the
 # version of Octave that we are distributing (it may even be required).
 
-dist: all dist-info-files
+dist: all
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`

@@ -21,7 +21,7 @@ SPECIAL_INCLUDE := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
 
 SPECIAL:= d1mach-tst.for $(SPECIAL_SRC) $(SPECIAL_INCLUDE)
 
-SPECIAL_DEPEND := machar.o f77-extern.o f77-fcn.o lo-error.o quit.o
+SPECIAL_DEPEND := machar.o f77-extern.o f77-fcn.o lo-error.o cquit.o quit.o
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
@@ -37,10 +37,10 @@ INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
 
 ifeq ($(SHARED_LIBS), true)
   ifdef CPICFLAG
-    CPICDEP := pic/machar.o pic/f77-fcn.o
+    CPICDEP := pic/machar.o pic/f77-fcn.o pic/lo-error.o pic/cquit.o
   endif
   ifdef CXXPICFLAG
-    CXXPICDEP := pic/f77-extern.o pic/lo-error.o pic/quit.o
+    CXXPICDEP := pic/f77-extern.o pic/quit.o
   endif
   SPECIAL_PICDEPEND := $(CPICDEP) $(CXXPICDEP)
 endif

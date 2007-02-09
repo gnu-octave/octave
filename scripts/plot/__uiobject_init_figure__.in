@@ -33,7 +33,7 @@ function f = __uiobject_init_figure__ (f)
 
   if (nargin == 0 || nargin == 1)
 
-    if (nargin == 0)
+    if (nargin == 0 || isempty (f))
       if (isempty (__uiobject_figure_handles_free_list__))
 	f = max (__uiobject_handles__) + 1;
       else

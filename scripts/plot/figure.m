@@ -31,6 +31,7 @@ function h = figure (varargin)
 
   f = [];
 
+  init_new_figure = false;
   if (mod (nargs, 2) == 1)
     tmp = varargin{1};
     if (ishandle (tmp) && strcmp (get (tmp, "type"), "figure"))
@@ -39,7 +40,7 @@ function h = figure (varargin)
       nargs--;
     elseif (isnumeric (tmp) && tmp > 0 && round (tmp) == tmp)
       f = tmp;
-      __uiobject_init_figure__ (f);
+      init_new_figure = true;
       varargin(1) = [];
       nargs--;
     else
@@ -47,9 +48,19 @@ function h = figure (varargin)
     endif
   endif
 
+  ## Check to see if we already have a figure on the screen.  If we do,
+  ## then update it if it is different from the figure we are creating
+  ## or switching to.
+  cf = get (0, "currentfigure");
+  if (! isempty (cf) && cf != 0)
+    if (isempty (f) || cf != f)
+      drawnow ();
+    endif
+  endif
+
   if (rem (nargs, 2) == 0)
-    if (isempty (f))
-      f = __uiobject_init_figure__ ();
+    if (isempty (f) || init_new_figure)
+      f = __uiobject_init_figure__ (f);
     endif
     if (nargs > 0)
       set (f, varargin{:});

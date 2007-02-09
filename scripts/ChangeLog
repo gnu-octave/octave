@@ -1,5 +1,10 @@
 2007-02-09  John W. Eaton  <jwe@octave.org>
 
+	* plot/figure.m: Call drawnow for current figure before creating
+	or switching to a new figure.
+	* plot/__uiobject_init_figure__.in: Handle empty arg the same as
+	nargin == 0 case.
+
 	* testfun/assert.m: Try to avoid problems when comparisons involve
 	strange values like Inf+NaNi.
 

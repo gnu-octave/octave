@@ -71,6 +71,7 @@ cfiles=
 ccfiles=
 f77files=
 objfiles=
+libfiles=
 octfiles=
 octfile=
 outputfile=
@@ -119,6 +120,10 @@ while [ $# -gt 0 ]; do
     *.o)
       file=$1
       objfiles="$objfiles $file"
+    ;;
+    *.a)
+      file=$1
+      libfiles="$libfiles $file"
     ;;
     -d | --debug | -v | --verbose)
       dbg=echo
@@ -202,6 +207,7 @@ Options:
                             .f90  Fortran source (free form)
                             .F90  Fortran source (free form)
                             .o    object file
+                            .a    library file
 
 EOF
       exit 0
@@ -459,7 +465,7 @@ fi
 if $link && [ -n "$objfiles" ]; then
   if $link_stand_alone; then
     if [ -n "$LD_CXX" ]; then
-      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS"
+      cmd="$LD_CXX $CPPFLAGS $ALL_CXXFLAGS $RDYNAMIC_FLAG $ALL_LDFLAGS $pass_on_options $output_option $objfiles $libfiles $ldflags $LFLAGS $RLD_FLAG $OCTAVE_LIBS $BLAS_LIBS $FFTW_LIBS $LIBREADLINE $LIBS $FLIBS"
       $dbg $cmd
       eval $cmd
     else
@@ -468,7 +474,7 @@ if $link && [ -n "$objfiles" ]; then
     fi
   else
     LINK_DEPS="$LFLAGS $OCTAVE_LIBS $LDFLAGS $BLAS_LIBS $FFTW_LIBS $LIBS $FLIBS"
-    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $ldflags $LINK_DEPS"
+    cmd="$DL_LD $DL_LDFLAGS $pass_on_options -o $octfile $objfiles $libfiles $ldflags $LINK_DEPS"
     $dbg $cmd
     eval $cmd
   fi

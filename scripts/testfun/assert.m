@@ -138,7 +138,9 @@ function assert(cond, expected, tol)
     elseif any(isna(A) != isna(B))
       iserror = 1;
       coda = "NAs don't match";
-    elseif any(A(isinf(A)) != B(isinf(B)))
+      ## Try to avoid problems comparing strange values like Inf+NaNi.
+    elseif (any(isinf(A) != isinf(B))
+	    || any(A(isinf(A) & !isnan(A)) != B(isinf(B) & !isnan(B))))
       iserror = 1;
       coda = "Infs don't match";
     else

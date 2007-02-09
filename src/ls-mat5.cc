@@ -717,7 +717,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
     case MAT_FILE_STRUCT_CLASS:
       {
-	Octave_map m;
+	Octave_map m (dim_vector (1, 1));
 	int32_t fn_type;
 	int32_t fn_len;
 	int32_t field_name_length;
@@ -729,7 +729,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	// space.
 	if (read_mat5_tag (is, swap, fn_type, fn_len) || fn_type != miINT32)
 	  {
-	    error ("load: invalid field name subelement");
+	    error ("load: invalid field name length subelement");
 	    goto data_read_error;
 	  }
 
@@ -749,37 +749,40 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	octave_idx_type n_fields = fn_len/field_name_length;
 
-	fn_len = PAD (fn_len);
-
-	OCTAVE_LOCAL_BUFFER (char, elname, fn_len);
-
-	if (! is.read (elname, fn_len))
-	  goto data_read_error;
-
-	std::vector<Cell> elt (n_fields);
-
-	for (octave_idx_type i = 0; i < n_fields; i++)
-	  elt[i] = Cell (dims);
-
-	octave_idx_type n = dims.numel ();
-
-	// fields subelements
-	for (octave_idx_type j = 0; j < n; j++)
+	if (n_fields > 0)
 	  {
+	    fn_len = PAD (fn_len);
+
+	    OCTAVE_LOCAL_BUFFER (char, elname, fn_len);
+
+	    if (! is.read (elname, fn_len))
+	      goto data_read_error;
+
+	    std::vector<Cell> elt (n_fields);
+
 	    for (octave_idx_type i = 0; i < n_fields; i++)
+	      elt[i] = Cell (dims);
+
+	    octave_idx_type n = dims.numel ();
+
+	    // fields subelements
+	    for (octave_idx_type j = 0; j < n; j++)
 	      {
-		octave_value fieldtc;
-		read_mat5_binary_element (is, filename, swap, global, fieldtc);
-		elt[i](j) = fieldtc;
+		for (octave_idx_type i = 0; i < n_fields; i++)
+		  {
+		    octave_value fieldtc;
+		    read_mat5_binary_element (is, filename, swap, global,
+					      fieldtc); 
+		    elt[i](j) = fieldtc;
+		  }
 	      }
 
-	  }
+	    for (octave_idx_type i = 0; i < n_fields; i++)
+	      {
+		const char *key = elname + i*field_name_length;
 
-	for (octave_idx_type i = 0; i < n_fields; i++)
-	  {
-	    const char *key = elname + i*field_name_length;
-
-	    m.assign (key, elt[i]);
+		m.assign (key, elt[i]);
+	      }
 	  }
 
 	tc = m;
@@ -1007,7 +1010,7 @@ write_mat5_tag (std::ostream& is, int type, int bytes)
 {
   int32_t temp;
 
-  if (bytes <= 4)
+  if (bytes > 0 && bytes <= 4)
     temp = (bytes << 16) + type;
   else
     {

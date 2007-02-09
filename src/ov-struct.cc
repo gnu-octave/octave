@@ -1087,7 +1087,7 @@ octave_struct::load_ascii (std::istream& is)
 	    }
 	}
       else if (len == 0 )
-	map = Octave_map ();
+	map = Octave_map (dim_vector (1, 1));
       else
 	panic_impossible ();
     }
@@ -1177,7 +1177,7 @@ octave_struct::load_binary (std::istream& is, bool swap,
 	}
     }
   else if (len == 0 )
-    map = Octave_map ();
+    map = Octave_map (dim_vector (1, 1));
   else
     panic_impossible ();
 
@@ -1224,7 +1224,7 @@ octave_struct::load_hdf5 (hid_t loc_id, const char *name,
   hdf5_callback_data dsub;
 
   herr_t retval2 = 0;
-  Octave_map m;
+  Octave_map m (dim_vector (1, 1));
   int current_item = 0;
 #ifdef HAVE_H5GGET_NUM_OBJS
   hsize_t num_obj = 0;

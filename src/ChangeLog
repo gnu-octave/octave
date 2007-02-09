@@ -1,3 +1,14 @@
+2007-02-09  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (read_mat5_binary_element): Don't attempt to read
+	fieldnames if there are no fields.
+	(write_mat5_tag): Don't use small data element format if bytes == 0.
+
+	* ls-mat5.cc (read_mat5_binary_element): Always create a structure
+	that is at least 1x1.
+	* ov-struct.cc (octave_struct::load_ascii,
+	octave_struct::load_binary, octave_struct::load_hdf5): Likewise.
+
 2007-02-08  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* DLD-FUNCTIONS/__glpk__.cc: Include glplib.h if glpk.h does not.

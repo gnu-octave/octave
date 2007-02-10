@@ -2729,7 +2729,7 @@ octave_base_stream::invalid_operation (const std::string& who, const char *rw)
 {
   // Note that this is not ::error () !
 
-  error (who, "stream not open for " + rw);
+  error (who, std::string ("stream not open for ") + rw);
 }
 
 octave_stream::octave_stream (octave_base_stream *bs)

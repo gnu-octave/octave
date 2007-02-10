@@ -1,8 +1,4 @@
 
-  ## Any function that includes these variables should not be cleared.
-
-  mlock ();
-
   ## The collection of current figure handles.  We need this to be able to
   ## allocate the next unused figure number.
 

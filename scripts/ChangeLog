@@ -1,3 +1,12 @@
+2007-02-10  John W. Eaton  <jwe@octave.org>
+
+	* plot/drawnow.m: Arrange for plot streams to be close on exit.
+	* plot/__uiobject_globals__.m: Don't call mlock.
+
+	* plot/drawnow.m: Only check for DISPLAY if isunix returns true.
+	* plot/__uiobject_delete__.m: Send quit command and flush stream
+	before calling pclose.
+
 2007-02-09  John W. Eaton  <jwe@octave.org>
 
 	* plot/subplot.m: Delete spurious call to axes.

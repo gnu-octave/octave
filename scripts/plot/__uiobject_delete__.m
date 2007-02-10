@@ -32,6 +32,8 @@ function __uiobject_delete__ (h)
       if (strcmp (obj.type, "figure"))
 	ps = obj.__plot_stream__;
 	if (any (ps == fopen ("all")))
+	  fputs (ps, "\nquit;\n");
+	  fflush (ps);
 	  pclose (ps);
 	endif
       endif

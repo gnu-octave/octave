@@ -26,6 +26,5 @@
 ## Author: jwe
 
 function __uiobject_close_all__ ()
-  fputs (stderr, "closing all figures\n");
   close ("all");
 endfunction

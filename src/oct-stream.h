@@ -467,8 +467,6 @@ private:
   // We can always do this in terms of seek(), so the derived class
   // only has to provide that.
 
-  int rewind (void);
-
   void invalid_operation (const std::string& who, const char *rw);
 
   // No copying!

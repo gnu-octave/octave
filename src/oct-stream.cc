@@ -932,7 +932,7 @@ void
 octave_base_stream::error (const std::string& who, const std::string& msg)
 {
   fail = true;
-  errmsg = who + msg;
+  errmsg = who + ": " + msg;
 }
 
 void
@@ -2709,12 +2709,6 @@ octave_base_stream::puts (const std::string& s, const std::string& who)
   return retval;
 }
 
-int
-octave_base_stream::rewind (void)
-{
-  return seek (0, std::ios::beg);
-}
-
 // Return current error message for this stream.
 
 std::string
@@ -2735,7 +2729,7 @@ octave_base_stream::invalid_operation (const std::string& who, const char *rw)
 {
   // Note that this is not ::error () !
 
-  error (who + ": stream not open for " + rw);
+  error (who, "stream not open for " + rw);
 }
 
 octave_stream::octave_stream (octave_base_stream *bs)
@@ -2975,12 +2969,7 @@ octave_stream::tell (void)
 int
 octave_stream::rewind (void)
 {
-  int retval = -1;
-
-  if (stream_ok ())
-    retval = rep->rewind ();
-
-  return retval;
+  return seek (0, SEEK_SET);
 }
 
 bool

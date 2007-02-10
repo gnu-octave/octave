@@ -74,8 +74,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <zlib.h>
 #endif
 
-#define PAD(l) (((l)<=4)?4:(((l)+7)/8)*8)
-#define TAGLENGTH(l) ((l)<=4?4:8)
+#define PAD(l) (((l) > 0 && (l) <= 4) ? 4 : (((l)+7)/8)*8)
 
 // FIXME -- the following enum values should be the same as the
 // mxClassID values in mexproto.h, but it seems they have also changed

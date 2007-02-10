@@ -1,5 +1,8 @@
 2007-02-09  John W. Eaton  <jwe@octave.org>
 
+	* ls-mat5.cc (PAD): Adjust to change in write_mat5_tag.
+	(TAGLENGTH): Delete unused macro.
+
 	* ov-struct.cc (octave_struct::load_ascii,
 	octave_struct::load_binary, octave_struct::load_hdf5):
 	Delete obsolete attempt at backward compatibility.

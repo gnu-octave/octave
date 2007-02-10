@@ -135,7 +135,6 @@ function h = subplot (rows, columns, index)
       if (obj.outerposition == pos)
 	found = true;
 	tmp = child;
-	axes (h);
 	break;
       endif
     endif

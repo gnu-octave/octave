@@ -1,3 +1,8 @@
+2007-02-11  John W. Eaton  <jwe@octave.org>
+
+	* plot/__uiobject_close_all.m: New file.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+
 2007-02-10  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow.m: Arrange for plot streams to be close on exit.

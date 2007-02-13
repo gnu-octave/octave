@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __plt1__ (h, x1, options)
+function retval = __plt1__ (h, x1, options)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -53,6 +53,6 @@ function __plt1__ (h, x1, options)
     x1 = (1:nr)';
   endif
 
-  __plt2__ (h, x1, x2, options);
+  retval = __plt2__ (h, x1, x2, options);
 
 endfunction

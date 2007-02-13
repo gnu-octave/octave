@@ -29,7 +29,7 @@
 
 ## Author: jwe
 
-function polar (varargin)
+function retval = polar (varargin)
 
   newplot ();
 
@@ -42,19 +42,23 @@ function polar (varargin)
     if (! ischar (varargin{3}))
       error ("polar: third argument must be a string");
     endif
-    __plr2__ (h, varargin{:});
+    tmp = __plr2__ (h, varargin{:});
   elseif (nargin == 2)
     if (ischar (varargin{2}))
-      __plr1__ (h, varargin{:});
+      tmp = __plr1__ (h, varargin{:});
     else
       fmt = "";
-      __plr2__ (h, varargin{:}, fmt);
+      tmp = __plr2__ (h, varargin{:}, fmt);
     endif
   elseif (nargin == 1)
     fmt = "";
-    __plr1__ (h, varargin{:}, fmt);
+    tmp = __plr1__ (h, varargin{:}, fmt);
   else
     print_usage ();
+  endif
+
+  if (nargout > 0)
+    retval = tmp;
   endif
 
 endfunction

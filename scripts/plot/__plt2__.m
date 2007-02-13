@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __plt2__ (h, x1, x2, options)
+function retval = __plt2__ (h, x1, x2, options)
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
@@ -45,25 +45,26 @@ function __plt2__ (h, x1, x2, options)
     x2 = real (x2);
   endif
 
+  h_set = false;
   if (isscalar (x1))
     if (isscalar (x2))
-      __plt2ss__ (h, x1, x2, options);
+      retval = __plt2ss__ (h, x1, x2, options);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
     if (isvector (x2))
-      __plt2vv__ (h, x1, x2, options);
+      retval = __plt2vv__ (h, x1, x2, options);
     elseif (ismatrix (x2))
-      __plt2vm__ (h, x1, x2, options);
+      retval = __plt2vm__ (h, x1, x2, options);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (ismatrix (x1))
     if (isvector (x2))
-      __plt2mv__ (h, x1, x2, options);
+      retval = __plt2mv__ (h, x1, x2, options);
     elseif (ismatrix (x2))
-      __plt2mm__ (h, x1, x2, options);
+      retval = __plt2mm__ (h, x1, x2, options);
     else
       error ("__plt2__: invalid data for plotting");
     endif

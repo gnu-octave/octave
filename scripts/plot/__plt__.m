@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __plt__ (caller, h, varargin)
+function retval = __plt__ (caller, h, varargin)
 
   nargs = nargin - 2;
 
@@ -51,9 +51,9 @@ function __plt__ (caller, h, varargin)
 	if (x_set)
 	  options = __pltopt__ (caller, next_arg);
 	  if (y_set)
-	    __plt2__ (h, x, y, options);
+	    retval = __plt2__ (h, x, y, options);
 	  else
-	    __plt1__ (h, x, options);
+	    retval = __plt1__ (h, x, options);
 	  endif
 	  x_set = false;
 	  y_set = false;
@@ -63,7 +63,7 @@ function __plt__ (caller, h, varargin)
       elseif (x_set)
 	if (y_set)
 	  options = __pltopt__ (caller, {""});
-	  __plt2__ (h, x, y, options);
+	  retval = __plt2__ (h, x, y, options);
 	  x = next_arg;
 	  y_set = false;
 	else

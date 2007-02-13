@@ -28,7 +28,7 @@
 
 ## Author: jwe
 
-function loglog (varargin)
+function retval = loglog (varargin)
 
   newplot ();
 
@@ -37,6 +37,10 @@ function loglog (varargin)
 
   set (h, "xscale", "log", "yscale", "log");
 
-  __plt__ ("loglog", h, varargin{:});
+  tmp = __plt__ ("loglog", h, varargin{:});
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
 
 endfunction

@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __plt2ss__ (h, x, y, options)
+function retval = __plt2ss__ (h, x, y, options)
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
@@ -49,10 +49,9 @@ function __plt2ss__ (h, x, y, options)
     if (isempty (color))
       color = __next_line_color__ ();
     endif
-    line (x, y, "keylabel", key, "color", color,
-	  "linestyle", options.linestyle,
-	  "marker", options.marker);
-);
+    retval = line (x, y, "keylabel", key, "color", color,
+		   "linestyle", options.linestyle,
+		   "marker", options.marker);
   else
     error ("__plt2ss__: arguments must be scalars");
   endif

@@ -93,11 +93,13 @@
 ## Author: Paul Kienzle
 ##         (modified from __plt__.m)
 
-function plot3 (varargin)
+function retval = plot3 (varargin)
 
   x_set = 0;
   y_set = 0;
   z_set = 0;
+
+  idx = 0;
 
   ## Gather arguments, decode format, and plot lines.
   for arg = 1:nargin
@@ -148,10 +150,10 @@ function plot3 (varargin)
 	set (gca (), "key", "on");
       endif
 
-      line (x(:), y(:), z(:), "keylabel", key,
-	    "color", options.color,
-	    "linestyle", options.linestyle,
-	    "marker", options.marker);
+      tmp(++idx) = line (x(:), y(:), z(:), "keylabel", key,
+			 "color", options.color,
+			 "linestyle", options.linestyle,
+			 "marker", options.marker);
 
       x_set = 0;
       y_set = 0;
@@ -182,7 +184,7 @@ function plot3 (varargin)
 	error ("plot3: x, y, and z must have the same shape");
       endif
 
-      line (x(:), y(:), z(:));
+      tmp(++idx) = line (x(:), y(:), z(:));
 
       x = new;
       y_set = 0;
@@ -228,10 +230,14 @@ function plot3 (varargin)
       error ("plot3: x, y, and z must have the same shape");
     endif
 
-    line (x(:), y(:), z(:));
+    tmp(++idx) = line (x(:), y(:), z(:));
 
   endif
 
   set (gca (), "view", [-37.5, 30]);
+
+  if (nargout > 0 && idx > 0)
+    retval = tmp;
+  endif
 
 endfunction

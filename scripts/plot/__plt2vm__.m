@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __plt2vm__ (h, x, y, options)
+function retval = __plt2vm__ (h, x, y, options)
 
   if (nargin < 3 || nargin > 4)
     print_usage ();
@@ -58,6 +58,7 @@ function __plt2vm__ (h, x, y, options)
     if (numel (options) == 1)
       options = repmat (options(:), y_nc, 1);
     endif
+    retval = zeros (y_nc, 1);
     for i = 1:y_nc
       tkey = options(i).key;
       if (! isempty (tkey))
@@ -67,9 +68,9 @@ function __plt2vm__ (h, x, y, options)
       if (isempty (color))
 	color = __next_line_color__ ();
       endif
-      line (x, y(:,i), "keylabel", tkey, "color", color,
-	    "linestyle", options(i).linestyle,
-	    "marker", options(i).marker);
+      retval(i) = line (x, y(:,i), "keylabel", tkey, "color", color,
+			"linestyle", options(i).linestyle,
+			"marker", options(i).marker);
     endfor
   else
     error ("__plt2vm__: arguments must be a matrices");

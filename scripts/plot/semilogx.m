@@ -28,7 +28,7 @@
 
 ## Author: jwe
 
-function semilogx (varargin)
+function retval = semilogx (varargin)
 
   newplot ();
 
@@ -37,6 +37,10 @@ function semilogx (varargin)
 
   set (h, "xscale", "log");
 
-  __plt__ ("semilogx", h, varargin{:});
+  tmp = __plt__ ("semilogx", h, varargin{:});
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
 
 endfunction

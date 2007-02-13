@@ -28,7 +28,7 @@
 
 ## Author: jwe
 
-function semilogy (varargin)
+function retval = semilogy (varargin)
 
   newplot ();
 
@@ -37,6 +37,10 @@ function semilogy (varargin)
 
   set (h, "yscale", "log");
 
-  __plt__ ("semilogy", h, varargin{:});
+  tmp = __plt__ ("semilogy", h, varargin{:});
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
 
 endfunction

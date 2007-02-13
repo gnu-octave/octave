@@ -40,7 +40,7 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function semilogxerr (varargin)
+function retval = semilogxerr (varargin)
 
   newplot ();
 
@@ -49,6 +49,10 @@ function semilogxerr (varargin)
 
   set (h, "xscale", "log");
 
-  __errcomm__ ("semilogxerr", h, varargin{:});
+  tmp = __errcomm__ ("semilogxerr", h, varargin{:});
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
 
 endfunction

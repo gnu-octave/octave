@@ -171,10 +171,14 @@
 
 ## Author: jwe
 
-function plot (varargin)
+function retval = plot (varargin)
 
   newplot ();
 
-  __plt__ ("plot", gca (), varargin{:});
+  tmp = __plt__ ("plot", gca (), varargin{:});
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
 
 endfunction

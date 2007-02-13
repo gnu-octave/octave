@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __plr1__ (h, theta, fmt)
+function retval = __plr1__ (h, theta, fmt)
 
   if (nargin != 3)
     print_usage ();
@@ -45,6 +45,6 @@ function __plr1__ (h, theta, fmt)
     theta = (1:nr)';
   endif
 
-  __plr2__ (h, theta, rho, fmt);
+  retval = __plr2__ (h, theta, rho, fmt);
 
 endfunction

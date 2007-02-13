@@ -28,7 +28,7 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function __errcomm__ (caller, h, varargin)
+function retval = __errcomm__ (caller, h, varargin)
 
   if (nargin < 4)
     print_usage ();
@@ -37,6 +37,7 @@ function __errcomm__ (caller, h, varargin)
   nargs = length (varargin);
 
   k = 1;
+  idx = 1;
   data = cell(6,1);
   while (k <= nargs)
     a = varargin{k++};
@@ -53,7 +54,7 @@ function __errcomm__ (caller, h, varargin)
     while (k <= nargs)
       a = varargin{k++};
       if (ischar (a) || iscellstr (a))
-	__errplot__ (a, h, data{1:ndata});
+	retval(idx++) = __errplot__ (a, h, data{1:ndata});
 	break;
       elseif (isvector (a))
 	a = a(:);
@@ -73,7 +74,7 @@ function __errcomm__ (caller, h, varargin)
   endwhile
 
   if (! (ischar (a) || iscellstr (a)))
-    __errplot__ ("~", h, data{1:ndata});
+    retval(idx++) = __errplot__ ("~", h, data{1:ndata});
   endif
 
   drawnow ();

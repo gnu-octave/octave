@@ -23,7 +23,7 @@
 
 ## Author: jwe
 
-function __plr2__ (h, theta, rho, fmt)
+function retval = __plr2__ (h, theta, rho, fmt)
 
   if (nargin != 4)
     print_usage ();
@@ -41,7 +41,7 @@ function __plr2__ (h, theta, rho, fmt)
     if (isscalar (rho))
       x = rho * cos (theta);
       y = rho * sin (theta);
-      __plt__ ("polar", h, x, y, fmt);
+      retval = __plt__ ("polar", h, x, y, fmt);
     else
       error ("__plr2__: invalid data for plotting");
     endif
@@ -58,7 +58,7 @@ function __plr2__ (h, theta, rho, fmt)
       endif
       x = rho .* cos (theta);
       y = rho .* sin (theta);
-      __plt__ ("polar", h, x, y, fmt);
+      retval = __plt__ ("polar", h, x, y, fmt);
     elseif (ismatrix (rho))
       [t_nr, t_nc] = size (theta);
       if (t_nr == 1)
@@ -79,7 +79,7 @@ function __plr2__ (h, theta, rho, fmt)
       endif
       x = diag (cos (theta)) * rho;
       y = diag (sin (theta)) * rho;
-      __plt__ ("polar", h, x, y, fmt);
+      retval = __plt__ ("polar", h, x, y, fmt);
     else
       error ("__plr2__: invalid data for plotting")
     endif
@@ -105,14 +105,14 @@ function __plr2__ (h, theta, rho, fmt)
       diag_r = diag (rho);
       x = diag_r * cos (theta);
       y = diag_r * sin (theta);
-      __plt__ ("polar", h, x, y, fmt);
+      retval = __plt__ ("polar", h, x, y, fmt);
     elseif (ismatrix (rho))
       if (! size_equal (rho, theta))
         error ("__plr2__: matrix dimensions must match");
       endif
       x = rho .* cos (theta);
       y = rho .* sin (theta);
-      __plt__ ("polar", h, x, y, fmt);
+      retval = __plt__ ("polar", h, x, y, fmt);
     else
       error ("__plr2__: invalid data for plotting")
     endif

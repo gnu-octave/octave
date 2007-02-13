@@ -1,5 +1,8 @@
 2007-02-13  John W. Eaton  <jwe@octave.org>
 
+	* plot/stem.m: New file, adapted from OctPlot.
+	* plot/Makefile.in (SOURCES_M): Add it to the list.
+
 	* plot/__errcomm__.m, plot/__plr1__.m, plot/__plr2__.m,
 	plot/__plt1__.m, plot/__plt2__.m, plot/__plt2mm__.m,
 	plot/__plt2mv__.m, plot/__plt2ss__.m, plot/__plt2vm__.m,

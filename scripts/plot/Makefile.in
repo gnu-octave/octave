@@ -99,6 +99,7 @@ SOURCES_M = \
   shg.m \
   sombrero.m \
   stairs.m \
+  stem.m \
   subplot.m \
   text.m \
   title.m \

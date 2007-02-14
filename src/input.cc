@@ -219,7 +219,13 @@ interactive_input (const std::string& s, bool force_readline = false)
     {
       feval ("drawnow");
 
+      // We set Vdrawnow_requested to false even if there is an error
+      // in drawnow so that the error doesn't reappear at every prompt.
+
       Vdrawnow_requested = false;
+
+      if (error_state)
+	return "\n";
     }
 
   return gnu_readline (s, force_readline);

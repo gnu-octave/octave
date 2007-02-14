@@ -42,17 +42,23 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
     print_usage ();
   endif
 
+  ## test arguments
+  if (columns (y) < 1)
+    error ("wavwrite: Y must have at least one column");
+  endif
+  if (columns (y) > 2^15-1)
+    error ("wavwrite: Y has more than 32767 columns (too many for a WAV-file)");
+  endif
+
   ## parse arguments
   if (nargin < 3)
-    warning ("wavwrite: sample rate set to 8000 Hz");
     samples_per_sec = 8000;
   endif
 
   if (nargin < 4)
-    warning ("wavwrite: sample resolution set to 16-bit");
     bits_per_sample = 16;
   endif
-  
+
   ## determine sample format
   switch (bits_per_sample)
     case 8  
@@ -62,12 +68,11 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
     case 32 
       format = "int32";
     otherwise
-      error ("wavread: sample resolution not supported");
+      error ("wavwrite: sample resolution not supported");
   endswitch
   
   ## calculate filesize
-  channels = size(y)(2);
-  n = size(y)(1);
+  [n, channels] = size(y);
 
   ## size of data chunk
   ck_size = n*channels*(bits_per_sample/8);
@@ -88,35 +93,35 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
   c += fwrite (fid, "RIFF", "uchar");
 
   ## file size - 8
-  c += fwrite (fid, ck_size + 36, "ulong", 0, BYTEORDER);
+  c += fwrite (fid, ck_size + 36, "uint32", 0, BYTEORDER);
   c += fwrite (fid, "WAVEfmt ", "uchar");
 
   ## size of fmt chunk
-  c += fwrite (fid, 16, "ulong", 0, BYTEORDER);
+  c += fwrite (fid, 16, "uint32", 0, BYTEORDER);
 
   ## sample format code (PCM)
-  c += fwrite (fid, 0x0001, "short", 0, BYTEORDER);
+  c += fwrite (fid, 1, "uint16", 0, BYTEORDER);
 
   ## channels
-  c += fwrite (fid, channels, "short", 0, BYTEORDER);
+  c += fwrite (fid, channels, "uint16", 0, BYTEORDER);
 
   ## sample rate
-  c += fwrite (fid, samples_per_sec, "ulong", 0, BYTEORDER);
+  c += fwrite (fid, samples_per_sec, "uint32", 0, BYTEORDER);
 
   ## bytes per second
   bps = samples_per_sec*channels*bits_per_sample/8;
-  c += fwrite (fid, bps, "ulong", 0, BYTEORDER);
+  c += fwrite (fid, bps, "uint32", 0, BYTEORDER);
 
   ## block align
-  c += fwrite (fid, channels*bits_per_sample/8, "short", 0, BYTEORDER);
+  c += fwrite (fid, channels*bits_per_sample/8, "uint16", 0, BYTEORDER);
 
-  c += fwrite (fid, bits_per_sample, "short", 0, BYTEORDER);   
+  c += fwrite (fid, bits_per_sample, "uint16", 0, BYTEORDER);   
   c += fwrite (fid, "data", "uchar");
-  c += fwrite (fid, ck_size, "ulong", 0, BYTEORDER);
+  c += fwrite (fid, ck_size, "uint32", 0, BYTEORDER);
   
   if (c < 25)
     fclose (fid);
-    error ("wavread: writing to file failed");
+    error ("wavwrite: writing to file failed");
   endif
   
   ## interleave samples
@@ -125,11 +130,11 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
   ## scale samples
   switch (bits_per_sample)
     case 8
-      yi = round (yi*127.5 + 127.5);
+      yi = round (yi*128 + 128);
     case 16
-      yi = floor (yi*32767.5);
+      yi = round (yi*32768);
     case 32
-      yi = floor (yi*2147483647.5);
+      yi = round (yi*2147483648);
   endswitch
   
   ## write to file
@@ -138,3 +143,27 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
   fclose (fid);
   
 endfunction
+
+%!test
+%! A = [1:10; 1:10]/10;
+%! wavwrite("a.wav", A);
+%! [B, samples_per_sec, bits_per_sample] = wavread("a.wav");
+%! assert(A,B, 10^(-4));
+%! assert(samples_per_sec, 8000);
+%! assert(bits_per_sample, 16);
+%
+%!test
+%! A=[1:10; 1:10] / 10;
+%! wavwrite("a.wav", A, 4000);
+%! [B, samples_per_sec, bits_per_sample] = wavread("a.wav");
+%! assert(A,B, 10^(-4));
+%! assert(samples_per_sec, 4000);
+%! assert(bits_per_sample, 16);
+%
+%!test
+%! A=[1:10; 1:10] / 10;
+%! wavwrite("a.wav", A, 4000, 8);
+%! [B, samples_per_sec, bits_per_sample] = wavread("a.wav");
+%! assert(A,B, 10^(-2));
+%! assert(samples_per_sec, 4000);
+%! assert(bits_per_sample, 8);

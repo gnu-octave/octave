@@ -84,24 +84,24 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   endwhile
 
   ## format chunk size
-  ck_size = fread (fid, 1, "ulong", 0, BYTEORDER);         
+  ck_size = fread (fid, 1, "uint32", 0, BYTEORDER);         
   
   ## sample format code
-  format_tag = fread (fid, 1, "short", 0, BYTEORDER);
+  format_tag = fread (fid, 1, "uint16", 0, BYTEORDER);
   if (format_tag != FORMAT_PCM && format_tag != FORMAT_IEEE_FLOAT)
     fclose (fid);
     error ("wavread: sample format %#x is not supported", format_tag);
   endif
 
   ## number of interleaved channels  
-  channels = fread (fid, 1, "short", 0, BYTEORDER);
+  channels = fread (fid, 1, "uint16", 0, BYTEORDER);
 
   ## sample rate
-  samples_per_sec = fread (fid, 1, "ulong", 0, BYTEORDER);
+  samples_per_sec = fread (fid, 1, "uint32", 0, BYTEORDER);
 
   ## bits per sample
   fseek (fid, 6, SEEK_CUR);
-  bits_per_sample = fread (fid, 1, "short", 0, BYTEORDER);
+  bits_per_sample = fread (fid, 1, "uint16", 0, BYTEORDER);
 
   ## ignore the rest of the chunk
   fseek (fid, ck_size-16, SEEK_CUR);
@@ -119,7 +119,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   end
 
   ## data chunk size
-  ck_size = fread (fid, 1, "ulong", 0, BYTEORDER);
+  ck_size = fread (fid, 1, "uint32", 0, BYTEORDER);
   
   ## determine sample data type
   if (format_tag == FORMAT_PCM)
@@ -134,7 +134,8 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
         format = "int32";
       otherwise
         fclose (fid);
-        error ("wavread: %d bits sample resolution is not supported with PCM", bits_per_sample);
+        error ("wavread: %d bits sample resolution is not supported with PCM",
+	       bits_per_sample);
     endswitch
   else
     switch (bits_per_sample)
@@ -144,7 +145,8 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
         format = "float64";
       otherwise
         fclose (fid);
-        error ("wavread: %d bits sample resolution is not supported with IEEE float", bits_per_sample);
+        error ("wavread: %d bits sample resolution is not supported with IEEE float",
+	       bits_per_sample);
     endswitch
   endif
   
@@ -178,6 +180,12 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   endif
   [yi, n] = fread (fid, length, format, 0, BYTEORDER);
   fclose (fid);
+
+  ## check data
+  if (mod (numel (yi), channels) != 0)
+    error ("wavread: data in %s doesn't match the number of channels",
+	   filename);
+  endif
 
   if (bits_per_sample == 24)
     yi = reshape (yi, 3, rows(yi)/3)';

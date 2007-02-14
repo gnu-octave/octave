@@ -1,3 +1,8 @@
+2007-02-14  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* audio/wavread.m, audio/wavwrite.m: Use types with specific sizes
+	for reading and writing data.  New tests.  Improve rounding.
+
 2007-02-13  John W. Eaton  <jwe@octave.org>
 
 	* plot/stem.m: New file, adapted from OctPlot.

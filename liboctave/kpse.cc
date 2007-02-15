@@ -2302,8 +2302,11 @@ do_subdir (str_llist_type *str_list_ptr, const std::string& elt,
 
 static void
 expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
-	    unsigned start)
+	    unsigned /* start */)
 {
+#if 0
+  // We don't want magic constructs.
+
   size_t elt_len = elt.length ();
 
   size_t dir = start;
@@ -2332,6 +2335,7 @@ expand_elt (str_llist_type *str_list_ptr, const std::string& elt,
       else
 	dir++;
     }
+#endif
 
   /* When we reach the end of ELT, it will be a normal filename.  */
   checked_dir_list_add (str_list_ptr, elt);

@@ -1,3 +1,8 @@
+2007-02-14  Alexander Barth  <abarth@marine.usf.edu>
+
+	* DLD-FUNCTIONS/interpn.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
 2007-02-14  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (interactive_input): Check error_state after call to feval.

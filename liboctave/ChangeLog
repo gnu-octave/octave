@@ -1,3 +1,7 @@
+2007-02-14  John W. Eaton  <jwe@octave.org>
+
+	* kpse.cc (expand_elt): Omit special treatment for //.
+
 2007-02-06  John W. Eaton  <jwe@octave.org>
 
 	* file-ops.cc (file_ops::canonicalize_file_name) [HAVE_REALPATH]:

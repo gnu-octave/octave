@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} imshow (@var{im}, @var{map})
 ## @deftypefnx {Function File} {} imshow (@var{R}, @var{G}, @var{B}, @dots{})
 ## @deftypefnx {Function File} {} imshow (@var{filename})
-## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, ...)
+## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
 ## Display the image @var{im}, where @var{im} can a 2-dimensional
 ## (gray-scale image) or a 3-dimensional (RGB image) matrix. If three matrices
 ## of the same size are given as arguments, they will be concatenated into
@@ -146,21 +146,21 @@ function imshow (im, varargin)
     im(im > 1) = 1;
   endif
   
-  ## Convert to indexed image.
   dim = ndims (im);
   if (dim == 2)
     im = round ((size (color_map, 1) - 1) * im);
+    colormap (color_map);
+    image (im, initial_magnification/100);
+    colormap (old_colormap);
   elseif (dim == 3 && size (im, 3) == 3)
-    [im, color_map] = rgb2ind (im);
+    __img__ ([] , [], im);
+    ## FIXME -- needed anymore for a special case?
+    ## Convert to indexed image.
+    ## [im, color_map] = rgb2ind (im);
   else
     error ("imshow: input image must be a 2D or 3D matrix");
   endif
   
-  ## And now, we show the image.
-  colormap (color_map);
-  image (im, initial_magnification/100);
-  colormap (old_colormap);
-
 endfunction
 
 %!error imshow ()                           # no arguments

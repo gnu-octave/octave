@@ -30,6 +30,8 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     axis_obj = get (h);
 
+    parent_figure_obj = get (axis_obj.parent);
+
     ## Set axis properties here?
 
     if (! isempty (axis_obj.outerposition))
@@ -222,7 +224,6 @@ function __uiobject_draw_axes__ (h, plot_stream)
     data = cell ();
 
     have_img_data = false;
-    img_data = [];
 
     xminp = yminp = zminp = Inf;
     xmax = ymax = zmax = -Inf;
@@ -239,7 +240,9 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	  endif
 	  have_img_data = true;
 	  img_data = obj.cdata;
-
+	  img_colormap = parent_figure_obj.colormap;
+	  img_xdata = obj.xdata;
+	  img_ydata = obj.ydata;
 
 	case "line"
 	  data_idx++;
@@ -552,28 +555,58 @@ function __uiobject_draw_axes__ (h, plot_stream)
       if (ischar (view_fcn) && strcmp (view_fcn, "gnuplot_internal"))
 	have_data = true;
 
-	[y_dim, x_dim] = size (img_data);
+	[y_dim, x_dim] = size (img_data(:,:,1));
 	if (x_dim > 1)
-	  dx = abs (xlim(2)-xlim(1))/(x_dim-1);
+	  dx = abs (img_xdata(2)-img_xdata(1))/(x_dim-1);
 	else
 	  dx = 1;
 	endif
 	if (y_dim > 1)
-	  dy = abs (ylim(2)-ylim(1))/(y_dim-1);
+	  dy = abs (img_ydata(2)-img_ydata(1))/(y_dim-1);
 	else
 	  dy = 1;
 	endif
-	x_origin = min (xlim);
-	y_origin = min (ylim);
+	x_origin = min (img_xdata);
+	y_origin = min (img_ydata);
 
 	## Let the file be deleted when Octave exits or `purge_tmp_files'
 	## is called.
 	[fid, fname] = mkstemp (strcat (P_tmpdir, "/gpimageXXXXXX"), 1);
-	fwrite (fid, img_data(:), "float");
+	if (ndims (img_data) == 3)
+	  fwrite (fid, permute (img_data, [3, 1, 2])(:), "float");
+	  format = "1:2:3";
+	  imagetype = "rgbimage";
+	else
+	  fwrite (fid, img_data(:), "float");
+	  format = "1";
+	  imagetype = "image";
+	  palette_size = rows (img_colormap);
+	  fprintf (plot_stream,
+		   "set palette positive color model RGB maxcolors %i;\n",
+		   palette_size);
+	  if (palette_size <= 128)
+	    ## Break up command to avoid buffer overflow.
+	    fprintf (plot_stream, "set palette file \"-\" using 1:2:3:4;\n");
+	    for i = 1:palette_size
+	      fprintf (plot_stream, "%g %g %g %g;\n",
+		       1e-3*round (1e3*[(i-1)/(palette_size-1), img_colormap(i,:)]));
+	    end
+	    fprintf (plot_stream, "e;\n");
+	  else
+	    # Let the file be deleted when Octave exits or `purge_tmp_files' is called.
+	    [fid, binary_fname, msg] = mkstemp (strcat (P_tmpdir, "/gpimageXXXXXX"), 1);
+	    fwrite (fid, img_colormap', "float32", 0, "ieee-le");
+	    fclose (fid);
+	    fprintf (plot_stream,
+		     "set palette file \"%s\" binary record=%d using 1:2:3;\n",
+		     binary_fname, palette_size);
+	  endif
+	endif
 	fclose (fid);
 
-	fprintf (plot_stream, "plot \"%s\" binary array=%dx%d scan=yx flipy origin=(%g,%g) dx=%g dy=%g using 1 with image",
-		 fname, x_dim, y_dim, x_origin, y_origin, dx, dy);
+	fprintf (plot_stream,
+		 "plot \"%s\" binary array=%dx%d scan=yx flipy origin=(%g,%g) dx=%g dy=%g using %s with %s",
+		 fname, x_dim, y_dim, x_origin, y_origin, dx, dy, format, imagetype);
 
 	plot_cmd = ",";
       else

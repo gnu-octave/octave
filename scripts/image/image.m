@@ -56,33 +56,7 @@ function image (x, y, img)
     print_usage ();
   endif
 
-  if (isempty (img))
-    error ("image: matrix is empty");
-  endif
-
-  ## Use the newly added mode of "plot" called "with image".
-  if (isempty (x))
-    x = [1, columns(img)];
-  endif
-
-  if (isempty (y))
-    y = [1, rows(img)];
-  endif
-
-  ca = gca ();
-
-  s = __uiobject_image_ctor__ (ca);
-
-  s.cdata = img;
-
-  tmp = __uiobject_make_handle__ (s);
-
-  __uiobject_adopt__ (ca, tmp);
-
-  xlim = [x(1), x(end)];
-  ylim = [y(1), y(end)];
-
-  set (ca, "view", [0, 90], "xlim", xlim, "ylim", ylim);
+  tmp = __img__ (x, y, img);
 
   if (nargout > 0)
     h = tmp;

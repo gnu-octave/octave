@@ -1,5 +1,12 @@
 2007-02-15  Daniel J Sebald  <daniel.sebald@ieee.org>
 
+	* plot/__uiobject_image_ctor__.m: Set xdata and ydata properties.
+	* image/__img__.m: New file containing common parts of image.m and
+	imshow.m.
+	* image/image.m, image/imshow.m: Call __img__.
+	* plot/__uiobject_draw_axes__.m:
+	Handle rgb imaged data stored in 3-d arrays.
+
 	* plot/figure.m: Doc fix.
 
 2007-02-14  Thomas Weber  <thomas.weber.mail@gmail.com>

@@ -32,6 +32,8 @@ function s = __uiobject_image_ctor__ (p)
     s.children = [];
 
     s.cdata = [];
+    s.xdata = [];
+    s.ydata = [];
 
     ## XXX FIXME XXX -- need to intialize all properties to default
     ## values here.

@@ -18,9 +18,10 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} figure (@var{n})
-## Set the current plot window to plot window @var{n}.  If @var{n} is
-## not specified, the next available window number is chosen.
+## @deftypefn {Function File} {} figure (@var{n}, @var{p}, @var{v}, @dots{})
+## Set the current plot window to plot window @var{n}.  If no arguments are
+## specified, the next available window number is chosen.  Parameters @var{p}
+## and settings @var{v} can be given in pairs if @var{n} is specified. 
 ## @end deftypefn
 
 ## Author: jwe, Bill Denney

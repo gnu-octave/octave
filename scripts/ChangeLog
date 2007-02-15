@@ -1,3 +1,7 @@
+2007-02-15  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* plot/figure.m: Doc fix.
+
 2007-02-14  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* audio/wavread.m, audio/wavwrite.m: Use types with specific sizes
@@ -2537,7 +2541,7 @@
 
 	* statistics/base/median.m: Make it work for the scalar case too.
 
-2005-01-25  Daniel J Sebald  <daniel.sebald@ieee.org>.
+2005-01-25  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* plot/__plt__.m: Initialize fmt and sep outside of loop.
 	Simplify logic for decoding args.

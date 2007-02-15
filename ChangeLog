@@ -1,3 +1,18 @@
+2007-02-15  John W. Eaton  <jwe@octave.org>
+
+	* octave-config.in (DATAROOTDIR): Include in list of vars.
+	Substitute OCTAVE_HOME.
+
+	* Makeconf.in (MKOCTFILE_INCFLAGS, MKOCTFILE_LFLAGS): Delete vars.
+	(do-subst-config-vals): Don't substitute them.
+	Also substitute OCTAVE_CONF_INCLUDEDIR, OCTAVE_CONF_OCTINCLUDEDIR,
+	OCTAVE_CONF_OCTLIBDIR, and OCTAVE_CONF_PREFIX here.
+	* mkoctfile.in (OCTAVE_CONF_OCTINCLUDEDIR, OCTAVE_CONF_INCLUDEDIR,
+	OCTAVE_CONF_OCTLIBDIR): Substitute values and perform OCTAVE_HOME
+	substitution here.
+	(DEFAULT_INCFLAGS, DEFAULT_LFLAGS): New variables.  Use them to
+	set default values for INCFLAGS and LFLAGS.
+
 2007-02-09  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in: Handle .a files.

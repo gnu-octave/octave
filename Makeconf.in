@@ -351,18 +351,6 @@ localstartupfiledir = ${localfcnfiledir}/startup
 # LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PATH, ...
 library_path_var = @library_path_var@
 
-# The -I flags to use for the mkoctfile script.
-ifeq ($(includedir),/usr/include)
- MKOCTFILE_INCFLAGS = \
-    -I$(octincludedir) -I$(octincludedir)/octave
-else
- MKOCTFILE_INCFLAGS = \
-    -I$(octincludedir) -I$(octincludedir)/octave -I$(includedir)
-endif
-
-# The -L flags to use for the mkoctfile scrip (for --link-stand-alone)
-MKOCTFILE_LFLAGS = -L$(octlibdir)
-
 MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_LDFLAGS@
 
 NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
@@ -495,6 +483,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_FPICFLAG%|\"${FPICFLAG}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_LIBS%|\"${GLPK_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_INCFLAGS%|\"${INCFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_INCLUDEDIR%|\"${includedir}\"|" \
   -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \
   -e "s|%OCTAVE_CONF_LDFLAGS%|\"${LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_LD_STATIC_FLAG%|\"${LD_STATIC_FLAG}\"|" \
@@ -512,8 +501,9 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \
   -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_MKOCTFILE_INCFLAGS%|\"${MKOCTFILE_INCFLAGS}\"|" \
-  -e "s|%OCTAVE_CONF_MKOCTFILE_LFLAGS%|\"${MKOCTFILE_LFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
+  -e "s|%OCTAVE_CONF_OCTLIBDIR%|\"${octlibdir}\"|" \
+  -e "s|%OCTAVE_CONF_PREFIX%|\"${prefix}\"|" \
   -e "s|%OCTAVE_CONF_RANLIB%|\"${RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_RDYNAMIC_FLAG%|\"${RDYNAMIC_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_RLD_FLAG%|\"${RLD_FLAG}\"|" \

@@ -5,6 +5,7 @@
 	* plot/__uiobject_image_ctor__.m: Set xdata and ydata properties.
 	* image/__img__.m: New file containing common parts of image.m and
 	imshow.m.
+	* image/Makefile.in (SOURCES): Add __img__.m to the list.
 	* image/image.m, image/imshow.m: Call __img__.
 	* plot/__uiobject_draw_axes__.m:
 	Handle rgb imaged data stored in 3-d arrays.

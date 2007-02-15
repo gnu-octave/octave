@@ -97,7 +97,7 @@ function imshow (im, varargin)
   ## Set other default parameters.
   isindexed = false;
   initial_magnification = 100;
-  old_colormap = color_map = colormap ();
+  color_map = colormap ();
   
   ## Handle the rest of the arguments.
   narg = 1;
@@ -149,9 +149,8 @@ function imshow (im, varargin)
   dim = ndims (im);
   if (dim == 2)
     im = round ((size (color_map, 1) - 1) * im);
-    colormap (color_map);
     image (im, initial_magnification/100);
-    colormap (old_colormap);
+    colormap (color_map);
   elseif (dim == 3 && size (im, 3) == 3)
     __img__ ([] , [], im);
     ## FIXME -- needed anymore for a special case?

@@ -47,7 +47,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
     endif
 
     if (strcmp (axis_obj.dataaspectratiomode, "manual"))
-      r = axis_obj.dataaspectratio
+      r = axis_obj.dataaspectratio;
       fprintf (plot_stream, "set size ratio %g;\n", -r(2)/r(1));
     else
       fputs (plot_stream, "set size noratio;\n");
@@ -804,7 +804,7 @@ function style = do_linestyle_command (obj, idx, plot_stream)
   style = "lines";
   if (isempty (lt))
     if (! isempty (pt))
-      style = "points"
+      style = "points";
     endif
   elseif (! isempty (pt))
     style = "linespoints";

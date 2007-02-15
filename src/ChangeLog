@@ -1,5 +1,7 @@
 2007-02-15  John W. Eaton  <jwe@octave.org>
 
+	* mxarray.h (mxChar): Use char instead of unsigned short.
+
 	* toplev.cc (Foctave_config_info): Remove
 	OCTAVE_CONF_MKOCTFILE_INCFLAGS and OCTAVE_CONF_MKOCTFILE_LFLAGS
 	from the list.

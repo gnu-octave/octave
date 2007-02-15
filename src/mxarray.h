@@ -79,7 +79,7 @@ typedef enum
 typedef int mxLogical;
 
 /* typedef Uint16 mxChar; */
-typedef unsigned short mxChar;
+typedef char mxChar;
 
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 

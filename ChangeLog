@@ -1,3 +1,11 @@
+2007-02-16  John W. Eaton  <jwe@octave.org>
+
+	* mkoctfile.in: Use OCTAVE_PREFIX, not OCTAVE_CONF_PREFIX, in sed
+	substitutions.
+	* octave-conf.in: Define DATAROOTDIR, not DATADIR, from
+	OCTAVE_DATAROOTDIR.
+	From Michael Goffioul <michael.goffioul@swing.be>.
+
 2007-02-15  John W. Eaton  <jwe@octave.org>
 
 	* octave-config.in (DATAROOTDIR): Include in list of vars.

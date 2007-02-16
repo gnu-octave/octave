@@ -629,7 +629,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	fprintf (plot_stream, "set view %g, %g;\n", rot_x, rot_z);
 
 	fprintf (plot_stream, "%s '-' %s %s %s", plot_cmd,
-		 usingclause{i}, titlespec{1}, withclause{1});
+		 usingclause{1}, titlespec{1}, withclause{1});
       endif
       for i = 2:data_idx
 	fprintf (plot_stream, ", '-' %s %s %s", usingclause{i},

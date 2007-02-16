@@ -27,9 +27,10 @@ function newplot ()
     cf = gcf ();
     fnp = get (cf, "nextplot");
     switch (fnp)
+      ## FIXME -- probably we should do more than validate the nextplot
+      ## property value...
       case "new"
       case "add"
-	return;
       case "replacechildren"
       case "replace"
       otherwise
@@ -42,7 +43,7 @@ function newplot ()
       case "replacechildren"
       case "replace"
 	__next_line_color__ (true);
-	__uiobject_axes_init__ (ca);
+	__uiobject_axes_init__ (ca, "replace");
       otherwise
 	error ("newplot: unrecognized nextplot property for current axes");
     endswitch

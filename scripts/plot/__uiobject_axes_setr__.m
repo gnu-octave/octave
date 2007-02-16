@@ -44,6 +44,7 @@ function obj = __uiobject_axes_setr__ (h, varargin)
 	    endif
 	    switch (key)
 	      case {"title", "xlabel", "ylabel", "zlabel"}
+		delete (obj.(key));
 		val = __uiobject_text_ctor__ (h, "string", val);
 
 	      case {"xlim", "ylim", "zlim"}

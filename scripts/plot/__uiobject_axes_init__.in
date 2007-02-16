@@ -24,16 +24,23 @@
 
 ## Author: jwe
 
-function h = __uiobject_axes_init__ (h)
+function h = __uiobject_axes_init__ (h, mode)
 
   __uiobject_globals__;
 
   if (nargin == 1)
+    mode = "";
+  endif
+
+  if (nargin == 1 || nargin == 2)
 
     s = get (h);
 
     s.__setter__ = @__uiobject_axes_setr__;
 
+    if (isfield (s, "title") && ! isempty (s.title))
+      delete (s.title);
+    endif
     s.title = __uiobject_text_ctor__ (h);
 
     s.box = "on";
@@ -52,6 +59,15 @@ function h = __uiobject_axes_init__ (h)
     s.ylimmode = "auto";
     s.zlimmode = "auto";
 
+    if (isfield (s, "xlabel") && ! isempty (s.xlabel))
+      delete (s.xlabel);
+    endif
+    if (isfield (s, "ylabel") && ! isempty (s.ylabel))
+      delete (s.ylabel);
+    endif
+    if (isfield (s, "zlabel") && ! isempty (s.zlabel))
+      delete (s.zlabel);
+    endif
     s.xlabel = __uiobject_text_ctor__ (h);
     s.ylabel = __uiobject_text_ctor__ (h);
     s.zlabel = __uiobject_text_ctor__ (h);
@@ -92,7 +108,12 @@ function h = __uiobject_axes_init__ (h)
 
     s.nextplot = "replace";
 
-    s.outerposition = [0, 0, 1, 1];
+    ## FIXME -- this is not quite right; we should preserve "position"
+    ## and "units".
+    if (! isfield (s, "outerposition")
+        || (isempty (s.outerposition) || ! strcmp (mode, "replace")))
+      s.outerposition = [0, 0, 1, 1];
+    endif
 
     s.dataaspectratio = [];
     s.dataaspectratiomode = "auto";

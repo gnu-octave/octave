@@ -1,3 +1,14 @@
+2007-02-15  John W. Eaton  <jwe@octave.org>
+
+	* plot/__uiobject_axes_init__.in, plot/__uiobject_axes_setr__.m:
+	Delete title, xlabel, ylabel, and zlabel properties before
+	reassigning.
+	* plot/__uiobject_axes_init__.in: New arg, mode.
+	Don't init outerposition if "mode" is "replace".
+	* plot/newplot.m: Check both figure and axes nextplot properties.
+	If axes nextplot property is replace, pass "replace" as mode arg
+	to __uiobject_axes_init__.
+
 2007-02-15  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* image/imshow.m: Don't restore old colormap.

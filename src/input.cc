@@ -211,11 +211,13 @@ gnu_readline (const std::string& s, bool force_readline)
 }
 
 static inline std::string
-interactive_input (const std::string& s, bool force_readline = false)
+interactive_input (const std::string& s, bool debug = false,
+		   bool force_readline = false)
 {
   Vlast_prompt_time.stamp ();
 
-  if (Vdrawnow_requested && (interactive || forced_interactive))
+  if (! debug
+      && (Vdrawnow_requested && (interactive || forced_interactive)))
     {
       feval ("drawnow");
 
@@ -629,7 +631,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
   octave_diary << prompt;
 
-  std::string input_buf = interactive_input (prompt.c_str (), true);
+  std::string input_buf = interactive_input (prompt.c_str (), debug, true);
 
   if (! input_buf.empty ())
     {

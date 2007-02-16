@@ -348,8 +348,9 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
 	os << "dbtype: unable to open `" << ff << "' for reading!\n";
     }
   else
-    os << "dbtype: unkown function";
+    os << "dbtype: unknown function " << name << "\n";
 
+  os.flush();
 }
 
 DEFCMD (dbtype, args, ,
@@ -401,25 +402,28 @@ List script file with line numbers.\n\
 		      int start = atoi (start_str.c_str ());
 		      int end = atoi (end_str.c_str ());
 		
-		      if (start < end)
-			do_dbtype (octave_stdout,
-				   dbg_fcn->name (), start, end);
+		      if (std::min (start, end) <= 0)
+ 			error ("dbtype: start and end lines must be >= 1\n");
+
+		      if (start <= end)
+			do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
 		      else
-			error ("dbtype: the start line must be less than the end line\n");
+			error ("dbtype: start line must be less than end line\n");
 		    }
 		  else
-		    error ("dbtype: if you specify lines it must be like `start:end`");
+		    error ("dbtype: line specification must be `start:end'");
 		}
 	    }
 	  break;
 
-	case 2: // (dbtype func start:end)
+	case 2: // (dbtype func start:end) , (dbtype func start)
 	  dbg_fcn = get_user_function (argv[1]);
 
 	  if (dbg_fcn)
 	    {
 	      std::string arg = argv[2];
-
+	      int start = 0;
+	      int end = 0;
 	      size_t ind = arg.find (':');
 
 	      if (ind != NPOS)
@@ -427,17 +431,23 @@ List script file with line numbers.\n\
 		  std::string start_str = arg.substr (0, ind);
 		  std::string end_str = arg.substr (ind + 1);
 
-		  int start = atoi (start_str.c_str ());
-		  int end = atoi (end_str.c_str ());
-		
-		  if (start < end)
-		    do_dbtype (octave_stdout,
-			       dbg_fcn->name (), start, end);
-		  else
-		    error ("dbtype: the start line must be less than the end line\n");
+		  start = atoi (start_str.c_str ());
+		  end = atoi (end_str.c_str ());
+		  
 		}
 	      else
-		error ("dbtype: if you specify lines it must be like `start:end`");
+		{
+		  start = atoi (arg.c_str ());
+		  end = start;
+		}
+
+	      if (std::min (start, end) <= 0)
+		error ("dbtype: start and end lines must be >= 1\n");
+	      
+	      if (start <= end)
+		do_dbtype (octave_stdout, dbg_fcn->name (), start, end);
+	      else
+		error ("dbtype: start line must be less than end line\n");
 	    }
 	  break;
 

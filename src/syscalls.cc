@@ -355,7 +355,7 @@ fclose (out);\n\
 %!    [in, out, pid] = popen2 ("sort", "-nr");
 %!    EAGAIN = errno ("EAGAIN");
 %!  else
-%!    [in, out, pid] = popen2 ("sort", "/R", 1);
+%!    [in, out, pid] = popen2 ("sort", "/R");
 %!    EAGAIN = errno ("EINVAL");
 %!  endif
 %!  fputs (in, "these\nare\nsome\nstrings\n");
@@ -379,7 +379,11 @@ fclose (out);\n\
 %!     endif
 %!   until (done)
 %!  fclose (out);
-%!  assert(str,{"these\n","strings\n","some\n","are\n"})
+%!  if (!isunix())
+%!    assert(str,{"these\n","strings\n","some\n","are\n"})
+%!  else
+%!    assert(str,{"these\r\n","strings\r\n","some\r\n","are\r\n"})
+%!  end
 
 */
 

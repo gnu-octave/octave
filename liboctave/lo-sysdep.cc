@@ -27,6 +27,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -35,10 +36,15 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+
 #include "file-ops.h"
 #include "lo-error.h"
 #include "pathlen.h"
 #include "lo-sysdep.h"
+#include "str-vec.h"
 
 std::string
 octave_getcwd (void)
@@ -99,7 +105,70 @@ octave_chdir (const std::string& path_arg)
 #endif
 }
 
-#if defined (_MSC_VER)
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+
+pid_t
+octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode,
+    int *fildes, std::string& msg)
+{
+  pid_t pid;
+  PROCESS_INFORMATION pi;
+  STARTUPINFO si;
+  std::string command = "\"" + cmd + "\"";
+  HANDLE hProcess = GetCurrentProcess(), childRead, childWrite, parentRead, parentWrite;
+  DWORD pipeMode;
+
+  ZeroMemory (&pi, sizeof (pi));
+  ZeroMemory (&si, sizeof (si));
+  si.cb = sizeof (si);
+
+  if (! CreatePipe (&childRead, &parentWrite, 0, 0) ||
+      ! DuplicateHandle (hProcess, childRead, hProcess, &childRead, 0, TRUE, DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
+    {
+      msg = "popen2: pipe creation failed";
+      return -1;
+    }
+  if (! CreatePipe (&parentRead, &childWrite, 0, 0) ||
+      ! DuplicateHandle (hProcess, childWrite, hProcess, &childWrite, 0, TRUE, DUPLICATE_SAME_ACCESS | DUPLICATE_CLOSE_SOURCE))
+    {
+      msg = "popen2: pipe creation failed";
+      return -1;
+    }
+  if (! sync_mode)
+    {
+      pipeMode = PIPE_NOWAIT;
+      SetNamedPipeHandleState (parentRead, &pipeMode, 0, 0);
+      SetNamedPipeHandleState (parentWrite, &pipeMode, 0, 0);
+    }
+  fildes[1] = _open_osfhandle (reinterpret_cast<long> (parentRead), _O_RDONLY | _O_BINARY);
+  fildes[0] = _open_osfhandle (reinterpret_cast<long> (parentWrite), _O_WRONLY | _O_BINARY);
+  si.dwFlags |= STARTF_USESTDHANDLES;
+  si.hStdInput = childRead;
+  si.hStdOutput = childWrite;
+
+  // Ignore first arg as it is the command
+  for (int k=1; k<args.length(); k++)
+    command += " \"" + args[k] + "\"";
+  OCTAVE_LOCAL_BUFFER (char, c_command, command.length () + 1);
+  strcpy (c_command, command.c_str ());
+  if (! CreateProcess (0, c_command, 0, 0, TRUE, 0, 0, 0, &si, &pi))
+    {
+      msg = "popen2: process creation failed";
+      return -1;
+    }
+  pid = pi.dwProcessId;
+
+  CloseHandle (childRead);
+  CloseHandle (childWrite);
+  CloseHandle (pi.hProcess);
+  CloseHandle (pi.hThread);
+
+  return pid;
+}
+
+#endif
+
+#if defined (_MSC_VER) && ! defined (HAVE_DIRENT_H)
 
 // FIXME -- it would probably be better to adapt the versions of
 // opendir, readdir, and closedir from Emacs as they appear to be more

@@ -47,6 +47,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <signal.h>
 
 #include "lo-utils.h"
+#include "lo-sysdep.h"
 #include "oct-syscalls.h"
 #include "str-vec.h"
 
@@ -354,6 +355,100 @@ octave_syscalls::kill (pid_t pid, int sig, std::string& msg)
 #endif
 
   return status;
+}
+
+pid_t
+octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
+    bool sync_mode, int *fildes)
+{
+  std::string msg;
+  bool interactive = false;
+  return popen2 (cmd, args, sync_mode, fildes, msg, interactive);
+}
+
+pid_t
+octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
+    bool sync_mode, int *fildes, std::string& msg)
+{
+  bool interactive = false;
+  return popen2 (cmd, args, sync_mode, fildes, msg, interactive);
+}
+
+pid_t
+octave_syscalls::popen2 (const std::string& cmd, const string_vector& args,
+    bool sync_mode, int *fildes, std::string& msg, bool &interactive)
+{
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+  return ::octave_popen2 (cmd, args, sync_mode, fildes, msg);
+#else
+  pid_t pid;
+  int child_stdin[2], child_stdout[2];
+
+  if (pipe (child_stdin, msg) == 0)
+    {
+      if (pipe (child_stdout, msg) == 0)
+        {
+          pid = fork (msg);
+          if (pid < 0)
+            msg = "popen2: process creation failed -- " + msg;
+          else if (pid == 0)
+            {
+	      std::string child_msg;
+
+	      interactive = false;
+
+              // Child process
+              ::close (child_stdin[1]);
+              ::close (child_stdout[0]);
+
+              if (dup2 (child_stdin[0], STDIN_FILENO) >= 0)
+                {
+                  ::close (child_stdin[0]);
+                  if (dup2 (child_stdout[1], STDOUT_FILENO) >= 0)
+                    {
+                      ::close (child_stdout[1]);
+                      if (execvp (cmd, args, child_msg) < 0)
+                        child_msg = "popen2 (child): unable to start process -- " + child_msg;
+                    }
+                  else
+                    child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
+                }
+              else
+                child_msg = "popen2 (child): file handle duplication failed -- " + child_msg;
+	      
+	      (*current_liboctave_error_handler)(child_msg.c_str());
+	      
+	      exit(0);
+            }
+          else
+            {
+              // Parent process
+              ::close (child_stdin[0]);
+              ::close (child_stdout[1]);
+#if defined (F_SETFL) && defined (O_NONBLOCK)
+              if (! sync_mode && fcntl (child_stdout[0], F_SETFL, O_NONBLOCK, msg) < 0)
+                msg = "popen2: error setting file mode -- " + msg;
+              else
+#endif
+                {
+                  fildes[0] = child_stdin [1];
+                  fildes[1] = child_stdout [0];
+                  return pid;
+                }
+            }
+          ::close (child_stdout[0]);
+          ::close (child_stdout[1]);
+        }
+      else
+        msg = "popen2: pipe creation failed -- " + msg;
+      ::close (child_stdin[0]);
+      ::close (child_stdin[1]);
+    }
+  else
+    msg = "popen2: pipe creation failed -- " + msg;
+
+  return -1;
+#endif
 }
 
 /*

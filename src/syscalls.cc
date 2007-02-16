@@ -60,6 +60,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"
+#include "input.h"
 
 static Octave_map
 mk_stat_map (const file_stat& fs)
@@ -219,6 +220,168 @@ error message.\n\
 
   return retval;
 }
+
+DEFUN (popen2, args, ,
+ "-*- texinfo -*-\n\
+@deftypefn {Function File} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})\n\
+Start a subprocess with two-way communication.  The name of the process\n\
+is given by @var{command}, and @var{args} is an array of strings\n\
+containing options for the command.  The file identifiers for the input\n\
+and output streams of the subprocess are returned in @var{in} and\n\
+@var{out}.  If execution of the command is successful, @var{pid}\n\
+contains the process ID of the subprocess.  Otherwise, @var{pid} is\n\
+@minus{}1.\n\
+\n\
+For example,\n\
+\n\
+@example\n\
+@group\n\
+[in, out, pid] = popen2 (\"sort\", \"-nr\");\n\
+fputs (in, \"these\\nare\\nsome\\nstrings\\n\");\n\
+fclose (in);\n\
+EAGAIN = errno (\"EAGAIN\");\n\
+done = false;\n\
+do\n\
+  s = fgets (out);\n\
+  if (ischar (s))\n\
+    fputs (stdout, s);\n\
+  elseif (errno () == EAGAIN)\n\
+    sleep (0.1);\n\
+    fclear (out);\n\
+  else\n\
+    done = true;\n\
+  endif\n\
+until (done)\n\
+fclose (out);\n\
+     @print{} are\n\
+     @print{} some\n\
+     @print{} strings\n\
+     @print{} these\n\
+@end group\n\
+@end example\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  retval(2) = -1;
+  retval(1) = Matrix ();
+  retval(0) = Matrix ();
+
+  int nargin = args.length ();
+
+  if (nargin >= 1 && nargin <= 3)
+    {
+      std::string exec_file = args(0).string_value();
+
+      if (! error_state)
+        {
+	  string_vector arg_list;
+
+	  if (nargin >= 2)
+	    {
+	      string_vector tmp = args(1).all_strings ();
+
+	      if (! error_state)
+		{
+		  int len = tmp.length ();
+
+		  arg_list.resize (len + 1);
+
+		  arg_list[0] = exec_file;
+
+		  for (int i = 0; i < len; i++)
+		    arg_list[i+1] = tmp[i];
+		}
+	      else
+		error ("popen2: arguments must be character strings");
+	    }
+	  else
+	    {
+	      arg_list.resize (1);
+
+	      arg_list[0] = exec_file;
+	    }
+
+          if (! error_state)
+            {
+              bool sync_mode = (nargin == 3 ? args(2).bool_value() : false);
+
+              if (! error_state)
+                {
+                  int fildes[2];
+                  std::string msg;
+                  pid_t pid;
+
+                  pid = octave_syscalls::popen2 (exec_file, arg_list, sync_mode, fildes, msg, interactive);
+                  if (pid >= 0)
+                    {
+                      FILE *ifile = fdopen (fildes[1], "r");
+                      FILE *ofile = fdopen (fildes[0], "w");
+
+                      std::string nm;
+
+                      octave_stream is = octave_stdiostream::create (nm, ifile,
+                          std::ios::in);
+
+                      octave_stream os = octave_stdiostream::create (nm, ofile,
+                          std::ios::out);
+
+                      Cell file_ids (1, 2);
+
+                      retval(0) = octave_stream_list::insert (os);
+                      retval(1) = octave_stream_list::insert (is);
+					  retval(2) = pid;
+                    }
+				  else
+                    error (msg.c_str ());
+                }
+            }
+          else
+            error ("popen2: arguments must be character strings");
+        }
+      else
+        error ("popen2: first argument must be a string");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+
+%!test
+%!  if (isunix())
+%!    [in, out, pid] = popen2 ("sort", "-nr");
+%!    EAGAIN = errno ("EAGAIN");
+%!  else
+%!    [in, out, pid] = popen2 ("sort", "/R", 1);
+%!    EAGAIN = errno ("EINVAL");
+%!  endif
+%!  fputs (in, "these\nare\nsome\nstrings\n");
+%!  fclose (in);
+%!  done = false;
+%!  str = {};
+%!  idx = 0;
+%!  do
+%!     if (!isunix())
+%!       errno (0);
+%!     endif
+%!     s = fgets (out);
+%!     if (ischar (s))
+%!       idx++;
+%!       str{idx} = s;
+%!     elseif (errno () == EAGAIN)
+%!       sleep (0.1);
+%!       fclear (out);
+%!     else
+%!       done = true;
+%!     endif
+%!   until (done)
+%!  fclose (out);
+%!  assert(str,{"these\n","strings\n","some\n","are\n"})
+
+*/
 
 DEFUN (fcntl, args, ,
  "-*- texinfo -*-\n\
@@ -644,9 +807,9 @@ system-dependent error message.\n\
 
 DEFUN (pipe, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {[@var{file_ids}, @var{err}, @var{msg}] =} pipe ()\n\
-Create a pipe and return the vector @var{file_ids}, which corresponding\n\
-to the reading and writing ends of the pipe.\n\
+@deftypefn {Built-in Function} {[@var{read_fd}, @var{write_fd}, @var{err}, @var{msg}] =} pipe ()\n\
+Create a pipe and return the reading and writing ends of the pipe\n\
+into @var{read_fd} and @var{write_fd} respectively.\n\
 \n\
 If successful, @var{err} is 0 and @var{msg} is an empty string.\n\
 Otherwise, @var{err} is nonzero and @var{msg} contains a\n\
@@ -655,9 +818,10 @@ system-dependent error message.\n\
 {
   octave_value_list retval;
 
-  retval(2) = std::string ();
+  retval(3) = std::string ();
+  retval(2) = -1;
   retval(1) = -1;
-  retval(0) = Matrix ();
+  retval(0) = -1;
 
   int nargin = args.length ();
 
@@ -670,7 +834,7 @@ system-dependent error message.\n\
       int status = octave_syscalls::pipe (fid, msg);
 
       if (status < 0)
-	retval(2) = msg;
+	retval(3) = msg;
       else
 	{
 	  FILE *ifile = fdopen (fid[0], "r");
@@ -684,13 +848,10 @@ system-dependent error message.\n\
 	  octave_stream os = octave_stdiostream::create (nm, ofile,
 							 std::ios::out);
 
-	  octave_value_list file_ids;
+	  retval(1) = octave_stream_list::insert (os);
+	  retval(0) = octave_stream_list::insert (is);
 
-	  file_ids(1) = octave_stream_list::insert (os);
-	  file_ids(0) = octave_stream_list::insert (is);
-
-	  retval(1) = status;
-          retval(0) = octave_value (file_ids);
+	  retval(2) = status;
 	}
     }
   else

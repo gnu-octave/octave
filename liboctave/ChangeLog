@@ -1,3 +1,11 @@
+2007-02-16  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* lo-sysdep.cc (octave_popen2): New function to simulate popen2 on
+	windows platform.
+	* lo-sysdep.h (octave_popen2): Declare it.
+	* oct-syscalls.cc (octave_syscalls::popen2): New function.
+	* oct-syscalls.h (octave_syscalls::popen2): Declare it.
+
 2007-02-14  John W. Eaton  <jwe@octave.org>
 
 	* kpse.cc (expand_elt): Omit special treatment for //.

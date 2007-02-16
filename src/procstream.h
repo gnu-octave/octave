@@ -56,7 +56,9 @@ public:
 
   int close (void);
 
-  pid_t pid (void) { return pb.pid (); }
+  pid_t pid (void) const { return pb.pid (); }
+
+  int file_number (void) const { return pb.file_number (); }
 
 private:
 

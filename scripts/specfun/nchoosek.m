@@ -49,30 +49,34 @@
 ## resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
 ## @var{k}), @var{k}]}.
 ##
+## @seealso{bincoeff}
 ## @end deftypefn
 
-##AUTHORS Rolf Fabian  <fabian@tu-cottbus.de>
-##        Paul Kienzle <pkienzle@users.sf.net>
+## Author: Rolf Fabian  <fabian@tu-cottbus.de>
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-## XXX FIXME XXX This function is identical to bincoeff for scalar
+## FIXME -- This function is identical to bincoeff for scalar
 ## values, and so should probably be combined with bincoeff.
 
 function A = nchoosek (v, k)
 
-  n = length (v);
-
-  if (n == 1)
-     A = round (exp (sum (log (k+1:v)) - sum (log (2:v-k))));
-  elseif (k == 0)
-    A = [];
-  elseif (k == 1)
-    A = v(:);
-  elseif (k == n)
-     A = v(:).';
+  if (nargin == 2)
+    n = length (v);
+    if (n == 1)
+       A = round (exp (sum (log (k+1:v)) - sum (log (2:v-k))));
+    elseif (k == 0)
+      A = [];
+    elseif (k == 1)
+      A = v(:);
+    elseif (k == n)
+       A = v(:).';
+    else
+      m = round (exp (sum (log (k:n-1)) - sum (log (2:n-k))));
+      A = [v(1)*ones(m,1), nchoosek(v(2:n),k-1);
+	   nchoosek(v(2:n),k)];
+    endif
   else
-    m = round (exp (sum (log (k:n-1)) - sum (log (2:n-k))));
-    A = [v(1)*ones(m,1), nchoosek(v(2:n),k-1);
-	 nchoosek(v(2:n),k)];
+    print_usage ();
   endif
 
 endfunction

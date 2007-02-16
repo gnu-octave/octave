@@ -56,7 +56,7 @@ public:
 
   bool is_open (void) const { return open_p; }
 
-  pid_t pid (void) { return proc_pid; }
+  pid_t pid (void) const { return proc_pid; }
 
 protected:
 

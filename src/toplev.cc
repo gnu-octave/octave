@@ -397,6 +397,28 @@ cleanup_iprocstream (void *p)
   delete cmd;
 }
 
+static int
+wait_for_input (int fid)
+{
+  int retval = -1;
+
+#if defined (HAVE_SELECT)
+  if (fid >= 0)
+    {
+      fd_set set;
+
+      FD_ZERO (&set);
+      FD_SET (fid, &set);
+
+      retval = select (FD_SETSIZE, &set, 0, 0, 0);
+    }
+#else
+  retval = 1;
+#endif
+
+  return retval;
+}
+
 static octave_value_list
 run_command_and_return_output (const std::string& cmd_str)
 {
@@ -410,15 +432,9 @@ run_command_and_return_output (const std::string& cmd_str)
 
       if (*cmd)
 	{
+	  int fid = cmd->file_number ();
+
 	  std::ostringstream output_buf;
-
-	  // FIXME -- Perhaps we should read more than one
-	  // character at a time and find a way to avoid the call to
-	  // octave_usleep as well?
-
-	  // This is a bit of a kluge...
-
-	  octave_usleep (100);
 
 	  char ch;
 
@@ -432,7 +448,8 @@ run_command_and_return_output (const std::string& cmd_str)
 		    {
 		      cmd->clear ();
 
-		      octave_usleep (100);
+		      if (wait_for_input (fid) != 1)
+			break;			
 		    }
 		  else
 		    break;

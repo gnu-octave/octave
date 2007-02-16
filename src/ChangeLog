@@ -1,3 +1,12 @@
+2007-02-16  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (wait_for_input): New function.
+	(run_command_and_return_output): Use it instead of napping.
+
+	* oct-procbuf.h (octave_procbuf::pid): Now const.
+	* procstream.h (procstreambase::pid): Now const.
+	(procstreambase::file_number): New function.
+
 2007-02-15  John W. Eaton  <jwe@octave.org>
 
 	* mxarray.h (mxChar): Use char instead of unsigned short.

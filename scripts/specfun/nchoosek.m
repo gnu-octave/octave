@@ -61,22 +61,23 @@
 function A = nchoosek (v, k)
 
   if (nargin == 2)
-    n = length (v);
-    if (n == 1)
-       A = round (exp (sum (log (k+1:v)) - sum (log (2:v-k))));
-    elseif (k == 0)
-      A = [];
-    elseif (k == 1)
-      A = v(:);
-    elseif (k == n)
-       A = v(:).';
-    else
-      m = round (exp (sum (log (k:n-1)) - sum (log (2:n-k))));
-      A = [v(1)*ones(m,1), nchoosek(v(2:n),k-1);
-	   nchoosek(v(2:n),k)];
-    endif
-  else
     print_usage ();
+  endif
+
+  n = length (v);
+
+  if (n == 1)
+     A = round (exp (sum (log (k+1:v)) - sum (log (2:v-k))));
+  elseif (k == 0)
+    A = [];
+  elseif (k == 1)
+    A = v(:);
+  elseif (k == n)
+     A = v(:).';
+  else
+    m = round (exp (sum (log (k:n-1)) - sum (log (2:n-k))));
+    A = [v(1)*ones(m,1), nchoosek(v(2:n),k-1);
+	 nchoosek(v(2:n),k)];
   endif
 
 endfunction

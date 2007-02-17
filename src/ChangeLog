@@ -1,15 +1,86 @@
+2007-02-16  John W. Eaton  <jwe@octave.org>
+
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct): Clear
+	function if original was loaded from relative path and the name
+	can no longer be found in path.  Mark files found from relative
+	path as relative.
+	(clear): Only warn if there is more than one function to clear.
+
+	* variables.cc (symbol_out_of_date): Don't ignore return value in
+	call to octave_env::make_absolute.
+	(symbol_out_of_date): Clear symbol if original was loaded from
+	relative path and name can no longer be found in path.
+
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct):
+	Also check whether new file is same as the old file.
+
+	* utils.cc (same_file): Move here from variables.cc.
+	* utils.h: (same_file): Provide decl.
+
+	* parse.y (frob_function): Stash parent function name if parsing
+	nested function.
+
+	* ov-fcn-handle.cc (make_fcn_handle): Pass current function name
+	as parent in call to lookup_function.
+
+	* ov-fcn.h (octave_function::parent_fcn_name): New virtual function.
+
+	* ov-usr-fcn.h (octave_user_function::parent_name): New data member.
+	(octave_user_function::stash_parent_function_name,
+	octave_user_function::parent_function_name): New methods.
+	* ov-usr-fcn.cc (octave_user_function::octave_user_function):
+	Initialize parent_name.
+
+	* variables.h, variables.cc (lookup_function): New arg, parent.
+	If not empty, try this first for lookup.
+
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_mex): If doing
+	path lookup, check relative status. Pass relative to oct_file_in_path.
+	(octave_dynamic_loader::do_load_mex): Likewise, for mex_file_in_path
+
+	* defun-int.h, defun.cc (install_mex_function): New arg, relative.
+	(install_dld_function): Likewise.
+	(octave_dld_fcn_installer): Likewise.
+	(DEFINE_FUNX_INSTALLER_FUN3): Pass relative to install_dld_function.
+
+	* dynamic-ld.h (octave_dynamic_loader::load_oct,
+	octave_dynamic_loader::load_mex,
+	octave_dynamic_loader::do_load_oct
+	octave_dynamic_loader::do_load_mex): New arg, relative.
+
+	* dirfns.h (Vcurrent_directory): Delete unused variable.
+
+	* variables.cc (symbol_out_of_date): Also compare function time
+	stamp to Vlast_chdir_time if function is from relative lookup.
+
+	* dirfns.cc (Vlast_chdir_time): New variable.
+	(octave_change_to_directory): Update it if chdir succeeds.
+	* dirfns.h (Vlast_chdir_time): Provide decl.
+
+	* ov-fcn.h (octave_function::relative): New data member.
+	(octave_function::mark_relative, octave_function::is_relative):
+	New functions.
+
+	* parse.y (fcn_file_from_relative_lookup): New static variable.
+	(load_fcn_from_file): Note whether function file was found from
+	relative path element.
+	(frob_function): Maybe mark function as relative.
+
+	* parse.y (lookup_autoload): Don't call octave_env::make_absolute
+	on return value.
+	* variables.cc (symbol_out_of_date): Make name absolute after call
+	to lookup_autoload.
+
+	* input.cc (interactive_input): New arg, DEBUG.  Don't call
+	drawnow if debugging.
+	(get_user_input): Pass DEBUG to interactive_input.
+
 2007-02-16  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* syscalls.cc (Fpopen2): New function.
 	(pipe): Modify to return input and output file descriptor
 	seperately rather than in a list.
 	
-2007-02-16  John W. Eaton  <jwe@octave.org>
-
-	* input.cc (interactive_input): New arg, DEBUG.  Don't call
-	drawnow if debugging.
-	(get_user_input): Pass DEBUG to interactive_input.
-
 2007-02-16  Muthiah Annamalai  <muthuspost@gmail.com>
 
 	* debug.cc (Fdbtype): Improve compatibility.

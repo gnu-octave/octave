@@ -27,6 +27,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <list>
 
+#include "oct-env.h"
 #include "oct-time.h"
 #include "file-stat.h"
 
@@ -302,9 +303,21 @@ void do_clear_function (const std::string& fcn_name)
   fbi_sym_tab->clear (fcn_name);
 }
 
+static void
+clear (octave_shlib& oct_file)
+{
+  if (oct_file.number_of_functions_loaded () > 1)
+    warning_with_id ("Octave:reload-forces-clear",
+		     "reloading %s clears the following functions:",
+		     oct_file.file_name().c_str ());
+
+  octave_shlib_list::remove (oct_file, do_clear_function);
+}
+
 bool
 octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
-				    const std::string& file_name)
+				    const std::string& file_name,
+				    bool relative)
 {
   bool retval = false;
 
@@ -321,26 +334,37 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 
   if (! error_state)
     {
-      if (function && oct_file.is_out_of_date ())
+      if (function
+	  && (! same_file (file_name, oct_file.file_name ())
+	      || oct_file.is_out_of_date ()))
 	{
-	  int n = oct_file.number_of_functions_loaded ();
-
-	  if (n > 0)
-	    warning_with_id ("Octave:reload-forces-clear",
-			     "reloading %s clears the following functions:",
-			     oct_file.file_name().c_str ());
-
-	  octave_shlib_list::remove (oct_file, do_clear_function);
-
+	  clear (oct_file);
 	  function = 0;
 	}
 
       if (! function)
 	{
-	  std::string oct_file_name
-	    = file_name.empty () ? oct_file_in_path (fcn_name) : file_name;
+	  std::string oct_file_name = file_name;
 
-	  if (! oct_file_name.empty ())
+	  if (oct_file_name.empty ())
+	    {
+	      oct_file_name = oct_file_in_path (fcn_name);
+
+	      if (! oct_file_name.empty ())
+		relative = ! octave_env::absolute_pathname (oct_file_name);
+	    }
+
+	  if (oct_file_name.empty ())
+	    {
+	      if (oct_file.is_relative ())
+		{
+		  // Can't see this function from current
+		  // directory, so we should clear it.
+		  clear (oct_file);
+		  function = 0;
+		}
+	    }
+	  else
 	    {
 	      oct_file.open (oct_file_name);
 
@@ -348,6 +372,9 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 		{
 		  if (oct_file)
 		    {
+		      if (relative)
+			oct_file.mark_relative ();
+
 		      octave_shlib_list::append (oct_file);
 
 		      function = oct_file.search (fcn_name, mangle_name);
@@ -357,7 +384,6 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 			     oct_file_name.c_str ());
 		}
 	    }
-
 	}
     }
 
@@ -366,7 +392,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
       octave_dld_fcn_installer f
 	= FCN_PTR_CAST (octave_dld_fcn_installer, function);
 
-      retval = f (oct_file);
+      retval = f (oct_file, relative);
 
       if (! retval)
 	::error ("failed to install .oct file function `%s'",
@@ -380,7 +406,8 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 
 bool
 octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
-				    const std::string& file_name)
+				    const std::string& file_name,
+				    bool relative)
 {
   bool retval = false;
 
@@ -392,8 +419,15 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
   doing_load = true;
 
-  std::string mex_file_name
-    = file_name.empty () ? mex_file_in_path (fcn_name) : file_name;
+  std::string mex_file_name = file_name;
+
+  if (mex_file_name.empty ())
+    {
+      mex_file_name = mex_file_in_path (fcn_name);
+
+      if (! mex_file_name.empty ())
+	relative = ! octave_env::absolute_pathname (mex_file_name);
+    }
 
   void *function = 0;
 
@@ -434,7 +468,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 
   if (function)
     {
-      install_mex_function (function, have_fmex, fcn_name, mex_file);
+      install_mex_function (function, have_fmex, fcn_name, mex_file, relative);
 
       retval = true;
     }
@@ -467,16 +501,20 @@ octave_dynamic_loader::do_remove (const std::string& fcn_name, octave_shlib& shl
 
 bool
 octave_dynamic_loader::load_oct (const std::string& fcn_name,
-				 const std::string& file_name)
+				 const std::string& file_name,
+				 bool relative)
 {
-  return (instance_ok ()) ? instance->do_load_oct (fcn_name, file_name) : false;
+  return (instance_ok ())
+    ? instance->do_load_oct (fcn_name, file_name, relative) : false;
 }
 
 bool
 octave_dynamic_loader::load_mex (const std::string& fcn_name,
-				 const std::string& file_name)
+				 const std::string& file_name,
+				 bool relative)
 {
-  return (instance_ok ()) ? instance->do_load_mex (fcn_name, file_name) : false;
+  return (instance_ok ())
+    ? instance->do_load_mex (fcn_name, file_name, relative) : false;
 }
 
 bool

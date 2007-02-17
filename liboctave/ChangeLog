@@ -1,3 +1,9 @@
+2007-02-16  John W. Eaton  <jwe@octave.org>
+
+	* oct-shlib.h (octave_shlib::relative): New data member.
+	(octave_shlib::mark_relative, octave_shlib::is_relative):
+	New functions.
+
 2007-02-16  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* lo-sysdep.cc (octave_popen2): New function to simulate popen2 on

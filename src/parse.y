@@ -118,6 +118,10 @@ std::string parent_function_name;
 // TRUE means we are in the process of autoloading a function.
 static bool autoloading = false;
 
+// TRUE means the current function file was found in a relative path
+// element.
+static bool fcn_file_from_relative_lookup = false;
+
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
 
@@ -2483,6 +2487,12 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       fcn->stash_fcn_file_time (now);
       fcn->mark_as_system_fcn_file ();
 
+      if (fcn_file_from_relative_lookup)
+	fcn->mark_relative ();
+
+      if (lexer_flags.parsing_nested_function)
+        fcn->stash_parent_fcn_name (parent_function_name);
+
       std::string nm = fcn->fcn_file_name ();
 
       file_stat fs (nm);
@@ -3229,7 +3239,8 @@ restore_input_stream (void *f)
 }
 
 static bool
-parse_fcn_file (const std::string& ff, bool exec_script, bool force_script = false)
+parse_fcn_file (const std::string& ff, bool exec_script,
+		bool force_script = false)
 {
   unwind_protect::begin_frame ("parse_fcn_file");
 
@@ -3366,8 +3377,7 @@ lookup_autoload (const std::string& nm)
   am_iter p = autoload_map.find (nm);
 
   if (p != autoload_map.end ())
-    retval = octave_env::make_absolute (load_path::find_file (p->second),
-					octave_env::getcwd ());
+    retval = load_path::find_file (p->second);
 
   return retval;
 }
@@ -3411,6 +3421,10 @@ load_fcn_from_file (const std::string& nm_arg, bool exec_script)
 
   std::string file;
 
+  unwind_protect_bool (fcn_file_from_relative_lookup);
+
+  fcn_file_from_relative_lookup = false;
+
   if (octave_env::absolute_pathname (nm)
       && ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
 	  || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
@@ -3433,20 +3447,23 @@ load_fcn_from_file (const std::string& nm_arg, bool exec_script)
 	  exec_script = true;
 	}
       else
-	file = octave_env::make_absolute
-	  (load_path::find_fcn (nm), octave_env::getcwd ());
+        file = load_path::find_fcn (nm);
+
+      fcn_file_from_relative_lookup = ! octave_env::absolute_pathname (file);
+
+      file = octave_env::make_absolute (file, octave_env::getcwd ());
     }
 
   int len = file.length ();
 
   if (len > 4 && file.substr (len-4, len-1) == ".oct")
     {
-      if (octave_dynamic_loader::load_oct (nm, file))
+      if (octave_dynamic_loader::load_oct (nm, file, fcn_file_from_relative_lookup))
         force_link_to_function (nm);
     }
   else if (len > 4 && file.substr (len-4, len-1) == ".mex")
     {
-      if (octave_dynamic_loader::load_mex (nm, file))
+      if (octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup))
         force_link_to_function (nm);
     }
   else if (len > 2)

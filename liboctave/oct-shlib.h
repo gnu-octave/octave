@@ -50,9 +50,10 @@ public:
 
   typedef void (*close_hook) (const std::string&);
 
-  octave_shlib (void) : rep (make_shlib ()) { }
+  octave_shlib (void) : relative (false), rep (make_shlib ()) { }
 
-  octave_shlib (const std::string& f) : rep (make_shlib ()) { open (f); }
+  octave_shlib (const std::string& f)
+    : relative (false), rep (make_shlib ()) { open (f); }
 
   virtual ~octave_shlib (void)
     {
@@ -102,6 +103,10 @@ public:
   virtual bool is_out_of_date (void) const
     { return rep->is_out_of_date (); }
 
+  void mark_relative (void) { relative = true; }
+
+  bool is_relative (void) const { return relative; }
+
   virtual int number_of_functions_loaded (void) const
     { return rep->number_of_functions_loaded (); }
 
@@ -118,6 +123,9 @@ protected:
   virtual bool is_open (void) const { return rep->is_open (); }
 
   static octave_shlib *make_shlib (void);
+
+  // TRUE if this function was found from a relative path element.
+  bool relative;
 
   union
     {

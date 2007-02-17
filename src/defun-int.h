@@ -50,11 +50,13 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 extern OCTINTERP_API void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
-		      const std::string& doc, bool is_text_fcn = false);
+		      const std::string& doc, bool is_text_fcn = false,
+		      bool relative = false);
 
 extern OCTINTERP_API void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-		      const octave_shlib& shl, bool is_text_fcn = false);
+		      const octave_shlib& shl, bool is_text_fcn = false,
+		      bool relative = false);
 
 extern OCTINTERP_API void
 alias_builtin (const std::string& alias, const std::string& name);
@@ -70,7 +72,7 @@ alias_builtin (const std::string& alias, const std::string& name);
 // the symbol table.  We look for this name instead of the actual
 // function so that we can easily install the doc std::string too.
 
-typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
+typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
 
 #define DEFINE_FUN_INSTALLER_FUN(name, doc) \
   DEFINE_FUN_INSTALLER_FUN2(name, doc, CXX_ABI)
@@ -91,10 +93,10 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&);
   extern "C" \
   OCTAVE_EXPORT \
   bool \
-  fsname ## _ ## cxx_abi (const octave_shlib& shl) \
+  fsname ## _ ## cxx_abi (const octave_shlib& shl, bool relative) \
   { \
     check_version (OCTAVE_API_VERSION, name); \
-    install_dld_function (fname, name, shl, doc); \
+    install_dld_function (fname, name, shl, doc, false, relative); \
     return error_state ? false : true; \
   }
 

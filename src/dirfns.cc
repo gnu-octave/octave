@@ -69,6 +69,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // directory tree.
 static bool Vconfirm_recursive_rmdir = true;
 
+// The time we last time we changed directories.
+octave_time Vlast_chdir_time = 0.0;
+
 static int
 octave_change_to_directory (const std::string& newdir)
 {
@@ -76,6 +79,8 @@ octave_change_to_directory (const std::string& newdir)
 
   if (cd_ok)
     {
+      Vlast_chdir_time.stamp ();
+
       // FIXME -- should this be handled as a list of functions
       // to call so users can add their own chdir handlers?
 

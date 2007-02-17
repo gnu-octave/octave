@@ -61,6 +61,8 @@ public:
 
   virtual std::string fcn_file_name (void) const { return std::string (); }
 
+  virtual std::string parent_fcn_name (void) const { return std::string (); }
+
   virtual void mark_fcn_file_up_to_date (const octave_time&) { }
 
   virtual octave_time time_parsed (void) const
@@ -79,6 +81,10 @@ public:
 
   virtual bool takes_var_return (void) const { return false; }
 
+  void mark_relative (void) { relative = true; }
+
+  bool is_relative (void) const { return relative; }
+
   std::string name (void) const { return my_name; }
 
   void document (const std::string& ds) { doc = ds; }
@@ -93,7 +99,10 @@ protected:
 
   octave_function (const std::string& nm,
 		   const std::string& ds = std::string ())
-    : my_name (nm), doc (ds) { }
+    : relative (false), my_name (nm), doc (ds) { }
+
+  // TRUE if this function was found from a relative path element.
+  bool relative;
 
   // The name of this function.
   std::string my_name;

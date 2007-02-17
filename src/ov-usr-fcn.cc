@@ -74,7 +74,7 @@ octave_user_function::octave_user_function
   : octave_function (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
     sym_tab (st), lead_comm (), trail_comm (), file_name (),
-    t_parsed (static_cast<time_t> (0)),
+    parent_name (), t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (0), num_named_args (0),
     nested_function (false), inline_function (false), args_passed (),

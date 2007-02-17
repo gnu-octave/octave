@@ -39,15 +39,21 @@ class string_vector;
 extern OCTINTERP_API bool valid_identifier (const char *s);
 extern OCTINTERP_API bool valid_identifier (const std::string& s);
 
-extern OCTINTERP_API int almost_match (const std::string& std, const std::string& s,
-			 int min_match_len = 1, int case_sens = 1);
+extern OCTINTERP_API bool
+same_file (const std::string& f, const std::string& g);
+
+extern OCTINTERP_API int almost_match (const std::string& std,
+				       const std::string& s,
+				       int min_match_len = 1,
+				       int case_sens = 1);
 
 extern OCTINTERP_API int
 keyword_almost_match (const char * const *std, int *min_len,
 		      const std::string& s, int min_toks_to_match,
 		      int max_toks);
 
-extern OCTINTERP_API int empty_arg (const char *name, octave_idx_type nr, octave_idx_type nc);
+extern OCTINTERP_API int empty_arg (const char *name, octave_idx_type nr,
+				    octave_idx_type nc);
 
 extern OCTINTERP_API std::string
 search_path_for_file (const std::string&, const string_vector&);
@@ -55,7 +61,9 @@ search_path_for_file (const std::string&, const string_vector&);
 extern OCTINTERP_API string_vector
 search_path_for_all_files (const std::string&, const string_vector&);
 
-extern OCTINTERP_API std::string file_in_path (const std::string&, const std::string&);
+extern OCTINTERP_API std::string
+file_in_path (const std::string&, const std::string&);
+
 extern OCTINTERP_API std::string fcn_file_in_path (const std::string&);
 extern OCTINTERP_API std::string oct_file_in_path (const std::string&);
 extern OCTINTERP_API std::string mex_file_in_path (const std::string&);
@@ -75,13 +83,15 @@ get_dimensions (const octave_value& a, const char *warn_for,
 
 extern OCTINTERP_API void
 get_dimensions (const octave_value& a, const octave_value& b,
-		const char *warn_for, octave_idx_type& nr, octave_idx_type& nc);
+		const char *warn_for, octave_idx_type& nr,
+		octave_idx_type& nc);
 
 extern OCTINTERP_API void
-get_dimensions (const octave_value& a,
-		const char *warn_for, octave_idx_type& nr, octave_idx_type& nc);
+get_dimensions (const octave_value& a,const char *warn_for,
+		octave_idx_type& nr, octave_idx_type& nc);
 
-extern OCTINTERP_API Matrix identity_matrix (octave_idx_type nr, octave_idx_type nc);
+extern OCTINTERP_API Matrix
+identity_matrix (octave_idx_type nr, octave_idx_type nc);
 
 extern OCTINTERP_API int
 octave_format (std::ostream& os, const char *fmt, ...);
@@ -99,8 +109,8 @@ extern "C" OCTINTERP_API void octave_sleep (unsigned int seconds);
 
 extern "C" OCTINTERP_API void octave_usleep (unsigned int useconds);
 
-extern "C" OCTINTERP_API int octave_raw_vsnprintf (char *buf, size_t n, const char *fmt,
-				     va_list args);
+extern "C" OCTINTERP_API int
+octave_raw_vsnprintf (char *buf, size_t n, const char *fmt, va_list args);
 
 #endif
 

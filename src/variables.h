@@ -99,7 +99,9 @@ extern OCTINTERP_API bool lookup (symbol_record *s, bool exec_script = true);
 extern OCTINTERP_API symbol_record *
 lookup_by_name (const std::string& nm, bool exec_script = true);
 
-extern OCTINTERP_API octave_value lookup_function (const std::string& nm);
+extern OCTINTERP_API octave_value
+lookup_function (const std::string& nm,
+		 const std::string& parent = std::string ());
 
 extern OCTINTERP_API octave_value lookup_user_function (const std::string& nm);
 

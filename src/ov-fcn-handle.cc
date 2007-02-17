@@ -612,7 +612,9 @@ make_fcn_handle (const std::string& nm)
 {
   octave_value retval;
 
-  octave_value f = lookup_function (nm);
+  octave_function *fcn = octave_call_stack::current ();
+
+  octave_value f = lookup_function (nm, fcn->name ());
 
   if (f.is_function ())
     retval = octave_value (new octave_fcn_handle (f, nm));

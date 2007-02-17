@@ -962,20 +962,6 @@ Check only for directories.\n\
   return retval;
 }
 
-// Return TRUE if F and G are both names for the same file.
-
-static bool
-same_file (const std::string& f, const std::string& g)
-{
-  std::string c_f = file_ops::canonicalize_file_name (f);
-  std::string c_g = file_ops::canonicalize_file_name (g);
-
-  file_stat f_fs (c_f);
-  file_stat g_fs (c_g);
-
-  return (f_fs.ino () == g_fs.ino () && f_fs.dev () == g_fs.dev ());
-}
-
 bool
 fcn_out_of_date (octave_function *fcn, const std::string& ff, time_t tp)
 {
@@ -1020,7 +1006,12 @@ symbol_out_of_date (symbol_record *sr)
 
 	  if (! ff.empty ())
 	    {
-	      if (fcn->time_checked () < Vlast_prompt_time)
+	      octave_time tc = fcn->time_checked ();
+
+	      bool relative = fcn->is_relative ();
+
+	      if (tc < Vlast_prompt_time
+		  || (relative && tc < Vlast_chdir_time))
 		{
 		  time_t tp = fcn->time_parsed ();
 
@@ -1047,19 +1038,27 @@ symbol_out_of_date (symbol_record *sr)
 		      file = lookup_autoload (nm);
 
 		      if (file.empty ())
-			{
-			  file = octave_env::make_absolute
-			    (load_path::find_fcn (nm), octave_env::getcwd ());
-			}
+			file = load_path::find_fcn (nm);
+
+		      file = octave_env::make_absolute (file, octave_env::getcwd ());
 		    }
 
-		  if (same_file (file, ff))
+		  if (relative && file.empty ())
+		    {
+		      // Can't see this function from current
+		      // directory, so we should clear it.
+
+		      sr->clear ();
+
+		      retval = true;
+		    }
+		  else if (same_file (file, ff))
 		    {
 		      retval = fcn_out_of_date (fcn, ff, tp);
 		    }
 		  else
 		    {
-		      // Check the full function name.  Maybe we alrady
+		      // Check the full function name.  Maybe we already
 		      // parsed it.
 
 		      symbol_record *full_sr = fbi_sym_tab->lookup (file);
@@ -1147,18 +1146,17 @@ lookup_by_name (const std::string& nm, bool exec_script)
 }
 
 octave_value
-lookup_function (const std::string& nm)
+lookup_function (const std::string& nm, const std::string& parent)
 {
   octave_value retval;
 
   symbol_record *sr = 0;
 
-  if (curr_parent_function)
-    {
-      std::string parent = curr_parent_function->name ();
+  if (! parent.empty ())
+    sr = fbi_sym_tab->lookup (parent + ":" + nm);
 
-      sr = fbi_sym_tab->lookup (parent + ":" + nm);
-    }
+  if (! sr || ! sr->is_function () && curr_parent_function)
+    sr = fbi_sym_tab->lookup (curr_parent_function->name () + ":" + nm);
 
   if (! sr || ! sr->is_function ())
     {
@@ -1464,12 +1462,15 @@ link_to_builtin_or_function (symbol_record *sr)
 
   symbol_record *tmp_sym = 0;
 
-  if (curr_parent_function)
-    {
-      std::string parent = curr_parent_function->name ();
+  octave_function *fcn = octave_call_stack::current ();
 
-      tmp_sym = fbi_sym_tab->lookup (parent + ":" + nm);
-    }
+  std::string parent = fcn ? fcn->parent_fcn_name () : std::string ();
+
+  if (! parent.empty ())
+    tmp_sym = fbi_sym_tab->lookup (parent + ":" + nm);
+
+  if (! tmp_sym && curr_parent_function)
+    tmp_sym = fbi_sym_tab->lookup (curr_parent_function->name () + ":" + nm);
 
   if (! tmp_sym)
     tmp_sym = fbi_sym_tab->lookup (nm);

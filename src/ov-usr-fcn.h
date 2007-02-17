@@ -108,6 +108,8 @@ public:
 
   void stash_fcn_file_name (const std::string& nm);
 
+  void stash_parent_fcn_name (const std::string& p) { parent_name = p; }
+
   void stash_leading_comment (octave_comment_list *lc) { lead_comm = lc; }
 
   void stash_trailing_comment (octave_comment_list *tc) { trail_comm = tc; }
@@ -123,6 +125,8 @@ public:
   void stash_symtab_ptr (symbol_record *sr) { symtab_entry = sr; }
 
   std::string fcn_file_name (void) const { return file_name; }
+
+  std::string parent_fcn_name (void) const { return parent_name; }
 
   octave_time time_parsed (void) const { return t_parsed; }
 
@@ -220,8 +224,11 @@ private:
   // The comments preceding the ENDFUNCTION token.
   octave_comment_list *trail_comm;
 
-  // The name of the file we parsed
+  // The name of the file we parsed.
   std::string file_name;
+
+  // The name of the parent function, if any.
+  std::string parent_name;
 
   // The time the file was parsed.
   octave_time t_parsed;

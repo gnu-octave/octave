@@ -165,7 +165,8 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 void
 install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const octave_shlib& shl,
-		      const std::string& doc, bool is_text_fcn)
+		      const std::string& doc, bool is_text_fcn,
+		      bool relative)
 {
   symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
 
@@ -175,7 +176,13 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
     t |= symbol_record::COMMAND;
 
   sym_rec->unprotect ();
-  sym_rec->define (new octave_dld_function (f, shl, name, doc), t);
+
+  octave_dld_function *df = new octave_dld_function (f, shl, name, doc);
+
+  if (relative)
+    df->mark_relative ();
+
+  sym_rec->define (df, t);
   sym_rec->document (doc);
 
   // Also insert the full name in the symbol table.  This way, we can
@@ -189,7 +196,8 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 
 void
 install_mex_function (void *fptr, bool fmex, const std::string& name,
-		      const octave_shlib& shl, bool is_text_fcn)
+		      const octave_shlib& shl, bool is_text_fcn,
+		      bool relative)
 {
   symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
 
@@ -199,7 +207,13 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
     t |= symbol_record::COMMAND;
 
   sym_rec->unprotect ();
-  sym_rec->define (new octave_mex_function (fptr, fmex, shl, name), t);
+
+  octave_mex_function *mf = new octave_mex_function (fptr, fmex, shl, name);
+
+  if (relative)
+    mf->mark_relative ();
+
+  sym_rec->define (mf, t);
 
   // Also insert the full name in the symbol table.  This way, we can
   // properly cope with changes to LOAD_PATH.

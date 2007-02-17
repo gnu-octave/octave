@@ -28,12 +28,15 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <string>
 
+#include "oct-time.h"
+
 extern std::string polite_directory_format (const std::string&);
 extern std::string base_pathname (const std::string&);
 extern std::string make_absolute (const std::string&, const std::string&);
 extern std::string get_working_directory (const std::string&);
 
-extern std::string Vcurrent_directory;
+// The time we last time we changed directories.
+extern octave_time Vlast_chdir_time;
 
 #endif
 

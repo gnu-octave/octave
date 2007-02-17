@@ -1,3 +1,8 @@
+2007-02-17  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_out_of_date): Don't exit early if looking
+	at nested function.
+
 2007-02-16  John W. Eaton  <jwe@octave.org>
 
 	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct): Clear

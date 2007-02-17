@@ -379,7 +379,7 @@ fclose (out);\n\
 %!     endif
 %!   until (done)
 %!  fclose (out);
-%!  if (!isunix())
+%!  if (isunix())
 %!    assert(str,{"these\n","strings\n","some\n","are\n"})
 %!  else
 %!    assert(str,{"these\r\n","strings\r\n","some\r\n","are\r\n"})

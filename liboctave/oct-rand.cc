@@ -107,7 +107,9 @@ static void
 do_old_initialization (void)
 {
   octave_localtime tm;
- 
+  int stored_distribution = current_distribution;
+  F77_FUNC (setcgn, SETCGN) (uniform_dist);
+
   int hour = tm.hour() + 1;
   int minute = tm.min() + 1;
   int second = tm.sec() + 1;
@@ -119,6 +121,7 @@ do_old_initialization (void)
   s1 = force_to_fit_range (s1, 1, 2147483399);
 
   F77_FUNC (setall, SETALL) (s0, s1);
+  F77_FUNC (setcgn, SETCGN) (stored_distribution);
 
   old_initialized = true;
 }

@@ -254,47 +254,26 @@ plot (t, x)
 @end example
 
 If you are using the X Window System, Octave will automatically create
-a separate window to display the plot.  If you are using a terminal that
-supports some other graphics commands, you will need to tell Octave what
-kind of terminal you have.  Type the command
+a separate window to display the plot.
+
+To print a plot once it has been displayed on the screen, use the print
+command.  For example,
 
 @example
-gset term
+print -deps foo.eps
 @end example
 
 @noindent
-to see a list of the supported terminal types.  Octave uses
-@code{gnuplot} to display graphics, and can display graphics on any
-terminal that is supported by @code{gnuplot}.
-
-To capture the output of the plot command in a file rather than sending
-the output directly to your terminal, you can use a set of commands like
-this
+will create a fille called @file{foo.eps} that contains a rendering of
+the current plot.  The command
 
 @example
-@group
-gset term postscript
-gset output "foo.ps"
-replot
-@end group
+help print
 @end example
 
 @noindent
-This will work for other types of output devices as well.  Octave's
-@code{gset} command is really just piped to the @code{gnuplot}
-subprocess, so that once you have a plot on the screen that you like,
-you should be able to do something like this to create an output file
-suitable for your graphics printer.
-
-Or, you can eliminate the intermediate file by using commands like this
-
-@example
-@group
-gset term postscript
-gset output "|lpr -Pname_of_your_graphics_printer"
-replot
-@end group
-@end example
+explains more options for the @code{print} command and provides a list
+of additional output devices.
 
 @unnumberedsubsec Editing What You Have Typed
 

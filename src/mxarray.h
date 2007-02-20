@@ -236,6 +236,8 @@ public:
 
   virtual void set_cell (int idx, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
 
+  virtual double get_scalar (void) const { return rep->get_scalar (); }
+
   virtual void *get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
 
   virtual void *get_imag_data (void) const { DO_MUTABLE_METHOD (void *, get_imag_data ()); }

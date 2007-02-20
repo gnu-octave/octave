@@ -182,6 +182,8 @@ public:
 
   void set_cell (int idx, mxArray *val) = 0;
 
+  double get_scalar (void) const = 0;
+
   void *get_data (void) const = 0;
 
   void *get_imag_data (void) const = 0;
@@ -337,8 +339,7 @@ public:
   {
     if (! dims)
       {
-	// Force ndims to be cached.
-	get_number_of_dimensions ();
+	ndims = val.ndims ();
 
 	dims = static_cast<int *> (malloc (ndims * sizeof (int)));
 
@@ -353,8 +354,8 @@ public:
 
   int get_number_of_dimensions (void) const
   {
-    if (ndims < 0)
-      ndims = val.ndims ();
+    // Force dims and ndims to be cached.
+    get_dimensions ();
 
     return ndims;
   }
@@ -441,6 +442,8 @@ public:
 
   // Not allowed.
   void set_cell (int /*idx*/, mxArray */*val*/) { panic_impossible (); }
+
+  double get_scalar (void) const { return val.scalar_value (true); }
 
   void *get_data (void) const
   {
@@ -871,6 +874,12 @@ public:
     invalid_type_error ();
   }
 
+  double get_scalar (void) const
+  {
+    invalid_type_error ();
+    return 0;
+  }
+
   void *get_data (void) const
   {
     invalid_type_error ();
@@ -1140,6 +1149,67 @@ public:
   }
 
   int is_complex (void) const { return pi != 0; }
+
+  double get_scalar (void) const
+  {
+    double retval = 0;
+
+    switch (get_class_id ())
+      {
+      case mxLOGICAL_CLASS:
+	retval = *(static_cast<bool *> (pr));
+	break;
+
+      case mxCHAR_CLASS:
+	retval = *(static_cast<mxChar *> (pr));
+	break;
+
+      case mxSINGLE_CLASS:
+	retval = *(static_cast<float *> (pr));
+	break;
+
+      case mxDOUBLE_CLASS:
+	retval = *(static_cast<double *> (pr));
+	break;
+
+      case mxINT8_CLASS:
+	retval = *(static_cast<int8_t *> (pr));
+	break;
+
+      case mxUINT8_CLASS:
+	retval = *(static_cast<uint8_t *> (pr));
+	break;
+
+      case mxINT16_CLASS:
+	retval = *(static_cast<int16_t *> (pr));
+	break;
+
+      case mxUINT16_CLASS:
+	retval = *(static_cast<uint16_t *> (pr));
+	break;
+
+      case mxINT32_CLASS:
+	retval = *(static_cast<int32_t *> (pr));
+	break;
+
+      case mxUINT32_CLASS:
+	retval = *(static_cast<uint32_t *> (pr));
+	break;
+
+      case mxINT64_CLASS:
+	retval = *(static_cast<int64_t *> (pr));
+	break;
+
+      case mxUINT64_CLASS:
+	retval = *(static_cast<uint64_t *> (pr));
+	break;
+
+      default:
+	panic_impossible ();
+      }
+
+    return retval;
+  }
 
   void *get_data (void) const { return pr; }
 
@@ -2665,8 +2735,7 @@ mxGetPi (const mxArray *ptr)
 double
 mxGetScalar (const mxArray *ptr)
 {
-  double *d = mxGetPr (ptr);
-  return d[0];
+  return ptr->get_scalar ();
 }
 
 mxChar *

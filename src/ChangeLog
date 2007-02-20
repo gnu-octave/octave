@@ -1,3 +1,15 @@
+2007-02-20  John W. Eaton  <jwe@octave.org>
+
+	* mxarray.h (mxArray::get_scalar): New function.
+	* mex.cc (mxArray_base::get_scalar): New pure virtual function.
+	(mxArray_octave_value::get_scalar, mxArray_matlab::get_scalar,
+	mxArray_number::get_scalar): New functions.
+	(mxGetScalar): Call get_scalar here.
+
+	* mex.cc (mxArray_octave_value::get_dimensions): Cache ndims here.
+	(mxArray_octave_value::get_number_of_dimensions):
+	Call get_dimensions here to cache both ndims and dims.
+
 2007-02-17  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_out_of_date): Don't exit early if looking

@@ -1,3 +1,8 @@
+2007-02-20  Rafael Laboissiere  <rafael@debian.org>
+
+	* configure.in: Check for versions of GLPK prior to 4.15 and set
+	the GLPK_PRE_4_15 macro accordingly.
+
 2007-02-16  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in: Use OCTAVE_PREFIX, not OCTAVE_CONF_PREFIX, in sed

@@ -38,8 +38,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #if defined (HAVE_GLPK)
 
-extern "C" {
+extern "C"
+{
 #include <glpk.h>
+
+#ifdef GLPK_PRE_4_15
+
 #ifndef _GLPLIB_H
 #include <glplib.h>
 #endif
@@ -50,6 +54,16 @@ extern "C" {
 #define lib_set_print_hook lib_print_hook
 #endif
 }
+
+#else
+
+extern "C"
+{
+void _glp_lib_print_hook (int (*func)(void *info, char *buf), void *info);
+void _glp_lib_fault_hook (int (*func)(void *info, char *buf), void *info);
+}
+
+#endif
 
 #define NIntP 17
 #define NRealP 10
@@ -150,10 +164,18 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   clock_t t_start = clock();
 
-  lib_set_fault_hook (NULL, glpk_fault_hook);
+#ifdef GLPK_PRE_4_15
+  lib_set_fault_hook (0, glpk_fault_hook);
+#else
+  _glp_lib_fault_hook (glpk_fault_hook, 0);
+#endif
 
   if (lpxIntParam[0] > 1)
-    lib_set_print_hook (NULL, glpk_print_hook);
+#ifdef GLPK_PRE_4_15
+    lib_set_print_hook (0, glpk_print_hook);
+#else
+    _glp_lib_print_hook (glpk_print_hook, 0);
+#endif
 
   LPX *lp = lpx_create_prob ();
 
@@ -286,7 +308,11 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       break;
 
     default:
+#ifdef GLPK_PRE_4_15
       insist (method != method);
+#else
+      glpk_fault_hook (0, "method != method");
+#endif
     }
 
   /*  errnum assumes the following results:
@@ -351,7 +377,12 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 	}
 
       *time = (clock () - t_start) / CLOCKS_PER_SEC;
+
+#ifdef GLPK_PRE_4_15
       *mem = (lib_env_ptr () -> mem_tpeak);
+#else
+      *mem = 0;
+#endif
 
       lpx_delete_prob (lp);
       return 0;

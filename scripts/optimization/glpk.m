@@ -361,7 +361,8 @@
 ## @item time
 ## Time (in seconds) used for solving LP/MIP problem.
 ## @item mem
-## Memory (in bytes) used for solving LP/MIP problem.
+## Memory (in bytes) used for solving LP/MIP problem (this is not 
+## available if the version of GLPK is 4.15 or later).
 ## @end table
 ## @end table
 ## 

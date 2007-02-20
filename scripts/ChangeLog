@@ -1,3 +1,8 @@
+2007-02-20  Rafael Laboissiere  <rafael@debian.org>
+
+	* optimization/glpk.m: Document the fact that extra.mem does not work
+	for versions of GLPK 4.15 and later.
+
 2007-02-19  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_alloc__.in: If next available element in

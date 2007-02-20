@@ -36,7 +36,9 @@ function __uiobject_grow_list__ ()
     __uiobject_list__(new_size).in_use = false;
     __uiobject_list__(new_size).handle = NaN;
     __uiobject_list__(new_size).object = NaN;
-    if (curr_size)
+    if (curr_size == 0)
+      __uiobject_head__ = 1;
+    else
       __uiobject_list__(curr_size).next = curr_size+1;
       __uiobject_list__(curr_size).in_use = false;
       __uiobject_list__(curr_size).handle = NaN;
@@ -48,8 +50,8 @@ function __uiobject_grow_list__ ()
       __uiobject_list__(i).handle = NaN;
       __uiobject_list__(i).object = NaN;
     endfor
-    __uiobject_head__ = curr_size+1;
   else
     print_usage ();
   endif
+
 endfunction

@@ -30,7 +30,7 @@ function idx = __uiobject_alloc__ ()
   __uiobject_globals__;
 
   if (nargin == 0)
-    if (! __uiobject_head__)
+    if (! (__uiobject_head__ && __uiobject_list__(__uiobject_head__).next))
       __uiobject_grow_list__ ();
     endif
     idx = __uiobject_head__;

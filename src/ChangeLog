@@ -1,3 +1,12 @@
+2007-02-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread): Return error
+	code and message instead of throwing error if functionality is
+	missing.
+
+	* oct-obj.h (octave_value_list::splice): Set default for
+	replacement list argument.
+
 2007-02-20  Rafael Laboissiere  <rafael@laboissiere.net>
 
 	* DLD-FUNCTIONS/__glpk__.cc: Adapt code for changes in the GLPK

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.556 $)
+AC_REVISION($Revision: 1.557 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -586,6 +586,8 @@ if test "$with_glpk" = yes; then
   glpk_lib="glpk"
 elif test "$with_glpk" != no; then
   glpk_lib="$with_glpk"
+else
+  glpk_missing=yes
 fi
 
 GLPK_LIBS=
@@ -618,6 +620,8 @@ if test "$with_curl" = yes; then
   curl_lib="curl"
 elif test "$with_curl" != no; then
   curl_lib="$with_curl"
+else
+  curl_missing=yes
 fi
 
 CURL_LIBS=
@@ -2160,6 +2164,11 @@ fi
 
 if test -n "$warn_arpack"; then
   AC_MSG_WARN($warn_arpack)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_curl"; then
+  AC_MSG_WARN($warn_curl)
   warn_msg_printed=true
 fi
 

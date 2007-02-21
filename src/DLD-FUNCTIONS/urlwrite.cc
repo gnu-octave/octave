@@ -314,7 +314,9 @@ urlwrite ('http://www.google.com/search', 'search.html', 'get', @{'query', 'octa
     error ("urlwrite: curl: %s", curl_easy_strerror (res));
 
 #else
-  error ("urlwrite: not available in this version of Octave");
+  retval(2) = "urlwrite: not available in this version of Octave";
+  retval(1) = 0;
+  retval(0) = "";
 #endif
 
   return retval;
@@ -429,7 +431,9 @@ s = urlread ('http://www.google.com/search', 'get', @{'query', 'octave'@});\n\
     error ("urlread: curl: %s", curl_easy_strerror (res));
 
 #else
-  error ("urlread: not available in this version of Octave");
+  retval(2) = "urlread: not available in this version of Octave";
+  retval(1) = 0;
+  retval(0) = "";
 #endif
 
   return retval;

@@ -107,8 +107,9 @@ public:
 
   octave_value_list& reverse (void);
 
-  octave_value_list splice (octave_idx_type offset, octave_idx_type length,
-			    const octave_value_list& lst) const;
+  octave_value_list
+  splice (octave_idx_type offset, octave_idx_type len,
+	  const octave_value_list& lst = octave_value_list ()) const;
 
   bool all_strings_p (void) const;
 

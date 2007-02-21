@@ -1437,8 +1437,8 @@ For a symmetric positive definite matrix S, returns the permutation vector p suc
 @emph{Not implemented}
 @item @ref{matrix_type}
 Identify the matrix type or mark a matrix as a particular type.
-@item normest
-@emph{Not implemented}
+@item @ref{normest}
+Estimates the 2-norm of the matrix @var{a} using a power series analysis.
 @item @ref{spchol}
 Compute the Cholesky factor, R, of the symmetric positive definite.
 @item @ref{spcholinv}
@@ -1459,8 +1459,8 @@ Compute the Cholesky factor, L, of the symmetric positive definite.
 Compute the LU decomposition of the sparse matrix A, using subroutines from UMFPACK.
 @item @ref{spqr}
 Compute the sparse QR factorization of @var{a}, using CSPARSE.
-@item sprank
-@emph{Not implemented}
+@item @ref{sprank}
+Calculates the structural rank of a sparse matrix @var{s}.
 @item svds
 @emph{Not implemented}
 @end table
@@ -1550,6 +1550,8 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 		A.
 * matrix_type:: Identify the matrix type or mark a matrix as a particular
 		type.
+* normest:: 	Estimates the 2-norm of the matrix @var{a} using a power 
+		series analysis.
 * nnz:: 	returns number of non zero elements in SM See also: sparse
 * nonzeros::	Returns a vector of the non-zero values of the sparse
 		matrix S
@@ -1598,6 +1600,7 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 * sprand::	Generate a random sparse matrix.
 * sprandn::	Generate a random sparse matrix.
 * sprandsym::	Generate a symmetric random sparse matrix.
+* sprank::	Calculates the structural rank of a sparse matrix @var{s}.
 * spstats::	Return the stats for the non-zero elements of the sparse
 		matrix S COUNT is the number of non-zeros in each column,
 		MEAN is the mean of the non-zeros in each column, and VAR
@@ -1668,12 +1671,18 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 
 @DOCSTRING(luinc)
 
-@node matrix_type, nnz, luinc, Function Reference
+@node matrix_type, normest, luinc, Function Reference
 @subsubsection matrix_type
 
 @DOCSTRING(matrix_type)
 
-@node nnz, nonzeros, matrix_type, Function Reference
+
+@node normest, nnz, matrix_type, Function Reference
+@subsubsection normest
+
+@DOCSTRING(normest)
+
+@node nnz, nonzeros, normest, Function Reference
 @subsubsection nnz
 
 @DOCSTRING(nnz)
@@ -1833,12 +1842,17 @@ Return a diagonal matrix with the sparse vector V on diagonal K.
 
 @DOCSTRING(sprandn)
 
-@node sprandsym, spstats, sprandn, Function Reference
+@node sprandsym, sprank, sprandn, Function Reference
 @subsubsection sprandsym
 
 @DOCSTRING(sprandsym)
 
-@node spstats, spsum, sprandsym, Function Reference
+@node sprank, spstats, sprandsym, Function Reference
+@subsubsection sprank
+
+@DOCSTRING(sprank)
+
+@node spstats, spsum, sprank, Function Reference
 @subsubsection spstats
 
 @DOCSTRING(spstats)

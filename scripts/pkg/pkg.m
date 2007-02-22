@@ -992,7 +992,7 @@ function deps_cell = fix_depends(depends)
                        "The dependency %s has the wrong syntax.\n"], dep);
             endif
             operator = parts{idx(1)};
-            if (!any(strcmp(operator, {">=", "<=", "=="}))) ## XXX: I belive we also support ">" and "<" 
+            if (!any(strcmp(operator, {">", ">=", "<=", "<", "=="})))
                 error("Unsupported operator: %s", operator);
             endif
             version  = fix_version(parts{idx(2)});

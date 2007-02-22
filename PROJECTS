@@ -153,13 +153,11 @@ Sparse Matrices:
     functions...
 
   * Other missing Functions
-      - eigs
       - symmmd      Superseded by symamd
       - colmmd      Superseded by colamd
       - treelayout
       - cholinc
       - condest
-      - normest
       - bicg
       - bicgstab
       - cgs

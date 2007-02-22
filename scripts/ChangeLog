@@ -1,5 +1,11 @@
 2007-02-22  David Bateman  <dbateman@free.fr>
 
+	* statistics/distributions/frnd.m, statistics/distributions/exprnd.m, 
+	statistics/distributions/gamrnd.m, statistics/distributions/trnd.m, 
+	statistics/distributions/poissrnd.m, statistics/distributions/chi2rnd.m,
+	statistics/distributions/betarnd.m: Convert to use randg, rande
+	and randp to accelerate.
+
 	* pkg/pkg.m (fix_depends): Support > and < operators as well. 
 
 2007-02-22  John W. Eaton  <jwe@octave.org>

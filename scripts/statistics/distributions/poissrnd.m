@@ -69,18 +69,7 @@ function rnd = poissrnd (l, r, c)
     if (!(l >= 0) | !(l < Inf))
       rnd = NaN * ones (sz);
     elseif ((l > 0) & (l < Inf))
-      num = zeros (sz);
-      sum = - log (1 - rand (sz)) ./ l;
-      while (1)
-	ind = find (sum < 1);
-	if (any (ind))
-          sum(ind) = (sum(ind) - log (1 - rand (size (ind))) / l);
-          num(ind) = num(ind) + 1;
-	else
-          break;
-	endif
-      endwhile
-      rnd = num;
+      rnd = randp(l, sz);
     else
       rnd = zeros (sz);
     endif
@@ -94,20 +83,7 @@ function rnd = poissrnd (l, r, c)
 
     k = find ((l > 0) & (l < Inf));
     if (any (k))
-      l = l(k);
-      num = zeros (size (k));
-      sum = - log (1 - rand (size (k))) ./ l;
-      while (1)
-	ind = find (sum < 1);
-	if (any (ind))
-          sum(ind) = (sum(ind)
-                      - log (1 - rand (size (ind))) ./ l(ind));
-          num(ind) = num(ind) + 1;
-	else
-          break;
-	endif
-      endwhile
-      rnd(k) = num;
+      rnd(k) = randp(l(k), size(k));
     endif
   endif
 

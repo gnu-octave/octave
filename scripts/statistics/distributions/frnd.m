@@ -80,7 +80,7 @@ function rnd = frnd (m, n, r, c)
 
   if (isscalar (m) && isscalar (n))
     if ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
-      rnd =  finv (rand (sz), m, n);
+      rnd = n ./ m .* randg(m/2,sz) ./ randg(n/2,sz);
     else
       rnd = NaN * ones (sz);
     endif
@@ -96,7 +96,7 @@ function rnd = frnd (m, n, r, c)
     k = find ((m > 0) & (m < Inf) &
               (n > 0) & (n < Inf));
     if (any (k))
-      rnd(k) = finv (rand (size (k)), m(k), n(k));
+      rnd(k) = n(k) ./ m(k) .* randg(m(k)./2,size(k)) ./ randg(n(k)./2,size(k));
     endif
   endif
 

@@ -79,7 +79,8 @@ function rnd = betarnd (a, b, r, c)
     if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
       rnd = NaN * ones (sz);
     else
-      rnd = betainv (rand(sz), a, b);
+      r1 = randg(a,sz); 
+      rnd = r1 ./ (r1 + randg(b,sz));
     endif
   else
     rnd = zeros (sz);
@@ -91,7 +92,8 @@ function rnd = betarnd (a, b, r, c)
 
     k = find ((a > 0) & (a < Inf) & (b > 0) & (b < Inf));
     if (any (k))
-      rnd(k) = betainv (rand (size (k)), a(k), b(k));
+      r1 = randg(a(k),size(k)); 
+      rnd(k) = r1 ./ (r1 + randg(b(k),size(k)));
     endif
   endif
 

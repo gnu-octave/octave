@@ -69,7 +69,7 @@ function rnd = chi2rnd (n, r, c)
      if (find (!(n > 0) | !(n < Inf)))
        rnd = NaN * ones (sz);
      else
-       rnd =  chi2inv (rand (sz), n);
+       rnd = 2 * randg(n/2, sz)
      endif
   else
     [retval, n, dummy] = common_size (n, ones (sz));
@@ -85,7 +85,7 @@ function rnd = chi2rnd (n, r, c)
 
     k = find ((n > 0) & (n < Inf));
     if (any (k))
-      rnd(k) = chi2inv (rand (size (k)), n(k));
+      rnd(k) = 2 * randg(n(k)/2, size(k))
     endif
   endif
 

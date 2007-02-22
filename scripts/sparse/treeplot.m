@@ -152,8 +152,6 @@ function treeplot (Tree, NodeS, EdgeS)
       
     endif
   endif
-  St;
-  Skelet;
 endfunction
 
 %!demo

@@ -51,7 +51,7 @@ function retval = doc (fname)
     endif
 
     if (ftype == 2 || ftype == 3)
-      ffile = file_in_loadpath (strcat (fname, "."));
+      ffile = which (fname);
     else
       ffile = "";
     endif

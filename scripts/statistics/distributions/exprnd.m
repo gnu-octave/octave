@@ -69,7 +69,7 @@ function rnd = exprnd (l, r, c)
 
   if (isscalar (l))
     if ((l > 0) && (l < Inf))
-      rnd = - log (1 - rand (sz)) ./ l;
+      rnd = rande(sz) / l;
     else
       rnd = NaN * ones (sz);
     endif
@@ -81,7 +81,7 @@ function rnd = exprnd (l, r, c)
     endif
     k = find ((l > 0) & (l < Inf));
     if (any (k))
-      rnd(k) = - log (1 - rand (size (k))) ./ l(k);
+      rnd(k) = rande(size(k)) / l(k);
     endif
   endif
 

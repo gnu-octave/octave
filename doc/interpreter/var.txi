@@ -284,11 +284,6 @@ Default value: @code{"> "}.
 
 Default value: @code{"+ "}.
 
-@item automatic_replot
-@xref{Low-Level plotting commands}.
-
-Default value: 0.
-
 @item beep_on_error
 @xref{Error Handling}.
 

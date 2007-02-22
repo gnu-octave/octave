@@ -1,3 +1,13 @@
+2007-02-22  John W. Eaton  <jwe@octave.org>
+
+	* src/oct-stream.cc (octave_stream::do_gets): If no limit or not
+	at limit, read ahead one character at end of line for compatibility.
+	(octave_stream::gets, octave_stream::getl): Set max_len to -1 if
+	tc_max_len is not defined.
+	* file-io.cc (Ffgets, Ffgetl): If no limit specified, pass
+	undefined octave_value object as max_len in call to
+	octave_stream::gets.
+
 2007-02-21  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mexErrMsgIdAndTxt, mexWarnMsgIdAndTxt): Handle second

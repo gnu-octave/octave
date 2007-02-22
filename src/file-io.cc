@@ -308,8 +308,7 @@ If there are no more characters to read, @code{fgetl} returns @minus{}1.\n\
 
       if (! error_state)
 	{
-	  octave_value len_arg = (nargin == 2)
-	    ? args(1) : octave_value (INT_MAX);
+	  octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
 	  bool err = false;
 
@@ -357,8 +356,7 @@ If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
 
       if (! error_state)
 	{
-	  octave_value len_arg = (nargin == 2)
-	    ? args(1) : octave_value (INT_MAX);
+	  octave_value len_arg = (nargin == 2) ? args(1) : octave_value ();
 
 	  bool err = false;
 

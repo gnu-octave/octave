@@ -976,26 +976,36 @@ octave_base_stream::do_gets (octave_idx_type max_len, bool& err,
 
       int c = 0;
       int char_count = 0;
-      int newline_stripped = 0;
 
-      while (is && (c = is.get ()) != EOF)
+      if (max_len != 0)
 	{
-	  char_count++;
-
-	  if (c == '\n')
+	  while (is && (c = is.get ()) != EOF)
 	    {
-	      if (! strip_newline)
-		buf << static_cast<char> (c);
+	      char_count++;
+
+	      if (c == '\n')
+		{
+		  if (! strip_newline)
+		    buf << static_cast<char> (c);
+
+		  break;
+		}
 	      else
-		newline_stripped = 1;
+		buf << static_cast<char> (c);
 
-	      break;
+	      if (max_len > 0 && char_count == max_len)
+		break;
 	    }
-	  else
-	    buf << static_cast<char> (c);
+	}
 
-	  if (max_len > 0 && char_count == max_len)
-	    break;
+      if (! is.eof () && char_count > 0)
+	{
+	  // GAGME.  Matlab seems to check for EOF even if the last
+	  // character in a file is a newline character.  This is NOT
+	  // what the corresponding C-library functions do.
+	  int disgusting_compatibility_hack = is.get ();
+	  if (! is.eof ())
+	    is.putback (disgusting_compatibility_hack);
 	}
 
       if (is.good () || (is.eof () && char_count > 0))
@@ -2801,14 +2811,20 @@ octave_stream::getl (const octave_value& tc_max_len, bool& err,
 
   int conv_err = 0;
 
-  int max_len = convert_to_valid_int (tc_max_len, conv_err);
+  int max_len = -1;
 
-  if (conv_err || max_len < 0)
+  if (tc_max_len.is_defined ())
     {
-      err = true;
-      ::error ("%s: invalid maximum length specified", who.c_str ());
+      max_len = convert_to_valid_int (tc_max_len, conv_err);
+
+      if (conv_err || max_len < 0)
+	{
+	  err = true;
+	  ::error ("%s: invalid maximum length specified", who.c_str ());
+	}
     }
-  else
+
+  if (! error_state)
     retval = getl (max_len, err, who);
 
   return retval;
@@ -2835,14 +2851,20 @@ octave_stream::gets (const octave_value& tc_max_len, bool& err,
 
   int conv_err = 0;
 
-  int max_len = convert_to_valid_int (tc_max_len, conv_err);
+  int max_len = -1;
 
-  if (conv_err || max_len < 0)
+  if (tc_max_len.is_defined ())
     {
-      err = true;
-      ::error ("%s: invalid maximum length specified", who.c_str ());
+      max_len = convert_to_valid_int (tc_max_len, conv_err);
+
+      if (conv_err || max_len < 0)
+	{
+	  err = true;
+	  ::error ("%s: invalid maximum length specified", who.c_str ());
+	}
     }
-  else
+
+  if (! error_state)
     retval = gets (max_len, err, who);
 
   return retval;

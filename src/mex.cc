@@ -3124,10 +3124,19 @@ mexErrMsgTxt (const char *s)
 }
 
 void
-mexErrMsgIdAndTxt (const char *id, const char *s)
+mexErrMsgIdAndTxt (const char *id, const char *fmt, ...)
 {
-  if (s && strlen (s) > 0)
-    error_with_id (id, "%s: %s", mexFunctionName (), s);
+  if (fmt && strlen (fmt) > 0)
+    {
+      const char *fname = mexFunctionName ();
+      size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
+      OCTAVE_LOCAL_BUFFER (char, tmpfmt, len);
+      sprintf (tmpfmt, "%s: %s", fname, fmt);
+      va_list args;
+      va_start (args, fmt);
+      verror_with_id (id, tmpfmt, args);
+      va_end (args);
+    }
   else
     // Just set the error state; don't print msg.
     error ("");
@@ -3142,9 +3151,22 @@ mexWarnMsgTxt (const char *s)
 }
 
 void
-mexWarnMsgIdAndTxt (const char *id, const char *s)
+mexWarnMsgIdAndTxt (const char *id, const char *fmt, ...)
 {
-  warning_with_id (id, "%s", s);
+  // FIXME -- is this right?  What does Matlab do if fmt is NULL or
+  // an empty string?
+
+  if (fmt && strlen (fmt) > 0)
+    {
+      const char *fname = mexFunctionName ();
+      size_t len = strlen (fname) + 2 + strlen (fmt) + 1;
+      OCTAVE_LOCAL_BUFFER (char, tmpfmt, len);
+      sprintf (tmpfmt, "%s: %s", fname, fmt);
+      va_list args;
+      va_start (args, fmt);
+      vwarning_with_id (id, tmpfmt, args);
+      va_end (args);
+    }
 }
 
 void

@@ -229,18 +229,26 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     palette_set = 0;
 
+    [view_cmd, view_fcn, view_zoom] = image_viewer ();
+    use_gnuplot_for_images = (ischar (view_fcn)
+			      && strcmp (view_fcn, "gnuplot_internal"));
+
+    ximg_data = {};
+    ximg_data_idx = 0;
+
     for i = 1:length (kids)
 
       obj = get (kids(i));
 
       switch (obj.type)
 	case "image"
-	  % FIXME - Is there a better way to determine if the plot command should
-	  % be "plot" or "splot"?????  Could have images projected into 3D so there
-	  % is really no reason to limit this.
+	  ## FIXME - Is there a better way to determine if the plot
+	  ## command should be "plot" or "splot"?????  Could have images
+	  ## projected into 3D so there is really no reason to limit
+	  ## this.
 	  if (nd == 0)
 	    nd = 2;
-	  end
+	  endif
 	  data_idx++;
 
 	  img_data = obj.cdata;
@@ -248,8 +256,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	  img_xdata = obj.xdata;
 	  img_ydata = obj.ydata;
 
-	  [view_cmd, view_fcn, view_zoom] = image_viewer ();
-	  if (ischar (view_fcn) && strcmp (view_fcn, "gnuplot_internal"))
+	  if (use_gnuplot_for_images)
 
 	    [y_dim, x_dim] = size (img_data(:,:,1));
 	    if (x_dim > 1)
@@ -276,7 +283,8 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	      fwrite (fid, img_data(:), "float");
 	      format = "1";
 	      imagetype = "image";
-	      % Only need to set pallete once because it doesn't change on a figure.
+	      ## Only need to set pallete once because it doesn't change
+	      ## on a figure.
 	      if (! palette_set)
 		palette_set = 1;
 		palette_size = rows (img_colormap);
@@ -289,10 +297,11 @@ function __uiobject_draw_axes__ (h, plot_stream)
 		  for i = 1:palette_size
 		    fprintf (plot_stream, "%g %g %g %g;\n",
 			     1e-3*round (1e3*[(i-1)/(palette_size-1), img_colormap(i,:)]));
-		  end
+		  endfor
 		  fprintf (plot_stream, "e;\n");
 		else
-		  # Let the file be deleted when Octave exits or `purge_tmp_files' is called.
+		  ## Let the file be deleted when Octave exits or
+		  ## `purge_tmp_files' is called.
 		  [fid, binary_fname, msg] = mkstemp (strcat (P_tmpdir, "/gpimageXXXXXX"), 1);
 		  fwrite (fid, img_colormap', "float32", 0, "ieee-le");
 		  fclose (fid);
@@ -310,10 +319,12 @@ function __uiobject_draw_axes__ (h, plot_stream)
 		x_dim, y_dim, x_origin, y_origin, dx, dy, format);
 	    withclause{data_idx} = sprintf ("with %s", imagetype);
 
-	    data{data_idx} = 0; % Data in file, set to zero for data available test to pass below.
+	    ## Data in file, set to zero for data available test to pass
+	    ## below.
+	    data{data_idx} = 0; 
 
 	  else
-	    view_fcn (xlim, ylim, img_data, view_zoom, view_cmd);
+	    ximg_data{++ximg_data_idx} = img_data;
 	  endif
 
 	case "line"
@@ -615,6 +626,12 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     fputs (plot_stream, "set style data lines;\n");
     fflush (plot_stream);
+
+    if (! use_gnuplot_for_images)
+      for i = 1:ximg_data_idx
+	view_fcn (xlim, ylim, ximg_data{i}, view_zoom, view_cmd);
+      endfor
+    endif
 
     if (have_data)
 

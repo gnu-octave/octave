@@ -71,9 +71,9 @@ extern OCTINTERP_API int mexCallMATLAB (int nargout, mxArray *argout[], int narg
 extern OCTINTERP_API void mexSetTrapFlag (int flag);
 extern OCTINTERP_API int mexEvalString (const char *s);
 extern OCTINTERP_API void mexErrMsgTxt (const char *s);
-extern OCTINTERP_API void mexErrMsgIdAndTxt (const char *id, const char *s);
+extern OCTINTERP_API void mexErrMsgIdAndTxt (const char *id, const char *s, ...);
 extern OCTINTERP_API void mexWarnMsgTxt (const char *s);
-extern OCTINTERP_API void mexWarnMsgIdAndTxt (const char *id, const char *s);
+extern OCTINTERP_API void mexWarnMsgIdAndTxt (const char *id, const char *s, ...);
 extern OCTINTERP_API void mexPrintf (const char *fmt, ...);
   
 extern OCTINTERP_API mxArray *mexGetVariable (const char *space, const char *name);

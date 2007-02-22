@@ -286,12 +286,25 @@ error_1 (std::ostream& os, const char *name, const char *id,
 }
 
 void
+vmessage (const char *name, const char *fmt, va_list args)
+{
+  verror (false, std::cerr, name, "", fmt, args);
+}
+
+void
 message (const char *name, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (false, std::cerr, name, "", fmt, args);
+  vmessage (name, fmt, args);
   va_end (args);
+}
+
+void
+vmessage_with_id (const char *name, const char *id, const char *fmt,
+		  va_list args)
+{
+  verror (false, std::cerr, name, id, fmt, args);
 }
 
 void
@@ -299,7 +312,7 @@ message_with_id (const char *name, const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  verror (false, std::cerr, name, id, fmt, args);
+  vmessage_with_id (name, id, fmt, args);
   va_end (args);
 }
 
@@ -311,12 +324,24 @@ usage_1 (const char *id, const char *fmt, va_list args)
 }
 
 void
+vusage (const char *fmt, va_list args)
+{
+  usage_1 ("", fmt, args);
+}
+
+void
 usage (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  usage_1 ("", fmt, args);
+  vusage (fmt, args);
   va_end (args);
+}
+
+void
+vusage_with_id (const char *id, const char *fmt, va_list args)
+{
+  usage_1 (id, fmt, args);
 }
 
 void
@@ -324,7 +349,7 @@ usage_with_id (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  usage_1 (id, fmt, args);
+  vusage_with_id (id, fmt, args);
   va_end (args);
 }
 
@@ -454,12 +479,24 @@ error_2 (const char *id, const char *fmt, va_list args)
 }
 
 void
+verror (const char *fmt, va_list args)
+{
+  error_2 ("", fmt, args);
+}
+
+void
 error (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_2 ("", fmt, args);
+  verror (fmt, args);
   va_end (args);
+}
+
+void
+verror_with_id (const char *id, const char *fmt, va_list args)
+{
+  error_2 (id, fmt, args);
 }
 
 void
@@ -467,7 +504,7 @@ error_with_id (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_2 (id, fmt, args);
+  verror_with_id (id, fmt, args);
   va_end (args);
 }
 
@@ -595,12 +632,24 @@ warning_1 (const char *id, const char *fmt, va_list args)
 }
 
 void
+vwarning (const char *fmt, va_list args)
+{
+  warning_1 ("", fmt, args);
+}
+
+void
 warning (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  warning_1 ("", fmt, args);
+  vwarning (fmt, args);
   va_end (args);
+}
+
+void
+vwarning_with_id (const char *id, const char *fmt, va_list args)
+{
+  warning_1 (id, fmt, args);
 }
 
 void
@@ -608,8 +657,14 @@ warning_with_id (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  warning_1 (id, fmt, args);
+  vwarning_with_id (id, fmt, args);
   va_end (args);
+}
+
+void
+vparse_error (const char *fmt, va_list args)
+{
+  error_1 (std::cerr, 0, "", fmt, args);
 }
 
 void
@@ -617,8 +672,14 @@ parse_error (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (std::cerr, 0, "", fmt, args);
+  vparse_error (fmt, args);
   va_end (args);
+}
+
+void
+vparse_error_with_id (const char *id, const char *fmt, va_list args)
+{
+  error_1 (std::cerr, 0, id, fmt, args);
 }
 
 void
@@ -626,7 +687,7 @@ parse_error_with_id (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (std::cerr, 0, id, fmt, args);
+  vparse_error_with_id (id, fmt, args);
   va_end (args);
 }
 

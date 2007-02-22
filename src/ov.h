@@ -239,7 +239,11 @@ public:
   // Delete the representation of this constant if the count drops to
   // zero.
 
-  ~octave_value (void);
+  ~octave_value (void)
+  {
+    if (--rep->count == 0)
+      delete rep;
+  }
 
   void make_unique (void)
     {

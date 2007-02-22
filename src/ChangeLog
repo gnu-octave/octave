@@ -1,5 +1,17 @@
 2007-02-21  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (mexErrMsgIdAndTxt, mexWarnMsgIdAndTxt): Handle second
+	arg as format and accept variable number of arguments.
+	* mexproto.h: Fix decls.
+
+	* error.h, error.cc (vmessage, vusage, vwarning, verror,
+	vparse_error, vmessage_with_id, vusage_with_id, vwarning_with_id,
+	verror_with_id, vparse_error_with_id): Provide va_list versions of
+	variadic error, warning, and message functions.
+	(message, usage, warning, error, parse_error, message_with_id,
+	usage_with_id, warning_with_id, error_with_id,
+	parse_error_with_id): Call va_list versions.
+
 	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread): Return error
 	code and message instead of throwing error if functionality is
 	missing.

@@ -681,17 +681,6 @@ octave_value::octave_value (octave_base_value *new_rep)
 {
 }
 
-octave_value::~octave_value (void)
-{
-#if defined (MDEBUG)
-  std::cerr << "~octave_value: rep: " << rep
-	    << " rep->count: " << rep->count << std::endl;
-#endif
-
-  if (--rep->count == 0)
-    delete rep;
-}
-
 octave_base_value *
 octave_value::clone (void) const
 {

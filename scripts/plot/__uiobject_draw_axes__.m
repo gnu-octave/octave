@@ -652,6 +652,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	fprintf (plot_stream, ", \"%s\" %s %s %s",
 		 filespec{i}, usingclause{i}, titlespec{i}, withclause{i});
       endfor
+      fputs (plot_stream, ";\n");
       for i = 1:data_idx
 	if (strcmp (filespec{i}, "-"))
 	  if (nd == 2)

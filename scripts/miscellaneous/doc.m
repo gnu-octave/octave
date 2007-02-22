@@ -80,14 +80,17 @@ function retval = doc (fname)
     cmd = sprintf ("\"%s\" --file \"%s\" --directory \"%s\"",
 		   info_program (), info_file_name, info_dir);
 
-    if (! isempty (fname))
-      cmd = sprintf ("%s --index-search %s", cmd, fname);
+    have_fname = ! isempty (fname);
+
+    if (have_fname)
+      status = system (sprintf ("%s --index-search %s", cmd, fname));
     endif
 
-    status = system (cmd);
-
-    if (status == 127)
-      warning ("unable to find info program `%s'", info_program ());
+    if (! (have_fname && status == 0))
+      status = system (cmd);
+      if (status == 127)
+	warning ("unable to find info program `%s'", info_program ());
+      endif
     endif
 
     if (nargout > 0)

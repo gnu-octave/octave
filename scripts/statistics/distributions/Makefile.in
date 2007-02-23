@@ -32,8 +32,7 @@ SOURCES = betacdf.m betainv.m betapdf.m betarnd.m binocdf.m \
   laplace_inv.m laplace_pdf.m laplace_rnd.m logistic_cdf.m \
   logistic_inv.m logistic_pdf.m logistic_rnd.m logncdf.m \
   logninv.m lognpdf.m lognrnd.m normcdf.m norminv.m normpdf.m \
-  normrnd.m pascal_cdf.m pascal_inv.m pascal_pdf.m pascal_rnd.m \
-  poisscdf.m poissinv.m poisspdf.m poissrnd.m stdnormal_cdf.m \
+  normrnd.m poisscdf.m poissinv.m poisspdf.m poissrnd.m stdnormal_cdf.m \
   stdnormal_inv.m stdnormal_pdf.m stdnormal_rnd.m tcdf.m tinv.m \
   tpdf.m trnd.m unifcdf.m unifinv.m unifpdf.m unifrnd.m wblcdf.m \
   wblinv.m wblpdf.m wblrnd.m wienrnd.m

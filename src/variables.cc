@@ -1149,12 +1149,13 @@ lookup_function (const std::string& nm, const std::string& parent)
   if (! parent.empty ())
     sr = fbi_sym_tab->lookup (parent + ":" + nm);
 
-  if (! sr || ! sr->is_function () && curr_parent_function)
-    sr = fbi_sym_tab->lookup (curr_parent_function->name () + ":" + nm);
-
   if (! sr || ! sr->is_function ())
     {
-      sr = fbi_sym_tab->lookup (nm, true);
+      if (curr_parent_function)
+	sr = fbi_sym_tab->lookup (curr_parent_function->name () + ":" + nm);
+
+      if (! sr || ! sr->is_function ())
+	sr = fbi_sym_tab->lookup (nm, true);
 
       if (sr && ! sr->is_function ())
 	load_fcn_from_file (sr, false);

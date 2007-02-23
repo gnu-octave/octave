@@ -1,3 +1,11 @@
+2007-02-23  John W. Eaton  <jwe@octave.org>
+
+	* statistics/distributions/Makefile.in (SOURCES): Remove
+	pascal_cdf.m pascal_inv.m pascal_pdf.m pascal_rnd.m from the list.
+
+	* deprecated/Makefile.in (SOURCES): Add pascal_cdf.m,
+	pascal_inv.m, pascal_pdf.m, and pascal_rnd.m to the list.
+
 2007-02-23  David Bateman  <dbateman@free.fr>
 
 	* statistics/distributions/discrete_rnd.m, 
@@ -10,7 +18,7 @@
 	statistics/distributions/unidinv.m, 
 	statistics/distributions/unidpdf.m, 
 	statistics/distributions/unidrnd.m: New functions based on 
-	discrete_cdf,  etc.
+	discrete_cdf, etc.
 
 	* statistics/distributions/pascal_cdf.m,
 	statistics/distributions/pascal_inv.m,

@@ -1,5 +1,9 @@
 2007-02-22  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (symbol_out_of_date): If checking nested function,
+	look for file using parent function name.  Delete unused
+	variable NAMES.
+
 	* src/oct-stream.cc (octave_stream::do_gets): If no limit or not
 	at limit, read ahead one character at end of line for compatibility.
 	(octave_stream::gets, octave_stream::getl): Set max_len to -1 if

@@ -1010,12 +1010,11 @@ symbol_out_of_date (symbol_record *sr)
 		{
 		  time_t tp = fcn->time_parsed ();
 
-		  std::string nm = fcn->name ();
+		  std::string nm = fcn->is_nested_function ()
+		    ? fcn->parent_fcn_name () : fcn->name ();
 
 		  // FIXME -- the following code is repeated
 		  // in load_fcn_from_file in parse.y.
-
-		  string_vector names (2);
 
 		  int nm_len = nm.length ();
 

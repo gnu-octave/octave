@@ -1,3 +1,12 @@
+2007-02-23  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/dispatch.cc (Fbuiltin): Also adjust argument list
+	in calls to functions that are not overloaded.  Call
+	lookup_by_name to find function instead of searching fbi_symtab
+	directly.
+
+	* help.cc (do_which): Return empty string if file not found.
+
 2007-02-22  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_cell::mxArray_cell (const mxArray_cell&),

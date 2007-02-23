@@ -1317,14 +1317,7 @@ do_which (const std::string& name)
   if (sym_rec && sym_rec->is_defined ())
     retval = sym_rec->which ();
   else
-    {
-      std::string path = fcn_file_in_path (name);
-
-      if (! path.empty ())
-	retval = path;
-      else
-	retval = "undefined";
-    }
+    retval = fcn_file_in_path (name);
 
   return retval;
 }

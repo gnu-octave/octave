@@ -306,20 +306,19 @@ some other function for the given type signature.\n\
       if (error_state)
 	return retval;
 
-      symbol_record *sr = fbi_sym_tab->lookup (name, 0);
+      symbol_record *sr = lookup_by_name (name, 0);
 
-      if (sr)
+      if (sr && sr->is_function ())
 	{
 	  if (sr->def().type_id () == octave_dispatch::static_type_id ())
 	    {
 	      octave_function *fcn = builtin (name);
 
 	      if (!error_state && fcn)
-		retval = fcn->do_multi_index_op (nargout,
-						 args.splice (0, 1, retval));
+		retval = fcn->do_multi_index_op (nargout, args.splice (0, 1));
 	    }
 	  else
-	    retval = feval (name, args, nargout);
+	    retval = feval (name, args.splice (0, 1), nargout);
 	}
       else
 	error ("builtin: lookup for symbol `%s' failed", name.c_str ());

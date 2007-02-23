@@ -73,12 +73,12 @@ function rnd = geornd (p, r, c)
     elseif (p == 0)
       rnd = Inf * ones (sz);
     elseif ((p > 0) & (p < 1));
-      rnd = floor (log (rand (sz)) / log (1 - p));
+      rnd = floor (- rande(sz) ./ log (1 - p));
     else
       rnd = zeros (sz);
     endif
   else
-    rnd = zeros (sz);
+    rnd = floor (- rande(sz) ./ log (1 - p));
 
     k = find (!(p >= 0) | !(p <= 1));
     if (any (k))
@@ -88,11 +88,6 @@ function rnd = geornd (p, r, c)
     k = find (p == 0);
     if (any (k))
       rnd(k) = Inf * ones (1, length (k));
-    endif
-
-    k = find ((p > 0) & (p < 1));
-    if (any (k))
-      rnd(k) = floor (log (rand (size (k))) ./ log (1 - p(k)));
     endif
   endif
 

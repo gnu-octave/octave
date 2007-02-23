@@ -79,16 +79,15 @@ function rnd = wblrnd (scale, shape, r, c)
 
   if (isscalar (shape) && isscalar (scale))
     if ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf))
-      rnd = (scale * (- log (1 - rand (sz))) .^ (1 / shape));
+      rnd = scale .* rande(sz) .^ (1./shape);
     else
       rnd = NaN * ones (sz);
     endif
   else
-    rnd = NaN * ones (sz);
-    k = find ((shape > 0) & (shape < Inf) & (scale > 0) & (scale < Inf));
-    if (any (k))
-      rnd(k) = (scale(k)
-		.* (- log (1 - rand (size (k)))) .^ (1 ./ shape(k)));
+    rnd = scale .* rande(sz) .^ (1./shape);
+    k = find ((shape <= 0) | (shape == Inf) | (scale <= 0) & (scale == Inf));
+    if (any(k))
+      rnd(k) = NaN;
     endif
   endif
 

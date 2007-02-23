@@ -78,23 +78,16 @@ function rnd = lognrnd (mu, sigma, r, c)
   endif
 
   if (isscalar (mu) && isscalar (sigma))
-    if  (!(mu > 0) | !(mu < Inf) | !(sigma > 0) | !(sigma < Inf))
+    if  (!(sigma > 0) || !(sigma < Inf))
       rnd = NaN * ones (sz);
-    elseif find ((mu > 0) & (mu < Inf) & (sigma > 0) & (sigma < Inf));
-      rnd = exp (mu) * exp (sigma .* randn (sz));
     else
-      rnd = zeros (sz);
+      rnd = exp(mu + sigma .* randn (sz)); 
     endif
   else
-    rnd = zeros (sz);
-    k = find (!(mu > 0) | !(mu < Inf) | !(sigma > 0) | !(sigma < Inf));
+    rnd = exp (mu + sigma .* randn (sz));
+    k = find ((sigma < 0) | (sigma == Inf));
     if (any (k))
-      rnd(k) = NaN * ones (1, length (k));
-    endif
-
-    k = find ((mu > 0) & (mu < Inf) & (sigma > 0) & (sigma < Inf));
-    if (any (k))
-      rnd(k) = exp (mu(k)) .* exp (sigma(k) .* randn (1, length (k)));
+      rnd(k) = NaN
     endif
   endif
 

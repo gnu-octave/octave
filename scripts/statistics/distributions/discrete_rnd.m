@@ -74,24 +74,5 @@ function rnd = discrete_rnd (v, p, r, c)
     error ("discrete_rnd: p must be a nonzero, nonnegative vector");
   endif
 
-  n = prod (sz);
-  m = length (v);
-  u = rand (1, n);
-  s = reshape (cumsum (p / sum (p)), m, 1);
-
-  ## The following loop is a space/time tradeoff in favor of space,
-  ## since the dataset may be large.
-  ##
-  ## Vectorized code is:
-  ##
-  rnd = v (1 + sum ((s * ones (1, n)) <= ((ones (m, 1) * u))));
-  rnd = reshape (rnd, sz);
-  ##
-  ## Non-vectorized code is:
-  ##
-  ##  rnd = zeros (sz);
-  ##  for q=1:n
-  ##    rnd (q) = v (sum (s <= u (q)) + 1);
-  ##  endfor
-
+  rnd = v (lookup (cumsum (p (1 : end-1)) / sum(p), rand (sz)) + 1); 
 endfunction

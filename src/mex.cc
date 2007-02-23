@@ -1839,7 +1839,10 @@ private:
     int nel = get_number_of_elements ();
 
     for (int i = 0; i < nel * nfields; i++)
-      data[i] = val.data[i]->clone ();
+      {
+	mxArray *ptr = val.data[i];
+	data[i] = ptr ? ptr->clone () : 0;
+      }
   }
 };
 
@@ -1913,7 +1916,10 @@ private:
     int nel = get_number_of_elements ();
 
     for (int i = 0; i < nel; i++)
-      data[i] = val.data[i]->clone ();
+      {
+	mxArray *ptr = val.data[i];
+	data[i] = ptr ? ptr->clone () : 0;
+      }
   }
 };
 

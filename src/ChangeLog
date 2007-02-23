@@ -1,5 +1,9 @@
 2007-02-22  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (mxArray_cell::mxArray_cell (const mxArray_cell&),
+	mxArray_struct::mxArray_struct (const mxArray_struct&)):
+	Avoid calling clone on 0 elements.
+
 	* variables.cc (symbol_out_of_date): If checking nested function,
 	look for file using parent function name.  Delete unused
 	variable NAMES.

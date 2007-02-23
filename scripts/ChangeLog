@@ -1,3 +1,30 @@
+2007-02-23  David Bateman  <dbateman@free.fr>
+
+	* statistics/distributions/discrete_rnd.m, 
+	statistics/distributions/geornd.m, 
+	statistics/distributions/lognnd.m, 
+	statistics/distributions/nbinrnd.m, 
+	statistics/distributions/wblrnd.m:  Accelerate distributions.
+	 
+	* statistics/distributions/unidcdf.m, 
+	statistics/distributions/unidinv.m, 
+	statistics/distributions/unidpdf.m, 
+	statistics/distributions/unidrnd.m: New functions based on 
+	discrete_cdf,  etc.
+
+	* statistics/distributions/pascal_cdf.m,
+	statistics/distributions/pascal_inv.m,
+	statistics/distributions/pascal_pdf.m,
+	statistics/distributions/pascal_rnd.m: Remove.
+	* statistics/distributions/nbincdf.m,
+	statistics/distributions/nbininv.m,
+	statistics/distributions/nbinpdf.m,
+	statistics/distributions/nbinrnd.m: Replace with matlab
+	compatible functions.
+	* deprecated/pascal_cdf.m, deprecated/pascal_inv.m,
+	deprecated/pascal_pdf.m, deprecated/pascal_rnd.m: Use the new
+	nbincdf, etc functions to implement these.
+
 2007-02-22  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* plot/__uiobject_draw_axes__.m: Insert newline between plot

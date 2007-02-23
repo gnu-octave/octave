@@ -30,64 +30,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Pascal (negative binomial) distribution
 
-function cdf = pascal_cdf (x, n, p)
+function cdf = pascal_cdf (varargin)
 
-  if (nargin != 3)
-    print_usage ();
-  endif
-
-  if (!isscalar(n) || !isscalar(p)) 
-    [retval, x, n, p] = common_size (x, n, p);
-    if (retval > 0)
-      error ("pascal_cdf: x, n and p must be of common size or scalar");
-    endif
-  endif
-  
-  cdf = zeros (size (x));
-
-  k = find (isnan (x) | (n < 1) | (n == Inf) | (n != round (n))
-	    | (p < 0) | (p > 1));
-  if (any (k))
-    cdf(k) = NaN;
-  endif
-
-  k = find ((x == Inf) & (n > 0) & (n < Inf) & (n == round (n))
-	    & (p >= 0) & (p <= 1));
-  if (any (k))
-    cdf(k) = 1;
-  endif
-
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (n > 0)
-	    & (n < Inf) & (n == round (n)) & (p > 0) & (p <= 1));
-  if (any (k))
-    ## Does anyone know a better way to do the summation?
-    m = zeros (size (k));
-    x = floor (x(k));
-    y = cdf(k);
-    if (isscalar (n) && isscalar (p))
-      while (1)
-	l = find (m <= x);
-	if (any (l))
-          y(l) = y(l) + pascal_pdf (m(l), n, p);
-          m(l) = m(l) + 1;
-	else
-          break;
-	endif
-      endwhile
-    else
-      n = n(k);
-      p = p(k);
-      while (1)
-	l = find (m <= x);
-	if (any (l))
-          y(l) = y(l) + pascal_pdf (m(l), n(l), p(l));
-          m(l) = m(l) + 1;
-	else
-          break;
-	endif
-      endwhile
-    endif
-    cdf(k) = y;
-  endif
+  cdf = nbincdf(varargin{:});
 
 endfunction

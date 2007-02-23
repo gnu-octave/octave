@@ -31,42 +31,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Pascal (negative binomial) distribution
 
-function pdf = pascal_pdf (x, n, p)
+function pdf = pascal_pdf (varargin)
 
-  if (nargin != 3)
-    print_usage ();
-  endif
-
-  if (!isscalar(n) || !isscalar(p)) 
-    [retval, x, n, p] = common_size (x, n, p);
-    if (retval > 0)
-      error ("pascal_pdf: x, n and p must be of common size or scalar");
-    endif
-  endif
-
-  pdf = zeros (size (x));
-
-  k = find (isnan (x) | (n < 1) | (n == Inf) | (n != round (n))
-	    | (p < 0) | (p > 1));
-  if (any (k))
-    pdf(k) = NaN;
-  endif
-
-  ## Just for the fun of it ...
-  k = find ((x == Inf) & (n > 0) & (n < Inf) & (n == round (n))
-	    & (p == 0));
-  if (any (k))
-    pdf(k) = 1;
-  endif
-
-  k = find ((x >= 0) & (x < Inf) & (x == round (x)) & (n > 0)
-	    & (n < Inf) & (n == round (n)) & (p > 0) & (p <= 1));
-  if (any (k))
-    if (isscalar (n) && isscalar (p))
-      pdf(k) = bincoeff (-n, x(k)) .* (p ^ n) .* ((p - 1) .^ x(k));
-    else
-      pdf(k) = bincoeff (-n(k), x(k)) .* (p(k) .^ n(k)) .* ((p(k) - 1) .^ x(k));
-    endif
-  endif
+  pdf = nbinpdf (varargin{:});
 
 endfunction

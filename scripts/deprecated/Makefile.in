@@ -33,7 +33,7 @@ SOURCES = beta_cdf.m beta_inv.m beta_pdf.m beta_rnd.m \
   is_struct.m is_symmetric.m is_vector.m isstr.m lognormal_cdf.m \
   lognormal_inv.m lognormal_pdf.m lognormal_rnd.m normal_cdf.m \
   normal_inv.m normal_pdf.m normal_rnd.m pascal_cdf.m \
-  pascal_inv.m pascal_pdf.m pascal_rnd.m ppoisson_cdf.m \
+  pascal_inv.m pascal_pdf.m pascal_rnd.m poisson_cdf.m \
   poisson_inv.m poisson_pdf.m poisson_rnd.m setstr.m \
   struct_contains.m struct_elements.m t_cdf.m t_inv.m t_pdf.m \
   t_rnd.m uniform_cdf.m uniform_inv.m uniform_pdf.m uniform_rnd.m \

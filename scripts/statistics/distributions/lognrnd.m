@@ -87,7 +87,7 @@ function rnd = lognrnd (mu, sigma, r, c)
     rnd = exp (mu + sigma .* randn (sz));
     k = find ((sigma < 0) | (sigma == Inf));
     if (any (k))
-      rnd(k) = NaN
+      rnd(k) = NaN;
     endif
   endif
 

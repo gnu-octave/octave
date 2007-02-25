@@ -24,6 +24,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_error_h)
 #define octave_error_h 1
 
+#include <cstdarg>
 #include <string>
 
 #define panic_impossible() \

@@ -25,7 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
-#include "dMatrix.cc"
+#include "dNDArray.h"
 
 #include "defun-dld.h"
 #include "error.h"

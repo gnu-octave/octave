@@ -666,11 +666,20 @@ function configure_make (desc, packdir)
             endif
             filenames = char(fread(fid))';
             fclose(fid);
+	    if (filenames(end) == "\n")
+	      filenames(end) = [];
+	    endif
             ## Copy the files
             fn = split_by(filenames, "\n");
+	    delete_idx =  [];
             for i = 1:length(fn)
-              fn{i} = fullfile(src, fn{i});
+	      if (!all(isspace(fn{i})))
+                fn{i} = fullfile(src, fn{i});
+	      else
+		delete_idx(end+1) = i;
+              endif
             endfor
+	    fn(delete_idx) = [];
             filenames = sprintf("%s ", fn{:});
         else
             m = dir(fullfile(src, "*.m"));

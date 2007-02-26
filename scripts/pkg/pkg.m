@@ -684,12 +684,16 @@ function configure_make (desc, packdir)
         else
             m = dir(fullfile(src, "*.m"));
             oct = dir(fullfile(src, "*.oct"));
+            mex = dir(fullfile(src, "*.mex"));
             filenames = "";
             if (length(m) > 0)
                 filenames = sprintf(fullfile(src, "%s "), m.name);
             endif
             if (length(oct) > 0)
                 filenames = [filenames " " sprintf(fullfile(src, "%s "), oct.name)];
+            endif
+            if (length(mex) > 0)
+                filenames = [filenames " " sprintf(fullfile(src, "%s "), mex.name)];
             endif
         endif
         filenames = split_by(filenames, " ");

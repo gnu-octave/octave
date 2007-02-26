@@ -36,11 +36,13 @@ INSTALL_DATA = @INSTALL_DATA@
 INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
 
 ifeq ($(SHARED_LIBS), true)
+  CPICDEP = f77-fcn.o lo-error.o cquit.o
   ifdef CPICFLAG
-    CPICDEP := pic/machar.o pic/f77-fcn.o pic/lo-error.o pic/cquit.o
+    CPICDEP := $(addprefix pic/, $(CPICDEP))
   endif
+  CXXPICDEP := f77-extern.o quit.o
   ifdef CXXPICFLAG
-    CXXPICDEP := pic/f77-extern.o pic/quit.o
+    CXXPICDEP := $(addprefix pic/, $(CXXPICDEP))
   endif
   SPECIAL_PICDEPEND := $(CPICDEP) $(CXXPICDEP)
 endif

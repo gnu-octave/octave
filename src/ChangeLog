@@ -2,6 +2,8 @@
 
 	* Makefile.in: Use $(LN_S) instead of ln or ln -s.
 
+	* DLD-FUNCTIONS/getrusage.cc: Undef min after including windows.h.
+
 2007-02-25  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/interpn.cc: Include dNDArray.h, not dMatrix.cc.

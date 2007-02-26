@@ -37,6 +37,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #if defined (__WIN32__)
 #include <windows.h>
+#ifdef min
+#undef min
+#endif
 #endif
 
 #if defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)

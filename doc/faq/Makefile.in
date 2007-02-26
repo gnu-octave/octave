@@ -85,6 +85,6 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist: all
-	ln $(DISTFILES) ../../`cat ../../.fname`/doc/faq
-	for dir in $(DISTDIRS); do ln -s ../../../doc/faq/$$dir ../../`cat ../../.fname`/doc/faq/$$dir; done
+	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/doc/faq
+	for dir in $(DISTDIRS); do $(LN_S) ../../doc/faq/$$dir ../../`cat ../../.fname`/doc/faq/$$dir; done
 .PHONY: dist

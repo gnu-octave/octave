@@ -1,3 +1,7 @@
+2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Makefile.in, Makerules.in: Use $(LN_S) instead of ln or ln -s.
+
 2007-02-07  John W. Eaton  <jwe@octave.org>
 
 	* Makerules.in: Don't use wildcard function to generate source

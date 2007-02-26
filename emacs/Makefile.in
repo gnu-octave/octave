@@ -54,5 +54,5 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	ln $(DISTFILES) ../`cat ../.fname`/emacs
+	$(LN_S) $(DISTFILES) ../`cat ../.fname`/emacs
 .PHONY: dist

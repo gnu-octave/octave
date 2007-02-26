@@ -1,3 +1,14 @@
+2007-02-26  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (DISTDIRS): Eliminate variable.
+
+2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
+
+	* octMakefile.in, dlfcn/Makefile.in, emacs/Makefile.in:
+	Use $(LN_S) instead of ln or ln -s.
+
+	* octMakefile.in (dist): Use -9 instead of --best with gzip/bzip2.
+
 2007-02-21  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Also warn about missing functionality for

@@ -1,3 +1,22 @@
+2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
+
+	* Makefile.in, audio/Makefile.in, control/Makefile.in,
+	control/base/Makefile.in, control/hinf/Makefile.in,
+	control/obsolete/Makefile.in, control/system/Makefile.in,
+	control/util/Makefile.in, deprecated/Makefile.in,
+	elfun/Makefile.in, finance/Makefile.in, general/Makefile.in,
+	image/Makefile.in, io/Makefile.in, linear-algebra/Makefile.in,
+	miscellaneous/Makefile.in, optimization/Makefile.in,
+	path/Makefile.in, pkg/Makefile.in, plot/Makefile.in,
+	polynomial/Makefile.in, quaternion/Makefile.in, set/Makefile.in,
+	signal/Makefile.in, sparse/Makefile.in, specfun/Makefile.in,
+	special-matrix/Makefile.in, startup/Makefile.in,
+	statistics/Makefile.in, statistics/base/Makefile.in,
+	statistics/distributions/Makefile.in,
+	statistics/models/Makefile.in, statistics/tests/Makefile.in,
+	strings/Makefile.in, testfun/Makefile.in, time/Makefile.in:
+	Use $(LN_S) instead of ln or ln -s.
+
 2007-02-24  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (configure_make): Ignore blank lines and trailing

@@ -167,7 +167,7 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/plot
+	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/scripts/plot
 .PHONY: dist
 
 $(GEN_M) : %.m : %.in __uiobject_globals__.m

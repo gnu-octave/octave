@@ -102,5 +102,5 @@ maintainer-clean::
 .PHONY: maintainer-clean
 
 dist:
-	ln $(EXTERNAL_DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)
+	$(LN_S) $(EXTERNAL_DISTFILES) ../../`cat ../../.fname`/libcruft/$(THISDIR)
 .PHONY: dist

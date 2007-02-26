@@ -65,5 +65,5 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/optimization
+	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/scripts/optimization
 .PHONY: dist

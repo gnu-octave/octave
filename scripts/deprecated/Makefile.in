@@ -81,5 +81,5 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/deprecated
+	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/scripts/deprecated
 .PHONY: dist

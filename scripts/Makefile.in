@@ -85,6 +85,6 @@ maintainer-clean::
 	rm -f tags TAGS configure
 
 dist:
-	ln $(DISTFILES) ../`cat ../.fname`/scripts
+	$(LN_S) $(DISTFILES) ../`cat ../.fname`/scripts
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

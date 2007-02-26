@@ -331,8 +331,8 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist: stamp-prereq
-	ln $(DISTFILES) ../`cat ../.fname`/liboctave
-	for dir in $(DISTDIRS); do ln -s ../../liboctave/$$dir ../`cat ../.fname`/liboctave; done
+	$(LN_S) $(DISTFILES) ../`cat ../.fname`/liboctave
+	for dir in $(DISTDIRS); do $(LN_S) ../../liboctave/$$dir ../`cat ../.fname`/liboctave; done
 .PHONY: dist
 
 $(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl

@@ -27,13 +27,11 @@ CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in \
 DISTFILES = $(CONF_DISTFILES) \
 	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS \
 	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
+	README.Cygwin README.MSVC \
 	README.MachTen README.kpathsea ROADMAP SENDING-PATCHES \
 	THANKS move-if-change octave-sh octave-bug.in \
 	octave-config.in mk-opts.pl mkinstalldirs \
 	mkoctfile.in run-octave.in gdbinit.in ChangeLog ChangeLog.[0-9]
-
-# Complete directory trees to distribute.
-DISTDIRS = # plplot
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @DLFCN_DIR@ libcruft liboctave src scripts doc examples
@@ -45,8 +43,7 @@ INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS_1 = $(sort $(SUBDIRS) dlfcn test emacs)
-DISTSUBDIRS = $(filter-out $(DISTDIRS), $(DISTSUBDIRS_1))
+DISTSUBDIRS = $(sort $(SUBDIRS) dlfcn test emacs)
 
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS)
@@ -166,8 +163,7 @@ dist: all
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
-	ln $(DISTFILES) `cat .fname`
-	for dir in $(DISTDIRS); do ln -s ../$$dir `cat .fname`; done
+	$(LN_S) $(DISTFILES) `cat .fname`
 	for dir in $(DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir dist; \
@@ -186,8 +182,8 @@ dist: all
 	chmod -R a+rwX `cat .fname`
 	tar cf `cat .fname`.tar `cat .fname`
 	rm -rf `cat .fname`
-	gzip --best --stdout `cat .fname`.tar > `cat .fname`.tar.gz
-	bzip2 --best --stdout `cat .fname`.tar > `cat .fname`.tar.bz2
+	gzip -9 --stdout `cat .fname`.tar > `cat .fname`.tar.gz
+	bzip2 -9 --stdout `cat .fname`.tar > `cat .fname`.tar.bz2
 	date -u > md5sum
 	md5sum `cat .fname`.tar.gz `cat .fname`.tar.bz2 >> md5sum
 	touch `cat .fname`.tar.gz `cat .fname`.tar.bz2 md5sum
@@ -219,7 +215,7 @@ conf-dist:
 	echo config-dist-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
-	ln $(CONF_DISTFILES) `cat .fname`
+	$(LN_S) $(CONF_DISTFILES) `cat .fname`
 	for dir in $(CONF_DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir conf-dist; \

@@ -23,8 +23,8 @@ Boston, MA 02110-1301, USA.
 #if !defined (octave_sparse_util_h)
 #define octave_sparse_util_h 1
 
-extern void SparseCholError (int status, char *file, int line, char *message);
-extern int SparseCholPrint (const char *fmt, ...);
+extern OCTAVE_API void SparseCholError (int status, char *file, int line, char *message);
+extern OCTAVE_API int SparseCholPrint (const char *fmt, ...);
 
 #endif
 

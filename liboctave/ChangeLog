@@ -2,6 +2,9 @@
 
 	* Makefile.in: Use $(LN_S) instead of ln or ln -s.
 
+	* sparse-util.h (SparseCholPrint, SparseCholError):
+	Tag with OCTAVE_API.
+
 2007-02-18  David Bateman  <dbateman@free.fr>
 
 	* oct-rand.cc (do_old_initialization()): call setcgn(1) prior to

@@ -127,15 +127,15 @@
 function [local_packages, global_packages] = pkg(varargin)
     ## Installation prefix (XXX: what should these be on windows?)
     persistent prefix = -1;
-    persistent local_list = tilde_expand("~/.octave_packages");
-    persistent global_list = fullfile (OCTAVE_HOME (), "/share/octave/octave_packages");
+    persistent local_list = tilde_expand(fullfile("~", ".octave_packages"));
+    persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave", "octave_packages");
     mlock;
 
     if (prefix == -1)
         if (issuperuser())
-            prefix = fullfile (OCTAVE_HOME (), "/share/octave/packages");
+            prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
         else
-            prefix = "~/octave";
+            prefix = fullfile ("~", "octave");
         endif
     endif
     prefix = tilde_expand(prefix);
@@ -203,7 +203,7 @@ function [local_packages, global_packages] = pkg(varargin)
                 local_packages = prefix;
             elseif (length(files) == 1 && nargout == 0 && ischar(files{1}))
                 prefix = files{1};
-                #if (!strcmp(prefix(end), "/")) prefix(end+1) = "/"; endif
+                #if (!strcmp(prefix(end), filesep)) prefix(end+1) = filesep; endif
             else
                 error("You must specify a prefix directory, or request an output argument");
             endif
@@ -605,7 +605,7 @@ endfunction
 
 function prepare_installation(desc, packdir)
     ## Is there a pre_install to call?
-    if (exist([packdir "pre_install.m"], "file"))
+    if (exist(fullfile(packdir, "pre_install.m"), "file"))
         wd = pwd();
         try
             cd(packdir);
@@ -618,8 +618,9 @@ function prepare_installation(desc, packdir)
     endif
 
     ## If the directory "inst" doesn't exist, we create it
-    if (!exist([packdir "inst"], "dir"))
-        [status, msg] = mkdir([packdir "inst"]);
+    inst_dir = fullfile(packdir, "inst");
+    if (!exist(inst_dir, "dir"))
+        [status, msg] = mkdir(inst_dir);
         if (status != 1)
             rm_rf(desc.dir);
             error("The 'inst' directory did not exist and could not be created: %s", msg);

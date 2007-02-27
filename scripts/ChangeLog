@@ -1,3 +1,7 @@
+2007-02-27  From Michael Goffioul  <michael.goffioul@swing.be>
+
+	* pkg/pkg.m: Use fullfile to create filenames from parts.
+
 2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in, audio/Makefile.in, control/Makefile.in,

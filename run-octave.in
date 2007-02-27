@@ -30,14 +30,13 @@ d4_path=$(echo "$d4_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 
-args="--path=$LOADPATH --image-path=$IMAGEPATH"
-qargs="--path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\""
+args="--no-initial-path --path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\""
 
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb"
     if [ $(/bin/pwd) = "$builddir" ]; then
-      sed "s|^set args.*$|set args $qargs|" .gdbinit > .gdbinit-tmp
+      sed "s|^set args.*$|set args $args|" .gdbinit > .gdbinit-tmp
       mv .gdbinit-tmp .gdbinit
     fi
     args=""
@@ -55,7 +54,7 @@ if [ -n "$args" ]; then
   OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
   LD_PRELOAD="$liboctinterp $liboctave $libcruft" \
   %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
-    exec $driver "$builddir/src/octave" "$args" "$@"
+    exec $driver "$builddir/src/octave" --no-initial-path --path="$LOADPATH" --image-path="$IMAGEPATH" "$@"
 else
   OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
   LD_PRELOAD="$liboctinterp $liboctave $libcruft" \

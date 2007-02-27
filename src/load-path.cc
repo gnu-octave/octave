@@ -352,18 +352,21 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
 }
 
 void
-load_path::do_initialize (void)
+load_path::do_initialize (bool set_initial_path)
 {
   Vsystem_path = dir_path::path_sep_str;
 
-  maybe_add_path_elts (Vsystem_path, Vlocal_ver_oct_file_dir);
-  maybe_add_path_elts (Vsystem_path, Vlocal_api_oct_file_dir);
-  maybe_add_path_elts (Vsystem_path, Vlocal_oct_file_dir);
-  maybe_add_path_elts (Vsystem_path, Vlocal_ver_fcn_file_dir);
-  maybe_add_path_elts (Vsystem_path, Vlocal_api_fcn_file_dir);
-  maybe_add_path_elts (Vsystem_path, Vlocal_fcn_file_dir);
-  maybe_add_path_elts (Vsystem_path, Voct_file_dir);
-  maybe_add_path_elts (Vsystem_path, Vfcn_file_dir);
+  if (set_initial_path)
+    {
+      maybe_add_path_elts (Vsystem_path, Vlocal_ver_oct_file_dir);
+      maybe_add_path_elts (Vsystem_path, Vlocal_api_oct_file_dir);
+      maybe_add_path_elts (Vsystem_path, Vlocal_oct_file_dir);
+      maybe_add_path_elts (Vsystem_path, Vlocal_ver_fcn_file_dir);
+      maybe_add_path_elts (Vsystem_path, Vlocal_api_fcn_file_dir);
+      maybe_add_path_elts (Vsystem_path, Vlocal_fcn_file_dir);
+      maybe_add_path_elts (Vsystem_path, Voct_file_dir);
+      maybe_add_path_elts (Vsystem_path, Vfcn_file_dir);
+    }
 
   std::string tpath = load_path::command_line_path;
 

@@ -106,6 +106,10 @@ static bool read_init_files = true;
 // (--norc; --no-site-file; -f)
 static bool read_site_files = true;
 
+// TRUE means we set the initial path to configured defaults.
+// (--no-initial-path)
+static bool set_initial_path = true;
+
 // TRUE means we don't print the usual startup message.
 // (--quiet; --silent; -q)
 static bool inhibit_startup_message = false;
@@ -123,8 +127,8 @@ static const char *usage_string =
   "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
        [--info-program prog] [--interactive] [--no-history] [--no-init-file]\n\
-       [--no-line-editing] [--no-site-file] [-p path] [--path path]\n\
-       [--silent] [--traditional] [--verbose] [--version] [file]";
+       [--no-line-editing] [--no-site-file] [--no-init-path] [-p path]\n\
+       [--path path] [--silent] [--traditional] [--verbose] [--version] [file]";
 
 // This is here so that it's more likely that the usage message and
 // the real set of options will agree.  Note: the `+' must come first
@@ -147,8 +151,9 @@ static bool persist = false;
 #define NO_INIT_FILE_OPTION 6
 #define NO_LINE_EDITING_OPTION 7
 #define NO_SITE_FILE_OPTION 8
-#define PERSIST_OPTION 9
-#define TRADITIONAL_OPTION 10
+#define NO_INITIAL_PATH_OPTION 9
+#define PERSIST_OPTION 10
+#define TRADITIONAL_OPTION 11
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
@@ -165,6 +170,7 @@ long_options long_opts[] =
     { "no-init-file",     prog_args::no_arg,       0, NO_INIT_FILE_OPTION },
     { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
     { "no-site-file",     prog_args::no_arg,       0, NO_SITE_FILE_OPTION },
+    { "no-initial-path",  prog_args::no_arg,       0, NO_INITIAL_PATH_OPTION },
     { "norc",             prog_args::no_arg,       0, 'f' },
     { "path",             prog_args::required_arg, 0, 'p' },
     { "persist",          prog_args::no_arg,       0, PERSIST_OPTION },
@@ -646,6 +652,10 @@ octave_main (int argc, char **argv, int embedded)
 	  read_site_files = 0;
 	  break;
 
+	case NO_INITIAL_PATH_OPTION:
+	  set_initial_path = false;
+	  break;
+
 	case TRADITIONAL_OPTION:
 	  traditional = true;
 	  break;
@@ -683,7 +693,7 @@ octave_main (int argc, char **argv, int embedded)
 
   initialize_version_info ();
 
-  load_path::initialize ();
+  load_path::initialize (set_initial_path);
 
   execute_startup_files ();
 

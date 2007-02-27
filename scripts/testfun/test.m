@@ -154,8 +154,12 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
     __file = file_in_loadpath ([__name, ".cc"], "all");
   endif
   if (iscell (__file))
-    ## If repeats, return first in path.
-    __file = __file{1};
+      ## If repeats, return first in path.
+    if (isempty (__file))
+      __file = "";
+    else
+      __file = __file{1};
+    endif
   endif
   if (isempty (__file))
     if (__grabdemo)

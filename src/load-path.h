@@ -46,10 +46,10 @@ public:
 
   ~load_path (void) { }
 
-  static void initialize (void)
+  static void initialize (bool set_initial_path = false)
   {
     if (instance_ok ())
-      instance->do_initialize ();
+      instance->do_initialize (set_initial_path);
   }
 
   static void clear (void)
@@ -295,7 +295,7 @@ private:
 
   void move (std::list<dir_info>::iterator i, bool at_end);
 
-  void do_initialize (void);
+  void do_initialize (bool set_initial_path);
 
   void do_clear (void);
 

@@ -1,3 +1,19 @@
+2007-02-27  John W. Eaton  <jwe@octave.org>
+
+	* load-path.h, (load_path::initialize, load_path::do_initialize):
+	New arg, set_initial_path.
+	* load-path.cc (load_path::do_initialize): Don't add system
+	directories to apth if set_initial_path is false.
+	* octave.cc (set_initial_path): New static variable.
+	(NO_INITIAL_PATH_OPTION): New define.
+	(usage_string): Include --no-initial-path in message.
+	(long_opts): Include no-initial-path/NO_INITIAL_PATH_OPTION here.
+	(octave_main): Handle NO_INITIAL_PATH_OPTION.
+	Pass set_initial_path to load_path::initialize.
+
+	* parse.y (Fautoload): Warn about duplicate entries.  Only insert
+	the first found.
+
 2007-02-27  David Bateman  <dbateman@free.fr>
 
 	* error.cc (Vlast_error_file, Vlast_erro_name, Vlast_error_row,

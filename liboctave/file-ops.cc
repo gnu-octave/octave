@@ -377,7 +377,10 @@ file_ops::recursive_rmdir (const std::string& name, std::string& msg)
 	}
 
       if (status >= 0)
-	status = file_ops::rmdir (name, msg);
+	{
+	  dir.close ();
+	  status = file_ops::rmdir (name, msg);
+	}
     }
   else
     {

@@ -93,12 +93,6 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 
   nopts = nargin - 2;
 
-  if (nargin < 2)
-    {
-      print_usage ();
-      return 0;
-    }
-
   std::string buffer = args(0).string_value ();
   if (error_state)
     {
@@ -581,6 +575,144 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
   return retval;
 }
 
+static octave_value_list
+octcellregexp (const octave_value_list &args, int nargout, const std::string &nm,
+	       bool case_insensitive)
+{
+  octave_value_list retval;
+
+  if (args(0).is_cell())
+    {
+      OCTAVE_LOCAL_BUFFER (Cell, newretval, nargout);
+      octave_value_list new_args = args;
+      Cell cellstr = args(0).cell_value();
+      if (args(1).is_cell())
+	{
+	  Cell cellpat = args(1).cell_value();
+
+	  if (cellpat.numel() == 1)
+	    {
+	      for (int j = 0; j < nargout; j++)
+		newretval[j].resize(cellstr.dims());
+
+	      new_args(1) = cellpat(0);
+
+	      for (octave_idx_type i = 0; i < cellstr.numel (); i++)
+		{
+		  new_args(0) = cellstr(i);
+		  octave_value_list tmp = octregexp (new_args, nargout, nm, 
+						     case_insensitive);
+
+		  if (error_state)
+		    break;
+
+		  for (int j = 0; j < nargout; j++)
+		    newretval[j](i) = tmp(j);
+		}
+	    }
+	  else if (cellstr.numel() == 1)
+	    {
+	      for (int j = 0; j < nargout; j++)
+		newretval[j].resize(cellpat.dims());
+
+	      new_args(0) = cellstr(0);
+
+	      for (octave_idx_type i = 0; i < cellpat.numel (); i++)
+		{
+		  new_args(1) = cellpat(i);
+		  octave_value_list tmp = octregexp (new_args, nargout, nm, 
+						     case_insensitive);
+
+		  if (error_state)
+		    break;
+
+		  for (int j = 0; j < nargout; j++)
+		    newretval[j](i) = tmp(j);
+		}
+	    }
+	  else if (cellstr.numel() == cellpat.numel())
+	    {
+
+	      if (cellstr.dims() != cellpat.dims())
+		error ("%s: Inconsistent cell array dimensions", nm.c_str());
+	      else
+		{
+		  for (int j = 0; j < nargout; j++)
+		    newretval[j].resize(cellstr.dims());
+
+		  for (octave_idx_type i = 0; i < cellstr.numel (); i++)
+		    {
+		      new_args(0) = cellstr(i);
+		      new_args(1) = cellpat(i);
+
+		      octave_value_list tmp = octregexp (new_args, nargout, nm, 
+							 case_insensitive);
+
+		      if (error_state)
+			break;
+
+		      for (int j = 0; j < nargout; j++)
+			newretval[j](i) = tmp(j);
+		    }
+		}
+	    }
+	  else
+	    error ("regexp: cell array arguments must be scalar or equal size");
+	}
+      else
+	{
+	  for (int j = 0; j < nargout; j++)
+	    newretval[j].resize(cellstr.dims());
+
+	  for (octave_idx_type i = 0; i < cellstr.numel (); i++)
+	    {
+	      new_args(0) = cellstr(i);
+	      octave_value_list tmp = octregexp (new_args, nargout, nm, case_insensitive);
+
+	      if (error_state)
+		break;
+
+	      for (int j = 0; j < nargout; j++)
+		newretval[j](i) = tmp(j);
+	    }
+	}
+
+      if (!error_state)
+	for (int j = 0; j < nargout; j++)
+	  retval(j) = octave_value (newretval[j]);
+    }
+  else if (args(1).is_cell())
+    {
+      OCTAVE_LOCAL_BUFFER (Cell, newretval, nargout);
+      octave_value_list new_args = args;
+      Cell cellpat = args(1).cell_value();
+
+      for (int j = 0; j < nargout; j++)
+	newretval[j].resize(cellpat.dims());
+
+      for (octave_idx_type i = 0; i < cellpat.numel (); i++)
+	{
+	  new_args(1) = cellpat(i);
+	  octave_value_list tmp = octregexp (new_args, nargout, nm, case_insensitive);
+
+	  if (error_state)
+	    break;
+
+	  for (int j = 0; j < nargout; j++)
+	    newretval[j](i) = tmp(j);
+	}
+
+      if (!error_state)
+	for (int j = 0; j < nargout; j++)
+	  retval(j) = octave_value (newretval[j]);
+    }
+  else
+    retval = octregexp (args, nargout, nm, case_insensitive);
+
+  return retval;
+
+}
+
 DEFUN_DLD (regexp, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexp (@var{str}, @var{pat})\n\
@@ -713,7 +845,17 @@ The pattern is taken literally.\n\
 @end table\n\
 @end deftypefn")
 {
-  return octregexp (args, nargout, "regexp", false);
+  octave_value_list retval;
+  int nargin = args.length();
+
+  if (nargin < 2)
+    print_usage ();
+  else if (args(0).is_cell() || args(1).is_cell())
+    retval = octcellregexp (args, nargout, "regexp", false);
+  else
+    retval = octregexp (args, nargout, "regexp", false);
+
+  return retval;
 }
 
 /*
@@ -876,6 +1018,11 @@ The pattern is taken literally.\n\
 %!error regexp('string', 'tri', 'BadArg');
 %!error regexp('string');
 
+%!assert(regexp({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},'-'),{6;[1,5,9];zeros(1,0)})
+%!assert(regexp({'asdfg-dfd','-dfd-dfd-','qasfdfdaq'},'-'),{6,[1,5,9],zeros(1,0)})
+%!assert(regexp({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},{'-';'f';'q'}),{6;[3,7];[1,9]})
+%!assert(regexp('Strings',{'t','s'}),{2,7})
+
 */
 
 DEFUN_DLD(regexpi, args, nargout,
@@ -888,7 +1035,17 @@ Case insensitive regular expression string matching. Matches @var{pat} in\n\
 if there are none. See @code{regexp} for more details\n\
 @end deftypefn")
 {
-  return octregexp (args, nargout, "regexp", true);
+  octave_value_list retval;
+  int nargin = args.length();
+
+  if (nargin < 2)
+    print_usage ();
+  else if (args(0).is_cell() || args(1).is_cell())
+    retval = octcellregexp (args, nargout, "regexpi", true);
+  else
+    retval = octregexp (args, nargout, "regexpi", true);
+
+  return retval;
 }
 
 /*
@@ -1035,61 +1192,19 @@ if there are none. See @code{regexp} for more details\n\
 %!error regexpi('string', 'tri', 'BadArg');
 %!error regexpi('string');
 
+%!assert(regexpi({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},'-'),{6;[1,5,9];zeros(1,0)})
+%!assert(regexpi({'asdfg-dfd','-dfd-dfd-','qasfdfdaq'},'-'),{6,[1,5,9],zeros(1,0)})
+%!assert(regexpi({'asdfg-dfd';'-dfd-dfd-';'qasfdfdaq'},{'-';'f';'q'}),{6;[3,7];[1,9]})
+%!assert(regexpi('Strings',{'t','s'}),{2,[1,7]})
+
 */
 
-DEFUN_DLD(regexprep, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Function File}  @var{string} = regexprep(@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
-Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
-\n\
-\n\
-The replacement can contain @code{$i}, which subsubstitutes\n\
-for the ith set of parentheses in the match string.  E.g.,\n\
-@example\n\
-\n\
-   regexprep(\"Bill Dunn\",'(\\w+) (\\w+)','$2, $1')\n\
-\n\
-@end example\n\
-returns \"Dunn, Bill\"\n\
-\n\
-@var{options} may be zero or more of\n\
-@table @samp\n\
-\n\
-@item once\n\
-Replace only the first occurance of @var{pat} in the result.\n\
-\n\
-@item warnings\n\
-This option is present for compatibility but is ignored.\n\
-\n\
-@item ignorecase or matchcase\n\
-Ignore case for the pattern matching (see @code{regexpi}).\n\
-Alternatively, use (?i) or (?-i) in the pattern.\n\
-\n\
-@item lineanchors and stringanchors\n\
-Whether characters ^ and $ match the beginning and ending of lines.\n\
-Alternatively, use (?m) or (?-m) in the pattern.\n\
-\n\
-@item dotexceptnewline and dotall\n\
-Whether . matches newlines in the string.\n\
-Alternatively, use (?s) or (?-s) in the pattern.\n\
-\n\
-@item freespacing or literalspacing\n\
-Whether whitespace and # comments can be used to make the regular expression more readable.\n\
-Alternatively, use (?x) or (?-x) in the pattern.\n\
-\n\
-@end table\n\
-@seealso{regexp,regexpi}\n\
-@end deftypefn")
+
+static octave_value
+octregexprep (const octave_value_list &args, const std::string &nm)
 {
-  octave_value_list retval;
-
+  octave_value retval;
   int nargin = args.length();
-
-  if (nargin < 3)
-    {
-      print_usage ();
-      return retval;
-    }
 
   // Make sure we have string,pattern,replacement
   const std::string buffer = args(0).string_value ();
@@ -1146,14 +1261,13 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
       std::list<regexp_elem> lst;
       string_vector named;
       int nopts;
-      int sz = octregexp_list (regexpargs, "regexprep", false, lst, named, 
-			       nopts);
+      int sz = octregexp_list (regexpargs, nm , false, lst, named, nopts);
 
       if (error_state)
 	return retval;
       if (sz == 0)
 	{
-	  retval(0) = args(0);
+	  retval = args(0);
 	  return retval;
 	}
 
@@ -1233,14 +1347,13 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
       std::list<regexp_elem> lst;
       string_vector named;
       int nopts;
-      int sz = octregexp_list (regexpargs, "regexprep", false, lst, named, 
-			       nopts);
+      int sz = octregexp_list (regexpargs, nm, false, lst, named,nopts);
 
       if (error_state)
 	return retval;
       if (sz == 0)
 	{
-	  retval(0) = args(0);
+	  retval = args(0);
 	  return retval;
 	}
 
@@ -1271,7 +1384,135 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
       rep.append(&buffer[from],buffer.size()-from);
     }
   
-  retval(0) = rep;
+  retval = rep;
+  return retval;
+}
+
+DEFUN_DLD(regexprep, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File}  @var{string} = regexprep(@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
+Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
+\n\
+\n\
+The replacement can contain @code{$i}, which subsubstitutes\n\
+for the ith set of parentheses in the match string.  E.g.,\n\
+@example\n\
+\n\
+   regexprep(\"Bill Dunn\",'(\\w+) (\\w+)','$2, $1')\n\
+\n\
+@end example\n\
+returns \"Dunn, Bill\"\n\
+\n\
+@var{options} may be zero or more of\n\
+@table @samp\n\
+\n\
+@item once\n\
+Replace only the first occurance of @var{pat} in the result.\n\
+\n\
+@item warnings\n\
+This option is present for compatibility but is ignored.\n\
+\n\
+@item ignorecase or matchcase\n\
+Ignore case for the pattern matching (see @code{regexpi}).\n\
+Alternatively, use (?i) or (?-i) in the pattern.\n\
+\n\
+@item lineanchors and stringanchors\n\
+Whether characters ^ and $ match the beginning and ending of lines.\n\
+Alternatively, use (?m) or (?-m) in the pattern.\n\
+\n\
+@item dotexceptnewline and dotall\n\
+Whether . matches newlines in the string.\n\
+Alternatively, use (?s) or (?-s) in the pattern.\n\
+\n\
+@item freespacing or literalspacing\n\
+Whether whitespace and # comments can be used to make the regular expression more readable.\n\
+Alternatively, use (?x) or (?-x) in the pattern.\n\
+\n\
+@end table\n\
+@seealso{regexp,regexpi}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+  int nargin = args.length();
+
+  if (nargin < 3)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  if (args(0).is_cell() || args(1).is_cell() || args(2).is_cell())
+    {
+      Cell str;
+      Cell pat;
+      Cell rep;
+      dim_vector dv(1,1);
+
+      if (args(0).is_cell())
+	str = args(0).cell_value();
+      else
+	str = Cell (args(0));
+
+      if (args(1).is_cell())
+	pat = args(1).cell_value();
+      else
+	pat = Cell (args(1));
+
+      if (args(2).is_cell())
+	rep = args(2).cell_value();
+      else
+	rep = Cell (args(2));
+
+      if (str.numel() != 1)
+	{
+	  dv = str.dims();
+	  if ((pat.numel() != 1 && dv != pat.dims()) ||
+	      (rep.numel() != 1 && dv != rep.dims()))
+	    error ("regexprep: Inconsistent cell array dimensions");
+	}
+      else if (pat.numel() != 1)
+	{
+	  dv = pat.dims();
+	  if ((pat.numel() != 1 && dv != pat.dims()) ||
+	      (rep.numel() != 1 && dv != rep.dims()))
+	    error ("regexprep: Inconsistent cell array dimensions");
+	}
+      else if (rep.numel() != 1)
+	dv = rep.dims();
+
+      if (!error_state)
+	{
+	  Cell ret (dv);
+	  octave_value_list new_args = args;
+
+	  if (str.numel() == 1)
+	    new_args(0) = str(0);
+	  if (pat.numel() == 1)
+	    new_args(1) = pat(0);
+	  if (rep.numel() == 1)
+	    new_args(2) = rep(0);
+
+	  for (octave_idx_type i = 0; i < dv.numel(); i++)
+	    {
+	      if (str.numel() != 1)
+		new_args(0) = str(i);
+	      if (pat.numel() != 1)
+		new_args(1) = pat(i);
+	      if (rep.numel() != 1)
+		new_args(2) = rep(i);
+	      ret(i) = octregexprep (new_args, "regexprep");
+
+	      if (error_state)
+		break;
+	    }
+
+	  if (!error_state)
+	    retval = octave_value (ret);
+	}
+    }
+  else
+    retval = octregexprep (args, "regexprep");
+
   return retval;
 }
 
@@ -1321,6 +1562,11 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
 %!assert(regexprep("abc","(b)","$1"),"abc");
 %!assert(regexprep("abc","(b)","$1."),"ab.c");
 %!assert(regexprep("abc","(b)","$1.."),"ab..c");
+
+## Test cell array arguments
+%!assert(regexprep("abc",{"b","a"},"?"),{"a?c","?bc"})
+%!assert(regexprep({"abc","cba"},"b","?"),{"a?c","c?a"})
+%!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"a?c","cb!"})
 
 */
 

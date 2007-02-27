@@ -85,6 +85,18 @@ static std::string Vlast_warning_id;
 // The last error message id.
 static std::string Vlast_error_id;
 
+// The last file in which an error occured
+static std::string Vlast_error_file;
+
+// The last function in which an error occured
+static std::string Vlast_error_name;
+
+// The last line in a function at which an error occured
+static int Vlast_error_line = -1;
+
+// The last column in a function at which an error occured
+static int Vlast_error_column = -1;
+
 // Current error state.
 //
 // Valid values:
@@ -214,6 +226,25 @@ verror (bool save_last_error, std::ostream& os,
 
       Vlast_error_id = id;
       Vlast_error_message = msg_string;
+
+      Vlast_error_line = -1;
+      Vlast_error_column = -1;
+      Vlast_error_name = std::string ();
+      Vlast_error_file = std::string ();
+
+      if (curr_statement)
+	{
+	  octave_function *fcn
+	    = octave_call_stack::caller_user_script_or_function ();
+
+	  if (fcn)
+	    {
+	      Vlast_error_file = fcn->fcn_file_name ();
+	      Vlast_error_name = fcn->name();
+	      Vlast_error_line = curr_statement->line ();
+	      Vlast_error_column = curr_statement->column ();
+	    }
+	}
     }
 
   if (buffer_error_messages)
@@ -692,6 +723,15 @@ parse_error_with_id (const char *id, const char *fmt, ...)
 }
 
 void
+rethrow_error (const char *id, const char *fmt, ...)
+{
+  va_list args;
+  va_start (args, fmt);
+  error_1 (std::cerr, "error", id, fmt, args);
+  va_end (args);
+}
+
+void
 panic (const char *fmt, ...)
 {
   va_list args;
@@ -779,6 +819,125 @@ handle_message (error_fun f, const char *id, const char *msg,
       retval = msg;
     }
 
+  return retval;
+}
+
+DEFUN (rethrow, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} rethrow (@var{err})\n\
+Reissues a previous error as defined by @var{err}. @var{err} is a structure\n\
+that must contain at least the 'message' and 'identifier' fields. @var{err}\n\
+can also contain a field 'stack' that gives information on the assumed\n\
+location of the error. Typically @var{err} is returned from\n\
+@code{lasterror}.\n\
+@seealso{lasterror, lasterr, error}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length();
+
+  if (nargin != 1)
+    print_usage();
+  else
+    {
+      Octave_map err = args(0).map_value();
+
+      if (!error_state)
+	{
+	  if (err.contains("message") && err.contains("identifier"))
+	    {
+	      std::string msg = err.contents("message")(0).string_value();
+	      std::string id = err.contents("identifier")(0).string_value();
+	      int len = msg.length();
+	      std::string file;
+	      std::string nm;
+	      int l = -1;
+	      int c = -1;
+
+	      if (err.contains("stack"))
+		{
+		  Octave_map err_stack = err.contents("stack")(0).map_value();
+
+		  if (err_stack.contains("file"))
+		    file = err_stack.contents("file")(0).string_value();
+		  if (err_stack.contains("name"))
+		    nm = err_stack.contents("name")(0).string_value();
+		  if (err_stack.contains("line"))
+		    l = err_stack.contents("line")(0).nint_value();
+		  if (err_stack.contains("column"))
+		    c = err_stack.contents("column")(0).nint_value();
+		}
+
+	      // Ugh.
+	      char *tmp_msg = strsave (msg.c_str());
+	      if (tmp_msg[len-1] == '\n')
+		{
+		  if (len > 1)
+		    {
+		      tmp_msg[len - 1] = '\0';
+		      rethrow_error (id.c_str(), "%s\n", tmp_msg);
+		    }
+		}
+	      else
+		rethrow_error (id.c_str(), "%s", tmp_msg);
+	      delete [] tmp_msg;
+
+	      // FIXME: Need to restore the stack as rethrow_error sets it?
+	      Vlast_error_file = file;
+	      Vlast_error_name = nm;
+	      Vlast_error_line = l;
+	      Vlast_error_column = c;
+
+	      if (err.contains("stack"))
+		{
+		  if (file.empty ())
+		    {
+		      if (nm.empty ())
+			{
+			  if (l > 0)
+			    if (c > 0)
+			      pr_where_1 ("error: near line %d, column %d", 
+					  l, c);
+			    else
+			      pr_where_1 ("error: near line %d", l );
+			}
+		      else
+			{
+			  if (l > 0)
+			    if (c > 0)
+			      pr_where_1 ("error: called from `%s' near line %d, column %d", 
+					  nm.c_str(), l, c);
+			    else
+			      pr_where_1 ("error: called from `%d' near line %d", nm.c_str(), l );
+			}
+		    }
+		  else
+		    {
+		      if (nm.empty ())
+			{
+			  if (l > 0)
+			    if (c > 0)
+			      pr_where_1 ("error: in file %s near line %d, column %d", 
+					  file.c_str(), l, c);
+			    else
+			      pr_where_1 ("error: in file %s near line %d", file.c_str(), l );
+			}
+		      else
+			{
+			  if (l > 0)
+			    if (c > 0)
+			      pr_where_1 ("error: called from `%s' in file %s near line %d, column %d", 
+					  nm.c_str(), file.c_str(), l, c);
+			    else
+			      pr_where_1 ("error: called from `%d' in file %s near line %d", nm.c_str(), file.c_str(), l );
+			}
+		    }
+		}
+	    }
+	  else
+	    error ("rethrow: structure must contain the fields 'message and 'identifier'");
+	}
+    }
   return retval;
 }
 
@@ -1169,6 +1328,176 @@ initialize_default_warning_state (void)
   disable_warning ("Octave:str-to-num");
   disable_warning ("Octave:string-concat");
   disable_warning ("Octave:variable-switch-label");
+}
+
+DEFUN (lasterror, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{err} =} lasterror (@var{err})\n\
+@deftypefnx {Built-in Function} {} lasterror ('reset')\n\
+Returns or sets the last error message. Called without any arguments\n\
+returns a structure containing the last error message, as well as other\n\
+information related to this error. The elements of this structure are:\n\
+\n\
+@table @asis\n\
+@item 'message'\n\
+The text of the last error message\n\
+@item 'identifier'\n\
+The message identifier of this error message\n\
+@item 'stack'\n\
+A structure containing information on where the message occured. This might\n\
+be an empty structure if this in the case where this information can not\n\
+be obtained. The fields of this structure are:\n\
+\n\
+@table @asis\n\
+@item 'file'\n\
+The name of the file where the error occurred\n\
+@item 'name'\n\
+The name of function in which the error occured\n\
+@item 'line'\n\
+The line number at which the error occured\n\
+@item 'column'\n\
+An optional field with the column number at which the error occurred\n\
+@end table\n\
+@end table\n\
+\n\
+The @var{err} structure may also be passed to @code{lasterror} to set the\n\
+information about the last error. The only constraint on @var{err} in that\n\
+case is that it is a scalar structure. Any fields of @var{err} that match\n\
+the above are set to the value passed in @var{err}, while other fields are\n\
+set to their default values.\n\
+\n\
+If @code{lasterror} is called with the argument 'reset', all values take\n\
+their default values.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length();
+
+  if (nargin < 2)
+    {
+      Octave_map err;
+
+      err.assign ("message", Vlast_error_message);
+      err.assign ("identifier", Vlast_error_id);
+
+      if (! (Vlast_error_file.empty() && Vlast_error_name.empty() &&
+	     Vlast_error_line < 0 && Vlast_error_column < 0))
+	{
+	  Octave_map err_stack;
+
+	  err_stack.assign ("file", Vlast_error_file);
+	  err_stack.assign ("name", Vlast_error_name);
+	  err_stack.assign ("line", Vlast_error_line);
+	  err_stack.assign ("column", Vlast_error_column);
+
+	  err.assign ("stack", octave_value (err_stack));
+	}
+      else
+	{
+	  string_vector sv(4);
+	  sv[0] = "file"; 
+	  sv[1] = "name";
+	  sv[2] = "line";
+	  sv[3] = "column";
+	  err.assign ("stack", octave_value (Octave_map (dim_vector (0,1), 
+							 sv)));
+	}
+
+      if (nargin == 1)
+	{
+	  if (args(0).is_string())
+	    {
+	      if (args(0).string_value() == "reset")
+		{
+		  Vlast_error_message = std::string();
+		  Vlast_error_id = std::string();
+		  Vlast_error_file = std::string();
+		  Vlast_error_name = std::string();
+		  Vlast_error_line = -1;
+		  Vlast_error_column = -1;
+		}
+	      else
+		error("lasterror: unrecognized string argument");
+	    }
+	  else if (args(0).is_map ())
+	    {
+	      Octave_map new_err = args(0).map_value();
+	      std::string new_error_message;
+	      std::string new_error_id;
+	      std::string new_error_file;
+	      std::string new_error_name;
+	      int new_error_line = -1;
+	      int new_error_column = -1;
+
+	      if (!error_state && new_err.contains("message"))
+		{
+		  const std::string tmp = 
+		    new_err.contents("message")(0).string_value();
+		  new_error_message = tmp;
+		}
+
+	      if (!error_state && new_err.contains("identifier"))
+		{
+		  const std::string tmp = 
+		    new_err.contents("identifier")(0).string_value();
+		  new_error_id = tmp;
+		}
+
+	      if (!error_state && new_err.contains("stack"))
+		{
+		  Octave_map new_err_stack = 
+		    new_err.contents("identifier")(0).map_value();
+
+		  if (!error_state && new_err_stack.contains("file"))
+		    {
+		      const std::string tmp = 
+			new_err_stack.contents("file")(0).string_value();
+		      new_error_file = tmp;
+		    }
+
+		  if (!error_state && new_err_stack.contains("name"))
+		    {
+		      const std::string tmp = 
+			new_err_stack.contents("name")(0).string_value();
+		      new_error_name = tmp;
+		    }
+
+		  if (!error_state && new_err_stack.contains("line"))
+		    {
+		      const int tmp = 
+			new_err_stack.contents("line")(0).nint_value();
+		      new_error_line = tmp;
+		    }
+		  
+		  if (!error_state && new_err_stack.contains("column"))
+		    {
+		      const int tmp = 
+			new_err_stack.contents("column")(0).nint_value();
+		      new_error_column = tmp;
+		    }
+		}
+
+	      if (! error_state)
+		{
+		  Vlast_error_message = new_error_message;
+		  Vlast_error_id = new_error_id;
+		  Vlast_error_file = new_error_file;
+		  Vlast_error_name = new_error_name;
+		  Vlast_error_line = new_error_line;
+		  Vlast_error_column = new_error_column;
+		}
+	    }
+	  else
+	    error ("lasterror: argument must be a structure or a string");
+	}
+
+      if (!error_state)
+	retval = err;
+    }
+  else
+    print_usage ();
+
+  return retval;  
 }
 
 DEFUN (lasterr, args, nargout,

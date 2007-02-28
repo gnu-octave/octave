@@ -1,3 +1,8 @@
+2007-02-28  John W. Eaton  <jwe@octave.org>
+
+	* plot/__uiobject_draw_axes__.m: If looking at image data, Don't
+	increment data_idx unless using gnuplot for display.
+
 2007-02-28  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* plot/__uiobject_draw_axes__.m: Improve calculation of limits for

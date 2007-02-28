@@ -249,7 +249,6 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	  if (nd == 0)
 	    nd = 2;
 	  endif
-	  data_idx++;
 
 	  img_data = obj.cdata;
 	  img_colormap = parent_figure_obj.colormap;
@@ -257,6 +256,8 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	  img_ydata = obj.ydata;
 
 	  if (use_gnuplot_for_images)
+
+	    data_idx++;
 
 	    [y_dim, x_dim] = size (img_data(:,:,1));
 	    if (x_dim > 1)

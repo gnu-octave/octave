@@ -221,6 +221,8 @@ interactive_input (const std::string& s, bool debug = false,
     {
       feval ("drawnow");
 
+      flush_octave_stdout ();
+
       // We set Vdrawnow_requested to false even if there is an error
       // in drawnow so that the error doesn't reappear at every prompt.
 

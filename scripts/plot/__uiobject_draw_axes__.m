@@ -272,6 +272,22 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	    x_origin = min (img_xdata);
 	    y_origin = min (img_ydata);
 
+	    if (nd == 2)
+	      if (xautoscale)
+		xmin = min (xmin, min (img_xdata) - dx/2);
+		xmax = max (xmax, max (img_xdata) + dx/2);
+		xminp = min (xminp, min (img_xdata((img_xdata - dx/2)>0)) - dx/2);
+	      endif
+	      if (yautoscale)
+		ymin = min (ymin, min (img_ydata) - dy/2);
+		ymax = max (ymax, max (img_ydata) + dy/2);
+		yminp = min (yminp, min (img_ydata((img_ydata - dy/2)>0)) - dy/2);
+	      endif
+	    else
+	      ## Can have images in 3D, but the image routines don't seem
+	      ## to have a means of arbitrary projection.
+	    endif
+
 	    ## Let the file be deleted when Octave exits or `purge_tmp_files'
 	    ## is called.
 	    [img_fid, img_fname] = mkstemp (fullfile (P_tmpdir, "gpimageXXXXXX"), 1);

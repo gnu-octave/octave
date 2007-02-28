@@ -41,18 +41,26 @@
 
 function image (x, y, img)
 
-  newplot ();
+  ## Deprecated zoom.  Remove this hunk of code if old zoom argument
+  ## is outmoded.
+  if ((nargin == 2 && isscalar (y)) || nargin == 4)
+    warning ("image: zoom argument ignored -- use GUI features");
+  endif
+  if (nargin == 4)
+    nargin = 3;
+  endif
+  if (nargin == 2 && isscalar (y))
+    nargin = 1;
+  endif
 
   if (nargin == 0)
     ## Load Bobbie Jo Richardson (Born 3/16/94)
     img = loadimage ("default.img");
     x = y = [];
-  elseif (nargin == 1 || nargin == 2)
-    ## FIXME -- should we handle the old zoom argument?  How?  What
-    ## figure property should we be setting?
+  elseif (nargin == 1)
     img = x;
     x = y = [];
-  elseif (nargin > 3)
+  elseif (nargin == 2 || nargin > 3)
     print_usage ();
   endif
 

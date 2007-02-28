@@ -20,20 +20,18 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} imagesc (@var{A})
 ## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{A})
-## @deftypefnx {Function File} {} imagesc (@dots{}, @var{zoom})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{limits})
 ## @deftypefnx {Function File} { @var{B} = } imagesc (@dots{})
 ## Display a scaled version of the matrix @var{A} as a color image.  The
 ## matrix is scaled so that its entries are indices into the current
-## colormap.  The scaled matrix is returned.  If @var{zoom} is omitted, a
-## comfortable size is chosen.  If @var{limits} = [@var{lo}, @var{hi}] are
+## colormap.  The scaled matrix is returned.  If @var{limits} = [@var{lo}, @var{hi}] are
 ## given, then that range maps into the full range of the colormap rather 
 ## than the minimum and maximum values of @var{A}.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}, either as pairs giving the minimum and maximum
 ## values for the respective axes, or as values for each row and column
-## of the matrix @var{A}.  At present they are ignored.
+## of the matrix @var{A}.
 ## @seealso{image, imshow}
 ## @end deftypefn
 
@@ -41,32 +39,46 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function ret = imagesc (x, y, A, zoom, limits)
+function ret = imagesc (x, y, A, limits, DEPRECATEDZOOM)
 
-  if (nargin < 1 || nargin > 5)
+  ## Deprecated zoom.  Remove this hunk of code if old zoom argument
+  ## is outmoded.
+  if ((nargin == 2 && isscalar (y))
+      || (nargin == 3 && (isscalar (y) || isscalar (A)))
+      || (nargin == 4 && isscalar (limits))
+      || nargin == 5)
+    warning ("image: zoom argument ignored -- use GUI features");
+  endif
+  if (nargin == 5)
+    if (isscalar (limits))
+      limits = DEPRECATEDZOOM;
+    endif
+    nargin = 4;
+  endif
+  if (nargin == 4 && isscalar (limits))
+    nargin = 3;
+  endif
+  if (nargin == 3 && (isscalar (y) || isscalar (A)))
+    if (isscalar (y))
+      y = A;
+    endif
+    nargin = 2;
+  endif
+  if (nargin == 2 && isscalar (y))
+    nargin = 1;
+  endif
+
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   elseif (nargin == 1)
     A = x;
-    zoom = x = y = limits = [];
+    x = y = limits = [];
   elseif (nargin == 2)
     A = x;
-    zoom = y;
-    x = y = limits = [];
-  elseif (nargin == 3)
-    ## Assume imagesc(x,y,A) for compatibility.  It
-    ## could also be imagesc(A,limits,zoom), but if A is
-    ## a 1x2 vector, this is equivalent to imagesc(x,y,A)
-    ## for scalar A so we won't try to guess.
-    zoom = limits = [];
-  elseif (nargin == 4)
+    limits = y;
+    x = y = [];
+  elseif (nargin == 3 && !isscalar (x) && !isscalar (y) && !isscalar (A))
     limits = [];
-  endif
-
-  ## correct for zoom, limits parameter order
-  if (length (zoom) == 2)
-     swap = limits;
-     limits = zoom;
-     zoom = swap;
   endif
 
   ## use given limits or guess them from the matrix
@@ -92,7 +104,7 @@ function ret = imagesc (x, y, A, zoom, limits)
 
   ## display or return the image
   if (nargout == 0)
-    image (x, y, B, zoom);
+    image (x, y, B);
   else
     ret = B;
   endif

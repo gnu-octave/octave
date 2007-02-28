@@ -1,3 +1,10 @@
+2007-02-28  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* plot/__uiobject_draw_axes__.m: Improve calculation of limits for
+	plots with images.
+	* image/image.m, image/imagesc.m, image/imshow.m:
+	Deprecate zoom argument.
+
 2007-02-28  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_draw_axes__.m: Use fullfile to generate

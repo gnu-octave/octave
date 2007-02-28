@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} imshow (@var{R}, @var{G}, @var{B}, @dots{})
 ## @deftypefnx {Function File} {} imshow (@var{filename})
 ## @deftypefnx {Function File} {} imshow (@dots{}, @var{string_param1}, @var{value1}, @dots{})
-## Display the image @var{im}, where @var{im} can a 2-dimensional
+## Display the image @var{im}, where @var{im} can be a 2-dimensional
 ## (gray-scale image) or a 3-dimensional (RGB image) matrix. If three matrices
 ## of the same size are given as arguments, they will be concatenated into
 ## a 3-dimensional (RGB image) matrix.
@@ -44,12 +44,8 @@
 ## If given, the parameter @var{string_param1} has value
 ## @var{value1}. @var{string_param1} can be any of the following:
 ## @table @samp
-## @item "display_range"
+## @item "displayrange"
 ## @var{value1} is the display range as described above.
-##
-## @item "InitialMagnification"
-## @var{value1} sets the zoom level in percent. 
-## If @var{value1} is 100 the image is showed unscaled.
 ## @end table
 ## @seealso{image, imagesc, colormap, gray2ind, rgb2ind}
 ## @end deftypefn
@@ -110,14 +106,14 @@ function imshow (im, varargin)
     elseif (ismatrix (arg) && size (arg, 2) == 3)
       color_map = arg;
       isindexed = true;
-    elseif (ischar (arg) && strcmpi (arg, "truesize"))
-      initial_magnification = 100;
     elseif (ischar (arg) && strcmpi (arg, "displayrange"))
       narg++;
       display_range = varargin{narg};
-    elseif (ischar (arg) && strcmpi (arg, "initialmagnification"))
+    elseif (ischar (arg) &&
+	    (strcmpi (arg, "truesize") ||
+             strcmpi (arg, "initialmagnification")))
       narg++;
-      initial_magnification = varargin{narg};
+      warning ("image: zoom argument ignored -- use GUI features");
     else
       warning ("imshow: input argument number %d is unsupported", narg) 
     endif
@@ -145,11 +141,11 @@ function imshow (im, varargin)
     im(im < 0) = 0;
     im(im > 1) = 1;
   endif
-  
+
   dim = ndims (im);
   if (dim == 2)
     im = round ((size (color_map, 1) - 1) * im);
-    image (im, initial_magnification/100);
+    image (im);
     colormap (color_map);
   elseif (dim == 3 && size (im, 3) == 3)
     __img__ ([] , [], im);
@@ -169,10 +165,6 @@ endfunction
 
 %!demo
 %!  imshow (loadimage ("default.img"));
-
-%!demo
-%!  I = loadimage ("default.img");
-%!  imshow (I, "truesize")
 
 %!demo
 %!  [I, M] = loadimage ("default.img");

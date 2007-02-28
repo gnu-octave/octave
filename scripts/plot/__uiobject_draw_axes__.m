@@ -703,12 +703,11 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
 endfunction
 
-function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
+## Attempt to make "nice" limits from the actual max and min of the
+## data.  For log plots, we will also use the smallest strictly positive
+## value.
 
-  ## FIXME -- this needs to make "nice" limits from the actual max and
-  ## min of the data.  For log plots, we will also need the smallest
-  ## strictly positive value, which we aren't currently computing and
-  ## caching above.
+function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
 
   if (logscale)
     if (isinf (min_pos))

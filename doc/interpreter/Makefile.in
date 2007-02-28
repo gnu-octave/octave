@@ -33,7 +33,7 @@ IMAGES_PNG = $(SPARSEIMAGES_PNG)
 IMAGES_TXT = $(SPARSEIMAGES_TXT)
 
 HTML_IMAGES_PNG = $(addprefix HTML/, $(IMAGES_PNG))
-  
+
 IMAGES = $(IMAGES_EPS) $(IMAGES_PDF) $(IMAGES_PNG) $(IMAGES_TXT)
 
 SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \

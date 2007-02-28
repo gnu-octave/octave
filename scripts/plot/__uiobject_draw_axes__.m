@@ -274,13 +274,13 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
 	    ## Let the file be deleted when Octave exits or `purge_tmp_files'
 	    ## is called.
-	    [fid, fname] = mkstemp (strcat (P_tmpdir, "/gpimageXXXXXX"), 1);
+	    [img_fid, img_fname] = mkstemp (fullfile (P_tmpdir, "gpimageXXXXXX"), 1);
 	    if (ndims (img_data) == 3)
-	      fwrite (fid, permute (img_data, [3, 1, 2])(:), "float");
+	      fwrite (img_fid, permute (img_data, [3, 1, 2])(:), "float");
 	      format = "1:2:3";
 	      imagetype = "rgbimage";
 	    else
-	      fwrite (fid, img_data(:), "float");
+	      fwrite (img_fid, img_data(:), "float");
 	      format = "1";
 	      imagetype = "image";
 	      ## Only need to set pallete once because it doesn't change
@@ -302,18 +302,18 @@ function __uiobject_draw_axes__ (h, plot_stream)
 		else
 		  ## Let the file be deleted when Octave exits or
 		  ## `purge_tmp_files' is called.
-		  [fid, binary_fname, msg] = mkstemp (strcat (P_tmpdir, "/gpimageXXXXXX"), 1);
-		  fwrite (fid, img_colormap', "float32", 0, "ieee-le");
-		  fclose (fid);
+		  [cmap_fid, cmap_fname, msg] = mkstemp (fullfile (P_tmpdir, "gpimageXXXXXX"), 1);
+		  fwrite (cmap_fid, img_colormap', "float32", 0, "ieee-le");
+		  fclose (cmap_fid);
 		  fprintf (plot_stream,
 			   "set palette file \"%s\" binary record=%d using 1:2:3;\n",
-			   binary_fname, palette_size);
+			   cmap_fname, palette_size);
 		endif
 	      endif
 	    endif
-	    fclose (fid);
+	    fclose (img_fid);
 
-	    filespec{data_idx} = fname;
+	    filespec{data_idx} = img_fname;
 	    titlespec{data_idx} = "";
 	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx flipy origin=(%g,%g) dx=%g dy=%g using %s",
 		x_dim, y_dim, x_origin, y_origin, dx, dy, format);

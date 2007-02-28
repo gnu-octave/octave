@@ -451,6 +451,7 @@ install-inc:
 
 uninstall:
 	rm -f $(DESTDIR)$(bindir)/octave$(EXEEXT)
+	rm -f $(DESTDIR)$(bindir)/octave-$(version)$(EXEEXT)
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(LIBEXT)
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLLIB)
 	rm -f $(DESTDIR)$(octlibdir)/$(LIBPRE)octinterp.$(SHLLIB_VER)
@@ -458,9 +459,16 @@ uninstall:
 	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octinterp.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octinterp.$(SHLBIN_VER); \
 	fi
-	for f in $(INCLUDES_FOR_INSTALL) defaults.h oct-conf.h; do \
+	for f in $(INCLUDES_FOR_INSTALL) defaults.h oct-conf.h oct-gperf.h; do \
 	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
 	done
+	if [ -n "$(OCT_FILES)" ]; then \
+	  xfiles="$(OCT_FILES)"; \
+	  for f in $$xfiles; do \
+	    rm -f $(DESTDIR)$(octfiledir)/$$f; \
+	  done; \
+	fi
+	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
 .PHONY: uninstall
 
 tags: $(SOURCES) $(DLD_SRC)

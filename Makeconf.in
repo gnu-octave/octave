@@ -635,4 +635,5 @@ define do-script-uninstall
 for f in $(FCN_FILES_NO_DIR); \
   do rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
 done
+rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD
 endef

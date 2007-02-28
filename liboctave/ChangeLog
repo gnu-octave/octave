@@ -1,3 +1,9 @@
+2007-02-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (uninstall): Delete files listed in
+	$(INCLUDES_FOR_INSTALL), instead of $(INCLUDES).
+	From Thomas Treichl <Thomas.Treichl@gmx.net>.
+
 2007-02-27  From Michael Goffioul  <michael.goffioul@swing.be>
 
 	* file-ops.cc (file_ops::recursive_rmdir):

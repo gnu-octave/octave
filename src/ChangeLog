@@ -1,5 +1,9 @@
 2007-02-27  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (uninstall): Also remove octave-$(version)$(EXEEXT), 
+	oct-gperf.h, and all .oct files.  Remove PKG_ADD.
+	From Thomas Treichl <Thomas.Treichl@gmx.net>.
+
 	* load-path.h, (load_path::initialize, load_path::do_initialize):
 	New arg, set_initial_path.
 	* load-path.cc (load_path::do_initialize): Don't add system

@@ -145,11 +145,14 @@ function yi = interp1 (x, y, varargin)
   ## unless extrap=="extrap" in which case, extrapolate them like we
   ## should be doing in the first place.
   minx = x(1);
+  maxx = x(nx);
+  if (minx > maxx)
+    tmp = minx;
+    minx = maxx;
+    maxx = tmp;
+  endif
   if (method(1) == "*")
-     dx = x(2) - x(1);
-     maxx = minx + (ny-1)*dx;
-  else
-     maxx = x(nx);
+    dx = x(2) - x(1);
   endif
 
   if (! pp)

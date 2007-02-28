@@ -1,3 +1,12 @@
+2007-02-28  John W. Eaton  <jwe@octave.org>
+
+	* plot/__uiobject_draw_axes__.m: Use fullfile to generate
+	temporary file names.  Keep image and colormap file ids separate.
+
+	* general/interp1.m: Correctly compute min and max values when
+	values are decreasing and not evenly spaced.
+	From Ricardo Marranita <ricardo.marranita@gmail.com>.
+
 2007-02-27  John W. Eaton  <jwe@octave.org>
 
 	* testfun/test.m (test): Handle possibility of file_in_loadpath

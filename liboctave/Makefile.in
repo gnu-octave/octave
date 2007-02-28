@@ -302,7 +302,7 @@ uninstall:
 	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octave.$(SHLBIN); \
 	  rm -f $(DESTDIR)$(bindir)/$(LIBPRE)octave.$(SHLBIN_VER); \
 	fi
-	for f in $(INCLUDES); do rm -f $(DESTDIR)$(octincludedir)/octave/$$f; done
+	for f in $(INCLUDES_FOR_INSTALL); do rm -f $(DESTDIR)$(octincludedir)/octave/$$f; done
 .PHONY: uninstall
 
 tags: $(SOURCES)

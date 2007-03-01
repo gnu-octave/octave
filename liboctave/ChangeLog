@@ -1,3 +1,13 @@
+2007-03-01  David Bateman  <dbateman@free.fr>
+
+        * md5.h, md5.c: New files from libmd5-rfc sourceforge project for
+        an independent implementation of RFC1321.
+        * oct-md5.h, oct-md5: New files for treating std::string class
+        with MD5.
+        * Makefile.in (INCLUDES): Add md5.h and oct-md5.h
+        (LIBOCTAVE_CXX_SOURCES): Add oct-md5.cc
+        (LIBOCTAVE_C_SOURCES): Add md5.c
+
 2007-02-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (uninstall): Delete files listed in

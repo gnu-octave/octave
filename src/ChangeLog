@@ -1,3 +1,8 @@
+2007-03-01  David Bateman  <dbateman@free.fr>
+
+        * DLD-FUNCTIONS/md5sum.cc: New file.
+        * Makefile.in (DLD_XSRC): Add md5sum.cc
+
 2007-03-01  Olli Saarela  <Olli.Saarela@kcl.fi>
 
 	* input.cc (FPS1): Fix @seealso.

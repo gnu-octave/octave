@@ -1,3 +1,7 @@
+2007-03-01  Muthiah Annamalai  <muthuspost@gmail.com>
+
+	* polynomial/roots.m: Check nargin before accessing arg.
+
 2007-02-28  John W. Eaton  <jwe@octave.org>
 
 	* plot/__uiobject_draw_axes__.m: If looking at image data, Don't

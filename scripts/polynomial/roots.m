@@ -43,7 +43,7 @@
 
 function r = roots (v)
 
-  if (min (size (v)) > 1 || nargin != 1)
+  if (nargin != 1 || min (size (v)) > 1)
     print_usage ();
   endif
 

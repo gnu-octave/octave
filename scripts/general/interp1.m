@@ -188,9 +188,9 @@ function yi = interp1 (x, y, varargin)
     endif
   elseif (strcmp (method, "*nearest"))
     if (pp)
-      yi = mkpp ([minx; minx+[0.5:(ny-1)]'*dx; maxx], y, szy(2:end));
+      yi = mkpp ([x(1); x(1)+[0.5:(ny-1)]'*dx; x(nx)], y, szy(2:end));
     else
-      idx = max (1, min (ny, floor((xi-minx)/dx+1.5)));
+      idx = max (1, min (ny, floor((xi-x(1))/dx+1.5)));
       yi(range,:) = y(idx,:);
     endif
   elseif (strcmp (method, "linear"))
@@ -210,10 +210,10 @@ function yi = interp1 (x, y, varargin)
   elseif (strcmp (method, "*linear"))
     if (pp)
       dy = [y(2:ny,:) - y(1:ny-1,:)];
-      yi = mkpp (minx + [0:ny-1]*dx, [dy./dx, y(1:end-1)], szy(2:end));
+      yi = mkpp (x(1) + [0:ny-1]*dx, [dy./dx, y(1:end-1)], szy(2:end));
     else
       ## find the interval containing the test point
-      t = (xi - minx)/dx + 1;
+      t = (xi - x(1))/dx + 1;
       idx = max(1,min(ny,floor(t)));
 
       ## use the endpoints of the interval to define a line
@@ -223,7 +223,7 @@ function yi = interp1 (x, y, varargin)
     endif
   elseif (strcmp (method, "pchip") || strcmp (method, "*pchip"))
     if (nx == 2 || method(1) == "*") 
-      x = linspace (minx, maxx, ny);
+      x = linspace (x(1), x(nx), ny);
     endif
     ## Note that pchip's arguments are transposed relative to interp1
     if (pp)
@@ -236,7 +236,7 @@ function yi = interp1 (x, y, varargin)
   elseif (strcmp (method, "cubic") || (strcmp (method, "*cubic") && pp))
     ## FIXME Is there a better way to treat pp return return and *cubic
     if (method(1) == "*")
-      x = linspace (minx, maxx, ny).'; 
+      x = linspace (x(1), x(nx), ny).'; 
       nx = ny;
     endif
 
@@ -277,7 +277,7 @@ function yi = interp1 (x, y, varargin)
 
     ## From: Miloje Makivic 
     ## http://www.npac.syr.edu/projects/nasa/MILOJE/final/node36.html
-    t = (xi - minx)/dx + 1;
+    t = (xi - x(1))/dx + 1;
     idx = max (min (floor (t), ny-2), 2);
     t = t - idx;
     t2 = t.*t;
@@ -293,7 +293,7 @@ function yi = interp1 (x, y, varargin)
 
   elseif (strcmp (method, "spline") || strcmp (method, "*spline"))
     if (nx == 2 || method(1) == "*") 
-      x = linspace(minx, maxx, ny); 
+      x = linspace(x(1), x(nx), ny); 
     endif
     ## Note that spline's arguments are transposed relative to interp1
     if (pp)
@@ -344,12 +344,27 @@ endfunction
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
+## For each type of interpolated test, confirm that the interpolated
+## value at the knots match the values at the knots.  Points away
+## from the knots are requested, but only 'nearest' and 'linear'
+## confirm they are the correct values.
+
 %!shared xp, yp, xi, style
-%! xp=0:5;      yp = sin(2*pi*xp/5);
-%! xi = sort([-1, max(xp)*rand(1,6), max(xp)+1]);
+%! xp=0:2:10;      yp = sin(2*pi*xp/5);  
+%! xi = [-1, 0, 2.2, 4, 6.6, 10, 11];
 
+
+## The following BLOCK/ENDBLOCK section is repeated for each style
+##    nearest, linear, cubic, spline, pchip
+## The test for ppval of cubic has looser tolerance, but otherwise
+## the tests are identical.
+## Note that the block checks style and *style; if you add more tests
+## before to add them to both sections of each block.  One test, 
+## style vs. *style, occurs only in the first section.
+## There is an ENDBLOCKTEST after the final block
 %!test style = "nearest";
-%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1]), [NaN, NaN]);
+## BLOCK
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
 %!assert (interp1(xp,yp,xp',style), yp', 100*eps);
 %!assert (interp1(xp',yp',xp',style), yp', 100*eps);
@@ -358,24 +373,15 @@ endfunction
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
 %!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
-%!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]));
-
-%!test style = "linear";
-%!assert (interp1(xp, yp, [-1, max(xp)+1]), [NaN, NaN]);
-%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
-%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
-%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
-%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
-%!assert (isempty(interp1(xp',yp',[],style)));
-%!assert (isempty(interp1(xp,yp,[],style)));
-%!assert (interp1(xp,[yp',yp'],xi(:),style),...
-%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
 %!assert (interp1(xp,[yp',yp'],xi,style),
 %!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
-
-%!test style = "cubic";
-%!assert (interp1(xp, yp, [-1, max(xp)+1]), [NaN, NaN]);
+%!test style=['*',style];
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
 %!assert (interp1(xp,yp,xp',style), yp', 100*eps);
 %!assert (interp1(xp',yp',xp',style), yp', 100*eps);
@@ -384,11 +390,15 @@ endfunction
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
 %!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
-%!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),1000*eps);
-
-%!test style = "spline";
-%!assert (interp1(xp, yp, [-1, max(xp) + 1]), [NaN, NaN]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
+## ENDBLOCK
+%!test style='linear';
+## BLOCK
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
 %!assert (interp1(xp,yp,xp,style), yp, 100*eps);
 %!assert (interp1(xp,yp,xp',style), yp', 100*eps);
 %!assert (interp1(xp',yp',xp',style), yp', 100*eps);
@@ -397,8 +407,132 @@ endfunction
 %!assert (isempty(interp1(xp,yp,[],style)));
 %!assert (interp1(xp,[yp',yp'],xi(:),style),...
 %!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
 %!assert (interp1(xp,[yp',yp'],xi,style),
-%!	  interp1(xp,[yp',yp'],xi,["*",style]),10*eps);
+%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!test style=['*',style];
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
+%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
+%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
+%!assert (isempty(interp1(xp',yp',[],style)));
+%!assert (isempty(interp1(xp,yp,[],style)));
+%!assert (interp1(xp,[yp',yp'],xi(:),style),...
+%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
+## ENDBLOCK
+%!test style='cubic';
+## BLOCK
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
+%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
+%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
+%!assert (isempty(interp1(xp',yp',[],style)));
+%!assert (isempty(interp1(xp,yp,[],style)));
+%!assert (interp1(xp,[yp',yp'],xi(:),style),...
+%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),100*eps);
+%!error interp1(1,1,1, style);
+%!assert (interp1(xp,[yp',yp'],xi,style),
+%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!test style=['*',style];
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
+%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
+%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
+%!assert (isempty(interp1(xp',yp',[],style)));
+%!assert (isempty(interp1(xp,yp,[],style)));
+%!assert (interp1(xp,[yp',yp'],xi(:),style),...
+%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),100*eps);
+%!error interp1(1,1,1, style);
+## ENDBLOCK
+%!test style='pchip';
+## BLOCK
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
+%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
+%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
+%!assert (isempty(interp1(xp',yp',[],style)));
+%!assert (isempty(interp1(xp,yp,[],style)));
+%!assert (interp1(xp,[yp',yp'],xi(:),style),...
+%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
+%!assert (interp1(xp,[yp',yp'],xi,style),
+%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!test style=['*',style];
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
+%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
+%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
+%!assert (isempty(interp1(xp',yp',[],style)));
+%!assert (isempty(interp1(xp,yp,[],style)));
+%!assert (interp1(xp,[yp',yp'],xi(:),style),...
+%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
+## ENDBLOCK
+%!test style='spline';
+## BLOCK
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
+%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
+%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
+%!assert (isempty(interp1(xp',yp',[],style)));
+%!assert (isempty(interp1(xp,yp,[],style)));
+%!assert (interp1(xp,[yp',yp'],xi(:),style),...
+%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
+%!assert (interp1(xp,[yp',yp'],xi,style),
+%!	  interp1(xp,[yp',yp'],xi,["*",style]),100*eps);
+%!test style=['*',style];
+%!assert (interp1(xp, yp, [min(xp)-1, max(xp)+1],style), [NaN, NaN]);
+%!assert (interp1(xp,yp,xp,style), yp, 100*eps);
+%!assert (interp1(xp,yp,xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp',style), yp', 100*eps);
+%!assert (interp1(xp',yp',xp,style), yp, 100*eps);
+%!assert (isempty(interp1(xp',yp',[],style)));
+%!assert (isempty(interp1(xp,yp,[],style)));
+%!assert (interp1(xp,[yp',yp'],xi(:),style),...
+%!	  [interp1(xp,yp,xi(:),style),interp1(xp,yp,xi(:),style)]);
+%!assert (interp1(xp,yp,xi,style),...
+%!	  interp1(fliplr(xp),fliplr(yp),xi,style),100*eps);
+%!assert (ppval(interp1(xp,yp,style,"pp"),xi),
+%!	  interp1(xp,yp,xi,style,"extrap"),10*eps);
+%!error interp1(1,1,1, style);
+## ENDBLOCK
+## ENDBLOCKTEST
 
 %!# test linear extrapolation
 %!assert (interp1([1:5],[3:2:11],[0,6],"linear","extrap"), [1, 13], eps);
@@ -407,7 +541,6 @@ endfunction
 %!error interp1
 %!error interp1(1:2,1:2,1,"bogus")
 
-%!error interp1(1,1,1, "nearest");
 %!assert (interp1(1:2,1:2,1.4,"nearest"),1);
 %!error interp1(1,1,1, "linear");
 %!assert (interp1(1:2,1:2,1.4,"linear"),1.4);
@@ -424,25 +557,3 @@ endfunction
 %!assert (interp1(1:2:8,1:2:8,1.4,"*cubic"),1.4);
 %!error interp1(1:2,1:2,1, "*spline");
 %!assert (interp1(1:2:6,1:2:6,1.4,"*spline"),1.4);
-
-%!assert (ppval(interp1(xp,yp,"nearest","pp"),xi),
-%!	  interp1(xp,yp,xi,"nearest","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"linear","pp"),xi),
-%!	  interp1(xp,yp,xi,"linear","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"cubic","pp"),xi),
-%!	  interp1(xp,yp,xi,"cubic","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"pchip","pp"),xi),
-%!	  interp1(xp,yp,xi,"pchip","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"spline","pp"),xi),
-%!	  interp1(xp,yp,xi,"spline","extrap"),10*eps);
-
-%!assert (ppval(interp1(xp,yp,"*nearest","pp"),xi),
-%!	  interp1(xp,yp,xi,"*nearest","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"*linear","pp"),xi),
-%!	  interp1(xp,yp,xi,"*linear","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"*cubic","pp"),xi),
-%!	  interp1(xp,yp,xi,"*cubic","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"*pchip","pp"),xi),
-%!	  interp1(xp,yp,xi,"*pchip","extrap"),10*eps);
-%!assert (ppval(interp1(xp,yp,"*spline","pp"),xi),
-%!	  interp1(xp,yp,xi,"*spline","extrap"),10*eps);

@@ -1,3 +1,7 @@
+2007-03-01  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* general/interp1.m: Fix *style cases for decreasing x.
+
 2007-03-01  Muthiah Annamalai  <muthuspost@gmail.com>
 
 	* polynomial/roots.m: Check nargin before accessing arg.

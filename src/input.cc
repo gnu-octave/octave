@@ -1181,7 +1181,7 @@ which will result in the prompt @samp{boris@@kremvax> } for the user\n\
 backslashes are required to enter a backslash into a double-quoted\n\
 character string.\n\
 @xref{Strings}.\n\
-@seealso{PS1, PS2}\n\
+@seealso{PS2, PS4}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (PS1);

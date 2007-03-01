@@ -1,3 +1,7 @@
+2007-03-01  Olli Saarela  <Olli.Saarela@kcl.fi>
+
+	* input.cc (FPS1): Fix @seealso.
+
 2007-03-01  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Special case scalar

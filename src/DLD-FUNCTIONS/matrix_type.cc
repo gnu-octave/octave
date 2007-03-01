@@ -109,13 +109,20 @@ matrix type.\n\
     error ("matrix_type: incorrect number of arguments");
   else
     {
-      if (args(0).is_sparse_type ())
+      if (args(0).is_scalar_type())
+	{
+	  if (nargin == 1)
+	    retval = octave_value ("Full");
+	  else
+	    retval = args(0);
+	}
+      else if (args(0).is_sparse_type ())
 	{
 	  if (nargin == 1)
 	    {
 	      MatrixType mattyp;
 
-	      if (args(0).type_name () == "sparse complex matrix" ) 
+	      if (args(0).is_complex_type ()) 
 		{
 		  mattyp = args(0).matrix_type ();
 
@@ -283,7 +290,7 @@ matrix type.\n\
 		      if (! error_state)
 			{
 			  // Set the matrix type
-			  if (args(0).type_name () == "sparse complex matrix" ) 
+			  if (args(0).is_complex_type ())
 			    retval = 
 			      octave_value (args(0).sparse_complex_matrix_value (), 
 					    mattyp);
@@ -301,7 +308,7 @@ matrix type.\n\
 	    {
 	      MatrixType mattyp;
 
-	      if (args(0).type_name () == "complex matrix" ) 
+	      if (args(0).is_complex_type ())
 		{
 		  mattyp = args(0).matrix_type ();
 
@@ -426,7 +433,7 @@ matrix type.\n\
 		      if (! error_state)
 			{
 			  // Set the matrix type
-			  if (args(0).type_name () == "complex matrix" ) 
+			  if (args(0).is_complex_type())
 			    retval = 
 			      octave_value (args(0).complex_matrix_value (), 
 					    mattyp);

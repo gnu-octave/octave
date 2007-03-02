@@ -18,7 +18,7 @@
 ## @deftypefn  {Command} pkg @var{command} @var{pkg_name}
 ## @deftypefnx {Command} pkg @var{command} @var{option} @var{pkg_name}
 ## This command interacts with the package manager. Different actions will
-## be taking depending on the value of @var{command}.
+## be taken depending on the value of @var{command}.
 ##
 ## @table @samp
 ## @item install

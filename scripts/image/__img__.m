@@ -62,7 +62,7 @@ function h = __img__ (x, y, img)
 
   __uiobject_adopt__ (ca, tmp);
 
-  set (ca, "view", [0, 90], "xlim", xlim, "ylim", ylim);
+  set (ca, "view", [0, 90]);
 
   if (nargout > 0)
     h = tmp;

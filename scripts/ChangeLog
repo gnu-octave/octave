@@ -1,3 +1,7 @@
+2007-03-01  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* image/__img__.m: Don't set xlim and ylim properties.
+
 2007-03-01  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* general/interp1.m: Fix *style cases for decreasing x.

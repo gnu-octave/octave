@@ -33,6 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-utils.h"
 #include "oct-alloc.h"
 #include "str-vec.h"
+#include "MatrixType.h"
 
 #include "ov-base.h"
 #include "ov-typeinfo.h"
@@ -46,13 +47,13 @@ octave_base_scalar : public octave_base_value
 public:
 
   octave_base_scalar (void)
-    : octave_base_value () { }
+    : octave_base_value (), typ (MatrixType ()) { }
 
-  octave_base_scalar (const ST& s)
-    : octave_base_value (), scalar (s) { }
+  octave_base_scalar (const ST& s, const MatrixType& t = MatrixType ())
+    : octave_base_value (), scalar (s), typ (t) { }
 
   octave_base_scalar (const octave_base_scalar& s)
-    : octave_base_value (), scalar (s.scalar) { }
+    : octave_base_value (), scalar (s.scalar), typ (s.typ) { }
 
   ~octave_base_scalar (void) { }
 
@@ -92,6 +93,10 @@ public:
 
   octave_value any (int = 0) const { return (scalar != ST ()); }
 
+  MatrixType matrix_type (void) const { return typ; }
+  MatrixType matrix_type (const MatrixType& _typ) const
+    { MatrixType ret = typ; typ = _typ; return ret; }
+
   bool is_scalar_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }
@@ -112,6 +117,8 @@ protected:
 
   // The value of this scalar.
   ST scalar;
+
+  mutable MatrixType typ;
 };
 
 #endif

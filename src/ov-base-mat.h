@@ -31,13 +31,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "mx-base.h"
 #include "str-vec.h"
+#include "MatrixType.h"
 
 #include "error.h"
 #include "oct-obj.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
-
-#include "MatrixType.h"
 
 class Octave_map;
 
@@ -54,14 +53,7 @@ public:
   octave_base_matrix (void)
     : octave_base_value (), typ (MatrixType ()) { }
 
-  octave_base_matrix (const MT& m)
-    : octave_base_value (), matrix (m), typ (MatrixType ())
-  {
-    if (matrix.ndims () == 0)
-      matrix.resize (dim_vector (0, 0));
-  }
-
-  octave_base_matrix (const MT& m, const MatrixType& t)
+  octave_base_matrix (const MT& m, const MatrixType& t = MatrixType ())
     : octave_base_value (), matrix (m), typ (t)
   {
     if (matrix.ndims () == 0)

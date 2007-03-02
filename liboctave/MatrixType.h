@@ -51,7 +51,7 @@ public:
   };
 
   MatrixType (void);
-    
+
   MatrixType (const MatrixType &a);
 
   MatrixType (const Matrix &a);

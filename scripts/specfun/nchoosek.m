@@ -60,7 +60,7 @@
 
 function A = nchoosek (v, k)
 
-  if (nargin == 2)
+  if (nargin != 2)
     print_usage ();
   endif
 

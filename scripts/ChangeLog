@@ -1,3 +1,7 @@
+2007-03-02  Bob Weigel <rweigel@gmu.edu>
+
+	* specfun/nchoosek.m: Fix nargin check.
+
 2007-03-01  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* image/__img__.m: Don't set xlim and ylim properties.

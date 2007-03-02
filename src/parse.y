@@ -3506,8 +3506,31 @@ DEFCMD (autoload, args, ,
 @deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
-With no arguments, return a structure with information about all\n\
-currently autoloaded functions.\n\
+The second argument, @var{file}, should be an absolute file name and\n\
+should not depend on the Octave load path.\n\
+\n\
+Normally, calls to @code{autoload} appear in PKG_ADD script files that\n\
+are evaluated when a directory is added to the Octave's load path.  To\n\
+avoid having to hardcode directory names in @var{file}, it is customary\n\
+to use\n\
+\n\
+@example\n\
+autoload (\"foo\",\n\
+          fullfile (fileparts (mfilename (\"fullpath\")),\n\
+                    \"bar.oct\"));\n\
+@end example\n\
+\n\
+Uses like\n\
+\n\
+@example\n\
+autoload (\"foo\", file_in_loadpth (\"bar.oct\"))\n\
+@end example\n\
+\n\
+@noindent\n\
+are strongly discouraged.\n\
+\n\
+With no arguments, return a structure containing the curre autoload map.\n\
+@seealso{PKG_ADD}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -3541,7 +3564,15 @@ currently autoloaded functions.\n\
       string_vector argv = args.make_argv ("autoload");
 
       if (! error_state)
-      	autoload_map[argv[1]] = argv[2];
+        {
+	  std::string nm = argv[2];
+
+	  if (! octave_env::absolute_pathname (nm))
+	    warning ("autoload: `%s' is not an absolute file name",
+		     nm.c_str ());
+
+	  autoload_map[argv[1]] = nm;
+	}
     }
   else
     print_usage ();

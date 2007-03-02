@@ -1,6 +1,7 @@
 2007-03-02  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (Fautoload): Undo previous change.
+	Warn if FILE is not an absolute file name.
 
 	* utils.cc (make_absolute): Make copy of arg before 
 

@@ -3541,13 +3541,7 @@ currently autoloaded functions.\n\
       string_vector argv = args.make_argv ("autoload");
 
       if (! error_state)
-        {
-	  if (autoload_map.find (argv[1]) != autoload_map.end ())
-	    warning ("autoload: not replacing existing entry for %s => %s",
-		     argv[1].c_str (), argv[2].c_str ());
-	  else
-	    autoload_map[argv[1]] = argv[2];
-	}
+      	autoload_map[argv[1]] = argv[2];
     }
   else
     print_usage ();

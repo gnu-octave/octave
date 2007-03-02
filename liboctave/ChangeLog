@@ -1,3 +1,7 @@
+2007-03-02  John W. Eaton  <jwe@octave.org>
+
+	* str-vec.h (string_vector::empty): Return bool, not int.
+
 2007-03-01  David Bateman  <dbateman@free.fr>
 
         * md5.h, md5.c: New files from libmd5-rfc sourceforge project for

@@ -1,3 +1,9 @@
+2007-03-02  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (Fautoload): Undo previous change.
+
+	* utils.cc (make_absolute): Make copy of arg before 
+
 2007-03-01  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-mat.h	(octave_base_matrix::octave_base_matrix (const MT&), 

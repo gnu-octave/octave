@@ -259,9 +259,9 @@ search_path_for_all_files (const std::string& path, const string_vector& names)
 
   string_vector sv = p.find_all_first_of (names);
 
-  int len = sv.length ();
+  octave_idx_type len = sv.length ();
 
-  for (int i = 0; i < len; i++)
+  for (octave_idx_type i = 0; i < len; i++)
     sv[i] = octave_env::make_absolute (sv[i], octave_env::getcwd ());
 
   return sv;
@@ -270,12 +270,14 @@ search_path_for_all_files (const std::string& path, const string_vector& names)
 static string_vector
 make_absolute (const string_vector& sv)
 {
-  int len = sv.length ();
+  octave_idx_type len = sv.length ();
 
-  for (int i = 0; i < len; i++)
-    sv[i] = octave_env::make_absolute (sv[i], octave_env::getcwd ());
+  string_vector retval (len);
 
-  return sv;
+  for (octave_idx_type i = 0; i < len; i++)
+    retval[i] = octave_env::make_absolute (sv[i], octave_env::getcwd ());
+ 
+  return retval;
 }
 
 DEFUN (file_in_loadpath, args, ,

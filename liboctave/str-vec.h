@@ -62,7 +62,7 @@ public:
 
   ~string_vector (void) { }
 
-  int empty (void) const { return length () == 0; }
+  bool empty (void) const { return length () == 0; }
 
   octave_idx_type max_length (void) const
   {

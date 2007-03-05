@@ -1,3 +1,7 @@
+2007-03-05  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/md5sum.cc (Fmd5sum): Treat both files and strings.
+
 2007-03-05  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__glpk__.cc (F__glpk__): Check GLPK_PRE_4_14, not

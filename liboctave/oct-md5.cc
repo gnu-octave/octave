@@ -28,6 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "config.h"
 #endif
 
+#include "lo-error.h"
 #include "oct-md5.h"
 #include "md5.h"
  
@@ -47,6 +48,42 @@ oct_md5 (const std::string str)
     sprintf (&tmp[2*i], "%02x", digest[i]);
   tmp[32] = 0;
   return std::string (tmp);
+}
+	  
+std::string
+oct_md5_file (const std::string file)
+{
+  FILE *ifile = fopen (file.c_str (), "rb");
+
+  if (! ifile)
+    {
+      (*current_liboctave_error_handler) ("unable to open file `%s' for writing",
+					  file.c_str());
+      return std::string();
+    }
+  else
+    {
+      md5_state_t state;
+      size_t nel;
+
+      OCTAVE_LOCAL_BUFFER (md5_byte_t, digest, 16);
+      OCTAVE_LOCAL_BUFFER (md5_byte_t, buf, 1024);
+
+      md5_init (&state);
+
+      while ((nel = fread (buf, 1, 1024, ifile)))
+	md5_append (&state, buf, nel);
+
+      fclose (ifile);
+
+      md5_finish (&state, digest);
+
+      OCTAVE_LOCAL_BUFFER (char, tmp, 33);
+      for (octave_idx_type i = 0; i < 16; i++)
+	sprintf (&tmp[2*i], "%02x", digest[i]);
+      tmp[32] = 0;
+      return std::string (tmp);
+    }
 }
 	  
 /*

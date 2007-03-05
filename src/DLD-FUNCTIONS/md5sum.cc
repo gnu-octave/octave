@@ -30,25 +30,59 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include "defun-dld.h"
+#include "file-stat.h"
+#include "file-ops.h"
+#include "gripes.h"
+#include "load-path.h"
+#include "oct-env.h"
 #include "oct-md5.h"
 
-DEFUN_DLD (md5sum, args, nargout,
+DEFUN_DLD (md5sum, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} md5sum (@var{str})\n\
-Calculates the MD5 sum of the string @var{str}.\n\
+@deftypefn {Loadable Function} {} md5sum (@var{file})\n\
+@deftypefnx {Loadable Function} {} md5sum (@var{str}, @var{opt})\n\
+Calculates the MD5 sum of the file @var{file}. If the second parameter\n\
+@var{opt} exists and is true, then calculate the MD5 sum of the\n\
+string @var{str}.\n\
 @end deftypefn")
 {
   octave_value retval;
   int nargin = args.length ();
 
-  if (nargin != 1)
+  if (nargin != 1 && nargin != 2)
     print_usage();
   else
     {
+      bool have_str = false;
       std::string str = args(0).string_value();
 
+      if (nargin == 2)
+	have_str = args(1).bool_value();
+	
       if (!error_state)
-	retval = oct_md5 (str);
+	{
+	  if (have_str)
+	    retval = oct_md5 (str);
+	  else
+	    {
+	      file_stat fs (str);
+
+	      if (! fs.exists ())
+		{
+		  std::string tmp = octave_env::make_absolute
+		    (load_path::find_file (str), octave_env::getcwd ());
+
+		  if (! tmp.empty ())
+		    {
+		      warning_with_id ("Octave:md5sum-file-in-path",
+				       "md5sum: file found in load path");
+		      str = tmp;
+		    }
+		}
+
+	      retval = oct_md5_file (str);
+	    }
+	}
     }
 
   return retval;

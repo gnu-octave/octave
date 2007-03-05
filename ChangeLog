@@ -1,3 +1,7 @@
+2007-03-05  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (GLPK_PRE_4_14): Rename from GLPK_PRE_4_15.
+
 2007-02-27  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-script-uninstall): Remove PKG_ADD.

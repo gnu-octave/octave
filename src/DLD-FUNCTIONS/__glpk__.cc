@@ -42,7 +42,7 @@ extern "C"
 {
 #include <glpk.h>
 
-#ifdef GLPK_PRE_4_15
+#ifdef GLPK_PRE_4_14
 
 #ifndef _GLPLIB_H
 #include <glplib.h>
@@ -164,14 +164,14 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   clock_t t_start = clock();
 
-#ifdef GLPK_PRE_4_15
+#ifdef GLPK_PRE_4_14
   lib_set_fault_hook (0, glpk_fault_hook);
 #else
   _glp_lib_fault_hook (glpk_fault_hook, 0);
 #endif
 
   if (lpxIntParam[0] > 1)
-#ifdef GLPK_PRE_4_15
+#ifdef GLPK_PRE_4_14
     lib_set_print_hook (0, glpk_print_hook);
 #else
     _glp_lib_print_hook (glpk_print_hook, 0);
@@ -308,7 +308,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
       break;
 
     default:
-#ifdef GLPK_PRE_4_15
+#ifdef GLPK_PRE_4_14
       insist (method != method);
 #else
       glpk_fault_hook (0, "method != method");
@@ -378,7 +378,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
       *time = (clock () - t_start) / CLOCKS_PER_SEC;
 
-#ifdef GLPK_PRE_4_15
+#ifdef GLPK_PRE_4_14
       *mem = (lib_env_ptr () -> mem_tpeak);
 #else
       *mem = 0;

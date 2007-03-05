@@ -1,3 +1,8 @@
+2007-03-05  John W. Eaton  <jwe@octave.org>
+
+	* optimization/sqp.m: Defer first call to obj_hess until after
+	calling obj_fun.
+
 2007-03-02  Bob Weigel <rweigel@gmu.edu>
 
 	* specfun/nchoosek.m: Fix nargin check.

@@ -179,8 +179,6 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif)
 
     n = length (x);
 
-    B = eye (n, n);
-
     ## Evaluate objective function, constraints, and gradients at initial
     ## value of x.
     ##
@@ -200,7 +198,6 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif)
 	  if (length (objf) > 2)
 	    obj_hess = objf{3};
 	    have_hess = 1;
-	    B = feval (obj_hess, x);
 	  endif
 	endif
       else
@@ -256,6 +253,12 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif)
     nfun = 1;
 
     c = feval (obj_grd, x);
+
+    if (have_hess)
+      B = feval (obj_hess, x);
+    else
+      B = eye (n, n);
+    endif
 
     ce = feval (ce_fun, x);
     F = feval (ce_grd, x);

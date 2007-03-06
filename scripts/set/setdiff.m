@@ -32,20 +32,22 @@
 ## Author: Paul Kienzle
 ## Adapted-by: jwe
 
-function c = setdiff (a, b, byrows)
+function c = setdiff (a, b, byrows_arg)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
+  byrows = false;
+
   if (nargin == 3)
-    if (! strcmpi (byrows, "rows"))
+    if (! strcmpi (byrows_arg, "rows"))
       error ("expecting third argument to be \"rows\"");
+    elseif (iscell (a) || iscell (b))
+      warning ("setdiff: \"rows\" not valid for cell arrays");
     else
       byrows = true;
     endif
-  else
-    byrows = false;
   endif
 
   if (byrows)
@@ -66,7 +68,11 @@ function c = setdiff (a, b, byrows)
       [dummy, idx] = sort ([c(:); b(:)]);
       ## Eliminate those elements of a that are the same as in b.
       n = length (dummy);
-      c(idx(find (dummy(1:n-1) == dummy(2:n)))) = [];
+      if (iscellstr (dummy))
+	c(idx(find (strcmp (dummy(1:n-1), dummy(2:n))))) = [];
+      else
+	c(idx(find (dummy(1:n-1) == dummy(2:n)))) = [];
+      endif
       ## Reshape if necessary.
       if (size (c, 1) != 1 && size (b, 1) == 1)
 	c = c.';
@@ -81,3 +87,5 @@ endfunction
 %!assert(setdiff(["b";"z";"b";"z"],["b";"c";"b"]), "z")
 %!assert(setdiff([1, 1; 2, 2; 3, 3; 4, 4], [1, 1; 2, 2; 4, 4], "rows"), [3 3])
 %!assert(setdiff([1; 2; 3; 4], [1; 2; 4], "rows"), 3)
+%!assert(setdiff([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 6])
+%!assert(setdiff({"one","two";"three","four"},{"one","two";"three","six"}), {"four"})

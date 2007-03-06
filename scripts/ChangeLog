@@ -1,3 +1,9 @@
+2007-03-06  David Bateman  <dbateman@free.fr>
+	    John W. Eaton  <jwe@octave.org>
+
+	* set/setdiff.m: Ignore "rows" for cell array args.
+	Handle cellstr args.
+
 2007-03-05  John W. Eaton  <jwe@octave.org>
 
 	* optimization/sqp.m: Defer first call to obj_hess until after

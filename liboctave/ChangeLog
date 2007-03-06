@@ -1,3 +1,14 @@
+2007-03-06  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assign1, assign2): For assignments like x(:,1) = 1 or
+	x(:) = 1, only resize if X is 0x0.
+	(assign2): Use single loop for x(:) = nonempty_rhs case.
+	If single index and rhs is 0x0, always call maybe_delete_elements
+	on lhs.
+	(Array<T>::maybe_delete_elements (Array<idx_vector>&, const T&)):
+	Quick return of [] if doing x(:) = [].
+
+
 2007-03-05  David Bateman  <dbateman@free.fr>
 
 	* oct-md5.c (oct_md5_file (const std::string&)): New function.

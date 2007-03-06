@@ -1682,6 +1682,12 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
   if (lhs_dims.all_zero ())
     return;
 
+  if (n_idx == 1 && ra_idx(0).is_colon ())
+    {
+      resize (dim_vector (0, 0), rfv);
+      return;
+    }
+
   int n_lhs_dims = lhs_dims.length ();
 
   Array<int> idx_is_colon (n_idx, 0);
@@ -2555,14 +2561,16 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     }
   else if (lhs_idx.is_colon ())
     {
-      if (lhs_len == 0)
+      dim_vector lhs_dims = lhs.dims ();
+
+      if (lhs_dims.all_zero ())
 	{
 	  lhs.resize_no_fill (rhs_len);
 
 	  for (octave_idx_type i = 0; i < rhs_len; i++)
 	    lhs.elem (i) = rhs.elem (i);
 	}
-      else
+      else if (rhs_len != 1)
 	(*current_liboctave_error_handler)
 	  ("A(:) = X: A must be the same size as X");
     }
@@ -2635,6 +2643,8 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	}
     }
 
+  bool rhs_is_scalar = rhs_nr == 1 && rhs_nc == 1;
+
   idx_vector *tmp = lhs.get_idx ();
 
   idx_vector idx_i;
@@ -2649,17 +2659,19 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
   if (n_idx == 2)
     {
       octave_idx_type n = idx_i.freeze (lhs_nr, "row", true);
-
       octave_idx_type m = idx_j.freeze (lhs_nc, "column", true);
 
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
 
-      if (idx_i_is_colon)
-	n = lhs_nr > 0 ? lhs_nr : rhs_nr;
+      if (lhs_nr == 0 && lhs_nc == 0)
+	{
+	  if (idx_i_is_colon)
+	    n = rhs_nr;
 
-      if (idx_j_is_colon)
-	m = lhs_nc > 0 ? lhs_nc : rhs_nc;
+	  if (idx_j_is_colon)
+	    m = rhs_nc;
+	}
 
       if (idx_i && idx_j)
 	{
@@ -2669,7 +2681,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	  else
 	    {
-	      if (rhs_nr == 1 && rhs_nc == 1 && n >= 0 && m >= 0)
+	      if (rhs_is_scalar && n >= 0 && m >= 0)
 		{
 		  // No need to do anything if either of the indices
 		  // are empty.
@@ -2695,10 +2707,10 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		       && (rhs_nr == 1 || rhs_nc == 1)
 		       && n * m == rhs_nr * rhs_nc)
 		{
+		  MAYBE_RESIZE_LHS;
+
 		  if (n > 0 && m > 0)
 		    {
-		      MAYBE_RESIZE_LHS;
-
 		      octave_idx_type k = 0;
 
 		      for (octave_idx_type j = 0; j < m; j++)
@@ -2714,10 +2726,10 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		}
 	      else if (n == rhs_nr && m == rhs_nc)
 		{
+		  MAYBE_RESIZE_LHS;
+
 		  if (n > 0 && m > 0)
 		    {
-		      MAYBE_RESIZE_LHS;
-
 		      for (octave_idx_type j = 0; j < m; j++)
 			{
 			  octave_idx_type jj = idx_j.elem (j);
@@ -2731,8 +2743,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		}
 	      else if (n == 0 && m == 0)
 		{
-		  if (! ((rhs_nr == 1 && rhs_nc == 1)
-			 || (rhs_nr == 0 || rhs_nc == 0)))
+		  if (! (rhs_is_scalar || (rhs_nr == 0 || rhs_nc == 0)))
 		    {
 		      (*current_liboctave_error_handler)
 		("A([], []) = X: X must be an empty matrix or a scalar");
@@ -2763,14 +2774,13 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	{
 	  octave_idx_type lhs_len = lhs.length ();
 
-	  octave_idx_type n = idx_i.freeze (lhs_len, 0, true);
+	  idx_i.freeze (lhs_len, 0, true);
 
 	  if (idx_i)
 	    {
 	      if (rhs_nr == 0 && rhs_nc == 0)
 		{
-		  if (n != 0 && (lhs_nr != 0 || lhs_nc != 0))
-		    lhs.maybe_delete_elements (idx_i);
+		  lhs.maybe_delete_elements (idx_i);
 		}
 	      else
 		{
@@ -2805,8 +2815,6 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 			  lhs.dimensions = dim_vector (1, lhs.length ());
 			}
-		      else
-			lhs.dimensions = dim_vector (0, 0);
 		    }
 		  else
 		    retval = 0;
@@ -2867,26 +2875,19 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		lhs.maybe_delete_elements (idx_i);
 	      else if (len == 0)
 		{
-		  if (! ((rhs_nr == 1 && rhs_nc == 1)
-			 || (rhs_nr == 0 || rhs_nc == 0)))
+		  if (! (rhs_is_scalar || (rhs_nr == 0 || rhs_nc == 0)))
 		    (*current_liboctave_error_handler)
 		      ("A([]) = X: X must be an empty matrix or scalar");
 		}
 	      else if (len == rhs_nr * rhs_nc)
 		{
-		  octave_idx_type k = 0;
-		  for (octave_idx_type j = 0; j < rhs_nc; j++)
+		  for (octave_idx_type i = 0; i < len; i++)
 		    {
-		      for (octave_idx_type i = 0; i < rhs_nr; i++)
-			{
-			  octave_idx_type ii = idx_i.elem (k++);
-			  octave_idx_type fr = ii % lhs_nr;
-			  octave_idx_type fc = (ii - fr) / lhs_nr;
-			  lhs.elem (fr, fc) = xrhs.elem (i, j);
-			}
+		      octave_idx_type ii = idx_i.elem (i);
+		      lhs.elem (ii) = xrhs.elem (i);
 		    }
 		}
-	      else if (rhs_nr == 1 && rhs_nc == 1)
+	      else if (rhs_is_scalar)
 		{
 		  RT scalar = rhs.elem (0, 0);
 

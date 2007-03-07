@@ -1,5 +1,7 @@
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
+	* Array.cc (assign1): Avoid resizing if there is an error.
+
 	* dMatrix.cc, CMatrix.cc (operator *): Only check
 	f77_exception_encountered immediately after calls that use F77_XFCN.
 

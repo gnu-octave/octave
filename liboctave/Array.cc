@@ -2525,38 +2525,40 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	  retval = 0;
 	}
-
-      if (rhs_len == n || rhs_len == 1)
-	{
-	  octave_idx_type max_idx = lhs_idx.max () + 1;
-	  if (max_idx > lhs_len)
-	    lhs.resize_and_fill (max_idx, rfv);
-	}
-
-      if (rhs_len == n)
-	{
-	  for (octave_idx_type i = 0; i < n; i++)
-	    {
-	      octave_idx_type ii = lhs_idx.elem (i);
-	      lhs.elem (ii) = rhs.elem (i);
-	    }
-	}
-      else if (rhs_len == 1)
-	{
-	  RT scalar = rhs.elem (0);
-
-	  for (octave_idx_type i = 0; i < n; i++)
-	    {
-	      octave_idx_type ii = lhs_idx.elem (i);
-	      lhs.elem (ii) = scalar;
-	    }
-	}
       else
 	{
-	  (*current_liboctave_error_handler)
-	    ("A(I) = X: X must be a scalar or a vector with same length as I");
+	  if (rhs_len == n || rhs_len == 1)
+	    {
+	      octave_idx_type max_idx = lhs_idx.max () + 1;
+	      if (max_idx > lhs_len)
+		lhs.resize_and_fill (max_idx, rfv);
+	    }
 
-	  retval = 0;
+	  if (rhs_len == n)
+	    {
+	      for (octave_idx_type i = 0; i < n; i++)
+		{
+		  octave_idx_type ii = lhs_idx.elem (i);
+		  lhs.elem (ii) = rhs.elem (i);
+		}
+	    }
+	  else if (rhs_len == 1)
+	    {
+	      RT scalar = rhs.elem (0);
+
+	      for (octave_idx_type i = 0; i < n; i++)
+		{
+		  octave_idx_type ii = lhs_idx.elem (i);
+		  lhs.elem (ii) = scalar;
+		}
+	    }
+	  else
+	    {
+	      (*current_liboctave_error_handler)
+		("A(I) = X: X must be a scalar or a vector with same length as I");
+
+	      retval = 0;
+	    }
 	}
     }
   else if (lhs_idx.is_colon ())

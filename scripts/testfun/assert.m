@@ -100,8 +100,8 @@ function assert(cond, expected, tol)
     endif
 
   elseif (isstruct (expected))
-    if (!isstruct (cond) || any(size(cond) != size(expected)) || ...
-	rows(struct_elements(cond)) != rows(struct_elements(expected)))
+    if (!isstruct (cond) || any(size(cond) != size(expected))
+	|| rows(struct_elements(cond)) != rows(struct_elements(expected)))
       iserror = 1;
     else
       try
@@ -121,7 +121,8 @@ function assert(cond, expected, tol)
   elseif (isempty (expected))
     iserror = (any (size (cond) != size (expected)));
 
-  elseif (any (size (cond) != size (expected)))
+  elseif (ndims (cond) != ndims (expected)
+	  || any (size (cond) != size (expected)))
     iserror = 1;
     coda = "Dimensions don't match";
 

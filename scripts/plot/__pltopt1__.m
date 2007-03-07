@@ -41,6 +41,9 @@ function options = __pltopt1__ (caller, opt)
     return;
   endif
 
+  have_linestyle = false;
+  have_marker = false;
+
   while (! isempty (opt))
     if (strncmp (opt, "--", 2) || strncmp (opt, "-.", 2))
       options.linestyle = opt(1:2);
@@ -49,12 +52,14 @@ function options = __pltopt1__ (caller, opt)
       topt = opt(1);
       n = 1;
       if (topt == "-" || topt == ":")
+	have_linestyle = true;
 	options.linestyle = topt;
       elseif (topt == "+" || topt == "o" || topt == "*"
 	      || topt == "." || topt == "x" || topt == "s"
 	      || topt == "d" || topt == "^" || topt == "v"
 	      || topt == ">" || topt == "<" || topt == "p"
 	      || topt == "h")
+	have_marker = true;
 	options.marker = topt;
       elseif (topt == "k")
 	options.color = [0, 0, 0];
@@ -88,5 +93,9 @@ function options = __pltopt1__ (caller, opt)
     endif
     opt(1:n) = [];
   endwhile
+
+  if (have_marker && ! have_linestyle)
+    options.linestyle = "";
+  endif
 
 endfunction

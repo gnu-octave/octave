@@ -29,6 +29,8 @@
 ## @var{pos} optionally  places the legend in the specified location:
 ##
 ## @multitable @columnfractions 0.1 0.1 0.8
+## @item @tab -1 @tab
+##   To the top right of the plot
 ## @item @tab 0 @tab
 ##   Don't move the legend box (default)
 ## @item @tab 1 @tab
@@ -39,14 +41,6 @@
 ##   Lower left-hand corner
 ## @item @tab 4 @tab
 ##   Lower right-hand corner
-## @item @tab -1 @tab
-##   To the top right of the plot
-## @item @tab -2 @tab
-##   To the bottom right of the plot
-## @item @tab -3 @tab
-##   To the bottom of the plot
-## @item @tab [@var{x}, @var{y}] @tab
-##   To the arbitrary postion in plot [@var{x}, @var{y}]
 ## @end multitable
 ##
 ## Some specific functions are directely avaliable using @var{func}:
@@ -79,7 +73,7 @@ function legend (varargin)
   if (nargs > 0)
     pos = varargin{nargs};
     if (isnumeric (pos) && isscalar (pos) && round (pos) == pos)
-      if (pos >= -3 && pos <= 4)
+      if (pos >= -1 && pos <= 4)
 	set (ca, "keypos", pos);
 	nargs--;
       else

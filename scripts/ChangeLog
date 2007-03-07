@@ -1,5 +1,18 @@
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
+	* control/base/rlocus.m: Update for current plotting functions.
+
+2007-03-07  A. S. Hodel  <a.s.hodel@eng.auburn.edu>
+
+	* control/base/rlocus.m: Improve display.
+
+2007-03-07  John W. Eaton  <jwe@octave.org>
+
+	* plot/legend.m: Only handle positions -1:4.
+	* plot/__pltopt1__.m: Don't set linestyle if only marker style is
+	found in option string
+	* plot/__uiobject_draw_axes__.m: Handle key position.
+
 	* plot/newplot.m: Always reset next line color.
 
 	* testfun/assert.m: Check that number of dimensions match before
@@ -1222,7 +1235,7 @@
 
 	* time/datevec.m: Add additional compatible default parsing strings.
 
-2006-10-09  Bill Denney  <denney@seas.upenn.edu><
+2006-10-09  Bill Denney  <denney@seas.upenn.edu>
 
 	* pkg/pkg.m: Remove trailing "\n" from error messages.
 	Remove compare_versions subfunction.

@@ -18,7 +18,7 @@
 ## 02110-1301 USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{rldata}, @var{k_break}, @var{rlpol}, @var{gvec}, @var{real_ax_pts}] =} rlocus (@var{sys}[, @var{increment}, @var{min_k}, @var{max_k}])
+## @deftypefn {Function File} {[@var{rldata}, @var{k}] =} rlocus (@var{sys}[, @var{increment}, @var{min_k}, @var{max_k}])
 ##
 ## Display root locus plot of the specified @acronym{SISO} system.
 ## @example
@@ -49,15 +49,8 @@
 ## @table @var 
 ## @item rldata
 ## Data points plotted: in column 1 real values, in column 2 the imaginary values.
-## @item k_break
+## @item k
 ## Gains for real axis break points.
-## @item rlpol
-## Closed-loop roots for each gain value: 1 locus branch per row; 1 pole
-## set per column
-## @item gvec
-## Gains vector
-## @item real_ax_pts
-## Real axis breakpoints
 ## @end table
 ## @end deftypefn
 
@@ -68,65 +61,98 @@
 
 function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, min_k, max_k)
 
-  if (nargin < 1) | (nargin > 4)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
   ## Convert the input to a transfer function if necessary
-
   [num,den] = sys2tf(sys);               # extract numerator/denom polyomials
-  lnum = length(num);      lden = length(den);
+  lnum = length(num);      
+  lden = length(den);
+  # equalize length of num, den polynomials
   if(lden < 2)
-    error(sprintf("length of derivative=%d, doesn't make sense",lden));
-  elseif(lnum == 1)
-    num = [0, num];     # so that derivative is shortened by one
+    error("system has no poles");
+  elseif(lnum < lden)
+    num = [zeros(1,lden-lnum), num];  # so that derivative is shortened by one
   endif
 
-  ## root locus plot axis limits
-
-  ## compute real axis locus breakpoints
-  ## compute the derivative of the numerator and the denominator
-  dern=polyderiv(num);        derd=polyderiv(den);
-
-  ## compute real axis breakpoints
-  real_ax_pol = conv(den,dern) - conv(num,derd);
-  real_ax_pts = roots(real_ax_pol);
-  if(isempty(real_ax_pts))
-    k_break = [];
-    maxk = 0;
+  olpol = roots(den);
+  olzer = roots(num);
+  nas = lden -lnum; # number of asymptotes
+  maxk = 0;
+  if(nas > 0)
+    cas = ( sum(olpol) - sum(olzer) )/nas;
+    angles = (2*[1:nas]-1)*pi/nas;
+    # printf("rlocus: there are %d asymptotes centered at %f\n", nas, cas);
   else
-    ## compute gains that achieve the breakpoints
-    c1 = polyval(num,real_ax_pts);
-    c2 = polyval(den,real_ax_pts);
-    k_break = -real(c2 ./ c1);
-    maxk = max(max(k_break,0));
+    cas = angles = [];
+    maxk = 100*den(1)/num(1);
   endif
 
-  ## compute gain ranges based on computed K values
-  if(maxk == 0)     maxk = 1;
-  else              maxk = 1.1*maxk;        endif
-  mink = 0;
-  ngain = 20;
 
+  # compute real axis break points and corresponding gains
+  dnum=polyderiv(num);
+  dden=polyderiv(den);
+  brkp = conv(den, dnum) - conv(num, dden);
+  real_ax_pts = roots(brkp);
+  real_ax_pts = real_ax_pts(find(imag(real_ax_pts) == 0));
+  k_break = -polyval(den,real_ax_pts) ./ polyval(num, real_ax_pts);
+  idx = find(k_break >= 0);
+  k_break = k_break(idx);
+  real_ax_pts = real_ax_pts(idx);
+  if(!isempty(k_break))
+    maxk = max(max(k_break),maxk);
+  endif
+  
+  if(nas == 0)
+    maxk = max(1, 2*maxk);  % get at least some root locus
+  else
+    # get distance from breakpoints, poles, and zeros to center of asymptotes
+    dmax = 3*max(abs( [vec(olzer); vec(olpol); vec(real_ax_pts)] - cas ));
+    if(dmax == 0)
+      dmax = 1;
+    endif
+ 
+    # get gain for dmax along each asymptote, adjust maxk if necessary
+    svals = cas + dmax*exp(j*angles);
+    kvals = -polyval(den,svals) ./ polyval(num, svals);
+    maxk = max(maxk, max(real(kvals)));
+  end
+  
   ## check for input arguments:
-  if (nargin > 2)       mink = min_k;          endif
-  if (nargin > 3)       maxk = max_k;          endif
+  if (nargin > 2)
+    mink = min_k;
+  else
+    mink = 0;
+  endif
+  if (nargin > 3)
+    maxk = max_k;
+  endif
   if (nargin > 1)
-    if(increment <= 0)  error("increment must be positive");
+    if(increment <= 0)
+      error("increment must be positive");
     else
       ngain = (maxk-mink)/increment;
     endif
+  else
+    ngain = 30;
   endif
 
   ## vector of gains
-  ngain = max(3,ngain);
+  ngain = max(30,ngain);
   gvec = linspace(mink,maxk,ngain);
+  if(length(k_break))
+    gvec = sort([gvec, vec(k_break)']);
+  endif
 
   ## Find the open loop zeros and the initial poles
   rlzer = roots(num);
 
   ## update num to be the same length as den
-  lnum = length(num);  if(lnum < lden) num = [zeros(1,lden - lnum),num];  endif
+  lnum = length(num);  
+  if(lnum < lden)
+    num = [zeros(1,lden - lnum),num];
+  endif
 
   ## compute preliminary pole sets
   nroots = lden-1;
@@ -135,57 +161,40 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
    rlpol(1:nroots,ii)  = vec(sortcom(roots(den + gain*num)));
   endfor
 
-  ## compute axis limits (isolate asymptotes)
-  olpol = roots(den);
-  real_axdat = union(real(rlzer), real(union(olpol,real_ax_pts)) );
-  rmin = min(real_axdat);      rmax = max(real_axdat);
+  ## set smoothing tolerance 
+  smtolx = 0.01*( max(max(real(rlpol))) - min(min(real(rlpol))));
+  smtoly = 0.01*( max(max(imag(rlpol))) - min(min(imag(rlpol))));
+  smtol = max(smtolx, smtoly);
+  rlpol = sort_roots(rlpol,smtolx, smtoly);   % sort according to nearest-neighbor
 
-  rlpolv = [vec(rlpol); vec(real_axdat)];
-  idx = find(real(rlpolv) >= rmin & real(rlpolv) <= rmax);
-  axlim = axis2dlim([real(rlpolv(idx)),imag(rlpolv(idx))]);
-  xmin = axlim(1);
-  xmax = axlim(2);
-
-  ## set smoothing tolerance per axis limits
-  smtol = 0.01*max(abs(axlim));
-
-  ## smooth poles if necessary, up to maximum of 1000 gain points
-  ## only smooth points within the axis limit window
-  ## smoothing done if max_k not specified as a command argument
   done=(nargin == 4);    # perform a smoothness check
   while((!done) & ngain < 1000)
     done = 1 ;      # assume done
     dp = abs(diff(rlpol'))';
-    maxd = max(dp);
-    ## search for poles in the real axis limits whose neighbors are distant
-    idx = find(maxd > smtol);
-    for ii=1:length(idx)
-      i1 = idx(ii);      g1 = gvec(i1);       p1 = rlpol(:,i1);
-      i2 = idx(ii)+1;    g2 = gvec(i2);       p2 = rlpol(:,i2);
+    maxdp = max(dp);
+    
+    ## search for poles whose neighbors are distant
+    if(lden == 2)
+      idx = find(dp > smtol);
+    else
+      idx = find(maxdp > smtol);
+    endif
 
-      ## isolate poles in p1, p2 that are inside the real axis limits
-      bidx = find( (real(p1) >= xmin & real(p1) <= xmax)  ...
-          | (real(p2) >= xmin & real(p2) <= xmax) );
-      if(!isempty(bidx))
-        p1 = p1(bidx);
-        p2 = p2(bidx);
-        if( max(abs(p2-p1)) > smtol)
-          newg = linspace(g1,g2,5);
-          newg = newg(2:4);
-          if(isempty(newg))
-            printf("rlocus: empty newg")
-            g1
-            g2
-            i1
-            i2
-            idx_i1 = idx(ii)
-            gvec_i1 = gvec(i1:i2)
-            delta_vec_i1 = diff(gvec(i1:i2))
-            prompt
-          endif
-          gvec =  [gvec,newg];
-          done = 0;             # need to process new gains
-        endif
+    for ii=1:length(idx)
+      i1 = idx(ii);
+      g1 = gvec(i1);
+      p1 = rlpol(:,i1);
+
+      i2 = idx(ii)+1;
+      g2 = gvec(i2);
+      p2 = rlpol(:,i2);
+
+      ## isolate poles in p1, p2 
+      if( max(abs(p2-p1)) > smtol)
+        newg = linspace(g1,g2,5);
+        newg = newg(2:4);
+        gvec =  [gvec,newg];
+        done = 0;             # need to process new gains
       endif
     endfor
 
@@ -199,32 +208,87 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     [gvec,idx] = sort(gvec);
     rlpol = rlpol(:,idx);
     ngain = length(gvec);
+    rlpol = sort_roots(rlpol,smtolx, smtoly);   % sort according to nearest-neighbor
   endwhile
+  rldata = rlpol;
 
   ## Plot the data
   if(nargout  == 0)
     rlpolv = vec(rlpol);
-    idx = find(real(rlpolv) >= xmin & real(rlpolv) <= xmax);
-    axdata = [real(rlpolv(idx)),imag(rlpolv(idx))];
+    axdata = [real(rlpolv),imag(rlpolv); real(olzer), imag(olzer)];
     axlim = axis2dlim(axdata);
-    axlim(1:2) = [xmin, xmax];
-    __gnuplot_set__ nologscale xy;
-    grid("on");
     rldata = [real(rlpolv), imag(rlpolv) ];
-    axis(axlim);
     [stn,inname,outname] = sysgetsignals(sys);
-    xlabel(sprintf("Root locus from %s to %s, gain=[%f,%f]: Real axis", ...
-        inname{1}, outname{1},gvec(1),gvec(ngain)));
-    ylabel("Imag. axis");
 
-    if(isempty(rlzer))
-      plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...
-           real(olpol),imag(olpol),"x2;open loop poles;");
-    else
-      plot(real(rlpolv),imag(rlpolv),".1;locus points;", ...
-           real(olpol),imag(olpol),"x2;open loop poles;", ...
-           real(rlzer),imag(rlzer),"o3;zeros;");
+    ## build plot command args pole by pole
+
+    n_rlpol = rows(rlpol);
+    nelts = n_rlpol+1;
+    if (! isempty (rlzer))
+      nelts++;
     endif
+    args = cell (3, nelts);
+    for kk=1:rows(rlpol)
+      args{1,kk} = real (rlpol (kk,:));
+      args{2,kk} = imag (rlpol (kk,:));
+      args{3,kk} = "b-";
+    endfor
+    args{1,n_rlpol+1} = real(olpol);
+    args{2,n_rlpol+1} = imag(olpol);
+    args{3,n_rlpol+1} = "rx;open loop poles;";
+
+    if (! isempty(rlzer))
+      args{1,n_rlpol+2} = real(rlzer);
+      args{2,n_rlpol+2} = imag(rlzer);
+      args{3,n_rlpol+2} = "go;zeros;";
+    endif
+
+    plot (args{:})
+    legend ("boxon", 2);
+    grid ("on");
+    axis (axlim);
+    xlabel (sprintf ("Root locus from %s to %s, gain=[%f,%f]: Real axis",
+		     inname{1}, outname{1}, gvec(1), gvec(ngain)));
+    ylabel ("Imag. axis");
     rldata = [];
   endif
+endfunction
+
+function rlpol = sort_roots (rlpol,tolx, toly)
+  # no point sorting of you've only got one pole!
+  if(rows(rlpol) == 1)
+    return
+  endif
+
+  # reorder entries in each column of rlpol to be by their nearest-neighbors
+  dp = diff(rlpol')';
+  drp = max(real(dp));
+  dip = max(imag(dp));
+  idx = find( drp > tolx | dip > toly );
+  if(isempty(idx) )
+    return
+  endif
+
+  [np,ng] = size(rlpol);  # num poles, num gains
+  for jj = idx
+    vals = rlpol(:,[jj,jj+1]);
+    jdx = (jj+1):ng;
+    for ii=1:rows(rlpol-1)
+      rdx = ii:np;
+      dval = abs(rlpol(rdx,jj+1)-rlpol(ii,jj));
+      mindist = min(dval);
+      sidx = min( find ( dval == mindist)) + ii - 1;
+      if( sidx != ii)
+        c1 = norm(diff(vals'));
+        [vals(ii,2), vals(sidx,2)] = swap( vals(ii,2), vals(sidx,2));
+        c2 = norm(diff(vals'));
+        if(c1 > c2 )
+          # perform the swap
+          [rlpol(ii,jdx), rlpol(sidx,jdx)] = swap( rlpol(ii,jdx), rlpol(sidx,jdx));
+          vals = rlpol(:,[jj,jj+1]);
+        endif
+      endif
+    endfor
+  endfor
+
 endfunction

@@ -32,6 +32,8 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     parent_figure_obj = get (axis_obj.parent);
 
+    have_newer_gnuplot = compare_versions (__gnuplot_version__ (), "4.0", ">");
+
     ## Set axis properties here?
 
     if (! isempty (axis_obj.outerposition))
@@ -633,10 +635,30 @@ function __uiobject_draw_axes__ (h, plot_stream)
 
     if (strcmp (axis_obj.key, "on"))
       if (strcmp (axis_obj.keybox, "on"))
-	fputs (plot_stream, "set key box;\n");
+	box = "box";
       else
-	fputs (plot_stream, "set key nobox;\n");
+	box = "nobox";
       endif
+      inout = "inside";
+      switch (axis_obj.keypos)
+	case -1
+	  pos = "right bottom";
+	  inout = "outside";
+	case 1
+	  pos = "right top";
+	case 2
+	  pos = "left top";
+	case 3
+	  pos = "left bottom";
+	case 4
+	  pos = "right bottom";
+	otherwise
+	  pos = "";
+      endswitch
+      if (! have_newer_gnuplot)
+	inout = "";
+      endif
+      fprintf (plot_stream, "set key %s %s %s;\n", inout, pos, box);
     else
       fputs (plot_stream, "unset key;\n");
     endif

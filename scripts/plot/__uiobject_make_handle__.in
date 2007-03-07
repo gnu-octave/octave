@@ -30,7 +30,7 @@ function h = __uiobject_make_handle__ (s)
 
   if (nargin == 1)
     idx = __uiobject_alloc__ ();
-    h = __uiobject_get_handle__ ()
+    h = __uiobject_get_handle__ ();
     __uiobject_list__(idx).handle = h;
     __uiobject_list__(idx).object = s;
     __request_drawnow__ ();

@@ -33,7 +33,7 @@ function s = __uiobject_adopt__ (parent, child)
       ## Put this child at the end of the list.  If it is already in
       ## the list, move it.
       kids(kids == child) = [];
-      kids = [kids, child]
+      kids = [kids, child];
       set (parent, "children", kids);
     else
       error ("__uiobject_adopt__: expecting parent to be a handle");

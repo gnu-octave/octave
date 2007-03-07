@@ -32,6 +32,8 @@
 
 function h = mesh (x, y, z)
 
+  newplot ();
+
   if (nargin == 1)
     z = x;
     if (ismatrix (z))

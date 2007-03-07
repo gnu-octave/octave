@@ -1345,7 +1345,7 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 	  if (typ == MatrixType::Permuted_Upper)
 	    {
 	      (*current_liboctave_error_handler)
-		("Permuted triangular matrix not implemented");
+		("permuted triangular matrix not implemented");
 	    }
 	  else
 	    {
@@ -1451,7 +1451,7 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 	  if (typ == MatrixType::Permuted_Lower)
 	    {
 	      (*current_liboctave_error_handler)
-		("Permuted triangular matrix not implemented");
+		("permuted triangular matrix not implemented");
 	    }
 	  else
 	    {
@@ -3145,22 +3145,30 @@ operator * (const Matrix& m, const Matrix& a)
 	      if (nr == 1)
 		F77_FUNC (xddot, XDDOT) (nc, m.data (), 1, a.data (), 1, *c);
 	      else
-		F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-					 nr, nc, 1.0,  m.data (), ld,
-					 a.data (), 1, 0.0, c, 1
-					 F77_CHAR_ARG_LEN (1)));
+		{
+		  F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+					   nr, nc, 1.0,  m.data (), ld,
+					   a.data (), 1, 0.0, c, 1
+					   F77_CHAR_ARG_LEN (1)));
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler)
+		      ("unrecoverable error in dgemv");
+		}
             }
 	  else
-	    F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
-				     F77_CONST_CHAR_ARG2 ("N", 1),
-				     nr, a_nc, nc, 1.0, m.data (),
-				     ld, a.data (), lda, 0.0, c, nr
-				     F77_CHAR_ARG_LEN (1)
-				     F77_CHAR_ARG_LEN (1)));
+	    {
+	      F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+				       F77_CONST_CHAR_ARG2 ("N", 1),
+				       nr, a_nc, nc, 1.0, m.data (),
+				       ld, a.data (), lda, 0.0, c, nr
+				       F77_CHAR_ARG_LEN (1)
+				       F77_CHAR_ARG_LEN (1)));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in dgemm");
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in dgemm");
+	    }
 	}
     }
 

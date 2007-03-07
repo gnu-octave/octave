@@ -1,5 +1,8 @@
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
+	* dMatrix.cc, CMatrix.cc (operator *): Only check
+	f77_exception_encountered immediately after calls that use F77_XFCN.
+
 	* Array.cc (assign1 (Array<LT>&, const Array<RT>&, const LT&)):
 	Only allow resizing empty LHS if it is 0x0.
 

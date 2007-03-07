@@ -153,6 +153,9 @@ urlget (const std::string& url, const std::string& method,
   // Set a pointer to our struct to pass to the callback.
   curl_easy_setopt (curl, CURLOPT_WRITEDATA, static_cast<void*> (&stream));
 
+  // Follow redirects.
+  curl_easy_setopt (curl, CURLOPT_FOLLOWLOCATION, 1);
+
   curl_easy_setopt (curl, CURLOPT_NOPROGRESS, false);
   curl_easy_setopt (curl, CURLOPT_PROGRESSFUNCTION, progress_func);
   curl_easy_setopt (curl, CURLOPT_PROGRESSDATA, url.c_str ());

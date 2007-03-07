@@ -1,5 +1,11 @@
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
+	* plot/mesh.m: Call newplot before doing anything.
+
+	* plot/__uiobject_draw_axes__.m: Send "e\n" at end of data, not
+	just "e".  Only flush plot stream once.
+	From Daniel J Sebald <daniel.sebald@ieee.org>.
+
 	* strings/blanks.m: Omit first index in assignment.
 
 2007-03-07  Paul Kienzle  <pkienzle@users.sf.net>

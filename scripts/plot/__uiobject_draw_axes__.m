@@ -642,7 +642,6 @@ function __uiobject_draw_axes__ (h, plot_stream)
     endif
 
     fputs (plot_stream, "set style data lines;\n");
-    fflush (plot_stream);
 
     if (! use_gnuplot_for_images)
       for i = 1:ximg_data_idx
@@ -688,13 +687,11 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	      endfor
 	    endif
 	  endif
-	  fputs (plot_stream, "e");
-	  fflush (plot_stream);
+	  fputs (plot_stream, "e\n");
 	endif
       endfor
     endif
 
-    fputs (plot_stream, "\n");
     fflush (plot_stream);
 
   else

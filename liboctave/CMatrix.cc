@@ -1683,7 +1683,7 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  if (typ == MatrixType::Permuted_Upper)
 	    {
 	      (*current_liboctave_error_handler)
-		("Permuted triangular matrix not implemented");
+		("permuted triangular matrix not implemented");
 	    }
 	  else
 	    {
@@ -1790,7 +1790,7 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  if (typ == MatrixType::Permuted_Lower)
 	    {
 	      (*current_liboctave_error_handler)
-		("Permuted triangular matrix not implemented");
+		("permuted triangular matrix not implemented");
 	    }
 	  else
 	    {
@@ -3768,22 +3768,30 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 	      if (nr == 1)
 		F77_FUNC (xzdotu, XZDOTU) (nc, m.data (), 1, a.data (), 1, *c);
 	      else
-		F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-					 nr, nc, 1.0,  m.data (), ld,
-					 a.data (), 1, 0.0, c, 1
-					 F77_CHAR_ARG_LEN (1)));
+		{
+		  F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
+					   nr, nc, 1.0,  m.data (), ld,
+					   a.data (), 1, 0.0, c, 1
+					   F77_CHAR_ARG_LEN (1)));
+
+		  if (f77_exception_encountered)
+		    (*current_liboctave_error_handler)
+		      ("unrecoverable error in zgemv");
+		}
 	    }
 	  else
-	    F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
-				     F77_CONST_CHAR_ARG2 ("N", 1),
-				     nr, a_nc, nc, 1.0, m.data (),
-				     ld, a.data (), lda, 0.0, c, nr
-				     F77_CHAR_ARG_LEN (1)
-				     F77_CHAR_ARG_LEN (1)));
+	    {
+	      F77_XFCN (zgemm, ZGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
+				       F77_CONST_CHAR_ARG2 ("N", 1),
+				       nr, a_nc, nc, 1.0, m.data (),
+				       ld, a.data (), lda, 0.0, c, nr
+				       F77_CHAR_ARG_LEN (1)
+				       F77_CHAR_ARG_LEN (1)));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in zgemm");
+	      if (f77_exception_encountered)
+		(*current_liboctave_error_handler)
+		  ("unrecoverable error in zgemm");
+	    }
 	}
     }
 

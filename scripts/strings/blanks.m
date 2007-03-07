@@ -34,7 +34,9 @@ function s = blanks (n)
     error ("blanks: n must be a non-negative integer");
   endif
 
-  s(1,1:n) = " ";
+  ## If 1:n is empty, the following expression will create an empty
+  ## character string.  Otherwise, it will create a row vector.
+  s(1:n) = " ";
 
 endfunction
 

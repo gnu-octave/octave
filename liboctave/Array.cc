@@ -1679,6 +1679,8 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
   dim_vector lhs_dims = dims ();
 
+  int n_lhs_dims = lhs_dims.length ();
+
   if (lhs_dims.all_zero ())
     return;
 
@@ -1688,7 +1690,24 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
       return;
     }
 
-  int n_lhs_dims = lhs_dims.length ();
+  if (n_idx > n_lhs_dims)
+    {
+      for (int i = n_idx; i < n_lhs_dims; i++)
+	{
+	  // Ensure that extra indices are either colon or 1.
+
+	  if (! ra_idx(i).is_colon_equiv (1, 1))
+	    {
+	      (*current_liboctave_error_handler)
+		("index exceeds array dimensions");
+	      return;
+	    }
+	}
+
+      ra_idx.resize (n_lhs_dims);
+
+      n_idx = n_lhs_dims;
+    }
 
   Array<int> idx_is_colon (n_idx, 0);
 
@@ -2466,47 +2485,18 @@ template <class LT, class RT>
 int
 assign (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 {
-  int retval = 0;
+  int n_idx = lhs.index_count ();
 
-  switch (lhs.ndims ())
-    {
-    case 0:
-      {
-	if (lhs.index_count () < 3)
-	  {
-	    // kluge...
-	    lhs.resize_no_fill (0, 0);
-	    retval = assign2 (lhs, rhs, rfv);
-	  }
-	else
-	  retval = assignN (lhs, rhs, rfv);
-      }
-      break;
+  // kluge...
+  if (lhs.ndims () == 0)
+    lhs.resize_no_fill (0, 0);
 
-    case 1:
-      {
-	if (lhs.index_count () > 1)
-	  retval = assignN (lhs, rhs, rfv);
-	else
-	  retval = assign1 (lhs, rhs, rfv);
-      }
-      break;
-
-    case 2:
-      {
-	if (lhs.index_count () > 2)
-	  retval = assignN (lhs, rhs, rfv);
-	else
-	  retval = assign2 (lhs, rhs, rfv);
-      }
-      break;
-
-    default:
-      retval = assignN (lhs, rhs, rfv);
-      break;
-    }
-
-  return retval;
+  return (lhs.ndims () == 2
+	  && (n_idx == 1
+	      || (n_idx < 3
+		  && rhs.ndims () == 2
+		  && rhs.rows () == 0 && rhs.columns () == 0)))
+    ? assign2 (lhs, rhs, rfv) : assignN (lhs, rhs, rfv);
 }
 
 template <class LT, class RT>
@@ -3067,16 +3057,17 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		  octave_idx_type nelem = idx(i).capacity ();
 
 		  if (nelem >= 1
-		      && k < rhs_dims.length () && nelem == rhs_dims(k))
+		      && ((k < rhs_dims.length () && nelem == rhs_dims(k))
+			  || rhs_is_scalar))
 		    k++;
-		  else if (nelem != 1)
+		  else if (! (nelem == 1 || rhs_is_scalar))
 		    {
 		      (*current_liboctave_error_handler)
 			("A(IDX-LIST) = RHS: mismatched index and RHS dimension");
 		      return retval;
 		    }
 
-		  new_dims(i) = idx(i).max () + 1;
+		  new_dims(i) = idx(i).orig_empty () ? 0 : idx(i).max () + 1;
 		}
 	    }
 	}
@@ -3154,19 +3145,53 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		  if  (! final_lhs_dims.any_zero ())
 		    {
-		      octave_idx_type n = Array<LT>::get_size (frozen_len);
-
-		      Array<octave_idx_type> result_idx (lhs_dims_len, 0);
-
 		      RT scalar = rhs.elem (0);
 
-		      for (octave_idx_type i = 0; i < n; i++)
+		      if (n_idx == 1)
 			{
-			  Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
+			  idx_vector iidx = idx(0);
 
-			  lhs.elem (elt_idx) = scalar;
+			  octave_idx_type len = frozen_len(0);
 
-			  increment_index (result_idx, frozen_len);
+			  for (octave_idx_type i = 0; i < len; i++)
+			    {
+			      octave_idx_type ii = iidx.elem (i);
+
+			      lhs.elem (ii) = scalar;
+			    }
+			}
+		      else if (lhs_dims_len == 2 && n_idx == 2)
+			{
+			  idx_vector idx_i = idx(0);
+			  idx_vector idx_j = idx(1);
+
+			  octave_idx_type i_len = frozen_len(0);
+			  octave_idx_type j_len = frozen_len(1);
+
+			  for (octave_idx_type j = 0; j < j_len; j++)
+			    {
+			      octave_idx_type jj = idx_j.elem (j);
+			      for (octave_idx_type i = 0; i < i_len; i++)
+				{
+				  octave_idx_type ii = idx_i.elem (i);
+				  lhs.elem (ii, jj) = scalar;
+				}
+			    }
+			}
+		      else
+			{
+			  octave_idx_type n = Array<LT>::get_size (frozen_len);
+
+			  Array<octave_idx_type> result_idx (lhs_dims_len, 0);
+
+			  for (octave_idx_type i = 0; i < n; i++)
+			    {
+			      Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
+
+			      lhs.elem (elt_idx) = scalar;
+
+			      increment_index (result_idx, frozen_len);
+			    }
 			}
 		    }
 		}
@@ -3192,17 +3217,52 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		      if  (! final_lhs_dims.any_zero ())
 			{
-			  n = Array<LT>::get_size (frozen_len);
-
-			  Array<octave_idx_type> result_idx (lhs_dims_len, 0);
-
-			  for (octave_idx_type i = 0; i < n; i++)
+			  if (n_idx == 1)
 			    {
-			      Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
+			      idx_vector iidx = idx(0);
 
-			      lhs.elem (elt_idx) = rhs.elem (i);
+			      octave_idx_type len = frozen_len(0);
 
-			      increment_index (result_idx, frozen_len);
+			      for (octave_idx_type i = 0; i < len; i++)
+				{
+				  octave_idx_type ii = iidx.elem (i);
+
+				  lhs.elem (ii) = rhs.elem (i);
+				}
+			    }
+			  else if (lhs_dims_len == 2 && n_idx == 2)
+			    {
+			      idx_vector idx_i = idx(0);
+			      idx_vector idx_j = idx(1);
+
+			      octave_idx_type i_len = frozen_len(0);
+			      octave_idx_type j_len = frozen_len(1);
+			      octave_idx_type k = 0;
+
+			      for (octave_idx_type j = 0; j < j_len; j++)
+				{
+				  octave_idx_type jj = idx_j.elem (j);
+				  for (octave_idx_type i = 0; i < i_len; i++)
+				    {
+				      octave_idx_type ii = idx_i.elem (i);
+				      lhs.elem (ii, jj) = rhs.elem (k++);
+				    }
+				}
+			    }
+			  else
+			    {
+			      n = Array<LT>::get_size (frozen_len);
+
+			      Array<octave_idx_type> result_idx (lhs_dims_len, 0);
+
+			      for (octave_idx_type i = 0; i < n; i++)
+				{
+				  Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
+
+				  lhs.elem (elt_idx) = rhs.elem (i);
+
+				  increment_index (result_idx, frozen_len);
+				}
 			    }
 			}
 		    }

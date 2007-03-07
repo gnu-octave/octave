@@ -1,5 +1,8 @@
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
+	* Array.cc (assign1 (Array<LT>&, const Array<RT>&, const LT&)):
+	Only allow resizing empty LHS if it is 0x0.
+
 	* Array.cc (Array<T>::maybe_delete_elements (Array<idx_vector>&,
 	const T&)): Handle case of more indices than dimensions.
 	(assign (Array<LT>&, const Array<RT>&, const LT&)): Allow more

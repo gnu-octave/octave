@@ -25,7 +25,9 @@
 ## @end deftypefn
 
 function x = factorial (n)
-  if (any (n(:) < 0))
+  if (nargin != 1)
+    print_usage ();
+  elseif (any (n(:) < 0))
     error ("factorial: n be be a scalar or array of positive integers");
   endif
   if (isscalar (n))

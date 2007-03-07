@@ -1,3 +1,7 @@
+2007-03-07  Muthiah Annamalai  <muthuspost@gmail.com>
+
+	* specfun/perms.m, specfun/factorial.m: Check args.
+
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
 	* plot/mesh.m: Call newplot before doing anything.

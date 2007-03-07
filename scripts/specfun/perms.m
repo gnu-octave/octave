@@ -27,6 +27,9 @@
 ## @end deftypefn
 
 function A = perms (v)
+  if (nargin != 1)
+    print_usage ();
+  endif
   v = v(:);
   n = length (v);
   if (n == 1)

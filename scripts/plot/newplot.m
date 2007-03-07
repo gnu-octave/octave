@@ -24,6 +24,7 @@
 function newplot ()
 
   if (nargin == 0)
+    __next_line_color__ (true);
     cf = gcf ();
     fnp = get (cf, "nextplot");
     switch (fnp)
@@ -42,7 +43,6 @@ function newplot ()
       case "add"
       case "replacechildren"
       case "replace"
-	__next_line_color__ (true);
 	__uiobject_axes_init__ (ca, "replace");
       otherwise
 	error ("newplot: unrecognized nextplot property for current axes");

@@ -1,5 +1,7 @@
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
+	* plot/newplot.m: Always reset next line color.
+
 	* testfun/assert.m: Check that number of dimensions match before
 	checking dimensions.
 

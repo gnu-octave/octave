@@ -57,8 +57,8 @@ function c = setdiff (a, b, byrows_arg)
       b = unique (b, "rows");
       [dummy, idx] = sortrows ([c; b]);
       ## Eliminate those elements of a that are the same as in b.
-      n = length (dummy);
-      c(idx(find (dummy(1:n-1) == dummy(2:n))), :) = [];
+      dups = find (all (dummy(1:end-1,:) == dummy(2:end,:), 2));
+      c(idx(dups),:) = [];
     endif
   else
     c = unique (a);
@@ -67,12 +67,12 @@ function c = setdiff (a, b, byrows_arg)
       b = unique (b);
       [dummy, idx] = sort ([c(:); b(:)]);
       ## Eliminate those elements of a that are the same as in b.
-      n = length (dummy);
       if (iscellstr (dummy))
-	c(idx(find (strcmp (dummy(1:n-1), dummy(2:n))))) = [];
+        dups = find (strcmp (dummy(1:end-1), dummy(2:end)));
       else
-	c(idx(find (dummy(1:n-1) == dummy(2:n)))) = [];
+	dups = find (dummy(1:end-1) == dummy(2:end));
       endif
+      c(idx(dups)) = [];
       ## Reshape if necessary.
       if (size (c, 1) != 1 && size (b, 1) == 1)
 	c = c.';
@@ -87,5 +87,5 @@ endfunction
 %!assert(setdiff(["b";"z";"b";"z"],["b";"c";"b"]), "z")
 %!assert(setdiff([1, 1; 2, 2; 3, 3; 4, 4], [1, 1; 2, 2; 4, 4], "rows"), [3 3])
 %!assert(setdiff([1; 2; 3; 4], [1; 2; 4], "rows"), 3)
-%!assert(setdiff([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 6])
+%!assert(setdiff([1, 2; 3, 4], [1, 2; 3, 6], "rows"), [3, 4])
 %!assert(setdiff({"one","two";"three","four"},{"one","two";"three","six"}), {"four"})

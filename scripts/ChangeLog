@@ -1,3 +1,7 @@
+2007-03-07  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* set/setdiff.m: Some code cleanup and a fix for setdiff on rows.
+
 2007-03-06  David Bateman  <dbateman@free.fr>
 	    John W. Eaton  <jwe@octave.org>
 

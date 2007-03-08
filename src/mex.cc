@@ -360,13 +360,13 @@ public:
     return ndims;
   }
 
-  void set_m (int /*m*/) { panic_impossible (); }
+  void set_m (int /*m*/) { request_mutation (); }
 
-  void set_n (int /*n*/) { panic_impossible (); }
+  void set_n (int /*n*/) { request_mutation (); }
 
   void set_dimensions (int */*dims_arg*/, int /*ndims_arg*/)
   {
-    panic_impossible ();
+    request_mutation ();
   }
 
   int get_number_of_elements (void) const { return val.numel (); }
@@ -432,7 +432,7 @@ public:
   }
 
   // Not allowed.
-  void set_class_name (const char */*name_arg*/) { panic_impossible (); }
+  void set_class_name (const char */*name_arg*/) { request_mutation (); }
 
   mxArray *get_cell (int /*idx*/) const
   {
@@ -441,7 +441,7 @@ public:
   }
 
   // Not allowed.
-  void set_cell (int /*idx*/, mxArray */*val*/) { panic_impossible (); }
+  void set_cell (int /*idx*/, mxArray */*val*/) { request_mutation (); }
 
   double get_scalar (void) const { return val.scalar_value (true); }
 
@@ -471,10 +471,10 @@ public:
   }
 
   // Not allowed.
-  void set_data (void */*pr*/) { panic_impossible (); }
+  void set_data (void */*pr*/) { request_mutation (); }
 
   // Not allowed.
-  void set_imag_data (void */*pi*/) { panic_impossible (); }
+  void set_imag_data (void */*pi*/) { request_mutation (); }
 
   int *get_ir (void) const
   {
@@ -499,23 +499,23 @@ public:
   int get_nzmax (void) const { return val.nzmax (); }
 
   // Not allowed.
-  void set_ir (int */*ir*/) { panic_impossible (); }
+  void set_ir (int */*ir*/) { request_mutation (); }
 
   // Not allowed.
-  void set_jc (int */*jc*/) { panic_impossible (); }
+  void set_jc (int */*jc*/) { request_mutation (); }
 
   // Not allowed.
-  void set_nzmax (int /*nzmax*/) { panic_impossible (); }
+  void set_nzmax (int /*nzmax*/) { request_mutation (); }
 
   // Not allowed.
   int add_field (const char */*key*/)
   {
-    panic_impossible ();
-    return -1;
+    request_mutation ();
+    return 0;
   }
 
   // Not allowed.
-  void remove_field (int /*key_num*/) { panic_impossible (); }
+  void remove_field (int /*key_num*/) { request_mutation (); }
 
   mxArray *get_field_by_number (int /*index*/, int /*key_num*/) const
   {
@@ -526,7 +526,7 @@ public:
   // Not allowed.
   void set_field_by_number (int /*index*/, int /*key_num*/, mxArray */*val*/)
   {
-    panic_impossible ();
+    request_mutation ();
   }
 
   int get_number_of_fields (void) const { return val.nfields (); }

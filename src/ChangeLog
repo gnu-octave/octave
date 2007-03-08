@@ -1,3 +1,18 @@
+2007-03-08  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mxArray_octave_value::set_dimensions,
+	mxArray_octave_value::set_m, mxArray_octave_value::set_n, 
+	mxArray_octave_value::set_class_name,
+	mxArray_octave_value::set_ir, mxArray_octave_value::set_jc,
+	mxArray_octave_value::remove_field,
+	mxArray_octave_value::set_field_by_number):
+	Don't panic; request mutation instead.
+	(class mxArray_octave_value): 
+
+	* mxarray.h (mxArray::set_m, mxArray::set_n,
+	mxArray::set_dimensions): Wrap method call call with
+	DO_VOID_MUTABLE_METHOD.
+
 2007-03-08  David Bateman  <dbateman@free.fr>
 
 	* data.cc (do_cat): Ignore leading empty matrices.

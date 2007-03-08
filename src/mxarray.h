@@ -212,11 +212,11 @@ public:
 
   virtual int get_number_of_dimensions (void) const { return rep->get_number_of_dimensions (); }
 
-  virtual void set_m (int m) { rep->set_m (m); }
+  virtual void set_m (int m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
 
-  virtual void set_n (int n) { rep->set_n (n); }
+  virtual void set_n (int n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
 
-  virtual void set_dimensions (int *dims_arg, int ndims_arg) { rep->set_dimensions (dims_arg, ndims_arg); }
+  virtual void set_dimensions (int *dims_arg, int ndims_arg) { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
 
   virtual int get_number_of_elements (void) const { return rep->get_number_of_elements (); }
 

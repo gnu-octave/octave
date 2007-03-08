@@ -1,3 +1,7 @@
+2007-03-08  David Bateman  <dbateman@free.fr>
+
+	* data.cc (do_cat): Ignore leading empty matrices.
+
 2007-03-07  Bob Weigel  <rweigel@gmu.edu>
 
 	* urlwrite.cc (urlget): Allow URL redirects.

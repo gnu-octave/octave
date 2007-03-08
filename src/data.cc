@@ -736,7 +736,8 @@ do_cat (const octave_value_list& args, std::string fname)
 
 	  octave_value tmp;
 
-          for (int i = 1; i < n_args; i++)
+	  int i;
+          for (i = 1; i < n_args; i++)
 	    {
 	      if (! args (i).all_zero_dims ())
 		{
@@ -752,14 +753,14 @@ do_cat (const octave_value_list& args, std::string fname)
 
 	  Array<int> ra_idx (dv.length (), 0);
 
-	  for (int i = 1; i < n_args; i++)
+	  for (int j = i; j < n_args; j++)
 	    {
-	      tmp = do_cat_op (tmp, args (i), ra_idx);
+	      tmp = do_cat_op (tmp, args (j), ra_idx);
 
 	      if (error_state)
 		return retval;
 
-	      dim_vector dv_tmp = args (i).dims ();
+	      dim_vector dv_tmp = args (j).dims ();
 
 	      ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1);
 	    }

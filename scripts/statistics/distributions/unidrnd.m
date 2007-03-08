@@ -1,4 +1,4 @@
-## Copyright (C) 2007  David Bateman
+## Copyright (C) 2005 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,28 +18,44 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} unidrnd (@var{v}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} unidrnd (@var{v}, @var{sz})
-## Generate a row vector containing a random sample of values from
-## the univariate distribution which assumes the values in @var{v} with
-## eqal probability. If @var{v} is a scalar, it is promoted to @code{1:@var{v}}.
+## @deftypefn {Function File} {} unidrnd (@var{mx});
+## @deftypefnx {Function File} {} unidrnd (@var{mx}, @var{v});
+## @deftypefnx {Function File} {} unidrnd (@var{mx}, @var{m}, @var{n}, @dots{});
+## Return random values from discrete uniform distribution, with maximum
+## value(s) given by the integer @var{mx}, which may be a scalar or
+## multidimensional array.
 ##
-## If @var{r} and @var{c} are given create a matrix with @var{r} rows and
-## @var{c} columns. Or if @var{sz} is a vector, create a matrix of size
-## @var{sz}.
+## If @var{mx} is a scalar, the size of the result is specified by
+## the vector @var{v}, or by the optional arguments @var{m}, @var{n},
+## @dots{}.  Otherwise, the size of the result is the same as the size
+## of @var{mx}.
 ## @end deftypefn
 
-function rnd = unidrnd (v, varargin)
+## Author: jwe
 
-  if (nargin != 2)
-    print_usage ();
-  endif
-
-  if (isscalar(v))
-    v = [1:v].';
+function retval = unidrnd (n, varargin)
+  if (nargin == 1)
+    dims = size (n);
+  elseif (nargin == 2)
+    if (rows (varargin{1}) == 1 && columns (varargin{1}) > 1)
+      dims = varargin{1};
+    else
+      error ("unidrnd: invalid dimension vector");
+    endif
+  elseif (nargin > 2)
+    for i = 1:nargin-1
+      if (! isscalar (varargin{i}))
+	error ("unidrnd: expecting scalar dimensions");
+      endif
+    endfor
+    dims = [varargin{:}];
   else
-    v = v(:);
+    error ("unidrnd (n, ...)");
   endif
-
-  rnd = discrete_rnd (v, ones(size(v)), varargin{:});
+  if (isscalar (n)
+      || (length (size (n)) == length (dims) && all (size (n) == dims)))
+    retval = ceil (rand (dims) .* n);
+  else
+    error ("unidrnd: dimension mismatch");
+  endif
 endfunction

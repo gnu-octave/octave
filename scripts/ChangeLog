@@ -1,3 +1,8 @@
+2007-03-08  David Bateman  <dbateman@free.fr>
+
+	* statistics/base/unidrnd.m: Move to statistics/distributions
+	replacing slower version based on dicrete_rnd.
+
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
 	* control/base/rlocus.m: Update for current plotting functions.

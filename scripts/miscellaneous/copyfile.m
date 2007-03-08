@@ -72,6 +72,8 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     f1 = glob (f1);
     f1 = sprintf ("\"%s\" ", f1{:});
 
+    f2 = tilde_expand (f2);
+
     ## Copy the files.
     [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, f1, f2));
     if (err < 0)

@@ -746,26 +746,31 @@ do_cat (const octave_value_list& args, std::string fname)
 		}
 	    }
 
-	  tmp = tmp.resize (dim_vector (0,0)).resize (dv);
-
-	  if (error_state)
-	    return retval;
-
-	  Array<int> ra_idx (dv.length (), 0);
-
-	  for (int j = i; j < n_args; j++)
+	  if (i == n_args)
+	    retval = Matrix ();
+	  else
 	    {
-	      tmp = do_cat_op (tmp, args (j), ra_idx);
+	      tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
 	      if (error_state)
 		return retval;
 
-	      dim_vector dv_tmp = args (j).dims ();
+	      Array<int> ra_idx (dv.length (), 0);
 
-	      ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1);
+	      for (int j = i; j < n_args; j++)
+		{
+		  tmp = do_cat_op (tmp, args (j), ra_idx);
+
+		  if (error_state)
+		    return retval;
+
+		  dim_vector dv_tmp = args (j).dims ();
+
+		  ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1);
+		}
+
+	      retval = tmp;
 	    }
-
-	  retval = tmp;
 	}
       else
 	error ("%s: invalid dimension argument", fname.c_str ());

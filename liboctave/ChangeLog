@@ -1,3 +1,10 @@
+2007-03-12  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_int::octave_int (double)):
+	New Specialization.  Round arg.
+	(operator / (const octave_int<T1>&, const octave_int<T2>&)):
+	Round result before converting type.
+
 2007-03-07  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assign1): Avoid resizing if there is an error.

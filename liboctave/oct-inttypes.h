@@ -211,6 +211,8 @@ public:
   template <class U>
   octave_int (U i) : ival (OCTAVE_INT_FIT_TO_RANGE (i, T)) { }
 
+  octave_int (double d) : ival (OCTAVE_INT_FIT_TO_RANGE (xround (d), T)) { }
+
   octave_int (bool b) : ival (b) { }
 
   template <class U>
@@ -424,7 +426,7 @@ operator / (const octave_int<T1>& x, const octave_int<T2>& y)
 {
   double tx = static_cast<double> (x.value ());
   double ty = static_cast<double> (y.value ());
-  double r = (tx == 0 && ty == 0) ? 0 : tx / ty;
+  double r = (tx == 0 && ty == 0) ? 0 : xround (tx / ty);
   return OCTAVE_INT_FIT_TO_RANGE2 (r, T1, T2);
 }
 

@@ -1,3 +1,15 @@
+2007-03-13  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/cast.m: Use feval and strcmp with cell to check
+	arg instead of switch statement.
+	From Søren Hauberg <soren@hauberg.org>
+
+2007-03-12  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/cast.m: New function.
+
+	* miscellaneous/delete.m: Call __go_delete__, not __uiobject_delete__.
+
 2007-03-08  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/copyfile.m, miscellaneous/movefile.m: Perform

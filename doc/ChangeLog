@@ -1,3 +1,7 @@
+2007-03-14  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
+
+	* interpreter/sparse.txi: Fix typo.
+
 2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in, interpreter/Makefile.in, faq/Makefile.in,

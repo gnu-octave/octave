@@ -195,7 +195,7 @@ definition of the diagonals of the matrix and create the sparse matrix
 that corresponds to this. For example
 
 @example
-s = diag (sparse(randn(1,n)), -1);
+s = spdiag (sparse(randn(1,n)), -1);
 @end example
 
 creates a sparse (@var{n}+1)-by-(@var{n}+1) sparse matrix with a single

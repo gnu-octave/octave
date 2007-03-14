@@ -110,7 +110,7 @@ SOURCES = \
 
 DISTFILES = Makefile.in include-globals.awk $(SOURCES)
 
-FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES_M))
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD

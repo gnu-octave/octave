@@ -27,7 +27,7 @@
 function clf ()
 
   if (nargin == 0)
-    for k = get (gcf (), children)
+    for k = get (gcf (), "children")
       delete (k);
     endfor
     drawnow ();

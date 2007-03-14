@@ -30,6 +30,7 @@ SOURCES = \
   __go_draw_axes__.m \
   __go_draw_figure__.m \
   __gnuplot_version__.m \
+  __line__.m \
   __next_line_color__.m \
   __plr1__.m \
   __plr2__.m \
@@ -63,7 +64,6 @@ SOURCES = \
   hist.m \
   hold.m \
   isfigure.m \
-  ishandle.m \
   ishold.m \
   legend.m \
   line.m \

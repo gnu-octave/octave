@@ -32,8 +32,11 @@ function delete (arg)
   if (nargin == 1)
     if (ischar (arg))
       unlink (arg);
+    elseif (ishandle (arg))
+      ## Delete a graphics object.
+      __go_delete__ (arg);
     else
-      __uiobject_delete__ (arg);
+      error ("delete: expecting argument to be a filename or graphics handle");
     endif
   else
     print_usage ();

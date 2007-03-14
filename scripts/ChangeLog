@@ -1,3 +1,78 @@
+2007-03-14  John W. Eaton  <jwe@octave.org>
+
+	* plot/__axis_label__.m: Convert arg to text handle before calling set.
+
+	* plot/__plt__.m: Return line handles from all calls to __plt1__
+	and __plt2__, not just the last.
+
+	* plot/Makefile.in (SOURCES): Rename from SOURCES_M.
+	(SOURCES_IN, GEN_M): Delete.
+	(FCN_FILES): Don't include $(GEN_M).
+	(all): Don't depend on $(GEN_M).
+	($(GEN_M) : %.m : %.in): Delete pattern rule.
+
+	* plot/text.m: Use __go_text__ instead of __uiboject_text_ctor__.
+
+	* plot/newplot.m: Call __go_axes_init__ instead of
+	__uiobject_axes_init__.
+
+	* plot/mesh.m: Use __go_surface__ instead of
+	__uiobject_surface_ctor__.  Don't access object fields directly.
+
+	* plot/line.m: Use __line__ to do actual work.
+	* plot/__line__.m: New function.
+
+	* plot/axes.m: Use __go_axes__ to create axes graphics handle.
+	Use get and set instead of accessing object fields directly.
+
+	* plot/figure.m: Use __go_figure__ to create figure graphics
+	handle.
+
+	* plot/drawnow.m: Register __go_close_all__ with atexit instead of
+	__uiobject_close_all.  Call __go_draw_figure__ instead of
+	__uiobject_draw_figure__.
+
+	* plot/clf.m: Use get instead of accessing object fields
+	directly.  Simply delete children.  Don't set currentaxes.
+
+	* plot/close.m (close_all_figures): New subfunction.
+	Use it instead of getting list of figures to close from
+	__uiobject_figures__.
+
+	* plot/closereq.m: Simply delete the current figure.  Don't set
+	currentfigure.
+
+	* plot/__errplot__.m: Call __line__ instead of
+	__uiobject_line_ctor__.  Use set instead of accesing object fields
+	directly.  Don't call __uiobject_adopt__.
+
+	* plot/__uiobject_adopt__.m, plot/__uiobject_alloc__.in,
+	plot/__uiobject_axes_ctor__.m, plot/__uiobject_axes_dtor__.m,
+	plot/__uiobject_axes_init__.in, plot/__uiobject_axes_setr__.m,
+	plot/__uiobject_delete__.m, plot/__uiobject_figure_ctor__.m,
+	plot/__uiobject_figures__.in, plot/__uiobject_free__.in,
+	plot/__uiobject_get_handle__.in, plot/__uiobject_globals__.m,
+	plot/__uiobject_grow_list__.in, plot/__uiobject_handle2idx__.in,
+	plot/__uiobject_image_ctor__.m, plot/__uiobject_init_figure__.in,
+	plot/__uiobject_init_root_figure__.in,
+	plot/__uiobject_line_ctor__.m, plot/__uiobject_make_handle__.in,
+	plot/__uiobject_root_figure_ctor__.m,
+	plot/__uiobject_surface_ctor__.m, plot/__uiobject_text_ctor__.m:
+	plot/get.in, plot/include-globals.awk, plot/ishandle.m,
+	plot/set.in: Delete.
+
+	* plot/__go_close_all__.m: Rename from __uiobject_close_all.m.
+	Pass "hidden" as second arg to close.
+	* plot/__go_draw_axes__.m: Rename from __uiobject_draw_axes.m.
+	* plot/__go_draw_figure__.m: Rename from __uiobject_draw_figure.m.
+
+	* image/__img__.m: Use __go_image__ to create image graphics
+	handle.
+
+	* miscellaneous/delete.m: Call __go_delete__, not
+	__uiobject_delete__.  Check that arg is a graphics handle before
+	calling __go_delete__.
+
 2007-03-13  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/cast.m: Use feval and strcmp with cell to check

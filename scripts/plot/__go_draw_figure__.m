@@ -18,13 +18,13 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __uiobject_draw_figure__ (f)
+## @deftypefn {Function File} {} __go_draw_figure__ (f)
 ## Display the figure @var{f}.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __uiobject_draw_figure__ (f, plot_stream)
+function __go_draw_figure__ (f, plot_stream)
 
   if (nargin == 2)
     if (strcmp (f.type, "figure"))
@@ -54,10 +54,10 @@ function __uiobject_draw_figure__ (f, plot_stream)
 	  obj = get (kids(i));
 	  switch (obj.type)
 	    case "axes"
-	      __uiobject_draw_axes__ (kids(i), plot_stream);
+	      __go_draw_axes__ (kids(i), plot_stream);
 
 	    otherwise
-	      error ("__uiobject_draw_figure__: unknown object class, %s",
+	      error ("__go_draw_figure__: unknown object class, %s",
 		     obj.type);
 	  endswitch
 	endfor
@@ -70,7 +70,7 @@ function __uiobject_draw_figure__ (f, plot_stream)
 	fflush (plot_stream);
       endif
     else
-      error ("__uiobject_draw_figure__: expecting figure object, found `%s'",
+      error ("__go_draw_figure__: expecting figure object, found `%s'",
 	     f.type);
     endif
   else

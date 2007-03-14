@@ -20,7 +20,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES_M = \
+SOURCES = \
   __axis_label__.m \
   __default_colormap__.m \
   __default_plot_options__.m \
@@ -108,30 +108,12 @@ SOURCES_M = \
   ylabel.m \
   zlabel.m
 
-SOURCES_IN = \
-  __uiobject_alloc__.in \
-  __uiobject_axes_init__.in \
-  __uiobject_figures__.in \
-  __uiobject_free__.in \
-  __uiobject_get_handle__.in \
-  __uiobject_grow_list__.in \
-  __uiobject_handle2idx__.in \
-  __uiobject_init_figure__.in \
-  __uiobject_init_root_figure__.in \
-  __uiobject_make_handle__.in \
-  get.in \
-  set.in
-
-GEN_M = $(SOURCES_IN:.in=.m)
-
-SOURCES = $(SOURCES_M) $(SOURCES_IN)
-
 DISTFILES = Makefile.in include-globals.awk $(SOURCES)
 
-FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES_M)) $(GEN_M)
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES_M))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
-all: $(GEN_M) PKG_ADD
+all: PKG_ADD
 .PHONY: all
 
 install install-strip:
@@ -169,7 +151,3 @@ maintainer-clean: distclean
 dist:
 	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/scripts/plot
 .PHONY: dist
-
-$(GEN_M) : %.m : %.in __uiobject_globals__.m
-	$(AWK) -f $(srcdir)/include-globals.awk file=$(srcdir)/__uiobject_globals__.m $< > $@-t
-	$(simple-move-if-change-rule)

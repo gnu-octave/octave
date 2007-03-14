@@ -18,13 +18,13 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __uiobject_draw_axes__ (@var{axis_obj}, @var{plot_stream})
+## @deftypefn {Function File} {} __go_draw_axes__ (@var{axis_obj}, @var{plot_stream})
 ## Display the axes @var{axis_obj} on @var{plot_stream}.
 ## @end deftypefn
 
 ## Author: jwe
 
-function __uiobject_draw_axes__ (h, plot_stream)
+function __go_draw_axes__ (h, plot_stream)
 
   if (nargin == 2)
 
@@ -526,7 +526,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	    err = true;
 	  endif
 	  if (err)
-	    error ("__uiobject_draw_axes__: invalid grid data");
+	    error ("__go_draw_axes__: invalid grid data");
 	  endif
 	  xlen = columns (zdat);
 	  ylen = rows (zdat);
@@ -569,7 +569,7 @@ function __uiobject_draw_axes__ (h, plot_stream)
 	  endif
 
 	otherwise
-	  error ("__uiobject_draw_axes__: unknown object class, %s",
+	  error ("__go_draw_axes__: unknown object class, %s",
 		 obj.type);
       endswitch
 

@@ -169,7 +169,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 
 DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \
-	dynamic-ld.cc error.cc file-io.cc gripes.cc \
+	dynamic-ld.cc error.cc file-io.cc graphics.cc gripes.cc \
 	help.cc input.cc lex.l load-path.cc load-save.cc ls-hdf5.cc \
 	ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \

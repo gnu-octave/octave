@@ -30,12 +30,6 @@ function closereq ()
     cf = get (0, "currentfigure");
     if (cf != 0)
       delete (cf);
-      figs = __uiobject_figures__ ();
-      if (isempty (figs))
-	set (0, "currentfigure", 0);
-      else
-	set (0, "currentfigure", figs(1));
-      endif
     endif
   else
     print_usage ();

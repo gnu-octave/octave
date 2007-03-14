@@ -52,15 +52,7 @@ function h = __img__ (x, y, img)
 
   ca = gca ();
 
-  s = __uiobject_image_ctor__ (ca);
-
-  s.cdata = img;
-  s.xdata = xlim;
-  s.ydata = ylim;
-
-  tmp = __uiobject_make_handle__ (s);
-
-  __uiobject_adopt__ (ca, tmp);
+  tmp = __go_image__ (ca, "cdata", img, "xdata", xlim, "ydata", ylim);
 
   set (ca, "view", [0, 90]);
 

@@ -30,7 +30,7 @@ function h = figure (varargin)
 
   nargs = nargin;
 
-  f = [];
+  f = NaN;
 
   init_new_figure = false;
   if (mod (nargs, 2) == 1)
@@ -54,19 +54,18 @@ function h = figure (varargin)
   ## or switching to.
   cf = get (0, "currentfigure");
   if (! isempty (cf) && cf != 0)
-    if (isempty (f) || cf != f)
+    if (isnan (f) || cf != f)
       drawnow ();
     endif
   endif
 
   if (rem (nargs, 2) == 0)
-    if (isempty (f) || init_new_figure)
-      f = __uiobject_init_figure__ (f);
+    if (isnan (f) || init_new_figure)
+      f = __go_figure__ (f);
     endif
     if (nargs > 0)
       set (f, varargin{:});
     endif
-    __uiobject_adopt__ (0, f);
     set (0, "currentfigure", f);
   else
     print_usage ();

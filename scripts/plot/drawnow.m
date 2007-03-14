@@ -28,9 +28,9 @@ function drawnow (term, file)
 
   ## Use this instead of persistent and mlock so that drawnow can be
   ## replaced.
-  global __uiobject_close_all_registered__;
-  if (isempty (__uiobject_close_all_registered__))
-    __lock_global__ ("__uiobject_close_all_registered__");
+  global __go_close_all_registered__;
+  if (isempty (__go_close_all_registered__))
+    __lock_global__ ("__go_close_all_registered__");
   endif
 
   ## Use this instead of calling gcf to avoid creating a figure.
@@ -49,9 +49,9 @@ function drawnow (term, file)
         cmd = sprintf ("%s -title \"Figure %d\"", cmd, h);
       endif
       plot_stream = popen (cmd, "w");
-      if (isempty (__uiobject_close_all_registered__))
-	atexit ("__uiobject_close_all__");
-	__uiobject_close_all_registered__ = true;
+      if (isempty (__go_close_all_registered__))
+	atexit ("__go_close_all__");
+	__go_close_all_registered__ = true;
       endif
       if (plot_stream < 0)
 	error ("drawnow: failed to open connection to gnuplot");
@@ -70,7 +70,7 @@ function drawnow (term, file)
     endif
 
     if (nargin == 2 || strcmp (f.visible, "on"))
-      __uiobject_draw_figure__ (f, plot_stream);
+      __go_draw_figure__ (f, plot_stream);
     endif
 
     __request_drawnow__ (false);

@@ -43,7 +43,7 @@ function newplot ()
       case "add"
       case "replacechildren"
       case "replace"
-	__uiobject_axes_init__ (ca, "replace");
+	__go_axes_init__ (ca, "replace");
       otherwise
 	error ("newplot: unrecognized nextplot property for current axes");
     endswitch

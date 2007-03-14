@@ -31,6 +31,8 @@
 
 function retval = close (arg1, arg2)
 
+  figs = [];
+
   if (nargin == 0)
     ## Close current figure.  Don't use gcf because that will open a new
     ## plot window if one doesn't exist.
@@ -40,8 +42,7 @@ function retval = close (arg1, arg2)
     endif
   elseif (nargin == 1)
     if (ischar (arg1) && strcmp (arg1, "all"))
-      ## Close all figures.
-      figs = __uiobject_figures__ ();
+      close_all_figures (false);
     elseif (isfigure (arg1))
       figs = arg1;
     else
@@ -50,7 +51,7 @@ function retval = close (arg1, arg2)
   elseif (nargin == 2
 	  && ischar (arg1) && strcmp (arg1, "all")
 	  && ischar (arg2) && strcmp (arg2, "hidden"))
-    figs = __uiobject_figures__ ();
+    close_all_figures (true);
   else
     print_usage ();
   endif
@@ -63,5 +64,16 @@ function retval = close (arg1, arg2)
   if (nargout > 0)
     retval = 1;
   endif
+
+endfunction
+
+function close_all_figures (close_hidden_figs)
+
+  while (! isempty (fig = get (0, "currentfigure")))
+    ## handlevisibility = get (fig, "handlevisibility")
+    ## if (close_hidden_figs || ! strcmp (handlevisibility, "off"))
+    close (fig);
+    ## endif
+  endwhile
 
 endfunction

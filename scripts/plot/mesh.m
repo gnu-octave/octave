@@ -68,17 +68,9 @@ function h = mesh (x, y, z)
   ## current figure.
   ca = gca ();
 
-  s = __uiobject_surface_ctor__ (ca);
-
-  s.xdata = x;
-  s.ydata = y;
-  s.zdata = z;
+  tmp = __go_surface__ (ca, "xdata", x, "ydata", y, "zdata", z);
 
   set (ca, "view", [-37.5, 30]);
-
-  tmp = __uiobject_make_handle__ (s);
-
-  __uiobject_adopt__ (ca, tmp);
 
   if (nargout > 0)
     h = tmp;

@@ -29,14 +29,13 @@
 
 function h = text (varargin)
 
-  if (nargin > 2)
-    x = y = z = 0;
-    if (isnumeric (varargin{1}) && isnumeric (varargin{2}))
-      x = varargin{1};
-      y = varargin{2};
-    else
-      error ("text: expecting first two arguments to be numeric");
-    endif
+  nargs = nargin;
+  offset = 0;
+
+  if (nargs > 2 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
+    x = varargin{1};
+    y = varargin{2};
+    offset = 3;
 
     if (nargin > 3 && isnumeric (varargin{3}))
       z = varargin{3};
@@ -56,36 +55,41 @@ function h = text (varargin)
       nx = numel (x);
       ny = numel (y);
       nz = numel (z);
-      if (nx == ny && nx == nz)
-	pos = [x(:), y(:), z(:)];
-	ca = gca ();
-	tmp = zeros (n, 1);
-	if (n == 1)
-	  label = label{1};
-	  for i = 1:nx
-	    tmp(i) = __uiobject_text_ctor__ (ca, "string", label,
-					     "position", pos(i,:),
-					     varargin{:});
-	  endfor
-	elseif (n == nx)
-	  for i = 1:nx
-	    tmp(i) = __uiobject_text_ctor__ (ca, "string", label{i},
-					     "position", pos(i,:),
-					     varargin{:});
-	  endfor
-	else
-	  error ("text: dimension mismatch for coordinates and label");
-	endif
-      else
-	error ("text: dimension mismatch for coordinates");
-      endif
     else
       error ("text: expecting label to be a character string or cell array of character strings");
     endif
+  else
+    x = y = z = 0;
+    nx = ny = nz = 1;
+    label = {""};
+    n = 1;
+  endif
 
-    for i = 1:numel (tmp)
-      __uiobject_adopt__ (ca, tmp(i));
-    endfor
+  if (rem (numel (varargin), 2) == 0)
+
+    if (nx == ny && nx == nz)
+      pos = [x(:), y(:), z(:)];
+      ca = gca ();
+      tmp = zeros (n, 1);
+      if (n == 1)
+	label = label{1};
+	for i = 1:nx
+	  tmp(i) = __go_text__ (ca, "string", label,
+				"position", pos(i,:),
+				varargin{:});
+	endfor
+      elseif (n == nx)
+	for i = 1:nx
+	  tmp(i) = __go_text__ (ca, "string", label{i},
+				"position", pos(i,:),
+				varargin{:});
+	endfor
+      else
+	error ("text: dimension mismatch for coordinates and label");
+      endif
+    else
+      error ("text: dimension mismatch for coordinates");
+    endif
 
     if (nargout > 0)
       h = tmp;

@@ -1,4 +1,4 @@
-## Copyright (C) 2005 John W. Eaton
+## Copyright (C) 2007 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -18,42 +18,13 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __uiobject_line_ctor__ (@var{p})
-## Create a line object with parent @var{p}.
+## @deftypefn {Function File} {} __go_close_all__ ()
+## Internal function to close all figures.
+## @seealso{drawnow}
 ## @end deftypefn
 
 ## Author: jwe
 
-function s = __uiobject_line_ctor__ (p)
-
-  if (nargin == 1)
-    s.type = "line";
-    s.parent = p;
-    s.children = [];
-
-    s.xdata = [];
-    s.ydata = [];
-    s.zdata = [];
-
-    s.ldata = [];
-    s.udata = [];
-
-    s.xldata = [];
-    s.xudata = [];
-
-    s.color = [0, 0, 1];
-    s.linestyle = "-";
-    s.linewidth = 0.5;
-
-    s.marker = "none";
-    s.markersize = 1;
-
-    s.keylabel = "";
-
-    ## XXX FIXME XXX -- need to intialize all properties to default
-    ## values here.
-  else
-    print_usage ();
-  endif
-
+function __go_close_all__ ()
+  close ("all", "hidden");
 endfunction

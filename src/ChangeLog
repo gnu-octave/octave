@@ -1,3 +1,13 @@
+2007-03-14  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc: New file.
+	* Makefile.in (DIST_SRC): Add it to the list.
+
+2007-03-13  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (do_stream_open): Use binary mode if 't' is not
+	  specified in mode, but don't add 'b' if it is already present.
+
 2007-03-09  David Bateman  <dbateman@free.fr>
 
 	* data.cc (do_cat):  Also treat case of all empty matrices.

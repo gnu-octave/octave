@@ -36,6 +36,8 @@ function retval = __plt__ (caller, h, varargin)
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
+    retval = [];
+
     while (nargs > 0 || x_set)
 
       if (nargs == 0)
@@ -51,9 +53,11 @@ function retval = __plt__ (caller, h, varargin)
 	if (x_set)
 	  options = __pltopt__ (caller, next_arg);
 	  if (y_set)
-	    retval = __plt2__ (h, x, y, options);
+	    tmp = __plt2__ (h, x, y, options);
+	    retval = [retval; tmp];
 	  else
-	    retval = __plt1__ (h, x, options);
+	    tmp = __plt1__ (h, x, options);
+	    retval = [retval; tmp];
 	  endif
 	  x_set = false;
 	  y_set = false;
@@ -63,7 +67,8 @@ function retval = __plt__ (caller, h, varargin)
       elseif (x_set)
 	if (y_set)
 	  options = __pltopt__ (caller, {""});
-	  retval = __plt2__ (h, x, y, options);
+	  tmp = __plt2__ (h, x, y, options);
+	  retval = [retval; tmp];
 	  x = next_arg;
 	  y_set = false;
 	else

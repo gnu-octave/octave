@@ -32,7 +32,8 @@ function retval = __axis_label__ (caller, txt)
   if (nargin == 2)
     if (ischar (txt))
       ca = gca ();
-      set (ca, caller, txt);
+      ## FIXME -- should be able to use text instead of __go_text__.
+      set (ca, caller, __go_text__ (ca, "string", txt));
       if (nargout > 0)
 	retval = get (ca, caller);
       endif

@@ -18,8 +18,10 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} line (@var{x}, @var{y})
+## @deftypefn {Function File} {} line ()
+## @deftypefnx {Function File} {} line (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z}, @var{opts})
 ## Create line object from @var{x} and @var{y} and insert in current
 ## axes object.  Return handle to line object.
 ## @end deftypefn
@@ -28,34 +30,12 @@
 
 function h = line (varargin)
 
-  nargs = nargin;
+  ## make a default line object, and make it the current axes for
+  ## the current figure.
+  tmp = __line__ (gca (), varargin{:});
 
-  if (nargs > 1)
-    if (isnumeric (varargin{1}) && isnumeric (varargin{2}))
-      ## make a default line object, and make it the current axes for
-      ## the current figure.
-      ca = gca ();
-      s = __uiobject_line_ctor__ (ca);
-      s.xdata = varargin{1};
-      s.ydata = varargin{2};
-      num_data_args = 2;
-      if (nargs > 2 && isnumeric (varargin{3}))
-	s.zdata = varargin{3};
-	num_data_args = 3;
-      endif
-      tmp = __uiobject_make_handle__ (s);
-      if (nargs > num_data_args)
-	set (tmp, varargin{num_data_args+1:end});
-      endif
-      __uiobject_adopt__ (ca, tmp);
-      if (nargout > 0)
-	h = tmp;
-      endif
-    else
-      error ("expecting numeric arguments for line data");
-    endif
-  else
-    print_usage ();
+  if (nargout > 0)
+    h = tmp;
   endif
 
 endfunction

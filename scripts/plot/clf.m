@@ -27,12 +27,9 @@
 function clf ()
 
   if (nargin == 0)
-    f = gcf ();
-    obj = get (f);
-    for child = obj.children
-      delete (child);
+    for k = get (gcf (), children)
+      delete (k);
     endfor
-    set (f, "currentaxes", []);
     drawnow ();
   else
     print_usage ();

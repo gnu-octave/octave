@@ -32,18 +32,16 @@ function h = axes (varargin)
     ## make default axes object, and make it the current axes for the
     ## current figure.
     cf = gcf ();
-    tmp = __uiobject_axes_ctor__ (cf, varargin{:});
-    __uiobject_adopt__ (cf, tmp);
+    tmp = __go_axes__ (cf, varargin{:});
     set (cf, "currentaxes", tmp);
   elseif (nargin == 1)
     ## arg is axes handle, make it the current axes for the current
     ## figure.
     tmp = varargin{1};
-    obj = get (tmp);
-    if (! isempty (obj) && strcmp (obj.type, "axes"))
-      cf = gcf ();
-      __uiobject_adopt__ (cf, tmp);
-      set (cf, "currentaxes", tmp);
+    if (ishandle (tmp) && strcmp (get (tmp, "type"), "axes"))
+      parent = get (tmp, "parent");
+      set (0, "currentfigure", parent);
+      set (parent, "currentaxes", tmp);
     else
       error ("axes: expecting argument to be axes handle");
     endif

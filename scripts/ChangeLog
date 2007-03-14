@@ -1,5 +1,7 @@
 2007-03-14  John W. Eaton  <jwe@octave.org>
 
+	* plot/clf.m: Set currentaxes property for current figure to [].
+
 	* plot/__axis_label__.m: Convert arg to text handle before calling set.
 
 	* plot/__plt__.m: Return line handles from all calls to __plt1__

@@ -26,6 +26,9 @@ SOURCES = \
   __default_plot_options__.m \
   __errcomm__.m \
   __errplot__.m \
+  __go_close_all__.m \
+  __go_draw_axes__.m \
+  __go_draw_figure__.m \
   __gnuplot_version__.m \
   __next_line_color__.m \
   __plr1__.m \
@@ -41,21 +44,6 @@ SOURCES = \
   __plt_get_axis_arg__.m \
   __pltopt1__.m \
   __pltopt__.m \
-  __uiobject_adopt__.m \
-  __uiobject_axes_ctor__.m \
-  __uiobject_axes_dtor__.m \
-  __uiobject_axes_setr__.m \
-  __uiobject_close_all__.m \
-  __uiobject_delete__.m \
-  __uiobject_draw_axes__.m \
-  __uiobject_draw_figure__.m \
-  __uiobject_figure_ctor__.m \
-  __uiobject_globals__.m \
-  __uiobject_image_ctor__.m \
-  __uiobject_line_ctor__.m \
-  __uiobject_root_figure_ctor__.m \
-  __uiobject_surface_ctor__.m \
-  __uiobject_text_ctor__.m \
   axes.m \
   axis.m \
   bar.m \

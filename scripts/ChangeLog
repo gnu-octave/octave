@@ -60,12 +60,14 @@
 	plot/__uiobject_surface_ctor__.m, plot/__uiobject_text_ctor__.m:
 	plot/get.in, plot/include-globals.awk, plot/ishandle.m,
 	plot/set.in: Delete.
+	* plot/Makefile.in (SOURCES_M, SOURCES_IN): Remove from lists.
 
 	* plot/__go_close_all__.m: Rename from __uiobject_close_all.m.
 	Pass "hidden" as second arg to close.
 	* plot/__go_draw_axes__.m: Rename from __uiobject_draw_axes.m.
 	* plot/__go_draw_figure__.m: Rename from __uiobject_draw_figure.m.
-
+	* plot/Makefile.in (SOURCES_M): Rename in list.
+	
 	* image/__img__.m: Use __go_image__ to create image graphics
 	handle.
 

@@ -209,7 +209,7 @@ acos (const Complex& x)
 {
   static Complex i (0, 1);
 
-  return (real (x) * imag (x) < 0.0) ? i * acosh (x) : -i * acosh (x);
+  return -i * (log (x + i * (sqrt (1.0 - x*x))));
 }
 
 Complex

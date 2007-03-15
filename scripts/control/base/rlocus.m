@@ -243,9 +243,9 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
         args{1,++kk} = [sigma_A sigma_A+len_A*cos(phi_A)];
         args{2,kk} = [0 len_A*sin(phi_A)];
         if (i_A == 1)
-          args{3,kk} = "k-;asymptotes;";
+          args{3,kk} = "k--;asymptotes;";
         else
-          args{3,kk} = "k-";
+          args{3,kk} = "k--";
         endif
       endfor
     endif

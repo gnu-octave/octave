@@ -788,18 +788,22 @@ function style = do_linestyle_command (obj, idx, plot_stream)
   if (isfield (obj, "linestyle"))
     switch (obj.linestyle)
       case "-"
-	lt = "lines";
+	lt = "1";
       case "--"
-	lt = "";
+	lt = "2";
       case ":"
-	lt = "";
+	lt = "3";
       case "-."
-	lt = "";
+	lt = "6";
       case "none"
 	lt = "";
       otherwise
 	lt = "";
     endswitch
+    if (! isempty (lt))
+      fprintf (plot_stream, " linetype %s", lt);
+      found_style = true;
+    endif
   else
     lt = "";
   endif

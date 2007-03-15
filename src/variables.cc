@@ -2041,36 +2041,6 @@ then return true if the current function is locked.\n\
   return retval;
 }
 
-DEFUN (__lock_global__, args, ,
-    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __lock_global__ (@var{name})\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  if (args.length () == 1)
-    {
-      std::string nm = args(0).string_value ();
-
-      if (! error_state)
-	{
-	  symbol_record *sr = global_sym_tab->lookup (nm);
-
-	  if (sr)
-	    sr->make_eternal ();
-	  else
-	    error ("__lock_global__: %s not found in global symbol table",
-		   nm.c_str ());
-	}
-      else
-	error ("__lock_global__: expecting argument to be a character string");
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-
 // Deleting names from the symbol tables.
 
 static inline bool

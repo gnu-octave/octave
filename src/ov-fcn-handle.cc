@@ -698,7 +698,17 @@ the function handle @var{fcn_handle}.\n\
       if (! error_state && fh)
 	{
 	  std::string fh_nm = fh->fcn_name ();
-	  retval = fh_nm;
+
+	  if (fh_nm == "@<anonymous>")
+	    {
+	      std::ostringstream buf;
+
+	      fh->print_raw (buf);
+
+	      retval = buf.str ();
+	    }
+	  else
+	    retval = fh_nm;
 	}
       else
 	error ("func2str: expecting valid function handle as first argument");

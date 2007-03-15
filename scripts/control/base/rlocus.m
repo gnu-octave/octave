@@ -227,29 +227,64 @@ function [rldata, k_break, rlpol, gvec, real_ax_pts] = rlocus (sys, increment, m
     if (! isempty (rlzer))
       nelts++;
     endif
+    # add asymptotes
+    n_A = length (olpol) - length (olzer);
+    if (n_A > 0)
+      nelts += n_A;
+    endif
     args = cell (3, nelts);
-    for kk=1:rows(rlpol)
-      args{1,kk} = real (rlpol (kk,:));
-      args{2,kk} = imag (rlpol (kk,:));
-      args{3,kk} = "b-";
+    kk = 0;
+    # asymptotes first
+    if (n_A > 0)
+      len_A = 2*max(abs(axlim));
+      sigma_A = (sum(olpol) - sum(olzer))/n_A;
+      for i_A=0:n_A-1
+        phi_A = pi*(2*i_A + 1)/n_A;
+        args{1,++kk} = [sigma_A sigma_A+len_A*cos(phi_A)];
+        args{2,kk} = [0 len_A*sin(phi_A)];
+        if (i_A == 1)
+          args{3,kk} = "k-;asymptotes;";
+        else
+          args{3,kk} = "k-";
+        endif
+      endfor
+    endif
+    # locus next
+    for ii=1:rows(rlpol)
+      args{1,++kk} = real (rlpol (ii,:));
+      args{2,kk} = imag (rlpol (ii,:));
+      if (ii == 1)
+        args{3,kk} = "b-;locus;";
+      else
+        args{3,kk} = "b-";
+      endif
     endfor
-    args{1,n_rlpol+1} = real(olpol);
-    args{2,n_rlpol+1} = imag(olpol);
-    args{3,n_rlpol+1} = "rx;open loop poles;";
-
+    # poles and zeros last
+    args{1,++kk} = real(olpol);
+    args{2,kk} = imag(olpol);
+    args{3,kk} = "rx;open loop poles;";
     if (! isempty(rlzer))
-      args{1,n_rlpol+2} = real(rlzer);
-      args{2,n_rlpol+2} = imag(rlzer);
-      args{3,n_rlpol+2} = "go;zeros;";
+      args{1,++kk} = real(rlzer);
+      args{2,kk} = imag(rlzer);
+      args{3,kk} = "go;zeros;";
     endif
 
-    plot (args{:})
+    set (gcf,"visible","off");
+    hplt = plot (args{:});
+    set (hplt(kk--), "markersize", 2);
+    if (! isempty(rlzer))
+      set(hplt(kk--), "markersize", 2);
+    endif
+    for ii=1:rows(rlpol)
+      set (hplt(kk--), "linewidth", 2);
+    endfor
     legend ("boxon", 2);
     grid ("on");
     axis (axlim);
     xlabel (sprintf ("Root locus from %s to %s, gain=[%f,%f]: Real axis",
 		     inname{1}, outname{1}, gvec(1), gvec(ngain)));
     ylabel ("Imag. axis");
+    set (gcf,"visible","on");
     rldata = [];
   endif
 endfunction

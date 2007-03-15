@@ -32,7 +32,8 @@ function __go_draw_axes__ (h, plot_stream)
 
     parent_figure_obj = get (axis_obj.parent);
 
-    have_newer_gnuplot = compare_versions (__gnuplot_version__ (), "4.0", ">");
+    persistent have_newer_gnuplot ...
+      = compare_versions (__gnuplot_version__ (), "4.0", ">");
 
     ## Set axis properties here?
 
@@ -765,7 +766,8 @@ endfunction
 
 function style = do_linestyle_command (obj, idx, plot_stream)
 
-  have_newer_gnuplot = compare_versions (__gnuplot_version__ (), "4.0", ">");
+  persistent have_newer_gnuplot ...
+    = compare_versions (__gnuplot_version__ (), "4.0", ">");
 
   if (have_newer_gnuplot)
     fprintf (plot_stream, "set style line %d default;\n", idx);
@@ -812,11 +814,11 @@ function style = do_linestyle_command (obj, idx, plot_stream)
       case "+"
 	pt = "1";
       case "o"
-	pt = "7";
+	pt = "6";
       case "*"
 	pt = "3";
       case "."
-	pt = "0";
+	pt = "7";
       case "x"
 	pt = "2";
       case {"square", "s"}
@@ -834,7 +836,7 @@ function style = do_linestyle_command (obj, idx, plot_stream)
       case {"pentagram", "p"}
 	pt = "4";
       case {"hexagram", "h"}
-	pt = "6";
+	pt = "12";
       case "none"
 	pt = "";
       otherwise

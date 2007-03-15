@@ -1,3 +1,15 @@
+2007-03-15  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__: Make have_newer_gnuplot persistent.
+	From Daniel J Sebald <daniel.sebald@ieee.org>.
+
+2007-03-15  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* plot/__go_draw_axes__.m (do_linestyle_command): Fix marker types.
+
+	* control/base/rlocus.m: Add asymptotes to the plot.  Use wider
+	lines and larger markers.
+
 2007-03-14  John W. Eaton  <jwe@octave.org>
 
 	* plot/__axis_label__.m: Accept additional property-value pairs

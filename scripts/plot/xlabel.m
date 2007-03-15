@@ -32,10 +32,14 @@
 
 function h = xlabel (varargin)
 
-  if (nargout > 0)
-    h = __axis_label__ ("xlabel", varargin{:});
+  if (rem (nargin, 2) == 1)
+    if (nargout > 0)
+      h = __axis_label__ ("xlabel", varargin{:});
+    else
+      __axis_label__ ("xlabel", varargin{:});
+    endif
   else
-    __axis_label__ ("xlabel", varargin{:});
+    print_usage ();
   endif
 
 endfunction

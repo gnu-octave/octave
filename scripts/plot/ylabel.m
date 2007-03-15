@@ -26,10 +26,14 @@
 
 function h = ylabel (varargin)
 
-  if (nargout > 0)
-    h = __axis_label__ ("ylabel", varargin{:});
+  if (rem (nargin, 2) == 1)
+    if (nargout > 0)
+      h = __axis_label__ ("ylabel", varargin{:});
+    else
+      __axis_label__ ("ylabel", varargin{:});
+    endif
   else
-    __axis_label__ ("ylabel", varargin{:});
+    print_usage ();
   endif
 
 endfunction

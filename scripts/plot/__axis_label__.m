@@ -24,22 +24,18 @@
 
 ## Author: jwe
 
-function retval = __axis_label__ (caller, txt)
+function retval = __axis_label__ (caller, txt, varargin)
 
-  ## If we have an even number of arguments, they should be
-  ## property-value pirs.
-
-  if (nargin == 2)
-    if (ischar (txt))
-      ca = gca ();
-      ## FIXME -- should be able to use text instead of __go_text__.
-      set (ca, caller, __go_text__ (ca, "string", txt));
-      if (nargout > 0)
-	retval = get (ca, caller);
-      endif
+  if (ischar (txt))
+    ## FIXME -- should be able to use text instead of __go_text__.
+    ca = gca ();
+    h = __go_text__ (ca, "string", txt, varargin{:});
+    set (ca, caller, h);
+    if (nargout > 0)
+      retval = h;
     endif
   else
-    print_usage ();
+    error ("%s: expecting first argument to be character string");
   endif
 
 endfunction

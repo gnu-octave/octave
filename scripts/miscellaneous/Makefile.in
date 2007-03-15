@@ -20,7 +20,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m comma.m \
+SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m cast.m comma.m \
   compare_versions.m computer.m copyfile.m cputime.m \
   delete.m dir.m doc.m dos.m dump_prefs.m \
   fileattrib.m fileparts.m flops.m fullfile.m getfield.m gunzip.m \

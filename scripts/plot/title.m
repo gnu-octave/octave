@@ -26,17 +26,11 @@
 
 function retval = title (varargin)
 
-  nargs = nargin;
-
-  if (nargs == 0)
-    varargin{1} = "";
-    nargs++;
-  endif
-
-  if (nargs == 1)
-    set (gca, "title", varargin{1});
+  if (rem (nargin, 2) == 1)
     if (nargout > 0)
-      retval = h;
+      h = __axis_label__ ("title", varargin{:});
+    else
+      __axis_label__ ("title", varargin{:});
     endif
   else
     print_usage ();

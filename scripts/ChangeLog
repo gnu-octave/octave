@@ -1,5 +1,13 @@
 2007-03-14  John W. Eaton  <jwe@octave.org>
 
+	* plot/__axis_label__.m: Accept additional property-value pairs
+	and pass them to __go_text__.  Simply return the handle obtained
+	from __go_text__ instead of calling get on the current axis.
+	* plot/xlabel.m, plot/zlabel.m, plot/zlabel.m: Check args here.
+	Allow for extra property value pairs to be passed along.
+	* plot/title.m: Implement with __axis_label__ since it does all
+	that title needs to do.
+
 	* plot/clf.m: Set currentaxes property for current figure to [].
 
 	* plot/__axis_label__.m: Convert arg to text handle before calling set.

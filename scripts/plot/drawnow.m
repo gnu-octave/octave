@@ -26,12 +26,9 @@
 
 function drawnow (term, file)
 
-  ## Use this instead of persistent and mlock so that drawnow can be
-  ## replaced.
-  global __go_close_all_registered__;
-  if (isempty (__go_close_all_registered__))
-    __lock_global__ ("__go_close_all_registered__");
-  endif
+  ## If drawnow is cleared, it is possible to register __go_close_all__
+  ## more than once, but that is not fatal.
+  persistent __go_close_all_registered__;
 
   ## Use this instead of calling gcf to avoid creating a figure.
 

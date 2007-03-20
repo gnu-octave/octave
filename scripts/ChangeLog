@@ -1,6 +1,11 @@
+2007-03-20  John W. Eaton  <jwe@octave.org>
+
+	* plot/drawnow.m: Make __go_close_all_registered__ persistent
+	instead of global.  From Daniel J Sebald <daniel.sebald@ieee.org>.
+
 2007-03-15  John W. Eaton  <jwe@octave.org>
 
-	* plot/__go_draw_axes__: Make have_newer_gnuplot persistent.
+	* plot/__go_draw_axes__.m: Make have_newer_gnuplot persistent.
 	From Daniel J Sebald <daniel.sebald@ieee.org>.
 
 2007-03-15  Daniel J Sebald  <daniel.sebald@ieee.org>

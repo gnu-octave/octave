@@ -56,6 +56,10 @@ function h = __img__ (x, y, img)
 
   set (ca, "view", [0, 90]);
 
+  if (strcmp (get (ca, "nextplot"), "replace"))
+    set (ca, "ydir", "reverse");
+  endif
+
   if (nargout > 0)
     h = tmp;
   endif

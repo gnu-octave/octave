@@ -335,7 +335,7 @@ function __go_draw_axes__ (h, plot_stream)
 
 	    filespec{data_idx} = img_fname;
 	    titlespec{data_idx} = "";
-	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx flipy origin=(%g,%g) dx=%g dy=%g using %s",
+	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%g,%g) dx=%g dy=%g using %s",
 		x_dim, y_dim, x_origin, y_origin, dx, dy, format);
 	    withclause{data_idx} = sprintf ("with %s", imagetype);
 

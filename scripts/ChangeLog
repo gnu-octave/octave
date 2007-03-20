@@ -7,6 +7,10 @@
 
 2007-03-20  Daniel J Sebald  <daniel.sebald@ieee.org>.
 
+	* image/__img__.m: Maybe set yaxis to reverse for images.
+	* plot/__go_draw_axes__.m: Don't add flipy to gnuplot command for
+	images.
+
 	* plot/drawnow.m: Make __go_close_all_registered__ persistent
 	instead of global.  Only register __go_close_all__ with atexit if
 	the plot stream is successfully opened.

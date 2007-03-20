@@ -1,7 +1,15 @@
 2007-03-20  John W. Eaton  <jwe@octave.org>
 
+	* plot/newplot.m: Call __request_drawnow__ after initializing axes.
+	* plot/text.m: Call __request_drawnow__ after creating text objects.
+
+	* plot/clf.m: Don't call drawnow.
+
+2007-03-20  Daniel J Sebald  <daniel.sebald@ieee.org>.
+
 	* plot/drawnow.m: Make __go_close_all_registered__ persistent
-	instead of global.  From Daniel J Sebald <daniel.sebald@ieee.org>.
+	instead of global.  Only register __go_close_all__ with atexit if
+	the plot stream is successfully opened.
 
 2007-03-15  John W. Eaton  <jwe@octave.org>
 

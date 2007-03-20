@@ -44,6 +44,7 @@ function newplot ()
       case "replacechildren"
       case "replace"
 	__go_axes_init__ (ca, "replace");
+	__request_drawnow__ ();
       otherwise
 	error ("newplot: unrecognized nextplot property for current axes");
     endswitch

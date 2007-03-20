@@ -46,16 +46,16 @@ function drawnow (term, file)
         cmd = sprintf ("%s -title \"Figure %d\"", cmd, h);
       endif
       plot_stream = popen (cmd, "w");
-      if (isempty (__go_close_all_registered__))
-	atexit ("__go_close_all__");
-	__go_close_all_registered__ = true;
-      endif
       if (plot_stream < 0)
 	error ("drawnow: failed to open connection to gnuplot");
       else
 	set (h, "__plot_stream__", plot_stream);
 	if (isunix () && isempty (getenv ("DISPLAY")))
 	  fprintf (plot_stream, "set terminal dumb\n;");
+	endif
+	if (isempty (__go_close_all_registered__))
+	  atexit ("__go_close_all__");
+	  __go_close_all_registered__ = true;
 	endif
       endif
     endif

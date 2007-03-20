@@ -78,12 +78,14 @@ function h = text (varargin)
 				"position", pos(i,:),
 				varargin{:});
 	endfor
+	__request_drawnow__ ();
       elseif (n == nx)
 	for i = 1:nx
 	  tmp(i) = __go_text__ (ca, "string", label{i},
 				"position", pos(i,:),
 				varargin{:});
 	endfor
+	__request_drawnow__ ();
       else
 	error ("text: dimension mismatch for coordinates and label");
       endif

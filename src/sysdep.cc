@@ -84,6 +84,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-obj.h"
 #include "ov.h"
 #include "pager.h"
+#include "parse.h"
 #include "sighandlers.h"
 #include "sysdep.h"
 #include "toplev.h"
@@ -648,15 +649,20 @@ clc;\n\
 
       if (! error_state)
 	{
-	  if (xisnan (dval))
-	    warning ("pause: NaN is an invalid delay");
-	  else if (xisinf (dval))
+	  if (! xisnan (dval))
 	    {
-	      flush_octave_stdout ();
-	      octave_kbhit ();
+	      feval ("drawnow");
+
+	      if (xisinf (dval))
+		{
+		  flush_octave_stdout ();
+		  octave_kbhit ();
+		}
+	      else
+		octave_sleep (dval);
 	    }
 	  else
-	    octave_sleep (dval);
+	    warning ("pause: NaN is an invalid delay");
 	}
     }
   else

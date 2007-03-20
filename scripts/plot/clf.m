@@ -32,7 +32,6 @@ function clf ()
     for k = get (cf, "children")
       delete (k);
     endfor
-    drawnow ();
   else
     print_usage ();
   endif

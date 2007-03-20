@@ -1,3 +1,11 @@
+2007-03-20  David Bateman  <dbateman@free.fr>
+
+	* general/Makefile.in: Include arrayfun.m in SOURCES.
+
+2007-03-20  Bill Denney  <denney@seas.upenn.edu>
+
+	* general/arrayfun.m: New function.
+
 2007-03-20  John W. Eaton  <jwe@octave.org>
 
 	* plot/newplot.m: Call __request_drawnow__ after initializing axes.

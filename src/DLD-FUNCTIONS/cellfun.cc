@@ -401,8 +401,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 			  if (error_state)
 			    goto cellfun_err;
 
-			  val.resize(f_args.dims());
-			  retval(j) = val;
+			  retval(j) = val.resize(f_args.dims());
 			}
 		    }
 		  else
@@ -521,6 +520,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 %!assert(cellfun('size',{zeros([1,2,3]),1},3),[3,1])
 %!assert(cellfun(@atan2,{1,1},{1,2}),[atan2(1,1),atan2(1,2)])
 %!assert(cellfun(@atan2,{1,1},{1,2},'UniformOutput',false),{atan2(1,1),atan2(1,2)})
+%!assert(cellfun(@sin,{1,2;3,4}),sin([1,2;3,4]))
+%!assert(cellfun(@atan2,{1,1;1,1},{1,2;1,2}),atan2([1,1;1,1],[1,2;1,2]))
 %!error(cellfun(@factorial,{-1,3}))
 %!assert(cellfun(@factorial,{-1,3},'ErrorHandler',@(x,y) NaN),[NaN,6])
 %!test

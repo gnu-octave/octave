@@ -1,3 +1,8 @@
+2007-03-20  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun): Correct for shape of return
+	matrix for the case of UniformOutput being true.
+
 2007-03-20  John W. Eaton  <jwe@octave.org>
 
 	* sysdep.cc (Fpause): Call drawnow.

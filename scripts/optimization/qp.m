@@ -236,7 +236,6 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
 	    ub = [];
 	    ctype = repmat ("L", n_in, 1);
 	    [P, dummy, status] = glpk (ctmp, Atmp, btmp, lb, ub, ctype);
-
 	    if ((status == 180 || status == 181 || status == 151)
 		&& all (abs (P(n-n_eq+1:end)) < rtol * (1 + norm (btmp))))
 	      ## We found a feasible starting point

@@ -1,3 +1,7 @@
+2007-03-20  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
+
+	* interpreter/sparse.txi: Clarify sparse matrix creation example.
+
 2007-03-14  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
 
 	* interpreter/sparse.txi: Fix typo.

@@ -206,30 +206,20 @@ two vectors containing the row and column index of the data and a third
 vector of the same size containing the data to be stored. For example
 
 @example
- function x = foo (r, j)
-  idx = randperm (r);
-  x = ([zeros(r-2,1); rand(2,1)])(idx);
- endfunction
-
- ri = [];
- ci = [];
- d = [];
-
- for j=1:c
-    dtmp = foo (r, j);  # Returns vector of length r with (:,j) values
-    idx = find (dtmp != 0.);
-    ri = [ri; idx];
-    ci = [ci; j*ones(length(idx),1)]; 
-    d = [d; dtmp(idx)];
- endfor
- s = sparse (ri, ci, d, r, c);
+  ri = ci = d = [];
+  for j = 1:c
+    ri = [ri; randperm(r)(1:n)'];
+    ci = [ci; j*ones(n,1)];
+    d = [d; rand(n,1)];
+  endfor
+  s = sparse (ri, ci, d, r, c);
 @end example
 
-creates an @var{r}-by-@var{c} sparse matrix with a random distribution of
-2 elements per row. The elements of the vectors do not need to be sorted in
-any particular order as Octave will sort them prior to storing the
-data. However, pre-sorting the data will make the creation of the sparse
-matrix faster.
+creates an @var{r}-by-@var{c} sparse matrix with a random distribution
+of @var{n} (<@var{r}) elements per column. The elements of the vectors
+do not need to be sorted in any particular order as Octave will sort
+them prior to storing the data. However, pre-sorting the data will
+make the creation of the sparse matrix faster.
 
 The function @dfn{spconvert} takes a three or four column real matrix.
 The first two columns represent the row and column index respectively and

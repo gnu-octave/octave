@@ -9,13 +9,13 @@ Summary of important user-visible changes for version 3.0:
       generate file with the plot.
 
     + RGB line colors are supported if you use gnuplot 4.2.  Octave
-      can still use gnuplot 4.0, but there is no longer any way to set
+      can still use gnuplot 4.0, but there is no way to set arbitrary
       line colors with it when using the Matlab-style plot functions.
-      Actually, there never was any way to do this reliably with older
-      versions of gnuplot (whether run from Octave or not) since it
-      only provided a limited set to choose from, and they were
-      terminal dependent, so choosing color 1 with the X11 terminal
-      would be different from color 1 with the PostScript terminal.
+      There never was any way to do this reliably with older versions
+      of gnuplot (whether run from Octave or not) since it only
+      provided a limited set to choose from, and they were terminal
+      dependent, so choosing color 1 with the X11 terminal would be
+      different from color 1 with the PostScript terminal.
 
     + You can control the width of lines using (for example):
 

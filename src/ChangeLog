@@ -2,6 +2,11 @@
 
 	* graphics.cc (axes::axes_properties::set_defaults): Reverse sense
 	of mode test for setting outerposition property.
+	(figure::figure_properties::set): If setting visible property,
+	make this figure the current figure.
+	(gh_manager::figure_handle_list, gh_manager::do_figure_handle_list):
+	New functions.
+	(F__go_figure_handles__): New function.
 
 	* sysdep.cc (Fpause): Also call drawnow if nargin == 0.
 	(Fkbhit, Fsleep, Fusleep): Also call drawnow here.

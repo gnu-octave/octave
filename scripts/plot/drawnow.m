@@ -26,59 +26,81 @@
 
 function drawnow (term, file)
 
+  if (nargin == 2)
+    h = get (0, "currentfigure");
+    if (h)
+      f = get (h);
+      plot_stream = [];
+      unwind_protect
+	plot_stream = open_gnuplot_stream ([], term, file);
+	__go_draw_figure__ (f, plot_stream);
+      unwind_protect_cleanup
+	if (! isempty (plot_stream))
+	  pclose (plot_stream);
+	endif
+      end_unwind_protect
+    else
+      error ("drawnow: nothing to draw");
+    endif
+  elseif (nargin == 0)
+    for h = __go_figure_handles__ ()
+      if (! (isnan (h) || h == 0))
+	f = get (h);
+	plot_stream = f.__plot_stream__;
+	figure_is_visible = strcmp (f.visible, "on");
+	if (figure_is_visible)
+	  if (isempty (plot_stream))
+	    plot_stream = open_gnuplot_stream (h);
+	  endif
+	  __go_draw_figure__ (f, plot_stream);
+	elseif (! isempty (plot_stream))
+	  pclose (plot_stream);
+	  set (h, "__plot_stream__", []);
+	endif
+	__request_drawnow__ (false);
+      endif
+    endfor
+  else
+    print_usage ();
+  endif
+
+  __request_drawnow__ (false);
+
+endfunction
+
+function plot_stream = open_gnuplot_stream (h, term, file)
+
   ## If drawnow is cleared, it is possible to register __go_close_all__
   ## more than once, but that is not fatal.
   persistent __go_close_all_registered__;
 
-  ## Use this instead of calling gcf to avoid creating a figure.
+  cmd = gnuplot_binary ();
 
-  h = get (0, "currentfigure");
+  if (! isempty (h) && gnuplot_use_title_option ())
+    cmd = sprintf ("%s -title \"Figure %d\"", cmd, h);
+  endif
 
-  if (h)
+  plot_stream = popen (cmd, "w");
 
-    f = get (h);
-
-    plot_stream = f.__plot_stream__;
-
-    if (isempty (plot_stream))
-      cmd = gnuplot_binary ();
-      if (gnuplot_use_title_option ())
-        cmd = sprintf ("%s -title \"Figure %d\"", cmd, h);
-      endif
-      plot_stream = popen (cmd, "w");
-      if (plot_stream < 0)
-	error ("drawnow: failed to open connection to gnuplot");
-      else
-	set (h, "__plot_stream__", plot_stream);
-	if (isunix () && isempty (getenv ("DISPLAY")))
-	  fprintf (plot_stream, "set terminal dumb\n;");
-	endif
-	if (isempty (__go_close_all_registered__))
-	  atexit ("__go_close_all__");
-	  __go_close_all_registered__ = true;
-	endif
-      endif
-    endif
-
-    if (nargin == 2)
-      fprintf (plot_stream,
-	       "set terminal push; set terminal %s; set output '%s'\n",
-	       term, file);
-    endif
-
-    if (nargin == 2 || strcmp (f.visible, "on"))
-      __go_draw_figure__ (f, plot_stream);
-    endif
-
-    __request_drawnow__ (false);
-
-    if (nargin == 2)
-      fputs (plot_stream, "set terminal pop; set output;\n");
-    endif
-
+  if (plot_stream < 0)
+    error ("drawnow: failed to open connection to gnuplot");
   else
 
-    __request_drawnow__ (false);
+    if (! isempty (h))
+      set (h, "__plot_stream__", plot_stream);
+    endif
+
+    if (nargin == 3)
+      fprintf (plot_stream, "set terminal %s\n;", term);
+      fprintf (plot_stream, "set output \"%s\"\n;", file);
+    elseif (isunix () && isempty (getenv ("DISPLAY")))
+      fprintf (plot_stream, "set terminal dumb\n;");
+    endif
+
+    if (isempty (__go_close_all_registered__))
+      atexit ("__go_close_all__");
+      __go_close_all_registered__ = true;
+    endif
 
   endif
 

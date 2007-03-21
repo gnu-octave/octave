@@ -701,9 +701,14 @@ public:
     return instance_ok () ? instance->do_current_figure () : octave_NaN;
   }
 
-  static Matrix list (void)
+  static Matrix handle_list (void)
   {
-    return instance_ok () ? instance->do_list () : Matrix ();
+    return instance_ok () ? instance->do_handle_list () : Matrix ();
+  }
+
+  static Matrix figure_handle_list (void)
+  {
+    return instance_ok () ? instance->do_figure_handle_list () : Matrix ();
   }
 
 private:
@@ -800,12 +805,23 @@ private:
 
   graphics_handle do_make_figure_handle (double val);
 
-  Matrix do_list (void)
+  Matrix do_handle_list (void)
   {
     Matrix retval (1, handle_map.size ());
     octave_idx_type i = 0;
     for (const_iterator p = handle_map.begin (); p != handle_map.end (); p++)
       retval(i++) = p->first;
+    return retval;
+  }
+
+  Matrix do_figure_handle_list (void)
+  {
+    Matrix retval (1, figure_list.size ());
+    octave_idx_type i = 0;
+    for (const_figure_list_iterator p = figure_list.begin ();
+	 p != figure_list.end ();
+	 p++)
+      retval(i++) = *p;
     return retval;
   }
 
@@ -1337,7 +1353,17 @@ public:
       else if (name.compare ("colormap"))
 	colormap = colormap_property (val);
       else if (name.compare ("visible"))
-	visible = val;
+	{
+	  std::string s = val.string_value ();
+
+	  if (! error_state)
+	    {
+	      if (s == "on")
+		xset (0, "currentfigure", __myhandle__);
+
+	      visible = val;
+	    }
+	}
       else if (name.compare ("paperorientation"))
 	paperorientation = val;
       else
@@ -3415,7 +3441,16 @@ DEFUN (__go_handles__, , ,
 Return current list of function handles.\n\
 @end deftypefn")
 {
-  return octave_value (gh_manager::list ());
+  return octave_value (gh_manager::handle_list ());
+}
+
+DEFUN (__go_figure_handles__, , ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_figure_handles__ ()\n\
+Return current list of function handles.\n\
+@end deftypefn")
+{
+  return octave_value (gh_manager::figure_handle_list ());
 }
 
 /*

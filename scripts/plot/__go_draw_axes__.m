@@ -355,10 +355,15 @@ function __go_draw_axes__ (h, plot_stream)
 	  else
 	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
 	  endif
-	  style = do_linestyle_command (obj, data_idx, plot_stream);
+	  [style, typ] = do_linestyle_command (obj, data_idx, plot_stream);
 	  usingclause{data_idx} = "";
-	  withclause{data_idx} = sprintf ("with %s linestyle %d",
-					  style, data_idx);
+	  if (have_newer_gnuplot || isnan (typ))
+	    withclause{data_idx} = sprintf ("with %s linestyle %d",
+					    style, data_idx);
+	  else
+	    withclause{data_idx} = sprintf ("with %s linetype %d",
+					    style, typ);
+	  endif
 	  parametric(i) = true;
 	  if (! isempty (obj.zdata))
 	    nd = 3;
@@ -479,7 +484,7 @@ function __go_draw_axes__ (h, plot_stream)
 
 	case "surface"
 	  data_idx++;
-	  style = do_linestyle_command (obj, data_idx, plot_stream);
+	  [style, typ] = do_linestyle_command (obj, data_idx, plot_stream);
 	  filespec{data_idx} = '-';
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
@@ -487,8 +492,13 @@ function __go_draw_axes__ (h, plot_stream)
 	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
 	  endif
 	  usingclause{data_idx} = "";
-	  withclause{data_idx} = sprintf ("with %s linestyle %d",
-					  style, data_idx);
+	  if (have_newer_gnuplot || isnan (typ))
+	    withclause{data_idx} = sprintf ("with %s linestyle %d",
+					    style, data_idx);
+	  else
+	    withclause{data_idx} = sprintf ("with %s linetype %d",
+					    style, typ);
+	  endif
 	  parametric(i) = false;
 	  nd = 3;
 	  xdat = obj.xdata;
@@ -764,7 +774,7 @@ function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
 
 endfunction
 
-function style = do_linestyle_command (obj, idx, plot_stream)
+function [style, typ] = do_linestyle_command (obj, idx, plot_stream)
 
   persistent have_newer_gnuplot ...
     = compare_versions (__gnuplot_version__ (), "4.0", ">");
@@ -775,12 +785,35 @@ function style = do_linestyle_command (obj, idx, plot_stream)
   fprintf (plot_stream, "set style line %d", idx);
 
   found_style = false;
+  typ = NaN;
 
-  if (isfield (obj, "color") && have_newer_gnuplot)
+  if (isfield (obj, "color"))
     color = obj.color;
     if (isnumeric (color))
-      fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-	       round (255*color));
+      if (have_newer_gnuplot)
+	fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+		 round (255*color));
+      else
+	if (isequal (color, [0,0,0]))
+	  typ = -1;
+	elseif (isequal (color, [1,0,0]))
+	  typ = 1;
+	elseif (isequal (color, [0,1,0]))
+	  typ = 2;
+	elseif (isequal (color, [0,0,1]))
+	  typ = 3;
+	elseif (isequal (color, [1,0,1]))
+	  typ = 4;
+	elseif (isequal (color, [0,1,1]))
+	  typ = 5;
+	elseif (isequal (color, [1,1,1]))
+	  typ = 6;
+	elseif (isequal (color, [1,1,0]))
+	  typ = 7;
+	else
+	  typ = 2;
+	endif
+      endif
     endif
     found_style = true;
   endif

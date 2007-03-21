@@ -117,10 +117,13 @@ function h = subplot (rows, columns, index)
   yp = fix ((index-1)/columns);
   xp = index - yp*columns - 1;
 
-  xorigin = xp * xsize;
-  yorigin = (rows - yp - 1) * ysize;
+  x0 = xp * xsize;
+  y0 = (rows - yp - 1) * ysize;
 
-  pos = [xorigin, yorigin, xsize, ysize];
+  pos = [x0, y0, xsize, ysize];
+
+  x1 = x0 + xsize;
+  y1 = y0 + ysize;
 
   cf = gcf ();
 
@@ -132,10 +135,23 @@ function h = subplot (rows, columns, index)
   for child = obj.children
     obj = get (child);
     if (strcmp (obj.type, "axes"))
-      if (obj.outerposition == pos)
+      objpos = obj.outerposition;
+      if (objpos == pos)
+	## If the new axes are in exactly the same position as an
+	## existing axes object, use the existing axes.
 	found = true;
 	tmp = child;
 	break;
+      else
+	## If the new axes overlap an old axes object, delete the old
+	## axes.
+	objx0 = objpos(1);
+	objx1 = objx0 + objpos(3);
+	objy0 = objpos(2);
+	objy1 = objy0 + objpos(4);
+	if (! (x0 >= objx1 || x1 <= objx0 || y0 >= objy1 || y1 <= objy0))
+	  delete (child);
+	endif
       endif
     endif
   endfor

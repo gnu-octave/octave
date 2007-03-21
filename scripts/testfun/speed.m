@@ -234,11 +234,14 @@ function [__order, __test_n, __tnew, __torig] ...
 
   ## Plot the data if no output is requested.
   doplot = (nargout == 0);
+  
+  if (doplot)
+    figure;
+  endif
 
   if doplot && !isempty(__f2)
-
-
     subplot(121);
+    hold on;
     xlabel("test length");
     title (__f1);
     ylabel("speedup ratio");
@@ -247,7 +250,8 @@ function [__order, __test_n, __tnew, __torig] ...
 	       __test_n, __tnew./__torig,
 	      ["-*g;", strrep(__f2,";","."), "/", strrep(__f1,";","."), ";"]);
     subplot (122);
-
+    hold on;
+    xlabel("test length");
     ylabel ("best execution time (ms)");
     title (["init: ", __init]);
     loglog ( __test_n, __tnew*1000, ["*-g;", strrep(__f1,";","."), ";" ], 
@@ -260,6 +264,7 @@ function [__order, __test_n, __tnew, __torig] ...
   elseif doplot
 
     subplot(111);
+    hold on;
     xlabel("test length");
     ylabel ("best execution time (ms)");
     title ([__f1, "  init: ", __init]);

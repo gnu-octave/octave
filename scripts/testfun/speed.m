@@ -51,8 +51,9 @@
 ## results of expression @var{f} and expression @var{f2}.  Otherwise,
 ## expression @var{f} should produce a value @var{v} and expression @var{f2} 
 ## should produce a value @var{v2}, and these shall be compared using 
-## @code{assert(@var{v},@var{v2},@var{tol})}. The default is
-## @code{eps}.
+## @code{assert(@var{v},@var{v2},@var{tol})}. If @var{tol} is positive,
+## the tolerance is assumed to be absolutr. If @var{tol} is negative,
+## the tolerance is assumed to be relative. The default is @code{eps}.
 ##
 ## @item @var{order}
 ## The time complexity of the expression @code{O(a n^p)}.  This
@@ -122,9 +123,9 @@
 ##
 ## @example
 ##   speed("v=xcorr(x,n)", "x=rand(128,1);", 100, ...
-##         "v2=xcorr_orig(x,n)", 100*eps,'rel')
+##         "v2=xcorr_orig(x,n)", -100*eps)
 ##   speed("v=xcorr(x,15)", "x=rand(20+n,1);", 100, ...
-##         "v2=xcorr_orig(x,n)", 100*eps,'rel')
+##         "v2=xcorr_orig(x,n)", -100*eps)
 ## @end example
 ##
 ## Assuming one of the two versions is in @var{xcorr_orig}, this would
@@ -315,11 +316,10 @@ endfunction
 %!  disp("-----------------------");
 %!
 %!  disp("Preallocated vector test.\nThis takes a little while...");
-%!  speed('build', 'build_orig', 1000, 'v=n;');
+%!  speed('build(n)', '', 1000, 'build_orig(n)');
 %!  clear build build_orig
 %!  disp("Note how much faster it is to pre-allocate a vector.");
 %!  disp("Notice the peak speedup ratio.");
-%!  clear build build_orig
 %! endif
 
 %!demo if 1
@@ -343,7 +343,7 @@ endfunction
 %!  disp("-----------------------");
 %!
 %!  disp("Vectorized test. This takes a little while...");
-%!  speed('build', 'build_orig', 1000, 'v=n;');
+%!  speed('build(n)', '', 1000, 'build_orig(n)');
 %!  clear build build_orig
 %!  disp("-----------------------");
 %!  disp("This time, the for loop is done away with entirely.");

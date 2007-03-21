@@ -1,7 +1,8 @@
-2007-03-20  David Bateman  <dbateman@free.fr>
+2007-03-21  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Handle some colors with older gnuplot.
-
+	* testfun/speed.m: Documentation and example fix.
+	
 2007-03-21  John W. Eaton  <jwe@octave.org>
 
 	* plot/subplot.m: If we find an existing subplot region, set

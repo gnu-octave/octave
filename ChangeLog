@@ -1,3 +1,7 @@
+2007-03-21  Paul Kienzle <pkienzle@users.sf.net>
+
+	* octMakefile.in (all): Print message after successful build.
+
 2007-03-05  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (GLPK_PRE_4_14): Rename from GLPK_PRE_4_15.

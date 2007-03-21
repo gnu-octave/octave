@@ -1,5 +1,8 @@
 2007-03-21  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (axes::axes_properties::set_defaults): Reverse sense
+	of mode test for setting outerposition property.
+
 	* sysdep.cc (Fpause): Also call drawnow if nargin == 0.
 	(Fkbhit, Fsleep, Fusleep): Also call drawnow here.
 

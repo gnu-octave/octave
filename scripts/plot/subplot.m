@@ -140,7 +140,9 @@ function h = subplot (rows, columns, index)
     endif
   endfor
 
-  if (! found)
+  if (found)
+    set (cf, "currentaxes", tmp);
+  else
     tmp = axes ("outerposition", pos);
   endif
 

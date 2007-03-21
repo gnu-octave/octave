@@ -1835,7 +1835,7 @@ public:
       // FIXME -- this is not quite right; we should preserve
       // "position" and "units".
 
-      if (mode == "replace")
+      if (mode != "replace")
 	{
 	  Matrix touterposition (1, 4, 0.0);
 	  touterposition(2) = 1;

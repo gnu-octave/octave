@@ -1152,7 +1152,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 		}
 
 	      if (done && nargout > 0)
-		retval = warning_options;
+		retval = old_warning_options;
 	    }
 	  else if (arg1 == "query")
 	    {
@@ -1245,7 +1245,7 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 	  Octave_map m = arg.map_value ();
 
 	  if (m.contains ("identifier") && m.contains ("state"))
-	    warning ("warning: setting state with structure not implemented");
+	    warning_options = m;
 	  else
 	    error ("warning: expecting structure with fields `identifier' and `state'");
 

@@ -1,5 +1,8 @@
 2007-03-21  John W. Eaton  <jwe@octave.org>
 
+	* error.cc (Fwarning): Allow setting options with struct.
+	If setting options, return previous state.
+
 	* graphics.cc (axes::axes_properties::set_defaults): Reverse sense
 	of mode test for setting outerposition property.
 	(figure::figure_properties::set): If setting visible property,

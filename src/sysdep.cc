@@ -601,6 +601,8 @@ returning the empty string if no key is available.\n\
 
   if (interactive || forced_interactive)
     {
+      feval ("drawnow");
+
       int c = octave_kbhit (args.length () == 0);
 
       if (c == -1)
@@ -667,6 +669,7 @@ clc;\n\
     }
   else
     {
+      feval ("drawnow");
       flush_octave_stdout ();
       octave_kbhit ();
     }
@@ -691,7 +694,10 @@ Suspend the execution of the program for the given number of seconds.\n\
 	  if (xisnan (dval))
 	    warning ("sleep: NaN is an invalid delay");
 	  else
-	    octave_sleep (dval);
+	    {
+	      feval ("drawnow");
+	      octave_sleep (dval);
+	    }
 	}
     }
   else
@@ -721,6 +727,8 @@ of time less than one second, @code{usleep} will pause the execution for\n\
 	    warning ("usleep: NaN is an invalid delay");
 	  else
 	    {
+	      feval ("drawnow");
+
 	      int delay = NINT (dval);
 
 	      if (delay > 0)

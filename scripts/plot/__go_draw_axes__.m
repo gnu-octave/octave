@@ -349,7 +349,7 @@ function __go_draw_axes__ (h, plot_stream)
 
 	case "line"
 	  data_idx++;
-	  filespec{data_idx} = '-';
+	  filespec{data_idx} = "-";
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
@@ -485,7 +485,7 @@ function __go_draw_axes__ (h, plot_stream)
 	case "surface"
 	  data_idx++;
 	  [style, typ] = do_linestyle_command (obj, data_idx, plot_stream);
-	  filespec{data_idx} = '-';
+	  filespec{data_idx} = "-";
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
@@ -723,6 +723,8 @@ function __go_draw_axes__ (h, plot_stream)
 	  fputs (plot_stream, "e\n");
 	endif
       endfor
+    else
+      fputs (plot_stream, "plot \"-\";\nInf Inf\ne\n");
     endif
 
     fflush (plot_stream);

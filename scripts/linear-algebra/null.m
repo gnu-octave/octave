@@ -61,6 +61,7 @@ function retval = null (A, tol)
 
     if (rank < cols)
       retval = V (:, rank+1:cols);
+      retval(abs (retval) < eps) = 0;
     else
       retval = zeros (cols, 0);
     endif

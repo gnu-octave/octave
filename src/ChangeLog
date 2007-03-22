@@ -1,4 +1,11 @@
+2007-03-22  John W. Eaton  <jwe@octave.org>
+
+	* src/parse.y (Fautoload): Use warning_with_id.
+
 2007-03-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__qp__.cc (ABS): Delete.  Use std::abs instead.
+	(null): Set elements of retval with magnitudes less than eps to 0.
 
 	* error.cc (Fwarning): Allow setting options with struct.
 	If setting options, return previous state.

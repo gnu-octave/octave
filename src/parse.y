@@ -3568,8 +3568,9 @@ With no arguments, return a structure containing the curre autoload map.\n\
 	  std::string nm = argv[2];
 
 	  if (! octave_env::absolute_pathname (nm))
-	    warning ("autoload: `%s' is not an absolute file name",
-		     nm.c_str ());
+	    warning_with_id ("Octave:autoload-relative-file-name",
+			     "autoload: `%s' is not an absolute file name",
+			     nm.c_str ());
 
 	  autoload_map[argv[1]] = nm;
 	}

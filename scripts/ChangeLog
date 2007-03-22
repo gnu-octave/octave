@@ -1,3 +1,13 @@
+2007-03-22  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: If no real data, plot a point at Inf,
+	Inf to show axes.  From Daniel J Sebald <daniel.sebald@ieee.org>.
+
+2007-03-21  John W. Eaton  <jwe@octave.org>
+
+	* linear-algebra/null.m: Set elements of retval with magnitudes
+	less than eps to 0.
+
 2007-03-21  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Handle some colors with older gnuplot.
@@ -24,7 +34,7 @@
 
 	* plot/clf.m: Don't call drawnow.
 
-2007-03-20  Daniel J Sebald  <daniel.sebald@ieee.org>.
+2007-03-20  Daniel J Sebald  <daniel.sebald@ieee.org>
 
 	* image/__img__.m: Maybe set yaxis to reverse for images.
 	* plot/__go_draw_axes__.m: Don't add flipy to gnuplot command for

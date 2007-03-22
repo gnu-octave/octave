@@ -39,12 +39,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "pr-output.h"
 #include "utils.h"
 
-static inline double
-ABS (double x)
-{
-  return x < 0 ? -x : x;
-}
-
 static Matrix
 null (const Matrix& A, octave_idx_type& rank)
 {
@@ -81,6 +75,10 @@ null (const Matrix& A, octave_idx_type& rank)
 	retval = V.extract (0, rank, A_nc-1, A_nc-1);
       else
 	retval.resize (A_nc, 0);
+
+      for (octave_idx_type i = 0; i < retval.numel (); i++)
+	if (std::abs (retval(i)) < DBL_EPSILON)
+	  retval(i) = 0;
     }
 
   return retval;
@@ -125,7 +123,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
       for (octave_idx_type i = 0; i < n_in; i++)
 	{
-	  res(i) /= (1.0 + ABS (bin(i)));
+	  res(i) /= (1.0 + std::abs (bin(i)));
 
 	  if (res(i) < rtol)
 	    {
@@ -304,7 +302,7 @@ qp (const Matrix& H, const ColumnVector& q,
       // Checking the step-size.
       ColumnVector abs_p (n);
       for (octave_idx_type i = 0; i < n; i++)
-	abs_p(i) = ABS (p(i));
+	abs_p(i) = std::abs (p(i));
       double max_p = abs_p.max ();
 
       if (max_p < rtol)

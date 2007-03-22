@@ -506,7 +506,7 @@ the examples
 
 will give. The first example of @var{s} raised to the power of 2 causes
 no problems. However @var{s} raised element-wise to itself involves a
-a large number of terms @code{0 .^ 0} which is 1. There @code{@var{s} .^
+large number of terms @code{0 .^ 0} which is 1. There @code{@var{s} .^
 @var{s}} is a full matrix. 
 
 Likewise @code{@var{s} .^ -2} involves terms terms like @code{0 .^ -2} which

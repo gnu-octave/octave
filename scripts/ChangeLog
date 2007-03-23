@@ -1,5 +1,8 @@
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
+	* plot/__pltopt1__.m: Handle "@" marker same as "+".
+	* plot/plot.m: Remove "-@" and "@" from docstring.
+
 	* plot/orient.m: Fix tests to avoid creating a plot window.
 
 	* elfun/acosd.m, elfun/acotd.m, elfun/acscd.m, elfun/asecd.m,

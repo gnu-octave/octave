@@ -85,12 +85,6 @@
 ## @item .
 ## Set dots plot style.
 ##
-## @item @@
-## Set points plot style.
-##
-## @item -@@
-## Set linespoints plot style.
-##
 ## @item ^
 ## Set impulses plot style.
 ##

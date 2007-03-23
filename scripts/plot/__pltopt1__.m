@@ -58,8 +58,12 @@ function options = __pltopt1__ (caller, opt)
 	      || topt == "." || topt == "x" || topt == "s"
 	      || topt == "d" || topt == "^" || topt == "v"
 	      || topt == ">" || topt == "<" || topt == "p"
-	      || topt == "h")
+	      || topt == "h" || topt == "@")
 	have_marker = true;
+	## Backward compatibility.  Leave undocumented.
+	if (topt == "@")
+	  topt = "+";
+	endif
 	options.marker = topt;
       elseif (topt == "k")
 	options.color = [0, 0, 0];

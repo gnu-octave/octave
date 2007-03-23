@@ -56,6 +56,8 @@ function retval = orient (varargin)
 
 endfunction
 
+%!shared
+%!  set (gcf (), "visible", "off")
 %!assert(orient,"portrait") # default
 %!test orient('landscape')
 %!assert(orient,"landscape") # change to landscape

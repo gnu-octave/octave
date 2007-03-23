@@ -1,3 +1,9 @@
+2007-03-23  John W. Eaton  <jwe@octave.org>
+
+	* examples/make_int.cc (octave_integer::clone): Return type is
+	pointer to octave_base_value, not octave_value.
+	(Fdoit): Rep is reference to octave_base_value, not octave_value.
+
 2007-03-21  Paul Kienzle <pkienzle@users.sf.net>
 
 	* octMakefile.in (all): Print message after successful build.

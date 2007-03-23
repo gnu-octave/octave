@@ -71,7 +71,7 @@ public:
 
   ~octave_integer (void) { }
 
-  octave_value *clone (void) { return new octave_integer (*this); }
+  octave_base_value *clone (void) { return new octave_integer (*this); }
 
 #if 0
   void *operator new (size_t size);
@@ -323,7 +323,7 @@ DEFUN_DLD (doit, args, ,
       // object, so we can peek at the representation and extract the
       // data.
 
-      const octave_value& rep = args(0).get_rep ();
+      const octave_base_value& rep = args(0).get_rep ();
 
       int my_value = ((const octave_integer&) rep) . integer_value ();
 

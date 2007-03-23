@@ -1,5 +1,8 @@
 2007-03-22  John W. Eaton  <jwe@octave.org>
 
+	* plot/drawnow.m: Check and optionally, set, the __modified__
+	property of each figure.
+
 	* plot/__go_draw_axes__.m: If no real data, plot a point at Inf,
 	Inf to show axes.  From Daniel J Sebald <daniel.sebald@ieee.org>.
 

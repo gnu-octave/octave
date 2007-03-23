@@ -396,6 +396,11 @@ public:
 
   virtual ~base_graphics_object (void) { }
 
+  virtual void mark_modified (void)
+  {
+    error ("base_graphics_object::mark_modified: invalid graphics object");
+  }
+
   virtual void override_defaults (base_graphics_object&)
   {
     error ("base_graphics_object::override_defaults: invalid graphics object");
@@ -517,6 +522,8 @@ public:
     if (--rep->count == 0)
       delete rep;
   }
+
+  void mark_modified (void) { rep->mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -1001,11 +1008,19 @@ public:
   base_properties (const std::string& t = "unknown",
 		   const graphics_handle& mh = octave_NaN,
 		   const graphics_handle& p = octave_NaN)
-    : type (t), __myhandle__ (mh), parent (p), children () { }
+    : type (t), __modified__ (true), __myhandle__ (mh), parent (p),
+      children () { }
 
   virtual ~base_properties (void) { }
 
   virtual std::string graphics_object_name (void) const = 0;
+
+  void mark_modified (void)
+  {
+    __modified__ = true;
+    graphics_object parent_obj = gh_manager::get_object (parent);
+    parent_obj.mark_modified ();
+  }
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -1119,6 +1134,7 @@ public:
 
 protected:
   std::string type;
+  bool __modified__;
   graphics_handle __myhandle__;
   graphics_handle parent;
   Matrix children;
@@ -1211,6 +1227,8 @@ public:
   ~root_figure (void) { properties.delete_children (); }
 
   std::string type (void) const { return properties.graphics_object_name (); }
+
+  void mark_modified (void) { }
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -1333,8 +1351,15 @@ public:
 
     void set (const property_name& name, const octave_value& val)
     {
+      bool modified = true;
+
       if (name.compare ("children"))
 	children = maybe_set_children (children, val);
+      else if (name.compare ("__modified__"))
+	{
+	  __modified__ = val.bool_value ();
+	  modified = false;
+	}
       else if (name.compare ("__plot_stream__"))
 	__plot_stream__ = val;
       else if (name.compare ("nextplot"))
@@ -1367,7 +1392,13 @@ public:
       else if (name.compare ("paperorientation"))
 	paperorientation = val;
       else
-	warning ("set: invalid property `%s'", name.c_str ());
+	{
+	  modified = false;
+	  warning ("set: invalid property `%s'", name.c_str ());
+	}
+
+      if (modified)
+	mark_modified ();
     }
 
     octave_value get (void) const
@@ -1377,6 +1408,7 @@ public:
       m.assign ("type", type);
       m.assign ("parent", parent);
       m.assign ("children", children);
+      m.assign ("__modified__", __modified__);
       m.assign ("__plot_stream__", __plot_stream__);
       m.assign ("nextplot", nextplot);
       m.assign ("closerequestfcn", closerequestfcn);
@@ -1398,6 +1430,8 @@ public:
 	retval = parent;
       else if (name.compare ("children"))
 	retval = children;
+      else if (name.compare ("__modified__"))
+	retval = __modified__;
       else if (name.compare ("__plot_stream__"))
 	retval = __plot_stream__;
       else if (name.compare ("nextplot"))
@@ -1443,7 +1477,7 @@ public:
       property_list::pval_map_type m;
 
       m["nextplot"] = "replace";
-      //      m["closerequestfcn"] = make_fcn_handle ("closereq");
+      // m["closerequestfcn"] = make_fcn_handle ("closereq");
       m["colormap"] = colormap_property ();
       m["visible"] = "on";
       m["paperorientation"] = "portrait";
@@ -1479,6 +1513,8 @@ public:
   }
 
   std::string type (void) const { return properties.graphics_object_name (); }
+
+  void mark_modified (void) { properties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -1638,10 +1674,17 @@ public:
 
     void set (const property_name& name, const octave_value& val)
     {
+      bool modified = true;
+
       if (name.compare ("parent"))
 	set_parent (val);
       else if (name.compare ("children"))
 	children = maybe_set_children (children, val);
+      else if (name.compare ("__modified__"))
+	{
+	  __modified__ = val.bool_value ();
+	  modified = false;
+	}
       else if (name.compare ("position"))
 	position = val;
       else if (name.compare ("title"))
@@ -1801,7 +1844,13 @@ public:
       else if (name.compare ("outerposition"))
 	outerposition = val;
       else
-	warning ("set: invalid property `%s'", name.c_str ());
+	{
+	  modified = false;
+	  warning ("set: invalid property `%s'", name.c_str ());
+	}
+
+      if (modified)
+	mark_modified ();
     }
 
     void set_defaults (base_graphics_object& obj, const std::string& mode)
@@ -1895,6 +1944,7 @@ public:
       m.assign ("type", type);
       m.assign ("parent", parent);
       m.assign ("children", children);
+      m.assign ("__modified__", __modified__);
       m.assign ("position", position);
       m.assign ("title", title);
       m.assign ("box", box);
@@ -1953,6 +2003,8 @@ public:
 	retval = parent;
       else if (name.compare ("children"))
 	retval = children;
+      else if (name.compare ("__modified__"))
+	retval = __modified__;
       else if (name.compare ("position"))
 	retval = position;
       else if (name.compare ("title"))
@@ -2229,6 +2281,8 @@ public:
 
   std::string type (void) const { return properties.graphics_object_name (); }
 
+  void mark_modified (void) { properties.mark_modified (); }
+
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
@@ -2357,10 +2411,17 @@ public:
 
     void set (const property_name& name, const octave_value& val)
     {
+      bool modified = true;
+
       if (name.compare ("parent"))
 	set_parent (val);
       else if (name.compare ("children"))
 	children = maybe_set_children (children, val);
+      else if (name.compare ("__modified__"))
+	{
+	  __modified__ = val.bool_value ();
+	  modified = false;
+	}
       else if (name.compare ("xdata"))
 	xdata = val;
       else if (name.compare ("ydata"))
@@ -2388,7 +2449,13 @@ public:
       else if (name.compare ("keylabel"))
 	keylabel = val;
       else
-	warning ("set: invalid property `%s'", name.c_str ());
+	{
+	  modified = false;
+	  warning ("set: invalid property `%s'", name.c_str ());
+	}
+
+      if (modified)
+	mark_modified ();
     }
 
     octave_value get (void) const
@@ -2398,6 +2465,7 @@ public:
       m.assign ("type", type);
       m.assign ("parent", parent);
       m.assign ("children", children);
+      m.assign ("__modified__", __modified__);
       m.assign ("xdata", xdata);
       m.assign ("ydata", ydata);
       m.assign ("zdata", zdata);
@@ -2425,6 +2493,8 @@ public:
 	retval = parent;
       else if (name.compare ("children"))
 	retval = children;
+      else if (name.compare ("__modified__"))
+	retval = __modified__;
       else if (name.compare ("xdata"))
 	retval = xdata;
       else if (name.compare ("ydata"))
@@ -2511,6 +2581,8 @@ public:
 
   std::string type (void) const { return properties.graphics_object_name (); }
 
+  void mark_modified (void) { properties.mark_modified (); }
+
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
@@ -2571,10 +2643,17 @@ public:
 
     void set (const property_name& name, const octave_value& val)
     {
+      bool modified = true;
+
       if (name.compare ("parent"))
 	set_parent (val);
       else if (name.compare ("children"))
 	children = maybe_set_children (children, val);
+      else if (name.compare ("__modified__"))
+	{
+	  __modified__ = val.bool_value ();
+	  modified = false;
+	}
       else if (name.compare ("string"))
 	string = val;
       else if (name.compare ("units"))
@@ -2584,7 +2663,13 @@ public:
       else if (name.compare ("horizontalalignment"))
 	horizontalalignment = val;
       else
-	warning ("set: invalid property `%s'", name.c_str ());
+	{
+	  modified = false;
+	  warning ("set: invalid property `%s'", name.c_str ());
+	}
+
+      if (modified)
+	mark_modified ();
     }
 
     octave_value get (void) const
@@ -2594,6 +2679,7 @@ public:
       m.assign ("type", type);
       m.assign ("parent", parent);
       m.assign ("children", children);
+      m.assign ("__modified__", __modified__);
       m.assign ("string", string);
       m.assign ("units", units);
       m.assign ("position", position);
@@ -2612,6 +2698,8 @@ public:
 	retval = parent;
       else if (name.compare ("children"))
 	retval = children;
+      else if (name.compare ("__modified__"))
+	retval = __modified__;
       else if (name.compare ("string"))
 	retval = string;
       else if (name.compare ("units"))
@@ -2661,6 +2749,8 @@ public:
   ~text (void) { properties.delete_children (); }
 
   std::string type (void) const { return properties.graphics_object_name (); }
+
+  void mark_modified (void) { properties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -2721,10 +2811,17 @@ public:
 
     void set (const property_name& name, const octave_value& val)
     {
+      bool modified = true;
+
       if (name.compare ("parent"))
 	set_parent (val);
       else if (name.compare ("children"))
 	children = maybe_set_children (children, val);
+      else if (name.compare ("__modified__"))
+	{
+	  __modified__ = val.bool_value ();
+	  modified = false;
+	}
       else if (name.compare ("cdata"))
 	cdata = val;
       else if (name.compare ("xdata"))
@@ -2732,7 +2829,13 @@ public:
       else if (name.compare ("ydata"))
 	ydata = val;
       else
-	warning ("set: invalid property `%s'", name.c_str ());
+	{
+	  modified = false;
+	  warning ("set: invalid property `%s'", name.c_str ());
+	}
+
+      if (modified)
+	mark_modified ();
     }
 
     octave_value get (void) const
@@ -2742,6 +2845,7 @@ public:
       m.assign ("type", type);
       m.assign ("parent", parent);
       m.assign ("children", children);
+      m.assign ("__modified__", __modified__);
       m.assign ("cdata", cdata);
       m.assign ("xdata", xdata);
       m.assign ("ydata", ydata);
@@ -2759,6 +2863,8 @@ public:
 	retval = parent;
       else if (name.compare ("children"))
 	retval = children;
+      else if (name.compare ("__modified__"))
+	retval = __modified__;
       else if (name.compare ("cdata"))
 	retval = cdata;
       else if (name.compare ("xdata"))
@@ -2804,6 +2910,8 @@ public:
   ~image (void) { properties.delete_children (); }
 
   std::string type (void) const { return properties.graphics_object_name (); }
+
+  void mark_modified (void) { properties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -2865,10 +2973,17 @@ public:
 
     void set (const property_name& name, const octave_value& val)
     {
+      bool modified = true;
+
       if (name.compare ("parent"))
 	set_parent (val);
       else if (name.compare ("children"))
 	children = maybe_set_children (children, val);
+      else if (name.compare ("__modified__"))
+	{
+	  __modified__ = val.bool_value ();
+	  modified = false;
+	}
       else if (name.compare ("xdata"))
 	xdata = val;
       else if (name.compare ("ydata"))
@@ -2878,7 +2993,13 @@ public:
       else if (name.compare ("keylabel"))
 	keylabel = val;
       else
-	warning ("set: invalid property `%s'", name.c_str ());
+	{
+	  modified = false;
+	  warning ("set: invalid property `%s'", name.c_str ());
+	}
+
+      if (modified)
+	mark_modified ();
     }
 
     octave_value get (void) const
@@ -2888,6 +3009,7 @@ public:
       m.assign ("type", type);
       m.assign ("parent", parent);
       m.assign ("children", children);
+      m.assign ("__modified__", __modified__);
       m.assign ("xdata", xdata);
       m.assign ("ydata", ydata);
       m.assign ("zdata", zdata);
@@ -2906,6 +3028,8 @@ public:
 	retval = parent;
       else if (name.compare ("children"))
 	retval = children;
+      else if (name.compare ("__modified__"))
+	retval = __modified__;
       else if (name.compare ("xdata"))
 	retval = xdata;
       else if (name.compare ("ydata"))
@@ -2955,6 +3079,8 @@ public:
   ~surface (void) { properties.delete_children (); }
 
   std::string type (void) const { return properties.graphics_object_name (); }
+
+  void mark_modified (void) { properties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {

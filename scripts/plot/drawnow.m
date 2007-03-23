@@ -46,16 +46,20 @@ function drawnow (term, file)
     for h = __go_figure_handles__ ()
       if (! (isnan (h) || h == 0))
 	f = get (h);
-	plot_stream = f.__plot_stream__;
-	figure_is_visible = strcmp (f.visible, "on");
-	if (figure_is_visible)
-	  if (isempty (plot_stream))
-	    plot_stream = open_gnuplot_stream (h);
+	if (f.__modified__)
+	  plot_stream = f.__plot_stream__;
+	  figure_is_visible = strcmp (f.visible, "on");
+	  if (figure_is_visible)
+	    if (isempty (plot_stream))
+	      plot_stream = open_gnuplot_stream (h);
+	    endif
+	    __go_draw_figure__ (f, plot_stream);
+	  elseif (! isempty (plot_stream))
+	    pclose (plot_stream);
+	    set (h, "__plot_stream__", []);
 	  endif
-	  __go_draw_figure__ (f, plot_stream);
-	elseif (! isempty (plot_stream))
-	  pclose (plot_stream);
-	  set (h, "__plot_stream__", []);
+	  "setting"
+	  set (h, "__modified__", false);
 	endif
 	__request_drawnow__ (false);
       endif

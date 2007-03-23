@@ -1,6 +1,29 @@
 2007-03-22  John W. Eaton  <jwe@octave.org>
 
-	* src/parse.y (Fautoload): Use warning_with_id.
+	* graphics.cc (base_graphics_object::mark_modified):
+	New virtual function.
+	(base_properties::__modified__): New data member.
+	(base_properties::base_properties): Initialize it.
+	(graphics_object::mark_modified, base_properties::mark_modified, 
+	root_figure::mark_modified, figure::mark_modified,
+	axes::mark_modified, line::mark_modified, text::mark_modified,
+	image::mark_modified, surface::mark_modified,
+	root_figure::root_figure_properties::mark_modified,
+	figure::figure_properties::mark_modified,
+	axes::axes_properties::mark_modified,
+	line::line_properties::mark_modified,
+	text::text_properties::mark_modified,
+	image::image_properties::mark_modified,
+	surface::surface_properties::mark_modified): New functions.
+	(figure::figure_properties::set, figure::figure_properties::get,
+	axes::axes_properties::set, axes::axes_properties::get,
+	line::line_properties::set, line::line_properties::get,
+	text::text_properties::set, text::text_properties::get,
+	image::image_properties::set, image::image_properties::get,
+	surface::surface_properties::set, surface::surface_properties::get):
+	Handle __modified__ property.
+
+	* parse.y (Fautoload): Use warning_with_id.
 
 2007-03-21  John W. Eaton  <jwe@octave.org>
 

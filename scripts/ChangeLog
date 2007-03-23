@@ -1,5 +1,7 @@
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_axes__.m: Use %g for label coordinates, not %d.
+
 	* plot/contour.m: Don't call drawnow.
 
 2007-03-22  John W. Eaton  <jwe@octave.org>

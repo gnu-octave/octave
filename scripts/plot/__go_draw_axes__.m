@@ -570,11 +570,11 @@ function __go_draw_axes__ (h, plot_stream)
 	  label = obj.string;
 	  halign = obj.horizontalalignment;
 	  if (nd == 3)
-	    fprintf (plot_stream, "set label \"%s\" at %d,%d,%d %s;\n",
+	    fprintf (plot_stream, "set label \"%s\" at %g,%g,%g %s;\n",
 		     undo_string_escapes (label),
 		     lpos(1), lpos(2), lpos(3), halign);
 	  else
-	    fprintf (plot_stream, "set label \"%s\" at %d,%d %s;\n",
+	    fprintf (plot_stream, "set label \"%s\" at %g,%g %s;\n",
 		     undo_string_escapes (label),
 		     lpos(1), lpos(2), halign);
 	  endif

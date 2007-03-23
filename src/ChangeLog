@@ -1,3 +1,8 @@
+2007-03-23  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/rand.cc: Make statistical tests optional and 
+	add tests for fixed sequences.
+
 2007-03-22  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (base_graphics_object::mark_modified):

@@ -44,10 +44,12 @@ function __go_draw_figure__ (f, plot_stream)
 	  endswitch
 	endfor
 
+	fputs (plot_stream, "reset;\n");
+
 	multiplot_mode = axes_count > 1;
 
 	if (multiplot_mode)
-	  fputs (plot_stream, "reset; set multiplot;\n");
+	  fputs (plot_stream, "set multiplot;\n");
 	endif
 
 	for i = 1:nkids

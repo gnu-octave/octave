@@ -1,5 +1,8 @@
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_figure__.m: Send reset to gnuplot before every
+	plot, not just multiplots.
+
 	* plot/__go_draw_axes__.m: Use %g for label coordinates, not %d.
 
 	* plot/contour.m: Don't call drawnow.

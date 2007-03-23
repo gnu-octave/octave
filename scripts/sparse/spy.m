@@ -20,32 +20,21 @@
 ## Plot the sparsity pattern of the sparse matrix @var{x}.
 ## @end deftypefn
 
-function spy(S) 
-  if issparse(S)
-    [i,j,s,m,n]= spfind(S);
+function spy (S) 
+
+  if (issparse (S))
+    [i, j, s, m, n] = spfind (S);
   else
-    [i,j,s] = find(S);
-    [m,n] = size(S);
+    [i, j, s] = find (S);
+    [m, n] = size (S);
   endif
 
-  arp = automatic_replot;
-  unwind_protect
-    automatic_replot (0);
+  if (numel (i) < 1000)
+    plot (j, i, "*");
+  else
+    plot (j, i, ".");
+  endif
 
-    eval(sprintf('__gnuplot_set__ nokey'))
-    eval(sprintf('__gnuplot_set__ yrange [0:%d] reverse',m+1))
-    eval(sprintf('__gnuplot_set__ xrange [0:%d] noreverse',n+1))
+  axis ([0, n+1, 0, m+1]);
 
-    if (length(i)<1000)
-      plot(j,i,'*');
-    else
-      plot(j,i,'.');
-    endif
-
-    #TODO: we should store the reverse state so we don't undo it
-    __gnuplot_set__ yrange [0:1] noreverse
-    axis;
-  unwind_protect_cleanup
-    automatic_replot (arp);
-  end_unwind_protect
 endfunction

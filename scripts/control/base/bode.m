@@ -141,18 +141,13 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 
   ## Get the magnitude and phase of f.
   mag = abs(f);
-  phase = arg(f)*180.0/pi;
+  phase = unwrap (arg(f)*180.0/pi);
 
   if (nargout < 1),
     ## Plot the information
     save_automatic_replot = automatic_replot;
     unwind_protect
       automatic_replot(0);
-      oneplot();
-      __gnuplot_set__ autoscale;
-      __gnuplot_set__ nokey;
-      clearplot();
-      __gnuplot_set__ data style lines;
       if(is_digital(sys))
 	xlstr = ["Digital frequency w=rad/sec.  pi/T=",num2str(pi/systsam)];
 	tistr = "(exp(jwT)) ";
@@ -200,8 +195,6 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 	   "), u=", inname{1},", y=",outname{1}]);
 	grid("on");
 	semilogx(w,phase);
-	## This should be the default for subsequent plot commands.
-	oneplot();
       endif
     unwind_protect_cleanup
       automatic_replot(save_automatic_replot);

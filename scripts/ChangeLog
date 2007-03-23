@@ -1,5 +1,13 @@
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
+	* elfun/acosd.m, elfun/acotd.m, elfun/acscd.m, elfun/asecd.m,
+	elfun/asind.m, elfun/atand.m, elfun/cosd.m, elfun/cotd.m,
+	elfun/cscd.m, elfun/secd.m, elfun/sind.m, elfun/tand.m,
+	general/arrayfun.m, miscellaneous/compare_versions.m,
+	path/savepath.m, pkg/pkg.m, plot/__gnuplot_version__.m,
+	plot/contour.m, plot/contourc.m, plot/legend.m, plot/stem.m,
+	polynomial/pchip.m: Fix copyright notice, correct FSF address.
+
 	* plot/__go_draw_figure__.m: Send reset to gnuplot before every
 	plot, not just multiplots.
 

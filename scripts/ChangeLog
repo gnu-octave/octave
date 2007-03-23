@@ -1,3 +1,7 @@
+2007-03-23  John W. Eaton  <jwe@octave.org>
+
+	* plot/contour.m: Don't call drawnow.
+
 2007-03-22  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow.m: Check and optionally, set, the __modified__

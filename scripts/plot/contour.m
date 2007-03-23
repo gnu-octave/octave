@@ -44,7 +44,6 @@
 ## @seealso{contourc,line,plot}
 ## @end deftypefn
 
-
 ## Author: shaia
 
 function retval = contour (varargin)
@@ -57,9 +56,10 @@ function retval = contour (varargin)
 
   newplot ();
 
-  ## decode contourc output format
+  ## Decode contourc output format.
   i1 = 1;
   while (i1 < length (c))
+
     clev = c(1,i1);
     clen = c(2,i1);
 
@@ -73,9 +73,6 @@ function retval = contour (varargin)
     i1 += c(2,i1)+1;
   endwhile
   
-  drawnow ();
-
-  ## folowing DM's suggestion to surpress output if none asked for
   if (nargout > 0)
     retval = c;
   endif

@@ -58,7 +58,6 @@ function drawnow (term, file)
 	    pclose (plot_stream);
 	    set (h, "__plot_stream__", []);
 	  endif
-	  "setting"
 	  set (h, "__modified__", false);
 	endif
 	__request_drawnow__ (false);

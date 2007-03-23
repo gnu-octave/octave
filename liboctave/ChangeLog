@@ -1,3 +1,8 @@
+2007-03-23  David Bateman  <dbateman@free.fr>
+
+	* oct-rand.cc (octave_rand::seed): Seed differently for big and
+	little endian.
+
 2007-03-15  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.cc (acos): Use formula similar to what we use for asin.

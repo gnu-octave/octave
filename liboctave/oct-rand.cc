@@ -36,6 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "randmtzig.h"
 #include "randpoisson.h"
 #include "randgamma.h"
+#include "mach-info.h"
 
 // Possible distributions of random numbers.  This was handled with an
 // enum, but unwind_protecting that doesn't work so well.
@@ -152,7 +153,19 @@ octave_rand::seed (void)
 
   union d2i { double d; octave_idx_type i[2]; };
   union d2i u;
-  F77_FUNC (getsd, GETSD) (u.i[0], u.i[1]);
+    
+  oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+
+  switch (ff)
+    {
+    case oct_mach_info::flt_fmt_ieee_big_endian:
+      F77_FUNC (getsd, GETSD) (u.i[1], u.i[0]);
+      break;
+    default:
+      F77_FUNC (getsd, GETSD) (u.i[0], u.i[1]);
+      break;
+    }
+
   return u.d;
 }
 
@@ -162,11 +175,25 @@ octave_rand::seed (double s)
   use_old_generators = true;
   maybe_initialize ();
 
+  int i0, i1;
   union d2i { double d; octave_idx_type i[2]; };
   union d2i u;
   u.d = s;
-  int i0 = force_to_fit_range (u.i[0], 1, 2147483563);
-  int i1 = force_to_fit_range (u.i[1], 1, 2147483399);
+
+  oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
+
+  switch (ff)
+    {
+    case oct_mach_info::flt_fmt_ieee_big_endian:
+      i1 = force_to_fit_range (u.i[0], 1, 2147483563);
+      i0 = force_to_fit_range (u.i[1], 1, 2147483399);
+      break;
+    default:
+      i0 = force_to_fit_range (u.i[0], 1, 2147483563);
+      i1 = force_to_fit_range (u.i[1], 1, 2147483399);
+      break;
+    }
+
   F77_FUNC (setsd, SETSD) (i0, i1);
 }
 

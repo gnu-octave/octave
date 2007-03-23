@@ -404,9 +404,11 @@ bitshift (eye (3), 1))\n\
 \n\
 bitshift (10, [-2, -1, 0, 1, 2])\n\
 @result{} 2   5  10  20  40\n\
-\n\
-bitshift ([1, 10], 2, [3,4])\n\
-@result{} 4  8\n\
+@c FIXME -- restore this example when third arg is allowed to be an array.\n\
+@c \n\
+@c \n\
+@c bitshift ([1, 10], 2, [3,4])\n\
+@c @result{} 4  8\n\
 @end example\n\
 @seealso{bitand, bitor, bitxor, bitset, bitget, bitcmp, bitmax}\n\
 @end deftypefn")
@@ -427,12 +429,19 @@ bitshift ([1, 10], 2, [3,4])\n\
 	{
 	  if (nargin == 3)
 	    {
-	      nbits = args(2).int_value ();
+	      // FIXME -- for compatibility, we should accept an array
+	      // or a scalar as the third argument.
+	      if (args(2).numel () > 1)
+		error ("bitshift: expecting scalar integer as third argument");
+	      else
+		{
+		  nbits = args(2).int_value ();
 	  
-	      if (error_state)
-		error ("bitshift: expecting integer as third argument");
-	      else if (nbits < 0)
-		error ("bitshift: number of bits to mask must be positive");
+		  if (error_state)
+		    error ("bitshift: expecting integer as third argument");
+		  else if (nbits < 0)
+		    error ("bitshift: number of bits to mask must be positive");
+		}
 	    }
 	}
 

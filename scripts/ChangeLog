@@ -1,6 +1,7 @@
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
 	* plot/__pltopt1__.m: Handle "@" marker same as "+".
+	Handle numeric color specs.
 	* plot/plot.m: Remove "-@" and "@" from docstring.
 
 	* plot/orient.m: Fix tests to avoid creating a plot window.

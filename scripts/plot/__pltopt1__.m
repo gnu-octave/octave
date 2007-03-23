@@ -65,21 +65,22 @@ function options = __pltopt1__ (caller, opt)
 	  topt = "+";
 	endif
 	options.marker = topt;
-      elseif (topt == "k")
+### Numeric color specs for backward compatibility.  Leave undocumented.
+      elseif (topt == "k" || topt == "0")
 	options.color = [0, 0, 0];
-      elseif (topt == "r")
+      elseif (topt == "r" || topt == "1")
 	options.color = [1, 0, 0];
-      elseif (topt == "g")
+      elseif (topt == "g" || topt == "2")
 	options.color = [0, 1, 0];
-      elseif (topt == "b")
+      elseif (topt == "b" || topt == "3")
 	options.color = [0, 0, 1];
       elseif (topt == "y")
 	options.color = [1, 1, 0];
-      elseif (topt == "m")
+      elseif (topt == "m" || topt == "4")
 	options.color = [1, 0, 1];
-      elseif (topt == "c")
+      elseif (topt == "c" || topt == "5")
 	options.color = [0, 1, 1];
-      elseif (topt == "w")
+      elseif (topt == "w" || topt == "6")
 	options.color = [1, 1, 1];
       elseif (isspace (topt))
 	## Do nothing.

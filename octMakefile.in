@@ -56,6 +56,7 @@ DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
 SHELL_SCRIPTS = octave-bug octave-config mkoctfile run-octave
 
 all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-files
+	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""
 	@echo "   ./run-octave    - to run in place"

@@ -19,8 +19,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} legend (@var{st1}, @var{st2}, @var{st3}, @var{...})
-## @deftypefnx {Function File} {} legend (@var{st1}, @var{st2}, @var{st3}, @var{...}, @var{pos})
+## @deftypefn {Function File} {} legend (@var{st1}, @var{st2}, @dots{})
+## @deftypefnx {Function File} {} legend (@var{st1}, @var{st2}, @dots{}, @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{matstr})
 ## @deftypefnx {Function File} {} legend (@var{matstr}, @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{cell})
@@ -28,9 +28,9 @@
 ## @deftypefnx {Function File} {} legend ('@var{func}')
 ##
 ## Legend puts a legend on the current plot using the specified strings
-## as labels. Use independant strings (@var{st1}, @var{st2}, @var{st3}...), a
+## as labels. Use independant strings (@var{st1}, @var{st2}, @dots{}), a
 ## matrix of strings (@var{matstr}), or a cell array of strings (@var{cell}) to
-## specify legends. Legend works on line graphs, bar graphs, etc...
+## specify legends. Legend works on line graphs, bar graphs, etc.
 ## Be sure to call plot before calling legend.
 ##
 ## @var{pos} optionally  places the legend in the specified location:
@@ -161,6 +161,7 @@ function legend (varargin)
       if (k <= nkids)
 	set (kids(k), "keylabel", arg);
 	turn_on_legend = true;
+	k++;
       elseif (! warned)
 	warned = true;
 	warning ("legend: ignoring extra labels");

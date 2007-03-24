@@ -1,3 +1,7 @@
+2007-03-24  John W. Eaton  <jwe@octave.org>
+
+	* plot/legend.m: Correctly increment index into list of children..
+
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
 	* general/interp2.m, general/bicubic.m, control/base/rldemo.m,

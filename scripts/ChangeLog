@@ -1,5 +1,8 @@
 2007-03-24  John W. Eaton  <jwe@octave.org>
 
+	* plot/drawnow.m: If GNUTERM is set to wxt in the environment,
+	send terminal setting command with title option to plot stream.
+
 	* plot/legend.m: Correctly increment index into list of children..
 
 2007-03-23  John W. Eaton  <jwe@octave.org>

@@ -98,6 +98,8 @@ function plot_stream = open_gnuplot_stream (h, term, file)
       fprintf (plot_stream, "set output \"%s\"\n;", file);
     elseif (isunix () && isempty (getenv ("DISPLAY")))
       fprintf (plot_stream, "set terminal dumb\n;");
+    elseif (! isempty (h) && strcmp (getenv ("GNUTERM"), "wxt"))
+      fprintf (plot_stream, "set terminal wxt title \"Figure %d\";\n", h);
     endif
 
     if (isempty (__go_close_all_registered__))

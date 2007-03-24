@@ -36,10 +36,8 @@ Boston, MA 02110-1301, USA.
 // FIXME There is a large code duplication here
 
 MatrixType::MatrixType (void)
-  : typ (MatrixType::Unknown),
-    sp_bandden (octave_sparse_params::get_key ("bandden")),
-    bandden (0), upper_band (0), lower_band (0), dense (false),
-    full (false), nperm (0), perm (0) { }
+  : typ (MatrixType::Unknown), sp_bandden (0), bandden (0), upper_band (0), 
+    lower_band (0), dense (false), full (false), nperm (0), perm (0) { }
 
 MatrixType::MatrixType (const MatrixType &a)
   : typ (a.typ), sp_bandden (a.sp_bandden), bandden (a.bandden), 

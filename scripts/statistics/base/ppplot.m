@@ -68,9 +68,8 @@ function [p, y] = ppplot (x, dist, varargin)
   endif
 
   if (nargout == 0)
-    axis ([0, 1, 0, 1]);
-    __gnuplot_set__ nokey;
     plot (p, y);
+    axis ([0, 1, 0, 1]);
   endif
 
 endfunction

@@ -108,19 +108,19 @@
 function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
 
   ## check number of input arguments given
-  if (nargin < 1 | nargin > 5)
+  if (nargin < 1 || nargin > 5)
     print_usage ();
   endif
-  if(nargin < 2)
+  if (nargin < 2)
     w = [];
   endif
-  if(nargin < 3)
+  if (nargin < 3)
     outputs = [];
   endif
-  if(nargin < 4)
+  if (nargin < 4)
     inputs = [];
   endif
-  if(nargin < 5)
+  if (nargin < 5)
     plot_style = "dB";
   endif
 
@@ -133,75 +133,77 @@ function [mag_r, phase_r, w_r] = bode (sys, w, outputs, inputs, plot_style)
   endif
 
   [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "bode");
-  bode_nin = sysdimensions(sys,"in");
-  bode_nout = sysdimensions(sys,"out");
+  bode_nin = sysdimensions (sys, "in");
+  bode_nout = sysdimensions (sys, "out");
 
-  [stname,inname,outname] = sysgetsignals(sys);
-  systsam = sysgettsam(sys);
+  [stname, inname, outname] = sysgetsignals (sys);
+  systsam = sysgettsam (sys);
 
   ## Get the magnitude and phase of f.
-  mag = abs(f);
-  phase = unwrap (arg(f)*180.0/pi);
+  mag = abs (f);
+  phase = unwrap (arg (f)) * 180.0 / pi;
 
   if (nargout < 1),
     ## Plot the information
-    save_automatic_replot = automatic_replot;
-    unwind_protect
-      automatic_replot(0);
-      if(is_digital(sys))
-	xlstr = ["Digital frequency w=rad/sec.  pi/T=",num2str(pi/systsam)];
-	tistr = "(exp(jwT)) ";
-      else
-	xlstr = "Frequency in rad/sec";
-	tistr = "(jw)";
-      endif
-      xlabel(xlstr);
-      if(is_siso(sys))
-	subplot(2,1,1);
-	title(["|[Y/U]",tistr,"|, u=", inname{1},", y=",outname{1}]);
-      else
-	title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
-	disp("MIMO plot from")
-	disp(__outlist__(inname,"     "));
-	disp("to")
-	disp(__outlist__(outname,"    "));
-      endif
-      wv = [min(w), max(w)];
-      if(do_db_plot && max(mag) > 0)
-	ylabel("Gain in dB");
-	md = 20*log10(mag);
-	axvec = axis2dlim([vec(w),vec(md)]);
-	axvec(1:2) = wv;
-	axis(axvec);
-      else
-	ylabel("Gain |Y/U|")
-	md = mag;
-      endif
+    if (is_digital (sys))
+      xlstr = sprintf ("Digital frequency w=rad/sec.  pi/T=%g", pi/systsam);
+      tistr = "(exp(jwT)) ";
+    else
+      xlstr = "Frequency in rad/sec";
+      tistr = "(jw)";
+    endif
 
-      grid("on");
-      if (do_db_plot)
-	semilogx(w,md);
-      else
-	loglog(w,md);
-      endif
-      if (is_siso(sys))
-	subplot(2,1,2);
-	axvec = axis2dlim([vec(w),vec(phase)]);
+    wv = [min(w), max(w)];
+
+    is_siso_sys = is_siso (sys);
+    max_mag_positive = max (mag) > 0;
+
+    if (is_siso_sys)
+      subplot (2, 1, 1);
+    endif
+
+    if (do_db_plot)
+      md = 20 * log10 (mag);
+      semilogx (w, md);
+      if (max_mag_positive)
+	ylabel ("Gain in dB");
+	axvec = axis2dlim ([w(:), md(:)]);
 	axvec(1:2) = wv;
-	axis(axvec);
-	xlabel(xlstr);
-	ylabel("Phase in deg");
-	title([ "phase([Y/U]", tistr, ...
-	   "), u=", inname{1},", y=",outname{1}]);
-	grid("on");
-	semilogx(w,phase);
+	axis (axvec);
       endif
-    unwind_protect_cleanup
-      automatic_replot(save_automatic_replot);
-    end_unwind_protect
+    else
+      loglog (w, mag);
+      ylabel ("Gain |Y/U|")
+    endif
+    xlabel (xlstr);
+    grid ("on");
+
+    if (is_siso_sys)
+      title (sprintf ("|[Y/U]%s|, u=%s, y=%s", tistr, inname{1}, outname{1}));
+    else
+      title (sprintf ("||Y(%s)/U(%s)||", tistr, tistr));
+      disp ("MIMO plot from")
+      disp (__outlist__(inname,"     "));
+      disp ("to")
+      disp (__outlist__(outname,"    "));
+    endif
+
+    if (is_siso_sys)
+      subplot (2, 1, 2);
+      axvec = axis2dlim ([w(:), phase(:)]);
+      axvec(1:2) = wv;
+      semilogx (w, phase);
+      axis (axvec);
+      xlabel (xlstr);
+      ylabel ("Phase in deg");
+      title (sprintf ("phase([Y/U]%s), u=%s, y=%s",
+		      tistr, inname{1}, outname{1}));
+      grid ("on");
+    endif
   else
     mag_r = mag;
     phase_r = phase;
     w_r = w;
   endif
+
 endfunction

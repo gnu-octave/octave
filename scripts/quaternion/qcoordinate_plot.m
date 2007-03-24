@@ -110,8 +110,7 @@ function qcoordinate_plot (qf, qb, qv)
   jbv = jnk(:,2);
   kbv = jnk(:,3);
 
-  __gnuplot_set__ size square
-  axis ([-2, 2, -2, 2]);
+  axis ([-2, 2, -2, 2], "square");
 
   [vv, theta] = quaternion (qb);
 

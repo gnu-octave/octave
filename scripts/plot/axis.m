@@ -254,9 +254,8 @@ function curr_axis = axis (ax, varargin)
 
   if (nargin > 1)
     axis (varargin{:});
-  elseif (automatic_replot)
-    replot ();
   endif
+
 endfunction
 
 %!demo

@@ -46,7 +46,6 @@ function dump_prefs (file)
               "PS1";
               "PS2";
               "PS4";
-              "automatic_replot";
               "beep_on_error";
               "completion_append_char";
               "crash_dumps_octave_core";

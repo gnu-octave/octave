@@ -228,7 +228,6 @@ function opt = demoquat ()
 
       # construct yaw-pitch-roll cartoon
       for kk=1:length(myth(1,:))
-	figure(kk)
 	thy = myth(1,kk);
 	thp = myth(2,kk);
 
@@ -243,16 +242,11 @@ function opt = demoquat ()
 	[vv,th] = quaternion(qb);
 	printf("      = (vector) = [%8.4f %8.4f %8.4f], th=%5.2f deg\n", ...
 	  vv(1), vv(2), vv(3), th*180/pi);
-
+	fflush (stdout);
 	qb = qmult(qb,qi);
 	title(sprintf("yaw=%5.2f deg, pitch=%5.2f deg",thy,thp))
 	qcoordinate_plot(qi,qb,qview);
-	# uncomment the next four lines to get eps output
-	#__gnuplot_set__ terminal postscript eps 
-	#eval(sprintf("__gnuplot_set__ output 'fig%d.eps'",kk));
-	#replot
-	#__gnuplot_set__ terminal x11
-	#prompt
+	drawnow ();
       endfor
 
     case(quitopt)

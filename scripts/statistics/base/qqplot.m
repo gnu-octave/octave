@@ -78,10 +78,9 @@ function [q, s] = qqplot (x, dist, varargin)
   endif
 
   if (nargout == 0)
+    plot (q, s);
     xlabel (q_label);
     ylabel ("sample points");
-    __gnuplot_set__ nokey;
-    plot (q, s);
   endif
 
 endfunction

@@ -21,9 +21,9 @@
 ## @deftypefn {Function File} {} shg
 ##
 ## Show the graph window.  Currently, this is the same as executing
-## replot.
+## @code{drawnow}.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, ylabel}
+## bar, stairs, xlabel, ylabel}
 ## @end deftypefn
 
 ## Author: jwe

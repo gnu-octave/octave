@@ -20,21 +20,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} subplot (@var{rows}, @var{cols}, @var{index})
 ## @deftypefnx {Function File} {} subplot (@var{rcn})
-## Sets @code{gnuplot} in multiplot mode and plots in location
-## given by index (there are @var{cols} by @var{rows} subwindows).
-##
-## Input:
-##
-## @table @var
-## @item rows
-## Number of rows in subplot grid.
-##
-## @item columns
-## Number of columns in subplot grid.
-##
-## @item index
-## Index of subplot where to make the next plot.
-## @end table
+## Set up a plot grid with @var{cols} by @var{rows} subwindows and plot
+## in location given by @var{index}.
 ##
 ## If only one argument is supplied, then it must be a three digit value
 ## specifying the location in digits 1 (rows) and 2 (columns) and the plot

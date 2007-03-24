@@ -24,7 +24,7 @@
 
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function freqz_plot(w,h)
+function freqz_plot (w, h)
 
     n = length (w);
 
@@ -37,59 +37,24 @@ function freqz_plot(w,h)
     phase = unwrap (arg (h));
     maxmag = max (mag);
 
-    unwind_protect
+    subplot (3, 1, 1);
+    plot (w, mag, ";Pass band (dB);");
+    grid ("on");
+    axis ([w(1), w(n), maxmag-3, maxmag], "labely");
 
-      ## Protect graph state.
+    subplot (3, 1, 2);
+    plot (w, mag, ";Stop band (dB);");
+    grid ("on");
+    if (maxmag - min (mag) > 100)
+      axis ([w(1), w(n), maxmag-100, maxmag], "labely");
+    else
+      axis ("autoy", "labely");
+    endif
 
-      replot_state = automatic_replot;
-      automatic_replot(0);
-
-      subplot (311);
-      __gnuplot_set__ lmargin 10;
-      axis ("labely");
-      xlabel ("");
-      grid ("on");
-      axis ([ w(1), w(n), maxmag-3, maxmag ]);
-      plot (w, mag, ";Pass band (dB);");
-
-      subplot (312);
-      axis ("labely");
-      title ("");
-      xlabel ("");
-      __gnuplot_set__ tmargin 0;
-      grid ("on");
-      if (maxmag - min (mag) > 100)
-      	axis ([ w(1), w(n), maxmag-100, maxmag ]);
-      else
-      	axis ("autoy");
-      endif
-      plot (w, mag, ";Stop band (dB);");
-      
-      subplot (313);
-      axis ("label");
-      title ("");
-      grid ("on");
-      axis ("autoy");
-      xlabel ("Frequency");
-      axis ([ w(1), w(n) ]);
-      plot (w, phase*360/(2*pi), ";Phase (degrees);");
-      
-    unwind_protect_cleanup
-
-      ## Restore graph state.
-
-      ## FIXME -- if automatic_replot is non-zero, this will
-      ## mess up the graph, however if we don't do it here then the user
-      ## will have to do it themselves.
-
-      grid ("off");
-      axis ("auto", "label");
-      __gnuplot_set__ lmargin;
-      __gnuplot_set__ tmargin;
-      oneplot ();
-
-      automatic_replot(replot_state);
-
-    end_unwind_protect
+    subplot (3, 1, 3);
+    plot (w, phase*360/(2*pi), ";Phase (degrees);");
+    grid ("on");
+    xlabel ("Frequency");
+    axis ([w(1), w(n)], "autoy", "label");
 
 endfunction

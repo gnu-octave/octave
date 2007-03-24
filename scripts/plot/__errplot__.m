@@ -26,7 +26,7 @@
 ## @end example
 ##
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
-## bar, stairs, errorbar, replot, xlabel, ylabel, title}
+## bar, stairs, errorbar, xlabel, ylabel, title}
 ## @end deftypefn
 
 ## Created: 18.7.2000

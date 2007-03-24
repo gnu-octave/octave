@@ -23,7 +23,7 @@
 ## the description of @code{plot} for a description of the arguments
 ## that @code{semilogx} will accept.
 ## @seealso{plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
-## replot, xlabel, ylabel, title}
+## xlabel, ylabel, title}
 ## @end deftypefn
 
 ## Author: jwe

@@ -37,11 +37,14 @@
 
 function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
 
-  if (sitype == 1)         IMPULSE = 0;
-  elseif (sitype == 2)     IMPULSE = 1;
-  else                     error("__stepimp__: invalid sitype argument.")
+  if (sitype == 1)
+    IMPULSE = 0;
+  elseif (sitype == 2)
+    IMPULSE = 1;
+  else
+    error ("__stepimp__: invalid sitype argument");
   endif
-  sys = sysupdate(sys,"ss");
+  sys = sysupdate (sys, "ss");
 
   USE_DEF = 0;   # default tstop and n if we have to give up
   N_MIN = 50;    # minimum number of points
@@ -49,27 +52,31 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
   T_DEF = 10.0;  # default simulation time
 
   ## collect useful information about the system
-  [ncstates,ndstates,NIN,NOUT] = sysdimensions(sys);
-  TSAMPLE = sysgettsam(sys);
+  [ncstates, ndstates, NIN, NOUT] = sysdimensions (sys);
+  TSAMPLE = sysgettsam (sys);
 
-  if (nargin < 3)                      inp = 1;
-  elseif (inp < 1 | inp > NIN)         error("Argument inp out of range")
+  if (nargin < 3)
+    inp = 1;
+  elseif (inp < 1 || inp > NIN)
+    error ("__stepimp__: argument inp out of range");
   endif
 
-  DIGITAL = is_digital(sys);
+  DIGITAL = is_digital (sys);
   if (DIGITAL)
     NSTATES = ndstates;
     if (TSAMPLE < eps)
-      error("__stepimp__: sampling time of discrete system too small.")
+      error ("__stepimp__: sampling time of discrete system too small")
     endif
-  else        NSTATES = ncstates;       endif
+  else
+    NSTATES = ncstates;
+  endif
   if (NSTATES < 1)
-    error("step: pure gain block (n_states < 1), step response is trivial");
+    error ("__stepimp__: pure gain block (n_states < 1), step response is trivial");
   endif
   if (nargin < 5)
     ## we have to compute the time when the system reaches steady state
     ## and the step size
-    ev = eig(sys2ss(sys));
+    ev = eig (sys2ss (sys));
     if (DIGITAL)
       ## perform bilinear transformation on poles in z
       for i = 1:NSTATES
@@ -84,7 +91,7 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
     ## remove poles near zero from eigenvalue array ev
     nk = NSTATES;
     for i = 1:NSTATES
-      if (abs(real(ev(i))) < 1.0e-10)
+      if (abs (real (ev(i))) < 1.0e-10)
         ev(i) = 0;
         nk = nk - 1;
       endif
@@ -93,14 +100,14 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       USE_DEF = 1;
       ## printf("##STEPIMP-DEBUG: using defaults.\n");
     else
-      ev = ev(find(ev));
-      x = max(abs(ev));
+      ev = ev(find (ev));
+      x = max (abs (ev));
       t_step = 0.2 * pi / x;
-      x = min(abs(real(ev)));
+      x = min (abs (real (ev)));
       t_sim = 5.0 / x;
       ## round up
-      yy = 10^(ceil(log10(t_sim)) - 1);
-      t_sim = yy * ceil(t_sim / yy);
+      yy = 10^(ceil (log10 (t_sim)) - 1);
+      t_sim = yy * ceil (t_sim / yy);
       ## printf("##STEPIMP-DEBUG: nk=%d   t_step=%f  t_sim=%f\n",
       ##   nk, t_step, t_sim);
     endif
@@ -109,9 +116,9 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
   if (DIGITAL)
     ## ---- sampled system
     if (nargin == 5)
-      n = round(n);
+      n = round (n);
       if (n < 2)
-        error("__stepimp__: n must not be less than 2.")
+        error ("__stepimp__: n must not be less than 2.")
       endif
     else
       if (nargin == 4)
@@ -124,13 +131,15 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
           tstop = t_sim;
         endif
       endif
-      n = floor(tstop / TSAMPLE) + 1;
-      if (n < 2)  n = 2;  endif
+      n = floor (tstop / TSAMPLE) + 1;
+      if (n < 2)
+	n = 2;
+      endif
       if (n > N_MAX)
         n = N_MAX;
-        printf("Hint: number of samples limited to %d by default.\n", \
-               N_MAX);
-        printf("  ==> increase \"n\" parameter for longer simulations.\n");
+        printf ("Hint: number of samples limited to %d by default.\n", \
+		N_MAX);
+        printf ("  ==> increase \"n\" parameter for longer simulations.\n");
       endif
     endif
     tstop = (n - 1) * TSAMPLE;
@@ -138,7 +147,7 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
   else
     ## ---- continuous system
     if (nargin == 5)
-      n = round(n);
+      n = round (n);
       if (n < 2)
         error("step: n must not be less than 2.")
       endif
@@ -150,7 +159,7 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
           n = N_MIN;
           t_step = tstop / (n - 1);
         else
-          n = floor(tstop / t_step) + 1;
+          n = floor (tstop / t_step) + 1;
         endif
       else
         ## tstop and n are unknown
@@ -160,7 +169,7 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
           t_step = tstop / (n - 1);
         else
           tstop = t_sim;
-          n = floor(tstop / t_step) + 1;
+          n = floor (tstop / t_step) + 1;
         endif
       endif
       if (n < N_MIN)
@@ -174,9 +183,9 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       endif
     endif
     tstop = (n - 1) * t_step;
-    [jnk,B] = sys2ss(sys);
+    [jnk,B] = sys2ss (sys);
     B = B(:,inp);
-    sys = c2d(sys, t_step);
+    sys = c2d (sys, t_step);
   endif
   ## printf("##STEPIMP-DEBUG: t_step=%f n=%d  tstop=%f\n", t_step, n, tstop);
 
@@ -184,12 +193,12 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
   G = sys.b(:,inp);
   C = sys.c;
   D = sys.d(:,inp);
-  y = zeros(NOUT, n);
-  t = linspace(0, tstop, n);
+  y = zeros (NOUT, n);
+  t = linspace (0, tstop, n);
 
   if (IMPULSE)
-    if (!DIGITAL && (D'*D > 0))
-      error("impulse: D matrix is nonzero, impulse response infinite.")
+    if (! DIGITAL && D'*D > 0)
+      error ("impulse: D matrix is nonzero, impulse response infinite.")
     endif
     if (DIGITAL)
       y(:,1) = D / t_step;
@@ -207,71 +216,56 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
       y *= t_step; 
     endif 
   else
-    x = zeros(NSTATES, 1);
+    x = zeros (NSTATES, 1);
     for i = 1:n
       y(:,i) = C * x + D;
       x = F * x + G;
     endfor
   endif
   
-  save_automatic_replot = automatic_replot;
-  unwind_protect
-    automatic_replot(0);
-    if(nargout == 0)
-      ## Plot the information
-      oneplot();
-      __gnuplot_set__ nogrid
-      __gnuplot_set__ nologscale
-      __gnuplot_set__ autoscale
-      __gnuplot_set__ nokey
-      if (IMPULSE)
-	gm = zeros(NOUT, 1);
-	tt = "impulse";
-      else
-	ssys = ss(F, G, C, D, t_step);
-	gm = dcgain(ssys);
-	tt = "step";
-      endif
-      ncols = floor(sqrt(NOUT));
-      nrows = ceil(NOUT / ncols);
-      if (ncols > 1 || nrows > 1)
-	clearplot();
-      endif
-      for i = 1:NOUT
-	subplot(nrows, ncols, i);
-	title(sprintf("%s: | %s -> %s", tt,sysgetsignals(sys,"in",inp,1), ...
-		      sysgetsignals(sys,"out",i,1)));
-	if (DIGITAL)
-	  [ts, ys] = stairs(t, y(i,:));
-	  ts = ts(1:2*n-2)';  ys = ys(1:2*n-2)';
-	  if (length(gm) > 0)
-	    yy = [ys; gm(i)*ones(size(ts))];
-	  else
-	    yy = ys;
-	  endif
-	  grid("on");
-	  xlabel("time [s]");
-	  ylabel("y(t)");
-	  plot(ts, yy);
-	else
-	  if (length(gm) > 0)
-	    yy = [y(i,:); gm(i)*ones(size(t))];
-	  else
-	    yy = y(i,:);
-	  endif
-	  grid("on");
-	  xlabel("time [s]");
-	  ylabel("y(t)");
-	  plot(t, yy);
-	endif
-      endfor
-      ## leave gnuplot in multiplot mode is bad style
-      oneplot();
-      y=[];
-      t=[];
+  if (nargout == 0)
+    if (IMPULSE)
+      gm = zeros (NOUT, 1);
+      tt = "impulse";
+    else
+      ssys = ss (F, G, C, D, t_step);
+      gm = dcgain (ssys);
+      tt = "step";
     endif
-    ## printf("##STEPIMP-DEBUG: gratulations, successfull completion.\n");
-  unwind_protect_cleanup
-    automatic_replot(save_automatic_replot);
-  end_unwind_protect
+    ncols = floor (sqrt (NOUT));
+    nrows = ceil (NOUT / ncols);
+    for i = 1:NOUT
+      subplot (nrows, ncols, i);
+      if (DIGITAL)
+	[ts, ys] = stairs (t, y(i,:));
+	ts = ts(1:2*n-2)';
+	ys = ys(1:2*n-2)';
+	if (length (gm) > 0)
+	  yy = [ys; gm(i)*ones(size(ts))];
+	else
+	  yy = ys;
+	endif
+	plot (ts, yy);
+	grid ("on");
+	xlabel ("time [s]");
+	ylabel ("y(t)");
+      else
+	if (length (gm) > 0)
+	  yy = [y(i,:); gm(i)*ones(size(t))];
+	else
+	  yy = y(i,:);
+	endif
+	plot (t, yy);
+	grid ("on");
+	xlabel ("time [s]");
+	ylabel ("y(t)");
+      endif
+      title (sprintf ("%s: | %s -> %s", tt,
+		      sysgetsignals (sys, "in", inp, 1),
+		      sysgetsignals (sys, "out", i, 1)));
+    endfor
+    y = [];
+    t = [];
+  endif
+  ## printf("##STEPIMP-DEBUG: gratulations, successfull completion.\n");
 endfunction  

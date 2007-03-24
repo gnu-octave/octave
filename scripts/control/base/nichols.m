@@ -68,7 +68,7 @@
 ## @end table
 ## If no output arguments are given, @command{nichols} plots the results to the screen.
 ## Descriptive labels are automatically placed. See @command{xlabel}, 
-## @command{ylabel}, @command{title}, and @command{replot}.
+## @command{ylabel}, and @command{title}.
 ##
 ## Note: if the requested plot is for an @acronym{MIMO} system, @var{mag} is set to
 ## @iftex
@@ -85,61 +85,62 @@
 function [mag, phase, w] = nichols (sys, w, outputs, inputs)
 
   ## check number of input arguments given
-  if (nargin < 1 | nargin > 4)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
-  if(nargin < 2)
+  if (nargin < 2)
     w = [];
   endif
-  if(nargin < 3)
+  if (nargin < 3)
     outputs = [];
   endif
-  if(nargin < 4)
+  if (nargin < 4)
     inputs = [];
   endif
 
   [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "nichols");
 
-  [stname,inname,outname] = sysgetsignals(sys);
-  systsam = sysgettsam(sys);
+  [stname,inname,outname] = sysgetsignals (sys);
+  systsam = sysgettsam (sys);
 
   ## Get the magnitude and phase of f.
-  mag = abs(f);
-  phase = arg(f)*180.0/pi;
+  mag = abs (f);
+  phase = arg (f)*180.0/pi;
 
   if (nargout < 1),
     ## Plot the information
-    oneplot();
-    __gnuplot_set__ autoscale;
-    __gnuplot_set__ nokey;
-    clearplot();
-    grid("on");
-    __gnuplot_set__ data style lines;
-    if(is_digital(sys))
+
+    if (max (mag) > 0)
+      plot (phase, 20 * log10 (mag));
+      ylabel ("Gain in dB");
+    else
+      plot (phase, mag);
+      ylabel ("Gain |Y/U|")
+    endif
+
+    grid ("on");
+
+    if (is_digital (sys))
       tistr = "(exp(jwT)) ";
     else
       tistr = "(jw)";
     endif
-    xlabel("Phase (deg)");
-    if(is_siso(sys))
-      title(["Nichols plot of |[Y/U]",tistr,"|, u=", ...
-        sysgetsignals(sys,"in",1,1), ", y=",sysgetsignals(sys,"out",1,1)]);
+
+    xlabel ("Phase (deg)");
+
+    if (is_siso (sys))
+      title (sprintf ("Nichols plot of |[Y/U]%s|, u=%s, y=%s", tistr,
+		      sysgetsignals (sys, "in", 1, 1),
+		      sysgetsignals (sys, "out", 1, 1));
     else
-      title([ "||Y(", tistr, ")/U(", tistr, ")||"]);
-      printf("MIMO plot from\n%s\nto\n%s\n",__outlist__(inname,"    "), ...
-        __outlist__(outname,"       "));
-    endif
-    if(max(mag) > 0)
-      ylabel("Gain in dB");
-      md = 20*log10(mag);
-    else
-      ylabel("Gain |Y/U|")
-      md = mag;
+      title ([ "||Y(", tistr, ")/U(", tistr, ")||"]);
+      printf ("MIMO plot from\n%s\nto\n%s\n", __outlist__ (inname, "    "),
+              __outlist__ (outname, "       "));
     endif
 
-    axvec = axis2dlim([vec(phase),vec(md)]);
-    axis(axvec);
-    plot(phase,md);
+    axis (axis2dlim ([phase(:), md(:)]));
+
     mag = phase = w = [];
   endif
+
 endfunction

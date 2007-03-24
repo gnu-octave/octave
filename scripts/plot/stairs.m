@@ -42,7 +42,7 @@
 ## @noindent
 ## are equivalent.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, replot, xlabel, ylabel, title}
+## bar, xlabel, ylabel, title}
 ## @end deftypefn
 
 ## Author: jwe

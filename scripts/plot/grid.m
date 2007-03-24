@@ -29,7 +29,7 @@
 ## be either @code{"on"} or @code{"off"} to explicitly set the state of
 ## the minor grid.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, xlabel, ylabel, title}
+## bar, stairs, xlabel, ylabel, title}
 ## @end deftypefn
 
 ## Author: jwe

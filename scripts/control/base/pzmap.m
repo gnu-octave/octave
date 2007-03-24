@@ -37,53 +37,53 @@
 ## @end table
 ## @end deftypefn
 
-function [zer, pol]=pzmap (sys)
+function [zer, pol] = pzmap (sys)
 
-  if(nargin != 1)
+  if (nargin != 1)
     print_usage ();
-  elseif (!isstruct(sys));
-    error("sys must be in system format");
+  elseif (! isstruct (sys));
+    error ("pzmap: sys must be in system format");
   endif
 
-  [zer,pol] = sys2zp(sys);
+  [zer, pol] = sys2zp (sys);
 
   ## force to column vectors, split into real, imaginary parts
   zerdata = poldata = [];
-  if(length(zer))
-    zer = reshape(zer,length(zer),1);
+  if (length (zer))
+    zer = reshape (zer, length (zer), 1);
     zerdata = [real(zer(:,1)), imag(zer(:,1))];
   endif
-  if(length(pol))
-    pol = reshape(pol,length(pol),1);
+  if (length (pol))
+    pol = reshape (pol, length (pol), 1);
     poldata = [real(pol(:,1)), imag(pol(:,1))];
   endif
 
   ## determine continuous or discrete plane
   vars = "sz";
-  varstr = vars(is_digital(sys) + 1);
+  varstr = vars(is_digital (sys) + 1);
 
   ## Plot the data
-  __gnuplot_set__ nologscale xy;
-  if(is_siso(sys))
-    title(sprintf("Pole-zero map from %s to %s", ...
-	 sysgetsignals(sys,"in",1,1), sysgetsignals(sys,"out",1,1) ));
+
+  if (length (zer) == 0)
+    plot (poldata(:,1), poldata(:,2), "@12 ;poles (no zeros);");
+  elseif (length (pol) == 0)
+    plot (zerdata(:,1), zerdata(:,2), "@31 ;zeros (no poles);");
+  else
+    plot (zerdata(:,1), zerdata(:,2), "@31 ;zeros;",
+	  poldata(:,1), poldata(:,2), "@12 ;poles;");
   endif
-  xlabel(["Re(",varstr,")"]);
-  ylabel(["Im(",varstr,")"]);
-  grid;
+
+  if (is_siso (sys))
+    title (sprintf ("Pole-zero map from %s to %s",
+		    sysgetsignals (sys, "in", 1, 1),
+		    sysgetsignals (sys, "out", 1, 1)));
+  endif
+
+  xlabel (sprintf ("Re(%s)", varstr));
+  ylabel (sprintf ("Im(%s)", varstr));
+  grid ("on");
 
   ## compute axis limits
-  axis(axis2dlim([zerdata;poldata]));
-  grid
-  ## finally, plot the data
-  if(length(zer) == 0)
-    plot(poldata(:,1), poldata(:,2),"@12 ;poles (no zeros);");
-  elseif(length(pol) == 0)
-    plot(zerdata(:,1), zerdata(:,2),"@31 ;zeros (no poles);");
-  else
-    plot(zerdata(:,1), zerdata(:,2),"@31 ;zeros;", ...
-	poldata(:,1), poldata(:,2),"@12 ;poles;");
-  endif
-  replot
+  axis (axis2dlim ([zerdata; poldata]));
 
 endfunction

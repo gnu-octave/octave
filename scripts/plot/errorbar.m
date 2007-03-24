@@ -102,7 +102,7 @@
 ## are drawn from @var{x}-@var{lx} to @var{x}+@var{ux} and @var{y} errorbars
 ## from @var{y}-@var{ly} to @var{y}+@var{uy}.
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
-## bar, stairs, replot, xlabel, ylabel, title}
+## bar, stairs, xlabel, ylabel, title}
 ## @end deftypefn
 
 ## Created: 18.7.2000

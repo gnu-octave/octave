@@ -33,7 +33,7 @@
 ## format defined by @var{fmt}. See errorbar for available formats and 
 ## additional information.
 ## @seealso{errorbar, loglogerr semilogxerr, polar, mesh, contour, __pltopt__, 
-## bar, stairs, replot, xlabel, ylabel, title}
+## bar, stairs,  xlabel, ylabel, title}
 ## @end deftypefn
 
 ## Created: 20.2.2001

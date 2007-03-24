@@ -21,11 +21,9 @@
 ## @deftypefn {Function File} {} xlabel (@var{string})
 ## @deftypefnx {Function File} {} ylabel (@var{string})
 ## @deftypefnx {Function File} {} zlabel (@var{string})
-## Specify x, y, and z axis labels for the plot.  If you already have a plot
-## displayed, use the command @code{replot} to redisplay it with the new
-## labels.
+## Specify x, y, and z axis labels for the plot.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, replot, ylabel, title}
+## bar, stairs,  ylabel, title}
 ## @end deftypefn
 
 ## Author: jwe

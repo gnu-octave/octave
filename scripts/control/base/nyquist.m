@@ -105,22 +105,22 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
   ## response is plotted is different between the two functions.
 
   ## check number of input arguments given
-  if (nargin < 1 | nargin > 5)
+  if (nargin < 1 || nargin > 5)
     print_usage ();
   endif
-  if(nargin < 2)
+  if (nargin < 2)
     w = [];
   endif
-  if(nargin < 3)
+  if (nargin < 3)
     outputs = [];
   endif
-  if(nargin < 4)
+  if (nargin < 4)
     inputs = [];
   endif
-  if(nargin < 5)
+  if (nargin < 5)
     atol = 0;
-  elseif(!(is_sample(atol) | atol == 0))
-    error("atol must be a nonnegative scalar.")
+  elseif (! (is_sample (atol) || atol == 0))
+    error ("nyquist: atol must be a nonnegative scalar")
   endif
 
   ## signal to __bodquist__ who's calling
@@ -128,84 +128,84 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
   [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "nyquist");
 
   ## Get the real and imaginary part of f.
-  realp = real(f);
-  imagp = imag(f);
+  realp = real (f);
+  imagp = imag (f);
 
   ## No output arguments, then display plot, otherwise return data.
   if (nargout == 0)
     dnplot = 0;
-    while(!dnplot)
-      oneplot();
-      __gnuplot_set__ key;
-      clearplot();
-      grid ("on");
-      __gnuplot_set__ data style lines;
+    while (! dnplot)
+      plot (realp, imagp, "- ;+w;", realp, -imagp, "-@ ;-w;");
 
-      if(is_digital(sys))
+      grid ("on");
+
+      if (is_digital (sys))
         tstr = " G(e^{jw}) ";
       else
         tstr = " G(jw) ";
       endif
-      xlabel(["Re(",tstr,")"]);
-      ylabel(["Im(",tstr,")"]);
+      xlabel (sprintf ("Re(%s)", tstr));
+      ylabel (sprintf ("Im(%s)", tstr));
 
-      [stn, inn, outn] = sysgetsignals(sys);
-      if(is_siso(sys))
-        title(sprintf("Nyquist plot from %s to %s, w (rad/s) in [%e, %e]", ...
-          inn{1}, outn{1}, w(1), w(length(w))) )
+      [stn, inn, outn] = sysgetsignals (sys);
+      if (is_siso (sys))
+        title (sprintf ("Nyquist plot from %s to %s, w (rad/s) in [%e, %e]",
+			inn{1}, outn{1}, w(1), w(end)));
       endif
 
-      __gnuplot_set__ nologscale xy;
-
-      axis(axis2dlim([[vec(realp),vec(imagp)];[vec(realp),-vec(imagp)]]));
-      plot(realp,imagp,"- ;+w;",realp,-imagp,"-@ ;-w;");
+      axis (axis2dlim ([[realp(:), imagp(:)]; [realp(:), -imagp(:)]]));
 
       ## check for interactive plots
       dnplot = 1; # assume done; will change later if atol is satisfied
-      if(atol > 0 & length(f) > 2)
+      if (atol > 0 && length (f) > 2)
 
         ## check for asymptotes
-        fmax = max(abs(f));
-        fi = find(abs(f) == fmax, 1, "last");
+        fmax = max (abs (f));
+        fi = find (abs (f) == fmax, 1, "last");
 
         ## compute angles from point to point
-        df = diff(f);
-        th = atan2(real(df),imag(df))*180/pi;
+        df = diff (f);
+        th = atan2 (real (df), imag (df)) * 180 / pi;
 
         ## get angle at fmax
-        if(fi == length(f)) fi = fi-1; endif
+        if (fi == length(f))
+	  fi = fi-1;
+	endif
         thm = th(fi);
 
         ## now locate consecutive angles within atol of thm
-        ith_same = find(abs(th - thm) < atol);
-        ichk = union(fi,find(diff(ith_same) == 1));
+        ith_same = find (abs (th - thm) < atol);
+        ichk = union (fi, find (diff (ith_same) == 1));
 
         ## locate max, min consecutive indices in ichk
-        loval = max(complement(ichk,1:fi));
-        if(isempty(loval)) loval = fi;
-        else               loval = loval + 1;   endif
+        loval = max (complement (ichk, 1:fi));
+        if (isempty (loval))
+	  loval = fi;
+        else
+          loval = loval + 1;
+	endif
 
-        hival = min(complement(ichk,fi:length(th)));
-        if(isempty(hival))  hival = fi+1;      endif
+        hival = min (complement (ichk, fi:length(th)));
+        if (isempty (hival))
+	  hival = fi+1;
+	endif
 
-        keep_idx = complement(loval:hival,1:length(w));
+        keep_idx = complement (loval:hival, 1:length(w));
 
-        if(length(keep_idx))
-          resp = input("Remove asymptotes and zoom in (y or n): ",1);
-          if(resp(1) == "y")
+        if (length (keep_idx))
+          resp = input ("Remove asymptotes and zoom in (y or n): ", 1);
+          if (resp(1) == "y")
             dnplot = 0;                 # plot again
             w = w(keep_idx);
             f = f(keep_idx);
-            realp = real(f);
-            imagp = imag(f);
+            realp = real (f);
+            imagp = imag (f);
           endif
         endif
 
      endif
-    endwhile
-    w = [];
-    realp=[];
-    imagp=[];
-  endif
+   endwhile
+   w = realp = imagp = [];
+ endif
 
 endfunction

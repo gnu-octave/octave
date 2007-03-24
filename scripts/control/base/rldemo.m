@@ -36,7 +36,6 @@ function rldemo ()
         "Display root locus diagram of SISO continuous system (rlocus)", ...
         "Display root locus diagram of SISO discrete system (rlocus)", ...
         "Return to main demo menu");
-    __gnuplot_set__ autoscale
     if (k == 1)
       clc
       help pzmap

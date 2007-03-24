@@ -194,5 +194,4 @@ endfunction
 %! yi=linspace(min(y),max(y),26);
 %! mesh(xi,yi,bicubic(x,y,A,xi,yi));
 %! [x,y] = meshgrid(x,y);
-%! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;

@@ -87,7 +87,7 @@
 ## @end example
 ##
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, errorbar, replot, xlabel, ylabel, title, print}
+## bar, stairs, errorbar, xlabel, ylabel, title, print}
 ## @end deftypefn
 
 ## Author: Paul Kienzle

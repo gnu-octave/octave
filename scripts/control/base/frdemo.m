@@ -546,9 +546,7 @@ function frdemo ()
           eval(cmd);
           disp("\nTo view the system's nyquist plot, execute the following");
           disp("commands:\n");
-          cmd = "__gnuplot_set__ xrange [-4:2];";
-          disp(cmd); eval(cmd);
-          cmd = "__gnuplot_set__ yrange [-2.5:2.5];";
+          cmd = "axis ([-4, 2, -2.5, 2.5]);";
           disp(cmd); eval(cmd);
           cmd = "nyquist(dsys3);";
           run_cmd;

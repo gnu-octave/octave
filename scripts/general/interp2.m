@@ -239,7 +239,6 @@ endfunction
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
 %! [x,y] = meshgrid(x,y); 
-%! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
@@ -249,7 +248,6 @@ endfunction
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
 %! [x,y] = meshgrid(x,y); 
-%! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!#demo
@@ -259,7 +257,6 @@ endfunction
 %! yi=linspace(min(y),max(y),26);
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
 %! [x,y] = meshgrid(x,y); 
-%! __gnuplot_raw__ ("set nohidden3d;\n")
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!test % simple test

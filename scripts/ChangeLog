@@ -1,8 +1,12 @@
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
-	* control/base/bode.m, quaternion/demoquat.m,
-	quaternion/qcoordinate_plot.m, statistics/base/qqplot.m,
-	statistics/base/ppplot.m, sparse/spy.m:
+	* general/interp2.m, general/bicubic.m, control/base/rldemo.m,
+	control/hinf/hinfdemo.m, control/hinf/dhinfdemo.m,
+	control/base/nyquist.m, control/base/nichols.m,
+	control/base/frdemo.m, signal/freqz_plot.m,
+	control/base/__stepimp__.m, control/base/bode.m,
+	quaternion/demoquat.m, quaternion/qcoordinate_plot.m,
+	statistics/base/qqplot.m, statistics/base/ppplot.m, sparse/spy.m:
 	Update plotting code.
 
 	* control/base/bode.m: Unwrap phase angle.

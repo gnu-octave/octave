@@ -936,7 +936,8 @@ D 50 p1284, 1994\n\
 %!test
 %! % Test fixed state
 %! randp("seed",1);
-%! assert(randp(5,1,6),[8 2 3 6 6 8])
+%! %%assert(randp(5,1,6),[8 2 3 6 6 8])
+%! assert(randp(5,1,5),[8 2 3 6 6])
 %!test
 %! % Test fixed state
 %! randp("seed",1);
@@ -975,27 +976,31 @@ D 50 p1284, 1994\n\
 %! randp("seed",12)
 %!assert(randp([-inf,-1,0,inf,nan]),[nan,nan,0,nan,nan]); % *** Please report
 %!test
-%! % statistical tests may fail occasionally.
-%! randp("seed",12)
-%! for a=[5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!   x = randp(a(1),100000,1);
-%!   assert(min(x)>=0); % *** Please report this!!! ***
-%!   assert(mean(x),a(1),a(2));
-%!   assert(var(x),a(1),0.02*a(1));
-%!   assert(skewness(x),1/sqrt(a(1)),a(3));
-%!   assert(kurtosis(x),1/a(1),3*a(3));
-%! end
+%! if (__random_statistical_tests__)
+%!   % statistical tests may fail occasionally.
+%!   randp("seed",12)
+%!   for a=[5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
+%!     x = randp(a(1),100000,1);
+%!     assert(min(x)>=0); % *** Please report this!!! ***
+%!     assert(mean(x),a(1),a(2));
+%!     assert(var(x),a(1),0.02*a(1));
+%!     assert(skewness(x),1/sqrt(a(1)),a(3));
+%!     assert(kurtosis(x),1/a(1),3*a(3));
+%!   endfor
+%! endif
 %!test
-%! % statistical tests may fail occasionally.
-%! randp("seed",12)
-%! for a=[5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
-%!   x = randp(a(1)*ones(100000,1),100000,1);
-%!   assert(min(x)>=0); % *** Please report this!!! ***
-%!   assert(mean(x),a(1),a(2));
-%!   assert(var(x),a(1),0.02*a(1));
-%!   assert(skewness(x),1/sqrt(a(1)),a(3));
-%!   assert(kurtosis(x),1/a(1),3*a(3));
-%! end
+%! if (__random_statistical_tests__)
+%!   % statistical tests may fail occasionally.
+%!   randp("seed",12)
+%!   for a=[5, 15, 1e9; 0.03, 0.03, -5e-3; 0.03, 0.03, 0.03]
+%!     x = randp(a(1)*ones(100000,1),100000,1);
+%!     assert(min(x)>=0); % *** Please report this!!! ***
+%!     assert(mean(x),a(1),a(2));
+%!     assert(var(x),a(1),0.02*a(1));
+%!     assert(skewness(x),1/sqrt(a(1)),a(3));
+%!     assert(kurtosis(x),1/a(1),3*a(3));
+%!   endfor
+%! endif
 */
 
 /*

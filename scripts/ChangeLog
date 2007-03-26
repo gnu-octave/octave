@@ -1,3 +1,9 @@
+2007-03-26  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m (get_data_limits): New function.
+	Check for Inf too.
+	(__go_draw_axes__): Use get_data_limits.
+
 2007-03-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow.m: If GNUTERM is set to wxt in the environment,

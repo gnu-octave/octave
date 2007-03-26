@@ -226,9 +226,9 @@ function __go_draw_axes__ (h, plot_stream)
     data_idx = 0;
     data = cell ();
 
-    xminp = yminp = zminp = Inf;
-    xmax = ymax = zmax = -Inf;
-    xmin = ymin = zmin = Inf;
+    xminp = yminp = zminp = realmax ();
+    xmax = ymax = zmax = -realmax ();
+    xmin = ymin = zmin = realmax ();
 
     palette_set = 0;
 
@@ -371,19 +371,13 @@ function __go_draw_axes__ (h, plot_stream)
 	    ydat = obj.ydata(:);
 	    zdat = obj.zdata(:);
 	    if (xautoscale)
-	      xmin = min (xmin, min (xdat));
-	      xmax = max (xmax, max (xdat));
-	      xminp = min (xminp, min (xdat(xdat>0)));
+	      [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
 	    endif
 	    if (yautoscale)
-	      ymin = min (ymin, min (ydat));
-	      ymax = max (ymax, max (ydat));
-	      yminp = min (yminp, min (ydat(ydat>0)));
+	      [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
 	    endif
 	    if (zautoscale)
-	      zmin = min (zmin, min (zdat));
-	      zmax = max (zmax, max (zdat));
-	      zminp = min (zminp, min (zdat(zdat>0)));
+	      [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, zdat);
 	    endif
 	    data{data_idx} = [xdat, ydat, zdat]';
 	    usingclause{data_idx} = "using ($1):($2):($3)";
@@ -420,18 +414,14 @@ function __go_draw_axes__ (h, plot_stream)
 	      yhi = ydat+udat;
 	      if (yautoscale)
 		ty = [ydat; ylo; yhi];
-		ymin = min (ymin, min (ty));
-		ymax = max (ymax, max (ty));
-		yminp = min (yminp, min (ty(ty>0)));
+		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ty);
 	      endif
 	      if (xerr)
 		xlo = xdat-xldat;
 		xhi = xdat+xudat;
 		if (xautoscale)
 		  tx = [xdat; xlo; xhi];
-		  xmin = min (xmin, min (tx));
-		  xmax = max (xmax, max (tx));
-		  xminp = min (xminp, min (tx(tx>0)));
+		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
 		endif
 		data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4):($5):($6)";
@@ -439,9 +429,8 @@ function __go_draw_axes__ (h, plot_stream)
 						data_idx);
 	      else
 		if (xautoscale)
-		  xmin = min (xmin, min (xdat));
-		  xmax = max (xmax, max (xdat));
-		  xminp = min (xminp, min (tx(tx>0)));
+		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax,
+							 xminp, xdat, tx);
 		endif
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4)";
@@ -453,14 +442,11 @@ function __go_draw_axes__ (h, plot_stream)
 	      xhi = xdat+xudat;
 	      if (xautoscale)
 		tx = [xdat; xlo; xhi];
-		xmin = min (xmin, min (tx));
-		xmax = max (xmax, max (tx));
-		xminp = min (xminp, min (tx(tx>0)));
+		[xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
 	      endif
 	      if (yautoscale)
-		ymin = min (ymin, min (ydat));
-		ymax = max (ymax, max (ydat));
-		yminp = min (yminp, min (ty(ty>0)));
+		[ymin, ymax, yminp] = get_data_limits (ymin, ymax,
+						       yminp, ydat, ty);
 	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
 	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
@@ -468,14 +454,10 @@ function __go_draw_axes__ (h, plot_stream)
 					      data_idx);
 	    else
 	      if (xautoscale)
-		xmin = min (xmin, min (xdat));
-		xmax = max (xmax, max (xdat));
-		xminp = min (xminp, min (xdat(xdat>0)));
+		[xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
 	      endif
 	      if (yautoscale)
-		ymin = min (ymin, min (ydat));
-		ymax = max (ymax, max (ydat));
-		yminp = min (yminp, min (ydat(ydat>0)));
+		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
 	      endif
 	      data{data_idx} = [xdat, ydat]';
 	      usingclause{data_idx} = "using ($1):($2)";
@@ -506,21 +488,15 @@ function __go_draw_axes__ (h, plot_stream)
 	  zdat = obj.zdata;
 	  if (xautoscale)
 	    tx = xdat(:);
-	    xmin = min (xmin, min (tx));
-	    xmax = max (xmax, max (tx));
-	    xminp = min (xminp, min (tx(tx>0)));
+	    [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
 	  endif
 	  if (yautoscale)
 	    ty = ydat(:);
-	    ymin = min (ymin, min (ty));
-	    ymax = max (ymax, max (ty));
-	    yminp = min (yminp, min (ty(ty>0)));
+	    [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ty);
 	  endif
 	  if (zautoscale)
 	    tz = zdat(:);
-	    zmin = min (zmin, min (tz));
-	    zmax = max (zmax, max (tz));
-	    zminp = min (zminp, min (tz(tz>0)));
+	    [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, tz);
 	  endif
 	  err = false;
 	  if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
@@ -733,6 +709,18 @@ function __go_draw_axes__ (h, plot_stream)
     print_usage ();
   endif    
 
+endfunction
+
+function [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat, tx)
+  xdat = xdat(! isinf (xdat));
+  xmin = min (xmin, min (xdat));
+  xmax = max (xmax, max (xdat));
+  if (nargin == 5)
+    tx = tx(! isinf (xdat) & tx > 0);
+    xminp = min (xminp, min (tx));
+  else
+    xminp = min (xminp, min (xdat(xdat>0)));
+  endif
 endfunction
 
 ## Attempt to make "nice" limits from the actual max and min of the

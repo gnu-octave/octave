@@ -50,62 +50,39 @@ DEFUNOP (transpose, char_matrix_str)
 
 // string by string ops.
 
-DEFBINOP (eq, char_matrix_str, char_matrix_str)
-{
-  CAST_BINOP_ARGS (const octave_char_matrix_str&,
-		   const octave_char_matrix_str&);
+#define DEFCHARNDBINOP_FN(name, op, t1, t2, e1, e2, f)	\
+  BINOPDECL (name, a1, a2) \
+  { \
+    dim_vector a1_dims = a1.dims (); \
+    dim_vector a2_dims = a2.dims (); \
+ \
+    bool a1_is_scalar = a1_dims.all_ones (); \
+    bool a2_is_scalar = a2_dims.all_ones (); \
+ \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+ \
+    if (a1_is_scalar) \
+      { \
+	if (a2_is_scalar) \
+	  return octave_value ((v1.e1 ## _value ())(0) op (v2.e2 ## _value ())(0)); \
+	else \
+	  return octave_value (f ((v1.e1 ## _value ())(0), v2.e2 ## _value ())); \
+      } \
+    else \
+      { \
+	if (a2_is_scalar) \
+	  return octave_value (f (v1.e1 ## _value (), (v2.e2 ## _value ())(0))); \
+	else \
+	  return octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
+      } \
+  }
 
-  charMatrix cm1 = v1.char_matrix_value ();
-  charMatrix cm2 = v2.char_matrix_value ();
-
-  if (cm1.rows () == 1 && cm1.columns () == 1)
-    {
-      if (cm2.rows () == 1 && cm2.columns () == 1)
-	return octave_value (cm1 (0, 0) == cm2 (0, 0));
-      else
-	SC_MX_BOOL_OP (char, c, cm1 (0, 0), charMatrix, m, cm2,
-		       c == m (i, j), 0.0);
-    }
-  else
-    {
-      int cm2_nr = cm2.rows ();
-      int cm2_nc = cm2.cols ();
-
-      if (cm2_nr == 1 && cm2_nc == 1)
-	MX_SC_BOOL_OP (charMatrix, m, cm1, char, c, cm2 (0, 0),
-		       c == m (i, j), 0.0);
-      else
-	MX_MX_BOOL_OP (charMatrix, m1, cm1, charMatrix, m2, cm2,
-		       m1 (i, j) == m2 (i, j), "==", 0.0, 1.0);
-    }
-}
-
-DEFBINOP (ne, char_matrix_str, char_matrix_str)
-{
-  CAST_BINOP_ARGS (const octave_char_matrix_str&,
-		   const octave_char_matrix_str&);
-
-  charMatrix cm1 = v1.char_matrix_value ();
-  charMatrix cm2 = v2.char_matrix_value ();
-
-  if (cm1.rows () == 1 && cm1.columns () == 1)
-    {
-      if (cm2.rows () == 1 && cm2.columns () == 1)
-	return octave_value (cm1 (0, 0) != cm2 (0, 0));
-      else
-	SC_MX_BOOL_OP (char, c, cm1 (0, 0), charMatrix, m, cm2,
-		       c != m (i, j), 1.0);
-    }
-  else
-    {
-      if (cm2.rows () == 1 && cm2.columns () == 1)
-	MX_SC_BOOL_OP (charMatrix, m, cm1, char, c, cm2 (0, 0),
-		       c != m (i, j), 1.0);
-      else
-	MX_MX_BOOL_OP (charMatrix, m1, cm1, charMatrix, m2, cm2,
-		       m1 (i, j) != m2 (i, j), "!=", 1.0, 0.0);
-    }
-}
+DEFCHARNDBINOP_FN (lt, <, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_lt)
+DEFCHARNDBINOP_FN (le, <=, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_le)
+DEFCHARNDBINOP_FN (eq, ==, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_eq)
+DEFCHARNDBINOP_FN (ge, >=, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_ge)
+DEFCHARNDBINOP_FN (gt, >, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_gt)
+DEFCHARNDBINOP_FN (ne, !=, char_matrix_str, char_matrix_str, char_array, char_array, mx_el_ne)
 
 DEFASSIGNOP (assign, char_matrix_str, char_matrix_str)
 {
@@ -126,11 +103,31 @@ install_str_str_ops (void)
   INSTALL_UNOP (op_hermitian, octave_char_matrix_str, transpose);
   INSTALL_UNOP (op_hermitian, octave_char_matrix_sq_str, transpose);
 
+  INSTALL_BINOP (op_lt, octave_char_matrix_str, octave_char_matrix_str, lt);
+  INSTALL_BINOP (op_lt, octave_char_matrix_str, octave_char_matrix_sq_str, lt);
+  INSTALL_BINOP (op_lt, octave_char_matrix_sq_str, octave_char_matrix_str, lt);
+  INSTALL_BINOP (op_lt, octave_char_matrix_sq_str, octave_char_matrix_sq_str, lt);
+  
+  INSTALL_BINOP (op_le, octave_char_matrix_str, octave_char_matrix_str, le);
+  INSTALL_BINOP (op_le, octave_char_matrix_str, octave_char_matrix_sq_str, le);
+  INSTALL_BINOP (op_le, octave_char_matrix_sq_str, octave_char_matrix_str, le);
+  INSTALL_BINOP (op_le, octave_char_matrix_sq_str, octave_char_matrix_sq_str, le);
+  
   INSTALL_BINOP (op_eq, octave_char_matrix_str, octave_char_matrix_str, eq);
   INSTALL_BINOP (op_eq, octave_char_matrix_str, octave_char_matrix_sq_str, eq);
   INSTALL_BINOP (op_eq, octave_char_matrix_sq_str, octave_char_matrix_str, eq);
   INSTALL_BINOP (op_eq, octave_char_matrix_sq_str, octave_char_matrix_sq_str, eq);
-
+  
+  INSTALL_BINOP (op_ge, octave_char_matrix_str, octave_char_matrix_str, ge);
+  INSTALL_BINOP (op_ge, octave_char_matrix_str, octave_char_matrix_sq_str, ge);
+  INSTALL_BINOP (op_ge, octave_char_matrix_sq_str, octave_char_matrix_str, ge);
+  INSTALL_BINOP (op_ge, octave_char_matrix_sq_str, octave_char_matrix_sq_str, ge);
+  
+  INSTALL_BINOP (op_gt, octave_char_matrix_str, octave_char_matrix_str, gt);
+  INSTALL_BINOP (op_gt, octave_char_matrix_str, octave_char_matrix_sq_str, gt);
+  INSTALL_BINOP (op_gt, octave_char_matrix_sq_str, octave_char_matrix_str, gt);
+  INSTALL_BINOP (op_gt, octave_char_matrix_sq_str, octave_char_matrix_sq_str, gt);
+  
   INSTALL_BINOP (op_ne, octave_char_matrix_str, octave_char_matrix_str, ne);
   INSTALL_BINOP (op_ne, octave_char_matrix_str, octave_char_matrix_sq_str, ne);
   INSTALL_BINOP (op_ne, octave_char_matrix_sq_str, octave_char_matrix_str, ne);

@@ -146,6 +146,15 @@ charNDArray::compute_index (Array<octave_idx_type>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
+NDS_CMP_OPS(charNDArray, , char, )
+NDS_BOOL_OPS(charNDArray, char, 0)
+
+SND_CMP_OPS(char, , charNDArray, )
+SND_BOOL_OPS(char, charNDArray, 0)
+
+NDND_CMP_OPS(charNDArray, , charNDArray, )
+NDND_BOOL_OPS(charNDArray, charNDArray, 0)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

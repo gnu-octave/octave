@@ -95,6 +95,15 @@ private:
   charNDArray (char *d, dim_vector& dv) : MArrayN<char> (d, dv) { }
 };
 
+NDS_CMP_OP_DECLS (charNDArray, char)
+NDS_BOOL_OP_DECLS (charNDArray, char)
+
+SND_CMP_OP_DECLS (char, charNDArray)
+SND_BOOL_OP_DECLS (char, charNDArray)
+
+NDND_CMP_OP_DECLS (charNDArray, charNDArray)
+NDND_BOOL_OP_DECLS (charNDArray, charNDArray)
+
 MARRAY_FORWARD_DEFS (MArrayN, charNDArray, char)
 
 #endif

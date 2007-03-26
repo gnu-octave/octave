@@ -218,7 +218,7 @@
 %% test/octave.test/system/readdir-1.m
 %!test
 %! [files, status, msg] = readdir (filesep);
-%! assert(iscell (files) && status == 0 && msg == "");
+%! assert(iscell (files) && status == 0 && strcmp (msg, ""));
 
 %% test/octave.test/system/readdir-2.m
 %!error <Invalid call to readdir.*> readdir ();

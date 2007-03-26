@@ -204,6 +204,15 @@ charMatrix::any (int dim) const
   MX_ANY_OP (dim);
 }
 
+MS_CMP_OPS(charMatrix, , char, )
+MS_BOOL_OPS(charMatrix, char, 0)
+
+SM_CMP_OPS(char, , charMatrix, )
+SM_BOOL_OPS(char, charMatrix, 0)
+
+MM_CMP_OPS(charMatrix, , charMatrix, )
+MM_BOOL_OPS(charMatrix, charMatrix, 0)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

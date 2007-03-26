@@ -443,7 +443,7 @@ do_stream_open (const std::string& name, const std::string& mode,
 	  else
 #endif
 	    {
-	      FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
+	      FILE *fptr = ::fopen (fname.c_str (), mode.c_str ());
 
 	      retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 

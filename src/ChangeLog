@@ -1,3 +1,14 @@
+2007-03-26  Juhani Saastamoinen  <juhani@cs.joensuu.fi>
+
+	* file-io.cc (do_stream_open) [! HAVE_ZLIB]:
+	Call fopen with mode, not tmode.
+
+2007-03-26  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-str-str.cc (DEFCHARNDBINOP): New macro.  Use it to
+	define functions for eq and ne ops.  Also define lt, le, ge, and
+	gt ops.
+
 2007-03-23  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/rand.cc: Make more statistical tests optional.

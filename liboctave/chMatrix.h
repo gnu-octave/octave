@@ -88,6 +88,17 @@ private:
   charMatrix (char *ch, octave_idx_type r, octave_idx_type c) : MArray2<char> (ch, r, c) { }
 };
 
+MS_CMP_OP_DECLS (charMatrix, char)
+MS_BOOL_OP_DECLS (charMatrix, char)
+
+SM_CMP_OP_DECLS (char, charMatrix)
+SM_BOOL_OP_DECLS (char, charMatrix)
+
+MM_CMP_OP_DECLS (charMatrix, charMatrix)
+MM_BOOL_OP_DECLS (charMatrix, charMatrix)
+
+MARRAY_FORWARD_DEFS (MArray2, charMatrix, char)
+
 #endif
 
 /*

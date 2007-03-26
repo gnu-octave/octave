@@ -1,3 +1,8 @@
+2007-03-26  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* plot/__go_draw_axes__.m: Always end palette data to gnuplot via
+	plot stream and using binary data.
+
 2007-03-26  John W. Eaton  <jwe@octave.org>
 
 	* plot/__plt1__.m, plot/__plt2__.m, plot/__plt2mm__.m,
@@ -5,6 +10,8 @@
 	plot/__plt2vv__.m: Accept properties in addtition to options struct.
 
 2007-03-26  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Send "set ticslevel 0" to plot stream.
 
 	* plot/plot3.m: Handle line properties.
 	* plot/plot.m: Update docstring.

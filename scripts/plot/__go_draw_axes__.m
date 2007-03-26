@@ -311,24 +311,11 @@ function __go_draw_axes__ (h, plot_stream)
 		fprintf (plot_stream,
 			 "set palette positive color model RGB maxcolors %i;\n",
 			 palette_size);
-		if (palette_size <= 128)
-		  ## Break up command to avoid buffer overflow.
-		  fprintf (plot_stream, "set palette file \"-\" using 1:2:3:4;\n");
-		  for i = 1:palette_size
-		    fprintf (plot_stream, "%g %g %g %g;\n",
-			     1e-3*round (1e3*[(i-1)/(palette_size-1), img_colormap(i,:)]));
-		  endfor
-		  fprintf (plot_stream, "e;\n");
-		else
-		  ## Let the file be deleted when Octave exits or
-		  ## `purge_tmp_files' is called.
-		  [cmap_fid, cmap_fname, msg] = mkstemp (fullfile (P_tmpdir, "gpimageXXXXXX"), 1);
-		  fwrite (cmap_fid, img_colormap', "float32", 0, "ieee-le");
-		  fclose (cmap_fid);
-		  fprintf (plot_stream,
-			   "set palette file \"%s\" binary record=%d using 1:2:3;\n",
-			   cmap_fname, palette_size);
-		endif
+		fprintf (plot_stream,
+			 "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+			 palette_size);
+		fwrite (plot_stream, [1:palette_size; img_colormap'],
+			"float32", 0, "ieee-le");
 	      endif
 	    endif
 	    fclose (img_fid);
@@ -669,6 +656,7 @@ function __go_draw_axes__ (h, plot_stream)
 	while (rot_z < 0)
 	  rot_z += 360;
 	endwhile
+ 	fputs (plot_stream, "set ticslevel 0;\n");
 	fprintf (plot_stream, "set view %g, %g;\n", rot_x, rot_z);
       endif
       fprintf (plot_stream, "%s \"%s\" %s %s %s", plot_cmd,

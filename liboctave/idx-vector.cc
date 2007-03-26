@@ -183,27 +183,25 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
       return;
     }
 
-  double b = r.base ();
-  double step = r.inc ();
-
   data = new octave_idx_type [len];
 
-  bool conversion_error = false;
+  // If all elements are ints, we can generate the indexes as integers 
+  // and save tons of tests.
 
-  for (octave_idx_type i = 0; i < len; i++)
-    {
-      double val = b + i * step;
+  if (r.all_elements_are_ints ())
+    {    
+      octave_idx_type b = static_cast<octave_idx_type> (r.base ());
+      octave_idx_type step = static_cast<octave_idx_type> (r.inc ());
 
-      if (idx_is_inf_or_nan (val))
-	return;
-      else
-	data[i] = tree_to_mat_idx (val, conversion_error);
+      data[0] = b - 1;
+      for (octave_idx_type i = 1; i < len; i++)
+	data[i] = data[i-1] + step;
 
-      if (conversion_error)
-	return;
+      init_state ();
     }
-
-  init_state ();
+  else
+    (*current_liboctave_error_handler)
+      ("expecting integer index, found non integer Range");
 }
 
 IDX_VEC_REP::idx_vector_rep (double d)

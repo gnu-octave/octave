@@ -1,3 +1,8 @@
+2007-03-26  David Bateman  <dbateman@free.fr>
+
+	* Range.cc (Range::all_elements_are_ints): Improve check.
+	* 
+
 2007-03-26  John W. Eaton  <jwe@octave.org>
 
 	* chNDArray.cc, chMatrix.cc: Also generate comparison and bool ops.

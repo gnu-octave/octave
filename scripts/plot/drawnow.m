@@ -26,48 +26,61 @@
 
 function drawnow (term, file)
 
-  if (nargin == 2)
-    h = get (0, "currentfigure");
-    if (h)
-      f = get (h);
-      plot_stream = [];
-      unwind_protect
-	plot_stream = open_gnuplot_stream ([], term, file);
-	__go_draw_figure__ (f, plot_stream);
-      unwind_protect_cleanup
-	if (! isempty (plot_stream))
-	  pclose (plot_stream);
-	endif
-      end_unwind_protect
-    else
-      error ("drawnow: nothing to draw");
-    endif
-  elseif (nargin == 0)
-    for h = __go_figure_handles__ ()
-      if (! (isnan (h) || h == 0))
-	f = get (h);
-	if (f.__modified__)
-	  plot_stream = f.__plot_stream__;
-	  figure_is_visible = strcmp (f.visible, "on");
-	  if (figure_is_visible)
-	    if (isempty (plot_stream))
-	      plot_stream = open_gnuplot_stream (h);
-	    endif
-	    __go_draw_figure__ (f, plot_stream);
-	  elseif (! isempty (plot_stream))
-	    pclose (plot_stream);
-	    set (h, "__plot_stream__", []);
-	  endif
-	  set (h, "__modified__", false);
-	endif
-	__request_drawnow__ (false);
-      endif
-    endfor
-  else
-    print_usage ();
-  endif
+  persistent drawnow_executing = 0;
 
-  __request_drawnow__ (false);
+  unwind_protect
+
+    ## If this is a recursive call, do nothing.
+    if (++drawnow_executing > 1)
+      return;
+    endif
+
+    if (nargin == 2)
+      h = get (0, "currentfigure");
+      if (h)
+	f = get (h);
+	plot_stream = [];
+	unwind_protect
+	  plot_stream = open_gnuplot_stream ([], term, file);
+	  __go_draw_figure__ (f, plot_stream);
+	unwind_protect_cleanup
+	  if (! isempty (plot_stream))
+	    pclose (plot_stream);
+	  endif
+	end_unwind_protect
+      else
+	error ("drawnow: nothing to draw");
+      endif
+    elseif (nargin == 0)
+      for h = __go_figure_handles__ ()
+	if (! (isnan (h) || h == 0))
+	  f = get (h);
+	  if (f.__modified__)
+	    plot_stream = f.__plot_stream__;
+	    figure_is_visible = strcmp (f.visible, "on");
+	    if (figure_is_visible)
+	      if (isempty (plot_stream))
+		plot_stream = open_gnuplot_stream (h);
+	      endif
+	      __go_draw_figure__ (f, plot_stream);
+	    elseif (! isempty (plot_stream))
+	      pclose (plot_stream);
+	      set (h, "__plot_stream__", []);
+	    endif
+	    set (h, "__modified__", false);
+	  endif
+	endif
+      endfor
+    else
+      print_usage ();
+    endif
+
+  unwind_protect_cleanup
+
+    drawnow_executing--;
+    __request_drawnow__ (false);
+
+  end_unwind_protect
 
 endfunction
 

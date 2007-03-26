@@ -18,19 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2mm__ (@var{h}, @var{x}, @var{y}, @var{options})
+## @deftypefn {Function File} {} __plt2mm__ (@var{h}, @var{x}, @var{y}, @var{options}, @var{properties})
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = __plt2mm__ (h, x, y, options)
+function retval = __plt2mm__ (h, x, y, options, properties)
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
+  endif
+
+  if (nargin < 5)
+    properties = {};
   endif
 
   [x_nr, x_nc] = size (x);
@@ -54,7 +58,7 @@ function retval = __plt2mm__ (h, x, y, options)
 	endif
 	retval(i) = line (x(:,i), y(:,i), "keylabel", tkey, "color", color,
 			  "linestyle", options(i).linestyle,
-			  "marker", options(i).marker);
+			  "marker", options(i).marker, properties{:});
       endfor
     else
       error ("__plt2mm__: arguments must be a matrices");

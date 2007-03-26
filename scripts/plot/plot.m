@@ -37,13 +37,20 @@
 ## If more than one argument is given, they are interpreted as
 ##
 ## @example
-## plot (@var{x}, @var{y}, @var{fmt} ...)
+## plot (@var{x}, @var{y}, @var{fmt}, @dots{})
 ## @end example
 ##
 ## @noindent
-## where @var{y} and @var{fmt} are optional, and any number of argument
-## sets may appear.  The @var{x} and @var{y} values are
-## interpreted as follows:
+## or as
+##
+## @example
+## plot (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @end example
+##
+## @noindent
+## where @var{y}, @var{fmt}, @var{property} and @var{value} are optional,
+## and any number of argument sets may appear.  The @var{x} and @var{y} 
+## values are interpreted as follows:
 ##
 ## @itemize @bullet
 ## @item
@@ -135,6 +142,9 @@
 ## Note that the last semi-colon is required and will generate an error if
 ## it is left out.
 ##
+## If a @var{property} is given it must be followed by @var{value}.  The
+## property value pairs are applied to the lines drawn by @code{plot}.
+##
 ## Here are some plot examples:
 ##
 ## @example
@@ -146,11 +156,11 @@
 ## color 4 (magenta) and @code{y4} with points displayed as @samp{+}.
 ##
 ## @example
-## plot (b, "*")
+## plot (b, "*", "markersize", 3)
 ## @end example
 ##
 ## This command will plot the data in the variable @code{b} will be plotted
-## with points displayed as @samp{*}.
+## with points displayed as @samp{*} with a marker size of 3.
 ##
 ## @example
 ## t = 0:0.1:6.3;

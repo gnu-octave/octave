@@ -33,6 +33,8 @@ function retval = __plt__ (caller, h, varargin)
 
     x_set = false;
     y_set = false;
+    property_set = false;
+    properties = {};
 
     ## Gather arguments, decode format, gather plot strings, and plot lines.
 
@@ -42,8 +44,10 @@ function retval = __plt__ (caller, h, varargin)
 
       if (nargs == 0)
 	## Force the last plot when input variables run out.
+	next_cell = {};
 	next_arg = {""};
       else
+	next_cell = varargin(k);
 	next_arg = varargin{k++};
       endif
 
@@ -51,12 +55,32 @@ function retval = __plt__ (caller, h, varargin)
 
       if (ischar (next_arg) || iscellstr (next_arg))
 	if (x_set)
-	  options = __pltopt__ (caller, next_arg);
+	  [options, valid] = __pltopt__ (caller, next_arg, false);
+	  if (! valid)
+	    if (nargs == 0)
+	      error ("%s: properties must appear followed by a value", caller);
+	    endif
+	    properties = [properties, [next_cell, varargin(k++)]];
+	    nargs--;
+	    continue;
+	  else
+	    while (nargs > 0 && ischar (varargin{k}))
+	      if (nargs < 2)
+		error ("%s: properties must appear followed by a value",
+		       caller);
+	      endif
+	      properties = [properties, varargin(k:k+1)];
+	      k += 2;
+	      nargs -= 2;
+	    endwhile
+	  endif
 	  if (y_set)
-	    tmp = __plt2__ (h, x, y, options);
+	    tmp = __plt2__ (h, x, y, options, properties);
+	    properties = {};
 	    retval = [retval; tmp];
 	  else
-	    tmp = __plt1__ (h, x, options);
+	    tmp = __plt1__ (h, x, options, properties);
+	    properties = {};
 	    retval = [retval; tmp];
 	  endif
 	  x_set = false;
@@ -67,10 +91,11 @@ function retval = __plt__ (caller, h, varargin)
       elseif (x_set)
 	if (y_set)
 	  options = __pltopt__ (caller, {""});
-	  tmp = __plt2__ (h, x, y, options);
+	  tmp = __plt2__ (h, x, y, options, properties);
 	  retval = [retval; tmp];
 	  x = next_arg;
 	  y_set = false;
+	  properties = {};
 	else
 	  y = next_arg;
 	  y_set = true;
@@ -86,7 +111,9 @@ function retval = __plt__ (caller, h, varargin)
     msg = sprintf ("%s (y)\n", caller);
     msg = sprintf ("%s       %s (x, y, ...)\n", msg, caller);
     msg = sprintf ("%s       %s (x, y, fmt, ...)", msg, caller);
+    msg = sprintf ("%s       %s (x, y, property, value, ...)", msg, caller);
     usage (msg);
   endif
 
 endfunction
+  

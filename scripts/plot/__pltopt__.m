@@ -88,9 +88,15 @@
 
 ## Author: jwe
 
-function options = __pltopt__ (caller, opt)
+function [options, valid] = __pltopt__ (caller, opt, err_on_invalid)
 
-  if (nargin == 2 && nargout == 1)
+  valid = true;
+  options =  __default_plot_options__ ();
+
+  if ((nargin == 2 || nargin == 3) && (nargout == 1 || nargout == 2))
+    if (nargin == 2)
+      err_on_invalid = true;
+    endif
     if (ischar (opt))
       nel = rows (opt);
     elseif (iscellstr (opt))
@@ -102,7 +108,10 @@ function options = __pltopt__ (caller, opt)
       opt = cellstr (opt);
     endif
     for i = nel:-1:1
-      options(i) = __pltopt1__ (caller, opt{i});
+      [options(i), valid] = __pltopt1__ (caller, opt{i}, err_on_invalid);
+      if (! err_on_invalid && ! valid)
+	return;
+      endif
     endfor
   else
     print_usage ();

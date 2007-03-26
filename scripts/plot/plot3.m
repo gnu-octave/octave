@@ -98,12 +98,23 @@ function retval = plot3 (varargin)
   x_set = 0;
   y_set = 0;
   z_set = 0;
+  property_set = 0;
+  fmt_set = 0;
+  properties = {};
 
   idx = 0;
 
   ## Gather arguments, decode format, and plot lines.
-  for arg = 1:nargin
+  arg = 0;
+  while (arg++ < nargin)
     new = varargin{arg};
+    new_cell = varargin(arg);
+
+    if (property_set)
+      properties = [properties, new_cell];
+      property_set = 0;
+      continue;
+    endif
 
     if (ischar (new))
       if (! z_set)
@@ -127,7 +138,28 @@ function retval = plot3 (varargin)
 	  z_set = 1;
 	endif
       endif
-      options = __pltopt__ ("plot3", new);
+
+      if (! fmt_set)
+	[options, valid] = __pltopt__ ("plot3", new, false);
+	if (! valid)
+	  properties = [properties, new_cell];
+	  property_set = 1;
+	  continue;
+	else
+	  fmt_set = 1;
+	  while (arg < nargin && ischar (varargin{arg+1}))
+	    if (nargin - arg < 2)
+	      error ("plot3: properties must appear followed by a value");
+	    endif
+	    properties = [properties, varargin(arg:arg+1)];
+	    arg += 2;
+	  endwhile
+	endif
+      else
+	properties = [properties, new_cell];
+	property_set = 1;
+	continue;
+      endif
 
       if (isvector (x) && isvector (y))
 	if (isvector (z))
@@ -149,15 +181,20 @@ function retval = plot3 (varargin)
       if (! isempty (key))
 	set (gca (), "key", "on");
       endif
+      color = options.color;
+      if (isempty (options.color))
+	color = __next_line_color__ ();
+      endif
 
-      tmp(++idx) = line (x(:), y(:), z(:), "keylabel", key,
-			 "color", options.color,
+      tmp(++idx) = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
 			 "linestyle", options.linestyle,
-			 "marker", options.marker);
+			 "marker", options.marker, properties{:});
 
       x_set = 0;
       y_set = 0;
       z_set = 0;
+      fmt_set = 0;
+      properties = {};
     elseif (! x_set)
       x = new;
       x_set = 1;
@@ -184,14 +221,32 @@ function retval = plot3 (varargin)
 	error ("plot3: x, y, and z must have the same shape");
       endif
 
-      tmp(++idx) = line (x(:), y(:), z(:));
+      options =  __default_plot_options__ ();
+      key = options.key;
+      if (! isempty (key))
+	set (gca (), "key", "on");
+      endif
+      color = options.color;
+      if (isempty (color))
+	color = __next_line_color__ ();
+      endif
+
+      tmp(++idx) = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
+			 "linestyle", options.linestyle,
+			 "marker", options.marker, properties{:});
 
       x = new;
       y_set = 0;
       z_set = 0;
+      fmt_set = 0;
+      properties = {};
     endif
 
-  endfor
+  endwhile
+
+  if (property_set)
+    error ("plot3: properties must appear followed by a value");
+  endif
 
   ## Handle last plot.
 
@@ -230,8 +285,19 @@ function retval = plot3 (varargin)
       error ("plot3: x, y, and z must have the same shape");
     endif
 
-    tmp(++idx) = line (x(:), y(:), z(:));
+    options =  __default_plot_options__ ();
+    key = options.key;
+    if (! isempty (key))
+      set (gca (), "key", "on");
+    endif
+    color = options.color;
+    if (isempty (color))
+      color = __next_line_color__ ();
+    endif
 
+    tmp(++idx) = line (x(:), y(:), z(:),  "keylabel", key, "color", color,
+		       "linestyle", options.linestyle,
+		       "marker", options.marker, properties{:});
   endif
 
   set (gca (), "view", [-37.5, 30]);

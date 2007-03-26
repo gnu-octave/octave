@@ -18,19 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2__ (@var{h}, @var{x1}, @var{x2}, @var{options})
+## @deftypefn {Function File} {} __plt2__ (@var{h}, @var{x1}, @var{x2}, @var{options}, @var{properties})
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = __plt2__ (h, x1, x2, options)
+function retval = __plt2__ (h, x1, x2, options, properties)
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
+  endif
+
+  if (nargin < 5)
+    properties = {};
   endif
 
   if (! isstruct (options))
@@ -48,23 +52,23 @@ function retval = __plt2__ (h, x1, x2, options)
   h_set = false;
   if (isscalar (x1))
     if (isscalar (x2))
-      retval = __plt2ss__ (h, x1, x2, options);
+      retval = __plt2ss__ (h, x1, x2, options, properties);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
     if (isvector (x2))
-      retval = __plt2vv__ (h, x1, x2, options);
+      retval = __plt2vv__ (h, x1, x2, options, properties);
     elseif (ismatrix (x2))
-      retval = __plt2vm__ (h, x1, x2, options);
+      retval = __plt2vm__ (h, x1, x2, options, properties);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (ismatrix (x1))
     if (isvector (x2))
-      retval = __plt2mv__ (h, x1, x2, options);
+      retval = __plt2mv__ (h, x1, x2, options, properties);
     elseif (ismatrix (x2))
-      retval = __plt2mm__ (h, x1, x2, options);
+      retval = __plt2mm__ (h, x1, x2, options, properties);
     else
       error ("__plt2__: invalid data for plotting");
     endif

@@ -18,19 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt1__ (@var{h}, @var{x1}, @var{fmt}, @var{key})
+## @deftypefn {Function File} {} __plt1__ (@var{h}, @var{x1}, @var{options}, @var{properties})
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = __plt1__ (h, x1, options)
+function retval = __plt1__ (h, x1, options, properties)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
   if (nargin < 3 || isempty (options))
     options = __default_plot_options__ ();
+  endif
+
+  if (nargin < 4)
+    properties = {};
   endif
 
   if (! isstruct (options))
@@ -53,6 +57,6 @@ function retval = __plt1__ (h, x1, options)
     x1 = (1:nr)';
   endif
 
-  retval = __plt2__ (h, x1, x2, options);
+  retval = __plt2__ (h, x1, x2, options, properties);
 
 endfunction

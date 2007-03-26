@@ -27,13 +27,14 @@
 ## Adapted-By: jwe
 ## Maintainer: jwe
 
-function options = __pltopt1__ (caller, opt)
+function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
 
   options = __default_plot_options__ ();
+  valid = true;
 
   more_opts = 1;
 
-  if (nargin != 2)
+  if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
 
@@ -90,10 +91,22 @@ function options = __pltopt1__ (caller, opt)
 	  options.key = undo_string_escapes (opt(2:t));
 	  n = t+1;
 	else
-          error ("%s: unfinished key label", caller);
+	  if (err_on_invalid)
+            error ("%s: unfinished key label", caller);
+	  else
+	    valid = false;
+	    options = __default_plot_options__ ();
+	    return;
+	  endif
         endif
       else
-	error ("%s: unrecognized format character: `%s'", caller, topt);
+	if (err_on_invalid)
+	  error ("%s: unrecognized format character: `%s'", caller, topt);
+	else
+	  valid = false;
+	  options = __default_plot_options__ ();
+	  return;
+	endif
       endif
     endif
     opt(1:n) = [];

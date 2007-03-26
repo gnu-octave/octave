@@ -18,19 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} __plt2ss__ (@var{h}, @var{x}, @var{y}, @var{options})
+## @deftypefn {Function File} {} __plt2ss__ (@var{h}, @var{x}, @var{y}, @var{options}, @var{properties})
 ## @end deftypefn
 
 ## Author: jwe
 
-function retval = __plt2ss__ (h, x, y, options)
+function retval = __plt2ss__ (h, x, y, options, properties)
 
-  if (nargin < 3 || nargin > 4)
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
   if (nargin < 4 || isempty (options))
     options = __default_plot_options__ ();
+  endif
+
+  if (nargin < 5)
+    properties = {};
   endif
 
   if (numel (options) > 1)
@@ -51,7 +55,7 @@ function retval = __plt2ss__ (h, x, y, options)
     endif
     retval = line (x, y, "keylabel", key, "color", color,
 		   "linestyle", options.linestyle,
-		   "marker", options.marker);
+		   "marker", options.marker, properties{:});
   else
     error ("__plt2ss__: arguments must be scalars");
   endif

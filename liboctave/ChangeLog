@@ -1,3 +1,15 @@
+2007-03-26  David Bateman <dbateman@free.fr>
+
+	* MatrixType.cc: Replace all uses of the method
+	octave_sparse_params::get_key ("bandden") with 
+	octave_sparse_params::get_bandden (void).
+	(MatrixType::MatrixType (void)): Undo previous change but use
+	octave_sparse_params::get_bandden (void).
+	* oct-spparms.cc (get_bandden(void), do_get_bandden(void)): New
+	methods.
+	* oct-spparms.h (get_bandden(void), do_get_bandden(void)):
+	Declare them.	
+	
 2007-03-26  Luis Ortiz  <lortiz@interactivesupercomputing.com>
 	    David Bateman  <dbateman@free.fr>
 

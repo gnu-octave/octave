@@ -94,6 +94,12 @@ octave_sparse_params::get_key (const std::string& key)
   return instance_ok () ? instance->do_get_key (key) : octave_NaN;
 }
 
+double
+octave_sparse_params::get_bandden (void)
+{
+  return instance_ok () ? instance->do_get_bandden () : 0.0;
+}
+
 void
 octave_sparse_params::print_info (std::ostream& os, const std::string& prefix)
 {
@@ -150,6 +156,12 @@ octave_sparse_params::init_keys (void)
   keys(9) = "piv_tol";
   keys(10) = "bandden";
   keys(11) = "umfpack";
+}
+
+double
+octave_sparse_params::do_get_bandden (void)
+{
+  return params(10);
 }
 
 bool

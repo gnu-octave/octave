@@ -66,6 +66,8 @@ public:
 
   static double get_key (const std::string& key);
 
+  static double get_bandden (void);
+
   static void print_info (std::ostream& os, const std::string& prefix);
 
 private:
@@ -89,6 +91,8 @@ private:
   bool do_set_key (const std::string& key, const double& val);
 
   double do_get_key (const std::string& key);
+
+  double do_get_bandden (void);
 
   void do_print_info (std::ostream& os, const std::string& prefix) const;
   

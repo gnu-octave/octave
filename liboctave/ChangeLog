@@ -1,7 +1,13 @@
+2007-03-26  Luis Ortiz  <lortiz@interactivesupercomputing.com>
+	    David Bateman  <dbateman@free.fr>
+
+	* idx-vector.h.cc (IDX_VEC_REP::idx_vector_rep (const Range&)):
+	Check that all elements are ints before doing anything.  Simplify
+	calculation of index values.
+
 2007-03-26  David Bateman  <dbateman@free.fr>
 
 	* Range.cc (Range::all_elements_are_ints): Improve check.
-	* 
 
 2007-03-26  John W. Eaton  <jwe@octave.org>
 

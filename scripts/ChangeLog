@@ -1,3 +1,8 @@
+2007-03-26  Kim Hansen  <kimhanse@gmail.com>
+
+	* testfun/assert.m: Delete special check for empty objects.
+	Add test.
+
 2007-03-26  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow.m: Exit early if call is recursive.

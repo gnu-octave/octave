@@ -118,9 +118,6 @@ function assert(cond, expected, tol)
       end
     endif
 
-  elseif (isempty (expected))
-    iserror = (any (size (cond) != size (expected)));
-
   elseif (ndims (cond) != ndims (expected)
 	  || any (size (cond) != size (expected)))
     iserror = 1;
@@ -197,6 +194,7 @@ endfunction
 %!assert(zeros(3,0),zeros(3,0))
 %!error assert(zeros(3,0),zeros(0,2))
 %!error assert(zeros(3,0),[])
+%!fail("assert(zeros(2,0,2),zeros(2,0))", "Dimensions don't match")
 
 ## conditions
 %!assert(isempty([]))

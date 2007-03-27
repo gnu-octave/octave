@@ -1,4 +1,7 @@
-<<<<<<< ChangeLog
+2007-03-27  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.10+
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.10.
@@ -18,12 +21,10 @@
 	arg to X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS.
 	(OCTAVE_STARTUP_MESSAGE): Put info about news last.
 
-=======
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (dist, conf-dist): Use ln, not $(LN_S).
 
->>>>>>> 1.1688
 2007-03-26  Juhani Saastamoinen  <juhani@cs.joensuu.fi>
 
 	* file-io.cc (do_stream_open) [! HAVE_ZLIB]:

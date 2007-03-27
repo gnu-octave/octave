@@ -225,12 +225,11 @@ function __go_draw_axes__ (h, plot_stream)
     nd = 0;
     data_idx = 0;
     data = cell ();
+    is_image_data = [];
 
     xminp = yminp = zminp = realmax ();
     xmax = ymax = zmax = -realmax ();
     xmin = ymin = zmin = realmax ();
-
-    palette_set = 0;
 
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
     use_gnuplot_for_images = (ischar (view_fcn)
@@ -261,6 +260,7 @@ function __go_draw_axes__ (h, plot_stream)
 	  if (use_gnuplot_for_images)
 
 	    data_idx++;
+	    is_image_data(data_idx) = true;
 
 	    [y_dim, x_dim] = size (img_data(:,:,1));
 	    if (x_dim > 1)
@@ -292,42 +292,29 @@ function __go_draw_axes__ (h, plot_stream)
 	      ## to have a means of arbitrary projection.
 	    endif
 
-	    ## Let the file be deleted when Octave exits or `purge_tmp_files'
-	    ## is called.
-	    [img_fid, img_fname] = mkstemp (fullfile (P_tmpdir, "gpimageXXXXXX"), 1);
 	    if (ndims (img_data) == 3)
-	      fwrite (img_fid, permute (img_data, [3, 1, 2])(:), "float");
+	      data{data_idx} = permute (img_data, [3, 1, 2])(:);
 	      format = "1:2:3";
 	      imagetype = "rgbimage";
 	    else
-	      fwrite (img_fid, img_data(:), "float");
+	      data{data_idx} = img_data(:);
 	      format = "1";
 	      imagetype = "image";
-	      ## Only need to set palette once because it doesn't change
-	      ## on a figure.
-	      if (! palette_set)
-		palette_set = 1;
-		palette_size = rows (img_colormap);
-		fprintf (plot_stream,
-			 "set palette positive color model RGB maxcolors %i;\n",
-			 palette_size);
-		fprintf (plot_stream,
-			 "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
-			 palette_size);
-		fwrite (plot_stream, [1:palette_size; img_colormap'], "float32");
-	      endif
-	    endif
-	    fclose (img_fid);
 
-	    filespec{data_idx} = img_fname;
+	      palette_size = rows (img_colormap);
+	      fprintf (plot_stream,
+		       "set palette positive color model RGB maxcolors %i;\n",
+		       palette_size);
+	      fprintf (plot_stream,
+		       "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+		       palette_size);
+	      fwrite (plot_stream, [1:palette_size; img_colormap'], "float32");
+	    endif
+
 	    titlespec{data_idx} = "";
 	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%g,%g) dx=%g dy=%g using %s",
 		x_dim, y_dim, x_origin, y_origin, dx, dy, format);
 	    withclause{data_idx} = sprintf ("with %s", imagetype);
-
-	    ## Data in file, set to zero for data available test to pass
-	    ## below.
-	    data{data_idx} = 0; 
 
 	  else
 	    ximg_data{++ximg_data_idx} = img_data;
@@ -335,7 +322,7 @@ function __go_draw_axes__ (h, plot_stream)
 
 	case "line"
 	  data_idx++;
-	  filespec{data_idx} = "-";
+	  is_image_data(data_idx) = false;
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
@@ -452,8 +439,8 @@ function __go_draw_axes__ (h, plot_stream)
 
 	case "surface"
 	  data_idx++;
+	  is_image_data(data_idx) = false;
 	  [style, typ] = do_linestyle_command (obj, data_idx, plot_stream);
-	  filespec{data_idx} = "-";
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
@@ -658,15 +645,17 @@ function __go_draw_axes__ (h, plot_stream)
  	fputs (plot_stream, "set ticslevel 0;\n");
 	fprintf (plot_stream, "set view %g, %g;\n", rot_x, rot_z);
       endif
-      fprintf (plot_stream, "%s \"%s\" %s %s %s", plot_cmd,
-	       filespec{1}, usingclause{1}, titlespec{1}, withclause{1});
+      fprintf (plot_stream, "%s \"-\" %s %s %s", plot_cmd,
+	       usingclause{1}, titlespec{1}, withclause{1});
       for i = 2:data_idx
-	fprintf (plot_stream, ", \"%s\" %s %s %s",
-		 filespec{i}, usingclause{i}, titlespec{i}, withclause{i});
+	fprintf (plot_stream, ", \"-\" %s %s %s",
+		 usingclause{i}, titlespec{i}, withclause{i});
       endfor
       fputs (plot_stream, ";\n");
       for i = 1:data_idx
-	if (strcmp (filespec{i}, "-"))
+	if (is_image_data(i))
+	  fwrite (plot_stream, data{i}, "float32");
+	else
 	  if (nd == 2)
 	    fprintf (plot_stream,
 		     strcat (repmat ("%g ", 1, rows (data{i})), "\n"),

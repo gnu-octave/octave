@@ -303,7 +303,7 @@ function __go_draw_axes__ (h, plot_stream)
 	      fwrite (img_fid, img_data(:), "float");
 	      format = "1";
 	      imagetype = "image";
-	      ## Only need to set pallete once because it doesn't change
+	      ## Only need to set palette once because it doesn't change
 	      ## on a figure.
 	      if (! palette_set)
 		palette_set = 1;
@@ -314,8 +314,7 @@ function __go_draw_axes__ (h, plot_stream)
 		fprintf (plot_stream,
 			 "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
 			 palette_size);
-		fwrite (plot_stream, [1:palette_size; img_colormap'],
-			"float32", 0, "ieee-le");
+		fwrite (plot_stream, [1:palette_size; img_colormap'], "float32";
 	      endif
 	    endif
 	    fclose (img_fid);

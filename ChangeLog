@@ -1,3 +1,7 @@
+2007-03-27  John W. Eaton  <jwe@octave.org>
+
+	* config.guess, config.sub: Update from FSF sources.
+
 2007-03-23  John W. Eaton  <jwe@octave.org>
 
 	* examples/make_int.cc (octave_integer::clone): Return type is

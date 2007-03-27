@@ -314,7 +314,7 @@ function __go_draw_axes__ (h, plot_stream)
 		fprintf (plot_stream,
 			 "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
 			 palette_size);
-		fwrite (plot_stream, [1:palette_size; img_colormap'], "float32";
+		fwrite (plot_stream, [1:palette_size; img_colormap'], "float32");
 	      endif
 	    endif
 	    fclose (img_fid);

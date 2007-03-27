@@ -1,7 +1,29 @@
+<<<<<<< ChangeLog
+2007-03-27  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.10.
+	(OCTAVE_API_VERSION): Now api-v23.
+	(OCTAVE_RELEASE_DATE): Now 2007-03-27.
+
+	* version.h (OCTAVE_COPYRIGHT): Update for 2007.  Add "and others".
+	(X_OCTAVE_WARRANTY_STATEMENT): Rename from OCTAVE_WARRANTY_STATEMENT.
+	Accept arg.
+	(OCTAVE_WARRANTY_STATEMENT): Define using X_OCTAVE_WARRANTY_STATEMENT.
+	(OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY): Define using
+	X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY.
+	(X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY): Rename
+	from OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY.
+	Accept arg and pass to X_OCTAVE_WARRANTY_STATEMENT.
+	(OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY): Pass empty
+	arg to X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS.
+	(OCTAVE_STARTUP_MESSAGE): Put info about news last.
+
+=======
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (dist, conf-dist): Use ln, not $(LN_S).
 
+>>>>>>> 1.1688
 2007-03-26  Juhani Saastamoinen  <juhani@cs.joensuu.fi>
 
 	* file-io.cc (do_stream_open) [! HAVE_ZLIB]:

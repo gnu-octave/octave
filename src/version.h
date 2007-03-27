@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1992, 1993, 1994, 1994, 1996, 1997, 1998, 1999, 2000,
-2001, 2002, 2003, 2004, 2005, 2006  John W. Eaton
+2001, 2002, 2003, 2004, 2005, 2006, 2007  John W. Eaton
 
 This file is part of Octave.
 
@@ -25,13 +25,13 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "2.9.9+"
+#define OCTAVE_VERSION "2.9.10"
 
-#define OCTAVE_API_VERSION "api-v22"
+#define OCTAVE_API_VERSION "api-v23"
 
-#define OCTAVE_RELEASE_DATE "2006-10-02"
+#define OCTAVE_RELEASE_DATE "2007-03-27"
 
-#define OCTAVE_COPYRIGHT "Copyright (C) 2006 John W. Eaton."
+#define OCTAVE_COPYRIGHT "Copyright (C) 2007 John W. Eaton and others."
 
 // This is the first line printed by --version.  The GNU coding
 // standards say that the version number should follow the last space
@@ -45,9 +45,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define OCTAVE_COPYING_STATEMENT \
   "This is free software; see the source code for copying conditions."
 
-#define OCTAVE_WARRANTY_STATEMENT \
+#define X_OCTAVE_WARRANTY_STATEMENT(ARG) \
   "There is ABSOLUTELY NO WARRANTY; not even for MERCHANTIBILITY or\n\
-FITNESS FOR A PARTICULAR PURPOSE."
+FITNESS FOR A PARTICULAR PURPOSE." ARG
+
+#define OCTAVE_WARRANTY_STATEMENT \
+  X_OCTAVE_WARRANTY_STATEMENT ("")
 
 #define OCTAVE_WWW_STATEMENT \
   "Additional information about Octave is available at http://www.octave.org."
@@ -65,25 +68,27 @@ http://www.octave.org/bugs.html to learn how to write a helpful report)."
   OCTAVE_COPYRIGHT
 
 #define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
+  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY("") \
+
+#define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY(ARG) \
   OCTAVE_NAME_VERSION_AND_COPYRIGHT "\n" \
   OCTAVE_COPYING_STATEMENT "\n" \
-  OCTAVE_WARRANTY_STATEMENT "\n\n" \
+  X_OCTAVE_WARRANTY_STATEMENT (ARG) "\n\n" \
   OCTAVE_CONFIG_STATEMENT
 
 #define X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS(ARG) \
-  OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY \
-  ARG \
+  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_AND_WARRANTY(ARG) "\n\n" \
   OCTAVE_WWW_STATEMENT "\n\n" \
   OCTAVE_CONTRIB_STATEMENT "\n\n" \
   OCTAVE_BUGS_STATEMENT
 
 #define OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS ("\n\n")
+  X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS ("")
 
 #define OCTAVE_STARTUP_MESSAGE \
   X_OCTAVE_NAME_VERSION_COPYRIGHT_COPYING_WARRANTY_AND_BUGS \
-    ("  For details, type `warranty'.\n\
-  For information about changes from previous versions, type `news'.\n\n")
+    ("  For details, type `warranty'.") "\n\n" \
+  "For information about changes from previous versions, type `news'."
 
 #endif
 

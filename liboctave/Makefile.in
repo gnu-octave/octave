@@ -165,9 +165,6 @@ DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
 	sparse-mk-ops.awk sparse-mx-ops oct-types.h.in \
 	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)
 
-# Complete directory trees to distribute.
-DISTDIRS :=
-
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
@@ -331,8 +328,7 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist: stamp-prereq
-	$(LN_S) $(DISTFILES) ../`cat ../.fname`/liboctave
-	for dir in $(DISTDIRS); do $(LN_S) ../../liboctave/$$dir ../`cat ../.fname`/liboctave; done
+	ln $(DISTFILES) ../`cat ../.fname`/liboctave
 .PHONY: dist
 
 $(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl

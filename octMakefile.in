@@ -170,7 +170,7 @@ dist: all
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
-	$(LN_S) $(DISTFILES) `cat .fname`
+	ln $(DISTFILES) `cat .fname`
 	for dir in $(DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir dist; \
@@ -222,7 +222,7 @@ conf-dist:
 	echo config-dist-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
-	$(LN_S) $(CONF_DISTFILES) `cat .fname`
+	ln $(CONF_DISTFILES) `cat .fname`
 	for dir in $(CONF_DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir conf-dist; \

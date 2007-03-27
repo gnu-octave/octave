@@ -1,3 +1,22 @@
+2007-03-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in, audio/Makefile.in, control/Makefile.in,
+	control/base/Makefile.in, control/hinf/Makefile.in,
+	control/obsolete/Makefile.in, control/system/Makefile.in,
+	control/util/Makefile.in, deprecated/Makefile.in,
+	elfun/Makefile.in, finance/Makefile.in, general/Makefile.in,
+	image/Makefile.in, io/Makefile.in, linear-algebra/Makefile.in,
+	miscellaneous/Makefile.in, optimization/Makefile.in,
+	path/Makefile.in, pkg/Makefile.in, plot/Makefile.in,
+	polynomial/Makefile.in, quaternion/Makefile.in, set/Makefile.in,
+	signal/Makefile.in, sparse/Makefile.in, specfun/Makefile.in,
+	special-matrix/Makefile.in, startup/Makefile.in,
+	statistics/Makefile.in, statistics/base/Makefile.in,
+	statistics/distributions/Makefile.in,
+	statistics/models/Makefile.in, statistics/tests/Makefile.in,
+	strings/Makefile.in, testfun/Makefile.in, time/Makefile.in:
+	Use ln instead of $(LN_S) in dist target.
+
 2007-03-27  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Allow linewidth settings to work with

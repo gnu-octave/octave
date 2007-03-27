@@ -48,6 +48,6 @@ maintainer-clean::
 	rm -f tags TAGS Makefile
 
 dist:
-	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/scripts/control
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/control
 	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/scripts/control/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

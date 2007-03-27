@@ -1,5 +1,10 @@
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
+	* octMakefile.in (dist, conf-dist): Use ln, not $(LN_S).
+	* emacs/Makefile.in (dist): Likewise.
+	* examples/Makefile.in (dist): Likewise.
+	* dlfcn/Makefile.in (conf-dist): Likewise.
+
 	* config.guess, config.sub: Update from FSF sources.
 
 2007-03-23  John W. Eaton  <jwe@octave.org>

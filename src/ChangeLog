@@ -1,3 +1,7 @@
+2007-03-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (dist, conf-dist): Use ln, not $(LN_S).
+
 2007-03-26  Juhani Saastamoinen  <juhani@cs.joensuu.fi>
 
 	* file-io.cc (do_stream_open) [! HAVE_ZLIB]:

@@ -87,5 +87,5 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	$(LN_S) $(DISTFILES) ../`cat ../.fname`/examples
+	ln $(DISTFILES) ../`cat ../.fname`/examples
 .PHONY: dist

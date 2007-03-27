@@ -186,7 +186,7 @@ maintainer-clean::
 
 dist:
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/libcruft/$$dir; $(MAKE) -C $$dir $@; done
-	$(LN_S) $(DISTFILES) ../`cat ../.fname`/libcruft
+	ln $(DISTFILES) ../`cat ../.fname`/libcruft
 .PHONY: dist
 
 .NOTPARALLEL:

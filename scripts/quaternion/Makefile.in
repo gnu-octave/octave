@@ -65,5 +65,5 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/scripts/quaternion
+	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/quaternion
 .PHONY: dist

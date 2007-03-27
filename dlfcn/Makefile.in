@@ -67,11 +67,11 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	$(LN_S) $(DISTFILES) ../`cat ../.fname`/dlfcn
+	ln $(DISTFILES) ../`cat ../.fname`/dlfcn
 .PHONY: dist
 
 conf-dist:
-	$(LN_S) octave.cc Makefile.in ../`cat ../.fname`/dlfcn
+	ln octave.cc Makefile.in ../`cat ../.fname`/dlfcn
 .PHONY: conf-dist
 
 ifndef omit_deps

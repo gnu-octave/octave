@@ -246,7 +246,7 @@ clean-texi:
 .PHONY: clean-texi
 
 dist: clean-texi all
-	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
-	for dir in $(DISTDIRS); do $(LN_S) ../../doc/interpreter/$$dir ../../`cat ../../.fname`/doc/interpreter/$$dir; done
+	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
+	for dir in $(DISTDIRS); do ln -s ../../doc/interpreter/$$dir ../../`cat ../../.fname`/doc/interpreter/$$dir; done
 	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/doc/interpreter/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

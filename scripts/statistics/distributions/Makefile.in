@@ -79,5 +79,5 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist:
-	$(LN_S) $(DISTFILES) ../../../`cat ../../../.fname`/scripts/$(script_sub_dir)
+	ln $(DISTFILES) ../../../`cat ../../../.fname`/scripts/$(script_sub_dir)
 .PHONY: dist

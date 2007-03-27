@@ -1,3 +1,9 @@
+2007-03-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in, interpreter/Makefile.in, faq/Makefile.in,
+	liboctave/Makefile.in, refcard/Makefile.in (dist):
+	Use ln instead of $(LN_S).
+
 2007-03-21  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
 
 	* interpreter/sparse.txi: Delete repeated word.

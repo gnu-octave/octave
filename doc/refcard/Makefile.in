@@ -77,5 +77,5 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist: all
-	$(LN_S) $(DISTFILES) ../../`cat ../../.fname`/doc/refcard
+	ln $(DISTFILES) ../../`cat ../../.fname`/doc/refcard
 .PHONY: dist

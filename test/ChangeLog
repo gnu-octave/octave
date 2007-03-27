@@ -1,3 +1,7 @@
+2007-03-27  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (dist): Use ln, not $(LN_S).
+
 2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in: Use $(LN_S) instead of ln or ln -s.

@@ -15,7 +15,10 @@ Summary of important user-visible changes for version 3.0:
       of gnuplot (whether run from Octave or not) since it only
       provided a limited set to choose from, and they were terminal
       dependent, so choosing color 1 with the X11 terminal would be
-      different from color 1 with the PostScript terminal.
+      different from color 1 with the PostScript terminal.  Valid RGB
+      colors for gnuplot 4.0 are the eight possible combinations of 0
+      and 1 for the R, G and B values. Invalid values are all mapped
+      to the same color.
 
     + You can control the width of lines using (for example):
 

@@ -328,7 +328,7 @@ function __go_draw_axes__ (h, plot_stream)
 	  else
 	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
 	  endif
-	  [style, typ] = do_linestyle_command (obj, data_idx, plot_stream);
+	  [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
 	  usingclause{data_idx} = "";
 	  if (have_newer_gnuplot || isnan (typ))
 	    withclause{data_idx} = sprintf ("with %s linestyle %d",
@@ -436,11 +436,18 @@ function __go_draw_axes__ (h, plot_stream)
 	      usingclause{data_idx} = "using ($1):($2)";
 	    endif
 	  endif
+	  if (! (have_newer_gnuplot || isempty (with)))
+	    if (isempty (withclause{data_idx}))
+	      withclause{data_idx} = sprintf("with %s", with);
+	    else
+	      withclause{data_idx} = sprintf("%s %s", withclause{data_idx}, with);
+	    endif
+	  endif
 
 	case "surface"
 	  data_idx++;
 	  is_image_data(data_idx) = false;
-	  [style, typ] = do_linestyle_command (obj, data_idx, plot_stream);
+	  [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
@@ -451,8 +458,8 @@ function __go_draw_axes__ (h, plot_stream)
 	    withclause{data_idx} = sprintf ("with %s linestyle %d",
 					    style, data_idx);
 	  else
-	    withclause{data_idx} = sprintf ("with %s linetype %d",
-					    style, typ);
+	    withclause{data_idx} = sprintf ("with %s linetype %d %s",
+					    style, typ, with);
 	  endif
 	  parametric(i) = false;
 	  nd = 3;
@@ -740,7 +747,7 @@ function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
 
 endfunction
 
-function [style, typ] = do_linestyle_command (obj, idx, plot_stream)
+function [style, typ, with] = do_linestyle_command (obj, idx, plot_stream)
 
   persistent have_newer_gnuplot ...
     = compare_versions (__gnuplot_version__ (), "4.0", ">");
@@ -752,6 +759,7 @@ function [style, typ] = do_linestyle_command (obj, idx, plot_stream)
 
   found_style = false;
   typ = NaN;
+  with = "";
 
   if (isfield (obj, "color"))
     color = obj.color;
@@ -808,7 +816,11 @@ function [style, typ] = do_linestyle_command (obj, idx, plot_stream)
   endif
 
   if (isfield (obj, "linewidth"))
-    fprintf (plot_stream, " linewidth %f", obj.linewidth);
+    if (have_newer_gnuplot)
+      fprintf (plot_stream, " linewidth %f", obj.linewidth);
+    else
+      with = sprintf ("%s lw %f", with, obj.linewidth);
+    endif
     found_style = true;
   endif
 
@@ -846,16 +858,15 @@ function [style, typ] = do_linestyle_command (obj, idx, plot_stream)
 	pt = "";
     endswitch
     if (! isempty (pt))
-      fprintf (plot_stream, " pointtype %s", pt);
+      if (have_newer_gnuplot)
+	fprintf (plot_stream, " pointtype %s", pt);
+      else
+	with = sprintf ("%s pt %s", with, pt);
+      endif
       found_style = true;
     endif
   else
     pt = "";
-  endif
-
-  if (isfield (obj, "markersize"))
-    fprintf (plot_stream, " pointsize %f", obj.markersize);
-    found_style = true;
   endif
 
   style = "lines";
@@ -865,6 +876,17 @@ function [style, typ] = do_linestyle_command (obj, idx, plot_stream)
     endif
   elseif (! isempty (pt))
     style = "linespoints";
+  endif
+
+  if (isfield (obj, "markersize"))
+    if (have_newer_gnuplot)
+      fprintf (plot_stream, " pointsize %f", obj.markersize);
+    else
+      if (! strcmp (style, "lines"))
+	with = sprintf ("%s ps %f", with, obj.markersize);
+      endif
+    endif
+    found_style = true;
   endif
 
   if (have_newer_gnuplot && ! found_style)

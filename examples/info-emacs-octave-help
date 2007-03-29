@@ -11,4 +11,4 @@ then
     shift 2
 fi
 cmd="$cmd (octave-help \"$4\")"
-gnuclient -q $cmd
+gnuclient -batch -q -eval "$cmd"

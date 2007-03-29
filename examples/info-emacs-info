@@ -11,4 +11,4 @@ then
 fi
 cmd="(require 'info) $cmd"
 [ $4 ] && cmd="$cmd (Info-index \"$4\")"
-gnuclient -q $cmd
+gnuclient -batch -q -eval "$cmd"

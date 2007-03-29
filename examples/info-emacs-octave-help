@@ -11,4 +11,4 @@ then
     shift 2
 fi
 cmd="$cmd (octave-help \"$4\")"
-gnudoit -q $cmd
+gnuclient -q $cmd

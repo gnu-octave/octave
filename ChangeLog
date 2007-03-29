@@ -1,3 +1,8 @@
+2007-03-29  Rafael Laboissiere  <rafael@debian.org>
+
+	* examples/info-emacs-octave-help, examples/info-emacs-info:
+	Use gnuclient, not gnudoit.
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (dist, conf-dist): Use ln, not $(LN_S).

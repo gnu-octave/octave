@@ -125,7 +125,7 @@ function h = stem (varargin)
 
   if (find (y < 0))
     x_axis_range = get (gca, "xlim");
-    hhhh = line (x_axis_range, [0, 0], "color", "k");
+    hhhh = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
   endif
 
   if (dofill)

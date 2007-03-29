@@ -1,3 +1,7 @@
+2007-03-29  John W. Eaton  <jwe@octave.org>
+
+	* plot/stem.m (set_default_values): Use RGB triple for color.
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in, audio/Makefile.in, control/Makefile.in,

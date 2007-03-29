@@ -291,8 +291,8 @@ endfunction
 
 function [lc, ls, mc, ms] = set_default_values ()
   ## set default values
-  mc = "r";
-  lc = "r";
+  mc = [1, 0, 0];
+  lc = [1, 0, 0];
   ls = "-";
   ms = "o";
 endfunction

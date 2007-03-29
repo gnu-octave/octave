@@ -1,5 +1,8 @@
 2007-03-29  Rafael Laboissiere  <rafael@debian.org>
 
+ 	* emacs/octave-mod.el: Drop LOADPATH, INFO_FILE, and
+ 	INFO_PROGRAM from octave-variables.
+
 	* examples/info-emacs-octave-help, examples/info-emacs-info:
 	Use gnuclient, not gnudoit.
 

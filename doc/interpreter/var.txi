@@ -229,11 +229,6 @@ where all of Octave is installed (the default is @file{@value{OCTAVEHOME}},
 Octave was compiled (for example, @code{x86_64-unknown-linux-gnu}).
 
 @vtable @code
-@item DEFAULT_LOADPATH
-@xref{Function Files}.
-
-Default value: @code{".:@var{octave-home}/lib/@var{version}"}.
-
 @item EDITOR
 @xref{Commands For History}.
 
@@ -243,22 +238,6 @@ Default value: @code{"emacs"}.
 @xref{Controlling Subprocesses}.
 
 Default value: @code{":$PATH"}.
-
-@item INFO_FILE
-@xref{Getting Help}.
-
-Default value: @code{"@var{octave-home}/info/octave.info"}.
-
-@item INFO_PROGRAM
-@xref{Getting Help}.
-
-Default value: @code{"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info"}.
-
-@item LOADPATH
-@xref{Function Files}.
-
-Default value: @code{":"}, which tells Octave to use the directories
-specified by the built-in variable @code{DEFAULT_LOADPATH}.
 
 @item OCTAVE_HOME
 
@@ -495,9 +474,9 @@ Default value: 0.
 @section Defaults from the Environment
 
 Octave uses the values of the following environment variables to set the
-default values for the corresponding built-in variables.  In addition,
-the values from the environment may be overridden by command-line
-arguments.  @xref{Command Line Options}.
+default values for the corresponding built-in or internal variables.
+In addition, the values from the environment may be overridden by
+command-line arguments.  @xref{Command Line Options}.
 
 @vtable @code
 @item EDITOR
@@ -514,19 +493,19 @@ Command-line argument: @code{--exec-path}.
 @item OCTAVE_PATH
 @xref{Function Files}.
 
-Built-in variable: @code{LOADPATH}.
+Internal variable changed by function @code{path}.
 Command-line argument: @code{--path}.
 
 @item OCTAVE_INFO_FILE
 @xref{Getting Help}.
 
-Built-in variable: @code{INFO_FILE}.
+Internal variable changed by function @code{info_file}.
 Command-line argument: @code{--info-file}.
 
 @item OCTAVE_INFO_PROGRAM
 @xref{Getting Help}.
 
-Built-in variable: @code{INFO_PROGRAM}.
+Internal variable changed by function @code{info_program}.
 Command-line argument: @code{--info-program}.
 
 @item OCTAVE_HISTSIZE

@@ -129,8 +129,8 @@ All Octave abbrevs start with a grave accent (`).")
 (defvar octave-variables
   '("DEFAULT_EXEC_PATH" "DEFAULT_LOADPATH"
     "EDITOR" "EXEC_PATH" "F_DUPFD" "F_GETFD" "F_GETFL" "F_SETFD"
-    "F_SETFL" "I" "IMAGE_PATH" "INFO_FILE" "INFO_PROGRAM" "Inf" "J"
-    "LOADPATH" "NaN" "OCTAVE_VERSION" "O_APPEND" "O_CREAT" "O_EXCL"
+    "F_SETFL" "I" "IMAGE_PATH" "Inf" "J"
+    "NaN" "OCTAVE_VERSION" "O_APPEND" "O_CREAT" "O_EXCL"
     "O_NONBLOCK" "O_RDONLY" "O_RDWR" "O_TRUNC" "O_WRONLY" "PAGER" "PS1"
     "PS2" "PS4" "PWD" "SEEK_CUR" "SEEK_END" "SEEK_SET" "__F_DUPFD__"
     "__F_GETFD__" "__F_GETFL__" "__F_SETFD__" "__F_SETFL__" "__I__"

@@ -398,7 +398,7 @@ place where Octave can find them.
 When Octave encounters an identifier that is undefined, it first looks
 for variables or functions that are already compiled and currently
 listed in its symbol table.  If it fails to find a definition there, it
-searches the list of directories specified by the built-in variable
+searches the list of directories specified by the internal variable
 @code{LOADPATH} for files ending in @file{.m} that have the same base
 name as the undefined identifier.@footnote{The @samp{.m} suffix was
 chosen for compatibility with @sc{Matlab}.}  Once Octave finds a file
@@ -437,9 +437,7 @@ else, Octave will check the time stamps on all function files.
 
 @c FIXME -- note about time stamps on files in NFS environments?
 
-@DOCSTRING(DEFAULT_LOADPATH)
-
-@DOCSTRING(LOADPATH)
+@DOCSTRING(path)
 
 @DOCSTRING(rehash)
 
@@ -491,10 +489,11 @@ function one ()
 @end example
 
 To have Octave read and compile these functions into an internal form,
-you need to make sure that the file is in Octave's @code{LOADPATH}, then
-simply type the base name of the file that contains the commands.
-(Octave uses the same rules to search for script files as it does to
-search for function files.)
+you need to make sure that the file is in Octave's @code{LOADPATH}
+(accessible through the @code{path} function), then simply type the
+base name of the file that contains the commands.  (Octave uses the
+same rules to search for script files as it does to search for
+function files.)
 
 If the first token in a file (ignoring comments) is @code{function},
 Octave will compile the function and try to execute it, printing a
@@ -529,7 +528,7 @@ Since Octave doesn't look for definitions until they are needed, the
 following code will always print @samp{bar = 3} whether it is typed
 directly on the command line, read from a script file, or is part of a
 function body, even if there is a function or script file called
-@file{bar.m} in Octave's @code{LOADPATH}.
+@file{bar.m} in Octave's path.
 
 @example
 @group

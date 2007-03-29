@@ -623,11 +623,12 @@ questions (preferably with answers!)
 @item
 Octave takes a long time to find symbols.
 
-Octave is probably spending this time recursively searching directories
-for function files.  Check the value of your LOADPATH.  For those
+Octave is probably spending this time recursively searching directories for
+function files.  Check the value of the internal variable LOADPATH,
+accessible through the Octave fucntion @code{path}.  For those
 elements that end in @samp{//}, do any name a very large directory tree?
-Does it contain directories that have a mixture of files and
-directories?  In order for the recursive directory searching code to
+Does it contain directories that have a mixture of files and 
+directories?  In order for the recursive directory searching code to 
 work efficiently, directories that are to be searched recursively should
 have either function files only, or subdirectories only, but not a
 mixture of both.  Check to make sure that Octave's standard set of

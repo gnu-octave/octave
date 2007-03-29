@@ -1,3 +1,15 @@
+2007-03-29  Rafael Laboissiere  <rafael@debian.org>
+
+	* faq/Octave-FAQ.texi, interpreter/basics.txi,
+	interpreter/emacs.txi, interpreter/func.tx, interpreter/var.txi:
+	Make it clear that the old built-in LOADPATH is an internal
+	variable, accessible through path ().
+	Drop references to DEFAULT_LOADPATH.
+	Chang references to the old built-in variables INFO_FILE and
+	INFO_PROGRAM to the respective fucntions info_file and
+	info_program.
+	* refcard/refcard.tex: Drop LOADPATH from list of built-in variables.
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in, interpreter/Makefile.in, faq/Makefile.in,

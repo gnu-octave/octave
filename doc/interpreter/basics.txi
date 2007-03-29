@@ -91,16 +91,16 @@ Print short help message and exit.
 Specify the name of the info file to use.  The value of @var{filename}
 specified on the command line will override any value of
 @code{OCTAVE_INFO_FILE} found in the environment, but not any commands
-in the system or user startup files that set the built-in variable
-@code{INFO_FILE}.
+in the system or user startup files that use the the @code{info_file}
+function.
 
 @item --info-program @var{program}
 @cindex @code{--info-program @var{program}}
 Specify the name of the info program to use.  The value of @var{program}
 specified on the command line will override any value of
 @code{OCTAVE_INFO_PROGRAM} found in the environment, but not any
-commands in the system or user startup files that set the built-in
-variable @code{INFO_PROGRAM}.
+commands in the system or user startup files that use the
+@code{info_program} function.
 
 @item --interactive
 @itemx -i
@@ -141,7 +141,8 @@ and @code{--no-site-file}.
 Specify the path to search for function files.  The value of @var{path}
 specified on the command line will override any value of
 @code{OCTAVE_PATH} found in the environment, but not any commands in the
-system or user startup files that set the built-in variable @code{LOADPATH}.
+system or user startup files that set the internal variable @code{LOADPATH}
+through one of the path functions.
 
 @item --persist
 Go to interactive mode after @code{--eval} or reading from a file
@@ -297,11 +298,11 @@ The help command can give you information about operators, but not the
 comma and semicolons that are used as command separators.  To get help
 for those, you must type @kbd{help comma} or @kbd{help semicolon}.
 
-@DOCSTRING(INFO_FILE)
+@DOCSTRING(info_file)
 
-@DOCSTRING(INFO_PROGRAM)
+@DOCSTRING(info_program)
 
-@DOCSTRING(MAKEINFO_PROGRAM)
+@DOCSTRING(makeinfo_program)
 
 @DOCSTRING(suppress_verbose_help_message)
 

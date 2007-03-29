@@ -1,3 +1,8 @@
+2007-03-29  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/filter.cc (filter): Fix typo in doc string.
+	From Utkarsh Upadhyay <musically.ut@gmail.com>.
+
 2007-03-28  Rafael Laboissiere  <rafael@debian.org>
 
 	* DLD-FUNCTIONS/__glpk__.cc: Fix #ifdef logic around GLPK_PRE_4_14.

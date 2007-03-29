@@ -355,7 +355,7 @@ $$\n\
             k=0\n\
   H(z) = ----------------------\n\
                N\n\
-          1 + SUM c(k+1) z(-k)\n\
+          1 + SUM c(k+1) z^(-k)\n\
               k=1\n\
 @end example\n\
 @end ifinfo\n\

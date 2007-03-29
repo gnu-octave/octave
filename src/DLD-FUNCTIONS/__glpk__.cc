@@ -53,17 +53,14 @@ extern "C"
 #ifndef lib_set_print_hook
 #define lib_set_print_hook lib_print_hook
 #endif
-}
 
 #else
 
-extern "C"
-{
 void _glp_lib_print_hook (int (*func)(void *info, char *buf), void *info);
 void _glp_lib_fault_hook (int (*func)(void *info, char *buf), void *info);
-}
 
 #endif
+}
 
 #define NIntP 17
 #define NRealP 10

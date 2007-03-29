@@ -1,3 +1,7 @@
+2007-03-28  Rafael Laboissiere  <rafael@debian.org>
+
+	* DLD-FUNCTIONS/__glpk__.cc: Fix #ifdef logic around GLPK_PRE_4_14.
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.10+

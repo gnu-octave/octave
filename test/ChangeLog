@@ -1,3 +1,7 @@
+2007-04-03  Kim Hansen  <kimhanse@gmail.com>
+
+	* test_slice.m: New file.
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (dist): Use ln, not $(LN_S).

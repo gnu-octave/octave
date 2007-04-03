@@ -3094,7 +3094,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	      // index is a colon the new dimension is singleton.
 
 	      if (i < lhs_dims_len
-		  && (idx(i).is_colon () || idx(i).max () < lhs_dims(i)))
+		  && (idx(i).is_colon ()
+		      || idx(i).orig_empty ()
+		      || idx(i).max () < lhs_dims(i)))
 		new_dims(i) = lhs_dims(i);
 	      else if (! idx(i).is_colon ())
 		new_dims(i) = idx(i).max () + 1;

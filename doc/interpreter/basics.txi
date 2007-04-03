@@ -764,7 +764,11 @@ Once you have learned Octave, you may want to write self-contained
 Octave scripts, using the @samp{#!} script mechanism.  You can do this
 on GNU systems and on many Unix systems @footnote{The @samp{#!}
 mechanism works on Unix systems derived from Berkeley Unix, System V
-Release 4, and some System V Release 3 systems.}
+Release 4, and some System V Release 3 systems.}.
+
+Self-contained Octave scripts are useful when you want to write a
+program which users can invoke without knowing that the program is
+written in the Octave language.
 
 For example, you could create a text file named @file{hello}, containing
 the following lines:
@@ -779,7 +783,9 @@ printf ("Hello, world!\n");
 
 @noindent
 (where @var{octave-interpreter-name} should be replaced with the full
-file name for your Octave binary).  After making this file executable
+file name for your Octave binary).  Note that this will only work if
+@samp{#!} appears at the very beginning of the file. After making this
+file executable
 (with the @code{chmod} command), you can simply type:
 
 @example
@@ -804,18 +810,42 @@ options to Octave, or data files, or both.  The @samp{-qf} option is
 usually specified in stand-alone Octave programs to prevent them from
 printing the normal startup message, and to keep them from behaving
 differently depending on the contents of a particular user's
-@file{~/.octaverc} file.  @xref{Invoking Octave}.  Note that some
-operating systems may place a limit on the number of characters that are
-recognized after @samp{#!}.
+@file{~/.octaverc} file.  @xref{Invoking Octave}.
 
-Self-contained Octave scripts are useful when you want to write a
-program which users can invoke without knowing that the program is
-written in the Octave language.
+Note that some operating systems may place a limit on the number of
+characters that are recognized after @samp{#!}.  Also, the various
+shells/systems parse differently the arguments appearing in a @samp{#!} 
+line.  The majority of them group together all the arguments in a string
+and pass it to the interepreter as a single argument.  In this case, the
+following script:
 
-The built-in function @code{argv} returns a cell array containing the
-command line arguments passed to an executable Octave script
-@xref{Command Line Options}.  For example, the following program will
-reproduce the command line that is used to execute it.
+@example
+@group
+#! @var{octave-interpreter-name} -q -f # comment
+@end group
+@end example
+
+@noindent
+is equivalent to type at the command line:
+
+@example
+@group
+octave "-q -f # comment"
+@end group
+@end example
+
+@noindent
+which would obviously produce an error message.  Unfortunately, it is
+impossible for Octave to know whether it has been called from the command
+line or from a @samp{#!} script, so some care is needed when using the
+@samp{#!} mechanism.
+
+Note that when Octave is started from an executable script, the built-in
+function @code{argv} returns a cell array containing the command line
+arguments passed to an executable Octave script, not the arguments
+passed to the Octave interpreter on the @samp{#!} line of the script.
+For example, the following program will reproduce the command line that
+is used to execute script, not @samp{-qf}.
 
 @example
 @group

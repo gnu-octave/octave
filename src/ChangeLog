@@ -1,3 +1,8 @@
+2007-04-03  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-handle.cc (make_fcn_handle): Pass ultimate parent
+	function name to lookup_function.
+
 2007-03-29  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/filter.cc (filter): Fix typo in doc string.

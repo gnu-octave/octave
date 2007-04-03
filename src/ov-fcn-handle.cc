@@ -614,7 +614,17 @@ make_fcn_handle (const std::string& nm)
 
   octave_function *fcn = octave_call_stack::current ();
 
-  octave_value f = lookup_function (nm, fcn ? fcn->name () : std::string ());
+  std::string parent_name = fcn ? fcn->name () : std::string ();
+
+  if (! parent_name.empty ())
+    {
+      size_t pos = parent_name.find (':');
+
+      if (pos != NPOS)
+	parent_name = parent_name.substr (0, pos);
+    }
+
+  octave_value f = lookup_function (nm, parent_name);
 
   if (f.is_function ())
     retval = octave_value (new octave_fcn_handle (f, nm));

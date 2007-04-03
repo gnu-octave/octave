@@ -1,3 +1,9 @@
+2007-04-03  Rafael Laboissiere  <rafael@debian.org>
+
+	* interpreter/basics.txi: Clarified some limitations of the #!
+	script mechanism, in particular related to the parsing of the
+	arguments.
+
 2007-03-29  Rafael Laboissiere  <rafael@debian.org>
 
 	* faq/Octave-FAQ.texi, interpreter/basics.txi,

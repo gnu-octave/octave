@@ -116,6 +116,10 @@ private:
 
 public:
   Matrix inverse (void) const;
+  Matrix inverse (octave_idx_type& info) const;
+  Matrix inverse (octave_idx_type& info, double& rcond, int force = 0,
+		  int calc_cond = 1) const;
+
   Matrix inverse (MatrixType &mattype) const;
   Matrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   Matrix inverse (MatrixType &mattype, octave_idx_type& info, double& rcond,

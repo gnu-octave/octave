@@ -202,13 +202,14 @@ options.
 
 @DOCSTRING(program_invocation_name)
 
-Here is an example of using these variables to reproduce Octave's
+Here is an example of using these functions to reproduce Octave's
 command line.
 
 @example
-printf ("%s", program_name);
+printf ("%s", program_name ());
 for i = 1:nargin
-  printf (" %s", nth (argv, i));
+  arg_list = argv ();
+  printf (" %s", arg_list@{i@});
 endfor
 printf ("\n");
 @end example
@@ -811,17 +812,18 @@ Self-contained Octave scripts are useful when you want to write a
 program which users can invoke without knowing that the program is
 written in the Octave language.
 
-If you invoke an executable Octave script with command line arguments,
-the arguments are available in the built-in variable @code{argv}.
+The built-in function @code{argv} returns a cell array containing the
+command line arguments passed to an executable Octave script
 @xref{Command Line Options}.  For example, the following program will
 reproduce the command line that is used to execute it.
 
 @example
 @group
 #! /bin/octave -qf
-printf ("%s", program_name);
+printf ("%s", program_name ());
 for i = 1:nargin
-  printf (" %s", argv@{i@});
+  arg_list = argv ();
+  printf (" %s", arg_list@{i@});
 endfor
 printf ("\n");
 @end group

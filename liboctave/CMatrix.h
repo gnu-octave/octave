@@ -144,6 +144,10 @@ private:
 
 public:
   ComplexMatrix inverse (void) const;
+  ComplexMatrix inverse (octave_idx_type& info) const;
+  ComplexMatrix inverse (octave_idx_type& info, double& rcond, int force = 0, 
+			 int calc_cond = 1) const;
+
   ComplexMatrix inverse (MatrixType &mattype) const;
   ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info) const;
   ComplexMatrix inverse (MatrixType &mattype, octave_idx_type& info,

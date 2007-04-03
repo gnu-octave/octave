@@ -973,6 +973,22 @@ ComplexMatrix::inverse (void) const
 }
 
 ComplexMatrix
+ComplexMatrix::inverse (octave_idx_type& info) const
+{
+  double rcond;
+  MatrixType mattype (*this);
+  return inverse (mattype, info, rcond, 0, 0);
+}
+
+ComplexMatrix
+ComplexMatrix::inverse (octave_idx_type& info, double& rcond, int force,
+			int calc_cond) const
+{
+  MatrixType mattype (*this);
+  return inverse (mattype, info, rcond, 0, 0);
+}
+
+ComplexMatrix
 ComplexMatrix::inverse (MatrixType &mattype) const
 {
   octave_idx_type info;

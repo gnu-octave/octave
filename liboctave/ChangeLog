@@ -1,3 +1,9 @@
+2007-04-02  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.h (Matrix::inverse): Reinstate versions without
+	MatrixType argument.
+	* CMatrix.h (ComplexMatrix::inverse): Likewise.
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (DISTDIRS): Delete variable.

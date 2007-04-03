@@ -641,6 +641,22 @@ Matrix::inverse (void) const
 }
 
 Matrix
+Matrix::inverse (octave_idx_type& info) const
+{
+  double rcond;
+  MatrixType mattype (*this);
+  return inverse (mattype, info, rcond, 0, 0);
+}
+
+Matrix
+Matrix::inverse (octave_idx_type& info, double& rcond, int force,
+		 int calc_cond) const
+{
+  MatrixType mattype (*this);
+  return inverse (mattype, info, rcond, force, calc_cond);
+}
+
+Matrix
 Matrix::inverse (MatrixType& mattype) const
 {
   octave_idx_type info;

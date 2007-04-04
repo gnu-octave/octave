@@ -855,9 +855,15 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcond,
     {
       if (mattype.is_hermitian ())
 	{
-	  CHOL chol (*this, info);
+	  CHOL chol (*this, info, calc_cond);
 	  if (info == 0)
-	    ret = chol.inverse ();
+	    {
+	      if (calc_cond)
+		rcond = chol.rcond ();
+	      else
+		rcond = 1.0;
+	      ret = chol.inverse ();
+	    }
 	  else
 	    mattype.mark_as_unsymmetric ();
 	}

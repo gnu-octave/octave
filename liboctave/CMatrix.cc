@@ -1186,9 +1186,15 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     {
       if (mattype.is_hermitian ())
 	{
-	  ComplexCHOL chol (*this, info);
+	  ComplexCHOL chol (*this, info, calc_cond);
 	  if (info == 0)
-	    ret = chol.inverse ();
+	    {
+	      if (calc_cond)
+		rcond = chol.rcond();
+	      else
+		rcond = 1.0;
+	      ret = chol.inverse ();
+	    }
 	  else
 	    mattype.mark_as_unsymmetric ();
 	}

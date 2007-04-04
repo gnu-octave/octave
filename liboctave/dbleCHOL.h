@@ -36,21 +36,26 @@ public:
 
   CHOL (void) : chol_mat () { }
 
-  CHOL (const Matrix& a) { init (a); }
+  CHOL (const Matrix& a, bool calc_cond = false) { init (a, calc_cond); }
 
-  CHOL (const Matrix& a, octave_idx_type& info) { info = init (a); }
+  CHOL (const Matrix& a, octave_idx_type& info, bool calc_cond = false) 
+    { info = init (a, calc_cond); }
 
-  CHOL (const CHOL& a) : chol_mat (a.chol_mat) { }
+  CHOL (const CHOL& a) : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
   CHOL& operator = (const CHOL& a)
     {
       if (this != &a)
-	chol_mat = a.chol_mat;
-
+	{
+	  chol_mat = a.chol_mat;
+	  xrcond = a.xrcond;
+	}
       return *this;
     }
 
   Matrix chol_matrix (void) const { return chol_mat; }
+
+  double rcond (void) const { return xrcond; }
 
   // Compute the inverse of a matrix using the Cholesky factorization.
   Matrix inverse (void) const;
@@ -61,7 +66,9 @@ private:
 
   Matrix chol_mat;
 
-  octave_idx_type init (const Matrix& a);
+  double xrcond;
+
+  octave_idx_type init (const Matrix& a, bool calc_cond);
 };
 
 Matrix OCTAVE_API chol2inv (const Matrix& r);

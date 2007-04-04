@@ -1,3 +1,26 @@
+2007-04-04  David Bateman  <dbateman@free.fr>
+
+	* dMatrix.cc (Matrix::inverse): If calc_cond is true, calculate
+	the condition number for positive definite matrices.
+	* CMatrix.cc (ComplexMatrix::inverse): Ditto.
+	* dbleChol.h (CHOL(const Matrix&, bool)): New arg, calc_cond.
+	(CHOL(const Matrix&, octave_idx_type&, bool): Ditto.
+	(octave_idx_type init (const Matrix&, bool)): Ditto.
+	(CHOL(const CHOL&)): Copy xrcond.
+	(CHOL& operator = (const CHOL&)): Copy xrcond.
+	(xrcond): New private data member.
+	* CmplxCHOL.h (ComplexCHOL(const ComplexMatrix&, bool)): New arg,
+	calc_cond.
+	(ComplexCHOL(const ComplexMatrix&, octave_idx_type&, bool): Ditto
+	(octave_idx_type init (const ComplexMatrix&, bool)): Ditto.
+	(ComplexCHOL(const ComplexCHOL&)): Copy xrcond.
+	(ComplexCHOL& operator = (const ComplexCHOL&)): Copy xrcond.
+	(xrcond): New private data member.
+	* dbleCHOL.cc (CHOL::init(const Matrix&, bool)): If calc_cond is
+	true, calculate the condition number with dpocon.
+	* CmplxCHOL.cc (ComplexCHOL::init(const ComplexMatrix&, bool)): If
+	calc_cond is true, calculate the condition number with zpocon.
+
 2007-04-03  John W. Eaton  <jwe@octave.org>
 
 	* intNDArray.cc (intNDArray): Delete spurious semicolon.

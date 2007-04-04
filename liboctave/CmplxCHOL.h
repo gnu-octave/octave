@@ -36,25 +36,30 @@ public:
 
   ComplexCHOL (void) : chol_mat () { }
 
-  ComplexCHOL (const ComplexMatrix& a) { init (a); }
+  ComplexCHOL (const ComplexMatrix& a, bool calc_cond = false) { init (a, calc_cond); }
 
-  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info)
+  ComplexCHOL (const ComplexMatrix& a, octave_idx_type& info, bool calc_cond = false)
     {
-      info = init (a);
+      info = init (a, calc_cond);
     }
 
   ComplexCHOL (const ComplexCHOL& a)
-    : chol_mat (a.chol_mat) { }
+    : chol_mat (a.chol_mat), xrcond (a.xrcond) { }
 
   ComplexCHOL& operator = (const ComplexCHOL& a)
     {
       if (this != &a)
-	chol_mat = a.chol_mat;
+	{
+	  chol_mat = a.chol_mat;
+	  xrcond = a.xrcond;
+	}
 
       return *this;
     }
 
   ComplexMatrix chol_matrix (void) const { return chol_mat; }
+
+  double rcond (void) const { return xrcond; }
 
   ComplexMatrix inverse (void) const;
 
@@ -64,7 +69,9 @@ private:
 
   ComplexMatrix chol_mat;
 
-  octave_idx_type init (const ComplexMatrix& a);
+  double xrcond;
+
+  octave_idx_type init (const ComplexMatrix& a, bool calc_cond);
 };
 
 ComplexMatrix OCTAVE_API chol2inv (const ComplexMatrix& r);

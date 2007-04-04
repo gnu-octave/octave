@@ -25,6 +25,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include "dMatrix.h"
+#include "dRowVector.h"
 #include "CmplxCHOL.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
@@ -39,10 +41,16 @@ extern "C"
   F77_FUNC (zpotri, ZPOTRI) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
 			     Complex*, const octave_idx_type&, octave_idx_type&
 			     F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (zpocon, ZPOCON) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&,
+			     Complex*, const octave_idx_type&, const double&,
+			     double&, Complex*, double*, 
+			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
 }
 
 octave_idx_type
-ComplexCHOL::init (const ComplexMatrix& a)
+ComplexCHOL::init (const ComplexMatrix& a, bool calc_cond)
 {
   octave_idx_type a_nr = a.rows ();
   octave_idx_type a_nc = a.cols ();
@@ -60,6 +68,11 @@ ComplexCHOL::init (const ComplexMatrix& a)
   chol_mat = a;
   Complex *h = chol_mat.fortran_vec ();
 
+  // Calculate the norm of the matrix, for later use.
+  double anorm = 0;
+  if (calc_cond) 
+    anorm = chol_mat.abs().sum().row(static_cast<octave_idx_type>(0)).max();
+
   F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
 			     F77_CHAR_ARG_LEN (1)));
 
@@ -67,13 +80,39 @@ ComplexCHOL::init (const ComplexMatrix& a)
     (*current_liboctave_error_handler) ("unrecoverable error in zpotrf");
   else
     {
-      // If someone thinks of a more graceful way of doing this (or
-      // faster for that matter :-)), please let me know!
+      xrcond = 0.0;
+      if (info != 0)
+	info = -1;
+      else if (calc_cond) 
+	{
+	  octave_idx_type zpocon_info = 0;
 
-      if (n > 1)
-	for (octave_idx_type j = 0; j < a_nc; j++)
-	  for (octave_idx_type i = j+1; i < a_nr; i++)
-	    chol_mat.xelem (i, j) = 0.0;
+	  // Now calculate the condition number for non-singular matrix.
+	  Array<Complex> z (2*n);
+	  Complex *pz = z.fortran_vec ();
+	  Array<double> rz (n);
+	  double *prz = rz.fortran_vec ();
+	  F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
+				     n, anorm, xrcond, pz, prz, zpocon_info
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (f77_exception_encountered)
+	    (*current_liboctave_error_handler) 
+	      ("unrecoverable error in zpocon");
+
+	  if (zpocon_info != 0) 
+	    info = -1;
+	}
+      else
+	{
+	  // If someone thinks of a more graceful way of doing this (or
+	  // faster for that matter :-)), please let me know!
+
+	  if (n > 1)
+	    for (octave_idx_type j = 0; j < a_nc; j++)
+	      for (octave_idx_type i = j+1; i < a_nr; i++)
+		chol_mat.xelem (i, j) = 0.0;
+	}
     }
 
   return info;

@@ -306,10 +306,10 @@ tree_multi_assignment::tree_multi_assignment
 {
   for (tree_argument_list::iterator p = lhs->begin (); p != lhs->end (); p++)
     {
-      tree_expression *lhs = *p;
+      tree_expression *lhs_expr = *p;
 
-      if (lhs)
-	maybe_warn_former_built_in_variable (lhs->name ());
+      if (lhs_expr)
+	maybe_warn_former_built_in_variable (lhs_expr->name ());
     }
 }
 

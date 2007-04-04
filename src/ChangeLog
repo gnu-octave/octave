@@ -1,5 +1,8 @@
 2007-04-03  John W. Eaton  <jwe@octave.org>
 
+	* error.cc (Frethrow): Add braces to avoid ambiguous if/else.
+	* oct-stream.cc (octave_scan<>): Likewise.
+
 	* ov-fcn-handle.cc (make_fcn_handle): Pass ultimate parent
 	function name to lookup_function.
 

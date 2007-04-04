@@ -2028,7 +2028,7 @@ interpreted as an octal number); otherwise an error message is printed.\n\
 }
 
 static octave_value
-const_value (const char *nm, const octave_value_list& args, int val)
+const_value (const char *, const octave_value_list& args, int val)
 {
   octave_value retval;
 
@@ -2109,7 +2109,7 @@ See SEEK_SET.\n\
 }
 
 static octave_value
-const_value (const char *nm, const octave_value_list& args,
+const_value (const char *, const octave_value_list& args,
 	     const octave_value& val)
 {
   octave_value retval;

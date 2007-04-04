@@ -840,46 +840,49 @@ location of the error. Typically @var{err} is returned from\n\
     print_usage();
   else
     {
-      Octave_map err = args(0).map_value();
+      Octave_map err = args(0).map_value ();
 
-      if (!error_state)
+      if (! error_state)
 	{
-	  if (err.contains("message") && err.contains("identifier"))
+	  if (err.contains ("message") && err.contains ("identifier"))
 	    {
-	      std::string msg = err.contents("message")(0).string_value();
-	      std::string id = err.contents("identifier")(0).string_value();
+	      std::string msg = err.contents("message")(0).string_value ();
+	      std::string id = err.contents("identifier")(0).string_value ();
 	      int len = msg.length();
 	      std::string file;
 	      std::string nm;
 	      int l = -1;
 	      int c = -1;
 
-	      if (err.contains("stack"))
+	      if (err.contains ("stack"))
 		{
-		  Octave_map err_stack = err.contents("stack")(0).map_value();
+		  Octave_map err_stack = err.contents("stack")(0).map_value ();
 
-		  if (err_stack.contains("file"))
-		    file = err_stack.contents("file")(0).string_value();
-		  if (err_stack.contains("name"))
-		    nm = err_stack.contents("name")(0).string_value();
-		  if (err_stack.contains("line"))
-		    l = err_stack.contents("line")(0).nint_value();
-		  if (err_stack.contains("column"))
-		    c = err_stack.contents("column")(0).nint_value();
+		  if (err_stack.contains ("file"))
+		    file = err_stack.contents("file")(0).string_value ();
+
+		  if (err_stack.contains ("name"))
+		    nm = err_stack.contents("name")(0).string_value ();
+
+		  if (err_stack.contains ("line"))
+		    l = err_stack.contents("line")(0).nint_value ();
+
+		  if (err_stack.contains ("column"))
+		    c = err_stack.contents("column")(0).nint_value ();
 		}
 
 	      // Ugh.
-	      char *tmp_msg = strsave (msg.c_str());
+	      char *tmp_msg = strsave (msg.c_str ());
 	      if (tmp_msg[len-1] == '\n')
 		{
 		  if (len > 1)
 		    {
 		      tmp_msg[len - 1] = '\0';
-		      rethrow_error (id.c_str(), "%s\n", tmp_msg);
+		      rethrow_error (id.c_str (), "%s\n", tmp_msg);
 		    }
 		}
 	      else
-		rethrow_error (id.c_str(), "%s", tmp_msg);
+		rethrow_error (id.c_str (), "%s", tmp_msg);
 	      delete [] tmp_msg;
 
 	      // FIXME: Need to restore the stack as rethrow_error sets it?
@@ -888,27 +891,31 @@ location of the error. Typically @var{err} is returned from\n\
 	      Vlast_error_line = l;
 	      Vlast_error_column = c;
 
-	      if (err.contains("stack"))
+	      if (err.contains ("stack"))
 		{
 		  if (file.empty ())
 		    {
 		      if (nm.empty ())
 			{
 			  if (l > 0)
-			    if (c > 0)
-			      pr_where_1 ("error: near line %d, column %d", 
-					  l, c);
-			    else
-			      pr_where_1 ("error: near line %d", l );
+			    {
+			      if (c > 0)
+				pr_where_1 ("error: near line %d, column %d", 
+					    l, c);
+			      else
+				pr_where_1 ("error: near line %d", l);
+			    }
 			}
 		      else
 			{
 			  if (l > 0)
-			    if (c > 0)
-			      pr_where_1 ("error: called from `%s' near line %d, column %d", 
-					  nm.c_str(), l, c);
-			    else
-			      pr_where_1 ("error: called from `%d' near line %d", nm.c_str(), l );
+			    {
+			      if (c > 0)
+				pr_where_1 ("error: called from `%s' near line %d, column %d", 
+					    nm.c_str (), l, c);
+			      else
+				pr_where_1 ("error: called from `%d' near line %d", nm.c_str (), l);
+			    }
 			}
 		    }
 		  else
@@ -916,20 +923,24 @@ location of the error. Typically @var{err} is returned from\n\
 		      if (nm.empty ())
 			{
 			  if (l > 0)
-			    if (c > 0)
-			      pr_where_1 ("error: in file %s near line %d, column %d", 
-					  file.c_str(), l, c);
-			    else
-			      pr_where_1 ("error: in file %s near line %d", file.c_str(), l );
+			    {
+			      if (c > 0)
+				pr_where_1 ("error: in file %s near line %d, column %d", 
+					    file.c_str (), l, c);
+			      else
+				pr_where_1 ("error: in file %s near line %d", file.c_str (), l);
+			    }
 			}
 		      else
 			{
 			  if (l > 0)
-			    if (c > 0)
-			      pr_where_1 ("error: called from `%s' in file %s near line %d, column %d", 
-					  nm.c_str(), file.c_str(), l, c);
-			    else
-			      pr_where_1 ("error: called from `%d' in file %s near line %d", nm.c_str(), file.c_str(), l );
+			    {
+			      if (c > 0)
+				pr_where_1 ("error: called from `%s' in file %s near line %d, column %d", 
+					    nm.c_str (), file.c_str (), l, c);
+			      else
+				pr_where_1 ("error: called from `%d' in file %s near line %d", nm.c_str (), file.c_str (), l);
+			    }
 			}
 		    }
 		}
@@ -1407,7 +1418,7 @@ their default values.\n\
 	{
 	  if (args(0).is_string())
 	    {
-	      if (args(0).string_value() == "reset")
+	      if (args(0).string_value () == "reset")
 		{
 		  Vlast_error_message = std::string();
 		  Vlast_error_id = std::string();
@@ -1421,7 +1432,7 @@ their default values.\n\
 	    }
 	  else if (args(0).is_map ())
 	    {
-	      Octave_map new_err = args(0).map_value();
+	      Octave_map new_err = args(0).map_value ();
 	      std::string new_error_message;
 	      std::string new_error_id;
 	      std::string new_error_file;
@@ -1429,50 +1440,50 @@ their default values.\n\
 	      int new_error_line = -1;
 	      int new_error_column = -1;
 
-	      if (!error_state && new_err.contains("message"))
+	      if (! error_state && new_err.contains ("message"))
 		{
 		  const std::string tmp = 
-		    new_err.contents("message")(0).string_value();
+		    new_err.contents("message")(0).string_value ();
 		  new_error_message = tmp;
 		}
 
-	      if (!error_state && new_err.contains("identifier"))
+	      if (! error_state && new_err.contains ("identifier"))
 		{
 		  const std::string tmp = 
-		    new_err.contents("identifier")(0).string_value();
+		    new_err.contents("identifier")(0).string_value ();
 		  new_error_id = tmp;
 		}
 
-	      if (!error_state && new_err.contains("stack"))
+	      if (! error_state && new_err.contains ("stack"))
 		{
 		  Octave_map new_err_stack = 
-		    new_err.contents("identifier")(0).map_value();
+		    new_err.contents("identifier")(0).map_value ();
 
-		  if (!error_state && new_err_stack.contains("file"))
+		  if (! error_state && new_err_stack.contains ("file"))
 		    {
 		      const std::string tmp = 
-			new_err_stack.contents("file")(0).string_value();
+			new_err_stack.contents("file")(0).string_value ();
 		      new_error_file = tmp;
 		    }
 
-		  if (!error_state && new_err_stack.contains("name"))
+		  if (! error_state && new_err_stack.contains ("name"))
 		    {
 		      const std::string tmp = 
-			new_err_stack.contents("name")(0).string_value();
+			new_err_stack.contents("name")(0).string_value ();
 		      new_error_name = tmp;
 		    }
 
-		  if (!error_state && new_err_stack.contains("line"))
+		  if (! error_state && new_err_stack.contains ("line"))
 		    {
 		      const int tmp = 
-			new_err_stack.contents("line")(0).nint_value();
+			new_err_stack.contents("line")(0).nint_value ();
 		      new_error_line = tmp;
 		    }
 		  
-		  if (!error_state && new_err_stack.contains("column"))
+		  if (! error_state && new_err_stack.contains ("column"))
 		    {
 		      const int tmp = 
-			new_err_stack.contents("column")(0).nint_value();
+			new_err_stack.contents("column")(0).nint_value ();
 		      new_error_column = tmp;
 		    }
 		}
@@ -1491,7 +1502,7 @@ their default values.\n\
 	    error ("lasterror: argument must be a structure or a string");
 	}
 
-      if (!error_state)
+      if (! error_state)
 	retval = err;
     }
   else

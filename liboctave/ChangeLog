@@ -6,7 +6,7 @@
 	fortran_vec method instead of OCTAVE_LOCAL_BUFFER to avoid
 	"maybe clobbered by vfork" warning.
 
-	* Sparse-op-defs.h (SPARSE_CUMSUM): Add parens to avoid ambiguous
+	* Sparse-op-defs.h (SPARSE_CUMSUM): Add braces to avoid ambiguous
 	if/else.
 
 	* oct-spparms.h (octave_sparse_params): Define copy constructor

@@ -1256,48 +1256,49 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
 			int c3 = is.get ();
 
 			if (c3 != EOF)
+			  {
+			    if (c3 == 'f')
+			      {
+				int c4 = is.get ();
 
-			  if (c3 == 'f')
-			    {
-			      int c4 = is.get ();
+				if (c4 != EOF)
+				  {
+				    is.putback (c4);
 
-			      if (c4 != EOF)
-				{
-				  is.putback (c4);
+				    if (isspace (c4) || ispunct (c4))
+				      ref = octave_Inf;
+				    else
+				      {
+					is.putback (c3);
+					is.putback (c2);
+					is.putback (c1);
 
-				  if (isspace (c4) || ispunct (c4))
+					is >> ref;
+				      }
+				  }
+				else
+				  {
+				    is.clear ();
+
 				    ref = octave_Inf;
-				  else
-				    {
-				      is.putback (c3);
-				      is.putback (c2);
-				      is.putback (c1);
+				  }
+			      }
+			    else
+			      {
+				is.putback (c3);
+				is.putback (c2);
+				is.putback (c1);
 
-				      is >> ref;
-				    }
-				}
-			      else
-				{
-				  is.clear ();
+				is >> ref;
+			      }
+			}
+		      else
+			{
+			  is.putback (c2);
+			  is.putback (c1);
 
-				  ref = octave_Inf;
-				}
-			    }
-			  else
-			    {
-			      is.putback (c3);
-			      is.putback (c2);
-			      is.putback (c1);
-
-			      is >> ref;
-			    }
-		      }
-		    else
-		      {
-			is.putback (c2);
-			is.putback (c1);
-
-			is >> ref;
+			  is >> ref;
+			}
 		      }
 		  }
 	      }

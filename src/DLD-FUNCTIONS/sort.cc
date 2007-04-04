@@ -347,26 +347,28 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 	  // things up.
 
 	  if (lo_ieee_signbit (octave_NaN))
-	    if (mode == UNDEFINED || mode == ASCENDING)
-	      {
-		octave_idx_type i = 0;
-		double *vtmp = reinterpret_cast<double *> (p);
-		while (xisnan (vtmp[i++]) && i < ns);
-		for (octave_idx_type l = 0; l < ns - i + 1; l++)
-		  vtmp[l] = vtmp[l+i-1];
-		for (octave_idx_type l = ns - i + 1; l < ns; l++)
-		  vtmp[l] = octave_NaN;
-	      }
-	    else
-	      {
-		octave_idx_type i = ns;
-		double *vtmp = reinterpret_cast<double *> (p);
-		while (xisnan (vtmp[--i]) && i > 0);
-		for (octave_idx_type l = i; l >= 0; l--)
-		  vtmp[l-i+ns-1] = vtmp[l];
-		for (octave_idx_type l = 0; l < ns - i - 1; l++)
-		  vtmp[l] = octave_NaN;
-	      }
+	    {
+	      if (mode == UNDEFINED || mode == ASCENDING)
+		{
+		  octave_idx_type i = 0;
+		  double *vtmp = reinterpret_cast<double *> (p);
+		  while (xisnan (vtmp[i++]) && i < ns);
+		  for (octave_idx_type l = 0; l < ns - i + 1; l++)
+		    vtmp[l] = vtmp[l+i-1];
+		  for (octave_idx_type l = ns - i + 1; l < ns; l++)
+		    vtmp[l] = octave_NaN;
+		}
+	      else
+		{
+		  octave_idx_type i = ns;
+		  double *vtmp = reinterpret_cast<double *> (p);
+		  while (xisnan (vtmp[--i]) && i > 0);
+		  for (octave_idx_type l = i; l >= 0; l--)
+		    vtmp[l-i+ns-1] = vtmp[l];
+		  for (octave_idx_type l = 0; l < ns - i - 1; l++)
+		    vtmp[l] = octave_NaN;
+		}
+	    }
 
 	  p += ns;
 	}
@@ -406,24 +408,26 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 	  // fix things up.
 
 	  if (lo_ieee_signbit (octave_NaN))
-	    if (mode == UNDEFINED || mode == ASCENDING)
-	      {
-		 octave_idx_type i = 0;
-		while (xisnan (v[i++*stride + offset]) && i < ns);
-		for (octave_idx_type l = 0; l < ns - i + 1; l++)
-		  v[l*stride + offset] = v[(l+i-1)*stride + offset];
-		for (octave_idx_type l = ns - i + 1; l < ns; l++)
-		  v[l*stride + offset] = octave_NaN;
-	      }
-	    else
-	      {
-		 octave_idx_type i = ns;
-		while (xisnan (v[--i*stride + offset]) && i > 0);
-		for (octave_idx_type l = i; l >= 0; l--)
-		  v[(l-i+ns-1)*stride + offset] = v[l*stride + offset];
-		for (octave_idx_type l = 0; l < ns - i - 1; l++)
-		  v[l*stride + offset] = octave_NaN;
-	      }
+	    {
+	      if (mode == UNDEFINED || mode == ASCENDING)
+		{
+		   octave_idx_type i = 0;
+		  while (xisnan (v[i++*stride + offset]) && i < ns);
+		  for (octave_idx_type l = 0; l < ns - i + 1; l++)
+		    v[l*stride + offset] = v[(l+i-1)*stride + offset];
+		  for (octave_idx_type l = ns - i + 1; l < ns; l++)
+		    v[l*stride + offset] = octave_NaN;
+		}
+	      else
+		{
+		   octave_idx_type i = ns;
+		  while (xisnan (v[--i*stride + offset]) && i > 0);
+		  for (octave_idx_type l = i; l >= 0; l--)
+		    v[(l-i+ns-1)*stride + offset] = v[l*stride + offset];
+		  for (octave_idx_type l = 0; l < ns - i - 1; l++)
+		    v[l*stride + offset] = octave_NaN;
+		}
+	    }
 	}
     }
 
@@ -509,42 +513,44 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
       // If it will be sorted to the beginning, fix things up.
 
       if (lo_ieee_signbit (octave_NaN))
-	if (mode == UNDEFINED || mode == ASCENDING)
-	  {
-	    octave_idx_type i = 0;
-	    while (xisnan (v[i++*stride+offset]) && i < ns);
-	    OCTAVE_LOCAL_BUFFER (double, itmp, i - 1);
-	    for (octave_idx_type l = 0; l < i -1; l++)
-	      itmp[l] = idx(l*stride + offset);
-	    for (octave_idx_type l = 0; l < ns - i + 1; l++)
-	      {
-		v[l*stride + offset] = v[(l+i-1)*stride + offset];
-		idx(l*stride + offset) = idx((l+i-1)*stride + offset);
-	      }
-	    for (octave_idx_type k = 0, l = ns - i + 1; l < ns; l++, k++)
-	      {
-		v[l*stride + offset] = octave_NaN;
-		idx(l*stride + offset) = itmp[k];
-	      }
-	  }
-	else 
-	  {
-	     octave_idx_type i = ns;
-	    while (xisnan (v[--i*stride+offset]) && i > 0);
-	    OCTAVE_LOCAL_BUFFER (double, itmp, ns - i - 1);
-	    for (octave_idx_type l = 0; l < ns - i -1; l++)
-	      itmp[l] = idx((l+i+1)*stride + offset);
-	    for (octave_idx_type l = i; l >= 0; l--)
-	      {
-		v[(l-i+ns-1)*stride + offset] = v[l*stride + offset];
-		idx((l-i+ns-1)*stride + offset) = idx(l*stride + offset);
-	      }
-	    for (octave_idx_type k = 0, l = 0; l < ns - i - 1; l++, k++)
-	      {
-		v[l*stride + offset] = octave_NaN;
-		idx(l*stride + offset) = itmp[k];
-	      }
-	  }
+	{
+	  if (mode == UNDEFINED || mode == ASCENDING)
+	    {
+	      octave_idx_type i = 0;
+	      while (xisnan (v[i++*stride+offset]) && i < ns);
+	      OCTAVE_LOCAL_BUFFER (double, itmp, i - 1);
+	      for (octave_idx_type l = 0; l < i -1; l++)
+		itmp[l] = idx(l*stride + offset);
+	      for (octave_idx_type l = 0; l < ns - i + 1; l++)
+		{
+		  v[l*stride + offset] = v[(l+i-1)*stride + offset];
+		  idx(l*stride + offset) = idx((l+i-1)*stride + offset);
+		}
+	      for (octave_idx_type k = 0, l = ns - i + 1; l < ns; l++, k++)
+		{
+		  v[l*stride + offset] = octave_NaN;
+		  idx(l*stride + offset) = itmp[k];
+		}
+	    }
+	  else 
+	    {
+	      octave_idx_type i = ns;
+	      while (xisnan (v[--i*stride+offset]) && i > 0);
+	      OCTAVE_LOCAL_BUFFER (double, itmp, ns - i - 1);
+	      for (octave_idx_type l = 0; l < ns - i -1; l++)
+		itmp[l] = idx((l+i+1)*stride + offset);
+	      for (octave_idx_type l = i; l >= 0; l--)
+		{
+		  v[(l-i+ns-1)*stride + offset] = v[l*stride + offset];
+		  idx((l-i+ns-1)*stride + offset) = idx(l*stride + offset);
+		}
+	      for (octave_idx_type k = 0, l = 0; l < ns - i - 1; l++, k++)
+		{
+		  v[l*stride + offset] = octave_NaN;
+		  idx(l*stride + offset) = itmp[k];
+		}
+	    }
+	}
     }
 
   retval(1) = idx;

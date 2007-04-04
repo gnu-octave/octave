@@ -220,7 +220,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
           if (d < 0)
 	    error ("cellfun: third argument must be a postive integer");
 
-	  if (!error_state)
+	  if (! error_state)
             {
               NDArray result (f_args.dims ());
               for (octave_idx_type count = 0; count < k ; count++)
@@ -274,10 +274,10 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 	{
 	  octave_value_list idx;
 	  octave_value_list inputlist;
-	  bool UniformOutput = true;
-	  bool haveErrorHandler = false;
+	  bool uniform_output = true;
+	  bool have_error_handler = false;
 	  std::string err_name;
-	  octave_function *ErrorHandler;
+	  octave_function *error_handler = 0;
 	  int offset = 1;
 	  int i = 1;
 	  OCTAVE_LOCAL_BUFFER (Cell, inputs, nargin);
@@ -297,13 +297,13 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 				  arg.begin (), tolower);
 
 		  if (arg == "uniformoutput")
-		    UniformOutput = args(i++).bool_value();
+		    uniform_output = args(i++).bool_value();
 		  else if (arg == "errorhandler")
 		    {
 		      if (args(i).is_function_handle () || 
 			  args(i).is_inline_function ())
 			{
-			  ErrorHandler = args(i).function_value ();
+			  error_handler = args(i).function_value ();
 
 			  if (error_state)
 			    goto cellfun_err;
@@ -314,15 +314,15 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 			  std::string fname = "function y = ";
 			  fname.append (fcn_name);
 			  fname.append ("(x) y = ");
-			  ErrorHandler = extract_function (args(i), "cellfun", 
-							   err_name, fname,
-							   "; endfunction");
+			  error_handler = extract_function (args(i), "cellfun", 
+							    err_name, fname,
+							    "; endfunction");
 			}
 
-		      if (!ErrorHandler)
+		      if (! error_handler)
 			goto cellfun_err;
 
-		      haveErrorHandler = true;
+		      have_error_handler = true;
 		      i++;
 		    }
 		  else
@@ -348,10 +348,10 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 	  inputlist.resize(nargin-offset);
 
-	  if (haveErrorHandler)
+	  if (have_error_handler)
 	    buffer_error_messages++;
 
-	  if (UniformOutput)
+	  if (uniform_output)
 	    {
 	      retval.resize(nargout);
 
@@ -362,7 +362,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 		  octave_value_list tmp = feval (func, inputlist, nargout);
 
-		  if (error_state && haveErrorHandler)
+		  if (error_state && have_error_handler)
 		    {
 		      octave_value_list errtmp = 
 			Flasterr (octave_value_list (), 2);
@@ -375,7 +375,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 		      errlist.prepend (msg);
 		      buffer_error_messages--;
 		      error_state = 0;
-		      tmp = feval (ErrorHandler, errlist, nargout);
+		      tmp = feval (error_handler, errlist, nargout);
 		      buffer_error_messages++;
 
 		      if (error_state)
@@ -441,7 +441,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 
 		  octave_value_list tmp = feval (func, inputlist, nargout);
 
-		  if (error_state && haveErrorHandler)
+		  if (error_state && have_error_handler)
 		    {
 		      octave_value_list errtmp = 
 			Flasterr (octave_value_list (), 2);
@@ -454,7 +454,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 		      errlist.prepend (msg);
 		      buffer_error_messages--;
 		      error_state = 0;
-		      tmp = feval (ErrorHandler, errlist, nargout);
+		      tmp = feval (error_handler, errlist, nargout);
 		      buffer_error_messages++;
 
 		      if (error_state)

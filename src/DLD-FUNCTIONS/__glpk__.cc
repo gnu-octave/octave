@@ -257,7 +257,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 
   if (save_pb)
     {
-      if (lpx_write_cpxlp (lp, "outpb.lp") != 0)
+      static char tmp[] = "outpb.lp";
+      if (lpx_write_cpxlp (lp, tmp) != 0)
 	{
 	  error ("__glpk__: unable to write problem");
 	  longjmp (mark, -1);
@@ -308,7 +309,8 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 #ifdef GLPK_PRE_4_14
       insist (method != method);
 #else
-      glpk_fault_hook (0, "method != method");
+      static char tmp[] = "method != method";
+      glpk_fault_hook (0, tmp);
 #endif
     }
 

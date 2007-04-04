@@ -693,18 +693,19 @@ permutations on the tree.\n\
 	}
 
       if (nargin == 2)
-	if (args(1).is_string ())
-	  {
-	    std::string str = args(1).string_value ();
-	    if (str.find("C") == 0 || str.find("c") == 0)
-	      is_sym = false;
-	  }
-	else
-	  {
-	    error ("etree: second argument must be a string");
-	    return retval;
-	  }
-
+	{
+	  if (args(1).is_string ())
+	    {
+	      std::string str = args(1).string_value ();
+	      if (str.find ("C") == 0 || str.find ("c") == 0)
+		is_sym = false;
+	    }
+	  else
+	    {
+	      error ("etree: second argument must be a string");
+	      return retval;
+	    }
+	}
       // column elimination tree post-ordering (reuse variables)
       OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
       

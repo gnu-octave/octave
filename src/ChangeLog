@@ -1,7 +1,14 @@
 2007-04-03  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread):
+	Use && for logical, not &.
+
+	* DLD-FUNCTIONS/qr.cc (Fqr): Clarify nargin check.
+
 	* error.cc (Frethrow): Add braces to avoid ambiguous if/else.
 	* oct-stream.cc (octave_scan<>): Likewise.
+	* DLD-FUNCTIONS/colamd.cc (Fetree): Likewise.
+	* DLD-FUNCTIONS/sort.cc (mx_sort, mx_sort_indexed): Likewise.
 
 	* ov-fcn-handle.cc (make_fcn_handle): Pass ultimate parent
 	function name to lookup_function.

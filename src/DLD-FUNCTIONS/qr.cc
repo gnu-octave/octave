@@ -153,7 +153,7 @@ factorization allows the construction of an orthogonal basis of\n\
 
   int nargin = args.length ();
 
-  if (nargin != 1 && nargin != 2 || nargout > 3)
+  if (nargin < 1 || nargin > 2 || nargout > 3)
     {
       print_usage ();
       return retval;

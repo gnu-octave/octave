@@ -142,7 +142,8 @@ the wisdom is lost.\n\
 		    {
 		      std::transform (arg1.begin (), arg1.end (), 
 				      arg1.begin (), tolower);
-		      octave_fftw_planner::FftwMethod meth;
+		      octave_fftw_planner::FftwMethod meth
+			= octave_fftw_planner::UNKNOWN;
 
 		      if (arg1 == "estimate")
 			meth = fftw_planner.method

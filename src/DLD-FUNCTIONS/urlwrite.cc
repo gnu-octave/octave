@@ -313,7 +313,7 @@ urlwrite ('http://www.google.com/search', 'search.html', 'get', @{'query', 'octa
       retval(2) = std::string (res == CURLE_OK ? "" : curl_easy_strerror (res));
     }
 
-  if (nargout < 2 & res != CURLE_OK)
+  if (nargout < 2 && res != CURLE_OK)
     error ("urlwrite: curl: %s", curl_easy_strerror (res));
 
 #else
@@ -430,7 +430,7 @@ s = urlread ('http://www.google.com/search', 'get', @{'query', 'octave'@});\n\
       retval(2) = std::string (res == CURLE_OK ? "" : curl_easy_strerror (res));
     }
 
-  if (nargout < 2 & res != CURLE_OK)
+  if (nargout < 2 && res != CURLE_OK)
     error ("urlread: curl: %s", curl_easy_strerror (res));
 
 #else

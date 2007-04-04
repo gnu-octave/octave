@@ -7,7 +7,6 @@ FTP:
   site                          directory
   ----                          ---------
   ftp.eos.hokudai.ac.jp         /pub/GNU/misc/octave
-  ftp.math.uni-hamburg.de       /pub/soft/math/octave
   ftp.u-aizu.ac.jp              /pub/SciEng/numanal/Octave
   neacm.fe.up.pt                /pub/octave
 

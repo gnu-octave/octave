@@ -6053,7 +6053,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 	      CHOLMOD_NAME(free_dense) (&X, cm);
 	      CHOLMOD_NAME(free_factor) (&L, cm);
 	      CHOLMOD_NAME(finish) (cm);
-	      CHOLMOD_NAME(print_common) (" ", cm);
+	      static char tmp[] = " ";
+	      CHOLMOD_NAME(print_common) (tmp, cm);
 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	    }
 #else
@@ -6300,7 +6301,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	      CHOLMOD_NAME(free_sparse) (&X, cm);
 	      CHOLMOD_NAME(free_factor) (&L, cm);
 	      CHOLMOD_NAME(finish) (cm);
-	      CHOLMOD_NAME(print_common) (" ", cm);
+	      static char tmp[] = " ";
+	      CHOLMOD_NAME(print_common) (tmp, cm);
 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	    }
 #else
@@ -6564,7 +6566,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	      CHOLMOD_NAME(free_dense) (&X, cm);
 	      CHOLMOD_NAME(free_factor) (&L, cm);
 	      CHOLMOD_NAME(finish) (cm);
-	      CHOLMOD_NAME(print_common) (" ", cm);
+	      static char tmp[] = " ";
+	      CHOLMOD_NAME(print_common) (tmp, cm);
 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	    }
 #else
@@ -6831,7 +6834,8 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	      CHOLMOD_NAME(free_sparse) (&X, cm);
 	      CHOLMOD_NAME(free_factor) (&L, cm);
 	      CHOLMOD_NAME(finish) (cm);
-	      CHOLMOD_NAME(print_common) (" ", cm);
+	      static char tmp[] = " ";
+	      CHOLMOD_NAME(print_common) (tmp, cm);
 	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 	    }
 #else

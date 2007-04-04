@@ -50,6 +50,22 @@ protected:
 
 public:
 
+  octave_sparse_params (const octave_sparse_params& a)
+    : params (a.params), keys (a.keys) { }
+
+  octave_sparse_params& operator = (const octave_sparse_params& a)
+  {
+    if (&a != this)
+      {
+	params = a.params;
+	keys = a.keys;
+      }
+    
+    return *this;
+  }
+
+  ~octave_sparse_params (void) { }
+
   static bool instance_ok (void);
 
   static void defaults (void);

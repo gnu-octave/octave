@@ -102,7 +102,7 @@ octave_fftw_planner::method (FftwMethod _meth)
 }
 
 #define CHECK_SIMD_ALIGNMENT(x) \
-  ((reinterpret_cast<ptrdiff_t> (x)) & 0xF == 0)
+  (((reinterpret_cast<ptrdiff_t> (x)) & 0xF) == 0)
 
 fftw_plan
 octave_fftw_planner::create_plan (int dir, const int rank,

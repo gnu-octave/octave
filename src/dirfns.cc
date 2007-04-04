@@ -147,7 +147,7 @@ directory is not changed.\n\
 
 DEFALIAS (chdir, cd);
 
-DEFUN (pwd, , nargout,
+DEFUN (pwd, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} pwd ()\n\
 Return the current working directory.\n\

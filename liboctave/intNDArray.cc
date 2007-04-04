@@ -98,7 +98,7 @@ template <class T>
 intNDArray<T>
 intNDArray<T>::concat (const intNDArray<T>& rb, const Array<octave_idx_type>& ra_idx)
 {
-  if (rb.numel () > 0);
+  if (rb.numel () > 0)
     insert (rb, ra_idx);
   return *this;
 }

@@ -85,6 +85,7 @@ The Python license is
 #endif
 
 #include <cassert>
+#include <cstdlib>
 
 #include "lo-mappers.h"
 #include "quit.h"

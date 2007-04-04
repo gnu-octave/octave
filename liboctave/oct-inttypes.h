@@ -24,6 +24,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_inttypes_h)
 #define octave_inttypes_h 1
 
+#include <climits>
+
 #include <limits>
 #include <iostream>
 

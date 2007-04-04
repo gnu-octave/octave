@@ -985,7 +985,7 @@ ComplexMatrix::inverse (octave_idx_type& info, double& rcond, int force,
 			int calc_cond) const
 {
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcond, 0, 0);
+  return inverse (mattype, info, rcond, force, calc_cond);
 }
 
 ComplexMatrix
@@ -1041,7 +1041,7 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 	      octave_idx_type ztrcon_info = 0;
 	      char job = '1';
 
-	      OCTAVE_LOCAL_BUFFER (Complex, cwork, 2 * nr);
+	      OCTAVE_LOCAL_BUFFER (Complex, cwork, 2*nr);
 	      OCTAVE_LOCAL_BUFFER (double, rwork, nr);
 
 	      F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),

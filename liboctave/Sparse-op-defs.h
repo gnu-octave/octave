@@ -1461,10 +1461,12 @@ Boston, MA 02110-1301, USA.
                 { \
                   t += data(j); \
                   if (t != ELT_TYPE ()) \
-                    if (j == cidx(i+1) - 1) \
-		      nel += nr - ridx(j); \
-                    else \
-		      nel += ridx(j+1) - ridx(j); \
+		    { \
+                      if (j == cidx(i+1) - 1) \
+			nel += nr - ridx(j);  \
+		      else \
+			nel += ridx(j+1) - ridx(j); \
+		    } \
                 } \
 	    } \
 	  retval = RET_TYPE (nr, nc, nel); \

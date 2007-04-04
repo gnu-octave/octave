@@ -26,6 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include <cerrno>
+#include <cstdlib>
 
 #include <string.h>
 

@@ -1,5 +1,17 @@
 2007-04-03  John W. Eaton  <jwe@octave.org>
 
+	* intNDArray.cc (intNDArray): Delete spurious semicolon.
+
+	* CMatrix.cc (ComplexMatrix::tinverse): Use Array<T> and
+	fortran_vec method instead of OCTAVE_LOCAL_BUFFER to avoid
+	"maybe clobbered by vfork" warning.
+
+	* Sparse-op-defs.h (SPARSE_CUMSUM): Add parens to avoid ambiguous
+	if/else.
+
+	* oct-spparms.h (octave_sparse_params): Define copy constructor
+	and destructor.
+
 	* Array.cc (assignN): Don't resize dimension if corresponding
 	index is empty.
 

@@ -214,10 +214,12 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
 	perms(i) = static_cast<octave_idx_type *>(Lfactor->Perm)[i];
     }
 
+  static char tmp[] = " ";
+
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   CHOLMOD_NAME(free_factor) (&Lfactor, cm);
   CHOLMOD_NAME(finish) (cm);
-  CHOLMOD_NAME(print_common) (" ", cm);
+  CHOLMOD_NAME(print_common) (tmp, cm);
   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 #else
   (*current_liboctave_error_handler) 

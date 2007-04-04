@@ -780,7 +780,7 @@ octave_yes_or_no (const std::string& prompt)
 
   while (1)
     {
-      std::string input_buf = interactive_input (prompt_string);
+      std::string input_buf = interactive_input (prompt_string, false, true);
 
       if (input_buf == "yes")
 	return true;

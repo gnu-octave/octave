@@ -12,40 +12,25 @@ srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
 
-SPECIAL_SRC := machar.c f77-extern.cc f77-fcn.c lo-error.c cquit.c quit.cc
-
-DEP_1 := $(patsubst %.c, %.d, $(SPECIAL_SRC))
-MAKEDEPS := $(patsubst %.cc, %.d, $(DEP_1))
-
-SPECIAL_INCLUDE := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
-
-SPECIAL:= d1mach-tst.for $(SPECIAL_SRC) $(SPECIAL_INCLUDE)
-
-SPECIAL_DEPEND := machar.o f77-extern.o f77-fcn.o lo-error.o cquit.o quit.o
-
 EXTERNAL_DISTFILES = $(DISTFILES)
 
 FSRC = d1mach.f i1mach.f
+
+CSRC = machar.c f77-fcn.c lo-error.c cquit.c
+
+CXXSRC = f77-extern.cc quit.cc
+
+MAKEDEPS := $(patsubst %.c, %.d, $(CSRC)) $(patsubst %.cc, %.d, $(CXXSRC))
+
+INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
+
+SPECIAL:= d1mach-tst.for $(INCLUDES)
 
 include $(TOPDIR)/Makeconf
 
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
-
-INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
-
-ifeq ($(SHARED_LIBS), true)
-  CPICDEP = machar.o f77-fcn.o lo-error.o cquit.o
-  ifdef CPICFLAG
-    CPICDEP := $(addprefix pic/, $(CPICDEP))
-  endif
-  CXXPICDEP := f77-extern.o quit.o
-  ifdef CXXPICFLAG
-    CXXPICDEP := $(addprefix pic/, $(CXXPICDEP))
-  endif
-  SPECIAL_PICDEPEND := $(CPICDEP) $(CXXPICDEP)
-endif
 
 include ../Makerules
 

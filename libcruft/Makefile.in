@@ -174,9 +174,9 @@ TAGS:: $(SOURCES)
 	etags $(SOURCES)
 
 clean mostlyclean distclean::
-	rm -f $(LIBPRE)cruft.$(LIBEXT) $(CRUFT_OBJ)
+	rm -f $(LIBPRE)cruft.$(LIBEXT)
 	rm -f $(LIBPRE)cruft.$(SHLEXT_VER) $(LIBPRE)cruft.$(SHLEXT)
-	rm -f $(CRUFT_DEFS) cruft.def
+	rm -f $(CRUFT_DEFS) cruft.def mkf77def
 
 distclean maintainer-clean::
 	rm -f Makefile Makerules so_locations

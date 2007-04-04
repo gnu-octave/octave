@@ -1,3 +1,15 @@
+2007-04-04  John W. Eaton  <jwe@octave.org>
+
+	* Makefules.in: Handle Fortran, C, and C++ sources with separate
+	variables.
+	* misc/Makefile.in: Use new variables for Fortran, C, and C++ files.
+	* Makefile.in (clean mostlyclean distclean): No need to remove
+	$(CRUFT_OBJ) here.
+
+2007-04-04  Rafael Laboissiere  <rafael@debian.org>
+
+	* Makefile.in (clean): Remove mkf77def.
+
 2007-03-27  John W. Eaton  <jwe@octave.org>
 
 	* Makerules.in, Makefile.in (dist): Use ln instead of $(LN_S).

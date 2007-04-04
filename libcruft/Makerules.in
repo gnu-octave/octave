@@ -18,34 +18,62 @@ CRUFT_CSRC = $(addprefix $(srcdir)/, $(CSRC))
 CRUFT_CXXSRC = $(addprefix $(srcdir)/, $(CXXSRC))
 
 CRUFT_SRC = $(CRUFT_FSRC) $(CRUFT_CSRC) $(CRUFT_CXXSRC)
-CRUFT_BASE = $(basename $(notdir $(CRUFT_SRC)) )
-CRUFT_OBJ = $(addsuffix .o, $(CRUFT_BASE) )
-CRUFT_DEFS = $(patsubst %.f, %.def, $(notdir $(CRUFT_FSRC)))
+
+CRUFT_FBASE = $(basename $(notdir $(CRUFT_FSRC)))
+CRUFT_CBASE = $(basename $(notdir $(CRUFT_CSRC)))
+CRUFT_CXXBASE = $(basename $(notdir $(CRUFT_CXXSRC)))
+
+CRUFT_BASE = $(CRUFT_FBASE) $(CRUFT_CBASE) $(CRUFT_CXXBASE)
+
+CRUFT_FOBJ = $(addsuffix .o, $(CRUFT_FBASE) )
+CRUFT_COBJ = $(addsuffix .o, $(CRUFT_CBASE) )
+CRUFT_CXXOBJ = $(addsuffix .o, $(CRUFT_CXXBASE) )
+
+CRUFT_OBJ = $(CRUFT_FOBJ) $(CRUFT_COBJ) $(CRUFT_CXXOBJ)
+
+CRUFT_FDEFS = $(patsubst %.f, %.def, $(notdir $(CRUFT_FSRC)))
+CRUFT_CDEFS = $(patsubst %.c, %.def, $(notdir $(CRUFT_CSRC)))
+CRUFT_CXXDEFS = $(patsubst %.cc, %.def, $(notdir $(CRUFT_CXXSRC)))
+
+CRUFT_DEFS = $(CRUFT_FDEFS) $(CRUFT_CDEFS) $(CRUFT_CXXDEFS)
 
 DISTFILES = Makefile.in $(CRUFT_SRC) $(SPECIAL)
 
 ifeq ($(SHARED_LIBS), true)
   ifdef FPICFLAG
-    CRUFT_PICOBJ := $(addprefix pic/, $(CRUFT_OBJ))
+    CRUFT_FPICOBJ := $(addprefix pic/, $(CRUFT_FOBJ))
   else
-    CRUFT_PICOBJ := $(CRUFT_OBJ)
+    CRUFT_FPICOBJ := $(CRUFT_FOBJ)
   endif
+  ifdef CPICFLAG
+    CRUFT_CPICOBJ := $(addprefix pic/, $(CRUFT_COBJ))
+  else
+    CRUFT_CPICOBJ := $(CRUFT_COBJ)
+  endif
+  ifdef CXXPICFLAG
+    CRUFT_CXXPICOBJ := $(addprefix pic/, $(CRUFT_CXXOBJ))
+  else
+    CRUFT_CXXPICOBJ := $(CRUFT_CXXOBJ)
+  endif
+  CRUFT_PICOBJ := $(CRUFT_FPICOBJ) $(CRUFT_CPICOBJ) $(CRUFT_CXXPICOBJ)
 endif
 
 CWD = $(shell pwd)
 THISDIR = $(notdir $(CWD))
 
-LIBCRUFT_OBJS = $(CRUFT_OBJ) $(SPECIAL_DEPEND)
-
 ifeq ($(STATIC_LIBS), true)
-  LIBCRUFT_DEPEND := $(LIBCRUFT_OBJS)
+  LIBCRUFT_DEPEND := $(CRUFT_OBJ)
+.PRECIOUS: $(CRUFT_OBJ)
 endif
 
-all: pic $(CRUFT_DEFS) $(LIBCRUFT_DEPEND) $(CRUFT_PICOBJ) $(SPECIAL_PICDEPEND)
+ifeq ($(SHARED_LIBS), true)
+  LIBCRUFT_PICDEPEND := $(CRUFT_PICOBJ)
+.PRECIOUS: $(CRUFT_PICOBJ)
+endif
+
+all: pic $(CRUFT_DEFS) $(LIBCRUFT_DEPEND) $(LIBCRUFT_PICDEPEND)
 	@echo "warning: run make in parent directory to update libraries"
 .PHONY: all
-
-.PRECIOUS: $(LIBCRUFT_OBJS)
 
 stmp-pic: pic
 	@if [ -f stmp-pic ]; then \

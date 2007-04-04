@@ -53,7 +53,7 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 clean:
-	rm -f fntests.log
+	rm -f fntests.log a.wav
 .PHONY: clean
 
 mostlyclean:

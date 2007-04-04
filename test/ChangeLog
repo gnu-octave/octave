@@ -1,3 +1,8 @@
+2007-04-04  Rafael Laboissiere  <rafael@debian.org>
+
+	* Makefile.in (clean): Also remove a.wav file created by
+	testing wavwrite.m.
+
 2007-04-03  Kim Hansen  <kimhanse@gmail.com>
 
 	* test_slice.m: New file.

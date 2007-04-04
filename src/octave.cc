@@ -372,7 +372,14 @@ execute_eval_option_code (const std::string& code)
 
   int parse_status = 0;
 
-  eval_string (code, false, parse_status, 0);
+  try
+    {
+      eval_string (code, false, parse_status, 0);
+    }
+  catch (std::bad_alloc)
+    {
+      std::cerr << "error: memory exhausted -- eval failed\n";
+    }
 
   unwind_protect::run_frame ("execute_eval_option_code");
 

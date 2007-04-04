@@ -1,3 +1,7 @@
+2007-04-04  John W. Eaton  <jwe@octave.org>
+
+	* octave.cc (execute_eval_option_code): Catch bad::alloc here.
+
 2007-04-03  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread):

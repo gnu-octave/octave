@@ -38,7 +38,7 @@
 
 function v = npv (r, p, i)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 

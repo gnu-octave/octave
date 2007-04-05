@@ -39,11 +39,11 @@
 
 function n = nper (r, p, a, l, m)
 
-  if ((nargin < 3) || (nargin > 5))
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
-  if (! (isscalar (r) && (r > -1)))
+  if (! (isscalar (r) && r > -1))
     error ("nper: r must be a scalar > -1");
   elseif (! isscalar (p))
     error ("nper: p must be a scalar");

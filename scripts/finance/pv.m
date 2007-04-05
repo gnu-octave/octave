@@ -39,13 +39,13 @@
 
 function v = pv (r, n, p, l, m)
 
-  if ((nargin < 3) || (nargin > 5))
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
-  if (! (isscalar (r) && (r > -1)))
+  if (! (isscalar (r) && r > -1))
     error ("pv: r must be a scalar > -1");
-  elseif (! (isscalar (n) && (n > 0)))
+  elseif (! (isscalar (n) && n > 0))
     error ("pv: n must be a positive scalar");
   elseif (! isscalar (p))
     error ("pv: p must be a scalar");

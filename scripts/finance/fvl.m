@@ -36,9 +36,9 @@ function v = fvl (r, n, l)
     print_usage ();
   endif
 
-  if (! (isscalar (r) && (r > -1)))
+  if (! (isscalar (r) && r > -1))
     error ("fvl: r has to be a scalar > -1");
-  elseif (! (isscalar (n) && (n > 0)))
+  elseif (! (isscalar (n) && n > 0))
     error ("fvl: n has to be a positive scalar");
   elseif (! isscalar (l))
     error ("fvl: l has to be a scalar");

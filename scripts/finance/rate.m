@@ -36,11 +36,11 @@
 
 function r = rate (n, p, v, l, m)
 
-  if ((nargin < 3) || (nargin > 5))
+  if (nargin < 3 || nargin > 5)
     print_usage ();
   endif
 
-  if (! (isscalar (n) && (n > 0)))
+  if (! (isscalar (n) && n > 0))
     error ("rate: n must be a positive scalar");
   elseif (! isscalar (p))
     error ("rate: p must be a scalar");

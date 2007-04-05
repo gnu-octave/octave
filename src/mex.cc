@@ -555,7 +555,7 @@ public:
 
 	const char *p = tmp.data ();
 
-	for (int i = 0; i < buflen; i++)
+	for (int i = 0; i < nel; i++)
 	  buf[i] = p[i];
 
 	buf[nel] = 0;
@@ -1223,16 +1223,16 @@ public:
   {
     int retval = 1;
 
-    int n = get_number_of_elements ();
+    int nel = get_number_of_elements ();
 
-    if (n < buflen)
+    if (nel < buflen)
       {
 	mxChar *ptr = static_cast<mxChar *> (pr);
 
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < nel; i++)
 	  buf[i] = static_cast<char> (ptr[i]);
 
-	buf[n] = 0;
+	buf[nel] = 0;
       }
 
     return retval;

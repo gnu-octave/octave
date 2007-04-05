@@ -1,3 +1,8 @@
+2007-04-05  Laurent Mazet <laurent.mazet@motorola.com>
+
+	* mex.cc (mxArray_octave_value::get_string): Copy nel elements,
+	not buflen elements.
+
 2007-04-05  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (DO_DOUBLE_CONV): New macro.

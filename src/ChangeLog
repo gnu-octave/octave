@@ -1,3 +1,8 @@
+2007-04-05  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (DO_DOUBLE_CONV): New macro.
+	(do_printf): Use it.
+
 2007-04-04  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (octave_yes_or_no): Force interactive_input to use readline.

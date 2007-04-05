@@ -2479,6 +2479,45 @@ template int
 do_printf_conv (std::ostream&, const char*, int, int, int, const char*,
 		const std::string&);
 
+#define DO_DOUBLE_CONV(TQUAL) \
+  do \
+    { \
+      if (elt->modifier == 'l') \
+	{ \
+	  if (val > std::numeric_limits<TQUAL long>::max () \
+	      || val < std::numeric_limits<TQUAL long>::min ()) \
+	    { \
+	      std::string tfmt = fmt; \
+ \
+	      tfmt.replace (tfmt.rfind (elt->type), 1, ".f"); \
+	      tfmt.replace (tfmt.rfind (elt->modifier), 1, ""); \
+ \
+	      retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, \
+					val, who); \
+	    } \
+	  else \
+	    retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, \
+				      static_cast<TQUAL long> (val), who); \
+	} \
+      else \
+	{ \
+	  if (val > std::numeric_limits<TQUAL int>::max () \
+	      || val < std::numeric_limits<TQUAL int>::min ()) \
+	    { \
+	      std::string tfmt = fmt; \
+ \
+	      tfmt.replace (tfmt.rfind (elt->type), 1, ".f"); \
+ \
+	      retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, \
+					val, who); \
+	    } \
+	  else \
+	    retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, \
+				      static_cast<TQUAL int> (val), who); \
+	} \
+    } \
+  while (0)
+
 int
 octave_base_stream::do_printf (printf_format_list& fmt_list,
 			       const octave_value_list& args,
@@ -2557,68 +2596,32 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
 		  if (val_cache)
 		    {
-		      if (lo_ieee_isnan (val) || xisinf (val)
-			  || ((val > INT_MAX || val < INT_MIN)
-			      && (elt->type == 'd'
-				  || elt->type == 'i'
-				  || elt->type == 'c'
-				  || elt->type == 'o'
-				  || elt->type == 'x'
-				  || elt->type == 'X'
-				  || elt->type == 'u')))
+		      if (lo_ieee_isnan (val) || xisinf (val))
 			{
 			  std::string tfmt = fmt;
 
-			  if (lo_ieee_isnan (val) || xisinf (val))
-			    {
-			      tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
+			  tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
 
-			      const char *tval = xisinf (val)
-				? (val < 0 ? "-Inf" : "Inf")
-				: (lo_ieee_is_NA (val) ? "NA" : "NaN");
+			  const char *tval = xisinf (val)
+			    ? (val < 0 ? "-Inf" : "Inf")
+			    : (lo_ieee_is_NA (val) ? "NA" : "NaN");
 
-			      retval += do_printf_conv (os, tfmt.c_str (),
-							nsa, sa_1, sa_2,
-							tval, who);
-			    }
-			  else
-			    {
-			      tfmt.replace (tfmt.rfind (elt->type), 1, ".f");
-
-			      retval += do_printf_conv (os, tfmt.c_str (),
-							nsa, sa_1, sa_2,
-							val, who);
-			    }
+			  retval += do_printf_conv (os, tfmt.c_str (),
+						    nsa, sa_1, sa_2,
+						    tval, who);
 			}
 		      else
 			{
-			  switch (elt->type)
+			  char type = elt->type;
+
+			  switch (type)
 			    {
 			    case 'd': case 'i': case 'c':
-			      {
-				if (elt->modifier == 'l')
-				  retval += do_printf_conv
-				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<long int> (val), who);
-				else
-				  retval += do_printf_conv
-				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<int> (val), who);
-			      }
+			      DO_DOUBLE_CONV ( );
 			      break;
 
 			    case 'o': case 'x': case 'X': case 'u':
-			      {
-				if (elt->modifier == 'l')
-				  retval += do_printf_conv
-				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<unsigned long int> (val),
-				     who);
-				else
-				  retval += do_printf_conv
-				    (os, fmt, nsa, sa_1, sa_2,
-				     static_cast<unsigned int> (val), who);
-			      }
+			      DO_DOUBLE_CONV (unsigned);
 			      break;
 
 			    case 'f': case 'e': case 'E':

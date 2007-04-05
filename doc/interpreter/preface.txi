@@ -59,169 +59,57 @@ it, and by reporting any problems you may have.
 
 Many people have already contributed to Octave's development.  In
 addition to John W. Eaton, the following people have helped write parts
-of Octave or helped out in various other ways.
+of Octave or helped out in various other ways (listed alphbetically).
 
-@c Once lp_solve has been added, don't forget to include the lp_solve
-@c author, and Kantor, for providing an example.
-
-@itemize @bullet
-@item
-Andy Adler @email{adler@@site.uottawa.ca} wrote the initial implementation of
-the sparse matrix data type.
-
-@item
-Thomas Baier @email{baier@@ci.tuwien.ac.at} wrote the original versions
-of @code{popen}, @code{pclose}, @code{execute}, @code{sync_system}, and
-@code{async_system}.
-
-@item
-David Bateman @email{dbateman@@free.fr} improved the @code{sort} and
-@code{min}/@code{max} functions, made many functions N-d aware,
-converted several built-in functions to use Lapack instead of Linpack,
-split the functionality of @file{load-save.cc} out into the
-@code{octave_value} classes, provided much of the code for the sparse
-matrix data type, and has contributed in many other ways.
-
-@item
-Karl Berry @email{karl@@cs.umb.edu} wrote the @code{kpathsea} library
-that allows Octave to recursively search directory paths for function
-and script files.
-
-@item
-Georg Beyerle @email{gbeyerle@@awi-potsdam.de} contributed code to save
-values in @sc{Matlab}'s @file{.mat}-file format, and has provided many
-useful bug reports and suggestions.
-
-@item
-John Campbell @email{jcc@@bevo.che.wisc.edu} wrote most of the file and
-C-style input and output functions.
-
-@item
-Dirk Eddelbuettel @email{edd@@debian.org} made Octave easy to install
-for users of Debian GNU/Linux.
-
-@item
-Brian Fox @email{bfox@@gnu.org} wrote the @code{readline} library
-used for command history editing, and the portion of this manual that
-documents it.
-
-@item
-Klaus Gebhardt @email{gebhardt@@crunch.ikp.physik.th-darmstadt.de}
-ported Octave to OS/2.
-
-@item
-Kai Habel @email{kai.habel@@gmx.de} implemted functions for performing
-coordinate transformations.
-
-@item
-A. Scottedward Hodel @email{A.S.Hodel@@eng.auburn.edu} contributed a number
-of functions including @code{expm}, @code{qzval}, @code{qzhess},
-@code{syl}, @code{lyap}, and @code{balance}.
-
-@item
-Kurt Hornik @email{Kurt.Hornik@@wu-wien.ac.at} provided the
-@code{corrcoef}, @code{cov}, @code{fftconv}, @code{fftfilt}, @code{gcd},
-@code{lcd}, @code{kurtosis}, @code{null}, @code{orth}, @code{poly},
-@code{polyfit}, @code{roots}, and @code{skewness} functions, supplied
-documentation for these and numerous other functions, rewrote the Emacs
-mode for editing Octave code and provided its documentation, and has
-helped tremendously with testing.  He has also been a constant source of
-new ideas for improving Octave.
-
-@item
-Teemu Ikonen @email{tpikonen@@pcu.helsinki.fi} contributed changes to
-separate the @code{gnuplot} command parser from the main Octave language
-parser.
-
-@item
-Cai Jianming @email{caijianming@@yahoo.co.uk} contributed the inital
-cell array implementation.
-
-@item
-Phil Johnson @email{johnsonp@@nicco.sscnet.ucla.edu} has helped to make
-Linux releases available.
-
-@item
-Steven G. Johnson @email{stevenj@@alum.mit.edu} added support for ATLAS,
-saving data in HDF5 files, and ported Octave's configure script to
-Autoconf 2.50.
-
-@item
-Mumit Khan @email{khan@@nanotech.wisc.edu} helped make it possible for
-Octave to be compiled by ISO standard C++ compilers other than GCC.
-
-@item
-Paul Kienzle @email{pkienzle@@users.sf.net} has provided many
-enhancements to improve Octave's compatibility with @sc{Matlab}, and
-also maintains the collection of conributed code at
-@url{http://octave.sf.net}.
-
-@item
-Bill Lash @email{lash@@tellabs.com} provided the @code{unwrap} function.
-
-@item
-Dirk Laurie @email{dlaurie@@na-net.ornl.gov} rewrote @code{invhilb} to be
-faster and more accurate.
-
-@item
-Friedrich Leisch @email{leisch@@ci.tuwien.ac.at} provided the
-@code{mahalanobis} function.
-
-@item
-Ken Neighbors @email{wkn@@leland.stanford.edu} has provided many useful
-bug reports and comments on @sc{Matlab} compatibility.
-
-@item
-Rick Niles @email{niles@@axp745.gsfc.nasa.gov} rewrote Octave's plotting
-functions to add line styles and the ability to specify an unlimited
-number of lines in a single call.  He also continues to track down odd
-incompatibilities and bugs.
-
-@item
-Mark Odegard @email{meo@@getech.com} provided the initial
-implementation of @code{fread}, @code{fwrite}, @code{feof}, and
-@code{ferror}.
-
-@item
-Gabriele Pannocchia  @email{pannocchia@@ing.unipi.it} provided the
-@code{dkalman.m} function, added support for singular system matrices
-to @code{dlqe} and @code{dlqr}, and has made various other
-improvements to the control system functions.
-
-@item
-Tony Richardson @email{richardson@@evansville.edu} wrote Octave's
-image processing functions as well as most of the original polynomial
-functions.
-
-@item
-Petter Risholm @email{Petter.Risholm@@idi.ntnu.no} helped to implement
-much of Octave's N-d array functionality.
-
-@item
-Ben Sapp @email{bsapp@@lanl.gov} implemented the debugger functions and
-added Texinfo markup commands to the internal doc strings.
-
-@item
-R. Bruce Tenison @email{btenison@@rstc.cc.al.us} wrote the
-@code{hess} and @code{schur} functions.
-
-@item
-Teresa Twaroch @email{twaroch@@ci.tuwien.ac.at} provided the functions
-@code{gls} and @code{ols}.
-
-@item
-James R. Van Zandt @email{jrv@@vanzandt.mv.com} added support for
-reading and writing @sc{Matlab} version 5 binary data files.
-
-@item
-Andreas Weingessel @email{Andreas.Weingessel@@ci.tuwien.ac.at} wrote the
-audio functions @code{lin2mu}, @code{loadaudio}, @code{mu2lin},
-@code{playaudio}, @code{record}, @code{saveaudio}, and @code{setaudio}.
-
-@item
-Fook Fah Yap @email{ffy@@eng.cam.ac.uk} provided the @code{fft} and
-@code{ifft} functions and valuable bug reports for early versions.
-@end itemize
+@noindent
+Andy Adler, Joel Andersson, Muthiah Annamalai,
+Shai Ayal, Roger Banks, Ben Barrowes, Alexander Barth, 
+David Bateman, Heinz Bauschke, Karl Berry, David Billinghurst, 
+Don Bindner, Jakub Bogusz, Marcus Brinkmann, Remy Bruno, 
+Marco Caliari, Daniel Calvelo, John C. Campbell, Jean-Francois Cardoso, 
+Joao Cardoso, Larrie Carr, David Castelow, Vincent Cautaerts, 
+Clinton Chee, Albert Chin-A-Young, J. D. Cole, Martin Costabel, 
+Michael Creel, Jeff Cunningham, Martin Dalecki, Jorge Barros de Abreu,
+Philippe Defert, Bill Denney, David M. Doolin, Pascal A. Dupuis,
+John W. Eaton, Dirk Eddelbuettel, Paul Eggert, Stephen Eglen, Peter Ekberg, 
+Rolf Fabian, Stephen Fegan, Ramon Garcia Fernandez, Torsten Finke, 
+Jose Daniel Munoz Frias, Castor Fu, Eduardo Gallestey, Walter Gautschi, 
+Klaus Gebhardt, Driss Ghaddab, Nicolo Giorgetti, From Michael Goffioul, 
+Michael Goffioul, Glenn Golden, Tomislav Goles, Keith Goodman, 
+Etienne Grossmann, Kai Habel, William Poetra Yoga Hadisoeseno, Benjamin Hall, 
+Kim Hansen, Soren Hauberg, Daniel Heiserer, Yozo Hida, 
+Roman Hodek, A. Scottedward Hodel, Richard Allan Holcombe, Tom Holroyd, 
+David Hoover, Kurt Hornik, Christopher Hulbert, Cyril Humbert, 
+Teemu Ikonen, Alan W. Irwin, Geoff Jacobsen, Mats Jansson, 
+Cai Jianming, Steven G. Johnson, Heikki Junes, Atsushi Kajita, 
+Mohamed Kamoun, Lute Kamstra, Mumit Khan, Paul Kienzle, 
+Aaron A. King, Arno J. Klaassen, Geoffrey Knauth, Heine Kolltveit, 
+Ken Kouno, Oyvind Kristiansen, Piotr Krzyzanowski, Volker Kuhlmann, 
+Miroslaw Kwasniak, Rafael Laboissiere, Kai Labusch, Claude Lacoursiere, 
+Walter Landry, Duncan Temple Lang, Bill Lash, Dirk Laurie, 
+Maurice LeBrun, Friedrich Leisch, Benjamin Lindner, Ross Lippert, 
+David Livings, Erik de Castro Lopo, Massimo Lorenzin, Hoxide Ma, 
+James Macnicol, Jens-Uwe Mager, Ricardo Marranita, Orestes Mas, 
+Makoto Matsumoto, Laurent Mazet, G. D. McBain, Stefan Monnier, 
+Antoine Moreau, Kai P. Mueller, Victor Munoz, Carmen Navarrete, 
+Todd Neal, Al Niessner, Rick Niles, Takuji Nishimura, 
+Eric Norum, Michael O'Brien, Thorsten Ohl, Arno Onken, 
+Luis F. Ortiz, Luis Ortiz, Scott Pakin, Gabriele Pannocchia, 
+Sylvain Pelissier, Per Persson, Jim Peterson, Danilo Piazzalunga, 
+Nicholas Piper, Hans Ekkehard Plesser, Tom Poage, Orion Poplawski, 
+Ondrej Popp, Jef Poskanzer, Francesco Potorti, James B. Rawlings, 
+Eric S. Raymond, Balint Reczey, Michael Reifenberger, Petter Risholm, 
+Matthew W. Roberts, Andrew Ross, Mark van Rossum, Kevin Ruland, 
+Olli Saarela, Toni Saarela, Juhani Saastamoinen, Ben Sapp, 
+Alois Schloegl, Michel D. Schmid, Nicol N. Schraudolph, Ludwig Schwardt, 
+Daniel J. Sebald, Dmitri A. Sergatskov, Baylis Shanks, Joseph P. Skudlarek, 
+John Smith, Julius Smith, Shan G. Smith, Joerg Specht, 
+Quentin H. Spencer, Christoph Spiel, Richard Stallman, Russell Standish, 
+Doug Stewart, Thomas Stuart, Ariel Tankus, Georg Thimm, 
+Thomas Treichl, Utkarsh Upadhyay, Stefan van der Walt, Peter Van Wieren, 
+James R. Van Zandt, Gregory Vanuxem, Ivana Varekova, Thomas Walter, 
+Olaf Weber, Thomas Weber, Bob Weigel, Andreas Weingessel, 
+Fook Fah Yap, Michael Zeising, Federico Zenith, and Alex Zvoleff.
 
 Special thanks to the following people and organizations for
 supporting the development of Octave:

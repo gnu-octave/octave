@@ -27,7 +27,7 @@
 ## @code{normest} to converge.
 ## @end deftypefn
 
-function [e1, c] = normest(A, tol)
+function [e1, c] = normest (A, tol)
   if (nargin < 2)
     tol = 1e-6;
   endif
@@ -35,14 +35,14 @@ function [e1, c] = normest(A, tol)
     tol = eps
   endif
   if (ndims(A) != 2)
-    error("A must be a matrix");
+    error ("normest: A must be a matrix");
   endif 
-  maxA = max(max(abs(A)));
+  maxA = max (max (abs (A)));
   c = 0;
   if (maxA == 0)
     e1 = 0
   else
-    [m, n] = size(A);
+    [m, n] = size (A);
     B = A / maxA;
     Bt = B';
     if (m > n)
@@ -51,27 +51,27 @@ function [e1, c] = normest(A, tol)
       Bt = tmp;
     endif
     e0 = 0;
-    x = randn(min(m,n),1);
-    e1 = norm(x);
+    x = randn (min (m, n), 1);
+    e1 = norm (x);
     x = x / e1;
-    e1 = sqrt(e1);
-    if (issparse(A))
-      while (abs(e1 - e0) > tol * e1)
+    e1 = sqrt (e1);
+    if (issparse (A))
+      while (abs (e1 - e0) > tol * e1)
 	e0 = e1;
 	x = B * (Bt * x);
-	e1 = norm(x);
+	e1 = norm (x);
 	x = x / e1;
-	e1 = sqrt(e1);
+	e1 = sqrt (e1);
 	c = c + 1;
       endwhile
     else
       B = B * Bt;
-      while (abs(e1 - e0) > tol * e1)
+      while (abs (e1 - e0) > tol * e1)
 	e0 = e1;
 	x = B * x;
-	e1 = norm(x);
+	e1 = norm (x);
 	x = x / e1;
-	e1 = sqrt(e1);
+	e1 = sqrt (e1);
 	c = c + 1;
       endwhile
     endif

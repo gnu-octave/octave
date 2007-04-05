@@ -29,7 +29,7 @@
 ## is taken to be the size of the matrix to create.
 ## @end deftypefn
 
-function s = speye(m,n)
+function s = speye (m, n)
   if (nargin == 1)
     if (isvector (m) && length(m) == 2)
       n = m(2);
@@ -40,13 +40,13 @@ function s = speye(m,n)
       error ("speye: invalid matrix dimension");
     endif
   else
-    if (!isscalar (m) || !isscalar (n))
+    if (! isscalar (m) || ! isscalar (n))
       error ("speye: invalid matrix dimension");
     endif
   endif
 
-  lo = min([m,n]);
-  s = sparse(1:lo,1:lo,1,m,n);
+  lo = min ([m, n]);
+  s = sparse (1:lo, 1:lo, 1, m, n);
 endfunction
 
 %!assert(issparse(speye(4)))

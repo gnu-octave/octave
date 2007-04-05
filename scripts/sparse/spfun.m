@@ -23,22 +23,23 @@
 ## function handle or an inline function.
 ## @end deftypefn
 
-function t = spfun(f,s)
+function t = spfun (f, s)
+
   if (nargin != 2)
     print_usage ();
   endif
 
-  if issparse(s)
-    [i,j,v,m,n] = spfind(s);
+  if (issparse (s))
+    [i,j,v,m,n] = spfind (s);
   else
-    [i,j,v] = find(s);
-    [m,n] = size(s);
+    [i, j, v] = find (s);
+    [m, n] = size (s);
   end
 
   if (isa (f, "function_handle") || isa (f, "inline function"))
-    t = sparse(i,j,f(v),m,n);
+    t = sparse (i, j, f(v), m, n);
   else
-    t = sparse(i,j,feval(f,v),m,n);
+    t = sparse(i, j, feval (f, v), m, n);
   endif
 
 endfunction

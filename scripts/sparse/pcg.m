@@ -277,10 +277,10 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M, x0,
 	T = T(2:iter-2,2:iter-2);
 	l = eig(T);
 	eigest = [min(l), max(l)];
-	## fprintf (stderr, "PCG condest: %g\n", eigest(2)/eigest(1));
+	## fprintf (stderr, "pcg condest: %g\n", eigest(2)/eigest(1));
       else
 	eigest = [NaN, NaN];
-	warning ("PCG: eigenvalue estimate failed: iteration converged too fast.");
+	warning ("pcg: eigenvalue estimate failed: iteration converged too fast.");
       endif
     else
       eigest = [NaN, NaN];
@@ -308,19 +308,19 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M, x0,
   if (iter >= maxit-2)
     flag = 1;
     if (nargout < 2)
-      warning ("PCG: maximum number of iterations (%d) reached\n", iter);
-      warning ("The initial residual norm was reduced %g times.\n", 1.0/relres);
+      warning ("pcg: maximum number of iterations (%d) reached\n", iter);
+      warning ("the initial residual norm was reduced %g times.\n", 1.0/relres);
     endif
   elseif (nargout < 2)
-    fprintf (stderr, "PCG: converged in %d iterations. ", iter);
-    fprintf (stderr, "The initial residual norm was reduced %g times.\n",...
+    fprintf (stderr, "pcg: converged in %d iterations. ", iter);
+    fprintf (stderr, "the initial residual norm was reduced %g times.\n",...
 	     1.0/relres);
   endif
 
   if (! matrix_positive_definite)
     flag = 3;
     if (nargout < 2)
-      warning ("PCG: matrix not positive definite?\n");
+      warning ("pcg: matrix not positive definite?\n");
     endif
   endif
 endfunction

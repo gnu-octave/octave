@@ -26,9 +26,9 @@ function y = sphcat (varargin)
 
   persistent sphcat_warned = false;
 
-  if (!sphcat_warned)
+  if (! sphcat_warned)
     sphcat_warned = true;
-    warning ("sphcat: This function is depreciated. Use horzcat instead");
+    warning ("sphcat: This function is depreciated.  Use horzcat instead");
   endif
 
   y = horzcat (varargin{:});

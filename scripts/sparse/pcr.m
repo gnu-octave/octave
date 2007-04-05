@@ -279,20 +279,20 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
   if (iter >= maxit-2)
     flag = 1;
     if (nargout < 2)
-      warning ("PCR: maximum number of iterations (%d) reached\n", iter);
-      warning ("The initial residual norm was reduced %g times.\n", 1.0/relres);
+      warning ("pcr: maximum number of iterations (%d) reached\n", iter);
+      warning ("the initial residual norm was reduced %g times.\n", 1.0/relres);
     endif
   elseif (nargout < 2 && ! breakdown)
-    fprintf (stderr, "PCR: converged in %d iterations. \n", iter);
-    fprintf (stderr, "The initial residual norm was reduced %g times.\n",
+    fprintf (stderr, "pcr: converged in %d iterations. \n", iter);
+    fprintf (stderr, "the initial residual norm was reduced %g times.\n",
 	     1.0/relres);
   endif
 
   if (breakdown)
     flag = 3;
     if (nargout < 2)
-      warning ("PCR: breakdown occured.\n");
-      warning ("System matrix singular or preconditioner indefinite?\n");
+      warning ("pcr: breakdown occured:\n");
+      warning ("system matrix singular or preconditioner indefinite?\n");
     endif
   endif
 

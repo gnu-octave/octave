@@ -21,14 +21,14 @@
 ## sparse matrix with the same structure as @var{x}.
 ## @end deftypefn
 
-function s = spones(s)
-  if issparse(s)
-    [i,j,v,m,n] = spfind(s);
+function s = spones (s)
+  if (issparse (s))
+    [i, j, v, m, n] = spfind (s);
   else
-    [i,j,v] = find(s);
-    [m,n] = size(s);
+    [i, j, v] = find (s);
+    [m, n] = size (s);
   end
-  s = sparse(i,j,1,m,n);
+  s = sparse (i, j, 1, m, n);
 endfunction
 
 %!assert(issparse(spones([1,2;3,0])))

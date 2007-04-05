@@ -53,33 +53,33 @@
 
 function [A, c] = spdiags (v, c, m, n)
 
-    if (nargin == 1 || nargin == 2)
-      ## extract nonzero diagonals of v into A,c
-      [i, j, v, nr, nc] = spfind (v);
-      if (nargin == 1)
-        c = unique(j-i);  # c contains the active diagonals
-      endif
-      ## FIXME: we can do this without a loop if we are clever
-      offset = max (min (c, nc-nr), 0);
-      A = zeros (min (nr, nc), length (c));
-      for k = 1:length(c)
-	idx = find (j-i == c(k));
-	A(j(idx)-offset(k),k) = v(idx);
-      end
-    elseif (nargin == 3)
-      ## Replace specific diagonals c of m with v,c
-      [nr,nc] = size (m);
-      B = spdiags (m, c);
-      A = m - spdiags (B, c, nr, nc) + spdiags (v, c, nr, nc);
-    else
-      ## Create new matrix of size mxn using v,c
-      [j, i, v] = find (v);
-      offset = max (min (c(:), n-m), 0);
-      j += offset(i);
-      i = j-c(:)(i);
-      idx = i>0 & i<=m & j>0 & j<=n;
-      A = sparse (i(idx), j(idx), v(idx), m, n);
-      
+  if (nargin == 1 || nargin == 2)
+    ## extract nonzero diagonals of v into A,c
+    [i, j, v, nr, nc] = spfind (v);
+    if (nargin == 1)
+      ## c contains the active diagonals
+      c = unique (j-i);
     endif
+    ## FIXME: we can do this without a loop if we are clever
+    offset = max (min (c, nc-nr), 0);
+    A = zeros (min (nr, nc), length (c));
+    for k = 1:length (c)
+      idx = find (j-i == c(k));
+      A(j(idx)-offset(k),k) = v(idx);
+    endfor
+  elseif (nargin == 3)
+    ## Replace specific diagonals c of m with v,c
+    [nr, nc] = size (m);
+    B = spdiags (m, c);
+    A = m - spdiags (B, c, nr, nc) + spdiags (v, c, nr, nc);
+  else
+    ## Create new matrix of size mxn using v,c
+    [j, i, v] = find (v);
+    offset = max (min (c(:), n-m), 0);
+    j += offset(i);
+    i = j-c(:)(i);
+    idx = i > 0 & i <= m & j > 0 & j <= n;
+    A = sparse (i(idx), j(idx), v(idx), m, n);
+  endif
 
 endfunction

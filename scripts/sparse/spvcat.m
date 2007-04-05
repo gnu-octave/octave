@@ -26,7 +26,7 @@ function y = spvcat (varargin)
 
   persistent spvcat_warned = false;
 
-  if (!spvcat_warned)
+  if (! spvcat_warned)
     spvcat_warned = true;
     warning ("spvcat: This function is depreciated. Use vertcat instead");
   endif

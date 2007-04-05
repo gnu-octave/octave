@@ -7,11 +7,11 @@
 ## Returns a vector of the non-zero values of the sparse matrix @var{s}.
 ## @end deftypefn
 
-function t = nonzeros(s)
-  if issparse(s)
-    [i,j,t] = spfind(s);
+function t = nonzeros (s)
+  if (issparse (s))
+    [i, j, t] = spfind (s);
   else
-    [i,j,t] = find(s);
+    [i, j, t] = find (s);
   endif
 endfunction
 

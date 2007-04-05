@@ -21,27 +21,28 @@
 ## This program is public domain
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
-function S = sprandn(m,n,d)
-  if nargin == 1
-    [i,j,v,nr,nc] = spfind(m);
-    S = sparse(i,j,randn(size(v)),nr,nc);
-  elseif nargin == 3
+function S = sprandn (m, n, d)
+  if (nargin == 1)
+    [i, j, v, nr, nc] = spfind (m);
+    S = sparse (i, j, randn (size (v)), nr, nc);
+  elseif (nargin == 3)
     mn = m*n;
-    k = round(d*mn);
-    idx=unique(fix(rand(min(k*1.01,k+10),1)*mn))+1; 
-                # idx contains random numbers in [1,mn]
-  		# generate 1% or 10 more random values than necessary
-		# in order to reduce the probability that there are less than k
-		# distinct values;
-    		# maybe a better strategy could be used
-     		# but I don't think it's worth the price
-    k = min(length(idx),k);  # actual number of entries in S
-    j = floor((idx(1:k)-1)/m);
+    k = round (d*mn);
+    idx = unique (fix (rand (min (k*1.01, k+10), 1) * mn)) + 1; 
+    ## idx contains random numbers in [1,mn]
+    ## generate 1% or 10 more random values than necessary in order to
+    ## reduce the probability that there are less than k distinct
+    ## values; maybe a better strategy could be used but I don't think
+    ## it's worth the price.
+
+    ## actual number of entries in S
+    k = min (length (idx), k);
+    j = floor ((idx(1:k)-1)/m);
     i = idx(1:k) - j*m;
-    if isempty(i)
-      S = sparse(m,n);
+    if (isempty (i))
+      S = sparse (m, n);
     else
-      S = sparse(i,j+1,randn(k,1),m,n);
+      S = sparse (i, j+1, randn (k, 1), m, n);
     endif
   else
     print_usage ();

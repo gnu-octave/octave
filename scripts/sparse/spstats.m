@@ -16,13 +16,14 @@
 ## @code{spstats (@var{s})} the zeros may disappear.
 ## @end deftypefn
 
-function [count,mean,var] = spstats(S,j)
-  if nargin < 1 || nargin > 2
+function [count, mean, var] = spstats (S, j)
+
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if nargin == 1
-    [i,j,v] = find (S);
+  if (nargin == 1)
+    [i, j, v] = find (S);
   else
     v = S;    
     i = 1:length (v);
@@ -32,7 +33,7 @@ function [count,mean,var] = spstats(S,j)
 
   count = spsum (sparse (i, j, 1, n, m));
   if (nargout > 1) 
-    mean = spsum(S) ./ count; 
+    mean = spsum (S) ./ count; 
   end
   if (nargout > 2) 
     ## FIXME Variance with count = 0 or 1?

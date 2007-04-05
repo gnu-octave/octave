@@ -143,94 +143,107 @@
 
 ## TODO: consider two dimensional speedup surfaces for functions like kron.
 function [__order, __test_n, __tnew, __torig] ...
-	= speed (__f1, __init, __max_n, __f2, __tol)
-  if nargin < 1 || nargin > 6, 
+      = speed (__f1, __init, __max_n, __f2, __tol)
+
+  if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
-  if nargin < 2 || isempty(__init), 
+
+  if (nargin < 2 || isempty (__init))
     __init = "x = randn(n, 1);";
   endif
-  if nargin < 3 || isempty(__max_n), __max_n = 100; endif
-  if nargin < 4, __f2 = []; endif
-  if nargin < 5 || isempty(__tol), __tol = eps; endif
+
+  if (nargin < 3 || isempty (__max_n))
+    __max_n = 100;
+  endif
+
+  if (nargin < 4)
+    __f2 = [];
+  endif
+
+  if (nargin < 5 || isempty (__tol))
+    __tol = eps;
+  endif
 
   __numtests = 15;
 
   ## Let user specify range of n
-  if isscalar(__max_n)
+  if (isscalar (__max_n))
     __min_n = 1;
-    assert(__max_n > __min_n);
-    __test_n = logspace(0,log10(__max_n),__numtests);
-  elseif length(__max_n) == 2
+    assert (__max_n > __min_n);
+    __test_n = logspace (0, log10 (__max_n), __numtests);
+  elseif (length (__max_n) == 2)
     __min_n = __max_n(1);
     __max_n = __max_n(2);
-    assert(__min_n >= 1);
-    __test_n = logspace(log10(__min_n),log10(__max_n),__numtests);
+    assert (__min_n >= 1);
+    __test_n = logspace (log10 (__min_n), log10 (__max_n), __numtests);
   else
     __test_n = __max_n;
   endif
-  __test_n = unique(round(__test_n)); # Force n to be an integer
-  assert(__test_n >= 1);
+  __test_n = unique (round (__test_n)); # Force n to be an integer
+  assert (__test_n >= 1);
 
-  __torig = __tnew = zeros (size(__test_n)) ;
+  __torig = __tnew = zeros (size (__test_n));
 
-  disp (["testing ", __f1, "\ninit: ", __init]);
+  disp (strcat ("testing ", __f1, "\ninit: ", __init));
 
   ## make sure the functions are freshly loaded by evaluating them at
   ## test_n(1); first have to initialize the args though.
-  n=1; k=0;
-  eval ([__init, ";"]);
-  if !isempty(__f2), eval ([__f2, ";"]); endif
-  eval ([__f1, ";"]);
+  n = 1;
+  k = 0;
+  eval (strcat (__init, ";"));
+  if (! isempty (__f2))
+    eval (strcat (__f2, ";"));
+  endif
+  eval (strcat (__f1, ";"));
 
   ## run the tests
-  for k=1:length(__test_n)
-    n=__test_n(k);
-    eval ([__init, ";"]);
+  for k = 1:length (__test_n)
+    n = __test_n(k);
+    eval (strcat (__init, ";"));
     
-    printf ("n%i=%i  ",k, n) ; fflush(1);
-    eval (["__t=time();", __f1, "; __v1=ans; __t = time()-__t;"]);
+    printf ("n%i=%i  ",k, n);
+    fflush (stdout);
+    eval (strcat ("__t=time();", __f1, "; __v1=ans; __t = time()-__t;"));
     if (__t < 0.25)
-      eval (["__t2=time();", __f1, "; __t2 = time()-__t2;"]);
-      eval (["__t3=time();", __f1, "; __t3 = time()-__t3;"]);
-      __t = min([__t,__t2,__t3]);
+      eval (strcat ("__t2=time();", __f1, "; __t2 = time()-__t2;"));
+      eval (strcat ("__t3=time();", __f1, "; __t3 = time()-__t3;"));
+      __t = min ([__t, __t2, __t3]);
     endif
     __tnew(k) = __t;
 
-    if !isempty(__f2)
-      eval (["__t=time();", __f2, "; __v2=ans; __t = time()-__t;"]);
+    if (! isempty (__f2))
+      eval (strcat ("__t=time();", __f2, "; __v2=ans; __t = time()-__t;"));
       if (__t < 0.25)
-      	eval (["__t2=time();", __f2, "; __t2 = time()-__t2;"]);
-      	eval (["__t3=time();", __f2, "; __t3 = time()-__t3;"]);
+      	eval (strcat ("__t2=time();", __f2, "; __t2 = time()-__t2;"));
+      	eval (strcat ("__t3=time();", __f2, "; __t3 = time()-__t3;"));
       endif
       __torig(k) = __t;
-      if !isinf(__tol)
-      	assert(__v1,__v2,__tol);
+      if (! isinf(__tol))
+      	assert (__v1, __v2, __tol);
       endif
     endif
-    
   endfor
   
   ## Drop times of zero
-  if !isempty(__f2)
-    zidx = ( __tnew < 100*eps |  __torig < 100*eps ) ;
+  if (! isempty (__f2))
+    zidx = (__tnew < 100*eps |  __torig < 100*eps);
     __test_n(zidx) = [];
     __tnew(zidx) = [];
     __torig(zidx) = [];
   else
-    zidx = ( __tnew < 100*eps ) ;
+    zidx = (__tnew < 100*eps);
     __test_n(zidx) = [];
     __tnew(zidx) = [];
   endif
-   
+
   ## Approximate time complexity and return it if requested
-  tailidx = [ceil(length(__test_n)/2):length(__test_n)];
-  p = polyfit(log(__test_n(tailidx)),log(__tnew(tailidx)), 1);
-  if nargout > 0, 
+  tailidx = ceil(length(__test_n)/2):length(__test_n);
+  p = polyfit (log (__test_n(tailidx)), log (__tnew(tailidx)), 1);
+  if (nargout > 0) 
     __order.p = p(1);
-    __order.a = exp(p(2));
+    __order.a = exp (p(2));
   endif
-  
 
   ## Plot the data if no output is requested.
   doplot = (nargout == 0);
@@ -239,59 +252,64 @@ function [__order, __test_n, __tnew, __torig] ...
     figure;
   endif
 
-  if doplot && !isempty(__f2)
-    subplot(121);
-    hold on;
-    xlabel("test length");
-    title (__f1);
-    ylabel("speedup ratio");
-    semilogx ( __test_n, __torig./__tnew, 
-	      ["-*r;", strrep(__f1,";","."), "/", strrep(__f2,";","."), ";"],
+  if (doplot && ! isempty (__f2))
+    subplot (1, 2, 1);
+    semilogx (__test_n, __torig./__tnew, 
+	      strcat ("-*r;", strrep (__f1, ";", "."), "/",
+		      strrep (__f2, ";", "."), ";"),
 	       __test_n, __tnew./__torig,
-	      ["-*g;", strrep(__f2,";","."), "/", strrep(__f1,";","."), ";"]);
-    subplot (122);
-    hold on;
-    xlabel("test length");
-    ylabel ("best execution time (ms)");
-    title (["init: ", __init]);
-    loglog ( __test_n, __tnew*1000, ["*-g;", strrep(__f1,";","."), ";" ], 
-	     __test_n, __torig*1000, ["*-r;", strrep(__f2,";","."), ";"])
+	      strcat ("-*g;", strrep (__f2, ";", "."), "/",
+		      strrep (__f1, ";", "."), ";"));
+    xlabel ("test length");
+    title (__f1);
+    ylabel ("speedup ratio");
+
+    subplot (1, 2, 2);
+    loglog (__test_n, __tnew*1000,
+	    strcat ("*-g;", strrep (__f1, ";", "."), ";" ), 
+	    __test_n, __torig*1000,
+	    strcat ("*-r;", strrep (__f2,";","."), ";"));
   
+    xlabel ("test length");
+    ylabel ("best execution time (ms)");
+    title (strcat ("init: ", __init));
+
     ratio = mean (__torig ./ __tnew);
-    printf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n", ...
+    printf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n",
             ratio, __f2, __f1);
 
-  elseif doplot
+  elseif (doplot)
 
-    subplot(111);
-    hold on;
-    xlabel("test length");
+    loglog (__test_n, __tnew*1000, "*-g;execution time;");
+    xlabel ("test length");
     ylabel ("best execution time (ms)");
-    title ([__f1, "  init: ", __init]);
-    loglog ( __test_n, __tnew*1000, "*-g;execution time;");
+    title (strcat (__f1, "  init: ", __init));
 
   endif
 
-  if doplot
+  if (doplot)
 
     ## Plot time complexity approximation (using milliseconds).
-    order = sprintf("O(n^%g)",round(10*p(1))/10);
-    v = polyval(p,log(__test_n(tailidx)));
-    hold on; 
-    loglog(__test_n(tailidx), exp(v)*1000, sprintf("b;%s;",order)); 
-    hold off;
+    order = sprintf ("O(n^%g)", round (10*p(1))/10);
+    v = polyval (p, log (__test_n(tailidx)));
+
+    loglog (__test_n(tailidx), exp(v)*1000, sprintf ("b;%s;", order)); 
 
     ## Get base time to 1 digit of accuracy
-    dt = exp(p(2));
-    dt = floor(dt/10^floor(log10(dt)))*10^floor(log10(dt));
-    if log10(dt) >= -0.5, time = sprintf("%g s", dt);
-    elseif log10(dt) >= -3.5, time = sprintf("%g ms", dt*1e3);
-    elseif log10(dt) >= -6.5, time = sprintf("%g us", dt*1e6);
-    else time = sprintf("%g ns", dt*1e9);
+    dt = exp (p(2));
+    dt = floor (dt/10^floor(log10(dt)))*10^floor(log10(dt));
+    if (log10 (dt) >= -0.5)
+      time = sprintf ("%g s", dt);
+    elseif (log10 (dt) >= -3.5)
+      time = sprintf ("%g ms", dt*1e3);
+    elseif (log10 (dt) >= -6.5)
+      time = sprintf ("%g us", dt*1e6);
+    else
+      time = sprintf ("%g ns", dt*1e9);
     endif
 
     ## Display nicely formatted complexity.
-    printf ("\nFor %s:\n",__f1);
+    printf ("\nFor %s:\n", __f1);
     printf ("  asymptotic power: %s\n", order);
     printf ("  approximate time per operation: %s\n", time); 
 

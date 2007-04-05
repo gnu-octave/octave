@@ -1,3 +1,24 @@
+2007-04-05  John W. Eaton  <jwe@octave.org>
+
+	* testfun/speed.m: Use "strcat (...)" instead of "[...]".
+	Plotting fixes.  Style fixes.
+
+	* testfun/test.m: Use "strcat (...)" instead of "[...]".
+	Style fixes.
+
+	* testfun/fail.m: No need to check for evalin and lastwarn.
+	Style fixes.
+
+	* testfun/demo.m, testfun/example.m: Style fixes.
+	Use "strcat (...)" instead of "[...]".
+	Use format specifiers in calls to warning.
+
+	* testfun/assert.m: Use "numel (x)" instead of "prod (size (x))".
+	Use "strcat (...)" instead of "[...]".
+	Use "x(end)" instead of "x(length (x))".
+	Check NA before NaN.
+	Style fixes.
+
 2007-03-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/stem.m (stem, set_default_values): Use RGB triple for color.

@@ -75,7 +75,7 @@
 
 ## PKG_ADD: mark_as_command demo
 
-function demo(name, n)
+function demo (name, n)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -85,12 +85,12 @@ function demo(name, n)
     n = 0;
   endif
 
-  [code, idx] = test (name, 'grabdemo');
-  if (length(idx) == 0)
-    warning(["demo not available for ", name]);
+  [code, idx] = test (name, "grabdemo");
+  if (length (idx) == 0)
+    warning ("demo not available for %s", name);
     return;
-  elseif (n >= length(idx))
-    warning(sprintf("only %d demos available for %s", length(idx)-1, name));
+  elseif (n >= length (idx))
+    warning ("only %d demos available for %s", length (idx) - 1, name);
     return;
   endif
 
@@ -98,25 +98,25 @@ function demo(name, n)
   if (n > 0)
     doidx = n;
   else
-    doidx = [ 1 : length(idx)-1 ];
+    doidx = 1:length(idx)-1;
   endif
-  for i=1:length(doidx)
+  for i = 1:length (doidx)
     ## Pause between demos
     if (i > 1)
-      input("Press <enter> to continue: ","s");
+      input ("Press <enter> to continue: ", "s");
     endif
 
     ## Process each demo without failing
     try
-      block = code( idx(doidx(i)) : idx(doidx(i)+1) -1 );
+      block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
       ## Use an environment without variables
-      eval(["function __demo__()\n", block, "\nendfunction"]);
+      eval (strcat ("function __demo__()\n", block, "\nendfunction"));
       ## Display the code that will be executed before executing it
-      printf("%s example %d:%s\n\n", name, doidx(i), block);
+      printf ("%s example %d:%s\n\n", name, doidx(i), block);
       __demo__;
     catch
       ## Let the programmer know which demo failed.
-      printf("%s example %d: failed\n%s", name, doidx(i), __error_text__);
+      printf ("%s example %d: failed\n%s", name, doidx(i), __error_text__);
     end_try_catch
     clear __demo__;
   endfor

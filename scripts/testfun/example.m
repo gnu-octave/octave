@@ -33,7 +33,7 @@
 
 ## PKG_ADD: mark_as_command example
 
-function [code_r, idx_r] = example(name, n)
+function [code_r, idx_r] = example (name, n)
 
   if (nargin < 1 || nargin > 2)
     print_usage ();
@@ -42,11 +42,11 @@ function [code_r, idx_r] = example(name, n)
     n = 0;
   endif
 
-  [code, idx] = test (name, 'grabdemo');
+  [code, idx] = test (name, "grabdemo");
   if (nargout > 0)
     if (n > 0)
-      if (n <= length(idx))
-      	code_r = code(idx(n) : idx(n+1)-1);
+      if (n <= length (idx))
+      	code_r = code(idx(n):idx(n+1)-1);
       	idx_r = [1, length(code_r)+1];
       else
 	code_r = "";
@@ -60,18 +60,18 @@ function [code_r, idx_r] = example(name, n)
     if (n > 0)
       doidx = n;
     else
-      doidx = [ 1:length(idx)-1 ];
+      doidx = 1:length(idx)-1;
     endif
-    if (length(idx) == 0)
-      warning(["example not available for ", name]);
+    if (length (idx) == 0)
+      warning ("example not available for %s", name);
     elseif (n >= length(idx))
-      warning(sprintf("only %d examples available for %s", length(idx)-1, name));
+      warning ("only %d examples available for %s", length(idx)-1, name);
       doidx = [];
     endif
 
     for i=1:length(doidx)
-      block = code( idx(doidx(i)) : idx(doidx(i)+1) -1 );
-      printf("%s example %d:%s\n\n", name, doidx(i), block);
+      block = code(idx(doidx(i)):idx(doidx(i)+1)-1);
+      printf ("%s example %d:%s\n\n", name, doidx(i), block);
     endfor
   endif
 

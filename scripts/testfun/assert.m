@@ -46,7 +46,8 @@
 ## TODO: but instead give a summary; don't print out the whole list, just
 ## TODO: say what the first different element is, etc.  To do this, make
 ## TODO: the message generation type specific.
-function assert(cond, expected, tol)
+
+function assert (cond, expected, tol)
 
   if (nargin < 1 || nargin > 3)
     print_usage ();
@@ -56,27 +57,30 @@ function assert(cond, expected, tol)
     tol = 0;
   endif
 
-  if exist("argn") == 0, argn=" "; endif
-  in = deblank(argn(1,:));
-  for i=2:rows(argn)
-    in = [in, ",", deblank(argn(i,:))];
+  if (exist ("argn") == 0)
+    argn = " ";
+  endif
+
+  in = deblank (argn(1,:));
+  for i = 2:rows (argn)
+    in = strcat (in, ",", deblank (argn(i,:)));
   end
-  in = ["(",in,")"];
+  in = strcat ("(", in, ")");
 
   coda = "";
   iserror = 0;
   if (nargin == 1)
-    if (!isnumeric(cond) || !all(cond(:)))
+    if (! isnumeric (cond) || ! all (cond(:)))
       error ("assert %s failed", in); # say which elements failed?
     endif
   
-  elseif (is_list(cond))
-    if (!is_list(expected) || length(cond) != length(expected))
+  elseif (is_list (cond))
+    if (! is_list (expected) || length (cond) != length (expected))
       iserror = 1;
     else
       try
-	for i=1:length(cond)
-	  assert(nth(cond,i),nth(expected,i));
+	for i = 1:length (cond)
+	  assert (nth (cond, i), nth (expected, i));
 	endfor
       catch
 	iserror = 1;
@@ -84,15 +88,15 @@ function assert(cond, expected, tol)
     endif
 
   elseif (ischar (expected))
-    iserror = (!ischar (cond) || !strcmp (cond, expected));
+    iserror = (! ischar (cond) || ! strcmp (cond, expected));
 
-  elseif (iscell(expected))
-    if (!iscell (cond) || any(size(cond)!=size(expected)))
+  elseif (iscell (expected))
+    if (! iscell (cond) || any (size (cond) != size (expected)))
       iserror = 1;
     else
       try
-	for i=1:length(expected(:))
-	  assert(cond{i},expected{i},tol);
+	for i = 1:length (expected(:))
+	  assert (cond{i}, expected{i}, tol);
 	endfor
       catch
 	iserror = 1;
@@ -100,18 +104,26 @@ function assert(cond, expected, tol)
     endif
 
   elseif (isstruct (expected))
-    if (!isstruct (cond) || any(size(cond) != size(expected))
-	|| rows(struct_elements(cond)) != rows(struct_elements(expected)))
+    if (! isstruct (cond) || any (size (cond) != size (expected))
+	|| rows(struct_elements (cond)) != rows (struct_elements (expected)))
       iserror = 1;
     else
       try
-	empty=prod(size(cond))==0;
-	normal=prod(size(cond))==1;
-	for [v,k] = cond
-	  if !struct_contains(expected,k), error; endif
-	  if empty, v = cell(1,0); endif
-	  if normal, v = {v}; else v = v(:)'; endif
-	  assert(v,{expected.(k)},tol)
+	empty = numel (cond) == 0;
+	normal = numel (cond) == 1;
+	for [v, k] = cond
+	  if (! struct_contains (expected, k))
+	    error ();
+	  endif
+	  if (empty)
+	    v = cell (1, 0);
+	  endif
+	  if (normal)
+	    v = {v};
+	  else
+	    v = v(:)';
+	  endif
+	  assert (v, {expected.(k)}, tol);
 	endfor
       catch
 	iserror = 1;
@@ -123,70 +135,73 @@ function assert(cond, expected, tol)
     iserror = 1;
     coda = "Dimensions don't match";
 
-  elseif tol==0 && !strcmp(typeinfo(cond),typeinfo(expected))
+  elseif (tol == 0 && ! strcmp (typeinfo (cond), typeinfo (expected)))
     iserror = 1;
-    coda = ["Type ",typeinfo(cond)," != ",typeinfo(expected)];
+    coda = strcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
 
   else # numeric
-    A=cond(:); B=expected(:);
+    A = cond(:);
+    B = expected(:);
     ## Check exceptional values
-    if any(isnan(A) != isnan(B))
-      iserror = 1;
-      coda = "NaNs don't match";
-    elseif any(isna(A) != isna(B))
+    if (any (isna (A) != isna (B)))
       iserror = 1;
       coda = "NAs don't match";
-      ## Try to avoid problems comparing strange values like Inf+NaNi.
-    elseif (any(isinf(A) != isinf(B))
-	    || any(A(isinf(A) & !isnan(A)) != B(isinf(B) & !isnan(B))))
+    elseif (any (isnan (A) != isnan (B)))
+      iserror = 1;
+      coda = "NaNs don't match";
+### Try to avoid problems comparing strange values like Inf+NaNi.
+    elseif (any (isinf (A) != isinf (B))
+	    || any (A(isinf (A) & ! isnan (A)) != B(isinf (B) & ! isnan (B))))
       iserror = 1;
       coda = "Infs don't match";
     else
       ## Check normal values
-      A = A(finite(A)); B=B(finite(B));
-      if tol == 0,
-        err = any(A != B);
+      A = A(finite (A));
+      B = B(finite (B));
+      if (tol == 0)
+        err = any (A != B);
 	errtype = "values do not match";
-      elseif tol >= 0,
-	err = max(abs(A-B));
+      elseif (tol >= 0)
+	err = max (abs (A - B));
 	errtype = "maximum absolute error %g exceeds tolerance %g";
       else 
-	abserr = max(abs(A(B==0)));
-	A = A(B!=0); B = B(B!=0);
-	relerr = max(abs(A-B)./abs(B));
-	err = max([abserr;relerr]);
+	abserr = max (abs (A(B == 0)));
+	A = A(B != 0);
+	B = B(B != 0);
+	relerr = max (abs (A - B) ./ abs (B));
+	err = max ([abserr; relerr]);
 	errtype = "maximum relative error %g exceeds tolerance %g";
       endif
-      if err > abs(tol)
+      if (err > abs (tol))
 	iserror = 1;
-	coda = sprintf(errtype,err,abs(tol));
+	coda = sprintf (errtype, err, abs (tol));
       endif
     endif
   endif
 
-  if (!iserror)
+  if (! iserror)
     return;
   endif
 
   ## pretty print the "expected but got" info,
   ## trimming leading and trailing "\n"
   str = disp (expected);
-  idx = find(str!="\n");
-  if (!isempty(idx))
-    str = str(idx(1):idx(length(idx)));
+  idx = find (str != "\n");
+  if (! isempty (idx))
+    str = str(idx(1):idx(end));
   endif
   str2 = disp (cond);
-  idx = find(str2!="\n");
-  if (!isempty(idx))
-    str2 = str2(idx(1):idx(length(idx)));
+  idx = find (str2 != "\n");
+  if (! isempty (idx))
+    str2 = str2 (idx(1):idx(end));
   endif
-  msg = ["assert ",in," expected\n", str, "\nbut got\n", str2];
-  if (!isempty(coda))
-    msg = [ msg, "\n", coda ];
+  msg = strcat ("assert ", in, " expected\n", str, "\nbut got\n", str2);
+  if (! isempty (coda))
+    msg = strcat (msg, "\n", coda);
   endif
-  error("%s",msg);
-  ## disp(msg);
-  ## error("assertion failed");
+  error ("%s", msg);
+  ## disp (msg);
+  ## error ("assertion failed");
 endfunction
 
 ## empty

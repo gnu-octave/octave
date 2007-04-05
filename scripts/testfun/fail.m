@@ -1,3 +1,20 @@
+## Copyright (C) 2005 Paul Kienzle
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301  USA
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} fail (@var{code},@var{pattern})
 ## @deftypefnx {Function File} {} fail (@var{code},'warning',@var{pattern})
@@ -29,68 +46,77 @@
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 ## PKG_ADD mark_as_command fail
-function ret=fail(code,pattern,warning_pattern)
-  if nargin < 1 || nargin > 3
+
+function ret = fail (code, pattern, warning_pattern)
+
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
   ## sort out arguments
-  test_warning =  (nargin > 1 && strcmp(pattern,'warning'));
-  if nargin == 3
+  test_warning = (nargin > 1 && strcmp (pattern, "warning"));
+  if (nargin == 3)
     pattern = warning_pattern;
-  elseif nargin == 1 || (nargin==2 && test_warning)
+  elseif (nargin == 1 || (nargin==2 && test_warning))
     pattern = "";
   endif
-  if isempty(pattern), pattern = "."; endif  # match any nonempty message
+
+  ## match any nonempty message
+  if (isempty (pattern))
+    pattern = ".";
+  endif
 
   ## allow assert(fail())
-  if nargout, ret=1; endif  
+  if (nargout)
+    ret = 1;
+  endif  
 
-  ## don't test failure if evalin doesn't exist
-  if !exist('evalin') || !exist('lastwarn'), return; endif
-
-  if test_warning
+  if (test_warning)
     ## perform the warning test
-    lastwarn();  # clear old warnings
-    state = warning("query","quiet"); # make sure warnings are turned on
-    warning("on","quiet");
+    lastwarn ();  # clear old warnings
+    state = warning ("query", "quiet"); # make sure warnings are turned on
+    warning ("on", "quiet");
     try
       ## printf("lastwarn before %s: %s\n",code,lastwarn);
-      evalin("caller",sprintf("%s;",code));
+      evalin ("caller", sprintf ("%s;", code));
       ## printf("lastwarn after %s: %s\n",code,lastwarn);
-      err = lastwarn;  # retrieve new warnings
-      warning(state.state,"quiet");
-      if isempty(err), 
-        msg = sprintf("expected warning <%s> but got none", pattern); 
+      err = lastwarn ();  # retrieve new warnings
+      warning (state.state, "quiet");
+      if (isempty (err))
+        msg = sprintf ("expected warning <%s> but got none", pattern); 
       else
-        err([1:9,end]) = [];  # transform "warning: ...\n" to "..."
-        if !isempty(regexp(err,pattern,"once")), return; end
-        msg = sprintf("expected warning <%s>\nbut got <%s>", pattern,err);
+        err([1:9, end]) = [];  # transform "warning: ...\n" to "..."
+        if (! isempty (regexp (err, pattern, "once")))
+	  return;
+	endif
+        msg = sprintf ("expected warning <%s>\nbut got <%s>", pattern, err);
       endif
     catch
-      warning(state.state,"quiet");
+      warning (state.state, "quiet");
       err = lasterr;
-      err([1:7,end]) = [];  # transform "error: ...\n", to "..."
-      msg = sprintf("expected warning <%s> but got error <%s>", pattern, err);
+      err([1:7, end]) = [];  # transform "error: ...\n", to "..."
+      msg = sprintf ("expected warning <%s> but got error <%s>", pattern, err);
     end
       
   else
     ## perform the error test
     try
-      evalin("caller",sprintf("%s;",code));
-      msg = sprintf("expected error <%s> but got none", pattern);
+      evalin ("caller", sprintf ("%s;", code));
+      msg = sprintf ("expected error <%s> but got none", pattern);
     catch
-      err=lasterr;
-      if (strcmp(err(1:7),"error:"))
-         err([1:6,end]) = []; # transform "error: ...\n", to "..."
+      err = lasterr ();
+      if (strcmp (err(1:7), "error:"))
+         err([1:6, end]) = []; # transform "error: ...\n", to "..."
       endif
-      if !isempty(regexp(err,pattern,"once")), return; end
-      msg = sprintf("expected error <%s>\nbut got <%s>",pattern,err);
+      if (! isempty (regexp (err, pattern, "once")))
+	return;
+      endif
+      msg = sprintf ("expected error <%s>\nbut got <%s>", pattern, err);
     end
   endif
 
   ## if we get here, then code didn't fail or error didn't match
-  error(msg);
+  error (msg);
 endfunction
 
 %!fail ('[1,2]*[2,3]','nonconformant')

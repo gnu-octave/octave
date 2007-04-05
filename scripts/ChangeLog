@@ -1,5 +1,9 @@
 2007-04-05  John W. Eaton  <jwe@octave.org>
 
+	* pkg/pkg.m: Use "strcat (...)" instead of "[...]".
+	Use stricmp instead of strcmp+tolower.
+	Style fixes.
+
 	* testfun/speed.m: Use "strcat (...)" instead of "[...]".
 	Plotting fixes.  Style fixes.
 

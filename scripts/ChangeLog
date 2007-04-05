@@ -6,7 +6,7 @@
 	sparse/spstats.m, sparse/treeplot.m: Style fixes.
 
 	* pkg/pkg.m: Use "strcat (...)" instead of "[...]".
-	Use stricmp instead of strcmp+tolower.
+	Use strcmpi instead of strcmp+tolower.
 	Style fixes.
 
 	* testfun/speed.m: Use "strcat (...)" instead of "[...]".

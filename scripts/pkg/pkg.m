@@ -251,10 +251,10 @@ auto = false;
 if (isfield (desc{1}, "autoload"))
   a = desc{1}.autoload;
   if ((isnumeric (a) && a > 0)
-      || (ischar (a) && (stricmp (a, "true")
-			 || stricmp (a, "on")
-			 || stricmp (a, "yes")
-			 || stricmp (a, "1"))))
+      || (ischar (a) && (strcmpi (a, "true")
+			 || strcmpi (a, "on")
+			 || strcmpi (a, "yes")
+			 || strcmpi (a, "1"))))
     auto = true;
   endif
 endif

@@ -26,10 +26,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
-#include <climits>
 #include <cstdlib>
 #include <cstdio>
 
+#include <limits>
 #include <string>
 
 #ifdef HAVE_UNISTD_H
@@ -48,15 +48,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // this function.
 
 // Sometimes you need a large integer, but not always.
-// FIXME -- INT_MAX and INT_MIN are probably not right for 64-bits.
 
 octave_idx_type
 NINTbig (double x)
 {
-  if (x > INT_MAX)
-    return INT_MAX;
-  else if (x < INT_MIN)
-    return INT_MIN;
+  if (x > std::numeric_limits<octave_idx_type>::max ())
+    return std::numeric_limits<octave_idx_type>::max ();
+  else if (x < std::numeric_limits<octave_idx_type>::min ())
+    return std::numeric_limits<octave_idx_type>::min ();
   else
     return static_cast<octave_idx_type> ((x > 0) ? (x + 0.5) : (x - 0.5));
 }
@@ -64,10 +63,10 @@ NINTbig (double x)
 int
 NINT (double x)
 {
-  if (x > INT_MAX)
-    return INT_MAX;
-  else if (x < INT_MIN)
-    return INT_MIN;
+  if (x > std::numeric_limits<int>::max ())
+    return std::numeric_limits<int>::max ();
+  else if (x < std::numeric_limits<int>::min ())
+    return std::numeric_limits<int>::min ();
   else
     return static_cast<int> ((x > 0) ? (x + 0.5) : (x - 0.5));
 }

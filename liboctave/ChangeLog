@@ -1,3 +1,10 @@
+2007-04-04  John W. Eaton  <jwe@octave.org>
+
+	* Range.cc (Range::nelem_internal): Likewise.
+	* lo-utils.cc (NINT): Use numeric_limits<int> instead of INT_MAX.
+	(NINTbig): Use numeric_limits<octave_idx_type> instead of INT_MAX.
+	From Scott Pakin <pakin@lanl.gov>.
+
 2007-04-04  David Bateman  <dbateman@free.fr>
 
 	* dMatrix.cc (Matrix::inverse): If calc_cond is true, calculate

@@ -26,10 +26,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #endif
 
 #include <cfloat>
-#include <climits>
 #include <cmath>
 
 #include <iostream>
+#include <limits>
 
 #include "Range.h"
 #include "lo-mappers.h"
@@ -287,7 +287,7 @@ Range::nelem_internal (void) const
 	    n_elt++;
 	}
 
-      retval = (n_elt >= INT_MAX - 1) ? -1 : n_elt;
+      retval = (n_elt >= std::numeric_limits<octave_idx_type>::max () - 1) ? -1 : n_elt;
     }
 
   return retval;

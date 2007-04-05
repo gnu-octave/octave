@@ -1,3 +1,9 @@
+2007-04-05  David Bateman <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/regexp.cc (Fregexprep): Correct iteration over 
+	cell arrays so that the source and pattern are iterated seperately 
+	in the same manner as matlab.
+
 2007-04-05  Laurent Mazet <laurent.mazet@motorola.com>
 
 	* mex.cc (mxArray_octave_value::get_string): Copy nel elements,

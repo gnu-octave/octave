@@ -1446,7 +1446,8 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
       Cell str;
       Cell pat;
       Cell rep;
-      dim_vector dv(1,1);
+      dim_vector dv0;
+      dim_vector dv1(1,1);
 
       if (args(0).is_cell())
 	str = args(0).cell_value();
@@ -1463,47 +1464,44 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
       else
 	rep = Cell (args(2));
 
-      if (str.numel() != 1)
+      dv0 = str.dims();
+      if (pat.numel() != 1)
 	{
-	  dv = str.dims();
-	  if ((pat.numel() != 1 && dv != pat.dims()) ||
-	      (rep.numel() != 1 && dv != rep.dims()))
-	    error ("regexprep: Inconsistent cell array dimensions");
-	}
-      else if (pat.numel() != 1)
-	{
-	  dv = pat.dims();
-	  if ((pat.numel() != 1 && dv != pat.dims()) ||
-	      (rep.numel() != 1 && dv != rep.dims()))
+	  dv1 = pat.dims();
+	  if (rep.numel() != 1 && dv1 != rep.dims())
 	    error ("regexprep: Inconsistent cell array dimensions");
 	}
       else if (rep.numel() != 1)
-	dv = rep.dims();
+	dv1 = rep.dims();
 
       if (!error_state)
 	{
-	  Cell ret (dv);
+	  Cell ret (dv0);
 	  octave_value_list new_args = args;
 
-	  if (str.numel() == 1)
-	    new_args(0) = str(0);
-	  if (pat.numel() == 1)
-	    new_args(1) = pat(0);
-	  if (rep.numel() == 1)
-	    new_args(2) = rep(0);
-
-	  for (octave_idx_type i = 0; i < dv.numel(); i++)
+	  for (octave_idx_type i = 0; i < dv0.numel(); i++)
 	    {
-	      if (str.numel() != 1)
-		new_args(0) = str(i);
-	      if (pat.numel() != 1)
-		new_args(1) = pat(i);
-	      if (rep.numel() != 1)
-		new_args(2) = rep(i);
-	      ret(i) = octregexprep (new_args, "regexprep");
+	      new_args(0) = str(i);
+	      if (pat.numel() == 1)
+		new_args(1) = pat(0);
+	      if (rep.numel() == 1)
+		new_args(2) = rep(0);
+	      for (octave_idx_type j = 0; j < dv1.numel(); j++)
+		{
+		  if (pat.numel() != 1)
+		    new_args(1) = pat(j);
+		  if (rep.numel() != 1)
+		    new_args(2) = rep(j);
+		  new_args(0) = octregexprep (new_args, "regexprep");
+
+		  if (error_state)
+		    break;
+		}
 
 	      if (error_state)
 		break;
+
+	      ret(i) = new_args(0);
 	    }
 
 	  if (!error_state)

@@ -236,8 +236,6 @@ because to not do so would cause trouble when parsing the valid expression
 For clarity, it is probably best to always use commas and semicolons to
 separate matrix elements and rows.
 
-@DOCSTRING(warn_separator_insert)
-
 When you type a matrix or the name of a variable whose value is a
 matrix, Octave responds by printing the matrix in with neatly aligned
 rows and columns.  If the rows of the matrix are too large to fit on the
@@ -324,8 +322,6 @@ empty matrix symbol, @samp{[]}.  The built-in variable
 Empty matrices may also be used in assignment statements as a convenient
 way to delete rows or columns of matrices.
 @xref{Assignment Ops, ,Assignment Expressions}.
-
-@DOCSTRING(warn_empty_list_elements)
 
 When Octave parses a matrix expression, it examines the elements of the
 list to determine whether they are all constants.  If they are, it

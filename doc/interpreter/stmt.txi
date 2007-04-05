@@ -193,8 +193,6 @@ else
 using the indentation to show how Octave groups the statements.
 @xref{Functions and Scripts}.
 
-@DOCSTRING(warn_assign_as_truth_value)
-
 @node The switch Statement
 @section The @code{switch} Statement
 @cindex @code{switch} statement
@@ -292,8 +290,6 @@ could detect all constant integer labels and improve performance by
 using a jump table.
 @end itemize
 
-@DOCSTRING(warn_variable_switch_label)
-
 @node The while Statement
 @section The @code{while} Statement
 @cindex @code{while} statement
@@ -363,9 +359,6 @@ A newline is not required between the condition and the
 body; but using one makes the program clearer unless the body is very
 simple.
 
-@xref{The if Statement}, for a description of the variable
-@code{warn_assign_as_truth_value}.
-
 @node The do-until Statement
 @section The @code{do-until} Statement
 @cindex @code{do-until} statement
@@ -412,9 +405,6 @@ until (i == 10)
 A newline is not required between the @code{do} keyword and the
 body; but using one makes the program clearer unless the body is very
 simple.
-
-@xref{The if Statement}, for a description of the variable
-@code{warn_assign_as_truth_value}.
 
 @node The for Statement
 @section The @code{for} Statement
@@ -667,22 +657,22 @@ guaranteed to be executed regardless of how control exits @var{body}.
 
 This is useful to protect temporary changes to global variables from
 possible errors.  For example, the following code will always restore
-the original value of the built-in variable @code{warn_fortran_indexing}
+the original value of the global variable @code{frobnositcate}
 even if an error occurs while performing the indexing operation.
 
 @example
 @group
-save_warn_fortran_indexing = warn_fortran_indexing;
+save_frobnosticate = frobnosticate;
 unwind_protect
-  warn_fortran_indexing = 1;
-  elt = a (idx)
+  frobnosticate = true;
+  @dots{}
 unwind_protect_cleanup
-  warn_fortran_indexing = save_warn_fortran_indexing;
+  frobnosticate = save_frobnosticate;
 end_unwind_protect
 @end group
 @end example
 
-Without @code{unwind_protect}, the value of @var{warn_fortran_indexing}
+Without @code{unwind_protect}, the value of @var{frobnosticate}
 would not be restored if an error occurs while performing the indexing
 operation because evaluation would stop at the point of the error and
 the statement to restore the value would not be executed.

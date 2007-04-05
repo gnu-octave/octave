@@ -225,8 +225,6 @@ possibilities and issue our own error message.
 
 @DOCSTRING(silent_functions)
 
-@DOCSTRING(warn_missing_semicolon)
-
 @node Multiple Return Values
 @section Multiple Return Values
 
@@ -313,12 +311,9 @@ c = 2
 @end example
 
 @noindent
-along with a warning if the value of the built-in variable
-@code{warn_undefined_return_values} is nonzero.
+along with a warning.
 
 @DOCSTRING(nargout)
-
-@DOCSTRING(warn_undefined_return_values)
 
 @DOCSTRING(nargchk)
 
@@ -444,10 +439,6 @@ else, Octave will check the time stamps on all function files.
 @DOCSTRING(file_in_loadpath)
 
 @DOCSTRING(ignore_function_time_stamp)
-
-@DOCSTRING(warn_function_name_clash)
-
-@DOCSTRING(warn_future_time_stamp)
 
 @node Script Files
 @section Script Files
@@ -735,8 +726,6 @@ in a single @file{.oct} file, reloading the file may force other
 functions to be cleared and reloaded.  If all the functions loaded from
 a given @file{.oct} file are cleared, Octave will automatically unload
 the @file{.oct} file.
-
-@DOCSTRING(warn_reload_forces_clear)
 
 @c FIXME -- is there a better place for this?
 

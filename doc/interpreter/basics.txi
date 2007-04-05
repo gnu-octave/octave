@@ -173,7 +173,6 @@ values for compatibility with @sc{Matlab}.
   fixed_point_format            = true
   page_screen_output            = false
   print_empty_dimensions        = false
-  warn_function_name_clash      = false
 @end group
 @end example
 

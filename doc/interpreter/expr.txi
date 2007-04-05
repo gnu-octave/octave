@@ -58,12 +58,6 @@ For example
 a (:)       # a column vector
 @end example
 
-A warning is issued when using a single expression to index a matrix,
-unless the value of the built-in variable @code{warn_fortran_indexing}
-is zero.
-
-@DOCSTRING(warn_fortran_indexing)
-
 Given the matrix
 
 @example
@@ -117,8 +111,6 @@ This is an obscure notation and should be avoided.  It is better to
 use the function @code{ones} to generate a matrix of the appropriate
 size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Utility Matrices}.
-
-@DOCSTRING(warn_resize_on_range_error)
 
 Note that it is quite inefficient to create a vector using a loop like
 the one shown in the example above.  In this particular case, it would
@@ -492,8 +484,6 @@ Although this is inconsistent with the normal behavior of Octave's
 lexer, which usually prefers to break the input into tokens by
 preferring the longest possible match at any given point, it is more
 useful in this case.
-
-@DOCSTRING(warn_divide_by_zero)
 
 @node Comparison Ops
 @section Comparison Operators

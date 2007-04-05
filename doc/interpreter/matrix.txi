@@ -200,13 +200,6 @@ Houston, TX 77030.
 
 @DOCSTRING(diag)
 
-@c FIXME -- is this really worth documenting?
-@c
-@c DOCSTRING(warn_imag_to_real)
-@c 
-@c FIXME -- this is here because it is used by @code{ones},
-@c @code{zeros}, @code{rand}, etc.
-
 The functions @code{linspace} and @code{logspace} make it very easy to
 create vectors with evenly or logarithmically spaced elements.
 @xref{Ranges}.
@@ -214,10 +207,6 @@ create vectors with evenly or logarithmically spaced elements.
 @DOCSTRING(linspace)
 
 @DOCSTRING(logspace)
-
-@DOCSTRING(warn_neg_dim_as_zero)
-
-@DOCSTRING(warn_imag_to_real)
 
 @node Famous Matrices
 @section Famous Matrices

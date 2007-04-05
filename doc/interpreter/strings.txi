@@ -195,12 +195,6 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(undo_string_escapes)
 
-@DOCSTRING(warn_num_to_str)
-
-@DOCSTRING(warn_str_to_num)
-
-@DOCSTRING(warn_single_quote_string)
-
 @node Character Class Functions
 @section Character Class Functions
 

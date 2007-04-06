@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} stem (@var{x}, @var{y}, @var{linespec})
-## Plot a stem graph and return the handles of hte line and marker
+## Plot a stem graph and return the handles of the line and marker
 ## objects used to draw the stems.  The default color is @code{"r"}
 ## (red). The default line style is @code{"-"} and the default marker is
 ## @code{"o"}.
@@ -80,7 +80,7 @@
 ## h = stem (x, y, "fill");
 ## @end example
 ## @noindent
-## plots 10 stems with hights from 2 to 20
+## plots 10 stems with heights from 2 to 20
 ## (the color is rgb-triple defined, the line style is @code{"-"},
 ## the marker style is @code{"o"}, and @var{h} is a 2-by-10 array of
 ## handles in which the first row holds the line handles and the second
@@ -104,39 +104,14 @@ function h = stem (varargin)
 
   newplot ();
 
-  ## first, plot the lines.. without marker
-  ## Use a loop and calls to line here because setting properties this
-  ## way doesn't work with plot yet.
-  idxhh = 0;
-  for i = 1:numel(x)
-    hh(++idxhh) = line ([x(i); x(i)], [0; y(i)], "color", lc, "linestyle", ls);
-  endfor
-
-  ## second, plot the markers..
-  hhh = [];
-  hhhh = [];
-
-  ## Use a loop and calls to line here because setting properties this
-  ## way doesn't work with plot yet.
-  idxhhh = 0;
-  for i = 1:numel(x)
-    hhh(++idxhhh) = line ([x(i); x(i)], [y(i); y(i)]);
-  endfor
-
-  if (find (y < 0))
-    x_axis_range = get (gca, "xlim");
-    hhhh = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
-  endif
-
-  if (dofill)
-    set (hhh, "markerfacecolor", mc);
-  endif
+  z = zeros (1, numel (x)));
+  xt = x(:)';
+  yt = y(:)';
+  tmp = plot ([xt; xt], [z; yt], "color", lc, "linestyle", ls,
+	      x, y, "color", mc, "marker", ms, "linestyle", "");
 
   if (nargout > 0)
-    if (! isempty (hhhh))
-      hhhh = hhhh*(ones (length (hh), 1))';
-    endif
-    h = [hh; hhh; hhhh];
+    h = tmp;
   endif
 
 endfunction
@@ -279,11 +254,11 @@ function [lc, ls, mc, ms] = stem_line_spec (str)
   for i = 1:length(cur_props)
     if (isfield (cur_props(i), "markeredgecolor"))
       mc = cur_props(i).markeredgecolor;
-    elseif (isfield (cur_props(i), "color")); # means line color
+    elseif (isfield (cur_props(i), "color") && ! isempty (cur_props(i).color)); # means line color
       lc = cur_props(i).color;
     elseif (isfield (cur_props(i), "linestyle"))
       ls = cur_props(i).linestyle;
-    elseif (isfield (cur_props(i), "marker"))
+    elseif (isfield (cur_props(i), "marker") && ! strcmp (cur_props(i).marker, "none"))
       ms = cur_props(i).marker;
     endif
   endfor

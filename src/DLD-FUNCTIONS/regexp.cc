@@ -1562,9 +1562,9 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
 %!assert(regexprep("abc","(b)","$1.."),"ab..c");
 
 ## Test cell array arguments
-%!assert(regexprep("abc",{"b","a"},"?"),{"a?c","?bc"})
+%!assert(regexprep("abc",{"b","a"},"?"),{"??c"})
 %!assert(regexprep({"abc","cba"},"b","?"),{"a?c","c?a"})
-%!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"a?c","cb!"})
+%!assert(regexprep({"abc","cba"},{"b","a"},{"?","!"}),{"!?c","c?!"})
 
 */
 

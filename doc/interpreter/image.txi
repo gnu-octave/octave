@@ -50,3 +50,5 @@ contact @email{bug@@octave.org}.
 @DOCSTRING(saveimage)
 
 @DOCSTRING(IMAGE_PATH)
+
+@DOCSTRING(image_viewer)

@@ -47,10 +47,16 @@ Golub and Van Loan, @cite{Matrix Computations, 2nd Ed.}, Johns Hopkins,
 
 @DOCSTRING(trace)
 
+@DOCSTRING(rref)
+
 @node Matrix Factorizations
 @section Matrix Factorizations
 
 @DOCSTRING(chol)
+
+@DOCSTRING(cholinv)
+
+@DOCSTRING(chol2inv)
 
 @DOCSTRING(hess)
 

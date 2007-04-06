@@ -70,6 +70,12 @@ Although @code{quad} returns a nonzero value for @var{ier}, the result
 is reasonably accurate (to see why, examine what happens to the result
 if you move the lower bound to 0.1, then 0.01, then 0.001, etc.).
 
+@DOCSTRING(quadl)
+
+@DOCSTRING(trapz)
+
+@DOCSTRING(cumtrapz)
+
 @node Orthogonal Collocation
 @section Orthogonal Collocation
 

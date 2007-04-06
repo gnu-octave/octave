@@ -14,10 +14,11 @@ in @sc{Matlab}.
 * Two-Dimensional Plotting::    
 * Specialized Two-Dimensional Plots::  
 * Three-Dimensional Plotting::  
+* Manipulating Existing Plots::
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
-@c *Exporting Plots::
+* Printing Plots::
 * Interaction with gnuplot::    
 @end menu
 
@@ -29,21 +30,23 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 @cindex plotting
 @cindex graphics
 
+@DOCSTRING(axes)
+
 @DOCSTRING(plot)
+
+@DOCSTRING(line)
+
+@DOCSTRING(fplot)
+
+@DOCSTRING(drawnow)
+
+@DOCSTRING(shg)
 
 @DOCSTRING(hold)
 
 @DOCSTRING(ishold)
 
-@DOCSTRING(clearplot)
-
-@DOCSTRING(shg)
-
-@DOCSTRING(closeplot)
-
-@DOCSTRING(purge_tmp_files)
-
-@DOCSTRING(axis)
+@DOCSTRING(newplot)
 
 @node Specialized Two-Dimensional Plots
 @section Specialized Two-Dimensional Plots
@@ -51,6 +54,8 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 @DOCSTRING(bar)
 
 @DOCSTRING(contour)
+
+@DOCSTRING(contourc)
 
 @DOCSTRING(hist)
 
@@ -61,6 +66,8 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 @DOCSTRING(semilogx)
 
 @DOCSTRING(semilogy)
+
+@DOCSTRING(stem)
 
 @DOCSTRING(stairs)
 
@@ -75,7 +82,7 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 @node Three-Dimensional Plotting
 @section Three-Dimensional Plotting
 
-The @sc{Matlab}-style three-dimensional plotting commands are:
+@DOCSTRING(plot3)
 
 @DOCSTRING(mesh)
 
@@ -83,14 +90,43 @@ The @sc{Matlab}-style three-dimensional plotting commands are:
 
 @DOCSTRING(meshdom)
 
+@DOCSTRING(view)
+
+@node Manipulating Existing Plots
+@section Manipulating Existing Plots
+
+@DOCSTRING(axis)
+
+@DOCSTRING(gca)
+
+@DOCSTRING(gcf)
+
+@DOCSTRING(get)
+
+@DOCSTRING(set)
+
+@DOCSTRING(clf)
+
+@DOCSTRING(delete)
+
+@DOCSTRING(close)
+
+@DOCSTRING(closereq)
+
 @node Plot Annotations
 @section Plot Annotations
 
-@DOCSTRING(grid)
-
 @DOCSTRING(title)
 
+@DOCSTRING(legend)
+
+@DOCSTRING(text)
+
 @DOCSTRING(xlabel)
+
+@DOCSTRING(box)
+
+@DOCSTRING(grid)
 
 @node Multiple Plots on One Page
 @section Multiple Plots on One Page
@@ -102,8 +138,12 @@ The @sc{Matlab}-style three-dimensional plotting commands are:
 
 @DOCSTRING(figure)
 
-@c @node Exporting Plots
-@c FIXME -- add info about getting paper copies of plots.
+@node Printing Plots
+@section Printing Plots
+
+@DOCSTRING(print)
+
+@DOCSTRING(orient)
 
 @node Interaction with gnuplot
 @section Interaction with @code{gnuplot}

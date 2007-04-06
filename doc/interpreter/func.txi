@@ -432,7 +432,19 @@ else, Octave will check the time stamps on all function files.
 
 @c FIXME -- note about time stamps on files in NFS environments?
 
+@DOCSTRING(addpath)
+
+@DOCSTRING(genpath)
+
+@DOCSTRING(rmpath)
+
+@DOCSTRING(savepath)
+
 @DOCSTRING(path)
+
+@DOCSTRING(pathdef)
+
+@DOCSTRING(pathsep)
 
 @DOCSTRING(rehash)
 

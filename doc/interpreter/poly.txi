@@ -47,7 +47,11 @@ p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 
 @DOCSTRING(polyderiv)
 
+@DOCSTRING(polyder)
+
 @DOCSTRING(polyfit)
+
+@DOCSTRING(polygcd)
 
 @DOCSTRING(polyinteg)
 
@@ -62,3 +66,9 @@ p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 @DOCSTRING(roots)
 
 @DOCSTRING(polyout)
+
+@DOCSTRING(ppval)
+
+@DOCSTRING(mkpp)
+
+@DOCSTRING(unmkpp)

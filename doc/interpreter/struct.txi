@@ -184,8 +184,22 @@ a loop, using a special form of the @code{for} statement
 The following functions are available to give you information about
 structures.
 
+@DOCSTRING(struct)
+
 @DOCSTRING(isstruct)
 
 @DOCSTRING(fieldnames)
 
 @DOCSTRING(isfield)
+
+@DOCSTRING(getfield)
+
+@DOCSTRING(orderfields)
+
+@DOCSTRING(rmfield)
+
+@DOCSTRING(setfield)
+
+@DOCSTRING(struct2cell)
+
+@DOCSTRING(substruct)

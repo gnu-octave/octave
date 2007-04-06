@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} [@var{c}, @var{lev}] =  contourc (@var{x}, @var{y}, @var{z}, @var{vv})
+## @deftypefn {Function File} {[@var{c}, @var{lev}] =}  contourc (@var{x}, @var{y}, @var{z}, @var{vv})
 ## Compute isolines (countour lines) of the matrix @var{z}. 
 ## Parameters @var{x}, @var{y} and @var{vn} are optional.
 ##
@@ -42,7 +42,7 @@
 ## If @var{vn} is omitted it defaults to 10.
 ##
 ## @example
-## @var{c}=contourc (@var{x}, @var{y}, @var{z}, linspace(0,2*pi,10))
+## c = contourc (x, y, z, linspace (0, 2*pi, 10));
 ## @end example
 ## @seealso{contour}
 ## @end deftypefn

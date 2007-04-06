@@ -146,6 +146,22 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(atan2)
 
+In addition to the trigonometric functions that work with radians,
+Octave also provides the following functions which work with degrees.
+
+@DOCSTRING(sind)
+@DOCSTRING(cosd)
+@DOCSTRING(tand)
+@DOCSTRING(secd)
+@DOCSTRING(cscd)
+@DOCSTRING(cotd)
+
+@DOCSTRING(asind)
+@DOCSTRING(acosd)
+@DOCSTRING(atand)
+@DOCSTRING(asecd)
+@DOCSTRING(acscd)
+@DOCSTRING(acotd)
 
 @node Sums and Products
 @section Sums and Products
@@ -171,6 +187,8 @@ sin ([1, 2; 3, 4])
 
 @DOCSTRING(betainc)
 
+@DOCSTRING(betaln)
+
 @DOCSTRING(bincoeff)
 
 @DOCSTRING(erf)
@@ -182,6 +200,8 @@ sin ([1, 2; 3, 4])
 @DOCSTRING(gamma)
 
 @DOCSTRING(gammainc)
+
+@DOCSTRING(legendre)
 
 @DOCSTRING(lgamma)
 

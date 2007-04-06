@@ -213,14 +213,24 @@ create vectors with evenly or logarithmically spaced elements.
 
 The following functions return famous matrix forms.
 
+@DOCSTRING(hadamard)
+
 @DOCSTRING(hankel)
 
 @DOCSTRING(hilb)
 
 @DOCSTRING(invhilb)
 
+@DOCSTRING(magic)
+
+@DOCSTRING(pascal)
+
+@DOCSTRING(rosser)
+
 @DOCSTRING(sylvester_matrix)
 
 @DOCSTRING(toeplitz)
 
 @DOCSTRING(vander)
+
+@DOCSTRING(wilkinson)

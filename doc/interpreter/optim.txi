@@ -23,11 +23,17 @@
 @node Linear Programming
 @section Linear Programming
 
+@DOCSTRING(glpk)
+
 @node Quadratic Programming
 @section Quadratic Programming
 
+@DOCSTRING(qp)
+
 @node Nonlinear Programming
 @section Nonlinear Programming
+
+@DOCSTRING(sqp)
 
 @node Linear Least Squares
 @section Linear Least Squares

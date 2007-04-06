@@ -10,8 +10,14 @@ set is defined as a collection unique elements.
 
 @DOCSTRING(create_set)
 
+@DOCSTRING(unique)
+
 @DOCSTRING(union)
 
-@DOCSTRING(intersection)
+@DOCSTRING(intersect)
 
 @DOCSTRING(complement)
+
+@DOCSTRING(setdiff)
+
+@DOCSTRING(setxor)

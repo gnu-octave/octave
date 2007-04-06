@@ -73,6 +73,8 @@ referred to as a @var{tm_struct}.
 
 @DOCSTRING(time)
 
+@DOCSTRING(now)
+
 @DOCSTRING(ctime)
 
 @DOCSTRING(gmtime)
@@ -109,6 +111,18 @@ useful.
 @DOCSTRING(sleep)
 
 @DOCSTRING(usleep)
+
+@DOCSTRING(  datenum)
+
+@DOCSTRING(datestr)
+
+@DOCSTRING(datevec)
+
+@DOCSTRING(calendar)
+
+@DOCSTRING(weekday)
+
+@DOCSTRING(eomday)
 
 @node Filesystem Utilities
 @section Filesystem Utilities

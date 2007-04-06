@@ -135,13 +135,19 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(strcat)
 
+@DOCSTRING(strvcat)
+
+@DOCSTRING(strtrunc)
+
 @DOCSTRING(string_fill_char)
 
 @DOCSTRING(str2mat)
 
 @DOCSTRING(ischar)
 
-@DOCSTRING(isstr)
+@DOCSTRING(mat2str)
+
+@DOCSTRING(num2str)
 
 @node Searching and Replacing
 @section Searching and Replacing
@@ -154,9 +160,21 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(rindex)
 
+@DOCSTRING(strfind)
+
+@DOCSTRING(strmatch)
+
+@DOCSTRING(strtok)
+
 @DOCSTRING(split)
 
 @DOCSTRING(strcmp)
+
+@DOCSTRING(strcmpi)
+
+@DOCSTRING(strncmp)
+
+@DOCSTRING(strncmpi)
 
 @DOCSTRING(strrep)
 
@@ -182,6 +200,8 @@ Data Types}, for more information about creating matrices.
 @DOCSTRING(base2dec)
 
 @DOCSTRING(strjust)
+
+@DOCSTRING(str2double)
 
 @DOCSTRING(str2num)
 

@@ -254,6 +254,14 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(lognrnd)
 
+@DOCSTRING(nbincdf)
+
+@DOCSTRING(nbininv)
+
+@DOCSTRING(nbinpdf)
+
+@DOCSTRING(nbinrnd)
+
 @DOCSTRING(normcdf)
 
 @DOCSTRING(norminv)
@@ -261,14 +269,6 @@ you would like to help improve Octave in this area, please contact
 @DOCSTRING(normpdf)
 
 @DOCSTRING(normrnd)
-
-@DOCSTRING(pascal_cdf)
-
-@DOCSTRING(pascal_inv)
-
-@DOCSTRING(pascal_pdf)
-
-@DOCSTRING(pascal_rnd)
 
 @DOCSTRING(poisscdf)
 
@@ -278,14 +278,6 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(poissrnd)
 
-@DOCSTRING(stdnormal_cdf)
-
-@DOCSTRING(stdnormal_inv)
-
-@DOCSTRING(stdnormal_pdf)
-
-@DOCSTRING(stdnormal_rnd)
-
 @DOCSTRING(tcdf)
 
 @DOCSTRING(tinv)
@@ -293,6 +285,14 @@ you would like to help improve Octave in this area, please contact
 @DOCSTRING(tpdf)
 
 @DOCSTRING(trnd)
+
+@DOCSTRING(unidcdf)
+
+@DOCSTRING(unidinv)
+
+@DOCSTRING(unidpdf)
+
+@DOCSTRING(unidrnd)
 
 @DOCSTRING(unifcdf)
 
@@ -302,12 +302,12 @@ you would like to help improve Octave in this area, please contact
 
 @DOCSTRING(unifrnd)
 
-@DOCSTRING(weibcdf)
+@DOCSTRING(wblcdf)
 
-@DOCSTRING(weibinv)
+@DOCSTRING(wblinv)
 
-@DOCSTRING(weibpdf)
+@DOCSTRING(wblpdf)
 
-@DOCSTRING(weibull_rnd)
+@DOCSTRING(wblrnd)
 
 @DOCSTRING(wienrnd)

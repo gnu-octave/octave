@@ -1,3 +1,8 @@
+2007-04-06  John W. Eaton  <jwe@octave.org>
+
+	* ranlib/phrtsd.f (phrtsd): Ensure that the types of the arguments
+	passed to mod are the same even on 64-bit systems.
+
 2007-04-04  John W. Eaton  <jwe@octave.org>
 
 	* Makefules.in: Handle Fortran, C, and C++ sources with separate

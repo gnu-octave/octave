@@ -417,7 +417,15 @@ execute_command_line_file (const std::string& fname)
 
   octave_program_name = tmp;
 
-  parse_and_execute (fname, false, "octave");
+  try
+    {
+      parse_and_execute (fname, false, "octave");
+    }
+  catch (std::bad_alloc)
+    {
+      std::cerr << "error: memory exhausted -- execution of "
+		<< fname << " failed\n";
+    }
  
   unwind_protect::run_frame ("execute_command_line_file");
 }

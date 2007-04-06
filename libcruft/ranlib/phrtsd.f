@@ -41,6 +41,8 @@ C     .. Parameters ..
      +          '!@#$%^&*()_+[];:''"<>?,./')
       INTEGER twop30
       PARAMETER (twop30=1073741824)
+      INTEGER sixty4
+      PARAMETER (sixty4=64)
 C     ..
 C     .. Scalar Arguments ..
       INTEGER seed1,seed2
@@ -73,7 +75,7 @@ C     .. Executable Statements ..
       lphr = lennob(phrase)
       IF (lphr.LT.1) RETURN
       DO 30,i = 1,lphr
-          ichr = mod(index(table,phrase(i:i)),64)
+          ichr = mod(index(table,phrase(i:i)),sixty4)
           IF (ichr.EQ.0) ichr = 63
           DO 10,j = 1,5
               values(j) = ichr - j

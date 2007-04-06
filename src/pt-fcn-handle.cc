@@ -72,7 +72,7 @@ tree_fcn_handle::rvalue (int nargout)
 }
 
 tree_expression *
-tree_fcn_handle::dup (symbol_table *sym_tab)
+tree_fcn_handle::dup (symbol_table *)
 {
   tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
 
@@ -87,18 +87,15 @@ tree_fcn_handle::accept (tree_walker& tw)
   tw.visit_fcn_handle (*this);
 }
 
-tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
-{
-  delete param_list;
-  delete cmd_list;
-  delete ret_list;
-  delete sym_tab;
-}
-
 octave_value
 tree_anon_fcn_handle::rvalue (void)
 {
   MAYBE_DO_BREAKPOINT;
+
+  tree_parameter_list *param_list = fcn.parameter_list ();
+  tree_parameter_list *ret_list = fcn.return_list ();
+  tree_statement_list *cmd_list = fcn.body ();
+  symbol_table *sym_tab = fcn.sym_tab ();
 
   symbol_table *new_sym_tab = sym_tab ? sym_tab->dup () : 0;
 
@@ -120,9 +117,9 @@ tree_anon_fcn_handle::rvalue (void)
 
   uf->mark_as_inline_function ();
 
-  octave_value fcn (uf);
+  octave_value ov_fcn (uf);
 
-  octave_value fh (new octave_fcn_handle (fcn, "@<anonymous>"));
+  octave_value fh (new octave_fcn_handle (ov_fcn, "@<anonymous>"));
 
   return fh;
 }
@@ -143,6 +140,11 @@ tree_anon_fcn_handle::rvalue (int nargout)
 tree_expression *
 tree_anon_fcn_handle::dup (symbol_table *st)
 {
+  tree_parameter_list *param_list = fcn.parameter_list ();
+  tree_parameter_list *ret_list = fcn.return_list ();
+  tree_statement_list *cmd_list = fcn.body ();
+  symbol_table *sym_tab = fcn.sym_tab ();
+
   symbol_table *new_sym_tab = sym_tab ? sym_tab->dup () : 0;
 
   if (new_sym_tab)

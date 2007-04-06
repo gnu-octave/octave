@@ -1,3 +1,22 @@
+2007-04-06  John W. Eaton  <jwe@octave.org>
+
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::param_list, 
+	tree_anon_fcn_handle::cmd_list,	tree_anon_fcn_handle::ret_list,
+	tree_anon_fcn_handle::sym_tab): Delete.  Remove all uses.
+	(tree_anon_fcn_handle::fcn): New data member.
+	(tree_anon_fcn_handle::tree_anon_fcn_handle): Initialize it.
+	(tree_anon_fcn_handle::rvalue, tree_anon_fcn_handle::dup):
+	Extract parameter list, return list, function body, and symbol
+	table from fcn.
+	(tree_anon_fcn_handle::parameter_list, tree_anon_fcn_handle::body):
+	Forward request to fcn.
+
+	* ov-usr-fcn.h (octave_user_function::local_sym_tab): Rename from
+	sym_tab.  Change all uses.
+	(octave_user_function::sym_tab): New function.
+
+	* octave.cc (execute_command_line_file): 
+
 2007-04-05  David Bateman <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/regexp.cc (Fregexprep): Correct iteration over 

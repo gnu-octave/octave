@@ -73,7 +73,7 @@ octave_user_function::octave_user_function
    tree_statement_list *cl, symbol_table *st)
   : octave_function (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
-    sym_tab (st), lead_comm (), trail_comm (), file_name (),
+    local_sym_tab (st), lead_comm (), trail_comm (), file_name (),
     parent_name (), t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (0), num_named_args (0),
@@ -89,7 +89,7 @@ octave_user_function::~octave_user_function (void)
 {
   delete param_list;
   delete ret_list;
-  delete sym_tab;
+  delete local_sym_tab;
   delete cmd_list;
   delete lead_comm;
   delete trail_comm;
@@ -277,15 +277,15 @@ octave_user_function::do_multi_index_op (int nargout,
 
   if (call_depth > 1)
     {
-      sym_tab->push_context ();
-      unwind_protect::add (pop_symbol_table_context, sym_tab);
+      local_sym_tab->push_context ();
+      unwind_protect::add (pop_symbol_table_context, local_sym_tab);
     }
 
   install_automatic_vars ();
 
   // Force symbols to be undefined again when this function exits.
 
-  unwind_protect::add (clear_symbol_table, sym_tab);
+  unwind_protect::add (clear_symbol_table, local_sym_tab);
 
   // Save old and set current symbol table context, for
   // eval_undefined_error().
@@ -294,7 +294,7 @@ octave_user_function::do_multi_index_op (int nargout,
   curr_caller_sym_tab = curr_sym_tab;
 
   unwind_protect_ptr (curr_sym_tab);
-  curr_sym_tab = sym_tab;
+  curr_sym_tab = local_sym_tab;
 
   unwind_protect_ptr (curr_caller_statement);
   curr_caller_statement = curr_statement;
@@ -381,7 +381,7 @@ octave_user_function::do_multi_index_op (int nargout,
 
 	Cell varargout;
 
-	symbol_record *sr = sym_tab->lookup ("varargout");
+	symbol_record *sr = local_sym_tab->lookup ("varargout");
 
 	if (sr && sr->is_variable ())
 	  {
@@ -436,8 +436,8 @@ octave_user_function::accept (tree_walker& tw)
 void
 octave_user_function::print_symtab_info (std::ostream& os) const
 {
-  if (sym_tab)
-    sym_tab->print_info (os);
+  if (local_sym_tab)
+    local_sym_tab->print_info (os);
   else
     warning ("%s: no symbol table info!", my_name.c_str ());
 }
@@ -461,14 +461,14 @@ octave_user_function::print_code_function_trailer (void)
 void
 octave_user_function::install_automatic_vars (void)
 {
-  if (sym_tab)
+  if (local_sym_tab)
     {
-      argn_sr = sym_tab->lookup ("argn", true);
-      nargin_sr = sym_tab->lookup ("__nargin__", true);
-      nargout_sr = sym_tab->lookup ("__nargout__", true);
+      argn_sr = local_sym_tab->lookup ("argn", true);
+      nargin_sr = local_sym_tab->lookup ("__nargin__", true);
+      nargout_sr = local_sym_tab->lookup ("__nargout__", true);
 
       if (takes_varargs ())
-	varargin_sr = sym_tab->lookup ("varargin", true);
+	varargin_sr = local_sym_tab->lookup ("varargin", true);
     }
 }
 

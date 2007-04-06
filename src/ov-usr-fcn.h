@@ -195,6 +195,8 @@ public:
 
   tree_statement_list *body (void) { return cmd_list; }
 
+  symbol_table *sym_tab (void) { return local_sym_tab; }
+
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
@@ -216,7 +218,7 @@ private:
   tree_statement_list *cmd_list;
 
   // The local symbol table for this function.
-  symbol_table *sym_tab;
+  symbol_table *local_sym_tab;
 
   // The comments preceding the FUNCTION token.
   octave_comment_list *lead_comm;

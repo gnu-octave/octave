@@ -1,5 +1,7 @@
 2007-04-06  John W. Eaton  <jwe@octave.org>
 
+	* data.cc (F__vnorm__): New function.
+
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::param_list, 
 	tree_anon_fcn_handle::cmd_list,	tree_anon_fcn_handle::ret_list,
 	tree_anon_fcn_handle::sym_tab): Delete.  Remove all uses.

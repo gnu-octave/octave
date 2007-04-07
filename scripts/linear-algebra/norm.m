@@ -69,14 +69,17 @@ function retval = norm (x, p)
   endif
 
   if (ndims (x) > 2)
-    error ("norm: Only valid on 2-D objects")
+    error ("norm: only valid on 2-D objects")
+  endif
+
+  if (nargin == 1)
+    p = 2;
   endif
 
   ## Do we have a vector or matrix as the first argument?
 
-  if (rows (x) == 1 || columns (x) == 1)
-
-    if (nargin == 2)
+  if (is_vector (x))
+    if (isinteger (x) || issparse (x))
       if (ischar (p))
         if (strcmp (p, "fro"))
 	  retval = sqrt (sum (abs (x) .^ 2));
@@ -94,36 +97,48 @@ function retval = norm (x, p)
           retval = sum (abs (x) .^ p) ^ (1/p);
         endif
       endif
-    elseif (nargin == 1)
-      retval = sqrt (sum (abs (x) .^ 2));
+    else
+      retval = __vnorm__ (x, p);
     endif
-
   else
-
-    if (nargin == 2)
-      if (ischar (p))
-        if (strcmp (p, "fro"))
-	  retval = sqrt (sum (sum (abs (x) .^ 2)));
-        elseif (strcmp (p, "inf"))
-          retval = max (sum (abs (x')));
-        else
-          error ("norm: unrecognized norm");
-        endif
+    if (ischar (p))
+      if (strcmp (p, "fro"))
+	retval = sqrt (sum (sum (abs (x) .^ 2)));
+      elseif (strcmp (p, "inf"))
+        retval = max (sum (abs (x')));
       else
-        if (p == 1)
-          retval = max (sum (abs (x)));
-        elseif (p == 2)
-          s = svd (x);
-          retval = s (1);
-        elseif (p == Inf)
-          retval = max (sum (abs (x')));
-        endif
+        error ("norm: unrecognized vector norm");
       endif
-    elseif (nargin == 1)
-      s = svd (x);
-      retval = s (1);
+    else
+      if (p == 1)
+        retval = max (sum (abs (x)));
+      elseif (p == 2)
+        s = svd (x);
+        retval = s (1);
+      elseif (p == Inf)
+        retval = max (sum (abs (x')));
+      else
+	error ("norm: unrecognized matrix norm");
+      endif
     endif
-
   endif
 
 endfunction
+
+%!shared x
+%! x = [1, -3, 4, 5, -7];
+%!assert(norm(x,1), 20);
+%!assert(norm(x,2), 10);
+%!assert(norm(x,3), 8.24257059961711, -4*eps);
+%!assert(norm(x,Inf), 7);
+%!assert(norm(x,-Inf), 1);
+%!assert(norm(x,"inf"), 7);
+%!assert(norm(x,"fro"), 10);
+%!assert(norm(x), 10);
+%!assert(norm([1e200, 1]), 1e200);
+%!shared m
+%! m = magic (4);
+%!assert(norm(m,1), 34);
+%!assert(norm(m,2), 34);
+%!assert(norm(m,Inf), 34);
+%!assert(norm(m,"inf"), 34);

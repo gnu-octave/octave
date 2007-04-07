@@ -28,9 +28,24 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // Instantiate MArrays of Complex values.
 
 #include "oct-cmplx.h"
+#include "f77-fcn.h"
+
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (xdznrm2, XDZNRM2) (const octave_idx_type&, const Complex*,
+			       const octave_idx_type&, double&);
+}
 
 #include "MArray.h"
 #include "MArray.cc"
+
+template <>
+double
+MArray<Complex>::norm (double p) const
+{
+  MARRAY_NORM_BODY (Complex, xdznrm2, XDZNRM2);
+}
 
 template class OCTAVE_API MArray<Complex>;
 

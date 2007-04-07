@@ -1,3 +1,11 @@
+2007-04-06  John W. Eaton  <jwe@octave.org>
+
+	* MArray-defs.h (MARRAY_NORM_BODY): New macro.
+	* MArray.h (MArray<T>::norm): New function.
+	* MArray.cc: Provide decl.
+	* MArray-d.cc (MArray<double>::norm): Define double specialization.
+	* MArray-C.cc (MArray<Complex>::norm): Define Complex specialization.
+
 2007-04-04  John W. Eaton  <jwe@octave.org>
 
 	* Range.cc (Range::nelem_internal): Likewise.

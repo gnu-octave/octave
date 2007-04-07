@@ -1,5 +1,8 @@
 2007-04-06  John W. Eaton  <jwe@octave.org>
 
+	* blas-xtra/xdnrm2.f, blas-xtra/xdznrm2.f: New functions.
+	* blas-xtra/Makefile.in (FSRC): Add them to the list.
+
 	* ranlib/phrtsd.f (phrtsd): Ensure that the types of the arguments
 	passed to mod are the same even on 64-bit systems.
 

@@ -321,6 +321,78 @@
   MDIAGARRAY2_DADA_BINOP_FWD_DEFS \
     (R, T, dynamic_cast<const B<T>&>, R, dynamic_cast<const B<T>&>, R)
 
+#define MARRAY_NORM_BODY(TYPE, blas_norm, BLAS_NORM)	\
+ \
+  double retval = octave_NaN; \
+ \
+  octave_idx_type len = length (); \
+ \
+  if (len > 0) \
+    { \
+      const TYPE *d = data (); \
+ \
+      if (p == -1) \
+	{ \
+	  /* Frobenius norm.  */ \
+	  retval = 0; \
+ \
+	  for (octave_idx_type i = 0; i < len; i++) \
+	    { \
+	      double d_abs = std::abs (d[i]); \
+	      retval += d_abs * d_abs; \
+	    } \
+ \
+	  retval = ::sqrt (retval); \
+	} \
+      else if (p == 2) \
+	F77_FCN (blas_norm, BLAS_NORM) (len, d, 1, retval); \
+      else if (xisinf (p)) \
+	{ \
+	  octave_idx_type i = 0; \
+ \
+	  while (i < len && xisnan (d[i])) \
+	    i++; \
+ \
+	  if (i < len) \
+	    retval = std::abs (d[i]); \
+ \
+	  if (p > 0) \
+	    { \
+	      while (i < len) \
+		{ \
+		  double d_abs = std::abs (d[i++]); \
+ \
+		  if (d_abs > retval) \
+		    retval = d_abs; \
+		} \
+	    } \
+	  else \
+	    { \
+	      while (i < len) \
+		{ \
+		  double d_abs = std::abs (d[i++]); \
+ \
+		  if (d_abs < retval) \
+		    retval = d_abs; \
+		} \
+	    } \
+	} \
+      else \
+	{ \
+	  retval = 0; \
+ \
+	  for (octave_idx_type i = 0; i < len; i++) \
+	    { \
+	      double d_abs = std::abs (d[i]); \
+	      retval += pow (d_abs, p); \
+	    } \
+ \
+	  retval = pow (retval, 1/p); \
+	} \
+    } \
+ \
+  return retval
+
 // Now we have all the definitions we need.
 
 #endif

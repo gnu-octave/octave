@@ -27,8 +27,24 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Instantiate MArrays of double values.
 
+#include "f77-fcn.h"
+
+extern "C"
+{
+  F77_RET_T
+  F77_FUNC (xdnrm2, XDNRM2) (const octave_idx_type&, const double*,
+			     const octave_idx_type&, double&);
+}
+
 #include "MArray.h"
 #include "MArray.cc"
+
+template <>
+double
+MArray<double>::norm (double p) const
+{
+  MARRAY_NORM_BODY (double, xdnrm2, XDNRM2);
+}
 
 template class MArray<double>;
 

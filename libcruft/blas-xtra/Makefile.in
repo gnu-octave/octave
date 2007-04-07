@@ -14,7 +14,7 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
-FSRC = xddot.f xerbla.f xzdotu.f
+FSRC = xddot.f xdnrm2.f xdznrm2.f xerbla.f xzdotu.f
 
 include $(TOPDIR)/Makeconf
 

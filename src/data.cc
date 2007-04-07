@@ -2583,6 +2583,79 @@ Remove singleton dimensions from @var{x} and return the result.\n\
   return retval;
 }
 
+DEFUN (__vnorm__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __vnorm__ (@var{x}, @var{p})\n\
+Compute various norms of the vector @var{x}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 1 || nargin == 2)
+    {
+      double p_val;
+
+      octave_value p_arg;
+
+      if (nargin == 1)
+	p_arg = 2;
+      else
+	p_arg = args(1);
+
+      if (p_arg.is_string ())
+	{
+	  std::string p = args(1).string_value ();
+
+	  if (p == "inf")
+	    p_val = octave_Inf;
+	  else if (p == "fro")
+	    p_val = -1;
+	  else
+	    {
+	      error ("norm: unrecognized norm `%s'", p.c_str ());
+	      return retval;
+	    }
+	}
+      else
+	{
+	  p_val = args(1).double_value ();
+
+	  if (error_state)
+	    {
+	      error ("norm: unrecognized norm value");
+	      return retval;
+	    }
+	}
+
+      octave_value x_arg = args(0);
+
+      if (x_arg.is_real_type ())
+	{
+	  ColumnVector x (x_arg.vector_value ());
+
+	  if (! error_state)
+	    retval = x.norm (p_val);
+	  else
+	    error ("norm: expecting real vector");
+	}
+      else
+	{
+	  ComplexColumnVector x (x_arg.complex_vector_value ());
+
+	  if (! error_state)
+	    retval = x.norm (p_val);
+	  else
+	    error ("norm: expecting complex vector");
+	}
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

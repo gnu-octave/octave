@@ -80,6 +80,7 @@ public:
       return retval;
     }
 
+  double norm (double p) const;
 
   // Currently, the OPS functions don't need to be friends, but that
   // may change.

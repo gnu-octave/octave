@@ -33,6 +33,16 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // One dimensional array with math ops.
 
+template <class T>
+double
+MArray<T>::norm (double) const
+{
+  (*current_liboctave_error_handler)
+    ("norm: only implemented for double and complex values");
+
+  return 0;
+}
+
 // Element by element MArray by scalar ops.
 
 template <class T>

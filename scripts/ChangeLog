@@ -1,3 +1,11 @@
+2007-04-06  John W. Eaton  <jwe@octave.org>
+
+	* linear-algebra/norm.m: Use new __vnorm__ function for vector args.
+
+2007-04-06  Daniel J Sebald  <daniel.sebald@ieee.org>
+
+	* plot/stem.m: Use plot instead of a series of calls to line.
+
 2007-04-05  John W. Eaton  <jwe@octave.org>
 
 	* sparse/nonzeros.m, sparse/normest.m, sparse/spconvert.m,

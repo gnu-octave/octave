@@ -30,7 +30,7 @@
 ## stem (x);
 ## @end example
 ## @noindent
-## plots 10 stems with hights from 1 to 10;
+## plots 10 stems with heights from 1 to 10;
 ##
 ## @example
 ## x = 1:10;
@@ -38,7 +38,7 @@
 ## stem (x, y);
 ## @end example
 ## @noindent
-## plots 10 stems with hights from 2 to 20;
+## plots 10 stems with heights from 2 to 20;
 ## 
 ## @example
 ## x = 1:10;
@@ -46,7 +46,7 @@
 ## h = stem (x, y, "b");
 ## @end example
 ## @noindent
-## plots 10 bars with hights from 2 to 20
+## plots 10 bars with heights from 2 to 20
 ## (the color is blue, and @var{h} is a 2-by-10 array of handles in
 ## which the first row holds the line handles and the 
 ## the second row holds the marker handles);
@@ -57,7 +57,7 @@
 ## h = stem (x, y, "-.k");
 ## @end example
 ## @noindent
-## plots 10 stems with hights from 2 to 20
+## plots 10 stems with heights from 2 to 20
 ## (the color is black, line style is @code{"-."}, and @var{h} is a 2-by-10
 ## array of handles in which the first row holds the line handles and
 ## the second rows holds the marker handles);
@@ -68,7 +68,7 @@
 ## h = stem (x, y, "-.k.");
 ## @end example
 ## @noindent
-## plots 10 stems with hights from 2 to 20
+## plots 10 stems with heights from 2 to 20
 ## (the color is black, line style is @code{"-."} and the marker style
 ## is @code{"."}, and @var{h} is a 2-by-10 array of handles in which the
 ## first row holds the line handles and the second row holds the marker
@@ -102,13 +102,20 @@ function h = stem (varargin)
 
   [x, y, dofill, lc, ls, mc, ms] = check_stem_arg (varargin{:});
 
+  if (dofill)
+    fc = mc;
+  else
+    fc = "none";
+  endif
+
   newplot ();
 
-  z = zeros (1, numel (x)));
+  z = zeros (1, numel (x));
   xt = x(:)';
   yt = y(:)';
   tmp = plot ([xt; xt], [z; yt], "color", lc, "linestyle", ls,
-	      x, y, "color", mc, "marker", ms, "linestyle", "");
+	      x, y, "color", mc, "marker", ms, "linestyle", "",
+	      "markerfacecolor", fc);
 
   if (nargout > 0)
     h = tmp;

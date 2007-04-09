@@ -2404,6 +2404,8 @@ public:
 	linestyle ("-"),
 	linewidth (0.5),
 	marker ("none"),
+	markeredgecolor ("auto"),
+	markerfacecolor ("none"),
 	markersize (1),
 	keylabel ("") { }
 
@@ -2444,6 +2446,10 @@ public:
 	linewidth = val;
       else if (name.compare ("marker"))
 	marker = val;
+      else if (name.compare ("markeredgecolor"))
+	markeredgecolor = val;
+      else if (name.compare ("markerfacecolor"))
+	markerfacecolor = val;
       else if (name.compare ("markersize"))
 	markersize = val;
       else if (name.compare ("keylabel"))
@@ -2477,6 +2483,8 @@ public:
       m.assign ("linestyle", linestyle);
       m.assign ("linewidth", linewidth);
       m.assign ("marker", marker);
+      m.assign ("markeredgecolor", markeredgecolor);
+      m.assign ("markerface", markerfacecolor);
       m.assign ("markersize", markersize);
       m.assign ("keylabel", keylabel);
 
@@ -2517,6 +2525,10 @@ public:
 	retval = linewidth;
       else if (name.compare ("marker"))
 	retval = marker;
+      else if (name.compare ("markeredgecolor"))
+	retval = markeredgecolor;
+      else if (name.compare ("markerfacecolor"))
+	retval = markerfacecolor;
       else if (name.compare ("markersize"))
 	retval = markersize;
       else if (name.compare ("keylabel"))
@@ -2544,6 +2556,8 @@ public:
       m["linestyle"] = "-";
       m["linewidth"] = 0.5;
       m["marker"] = "none";
+      m["markeredgecolor"] = "auto";
+      m["markerfacecolor"] = "none";
       m["markersize"] = 1;
       m["keylabel"] = "";
 
@@ -2562,6 +2576,8 @@ public:
     octave_value linestyle;
     octave_value linewidth;
     octave_value marker;
+    octave_value markeredgecolor;
+    octave_value markerfacecolor;
     octave_value markersize;
     octave_value keylabel;
 

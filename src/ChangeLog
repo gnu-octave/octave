@@ -1,3 +1,8 @@
+2007-04-09  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (line::line_properties::markeredgecolor,
+	line::line_properties::markerfacecolor): New properties.
+
 2007-04-06  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (F__vnorm__): New function.

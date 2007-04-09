@@ -1,3 +1,8 @@
+2007-04-09  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/func.txi: Document varargin, varargout, and default
+	argument values.
+
 2007-04-03  Rafael Laboissiere  <rafael@debian.org>
 
 	* interpreter/basics.txi: Clarified some limitations of the #!

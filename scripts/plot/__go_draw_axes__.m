@@ -663,23 +663,7 @@ function __go_draw_axes__ (h, plot_stream)
 	if (is_image_data(i))
 	  fwrite (plot_stream, data{i}, "float32");
 	else
-	  if (nd == 2)
-	    fprintf (plot_stream,
-		     strcat (repmat ("%g ", 1, rows (data{i})), "\n"),
-		     data{i});
-	  else
-	    if (parametric(i))
-	      fprintf (plot_stream, "%g %g %g\n", data{i});
-	    else
-	      tmp = data{i};
-	      nc = columns (tmp);
-	      for j = 1:3:nc
-		fprintf (plot_stream, "%g %g %g\n", tmp(:,j:j+2)');
-		fputs (plot_stream, "\n");
-	      endfor
-	    endif
-	  endif
-	  fputs (plot_stream, "e\n");
+	  __gnuplot_write_data__ (plot_stream, data{i}, nd, parametric(i));
 	endif
       endfor
     else
@@ -894,5 +878,46 @@ function [style, typ, with] = do_linestyle_command (obj, idx, plot_stream)
   endif
 
   fputs (plot_stream, ";\n");
+
+endfunction
+
+function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
+  
+  ## DATA is already transposed.
+
+  ## FIXME -- this may need to be converted to C++ for speed.
+
+  if (nd == 2)
+    nan_elts = find (sum (isnan (data)));
+    fmt = strcat (repmat ("%g ", 1, rows (data)), "\n");
+    if (isempty (nan_elts))
+      fprintf (plot_stream, fmt, data);
+    else
+      n = columns (data);
+      have_nans = true;
+      num_nan_elts = numel (nan_elts);
+      k = 1;
+      for i = 1:n
+	if (have_nans && i == nan_elts(k))
+	  fputs (plot_stream, "\n");
+	  have_nans = ++k <= num_nan_elts;
+	else
+	  fprintf (plot_stream, fmt, data(:,i));
+	endif
+      endfor
+    endif
+  else
+    ## FIXME -- handle NaNs here too?
+    if (parametric)
+      fprintf (plot_stream, "%g %g %g\n", data);
+    else
+      nc = columns (data);
+      for j = 1:3:nc
+	fprintf (plot_stream, "%g %g %g\n", data(:,j:j+2)');
+	fputs (plot_stream, "\n");
+      endfor
+    endif
+  endif
+  fputs (plot_stream, "e\n");
 
 endfunction

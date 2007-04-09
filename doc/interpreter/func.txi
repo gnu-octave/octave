@@ -20,6 +20,7 @@ like built-in functions.
 * Variable-length Argument Lists::  
 * Variable-length Return Lists::  
 * Returning From a Function::   
+* Default Arguments::   
 * Function Files::              
 * Script Files::                
 * Dynamically Linked Functions::  
@@ -88,7 +89,7 @@ hold the argument values given in the call.  The list of arguments may
 be empty, in which case this form is equivalent to the one shown above.
 
 To print a message along with ringing the bell, you might modify the
-@code{beep} to look like this:
+@code{wakeup} to look like this:
 
 @example
 @group
@@ -321,11 +322,114 @@ along with a warning.
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
 @cindex @code{...}
+Sometimes the number of input arguments is not known when the function
+is defined.  As an example think of a function that returns the smallest
+of all its input arguments.  For example,
+
+@example
+a = smallest (1, 2, 3);
+b = smallest (1, 2, 3, 4);
+@end example
+
+@noindent
+In this example both @code{a} and @code{b} would be 1.  One way to write
+the @code{smallest} function is
+
+@example
+function val = smallest (arg1, arg2, arg3, arg4, arg5)
+  @var{body}
+endfunction
+@end example
+
+@noindent
+and then use the value of @code{nargin} to determine which of the input
+arguments should be considered. The problem with this approach is
+that it can only handle a limited number of input arguments.
+
+Octave supports the @code{varargin} keyword for handling a variable
+number of input arguments. Using @code{varargin} the function
+looks like this
+
+@example
+function val = smallest (varargin)
+  @var{body}
+endfunction
+@end example
+
+@noindent
+In the function body the input arguments can be accessed through the
+variable @code{varargin}. This variable is a cell array containing
+all the input arguments. @xref{Cell Arrays}, for details on working
+with cell arrays. The @code{smallest} function can now be defined
+like this
+
+@example
+function val = smallest (varargin)
+  val = min ([varargin@{:@}]);
+endfunction
+@end example
+
+@noindent
+This implementation handles any number of input arguments, but it's also
+a very simple solution to the problem.
+
+A slightly more complex example of @code{varargin} is a function 
+@code{print_arguments} that prints all input arguments.  Such a function
+can be defined like this
+
+@example
+function print_arguments (varargin)
+  for i = 1:length (varargin)
+    printf ("Input argument %d: ", i);
+    disp (varargin@{i@});
+  endfor
+endfunction
+@end example
+
+@noindent
+This function produces output like this
+
+@example
+@group
+print_arguments (1, "two", 3);
+     @print{} Input argument 1:  1
+     @print{} Input argument 2: two
+     @print{} Input argument 3:  3
+@end group
+@end example
 
 @node Variable-length Return Lists
 @section Variable-length Return Lists
 @cindex variable-length return lists
-@cindex @code{...}
+It is possible to return a variable number of output arguments from a
+function using a syntax that's similar to the one used with the
+@code{varargin} keyword.  To let a function return a variable number of
+output arguments the @code{varargout} keyword is used.  As with
+@code{varargin} @code{varargout} is a cell array that will contain the
+requested output arguments.
+
+As an example the following function sets the first output argument to
+1, the second to 2, and so on.
+
+@example
+function varargout = one_to_n ()
+  for i = 1:nargout
+    varargout@{i@} = i;
+  endfor
+endfunction
+@end example
+
+@noindent
+When called this function returns values like this
+
+@example
+@group
+[a, b, c] = one_to_n ()
+     @result{} a =  1
+     @result{} b =  2
+     @result{} c =  3
+@end group
+@end example
 
 @node Returning From a Function
 @section Returning From a Function
@@ -376,6 +480,61 @@ at the end of every function definition.
 @end deffn
 
 @DOCSTRING(return_last_computed_value)
+
+@node Default Arguments
+@section Default Arguments
+@cindex default arguments
+
+Since Octave supports variable number of input arguments, it is very useful
+to assign default values to some input arguments. When an input argument
+is declared in the argument list it is possible to assign a default
+value to the argument like this
+
+@example
+function @var{name} (@var{arg1} = @var{val1}, @dots{})
+  @var{body}
+endfunction
+@end example
+
+@noindent
+If no value is assigned to @var{arg1} by the user, it will have the
+value @var{val1}.
+
+As an example, the following function implements a variant of the classic
+``Hello, World'' program.
+@example
+function hello (who = "World")
+  printf ("Hello, %s!\n", who);
+endfunction
+@end example
+
+@noindent
+When called without an input argument the function prints the following
+@example
+@group
+hello ();
+     @print{} Hello, World!
+@end group
+@end example
+
+@noindent
+and when it's called with an input argument it prints the following
+@example
+@group
+hello ("Beautiful World of Free Software");
+     @print{} Hello, Beautiful World of Free Software!
+@end group
+@end example
+
+Sometimes it is useful to explicitly tell Octave to use the default value
+of an input argument.  This can be done writing a @samp{:} as the value
+of the input argument when calling the function.
+@example
+@group
+hello (:);
+     @print{} Hello, World!
+@end group
+@end example
 
 @node Function Files
 @section Function Files
@@ -580,8 +739,6 @@ M-file (also distributed with Octave in the file
 @file{examples/oregonator.m}).
 
 Here is the complete text of @file{oregonator.cc}:
-
-just
 
 @example
 @group

@@ -707,9 +707,10 @@ function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
       endif
       warning ("axis: omitting negative data in log plot");
     endif
-    if (min_val == max_val)
-      min_val = 0.9 * min_val;
-      max_val = 1.1 * max_val;
+    ## FIXME -- maybe this test should also be relative?
+    if (abs (min_val - max_val) < sqrt (eps))
+      min_val *= 0.9;
+      max_val *= 1.1;
     endif
     min_val = 10 ^ floor (log10 (min_val));
     max_val = 10 ^ ceil (log10 (max_val));
@@ -717,9 +718,10 @@ function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
     if (min_val == 0 && max_val == 0)
       min_val = -1;
       max_val = 1;
-    elseif (min_val == max_val)
-      min_val = 0.9 * min_val;
-      max_val = 1.1 * max_val;
+    ## FIXME -- maybe this test should also be relative?
+    elseif (abs (min_val - max_val) < sqrt (eps))
+      min_val -= 0.1 * abs (min_val);
+      max_val += 0.1 * abs (max_val);
     endif
     ## FIXME -- to do a better job, we should consider the tic spacing.
     scale = 10 ^ floor (log10 (max_val - min_val) - 1);

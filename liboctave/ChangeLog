@@ -1,3 +1,10 @@
+2007-04-10  John W. Eaton  <jwe@octave.org>
+
+	* SparseCmplxQR.cc
+	(SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep):
+	Move GCC_ATTR_UNUSED before the parameter decl.
+	From Luis Ortiz  <lortiz@interactivesupercomputing.com>.
+
 2007-04-06  John W. Eaton  <jwe@octave.org>
 
 	* MArray-defs.h (MARRAY_NORM_BODY): New macro.

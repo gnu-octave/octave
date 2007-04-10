@@ -37,8 +37,7 @@ Boston, MA 02110-1301, USA.
 #define OCTAVE_C99_ZERO (0. + 0.iF);
 
 SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep 
-(const SparseComplexMatrix& a GCC_ATTR_UNUSED,
- int order GCC_ATTR_UNUSED)
+(GCC_ATTR_UNUSED const SparseComplexMatrix& a, GCC_ATTR_UNUSED int order)
 {
 #ifdef HAVE_CXSPARSE
   CXSPARSE_ZNAME () A;

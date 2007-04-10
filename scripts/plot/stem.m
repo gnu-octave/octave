@@ -113,12 +113,17 @@ function h = stem (varargin)
   z = zeros (1, numel (x));
   xt = x(:)';
   yt = y(:)';
-  tmp = plot ([xt; xt], [z; yt], "color", lc, "linestyle", ls,
-	      x, y, "color", mc, "marker", ms, "linestyle", "",
-	      "markerfacecolor", fc);
+  h_stems = plot ([xt; xt], [z; yt], "color", lc, "linestyle", ls,
+		  x, y, "color", mc, "marker", ms, "linestyle", "",
+		  "markerfacecolor", fc);
+
+  ## Must draw the plot first to get proper x limits.
+  drawnow();
+  x_axis_range = get (gca, "xlim");
+  h_baseline = line (x_axis_range, [0, 0], "color", [0, 0, 0]);
 
   if (nargout > 0)
-    h = tmp;
+    h = [h_stems; h_baseline];
   endif
 
 endfunction

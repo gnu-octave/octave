@@ -128,7 +128,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Numeric Data Types::          
 * Strings::                     
 * Data Structures::             
-* Containers::                  
+* Cell Arrays::                  
 * I/O Streams::                 
 * Variables::                   
 * Expressions::                 Expressions.

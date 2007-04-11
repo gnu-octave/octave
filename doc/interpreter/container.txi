@@ -14,20 +14,262 @@
 @section Cell Arrays
 @cindex cell arrays
 
+It can be both necessary and convenient to store several variables of
+different size or type in one variable. A cell array is a container
+class able to do just that. In general cell arrays work just like
+@math{N}-dimensional arrays, with the exception of the use of @samp{@{}
+and @samp{@}} as allocation and indexing operators.
+
+As an example, the following code creates a cell array containing a
+string and a 2-by-2 random matrix
+
+@example
+c = @{"a string", rand(2, 2)@};
+@end example
+
+@noindent
+And a cell array can be indexed with the @{ and @} operators, so the
+variable created in the previous example can be indexed like this
+
+@example
+@group
+c@{1@}
+     @result{} ans = a string
+@end group
+@end example
+
+@noindent
+As with numerical arrays several elements of a cell array can be
+extracted by indexing with a vector of indexes
+
+@example
+@group
+c@{1:2@}
+     @result{} ans =
+          
+          (,
+            [1] = a string
+            [2] =
+          
+               0.593993   0.627732
+               0.377037   0.033643
+          
+          ,)
+@end group
+@end example
+
+The indexing operators can also be used to insert or overwrite elements
+of a cell array. The following code inserts the scalar 3 on the
+third place of the previously created cell array
+
+@example
+@group
+c@{3@} = 3
+     @result{} c =
+         
+         @{
+           [1,1] = a string
+           [1,2] =
+         
+              0.593993   0.627732
+              0.377037   0.033643
+         
+           [1,3] =  3
+         @}
+@end group
+@end example
+
+@node Creating Cell Arrays
+@subsection Creating Cell Array
+
+The introductory example showed how to create a cell array containing
+currently available variables. In many situations, however, it is useful
+to create a cell array and then fill it with data.
+
+The @code{cell} function returns a cell array of a given size, containing
+empty matrices. This function works very similar to the @code{zeros}
+function for creating new numerical arrays. The following example creates
+a 2-by-2 cell array containing empty matrices
+
+@example
+@group
+c = cell(2,2)
+     @result{} c =
+         
+         @{
+           [1,1] = [](0x0)
+           [2,1] = [](0x0)
+           [1,2] = [](0x0)
+           [2,2] = [](0x0)
+         @}
+@end group
+@end example
+
+Just like numerical arrays, cell arrays can be multidimensional. The
+@code{cell} function accepts any number of positive integers to describe
+the size of the returned cell array. It is also possible to set the size
+of the cell array through a vector of positive integers. In the
+following example two cell arrays of equal size is created, and the size
+of the first one is displayed
+
+@example
+c1 = cell(3, 4, 5);
+c2 = cell( [3, 4, 5] );
+size(c1)
+     @result{} ans =
+         3   4   5
+@end example
+
+@noindent
+As can be seen, the @code{size} function also work for cell arrays. As
+do the other functions describing the size of an object, such as
+@code{length}, @code{numel}, @code{rows}, and @code{columns}.
+
+An alternative to creating empty cell arrays, and then filling them, it
+is possible to convert numerical arrays into cell arrays using the
+@code{num2cell} and @code{mat2cell} functions.
+
 @DOCSTRING(cell)
+
+@DOCSTRING(iscell)
+
+@DOCSTRING(num2cell)
+
+@DOCSTRING(mat2cell)
+
+@node Indexing Cell Arrays
+@subsection Indexing Cell Arrays
+
+As shown in the introductory example elements can be inserted from cell
+arrays using the @samp{@{} and @samp{@}} operators. Besides the change
+of operators, indexing works for cell arrays like for multidimensional
+arrays.  As an example, all the rows of the first and third column of a
+cell array can be set to @code{0} with the following code
+
+@example
+c@{:, [1, 3]@} = 0;
+@end example
+
+Accessing values in a cell array is, however, different from the same
+operation for numerical arrays. Accessing a single element of a cell
+array is very similar to numerical arrays, for example
+
+@example
+element = c@{1, 2@};
+@end example
+
+@noindent
+This will, however, @emph{not} work when accessing multiple elements of
+a cell array, because it might not be possible to represent all elements
+with a single variable as is the case with numerical arrays.
+
+Accessing multiple elements of a cell array will result in a list of all
+the requested elements. This list can then form the basis of a new
+numerical array or cell array, or be passed as arguments to a
+function. If all the accessed elements of a cell array are scalars or
+column vectors, they can be concatenated into a new column vector
+containing the elements, by surrounding the list with @code{[} and
+@code{]} as in the following example
+
+@example
+a = @{1, [2, 3], 4@};
+b = [a@{:@}]
+     @result{} b =
+         1   2   3   4
+@end example
+
+In much the same way, a new cell array containing the accessed elements
+can be created. By surrounding the list with @samp{@{} and @samp{@}} a
+new cell array will be created, like the following example illustrates
+
+@example
+a = @{1, rand(2, 2), "three"@};
+b = @{ a@{ [1, 3] @} @}
+     @result{} b =
+         @{
+           [1,1] =  1
+           [1,2] = three
+         @}
+@end example
+
+It is also possible to pass the accessed elements directly to a
+function.  The list of elements from the cell array will be passed as an
+argument list to a given function if it is called with the elements as
+arguments.  The two calls to @code{printf} in the following example are
+identical but the latter is more simple and handles more situations
+
+@example
+c = @{"GNU", "Octave", "is", "Free", "Software"@};
+printf ("%s ", c@{1@}, c@{2@}, c@{3@}, c@{4@}, c@{5@});
+     @print{} GNU Octave is Free Software 
+printf ("%s ", c@{:@});
+     @print{} GNU Octave is Free Software 
+@end example
+
+@node Cell Arrays of Strings
+@subsection Cell Arrays of Strings
+
+One common use of cell arrays is to store multiple strings in the same
+variable. It is possible to store multiple strings in a character matrix
+by letting each row be a string. This, however, introduces the problem
+that all strings must be of equal length. Therefore it is recommended to
+use cell arrays to store multiple strings. If, however, the character
+matrix representation is required for an operation, it can be converted
+to a cell array of strings using the @code{cellstr} function
+
+@example
+a = ["hello"; "world"];
+c = cellstr (a)
+     @result{} c =
+         @{
+           [1,1] = hello
+           [2,1] = world
+         @}
+@end example
+
+One further advantage of using cell arrays to store multiple strings, is
+that most functions for string manipulations included with Octave
+supports this representation. As an example, it is possible to compare
+one string with many others using the @code{strcmp} function. If one of
+the arguments to this function is a string and the other is a cell array
+of strings, each element of the cell array will be compared the string
+argument,
+
+@example
+c = @{"hello", "world"@};
+strcmp ("hello", c)
+     @result{} ans =
+        1   0
+@end example
+
+@noindent
+The following functions for string manipulation support cell arrays of
+strings, @code{strcmp}, @code{strcmpi}, @code{strncmp}, @code{strncmpi}, 
+@code{str2double}, @code{str2mat}, @code{strappend}, @code{strtrunc},
+@code{strvcat}, @code{strfind}, and @code{strmatch}.
 
 @DOCSTRING(cellstr)
 
-@DOCSTRING(iscell)
+@DOCSTRING(iscellstr)
+
+@DOCSTRING(cellidx)
+
+@node Processing Data in Cell Arrays
+@subsection Processing Data in Cell Arrays
+
+Data that is stored in a cell array can be processed in several ways
+depending on the actual data. The most simple way to process that data
+is to iterate through it using one or more @code{for} loops. The same
+idea can be implemented easier through the use of the @code{cellfun}
+function that calls a user specified function on all elements of a cell
+array.
+
+@DOCSTRING(cellfun)
+
+An alternative is to convert the data to a different container, such as
+a matrix or a data structure.  Depending on the data this is possible
+using the @code{cell2mat} and @code{cell2struct} functions.
 
 @DOCSTRING(cell2mat)
 
 @DOCSTRING(cell2struct)
-
-@DOCSTRING(cellfun)
-
-@DOCSTRING(cellidx)
-
-@DOCSTRING(mat2cell)
-
-@DOCSTRING(num2cell)

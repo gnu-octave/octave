@@ -1,3 +1,7 @@
+2007-04-11  David Bateman  <dbateman@free.fr>
+
+	* general/bitcmp.m: Make it work again.
+
 2007-04-10  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Try harder to handle min and max vals

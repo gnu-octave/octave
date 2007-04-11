@@ -59,10 +59,12 @@ function axvec = axis2dlim (axdata)
     endif
   else
     ## they're at least one-dimensional
+    tolv = max(1e-8, 1e-8*abs(midv));
+    if(abs(delv(1)) >= tolv(1))
     if(delv(1) != 0)
       axdel(1:2) = 1.1*[-delv(1),delv(1)];
     endif
-    if(delv(2) != 0)
+    if(abs(delv(2)) >= tolv(2))
       axdel(3:4) = 1.1*[-delv(2),delv(2)];
     endif
   endif

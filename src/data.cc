@@ -2656,6 +2656,234 @@ Compute various norms of the vector @var{x}.\n\
   return retval;
 }
 
+#define UNARY_OP_DEFUN_BODY(F) \
+ \
+  octave_value retval; \
+ \
+  if (args.length () == 1) \
+    retval = F (args(0)); \
+  else \
+    print_usage (); \
+ \
+  return retval
+
+DEFUN (not, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} not (@var{x})\n\
+This function is equivalent to @code{! x}.\n\
+@end deftypefn")
+{
+  UNARY_OP_DEFUN_BODY (op_not);
+}
+
+DEFUN (uplus, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} uplus (@var{x})\n\
+This function is equivalent to @code{+ x}.\n\
+@end deftypefn")
+{
+  UNARY_OP_DEFUN_BODY (op_uplus);
+}
+
+DEFUN (uminus, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} uminus (@var{x})\n\
+This function is equivalent to @code{- x}.\n\
+@end deftypefn")
+{
+  UNARY_OP_DEFUN_BODY (op_uminus);
+}
+
+DEFUN (transpose, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} transpose (@var{x})\n\
+This function is equivalent to @code{x.'}.\n\
+@end deftypefn")
+{
+  UNARY_OP_DEFUN_BODY (op_transpose);
+}
+
+DEFUN (ctranspose, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
+This function is equivalent to @code{x'}.\n\
+@end deftypefn")
+{
+  UNARY_OP_DEFUN_BODY (op_hermitian);
+}
+
+#define BINARY_OP_DEFUN_BODY(F) \
+ \
+  octave_value retval; \
+ \
+  if (args.length () == 2) \
+    retval = F (args(0), args(1)); \
+  else \
+    print_usage (); \
+ \
+  return retval
+
+DEFUN (plus, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} plus (@var{x}, @var{y})\n\
+This function is equivalent to @code{x + y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_add);
+}
+
+DEFUN (minus, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} minus (@var{x}, @var{y})\n\
+This function is equivalent to @code{x - y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_sub);
+}
+
+DEFUN (mtimes, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} mtimes (@var{x}, @var{y})\n\
+This function is equivalent to @code{x * y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_mul);
+}
+
+DEFUN (mrdivide, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} mrdivide (@var{x}, @var{y})\n\
+This function is equivalent to @code{x / y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_div);
+}
+
+DEFUN (mpower, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} mpower (@var{x}, @var{y})\n\
+This function is equivalent to @code{x ^ y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_pow);
+}
+
+DEFUN (mldivide, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} mldivide (@var{x}, @var{y})\n\
+This function is equivalent to @code{x \\ y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_ldiv);
+}
+
+DEFUN (lt, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} lt (@var{x}, @var{y})\n\
+This function is equivalent to @code{x < y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_lt);
+}
+
+DEFUN (le, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} le (@var{x}, @var{y})\n\
+This function is equivalent to @code{x <= y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_le);
+}
+
+DEFUN (eq, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} eq (@var{x}, @var{y})\n\
+This function is equivalent to @code{x == y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_eq);
+}
+
+DEFUN (ge, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ge (@var{x}, @var{y})\n\
+This function is equivalent to @code{x >= y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_ge);
+}
+
+DEFUN (gt, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} gt (@var{x}, @var{y})\n\
+This function is equivalent to @code{x > y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_gt);
+}
+
+DEFUN (ne, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ne (@var{x}, @var{y})\n\
+This function is equivalent to @code{x != y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_ne);
+}
+
+DEFUN (times, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} times (@var{x}, @var{y})\n\
+This function is equivalent to @code{x .* y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_el_mul);
+}
+
+DEFUN (rdivide, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} rdivide (@var{x}, @var{y})\n\
+This function is equivalent to @code{x ./ y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_el_div);
+}
+
+DEFUN (power, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
+This function is equivalent to @code{x .\\ y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_el_pow);
+}
+
+DEFUN (ldivide, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_el_ldiv);
+}
+
+DEFUN (and, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} and (@var{x}, @var{y})\n\
+This function is equivalent to @code{x & y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_el_and);
+}
+
+DEFUN (or, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} or (@var{x}, @var{y})\n\
+This function is equivalent to @code{x | y}.\n\
+@end deftypefn")
+{
+  BINARY_OP_DEFUN_BODY (op_el_or);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

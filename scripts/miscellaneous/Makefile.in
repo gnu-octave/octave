@@ -26,7 +26,7 @@ SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m cast.m comma.m \
   fileattrib.m fileparts.m flops.m fullfile.m getfield.m gunzip.m \
   inputname.m ispc.m isunix.m license.m list_primes.m ls.m \
   ls_command.m menu.m mex.m mexext.m mkoctfile.m movefile.m \
-  news.m not.m orderfields.m pack.m paren.m parseparams.m \
+  news.m orderfields.m pack.m paren.m parseparams.m \
   semicolon.m setfield.m single.m substruct.m tar.m \
   tempdir.m tempname.m texas_lotto.m unix.m unpack.m untar.m \
   unzip.m ver.m version.m warning_ids.m xor.m zip.m

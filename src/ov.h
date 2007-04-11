@@ -70,11 +70,11 @@ public:
 
   enum unary_op
   {
-    op_not,
-    op_uplus,
-    op_uminus,
-    op_transpose,
-    op_hermitian,
+    op_not,            // not
+    op_uplus,          // uplus
+    op_uminus,         // uminus
+    op_transpose,      // transpose
+    op_hermitian,      // ctranspose
     op_incr,
     op_decr,
     num_unary_ops,
@@ -83,26 +83,26 @@ public:
 
   enum binary_op
   {
-    op_add,
-    op_sub,
-    op_mul,
-    op_div,
-    op_pow,
-    op_ldiv,
+    op_add,            // plus
+    op_sub,            // minus
+    op_mul,            // mtimes
+    op_div,            // mrdivide
+    op_pow,            // mpower
+    op_ldiv,           // mldivide
     op_lshift,
     op_rshift,
-    op_lt,
-    op_le,
-    op_eq,
-    op_ge,
-    op_gt,
-    op_ne,
-    op_el_mul,
-    op_el_div,
-    op_el_pow,
-    op_el_ldiv,
-    op_el_and,
-    op_el_or,
+    op_lt,             // lt
+    op_le,             // le
+    op_eq,             // eq
+    op_ge,             // ge
+    op_gt,             // gt
+    op_ne,             // ne
+    op_el_mul,         // times
+    op_el_div,         // rdivide
+    op_el_pow,         // power
+    op_el_ldiv,        // ldivide
+    op_el_and,         // and
+    op_el_or,          // or
     op_struct_ref,
     num_binary_ops,
     unknown_binary_op
@@ -881,6 +881,7 @@ do_binary_op (octave_value::binary_op op,
   OV_UNOP_OP (name, op)
 
 OV_UNOP_FN_OP (op_not, !)
+OV_UNOP_FN_OP (op_uplus, +)
 OV_UNOP_FN_OP (op_uminus, -)
 
 OV_UNOP_FN (op_transpose)

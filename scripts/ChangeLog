@@ -1,3 +1,13 @@
+2007-04-11  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/not.m: Delete.
+	* miscellaneous/Makefile.in (SOURCES): Delete it from the list.
+
+2007-04-11  A. S. Hodel  <a.s.hodel@eng.auburn.edu>
+
+	* control/util/axis2dlim.m: Try harder to handle min and max vals
+	that are close but not exactly equal.
+
 2007-04-11  David Bateman  <dbateman@free.fr>
 
 	* general/bitcmp.m: Make it work again.

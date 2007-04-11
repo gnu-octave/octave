@@ -1,5 +1,16 @@
 2007-04-11  Søren Hauberg  <hauberg@gmail.com>
 
+	* interpreter/container.txi: Document indexing with ().
+
+2007-04-11  David Bateman  <dbateman@free.fr>
+
+	* interpreter/linalg.txi (Techniques used for Linear Algebra):
+	New node.
+	* interpreter/octave.texi: Include it in menu.
+	* interpreter/sparse.txi: Delete discusion of matrix_type.
+
+2007-04-11  Søren Hauberg  <hauberg@gmail.com>
+
 	* interpreter/container.txi: Improve cell array documentation.
 
 2007-04-09  Søren Hauberg  <hauberg@gmail.com>

@@ -163,8 +163,10 @@ This will, however, @emph{not} work when accessing multiple elements of
 a cell array, because it might not be possible to represent all elements
 with a single variable as is the case with numerical arrays.
 
-Accessing multiple elements of a cell array will result in a list of all
-the requested elements. This list can then form the basis of a new
+Accessing multiple elements of a cell array with the @samp{@{} and
+@samp{@{} operators will result in a comma-seperated list of all
+the requested elements. This list can then be used anywhere where a
+comma-seperated list is used, such as in the creation of a new
 numerical array or cell array, or be passed as arguments to a
 function. If all the accessed elements of a cell array are scalars or
 column vectors, they can be concatenated into a new column vector
@@ -178,9 +180,25 @@ b = [a@{:@}]
          1   2   3   4
 @end example
 
-In much the same way, a new cell array containing the accessed elements
-can be created. By surrounding the list with @samp{@{} and @samp{@}} a
-new cell array will be created, like the following example illustrates
+It is also possible to pass the accessed elements directly to a
+function.  The list of elements from the cell array will be passed as an
+argument list to a given function as if it is called with the elements as
+arguments.  The two calls to @code{printf} in the following example are
+identical but the latter is more simple and handles more situations
+
+@example
+c = @{"GNU", "Octave", "is", "Free", "Software"@};
+printf ("%s ", c@{1@}, c@{2@}, c@{3@}, c@{4@}, c@{5@});
+     @print{} GNU Octave is Free Software 
+printf ("%s ", c@{:@});
+     @print{} GNU Octave is Free Software 
+@end example
+
+Just like it is possible to create a numerical array from selected
+elements of a cell array, it is possible to create a new cell array
+containing the selected elements. By surrounding the list with 
+@samp{@{} and @samp{@}} a new cell array will be created, like the
+following example illustrates
 
 @example
 a = @{1, rand(2, 2), "three"@};
@@ -192,18 +210,22 @@ b = @{ a@{ [1, 3] @} @}
          @}
 @end example
 
-It is also possible to pass the accessed elements directly to a
-function.  The list of elements from the cell array will be passed as an
-argument list to a given function if it is called with the elements as
-arguments.  The two calls to @code{printf} in the following example are
-identical but the latter is more simple and handles more situations
+@noindent
+This syntax is however a bit cumbersome, and since this is a common
+operation, it is possible to achieve the same using the @samp{(}
+and @samp{)} operators for indexing. When a cell array is indexed
+using the @samp{(} and @samp{)} operators a new cell array containing
+the selected elements. Using this syntax, the previous example can
+be simplified into the following
 
 @example
-c = @{"GNU", "Octave", "is", "Free", "Software"@};
-printf ("%s ", c@{1@}, c@{2@}, c@{3@}, c@{4@}, c@{5@});
-     @print{} GNU Octave is Free Software 
-printf ("%s ", c@{:@});
-     @print{} GNU Octave is Free Software 
+a = @{1, rand(2, 2), "three"@};
+b = a( [1, 3] )
+     @result{} b =
+         @{
+           [1,1] =  1
+           [1,2] = three
+         @}
 @end example
 
 @node Cell Arrays of Strings

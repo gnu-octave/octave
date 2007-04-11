@@ -796,7 +796,8 @@ that is @code{numel (@var{fields}) == size (@var{cell}, @var{dim})}.\n\
 \n\
 @example\n\
 @group\n\
-A = cell2struct(@{'Peter', 'Hannah', 'Robert'; 185, 170, 168@}, @{'Name','Height'@}, 1);\n\
+A = cell2struct (@{'Peter', 'Hannah', 'Robert'; 185, 170, 168@},\n\
+                 @{'Name','Height'@}, 1);\n\
 A(1)\n\
 @result{} ans =\n\
       @{\n\

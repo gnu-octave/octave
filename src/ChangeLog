@@ -1,5 +1,8 @@
 2007-04-11  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (DOCSTRINGS): Don't echo commands.
+	(doc-files): Use mv, not $(simple-move-if-change-rule).
+
 	* data.cc (Fnot, Fuplus, Fuminus, Ftranspose, Fctranspose, Fplus,
 	Fminus, Fmtimes, Fmrdivide, Fmpower, Fmldivide, Flt, Fle, Feq,
 	Fge, Fgt, Fne, Ftimes, Frdivide, Fpower, Fldivide, Fand, For):

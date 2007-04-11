@@ -351,14 +351,15 @@ PKG_ADD: $(DLD_DEF_FILES)
 	@$(simple-move-if-change-rule)
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
-	./gendoc > $@-t
+	@echo making $@
+	@./gendoc > $@-t
 	@$(simple-move-if-change-rule)
 
 doc-files: $(DOC_FILES)
 	@echo making $@
 	@echo DOC_FILES = $(DOC_FILES)
 	@echo $(DOC_FILES) > $@-t
-	@$(simple-move-if-change-rule)
+	mv $@-t $@
 
 gendoc.cc: doc-files mkgendoc
 	@echo making $@

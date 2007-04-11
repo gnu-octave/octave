@@ -254,9 +254,12 @@ Strings
 * String Conversions::          
 * Character Class Functions::   
 
-Containers
+Cell Arrays
 
-* Cell Arrays::                 
+* Creating Cell Arrays::                 
+* Indexing Cell Arrays::
+* Cell Arrays of Strings::
+* Processing Data in Cell Arrays::
 
 Variables
 

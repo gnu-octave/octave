@@ -2,16 +2,9 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Containers
-@chapter Containers
-@cindex containers
-
-@menu
-* Cell Arrays::                 
-@end menu
-
 @node Cell Arrays
-@section Cell Arrays
+@chapter Cell Arrays
+@cindex containers
 @cindex cell arrays
 
 It can be both necessary and convenient to store several variables of
@@ -87,7 +80,7 @@ c@{3@} = 3
 @end menu
 
 @node Creating Cell Arrays
-@subsection Creating Cell Array
+@section Creating Cell Array
 
 The introductory example showed how to create a cell array containing
 currently available variables. In many situations, however, it is useful
@@ -145,7 +138,7 @@ is possible to convert numerical arrays into cell arrays using the
 @DOCSTRING(mat2cell)
 
 @node Indexing Cell Arrays
-@subsection Indexing Cell Arrays
+@section Indexing Cell Arrays
 
 As shown in the introductory example elements can be inserted from cell
 arrays using the @samp{@{} and @samp{@}} operators. Besides the change
@@ -214,7 +207,7 @@ printf ("%s ", c@{:@});
 @end example
 
 @node Cell Arrays of Strings
-@subsection Cell Arrays of Strings
+@section Cell Arrays of Strings
 
 One common use of cell arrays is to store multiple strings in the same
 variable. It is possible to store multiple strings in a character matrix
@@ -262,7 +255,7 @@ strings, @code{strcmp}, @code{strcmpi}, @code{strncmp}, @code{strncmpi},
 @DOCSTRING(cellidx)
 
 @node Processing Data in Cell Arrays
-@subsection Processing Data in Cell Arrays
+@section Processing Data in Cell Arrays
 
 Data that is stored in a cell array can be processed in several ways
 depending on the actual data. The most simple way to process that data

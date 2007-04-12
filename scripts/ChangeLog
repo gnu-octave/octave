@@ -1,3 +1,7 @@
+2007-04-12  Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* miscellaneous/menu.m: Adapt to page_screen_output as a function.
+
 2007-04-11  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/not.m: Delete.

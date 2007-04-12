@@ -43,11 +43,11 @@ function num = menu (t, varargin)
   ## Don't send the menu through the pager since doing that can cause
   ## major confusion.
 
-  save_page_screen_output = page_screen_output;
+  save_page_screen_output = page_screen_output ();
 
   unwind_protect
 
-    page_screen_output = 0;
+    page_screen_output (0);
 
     if (! isempty (t))
       disp (t);
@@ -73,7 +73,7 @@ function num = menu (t, varargin)
 
   unwind_protect_cleanup
 
-    page_screen_output = save_page_screen_output;
+    page_screen_output (save_page_screen_output);
 
   end_unwind_protect
 

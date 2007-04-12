@@ -176,8 +176,14 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     ## Discard inequality constraints that have -Inf bounds since those
     ## will never be active.
     idx = isinf (bin) & bin < 0;
-    bin(idx) = [];
-    Ain(idx,:) = [];
+
+    ## FIXME -- this check should not be necessary, but Octave is
+    ## incorrectly returning [](0x0) for bin(idx) when bin = [](0x1) and
+    ## idx = [](0x1).
+    if (! isempty (idx))
+      bin(idx) = [];
+      Ain(idx,:) = [];
+    endif
 
     n_in = length (bin);
 

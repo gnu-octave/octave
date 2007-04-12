@@ -28,8 +28,8 @@
 
 function bddemo ()
 
-  sav_page = page_screen_output;
-  page_screen_output = 1;
+  sav_page = page_screen_output ();
+  page_screen_output (1);
 
   while (1)
     clc
@@ -609,5 +609,5 @@ function bddemo ()
     endif
   endwhile
   implict_str_to_num_ok = str_sav;
-  page_screen_output = sav_page;
+  page_screen_output  (sav_page);
 endfunction

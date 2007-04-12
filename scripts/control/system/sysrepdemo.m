@@ -28,8 +28,8 @@
 
 function sysrepdemo ()
 
-  save_val = page_screen_output;
-  page_screen_output = 1;
+  save_val = page_screen_output ();
+  page_screen_output (1);
 
   disp("System representation demo:")
   num = [5, -1];
@@ -491,6 +491,6 @@ function sysrepdemo ()
     endif
 
   endwhile
-  page_screen_output = save_val;
+  page_screen_output (save_val);
 endfunction
 

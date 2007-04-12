@@ -17,8 +17,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301 USA.
 
-save_var = page_screen_output;
-page_screen_output = 1;
+save_var = page_screen_output ();
+page_screen_output (1);
 disp("Description of system data structure:")
 disp("A linear system is stored in a structure, and may be represented in")
 disp("ss (state space), tf (transfer function),  and/or zp (zero-pole-gain)")
@@ -93,4 +93,4 @@ disp("  sys2ss          sys2tf          sys2zp          syschtsam")
 disp("  sysdimensions   sysgetsignals   syssetsignals   sysgettype")
 disp("  zp    ")
 disp("to create/access internal variables.  ");
-page_screen_output = save_var;
+page_screen_output (save_var);

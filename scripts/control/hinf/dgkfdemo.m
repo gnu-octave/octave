@@ -36,8 +36,8 @@
 
 function dgkfdemo ()
 
-  save_val = page_screen_output;
-  page_screen_output = 0;
+  save_val = page_screen_output ();
+  page_screen_output  (0);
   while (1)
     clc
     sel = 0;
@@ -359,6 +359,6 @@ function dgkfdemo ()
     endif
     prompt
   endwhile
-  page_screen_output = save_val;
+  page_screen_output (save_val);
 
 endfunction

@@ -1,3 +1,7 @@
+2007-04-13  John W. Eaton  <jwe@octave.org>
+
+	* optimization/qp.m: Undo previous change.
+
 2007-04-13  Geordie McBain  <geordie.mcbain@aeromech.usyd.edu.au>
 
 	* spdiags.m: Fixed the four-argument case to work for columns of

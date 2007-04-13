@@ -183,10 +183,10 @@ DEFUN_DLD (find, args, nargout,
 @deftypefn {Loadable Function} {} find (@var{x})\n\
 @deftypefnx {Loadable Function} {} find (@var{x}, @var{n})\n\
 @deftypefnx {Loadable Function} {} find (@var{x}, @var{n}, @var{direction})\n\
-Return a vector of indices of nonzero elements of a matrix.  To obtain a\n\
-single index for each matrix element, Octave pretends that the columns\n\
-of a matrix form one long vector (like Fortran arrays are stored).  For\n\
-example,\n\
+Return a vector of indices of nonzero elements of a matrix, as a row if\n\
+@var{x} is a row or as a column otherwise.  To obtain a single index for\n\
+each matrix element, Octave pretends that the columns of a matrix form one\n\
+long vector (like Fortran arrays are stored).  For example,\n\
 \n\
 @example\n\
 @group\n\

@@ -1402,9 +1402,6 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
 
-  if (nr == 0 && nc == 0)
-    return;
-
   octave_idx_type n;
   if (nr == 1)
     n = nc;
@@ -1419,7 +1416,7 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
       nc = n;
     }
 
-  if (idx_arg.is_colon_equiv (n, 1))
+  if (nr > 0 && nc > 0 && idx_arg.is_colon_equiv (n, 1))
     {
       // Either A(:) = [] or A(idx) = [] with idx enumerating all
       // elements, so we delete all elements and return [](0x0).  To

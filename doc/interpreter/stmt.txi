@@ -200,13 +200,42 @@ using the indentation to show how Octave groups the statements.
 @cindex @code{otherwise} statement
 @cindex @code{endswitch} statement
 
-The @code{switch} statement was introduced in Octave 2.0.5.  It should
-be considered experimental, and details of the implementation may change
-slightly in future versions of Octave.  If you have comments or would
-like to share your experiences in trying to use this new command in real
-programs, please send them to @email{maintainers@@octave.org}.  (But if
-you think you've found a bug, please report it to
-@email{bug@@octave.org}.
+It is very common to take different actions depending on the value of
+one variable. This is possible using the @code{if} statement in the
+following way
+
+@example
+if (X == 1)
+  do_something ();
+elseif (X == 2)
+  do_something_else ();
+else
+  do_something_completely_different ();
+endif
+@end example
+
+@noindent
+This kind of code can however be very cumbersome to both write and
+maintain. To overcome this problem Octave supports the @code{switch}
+statement. Using this statement, the above example becomes
+
+@example
+switch (X)
+  case 1
+    do_something ();
+  case 2
+    do_something_else ();
+  otherwise
+    do_something_completely_different ();
+endswitch
+@end example
+
+@noindent
+This code makes the repetitive structure of the problem more explicit,
+making the code easier to read, and hence maintain. Also, if the
+variable @code{X} should change it's name, only one line would need
+changing compared to one line per case when @code{if} statements are
+used.
 
 The general form of the @code{switch} statement is
 
@@ -225,30 +254,50 @@ endswitch
 @end group
 @end example
 
-@itemize @bullet
-@item
-The identifiers @code{switch}, @code{case}, @code{otherwise}, and
-@code{endswitch} are now keywords. 
+@noindent
+where @var{label} can be any expression. However, duplicate
+@var{label} values are not detected, and only the @var{command_list}
+corresponding to the first match will be executed. For the
+@code{switch} statement to be meaningful at least one
+@code{case @var{label} @var{command_list}} clause must be present,
+while the @code{otherwise @var{command_list}} clause is optional.
 
-@item
-The @var{label} may be any expression.
-
-@item
-Duplicate @var{label} values are not detected.  The @var{command_list}
-corresponding to the first match will be executed.
-
-@item
-You must have at least one @code{case @var{label} @var{command_list}}
-clause.
-
-@item
-The @code{otherwise @var{command_list}} clause is optional.
-
-@item
 As with all other specific @code{end} keywords, @code{endswitch} may be
 replaced by @code{end}, but you can get better diagnostics if you use
 the specific forms.
 
+@c Strings can be matched
+
+One advantage of using the @code{switch} statement compared to using
+@code{if} statements is that the @var{label}s can be strings. If an
+@code{if} statement is used it is @emph{not} possible to write
+
+@example
+if (X == "a string") # This is NOT valid
+@end example
+
+@noindent
+since a character-to-character comparison between @code{X} and the
+string will be made instead of evaluating if the strings are equal.
+This special-case is handled by the @code{switch} statement, and it
+is possible to write programs that look like this
+
+@example
+switch (X)
+  case "a string"
+    do_something
+  @dots{}
+endswitch
+@end example
+
+@node Notes for the C programmer
+@subsection Notes for the C programmer
+
+The @code{switch} statement is also used in the widely used C
+programming language. There are, however, some differences
+between the statement in Octave and C
+
+@itemize @bullet
 @item
 Cases are exclusive, so they don't `fall through' as do the cases
 in the switch statement of the C language.
@@ -281,13 +330,6 @@ switch (foo)
 
 @noindent
 particularly for C programmers.
-
-@item
-The implementation is simple-minded and currently offers no real
-performance improvement over an equivalent @code{if} block, even if all
-the labels are integer constants.  Perhaps a future variation on this
-could detect all constant integer labels and improve performance by
-using a jump table.
 @end itemize
 
 @node The while Statement

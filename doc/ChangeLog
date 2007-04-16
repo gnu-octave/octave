@@ -5,6 +5,11 @@
 
 2007-04-16  Søren Hauberg  <hauberg@gmail.com>
 
+	* intrepreter/stmt.txi: Improve documentation of switch statement.
+
+	* interpreter/tips.txi: Update description of how copyright
+	statements are recognized.
+
 	* interpreter/octave.texi: Don't include stream.texi.
 	Remove menu entry for I/O streams.
 

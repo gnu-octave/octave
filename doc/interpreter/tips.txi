@@ -283,22 +283,8 @@ Here is an example:
 Octave uses the first block of comments in a function file that do not
 appear to be a copyright notice as the help text for the file.  For
 Octave to recognize the first comment block as a copyright notice, it
-must match the regular expression
-
-@example
-^ Copyright (C).*\n\n This file is part of Octave.
-@end example
-
-@noindent
-or
-
-@example
-^ Copyright (C).*\n\n This program is free softwar
-@end example
-
-@noindent
-(after stripping the leading comment characters).  This is a fairly
-strict requirement, and may be relaxed somewhat in the future.
+must start with the word `Copyright' after stripping the leading
+comment characters.
 
 After the copyright notice and help text come several @dfn{header
 comment} lines, each beginning with @samp{## @var{header-name}:}.  For

@@ -129,7 +129,6 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Strings::                     
 * Data Structures::             
 * Cell Arrays::                  
-* I/O Streams::                 
 * Variables::                   
 * Expressions::                 Expressions.
 * Evaluation::                  
@@ -518,7 +517,6 @@ Grammar
 @include strings.texi
 @include struct.texi
 @include container.texi
-@include stream.texi
 @include var.texi
 @include expr.texi
 @include eval.texi

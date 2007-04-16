@@ -756,7 +756,7 @@ DEFUN (argnames, args, ,
 @deftypefn {Built-in Function} {} argnames (@var{fun})\n\
 Return a cell array of character strings containing the names of\n\
 the arguments of the inline function @var{fun}.\n\
-@seealso{argnames, inline, formula, vectorize}\n\
+@seealso{inline, formula, vectorize}\n\
 @end deftypefn")
 {
   octave_value retval;

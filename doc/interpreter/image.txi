@@ -5,50 +5,138 @@
 @node Image Processing
 @chapter Image Processing
 
-Octave can display images with the X Window System using the
-@code{xloadimage} program.  You do not need to be running X in order to
-manipulate images, however, so some of these functions may be useful
-even if you are not able to view the results.
+Since an image basically is a matrix Octave is a very powerful
+environment for processing and analysing images. To illustrate
+how easy it is to do image processing in Octave, the following
+example will load an image, smooth it by a 5-by-5 averaging filter,
+and compute the gradient of the smoothed image.
 
-Loading images only works with Octave's image format (a file with a
-matrix containing the image data, and a matrix containing the
-colormap).  Contributions of robust, well-written functions to read
-other image formats are welcome.  If you can provide them, or would like
-to improve Octave's image processing capabilities in other ways, please
-contact @email{bug@@octave.org}.
+@example
+I = loadimage("default.img");
+S = conv2(I, ones(5,5)/25, "same");
+[Dx, Dy] = gradient(S);
+@end example
 
-@DOCSTRING(colormap)
+@noindent
+In this example @code{S} contains the smoothed image, and @code{Dx}
+and @code{Dy} contains the partial spatial derivatives of the image.
 
-@DOCSTRING(gray)
+@node Loading and Saving Images
+@section Loading and Saving Images
 
-@DOCSTRING(gray2ind)
+The first step in most image processing tasks is to load an image
+into Octave. Currently Octave only support saving images in the
+Portable Pixmap Format (PPM), PostScript, and Octave's own format, and
+loading images in Octave's format. Most image processing code will
+follow the structure of this code
 
-@DOCSTRING(image)
-
-@DOCSTRING(imagesc)
-
-@DOCSTRING(imshow)
-
-@DOCSTRING(ind2gray)
-
-@DOCSTRING(ind2rgb)
+@example
+I = loadimage("my_input_image.img");
+J = process_my_image(I);
+saveimage("my_output_image.img", J);
+@end example
 
 @DOCSTRING(loadimage)
-
-@DOCSTRING(rgb2ntsc)
-
-@DOCSTRING(ntsc2rgb)
-
-@DOCSTRING(hsv2rgb)
-
-@DOCSTRING(rgb2hsv)
-
-@DOCSTRING(ocean)
-
-@DOCSTRING(rgb2ind)
 
 @DOCSTRING(saveimage)
 
 @DOCSTRING(IMAGE_PATH)
 
+@node Displaying Images
+@section Displaying Images
+
+A natural part of image processing is visualization of an image.
+The most basic function for this is the @code{imshow} function that
+shows the image given in the first input argument. This function uses
+an external program to show the image. If gnuplot 4.2 or later is 
+available it will be used to display the image, otherwise the
+@code{display}, @code{xv}, or @code{xloadimage} program is used. The
+actual program can be selected with the @code{image_viewer} function.
+
+@DOCSTRING(imshow)
+
+@DOCSTRING(image)
+
+@DOCSTRING(imagesc)
+
 @DOCSTRING(image_viewer)
+
+@node Representing Images
+@section Representing Images
+
+In general Octave supports four different kinds of images, gray-scale
+images, RGB images, binary images, and indexed images. A gray-scale
+image is represented with a @math{M @times N} matrix in which each
+element corresponds to the intensity of a pixel. An RGB image is
+represented with a @math{M @times N @times 3} array where each
+3-vector corresponds to the red, green, and blue intensities of each
+pixel.
+
+The actual meaning of the value of a pixel in a gray-scale or RGB
+image depends on the class of the matrix. If the matrix is of class
+@code{double} pixel intensities are between 0 and 1, if it is of class
+@code{uint8} intensities are between 0 and 255, and if it is of class
+@code{uint16} intensities are between 0 and 65535.
+
+A binary image is a @math{M @times N} matrix of class @code{logical}.
+A pixel in a binary image is black if it is @code{false} and white
+if it is @code{true}.
+
+An indexed image consists of a @math{M @times N} matrix of integers
+and a @math{C @times 3} color map. Each integer corresponds to an
+index in the color map, and each row in the color map corresponds to
+a RGB color. The color map must be of class @code{double} with values
+between 0 and 1.
+
+@DOCSTRING(gray2ind)
+
+@DOCSTRING(ind2gray)
+
+@DOCSTRING(rgb2ind)
+
+@DOCSTRING(ind2rgb)
+
+@DOCSTRING(colormap)
+
+@DOCSTRING(gray)
+
+@DOCSTRING(ocean)
+
+@node Plotting on top of Images
+@section Plotting on top of Images
+
+If gnuplot is being used to display images it is possible to plot on
+top of images. Since an image is a matrix it is indexed by row and
+column values. The plotting system is, however, based on the 
+traditional @math{(x, y)} system. To minimize the difference between
+the two systems Octave places the origin of the coordinate system in
+the point corresponding to the pixel at @math{(1, 1)}. So, to plot
+points given by row and column values on top of an image, one should
+simply call @code{plot} with the column values as the first argument
+and the row values as the second. As an example the following code
+generates an image with random intensities between 0 and 1, and shows
+the image with red circles over pixels with an intensity above 
+@math{0.99}.
+
+@example
+I = rand(100, 100);
+[row, col] = find(I > 0.99);
+imshow(I);
+hold on, plot(col, row, "ro"); hold off
+@end example
+
+@node Color Conversion
+@section Color Conversion
+
+Octave supports conversion from the RGB color system to NTSC and HSV
+and vice versa. 
+
+@DOCSTRING(rgb2hsv)
+
+@DOCSTRING(hsv2rgb)
+
+@DOCSTRING(rgb2ntsc)
+
+@DOCSTRING(ntsc2rgb)
+
+

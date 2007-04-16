@@ -1,3 +1,7 @@
+2007-04-16  Geordie McBain  <geordie.mcbain@aeromech.usyd.edu.au>
+
+	* ov-fcn-inline.cc (Fargnames): Doc fix.
+
 2007-04-13  Geordie McBain  <geordie.mcbain@aeromech.usyd.edu.au>
 
 	* DLD-FUNCTIONS/find.cc (Ffind): Doc fix.

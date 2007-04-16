@@ -1,3 +1,15 @@
+2007-04-16  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/stream.txi: Delete.
+	* interpreter/Makefile.in (SUB_SOURCE): Remove it from the list.
+
+2007-04-16  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/octave.texi: Don't include stream.texi.
+	Remove menu entry for I/O streams.
+
+	* interpreter/image.txi: Update docs.
+
 2007-04-11  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/container.txi: Document indexing with ().

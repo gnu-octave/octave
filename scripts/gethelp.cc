@@ -12,32 +12,10 @@
 static bool
 looks_like_octave_copyright (const std::string& s)
 {
-  bool retval = false;
+  // Perhaps someday we will want to do more here, so leave this as a
+  // separate function.
 
-  std::string t = s.substr (0, 14);
-
-  if (t == "Copyright (C) ")
-    {
-      size_t pos = s.find ('\n');
-
-      if (pos != NPOS)
-	{
-	  pos = s.find ('\n', pos + 1);
-
-	  if (pos != NPOS)
-	    {
-	      pos++;
-
-	      t = s.substr (pos, 28);
-
-	      if (t == "This file is part of Octave."
-		  || t == "This program is free softwar")
-		retval = true;
-	    }
-	}
-    }
-
-  return retval;
+  return (s.substr (0, 9) == "Copyright");
 }
 
 // Eat whitespace and comments from FFILE, returning the text of the

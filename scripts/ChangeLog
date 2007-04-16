@@ -1,5 +1,9 @@
 2007-04-16  John W. Eaton  <jwe@octave.org>
 
+	* gethelp.cc (looks_like_octave_copyright): Use same logic as in
+	looks_like_copyright in src/help.cc.
+	From Søren Hauberg <soren@hauberg.org>.
+
 	* plot/__go_draw_axes__.m: For log plots, omit zero values too.
 
 2007-04-13  John W. Eaton  <jwe@octave.org>
@@ -363,7 +367,7 @@
 
 	* miscellaneous/cast.m: Use feval and strcmp with cell to check
 	arg instead of switch statement.
-	From Søren Hauberg <soren@hauberg.org>
+	From Søren Hauberg <soren@hauberg.org>.
 
 2007-03-12  John W. Eaton  <jwe@octave.org>
 

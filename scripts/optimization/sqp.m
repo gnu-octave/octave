@@ -279,6 +279,8 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif)
 
     ## report (iter, qp_iter, alpha, nfun, obj);
 
+    info = 0;
+
     while (++iter < iter_max)
 
       ## Check convergence.  This is just a simple check on the first

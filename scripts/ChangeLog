@@ -1,4 +1,10 @@
+2007-04-16  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: For log plots, omit zero values too.
+
 2007-04-13  John W. Eaton  <jwe@octave.org>
+
+	* optimization/sqp.m: Initialize info to 0.
 
 	* optimization/qp.m: Undo previous change.
 

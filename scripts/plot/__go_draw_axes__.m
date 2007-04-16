@@ -700,12 +700,12 @@ function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
     if (isinf (min_pos))
       warning ("axis: logscale with no positive values to plot");
     endif
-    if (min_val < 0)
+    if (min_val <= 0)
       min_val = min_pos;
-      if (max_val < 0)
+      if (max_val <= 0)
 	max_val = min_pos;
       endif
-      warning ("axis: omitting negative data in log plot");
+      warning ("axis: omitting nonpositive data in log plot");
     endif
     ## FIXME -- maybe this test should also be relative?
     if (abs (min_val - max_val) < sqrt (eps))

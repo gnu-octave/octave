@@ -27,15 +27,14 @@
 function x = factorial (n)
   if (nargin != 1)
     print_usage ();
-  elseif (any (n(:) < 0))
-    error ("factorial: n be be a scalar or array of positive integers");
+  elseif (any (n(:) < 0 | n(:) != round (n(:))))
+    error ("factorial: n must all be nonnegative integers");
   endif
-  if (isscalar (n))
-    x = prod (2:n);
-  else
-    n (n < 1) = 1;
-    m = max (n(:));
-    c = cumprod (1:m);
-    x = c(floor (n));
-  endif
+  x = round (gamma (n+1));
 endfunction
+
+%!assert (factorial(5), prod(1:5))
+%!assert (factorial([1,2;3,4]), [1,2;6,24])
+%!assert (factorial(70), exp(sum(log(1:70))), -10*eps)
+%!fail ('factorial(5.5)', "must all be nonnegative integers")
+%!fail ('factorial(-3)', "must all be nonnegative integers")

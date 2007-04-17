@@ -57,9 +57,9 @@ it, and by reporting any problems you may have.
 @unnumberedsec Acknowledgements
 @cindex acknowledgements
 
-Many people have already contributed to Octave's development.  In
-addition to John W. Eaton, the following people have helped write parts
-of Octave or helped out in various other ways (listed alphbetically).
+Many people have already contributed to Octave's development.  The
+following people have helped write parts of Octave or helped out in
+various other ways (listed alphbetically).
 
 @noindent
 Andy Adler, Joel Andersson, Muthiah Annamalai,
@@ -74,7 +74,7 @@ Philippe Defert, Bill Denney, David M. Doolin, Pascal A. Dupuis,
 John W. Eaton, Dirk Eddelbuettel, Paul Eggert, Stephen Eglen, Peter Ekberg, 
 Rolf Fabian, Stephen Fegan, Ramon Garcia Fernandez, Torsten Finke, 
 Jose Daniel Munoz Frias, Castor Fu, Eduardo Gallestey, Walter Gautschi, 
-Klaus Gebhardt, Driss Ghaddab, Nicolo Giorgetti, From Michael Goffioul, 
+Klaus Gebhardt, Driss Ghaddab, Nicolo Giorgetti,
 Michael Goffioul, Glenn Golden, Tomislav Goles, Keith Goodman, 
 Etienne Grossmann, Kai Habel, William Poetra Yoga Hadisoeseno, Benjamin Hall, 
 Kim Hansen, Soren Hauberg, Daniel Heiserer, Yozo Hida, 

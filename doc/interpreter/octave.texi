@@ -382,6 +382,7 @@ Arithmetic
 
 Linear Algebra
 
+* Techniques used for Linear Algebra::
 * Basic Matrix Functions::      
 * Matrix Factorizations::       
 * Functions of a Matrix::       

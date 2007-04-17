@@ -1,3 +1,10 @@
+2007-04-17  David Bateman  <dbateman@free.fr>
+
+	* interpreter/linalg.txi (Techniques used for Linear Algebra):
+	New node.
+	* interpreter/octave.texi: Include it in menu.
+	* interpreter/sparse.txi: Delete discusion of matrix_type.
+
 2007-04-16  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/stream.txi: Delete.
@@ -18,13 +25,6 @@
 2007-04-11  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/container.txi: Document indexing with ().
-
-2007-04-11  David Bateman  <dbateman@free.fr>
-
-	* interpreter/linalg.txi (Techniques used for Linear Algebra):
-	New node.
-	* interpreter/octave.texi: Include it in menu.
-	* interpreter/sparse.txi: Delete discusion of matrix_type.
 
 2007-04-11  Søren Hauberg  <hauberg@gmail.com>
 

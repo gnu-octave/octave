@@ -108,4 +108,10 @@ function c = ismember (a, S)
   endif
 
 endfunction
-  
+
+%!assert (ismember ({''}, {'abc', 'def'}), false);
+%!assert (ismember ('abc', {'abc', 'def'}), true);
+%!assert (isempty (ismember ([], [1, 2])), true);
+%!assert (ismember ('', {'abc', 'def'}), false);
+%!fail (ismember ([], {1, 2}), 'error:.*');
+%!fail (ismember ({[]}, {1, 2}), 'error:.*');

@@ -1,3 +1,8 @@
+2007-04-17  John W. Eaton  <jwe@octave.org>
+
+	* set/ismember.m: New tests.
+	From David Grohmann <grohmann@arlut.utexas.edu>
+
 2007-04-17  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* specfun/factorial.m: Use gamma function instead of cumprod.

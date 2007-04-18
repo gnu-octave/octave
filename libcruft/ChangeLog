@@ -1,3 +1,8 @@
+2007-04-18  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* libcruft/blas-xtra/xdnrm2.f, libcruft/blas-xtra/xdznrm2.f:
+	Delete spurious semicolons.
+
 2007-04-06  John W. Eaton  <jwe@octave.org>
 
 	* blas-xtra/xdnrm2.f, blas-xtra/xdznrm2.f: New functions.
@@ -27,7 +32,7 @@
 	* misc/Makefile.in (CPICDEP): Also set if CPICFLAG is not defined.
 	(CXXPICDEP): Also set if CXXPICFLAG is not defined.
 
-2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
+2007-02-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in, Makerules.in: Use $(LN_S) instead of ln or ln -s.
 

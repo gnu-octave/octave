@@ -1,3 +1,7 @@
+2007-04-18  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* oct-md5.h (oct_md5, oct_md5_file): Tag decls with OCTAVE_API.
+
 2007-04-13  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::maybe_delete_elements_2): Don't return early
@@ -169,12 +173,12 @@
 	$(INCLUDES_FOR_INSTALL), instead of $(INCLUDES).
 	From Thomas Treichl <Thomas.Treichl@gmx.net>.
 
-2007-02-27  From Michael Goffioul  <michael.goffioul@swing.be>
+2007-02-27  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* file-ops.cc (file_ops::recursive_rmdir):
 	Close dir_entry object before calling rmdir.
 
-2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
+2007-02-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in: Use $(LN_S) instead of ln or ln -s.
 

@@ -21,9 +21,9 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 */
 
-extern std::string oct_md5 (const std::string str);
+extern OCTAVE_API std::string oct_md5 (const std::string str);
 
-extern std::string oct_md5_file (const std::string file);
+extern OCTAVE_API std::string oct_md5_file (const std::string file);
 	  
 /*
 ;;; Local Variables: ***

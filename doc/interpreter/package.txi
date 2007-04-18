@@ -22,6 +22,7 @@ website for an updated reference.
 * Creating Packages::           
 @end menu
 
+@findex pkg
 @node Installing and Removing Packages
 @section Installing and Removing Packages
 
@@ -462,7 +463,3 @@ command that should be placed in the @code{PKG_ADD} file.
 @code{PKG_DEL} directives work in the same way, except the @code{PKG_ADD}
 keyword is replaced with @code{PKG_DEL} and the commands get added
 to the @code{PKG_DEL} file.
-
-@c Perhaps we should include this line when creating info files?
-@c That way the user can still type 'doc pkg'.
-@c DOCSTRING(pkg)

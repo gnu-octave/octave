@@ -29,8 +29,9 @@ d4_path=$(echo "$d4_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:
 
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
+INFOFILE="$builddir/doc/interperter/octave.info"
 
-args="--no-initial-path --path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\""
+args="--no-initial-path --path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\" --info=file=\"$INFOFILE\""
 
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then

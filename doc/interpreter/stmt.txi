@@ -290,6 +290,10 @@ switch (X)
 endswitch
 @end example
 
+@menu
+* Notes for the C programmer::  
+@end menu
+
 @node Notes for the C programmer
 @subsection Notes for the C programmer
 

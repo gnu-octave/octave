@@ -1,3 +1,11 @@
+2007-04-18  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/contributors.in: New file.
+	* interpreter/Makefile.in (contributors.texi): New target.
+	(clean): Also deleete contributors.texi
+	(TEXINFO): Include contributors.texi in the list.
+	(preface.texi): @include contributors.texi.
+
 2007-04-17  David Bateman  <dbateman@free.fr>
 
 	* interpreter/linalg.txi (Techniques used for Linear Algebra):

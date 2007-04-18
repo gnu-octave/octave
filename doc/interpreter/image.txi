@@ -12,14 +12,22 @@ example will load an image, smooth it by a 5-by-5 averaging filter,
 and compute the gradient of the smoothed image.
 
 @example
-I = loadimage("default.img");
-S = conv2(I, ones(5,5)/25, "same");
-[Dx, Dy] = gradient(S);
+I = loadimage ("default.img");
+S = conv2 (I, ones (5, 5) / 25, "same");
+[Dx, Dy] = gradient (S);
 @end example
 
 @noindent
 In this example @code{S} contains the smoothed image, and @code{Dx}
 and @code{Dy} contains the partial spatial derivatives of the image.
+
+@menu
+* Loading and Saving Images::   
+* Displaying Images::           
+* Representing Images::         
+* Plotting on top of Images::   
+* Color Conversion::            
+@end menu
 
 @node Loading and Saving Images
 @section Loading and Saving Images
@@ -31,9 +39,9 @@ loading images in Octave's format. Most image processing code will
 follow the structure of this code
 
 @example
-I = loadimage("my_input_image.img");
-J = process_my_image(I);
-saveimage("my_output_image.img", J);
+I = loadimage ("my_input_image.img");
+J = process_my_image (I);
+saveimage ("my_output_image.img", J);
 @end example
 
 @DOCSTRING(loadimage)
@@ -66,9 +74,9 @@ actual program can be selected with the @code{image_viewer} function.
 
 In general Octave supports four different kinds of images, gray-scale
 images, RGB images, binary images, and indexed images. A gray-scale
-image is represented with a @math{M @times N} matrix in which each
+image is represented with an M-by-N matrix in which each
 element corresponds to the intensity of a pixel. An RGB image is
-represented with a @math{M @times N @times 3} array where each
+represented with an M-by-N-by3 array where each
 3-vector corresponds to the red, green, and blue intensities of each
 pixel.
 
@@ -78,12 +86,12 @@ image depends on the class of the matrix. If the matrix is of class
 @code{uint8} intensities are between 0 and 255, and if it is of class
 @code{uint16} intensities are between 0 and 65535.
 
-A binary image is a @math{M @times N} matrix of class @code{logical}.
+A binary image is a M-by-N matrix of class @code{logical}.
 A pixel in a binary image is black if it is @code{false} and white
 if it is @code{true}.
 
-An indexed image consists of a @math{M @times N} matrix of integers
-and a @math{C @times 3} color map. Each integer corresponds to an
+An indexed image consists of an M-by-N matrix of integers
+and a C-by-3 color map. Each integer corresponds to an
 index in the color map, and each row in the color map corresponds to
 a RGB color. The color map must be of class @code{double} with values
 between 0 and 1.
@@ -119,10 +127,12 @@ the image with red circles over pixels with an intensity above
 @math{0.99}.
 
 @example
-I = rand(100, 100);
-[row, col] = find(I > 0.99);
-imshow(I);
-hold on, plot(col, row, "ro"); hold off
+I = rand (100, 100);
+[row, col] = find (I > 0.99);
+hold ("on");
+imshow (I);
+plot (col, row, "ro");
+hold ("off");
 @end example
 
 @node Color Conversion

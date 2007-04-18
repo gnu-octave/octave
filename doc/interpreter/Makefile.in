@@ -53,7 +53,7 @@ MAIN_TEXINFO := $(srcdir)/octave.texi
 
 SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 
-TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO) ../conf.texi
+TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO) contributors.texi ../conf.texi
 
 FORMATTED = octave.dvi octave.ps octave.pdf \
 	octave.info octave.info-[0-9]*
@@ -62,7 +62,7 @@ MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
 # FIXME -- need to include generated figures here...
-DISTFILES = Makefile.in dir munge-texi.cc $(MAN_SRC) \
+DISTFILES = Makefile.in contributors.in dir munge-texi.cc $(MAN_SRC) \
   $(SOURCES) $(TEXINFO) $(FORMATTED) $(IMAGES)
 
 DISTDIRS = HTML
@@ -99,7 +99,11 @@ scripts-DOCSTRINGS:
 	$(MAKE) -C ../../scripts DOCSTRINGS
 .PHONY: scripts-DOCSTRINGS
 
-%.texi : %.txi
+contributors.texi: contributors.in
+	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t
+	@$(simple-move-if-change-rule)
+
+$(SUB_TEXINFO) : %.texi : %.txi
 	@echo making $@ from $<
 	@./munge-texi \
 	  -d $(TOPDIR)/src/DOCSTRINGS \
@@ -242,7 +246,7 @@ maintainer-clean: clean-texi
 .PHONY: maintainer-clean
 
 clean-texi:
-	rm -f $(SUB_TEXINFO)
+	rm -f $(SUB_TEXINFO) contributors.texi
 .PHONY: clean-texi
 
 dist: clean-texi all

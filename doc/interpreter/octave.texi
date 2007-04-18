@@ -448,6 +448,14 @@ System Construction and Interface Functions
 * structaccess::                
 * structintern::                
 
+Image Processing
+
+* Loading and Saving Images::   
+* Displaying Images::           
+* Representing Images::         
+* Plotting on top of Images::   
+* Color Conversion::            
+
 System Utilities
 
 * Timing Utilities::            

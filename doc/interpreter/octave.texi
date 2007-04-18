@@ -156,6 +156,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Audio Processing::            
 * Quaternions::                 
 * System Utilities::            
+* Packages::            
 * Test and Demo Functions::
 * Tips::                        
 * Trouble::                     If you have trouble installing Octave.
@@ -468,6 +469,16 @@ System Utilities
 * Group Database Functions::    
 * System Information::          
 
+Packages
+
+* Installing and Removing Packages::
+* Using Packages::
+* Administrating Packages::
+* Creating Packages::
+* The DESCRIPTION File::        
+* The INDEX file::              
+* PKG_ADD and PKG_DEL directives::  
+
 Test and Demo Functions
 
 * Test Functions::
@@ -553,6 +564,7 @@ Grammar
 @include audio.texi
 @include quaternion.texi
 @include system.texi
+@include package.texi
 
 @c maybe add again later, if anyone every writes any really interesting
 @c fun stuff for Octave.

@@ -1,3 +1,8 @@
+2007-04-18  John W. Eaton  <jwe@octave.org>
+
+	* pt-id.cc (tree_identifier::do_lookup): Don't call lookup if
+	symbol is a variable.
+
 2007-04-16  Geordie McBain  <geordie.mcbain@aeromech.usyd.edu.au>
 
 	* ov-fcn-inline.cc (Fargnames): Doc fix.

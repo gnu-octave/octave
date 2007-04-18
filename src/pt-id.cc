@@ -107,7 +107,10 @@ tree_identifier::do_lookup (bool& script_file_executed, bool exec_script)
 {
   static octave_value foo;
 
-  script_file_executed = lookup (sym, exec_script);
+  if (sym && sym->is_variable ())
+    script_file_executed = false;
+  else
+    script_file_executed = lookup (sym, exec_script);
 
   return script_file_executed ? foo : sym->def ();
 }

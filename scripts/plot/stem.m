@@ -262,7 +262,7 @@ function [lc, ls, mc, ms] = stem_line_spec (str)
   endif
   [lc, ls, mc, ms] = set_default_values ();
   ## Parse the line specifier string.
-  cur_props = __pltopt__ ("stem", str);
+  cur_props = __pltopt__ ("stem", str, false);
   for i = 1:length(cur_props)
     if (isfield (cur_props(i), "markeredgecolor"))
       mc = cur_props(i).markeredgecolor;

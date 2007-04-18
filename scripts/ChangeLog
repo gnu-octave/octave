@@ -1,5 +1,7 @@
 2007-04-17  John W. Eaton  <jwe@octave.org>
 
+	* plot/stem.m (stem_line_spec): Pass false as third arg to __pltopt__.
+
 	* set/ismember.m: New tests.
 	From David Grohmann <grohmann@arlut.utexas.edu>
 

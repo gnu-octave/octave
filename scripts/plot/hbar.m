@@ -18,9 +18,9 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} bar (@var{x}, @var{y}, @var{style})
-## @deftypefnx {Function File} {[@var{xb}, @var{yb}] =} bar (@dots{})
-## Given two vectors of x-y data, @code{bar} produces a bar graph.
+## @deftypefn {Function File} {@var{h} =} hbar (@var{x}, @var{y}, @var{style})
+## @deftypefnx {Function File} {[@var{xb}, @var{yb}] =} hbar (@dots{})
+## Given two vectors of x-y data, @code{bar} produces a horizontal bar graph.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
@@ -34,26 +34,26 @@
 ## not plotted.  For example,
 ##
 ## @example
-## bar (x, y);
+## hbar (x, y);
 ## @end example
 ##
 ## @noindent
 ## and
 ##
 ## @example
-## [xb, yb] = bar (x, y);
+## [xb, yb] = hbar (x, y);
 ## plot (xb, yb);
 ## @end example
 ##
 ## @noindent
 ## are equivalent.
-## @seealso{hbar, plot, semilogx, semilogy, loglog, polar, mesh, contour,
+## @seealso{bar, plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## stairs, xlabel, ylabel, title}
 ## @end deftypefn
 
 ## Author: jwe
 
-function varargout = bar (varargin)
+function varargout = hbar (varargin)
   varargout = cell (nargout, 1);
-  [varargout{:}] = __bar__ (true, "bar", varargin{:});
+  [varargout{:}] = __bar__ (false, "hbar", varargin{:});
 endfunction

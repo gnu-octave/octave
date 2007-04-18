@@ -1,3 +1,11 @@
+2007-04-18  David Bateman  <dbateman@free.fr>
+
+	* __bar__.m: New support function for bar/hbar to support graphic
+	handles, and additional arguments.
+	* bar.m: Convert to use __bar__.
+	* hbar.m: New function
+	* hist.m: Explicitly set the width of the bar plot.
+	
 2007-04-17  John W. Eaton  <jwe@octave.org>
 
 	* plot/stem.m (stem_line_spec): Pass false as third arg to __pltopt__.

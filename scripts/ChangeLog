@@ -1,3 +1,8 @@
+2007-04-19  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/unpack.m: Use gzip -d and bzip2 -d instead of
+	gunzip and bunzip.  From Michael Goffioul <michael.goffioul@swing.be>.
+
 2007-04-19  A. S. Hodel  <a.s.hodel@eng.auburn.edu>
 
 	* control/util/axis2dlim.m: Delete extraneous line.
@@ -507,11 +512,11 @@
 	* testfun/test.m (test): Handle possibility of file_in_loadpath
 	returning an empty cell array.
 
-2007-02-27  From Michael Goffioul  <michael.goffioul@swing.be>
+2007-02-27  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* pkg/pkg.m: Use fullfile to create filenames from parts.
 
-2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
+2007-02-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in, audio/Makefile.in, control/Makefile.in,
 	control/base/Makefile.in, control/hinf/Makefile.in,

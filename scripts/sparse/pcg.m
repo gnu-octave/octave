@@ -94,7 +94,8 @@
 ## @code{@var{resvec} (i,1)} is the Euclidean norm of the residual, and
 ## @code{@var{resvec} (i,2)} is the preconditioned residual norm,
 ## after the (@var{i}-1)-th iteration, @code{@var{i} =
-## 1,2,...@var{iter}+1}. The preconditioned residual norm is defined as
+## 1, 2, @dots{}, @var{iter}+1}. The preconditioned residual norm
+## is defined as
 ## @code{norm (@var{r}) ^ 2 = @var{r}' * (@var{m} \ @var{r})} where
 ## @code{@var{r} = @var{b} - @var{a} * @var{x}}, see also the
 ## description of @var{m}. If @var{eigest} is not required, only
@@ -121,8 +122,8 @@
 ## @example
 ## @group
 ## 	N = 10; 
-## 	A = diag([1:N]); A = sparse(A);  
-## 	b = rand(N,1);
+## 	A = spdiag ([1:N]);
+## 	b = rand (N, 1);
 ## @end group
 ## @end example
 ## 
@@ -137,11 +138,11 @@
 ## 
 ## @example
 ## @group
-##   function y = applyA(x) 
+##   function y = applyA (x)
 ##     y = [1:N]'.*x; 
 ##   endfunction
 ##
-##   x = pcg('applyA',b)
+##   x = pcg ("applyA", b)
 ## @end group
 ## @end example
 ## 
@@ -151,14 +152,14 @@
 ## 
 ## @example
 ## @group
-##   function y = applyM(x)		
-##     K = floor(length(x)-2); 
-##     y = x; 
-##     y(1:K) = x(1:K)./[1:K]';	
+##   function y = applyM(x)
+##     K = floor (length (x) - 2);
+##     y = x;
+##     y(1:K) = x(1:K)./[1:K]';
 ##   endfunction
 ## 
-##   [x, flag, relres, iter, resvec, eigest] = pcg(A,b,[],[],'applyM')
-##   semilogy([1:iter+1], resvec);
+##   [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], "applyM");
+##   semilogy (1:iter+1, resvec);
 ## @end group
 ## @end example
 ## 
@@ -167,13 +168,14 @@
 ## 
 ## @example
 ## @group
-##   function y = applyM(x, varargin)
+##   function y = applyM (x, varargin)
 ##   K = varargin@{1@}; 
-##   y = x; y(1:K) = x(1:K)./[1:K]';	 
+##   y = x;
+##   y(1:K) = x(1:K)./[1:K]';
 ##   endfuntion
 ## 
 ##   [x, flag, relres, iter, resvec, eigest] = ...
-##        pcg(A,b,[],[],'applyM',[],3)
+##        pcg (A, b, [], [], "applyM", [], 3)
 ## @end group
 ## @end example
 ## 

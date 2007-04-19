@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y}} = circshift (@var{x}, @var{n})
+## @deftypefn {Function File} {@var{y} =} circshift (@var{x}, @var{n})
 ## Circularly shifts the values of the array @var{x}. @var{n} must be
 ## a vector of integers no longer than the number of dimensions in 
 ## @var{x}. The values of @var{n} can be either positive or negative,

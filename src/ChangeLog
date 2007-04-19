@@ -1,3 +1,8 @@
+2007-04-19  John W. Eaton  <jwe@octave.org>
+
+	* lex.l (is_keyword_token): Delete all_va_args_kw switch case.
+	* octave.gperf: Remove all_va_args_kw from the list.
+
 2007-04-19  Daniel J. Sebald  <daniel.sebald@ieee.org>
 
 	* syscalls.cc: Fix popen2 test to stop trying after 100 times

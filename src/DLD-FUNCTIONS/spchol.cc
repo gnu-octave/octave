@@ -333,7 +333,7 @@ it is much faster than using @code{inv}.\n\
 
 DEFUN_DLD (symbfact, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}]} = symbfact (@var{s}, @var{typ}, @var{mode})\n\
+@deftypefn {Loadable Function} {[@var{count}, @var{h}, @var{parent}, @var{post}, @var{r}] =} symbfact (@var{s}, @var{typ}, @var{mode})\n\
 \n\
 Performs a symbolic factorization analysis on the sparse matrix @var{s}.\n\
 Where\n\

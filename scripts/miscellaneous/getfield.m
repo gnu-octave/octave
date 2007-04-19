@@ -18,23 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {} [@var{v1},...] =
-## @code{getfield (@var{s}, 'k1',...)} extract fields from a structure.
+## @deftypefn {Built-in Function} {[@var{v1}, @dots{}] =} getfield (@var{s}, @var{key}, @dots{}) extract fields from a structure.
 ## For example
 ##
 ## @example
 ## @group
 ## ss(1,2).fd(3).b=5;
-## getfield(ss,@{1,2@},'fd',@{3@},'b')
+## getfield (ss, @{1,2@}, "fd", @{3@}, "b")
 ## @result{} ans = 5
 ## @end group
 ## @end example
 ##
-## Note that this function could be written as
+## Note that the function call in the previous example is equivalent to
+## the expression
 ##
 ## @example
-##          i1= @{1,2@}; i2= 'fd'; i3= @{3@}; i4= 'b';
-##          ss( i1@{:@} ).( i2 )( i3@{:@} ).( i4 )
+##          i1= @{1,2@}; i2= "fd"; i3= @{3@}; i4= "b";
+##          ss(i1@{:@}).(i2)(i3@{:@}).(i4)
 ## @end example
 ## @seealso{setfield, rmfield, isfield, isstruct, fieldnames, struct}
 ## @end deftypefn

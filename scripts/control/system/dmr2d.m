@@ -55,9 +55,9 @@
 ## The sampling time of sys is updated to @var{ts2}.
 ##
 ## if @var{cuflg}=0 then a set of additional inputs is added to
-## the system with suffixes _d1, ..., _dn to indicate their
+## the system with suffixes _d1, @dots{}, _dn to indicate their
 ## delay from the starting time k @var{ts2}, i.e.
-## u = [u_1; u_1_d1; ..., u_1_dn] where u_1_dk is the input
+## u = [u_1; u_1_d1; @dots{}, u_1_dn] where u_1_dk is the input
 ## k*ts1 units of time after u_1 is sampled. (@var{ts1} is
 ## the original sampling time of the discrete time system and
 ## @var{ts2} = (n+1)*ts1)

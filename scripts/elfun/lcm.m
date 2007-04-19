@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} lcm (@var{x}, @code{...})
+## @deftypefn {Mapping Function} {} lcm (@var{x}, @dots{})
 ## Compute the least common multiple of the elements elements of @var{x}, or
 ## the list of all the arguments.  For example,
 ##

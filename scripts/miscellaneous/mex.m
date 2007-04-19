@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mex [options] file ...
+## @deftypefn {Function File} {} mex [options] file @dots{}
 ## Compile source code written in C, C++, or Fortran, to a MEX file.
 ## This is equivalent to @code{mkoctfile --mex [options] file}.
 ## @seealso{mkoctfile}

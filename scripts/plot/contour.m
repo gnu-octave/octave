@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} {@var{c}} = contour (@var{x},@var{y},@var{z},@var{vv})
+## @deftypefn {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vv})
 ## Compute isolines (countour lines) of the matrix @var{z}. 
 ## parameters @var{x}, @var{y} and @var{vn} are optional.
 ##
@@ -26,8 +26,8 @@
 ## contour lines in the following format
 ##
 ## @example
-## @var{c} = [lev1 , x1 , x2 , ... , levn , x1 , x2 , ... 
-##      len1   , y1 , y2 , ... , lenn   , y1 , y2 , ...  ]
+## @var{c} = [lev1, x1, x2, ..., levn, x1, x2, ... 
+##      len1, y1, y2, ..., lenn, y1, y2, ...]
 ## @end example
 ##
 ## @noindent
@@ -41,9 +41,10 @@
 ## @var{vn} is omitted it defaults to 10.
 ##
 ## @example
-## @var{c}=contourc (@var{x}, @var{y}, @var{z}, linspace(0,2*pi,10))
+## levels = linspace (0, 2*pi, 10);
+## @var{c} = contourc (@var{x}, @var{y}, @var{z}, levels);
 ## @end example
-## @seealso{contourc,line,plot}
+## @seealso{contourc, line, plot}
 ## @end deftypefn
 
 ## Author: shaia

@@ -561,7 +561,7 @@ octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
 DEFUN (inline, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} inline (@var{str})\n\
-@deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, ...)\n\
+@deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, @dots{})\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{n})\n\
 Create an inline function from the character string @var{str}.\n\
 If called with a single argument, the arguments of the generated\n\

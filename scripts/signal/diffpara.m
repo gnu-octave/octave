@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{d}, @var{dd}]} = diffpara (@var{x}, @var{a}, @var{b})
+## @deftypefn {Function File} {[@var{d}, @var{dd}] =} diffpara (@var{x}, @var{a}, @var{b})
 ## Return the estimator @var{d} for the differencing parameter of an
 ## integrated time series.
 ##

@@ -70,62 +70,6 @@ page_screen_output = "false"
 
 @noindent
 to turn the pager off.
-
-@item
-If you get messages like
-
-@example
-Input line too long
-@end example
-
-when trying to plot many lines on one graph, you have probably generated
-a plot command that is too large for @code{gnuplot}'s fixed-length
-buffer for commands.  Splitting up the plot command doesn't help because
-replot is implemented in gnuplot by simply appending the new plotting
-commands to the old command line and then evaluating it again.
-
-You can demonstrate this `feature' by running gnuplot and doing
-something like
-
-@example
-  plot sin (x), sin (x), sin (x), ... lots more ..., sin (x)
-@end example
-
-@noindent
-and then
-
-@example
-  replot sin (x), sin (x), sin (x), ... lots more ..., sin (x)
-@end example
-
-@noindent
-after repeating the replot command a few times, gnuplot will give you
-an error.
-
-Also, it doesn't help to use backslashes to enter a plot command over
-several lines, because the limit is on the overall command line
-length, once the backslashed lines are all pasted together.
-
-Because of this, Octave tries to use as little of the command-line
-length as possible by using the shortest possible abbreviations for
-all the plot commands and options.  Unfortunately, the length of the
-temporary file names is probably what is taking up the most space on
-the command line.
-
-You can buy a little bit of command line space by setting the
-environment variable @code{TMPDIR} to be "." before starting Octave, or
-you can increase the maximum command line length in gnuplot by changing
-the following limits in the file plot.h in the gnuplot distribution and
-recompiling gnuplot.
-
-@example
-#define MAX_LINE_LEN 32768  /* originally 1024 */
-#define MAX_TOKENS 8192     /* originally 400 */
-@end example  
-
-Of course, this doesn't really fix the problem, but it does make it
-much less likely that you will run into trouble unless you are putting
-a very large number of lines on a given plot.
 @end itemize
 
 A list of ideas for future enhancements is distributed with Octave.  See

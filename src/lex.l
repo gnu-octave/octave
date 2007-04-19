@@ -1003,7 +1003,6 @@ is_keyword_token (const std::string& s)
 
       switch (kw->kw_id)
 	{
-	case all_va_args_kw:
 	case break_kw:
 	case case_kw:
 	case catch_kw:

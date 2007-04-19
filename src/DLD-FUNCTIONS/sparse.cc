@@ -61,7 +61,7 @@ Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
 
 DEFUN_DLD (sparse, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{sparse_val} =} sparse (...)\n\
+@deftypefn {Loadable Function} {@var{sparse_val} =} sparse (@dots{})\n\
 SPARSE: create a sparse matrix\n\
 \n\
 sparse can be called in the following ways:\n\

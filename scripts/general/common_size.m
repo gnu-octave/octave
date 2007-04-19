@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{err}, @var{y1}, ...] =} common_size (@var{x1}, ...)
+## @deftypefn {Function File} {[@var{err}, @var{y1}, @dots{}] =} common_size (@var{x1}, @dots{})
 ## Determine if all input arguments are either scalar or of common
 ## size.  If so, @var{err} is zero, and @var{yi} is a matrix of the
 ## common size with all entries equal to @var{xi} if this is a scalar or

@@ -3,8 +3,8 @@
 ## This program is free software and is in the public domain
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{count}, @var{mean}, @var{var}]} = spstats (@var{s})
-## @deftypefnx {Function File} {[@var{count}, @var{mean}, @var{var}]} = spstats (@var{s}, @var{j})
+## @deftypefn {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{s})
+## @deftypefnx {Function File} {[@var{count}, @var{mean}, @var{var}] =} spstats (@var{s}, @var{j})
 ## Return the stats for the non-zero elements of the sparse matrix @var{s}.
 ## @var{count} is the number of non-zeros in each column, @var{mean}
 ## is the mean of the non-zeros in each column, and @var{var} is the  

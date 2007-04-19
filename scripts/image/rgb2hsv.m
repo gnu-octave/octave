@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} @var{hsv_map} = rgb2hsv (@var{rgb_map})
+## @deftypefn {Function File} {@var{hsv_map} =} rgb2hsv (@var{rgb_map})
 ## Transform a colormap from the rgb space to the hsv space.
 ##
 ## A color n the RGB space consists of the red, green and blue intensities.

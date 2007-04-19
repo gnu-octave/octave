@@ -7,7 +7,7 @@
 @cindex grammar rules
 @cindex language definition
 
-Someday I hope to expand this to include a semi-formal description of
+This appendix should eventually contain a semi-formal description of
 Octave's language.
 
 @menu
@@ -21,38 +21,16 @@ Octave's language.
 The following identifiers are keywords, and may not be used as variable
 or function names:
 
-@example
-@group
-break                   for
-case                    function
-catch                   global
-continue                gplot
-else                    gsplot
-elseif                  if
-end                     otherwise
-end_try_catch           return
-end_unwind_protect      switch
-endfor                  try
-endfunction             unwind_protect
-endif                   unwind_protect_cleanup
-endswitch               while
-endwhile                
-@end group
-@end example
-
-The following command-like functions are also speical.  They may be used
-as simple variable names, but not as formal parameters for functions, or
-as the names of structure variables.  Failed assignments leave them
-undefined (you can recover the orginal definition as a function using
-clear).
-
-@example
-@group
-casesen       echo          load          show
-cd            edit_history  ls            type
-chdir         format        more          which
-clear         help          run_history   who
-diary         history       save          whos
-dir           hold          set
-@end group
-@end example
+@multitable @columnfractions .33 .33 .33
+@item @code{break} @tab @code{case} @tab @code{catch}
+@item @code{continue} @tab @code{do} @tab @code{else}
+@item @code{elseif} @tab @code{end} @tab @code{end_try_catch}
+@item @code{end_unwind_protect} @tab @code{endfor} @tab @code{endfunction}
+@item @code{endif} @tab @code{endswitch} @tab @code{endwhile}
+@item @code{for} @tab @code{function} @tab @code{global}
+@item @code{if} @tab @code{otherwise} @tab @code{persistent}
+@item @code{return} @tab @code{static} @tab @code{switch}
+@item @code{try} @tab @code{until} @tab @code{unwind_protect}
+@item @code{unwind_protect_cleanup} @tab @code{varargin} @tab @code{varargout}
+@item @code{while} @tab @code{__FILE__} @tab @code{__LINE__}
+@end multitable

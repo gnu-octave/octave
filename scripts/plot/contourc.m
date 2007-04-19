@@ -27,8 +27,8 @@
 ## contour lines in the following format
 ##
 ## @example
-## @var{c} = [lev1 , x1 , x2 , ... , levn , x1 , x2 , ... 
-##      len1   , y1 , y2 , ... , lenn   , y1 , y2 , ...  ]
+## @var{c} = [lev1, x1, x2, ..., levn, x1, x2, ... 
+##      len1, y1, y2, ..., lenn, y1, y2, ...]
 ## @end example
 ##
 ## @noindent

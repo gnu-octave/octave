@@ -41,8 +41,8 @@ is_integer_value (double x)
 
 DEFUN_DLD (gcd, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{g} =} gcd (@var{a1}, @code{...})\n\
-@deftypefnx {Loadable Function} {[@var{g}, @var{v1}, @var{...}] =} gcd (@var{a1}, @code{...})\n\
+@deftypefn {Loadable Function} {@var{g} =} gcd (@var{a1}, @dots{})\n\
+@deftypefnx {Loadable Function} {[@var{g}, @var{v1}, @dots{}] =} gcd (@var{a1}, @dots{})\n\
 \n\
 If a single argument is given then compute the greatest common divisor of\n\
 the elements of this argument. Otherwise if more than one argument is\n\
@@ -72,7 +72,7 @@ that,\n\
 \n\
 @ifinfo\n\
 @example\n\
-@var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @var{...}\n\
+@var{g} = @var{v1} .* @var{a1} + @var{v2} .* @var{a2} + @dots{}\n\
 @end example\n\
 @end ifinfo\n\
 @iftex\n\
@@ -83,7 +83,7 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 \n\
 For backward compatiability with previous versions of this function, when\n\
 all arguments are scalr, a single return argument @var{v1} containing\n\
-all of the values of @var{v1}, @var{...} is acceptable.\n\
+all of the values of @var{v1}, @dots{} is acceptable.\n\
 @seealso{lcm, min, max, ceil, floor}\n\
 @end deftypefn")
 {

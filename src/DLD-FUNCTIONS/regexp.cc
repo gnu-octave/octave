@@ -1390,7 +1390,7 @@ octregexprep (const octave_value_list &args, const std::string &nm)
 
 DEFUN_DLD(regexprep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File}  @var{string} = regexprep(@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
+@deftypefn {Function File}  {@var{string} =} regexprep(@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
 Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
 \n\
 \n\

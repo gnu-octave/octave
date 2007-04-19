@@ -16,10 +16,10 @@
 ## 02110-1301  USA
 
 ## -*- texinfo -*-
-## @deftypefn {function File} {[@var{b}, @var{c}]} = spdiags (@var{a})
-## @deftypefnx {function File} {@var{b}} = spdiags (@var{a}, @var{c})
-## @deftypefnx {function File} {@var{b}} = spdiags (@var{v}, @var{c}, @var{a})
-## @deftypefnx {function File} {@var{b}} = spdiags (@var{v}, @var{c}, @var{m}, @var{n})
+## @deftypefn {function File} {[@var{b}, @var{c}] =} spdiags (@var{a})
+## @deftypefnx {function File} {@var{b} =} spdiags (@var{a}, @var{c})
+## @deftypefnx {function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{a})
+## @deftypefnx {function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{m}, @var{n})
 ## A generalization of the function @code{spdiag}. Called with a single
 ## input argument, the non-zero diagonals @var{c} of @var{A} are extracted.
 ## With two arguments the diagonals to extract are given by the vector 

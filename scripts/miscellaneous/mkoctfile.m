@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mkoctfile [-options] file ...
+## @deftypefn {Function File} {} mkoctfile [-options] file @dots{}
 ## 
 ## The @code{mkoctfile} function compiles source code written in C,
 ## C++, or Fortran.  Depending on the options used with @code{mkoctfile}, the

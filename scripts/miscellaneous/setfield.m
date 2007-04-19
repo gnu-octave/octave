@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{k1},..., @var{v1}] =} setfield (@var{s}, @var{k1}, @var{v1}, @dots{})
+## @deftypefn {Function File} {[@var{k1}, @dots{}, @var{v1}] =} setfield (@var{s}, @var{k1}, @var{v1}, @dots{})
 ## Set field members in a structure.
 ##
 ## @example

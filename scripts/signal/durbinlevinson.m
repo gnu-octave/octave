@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} durbinlevinson (@var{c}, @var{oldphi}, @var{oldv})
 ## Perform one step of the Durbin-Levinson algorithm.
 ##
-## The vector @var{c} specifies the autocovariances @code{[gamma_0, ...,
+## The vector @var{c} specifies the autocovariances @code{[gamma_0, @dots{},
 ## gamma_t]} from lag 0 to @var{t}, @var{oldphi} specifies the
 ## coefficients based on @var{c}(@var{t}-1) and @var{oldv} specifies the
 ## corresponding error.

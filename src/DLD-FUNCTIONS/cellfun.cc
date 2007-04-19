@@ -49,7 +49,7 @@ DEFUN_DLD (cellfun, args, nargout,
 @deftypefnx {Lodable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
 @deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c})\n\
 @deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c}, @var{d})\n\
-@deftypefnx {Lodable Function} {[@var{a}, @var{b}]} = cellfun (@dots{})\n\
+@deftypefnx {Lodable Function} {[@var{a}, @var{b}] =} cellfun (@dots{})\n\
 @deftypefnx {Lodable Function} {} cellfun (@dots{}, 'ErrorHandler',@var{errfunc})\n\
 @deftypefnx {Lodable Function} {} cellfun (@dots{}, 'UniformOutput',@var{val})\n\
 \n\

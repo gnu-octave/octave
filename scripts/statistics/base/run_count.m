@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} run_count (@var{x}, @var{n})
 ## Count the upward runs along the first non-singleton dimension of
-## @var{x} of length 1, 2, ..., @var{n}-1 and greater than or equal 
+## @var{x} of length 1, 2, @dots{}, @var{n}-1 and greater than or equal 
 ## to @var{n}. If the optional argument @var{dim} is given operate
 ## along this dimension
 ## @end deftypefn

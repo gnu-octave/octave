@@ -35,7 +35,7 @@
 ## If more than two arguments are given, they are interpreted as
 ##
 ## @example
-## errorbar (@var{x}, @var{y}, ..., @var{fmt} ...)
+## errorbar (@var{x}, @var{y}, ..., @var{fmt}, ...)
 ## @end example
 ##
 ## @noindent

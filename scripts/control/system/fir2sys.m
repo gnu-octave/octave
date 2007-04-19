@@ -26,7 +26,7 @@
 ## @item num
 ## vector of coefficients 
 ## @ifinfo
-## [c0, c1, ..., cn]
+## [c0, c1, @dots{}, cn]
 ## @end ifinfo
 ## @iftex
 ## @tex
@@ -35,7 +35,7 @@
 ## @end iftex
 ## of the @acronym{SISO} @acronym{FIR} transfer function
 ## @ifinfo
-## C(z) = c0 + c1*z^(-1) + c2*z^(-2) + ... + cn*z^(-n)
+## C(z) = c0 + c1*z^(-1) + c2*z^(-2) + @dots{} + cn*z^(-n)
 ## @end ifinfo
 ## @iftex
 ## @tex

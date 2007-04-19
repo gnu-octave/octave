@@ -330,7 +330,7 @@ DEFUN_DLD (urlread, args, nargout,
 @deftypefn {Loadable Function} {@var{s} =} urlread(@var{url})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{success}] =} urlread (@var{url})\n\
 @deftypefnx {Loadable Function} {[@var{s}, @var{success}, @var{message}] =} urlread(@var{url})\n\
-@deftypefnx {Loadable Function} {[...] =} urlread (@var{url}, @var{method}, @var{param})\n\
+@deftypefnx {Loadable Function} {[@dots{}] =} urlread (@var{url}, @var{method}, @var{param})\n\
 Download a remote file specified by its @var{URL} and return its content\n\
 in string @var{s}.  For example,\n\
 \n\

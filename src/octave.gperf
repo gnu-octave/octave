@@ -2,7 +2,6 @@
 
 enum octave_kw_id
 {
-  all_va_args_kw,
   break_kw,
   case_kw,
   catch_kw,

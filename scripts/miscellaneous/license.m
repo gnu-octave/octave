@@ -24,10 +24,10 @@
 ## @deftypefnx {Function File} {} license ("inuse")
 ## Display a list of packages currently being used.
 ##
-## @deftypefnx {Function File} {@var{retval}} = license ("inuse")
+## @deftypefnx {Function File} {@var{retval} =} license ("inuse")
 ## Return a structure containing the fields @code{feature} and @code{user}.
 ##
-## @deftypefnx {Function File} {@var{retval}} = license ("test", @var{feature})
+## @deftypefnx {Function File} {@var{retval} =} license ("test", @var{feature})
 ## Return 1 if a license exists for the product identified by the string
 ## @var{feature} and 0 otherwise.  The argument @var{feature} is case
 ## insensitive and only the first 27 characters are checked.
@@ -44,7 +44,7 @@
 ## Future tests for the specified license of @var{feature} return 0.
 ## @end table
 ##
-## @deftypefnx {Function File} {@var{retval}} = license ("checkout", @var{feature})
+## @deftypefnx {Function File} {@var{retval} =} license ("checkout", @var{feature})
 ## Check out a license for @var{feature}, returning 1 on success and 0
 ## on failure.
 ##

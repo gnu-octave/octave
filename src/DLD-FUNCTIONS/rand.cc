@@ -346,9 +346,9 @@ fraction of a second.\n\
 equidistributed uniform pseudorandom number generator'', ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, Januray pp.3-30 1998,\n\
 @url{http://www.math.keio.ac.jp/~matumoto/emt.html}).\n\
-Do NOT use for CRYPTOGRAPHY without securely hashing several returned\n\
-values together, otherwise the generator state can be learned after\n\
-reading 624 consecutive values.\n\
+Do @strong{not} use for cryptography without securely hashing\n\
+several returned values together, otherwise the generator state\n\
+can be learned after reading 624 consecutive values.\n\
 \n\
 @code{rand} includes a second random number generator, that was the\n\
 previous generator used in Octave. The new generator is used by default\n\
@@ -479,7 +479,7 @@ W.W. Tsang, 'Ziggurat method for generating random variables',\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
 \n\
-@seealso{rand,rande,randg,randp}\n\
+@seealso{rand, rande, randg, randp}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -552,7 +552,7 @@ transform from a uniform to a exponential distribution. (G. Marsaglia and\n\
 W.W. Tsang, 'Ziggurat method for generating random variables',\n\
 J. Statistical Software, vol 5, 2000,\n\
 @url{http://www.jstatsoft.org/v05/i08/})\n\
-@seealso{rand,randn,randg,randp}\n\
+@seealso{rand, randn, randg, randp}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -626,51 +626,51 @@ except for the argument @var{a}.\n\
 This can be used to generate many distributions:\n\
 \n\
 @table @asis\n\
-@item @code{gamma (a,b)} for @code{a > -1}, @code{b > 0}\n\
+@item @code{gamma (a, b)} for @code{a > -1}, @code{b > 0}\n\
 @example\n\
-r = b*randg(a)\n\
+r = b * randg (a)\n\
 @end example\n\
-@item @code{beta(a,b)} for @code{a > -1}, @code{b > -1}\n\
+@item @code{beta (a, b)} for @code{a > -1}, @code{b > -1}\n\
 @example\n\
-r1 = randg(a,1)\n\
-r = r1 / (r1 + randg(b,1))\n\
+r1 = randg (a, 1)\n\
+r = r1 / (r1 + randg (b, 1))\n\
 @end example\n\
-@item @code{Erlang(a, n)}\n\
+@item @code{Erlang (a, n)}\n\
 @example\n\
-r = a*randg(n)\n\
+r = a * randg (n)\n\
 @end example\n\
-@item @code{chisq(df)} for @code{df > 0}\n\
+@item @code{chisq (df)} for @code{df > 0}\n\
 @example\n\
-r = 2*randg(df/2)\n\
+r = 2 * randg (df / 2)\n\
 @end example\n\
 @item @code{t(df)} for @code{0 < df < inf} (use randn if df is infinite)\n\
 @example\n\
-r = randn() / sqrt(2*randg(df/2)/df)\n\
+r = randn () / sqrt (2 * randg (df / 2) / df)\n\
 @end example\n\
-@item @code{F(n1,n2)} for @code{0 < n1}, @code{0 < n2}\n\
+@item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}\n\
 @example\n\
-r1 = 2*randg(n1/2)/n1 or 1 if n1 is infinite\n\
-r2 = 2*randg(n2/2)/n2 or 1 if n2 is infinite\n\
+r1 = 2 * randg (n1 / 2) / n1 or 1 if n1 is infinite\n\
+r2 = 2 * randg (n2 / 2) / n2 or 1 if n2 is infinite\n\
 r = r1 / r2\n\n\
 @end example\n\
 @item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}\n\
 @example\n\
-r = randp((1-p)/p * randg(n))\n\
+r = randp ((1 - p) / p * randg (n))\n\
 @end example\n\
-@item non-central @code{chisq(df,L)}, for @code{df >= 0} and @code{L > 0}\n\
+@item non-central @code{chisq (df, L)}, for @code{df >= 0} and @code{L > 0}\n\
 (use chisq if @code{L = 0})\n\
 @example\n\
-r = randp(L/2)\n\
-r(r > 0) = 2*randg(r(r > 0))\n\
-r(df > 0) += 2*randg(df(df > 0)/2)\n\
+r = randp (L / 2)\n\
+r(r > 0) = 2 * randg (r(r > 0))\n\
+r(df > 0) += 2 * randg (df(df > 0)/2)\n\
 @end example\n\
-@item @code{Dirichlet(a1,...,ak)}\n\
+@item @code{Dirichlet (a1, ..., ak)}\n\
 @example\n\
-r = (randg(a1),...,randg(ak))\n\
-r = r / sum(r)\n\
+r = (randg (a1), ..., randg (ak))\n\
+r = r / sum (r)\n\
 @end example\n\
 @end table\n\
-@seealso{rand,randn,rande,randp}\n\
+@seealso{rand, randn, rande, randp}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -884,7 +884,7 @@ University Graz, Austria, 1994.\n\
 L. Montanet, et al., 'Review of Particle Properties', Physical Review\n\
 D 50 p1284, 1994\n\
 @end table\n\
-@seealso{rand,randn,rande,randg}\n\
+@seealso{rand, randn, rande, randg}\n\
 @end deftypefn")
 {
   octave_value retval;

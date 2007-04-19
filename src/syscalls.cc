@@ -372,8 +372,8 @@ fclose (out);\n\
 %!       idx++;
 %!       str{idx} = s;
 %!     elseif (errno () == EAGAIN)
-%!       sleep (0.1);
 %!       fclear (out);
+%!       sleep (0.1);
 %!     else
 %!       done = true;
 %!     endif

@@ -12,8 +12,8 @@
 %!function y = f (x)
 %!  y = x .* sin (1 ./ x) .* sqrt (abs (1 - x));
 %!test
-%! [v, ier, nfun, err] = quad ("f", 0, 3);
-%! assert((ier == 0 || ier == 1) && abs (v - 1.98194122455795) < sqrt (eps) && nfun > 0);
+%!  [v, ier, nfun, err] = quad ("f", 0.001, 3);
+%! assert((ier == 0 || ier == 1) && abs (v - 1.98194120273598) < sqrt (eps) && nfun > 0);
 
 %% test/octave.test/quad/quad-3.m
 %!error <Invalid call to quad.*> quad ();

@@ -1,3 +1,7 @@
+2007-04-18  John W. Eaton  <jwe@octave.org>
+
+	* specfun/factorial.m: Increase tolerance in large value test.
+
 2007-04-18  David Bateman  <dbateman@free.fr>
 
 	* __bar__.m: New support function for bar/hbar to support graphic

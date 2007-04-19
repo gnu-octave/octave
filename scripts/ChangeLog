@@ -1,3 +1,7 @@
+2007-04-19  A. S. Hodel  <a.s.hodel@eng.auburn.edu>
+
+	* control/util/axis2dlim.m: Delete extraneous line.
+
 2007-04-18  John W. Eaton  <jwe@octave.org>
 
 	* specfun/factorial.m: Increase tolerance in large value test.

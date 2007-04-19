@@ -363,6 +363,7 @@ fclose (out);\n\
 %!  done = false;
 %!  str = {};
 %!  idx = 0;
+%!  errs = 0;
 %!  do
 %!     if (!isunix())
 %!       errno (0);
@@ -374,10 +375,13 @@ fclose (out);\n\
 %!     elseif (errno () == EAGAIN)
 %!       fclear (out);
 %!       sleep (0.1);
+%!       if (++errs == 100)
+%!         done = true;
+%!       endif
 %!     else
 %!       done = true;
 %!     endif
-%!   until (done)
+%!  until (done)
 %!  fclose (out);
 %!  if (isunix())
 %!    assert(str,{"these\n","strings\n","some\n","are\n"})

@@ -1,3 +1,8 @@
+2007-04-19  Daniel J. Sebald  <daniel.sebald@ieee.org>
+
+	* syscalls.cc: Fix popen2 test to stop trying after 100 times
+	throught the loop.
+
 2007-04-16  Geordie McBain  <geordie.mcbain@aeromech.usyd.edu.au>
 
 	* ov-fcn-inline.cc (Fargnames): Doc fix.

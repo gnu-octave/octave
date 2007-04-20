@@ -553,26 +553,25 @@ place where Octave can find them.
 When Octave encounters an identifier that is undefined, it first looks
 for variables or functions that are already compiled and currently
 listed in its symbol table.  If it fails to find a definition there, it
-searches the list of directories specified by the internal variable
-@code{LOADPATH} for files ending in @file{.m} that have the same base
-name as the undefined identifier.@footnote{The @samp{.m} suffix was
-chosen for compatibility with @sc{Matlab}.}  Once Octave finds a file
-with a name that matches, the contents of the file are read.  If it
-defines a @emph{single} function, it is compiled and executed.
-@xref{Script Files}, for more information about how you can define more
-than one function in a single file.
+searches a list of directories (the @deffn{path}) for files ending in
+@file{.m} that have the same base name as the undefined
+identifier.@footnote{The @samp{.m} suffix was chosen for compatibility
+with @sc{Matlab}.}  Once Octave finds a file with a name that matches,
+the contents of the file are read.  If it defines a @emph{single}
+function, it is compiled and executed.  @xref{Script Files}, for more
+information about how you can define more than one function in a single
+file.
 
 When Octave defines a function from a function file, it saves the full
-name of the file it read and the time stamp on the file.  After
-that, it checks the time stamp on the file every time it needs the
-function.  If the time stamp indicates that the file has changed since
-the last time it was read, Octave reads it again.
+name of the file it read and the time stamp on the file.  If the time
+stamp on the file changes, Octave may reload the file.  When Octave is
+running interactively, time stamp checking normally happens at most once
+each time Octave prints the prompt.  Searching for new function
+definitions also occurs if the current working directory changes.
 
 Checking the time stamp allows you to edit the definition of a function
 while Octave is running, and automatically use the new function
-definition without having to restart your Octave session.  Checking the
-time stamp every time a function is used is rather inefficient, but it
-has to be done to ensure that the correct function definition is used.
+definition without having to restart your Octave session.
 
 To avoid degrading performance unnecessarily by checking the time stamps
 on functions that are not likely to change, Octave assumes that function
@@ -584,11 +583,10 @@ assumption and provides a significant improvement in performance for the
 function files that are distributed with Octave.
 
 If you know that your own function files will not change while you are
-running Octave, you can improve performance by setting the variable
-@code{ignore_function_time_stamp} to @code{"all"}, so that Octave will
-ignore the time stamps for all function files.  Setting it to
-@code{"system"} gives the default behavior.  If you set it to anything
-else, Octave will check the time stamps on all function files.
+running Octave, you can improve performance by calling
+@code{ignore_function_time_stamp ("all")}, so that Octave will
+ignore the time stamps for all function files.  Passing
+@code{"system"} to this function resets the default behavior.
 
 @c FIXME -- note about time stamps on files in NFS environments?
 
@@ -917,28 +915,7 @@ the @file{.oct} file.
 
 Additional examples for writing dynamically linked functions are
 available in the files in the @file{src} directory of the Octave
-distribution.  Currently, this includes the files
-
-@example
-@group
-balance.cc   fft2.cc      inv.cc       qzval.cc
-chol.cc      filter.cc    log.cc       schur.cc
-colloc.cc    find.cc      lsode.cc     sort.cc 
-dassl.cc     fsolve.cc    lu.cc        svd.cc
-det.cc       givens.cc    minmax.cc    syl.cc
-eig.cc       hess.cc      pinv.cc      
-expm.cc      ifft.cc      qr.cc     
-fft.cc       ifft2.cc     quad.cc
-@end group
-@end example
-
-@noindent
-These files use the macro @code{DEFUN_DLD_BUILTIN} instead of
-@code{DEFUN_DLD}.  The difference between these two macros is just that
-@code{DEFUN_DLD_BUILTIN} can define a built-in function that is not
-dynamically loaded if the operating system does not support dynamic
-linking.  To define your own dynamically linked functions you should use
-@code{DEFUN_DLD}.
+distribution.
 
 There is currently no detailed description of all the functions that you
 can call in a built-in function.  For the time being, you will have to
@@ -960,17 +937,106 @@ inline functions.
 
 @menu
 * Function Handles::
+* Anonymous Functions::
 * Inline Functions::
 @end menu
 
 @node Function Handles
 @subsection Function Handles
 
+A function handle is a pointer to another function and is defined with
+the syntax
+
+@example
+@@@var{function-name}
+@end example
+
+@noindent
+For example
+
+@example
+f = @sin;
+@end example
+
+@noindent
+Creates a function handle called @code{f} that refers to the the
+function @code{sin}.
+
+Function handles are used to call other functions indirectly, or to pass
+a function as an argument to another function like @code{quad} or
+@code{fsolve}.  For example
+
+@example
+f = @sin;
+quad (f, 0, pi)
+    @result 1.8391
+@end example
+
+You may use @code{feval} to call a function using function handle, or
+simply write the name of the function handle follwed by an argument
+list.  If there are no arguments, you must use an empty argument list
+@samp{()}.  For example
+
+@example
+f = @sin;
+feval (f, pi/4)
+    @result 0.70711
+f (pi/4)
+    @result 0.70711
+@end example
+
 @DOCSTRING(functions)
 
 @DOCSTRING(func2str)
 
 @DOCSTRING(str2func)
+
+@node Anonymous Functions::
+@subsection Anonymous Functions
+
+Anonymous functions are defined using the syntax
+
+@example
+@@(@var{argument-list}) @var{expression}
+@end example
+
+@noindent
+Any variables that are not found in the argument list are inherited from
+the enclosing scope.  Anonymous functions are useful for creating simple
+unnamed functions from expressions or for wrapping calls to other
+functions to adapt them for use by functions like @code{quad}.  For
+example,
+
+@example
+f = @@(x) x.^2;
+quad (f, 0, 10)
+    @result 333.33
+@end example
+
+@noindent
+creates a simple unnamed function from the expression @code{x.^2} and
+passes it to @code{quad},
+
+@example
+quad (@@(x) sin (x), 0, pi)
+    @result 1.8391
+@end example
+
+@noindent
+wraps another function, and
+
+@example
+a = 1;
+b = 2;
+quad (@@(x) betainc (x, a, b), 0, 0.4)
+    @result 1.3867
+@end example
+
+@noindent
+adapts a function with several parameters to the form required by
+@code{quad}.  In this example, the values of @var{a} and @var{b} that
+are passed to @code{betainc} are inherited from the current
+environment.
 
 @node Inline Functions
 @subsection Inline Functions
@@ -1019,6 +1085,10 @@ Functions for design and simulation of automatic control systems.
 @item elfun
 Elementary functions.
 
+@item finance
+Functions for computing interest payments, investment values, and rates
+of return.
+
 @item general
 Miscellaneous matrix manipulations, like @code{flipud}, @code{rot90},
 and @code{triu}, as well as other basic functions, like
@@ -1036,6 +1106,15 @@ Functions for linear algebra.
 @item miscellaneous
 Functions that don't really belong anywhere else.
 
+@item optimization
+Minimization of functions.
+
+@item path
+Functions to manage the directory path Octave uses to find functions.
+
+@item pkg
+Install external packages of functions in Octave.
+
 @item plot
 A set of functions that implement the @sc{Matlab}-like plotting functions.
 
@@ -1047,6 +1126,9 @@ Functions for creating and manipulating sets of unique values.
 
 @item signal
 Functions for signal processing applications.
+
+@item sparse
+Functions for handling sparse matrices.
 
 @item specfun
 Special functions.
@@ -1062,6 +1144,9 @@ Statistical functions.
 
 @item strings
 Miscellaneous string-handling functions.
+
+@item testfun
+Perform unit tests on other functions.
 
 @item time
 Functions related to time keeping.

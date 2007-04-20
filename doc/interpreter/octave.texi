@@ -346,7 +346,7 @@ C-Style I/O Functions
 * Output Conversion Syntax::    
 * Table of Output Conversions::  
 * Integer Conversions::         
-* Floating-Point Conversions::  Other Output Conversions::    
+* Floating-Point Conversions::
 * Other Output Conversions::    
 * Formatted Input::             
 * Input Conversion Syntax::     

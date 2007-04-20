@@ -28,27 +28,30 @@ Since the single-quote mark is also used for the transpose operator
 (@pxref{Arithmetic Ops}) but double-quote marks have no other purpose in
 Octave, it is best to use double-quote marks to denote strings.
 
-@c FIXME -- this is probably pretty confusing.
-
 @cindex escape sequence notation
-Some characters cannot be included literally in a string constant.  You
-represent them instead with @dfn{escape sequences}, which are character
-sequences beginning with a backslash (@samp{\}).
+In double-quoted strings, the backslash character is used to introduce
+@deffn{escape sequences} that reresent other characters.  For example,
+@samp{\n} embeds a newline character in a double-quoted string and
+@samp{\"} embeds a double quote character.
 
-One use of an escape sequence is to include a double-quote
-(single-quote) character in a string constant that has been defined
-using double-quote (single-quote) marks.  Since a plain double-quote
-would end the string, you must use @samp{\"} to represent a single
-double-quote character as a part of the string.  The backslash character
-itself is another character that cannot be included normally.  You must
-write @samp{\\} to put one backslash in the string.  Thus, the string
-whose contents are the two characters @samp{"\} may be written
-@code{"\"\\"} or @code{'"\\'}.  Similarly, the string whose contents are
-the two characters @samp{'\} may be written @code{'\'\\'} or @code{"'\\"}.
+In single-quoted strings, backslash is not a special character.
 
-Another use of backslash is to represent unprintable characters
-such as newline.  While there is nothing to stop you from writing most
-of these characters directly in a string constant, they may look ugly.
+Here is an example showing the difference
+
+@example
+toascii ("\n")
+    @result 10
+toascii ('\n')
+    @result [ 92 110 ]
+@end example
+
+You may also insert a single quote character in a single-quoted string
+by using two single quote characters in succession.  For example,
+
+@example
+'I can''t escape'
+  @result I can't escape
+@end example
 
 Here is a table of all the escape sequences used in Octave.  They are
 the same as those used in the C programming language.

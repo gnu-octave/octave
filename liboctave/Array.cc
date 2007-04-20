@@ -2569,7 +2569,7 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	  for (octave_idx_type i = 0; i < rhs_len; i++)
 	    lhs.elem (i) = rhs.elem (i);
 	}
-      else if (rhs_len != 1)
+      else if (rhs_len != lhs_len)
 	(*current_liboctave_error_handler)
 	  ("A(:) = X: A must be the same size as X");
     }

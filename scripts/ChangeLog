@@ -1,3 +1,7 @@
+2007-04-20  John W. Eaton  <jwe@octave.org>
+
+	* plot/Makefile.in (SOURCES): Fix typo in adding __bar__.m to the list.
+
 2007-04-19  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/unpack.m: Use gzip -d and bzip2 -d instead of

@@ -1,3 +1,8 @@
+2007-04-20  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assign1): For x(:) = RHS, require rhs_len == lhs_len,
+	not rhs_len == 1.
+
 2007-04-18  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* oct-md5.h (oct_md5, oct_md5_file): Tag decls with OCTAVE_API.

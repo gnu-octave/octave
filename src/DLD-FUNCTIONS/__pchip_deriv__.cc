@@ -40,7 +40,7 @@ extern "C"
 			     octave_idx_type *ierr);
 }
 
-DEFUN_DLD(__pchip_deriv__, args, ,
+DEFUN_DLD (__pchip_deriv__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __pchip_deriv__ (@var{x}, @var{y})\n\
 Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates for\n\

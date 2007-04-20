@@ -184,6 +184,8 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(regexpi)
 
+@DOCSTRING(regexprep)
+
 @node String Conversions
 @section String Conversions
 
@@ -242,6 +244,8 @@ isalpha ("!Q@@WERT^Y&")
 @DOCSTRING(isdigit)
 
 @DOCSTRING(isgraph)
+
+@DOCSTRING(isletter)
 
 @DOCSTRING(islower)
 

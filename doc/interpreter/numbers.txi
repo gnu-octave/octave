@@ -65,9 +65,16 @@ parse error:
 You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 @samp{i} above.  All four forms are equivalent.
 
+@DOCSTRING(double)
+
+@DOCSTRING(single)
+
+@DOCSTRING(complex)
+
 @menu
 * Matrices::                    
 * Ranges::                      
+* Integer Data Types::
 * Logical Values::              
 * Predicates for Numeric Objects::  
 @end menu
@@ -374,8 +381,35 @@ When Octave parses a range expression, it examines the elements of the
 expression to determine whether they are all constants.  If they are, it
 replaces the range expression with a single range constant.
 
+@node Integer Data Types
+@section Integer Data Types
+
+@DOCSTRING(isinteger)
+
+@DOCSTRING(int8)
+
+@DOCSTRING(uint8)
+
+@DOCSTRING(int16)
+
+@DOCSTRING(uint16)
+
+@DOCSTRING(int32)
+
+@DOCSTRING(uint32)
+
+@DOCSTRING(int64)
+
+@DOCSTRING(uint64)
+
+@DOCSTRING(intmax)
+
+@DOCSTRING(intmin)
+
 @node Logical Values
 @section Logical Values
+
+@DOCSTRING(logical)
 
 @DOCSTRING(true)
 

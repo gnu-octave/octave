@@ -1,0 +1,24 @@
+@c Copyright (C) 2007 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Bit Manipulations
+@chapter Bit Manipulations
+
+Octave provides the following functions for bit twiddling.
+
+@DOCSTRING(bitset)
+
+@DOCSTRING(bitget)
+
+@DOCSTRING(bitcmp)
+
+@DOCSTRING(bitshift)
+
+@DOCSTRING(bitand)
+
+@DOCSTRING(bitor)
+
+@DOCSTRING(bitxor)
+
+@DOCSTRING(bitmax)

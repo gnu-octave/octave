@@ -50,3 +50,6 @@ hardware are welcome.
 
 @DOCSTRING(setaudio)
 
+@DOCSTRING(wavread)
+
+@DOCSTRING(wavwrite)

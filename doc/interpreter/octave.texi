@@ -140,6 +140,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Plotting::                    
 * Matrix Manipulation::         
 * Arithmetic::                  
+* Bit Manipulations::
 * Linear Algebra::              
 * Nonlinear Equations::         
 * Sparse Matrices::
@@ -150,6 +151,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Financial Functions::         
 * Sets::                        
 * Polynomial Manipulations::    
+* Interpolation::
 * Control Theory::              
 * Signal Processing::           
 * Image Processing::            
@@ -240,6 +242,7 @@ Numeric Data Types
 
 * Matrices::                    
 * Ranges::                      
+* Integer Data Types::
 * Logical Values::              
 * Predicates for Numeric Objects::  
 
@@ -461,6 +464,8 @@ System Utilities
 
 * Timing Utilities::            
 * Filesystem Utilities::        
+* File Archiving Utilities::
+* Networking Utilities::
 * Controlling Subprocesses::    
 * Process ID Information::      
 * Environment Variables::       
@@ -548,6 +553,7 @@ Grammar
 @include plot.texi
 @include matrix.texi
 @include arith.texi
+@include bit.texi
 @include linalg.texi
 @include nonlin.texi
 @include sparse.texi
@@ -558,6 +564,7 @@ Grammar
 @include finance.texi
 @include set.texi
 @include poly.texi
+@include interp.texi
 @include control.texi
 @include signal.texi
 @include image.texi

@@ -14,6 +14,8 @@ and even start other programs from the Octave prompt.
 @menu
 * Timing Utilities::            
 * Filesystem Utilities::        
+* File Archiving Utilities::
+* Networking Utilities::
 * Controlling Subprocesses::    
 * Process ID Information::      
 * Environment Variables::       
@@ -153,6 +155,12 @@ about the status of files.
 
 @DOCSTRING(stat)
 
+@DOCSTRING(lstat)
+
+@DOCSTRING(fileattrib)
+
+@DOCSTRING(isdir)
+
 @DOCSTRING(glob)
 
 @DOCSTRING(fnmatch)
@@ -160,6 +168,50 @@ about the status of files.
 @DOCSTRING(file_in_path)
 
 @DOCSTRING(tilde_expand)
+
+@DOCSTRING(canonicalize_file_name)
+
+@DOCSTRING(movefile)
+
+@DOCSTRING(copyfile)
+
+@DOCSTRING(fileparts)
+
+@DOCSTRING(filesep)
+
+@DOCSTRING(fullfile)
+
+@DOCSTRING(tempdir)
+
+@DOCSTRING(tempname)
+
+@DOCSTRING(P_tmpdir)
+
+@node File Archiving Utilities
+@section File Archiving Utilities
+
+@DOCSTRING(bunzip2)
+
+@DOCSTRING(gunzip)
+
+@DOCSTRING(tar)
+
+@DOCSTRING(untar)
+
+@DOCSTRING(zip)
+
+@DOCSTRING(unzip)
+
+@DOCSTRING(pack)
+
+@DOCSTRING(unpack)
+
+@node Networking Utilities
+@section Networking Utilities
+
+@DOCSTRING(urlread)
+
+@DOCSTRING(urlwrite)
 
 @node Controlling Subprocesses
 @section Controlling Subprocesses
@@ -175,6 +227,10 @@ use them if you can't find any way to do what you need with the
 higher-level functions.
 
 @DOCSTRING(system)
+
+@DOCSTRING(unix)
+
+@DOCSTRING(dos)
 
 @DOCSTRING(popen)
 
@@ -199,6 +255,10 @@ they can be used, look at the definition of the function @code{popen2}.
 @DOCSTRING(waitpid)
 
 @DOCSTRING(fcntl)
+
+@DOCSTRING(kill)
+
+@DOCSTRING(SIG)
 
 @node Process ID Information
 @section Process, Group, and User IDs
@@ -230,6 +290,10 @@ they can be used, look at the definition of the function @code{popen2}.
 @DOCSTRING(cd)
 
 @DOCSTRING(ls)
+
+@DOCSTRING(ls_command)
+
+@DOCSTRING(dir)
 
 @DOCSTRING(pwd)
 
@@ -312,6 +376,12 @@ referred to as a @var{grp_struct}.
 @section System Information
 
 @DOCSTRING(computer)
+
+@DOCSTRING(uname)
+
+@DOCSTRING(ispc)
+
+@DOCSTRING(isunix)
 
 @DOCSTRING(isieee)
 

@@ -43,6 +43,8 @@ p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 
 @DOCSTRING(deconv)
 
+@DOCSTRING(conv2)
+
 @DOCSTRING(poly)
 
 @DOCSTRING(polyderiv)

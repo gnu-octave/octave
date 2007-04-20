@@ -153,6 +153,10 @@ endfor
 particularly for large matrices because Octave does not have to
 repeatedly resize the result.
 
+@DOCSTRING(sub2ind)
+
+@DOCSTRING(ind2sub)
+
 @node Calling Functions
 @section Calling Functions
 

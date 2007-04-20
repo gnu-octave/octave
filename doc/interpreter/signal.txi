@@ -9,6 +9,8 @@
 
 @DOCSTRING(fft)
 
+@DOCSTRING(fftw)
+
 @DOCSTRING(ifft)
 
 @DOCSTRING(fft2)
@@ -24,6 +26,8 @@
 @DOCSTRING(fftfilt)
 
 @DOCSTRING(filter)
+
+@DOCSTRING(filter2)
 
 @DOCSTRING(freqz)
 
@@ -59,6 +63,8 @@
 
 @DOCSTRING(fftshift)
 
+@DOCSTRING(ifftshift)
+
 @DOCSTRING(fractdiff)
 
 @DOCSTRING(hamming)
@@ -66,6 +72,8 @@
 @DOCSTRING(hanning)
 
 @DOCSTRING(hurst)
+
+@DOCSTRING(pchip)
 
 @DOCSTRING(periodogram)
 

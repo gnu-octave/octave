@@ -62,3 +62,7 @@ of all the arguments, ensure that the supplied function really was a
 function, etc.  See @xref{Predicates for Numeric Objects}, for example,
 for a list of predicates for numeric objects, and @xref{Status of
 Variables}, for a description of the @code{exist} function.
+
+@DOCSTRING(evalin)
+
+@DOCSTRING(assignin)

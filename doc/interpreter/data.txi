@@ -136,9 +136,13 @@ expression.  These functions are defined for all objects.  They return
 data structure type doesn't have rows or columns, so the @code{rows} and
 @code{columns} functions return @minus{}1 for structure arguments.
 
+@DOCSTRING(ndims)
+
 @DOCSTRING(columns)
 
 @DOCSTRING(rows)
+
+@DOCSTRING(numel)
 
 @DOCSTRING(length)
 
@@ -146,3 +150,6 @@ data structure type doesn't have rows or columns, so the @code{rows} and
 
 @DOCSTRING(isempty)
 
+@DOCSTRING(sizeof)
+
+@DOCSTRING(size_equal)

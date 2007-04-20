@@ -113,6 +113,8 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 
 @DOCSTRING(closereq)
 
+@DOCSTRING(isfigure)
+
 @node Plot Annotations
 @section Plot Annotations
 

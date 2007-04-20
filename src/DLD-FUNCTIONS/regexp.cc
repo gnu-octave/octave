@@ -1025,7 +1025,7 @@ The pattern is taken literally.\n\
 
 */
 
-DEFUN_DLD(regexpi, args, nargout,
+DEFUN_DLD (regexpi, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{s}, @var{e}, @var{te}, @var{m}, @var{t}, @var{nm}] =} regexpi (@var{str}, @var{pat})\n\
 @deftypefnx {Loadable Function} {[@dots{}] =} regexpi (@var{str}, @var{pat}, @var{opts}, @dots{})\n\
@@ -1388,9 +1388,9 @@ octregexprep (const octave_value_list &args, const std::string &nm)
   return retval;
 }
 
-DEFUN_DLD(regexprep, args, ,
+DEFUN_DLD (regexprep, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File}  {@var{string} =} regexprep(@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
+@deftypefn {Function File}  {@var{string} =} regexprep (@var{string}, @var{pat}, @var{repstr}, @var{options})\n\
 Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
 \n\
 \n\

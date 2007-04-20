@@ -25,6 +25,7 @@ like built-in functions.
 * Script Files::                
 * Dynamically Linked Functions::  
 * Function Handles and Inline::
+* Commands::
 * Organization of Functions::   
 @end menu
 
@@ -591,6 +592,14 @@ else, Octave will check the time stamps on all function files.
 
 @c FIXME -- note about time stamps on files in NFS environments?
 
+@DOCSTRING(mfilename)
+
+@DOCSTRING(mlock)
+
+@DOCSTRING(munlock)
+
+@DOCSTRING(mislocked)
+
 @DOCSTRING(addpath)
 
 @DOCSTRING(genpath)
@@ -610,6 +619,12 @@ else, Octave will check the time stamps on all function files.
 @DOCSTRING(file_in_loadpath)
 
 @DOCSTRING(ignore_function_time_stamp)
+
+@DOCSTRING(autoload)
+
+@DOCSTRING(builtin)
+
+@DOCSTRING(dispatch)
 
 @node Script Files
 @section Script Files
@@ -929,6 +944,12 @@ There is currently no detailed description of all the functions that you
 can call in a built-in function.  For the time being, you will have to
 read the source code for Octave.
 
+@DOCSTRING(mkoctfile)
+
+@DOCSTRING(mex)
+
+@DOCSTRING(mexext)
+
 @node Function Handles and Inline
 @section Function Handles and Inline
 @cindex handle, function handles
@@ -961,6 +982,21 @@ inline functions.
 @DOCSTRING(formula)
 
 @DOCSTRING(vectorize)
+
+@node Commands
+@section Commands
+
+@DOCSTRING(mark_as_command)
+
+@DOCSTRING(unmark_command)
+
+@DOCSTRING(iscommand)
+
+@DOCSTRING(mark_as_rawcommand)
+
+@DOCSTRING(unmark_rawcommand)
+
+@DOCSTRING(israwcommand)
 
 @node Organization of Functions
 @section Organization of Functions Distributed with Octave

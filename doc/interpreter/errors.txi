@@ -16,11 +16,23 @@ messages using the functions described in this chapter.
 
 @DOCSTRING(warning)
 
+@DOCSTRING(print_usage)
+
 @DOCSTRING(usage)
+
+@DOCSTRING(lasterror)
 
 @DOCSTRING(lasterr)
 
 @DOCSTRING(lastwarn)
+
+@DOCSTRING(rethrow)
+
+@DOCSTRING(warning_ids)
+
+@DOCSTRING(errno)
+
+@DOCSTRING(errno_list)
 
 The following pair of functions are of limited usefulness, and may be
 removed from future versions of Octave.

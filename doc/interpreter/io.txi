@@ -35,6 +35,8 @@ variable @code{page_screen_output} to 0.
 
 @DOCSTRING(PAGER)
 
+@DOCSTRING(PAGER_FLAGS)
+
 @DOCSTRING(page_screen_output)
 
 @DOCSTRING(page_output_immediately)

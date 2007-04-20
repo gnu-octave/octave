@@ -78,11 +78,8 @@ All Octave abbrevs start with a grave accent (`).")
     (define-abbrev octave-abbrev-table "`f" "for" nil)
     (define-abbrev octave-abbrev-table "`fu" "function" nil)
     (define-abbrev octave-abbrev-table "`gl" "global" nil)
-    (define-abbrev octave-abbrev-table "`gp" "gplot" nil)
-    (define-abbrev octave-abbrev-table "`gs" "gsplot" nil)
     (define-abbrev octave-abbrev-table "`if" "if ()" nil)
     (define-abbrev octave-abbrev-table "`o" "otherwise" nil)
-    (define-abbrev octave-abbrev-table "`rp" "replot" nil)
     (define-abbrev octave-abbrev-table "`r" "return" nil)
     (define-abbrev octave-abbrev-table "`s" "switch" nil)
     (define-abbrev octave-abbrev-table "`t" "try" nil)
@@ -115,14 +112,13 @@ All Octave abbrevs start with a grave accent (`).")
   (append octave-begin-keywords
 	  octave-else-keywords
 	  octave-end-keywords
-	  '("all_va_args" "break" "continue" "end" "global" "gplot" "gsplot"
-	    "replot" "return"))
+	  '("all_va_args" "break" "continue" "end" "global" "return"))
   "Reserved words in Octave.")
 
 (defvar octave-text-functions
   '("casesen" "cd" "chdir" "clear" "diary" "dir" "document" "echo"
-    "edit_history" "format" "graw" "gset" "gshow" "help" "history" "hold"
-    "load" "ls" "more" "run_history" "save" "set" "show" "type"
+    "edit_history" "format" "help" "history" "hold"
+    "load" "ls" "more" "run_history" "save" "type"
     "which" "who" "whos")
   "Text functions in Octave (these names are also reserved).")
 
@@ -141,7 +137,7 @@ All Octave abbrevs start with a grave accent (`).")
     "__i__" "__inf__" "__j__" "__nan__" "__pi__"
     "__program_invocation_name__" "__program_name__" "__realmax__"
     "__realmin__" "__stderr__" "__stdin__" "__stdout__" "ans" "argv"
-    "automatic_replot" "beep_on_error" "completion_append_char"
+    "beep_on_error" "completion_append_char"
     "crash_dumps_octave_core" "default_save_format"
     "e" "echo_executing_commands" "eps"
     "error_text" "gnuplot_binary" "history_file"
@@ -154,15 +150,7 @@ All Octave abbrevs start with a grave accent (`).")
     "saving_history" "sighup_dumps_octave_core" "sigterm_dumps_octave_core"
     "silent_functions" "split_long_rows" "stderr" "stdin" "stdout"
     "string_fill_char" "struct_levels_to_print"
-    "suppress_verbose_help_message" "warn_assign_as_truth_value"
-    "warn_divide_by_zero" "warn_empty_list_elements"
-    "warn_fortran_indexing" "warn_function_name_clash"
-    "warn_future_time_stamp" "warn_imag_to_real"
-    "warn_matlab_incompatible" "warn_missing_semicolon"
-    "warn_neg_dim_as_zero" "warn_num_to_str" "warn_precedence_change"
-    "warn_reload_forces_clear" "warn_separator_insert"
-    "warn_single_quote_string" "warn_str_to_num"
-    "warn_undefined_return_values" "warn_variable_switch_label")
+    "suppress_verbose_help_message")
   "Builtin variables in Octave.")
 
 (defvar octave-function-header-regexp

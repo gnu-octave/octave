@@ -555,7 +555,7 @@ global {\it var1} ...&Declare variables global.\cr
   they are also declared global within the function.}\span\cr
 \endsec
 
-\sec Selected Built-in Variables;
+\sec Selected Built-in Functions;
 EDITOR&editor to use with {\tt edit\_history}\cr
 Inf, NaN&IEEE infinity, NaN\cr
 PAGER&program to use to paginate output\cr
@@ -564,37 +564,6 @@ eps&machine precision\cr
 pi&$\pi$\cr
 realmax&maximum representable value\cr
 realmin&minimum representable value\cr
-\endsec
-\vskip -\secskip
-\vskip -2\lskip
-\altsec \null;
-automatic\_replot&automatically redraw plots\cr
-do\_fortran\_indexing&Fortran-style indexing of matrices\cr
-implicit\_str\_to\_num\_ok&allow strings to become numbers\cr
-output\_max\_field\_width&maximum numeric field width\cr
-output\_precision&min significant figures displayed\cr
-page\_screen\_output&control whether output is paged\cr
-prefer\_column\_vectors&create column vectors by default\cr
-resize\_on\_range\_error&automatic resizing of matrices\cr
-save\_precision&digits stored by {\tt save} command\cr
-silent\_functions&suppress output from functions\cr
-warn\_divide\_by\_zero&suppress divide by zero errors\cr
-\endsec
-\vskip -\secskip
-\vskip -2\lskip
-\widesec \null;
-commas\_in\_literal\_matrix\vskip\lskip\cr
-\omit\hfill\vbox{\hsize=\idnwid\rm
-  control handling of spaces in matrices\vskip3\lskip}\cr
-ignore\_function\_time\_stamp\cr
-\omit\hfill\vbox{\hsize=\idnwid\rm
-  ignore changes in function files during session\vskip3\lskip}\cr
-ok\_to\_lose\_imaginary\_part\cr
-\omit\hfill\vbox{\hsize=\idnwid\rm
-  allow complex to real conversion\vskip3\lskip}\cr
-prefer\_zero\_one\_indexing\cr
-\omit\hfill\vbox{\hsize=\idnwid\rm
-  if ambiguous, prefer 0-1 style indexing\vskip3\lskip}\cr
 \endsec
 
 \vfill\eject
@@ -880,36 +849,10 @@ var ({\it a})&variance\cr
 
 \vfill\eject
 
-\sec Basic Plotting;
-\omit \vbox{\tt
-gplot \opt{{\it ranges}} {\it expr} \opt{{\it using}}
-  \opt{{\it title}} \opt{{\it style}}\hfill{\rm 2D plotting}
-  \par\vskip \lskip}\span\cr
-\omit \vbox{\tt
-gsplot \opt{{\it ranges}} {\it expr} \opt{{\it using}}
-  \opt{{\it title}} \opt{{\it style}}\hfill{\rm 3D plotting}
-  \par\vskip \lskip}\span\cr
-\quad{\it ranges}&specify data ranges\cr
-\quad{\it expr}&expression to plot\cr
-\quad{\it using}&specify columns to plot\cr
-\quad{\it title}&specify line title for legend\cr
-\quad{\it style}&specify line style\cr
-\omit \vbox{\rm\vskip0.85ex 
-  If {\it ranges\/} are supplied, they must come before the expression
-  to plot.  The {\it using\/}, {\it title\/}, and {\it style\/}
-  options may appear in any order after {\it expr\/}.  Multiple
-  expressions may be plotted with a single command by separating them
-  with commas.\vskip1ex}\span\cr
-set {\it options}&set plotting options\cr
-show {\it options}&show plotting options\cr
-replot&redisplay current plot\cr
-closeplot&close stream to {\tt gnuplot} process\cr
-purge\_tmp\_files&clean up temporary plotting files\cr
-automatic\_replot&built-in variable\cr
-\endsec
-
-\sec Other Plotting Functions;
+\sec Plotting Functions;
 plot ({\it args})&2D plot with linear axes\cr
+plot3 ({\it args})&3D plot with linear axes\cr
+line ({\it args})&2D or 3D line\cr
 semilogx ({\it args})&2D plot with logarithmic x-axis\cr
 semilogy ({\it args})&2D plot with logarithmic y-axis\cr
 loglog ({\it args})&2D plot with logarithmic axes\cr
@@ -920,6 +863,8 @@ title ({\it string})&set plot title\cr\cr
 axis ({\it limits})&set axis ranges\cr
 xlabel ({\it string})&set x-axis label\cr
 ylabel ({\it string})&set y-axis label\cr
+zlabel ({\it string})&set z-axis label\cr
+legend ({\it string})&set label in plot key\cr
 grid \opt{on$|$off}&set grid state\cr
 hold \opt{on$|$off}&set hold state\cr
 ishold&return 1 if hold is on, 0 otherwise\cr\cr
@@ -932,8 +877,8 @@ meshdom ({\it x}, {\it y})&create mesh coordinate matrices\cr
 \par\vskip10pt
 {\smrm\parskip=6pt
 Edition \refcardedition for Octave Version \octaveversion.  Copyright
-1996, John W. Eaton
-(jwe@che.utexas.edu).  The author assumes no responsibility for any
+1996, 2007, John W. Eaton
+(jwe@bevo.che.wisc.edu).  The author assumes no responsibility for any
 errors on this card.
 
 This card may be freely distributed under the terms of the GNU

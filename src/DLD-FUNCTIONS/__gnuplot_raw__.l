@@ -1342,7 +1342,7 @@ gnuplot::makeplot (std::string caller, std::string args)
 	      std::string yrange_end_str = read_until (endbracketp, tok);
 	      outstr += printrange (yrange_start_str, yrange_end_str) + " ";
 	      tok = gptlex ();
-	      if (tok == START_BRACKET && caller == "gsplot")
+	      if (tok == START_BRACKET && caller == "splot")
 		{
 		  std::string zrange_start_str = read_until (colonp, tok);
 		  std::string zrange_end_str = read_until (endbracketp, tok);

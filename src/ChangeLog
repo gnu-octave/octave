@@ -1,5 +1,11 @@
 2007-04-20  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__gnuplot_raw__.l (deftypefn): 
+	(Vautomatic_replot): Delete static variable.
+	(Fautomatic_replot): Delete function.
+
+	* toplev.cc (Fcasesen): Delete obsolete function.
+
 	* DLD-FUNCTIONS/__gnuplot_raw__.l (gnuplot::makeplot): Check
 	whether caller is "splot", not "gsplot".
 

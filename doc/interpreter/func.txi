@@ -541,6 +541,8 @@ hello (:);
 @section Function Files
 @cindex function file
 
+@c FIXME need discussion of subfunctions here
+
 Except for simple one-shot programs, it is not practical to have to
 define all the functions you need each time you need them.  Instead, you
 will normally want to save them in a file so that you can easily edit
@@ -553,7 +555,7 @@ place where Octave can find them.
 When Octave encounters an identifier that is undefined, it first looks
 for variables or functions that are already compiled and currently
 listed in its symbol table.  If it fails to find a definition there, it
-searches a list of directories (the @deffn{path}) for files ending in
+searches a list of directories (the @dfn{path}) for files ending in
 @file{.m} that have the same base name as the undefined
 identifier.@footnote{The @samp{.m} suffix was chosen for compatibility
 with @sc{Matlab}.}  Once Octave finds a file with a name that matches,
@@ -623,6 +625,39 @@ ignore the time stamps for all function files.  Passing
 @DOCSTRING(builtin)
 
 @DOCSTRING(dispatch)
+
+@menu
+* Subfunctions::
+@end menu
+
+@node Subfunctions
+@subsection Subfunctions
+
+A function file may contain secondary functions called
+@dfn{subfunctions}.  These secondary functions are only visible to the
+other functions in the same function file.  For example, a file
+@file{f.m} containing
+
+@example
+@group
+function f ()
+  printf ("in f, calling g\n");
+  g ()
+endfunction
+function g ()
+  printf ("in g, calling h\n");
+endfunction
+function h ()
+  printf ("in h\n")
+endfunction
+@end group
+@end example
+
+@noindent
+defines a main function @code{f} and two subfunctions.  The
+subfunctions @code{g} and @code{h} may only be called from the main
+function @code{f} or from the other subfunctions, but not from outside
+the file @file{f.m}.
 
 @node Script Files
 @section Script Files
@@ -955,7 +990,7 @@ the syntax
 For example
 
 @example
-f = @sin;
+f = @@sin;
 @end example
 
 @noindent
@@ -967,7 +1002,7 @@ a function as an argument to another function like @code{quad} or
 @code{fsolve}.  For example
 
 @example
-f = @sin;
+f = @@sin;
 quad (f, 0, pi)
     @result 1.8391
 @end example
@@ -978,7 +1013,7 @@ list.  If there are no arguments, you must use an empty argument list
 @samp{()}.  For example
 
 @example
-f = @sin;
+f = @@sin;
 feval (f, pi/4)
     @result 0.70711
 f (pi/4)
@@ -1116,7 +1151,7 @@ Functions to manage the directory path Octave uses to find functions.
 Install external packages of functions in Octave.
 
 @item plot
-A set of functions that implement the @sc{Matlab}-like plotting functions.
+Functions for displaying and printing two- and three-dimensional graphs.
 
 @item polynomial
 Functions for manipulating polynomials.

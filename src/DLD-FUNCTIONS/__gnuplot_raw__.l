@@ -273,10 +273,6 @@ static std::string Vgnuplot_command_axes = "ax";
 static std::string Vgnuplot_command_title = "t";
 static std::string Vgnuplot_command_end = "\n";
 
-// If TRUE, a replot command is issued automatically each time a plot
-// changes in some way.
-static bool Vautomatic_replot = true;
-
 // Check if the parser state is such that a plot keyword can occur.
 
 static bool
@@ -1551,18 +1547,6 @@ static gnuplot_X X;
 // -----------------------
 // User-callable functions
 // -----------------------
-
-DEFUN_DLD (automatic_replot, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{val} =} automatic_replot ()\n\
-@deftypefnx {Loadable Function} {@var{old_val} =} automatic_replot (@var{new_val})\n\
-Query or set the current automatic replot state.  Although it is fairly\n\
-inefficient, especially for large plots, automatic replotting is enabled\n\
-by default for compatibility with Matlab.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (automatic_replot);
-}
 
 DEFUN_DLD (gnuplot_binary, args, nargout,
   "-*- texinfo -*-\n\

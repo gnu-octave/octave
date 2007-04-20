@@ -295,31 +295,6 @@ clean_up_and_exit (int retval)
   exit (retval == EOF ? 0 : retval);
 }
 
-DEFCMD (casesen, args, ,
-  "-*- texinfo -*-\n\
-@deffn {Command} casesen arg\n\
-Provided for compatibility with Matlab, but does nothing.\n\
-@end deffn")
-{
-  octave_value_list retval;
-
-  int argc = args.length () + 1;
-
-  string_vector argv = args.make_argv ("casesen");
-
-  if (error_state)
-    return retval;
-
-  if (argc == 1 || (argc > 1 && argv[1] == "off"))
-    warning ("casesen: sorry, Octave is always case sensitive");
-  else if (argc > 1 && argv[1] == "on")
-    ; // ok.
-  else
-    print_usage ();
-
-  return retval;
-}
-
 DEFUN (quit, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} exit (@var{status})\n\

@@ -930,7 +930,7 @@ DEFUN (length, args, ,
 @deftypefn {Built-in Function} {} length (@var{a})\n\
 Return the `length' of the object @var{a}.  For matrix objects, the\n\
 length is the number of rows or columns, whichever is greater (this\n\
-odd definition is used for compatibility with Matlab).\n\
+odd definition is used for compatibility with @sc{Matlab}).\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2252,8 +2252,9 @@ the specified type, like\n\
 val = zeros (n,m, \"uint8\")\n\
 @end example\n\
 \n\
-For compatibility with @sc{Matlab}, calling @code{eye} with no arguments\n\
-is equivalent to calling it with an argument of 1.\n\
+Calling @code{eye} with no arguments is equivalent to calling it\n\
+with an argument of 1.  This odd definition is for compatibility\n\
+with @sc{Matlab}.\n\
 @end deftypefn")
 {
   octave_value retval;

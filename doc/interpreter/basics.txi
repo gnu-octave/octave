@@ -160,19 +160,30 @@ Don't print the usual greeting and version message at startup.
 @itemx --braindead
 @cindex @code{--traditional}
 @cindex @code{--braindead}
-Set initial values for user-preference variables to the following
-values for compatibility with @sc{Matlab}.
+For compatibility with @sc{Matlab}, set initial values for
+user-preferences to the following values
 
 @example
 @group
-  PS1                           = ">> "
-  PS2                           = ""
-  beep_on_error                 = true
-  crash_dumps_octave_core       = false
-  default_save_options          = "-mat-binary"
-  fixed_point_format            = true
-  page_screen_output            = false
-  print_empty_dimensions        = false
+  PS1                             = ">> "
+  PS2                             = ""
+  beep_on_error                   = true
+  crash_dumps_octave_core         = false
+  default_save_options            = "-mat-binary"
+  fixed_point_format              = true
+  history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
+  page_screen_output              = false
+  print_empty_dimensions          = false
+@end group
+@end example
+
+@noindent
+and disable the following warnings
+@example
+@group
+  Octave:fopen-file-in-path
+  Octave:function-name-clash
+  Octave:load-file-in-path
 @end group
 @end example
 

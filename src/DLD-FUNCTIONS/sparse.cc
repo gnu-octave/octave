@@ -61,50 +61,46 @@ Return 1 if the value of the expression @var{expr} is a sparse matrix.\n\
 
 DEFUN_DLD (sparse, args, ,
     "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{sparse_val} =} sparse (@dots{})\n\
-SPARSE: create a sparse matrix\n\
-\n\
-sparse can be called in the following ways:\n\
-\n\
-@enumerate\n\
-@item @var{S} = sparse(@var{A})  where @var{A} is a full matrix\n\
-\n\
-@item @var{S} = sparse(@var{A},1)  where @var{A} is a full matrix, result\n\
+@deftypefn {Loadable Function} {@var{s} =} sparse (@var{a})\n\
+Create a sparse matrix from the full matrix @var{a}.\n\
 is forced back to a full matrix is resulting matrix is sparse\n\
 \n\
-@item @var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},@var{nzmax})  where\n\
-   @itemize @w \n\
-@var{i},@var{j}   are integer index vectors (1 x nnz) @* \n\
-@var{s}     is the vector of real or complex entries (1 x nnz) @* \n\
-@var{m},@var{n}   are the scalar dimentions of S @* \n\
-@var{nzmax} is ignored (here for compatability with Matlab) @* \n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{a}, 1)\n\
+Create a sparse matrix and convert it back to a full matrix.\n\
+is forced back to a full matrix is resulting matrix is sparse\n\
 \n\
-        if multiple values are specified with the same @var{i},@var{j}\n\
-        position, the corresponding values in @var{s} will be added\n\
-   @end itemize\n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
+Create a sparse matrix given integer index vectors @var{i} and @var{j},\n\
+a 1-by-@code{nnz} vector of real of complex values @var{sv}, overall\n\
+dimensions @var{m} and @var{n} of the sparse matrix.  The argument\n\
+@code{nzmax} is ignored but accepted for compatability with @sc{Matlab}.\n\
 \n\
-@item The following usages are equivalent to (2) above:\n\
-   @itemize @w \n\
-@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n})@*\n\
-@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'summation')@*\n\
-@var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'sum')@*\n\
-   @end itemize\n\
+@strong{Note}: if multiple values are specified with the same\n\
+@var{i}, @var{j} indices, the corresponding values in @var{s} will\n\
+be added.\n\
 \n\
-@item @var{S} = sparse(@var{i},@var{j},@var{s},@var{m},@var{n},'unique')@*\n\
+@item The following usages are equivalent:\n\
 \n\
-   @itemize @w \n\
-same as (2) above, except that rather than adding,\n\
-if more than two values are specified for the same @var{i},@var{j}\n\
-position, then the last specified value will be kept\n\
-   @end itemize\n\
+@example\n\
+@group\n\
+s = sparse (i, j, s, m, n)\n\
+s = sparse (i, j, s, m, n, \"summation\")\n\
+s = sparse (i, j, s, m, n, \"sum\")\n\
+@end group\n\
+@end example\n\
 \n\
-@item @var{S}=  sparse(@var{i},@var{j},@var{sv})          uses @var{m}=max(@var{i}), @var{n}=max(@var{j})\n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{s}, @var{m}, @var{n}, \"unique\")\n\
+Same as above, except that if more than two values are specified for the\n\
+same @var{i}, @var{j} indices, the last specified value will be used.\n\
 \n\
-@item @var{S}=  sparse(@var{m},@var{n})            does sparse([],[],[],@var{m},@var{n},0)\n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv})\n\
+Uses @code{@var{m} = max (@var{i})}, @code{@var{n} = max (@var{j})}\n\
 \n\
-@var{sv}, and @var{i} or @var{j} may be scalars, in\n\
-which case they are expanded to all have the same length\n\
-@end enumerate\n\
+@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{m}, @var{n})\n\
+Equivalent to @code{sparse ([], [], [], @var{m}, @var{n}, 0)}\n\
+\n\
+If any of @var{sv}, @var{i} or @var{j} are scalars, they are expanded\n\
+to have a common size.\n\
 @seealso{full}\n\
 @end deftypefn")
 {

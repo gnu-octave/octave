@@ -30,7 +30,7 @@ Octave, it is best to use double-quote marks to denote strings.
 
 @cindex escape sequence notation
 In double-quoted strings, the backslash character is used to introduce
-@deffn{escape sequences} that reresent other characters.  For example,
+@dfn{escape sequences} that reresent other characters.  For example,
 @samp{\n} embeds a newline character in a double-quoted string and
 @samp{\"} embeds a double quote character.
 
@@ -39,10 +39,12 @@ In single-quoted strings, backslash is not a special character.
 Here is an example showing the difference
 
 @example
+@group
 toascii ("\n")
     @result 10
 toascii ('\n')
     @result [ 92 110 ]
+@end group
 @end example
 
 You may also insert a single quote character in a single-quoted string
@@ -50,7 +52,7 @@ by using two single quote characters in succession.  For example,
 
 @example
 'I can''t escape'
-  @result I can't escape
+    @result I can't escape
 @end example
 
 Here is a table of all the escape sequences used in Octave.  They are

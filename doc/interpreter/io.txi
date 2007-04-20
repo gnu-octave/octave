@@ -5,12 +5,6 @@
 @node Input and Output
 @chapter Input and Output
 
-There are two distinct classes of input and output functions.  The first
-set are modeled after the functions available in @sc{Matlab}.  The
-second set are modeled after the standard I/O library used by the C
-programming language and offer more flexibility and control over the
-output.
-
 When running interactively, Octave normally sends any output intended
 for your terminal that is more than one screen long to a paging program,
 such as @code{less} or @code{more}.  This avoids the problem of having a

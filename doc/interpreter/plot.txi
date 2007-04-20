@@ -5,13 +5,8 @@
 @node Plotting
 @chapter Plotting
 
-All of Octave's plotting functions use @code{gnuplot} to handle the
-actual graphics. Most types of plots can be generated using the basic
-plotting functions, which are patterned after the equivalent functions
-in @sc{Matlab}.
-
 @menu
-* Two-Dimensional Plotting::    
+* Plotting::    
 * Specialized Two-Dimensional Plots::  
 * Three-Dimensional Plotting::  
 * Manipulating Existing Plots::
@@ -22,10 +17,10 @@ in @sc{Matlab}.
 * Interaction with gnuplot::    
 @end menu
 
-@node Two-Dimensional Plotting
-@section Two-Dimensional Plotting
+@node Plotting
+@section Plotting
 
-The @sc{Matlab}-style two-dimensional plotting commands are:
+The basic plotting commands are:
 
 @cindex plotting
 @cindex graphics
@@ -89,8 +84,6 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 @DOCSTRING(meshgrid)
 
 @DOCSTRING(ndgrid)
-
-@DOCSTRING(meshdom)
 
 @DOCSTRING(view)
 

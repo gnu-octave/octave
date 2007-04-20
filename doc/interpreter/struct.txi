@@ -2,6 +2,9 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
+@c FIXME update for structure arrays
+@c FIXME need discussion of comma-separated lists somewhere
+
 @node Data Structures
 @chapter Data Structures
 @cindex structures

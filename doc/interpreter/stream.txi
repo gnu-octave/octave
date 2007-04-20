@@ -1,8 +1,0 @@
-@c Copyright (C) 1996, 1997 John W. Eaton
-@c This is part of the Octave manual.
-@c For copying conditions, see the file gpl.texi.
-
-@node I/O Streams
-@chapter I/O Streams
-
-@DOCSTRING(isstream)

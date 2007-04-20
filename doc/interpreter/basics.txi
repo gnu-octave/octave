@@ -272,6 +272,8 @@ invoke Octave with the @code{--verbose} option but without the
 Startup files may contain any valid Octave commands, including function
 definitions.
 
+@DOCSTRING(OCTAVE_HOME)
+
 @DOCSTRING(version)
 
 @DOCSTRING(ver)

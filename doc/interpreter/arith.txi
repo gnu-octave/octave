@@ -44,6 +44,8 @@ each element of the matrix.
 
 @DOCSTRING(gcd)
 
+@DOCSTRING(gradient)
+
 @DOCSTRING(lcm)
 
 @DOCSTRING(log)

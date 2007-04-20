@@ -34,3 +34,5 @@ or function names:
 @item @code{unwind_protect_cleanup} @tab @code{varargin} @tab @code{varargout}
 @item @code{while} @tab @code{__FILE__} @tab @code{__LINE__}
 @end multitable
+
+@DOCSTRING(iskeyword)

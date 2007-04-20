@@ -104,6 +104,8 @@ invoke the editor on a file that already contains all the configuration
 information.  When you exit the editor, Octave will mail the bug report
 for you.
 
+@DOCSTRING(bug_report)
+
 @menu
 * Bug Criteria::                
 * Where: Bug Lists.             Where to send your bug report.

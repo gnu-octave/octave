@@ -94,8 +94,6 @@ using a variety of powerful indexing features.  @xref{Index Expressions}.
 
 @DOCSTRING(isna)
 
-@DOCSTRING(is_nan_or_na)
-
 @node String Objects
 @subsection String Objects
 @cindex strings

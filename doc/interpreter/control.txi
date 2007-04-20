@@ -189,7 +189,6 @@ data structures are given in @ref{sysdisp}.
 * tf2sys::                      
 * zp2sys::                      
 * structaccess::                
-* structintern::                
 @end menu
 
 @node fir2sys
@@ -202,6 +201,8 @@ data structures are given in @ref{sysdisp}.
 @node ss2sys
 @subsection State space system interface functions
 
+@DOCSTRING(ss)
+
 @DOCSTRING(ss2sys)
 
 @DOCSTRING(sys2ss)
@@ -209,12 +210,16 @@ data structures are given in @ref{sysdisp}.
 @node tf2sys
 @subsection Transfer function system interface functions
 
+@DOCSTRING(tf)
+
 @DOCSTRING(tf2sys)
 
 @DOCSTRING(sys2tf)
 
 @node zp2sys
 @subsection Zero-pole system interface functions
+
+@DOCSTRING(zp)
 
 @DOCSTRING(zp2sys)
 
@@ -241,17 +246,6 @@ data structures are given in @ref{sysdisp}.
 
 @DOCSTRING(sysgettsam)
 
-@node structintern
-@subsection Data structure internal functions
-
-@DOCSTRING(syschnamesl)
-
-@DOCSTRING(sysdefioname)
-
-@DOCSTRING(sysdefstname)
-
-@DOCSTRING(tf2sysl)
-
 @node sysdisp
 @section System display functions
 
@@ -260,8 +254,6 @@ data structures are given in @ref{sysdisp}.
 @DOCSTRING(tfout)
 
 @DOCSTRING(zpout)
-
-@DOCSTRING(outlist)
 
 @node blockdiag
 @section Block Diagram Manipulations
@@ -287,15 +279,11 @@ system data structures.
 
 @DOCSTRING(syscont)
 
-@DOCSTRING(syscont_disc)
-
 @DOCSTRING(sysdisc)
 
 @DOCSTRING(sysdup) 
 
 @DOCSTRING(sysgroup)
-
-@DOCSTRING(sysgroupn)
 
 @DOCSTRING(sysmult)
 
@@ -340,8 +328,6 @@ system data structures.
 
 @DOCSTRING(zginit)
 
-@DOCSTRING(zgpbal)
-
 @DOCSTRING(zgreduce)
 
 @DOCSTRING(zgrownorm)
@@ -367,8 +353,6 @@ system data structures.
 @DOCSTRING(analdemo)
 
 @DOCSTRING(abcddim)
-
-@DOCSTRING(abcddims)
 
 @DOCSTRING(ctrb)
 
@@ -419,8 +403,6 @@ system data structures.
 
 @DOCSTRING(step)
 
-@DOCSTRING(stepimp)
-
 @node sysfreq
 @section System Analysis-Frequency Domain
 
@@ -431,15 +413,13 @@ system data structures.
 
 @DOCSTRING(bode_bounds)
 
-@DOCSTRING(bodquist)
-
 @DOCSTRING(freqchkw)
-
-@DOCSTRING(freqresp)
 
 @DOCSTRING(ltifr)
 
 @DOCSTRING(nyquist)
+
+@DOCSTRING(nichols)
 
 @DOCSTRING(tzero)
 
@@ -499,15 +479,11 @@ system data structures.
 
 @DOCSTRING(starp)
 
-@DOCSTRING(susball)
-
 @DOCSTRING(tf2ss)
 
 @DOCSTRING(tf2zp)
 
 @DOCSTRING(zp2ss)
-
-@DOCSTRING(zp2ssg2)
 
 @DOCSTRING(zp2tf)
 

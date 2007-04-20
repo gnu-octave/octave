@@ -451,7 +451,6 @@ System Construction and Interface Functions
 * tf2sys::                      
 * zp2sys::                      
 * structaccess::                
-* structintern::                
 
 Image Processing
 

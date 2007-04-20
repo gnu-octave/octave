@@ -568,7 +568,7 @@ Grammar
 @include poly.texi
 @include interp.texi
 @include geometry.texi
-@include hash.texi
+@include hashing.texi
 @include control.texi
 @include signal.texi
 @include image.texi

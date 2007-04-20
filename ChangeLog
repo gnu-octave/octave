@@ -1,3 +1,7 @@
+2007-04-20  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Don't check for ARPACK.
+
 2007-03-29  Rafael Laboissiere  <rafael@debian.org>
 
  	* emacs/octave-mod.el: Drop LOADPATH, INFO_FILE, and

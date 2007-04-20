@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.558 $)
+AC_REVISION($Revision: 1.559 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1006,35 +1006,6 @@ fi
 if test -n "$warn_cxsparse"; then
   AC_MSG_WARN($warn_cxsparse)
 fi
-
-WITH_ARPACK=true
-AC_ARG_WITH(arpack,
-  [AS_HELP_STRING([--without-arpack], [don't use arpack])],
-  with_arpack=$withval, with_arpack=yes)
-
-arpack_lib=
-if test "$with_arpack" = yes; then
-  arpack_lib="arpack"
-elif test "$with_arpack" != no; then
-  arpack_lib="$with_arpack"
-fi
-
-ARPACK_LIBS=
-AC_SUBST(ARPACK_LIBS)
-WITH_ARPACK=false
-if test -n "$arpack_lib"; then
-  AC_CHECK_LIB($arpack_lib, F77_FUNC(dseupd,DSEUPD), [
-	WITH_ARPACK=true
-        ARPACK_LIBS="-l$arpack_lib"
-        FLIBS="$ARPACK_LIBS $FLIBS"
-        AC_DEFINE(HAVE_ARPACK, 1, [Define if ARPACK is available.])], , 
-	$BLAS_LIBS $FLIBS)
-fi
-if test $WITH_ARPACK = no; then
-  warn_arpack="arpack not found. This will result in a lack of the eigs function."
-  AC_MSG_WARN($warn_arpack)
-fi
-
 
 ### Handle shared library options.
 
@@ -2159,11 +2130,6 @@ fi
 
 if test -n "$warn_cxsparse"; then
   AC_MSG_WARN($warn_cxsparse)
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_arpack"; then
-  AC_MSG_WARN($warn_arpack)
   warn_msg_printed=true
 fi
 

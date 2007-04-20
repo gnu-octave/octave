@@ -15,6 +15,7 @@ lower-triangular parts, or sort the columns of a matrix.
 @menu
 * Finding Elements and Checking Conditions::  
 * Rearranging Matrices::        
+* Applying a Function to an Array::
 * Special Utility Matrices::    
 * Famous Matrices::             
 @end menu
@@ -99,6 +100,8 @@ Note that in conditional contexts (like the test clause of @code{if} and
 
 @DOCSTRING(sort)
 
+@DOCSTRING(sortrows)
+
 Since the @code{sort} function does not allow sort keys to be specified,
 it can't be used to order the rows of a matrix according to the values
 of the elements in various columns@footnote{For example, to first sort
@@ -120,6 +123,12 @@ a (i, :)
 @end group
 @end example
 
+@DOCSTRING(swap)
+
+@DOCSTRING(swapcols)
+
+@DOCSTRING(swaprows)
+
 @DOCSTRING(tril)
 
 @DOCSTRING(vec)
@@ -127,6 +136,13 @@ a (i, :)
 @DOCSTRING(vech)
 
 @DOCSTRING(prepad)
+
+@DOCSTRING(blkdiag)
+
+@node Applying a Function to an Array
+@section Applying a Function to an Array
+
+@DOCSTRING(arrayfun)
 
 @node Special Utility Matrices
 @section Special Utility Matrices

@@ -149,6 +149,8 @@ about the status of files.
 
 @DOCSTRING(rmdir)
 
+@DOCSTRING(confirm_recursive_rmdir)
+
 @DOCSTRING(mkfifo)
 
 @DOCSTRING(umask)

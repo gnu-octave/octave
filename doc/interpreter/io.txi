@@ -147,11 +147,17 @@ unexpectedly.
 
 @DOCSTRING(octave_core_file_options)
 
+@DOCSTRING(octave_core_file_limit)
+
+@DOCSTRING(octave_core_file_name)
+
 @DOCSTRING(save_precision)
 
 @DOCSTRING(save_header_format_string)
 
 @DOCSTRING(load)
+
+@DOCSTRING(native_float_format)
 
 @node C-Style I/O Functions
 @section C-Style I/O Functions

@@ -199,6 +199,8 @@ options.
 
 @DOCSTRING(argv)
 
+@DOCSTRING(program_name)
+
 @DOCSTRING(program_invocation_name)
 
 Here is an example of using these functions to reproduce Octave's
@@ -269,6 +271,10 @@ invoke Octave with the @code{--verbose} option but without the
 
 Startup files may contain any valid Octave commands, including function
 definitions.
+
+@DOCSTRING(version)
+
+@DOCSTRING(ver)
 
 @node Quitting Octave
 @section Quitting Octave
@@ -580,6 +586,8 @@ re-running chunks of commands from the history list.
 @DOCSTRING(history_size)
 
 @DOCSTRING(saving_history)
+
+@DOCSTRING(history_timestamp_format_string)
 
 @node Customizing readline
 @subsection Customizing @code{readline}

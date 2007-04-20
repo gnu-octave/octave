@@ -38,6 +38,12 @@ need a specialized data type that is not currently provided as a
 built-in type, you are encouraged to write your own user-defined data
 type and contribute it for distribution in a future release of Octave.
 
+@DOCSTRING(class)
+
+@DOCSTRING(isa)
+
+@DOCSTRING(cast)
+
 @menu
 * Numeric Objects::             
 * Missing Data::                
@@ -153,3 +159,5 @@ data structure type doesn't have rows or columns, so the @code{rows} and
 @DOCSTRING(sizeof)
 
 @DOCSTRING(size_equal)
+
+@DOCSTRING(squeeze)

@@ -434,4 +434,8 @@ replaces the range expression with a single range constant.
 
 @DOCSTRING(issymmetric)
 
+@DOCSTRING(isdefinite)
+
 @DOCSTRING(isbool)
+
+@DOCSTRING(isprime)

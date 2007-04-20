@@ -88,6 +88,8 @@ The @sc{Matlab}-style two-dimensional plotting commands are:
 
 @DOCSTRING(meshgrid)
 
+@DOCSTRING(ndgrid)
+
 @DOCSTRING(meshdom)
 
 @DOCSTRING(view)

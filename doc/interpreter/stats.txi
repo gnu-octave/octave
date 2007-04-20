@@ -37,6 +37,10 @@ you would like to help improve Octave in this area, please contact
 
 @c FIXME -- these need to be organized.
 
+@DOCSTRING(nchoosek)
+
+@DOCSTRING(perms)
+
 @DOCSTRING(values)
 
 @DOCSTRING(var)

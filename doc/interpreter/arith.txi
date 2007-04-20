@@ -28,11 +28,19 @@ each element of the matrix.
 
 @DOCSTRING(ceil)
 
+@DOCSTRING(cplxpair)
+
 @DOCSTRING(exp)
+
+@DOCSTRING(factor)
+
+@DOCSTRING(factorial)
 
 @DOCSTRING(fix)
 
 @DOCSTRING(floor)
+
+@DOCSTRING(fmod)
 
 @DOCSTRING(gcd)
 
@@ -52,7 +60,11 @@ each element of the matrix.
 
 @DOCSTRING(nextpow2)
 
+@DOCSTRING(nthroot)
+
 @DOCSTRING(pow2)
+
+@DOCSTRING(primes)
 
 @DOCSTRING(rem)
 

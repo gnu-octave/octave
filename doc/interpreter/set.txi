@@ -10,6 +10,8 @@ set is defined as a collection unique elements.
 
 @DOCSTRING(create_set)
 
+@DOCSTRING(ismember)
+
 @DOCSTRING(unique)
 
 @DOCSTRING(union)

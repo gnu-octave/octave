@@ -72,7 +72,6 @@ SOURCES = \
   loglog.m \
   loglogerr.m \
   mesh.m \
-  meshdom.m \
   meshgrid.m \
   ndgrid.m \
   newplot.m \

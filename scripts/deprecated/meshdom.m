@@ -19,11 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} meshdom (@var{x}, @var{y})
-## Given vectors of @var{x} and @var{y} coordinates, return two matrices
-## corresponding to the @var{x} and @var{y} coordinates of the mesh.
-##
-## Note: this function is provided for compatibility with older versions
-## of @sc{Matlab}.  You should use @code{meshgrid} instead.
+## This function has been deprecated.  Use @code{meshgrid} instead.
 ## @end deftypefn
 
 ## Author: jwe

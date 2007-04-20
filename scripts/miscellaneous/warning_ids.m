@@ -77,7 +77,7 @@
 ## If the @code{Octave:associativity-change} warning is
 ## enabled, Octave will warn about possible changes in the meaning of
 ## some code due to changes in associativity for some operators.
-## Associativity changes have typically been made for Matlab
+## Associativity changes have typically been made for @sc{Matlab}
 ## compatibility.  By default, the @code{Octave:associativity-change}
 ## warning is enabled.
 ## 
@@ -124,7 +124,7 @@
 ## 
 ## @item Octave:matlab-incompatible
 ## Print warnings for Octave language features that may cause
-## compatibility problems with Matlab.
+## compatibility problems with @sc{Matlab}.
 ## 
 ## @item Octave:missing-semicolon
 ## If the @code{Octave:missing-semicolon} warning is enabled, Octave
@@ -162,7 +162,7 @@
 ## If the @code{Octave:precedence-change} warning is enabled, Octave
 ## will warn about possible changes in the meaning of some code due to
 ## changes in precedence for some operators.  Precedence changes have
-## typically been made for Matlab compatibility.  By default, the
+## typically been made for @sc{Matlab} compatibility.  By default, the
 ## @code{Octave:precedence-change} warning is enabled.
 ## 
 ## @item Octave:reload-forces-clear

@@ -61,7 +61,7 @@ function retval = license (varargin)
   if (isempty (__octave_licenses__))
     __octave_licenses__ = cell ();
     __octave_licenses__{1,1} = "Octave";
-    __octave_licenses__{1,2} = "GNU General Public License, Version 2";
+    __octave_licenses__{1,2} = "GNU General Public License";
     __octave_licenses__{1,3} = true;
     if (exist ("OCTAVE_FORGE_VERSION"))
       __octave_licenses__{2,1} = "octave-forge";

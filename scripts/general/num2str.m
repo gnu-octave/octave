@@ -21,9 +21,9 @@
 ## @deftypefn {Function File} {} num2str (@var{n})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{precision})
 ## @deftypefnx {Function File} {} num2str (@var{x}, @var{format})
-## Convert a number to a string.  These functions are not very flexible,
-## but are provided for compatibility with @sc{Matlab}.  For better control
-## over the results, use @code{sprintf} (@pxref{Formatted Output}).
+## Convert a number to a string.  This function is not very flexible.
+## For better control over the results, use @code{sprintf}
+## (@pxref{Formatted Output}).
 ## @seealso{sprintf, int2str}
 ## @end deftypefn
 

@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} pack ()
-## This function is provided for compatibility with Matlab, but it
+## This function is provided for compatibility with @sc{Matlab}, but it
 ## doesn't actually do anything.
 ## @end deftypefn
 

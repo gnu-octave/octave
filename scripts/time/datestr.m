@@ -21,8 +21,8 @@
 ## @deftypefn {Function File} {@var{str} =} datestr (@var{date}, [@var{f}, [@var{p}]])
 ## Format the given date/time according to the format @code{f} and return
 ## the result in @var{str}. @var{date} is a serial date number (see
-## @code{datenum}) or a date vector (see @code{datevec}). For compatibility
-## with Matlab, @var{date} may also be a string or cell array of strings.
+## @code{datenum}) or a date vector (see @code{datevec}).  The value of
+## @var{date} may also be a string or cell array of strings.
 ##
 ## @var{f} can be an integer which corresponds to one of the codes in
 ## the table below, or a date format string.

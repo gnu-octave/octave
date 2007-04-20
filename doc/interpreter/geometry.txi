@@ -1,0 +1,8 @@
+@c Copyright (C) 2007 John W. Eaton
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@node Geometry
+@chapter Geometry
+
+@DOCSTRING(polyarea)

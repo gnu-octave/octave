@@ -152,6 +152,8 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Sets::                        
 * Polynomial Manipulations::    
 * Interpolation::
+* Geometry::
+* Hashing::
 * Control Theory::              
 * Signal Processing::           
 * Image Processing::            
@@ -565,6 +567,8 @@ Grammar
 @include set.texi
 @include poly.texi
 @include interp.texi
+@include geometry.texi
+@include hash.texi
 @include control.texi
 @include signal.texi
 @include image.texi

@@ -225,6 +225,8 @@ possibilities and issue our own error message.
 
 @DOCSTRING(nargin)
 
+@DOCSTRING(inputname)
+
 @DOCSTRING(silent_functions)
 
 @node Multiple Return Values
@@ -399,6 +401,8 @@ print_arguments (1, "two", 3);
 @end group
 @end example
 
+@DOCSTRING(parseparams)
+
 @node Variable-length Return Lists
 @section Variable-length Return Lists
 @cindex variable-length return lists
@@ -431,6 +435,8 @@ When called this function returns values like this
      @result{} c =  3
 @end group
 @end example
+
+@DOCSTRING(deal)
 
 @node Returning From a Function
 @section Returning From a Function

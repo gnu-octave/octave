@@ -17,4 +17,6 @@ Octave provides the following functions for interpolation.
 
 @DOCSTRING(bicubic)
 
+@DOCSTRING(spline)
+
 @DOCSTRING(lookup)

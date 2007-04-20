@@ -79,7 +79,7 @@ dimensions @var{m} and @var{n} of the sparse matrix.  The argument\n\
 @var{i}, @var{j} indices, the corresponding values in @var{s} will\n\
 be added.\n\
 \n\
-@item The following usages are equivalent:\n\
+The following are all equivalent:\n\
 \n\
 @example\n\
 @group\n\

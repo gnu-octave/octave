@@ -2430,8 +2430,6 @@ will clear the variable definition and restore the definition of\n\
 clear the function definition.\n\
 \n\
 With -x, clear the variables that don't match the patterns.\n\
-\n\
-This command may not be used within a function body.\n\
 @end deffn")
 {
   octave_value_list retval;

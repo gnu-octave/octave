@@ -116,9 +116,9 @@ public:
 
   operator octave_value (void) const
   {
-    Matrix retval (1, 4);
+    Matrix retval (1, 3);
 
-    for (int i = 0; i < 4 ; i++)
+    for (int i = 0; i < 3 ; i++)
       retval(i) = xrgba[i];
 
     return retval;

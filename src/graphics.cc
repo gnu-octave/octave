@@ -65,10 +65,10 @@ class color_property
 public:
   color_property (double r = 0, double g = 0, double b = 1, double a = 1)
   {
-    rgba[0] = r;
-    rgba[1] = g;
-    rgba[2] = b;
-    rgba[3] = a;
+    xrgba[0] = r;
+    xrgba[1] = g;
+    xrgba[2] = b;
+    xrgba[3] = a;
 
     validate ();
   }
@@ -87,7 +87,7 @@ public:
     if (! error_state && m.numel () >= 3 && m.numel () <= 4)
       {
 	for (int i = 0; i < m.numel (); i++)
-	  rgba[i] = m(i);
+	  xrgba[i] = m(i);
 
 	validate ();
       }
@@ -96,7 +96,7 @@ public:
 	std::string c = val.string_value ();
 
 	if (! error_state && c.length () == 1)
-	  c2rgb(c[0]);
+	  c2rgba (c[0]);
 	else
 	  error ("invalid color specification");
       }
@@ -106,7 +106,7 @@ public:
   {
     for (int i = 0; i < 4; i++)
       {
-	if (rgba[i] < 0 ||  rgba[i] > 1)
+	if (xrgba[i] < 0 ||  xrgba[i] > 1)
 	  {
 	    error ("invalid RGB color specification");
 	    break;
@@ -119,18 +119,18 @@ public:
     Matrix retval (1, 4);
 
     for (int i = 0; i < 4 ; i++)
-      retval(i) = rgba[i];
+      retval(i) = xrgba[i];
 
     return retval;
   }
 
   const double* rgba (void) const
   {
-    return rgba;
+    return xrgba;
   }
 
 private:
-  double rgba[4];
+  double xrgba[4];
 
   void c2rgba (char c)
   {
@@ -139,31 +139,31 @@ private:
     switch(c) 
       {
       case 'r':
-	tmp_rgb[0] = 1;	
+	tmp_rgba[0] = 1;	
 	break;	
 
       case 'g': 
-	tmp_rgb[1] = 1;
+	tmp_rgba[1] = 1;
 	break;
 
       case 'b':
-	tmp_rgb[2] = 1; 
+	tmp_rgba[2] = 1; 
 	break;
 
       case 'c': 	
-	tmp_rgb[1] = tmp_rgb[2] = 1;
+	tmp_rgba[1] = tmp_rgba[2] = 1;
 	break;
 
       case 'm':
-	tmp_rgb[0] = tmp_rgb[2] = 1;
+	tmp_rgba[0] = tmp_rgba[2] = 1;
 	break;
 
       case 'y': 
-	tmp_rgb[0] = tmp_rgb[1] = 1;
+	tmp_rgba[0] = tmp_rgba[1] = 1;
 	break;
 
       case 'w': 
-	tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
+	tmp_rgba[0] = tmp_rgba[1] = tmp_rgba[2] = 1;
 	break;
 
       default:
@@ -173,7 +173,7 @@ private:
     if (! error_state)
       {
 	for (int i = 0; i < 4; i++)
-	  rgba[i] = tmp_rgba[i];
+	  xrgba[i] = tmp_rgba[i];
       }
   }
 };

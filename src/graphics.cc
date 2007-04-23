@@ -63,52 +63,119 @@ empty_to_nan (const octave_value& val)
 class color_property
 {
 public:
-  color_property (double r = 0, double g = 0, double b = 1)
-    : red (r), green (g), blue (b)
+  color_property (double r = 0, double g = 0, double b = 1, double a = 1)
   {
+    rgba[0] = r;
+    rgba[1] = g;
+    rgba[2] = b;
+    rgba[3] = a;
+
     validate ();
   }
 
+  color_property (char c)
+  {
+    c2rgba (c);
+  }
+
   color_property (const octave_value& val)
-    : red (), green (), blue ()
   {
     // FIXME -- need some error checking here.
 
     Matrix m = val.matrix_value ();
 
-    if (! error_state && m.numel () == 3)
+    if (! error_state && m.numel () >= 3 && m.numel () <= 4)
       {
-	red = m(0);
-	green = m(1);
-	blue = m(2);
+	for (int i = 0; i < m.numel (); i++)
+	  rgba[i] = m(i);
 
 	validate ();
       }
-    else
-      error ("invalid RGB color specification");
+    else 
+      {
+	std::string c = val.string_value ();
+
+	if (! error_state && c.length () == 1)
+	  c2rgb(c[0]);
+	else
+	  error ("invalid color specification");
+      }
   }
 
   void validate (void) const
   {
-    if (red < 0 || red > 1 || green < 0 || green > 1 || blue < 0 || blue > 1)
-      error ("invalid RGB color specification");
+    for (int i = 0; i < 4; i++)
+      {
+	if (rgba[i] < 0 ||  rgba[i] > 1)
+	  {
+	    error ("invalid RGB color specification");
+	    break;
+	  }
+      }
   }
 
   operator octave_value (void) const
   {
-    Matrix retval (1, 3);
+    Matrix retval (1, 4);
 
-    retval(0) = red;
-    retval(1) = green;
-    retval(2) = blue;
+    for (int i = 0; i < 4 ; i++)
+      retval(i) = rgba[i];
 
     return retval;
   }
 
+  const double* rgba (void) const
+  {
+    return rgba;
+  }
+
 private:
-  double red;
-  double green;
-  double blue;
+  double rgba[4];
+
+  void c2rgba (char c)
+  {
+    double tmp_rgba[4] = {0,0,0,1};
+
+    switch(c) 
+      {
+      case 'r':
+	tmp_rgb[0] = 1;	
+	break;	
+
+      case 'g': 
+	tmp_rgb[1] = 1;
+	break;
+
+      case 'b':
+	tmp_rgb[2] = 1; 
+	break;
+
+      case 'c': 	
+	tmp_rgb[1] = tmp_rgb[2] = 1;
+	break;
+
+      case 'm':
+	tmp_rgb[0] = tmp_rgb[2] = 1;
+	break;
+
+      case 'y': 
+	tmp_rgb[0] = tmp_rgb[1] = 1;
+	break;
+
+      case 'w': 
+	tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
+	break;
+
+      default:
+	error ("invalid color specification");
+      }
+
+    if (! error_state)
+      {
+	for (int i = 0; i < 4; i++)
+	  rgba[i] = tmp_rgba[i];
+      }
+  }
 };
 
 class colormap_property

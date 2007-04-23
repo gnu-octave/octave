@@ -1,3 +1,14 @@
+2007-04-23  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* src/graphics.cc (color_property::color_property):
+	New arg A for alpha channel.  Set rgba instead of red, green, blue.
+        (color_property::color_property (char)): New constructor.
+        (color_propery::rgba): New data member.
+	(color_property::red, color_property::green, color_property::blue):
+	Delete.
+        (color_property::validate): Use rgba.
+        (color_property::c2rgba): New function.
+
 2007-04-23  Soren Hauberg  <soren@hauberg.org>
 
 	* data.cc (Fsize_equal): Allow more than two arguments.

@@ -95,6 +95,8 @@
 
 function retval = plot3 (varargin)
 
+  newplot ();
+
   x_set = 0;
   y_set = 0;
   z_set = 0;

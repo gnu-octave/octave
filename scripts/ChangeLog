@@ -1,3 +1,7 @@
+2007-04-23  David Bateman  <dbateman@free.fr>
+
+	* plot/plot3.m: Call newplot.
+
 2007-04-20  John W. Eaton  <jwe@octave.org>
 
 	* plot/Makefile.in (SOURCES): Fix typo in adding __bar__.m to the list.

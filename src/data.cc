@@ -1099,23 +1099,34 @@ returns the number of columns in the given matrix.\n\
 
 DEFUN (size_equal, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b})\n\
-Return true if the dimensions of @var{a} and @var{b} agree.\n\
+@deftypefn {Built-in Function} {} size_equal (@var{a}, @var{b}, @dots{})\n\
+Return true if the dimensions of all arguments agree.\n\
 Trailing singleton dimensions are ignored.\n\
 @seealso{size, numel}\n\
 @end deftypefn")
 {
   octave_value retval;
 
-  if (args.length () == 2)
+  int nargin = args.length ();
+
+  if (nargin >= 2)
     {
+      retval = true;
+
       dim_vector a_dims = args(0).dims ();
-      dim_vector b_dims = args(1).dims ();
-
       a_dims.chop_trailing_singletons ();
-      b_dims.chop_trailing_singletons ();
 
-      retval = a_dims == b_dims;
+      for (int i = 1; i < nargin; ++i)
+        {
+          dim_vector b_dims = args(i).dims ();
+          b_dims.chop_trailing_singletons ();
+
+          if (a_dims != b_dims)
+	    {
+	      retval = false;
+	      break;
+	    }
+        }
     }
   else
     print_usage ();

@@ -1,3 +1,8 @@
+2007-04-24  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.cc (color_property): Eliminate alpha channel from RGB
+	color spec.
+
 2007-04-23  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* src/graphics.cc (color_property::color_property):

@@ -63,19 +63,18 @@ empty_to_nan (const octave_value& val)
 class color_property
 {
 public:
-  color_property (double r = 0, double g = 0, double b = 1, double a = 1)
+  color_property (double r = 0, double g = 0, double b = 1)
   {
-    xrgba[0] = r;
-    xrgba[1] = g;
-    xrgba[2] = b;
-    xrgba[3] = a;
+    xrgb[0] = r;
+    xrgb[1] = g;
+    xrgb[2] = b;
 
     validate ();
   }
 
   color_property (char c)
   {
-    c2rgba (c);
+    c2rgb (c);
   }
 
   color_property (const octave_value& val)
@@ -84,10 +83,10 @@ public:
 
     Matrix m = val.matrix_value ();
 
-    if (! error_state && m.numel () >= 3 && m.numel () <= 4)
+    if (! error_state && m.numel () == 3)
       {
 	for (int i = 0; i < m.numel (); i++)
-	  xrgba[i] = m(i);
+	  xrgb[i] = m(i);
 
 	validate ();
       }
@@ -96,7 +95,7 @@ public:
 	std::string c = val.string_value ();
 
 	if (! error_state && c.length () == 1)
-	  c2rgba (c[0]);
+	  c2rgb (c[0]);
 	else
 	  error ("invalid color specification");
       }
@@ -104,9 +103,9 @@ public:
 
   void validate (void) const
   {
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
       {
-	if (xrgba[i] < 0 ||  xrgba[i] > 1)
+	if (xrgb[i] < 0 ||  xrgb[i] > 1)
 	  {
 	    error ("invalid RGB color specification");
 	    break;
@@ -119,51 +118,51 @@ public:
     Matrix retval (1, 3);
 
     for (int i = 0; i < 3 ; i++)
-      retval(i) = xrgba[i];
+      retval(i) = xrgb[i];
 
     return retval;
   }
 
-  const double* rgba (void) const
+  const double* rgb (void) const
   {
-    return xrgba;
+    return xrgb;
   }
 
 private:
-  double xrgba[4];
+  double xrgb[3];
 
-  void c2rgba (char c)
+  void c2rgb (char c)
   {
-    double tmp_rgba[4] = {0,0,0,1};
+    double tmp_rgb[4] = {0, 0, 0};
 
     switch(c) 
       {
       case 'r':
-	tmp_rgba[0] = 1;	
+	tmp_rgb[0] = 1;	
 	break;	
 
       case 'g': 
-	tmp_rgba[1] = 1;
+	tmp_rgb[1] = 1;
 	break;
 
       case 'b':
-	tmp_rgba[2] = 1; 
+	tmp_rgb[2] = 1; 
 	break;
 
       case 'c': 	
-	tmp_rgba[1] = tmp_rgba[2] = 1;
+	tmp_rgb[1] = tmp_rgb[2] = 1;
 	break;
 
       case 'm':
-	tmp_rgba[0] = tmp_rgba[2] = 1;
+	tmp_rgb[0] = tmp_rgb[2] = 1;
 	break;
 
       case 'y': 
-	tmp_rgba[0] = tmp_rgba[1] = 1;
+	tmp_rgb[0] = tmp_rgb[1] = 1;
 	break;
 
       case 'w': 
-	tmp_rgba[0] = tmp_rgba[1] = tmp_rgba[2] = 1;
+	tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
 	break;
 
       default:
@@ -173,7 +172,7 @@ private:
     if (! error_state)
       {
 	for (int i = 0; i < 4; i++)
-	  xrgba[i] = tmp_rgba[i];
+	  xrgb[i] = tmp_rgb[i];
       }
   }
 };

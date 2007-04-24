@@ -32,7 +32,6 @@
 
 function box (varargin)
 
-  ## [h, varargin] = __plt_get_axis_arg__ ("box", varargin{:});
   h = gca ();
 
   box_state = get (h, "box");
@@ -61,9 +60,5 @@ function box (varargin)
   endif
 
   set (h, "box", box_state);
-
-endfunction
-
-  
 
 endfunction

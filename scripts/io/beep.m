@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} puts (@var{string})
+## @deftypefn {Function File} {} beep ()
 ## Produce a beep from the speaker (or visual bell).
 ## @seealso{puts, fputs, printf, fprintf}
 ## @end deftypefn

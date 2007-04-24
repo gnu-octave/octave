@@ -1,3 +1,12 @@
+2007-04-24  John W. Eaton  <jwe@octave.org>
+
+	* io/beep.m: Fix cut and paste error.
+	From Søren Hauberg <soren@hauberg.org>.
+
+2007-04-23  John W. Eaton  <jwe@octave.org>
+
+	* plot/box.m: Delete extra endfunction keyword.
+
 2007-04-23  David Bateman  <dbateman@free.fr>
 
 	* plot/plot3.m: Call newplot.

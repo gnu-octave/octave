@@ -49,7 +49,7 @@ C     .. Scalar Arguments ..
       CHARACTER phrase* (*)
 C     ..
 C     .. Local Scalars ..
-      INTEGER i,ichr,j,lphr
+      INTEGER i,ichr,j,lphr,idxval
 C     ..
 C     .. Local Arrays ..
       INTEGER shift(0:4),values(5)
@@ -75,7 +75,8 @@ C     .. Executable Statements ..
       lphr = lennob(phrase)
       IF (lphr.LT.1) RETURN
       DO 30,i = 1,lphr
-          ichr = mod(index(table,phrase(i:i)),sixty4)
+          idxval = index(table,phrase(i:i))
+          ichr = mod(idxval,sixty4)
           IF (ichr.EQ.0) ichr = 63
           DO 10,j = 1,5
               values(j) = ichr - j

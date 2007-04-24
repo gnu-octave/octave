@@ -41,9 +41,9 @@ Here is an example showing the difference
 @example
 @group
 toascii ("\n")
-    @result 10
+    @result{} 10
 toascii ('\n')
-    @result [ 92 110 ]
+    @result{} [ 92 110 ]
 @end group
 @end example
 
@@ -52,7 +52,7 @@ by using two single quote characters in succession.  For example,
 
 @example
 'I can''t escape'
-    @result I can't escape
+    @result{} I can't escape
 @end example
 
 Here is a table of all the escape sequences used in Octave.  They are

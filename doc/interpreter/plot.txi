@@ -6,7 +6,7 @@
 @chapter Plotting
 
 @menu
-* Plotting::    
+* Two-Dimensional Plotting::    
 * Specialized Two-Dimensional Plots::  
 * Three-Dimensional Plotting::  
 * Manipulating Existing Plots::
@@ -17,8 +17,8 @@
 * Interaction with gnuplot::    
 @end menu
 
-@node Plotting
-@section Plotting
+@node Two-Dimensional Plotting
+@section Two-Dimensional Plotting
 
 The basic plotting commands are:
 

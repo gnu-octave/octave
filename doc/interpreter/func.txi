@@ -23,7 +23,6 @@ like built-in functions.
 * Default Arguments::   
 * Function Files::              
 * Script Files::                
-* Dynamically Linked Functions::  
 * Function Handles and Inline::
 * Commands::
 * Organization of Functions::   
@@ -769,205 +768,6 @@ execute commands from any file.
 
 @DOCSTRING(source)
 
-@node Dynamically Linked Functions
-@section Dynamically Linked Functions
-@cindex dynamic linking
-
-On some systems, Octave can dynamically load and execute functions
-written in C++.  Octave can only directly call functions written in C++,
-but you can also load functions written in other languages
-by calling them from a simple wrapper function written in C++.
-
-Here is an example of how to write a C++ function that Octave can load,
-with commentary.  The source for this function is included in the source
-distributions of Octave, in the file @file{examples/oregonator.cc}.  It
-defines the same set of differential equations that are used in the
-example problem of @ref{Ordinary Differential Equations}.  By running
-that example and this one, we can compare the execution times to see
-what sort of increase in speed you can expect by using dynamically
-linked functions.
-
-The function defined in @file{oregonator.cc} contains just 8 statements,
-and is not much different than the code defined in the corresponding
-M-file (also distributed with Octave in the file
-@file{examples/oregonator.m}).
-
-Here is the complete text of @file{oregonator.cc}:
-
-@example
-@group
-#include <octave/oct.h>
-
-DEFUN_DLD (oregonator, args, ,
-  "The `oregonator'.")
-@{
-  ColumnVector dx (3);
-
-  ColumnVector x (args(0).vector_value ());
-
-  dx(0) = 77.27 * (x(1) - x(0)*x(1) + x(0)
-                   - 8.375e-06*pow (x(0), 2));
-
-  dx(1) = (x(2) - x(0)*x(1) - x(1)) / 77.27;
-
-  dx(2) = 0.161*(x(0) - x(2));
-
-  return octave_value (dx);
-@}
-@end group
-@end example
-
-The first line of the file,
-
-@example
-#include <octave/oct.h>
-@end example
-
-@noindent
-includes declarations for all of Octave's internal functions that you
-will need.  If you need other functions from the standard C++ or C
-libraries, you can include the necessary headers here.
-
-The next two lines
-@example
-@group
-DEFUN_DLD (oregonator, args, ,
-  "The `oregonator'.")
-@end group
-@end example
-
-@noindent
-declares the function.  The macro @code{DEFUN_DLD} and the macros that
-it depends on are defined in the files @file{defun-dld.h},
-@file{defun.h}, and @file{defun-int.h} (these files are included in the
-header file @file{octave/oct.h}).
-
-Note that the third parameter to @code{DEFUN_DLD} (@code{nargout}) is
-not used, so it is omitted from the list of arguments in order to
-avoid the warning from gcc about an unused function parameter.
-
-The next line,
-
-@example
-ColumnVector dx (3);
-@end example
-
-@noindent
-simply declares an object to store the right hand sides of the
-differential equation, and the statement
-
-@example
-ColumnVector x (args(0).vector_value ());
-@end example
-
-@noindent
-extracts a vector from the first input argument.  The
-@code{vector_value} method is used so that the user of the function
-can pass either a row or column vector.  The @code{ColumnVector}
-constructor is needed because the ODE class requires a column
-vector.  The variable @code{args} is passed to functions defined with
-@code{DEFUN_DLD} as an @code{octave_value_list} object, which includes
-methods for getting the length of the list and extracting individual
-elements.
-
-In this example, we don't check for errors, but that is not difficult.
-All of the Octave's built-in functions do some form of checking on their
-arguments, so you can check the source code for those functions for
-examples of various strategies for verifying that the correct number and
-types of arguments have been supplied.
-
-The next statements
-
-@example
-@group
-dx(0) = 77.27 * (x(1) - x(0)*x(1) + x(0)
-                 - 8.375e-06*pow (x(0), 2));
-
-dx(1) = (x(2) - x(0)*x(1) - x(1)) / 77.27;
-
-dx(2) = 0.161*(x(0) - x(2));
-@end group
-@end example
-
-@noindent
-define the right-hand side of the differential equation.  Finally, we
-can return @code{dx}:
-
-@example
-return octave_value (dx);
-@end example
-
-@noindent
-The actual return type is @code{octave_value_list}, but it is only
-necessary to convert the return type to an @code{octave_value} because
-there is a default constructor that can automatically create an object
-of that type from an @code{octave_value} object, so we can just use that
-instead.
-
-To use this file, your version of Octave must support dynamic linking.
-To find out if it does, type the command
-@kbd{octave_config_info ("dld")} at the Octave prompt.  Support for
-dynamic linking is included if this command returns 1.
-
-To compile the example file, type the command @samp{mkoctfile
-oregonator.cc} at the shell prompt.  The script @code{mkoctfile} should
-have been installed along with Octave.  Running it will create a file
-called @file{oregonator.oct} that can be loaded by Octave.  To test the
-@file{oregonator.oct} file, start Octave and type the command
-
-@example
-oregonator ([1, 2, 3], 0)
-@end example
-
-@noindent
-at the Octave prompt.  Octave should respond by printing
-
-@example
-@group
-ans =
-
-   77.269353
-   -0.012942
-   -0.322000
-@end group
-@end example
-
-You can now use the @file{oregonator.oct} file just as you would the
-@code{oregonator.m} file to solve the set of differential equations.
-
-On a 133 MHz Pentium running Linux, Octave can solve the problem shown
-in @ref{Ordinary Differential Equations}, in about 1.4 seconds using the
-dynamically linked function, compared to about 19 seconds using the
-M-file.  Similar decreases in execution time can be expected for other
-functions, particularly those that rely on functions like @code{lsode}
-that require user-supplied functions.
-
-Just as for M-files, Octave will automatically reload a dynamically linked
-function when the file that defines it is more recent than the last
-time that the function was loaded.  If more than one function is defined
-in a single @file{.oct} file, reloading the file may force other
-functions to be cleared and reloaded.  If all the functions loaded from
-a given @file{.oct} file are cleared, Octave will automatically unload
-the @file{.oct} file.
-
-@c FIXME -- is there a better place for this?
-
-@DOCSTRING(variables_can_hide_functions)
-
-Additional examples for writing dynamically linked functions are
-available in the files in the @file{src} directory of the Octave
-distribution.
-
-There is currently no detailed description of all the functions that you
-can call in a built-in function.  For the time being, you will have to
-read the source code for Octave.
-
-@DOCSTRING(mkoctfile)
-
-@DOCSTRING(mex)
-
-@DOCSTRING(mexext)
-
 @node Function Handles and Inline
 @section Function Handles and Inline
 @cindex handle, function handles
@@ -1000,7 +800,7 @@ f = @@sin;
 @end example
 
 @noindent
-Creates a function handle called @code{f} that refers to the the
+Creates a function handle called @code{f} that refers to the
 function @code{sin}.
 
 Function handles are used to call other functions indirectly, or to pass
@@ -1010,20 +810,20 @@ a function as an argument to another function like @code{quad} or
 @example
 f = @@sin;
 quad (f, 0, pi)
-    @result 1.8391
+    @result{} 1.8391
 @end example
 
 You may use @code{feval} to call a function using function handle, or
-simply write the name of the function handle follwed by an argument
+simply write the name of the function handle followed by an argument
 list.  If there are no arguments, you must use an empty argument list
 @samp{()}.  For example
 
 @example
 f = @@sin;
 feval (f, pi/4)
-    @result 0.70711
+    @result{} 0.70711
 f (pi/4)
-    @result 0.70711
+    @result{} 0.70711
 @end example
 
 @DOCSTRING(functions)
@@ -1032,7 +832,7 @@ f (pi/4)
 
 @DOCSTRING(str2func)
 
-@node Anonymous Functions::
+@node Anonymous Functions
 @subsection Anonymous Functions
 
 Anonymous functions are defined using the syntax
@@ -1051,7 +851,7 @@ example,
 @example
 f = @@(x) x.^2;
 quad (f, 0, 10)
-    @result 333.33
+    @result{} 333.33
 @end example
 
 @noindent
@@ -1060,7 +860,7 @@ passes it to @code{quad},
 
 @example
 quad (@@(x) sin (x), 0, pi)
-    @result 1.8391
+    @result{} 1.8391
 @end example
 
 @noindent
@@ -1070,7 +870,7 @@ wraps another function, and
 a = 1;
 b = 2;
 quad (@@(x) betainc (x, a, b), 0, 0.4)
-    @result 1.3867
+    @result{} 1.3867
 @end example
 
 @noindent

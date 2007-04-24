@@ -153,14 +153,15 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Polynomial Manipulations::    
 * Interpolation::
 * Geometry::
-* Hashing::
+* Hashing Functions::
 * Control Theory::              
 * Signal Processing::           
 * Image Processing::            
 * Audio Processing::            
 * Quaternions::                 
 * System Utilities::            
-* Packages::            
+* Packages:: 
+* Dynamically Linked Functions::
 * Test and Demo Functions::
 * Tips::                        
 * Trouble::                     If you have trouble installing Octave.
@@ -320,7 +321,6 @@ Functions and Script Files
 * Returning From a Function::   
 * Function Files::              
 * Script Files::                
-* Dynamically Linked Functions::  
 * Organization of Functions::   
 
 Error Handling
@@ -400,7 +400,6 @@ Sparse Matrices
 * Sparse Linear Algebra::
 * Iterative Techniques::
 * Real Life Example::
-* Oct-Files::
 * Function Reference::
 
 Quadrature
@@ -425,6 +424,8 @@ Statistics
 * Tests::                       
 * Models::                      
 * Distributions::               
+
+Hashing Functions
 
 Control Theory
 
@@ -485,6 +486,12 @@ Packages
 * The DESCRIPTION File::        
 * The INDEX file::              
 * PKG_ADD and PKG_DEL directives::  
+
+Dynamically Linked Functions
+
+* Oct-Files::
+* Mex-Files::
+* Standalone Programs::
 
 Test and Demo Functions
 
@@ -587,6 +594,7 @@ Grammar
 @c for them, and there appears to be no way to go back to the original
 @c set of indices once a redirection has taken place.
 
+@include dynamic.texi
 @include testfun.texi
 @include tips.texi
 @include bugs.texi

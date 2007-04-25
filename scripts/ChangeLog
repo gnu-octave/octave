@@ -1,3 +1,9 @@
+2007-04-26  David Bateman  <dbateman@free.fr>
+
+	* plot/hist.m: Support returning of handle
+	* plot/__bar__.m: __pltopt__ should only be called on strings or
+	cells.
+
 2007-04-25  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: For images, set titlespec{data_idx} to

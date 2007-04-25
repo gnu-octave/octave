@@ -118,7 +118,7 @@ function [nn, xx] = hist (y, x, norm)
     freq = freq / rows (y) * norm;
   endif
 
-  if (nargout > 0)
+  if (nargout > 1)
     if (arg_is_vector)
       nn = freq';
       xx = x';
@@ -126,8 +126,10 @@ function [nn, xx] = hist (y, x, norm)
       nn = freq;
       xx = x;
     endif
+  elseif (nargout == 1)
+    nn = bar (x, freq, 1.0);
   else
-    bar (x, freq);
+    bar (x, freq, 1.0);
   endif
 
 endfunction

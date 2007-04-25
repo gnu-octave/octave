@@ -74,7 +74,7 @@ function varargout = __bar__ (vertical, func, varargin)
       group = false;
       idx++;
     else
-      if (!HaveLineSpec)
+      if ((isstr(varargin{idx}) || iscell(varargin{idx})) && !HaveLineSpec)
 	[dummy, valid] = __pltopt__ (func, varargin{idx}, false);
 	if (valid)
 	  HaveLineSpec = true;

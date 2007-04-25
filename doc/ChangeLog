@@ -1,10 +1,3 @@
-2007-04-24  John W. Eaton  <jwe@octave.org>
-
-	* Makefile (EXAMPLE_SOURCES): New variable.
-	(octave.info, octave.dvi, octave.pdf, HTML/index.html):
-	Depend on $(EXAMPLE_SOURCES).
-	(DISTFILES): Include $(EXAMPLE_SOURCES) in the list.
-
 2007-04-24  David Bateman  <dbateman@free.fr>
 
 	* interpreter/octave.texi: Include dynamic.texi as appendix and

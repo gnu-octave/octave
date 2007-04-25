@@ -81,17 +81,7 @@ Consider the short example
 
 @example
 @group
-#include <octave/oct.h>
-
-DEFUN_DLD (helloworld, args, nargout,
-  "Hello World Help String")
-@{
-  int nargin = args.length ();
-  octave_stdout << "Hello World has " << nargin
-        << " input arguments and "
-        << nargout << " output arguments.\n";
-  return octave_value_list ();
-@}
+@verbatiminclude @value{top_srcdir}/examples/helloworld.cc
 @end group
 @end example
 
@@ -277,22 +267,7 @@ The typical way to extract a matrix or array from the input arguments of
 
 @example
 @group
-#include <octave/oct.h>
-
-DEFUN_DLD (addtwomatrices, args, , "Add A to B")
-@{
-  int nargin = args.length ();
-  if (nargin != 2)
-    print_usage ();
-  else
-    @{
-      NDArray A = args(0).array_value ();
-      NDArray B = args(1).array_value ();
-      if (! error_state)
-        return octave_value (A + B);
-    @}
-  return octave_value_list ();
-@}
+@verbatiminclude @value{top_srcdir}/examples/addtwomatrices.cc
 @end group
 @end example
 
@@ -355,38 +330,7 @@ Consider the example
 
 @example
 @group
-#include <octave/oct.h>
-
-DEFUN_DLD (stringdemo, args, , "String Demo")
-@{
-  int nargin = args.length ();
-  octave_value_list retval;
-
-  if (nargin != 1)
-    print_usage ();
-  else
-    @{
-      charMatrix ch = args(0).char_matrix_value ();
-
-      if (! error_state)
-        @{
-          if (args(0).is_sq_string ())
-            retval(1) = octave_value (ch, true);
-          else
-            retval(1) = octave_value (ch, true, '\'');
-
-          octave_idx_type nr = ch.rows();
-          for (octave_idx_type i = 0; i < nr / 2; i++)
-            @{
-              std::string tmp = ch.row_as_string (i);
-              ch.insert (ch.row_as_string(nr-i-1).c_str(), i, 0);
-              ch.insert (tmp.c_str(), nr-i-1, 0);
-            @}
-          retval(0) = octave_value (ch, true);
-        @}
-    @}
-  return retval;
-@}
+@verbatiminclude @value{top_srcdir}/examples/stringdemo.cc
 @end group
 @end example
 
@@ -431,8 +375,11 @@ Note however, that both types of strings are represented by the
 octave_value_list retval;
 charNDArray c;
 @dots{}
-retval(0) = octave_value (ch, true); // Create a double quoted string
-retval(1) = octave_value (ch, true, '\''); // Create single quoted string
+// Create single quoted string
+retval(1) = octave_value (ch, true, '\'');
+
+// Create a double quoted string
+retval(0) = octave_value (ch, true);
 @end group
 @end example
 
@@ -446,25 +393,7 @@ example is
 
 @example
 @group
-#include <octave/oct.h>
-#include <octave/Cell.h>
-
-DEFUN_DLD (celldemo, args, , "Cell Demo")
-@{
-  octave_value_list retval;
-  int nargin = args.length();
-
-  if (nargin != 1)
-    print_usage ();
-  else
-    @{
-      Cell c = args (0).cell_value ();
-      if (! error_state)
-        for (octave_idx_type i = 0; i < c.nelem (); i++)
-          retval(i) = c.elem (i);
-    @}
-  return retval;
-@}
+@verbatiminclude @value{top_srcdir}/examples/celldemo.cc
 @end group
 @end example
 
@@ -498,42 +427,7 @@ A simple example demonstrating the use of structures within oct-files is
 
 @example
 @group
-#include <octave/oct.h>
-#include <octave/ov-struct.h>
-
-DEFUN_DLD (structdemo, args, , "Struct demo.")
-@{
-  int nargin = args.length ();
-  octave_value retval;
-
-  if (nargin != 2)
-    print_usage ();
-  else
-    @{
-      Octave_map arg0 = args(0).map_value ();
-      std::string arg1 = args(1).string_value ();
-
-      if (! error_state && arg0.contains (arg1))
-        @{
-          // The following two lines might be written as
-          //    octave_value tmp;
-          //    for (Octave_map::iterator p0 = arg0.begin() ;
-          //        p0 != arg0.end(); p0++ )
-          //      if (arg0.key (p0) == arg1)
-          //        @{
-          //          tmp = arg0.contents (p0) (0);
-          //          break;
-          //        @}
-          // though using seek is more concise.
-          Octave_map::const_iterator p1 = arg0.seek (arg1);
-          octave_value tmp =  arg0.contents( p1 ) (0);
-          Octave_map st;
-          st.assign ("selected", tmp);
-          retval = octave_value (st);
-        @}
-    @}
-  return retval;
-@}
+@verbatiminclude @value{top_srcdir}/examples/structdemo.cc
 @end group
 @end example
 
@@ -605,9 +499,11 @@ The number of elements in a sparse matrix is considered to be the number
 of non-zero elements rather than the product of the dimensions.  Therefore
 
 @example
-  SparseMatrix sm;
-  @dots{}
-  int nel = sm.nelem ();
+@group
+SparseMatrix sm;
+@dots{}
+int nel = sm.nelem ();
+@end group
 @end example
 
 returns the number of non-zero elements.  If the user really requires the
@@ -630,12 +526,14 @@ to create this element so it can be filled.  Therefore a piece of
 code like
 
 @example
-  SparseMatrix sm;
-  @dots{}
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      std::cerr << " (" << i << "," << j << "): " << sm(i,j)
-                << std::endl;
+@group
+SparseMatrix sm;
+@dots{}
+for (int j = 0; j < nc; j++)
+  for (int i = 0; i < nr; i++)
+    std::cerr << " (" << i << "," << j << "): " << sm(i,j)
+              << std::endl;
+@end group
 @end example
 
 is a great way of turning the sparse matrix into a dense one, and a
@@ -649,13 +547,15 @@ data will be shared between the two versions of the sparse matrix.  So this
 is not a costly operation.  For example, the above would become
 
 @example
-  SparseMatrix sm;
-  @dots{}
-  const SparseMatrix tmp (sm);
-  for (int j = 0; j < nc; j++)
-    for (int i = 0; i < nr; i++)
-      std::cerr << " (" << i << "," << j << "): " << tmp(i,j)
-                << std::endl;
+@group
+SparseMatrix sm;
+@dots{}
+const SparseMatrix tmp (sm);
+for (int j = 0; j < nc; j++)
+  for (int i = 0; i < nr; i++)
+    std::cerr << " (" << i << "," << j << "): " << tmp(i,j)
+              << std::endl;
+@end group
 @end example
 
 Finally, as the sparse types aren't just represented as a contiguous
@@ -682,16 +582,19 @@ Here is an example of how to create a small sparse matrix with the first
 technique
 
 @example
-  int nz = 4, nr = 3, nc = 4;
-  ColumnVector ridx (nz);
-  ColumnVector cidx (nz);
-  ColumnVector data (nz);
+@group
+int nz = 4, nr = 3, nc = 4;
 
-  ridx(0) = 0; ridx(1) = 0; ridx(2) = 1; ridx(3) = 2;
-  cidx(0) = 0; cidx(1) = 1; cidx(2) = 3; cidx(3) = 3;
-  data(0) = 1; data(1) = 2; data(2) = 3; data(3) = 4;
+ColumnVector ridx (nz);
+ColumnVector cidx (nz);
+ColumnVector data (nz);
 
-  SparseMatrix sm (data, ridx, cidx, nr, nc);
+ridx(0) = 0; ridx(1) = 0; ridx(2) = 1; ridx(3) = 2;
+cidx(0) = 0; cidx(1) = 1; cidx(2) = 3; cidx(3) = 3;
+data(0) = 1; data(1) = 2; data(2) = 3; data(3) = 4;
+
+SparseMatrix sm (data, ridx, cidx, nr, nc);
+@end group
 @end example
 
 @noindent
@@ -714,9 +617,11 @@ number of non-zero elements and then later fill those elements in.  The
 easiest way to do this is
 
 @example
-  int nz = 4, nr = 3, nc = 4;
-  SparseMatrix sm (nr, nc, nz);
-  sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
+@group
+int nz = 4, nr = 3, nc = 4;
+SparseMatrix sm (nr, nc, nz);
+sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
+@end group
 @end example
 
 That creates the same matrix as previously.  Again, although it is not
@@ -732,9 +637,11 @@ a sparse matrix.  Firstly, it is possible to create a sparse matrix
 with fewer elements than are actually inserted in the matrix.  Therefore
 
 @example
-  int nz = 4, nr = 3, nc = 4;
-  SparseMatrix sm (nr, nc, 0);
-  sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
+@group
+int nz = 4, nr = 3, nc = 4;
+SparseMatrix sm (nr, nc, 0);
+sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
+@end group
 @end example
 
 @noindent 
@@ -760,7 +667,9 @@ is the user doesn't add the zeros in the first place.  An example of
 the use of @dfn{maybe_compress} is
 
 @example
+@group
   int nz = 6, nr = 3, nc = 4;
+
   SparseMatrix sm1 (nr, nc, nz);
   sm1(0,0) = 1; sm1(0,1) = 2; sm1(1,3) = 3; sm1(2,3) = 4;
   sm1.maybe_compress ();  // No zero elements were added
@@ -769,6 +678,7 @@ the use of @dfn{maybe_compress} is
   sm2(0,0) = 1; sm2(0,1) = 2; sm(0,2) = 0; sm(1,2) = 0;
   sm1(1,3) = 3; sm1(2,3) = 4;
   sm2.maybe_compress (true);  // Zero elements were added
+@end group
 @end example
 
 The use of the @dfn{maybe_compress} function should be avoided if
@@ -783,31 +693,31 @@ be
 @c { with @{, etc
 
 @example
-  octave_value arg;
+@group
+octave_value arg;
+@dots{}
+int nz = 6, nr = 3, nc = 4;   // Assume we know the max no nz
+SparseMatrix sm (nr, nc, nz);
+Matrix m = arg.matrix_value ();
 
-  @dots{}
-
-  int nz = 6, nr = 3, nc = 4;   // Assume we know the max no nz
-  SparseMatrix sm (nr, nc, nz);
-  Matrix m = arg.matrix_value ();
-
-  int ii = 0;
-  sm.cidx (0) = 0;
-  for (int j = 1; j < nc; j++)
-    @{
-      for (int i = 0; i < nr; i++)
-        @{
-          double tmp = foo (m(i,j));
-          if (tmp != 0.)
-            @{
-              sm.data(ii) = tmp;
-              sm.ridx(ii) = i;
-              ii++;
-            @}
-        @}
-      sm.cidx(j+1) = ii;
-   @}
-  sm.maybe_compress ();  // If don't know a-priori the final no of nz.
+int ii = 0;
+sm.cidx (0) = 0;
+for (int j = 1; j < nc; j++)
+  @{
+    for (int i = 0; i < nr; i++)
+      @{
+        double tmp = foo (m(i,j));
+        if (tmp != 0.)
+          @{
+            sm.data(ii) = tmp;
+            sm.ridx(ii) = i;
+            ii++;
+          @}
+      @}
+    sm.cidx(j+1) = ii;
+ @}
+sm.maybe_compress ();  // If don't know a-priori the final no of nz.
+@end group
 @end example
 
 @noindent
@@ -819,36 +729,36 @@ the method @code{change_capacity} exists to reallocate the sparse memory.
 The above example would then be modified as
 
 @example
-  octave_value arg;
+@group
+octave_value arg;
+@dots{}
+int nz = 6, nr = 3, nc = 4;   // Assume we know the max no nz
+SparseMatrix sm (nr, nc, nz);
+Matrix m = arg.matrix_value ();
 
-  @dots{}
-
-  int nz = 6, nr = 3, nc = 4;   // Assume we know the max no nz
-  SparseMatrix sm (nr, nc, nz);
-  Matrix m = arg.matrix_value ();
-
-  int ii = 0;
-  sm.cidx (0) = 0;
-  for (int j = 1; j < nc; j++)
-    @{
-      for (int i = 0; i < nr; i++)
-        @{
-          double tmp = foo (m(i,j));
-          if (tmp != 0.)
-            @{
-              if (ii == nz)
-                @{
-                  nz += 2;   // Add 2 more elements
-                  sm.change_capacity (nz);
-                @}
-              sm.data(ii) = tmp;
-              sm.ridx(ii) = i;
-              ii++;
-            @}
-        @}
-      sm.cidx(j+1) = ii;
-   @}
-  sm.maybe_mutate ();  // If don't know a-priori the final no of nz.
+int ii = 0;
+sm.cidx (0) = 0;
+for (int j = 1; j < nc; j++)
+  @{
+    for (int i = 0; i < nr; i++)
+      @{
+        double tmp = foo (m(i,j));
+        if (tmp != 0.)
+          @{
+            if (ii == nz)
+              @{
+                nz += 2;   // Add 2 more elements
+                sm.change_capacity (nz);
+              @}
+            sm.data(ii) = tmp;
+            sm.ridx(ii) = i;
+            ii++;
+          @}
+      @}
+    sm.cidx(j+1) = ii;
+ @}
+sm.maybe_mutate ();  // If don't know a-priori the final no of nz.
+@end group
 @end example
 
 Note that both increasing and decreasing the number of non-zero elements in
@@ -867,17 +777,17 @@ and returning them as an @code{octave_value}, can be seen in the
 following example
 
 @example
-   octave_value_list retval;
+@group
+octave_value_list retval;
 
-   SparseMatrix sm = args(0).sparse_matrix_value ();
-   SparseComplexMatrix scm = args(1).sparse_complex_matrix_value ();
-   SparseBoolMatrix sbm = args(2).sparse_bool_matrix_value ();
-
-   @dots{}
-
-   retval(2) = sbm;
-   retval(1) = scm;
-   retval(0) = sm;
+SparseMatrix sm = args(0).sparse_matrix_value ();
+SparseComplexMatrix scm = args(1).sparse_complex_matrix_value ();
+SparseBoolMatrix sbm = args(2).sparse_bool_matrix_value ();
+@dots{}
+retval(2) = sbm;
+retval(1) = scm;
+retval(0) = sm;
+@end group
 @end example
 
 The conversion to an octave-value is handled by the sparse
@@ -897,31 +807,7 @@ use of these two functions is
 
 @example
 @group
-#include <octave/oct.h>
-
-DEFUN_DLD (globaldemo, args, , "Global demo.")
-@{
-  int nargin = args.length();
-  octave_value retval;
-
-  if (nargin != 1)
-    print_usage ();
-  else
-    @{
-      std::string s = args(0).string_value ();
-      if (! error_state)
-        @{
-          octave_value tmp = get_global_value (s, true);
-          if (tmp.is_defined ())
-            retval = tmp;
-          else
-            retval = "Global variable not found";
-
-          set_global_value ("a", 42.0);
-        @}
-    @}
-  return retval;
-@}
+@verbatiminclude @value{top_srcdir}/examples/globaldemo.cc
 @end group
 @end example
 
@@ -964,39 +850,7 @@ passing a function to an oct-file.
 
 @example
 @group
-#include <octave/oct.h>
-#include <octave/parse.h>
-
-DEFUN_DLD (funcdemo, args, nargout, "Function Demo")
-@{
-  int nargin = args.length();
-  octave_value_list retval;
-
-  if (nargin < 2)
-    print_usage ();
-  else
-    @{
-      octave_value_list newargs;
-      for (octave_idx_type i = nargin - 1; i > 0; i--)
-        newargs (i - 1) = args(i);
-      if (args(0).is_function_handle () ||
-          args(0).is_inline_function ())
-        @{
-          octave_function *fcn = args(0).function_value ();
-          if (! error_state)
-            retval = feval (fcn, newargs, nargout);
-        @}
-      else if (args(0).is_string ())
-        @{
-          std::string fcn = args (0).string_value ();
-          if (! error_state)
-            retval = feval (fcn, newargs, nargout);
-        @}
-      else
-        error ("funcdemo: expected string, inline or function handle");
-    @}
-  return retval;
-@}
+@verbatiminclude @value{top_srcdir}/examples/funcdemo.cc
 @end group
 @end example
 
@@ -1025,15 +879,15 @@ case the string argument can be used to create a temporary function like
 
 @example
 @group
-  std::octave fcn_name = unique_symbol_name ("__fcn__");
-  std::string fname = "function y = ";
-  fname.append (fcn_name);
-  fname.append ("(x) y = ");
-  fcn = extract_function (args(0), "funcdemo", fcn_name,
-                          fname, "; endfunction");
-  @dots{}
-  if (fcn_name.length ())
-    clear_function (fcn_name);
+std::octave fcn_name = unique_symbol_name ("__fcn__");
+std::string fname = "function y = ";
+fname.append (fcn_name);
+fname.append ("(x) y = ");
+fcn = extract_function (args(0), "funcdemo", fcn_name,
+                        fname, "; endfunction");
+@dots{}
+if (fcn_name.length ())
+  clear_function (fcn_name);
 @end group
 @end example
 
@@ -1095,45 +949,7 @@ given in the following example, where the C++ wrapper is
 
 @example
 @group
-#include <octave/oct.h>
-#include <octave/f77-fcn.h>
-
-extern "C"
-@{
-  F77_RET_T
-  F77_FUNC (fortsub, FORTSUB)
-        (const int&, double*, F77_CHAR_ARG_DECL
-         F77_CHAR_ARG_LEN_DECL);
-@}
-
-DEFUN_DLD (fortdemo, args, , "Fortran Demo.")
-@{
-  octave_value_list retval;
-  int nargin = args.length();
-  if (nargin != 1)
-    print_usage ();
-  else
-    @{
-      NDArray a = args(0).array_value ();
-      if (! error_state)
-        @{
-          double *av = a.fortran_vec ();
-          octave_idx_type na = a.nelem ();
-          OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
-
-          F77_XFCN (fortsub, FORTSUB, (na, av, ctmp F77_CHAR_ARG_LEN (128)));
-
-          if (f77_exception_encountered)
-            error ("fortdemo: error in fortran");
-          else
-            @{
-              retval(1) = std::string (ctmp);
-              retval(0) = a;
-            @}
-        @}
-    @}
-  return retval;
-@}
+@verbatiminclude @value{top_srcdir}/examples/fortdemo.cc
 @end group
 @end example
 
@@ -1142,26 +958,7 @@ and the fortran function is
 
 @example
 @group
-      subroutine fortsub (n, a, s)
-      implicit none
-      character*(*) s
-      real*8 a(*)
-      integer*4 i, n, ioerr
-      do i = 1, n
-         if (a (i) .eq. 0d0) then
-            call xstopx ('fortsub:divide by zero')
-         else
-            a (i) = 1d0 / a (i)
-         end if
-      end do
-      write (unit = s, fmt = '(a,i3,a,a)', iostat = ioerr)
-     $       'There are ', n, ' values in the input vector',
-     $       char(0)
-      if (ioerr .ne. 0) then
-         call xstopx ('fortsub: error writing string')
-      end if
-      return
-      end
+@verbatiminclude @value{top_srcdir}/examples/fortsub.f
 @end group
 @end example
 
@@ -1215,11 +1012,11 @@ the @code{OCTAVE_QUIT} macro is supplied.  For example
 
 @example
 @group
-  for (octave_idx_type i = 0; i < a.nelem (); i++)
-    @{
-      OCTAVE_QUIT;
-      b.elem(i) = 2. * a.elem(i);
-    @}
+for (octave_idx_type i = 0; i < a.nelem (); i++)
+  @{
+    OCTAVE_QUIT;
+    b.elem(i) = 2. * a.elem(i);
+  @}
 @end group
 @end example
 
@@ -1239,9 +1036,9 @@ this case.  The alternative in this case is
 
 @example
 @group
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-  @dots{}  some code that calls a "foreign" function @dots{}
-  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+@dots{}  some code that calls a "foreign" function @dots{}
+END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 @end group
 @end example
 
@@ -1259,37 +1056,7 @@ example of the use of this mechanism is
 
 @example
 @group
-#include <octave/oct.h>
-#include <octave/unwind-prot.h>
-
-void
-err_hand (const char *fmt, ...)
-@{
-  // Do nothing!!
-@}
-
-DEFUN_DLD (unwinddemo, args, nargout, "Unwind Demo")
-@{
-  int nargin = args.length();
-  octave_value retval;
-  if (nargin < 2)
-    print_usage ();
-  else
-    @{
-      NDArray a = args(0).array_value ();
-      NDArray b = args(1).array_value ();
-
-      if (! error_state)
-        @{
-          unwind_protect::begin_frame ("Funwinddemo");
-          unwind_protect_ptr (current_liboctave_warning_handler);
-          set_liboctave_warning_handler (err_hand);
-          retval = octave_value (quotient (a, b));
-          unwind_protect::run_frame ("Funwinddemo");
-        @}
-    @}
-  return retval;
-@}
+@verbatiminclude @value{top_srcdir}/examples/unwinddemo.cc
 @end group
 @end example
 
@@ -1364,16 +1131,7 @@ Consider the short example
 
 @example
 @group
-#include "mex.h"
-
-void
-mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
-@{
-  mxArray *v = mxCreateDoubleMatrix (1, 1, mxREAL);
-  double *data = mxGetPr (v);
-  *data = 1.23456789;
-  plhs[0] = v;
-@}
+@verbatiminclude @value{top_srcdir}/examples/firstmexdemo.c
 @end group
 @end example
 

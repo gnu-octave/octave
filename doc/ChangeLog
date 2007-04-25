@@ -1,5 +1,14 @@
 2007-04-25  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/dynamic.txi: Use @verbatiminclude for example code.
+
+	* interpreter/Makefile.in (EXAMPLE_FILES_NODIR, EXAMPLE_FILES):
+	New variables.
+	(octave.info, octave.dvi, octave.pdf, HTML/index.html):
+	Depend on $(EXAMPLE_FILES).
+
+	* conf.texi.in: Also set top_srcdir with substitution.
+
 	* interpreter/tips.txi: Update with new text and examples.
 	Move documentation section to the end.
 

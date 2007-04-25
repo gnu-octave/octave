@@ -20,6 +20,21 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SCRIPT_SOURCES = sparseimages.m
 
+EXAMPLE_FILES_NODIR = \
+  addtwomatrices.cc \
+  celldemo.cc \
+  firstmexdemo.c \
+  fortdemo.cc \
+  fortsub.f \
+  funcdemo.cc \
+  globaldemo.cc \
+  helloworld.cc \
+  stringdemo.cc \
+  structdemo.cc \
+  unwinddemo.cc
+
+EXAMPLE_FILES = $(addprefix $(top_srcdir)/examples/, $(EXAMPLE_FILES_NODIR))
+
 SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
 
 SPARSEIMAGES_EPS = $(addsuffix .eps, $(SPARSEIMAGES_1))
@@ -110,17 +125,17 @@ $(SUB_TEXINFO) : %.texi : %.txi
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@-t
 	@$(simple-move-if-change-rule)
 
-octave.info: $(IMAGES_TXT) $(TEXINFO)
+octave.info: $(IMAGES_TXT) $(TEXINFO) $(EXAMPLE_FILES)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
-octave.dvi: $(IMAGES_EPS) $(TEXINFO)
+octave.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
 	  $(UNSETCOMSPEC) $(TEXI2DVI) $(MAIN_TEXINFO)
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
-octave.pdf: $(IMAGES_PDF) $(TEXINFO)
+octave.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
 	  $(UNSETCOMSPEC) $(TEXI2PDF) $(MAIN_TEXINFO)
 
@@ -138,7 +153,7 @@ octave.pdf: $(IMAGES_PDF) $(TEXINFO)
 	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
-HTML/index.html: $(HTML_IMAGES_PNG) $(TEXINFO)
+HTML/index.html: $(HTML_IMAGES_PNG) $(TEXINFO) $(EXAMPLE_FILES)
 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
 $(HTML_IMAGES_PNG): HTML/%.png : %.png

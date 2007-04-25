@@ -574,6 +574,7 @@ endef
 define do-subst-texinfo-vals
 echo "making $@ from $<"
 $(SED) < $< \
+  -e "s|%top_srcdir%|${top_srcdir}|" \
   -e "s|%OCTAVE_HOME%|${prefix}|" \
   -e "s|%OCTAVE_VERSION%|${version}|" \
   -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \

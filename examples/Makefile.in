@@ -27,6 +27,7 @@ SCRIPTS = info-emacs-info info-emacs-octave-help
 SOURCES = \
   addtwomatrices.cc \
   celldemo.cc \
+  firstmexdemo.c \
   fortdemo.cc \
   fortsub.f \
   funcdemo.cc \

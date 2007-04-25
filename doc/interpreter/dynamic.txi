@@ -21,14 +21,14 @@ address ask yourself
 @item
 Can I get the same functionality using the Octave scripting language only.
 @item
-Is it thoroughly optimized Octave code? Vectorization of Octave code,
+Is it thoroughly optimized Octave code?  Vectorization of Octave code,
 doesn't just make it concise, it generally significantly improves its
 performance.  Above all, if loops must be used, make sure that the
 allocation of space for variables takes place outside the loops using an
 assignment to a like matrix or zeros.
 @item
 Does it make as much use as possible of existing built-in library
-routines? These are highly optimized and many do not carry the overhead
+routines?  These are highly optimized and many do not carry the overhead
 of being interpreted.
 @item
 Does writing a dynamically linked function represent useful investment
@@ -41,9 +41,9 @@ the user code.  For example a segmentation violation in the users code
 will cause Octave to abort.
 
 @menu
-* Oct-Files::
-* Mex-Files::
-* Standalone Programs::
+* Oct-Files::                   
+* Mex-Files::                   
+* Standalone Programs::         
 @end menu
 
 @node Oct-Files
@@ -53,20 +53,20 @@ will cause Octave to abort.
 @cindex oct
 
 @menu
-* Getting Started with Oct-Files::
-* Matrices and Arrays in Oct-Files::
-* Using Sparse Matrices in Oct-Files::
-* Using Strings in Oct-Files::
-* Cell Arrays in Oct-Files::
-* Using Structures in Oct-Files::
-* Accessing Global Variables in Oct-Files::
-* Calling Octave Functions from Oct-Files::
-* Calling External Code from Oct-Files::
-* Allocating Local Memory in Oct-Files::
-* Input Parameter Checking in Oct-Files::
-* Exception and Error Handling in Oct-Files::
-* Documentation and Test of Oct-Files::
-* Application Programming Interface for Oct-Files::
+* Getting Started with Oct-Files::  
+* Matrices and Arrays in Oct-Files::  
+* Character Strings in Oct-Files::  
+* Cell Arrays in Oct-Files::    
+* Structures in Oct-Files::  
+* Sparse Matrices in Oct-Files::  
+* Accessing Global Variables in Oct-Files::  
+* Calling Octave Functions from Oct-Files::  
+* Calling External Code from Oct-Files::  
+* Allocating Local Memory in Oct-Files::  
+* Input Parameter Checking in Oct-Files::  
+* Exception and Error Handling in Oct-Files::  
+* Documentation and Test of Oct-Files::  
+* Application Programming Interface for Oct-Files::  
 @end menu
 
 @node Getting Started with Oct-Files
@@ -102,27 +102,27 @@ oct-file in Octave is to use the @code{#include <octave/oct.h>}
 header.
 
 The macro that defines the entry point into the dynamically loaded
-function is DEFUN_DLD.  This macro takes four arguments, these being
+function is @code{DEFUN_DLD}.  This macro takes four arguments, these being
 
 @enumerate 1
 @item The function name as it will be seen in Octave,
-@item The list of arguments to the function of type octave_value_list,
+@item The list of arguments to the function of type @code{octave_value_list},
 @item The number of output arguments, which can and often is omitted if
 not used, and
 @item The string that will be seen as the help text of the function.
 @end enumerate
 
-The return type of functions defined with DEFUN_DLD is always
-octave_value_list.
+The return type of functions defined with @code{DEFUN_DLD} is always
+@code{octave_value_list}.
 
 There are a couple of important considerations in the choice of function
 name.  Firstly, it must be a valid Octave function name and so must be a
 sequence of letters, digits and underscores, not starting with a
 digit.  Secondly, as Octave uses the function name to define the filename
-it attempts to find the function in, the function name in the DEFUN_DLD
+it attempts to find the function in, the function name in the @code{DEFUN_DLD}
 macro must match the filename of the oct-file.  Therefore, the above
-function should be in a file helloworld.cc, and it should be compiled to
-an oct-file using the command
+function should be in a file @file{helloworld.cc}, and it should be
+compiled to an oct-file using the command
 
 @example
 mkoctfile helloworld.cc
@@ -130,9 +130,9 @@ mkoctfile helloworld.cc
 
 This will create a file call helloworld.oct, that is the compiled
 version of the function.  It should be noted that it is perfectly
-acceptable to have more than one DEFUN_DLD function in a source
+acceptable to have more than one @code{DEFUN_DLD} function in a source
 file.  However, there must either be a symbolic link to the oct-file for
-each of the functions defined in the source code with the DEFUN_DLD
+each of the functions defined in the source code with the @code{DEFUN_DLD}
 macro or the autoload (@ref{Function Files}) function should be used.
 
 The rest of this function then shows how to find the number of input
@@ -142,8 +142,8 @@ is
 
 @example
 @group
-helloworld(1,2,3)
-@result{} Hello World has 3 input arguments and 0 output arguments.
+helloworld (1, 2, 3)
+@print{} Hello World has 3 input arguments and 0 output arguments.
 @end group
 @end example
 
@@ -155,7 +155,7 @@ majority of which are based on the Array class.  The exception is the
 sparse matrix types discussed separately below.  There are three basic
 matrix types
 
-@table @asis
+@table @code
 @item Matrix
 A double precision matrix class defined in dMatrix.h,
 @item ComplexMatrix
@@ -168,22 +168,30 @@ These are the basic two-dimensional matrix types of octave.  In
 additional there are a number of multi-dimensional array types, these
 being
 
-@table @asis
+@table @code
 @item NDArray
-A double precision array class defined in dNDArray.h,
+A double precision array class defined in @file{dNDArray.h}
 @item ComplexNDarray
-A complex array class defined in CNDArray.h,
+A complex array class defined in @file{CNDArray.h}
 @item boolNDArray
-A boolean array class defined in boolNDArray.h,
-@item int8NDArray, int16NDArray, int32NDArray, int64NDArray
-8, 16, 32 and 64-bit signed array classes defined in int8NDArray.h, etc, and
-@item uint8NDArray, uint16NDArray, uint32NDArray, uint64NDArray
-8, 16, 32 and 64-bit unsigned array classes defined in uint8NDArray.h,
-etc.
+A boolean array class defined in @file{boolNDArray.h}
+@item int8NDArray
+@itemx int16NDArray
+@itemx int32NDArray
+@itemx int64NDArray
+8, 16, 32 and 64-bit signed array classes defined in
+@file{int8NDArray.h}, @file{int16NDArray.h}, etc.
+@item uint8NDArray
+@itemx uint16NDArray
+@itemx uint32NDArray
+@itemx uint64NDArray
+8, 16, 32 and 64-bit unsigned array classes defined in
+@file{uint8NDArray.h}, @file{uint16NDArray.h}, etc.
 @end table
 
 There are several basic means of constructing matrices of
-multi-dimensional arrays.  Considering the Matrix type as an example
+multi-dimensional arrays.  Considering the @code{Matrix} type as an
+example
 
 @itemize @bullet
 @item
@@ -201,18 +209,18 @@ example
 
 @example
 @group
-dim_vector dv(2);
+dim_vector dv (2);
 dv(0) = 2; dv(1) = 2;
-Matrix a(dv);
+Matrix a (dv);
 @end group
 @end example
 
 This can be used on all matrix and array types
 @item
-Define the number of rows and columns in the Matrix.  For example
+Define the number of rows and columns in the matrix.  For example
 
 @example
-Matrix a(2,2)
+Matrix a (2, 2)
 @end example
 
 However, this constructor can only be used with the matrix types.
@@ -221,41 +229,51 @@ However, this constructor can only be used with the matrix types.
 These types all share a number of basic methods and operators, a
 selection of which include
 
-
-@table @asis
-@item T& operator (octave_idx_type), T& elem(octave_idx_type)
-The () operator or elem method allow the values of the matrix or array
-to be read or set.  These can take a single argument, which is of type
-octave_idx_type, that is the index into the matrix or
+@deftypefn Method T& {operator ()} (octave_idx_type)
+@deftypefnx Method T& elem (octave_idx_type)
+The @code{()} operator or @code{elem} method allow the values of the
+matrix or array to be read or set.  These can take a single argument,
+which is of type @code{octave_idx_type}, that is the index into the matrix or
 array.  Additionally, the matrix type allows two argument versions of the
-() operator and elem method, giving the row and column index of the
+@code{()} operator and elem method, giving the row and column index of the
 value to obtain or set.
+@end deftypefn
 
 Note that these function do significant error checking and so in some
 circumstances the user might prefer the access the data of the array or
 matrix directly through the fortran_vec method discussed below.
-@item octave_idx_type nelem ()
+
+@deftypefn Method octave_idx_type nelem (void) const
 The total number of elements in the matrix or array.
-@item size_t byte_size ()
+@end deftypefn
+
+@deftypefn Method size_t byte_size (void) const
 The number of bytes used to store the matrix or array.
-@item dim_vector dims()
+@end deftypefn
+
+@deftypefn Method dim_vector dims (void) const
 The dimensions of the matrix or array in value of type dim_vector.
-@item void resize (const dim_vector&)
-A method taking either an argument of type dim_vector, or in the case of
-a matrix two arguments of type octave_idx_type defining the number of
-rows and columns in the matrix.
-@item T* fortran_vec ()
+@end deftypefn
+
+@deftypefn Method void resize (const dim_vector&)
+A method taking either an argument of type @code{dim_vector}, or in the
+case of a matrix two arguments of type @code{octave_idx_type} defining
+the number of rows and columns in the matrix.
+@end deftypefn
+
+@deftypefn Method T* fortran_vec (void)
 This method returns a pointer to the underlying data of the matrix or a
 array so that it can be manipulated directly, either within Octave or by
 an external library.
-@end table
+@end deftypefn
 
-Operators such an +, -, or * can be used on the majority of the above
-types.  In addition there are a number of methods that are of interest
-only for matrices such as transpose, hermitian, solve, etc.
+Operators such an @code{+}, @code{-}, or @code{*} can be used on the
+majority of the above types.  In addition there are a number of methods
+that are of interest only for matrices such as @code{transpose},
+@code{hermitian}, @code{solve}, etc.
 
 The typical way to extract a matrix or array from the input arguments of
-DEFUN_DLD function is as follows
+@code{DEFUN_DLD} function is as follows
 
 @example
 @group
@@ -268,10 +286,10 @@ DEFUN_DLD (addtwomatrices, args, , "Add A to B")
     print_usage ();
   else
     @{
-      NDArray A = args(0).array_value();
-      NDArray B = args(1).array_value();
+      NDArray A = args(0).array_value ();
+      NDArray B = args(1).array_value ();
       if (! error_state)
-        return octave_value(A + B);
+        return octave_value (A + B);
     @}
   return octave_value_list ();
 @}
@@ -281,59 +299,275 @@ DEFUN_DLD (addtwomatrices, args, , "Add A to B")
 To avoid segmentation faults causing Octave to abort, this function
 explicitly checks that there are sufficient arguments available before
 accessing these arguments.  It then obtains two multi-dimensional arrays
-of type NDArray and adds these together.  Note that the array_value
-method is called without using the is_matrix_type type, and instead the
+of type @code{NDArray} and adds these together.  Note that the array_value
+method is called without using the @code{is_matrix_type} type, and instead the
 error_state is checked before returning @code{A + B}.  The reason to
 prefer this is that the arguments might be a type that is not an
-NDArray, but it would make sense to convert it to one.  The array_value
-method allows this conversion to be performed transparently if possible,
-and sets error_state if it is not.
+@code{NDArray}, but it would make sense to convert it to one.  The
+@code{array_value} method allows this conversion to be performed
+transparently if possible, and sets @code{error_state} if it is not.
 
-@code{A + B}, operating on two NDArray's returns an NDArray, which is
-cast to an octave_value on the return from the function.  An example of
-the use of this demonstration function is
+@code{A + B}, operating on two @code{NDArray}'s returns an
+@code{NDArray}, which is cast to an @code{octave_value} on the return
+from the function.  An example of the use of this demonstration function
+is
 
 @example
 @group
-addtwomatrices(ones(2,2),ones(2,2))
+addtwomatrices (ones (2, 2), ones (2, 2))
       @result{}  2  2
           2  2
 @end group
 @end example
 
-A list of the basic Matrix and Array types, the methods to extract these
-from an octave_value and the associated header is listed below.
+A list of the basic @code{Matrix} and @code{Array} types, the methods to
+extract these from an @code{octave_value} and the associated header is
+listed below.
 
 @multitable @columnfractions .3 .4 .3
-@item RowVector @tab row_vector_value @tab dRowVector.h
-@item ComplexRowVector @tab complex_row_vector_value @tab CRowVector.h
-@item ColumnVector @tab column_vector_value @tab dColVector.h
-@item ComplexColumnVector @tab complex_column_vector_value @tab CColVector.h
-@item Matrix @tab matrix_value @tab dMatrix.h
-@item ComplexMatrix @tab complex_matrix_value @tab CMatrix.h
-@item boolMatrix @tab bool_matrix_value @tab boolMatrix.h
-@item charMatrix @tab char_matrix_value @tab chMatrix.h
-@item NDArray @tab array_value @tab dNDArray.h
-@item ComplexNDArray @tab complex_array_value @tab CNDArray.h
-@item boolNDArray @tab bool_array_value @tab boolNDArray.h
-@item charNDArray @tab char_array_value @tab charNDArray.h
-@item int8NDArray @tab int8_array_value @tab int8NDArray.h
-@item int16NDArray @tab int16_array_value @tab int16NDArray.h
-@item int32NDArray @tab int32_array_value @tab int32NDArray.h
-@item int64NDArray @tab int64_array_value @tab int64NDArray.h
-@item uint8NDArray @tab uint8_array_value @tab uint8NDArray.h
-@item uint16NDArray @tab uint16_array_value @tab uint16NDArray.h
-@item uint32NDArray @tab uint32_array_value @tab uint32NDArray.h
-@item uint64NDArray @tab uint64_array_value @tab uint64NDArray.h
+@item @code{RowVector} @tab @code{row_vector_value} @tab @file{dRowVector.h}
+@item @code{ComplexRowVector} @tab @code{complex_row_vector_value} @tab @file{CRowVector.h}
+@item @code{ColumnVector} @tab @code{column_vector_value} @tab @file{dColVector.h}
+@item @code{ComplexColumnVector} @tab @code{complex_column_vector_value} @tab @file{CColVector.h}
+@item @code{Matrix} @tab @code{matrix_value} @tab @file{dMatrix.h}
+@item @code{ComplexMatrix} @tab @code{complex_matrix_value} @tab @file{CMatrix.h}
+@item @code{boolMatrix} @tab @code{bool_matrix_value} @tab @file{boolMatrix.h}
+@item @code{charMatrix} @tab @code{char_matrix_value} @tab @file{chMatrix.h}
+@item @code{NDArray} @tab @code{array_value} @tab @file{dNDArray.h}
+@item @code{ComplexNDArray} @tab @code{complex_array_value} @tab @file{CNDArray.h}
+@item @code{boolNDArray} @tab @code{bool_array_value} @tab @file{boolNDArray.h}
+@item @code{charNDArray} @tab @code{char_array_value} @tab @file{charNDArray.h}
+@item @code{int8NDArray} @tab @code{int8_array_value} @tab @file{int8NDArray.h}
+@item @code{int16NDArray} @tab @code{int16_array_value} @tab @file{int16NDArray.h}
+@item @code{int32NDArray} @tab @code{int32_array_value} @tab @file{int32NDArray.h}
+@item @code{int64NDArray} @tab @code{int64_array_value} @tab @file{int64NDArray.h}
+@item @code{uint8NDArray} @tab @code{uint8_array_value} @tab @file{uint8NDArray.h}
+@item @code{uint16NDArray} @tab @code{uint16_array_value} @tab @file{uint16NDArray.h}
+@item @code{uint32NDArray} @tab @code{uint32_array_value} @tab @file{uint32NDArray.h}
+@item @code{uint64NDArray} @tab @code{uint64_array_value} @tab @file{uint64NDArray.h}
 @end multitable
 
-@node Using Sparse Matrices in Oct-Files
-@subsection Using Sparse Matrices in Oct-Files
+@node Character Strings in Oct-Files
+@subsection Character Strings in Oct-Files
+
+In Octave a character string is just a special @code{Array} class.
+Consider the example 
+
+@example
+@group
+#include <octave/oct.h>
+
+DEFUN_DLD (stringdemo, args, , "String Demo")
+@{
+  int nargin = args.length ();
+  octave_value_list retval;
+
+  if (nargin != 1)
+    print_usage ();
+  else
+    @{
+      charMatrix ch = args(0).char_matrix_value ();
+
+      if (! error_state)
+        @{
+          if (args(0).is_sq_string ())
+            retval(1) = octave_value (ch, true);
+          else
+            retval(1) = octave_value (ch, true, '\'');
+
+          octave_idx_type nr = ch.rows();
+          for (octave_idx_type i = 0; i < nr / 2; i++)
+            @{
+              std::string tmp = ch.row_as_string (i);
+              ch.insert (ch.row_as_string(nr-i-1).c_str(), i, 0);
+              ch.insert (tmp.c_str(), nr-i-1, 0);
+            @}
+          retval(0) = octave_value (ch, true);
+        @}
+    @}
+  return retval;
+@}
+@end group
+@end example
+
+An example of the of the use of this function is
+
+@example
+@group
+s0 = ["First String"; "Second String"];
+[s1,s2] = stringdemo (s0)
+@result{} s1 = Second String
+        First String
+
+@result{} s2 = First String
+        Second String
+
+typeinfo (s2)
+@result{} sq_string
+typeinfo (s1)
+@result{} string
+@end group
+@end example
+
+One additional complication of strings in Octave is the difference
+between single quoted and double quoted strings.  To find out if an
+@code{octave_value} contains a single or double quoted string an example is
+
+@example
+@group
+    if (args(0).is_sq_string ())
+      octave_stdout << "First argument is a singularly quoted string\n";
+    else if (args(0).is_dq_string ())
+      octave_stdout << "First argument is a doubly quoted string\n";
+@end group
+@end example
+
+Note however, that both types of strings are represented by the
+@code{charNDArray} type, and so when assigning to an
+@code{octave_value}, the type of string should be specified.  For example
+
+@example
+@group
+octave_value_list retval;
+charNDArray c;
+@dots{}
+retval(0) = octave_value (ch, true); // Create a double quoted string
+retval(1) = octave_value (ch, true, '\''); // Create single quoted string
+@end group
+@end example
+
+@node Cell Arrays in Oct-Files
+@subsection Cell Arrays in Oct-Files
+
+Octave's cell type is equally accessible within an oct-files.  A cell
+array is just an array of @code{octave_value}s, and so each element of the cell
+array can then be treated just like any other @code{octave_value}.  A simple
+example is
+
+@example
+@group
+#include <octave/oct.h>
+#include <octave/Cell.h>
+
+DEFUN_DLD (celldemo, args, , "Cell Demo")
+@{
+  octave_value_list retval;
+  int nargin = args.length();
+
+  if (nargin != 1)
+    print_usage ();
+  else
+    @{
+      Cell c = args (0).cell_value ();
+      if (! error_state)
+        for (octave_idx_type i = 0; i < c.nelem (); i++)
+          retval(i) = c.elem (i);
+    @}
+  return retval;
+@}
+@end group
+@end example
+
+Note that cell arrays are used less often in standard oct-files and so
+the @file{Cell.h} header file must be explicitly included.  The rest of this
+example extracts the @code{octave_value}s one by one from the cell array and
+returns be as individual return arguments.  For example consider
+
+@example
+@group
+[b1, b2, b3] = celldemo (@{1, [1, 2], "test"@})
+@result{}
+b1 =  1
+b2 =
+
+   1   2
+
+b3 = test
+@end group
+@end example
+
+@node Structures in Oct-Files
+@subsection Structures in Oct-Files
+
+A structure in Octave is map between a number of fields represented and
+their values.  The Standard Template Library @code{map} class is used,
+with the pair consisting of a @code{std::string} and an octave
+@code{Cell} variable.
+
+A simple example demonstrating the use of structures within oct-files is
+
+@example
+@group
+#include <octave/oct.h>
+#include <octave/ov-struct.h>
+
+DEFUN_DLD (structdemo, args, , "Struct demo.")
+@{
+  int nargin = args.length ();
+  octave_value retval;
+
+  if (nargin != 2)
+    print_usage ();
+  else
+    @{
+      Octave_map arg0 = args(0).map_value ();
+      std::string arg1 = args(1).string_value ();
+
+      if (! error_state && arg0.contains (arg1))
+        @{
+          // The following two lines might be written as
+          //    octave_value tmp;
+          //    for (Octave_map::iterator p0 = arg0.begin() ;
+          //        p0 != arg0.end(); p0++ )
+          //      if (arg0.key (p0) == arg1)
+          //        @{
+          //          tmp = arg0.contents (p0) (0);
+          //          break;
+          //        @}
+          // though using seek is more concise.
+          Octave_map::const_iterator p1 = arg0.seek (arg1);
+          octave_value tmp =  arg0.contents( p1 ) (0);
+          Octave_map st;
+          st.assign ("selected", tmp);
+          retval = octave_value (st);
+        @}
+    @}
+  return retval;
+@}
+@end group
+@end example
+
+An example of its use is
+
+@example
+@group
+x.a = 1; x.b = "test"; x.c = [1, 2];
+structdemo (x, "b")
+@result{} selected = test
+@end group
+@end example
+
+The commented code above demonstrates how to iterated over all of the
+fields of the structure, where as the following code demonstrates finding
+a particular field in a more concise manner.
+
+As can be seen the @code{contents} method of the @code{Octave_map} class
+returns a @code{Cell} which allows structure arrays to be represented.
+Therefore, to obtain the underlying @code{octave_value} we write
+
+@example
+octave_value tmp = arg0.contents (p1) (0);
+@end example
+
+where the trailing (0) is the () operator on the @code{Cell} object.
+
+@node Sparse Matrices in Oct-Files
+@subsection Sparse Matrices in Oct-Files
 
 There are three classes of sparse objects that are of interest to the
 user.
 
-@table @asis
+@table @code
 @item SparseMatrix
 A double precision sparse matrix class
 @item SparseComplexMatrix
@@ -345,26 +579,26 @@ A boolean sparse matrix class
 All of these classes inherit from the @code{Sparse<T>} template class,
 and so all have similar capabilities and usage.  The @code{Sparse<T>}
 class was based on Octave @code{Array<T>} class, and so users familiar
-with Octave's Array classes will be comfortable with the use of
+with Octave's @code{Array} classes will be comfortable with the use of
 the sparse classes.
 
 The sparse classes will not be entirely described in this section, due
-to their similar with the existing Array classes.  However, there are a
-few differences due the different nature of sparse objects, and these
-will be described.  Firstly, although it is fundamentally possible to
-have N-dimensional sparse objects, the Octave sparse classes do
+to their similarity with the existing @code{Array} classes.  However,
+there are a few differences due the different nature of sparse objects,
+and these will be described.  Firstly, although it is fundamentally
+possible to have N-dimensional sparse objects, the Octave sparse classes do
 not allow them at this time.  So all operations of the sparse classes
 must be 2-dimensional.  This means that in fact @code{SparseMatrix} is
 similar to Octave's @code{Matrix} class rather than its
 @code{NDArray} class.
 
 @menu
-* OctDifferences:: The Differences between the Array and Sparse Classes
-* OctCreation:: Creating Spare Matrices in Oct-Files
-* OctUse:: Using Sparse Matrices in Oct-Files
+* Array and Sparse Differences::  
+* Creating Sparse Matrices in Oct-Files::  
+* Using Sparse Matrices in Oct-Files::  
 @end menu
 
-@node OctDifferences
+@node Array and Sparse Differences
 @subsubsection The Differences between the Array and Sparse Classes
 
 The number of elements in a sparse matrix is considered to be the number
@@ -434,18 +668,18 @@ to allow the matrix to be accessed or filled.  However, in that case it is
 up to the user to respect the sparse matrix compressed column format
 discussed previous.
 
-@node OctCreation
-@subsubsection Creating Spare Matrices in Oct-Files
+@node Creating Sparse Matrices in Oct-Files
+@subsubsection Creating Sparse Matrices in Oct-Files
 
-The user has several alternatives in how to create a sparse matrix.
-They can first create the data as three vectors representing the
+You have several alternatives for creating a sparse matrix.
+You can first create the data as three vectors representing the
 row and column indexes and the data, and from those create the matrix.
-Or alternatively, they can create a sparse matrix with the appropriate
+Or alternatively, you can create a sparse matrix with the appropriate
 amount of space and then fill in the values.  Both techniques have their
 advantages and disadvantages.
 
-An example of how to create a small sparse matrix with the first technique
-might be seen the example
+Here is an example of how to create a small sparse matrix with the first
+technique
 
 @example
   int nz = 4, nr = 3, nc = 4;
@@ -460,6 +694,7 @@ might be seen the example
   SparseMatrix sm (data, ridx, cidx, nr, nc);
 @end example
 
+@noindent
 which creates the matrix given in section @ref{Storage}.  Note that
 the compressed matrix format is not used at the time of the creation
 of the matrix itself, however it is used internally.
@@ -493,7 +728,7 @@ in the matrix needs to be moved to allow the new element to be
 inserted.  Only the column indexes need to be updated.
 
 There are a few further points to note about this technique of creating
-a sparse matrix.  Firstly, it is not illegal to create a sparse matrix
+a sparse matrix.  Firstly, it is possible to create a sparse matrix
 with fewer elements than are actually inserted in the matrix.  Therefore
 
 @example
@@ -502,23 +737,24 @@ with fewer elements than are actually inserted in the matrix.  Therefore
   sm(0,0) = 1; sm(0,1) = 2; sm(1,3) = 3; sm(2,3) = 4;
 @end example
 
-is perfectly legal.  However it is a very bad idea.  The reason is that
+@noindent 
+is perfectly valid.  However it is a very bad idea.  The reason is that
 as each new element is added to the sparse matrix the space allocated
 to it is increased by reallocating the memory.  This is an expensive
 operation, that will significantly slow this means of creating a sparse
-matrix.  Furthermore, it is not illegal to create a sparse matrix with
-too much storage, so having @var{nz} above equaling 6 is also legal.
+matrix.  Furthermore, it is possible to create a sparse matrix with
+too much storage, so having @var{nz} above equaling 6 is also valid.
 The disadvantage is that the matrix occupies more memory than strictly
 needed.
 
-It is not always easy to known the number of non-zero elements prior
+It is not always easy to know the number of non-zero elements prior
 to filling a matrix.  For this reason the additional storage for the
 sparse matrix can be removed after its creation with the
 @dfn{maybe_compress} function.  Furthermore, the maybe_compress can
 deallocate the unused storage, but it can equally remove zero elements
 from the matrix.  The removal of zero elements from the matrix is
 controlled by setting the argument of the @dfn{maybe_compress} function
-to be 'true'.  However, the cost of removing the zeros is high because it
+to be @samp{true}.  However, the cost of removing the zeros is high because it
 implies resorting the elements.  Therefore, if possible it is better
 is the user doesn't add the zeros in the first place.  An example of
 the use of @dfn{maybe_compress} is
@@ -574,6 +810,7 @@ be
   sm.maybe_compress ();  // If don't know a-priori the final no of nz.
 @end example
 
+@noindent
 which is probably the most efficient means of creating the sparse matrix.
 
 Finally, it might sometimes arise that the amount of storage initially
@@ -620,7 +857,7 @@ parts of the matrix, though not its entirety, exist as the old and new copy
 at the same time, additional memory is needed.  Therefore if possible this
 should be avoided.
 
-@node OctUse
+@node Using Sparse Matrices in Oct-Files
 @subsubsection Using Sparse Matrices in Oct-Files
 
 Most of the same operators and functions on sparse matrices that are
@@ -645,218 +882,6 @@ following example
 
 The conversion to an octave-value is handled by the sparse
 @code{octave_value} constructors, and so no special care is needed.
-
-@node Using Strings in Oct-Files
-@subsection Using Strings in Oct-Files
-
-In Octave a string is just a special Array class.  Consider the example
-
-@example
-@group
-#include <octave/oct.h>
-
-DEFUN_DLD (stringdemo, args, , "String Demo")
-@{
-  int nargin = args.length();
-  octave_value_list retval;
-
-  if (nargin != 1)
-    print_usage ();
-  else
-    @{
-      charMatrix ch = args(0).char_matrix_value ();
-
-      if (! error_state)
-        @{
-          if (args(0).is_sq_string ())
-            retval(1) = octave_value (ch, true);
-          else
-            retval(1) = octave_value (ch, true, '\'');
-
-          octave_idx_type nr = ch.rows();
-          for (octave_idx_type i = 0; i < nr / 2; i++)
-            @{
-              std::string tmp = ch.row_as_string (i);
-              ch.insert (ch.row_as_string(nr - i - 1).c_str(), i, 0);
-              ch.insert (tmp.c_str(), nr - i - 1, 0);
-            @}
-          retval(0) = octave_value (ch, true);
-        @}
-    @}
-  return retval;
-@}
-@end group
-@end example
-
-An example of the of the use of this function is
-
-@example
-@group
-s0 = ["First String";"Second String"];
-[s1,s2] = stringdemo (s0)
-@result{}s1 = Second String
-        First String
-
-@result{}s2 = First String
-        Second String
-
-typeinfo (s2)
-@result{} sq_string
-typeinfo (s1)
-@result{} string
-@end group
-@end example
-
-One additional complication of strings in Octave is the difference
-between single quoted and double quoted strings.  To find out if an
-octave_value contains a single or double quoted string an example is
-
-@example
-@group
-    if (args(0).is_sq_string())
-      octave_stdout << "First argument is a singularly quoted string\n";
-    else if (args(0).is_dq_string())
-      octave_stdout << "First argument is a doubly quoted string\n";
-@end group
-@end example
-
-Note however, that both types of strings are represented by the
-charNDArray type, and so when assigning to an octave_value, the type of
-string should be specified.  For example
-
-@example
-@group
-octave_value_list retval;
-charNDArray c;
-@dots{}
-retval(0) = octave_value (ch, true); // Create a double quoted string
-retval(1) = octave_value (ch, true, "'"); // Create single quoted string
-@end group
-@end example
-
-@node Cell Arrays in Oct-Files
-@subsection Cell Arrays in Oct-Files
-
-Octave's cell type is equally accessible within an oct-files.  A cell
-array is just an array of octave_values, and so each element of the cell
-array can then be treated just like any other octave_value.  A simple
-example is
-
-@example
-@group
-#include <octave/oct.h>
-#include <octave/Cell.h>
-
-DEFUN_DLD (celldemo, args, , "Cell Demo")
-@{
-  octave_value_list retval;
-  int nargin = args.length();
-
-  if (nargin != 1)
-    print_usage ();
-  else
-    @{
-      Cell c = args (0).cell_value ();
-      if (! error_state)
-        for (octave_idx_type i = 0; i < c.nelem (); i++)
-          retval(i) = c.elem (i);
-    @}
-  return retval;
-@}
-@end group
-@end example
-
-Note that cell arrays are used less often in standard oct-files and so
-the Cell.h header file must be explicitly included.  The rest of this
-example extracts the octave_values one by one from the cell array and
-returns be as individual return arguments.  For example consider
-
-@example
-@group
-[b1,b2,b3] = celldemo(@{1, [1,2], "test"@})
-@result{}
-b1 =  1
-b2 =
-
-   1   2
-
-b3 = test
-@end group
-@end example
-
-@node Using Structures in Oct-Files
-@subsection Using Structures in Oct-Files
-
-A structure in Octave is map between a number of fields represented and
-their values.  The "Standard Template Library" map class is used, with
-the pair consisting of a std::string and an octave Cell variable.
-
-A simple example demonstrating the use of structures within oct-files is
-
-@example
-@group
-#include <octave/oct.h>
-#include <octave/ov-struct.h>
-
-DEFUN_DLD (structdemo, args, , "Struct demo.")
-@{
-  int nargin = args.length ();
-  octave_value retval;
-
-  if (nargin != 2)
-    print_usage ();
-  else
-    @{
-      Octave_map arg0 = args(0).map_value ();
-      std::string arg1 = args(1).string_value ();
-
-      if (! error_state && arg0.contains (arg1))
-        @{
-          // The following two lines might be written as
-          //    octave_value tmp;
-          //    for (Octave_map::iterator p0 = arg0.begin() ;
-          //        p0 != arg0.end(); p0++ )
-          //      if (arg0.key (p0) == arg1)
-          //        @{
-          //          tmp = arg0.contents (p0) (0);
-          //          break;
-          //        @}
-          // though using seek is more concise.
-          Octave_map::const_iterator p1 = arg0.seek (arg1);
-          octave_value tmp =  arg0.contents( p1 ) (0);
-          Octave_map st;
-          st.assign ("selected", tmp);
-          retval = octave_value (st);
-        @}
-    @}
-  return retval;
-@}
-@end group
-@end example
-
-An example of its use is
-
-@example
-@group
-x.a = 1; x.b = "test"; x.c = [1,2];
-structdemo(x,"b")
-@result{} selected = test
-@end group
-@end example
-
-The commented code above demonstrates how to iterated over all of the
-fields of the structure, where as the following code demonstrates finding
-a particular field in a more concise manner.
-
-As can be seen the @code{contents} method of the @code{Octave_map} class
-returns a Cell which allows Structure Arrays to be
-represented.  Therefore, to obtain the underlying octave_value we write
-
-@example
-octave_value tmp = arg0.contents (p1) (0);
-@end example
-
-where the trailing (0) is the () operator on the Cell array.
 
 @node Accessing Global Variables in Oct-Files
 @subsection Accessing Global Variables in Oct-Files
@@ -980,13 +1005,13 @@ and the following arguments are all passed to the user function.
 
 @example
 @group
-funcdemo(@@sin,1)
+funcdemo (@@sin,1)
 @result{} 0.84147
-funcdemo(@@(x) sin(x), 1)
+funcdemo (@@(x) sin(x), 1)
 @result{} 0.84147
-funcdemo (inline("sin(x)"), 1)
+funcdemo (inline ("sin(x)"), 1)
 @result{} 0.84147
-funcdemo("sin",1)
+funcdemo ("sin",1)
 @result{} 0.84147
 funcdemo (@@atan2, 1, 1)
 @result{} 0.78540
@@ -995,8 +1020,8 @@ funcdemo (@@atan2, 1, 1)
 
 When the user function is passed as a string, the treatment of the
 function is different.  In some cases it is necessary to always have the
-user supplied function as an octave_function.  In that case the string
-argument can be used to create a temporary function like
+user supplied function as an @code{octave_function} object.  In that
+case the string argument can be used to create a temporary function like
 
 @example
 @group
@@ -1007,7 +1032,7 @@ argument can be used to create a temporary function like
   fcn = extract_function (args(0), "funcdemo", fcn_name,
                           fname, "; endfunction");
   @dots{}
-  if (fcn_name.length())
+  if (fcn_name.length ())
     clear_function (fcn_name);
 @end group
 @end example
@@ -1052,10 +1077,10 @@ exception handler to treat failing cases in the fortran code
 explicitly.  Note that Octave supplies its own replacement blas
 @code{XERBLA} function, which uses @code{XSTOPX}.
 
-If the underlying code calls @code{XSTOP}, then the @code{F77_XFCN}
+If the underlying code calls @code{XSTOPX}, then the @code{F77_XFCN}
 macro should be used to call the underlying fortran function.  The Fortran
 exception state can then be checked with the global variable
-@code{f77_exception_encountered}.  If @code{XSTOP} will not be called,
+@code{f77_exception_encountered}.  If @code{XSTOPX} will not be called,
 then the @code{F77_FCN} macro should be used instead to call the Fortran
 code.
 
@@ -1081,7 +1106,7 @@ extern "C"
          F77_CHAR_ARG_LEN_DECL);
 @}
 
-DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
+DEFUN_DLD (fortdemo, args, , "Fortran Demo.")
 @{
   octave_value_list retval;
   int nargin = args.length();
@@ -1096,9 +1121,9 @@ DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
           octave_idx_type na = a.nelem ();
           OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
-          F77_XFCN(fortsub, FORTSUB, (na, av, ctmp F77_CHAR_ARG_LEN (128)));
+          F77_XFCN (fortsub, FORTSUB, (na, av, ctmp F77_CHAR_ARG_LEN (128)));
 
-          if ( f77_exception_encountered )
+          if (f77_exception_encountered)
             error ("fortdemo: error in fortran");
           else
             @{
@@ -1112,6 +1137,7 @@ DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
 @end group
 @end example
 
+@noindent
 and the fortran function is
 
 @example
@@ -1123,15 +1149,16 @@ and the fortran function is
       integer*4 i, n, ioerr
       do i = 1, n
          if (a (i) .eq. 0d0) then
-            call xstopx('fortsub:divide by zero')
+            call xstopx ('fortsub:divide by zero')
          else
             a (i) = 1d0 / a (i)
          end if
       end do
-      write(unit = s, fmt = '(a,i3,a,a)', iostat = ioerr)
-     1     'There are ', n, ' values in the input vector', char(0)
+      write (unit = s, fmt = '(a,i3,a,a)', iostat = ioerr)
+     $       'There are ', n, ' values in the input vector',
+     $       char(0)
       if (ioerr .ne. 0) then
-         call xstopx('fortsub: error writing string')
+         call xstopx ('fortsub: error writing string')
       end if
       return
       end
@@ -1144,7 +1171,7 @@ as exception handling.  An example of the behavior of this function is
 
 @example
 @group
-[b, s] = fortdemo(1:3)
+[b, s] = fortdemo (1:3)
 @result{}
   b = 1.00000   0.50000   0.33333
   s = There are   3 values in the input vector
@@ -1161,8 +1188,8 @@ error: fortdemo: error in fortran
 Allocating memory within an oct-file might seem easy as the C++
 new/delete operators can be used.  However, in that case care must be
 taken to avoid memory leaks.  The preferred manner in which to allocate
-memory for use locally is to use the OCTAVE_LOCAL_BUFFER macro.  An
-example of its use is
+memory for use locally is to use the @code{OCTAVE_LOCAL_BUFFER} macro.
+An example of its use is
 
 @example
 OCTAVE_LOCAL_BUFFER (double, tmp, len)
@@ -1196,18 +1223,18 @@ the @code{OCTAVE_QUIT} macro is supplied.  For example
 @end group
 @end example
 
-The presence of the OCTAVE_QUIT macro in the inner loop allows Octave to
+The presence of the @code{OCTAVE_QUIT} macro in the inner loop allows Octave to
 treat the user request with the @kbd{Control-C}.  Without this macro, the user
 must either wait for the function to return before the interrupt is
 processed, or press @kbd{Control-C} three times to force Octave to exit.
 
-The OCTAVE_QUIT macro does impose a very small speed penalty, and so for
+The @code{OCTAVE_QUIT} macro does impose a very small speed penalty, and so for
 loops that are known to be small it might not make sense to include
-OCTAVE_QUIT.
+@code{OCTAVE_QUIT}.
 
 When creating an oct-file that uses an external libraries, the function
 might spend a significant portion of its time in the external
-library.  It is not generally possible to use the OCTAVE_QUIT macro in
+library.  It is not generally possible to use the @code{OCTAVE_QUIT} macro in
 this case.  The alternative in this case is
 
 @example
@@ -1222,7 +1249,7 @@ The disadvantage of this is that if the foreign code allocates any
 memory internally, then this memory might be lost during an interrupt,
 without being deallocated.  Therefore, ideally Octave itself should
 allocate any memory that is needed by the foreign code, with either the
-fortran_vec method or the OCTAVE_LOCAL_BUFFER macro.
+fortran_vec method or the @code{OCTAVE_LOCAL_BUFFER} macro.
 
 The Octave unwind_protect mechanism (@ref{The unwind_protect Statement})
 can also be used in oct-files.  In conjunction with the exception
@@ -1254,11 +1281,11 @@ DEFUN_DLD (unwinddemo, args, nargout, "Unwind Demo")
 
       if (! error_state)
         @{
-          unwind_protect::begin_frame("Funwinddemo");
-          unwind_protect_ptr(current_liboctave_warning_handler);
-          set_liboctave_warning_handler(err_hand);
-          retval = octave_value ( quotient (a, b));
-          unwind_protect::run_frame("Funwinddemo");
+          unwind_protect::begin_frame ("Funwinddemo");
+          unwind_protect_ptr (current_liboctave_warning_handler);
+          set_liboctave_warning_handler (err_hand);
+          retval = octave_value (quotient (a, b));
+          unwind_protect::run_frame ("Funwinddemo");
         @}
     @}
   return retval;
@@ -1270,7 +1297,7 @@ As can be seen in the example
 
 @example
 @group
-unwinddemo(1,0)
+unwinddemo (1, 0)
 @result{} Inf
 1 / 0
 @result{} warning: division by zero
@@ -1284,7 +1311,7 @@ The division by zero (and in fact all warnings) is disabled in the
 @node Documentation and Test of Oct-Files
 @subsection Documentation and Test of Oct-Files
 
-WRITE ME, reference how to use texinfo in oct-file and embed test code.
+WRITE ME, reference how to use Texinfo in oct-file and embed test code.
 
 @node Application Programming Interface for Oct-Files
 @subsection Application Programming Interface for Oct-Files
@@ -1309,10 +1336,10 @@ reason, new code should be written using the oct-file interface
 discussed above if possible.
 
 @menu
-* Getting Started with Mex-Files::
-* Using Structures with Mex-Files::
-* Sparse Matrices with Mex-Files::
-* Calling External Functions in Mex-Files::
+* Getting Started with Mex-Files::  
+* Structures with Mex-Files::  
+* Sparse Matrices with Mex-Files::  
+* Calling External Functions in Mex-Files::  
 @end menu
 
 @node Getting Started with Mex-Files
@@ -1354,8 +1381,8 @@ This simple example demonstrates the basics of writing a mex-file.
 
 WRITE ME
 
-@node Using Structures with Mex-Files
-@subsection Using Structures with Mex-Files
+@node Structures with Mex-Files
+@subsection Structures with Mex-Files
 
 WRITE ME
 
@@ -1386,13 +1413,13 @@ int
 main (void)
 @{
   std::cout << "Hello Octave world!\n";
-  const int size = 2;
-  Matrix a_matrix = Matrix(size, size);
-  for (octave_idx_type row = 0; row < size; ++row)
+  int n = 2;
+  Matrix a_matrix = Matrix (n, n);
+  for (octave_idx_type i = 0; i < n; i++)
     @{
-      for (octave_idx_type column = 0; column < size; ++column)
+      for (octave_idx_type j = 0; j < n; j++)
         @{
-          a_matrix(row, column) = (row + 1)*10 + (column + 1);
+          a_matrix(row,column) = (i+1)*10 + (j+1);
         @}
     @}
   std::cout << a_matrix;

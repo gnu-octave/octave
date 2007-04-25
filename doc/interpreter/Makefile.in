@@ -20,10 +20,6 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SCRIPT_SOURCES = sparseimages.m
 
-EXAMPLE_SOURCES = addtwomatrices.cc celldemo.cc fortdemo.cc \
-	funcdemo.cc globaldemo.cc helloworld.cc munge-texi.cc \
-	stringdemo.cc structdemo.cc unwinddemo.cc fortsub.f
-
 SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
 
 SPARSEIMAGES_EPS = $(addsuffix .eps, $(SPARSEIMAGES_1))
@@ -51,7 +47,7 @@ SUB_SOURCE := arith.txi audio.txi basics.txi bit.txi bugs.txi \
 	stmt.txi strings.txi struct.txi system.txi \
 	testfun.txi tips.txi var.txi vr-idx.txi
 
-SOURCES := $(SUB_SOURCE) $(SCRIPT_SOURCES) $(EXAMPLE_SOURCES)
+SOURCES := $(SUB_SOURCE) $(SCRIPT_SOURCES)
 
 MAIN_TEXINFO := $(srcdir)/octave.texi
 
@@ -114,17 +110,17 @@ $(SUB_TEXINFO) : %.texi : %.txi
 	  -d $(TOPDIR)/scripts/DOCSTRINGS < $< > $@-t
 	@$(simple-move-if-change-rule)
 
-octave.info: $(IMAGES_TXT) $(TEXINFO) $(EXAMPLE_SOURCES)
+octave.info: $(IMAGES_TXT) $(TEXINFO)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
-octave.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_SOURCES)
+octave.dvi: $(IMAGES_EPS) $(TEXINFO)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
 	  $(UNSETCOMSPEC) $(TEXI2DVI) $(MAIN_TEXINFO)
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
-octave.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_SOURCES)
+octave.pdf: $(IMAGES_PDF) $(TEXINFO)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
 	  $(UNSETCOMSPEC) $(TEXI2PDF) $(MAIN_TEXINFO)
 
@@ -142,7 +138,7 @@ octave.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_SOURCES)
 	  -I.. -I$(srcdir) -I$(srcdir)/.. $<
 	mv BUGS ../../BUGS
 
-HTML/index.html: $(HTML_IMAGES_PNG) $(TEXINFO) $(EXAMPLE_SOURCES)
+HTML/index.html: $(HTML_IMAGES_PNG) $(TEXINFO)
 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
 $(HTML_IMAGES_PNG): HTML/%.png : %.png

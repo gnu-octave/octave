@@ -6,6 +6,9 @@
 # University of Wisconsin-Madison
 # Department of Chemical Engineering
 
+EXAMPLE_SOURCES = 
+
+
 TOPDIR = ..
 
 srcdir = @srcdir@
@@ -21,7 +24,22 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SCRIPTS = info-emacs-info info-emacs-octave-help
 
-SOURCES = hello.cc oregonator.m oregonator.cc make_int.cc octave.desktop.in
+SOURCES = \
+  addtwomatrices.cc \
+  celldemo.cc \
+  fortdemo.cc \
+  fortsub.f \
+  funcdemo.cc \
+  globaldemo.cc \
+  hello.cc \
+  helloworld.cc \
+  make_int.cc \
+  octave.desktop.in \
+  oregonator.cc \
+  oregonator.m \
+  stringdemo.cc \
+  structdemo.cc \
+  unwinddemo.cc
 
 IMAGE_FILES = $(srcdir)/octave-sombrero.png
 IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))

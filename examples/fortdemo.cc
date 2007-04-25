@@ -19,21 +19,21 @@ DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
     {
       NDArray a = args(0).array_value ();
       if (! error_state)
-	{
-	  double *av = a.fortran_vec ();
-	  octave_idx_type na = a.nelem ();
-	  OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
+        {
+          double *av = a.fortran_vec ();
+          octave_idx_type na = a.nelem ();
+          OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
-	  F77_XFCN(fortsub, FORTSUB, (na, av, ctmp F77_CHAR_ARG_LEN (128)));
+          F77_XFCN (fortsub, FORTSUB, (na, av, ctmp F77_CHAR_ARG_LEN (128)));
 
-	  if ( f77_exception_encountered )
-	    error ("fortdemo: error in fortran");
-	  else
-	    {
-	      retval(1) = std::string (ctmp);
-	      retval(0) = a;
-	    }
-	}
+          if (f77_exception_encountered)
+            error ("fortdemo: error in fortran");
+          else
+            {
+              retval(1) = std::string (ctmp);
+              retval(0) = a;
+            }
+        }
     }
   return retval;
 }

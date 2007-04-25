@@ -15,9 +15,9 @@ previous chapters.
 @menu
 * Style Tips::                  Writing clean and robust programs.
 * Coding Tips::                 Making code run faster.
-* Documentation Tips::          Writing readable documentation strings.
 * Comment Tips::                Conventions for writing comments.
 * Function Headers::            Standard headers for functions.
+* Documentation Tips::          Writing readable documentation strings.
 @end menu
 
 @node Style Tips
@@ -119,84 +119,6 @@ change during your run, set the variable
 @code{ignore_function_time_stamp} to @code{"all"} so that Octave doesn't
 waste a lot of time checking to see if you have updated your function
 files.
-@end itemize
-
-@node Documentation Tips
-@section Tips for Documentation Strings
-
-Here are some tips for the writing of documentation strings.
-
-@itemize @bullet
-@item
-Every command, function, or variable intended for users to know about
-should have a documentation string.
-
-@item
-An internal variable or subroutine of an Octave program might as well have
-a documentation string.
-
-@item
-The first line of the documentation string should consist of one or two
-complete sentences that stand on their own as a summary.
-
-The documentation string can have additional lines that expand on the
-details of how to use the function or variable.  The additional lines
-should also be made up of complete sentences.
-
-@item
-For consistency, phrase the verb in the first sentence of a
-documentation string as an infinitive with ``to'' omitted.  For
-instance, use ``Return the frob of A and B.'' in preference to ``Returns
-the frob of A and B@.''  Usually it looks good to do likewise for the
-rest of the first paragraph.  Subsequent paragraphs usually look better
-if they have proper subjects.
-
-@item
-Write documentation strings in the active voice, not the passive, and in
-the present tense, not the future.  For instance, use ``Return a list
-containing A and B.'' instead of ``A list containing A and B will be
-returned.''
-
-@item
-Avoid using the word ``cause'' (or its equivalents) unnecessarily.
-Instead of, ``Cause Octave to display text in boldface,'' write just
-``Display text in boldface.''
-
-@item
-Do not start or end a documentation string with whitespace.
-
-@item
-Format the documentation string so that it fits in an Emacs window on an
-80-column screen.  It is a good idea for most lines to be no wider than
-60 characters.
-
-However, rather than simply filling the entire documentation string, you
-can make it much more readable by choosing line breaks with care.
-Use blank lines between topics if the documentation string is long.
- 
-@item
-@strong{Do not} indent subsequent lines of a documentation string so
-that the text is lined up in the source code with the text of the first
-line.  This looks nice in the source code, but looks bizarre when users
-view the documentation.  Remember that the indentation before the
-starting double-quote is not part of the string!
-
-@item
-The documentation string for a variable that is a yes-or-no flag should
-start with words such as ``Nonzero means@dots{}'', to make it clear that
-all nonzero values are equivalent and indicate explicitly what zero and
-nonzero mean.
-
-@item
-When a function's documentation string mentions the value of an argument
-of the function, use the argument name in capital letters as if it were
-a name for that value.  Thus, the documentation string of the operator
-@code{/} refers to its second argument as @samp{DIVISOR}, because the
-actual argument name is @code{divisor}.
-
-Also use all caps for meta-syntactic variables, such as when you show
-the decomposition of a list or vector into subunits, some of which may
-vary.
 @end itemize
 
 @node Comment Tips
@@ -347,3 +269,315 @@ Just about every Octave function ought to have the @samp{Author} and
 @samp{Keywords} header comment lines.  Use the others if they are
 appropriate.  You can also put in header lines with other header
 names---they have no standard meanings, so they can't do any harm.
+
+@node Documentation Tips
+@section Tips for Documentation Strings
+
+As noted above, documentation is typically in a commented header block
+on an Octave function following the copyright statement. The help string
+shown above is an unformated stringed and will be displayed as is by
+Octave. Here are some tips for the writing of documentation strings.
+
+@itemize @bullet
+@item
+Every command, function, or variable intended for users to know about
+should have a documentation string.
+
+@item
+An internal variable or subroutine of an Octave program might as well have
+a documentation string.
+
+@item
+The first line of the documentation string should consist of one or two
+complete sentences that stand on their own as a summary.
+
+The documentation string can have additional lines that expand on the
+details of how to use the function or variable.  The additional lines
+should also be made up of complete sentences.
+
+@item
+For consistency, phrase the verb in the first sentence of a
+documentation string as an infinitive with ``to'' omitted.  For
+instance, use ``Return the frob of A and B.'' in preference to ``Returns
+the frob of A and B@.''  Usually it looks good to do likewise for the
+rest of the first paragraph.  Subsequent paragraphs usually look better
+if they have proper subjects.
+
+@item
+Write documentation strings in the active voice, not the passive, and in
+the present tense, not the future.  For instance, use ``Return a list
+containing A and B.'' instead of ``A list containing A and B will be
+returned.''
+
+@item
+Avoid using the word ``cause'' (or its equivalents) unnecessarily.
+Instead of, ``Cause Octave to display text in boldface,'' write just
+``Display text in boldface.''
+
+@item
+Do not start or end a documentation string with whitespace.
+
+@item
+Format the documentation string so that it fits in an Emacs window on an
+80-column screen.  It is a good idea for most lines to be no wider than
+60 characters.
+
+However, rather than simply filling the entire documentation string, you
+can make it much more readable by choosing line breaks with care.
+Use blank lines between topics if the documentation string is long.
+ 
+@item
+@strong{Do not} indent subsequent lines of a documentation string so
+that the text is lined up in the source code with the text of the first
+line.  This looks nice in the source code, but looks bizarre when users
+view the documentation.  Remember that the indentation before the
+starting double-quote is not part of the string!
+
+@item
+The documentation string for a variable that is a yes-or-no flag should
+start with words such as ``Nonzero means@dots{}'', to make it clear that
+all nonzero values are equivalent and indicate explicitly what zero and
+nonzero mean.
+
+@item
+When a function's documentation string mentions the value of an argument
+of the function, use the argument name in capital letters as if it were
+a name for that value.  Thus, the documentation string of the operator
+@code{/} refers to its second argument as @samp{DIVISOR}, because the
+actual argument name is @code{divisor}.
+
+Also use all caps for meta-syntactic variables, such as when you show
+the decomposition of a list or vector into subunits, some of which may
+vary.
+@end itemize
+
+Octave also allows extensive formatting of the help string of functions
+using Texinfo.  The effect on the online documentation is relatively
+small, but makes the help string of functions conform to the help of
+Octave's own functions.  However, the effect on the appearance of printed
+or online documentation will be greatly improved.
+
+The fundamental building block of Texinfo documentation strings is the
+Texinfo-macro @code{@@deftypefn}, which takes three arguments: The class
+the function is in, its output arguments, and the function's
+signature.  Typical classes for functions include @code{Function File}
+for standard Octave functions, and @code{Loadable Function} for
+dynamically linked functions.  A skeletal Texinfo documentation string
+therefore looks like this
+
+@example
+@group
+-*- texinfo -*-
+@@deftypefn@{Function File@} @{@@var@{return_value@} = @} function_name (@dots{})
+@@cindex index term
+Help text in Texinfo format.  Code samples should be marked like
+@@code@{sample of code@} and variables should be marked as
+@@var@{variable@}.
+@@seealso@{function2@}
+@@end deftypefn
+@end group
+@end example
+
+This help string must be commented in user functions, or in the help
+string of the @code{DEFUN_DLD} macro for dynamically loadable
+functions.  The important aspects of the documentation string are
+
+@table @asis
+@item -*- texinfo -*-
+This string signals Octave that the follow text is in Texinfo format,
+and should be the first part of any help string in Texinfo format.
+@item @@deftypefn@{class@} @dots{} @@end deftypefn
+The entire help string should be enclosed within the block defined by
+deftypefn.
+@item @@cindex index term
+This generates an index entry, and can be useful when the function is
+included as part of a larger piece of documentation.  It is ignored
+within Octave's help viewer.
+@item @@var@{variable@}
+All variables should be marked with this macro.  The markup of variables
+is then changed appropriately for display.
+@item @@code@{sample of code@}
+All samples of code should be marked with this macro for the same
+reasons as the @@var macro.
+@item @@seealso@{function2@}
+This is a comma separated list of function names that allows cross
+referencing from one function documentation string to another.
+@end table
+
+Texinfo format has been designed to generate output for online viewing
+with text-terminals as well as generating high-quality printed output.
+To these ends, Texinfo has commands which control the diversion of parts
+of the document into a particular output processor.  Three formats are
+of importance: info, html and TeX.  These are selected with
+
+@example
+@group
+@@ifinfo
+Text area for info only
+@@end ifinfo
+@end group
+@end example
+
+@example
+@group
+@@ifhtml
+Text area for html only
+@@end ifhtml
+@end group
+@end example
+
+@example
+@group
+@@iftex
+@@tex
+text for TeX only
+@@end tex
+@@end iftex
+@end group
+@end example
+
+Note that often TeX output can be used in html documents and so often
+the @code{@@ifhtml} blocks are unnecessary. If no specific output
+processor is chosen, by default, the text goes into all output
+processors. It is usual to have the above blocks in pairs to allow the
+same information to be conveyed in all output formats, but with a
+different markup.
+
+Another important feature of Texinfo that is often used in Octave help
+strings is the @code{@@example} environment. An example of its use is
+
+@example
+@group
+@@example
+@@group
+@@code@{2 * 2@}
+@@result@{@} 4
+@@end group
+@@end example
+@end group
+@end example
+
+which produces
+
+@example
+@group
+@code{2 * 2}
+@result{} 4
+@end group
+@end example
+
+The @code{@@group} block prevents the example from being split across a
+page boundary, while the @code{@@result@{@}} macro produces a right
+arrow signifying the result of a command. 
+
+In many cases a function has multiple means in which it can be called,
+and the @code{@@deftypefnx} macro can be used to give alternatives. For
+example
+
+@example
+@group
+-*- texinfo -*-
+@@deftypefn@{Function File@} @{@@var@{a@} = @} function_name (@@var@{x@}, @dots{})
+@@deftypefnx@{Function File@} @{@@var@{a@} = @} function_name (@@var@{y@}, @dots{})
+Help text in Texinfo format.
+@@end deftypefn
+@end group
+@end example
+
+Many complete examples of Texinfo documentation can be taken from the
+help strings for the Octave functions themselves. A relatively complete
+example of which is the @code{nchoosek} function. The Texinfo
+documentation string of @code{nchoosek} is
+
+@example
+@group
+-*- texinfo -*-
+@@deftypefn @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{n@}, @@var@{k@})
+
+Compute the binomial coefficient or all combinations of @@var@{n@}.
+If @@var@{n@} is a scalar then, calculate the binomial coefficient
+of @@var@{n@} and @@var@{k@}, defined as
+
+@@iftex
+@@tex
+$$
+ @{n \choose k@} = @{n (n-1) (n-2) \cdots (n-k+1) \over k!@}
+$$
+@@end tex
+@@end iftex
+@@ifinfo
+
+@@example
+@@group
+ /   \
+ | n |    n (n-1) (n-2) ... (n-k+1)
+ |   |  = -------------------------
+ | k |               k!
+ \   /
+@@end group
+@@end example
+@@end ifinfo
+
+If @@var@{n@} is a vector generate all combinations of the elements
+of @@var@{n@}, taken @@var@{k@} at a time, one row per combination. The 
+resulting @@var@{c@} has size @@code@{[nchoosek (length (@@var@{n@}), 
+@@var@{k@}), @@var@{k@}]@}.
+
+@@seealso@{bincoeff@}
+@@end deftypefn
+@end group
+@end example
+
+which demonstrates most of the concepts discussed above.
+@iftex
+This documentation string renders as
+
+@c Note actually use the output of info below rather than try and 
+@c reproduce it here to prevent it looking different than how it would
+@c appear with info.
+@example
+@group
+ -- Function File: C = nchoosek (N, K)
+     Compute the binomial coefficient or all combinations of N.  If N
+     is a scalar then, calculate the binomial coefficient of N and K,
+     defined as
+
+           /   \
+           | n |    n (n-1) (n-2) ... (n-k+1)
+           |   |  = -------------------------
+           | k |               k!
+           \   /
+
+     If N is a vector generate all combinations of the elements of N,
+     taken K at a time, one row per combination. The resulting C has
+     size `[nchoosek (length (N), K), K]'.
+
+
+     See also: bincoeff.
+@end group
+@end example
+
+using info, whereas in a printed documentation using TeX it will appear
+as
+
+@deftypefn {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
+
+Compute the binomial coeeficient or all combinations of @var{n}.
+If @var{n} is a scalar then, calculate the binomial coefficient
+of @var{n} and @var{k}, defined as
+
+@tex
+$$
+ {n \choose k} = {n (n-1) (n-2) \cdots (n-k+1) \over k!}
+$$
+@end tex
+
+If @var{n} is a vector generate all combinations of the elements
+of @var{n}, taken @var{k} at a time, one row per combination. The 
+resulting @var{c} has size @code{[nchoosek (length (@var{n}), 
+@var{k}), @var{k}]}.
+
+@seealso{bincoeff}
+@end deftypefn
+
+@end iftex

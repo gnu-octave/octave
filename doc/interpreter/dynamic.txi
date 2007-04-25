@@ -1,4 +1,5 @@
 @c Copyright (C) 2007 John W. Eaton, David Bateman
+@c Copyright (C) 2007 Paul Thomas, Christoph Spiel
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -974,7 +975,39 @@ that returns a pointer @code{tmp} of type @code{double *} of length
 @node Input Parameter Checking in Oct-Files
 @subsection Input Parameter Checking in Oct-Files
 
-WRITE ME
+As oct-files are compiled functions they have the possibility of causing
+Octave to abort abnormally.  It is therefore inportant that the input
+parameters to each and every function has the minimum of parameter
+checking needed to ensure that Octave behaves well.
+
+The minimum requirement, as previously discussed, is to check the number
+of input arguments before using them to avoid referencing a non existent
+argument.  However, it some case this might not be sufficient as the
+underlying code imposes further constraints. For example an external
+function call might be undefined if the input arguments are not
+integers, or if one of the arguments is zero. Therefore, oct-files often
+need additional input parameter checking.
+
+There are several functions within Octave that might be useful for the
+purposes of parameter checking. These include the methods of the
+octave_value class like @code{is_real_matrix}, etc, but equally include
+more specialized functions. Some of the more common ones are
+demonstrated in the following example
+
+@examplefile{paramdemo.cc}
+
+@noindent
+and an example of its use is
+
+@example
+@group
+paramdemo ([1, 2, NaN, Inf])
+@result{} Properties of input array:
+      includes Inf or NaN values
+      includes other values than 1 and 0
+      includes only int, Inf or NaN values
+@end group
+@end example
 
 @node Exception and Error Handling in Oct-Files
 @subsection Exception and Error Handling in Oct-Files
@@ -1050,7 +1083,61 @@ The division by zero (and in fact all warnings) is disabled in the
 @node Documentation and Test of Oct-Files
 @subsection Documentation and Test of Oct-Files
 
-WRITE ME, reference how to use Texinfo in oct-file and embed test code.
+The documentation of an oct-file is the fourth string parameter of the
+@code{DEFUN_DLD} macro.  This string can be formatted in the same manner
+as the help strings for user functions (@ref{Documentation Tips}),
+however there are some issue that are particular to the formatting of
+help strings within oct-files.
+
+The major issue is that the help string will typically be longer than a
+single line of text, and so the formatting of long help strings need to
+be taken into account. There are several manner in which to happen this
+issue, but the most common is illustrated in the following example
+
+@example
+@group
+DEFUN_DLD (do_what_i_want, args, nargout, 
+  "-*- texinfo -*-\n\
+@@deftypefn @{Function File@} @{@} do_what_i_say (@@var@{n@})\n\
+A function that does what the user actually wants rather than what\n\
+they requested.\n\
+@@end deftypefn")
+@{
+@dots{}
+@}
+@end group
+@end example
+
+@noindent
+where, as can be seen, end line of text within the help string is
+terminated by @code{\n\} which is an an embedded new-line in the string
+together with a C++ string continuation character.  Note that the final
+@code{\} must be the last character on the line.
+
+Octave also includes the ability to embed the test and demonstration
+code for a function within the code itself (@ref{Test and Demo Functions}).
+This can be used from within oct-files (or in fact any file) with
+certain provisos.  Firstly, the test and demo functions of Octave look
+for a @code{%!} as the first characters on a new-line to identify test
+and demonstration code.  This is equally a requirement for
+oct-files.  Furthermore the test and demonstration code must be included
+in a comment block of the compiled code to avoid it being interpreted by
+the compiler.  Finally, he Octave test and demonstration code must have
+access to the source code of the oct-file and not just the compiled code
+as th<e tests are stripped from the compiled code. An example in an
+oct-file might be
+
+@example
+@group
+/*
+
+%!error (sin())
+%!error (sin(1,1))
+%!assert (sin([1,2]),[sin(1),sin(2)])
+
+*/
+@end group
+@end example
 
 @node Application Programming Interface for Oct-Files
 @subsection Application Programming Interface for Oct-Files
@@ -1076,9 +1163,13 @@ discussed above if possible.
 
 @menu
 * Getting Started with Mex-Files::  
+* Working with Matrices and Arrays in Mex-Files::  
+* Character Strings in Mex-Files::  
+* Cell Arrays with Mex-Files::  
 * Structures with Mex-Files::  
 * Sparse Matrices with Mex-Files::  
-* Calling External Functions in Mex-Files::  
+* Calling Other Functions in Mex-Files::  
+* Application Programming Interface for Mex-Files::  
 @end menu
 
 @node Getting Started with Mex-Files
@@ -1103,24 +1194,146 @@ Consider the short example
 
 @examplefile{firstmexdemo.c}
 
-This simple example demonstrates the basics of writing a mex-file.
+This simple example demonstrates the basics of writing a mex-file. The
+entry point into the mex-file is defined by @code{mexFunction}. Note
+that the function name is not explicitly included in the
+@code{mexFunction} and so there can only be a single @code{mexFunction}
+entry point per-file.  Also the name of the function is determined by the
+name of the mex-file itself.  Therefore if the above function is in the
+file @file{firstmexdemo.c}, it can be compiled with
+
+@example
+mkoctfile --mex firstmexdemo.c
+@end example
+
+@noindent
+which creates a file @file{firstmexdemo.mex}.  The function can then be run
+from Octave as
+
+@example
+@group
+firstmexdemo()
+@result{} 1.2346
+@end group
+@end example
+
+It should be noted that the mex-file contains no help string for the
+functions it contains. To document mex-files, there should exist an
+m-file in the same directory as the mex-file itself. Taking the above as
+an example, we would therefore have a file @file{firstmexdemo.m} that might
+contain the text
+
+@example
+%FIRSTMEXDEMO Simple test of the functionality of a mex-file.
+@end example
+
+In this case, the function that will be executed within Octave will be
+given by the mex-file, while the help string will come from the
+m-file. This can also be useful to allow a sample implementation of the
+mex-file within the Octave language itself for testing purposes.
+
+Although we can not have multiple entry points into a single mex-file,
+we can use the @code{mexFunctionName} function to determine what name
+the mex-file was called with. This can be used to alter the behavior of
+the mex-file based on the function name. For example if
+
+@examplefile{myfunc.c}
+
+@noindent
+is in file @file{myfunc.c}, and it is compiled with
+
+@example
+@group
+mkoctfile --mex myfunc.c
+ln -s myfunc.mex myfunc2.mex
+@end group
+@end example
+
+Then as can be seen by
+
+@example
+@group
+myfunc()
+@result{} You called function: myfunc
+    This is the principal function
+myfunc2()
+@result{} You called function: myfunc2
+@end group
+@end example
+
+@noindent
+the behavior of the mex-file can be altered depending on the functions
+name.
+
+@node Working with Matrices and Arrays in Mex-Files
+@subsection Working with Matrices and Arrays in Mex-Files
+
+The basic mex type of all variables is @code{mxArray}. All variables,
+such as Matrices, cell arrays or structures are all stored in this basic
+type, and this type serves basically the same purpose as the
+octave_value class in oct-files. That is it acts as a container for the
+more specialized types.
+
+WRITE ME
+
+@node Character Strings in Mex-Files
+@subsection Character Strings in Mex-Files
+
+WRITE ME
+
+@node Cell Arrays with Mex-Files
+@subsection Cell Arrays with Mex-Files
 
 WRITE ME
 
 @node Structures with Mex-Files
 @subsection Structures with Mex-Files
 
+See the file @file{mystruct.c}
+
+@examplefile{mystruct.c}
+
 WRITE ME
 
 @node Sparse Matrices with Mex-Files
 @subsection Sparse Matrices with Mex-Files
 
+See the file @file{mysparse.c}
+
+@examplefile{mysparse.c}
+
 WRITE ME
 
-@node Calling External Functions in Mex-Files
-@subsection Calling External Functions in Mex-Files
+@node Calling Other Functions in Mex-Files
+@subsection Calling Other Functions in Mex-Files
 
-WRITE ME
+It is also possible call other Octave functions from within a mex-file
+using @code{mexCallMATLAB}. An example of the use of
+@code{mexCallMATLAB} can be see in the example below
+
+@examplefile{myfeval.c}
+
+If this code is in the file @file{myfeval.c}, and is compiled to
+@file{myfeval.mex}, then an example of its use is
+
+@example
+@group
+myfeval("sin", 1)
+a = myfeval("sin", 1)
+@result{} Hello, World!
+    I have 2 inputs and 1 outputs
+    I'm going to call the interpreter function sin
+    a =  0.84147
+@end group
+@end example
+
+Note that it is not possible to use function handles or inline functions
+within a mex-file.
+
+@node Application Programming Interface for Mex-Files
+@subsection Application Programming Interface for Mex-Files
+
+WRITE ME, refer to mex.h and mexproto.h
 
 @node Standalone Programs
 @section Standalone Programs
@@ -1154,6 +1367,7 @@ main (void)
 @end group
 @end example
 
+@noindent
 mkoctfile can then be used to build a standalone application with a
 command like
 

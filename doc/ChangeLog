@@ -1,3 +1,11 @@
+2007-04-25  David Bateman  <dbateman@free.fr>
+
+	* interpreter/dynamic.txi: Add additional copyrights. Add sections
+	of input parameter checking, documentation and testing of
+	oct-files. Adds a section on calling other functions from
+	mex-files, expands the basic information on mex-files, and add a
+	few new sections (to be completed) to the section about mex-files
+
 2007-04-25  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/dynamic.txi: Use @verbatiminclude for example code.

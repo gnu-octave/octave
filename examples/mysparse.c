@@ -20,8 +20,8 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   
   if (mxIsComplex (prhs[0]))
     {
-      mexPrintf ("Matrix is %d-by-%d complex sparse matrix with %d elements\n",
-		m, n, nz);
+      mexPrintf ("Matrix is %d-by-%d complex sparse matrix", m, n);
+      mexPrintf (" with %d elements\n", nz);
 
       pr = mxGetPr (prhs[0]);
       pi = mxGetPi (prhs[0]);
@@ -30,8 +30,8 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
-      mexPrintf ("last non-zero element (%d, %d) = (%g, %g)\n", ir[nz-1]+ 1, 
-		i, pr[nz-1], pi[nz-1]);
+      mexPrintf ("last non-zero element (%d, %d) = (%g, %g)\n", 
+                ir[nz-1]+ 1, i, pr[nz-1], pi[nz-1]);
 
       v = mxCreateSparse (m, n, nz, mxCOMPLEX);
       pr2 = mxGetPr (v);
@@ -40,22 +40,22 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       jc2 = mxGetJc (v);
       
       for (i = 0; i < nz; i++)
-	{
-	  pr2[i] = 2 * pr[i];
-	  pi2[i] = 2 * pi[i];
-	  ir2[i] = ir[i];
-	}
+        {
+          pr2[i] = 2 * pr[i];
+          pi2[i] = 2 * pi[i];
+          ir2[i] = ir[i];
+        }
       for (i = 0; i < n + 1; i++)
-	jc2[i] = jc[i];
+        jc2[i] = jc[i];
 
       if (nlhs > 0)
-	plhs[0] = v;
+        plhs[0] = v;
     }
   else if (mxIsLogical (prhs[0]))
     {
       bool *pbr, *pbr2;
-      mexPrintf ("Matrix is %d-by-%d logical sparse matrix with %d elements\n",
-		m, n, nz);
+      mexPrintf ("Matrix is %d-by-%d logical sparse matrix", m, n);
+      mexPrintf (" with %d elements\n", nz);
 
       pbr = mxGetLogicals (prhs[0]);
       ir = mxGetIr (prhs[0]);
@@ -64,7 +64,7 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
       mexPrintf ("last non-zero element (%d, %d) = %d\n", ir[nz-1]+ 1, 
-		i, pbr[nz-1]);
+                i, pbr[nz-1]);
 
       v = mxCreateSparseLogicalMatrix (m, n, nz);
       pbr2 = mxGetLogicals (v);
@@ -72,21 +72,20 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       jc2 = mxGetJc (v);
       
       for (i = 0; i < nz; i++)
-	{
-	  pbr2[i] = pbr[i];
-	  ir2[i] = ir[i];
-	}
+        {
+          pbr2[i] = pbr[i];
+          ir2[i] = ir[i];
+        }
       for (i = 0; i < n + 1; i++)
-	jc2[i] = jc[i];
+        jc2[i] = jc[i];
 
       if (nlhs > 0)
-	plhs[0] = v;
+        plhs[0] = v;
     }
   else
     {
-      
-      mexPrintf ("Matrix is %d-by-%d real sparse matrix with %d elements\n",
-		m, n, nz);
+      mexPrintf ("Matrix is %d-by-%d real sparse matrix", m, n);
+      mexPrintf (" with %d elements\n", nz);
 
       pr = mxGetPr (prhs[0]);
       ir = mxGetIr (prhs[0]);
@@ -95,7 +94,7 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
       mexPrintf ("last non-zero element (%d, %d) = %g\n", ir[nz-1]+ 1, 
-		i, pr[nz-1]);
+                i, pr[nz-1]);
 
       v = mxCreateSparse (m, n, nz, mxREAL);
       pr2 = mxGetPr (v);
@@ -103,14 +102,14 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
       jc2 = mxGetJc (v);
       
       for (i = 0; i < nz; i++)
-	{
-	  pr2[i] = 2 * pr[i];
-	  ir2[i] = ir[i];
-	}
+        {
+          pr2[i] = 2 * pr[i];
+          ir2[i] = ir[i];
+        }
       for (i = 0; i < n + 1; i++)
-	jc2[i] = jc[i];
+        jc2[i] = jc[i];
 
       if (nlhs > 0)
-	plhs[0] = v;
+        plhs[0] = v;
     }
 }

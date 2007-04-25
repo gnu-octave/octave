@@ -24,7 +24,8 @@ DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
           octave_idx_type na = a.nelem ();
           OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
-          F77_XFCN (fortsub, FORTSUB, (na, av, ctmp F77_CHAR_ARG_LEN (128)));
+          F77_XFCN (fortsub, FORTSUB, (na, av, ctmp 
+                                       F77_CHAR_ARG_LEN (128)));
 
           if (f77_exception_encountered)
             error ("fortdemo: error in fortran");

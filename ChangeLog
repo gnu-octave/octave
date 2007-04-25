@@ -1,3 +1,9 @@
+2007-04-25  David Bateman  <dbateman@free.fr>
+
+	* examples/myfunc.c, exampples/paramdemo.cc: New files
+	* examples/mystruct.c, examples/mysparse.c, fortdemo.cc: Fix a few
+	formatting issues when included in texinfo files.
+
 2007-04-25  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-subst-texinfo-vals): Also substitute top_srcdir.

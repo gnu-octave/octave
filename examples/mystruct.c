@@ -13,9 +13,10 @@ mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
   for (i = 0; i < mxGetNumberOfFields (prhs[0]); i++)
     for (j=0; j < mxGetNumberOfElements(prhs[0]); j++)
       {
-	mexPrintf ("field %s(%d) = ", mxGetFieldNameByNumber (prhs[0], i), j);
-	v = mxGetFieldByNumber (prhs[0], j, i);
-	mexCallMATLAB(0, 0, 1, &v, "disp");
+        mexPrintf ("field %s(%d) = ", 
+                   mxGetFieldNameByNumber (prhs[0], i), j);
+        v = mxGetFieldByNumber (prhs[0], j, i);
+        mexCallMATLAB(0, 0, 1, &v, "disp");
       }
 
   v = mxCreateStructMatrix (2, 2, 2, keys);

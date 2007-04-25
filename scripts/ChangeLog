@@ -1,5 +1,8 @@
 2007-04-25  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_axes__.m: For images, set titlespec{data_idx} to
+	"title \"\"", not "".
+
 	* plot/legend.m: Initialize WARNED to false.
 
 2007-04-24  John W. Eaton  <jwe@octave.org>

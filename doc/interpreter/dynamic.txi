@@ -1,3 +1,15 @@
+@c Copyright (C) 2007 John W. Eaton, David Bateman
+@c This is part of the Octave manual.
+@c For copying conditions, see the file gpl.texi.
+
+@macro examplefile{file}
+@example
+@group
+@verbatiminclude @value{top_srcdir}/examples/\file\
+@end group
+@end example
+@end macro
+
 @node Dynamically Linked Functions
 @appendix Dynamically Linked Functions
 @cindex dynamic-linking
@@ -79,11 +91,7 @@ call from within octave or from the command line.
 
 Consider the short example
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/helloworld.cc
-@end group
-@end example
+@examplefile{helloworld.cc}
 
 This example although short introduces the basics of writing a C++
 function that can be dynamically linked to Octave.  The easiest way to
@@ -265,11 +273,7 @@ that are of interest only for matrices such as @code{transpose},
 The typical way to extract a matrix or array from the input arguments of
 @code{DEFUN_DLD} function is as follows
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/addtwomatrices.cc
-@end group
-@end example
+@examplefile{addtwomatrices.cc}
 
 To avoid segmentation faults causing Octave to abort, this function
 explicitly checks that there are sufficient arguments available before
@@ -328,11 +332,7 @@ listed below.
 In Octave a character string is just a special @code{Array} class.
 Consider the example 
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/stringdemo.cc
-@end group
-@end example
+@examplefile{stringdemo.cc}
 
 An example of the of the use of this function is
 
@@ -391,11 +391,7 @@ array is just an array of @code{octave_value}s, and so each element of the cell
 array can then be treated just like any other @code{octave_value}.  A simple
 example is
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/celldemo.cc
-@end group
-@end example
+@examplefile{celldemo.cc}
 
 Note that cell arrays are used less often in standard oct-files and so
 the @file{Cell.h} header file must be explicitly included.  The rest of this
@@ -425,11 +421,7 @@ with the pair consisting of a @code{std::string} and an octave
 
 A simple example demonstrating the use of structures within oct-files is
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/structdemo.cc
-@end group
-@end example
+@examplefile{structdemo.cc}
 
 An example of its use is
 
@@ -805,11 +797,7 @@ second argument is a boolean argument specifying what to do in the case
 that no global variable of the desired name is found.  An example of the
 use of these two functions is
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/globaldemo.cc
-@end group
-@end example
+@examplefile{globaldemo.cc}
 
 An example of its use is
 
@@ -848,11 +836,7 @@ be passed as one of
 The example below demonstrates an example that accepts all four means of
 passing a function to an oct-file.
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/funcdemo.cc
-@end group
-@end example
+@examplefile{funcdemo.cc}
 
 The first argument to this demonstration is the user supplied function
 and the following arguments are all passed to the user function.
@@ -947,20 +931,12 @@ segmentation fault.
 An example of the inclusion of a Fortran function in an oct-file is
 given in the following example, where the C++ wrapper is
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/fortdemo.cc
-@end group
-@end example
+@examplefile{fortdemo.cc}
 
 @noindent
 and the fortran function is
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/fortsub.f
-@end group
-@end example
+@examplefile{fortsub.f}
 
 This example demonstrates most of the features needed to link to an
 external Fortran function, including passing arrays and strings, as well
@@ -1054,11 +1030,7 @@ handling of Octave, it is important to enforce that certain code is run
 to allow variables, etc to be restored even if an exception occurs.  An
 example of the use of this mechanism is
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/unwinddemo.cc
-@end group
-@end example
+@examplefile{unwinddemo.cc}
 
 As can be seen in the example
 
@@ -1129,11 +1101,7 @@ distinguish between filenames in upper and lower case
 
 Consider the short example
 
-@example
-@group
-@verbatiminclude @value{top_srcdir}/examples/firstmexdemo.c
-@end group
-@end example
+@examplefile{firstmexdemo.c}
 
 This simple example demonstrates the basics of writing a mex-file.
 

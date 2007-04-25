@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{c} =} nchoosek (@var{n}, @var{k})
 ##
-## Compute the binomial coeeficient or all combinations of @var{n}.
+## Compute the binomial coefficient or all combinations of @var{n}.
 ## If @var{n} is a scalar then, calculate the binomial coefficient
 ## of @var{n} and @var{k}, defined as
 ##

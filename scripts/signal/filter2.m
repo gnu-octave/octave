@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{y} =} filter2 (@var{b, @var{x}})
+## @deftypefn {Function File} {@var{y} =} filter2 (@var{b}, @var{x})
 ## @deftypefnx {Function File} {@var{y} =} filter2 (@var{b}, @var{x}, @var{shape})
 ## Apply the 2-D FIR filter @var{b} to @var{x}. If the argument
 ## @var{shape} is specified, return an array of the desired shape.

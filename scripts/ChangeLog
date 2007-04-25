@@ -1,3 +1,7 @@
+2007-04-25  John W. Eaton  <jwe@octave.org>
+
+	* plot/legend.m: Initialize WARNED to false.
+
 2007-04-24  John W. Eaton  <jwe@octave.org>
 
 	* io/beep.m: Fix cut and paste error.

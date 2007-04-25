@@ -152,6 +152,7 @@ function legend (varargin)
     endif
   endif
 
+  warned = false;
   for i = 1:nargs
     arg = varargin{i};
     if (ischar (arg))

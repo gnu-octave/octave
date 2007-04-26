@@ -1,5 +1,9 @@
 2007-04-26  David Bateman  <dbateman@free.fr>
 
+	* plot/hist.m: Partially remove previous patch.
+
+2007-04-26  David Bateman  <dbateman@free.fr>
+
 	* plot/hist.m: Support returning of handle
 	* plot/__bar__.m: __pltopt__ should only be called on strings or
 	cells.

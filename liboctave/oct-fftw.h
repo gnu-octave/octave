@@ -109,6 +109,7 @@ private:
 extern OCTAVE_API octave_fftw_planner fftw_planner;
 
 class
+OCTAVE_API
 octave_fftw
 {
 public:

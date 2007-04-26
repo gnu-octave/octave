@@ -8,6 +8,15 @@
 
 2007-04-25  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/dynamic.txi: Use abs_top_srcdir to find example files.
+
+2007-04-25  David Bateman  <dbateman@free.fr>
+
+	* conf.texi.in: Also set abs_top_srcdir with substitution.
+	* Makefile.in: Substitute abs_top_srcdir here.
+
+2007-04-25  John W. Eaton  <jwe@octave.org>
+
 	* interpreter/dynamic.txi: Use @verbatiminclude for example code.
 
 	* interpreter/Makefile.in (EXAMPLE_FILES_NODIR, EXAMPLE_FILES):

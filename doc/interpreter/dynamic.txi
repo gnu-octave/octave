@@ -6,7 +6,7 @@
 @macro examplefile{file}
 @example
 @group
-@verbatiminclude @value{top_srcdir}/examples/\file\
+@verbatiminclude @value{abs_top_srcdir}/examples/\file\
 @end group
 @end example
 @end macro

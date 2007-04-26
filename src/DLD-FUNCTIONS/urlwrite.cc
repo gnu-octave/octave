@@ -215,7 +215,7 @@ urlwrite (\"http://username:password@@example.com/file.txt\",\n\
 @end example\n\
 \n\
 GET and POST requests can be specified by @var{method} and @var{param}.\n\
-The parameter @var{method} is either @samp{get} or @get{post}\n\
+The parameter @var{method} is either @samp{get} or @samp{post}\n\
 and @var{param} is a cell array of parameter and value pairs.\n\
 For example:\n\
 \n\

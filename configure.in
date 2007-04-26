@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.559 $)
+AC_REVISION($Revision: 1.560 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -2025,7 +2025,6 @@ Octave is now configured for $canonical_host_type
   CCOLAMD libraries:    $CCOLAMD_LIBS
   CHOLMOD libraries:    $CHOLMOD_LIBS
   CXSPARSE libraries:   $CXSPARSE_LIBS
-  ARPACK libraries:     $ARPACK_LIBS
   HDF5 libraries:       $HDF5_LIBS
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS

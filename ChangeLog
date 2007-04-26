@@ -1,3 +1,7 @@
+2007-04-26  Alex Zvoleff  <azvoleff@sbcglobal.net>
+
+	* configure.in: Don't report ARPACK libraries in summary.
+
 2007-04-25  David Bateman  <dbateman@free.fr>
 
 	* Makeconf.in (do-subst-texinfo-vals): Also substitute abs_top_srcdir.

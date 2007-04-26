@@ -598,7 +598,7 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
     {
       file_stat fs (fname);
 
-      if (! fs.exists ())
+      if (! (fs.exists () && fs.is_reg ()))
 	{
 	  std::string tmp = octave_env::make_absolute
 	    (load_path::find_file (fname), octave_env::getcwd ());
@@ -616,14 +616,14 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
     {
       file_stat fs (fname);
 
-      if (! fs.exists ())
+      if (! (fs.exists () && fs.is_reg ()))
 	fname = find_file_to_load (fname + ".mat", orig_name);
     }
   else
     {
       file_stat fs (fname);
   
-      if (! fs.exists ())
+      if (! (fs.exists () && fs.is_reg ()))
 	{
 	  fname = "";
 

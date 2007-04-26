@@ -403,6 +403,7 @@ tree_simple_for_command::eval (void)
 	int ndims = dv.length ();
 	for (int i = 2; i < ndims; i++)
 	  dv(1) *= dv(i);
+	dv.resize (2);
 
 	if (dv(1) > 0)
 	  {
@@ -455,6 +456,7 @@ tree_simple_for_command::eval (void)
 	int ndims = dv.length ();
 	for (int i = 2; i < ndims; i++)
 	  dv(1) *= dv(i);
+	dv.resize (2);
 
 	if (dv(1) > 0)
 	  {

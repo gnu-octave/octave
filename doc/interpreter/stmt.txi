@@ -506,6 +506,44 @@ next value in the range is assigned to the variable @code{i}, and the
 loop body is executed again.  This process continues until there are no
 more elements to assign.
 
+Within Octave is it also possible to iterate over matrices or cell arrays
+using the @code{for} statement. For example consider
+
+@example
+@group
+disp("Loop over a matrix")
+for i = [1,3;2,4]
+  i
+endfor
+disp("Loop over a cell array")
+for i = @{1,"two";"three",4@}
+  i
+endfor
+@end group 
+@end example
+
+@noindent
+In this case the variable @code{i} takes on the value of the columns of
+the matrix or cell matrix. So the first loop iterates twice, producing
+two column vectors @code{[1;2]}, follwed by @code{[3;4]}, and likewise
+for the loop over the cell array. This can be extended to loops over
+multidimensional arrays. For example
+
+@example
+@group
+a = [1,3;2,4]; b = cat(3, a, 2*a);
+for i = c
+  i
+endfor
+@end group 
+@end example
+
+@noindent
+In the above case, the mulitdimensional matrix @var{c} is reshaped to a
+two dimensional matrix as @code{reshape (c, rows(c),
+prod(size(c)(2:end)))} and then the same behavior as a loop over a two
+dimensional matrix is produced.
+
 Although it is possible to rewrite all @code{for} loops as @code{while}
 loops, the Octave language has both statements because often a
 @code{for} loop is both less work to type and more natural to think of.

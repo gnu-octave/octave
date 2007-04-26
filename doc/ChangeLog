@@ -1,3 +1,8 @@
+2007-04-26  David Bateman  <dbateman@free.fr>
+
+	* interpreter/stmt.txi: Document for loops over matrices, arrays
+	and cell arrays.
+
 2007-04-25  David Bateman  <dbateman@free.fr>
 
 	* interpreter/dynamic.txi: Add additional copyrights. Add sections

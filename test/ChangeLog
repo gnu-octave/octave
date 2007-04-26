@@ -1,3 +1,8 @@
+2007-04-26  David Bateman  <dbateman@free.fr>
+
+	* test_for.m: Add tests for multi-dimensional matrices and cell
+	arrays.
+
 2007-04-04  Rafael Laboissiere  <rafael@debian.org>
 
 	* Makefile.in (clean): Also remove a.wav file created by

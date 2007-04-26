@@ -80,3 +80,16 @@
 %! printf_assert ("\n");
 %! assert(prog_output_assert("34"));
 
+%!test
+%! a = [1,3;2,4];
+%! j = 0;
+%! for i = cat (3, a, 4 + a)
+%!   assert (i, [1;2] + 2*j++)
+%! endfor
+
+%!test
+%! a = {1,3;2,4};
+%! j=0
+%! for i = cat (3, a, cellfun(@(x) 4 + x, a, 'UniformOutput', 0))
+%!   assert (i, {1 + 2*j; 2 + 2*j++})
+%! endfor

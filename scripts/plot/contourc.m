@@ -41,8 +41,17 @@
 ## value is wanted, set @code{@var{vn} = [val, val]};
 ## If @var{vn} is omitted it defaults to 10.
 ##
+## For example,
 ## @example
-## c = contourc (x, y, z, linspace (0, 2*pi, 10));
+## @group
+## x = 0:2;
+## y = x;
+## z = x' * y;
+## contourc (x, y, z, 2:3)
+##      @result{}   2.0000   2.0000   1.0000   3.0000   1.5000   2.0000
+##      2.0000   1.0000   2.0000   2.0000   2.0000   1.5000
+##
+## @end group
 ## @end example
 ## @seealso{contour}
 ## @end deftypefn

@@ -273,7 +273,9 @@ xround (const Complex& x)
 Complex
 signum (const Complex& x)
 {
-  return x / abs (x);
+  double tmp = abs (x);
+
+  return tmp == 0 ? 0.0 : x / tmp;
 }
 
 // complex -> bool mappers.

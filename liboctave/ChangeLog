@@ -1,3 +1,7 @@
+2007-04-27  John W. Eaton  <jwe@octave.org>
+
+	* lo-mappers.cc (signum (const Complex&)): Special case for (0, 0).
+
 2007-04-25  John W. Eaton  <jwe@octave.org>
 
 	* oct-fftw.h (octave_fftw): Tag with OCTAVE_API.

@@ -38,17 +38,17 @@ function ind = sub2ind (dims, varargin)
       scale = cumprod (dims(:));
       for i = 1:vlen
 	arg = varargin{i};
-	if (isnumeric (arg) && all (round (arg) == arg))
+	if (isnumeric (arg) && isequal (round (arg), arg))
 	  if (i == 1)
-	    if (all (arg > 0 & arg <= dims(i)))
+	    if (all (arg(:) > 0 & arg(:) <= dims(i)))
 	      ind = first_arg = arg;
 	    else
 	      error ("sub2ind: index out of range");
 	    endif
 	  else
-            if (prod (size (first_arg)) == prod (size (arg)))
-	      if ((i > nd && arg == 1) || all (arg > 0 & arg <= dims(i)))
-		ind(:) += scale(i-1) * (arg(:) - 1);
+	    if (size_equal (first_arg, arg))
+	      if ((i > nd && arg == 1) || all (arg(:) > 0 & arg(:) <= dims(i)))
+		ind += scale(i-1) * (arg - 1);
 	      else
 		error ("sub2ind: index out of range");
 	      endif
@@ -69,3 +69,48 @@ function ind = sub2ind (dims, varargin)
 
 
 endfunction
+
+# Test input validation
+%!error <sub2ind: expecting dims to be an integer vector> sub2ind([10 10.5], 1, 1);
+%!error <sub2ind: expecting integer-valued index arguments> sub2ind([10 10], 1.5, 1);
+%!error <sub2ind: expecting integer-valued index arguments> sub2ind([10 10], 1, 1.5);
+
+# Test evaluation
+%!shared s1, s2, s3, in
+%! s1 = [   1   1   1   1 ;   2   2   2   2 ];
+%! s2 = [   1   1   2   2 ;   1   1   2   2 ];
+%! s3 = [   1   2   1   2 ;   1   2   1   2 ];
+%! in = [   1 101  11 111 ;   2 102  12 112 ];
+%!assert (sub2ind([10 10 10], s1, s2, s3), in);
+%!shared
+
+# Test low index
+%!assert (sub2ind([10 10 10], 1, 1, 1), 1);
+%!error <sub2ind: index out of range> sub2ind([10 10 10], 0, 1, 1);
+%!error <sub2ind: index out of range> sub2ind([10 10 10], 1, 0, 1);
+%!error <sub2ind: index out of range> sub2ind([10 10 10], 1, 1, 0);
+
+# Test high index
+%!assert (sub2ind([10 10 10], 10, 10, 10), 1000);
+%!error <sub2ind: index out of range> sub2ind([10 10 10], 11, 10, 10);
+%!error <sub2ind: index out of range> sub2ind([10 10 10], 10, 11, 10);
+%!error <sub2ind: index out of range> sub2ind([10 10 10], 10, 10, 11);
+
+# Test high index in the trailing dimensions
+%!assert (sub2ind([10], 2, 1, 1), 2);
+%!error <sub2ind: index out of range> sub2ind([10], 1, 2, 1);
+%!error <sub2ind: index out of range> sub2ind([10], 1, 1, 2);
+%!assert (sub2ind([10 10], 2, 2, 1), 12);
+%!error <sub2ind: index out of range> sub2ind([10 10], 2, 1, 2);
+%!error <sub2ind: index out of range> sub2ind([10 10], 1, 2, 2);
+
+# Test handling of empty arguments
+%!assert (sub2ind([10 10], zeros(0,0), zeros(0,0)), zeros(0,0));
+%!assert (sub2ind([10 10], zeros(2,0), zeros(2,0)), zeros(2,0));
+%!assert (sub2ind([10 10], zeros(0,2), zeros(0,2)), zeros(0,2));
+%!error <sub2ind: all index arguments must be the same size> sub2ind([10 10 10], zeros(0,2), zeros(2,0));
+
+# Test handling of arguments of different size
+%!error <sub2ind: all index arguments must be the same size> sub2ind([10 10], ones(1,2), ones(1,3));
+%!error <sub2ind: all index arguments must be the same size> sub2ind([10 10], ones(1,2), ones(2,1));
+

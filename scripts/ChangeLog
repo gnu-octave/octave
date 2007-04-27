@@ -1,3 +1,7 @@
+2007-04-27  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
+
+	* plot/contourc.m: Doc fix.
+
 2007-04-26  David Bateman  <dbateman@free.fr>
 
 	* plot/hist.m: Partially remove previous patch.

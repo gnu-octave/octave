@@ -29,6 +29,14 @@ EXAMPLE_FILES_NODIR = \
   funcdemo.cc \
   globaldemo.cc \
   helloworld.cc \
+  mycell.c \
+  myfeval.c \
+  myfunc.c \
+  mypow2.c \
+  mysparse.c \
+  mystring.c \
+  mystruct.c \
+  paramdemo.cc \
   stringdemo.cc \
   structdemo.cc \
   unwinddemo.cc

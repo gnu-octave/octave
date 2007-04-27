@@ -41,6 +41,7 @@ SOURCES = \
   myfunc.c \
   myhello.c \
   mypow2.c \
+  myprop.c \
   myset.c \
   mysparse.c \
   mystring.c \

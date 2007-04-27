@@ -1,5 +1,8 @@
 2007-04-27  David Bateman  <dbateman@free.fr>
 
+	* Makefile.in (EXAMPLE_FILES_NODIR): Add mycell.c, myfeval.c,
+	myfunc.c, mypow2.c, mysparse.c, mystring.c, mystruct.c and
+	paramdemo.cc.
 	* interpreter.txi/dynamic.txi: Complete all but the section on
 	the mex- and oct-file APIs.
 

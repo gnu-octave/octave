@@ -27,6 +27,7 @@ class mxArray;
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+#include "graphics.h"
 
 // #define DEBUG 1
 
@@ -3294,11 +3295,14 @@ mexAtExit (void (*f) (void))
 }
 
 const mxArray *
-mexGet (double /*handle*/, const char */*property*/)
+mexGet (double handle, const char *property)
 {
-  // FIXME
-  error ("mexGet: not implemented");
-  return 0;
+  mxArray *m = 0;
+  octave_value ret = get_property_from_handle (handle, property, "mexGet");
+
+  if (!error_state && ret.is_defined())
+    m = ret.as_mxArray ();
+  return m;
 }
 
 int
@@ -3341,11 +3345,12 @@ mexLock (void)
 }
 
 int
-mexSet (double /*handle*/, const char */*property*/, mxArray */*val*/)
+mexSet (double handle, const char *property, mxArray *val)
 {
-  // FIXME
-  error ("mexSet: not implemented");
-  return 0;
+  bool ret = 
+    set_property_in_handle (handle, property, mxArray::as_octave_value (val),
+			    "mexSet");
+  return (ret ? 0 : 1);
 }
 
 void

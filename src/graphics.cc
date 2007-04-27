@@ -40,6 +40,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <ov-fcn-handle.h>
 #include <parse.h>
 
+#include "graphics.h"
+
 static void
 gripe_set_invalid (const std::string& pname)
 {
@@ -3659,6 +3661,44 @@ Return current list of function handles.\n\
 @end deftypefn")
 {
   return octave_value (gh_manager::figure_handle_list ());
+}
+
+octave_value
+get_property_from_handle (double handle, const std::string &property,
+			  const std::string &func)
+{
+  graphics_object obj = gh_manager::get_object (handle);
+  octave_value retval;
+
+  if (obj)
+    {
+      property_name p = std::string (property);
+      retval = obj.get (p);
+    }
+  else
+    error ("%s: invalid handle (= %g)", func.c_str(), handle);
+
+  return retval;
+}
+
+bool
+set_property_in_handle (double handle, const std::string &property,
+			const octave_value &arg, const std::string &func)
+{
+  graphics_object obj = gh_manager::get_object (handle);
+  int ret = false;
+
+  if (obj)
+    {
+      property_name p = std::string (property);
+      obj.set (p, arg);
+      if (!error_state)
+	ret = true;
+    }
+  else
+    error ("%s: invalid handle (= %g)", func.c_str(), handle);
+
+  return ret;
 }
 
 /*

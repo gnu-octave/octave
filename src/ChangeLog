@@ -1,3 +1,12 @@
+2007-04-27  David Bateman  <dbateman@free.fr>
+
+	* graphic.cc (get_property_form_handle, set_property_in_handle):
+	New functions.
+	* grahics.h: New file.
+	* mex.cc (mexGet, mexSet): use the above to implement mexGet
+	and mexSet.
+	* Makefile.in (INCLUDES): Add graphics.h
+
 2007-04-26  John W. Eaton  <jwe@octave.org>
 
 	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):

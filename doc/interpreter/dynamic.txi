@@ -11,6 +11,12 @@
 @end example
 @end macro
 
+@macro longexamplefile{file}
+@example
+@verbatiminclude @value{abs_top_srcdir}/examples/\file\
+@end example
+@end macro
+
 @node Dynamically Linked Functions
 @appendix Dynamically Linked Functions
 @cindex dynamic-linking
@@ -79,7 +85,7 @@ will cause Octave to abort.
 * Input Parameter Checking in Oct-Files::  
 * Exception and Error Handling in Oct-Files::  
 * Documentation and Test of Oct-Files::  
-* Application Programming Interface for Oct-Files::  
+@c * Application Programming Interface for Oct-Files::  
 @end menu
 
 @node Getting Started with Oct-Files
@@ -446,7 +452,9 @@ Therefore, to obtain the underlying @code{octave_value} we write
 octave_value tmp = arg0.contents (p1) (0);
 @end example
 
-where the trailing (0) is the () operator on the @code{Cell} object.
+where the trailing (0) is the () operator on the @code{Cell} object.  We
+can equally iterate of the elements of the Cell array to address the
+elements of the structure array.
 
 @node Sparse Matrices in Oct-Files
 @subsection Sparse Matrices in Oct-Files
@@ -983,15 +991,15 @@ checking needed to ensure that Octave behaves well.
 The minimum requirement, as previously discussed, is to check the number
 of input arguments before using them to avoid referencing a non existent
 argument.  However, it some case this might not be sufficient as the
-underlying code imposes further constraints. For example an external
+underlying code imposes further constraints.  For example an external
 function call might be undefined if the input arguments are not
-integers, or if one of the arguments is zero. Therefore, oct-files often
+integers, or if one of the arguments is zero.  Therefore, oct-files often
 need additional input parameter checking.
 
 There are several functions within Octave that might be useful for the
-purposes of parameter checking. These include the methods of the
+purposes of parameter checking.  These include the methods of the
 octave_value class like @code{is_real_matrix}, etc, but equally include
-more specialized functions. Some of the more common ones are
+more specialized functions.  Some of the more common ones are
 demonstrated in the following example
 
 @examplefile{paramdemo.cc}
@@ -1073,7 +1081,7 @@ unwinddemo (1, 0)
 @result{} Inf
 1 / 0
 @result{} warning: division by zero
-    Inf
+   Inf
 @end group
 @end example
 
@@ -1091,7 +1099,7 @@ help strings within oct-files.
 
 The major issue is that the help string will typically be longer than a
 single line of text, and so the formatting of long help strings need to
-be taken into account. There are several manner in which to happen this
+be taken into account.  There are several manner in which to happen this
 issue, but the most common is illustrated in the following example
 
 @example
@@ -1124,7 +1132,7 @@ oct-files.  Furthermore the test and demonstration code must be included
 in a comment block of the compiled code to avoid it being interpreted by
 the compiler.  Finally, he Octave test and demonstration code must have
 access to the source code of the oct-file and not just the compiled code
-as th<e tests are stripped from the compiled code. An example in an
+as th<e tests are stripped from the compiled code.  An example in an
 oct-file might be
 
 @example
@@ -1139,10 +1147,10 @@ oct-file might be
 @end group
 @end example
 
-@node Application Programming Interface for Oct-Files
-@subsection Application Programming Interface for Oct-Files
-
-WRITE ME, using Coda section 1.3 as a starting point.
+@c @node Application Programming Interface for Oct-Files
+@c @subsection Application Programming Interface for Oct-Files
+@c 
+@c WRITE ME, using Coda section 1.3 as a starting point.
 
 @node Mex-Files
 @section Mex-Files
@@ -1152,13 +1160,13 @@ WRITE ME, using Coda section 1.3 as a starting point.
 Octave includes an interface to allow legacy mex-files to be compiled
 and used with Octave.  This interface can also be used to share code
 between Octave and non Octave users.  However, as mex-files expose the
-intern API of a product alternative to Octave, and the internal
+internal API of an alternative product to Octave, and the internal
 structure of Octave is different to this product, a mex-file can never
 have the same performance in Octave as the equivalent oct-file.  In
 particular to support the manner in which mex-files access the variables
 passed to mex functions, there are a significant number of additional
-copies of memory when calling or returning from a mex function.  For this
-reason, new code should be written using the oct-file interface
+copies of memory when calling or returning from a mex function.  For
+this reason, new code should be written using the oct-file interface
 discussed above if possible.
 
 @menu
@@ -1169,7 +1177,7 @@ discussed above if possible.
 * Structures with Mex-Files::  
 * Sparse Matrices with Mex-Files::  
 * Calling Other Functions in Mex-Files::  
-* Application Programming Interface for Mex-Files::  
+@c * Application Programming Interface for Mex-Files::  
 @end menu
 
 @node Getting Started with Mex-Files
@@ -1194,8 +1202,8 @@ Consider the short example
 
 @examplefile{firstmexdemo.c}
 
-This simple example demonstrates the basics of writing a mex-file. The
-entry point into the mex-file is defined by @code{mexFunction}. Note
+This simple example demonstrates the basics of writing a mex-file.  The
+entry point into the mex-file is defined by @code{mexFunction}.  Note
 that the function name is not explicitly included in the
 @code{mexFunction} and so there can only be a single @code{mexFunction}
 entry point per-file.  Also the name of the function is determined by the
@@ -1218,8 +1226,8 @@ firstmexdemo()
 @end example
 
 It should be noted that the mex-file contains no help string for the
-functions it contains. To document mex-files, there should exist an
-m-file in the same directory as the mex-file itself. Taking the above as
+functions it contains.  To document mex-files, there should exist an
+m-file in the same directory as the mex-file itself.  Taking the above as
 an example, we would therefore have a file @file{firstmexdemo.m} that might
 contain the text
 
@@ -1229,13 +1237,13 @@ contain the text
 
 In this case, the function that will be executed within Octave will be
 given by the mex-file, while the help string will come from the
-m-file. This can also be useful to allow a sample implementation of the
+m-file.  This can also be useful to allow a sample implementation of the
 mex-file within the Octave language itself for testing purposes.
 
 Although we can not have multiple entry points into a single mex-file,
 we can use the @code{mexFunctionName} function to determine what name
-the mex-file was called with. This can be used to alter the behavior of
-the mex-file based on the function name. For example if
+the mex-file was called with.  This can be used to alter the behavior of
+the mex-file based on the function name.  For example if
 
 @examplefile{myfunc.c}
 
@@ -1265,50 +1273,289 @@ myfunc2()
 the behavior of the mex-file can be altered depending on the functions
 name.
 
+Allow the user should only include @code{mex.h} in their code, Octave
+declares additional functions, typedefs, etc, available to the user to
+write mex-files in the headers @code{mexproto.h} and @code{mxarray.h}.
+
 @node Working with Matrices and Arrays in Mex-Files
 @subsection Working with Matrices and Arrays in Mex-Files
 
-The basic mex type of all variables is @code{mxArray}. All variables,
-such as Matrices, cell arrays or structures are all stored in this basic
+The basic mex type of all variables is @code{mxArray}.  All variables,
+such as matrices, cell arrays or structures are all stored in this basic
 type, and this type serves basically the same purpose as the
-octave_value class in oct-files. That is it acts as a container for the
+octave_value class in oct-files.  That is it acts as a container for the
 more specialized types.
 
-WRITE ME
+The @code{mxArray} structure contains at a minimum, the variable it
+represents name, its dimensions, its type and whether the variable is
+real or complex.  It can however contain a number of additional fields
+depending on the type of the @code{mxArray}.  There are a number of
+functions to create @code{mxArray} structures, including
+@code{mxCreateCellArray}, @code{mxCreateSparse} and the generic
+@code{mxCreateNumericArray}.
+
+The basic functions to access the data contained in an array is
+@code{mxGetPr}.  As the mex interface assumes that the real and imaginary
+parts of a complex array are stored seperately, there is an equivalent
+function @code{mxGetPi} that get the imaginary part.  Both of these
+functions are for use only with double precision matrices.  There also
+exists the generic function @code{mxGetData} and @code{mxGetImagData}
+that perform the same operation on all matrix types.  For example
+
+@example
+@group
+mxArray *m;
+int *dims;
+UINT32_T *pr;
+
+dims = (int *) mxMalloc (2 * sizeof(int));
+dims[0] = 2;
+dims[1] = 2;
+m = mxCreateNumericArray (2, dims, mxUINT32_CLASS, mxREAL);
+pr =  = (UINT32_T *) mxGetData (m);
+@end group
+@end example
+
+There are also the functions @code{mxSetPr}, etc, that perform the
+inverse, and set the data of an Array to use the block of memory pointed
+to by the argument of @code{mxSetPr}.
+
+An example that demonstration how to work with arbitrary real or complex
+double precision arrays is given by the file @file{mypow2.c} as given
+below.
+
+@examplefile{mypow2.c}
+
+@noindent
+with an example of its use
+
+@example
+@group
+b = randn(4,1) + 1i * randn(4,1);
+all(b.^2 == mypow2(b))
+@result{} 1
+@end group
+@end example
+
+
+The example above uses the @code{mxGetNumberOfElements},
+@code{mxGetNumberOfDimensions} and @code{mxGetDimensions}, to work with
+the dimensional parameters of multi-dimensional arrays.  The also exists
+the functions @code{mxGetM}, and @code{mxGetN} that probe the number of
+rows and columns in a matrix.
 
 @node Character Strings in Mex-Files
 @subsection Character Strings in Mex-Files
 
-WRITE ME
+As mex-files do not make the distinction between single and double
+quoted strings within Octave, there is perhaps less complexity in the
+use of strings and character matrices in mex-files.  An example of their
+use, that parallels the demo in @file{stringdemo.cc}, is given in the
+file @file{mystring.c}, as seen below.
+
+@examplefile{mystring.c}
+
+@noindent
+An example of its expected output is
+
+@example
+@group
+mystring(["First String"; "Second String"])
+@result{} s1 = Second String
+        First String
+@end group
+@end example
+
+There are a couple of additional functions available in mex-files of
+interest in the treatment of strings.  These are @code{mxCreateString},
+@code{mxArrayToString} and @code{mxCreateCharMatrixFromStrings}.  A
+string in a mex-file is considered to be a vector rather than a
+matrix.  This is perhaps an arbitrary distinction as the data in the
+mxArray for the matrix is consequetive in any case.
 
 @node Cell Arrays with Mex-Files
 @subsection Cell Arrays with Mex-Files
 
-WRITE ME
+We can perform exactly the same operations in Cell arrays in mex-files
+as we can in oct-files.  An example that reduplicates the functional of
+the @file{celldemo.cc} oct-file in a mex-file is given by
+@file{mycell.c} as below
+
+@examplefile{mycell.c}
+
+@noindent
+which as can be seen below has exactly the same behavior as the oct-file
+version.
+
+@example
+@group
+[b1, b2, b3] = mycell (@{1, [1, 2], "test"@})
+@result{}
+b1 =  1
+b2 =
+
+   1   2
+
+b3 = test
+@end group
+@end example
+
+Note in the example the use of the @code{mxDuplicateArry} function.  This
+is needed as the @code{mxArray} pointer returned by @code{mxGetCell}
+might be deallocated.  The inverse function to @code{mxGetCell} is
+@code{mcSetCell} and is defined as
+
+@example
+void mxSetCell (mxArray *ptr, int idx, mxArray *val);
+@end example
+
+Finally, to create a cell array or matrix, the appropraiate functions are
+
+@example
+@group
+mxArray *mxCreateCellArray (int ndims, const int *dims);
+mxArray *mxCreateCellMatrix (int m, int n);
+@end group
+@end example
 
 @node Structures with Mex-Files
 @subsection Structures with Mex-Files
 
-See the file @file{mystruct.c}
+The basic function to create a structure in a mex-file is
+@code{mxCreateStructMatrix}, which creates a structure array with a two
+dimensional matrix, or @code{mxCreateStructArray}.
+
+@example
+@group
+mxArray *mxCreateStructArray (int ndims, int *dims, int num_keys, 
+                              const char **keys);
+mxArray *mxCreateStructMatrix (int rows, int cols, int num_keys, 
+                               const char **keys);
+@end group
+@end example
+
+Accessing the fields of the structure can then be performed with the
+@code{mxGetField} and @code{mxSetField} or alternatively with the
+@code{mxGetFieldByNumber} and @code{mxSetFieldByNumber} functions.
+
+@example
+@group
+mxArray *mxGetField (const mxArray *ptr, int index, const char *key);
+mxArray *mxGetFieldByNumber (const mxArray *ptr, 
+                             int index, int key_num);
+void mxSetField (mxArray *ptr, int index, 
+                 const char *key, mxArray *val);
+void mxSetFieldByNumber (mxArray *ptr, int index, 
+                         int key_num, mxArray *val);
+@end group
+@end example
+
+A difference between the oct-file interface to structures and the
+mex-file version is that the functions to operate on structures in
+mex-files directly include an @code{index} over the elements of the
+arrays of elements per @code{field}.  Whereas the oct-file structure
+includes a Cell Array per field of the structure.
+
+An example that demonstrates the use of structures in mex-file can be
+found in the file @file{mystruct.c}, as seen below
 
 @examplefile{mystruct.c}
 
-WRITE ME
+An example of the behavior of this function within Octave is then
+
+@example
+@group
+a(1).f1 = "f11"; a(1).f2 = "f12"; a(2).f1 = "f21"; a(2).f2 = "f22";
+b = mystruct(a)
+@result{} field f1(0) = f11
+    field f1(1) = f21
+    field f2(0) = f12
+    field f2(1) = f22
+    b =
+    @{
+      this =
+    
+      (,
+        [1] = this1
+        [2] = this2
+        [3] = this3
+        [4] = this4
+      ,)
+    
+      that =
+    
+      (,
+        [1] = that1
+        [2] = that2
+        [3] = that3
+        [4] = that4
+      ,)
+    
+    @}
+@end group
+@end example
 
 @node Sparse Matrices with Mex-Files
 @subsection Sparse Matrices with Mex-Files
 
-See the file @file{mysparse.c}
+The Octave format for sparse matrices is identical to the mex format in
+that it is a compressed colument sparse format.  Also in both, sparse
+matrices are required to be two dimensional.  The only difference is that
+the real and imaginary parts of the matrix are stored seperately.
 
-@examplefile{mysparse.c}
+The mex-file interface, as well as using @code{mxGetM}, @code{mxGetN},
+@code{mxSetM}, @code{mxSetN}, @code{mxGetPr}, @code{mxGetPi},
+@code{mxSetPr} and @code{mxSetPi}, the mex-file interface supplies the
+functions
 
-WRITE ME
+@example
+@group
+int *mxGetIr (const mxArray *ptr);
+int *mxGetJc (const mxArray *ptr);
+int mxGetNzmax (const mxArray *ptr);
+
+void mxSetIr (mxArray *ptr, int *ir);
+void mxSetJc (mxArray *ptr, int *jc);
+void mxSetNzmax (mxArray *ptr, int nzmax);
+@end group
+@end example
+
+@noindent
+@code{mxGetNzmax} gets the maximum number of elements that can be stored
+in the sparse matrix.  This is not necessarily the number of non-zero
+elements in the sparse matrix.  @code{mxGetJc} returns an array with one
+additional value than the number of columns in the sparse matrix.  The
+difference between consecutive values of the array returned by
+@code{mxGetJc} define the number of non-zero elements in each column of
+the sparse matrix.  Therefore
+
+@example
+@group
+int nz, n;
+int *Jc;
+mxArray *m;
+@dots{}
+n = mxGetN (m);
+Jc = mxGetJc (m);
+nz = Jc[n];
+@end group
+@end example
+
+@noindent
+returns the actual number of non-zero elements stored in the matrix in
+@code{nz}.  As the arrays returned by @code{mxGetPr} and @code{mxGetPi}
+only contain the non-zero values of the matrix, we also need a pointer
+to the rows of the non-zero elements, and this is given by
+@code{mxGetIr}.  A complete example of the use of sparse matrices in
+mex-files is given by the file @file{mysparse.c} as seen below
+
+@longexamplefile{mysparse.c}
 
 @node Calling Other Functions in Mex-Files
 @subsection Calling Other Functions in Mex-Files
 
 It is also possible call other Octave functions from within a mex-file
-using @code{mexCallMATLAB}. An example of the use of
+using @code{mexCallMATLAB}.  An example of the use of
 @code{mexCallMATLAB} can be see in the example below
 
 @examplefile{myfeval.c}
@@ -1330,10 +1577,10 @@ a = myfeval("sin", 1)
 Note that it is not possible to use function handles or inline functions
 within a mex-file.
 
-@node Application Programming Interface for Mex-Files
-@subsection Application Programming Interface for Mex-Files
-
-WRITE ME, refer to mex.h and mexproto.h
+@c @node Application Programming Interface for Mex-Files
+@c @subsection Application Programming Interface for Mex-Files
+@c 
+@c WRITE ME, refer to mex.h and mexproto.h
 
 @node Standalone Programs
 @section Standalone Programs

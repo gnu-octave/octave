@@ -89,6 +89,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "sysdep.h"
 #include "toplev.h"
 #include "utils.h"
+#include "file-stat.h"
 
 #ifndef STDIN_FILENO
 #define STDIN_FILENO 1
@@ -223,6 +224,69 @@ CYGWIN_init (void)
   octave_env::putenv ("TMPDIR", tmpdir);
 }
 #endif
+
+// Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
+
+bool
+same_file_internal (const std::string& file1, const std::string& file2)
+{
+#ifdef OCTAVE_USE_WINDOWS_API
+
+  // Windows native code 
+  // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
+
+  HANDLE hfile1;
+  HANDLE hfile2;
+  
+  BY_HANDLE_FILE_INFORMATION hfi1;
+  BY_HANDLE_FILE_INFORMATION hfi2;
+  
+  hfile1 = CreateFile (file1.c_str (), 0, FILE_SHARE_READ, 0,
+		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); 
+
+  if (hfile1 == INVALID_FILE_HANDLE)
+    return false;
+  
+  hfile2 = CreateFile (file2.c_str (), 0, FILE_SHARE_READ, 0,
+		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+  if (hfile2 == INVALID_FILE_HANDLE)
+    {
+      CloseHandle (hfile1);
+      return false;
+    }
+  
+  if (! GetFileInformationByHandle (hfile1, &hfi1))
+    {
+      CloseHandle (hfile1);
+      CloseHandle (hfile2);
+      return false;
+    }
+   
+  if (! GetFileInformationByHandle (hfile2, &hfi2))
+    {
+      CloseHandle (hfile1);
+      CloseHandle (hfile2);
+      return false;
+    }
+  
+  return (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
+	  && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
+	  && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+
+#else
+
+  // POSIX Code
+
+  file_stat fs_file1 (file1);
+  file_stat fs_file2 (file2);
+
+  return (fs_file1 && fs_file2
+	  && fs_file1.ino () == fs_file2.ino ()
+	  && fs_file1.dev () == fs_file2.dev ());
+
+#endif
+}
 
 #if defined (__DECCXX)
 

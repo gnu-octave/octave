@@ -338,10 +338,7 @@ execute_startup_files (void)
 
 	      local_rc = octave_env::make_absolute (initfile, curr_dir);
 
-	      file_stat fs_dot_rc (local_rc);
-
-	      if (fs_dot_rc && fs_home_rc.ino () == fs_dot_rc.ino ())
-		home_rc_already_executed = true;
+	      home_rc_already_executed = same_file (home_rc, local_rc);
 	    }
 	}
 

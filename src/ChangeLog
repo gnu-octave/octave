@@ -1,3 +1,18 @@
+2007-04-27  Benjamin Lindner  <lindnerb@users.sourceforge.net>.
+
+	* octave.cc (execute_startup_files): Call same_file to check for
+	already executed init files.
+
+2007-04-27  John W. Eaton  <jwe@octave.org>
+
+	* sysdep.cc (same_file_internal): New function.  POSIX code
+	from same_file in utils.cc.  Windows code from
+	Benjamin Lindner  <lindnerb@users.sourceforge.net>.
+	Don't canonicalize file names.
+	Also return false if stat calls fail.
+	* sysdep.h: Provide decl.
+	* utils.cc (same_file): Use same_file_internal.
+
 2007-04-27  David Bateman  <dbateman@free.fr>
 
 	* graphic.cc (get_property_form_handle, set_property_in_handle):

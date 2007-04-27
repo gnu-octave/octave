@@ -118,13 +118,7 @@ Return true if @var{name} is a valid variable name\n\
 bool
 same_file (const std::string& f, const std::string& g)
 {
-  std::string c_f = file_ops::canonicalize_file_name (f);
-  std::string c_g = file_ops::canonicalize_file_name (g);
-
-  file_stat f_fs (c_f);
-  file_stat g_fs (c_g);
-
-  return (f_fs.ino () == g_fs.ino () && f_fs.dev () == g_fs.dev ());
+  return same_file_internal (f, g);
 }
 
 int

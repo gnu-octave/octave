@@ -35,9 +35,20 @@ SOURCES = \
   hello.cc \
   helloworld.cc \
   make_int.cc \
+  mycell.c \
+  myfeval.c \
+  myfevalf.f \
+  myfunc.c \
+  myhello.c \
+  mypow2.c \
+  myset.c \
+  mysparse.c \
+  mystring.c \
+  mystruct.c \
   octave.desktop.in \
   oregonator.cc \
   oregonator.m \
+  paramdemo.cc \
   stringdemo.cc \
   structdemo.cc \
   unwinddemo.cc

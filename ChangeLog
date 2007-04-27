@@ -1,3 +1,10 @@
+2007-04-27  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (SOURCES): Add all example files to the list.
+
+	* octave-config.in: Don't set PREFIX to OCTAVE_HOME if OCTAVE_HOME
+	is empty.
+
 2007-04-27  David Bateman  <dbateman@free.fr>
 
 	* examples/mycell.c, examples/mypow2.c, examples/mystring.c: New

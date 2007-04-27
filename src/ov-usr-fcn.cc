@@ -381,16 +381,19 @@ octave_user_function::do_multi_index_op (int nargout,
 
 	Cell varargout;
 
-	symbol_record *sr = local_sym_tab->lookup ("varargout");
-
-	if (sr && sr->is_variable ())
+	if (ret_list->takes_varargs ())
 	  {
-	    octave_value v = sr->def ();
+	    symbol_record *sr = local_sym_tab->lookup ("varargout");
 
-	    varargout = v.cell_value ();
+	    if (sr && sr->is_variable ())
+	      {
+		octave_value v = sr->def ();
 
-	    if (error_state)
-	      error ("expecting varargout to be a cell array object");
+		varargout = v.cell_value ();
+
+		if (error_state)
+		  error ("expecting varargout to be a cell array object");
+	      }
 	  }
 
 	if (! error_state)

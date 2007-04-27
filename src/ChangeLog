@@ -1,3 +1,8 @@
+2007-04-26  John W. Eaton  <jwe@octave.org>
+
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Only deal with varargout if ret_list->takes_varargs () is true.
+
 2007-04-26  Soren Hauberg  <soren@hauberg.org>
 
 	* DLD-FUNCTIONS/urlwrite.cc: Doc fix.

@@ -35,7 +35,12 @@ function varargout = bunzip2 (files, outputdir)
   if (nargin == 1)
     outputdir = ".";
   endif
-  varargout = cell (1, nargout);
-  [varargout{:}] = unpack (files, outputdir, mfilename ());
+
+  if (nargout > 0)
+    varargout = cell (1, nargout);
+    [varargout{:}] = unpack (files, outputdir, mfilename ());
+  else
+    unpack (files, outputdir, mfilename ());
+  endif
 
 endfunction

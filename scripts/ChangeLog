@@ -1,3 +1,9 @@
+2007-04-28  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/unzip.m, miscellaneous/untar.m,
+	miscellaneous/bunzip2.m, miscellaneous/gunzip.m:
+	Special case nargout == 0.
+
 2007-04-27  Kim Hansen  <kimhanse@gmail.com>
 
 	* general/sub2ind.m: Handle empty input, add tests.

@@ -2064,14 +2064,7 @@ public:
     // We can't use mex::free here because it modifies memlist.
     for (std::set<void *>::iterator p = context->memlist.begin ();
 	 p != context->memlist.end (); p++)
-      {
-	if (*p)
-	  {
-	    context->unmark (*p);
-
-	    xfree (*p);
-	  }
-      }
+      xfree (*p);
 
     context->memlist.clear ();
 

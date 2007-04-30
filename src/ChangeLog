@@ -1,3 +1,9 @@
+2007-04-30  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-int-conv.cc: Define sq and dq string conversion
+	operators.  Delete old char_matrix_str conversions.
+	* OPERATORS/op-int-conv.cc (install_int_conv_ops): Install them.
+
 2007-04-27  Benjamin Lindner  <lindnerb@users.sourceforge.net>.
 
 	* octave.cc (execute_startup_files): Call same_file to check for

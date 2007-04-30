@@ -219,8 +219,6 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 					   const octave_value& rhs,
 					   bool& quit)
 {
-  quit = false;
-
   ult.assign (octave_value::op_asn_eq, rhs);
 
   if (! error_state)
@@ -239,54 +237,84 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
   quit = quit_loop_now ();
 }
 
-#define DO_LOOP(arg) \
+#define DO_ND_LOOP(MTYPE, TYPE, CONV, ARG) \
   do \
     { \
-      for (int i = 0; i < steps; i++) \
-	{ \
-	  MAYBE_DO_BREAKPOINT; \
+      dim_vector dv = ARG.dims (); \
  \
-	  octave_value val (arg); \
+      bool quit = false; \
  \
-	  bool quit = false; \
+      TYPE *atmp = ARG.fortran_vec (); \
  \
-	  do_for_loop_once (ult, val, quit); \
- \
-	  if (quit) \
-	    break; \
-	} \
-    } \
-  while (0)
-
-#define DO_ND_LOOP(TYPE, ARG) \
-  do \
-    { \
       octave_idx_type steps = dv(1); \
  \
-      for (octave_idx_type i = 0; i < steps; i++) \
+      octave_idx_type nrows = dv(0); \
+ \
+      int ndims = dv.length (); \
+      if (ndims > 2) \
+        { \
+          for (int i = 2; i < ndims; i++) \
+            steps *= dv(i); \
+          dv(1) = steps; \
+          dv.resize (2); \
+        } \
+ \
+      if (steps > 0) \
 	{ \
-	  MAYBE_DO_BREAKPOINT; \
+          if (nrows == 0) \
+            { \
+	      octave_value val (MTYPE (dim_vector (0, 1))); \
  \
-          TYPE tmp; \
+	      for (octave_idx_type i = 0; i < steps; i++) \
+		{ \
+		  MAYBE_DO_BREAKPOINT; \
  \
-          int nr = ARG.rows (); \
+	          do_for_loop_once (ult, val, quit); \
  \
-	  tmp.resize (dim_vector (nr, 1)); \
+	          if (quit) \
+	            break; \
+	       } \
+            } \
+          else if (nrows == 1) \
+            { \
+	      for (octave_idx_type i = 0; i < steps; i++) \
+		{ \
+		  MAYBE_DO_BREAKPOINT; \
  \
-	  for (int j = 0; j < nr; j++) \
-	    tmp.xelem (j) = ARG.xelem (j, i); \
+		  octave_value val (CONV (*atmp++)); \
  \
-          octave_value val (tmp); \
+	          do_for_loop_once (ult, val, quit); \
  \
-	  bool quit = false; \
+	          if (quit) \
+	            break; \
+	       } \
+            } \
+          else \
+            { \
+              if (ndims > 2) \
+                ARG = ARG.reshape (dv); \
  \
-	  do_for_loop_once (ult, val, quit); \
-	  quit = (i == steps - 1 ? true : quit); \
+              MTYPE tmp (dim_vector (nrows, 1)); \
  \
-	  if (quit) \
-	    break; \
+              TYPE *ftmp = tmp.fortran_vec (); \
  \
-	} \
+              for (octave_idx_type i = 0; i < steps; i++) \
+	        { \
+	          MAYBE_DO_BREAKPOINT; \
+ \
+ 	          for (int j = 0; j < nrows; j++) \
+	            ftmp[j] = *atmp++;  \
+ \
+                  octave_value val (tmp); \
+ \
+                  do_for_loop_once (ult, val, quit); \
+                  quit = (i == steps - 1 ? true : quit); \
+ \
+	          if (quit) \
+	            break; \
+	        } \
+	    } \
+        } \
     } \
   while (0)
 
@@ -326,16 +354,14 @@ tree_simple_for_command::eval (void)
 	octave_idx_type steps = rng.nelem ();
 	double b = rng.base ();
 	double increment = rng.inc ();
+	bool quit = false;
+	double tmp_val = b;
 
-	for (octave_idx_type i = 0; i < steps; i++)
+	for (octave_idx_type i = 0; i < steps; i++, tmp_val += increment)
 	  {
 	    MAYBE_DO_BREAKPOINT;
 
-	    double tmp_val = b + i * increment;
-
 	    octave_value val (tmp_val);
-
-	    bool quit = false;
 
 	    do_for_loop_once (ult, val, quit);
 
@@ -356,12 +382,25 @@ tree_simple_for_command::eval (void)
 	charMatrix chm_tmp = rhs.char_matrix_value ();
 	octave_idx_type nr = chm_tmp.rows ();
 	octave_idx_type steps = chm_tmp.columns ();
+	bool quit = false;
 
 	if (error_state)
 	  goto cleanup;
 
 	if (nr == 1)
-	  DO_LOOP (chm_tmp (0, i));
+	  {
+	    for (octave_idx_type i = 0; i < steps; i++)
+	      {
+		MAYBE_DO_BREAKPOINT;
+
+		octave_value val (chm_tmp.xelem (0, i));
+
+		do_for_loop_once (ult, val, quit);
+
+		if (quit)
+		  break;
+	      }
+	  }
 	else
 	  {
 	    for (octave_idx_type i = 0; i < steps; i++)
@@ -369,8 +408,6 @@ tree_simple_for_command::eval (void)
 		MAYBE_DO_BREAKPOINT;
 
 		octave_value val (chm_tmp.extract (0, i, nr-1, i), true);
-
-		bool quit = false;
 
 		do_for_loop_once (ult, val, quit);
 
@@ -381,51 +418,30 @@ tree_simple_for_command::eval (void)
       }
     else if (rhs.is_matrix_type ())
       {
-	NDArray m_tmp;
-	ComplexNDArray cm_tmp;
-	dim_vector dv;
-
 	if (rhs.is_real_type ())
 	  {
-	    m_tmp = rhs.array_value ();
-	    dv = m_tmp.dims ();
+	    NDArray m_tmp = rhs.array_value ();
+
+	    if (error_state)
+	      goto cleanup;
+
+	    DO_ND_LOOP (NDArray, double, , m_tmp);
 	  }
 	else
 	  {
-	    cm_tmp = rhs.complex_array_value ();
-	    dv = cm_tmp.dims ();
-	  }
+	    ComplexNDArray cm_tmp = rhs.complex_array_value ();
 
-	if (error_state)
-	  goto cleanup;
+	    if (error_state)
+	      goto cleanup;
 
-	// FIXME -- maybe we need a function for this?
-	int ndims = dv.length ();
-	for (int i = 2; i < ndims; i++)
-	  dv(1) *= dv(i);
-	dv.resize (2);
-
-	if (dv(1) > 0)
-	  {
-	    if (rhs.is_real_type ())
-	      {
-		if (ndims > 2)
-		  m_tmp = m_tmp.reshape (dv);
-
-		DO_ND_LOOP(NDArray, m_tmp);
-	      }
-	    else
-	      {
-		if (ndims > 2)
-		  cm_tmp = cm_tmp.reshape (dv);
-
-		DO_ND_LOOP(ComplexNDArray, cm_tmp);
-	      }
+	    DO_ND_LOOP (ComplexNDArray, Complex, , cm_tmp);
 	  }
       }
     else if (rhs.is_map ())
       {
 	Octave_map tmp_val (rhs.map_value ());
+
+	bool quit = false;
 
 	for (Octave_map::iterator p = tmp_val.begin ();
 	     p != tmp_val.end ();
@@ -438,8 +454,6 @@ tree_simple_for_command::eval (void)
 	    octave_value val
 	      = (val_lst.length () == 1) ? val_lst(0) : octave_value (val_lst);
 
-	    bool quit = false;
-
 	    do_for_loop_once (ult, val, quit);
 
 	    if (quit)
@@ -450,21 +464,7 @@ tree_simple_for_command::eval (void)
       {
 	Cell c_tmp = rhs.cell_value ();
 
-	dim_vector dv = c_tmp.dims ();
-
-	// FIXME -- maybe we need a function for this?
-	int ndims = dv.length ();
-	for (int i = 2; i < ndims; i++)
-	  dv(1) *= dv(i);
-	dv.resize (2);
-
-	if (dv(1) > 0)
-	  {
-	    if (ndims > 2)
-	      c_tmp = c_tmp.reshape (dv);
-
-	    DO_ND_LOOP(Cell, c_tmp);
-	  }
+	DO_ND_LOOP (Cell, octave_value, Cell, c_tmp);
       }
     else
       {

@@ -1,3 +1,15 @@
+2007-04-30  David Bateman  <dbateman@free.fr>
+	
+	* pt-loop.cc (DO_ND_LOOP): New args, CONV and ARG.
+	Use octave_idx_type instead of int for loop counters.
+	Remove redundant assignments to variable "quit" as it is
+	always defined in quit_loop_now.
+	Special case rows = 0 and 1 cases in loops over arrays.
+	Include some of the code that was separate from the macro
+	DO_ND_LOOP in the macro itself
+	(tree_simple_for_command::eval): USE DO_ND_LOOP for all loops.
+	(DO_LOOP): Delete.
+
 2007-04-30  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mex::cleanup): Don't call unmark for elements of the set

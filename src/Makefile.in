@@ -30,7 +30,7 @@ CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 	  egrep '^(///*|/\*) *PKG_ADD:' $< ; \
 	  $(CXXCPP) $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) -DMAKE_BUILTINS $< \
 	    | $(srcdir)/mkdefs) > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 # How to make a .oct file from a .o file:
 

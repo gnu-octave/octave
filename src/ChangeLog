@@ -1,3 +1,8 @@
+2007-04-30  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (%.df : %.cc): Use mv instead of
+	$(simple-move-if-change-rule).
+
 2007-04-30  David Bateman  <dbateman@free.fr>
 	
 	* pt-loop.cc (DO_ND_LOOP): New args, CONV and ARG.

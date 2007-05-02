@@ -1,3 +1,7 @@
+2007-05-02  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Convert NA to NaN before writing.
+
 2007-05-02  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
 
 	* contour.m: Rewrite help string.

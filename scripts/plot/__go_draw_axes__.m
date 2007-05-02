@@ -889,6 +889,13 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
 
   ## FIXME -- this may need to be converted to C++ for speed.
 
+  ## Convert NA elements to normal NaN values because fprintf writes
+  ## "NA" and that confuses gnuplot.
+  idx = find (isna (data));
+  if (any (idx))
+    data(idx) = NaN;
+  endif
+
   if (nd == 2)
     nan_elts = find (sum (isnan (data)));
     fmt = strcat (repmat ("%g ", 1, rows (data)), "\n");

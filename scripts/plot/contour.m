@@ -18,31 +18,24 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vv})
-## Compute isolines (countour lines) of the matrix @var{z}. 
-## parameters @var{x}, @var{y} and @var{vn} are optional.
+## @deftypefn {Function File} {} {@var{c} =} contour (@var{z})
+## @deftypefnx {Function File} {} {@var{c} =} contour (@var{z}, @var{vn})
+## @deftypefnx {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
 ##
-## The return value @var{c} is a 2 by @var{n} matrix containing the
-## contour lines in the following format
-##
-## @example
-## @var{c} = [lev1, x1, x2, ..., levn, x1, x2, ... 
-##      len1, y1, y2, ..., lenn, y1, y2, ...]
-## @end example
-##
-## @noindent
-## in which contour line @var{n} has a level (height) of @var{levn} and
-## length of @var{lenn}.
-## 
-## If @var{x} and @var{y} are omitted they are taken as the row/column 
-## index of @var{z}.  @var{vn} is either a scalar denoting the number of
-## lines to compute or a vector containing the values of the lines.  If
-## only one value is wanted, set @code{@var{vn} = [val, val]}.  If
-## @var{vn} is omitted it defaults to 10.
+## Plot level curves (contour lines) of the matrix @var{z}, using the
+## contour matrix @var{c} computed by @code{contourc} from the same
+## arguments; see the latter for their interpretation.  @var{c} is only
+## returned if requested.  For example:
 ##
 ## @example
-## levels = linspace (0, 2*pi, 10);
-## @var{c} = contourc (@var{x}, @var{y}, @var{z}, levels);
+## @group
+## x = 0:2;
+## y = x;
+## z = x' * y;
+## contour (x, y, z, 2:3)
+##
+## @end group
 ## @end example
 ## @seealso{contourc, line, plot}
 ## @end deftypefn

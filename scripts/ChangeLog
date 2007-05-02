@@ -1,3 +1,7 @@
+2007-05-02  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
+
+	* contour.m: Rewrite help string.
+
 2007-04-28  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/unzip.m, miscellaneous/untar.m,

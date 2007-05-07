@@ -17,10 +17,32 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} spy (@var{x})
-## Plot the sparsity pattern of the sparse matrix @var{x}.
+## @deftypefnx {Function File} {} spy (@dots{}, @var{markersize})
+## @deftypefnx {Function File} {} spy (@dots{}, @var{LineSpec})
+## Plot the sparsity pattern of the sparse matrix @var{x}. If the argument
+## @var{markersize} is given as an scalar value, it is used to determine the
+## point size in the plot. If the string @var{LineSpec} is given it is
+## passed to @code{plot} and determines the appearance of the plot.
+## @seealso{plot}
 ## @end deftypefn
 
-function spy (S) 
+function spy (S, varargin) 
+
+  markersize = NaN;
+  if (numel (i) < 1000)
+    LineSpec = "*";
+  else
+    LineSpec = ".";
+  endif
+  for i = 1:length(varargin)
+    if (ischar(varargin{i}))
+      LineSpec = varargin{i};
+    elseif (isscalar (varargin{i}))
+      markersize = varargin{i};
+    else
+      error ("spy: expected markersize or linespec");
+    endif
+  endfor
 
   if (issparse (S))
     [i, j, s, m, n] = spfind (S);
@@ -29,10 +51,10 @@ function spy (S)
     [m, n] = size (S);
   endif
 
-  if (numel (i) < 1000)
-    plot (j, i, "*");
+  if (isnan (markersize))
+    plot (j, i, LineSpec);
   else
-    plot (j, i, ".");
+    plot (j, i, LineSpec, "MarkerSize", markersize);
   endif
 
   axis ([0, n+1, m+1, 0]);

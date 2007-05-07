@@ -1,6 +1,7 @@
 2007-05-07  David Bateman  <dbateman@free.fr>
 
-	* sparse/spy.m: Reverse Y axis for new graphics code.
+	* sparse/spy.m: Reverse Y axis for new graphics code. Make more
+	compatiable, accepting LineSpec and markersize arguments.
 
 2007-05-02  John W. Eaton  <jwe@octave.org>
 

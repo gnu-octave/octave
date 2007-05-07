@@ -35,6 +35,6 @@ function spy (S)
     plot (j, i, ".");
   endif
 
-  axis ([0, n+1, 0, m+1]);
+  axis ([0, n+1, m+1, 0]);
 
 endfunction

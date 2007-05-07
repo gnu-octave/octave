@@ -1099,7 +1099,7 @@ help strings within oct-files.
 
 The major issue is that the help string will typically be longer than a
 single line of text, and so the formatting of long help strings need to
-be taken into account.  There are several manner in which to happen this
+be taken into account.  There are several manner in which to treat this
 issue, but the most common is illustrated in the following example
 
 @example
@@ -1130,9 +1130,9 @@ for a @code{%!} as the first characters on a new-line to identify test
 and demonstration code.  This is equally a requirement for
 oct-files.  Furthermore the test and demonstration code must be included
 in a comment block of the compiled code to avoid it being interpreted by
-the compiler.  Finally, he Octave test and demonstration code must have
+the compiler.  Finally, the Octave test and demonstration code must have
 access to the source code of the oct-file and not just the compiled code
-as th<e tests are stripped from the compiled code.  An example in an
+as the tests are stripped from the compiled code.  An example in an
 oct-file might be
 
 @example

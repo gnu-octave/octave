@@ -69,7 +69,7 @@ editing interface is also available.  At the end of each session, the
 command history is saved, so that commands entered during previous
 sessions are not lost.
 
-The Octave distribution includes a 500+ page Texinfo manual.  Access
+The Octave distribution includes a 550+ page Texinfo manual.  Access
 to the complete text of the manual is available via the help command
 @c really, the *complete* text?
 at the Octave prompt.
@@ -198,9 +198,9 @@ Series 2.9.N brings
 
 @item better support for both msvc and mingw
 
-@item many many other minor features and compatibility changes
-
 @item a fully compatiable MEX interface
+
+@item many many other minor features and compatibility changes
 
 @end itemize
 
@@ -592,16 +592,10 @@ questions (preferably with answers!)
 @item
 Octave takes a long time to find symbols.
 
-Octave is probably spending this time recursively searching directories for
-function files.  Check the value of the internal variable LOADPATH,
-accessible through the Octave fucntion @code{path}.  For those
-elements that end in @samp{//}, do any name a very large directory tree?
-Does it contain directories that have a mixture of files and 
-directories?  In order for the recursive directory searching code to 
-work efficiently, directories that are to be searched recursively should
-have either function files only, or subdirectories only, but not a
-mixture of both.  Check to make sure that Octave's standard set of
-function files is installed this way.
+Octave uses the @code{genpath} function to recursively add directories
+to the list of directories searched for function files. Check the list
+of directories with the @code{path} command. If the path list is very
+long check your use of the @code{genpath} function.
 @end itemize
 
 @node How do I ...?

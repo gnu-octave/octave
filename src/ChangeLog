@@ -1,3 +1,8 @@
+2007-05-08 Michael Weitzel <michael.weitzel@uni-siegen.de>
+
+	* DLD-FUNCTIONS/symrcm.cc: New function for Reverse Cuthill-McKee
+	permutation.
+	
 2007-04-30  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (%.df : %.cc): Use mv instead of

@@ -143,5 +143,7 @@ Summary of important user-visible changes for version 3.0:
 
       [status, output] = system (cmd);
 
+ ** For compatibility with Matlab, the third argument to normcdf is
+    now the standard deviation instead of the variance.
 
 See NEWS.2 for old news.

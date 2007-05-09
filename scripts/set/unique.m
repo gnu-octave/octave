@@ -40,7 +40,7 @@ function [y, i, j] = unique (x, r)
   endif
 
   if (nargin == 1)
-    n = prod (size (x));
+    n = numel (x);
   else
     n = size (x, 1);
   endif

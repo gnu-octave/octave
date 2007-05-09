@@ -1,3 +1,21 @@
+2007-05-09  G. D. McBain  <geordie.mcbain@aeromech.usyd.edu.au>
+
+	* statistics/distributions/normcdf.m: Use standard deviation
+	instead of variance for compatibility.
+
+2007-05-08  John W. Eaton  <jwe@octave.org>
+
+
+	* set/unique.m, set/ismember.m: Use numel(x) instead of prod(size(x)).
+
+	* set/ismember.m: Always return logical values.
+
+	* set/ismember.m: Return early if no matches are found.  New tests.
+	From: David Grohmann <grohmann@arlut.utexas.edu>.
+
+	* general/__isequal__.m: Allow numeric values of different classes
+	to compare equal.
+
 2007-05-07  David Bateman  <dbateman@free.fr>
 
 	* sparse/spy.m: Reverse Y axis for new graphics code. Make more

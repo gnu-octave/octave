@@ -34,7 +34,7 @@ function c = ismember (a, S)
   endif
 
   if (isempty (a) || isempty (S))
-    c = zeros (size (a));
+    c = zeros (size (a), "logical");
   else
     if (iscell (a) && ! iscell (S))
       tmp{1} = S;
@@ -50,16 +50,24 @@ function c = ismember (a, S)
       if (iscell (a) || iscell (S))
         c = cellfun ("length", a) == cellfun ("length", S);
         idx = find (c);
-        c(idx) = all (char (a(idx)) == repmat (char (S), length (idx), 1), 2);
+	if (isempty (idx))
+	  c = zeros (size (a), "logical");
+	else
+	  c(idx) = all (char (a(idx)) == repmat (char (S), length (idx), 1), 2);
+	endif
       else
         c = (a == S);
       endif
-    elseif (prod (size (a)) == 1)
+    elseif (numel (a) == 1)
       if (iscell (a) || iscell (S))
         c = cellfun ("length", a) == cellfun ("length", S);
         idx = find (c);
-        c(idx) = all (repmat (char (a), length (idx), 1) == char (S(idx)), 2);
-        c = any(c);
+	if (isempty (idx))
+	  c = zeros (size (a), "logical");
+	else
+          c(idx) = all (repmat (char (a), length (idx), 1) == char (S(idx)), 2);
+          c = any(c);
+	endif
       else
         c = any (a == S);
       endif
@@ -115,3 +123,9 @@ endfunction
 %!assert (ismember ('', {'abc', 'def'}), false);
 %!fail (ismember ([], {1, 2}), 'error:.*');
 %!fail (ismember ({[]}, {1, 2}), 'error:.*');
+%!assert (ismember ({'foo', 'bar'}, {'foobar'}), logical ([0, 0]))
+%!assert (ismember ({'foo'}, {'foobar'}), false)
+%!assert (ismember ({'bar'}, {'foobar'}), false)
+%!assert (ismember ({'bar'}, {'foobar', 'bar'}), true)
+%!assert (ismember ({'foo', 'bar'}, {'foobar', 'bar'}), logical ([0, 1]))
+%!assert (ismember ({'xfb', 'f', 'b'}, {'fb', 'b'}), logical ([0, 0, 1]))

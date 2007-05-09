@@ -3,6 +3,14 @@
 	* DLD-FUNCTIONS/symrcm.cc: New function for Reverse Cuthill-McKee
 	permutation.
 	
+2007-05-07  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.cc (Octave_map::resize): Handle case of no keys.
+	(keys_ok): Rename from equiv_keys.  Return value is now status.
+	Pass key names as string_vector reference arg.
+	(Octave_map::assign (const octave_value_list&, const Octave_map&)):
+	Call keys_ok, not equiv_keys.  Handle case of no keys.
+
 2007-04-30  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (%.df : %.cc): Use mv instead of

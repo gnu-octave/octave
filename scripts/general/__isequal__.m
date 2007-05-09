@@ -58,11 +58,13 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
     error ("__isequal__: list objects are deprecated and cannot be tested for equality here; use cell arrays instead");
   endif
 
-  ## Test that everything is the same class.
-  ## NOTE: sparse and numeric matrices that are otherwise equal will
-  ## compare as different here.
-  t = all (strcmp (class(x),
-		   cellfun (@class, varargin, "UniformOutput", false)));
+  ## All arguments must either be of the same class or they must be
+  ## numeric values.
+  t = (all (strcmp (class(x),
+		   cellfun (@class, varargin, "UniformOutput", false)))
+       || (isnumeric (x)
+	   && all (cellfun (@isnumeric, varargin, "UniformOutput", true))));
+
   if (t)
     ## Test that everything has the same number of dimensions.
     s_x = size (x);
@@ -137,9 +139,6 @@ function t = __isequal__ (nans_compare_equal, x, varargin)
 
     else
       ## Check the numeric types.
-
-      ## NOTE: sparse and nonsparse will compare equally here, but they
-      ## won't compare equally at the class check at the top.
 
       if (issparse (x))
 	f_x = spfind (x);

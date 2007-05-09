@@ -652,10 +652,10 @@ function __go_draw_axes__ (h, plot_stream)
  	fputs (plot_stream, "set ticslevel 0;\n");
 	fprintf (plot_stream, "set view %g, %g;\n", rot_x, rot_z);
       endif
-      fprintf (plot_stream, "%s \"-\" %s %s %s", plot_cmd,
+      fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
 	       usingclause{1}, titlespec{1}, withclause{1});
       for i = 2:data_idx
-	fprintf (plot_stream, ", \"-\" %s %s %s",
+	fprintf (plot_stream, ", \"-\" %s %s %s \\\n",
 		 usingclause{i}, titlespec{i}, withclause{i});
       endfor
       fputs (plot_stream, ";\n");

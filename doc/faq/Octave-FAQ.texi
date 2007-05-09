@@ -629,37 +629,402 @@ pi = 3.1416
 @cindex @sc{Matlab} compatibility
 @cindex Compatibility with @sc{Matlab}
 
+People often ask
+
 ``I wrote some code for @sc{Matlab}, and I want to get it running under
 Octave.  Is there anything I should watch out for?''
 
-The differences between Octave and @sc{Matlab} typically fall into one of
-three categories:
+or alternatively
 
-@enumerate
-@item
-Irrelevant.
+``I wrote some code in Octave, and want to share it with @sc{Matlab}
+users. Is there anything I should watch out for?''
 
-@item
-Known differences, perhaps configurable with a user preference variable.
-
-@item
-Unknown differences.
-@end enumerate
-
-The first category, irrelevant differences, do not affect computations
-and most likely do not affect the execution of function files.
-
-The differences of the second category are usually because the authors
-of Octave decided on a better (subjective) implementation than the way
-@sc{Matlab} works.  To make Octave more @sc{Matlab}-compatible, use the
-command line option @samp{--traditional} (though really, with the latest
-2.9.N version, most of the things that the @samp{--traditional} option
-does are just cosmetic.
-
-The third category of differences is (hopefully) shrinking.  If you find
-a difference between Octave behavior and @sc{Matlab}, then you should send a
+which is not quite the same thing. There are still a number of
+differences between Octave and @sc{Matlab}, however in general
+differences between the two are considered as bugs.  Octave might
+consider that the bug is in @sc{Matlab} and do nothing about it, but
+generally functionality is almost identical.  If you find a difference
+between Octave behavior and @sc{Matlab}, then you should send a
 description of this difference (with code illustrating the difference,
 if possible) to @email{bug@@octave.org}.
+
+Furthermore, Octave adds a few syntactical extensions to Matlab that
+might cause some issues when exchanging files between Matlab and Octave
+users. As both Octave and @sc{Matlab} are under constant development the
+information in this section is subject to change at anytime.
+
+You should also look at the page
+@url{http://octave.sourceforge.net/packages.html} and
+@url{http://octave.sourceforge.net/doc/} that has a function reference
+that is up to date. You can use this function reference to see the
+number of octave function that are available and their @sc{Matlab}
+compatibility.
+
+The major differences between Octave 2.9.10 and  @sc{Matlab} v7.3 are:
+
+@itemize @bullet
+@item Nested Functions
+
+Octave doesn't yet have nested functions. That if
+
+@example
+@group
+function y = foo (x)
+   y = bar(x)
+   function y = bar (x)
+      y = @dots{};
+   end
+end
+@end group
+@end example
+
+There was discussion in Octave of having these even prior to @sc{Matlab},
+and the decision was made not to have these in Octave at the time for
+compatibility. The above written with sub-functions functions would be
+
+@example
+@group
+function y = foo (x)
+   y = bar(x)
+end
+function y = bar (x)
+   y = @dots{};
+end
+@end group
+@end example
+
+Now that @sc{Matlab} has recently introduced nested functions, Octave will
+probably have them soon as well. Till then nested functions in Octave
+are treated as sub-functions with the same scoping rules as
+sub-functions.  
+
+The authors of Octave consider the nested function scoping rules of
+Matlab to be more problems than they are worth as they introduce
+diffiult to find bugs as inadvertantly modifying a variable in a
+nested function that is also used in the parent is particularly easy.
+
+@item Differences in core syntax
+
+There a few core @sc{Matlab} syntaxes that are not accepted by Octave,
+these being
+
+@itemize @bullet
+@item
+Some limitations on the use of function handles. The major difference is
+related to nested function scoping rules (as above) and there use with
+function handles.
+
+@item
+Some limitations of variable argument lists on the LHS of an expression,
+though the most common types are accepted.
+
+@item 
+@sc{Matlab} object-oriented classes with overloading etc through the
+subasgn and "@@" directories is not treated by Octave. There is work to
+remove this restriction in the future.
+
+@item
+@sc{Matlab} private directories are not treated, though as for classes,
+this will change in the near future. This restriction alleviated by
+using addpath on the private directories, but this makes the private
+directories visible in the global scope.
+@end itemize
+
+@item Differences in core functions
+
+A large number of the @sc{Matlab} core functions (ie those that are in
+the core and not a toolbox) are implemented, and certainly all of the
+commonly used ones. There are a few functions that aren't implemented,
+for example condest or to do with specific missing Octave functionality
+(gui, dll, java, activex, dde, web, and serial functions). Some of the
+core functions have limitations that aren't in the @sc{Matlab}
+version. For example the interpN function can only do linear
+interpolation and not cubic spline, etc.. However the interp and interp2
+function can.
+
+@item Just-In-Time compiler
+
+@sc{Matlab} includes a "Just-In-Time" compiler. This compiler allows the
+acceleration of for-loops in @sc{Matlab} to almost native performance with
+certain restrictions. The JIT must know the return type of all functions
+called in the loops and so you can't include user functions in the loop
+of JIT optimized loops. Octave doesn't have a JIT and so to some might
+seem slower than @sc{Matlab}. For this reason you must vectorize your code as
+much as possible. @sc{Matlab} themselves produces a good document discussing
+vectorization at
+@url{http://www.mathworks.com/support/tech-notes/1100/1109.html}.
+
+@item Compiler
+
+On a related point, there is no Octave compiler, and so you can't
+convert your Octave code into a binary for additional speed or
+distribution. There is an example of how to do this at
+@url{http://www.stud.tu-ilmenau.de/~rueckn/}, but this is a very early
+example code and would need lots of work to complete it.
+
+@item Graphic Handles
+
+Up to Octave 2.9.9 there was no support for graphic handles in Octave
+itself. There is in Octave 2.9.10 and later, and so the graphics between
+Octave and @sc{Matlab} are currently in the process of converging to a
+common interface.  Note that the basic graphic handle stuff is in place
+in 2.9.10, but not graphics objects like "patch", "barseries", etc.
+
+@item GUI 
+
+There is no @sc{Matlab} compatible GUI functions. There are a number of
+bindings from Octave to tcl/tk, vtk and zenity included in the
+octave-forge project (@url{http://octave.sourceforge.net}) for example
+that can be used for a GUI, but these are not @sc{Matlab}
+compatible. This might be an issue if you intend to exchange Octave code
+with @sc{Matlab} users.
+
+@item Simulink
+
+Octave itself includes no Simulink support. Typically the simulink
+models lag research and are less flexible, so shouldn't really be used
+in a research environment. However, some @sc{Matlab} users that try to use
+Octave complain about this lack. There is a similar package to simulink
+for the Octave and R projects available at @url{http://www.scicraft.org/}
+
+@item Mex-Files
+
+Octave includes an API to the matlab MEX interface. However, as MEX is
+an API to the internals of @sc{Matlab} and the internals of Octave differ to
+@sc{Matlab}, there is necessarily a manipulation of the data to convert from
+a MEX interface to the Octave equivalent. This is notable for all
+complex matrices, where matlab stores complex arrays as real and
+imaginary parts, whereas octave respects the C99/C++ standards of
+co-locating the real/imag parts in memory. Also due to the way matlab
+allows access to the arrays passed through a pointer, the MEX interface
+might require that copies of arrays (even non complex ones). There were
+some serious memory leaks in the MEX API in Octave up to version 2.9.9,
+and version 2.9.10 or later should be used if posible.
+
+@item Block comments
+
+@sc{Matlab} recently included the possibility to have block comments. With
+the "%@{" and "%@}" markers. Octave doesn't yet have block comments, but
+might in the future.
+
+@item Mat-File format
+
+There are some differences in the mat v5 file format accepted by
+Octave. @sc{Matlab} recently introduced the "-V7.3" save option which is
+an hdf5 format which is particularly useful for 64-bit platforms where
+the standard matlab format can not correctly save variables.. Octave
+accepts hdf5 files, but is not yet compatible with the "-v7.3" versions
+produced by @sc{Matlab}. 
+
+Up to version 2.9.10, Octave can't load/save the inline or function
+handles saved in mat-files by @sc{Matlab} (though can in its own
+format). There is some work to fix this, but the @sc{Matlab} function handle
+format in mat-files is undocumented and this is therefore not easy to
+address. 
+
+Finally, Some multi-byte unicode characters aren't yet treated in
+mat-files.
+
+@item Profiler
+
+Octave doesn't have a profiler. Though there is a patch for a flat
+profiler, that might become a real profiler sometime in the future. see
+the thread
+
+@url{http://www.cae.wisc.edu/pipermail/octave-maintainers/2007-January/001685.html}
+
+for more details
+
+@item Toolboxes
+
+Octave is a community project and so the toolboxes that exist are
+donated by those interested in them through the octave-forge website
+(@url{http://octave.sourceforge.net}). These might be lacking in certain
+functionality relative to the @sc{Matlab} toolboxes, and might not
+exactly duplicate the matlab functionality or interface.
+
+@item Short-circuit & and | operators
+
+The & and | operators in @sc{Matlab} short-circuit when included in an if
+statemant and not otherwise. Whereas in Octave only the && and ||
+short circuit. This is due to the absence of && and || in @sc{Matlab}
+till recently. Note that this means that
+
+@example
+@group
+  if (a | b)
+    @dots{}
+  end
+@end group
+@end example
+
+and
+  
+@example
+@group
+  t = a | b;
+  if t
+    @dots{}
+  end
+@end group
+@end example
+
+are different in @sc{Matlab}. This is really a @sc{Matlab} bug, but
+there is too much code out there that relies on this behavior to change
+it. Prefer the || and && operators in if statements if possible.
+
+Note that the difference is also significant when either argument is a
+function with side effects or if the first argument is a scalar and the
+second argument is an empty matrix.  For example, note the difference
+between
+
+@example
+@group
+  t = 1 | [];          ## results in [], so...
+  if (t) 1, end        ## in if ([]), this is false.
+@end group
+@end example
+
+and
+
+@example
+  if (1 | []) 1, end   ## short circuits so condition is true.
+@end example
+
+Another case that is documented in the @sc{Matlab} manuals is that
+
+@example
+@group
+  t = [1, 1] | [1, 2, 3];          ## error
+  if ([1, 1] | [1, 2, 3]) 1, end   ## OK
+@end group
+@end example
+
+Also @sc{Matlab} requires the operands of && and || to be scalar values but
+Octave does not (it just applies the rule that for an operand to be
+considered true, every element of the object must be nonzero or
+logically true).
+
+Finally, note the inconsistence of thinking of the condition of an if
+statement as being equivalent to @code{all(X(:))} when @var{X} is a
+matrix.  This is true for all cases EXCEPT empty matrices:
+
+@example
+@group
+  if ([0, 1]) == if (all ([0, 1]))   ==>  i.e., condition is false.
+  if ([1, 1]) == if (all ([1, 1]))   ==>  i.e., condition is true.
+@end group
+@end example
+
+However,
+
+@example
+  if ([]) != if (all ([]))
+@end example
+
+because @code{all ([]) == 1} (because, despite the name, it is really
+returning true if none of the elements of the matrix are zero, and since
+there are no elements, well, none of them are zero).  But, somewhere
+along the line, someone decided that if @code{([])} should be false.
+Mathworks probably thought it just looks wrong to have @code{[]} be true
+in this context even if you can use logical gymnastics to convince
+yourself that "all" the elements of a matrix that doesn't actually have
+any elements are nonzero. Octave however duplicates this behavior for if
+statements containing empty matrices.
+
+@item Octave extensions
+
+The extensions in Octave over @sc{Matlab} syntax are
+very useful, but might cause issues when sharing with @sc{Matlab} users.
+A list of the major extensions that should be avoided to be compatible
+with @sc{Matlab} are
+
+@itemize @bullet
+@item
+Comments in octave can be marked with "#". This allows POSIX
+systems to have the first line as "#! octave -q" and mark the script
+itself executable. @sc{Matlab} doesn't have this feature due the the
+absence of comments starting with "#"
+
+@item
+Code blocks like if, for, while, etc can be terminated with block
+specific terminations like "endif". @sc{Matlab} doesn't have this and
+all blocks must be terminated with "end"
+
+@item
+Octave has a lisp like unwind_protect block that allows blocks of
+code that terminate in an error to ensure that the variables that
+are touched are restored. You can do something similar with
+try/catch combined with rethrow(lasterror()) in @sc{Matlab}, however
+rethrow and lasterror were only just introduced in Octave and so
+aren't in 2.9.9, but are in 2.9.10.
+
+Note that using try/catch combined with rethrow(lasterror()) can not
+guarentee that global variables will be correctly reset, as it won't
+catch user interrupts with Ctrl-C. For example
+
+@example
+@group
+  global a
+  a = 1;
+  try
+    _a = a;
+    a = 2
+    while true
+    end
+  catch
+    fprintf ('caught interrupt\n');
+    a = _a;
+    rethrow (lasterror());
+  end
+@end group
+@end example
+
+@noindent
+compared to
+
+@example
+@group
+  global a
+  a = 1;
+  unwind_protect
+    _a = a;
+    a = 2
+    while true
+    end
+  unwind_protect_cleanup
+    fprintf ('caught interrupt\n');
+    a = _a;
+  end
+@end group
+@end example
+
+Typing Ctrl-C in the first case returns the user directly to the
+prompt, and the variable "a" is not reset to the save value. In the
+second case the variable "a" is reset correctly. Therefore matlab
+gives no save way of temporarily changing global variables.
+
+@item
+Indexing can be applied to all objects in Octave and not just
+variable. Therefore @code{sin(x)(1:10);} for example is perfectly valid
+in Octave but not @sc{Matlab}. To do the same in @sc{Matlab} you must do
+@code{y = sin(x); y = y([1:10]);}
+
+@item
+Octave has the operators "++", "--", "-=", "+=", "*=", etc. As
+@sc{Matlab} doesn't, if you are sharing code these should be avoided.
+
+@item
+Strings in Octave can be denoted with double or single quotes. There is
+a subtle difference between the two in that escaped characters like \n,
+etc are interpreted in double quoted strings but not single quoted
+strings. This difference is important on Windows platforms where the "\"
+character is used in path names, and so single quoted strings should be
+used in paths. @sc{Matlab} doesn't have double quoted strings and so
+they should be avoided if the code will be transfered to a matlab user.
+@end itemize
+
+@end itemize
 
 @node Index
 @appendix Concept Index

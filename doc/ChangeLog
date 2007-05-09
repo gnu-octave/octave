@@ -1,3 +1,7 @@
+2007-05-09  David Bateman  <dbateman@free.fr>
+
+	* faq/Octave-FAQ.texi: Update compatibility section.
+
 2007-04-27  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (EXAMPLE_FILES_NODIR): Add mycell.c, myfeval.c,

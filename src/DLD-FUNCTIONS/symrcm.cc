@@ -47,9 +47,8 @@ The implementation of this algorithm is based in the descriptions found in
 The algorithm represents a heuristic approach to the NP-complete minimum
 bandwidth problem.
 
-The author can be reached at
-	michael.weitzel@uni-siegen.de
-	or weitzel@ldknet.org
+Written by Michael Weitzel <michael.weitzel@@uni-siegen.de>
+                           <weitzel@@ldknet.org>
 */
 
 #ifdef HAVE_CONFIG_H
@@ -147,26 +146,23 @@ DEFUN_DLD (symrcm, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{p} = } symrcm (@var{S})\n\
 Symmetric reverse Cuthill-McKee permutation of @var{S}.\n\
-@code{symrcm (@var{S})} returns a permutation vector @var{p} such that\n\
+Return a permutation vector @var{p} such that\n\
 @code{@var{S} (@var{p}, @var{p})} tends to have its diagonal elements\n\
-closer to the diagonal than @var{S}. This is a good preordering for LU\n\
+closer to the diagonal than @var{S}.  This is a good preordering for LU\n\
 or Cholesky factorization of matrices that come from 'long, skinny'\n\
-problems. It works for both symmetric and asymmetric @var{S}.\n\
+problems.  It works for both symmetric and asymmetric @var{S}.\n\
 \n\
 The algorithm represents a heuristic approach to the NP-complete\n\
-bandwidth minimization problem. The implementation is based in the\n\
+bandwidth minimization problem.  The implementation is based in the\n\
 descriptions found in\n\
 \n\
-  E. Cuthill, J. McKee: Reducing the Bandwidth of Sparse Symmetric\n\
-  Matrices. Proceedings of the 24th ACM National Conference, 157-172\n\
-  1969, Brandon Press, New Jersey.\n\
+E. Cuthill, J. McKee: Reducing the Bandwidth of Sparse Symmetric\n\
+Matrices. Proceedings of the 24th ACM National Conference, 157-172\n\
+1969, Brandon Press, New Jersey.\n\
 \n\
-  Alan George, Joseph W. H. Liu: Computer Solution of Large Sparse\n\
-  Positive Definite Systems, Prentice Hall Series in Computational\n\
-  Mathematics, ISBN 0-13-165274-5, 1981.\n\
-\n\
-The author of the code itself is\n\
-Michael Weitzel (michael.weitzel@@uni-siegen.de, weitzel@@ldknet.org).\n\
+Alan George, Joseph W. H. Liu: Computer Solution of Large Sparse\n\
+Positive Definite Systems, Prentice Hall Series in Computational\n\
+Mathematics, ISBN 0-13-165274-5, 1981.\n\
 \n\
 @seealso{colperm, colamd, symamd}\n\
 @end deftypefn")

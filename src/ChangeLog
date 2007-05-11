@@ -1,3 +1,8 @@
+2007-05-11  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (symbol_out_of_date):
+	Always check for files that have gone missing.
+
 2007-05-08 Michael Weitzel <michael.weitzel@uni-siegen.de>
 
 	* DLD-FUNCTIONS/symrcm.cc: New function for Reverse Cuthill-McKee

@@ -1037,10 +1037,10 @@ symbol_out_of_date (symbol_record *sr)
 		      file = octave_env::make_absolute (file, octave_env::getcwd ());
 		    }
 
-		  if (relative && file.empty ())
+		  if (file.empty ())
 		    {
-		      // Can't see this function from current
-		      // directory, so we should clear it.
+		      // Can't see this function now, so we should
+		      // clear it.
 
 		      sr->clear ();
 

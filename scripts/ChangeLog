@@ -1,3 +1,10 @@
+2007-05-12  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m: Add a "-verbose" option that allows all output of an
+	install to be printed. An error in the on_uninstall script causes
+	a failure to uninstall. Place oct- and mex-files in an
+	architecture dependent directory.
+
 2007-05-09  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Break plot command over multiple lines.

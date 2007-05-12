@@ -44,6 +44,9 @@
 ## If @var{option} is @code{-auto} the package manager will
 ## automatically load the installed package when starting Octave,
 ## even if the package requests that it isn't.
+##
+## Final if @var{option} is @code{-verbose} the package manager will
+## print the output of all of the commands that are performed
 ## @item uninstall
 ## Uninstall named packages.  For example,
 ## @example
@@ -152,6 +155,7 @@ function [local_packages, global_packages] = pkg (varargin)
   deps = true;
   auto = 0;
   action = "none";
+  verbose = false;
   for i = 1:length (varargin)
     switch (varargin{i})
       case "-nodeps"
@@ -160,6 +164,8 @@ function [local_packages, global_packages] = pkg (varargin)
 	auto = -1;
       case "-auto"
 	auto = 1;
+      case "-verbose"
+	verbose = true;
       case {"list", "install", "uninstall", "load", "unload", ...
 	    "prefix", "local_list", "global_list"}
 	action = varargin{i};
@@ -186,13 +192,13 @@ function [local_packages, global_packages] = pkg (varargin)
       if (length (files) == 0)
 	error ("you must specify at least one filename when calling 'pkg install'");
       endif
-      install (files, deps, auto, prefix, local_list, global_list);
+      install (files, deps, auto, prefix, verbose, local_list, global_list);
 
     case "uninstall"
       if (length (files) == 0)
 	error ("you must specify at least one package when calling 'pkg uninstall'");
       endif
-      uninstall (files, deps, local_list, global_list);
+      uninstall (files, deps, verbose, local_list, global_list);
 
     case "load"
       if (length (files) == 0)
@@ -260,7 +266,7 @@ if (isfield (desc{1}, "autoload"))
 endif
 endfunction
 
-function install (files, handle_deps, autoload, prefix, local_list, global_list)
+function install (files, handle_deps, autoload, prefix, verbose, local_list, global_list)
   global_install = issuperuser ();
 
   # Check that the directory in prefix exist. If it doesn't: create it!
@@ -390,7 +396,7 @@ function install (files, handle_deps, autoload, prefix, local_list, global_list)
       desc = descriptions{i};
       pdir = packdirs{i};
       prepare_installation (desc, pdir);
-      configure_make (desc, pdir);
+      configure_make (desc, pdir, verbose);
     endfor
   catch
     ## Something went wrong, delete tmpdirs
@@ -403,7 +409,7 @@ function install (files, handle_deps, autoload, prefix, local_list, global_list)
   ## Uninstall the packages that will be replaced
   try
     for i = packages_to_uninstall
-      uninstall ({installed_packages{i}.name}, false, local_list, 
+      uninstall ({installed_packages{i}.name}, false, verbose, local_list, 
 		 global_list);
     endfor
   catch
@@ -489,16 +495,20 @@ function install (files, handle_deps, autoload, prefix, local_list, global_list)
 
   ## Add the newly installed packages to the path, so the user
   ## can begin usings them.
+  arch = getarch();
   if (length (descriptions) > 0)
-    dirs = cell (1, length (descriptions));
+    dirs = {};
     for i = 1:length (descriptions)
-      dirs{i} = descriptions{i}.dir;
+      dirs{end + 1} = descriptions{i}.dir;
+      if (exist (fullfile (descriptions{i}.dir, arch), "dir"))
+	dirs{end + 1} = fullfile (descriptions{i}.dir, arch);
+      endif
     endfor
     addpath (dirs{:});
   endif
 endfunction
 
-function uninstall (pkgnames, handle_deps, local_list, global_list)
+function uninstall (pkgnames, handle_deps, verbose, local_list, global_list)
   ## Get the list of installed packages
   [local_packages, global_packages] = installed_packages(local_list, 
 							 global_list);
@@ -573,20 +583,16 @@ function uninstall (pkgnames, handle_deps, local_list, global_list)
     desc = installed_packages{i};
     ## If an 'on_uninstall.m' exist, call it!
     if (exist (fullfile (desc.dir, "packinfo", "on_uninstall.m"), "file"))
-      try
-	wd = pwd ();
-	cd (fullfile(desc.dir, "packinfo"));
-	on_uninstall (desc);
-	cd (wd);
-      catch
-	## XXX: Should this rather be an error?
-	warning ("the 'on_uninstall' script retsurned the following error: %s",
-		 lasterr ());
-	cd (wd);
-      end_try_catch
+      wd = pwd ();
+      cd (fullfile(desc.dir, "packinfo"));
+      on_uninstall (desc);
+      cd (wd);
     endif
     ## Do the actual deletion
     rmpath (desc.dir);
+    if (exist (fullfile (desc.dir, getarch()), "dir"))
+      rmpath (fullfile (desc.dir, getarch ()));
+    endif
     if (exist (desc.dir, "dir"))
       [status, msg] = rm_rf (desc.dir);
       if (status != 1)
@@ -647,7 +653,7 @@ function prepare_installation (desc, packdir)
   endif
 endfunction
 
-function configure_make (desc, packdir)   
+function configure_make (desc, packdir, verbose)   
   ## Perform ./configure, make, make install in "src"
   if (exist (fullfile (packdir, "src"), "dir"))
     src = fullfile (packdir, "src");
@@ -655,6 +661,9 @@ function configure_make (desc, packdir)
     if (exist (fullfile (src, "configure"), "file"))
       [status, output] = system (strcat ("cd ", src, "; ./configure --prefix=",
 					 desc.dir));
+      if (verbose)
+	printf("%s", output);
+      endif
       if (status != 0)
 	rm_rf (desc.dir);
 	error ("the configure script returned the following error: %s", output);
@@ -665,21 +674,28 @@ function configure_make (desc, packdir)
     if (exist (fullfile (src, "Makefile"), "file"))
       [status, output] = system (strcat ("export INSTALLDIR=", desc.dir,
 					 "; make -C ", src));
+      if (verbose)
+	printf("%s", output);
+      endif
       if (status != 0)
 	rm_rf (desc.dir);
 	error ("'make' returned the following error: %s", output);
       endif
       %# make install
       %[status, output] = system(["export INSTALLDIR=" desc.dir "; make install -C " src]);
+      %if (verbose)
+      %  printf("%s", output);
+      %endif
       %if (status != 0)
       %    rm_rf(desc.dir);
       %    error("'make install' returned the following error: %s", output);
       %endif
     endif
 
-    ## Copy files to "inst" (this is instead of 'make install')
+    ## Copy files to "inst" and "inst/arch" (this is instead of 'make install')
     files = fullfile (src, "FILES");
     instdir = fullfile (packdir, "inst");
+    archdir = fullfile (packdir, "inst", getarch ());
     if (exist (files, "file"))
       ## Get file names
       [fid, msg] = fopen (files, "r");
@@ -703,30 +719,61 @@ function configure_make (desc, packdir)
       endfor
       fn(delete_idx) = [];
       filenames = sprintf ("%s ", fn{:});
+
+      filenames = split_by (filenames, " ");
+      archindependent = filenames;
+      mex = regexp (filenames, '^.*\.mex');
+      archindependent(cellfun ("isempty", mex) == 0) = [];
+      mex (cellfun ("isempty", mex)) = [];
+      mex = cellfun (@(x) x(1), mex);
+      oct = regexp (filenames, '^.*\.oct');
+      archindependent(cellfun ("isempty", oct) == 0) = [];
+      oct (cellfun ("isempty", oct)) = [];
+      oct = cellfun (@(x) x(1), oct);
+      archdependent = [oct, mex];
     else
       m = dir (fullfile (src, "*.m"));
       oct = dir (fullfile (src, "*.oct"));
       mex = dir (fullfile (src, "*.mex"));
+      archdependent = "";
+      archindependent = "";
       filenames = "";
       if (length (m) > 0)
 	filenames = sprintf (fullfile (src, "%s "), m.name);
+	archindependent = sprintf (fullfile (src, "%s "), m.name);
       endif
       if (length (oct) > 0)
 	filenames = [filenames, " ", sprintf(fullfile(src, "%s "), oct.name)];
+	archdependent = [archdependent, " ", ...
+			 sprintf(fullfile(src, "%s "), oct.name)];
       endif
       if (length (mex) > 0)
 	filenames = [filenames, " ", sprintf(fullfile(src, "%s "), mex.name)];
+	archdependent = [archdependent, " ", ...
+			 sprintf(fullfile(src, "%s "), mex.name)];
       endif
+      filenames = split_by (filenames, " ");
+      archdependent = split_by (archdependent, " ");
+      archindependent = split_by (archindependent, " ");
     endif
-    filenames = split_by (filenames, " ");
 
     if (! all (isspace (filenames)))
 	mkdir (instdir);
-	[status, output] = copyfile (filenames, instdir);
-	if (status != 1)
+	if (! all (isspace (archindependent)))
+	  [status, output] = copyfile (archindependent, instdir);
+	  if (status != 1)
 	    rm_rf (desc.dir);
 	    error ("Couldn't copy files from 'src' to 'inst': %s", output);
-	endif
+	  endif
+        endif
+	if (! all (isspace (archdependent)))
+	  mkdir (archdir);
+	  [status, output] = copyfile (archdependent, archdir);
+	  if (status != 1)
+	    rm_rf (desc.dir);
+	    error ("Couldn't copy files from 'src' to 'inst': %s", output);
+	  endif
+        endif
     endif
   endif
 endfunction
@@ -1296,6 +1343,20 @@ function load_packages (files, handle_deps, local_list, global_list)
     dirs = unique(dirs);
   endif
 
+  ## Check for architecture dependent directories
+  arch = getarch();
+  archdirs = {};
+  for i = 1:length (dirs)
+    tmpdir = fullfile (dirs{i}, arch);
+    if (exist (tmpdir, "dir"))
+      archdirs{end + 1} = dirs{i};
+      archdirs{end + 1} = tmpdir;
+    endif
+  endfor
+  if (length (archdirs) > 0)
+    dirs = archdirs;
+  endif
+
   ## Load the packages
   if (length (dirs) > 0)
     addpath (dirs{:});
@@ -1337,6 +1398,20 @@ function unload_packages (files, handle_deps, local_list, global_list)
       endif
 	dirs{end+1} = pdirs{idx};
       endfor
+  endif
+
+  ## Check for architecture dependent directories
+  arch = getarch();
+  archdirs = {};
+  for i = 1:length (dirs)
+    tmpdir = fullfile (dirs{i}, arch);
+    if (exist (tmpdir, "dir"))
+      archdirs{end + 1} = dirs{i};
+      archdirs{end + 1} = tmpdir;
+    endif
+  endfor
+  if (length (archdirs) > 0)
+    dirs = archdirs;
   endif
 
   ## Unload the packages
@@ -1387,4 +1462,10 @@ function emp = dirempty (nm, ign)
     endif
   endfor
   emp = true;
+endfunction
+
+function arch = getarch ()
+  persistent _arch = [octave_config_info("canonical_host_type"), "-", ...
+   octave_config_info("api_version")];
+  arch = _arch;
 endfunction

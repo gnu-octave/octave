@@ -301,7 +301,7 @@ DEFUN (quit, args, nargout,
 @deftypefnx {Built-in Function} {} quit (@var{status})\n\
 Exit the current Octave session.  If the optional integer value\n\
 @var{status} is supplied, pass that value to the operating system as the\n\
-Octave's exit status.\n\
+Octave's exit status.  The default value is zero.\n\
 @end deftypefn")
 {
   octave_value_list retval;

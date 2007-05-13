@@ -1156,21 +1156,17 @@ builtin_help (int argc, const string_vector& argv)
 
 DEFCMD (help, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} help\n\
-Octave's @code{help} command can be used to print brief usage-style\n\
-messages, or to display information directly from an on-line version of\n\
-the printed manual, using the GNU Info browser.  If invoked without any\n\
-arguments, @code{help} prints a list of all the available operators\n\
-and functions.  If the first argument is @code{-i}, the @code{help}\n\
-command searches the index of the on-line version of this manual for\n\
-the given topics.\n\
+@deffn {Command} help @var{name}\n\
+Display the help text for @var{name}.\n\
+If invoked without any arguments, @code{help} prints a list\n\
+of all the available operators and functions.\n\
 \n\
 For example, the command @kbd{help help} prints a short message\n\
-describing the @code{help} command, and @kbd{help -i help} starts the\n\
-GNU Info browser at this node in the on-line version of the manual.\n\
+describing the @code{help} command.\n\
 \n\
-Once the GNU Info browser is running, help for using it is available\n\
-using the command @kbd{C-h}.\n\
+The help command can give you information about operators, but not the\n\
+comma and semicolons that are used as command separators.  To get help\n\
+for those, you must type @kbd{help comma} or @kbd{help semicolon}.\n\
 @seealso{doc, which, lookfor}\n\
 @end deffn")
 {

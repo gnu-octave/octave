@@ -17,12 +17,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Command} doc @var{function_name}
-## Displays documentation for the function @var{function_name}.
-## For example, if you want to see the documentation for the Octave
-## random number generator @code{rand}, type
-## @example
-## @code{doc rand}
-## @end example
+## Display documentation for the function @var{function_name}
+## directly from an on-line version of
+## the printed manual, using the GNU Info browser.  If invoked without
+## any arguments, the manual is shown from the beginning.
+##
+## For example, the command @kbd{doc rand} starts the GNU Info browser
+## at this node in the on-line version of the manual.
+##
+## Once the GNU Info browser is running, help for using it is available
+## using the command @kbd{C-h}.
 ## @seealso{help}
 ## @end deftypefn
 

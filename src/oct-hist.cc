@@ -739,7 +739,7 @@ DEFUN (saving_history, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} saving_history (@var{new_val})\n\
 Query or set the internal variable that controls whether commands entered\n\
 on the command line are saved in the history file.\n\
-@seealso{history_file, history_size, history_timestamp_format}.\n\
+@seealso{history_file, history_size, history_timestamp_format}\n\
 @end deftypefn")
 {
   octave_value retval = SET_INTERNAL_VARIABLE (saving_history);

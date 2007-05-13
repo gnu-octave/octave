@@ -1,3 +1,9 @@
+2007-05-13  Søren Hauberg  <soren@hauberg.org>
+
+	* toplev.cc (Fquit): Doc fix.
+	* help.cc (Fhelp): Doc fix.
+	* oct-hist.cc (Fsaving_history): Doc fix.
+
 2007-05-11  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (symbol_out_of_date):
@@ -73,7 +79,7 @@
 	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
 	Only deal with varargout if ret_list->takes_varargs () is true.
 
-2007-04-26  Soren Hauberg  <soren@hauberg.org>
+2007-04-26  Søren Hauberg  <soren@hauberg.org>
 
 	* DLD-FUNCTIONS/urlwrite.cc: Doc fix.
 
@@ -102,7 +108,7 @@
         (color_property::validate): Use rgba.
         (color_property::c2rgba): New function.
 
-2007-04-23  Soren Hauberg  <soren@hauberg.org>
+2007-04-23  Søren Hauberg  <soren@hauberg.org>
 
 	* data.cc (Fsize_equal): Allow more than two arguments.
 
@@ -1502,7 +1508,7 @@
 	New functions.
 	* ov-base-int.h: Provide decls.
 
-2006-09-15  Soren Hauberg  <soren@hauberg.org>.
+2006-09-15  Søren Hauberg  <soren@hauberg.org>.
 
 	* data.cc (Fsize): If nargout > ndims, fill with 1.
 
@@ -3608,7 +3614,7 @@
 	* help.cc (help_from_info): Simplify.
 	(try_info): Use feval to call doc instead of executing info program.
 	(additional_help_message): Point users to doc instead of help -i.
-	From Soren Hauberg <soren@hauberg.org>.
+	From Søren Hauberg <soren@hauberg.org>.
 
 	* toplev.cc (Fsystem): Return output if nargout > 1, not 0.
 
@@ -4455,7 +4461,7 @@
 
 2005-07-18  John W. Eaton  <jwe@octave.org>
 
-	* strfns.cc (Fstrcmp): New function from Soren Hauberg
+	* strfns.cc (Fstrcmp): New function from Søren Hauberg
 	<soren@hauberg.org> and Tom Holroyd <tomh@kurage.nimh.nih.gov>.
 	Adapt to Octave conventions.
 

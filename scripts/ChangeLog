@@ -1,3 +1,13 @@
+2007-05-13  Søren Hauberg <soren@hauberg.org>
+
+	* miscellaneous/single.m: Doc fix.
+	Convert to double instead of returning argument unchanged.
+
+	* miscellaneous/doc.m: Doc fix.
+
+	* miscellaneous/ver.m: Doc fix.
+	Don't display information about Octave Forge.
+
 2007-05-12  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m: Add a "-verbose" option that allows all output of an

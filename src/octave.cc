@@ -443,7 +443,7 @@ Options:\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
   --exec-path PATH        Set path for executing subprograms.\n\
   --help, -h, -?          Print short help message and exit.\n\
-  --image-path PATH       Set initial IMAGEPATH to PATH.\n\
+  --image-path PATH       Set initial IMAGE_PATH to PATH.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\

@@ -1,3 +1,8 @@
+2007-05-14  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_figure__.m: Ensure that a reset commands starts
+	on a new line.
+
 2007-05-14  Tarmigan Casebolt  <tarmigan+list@gmail.com>
 
 	* statistics/distributions/norminv.m,

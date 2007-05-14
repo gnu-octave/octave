@@ -44,7 +44,7 @@ function __go_draw_figure__ (f, plot_stream)
 	  endswitch
 	endfor
 
-	fputs (plot_stream, "reset;\n");
+	fputs (plot_stream, "\nreset;\n");
 
 	multiplot_mode = axes_count > 1;
 
@@ -68,7 +68,7 @@ function __go_draw_figure__ (f, plot_stream)
 	  fputs (plot_stream, "unset multiplot;\n");
 	endif
       else
-	fputs (plot_stream, "reset; clear;\n");
+	fputs (plot_stream, "\nreset; clear;\n");
 	fflush (plot_stream);
       endif
     else

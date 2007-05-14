@@ -150,7 +150,6 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
 %!error(fft())
 %!assert(fft([]), [])
-%!assert(fft([])), [])
 %!assert(fft(zeros(10,0)), zeros(10,0))
 %!assert(fft(zeros(0,10)), zeros(0,10))
 %!assert(fft(0), 0)

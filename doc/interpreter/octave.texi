@@ -600,7 +600,7 @@ Grammar
 @include bugs.texi
 @include install.texi
 @include emacs.texi
-@include grammar.texi
+@c @include grammar.texi
 @include gpl.texi
 
 @include cp-idx.texi

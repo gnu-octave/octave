@@ -49,15 +49,16 @@ To see which packages are installed type
 @example
 @group
 pkg list
-     @print{} Package Name | Version | Installation directory
-     @print{} -------------+---------+-----------------------
-     @print{}        image |   1.0.0 | /home/jwe/octave/image-1.0.0
+     @print{} Package Name  | Version | Installation directory
+     @print{} --------------+---------+-----------------------
+     @print{}        image *|   1.0.0 | /home/jwe/octave/image-1.0.0
 @end group
 @end example
 
 @noindent
 In this case only version 1.0.0 of the @code{image} package is
-installed.
+installed. The '*' character next to the package name shows that the
+image package is loaded and ready for use.
 
 It is possible to remove a package from the system using the
 @code{pkg uninstall} command like this

@@ -1,3 +1,7 @@
+2007-05-14  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m: Mark loaded packages with "*".
+
 2007-05-13  Søren Hauberg <soren@hauberg.org>
 
 	* miscellaneous/single.m: Doc fix.

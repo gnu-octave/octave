@@ -45,7 +45,7 @@
 ## automatically load the installed package when starting Octave,
 ## even if the package requests that it isn't.
 ##
-## Final if @var{option} is @code{-verbose} the package manager will
+## Finally, if @var{option} is @code{-verbose} the package manager will
 ## print the output of all of the commands that are performed
 ## @item uninstall
 ## Uninstall named packages.  For example,
@@ -1238,6 +1238,16 @@ function [out1, out2] = installed_packages (local_list, global_list)
     installed_packages(dup) = [];
   endif  
 
+  ## Now check if the package is loaded
+  tmppath = path();
+  for i = 1:length (installed_packages)
+    if (regexp (tmppath, installed_packages{i}.dir))
+      installed_packages{i}.loaded = true;
+    else
+      installed_packages{i}.loaded = false;
+    endif
+  endfor
+
   ## Should we return something?
   if (nargout == 2)
     out1 = local_packages;
@@ -1269,7 +1279,7 @@ function [out1, out2] = installed_packages (local_list, global_list)
 			      length (installed_packages{i}.version));
     names{i} = installed_packages{i}.name;
   endfor
-  h1 = postpad (h1, max_name_length, " ");
+  h1 = postpad (h1, max_name_length + 1, " ");
   h2 = postpad (h2, max_version_length, " ");;
 
   ## Print a header
@@ -1281,14 +1291,19 @@ function [out1, out2] = installed_packages (local_list, global_list)
   printf ("%s\n", tmp);
 
   ## Print the packages
-  format = sprintf ("%%%ds | %%%ds | %%s\n", max_name_length,
+  format = sprintf ("%%%ds %%1s| %%%ds | %%s\n", max_name_length,
 		    max_version_length);
   [dummy, idx] = sort (names);
   for i = 1:num_packages
     cur_name = installed_packages{idx(i)}.name;
     cur_version = installed_packages{idx(i)}.version;
     cur_dir = installed_packages{idx(i)}.dir;
-    printf (format, cur_name, cur_version, cur_dir);
+    if (installed_packages{idx(i)}.loaded)
+      cur_loaded = "*";
+    else
+      cur_loaded = " ";
+    endif
+    printf (format, cur_name, cur_loaded, cur_version, cur_dir);
   endfor
 endfunction
 

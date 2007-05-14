@@ -1,3 +1,7 @@
+2007-04-18  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/package.texi: Document "*" flag for loaded packages.
+
 2007-05-09  David Bateman  <dbateman@free.fr>
 
 	* faq/Octave-FAQ.texi: Update compatibility section.

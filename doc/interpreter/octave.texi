@@ -11,9 +11,14 @@
 @c each group of functions and variables).
 
 @macro seealso {args}
+@iftex
+@vskip 2pt
+@end iftex
+@ifnottex
 @sp 1
+@end ifnottex
 @noindent
-See also: \args\.
+@strong{See also:} \args\.
 @end macro
 
 @ifinfo
@@ -205,7 +210,7 @@ Format of Descriptions
 
 Getting Started
 
-* Invoking Octave::             
+* Invoking Octave from the Command Line::             
 * Quitting Octave::             
 * Getting Help::                
 * Command Line Editing::        
@@ -213,7 +218,7 @@ Getting Started
 * Executable Octave Programs::  
 * Comments::                    
 
-Invoking Octave
+Invoking Octave from the Command Line
 
 * Command Line Options::        
 * Startup Files::               

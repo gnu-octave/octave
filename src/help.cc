@@ -1232,16 +1232,8 @@ DEFCMD (type, args, nargout,
 @deffn {Command} type options name @dots{}\n\
 Display the definition of each @var{name} that refers to a function.\n\
 \n\
-Normally also displays if each @var{name} is user-defined or builtin;\n\
+Normally also displays whether each @var{name} is user-defined or built-in;\n\
 the @code{-q} option suppresses this behaviour.\n\
-\n\
-Currently, Octave can only display functions that can be compiled\n\
-cleanly, because it uses its internal representation of the function to\n\
-recreate the program text.\n\
-\n\
-Comments are not displayed because Octave's parser currently discards\n\
-them as it converts the text of a function file to its internal\n\
-representation.  This problem may be fixed in a future release.\n\
 @end deffn")
 {
   octave_value retval;
@@ -1764,10 +1756,10 @@ each of their help strings.\n\
 \n\
 Note that the ability of @code{lookfor} to correctly identify the first\n\
 sentence of the help of the functions is dependent on the format of the\n\
-functions help. All of the functions in octave itself will correctly\n\
+functions help. All of the functions in Octave itself will correctly\n\
 find the first sentence, but the same can not be guaranteed for other\n\
 functions. Therefore the use of the '-all' argument might be necessary\n\
-to find related functions that are not part of octave.\n\
+to find related functions that are not part of Octave.\n\
 @seealso{help, which}\n\
 @end deffn")
 {

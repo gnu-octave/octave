@@ -7,8 +7,8 @@
 @cindex data types
 
 All versions of Octave include a number of built-in data types,
-including real and complex scalars and matrices, character strings, and
-a data structure type.
+including real and complex scalars and matrices, character strings,
+a data structure type, and an array that can contain all data types.
 
 It is also possible to define new specialized data types by writing a
 small amount of C++ code.  On some systems, new data types can be loaded
@@ -32,11 +32,14 @@ to define a new data type for Octave.
 @cindex built-in data types
 
 The standard built-in data types are real and complex scalars and
-matrices, ranges, character strings, and a data structure type.
-Additional built-in data types may be added in future versions.  If you
-need a specialized data type that is not currently provided as a
+matrices, ranges, character strings, a data structure type, and cell
+arrays. Additional built-in data types may be added in future versions.
+If you need a specialized data type that is not currently provided as a
 built-in type, you are encouraged to write your own user-defined data
 type and contribute it for distribution in a future release of Octave.
+
+The data type of a variable can be determined and changed through the
+use of the following functions.
 
 @DOCSTRING(class)
 
@@ -56,27 +59,27 @@ type and contribute it for distribution in a future release of Octave.
 @cindex numeric constant
 @cindex numeric value
 
-Octave's built-in numeric objects include real and complex scalars and
-matrices.  All built-in numeric data is currently stored as double
-precision numbers.  On systems that use the IEEE floating point format,
-values in the range of approximately
+Octave's built-in numeric objects include real, complex, and integer
+scalars and matrices.  All built-in floating point numeric data is
+currently stored as double precision numbers.  On systems that use the
+IEEE floating point format, values in the range of approximately
 @iftex
 @tex
  $2.2251\times10^{-308}$ to $1.7977\times10^{308}$
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
  2.2251e-308 to 1.7977e+308
-@end ifinfo
+@end ifnottex
  can be stored, and the relative precision is approximately
 @iftex
 @tex
  $2.2204\times10^{-16}$.
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
  2.2204e-16.
-@end ifinfo
+@end ifnottex
 The exact values are given by the variables @code{realmin},
 @code{realmax}, and @code{eps}, respectively.
 
@@ -89,6 +92,12 @@ using a variety of powerful indexing features.  @xref{Index Expressions}.
 @node Missing Data
 @subsection Missing Data
 @cindex missing data
+
+It is possible to represent missing data explicitly in Octave using
+@code{NA} (short for ``Not Available''). Missing data can only be
+represented when data is represented as floating point numbers. In this
+case missing data is represented as a special case of the representation
+of @code{NaN}.
 
 @DOCSTRING(NA)
 
@@ -119,6 +128,15 @@ with indices limited to strings, but the syntax is more like C-style
 structures.
 
 @xref{Data Structures}, for more information.
+
+@node Cell Array Objects
+@subsection Cell Array Objects
+@cindex cell arrays
+
+A Cell Array in Octave is general array that can hold any number of
+different data types.
+
+@xref{Cell Arrays}, for more information.
 
 @node User-defined Data Types
 @section User-defined Data Types

@@ -44,14 +44,14 @@ Compute the singular value decomposition of @var{a}\n\
 @iftex\n\
 @tex\n\
 $$\n\
- A = U\\Sigma V^H\n\
+ A = U S V^H\n\
 $$\n\
 @end tex\n\
 @end iftex\n\
 @ifinfo\n\
 \n\
 @example\n\
-a = u * sigma * v'\n\
+A = U*S*V'\n\
 @end example\n\
 @end ifinfo\n\
 \n\

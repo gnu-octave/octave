@@ -1212,8 +1212,9 @@ DEFUN (PS4, args, nargout,
 @deftypefnx {Built-in Function} {@var{old_val} =} PS4 (@var{new_val})\n\
 Query or set the character string used to prefix output produced\n\
 when echoing commands when @code{echo_executing_commands} is enabled.\n\
-The default value is @code{\"+ \"}.  @xref{Invoking Octave}, for\n\
-a description of @code{--echo-commands}.\n\
+The default value is @code{\"+ \"}.\n\
+@xref{Invoking Octave from the Command Line}, for a description of\n\
+@code{--echo-commands}.\n\
 @seealso{echo_executing_commands, PS1, PS2}\n\
 @end deftypefn")
 {

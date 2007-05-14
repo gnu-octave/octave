@@ -99,7 +99,7 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
   if (dim < 0)
     {
       for (octave_idx_type i = 0; i < dims.length (); i++)
-	if ( dims(i) > 1)
+	if (dims(i) > 1)
 	  {
 	    dim = i;
 	    break;
@@ -115,8 +115,8 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
   else
     dims (dim) = n_points;
 
-  if (dims.all_zero () || n_points == 0)
-    return octave_value (Matrix ());
+  if (dims.any_zero () || n_points == 0)
+    return octave_value (NDArray (dims));
 
   if (arg.is_real_type ())
     {
@@ -145,6 +145,21 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 
   return retval;
 }
+
+/*
+
+%!error(fft())
+%!assert(fft([]), [])
+%!assert(fft(zeros(-1,-1)), [])
+%!assert(fft(zeros(1,-1)), [])
+%!assert(fft(zeros(-1,1)), [])
+%!assert(fft(0), 0)
+%!assert(fft(1), 1)
+%!assert(fft(1), 1)
+%!assert(fft(ones(2,2)), [2,2; 0,0])
+%!assert(fft(eye(2,2)), [1,1; 1,-1])
+
+*/
 
 
 DEFUN_DLD (fft, args, ,

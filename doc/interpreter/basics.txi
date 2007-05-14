@@ -11,7 +11,7 @@ command line, and write Octave programs that can be executed as commands
 from your shell.
 
 @menu
-* Invoking Octave::             
+* Invoking Octave from the Command Line::             
 * Quitting Octave::             
 * Getting Help::                
 * Command Line Editing::        
@@ -20,8 +20,8 @@ from your shell.
 * Comments::                    
 @end menu
 
-@node Invoking Octave
-@section Invoking Octave
+@node Invoking Octave from the Command Line
+@section Invoking Octave from the Command Line
 
 Normally, Octave is used interactively by running the program
 @samp{octave} without any arguments.  Once started, Octave reads
@@ -50,6 +50,7 @@ shorter equivalent).
 
 Here is a complete list of all the command line options that Octave
 accepts.
+
 
 @table @code
 @item --debug
@@ -85,6 +86,12 @@ in the system or user startup files that set the built-in variable
 @cindex @code{-h}
 @cindex @code{-?}
 Print short help message and exit.
+
+@item --image-path @var{path}
+@cindex @code{--image-path @var{path}}
+Specify the path to search for images.  The value of @var{path}
+specified on the command line will set the value of
+@code{IMAGE_PATH} found in the environment.
 
 @item --info-file @var{filename}
 @cindex @code{--info-file @var{filename}}
@@ -219,8 +226,8 @@ command line.
 
 @example
 printf ("%s", program_name ());
+arg_list = argv ();
 for i = 1:nargin
-  arg_list = argv ();
   printf (" %s", arg_list@{i@});
 endfor
 printf ("\n");
@@ -236,8 +243,9 @@ for information about the variable @code{nargin}.
 @cindex initialization
 @cindex startup
 
-When Octave starts, it looks for commands to execute from the following
-files:
+When Octave starts, it looks for commands to execute from the files in
+the following list. These files may contain any valid Octave commands,
+including function definitions.
 
 @cindex startup files
 
@@ -280,9 +288,6 @@ A message will be displayed as each of the startup files is read if you
 invoke Octave with the @code{--verbose} option but without the
 @code{--silent} option.
 
-Startup files may contain any valid Octave commands, including function
-definitions.
-
 @DOCSTRING(OCTAVE_HOME)
 
 @DOCSTRING(version)
@@ -304,7 +309,7 @@ definitions.
 @cindex help, on-line
 
 The entire text of this manual is available from the Octave prompt
-via the command @kbd{help -i}.  In addition, the documentation for
+via the command @kbd{doc}.  In addition, the documentation for
 individual user-written functions and variables is also available via
 the @kbd{help} command.  This section describes the commands used for
 reading the manual and the documentation strings for user-supplied
@@ -317,9 +322,9 @@ about how to document the functions you write.
 
 @DOCSTRING(lookfor)
 
-The help command can give you information about operators, but not the
-comma and semicolons that are used as command separators.  To get help
-for those, you must type @kbd{help comma} or @kbd{help semicolon}.
+The following function can be used to change which programs are used
+for displaying the documentation, and where the documentation can be
+found.
 
 @DOCSTRING(info_file)
 
@@ -422,12 +427,14 @@ Notice how @kbd{C-f} moves forward a character, while @kbd{M-f} moves
 forward a word.  It is a loose convention that control keystrokes
 operate on characters while meta keystrokes operate on words.
 
-There is also a function available so that you can clear the screen from
-within Octave programs.
-
 @cindex clearing the screen
 
+The function @code{clc} will allow you to clear the screen from within
+Octave programs.
+
+@ifinfo
 @DOCSTRING(clc)
+@end ifinfo
 
 @node Killing and Yanking
 @subsection Killing and Yanking
@@ -506,7 +513,7 @@ Uppercase the characters following the cursor to the end of the current
 (or following) word, moving the cursor to the end of the word.
 
 @item M-l
-Lowecase the characters following the cursor to the end of the current
+Lowercase the characters following the cursor to the end of the current
 (or following) word, moving the cursor to the end of the word.
 
 @item M-c
@@ -592,7 +599,8 @@ re-running chunks of commands from the history list.
 
 @DOCSTRING(run_history)
 
-@DOCSTRING(EDITOR)
+Octave also allows you customize the details of how and where the history
+is saved.
 
 @DOCSTRING(history_file)
 
@@ -602,8 +610,14 @@ re-running chunks of commands from the history list.
 
 @DOCSTRING(history_timestamp_format_string)
 
+@DOCSTRING(EDITOR)
+
 @node Customizing readline
 @subsection Customizing @code{readline}
+
+As mentioned earlier Octave uses the GNU readline library for
+command-line editing and history features. It is possible to
+customize how readline works through a configuration file.
 
 @c FIXME -- need a brief description of the ~/.inputrc file here.
 
@@ -748,6 +762,7 @@ error: called from `f'
 @end group
 @end example
 
+@noindent
 This error message has several parts, and gives you quite a bit of
 information to help you locate the source of the error.  The messages
 are generated from the point of the innermost error, and provide a
@@ -834,7 +849,7 @@ options to Octave, or data files, or both.  The @samp{-qf} option is
 usually specified in stand-alone Octave programs to prevent them from
 printing the normal startup message, and to keep them from behaving
 differently depending on the contents of a particular user's
-@file{~/.octaverc} file.  @xref{Invoking Octave}.
+@file{~/.octaverc} file.  @xref{Invoking Octave from the Command Line}.
 
 Note that some operating systems may place a limit on the number of
 characters that are recognized after @samp{#!}.  Also, the various
@@ -875,8 +890,8 @@ is used to execute script, not @samp{-qf}.
 @group
 #! /bin/octave -qf
 printf ("%s", program_name ());
+arg_list = argv ();
 for i = 1:nargin
-  arg_list = argv ();
   printf (" %s", arg_list@{i@});
 endfor
 printf ("\n");

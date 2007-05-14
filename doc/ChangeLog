@@ -1,3 +1,9 @@
+2007-05-14  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/basics.txi, interpreter/data.txi,
+	interpreter/intro.txi, interpreter/numbers.txi,
+	interpreter/octave.texi, interpreter/preface.txi: Doc fixes.
+
 2007-04-18  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/package.texi: Document "*" flag for loaded packages.

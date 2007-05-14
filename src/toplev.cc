@@ -665,16 +665,15 @@ Register a function to be called when Octave exits.  For example,\n\
 \n\
 @example\n\
 @group\n\
-function print_fortune ()\n\
-  printf (\"\\n%s\\n\", system (\"fortune\"));\n\
-  fflush (stdout);\n\
+function bye_bye ()\n\
+  disp (\"Bye bye\");\n\
 endfunction\n\
-atexit (\"print_fortune\");\n\
+atexit (\"bye_bye\");\n\
 @end group\n\
 @end example\n\
 \n\
 @noindent\n\
-will print a message when Octave exits.\n\
+will print the message \"Bye bye\" when Octave exits.\n\
 @end deftypefn")
 {
   octave_value_list retval;

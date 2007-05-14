@@ -166,5 +166,5 @@ USA
 @end quotation
  
 Octave is also available on the Internet from
-@url{ftp://ftp.che.wisc.edu/pub/octave}, and additional information is
-available from @url{http://www.che.wisc.edu/octave}.
+@url{ftp://ftp.octave.org/pub/octave}, and additional information is
+available from @url{http://www.octave.org}.

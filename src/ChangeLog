@@ -1,3 +1,17 @@
+2007-05-14  Bob Weigel  <rweigel@gmu.edu>
+
+	* DLD-FUNCTIONS/svd.cc: Doc fix.
+
+2007-05-14  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* DLD-FUNCTIONS/fft.cc (do_fft): Handle empty matrices.  New tests.
+
+2007-05-14  Søren Hauberg  <soren@hauberg.org>
+
+	* toplev.cc (Fatexit): Simplify example in doc string.
+	* help.cc (Flookfor): Doc fix.
+	* input.cc, 
+
 2007-05-13  Søren Hauberg  <soren@hauberg.org>
 
 	* toplev.cc (Fquit): Doc fix.

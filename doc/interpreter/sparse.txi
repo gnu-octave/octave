@@ -17,7 +17,6 @@
 * Sparse Linear Algebra:: Linear Algebra on Sparse Matrices
 * Iterative Techniques:: Iterative Techniques applied to Sparse Matrices
 * Real Life Example:: Real Life Example of the use of Sparse Matrices
-* Function Reference:: Documentation from the Specific Sparse Functions
 @end menu
 
 @node Basics, Sparse Linear Algebra, Sparse Matrices, Sparse Matrices
@@ -64,7 +63,7 @@ and storage given a-priori knowledge of the particular class of problems
 that will be solved. A good summary of the available techniques for storing
 sparse matrix is given by Saad @footnote{Youcef Saad "SPARSKIT: A basic toolkit
 for sparse matrix computation", 1994,
-@url{ftp://ftp.cs.umn.edu/dept/sparse/SPARSKIT2/DOC/paper.ps}}.
+@url{http://www-users.cs.umn.edu/~saad/software/SPARSKIT/paper.ps}}.
 With full matrices, knowledge of the point of an element of the matrix
 within the matrix is implied by its position in the computers memory. 
 However, this is not the case for sparse matrices, and so the positions
@@ -200,6 +199,38 @@ s = spdiag (sparse(randn(1,n)), -1);
 creates a sparse (@var{n}+1)-by-(@var{n}+1) sparse matrix with a single
 diagonal defined.
 
+@DOCSTRING(spatan2)
+
+@DOCSTRING(spcumprod)
+
+@DOCSTRING(spcumsum)
+
+@DOCSTRING(spdiag)
+
+@DOCSTRING(spdiags)
+
+@DOCSTRING(speye)
+
+@DOCSTRING(spfun)
+
+@DOCSTRING(spmax)
+
+@DOCSTRING(spmin)
+
+@DOCSTRING(spones)
+
+@DOCSTRING(spprod)
+
+@DOCSTRING(sprand)
+
+@DOCSTRING(sprandn)
+
+@DOCSTRING(sprandsym)
+
+@DOCSTRING(spsum)
+
+@DOCSTRING(spsumsq)
+
 The recommended way for the user to create a sparse matrix, is to create 
 two vectors containing the row and column index of the data and a third
 vector of the same size containing the data to be stored. For example
@@ -257,6 +288,16 @@ important that code using to above structure should be vectorized
 as much as possible to minimize the number of assignments and reduce the
 number of memory allocations.
 
+@DOCSTRING(full)
+
+@DOCSTRING(spalloc)
+
+@DOCSTRING(sparse)
+
+@DOCSTRING(spconvert)
+
+@DOCSTRING(spfind)
+
 The above problem can be avoided in oct-files. However, the construction
 of a sparse matrix from an oct-file is more complex than can be
 discussed in this brief introduction, and you are referred to chapter
@@ -281,6 +322,16 @@ the same as @dfn{nnz}, but in general they will give the same
 result. The function @dfn{spstats} returns some basic statistics on
 the columns of a sparse matrix including the number of elements, the
 mean and the variance of each column.
+
+@DOCSTRING(issparse)
+
+@DOCSTRING(nnz)
+
+@DOCSTRING(nonzeros)
+
+@DOCSTRING(nzmax)
+
+@DOCSTRING(spstats)
 
 When solving linear equations involving sparse matrices Octave
 determines the means to solve the equation based on the type of the
@@ -361,6 +412,16 @@ returns the elimination tree of the matrix and can be displayed
 graphically by the command @code{treeplot(etree(A))} if @code{A} is
 symmetric or @code{treeplot(etree(A+A'))} otherwise.
 
+@DOCSTRING(spy)
+
+@DOCSTRING(etree)
+
+@DOCSTRING(etreeplot)
+
+@DOCSTRING(gplot)
+
+@DOCSTRING(treeplot)
+
 @node Operators and Functions, , Information, Basics
 @subsection Basic Operators and Functions on Sparse Matrices
 
@@ -382,12 +443,13 @@ functions that work with sparse matrices. However, at any time the
 sparse matrix specific version of the function can be used by
 explicitly calling its function name. 
 
-The table below lists all of the sparse functions of Octave
-together (with possible future extensions that are currently
-unimplemented, listed last). Note that in this specific sparse forms
-of the functions are typically the same as the general versions with a
-@dfn{sp} prefix. In the table below, and the rest of this article
-the specific sparse versions of the functions are used.
+The table below lists all of the sparse functions of Octave.  Note that
+in this specific sparse forms of the functions are typically the same as
+the general versions with a @dfn{sp} prefix. In the table below, and the
+rest of this article the specific sparse versions of the functions are
+used.
+
+@c Table includes in comments the missing sparse functions
 
 @table @asis
 @item Generate sparse matrices:
@@ -399,25 +461,29 @@ the specific sparse versions of the functions are used.
 
 @item Manipulate sparse matrices
   @dfn{issparse}, @dfn{nnz}, @dfn{nonzeros}, @dfn{nzmax},
-  @dfn{spfun}, @dfn{spones}, @dfn{spy},
+  @dfn{spfun}, @dfn{spones}, @dfn{spy}
 
 @item Graph Theory:
   @dfn{etree}, @dfn{etreeplot}, @dfn{gplot}, 
-  @dfn{treeplot}, (treelayout)
+  @dfn{treeplot}
+@c @dfn{treelayout}
 
 @item Sparse matrix reordering:
-  @dfn{ccolamd}, @dfn{colamd}, @dfn{colperm}, 
-  @dfn{csymamd}, @dfn{dmperm}, @dfn{symamd}, @dfn{randperm}, (symrcm)
+  @dfn{ccolamd}, @dfn{colamd}, @dfn{colperm}, @dfn{csymamd},
+  @dfn{dmperm}, @dfn{symamd}, @dfn{randperm}, @dfn{symrcm}
 
 @item Linear algebra:
   @dfn{matrix\_type}, @dfn{spchol}, @dfn{cpcholinv}, 
   @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv}, @dfn{spkron},
-  @dfn{splchol}, @dfn{splu}, @dfn{spqr}, (condest, eigs, normest, 
-  sprank, svds, spaugment)
+  @dfn{splchol}, @dfn{splu}, @dfn{spqr}, @dfn{normest}, 
+  @dfn{sprank}
+@c @dfn{condest}, @dfn{spaugment}
+@c @dfn{eigs}, @dfn{svds} but these are in octave-forge for now
 
 @item Iterative techniques:
-  @dfn{luinc}, @dfn{pcg}, @dfn{pcr}, (bicg, bicgstab, cholinc, cgs, 
-  gmres, lsqr, minres, qmr, symmlq)
+  @dfn{luinc}, @dfn{pcg}, @dfn{pcr}
+@c @dfn{bicg}, @dfn{bicgstab}, @dfn{cholinc}, @dfn{cgs}, @dfn{gmres}, 
+@c @dfn{lsqr}, @dfn{minres}, @dfn{qmr}, @dfn{symmlq}
 
 @item Miscellaneous:
   @dfn{spparms}, @dfn{symbfact}, @dfn{spstats}, 
@@ -639,6 +705,20 @@ Finally, Octave implicitly reorders the matrix when using the div (/)
 and ldiv (\) operators, and so no the user does not need to explicitly
 reorder the matrix to maximize performance.
 
+@DOCSTRING(ccolamd)
+
+@DOCSTRING(colamd)
+
+@DOCSTRING(colperm)
+
+@DOCSTRING(csymamd)
+
+@DOCSTRING(dmperm)
+
+@DOCSTRING(symamd)
+
+@DOCSTRING(symrcm)
+
 @node Sparse Linear Algebra, Iterative Techniques, Basics, Sparse Matrices
 @section Linear Algebra on Sparse Matrices
 
@@ -720,7 +800,7 @@ solution and force a minimum norm solution to be used. However, for
 narrow banded, triangular or diagonal matrices, the cost of
 calculating the condition number is significant, and can in fact
 exceed the cost of factoring the matrix. Therefore the condition
-number is not calculated in these case, and octave relies on simplier
+number is not calculated in these case, and Octave relies on simplier
 techniques to detect sinular matrices or the underlying LAPACK code in
 the case of banded matrices.
 
@@ -730,15 +810,54 @@ However, it should be noted incorrectly identifying the type of the matrix
 will lead to unpredictable results, and so @code{matrix_type} should be
 used with care.
 
+@DOCSTRING(normest)
+
+@DOCSTRING(spchol)
+
+@DOCSTRING(spcholinv)
+
+@DOCSTRING(spchol2inv)
+
+@DOCSTRING(spdet)
+
+@DOCSTRING(spinv)
+
+@DOCSTRING(spkron)
+
+@DOCSTRING(splchol)
+
+@DOCSTRING(splu)
+
+@DOCSTRING(spparms)
+
+@DOCSTRING(spqr)
+
+@DOCSTRING(sprank)
+
+@DOCSTRING(symbfact)
+
 @node Iterative Techniques, Real Life Example, Sparse Linear Algebra, Sparse Matrices
 @section Iterative Techniques applied to sparse matrices
 
-There are three functions currently to document here, these being
-@dfn{luinc}, @dfn{pcg} and @dfn{pcr}.
+The left division @code{\} and right division @code{/} operators,
+discussed in the previous section, use direct solvers to resolve a
+linear equation of the form @code{@var{x} = @var{A} \ @var{b}} or
+@code{@var{x} = @var{b} / @var{A}}. Octave equally includes a number of
+functions to solve sparse linear equations using iterative techniques.
 
-WRITE ME.
+@DOCSTRING(pcg)
 
-@node Real Life Example, Function Reference, Iterative Techniques, Sparse Matrices
+@DOCSTRING(pcr)
+
+The speed with which an iterative solver converges to a solution can be
+accelerated with the use of a pre-conditioning matrix @var{M}. In this
+case the linear equation @code{@var{M}^-1 * @var{x} = @var{M}^-1 *
+@var{A} \ @var{b}} is solved instead. Typical pre-conditioning matrices
+are partial factorizations of the original matrix.
+
+@DOCSTRING(luinc)
+
+@node Real Life Example, , Iterative Techniques, Sparse Matrices
 @section Real Life Example of the use of Sparse Matrices
 
 A common application for sparse matrices is in the solution of Finite
@@ -1003,535 +1122,6 @@ The height of each vertex corresponds to the solution value.}
 @end ifset
 @end ifset
 @end ifset
-
-@node Function Reference, , Real Life Example, Sparse Matrices
-@section Function Reference
-
-@ifset htmltex
-@subsection Functions by Category
-@subsubsection Generate sparse matrix
-@table @asis
-@item @ref{spdiags}
-A generalization of the function `spdiag'.
-@item @ref{speye}
-Returns a sparse identity matrix.
-@item @ref{sprand}
-Generate a random sparse matrix.
-@item @ref{sprandn}
-Generate a random sparse matrix.
-@item @ref{sprandsym}
-Generate a symmetric random sparse matrix.
-@end table
-@subsubsection Sparse matrix conversion
-@table @asis
-@item @ref{full}
-returns a full storage matrix from a sparse one See also: sparse
-@item @ref{sparse}
-SPARSE: create a sparse matrix
-@item @ref{spconvert}
-This function converts for a simple sparse matrix format easily produced by other programs into Octave's internal sparse format.
-@item @ref{spfind}
-SPFIND: a sparse version of the find operator 1.
-@end table
-@subsubsection Manipulate sparse matrices
-@table @asis
-@item @ref{issparse}
-Return 1 if the value of the expression EXPR is a sparse matrix.
-@item @ref{nnz}
-returns number of non zero elements in SM See also: sparse
-@item @ref{nonzeros}
-Returns a vector of the non-zero values of the sparse matrix S
-@item @ref{nzmax}
-Returns the amount of storage allocated to the sparse matrix SM.
-@item @ref{spalloc}
-Returns an empty sparse matrix of size R-by-C.
-@item @ref{spfun}
-Compute `f(X)' for the non-zero values of X This results in a sparse matrix with the same structure as X.
-@item @ref{spones}
-Replace the non-zero entries of X with ones.
-@item @ref{spy}
-Plot the sparsity pattern of the sparse matrix X
-@end table
-@subsubsection Graph Theory
-@table @asis
-@item @ref{etree}
-Returns the elimination tree for the matrix S.
-@item @ref{etreeplot}
-Plots the elimination tree of the matrix @var{s} or @code{@var{s}+@var{s}'}
-if @var{s} in non-symmetric.
-@item @ref{gplot}
-Plots a graph defined by @var{A} and @var{xy} in the graph theory sense.
-@item treelayout
-@emph{Not implemented}
-@item @ref{treeplot}
-Produces a graph of a tree or forest.
-@end table
-@subsubsection Sparse matrix reordering
-@table @asis
-@item @ref{ccolamd}
-Constrained column approximate minimum degree permutation.
-@item @ref{colamd}
-Column approximate minimum degree permutation.
-@item @ref{colperm}
-Returns the column permutations such that the columns of `S (:, P)' are ordered in terms of increase number of non-zero elements.
-@item @ref{csymamd}
-For a symmetric positive definite matrix S, returns the permutation vector p such that `S (P, P)' tends to have a sparser Cholesky factor than S.
-@item @ref{dmperm}
-Perform a Deulmage-Mendelsohn permutation on the sparse matrix S.
-@item @ref{symamd}
-For a symmetric positive definite matrix S, returns the permutation vector p such that `S (P, P)' tends to have a sparser Cholesky factor than S.
-@item symrcm
-@emph{Not implemented}
-@end table
-@subsubsection Linear algebra
-@table @asis
-@item cholinc
-@emph{Not implemented}
-@item condest
-@emph{Not implemented}
-@item eigs
-@emph{Not implemented}
-@item @ref{normest}
-Estimates the 2-norm of the matrix @var{a} using a power series analysis.
-@item @ref{spchol}
-Compute the Cholesky factor, R, of the symmetric positive definite.
-@item @ref{spcholinv}
-Use the Cholesky factorization to compute the inverse of the
-sparse symmetric positive definite matrix A.
-@item @ref{spchol2inv}
-Invert a sparse symmetric, positive definite square matrix from its
-Cholesky decomposition, U.
-@item @ref{spdet}
-Compute the determinant of sparse matrix A using UMFPACK.
-@item @ref{spinv}
-Compute the inverse of the square matrix A.
-@item @ref{spkron}
-Form the kronecker product of two sparse matrices.
-@item @ref{splchol}
-Compute the Cholesky factor, L, of the symmetric positive definite.
-@item @ref{splu}
-Compute the LU decomposition of the sparse matrix A, using subroutines from UMFPACK.
-@item @ref{spqr}
-Compute the sparse QR factorization of @var{a}, using CSPARSE.
-@item @ref{sprank}
-Calculates the structural rank of a sparse matrix @var{s}.
-@item svds
-@emph{Not implemented}
-@end table
-@subsubsection Iterative techniques
-@table @asis
-@item bicg
-@emph{Not implemented}
-@item bicgstab
-@emph{Not implemented}
-@item cgs
-@emph{Not implemented}
-@item gmres
-@emph{Not implemented}
-@item @ref{luinc}
-Produce the incomplete LU factorization of the sparse matrix A.
-@item lsqr
-@emph{Not implemented}
-@item minres
-@emph{Not implemented}
-@item pcg
-Solves the linear system of equations @code{@var{A} * @var{x} =
-@var{b}} by means of the  Preconditioned Conjugate Gradient iterative
-method.
-@item pcr
-Solves the linear system of equations @code{@var{A} * @var{x} =
-@var{b}} by means of the  Preconditioned Conjugate Residual iterative
-method.
-@item qmr
-@emph{Not implemented}
-@item symmlq
-@emph{Not implemented}
-@end table
-@subsubsection Miscellaneous
-@table @asis
-@item spaugment
-@emph{Not implemented}
-@item @ref{spparms}
-Sets or displays the parameters used by the sparse solvers and factorization functions.
-@item @ref{symbfact}
-Performs a symbolic factorization analysis on the sparse matrix S.
-@item @ref{spstats}
-Return the stats for the non-zero elements of the sparse matrix S COUNT is the number of non-zeros in each column, MEAN is the mean of the non-zeros in each column, and VAR is the variance of the non-zeros in each column
-@item @ref{spprod}
-Product of elements along dimension DIM.
-@item @ref{spcumprod}
-Cumulative product of elements along dimension DIM.
-@item @ref{spcumsum}
-Cumulative sum of elements along dimension DIM.
-@item @ref{spsum}
-Sum of elements along dimension DIM.
-@item @ref{spsumsq}
-Sum of squares of elements along dimension DIM.
-@item @ref{spmin}
-For a vector argument, return the minimum value.
-@item @ref{spmax}
-For a vector argument, return the maximum value.
-@item @ref{spatan2}
-Compute atan (Y / X) for corresponding sparse matrix elements of Y and X.
-@item @ref{spdiag}
-Return a diagonal matrix with the sparse vector V on diagonal K.
-@end table
-
-@subsection Functions Alphabetically
-@end ifset
-
-@menu
-* ccolamd::	Constrained column approximate minimum degree permutation.
-* colamd::	Column approximate minimum degree permutation.
-* colperm::	Returns the column permutations such that the columns of `S
-		(:, P)' are ordered in terms of increase number of non-zero
-		elements.
-* csymamd::	For a symmetric positive definite matrix S, returns the
-		permutation vector p such that `S (P, P)' tends to have a
-		sparser Cholesky factor than S.
-* dmperm::	Perfrom a Deulmage-Mendelsohn permutation on the sparse
-		matrix S.
-* etree::	Returns the elimination tree for the matrix S.
-* etreeplot::   Plots the elimination tree of the matrix @var{s} or 
-		@code{@var{s}+@var{s}'} if @var{s} in non-symmetric.
-* full::	returns a full storage matrix from a sparse one See also:
-		sparse
-* gplot::	Plots a graph defined by @var{A} and @var{xy} in the graph 
-		theory sense.
-* issparse::	Return 1 if the value of the expression EXPR is a sparse
-		matrix.
-* luinc::	Produce the incomplete LU factorization of the sparse 
-		A.
-* normest:: 	Estimates the 2-norm of the matrix @var{a} using a power 
-		series analysis.
-* nnz:: 	returns number of non zero elements in SM See also: sparse
-* nonzeros::	Returns a vector of the non-zero values of the sparse
-		matrix S
-* nzmax::	Returns the amount of storage allocated to the sparse
-		matrix SM.
-* pcg::		Solves linear system of equations by means of the 
-		Preconditioned Conjugate Gradient iterative method.
-* pcr::		Solves linear system of equations by means of the 
-		Preconditioned Conjugate Residual iterative method.
-* spalloc::	Returns an empty sparse matrix of size R-by-C.
-* sparse::	SPARSE: create a sparse matrix
-* spatan2::	Compute atan (Y / X) for corresponding sparse matrix
-		elements of Y and X.
-* spchol::	Compute the Cholesky factor, R, of the symmetric 
-		positive definite.
-* spcholinv::	Use the Cholesky factorization to compute the inverse of the
-		sparse symmetric positive definite matrix A.
-* spchol2inv::	Invert a sparse symmetric, positive definite square matrix
-		from its Cholesky decomposition, U.
-* spconvert::	This function converts for a simple sparse matrix format
-		easily produced by other programs into Octave's internal
-		sparse format.
-* spcumprod::	Cumulative product of elements along dimension DIM.
-* spcumsum::	Cumulative sum of elements along dimension DIM.
-* spdet::	Compute the determinant of sparse matrix A using UMFPACK.
-* spdiag::	Return a diagonal matrix with the sparse vector V on
-		diagonal K.
-* spdiags::	A generalization of the function `spdiag'.
-* speye::	Returns a sparse identity matrix.
-* spfind::	SPFIND: a sparse version of the find operator 1.
-* spfun::	Compute `f(X)' for the non-zero values of X This results in
-		a sparse matrix with the same structure as X.
-* spinv::	Compute the inverse of the square matrix A.
-* spkron::	Form the kronecker product of two sparse matrices.
-* splchol::	Compute the Cholesky factor, L, of the symmetric positive 
-		definite.
-* splu::	Compute the LU decomposition of the sparse matrix A, using
-		subroutines from UMFPACK.
-* spmax::	For a vector argument, return the maximum value.
-* spmin::	For a vector argument, return the minimum value.
-* spones::	Replace the non-zero entries of X with ones.
-* spparms::	Sets or displays the parameters used by the sparse solvers
-		and factorization functions.
-* spprod::	Product of elements along dimension DIM.
-* spqr::	Compute the sparse QR factorization of @var{a}, using CSPARSE.
-* sprand::	Generate a random sparse matrix.
-* sprandn::	Generate a random sparse matrix.
-* sprandsym::	Generate a symmetric random sparse matrix.
-* sprank::	Calculates the structural rank of a sparse matrix @var{s}.
-* spstats::	Return the stats for the non-zero elements of the sparse
-		matrix S COUNT is the number of non-zeros in each column,
-		MEAN is the mean of the non-zeros in each column, and VAR
-		is the variance of the non-zeros in each column
-* spsum::	Sum of elements along dimension DIM.
-* spsumsq::	Sum of squares of elements along dimension DIM.
-* spy:: 	Plot the sparsity pattern of the sparse matrix X
-* symamd::	For a symmetric positive definite matrix S, returns the
-		permutation vector p such that `S (P, P)' tends to have a
-		sparser Cholesky factor than S.
-* symbfact::	Performs a symbolic factorization analysis on the sparse
-		matrix S.
-* treeplot::	Produces a graph of a tree or forest.
-@end menu
-
-@node colamd, ccolamd, , Function Reference
-@subsubsection colamd
-
-@DOCSTRING(colamd)
-
-@node ccolamd, colperm, colamd, Function Reference
-@subsubsection ccolamd
-
-@DOCSTRING(ccolamd)
-
-@node colperm, csymamd, ccolamd, Function Reference
-@subsubsection colperm
-
-@DOCSTRING(colperm)
-
-@node csymamd, dmperm, colperm, Function Reference
-@subsubsection csymamd
-
-@DOCSTRING(csymamd)
-
-@node dmperm, etree, csymamd, Function Reference
-@subsubsection dmperm
-
-@DOCSTRING(dmperm)
-
-@node etree, etreeplot, dmperm, Function Reference
-@subsubsection etree
-
-@DOCSTRING(etree)
-
-@node etreeplot, full, etree, Function Reference
-@subsubsection etreeplot
-
-@DOCSTRING(etreeplot)
-
-@node full, gplot, etreeplot, Function Reference
-@subsubsection full
-
-@DOCSTRING(full)
-
-@node gplot, issparse, full, Function Reference
-@subsubsection gplot
-
-@DOCSTRING(gplot)
-
-@node issparse, luinc, gplot, Function Reference
-@subsubsection issparse
-
-@DOCSTRING(issparse)
-
-@node luinc, normest, issparse, Function Reference
-@subsubsection luinc
-
-@DOCSTRING(luinc)
-
-@node normest, nnz, luinc, Function Reference
-@subsubsection normest
-
-@DOCSTRING(normest)
-
-@node nnz, nonzeros, normest, Function Reference
-@subsubsection nnz
-
-@DOCSTRING(nnz)
-
-@node nonzeros, nzmax, nnz, Function Reference
-@subsubsection nonzeros
-
-@DOCSTRING(nonzeros)
-
-@node nzmax, pcg, nonzeros, Function Reference
-@subsubsection nzmax
-
-@DOCSTRING(nzmax)
-
-@node pcg, pcr, nzmax, Function Reference
-@subsubsection pcg
-
-@DOCSTRING(pcg)
-
-@node pcr, spalloc, pcg, Function Reference
-@subsubsection pcr
-
-@DOCSTRING(pcr)
-
-@node spalloc, sparse, pcr, Function Reference
-@subsubsection spalloc
-
-@DOCSTRING(spalloc)
-
-@node sparse, spatan2, spalloc, Function Reference
-@subsubsection sparse
-
-@DOCSTRING(sparse)
-
-@node spatan2, spchol, sparse, Function Reference
-@subsubsection spatan2
-
-@DOCSTRING(spatan2)
-
-@node spchol, spcholinv, spatan2, Function Reference
-@subsubsection spchol
-
-@DOCSTRING(spchol)
-
-@node spcholinv, spchol2inv, spchol, Function Reference
-@subsubsection spcholinv
-
-@DOCSTRING(spcholinv)
-
-@node spchol2inv, spconvert, spcholinv, Function Reference
-@subsubsection spchol2inv
-
-@DOCSTRING(spchol2inv)
-
-@node spconvert, spcumprod, spchol2inv, Function Reference
-@subsubsection spconvert
-
-@DOCSTRING(spconvert)
-
-@node spcumprod, spcumsum, spconvert, Function Reference
-@subsubsection spcumprod
-
-@DOCSTRING(spcumprod)
-
-@node spcumsum, spdet, spcumprod, Function Reference
-@subsubsection spcumsum
-
-@DOCSTRING(spcumsum)
-
-@node spdet, spdiag, spcumsum, Function Reference
-@subsubsection spdet
-
-@DOCSTRING(spdet)
-
-@node spdiag, spdiags, spdet, Function Reference
-@subsubsection spdiag
-
-@DOCSTRING(spdiag)
-
-@node spdiags, speye, spdiag, Function Reference
-@subsubsection spdiags
-
-@DOCSTRING(spdiags)
-
-@node speye, spfind, spdiags, Function Reference
-@subsubsection speye
-
-@DOCSTRING(speye)
-
-@node spfind, spfun, speye, Function Reference
-@subsubsection spfind
-
-@DOCSTRING(spfind)
-
-@node spfun, spinv, spfind, Function Reference
-@subsubsection spfun
-
-@DOCSTRING(spfun)
-
-@node spinv, spkron, spfun, Function Reference
-@subsubsection spinv
-
-@DOCSTRING(spinv)
-
-@node spkron, splchol, spinv, Function Reference
-@subsubsection spkron
-
-@DOCSTRING(spkron)
-
-@node splchol, splu, spkron, Function Reference
-@subsubsection splchol
-
-@DOCSTRING(splchol)
-
-@node splu, spmax, splchol, Function Reference
-@subsubsection splu
-
-@DOCSTRING(splu)
-
-@node spmax, spmin, splu, Function Reference
-@subsubsection spmax
-
-@DOCSTRING(spmax)
-
-@node spmin, spones, spmax, Function Reference
-@subsubsection spmin
-
-@DOCSTRING(spmin)
-
-@node spones, spparms, spmin, Function Reference
-@subsubsection spones
-
-@DOCSTRING(spones)
-
-@node spparms, spprod, spones, Function Reference
-@subsubsection spparms
-
-@DOCSTRING(spparms)
-
-@node spprod, spqr, spparms, Function Reference
-@subsubsection spprod
-
-@DOCSTRING(spprod)
-
-@node spqr, sprand, spprod, Function Reference
-@subsubsection spqr
-
-@DOCSTRING(spqr)
-
-@node sprand, sprandn, spqr, Function Reference
-@subsubsection sprand
-
-@DOCSTRING(sprand)
-
-@node sprandn, sprandsym, sprand, Function Reference
-@subsubsection sprandn
-
-@DOCSTRING(sprandn)
-
-@node sprandsym, sprank, sprandn, Function Reference
-@subsubsection sprandsym
-
-@DOCSTRING(sprandsym)
-
-@node sprank, spstats, sprandsym, Function Reference
-@subsubsection sprank
-
-@DOCSTRING(sprank)
-
-@node spstats, spsum, sprank, Function Reference
-@subsubsection spstats
-
-@DOCSTRING(spstats)
-
-@node spsum, spsumsq, spstats, Function Reference
-@subsubsection spsum
-
-@DOCSTRING(spsum)
-
-@node spsumsq, spy, spsum, Function Reference
-@subsubsection spsumsq
-
-@DOCSTRING(spsumsq)
-
-@node spy, symamd, spsumsq, Function Reference
-@subsubsection spy
-
-@DOCSTRING(spy)
-
-@node symamd, symbfact, spy, Function Reference
-@subsubsection symamd
-
-@DOCSTRING(symamd)
-
-@node symbfact, treeplot, symamd, Function Reference
-@subsubsection symbfact
-
-@DOCSTRING(symbfact)
-
-@node treeplot, ,symbfact, Function Reference
-@subsubsection treeplot
-
-@DOCSTRING(treeplot)
 
 @c Local Variables: ***
 @c Mode: texinfo ***

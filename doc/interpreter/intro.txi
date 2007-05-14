@@ -6,7 +6,7 @@
 @chapter A Brief Introduction to Octave
 @cindex introduction
 
-This manual documents how to run, install and port GNU Octave, and how
+This manual documents how to install, run, and use GNU Octave, and how
 to report bugs.
 
 GNU Octave is a high-level language, primarily intended for numerical
@@ -72,7 +72,7 @@ To create a new matrix and store it in a variable so that it you can
 refer to it later, type the command
 
 @example
-octave:1> a = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
+octave:1> A = [ 1, 1, 2; 3, 5, 8; 13, 21, 34 ]
 @end example
 
 @noindent
@@ -81,7 +81,7 @@ Ending a command with a semicolon tells Octave to not print the result
 of a command.  For example
 
 @example
-octave:2> b = rand (3, 2);
+octave:2> B = rand (3, 2);
 @end example
 
 @noindent
@@ -90,10 +90,10 @@ value between zero and one.
 
 To display the value of any variable, simply type the name of the
 variable.  For example, to display the value stored in the matrix
-@code{b}, type the command
+@code{B}, type the command
 
 @example
-octave:3> b
+octave:3> B
 @end example
 
 @unnumberedsubsec Matrix Arithmetic
@@ -103,49 +103,51 @@ arithmetic.  For example, to multiply the matrix @code{a} by a scalar
 value, type the command
 
 @example
-octave:4> 2 * a
+octave:4> 2 * A
 @end example
 
+@noindent
 To multiply the two matrices @code{a} and @code{b}, type the command
 
 @example
-octave:5> a * b
+octave:5> A * B
 @end example
 
-To form the matrix product
+@noindent
+and to form the matrix product
 @iftex
 @tex
-$@code{a}^T@code{a}$,
+$@code{A}^T@code{A}$,
 @end tex
 @end iftex
-@ifinfo
-@code{transpose (a) * a},
-@end ifinfo
+@ifnottex
+@code{transpose (A) * A},
+@end ifnottex
 type the command
 
 @example
-octave:6> a' * a
+octave:6> A' * A
 @end example
 
 @unnumberedsubsec Solving Linear Equations
 
-To solve the set of linear equations @code{a@var{x} = b},
+To solve the set of linear equations @code{A@var{x} = b},
 use the left division operator, @samp{\}:
 
 @example
-octave:7> a \ b
+octave:7> A \ b
 @end example
 
 @noindent
 This is conceptually equivalent to
 @iftex
 @tex
-$@code{a}^{-1}@code{b}$,
+$@code{A}^{-1}@code{b}$,
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 @code{inv (a) * b},
-@end ifinfo
+@end ifnottex
 but avoids computing the inverse of a matrix directly.
 
 If the coefficient matrix is singular, Octave will print a warning
@@ -162,7 +164,7 @@ $$
 $$
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 
 @example
 @group
@@ -178,7 +180,7 @@ with the initial condition
 @example
 x(t = t0) = x0
 @end example
-@end ifinfo
+@end ifnottex
 
 @noindent
 For Octave to integrate equations of this form, you must first provide a
@@ -188,9 +190,9 @@ definition of the function
 $f (x, t)$.
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 @code{f(x,t)}.
-@end ifinfo
+@end ifnottex
 This is straightforward, and may be accomplished by entering the
 function body directly on the command line.  For example, the following
 commands define the right hand side function for an interesting pair of
@@ -253,10 +255,11 @@ command
 plot (t, x)
 @end example
 
-If you are using the X Window System, Octave will automatically create
+@noindent
+If you are using a graphical user interface, Octave will automatically create
 a separate window to display the plot.
 
-To print a plot once it has been displayed on the screen, use the print
+To save a plot once it has been displayed on the screen, use the print
 command.  For example,
 
 @example
@@ -273,19 +276,18 @@ help print
 
 @noindent
 explains more options for the @code{print} command and provides a list
-of additional output devices.
+of additional output file formats.
 
 @unnumberedsubsec Editing What You Have Typed
 
 At the Octave prompt, you can recall, edit, and reissue previous
 commands using Emacs- or vi-style editing commands.  The default
 keybindings use Emacs-style commands.  For example, to recall the
-previous command, type @kbd{Control-p} (usually written @kbd{C-p} for
-short).  @kbd{C-p} gets its name from the fact that you type it by
-holding down @key{CTRL} and then pressing @key{p}.  Doing this will
-normally bring back the previous line of input.  @kbd{C-n} will bring up
-the next line of input, @kbd{C-b} will move the cursor backward on the
-line, @kbd{C-f} will move the cursor forward on the line, etc.
+previous command, press @kbd{Control-p} (usually written @kbd{C-p} for
+short). Doing this will normally bring back the previous line of input.
+@kbd{C-n} will bring up the next line of input, @kbd{C-b} will move
+the cursor backward on the line, @kbd{C-f} will move the cursor forward
+on the line, etc.
 
 A complete description of the command line editing capability is given
 in this manual in @ref{Command Line Editing}.
@@ -301,9 +303,13 @@ In order to get good help you first need to know the name of the command
 that you want to use.  This name of the function may not always be
 obvious, but a good place to start is to just type @code{help}.
 This will show you all the operators, reserved words, functions,
-built-in variables, and function files.  You can then get more
-help on anything that is listed by simply including the name as an
-argument to help.  For example,
+built-in variables, and function files. An alternative is to search the
+documentation using the @code{lookfor} function. This function is
+described in @ref{Getting Help}.
+
+Once you know the name of the function you wish to use, you can get more
+help on the function by simply including the name as an argument to help.
+For example,
 
 @example
 help plot
@@ -511,6 +517,11 @@ catagory name for functions may include another name that indicates the
 way that the function is defined.  These additional tags include
 
 @table @asis
+@item Function File
+@cindex function file
+The function described is defined using Octave commands stored in a text
+file.  @xref{Function Files}.
+
 @item Built-in Function
 @cindex built-in function
 The function described is written in a language like C++, C, or Fortran,
@@ -522,11 +533,6 @@ The function described is written in a language like C++, C, or Fortran.
 On systems that support dynamic linking of user-supplied functions, it
 may be automatically linked while Octave is running, but only if it is
 needed.  @xref{Dynamically Linked Functions}.
-
-@item Function File
-@cindex function file
-The function described is defined using Octave commands stored in a text
-file.  @xref{Function Files}.
 
 @item Mapping Function
 @cindex mapping function

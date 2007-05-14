@@ -12,11 +12,12 @@ may contain complex values.
 
 The simplest form of a numeric constant, a scalar, is a single number
 that can be an integer, a decimal fraction, a number in scientific
-(exponential) notation, or a complex number.  Note that all numeric
+(exponential) notation, or a complex number.  Note that by default numeric
 constants are represented within Octave in double-precision floating
 point format (complex constants are stored as pairs of double-precision
-floating point values).  Here are some examples of real-valued numeric
-constants, which all have the same value:
+floating point values).  It is however possible to represent real
+integers as described in @ref{Integer Data Types}. Here are some examples
+of real-valued numeric constants, which all have the same value:
 
 @example
 @group
@@ -36,6 +37,7 @@ To specify complex constants, you can write an expression of the form
 @end group
 @end example
 
+@noindent
 all of which are equivalent.  The letter @samp{i} in the previous example
 stands for the pure imaginary constant, defined as
 @iftex
@@ -43,9 +45,9 @@ stands for the pure imaginary constant, defined as
   $\sqrt{-1}$.
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
   @code{sqrt (-1)}.
-@end ifinfo
+@end ifnottex
 
 For Octave to recognize a value as the imaginary part of a complex
 constant, a space must not appear between the number and the @samp{i}.
@@ -62,6 +64,7 @@ parse error:
 @end group
 @end example
 
+@noindent
 You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 @samp{i} above.  All four forms are equivalent.
 
@@ -103,7 +106,7 @@ results in the matrix
 $$ a = \left[ \matrix{ 1 & 2 \cr 3 & 4 } \right] $$
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 
 @example
 @group
@@ -116,7 +119,7 @@ $$ a = \left[ \matrix{ 1 & 2 \cr 3 & 4 } \right] $$
 
 @end group
 @end example
-@end ifinfo
+@end ifnottex
 
 Elements of a matrix may be arbitrary expressions, provided that the
 dimensions all make sense when combining the various pieces.  For
@@ -234,7 +237,7 @@ error: unterminated string constant
 @end example
 
 @noindent
-because to not do so would cause trouble when parsing the valid expression
+because not doing so would cause trouble when parsing the valid expression
 
 @example
 [ a 'foo' ]
@@ -299,7 +302,7 @@ M_{m\times n} \cdot [\,]_{n\times 0} &= [\,]_{m\times 0}\cr
 $$
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 Briefly, given a scalar @var{s}, an @var{m} by
 @var{n} matrix @code{M(mxn)}, and an @var{m} by @var{n} empty matrix
 @code{[](mxn)} (with either one or both dimensions equal to zero), the
@@ -318,7 +321,7 @@ s * [](mxn) = [](mxn) * s = [](mxn)
     [](mx0) * [](0xn) =  0(mxn)
 @end group
 @end example
-@end ifinfo
+@end ifnottex
 
 By default, dimensions of the empty matrix are printed along with the
 empty matrix symbol, @samp{[]}.  The built-in variable
@@ -384,6 +387,31 @@ replaces the range expression with a single range constant.
 @node Integer Data Types
 @section Integer Data Types
 
+Octave supports integer matrices as an alternative to using double
+precision. It is possible to use both signed and unsigned integers
+represented by 8, 16, 32, or 64 bits. It should be noted that most
+computations require floating point data, meaning that integers will
+often change type when involved in numeric computations. For this
+reason integers are most often used to store data, and not for
+calculations.
+
+In general most integer matrices are created by casting
+existing matrices to integers. The following example shows how to cast
+a matrix into 32 bit integers.
+
+@example
+float = rand (2, 2)
+     @result{} float = 0.37569   0.92982
+                0.11962   0.50876
+integer = int32 (float)
+     @result{} integer = 0  1
+                  0  1
+@end example
+
+@noindent
+As can be seen, floating point values are rounded to the nearest integer
+when converted.
+
 @DOCSTRING(isinteger)
 
 @DOCSTRING(int8)
@@ -406,8 +434,64 @@ replaces the range expression with a single range constant.
 
 @DOCSTRING(intmin)
 
+@node Integer Arithmetic
+@subsection Integer Arithmetic
+
+While many numerical computations can't be carried out in integers,
+Octave does support basic operations like addition and multiplication
+on integers. The operators @code{+}, @code{-}, @code{.*}, and @code{./}
+works on integers of the same type. So, it is possible to add two 32 bit
+integers, but not to add a 32 bit integer and a 16 bit integer.
+
+When doing integer arithmetic one should consider the possibility of
+underflow and overflow. This happens when the result of the computation
+can't be represented using the chosen integer type. As an example it is
+not possible to represent the result of @math{10 - 20} when using
+unsigned integers. Octave makes sure that the result of integer
+computations is the integer that is closest to the true result. So, the
+result of @math{10 - 20} when using unsigned integers is zero.
+
+When doing integer division Octave will round the result to the nearest
+integer. This is different from most programming languages, where the
+result is often floored to the nearest integer. So, the result of
+@code{int32(5)./int32(8)} is @code{1}.
+
 @node Logical Values
 @section Logical Values
+
+Octave has built-in support for logical values, i.e. variables that
+are either @code{true} or @code{false}. When comparing two variables,
+the result will be a logical value whose value depends on whether or
+not the comparison is true.
+
+The basic logical operations are @code{&}, @code{|}, and @code{!},
+that corresponds to ``Logical And'', ``Logical Or'', and ``Logical
+Negation''. These operations all follow the rules of logic.
+
+It is also possible to use logical values as part of standard numerical
+calculations. In this case @code{true} is converted to @code{1}, and
+@code{false} to 0, both represented using double precision floating
+point numbers. So, the result of @code{true*22 - false/6} is @code{22}.
+
+Logical values can also be used to index matrices and cell arrays.
+When indexing with a logical array the result will be a vector containing
+the values corresponding to @code{true} parts of the logical array.
+The following example illustrates this.
+
+@example
+data = [ 1, 2; 3, 4 ];
+idx = (data <= 2);
+data(idx)
+     @result{} ans = [ 1; 4 ]
+@end example
+
+@noindent
+Instead of creating the @code{idx} array it is possible to replace
+@code{data(idx)} with @code{data( data <= 2 )} in the above code.
+
+Besides when doing comparisons, logical values can be constructed by
+casting numeric objects to logical values, or by using the @code{true}
+or @code{false} functions.
 
 @DOCSTRING(logical)
 
@@ -417,6 +501,26 @@ replaces the range expression with a single range constant.
 
 @node Predicates for Numeric Objects
 @section Predicates for Numeric Objects
+
+Since the type of a variable may change during the execution of a
+program, it can be necessary to type checking at run-time. Doing this
+also allows you to change the behaviour of a function depending on the
+type of the input. As an example, this naive implementation of @code{abs}
+return the absolute value of the input if it is a real number, and the
+length of the input if it is a complex number.
+
+@example
+function a = abs (x)
+  if (isreal (x))
+    a = sign (x) .* x;
+  elseif (iscomplex (x))
+    a = sqrt (real(x).^2 + imag(x).^2);
+  endif
+endfunction
+@end example
+
+The following functions are available for determining the type of a
+variable.
 
 @DOCSTRING(isnumeric)
 

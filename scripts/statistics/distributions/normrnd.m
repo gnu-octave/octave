@@ -18,27 +18,27 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} normrnd (@var{m}, @var{v}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} normrnd (@var{m}, @var{v}, @var{sz})
+## @deftypefn {Function File} {} normrnd (@var{m}, @var{s}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} normrnd (@var{m}, @var{s}, @var{sz})
 ## Return an @var{r} by @var{c}  or @code{size (@var{sz})} matrix of
-## random samples from the normal distribution with parameters @var{m} 
-## and @var{v}.  Both @var{m} and @var{v} must be scalar or of size 
-## @var{r} by @var{c}.
+## random samples from the normal distribution with parameters mean @var{m} 
+## and standard deviation @var{s}.  Both @var{m} and @var{s} must be scalar 
+## or of size @var{r} by @var{c}.
 ##
 ## If @var{r} and @var{c} are omitted, the size of the result matrix is
-## the common size of @var{m} and @var{v}.
+## the common size of @var{m} and @var{s}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the normal distribution
 
-function rnd = normrnd (m, v, r, c)
+function rnd = normrnd (m, s, r, c)
 
   if (nargin > 1)
-    if (!isscalar(m) || !isscalar(v)) 
-      [retval, m, v] = common_size (m, v);
+    if (!isscalar (m) || !isscalar (s)) 
+      [retval, m, s] = common_size (m, s);
       if (retval > 0)
-	error ("normrnd: m and v must be of common size or scalar");
+	error ("normrnd: m and s must be of common size or scalar");
       endif
     endif
   endif
@@ -54,7 +54,7 @@ function rnd = normrnd (m, v, r, c)
 
     if (any (size (m) != 1)
 	&& (length (size (m)) != length (sz) || any (size (m) != sz)))
-      error ("normrnd: m and v must be scalar or of size [r, c]");
+      error ("normrnd: m and s must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
     if (isscalar (r) && (r > 0))
@@ -67,7 +67,7 @@ function rnd = normrnd (m, v, r, c)
 
     if (any (size (m) != 1)
 	&& (length (size (m)) != length (sz) || any (size (m) != sz)))
-      error ("normrnd: m and v must be scalar or of size sz");
+      error ("normrnd: m and s must be scalar or of size sz");
     endif
   elseif (nargin == 2)
     sz = size(m);
@@ -75,15 +75,15 @@ function rnd = normrnd (m, v, r, c)
     print_usage ();
   endif
 
-  if (isscalar (m) && isscalar (v))
-    if (find (isnan (m) | isinf (m) | !(v > 0) | !(v < Inf)))
+  if (isscalar (m) && isscalar (s))
+    if (find (isnan (m) | isinf (m) | !(s > 0) | !(s < Inf)))
       rnd = NaN * ones (sz);
     else
-      rnd =  m + sqrt (v) .* randn (sz);
+      rnd =  m + s .* randn (sz);
     endif
   else
-    rnd = m + sqrt (v) .* randn (sz);
-    k = find (isnan (m) | isinf (m) | !(v > 0) | !(v < Inf));
+    rnd = m + s .* randn (sz);
+    k = find (isnan (m) | isinf (m) | !(s > 0) | !(s < Inf));
     if (any (k))
       rnd(k) = NaN;
     endif

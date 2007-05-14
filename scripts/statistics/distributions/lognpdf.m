@@ -44,7 +44,7 @@ function pdf = lognpdf (x, mu, sigma)
 
   ## The following "straightforward" implementation unfortunately does
   ## not work for the special cases (Inf, ...)
-  ## pdf = (x > 0) ./ x .* normal_pdf (log (x), mu, sigma);
+  ## pdf = (x > 0) ./ x .* normpdf (log (x), mu, sigma);
   ## Hence ...
 
   if (!isscalar (mu) || !isscalar (sigma))
@@ -64,9 +64,9 @@ function pdf = lognpdf (x, mu, sigma)
   k = find ((x > 0) & (x < Inf) & (sigma > 0) & (sigma < Inf));
   if (any (k))
     if (isscalar (mu) && isscalar (sigma))
-      pdf(k) = normpdf (log (x(k)), mu, sigma.^2) ./ x(k);
+      pdf(k) = normpdf (log (x(k)), mu, sigma) ./ x(k);
     else
-      pdf(k) = normpdf (log (x(k)), mu(k), sigma(k).^2) ./ x(k);
+      pdf(k) = normpdf (log (x(k)), mu(k), sigma(k)) ./ x(k);
     endif
   endif
 

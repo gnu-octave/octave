@@ -34,6 +34,10 @@
 
 function rnd = normal_rnd (varargin)
 
+ if (nargin > 1)
+   varargin{2} = sqrt (varargin{2});
+ endif
+
  rnd =  normrnd (varargin{:});
 
 endfunction

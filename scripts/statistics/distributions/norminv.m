@@ -18,18 +18,18 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} norminv (@var{x}, @var{m}, @var{v})
+## @deftypefn {Function File} {} norminv (@var{x}, @var{m}, @var{s})
 ## For each element of @var{x}, compute the quantile (the inverse of the
 ## CDF) at @var{x} of the normal distribution with mean @var{m} and
-## variance @var{v}.
+## standard deviation @var{s}.
 ##
-## Default values are @var{m} = 0, @var{v} = 1.
+## Default values are @var{m} = 0, @var{s} = 1.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the normal distribution
 
-function inv = norminv (x, m, v)
+function inv = norminv (x, m, s)
 
   if (nargin != 1 && nargin != 3)
     print_usage ();
@@ -37,43 +37,43 @@ function inv = norminv (x, m, v)
 
   if (nargin == 1)
     m = 0;
-    v = 1;
+    s = 1;
   endif
 
-  if (!isscalar (m) || !isscalar(v))
-    [retval, x, m, v] = common_size (x, m, v);
+  if (!isscalar (m) || !isscalar (s))
+    [retval, x, m, s] = common_size (x, m, s);
     if (retval > 0)
-      error ("norminv: x, m and v must be of common size or scalars");
+      error ("norminv: x, m and s must be of common size or scalars");
     endif
   endif
 
   sz = size (x);
   inv = zeros (sz);
 
-  if (isscalar (m) && isscalar(v))
-    if (find (isinf (m) | isnan (m) | !(v > 0) | !(v < Inf)))
+  if (isscalar (m) && isscalar (s))
+    if (find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf)))
       inv = NaN * ones (sz);
     else
-      inv =  m + sqrt (v) .* stdnormal_inv (x);
+      inv =  m + s .* stdnormal_inv (x);
     endif
   else
-    k = find (isinf (m) | isnan (m) | !(v > 0) | !(v < Inf));
+    k = find (isinf (m) | isnan (m) | !(s > 0) | !(s < Inf));
     if (any (k))
       inv(k) = NaN;
     endif
 
-    k = find (!isinf (m) & !isnan (m) & (v > 0) & (v < Inf));
+    k = find (!isinf (m) & !isnan (m) & (s > 0) & (s < Inf));
     if (any (k))
-      inv(k) = m(k) + sqrt (v(k)) .* stdnormal_inv (x(k));
+      inv(k) = m(k) + s(k) .* stdnormal_inv (x(k));
     endif
   endif
 
-  k = find ((v == 0) & (x > 0) & (x < 1));
+  k = find ((s == 0) & (x > 0) & (x < 1));
   if (any (k))
     inv(k) = m(k);
   endif
 
-  inv((v == 0) & (x == 0)) = -Inf;
-  inv((v == 0) & (x == 1)) = Inf;
+  inv((s == 0) & (x == 0)) = -Inf;
+  inv((s == 0) & (x == 1)) = Inf;
 
 endfunction

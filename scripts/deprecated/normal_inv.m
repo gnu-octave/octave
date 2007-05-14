@@ -31,6 +31,10 @@
 
 function inv = normal_inv (varargin)
 
+ if (nargin > 2)
+   varargin{3} = sqrt (varargin{3});
+ endif
+
  inv =  norminv (varargin{:});
 
 endfunction

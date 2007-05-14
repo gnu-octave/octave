@@ -31,6 +31,10 @@
 
 function cdf = normal_cdf (varargin)
 
+ if (nargin > 2)
+   varargin{3} = sqrt (varargin{3});
+ endif
+
  cdf =  normcdf (varargin{:});
 
 endfunction

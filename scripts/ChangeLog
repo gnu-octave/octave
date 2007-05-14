@@ -1,3 +1,16 @@
+2007-05-14  Tarmigan Casebolt  <tarmigan+list@gmail.com>
+
+	* statistics/distributions/norminv.m,
+	statistics/distributions/norminv.m,
+	statistics/distributions/normpdf.m,
+	statistics/distributions/normrnd.m:
+	Use standard deviation, not variance.
+	* statistics/distributions/lognpdf.m: Adapt to change in norminv.
+	* statistics/distributions/logninv.m: Refer to norminv, not normal_inv.
+	* deprecated/normal_cdf.m, deprecated/normal_inv.m,
+	deprecated/normal_pdf.m, deprecated/normal_rnd.m: Preserve
+	backward compatibility.
+
 2007-05-14  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m: Mark loaded packages with "*".

@@ -31,6 +31,10 @@
 
 function pdf = normal_pdf (varargin)
 
- pdf =  normpdf (varargin{:});
+ if (nargin > 2)
+   varargin{3} = sqrt (varargin{3});
+ endif
 
+ pdf = normpdf (varargin{:});
+   
 endfunction

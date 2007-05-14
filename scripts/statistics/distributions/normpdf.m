@@ -18,18 +18,18 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} normpdf (@var{x}, @var{m}, @var{v})
+## @deftypefn {Function File} {} normpdf (@var{x}, @var{m}, @var{s})
 ## For each element of @var{x}, compute the probability density function
 ## (PDF) at @var{x} of the normal distribution with mean @var{m} and
-## variance @var{v}.
+## standard deviation @var{s}.
 ##
-## Default values are @var{m} = 0, @var{v} = 1.
+## Default values are @var{m} = 0, @var{s} = 1.
 ## @end deftypefn
 
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: PDF of the normal distribution
 
-function pdf = normpdf (x, m, v)
+function pdf = normpdf (x, m, s)
 
   if (nargin != 1 && nargin != 3)
     print_usage ();
@@ -37,38 +37,38 @@ function pdf = normpdf (x, m, v)
 
   if (nargin == 1)
     m = 0;
-    v = 1;
+    s = 1;
   endif
 
-  if (!isscalar (m) || !isscalar(v))
-    [retval, x, m, v] = common_size (x, m, v);
+  if (!isscalar (m) || !isscalar (s))
+    [retval, x, m, s] = common_size (x, m, s);
     if (retval > 0)
-      error ("normpdf: x, m and v must be of common size or scalars");
+      error ("normpdf: x, m and s must be of common size or scalars");
     endif
   endif
 
   sz = size (x);
   pdf = zeros (sz);
 
-  if (isscalar (m) && isscalar(v))
-    if (find (isinf (m) | isnan (m) | !(v >= 0) | !(v < Inf)))
+  if (isscalar (m) && isscalar (s))
+    if (find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf)))
       pdf = NaN * ones (sz);
     else
-      pdf = stdnormal_pdf ((x - m) ./ sqrt (v)) ./ sqrt (v);
+      pdf = stdnormal_pdf ((x - m) ./ s) ./ s;
     endif
   else
-    k = find (isinf (m) | isnan (m) | !(v >= 0) | !(v < Inf));
+    k = find (isinf (m) | isnan (m) | !(s >= 0) | !(s < Inf));
     if (any (k))
       pdf(k) = NaN;
     endif
 
-    k = find (!isinf (m) & !isnan (m) & (v >= 0) & (v < Inf));
+    k = find (!isinf (m) & !isnan (m) & (s >= 0) & (s < Inf));
     if (any (k))
-      pdf(k) = stdnormal_pdf ((x(k) - m(k)) ./ sqrt (v(k))) ./ sqrt (v(k));
+      pdf(k) = stdnormal_pdf ((x(k) - m(k)) ./ s(k)) ./ s(k);
     endif
   endif
 
-  pdf((v == 0) & (x == m)) = Inf;
-  pdf((v == 0) & ((x < m) | (x > m))) = 0;
+  pdf((s == 0) & (x == m)) = Inf;
+  pdf((s == 0) & ((x < m) | (x > m))) = 0;
 
 endfunction

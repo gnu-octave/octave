@@ -44,7 +44,7 @@ function inv = logninv (x, mu, sigma)
 
   ## The following "straightforward" implementation unfortunately does
   ## not work (because exp (Inf) -> NaN):
-  ## inv = exp (normal_inv (x, mu, sigma));
+  ## inv = exp (norminv (x, mu, sigma));
   ## Hence ...
 
   if (!isscalar (mu) || !isscalar (sigma))

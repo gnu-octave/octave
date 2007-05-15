@@ -406,7 +406,6 @@ Sparse Matrices
 * Sparse Linear Algebra::
 * Iterative Techniques::
 * Real Life Example::
-* Function Reference::
 
 Quadrature
 
@@ -541,8 +540,8 @@ Emacs Octave Support
 * Using the Emacs Info Reader for Octave::  
 
 @c Grammar
-
-* Keywords::                    
+@c 
+@c * Keywords::                    
 
 @end detailmenu
 @end menu

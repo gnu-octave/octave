@@ -121,8 +121,9 @@ produces the string whose contents are @samp{foobarbaz}.  @xref{Numeric
 Data Types}, for more information about creating matrices.
 
 @menu
-* Creating Strings::            
-* Searching and Replacing::     
+* Creating Strings:: 
+* Comparing Strings::           
+* Manipulating Strings::     
 * String Conversions::          
 * Character Class Functions::   
 @end menu

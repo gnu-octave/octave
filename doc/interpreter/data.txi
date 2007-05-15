@@ -52,6 +52,7 @@ use of the following functions.
 * Missing Data::                
 * String Objects::              
 * Data Structure Objects::      
+* Cell Array Objects::          
 @end menu
 
 @node Numeric Objects

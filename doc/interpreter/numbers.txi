@@ -434,6 +434,10 @@ when converted.
 
 @DOCSTRING(intmin)
 
+@menu
+* Integer Arithmetic::
+@end menu
+
 @node Integer Arithmetic
 @subsection Integer Arithmetic
 

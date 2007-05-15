@@ -10,7 +10,8 @@
 
 	* toplev.cc (Fatexit): Simplify example in doc string.
 	* help.cc (Flookfor): Doc fix.
-	* input.cc, 
+	* DLD-FUNCTIONS/cellfun.cc (Fcellfun):
+	Reformat to avoid long lines in doc string example.
 
 2007-05-13  Søren Hauberg  <soren@hauberg.org>
 

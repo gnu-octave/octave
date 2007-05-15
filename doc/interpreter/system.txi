@@ -387,7 +387,13 @@ referred to as a @var{grp_struct}.
 
 @DOCSTRING(isieee)
 
+@DOCSTRING(OCTAVE_HOME)
+
 @DOCSTRING(OCTAVE_VERSION)
+
+@DOCSTRING(version)
+
+@DOCSTRING(ver)
 
 @DOCSTRING(octave_config_info)
 

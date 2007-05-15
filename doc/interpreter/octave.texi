@@ -172,7 +172,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Trouble::                     If you have trouble installing Octave.
 * Installation::                How to configure, compile and install Octave.
 * Emacs::                       
-* Grammar::                     
+@c * Grammar::                     
 * Copying::                     The GNU General Public License.
 * Concept Index::               An item for each concept.
 * Variable Index::              An item for each documented variable.
@@ -261,7 +261,8 @@ Matrices
 Strings
 
 * Creating Strings::            
-* Searching and Replacing::     
+* Comparing Strings::
+* Manipulating Strings::     
 * String Conversions::          
 * Character Class Functions::   
 
@@ -539,7 +540,7 @@ Emacs Octave Support
 * Running Octave From Within Emacs::  
 * Using the Emacs Info Reader for Octave::  
 
-Grammar
+@c Grammar
 
 * Keywords::                    
 

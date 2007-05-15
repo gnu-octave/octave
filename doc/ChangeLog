@@ -8,6 +8,16 @@
 
 	* interpreter/package.texi: Document "*" flag for loaded packages.
 
+	* interpreter.var.txi: Improve explanation of clear, exist, and who.
+
+	* interpreter/intro.txi: Change @unnumberedsubsec to @subsection.
+
+	* interpreter/container.txi: Doc fix.
+
+	* interpreter/strings.txi: Improve explanation for creating
+	comparing, and converting strings.
+	* interpreter/octave.texi: Update detailed menu.
+
 2007-05-09  David Bateman  <dbateman@free.fr>
 
 	* faq/Octave-FAQ.texi: Update compatibility section.

@@ -164,9 +164,9 @@ a cell array, because it might not be possible to represent all elements
 with a single variable as is the case with numerical arrays.
 
 Accessing multiple elements of a cell array with the @samp{@{} and
-@samp{@{} operators will result in a comma-seperated list of all
+@samp{@}} operators will result in a comma-separated list of all
 the requested elements. This list can then be used anywhere where a
-comma-seperated list is used, such as in the creation of a new
+comma-separated list is used, such as in the creation of a new
 numerical array or cell array, or be passed as arguments to a
 function. If all the accessed elements of a cell array are scalars or
 column vectors, they can be concatenated into a new column vector

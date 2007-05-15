@@ -288,12 +288,6 @@ A message will be displayed as each of the startup files is read if you
 invoke Octave with the @code{--verbose} option but without the
 @code{--silent} option.
 
-@DOCSTRING(OCTAVE_HOME)
-
-@DOCSTRING(version)
-
-@DOCSTRING(ver)
-
 @node Quitting Octave
 @section Quitting Octave
 @cindex exiting octave

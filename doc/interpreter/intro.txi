@@ -66,7 +66,7 @@ begin learning Octave by using it.  Lines marked with @samp{octave:13>}
 are lines you type, ending each with a carriage return.  Octave will
 respond with an answer, or by displaying a graph.
 
-@unnumberedsubsec Creating a Matrix
+@subsection Creating a Matrix
 
 To create a new matrix and store it in a variable so that it you can
 refer to it later, type the command
@@ -96,7 +96,7 @@ variable.  For example, to display the value stored in the matrix
 octave:3> B
 @end example
 
-@unnumberedsubsec Matrix Arithmetic
+@subsection Matrix Arithmetic
 
 Octave has a convenient operator notation for performing matrix
 arithmetic.  For example, to multiply the matrix @code{a} by a scalar
@@ -129,7 +129,7 @@ type the command
 octave:6> A' * A
 @end example
 
-@unnumberedsubsec Solving Linear Equations
+@subsection Solving Linear Equations
 
 To solve the set of linear equations @code{A@var{x} = b},
 use the left division operator, @samp{\}:
@@ -153,7 +153,7 @@ but avoids computing the inverse of a matrix directly.
 If the coefficient matrix is singular, Octave will print a warning
 message and compute a minimum norm solution.
 
-@unnumberedsubsec Integrating Differential Equations
+@subsection Integrating Differential Equations
 
 Octave has built-in functions for solving nonlinear differential
 equations of the form
@@ -246,7 +246,7 @@ Differential Equations, described in A. C. Hindmarsh, @cite{ODEPACK, a
 Systematized Collection of ODE Solvers}, in: Scientific Computing, R. S.
 Stepleman et al. (Eds.), North-Holland, Amsterdam, 1983, pages 55--64.
 
-@unnumberedsubsec Producing Graphical Output
+@subsection Producing Graphical Output
 
 To display the solution of the previous example graphically, use the
 command
@@ -278,7 +278,7 @@ help print
 explains more options for the @code{print} command and provides a list
 of additional output file formats.
 
-@unnumberedsubsec Editing What You Have Typed
+@subsection Editing What You Have Typed
 
 At the Octave prompt, you can recall, edit, and reissue previous
 commands using Emacs- or vi-style editing commands.  The default
@@ -292,7 +292,7 @@ on the line, etc.
 A complete description of the command line editing capability is given
 in this manual in @ref{Command Line Editing}.
 
-@unnumberedsubsec Help and Documentation
+@subsection Help and Documentation
 
 Octave has an extensive help facility.  The same documentation that is
 available in printed form is also available from the Octave prompt,

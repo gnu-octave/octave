@@ -101,7 +101,8 @@ a cell array. For example\n\
 \n\
 @example\n\
 @group\n\
-cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@},'UniformOutput',false)\n\
+cellfun (\"tolower(x)\", @{\"Foo\", \"Bar\", \"FooBar\"@},\n\
+         \"UniformOutput\",false)\n\
 @result{} ans = @{\"foo\", \"bar\", \"foobar\"@}\n\
 @end group\n\
 @end example\n\

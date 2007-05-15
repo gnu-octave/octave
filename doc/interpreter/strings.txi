@@ -30,7 +30,7 @@ Octave, it is best to use double-quote marks to denote strings.
 
 @cindex escape sequence notation
 In double-quoted strings, the backslash character is used to introduce
-@dfn{escape sequences} that reresent other characters.  For example,
+@dfn{escape sequences} that represent other characters.  For example,
 @samp{\n} embeds a newline character in a double-quoted string and
 @samp{\"} embeds a double quote character.
 
@@ -130,13 +130,43 @@ Data Types}, for more information about creating matrices.
 @node Creating Strings
 @section Creating Strings
 
+The easiest way to create a string is, as illustrated in the introduction,
+to enclose a text in double-quotes or single-quotes. It is however
+possible to create a string without actually writing a text. The
+function @code{blanks} creates a string of a given length consisting
+only of blank characters (ASCII code 32).
+
 @DOCSTRING(blanks)
 
+The string representation used by Octave is an array of characters, so
+the result of @code{blanks(10)} is actually a row vector of length 10
+containing the value 32 in all places. This lends itself to the obvious
+generalisation to character matrices. Using a matrix of characters, it
+is possible to represent a collection of same-length strings in one
+variable. The convention used in Octave is that each row in a
+character matrix is a separate string, but letting each column represent
+a string is equally possible.
+
+The easiest way to create a character matrix is to put several strings
+together into a matrix.
+
+@example
+collection = [ "String #1"; "String #2" ];
+@end example
+
+@noindent
+This creates a 2-by-9 character matrix.
+
+One relevant question is, what happens when character matrix is
+created from strings of different length. The answer is that Octave
+puts blank characters at the end of strings shorter than the longest
+string. While it is possible to use a different character than the
+blank character using the @code{string_fill_char} function, it shows
+a problem with character matrices. It simply isn't possible to
+represent strings of different lengths. The solution is to use a cell
+array of strings, which is described in @ref{Cell Arrays of Strings}.
+
 @DOCSTRING(char)
-
-@DOCSTRING(int2str)
-
-@DOCSTRING(com2str)
 
 @DOCSTRING(strcat)
 
@@ -154,8 +184,50 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(num2str)
 
-@node Searching and Replacing
-@section Searching and Replacing
+@DOCSTRING(int2str)
+
+@node Comparing Strings
+@section Comparing Strings
+
+Since a string is a character array comparison between strings work
+element by element as the following example shows.
+
+@example
+GNU = "GNU's Not UNIX";
+spaces = (GNU == " ")
+     @result{} spaces =
+           0   0   0   0   0   1   0   0   0   1   0   0   0   0
+@end example
+
+@noindent
+To determine if two functions are identical it is therefore necessary
+to use the @code{strcmp} or @code{strncpm} functions. Similar 
+functions exists for doing case-insensitive comparisons.
+
+@DOCSTRING(strcmp)
+
+@DOCSTRING(strcmpi)
+
+@DOCSTRING(strncmp)
+
+@DOCSTRING(strncmpi)
+
+@node Manipulating Strings
+@section Manipulating Strings
+
+Octave supports a wide range of functions for manipulating strings.
+Since a string is just a matrix, simple manipulations can be accomplished
+using standard operators. The following example shows how to replace
+all blank characters with underscores.
+
+@example
+quote = "First things first, but not necessarily in that order";
+quote( quote == " " ) = "_"
+     @print{} quote = First_things_first,_but_not_necessarily_in_that_order
+@end example
+
+For more complex manipulations, such as searching, replacing, and
+general regular expressions, the following function come with Octave.
 
 @DOCSTRING(deblank)
 
@@ -173,14 +245,6 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(split)
 
-@DOCSTRING(strcmp)
-
-@DOCSTRING(strcmpi)
-
-@DOCSTRING(strncmp)
-
-@DOCSTRING(strncmpi)
-
 @DOCSTRING(strrep)
 
 @DOCSTRING(substr)
@@ -194,6 +258,15 @@ Data Types}, for more information about creating matrices.
 @node String Conversions
 @section String Conversions
 
+Octave supports various kinds of conversions between strings and
+numbers. As an example, it is possible to convert a string containing
+a hexadecimal number to a floating point number.
+
+@example
+hex2dec ("FF")
+     @result{} ans = 255
+@end example
+
 @DOCSTRING(bin2dec)
 
 @DOCSTRING(dec2bin)
@@ -206,9 +279,9 @@ Data Types}, for more information about creating matrices.
 
 @DOCSTRING(base2dec)
 
-@DOCSTRING(strjust)
-
 @DOCSTRING(str2double)
+
+@DOCSTRING(strjust)
 
 @DOCSTRING(str2num)
 

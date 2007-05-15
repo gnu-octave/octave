@@ -96,7 +96,7 @@ global gvar = 2
 
 @noindent
 the value of the global variable @code{gvar} is 1, not 2.  Issuing a
-@samp{clear a} command does not change the above behavior, but
+@samp{clear gvar} command does not change the above behavior, but
 @samp{clear all} does.
 
 It is necessary declare a variable as global within a function body in
@@ -203,7 +203,18 @@ the value of the persistent variable @code{pvar} is 2.
 @node Status of Variables
 @section Status of Variables
 
-@DOCSTRING(clear)
+When creating simple one-shot programs it can be very convenient to
+see which variables are available at the prompt. The function @code{who}
+and its siblings @code{whos} and @code{whos_line_format} will show
+different information about what is in memory, as the following shows.
+
+@example
+str = "A random string";
+who -variables
+     @print{} *** local user variables:
+     @print{} 
+     @print{} __nargin__  str
+@end example
 
 @DOCSTRING(who)
 
@@ -211,7 +222,39 @@ the value of the persistent variable @code{pvar} is 2.
 
 @DOCSTRING(whos_line_format)
 
+Instead of displaying which variables are in memory, it is possible
+to determine if a given variable is available. That way it is possible
+to alter the behaviour of a program depending on the existence of a
+variable. The following example illustrates this.
+
+@example
+if (! exist ("meaning", "var"))
+  disp ("The program has no 'meaning'");
+endif
+@end example
+
 @DOCSTRING(exist)
+
+Usually Octave will manage the memory, but sometimes it can be practical
+to remove variables from memory manually. This is usually needed when
+working with large variables that fill a substantial part of the memory.
+On a computer that uses the IEEE floating point format, the following
+program allocates a matrix that requires around 128 MB memory.
+
+@example
+large_matrix = zeros (4000, 4000);
+@end example
+
+@noindent
+Since having this variable in memory might slow down other computations,
+it can be necessary to remove it manually from memory. The @code{clear}
+function allows this.
+
+@DOCSTRING(clear)
+
+Information about a function or variable such as it's location in the
+file system can also be acquired from within Octave. This is usually
+only useful during development of programs, and not within a program.
 
 @DOCSTRING(document)
 

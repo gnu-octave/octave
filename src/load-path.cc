@@ -47,6 +47,7 @@ load_path *load_path::instance = 0;
 load_path::hook_function_ptr load_path::add_hook = execute_pkg_add;
 load_path::hook_function_ptr load_path::remove_hook = execute_pkg_del;
 std::string load_path::command_line_path;
+std::string load_path::sys_path;
 
 void
 load_path::dir_info::update (void)
@@ -1287,7 +1288,7 @@ files.\n\
 @seealso{path, addpath, rmpath, genpath, savepath, pathsep}\n\
 @end deftypefn")
 {
-  return load_path::system_path ();
+  return octave_value (load_path::system_path ());
 }
 
 DEFUN (path, args, nargout,

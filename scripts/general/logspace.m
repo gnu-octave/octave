@@ -57,7 +57,11 @@
 ## @ifinfo
 ## 10^base and 10^pi,
 ## @end ifinfo
-## in order to  be compatible with the corresponding @sc{Matlab} function.
+## in order to  be compatible with the corresponding @sc{Matlab}
+## function.
+##
+## Also for compatibility, return the second argument if fewer than two
+## values are requested.
 ## @seealso{linspace}
 ## @end deftypefn
 

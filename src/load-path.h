@@ -175,7 +175,7 @@ public:
 
   static std::string system_path (void)
   {
-    return instance_ok () ? do_system_path () : std::string ();
+    return instance_ok () ? instance->do_system_path () : std::string ();
   }
 
 private:

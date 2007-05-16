@@ -2325,13 +2325,16 @@ DEFUN (linspace, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
 Return a row vector with @var{n} linearly spaced elements between\n\
-@var{base} and @var{limit}.  The number of elements, @var{n}, must be\n\
-greater than 1.  The @var{base} and @var{limit} are always included in\n\
+@var{base} and @var{limit}.  If the number of elements is greater than one,\n\
+then the @var{base} and @var{limit} are always included in\n\
 the range.  If @var{base} is greater than @var{limit}, the elements are\n\
 stored in decreasing order.  If the number of points is not specified, a\n\
 value of 100 is used.\n\
 \n\
 The @code{linspace} function always returns a row vector.\n\
+\n\
+For compatibility with @sc{Matlab}, return the second argument if\n\
+fewer than two values are requested.\n\
 @end deftypefn")
 {
   octave_value retval;

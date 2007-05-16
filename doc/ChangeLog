@@ -1,3 +1,7 @@
+2007-05-16  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/expr.txi: Imrove docs.
+
 2007-05-14  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/basics.txi, interpreter/data.txi,

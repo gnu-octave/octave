@@ -670,22 +670,31 @@ soon as the overall truth value can be determined.  Octave's
 @item @var{boolean1} && @var{boolean2}
 @opindex &&
 The expression @var{boolean1} is evaluated and converted to a scalar
-using the equivalent of the operation @code{all (all (@var{boolean1}))}.
+using the equivalent of the operation @code{all (@var{boolean1}(:))}.
 If it is false, the result of the overall expression is 0.  If it is
 true, the expression @var{boolean2} is evaluated and converted to a
-scalar using the equivalent of the operation @code{all (all
-(@var{boolean1}))}.  If it is true, the result of the overall expression
+scalar using the equivalent of the operation @code{all
+(@var{boolean1}(:))}.  If it is true, the result of the overall expression
 is 1.  Otherwise, the result of the overall expression is 0.
+
+@strong{Warning:} there is one exception to the rule of evaluating
+@code{all (@var{boolean1}(:))}, which is when @code{boolean1} is the
+empty matrix. The truth value of an empty matrix is always @code{false}
+so @code{[] && true} evaluates to @code{false} even though
+@code{all ([])} is @code{true}.
 
 @item @var{boolean1} || @var{boolean2}
 @opindex ||
 The expression @var{boolean1} is evaluated and converted to a scalar
-using the equivalent of the operation @code{all (all (@var{boolean1}))}.
+using the equivalent of the operation @code{all (@var{boolean1}(:))}.
 If it is true, the result of the overall expression is 1.  If it is
 false, the expression @var{boolean2} is evaluated and converted to a
-scalar using the equivalent of the operation @code{all (all
-(@var{boolean1}))}.  If it is true, the result of the overall expression
+scalar using the equivalent of the operation @code{all
+(@var{boolean1}(:))}.  If it is true, the result of the overall expression
 is 1.  Otherwise, the result of the overall expression is 0.
+
+@strong{Warning:} the truth value of an empty matrix is always @code{false},
+see the previous list item for details.
 @end table
 
 The fact that both operands may not be evaluated before determining the
@@ -725,6 +734,7 @@ function f (a, b, c)
 @end group
 @end example
 
+@noindent
 Writing
 
 @example
@@ -757,6 +767,7 @@ the variable @code{z}:
 z = 1
 @end example
 
+@noindent
 After this expression is executed, the variable @code{z} has the value 1.
 Whatever old value @code{z} had before the assignment is forgotten.
 The @samp{=} sign is called an @dfn{assignment operator}.
@@ -879,14 +890,6 @@ In expressions like this, the number of values in each part of the
 expression need not match.  For example, the expression
 
 @example
-[a, b, c, d] = [u, s, v] = svd (a)
-@end example
-
-@noindent
-is equivalent to the expression above, except that the value of the
-variable @samp{d} is left unchanged, and the expression
-
-@example
 [a, b] = [u, s, v] = svd (a)
 @end example
 
@@ -899,6 +902,17 @@ is equivalent to
 a = u
 b = s
 @end group
+@end example
+
+@noindent
+The number of values on the left side of the expression can, however,
+not exceed the number of values on the right side. For example, the
+following will produce an error.
+
+@example
+[a, b, c, d] = [u, s, v] = svd (a)
+     @print{} error: element number 4 undefined in return list
+        error: evaluating assignment expression near line 8, column 15
 @end example
 
 You can use an assignment anywhere an expression is called for.  For
@@ -961,12 +975,6 @@ value of the expression is the @emph{old} value of @var{x}.
 This expression causes the variable @var{x} to be decremented.  The
 value of the expression is the @emph{old} value of @var{x}.
 @end table
-
-It is not currently possible to increment index expressions.  For
-example, you might expect that the expression @code{@var{v}(4)++} would
-increment the fourth element of the vector @var{v}, but instead it
-results in a parse error.  This problem may be fixed in a future
-release of Octave.
 
 @node Operator Precedence
 @section Operator Precedence

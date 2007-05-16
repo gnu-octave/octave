@@ -1,3 +1,7 @@
+2007-05-16  Søren Hauberg  <soren@hauberg.org>
+
+	* ov.cc (Fsubsref, Fsubsasgn): Doc fix.
+
 2007-05-16  John W. Eaton  <jwe@octave.org>
 
 	* load-path.h (load_path::sys_path): New static data member.

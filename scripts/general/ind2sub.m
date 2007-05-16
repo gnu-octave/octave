@@ -20,6 +20,15 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{s1}, @var{s2}, @dots{}, @var{sN}] =} ind2sub (@var{dims}, @var{ind})
 ## Convert a linear index into subscripts.
+##
+## The following example shows how to convert the linear index @code{8}
+## in a 3-by-3 matrix into a subscript.
+##
+## @example
+## [r, c] = ind2sub ([3, 3], 8)
+## @result{} r =  2
+## c =  3
+## @end example
 ## @seealso{sub2ind}
 ## @end deftypefn
 

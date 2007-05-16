@@ -1,3 +1,7 @@
+2007-05-16  Søren Hauberg  <soren@hauberg.org>
+
+	* general/sub2ind.m, general/ind2sub.m: Doc fix.
+
 2007-05-16  John W. Eaton  <jwe@octave.org>
 
 	* general/logspace.m: Return second arg if fewer than two values

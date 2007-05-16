@@ -21,6 +21,14 @@
 ## @deftypefn {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{i}, @var{j})
 ## @deftypefnx {Function File} {@var{ind} =} sub2ind (@var{dims}, @var{s1}, @var{s2}, @dots{}, @var{sN})
 ## Convert subscripts into a linear index.
+##
+## The following example shows how to convert the two-dimensional
+## index @code{(2,3)} of a 3-by-3 matrix to a linear index.
+##
+## @example
+## linear_index = sub2ind ([3, 3], 2, 3)
+## @result{} 8
+## @end example
 ## @seealso{ind2sub}
 ## @end deftypefn
 

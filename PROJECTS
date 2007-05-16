@@ -31,14 +31,10 @@ Numerical:
 
   * Support for lp_solve for linear programming problems.
 
-  * Free QP solver.
-
   * Free NLP solver.
 
   * Fix CollocWt to handle Laguerre polynomials.  Make it easy to
     extend it to other polynomial types.
-
-  * Make filter faster (perhaps by calling BLAS functions).
 
   * Add optional arguments to colloc so that it's not restricted to
     Legendre polynomials.
@@ -52,22 +48,9 @@ Numerical:
   * Use octave_allocator for memory management in Array classes once
     g++ supports static member templates.
 
-  * Implement the following functions:
-    -- ppval    -- cross    -- dot
-
   * When constructing NLConst (and other) objects, make sure that
     there are sufficient checks to ensure that the dimensions all
     conform.
-
-  * Allow parameters to be passed through the call to fsolve() to the
-    user-supplied function for Matlab compatibility.  Don't place an
-    upper limit on the number of arguments.
-
-  * Check matrix classes for proper handling of empty matrices.
-
-  * Make operations with empty matrices produce empty matrices, for
-    compatibility with Matlab (but only if Matlab 5 still does things
-    this way). For example:  [1, 2] * [] ==> [].
 
   * Improve design of ODE, DAE, classes.
 
@@ -76,24 +59,6 @@ Numerical:
     M by elements of v.  Similarly, if w is a row vector with as many
     columns as M, then either w .* M or M .* w scales the columns of
     M.
-
-  * Given two vectors x and y of length m and n, implement a function
-    outer (x, y, f) that returns an m-by-n matrix with entries
-    f (x(i), y(j)).  If f is omitted, multiplication is the default.
-    Should probably work for any vectors, not just if x is a column
-    vector and y is a row vector.
-
-  * Make it possible to solve b = L \ x efficiently, either by
-    providing an explicit function call, or by automatically
-    determining that L is triangular.  If it is done automatically,
-    provide some means for determining whether Octave has actually
-    detected that the matrix is triangular.
-
-  * The polyfit function uses the economy QR factorization, but even
-    that can take a lot of time for large datasets.  Consider an
-    option to compute the result with inv (A' * A) * A' * y or some
-    other faster method.d  Possibly just switch to this method if the
-    dataset is larger than some value.
 
   * Make QR more memory efficient for large matrices when not all the
     columns of Q are required (apparently this is not handled by the
@@ -115,19 +80,6 @@ Sparse Matrices:
 
   * Sparse logical indexing in idx_vector class so that something like
     "a=sprandn(1e6,1e6,1e-6); a(a<1) = 0" won't cause a memory overflow.
-
-  * Write the rest of the sparse docs
-
-  * The algo in TOMS 582 is perfect for symrcm function. However, this is
-    under the ACM license and can't be used in a GPL program.
-
-    An alternative is that PETSC is GPL compatiable and has a symrcm 
-    implemented from the original SPARSPAK. Its not clear that this is
-    legal to me as I have found no clarification of the original license
-    of SPARSPAK. As PETSC has had this code for over 10 years without
-    problem, we can perhaps assume that there are no issues. Maybe need
-    to contact PETSC people or the SPARSPAK people at uni of waterloo
-    to check issues.
 
   * Make spalloc(r,c,n) actually create an empty sparse with n non-zero 
     elements? This allows something like
@@ -158,14 +110,12 @@ Sparse Matrices:
       - treelayout
       - cholinc
       - condest
-      - bicg
+      - bicg        Can this be taken from octave-forge?
       - bicgstab
       - cgs
       - gmres
       - lsqr
       - minres
-      - pcg         Can this be taken from o-forge? Is it compatiable
-      - pcr         Can and should this be taken from o-forge?
       - qmr
       - symmlq 
       - spaugment
@@ -176,29 +126,7 @@ Graphics:
 
   * Make plotting with plplot work.
 
-  * Fix interface with gnuplot to wait for gnuplot to output any text
-    before octave returns a prompt.  Possible by implementing two
-    way communication between gnuplot and Octave.
-
-  * Handle gnuplot ranges correctly for parametric modes (accept 3
-    ranges for 2d plots and 5 ranges for 3d plots).
-
-  * Make gsave (and possibly gload) work.  Implement gsave by having it
-    also alter the plot command to not use temporary files (perhaps
-    with some user-specified template for naming them) and then
-    sending a `save' command to gnuplot.
-
-  * It would be nice to be able to check that a plot is currently
-    being displayed.
-
-  * Implement clf, gcf, get, set, orient, print, close, etc. in
-    Matlab-compatible ways.
-
   * Make it possible to check the current graphics terminal type.
-
-  * If possible, pass data to gnuplot without using temporary files.
-
-  * If possible, pass binary data to gnuplot to speed things up.
 
   * If using gnuplot, consider setting a smaller default for the
     `zero' value (e.g., set zero sqrt (realmin) or something).
@@ -210,8 +138,6 @@ Strings:
   * Improve performance of string functions, particularly for
     searching and replacing.
 
-  * Provide some regex matching functions.
-
   * Convert string functions to work on string arrays.
 
   * Make find work for strings.
@@ -222,9 +148,6 @@ Strings:
 
   * Consider changing the default value of `string_fill_char' from SPC
     to NUL.
-
-  * Consider making ["test", []] ==> "test", for compatibility with
-    Matlab, at least when some set of preferences are set.
 
 ----------------
 Other Data Types:
@@ -251,23 +174,7 @@ Input/Output:
     working on them, it would be good to support other size
     specifications (integer*2, etc.).
 
-  * Make fread and fopen look in LOADPATH for files.
-
-  * Make load and save look for <file>.mat if only given <file>.
-
-    Potential sticky points:
-
-      - For load, if both foo and foo.mat exist, should it prefer foo
-        or foo.mat?  Should the preference depend on the arguments to
-        load?  I think it should only prefer .mat files if the
-        -mat-binary option is supplied, or if the file foo.mat exists
-        but the file foo does not.
-
-      - For save, should it prefer to create foo or foo.mat?  Should
-        the preference depend on the arguments to save?  Should the
-        default_save_format imply a default preference?  I think it
-        should only create .mat files if it is writing Matlab
-        compatible files.
+  * Make fread and fopen look in the load path for files.
 
   * Move some pr-output stuff to liboctave.
 
@@ -309,14 +216,6 @@ Interpreter:
   * Consider grouping all preference variables in a structure instead
     of further polluting the namespace.  Maybe `Octave_options.xxx'?
 
-  * Rewrite functions in input.cc to do the right thing in all cases
-    of using readline, forced interactive behavior, echoing of input,
-    etc.
-
-  * Consider making linspace() and logspace() return the value
-    corresponding to the first argument if the number of requested
-    points is 1.
-
   * Consider allowing an arbitrary property list to be attached to any
     variable.  This could be a more general way to handle the help
     string that can currently be added with `document'.
@@ -324,20 +223,7 @@ Interpreter:
   * Allow more command line options to be accessible as built-in
     variables (--echo-commands, etc.).
 
-  * Allow `octave -c STRING' to execute commands from STRING then
-    exit.
-
   * Make the interpreter run faster.
-
-  * Make it possible to disable or enable all warnings on an
-    individual basis from the command line or via some built-in
-    structure variable.
-
-  * Warn about complex comparisons?  Could just use double_value() or
-    matrix_value() instead of explicit conversions to real types.  For
-    this to really be useful, some additional information must be
-    available to point to the location of the code that triggers the
-    warning.
 
   * Allow arbitrary lower bounds for array indexing.
 
@@ -348,9 +234,6 @@ Interpreter:
 
   * Add a command-line option to tell Octave to just do syntax
     checking and not execute statements.
-
-  * Is it necessary for do_binary_op and do_unary_op to be friends of
-    the tree_constant class.
 
   * Clean up symtab and variable stuff.
 
@@ -369,8 +252,6 @@ Interpreter:
 
     so that `function_with_a_very_long_name' could be invoked as
     `fun'.
-
-  * What should is_global() return when called for built-in variables?
 
   * Allow local changes to variables to be written more compactly than
     is currently possible with unwind_protect.  For example,
@@ -395,9 +276,6 @@ Interpreter:
   * Fix all function files to check for bogus inputs (wrong number or
     types of input arguments, wrong number of output arguments).
 
-  * Reduce the memory and time required to parse very large matrix
-    lists.
-
   * Handle options for built-in functions more consistently.
 
   * Too much time is spent allocating and freeing memory.  What can be
@@ -411,52 +289,24 @@ Interpreter:
 
   * Attempt to recognize common subexpressions in the parser.
 
-  * Handle arrays with more than two dimensions.
-
   * Consider making it possible to specify an empty matrix with a
     syntax like [](e1, e2).  Of course at least one of the expressions
     must be zero...
 
   * Is Matrix::fortran_vec() really necessary?
 
-  * print_usage() should set error_state in most cases?
-
   * Add a command that works like bash's `builtin' command.
 
-  * Handle end-of-line comments correctly in parse trees for use with
-    the type command.
-
-  * Clean up eye, eval, feval, keyboard, input, ones, zeros.
-
   * It would be nice to have an interactive debugger.
-
-  * Make whos report total memory used by variables (and functions?).
 
   * Rewrite whos and the symbol_record_info class.  Write a built-in
     function that gives all the basic information, then write who and
     whos as M-files.
 
-  * Make whos work for structure elements:
-
-      prot  type               rows   cols  name
-      ====  ====               ====   ====  ====
-      wd   matrix                m      n   struct.field
-
-  * Allow who to return information as a list of strings.
-
   * On systems that support matherr(), make it possible for users to
     enable the printing of warning messages.
 
   * Make it possible to mark variables and functions as read-only.
-
-  * Provide a built-in function for applying a scalar function to an
-    array.  Be sure to note in the manual that this is not the
-    preferred way to write a function that can handle vector/matrix
-    arguments because there is a significant overhead for function
-    calls.  If you are really looking to make a function work for
-    vector/matrix arguments and you want it to run fast, you should
-    write it in terms of the existing vector/matrix operators as much
-    as possible.
 
   * Make it possible to write a function that gets a reference to a
     matrix in memory and change one or more elements without
@@ -474,11 +324,6 @@ History:
 
   * The history command should accept two numeric arguments to
     indicate a range of history entries to display, save or read.
-
-  * Add an option to include information about the Octave session in
-    the history list.  Possibly a time/date stamp and the current
-    Octave line number, appended as a comment (users should probably
-    be able to control the format).
 
   * Avoid writing the history file if the history list has not
     changed.
@@ -524,17 +369,9 @@ Documentation and On-Line Help:
 
   * Texinfo documentation for the C++ classes.
 
-  * Support multiple info files, perhaps allowing one or more in each
-    directory in the LOADPATH, so that local collections of M-files
-    could be documented with Info.
-
-  * Improve help messages for operators and keywords in help.cc.
-
   * Make index entries more consistent to improve behavior of `help -i'.
 
   * Make `help -i' try to find a whole word match first.
-
-  * Allow help for local additions to be accessible with help -i.
 
   * Clean up help stuff.
 
@@ -548,7 +385,7 @@ Documentation and On-Line Help:
     duplicated, and will remain current if the M-files change.  It
     would also be best to do as much of this as possible in an M-file,
     though I wouldn't mind adding some basic support for listing the
-    names of all the directories in the LOADPATH, and the names of all
+    names of all the directories in the load path, and the names of all
     the M-files in a given directory if that is needed.
 
     Also make it possible to recursively search for Contents files:
@@ -556,10 +393,6 @@ Documentation and On-Line Help:
       help dir        -- Contents from dir
       help dir//      -- Contents from dir and all its subdirectories
       help dir1/dir2  -- Contents from dir2 which is under dir1
-
-  * Some sort of blurb (2-3 pages) describing Octave in a reasonably
-    coherent way, where to get it etc., perhaps formatted pretty,
-    i.e. not just text.  Maybe start with the latest Announce file.
 
 -----
 Tests:
@@ -612,8 +445,6 @@ Programming:
     -- Add a `Makefile' target to the Makefiles.
     -- Comments on #else and #endif preprocessor commands.
     -- Change error message format to match standards everywhere.
-
-  * Use STL stuff instead of libg++ lists, maps, and stacks.
 
   * Eliminate more global variables.
 

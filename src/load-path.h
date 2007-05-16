@@ -173,6 +173,11 @@ public:
       command_line_path += dir_path::path_sep_str + p;
   }
 
+  static std::string system_path (void)
+  {
+    return instance_ok () ? do_system_path () : std::string ();
+  }
+
 private:
 
   static const int M_FILE = 1;
@@ -277,6 +282,8 @@ private:
 
   static std::string command_line_path;
 
+  static std::string sys_path;
+
   static bool instance_ok (void);
 
   typedef std::list<dir_info>::const_iterator const_dir_info_list_iterator;
@@ -332,6 +339,8 @@ private:
 
   void do_display (std::ostream& os) const;
 
+  std::string system_path (void) const { return sys_path; }
+
   void add_to_fcn_map (const dir_info& di, bool at_end) const;
 };
 
@@ -340,8 +349,6 @@ genpath (const std::string& dir, const string_vector& skip = "private");
 
 extern void execute_pkg_add (const std::string& dir);
 extern void execute_pkg_del (const std::string& dir);
-
-extern std::string octave_system_path (void);
 
 #endif
 

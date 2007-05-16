@@ -197,7 +197,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 	  names(1) = nm + ".mex";
 	  names(2) = nm + ".m";
 
-	  dir_path p (octave_system_path ());
+	  dir_path p (load_path::system_path ());
 
 	  str = octave_env::make_absolute 
 	    (p.find_first_of (names), octave_env::getcwd ());

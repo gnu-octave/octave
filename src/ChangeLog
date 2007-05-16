@@ -1,3 +1,14 @@
+2007-05-16  John W. Eaton  <jwe@octave.org>
+
+	* load-path.h (load_path::sys_path): New static data member.
+	(load_path::system_path): New static function.
+	(load_path::do_system_path): New function.
+	* load-path.cc (Vsystem_path): Delete.
+	(load_path::do_initialize): Use sys_path, not Vsystem_path.
+	(Fpathdef): Call load_path::system_path instead of using Vsystem_path.
+	* ls-mat5.cc (read_mat5_binary_element): Likewise.
+	* ov-fcn-handle.cc (octave_fcn_handle::set_fcn): Likewise.
+
 2007-05-16  David Bateman  <dbateman@free.fr>
 
 	* load_pathc.cc (std::string octave_system_path (void)): New

@@ -48,14 +48,6 @@ load_path::hook_function_ptr load_path::add_hook = execute_pkg_add;
 load_path::hook_function_ptr load_path::remove_hook = execute_pkg_del;
 std::string load_path::command_line_path;
 
-static std::string Vsystem_path;
-
-std::string
-octave_system_path (void)
-{
-  return Vsystem_path;
-}
-
 void
 load_path::dir_info::update (void)
 {
@@ -360,18 +352,18 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
 void
 load_path::do_initialize (bool set_initial_path)
 {
-  Vsystem_path = dir_path::path_sep_str;
+  sys_path = dir_path::path_sep_str;
 
   if (set_initial_path)
     {
-      maybe_add_path_elts (Vsystem_path, Vlocal_ver_oct_file_dir);
-      maybe_add_path_elts (Vsystem_path, Vlocal_api_oct_file_dir);
-      maybe_add_path_elts (Vsystem_path, Vlocal_oct_file_dir);
-      maybe_add_path_elts (Vsystem_path, Vlocal_ver_fcn_file_dir);
-      maybe_add_path_elts (Vsystem_path, Vlocal_api_fcn_file_dir);
-      maybe_add_path_elts (Vsystem_path, Vlocal_fcn_file_dir);
-      maybe_add_path_elts (Vsystem_path, Voct_file_dir);
-      maybe_add_path_elts (Vsystem_path, Vfcn_file_dir);
+      maybe_add_path_elts (sys_path, Vlocal_ver_oct_file_dir);
+      maybe_add_path_elts (sys_path, Vlocal_api_oct_file_dir);
+      maybe_add_path_elts (sys_path, Vlocal_oct_file_dir);
+      maybe_add_path_elts (sys_path, Vlocal_ver_fcn_file_dir);
+      maybe_add_path_elts (sys_path, Vlocal_api_fcn_file_dir);
+      maybe_add_path_elts (sys_path, Vlocal_fcn_file_dir);
+      maybe_add_path_elts (sys_path, Voct_file_dir);
+      maybe_add_path_elts (sys_path, Vfcn_file_dir);
     }
 
   std::string tpath = load_path::command_line_path;
@@ -384,8 +376,8 @@ load_path::do_initialize (bool set_initial_path)
   if (! tpath.empty ())
     xpath += dir_path::path_sep_str + tpath;
 
-  if (Vsystem_path != dir_path::path_sep_str)
-    xpath += Vsystem_path;
+  if (sys_path != dir_path::path_sep_str)
+    xpath += sys_path;
 
   do_set (xpath, false);
 }
@@ -1295,7 +1287,7 @@ files.\n\
 @seealso{path, addpath, rmpath, genpath, savepath, pathsep}\n\
 @end deftypefn")
 {
-  return octave_value (Vsystem_path);
+  return load_path::system_path ();
 }
 
 DEFUN (path, args, nargout,

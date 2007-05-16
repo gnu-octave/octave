@@ -339,7 +339,7 @@ private:
 
   void do_display (std::ostream& os) const;
 
-  std::string system_path (void) const { return sys_path; }
+  std::string do_system_path (void) const { return sys_path; }
 
   void add_to_fcn_map (const dir_info& di, bool at_end) const;
 };

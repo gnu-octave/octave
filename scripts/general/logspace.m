@@ -77,10 +77,6 @@ function retval = logspace (x1, x2, n)
     print_usage ();
   endif
 
-  if (npoints < 2)
-    error ("logspace: npoints must be greater than 2");
-  endif
-
   if (length (x1) == 1 && length (x2) == 1)
     x2_tmp = x2;
     if (x2 == pi)

@@ -526,14 +526,8 @@ linspace (const Complex& x1, const Complex& x2, octave_idx_type n)
     }
   else if (n == 1)
     {
-      if (x1 == x2)
-	{
-	  retval.resize (1);
-	  retval.elem (0) = x1;
-	}
-      else
-	(*current_liboctave_error_handler)
-	  ("linspace: npoints is 1, but x1 != x2");
+      retval.resize (1);
+      retval.elem (0) = x2;
     }
   else
     (*current_liboctave_error_handler)

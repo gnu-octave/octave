@@ -1,3 +1,8 @@
+2007-05-16  John W. Eaton  <jwe@octave.org>
+
+	* general/logspace.m: Return second arg if fewer than two values
+	are requested.
+
 2007-05-14  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_figure__.m: Ensure that a reset commands starts

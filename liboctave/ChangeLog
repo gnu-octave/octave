@@ -1,3 +1,9 @@
+2007-05-16  David Bateman  <dbateman@free.fr>
+
+	* dRowVector.cc (linspace): Return second argument if fewer than
+	two values are requested.
+	* CRowVector.cc (linspace): Likewise.
+
 2007-04-27  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.cc (signum (const Complex&)): Special case for (0, 0).

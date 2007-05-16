@@ -31,7 +31,7 @@ Numerical:
 
   * Support for lp_solve for linear programming problems.
 
-  * Free NLP solver.
+  * Improve sqp.
 
   * Fix CollocWt to handle Laguerre polynomials.  Make it easy to
     extend it to other polynomial types.
@@ -174,8 +174,6 @@ Input/Output:
     working on them, it would be good to support other size
     specifications (integer*2, etc.).
 
-  * Make fread and fopen look in the load path for files.
-
   * Move some pr-output stuff to liboctave.
 
   * Make the cutoff point for changing to packed storage a
@@ -213,8 +211,9 @@ Interpreter:
 
     is parsed as IF expr STRING END.
 
-  * Consider grouping all preference variables in a structure instead
-    of further polluting the namespace.  Maybe `Octave_options.xxx'?
+  * Clean up functions in input.cc that handle user input (there
+    currently seems to be some unnecessary duplication of code and it
+    seems overly complex).
 
   * Consider allowing an arbitrary property list to be attached to any
     variable.  This could be a more general way to handle the help

@@ -65,6 +65,8 @@ public:
 
   octave_value convert_to_str_internal (bool, bool, char) const;
 
+  Octave_map map_value (void) const;
+
   bool save_ascii (std::ostream& os, bool& infnan_warned);
 
   bool load_ascii (std::istream& is);

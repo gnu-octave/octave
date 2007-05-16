@@ -348,7 +348,7 @@ check_gzip_magic (const std::string& fname)
 #endif
 
 static load_save_format
-get_file_format (std::istream& file)
+get_file_format (std::istream& file, const std::string& filename)
 {
   load_save_format retval = LS_UNKNOWN;
 
@@ -374,7 +374,7 @@ get_file_format (std::istream& file)
 	  file.clear ();
 	  file.seekg (0, std::ios::beg);
 
-	  err = read_mat5_binary_file_header (file, swap, true);
+	  err = read_mat5_binary_file_header (file, swap, true, filename);
 
 	  if (! err)
   	    {
@@ -415,7 +415,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
       
   if (file)
     {
-      retval = get_file_format (file);
+      retval = get_file_format (file, orig_fname);
       file.close ();
 
 #ifdef HAVE_ZLIB
@@ -426,7 +426,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 
 	  if (gzfile)
 	    {
-	      retval = get_file_format (gzfile);
+	      retval = get_file_format (gzfile, orig_fname);
 	      gzfile.close ();
 	    }
 	}
@@ -925,7 +925,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 		  else if (format == LS_MAT5_BINARY 
 			   || format == LS_MAT7_BINARY)
 		    {
-		      if (read_mat5_binary_file_header (file, swap, false) < 0)
+		      if (read_mat5_binary_file_header (file, swap, false, orig_fname) < 0)
 			{
 			  if (file) file.close ();
 			  return retval;
@@ -959,7 +959,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 		  else if (format == LS_MAT5_BINARY 
 			   || format == LS_MAT7_BINARY)
 		    {
-		      if (read_mat5_binary_file_header (file, swap, false) < 0)
+		      if (read_mat5_binary_file_header (file, swap, false, orig_fname) < 0)
 			{
 			  if (file) file.close ();
 			  return retval;
@@ -1400,6 +1400,10 @@ dump_octave_core (void)
   
       std::ios::openmode mode = std::ios::out;
 
+      // Matlab v7 files are always compressed
+      if (format == LS_MAT7_BINARY)
+	use_zlib = false;
+
       if (format == LS_BINARY
 #ifdef HAVE_HDF5
 	  || format == LS_HDF5
@@ -1666,6 +1670,10 @@ the file @file{data} in Octave's binary format.\n\
       i++;
 
       std::ios::openmode mode = std::ios::out;
+
+      // Matlab v7 files are always compressed
+      if (format == LS_MAT7_BINARY)
+	use_zlib = false;
 
       if (format == LS_BINARY
 #ifdef HAVE_HDF5

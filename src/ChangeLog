@@ -1,3 +1,48 @@
+2007-05-16  David Bateman  <dbateman@free.fr>
+
+	* load_pathc.cc (std::string octave_system_path (void)): New
+        function.
+        * load-path.h (std::string octave_system_path (void)): Declare it.
+
+        * load-save.cc (static load_save_format get_file_format
+        (std::istream&, const std::string&)): Add filename argument, and
+        pass it to read_mat5_binary_header. Use new format throughout file.
+        (Fload): Don't allow gzip of matlab v7 files as the files
+        themselves include compression.
+
+        * ls-mat5.cc (arrayclsstype:MAT_FILE_WORKSPACE_CLASS): New class
+        type.
+        (read_mat5_binary_element): Workspaces, don't have dimensions, so
+        don't read them. Implement read of matlab objects, but only use
+        them for inline functions. Implement reading of function and
+        workspace classes.
+        (read_mat5_binary_header): Add filename argument. Read sub-system
+        specific data block given as an offset in bytes 117 to 124.
+        (save_mat5_binary_element): Include saving of inline functions.
+
+        * ls-mat5.h (read_mat5_binary_header): Include filename.
+
+        * ov-fcn-handle.cc (octave_fcn_handle_save_ascii,
+        octave_fcn_handle::load_ascii, octave_fcn_handle::save_binary, 
+        octave_fcn_handle::load_binary, octave_fcn_handle::save_hdf5, 
+        octave_fcn_handle::load_hdf5): Save and reload the local symbol
+        table of the user function associated with anonymous function
+        handles. Save and load the absolute path and the exec_prefix for
+        normal function handles and use then to find equivalent functions
+        between different installations of Octave. Attempt to maintain
+        backward and forward compatibility.
+        (Ffunctions): Additional outputs, including the workspace of
+        anonymous functions, and more compatiable outputs.
+
+        * ov-fcn-handle.h (user_function_value): Expose the user function
+        value of a function handle.
+
+        * ov-fcn-inline.cc (Octave_map octave_fcn_inline::map_value
+        (void) const): Return a structure compatiable with matlab's class
+        implementation of inline functions.
+
+        * ov-fcn-inline.h (map_value): Declare it.
+
 2007-05-14  Bob Weigel  <rweigel@gmu.edu>
 
 	* DLD-FUNCTIONS/svd.cc: Doc fix.

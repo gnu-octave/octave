@@ -341,6 +341,8 @@ genpath (const std::string& dir, const string_vector& skip = "private");
 extern void execute_pkg_add (const std::string& dir);
 extern void execute_pkg_del (const std::string& dir);
 
+extern std::string octave_system_path (void);
+
 #endif
 
 /*

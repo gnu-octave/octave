@@ -78,6 +78,9 @@ public:
   octave_function *function_value (bool = false)
     { return fcn.function_value (); }
 
+  octave_user_function *user_function_value (bool = false)
+    { return fcn.user_function_value (); }
+
   octave_fcn_handle *fcn_handle_value (bool = false) { return this; }
 
   octave_value fcn_val (void) const { return fcn; }
@@ -104,6 +107,8 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
 private:
+
+  bool set_fcn (const std::string &octaveroot, const std::string& fpath);
 
   DECLARE_OCTAVE_ALLOCATOR
 

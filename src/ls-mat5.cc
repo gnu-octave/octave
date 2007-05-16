@@ -48,15 +48,18 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-time.h"
 #include "quit.h"
 #include "str-vec.h"
+#include "file-stat.h"
 
 #include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
 #include "load-save.h"
+#include "load-path.h"
 #include "oct-obj.h"
 #include "oct-map.h"
 #include "ov-cell.h"
+#include "ov-fcn-inline.h"
 #include "pager.h"
 #include "pt-exp.h"
 #include "symtab.h"
@@ -70,11 +73,18 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ls-utils.h"
 #include "ls-mat5.h"
 
+#include "parse.h"
+#include "defaults.h"
+
 #ifdef HAVE_ZLIB
 #include <zlib.h>
 #endif
 
 #define PAD(l) (((l) > 0 && (l) <= 4) ? 4 : (((l)+7)/8)*8)
+
+
+// The subsystem data block
+static octave_value subsys_ov;
 
 // FIXME -- the following enum values should be the same as the
 // mxClassID values in mexproto.h, but it seems they have also changed
@@ -100,7 +110,8 @@ enum arrayclasstype
     MAT_FILE_UINT32_CLASS,		// 32 bit unsigned integer
     MAT_FILE_INT64_CLASS,		// 64 bit signed integer
     MAT_FILE_UINT64_CLASS,		// 64 bit unsigned integer
-    MAT_FILE_FUNCTION_CLASS            // Function handle
+    MAT_FILE_FUNCTION_CLASS,            // Function handle
+    MAT_FILE_WORKSPACE_CLASS		// Workspace (undocumented)
   };
 
 // Read COUNT elements of data from IS in the format specified by TYPE,
@@ -397,6 +408,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   oct_mach_info::float_format flt_fmt = oct_mach_info::flt_fmt_unknown;
   int32_t type = 0;
+  std::string classname;
+  bool isclass = false;
   bool imag;
   bool logicalvar;
   enum arrayclasstype arrayclass;
@@ -407,7 +420,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   int32_t element_length;
   std::streampos pos;
   int16_t number;
-  number = *(int16_t *)"\x00\x01";
+  number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
 
   global = false;
 
@@ -469,6 +482,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
   if (type != miMATRIX)
     {
+      pos = is.tellg ();
       error ("load: invalid element type = %d", type);
       goto early_read_error;
     }
@@ -496,27 +510,35 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
   read_int (is, swap, nzmax);	// max number of non-zero in sparse
   
   // dimensions array subelement
-  {
-    int32_t dim_len;
+  if (arrayclass != MAT_FILE_WORKSPACE_CLASS)
+    {
+      int32_t dim_len;
 
-    if (read_mat5_tag (is, swap, type, dim_len) || type != miINT32)
-      {
-	error ("load: invalid dimensions array subelement");
-	goto early_read_error;
-      }
+      if (read_mat5_tag (is, swap, type, dim_len) || type != miINT32)
+	{
+	  error ("load: invalid dimensions array subelement");
+	  goto early_read_error;
+	}
 
-    int ndims = dim_len / 4;
-    dims.resize (ndims);
-    for (int i = 0; i < ndims; i++)
-      {
-	int32_t n;
-	read_int (is, swap, n);
-	dims(i) = n;
-      }
+      int ndims = dim_len / 4;
+      dims.resize (ndims);
+      for (int i = 0; i < ndims; i++)
+	{
+	  int32_t n;
+	  read_int (is, swap, n);
+	  dims(i) = n;
+	}
 
-    std::streampos tmp_pos = is.tellg ();
-    is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (dim_len) - dim_len));
-  }
+      std::streampos tmp_pos = is.tellg ();
+      is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (dim_len) - dim_len));
+    }
+  else
+    {
+      // Why did mathworks decide to not have dims for a workspace!!!
+      dims.resize(2);
+      dims(0) = 1;
+      dims(1) = 1;
+    }
 
   if (read_mat5_tag (is, swap, type, len) || type != miINT8)
     {
@@ -570,10 +592,6 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	tc = cell_array;
       }
       break;
-
-    case MAT_FILE_OBJECT_CLASS:
-      warning ("load: objects are not implemented");
-      goto skip_ahead;
 
     case MAT_FILE_SPARSE_CLASS:
 #if SIZEOF_INT != SIZEOF_OCTAVE_IDX_TYPE
@@ -707,13 +725,310 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	else
 	  tc = sm;
       }
-      break;
 #endif
+      break;
 
     case MAT_FILE_FUNCTION_CLASS:
-      warning ("load: function handles are not implemented");
-      goto skip_ahead;
+      {
+	octave_value tc2;
+	std::string nm
+	  = read_mat5_binary_element (is, filename, swap, global, tc2);
 
+	if (! is || error_state)
+	  goto data_read_error;
+
+	// Octave can handle both "/" and "\" as a directry seperator
+	// and so can ignore the seperator field of m0. I think the
+	// sentinel field is also save to ignore.
+	Octave_map m0 = tc2.map_value();
+	Octave_map m1 = m0.contents("function_handle")(0).map_value();
+	std::string ftype = m1.contents("type")(0).string_value();
+	std::string fname = m1.contents("function")(0).string_value();
+	std::string fpath = m1.contents("file")(0).string_value();
+
+	if (ftype == "simple" || ftype == "scopedfunction")
+	  {
+	    if (fpath.length() == 0)
+	      // We have a builtin function
+	      tc = make_fcn_handle (fname);
+	    else
+	      {
+		std::string mroot = 
+		  m0.contents("matlabroot")(0).string_value();
+
+		if ((fpath.length () >= mroot.length ()) &&
+		    fpath.substr(0, mroot.length()) == mroot &&
+		    OCTAVE_EXEC_PREFIX != mroot)
+		  {
+		    // If fpath starts with matlabroot, and matlabroot
+		    // doesn't equal octave_config_info ("exec_prefix")
+		    // then the function points to a version of Octave
+		    // or Matlab other than the running version. In that
+		    // case we replace with the same function in the
+		    // running version of Octave?
+		    
+		    // First check if just replacing matlabroot is enough
+		    std::string str = OCTAVE_EXEC_PREFIX + 
+		      fpath.substr (mroot.length ());		    
+		    file_stat fs (str);
+
+		    if (fs.exists ())
+		      {
+			symbol_record *sr = fbi_sym_tab->lookup (str, true);
+		    
+			if (sr)
+			  {
+			    load_fcn_from_file (sr, false);
+
+			    tc = octave_value (new octave_fcn_handle 
+					       (sr->def (), fname));
+
+			    // The next two lines are needed to force the 
+			    // definition of the function back to the one 
+			    // that is on the user path.
+			    sr = fbi_sym_tab->lookup (fname, true);
+
+			    load_fcn_from_file (sr, false);
+			  }
+		      }
+		    else
+		      {
+			// Next just search for it anywhere in the
+			// system path
+			string_vector names(3);
+			names(0) = fname + ".oct";
+			names(1) = fname + ".mex";
+			names(2) = fname + ".m";
+
+			dir_path p (octave_system_path ());
+
+			str = octave_env::make_absolute 
+			  (p.find_first_of (names), octave_env::getcwd ());
+
+			symbol_record *sr = fbi_sym_tab->lookup (str, true);
+
+			if (sr)
+			  {
+			    load_fcn_from_file (sr, false);
+
+			    tc = octave_value (new octave_fcn_handle 
+					       (sr->def (), fname));
+
+			    // The next two lines are needed to force the 
+			    // definition of the function back to the one 
+			    // that is on the user path.
+			    sr = fbi_sym_tab->lookup (fname, true);
+
+			    load_fcn_from_file (sr, false);
+			  }
+			else
+			  {
+			    warning ("load: can't find the file %s", 
+				     fpath.c_str());
+			    goto skip_ahead;
+			  }
+		      }
+		  }
+		else
+		  {
+		    symbol_record *sr = fbi_sym_tab->lookup (fpath, true);
+
+		    if (sr)
+		      {
+			load_fcn_from_file (sr, false);
+
+			tc = octave_value (new octave_fcn_handle (sr->def (), 
+								  fname));
+
+			sr = fbi_sym_tab->lookup (fname, true);
+
+			load_fcn_from_file (sr, false);
+		      }
+		    else
+		      {
+			warning ("load: can't find the file %s", 
+				 fpath.c_str());
+			goto skip_ahead;
+		      }
+		  }
+	      }
+	  }
+	else if (ftype == "nested")
+	  {
+	    warning ("load: can't load nested function");
+	    goto skip_ahead;
+	  }
+	else if (ftype == "anonymous")
+	  {
+	    Octave_map m2 = m1.contents("workspace")(0).map_value();
+	    uint32NDArray MCOS = m2.contents("MCOS")(0).uint32_array_value();
+	    octave_idx_type off = static_cast<octave_idx_type>(double (MCOS (4)));
+	    m2 = subsys_ov.map_value();
+	    m2 = m2.contents("MCOS")(0).map_value();
+	    tc2 = m2.contents("MCOS")(0).cell_value()(1 + off).cell_value()(1);
+	    m2 = tc2.map_value();
+	    symbol_table *local_sym_tab = 0;
+	    if (m2.length() > 0)
+	      {
+		octave_value tmp;
+
+		local_sym_tab = new symbol_table (((m2.length() + 1) & ~1), 
+						  "LOCAL");
+	      
+		for (Octave_map::iterator p0 = m2.begin() ; 
+		     p0 != m2.end(); p0++)
+		  {
+		    std::string key = m2.key(p0);
+		    octave_value val = m2.contents(p0)(0);
+
+		    symbol_record *sr = local_sym_tab->lookup (key, true);
+
+		    if (sr)
+		      sr->define (val);
+		    else
+		      {
+			error ("load: failed to load anonymous function handle");
+			goto skip_ahead;
+		      }
+                  }
+	      }
+	    
+	    unwind_protect::begin_frame ("anon_mat5_load");
+	    unwind_protect_ptr (curr_sym_tab);
+
+	    if (local_sym_tab)
+	      curr_sym_tab = local_sym_tab;
+
+	    int parse_status;
+	    octave_value anon_fcn_handle = 
+	      eval_string (fname.substr (4), true, parse_status);
+
+	    if (parse_status == 0)
+	      {
+		octave_fcn_handle *fh = 
+		  anon_fcn_handle.fcn_handle_value ();
+		if (fh)
+		  tc = new octave_fcn_handle (fh->fcn_val(), "@<anonymous>");
+		else
+		  {
+		    error ("load: failed to load anonymous function handle");
+		    goto skip_ahead;
+		  }
+	      }
+	    else
+	      {
+		error ("load: failed to load anonymous function handle");
+		goto skip_ahead;
+	      }
+
+	    unwind_protect::run_frame ("anon_mat5_load");
+
+	    if (local_sym_tab)
+	      delete local_sym_tab;	    
+	  }
+	else
+	  {
+	    error ("load: invalid function handle type");
+	    goto skip_ahead;
+	  }
+      }
+      break;
+
+    case MAT_FILE_WORKSPACE_CLASS:
+      {
+	Octave_map m (dim_vector (1, 1));
+	int n_fields = 2;
+	string_vector field (n_fields);
+
+	for (int i = 0; i < n_fields; i++)
+	  {
+	    int32_t fn_type;
+	    int32_t fn_len;
+	    if (read_mat5_tag (is, swap, fn_type, fn_len) || fn_type != miINT8)
+	      {
+		error ("load: invalid field name subelement");
+		goto data_read_error;
+	      }
+
+	    OCTAVE_LOCAL_BUFFER (char, elname, fn_len + 1);
+
+	    std::streampos tmp_pos = is.tellg ();
+
+	    if (fn_len)
+	      {
+		if (! is.read (elname, fn_len))
+		  goto data_read_error;
+
+		is.seekg (tmp_pos + 
+			  static_cast<std::streamoff> (PAD (fn_len)));
+	      }
+
+	    elname[fn_len] = '\0';
+
+	    field(i) = elname;
+	  }
+
+	std::vector<Cell> elt (n_fields);
+
+	for (octave_idx_type i = 0; i < n_fields; i++)
+	  elt[i] = Cell (dims);
+
+	octave_idx_type n = dims.numel ();
+
+	// fields subelements
+	for (octave_idx_type j = 0; j < n; j++)
+	  {
+	    for (octave_idx_type i = 0; i < n_fields; i++)
+	      {
+		if (field(i) == "MCOS")
+		  {
+		    octave_value fieldtc;
+		    read_mat5_binary_element (is, filename, swap, global,
+					      fieldtc); 
+		    if (! is || error_state)
+		      goto data_read_error;
+
+		    elt[i](j) = fieldtc;
+		  }
+		else
+		  elt[i](j) = octave_value ();
+	      }
+	  }
+
+	for (octave_idx_type i = 0; i < n_fields; i++)
+	  m.assign (field (i), elt[i]);
+	tc = m;
+      }
+      break;
+
+    case MAT_FILE_OBJECT_CLASS:
+      {
+	isclass = true;
+
+	if (read_mat5_tag (is, swap, type, len) || type != miINT8)
+	  {
+	    error ("load: invalid class name");
+	    goto skip_ahead;
+	  }
+
+	{
+	  OCTAVE_LOCAL_BUFFER (char, name, len+1);
+
+	  std::streampos tmp_pos = is.tellg ();
+
+	  if (len)
+	    {
+	      if (! is.read (name, len ))
+		goto data_read_error;
+	
+	      is.seekg (tmp_pos + static_cast<std::streamoff> (PAD (len)));
+	    }
+
+	  name[len] = '\0';
+	  classname = name;
+	}
+      }
+      // Fall-through
     case MAT_FILE_STRUCT_CLASS:
       {
 	Octave_map m (dim_vector (1, 1));
@@ -784,7 +1099,24 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      }
 	  }
 
-	tc = m;
+	if (isclass)
+	  {
+	    if (classname == "inline")
+	      {
+		// inline is not an object in Octave but rather an
+		// overload of a function handle. Special case.
+		tc =  
+		  new octave_fcn_inline (m.contents("expr")(0).string_value(),
+					 m.contents("args")(0).string_value());
+	      }
+	    else
+	      {
+		warning ("load: objects are not implemented");
+		goto skip_ahead;
+	      }
+	  }
+	else
+	  tc = m;
       }
       break;
 
@@ -975,9 +1307,14 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 }
 
 int
-read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet)
+read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet, 
+			      const std::string& filename)
 {
   int16_t version=0, magic=0;
+  uint64_t subsys_offset;
+
+  is.seekg (116, std::ios::beg);
+  is.read (reinterpret_cast<char *> (&subsys_offset), 8);
 
   is.seekg (124, std::ios::beg);
   is.read (reinterpret_cast<char *> (&version), 2);
@@ -1000,6 +1337,48 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet)
   if (version != 1 && !quiet)
     warning ("load: found version %d binary MAT file, "
 	     "but only prepared for version 1", version);
+
+  if (swap)
+    swap_bytes<8> (&subsys_offset, 1);
+
+  if (subsys_offset != 0x2020202020202020ULL && subsys_offset != 0ULL)
+    {
+      // Read the subsystem data block
+      is.seekg (subsys_offset, std::ios::beg);
+
+      octave_value tc;
+      bool global;
+      read_mat5_binary_element (is, filename, swap, global, tc);
+
+      if (!is || error_state)
+	return -1;
+
+      if (tc.is_uint8_type ())
+	{
+	  const uint8NDArray itmp = tc.uint8_array_value();
+	  octave_idx_type ilen = itmp.nelem ();
+
+	  // Why should I have to initialize outbuf as just overwrite
+	  std::string outbuf (ilen - 7, ' ');
+
+	  // FIXME -- find a way to avoid casting away const here
+	  char *ctmp = const_cast<char *> (outbuf.c_str ());
+	  for (octave_idx_type j = 8; j < ilen; j++)
+	    ctmp [j - 8] = itmp (j);
+
+	  std::istringstream fh_ws (outbuf);
+
+	  read_mat5_binary_element (fh_ws, filename, swap, global, subsys_ov);
+
+	  if (error_state)
+	    return -1;
+	}
+      else
+	return -1;
+
+      // Reposition to just after the header
+      is.seekg (128, std::ios::beg);
+    }
 
   return 0;
 }
@@ -1415,11 +1794,15 @@ save_mat5_element_length (const octave_value& tc, const std::string& name,
       ret += save_mat5_array_length (m.fortran_vec (), m.nelem (),
 				     save_as_floats);
     }
-  else if (tc.is_map ()) 
+  else if (tc.is_map () || tc.is_inline_function ()) 
     {
       int fieldcnt = 0;
       const Octave_map m = tc.map_value ();
       int nel = m.numel ();
+
+      if (tc.is_inline_function ())
+	// length of "inline" is 6
+	ret += 8 + PAD (6 > max_namelen ? max_namelen : 6);
 
       for (Octave_map::const_iterator i = m.begin (); i != m.end (); i++)
 	fieldcnt++;
@@ -1559,6 +1942,8 @@ save_mat5_binary_element (std::ostream& os,
     flags |= MAT_FILE_STRUCT_CLASS;
   else if (tc.is_cell ())
     flags |= MAT_FILE_CELL_CLASS;
+  else if (tc.is_inline_function ())
+    flags |= MAT_FILE_OBJECT_CLASS;
   else
     {
       gripe_wrong_type_arg ("save", tc, false);
@@ -1746,12 +2131,28 @@ save_mat5_binary_element (std::ostream& os,
       write_mat5_array (os, ::real (m_cmplx), save_as_floats);
       write_mat5_array (os, ::imag (m_cmplx), save_as_floats);
     }
-  else if (tc.is_map ()) 
+  else if (tc.is_map () || tc.is_inline_function()) 
     {
+      const Octave_map m = tc.map_value ();
+      if (tc.is_inline_function ())
+	{
+	  std::string classname = "inline";
+	  int namelen = classname.length ();
+
+	  if (namelen > max_namelen)
+	    namelen = max_namelen; // only 31 or 63 char names permitted
+
+	  int paddedlength = PAD (namelen);
+
+	  write_mat5_tag (os, miINT8, namelen);
+	  OCTAVE_LOCAL_BUFFER (char, paddedname, paddedlength);
+	  memset (paddedname, 0, paddedlength);
+	  strncpy (paddedname, classname.c_str (), namelen);
+	  os.write (paddedname, paddedlength);
+	}
+
       // an Octave structure */
       // recursively write each element of the structure
-      const Octave_map m = tc.map_value ();
-
       {
 	char buf[64];
 	int32_t maxfieldnamelength = max_namelen + 1;

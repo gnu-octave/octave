@@ -50,6 +50,12 @@ std::string load_path::command_line_path;
 
 static std::string Vsystem_path;
 
+std::string
+octave_system_path (void)
+{
+  return Vsystem_path;
+}
+
 void
 load_path::dir_info::update (void)
 {

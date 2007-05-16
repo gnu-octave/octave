@@ -89,6 +89,26 @@ octave_fcn_inline::octave_fcn_inline (const std::string& f,
     error ("inline: unable to define function");
 }
 
+// This function is supplied to allow a Matlab style class structure
+// to be returned..
+Octave_map
+octave_fcn_inline::map_value (void) const
+{
+  Octave_map m;
+  string_vector args = fcn_arg_names ();
+  m.assign ("version", octave_value (1.0));
+  m.assign ("isEmpty", octave_value (0.0));
+  m.assign ("expr", octave_value (fcn_text ()));
+  m.assign ("numArgs", octave_value (args.length ()));
+  m.assign ("args", octave_value (args));
+  std::ostringstream buf;
+  for (int i = 0; i < args.length (); i++)
+    buf << args(i) << " = INLINE_INPUTS_{" << i + 1 << "}; ";
+  m.assign ("inputExpr", octave_value (buf.str ()));
+
+  return m;
+}
+
 bool
 octave_fcn_inline::save_ascii (std::ostream& os, bool&)
 {

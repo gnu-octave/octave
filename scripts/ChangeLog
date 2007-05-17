@@ -1,3 +1,8 @@
+2007-05-17  David Bateman  <dbateman@free.fr>
+
+	* plot/hbar.m: Remove.
+	* plot/barh.m: and move it here.
+
 2007-05-16  Søren Hauberg  <soren@hauberg.org>
 
 	* general/sub2ind.m, general/ind2sub.m: Doc fix.

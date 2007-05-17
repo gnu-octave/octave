@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __bar__ (@dots{})
-## Support function for @ode{bar} and {hbar}. 
+## Support function for @code{bar} and @code{hbar}. 
 ## @seealso{bar, hbar}
 ## @end deftypefn
 

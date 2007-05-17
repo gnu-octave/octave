@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} hbar (@var{x}, @var{y}, @var{style})
-## @deftypefnx {Function File} {[@var{xb}, @var{yb}] =} hbar (@dots{})
+## @deftypefn {Function File} {@var{h} =} barh (@var{x}, @var{y}, @var{style})
+## @deftypefnx {Function File} {[@var{xb}, @var{yb}] =} barh (@dots{})
 ## Given two vectors of x-y data, @code{bar} produces a horizontal bar graph.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
@@ -34,14 +34,14 @@
 ## not plotted.  For example,
 ##
 ## @example
-## hbar (x, y);
+## barh (x, y);
 ## @end example
 ##
 ## @noindent
 ## and
 ##
 ## @example
-## [xb, yb] = hbar (x, y);
+## [xb, yb] = barh (x, y);
 ## plot (xb, yb);
 ## @end example
 ##
@@ -53,7 +53,7 @@
 
 ## Author: jwe
 
-function varargout = hbar (varargin)
+function varargout = barh (varargin)
   varargout = cell (nargout, 1);
-  [varargout{:}] = __bar__ (false, "hbar", varargin{:});
+  [varargout{:}] = __bar__ (false, "barh", varargin{:});
 endfunction

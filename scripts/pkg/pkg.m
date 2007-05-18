@@ -302,12 +302,18 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
       ## Create a temporary directory 
       tmpdir = tmpnam ();
       tmpdirs{end+1} = tmpdir;
+      if (verbose)
+	printf ("mkdir (%s)\n", tmpdir);
+      endif
       [status, msg] = mkdir (tmpdir);
       if (status != 1)
 	error ("couldn't create temporary directory: %s", msg);
       endif
 
       ## Uncompress the package
+      if (verbose)
+	printf ("untar (%s, %s)\n", tgz, tmpdir);
+      endif
       untar (tgz, tmpdir);
 
       ## Get the name of the directories produced by tar
@@ -760,6 +766,11 @@ function configure_make (desc, packdir, verbose)
     if (! all (isspace (filenames)))
 	mkdir (instdir);
 	if (! all (isspace (archindependent)))
+	  if (verbose)
+	    printf ("copyfile");
+	    printf (" %s", archindependent{:});
+	    printf ("%s\n", instdir);
+	  endif
 	  [status, output] = copyfile (archindependent, instdir);
 	  if (status != 1)
 	    rm_rf (desc.dir);
@@ -767,6 +778,11 @@ function configure_make (desc, packdir, verbose)
 	  endif
         endif
 	if (! all (isspace (archdependent)))
+	  if (verbose)
+	    printf ("copyfile");
+	    printf (" %s", archdependent{:});
+	    printf (" %s\n", archdir);
+	  endif
 	  mkdir (archdir);
 	  [status, output] = copyfile (archdependent, archdir);
 	  if (status != 1)
@@ -799,7 +815,16 @@ function pkg = extract_pkg (nm, pat)
 endfunction
 
 function create_pkgadddel (desc, packdir, nm)
-  pkg = fullfile (desc.dir, nm);
+  archdir = fullfile (desc.dir, getarch ());
+
+  ## If it is exists, the PKG_* files should go into the architecture
+  ## dependent directory so that the autoload/mfilename commands work
+  ## as expected...
+  if (exist (archdir, "dir"))
+    pkg = fullfile (desc.dir, getarch(), nm);
+  else
+    pkg = fullfile (desc.dir, nm);
+  endif
   fid = fopen (pkg, "wt");
 
   if (fid >= 0)
@@ -1136,6 +1161,17 @@ function write_INDEX (desc, dir, INDEX)
   [files, err, msg] = readdir (dir);
   if (err)
     error ("couldn't read directory %s: %s", dir, msg);
+  endif
+
+  ## Check for architecture dependent files
+  arch = getarch();
+  tmpdir = fullfile (dir, arch);
+  if (exist (tmpdir, "dir"))
+    [files2, err, msg] = readdir (tmpdir);
+    if (err)
+      error ("couldn't read directory %s: %s", tmpdir, msg);
+    endif
+    files = [files; files2];    
   endif
 
   functions = {};

@@ -1,3 +1,11 @@
+2007-05-18  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (install): More verbosity. 
+	(configure_make): Ditto.
+	(create_pkgadddel): Install in architecture dependent directory if
+	it exists to address issues with autoload/mfilename.
+	(write_INDEX): Check in archiecture dependent directories as well.
+
 2007-05-17  David Bateman  <dbateman@free.fr>
 
 	* plot/hbar.m: Remove.

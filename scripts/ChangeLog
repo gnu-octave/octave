@@ -1,3 +1,7 @@
+2007-05-19  Kristan Onu
+
+	* plot/Makefile.in (SOURCES): Remove hbar.m and add barh.m.
+
 2007-05-18  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (install): More verbosity. 

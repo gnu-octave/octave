@@ -49,6 +49,7 @@ SOURCES = \
   axes.m \
   axis.m \
   bar.m \
+  barh.m \
   box.m \
   clf.m \
   close.m \
@@ -62,7 +63,6 @@ SOURCES = \
   gca.m \
   gcf.m \
   grid.m \
-  hbar.m \
   hist.m \
   hold.m \
   isfigure.m \

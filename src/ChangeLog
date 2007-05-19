@@ -1,3 +1,7 @@
+2007-05-19  David Bateman  <dbatemna@free.fr>
+
+	* ov-fcn-inline.cc (Fvectorize): Doc fix.
+
 2007-05-16  Søren Hauberg  <soren@hauberg.org>
 
 	* ov.cc (Fsubsref, Fsubsasgn): Doc fix.

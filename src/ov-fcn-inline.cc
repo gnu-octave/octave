@@ -809,7 +809,7 @@ the arguments of the inline function @var{fun}.\n\
 
 DEFUN (vectorize, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} argnames (@var{fun})\n\
+@deftypefn {Built-in Function} {} vectorize (@var{fun})\n\
 Create a vectorized version of the inline function @var{fun}\n\
 by replacing all occurrences of @code{*}, @code{/}, etc., with\n\
 @code{.*}, @code{./}, etc.\n\

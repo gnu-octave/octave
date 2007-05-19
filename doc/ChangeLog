@@ -1,6 +1,11 @@
+2007-05-19  David Bateman  <dbatemna@free.fr>
+
+	* interpreter/func.txi: Additional documentation for function
+	locking, dispatch and autoloading.
+
 2007-05-16  Søren Hauberg  <hauberg@gmail.com>
 
-	* interpreter/expr.txi: Imrove docs.
+	* interpreter/expr.txi: Improve docs.
 
 2007-05-14  John W. Eaton  <jwe@octave.org>
 

@@ -823,12 +823,6 @@ the commands do not need to be parsed each time the @var{try} and
 @var{catch} statements are evaluated.  @xref{Error Handling}, for more
 information about the @code{lasterr} function.
 
-Octave's @var{try} block is a very limited variation on the Lisp
-condition-case form (limited because it cannot handle different classes
-of errors separately).  Perhaps at some point Octave can have some sort
-of classification of errors and try-catch can be improved to be as
-powerful as condition-case in Lisp.
-
 @cindex continuation lines
 @cindex @code{...} continuation marker
 @cindex @code{\} continuation marker

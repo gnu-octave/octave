@@ -23,7 +23,7 @@ like built-in functions.
 * Default Arguments::   
 * Function Files::              
 * Script Files::                
-* Function Handles and Inline::
+* Function Handles Inline Functions and Anonymous Functions::
 * Commands::
 * Organization of Functions::   
 @end menu
@@ -546,8 +546,6 @@ hello (:);
 @section Function Files
 @cindex function file
 
-@c FIXME need discussion of subfunctions here
-
 Except for simple one-shot programs, it is not practical to have to
 define all the functions you need each time you need them.  Instead, you
 will normally want to save them in a file so that you can easily edit
@@ -599,6 +597,36 @@ ignore the time stamps for all function files.  Passing
 
 @DOCSTRING(mfilename)
 
+@DOCSTRING(ignore_function_time_stamp)
+
+@menu
+* Manipulating the load path::
+* Subfunctions::
+* Overloading and Autoloading::
+* Function Locking::
+@end menu
+
+@node Manipulating the load path
+@subsection Manipulating the load path
+
+When a function is called Octave searches a list of directories for
+a file that contains the function declaration. This list of directories
+is known as the load path. By default the load path contains
+a list of directories distributed with Octave plus the current
+working directory. To see your current load path call the @code{path}
+function without any input or output arguments.
+
+It is possible to add or remove directories to or from the load path
+using the @code{addpath} and @code{rmpath}. As an example, the following
+code adds @samp{~/Octave} to the load path.
+
+@example
+addpath("~/Octave")
+@end example
+
+@noindent
+After this the directory @samp{~/Octave} will be searched for functions.
+ 
 @DOCSTRING(addpath)
 
 @DOCSTRING(genpath)
@@ -617,15 +645,6 @@ ignore the time stamps for all function files.  Passing
 
 @DOCSTRING(file_in_loadpath)
 
-@DOCSTRING(ignore_function_time_stamp)
-
-
-@menu
-* Subfunctions::
-* Overloading and Autoloading::
-* Function Locking::
-@end menu
-
 @node Subfunctions
 @subsection Subfunctions
 
@@ -642,6 +661,7 @@ function f ()
 endfunction
 function g ()
   printf ("in g, calling h\n");
+  h ()
 endfunction
 function h ()
   printf ("in h\n")
@@ -761,7 +781,7 @@ function one ()
 @end example
 
 To have Octave read and compile these functions into an internal form,
-you need to make sure that the file is in Octave's @code{LOADPATH}
+you need to make sure that the file is in Octave's load path
 (accessible through the @code{path} function), then simply type the
 base name of the file that contains the commands.  (Octave uses the
 same rules to search for script files as it does to search for
@@ -825,13 +845,16 @@ execute commands from any file.
 
 @DOCSTRING(source)
 
-@node Function Handles and Inline
-@section Function Handles and Inline
+@node Function Handles Inline Functions and Anonymous Functions
+@section Function Handles, Inline Functions, and Anonymous Functions
 @cindex handle, function handles
 @cindex inline, inline functions
+@cindex anonymous functions
 
-This is a place holder for the description of function handles and
-inline functions.
+It can be very convenient store a function in a variable so that it
+can be passed to a different function. For example, a function that
+performs numerical minimisation needs access to the function that 
+should be minimised.
 
 @menu
 * Function Handles::
@@ -939,6 +962,18 @@ environment.
 @node Inline Functions
 @subsection Inline Functions
 
+An inline function is created from a string containing the function
+body using the @code{inline} function. The following code defines the
+function @math{f(x) = x^2 + 2}.
+
+@example
+f = inline("x^2 + 2");
+@end example
+
+@noindent
+After this it is possible to evaluate @math{f} at any @math{x} by
+writing @code{f(x)}.
+
 @DOCSTRING(inline)
 
 @DOCSTRING(argnames)
@@ -949,6 +984,52 @@ environment.
 
 @node Commands
 @section Commands
+
+Commands are a special class of functions that only accept string
+input arguments. A command can be called as an ordinary function, but
+it can also be called without the parentheses like the following example
+shows
+
+@example
+my_command hello world
+@end example
+
+@noindent
+which is the same as
+
+@example
+my_command("hello", "world")
+@end example
+
+The general form of a command call is
+
+@example
+@var{name} @var{arg1} @var{arg2} @dots{}
+@end example
+
+@noindent
+which translates directly to
+
+@example
+@var{name} ("@var{arg1}", "@var{arg2}", @dots{})
+@end example
+
+A function can be used as a command if it accept string input arguments.
+To do this, the function must be marked as a command, which can be done
+with the @code{mark_as_command} command like this
+
+@example
+mark_as_command name
+@end example
+
+@noindent
+where @code{name} is the function to be marked as a command.
+
+One difficulty of commands occurs when one of the string input arguments
+are stored in a variable. Since Octave can't tell the difference between
+a variable name, and an ordinary string, it is not possible to pass a
+variable as input to a command. In such a situation a command must be
+called as a function.
 
 @DOCSTRING(mark_as_command)
 

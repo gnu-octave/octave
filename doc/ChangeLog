@@ -1,5 +1,8 @@
 2007-05-21  Søren Hauberg  <hauberg@gmail.com>
 
+        * interpreter/func.txi: New section describing load path.
+        Improve 'inline' and 'command' sections.
+
         * interpreter/stmt.txi: Describe cell array cases for the switch
 	statement.  Minor layout changes.
 

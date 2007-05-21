@@ -1264,7 +1264,7 @@ Return a path constructed from @var{dir} and all its subdiretories.\n\
 DEFUN (rehash, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} rehash ()\n\
-Reinitialize Octave's @code{LOADPATH} directory cache.\n\
+Reinitialize Octave's load path directory cache.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -1294,13 +1294,13 @@ files.\n\
 DEFUN (path, args, nargout,
     "-*- texinfo -*-\n\
 @deftypefn {Function File} {} path (@dots{})\n\
-Modify or display Octave's @code{LOADPATH}.\n\
+Modify or display Octave's load path.\n\
 \n\
 If @var{nargin} and @var{nargout} are zero, display the elements of\n\
-Octave's @code{LOADPATH} in an easy to read format.\n\
+Octave's load path in an easy to read format.\n\
 \n\
 If @var{nargin} is zero and nargout is greater than zero, return the\n\
-current value of @code{LOADPATH}.\n\
+current load path.\n\
 \n\
 If @var{nargin} is greater than zero, concatenate the arguments,\n\
 separating them with @code{pathsep()}.  Set the internal search path\n\

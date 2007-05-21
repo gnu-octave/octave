@@ -3523,13 +3523,13 @@ autoload (\"foo\",\n\
 Uses like\n\
 \n\
 @example\n\
-autoload (\"foo\", file_in_loadpth (\"bar.oct\"))\n\
+autoload (\"foo\", file_in_loadpath (\"bar.oct\"))\n\
 @end example\n\
 \n\
 @noindent\n\
 are strongly discouraged.\n\
 \n\
-With no arguments, return a structure containing the curre autoload map.\n\
+With no arguments, return a structure containing the current autoload map.\n\
 @seealso{PKG_ADD}\n\
 @end deftypefn")
 {

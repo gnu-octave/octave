@@ -235,7 +235,7 @@ DEFCMD (iscommand, args, ,
 @deftypefn {Built-in Function} {} iscommand (@var{name})\n\
 Return true if @var{name} is a command style function.  If @var{name}\n\
 is omitted, return a list of identifiers which are marked as commands with\n\
-mark_as_command.\n\
+@code{mark_as_command}.\n\
 @seealso{mark_as_command, unmark_command}\n\
 @end deftypefn")
 {

@@ -71,8 +71,8 @@ statement will do.  The @var{then-body} is executed only if
 The condition in an @code{if} statement is considered true if its value
 is non-zero, and false if its value is zero.  If the value of the
 conditional expression in an @code{if} statement is a vector or a
-matrix, it is considered true only if @emph{all} of the elements are
-non-zero.
+matrix, it is considered true only if it is non-empty and @emph{all}
+of the elements are non-zero.
 
 The second form of an if statement looks like this:
 
@@ -262,6 +262,21 @@ corresponding to the first match will be executed. For the
 @code{case @var{label} @var{command_list}} clause must be present,
 while the @code{otherwise @var{command_list}} clause is optional.
 
+If @var{label} is a cell array the corresponding @var{command_list}
+is executed if @emph{any} of the elements of the cell array match
+@var{expression}. As an example, the following program will print
+@samp{Variable is either 6 or 7}.
+
+@example
+A = 7;
+switch A
+  case @{ 6, 7 @}
+    printf ("variable is either 6 or 7\n");
+  otherwise
+    printf ("variable is neither 6 nor 7\n");
+endswitch
+@end example
+
 As with all other specific @code{end} keywords, @code{endswitch} may be
 replaced by @code{end}, but you can get better diagnostics if you use
 the specific forms.
@@ -297,14 +312,14 @@ endswitch
 @node Notes for the C programmer
 @subsection Notes for the C programmer
 
-The @code{switch} statement is also used in the widely used C
+The @code{switch} statement is also available in the widely used C
 programming language. There are, however, some differences
 between the statement in Octave and C
 
 @itemize @bullet
 @item
 Cases are exclusive, so they don't `fall through' as do the cases
-in the switch statement of the C language.
+in the @code{switch} statement of the C language.
 
 @item
 The @var{command_list} elements are not optional.  Making the list
@@ -333,7 +348,18 @@ switch (foo)
 @end example
 
 @noindent
-particularly for C programmers.
+particularly for C programmers. If @code{doit()} should be executed if
+@var{foo} is either @code{1} or @code{2}, the above code should be
+written with a cell array like this
+
+@example
+@group
+switch (foo)
+  case @{ 1, 2 @}
+    doit ();
+  @dots{}
+@end group
+@end example
 @end itemize
 
 @node The while Statement
@@ -352,7 +378,7 @@ with the condition in an @code{if} statement, the condition in a
 @code{while} statement is considered true if its value is non-zero, and
 false if its value is zero.  If the value of the conditional expression
 in a @code{while} statement is a vector or a matrix, it is considered
-true only if @emph{all} of the elements are non-zero.
+true only if it is non-empty and @emph{all} of the elements are non-zero.
 
 Octave's @code{while} statement looks like this:
 
@@ -417,7 +443,7 @@ condition in an @code{if} statement, the condition in a @code{do-until}
 statement is considered true if its value is non-zero, and false if its
 value is zero.  If the value of the conditional expression in a
 @code{do-until} statement is a vector or a matrix, it is considered 
-true only if @emph{all} of the elements are non-zero.
+true only if it is non-empty and @emph{all} of the elements are non-zero.
 
 Octave's @code{do-until} statement looks like this:
 
@@ -473,7 +499,7 @@ where @var{body} stands for any statement or list of statements,
 @var{expression} is any valid expression, and @var{var} may take several
 forms.  Usually it is a simple variable name or an indexed variable.  If
 the value of @var{expression} is a structure, @var{var} may also be a
-list.  @xref{Looping Over Structure Elements}, below.
+vector with two elements.  @xref{Looping Over Structure Elements}, below.
 
 The assignment expression in the @code{for} statement works a bit
 differently than Octave's normal assignment statement.  Instead of
@@ -602,7 +628,7 @@ endfor
 
 The elements are not accessed in any particular order.  If you need to
 cycle through the list in a particular way, you will have to use the
-function @code{struct_elements} and sort the list yourself.
+function @code{fieldnames} and sort the list yourself.
 
 The @var{key} variable may also be omitted.  If it is, the brackets are
 also optional.  This is useful for cycling through the values of all the
@@ -735,7 +761,7 @@ end_unwind_protect
 @end example
 
 @noindent
-Where @var{body} and @var{cleanup} are both optional and may contain any
+where @var{body} and @var{cleanup} are both optional and may contain any
 Octave expressions or commands.  The statements in @var{cleanup} are 
 guaranteed to be executed regardless of how control exits @var{body}.
 
@@ -756,6 +782,7 @@ end_unwind_protect
 @end group
 @end example
 
+@noindent
 Without @code{unwind_protect}, the value of @var{frobnosticate}
 would not be restored if an error occurs while performing the indexing
 operation because evaluation would stop at the point of the error and
@@ -782,7 +809,8 @@ end_try_catch
 @end group
 @end example
 
-Where @var{body} and @var{cleanup} are both optional and may contain any
+@noindent
+where @var{body} and @var{cleanup} are both optional and may contain any
 Octave expressions or commands.  The statements in @var{cleanup} are
 only executed if an error occurs in @var{body}.
 
@@ -825,7 +853,7 @@ x = long_variable_name ...
 
 @noindent
 form a single statement.  The backslash character on the second line
-above is interpreted a continuation character, @emph{not} as a division
+above is interpreted as a continuation character, @emph{not} as a division
 operator.
 
 For continuation lines that do not occur inside string constants,

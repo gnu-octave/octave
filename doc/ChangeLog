@@ -1,3 +1,8 @@
+2007-05-21  Søren Hauberg  <hauberg@gmail.com>
+
+        * interpreter/stmt.txi: Describe cell array cases for the switch
+	statement.  Minor layout changes.
+
 2007-05-19  David Bateman  <dbatemna@free.fr>
 
 	* interpreter/func.txi: Additional documentation for function

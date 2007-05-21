@@ -1,3 +1,8 @@
+2007-05-21  Søren Hauberg  <soren@hauberg.org>
+
+	* help.cc (Fautoload): Doc fix.
+	* variables.cc (Fiscommand): Doc fix.
+
 2007-05-19  David Bateman  <dbatemna@free.fr>
 
 	* ov-fcn-inline.cc (Fvectorize): Doc fix.

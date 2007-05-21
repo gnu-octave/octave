@@ -1,3 +1,7 @@
+2007-05-21  Søren Hauberg  <hauberg@gmail.com>
+
+        * parse.y (Feval): Add example.
+
 2007-05-21  David Bateman  <dbateman@free.fr>
 
 	* error.cc (rethrow_error): Use NULL name so that "error:" is not

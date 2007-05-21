@@ -3963,9 +3963,26 @@ DEFUN (eval, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} eval (@var{try}, @var{catch})\n\
 Parse the string @var{try} and evaluate it as if it were an Octave\n\
-program.  If that fails, evaluate the string @var{catch}.\n\
+program.  If that fails, evaluate the optional string @var{catch}.\n\
 The string @var{try} is evaluated in the current context,\n\
 so any results remain available after @code{eval} returns.\n\
+\n\
+The following example makes the variable @var{a} with the approximate\n\
+value 3.1416 available.\n\
+\n\
+@example\n\
+eval(\"a = acos(-1);\");\n\
+@end example\n\
+\n\
+If an error occurs during the evaluation of @var{try} the @var{catch}\n\
+string is evaluated, as the following example shows.\n\
+\n\
+@example\n\
+eval ('error (\"This is a bad example\");',\n\
+      'printf (\"This error occured:\\n%s\", lasterr ());');\n\
+     @print{} This error occured:\n\
+        error: This is a bad example\n\
+@end example\n\
 @end deftypefn")
 {
   octave_value_list retval;

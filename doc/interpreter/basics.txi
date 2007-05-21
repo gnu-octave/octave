@@ -148,8 +148,8 @@ and @code{--no-site-file}.
 Specify the path to search for function files.  The value of @var{path}
 specified on the command line will override any value of
 @code{OCTAVE_PATH} found in the environment, but not any commands in the
-system or user startup files that set the internal variable @code{LOADPATH}
-through one of the path functions.
+system or user startup files that set the internal load path through one
+of the path functions.
 
 @item --persist
 Go to interactive mode after @code{--eval} or reading from a file

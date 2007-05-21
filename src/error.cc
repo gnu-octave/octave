@@ -727,7 +727,7 @@ rethrow_error (const char *id, const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
-  error_1 (std::cerr, "error", id, fmt, args);
+  error_1 (std::cerr, 0, id, fmt, args);
   va_end (args);
 }
 
@@ -858,17 +858,20 @@ location of the error. Typically @var{err} is returned from\n\
 		{
 		  Octave_map err_stack = err.contents("stack")(0).map_value ();
 
-		  if (err_stack.contains ("file"))
-		    file = err_stack.contents("file")(0).string_value ();
+		  if (err_stack.numel () > 0)
+		    {
+		      if (err_stack.contains ("file"))
+			file = err_stack.contents("file")(0).string_value ();
 
-		  if (err_stack.contains ("name"))
-		    nm = err_stack.contents("name")(0).string_value ();
+		      if (err_stack.contains ("name"))
+			nm = err_stack.contents("name")(0).string_value ();
 
-		  if (err_stack.contains ("line"))
-		    l = err_stack.contents("line")(0).nint_value ();
+		      if (err_stack.contains ("line"))
+			l = err_stack.contents("line")(0).nint_value ();
 
-		  if (err_stack.contains ("column"))
-		    c = err_stack.contents("column")(0).nint_value ();
+		      if (err_stack.contains ("column"))
+			c = err_stack.contents("column")(0).nint_value ();
+		    }
 		}
 
 	      // Ugh.

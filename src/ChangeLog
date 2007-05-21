@@ -1,3 +1,9 @@
+2007-05-21  David Bateman  <dbateman@free.fr>
+
+	* error.cc (rethrow_error): Use NULL name so that "error:" is not
+	added to the message
+	(Frethrow): Correctly treat empty stack.
+
 2007-05-21  John W. Eaton  <jwe@octave.org>
 
 	* oct-map.h (Octave_map::numel): Return number of array elements,

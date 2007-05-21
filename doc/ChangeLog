@@ -1,5 +1,8 @@
 2007-05-21  Søren Hauberg  <hauberg@gmail.com>
 
+        * interpreter/expr.txi: Describe +=, -=, *=, and /= operators.
+	Add new example.
+
         * interpreter/eval.txi: Partition the chapter into sections.
         Describe evalin and assignin functions using text from Paul
 	Kienzle.

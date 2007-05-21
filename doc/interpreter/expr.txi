@@ -112,6 +112,25 @@ use the function @code{ones} to generate a matrix of the appropriate
 size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Utility Matrices}.
 
+It is also possible to create a matrix with different values. The
+following example create a 10 dimensional row vector @math{a} containing
+the values
+@iftex
+@tex
+$a_i = \sqrt{i}$.
+@end tex
+@end iftex
+@ifnottex
+a(i) = sqrt(i).
+@end ifnottex
+
+@example
+for i = 1:10
+  a(i) = sqrt (i);
+endfor
+@end example
+
+@noindent
 Note that it is quite inefficient to create a vector using a loop like
 the one shown in the example above.  In this particular case, it would
 have been much more efficient to use the expression
@@ -301,7 +320,7 @@ For example, the ODE solver @code{lsode} is ultimately implemented in a
 Fortran subroutine that cannot be called recursively, so @code{lsode}
 should not be called either directly or indirectly from within the
 user-supplied function that @code{lsode} requires.  Doing so will result
-in undefined behavior.}, recursive function calls are allowed.  A
+in an error.}, recursive function calls are allowed.  A
 @dfn{recursive function} is one which calls itself, either directly or
 indirectly.  For example, here is an inefficient@footnote{It would be
 much better to use @code{prod (1:n)}, or @code{gamma (n+1)} instead,
@@ -915,6 +934,63 @@ following will produce an error.
         error: evaluating assignment expression near line 8, column 15
 @end example
 
+@opindex +=
+A very common programming pattern is to increment an existing variable
+with a given value, like this
+
+@example
+a = a + 2;
+@end example
+
+@noindent
+This can be written in a clearer and more condensed form using the
+@code{+=} operator
+
+@example
+a += 2;
+@end example
+
+@noindent
+@opindex -=
+@opindex *=
+@opindex /=
+Similar operators also exist for subtraction (@code{-=}),
+multiplication (@code{*=}), and division (@code{/=}). An expression
+of the form
+
+@example
+@var{expr1} @var{op}= @var{expr2}
+@end example
+
+@noindent
+is evaluated as
+
+@example
+@var{expr1} = (@var{expr1}) @var{op} (@var{expr2})
+@end example
+
+@noindent
+where @var{op} can be either @code{+}, @code{-}, @code{*}, or @code{/}.
+So, the expression
+
+@example
+a *= b+1
+@end example
+
+@noindent
+is evaluated as
+
+@example
+a = a * (b+1)
+@end example
+
+@noindent
+and @emph{not}
+
+@example
+a = a * b + 1
+@end example
+
 You can use an assignment anywhere an expression is called for.  For
 example, it is valid to write @code{x != (y = 1)} to set @code{y} to 1
 and then test whether @code{x} equals 1.  But this style tends to make
@@ -1013,7 +1089,8 @@ precedence.
 @samp{;}, @samp{,}.
 
 @item assignment
-@samp{=}.  This operator groups right to left.
+@samp{=}, @samp{+=}, @samp{-=}, @samp{*=},@samp{/=}.  This operator
+groups right to left.
 
 @item logical "or" and "and"
 @samp{||}, @samp{&&}.

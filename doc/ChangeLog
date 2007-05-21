@@ -1,5 +1,9 @@
 2007-05-21  Søren Hauberg  <hauberg@gmail.com>
 
+        * interpreter/eval.txi: Partition the chapter into sections.
+        Describe evalin and assignin functions using text from Paul
+	Kienzle.
+
         * interpreter/func.txi: New section describing load path.
         Improve 'inline' and 'command' sections.
 

@@ -1,3 +1,26 @@
+2007-05-21  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m: Add rebuild target, and -local, -global option to
+	force installation location.
+	(rebuild): New subfunction to rebuild package database from
+	installed packages. Also allows changing of autoload status
+	(install): Warn use if attempting to install from non existent
+	file. 
+	(issuperuser): Use 'geteuid() == 0' instead of 'strcmp (getenv(
+	"USER", "root"))' for root test.
+
+2007-05-21  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* miscellaneous/copyfile.m: check for cp.exe on Windows platforms
+	and replace "\" characters with "/".
+	* pkg/pkg.m: Use shell rather than system throughout. Replace "\" 
+	characters with "/" throughout.
+	(shell): New subfunction that wraps system and is careful with the
+	shell on windows platforms.
+	(configure_make): Explictly pass complier etc to configure
+	process.
+	(issuperuser): Force default to global install for Windows machines.
+	
 2007-05-19  Kristan Onu
 
 	* plot/Makefile.in (SOURCES): Remove hbar.m and add barh.m.

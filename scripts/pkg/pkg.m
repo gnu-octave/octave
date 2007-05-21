@@ -32,21 +32,35 @@
 ## @noindent
 ## installs the package found in the file @code{image-1.0.0.tar.gz}.
 ##
-## If @var{option} is @code{-nodeps} the package manager will disable the
-## dependency checking. That way it is possible to install a package even
-## if it depends on another package that's not installed on the system.
-## @strong{Use this option with care.}
+## The @var{option} variable can contain options that affect the manner
+## in which a package is installed. These options can be one or more of
 ##
-## If @var{option} is @code{-noauto} the package manager will not
-## automatically load the installed package when starting Octave,
-## even if the package requests that it is.
+## @table @code
+## @item -nodeps
+## The package manager will disable the dependency checking. That way it 
+## is possible to install a package even if it depends on another package 
+## that's not installed on the system. @strong{Use this option with care.}
 ##
-## If @var{option} is @code{-auto} the package manager will
-## automatically load the installed package when starting Octave,
-## even if the package requests that it isn't.
+## @item -noauto
+## The package manager will not automatically load the installed package 
+## when starting Octave, even if the package requests that it is.
 ##
-## Finally, if @var{option} is @code{-verbose} the package manager will
-## print the output of all of the commands that are performed
+## @item -auto
+## The package manager will automatically load the installed package when 
+## starting Octave, even if the package requests that it isn't.
+##
+## @item -local
+## A local installation is forced, even if the user has system privileges.
+##
+## @item -global
+## A global installation is forced, even if the user doesn't normally have
+## system privileges
+##
+## @item -verbose
+## The package manager will print the output of all of the commands that are 
+## performed.
+## @end table
+##
 ## @item uninstall
 ## Uninstall named packages.  For example,
 ## @example
@@ -124,6 +138,17 @@
 ## @example
 ## pkg global_list
 ## @end example
+## @item rebuild
+## Rebuilds the package database from the installed directories. This can 
+## be used in cases where for some reason the package database is corrupted.
+## It can also take the @code{-auto} and @code{-noauto} options to allow the
+## autolaoding state of a package to be changed. For example
+##
+## @example
+## pkg rebuild -noauto image
+## @end example
+##
+## will remove the autoloading status of the image package.
 ## @end table
 ## @end deftypefn
 
@@ -132,20 +157,22 @@
 
 function [local_packages, global_packages] = pkg (varargin)
   ## Installation prefix (XXX: what should these be on windows?)
+  persistent user_prefix = false;
   persistent prefix = -1;
   persistent local_list = tilde_expand (fullfile("~", ".octave_packages"));
   persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave",
 				     "octave_packages");
   mlock ();
 
+  global_install = issuperuser ();
   if (prefix == -1)
-    if (issuperuser ())
+    if (global_install)
       prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
     else
       prefix = fullfile ("~", "octave");
     endif
+    prefix = tilde_expand (prefix);
   endif
-  prefix = tilde_expand (prefix);
 
   ## Handle input
   if (length (varargin) == 0 || ! iscellstr (varargin))
@@ -166,8 +193,18 @@ function [local_packages, global_packages] = pkg (varargin)
 	auto = 1;
       case "-verbose"
 	verbose = true;
+      case "-local"
+	global_install = false;
+	if (! user_prefix)
+	  prefix = fullfile ("~", "octave");
+	endif
+      case "-global"
+	global_install = true;
+	if (! user_prefix)
+	  prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
+	endif
       case {"list", "install", "uninstall", "load", "unload", ...
-	    "prefix", "local_list", "global_list"}
+	    "prefix", "local_list", "global_list", "rebuild"}
 	action = varargin{i};
       otherwise
 	files{end+1} = varargin{i};
@@ -192,13 +229,15 @@ function [local_packages, global_packages] = pkg (varargin)
       if (length (files) == 0)
 	error ("you must specify at least one filename when calling 'pkg install'");
       endif
-      install (files, deps, auto, prefix, verbose, local_list, global_list);
+      install (files, deps, auto, prefix, verbose, local_list, 
+	       global_list, global_install);
 
     case "uninstall"
       if (length (files) == 0)
 	error ("you must specify at least one package when calling 'pkg uninstall'");
       endif
-      uninstall (files, deps, verbose, local_list, global_list);
+      uninstall (files, deps, verbose, local_list, 
+		 global_list, global_install);
 
     case "load"
       if (length (files) == 0)
@@ -222,6 +261,8 @@ function [local_packages, global_packages] = pkg (varargin)
 	## if (!strcmp(prefix(end), filesep))
 	##   prefix(end+1) = filesep;
 	## endif
+	prefix = tilde_expand (prefix);
+	user_prefix = true;
       else
 	error ("you must specify a prefix directory, or request an output argument");
       endif
@@ -247,9 +288,92 @@ function [local_packages, global_packages] = pkg (varargin)
       else
 	error ("you must specify a global_list file, or request an output argument");
       endif
+
+    case "rebuild"
+      if (global_install)
+	global_packages = rebuild (prefix, global_list, auto, verbose);
+	save (global_list, "global_packages");
+	local_packages = global_packages;
+      else
+	local_packages = rebuild (prefix, local_list, files, auto, verbose);
+	save (local_list, "local_packages");
+      endif
+
     otherwise
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
   endswitch
+endfunction
+
+function descriptions = rebuild (prefix, list, files, auto, verbose)
+  if (isempty (files))
+    [dirlist, err, msg] = readdir (prefix);
+    if (err)
+      error ("couldn't read directory %s: %s", prefix, msg);
+    endif
+    ## the two first entries of dirlist are "." and ".."
+    dirlist([1,2]) = [];
+  else
+    old_descriptions = installed_packages (list, list);
+    wd = pwd ();
+    cd (prefix);
+    dirlist = glob (cellfun(@(x) [x, '-*'], files, 'UniformOutput', 0))
+    cd (wd);
+  endif
+  descriptions = {};
+  for k = 1:length (dirlist)
+    descfile = fullfile (prefix, dirlist{k}, "packinfo", "DESCRIPTION");
+    if (verbose)
+      printf ("recreating package description from %s\n", dirlist{k});
+    endif
+    if (exist (descfile, "file"))
+      desc = get_description (descfile);
+      desc.dir = fullfile (prefix, dirlist{k});
+      if (auto != 0)
+	if (exist (fullfile (desc.dir, "packinfo", ".autoload"), "file"))
+	  unlink (fullfile (desc.dir, "packinfo", ".autoload"));
+	endif
+        if (auto < 0)
+	  desc.autoload = 0;
+	elseif (auto > 0)
+	  desc.autoload = 1;
+	  fclose (fopen (fullfile (desc.dir, "packinfo", ".autoload"), "wt"));
+	endif
+      else
+	if (exist (fullfile (desc.dir, "packinfo", ".autoload"), "file"))
+	  desc.autoload = 1;
+	else
+	  desc.autoload = 0;
+	endif
+      endif
+      descriptions{end + 1} = desc;
+    elseif (verbose)
+      warning ("directory %s is not a valid package", dirlist{k});
+    endif
+  endfor
+
+  if (isempty (files))
+    ## We are rebuilding for a particular package(s) so we should take
+    ## care to keep the other untouched packages in the descriptions
+    descriptions = {desriptions{:}, old_desriptions{:}};
+
+    dup = [];
+    for i = 1:length (descriptions)
+      if (find (dup, i))
+	continue;
+      endif
+      for j = (i+1):length (descriptions)
+	if (find (dup, j))
+	  continue;
+	endif
+	if (strcmp (descriptions{i}.name, descriptions{j}.name))
+	  dup = [dup, j];
+	endif
+      endfor
+    endfor
+    if (! isempty (dup))
+      descriptions (dup) = [];
+    endif  
+  endif
 endfunction
 
 function auto = isautoload (desc)
@@ -266,8 +390,7 @@ if (isfield (desc{1}, "autoload"))
 endif
 endfunction
 
-function install (files, handle_deps, autoload, prefix, verbose, local_list, global_list)
-  global_install = issuperuser ();
+function install (files, handle_deps, autoload, prefix, verbose, local_list, global_list, global_install)
 
   # Check that the directory in prefix exist. If it doesn't: create it!
   if (! exist (prefix, "dir"))
@@ -299,66 +422,70 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
     for i = 1:length (files)
       tgz = files{i};
 
-      ## Create a temporary directory 
-      tmpdir = tmpnam ();
-      tmpdirs{end+1} = tmpdir;
-      if (verbose)
-	printf ("mkdir (%s)\n", tmpdir);
-      endif
-      [status, msg] = mkdir (tmpdir);
-      if (status != 1)
-	error ("couldn't create temporary directory: %s", msg);
-      endif
-
-      ## Uncompress the package
-      if (verbose)
-	printf ("untar (%s, %s)\n", tgz, tmpdir);
-      endif
-      untar (tgz, tmpdir);
-
-      ## Get the name of the directories produced by tar
-      [dirlist, err, msg] = readdir (tmpdir);
-      if (err)
-	error ("couldn't read directory produced by tar: %s", msg);
-      endif
-
-      if (length (dirlist) > 3)
-	error ("bundles of packages are not allowed")
-      endif
-
-      ## the two first entries of dirlist are "." and ".."
-      for k = 3:length (dirlist)
-	packdir = fullfile (tmpdir, dirlist{k});
-	packdirs{end+1} = packdir;
-
-	## Make sure the package contains necessary files
-	verify_directory (packdir);
-
-	## Read the DESCRIPTION file
-	filename = fullfile (packdir, "DESCRIPTION");
-	desc = get_description (filename);
-
-	## Verify that package name corresponds with filename
-	[dummy, nm] = fileparts (tgz); 
-	if ((length (nm) >= length (desc.name))
-	    && ! strcmp (desc.name, nm(1:length(desc.name))))
-	  error ("package name '%s' doesn't correspond to its filename '%s'", desc.name, nm);
+      if (exist (tgz, "file"))
+	## Create a temporary directory 
+	tmpdir = tmpnam ();
+	tmpdirs{end+1} = tmpdir;
+        if (verbose)
+	  printf ("mkdir (%s)\n", tmpdir);
+	endif
+	[status, msg] = mkdir (tmpdir);
+	if (status != 1)
+	  error ("couldn't create temporary directory: %s", msg);
 	endif
 
-	## Set default installation directory
-	desc.dir = fullfile (prefix, strcat (desc.name, "-", desc.version));
+	## Uncompress the package
+	if (verbose)
+	  printf ("untar (%s, %s)\n", tgz, tmpdir);
+	endif
+	untar (tgz, tmpdir);
 
-	## Save desc
-	descriptions{end+1} = desc;
+	## Get the name of the directories produced by tar
+	[dirlist, err, msg] = readdir (tmpdir);
+	if (err)
+	  error ("couldn't read directory produced by tar: %s", msg);
+	endif
 
-	## Are any of the new packages already installed?
-	## If so we'll remove the old version.
-	for j = 1:length (packages)
-	  if (strcmp (packages{j}.name, desc.name))
-	    packages_to_uninstall(end+1) = j;
+	if (length (dirlist) > 3)
+	  error ("bundles of packages are not allowed")
+	endif
+
+	## the two first entries of dirlist are "." and ".."
+	for k = 3:length (dirlist)
+	  packdir = fullfile (tmpdir, dirlist{k});
+	  packdirs{end+1} = packdir;
+
+	  ## Make sure the package contains necessary files
+	  verify_directory (packdir);
+
+	  ## Read the DESCRIPTION file
+	  filename = fullfile (packdir, "DESCRIPTION");
+	  desc = get_description (filename);
+
+	  ## Verify that package name corresponds with filename
+	  [dummy, nm] = fileparts (tgz); 
+	  if ((length (nm) >= length (desc.name))
+	      && ! strcmp (desc.name, nm(1:length(desc.name))))
+	    error ("package name '%s' doesn't correspond to its filename '%s'", desc.name, nm);
 	  endif
-	endfor
-      endfor        
+
+	  ## Set default installation directory
+	  desc.dir = fullfile (prefix, strcat (desc.name, "-", desc.version));
+
+	  ## Save desc
+	  descriptions{end+1} = desc;
+
+	  ## Are any of the new packages already installed?
+	  ## If so we'll remove the old version.
+	  for j = 1:length (packages)
+	    if (strcmp (packages{j}.name, desc.name))
+	      packages_to_uninstall(end+1) = j;
+	    endif
+	  endfor
+	endfor        
+      else
+	warning ("file %s does not exist", tgz);
+      endif
     endfor
   catch
     ## Something went wrong, delete tmpdirs
@@ -416,7 +543,7 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
   try
     for i = packages_to_uninstall
       uninstall ({installed_packages{i}.name}, false, verbose, local_list, 
-		 global_list);
+		 global_list, global_install);
     endfor
   catch
     ## Something went wrong, delete tmpdirs
@@ -514,11 +641,12 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
   endif
 endfunction
 
-function uninstall (pkgnames, handle_deps, verbose, local_list, global_list)
+function uninstall (pkgnames, handle_deps, verbose, local_list, 
+		    global_list, global_install)
   ## Get the list of installed packages
   [local_packages, global_packages] = installed_packages(local_list, 
 							 global_list);
-  if (issuperuser ())
+  if (global_install)
     installed_packages = {local_packages{:}, global_packages{:}};
   else
     installed_packages = local_packages;
@@ -535,7 +663,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list, global_list)
 
   ## Are all the packages that should be uninstalled already installed?
   if (length (delete_idx) != length (pkgnames))
-    if (issuperuser ())
+    if (global_install)
       ## Try again for a locally installed package
       installed_packages = local_packages
 
@@ -610,7 +738,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list, global_list)
   endfor
 
   ## Write a new ~/.octave_packages
-  if (issuperuser ())
+  if (global_install)
     if (length (remaining_packages) == 0)
       unlink (global_list);
     else
@@ -665,8 +793,12 @@ function configure_make (desc, packdir, verbose)
     src = fullfile (packdir, "src");
     ## configure
     if (exist (fullfile (src, "configure"), "file"))
-      [status, output] = system (strcat ("cd ", src, "; ./configure --prefix=",
-					 desc.dir));
+      [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
+					 desc.dir, "\"",
+					 " CC=", octave_config_info ("CC"),
+					 " CXX=", octave_config_info ("CXX"),
+					 " AR=", octave_config_info ("AR"),
+					 " RANLIB=", octave_config_info ("RANLIB")));
       if (verbose)
 	printf("%s", output);
       endif
@@ -678,8 +810,8 @@ function configure_make (desc, packdir, verbose)
 
     ## make
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = system (strcat ("export INSTALLDIR=", desc.dir,
-					 "; make -C ", src));
+      [status, output] = shell (strcat ("export INSTALLDIR=\"", desc.dir,
+					 "\"; make -C ", src));
       if (verbose)
 	printf("%s", output);
       endif
@@ -978,7 +1110,12 @@ function finish_installation (desc, packdir)
 endfunction
 
 function out = issuperuser ()
-  out = strcmp (getenv("USER"), "root");
+  if (ispc () && ! isunix ())
+    out = 1;
+  else
+    ## Need to be a bit presistent in probing superuser
+    out = (geteuid() == 0);
+  endif
 endfunction
 
 ## This function makes sure the package contains the
@@ -1275,9 +1412,9 @@ function [out1, out2] = installed_packages (local_list, global_list)
   endif  
 
   ## Now check if the package is loaded
-  tmppath = path();
+  tmppath = strrep (path(), "\\", "/");
   for i = 1:length (installed_packages)
-    if (regexp (tmppath, installed_packages{i}.dir))
+    if (regexp (tmppath, strrep (installed_packages{i}.dir, "\\", "/")))
       installed_packages{i}.loaded = true;
     else
       installed_packages{i}.loaded = false;
@@ -1519,4 +1656,30 @@ function arch = getarch ()
   persistent _arch = [octave_config_info("canonical_host_type"), "-", ...
    octave_config_info("api_version")];
   arch = _arch;
+endfunction
+
+function [status, output] = shell (cmd)
+
+  persistent have_sh;
+
+  cmd = strrep (cmd, "\\", "/");
+  disp (cmd);
+  if (ispc () && ! isunix ())
+    if (isempty(have_sh))
+      if (system("sh.exe -c \"exit\""))
+        have_sh = false;
+      else
+        have_sh = true;
+      endif
+    endif
+    if (have_sh)
+      [status, output] = system (["sh.exe -c \"", cmd, "\""]);
+    else
+      error ("Can not find the command shell")
+    endif
+  else
+    [status, output] = system (cmd);
+  endif
+  disp(output);
+
 endfunction

@@ -40,7 +40,7 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
   ## FIXME -- maybe use the same method as in ls to allow users control
   ## over the command that is executed.
 
-  if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "cp")))
+  if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "cp.exe")))
     ## Windows.
     cmd = "cmd /C xcopy /E";
     cmd_force_flag = "/Y";
@@ -73,6 +73,11 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     f1 = sprintf ("\"%s\" ", f1{:});
 
     f2 = tilde_expand (f2);
+  
+    if (ispc () && ! isunix () && ! isempty (file_in_path (EXEC_PATH, "cp.exe")))
+      f1 = strrep (f1, "\\", "/");
+      f2 = strrep (f2, "\\", "/");
+    endif
 
     ## Copy the files.
     [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, f1, f2));

@@ -95,7 +95,7 @@ public:
     return dv.numel ();
   }
 
-  octave_idx_type nfields (void) const { return map.length (); }
+  octave_idx_type nfields (void) const { return map.nfields (); }
 
   octave_value reshape (const dim_vector& new_dims) const
     { return map.reshape (new_dims); }

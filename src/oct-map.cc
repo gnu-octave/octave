@@ -91,7 +91,7 @@ Octave_map::stringfield (const std::string& k,
 string_vector
 Octave_map::keys (void) const
 {
-  assert (length () == key_list.size ());
+  assert (nfields () == key_list.size ());
 
   return string_vector (key_list);
 }
@@ -134,28 +134,12 @@ Octave_map::reshape (const dim_vector& new_dims) const
   return retval;
 }
 
-octave_idx_type
-Octave_map::numel (void) const
-{
-  octave_idx_type retval;
-
-  if (empty ())
-    retval = 0;
-  else
-    {
-      Cell tmp = contents (begin ());
-      retval = tmp.numel ();
-    }
-
-  return retval;
-}
-
 void
 Octave_map::resize (const dim_vector& dv, bool fill)
 {
   if (dv != dims ())
     {
-      if (empty ())
+      if (nfields () == 0)
 	dimensions = dv;
       else
 	{
@@ -181,7 +165,7 @@ Octave_map::concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx)
 {
   Octave_map retval;
 
-  if (length() == rb.length())
+  if (nfields () == rb.nfields ())
     {
       for (const_iterator pa = begin (); pa != end (); pa++)
 	{
@@ -210,7 +194,7 @@ keys_ok (const Octave_map& a, const Octave_map& b, string_vector& keys)
 
   keys = string_vector ();
 
-  if (a.empty ())
+  if (a.nfields () == 0)
     {
       keys = b.keys ();
       retval = true;
@@ -382,7 +366,7 @@ Octave_map::assign (const octave_value_list& idx, const std::string& k,
 Octave_map&
 Octave_map::assign (const std::string& k, const octave_value& rhs)
 {
-  if (empty ())
+  if (nfields () == 0)
     {
       maybe_add_to_key_list (k);
 
@@ -410,7 +394,7 @@ Octave_map::assign (const std::string& k, const octave_value& rhs)
 Octave_map&
 Octave_map::assign (const std::string& k, const Cell& rhs)
 {
-  if (empty ())
+  if (nfields () == 0)
     {
       maybe_add_to_key_list (k);
 

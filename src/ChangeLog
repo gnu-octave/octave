@@ -1,3 +1,11 @@
+2007-05-21  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.h (Octave_map::numel): Return number of array elements,
+	not number of map elements.
+	(Octave_map::nfields): Rename from length.
+	(Octave_map::empty): Delete.
+	Change all uses of empty to check nfields () == 0 instead.
+
 2007-05-21  Søren Hauberg  <soren@hauberg.org>
 
 	* help.cc (Fautoload): Doc fix.

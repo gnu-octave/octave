@@ -1020,7 +1020,7 @@ bool
 octave_struct::save_ascii (std::ostream& os, bool& infnan_warned)
 {
   Octave_map m = map_value ();
-  os << "# length: " << m.length () << "\n";
+  os << "# length: " << m.nfields () << "\n";
 
   Octave_map::iterator i = m.begin ();
   while (i != m.end ())
@@ -1099,7 +1099,7 @@ octave_struct::save_binary (std::ostream& os, bool& save_as_floats)
 {
   Octave_map m = map_value ();
 
-  int32_t len = m.length();
+  int32_t len = m.nfields ();
   os.write (reinterpret_cast<char *> (&len), 4);
   
   Octave_map::iterator i = m.begin ();

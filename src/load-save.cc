@@ -583,7 +583,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
       else
 	octave_stdout << msg;
     }
-  else if (! retstruct.empty ())
+  else if (retstruct.nfields () != 0)
     retval = retstruct;
 
   return retval;

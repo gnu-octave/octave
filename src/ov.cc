@@ -1877,7 +1877,7 @@ decode_subscripts (const char* name, const octave_value& arg,
   Octave_map m = arg.map_value ();
 
   if (! error_state
-      && m.length () == 2 && m.contains ("type") && m.contains ("subs"))
+      && m.nfields () == 2 && m.contains ("type") && m.contains ("subs"))
     {
       Cell& type = m.contents ("type");
       Cell& subs = m.contents ("subs");

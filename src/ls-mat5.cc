@@ -868,11 +868,11 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    tc2 = m2.contents("MCOS")(0).cell_value()(1 + off).cell_value()(1);
 	    m2 = tc2.map_value();
 	    symbol_table *local_sym_tab = 0;
-	    if (m2.length() > 0)
+	    if (m2.nfields() > 0)
 	      {
 		octave_value tmp;
 
-		local_sym_tab = new symbol_table (((m2.length() + 1) & ~1), 
+		local_sym_tab = new symbol_table (((m2.nfields() + 1) & ~1), 
 						  "LOCAL");
 	      
 		for (Octave_map::iterator p0 = m2.begin() ; 

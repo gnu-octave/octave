@@ -235,7 +235,7 @@ DEFUN (__version_info__, args, ,
 
   if (nargin == 4)
     {
-      if (vinfo.empty ())
+      if (vinfo.nfields () == 0)
 	{
 	  vinfo.assign ("Name", args (0));
 	  vinfo.assign ("Version", args (1));

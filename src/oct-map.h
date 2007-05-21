@@ -88,9 +88,7 @@ Octave_map
   ~Octave_map (void) { }
 
   // This is the number of keys.
-  octave_idx_type length (void) const { return map.size (); }
-
-  int empty (void) const { return map.empty (); }
+  octave_idx_type nfields (void) const { return map.size (); }
 
   void del (const std::string& k)
     {
@@ -159,7 +157,7 @@ Octave_map
 
   void resize (const dim_vector& dv, bool fill = false);
 
-  octave_idx_type numel (void) const;
+  octave_idx_type numel (void) const { return dimensions.numel (); }
 
   Octave_map concat (const Octave_map& rb, const Array<octave_idx_type>& ra_idx);
 

@@ -117,12 +117,9 @@ Octave entered debug mode.
 
 @DOCSTRING(dbtype)
 
-Within debug mode it is equally allows single line stepping through a
-function.  To allow this two additional commands are available;
-@code{dbstep} and @code{dbnext}.  These differ slightly in the way
-they treat the next executable line if the next line itself is a
-function defined in an m-file.
-
-@code{dbnext} will execute the next line, while staying in the existing
-function being debugged. Whereas @code{dbstep} will step in to this new
-function defined in an m-file.
+Debug mode equally allows single line stepping through a function using
+the commands @code{dbstep} and @code{dbnext}.  These differ slightly in
+the way they treat the next executable line if the next line itself is a
+function defined in an m-file.  The @code{dbnext} command will execute
+the next line, while staying in the existing function being debugged.
+The @code{dbstep} command will step in to the new function.

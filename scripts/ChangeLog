@@ -1,3 +1,9 @@
+2007-05-22  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* ChangeLog, control/system/is_stabilizable.m, general/bicubic.m,
+	image/ind2gray.m, image/saveimage.m, plot/box.m, plot/grid.m,
+	signal/freqz.m: Fix typos.
+
 2007-05-21  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m: Add rebuild target, and -local, -global option to
@@ -7226,7 +7232,7 @@ Tue Oct  3 03:55:18 1995  John Eaton  <jwe@bevo.che.wisc.edu>
 	* image/Makefile.in: Don't build or install octtoppm.
 
 	* image/saveimage.m: Rewrite to avoid using octoppm and pbm
-	routines so that people who don't have the the pbm stuff installed
+	routines so that people who don't have the pbm stuff installed
 	can still use this function.
 
 Mon Oct  2 05:10:44 1995  John Eaton  <jwe@bevo.che.wisc.edu>

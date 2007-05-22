@@ -98,7 +98,7 @@ specified on the command line will set the value of
 Specify the name of the info file to use.  The value of @var{filename}
 specified on the command line will override any value of
 @code{OCTAVE_INFO_FILE} found in the environment, but not any commands
-in the system or user startup files that use the the @code{info_file}
+in the system or user startup files that use the @code{info_file}
 function.
 
 @item --info-program @var{program}

@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {@var{retval} =} is_stabilizable (@var{sys}, @var{tol})
 ## @deftypefnx {Function File} {@var{retval} =} is_stabilizable (@var{a}, @var{b}, @var{tol}, @var{dflg})
 ## Logical check for system stabilizability (i.e., all unstable modes are controllable). 
-## Returns 1 if the system is stabilizable, 0 if the the system is not stabilizable, -1 
+## Returns 1 if the system is stabilizable, 0 if the system is not stabilizable, -1 
 ## if the system has non stabilizable modes at the imaginary axis (unit circle for 
 ## discrete-time systems.
 ##

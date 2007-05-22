@@ -429,7 +429,7 @@ answered by the Octave manual or by this document.
 To subscribe to the list, go to @url{www.octave.org/archive.html} and
 follow the link to the subscription page for the list.
 
-@strong{Please do not} send requests to be added or removed from the the
+@strong{Please do not} send requests to be added or removed from the
 mailing list, or other administrative trivia to the list itself.
 
 An archive of old postings to the help-octave mailing list is maintained
@@ -943,7 +943,7 @@ with @sc{Matlab} are
 @item
 Comments in octave can be marked with "#". This allows POSIX
 systems to have the first line as "#! octave -q" and mark the script
-itself executable. @sc{Matlab} doesn't have this feature due the the
+itself executable. @sc{Matlab} doesn't have this feature due to the
 absence of comments starting with "#"
 
 @item

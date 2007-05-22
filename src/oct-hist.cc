@@ -719,7 +719,7 @@ DEFUN (history_timestamp_format_string, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} history_timestamp_format_string ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} history_timestamp_format_string (@var{new_val})\n\
-Query or set the internal variable that specifies the the format string\n\
+Query or set the internal variable that specifies the format string\n\
 for the comment line that is written to the history file when Octave\n\
 exits.  The format string is passed to @code{strftime}.  The default\n\
 value is\n\

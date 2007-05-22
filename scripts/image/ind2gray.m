@@ -42,7 +42,7 @@ function Y = ind2gray (X, map)
   ## Convert colormap to intensity values (the first column of the
   ## result of the call to rgb2ntsc) and then replace indices in
   ## the input matrix with indexed values in the output matrix (indexed
-  ## values are the result of indexing the the intensity values by the
+  ## values are the result of indexing the intensity values by the
   ## elements of X(:)).
 
   Y = reshape (((rgb2ntsc (map))(:,1))(X(:)), rows, cols);

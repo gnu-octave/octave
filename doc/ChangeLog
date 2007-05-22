@@ -1,3 +1,8 @@
+2007-05-22  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* faq/Octave-FAQ.texi, interpreter/basics.txi,
+	refcard/refcard.tex: Fix typos.
+
 2007-05-22  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in (DISTFILES): Add mkcontrib.awk to the list.

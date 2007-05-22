@@ -450,7 +450,7 @@ symbol_record::dimensions_string_req_first_space (int print_dims) const
   return first_param_space;
 }
 
-// Calculate how much space needs to be reserved for the the
+// Calculate how much space needs to be reserved for the
 // dimensions string.  For example,
 //
 //   mat is a 12x3 matrix

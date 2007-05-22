@@ -63,7 +63,7 @@ from the MinGW site.
         Grab the newer one and simply uncompress it in the root
         directory of the MSYS installation directory.
 
-If you are building from CVS, you will need the the following
+If you are building from CVS, you will need the following
 additional tools that are not part of the MSYS packages
 
   bison  flex  gperf

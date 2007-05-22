@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} grid (@var{h}, @dots{})
 ## Control the display of a border around the plot.
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
-## omitted, the the current box state is toggled.
+## omitted, the current box state is toggled.
 ## @seealso{grid}
 ## @end deftypefn
 

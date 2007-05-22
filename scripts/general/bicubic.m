@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
 ##
-## Return a matrix @var{zi} corresponding to the the bicubic
+## Return a matrix @var{zi} corresponding to the bicubic
 ## interpolations at @var{xi} and @var{yi} of the data supplied
 ## as @var{x}, @var{y} and @var{z}. 
 ##

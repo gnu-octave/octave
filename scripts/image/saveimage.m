@@ -59,7 +59,7 @@
 ## Adapted-By: jwe
 
 ## Rewritten by jwe to avoid using octoppm and pbm routines so that
-## people who don't have the the pbm stuff installed can still use this
+## people who don't have the pbm stuff installed can still use this
 ## function.
 ##
 ## The conversion to PostScript is based on pnmtops.c, which is part of

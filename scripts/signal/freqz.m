@@ -128,7 +128,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
   elseif (strcmp (region, "whole"))
     f = Fs * (0:n-1)' / n;
     ## polyval(fliplr(P),exp(jw)) is O(p n) and fft(x) is O(n log(n)),
-    ## where p is the order of the the polynomial P.  For small p it
+    ## where p is the order of the polynomial P.  For small p it
     ## would be faster to use polyval but in practice the overhead for
     ## polyval is much higher and the little bit of time saved isn't
     ## worth the extra code.

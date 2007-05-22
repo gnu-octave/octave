@@ -1,5 +1,14 @@
 2007-05-22  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.12.
+
+2007-05-22  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* debug.cc, error.cc, load-save.cc, oct-hist.cc, sighandlers.cc,
+	symtab.cc: Fix typos.
+
+2007-05-22  John W. Eaton  <jwe@octave.org>
+
 	* version.h (OCTAVE_VERSION): Now 2.9.11+.
 
 2007-05-22  John W. Eaton  <jwe@octave.org>

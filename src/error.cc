@@ -1040,7 +1040,7 @@ be used to set the state of all warnings.\n\
 @deftypefnx {Built-in Function} {} warning (\"off\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"error\", @var{id})\n\
 @deftypefnx {Built-in Function} {} warning (\"query\", @var{id})\n\
-Set or query the the state of a particular warning using the identifier\n\
+Set or query the state of a particular warning using the identifier\n\
 @var{id}.  If the identifier is omitted, a value of @samp{\"all\"} is\n\
 assumed.  If you set the state of a warning to @samp{\"error\"}, the\n\
 warning named by @var{id} is handled as if it were an error instead.\n\

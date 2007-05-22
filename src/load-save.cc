@@ -1760,7 +1760,7 @@ DEFUN (crash_dumps_octave_core, args, nargout,
 @deftypefn {Built-in Function} {@var{val} =} crash_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} crash_dumps_octave_core (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables the the file \"octave-core\" if it\n\
+to save all current variables to the file \"octave-core\" if it\n\
 crashes or receives a hangup, terminate or similar signal.\n\
 @seealso{octave_core_file_limit, octave_core_file_name, octave_core_file_options}\n\
 @end deftypefn")

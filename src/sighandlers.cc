@@ -1007,7 +1007,7 @@ DEFUN (sighup_dumps_octave_core, args, nargout,
 @deftypefn {Built-in Function} {@var{val} =} sighup_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sighup_dumps_octave_core (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables the the file \"octave-core\" if it receives\n\
+to save all current variables to the file \"octave-core\" if it receives\n\
 a hangup signal.\n\
 @end deftypefn")
 {
@@ -1019,7 +1019,7 @@ DEFUN (sigterm_dumps_octave_core, args, nargout,
 @deftypefn {Built-in Function} {@var{val} =} sigterm_dumps_octave_core ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} sigterm_dumps_octave_core (@var{new_val})\n\
 Query or set the internal variable that controls whether Octave tries\n\
-to save all current variables the the file \"octave-core\" if it receives\n\
+to save all current variables to the file \"octave-core\" if it receives\n\
 a terminate signal.\n\
 @end deftypefn")
 {

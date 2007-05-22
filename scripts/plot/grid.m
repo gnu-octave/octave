@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} grid ("minor", @var{arg2})
 ## Force the display of a grid on the plot.
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
-## omitted, the the current grid state is toggled.
+## omitted, the current grid state is toggled.
 ##
 ## If @var{arg} is @code{"minor"} then the minor grid is toggled. When
 ## using a minor grid a second argument @var{arg2} is allowed, which can

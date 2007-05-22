@@ -1,3 +1,7 @@
+2007-05-22  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (DISTFILES): Add mkcontrib.awk to the list.
+
 2007-05-21  David Bateman  <dbatemna@free.fr>
 
 	* interpreter/debug.txi, io.txi, octave.txi: Doc fixes.

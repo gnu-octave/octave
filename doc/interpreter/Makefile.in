@@ -85,8 +85,8 @@ MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
 # FIXME -- need to include generated figures here...
-DISTFILES = Makefile.in contributors.in dir munge-texi.cc $(MAN_SRC) \
-  $(SOURCES) $(TEXINFO) $(FORMATTED) $(IMAGES)
+DISTFILES = Makefile.in contributors.in mkcontrib.awk dir \
+  munge-texi.cc $(MAN_SRC) $(SOURCES) $(TEXINFO) $(FORMATTED) $(IMAGES)
 
 DISTDIRS = HTML
 

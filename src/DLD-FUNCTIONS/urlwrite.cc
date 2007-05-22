@@ -357,7 +357,7 @@ s = urlread (\"http://username:password@@example.com/file.txt\");\n\
 GET and POST requests can be specified by @var{method} and @var{param}.\n\
 The parameter @var{method} is either @samp{get} or @samp{post}\n\
 and @var{param} is a cell array of parameter and value pairs.\n\
-For example,\n\ 
+For example,\n\
 \n\
 @example\n\
 s = urlread (\"http://www.google.com/search\", \"get\",\n\

@@ -87,14 +87,15 @@ get_user_function (std::string fname = "")
 
 DEFCMD (dbstop, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {rline =} dbstop (func, line)\n\
+@deftypefn {Loadable Function} {rline =} dbstop (func, line, @dots{})\n\
 Set a breakpoint in a function\n\
 @table @code\n\
 @item func\n\
 String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 @item line\n\
-Line you would like the breakpoint to be set on\n\
+Line you would like the breakpoint to be set on. Multiple\n\
+lines might be given as seperate arguments or as a vector.\n\
 @end table\n\
 \n\
 The rline returned is the real line that the breakpoint was set at.\n\
@@ -102,118 +103,152 @@ The rline returned is the real line that the breakpoint was set at.\n\
 @end deftypefn")
 {
   octave_value retval;
-
-  int result = -1;
   int nargin = args.length ();
+  int idx = 0;
+  std::string symbol_name = "";
 
-  string_vector argv = args.make_argv ("dbstop");
-
-  if (error_state)
-    return retval;
-
-  if (nargin == 2)
+  if (nargin != 1 && args(0).is_string())
     {
-      std::string symbol_name = argv[1];
-
-      std::string line_number = argv[2];
-
-      int line = atoi (line_number.c_str ());
-
-      octave_user_function *dbg_fcn = get_user_function (symbol_name);
-
-      if (dbg_fcn)
-	{
-	  tree_statement_list *cmds = dbg_fcn->body ();
-	  result = cmds->set_breakpoint (line);
-	}
-      else
-	error ("dbstop: unable to find the function requested\n");
+      symbol_name = args(0).string_value ();
+      idx = 1;
     }
-  else if (nargin == 1)
+
+  octave_user_function *dbg_fcn = get_user_function (symbol_name);
+
+  if (dbg_fcn)
     {
-      std::string line_number = argv[1];
+      octave_idx_type nsize = 10;
+      RowVector results (nsize);
+      octave_idx_type nr = 0;
 
-      int line = atoi (line_number.c_str ());
+      tree_statement_list *cmds = dbg_fcn->body ();
 
-      octave_user_function *dbg_fcn = get_user_function ();
-
-      if (dbg_fcn)
+      for (int i = idx; i < nargin; i++)
 	{
-	  tree_statement_list *cmds = dbg_fcn->body ();
-	  result = cmds->set_breakpoint (line);
+	  if (args(i).is_string ())
+	    {
+	      int line = atoi (args(i).string_value ().c_str ());
+
+	      if (error_state)
+		break;
+
+	      if (nr == nsize)
+		{
+		  nsize *= 2;
+		  results.resize (nsize);
+		}
+
+	      results(nr++) = cmds->set_breakpoint (line);
+	    }
+	  else
+	    {
+	      const NDArray arg = args(i).array_value ();
+
+	      if (error_state)
+		break;
+
+	      for (octave_idx_type j = 0; j < arg.nelem(); j++)
+		{
+		  int line = static_cast<int> (arg.elem (j));
+
+		  if (error_state)
+		    break;
+
+		  if (nr == nsize)
+		    {
+		      nsize *= 2;
+		      results.resize (nsize);
+		    }
+
+		  results(nr++) = cmds->set_breakpoint (line);
+		}
+
+	      if (error_state)
+		break;
+	    }
 	}
-      else
-	error ("dbstop: unable to find the function requested\n");	
+
+      if (! error_state)
+	{
+	  results.resize (nr);
+	  retval = results;
+	}
     }
   else
-    error ("dbstop: one argument when in a function and two when not\n");
-
-  retval = result;
+    error ("dbstop: unable to find the function requested\n");
 
   return retval;
 }
 
 DEFCMD (dbclear, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} dbclear (func, line)\n\
+@deftypefn {Loadable Function} {} dbclear (func, line, @dots{})\n\
 Delete a breakpoint in a function\n\
 @table @code\n\
 @item func\n\
 String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 @item line\n\
-Line where you would like to remove the the breakpoint\n\
+Line where you would like to remove the the breakpoint. Multiple\n\
+lines might be given as seperate arguments or as a vector.\n\
 @end table\n\
 No checking is done to make sure that the line you requested is really\n\
-a breakpoint.   If you get the wrong line nothing will happen.\n\
+a breakpoint. If you get the wrong line nothing will happen.\n\
 @seealso{dbstop, dbstatus, dbwhere}\n\
 @end deftypefn")
 {
   octave_value retval;
-
-  std::string symbol_name = "";
-  std::string line_number;
-
-  int line = -1;
   int nargin = args.length ();
+  int idx = 0;
+  std::string symbol_name = "";
 
-  string_vector argv = args.make_argv ("dbclear");
-
-  if (error_state)
-    return retval;
-
-  if (nargin == 1 || nargin == 2)
+  if (nargin != 1 && args(0).is_string())
     {
-      if (nargin == 2)
+      symbol_name = args(0).string_value ();
+      idx = 1;
+    }
+
+  octave_user_function *dbg_fcn = get_user_function (symbol_name);
+
+  if (dbg_fcn)
+    {
+      tree_statement_list *cmds = dbg_fcn->body ();
+
+      for (int i = idx; i < nargin; i++)
 	{
-	  symbol_name = argv[1];
+	  if (args(i).is_string ())
+	    {
+	      int line = atoi (args(i).string_value ().c_str ());
 
-	  octave_stdout << argv[1] << std::endl;
-	  line_number = argv[2];
+	      if (error_state)
+		break;
+
+	      cmds->delete_breakpoint (line);
+	    }
+	  else
+	    {
+	      const NDArray arg = args(i).array_value ();
+
+	      if (error_state)
+		break;
+
+	      for (octave_idx_type j = 0; j < arg.nelem (); j++)
+		{
+		  int line = static_cast<int> (arg.elem (j));
+
+		  if (error_state)
+		    break;
+
+		  cmds->delete_breakpoint (line);
+		}
+
+	      if (error_state)
+		break;
+	    }
 	}
-      else if (nargin == 1)
-	{
-	  line_number = argv[1];
-	}
-
-      if (line_number.compare ("all") && line_number.compare ("ALL"))
-	line = atoi (line_number.c_str ());
-      else
-	line = -1;
-
-      octave_stdout << "symbol_name = " << symbol_name << std::endl;
-      octave_user_function *dbg_fcn = get_user_function (symbol_name);
-
-      if (dbg_fcn)
-	{
-	  tree_statement_list *cmds = dbg_fcn->body ();
-	  cmds->delete_breakpoint (line);
-	}
-      else
-	error ("dbclear: unable to find the function requested\n");
     }
   else
-    error ("dbclear: expecting one or two arguements\n");
+    error ("dbclear: unable to find the function requested\n");
 
   return retval;
 }
@@ -350,7 +385,7 @@ do_dbtype (std::ostream& os, const std::string& name, int start, int end)
   else
     os << "dbtype: unknown function " << name << "\n";
 
-  os.flush();
+  os.flush ();
 }
 
 DEFCMD (dbtype, args, ,

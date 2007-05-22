@@ -5,18 +5,114 @@
 @node Debugging
 @chapter Debugging
 
-@DOCSTRING(dbstop)
+Octave includes a built-in debugger to aid in the development of
+scripts. This can be used to interrupt the execution of an Octave script
+at a certain point, or when certain conditions are met. Once execution
+has stopped, and debug mode is entered, the symbol table at the point
+where execution has stopped can be examined and modified to check for
+errors.
 
-@DOCSTRING(dbclear)
+The normal commandline editing and history functions are available in
+debug mode. However, one limitation on the debug mode is that
+commands entered at the debug prompt are evaluated as strings, rather
+than being handled by the Octave parser. This means that all commands in
+debug mode must be contained on a single line. That is, it is alright to
+write
 
-@DOCSTRING(dbstatus)
+@example
+debug> for i = 1:n, foo(i); endfor
+@end example
 
-@DOCSTRING(dbwhere)
+@noindent
+in debug mode. However, writing the above in three lines will not be
+correctly evaluated. To leave the debug mode, you should simply type
+either @code{quit} or @code{exit}.
 
-@DOCSTRING(dbtype)
+@menu
+* Entering Debug Mode::
+* Breakpoints::
+* Debug Mode::
+@end menu
+
+@node Entering Debug Mode
+@section Entering Debug Mode
+
+There are two basic means of interrupting the execution of an Octave
+script. These are breakpoints @ref{Breakpoints}, discussed in the next
+section and interruption based on some condition.
+
+Octave supports three means to stop execution based on the values set in
+the functions @code{debug_on_interrupt}, @code{debug_on_warning} and
+@code{debug_on_error}.
 
 @DOCSTRING(debug_on_interrupt)
 
 @DOCSTRING(debug_on_warning)
 
 @DOCSTRING(debug_on_error)
+
+@node Breakpoints
+@section Breakpoints
+
+Breakpoints can be set in any Octave function, using the @code{dbstop}
+function.
+
+@DOCSTRING(dbstop)
+
+@noindent
+Note that breakpoints can not be set in built-in functions
+(eg. @code{sin}, etc) or dynamically loaded function (ie. oct-files). To
+set a breakpoint immediately on entering a function, the breakpoint
+should be set to line 1. The leading comment block will be ignored and
+the breakpoint will be set to the first executable statement in the
+function. For example
+
+@example
+@group
+dbstop ("asind", 1)
+@result{} 27
+@end group
+@end example
+
+@noindent
+Note that the return value of @code{27} means that the breakpoint was
+effectively set to line 27. The status of breakpoints in a function can
+be queried with the @code{dbstatus} function.
+
+@DOCSTRING(dbstatus)
+
+@noindent
+Taking the above as an example, @code{dbstatus ("asind")} should return
+27. The breakpoints can then be cleared with the @code{dbclear} function
+
+@DOCSTRING(dbclear)
+
+@noindent
+To clear all of the breakpoints in a function the recommended means,
+following the above example, is then
+
+@example
+dbclear ("asind", dbstatus ("asind"));
+@end example
+
+Another simple means of setting a breakpoint in an Octave script is the
+use of the @code{keyboard} function.
+
+@DOCSTRING(keyboard)
+
+@noindent
+The @code{keyboard} function is typically placed in a script at the
+point where the user desires that the execution is stopped. It
+automatically sets the running script into the debug mode.
+
+@node Debug Mode
+@section Debug Mode
+
+There are two additional support functions that allow the user to
+interrogate where in the execution of a script Octave entered the debug
+mode and to print the code in the script surrounding the point where
+Octave entered debug mode.
+
+@DOCSTRING(dbwhere)
+
+@DOCSTRING(dbtype)

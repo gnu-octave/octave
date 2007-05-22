@@ -1,3 +1,9 @@
+2007-05-21  David Bateman  <dbateman@free.fr>
+
+	* debug.cc (Fdbstop): handle integer, vector and multiple line
+	arguments.
+	(Fdbclar): ditto. Eliminate extraneous debugging messages.
+
 2007-05-21  Søren Hauberg  <hauberg@gmail.com>
 
         * load-path.cc (Fpath, Frehash): Replace "LOADPATH" with "load

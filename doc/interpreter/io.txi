@@ -101,10 +101,8 @@ used for managing an interactive dialog with a user, and the
 
 @DOCSTRING(menu)
 
-@DOCSTRING(keyboard)
-
-For both @code{input} and @code{keyboard}, the normal command line
-history and editing functions are available at the prompt.
+For @code{input}, the normal command line history and editing functions
+are available at the prompt.
 
 Octave also has a function that makes it possible to get a single
 character from the keyboard without requiring the user to type a

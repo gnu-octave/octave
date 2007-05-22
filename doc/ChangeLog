@@ -1,3 +1,9 @@
+2007-05-22  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (TEXINFO_SOURCE): New variable.
+	(TEXINFO): Define using $(TEXINFO_SOURCE).
+	(DISTFILES): Include $(TEXINFO_SOURCE) in the list, not $(TEXINFO).
+
 2007-05-22  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* faq/Octave-FAQ.texi, interpreter/basics.txi,

@@ -76,7 +76,10 @@ MAIN_TEXINFO := $(srcdir)/octave.texi
 
 SUB_TEXINFO := $(SUB_SOURCE:.txi=.texi)
 
-TEXINFO := $(MAIN_TEXINFO) $(SUB_TEXINFO) contributors.texi ../conf.texi
+# Don't list ../conf.texi here.
+TEXINFO_SOURCE := $(MAIN_TEXINFO) $(SUB_TEXINFO) contributors.texi
+
+TEXINFO := $(TEXINFO_SOURCE) ../conf.texi
 
 FORMATTED = octave.dvi octave.ps octave.pdf \
 	octave.info octave.info-[0-9]*
@@ -86,7 +89,7 @@ MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
 # FIXME -- need to include generated figures here...
 DISTFILES = Makefile.in contributors.in mkcontrib.awk dir \
-  munge-texi.cc $(MAN_SRC) $(SOURCES) $(TEXINFO) $(FORMATTED) $(IMAGES)
+  munge-texi.cc $(MAN_SRC) $(SOURCES) $(TEXINFO_SOURCE) $(FORMATTED) $(IMAGES)
 
 DISTDIRS = HTML
 

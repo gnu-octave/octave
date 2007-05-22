@@ -2,6 +2,10 @@
 
 	* version.h (OCTAVE_VERSION): Now 2.9.12.
 
+	* Makefile.in (uninstall): Also remove
+	$(DESTDIR)$(octincludedir)/octave, $(DESTDIR)$(octincludedir),
+	$(DESTDIR)$(octlibdir), and $(DESTDIR)$(octfiledir).
+
 2007-05-22  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* debug.cc, error.cc, load-save.cc, oct-hist.cc, sighandlers.cc,

@@ -470,6 +470,10 @@ uninstall:
 	  done; \
 	fi
 	rm -f $(DESTDIR)$(octfiledir)/PKG_ADD
+	-rmdir $(DESTDIR)$(octincludedir)/octave
+	-rmdir $(DESTDIR)$(octincludedir)
+	-rmdir $(DESTDIR)$(octlibdir)
+	-rmdir $(DESTDIR)$(octfiledir)
 .PHONY: uninstall
 
 tags: $(SOURCES) $(DLD_SRC)

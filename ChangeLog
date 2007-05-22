@@ -1,3 +1,7 @@
+2007-05-22  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-script-uninstall): Also remove directory.
+
 2007-05-22  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* NEWS.2, README.MSVC, WWW/NEWS-2.html: Fix typos.

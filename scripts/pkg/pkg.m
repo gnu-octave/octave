@@ -492,7 +492,7 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
     for i = 1:length (tmpdirs)
       rm_rf (tmpdirs{i});
     endfor
-    error (lasterr()(8:end));
+    rethrow (lasterror ());
   end_try_catch
 
   ## Check dependencies
@@ -536,7 +536,7 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
     for i = 1:length (tmpdirs)
       rm_rf (tmpdirs{i});
     endfor
-    error (lasterr()(8:end));
+    rethrow (lasterror ());
   end_try_catch
 
   ## Uninstall the packages that will be replaced
@@ -550,7 +550,7 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
     for i = 1:length (tmpdirs)
       rm_rf (tmpdirs{i});
     endfor
-    error (lasterr()(8:end));
+    rethrow (lasterror ());
   end_try_catch
 
   ## Install each package
@@ -571,13 +571,14 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
     for i = 1:length (descriptions)
       rm_rf (descriptions{i}.dir);
     endfor
-    error (lasterr()(8:end));
+    rethrow (lasterror ());
   end_try_catch
 
   ## Check if the installed directory is empty. If it is remove it
   ## from the list
   for i = length (descriptions):-1:1
     if (dirempty (descriptions{i}.dir, {"packinfo", "doc"}))
+      warning ("package %s is empty\n", descriptions{i}.name);
       rm_rf (descriptions{i}.dir);
       descriptions(i) = [];
     endif
@@ -665,7 +666,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   if (length (delete_idx) != length (pkgnames))
     if (global_install)
       ## Try again for a locally installed package
-      installed_packages = local_packages
+      installed_packages = local_packages;
 
       num_packages = length (installed_packages);
       delete_idx = [];
@@ -677,11 +678,11 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       endfor
       if (length (delete_idx) != length (pkgnames))
 	## XXX: We should have a better error message
-	error ("some of the packages you want to uninstall are not installed");
+	warning ("some of the packages you want to uninstall are not installed");
       endif
     else
       ## XXX: We should have a better error message
-      error ("some of the packages you want to uninstall are not installed.");
+      warning ("some of the packages you want to uninstall are not installed.");
     endif
   endif
 
@@ -834,8 +835,8 @@ function configure_make (desc, packdir, verbose)
     files = fullfile (src, "FILES");
     instdir = fullfile (packdir, "inst");
     archdir = fullfile (packdir, "inst", getarch ());
+    ## Get file names
     if (exist (files, "file"))
-      ## Get file names
       [fid, msg] = fopen (files, "r");
       if (fid < 0)
 	error ("couldn't open %s: %s", files, msg);
@@ -845,29 +846,24 @@ function configure_make (desc, packdir, verbose)
       if (filenames(end) == "\n")
 	filenames(end) = [];
       endif
-      ## Copy the files
-      fn = split_by (filenames, "\n");
+      filenames = split_by (filenames, "\n");
       delete_idx =  [];
-      for i = 1:length (fn)
-	if (! all (isspace (fn{i})))
-	  fn{i} = fullfile (src, fn{i});
+      for i = 1:length (filenames)
+	if (! all (isspace (filenames{i})))
+	  filenames{i} = fullfile (src, filenames{i});
 	else
 	  delete_idx(end+1) = i;
 	endif
       endfor
-      fn(delete_idx) = [];
-      filenames = sprintf ("%s ", fn{:});
-
-      filenames = split_by (filenames, " ");
+      filenames(delete_idx) = [];
+      idx1 = cellfun ("isempty", regexp (filenames, '^.*\.mex'));
+      idx2 = cellfun ("isempty", regexp (filenames, '^.*\.oct'));
+      mex = filenames;
+      mex(idx1 != 0) = [];
+      oct = filenames;
+      oct(idx2 != 0) = [];
       archindependent = filenames;
-      mex = regexp (filenames, '^.*\.mex');
-      archindependent(cellfun ("isempty", mex) == 0) = [];
-      mex (cellfun ("isempty", mex)) = [];
-      mex = cellfun (@(x) x(1), mex);
-      oct = regexp (filenames, '^.*\.oct');
-      archindependent(cellfun ("isempty", oct) == 0) = [];
-      oct (cellfun ("isempty", oct)) = [];
-      oct = cellfun (@(x) x(1), oct);
+      archindependent(idx1 == 0 | idx2 == 0) = [];
       archdependent = [oct, mex];
     else
       m = dir (fullfile (src, "*.m"));
@@ -895,8 +891,11 @@ function configure_make (desc, packdir, verbose)
       archindependent = split_by (archindependent, " ");
     endif
 
+    ## Copy the files
     if (! all (isspace (filenames)))
-	mkdir (instdir);
+	if (! exist (instdir, "dir")) 
+	  mkdir (instdir);
+	endif
 	if (! all (isspace (archindependent)))
 	  if (verbose)
 	    printf ("copyfile");
@@ -915,7 +914,9 @@ function configure_make (desc, packdir, verbose)
 	    printf (" %s", archdependent{:});
 	    printf (" %s\n", archdir);
 	  endif
-	  mkdir (archdir);
+	  if (! exist (archdir, "dir")) 
+	    mkdir (archdir);
+	  endif
 	  [status, output] = copyfile (archdependent, archdir);
 	  if (status != 1)
 	    rm_rf (desc.dir);

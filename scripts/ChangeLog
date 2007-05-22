@@ -1,3 +1,13 @@
+2007-05-22  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m: Use rethrow(lasterror()) throughout rather than
+	error(lasterr()(8:end)).
+	(pkg:install): Warning for empty packages being removed. Suppress
+	spurious output. Warning rather than error for uninstalling a
+	package that is not installed to avoid RPM issue.
+	(pkg:configure_make): Fix for parsing of src/FILES. Don't create
+	inst or architecture dependent directory if it exists.
+
 2007-05-22  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* ChangeLog, control/system/is_stabilizable.m, general/bicubic.m,

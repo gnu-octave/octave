@@ -115,6 +115,11 @@ tree_anon_fcn_handle::rvalue (void)
     = new octave_user_function (new_param_list, new_ret_list,
 				new_cmd_list, new_sym_tab);
 
+  octave_function *curr_fcn = octave_call_stack::current ();
+
+  if (curr_fcn)
+    uf->stash_parent_fcn_name (curr_fcn->name ());
+
   uf->mark_as_inline_function ();
 
   octave_value ov_fcn (uf);

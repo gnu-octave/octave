@@ -2,6 +2,9 @@
 
 	* version.h (OCTAVE_VERSION): Now 2.9.12.
 
+	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue):
+	Set current function as parent of anonymous function handle.
+
 	* Makefile.in (uninstall): Also remove
 	$(DESTDIR)$(octincludedir)/octave, $(DESTDIR)$(octincludedir),
 	$(DESTDIR)$(octlibdir), and $(DESTDIR)$(octfiledir).

@@ -26,7 +26,7 @@ debug> for i = 1:n, foo(i); endfor
 @noindent
 in debug mode. However, writing the above in three lines will not be
 correctly evaluated. To leave the debug mode, you should simply type
-either @code{quit} or @code{exit}.
+either @code{quit}, @code{exit}, @code{return} or @code{dbcont}.
 
 @menu
 * Entering Debug Mode::
@@ -116,3 +116,13 @@ Octave entered debug mode.
 @DOCSTRING(dbwhere)
 
 @DOCSTRING(dbtype)
+
+Within debug mode it is equally allows single line stepping through a
+function.  To allow this two additional commands are available;
+@code{dbstep} and @code{dbnext}.  These differ slightly in the way
+they treat the next executable line if the next line itself is a
+function defined in an m-file.
+
+@code{dbnext} will execute the next line, while staying in the existing
+function being debugged. Whereas @code{dbstep} will step in to this new
+function defined in an m-file.

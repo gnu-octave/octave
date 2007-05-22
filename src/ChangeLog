@@ -1,3 +1,9 @@
+2007-05-22  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.11.
+	(OCTAVE_API_VERSION): Now api-v24.
+	(OCTAVE_RELEASE_DATE): Now 2007-05-22.
+
 2007-05-21  David Bateman  <dbateman@free.fr>
 
 	* debug.cc (Fdbstop): handle integer, vector and multiple line

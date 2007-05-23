@@ -1,3 +1,11 @@
+2007-05-23  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (make_anon_fcn_handle): Don't build assignment expression.
+	* ov-fcn-handle.cc (octave_fcn_handle::print_raw):
+	Don't split assignment expression.
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Special case for inline function body evaluation.
+
 2007-05-22  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.12.

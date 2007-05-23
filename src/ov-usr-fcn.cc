@@ -356,7 +356,14 @@ octave_user_function::do_multi_index_op (int nargout,
     unwind_protect_bool (evaluating_function_body);
     evaluating_function_body = true;
 
-    cmd_list->eval ();
+    if (is_inline_function ())
+      {
+	assert (cmd_list->length () == 1);
+
+	retval = cmd_list->eval (false, nargout);
+      }
+    else
+      cmd_list->eval ();
 
     if (echo_commands)
       print_code_function_trailer ();
@@ -375,7 +382,7 @@ octave_user_function::do_multi_index_op (int nargout,
     
     // Copy return values out.
 
-    if (ret_list)
+    if (ret_list && ! is_inline_function ())
       {
 	ret_list->initialize_undefined_elements (my_name, nargout, Matrix ());
 

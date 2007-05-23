@@ -1782,28 +1782,7 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
   symtab_context.pop ();
 
   if (stmt && stmt->is_expression ())
-    {
-      symbol_record *sr = fcn_sym_tab->lookup ("__retval__", true);
-
-      tree_expression *e = stmt->expression ();
-
-      tree_identifier *id = new tree_identifier (sr);
-
-      tree_simple_assignment *asn = new tree_simple_assignment (id, e);
-
-      stmt->set_expression (asn);
-
-      stmt->set_print_flag (false);
-
-      // FIXME -- would like to delete old_stmt here or
-      // replace expression inside it with the new expression we just
-      // created so we don't have to create a new statement at all.
-
-      id = new tree_identifier (sr);
-      tree_decl_elt *elt = new tree_decl_elt (id);
-
-      ret_list = new tree_parameter_list (elt);
-    }
+    stmt->set_print_flag (false);
 
   tree_statement_list *body = new tree_statement_list (stmt);
 

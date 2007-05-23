@@ -1265,23 +1265,7 @@ octave_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 		      tree_expression *e = s->expression ();
 
 		      if (e)
-			{
-			  if (e->is_assignment_expression ())
-			    {
-			      // The parser builds an assignment to
-			      // __retval__, and we don't want to
-			      // display that part.
-
-			      tree_simple_assignment *tsa
-				= reinterpret_cast <tree_simple_assignment *> (e);
-			      tree_expression *rhs = tsa->right_hand_side ();
-
-			      if (rhs)
-				rhs->accept (tpc);
-			    }
-			  else
-			    e->accept (tpc);
-			}
+			e->accept (tpc);
 		    }
 		  else
 		    {

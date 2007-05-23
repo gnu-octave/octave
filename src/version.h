@@ -25,7 +25,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_version_h)
 #define octave_version_h 1
 
-#define OCTAVE_VERSION "2.9.12"
+#define OCTAVE_VERSION "2.9.12+"
 
 #define OCTAVE_API_VERSION "api-v24"
 

@@ -1,5 +1,9 @@
 2007-05-23  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.12+.
+
+2007-05-23  John W. Eaton  <jwe@octave.org>
+
 	* version.h (OCTAVE_VERSION): Now 2.9.12.
 	(OCTAVE_RELEASE_DATE): Now 2007-05-23.
 

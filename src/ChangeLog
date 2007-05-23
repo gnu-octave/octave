@@ -1,5 +1,8 @@
 2007-05-23  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.12.
+	(OCTAVE_RELEASE_DATE): Now 2007-05-23.
+
 	* parse.y (make_anon_fcn_handle): Don't build assignment expression.
 	* ov-fcn-handle.cc (octave_fcn_handle::print_raw):
 	Don't split assignment expression.
@@ -7,8 +10,6 @@
 	Special case for inline function body evaluation.
 
 2007-05-22  John W. Eaton  <jwe@octave.org>
-
-	* version.h (OCTAVE_VERSION): Now 2.9.12.
 
 	* pt-fcn-handle.cc (tree_anon_fcn_handle::rvalue):
 	Set current function as parent of anonymous function handle.

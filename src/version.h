@@ -29,7 +29,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #define OCTAVE_API_VERSION "api-v24"
 
-#define OCTAVE_RELEASE_DATE "2007-05-22"
+#define OCTAVE_RELEASE_DATE "2007-05-23"
 
 #define OCTAVE_COPYRIGHT "Copyright (C) 2007 John W. Eaton and others."
 

@@ -1,3 +1,7 @@
+2007-05-24  David Bateman  <dbateman@free.fr>
+
+        * pkg/pkg.m (pkg:rebuild): Thinko in rebuild logic.
+
 2007-05-22  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m: Use rethrow(lasterror()) throughout rather than

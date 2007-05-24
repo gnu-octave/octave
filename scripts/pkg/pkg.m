@@ -291,7 +291,7 @@ function [local_packages, global_packages] = pkg (varargin)
 
     case "rebuild"
       if (global_install)
-	global_packages = rebuild (prefix, global_list, auto, verbose);
+	global_packages = rebuild (prefix, global_list, files,  auto, verbose);
 	save (global_list, "global_packages");
 	local_packages = global_packages;
       else
@@ -315,9 +315,12 @@ function descriptions = rebuild (prefix, list, files, auto, verbose)
   else
     old_descriptions = installed_packages (list, list);
     wd = pwd ();
-    cd (prefix);
-    dirlist = glob (cellfun(@(x) [x, '-*'], files, 'UniformOutput', 0))
-    cd (wd);
+    unwind_protect
+      cd (prefix);
+      dirlist = glob (cellfun(@(x) [x, '-*'], files, 'UniformOutput', 0))
+    unwind_protect_cleanup
+      cd (wd);
+    end_unwind_protect
   endif
   descriptions = {};
   for k = 1:length (dirlist)
@@ -351,10 +354,10 @@ function descriptions = rebuild (prefix, list, files, auto, verbose)
     endif
   endfor
 
-  if (isempty (files))
+  if (! isempty (files))
     ## We are rebuilding for a particular package(s) so we should take
     ## care to keep the other untouched packages in the descriptions
-    descriptions = {desriptions{:}, old_desriptions{:}};
+    descriptions = {descriptions{:}, old_descriptions{:}};
 
     dup = [];
     for i = 1:length (descriptions)

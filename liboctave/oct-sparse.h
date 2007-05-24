@@ -28,10 +28,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #if defined (HAVE_SUITESPARSE_UMFPACK_H)
 #include <suitesparse/umfpack.h>
 #elif defined (HAVE_UFSPARSE_UMFPACK_H)
@@ -101,10 +97,6 @@ extern "C" {
 #else
 #define CHOLMOD_NAME(name) cholmod_ ## name
 #endif
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 #endif

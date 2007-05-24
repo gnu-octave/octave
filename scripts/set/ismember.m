@@ -121,8 +121,8 @@ endfunction
 %!assert (ismember ('abc', {'abc', 'def'}), true);
 %!assert (isempty (ismember ([], [1, 2])), true);
 %!assert (ismember ('', {'abc', 'def'}), false);
-%!fail (ismember ([], {1, 2}), 'error:.*');
-%!fail (ismember ({[]}, {1, 2}), 'error:.*');
+%!fail ('ismember ([], {1, 2})', 'error:.*');
+%!fail ('ismember ({[]}, {1, 2})', 'error:.*');
 %!assert (ismember ({'foo', 'bar'}, {'foobar'}), logical ([0, 0]))
 %!assert (ismember ({'foo'}, {'foobar'}), false)
 %!assert (ismember ({'bar'}, {'foobar'}), false)

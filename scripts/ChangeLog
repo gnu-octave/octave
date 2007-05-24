@@ -1,3 +1,7 @@
+2007-05-24  John W. Eaton  <jwe@octave.org>
+
+	* set/ismember.m: Quote first arg of "fail" tests.
+
 2007-05-24  David Bateman  <dbateman@free.fr>
 
         * pkg/pkg.m (pkg:rebuild): Thinko in rebuild logic.

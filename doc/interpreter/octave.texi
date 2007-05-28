@@ -139,7 +139,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Evaluation::                  
 * Statements::                  Looping and program flow control.
 * Functions and Scripts::       
-* Error Handling::              
+* Errors and Warnings::              
 * Debugging::
 * Input and Output::            
 * Plotting::                    
@@ -329,7 +329,10 @@ Functions and Script Files
 * Script Files::                
 * Organization of Functions::   
 
-Error Handling
+Errors and Warnings
+
+* Handling Errors::
+* Handling Warnings::
 
 Debugging
 

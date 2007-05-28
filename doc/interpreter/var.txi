@@ -309,7 +309,7 @@ Default value: @code{"> "}.
 Default value: @code{"+ "}.
 
 @item beep_on_error
-@xref{Error Handling}.
+@xref{Errors and Warnings}.
 
 Default value: 0.
 

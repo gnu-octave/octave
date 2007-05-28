@@ -1,5 +1,13 @@
 2007-05-28  Søren Hauberg  <hauberg@gmail.com>
 
+        * interpreter/errors.txi: Add new sections and some more detailed
+	descriptions on errors and warnings.
+        * interpreter/octave.texi, interpreter/stmt.txi,
+	interpreter/var.txi: Add references to the new sections in
+	errors.txi.
+
+2007-05-28  Søren Hauberg  <hauberg@gmail.com>
+
         * interpreter/io.txi: Rearrange some sections, and add
         a few examples.
 

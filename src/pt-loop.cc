@@ -263,7 +263,9 @@ tree_simple_for_command::do_for_loop_once (octave_lvalue& ult,
 	{ \
           if (nrows == 0) \
             { \
-	      octave_value val (MTYPE (dim_vector (0, 1))); \
+	      MTYPE tarray (dim_vector (0, 1)); \
+ \
+	      octave_value val (tarray); \
  \
 	      for (octave_idx_type i = 0; i < steps; i++) \
 		{ \

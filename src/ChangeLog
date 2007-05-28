@@ -1,3 +1,7 @@
+2007-05-28  John W. Eaton  <jwe@octave.org>
+
+	* pt-loop.cc (DO_ND_LOOP): Avoid parser problem with obsolete g++.
+
 2007-05-23  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.12+.

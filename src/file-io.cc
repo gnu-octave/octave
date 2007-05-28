@@ -558,7 +558,7 @@ Append a \"t\" to the mode string to open the file in text mode or a\n\
 \"b\" to open in binary mode.  On Windows and Macintosh systems, text\n\
 mode reading and writing automatically converts linefeeds to the\n\
 appropriate line end character for the system (carriage-return linefeed\n\
-on Windows, carriage-returnn on Macintosh).  The default if no mode is\n\
+on Windows, carriage-return on Macintosh).  The default if no mode is\n\
 specified is binary mode.\n\
 \n\
 Additionally, you may append a \"z\" to the mode string to open a\n\

@@ -59,7 +59,7 @@ it, and by reporting any problems you may have.
 
 Many people have already contributed to Octave's development.  The
 following people have helped write parts of Octave or helped out in
-various other ways (listed alphbetically).
+various other ways (listed alphabetically).
 
 @include contributors.texi
 

@@ -1,3 +1,7 @@
+2007-05-28  G. D. McBain  <geordie_mcbain@yahoo.com.au>
+
+	* ov-list.cc (append): Doc fix.
+
 2007-05-28  John W. Eaton  <jwe@octave.org>
 
 	* pt-loop.cc (DO_ND_LOOP): Avoid parser problem with obsolete g++.

@@ -1,3 +1,12 @@
+2007-05-28  Søren Hauberg  <hauberg@gmail.com>
+
+        * interpreter/io.txi: Rearrange some sections, and add
+        a few examples.
+
+2007-05-28  G. D. McBain  <geordie_mcbain@yahoo.com.au>
+
+	* interpreter/struct.txi: Doc fix.
+
 2007-05-23  John W. Eaton  <jwe@octave.org>
 
 	* liboctave/Makefile.in (TEXINFO_SOURCE): New variable.

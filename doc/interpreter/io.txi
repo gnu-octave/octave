@@ -5,6 +5,64 @@
 @node Input and Output
 @chapter Input and Output
 
+Octave supports several ways of reading and writing data to or from the
+prompt or a file.  The most simple functions for data Input and Output
+(I/O) are easy to use, but only provides a limited control of how
+data is processed.  For more control, a set of functions modelled
+after the C standard library are also provided by Octave.
+
+@menu
+* Basic Input and Output::      
+* C-Style I/O Functions::       
+@end menu
+
+@node Basic Input and Output
+@section Basic Input and Output
+
+@c We could use a two-line introduction here...
+
+@menu
+* Terminal Output::             
+* Terminal Input::              
+* Simple File I/O::             
+@end menu
+
+@node Terminal Output
+@subsection Terminal Output
+
+Since Octave normally prints the value of an expression as soon as it
+has been evaluated, the simplest of all I/O functions is a simple
+expression.  For example, the following expression will display the
+value of @samp{pi}
+
+@example
+pi
+     @print{} pi = 3.1416
+@end example
+
+This works well as long as it is acceptable to have the name of the
+variable (or @samp{ans}) printed along with the value.  To print the
+value of a variable without printing its name, use the function
+@code{disp}.
+
+The @code{format} command offers some control over the way Octave prints
+values with @code{disp} and through the normal echoing mechanism.
+
+@DOCSTRING(ans)
+
+@DOCSTRING(disp)
+
+@DOCSTRING(format)
+
+@DOCSTRING(print_answer_id_name)
+
+@menu
+* Paging Screen Output::
+@end menu
+
+@node Paging Screen Output
+@subsubsection Paging Screen Output
+
 When running interactively, Octave normally sends any output intended
 for your terminal that is more than one screen long to a paging program,
 such as @code{less} or @code{more}.  This avoids the problem of having a
@@ -21,9 +79,9 @@ work with a single command statement.  The function @code{fflush} may be
 used to force output to be sent to the pager (or any other stream)
 immediately.
 
-You can select the program to run as the pager by setting the variable
-@code{PAGER}, and you can turn paging off by setting the value of the
-variable @code{page_screen_output} to 0.
+You can select the program to run as the pager using the @code{PAGER}
+function, and you can turn paging off by using the function
+@code{more}.
 
 @DOCSTRING(more)
 
@@ -43,51 +101,6 @@ variable @code{page_screen_output} to 0.
 @c warning: connection to external pager (pid = 9334) lost --
 @c warning: pending computations and output may be lost
 @c warning: broken pipe
-
-@menu
-* Basic Input and Output::      
-* C-Style I/O Functions::       
-@end menu
-
-@node Basic Input and Output
-@section Basic Input and Output
-
-@menu
-* Terminal Output::             
-* Terminal Input::              
-* Simple File I/O::             
-@end menu
-
-@node Terminal Output
-@subsection Terminal Output
-
-Since Octave normally prints the value of an expression as soon as it
-has been evaluated, the simplest of all I/O functions is a simple
-expression.  For example, the following expression will display the
-value of pi
-
-@example
-pi
-     @print{} pi = 3.1416
-@end example
-
-This works well as long as it is acceptable to have the name of the
-variable (or @samp{ans}) printed along with the value.  To print the
-value of a variable without printing its name, use the function
-@code{disp}.
-
-The @code{format} command offers some control over the way Octave prints
-values with @code{disp} and through the normal echoing mechanism.
-
-@DOCSTRING(ans)
-
-@DOCSTRING(fdisp)
-
-@DOCSTRING(disp)
-
-@DOCSTRING(format)
-
-@DOCSTRING(print_answer_id_name)
 
 @node Terminal Input
 @subsection Terminal Input
@@ -117,17 +130,76 @@ carriage return.
 @cindex loading data
 The @code{save} and @code{load} commands allow data to be written to and
 read from disk files in various formats.  The default format of files
-written by the @code{save} command can be controlled using the built-in
-variables @code{default_save_options} and @code{save_precision}.
+written by the @code{save} command can be controlled using the functions
+@code{default_save_options} and @code{save_precision}.
 
-Note that Octave cannot yet save or load structure variables or any
-user-defined types.
+As an example the following code creates a 3-by-3 matrix and saves it
+to the file @samp{myfile.mat}.
+
+@example
+A = [ 1:3; 4:6; 7:9 ];
+save myfile.mat A
+@end example
+
+Once one or more variables have been saved to a file, they can be
+read into memory using the @code{load} command.
+
+@example
+load myfile.mat
+A
+     @print{} A =
+     @print{} 
+     @print{}    1   2   3
+     @print{}    4   5   6
+     @print{}    7   8   9
+@end example
 
 @DOCSTRING(save)
 
-There are three variables that modify the behavior of @code{save} and
-three more that control whether variables are saved when Octave exits
-unexpectedly.
+@DOCSTRING(load)
+
+There are three functions that modify the behavior of @code{save}.
+
+@DOCSTRING(default_save_options)
+
+@DOCSTRING(save_precision)
+
+@DOCSTRING(save_header_format_string)
+
+@DOCSTRING(native_float_format)
+
+It is possible to write data to a file in a way much similar to the
+@code{disp} function for writing data to the screen.  The @code{fdisp}
+works just like @code{disp} except its first argument is a file pointer
+as created by @code{fopen}.  As an example, the following code writes
+to data @samp{myfile.txt}.
+
+@example
+fid = fopen ("myfile.txt", "w");
+fdisp (fid, "3/8 is ");
+fdisp (fid, 3/8);
+fclose (fid);
+@end example
+
+@noindent
+@xref{Opening and Closing Files}, for details on how to use @code{fopen}
+and @code{fclose}.
+
+@DOCSTRING(fdisp)
+
+@menu
+* Saving Data on Unexpected Exits::
+@end menu
+
+@node Saving Data on Unexpected Exits
+@subsubsection Saving Data on Unexpected Exits
+
+If Octave for some reason exits unexpected it will by default save the
+variables available in the workspace to a file in the current directory.
+By default this file is named @samp{octave-core} and can be loaded
+into memory with the @code{load} command.  While the default behaviour
+most often is reasonable it can be changed through the following
+functions.
 
 @DOCSTRING(crash_dumps_octave_core)
 
@@ -135,21 +207,12 @@ unexpectedly.
 
 @DOCSTRING(sigterm_dumps_octave_core)
 
-@DOCSTRING(default_save_options)
-
 @DOCSTRING(octave_core_file_options)
 
 @DOCSTRING(octave_core_file_limit)
 
 @DOCSTRING(octave_core_file_name)
 
-@DOCSTRING(save_precision)
-
-@DOCSTRING(save_header_format_string)
-
-@DOCSTRING(load)
-
-@DOCSTRING(native_float_format)
 
 @node C-Style I/O Functions
 @section C-Style I/O Functions
@@ -198,6 +261,21 @@ make your programs easier to understand.
 @node Opening and Closing Files
 @subsection Opening and Closing Files
 
+When reading data from a file it must be opened for reading first, and
+likewise when writing to a file.  The @code{fopen} function returns a
+pointer to an open file that is ready to be read or written.  Once all
+data has been read from or written to the opened file it should be closed.
+The @code{fclose} function does this.  The following code illustrates
+the basic pattern for writing to a file, but a very similar pattern is
+used when reading a file.
+
+@example
+filename = "myfile.txt";
+fid = fopen (filename, "w");
+# Do the actual I/O here...
+fclose (fid);
+@end example
+
 @DOCSTRING(fopen)
 
 @DOCSTRING(fclose)
@@ -205,12 +283,43 @@ make your programs easier to understand.
 @node Simple Output
 @subsection Simple Output
 
+Once a file has been opened for writing a string can be written to the
+file using the @code{fputs} function.  The following example shows
+how to write the string @samp{Free Software is needed for Free Science}
+to the file @samp{free.txt}.
+
+@example
+filename = "free.txt";
+fid = fopen (filename, "w");
+fputs (fid, "Free Software is needed for Free Science");
+fclose (fid);
+@end example
+
 @DOCSTRING(fputs)
+
+A function much similar to @code{fputs} is available for writing data
+to the screen.  The @code{puts} function works just like @code{fputs}
+except it doesn't take a file pointer as its input.
 
 @DOCSTRING(puts)
 
 @node Line-Oriented Input
 @subsection Line-Oriented Input
+
+To read from a file it must be opened for reading using @code{fopen}.
+Then a line can be read from the file using @code{fgetl} as the following
+code illustrates
+
+@example
+fid = fopen ("free.txt");
+txt = fgetl (fid)
+     @print{} Free Software is needed for Free Science
+fclose (fid);
+@end example
+
+@noindent
+This of course assumes that the file @samp{free.txt} exists and contains
+the line @samp{Free Software is needed for Free Science}.
 
 @DOCSTRING(fgetl)
 
@@ -825,6 +934,11 @@ as the data are read.
 @node Temporary Files
 @subsection Temporary Files
 
+Sometimes one needs to write data to a file that is only temporary.
+This is most commonly used when an external program launched from
+within Octave needs to access data.  When Octave exits all temporary
+files will be deleted, so this step need not be executed manually.
+
 @DOCSTRING(mkstemp)
 
 @DOCSTRING(tmpfile)
@@ -833,6 +947,27 @@ as the data are read.
 
 @node EOF and Errors
 @subsection End of File and Errors
+
+Once a file has been opened its status can be acquired.  As an example
+the @code{feof} functions determines if the end of the file has been
+reached.  This can be very useful when reading small parts of a file
+at a time.  The following example shows how to read one line at a time
+from a file until the end has been reached.
+
+@example
+filename = "myfile.txt";
+fid = fopen (filename, "r");
+while (! feof (fid) )
+  text_line = fgetl (fid);
+endwhile
+fclose (fid);
+@end example
+
+@noindent
+Note that in some situations it is more efficient to read the entire
+contents of a file and then process it, than it is to read it line by
+line.  This has the potential advantage of removing the loop in the
+above code.
 
 @DOCSTRING(feof)
 
@@ -853,7 +988,6 @@ the file pointer for a given file.
 @DOCSTRING(SEEK_SET)
 
 @DOCSTRING(frewind)
-
 
 The following example stores the current file position in the variable
 @code{marker}, moves the pointer to the beginning of the file, reads

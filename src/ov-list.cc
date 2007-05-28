@@ -404,7 +404,7 @@ Return the @var{n}-th element of @var{list}.\n\
 DEFUN (append, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} append (@var{list}, @var{a1}, @var{a2}, @dots{})\n\
-Return a new list created by appending @var{a1}, @var{a1}, @dots{}, to\n\
+Return a new list created by appending @var{a1}, @var{a2}, @dots{}, to\n\
 @var{list}.  If any of the arguments to be appended is a list, its\n\
 elements are appended individually.  For example,\n\
 \n\

@@ -1,3 +1,8 @@
+2007-05-29  Steven Mestdagh  <steven.mestdagh@esat.kuleuven.be>
+
+	* configure.in: Delete spurious "break" in fftw3 check.
+	Use separate case for SH_LD and SH_LDFLAGS on openbsd.
+
 2007-05-22  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-script-uninstall): Also remove directory.

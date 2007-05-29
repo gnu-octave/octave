@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.560 $)
+AC_REVISION($Revision: 1.561 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -561,7 +561,7 @@ AC_ARG_WITH(fftw,
 if test "$with_fftw" = yes; then
   have_fftw3_header=no
   with_fftw3=no
-  AC_CHECK_HEADER(fftw3.h, [have_fftw3_header=yes; break])
+  AC_CHECK_HEADER(fftw3.h, [have_fftw3_header=yes])
   if test "$have_fftw3_header" = yes; then
     AC_CHECK_LIB(fftw3, fftw_plan_dft_1d, [FFTW_LIBS="-lfftw3"; with_fftw3=yes])
   fi
@@ -1084,9 +1084,13 @@ OCTAVE_DLL_DEFS=
 OCTINTERP_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 case "$canonical_host_type" in
-  *-*-386bsd* | *-*-openbsd* | *-*-netbsd*)
+  *-*-386bsd* | *-*-netbsd*)
     SH_LD=ld
     SH_LDFLAGS=-Bshareable
+  ;;
+  *-*-openbsd*)
+    SH_LD='$(CXX)'
+    SH_LDFLAGS='-shared -fPIC'
   ;;
   *-*-freebsd*)
     SH_LD='$(CC)'

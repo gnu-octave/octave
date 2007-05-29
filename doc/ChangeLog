@@ -1,3 +1,8 @@
+2007-05-29  Steven Mestdagh  <steven.mestdagh@esat.kuleuven.be>
+
+	* interpreter/Makefile.in ($(HTML_IMAGES_PNG)): Use cp instead of
+	INSTALL_DATA to copy files to the HTML directory.
+
 2007-05-28  Søren Hauberg  <hauberg@gmail.com>
 
         * interpreter/errors.txi: Add new sections and some more detailed

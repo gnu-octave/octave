@@ -174,7 +174,7 @@ $(HTML_IMAGES_PNG): HTML/%.png : %.png
 	  echo "creating HTML directory"; \
 	  mkdir HTML; \
 	fi
-	$(INSTALL_DATA) $(filter-out html-dir, $<) HTML
+	cp $(filter-out html-dir, $<) HTML
 
 ## Unset DISPLAY here to avoid problems with the -title option for
 ## gnuplot (it doesn't work if we are calling pgnuplot).  Sleep for

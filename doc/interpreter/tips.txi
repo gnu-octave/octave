@@ -227,9 +227,9 @@ Here is a table of the conventional possibilities for @var{header-name}:
 This line states the name and net address of at least the principal
 author of the library.
 
-@smallexample
+@example
 ## Author: John W. Eaton <jwe@@bevo.che.wisc.edu>
-@end smallexample
+@end example
 
 @item Maintainer
 This line should contain a single name/address as in the Author line, or

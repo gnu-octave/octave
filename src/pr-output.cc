@@ -3075,7 +3075,7 @@ which can fit within the limits of your terminal width and each set of\n\
 rows is labeled so that you can easily see which columns are currently\n\
 being displayed.  For example:\n\
 \n\
-@smallexample\n\
+@example\n\
 @group\n\
 octave:13> rand (2,10)\n\
 ans =\n\
@@ -3090,7 +3090,7 @@ ans =\n\
   0.90174  0.11854  0.72313  0.73326\n\
   0.44672  0.94303  0.56564  0.82150\n\
 @end group\n\
-@end smallexample\n\
+@end example\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (split_long_rows);

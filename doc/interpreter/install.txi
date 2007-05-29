@@ -281,19 +281,19 @@ the kernel, install it, and reboot.
 @item
 If you encounter errors like
 
-@smallexample
+@example
 @group
 passing `void (*)()' as argument 2 of
   `octave_set_signal_handler(int, void (*)(int))'
 @end group
-@end smallexample
+@end example
 
 @noindent
 or
 
-@smallexample
+@example
 warning: ANSI C++ prohibits conversion from `(int)' to `(...)'
-@end smallexample
+@end example
 
 @noindent
 while compiling @file{sighandlers.cc}, you may need to edit some files
@@ -341,7 +341,7 @@ that contains the file @file{libgcc.a}.
 Some of the Fortran subroutines may fail to compile with older versions
 of the Sun Fortran compiler.  If you get errors like
 
-@smallexample
+@example
 zgemm.f:
 	zgemm:
 warning: unexpected parent of complex expression subtree
@@ -355,7 +355,7 @@ zgemm.f, line 327: warning: unexpected parent of complex
   expression subtree
 pcc_binval: missing IR_CONV in complex op
 make[2]: *** [zgemm.o] Error 1
-@end smallexample
+@end example
 
 @noindent
 when compiling the Fortran subroutines in the @file{libcruft}

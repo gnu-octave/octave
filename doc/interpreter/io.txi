@@ -352,20 +352,20 @@ a @samp{%} character in the template cause subsequent arguments to be
 formatted and written to the output stream.  For example,
 @cindex conversion specifications (@code{printf})
 
-@smallexample
+@example
 pct = 37;
 filename = "foo.txt";
 printf ("Processing of `%s' is %d%% finished.\nPlease be patient.\n",
         filename, pct);
-@end smallexample
+@end example
 
 @noindent
 produces output like
 
-@smallexample
+@example
 Processing of `foo.txt' is 37% finished.
 Please be patient.
-@end smallexample
+@end example
 
 This example shows the use of the @samp{%d} conversion to specify that a
 scalar argument should be printed in decimal notation, the @samp{%s}
@@ -441,9 +441,9 @@ conversion specification are printed as-is to the output stream.
 The conversion specifications in a @code{printf} template string have
 the general form:
 
-@smallexample
+@example
 % @var{flags} @var{width} @r{[} . @var{precision} @r{]} @var{type} @var{conversion}
-@end smallexample
+@end example
 
 For example, in the conversion specifier @samp{%-10.8ld}, the @samp{-}
 is a flag, @samp{10} specifies the field width, the precision is
@@ -690,9 +690,9 @@ flag can be used to specify left-justification in the field, but no
 other flags are defined, and no precision or type modifier can be given.
 For example:
 
-@smallexample
+@example
 printf ("%c%c%c%c%c", "h", "e", "l", "l", "o");
-@end smallexample
+@end example
 
 @noindent
 prints @samp{hello}.
@@ -705,9 +705,9 @@ output stream.  The @samp{-} flag can be used to specify
 left-justification in the field, but no other flags or type modifiers
 are defined for this conversion.  For example:
 
-@smallexample
+@example
 printf ("%3s%-6s", "no", "where");
-@end smallexample
+@end example
 
 @noindent
 prints @samp{ nowhere } (note the leading and trailing spaces).
@@ -770,9 +770,9 @@ this is not the case, a matching failure occurs.
 The conversion specifications in a @code{scanf} template string
 have the general form:
 
-@smallexample
+@example
 % @var{flags} @var{width} @var{type} @var{conversion}
-@end smallexample
+@end example
 
 In more detail, an input conversion specification consists of an initial
 @samp{%} character followed in sequence by:
@@ -909,9 +909,9 @@ more whitespace after having read something.
 
 For example, reading the input:
 
-@smallexample
+@example
  hello, world
-@end smallexample
+@end example
 
 @noindent
 with the conversion @samp{%10c} produces @code{" hello, wo"}, but

@@ -871,7 +871,7 @@ A (:, 1:2:5) = []
 @end example
 
 @noindent
-deletes the first, second, and fifth columns.
+deletes the first, third, and fifth columns.
 
 An assignment is an expression, so it has a value.  Thus, @code{z = 1}
 as an expression has the value 1.  One consequence of this is that you

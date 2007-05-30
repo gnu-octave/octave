@@ -1,3 +1,7 @@
+2007-05-30  G. D. McBain  <gdmcbain@freeshell.org>
+
+	* interpreter/expr.txi (Assignment Ops): Doc fix.
+
 2007-05-29  Steven Mestdagh  <steven.mestdagh@esat.kuleuven.be>
 
 	* interpreter/Makefile.in ($(HTML_IMAGES_PNG)): Use cp instead of

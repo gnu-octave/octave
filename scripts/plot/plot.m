@@ -59,7 +59,7 @@
 ## the elements, starting with 1.
 ##
 ## @item
-## If the @var{x} is a vector and @var{y} is a matrix, the
+## If the @var{x} is a vector and @var{y} is a matrix, then
 ## the columns (or rows) of @var{y} are plotted versus @var{x}.
 ## (using whichever combination matches, with columns tried first.)
 ##
@@ -159,7 +159,7 @@
 ## plot (b, "*", "markersize", 3)
 ## @end example
 ##
-## This command will plot the data in the variable @code{b} will be plotted
+## This command will plot the data in the variable @code{b},
 ## with points displayed as @samp{*} with a marker size of 3.
 ##
 ## @example

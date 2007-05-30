@@ -81,8 +81,13 @@ TEXINFO_SOURCE := $(MAIN_TEXINFO) $(SUB_TEXINFO) contributors.texi
 
 TEXINFO := $(TEXINFO_SOURCE) ../conf.texi
 
-FORMATTED = octave.dvi octave.ps octave.pdf \
-	octave.info octave.info-[0-9]*
+TEXI2DVICOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+	  $(UNSETCOMSPEC) $(TEXI2DVI) $(MAIN_TEXINFO) --output $@
+
+TEXI2PDFCOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
+	  $(UNSETCOMSPEC) $(TEXI2PDF) $(MAIN_TEXINFO) --output $@
+
+FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*
 
 MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
@@ -109,7 +114,7 @@ SPELL = $(patsubst %.texi, %.spell, $(TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: octave.info octave.dvi octave.ps octave.pdf HTML/index.html
+all: octave.info octave.pdf octave-a4.pdf HTML/index.html
 .PHONY: all
 
 $(TEXINFO): src-DOCSTRINGS scripts-DOCSTRINGS munge-texi$(BUILD_EXEEXT)
@@ -143,12 +148,29 @@ octave.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
 	  $(UNSETCOMSPEC) $(TEXI2DVI) $(MAIN_TEXINFO)
 
+octave-a4.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
+	-$(TEXI2DVICOMMAND) -t @afourpaper
+
+octave-smallbook.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
+	-$(TEXI2DVICOMMAND) -t @smallbook
+
 octave.ps: octave.dvi
 	-dvips -o $@ $<
 
+octave-a4.ps: octave-a4.dvi
+	-dvips -o $@ $<
+
+octave-smallbook.ps: octave-smallbook.dvi
+	-dvips -o $@ $<
+
 octave.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
-	  $(UNSETCOMSPEC) $(TEXI2PDF) $(MAIN_TEXINFO)
+	-$(TEXI2PDFCOMMAND)
+
+octave-a4.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
+	-$(TEXI2PDFCOMMAND) -t @afourpaper
+
+octave-smallbook.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
+	-$(TEXI2PDFCOMMAND) -t @smallbook
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
@@ -266,7 +288,7 @@ distclean: clean
 	rm -f Makefile 
 .PHONY: distclean
 
-maintainer-clean: clean-texi
+maintainer-clean: clean clean-texi
 	rm -f Makefile tags TAGS $(FORMATTED) $(IMAGES)
 	rm -rf HTML
 .PHONY: maintainer-clean

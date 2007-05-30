@@ -1,3 +1,13 @@
+2007-05-30  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (TEXI2DVICOMMAND, TEXI2PDFCOMMAND):
+	New macros.
+	(octave-a4.pdf, octave-smallbook.pdf): New targets.
+	(FORMATTED, all): Include octave-a4.pdf in list of dependencies.
+	Delete octave.dvi and octave.ps from list.
+	(FORMATTED, all): Use $(PDF_TARGETS).
+	(maintainer-clean): Depend on clean.
+
 2007-05-30  G. D. McBain  <gdmcbain@freeshell.org>
 
 	* interpreter/expr.txi (Assignment Ops): Doc fix.

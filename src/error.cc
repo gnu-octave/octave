@@ -974,8 +974,8 @@ example, given the following function definitions:\n\
 \n\
 @example\n\
 @group\n\
-function f () g () end\n\
-function g () h () end\n\
+function f () g (); end\n\
+function g () h (); end\n\
 function h () nargin == 1 || error (\"nargin != 1\"); end\n\
 @end group\n\
 @end example\n\

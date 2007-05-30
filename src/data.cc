@@ -2454,10 +2454,10 @@ the result are @var{m}-by-@var{n}.\n\
 
 DEFUN (reshape, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
-@deftypefnx {Function File} {} reshape (@var{a}, @var{siz})\n\
+@deftypefn {Built-in Function} {} reshape (@var{a}, @var{m}, @var{n}, @dots{})\n\
+@deftypefnx {Built-in Function} {} reshape (@var{a}, @var{siz})\n\
 Return a matrix with the given dimensions whose elements are taken\n\
-from the matrix @var{a}.  The elements of the matrix are access in\n\
+from the matrix @var{a}.  The elements of the matrix are accessed in\n\
 column-major order (like Fortran arrays are stored).\n\
 \n\
 For example,\n\

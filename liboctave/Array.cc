@@ -32,6 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <new>
 
 #include "Array.h"
 #include "Array-util.h"
@@ -121,6 +122,16 @@ Array<T>::squeeze (void) const
   return retval;
 }
 
+// KLUGE
+
+// The following get_size functions will throw a std::bad_alloc ()
+// exception if the requested size is larger than can be indexed by
+// octave_idx_type.  This may be smaller than the actual amount of
+// memory that can be safely allocated on a system.  However, if we
+// don't fail here, we can end up with a mysterious crash inside a
+// function that is iterating over an array using octave_idx_type
+// indices.
+
 // A guess (should be quite conservative).
 #define MALLOC_OVERHEAD 1024
 
@@ -128,24 +139,10 @@ template <class T>
 octave_idx_type
 Array<T>::get_size (octave_idx_type r, octave_idx_type c)
 {
-  // KLUGE
-
-  // If an allocation of an array with r * c elements of type T
-  // would cause an overflow in the allocator when computing the
-  // size of the allocation, then return a value which, although
-  // not equivalent to the actual request, should be too large for
-  // most current hardware, but not so large to cause the
-  // allocator to barf on computing retval * sizeof (T).
-
   static int nl;
   static double dl
     = frexp (static_cast<double> 
 	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
-
-  // This value should be an integer.  If we return this value and
-  // things work the way we expect, we should be paying a visit to
-  // new_handler in no time flat.
-  static octave_idx_type max_items = static_cast<octave_idx_type> (ldexp (dl, nl));  // = dl.2^nl
 
   int nr, nc;
   double dr = frexp (static_cast<double> (r), &nr);   // r = dr * 2^nr
@@ -160,32 +157,23 @@ Array<T>::get_size (octave_idx_type r, octave_idx_type c)
       dt *= 2;
     }
 
-	// if (r*c) below limit, then return r*c, otherwise return TOO BIG num!
-  return (nt < nl || (nt == nl && dt < dl)) ? r * c : max_items;
+  if (nt < nl || (nt == nl && dt < dl))
+    return r * c;
+  else
+    {
+      throw std::bad_alloc ();
+      return 0;
+    }
 }
 
 template <class T>
 octave_idx_type
 Array<T>::get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p)
 {
-  // KLUGE
-
-  // If an allocation of an array with r * c * p elements of type T
-  // would cause an overflow in the allocator when computing the
-  // size of the allocation, then return a value which, although
-  // not equivalent to the actual request, should be too large for
-  // most current hardware, but not so large to cause the
-  // allocator to barf on computing retval * sizeof (T).
-
   static int nl;
   static double dl
     = frexp (static_cast<double>
 	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
-
-  // This value should be an integer.  If we return this value and
-  // things work the way we expect, we should be paying a visit to
-  // new_handler in no time flat.
-  static octave_idx_type max_items = static_cast<octave_idx_type> (ldexp (dl, nl));
 
   int nr, nc, np;
   double dr = frexp (static_cast<double> (r), &nr);
@@ -207,34 +195,23 @@ Array<T>::get_size (octave_idx_type r, octave_idx_type c, octave_idx_type p)
 	}
     }
 
-  return (nt < nl || (nt == nl && dt < dl)) ? r * c * p : max_items;
+  if (nt < nl || (nt == nl && dt < dl))
+    return r * c * p;
+  else
+    {
+      throw std::bad_alloc ();
+      return 0;
+    }
 }
 
 template <class T>
 octave_idx_type
 Array<T>::get_size (const dim_vector& ra_idx)
 {
-  // KLUGE
-
-  // If an allocation of an array with r * c elements of type T
-  // would cause an overflow in the allocator when computing the
-  // size of the allocation, then return a value which, although
-  // not equivalent to the actual request, should be too large for
-  // most current hardware, but not so large to cause the
-  // allocator to barf on computing retval * sizeof (T).
-
   static int nl;
   static double dl
     = frexp (static_cast<double>
 	(std::numeric_limits<octave_idx_type>::max() - MALLOC_OVERHEAD) / sizeof (T), &nl);
-
-  // This value should be an integer.  If we return this value and
-  // things work the way we expect, we should be paying a visit to
-  // new_handler in no time flat.
-
-  static octave_idx_type max_items = static_cast<octave_idx_type> (ldexp (dl, nl));
-
-  octave_idx_type retval = max_items;
 
   int n = ra_idx.length ();
 
@@ -258,13 +235,18 @@ Array<T>::get_size (const dim_vector& ra_idx)
 
   if (nt < nl || (nt == nl && dt < dl))
     {
-      retval = 1;
+      octave_idx_type retval = 1;
 
       for (int i = 0; i < n; i++)
 	retval *= ra_idx(i);
-    }
 
-  return retval;
+      return retval;
+    }
+  else
+    {
+      throw std::bad_alloc ();
+      return 0;
+    }
 }
 
 #undef MALLOC_OVERHEAD

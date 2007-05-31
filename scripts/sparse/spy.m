@@ -57,6 +57,6 @@ function spy (S, varargin)
     plot (j, i, LineSpec, "MarkerSize", markersize);
   endif
 
-  axis ([0, n+1, m+1, 0], "ij");
+  axis ([0, n+1, 0, m+1], "ij");
 
 endfunction

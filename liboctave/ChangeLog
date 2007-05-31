@@ -1,3 +1,8 @@
+2007-05-31  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array::get_size): Throw std::bad_alloc exception if
+	the computed size is too large for the size of Octave's index type.
+
 2007-05-23  John W. Eaton  <jwe@octave.org>
 
 	* oct-sparse.h: Don't surround included files with extern "C" { ... }.

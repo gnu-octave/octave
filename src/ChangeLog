@@ -1,4 +1,16 @@
+2007-05-31  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (main_loop): Improve bad_alloc error message.
+
+	* octave.cc (execute_command_line_file, execute_eval_option_code):
+	Likewise.
+
 2007-05-31  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* toplev.cc (octave_atexit_functions):
+	Now std::list instead of std::stack.
+	(do_octave_atexit): Adapte to octave_atexit_functions as list.
+	(Fatexit): Allow second arg of false to remove element from list.
 
 	* DLD-FUNCTIONS/symrcm.cc: Use ! instead of "not".
 

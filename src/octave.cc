@@ -375,7 +375,8 @@ execute_eval_option_code (const std::string& code)
     }
   catch (std::bad_alloc)
     {
-      std::cerr << "error: memory exhausted -- eval failed\n";
+      std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- eval failed"
+		<< std::endl;
     }
 
   unwind_protect::run_frame ("execute_eval_option_code");
@@ -420,8 +421,8 @@ execute_command_line_file (const std::string& fname)
     }
   catch (std::bad_alloc)
     {
-      std::cerr << "error: memory exhausted -- execution of "
-		<< fname << " failed\n";
+      std::cerr << "error: memory exhausted or requested size too large for range of Octave's index type -- execution of "
+		<< fname << " failed" << std::endl;
     }
  
   unwind_protect::run_frame ("execute_command_line_file");

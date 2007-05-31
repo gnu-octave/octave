@@ -275,7 +275,8 @@ main_loop (void)
 	{
 	  recover_from_exception ();
 	  std::cerr
-	    << "error: memory exhausted -- trying to return to prompt\n";
+	    << "error: memory exhausted or requested size too large for range of Octave's index type -- trying to return to prompt"
+	    << std::endl;
 	}
     }
   while (retval == 0);
@@ -602,7 +603,7 @@ DEFALIAS (shell_cmd, system);
 
 // FIXME -- this should really be static, but that causes
 // problems on some systems.
-std::stack<std::string> octave_atexit_functions;
+std::list<std::string> octave_atexit_functions;
 
 void
 do_octave_atexit (void)
@@ -611,9 +612,9 @@ do_octave_atexit (void)
 
   while (! octave_atexit_functions.empty ())
     {
-      std::string fcn = octave_atexit_functions.top ();
+      std::string fcn = octave_atexit_functions.front ();
 
-      octave_atexit_functions.pop ();
+      octave_atexit_functions.pop_front ();
 
       reset_error_handler ();
 
@@ -658,7 +659,7 @@ do_octave_atexit (void)
     }
 }
 
-DEFUN (atexit, args, ,
+DEFUN (atexit, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} atexit (@var{fcn})\n\
 Register a function to be called when Octave exits.  For example,\n\
@@ -674,20 +675,74 @@ atexit (\"bye_bye\");\n\
 \n\
 @noindent\n\
 will print the message \"Bye bye\" when Octave exits.\n\
+\n\
+@deftypefnx {Built-in Function} {} atexit (@var{fcn}, @var{flag})\n\
+Register or unregister a function to be called when Octave exits,\n\
+depending on @var{flag}.  If @var{flag} is true, the function is\n\
+registered, if @var{flag} is false, it is unregistered.  For example,\n\
+after registering the function @code{bye_bye} as above,\n\
+\n\
+@example\n\
+atexit (\"bye_bye\", false);\n\
+@end example\n\
+\n\
+@noindent\n\
+will remove the function from the list and Octave will not call\n\
+the function @code{bye_by} when it exits.\n\
+\n\
+Note that @code{atexit} only removes the first occurence of a function\n\
+from the list, so if a function was placed in the list multiple\n\
+times with @code{atexit}, it must also be removed from the list\n\
+multiple times.\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin == 1)
+  if (nargin == 1 || nargin == 2)
     {
       std::string arg = args(0).string_value ();
 
       if (! error_state)
-	octave_atexit_functions.push (arg);
+        {
+          bool add_mode = true;
+
+          if (nargin == 2)
+            {
+              add_mode = args(1).bool_value ();
+
+              if (error_state)
+                error ("atexit: second argument must be a logical value");
+            }
+
+          if (! error_state)
+	    {
+	      if (add_mode)
+		octave_atexit_functions.push_front (arg);
+	      else
+		{
+		  bool found = false;
+		  std::list<std::string>::iterator it;
+
+		  for (std::list<std::string>::iterator p = octave_atexit_functions.begin ();
+		       p != octave_atexit_functions.end (); p++)
+		    {
+		      if (*p == arg)
+			{
+			  octave_atexit_functions.erase (p);
+			  found = true;
+			  break;
+			}
+		    }
+
+		  if (nargout > 0)
+		    retval(0) = found;
+		}
+	    }
+	}
       else
-	error ("atexit: argument must be a string");
+        error ("atexit: argument must be a string");
     }
   else
     print_usage ();

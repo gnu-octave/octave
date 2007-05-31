@@ -1,3 +1,10 @@
+2007-05-31  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* DLD-FUNCTIONS/symrcm.cc: Use ! instead of "not".
+
+	* sysdep.cc (same_file_internal) [OCTAVE_USE_WINDOWS_API]:
+	Use INVALID_HANDLE_VALUE, not INVALID_FILE_HANDLE.
+
 2007-05-28  G. D. McBain  <geordie_mcbain@yahoo.com.au>
 
 	* ov-list.cc (append): Doc fix.
@@ -605,7 +612,7 @@
         (octregexprep): New function with functionality of old Fregexprep.
         (Fregexprep): Treat cell arguments.
 
-2007-02-26  From Michael Goffioul  <michael.goffioul@swing.be>
+2007-02-26  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* Makefile.in: Use $(LN_S) instead of ln or ln -s.
 

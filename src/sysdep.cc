@@ -244,13 +244,13 @@ same_file_internal (const std::string& file1, const std::string& file2)
   hfile1 = CreateFile (file1.c_str (), 0, FILE_SHARE_READ, 0,
 		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); 
 
-  if (hfile1 == INVALID_FILE_HANDLE)
+  if (hfile1 == INVALID_HANDLE_VALUE)
     return false;
   
   hfile2 = CreateFile (file2.c_str (), 0, FILE_SHARE_READ, 0,
 		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-  if (hfile2 == INVALID_FILE_HANDLE)
+  if (hfile2 == INVALID_HANDLE_VALUE)
     {
       CloseHandle (hfile1);
       return false;

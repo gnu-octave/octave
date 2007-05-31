@@ -280,7 +280,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
     {
       // locate an unvisited starting node of the graph
       for (i = 0; i < N; i++)
-	if (not visit[i]) 
+	if (! visit[i]) 
 	  break;
 
       // locate a probably better starting node
@@ -303,7 +303,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       // the root is the first/only node on level 0
       level_N = 1;
 	
-      while (not Q_empty (Q, N, qh, qt))
+      while (! Q_empty (Q, N, qh, qt))
 	{
 	  v = Q_deq (Q, N, qh, qt);
 	  i = v.id;
@@ -330,7 +330,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 	      if (j1 == cidx[i+1])
 		{
 		  octave_idx_type r2 = ridx2[j2++];
-		  if (not visit[r2])
+		  if (! visit[r2])
 		    {
 		      // the distance of node j is dist(i)+1
 		      w.id = r2;
@@ -343,7 +343,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 	      else if (j2 == cidx2[i+1])
 		{
 		  octave_idx_type r1 = ridx[j1++];
-		  if (not visit[r1])
+		  if (! visit[r1])
 		    {
 		      w.id = r1;
 		      w.deg = D[r1];
@@ -358,7 +358,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 		  octave_idx_type r2 = ridx2[j2];
 		  if (r1 <= r2)
 		    {
-		      if (not visit[r1])
+		      if (! visit[r1])
 			{
 			  w.id = r1;
 			  w.deg = D[r1];
@@ -372,7 +372,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 		    }
 		  else
 		    {
-		      if (not visit[r2])
+		      if (! visit[r2])
 			{
 			  w.id = r2;
 			  w.deg = D[r2];
@@ -386,7 +386,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 	    }
 
 	  // add the neighbors to the queue (sorted by node degree)
-	  while (not H_empty(S, s))
+	  while (! H_empty(S, s))
 	    {
 	      OCTAVE_QUIT;
 
@@ -564,7 +564,7 @@ find_starting_node(octave_idx_type N, const octave_idx_type *ridx,
 
   for (;;)
     {
-      while (not Q_empty(Q, N, qh, qt))
+      while (! Q_empty(Q, N, qh, qt))
 	{
 	  v = Q_deq(Q, N, qh, qt);
 
@@ -583,7 +583,7 @@ find_starting_node(octave_idx_type N, const octave_idx_type *ridx,
 	      if (j1 == cidx[i+1])
 		{
 		  octave_idx_type r2 = ridx2[j2++];
-		  if (not visit[r2])
+		  if (! visit[r2])
 		    {
 		      // the distance of node j is dist(i)+1
 		      w.id = r2;
@@ -599,7 +599,7 @@ find_starting_node(octave_idx_type N, const octave_idx_type *ridx,
 	      else if (j2 == cidx2[i+1])
 		{
 		  octave_idx_type r1 = ridx[j1++];
-		  if (not visit[r1])
+		  if (! visit[r1])
 		    {
 		      // the distance of node j is dist(i)+1
 		      w.id = r1;
@@ -618,7 +618,7 @@ find_starting_node(octave_idx_type N, const octave_idx_type *ridx,
 		  octave_idx_type r2 = ridx2[j2];
 		  if (r1 <= r2)
 		    {
-		      if (not visit[r1])
+		      if (! visit[r1])
 			{
 			  w.id = r1;
 			  w.deg = D[r1];
@@ -635,7 +635,7 @@ find_starting_node(octave_idx_type N, const octave_idx_type *ridx,
 		    }
 		  else
 		    {
-		      if (not visit[r2])
+		      if (! visit[r2])
 			{
 			  w.id = r2;
 			  w.deg = D[r2];

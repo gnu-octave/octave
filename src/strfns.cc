@@ -147,7 +147,7 @@ Return 1 if @var{a} is a string.  Otherwise, return 0.\n\
 
 DEFUN (strcmp, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} strcmp (@var{s1}, @var{s2})\n\
+@deftypefn {Built-in Function} {} strcmp (@var{s1}, @var{s2})\n\
 Return 1 if the character strings @var{s1} and @var{s2} are the same,\n\
 and 0 otherwise.\n\
 \n\
@@ -425,7 +425,7 @@ This is just the opposite of the corresponding C library function.\n\
 
 DEFUN (strncmp, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
+@deftypefn {Built-in Function} {} strncmp (@var{s1}, @var{s2}, @var{n})\n\
 Return 1 if the first @var{n} characters of strings @var{s1} and @var{s2} are the same,\n\
 and 0 otherwise.\n\
 \n\

@@ -3313,7 +3313,7 @@ root_figure::init_factory_properties (void)
 
 DEFUN (ishandle, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} ishandle (@var{h})\n\
+@deftypefn {Built-in Function} {} ishandle (@var{h})\n\
 Return true if @var{h} is a graphics handle and false otherwise.\n\
 @end deftypefn")
 {
@@ -3329,7 +3329,7 @@ Return true if @var{h} is a graphics handle and false otherwise.\n\
 
 DEFUN (set, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} set (@var{h}, @var{p}, @var{v}, @dots{})\n\
+@deftypefn {Built-in Function} {} set (@var{h}, @var{p}, @var{v}, @dots{})\n\
 Set the named property @var{p} to the value @var{v} in the graphics\n\
 handle @var{h}.\n\
 @end deftypefn")
@@ -3366,7 +3366,7 @@ handle @var{h}.\n\
 
 DEFUN (get, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} get (@var{h}, @var{p})\n\
+@deftypefn {Built-in Function} {} get (@var{h}, @var{p})\n\
 Return the named property @var{p} from the graphics handle @var{h}.\n\
 If @var{p} is omitted, return the complete property list for @var{h}.\n\
 @end deftypefn")

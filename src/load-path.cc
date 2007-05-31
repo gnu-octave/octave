@@ -1293,7 +1293,7 @@ files.\n\
 
 DEFUN (path, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Function File} {} path (@dots{})\n\
+@deftypefn {Built-in Function} {} path (@dots{})\n\
 Modify or display Octave's load path.\n\
 \n\
 If @var{nargin} and @var{nargout} are zero, display the elements of\n\
@@ -1347,8 +1347,8 @@ No checks are made for duplicate elements.\n\
 
 DEFCMD (addpath, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} addpath (@var{dir1}, @dots{})\n\
-@deftypefnx {Function File} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
+@deftypefn {Built-in Function} {} addpath (@var{dir1}, @dots{})\n\
+@deftypefnx {Built-in Function} {} addpath (@var{dir1}, @dots{}, @var{option})\n\
 Add @var{dir1}, @dots{} to the current function search path.  If\n\
 @var{option} is @samp{\"-begin\"} or 0 (the default), prepend the\n\
 directory name to the current path.  If @var{option} is @samp{\"-end\"}\n\
@@ -1443,7 +1443,7 @@ Directories added to the path must exist.\n\
 
 DEFCMD (rmpath, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Function File} {} rmpath (@var{dir1}, @dots{})\n\
+@deftypefn {Built-in Function} {} rmpath (@var{dir1}, @dots{})\n\
 Remove @var{dir1}, @dots{} from the current function search path.\n\
 \n\
 @seealso{path, addpath, genpath, pathdef, savepath, pathsep}\n\

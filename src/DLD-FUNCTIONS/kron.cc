@@ -71,7 +71,7 @@ template void
 kron (const Array2<Complex>&, const Array2<Complex>&, Array2<Complex>&);
 
 DEFUN_DLD (kron, args,  nargout, "-*- texinfo -*-\n\
-@deftypefn {Function File} {} kron (@var{a}, @var{b})\n\
+@deftypefn {Loadable Function} {} kron (@var{a}, @var{b})\n\
 Form the kronecker product of two matrices, defined block by block as\n\
 \n\
 @example\n\

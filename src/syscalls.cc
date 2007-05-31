@@ -223,7 +223,7 @@ error message.\n\
 
 DEFUN (popen2, args, ,
  "-*- texinfo -*-\n\
-@deftypefn {Function File} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})\n\
+@deftypefn {Built-in Function} {[@var{in}, @var{out}, @var{pid}] =} popen2 (@var{command}, @var{args})\n\
 Start a subprocess with two-way communication.  The name of the process\n\
 is given by @var{command}, and @var{args} is an array of strings\n\
 containing options for the command.  The file identifiers for the input\n\

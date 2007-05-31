@@ -149,6 +149,20 @@
 ## @end example
 ##
 ## will remove the autoloading status of the image package.
+## @item build
+## Builds a binary form of a package or packages. The binary file produced
+## will itself be an Octave package that can be installed normally with
+## @code{pkg}. The form of the command to build a binary package is
+##
+## @example
+## pkg build builddir image-1.0.0.tar.gz @dots{}
+## @end example
+##
+## @noindent
+## where @code{buiddir} is the name of a directory where the temporary
+## installation will be produced and the binary packages will be found.
+## The options @code{-verbose} and @code{-nodeps} are respected, while 
+## the other options are ignored.
 ## @end table
 ## @end deftypefn
 
@@ -204,7 +218,7 @@ function [local_packages, global_packages] = pkg (varargin)
 	  prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
 	endif
       case {"list", "install", "uninstall", "load", "unload", ...
-	    "prefix", "local_list", "global_list", "rebuild"}
+	    "prefix", "local_list", "global_list", "rebuild", "build"}
 	action = varargin{i};
       otherwise
 	files{end+1} = varargin{i};
@@ -256,12 +270,13 @@ function [local_packages, global_packages] = pkg (varargin)
 	disp (prefix);
       elseif (length (files) == 0 && nargout == 1)
 	local_packages = prefix;
-      elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
+      elseif (length (files) == 1 && nargout <= 1 && ischar (files{1}))
 	prefix = files{1};
 	## if (!strcmp(prefix(end), filesep))
 	##   prefix(end+1) = filesep;
 	## endif
-	prefix = tilde_expand (prefix);
+	prefix = absolute_pathname (prefix);
+	local_packages = prefix;
 	user_prefix = true;
       else
 	error ("you must specify a prefix directory, or request an output argument");
@@ -273,7 +288,7 @@ function [local_packages, global_packages] = pkg (varargin)
       elseif (length (files) == 0 && nargout == 1)
 	local_packages = local_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
-	local_list = files{1};
+	local_list = absolute_pathname (files{1});
       else
 	error ("you must specify a local_list file, or request an output argument");
       endif
@@ -284,20 +299,26 @@ function [local_packages, global_packages] = pkg (varargin)
       elseif (length (files) == 0 && nargout == 1)
 	local_packages = global_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
-	global_list = files{1};
+	global_list = absolute_pathname (files{1});
       else
 	error ("you must specify a global_list file, or request an output argument");
       endif
 
     case "rebuild"
       if (global_install)
-	global_packages = rebuild (prefix, global_list, files,  auto, verbose);
+	global_packages = rebuild (prefix, global_list, files, auto, verbose);
 	save (global_list, "global_packages");
 	local_packages = global_packages;
       else
 	local_packages = rebuild (prefix, local_list, files, auto, verbose);
 	save (local_list, "local_packages");
       endif
+
+    case "build"
+      if (length (files) < 2)
+	error ("you must specify at least the build directory and one filename\nwhen calling 'pkg build'");
+      endif
+      build (files, deps, auto, verbose);
 
     otherwise
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
@@ -317,7 +338,7 @@ function descriptions = rebuild (prefix, list, files, auto, verbose)
     wd = pwd ();
     unwind_protect
       cd (prefix);
-      dirlist = glob (cellfun(@(x) [x, '-*'], files, 'UniformOutput', 0))
+      dirlist = glob (cellfun(@(x) strcat(x, '-*'), files, 'UniformOutput', 0))
     unwind_protect_cleanup
       cd (wd);
     end_unwind_protect
@@ -379,21 +400,45 @@ function descriptions = rebuild (prefix, list, files, auto, verbose)
   endif
 endfunction
 
-function auto = isautoload (desc)
-auto = false;
-if (isfield (desc{1}, "autoload"))
-  a = desc{1}.autoload;
-  if ((isnumeric (a) && a > 0)
-      || (ischar (a) && (strcmpi (a, "true")
-			 || strcmpi (a, "on")
-			 || strcmpi (a, "yes")
-			 || strcmpi (a, "1"))))
-    auto = true;
+function build (files, handle_deps, autoload, verbose)
+  if (length (files) < 1)
+    error ("insufficient number of files");
   endif
-endif
+  builddir = files{1};
+  if (! exist (builddir, "dir"))
+    warning ("creating build directory %s", builddir);
+    [status, msg] = mkdir (builddir);
+    if (status != 1)
+      error ("could not create installation directory: %s", msg);
+    endif
+  endif
+  builddir = absolute_pathname (builddir);
+  installdir = fullfile (builddir, "install");
+  if (! exist (installdir, "dir"))
+    [status, msg] = mkdir (installdir);
+    if (status != 1)
+      error ("could not create installation directory: %s", msg);
+    endif
+  endif
+  files(1) = [];
+  buildlist = fullfile (builddir, "octave_packages");
+  install (files, handle_deps, autoload, installdir, verbose, 
+	   buildlist, "", false);
+  unwind_protect
+    repackage (builddir, buildlist);
+  unwind_protect_cleanup
+    unload_packages ({"all"}, handle_deps, buildlist, "");
+    if (exist (installdir, "dir"))
+      rm_rf (installdir);
+    endif
+    if (exist (buildlist, "file"))
+      unlink (buildlist);
+    endif
+  end_unwind_protect
 endfunction
 
 function install (files, handle_deps, autoload, prefix, verbose, local_list, global_list, global_install)
+
 
   # Check that the directory in prefix exist. If it doesn't: create it!
   if (! exist (prefix, "dir"))
@@ -727,9 +772,11 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       cd (wd);
     endif
     ## Do the actual deletion
-    rmpath (desc.dir);
-    if (exist (fullfile (desc.dir, getarch()), "dir"))
-      rmpath (fullfile (desc.dir, getarch ()));
+    if (desc.loaded)
+      rmpath (desc.dir);
+      if (exist (fullfile (desc.dir, getarch()), "dir"))
+	rmpath (fullfile (desc.dir, getarch ()));
+      endif
     endif
     if (exist (desc.dir, "dir"))
       [status, msg] = rm_rf (desc.dir);
@@ -763,6 +810,86 @@ endfunction
 ##########################################################
 ##        A U X I L I A R Y    F U N C T I O N S        ##
 ##########################################################
+
+function pth = absolute_pathname (pth)
+  [status, msg, msgid] = fileattrib(pth);
+  pth = msg.Name;
+endfunction
+
+function repackage (builddir, buildlist)
+  packages = installed_packages (buildlist, buildlist);
+
+  wd = pwd();
+  for i = 1 : length(packages)
+    pack = packages{i};
+    unwind_protect
+      cd (builddir);
+      mkdir (pack.name);
+      mkdir (fullfile (pack.name, "inst"));
+      copyfile (fullfile (pack.dir, "*"), fullfile (pack.name, "inst"));
+      movefile (fullfile (pack.name, "inst","packinfo", "*"), pack.name);
+      if (exist (fullfile (pack.name, "inst","packinfo", ".autoload"), "file"))
+	unlink (fullfile (pack.name, "inst","packinfo", ".autoload"));
+      endif
+      rmdir (fullfile (pack.name, "inst", "packinfo"));
+      if (exist (fullfile (pack.name, "inst", "doc"), "dir"))
+	movefile (fullfile (pack.name, "inst", "doc"), pack.name);
+      endif
+      if (exist (fullfile (pack.name, "inst", "bin"), "dir"))
+	movefile (fullfile (pack.name, "inst", "bin"), pack.name);
+      endif
+      archdir = fullfile (pack.name, "inst", getarch ());
+      if (exist (archdir, "dir"))
+	if (exist (fullfile (pack.name, "inst", "PKG_ADD"), "file"))
+	  unlink (fullfile (pack.name, "inst", "PKG_ADD"));
+	endif
+	if (exist (fullfile (pack.name, "inst", "PKG_DEL"), "file"))
+	  unlink (fullfile (pack.name, "inst", "PKG_DEL"));
+	endif
+	if (exist (fullfile (archdir, "PKG_ADD"), "file"))
+	  movefile (fullfile (archdir, "PKG_ADD"), 
+		    fullfile (pack.name, "PKG_ADD"));
+	endif
+	if (exist (fullfile (archdir, "PKG_DEL"), "file"))
+	  movefile (fullfile (archdir, "PKG_DEL"), 
+		    fullfile (pack.name, "PKG_DEL")); 
+	endif
+      else
+	if (exist (fullfile (pack.name, "inst", "PKG_ADD"), "file"))
+	  movefile (fullfile (pack.name, "inst", "PKG_ADD"), 
+		    fullfile (pack.name, "PKG_ADD"));
+	endif 
+	if (exist (fullfile (pack.name, "inst", "PKG_DEL"), "file"))
+	  movefile (fullfile (pack.name, "inst", "PKG_DEL"), 
+		    fullfile (pack.name, "PKG_DEL")); 
+	endif	
+      endif	
+      tfile = strcat (pack.name, "-", pack.version, ".tar");
+      tar (tfile, pack.name);
+      
+
+    unwind_protect_cleanup
+      if (exist (pack.name, "dir"))
+	rm_rf (pack.name);
+      endif
+      cd (wd);
+    end_unwind_protect
+  endfor
+endfunction
+
+function auto = isautoload (desc)
+auto = false;
+if (isfield (desc{1}, "autoload"))
+  a = desc{1}.autoload;
+  if ((isnumeric (a) && a > 0)
+      || (ischar (a) && (strcmpi (a, "true")
+			 || strcmpi (a, "on")
+			 || strcmpi (a, "yes")
+			 || strcmpi (a, "1"))))
+    auto = true;
+  endif
+endif
+endfunction
 
 function prepare_installation (desc, packdir)
   ## Is there a pre_install to call?
@@ -803,35 +930,25 @@ function configure_make (desc, packdir, verbose)
 					 " CXX=", octave_config_info ("CXX"),
 					 " AR=", octave_config_info ("AR"),
 					 " RANLIB=", octave_config_info ("RANLIB")));
-      if (verbose)
-	printf("%s", output);
-      endif
       if (status != 0)
 	rm_rf (desc.dir);
 	error ("the configure script returned the following error: %s", output);
+      elseif (verbose)
+	printf("%s", output);
       endif
+
     endif
 
     ## make
     if (exist (fullfile (src, "Makefile"), "file"))
       [status, output] = shell (strcat ("export INSTALLDIR=\"", desc.dir,
 					 "\"; make -C ", src));
-      if (verbose)
-	printf("%s", output);
-      endif
       if (status != 0)
 	rm_rf (desc.dir);
 	error ("'make' returned the following error: %s", output);
+      elseif (verbose)
+	printf("%s", output);
       endif
-      %# make install
-      %[status, output] = system(["export INSTALLDIR=" desc.dir "; make install -C " src]);
-      %if (verbose)
-      %  printf("%s", output);
-      %endif
-      %if (status != 0)
-      %    rm_rf(desc.dir);
-      %    error("'make install' returned the following error: %s", output);
-      %endif
     endif
 
     ## Copy files to "inst" and "inst/arch" (this is instead of 'make install')
@@ -880,14 +997,16 @@ function configure_make (desc, packdir, verbose)
 	archindependent = sprintf (fullfile (src, "%s "), m.name);
       endif
       if (length (oct) > 0)
-	filenames = [filenames, " ", sprintf(fullfile(src, "%s "), oct.name)];
-	archdependent = [archdependent, " ", ...
-			 sprintf(fullfile(src, "%s "), oct.name)];
+	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
+						    oct.name));
+	archdependent = strcat (archdependent, " ", ...
+			 sprintf(fullfile(src, "%s "), oct.name));
       endif
       if (length (mex) > 0)
-	filenames = [filenames, " ", sprintf(fullfile(src, "%s "), mex.name)];
-	archdependent = [archdependent, " ", ...
-			 sprintf(fullfile(src, "%s "), mex.name)];
+	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
+						    mex.name));
+	archdependent = strcat (archdependent, " ", ...
+			 sprintf(fullfile(src, "%s "), mex.name));
       endif
       filenames = split_by (filenames, " ");
       archdependent = split_by (archdependent, " ");
@@ -951,54 +1070,64 @@ function pkg = extract_pkg (nm, pat)
 endfunction
 
 function create_pkgadddel (desc, packdir, nm)
-  archdir = fullfile (desc.dir, getarch ());
-
-  ## If it is exists, the PKG_* files should go into the architecture
-  ## dependent directory so that the autoload/mfilename commands work
-  ## as expected...
-  if (exist (archdir, "dir"))
-    pkg = fullfile (desc.dir, getarch(), nm);
+  instpkg = fullfile (desc.dir, nm);
+  instfid = fopen (instpkg, "wt");
+  ## If it is exists, most of the  PKG_* file should go into the 
+  ## architecture dependent directory so that the autoload/mfilename 
+  ## commands work as expected. The only part that doesn't is the
+  ## part in the main directory.
+  if (exist (fullfile (desc.dir, getarch ()), "dir"))
+    archpkg = fullfile (desc.dir, getarch (), nm);
+    archfid = fopen (archpkg, "wt");
   else
-    pkg = fullfile (desc.dir, nm);
+    archpkg = instpkg;
+    archfid = instfid;
   endif
-  fid = fopen (pkg, "wt");
 
-  if (fid >= 0)
+  if (archfid >= 0 && instfid >= 0)
     ## Search all dot-m files for PKG commands
     lst = dir (fullfile(packdir, "inst", "*.m"));
     for i = 1:length (lst)
       nam = fullfile(packdir, "inst", lst(i).name);
-      fwrite (fid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
+      fwrite (instfid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
     ## Search all C++ source files for PKG commands
     lst = dir (fullfile(packdir, "src", "*.cc"));
     for i = 1:length (lst)
       nam = fullfile(packdir, "src", lst(i).name);
-      fwrite (fid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
-      fwrite (fid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
+      fwrite (archfid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
+      fwrite (archfid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
     endfor
 
     ## Add developer included PKG commands
     packdirnm = fullfile (packdir, nm);
     if (exist (packdirnm, "file"))
-      fid2 = fopen (packdirnm, "rt");
-      if (fid2 >= 0)
-        while (! feof (fid2))
-          ln = fgets (fid2);
+      fid = fopen (packdirnm, "rt");
+      if (fid >= 0)
+        while (! feof (fid))
+          ln = fgets (fid);
           if (ln > 0)
-            fwrite (fid, ln);
+            fwrite (archfid, ln);
           endif
         endwhile
-        fclose (fid2);
+        fclose (fid);
       endif
     endif
-    fclose (fid);
 
-    ## If the file is empty remove it
-    t = dir (pkg);
+    ## If the files is empty remove it
+    fclose (instfid);
+    t = dir (instpkg);
     if (t.bytes <= 0)
-      unlink (pkg);
+      unlink (instpkg);
+    endif
+
+    if (instfid != archfid)
+      fclose (archfid);
+      t = dir (archpkg);
+      if (t.bytes <= 0)
+        unlink (archpkg);
+      endif
     endif
   endif
 endfunction
@@ -1385,11 +1514,7 @@ function [out1, out2] = installed_packages (local_list, global_list)
     local_packages = {};
   end_try_catch
   try
-    if (strcmp(local_list, global_list))
-      global_packages = {};
-    else
-      global_packages = load (global_list).global_packages;
-    endif
+    global_packages = load (global_list).global_packages;
   catch
     global_packages = {};
   end_try_catch
@@ -1422,6 +1547,20 @@ function [out1, out2] = installed_packages (local_list, global_list)
       installed_packages{i}.loaded = true;
     else
       installed_packages{i}.loaded = false;
+    endif
+  endfor
+  for i = 1:length (local_packages)
+    if (regexp (tmppath, strrep (local_packages{i}.dir, "\\", "/")))
+      local_packages{i}.loaded = true;
+    else
+      local_packages{i}.loaded = false;
+    endif
+  endfor
+  for i = 1:length (global_packages)
+    if (regexp (tmppath, strrep (global_packages{i}.dir, "\\", "/")))
+      global_packages{i}.loaded = true;
+    else
+      global_packages{i}.loaded = false;
     endif
   endfor
 
@@ -1497,11 +1636,11 @@ function load_packages (files, handle_deps, local_list, global_list)
   endfor
 
   ## load all
+  dirs = {};
   if (length (files) == 1 && strcmp (files{1}, "all"))
     dirs = pdirs;
   ## load auto
   elseif (length (files) == 1 && strcmp (files{1}, "auto"))
-    dirs = {};
     for i = 1:length (installed_packages)
       if (exist (fullfile (pdirs{i}, "packinfo", ".autoload"), "file"))
 	dirs{end+1} = pdirs{i};
@@ -1509,7 +1648,6 @@ function load_packages (files, handle_deps, local_list, global_list)
     endfor
   ## load package_name1 ...
   else
-    dirs = {};
     for i = 1:length (files)
       idx = strcmp (pnames, files{i});
       if (! any (idx))
@@ -1540,8 +1678,8 @@ function load_packages (files, handle_deps, local_list, global_list)
   archdirs = {};
   for i = 1:length (dirs)
     tmpdir = fullfile (dirs{i}, arch);
+    archdirs{end + 1} = dirs{i};
     if (exist (tmpdir, "dir"))
-      archdirs{end + 1} = dirs{i};
       archdirs{end + 1} = tmpdir;
     endif
   endfor
@@ -1657,17 +1795,15 @@ function emp = dirempty (nm, ign)
 endfunction
 
 function arch = getarch ()
-  persistent _arch = [octave_config_info("canonical_host_type"), "-", ...
-   octave_config_info("api_version")];
+  persistent _arch = strcat (octave_config_info("canonical_host_type"), ...
+			     "-", octave_config_info("api_version"));
   arch = _arch;
 endfunction
 
 function [status, output] = shell (cmd)
-
   persistent have_sh;
 
   cmd = strrep (cmd, "\\", "/");
-  disp (cmd);
   if (ispc () && ! isunix ())
     if (isempty(have_sh))
       if (system("sh.exe -c \"exit\""))
@@ -1677,13 +1813,11 @@ function [status, output] = shell (cmd)
       endif
     endif
     if (have_sh)
-      [status, output] = system (["sh.exe -c \"", cmd, "\""]);
+      [status, output] = system (strcat ("sh.exe -c \"", cmd, "\""));
     else
       error ("Can not find the command shell")
     endif
   else
     [status, output] = system (cmd);
   endif
-  disp(output);
-
 endfunction

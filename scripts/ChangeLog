@@ -1,3 +1,27 @@
+2007-05-31  David Bateman  <dbateman@free.fr>
+
+	* pkg.m: Add build option to allow binary Octave packages to be
+	built from source packages. Probe absolute path of prefix, global
+	and local lists. Use strcat, rather that [] for strings.
+	(pkg:build): New function to binary binary package.
+	(pkg:absolute_pathname): Use fileattrib to probe absolute path.
+	(pkg:repackage): Package binary Octave package from installation.
+	(pkg:create_pkgadddel): Extract PKG_ADD and PKG_DEL directives
+	from m-files into main installation directory.
+	(pkg:shell): Suppress verbose messages from shell and only display
+	them with the verbose flag.
+	(pkg:installed_packages): Also include the loaded flag in the
+	local and global packages.
+	(pkg:uninstall): On uninstall, only rmpath the package if it is
+	flagged as loaded.
+
+2007-05-31  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* pkg.m (pkg:load_packages): Correctly load a mix of packages
+	with and without architecture dependent directories.
+	(pkg:installed_packages): Probe the global_list file even if it is
+	the same as the local_list. 
+
 2007-05-29  John W. Eaton  <jwe@octave.org>
 
 	* sparse/spy.m: Set axis to "ij" mode.

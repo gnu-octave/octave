@@ -33,6 +33,7 @@
 
 function [status, msg, msgid] = copyfile (f1, f2, force)
 
+  max_cmd_line = 1024;
   status = true;
   msg = "";
   msgid = "";
@@ -67,23 +68,54 @@ function [status, msg, msgid] = copyfile (f1, f2, force)
     if (ischar (f1))
       f1 = cellstr (f1);
     endif
+
+    ## If f1 has more than 1 element f2 must be a directory
+    isdir = (exist (f2, "dir") != 0);
+    if (length(f1) > 1 && ! isdir)
+      error ("copyfile: when copying multiple files, second argument must be a directory");
+    endif
     
     ## Protect the file name(s).
     f1 = glob (f1);
-    f1 = sprintf ("\"%s\" ", f1{:});
+    p1 = sprintf ("\"%s\" ", f1{:});
+    p2 = tilde_expand (f2);
 
-    f2 = tilde_expand (f2);
-  
-    if (ispc () && ! isunix () && ! isempty (file_in_path (EXEC_PATH, "cp.exe")))
-      f1 = strrep (f1, "\\", "/");
-      f2 = strrep (f2, "\\", "/");
-    endif
+    if (isdir && length(p1) > max_cmd_line)
+      l2 = length(p2) + length (cmd) + 6;
+      while (! isempty(f1))
+	p1 = sprintf ("\"%s\" ", f1{1});
+	f1(1) = [];
+	while (!isempty (f1) && (length(p1) + length(f1{1}) + l2 < 
+				 max_cmd_line))
+	  p1 = sprintf ("%s\"%s\" ", p1, f1{1});
+	  f1(1) = [];
+	endwhile 
 
-    ## Copy the files.
-    [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, f1, f2));
-    if (err < 0)
-      status = false;
-      msgid = "copyfile";
+	if (ispc () && ! isunix () && ! isempty (file_in_path (EXEC_PATH, "cp.exe")))
+	  p1 = strrep (p1, "\\", "/");
+	  p2 = strrep (p2, "\\", "/");
+	endif
+
+	## Copy the files.
+	[err, msg] = system (sprintf ("%s %s\"%s\"", cmd, p1, p2));
+	if (err < 0)
+	  status = false;
+	  msgid = "copyfile";
+	  break;
+	endif
+      endwhile
+    else
+      if (ispc () && ! isunix () && ! isempty (file_in_path (EXEC_PATH, "cp.exe")))
+	p1 = strrep (p1, "\\", "/");
+	p2 = strrep (p2, "\\", "/");
+      endif
+
+      ## Copy the files.
+      [err, msg] = system (sprintf ("%s %s\"%s\"", cmd, p1, p2));
+      if (err < 0)
+	status = false;
+	msgid = "copyfile";
+      endif
     endif
   else
     print_usage ();

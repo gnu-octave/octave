@@ -1,5 +1,9 @@
 2007-05-31  David Bateman  <dbateman@free.fr>
 
+	* miscellaneous/copyfile.m: Split copying of multiple files to a 
+	directory over several copy command to limit the line length.
+	* miscellaneous/movefile.m: Ditto.
+	
 	* pkg.m: Add build option to allow binary Octave packages to be
 	built from source packages. Probe absolute path of prefix, global
 	and local lists. Use strcat, rather that [] for strings.

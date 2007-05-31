@@ -32,6 +32,7 @@
 
 function [status, msg, msgid] = movefile (f1, f2, force)
 
+  max_cmd_line = 1024;
   status = true;
   msg = "";
   msgid = "";
@@ -39,7 +40,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   ## FIXME -- maybe use the same method as in ls to allow users control
   ## over the command that is executed.
 
-  if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "mv")))
+  if (ispc () && ! isunix () && isempty (file_in_path (EXEC_PATH, "mv.exe")))
     ## Windows.
     cmd = "cmd /C move";
     cmd_force_flag = "/Y";
@@ -51,11 +52,11 @@ function [status, msg, msgid] = movefile (f1, f2, force)
   if (nargin == 2 || nargin == 3)
     ## Input type check.
     if (! (ischar (f1) || iscellstr (f1)))
-      error ("copyfile: first argument must be a character string or a cell array of character strings");
+      error ("movefile: first argument must be a character string or a cell array of character strings");
     endif
 
     if (! ischar (f2))
-      error ("copyfile: second argument must be a character string");
+      error ("movefile: second argument must be a character string");
     endif
 
     if (nargin == 3 && strcmp (force, "f"))
@@ -67,20 +68,54 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       f1 = cellstr (f1);
     endif
     
+    ## If f1 has more than 1 element f2 must be a directory
+    isdir = (exist (f2, "dir") != 0);
+    if (length(f1) > 1 && ! isdir)
+      error ("movefile: when moving multiple files, second argument must be a directory");
+    endif
+    
     ## Protect the file name(s).
     f1 = glob (f1);
-    f1 = sprintf ("\"%s\" ", f1{:});
+    p1 = sprintf ("\"%s\" ", f1{:});
+    p2 = tilde_expand (f2);
 
-    f2 = tilde_expand (f2);
+    if (isdir && length(p1) > max_cmd_line)
+      l2 = length(p2) + length (cmd) + 6;
+      while (! isempty(f1))
+	p1 = sprintf ("\"%s\" ", f1{1});
+	f1(1) = [];
+	while (!isempty (f1) && (length(p1) + length(f1{1}) + l2 < 
+				 max_cmd_line))
+	  p1 = sprintf ("%s\"%s\" ", p1, f1{1});
+	  f1(1) = [];
+	endwhile 
 
-    ## Move the file(s).
-    [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, f1, f2));
-    if (err < 0)
-      status = false;
-      msgid = "movefile";
+	if (ispc () && ! isunix () && ! isempty (file_in_path (EXEC_PATH, "cp.exe")))
+	  p1 = strrep (p1, "\\", "/");
+	  p2 = strrep (p2, "\\", "/");
+	endif
+
+	## Move the file(s).
+	[err, msg] = system (sprintf ("%s %s\"%s\"", cmd, f1, f2));
+	if (err < 0)
+	  status = false;
+	  msgid = "movefile";
+	endif
+      endwhile
+    else
+      if (ispc () && ! isunix () && ! isempty (file_in_path (EXEC_PATH, "cp.exe")))
+	p1 = strrep (p1, "\\", "/");
+	p2 = strrep (p2, "\\", "/");
+      endif
+
+      ## Move the file(s).
+      [err, msg] = system (sprintf ("%s %s\"%s\"", cmd, f1, f2));
+      if (err < 0)
+	status = false;
+	msgid = "movefile";
+      endif
     endif
   else
     print_usage ();
   endif
-
 endfunction

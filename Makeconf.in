@@ -351,8 +351,6 @@ localstartupfiledir = ${localfcnfiledir}/startup
 # LD_LIBRARY_PATH, DYLD_LIBRARY_PATH, PATH, ...
 library_path_var = @library_path_var@
 
-MKOCTFILE_DL_LDFLAGS = @MKOCTFILE_DL_LDFLAGS@
-
 NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 
 # The following pattern rules and the substitution functions require
@@ -500,7 +498,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LIBREADLINE%|\"${LIBREADLINE}\"|" \
   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \
-  -e "s|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"${MKOCTFILE_DL_LDFLAGS}\"|" \
+  -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"@MKOCTFILE_DL_LDFLAGS@\"|' \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_CONF_OCTLIBDIR%|\"${octlibdir}\"|" \
   -e "s|%OCTAVE_CONF_PREFIX%|\"${prefix}\"|" \

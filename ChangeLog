@@ -1,3 +1,13 @@
+2007-06-01  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (*-*-darwin*): Fix quoting and construction of
+	MKOCTFILE_DL_LDFLAGS.
+	* mkoctfile.in (DEFAULT_BINDIR, EXEEXT): New substitutions.
+	* Makeconf.in (MKOCTFILE_DL_LDFLAGS): Delete.
+	(do-subst-config-vals): Do configure substitution of
+	MKOCTFILE_DL_LDFLAGS directly here instead of using intermediate
+	variable.  Quote this sed substitution with ' instead of ".
+
 2007-05-29  Steven Mestdagh  <steven.mestdagh@esat.kuleuven.be>
 
 	* configure.in: Delete spurious "break" in fftw3 check.

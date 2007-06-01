@@ -1,3 +1,9 @@
+2007-05-31  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.cc (radio_values, radio_property, color_values):
+	New classes.
+	(color_property class): Handle both color and radio values.
+
 2007-05-31  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (main_loop): Improve bad_alloc error message.

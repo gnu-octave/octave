@@ -62,10 +62,124 @@ empty_to_nan (const octave_value& val)
 
 // ---------------------------------------------------------------------
 
-class color_property
+class
+radio_values
 {
 public:
-  color_property (double r = 0, double g = 0, double b = 1)
+  radio_values (const std::string& opt_string = std::string ())
+  {
+    size_t beg = 0;
+    size_t len = opt_string.length ();
+    bool done = len == 0;
+
+    while (! done)
+      {
+	size_t end = opt_string.find ('|', beg);
+
+	if (end == std::string::npos)
+	  {
+	    end = len;
+	    done = true;
+	  }
+
+	std::string t = opt_string.substr (beg, end-beg);
+
+	// Might want more error checking here...
+	if (t[0] == '{')
+	  {
+	    t = t.substr (1, t.length () - 2);
+	    default_val = t;
+	  }
+	else if (beg == 0) // ensure default value
+	  default_val = t;
+
+	possible_vals.insert (t);
+
+	beg = end + 1;
+      }
+  };
+
+  radio_values (const radio_values& a)
+    : default_val (a.default_val), possible_vals (a.possible_vals) { }
+
+  radio_values& operator = (const radio_values& a)
+  {
+    if (&a != this)
+      {
+	default_val = a.default_val;
+	possible_vals = a.possible_vals;
+      }
+
+    return *this;
+  }
+
+  std::string default_value (void) const { return default_val; }
+
+  std::set<std::string> possible_values (void) const { return possible_vals; }
+
+  bool validate (const std::string& val)
+  {
+    bool retval = true;
+
+    if (possible_vals.find (val) == possible_vals.end ())
+      {
+	error ("invalid value = %s", val.c_str ());
+	retval = false;
+      }
+
+    return retval;
+  }
+
+private:
+  // Might also want to cache
+  std::string default_val;
+  std::set<std::string> possible_vals;
+};
+
+class
+radio_property
+{
+public:
+  radio_property (const radio_values& v)
+    : vals (v), current_val (v.default_value ()) { }
+
+  radio_property (const radio_values& v, const std::string& initial_value)
+    : vals (v), current_val (initial_value) { }
+
+  radio_property (const radio_property& a)
+    : vals (a.vals), current_val (a.current_val) { }
+
+  radio_property& operator = (const radio_property& a)
+  {
+    if (&a != this)
+      {
+	vals = a.vals;
+	current_val = a.current_val;
+      }
+
+    return *this;
+  }
+
+  radio_property& operator = (const std::string& newval)
+  {
+    if (vals.validate (newval))
+      current_val = newval;
+
+    return *this;
+  }
+
+  const std::string& current_value (void) const { return current_val; }
+
+private:
+  radio_values vals;
+  std::string current_val;
+};
+
+class
+color_values
+{
+public:
+  color_values (double r = 0, double g = 0, double b = 1)
   {
     xrgb[0] = r;
     xrgb[1] = g;
@@ -74,34 +188,33 @@ public:
     validate ();
   }
 
-  color_property (char c)
+  color_values (const char c)
   {
-    c2rgb (c);
+    if (! c2rgb (c))
+      error ("invalid color specification");
   }
 
-  color_property (const octave_value& val)
+  color_values (const color_values& c)
   {
-    // FIXME -- need some error checking here.
-
-    Matrix m = val.matrix_value ();
-
-    if (! error_state && m.numel () == 3)
-      {
-	for (int i = 0; i < m.numel (); i++)
-	  xrgb[i] = m(i);
-
-	validate ();
-      }
-    else 
-      {
-	std::string c = val.string_value ();
-
-	if (! error_state && c.length () == 1)
-	  c2rgb (c[0]);
-	else
-	  error ("invalid color specification");
-      }
+    xrgb[0] = c.xrgb[0];
+    xrgb[1] = c.xrgb[1];
+    xrgb[2] = c.xrgb[2];
   }
+
+  color_values& operator = (const color_values& c)
+  {
+    if (&c != this)
+      {
+	xrgb[0] = c.xrgb[0];
+	xrgb[1] = c.xrgb[1];
+	xrgb[2] = c.xrgb[2];
+
+      }
+
+    return *this;
+  }
+
+  const double* rgb (void) const { return xrgb; }
 
   void validate (void) const
   {
@@ -115,27 +228,13 @@ public:
       }
   }
 
-  operator octave_value (void) const
-  {
-    Matrix retval (1, 3);
-
-    for (int i = 0; i < 3 ; i++)
-      retval(i) = xrgb[i];
-
-    return retval;
-  }
-
-  const double* rgb (void) const
-  {
-    return xrgb;
-  }
-
 private:
   double xrgb[3];
 
-  void c2rgb (char c)
+  bool c2rgb (char c)
   {
-    double tmp_rgb[4] = {0, 0, 0};
+    double tmp_rgb[3] = {0, 0, 0};
+    bool retval = true;
 
     switch(c) 
       {
@@ -168,18 +267,158 @@ private:
 	break;
 
       default:
-	error ("invalid color specification");
+	retval = false;
       }
 
-    if (! error_state)
+    if (retval)
       {
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++)
 	  xrgb[i] = tmp_rgb[i];
       }
+
+    return retval;
   }
 };
 
-class colormap_property
+
+class 
+color_property
+{
+public:
+  color_property (const color_values& c = color_values (),
+		  const radio_values& v = radio_values ())
+    : current_type (color_t), color_val (c), radio_val (v),
+      current_val (v.default_value ())
+  { }
+
+  color_property (const radio_values& v)
+    : current_type (radio_t), color_val (color_values ()), radio_val (v),
+      current_val (v.default_value ())
+  { }
+
+  color_property (const radio_values& v, const std::string& initial_value)
+    : current_type (radio_t), color_val (color_values ()), radio_val (v),
+      current_val (initial_value)
+  { }
+
+  color_property (const octave_value& val)
+    : radio_val (), current_val ()
+  {
+    // FIXME -- need some error checking here.
+
+    if (val.is_string ())
+      {
+	std::string s = val.string_value ();
+
+	if (! s.empty ())
+	  {
+	    color_values col (s[0]);
+	    if (! error_state)
+	      {
+		color_val = col;
+		current_type = color_t;
+	      }
+	  }
+	else
+	  error ("invalid color specification");	  
+      }
+    else if (val.is_real_matrix ())
+      {
+	Matrix m = val.matrix_value ();
+
+	if (m.numel () == 3)
+	  {
+	    color_values col (m (0), m (1), m(2));
+	    if (! error_state)
+	      {
+		color_val = col;
+		current_type = color_t;
+	      }
+	  }
+	else
+	  error ("invalid color specification");
+      }
+    else 
+      error ("invalid color specification");
+  }
+
+  operator octave_value (void) const
+  {
+    if (current_type == color_t)
+      {
+	Matrix retval (1, 3);
+	const double *xrgb = color_val.rgb ();
+
+	for (int i = 0; i < 3 ; i++)
+	  retval(i) = xrgb[i];
+
+	return retval;
+      }
+
+    return current_val;
+  }
+
+  color_property& operator = (const color_property& a)
+  {
+    if (&a != this)
+      {
+	current_type = a.current_type;
+	color_val = a.color_val;
+	radio_val = a.radio_val;
+	current_val = a.current_val;
+      }
+
+    return *this;
+  }
+
+  color_property& operator = (const std::string& newval)
+  {
+    if (radio_val.validate (newval))
+      {
+	current_val = newval;
+	current_type = radio_t;
+      }
+
+    return *this;
+  }
+
+  color_property& operator = (const color_values& newval)
+  {
+    color_val = newval;
+    current_type = color_t;
+
+    return *this;
+  }
+
+  bool is_rgb (void) const { return (current_type == color_t); }
+
+  bool is_radio (void) const { return (current_type == radio_t); }
+
+  const double* rgb (void) const
+  {
+    if (current_type != color_t)
+      error ("color has no rgb value");
+
+    return color_val.rgb ();
+  }
+
+  const std::string& current_value (void) const
+  {
+    if (current_type != radio_t)
+      error ("color has no radio value");
+
+    return current_val;
+  }
+
+private:
+  enum { color_t, radio_t } current_type;
+  color_values color_val;
+  radio_values radio_val;
+  std::string current_val;
+};
+
+class 
+colormap_property
 {
 public:
   colormap_property (const Matrix& m = Matrix ())

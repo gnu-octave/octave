@@ -178,7 +178,12 @@ function [local_packages, global_packages] = pkg (varargin)
 				     "octave_packages");
   mlock ();
 
-  global_install = issuperuser ();
+  if (ispc () && ! isunix ())
+    global_install = 1;
+  else
+    global_install = (geteuid() == 0);
+  endif
+
   if (prefix == -1)
     if (global_install)
       prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
@@ -464,6 +469,14 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
   ## Uncompress the packages and read the DESCRIPTION files
   tmpdirs = packdirs = descriptions = {};
   try
+
+    ## Warn about non existent files 
+    for i = 1:length (files)
+      if (isempty (glob(files{i}))) 
+	warning ("file %s does not exist", files{i});
+      endif
+    endfor
+
     ## Unpack the package files and read the DESCRIPTION files
     files = glob (files);
     packages_to_uninstall = [];
@@ -531,8 +544,6 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
 	    endif
 	  endfor
 	endfor        
-      else
-	warning ("file %s does not exist", tgz);
       endif
     endfor
   catch
@@ -1239,15 +1250,6 @@ function finish_installation (desc, packdir)
       error ("the post_install function returned the following error: %s",
 	     lasterr ());
     end_try_catch
-  endif
-endfunction
-
-function out = issuperuser ()
-  if (ispc () && ! isunix ())
-    out = 1;
-  else
-    ## Need to be a bit presistent in probing superuser
-    out = (geteuid() == 0);
   endif
 endfunction
 

@@ -411,7 +411,7 @@ public:
   }
 
 private:
-  enum { color_t, radio_t } current_type;
+  enum current_enum { color_t, radio_t } current_type;
   color_values color_val;
   radio_values radio_val;
   std::string current_val;

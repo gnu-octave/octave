@@ -1,3 +1,7 @@
+2007-06-02  David Bateman  <dbateman@free.fr>
+
+	* SparseCmplxQR.cc: Changes to support CXSparse 2.2.0.
+
 2007-05-31  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array::get_size): Throw std::bad_alloc exception if

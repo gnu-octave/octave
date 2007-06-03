@@ -224,7 +224,11 @@ function [local_packages, global_packages] = pkg (varargin)
 	endif
       case {"list", "install", "uninstall", "load", "unload", ...
 	    "prefix", "local_list", "global_list", "rebuild", "build"}
-	action = varargin{i};
+	if (strcmp (action,"none"))
+	  action = varargin{i};
+	else
+	  error ("more than one action specified");
+	endif
       otherwise
 	files{end+1} = varargin{i};
     endswitch
@@ -877,7 +881,6 @@ function repackage (builddir, buildlist)
       endif	
       tfile = strcat (pack.name, "-", pack.version, ".tar");
       tar (tfile, pack.name);
-      
 
     unwind_protect_cleanup
       if (exist (pack.name, "dir"))

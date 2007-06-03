@@ -607,11 +607,11 @@ octave_complex_matrix::as_mxArray (void) const
   double *pr = static_cast<double *> (retval->get_data ());
   double *pi = static_cast<double *> (retval->get_imag_data ());
 
-  int nel = numel ();
+  mwSize nel = numel ();
 
   const Complex *p = matrix.data ();
 
-  for (int i = 0; i < nel; i++)
+  for (mwIndex i = 0; i < nel; i++)
     {
       pr[i] = real (p[i]);
       pi[i] = imag (p[i]);

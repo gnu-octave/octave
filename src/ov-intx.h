@@ -213,11 +213,11 @@ public:
 
     OCTAVE_INT_T::val_type *pr = static_cast<OCTAVE_INT_T::val_type *> (retval->get_data ());
 
-    int nel = numel ();
+    mwSize nel = numel ();
 
     const OCTAVE_INT_T *p = matrix.data ();
 
-    for (int i = 0; i < nel; i++)
+    for (mwIndex i = 0; i < nel; i++)
       pr[i] = p[i].value ();
 
     return retval;

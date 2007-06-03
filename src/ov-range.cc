@@ -477,13 +477,13 @@ octave_range::as_mxArray (void) const
 
   double *pr = static_cast<double *> (retval->get_data ());
 
-  int nel = numel ();
+  mwSize nel = numel ();
 
   Matrix m = matrix_value ();
 
   const double *p = m.data ();
 
-  for (int i = 0; i < nel; i++)
+  for (mwSize i = 0; i < nel; i++)
     pr[i] = p[i];
 
   return retval;

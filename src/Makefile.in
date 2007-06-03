@@ -255,7 +255,7 @@ OCT_LINK_DEPS = \
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	DOCSTRINGS mkbuiltins mk-errno-list mk-pkg-add \
-	defaults.h.in oct-conf.h.in oct-errno.cc.in octave.gperf \
+	defaults.h.in mxarray.h.in oct-conf.h.in oct-errno.cc.in octave.gperf \
 	oct-gperf.h parse.cc lex.cc y.tab.h __gnuplot_raw__.cc \
 	$(INCLUDES) $(DIST_SRC) $(OPT_HANDLERS) $(EXTRAS)
 
@@ -438,7 +438,11 @@ install-inc:
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(octincludedir)/octave
 	for f in $(INCLUDES_FOR_INSTALL); do \
 	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
-	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(octincludedir)/octave/$$f; \
+	  if [ -f $$f ]; then \
+	    $(INSTALL_DATA) $$f $(DESTDIR)$(octincludedir)/octave/$$f; \
+	  else \
+	    $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(octincludedir)/octave/$$f; \
+	  fi ; \
 	done
 	for f in defaults.h oct-conf.h oct-gperf.h; do \
 	  rm -f $(DESTDIR)$(octincludedir)/octave/$$f; \
@@ -498,7 +502,7 @@ mostlyclean: clean
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations oct-errno.cc
 	rm -f stamp-prereq stamp-liboctave-prereq
-	rm -f doc-files gendoc.cc DOCSTRINGS
+	rm -f doc-files gendoc.cc mxarray.h DOCSTRINGS
 .PHONY: distclean
 
 maintainer-clean: distclean

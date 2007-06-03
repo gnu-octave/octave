@@ -105,11 +105,11 @@ octave_char_matrix::as_mxArray (void) const
 
   mxChar *pr = static_cast<mxChar *> (retval->get_data ());
 
-  int nel = numel ();
+  mwSize nel = numel ();
 
   const char *p = matrix.data ();
 
-  for (int i = 0; i < nel; i++)
+  for (mwIndex i = 0; i < nel; i++)
     pr[i] = p[i];
 
   return retval;

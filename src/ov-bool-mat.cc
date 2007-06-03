@@ -476,11 +476,11 @@ octave_bool_matrix::as_mxArray (void) const
 
   bool *pr = static_cast<bool *> (retval->get_data ());
 
-  int nel = numel ();
+  mwSize nel = numel ();
 
   const bool *p = matrix.data ();
 
-  for (int i = 0; i < nel; i++)
+  for (mwIndex i = 0; i < nel; i++)
     pr[i] = p[i];
 
   return retval;

@@ -1,3 +1,10 @@
+2007-06-03  David Bateman  <dbateman@free.fr>
+
+	* configure.in (AC_CONFIG_FILES): Add src/mxarray.h
+	* examples/mycell.c, examples/mypow2.c, examples/mysparse.c,
+	examples/mystring.c, examples/mystruct.c: Use mwSize and mwIndex,
+	rather than int for indexing to conform to new mex API.
+	
 2007-06-01  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (*-*-darwin*): Fix quoting and construction of

@@ -3,7 +3,8 @@
 void
 mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
-  int n, i;
+  mwSize n;
+  mwIndex i;
 
   if (nrhs != 1 || ! mxIsCell (prhs[0]))
     mexErrMsgTxt ("expects cell");

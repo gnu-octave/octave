@@ -81,6 +81,14 @@ typedef int mxLogical;
 /* typedef Uint16 mxChar; */
 typedef char mxChar;
 
+/* 
+ * FIXME? Mathworks says these should be size_t on 64-bit system and when
+ * mex is used with the -largearraydims flag, but why do that? Its better
+ * to conform to the same indexing as the rest of Octave
+ */
+typedef @OCTAVE_IDX_TYPE@ mwSize;
+typedef @OCTAVE_IDX_TYPE@ mwIndex;
+
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 
 class octave_value;
@@ -124,12 +132,12 @@ public:
 
   mxArray (const octave_value& ov);
 
-  mxArray (mxClassID id, int ndims, const int *dims,
+  mxArray (mxClassID id, mwSize ndims, const mwSize *dims,
 	   mxComplexity flag = mxREAL);
 
   mxArray (mxClassID id, const dim_vector& dv, mxComplexity flag = mxREAL);
 
-  mxArray (mxClassID id, int m, int n, mxComplexity flag = mxREAL);
+  mxArray (mxClassID id, mwSize m, mwSize n, mxComplexity flag = mxREAL);
 
   mxArray (mxClassID id, double val);
 
@@ -139,19 +147,19 @@ public:
 
   mxArray (int m, const char **str);
 
-  mxArray (mxClassID id, int m, int n, int nzmax, mxComplexity flag = mxREAL);
+  mxArray (mxClassID id, mwSize m, mwSize n, int nzmax, mxComplexity flag = mxREAL);
 
-  mxArray (int ndims, const int *dims, int num_keys, const char **keys);
+  mxArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys);
 
   mxArray (const dim_vector& dv, int num_keys, const char **keys);
 
-  mxArray (int m, int n, int num_keys, const char **keys);
+  mxArray (mwSize m, mwSize n, int num_keys, const char **keys);
 
-  mxArray (int ndims, const int *dims);
+  mxArray (mwSize ndims, const mwSize *dims);
 
   mxArray (const dim_vector& dv);
 
-  mxArray (int m, int n);
+  mxArray (mwSize m, mwSize n);
 
   virtual mxArray *clone (void) const
   {
@@ -204,21 +212,21 @@ public:
 
   virtual int is_logical_scalar_true (void) const { return rep->is_logical_scalar_true (); }
 
-  virtual int get_m (void) const { return rep->get_m (); }
+  virtual mwSize get_m (void) const { return rep->get_m (); }
 
-  virtual int get_n (void) const { return rep->get_n (); }
+  virtual mwSize get_n (void) const { return rep->get_n (); }
 
-  virtual int *get_dimensions (void) const { return rep->get_dimensions (); }
+  virtual mwSize *get_dimensions (void) const { return rep->get_dimensions (); }
 
-  virtual int get_number_of_dimensions (void) const { return rep->get_number_of_dimensions (); }
+  virtual mwSize get_number_of_dimensions (void) const { return rep->get_number_of_dimensions (); }
 
-  virtual void set_m (int m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
+  virtual void set_m (mwSize m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
 
-  virtual void set_n (int n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
+  virtual void set_n (mwSize n) { DO_VOID_MUTABLE_METHOD (set_n (n)); }
 
-  virtual void set_dimensions (int *dims_arg, int ndims_arg) { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
+  virtual void set_dimensions (mwSize *dims_arg, mwSize ndims_arg) { DO_VOID_MUTABLE_METHOD (set_dimensions (dims_arg, ndims_arg)); }
 
-  virtual int get_number_of_elements (void) const { return rep->get_number_of_elements (); }
+  virtual mwSize get_number_of_elements (void) const { return rep->get_number_of_elements (); }
 
   virtual int is_empty (void) const { return get_number_of_elements () == 0; }
 
@@ -232,9 +240,9 @@ public:
 
   virtual void set_class_name (const char *name_arg) { DO_VOID_MUTABLE_METHOD (set_class_name (name_arg)); }
 
-  virtual mxArray *get_cell (int idx) const { DO_MUTABLE_METHOD (mxArray *, get_cell (idx)); }
+  virtual mxArray *get_cell (mwIndex idx) const { DO_MUTABLE_METHOD (mxArray *, get_cell (idx)); }
 
-  virtual void set_cell (int idx, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
+  virtual void set_cell (mwIndex idx, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
 
   virtual double get_scalar (void) const { return rep->get_scalar (); }
 
@@ -246,25 +254,25 @@ public:
 
   virtual void set_imag_data (void *pi) { DO_VOID_MUTABLE_METHOD (set_imag_data (pi)); }
 
-  virtual int *get_ir (void) const { DO_MUTABLE_METHOD (int *, get_ir ()); }
+  virtual mwIndex *get_ir (void) const { DO_MUTABLE_METHOD (mwIndex *, get_ir ()); }
 
-  virtual int *get_jc (void) const { DO_MUTABLE_METHOD (int *, get_jc ()); }
+  virtual mwIndex *get_jc (void) const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
 
-  virtual int get_nzmax (void) const { return rep->get_nzmax (); }
+  virtual mwSize get_nzmax (void) const { return rep->get_nzmax (); }
 
-  virtual void set_ir (int *ir) { DO_VOID_MUTABLE_METHOD (set_ir (ir)); }
+  virtual void set_ir (mwIndex *ir) { DO_VOID_MUTABLE_METHOD (set_ir (ir)); }
 
-  virtual void set_jc (int *jc) { DO_VOID_MUTABLE_METHOD (set_jc (jc)); }
+  virtual void set_jc (mwIndex *jc) { DO_VOID_MUTABLE_METHOD (set_jc (jc)); }
 
-  virtual void set_nzmax (int nzmax) { DO_VOID_MUTABLE_METHOD (set_nzmax (nzmax)); }
+  virtual void set_nzmax (mwSize nzmax) { DO_VOID_MUTABLE_METHOD (set_nzmax (nzmax)); }
 
   virtual int add_field (const char *key) { DO_MUTABLE_METHOD (int, add_field (key)); }
 
   virtual void remove_field (int key_num) { DO_VOID_MUTABLE_METHOD (remove_field (key_num)); }
 
-  virtual mxArray *get_field_by_number (int index, int key_num) const { DO_MUTABLE_METHOD (mxArray *, get_field_by_number (index, key_num)); }
+  virtual mxArray *get_field_by_number (mwIndex index, int key_num) const { DO_MUTABLE_METHOD (mxArray *, get_field_by_number (index, key_num)); }
 
-  virtual void set_field_by_number (int index, int key_num, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
+  virtual void set_field_by_number (mwIndex index, int key_num, mxArray *val) { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
 
   virtual int get_number_of_fields (void) const { return rep->get_number_of_fields (); }
 
@@ -276,9 +284,9 @@ public:
 
   virtual char *array_to_string (void) const { return rep->array_to_string (); }
 
-  virtual int calc_single_subscript (int nsubs, int *subs) const { return rep->calc_single_subscript (nsubs, subs); }
+  virtual mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const { return rep->calc_single_subscript (nsubs, subs); }
 
-  virtual int get_element_size (void) const { return rep->get_element_size (); }
+  virtual size_t get_element_size (void) const { return rep->get_element_size (); }
 
   virtual bool mutation_needed (void) const { return rep->mutation_needed (); }
 
@@ -294,7 +302,7 @@ public:
 
     if (str)
       {
-	int sz =  sizeof (mxChar) * (strlen (str) + 1);
+	mwSize sz =  sizeof (mxChar) * (strlen (str) + 1);
 	retval = static_cast<char *> (mxArray::malloc (sz));
 	strcpy (retval, str);
       }

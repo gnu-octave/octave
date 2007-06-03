@@ -1147,11 +1147,11 @@ octave_cell::as_mxArray (void) const
 
   mxArray **elts = static_cast<mxArray **> (retval->get_data ());
 
-  int nel = numel ();
+  mwSize nel = numel ();
 
   const octave_value *p = matrix.data ();
 
-  for (int i = 0; i < nel; i++)
+  for (mwIndex i = 0; i < nel; i++)
     elts[i] = new mxArray (p[i]);
 
   return retval;

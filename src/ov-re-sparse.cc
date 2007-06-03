@@ -795,21 +795,21 @@ octave_sparse_matrix::load_hdf5 (hid_t loc_id, const char *name,
 mxArray *
 octave_sparse_matrix::as_mxArray (void) const
 {
-  int nz = nzmax();
-  int nr = rows();
-  int nc = columns();
+  mwSize nz = nzmax();
+  mwSize nr = rows();
+  mwSize nc = columns();
   mxArray *retval = new mxArray (mxDOUBLE_CLASS, nr, nc, nz, mxREAL);
   double *pr = static_cast<double *> (retval->get_data ());
-  int *ir = retval->get_ir();
-  int *jc = retval->get_jc();
+  mwIndex *ir = retval->get_ir();
+  mwIndex *jc = retval->get_jc();
 
-  for (int i = 0; i < nz; i++)
+  for (mwIndex i = 0; i < nz; i++)
     {
       pr[i] = matrix.data(i);
       ir[i] = matrix.ridx(i);
     }
 
-  for (int i = 0; i < nc + 1; i++)
+  for (mwIndex i = 0; i < nc + 1; i++)
     jc[i] = matrix.cidx(i);
 
   return retval;

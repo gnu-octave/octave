@@ -3,13 +3,13 @@
 void
 mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-  int n, m, nz;
+  mwSize n, m, nz;
   mxArray *v;
-  int i;
+  mwIndex i;
   double *pr, *pi;
   double *pr2, *pi2;
-  int *ir, *jc;
-  int *ir2, *jc2;
+  mwIndex *ir, *jc;
+  mwIndex *ir2, *jc2;
   
   if (nrhs != 1 || ! mxIsSparse (prhs[0]))
     mexErrMsgTxt ("expects sparse matrix");

@@ -3,7 +3,8 @@
 void
 mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
-  int i, n;
+  mwIndex i;
+  mwSize n;
   double *vri, *vro;
   
   if (nrhs != 1 || ! mxIsNumeric (prhs[0]))

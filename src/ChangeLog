@@ -1,3 +1,28 @@
+2007-06-03  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (DISTFILES): Add mxarray.h.in
+	(install-inc): Modify target so that mxarray.h is installed
+	correctly.
+	(distclean): Remove mxarray.h on distclean.
+	* mex.cc: Use mwSize for dimensions and mwIndex for indexing
+	throughout, with the exception of struct key indexes.
+	* mexproto.h: ditto.
+	* mxarray.h: remove.
+	* mxarray.h.in: Copy here and define mwSize, mwIndex, and use
+	throughout. 
+	* ov-bool-mat.cc (octave_bool_matrix::as_mxArray): Use mwSize and
+	mwIndex.
+	* ov-bool-sparse (octave_sparse_bool_matrix::as_mxArray): ditto.
+	* ov-cell.cc (octave_cell:as_mxArray): ditto.
+	* ov-ch-mat.cc (octave_char_matrix:as_mxArray): ditto.
+	* ov-cx-mat.cc (octave_complex_matrix::as_mxArray): ditto.
+	* ov-cx-sparse.cc (octave_sparse_complex_matrix::as_mxArray): ditto.
+	* ov-int.h (as_mxArray): ditto.
+	* ov-range.cc (octave_range:as_mxArray): ditto.
+	* ov-re-mat.cc (octave_matrix:as_mxArray): ditto.
+	* ov-re-sparse.cc (octave_sparse_matrix::as_mxArray): ditto.
+	* ov-struct.cc (octave_struct::as_mxArray): ditto.
+
 2007-06-02  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (color_property class): g++ doesn't like anonymous

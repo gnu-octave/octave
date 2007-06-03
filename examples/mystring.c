@@ -4,7 +4,8 @@
 void
 mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-  int i, j, m, n;
+  mwIndex i, j;
+  mwSize m, n;
   mxChar *pi, *po;
 
   if (nrhs != 1 || ! mxIsChar (prhs[0]) || 

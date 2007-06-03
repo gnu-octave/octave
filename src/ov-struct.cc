@@ -1271,9 +1271,9 @@ octave_struct::as_mxArray (void) const
 
   mxArray **elts = static_cast<mxArray **> (retval->get_data ());
 
-  int nel = numel ();
+  mwSize nel = numel ();
 
-  int ntot = nf * nel;
+  mwSize ntot = nf * nel;
 
   for (int i = 0; i < nf; i++)
     {
@@ -1281,8 +1281,8 @@ octave_struct::as_mxArray (void) const
 
       const octave_value *p = c.data ();
 
-      int k = 0;
-      for (int j = i; j < ntot; j += nf)
+      mwIndex k = 0;
+      for (mwIndex j = i; j < ntot; j += nf)
 	elts[j] = new mxArray (p[k++]);
     }
 

@@ -218,22 +218,22 @@ endfunction
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
-%!shared x,y
-%! x = [0:10]; y = sin(x);
-%!assert (spline(x,y,x), y);
-%!assert (spline(x,y,x'), y');
-%!assert (spline(x',y',x'), y');
-%!assert (spline(x',y',x), y);
+%!shared x,y,abserr
+%! x = [0:10]; y = sin(x); abserr = 1e-14;
+%!assert (spline(x,y,x), y, abserr);
+%!assert (spline(x,y,x'), y', abserr);
+%!assert (spline(x',y',x'), y', abserr);
+%!assert (spline(x',y',x), y, abserr);
 %!assert (isempty(spline(x',y',[])));
 %!assert (isempty(spline(x,y,[])));
-%!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)])
+%!assert (spline(x,[y;y],x), [spline(x,y,x);spline(x,y,x)],abserr)
 %! y = cos(x) + i*sin(x);
-%!assert ( spline(x,y,x), y )
-%!assert ( real(spline(x,y,x)), real(y) );
-%!assert ( real(spline(x,y,x.')), real(y).' );
-%!assert ( real(spline(x.',y.',x.')), real(y).' );
-%!assert ( real(spline(x.',y,x)), real(y) );
-%!assert ( imag(spline(x,y,x)), imag(y) );
-%!assert ( imag(spline(x,y,x.')), imag(y).' );
-%!assert ( imag(spline(x.',y.',x.')), imag(y).' );
-%!assert ( imag(spline(x.',y,x)), imag(y) );
+%!assert (spline(x,y,x), y, abserr)
+%!assert (real(spline(x,y,x)), real(y), abserr);
+%!assert (real(spline(x,y,x.')), real(y).', abserr);
+%!assert (real(spline(x.',y.',x.')), real(y).', abserr);
+%!assert (real(spline(x.',y,x)), real(y), abserr);
+%!assert (imag(spline(x,y,x)), imag(y), abserr);
+%!assert (imag(spline(x,y,x.')), imag(y).', abserr);
+%!assert (imag(spline(x.',y.',x.')), imag(y).', abserr);
+%!assert (imag(spline(x.',y,x)), imag(y), abserr);

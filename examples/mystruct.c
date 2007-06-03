@@ -3,7 +3,8 @@
 void
 mexFunction (int nlhs, mxArray* plhs[], int nrhs, const mxArray* prhs[])
 {
-  int i, j;
+  int i;
+  mwIndex j;
   mxArray *v;
   const char *keys[] = { "this", "that" };
 

@@ -1305,10 +1305,10 @@ that perform the same operation on all matrix types.  For example
 @example
 @group
 mxArray *m;
-int *dims;
+mwSize *dims;
 UINT32_T *pr;
 
-dims = (int *) mxMalloc (2 * sizeof(int));
+dims = (mwSize *) mxMalloc (2 * sizeof(mwSize));
 dims[0] = 2;
 dims[1] = 2;
 m = mxCreateNumericArray (2, dims, mxUINT32_CLASS, mxREAL);
@@ -1319,6 +1319,13 @@ pr =  = (UINT32_T *) mxGetData (m);
 There are also the functions @code{mxSetPr}, etc, that perform the
 inverse, and set the data of an Array to use the block of memory pointed
 to by the argument of @code{mxSetPr}.
+
+Note the type @code{mwSize} used above, and @code{mwIndex} are defined
+as the native precision of the indexing in Octave on the platform on
+which the mex-file is built. This allows both 32- and 64-bit platforms
+to support mex-files. @code{mwSize} is used to define array dimension
+and maximum number or elements, while @code{mwIndex} is used to define
+indexing into arrays.
 
 An example that demonstration how to work with arbitrary real or complex
 double precision arrays is given by the file @file{mypow2.c} as given
@@ -1440,12 +1447,12 @@ Accessing the fields of the structure can then be performed with the
 
 @example
 @group
-mxArray *mxGetField (const mxArray *ptr, int index, const char *key);
+mxArray *mxGetField (const mxArray *ptr, mwIndex index, const char *key);
 mxArray *mxGetFieldByNumber (const mxArray *ptr, 
-                             int index, int key_num);
-void mxSetField (mxArray *ptr, int index, 
+                             mwIndex index, int key_num);
+void mxSetField (mxArray *ptr, mwIndex index, 
                  const char *key, mxArray *val);
-void mxSetFieldByNumber (mxArray *ptr, int index, 
+void mxSetFieldByNumber (mxArray *ptr, mwIndex index, 
                          int key_num, mxArray *val);
 @end group
 @end example
@@ -1510,13 +1517,13 @@ functions
 
 @example
 @group
-int *mxGetIr (const mxArray *ptr);
-int *mxGetJc (const mxArray *ptr);
-int mxGetNzmax (const mxArray *ptr);
+mwIndex *mxGetIr (const mxArray *ptr);
+mwIndex *mxGetJc (const mxArray *ptr);
+mwSize mxGetNzmax (const mxArray *ptr);
 
-void mxSetIr (mxArray *ptr, int *ir);
-void mxSetJc (mxArray *ptr, int *jc);
-void mxSetNzmax (mxArray *ptr, int nzmax);
+void mxSetIr (mxArray *ptr, mwIndex *ir);
+void mxSetJc (mxArray *ptr, mwIndex *jc);
+void mxSetNzmax (mxArray *ptr, mwSize nzmax);
 @end group
 @end example
 
@@ -1531,8 +1538,8 @@ the sparse matrix.  Therefore
 
 @example
 @group
-int nz, n;
-int *Jc;
+mwSize nz, n;
+mwIndex *Jc;
 mxArray *m;
 @dots{}
 n = mxGetN (m);

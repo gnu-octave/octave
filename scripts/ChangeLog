@@ -1,3 +1,7 @@
+2007-06-03  David Bateman  <dbateman@free.fr>
+
+	* polynomial/spline.m: Add a small tolerance to spline tests.
+
 2007-06-01  David Bateman  <dbateman@free.fr>
 
 	* pkg.m (pkg:is_superuser): Remove function used in one place and

@@ -1,3 +1,8 @@
+2007-06-04  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (Sparse<T> Sparse<T>::reshape): If length of new
+	dimensions is greater than 2, collapse to 2-D.
+
 2007-06-02  David Bateman  <dbateman@free.fr>
 
 	* SparseCmplxQR.cc: Changes to support CXSparse 2.2.0.

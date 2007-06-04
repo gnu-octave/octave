@@ -730,14 +730,22 @@ Sparse<T>
 Sparse<T>::reshape (const dim_vector& new_dims) const
 {
   Sparse<T> retval;
+  dim_vector dims2 = new_dims;
 
-  if (dimensions != new_dims)
+  if (dims2.length () > 2)
     {
-      if (dimensions.numel () == new_dims.numel ())
+      for (octave_idx_type i = 2; i < dims2.length(); i++)
+	dims2 (1) *= dims2(i);
+      dims2.resize (2);
+    }
+
+  if (dimensions != dims2)
+    {
+      if (dimensions.numel () == dims2.numel ())
 	{
 	  octave_idx_type new_nnz = nnz ();
-	  octave_idx_type new_nr = new_dims (0);
-	  octave_idx_type new_nc = new_dims (1);
+	  octave_idx_type new_nr = dims2 (0);
+	  octave_idx_type new_nc = dims2 (1);
 	  octave_idx_type old_nr = rows ();
 	  octave_idx_type old_nc = cols ();
 	  retval = Sparse<T> (new_nr, new_nc, new_nnz);

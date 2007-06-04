@@ -454,7 +454,7 @@ Q_enq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qh,
        octave_idx_type& qt, const CMK_Node& o)
 {	
   Q[qt] = o;
-  qt = (qt + 1) % N;
+  qt = (qt + 1) % (N + 1);
 }
 
 inline static CMK_Node 
@@ -462,7 +462,7 @@ Q_deq(CMK_Node * Q, octave_idx_type N, octave_idx_type &qh,
       octave_idx_type &qt)
 {
   CMK_Node r = Q[qh];
-  qh = (qh + 1) % N;
+  qh = (qh + 1) % (N + 1);
   return r;
 }
 

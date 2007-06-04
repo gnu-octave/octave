@@ -1,3 +1,8 @@
+2007-05-08 Michael Weitzel <michael.weitzel@uni-siegen.de>
+
+	* DLD-FUNCTIONS/symrcm.cc: Fix for queuing error that might cause
+	an infinite loop.
+
 2007-06-04  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (Fislogical): Rename from Fisbool.
@@ -28,7 +33,6 @@
 	* ov-re-sparse.cc (octave_sparse_matrix::as_mxArray): ditto.
 	* ov-struct.cc (octave_struct::as_mxArray): ditto.
 
->>>>>>> 1.1759
 2007-06-02  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (color_property class): g++ doesn't like anonymous

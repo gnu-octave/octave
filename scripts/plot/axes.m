@@ -34,7 +34,7 @@ function h = axes (varargin)
     cf = gcf ();
     tmp = __go_axes__ (cf, varargin{:});
     set (cf, "currentaxes", tmp);
-  elseif (nargin == 1)
+  else
     ## arg is axes handle, make it the current axes for the current
     ## figure.
     tmp = varargin{1};
@@ -45,8 +45,6 @@ function h = axes (varargin)
     else
       error ("axes: expecting argument to be axes handle");
     endif
-  else
-    print_usage ();
   endif
 
   if (nargout > 0)

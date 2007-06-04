@@ -544,6 +544,6 @@ variable.
 
 @DOCSTRING(isdefinite)
 
-@DOCSTRING(isbool)
+@DOCSTRING(islogical)
 
 @DOCSTRING(isprime)

@@ -1238,10 +1238,10 @@ but it uses less memory and avoids calling conj if @var{x} is real.\n\
   DATA_REDUCTION (sumsq);
 }
 
-DEFUN (isbool, args, ,
+DEFUN (islogical, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Functio} {} isbool (@var{x})\n\
-Return true if @var{x} is a boolean object.\n\
+@deftypefn {Built-in Functio} {} islogical (@var{x})\n\
+Return true if @var{x} is a logical object.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1254,7 +1254,7 @@ Return true if @var{x} is a boolean object.\n\
   return retval;
 }
 
-DEFALIAS (islogical, isbool);
+DEFALIAS (isbool, islogical);
 
 DEFUN (isinteger, args, ,
   "-*- texinfo -*-\n\

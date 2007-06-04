@@ -1,8 +1,17 @@
+<<<<<<< ChangeLog
+<<<<<<< ChangeLog
+2007-06-03  Søren Hauberg  <soren@hauberg.org>
+
+	* plot/axes.m: Eliminate redundant else clause.
+
+=======
+=======
 2007-06-03  David Bateman  <dbateman@free.fr>
 
 	* polynomial/spline.m: Add a small tolerance to spline tests.
 	* pkg/pkg.m: Protect against multiple actions being define.
 	
+>>>>>>> 1.846
 2007-06-01  David Bateman  <dbateman@free.fr>
 
 	* pkg.m (pkg:is_superuser): Remove function used in one place and
@@ -10,6 +19,7 @@
 	(pkg:install): Check for existence of files to install before
 	globbing and warn the user if they don't exist.
 
+>>>>>>> 1.844
 2007-05-31  David Bateman  <dbateman@free.fr>
 
 	* miscellaneous/copyfile.m: Split copying of multiple files to a 

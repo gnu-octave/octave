@@ -102,7 +102,7 @@ INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	error.h file-io.h graphics.h gripes.h help.h input.h \
 	lex.h load-path.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \
-	mex.h mexproto.h mxarray.h \
+	mex.h mexproto.h \
 	oct-errno.h oct-fstrm.h oct-hist.h oct-iostrm.h oct-map.h oct-obj.h \
 	oct-prcstrm.h oct-procbuf.h oct-stdstrm.h oct-stream.h zfstream.h \
 	oct-strstrm.h oct-lvalue.h oct.h octave.h ops.h pager.h \
@@ -185,7 +185,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 
 SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
 
-EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc 
+EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc mxarray.h
 
 EXTRA_OBJECTS := oct-errno.o octave.o builtins.o ops.o
 

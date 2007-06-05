@@ -1,5 +1,11 @@
 2007-06-05  John W. Eaton  <jwe@octave.org>
 
+	* help.h (raw_help): Tag with OCTINTERP_API.
+
+	* Makefile.in (INCLUDES): Remove mxarray.h from the list so that
+	it is not distributed.
+	(EXTRAS): Add mxarray.h to the list so that it is installed.
+
 	* sysdep.cc (same_file_internal) [OCTAVE_USE_WINDOWS_API]:
 	Avoid leaking file handles.
 

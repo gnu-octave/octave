@@ -232,47 +232,38 @@ same_file_internal (const std::string& file1, const std::string& file2)
 {
 #ifdef OCTAVE_USE_WINDOWS_API
 
+  bool retval = false;
+
   // Windows native code 
   // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
 
-  HANDLE hfile1;
-  HANDLE hfile2;
-  
-  BY_HANDLE_FILE_INFORMATION hfi1;
-  BY_HANDLE_FILE_INFORMATION hfi2;
-  
-  hfile1 = CreateFile (file1.c_str (), 0, FILE_SHARE_READ, 0,
-		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); 
+  HANDLE hfile1 = CreateFile (file1.c_str (), 0, FILE_SHARE_READ, 0,
+			      OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0); 
 
-  if (hfile1 == INVALID_HANDLE_VALUE)
-    return false;
-  
-  hfile2 = CreateFile (file2.c_str (), 0, FILE_SHARE_READ, 0,
-		       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+  if (hfile1 != INVALID_HANDLE_VALUE)
+    {
+      HANDLE hfile2 = CreateFile (file2.c_str (), 0, FILE_SHARE_READ, 0,
+				  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-  if (hfile2 == INVALID_HANDLE_VALUE)
-    {
-      CloseHandle (hfile1);
-      return false;
-    }
+      if (hfile2 != INVALID_HANDLE_VALUE)
+	{  
+	  BY_HANDLE_FILE_INFORMATION hfi1;
+	  BY_HANDLE_FILE_INFORMATION hfi2;
   
-  if (! GetFileInformationByHandle (hfile1, &hfi1))
-    {
-      CloseHandle (hfile1);
-      CloseHandle (hfile2);
-      return false;
-    }
-   
-  if (! GetFileInformationByHandle (hfile2, &hfi2))
-    {
-      CloseHandle (hfile1);
-      CloseHandle (hfile2);
-      return false;
-    }
+	  if (GetFileInformationByHandle (hfile1, &hfi1)
+	      && GetFileInformationByHandle (hfile2, &hfi2))
   
-  return (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
-	  && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
-	  && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+	    retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
+		      && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
+		      && hfi1.nFileIndexLow == hfi2.nFileIndexLow);
+
+	  CloseHandle (hfile2);
+	}
+
+      CloseHandle (hfile1);
+    }
+
+  return retval;
 
 #else
 

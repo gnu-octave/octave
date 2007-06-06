@@ -48,7 +48,7 @@ class tree_walker;
 // Complex scalar values.
 
 class
-OCTAVE_API
+OCTINTERP_API
 octave_complex : public octave_base_scalar<Complex>
 {
 public:

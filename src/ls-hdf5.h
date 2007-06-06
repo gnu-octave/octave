@@ -140,35 +140,35 @@ hdf5_callback_data
 };
 
 #if HAVE_HDF5_INT2FLOAT_CONVERSIONS
-extern hid_t
+extern OCTINTERP_API hid_t
 save_type_to_hdf5 (save_type st)
 #endif
 
-extern hid_t
+extern OCTINTERP_API hid_t
 hdf5_make_complex_type (hid_t num_type);
 
-extern bool
+extern OCTINTERP_API bool
 hdf5_types_compatible (hid_t t1, hid_t t2);
 
-extern herr_t
+extern OCTINTERP_API herr_t
 hdf5_read_next_data (hid_t group_id, const char *name, void *dv);
 
-extern bool
+extern OCTINTERP_API bool
 add_hdf5_data (hid_t loc_id, const octave_value& tc,
 	       const std::string& name, const std::string& doc,
 	       bool mark_as_global, bool save_as_floats);
 
-extern int
+extern OCTINTERP_API int
 save_hdf5_empty (hid_t loc_id, const char *name, const dim_vector d);
 
-extern int
+extern OCTINTERP_API int
 load_hdf5_empty (hid_t loc_id, const char *name, dim_vector &d);
 
-extern std::string
+extern OCTINTERP_API std::string
 read_hdf5_data (std::istream& is,  const std::string& filename, bool& global,
 		octave_value& tc, std::string& doc);
 
-extern bool
+extern OCTINTERP_API bool
 save_hdf5_data (std::ostream& os, const octave_value& tc,
 		const std::string& name, const std::string& doc,
 		bool mark_as_global, bool save_as_floats);

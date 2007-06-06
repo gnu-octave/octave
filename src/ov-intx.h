@@ -39,6 +39,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "gripes.h"
 
 class
+OCTINTERP_API
 OCTAVE_VALUE_INT_MATRIX_T
   : public octave_base_int_matrix<OCTAVE_INT_NDARRAY_T>
 {
@@ -231,6 +232,7 @@ private:
 };
 
 class
+OCTINTERP_API
 OCTAVE_VALUE_INT_SCALAR_T
   : public octave_base_int_scalar<OCTAVE_INT_T>
 {

@@ -35,7 +35,7 @@ extern void sysdep_cleanup (void);
 
 extern void raw_mode (bool, bool wait = true);
 
-extern int octave_kbhit (bool wait = true);
+extern OCTINTERP_API int octave_kbhit (bool wait = true);
 
 extern void w32_set_quiet_shutdown (void);
 

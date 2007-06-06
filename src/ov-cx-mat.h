@@ -49,6 +49,7 @@ class tree_walker;
 // Complex matrix values.
 
 class
+OCTINTERP_API
 octave_complex_matrix : public octave_base_matrix<ComplexNDArray>
 {
 public:

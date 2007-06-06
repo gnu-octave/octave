@@ -41,7 +41,7 @@ extern "C"
 #include "MArray.cc"
 
 template <>
-double
+OCTAVE_API double
 MArray<Complex>::norm (double p) const
 {
   MARRAY_NORM_BODY (Complex, xdznrm2, XDZNRM2);

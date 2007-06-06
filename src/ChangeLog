@@ -1,3 +1,8 @@
+2007-06-06  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* defaults.h.in, ls-hdf5.h, ov-complex.h, ov-cx-mat.h, ov-intx.h,
+	sysdep.h: Sprinkle with OCTINTERP_API as needed.
+
 2007-06-05  John W. Eaton  <jwe@octave.org>
 
 	* help.h (raw_help): Tag with OCTINTERP_API.

@@ -1,3 +1,7 @@
+2007-06-06  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* MArray-C.cc: Sprinkle with OCTINTERP_API as needed.
+
 2007-06-04  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (Sparse<T> Sparse<T>::reshape): If length of new

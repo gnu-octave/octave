@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.563 $)
+AC_REVISION($Revision: 1.564 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1348,8 +1348,8 @@ AC_CHECK_HEADERS(assert.h curses.h direct.h dlfcn.h fcntl.h float.h \
   floatingpoint.h grp.h ieeefp.h inttypes.h limits.h locale.h memory.h nan.h \
   ncurses.h poll.h pwd.h stdint.h stdlib.h string.h sys/ioctl.h \
   sys/param.h sys/poll.h sys/resource.h sys/select.h sys/stat.h \
-  sys/time.h sys/times.h sys/types.h sys/utsname.h termcap.h \
-  unistd.h varargs.h)
+  sys/time.h sys/times.h sys/types.h sys/utsname.h sys/utime.h termcap.h \
+  unistd.h utime.h varargs.h)
 
 ### C++ headers
 
@@ -1403,7 +1403,7 @@ fi
 
 ### Checks for functions and variables.
 
-AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
+AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name chmod \
   dup2 endgrent endpwent execvp fcntl fork getcwd getegid geteuid \
   getgid getgrent getgrgid getgrnam getpgrp getpid getppid getpwent \
   getpwuid gettimeofday getuid getwd _kbhit kill link localtime_r \
@@ -1412,7 +1412,8 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name \
   setlocale setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
   sigsuspend stat strcasecmp strdup strerror stricmp \
   strncasecmp strnicmp strsignal symlink tempnam umask \
-  uname unlink usleep vfprintf vsprintf vsnprintf waitpid)
+  uname unlink usleep utime vfprintf vsprintf vsnprintf waitpid \
+  _chmod _utime _utime32)
 
 case "$canonical_host_type" in
   *-*-msdosmsvc)

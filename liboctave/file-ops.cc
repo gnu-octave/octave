@@ -41,6 +41,20 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>
+#endif
+
+#if defined (HAVE_UTIME_H)
+#include <utime.h>
+#elif defined (HAVE_SYS_UTIME_H)
+#include <sys/utime.h>
+#endif
+
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -63,11 +77,46 @@ char file_ops::dir_sep_char = '/';
 std::string file_ops::dir_sep_str ("/");
 #endif
 
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) \
-     && defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
+#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
 std::string file_ops::dir_sep_chars ("/\\");
 #else
 std::string file_ops::dir_sep_chars (file_ops::dir_sep_str);
+#endif
+
+#if ! defined (HAVE_CHMOD) && defined (HAVE__CHMOD)
+#define chmod _chmod
+#define HAVE_CHMOD 1
+#endif
+
+#if ! defined (HAVE_UTIME) \
+	&& (defined (HAVE__UTIME) || defined (HAVE__UTIME32))
+#define utime _utime
+#define utimbuf _utimbuf
+#define HAVE_UTIME 1
+#endif
+
+#if ! defined (S_IFMT) && defined (_S_IFMT)
+#define S_IFMT _S_IFMT
+#endif
+
+#if ! defined (O_RDONLY) && defined (_O_RDONLY)
+#define O_RDONLY _O_RDONLY
+#endif
+
+#if ! defined (O_WRONLY) && defined (_O_WRONLY)
+#define O_WRONLY _O_WRONLY
+#endif
+
+#if ! defined (O_CREAT) && defined (_O_CREAT)
+#define O_CREAT _O_CREAT
+#endif
+
+#ifndef O_BINARY
+#ifdef _O_BINARY
+#define O_BINARY _O_BINARY
+#else
+#define O_BINARY 0
+#endif
 #endif
 
 // We provide a replacement for mkdir().
@@ -644,7 +693,7 @@ tilde_find_suffix (const std::string& s)
 
   for ( ; i < s_len; i++)
     {
-      if (s[i] == file_ops::dir_sep_char)
+      if (file_ops::is_dir_sep (s[i]))
 	break;
 
       if (! suffixes.empty ())
@@ -671,7 +720,7 @@ isolate_tilde_prefix (const std::string& fname)
 
   size_t len = 1;
 
-  while (len < f_len && fname[len] != file_ops::dir_sep_char)
+  while (len < f_len && ! file_ops::is_dir_sep (fname[len]))
     len++;
 
   return fname.substr (1, len);
@@ -692,7 +741,7 @@ tilde_expand_word (const std::string& filename)
   // of $HOME or the home directory of the current user, regardless of
   // any preexpansion hook.
 
-  if (f_len == 1 || filename[1] == file_ops::dir_sep_char)
+  if (f_len == 1 || file_ops::is_dir_sep (filename[1]))
     return octave_env::get_home_directory () + filename.substr (1);
 
   std::string username = isolate_tilde_prefix (filename);

@@ -950,7 +950,7 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
 
 /* FIXME -- we really need a configure test for this.  */
 
-#if defined __GNUC__ && __GNUC__ >= 3
+#if defined __GNUC__ && __GNUC__ >= 3 && ! defined __MINGW32__
 #define HAVE_C99_VSNPRINTF 1
 #endif
 

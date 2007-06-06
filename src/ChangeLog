@@ -1,3 +1,7 @@
+2007-06-06  Benjamin Lindner  <lindnerben@gmx.net>
+
+	* utils.cc [__MINGW32__]: Don't define HAVE_C99_VSNPRINTF.
+
 2007-06-06  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* defaults.h.in, ls-hdf5.h, ov-complex.h, ov-cx-mat.h, ov-intx.h,

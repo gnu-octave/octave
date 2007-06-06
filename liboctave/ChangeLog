@@ -1,5 +1,15 @@
 2007-06-06  Michael Goffioul  <michael.goffioul@swing.be>
 
+	* file-ops.cc: Include sys/stat.h, fcntl.h, and utime.h or
+	sys/utime.h if they are available.
+	If _chmod is available but chmod is not, define chmod to _chmod
+	and define HAVE_CHMOD.  Likewise for utime and utimbuf.
+	If _S_IFMT is defined but S_IFMT is not, define S_IFMT to _S_IFMT.
+	Likewise for _O_RDONLY, _O_WRONLY, _O_CREAT and _O_BINARY.
+	(tilde_find_suffix, isolate_tilde_prefix, tilde_expand_word):
+	Use file_ops::is_dir_sep instead of comparing with
+	file_ops::dir_sep_char.
+
 	* MArray-C.cc: Sprinkle with OCTINTERP_API as needed.
 
 2007-06-04  David Bateman  <dbateman@free.fr>

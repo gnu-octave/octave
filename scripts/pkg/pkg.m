@@ -316,11 +316,18 @@ function [local_packages, global_packages] = pkg (varargin)
     case "rebuild"
       if (global_install)
 	global_packages = rebuild (prefix, global_list, files, auto, verbose);
+	global_packages = save_order (global_packages);
 	save (global_list, "global_packages");
-	local_packages = global_packages;
+	if (nargout > 0)
+	  local_packages = global_packages;
+	endif
       else
 	local_packages = rebuild (prefix, local_list, files, auto, verbose);
+	local_packages = save_order (local_packages);
 	save (local_list, "local_packages");
+	if (nargout == 0)
+	  clear ("local_packages");
+	endif
       endif
 
     case "build"
@@ -448,7 +455,6 @@ endfunction
 
 function install (files, handle_deps, autoload, prefix, verbose, local_list, global_list, global_install)
 
-
   # Check that the directory in prefix exist. If it doesn't: create it!
   if (! exist (prefix, "dir"))
     warning ("creating installation directory %s", prefix);
@@ -564,9 +570,21 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
     error_text = "";
     for i = 1:length (descriptions)
       desc = descriptions{i};
-      idx1 = complement (packages_to_uninstall, 1:length(installed_packages));
       idx2 = complement (i, 1:length(descriptions));
-      pseudo_installed_packages = {installed_packages{idx1}, descriptions{idx2}};
+      if (global_install)
+	## Global installation is not allowed to have dependencies on locally
+	## installed packages
+	idx1 = complement (packages_to_uninstall, 
+			   1:length(global_packages));
+	pseudo_installed_packages = {global_packages{idx1}, ...
+				     descriptions{idx2}};
+      else
+	idx1 = complement (packages_to_uninstall, 
+			   1:length(local_packages));
+	pseudo_installed_packages = {local_packages{idx1}, ... 
+				     global_packages{:}, ...
+				     descriptions{idx2}};
+      endif
       bad_deps = get_unsatisfied_deps (desc, pseudo_installed_packages);
       ## Are there any unsatisfied dependencies?
       if (! isempty (bad_deps))
@@ -605,8 +623,13 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
   ## Uninstall the packages that will be replaced
   try
     for i = packages_to_uninstall
-      uninstall ({installed_packages{i}.name}, false, verbose, local_list, 
-		 global_list, global_install);
+      if (global_install)
+	uninstall ({global_packages{i}.name}, false, verbose, local_list, 
+		   global_list, global_install);
+      else
+	uninstall ({local_packages{i}.name}, false, verbose, local_list, 
+		   global_list, global_install);
+      endif
     endfor
   catch
     ## Something went wrong, delete tmpdirs
@@ -653,6 +676,7 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
     if (autoload > 0 || (autoload == 0 && isautoload (descriptions(i))))
       fclose (fopen (fullfile (descriptions{i}.dir, "packinfo", 
 			       ".autoload"), "wt"));
+      descriptions{i}.autoload = 1;
     endif
   endfor
 
@@ -660,12 +684,14 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
   try
     if (global_install)
       idx = complement (packages_to_uninstall, 1:length(global_packages));
-      global_packages = {global_packages{idx}, descriptions{:}};
+      global_packages = save_order ({global_packages{idx}, descriptions{:}});
       save (global_list, "global_packages");
+      installed_packages = {local_packages{:}, global_packages{:}};
     else
       idx = complement (packages_to_uninstall, 1:length(local_packages));
-      local_packages = {local_packages{idx}, descriptions{:}};
+      local_packages = save_order ({local_packages{idx}, descriptions{:}});
       save (local_list, "local_packages");
+      installed_packages = {local_packages{:}, global_packages{:}};
     endif
   catch
     ## Something went wrong, delete tmpdirs
@@ -676,10 +702,11 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
       rm_rf (descriptions{i}.dir);
     endfor
     if (global_install)
-      error ("couldn't append to %s: %s", global_list, lasterr()(8:end));
+      printf ("error: couldn't append to %s\n", global_list);
     else
-      error ("couldn't append to %s: %s", local_list, lasterr()(8:end));
+      printf ("error: couldn't append to %s\n", local_list);
     endif
+    rethrow (lasterror ());
   end_try_catch
 
   ## All is well, let's clean up
@@ -691,17 +718,15 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
   endfor
 
   ## Add the newly installed packages to the path, so the user
-  ## can begin usings them.
-  arch = getarch();
+  ## can begin usings them. Only load them if they are marked autoload
   if (length (descriptions) > 0)
-    dirs = {};
+    idx = [];
     for i = 1:length (descriptions)
-      dirs{end + 1} = descriptions{i}.dir;
-      if (exist (fullfile (descriptions{i}.dir, arch), "dir"))
-	dirs{end + 1} = fullfile (descriptions{i}.dir, arch);
+      if (isautoload (descriptions(i)))
+	idx (end + 1) = i;
       endif
     endfor
-    addpath (dirs{:});
+    load_packages_and_dependencies (idx, handle_deps, installed_packages);
   endif
 endfunction
 
@@ -808,14 +833,14 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
     if (length (remaining_packages) == 0)
       unlink (global_list);
     else
-      global_packages = remaining_packages;
+      global_packages = save_order (remaining_packages);
       save (global_list, "global_packages");
     endif
   else
     if (length (remaining_packages) == 0)
       unlink (local_list);
     else
-      local_packages = remaining_packages;
+      local_packages = save_order (remaining_packages);
       save (local_list, "local_packages");
     endif
   endif
@@ -892,17 +917,17 @@ function repackage (builddir, buildlist)
 endfunction
 
 function auto = isautoload (desc)
-auto = false;
-if (isfield (desc{1}, "autoload"))
-  a = desc{1}.autoload;
-  if ((isnumeric (a) && a > 0)
-      || (ischar (a) && (strcmpi (a, "true")
+  auto = false;
+  if (isfield (desc{1}, "autoload"))
+    a = desc{1}.autoload;
+    if ((isnumeric (a) && a > 0)
+        || (ischar (a) && (strcmpi (a, "true")
 			 || strcmpi (a, "on")
 			 || strcmpi (a, "yes")
 			 || strcmpi (a, "1"))))
-    auto = true;
+      auto = true;
+    endif
   endif
-endif
 endfunction
 
 function prepare_installation (desc, packdir)
@@ -915,8 +940,7 @@ function prepare_installation (desc, packdir)
       cd (wd);
     catch
       cd (wd);
-      error ("the pre-install function returned the following error: %s",
-	     lasterr ());
+      rethrow (lasterror ());
     end_try_catch
   endif
 
@@ -1212,7 +1236,7 @@ function copy_files (desc, packdir, bindir)
 		   fullfile (packinfo, "INDEX"));
     catch
       rm_rf (desc.dir);
-      error (lasterr ());
+      rethrow (lasterror ());
     end_try_catch
   endif
 
@@ -1250,8 +1274,7 @@ function finish_installation (desc, packdir)
     catch
       cd (wd);
       rm_rf (desc.dir);
-      error ("the post_install function returned the following error: %s",
-	     lasterr ());
+      rethrow (lasterror ());
     end_try_catch
   endif
 endfunction
@@ -1637,72 +1660,33 @@ function load_packages (files, handle_deps, local_list, global_list)
   for i = 1:num_packages
     pnames{i} = installed_packages{i}.name;
     pdirs{i} = installed_packages{i}.dir;
-    pdeps{i} = installed_packages{i}.depends;
   endfor
 
   ## load all
-  dirs = {};
   if (length (files) == 1 && strcmp (files{1}, "all"))
-    dirs = pdirs;
+    idx = [1:length(installed_packages)];
   ## load auto
-  elseif (length (files) == 1 && strcmp (files{1}, "auto"))
+  elseif (length (files) == 1 && strcmp (files{1}, "auto")) 
+    idx = [];
     for i = 1:length (installed_packages)
       if (exist (fullfile (pdirs{i}, "packinfo", ".autoload"), "file"))
-	dirs{end+1} = pdirs{i};
+	idx (end + 1) = i;
       endif
     endfor
   ## load package_name1 ...
   else
+    idx = [];
     for i = 1:length (files)
-      idx = strcmp (pnames, files{i});
-      if (! any (idx))
+      idx2 = find (strcmp (pnames, files{i}));
+      if (! any (idx2))
 	  error ("package %s is not installed", files{i});
       endif
-      dirs{end+1} = pdirs{idx};
-      if (handle_deps)
-	pdep = pdeps{idx};
-	for j = 1:length (pdep)
-	  depname = pdep{j}.package;
-	  if (strcmp (depname, "octave"))
-            continue;
-	  endif
-	  idx = strcmp (pnames, depname);
-	  if (! any (idx))
-	    error ("package %s could not be loaded since it depends on %s",
-		   files{i}, depname);
-	  endif
-	  dirs{end+1} = pdirs{idx};
-	endfor
-      endif
+      idx (end + 1) = idx2;
     endfor
-    dirs = unique(dirs);
   endif
 
-  ## Check for architecture dependent directories
-  arch = getarch();
-  archdirs = {};
-  for i = 1:length (dirs)
-    tmpdir = fullfile (dirs{i}, arch);
-    archdirs{end + 1} = dirs{i};
-    if (exist (tmpdir, "dir"))
-      archdirs{end + 1} = tmpdir;
-    endif
-  endfor
-  if (length (archdirs) > 0)
-    dirs = archdirs;
-  endif
-
-  ## Load the packages
-  if (length (dirs) > 0)
-    addpath (dirs{:});
-  endif
-
-  ## Add local binaries, if any, to the EXEC_PATH
-  for i = 1:length (dirs)
-   if (exist (fullfile (dirs{i}, "bin"), "dir"))
-     EXEC_PATH (strcat (fullfile(dirs{i}, "bin"), ":", EXEC_PATH ()));
-   endif
-  endfor
+  ## Load the packages, but take care of the ordering of dependencies
+  load_packages_and_dependencies (idx, handle_deps, installed_packages);
 endfunction
 
 function unload_packages (files, handle_deps, local_list, global_list)
@@ -1825,4 +1809,97 @@ function [status, output] = shell (cmd)
   else
     [status, output] = system (cmd);
   endif
+endfunction
+
+function newdesc = save_order (desc)
+  newdesc = {};
+  for i = 1 : length(desc)
+    deps = desc{i}.depends;
+    if (isempty (deps) || (length (deps) == 1 && 
+			  strcmp(deps{1}.package, "octave")))
+      newdesc {end + 1} = desc{i};
+    else
+      tmpdesc = {};
+      for k = 1 : length (deps)
+        for j = 1 : length (desc)
+          if (strcmp (desc{j}.name, deps{k}.package))
+            tmpdesc {end + 1} = desc{j};
+	    break;
+          endif
+        endfor
+      endfor
+      if (! isempty (tmpdesc))					     
+        newdesc = {newdesc{:}, save_order(tmpdesc){:}, desc{i}};
+      else
+        newdesc {end + 1} = desc{i};
+      endif
+    endif
+  endfor
+  ## Eliminate the duplicates
+  idx = [];
+  for i = 1 : length (newdesc)
+    for j = (i + 1) : length (newdesc)
+      if (strcmp (newdesc{i}.name, newdesc{j}.name))
+        idx (end + 1) = j;
+      endif
+    endfor
+  endfor
+  newdesc(idx) = [];
+endfunction
+
+function load_packages_and_dependencies (idx, handle_deps, installed_packages)
+  idx = load_package_dirs (idx, [], handle_deps, installed_packages);
+  arch = getarch ();
+  dirs = {};
+  execpath = EXEC_PATH ();
+  for i = idx;
+    ndir = installed_packages{i}.dir;
+    dirs {end + 1} = ndir;
+    if (exist (fullfile (dirs{end}, "bin"), "dir"))
+      execpath = strcat (fullfile(dirs{end}, "bin"), ":", execpath);
+    endif
+    tmpdir = fullfile (ndir, arch);
+    if (exist (tmpdir, "dir"))
+      dirs{end + 1} = tmpdir;
+    endif
+  endfor
+
+  ## Load the packages
+  if (length (dirs) > 0)
+    addpath (dirs{:});
+  endif
+
+  ## Add the binaries to exec_path
+  if (! strcmp (EXEC_PATH, execpath))
+    EXEC_PATH (execpath);
+  endif
+endfunction
+
+function idx = load_package_dirs (lidx, idx, handle_deps, installed_packages)
+  for i = lidx
+    if (installed_packages{i}.loaded)
+      continue;
+    else
+      if (handle_deps)
+        deps = installed_packages{i}.depends;
+        if ((length (deps) > 1) || (length (deps) == 1 && 
+	  		  ! strcmp(deps{1}.package, "octave")))
+          tmplidx = [];
+          for k = 1 : length (deps)
+            for j = 1 : length (installed_packages)
+              if (strcmp (installed_packages{j}.name, deps{k}.package))
+                tmplidx (end + 1) = j;
+	        break;
+              endif
+            endfor
+          endfor
+          idx = load_package_dirs (tmplidx, idx, handle_deps, 
+				 installed_packages);
+        endif
+      endif
+      if (isempty (find(idx == i)))
+        idx (end + 1) = i;
+      endif
+    endif
+  endfor
 endfunction

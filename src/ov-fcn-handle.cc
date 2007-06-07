@@ -737,6 +737,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       H5Tset_size (type_hid, stmp.length () + 1);
       if (type_hid < 0)
 	{
+	  H5Sclose (space_hid);
 	  H5Gclose (group_hid);
 	  return false;
 	}
@@ -837,7 +838,12 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 	  H5Aclose (a_id);
 	}
       else
-	retval = false;
+	{
+	  H5Sclose (space_hid);
+	  H5Tclose (type_hid);
+	  H5Gclose (group_hid);
+	  return false;
+	}
 
       H5Sclose (space_hid);
       hdims[0] = 1;
@@ -934,8 +940,10 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 
   if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, nm_tmp) < 0)
     {
+      H5Tclose (st_id);
       H5Sclose (space_hid);
       H5Tclose (type_hid);
+      H5Dclose (data_hid);
       H5Gclose (group_hid);
       return false;
     }
@@ -949,21 +957,26 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 
       if (data_hid < 0)
 	{
+	  H5Sclose (space_hid);
+	  H5Tclose (type_hid);
 	  H5Gclose (group_hid);
 	  return false;
 	}
 
+      H5Tclose (type_hid);
       type_hid = H5Dget_type (data_hid);
       type_class_hid = H5Tget_class (type_hid);
 
       if (type_class_hid != H5T_STRING)
 	{
+	  H5Sclose (space_hid);
 	  H5Tclose (type_hid);
 	  H5Dclose (data_hid);
 	  H5Gclose (group_hid);
 	  return false;
 	}
 
+      H5Sclose (space_hid);
       space_hid = H5Dget_space (data_hid);
       rank = H5Sget_simple_extent_ndims (space_hid);
 
@@ -994,11 +1007,14 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 
       if (H5Dread (data_hid, st_id, H5S_ALL, H5S_ALL, H5P_DEFAULT, fcn_tmp) < 0)
 	{
+	  H5Tclose (st_id);
 	  H5Sclose (space_hid);
 	  H5Tclose (type_hid);
+	  H5Dclose (data_hid);
 	  H5Gclose (group_hid);
 	  return false;
 	}
+      H5Tclose (st_id);
       H5Dclose (data_hid);
 
       symbol_table *local_sym_tab = 0;
@@ -1081,9 +1097,6 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 	    }
 	}
 
-      H5Tclose (st_id);
-      H5Gclose (group_hid);
-
       if (success)
 	{
 	  unwind_protect::begin_frame ("anon_hdf5_load");
@@ -1133,6 +1146,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       hid_t attr_id = H5Aopen_name (group_hid, "OCTAVEROOT");
       if (attr_id >= 0)
 	{
+	  H5Tclose (type_hid);
 	  type_hid = H5Aget_type (attr_id);
 	  type_class_hid = H5Tget_class (type_hid);
 
@@ -1149,33 +1163,41 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 		success = false;
 	      else
 		octaveroot = root_tmp;
+
+	      H5Tclose (st_id);
 	    }
 
 	  H5Aclose (attr_id);
 	}
 
-      attr_id = H5Aopen_name (group_hid, "FILE");
-      if (attr_id >= 0)
+      if (success)
 	{
-	  type_hid = H5Aget_type (attr_id);
-	  type_class_hid = H5Tget_class (type_hid);
-
-	  if (type_class_hid != H5T_STRING)
-	    success = false;
-	  else
+	  attr_id = H5Aopen_name (group_hid, "FILE");
+	  if (attr_id >= 0)
 	    {
-	      slen = H5Tget_size (type_hid);
-	      st_id = H5Tcopy (H5T_C_S1);
-	      H5Tset_size (st_id, slen);
-	      OCTAVE_LOCAL_BUFFER (char, path_tmp, slen);
+	      H5Tclose (type_hid);
+	      type_hid = H5Aget_type (attr_id);
+	      type_class_hid = H5Tget_class (type_hid);
 
-	      if (H5Aread (attr_id, st_id, path_tmp) < 0)
+	      if (type_class_hid != H5T_STRING)
 		success = false;
 	      else
-		fpath = path_tmp;
-	    }
+		{
+		  slen = H5Tget_size (type_hid);
+		  st_id = H5Tcopy (H5T_C_S1);
+		  H5Tset_size (st_id, slen);
+		  OCTAVE_LOCAL_BUFFER (char, path_tmp, slen);
 
-	  H5Aclose (attr_id);
+		  if (H5Aread (attr_id, st_id, path_tmp) < 0)
+		    success = false;
+		  else
+		    fpath = path_tmp;
+
+		  H5Tclose (st_id);
+		}
+
+	      H5Aclose (attr_id);
+	    }
 	}
 
       // restore error reporting:
@@ -1183,6 +1205,10 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 
       success = (success ? set_fcn (octaveroot, fpath) : success);
     }
+
+  H5Tclose (type_hid);
+  H5Sclose (space_hid);
+  H5Gclose (group_hid);
 
   return success;
 }

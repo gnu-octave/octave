@@ -1,3 +1,21 @@
+2007-06-07  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (pkg): For rebuild target, force package order in
+	saved file so that dependent packages are loaded first, and if
+	nargout==0 don't return any arguments.
+	(pkg:install): Only load packages that are marked autoload after
+	install. Various fixes. Save in order.
+	(pkg:uninstall): Save in order
+	(pkg:load_packages): Use load_package_and_dependencies to load
+	packages.
+	(pkg:save_order): New function to sort package list with dependent
+	packages first.
+	(pkg:load_packages_and_dependencies): New function to load both a
+	list of packages and their dependencies.
+	(pkg:load_package_dirs): New function that returns a vector of the
+	indexes into the installed package list indicating the packages to
+	load and the order to load them in to respect the dependencies.
+
 2007-06-03  Søren Hauberg  <soren@hauberg.org>
 
 	* plot/axes.m: Eliminate redundant else clause.

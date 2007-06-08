@@ -77,7 +77,7 @@ char file_ops::dir_sep_char = '/';
 std::string file_ops::dir_sep_str ("/");
 #endif
 
-#if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
+#if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
 std::string file_ops::dir_sep_chars ("/\\");
 #else
 std::string file_ops::dir_sep_chars (file_ops::dir_sep_str);

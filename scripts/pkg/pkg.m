@@ -354,7 +354,7 @@ function descriptions = rebuild (prefix, list, files, auto, verbose)
     wd = pwd ();
     unwind_protect
       cd (prefix);
-      dirlist = glob (cellfun(@(x) strcat(x, '-*'), files, 'UniformOutput', 0))
+      dirlist = glob (cellfun(@(x) strcat(x, '-*'), files, 'UniformOutput', 0));
     unwind_protect_cleanup
       cd (wd);
     end_unwind_protect

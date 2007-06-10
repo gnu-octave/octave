@@ -1623,6 +1623,12 @@ function [out1, out2] = installed_packages (local_list, global_list)
 			      length (installed_packages{i}.version));
     names{i} = installed_packages{i}.name;
   endfor
+  max_dir_length = terminal_size()(2) - max_name_length - ...
+					     max_version_length - 7;
+  if (max_dir_length < 20)
+     max_dir_length = Inf;
+  endif
+
   h1 = postpad (h1, max_name_length + 1, " ");
   h2 = postpad (h2, max_version_length, " ");;
 
@@ -1642,6 +1648,16 @@ function [out1, out2] = installed_packages (local_list, global_list)
     cur_name = installed_packages{idx(i)}.name;
     cur_version = installed_packages{idx(i)}.version;
     cur_dir = installed_packages{idx(i)}.dir;
+    if (length (cur_dir) > max_dir_length)
+      first_char = length (cur_dir) - max_dir_length + 4;
+      first_filesep = strfind (cur_dir(first_char:end), filesep());
+      if (! isempty (first_filesep))
+        cur_dir = strcat ("...", 
+			  cur_dir((first_char + first_filesep(1) - 1):end));
+      else
+        cur_dir = strcat ("...", cur_dir(first_char:end));
+      endif
+    endif
     if (installed_packages{idx(i)}.loaded)
       cur_loaded = "*";
     else

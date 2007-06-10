@@ -1,3 +1,8 @@
+2007-06-10  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (pkg:installed_packages): truncate start of package
+	directory if need to, so that it fits on a line.
+	
 2007-06-07  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (pkg): For rebuild target, force package order in

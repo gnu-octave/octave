@@ -1,6 +1,7 @@
-2007-06-04  David Bateman  <dbateman@free.fr>
+2007-06-12  John W. Eaton  <jwe@octave.org>
 
-	* file-ops.cc: Typo.
+	* dMatrix.cc (Matrix::expm): Special case for scalar arg.
+	* CMatrix.cc (ComplexMatrix::expm): Likewise.
 
 2007-06-06  Michael Goffioul  <michael.goffioul@swing.be>
 
@@ -17,6 +18,8 @@
 	* MArray-C.cc: Sprinkle with OCTINTERP_API as needed.
 
 2007-06-04  David Bateman  <dbateman@free.fr>
+
+	* file-ops.cc: Typo.
 
 	* Sparse.cc (Sparse<T> Sparse<T>::reshape): If length of new
 	dimensions is greater than 2, collapse to 2-D.

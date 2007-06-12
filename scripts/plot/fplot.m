@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} fplot (@var{fn}, @var{limits})
 ## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{n})
-## Plots a function @var{fn}, within the defined limits. @var{fn}
+## Plot a function @var{fn}, within the defined limits.  @var{fn}
 ## an be either a string, a function handle or an inline function.
 ## The limits of the plot are given by @var{limits} of the form
 ## @code{[@var{xlo}, @var{xhi}]} or @code{[@var{xlo}, @var{xhi},
@@ -28,8 +28,8 @@
 ## defaults to 100. 
 ##
 ## @example
-##    fplot('cos',[0,2*pi])
-##    fplot('[cos(x),sin(x)]',[0,2*pi])
+##    fplot ("cos", [0, 2*pi])
+##    fplot ("[cos(x), sin(x)]", [0, 2*pi])
 ## @end example
 ## @end deftypefn
 
@@ -44,12 +44,18 @@ function fplot (fn, limits, n)
 
   x = linspace (limits(1), limits(2), n)';
 
-  if (isa (fn, "inline function") || isa (fn, "function_handle"))
+  nam = fn;
+  if (strcmp (typeinfo (fn), "inline function"))
+    fn = vectorize (fn);
     y = fn (x);
+    nam = formula (fn);
+  elseif (isa (fn, "function_handle"))
+    y = fn (x);
+    nam = func2str (fn);
   elseif (all (isalnum (fn)))
     y = feval (fn, x);
   else
-    finl = inline (fn);
+    finl = vectorize (inline (fn));
     y = finl (x);
   endif
 
@@ -57,6 +63,6 @@ function fplot (fn, limits, n)
     axis (limits);
   endif
 
-  plot (x, y, [";", fn, ";"]);
+  plot (x, y, [";", nam, ";"]);
 
 endfunction

@@ -1,3 +1,7 @@
+2007-06-12  Søren Hauberg  <soren@hauberg.org>
+
+	* plot/fplot.m: If function is inline, vectorize it.
+
 2007-06-10  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (pkg:installed_packages): truncate start of package

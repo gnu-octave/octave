@@ -123,7 +123,7 @@
 %! assert(all( all( abs(s-answer) < 30*eps ) ));
 
 %% test/octave.test/signal/unwrap-1.m
-%!function t = assert(a,b,tol)
+%!function t = xassert(a,b,tol)
 %!  if (nargin == 1)
 %!    t = all(a(:));
 %!  else
@@ -148,18 +148,18 @@
 %! w = r - 2*pi*floor((r+pi)/(2*pi));  # wrapped into [-pi,pi]
 %! tol = 1e3*eps;                      # maximum expected deviation
 %! 
-%! t(++i) = assert(r, unwrap(w), tol);               #unwrap single row
-%! t(++i) = assert(r', unwrap(w'), tol);             #unwrap single column
-%! t(++i) = assert([r',r'], unwrap([w',w']), tol);   #unwrap 2 columns
-%! t(++i) = assert([r;r], unwrap([w;w],[],2), tol);  #verify that dim works
-%! t(++i) = assert(r+10, unwrap(10+w), tol);         #verify that r(1)>pi works
+%! t(++i) = xassert(r, unwrap(w), tol);               #unwrap single row
+%! t(++i) = xassert(r', unwrap(w'), tol);             #unwrap single column
+%! t(++i) = xassert([r',r'], unwrap([w',w']), tol);   #unwrap 2 columns
+%! t(++i) = xassert([r;r], unwrap([w;w],[],2), tol);  #verify that dim works
+%! t(++i) = xassert(r+10, unwrap(10+w), tol);         #verify that r(1)>pi works
 %! 
-%! t(++i) = assert(w', unwrap(w',[],2));  #unwrap col by rows should not change it
-%! t(++i) = assert(w, unwrap(w,[],1));    #unwrap row by cols should not change it
-%! t(++i) = assert([w;w], unwrap([w;w])); #unwrap 2 rows by cols should not change them
+%! t(++i) = xassert(w', unwrap(w',[],2));  #unwrap col by rows should not change it
+%! t(++i) = xassert(w, unwrap(w,[],1));    #unwrap row by cols should not change it
+%! t(++i) = xassert([w;w], unwrap([w;w])); #unwrap 2 rows by cols should not change them
 %! 
 %! ## verify that setting tolerance too low will cause bad results.
-%! t(++i) = assert(any(abs(r - unwrap(w,0.8)) > 100));
+%! t(++i) = xassert(any(abs(r - unwrap(w,0.8)) > 100));
 %! 
 %! assert(all(t));
 

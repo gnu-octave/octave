@@ -2619,6 +2619,9 @@ ComplexMatrix::expm (void) const
 
   ComplexMatrix m = *this;
 
+  if (numel () == 1)
+    return ComplexMatrix (1, 1, exp (m(0)));
+
   octave_idx_type nc = columns ();
 
   // Preconditioning step 1: trace normalization to reduce dynamic

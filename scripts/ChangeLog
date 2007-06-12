@@ -1,3 +1,7 @@
+2007-06-12  Steve M. Robbins  <steve@sumost.ca>
+
+	* statistics/tests/wilcoxon_test.m: Error if N <= 25.
+
 2007-06-12  Søren Hauberg  <soren@hauberg.org>
 
 	* plot/fplot.m: If function is inline, vectorize it.

@@ -22,7 +22,10 @@
 ## For two matched-pair sample vectors @var{x} and @var{y}, perform a
 ## Wilcoxon signed-rank test of the null hypothesis PROB (@var{x} >
 ## @var{y}) == 1/2.  Under the null, the test statistic @var{z}
-## approximately follows a standard normal distribution.
+## approximately follows a standard normal distribution when @var{n} > 25.
+##
+## @strong{Warning}: This function assumes a normal distribution for @var{z}
+## and thus is invalid for @var{n} <= 25.
 ##
 ## With the optional argument string @var{alt}, the alternative of
 ## interest can be selected.  If @var{alt} is @code{"!="} or
@@ -42,7 +45,7 @@
 
 function [pval, z] = wilcoxon_test (x, y, alt)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
@@ -56,12 +59,12 @@ function [pval, z] = wilcoxon_test (x, y, alt)
   d = x - y;
   d = d (find (d != 0));
   n = length (d);
-  if (n > 0)
+  if (n > 25)
     r = ranks (abs (d));
     z = sum (r (find (d > 0)));
     z = ((z - n * (n + 1) / 4) / sqrt (n * (n + 1) * (2 * n + 1) / 24));
   else
-    z = 0;
+    error ("wilcoxon_test: implementation requires more than 25 different pairs");
   endif
 
   cdf = stdnormal_cdf (z);

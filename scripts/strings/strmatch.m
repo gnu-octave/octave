@@ -20,7 +20,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} strmatch (@var{s}, @var{a}, "exact")
-## Return true for entries of @var{a} that match the string @var{s}.
+## Return indices of entries of @var{a} that match the string @var{s}.
 ## The second argument @var{a} may be a string matrix or a cell array of
 ## strings.  If the third argument @code{"exact"} is not given, then
 ## @var{s} only needs to match @var{a} up to the length of @var{s}.  Nul

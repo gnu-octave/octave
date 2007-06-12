@@ -5,8 +5,9 @@
 @node Differential Equations
 @chapter Differential Equations
 
-Octave has two built-in functions for solving differential equations.
-Both are based on reliable ODE solvers written in Fortran.
+Octave has built-in functions for solving ordinary differential equations,
+and differential-algebraic equations.
+All solvers are based on reliable ODE solvers written in Fortran.
 
 @menu
 * Ordinary Differential Equations::  
@@ -39,6 +40,8 @@ dt
 
 @noindent
 using Hindmarsh's ODE solver @sc{Lsode}.
+
+
 
 @DOCSTRING(lsode)
 
@@ -102,15 +105,25 @@ $$
 $$
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 
 @example
 0 = f (x-dot, x, t),    x(t=0) = x_0, x-dot(t=0) = x-dot_0
 @end example
-@end ifinfo
+@end ifnottex
 
 @noindent
-using Petzold's DAE solver @sc{Daspk}.
+where
+@iftex
+@tex
+$\dot{x} = {dx \over dt}$
+@end tex
+@end iftex
+@ifnottex
+@math{x-dot}
+@end ifnottex
+is the derivative of @math{x}. The equation is solved using Petzold's
+DAE solver @sc{Daspk}.
 
 @DOCSTRING(daspk)
 

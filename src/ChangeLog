@@ -1,3 +1,10 @@
+2007-06-12  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/interpn.cc: Remove it.
+	* DLD-FUNCTIONS/__lin_interpn__.cc: Move it. This is now a support
+	function of interpn.m.
+	* Makefile.in (DLD_XSRC): Remove interpn.cc and add __lin_interpn__.cc.
+
 2007-06-07  David Bateman  <dbateman@free.fr>
 
 	* ov-fcn-handles.cc (octave_fcn_handle::save_hdf5): More care that

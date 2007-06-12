@@ -1,3 +1,21 @@
+2007-06-12  David Bateman  <dbateman@free.fr>
+
+	* general/interp1.m: Change examples to use new graphics
+	interface.
+	* general/__splinen__.m: New support function for N-dimensional
+	spline interpolation.
+	* general/bicubic.m: Allow definition of extrapolation
+	value. Adapt tests to use new graphics interface
+	* general/interp2.m: Call __splinen__ for 2-D spline
+	interpolation. Make the lookup table code only be called for
+	linear and nearest methods.
+	* general/interpn.m: New function for N-dimensional, linear, nearest
+	and spline interpolation.
+	* general/interp3.m: New function for 3-dimensional, linear, nearest
+	and spline interpolation.
+	* polynomial/spline.m: Change examples to use new graphics
+	interface.
+	
 2007-06-12  Steve M. Robbins  <steve@sumost.ca>
 
 	* statistics/tests/wilcoxon_test.m: Error if N <= 25.

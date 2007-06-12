@@ -138,9 +138,9 @@ lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
     }
 }
 
-DEFUN_DLD (interpn, args, ,
+DEFUN_DLD (__lin_interpn__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{vi} =} interpn (@var{x1}, @var{x2}, @dots{}, @var{xn}, @var{v}, @var{y1}, @var{y2}, @dots{}, @var{yn})\n\
+@deftypefn {Loadable Function} {@var{vi} =} __lin_interpn__ (@var{x1}, @var{x2}, @dots{}, @var{xn}, @var{v}, @var{y1}, @var{y2}, @dots{}, @var{yn})\n\
 Perform @var{n}-dimensional interpolation.  Each element of then\n\
 @var{n}-dimensional array @var{v} represents a value at a location\n\
 given by the parameters @var{x1}, @var{x2},...,@var{xn}. The parameters\n\

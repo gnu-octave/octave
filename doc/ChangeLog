@@ -1,3 +1,16 @@
+2007-06-12  David Bateman  <dbateman@free.fr>
+
+	* interpreter/interp.txi: Split into two section and document
+	interp3 and the differences in the treatement of the dimensions
+	between interpn and interp3.
+	* hashing.txi: Remove.
+	* system.txi: Move it here as a subsection. Include explanation
+	and example.
+	* interpreter/octave.texi: Add sections for the Interpolation
+	chapter. Remove references to Hashing chapter and hashing.texi,
+	and subsections for hashing to system utilities chapter.
+
+
 2007-06-12  2007-06-10  Søren Hauberg  <hauberg@gmail.com>
 
         * interpreter/diffeq.txi: Note that x-dot is the derivative of x.

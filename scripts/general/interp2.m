@@ -62,7 +62,7 @@
 ## Cubic interpolation from four nearest neighbors.
 ## @item 'spline'
 ## Cubic spline interpolation--smooth first and second derivatives
-## throughout the curve (not implemented yet).
+## throughout the curve.
 ## @end table
 ##
 ## If a scalar value @var{extrapval} is defined as the final value, then
@@ -161,75 +161,102 @@ function ZI = interp2 (varargin)
     error ("interp2 expected numeric XI, YI"); 
   endif
 
-  ## If X and Y vectors produce a grid from them
-  if (isvector (X) && isvector (Y))
-    [X, Y] = meshgrid (X, Y);
-  elseif (! size_equal (X, Y))
-    error ("X and Y must be matrices of same size");
-  endif
-  if (! size_equal (X, Z))
-    error ("X and Y size must match Z dimensions");
-  endif
 
-  ## If Xi and Yi are vectors of different orientation build a grid
-  if ((rows (XI) == 1 && columns (YI) == 1)
-      || (columns (XI) == 1 && rows (YI) == 1))
-    [XI, YI] = meshgrid (XI, YI);
-  elseif (! size_equal (XI, YI))
-    error ("XI and YI must be matrices of same size");
-  endif
+  if (strcmp (method, "linear") || strcmp (method, "nearest"))
 
-  shape = size (XI);
-  XI = reshape (XI, 1, prod (shape));
-  YI = reshape (YI, 1, prod (shape));
+    ## If X and Y vectors produce a grid from them
+    if (isvector (X) && isvector (Y))
+      [X, Y] = meshgrid (X, Y);
+    elseif (! size_equal (X, Y))
+      error ("X and Y must be matrices of same size");
+    endif
+    if (! size_equal (X, Z))
+      error ("X and Y size must match Z dimensions");
+    endif
 
-  xidx = lookup (X(1, 2:end-1), XI) + 1;
-  yidx = lookup (Y(2:end-1, 1), YI) + 1;
+    ## If Xi and Yi are vectors of different orientation build a grid
+    if ((rows (XI) == 1 && columns (YI) == 1)
+	|| (columns (XI) == 1 && rows (YI) == 1))
+      [XI, YI] = meshgrid (XI, YI);
+    elseif (! size_equal (XI, YI))
+      error ("XI and YI must be matrices of same size");
+    endif
 
-  if (strcmp (method, "linear"))
-    ## each quad satisfies the equation z(x,y)=a+b*x+c*y+d*xy
-    ##
-    ## a-b
-    ## | |
-    ## c-d
-    a = Z(1:(zr - 1), 1:(zc - 1));
-    b = Z(1:(zr - 1), 2:zc) - a;
-    c = Z(2:zr, 1:(zc - 1)) - a;
-    d = Z(2:zr, 2:zc) - a - b - c;
+    shape = size (XI);
+    XI = reshape (XI, 1, prod (shape));
+    YI = reshape (YI, 1, prod (shape));
 
-    idx = sub2ind (size (a), yidx, xidx);
+    xidx = lookup (X(1, 2:end-1), XI) + 1;
+    yidx = lookup (Y(2:end-1, 1), YI) + 1;
 
-    ## scale XI, YI values to a 1-spaced grid
-    Xsc = (XI - X(1, xidx)) ./ (X(1, xidx + 1) - X(1, xidx));
-    Ysc = (YI - Y(yidx, 1)') ./ (Y(yidx + 1, 1) - Y(yidx, 1))';
+    if (strcmp (method, "linear"))
+      ## each quad satisfies the equation z(x,y)=a+b*x+c*y+d*xy
+      ##
+      ## a-b
+      ## | |
+      ## c-d
+      a = Z(1:(zr - 1), 1:(zc - 1));
+      b = Z(1:(zr - 1), 2:zc) - a;
+      c = Z(2:zr, 1:(zc - 1)) - a;
+      d = Z(2:zr, 2:zc) - a - b - c;
 
-    ## apply plane equation
-    ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;
+      idx = sub2ind (size (a), yidx, xidx);
 
-  elseif (strcmp (method, "nearest"))
-    xtable = X(1, :);
-    ytable = Y(:, 1)';
-    ii = (XI - xtable(xidx) > xtable(xidx + 1) - XI);
-    jj = (YI - ytable(yidx) > ytable(yidx + 1) - YI);
-    idx = sub2ind (size (Z), yidx+jj, xidx+ii);
-    ZI = Z(idx);
+      ## scale XI, YI values to a 1-spaced grid
+      Xsc = (XI - X(1, xidx)) ./ (X(1, xidx + 1) - X(1, xidx));
+      Ysc = (YI - Y(yidx, 1)') ./ (Y(yidx + 1, 1) - Y(yidx, 1))';
 
-  elseif (strcmp (method, "cubic"))
-    ## FIXME bicubic doesn't handle arbitrary XI, YI
-    ZI = bicubic (X, Y, Z, XI(1,:), YI(:,1));
+      ## apply plane equation
+      ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;
 
-  elseif (strcmp (method, "spline"))
-    ## FIXME Implement 2-D (or in fact ND) spline interpolation
-    error ("interp2, spline interpolation not yet implemented");
+    elseif (strcmp (method, "nearest"))
+      xtable = X(1, :);
+      ytable = Y(:, 1)';
+      ii = (XI - xtable(xidx) > xtable(xidx + 1) - XI);
+      jj = (YI - ytable(yidx) > ytable(yidx + 1) - YI);
+      idx = sub2ind (size (Z), yidx+jj, xidx+ii);
+      ZI = Z(idx);
+    endif
 
+    ## set points outside the table to NaN
+    ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1)) = extrapval;
+    ZI = reshape (ZI, shape);
   else
-    error ("interpolation method not recognized");
+
+    ## If X and Y vectors produce a grid from them
+    if (isvector (X) && isvector (Y))
+      X = X(:).';
+      Y = Y(:);
+      if (!isequal ([length(X), length(Y)], size(Z)))
+	error ("X and Y size must match Z dimensions");
+      endif
+    elseif (!size_equal (X, Y))
+      error ("X and Y must be matrices of same size");
+      if (! size_equal (X, Z))
+	error ("X and Y size must match Z dimensions");
+      endif
+    endif
+
+    ## If Xi and Yi are vectors of different orientation build a grid
+    if ((rows (XI) == 1 && columns (YI) == 1)
+	|| (columns (XI) == 1 && rows (YI) == 1))
+      ## Do nothing
+    elseif (! size_equal (XI, YI))
+      error ("XI and YI must be matrices of same size");
+    endif
+
+    ## FIXME bicubic/__splinen__ don't handle arbitrary XI, YI
+    if (strcmp (method, "cubic"))
+      ZI = bicubic (X, Y, Z, XI(1,:), YI(:,1), extrapval);
+
+    elseif (strcmp (method, "spline"))
+      ZI = __splinen__ ({Y(:,1).', X(1,:)}, Z, {YI(:,1), XI(1,:)}, extrapval, 
+			"spline");
+    else
+      error ("interpolation method not recognized");
+    endif
+
   endif
-
-  ## set points outside the table to NaN
-  ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1)) = extrapval;
-  ZI = reshape (ZI, shape);
-
 endfunction
 
 %!demo
@@ -250,12 +277,21 @@ endfunction
 %! [x,y] = meshgrid(x,y); 
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
-%!#demo
+%!demo
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,2]; y=[10,11,12];
 %! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26);
+%! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
+%! [x,y] = meshgrid(x,y); 
+%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
+%! A=[13,-1,12;5,4,3;1,6,2];
+%! x=[0,1,2]; y=[10,11,12];
+%! xi=linspace(min(x),max(x),17);
+%! yi=linspace(min(y),max(y),26)';
+%! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
 %! [x,y] = meshgrid(x,y); 
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 

@@ -18,30 +18,35 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi})
+## @deftypefn {Function File} {@var{zi}=} bicubic (@var{x}, @var{y}, @var{z}, @var{xi}, @var{yi}, @var{extrapval})
 ##
 ## Return a matrix @var{zi} corresponding to the bicubic
 ## interpolations at @var{xi} and @var{yi} of the data supplied
-## as @var{x}, @var{y} and @var{z}. 
+## as @var{x}, @var{y} and @var{z}. Points outside the grid are set
+## to @var{extrapval}
 ##
-## For further information please see bicubic.pdf available at
-## @url{http://wiki.woodpecker.org.cn/moin/Octave/Bicubic}
+## See @url{http://wiki.woodpecker.org.cn/moin/Octave/Bicubic}
+## for further information.
 ## @seealso{interp2}
 ## @end deftypefn
 
 ## Bicubic interpolation method.
 ## Author: Hoxide Ma <hoxide_dirac@yahoo.com.cn>
 
-function F = bicubic (X, Y, Z, XI, YI, spline_alpha)
+function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
 
-  if (nargin < 1 || nargin > 6)
+  if (nargin < 1 || nargin > 7)
     print_usage ();
   endif
 
-  if (nargin == 6 && prod (size (spline_alpha)) == 1)
+  if (nargin == 7 && isscalar(spline_alpha))
     a = spline_alpha
   else
     a = 0.5;
+  endif
+
+  if (nargin < 6)
+    extrapval = NaN;
   endif
 
   if (nargin <= 2)
@@ -177,12 +182,12 @@ function F = bicubic (X, Y, Z, XI, YI, spline_alpha)
 	 p(int,inds+2) .* cs2 + p(int,inds+3) .* cs3);
   endfor
 
-  ## set points outside the table to NaN
+  ## set points outside the table to extrapval
   if (! (isempty (xfirst_ind) && isempty (xlast_ind)))
-    F(:, [xfirst_ind, xlast_ind]) = NaN;
+    F(:, [xfirst_ind, xlast_ind]) = extrapval;
   endif
   if (! (isempty (yfirst_ind) && isempty (ylast_ind)))
-    F([yfirst_ind; ylast_ind], :) = NaN;
+    F([yfirst_ind; ylast_ind], :) = extrapval;
   endif
 
 endfunction
@@ -191,7 +196,7 @@ endfunction
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,4]+10; y=[-10,-9,-8];
 %! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26);
+%! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,bicubic(x,y,A,xi,yi));
 %! [x,y] = meshgrid(x,y);
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;

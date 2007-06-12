@@ -158,7 +158,6 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Polynomial Manipulations::    
 * Interpolation::
 * Geometry::
-* Hashing Functions::
 * Control Theory::              
 * Signal Processing::           
 * Image Processing::            
@@ -437,7 +436,9 @@ Statistics
 * Models::                      
 * Distributions::               
 
-Hashing Functions
+Interpolation
+* One-dimensional Interpolation::
+* Multi-dimensional Interpolation::
 
 Control Theory
 
@@ -488,6 +489,7 @@ System Utilities
 * Password Database Functions::  
 * Group Database Functions::    
 * System Information::          
+* Hashing Functions::
 
 Packages
 
@@ -587,7 +589,6 @@ Emacs Octave Support
 @include poly.texi
 @include interp.texi
 @include geometry.texi
-@include hashing.texi
 @include control.texi
 @include signal.texi
 @include image.texi

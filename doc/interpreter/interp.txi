@@ -5,18 +5,96 @@
 @node Interpolation
 @chapter Interpolation
 
-Octave provides the following functions for interpolation.
+@menu
+* One-dimensional Interpolation::
+* Multi-dimensional Interpolation::
+@end menu
+
+@node One-dimensional Interpolation
+@section One-dimensional Interpolation
 
 @DOCSTRING(interp1)
 
-@DOCSTRING(interp2)
+Fourier interpolation, is a resampling technique where a signal is
+converted to the frequency domain, padded with zeros and then
+reconverted to the time domain.
 
 @DOCSTRING(interpft)
 
-@DOCSTRING(interpn)
+There are two significant limitations on Fourier interpolation. Firstly,
+the function signal is assumed to be periodic, and so no periodic
+signals will be poorly represented at the edges. Secondly, both the
+signal and its interpolation are required to be sampled at equispaced
+points. An example of the use of @code{interpft} is
 
-@DOCSTRING(bicubic)
+@example
+@group
+t = 0 : 0.3 : pi; dt = t(2)-t(1);
+n = length (t); k = 100;
+ti = t(1) + [0 : k-1]*dt*n/k;
+y = sin (4*t + 0.3) .* cos (3*t - 0.1);
+yp = sin (4*ti + 0.3) .* cos (3*ti - 0.1);
+plot (ti, yp, 'g', ti, interp1(t, y, ti, 'spline'), 'b', ...
+      ti, interpft (y, k), 'c', t, y, 'r+');
+legend ('sin(4t+0.3)cos(3t-0.1','spline','interpft','data');
+@end group
+@end example
+
+which demonstrates the poor behavior of Fourier interpolation for non
+periodic functions.
+
+In additional the support function @code{spline} and @code{lookup} that
+underlie the @code{interp1} function can be called directly.
 
 @DOCSTRING(spline)
 
+The @code{lookup} is used by other interpolation function to identify
+the points of the original data that are closest to the current point
+of interest.
+
 @DOCSTRING(lookup)
+
+@node Multi-dimensional Interpolation
+@section Multi-dimensional Interpolation
+
+There are three multi-dimensional interpolation function in Octave, with
+similar capabilities.
+
+@DOCSTRING(interp2)
+
+@DOCSTRING(interp3)
+
+@DOCSTRING(interpn)
+
+A significant difference between @code{interpn} and the other two
+multidimensional interpolation function is the fashion in which the
+dimensions are treated. For @code{interp2} and @code{interp3}, the 'y'
+axis is considered to be the columns of the matrix, whereas the 'x'
+axis corresponds to the rows the the array. As Octave indexes arrays in
+column major order, the first dimension of any array is the columns, and
+so @code{interpn} effectively reverses the 'x' and 'y' dimensions. 
+Consider the example
+
+@example
+@group
+x = y = z = -1:1;
+f = @@(x,y,z) x.^2 - y - z.^2;
+[xx, yy, zz] = meshgrid (x, y, z);
+v = f (xx,yy,zz);
+xi = yi = zi = -1:0.5:1;
+[xxi, yyi, zzi] = meshgrid (xi, yi, zi);
+vi = interp3(x, y, z, v, xxi, yyi, zzi);
+[xxi, yyi, zzi] = ndgrid (xi, yi, zi);
+vi2 = interpn(x, y, z, v, xxi, yyi, zzi);
+@end group
+@end example
+
+@noindent
+where @code{vi} and @code{vi2} are identical. The reversal of the
+dimensions is treated in the @code{meshgrid} and @code{ndgrid} functions
+respectively.
+
+In additional the support function @code{bicubic} that underlies the
+cubic interpolation of @code{interp2} function can be called directly.
+
+@DOCSTRING(bicubic)

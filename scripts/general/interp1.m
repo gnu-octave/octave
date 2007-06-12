@@ -70,8 +70,9 @@
 ##    spl=interp1(xp,yp,xf,'spline');
 ##    cub=interp1(xp,yp,xf,'cubic');
 ##    near=interp1(xp,yp,xf,'nearest');
-##    plot(xf,yf,';original;',xf,lin,';linear;',xf,spl,';spline;',...
-##         xf,cub,';cubic;',xf,near,';nearest;',xp,yp,'*;;');
+##    plot(xf,yf,"r",xf,lin,"g",xf,spl,"b", ...
+##         xf,cub,"c",xf,near,"m",xp,yp,"r*");
+##    legend ("original","linear","spline","cubic","nearest")
 ## @end group
 ## @end example
 ##
@@ -327,8 +328,8 @@ endfunction
 %! spl=interp1(xp,yp,xf,"spline");
 %! cub=interp1(xp,yp,xf,"pchip");
 %! near=interp1(xp,yp,xf,"nearest");
-%! plot(xf,yf,";original;",xf,near,";nearest;",xf,lin,";linear;",...
-%!      xf,cub,";pchip;",xf,spl,";spline;",xp,yp,"*;;");
+%! plot(xf,yf,"r",xf,near,"g",xf,lin,"b",xf,cub,"c",xf,spl,"m",xp,yp,"r*");
+%! legend ("original","nearest","linear","pchip","spline")
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
@@ -339,8 +340,8 @@ endfunction
 %! spl=interp1(xp,yp,xf,"*spline");
 %! cub=interp1(xp,yp,xf,"*cubic");
 %! near=interp1(xp,yp,xf,"*nearest");
-%! plot(xf,yf,";*original;",xf,near,";*nearest;",xf,lin,";*linear;",...
-%!      xf,cub,";*cubic;",xf,spl,";*spline;",xp,yp,"*;;");
+%! plot(xf,yf,"r",xf,near,"g",xf,lin,"b",xf,cub,"c",xf,spl,"m",xp,yp,"r*");
+%! legend ("*original","*nearest","*linear","*cubic","*spline")
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 

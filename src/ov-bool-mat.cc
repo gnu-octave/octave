@@ -468,8 +468,7 @@ octave_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
 
   octave_idx_type nel = dv.numel ();
   OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, 
-	       H5P_DEFAULT, &htmp[0]) >= 0) 
+  if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0) 
     {
       retval = true;
 

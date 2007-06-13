@@ -18,11 +18,11 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Command} {@var{a} =} arrayfun (@var{name}, @var{c})
-## @deftypefnx {Command} {@var{a} =} arrayfun (@var{func}, @var{c})
-## @deftypefnx {Command} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{d})
-## @deftypefnx {Command} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{options})
-## @deftypefnx {Command} {[@var{a}, @var{b}, @dots{}] =} arrayfun (@var{func}, @var{c}, @dots{})
+## @deftypefn {Function File} {@var{a} =} arrayfun (@var{name}, @var{c})
+## @deftypefnx {Function File} {@var{a} =} arrayfun (@var{func}, @var{c})
+## @deftypefnx {Function File} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{d})
+## @deftypefnx {Function File} {@var{a} =} arrayfun (@var{func}, @var{c}, @var{options})
+## @deftypefnx {Function File} {[@var{a}, @var{b}, @dots{}] =} arrayfun (@var{func}, @var{c}, @dots{})
 ## Execute a function on each element of an array.  This is useful for
 ## functions that do not accept array arguments.  If the function does
 ## accept array arguments it is better to call the function directly.

@@ -41,20 +41,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h>
-#endif
-
-#ifdef HAVE_FCNTL_H
-#include <fcntl.h>
-#endif
-
-#if defined (HAVE_UTIME_H)
-#include <utime.h>
-#elif defined (HAVE_SYS_UTIME_H)
-#include <sys/utime.h>
-#endif
-
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
@@ -81,42 +67,6 @@ std::string file_ops::dir_sep_str ("/");
 std::string file_ops::dir_sep_chars ("/\\");
 #else
 std::string file_ops::dir_sep_chars (file_ops::dir_sep_str);
-#endif
-
-#if ! defined (HAVE_CHMOD) && defined (HAVE__CHMOD)
-#define chmod _chmod
-#define HAVE_CHMOD 1
-#endif
-
-#if ! defined (HAVE_UTIME) \
-	&& (defined (HAVE__UTIME) || defined (HAVE__UTIME32))
-#define utime _utime
-#define utimbuf _utimbuf
-#define HAVE_UTIME 1
-#endif
-
-#if ! defined (S_IFMT) && defined (_S_IFMT)
-#define S_IFMT _S_IFMT
-#endif
-
-#if ! defined (O_RDONLY) && defined (_O_RDONLY)
-#define O_RDONLY _O_RDONLY
-#endif
-
-#if ! defined (O_WRONLY) && defined (_O_WRONLY)
-#define O_WRONLY _O_WRONLY
-#endif
-
-#if ! defined (O_CREAT) && defined (_O_CREAT)
-#define O_CREAT _O_CREAT
-#endif
-
-#ifndef O_BINARY
-#ifdef _O_BINARY
-#define O_BINARY _O_BINARY
-#else
-#define O_BINARY 0
-#endif
 #endif
 
 // We provide a replacement for mkdir().

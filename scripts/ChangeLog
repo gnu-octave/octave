@@ -1,3 +1,8 @@
+2007-06-12  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (pkg:load_package_dirs): Check for field "loaded" in
+	structure before using it.
+
 2007-06-13  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* miscellaneous/mkoctfile.m: Quote script name for call to system.

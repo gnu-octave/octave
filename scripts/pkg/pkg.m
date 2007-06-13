@@ -1893,7 +1893,8 @@ endfunction
 
 function idx = load_package_dirs (lidx, idx, handle_deps, installed_packages)
   for i = lidx
-    if (installed_packages{i}.loaded)
+    if (isfield (installed_packages{i}, "loaded") &&
+	installed_packages{i}.loaded)
       continue;
     else
       if (handle_deps)

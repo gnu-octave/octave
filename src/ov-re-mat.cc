@@ -316,19 +316,34 @@ octave_matrix::load_ascii (std::istream& is)
 	      for (int i = 0; i < mdims; i++)
 		is >> dv(i);
 
-	      NDArray tmp(dv);
-	      is >> tmp;
-
-	      if (!is) 
+	      if (is)
 		{
-		  error ("load: failed to load matrix constant");
+		  NDArray tmp(dv);
+
+		  if (tmp.is_empty ())
+		    matrix = tmp;
+		  else
+		    {
+		      is >> tmp;
+
+		      if (is)
+			matrix = tmp;
+		      else
+			{
+			  error ("load: failed to load matrix constant");
+			  success = false;
+			}
+		    }
+		}
+	      else
+		{
+		  error ("load: failed to read dimensions");
 		  success = false;
 		}
-	      matrix = tmp;
 	    }
 	  else
 	    {
-	      error ("load: failed to extract number of rows and columns");
+	      error ("load: failed to extract number of dimensions");
 	      success = false;
 	    }
 	}

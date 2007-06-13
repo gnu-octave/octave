@@ -128,7 +128,7 @@ function mkoctfile (varargin)
 
   cmd = strcat ("\"", shell_script, "\"");
   for i = 1:nargin
-    cmd = strcat (cmd, " ", varargin{i});
+    cmd = strcat (cmd, " \"", varargin{i}, "\"");
   endfor
   
   status = system (cmd);

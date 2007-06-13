@@ -204,24 +204,40 @@ octave_bool_matrix::load_ascii (std::istream& is)
 	      for (int i = 0; i < mdims; i++)
 		is >> dv(i);
 
-	      NDArray tmp(dv);
-	      is >> tmp;
-
-	      if (!is)
+	      if (is)
 		{
-		  error ("load: failed to load matrix constant");
+		  boolNDArray btmp (dv);
+
+		  if (btmp.is_empty ())
+		    matrix = btmp;
+		  else
+		    {
+		      NDArray tmp(dv);
+		      is >> tmp;
+
+		      if (is)
+			{
+			  for (octave_idx_type i = 0; i < btmp.nelem (); i++)
+			    btmp.elem (i) = (tmp.elem (i) != 0.);
+
+			  matrix = btmp;
+			}
+		      else
+			{
+			  error ("load: failed to load matrix constant");
+			  success = false;
+			}
+		    }
+		}
+	      else
+		{
+		  error ("load: failed to extract dimensions");
 		  success = false;
 		}
-
-	      boolNDArray btmp (dv);
-	      for (octave_idx_type i = 0; i < btmp.nelem (); i++)
-		btmp.elem (i) = (tmp.elem (i) != 0.);
-
-	      matrix = btmp;
 	    }
 	  else
 	    {
-	      error ("load: failed to extract number of rows and columns");
+	      error ("load: failed to extract number of dimensions");
 	      success = false;
 	    }
 	}
@@ -236,18 +252,20 @@ octave_bool_matrix::load_ascii (std::istream& is)
 		{
 		  Matrix tmp (nr, nc);
 		  is >> tmp;
-		  if (!is) 
+		  if (is) 
+		    {
+		      boolMatrix btmp (nr, nc);
+		      for (octave_idx_type j = 0; j < nc; j++)
+			for (octave_idx_type i = 0; i < nr; i++)
+			  btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
+
+		      matrix = btmp;
+		    }
+		  else
 		    {
 		      error ("load: failed to load matrix constant");
 		      success = false;
 		    }
-
-		  boolMatrix btmp (nr, nc);
-		  for (octave_idx_type j = 0; j < nc; j++)
-		    for (octave_idx_type i = 0; i < nr; i++)
-		      btmp.elem (i,j) = (tmp.elem (i, j) != 0.);
-
-		  matrix = btmp;
 		}
 	      else if (nr == 0 || nc == 0)
 		matrix = boolMatrix (nr, nc);

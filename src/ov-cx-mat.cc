@@ -261,19 +261,34 @@ octave_complex_matrix::load_ascii (std::istream& is)
 	      for (int i = 0; i < mdims; i++)
 		is >> dv(i);
 
-	      ComplexNDArray tmp(dv);
-	      is >> tmp;
-
-	      if (!is) 
+	      if (is)
 		{
-		  error ("load: failed to load matrix constant");
+		  ComplexNDArray tmp(dv);
+
+		  if (tmp.is_empty ())
+		    matrix = tmp;
+		  else
+		    {
+		      is >> tmp;
+
+		      if (is)
+			matrix = tmp;
+		      else
+			{
+			  error ("load: failed to load matrix constant");
+			  success = false;
+			}
+		    }
+		}
+	      else
+		{
+		  error ("load: failed to read dimensions");
 		  success = false;
 		}
-	      matrix = tmp;
 	    }
 	  else
 	    {
-	      error ("load: failed to extract number of rows and columns");
+	      error ("load: failed to extract number of dimensions");
 	      success = false;
 	    }
 	}
@@ -288,12 +303,13 @@ octave_complex_matrix::load_ascii (std::istream& is)
 		{
 		  ComplexMatrix tmp (nr, nc);
 		  is >> tmp;
-		  if (!is)
+		  if (is)
+		    matrix = tmp;
+		  else
 		    {
 		      error ("load: failed to load matrix constant");
 		      success = false;
 		    }
-		  matrix = tmp;
 		}
 	      else if (nr == 0 || nc == 0)
 		matrix = ComplexMatrix (nr, nc);

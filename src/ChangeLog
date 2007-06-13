@@ -1,3 +1,11 @@
+2007-06-13  John W. Eaton  <jwe@octave.org>
+
+	* ov-re-mat.cc (octave_matrix::load_ascii):
+	Do a better job of handling read errors and empty matrices.
+	* ov-cx-mat.cc (octave_complex_matrix::load_ascii): Likewise.
+	* ov-bool-mat.cc (octave_bool_matrix::load_ascii): Likewise.
+	* ov-str-mat.cc (octave_char_matrix_str::load_ascii): Likewise.
+
 2007-06-13  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/minmax.cc (MINMAX_BODY): Don't treat as single

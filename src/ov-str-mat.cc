@@ -333,20 +333,34 @@ octave_char_matrix_str::load_ascii (std::istream& is)
 	      for (int i = 0; i < mdims; i++)
 		is >> dv(i);
 
-	      charNDArray tmp(dv);
-	      char *ftmp = tmp.fortran_vec ();
-
-	      // Skip the return line
-	      if (! is.read (ftmp, 1))
-		return false;
-
-	      if (! is.read (ftmp, dv.numel ()) || !is)
+	      if (is)
 		{
-		  error ("load: failed to load string constant");
-		  success = false;
+		  charNDArray tmp(dv);
+
+		  if (tmp.is_empty ())
+		    matrix = tmp;
+		  else
+		    {
+		      char *ftmp = tmp.fortran_vec ();
+
+		      // Skip the return line
+		      if (! is.read (ftmp, 1))
+			return false;
+
+		      if (! is.read (ftmp, dv.numel ()) || !is)
+			{
+			  error ("load: failed to load string constant");
+			  success = false;
+			}
+		      else
+			matrix = tmp;
+		    }
 		}
 	      else
-		matrix = tmp;
+		{
+		  error ("load: failed to read dimensions");
+		  success = false;
+		}
 	    }
 	  else
 	    {

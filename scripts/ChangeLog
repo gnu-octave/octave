@@ -1,12 +1,6 @@
-2007-06-12  David Bateman  <dbateman@free.fr>
+2007-06-13  John W. Eaton  <jwe@octave.org>
 
-	* general/Makefile.in (SOURCES): Include __spline__.m, interp3.m
-	and interpn.m.
-
-2007-06-12  David Bateman  <dbateman@free.fr>
-
-	* pkg/pkg.m (pkg:load_package_dirs): Check for field "loaded" in
-	structure before using it.
+	* miscellaneous/mkoctfile.m: Quote args too.
 
 2007-06-13  Michael Goffioul  <michael.goffioul@swing.be>
 
@@ -16,6 +10,14 @@
 
 	* plot/__pltopt1__.m: Set linestyle to "none" instead of "".
 	Set have_linestyle to true if two character linestyle is found.
+
+2007-06-12  David Bateman  <dbateman@free.fr>
+
+	* general/Makefile.in (SOURCES): Include __spline__.m, interp3.m
+	and interpn.m.
+
+	* pkg/pkg.m (pkg:load_package_dirs): Check for field "loaded" in
+	structure before using it.
 
 2007-06-12  David Bateman  <dbateman@free.fr>
 

@@ -1,3 +1,8 @@
+2007-06-13  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h, graphics.cc: Move class declarations to graphics.h.
+	Move larger functions outside of class declarations in graphics.cc.
+
 2007-06-12  Benjamin Lindner  <lindnerben@gmx.net>
 
 	* DLD-FUNCTIONS/cellfun.cc: Use fullfile to generate filenames

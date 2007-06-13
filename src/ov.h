@@ -1003,7 +1003,7 @@ OCTAVE_ARRAY_TYPE_TRAIT (NDArray, double);
 #endif
 
 /*
-;; Local Variables: ***
-;; mode: C++ ***
-;; End: ***
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
 */

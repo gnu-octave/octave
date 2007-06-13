@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.566 $)
+AC_REVISION($Revision: 1.567 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -995,6 +995,7 @@ AC_ARG_WITH(cxsparse,
 warn_cxsparse="CXSparse not found. This will result in some lack of functionality for sparse matrices."
 if test "$with_cxsparse" = yes; then
   with_cxsparse=no
+  AC_LANG_PUSH(C++)
   AC_CHECK_HEADERS([suitesparse/cs.h ufsparse/cs.h cxsparse/cs.h cs.h], [
     AC_CHECK_LIB(cxsparse, cs_di_sqr, [CXSPARSE_LIBS="-lcxsparse"; with_cxsparse=yes])
     if test "$with_cxsparse" = yes; then
@@ -1002,6 +1003,7 @@ if test "$with_cxsparse" = yes; then
       warn_cxsparse=
     fi
     break])
+  AC_LANG_POP(C++)
 fi
 if test -n "$warn_cxsparse"; then
   AC_MSG_WARN($warn_cxsparse)

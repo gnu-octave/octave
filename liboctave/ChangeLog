@@ -1,5 +1,8 @@
 2007-06-13  Michael Goffioul  <michael.goffioul@swing.be>
 
+	* SparseCmplxQR.cc (OCTAVE_C99_ZERO): For CXSparse 2.2 and greater
+	use cs_complex_t(0,0) for the complex zero.
+
 	* MArray-ch.cc, MArray-d.cc, MArray-i.cc, MArray-s.cc:
 	Sprinkle class instantiations with OCTAVE_API as needed.
 

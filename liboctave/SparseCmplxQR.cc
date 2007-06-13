@@ -37,12 +37,12 @@ typedef double _Complex cs_complex_t;
   OCTAVE_LOCAL_BUFFER (double, buf ## tmp, (2 * (n))); \
   cs_complex_t *buf = reinterpret_cast<cs_complex_t *> (buf ## tmp);
 
+#define OCTAVE_C99_ZERO (0. + 0.iF)
 #else
 #define OCTAVE_C99_COMPLEX(buf, n) \
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, (n));
+#define OCTAVE_C99_ZERO cs_complex_t(0., 0.);
 #endif
-
-#define OCTAVE_C99_ZERO (0. + 0.iF)
 
 SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep 
 (GCC_ATTR_UNUSED const SparseComplexMatrix& a, GCC_ATTR_UNUSED int order)

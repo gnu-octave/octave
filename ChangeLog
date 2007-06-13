@@ -1,5 +1,6 @@
 2007-06-13  Michael Goffioul  <michael.goffioul@swing.be>
 
+	* configure.in: Check for CXSparse with C++.
 	* Makeconf.in (do-subst-config-vals): Also substitute ${libdir} as
 	OCTAVE_CONF_LIBDIR.
 	* mkoctfile.in: Set DEFAULT_LIBDIR and substitute OCTAVE_HOME.

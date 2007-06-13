@@ -99,7 +99,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 	dim = 0; \
     } \
  \
-  bool single_arg = (nargin == 1) || arg2.is_empty();	\
+  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
  \
   if (single_arg && (nargout == 1 || nargout == 0)) \
     { \

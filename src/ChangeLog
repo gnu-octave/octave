@@ -1,3 +1,8 @@
+2007-06-13  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/minmax.cc (MINMAX_BODY): Don't treat as single
+	argument if arg2 is empty and nargin=2.
+
 2007-06-13  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h, graphics.cc: Move class declarations to graphics.h.

@@ -25,7 +25,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #define octave_boolNDArray_h 1
 
 #include "ArrayN.h"
-#include "CMatrix.h"
 
 #include "mx-defs.h"
 #include "mx-op-defs.h"

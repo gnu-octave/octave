@@ -447,6 +447,13 @@ on integers. The operators @code{+}, @code{-}, @code{.*}, and @code{./}
 works on integers of the same type. So, it is possible to add two 32 bit
 integers, but not to add a 32 bit integer and a 16 bit integer.
 
+The arithmetic operations on integers are performed by casting the
+integer values to double precision values, performing the operation, and
+then re-casting the values back to the original integer type. As the
+double precision type of Octave is only capable of representing integers
+with up to 53 bits of precision, it is not possible to perform
+arithmetic of the 64 bit integer types.
+
 When doing integer arithmetic one should consider the possibility of
 underflow and overflow. This happens when the result of the computation
 can't be represented using the chosen integer type. As an example it is

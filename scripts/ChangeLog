@@ -1,3 +1,7 @@
+2007-06-13  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* miscellaneous/mkoctfile.m: Quote script name for call to system.
+
 2007-06-12  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* plot/__pltopt1__.m: Set linestyle to "none" instead of "".

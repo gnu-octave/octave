@@ -126,7 +126,7 @@ function mkoctfile (varargin)
 
   shell_script = fullfile (bindir, sprintf ("mkoctfile-%s", OCTAVE_VERSION));
 
-  cmd = shell_script;
+  cmd = strcat ("\"", shell_script, "\"");
   for i = 1:nargin
     cmd = strcat (cmd, " ", varargin{i});
   endfor
@@ -136,7 +136,7 @@ function mkoctfile (varargin)
   if (status == 127)
     warning ("unable to find mkoctfile in expected location: `%s'",
 	     shell_script);
-  elseif (status != 0)
+
     warning ("mkoctfile exited with failure status");
   endif
 

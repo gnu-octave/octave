@@ -489,6 +489,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LEXLIB%|\"${LEXLIB}\"|" \
   -e "s|%OCTAVE_CONF_LFLAGS%|\"${LFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_LIBCRUFT%|\"${LIBCRUFT}\"|" \
+  -e "s|%OCTAVE_CONF_LIBDIR%|\"${libdir}\"|" \
   -e "s|%OCTAVE_CONF_LIBDLFCN%|\"${LIBDLFCN}\"|" \
   -e "s|%OCTAVE_CONF_LIBEXT%|\"${LIBEXT}\"|" \
   -e "s|%OCTAVE_CONF_LIBFLAGS%|\"${LIBFLAGS}\"|" \

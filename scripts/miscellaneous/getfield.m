@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {[@var{v1}, @dots{}] =} getfield (@var{s}, @var{key}, @dots{}) extract fields from a structure.
-## For example
+## @deftypefn {Function File} {[@var{v1}, @dots{}] =} getfield (@var{s}, @var{key}, @dots{}) 
+## Extract fields from a structure. For example
 ##
 ## @example
 ## @group

@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {} ishold
+## @deftypefn {Function File} {} ishold
 ## Return 1 if the next line will be added to the current plot, or 0 if
 ## the plot device will be cleared before drawing the next line.
 ## @end deftypefn

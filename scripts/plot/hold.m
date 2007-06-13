@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {} hold @var{args}
+## @deftypefn {Function File} {} hold @var{args}
 ## Tell Octave to `hold' the current data on the plot when executing
 ## subsequent plotting commands.  This allows you to execute a series of
 ## plot commands and have all the lines end up on the same figure.  The

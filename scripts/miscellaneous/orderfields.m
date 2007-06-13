@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Built-in Function} {[@var{t}, @var{p}] =} orderfields (@var{s1}, @var{s2})
+## @deftypefn {Function File} {[@var{t}, @var{p}] =} orderfields (@var{s1}, @var{s2})
 ## Return a struct with fields arranged alphabetically or as specified
 ## by @var{s2} and a corresponding permutation vector.
 ##

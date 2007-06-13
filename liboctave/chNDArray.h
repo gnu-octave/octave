@@ -95,14 +95,14 @@ private:
   charNDArray (char *d, dim_vector& dv) : MArrayN<char> (d, dv) { }
 };
 
-NDS_CMP_OP_DECLS (charNDArray, char)
-NDS_BOOL_OP_DECLS (charNDArray, char)
+NDS_CMP_OP_DECLS (charNDArray, char, OCTAVE_API)
+NDS_BOOL_OP_DECLS (charNDArray, char, OCTAVE_API)
 
-SND_CMP_OP_DECLS (char, charNDArray)
-SND_BOOL_OP_DECLS (char, charNDArray)
+SND_CMP_OP_DECLS (char, charNDArray, OCTAVE_API)
+SND_BOOL_OP_DECLS (char, charNDArray, OCTAVE_API)
 
-NDND_CMP_OP_DECLS (charNDArray, charNDArray)
-NDND_BOOL_OP_DECLS (charNDArray, charNDArray)
+NDND_CMP_OP_DECLS (charNDArray, charNDArray, OCTAVE_API)
+NDND_BOOL_OP_DECLS (charNDArray, charNDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, charNDArray, char)
 

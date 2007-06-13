@@ -26,26 +26,26 @@ Boston, MA 02110-1301, USA.
 // Nothing like a little CPP abuse to brighten everyone's day.
 
 // A macro that can be used to declare and instantiate OP= operators.
-#define SPARSE_OP_ASSIGN_DECL(A_T, E_T, OP, PFX, LTGT, RHS_T) \
-  PFX A_T<E_T>& \
+#define SPARSE_OP_ASSIGN_DECL(A_T, E_T, OP, PFX, API, LTGT, RHS_T) \
+  PFX API A_T<E_T>& \
   operator OP LTGT (A_T<E_T>&, const RHS_T&)
 
 // All the OP= operators that we care about.
-#define SPARSE_OP_ASSIGN_DECLS(A_T, E_T, PFX, LTGT, RHS_T) \
-  SPARSE_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, LTGT, RHS_T); \
-  SPARSE_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, LTGT, RHS_T);
+#define SPARSE_OP_ASSIGN_DECLS(A_T, E_T, PFX, API, LTGT, RHS_T) \
+  SPARSE_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, API, LTGT, RHS_T); \
+  SPARSE_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, API, LTGT, RHS_T);
 
 // Generate forward declarations for OP= operators.
-#define SPARSE_OP_ASSIGN_FWD_DECLS(A_T, RHS_T) \
-  SPARSE_OP_ASSIGN_DECLS (A_T, T, template <typename T>, , RHS_T)
+#define SPARSE_OP_ASSIGN_FWD_DECLS(A_T, RHS_T, API) \
+  SPARSE_OP_ASSIGN_DECLS (A_T, T, template <typename T>, API, , RHS_T)
 
 // Generate friend declarations for the OP= operators.
-#define SPARSE_OP_ASSIGN_FRIENDS(A_T, RHS_T) \
-  SPARSE_OP_ASSIGN_DECLS (A_T, T, friend, <>, RHS_T)
+#define SPARSE_OP_ASSIGN_FRIENDS(A_T, RHS_T, API) \
+  SPARSE_OP_ASSIGN_DECLS (A_T, T, friend, API, <>, RHS_T)
 
 // Instantiate the OP= operators.
-#define SPARSE_OP_ASSIGN_DEFS(A_T, E_T, RHS_T) \
-  SPARSE_OP_ASSIGN_DECLS (A_T, E_T, template OCTAVE_API, , RHS_T)
+#define SPARSE_OP_ASSIGN_DEFS(A_T, E_T, RHS_T, API) \
+  SPARSE_OP_ASSIGN_DECLS (A_T, E_T, template, API, , RHS_T)
 
 // A function that can be used to forward OP= operations from derived
 // classes back to us.
@@ -62,26 +62,26 @@ Boston, MA 02110-1301, USA.
   SPARSE_OP_ASSIGN_FWD_FCN (R, operator -=, T, C_X, X_T, C_Y, Y_T)
 
 // A macro that can be used to declare and instantiate unary operators.
-#define SPARSE_UNOP(A_T, E_T, F, PFX, LTGT) \
-  PFX A_T<E_T> \
+#define SPARSE_UNOP(A_T, E_T, F, PFX, API, LTGT) \
+  PFX API A_T<E_T> \
   F LTGT (const A_T<E_T>&)
 
 // All the unary operators that we care about.
-#define SPARSE_UNOP_DECLS(A_T, E_T, PFX, LTGT) \
-  SPARSE_UNOP (A_T, E_T, operator +, PFX, LTGT); \
-  SPARSE_UNOP (A_T, E_T, operator -, PFX, LTGT);
+#define SPARSE_UNOP_DECLS(A_T, E_T, PFX, API, LTGT) \
+  SPARSE_UNOP (A_T, E_T, operator +, PFX, API, LTGT); \
+  SPARSE_UNOP (A_T, E_T, operator -, PFX, API, LTGT);
 
 // Generate forward declarations for unary operators.
-#define SPARSE_UNOP_FWD_DECLS(A_T) \
-  SPARSE_UNOP_DECLS (A_T, T, template <typename T>, )
+#define SPARSE_UNOP_FWD_DECLS(A_T, API) \
+  SPARSE_UNOP_DECLS (A_T, T, template <typename T>, API, )
 
 // Generate friend declarations for the unary operators.
-#define SPARSE_UNOP_FRIENDS(A_T) \
-  SPARSE_UNOP_DECLS (A_T, T, friend, <>)
+#define SPARSE_UNOP_FRIENDS(A_T, API) \
+  SPARSE_UNOP_DECLS (A_T, T, friend, API, <>)
 
 // Instantiate the unary operators.
-#define SPARSE_UNOP_DEFS(A_T, E_T) \
-  SPARSE_UNOP_DECLS (A_T, E_T, template OCTAVE_API, )
+#define SPARSE_UNOP_DEFS(A_T, E_T, API) \
+  SPARSE_UNOP_DECLS (A_T, E_T, template, API, )
 
 // A function that can be used to forward unary operations from derived
 // classes back to us.
@@ -98,42 +98,42 @@ Boston, MA 02110-1301, USA.
   SPARSE_UNOP_FWD_FCN (R, operator -, T, C_X, X_T)
 
 // A macro that can be used to declare and instantiate binary operators.
-#define SPARSE_BINOP_DECL(A_T, E_T, F, PFX, LTGT, X_T, Y_T) \
-  PFX A_T<E_T> \
+#define SPARSE_BINOP_DECL(A_T, E_T, F, PFX, API, LTGT, X_T, Y_T) \
+  PFX API A_T<E_T> \
   F LTGT (const X_T&, const Y_T&)
 
 // All the binary operators that we care about.  We have two
 // sets of macros since the MArray OP MArray operations use functions
 // (product and quotient) instead of operators (*, /).
-#define SPARSE_BINOP_DECLS(A_T, F_T, E_T, PFX, LTGT, X_T, Y_T)	 \
-  SPARSE_BINOP_DECL (F_T, E_T, operator +, PFX, LTGT, X_T, Y_T); \
-  SPARSE_BINOP_DECL (F_T, E_T, operator -, PFX, LTGT, X_T, Y_T); \
-  SPARSE_BINOP_DECL (A_T, E_T, operator *, PFX, LTGT, X_T, Y_T); \
-  SPARSE_BINOP_DECL (A_T, E_T, operator /, PFX, LTGT, X_T, Y_T);
+#define SPARSE_BINOP_DECLS(A_T, F_T, E_T, PFX, API, LTGT, X_T, Y_T)	 \
+  SPARSE_BINOP_DECL (F_T, E_T, operator +, PFX, API, LTGT, X_T, Y_T); \
+  SPARSE_BINOP_DECL (F_T, E_T, operator -, PFX, API, LTGT, X_T, Y_T); \
+  SPARSE_BINOP_DECL (A_T, E_T, operator *, PFX, API, LTGT, X_T, Y_T); \
+  SPARSE_BINOP_DECL (A_T, E_T, operator /, PFX, API, LTGT, X_T, Y_T);
 
-#define SPARSE_AA_BINOP_DECLS(A_T, E_T, PFX, LTGT) \
-  SPARSE_BINOP_DECL (A_T, E_T, operator +, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  SPARSE_BINOP_DECL (A_T, E_T, operator -, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  SPARSE_BINOP_DECL (A_T, E_T, quotient,   PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  SPARSE_BINOP_DECL (A_T, E_T, product,    PFX, LTGT, A_T<E_T>, A_T<E_T>);
+#define SPARSE_AA_BINOP_DECLS(A_T, E_T, PFX, API, LTGT) \
+  SPARSE_BINOP_DECL (A_T, E_T, operator +, PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  SPARSE_BINOP_DECL (A_T, E_T, operator -, PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  SPARSE_BINOP_DECL (A_T, E_T, quotient,   PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  SPARSE_BINOP_DECL (A_T, E_T, product,    PFX, API, LTGT, A_T<E_T>, A_T<E_T>);
 
 // Generate forward declarations for binary operators.
-#define SPARSE_BINOP_FWD_DECLS(A_T, F_T) \
-  SPARSE_BINOP_DECLS (A_T, F_T, T, template <typename T>, , A_T<T>, T)	\
-  SPARSE_BINOP_DECLS (A_T, F_T, T, template <typename T>, , T, A_T<T>) \
-  SPARSE_AA_BINOP_DECLS (A_T, T, template <typename T>, )
+#define SPARSE_BINOP_FWD_DECLS(A_T, F_T, API) \
+  SPARSE_BINOP_DECLS (A_T, F_T, T, template <typename T>, API, , A_T<T>, T)	\
+  SPARSE_BINOP_DECLS (A_T, F_T, T, template <typename T>, API, , T, A_T<T>) \
+  SPARSE_AA_BINOP_DECLS (A_T, T, template <typename T>, API, )
 
 // Generate friend declarations for the binary operators.
-#define SPARSE_BINOP_FRIENDS(A_T, F_T)		     \
-  SPARSE_BINOP_DECLS (A_T, F_T, T, friend, <>, A_T<T>, T)	\
-  SPARSE_BINOP_DECLS (A_T, F_T, T, friend, <>, T, A_T<T>)	\
-  SPARSE_AA_BINOP_DECLS (A_T, T, friend, <>)
+#define SPARSE_BINOP_FRIENDS(A_T, F_T, API)		     \
+  SPARSE_BINOP_DECLS (A_T, F_T, T, friend, API, <>, A_T<T>, T)	\
+  SPARSE_BINOP_DECLS (A_T, F_T, T, friend, API, <>, T, A_T<T>)	\
+  SPARSE_AA_BINOP_DECLS (A_T, T, friend, API, <>)
 
 // Instantiate the binary operators.
-#define SPARSE_BINOP_DEFS(A_T, F_T, E_T) \
-  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template OCTAVE_API, , A_T<E_T>, E_T)	\
-  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template OCTAVE_API, , E_T, A_T<E_T>)	\
-  SPARSE_AA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, )
+#define SPARSE_BINOP_DEFS(A_T, F_T, E_T, API) \
+  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template, API, , A_T<E_T>, E_T)	\
+  SPARSE_BINOP_DECLS (A_T, F_T, E_T, template, API, , E_T, A_T<E_T>)	\
+  SPARSE_AA_BINOP_DECLS (A_T, E_T, template, API, )
 
 // A function that can be used to forward binary operations from derived
 // classes back to us.
@@ -160,30 +160,30 @@ Boston, MA 02110-1301, USA.
   SPARSE_BINOP_FWD_FCN (R, quotient,   T, C_X, X_T, C_Y, Y_T)
 
 // Forward declarations for the MSparse operators.
-#define SPARSE_OPS_FORWARD_DECLS(A_T, F_T) \
+#define SPARSE_OPS_FORWARD_DECLS(A_T, F_T, API) \
   template <class T> \
   class A_T; \
  \
   /* SPARSE_OP_ASSIGN_FWD_DECLS (A_T, T) */ \
-  SPARSE_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>) \
-  SPARSE_UNOP_FWD_DECLS (A_T) \
-  SPARSE_BINOP_FWD_DECLS (A_T, F_T)
+  SPARSE_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>, API) \
+  SPARSE_UNOP_FWD_DECLS (A_T, API) \
+  SPARSE_BINOP_FWD_DECLS (A_T, F_T, API)
 
 // Friend declarations for the MSparse operators.
-#define SPARSE_OPS_FRIEND_DECLS(A_T, F_T)  \
+#define SPARSE_OPS_FRIEND_DECLS(A_T, F_T, API)  \
   /* SPARSE_OP_ASSIGN_FRIENDS (A_T, T) */ \
-  SPARSE_OP_ASSIGN_FRIENDS (A_T, A_T<T>) \
-  SPARSE_UNOP_FRIENDS (A_T) \
-    SPARSE_BINOP_FRIENDS (A_T, F_T)
+  SPARSE_OP_ASSIGN_FRIENDS (A_T, A_T<T>, API) \
+  SPARSE_UNOP_FRIENDS (A_T, API) \
+    SPARSE_BINOP_FRIENDS (A_T, F_T, API)
 
 // The following macros are for external use.
 
 // Instantiate all the MSparse friends for MSparse element type T.
-#define INSTANTIATE_SPARSE_FRIENDS(T) \
+#define INSTANTIATE_SPARSE_FRIENDS(T, API) \
   /* SPARSE_OP_ASSIGN_DEFS (MSparse, T, T) */ \
-  SPARSE_OP_ASSIGN_DEFS (MSparse, T, MSparse<T>) \
-  SPARSE_UNOP_DEFS (MSparse, T) \
-  SPARSE_BINOP_DEFS (MSparse, MArray2, T)
+  SPARSE_OP_ASSIGN_DEFS (MSparse, T, MSparse<T>, API) \
+  SPARSE_UNOP_DEFS (MSparse, T, API) \
+  SPARSE_BINOP_DEFS (MSparse, MArray2, T, API)
 
 // Define all the MSparse forwarding functions for return type R and
 // MSparse element type T

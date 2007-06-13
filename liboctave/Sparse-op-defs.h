@@ -26,22 +26,22 @@ Boston, MA 02110-1301, USA.
 #include "Array-util.h"
 #include "mx-ops.h"
 
-#define SPARSE_BIN_OP_DECL(R, OP, X, Y) \
-  extern OCTAVE_API R OP (const X&, const Y&)
+#define SPARSE_BIN_OP_DECL(R, OP, X, Y, API) \
+  extern API R OP (const X&, const Y&)
 
-#define SPARSE_CMP_OP_DECL(OP, X, Y) \
-  extern OCTAVE_API SparseBoolMatrix OP (const X&, const Y&)
+#define SPARSE_CMP_OP_DECL(OP, X, Y, API) \
+  extern API SparseBoolMatrix OP (const X&, const Y&)
 
-#define SPARSE_BOOL_OP_DECL(OP, X, Y) \
-  extern OCTAVE_API SparseBoolMatrix OP (const X&, const Y&)
+#define SPARSE_BOOL_OP_DECL(OP, X, Y, API) \
+  extern API SparseBoolMatrix OP (const X&, const Y&)
 
 // matrix by scalar operations.
 
-#define SPARSE_SMS_BIN_OP_DECLS(R1, R2, M, S)  \
-  SPARSE_BIN_OP_DECL (R1, operator +, M, S); \
-  SPARSE_BIN_OP_DECL (R1, operator -, M, S); \
-  SPARSE_BIN_OP_DECL (R2, operator *, M, S); \
-  SPARSE_BIN_OP_DECL (R2, operator /, M, S);
+#define SPARSE_SMS_BIN_OP_DECLS(R1, R2, M, S, API)  \
+  SPARSE_BIN_OP_DECL (R1, operator +, M, S, API); \
+  SPARSE_BIN_OP_DECL (R1, operator -, M, S, API); \
+  SPARSE_BIN_OP_DECL (R2, operator *, M, S, API); \
+  SPARSE_BIN_OP_DECL (R2, operator /, M, S, API);
 
 #define SPARSE_SMS_BIN_OP_1(R, F, OP, M, S)	\
   R \
@@ -86,17 +86,17 @@ Boston, MA 02110-1301, USA.
   SPARSE_SMS_BIN_OP_2 (R2, operator *, *, M, S) \
   SPARSE_SMS_BIN_OP_2 (R2, operator /, /, M, S)
 
-#define SPARSE_SMS_CMP_OP_DECLS(M, S) \
-  SPARSE_CMP_OP_DECL (mx_el_lt, M, S); \
-  SPARSE_CMP_OP_DECL (mx_el_le, M, S); \
-  SPARSE_CMP_OP_DECL (mx_el_ge, M, S); \
-  SPARSE_CMP_OP_DECL (mx_el_gt, M, S); \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M, S); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M, S);
+#define SPARSE_SMS_CMP_OP_DECLS(M, S, API) \
+  SPARSE_CMP_OP_DECL (mx_el_lt, M, S, API); \
+  SPARSE_CMP_OP_DECL (mx_el_le, M, S, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ge, M, S, API); \
+  SPARSE_CMP_OP_DECL (mx_el_gt, M, S, API); \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M, S, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M, S, API);
 
-#define SPARSE_SMS_EQNE_OP_DECLS(M, S) \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M, S); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M, S);
+#define SPARSE_SMS_EQNE_OP_DECLS(M, S, API) \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M, S, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M, S, API);
 
 #define SPARSE_SMS_CMP_OP(F, OP, M, MZ, MC, S, SZ, SC)	\
   SparseBoolMatrix \
@@ -169,9 +169,9 @@ Boston, MA 02110-1301, USA.
   SPARSE_SMS_CMP_OP (mx_el_eq, ==, M, MZ,   , S, SZ,   )	\
   SPARSE_SMS_CMP_OP (mx_el_ne, !=, M, MZ,   , S, SZ,   )
 
-#define SPARSE_SMS_BOOL_OP_DECLS(M, S) \
-  SPARSE_BOOL_OP_DECL (mx_el_and, M, S); \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  M, S);
+#define SPARSE_SMS_BOOL_OP_DECLS(M, S, API) \
+  SPARSE_BOOL_OP_DECL (mx_el_and, M, S, API); \
+  SPARSE_BOOL_OP_DECL (mx_el_or,  M, S, API);
 
 #define SPARSE_SMS_BOOL_OP(F, OP, M, S, LHS_ZERO, RHS_ZERO) \
   SparseBoolMatrix \
@@ -239,18 +239,18 @@ Boston, MA 02110-1301, USA.
 #define SPARSE_SMS_BOOL_OPS(M, S, ZERO) \
   SPARSE_SMS_BOOL_OPS2(M, S, ZERO, ZERO)
 
-#define SPARSE_SMS_OP_DECLS(R1, R2, M, S) \
-  SPARSE_SMS_BIN_OP_DECLS (R1, R2, M, S)	 \
-  SPARSE_SMS_CMP_OP_DECLS (M, S) \
-  SPARSE_SMS_BOOL_OP_DECLS (M, S)
+#define SPARSE_SMS_OP_DECLS(R1, R2, M, S, API) \
+  SPARSE_SMS_BIN_OP_DECLS (R1, R2, M, S, API)	 \
+  SPARSE_SMS_CMP_OP_DECLS (M, S, API) \
+  SPARSE_SMS_BOOL_OP_DECLS (M, S, API)
 
 // scalar by matrix operations.
 
-#define SPARSE_SSM_BIN_OP_DECLS(R1, R2, S, M)    \
-  SPARSE_BIN_OP_DECL (R1, operator +, S, M); \
-  SPARSE_BIN_OP_DECL (R1, operator -, S, M); \
-  SPARSE_BIN_OP_DECL (R2, operator *, S, M); \
-  SPARSE_BIN_OP_DECL (R2, operator /, S, M);
+#define SPARSE_SSM_BIN_OP_DECLS(R1, R2, S, M, API)    \
+  SPARSE_BIN_OP_DECL (R1, operator +, S, M, API); \
+  SPARSE_BIN_OP_DECL (R1, operator -, S, M, API); \
+  SPARSE_BIN_OP_DECL (R2, operator *, S, M, API); \
+  SPARSE_BIN_OP_DECL (R2, operator /, S, M, API);
 
 #define SPARSE_SSM_BIN_OP_1(R, F, OP, S, M) \
   R \
@@ -296,17 +296,17 @@ Boston, MA 02110-1301, USA.
   SPARSE_SSM_BIN_OP_2 (R2, operator *, *, S, M) \
   SPARSE_SSM_BIN_OP_2 (R2, operator /, /, S, M)
 
-#define SPARSE_SSM_CMP_OP_DECLS(S, M) \
-  SPARSE_CMP_OP_DECL (mx_el_lt, S, M); \
-  SPARSE_CMP_OP_DECL (mx_el_le, S, M); \
-  SPARSE_CMP_OP_DECL (mx_el_ge, S, M); \
-  SPARSE_CMP_OP_DECL (mx_el_gt, S, M); \
-  SPARSE_CMP_OP_DECL (mx_el_eq, S, M); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, S, M);
+#define SPARSE_SSM_CMP_OP_DECLS(S, M, API) \
+  SPARSE_CMP_OP_DECL (mx_el_lt, S, M, API); \
+  SPARSE_CMP_OP_DECL (mx_el_le, S, M, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ge, S, M, API); \
+  SPARSE_CMP_OP_DECL (mx_el_gt, S, M, API); \
+  SPARSE_CMP_OP_DECL (mx_el_eq, S, M, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, S, M, API);
 
-#define SPARSE_SSM_EQNE_OP_DECLS(S, M) \
-  SPARSE_CMP_OP_DECL (mx_el_eq, S, M); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, S, M);
+#define SPARSE_SSM_EQNE_OP_DECLS(S, M, API) \
+  SPARSE_CMP_OP_DECL (mx_el_eq, S, M, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, S, M, API);
 
 #define SPARSE_SSM_CMP_OP(F, OP, S, SZ, SC, M, MZ, MC)	\
   SparseBoolMatrix \
@@ -379,9 +379,9 @@ Boston, MA 02110-1301, USA.
   SPARSE_SSM_CMP_OP (mx_el_eq, ==, S, SZ,   , M, MZ,   )	\
   SPARSE_SSM_CMP_OP (mx_el_ne, !=, S, SZ,   , M, MZ,   )
 
-#define SPARSE_SSM_BOOL_OP_DECLS(S, M) \
-  SPARSE_BOOL_OP_DECL (mx_el_and, S, M); \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  S, M); \
+#define SPARSE_SSM_BOOL_OP_DECLS(S, M, API) \
+  SPARSE_BOOL_OP_DECL (mx_el_and, S, M, API); \
+  SPARSE_BOOL_OP_DECL (mx_el_or,  S, M, API); \
 
 #define SPARSE_SSM_BOOL_OP(F, OP, S, M, LHS_ZERO, RHS_ZERO) \
   SparseBoolMatrix \
@@ -449,18 +449,18 @@ Boston, MA 02110-1301, USA.
 #define SPARSE_SSM_BOOL_OPS(S, M, ZERO) \
   SPARSE_SSM_BOOL_OPS2(S, M, ZERO, ZERO)
 
-#define SPARSE_SSM_OP_DECLS(R1, R2, S, M) \
-  SPARSE_SSM_BIN_OP_DECLS (R1, R2, S, M)	 \
-  SPARSE_SSM_CMP_OP_DECLS (S, M) \
-  SPARSE_SSM_BOOL_OP_DECLS (S, M) \
+#define SPARSE_SSM_OP_DECLS(R1, R2, S, M, API) \
+  SPARSE_SSM_BIN_OP_DECLS (R1, R2, S, M, API)	 \
+  SPARSE_SSM_CMP_OP_DECLS (S, M, API) \
+  SPARSE_SSM_BOOL_OP_DECLS (S, M, API) \
 
 // matrix by matrix operations.
 
-#define SPARSE_SMSM_BIN_OP_DECLS(R1, R2, M1, M2)	\
-  SPARSE_BIN_OP_DECL (R1, operator +, M1, M2); \
-  SPARSE_BIN_OP_DECL (R1, operator -, M1, M2); \
-  SPARSE_BIN_OP_DECL (R2, product,    M1, M2); \
-  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2);
+#define SPARSE_SMSM_BIN_OP_DECLS(R1, R2, M1, M2, API)	\
+  SPARSE_BIN_OP_DECL (R1, operator +, M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R1, operator -, M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R2, product,    M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2, API);
 
 #define SPARSE_SMSM_BIN_OP_1(R, F, OP, M1, M2)	\
   R \
@@ -803,17 +803,17 @@ Boston, MA 02110-1301, USA.
   SPARSE_SMSM_BIN_OP_2 (R2, product,     *, M1, M2) \
   SPARSE_SMSM_BIN_OP_3 (R2, quotient,    /, M1, M2)
 
-#define SPARSE_SMSM_CMP_OP_DECLS(M1, M2) \
-  SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_le, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ge, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_gt, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2);
+#define SPARSE_SMSM_CMP_OP_DECLS(M1, M2, API) \
+  SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_le, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ge, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_gt, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
-#define SPARSE_SMSM_EQNE_OP_DECLS(M1, M2) \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2);
+#define SPARSE_SMSM_EQNE_OP_DECLS(M1, M2, API) \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
 #define SPARSE_SMSM_CMP_OP(F, OP, M1, C1, M2, C2)	\
   SparseBoolMatrix \
@@ -889,9 +889,9 @@ Boston, MA 02110-1301, USA.
   SPARSE_SMSM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
   SPARSE_SMSM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
 
-#define SPARSE_SMSM_BOOL_OP_DECLS(M1, M2) \
-  SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2); \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2);
+#define SPARSE_SMSM_BOOL_OP_DECLS(M1, M2, API) \
+  SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2, API); \
+  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2, API);
 
 #define SPARSE_SMSM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO) \
   SparseBoolMatrix \
@@ -964,18 +964,18 @@ Boston, MA 02110-1301, USA.
 #define SPARSE_SMSM_BOOL_OPS(M1, M2, ZERO) \
   SPARSE_SMSM_BOOL_OPS2(M1, M2, ZERO, ZERO)
 
-#define SPARSE_SMSM_OP_DECLS(R1, R2, M1, M2) \
-  SPARSE_SMSM_BIN_OP_DECLS (R1, R2, M1, M2) \
-  SPARSE_SMSM_CMP_OP_DECLS (M1, M2) \
-  SPARSE_SMSM_BOOL_OP_DECLS (M1, M2)
+#define SPARSE_SMSM_OP_DECLS(R1, R2, M1, M2, API) \
+  SPARSE_SMSM_BIN_OP_DECLS (R1, R2, M1, M2, API) \
+  SPARSE_SMSM_CMP_OP_DECLS (M1, M2, API) \
+  SPARSE_SMSM_BOOL_OP_DECLS (M1, M2, API)
 
 // matrix by matrix operations.
 
-#define SPARSE_MSM_BIN_OP_DECLS(R1, R2, M1, M2)	\
-  SPARSE_BIN_OP_DECL (R1, operator +, M1, M2); \
-  SPARSE_BIN_OP_DECL (R1, operator -, M1, M2); \
-  SPARSE_BIN_OP_DECL (R2, product,    M1, M2); \
-  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2);
+#define SPARSE_MSM_BIN_OP_DECLS(R1, R2, M1, M2, API)	\
+  SPARSE_BIN_OP_DECL (R1, operator +, M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R1, operator -, M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R2, product,    M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2, API);
 
 #define SPARSE_MSM_BIN_OP_1(R, F, OP, M1, M2)	\
   R \
@@ -1057,17 +1057,17 @@ Boston, MA 02110-1301, USA.
   SPARSE_MSM_BIN_OP_2 (R2, product,     *, M1, M2, 0.0) \
   SPARSE_MSM_BIN_OP_2 (R2, quotient,    /, M1, M2, 0.0)
 
-#define SPARSE_MSM_CMP_OP_DECLS(M1, M2) \
-  SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_le, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ge, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_gt, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2);
+#define SPARSE_MSM_CMP_OP_DECLS(M1, M2, API) \
+  SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_le, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ge, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_gt, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
-#define SPARSE_MSM_EQNE_OP_DECLS(M1, M2) \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2);
+#define SPARSE_MSM_EQNE_OP_DECLS(M1, M2, API) \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
 #define SPARSE_MSM_CMP_OP(F, OP, M1, C1, M2, C2)	\
   SparseBoolMatrix \
@@ -1133,9 +1133,9 @@ Boston, MA 02110-1301, USA.
   SPARSE_MSM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
   SPARSE_MSM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
 
-#define SPARSE_MSM_BOOL_OP_DECLS(M1, M2) \
-  SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2); \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2);
+#define SPARSE_MSM_BOOL_OP_DECLS(M1, M2, API) \
+  SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2, API); \
+  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2, API);
 
 #define SPARSE_MSM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO) \
   SparseBoolMatrix \
@@ -1198,18 +1198,18 @@ Boston, MA 02110-1301, USA.
 #define SPARSE_MSM_BOOL_OPS(M1, M2, ZERO) \
   SPARSE_MSM_BOOL_OPS2(M1, M2, ZERO, ZERO)
 
-#define SPARSE_MSM_OP_DECLS(R1, R2, M1, M2) \
-  SPARSE_MSM_BIN_OP_DECLS (R1, R2, M1, M2) \
-  SPARSE_MSM_CMP_OP_DECLS (M1, M2) \
-  SPARSE_MSM_BOOL_OP_DECLS (M1, M2)
+#define SPARSE_MSM_OP_DECLS(R1, R2, M1, M2, API) \
+  SPARSE_MSM_BIN_OP_DECLS (R1, R2, M1, M2, API) \
+  SPARSE_MSM_CMP_OP_DECLS (M1, M2, API) \
+  SPARSE_MSM_BOOL_OP_DECLS (M1, M2, API)
 
 // matrix by matrix operations.
 
-#define SPARSE_SMM_BIN_OP_DECLS(R1, R2, M1, M2)	\
-  SPARSE_BIN_OP_DECL (R1, operator +, M1, M2); \
-  SPARSE_BIN_OP_DECL (R1, operator -, M1, M2); \
-  SPARSE_BIN_OP_DECL (R2, product,    M1, M2); \
-  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2);
+#define SPARSE_SMM_BIN_OP_DECLS(R1, R2, M1, M2, API)	\
+  SPARSE_BIN_OP_DECL (R1, operator +, M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R1, operator -, M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R2, product,    M1, M2, API); \
+  SPARSE_BIN_OP_DECL (R2, quotient,   M1, M2, API);
 
 #define SPARSE_SMM_BIN_OP_1(R, F, OP, M1, M2)	\
   R \
@@ -1291,17 +1291,17 @@ Boston, MA 02110-1301, USA.
   SPARSE_SMM_BIN_OP_2 (R2, product,     *, M1, M2, 0.0) \
   SPARSE_SMM_BIN_OP_2 (R2, quotient,    /, M1, M2, 0.0)
 
-#define SPARSE_SMM_CMP_OP_DECLS(M1, M2) \
-  SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_le, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ge, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_gt, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2);
+#define SPARSE_SMM_CMP_OP_DECLS(M1, M2, API) \
+  SPARSE_CMP_OP_DECL (mx_el_lt, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_le, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ge, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_gt, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
-#define SPARSE_SMM_EQNE_OP_DECLS(M1, M2) \
-  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2); \
-  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2);
+#define SPARSE_SMM_EQNE_OP_DECLS(M1, M2, API) \
+  SPARSE_CMP_OP_DECL (mx_el_eq, M1, M2, API); \
+  SPARSE_CMP_OP_DECL (mx_el_ne, M1, M2, API);
 
 #define SPARSE_SMM_CMP_OP(F, OP, M1, C1, M2, C2)	\
   SparseBoolMatrix \
@@ -1367,9 +1367,9 @@ Boston, MA 02110-1301, USA.
   SPARSE_SMM_CMP_OP (mx_el_eq, ==, M1,   , M2,   ) \
   SPARSE_SMM_CMP_OP (mx_el_ne, !=, M1,   , M2,   )
 
-#define SPARSE_SMM_BOOL_OP_DECLS(M1, M2) \
-  SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2); \
-  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2);
+#define SPARSE_SMM_BOOL_OP_DECLS(M1, M2, API) \
+  SPARSE_BOOL_OP_DECL (mx_el_and, M1, M2, API); \
+  SPARSE_BOOL_OP_DECL (mx_el_or,  M1, M2, API);
 
 #define SPARSE_SMM_BOOL_OP(F, OP, M1, M2, LHS_ZERO, RHS_ZERO) \
   SparseBoolMatrix \
@@ -1432,10 +1432,10 @@ Boston, MA 02110-1301, USA.
 #define SPARSE_SMM_BOOL_OPS(M1, M2, ZERO) \
   SPARSE_SMM_BOOL_OPS2(M1, M2, ZERO, ZERO)
 
-#define SPARSE_SMM_OP_DECLS(R1, R2, M1, M2) \
-  SPARSE_SMM_BIN_OP_DECLS (R1, R2, M1, M2) \
-  SPARSE_SMM_CMP_OP_DECLS (M1, M2) \
-  SPARSE_SMM_BOOL_OP_DECLS (M1, M2)
+#define SPARSE_SMM_OP_DECLS(R1, R2, M1, M2, API) \
+  SPARSE_SMM_BIN_OP_DECLS (R1, R2, M1, M2, API) \
+  SPARSE_SMM_CMP_OP_DECLS (M1, M2, API) \
+  SPARSE_SMM_BOOL_OP_DECLS (M1, M2, API)
 
 // Avoid some code duplication.  Maybe we should use templates.
 

@@ -373,14 +373,14 @@ extern OCTAVE_API ComplexMatrix max (const Complex& c, const ComplexMatrix& m);
 extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& m, const Complex& c);
 extern OCTAVE_API ComplexMatrix max (const ComplexMatrix& a, const ComplexMatrix& b);
 
-MS_CMP_OP_DECLS (ComplexMatrix, Complex)
-MS_BOOL_OP_DECLS (ComplexMatrix, Complex)
+MS_CMP_OP_DECLS (ComplexMatrix, Complex, OCTAVE_API)
+MS_BOOL_OP_DECLS (ComplexMatrix, Complex, OCTAVE_API)
 
-SM_CMP_OP_DECLS (Complex, ComplexMatrix)
-SM_BOOL_OP_DECLS (Complex, ComplexMatrix)
+SM_CMP_OP_DECLS (Complex, ComplexMatrix, OCTAVE_API)
+SM_BOOL_OP_DECLS (Complex, ComplexMatrix, OCTAVE_API)
 
-MM_CMP_OP_DECLS (ComplexMatrix, ComplexMatrix)
-MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix)
+MM_CMP_OP_DECLS (ComplexMatrix, ComplexMatrix, OCTAVE_API)
+MM_BOOL_OP_DECLS (ComplexMatrix, ComplexMatrix, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArray2, ComplexMatrix, Complex)
 

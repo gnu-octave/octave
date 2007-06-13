@@ -31,7 +31,7 @@ Boston, MA 02110-1301, USA.
 
 template class OCTAVE_API MSparse<Complex>;
 
-INSTANTIATE_SPARSE_FRIENDS (Complex);
+INSTANTIATE_SPARSE_FRIENDS (Complex, OCTAVE_API);
 
 /*
 ;;; Local Variables: ***

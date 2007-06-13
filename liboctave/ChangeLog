@@ -1,3 +1,63 @@
+2007-06-13  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* MArray-ch.cc, MArray-d.cc, MArray-i.cc, MArray-s.cc:
+	Sprinkle class instantiations with OCTAVE_API as needed.
+
+	* Array.h (INSTANTIATE_ARRAY_ASSIGN, INSTANTIATE_ARRAY,
+	INSTANTIATE_ARRAY_AND_ASSIGN): New arg, API. Change all uses.
+	* MArray-defs.h (MARRAY_OP_ASSIGN_DECL, MARRAY_OP_ASSIGN_DECLS,
+	MARRAY_OP_ASSIGN_FWD_DECLS, MARRAY_OP_ASSIGN_FRIENDS,
+	MARRAY_OP_ASSIGN_DEFS, MARRAY_UNOP, MARRAY_UNOP_DECLS,
+	MARRAY_UNOP_FWD_DECLS, MARRAY_UNOP_FRIENDS, MARRAY_UNOP_DEFS,
+	MARRAY_BINOP_DECL, MARRAY_BINOP_DECLS, MARRAY_AA_BINOP_DECLS,
+	MDIAGARRAY2_DAS_BINOP_DECLS, MDIAGARRAY2_SDA_BINOP_DECLS,
+	MDIAGARRAY2_DADA_BINOP_DECLS, MARRAY_BINOP_FWD_DECLS,
+	MDIAGARRAY2_BINOP_FWD_DECLS, MARRAY_BINOP_FRIENDS,
+	MDIAGARRAY2_BINOP_FRIENDS, MARRAY_BINOP_DEFS,
+	MDIAGARRAY2_BINOP_DEFS, MARRAY_OPS_FORWARD_DECLS,
+	MDIAGARRAY2_OPS_FORWARD_DECLS, MARRAY_OPS_FRIEND_DECLS,
+	MDIAGARRAY2_OPS_FRIEND_DECLS, INSTANTIATE_MARRAY_FRIENDS,
+	INSTANTIATE_MARRAY2_FRIENDS, INSTANTIATE_MARRAYN_FRIENDS,
+	INSTANTIATE_MDIAGARRAY2_FRIENDS): Ditto.
+	* MSparse-defs.h (SPARSE_OP_ASSIGN_DECL, SPARSE_OP_ASSIGN_DECLS,
+	SPARSE_OP_ASSIGN_FWD_DECLS, SPARSE_OP_ASSIGN_FRIENDS,
+	SPARSE_OP_ASSIGN_DEFS, SPARSE_UNOP, SPARSE_UNOP_DECLS,
+	SPARSE_UNOP_FWD_DECLS, SPARSE_UNOP_FRIENDS, SPARSE_UNOP_DEFS,
+	SPARSE_BINOP_DECL, SPARSE_BINOP_DECLS, SPARSE_AA_BINOP_DECLS,
+	SPARSE_BINOP_FWD_DECLS, SPARSE_BINOP_FRIENDS, SPARSE_BINOP_DEFS,
+	SPARSE_OPS_FORWARD_DECLS, SPARSE_OPS_FRIEND_DECLS,
+	INSTANTIATE_SPARSE_FRIENDS): Ditto.
+	* Sparse-op-defs.h (SPARSE_BIN_OP_DECL, SPARSE_CMP_OP_DECL,
+	SPARSE_BOOL_OP_DECL, SPARSE_SMS_BIN_OP_DECLS,
+	SPARSE_SMS_CMP_OP_DECLS, SPARSE_SMS_EQNE_OP_DECLS,
+	SPARSE_SMS_BOOL_OP_DECLS, SPARSE_SSM_BIN_OP_DECLS,
+	SPARSE_SMS_OP_DECLS, SPARSE_SSM_BIN_OP_DECLS,
+	SPARSE_SSM_CMP_OP_DECLS, SPARSE_SSM_EQNE_OP_DECLS,
+	SPARSE_SSM_BOOL_OP_DECLS, SPARSE_SSM_OP_DECLS,
+	SPARSE_SMSM_BIN_OP_DECLS, SPARSE_SMSM_CMP_OP_DECLS,
+	SPARSE_SMSM_EQNE_OP_DECLS, SPARSE_SMSM_BOOL_OP_DECLS,
+	SPARSE_SMSM_OP_DECLS, SPARSE_MSM_BIN_OP_DECLS,
+	SPARSE_MSM_CMP_OP_DECLS, SPARSE_MSM_EQNE_OP_DECLS,
+	SPARSE_MSM_BOOL_OP_DECLS, SPARSE_MSM_OP_DECLS,
+	SPARSE_SMM_BIN_OP_DECLS, SPARSE_SMM_CMP_OP_DECLS,
+	SPARSE_SMM_EQNE_OP_DECLS, SPARSE_SMM_BOOL_OP_DECLS,
+	SPARSE_SMM_OP_DECLS): Ditto.
+	* Sparse.h (INSTANTIATE_SPARSE_ASSIGN, INSTANTIATE_SPARSE,
+	INSTANTIATE_SPARSE_AND_ASSIGN): Ditto.
+	* mx-op-defs.h (BIN_OP_DECL, CMP_OP_DECL, NDCMP_OP_DECL,
+	BOOL_OP_DECL, NDBOOL_OP_DECL, VS_BIN_OP_DECLS, VS_OP_DECLS,
+	SV_BIN_OP_DECLS, SV_OP_DECLS, VV_BIN_OP_DECLS, VV_OP_DECLS,
+	MS_BIN_OP_DECLS, MS_CMP_OP_DECLS, MS_BOOL_OP_DECLS, MS_OP_DECLS,
+	SM_BIN_OP_DECLS, SM_CMP_OP_DECLS, SM_BOOL_OP_DECLS, SM_OP_DECLS,
+	MM_BIN_OP_DECLS, MM_CMP_OP_DECLS, MM_BOOL_OP_DECLS, MM_OP_DECLS,
+	NDS_BIN_OP_DECLS, NDS_CMP_OP_DECLS, NDS_BOOL_OP_DECLS,
+	NDS_OP_DECLS, SND_BIN_OP_DECLS, SND_CMP_OP_DECLS,
+	SND_BOOL_OP_DECLS, SND_OP_DECLS, NDND_BIN_OP_DECLS,
+	NDND_CMP_OP_DECLS, NDND_BOOL_OP_DECLS, NDND_OP_DECLS,
+	SDM_BIN_OP_DECLS, SDM_OP_DECLS, DMS_BIN_OP_DECLS, DMS_OP_DECLS,
+	MDM_BIN_OP_DECLS, MDM_OP_DECLS, DMM_BIN_OP_DECLS, DMM_OP_DECLS,
+	DMDM_BIN_OP_DECLS, DMDM_OP_DECLS): Ditto.
+
 2007-06-12  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc (Matrix::expm): Special case for scalar arg.
@@ -470,51 +530,29 @@
 
 	* kpse.cc [! MSVC]: Don't include win32lib.h.
 
-	* liboctave/Array-C.cc, liboctave/Array-b.cc,
-	liboctave/Array-ch.cc, liboctave/Array-i.cc,
-	liboctave/Array-util.h, liboctave/Array.h, liboctave/CColVector.h,
-	liboctave/CMatrix.h, liboctave/CNDArray.h, liboctave/CRowVector.h,
-	liboctave/CSparse.h, liboctave/CmplxAEPBAL.h,
-	liboctave/CmplxCHOL.h, liboctave/CmplxDET.h,
-	liboctave/CmplxHESS.h, liboctave/CmplxLU.h, liboctave/CmplxQR.h,
-	liboctave/CmplxQRP.h, liboctave/CmplxSCHUR.h,
-	liboctave/CmplxSVD.h, liboctave/CollocWt.h, liboctave/DAE.h,
-	liboctave/DASPK.h, liboctave/DASRT.h, liboctave/DASSL.h,
-	liboctave/EIG.h, liboctave/LSODE.h, liboctave/MArray-C.cc,
-	liboctave/MArray-defs.h, liboctave/MSparse-C.cc,
-	liboctave/MSparse-d.cc, liboctave/MSparse-defs.h,
-	liboctave/MatrixType.h, liboctave/NLEqn.h, liboctave/Quad.h,
-	liboctave/Range.h, liboctave/Sparse-op-defs.h, liboctave/Sparse.h,
-	liboctave/SparseCmplxCHOL.h, liboctave/SparseCmplxLU.h,
-	liboctave/SparseCmplxQR.h, liboctave/SparseQR.h,
-	liboctave/SparsedbleCHOL.h, liboctave/SparsedbleLU.h,
-	liboctave/boolMatrix.h, liboctave/boolNDArray.h,
-	liboctave/boolSparse.h, liboctave/chMatrix.h,
-	liboctave/chNDArray.h, liboctave/cmd-edit.h, liboctave/cmd-hist.h,
-	liboctave/dColVector.h, liboctave/dDiagMatrix.h,
-	liboctave/dMatrix.h, liboctave/dNDArray.h, liboctave/dRowVector.h,
-	liboctave/dSparse.h, liboctave/data-conv.h,
-	liboctave/dbleAEPBAL.h, liboctave/dbleCHOL.h, liboctave/dbleDET.h,
-	liboctave/dbleHESS.h, liboctave/dbleLU.h, liboctave/dbleQR.h,
-	liboctave/dbleQRP.h, liboctave/dbleSCHUR.h, liboctave/dbleSVD.h,
-	liboctave/dir-ops.h, liboctave/file-ops.h, liboctave/file-stat.h,
-	liboctave/glob-match.h, liboctave/idx-vector.h,
-	liboctave/int16NDArray.cc, liboctave/int32NDArray.cc,
-	liboctave/int64NDArray.cc, liboctave/int8NDArray.cc,
-	liboctave/lo-cutils.c, liboctave/lo-ieee.h,
-	liboctave/lo-mappers.h, liboctave/lo-specfun.h,
-	liboctave/lo-utils.h, liboctave/mach-info.h,
-	liboctave/mx-op-defs.h, liboctave/oct-alloc.h,
-	liboctave/oct-env.h, liboctave/oct-group.h,
-	liboctave/oct-inttypes.cc, liboctave/oct-inttypes.h,
-	liboctave/oct-passwd.h, liboctave/oct-rand.h,
-	liboctave/oct-shlib.h, liboctave/oct-spparms.h,
-	liboctave/oct-syscalls.h, liboctave/oct-time.h,
-	liboctave/oct-uname.h, liboctave/pathsearch.h,
-	liboctave/prog-args.h, liboctave/so-array.h, liboctave/str-vec.h,
-	liboctave/uint16NDArray.cc, liboctave/uint32NDArray.cc,
-	liboctave/uint64NDArray.cc, liboctave/uint8NDArray.cc:
-	Sprinkle with OCTAVE_API as needed.
+	* Array-C.cc, Array-b.cc, Array-ch.cc, Array-i.cc, Array-util.h,
+	Array.h, CColVector.h, CMatrix.h, CNDArray.h, CRowVector.h,
+	CSparse.h, CmplxAEPBAL.h, CmplxCHOL.h, CmplxDET.h, CmplxHESS.h,
+	CmplxLU.h, CmplxQR.h, CmplxQRP.h, CmplxSCHUR.h, CmplxSVD.h,
+	CollocWt.h, DAE.h, DASPK.h, DASRT.h, DASSL.h, EIG.h, LSODE.h,
+	MArray-C.cc, MArray-defs.h, MSparse-C.cc, MSparse-d.cc,
+	MSparse-defs.h, MatrixType.h, NLEqn.h, Quad.h, Range.h,
+	Sparse-op-defs.h, Sparse.h, SparseCmplxCHOL.h, SparseCmplxLU.h,
+	SparseCmplxQR.h, SparseQR.h, SparsedbleCHOL.h, SparsedbleLU.h,
+	boolMatrix.h, boolNDArray.h, boolSparse.h, chMatrix.h,
+	chNDArray.h, cmd-edit.h, cmd-hist.h, dColVector.h, dDiagMatrix.h,
+	dMatrix.h, dNDArray.h, dRowVector.h, dSparse.h, data-conv.h,
+	dbleAEPBAL.h, dbleCHOL.h, dbleDET.h, dbleHESS.h, dbleLU.h,
+	dbleQR.h, dbleQRP.h, dbleSCHUR.h, dbleSVD.h, dir-ops.h,
+	file-ops.h, file-stat.h, glob-match.h, idx-vector.h,
+	int16NDArray.cc, int32NDArray.cc, int64NDArray.cc, int8NDArray.cc,
+	lo-cutils.c, lo-ieee.h, lo-mappers.h, lo-specfun.h, lo-utils.h,
+	mach-info.h, mx-op-defs.h, oct-alloc.h, oct-env.h, oct-group.h,
+	oct-inttypes.cc, oct-inttypes.h, oct-passwd.h, oct-rand.h,
+	oct-shlib.h, oct-spparms.h, oct-syscalls.h, oct-time.h,
+	oct-uname.h, pathsearch.h, prog-args.h, so-array.h, str-vec.h,
+	uint16NDArray.cc, uint32NDArray.cc, uint64NDArray.cc,
+	uint8NDArray.cc: Sprinkle with OCTAVE_API as needed.
 
 2006-10-26  John W. Eaton  <jwe@octave.org>
 
@@ -573,8 +611,8 @@
 
 	* oct-syscalls.cc (syscalls::waitpid): Always declare and define retval.
 
-	* liboctave/CMatrix.cc (ComplexMatrix::solve): Avoid infinite recursion. 
-	* Index: liboctave/CSparse.cc (SparseComplexMatrix::insert): Likewise.
+	* CMatrix.cc (ComplexMatrix::solve): Avoid infinite recursion. 
+	* CSparse.cc (SparseComplexMatrix::insert): Likewise.
 
 	* oct-types.h.in: Include limits.h, for CHAR_BIT.
 

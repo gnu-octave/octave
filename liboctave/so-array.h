@@ -94,23 +94,23 @@ OCTAVE_API streamoff_array& operator -= (streamoff_array& l, const std::streamof
 OCTAVE_API streamoff_array& operator += (streamoff_array& l, const streamoff_array& r);
 OCTAVE_API streamoff_array& operator -= (streamoff_array& l, const streamoff_array& r);
 
-NDCMP_OP_DECL (mx_el_eq, std::streamoff, streamoff_array);
-NDCMP_OP_DECL (mx_el_ne, std::streamoff, streamoff_array);
+NDCMP_OP_DECL (mx_el_eq, std::streamoff, streamoff_array, OCTAVE_API);
+NDCMP_OP_DECL (mx_el_ne, std::streamoff, streamoff_array, OCTAVE_API);
 
-NDCMP_OP_DECL (mx_el_eq, streamoff_array, std::streamoff);
-NDCMP_OP_DECL (mx_el_ne, streamoff_array, std::streamoff);
+NDCMP_OP_DECL (mx_el_eq, streamoff_array, std::streamoff, OCTAVE_API);
+NDCMP_OP_DECL (mx_el_ne, streamoff_array, std::streamoff, OCTAVE_API);
 
-NDCMP_OP_DECL (mx_el_eq, streamoff_array, streamoff_array);
-NDCMP_OP_DECL (mx_el_ne, streamoff_array, streamoff_array);
+NDCMP_OP_DECL (mx_el_eq, streamoff_array, streamoff_array, OCTAVE_API);
+NDCMP_OP_DECL (mx_el_ne, streamoff_array, streamoff_array, OCTAVE_API);
 
-BIN_OP_DECL (streamoff_array, operator +, streamoff_array, streamoff_array);
-BIN_OP_DECL (streamoff_array, operator -, streamoff_array, streamoff_array);
+BIN_OP_DECL (streamoff_array, operator +, streamoff_array, streamoff_array, OCTAVE_API);
+BIN_OP_DECL (streamoff_array, operator -, streamoff_array, streamoff_array, OCTAVE_API);
 
-BIN_OP_DECL (streamoff_array, operator +, streamoff_array, std::streamoff);
-BIN_OP_DECL (streamoff_array, operator -, streamoff_array, std::streamoff);
+BIN_OP_DECL (streamoff_array, operator +, streamoff_array, std::streamoff, OCTAVE_API);
+BIN_OP_DECL (streamoff_array, operator -, streamoff_array, std::streamoff, OCTAVE_API);
 
-BIN_OP_DECL (streamoff_array, operator +, std::streamoff, streamoff_array);
-BIN_OP_DECL (streamoff_array, operator -, std::streamoff, streamoff_array);
+BIN_OP_DECL (streamoff_array, operator +, std::streamoff, streamoff_array, OCTAVE_API);
+BIN_OP_DECL (streamoff_array, operator -, std::streamoff, streamoff_array, OCTAVE_API);
 
 #endif
 

@@ -29,7 +29,7 @@ Boston, MA 02110-1301, USA.
 #include "Sparse.h"
 #include "Sparse.cc"
 
-INSTANTIATE_SPARSE_AND_ASSIGN (double);
+INSTANTIATE_SPARSE_AND_ASSIGN (double, OCTAVE_API);
 
 #if 0
 template std::ostream& operator << (std::ostream&, const Sparse<double>&);

@@ -50,10 +50,7 @@ resize_fill_value<octave_value> (const octave_value&)
 
 template class OCTINTERP_API Array<octave_value>;
 
-#undef OCTAVE_API
-#define OCTAVE_API OCTINTERP_API
-
-INSTANTIATE_ARRAY_ASSIGN (octave_value, octave_value);
+INSTANTIATE_ARRAY_ASSIGN (octave_value, octave_value, OCTINTERP_API);
 
 template class OCTINTERP_API Array2<octave_value>;
 

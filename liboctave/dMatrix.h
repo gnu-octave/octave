@@ -323,14 +323,14 @@ extern OCTAVE_API Matrix max (double d, const Matrix& m);
 extern OCTAVE_API Matrix max (const Matrix& m, double d);
 extern OCTAVE_API Matrix max (const Matrix& a, const Matrix& b);
 
-MS_CMP_OP_DECLS (Matrix, double)
-MS_BOOL_OP_DECLS (Matrix, double)
+MS_CMP_OP_DECLS (Matrix, double, OCTAVE_API)
+MS_BOOL_OP_DECLS (Matrix, double, OCTAVE_API)
 
-SM_CMP_OP_DECLS (double, Matrix)
-SM_BOOL_OP_DECLS (double, Matrix)
+SM_CMP_OP_DECLS (double, Matrix, OCTAVE_API)
+SM_BOOL_OP_DECLS (double, Matrix, OCTAVE_API)
 
-MM_CMP_OP_DECLS (Matrix, Matrix)
-MM_BOOL_OP_DECLS (Matrix, Matrix)
+MM_CMP_OP_DECLS (Matrix, Matrix, OCTAVE_API)
+MM_BOOL_OP_DECLS (Matrix, Matrix, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArray2, Matrix, double)
 

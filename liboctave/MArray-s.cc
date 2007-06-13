@@ -30,23 +30,23 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "MArray.h"
 #include "MArray.cc"
 
-template class MArray<short>;
+template class OCTAVE_API MArray<short>;
 
-INSTANTIATE_MARRAY_FRIENDS (short)
+INSTANTIATE_MARRAY_FRIENDS (short, OCTAVE_API)
 
 #include "MArray2.h"
 #include "MArray2.cc"
 
-template class MArray2<short>;
+template class OCTAVE_API MArray2<short>;
 
-INSTANTIATE_MARRAY2_FRIENDS (short)
+INSTANTIATE_MARRAY2_FRIENDS (short, OCTAVE_API)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 
-template class MDiagArray2<short>;
+template class OCTAVE_API MDiagArray2<short>;
 
-INSTANTIATE_MDIAGARRAY2_FRIENDS (short)
+INSTANTIATE_MDIAGARRAY2_FRIENDS (short, OCTAVE_API)
 
 /*
 ;;; Local Variables: ***

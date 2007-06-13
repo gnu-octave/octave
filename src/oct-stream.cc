@@ -53,9 +53,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-obj.h"
 #include "utils.h"
 
-#undef OCTAVE_API
-#define OCTAVE_API
-
 // Possible values for conv_err:
 //
 //   1 : not a real scalar
@@ -3218,7 +3215,7 @@ INSTANTIATE_DO_READ (boolNDArray);
 typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool,
 				   oct_mach_info::float_format ffmt, octave_idx_type&);
 
-INSTANTIATE_ARRAY (read_fptr);
+INSTANTIATE_ARRAY (read_fptr,);
 template class Array2<read_fptr>;
 
 #define FILL_TABLE_ROW(R, VAL_T) \

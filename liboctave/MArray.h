@@ -33,7 +33,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "MArray-defs.h"
 
-MARRAY_OPS_FORWARD_DECLS (MArray)
+MARRAY_OPS_FORWARD_DECLS (MArray, )
 
 template <class T>
 class

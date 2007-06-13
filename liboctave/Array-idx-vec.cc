@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "Array.h"
 #include "Array.cc"
 
-INSTANTIATE_ARRAY (idx_vector);
+INSTANTIATE_ARRAY (idx_vector, OCTAVE_API);
 
 /*
 ;;; Local Variables: ***

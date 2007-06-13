@@ -569,21 +569,21 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
   return assign (lhs, rhs, resize_fill_value (LT ()));
 }
 
-#define INSTANTIATE_ARRAY_ASSIGN(LT, RT) \
-  template OCTAVE_API int assign (Array<LT>&, const Array<RT>&, const LT&); \
-  template OCTAVE_API int assign1 (Array<LT>&, const Array<RT>&, const LT&); \
-  template OCTAVE_API int assign2 (Array<LT>&, const Array<RT>&, const LT&); \
-  template OCTAVE_API int assignN (Array<LT>&, const Array<RT>&, const LT&); \
-  template OCTAVE_API int assign (Array<LT>&, const Array<RT>&)
+#define INSTANTIATE_ARRAY_ASSIGN(LT, RT, API) \
+  template API int assign (Array<LT>&, const Array<RT>&, const LT&); \
+  template API int assign1 (Array<LT>&, const Array<RT>&, const LT&); \
+  template API int assign2 (Array<LT>&, const Array<RT>&, const LT&); \
+  template API int assignN (Array<LT>&, const Array<RT>&, const LT&); \
+  template API int assign (Array<LT>&, const Array<RT>&)
 
 
-#define INSTANTIATE_ARRAY(T) \
-  template class OCTAVE_API Array<T>; \
-  template OCTAVE_API T resize_fill_value (const T&); \
+#define INSTANTIATE_ARRAY(T, API) \
+  template class API Array<T>; \
+  template API T resize_fill_value (const T&); \
 
-#define INSTANTIATE_ARRAY_AND_ASSIGN(T) \
-  INSTANTIATE_ARRAY (T); \
-  INSTANTIATE_ARRAY_ASSIGN (T, T)
+#define INSTANTIATE_ARRAY_AND_ASSIGN(T, API) \
+  INSTANTIATE_ARRAY (T, API); \
+  INSTANTIATE_ARRAY_ASSIGN (T, T, API)
 
 #endif
 

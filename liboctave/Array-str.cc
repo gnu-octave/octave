@@ -32,7 +32,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <string>
 
-INSTANTIATE_ARRAY (std::string);
+INSTANTIATE_ARRAY (std::string, OCTAVE_API);
 
 /*
 ;;; Local Variables: ***

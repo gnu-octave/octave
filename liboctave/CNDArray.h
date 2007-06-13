@@ -131,14 +131,14 @@ extern OCTAVE_API ComplexNDArray max (const Complex& c, const ComplexNDArray& m)
 extern OCTAVE_API ComplexNDArray max (const ComplexNDArray& m, const Complex& c);
 extern OCTAVE_API ComplexNDArray max (const ComplexNDArray& a, const ComplexNDArray& b);
 
-NDS_CMP_OP_DECLS (ComplexNDArray, Complex)
-NDS_BOOL_OP_DECLS (ComplexNDArray, Complex)
+NDS_CMP_OP_DECLS (ComplexNDArray, Complex, OCTAVE_API)
+NDS_BOOL_OP_DECLS (ComplexNDArray, Complex, OCTAVE_API)
 
-SND_CMP_OP_DECLS (Complex, ComplexNDArray)
-SND_BOOL_OP_DECLS (Complex, ComplexNDArray)
+SND_CMP_OP_DECLS (Complex, ComplexNDArray, OCTAVE_API)
+SND_BOOL_OP_DECLS (Complex, ComplexNDArray, OCTAVE_API)
 
-NDND_CMP_OP_DECLS (ComplexNDArray, ComplexNDArray)
-NDND_BOOL_OP_DECLS (ComplexNDArray, ComplexNDArray)
+NDND_CMP_OP_DECLS (ComplexNDArray, ComplexNDArray, OCTAVE_API)
+NDND_BOOL_OP_DECLS (ComplexNDArray, ComplexNDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, ComplexNDArray, Complex)
 

@@ -30,14 +30,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 typedef intNDArray<octave_int64> int64NDArray;
 
-NDS_CMP_OP_DECLS (int64NDArray, octave_int64)
-NDS_BOOL_OP_DECLS (int64NDArray, octave_int64)
+NDS_CMP_OP_DECLS (int64NDArray, octave_int64, OCTAVE_API)
+NDS_BOOL_OP_DECLS (int64NDArray, octave_int64, OCTAVE_API)
 
-SND_CMP_OP_DECLS (octave_int64, int64NDArray)
-SND_BOOL_OP_DECLS (octave_int64, int64NDArray)
+SND_CMP_OP_DECLS (octave_int64, int64NDArray, OCTAVE_API)
+SND_BOOL_OP_DECLS (octave_int64, int64NDArray, OCTAVE_API)
 
-NDND_CMP_OP_DECLS (int64NDArray, int64NDArray)
-NDND_BOOL_OP_DECLS (int64NDArray, int64NDArray)
+NDND_CMP_OP_DECLS (int64NDArray, int64NDArray, OCTAVE_API)
+NDND_BOOL_OP_DECLS (int64NDArray, int64NDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, int64NDArray, octave_int64)
 

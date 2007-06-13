@@ -463,14 +463,14 @@ extern OCTAVE_API SparseComplexMatrix max (const SparseComplexMatrix& m,
 extern OCTAVE_API SparseComplexMatrix max (const SparseComplexMatrix& a, 
 				const SparseComplexMatrix& b);
 
-SPARSE_SMS_CMP_OP_DECLS (SparseComplexMatrix, Complex)
-SPARSE_SMS_BOOL_OP_DECLS (SparseComplexMatrix, Complex)
+SPARSE_SMS_CMP_OP_DECLS (SparseComplexMatrix, Complex, OCTAVE_API)
+SPARSE_SMS_BOOL_OP_DECLS (SparseComplexMatrix, Complex, OCTAVE_API)
 
-SPARSE_SSM_CMP_OP_DECLS (Complex, SparseComplexMatrix)
-SPARSE_SSM_BOOL_OP_DECLS (Complex, SparseComplexMatrix)
+SPARSE_SSM_CMP_OP_DECLS (Complex, SparseComplexMatrix, OCTAVE_API)
+SPARSE_SSM_BOOL_OP_DECLS (Complex, SparseComplexMatrix, OCTAVE_API)
 
-SPARSE_SMSM_CMP_OP_DECLS (SparseComplexMatrix, SparseComplexMatrix)
-SPARSE_SMSM_BOOL_OP_DECLS (SparseComplexMatrix, SparseComplexMatrix)
+SPARSE_SMSM_CMP_OP_DECLS (SparseComplexMatrix, SparseComplexMatrix, OCTAVE_API)
+SPARSE_SMSM_BOOL_OP_DECLS (SparseComplexMatrix, SparseComplexMatrix, OCTAVE_API)
 
 SPARSE_FORWARD_DEFS (MSparse, SparseComplexMatrix, ComplexMatrix, Complex)
 

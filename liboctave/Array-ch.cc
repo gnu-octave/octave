@@ -30,7 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "Array.h"
 #include "Array.cc"
 
-INSTANTIATE_ARRAY_AND_ASSIGN (char);
+INSTANTIATE_ARRAY_AND_ASSIGN (char, OCTAVE_API);
 
 #include "Array2.h"
 

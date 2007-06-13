@@ -32,12 +32,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "Array.h"
 #include "Array.cc"
 
-INSTANTIATE_ARRAY_AND_ASSIGN (Complex);
+INSTANTIATE_ARRAY_AND_ASSIGN (Complex, OCTAVE_API);
 
-INSTANTIATE_ARRAY_ASSIGN (Complex, double);
-INSTANTIATE_ARRAY_ASSIGN (Complex, int);
-INSTANTIATE_ARRAY_ASSIGN (Complex, short);
-INSTANTIATE_ARRAY_ASSIGN (Complex, char);
+INSTANTIATE_ARRAY_ASSIGN (Complex, double, OCTAVE_API);
+INSTANTIATE_ARRAY_ASSIGN (Complex, int, OCTAVE_API);
+INSTANTIATE_ARRAY_ASSIGN (Complex, short, OCTAVE_API);
+INSTANTIATE_ARRAY_ASSIGN (Complex, char, OCTAVE_API);
 
 #include "Array2.h"
 

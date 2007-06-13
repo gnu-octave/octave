@@ -142,14 +142,14 @@ extern OCTAVE_API NDArray max (double d, const NDArray& m);
 extern OCTAVE_API NDArray max (const NDArray& m, double d);
 extern OCTAVE_API NDArray max (const NDArray& a, const NDArray& b);
 
-NDS_CMP_OP_DECLS (NDArray, double)
-NDS_BOOL_OP_DECLS (NDArray, double)
+NDS_CMP_OP_DECLS (NDArray, double, OCTAVE_API)
+NDS_BOOL_OP_DECLS (NDArray, double, OCTAVE_API)
 
-SND_CMP_OP_DECLS (double, NDArray)
-SND_BOOL_OP_DECLS (double, NDArray)
+SND_CMP_OP_DECLS (double, NDArray, OCTAVE_API)
+SND_BOOL_OP_DECLS (double, NDArray, OCTAVE_API)
 
-NDND_CMP_OP_DECLS (NDArray, NDArray)
-NDND_BOOL_OP_DECLS (NDArray, NDArray)
+NDND_CMP_OP_DECLS (NDArray, NDArray, OCTAVE_API)
+NDND_BOOL_OP_DECLS (NDArray, NDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, NDArray, double)
 

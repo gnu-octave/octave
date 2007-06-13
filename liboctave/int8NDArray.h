@@ -30,14 +30,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 typedef intNDArray<octave_int8> int8NDArray;
 
-NDS_CMP_OP_DECLS (int8NDArray, octave_int8)
-NDS_BOOL_OP_DECLS (int8NDArray, octave_int8)
+NDS_CMP_OP_DECLS (int8NDArray, octave_int8, OCTAVE_API)
+NDS_BOOL_OP_DECLS (int8NDArray, octave_int8, OCTAVE_API)
 
-SND_CMP_OP_DECLS (octave_int8, int8NDArray)
-SND_BOOL_OP_DECLS (octave_int8, int8NDArray)
+SND_CMP_OP_DECLS (octave_int8, int8NDArray, OCTAVE_API)
+SND_BOOL_OP_DECLS (octave_int8, int8NDArray, OCTAVE_API)
 
-NDND_CMP_OP_DECLS (int8NDArray, int8NDArray)
-NDND_BOOL_OP_DECLS (int8NDArray, int8NDArray)
+NDND_CMP_OP_DECLS (int8NDArray, int8NDArray, OCTAVE_API)
+NDND_BOOL_OP_DECLS (int8NDArray, int8NDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, int8NDArray, octave_int8)
 

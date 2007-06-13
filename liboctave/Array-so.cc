@@ -30,7 +30,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "Array.h"
 #include "Array.cc"
 
-INSTANTIATE_ARRAY_AND_ASSIGN (std::streamoff);
+INSTANTIATE_ARRAY_AND_ASSIGN (std::streamoff, OCTAVE_API);
 
 #include "Array2.h"
 

@@ -32,72 +32,72 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "MArray.h"
 #include "MArray.cc"
 
-template class MArray<int>;
-template class MArray<long>;
+template class OCTAVE_API MArray<int>;
+template class OCTAVE_API MArray<long>;
 
-INSTANTIATE_MARRAY_FRIENDS (int)
-INSTANTIATE_MARRAY_FRIENDS (long)
+INSTANTIATE_MARRAY_FRIENDS (int, OCTAVE_API)
+INSTANTIATE_MARRAY_FRIENDS (long, OCTAVE_API)
 
-template class MArray<octave_int8>;
-template class MArray<octave_int16>;
-template class MArray<octave_int32>;
-template class MArray<octave_int64>;
+template class OCTAVE_API MArray<octave_int8>;
+template class OCTAVE_API MArray<octave_int16>;
+template class OCTAVE_API MArray<octave_int32>;
+template class OCTAVE_API MArray<octave_int64>;
 
-INSTANTIATE_MARRAY_FRIENDS (octave_int8)
-INSTANTIATE_MARRAY_FRIENDS (octave_int16)
-INSTANTIATE_MARRAY_FRIENDS (octave_int32)
-INSTANTIATE_MARRAY_FRIENDS (octave_int64)
+INSTANTIATE_MARRAY_FRIENDS (octave_int8, OCTAVE_API)
+INSTANTIATE_MARRAY_FRIENDS (octave_int16, OCTAVE_API)
+INSTANTIATE_MARRAY_FRIENDS (octave_int32, OCTAVE_API)
+INSTANTIATE_MARRAY_FRIENDS (octave_int64, OCTAVE_API)
 
-template class MArray<octave_uint8>;
-template class MArray<octave_uint16>;
-template class MArray<octave_uint32>;
-template class MArray<octave_uint64>;
+template class OCTAVE_API MArray<octave_uint8>;
+template class OCTAVE_API MArray<octave_uint16>;
+template class OCTAVE_API MArray<octave_uint32>;
+template class OCTAVE_API MArray<octave_uint64>;
 
-INSTANTIATE_MARRAY_FRIENDS (octave_uint8)
-INSTANTIATE_MARRAY_FRIENDS (octave_uint16)
-INSTANTIATE_MARRAY_FRIENDS (octave_uint32)
-INSTANTIATE_MARRAY_FRIENDS (octave_uint64)
+INSTANTIATE_MARRAY_FRIENDS (octave_uint8, OCTAVE_API)
+INSTANTIATE_MARRAY_FRIENDS (octave_uint16, OCTAVE_API)
+INSTANTIATE_MARRAY_FRIENDS (octave_uint32, OCTAVE_API)
+INSTANTIATE_MARRAY_FRIENDS (octave_uint64, OCTAVE_API)
 
 #include "MArray2.h"
 #include "MArray2.cc"
 
-template class MArray2<int>;
+template class OCTAVE_API MArray2<int>;
 
-INSTANTIATE_MARRAY2_FRIENDS (int)
+INSTANTIATE_MARRAY2_FRIENDS (int, OCTAVE_API)
 
 #include "MArrayN.h"
 #include "MArrayN.cc"
 
-template class MArrayN<int>;
+template class OCTAVE_API MArrayN<int>;
 
-INSTANTIATE_MARRAYN_FRIENDS (int)
+INSTANTIATE_MARRAYN_FRIENDS (int, OCTAVE_API)
 
-template class MArrayN<octave_int8>;
-template class MArrayN<octave_int16>;
-template class MArrayN<octave_int32>;
-template class MArrayN<octave_int64>;
+template class OCTAVE_API MArrayN<octave_int8>;
+template class OCTAVE_API MArrayN<octave_int16>;
+template class OCTAVE_API MArrayN<octave_int32>;
+template class OCTAVE_API MArrayN<octave_int64>;
 
-INSTANTIATE_MARRAYN_FRIENDS (octave_int8)
-INSTANTIATE_MARRAYN_FRIENDS (octave_int16)
-INSTANTIATE_MARRAYN_FRIENDS (octave_int32)
-INSTANTIATE_MARRAYN_FRIENDS (octave_int64)
+INSTANTIATE_MARRAYN_FRIENDS (octave_int8, OCTAVE_API)
+INSTANTIATE_MARRAYN_FRIENDS (octave_int16, OCTAVE_API)
+INSTANTIATE_MARRAYN_FRIENDS (octave_int32, OCTAVE_API)
+INSTANTIATE_MARRAYN_FRIENDS (octave_int64, OCTAVE_API)
 
-template class MArrayN<octave_uint8>;
-template class MArrayN<octave_uint16>;
-template class MArrayN<octave_uint32>;
-template class MArrayN<octave_uint64>;
+template class OCTAVE_API MArrayN<octave_uint8>;
+template class OCTAVE_API MArrayN<octave_uint16>;
+template class OCTAVE_API MArrayN<octave_uint32>;
+template class OCTAVE_API MArrayN<octave_uint64>;
 
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint8)
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint16)
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint32)
-INSTANTIATE_MARRAYN_FRIENDS (octave_uint64)
+INSTANTIATE_MARRAYN_FRIENDS (octave_uint8, OCTAVE_API)
+INSTANTIATE_MARRAYN_FRIENDS (octave_uint16, OCTAVE_API)
+INSTANTIATE_MARRAYN_FRIENDS (octave_uint32, OCTAVE_API)
+INSTANTIATE_MARRAYN_FRIENDS (octave_uint64, OCTAVE_API)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 
-template class MDiagArray2<int>;
+template class OCTAVE_API MDiagArray2<int>;
 
-INSTANTIATE_MDIAGARRAY2_FRIENDS (int)
+INSTANTIATE_MDIAGARRAY2_FRIENDS (int, OCTAVE_API)
 
 /*
 ;;; Local Variables: ***

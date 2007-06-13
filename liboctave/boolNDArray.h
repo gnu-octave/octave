@@ -115,14 +115,14 @@ private:
   boolNDArray (bool *d, dim_vector& dv) : ArrayN<bool> (d, dv) { }
 };
 
-NDND_BOOL_OP_DECLS (boolNDArray, boolNDArray)
-NDND_CMP_OP_DECLS (boolNDArray, boolNDArray)
+NDND_BOOL_OP_DECLS (boolNDArray, boolNDArray, OCTAVE_API)
+NDND_CMP_OP_DECLS (boolNDArray, boolNDArray, OCTAVE_API)
 
-NDS_BOOL_OP_DECLS (boolNDArray, bool)
-NDS_CMP_OP_DECLS (boolNDArray, bool)
+NDS_BOOL_OP_DECLS (boolNDArray, bool, OCTAVE_API)
+NDS_CMP_OP_DECLS (boolNDArray, bool, OCTAVE_API)
 
-SND_BOOL_OP_DECLS (bool, boolNDArray)
-SND_CMP_OP_DECLS (bool, boolNDArray)
+SND_BOOL_OP_DECLS (bool, boolNDArray, OCTAVE_API)
+SND_CMP_OP_DECLS (bool, boolNDArray, OCTAVE_API)
 
 #endif
 

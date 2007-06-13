@@ -51,26 +51,26 @@
   while (0)
 
 // A macro that can be used to declare and instantiate OP= operators.
-#define MARRAY_OP_ASSIGN_DECL(A_T, E_T, OP, PFX, LTGT, RHS_T) \
-  PFX A_T<E_T>& \
+#define MARRAY_OP_ASSIGN_DECL(A_T, E_T, OP, PFX, API, LTGT, RHS_T) \
+  PFX API A_T<E_T>& \
   operator OP LTGT (A_T<E_T>&, const RHS_T&)
 
 // All the OP= operators that we care about.
-#define MARRAY_OP_ASSIGN_DECLS(A_T, E_T, PFX, LTGT, RHS_T) \
-  MARRAY_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, LTGT, RHS_T); \
-  MARRAY_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, LTGT, RHS_T);
+#define MARRAY_OP_ASSIGN_DECLS(A_T, E_T, PFX, API, LTGT, RHS_T) \
+  MARRAY_OP_ASSIGN_DECL (A_T, E_T, +=, PFX, API, LTGT, RHS_T); \
+  MARRAY_OP_ASSIGN_DECL (A_T, E_T, -=, PFX, API, LTGT, RHS_T);
 
 // Generate forward declarations for OP= operators.
-#define MARRAY_OP_ASSIGN_FWD_DECLS(A_T, RHS_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T> OCTAVE_API, , RHS_T)
+#define MARRAY_OP_ASSIGN_FWD_DECLS(A_T, RHS_T, API) \
+  MARRAY_OP_ASSIGN_DECLS (A_T, T, template <typename T>, API, , RHS_T)
 
 // Generate friend declarations for the OP= operators.
-#define MARRAY_OP_ASSIGN_FRIENDS(A_T, RHS_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, T, friend, <>, RHS_T)
+#define MARRAY_OP_ASSIGN_FRIENDS(A_T, RHS_T, API) \
+  MARRAY_OP_ASSIGN_DECLS (A_T, T, friend, API, <>, RHS_T)
 
 // Instantiate the OP= operators.
-#define MARRAY_OP_ASSIGN_DEFS(A_T, E_T, RHS_T) \
-  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template OCTAVE_API, , RHS_T)
+#define MARRAY_OP_ASSIGN_DEFS(A_T, E_T, RHS_T, API) \
+  MARRAY_OP_ASSIGN_DECLS (A_T, E_T, template, API, , RHS_T)
 
 // A function that can be used to forward OP= operations from derived
 // classes back to us.
@@ -87,26 +87,26 @@
   MARRAY_OP_ASSIGN_FWD_FCN (R, operator -=, T, C_X, X_T, C_Y, Y_T)
 
 // A macro that can be used to declare and instantiate unary operators.
-#define MARRAY_UNOP(A_T, E_T, F, PFX, LTGT) \
-  PFX A_T<E_T> \
+#define MARRAY_UNOP(A_T, E_T, F, PFX, API, LTGT) \
+  PFX API A_T<E_T> \
   F LTGT (const A_T<E_T>&)
 
 // All the unary operators that we care about.
-#define MARRAY_UNOP_DECLS(A_T, E_T, PFX, LTGT) \
-  MARRAY_UNOP (A_T, E_T, operator +, PFX, LTGT); \
-  MARRAY_UNOP (A_T, E_T, operator -, PFX, LTGT);
+#define MARRAY_UNOP_DECLS(A_T, E_T, PFX, API, LTGT) \
+  MARRAY_UNOP (A_T, E_T, operator +, PFX, API, LTGT); \
+  MARRAY_UNOP (A_T, E_T, operator -, PFX, API, LTGT);
 
 // Generate forward declarations for unary operators.
-#define MARRAY_UNOP_FWD_DECLS(A_T) \
-  MARRAY_UNOP_DECLS (A_T, T, template <typename T> OCTAVE_API, )
+#define MARRAY_UNOP_FWD_DECLS(A_T, API) \
+  MARRAY_UNOP_DECLS (A_T, T, template <typename T>, API, )
 
 // Generate friend declarations for the unary operators.
-#define MARRAY_UNOP_FRIENDS(A_T) \
-  MARRAY_UNOP_DECLS (A_T, T, friend, <>)
+#define MARRAY_UNOP_FRIENDS(A_T, API) \
+  MARRAY_UNOP_DECLS (A_T, T, friend, API, <>)
 
 // Instantiate the unary operators.
-#define MARRAY_UNOP_DEFS(A_T, E_T) \
-  MARRAY_UNOP_DECLS (A_T, E_T, template OCTAVE_API, )
+#define MARRAY_UNOP_DEFS(A_T, E_T, API) \
+  MARRAY_UNOP_DECLS (A_T, E_T, template, API, )
 
 // A function that can be used to forward unary operations from derived
 // classes back to us.
@@ -123,69 +123,69 @@
   MARRAY_UNOP_FWD_FCN (R, operator -, T, C_X, X_T)
 
 // A macro that can be used to declare and instantiate binary operators.
-#define MARRAY_BINOP_DECL(A_T, E_T, F, PFX, LTGT, X_T, Y_T) \
-  PFX A_T<E_T> \
+#define MARRAY_BINOP_DECL(A_T, E_T, F, PFX, API, LTGT, X_T, Y_T) \
+  PFX API A_T<E_T> \
   F LTGT (const X_T&, const Y_T&)
 
 // All the binary operators that we care about.  We have two
 // sets of macros since the MArray OP MArray operations use functions
 // (product and quotient) instead of operators (*, /).
-#define MARRAY_BINOP_DECLS(A_T, E_T, PFX, LTGT, X_T, Y_T) \
-  MARRAY_BINOP_DECL (A_T, E_T, operator +, PFX, LTGT, X_T, Y_T); \
-  MARRAY_BINOP_DECL (A_T, E_T, operator -, PFX, LTGT, X_T, Y_T); \
-  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, LTGT, X_T, Y_T); \
-  MARRAY_BINOP_DECL (A_T, E_T, operator /, PFX, LTGT, X_T, Y_T);
+#define MARRAY_BINOP_DECLS(A_T, E_T, PFX, API, LTGT, X_T, Y_T) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator +, PFX, API, LTGT, X_T, Y_T); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator -, PFX, API, LTGT, X_T, Y_T); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, API, LTGT, X_T, Y_T); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator /, PFX, API, LTGT, X_T, Y_T);
 
-#define MARRAY_AA_BINOP_DECLS(A_T, E_T, PFX, LTGT) \
-  MARRAY_BINOP_DECL (A_T, E_T, operator +, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  MARRAY_BINOP_DECL (A_T, E_T, operator -, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  MARRAY_BINOP_DECL (A_T, E_T, quotient,   PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  MARRAY_BINOP_DECL (A_T, E_T, product,    PFX, LTGT, A_T<E_T>, A_T<E_T>);
+#define MARRAY_AA_BINOP_DECLS(A_T, E_T, PFX, API, LTGT) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator +, PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator -, PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  MARRAY_BINOP_DECL (A_T, E_T, quotient,   PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  MARRAY_BINOP_DECL (A_T, E_T, product,    PFX, API, LTGT, A_T<E_T>, A_T<E_T>);
 
-#define MDIAGARRAY2_DAS_BINOP_DECLS(A_T, E_T, PFX, LTGT, X_T, Y_T) \
-  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, LTGT, X_T, Y_T); \
-  MARRAY_BINOP_DECL (A_T, E_T, operator /, PFX, LTGT, X_T, Y_T);
+#define MDIAGARRAY2_DAS_BINOP_DECLS(A_T, E_T, PFX, API, LTGT, X_T, Y_T) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, API, LTGT, X_T, Y_T); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator /, PFX, API, LTGT, X_T, Y_T);
 
-#define MDIAGARRAY2_SDA_BINOP_DECLS(A_T, E_T, PFX, LTGT, X_T, Y_T) \
-  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, LTGT, X_T, Y_T);
+#define MDIAGARRAY2_SDA_BINOP_DECLS(A_T, E_T, PFX, API, LTGT, X_T, Y_T) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator *, PFX, API, LTGT, X_T, Y_T);
 
-#define MDIAGARRAY2_DADA_BINOP_DECLS(A_T, E_T, PFX, LTGT) \
-  MARRAY_BINOP_DECL (A_T, E_T, operator +, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  MARRAY_BINOP_DECL (A_T, E_T, operator -, PFX, LTGT, A_T<E_T>, A_T<E_T>); \
-  MARRAY_BINOP_DECL (A_T, E_T, product,    PFX, LTGT, A_T<E_T>, A_T<E_T>);
+#define MDIAGARRAY2_DADA_BINOP_DECLS(A_T, E_T, PFX, API, LTGT) \
+  MARRAY_BINOP_DECL (A_T, E_T, operator +, PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  MARRAY_BINOP_DECL (A_T, E_T, operator -, PFX, API, LTGT, A_T<E_T>, A_T<E_T>); \
+  MARRAY_BINOP_DECL (A_T, E_T, product,    PFX, API, LTGT, A_T<E_T>, A_T<E_T>);
 
 // Generate forward declarations for binary operators.
-#define MARRAY_BINOP_FWD_DECLS(A_T) \
-  MARRAY_BINOP_DECLS (A_T, T, template <typename T> OCTAVE_API, , A_T<T>, T) \
-  MARRAY_BINOP_DECLS (A_T, T, template <typename T> OCTAVE_API, , T, A_T<T>) \
-  MARRAY_AA_BINOP_DECLS (A_T, T, template <typename T> OCTAVE_API, )
+#define MARRAY_BINOP_FWD_DECLS(A_T, API) \
+  MARRAY_BINOP_DECLS (A_T, T, template <typename T>, API, , A_T<T>, T) \
+  MARRAY_BINOP_DECLS (A_T, T, template <typename T>, API, , T, A_T<T>) \
+  MARRAY_AA_BINOP_DECLS (A_T, T, template <typename T>, API, )
 
-#define MDIAGARRAY2_BINOP_FWD_DECLS(A_T) \
-  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, T, template <typename T>, , A_T<T>, T) \
-  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, T, template <typename T>, , T, A_T<T>) \
-  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, T, template <typename T>, )
+#define MDIAGARRAY2_BINOP_FWD_DECLS(A_T, API) \
+  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, T, template <typename T>, API, , A_T<T>, T) \
+  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, T, template <typename T>, API, , T, A_T<T>) \
+  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, T, template <typename T>, API, )
 
 // Generate friend declarations for the binary operators.
-#define MARRAY_BINOP_FRIENDS(A_T) \
-  MARRAY_BINOP_DECLS (A_T, T, friend, <>, A_T<T>, T) \
-  MARRAY_BINOP_DECLS (A_T, T, friend, <>, T, A_T<T>) \
-  MARRAY_AA_BINOP_DECLS (A_T, T, friend, <>)
+#define MARRAY_BINOP_FRIENDS(A_T, API) \
+  MARRAY_BINOP_DECLS (A_T, T, friend, API, <>, A_T<T>, T) \
+  MARRAY_BINOP_DECLS (A_T, T, friend, API, <>, T, A_T<T>) \
+  MARRAY_AA_BINOP_DECLS (A_T, T, friend, API, <>)
 
-#define MDIAGARRAY2_BINOP_FRIENDS(A_T) \
-  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, T, friend, <>, A_T<T>, T) \
-  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, T, friend, <>, T, A_T<T>) \
-  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, T, friend, <>)
+#define MDIAGARRAY2_BINOP_FRIENDS(A_T, API) \
+  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, T, friend, API, <>, A_T<T>, T) \
+  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, T, friend, API, <>, T, A_T<T>) \
+  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, T, friend, API, <>)
 
 // Instantiate the binary operators.
-#define MARRAY_BINOP_DEFS(A_T, E_T) \
-  MARRAY_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , A_T<E_T>, E_T) \
-  MARRAY_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , E_T, A_T<E_T>) \
-  MARRAY_AA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, )
+#define MARRAY_BINOP_DEFS(A_T, E_T, API) \
+  MARRAY_BINOP_DECLS (A_T, E_T, template, API, , A_T<E_T>, E_T) \
+  MARRAY_BINOP_DECLS (A_T, E_T, template, API, , E_T, A_T<E_T>) \
+  MARRAY_AA_BINOP_DECLS (A_T, E_T, template, API, )
 
-#define MDIAGARRAY2_BINOP_DEFS(A_T, E_T) \
-  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , A_T<E_T>, E_T) \
-  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, , E_T, A_T<E_T>) \
-  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, E_T, template OCTAVE_API, )
+#define MDIAGARRAY2_BINOP_DEFS(A_T, E_T, API) \
+  MDIAGARRAY2_DAS_BINOP_DECLS (A_T, E_T, template, API, , A_T<E_T>, E_T) \
+  MDIAGARRAY2_SDA_BINOP_DECLS (A_T, E_T, template, API, , E_T, A_T<E_T>) \
+  MDIAGARRAY2_DADA_BINOP_DECLS (A_T, E_T, template, API, )
 
 // A function that can be used to forward binary operations from derived
 // classes back to us.
@@ -224,63 +224,63 @@
   MARRAY_BINOP_FWD_FCN (R, product,    T, C_X, X_T, C_Y, Y_T)
 
 // Forward declarations for the MArray operators.
-#define MARRAY_OPS_FORWARD_DECLS(A_T) \
+#define MARRAY_OPS_FORWARD_DECLS(A_T, API) \
   template <class T> \
   class A_T; \
  \
-  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, T) \
-  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>) \
-  MARRAY_UNOP_FWD_DECLS (A_T) \
-  MARRAY_BINOP_FWD_DECLS (A_T)
+  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, T, API) \
+  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>, API) \
+  MARRAY_UNOP_FWD_DECLS (A_T, API) \
+  MARRAY_BINOP_FWD_DECLS (A_T, API)
 
-#define MDIAGARRAY2_OPS_FORWARD_DECLS(A_T) \
+#define MDIAGARRAY2_OPS_FORWARD_DECLS(A_T, API) \
   template <class T> \
   class A_T; \
  \
-  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>) \
-  MARRAY_UNOP_FWD_DECLS (A_T) \
-  MDIAGARRAY2_BINOP_FWD_DECLS (A_T)
+  MARRAY_OP_ASSIGN_FWD_DECLS (A_T, A_T<T>, API) \
+  MARRAY_UNOP_FWD_DECLS (A_T, API) \
+  MDIAGARRAY2_BINOP_FWD_DECLS (A_T, API)
 
 // Friend declarations for the MArray operators.
-#define MARRAY_OPS_FRIEND_DECLS(A_T) \
-  MARRAY_OP_ASSIGN_FRIENDS (A_T, T) \
-  MARRAY_OP_ASSIGN_FRIENDS (A_T, A_T<T>) \
-  MARRAY_UNOP_FRIENDS (A_T) \
-  MARRAY_BINOP_FRIENDS (A_T)
+#define MARRAY_OPS_FRIEND_DECLS(A_T, API) \
+  MARRAY_OP_ASSIGN_FRIENDS (A_T, T, API) \
+  MARRAY_OP_ASSIGN_FRIENDS (A_T, A_T<T>, API) \
+  MARRAY_UNOP_FRIENDS (A_T, API) \
+  MARRAY_BINOP_FRIENDS (A_T, API)
 
-#define MDIAGARRAY2_OPS_FRIEND_DECLS(A_T) \
-  MARRAY_OP_ASSIGN_FRIENDS (A_T, A_T<T>) \
-  MARRAY_UNOP_FRIENDS (A_T) \
-  MDIAGARRAY2_BINOP_FRIENDS (A_T)
+#define MDIAGARRAY2_OPS_FRIEND_DECLS(A_T, API) \
+  MARRAY_OP_ASSIGN_FRIENDS (A_T, A_T<T>, API) \
+  MARRAY_UNOP_FRIENDS (A_T, API) \
+  MDIAGARRAY2_BINOP_FRIENDS (A_T, API)
 
 // The following macros are for external use.
 
 // Instantiate all the MArray friends for MArray element type T.
-#define INSTANTIATE_MARRAY_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray, T, T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray, T, MArray<T>) \
-  MARRAY_UNOP_DEFS (MArray, T) \
-  MARRAY_BINOP_DEFS (MArray, T)
+#define INSTANTIATE_MARRAY_FRIENDS(T, API) \
+  MARRAY_OP_ASSIGN_DEFS (MArray, T, T, API) \
+  MARRAY_OP_ASSIGN_DEFS (MArray, T, MArray<T>, API) \
+  MARRAY_UNOP_DEFS (MArray, T, API) \
+  MARRAY_BINOP_DEFS (MArray, T, API)
 
 // Instantiate all the MArray2 friends for MArray2 element type T.
-#define INSTANTIATE_MARRAY2_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray2, T, T) \
-  MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>) \
-  MARRAY_UNOP_DEFS (MArray2, T) \
-  MARRAY_BINOP_DEFS (MArray2, T)
+#define INSTANTIATE_MARRAY2_FRIENDS(T, API) \
+  MARRAY_OP_ASSIGN_DEFS (MArray2, T, T, API) \
+  MARRAY_OP_ASSIGN_DEFS (MArray2, T, MArray2<T>, API) \
+  MARRAY_UNOP_DEFS (MArray2, T, API) \
+  MARRAY_BINOP_DEFS (MArray2, T, API)
 
 // Instantiate all the MArrayN friends for MArrayN element type T.
-#define INSTANTIATE_MARRAYN_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, T) \
-  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, MArrayN<T>) \
-  MARRAY_UNOP_DEFS (MArrayN, T) \
-  MARRAY_BINOP_DEFS (MArrayN, T)
+#define INSTANTIATE_MARRAYN_FRIENDS(T, API) \
+  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, T, API) \
+  MARRAY_OP_ASSIGN_DEFS (MArrayN, T, MArrayN<T>, API) \
+  MARRAY_UNOP_DEFS (MArrayN, T, API) \
+  MARRAY_BINOP_DEFS (MArrayN, T, API)
 
 // Instantiate all the MDiagArray2 friends for MDiagArray2 element type T.
-#define INSTANTIATE_MDIAGARRAY2_FRIENDS(T) \
-  MARRAY_OP_ASSIGN_DEFS (MDiagArray2, T, MDiagArray2<T>) \
-  MARRAY_UNOP_DEFS (MDiagArray2, T) \
-  MDIAGARRAY2_BINOP_DEFS (MDiagArray2, T)
+#define INSTANTIATE_MDIAGARRAY2_FRIENDS(T, API) \
+  MARRAY_OP_ASSIGN_DEFS (MDiagArray2, T, MDiagArray2<T>, API) \
+  MARRAY_UNOP_DEFS (MDiagArray2, T, API) \
+  MDIAGARRAY2_BINOP_DEFS (MDiagArray2, T, API)
 
 // Define all the MArray forwarding functions for return type R and
 // MArray element type T

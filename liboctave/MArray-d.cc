@@ -40,36 +40,36 @@ extern "C"
 #include "MArray.cc"
 
 template <>
-double
+OCTAVE_API double
 MArray<double>::norm (double p) const
 {
   MARRAY_NORM_BODY (double, xdnrm2, XDNRM2);
 }
 
-template class MArray<double>;
+template class OCTAVE_API MArray<double>;
 
-INSTANTIATE_MARRAY_FRIENDS (double)
+INSTANTIATE_MARRAY_FRIENDS (double, OCTAVE_API)
 
 #include "MArray2.h"
 #include "MArray2.cc"
 
-template class MArray2<double>;
+template class OCTAVE_API MArray2<double>;
 
-INSTANTIATE_MARRAY2_FRIENDS (double)
+INSTANTIATE_MARRAY2_FRIENDS (double, OCTAVE_API)
 
 #include "MArrayN.h"
 #include "MArrayN.cc"
 
-template class MArrayN<double>;
+template class OCTAVE_API MArrayN<double>;
 
-INSTANTIATE_MARRAYN_FRIENDS (double)
+INSTANTIATE_MARRAYN_FRIENDS (double, OCTAVE_API)
 
 #include "MDiagArray2.h"
 #include "MDiagArray2.cc"
 
-template class MDiagArray2<double>;
+template class OCTAVE_API MDiagArray2<double>;
 
-INSTANTIATE_MDIAGARRAY2_FRIENDS (double)
+INSTANTIATE_MDIAGARRAY2_FRIENDS (double, OCTAVE_API)
 
 /*
 ;;; Local Variables: ***

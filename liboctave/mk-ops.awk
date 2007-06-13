@@ -147,15 +147,15 @@ BEGIN {
           printf ("#include \"mx-op-defs.h\"\n") >> h_file;
 
           if (bin_ops)
-            printf ("%s%s_BIN_OP_DECLS (%s, %s, %s)\n", lhs_class,
+            printf ("%s%s_BIN_OP_DECLS (%s, %s, %s, OCTAVE_API)\n", lhs_class,
 		    rhs_class, result_type, lhs_type, rhs_type) >> h_file
 
           if (cmp_ops)
-            printf ("%s%s_CMP_OP_DECLS (%s, %s)\n", lhs_class,
+            printf ("%s%s_CMP_OP_DECLS (%s, %s, OCTAVE_API)\n", lhs_class,
 		    rhs_class, lhs_type, rhs_type) >> h_file
 
           if (bool_ops)
-            printf ("%s%s_BOOL_OP_DECLS (%s, %s)\n", lhs_class,
+            printf ("%s%s_BOOL_OP_DECLS (%s, %s, OCTAVE_API)\n", lhs_class,
 		    rhs_class, lhs_type, rhs_type) >> h_file
 
 

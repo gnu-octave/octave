@@ -43,30 +43,27 @@ octave_value_typeinfo::instance (0);
 
 #include <Array.cc>
 
-#undef OCTAVE_API
-#define OCTAVE_API
-
-INSTANTIATE_ARRAY (octave_value_typeinfo::unary_op_fcn);
+INSTANTIATE_ARRAY (octave_value_typeinfo::unary_op_fcn, );
 template class Array2<octave_value_typeinfo::unary_op_fcn>;
 
-INSTANTIATE_ARRAY (octave_value_typeinfo::non_const_unary_op_fcn);
+INSTANTIATE_ARRAY (octave_value_typeinfo::non_const_unary_op_fcn, );
 template class Array2<octave_value_typeinfo::non_const_unary_op_fcn>;
 
-INSTANTIATE_ARRAY (octave_value_typeinfo::binary_op_fcn);
+INSTANTIATE_ARRAY (octave_value_typeinfo::binary_op_fcn, );
 template class Array2<octave_value_typeinfo::binary_op_fcn>;
 template class Array3<octave_value_typeinfo::binary_op_fcn>;
 
-INSTANTIATE_ARRAY (octave_value_typeinfo::cat_op_fcn);
+INSTANTIATE_ARRAY (octave_value_typeinfo::cat_op_fcn, );
 template class Array2<octave_value_typeinfo::cat_op_fcn>;
 
-INSTANTIATE_ARRAY (octave_value_typeinfo::assign_op_fcn);
+INSTANTIATE_ARRAY (octave_value_typeinfo::assign_op_fcn, );
 template class Array2<octave_value_typeinfo::assign_op_fcn>;
 template class Array3<octave_value_typeinfo::assign_op_fcn>;
 
-INSTANTIATE_ARRAY (octave_value_typeinfo::assignany_op_fcn);
+INSTANTIATE_ARRAY (octave_value_typeinfo::assignany_op_fcn, );
 template class Array2<octave_value_typeinfo::assignany_op_fcn>;
 
-INSTANTIATE_ARRAY (octave_base_value::type_conv_fcn);
+INSTANTIATE_ARRAY (octave_base_value::type_conv_fcn, );
 template class Array2<octave_base_value::type_conv_fcn>;
 
 bool

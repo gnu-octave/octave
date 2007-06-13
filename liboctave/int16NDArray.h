@@ -30,14 +30,14 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 typedef intNDArray<octave_int16> int16NDArray;
 
-NDS_CMP_OP_DECLS (int16NDArray, octave_int16)
-NDS_BOOL_OP_DECLS (int16NDArray, octave_int16)
+NDS_CMP_OP_DECLS (int16NDArray, octave_int16, OCTAVE_API)
+NDS_BOOL_OP_DECLS (int16NDArray, octave_int16, OCTAVE_API)
 
-SND_CMP_OP_DECLS (octave_int16, int16NDArray)
-SND_BOOL_OP_DECLS (octave_int16, int16NDArray)
+SND_CMP_OP_DECLS (octave_int16, int16NDArray, OCTAVE_API)
+SND_BOOL_OP_DECLS (octave_int16, int16NDArray, OCTAVE_API)
 
-NDND_CMP_OP_DECLS (int16NDArray, int16NDArray)
-NDND_BOOL_OP_DECLS (int16NDArray, int16NDArray)
+NDND_CMP_OP_DECLS (int16NDArray, int16NDArray, OCTAVE_API)
+NDND_BOOL_OP_DECLS (int16NDArray, int16NDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, int16NDArray, octave_int16)
 

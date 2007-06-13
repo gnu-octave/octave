@@ -113,14 +113,14 @@ public:
   friend OCTAVE_API std::istream& operator >> (std::istream& is, SparseBoolMatrix& a);
 };
 
-SPARSE_SMS_EQNE_OP_DECLS (SparseBoolMatrix, bool)
-SPARSE_SMS_BOOL_OP_DECLS (SparseBoolMatrix, bool)
+SPARSE_SMS_EQNE_OP_DECLS (SparseBoolMatrix, bool, OCTAVE_API)
+SPARSE_SMS_BOOL_OP_DECLS (SparseBoolMatrix, bool, OCTAVE_API)
 
-SPARSE_SSM_EQNE_OP_DECLS (bool, SparseBoolMatrix)
-SPARSE_SSM_BOOL_OP_DECLS (bool, SparseBoolMatrix)
+SPARSE_SSM_EQNE_OP_DECLS (bool, SparseBoolMatrix, OCTAVE_API)
+SPARSE_SSM_BOOL_OP_DECLS (bool, SparseBoolMatrix, OCTAVE_API)
 
-SPARSE_SMSM_EQNE_OP_DECLS (SparseBoolMatrix, SparseBoolMatrix)
-SPARSE_SMSM_BOOL_OP_DECLS (SparseBoolMatrix, SparseBoolMatrix)
+SPARSE_SMSM_EQNE_OP_DECLS (SparseBoolMatrix, SparseBoolMatrix, OCTAVE_API)
+SPARSE_SMSM_BOOL_OP_DECLS (SparseBoolMatrix, SparseBoolMatrix, OCTAVE_API)
 
 #endif
 

@@ -155,20 +155,20 @@ BEGIN {
           printf ("#include \"Sparse-op-defs.h\"\n") >> h_file;
 
           if (bin_ops)
-            printf ("SPARSE_%s%s_BIN_OP_DECLS (%s, %s, %s, %s)\n", lhs_class,
+            printf ("SPARSE_%s%s_BIN_OP_DECLS (%s, %s, %s, %s, OCTAVE_API)\n", lhs_class,
 		    rhs_class, result_type_1, result_type_2, lhs_type, 
 		    rhs_type) >> h_file
 
           if (cmp_ops)
-            printf ("SPARSE_%s%s_CMP_OP_DECLS (%s, %s)\n", lhs_class,
+            printf ("SPARSE_%s%s_CMP_OP_DECLS (%s, %s, OCTAVE_API)\n", lhs_class,
 		    rhs_class, lhs_type, rhs_type) >> h_file
 
           if (eqne_ops)
-            printf ("SPARSE_%s%s_EQNE_OP_DECLS (%s, %s)\n", lhs_class,
+            printf ("SPARSE_%s%s_EQNE_OP_DECLS (%s, %s, OCTAVE_API)\n", lhs_class,
 		    rhs_class, lhs_type, rhs_type) >> h_file
 
           if (bool_ops)
-            printf ("SPARSE_%s%s_BOOL_OP_DECLS (%s, %s)\n", lhs_class,
+            printf ("SPARSE_%s%s_BOOL_OP_DECLS (%s, %s, OCTAVE_API)\n", lhs_class,
 		    rhs_class, lhs_type, rhs_type) >> h_file
 
 

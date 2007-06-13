@@ -528,16 +528,16 @@ template <class LT, class RT>
 /* friend */ int
 assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs);
 
-#define INSTANTIATE_SPARSE_ASSIGN(LT, RT) \
-  template OCTAVE_API int assign (Sparse<LT>&, const Sparse<RT>&); \
-  template OCTAVE_API int assign1 (Sparse<LT>&, const Sparse<RT>&);
+#define INSTANTIATE_SPARSE_ASSIGN(LT, RT, API) \
+  template API int assign (Sparse<LT>&, const Sparse<RT>&); \
+  template API int assign1 (Sparse<LT>&, const Sparse<RT>&);
 
-#define INSTANTIATE_SPARSE(T) \
-  template class OCTAVE_API Sparse<T>;
+#define INSTANTIATE_SPARSE(T, API) \
+  template class API Sparse<T>;
 
-#define INSTANTIATE_SPARSE_AND_ASSIGN(T) \
-  INSTANTIATE_SPARSE (T); \
-  INSTANTIATE_SPARSE_ASSIGN (T, T)
+#define INSTANTIATE_SPARSE_AND_ASSIGN(T, API) \
+  INSTANTIATE_SPARSE (T, API); \
+  INSTANTIATE_SPARSE_ASSIGN (T, T, API)
 
 #endif
 

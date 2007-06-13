@@ -33,7 +33,7 @@ Boston, MA 02110-1301, USA.
 
 #include "MSparse-defs.h"
 
-SPARSE_OPS_FORWARD_DECLS (MSparse, MArray2)
+SPARSE_OPS_FORWARD_DECLS (MSparse, MArray2, )
 
 template <class T>
 class

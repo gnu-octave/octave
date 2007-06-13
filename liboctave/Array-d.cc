@@ -30,11 +30,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "Array.h"
 #include "Array.cc"
 
-INSTANTIATE_ARRAY_AND_ASSIGN (double);
+INSTANTIATE_ARRAY_AND_ASSIGN (double, OCTAVE_API);
 
-INSTANTIATE_ARRAY_ASSIGN (double, int);
-INSTANTIATE_ARRAY_ASSIGN (double, short);
-INSTANTIATE_ARRAY_ASSIGN (double, char);
+INSTANTIATE_ARRAY_ASSIGN (double, int, OCTAVE_API);
+INSTANTIATE_ARRAY_ASSIGN (double, short, OCTAVE_API);
+INSTANTIATE_ARRAY_ASSIGN (double, char, OCTAVE_API);
 
 #include "Array2.h"
 

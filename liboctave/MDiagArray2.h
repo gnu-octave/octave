@@ -34,7 +34,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include "MArray-defs.h"
 
-MDIAGARRAY2_OPS_FORWARD_DECLS (MDiagArray2)
+MDIAGARRAY2_OPS_FORWARD_DECLS (MDiagArray2, )
 
 template <class T>
 class

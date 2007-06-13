@@ -1,3 +1,8 @@
+2007-06-12  Benjamin Lindner  <lindnerben@gmx.net>
+
+	* DLD-FUNCTIONS/cellfun.cc: Use fullfile to generate filenames
+	instead of assuming / will work as directory separator.
+
 2007-06-12  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/interpn.cc: Remove it.

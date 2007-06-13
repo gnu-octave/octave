@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.564 $)
+AC_REVISION($Revision: 1.565 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1290,11 +1290,11 @@ AC_CHECK_FUNCS(gethostname, [], [AC_CHECK_LIB(socket, gethostname)])
 AC_CHECK_FUNCS(getpwnam, [], [AC_CHECK_LIB(sun, getpwnam)])
 
 case "$canonical_host_type" in
-  *-*-cygwin* | *-*-mingw*)
+  *-*-cygwin*)
    AC_CHECK_LIB(wsock32, gethostname)
    LIBS="$LIBS -lwsock32"
   ;;
-  *-*-msdosmsvc*)
+  *-*-msdosmsvc* | *-*-mingw*)
   LIBS="$LIBS -lws2_32 -lkernel32"
   ;;
 esac
@@ -1441,7 +1441,7 @@ esac
 OCTAVE_SMART_PUTENV
 
 case "$canonical_host_type" in
-  *-*-msdosmsvc)
+  *-*-msdosmsvc | *-*-mingw*)
     AC_MSG_CHECKING([for required _WIN32_WINNT])
     AC_COMPILE_IFELSE(AC_LANG_PROGRAM([[
 #include <windows.h>

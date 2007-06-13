@@ -1,7 +1,11 @@
+2007-06-12  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* plot/__pltopt1__.m: Set linestyle to "none" instead of "".
+	Set have_linestyle to true if two character linestyle is found.
+
 2007-06-12  David Bateman  <dbateman@free.fr>
 
-	* general/interp1.m: Change examples to use new graphics
-	interface.
+	* general/interp1.m: Change examples to use new graphics interface.
 	* general/__splinen__.m: New support function for N-dimensional
 	spline interpolation.
 	* general/bicubic.m: Allow definition of extrapolation
@@ -13,8 +17,7 @@
 	and spline interpolation.
 	* general/interp3.m: New function for 3-dimensional, linear, nearest
 	and spline interpolation.
-	* polynomial/spline.m: Change examples to use new graphics
-	interface.
+	* polynomial/spline.m: Change examples to use new graphics interface.
 	
 2007-06-12  Steve M. Robbins  <steve@sumost.ca>
 

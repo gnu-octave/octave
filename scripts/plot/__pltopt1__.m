@@ -48,6 +48,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   while (! isempty (opt))
     if (strncmp (opt, "--", 2) || strncmp (opt, "-.", 2))
       options.linestyle = opt(1:2);
+      have_linestyle = true;
       n = 2;
     else
       topt = opt(1);
@@ -113,7 +114,7 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   endwhile
 
   if (have_marker && ! have_linestyle)
-    options.linestyle = "";
+    options.linestyle = "none";
   endif
 
 endfunction

@@ -526,8 +526,8 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
 %!error(cellfun(@factorial,{-1,3}))
 %!assert(cellfun(@factorial,{-1,3},'ErrorHandler',@(x,y) NaN),[NaN,6])
 %!test
-%! [a,b,c]=cellfun(@fileparts,{'/a/b/c.d','/e/f/g.h'},'UniformOutput',false);
-%! assert(a,{'/a/b','/e/f'})
+%! [a,b,c]=cellfun(@fileparts,{fullfile("a","b","c.d"),fullfile("e","f","g.h")},'UniformOutput',false);
+%! assert(a,{fullfile("a","b"),fullfile("e","f")})
 %! assert(b,{'c','g'})
 %! assert(c,{'.d','.h'})
 

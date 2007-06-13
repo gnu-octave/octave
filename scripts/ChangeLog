@@ -1,5 +1,10 @@
 2007-06-12  David Bateman  <dbateman@free.fr>
 
+	* general/Makefile.in (SOURCES): Include __spline__.m, interp3.m
+	and interpn.m.
+
+2007-06-12  David Bateman  <dbateman@free.fr>
+
 	* pkg/pkg.m (pkg:load_package_dirs): Check for field "loaded" in
 	structure before using it.
 

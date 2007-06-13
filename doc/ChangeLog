@@ -1,5 +1,10 @@
 2007-06-12  David Bateman  <dbateman@free.fr>
 
+	* interpreter/numbers.txi: Document that 64-bit arithmetic is
+	not possible.
+
+2007-06-12  David Bateman  <dbateman@free.fr>
+
 	* interpreter/interp.txi: Split into two section and document
 	interp3 and the differences in the treatement of the dimensions
 	between interpn and interp3.

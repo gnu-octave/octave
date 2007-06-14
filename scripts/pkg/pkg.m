@@ -215,7 +215,7 @@ function [local_packages, global_packages] = pkg (varargin)
       case "-local"
 	global_install = false;
 	if (! user_prefix)
-	  prefix = fullfile ("~", "octave");
+	  prefix = tilde_expand (fullfile ("~", "octave"));
 	endif
       case "-global"
 	global_install = true;
@@ -297,7 +297,13 @@ function [local_packages, global_packages] = pkg (varargin)
       elseif (length (files) == 0 && nargout == 1)
 	local_packages = local_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
-	local_list = absolute_pathname (files{1});
+	try
+	  local_list = absolute_pathname (files{1});
+	catch
+	  ## Force file to be created
+	  fclose (fopen (files{1}, 'wt'));
+	  local_list = absolute_pathname (files{1});
+	end_try_catch
       else
 	error ("you must specify a local_list file, or request an output argument");
       endif
@@ -308,7 +314,13 @@ function [local_packages, global_packages] = pkg (varargin)
       elseif (length (files) == 0 && nargout == 1)
 	local_packages = global_list;
       elseif (length (files) == 1 && nargout == 0 && ischar (files{1}))
-	global_list = absolute_pathname (files{1});
+	try
+	  global_list = absolute_pathname (files{1});
+	catch
+	  ## Force file to be created
+	  fclose (fopen (files{1}, 'wt'));
+	  global_list = absolute_pathname (files{1});
+	end_try_catch
       else
 	error ("you must specify a global_list file, or request an output argument");
       endif
@@ -853,7 +865,11 @@ endfunction
 
 function pth = absolute_pathname (pth)
   [status, msg, msgid] = fileattrib(pth);
-  pth = msg.Name;
+  if (status != 1)
+    error ("could not find the file or path %s", pth);
+  else
+    pth = msg.Name;
+  endif
 endfunction
 
 function repackage (builddir, buildlist)

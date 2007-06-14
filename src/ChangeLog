@@ -1,5 +1,8 @@
 2007-06-14  John W. Eaton  <jwe@octave.org>
 
+	* oct-procbuf.cc (procbuf::open): Open pipe in binary mode for
+	Windows.
+
 	* graphics.h (text::text_properties::rotation): New data member.
 	* graphics.cc (text::text_properties::text_properties, 
 	text::text_properties::set, text::text_properties::get, 

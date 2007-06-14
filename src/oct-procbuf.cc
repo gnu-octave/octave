@@ -74,7 +74,7 @@ octave_procbuf::open (const char *command, int mode)
   if (is_open ()) 
     return 0;
 
-  f = ::W32POPEN (command, (mode & std::ios::in) ? "r" : "w");
+  f = ::W32POPEN (command, (mode & std::ios::in) ? "rb" : "wb");
 
   if (! f)
     return 0;

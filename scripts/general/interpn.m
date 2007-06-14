@@ -128,22 +128,22 @@ function vi = interpn (varargin)
       endif
       idx (1 : nd) = {1};
       idx (i) = ":";
-      x{i} = x{i}(idx{:});
+      x{i} = x{i}(idx{:})(:);
     endfor
     idx (1 : nd) = {1};
     idx (1) = ":";
-    x{1} = x{1}(idx{:});
+    x{1} = x{1}(idx{:})(:);
   endif
 
   if (strcmp (method, "linear") || strcmp (method, "nearest"))
     if (all (cellfun (@isvector, y)))
       [y{:}] = ndgrid (y{:});
     endif
-  elseif (any (! cellfun (@isvector, x)))
+  elseif (any (! cellfun (@isvector, y)))
     for i = 1 : nd
       idx (1 : nd) = {1};
       idx (i) = ":";
-      y{i} = y{i}(idx{:});
+      y{i} = y{i}(idx{:})(:).';
     endfor
   endif
 
@@ -170,7 +170,7 @@ function vi = interpn (varargin)
     endfor
     vi(idx) = extrapval;
     vi = reshape (vi, yshape); 
-  elseif (strcmp (method, "spline")) 
+  elseif (strcmp (method, "spline"))
     vi = __splinen__ (x, v, y, extrapval, "interpn");
   elseif (strcmp (method, "cubic")) 
     error ("cubic interpolation not yet implemented");
@@ -215,4 +215,15 @@ endfunction
 %! mesh(xi,yi,interpn(x,y,A.',xi,yi,"spline").');
 %! [x,y] = meshgrid(x,y); 
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+
+%!demo
+%! x = y = z = -1:1;
+%! f = @(x,y,z) x.^2 - y - z.^2;
+%! [xx, yy, zz] = meshgrid (x, y, z);
+%! v = f (xx,yy,zz);
+%! xi = yi = zi = -1:0.1:1;
+%! [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
+%! vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
+%! mesh (yi, zi, squeeze (vi(1,:,:)));
 

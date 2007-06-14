@@ -52,7 +52,7 @@ function pp = mkpp (x, P, d)
     d = round (rows (P) / pp.n); 
   endif
   pp.d = d;
-  if (pp.n*d != rows (P))
+  if (pp.n * prod (d) != rows (P))
     error ("mkpp: num intervals in x doesn't match num polynomials in P");
   endif
 endfunction

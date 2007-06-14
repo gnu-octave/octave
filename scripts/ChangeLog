@@ -1,3 +1,13 @@
+2007-06-14  David Bateman  <dbateman@free.fr>
+
+	* general/__splinen__.m: Check also for ND vectors. Fix for N > 2,
+	as permutation of results was incorrect.
+	* general/interp1.m: Add demo on second derivative
+	* general/interpn.m: Convert "y" to vectors for __splinen__
+	call. Add 3D demo.
+
+	* polynomial/mkpp.m: Correction for matrices of 3 or more dimensions.
+
 2007-06-13  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/mkoctfile.m: Quote args too.

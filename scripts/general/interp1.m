@@ -345,6 +345,19 @@ endfunction
 %! %--------------------------------------------------------
 %! % confirm that interpolated function matches the original
 
+%!demo
+%! t = 0 : 0.3 : pi; dt = t(2)-t(1);
+%! n = length (t); k = 100; dti = dt*n/k;
+%! ti = t(1) + [0 : k-1]*dti;
+%! y = sin (4*t + 0.3) .* cos (3*t - 0.1);
+%! ddyc = diff(diff(interp1(t,y,ti,'cubic'))./dti)./dti;
+%! ddys = diff(diff(interp1(t,y,ti,'spline'))./dti)./dti;
+%! ddyp = diff(diff(interp1(t,y,ti,'pchip'))./dti)./dti;
+%! plot (ti(2:end-1), ddyc,'g+',ti(2:end-1),ddys,'b*', ...
+%!       ti(2:end-1),ddyp,'c^');
+%! legend('cubic','spline','pchip');
+%! title("Second derivative of interpolated 'sin (4*t + 0.3) .* cos (3*t - 0.1)'");
+
 ## For each type of interpolated test, confirm that the interpolated
 ## value at the knots match the values at the knots.  Points away
 ## from the knots are requested, but only 'nearest' and 'linear'

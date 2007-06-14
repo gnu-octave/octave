@@ -18,7 +18,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SCRIPT_SOURCES = sparseimages.m
+SCRIPT_SOURCES = sparseimages.m interpimages.m
 
 EXAMPLE_FILES_NODIR = \
   addtwomatrices.cc \
@@ -43,16 +43,20 @@ EXAMPLE_FILES_NODIR = \
 
 EXAMPLE_FILES = $(addprefix $(top_srcdir)/examples/, $(EXAMPLE_FILES_NODIR))
 
-SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
+INTERPIMAGES = interpft interpn interpderiv
+INTERPIMAGES_EPS = $(addsuffix .eps, $(INTERPIMAGES))
+INTERPIMAGES_PDF = $(addsuffix .pdf, $(INTERPIMAGES))
+INTERPIMAGES_PNG = $(addsuffix .png, $(INTERPIMAGES))
 
+SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
 SPARSEIMAGES_EPS = $(addsuffix .eps, $(SPARSEIMAGES_1))
 SPARSEIMAGES_PDF = $(addsuffix .pdf, $(SPARSEIMAGES_1))
 SPARSEIMAGES_PNG = $(addsuffix .png, $(SPARSEIMAGES_1))
 SPARSEIMAGES_TXT = $(addsuffix .txt, $(SPARSEIMAGES_1))
 
-IMAGES_EPS = $(SPARSEIMAGES_EPS)
-IMAGES_PDF = $(SPARSEIMAGES_PDF)
-IMAGES_PNG = $(SPARSEIMAGES_PNG)
+IMAGES_EPS = $(SPARSEIMAGES_EPS) $(INTERPIMAGES_EPS)
+IMAGES_PDF = $(SPARSEIMAGES_PDF) $(INTERPIMAGES_PDF)
+IMAGES_PNG = $(SPARSEIMAGES_PNG) $(INTERPIMAGES_PNG)
 IMAGES_TXT = $(SPARSEIMAGES_TXT)
 
 HTML_IMAGES_PNG = $(addprefix HTML/, $(IMAGES_PNG))
@@ -206,6 +210,9 @@ define run-octave
   DISPLAY= $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
     --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))'); sleep (1);"
 endef
+
+$(INTERPIMAGES_EPS) $(INTERPIMAGES_PNG) $(INTERPIMAGES_TXT): interpimages.m
+	$(run-octave)
 
 $(SPARSEIMAGES_EPS) $(SPARSEIMAGES_PNG) $(SPARSEIMAGES_TXT): sparseimages.m
 	$(run-octave)

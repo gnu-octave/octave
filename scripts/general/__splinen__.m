@@ -28,14 +28,14 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
   if (nargin != 5)
     error ("Incorrect number of arguments");
   endif
-
-  if (!iscell (x) || length(x) < ndims(y) || any (! cellfun (@isvector, x)) ||
-      !iscell (xi) || length(xi) < ndims(y) || any (! cellfun (@isvector, xi)))
+  isvec = @(x) prod(size(x)) == length(x);   # ND isvector function
+  if (!iscell (x) || length(x) < ndims(y) || any (! cellfun (isvec, x)) ||
+      !iscell (xi) || length(xi) < ndims(y) || any (! cellfun (isvec, xi)))
     error ("%s: non gridded data or dimensions inconsistent", f);
   endif
   yi = y;
   for i = length(x):-1:1
-    yi = spline (x{i}, yi, xi{i}).';
+    yi = permute (spline (x{i}, yi, xi{i}), [length(x),1:length(x)-1]);
   endfor
 
   [xi{:}] = ndgrid (xi{:});

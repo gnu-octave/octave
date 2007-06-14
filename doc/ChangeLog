@@ -1,3 +1,12 @@
+2007-06-14  David Bateman  <dbateman@free.fr>
+
+	* interpreter/Makefile.in (SCRIPT_SORCES): add interimages.m
+	(INTERPIMAGES*): New variables. Add targets for them
+	(IMAGES_EPS, IMAGES_PDF, IMAGES_PNG): Add the INTERPIMAGES.
+	* interpreter/interpimages.m: New function
+	* interpreter/interp.txi: Add text about second derivation of
+	splines	and add figures.
+
 2007-06-12  David Bateman  <dbateman@free.fr>
 
 	* interpreter/numbers.txi: Document that 64-bit arithmetic is

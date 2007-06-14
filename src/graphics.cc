@@ -103,6 +103,9 @@ color_values::c2rgb (char c)
 
   switch(c) 
     {
+    case 'k':
+      break;
+
     case 'r':
       tmp_rgb[0] = 1;	
       break;	

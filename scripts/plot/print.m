@@ -168,15 +168,23 @@ function print (varargin)
     dev = devopt;
   endif
 
-  if (strcmp (dev, "ill"))
+  if (strcmp (dev, "tex"))
+    dev = "epslatex";
+    ## gnuplot 4.0 wants ".eps" in the output name    
+    if (compare_versions (__gnuplot_version__, "4.2", "<"))
+      name = strcat (name(1:dot), "eps");
+    endif
+  elseif (strcmp (dev, "ill"))
     dev = "aifm";
   elseif (strcmp (dev, "cdr"))
     dev = "corel";
   endif
 
   ## check if we have to use convert
-  dev_list = {"aifm" "corel" "fig" "png" "pbm" "dxf" "mf" "hpgl", ...
-	      "ps" "ps2" "psc" "psc2" "eps" "eps2" "epsc" "epsc2" "emf"};
+  dev_list = {"aifm", "corel", "fig", "png", "pbm", "dxf", "mf", ...
+	      "hpgl", "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
+	      "epsc", "epsc2", "emf", "pstex", "pslatex", ...
+	      "epslatex", "epslatexstandalone"};
   convertname = "";
   [idx, errmsg] = cellidx (dev_list, dev);
   if (! idx)
@@ -192,15 +200,32 @@ function print (varargin)
   if (strcmp (dev, "ps") || strcmp (dev, "ps2") ...
       || strcmp (dev, "psc")  || strcmp (dev, "psc2")
       || strcmp (dev, "epsc") || strcmp (dev, "epsc2")
-      || strcmp (dev, "eps")  || strcmp (dev, "eps2"))
-    ## Various postscript options
-    if (dev(1) == "e")
-      options = "eps ";
-    else
-      options = strcat (orientation, " ");
-    endif
-    options = strcat (options, "enhanced ");
+      || strcmp (dev, "eps")  || strcmp (dev, "eps2")
+      || strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
+      || strcmp (dev, "epslatex") || strcmp (dev, "epslatexstandalone"))
 
+    ## Various postscript options
+    if (strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
+	|| strcmp (dev, "epslatex"))
+      termn = dev;
+      options = "";
+    elseif (strcmp (dev, "epslatexstandalone"))
+      if (compare_versions (__gnuplot_version__, "4.2", ">="))
+	termn = "epslatex";
+	options = "standalone ";
+      else
+	error ("print: epslatexstandalone needs gnuplot 4.2 or higher");
+      endif
+    else
+      if (dev(1) == "e")
+	options = "eps ";
+      else
+	options = strcat (orientation, " ");
+      endif
+      options = strcat (options, "enhanced ");
+      termn = "postscript";
+    endif
+    
     if (any (dev == "c") || use_color > 0)
       if (force_solid < 0)
 	options = strcat (options, "color dashed ");
@@ -221,9 +246,9 @@ function print (varargin)
     if (! isempty (fontsize))
       options = strcat (options, " ", fontsize);
     endif
-
-    new_terminal = strcat ("postscript ", options);
-
+    
+    new_terminal = strcat (termn, " ", options);
+    
   elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
     ## Adobe Illustrator, CorelDraw
     if (use_color >= 0)

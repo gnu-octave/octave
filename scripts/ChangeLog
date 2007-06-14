@@ -2,6 +2,11 @@
 
 	* plot/__go_draw_axes__.m: Handle text rotation property.
 
+2007-06-14  Sebastian Schubert  <sebastian-schubert@gmx.de>
+
+	* plot/print.m: Handle pstex, pslatex, epslatex, and
+	epslatexstandalone terminals.
+
 2007-06-14  David Bateman  <dbateman@free.fr>
 
 	* general/__splinen__.m: Check also for ND vectors. Fix for N > 2,

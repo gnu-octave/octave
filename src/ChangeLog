@@ -1,7 +1,12 @@
 2007-06-14  John W. Eaton  <jwe@octave.org>
 
-	* oct-procbuf.cc (procbuf::open): Open pipe in binary mode for
-	Windows.
+	* sysdep.cc (octave_popen, octave_pclose): New functions.
+	* sysdep.h: Provide decls.
+
+	* oct-procbuf.cc (procbuf::open): Use octave_popen.
+	(procbuf::close): Use octave_pclose.
+	* oct-prcstrm.cc (octave_oprocstream::octave_oprocstream, 
+	octave_iprocstream::ictave_oprocstream): Likewise.
 
 	* graphics.h (text::text_properties::rotation): New data member.
 	* graphics.cc (text::text_properties::text_properties, 

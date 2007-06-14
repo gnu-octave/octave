@@ -28,20 +28,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cstdio>
 
 #include "oct-prcstrm.h"
-
-// FIXME -- perhaps this should be handled more globally.  See also
-// oct-procbuf.cc.
-
-#if defined (_MSC_VER)
-#define popen _popen
-#define pclose _pclose
-#endif
-
-static int
-cxx_pclose (FILE *f)
-{
-  return ::pclose (f);
-}
+#include "sysdep.h"
 
 octave_stream
 octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
@@ -53,8 +40,8 @@ octave_iprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_iprocstream::octave_iprocstream (const std::string& n,
 					std::ios::openmode arg_md,
 					oct_mach_info::float_format ff)
-  : octave_stdiostream (n, ::popen (n.c_str (), "r"),
-			arg_md, ff, cxx_pclose)
+  : octave_stdiostream (n, octave_popen (n.c_str (), "r"),
+			arg_md, ff, octave_pclose)
 {
 }
 
@@ -73,8 +60,8 @@ octave_oprocstream::create (const std::string& n, std::ios::openmode arg_md,
 octave_oprocstream::octave_oprocstream (const std::string& n,
 					std::ios::openmode arg_md,
 					oct_mach_info::float_format ff)
-  : octave_stdiostream (n, ::popen (n.c_str (), "w"),
-			arg_md, ff, cxx_pclose)
+  : octave_stdiostream (n, octave_popen (n.c_str (), "w"),
+			arg_md, ff, octave_pclose)
 {
 }
 

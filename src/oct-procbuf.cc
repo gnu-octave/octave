@@ -40,6 +40,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "lo-utils.h"
 #include "oct-procbuf.h"
 #include "oct-syscalls.h"
+#include "sysdep.h"
 #include "variables.h"
 
 #include "defun.h"
@@ -50,17 +51,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 // Per Bothner, Copyright (C) 1993 Free Software Foundation.
 
 static octave_procbuf *octave_procbuf_list = 0;
-
-// FIXME -- perhaps this should be handled more globally.  See also
-// oct-prcstrm.cc.
-
-#if defined (__CYGWIN__)
-#define W32POPEN popen
-#define W32PCLOSE pclose
-#elif defined (__MINGW32__) || defined (_MSC_VER)
-#define W32POPEN _popen
-#define W32PCLOSE _pclose
-#endif
 
 #ifndef BUFSIZ
 #define BUFSIZ 1024
@@ -74,7 +64,7 @@ octave_procbuf::open (const char *command, int mode)
   if (is_open ()) 
     return 0;
 
-  f = ::W32POPEN (command, (mode & std::ios::in) ? "rb" : "wb");
+  f = octave_popen (command, (mode & std::ios::in) ? "r" : "w");
 
   if (! f)
     return 0;
@@ -179,7 +169,7 @@ octave_procbuf::close (void)
 
   if (f)
     {
-      wstatus = ::W32PCLOSE (f);
+      wstatus = octave_pclose (f);
       f = 0;
     }
 

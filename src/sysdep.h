@@ -24,6 +24,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #if !defined (octave_sysdep_h)
 #define octave_sysdep_h 1
 
+#include <cstdio>
+
 #include <string>
 
 #include "lo-ieee.h"
@@ -34,6 +36,9 @@ extern void sysdep_init (void);
 extern void sysdep_cleanup (void);
 
 extern void raw_mode (bool, bool wait = true);
+
+extern FILE *octave_popen (const char *command, const char *mode);
+extern int octave_pclose (FILE *f);
 
 extern OCTINTERP_API int octave_kbhit (bool wait = true);
 

@@ -516,6 +516,36 @@ raw_mode (bool on, bool wait)
   curr_on = on;
 }
 
+FILE *
+octave_popen (const char *command, const char *mode)
+{
+#if defined (__MINGW32__) || defined (_MSC_VER)
+  if (mode && mode[0] && ! mode[1])
+    {
+      char tmode[3];
+      tmode[0] = mode[0];
+      tmode[1] = 'b';
+      tmode[2] = 0;
+
+      return _popen (command, tmode);
+    }
+  else
+    return _popen (command, mode);
+#else
+  return popen (command, mode);
+#endif
+}
+
+int
+octave_pclose (FILE *f)
+{
+#if defined (__MINGW32__) || defined (_MSC_VER)
+  return _pclose (f);
+#else
+  return pclose (f);
+#endif
+}
+
 // Read one character from the terminal.
 
 int

@@ -76,7 +76,7 @@ function vi = interpn (varargin)
     method = varargin {end};
     nargs = nargs - 1;
   elseif (ischar (varargin {end - 1}))
-    if (! isnumeric (vargin {end}) || ! isscalar (vargin {end}))
+    if (! isnumeric (varargin {end}) || ! isscalar (varargin {end}))
       error ("extrapal is expected to be a numeric scalar");
     endif
     method = varargin {end - 1};

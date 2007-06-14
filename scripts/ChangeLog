@@ -4,8 +4,9 @@
 	as permutation of results was incorrect.
 	* general/interp1.m: Add demo on second derivative
 	* general/interpn.m: Convert "y" to vectors for __splinen__
-	call. Add 3D demo.
-
+	call. Add 3D demo. Fix typos
+	* general/interp3.m: Fix typos. Correct permutation for use of
+	interpn.
 	* polynomial/mkpp.m: Correction for matrices of 3 or more dimensions.
 
 2007-06-13  John W. Eaton  <jwe@octave.org>

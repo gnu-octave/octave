@@ -412,7 +412,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       __code = ""; # code already processed
       
     ## TEST
-    elseif (strcmp (__type, "test"))
+    elseif (strcmp (__type, "test") || strcmp (__type, "xtest"))
       __istest = 1;
       ## code will be evaluated below
       
@@ -436,8 +436,12 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
 		       __shared_r,__shared, __code));
 	eval (sprintf ("%s__test__(%s);", __shared_r, __shared));
       catch
-	__success = 0;
-	__msg = sprintf ("%stest failed\n%s", __signal_fail, __error_text__);
+        if (strcmp (__type, "xtest"))
+           __msg = sprintf ("%sknown failure\n%s", __signal_fail, __error_text__);
+        else
+           __msg = sprintf ("%stest failed\n%s", __signal_fail, __error_text__);
+	   __success = 0;
+        endif
 	if (isempty (__error_text__))
 	  error ("empty error text, probably Ctrl-C --- aborting"); 
 	endif
@@ -578,6 +582,9 @@ function body = __extract_test_code (nm)
     fclose (fid);
   endif
 endfunction
+
+### Test for a known failure
+%!xtest error("This test is known to fail")
 
 ### example from toeplitz
 %!shared msg

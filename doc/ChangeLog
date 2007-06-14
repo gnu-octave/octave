@@ -1,3 +1,7 @@
+2007-06-14  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* interpreter/testfun.txi: Document xtest block
+
 2007-06-14  David Bateman  <dbateman@free.fr>
 
 	* interpreter/Makefile.in (SCRIPT_SORCES): add interimages.m

@@ -2,6 +2,10 @@
 
 	* plot/__go_draw_axes__.m: Handle text rotation property.
 
+2007-06-14  Paul Kienzle  <pkienzle@users.sf.net>
+
+	* testfun/test.m: Add xtest support for tests known to fail.
+
 2007-06-14  Sebastian Schubert  <sebastian-schubert@gmx.de>
 
 	* plot/print.m: Handle pstex, pslatex, epslatex, and

@@ -32,7 +32,7 @@ block evaluated separately.  Blocks are introduced by the keyword
 
 @example
 @group
-   %!test error("this test fails!");
+   %!test error ("this test fails!");
    %!test "this test doesn't fail since it doesn't generate an error";
 @end group
 @end example
@@ -41,7 +41,7 @@ When a test fails, you will see something like:
 
 @example
 @group
-     ***** test error('this test fails!')
+     ***** test error ('this test fails!')
    !!!!! test failed
    this test fails!
 @end group
@@ -108,6 +108,19 @@ which is equivalent to:
 @example
    %!test assert (@dots{})
 @end example
+
+Sometimes during development there is a test that should work but is
+known to fail.  You still want to leave the test in because when the
+final code is ready the test should pass, but you may not be able to
+fix it immediately.  To avoid unecessary bug reports for these known
+failures, mark the block with @code{xtest} rather than @code{test}:
+
+@example
+   %!xtest error ("This test is known to fail.")
+@end example
+
+Another use of @code{xtest} is for statistical tests which should
+pass most of the time but are known to fail occasionally.
 
 Each block is evaluated in its own function environment, which means
 that variables defined in one block are not automatically shared

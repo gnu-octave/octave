@@ -1,3 +1,10 @@
+2007-06-14  David Bateman  <dbateman@free.fr>
+
+	* ov-ch-mat.h (idx_vector index_vector (void) const): Remove
+	definition.
+	* ov-ch-mat.cc (idx_vector index_vector (void) const): Move it
+	here. Special case ":" case for compatibility.
+
 2007-06-13  John W. Eaton  <jwe@octave.org>
 
 	* ov-re-mat.cc (octave_matrix::load_ascii):

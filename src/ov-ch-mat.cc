@@ -44,6 +44,16 @@ DEFINE_OCTAVE_ALLOCATOR (octave_char_matrix);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_char_matrix,
 				     "char matrix", "int8");
 
+idx_vector 
+octave_char_matrix::index_vector (void) const
+{ 
+  const char *p = matrix.data ();
+  if (numel () == 1 && *p == ':')
+    return idx_vector (':');
+  else
+    return idx_vector (array_value (true)); 
+}
+
 bool
 octave_char_matrix::valid_as_scalar_index (void) const
 {

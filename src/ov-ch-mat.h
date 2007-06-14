@@ -80,8 +80,7 @@ public:
   octave_base_value *clone (void) const { return new octave_char_matrix (*this); }
   octave_base_value *empty_clone (void) const { return new octave_char_matrix (); }
 
-  idx_vector index_vector (void) const
-    { return idx_vector (array_value (true)); }
+  idx_vector index_vector (void) const;
 
   bool is_char_matrix (void) const { return true; }
   bool is_real_matrix (void) const { return true; }

@@ -1706,6 +1706,7 @@ text::text_properties::text_properties (const graphics_handle& mh,
     string (""),
     units ("data"),
     position (Matrix (1, 3, 0.0)),
+    rotation (0),
     horizontalalignment ("left")
 { }
 
@@ -1729,6 +1730,8 @@ text::text_properties::set (const property_name& name, const octave_value& val)
     units = val;
   else if (name.compare ("position"))
     position = val;
+  else if (name.compare ("rotation"))
+    rotation = val;
   else if (name.compare ("horizontalalignment"))
     horizontalalignment = val;
   else
@@ -1753,6 +1756,7 @@ text::text_properties::get (void) const
   m.assign ("string", string);
   m.assign ("units", units);
   m.assign ("position", position);
+  m.assign ("rotation", rotation);
   m.assign ("horizontalalignment", horizontalalignment);
 
   return m;
@@ -1777,6 +1781,8 @@ text::text_properties::get (const property_name& name) const
     retval = units;
   else if (name.compare ("position"))
     retval = position;
+  else if (name.compare ("rotation"))
+    retval = rotation;
   else if (name.compare ("horizontalalignment"))
     retval = horizontalalignment;
   else
@@ -1793,6 +1799,7 @@ text::text_properties::factory_defaults (void)
   m["string"] = "";
   m["units"] = "data";
   m["position"] = Matrix (1, 3, 0.0);
+  m["rotation"] = 0;
   m["horizontalalignment"] = "left";
 
   return m;

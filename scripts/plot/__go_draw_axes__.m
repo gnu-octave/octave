@@ -525,14 +525,17 @@ function __go_draw_axes__ (h, plot_stream)
 	  lpos = obj.position;
 	  label = obj.string;
 	  halign = obj.horizontalalignment;
+	  angle = obj.rotation;
 	  if (nd == 3)
-	    fprintf (plot_stream, "set label \"%s\" at %g,%g,%g %s;\n",
+	    fprintf (plot_stream,
+		     "set label \"%s\" at %g,%g,%g %s rotate by %f;\n",
 		     undo_string_escapes (label),
-		     lpos(1), lpos(2), lpos(3), halign);
+		     lpos(1), lpos(2), lpos(3), halign, angle);
 	  else
-	    fprintf (plot_stream, "set label \"%s\" at %g,%g %s;\n",
+	    fprintf (plot_stream,
+		     "set label \"%s\" at %g,%g %s rotate by %f;\n",
 		     undo_string_escapes (label),
-		     lpos(1), lpos(2), halign);
+		     lpos(1), lpos(2), halign, angle);
 	  endif
 
 	otherwise

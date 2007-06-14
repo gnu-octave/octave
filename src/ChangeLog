@@ -1,3 +1,10 @@
+2007-06-14  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h (text::text_properties::rotation): New data member.
+	* graphics.cc (text::text_properties::text_properties, 
+	text::text_properties::set, text::text_properties::get, 
+	text::text_properties::factory_defaults): Handle rotation property.
+
 2007-06-14  David Bateman  <dbateman@free.fr>
 
 	* ov-ch-mat.h (idx_vector index_vector (void) const): Remove

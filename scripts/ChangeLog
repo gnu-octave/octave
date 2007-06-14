@@ -1,3 +1,7 @@
+2007-06-14  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Handle text rotation property.
+
 2007-06-14  David Bateman  <dbateman@free.fr>
 
 	* general/__splinen__.m: Check also for ND vectors. Fix for N > 2,

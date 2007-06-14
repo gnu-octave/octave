@@ -1426,6 +1426,7 @@ public:
     octave_value string;
     octave_value units;
     octave_value position;
+    octave_value rotation;
     octave_value horizontalalignment;
 
     static std::string go_name;

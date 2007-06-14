@@ -994,11 +994,11 @@ dnl requires the definition of _HDF5USEDL_ under MSVC compiler.
 dnl
 AC_DEFUN([OCTAVE_HDF5_DLL], [
   AC_CACHE_CHECK([if _HDF5USEDLL_ needs to be defined],octave_cv_hdf5_dll, [
-    AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE;],
+    AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE; return x],
       octave_cv_hdf5_dll=no, [
       CFLAGS_old=$CFLAGS
       CFLAGS="$CFLAGS -DWIN32 -D_HDF5USEDLL_"
-      AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE;],
+      AC_TRY_LINK([#include <hdf5.h>], [hid_t x = H5T_NATIVE_DOUBLE; return x],
         octave_cv_hdf5_dll=yes,
 	octave_cv_hdf5_dll=no)
       CFLAGS=$CFLAGS_old])])

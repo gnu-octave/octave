@@ -18,7 +18,7 @@ function interpimages (nm, typ)
     xi = yi = zi = -1:0.1:1;
     [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
     vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
-    mesh (yi, zi, squeeze (vi(1,:,:)));
+    mesh (zi, yi, squeeze (vi(1,:,:)));
     print (strcat (nm, ".", typ), strcat ("-d", typ))
   elseif (strcmp (nm, "interpderiv"))
     t = 0 : 0.3 : pi; dt = t(2)-t(1);

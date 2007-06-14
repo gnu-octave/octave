@@ -135,7 +135,7 @@ xi = yi = zi = -1:0.1:1;
 vi = interp3(x, y, z, v, xxi, yyi, zzi, 'spline');
 [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
 vi2 = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
-mesh (yi, zi, squeeze (vi2(1,:,:)));
+mesh (zi, yi, squeeze (vi2(1,:,:)));
 @end group
 @end example
 

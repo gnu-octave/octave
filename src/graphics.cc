@@ -2146,6 +2146,8 @@ in the graphics handle @var{h}.\n\
 
       if (! error_state)
         {
+	  bool request_drawnow = false;
+
           for (octave_idx_type n = 0; n < hcv.length (); n++) 
             {
               graphics_object obj = gh_manager::get_object (hcv(n));
@@ -2154,11 +2156,17 @@ in the graphics handle @var{h}.\n\
                 {
                   obj.set (args.splice (0, 1));
 
-                  feval ("__request_drawnow__");
+                  request_drawnow = true;
                 }
               else
-                error ("set: invalid handle (= %g)", hcv(n));
+		{
+		  error ("set: invalid handle (= %g)", hcv(n));
+		  break;
+		}
             }
+
+	  if (! error_state && request_drawnow)
+	    feval ("__request_drawnow__");
         }
       else
         error ("set: expecting graphics handle as first argument");
@@ -2189,7 +2197,11 @@ values or lists respectively.\n\
 
       if (! error_state)
         {
-          for (octave_idx_type n = 0; n < hcv.length (); n++)
+	  octave_idx_type len = hcv.length ();
+
+	  vlist.resize (len);
+
+          for (octave_idx_type n = 0; n < len; n++)
             {
               graphics_object obj = gh_manager::get_object (hcv(n));
 
@@ -2204,11 +2216,17 @@ values or lists respectively.\n\
                       if (! error_state)
                         vlist(n) = obj.get (property);
                       else
-                        error ("get: expecting property name as second argument");
+			{
+			  error ("get: expecting property name as second argument");
+			  break;
+			}
                     }
                 }
               else
-                error ("get: invalid handle (= %g)", hcv(n));
+		{
+		  error ("get: invalid handle (= %g)", hcv(n));
+		  break;
+		}
             }
         }
       else
@@ -2217,13 +2235,15 @@ values or lists respectively.\n\
   else
     print_usage ();
 
-  if (vlist.length () > 1)
+  if (! error_state)
     {
-      Cell c(vlist);
-      retval = c;
+      octave_idx_type len = vlist.length ();
+
+      if (len > 1)
+	retval = Cell (vlist);
+      else if (len == 1)
+	retval = vlist(0);
     }
-  else
-    retval = vlist(0);
 
   return retval;
 }

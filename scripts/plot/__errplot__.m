@@ -44,8 +44,25 @@ function h = __errplot__ (fstr, p, a1, a2, a3, a4, a5, a6)
   [len, nplots] = size (a1);
 
   for i = 1:nplots
-    ifmt = fmt{1+mod(i-1,numel(fmt))};
+    ## Set the plot type based on linestyle.
+    if (fmt.linestyle == "~")
+      ifmt = "yerr";
+    elseif (fmt.linestyle == ">")
+      ifmt = "xerr";
+    elseif (fmt.linestyle == "~>")
+      ifmt = "xyerr";
+    elseif (fmt.linestyle == "#")
+      ifmt = "box";
+    elseif (fmt.linestyle == "#~")
+      ifmt = "boxy";
+    elseif (fmt.linestyle == "#~>")
+      ifmt = "boxxy";
+    else
+      print_usage ();
+    endif
+
     h = __line__ (p);
+
     switch (nargin - 2)
       case 2
 	set (h, "xdata", (1:len)');

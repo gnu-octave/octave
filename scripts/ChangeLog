@@ -1,3 +1,11 @@
+2007-06-15  Pete Gustafson  <petegus@umich.edu>
+
+        * plot/__errplot__.m: Set ifmt from fmt.linestyle.
+        * plot/__go_draw_axes__.m: Removed undefined tx from call to
+	get_data_limits.
+        * plot/__plotopt1__.m: Intercept and strip format string when
+	called by __errplot__.
+
 2007-06-15  John W. Eaton  <jwe@octave.org>
 
 	* testfun/test.m: Also return number of expected failures.

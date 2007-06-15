@@ -45,6 +45,21 @@ function [options, valid] = __pltopt1__ (caller, opt, err_on_invalid)
   have_linestyle = false;
   have_marker = false;
 
+  ## If called by __errplot__, extract the linestyle before proceeding.
+  if (strcmp (caller,"__errplot__"))
+    if (strncmp (opt, "#~>", 3))
+      n = 3;
+    elseif (strncmp (opt, "#~", 2) || strncmp (opt, "~>", 2))
+      n = 2;
+    elseif (strncmp (opt, "~", 1) || strncmp (opt, ">", 1) 
+	    || strncmp (opt, "#", 1))
+      n = 1;
+    endif
+      options.linestyle = opt(1:n);
+      opt(1:n) = [];
+      have_linestyle = true;
+  endif
+
   while (! isempty (opt))
     if (strncmp (opt, "--", 2) || strncmp (opt, "-.", 2))
       options.linestyle = opt(1:2);

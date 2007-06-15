@@ -401,9 +401,10 @@ function __go_draw_axes__ (h, plot_stream)
 		withclause{data_idx} = sprintf ("with xyerrorbars linestyle %d",
 						data_idx);
 	      else
+		## Obtain the limits based on the exact x values.
 		if (xautoscale)
 		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax,
-							 xminp, xdat, tx);
+							 xminp, xdat);
 		endif
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4)";

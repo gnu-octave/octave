@@ -68,31 +68,36 @@ function __go_draw_axes__ (h, plot_stream)
 
     if (! isempty (axis_obj.xlabel))
       t = get (axis_obj.xlabel);
+      angle = t.rotation;
       if (isempty (t.string))
 	fputs (plot_stream, "unset xlabel;\n");
       else
-	fprintf (plot_stream, "set xlabel \"%s\";\n",
-		 undo_string_escapes (t.string));
+	## Rotation of xlabel not yet support by gnuplot as of 4.2.
+	fprintf (plot_stream, "set xlabel \"%s\" rotate by %f;\n",
+		 undo_string_escapes (t.string), angle)
       endif
     endif
 
     if (! isempty (axis_obj.ylabel))
       t = get (axis_obj.ylabel);
+      angle = t.rotation;
       if (isempty (t.string))
 	fputs (plot_stream, "unset ylabel;\n");
       else
-	fprintf (plot_stream, "set ylabel \"%s\";\n",
-		 undo_string_escapes (t.string));
+	fprintf (plot_stream, "set ylabel \"%s\" rotate by %f;\n",
+		 undo_string_escapes (t.string), angle)
       endif
     endif
 
     if (! isempty (axis_obj.zlabel))
       t = get (axis_obj.zlabel);
+      angle = t.rotation;
       if (isempty (t.string))
 	fputs (plot_stream, "unset zlabel;\n");
       else
-	fprintf (plot_stream, "set zlabel \"%s\";\n",
-		 undo_string_escapes (t.string));
+	## Rotation of zlabel not yet support by gnuplot as of 4.2.
+	fprintf (plot_stream, "set zlabel \"%s\" rotate by %f;\n",
+		 undo_string_escapes (t.string), angle)
       endif
     endif
 

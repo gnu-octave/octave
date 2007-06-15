@@ -1,5 +1,9 @@
 2007-06-15  Pete Gustafson  <petegus@umich.edu>
 
+        * plot/__go_draw_axes__.m  Handle rotation arg for axis labels.
+        * plot/__axis_label__.m  Assign ylabel default rotation property
+	to 90, all others 0.
+
         * plot/__errplot__.m: Set ifmt from fmt.linestyle.
         * plot/__go_draw_axes__.m: Removed undefined tx from call to
 	get_data_limits.

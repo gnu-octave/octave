@@ -1,3 +1,10 @@
+2007-06-15  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h (OCTAVE_GRAPHICS_PROPERTY_INTERNAL,
+	OCTAVE_GRAPHICS_PROPERTY, OCTAVE_GRAPHICS_MUTABLE_PROPERTY):
+	New macros. Use them to declare individual properties and define
+	accessor methods for each property in the property classes.
+
 2007-06-15  Kai Habel <kai.habel@gmx.de>
 
 	* graphics.cc (Fget, Fset): Handle vectors of handles.

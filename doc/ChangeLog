@@ -1,3 +1,7 @@
+2007-06-15  David Bateman  <dbateman@free.fr>
+
+	* faq/Octave-FAQ.texi: Document the gnuplot 4.2 bug using pipes.
+
 2007-06-15  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* interpreter/testfun.txi: Provide a clue to using xtest for assert.

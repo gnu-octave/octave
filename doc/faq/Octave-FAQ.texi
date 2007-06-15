@@ -10,7 +10,7 @@
 @titlepage
 @title Octave FAQ
 @subtitle Frequently asked questions about Octave
-@subtitle April, 2007
+@subtitle June, 2007
 @sp 1
 @author John W. Eaton
 @page
@@ -38,7 +38,7 @@ you should first check to see if the topic is covered in the manual.
 @menu
 * What is Octave?::  
 * How can I cite Octave?::  
-* Series 2.9.N::  
+* Series 2.9.N and 3.0.N::  
 * Octave Features::  
 * Learning more about Octave:: 
 * Getting Octave::  
@@ -172,15 +172,15 @@ reference, then you can cite the Octave manual:
 @end group
 @end example
 
-@node Series 2.9.N
-@chapter What's new in version series 2.9.N of Octave
+@node Series 2.9.N and 3.0.N
+@chapter What's new in version series 2.9.N and 3.0.N of Octave
 
 The 2.9.N series, started in March 2005, has enough new features to
-justify a major version number change.  Version 2.9.10 is nearly as
-stable as the latest 2.1.N releases and stability should increase as
-one gets near version 3.0.
+justify a major version number change.  The latest version are as stable
+as the last 2.1.N releases and stability should increase as one gets
+near version 3.0.
 
-Series 2.9.N brings
+The 2.9.N and 3.0.N series brings
 
 @itemize @bullet
 
@@ -204,7 +204,7 @@ Series 2.9.N brings
 
 @end itemize
 
-Here are some features that have been around since 2.1.NN
+Here are some features that have been around since 2.1.N
 
 @itemize @bullet
 
@@ -225,13 +225,12 @@ Here are some features that have been around since 2.1.NN
 * Informative block closing::
 * Coherent syntax::             
 * Exclamation mark as not operator::
-@c * Short-circuit boolean operators::  
 * Increment and decrement operators::  
 * Unwind-protect::              
 * Built-in ODE and DAE solvers::
 @end menu
 
-This section refers to Matlab 6,5.0 R 13 and Octave 2.9.10.
+This section refers to Matlab R2007a and Octave 2.9.12.
 
 @node Functions defined on the command-line
 @section Functions defined on the command-line
@@ -544,7 +543,7 @@ porting Octave to other systems, please contact
 
 @cindex Octave, building 
 
-Octave 2.9.10 requires approximately 800MB of disk storage to unpack
+Octave 2.9.N and 3.0 require approximately 800MB of disk storage to unpack
 and compile from source (considerably less if you don't compile with
 debugging symbols).  Once installed, Octave requires approximately 200MB
 of disk space (again, considerably less if you don't compile with
@@ -596,6 +595,18 @@ Octave uses the @code{genpath} function to recursively add directories
 to the list of directories searched for function files. Check the list
 of directories with the @code{path} command. If the path list is very
 long check your use of the @code{genpath} function.
+
+@item
+When plotting Octave occasionally gives me errors like ``gnuplot> 9 0.735604
+line 26317: invalid command''
+
+There is a known bug in gnuplot 4.2 that can cause an off by one error
+while piping data to gnuplot. The relevant gnuplot bug report can be
+found at @url{http://sourceforge.net/tracker/index.php?func=detail&aid=1716556&group_id=2055&atid=102055}
+
+If you have obtained your copy of Octave from a distribution please file
+a bug report requesting that the fix reported in the above bug report be
+included.
 @end itemize
 
 @node How do I ...?
@@ -660,7 +671,7 @@ that is up to date. You can use this function reference to see the
 number of octave function that are available and their @sc{Matlab}
 compatibility.
 
-The major differences between Octave 2.9.10 and  @sc{Matlab} v7.3 are:
+The major differences between Octave 2.9.N and  @sc{Matlab} R2007a are:
 
 @itemize @bullet
 @item Nested Functions
@@ -738,9 +749,8 @@ commonly used ones. There are a few functions that aren't implemented,
 for example condest or to do with specific missing Octave functionality
 (gui, dll, java, activex, dde, web, and serial functions). Some of the
 core functions have limitations that aren't in the @sc{Matlab}
-version. For example the interpN function can only do linear
-interpolation and not cubic spline, etc.. However the interp and interp2
-function can.
+version. For example the @code{sprandn} function can not force a
+particular condition number for the matrix like @sc{Matlab} can.
 
 @item Just-In-Time compiler
 
@@ -768,7 +778,7 @@ Up to Octave 2.9.9 there was no support for graphic handles in Octave
 itself. There is in Octave 2.9.10 and later, and so the graphics between
 Octave and @sc{Matlab} are currently in the process of converging to a
 common interface.  Note that the basic graphic handle stuff is in place
-in 2.9.10, but not graphics objects like "patch", "barseries", etc.
+since 2.9.10, but not graphics objects like "patch", "barseries", etc.
 
 @item GUI 
 
@@ -818,9 +828,8 @@ produced by @sc{Matlab}.
 
 Up to version 2.9.10, Octave can't load/save the inline or function
 handles saved in mat-files by @sc{Matlab} (though can in its own
-format). There is some work to fix this, but the @sc{Matlab} function handle
-format in mat-files is undocumented and this is therefore not easy to
-address. 
+format). In 2.9.11 and later Octave can load inline and function handles
+saved in the mat-file formats, but can't save them to mat-files.
 
 Finally, Some multi-byte unicode characters aren't yet treated in
 mat-files.
@@ -956,8 +965,7 @@ Octave has a lisp like unwind_protect block that allows blocks of
 code that terminate in an error to ensure that the variables that
 are touched are restored. You can do something similar with
 try/catch combined with rethrow(lasterror()) in @sc{Matlab}, however
-rethrow and lasterror were only just introduced in Octave and so
-aren't in 2.9.9, but are in 2.9.10.
+rethrow and lasterror are only available in Octave 2.9.10 and later.
 
 Note that using try/catch combined with rethrow(lasterror()) can not
 guarentee that global variables will be correctly reset, as it won't

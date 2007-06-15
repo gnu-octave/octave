@@ -2132,8 +2132,8 @@ Return true if @var{h} is a graphics handle and false otherwise.\n\
 DEFUN (set, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} set (@var{h}, @var{p}, @var{v}, @dots{})\n\
-Set the named property @var{p} to the value @var{v} in the graphics\n\
-handle @var{h}.\n\
+Set the named property value or vector @var{p} to the value @var{v}\n\
+in the graphics handle @var{h}.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2142,23 +2142,26 @@ handle @var{h}.\n\
 
   if (nargin > 0)
     {
-      double handle = args(0).double_value ();
+      ColumnVector hcv (args(0).vector_value ());
 
       if (! error_state)
-	{
-	  graphics_object obj = gh_manager::get_object (handle);
+        {
+          for (octave_idx_type n = 0; n < hcv.length (); n++) 
+            {
+              graphics_object obj = gh_manager::get_object (hcv(n));
 
-	  if (obj)
-	    {
-	      obj.set (args.splice (0, 1));
+              if (obj)
+                {
+                  obj.set (args.splice (0, 1));
 
-	      feval ("__request_drawnow__");
-	    }
-	  else
-	    error ("set: invalid handle (= %g)", handle);
-	}
+                  feval ("__request_drawnow__");
+                }
+              else
+                error ("set: invalid handle (= %g)", hcv(n));
+            }
+        }
       else
-	error ("set: expecting graphics handle as first argument");
+        error ("set: expecting graphics handle as first argument");
     }
   else
     print_usage ();
@@ -2171,49 +2174,63 @@ DEFUN (get, args, ,
 @deftypefn {Built-in Function} {} get (@var{h}, @var{p})\n\
 Return the named property @var{p} from the graphics handle @var{h}.\n\
 If @var{p} is omitted, return the complete property list for @var{h}.\n\
+If @var{h} is a vector, return a cell array including the property\n\
+values or lists respectively.\n\
 @end deftypefn")
 {
   octave_value retval;
+  octave_value_list vlist;
 
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
     {
-      double handle = args(0).double_value ();
+      ColumnVector hcv (args(0).vector_value ());
 
       if (! error_state)
-	{
-	  graphics_object obj = gh_manager::get_object (handle);
+        {
+          for (octave_idx_type n = 0; n < hcv.length (); n++)
+            {
+              graphics_object obj = gh_manager::get_object (hcv(n));
 
-	  if (obj)
-	    {
-	      if (nargin == 1)
-		retval = obj.get ();
-	      else
-		{
-		  property_name property = args(1).string_value ();
+              if (obj)
+                {
+                  if (nargin == 1)
+                    vlist(n) = obj.get ();
+                  else
+                    {
+                      property_name property = args(1).string_value ();
 
-		  if (! error_state)
-		    retval = obj.get (property);
-		  else
-		    error ("get: expecting property name as second argument");
-		}
-	    }
-	  else
-	    error ("get: invalid handle (= %g)", handle);
-	}
+                      if (! error_state)
+                        vlist(n) = obj.get (property);
+                      else
+                        error ("get: expecting property name as second argument");
+                    }
+                }
+              else
+                error ("get: invalid handle (= %g)", hcv(n));
+            }
+        }
       else
-	error ("get: expecting graphics handle as first argument");
+        error ("get: expecting graphics handle as first argument");
     }
   else
     print_usage ();
+
+  if (vlist.length () > 1)
+    {
+      Cell c(vlist);
+      retval = c;
+    }
+  else
+    retval = vlist(0);
 
   return retval;
 }
 
 static octave_value
 make_graphics_object (const std::string& go_name,
-		      const octave_value_list& args)
+          const octave_value_list& args)
 {
   octave_value retval;
 

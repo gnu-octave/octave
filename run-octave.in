@@ -22,10 +22,10 @@ d2_list=$(find "$d2" -type d -a ! \( \( -name CVS -o -name private \) -a -prune 
 d3_list=$(find "$d3" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
 d4_list=$(find "$d4" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
 
-d1_path=$(echo "$d1_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
-d2_path=$(echo "$d2_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
-d3_path=$(echo "$d3_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
-d4_path=$(echo "$d4_list" | $AWK '{ s = sprintf ("%s%s", s, $0); } END { sub (/:$/, "", s); print s; }')
+d1_path=$(echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
+d2_path=$(echo "$d2_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
+d3_path=$(echo "$d3_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
+d4_path=$(echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
 
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"

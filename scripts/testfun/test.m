@@ -53,7 +53,7 @@
 ## the current test.
 ##
 ## Called with a single output argument @var{success}, @code{test} returns
-## true is all of the tests were successful. Called with two output arguments
+## true if all of the tests were successful. Called with two output arguments
 ## @var{n} and @var{max}, the number of sucessful test and the total number
 ## of tests in the file @var{name} are returned.
 ##
@@ -74,12 +74,14 @@
 
 ## PKG_ADD: mark_as_command test
 
-function [__ret1, __ret2] = test (__name, __flag, __fid)
+function [__ret1, __ret2, __ret3] = test (__name, __flag, __fid)
   ## information from test will be introduced by "key" 
   persistent __signal_fail =  "!!!!! ";
   persistent __signal_empty = "????? ";
   persistent __signal_block = "  ***** ";
   persistent __signal_file =  ">>>>> ";
+
+  __xfail = 0;
 
   if (nargin < 2 || isempty (__flag))
     __flag = "quiet";
@@ -299,7 +301,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       endif
       
       ## strip comments off the variables
-      __idx = find (__vars=="%" | __vars == "#");
+      __idx = find (__vars == "%" | __vars == "#");
       if (! isempty (__idx))
 	__vars = __vars(1:__idx(1)-1);
       endif
@@ -438,6 +440,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
       catch
         if (strcmp (__type, "xtest"))
            __msg = sprintf ("%sknown failure\n%s", __signal_fail, __error_text__);
+	   __xfail++;
         else
            __msg = sprintf ("%stest failed\n%s", __signal_fail, __error_text__);
 	   __success = 0;
@@ -484,7 +487,12 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   eval (__clear, "");
 
   if (nargout == 0)
-    printf ("PASSES %d out of %d tests\n", __successes, __tests);
+    if (__xfail)
+      printf ("PASSES %d out of %d tests (%d expected failures)\n",
+	      __successes, __tests, __xfail);
+    else
+      printf ("PASSES %d out of %d tests\n", __successes, __tests);
+    endif
   elseif (__grabdemo)
     __ret1 = __demo_code;
     __ret2 = __demo_idx;
@@ -493,6 +501,7 @@ function [__ret1, __ret2] = test (__name, __flag, __fid)
   else
     __ret1 = __successes;
     __ret2 = __tests;
+    __ret3 = __xfail;
   endif
 endfunction
 

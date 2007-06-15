@@ -1,4 +1,10 @@
+2007-06-15  John W. Eaton  <jwe@octave.org>
+
+	* testfun/test.m: Also return number of expected failures.
+
 2007-06-14  John W. Eaton  <jwe@octave.org>
+
+	* set/ismember.m: Mark two tests known to fail with xtest.
 
 	* plot/__go_draw_axes__.m: Handle text rotation property.
 

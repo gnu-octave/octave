@@ -1,3 +1,8 @@
+2007-06-15  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Only attempt label rotation if
+	have_newer_gnuplot is true.
+
 2007-06-15  Pete Gustafson  <petegus@umich.edu>
 
         * plot/__go_draw_axes__.m  Handle rotation arg for axis labels.

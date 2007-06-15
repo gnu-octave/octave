@@ -72,9 +72,14 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset xlabel;\n");
       else
-	## Rotation of xlabel not yet support by gnuplot as of 4.2.
-	fprintf (plot_stream, "set xlabel \"%s\" rotate by %f;\n",
-		 undo_string_escapes (t.string), angle)
+	fprintf (plot_stream, "set xlabel \"%s\"",
+		 undo_string_escapes (t.string));
+	if (have_newer_gnuplot)
+	  ## Rotation of xlabel not yet support by gnuplot as of 4.2, but
+	  ## there is no message about it.
+	  fprintf (plot_stream, " rotate by %f", angle);
+	endif
+	fputs (plot_stream, ";\n");
       endif
     endif
 
@@ -84,8 +89,12 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset ylabel;\n");
       else
-	fprintf (plot_stream, "set ylabel \"%s\" rotate by %f;\n",
-		 undo_string_escapes (t.string), angle)
+	fprintf (plot_stream, "set ylabel \"%s\"",
+		 undo_string_escapes (t.string));
+	if (have_newer_gnuplot)
+	  fprintf (" rotate by %f;\n", angle);
+	endif
+	fputs (plot_stream, ";\n");
       endif
     endif
 
@@ -95,9 +104,14 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset zlabel;\n");
       else
-	## Rotation of zlabel not yet support by gnuplot as of 4.2.
-	fprintf (plot_stream, "set zlabel \"%s\" rotate by %f;\n",
-		 undo_string_escapes (t.string), angle)
+	fprintf (plot_stream, "set zlabel \"%s\"",
+		 undo_string_escapes (t.string));
+	if (have_newer_gnuplot)
+	  ## Rotation of zlabel not yet support by gnuplot as of 4.2, but
+	  ## there is no message about it.
+	  fprintf (plot_stream, " rotate by %f;\n", angle);
+	endif
+	fputs (plot_stream, ";\n");
       endif
     endif
 

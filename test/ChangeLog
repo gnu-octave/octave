@@ -1,6 +1,7 @@
 2007-06-15  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m: Also report expected failures in summary.
+	Improved wording from Thomas Weber <thomas.weber.mail@gmail.com>.
 
 2007-06-06  John W. Eaton  <jwe@octave.org>
 

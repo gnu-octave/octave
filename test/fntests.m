@@ -174,6 +174,8 @@ try
   if (dxf > 0)
     printf ("\nThere were %d expected failures (see fntests.log for details).\n",
 	    dxf);
+    printf ("\nExpected failures are known bugs. Please help improve\n");
+    printf ("Octave by contributing fixes for them.\n");
   endif
   n_files_with_no_tests = length (files_with_no_tests);
   n_files = n_files_with_no_tests + length (files_with_tests);

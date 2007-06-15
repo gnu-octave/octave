@@ -116,7 +116,8 @@ fix it immediately.  To avoid unecessary bug reports for these known
 failures, mark the block with @code{xtest} rather than @code{test}:
 
 @example
-   %!xtest error ("This test is known to fail.")
+   %!xtest assert (1==0)
+   %!xtest fail ('success=1','error'))
 @end example
 
 Another use of @code{xtest} is for statistical tests which should

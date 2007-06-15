@@ -53,6 +53,16 @@
 ##   @itemx epsc
 ##   @itemx epsc2
 ##     Encapsulated postscript (level 1 and 2, mono and color)
+##   @item tex
+##   @itemx epslatex
+##   @itemx epslatexstandalone
+##   @itemx pstex
+##   @itemx pslatex
+##     Generate a LaTeX (or TeX) file for labels, and eps/ps for
+##     graphics.  The file produced by @code{epslatexstandalone} can be
+##     processed directly by LaTeX.  The other formats are intended to
+##     be included in a LaTeX (or TeX) document.  The @code{tex} device
+##     is the same as the @code{epslatex} device.
 ##   @item ill
 ##   @itemx aifm
 ##     Adobe Illustrator

@@ -1,3 +1,7 @@
+2007-06-16  Søren Hauberg  <hauberg@gmail.com>
+
+        * plot/legend.m: Replace 'vargin' with 'varargin'.
+
 2007-06-15  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Only attempt label rotation if

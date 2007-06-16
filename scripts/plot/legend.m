@@ -129,7 +129,7 @@ function legend (varargin)
 	nargs--;
       else
 	varargin = cellstr (arg);
-	nargs = numel (vargin);
+	nargs = numel (varargin);
       endif
     elseif (iscellstr (arg))
       varargin = arg;

@@ -18,14 +18,9 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} setfield (@var{type}, @var{subs}, @dots{})
+## @deftypefn {Function File} {} substruct (@var{type}, @var{subs}, @dots{})
 ## Create a subscript structure for use with @code{subsref} or
 ## @code{subsasgn}.
-##
-## @example
-## @group
-## @end group
-## @end example
 ## @seealso{subsref, subsasgn}
 ## @end deftypefn
 

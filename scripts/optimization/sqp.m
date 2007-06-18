@@ -20,30 +20,36 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{iter}, @var{nf}, @var{lambda}] =} sqp (@var{x}, @var{phi}, @var{g}, @var{h})
 ## Solve the nonlinear program
-## @ifinfo
+## @iftex
+## @tex
+## $$
+## \min_x \phi (x)
+## $$
+## @end tex
+## @end iftex
+## @ifnottex
 ##
 ## @example
 ##      min phi (x)
 ##       x
 ## @end example
 ##
-## @end ifinfo
+## @end ifnottex
+## subject to
 ## @iftex
 ## @tex
+## $$
+##  g(x) = 0 \qquad h(x) \geq 0
+## $$
 ## @end tex
 ## @end iftex
-## subject to
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ##      g(x)  = 0
 ##      h(x) >= 0
 ## @end example
-## @end ifinfo
-## @iftex
-## @tex
-## @end tex
-## @end iftex
+## @end ifnottex
 ##
 ## @noindent
 ## using a successive quadratic programming method.
@@ -109,11 +115,22 @@
 ## function and the second should point to a function that computes the
 ## gradient of the constraint function:
 ##
+## @iftex
+## @tex
+## $$
+##  \Bigg( {\partial f(x) \over \partial x_1}, 
+##         {\partial f(x) \over \partial x_2}, \ldots,
+##         {\partial f(x) \over \partial x_N} \Bigg)^T
+## $$
+## @end tex
+## @end iftex
+## @ifnottex
 ## @example
 ##                 [ d f(x)   d f(x)        d f(x) ]
 ##     transpose ( [ ------   -----   ...   ------ ] )
 ##                 [  dx_1     dx_2          dx_N  ]
 ## @end example
+## @end ifnottex
 ##
 ## Here is an example of calling @code{sqp}:
 ##

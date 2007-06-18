@@ -5,6 +5,11 @@
 @node Optimization
 @chapter Optimization
 
+Octave comes with support for solving various kinds of optimization
+problems. Specifically Octave can solve problems in Linear Programming,
+Quadratic Programming, Nonlinear Programming, and Linear Least Squares
+Minimization.
+
 @menu
 * Linear Programming::       
 * Quadratic Programming::       
@@ -23,21 +28,98 @@
 @node Linear Programming
 @section Linear Programming
 
+Octave can solve Linear Programming problems using the @code{glpk}
+function.  That is, Octave can solve
+
+@iftex
+@tex
+$$
+  \min_x c^T x
+$$
+@end tex
+@end iftex
+@ifnottex
+@example
+min C'*x
+@end example
+@end ifnottex
+subject to the linear constraints
+@iftex
+@tex
+$Ax = b$ where $x \geq 0$.
+@end tex
+@end iftex
+@ifnottex
+@math{A*x = b} where @math{x >= 0}.
+@end ifnottex
+
+@noindent
+The @code{glpk} function also supports variations of this problem.
+
 @DOCSTRING(glpk)
 
 @node Quadratic Programming
 @section Quadratic Programming
+
+Octave can also solve Quadratic Programming problems, this is
+@iftex
+@tex
+$$
+ \min_x {1 \over 2} x^T H x + x^T q
+$$
+@end tex
+@end iftex
+@ifnottex
+@example
+min 0.5 x'*H*x + x'*q
+@end example
+@end ifnottex
+subject to
+@iftex
+@tex
+$$
+ Ax = b \qquad lb \leq x \leq ub \qquad A_{lb} \leq A_{in} \leq A_{ub}
+$$
+@end tex
+@end iftex
+@ifnottex
+@example
+     A*x = b
+     lb <= x <= ub
+     A_lb <= A_in*x <= A_ub
+@end example
+@end ifnottex
 
 @DOCSTRING(qp)
 
 @node Nonlinear Programming
 @section Nonlinear Programming
 
+Octave can also perform general nonlinear minimization using a
+successive quadratic programming solver.
+
 @DOCSTRING(sqp)
 
 @node Linear Least Squares
 @section Linear Least Squares
 
-@DOCSTRING(gls)
+Octave also supports linear least squares minimization.  That is,
+Octave can find the parameter @math{b} such the the model
+@iftex
+@tex
+$y = xb$
+@end tex
+@end iftex
+@ifnottex
+@math{y = x*b}
+@end ifnottex
+fits data @math{(x,y)} as good as possible, assuming zero-mean
+Gaussian noise.  If the noise is assumed to be isotropic the problem
+can be solved using the @samp{\} or @samp{/} operators, or the @code{ols}
+function.  In the general case where the noise is assumed to be anisotropic
+the @code{gls} is needed.
 
 @DOCSTRING(ols)
+
+@DOCSTRING(gls)
+

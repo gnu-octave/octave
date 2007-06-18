@@ -165,6 +165,9 @@ solution.\n\
 \n\
 You can use the function @code{quad_options} to set optional\n\
 parameters for @code{quad}.\n\
+\n\
+It should be noted that since @code{quad} is written in Fortran it\n\
+cannot be called recursively.\n\
 @end deftypefn")
 {
   octave_value_list retval;

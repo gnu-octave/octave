@@ -2,16 +2,48 @@
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
-@node Quadrature
-@chapter Quadrature
+@node Numerical Integration
+@chapter Numerical Integration
+
+Octave comes with several built-in functions for computing the integral
+of a function numerically.  These functions all solve 1-dimensional
+integration problems.
 
 @menu
-* Functions of One Variable::   
+* Functions of One Variable:: 
+* Functions of Multiple Variables:: 
 * Orthogonal Collocation::      
 @end menu
 
 @node Functions of One Variable
 @section Functions of One Variable
+
+Octave supports three different algorithms for computing the integral
+@iftex
+@tex
+$$
+ \int_a^b f(x) d x
+$$
+@end tex
+@end iftex
+of a function @math{f} over the interval from @math{a} to @math{b}.
+These are
+
+@table @code
+@item quad
+Numerical integration based on Gaussian quadrature.
+
+@item quadl
+Numerical integration using an adaptive Lobatto rule.
+
+@item trapz
+Numerical integration using the trapezodial method.
+@end table
+
+@noindent
+Besides these functions Octave also allows you to perform cumulative
+numerical integration using the trapezodial method through the
+@code{cumtrapz} function.
 
 @DOCSTRING(quad)
 
@@ -26,7 +58,7 @@ $$
 from $x = 0$ to $x = 3$.
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 
 @example
   @var{f}(@var{x}) = @var{x} * sin (1/@var{x}) * sqrt (abs (1 - @var{x}))
@@ -34,7 +66,7 @@ from $x = 0$ to $x = 3$.
 
 @noindent
 from @var{x} = 0 to @var{x} = 3.
-@end ifinfo
+@end ifnottex
 
 This is a fairly difficult integration (plot the function over the range
 of integration to see why).
@@ -89,10 +121,10 @@ $u^\prime - \alpha u^{\prime\prime} = 0$ with the boundary conditions
 $u(0) = 0$ and $u(1) = 1$.
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 @var{u}' - @var{alpha} * @var{u}'' = 0 with the boundary conditions
 @var{u}(0) = 0 and @var{u}(1) = 1.
-@end ifinfo
+@end ifnottex
 
 First, we can generate the weight matrices for @var{n} points (including
 the endpoints of the interval), and incorporate the boundary conditions
@@ -102,9 +134,9 @@ in the right hand side (for a specific value of
 $\alpha$).
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 @var{alpha}).
-@end ifinfo
+@end ifnottex
 
 @example
 @group
@@ -123,3 +155,85 @@ Then the solution at the roots @var{r} is
 u = [ 0; (at - alpha * bt) \ rhs; 1]
      @result{} [ 0.00; 0.004; 0.01 0.00; 0.12; 0.62; 1.00 ]
 @end example
+
+@node Functions of Multiple Variables
+@section Functions of Multiple Variables
+
+Octave does not have built-in functions for computing the integral
+of functions of multiple variables.  It is however possible to compute
+the integral of a function of multiple variables using the functions
+for one-dimensional integrals.
+
+To illustrate how the integration can be performed, we will integrate
+the function
+@iftex
+@tex
+$$
+  f(x, y) = \sin(\pi x y)\sqrt{x y}
+$$
+@end tex
+@end iftex
+@ifnottex
+@example
+f(x, y) = sin(pi*x*y)*sqrt(x*y)
+@end example
+@end ifnottex
+for @math{x} and @math{y} between 0 and 1.
+
+The first approach creates a function that integrates @math{f} with
+respect to @math{x}, and then integrates that function with respect to
+@math{y}.  Since @code{quad} is written in Fortran it cannot be called
+recursively.  This means that @code{quad} cannot integrate a function
+that calls @code{quad}, and hence cannot be used to perform the double
+integration.  It is however possible with @code{quadl}, which is what
+the following code does.
+
+@example
+function I = g(y)
+  I = ones(1, length(y));
+  for i = 1:length(y)
+    f = @@(x) sin(pi.*x.*y(i)).*sqrt(x.*y(i));
+    I(i) = quadl(f, 0, 1);
+  endfor
+endfunction
+
+I = quadl("g", 0, 1)
+      @result{} 0.30022
+@end example
+
+The above mentioned approach works but is fairly slow, and that problem
+increases exponentially with the dimensionality the problem.  Another
+possible solution is to use Orthogonal Collocation as described in the
+previous section.  The integral of a function @math{f(x,y)} for
+@math{x} and @math{y} between 0 and 1 can be approximated using @math{n}
+points by
+@iftex
+@tex
+$$
+ \int_0^1 \int_0^1 f(x,y) d x d y \approx \sum_{i=1}^n \sum_{j=1}^n q_i q_j f(r_i, r_j),
+$$
+@end tex
+@end iftex
+@ifnottex
+the sum over @code{i=1:n} and @code{j=1:n} of @code{q(i)*q(j)*f(r(i),r(j))},
+@end ifnottex
+where @math{q} and @math{r} is as returned by @code{colloc(n)}.  The
+generalisation to more than two variables is straight forward.  The
+following code computes the studied integral using @math{n=7} points.
+
+@example
+f = @@(x,y) sin(pi*x*y').*sqrt(x*y');
+n = 7;
+[t, A, B, q] = colloc(n);
+I = q'*f(t,t)*q;
+      @result{} 0.30022
+@end example
+
+@noindent
+It should be noted that the number of points determines the quality
+of the approximation.  If the integration needs to be performed between
+@math{a} and @math{b} instead of 0 and 1, a change of variables is needed.
+
+
+
+

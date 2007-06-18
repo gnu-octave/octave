@@ -6,13 +6,35 @@
 @chapter Sets
 
 Octave has a limited set of functions for managing sets of data, where a
-set is defined as a collection unique elements.
+set is defined as a collection unique elements.  In Octave a set is
+represented as a vector of numbers.
 
 @DOCSTRING(create_set)
 
-@DOCSTRING(ismember)
-
 @DOCSTRING(unique)
+
+@menu
+* Set Operations:: 
+@end menu
+
+@node Set Operations
+@section Set Operations
+
+Octave supports the basic set operations.  That is, Octave can compute
+the union, intersection, complement, and difference of two sets.
+Octave can also supports the @emph{Exclusive Or} set operation, and
+membership determination.  The functions for set operations all work in
+pretty much the same way.  As an example, assume that @code{x} and
+@code{y} contains two sets, then
+
+@example
+union(x, y)
+@end example
+
+@noindent
+computes the union of the two sets.
+
+@DOCSTRING(ismember)
 
 @DOCSTRING(union)
 

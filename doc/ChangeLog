@@ -1,3 +1,11 @@
+2007-06-18  Søren Hauberg  <hauberg@gmail.com>
+
+        * interpreter/optim.txi: Added some introductory text to each
+	section.
+
+        * interpreter/set.txi: Added some introductory text.
+        * interpreter/octave.texi: Updated to reflect changes in set.txi.
+
 2007-06-15  David Bateman  <dbateman@free.fr>
 
 	* faq/Octave-FAQ.texi: Document the gnuplot 4.2 bug using pipes.

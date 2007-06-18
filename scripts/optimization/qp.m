@@ -18,33 +18,39 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb}, @var{Ain}, @var{A_ub})
+## @deftypefn {Function File} {[@var{x}, @var{obj}, @var{info}, @var{lambda}] =} qp (@var{x0}, @var{H}, @var{q}, @var{A}, @var{b}, @var{lb}, @var{ub}, @var{A_lb}, @var{A_in}, @var{A_ub})
 ## Solve the quadratic program
-## @ifinfo
+## @iftex
+## @tex
+## $$
+##  \min_x {1 \over 2} x^T H x + x^T q
+## $$
+## @end tex
+## @end iftex
+## @ifnottex
 ##
 ## @example
 ##      min 0.5 x'*H*x + x'*q
 ##       x
 ## @end example
 ##
-## @end ifinfo
+## @end ifnottex
+## subject to
 ## @iftex
 ## @tex
+## $$
+##  Ax = b \qquad lb \leq x \leq ub \qquad A_{lb} \leq A_{in} \leq A_{ub}
+## $$
 ## @end tex
 ## @end iftex
-## subject to
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ##      A*x = b
 ##      lb <= x <= ub
-##      A_lb <= Ain*x <= A_ub
+##      A_lb <= A_in*x <= A_ub
 ## @end example
-## @end ifinfo
-## @iftex
-## @tex
-## @end tex
-## @end iftex
+## @end ifnottex
 ##
 ## @noindent
 ## using a null-space active-set method.

@@ -23,9 +23,9 @@
 ## @deftypefnx {Function File} {@var{z} =} cumtrapz (@dots{}, @var{dim})
 ## 
 ## Cumulative numerical intergration using trapezodial method.
-## @code{trapz (@var{y})} computes the cummulative integral of the 
+## @code{cumtrapz (@var{y})} computes the cummulative integral of the 
 ## @var{y} along the first non singleton dimension. If the argument 
-## @var{x} is omitted a equally spaced vector is assumed. @code{trapz 
+## @var{x} is omitted a equally spaced vector is assumed. @code{cumtrapz 
 ## (@var{x}, @var{y})} evaluates the cummulative integral with respect 
 ## to @var{x}.
 ##  

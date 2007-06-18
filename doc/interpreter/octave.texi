@@ -149,7 +149,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Linear Algebra::              
 * Nonlinear Equations::         
 * Sparse Matrices::
-* Quadrature::                  
+* Numerical Integration::                  
 * Differential Equations::      
 * Optimization::                
 * Statistics::                  
@@ -413,10 +413,11 @@ Sparse Matrices
 * Iterative Techniques::
 * Real Life Example::
 
-Quadrature
+Numerical Integration
 
 * Functions of One Variable::   
 * Orthogonal Collocation::      
+* Functions of Multiple Variables:: 
 
 Differential Equations
 
@@ -435,6 +436,10 @@ Statistics
 * Tests::                       
 * Models::                      
 * Distributions::               
+
+Sets
+
+* Set Operations::
 
 Interpolation
 * One-dimensional Interpolation::

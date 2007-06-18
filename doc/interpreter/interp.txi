@@ -18,31 +18,49 @@
 There are some important differences between the various interpolation
 methods. The 'spline' method enforces that both the first and second
 derivatives of the interpolated values have a continuous derivative,
-whereas the other methods do not. This can be demonstrated by the code
+whereas the other methods do not. This means that the results of the
+'spline' method are generally smoother. If the function to be
+interpolated is in fact smooth, then 'spline' will give excellent
+results. However, if the function to be evaluated is in some manner
+discontinuous, then 'pchip' interpolation might give better results.
+
+This can be demonstrated by the code
 
 @example
 @group
-t = 0 : 0.3 : pi; dt = t(2)-t(1);
-n = length (t); k = 100; dti = dt*n/k;
-ti = t(1) + [0 : k-1]*dti;
-y = sin (4*t + 0.3) .* cos (3*t - 0.1);
-ddyc = diff(diff(interp1(t,y,ti,'cubic'))./dti)./dti;
-ddys = diff(diff(interp1(t,y,ti,'spline'))./dti)./dti;
-ddyp = diff(diff(interp1(t,y,ti,'pchip'))./dti)./dti;
-plot (ti(2:end-1), ddyc,'g+',ti(2:end-1),ddys,'b*', ...
-      ti(2:end-1),ddyp,'c^');
-legend('cubic','spline','pchip');
+t = -2:2;
+dt = 1;
+ti =-2:0.025:2;
+dti = 0.025;
+y = sign(t);
+ys = interp1(t,y,ti,'spline');
+yp = interp1(t,y,ti,'pchip');
+ddys = diff(diff(ys)./dti)./dti;
+ddyp = diff(diff(yp)./dti)./dti;
+figure(1);
+plot (ti, ys,'r-', ti, yp,'g-');
+legend('spline','pchip',4);
+figure(2);
+plot (ti, ddys,'r+', ti, ddyp,'g*');
+legend('spline','pchip');
 @end group
 @end example
 
 @ifnotinfo
 @noindent
-The result of which can be seen in @ref{fig:interpderiv}.
+The result of which can be seen in @ref{fig:interpderiv1} and
+@ref{fig:interpderiv2}.
 
-@float Figure,fig:interpderiv
-@image{interpderiv,8cm}
-@caption{Comparison of second derivative of interpolated values for
-various interpolation methods}
+@float Figure,fig:interpderiv1
+@image{interpderiv1,8cm}
+@caption{Comparison of 'phcip' and 'spline' interpolation methods for a 
+step function}
+@end float
+
+@float Figure,fig:interpderiv2
+@image{interpderiv2,8cm}
+@caption{Comparison of the second derivate of the 'phcip' and 'spline' 
+interpolation methods for a step function}
 @end float
 @end ifnotinfo
 

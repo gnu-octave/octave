@@ -20,17 +20,27 @@ function interpimages (nm, typ)
     vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
     mesh (zi, yi, squeeze (vi(1,:,:)));
     print (strcat (nm, ".", typ), strcat ("-d", typ))
-  elseif (strcmp (nm, "interpderiv"))
-    t = 0 : 0.3 : pi; dt = t(2)-t(1);
-    n = length (t); k = 100; dti = dt*n/k;
-    ti = t(1) + [0 : k-1]*dti;
-    y = sin (4*t + 0.3) .* cos (3*t - 0.1);
-    ddyc = diff(diff(interp1(t,y,ti,'cubic'))./dti)./dti;
+  elseif (strcmp (nm, "interpderiv1"))
+    t = -2:2;
+    dt = 1;
+    ti =-2:0.025:2;
+    dti = 0.025;
+    y = sign(t);
+    ys = interp1(t,y,ti,'spline');
+    yp = interp1(t,y,ti,'pchip');
+    plot (ti, ys,'r-', ti, yp,'g-');
+    legend('spline','pchip', 4);
+    print (strcat (nm, ".", typ), strcat ("-d", typ))
+  elseif (strcmp (nm, "interpderiv2"))
+    t = -2:2;
+    dt = 1;
+    ti =-2:0.025:2;
+    dti = 0.025;
+    y = sign(t);
     ddys = diff(diff(interp1(t,y,ti,'spline'))./dti)./dti;
     ddyp = diff(diff(interp1(t,y,ti,'pchip'))./dti)./dti;
-    plot (ti(2:end-1), ddyc,'g+',ti(2:end-1),ddys,'b*', ...
-          ti(2:end-1),ddyp,'c^');
-    legend('cubic','spline','pchip');
+    plot (ti(2:end-1),ddys,'r*', ti(2:end-1),ddyp,'g+');
+    legend('spline','pchip');
     print (strcat (nm, ".", typ), strcat ("-d", typ))
   endif
   bury_output ();  

@@ -1,3 +1,10 @@
+2007-06-18  David Bateman  <dbateman@free.fr>
+
+	* interpreter/interpimages.m: Simpler images to demonstrate
+	the continuity of the second derivative of splines.
+	* interpreter/interp.txi: Also change figures here.
+	* interpreter/Makefile.in: and here.
+	
 2007-06-18  Søren Hauberg  <hauberg@gmail.com>
 
         * interpreter/optim.txi: Added some introductory text to each

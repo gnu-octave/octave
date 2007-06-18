@@ -43,7 +43,7 @@ EXAMPLE_FILES_NODIR = \
 
 EXAMPLE_FILES = $(addprefix $(top_srcdir)/examples/, $(EXAMPLE_FILES_NODIR))
 
-INTERPIMAGES = interpft interpn interpderiv
+INTERPIMAGES = interpft interpn interpderiv1 interpderiv2
 INTERPIMAGES_EPS = $(addsuffix .eps, $(INTERPIMAGES))
 INTERPIMAGES_PDF = $(addsuffix .pdf, $(INTERPIMAGES))
 INTERPIMAGES_PNG = $(addsuffix .png, $(INTERPIMAGES))

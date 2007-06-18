@@ -58,13 +58,13 @@
 ##
 ## If @var{extrap} is the string 'extrap', then extrapolate values beyond
 ## the endpoints.  If @var{extrap} is a number, replace values beyond the
-## endpoints with that number.  If @var{extrap} is missing, assume NaN.
+## endpoints with that number.  If @var{extrap} is missing, assume NA.
 ## @seealso{interp1, interp2, spline, meshgrid}
 ## @end deftypefn
 
 function vi = interp3 (varargin)
   method = "linear";
-  extrapval = NaN;
+  extrapval = NA;
   nargs = nargin;
 
   if (nargin < 1)

@@ -41,7 +41,7 @@
   :group 'octave-inferior)
 
 (defcustom inferior-octave-prompt
-  "\\(^octave\\(-[.0-9]+\\)?\\(:[0-9]+\\)?\\|^debug\\|^\\)>+ "
+  "\\(^octave\\(\\|.bin\\|.exe\\)\\(-[.0-9]+\\)?\\(:[0-9]+\\)?\\|^debug\\|^\\)>+ "
   "*Regexp to match prompts for the inferior Octave process."
   :type 'regexp
   :group 'octave-inferior)

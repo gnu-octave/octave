@@ -1,3 +1,7 @@
+2007-06-18  Søren Hauberg  <hauberg@gmail.com>
+
+        * DLD-FUNCTIONS/__lin_interpn__.cc: Replace octave_NaN with octave_NA.
+
 2007-06-15  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h (OCTAVE_GRAPHICS_PROPERTY_INTERNAL,

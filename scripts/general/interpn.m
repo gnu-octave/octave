@@ -58,14 +58,14 @@
 ##
 ## If @var{extrap} is the string 'extrap', then extrapolate values beyond
 ## the endpoints.  If @var{extrap} is a number, replace values beyond the
-## endpoints with that number.  If @var{extrap} is missing, assume NaN.
+## endpoints with that number.  If @var{extrap} is missing, assume NA.
 ## @seealso{interp1, interp2, spline, ndgrid}
 ## @end deftypefn
 
 function vi = interpn (varargin)
 
   method = "linear";
-  extrapval = NaN;
+  extrapval = NA;
   nargs = nargin;
 
   if (nargin < 1)
@@ -150,7 +150,7 @@ function vi = interpn (varargin)
   method = tolower (method);
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
-    vi (vi == NaN) = extrapval;
+    vi (isna (vi)) = extrapval;
   elseif (strcmp (method, "nearest"))
     yshape = size (y{1});
     yidx = cell (1, nd);

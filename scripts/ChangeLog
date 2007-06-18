@@ -1,5 +1,11 @@
 2007-06-18  Søren Hauberg  <hauberg@gmail.com>
 
+        * general/interp1.m, general/interp2.m, general/interp3.m,
+	general/interpn.m: Replace, NaN with NA.  Use isna instead of ==
+	to check for NA.
+
+2007-06-18  Søren Hauberg  <hauberg@gmail.com>
+
         * optimization/glpk.m: TeXified the help text.
         * optimization/qp.m: TeXified the help text.
         * optimization/sqp.m: TeXified the help text.

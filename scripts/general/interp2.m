@@ -68,7 +68,7 @@
 ## If a scalar value @var{extrapval} is defined as the final value, then
 ## values outside the mesh as set to this value. Note that in this case 
 ## @var{method} must be defined as well. If @var{extrapval} is not
-## defined then NaN is assumed. 
+## defined then NA is assumed. 
 ##
 ## @seealso{interp1}
 ## @end deftypefn
@@ -92,7 +92,7 @@
 function ZI = interp2 (varargin)
   Z = X = Y = XI = YI = n = [];
   method = "linear";
-  extrapval = NaN;
+  extrapval = NA;
 
   switch (nargin)
     case 1
@@ -218,7 +218,7 @@ function ZI = interp2 (varargin)
       ZI = Z(idx);
     endif
 
-    ## set points outside the table to NaN
+    ## set points outside the table to 'extrapval'
     ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1)) = extrapval;
     ZI = reshape (ZI, shape);
   else
@@ -337,7 +337,7 @@ endfunction
 %!  Orig = X.^2 + Y.^3;
 %!  xi = [0,4];
 %!  yi = [3,8]';
-%!  assert(interp2(x,y,Orig, xi, yi),[nan,nan;nan,nan]);
+%!  assert(interp2(x,y,Orig, xi, yi),[NA,NA;NA,NA]);
 %!  assert(interp2(x,y,Orig, xi, yi,'linear', 0),[0,0;0,0]);
 
 %!test % for values at boundaries

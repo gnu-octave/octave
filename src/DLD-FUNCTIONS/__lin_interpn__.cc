@@ -188,7 +188,7 @@ This function only performs linear interpolation.\n\
   double *vi = Vi.fortran_vec ();
   octave_idx_type Ni = Vi.numel ();
 
-  double extrapval = octave_NaN;
+  double extrapval = octave_NA;
 
   for (int i = 0; i < n; i++)
     {

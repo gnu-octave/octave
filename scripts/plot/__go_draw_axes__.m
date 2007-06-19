@@ -154,65 +154,7 @@ function __go_draw_axes__ (h, plot_stream)
       fputs (plot_stream, "set grid nomztics;\n");
     endif
 
-    if (strcmp (axis_obj.xtickmode, "manual"))
-      xtic = axis_obj.xtick;
-      if (isempty (xtic))
-	fputs (plot_stream, "unset xtics;\n");
-      else
-	## FIXME
-      endif
-    else
-      fputs (plot_stream, "set xtics;\n");
-    endif
-
-    if (strcmp (axis_obj.ytickmode, "manual"))
-      ytic = axis_obj.ytick;
-      if (isempty (ytic))
-	fputs (plot_stream, "unset ytics;\n");
-      else
-	## FIXME
-      endif
-    else
-      fputs (plot_stream, "set ytics;\n");
-    endif
-
-    if (strcmp (axis_obj.ztickmode, "manual"))
-      ztic = axis_obj.ztick;
-      if (isempty (ztic))
-	fputs (plot_stream, "unset ztics;\n");
-      else
-	## FIXME
-      endif
-    else
-      fputs (plot_stream, "set ztics;\n");
-    endif
-
-    if (strcmp (axis_obj.xticklabelmode, "manual"))
-      ## FIXME -- we should be able to specify the actual tick labels,
-      ## not just the format.
-      xticlabel = axis_obj.xticklabel;
-      fprintf (plot_stream, "set format x \"%s\";\n", xticlabel);
-    else
-      fputs (plot_stream, "set xtics;\n");
-    endif
-
-    if (strcmp (axis_obj.yticklabelmode, "manual"))
-      ## FIXME -- we should be able to specify the actual tick labels,
-      ## not just the format.
-      yticlabel = axis_obj.yticklabel;
-      fprintf (plot_stream, "set format y \"%s\";\n", yticlabel);
-    else
-      fputs (plot_stream, "set ytics;\n");
-    endif
-
-    if (strcmp (axis_obj.zticklabelmode, "manual"))
-      ## FIXME -- we should be able to specify the actual tick labels,
-      ## not just the format.
-      zticlabel = axis_obj.zticklabel;
-      fprintf (plot_stream, "set format z \"%s\";\n", zticlabel);
-    else
-      fputs (plot_stream, "set ztics;\n");
-    endif
+    do_tics (axis_obj, plot_stream);
 
     xlogscale = strcmp (axis_obj.xscale, "log");
     if (xlogscale)
@@ -952,4 +894,47 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
   endif
   fputs (plot_stream, "e\n");
 
+endfunction
+
+function do_tics (obj, plot_stream)
+  do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
+	     "x", plot_stream);
+  do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
+	     "y", plot_stream);
+  do_tics_1 (obj.ztickmode, obj.ztick, obj.zticklabelmode, obj.zticklabel,
+	     "z", plot_stream);
+endfunction
+
+function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
+  if (strcmp (ticmode, "manual"))
+    if (isempty (tics))
+      fprintf (plot_stream, "unset %stics;\n", ax);
+    elseif (strcmp (labelmode, "manual") && ! isempty (labels))
+      k = 1;
+      ntics = numel (tics);
+      nlabels = numel (labels);
+      if (iscellstr (labels))
+	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
+	fprintf (plot_stream, "set %stics (", ax);
+	for i = 1:ntics
+	  fprintf (plot_stream, " \"%s\" %g", labels(k++), tics(i))
+	  if (i < ntics)
+	    fputs (plot_stream, ", ");
+	  endif
+	  if (k > nlabels)
+	    k = 1;
+	  endif
+	endfor
+	fputs (plot_stream, ");\n");
+      else
+	error ("unsupported type of ticklabel");
+      endif
+    else
+      fprintf (plot_stream, "set %stics (", ax);
+      fprintf (plot_stream, " %g,", xtic(1:end-1));
+      fprintf (plot_stream, " %g);\n", xtic(end));
+    endif
+  else
+    fprintf (plot_stream, "set %stics;\n", ax);
+  endif
 endfunction

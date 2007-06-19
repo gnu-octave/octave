@@ -35,8 +35,8 @@ function treeplot (Tree, NodeS, EdgeS)
       error ("treeplot: the first input argument must be a vector of predecessors");
     else
       ## the inicialization of node end edge style
-      NodeStyle = "0*;;";
-      EdgeStyle = "1;;";      
+      NodeStyle = "k*";
+      EdgeStyle = "r";      
       if (nargin > 2)
         EdgeStyle = EdgeS;
         if (nargin > 1) 

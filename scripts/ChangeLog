@@ -1,3 +1,13 @@
+2007-06-19  David Bateman  <dbateman@free.fr>
+
+	* plot/axis.m: Prefer to use legend rather than the older Octave
+	only ";;" legend syntax.
+	* polynomial/mkpp.m: ditto.
+	* polynomial/pchip.m: ditto.
+	* signal/freqz_plot.m: ditto.
+	* sparse/gplot.m: ditto.
+	* sparse/treeplot.m: ditto.
+
 2007-06-19  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m (do_tics, do_tics_1): New functions.

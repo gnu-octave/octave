@@ -64,4 +64,5 @@ endfunction
 %! b=t(1:4,:);
 %! pp = mkpp(x, [m(:),b(:)]);
 %! xi=linspace(0,pi,50);
-%! plot(x,t,"x;control;",xi,ppval(pp,xi),";interp;");
+%! plot(x,t,"x",xi,ppval(pp,xi));
+%! legend("control","interp");

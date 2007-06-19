@@ -38,7 +38,7 @@ function [x, y] = gplot (A, xy, line_style)
   endif
 
   if (nargin == 2)
-    line_style = "-;;";
+    line_style = "-";
   endif
 
   [i, j] = find (A);

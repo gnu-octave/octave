@@ -262,64 +262,64 @@ endfunction
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(221);    title("normal plot");
-%! plot(t, x, ";;");
+%! plot(t, x);
 %!
 %! subplot(222);    title("square plot");
-%! axis("square");  plot(t, x, ";;");
+%! axis("square");  plot(t, x);
 %!
 %! subplot(223);    title("equal plot");
-%! axis("equal");   plot(t, x, ";;");
+%! axis("equal");   plot(t, x);
 %! 
 %! subplot(224);    title("normal plot again");
-%! axis("normal");  plot(t, x, ";;");
+%! axis("normal");  plot(t, x);
 
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(121);   title("ij plot");
-%! axis("ij");     plot(t, x, ";;");
+%! axis("ij");     plot(t, x);
 %!
 %! subplot(122);   title("xy plot");
-%! axis("xy");     plot(t, x, ";;");
+%! axis("xy");     plot(t, x);
 
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(331);   title("x tics & labels");
-%! axis("ticx");   plot(t, x, ";;");
+%! axis("ticx");   plot(t, x);
 %!
 %! subplot(332);   title("y tics & labels");
-%! axis("ticy");   plot(t, x, ";;");
+%! axis("ticy");   plot(t, x);
 %!
 %! subplot(334);     title("x & y tics, x labels");
-%! axis("labelx","tic");   plot(t, x, ";;");
+%! axis("labelx","tic");   plot(t, x);
 %!
 %! subplot(335);     title("x & y tics, y labels");
-%! axis("labely","tic");   plot(t, x, ";;");
+%! axis("labely","tic");   plot(t, x);
 %!
 %! subplot(337);     title("x tics, no labels");
-%! axis("nolabel","ticx");   plot(t, x, ";;");
+%! axis("nolabel","ticx");   plot(t, x);
 %!
 %! subplot(338);     title("y tics, no labels");
-%! axis("nolabel","ticy");   plot(t, x, ";;");
+%! axis("nolabel","ticy");   plot(t, x);
 %!
 %! subplot(333);     title("no tics or labels");
-%! axis("off");    plot(t, x, ";;");
+%! axis("off");    plot(t, x);
 %!
 %! subplot(336);     title("all tics but no labels");
-%! axis("nolabel","tic");    plot(t, x, ";;");
+%! axis("nolabel","tic");    plot(t, x);
 %!
 %! subplot(339);     title("all tics & labels");
-%! axis("on");       plot(t, x, ";;");
+%! axis("on");       plot(t, x);
 
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);
 %!
 %! subplot(321);    title("axes at [0 3 0 1]")
-%! axis([0,3,0,1]); plot(t, x, ";;");
+%! axis([0,3,0,1]); plot(t, x);
 %!
 %! subplot(322);    title("auto");
-%! axis("auto");    plot(t, x, ";;");
+%! axis("auto");    plot(t, x);
 %!
 %! subplot(323);    title("manual");
 %! plot(t, x, ";sine [0:2pi];"); hold on;
@@ -335,6 +335,6 @@ endfunction
 %! plot(t, x, ";sine [0:2p];");
 %!
 %! subplot(326);    title("tight");
-%! axis("tight");   plot(t, x, ";;");
+%! axis("tight");   plot(t, x);
 %! % The last plot should not have any whitespace outside the data
 %! % limits, but "tight" isn't implemented yet.

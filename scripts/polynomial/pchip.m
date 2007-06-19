@@ -139,9 +139,8 @@ endfunction
 %! yspline = spline(x,y,xi);
 %! ypchip = pchip(x,y,xi);
 %! title("pchip and spline fit to discontinuous function");
-%! plot(xi,yspline,";spline;",...
-%!      xi,ypchip,"-;pchip;",...
-%!      x,y,"+;data;");
+%! plot(xi,yspline,xi,ypchip,"-",x,y,"+");
+%! legend ("spline","pchip","data");
 %! %-------------------------------------------------------------------
 %! % confirm that pchip agreed better to discontinuous data than spline
 

@@ -1,3 +1,8 @@
+2007-06-19  Vittoria Rezzonico  <vittoria.rezzonico@epfl.ch>
+
+	* sparse/pcg.m: Allow the preconditioner to be passed as two
+	separate matrices.
+
 2007-06-19  David Bateman  <dbateman@free.fr>
 
 	* plot/axis.m: Prefer to use legend rather than the older Octave

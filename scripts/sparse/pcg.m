@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} =} pcg (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m}, @var{x0}, @dots{})
+## @deftypefn {Function File} {@var{x} =} pcg (@var{a}, @var{b}, @var{tol}, @var{maxit}, @var{m1}, @var{m2}, @var{x0}, @dots{})
 ## @deftypefnx {Function File} {[@var{x}, @var{flag}, @var{relres}, @var{iter}, @var{resvec}, @var{eigest}] =} pcg (@dots{})
 ##
 ## Solves the linear system of equations @code{@var{a} * @var{x} =
@@ -50,15 +50,17 @@
 ## arguments, a default value equal to 20 is used.
 ## 
 ## @item
-## @var{m} is the (left) preconditioning matrix, so that the iteration is
+## @var{m} = @var{m1} * @var{m2} is the (left) preconditioning matrix, so that the iteration is
 ## (theoretically) equivalent to solving by @code{pcg} @code{@var{P} *
 ## @var{x} = @var{m} \ @var{b}}, with @code{@var{P} = @var{m} \ @var{a}}.
 ## Note that a proper choice of the preconditioner may dramatically
-## improve the overall performance of the method. Instead of matrix
-## @var{m}, the user may pass a function which returns the results of 
-## applying the inverse of @var{m} to a vector (usually this is the
-## preferred way of using the preconditioner). If @code{[]} is supplied
-## for @var{m}, or @var{m} is omitted, no preconditioning is applied.
+## improve the overall performance of the method. Instead of matrices
+## @var{m1} and @var{m2}, the user may pass two functions which return 
+## the results of applying the inverse of @var{m1} and @var{m2} to 
+## a vector (usually this is the preferred way of using the preconditioner). 
+## If @code{[]} is supplied for @var{m1}, or @var{m1} is omitted, no 
+## preconditioning is applied. If @var{m2} is omitted, @var{m} = @var{m1}
+## will be used as preconditioner.
 ## 
 ## @item
 ## @var{x0} is the initial guess. If @var{x0} is empty or omitted, the 
@@ -124,6 +126,7 @@
 ## 	N = 10; 
 ## 	A = spdiag ([1:N]);
 ## 	b = rand (N, 1);
+##      [L, U, P, Q] = luinc (A,1.e-3);
 ## @end group
 ## @end example
 ## 
@@ -145,8 +148,22 @@
 ##   x = pcg ("applyA", b)
 ## @end group
 ## @end example
-## 
-## @sc{Example 3:} Preconditioned iteration, with full diagnostics. The
+##
+## @sc{Example 3:} @code{pcg} with a preconditioner: @var{l} * @var{u}
+##
+## @example
+## x=pcg(A,b,1.e-6,500,L*U);
+## @end example
+##
+## @sc{Example 4:} @code{pcg} with a preconditioner: @var{l} * @var{u}.
+## Faster than @sc{Example 3} since lower and upper triangular matrices 
+## are easier to invert
+##
+## @example
+## x=pcg(A,b,1.e-6,500,L,U);
+## @end example
+##
+## @sc{Example 5:} Preconditioned iteration, with full diagnostics. The
 ## preconditioner (quite strange, because even the original matrix
 ## @var{a} is trivial) is defined as a function
 ## 
@@ -163,7 +180,7 @@
 ## @end group
 ## @end example
 ## 
-## @sc{Example 4:} Finally, a preconditioner which depends on a
+## @sc{Example 6:} Finally, a preconditioner which depends on a
 ## parameter @var{k}.
 ## 
 ## @example
@@ -175,7 +192,7 @@
 ##   endfuntion
 ## 
 ##   [x, flag, relres, iter, resvec, eigest] = ...
-##        pcg (A, b, [], [], "applyM", [], 3)
+##        pcg (A, b, [], [], "applyM", [], [], 3)
 ## @end group
 ## @end example
 ## 
@@ -193,18 +210,31 @@
 ## @end deftypefn
 
 ## Author: Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
+## Modified by: Vittoria Rezzonico <vittoria.rezzonico@epfl.ch>
+##    - Add the ability to provide the pre-conditioner as two separate
+## matrices
 
-function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M, x0, varargin)
+  function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M1, M2, x0, varargin)
 
-  if (nargin < 6 || isempty (x0))
+## M = M1*M2
+
+  if (nargin < 7 || isempty (x0))
     x = zeros (size (b));
   else
     x = x0;
   endif
 
-  if (nargin < 5)
-    M = [];
-  endif
+if ((nargin < 5) || isempty (M1))
+   existM1 = 0;
+else
+   existM1 = 1;
+endif
+
+if ((nargin < 6) || isempty (M2))
+   existM2 = 0;
+else
+   existM2 = 1;
+endif
 
   if (nargin < 4 || isempty (maxit))
     maxit = min (size (b, 1), 20);
@@ -236,21 +266,30 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M, x0,
   alpha = 1;
   iter = 2;
 
-  while (resvec(iter-1,1) > tol*resvec(1,1) && iter < maxit)
-    if (isnumeric (M))		# is M a matrix?
-      if (isempty (M))		# if M is empty, use no precond
-	z = r;
-      else			# otherwise, apply the precond
-	z = M \ r;
+  while (resvec (iter-1,1) > tol * resvec (1,1) && iter < maxit)
+    if (existM1)
+      if(isnumeric (M1))
+	y = M1 \ r;
+      else
+	y = feval (M1, r, varargin{:});
       endif
-    else			# then M should be a function!
-      z = feval (M, r, varargin{:});
+    else
+      y = r;
+    endif
+    if (existM2)
+      if (isnumeric (M2))
+	z = M2 \ y;
+      else
+	z = feval (M2, y, varargin{:});
+      endif
+    else
+      z = y;
     endif
     tau = z' * r; 
-    resvec(iter-1,2) = sqrt (tau);
+    resvec (iter-1,2) = sqrt (tau);
     beta = tau / oldtau;
     oldtau = tau;
-    p = z + beta*p;
+    p = z + beta * p;
     if (isnumeric (A))		# is A a matrix?
       w = A * p;
     else			# then A should be a function!
@@ -261,15 +300,15 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M, x0,
     if (alpha <= 0.0) # negative matrix?
       matrix_positive_definite = false;
     endif
-    x += alpha*p;
-    r -= alpha*w;
+    x += alpha * p;
+    r -= alpha * w;
     if (nargout > 5 && iter > 2)
       T(iter-1:iter, iter-1:iter) = T(iter-1:iter, iter-1:iter) + ...
 	  [1 sqrt(beta); sqrt(beta) beta]./oldalpha;
       ## EVS = eig(T(2:iter-1,2:iter-1));
       ## fprintf(stderr,"PCG condest: %g (iteration: %d)\n", max(EVS)/min(EVS),iter);
     endif
-    resvec(iter,1) = norm (r);
+    resvec (iter,1) = norm (r);
     iter++;
   endwhile
 
@@ -277,7 +316,7 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M, x0,
     if (matrix_positive_definite)
       if (iter > 3)
 	T = T(2:iter-2,2:iter-2);
-	l = eig(T);
+	l = eig (T);
 	eigest = [min(l), max(l)];
 	## fprintf (stderr, "pcg condest: %g\n", eigest(2)/eigest(1));
       else
@@ -290,28 +329,39 @@ function [x, flag, relres, iter, resvec, eigest] = pcg (A, b, tol, maxit, M, x0,
 
     ## apply the preconditioner once more and finish with the precond
     ## residual
-    if (isnumeric (M))		# is M a matrix?
-      if (isempty (M))		# if M is empty, use no precond
-	z = r;
-      else			# otherwise, apply the precond
-	z = M \ r;
+    if (existM1)
+      if(isnumeric (M1))
+	y = M1 \ r;
+      else
+	y = feval (M1, r, varargin{:});
       endif
-    else			# then M should be a function!
-      z = feval (M, r, varargin{:});
+    else
+      y = r;
     endif
-    resvec(iter-1,2) = sqrt (r'*z);
+    if (existM2)
+      if (isnumeric (M2))
+	z = M2 \ y;
+      else
+	z = feval (M2, y, varargin{:});
+      endif
+    else
+      z = y;
+    endif
+
+    resvec (iter-1,2) = sqrt (r' * z);
   else
     resvec = resvec(:,1);
   endif
 
   flag = 0;
-  relres = resvec(iter-1,1)./resvec(1,1);
+  relres = resvec (iter-1,1) ./ resvec(1,1);
   iter -= 2;
-  if (iter >= maxit-2)
+  if (iter >= maxit - 2)
     flag = 1;
     if (nargout < 2)
       warning ("pcg: maximum number of iterations (%d) reached\n", iter);
-      warning ("the initial residual norm was reduced %g times.\n", 1.0/relres);
+      warning ("the initial residual norm was reduced %g times.\n", ...
+	       1.0 / relres);
     endif
   elseif (nargout < 2)
     fprintf (stderr, "pcg: converged in %d iterations. ", iter);
@@ -332,9 +382,9 @@ endfunction
 %!	# Simplest usage of pcg (see also 'help pcg')
 %!
 %!	N = 10; 
-%!	A = diag([1:N]); b = rand(N,1); y = A\b; #y is the true solution
-%!  	x = pcg(A,b);
-%!	printf('The solution relative error is %g\n', norm(x-y)/norm(y));
+%!	A = diag ([1:N]); b = rand (N, 1); y =  A \ b; #y is the true solution
+%!  	x = pcg (A, b);
+%!	printf('The solution relative error is %g\n', norm (x - y) / norm (y));
 %!
 %!	# You shouldn't be afraid if pcg issues some warning messages in this
 %!	# example: watch out in the second example, why it takes N iterations 
@@ -345,24 +395,26 @@ endfunction
 %!	# We use this output to plot the convergence history  
 %!
 %!	N = 10; 
-%!	A = diag([1:N]); b = rand(N,1); X = A\b; #X is the true solution
-%!  	[x, flag, relres, iter, resvec] = pcg(A,b);
-%!	printf('The solution relative error is %g\n', norm(x-X)/norm(X));
+%!	A = diag ([1:N]); b = rand (N, 1); X =  A \ b; #X is the true solution
+%!  	[x, flag, relres, iter, resvec] = pcg (A, b);
+%!	printf('The solution relative error is %g\n', norm (x - X) / norm (X));
 %!	title('Convergence history'); xlabel('Iteration'); ylabel('log(||b-Ax||/||b||)');
-%!	semilogy([0:iter],resvec/resvec(1),'o-g;relative residual;');
+%!	semilogy([0:iter], resvec / resvec(1),'o-g');
+%!      legend('relative residual');
 %!demo
 %!
 %!	# Full output from pcg, including the eigenvalue estimates
 %!	# Hilbert matrix is extremely ill conditioned, so pcg WILL have problems
 %!
 %!	N = 10; 
-%!	A = hilb(N); b = rand(N,1); X = A\b; #X is the true solution
-%!  	[x, flag, relres, iter, resvec, eigest] = pcg(A,b,[],200);
-%!	printf('The solution relative error is %g\n', norm(x-X)/norm(X));
-%!	printf('Condition number estimate is %g\n', eigest(2)/eigest(1));
-%!	printf('Actual condition number is   %g\n', cond(A));
+%!	A = hilb (N); b = rand (N, 1); X = A \ b; #X is the true solution
+%!  	[x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], 200);
+%!	printf('The solution relative error is %g\n', norm (x - X) / norm (X));
+%!	printf('Condition number estimate is %g\n', eigest(2) / eigest (1));
+%!	printf('Actual condition number is   %g\n', cond (A));
 %!	title('Convergence history'); xlabel('Iteration'); ylabel('log(||b-Ax||)');
-%!	semilogy([0:iter],resvec,['o-g;absolute residual;';'+-r;absolute preconditioned residual;']);
+%!	semilogy([0:iter], resvec,['o-g';'+-r']);
+%!      legend('absolute residual','absolute preconditioned residual');
 %!demo
 %!
 %!	# Full output from pcg, including the eigenvalue estimates
@@ -372,49 +424,55 @@ endfunction
 %!	# which is the diagonal of A
 %!
 %!	N = 100; 
-%!	A = zeros(N,N);
-%!	for i=1:N-1 # form 1-D Laplacian matrix
-%!		A(i:i+1,i:i+1) = [2 -1; -1 2];
+%!	A = zeros (N, N);
+%!	for i=1 : N - 1 # form 1-D Laplacian matrix
+%!		A (i:i+1, i:i+1) = [2 -1; -1 2];
 %!	endfor
-%!	b = rand(N,1); X = A\b; #X is the true solution
+%!	b = rand (N, 1); X = A \ b; #X is the true solution
 %!	maxit = 80;
-%!	printf('System condition number is %g\n',cond(A));
+%!	printf('System condition number is %g\n', cond (A));
 %!	# No preconditioner: the convergence is very slow!
 %!
-%!  	[x, flag, relres, iter, resvec, eigest] = pcg(A,b,[],maxit);
-%!	printf('System condition number estimate is %g\n',eigest(2)/eigest(1));
+%!  	[x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], maxit);
+%!	printf('System condition number estimate is %g\n', eigest(2) / eigest(1));
 %!	title('Convergence history'); xlabel('Iteration'); ylabel('log(||b-Ax||)');
-%!	semilogy([0:iter],resvec(:,1),'o-g;NO preconditioning: absolute residual;');
+%!	semilogy([0:iter], resvec(:,1), 'o-g');
+%!      legend('NO preconditioning: absolute residual');
 %!
 %!	pause(1);
 %!	# Test Jacobi preconditioner: it will not help much!!!
 %!
-%!	M = diag(diag(A)); # Jacobi preconditioner
-%!  	[x, flag, relres, iter, resvec, eigest] = pcg(A,b,[],maxit,M);
-%!	printf('JACOBI preconditioned system condition number estimate is %g\n',eigest(2)/eigest(1));
+%!	M = diag (diag (A)); # Jacobi preconditioner
+%!  	[x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], maxit, M);
+%!	printf('JACOBI preconditioned system condition number estimate is %g\n', eigest(2) / eigest(1));
 %!	hold on;
-%!	semilogy([0:iter],resvec(:,1),'o-r;JACOBI preconditioner: absolute residual;');
+%!	semilogy([0:iter], resvec(:,1), 'o-r');
+%!      legend('NO preconditioning: absolute residual', ...
+%!             'JACOBI preconditioner: absolute residual');
 %!
 %!	pause(1);
 %!	# Test nonoverlapping block Jacobi preconditioner: it will help much!
 %!
-%!	M = zeros(N,N);k=4
-%!	for i=1:k:N # form 1-D Laplacian matrix
-%!		M(i:i+k-1,i:i+k-1) = A(i:i+k-1,i:i+k-1);
+%!	M = zeros (N, N); k = 4;
+%!	for i = 1 : k : N # form 1-D Laplacian matrix
+%!		M (i:i+k-1, i:i+k-1) = A (i:i+k-1, i:i+k-1);
 %!	endfor
-%!  	[x, flag, relres, iter, resvec, eigest] = pcg(A,b,[],maxit,M);
-%!	printf('BLOCK JACOBI preconditioned system condition number estimate is %g\n',eigest(2)/eigest(1));
-%!	semilogy([0:iter],resvec(:,1),'o-b;BLOCK JACOBI preconditioner: absolute residual;');
+%!  	[x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], maxit, M);
+%!	printf('BLOCK JACOBI preconditioned system condition number estimate is %g\n', eigest(2) / eigest(1));
+%!	semilogy ([0:iter], resvec(:,1),'o-b');
+%!      legend('NO preconditioning: absolute residual', ...
+%!             'JACOBI preconditioner: absolute residual', ...
+%!             'BLOCK JACOBI preconditioner: absolute residual');
 %!	hold off;
 %!test
 %!
 %!	#solve small diagonal system
 %!
 %!	N = 10; 
-%!	A = diag([1:N]); b = rand(N,1); X = A\b; #X is the true solution
-%!  	[x, flag] = pcg(A,b,[],N+1);
-%!	assert(norm(x-X)/norm(X),0,1e-10);
-%!	assert(flag,0);
+%!	A = diag ([1:N]); b = rand (N, 1); X = A \ b; #X is the true solution
+%!  	[x, flag] = pcg (A, b, [], N+1);
+%!	assert(norm (x - X) / norm (X), 0, 1e-10);
+%!	assert(flag, 0);
 %!
 %!test
 %!
@@ -423,25 +481,25 @@ endfunction
 %!	#indefiniteness of A is detected
 %!
 %!	N = 10; 
-%!	A = diag([1:N].*(-ones(1,N).^2)); b = rand(N,1); X = A\b; #X is the true solution
-%!  	[x, flag] = pcg(A,b,[],N+1);
-%!	assert(norm(x-X)/norm(X),0,1e-10);
-%!	assert(flag,3);
+%!	A = diag([1:N] .* (-ones(1, N) .^ 2)); b = rand (N, 1); X = A \ b; #X is the true solution
+%!  	[x, flag] = pcg (A, b, [], N+1);
+%!	assert(norm (x - X) / norm (X), 0, 1e-10);
+%!	assert(flag, 3);
 %!
 %!test
 %!
 %!	#solve tridiagonal system, do not converge in default 20 iterations
 %!
 %!	N = 100; 
-%!	A = zeros(N,N);
-%!	for i=1:N-1 # form 1-D Laplacian matrix
-%!		A(i:i+1,i:i+1) = [2 -1; -1 2];
+%!	A = zeros (N, N);
+%!	for i = 1 : N - 1 # form 1-D Laplacian matrix
+%!		A (i:i+1, i:i+1) = [2 -1; -1 2];
 %!	endfor
-%!	b = ones(N,1); X = A\b; #X is the true solution
-%!  	[x, flag, relres, iter, resvec, eigest] = pcg(A,b,1e-12);
+%!	b = ones (N, 1); X = A \ b; #X is the true solution
+%!  	[x, flag, relres, iter, resvec, eigest] = pcg (A, b, 1e-12);
 %!	assert(flag);
-%!	assert(relres>1.0);
-%!	assert(iter,20); #should perform max allowable default number of iterations
+%!	assert(relres > 1.0);
+%!	assert(iter, 20); #should perform max allowable default number of iterations
 %!
 %!test
 %!
@@ -450,14 +508,14 @@ endfunction
 %!	#and issues a warning
 %!
 %!	N = 100; 
-%!	A = zeros(N,N);
-%!	for i=1:N-1 # form 1-D Laplacian matrix
-%!		A(i:i+1,i:i+1) = [2 -1; -1 2];
+%!	A = zeros (N, N);
+%!	for i = 1 : N - 1 # form 1-D Laplacian matrix
+%!		A (i:i+1, i:i+1) = [2 -1; -1 2];
 %!	endfor
-%!	b = ones(N,1); X = A\b; #X is the true solution
-%!  	[x, flag, relres, iter, resvec, eigest] = pcg(A,b,[],[],A,b);
-%!	assert(norm(x-X)/norm(X),0,1e-6);
-%!	assert(flag,0);
-%!	assert(iter,1); #should converge in one iteration
-%!	assert(isnan(eigest),isnan([NaN NaN]));
+%!	b = ones (N, 1); X = A \ b; #X is the true solution
+%!  	[x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], A, [], b);
+%!	assert(norm (x - X) / norm (X), 0, 1e-6);
+%!	assert(flag, 0);
+%!	assert(iter, 1); #should converge in one iteration
+%!	assert(isnan (eigest), isnan ([NaN, NaN]));
 %!

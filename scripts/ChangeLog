@@ -1,3 +1,7 @@
+2007-06-20  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m (do_tics_1): Fix typo (xtic -> tics).
+
 2007-06-19  Vittoria Rezzonico  <vittoria.rezzonico@epfl.ch>
 
 	* sparse/pcg.m: Allow the preconditioner to be passed as two

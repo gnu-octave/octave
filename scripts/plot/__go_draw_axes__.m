@@ -931,8 +931,8 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
       endif
     else
       fprintf (plot_stream, "set %stics (", ax);
-      fprintf (plot_stream, " %g,", xtic(1:end-1));
-      fprintf (plot_stream, " %g);\n", xtic(end));
+      fprintf (plot_stream, " %g,", tics(1:end-1));
+      fprintf (plot_stream, " %g);\n", tics(end));
     endif
   else
     fprintf (plot_stream, "set %stics;\n", ax);

@@ -52,7 +52,7 @@ function n = index (s, t, direction)
   endif
   direction = lower (direction);
 
-  if (! (ischar (s) && ischar (t) && isvector (s) && isvector (t)))
+  if (! (ischar (s) && ischar (t)))
     error ("index: expecting character string arguments");
   elseif (! strcmp (direction, {"first", "last"}))
     error ("index: direction must be either \"first\" or \"last\"");

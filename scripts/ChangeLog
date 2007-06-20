@@ -1,5 +1,8 @@
 2007-06-20  John W. Eaton  <jwe@octave.org>
 
+	* strings/index.m: Allow strings to be empty.
+	From Hartmut Wziontek <hwz@hwz.bv.TU-Berlin.DE>
+
 	* plot/__go_draw_axes__.m (do_tics_1): Fix typo (xtic -> tics).
 
 2007-06-19  Vittoria Rezzonico  <vittoria.rezzonico@epfl.ch>
@@ -330,7 +333,7 @@
 	* set/ismember.m: Always return logical values.
 
 	* set/ismember.m: Return early if no matches are found.  New tests.
-	From: David Grohmann <grohmann@arlut.utexas.edu>.
+	From David Grohmann <grohmann@arlut.utexas.edu>.
 
 	* general/__isequal__.m: Allow numeric values of different classes
 	to compare equal.

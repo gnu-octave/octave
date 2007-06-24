@@ -604,7 +604,7 @@ stored. In certain cases the sign-bit of zero is important. For example
 To correct this behavior would mean that zero elements with a negative
 sign-bit would need to be stored in the matrix to ensure that their 
 sign-bit was respected. This is not done at this time, for reasons of
-efficient, and so the user is warned that calculations where the sign-bit
+efficiency, and so the user is warned that calculations where the sign-bit
 of zero is important must not be done using sparse matrices.
 
 In general any function or operator used on a sparse matrix will

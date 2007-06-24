@@ -64,12 +64,6 @@ interpolation methods for a step function}
 @end float
 @end ifnotinfo
 
-This means that in general the 'spline' method results in smooth
-results. If the function to be interpolated is in fact smooth, then
-'spline' will give excellent results. However, if the function to be
-evaluated is in some manner discontinuous, then 'cubic' or 'pchip'
-interpolation might give better results.
-
 Fourier interpolation, is a resampling technique where a signal is
 converted to the frequency domain, padded with zeros and then
 reconverted to the time domain.

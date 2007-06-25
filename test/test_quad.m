@@ -26,9 +26,6 @@
 %! quad_options ("absolute tolerance", eps);
 %! assert(quad_options ("absolute tolerance") == eps);
 
-%% test/octave.test/quad/quad_options-2.m
-%!error <Invalid call to quad_options.*> quad_options ();
-
 %% test/octave.test/quad/quad_options-3.m
 %!error <Invalid call to quad_options.*> quad_options (1, 2, 3);
 

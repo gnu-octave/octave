@@ -32,6 +32,7 @@ class octave_value_list;
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <map>
 
 #include "Array.h"
 #include "data-conv.h"
@@ -583,9 +584,15 @@ public:
 
   static std::string mode_as_string (int mode);
 
-  std::istream *input_stream (void) { return rep ? rep->input_stream () : 0; }
+  std::istream *input_stream (void)
+  {
+    return rep ? rep->input_stream () : 0;
+  }
 
-  std::ostream *output_stream (void) { return rep ? rep->output_stream () : 0; }
+  std::ostream *output_stream (void)
+  {
+    return rep ? rep->output_stream () : 0;
+  }
 
   void clearerr (void) { if (rep) rep->clearerr (); }
 
@@ -622,7 +629,7 @@ octave_stream_list
 {
 protected:
 
-  octave_stream_list (void) : list (32), curr_len (0) { }
+  octave_stream_list (void) : list () { }
 
 public:
 
@@ -630,7 +637,7 @@ public:
 
   static bool instance_ok (void);
 
-  static int insert (const octave_stream& os);
+  static int insert (octave_stream& os);
 
   static octave_stream
   lookup (int fid, const std::string& who = std::string ());
@@ -655,13 +662,13 @@ public:
 
 private:
 
-  Array<octave_stream> list;
+  typedef std::map<int, octave_stream> ostrl_map;
 
-  int curr_len;
+  ostrl_map list;
 
   static octave_stream_list *instance;
 
-  int do_insert (const octave_stream& os);
+  int do_insert (octave_stream& os);
 
   octave_stream do_lookup (int fid, const std::string& who = std::string ()) const;
   octave_stream do_lookup (const octave_value& fid,

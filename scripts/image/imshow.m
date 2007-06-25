@@ -102,7 +102,7 @@ function imshow (im, varargin)
     if (ismatrix (arg) && size (arg, 2) == 3)
       color_map = arg;
       isindexed = true;
-    elseif (ismatrix (arg) && ndims (arg) == 2)
+    elseif (ismatrix (arg) && numel (arg) == 2)
       display_range = arg;
     elseif (isempty (arg))
       display_range = [min(im(:)), max(im(:))];

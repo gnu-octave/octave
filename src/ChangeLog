@@ -1,3 +1,20 @@
+2007-06-25  Olaf Till  <i7tiol@t-online.de>
+
+	* oct-stream.h (octave_stream_list::list): Use std::map.
+	(octave_stream_list::curr_len): Delete data member.
+	(octave_stream_list::octave_stream_list): Fix initializations.
+ 
+	* oct-stream.cc (octave_steam_list::do_insert,
+	octave_steam_list::do_lookup, octave_steam_list::do_remove,
+	octave_steam_list::do_clear, octave_steam_list::do_list_open_files, 
+	octave_steam_list::do_open_file_numbers,
+	octave_steam_list::do_get_file_number):
+ 	Use new octave_stream_list::list type.
+	(octave_stream_list::do_insert): Insert octave_stream with key
+	corresponding to file-descriptor.
+	(octave_stream_list::do_insert, octave_steam_list::insert):
+	Remove const qualifier of argument.
+
 2007-06-18  Søren Hauberg  <hauberg@gmail.com>
 
         * DLD-FUNCTIONS/__lin_interpn__.cc: Replace octave_NaN with octave_NA.

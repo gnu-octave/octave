@@ -897,10 +897,11 @@ octave_base_stream::file_number (void)
   // std::filebuf (nor in the GNU libstdc++-v3 implementation). We cache
   // the descriptor in c_file_ptr_buf, and then extract it here.
 
-  c_file_ptr_buf *ibuf = is ?
-    dynamic_cast<c_file_ptr_buf *> (is->rdbuf ()) : 0;
-  c_file_ptr_buf *obuf = os ?
-    dynamic_cast<c_file_ptr_buf *> (os->rdbuf ()) : 0;
+  c_file_ptr_buf *ibuf
+    = is ? dynamic_cast<c_file_ptr_buf *> (is->rdbuf ()) : 0;
+
+  c_file_ptr_buf *obuf
+    = os ? dynamic_cast<c_file_ptr_buf *> (os->rdbuf ()) : 0;
 
   int i_fid = ibuf ? ibuf->file_number () : -1;
   int o_fid = obuf ? obuf->file_number () : -1;
@@ -3888,7 +3889,7 @@ octave_stream_list::instance_ok (void)
 }
 
 int
-octave_stream_list::insert (const octave_stream& os)
+octave_stream_list::insert (octave_stream& os)
 {
   return (instance_ok ()) ? instance->do_insert (os) : -1;
 }
@@ -3956,40 +3957,35 @@ octave_stream_list::get_file_number (const octave_value& fid)
 }
 
 int
-octave_stream_list::do_insert (const octave_stream& os)
+octave_stream_list::do_insert (octave_stream& os)
 {
-  octave_value retval;
+  // Insert item with key corresponding to file-descriptor.
 
-  int stream_number = -1;
+  int stream_number;
 
-  // Insert item in first open slot, increasing size of list if
-  // necessary.
+  if ((stream_number = os.file_number ()) == -1)
+    return stream_number;
 
-  for (int i = 0; i < curr_len; i++)
+  // Should we test for "(list.find (stream_number) != list.end ()) &&
+  // list[stream_number].is_open ()" and respond with "error
+  // ("internal error: ...")"? It should not happen except for some
+  // bug or if the user has opened a stream with an interpreted
+  // command, but closed it directly with a system call in an
+  // oct-file; then the kernel knows the fd is free, but Octave does
+  // not know. If it happens, it should not do harm here to simply
+  // overwrite this entry, although the wrong entry might have done
+  // harm before.
+
+  if (list.size () < list.max_size ())
+    list[stream_number] = os;
+  else
     {
-      octave_stream tmp = list(i);
-
-      if (! tmp.is_open ())
-	{
-	  list(i) = os;
-	  stream_number = i;
-	  break;
-	}
-    }
-
-  if (stream_number < 0)
-    {
-      int total_len = list.length ();
-
-      if (curr_len == total_len)
-	list.resize (total_len * 2);
-
-      list(curr_len) = os;
-      stream_number = curr_len;
-      curr_len++;
+      stream_number = -1;
+      error ("could not create file id");
     }
 
   return stream_number;
+
 }
 
 static void
@@ -4006,8 +4002,15 @@ octave_stream_list::do_lookup (int fid, const std::string& who) const
 {
   octave_stream retval;
 
-  if (fid >= 0 && fid < curr_len)
-    retval = list(fid);
+  if (fid >= 0)
+    {
+      ostrl_map::const_iterator iter = list.find (fid);
+
+      if (iter != list.end ())
+	retval = iter->second;
+      else
+	gripe_invalid_file_id (fid, who);
+    }
   else
     gripe_invalid_file_id (fid, who);
 
@@ -4036,15 +4039,22 @@ octave_stream_list::do_remove (int fid, const std::string& who)
   // Can't remove stdin (std::cin), stdout (std::cout), or stderr
   // (std::cerr).
 
-  if (fid > 2 && fid < curr_len)
+  if (fid > 2)
     {
-      octave_stream os = list(fid);
+      ostrl_map::iterator iter = list.find (fid);
 
-      if (os.is_valid ())
+      if (iter != list.end ())
 	{
-	  os.close ();
-	  list(fid) = octave_stream ();
-	  retval = 0;
+	  octave_stream os = iter->second;
+
+	  if (os.is_valid ())
+	    {
+	      os.close ();
+	      iter->second = octave_stream ();
+	      retval = 0;
+	    }
+	  else
+	    gripe_invalid_file_id (fid, who);
 	}
       else
 	gripe_invalid_file_id (fid, who);
@@ -4062,14 +4072,17 @@ octave_stream_list::do_remove (const octave_value& fid, const std::string& who)
 
   if (fid.is_string () && fid.string_value () == "all")
     {
-      // Skip stdin, stdout, and stderr.
-
-      for (int i = 3; i < curr_len; i++)
+      for (ostrl_map::iterator p = list.begin (); p != list.end (); p++)
 	{
-	  octave_stream os = list(i);
+	  // Skip stdin, stdout, and stderr.
 
-	  if (os.is_valid ())
-	    do_remove (i, who);
+	  if (p->first > 2)
+	    {
+	      octave_stream os = p->second;
+
+	      if (os.is_valid ())
+		do_remove (p->first, who);
+	    }
 	}
 
       retval = 0;
@@ -4090,13 +4103,18 @@ octave_stream_list::do_clear (void)
 {
   // Do flush stdout and stderr.
 
-  list(0) . flush ();
-  list(1) . flush ();
+  list[0].flush ();
+  list[1].flush ();
 
   // But don't delete them or stdin.
 
-  for (int i = 3; i < curr_len; i++)
-    list(i) = octave_stream ();
+  for (ostrl_map::iterator p = list.begin (); p != list.end (); p++)
+    {
+      // Skip stdin, stdout, and stderr.
+
+      if (p->first > 2)
+	p->second = octave_stream ();
+    }
 }
 
 string_vector
@@ -4148,13 +4166,13 @@ octave_stream_list::do_list_open_files (void) const
       << "  number  mode  arch       name\n"
       << "  ------  ----  ----       ----\n";
 
-  for (int i = 0; i < curr_len; i++)
+  for (ostrl_map::const_iterator p = list.begin (); p != list.end (); p++)
     {
-      octave_stream os = list(i);
+      octave_stream os = p->second;
 
       buf << "  "
 	  << std::setiosflags (std::ios::right)
-	  << std::setw (4) << i << "     "
+	  << std::setw (4) << p->first << "     "
 	  << std::setiosflags (std::ios::left)
 	  << std::setw (3)
 	  << octave_stream::mode_as_string (os.mode ())
@@ -4175,16 +4193,16 @@ octave_stream_list::do_list_open_files (void) const
 octave_value
 octave_stream_list::do_open_file_numbers (void) const
 {
-  Matrix retval (1, curr_len, 0.0);
+  Matrix retval (1, list.size (), 0.0);
 
   int num_open = 0;
 
-  // Skip stdin, stdout, and stderr.
-
-  for (int i = 3; i < curr_len; i++)
+  for (ostrl_map::const_iterator p = list.begin (); p != list.end (); p++)
     {
-      if (list(i))
-	retval (0, num_open++) = i;
+      // Skip stdin, stdout, and stderr.
+
+      if (p->first > 2 && p->second)
+	retval(0,num_open++) = p->first;
     }
 
   retval.resize ((num_open > 0), num_open);
@@ -4201,17 +4219,20 @@ octave_stream_list::do_get_file_number (const octave_value& fid) const
     {
       std::string nm = fid.string_value ();
 
-      // stdin (std::cin), stdout (std::cout), and stderr (std::cerr)
-      // are unnamed.
-
-      for (int i = 3; i < curr_len; i++)
+      for (ostrl_map::const_iterator p = list.begin (); p != list.end (); p++)
 	{
-	  octave_stream os = list(i);
+	  // stdin (std::cin), stdout (std::cout), and stderr (std::cerr)
+	  // are unnamed.
 
-	  if (os && os.name () == nm)
+	  if (p->first > 2)
 	    {
-	      retval = i;
-	      break;
+	      octave_stream os = p->second;
+
+	      if (os && os.name () == nm)
+		{
+		  retval = p->first;
+		  break;
+		}
 	    }
 	}
     }

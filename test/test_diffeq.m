@@ -70,9 +70,6 @@
 %! lsode_options ("absolute tolerance", eps);
 %! assert(lsode_options ("absolute tolerance") == eps);
 
-%% test/octave.test/diffeq/lsode_options-2.m
-%!error <Invalid call to lsode_options.*> lsode_options ();
-
 %% test/octave.test/diffeq/lsode_options-3.m
 %!error <Invalid call to lsode_options.*> lsode_options ("foo", 1, 2);
 
@@ -153,9 +150,6 @@
 %!test
 %! dassl_options ("absolute tolerance", eps);
 %! assert(dassl_options ("absolute tolerance") == eps);
-
-%% test/octave.test/diffeq/dassl_options-2.m
-%!error <Invalid call to dassl_options.*> dassl_options ();
 
 %% test/octave.test/diffeq/dassl_options-3.m
 %!error <Invalid call to dassl_options.*> dassl_options ("foo", 1, 2);

@@ -1,8 +1,12 @@
+2007-06-25  Søren Hauberg  <hauberg@gmail.com>
+
+        * image/imshow.m: Fix check for colormap arguments.
+
 2007-06-25  Joel Keay  <keay@nhn.ou.edu>
 
 	* plot/drawnow.m: Handle GNUTERM=aqua if DISPLAY is not set.
 
-2007-06-25  Søren Hauberg   <hauberg@gmail.com>
+2007-06-25  Søren Hauberg  <hauberg@gmail.com>
 
         * statistics/base/median.m: Update help text to mention 'dim'
 	argument, and note that the data should be sorted for the

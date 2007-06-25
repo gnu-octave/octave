@@ -99,13 +99,13 @@ function imshow (im, varargin)
   narg = 1;
   while (narg <= length (varargin))
     arg = varargin{narg};
-    if (ismatrix (arg) && ndims (arg) == 2)
+    if (ismatrix (arg) && size (arg, 2) == 3)
+      color_map = arg;
+      isindexed = true;
+    elseif (ismatrix (arg) && ndims (arg) == 2)
       display_range = arg;
     elseif (isempty (arg))
       display_range = [min(im(:)), max(im(:))];
-    elseif (ismatrix (arg) && size (arg, 2) == 3)
-      color_map = arg;
-      isindexed = true;
     elseif (ischar (arg) && strcmpi (arg, "displayrange"))
       narg++;
       display_range = varargin{narg};

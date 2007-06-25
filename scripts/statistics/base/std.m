@@ -26,18 +26,19 @@
 ## @iftex
 ## @tex
 ## $$
-## {\rm std} (x) = \sigma (x) = \sqrt{{\sum_{i=1}^N (x_i - \bar{x}) \over N - 1}}
+## {\rm std} (x) = \sigma (x) = \sqrt{{\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}}
 ## $$
+## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## @group
 ## std (x) = sqrt (sumsq (x - mean (x)) / (n - 1))
 ## @end group
 ## @end example
-## @end ifinfo
+## @end ifnottex
 ## If @var{x} is a matrix, compute the standard deviation for
 ## each column and return them in a row vector.
 ##
@@ -46,10 +47,10 @@
 ##
 ## @table @asis 
 ## @item 0:
-##   normalizes with N-1, provides the square root of best unbiased estimator of 
+##   normalizes with @math{N-1}, provides the square root of best unbiased estimator of 
 ##   the variance [default]
 ## @item 1:
-##   normalizes with N, this provides the square root of the second moment around 
+##   normalizes with @math{N}, this provides the square root of the second moment around 
 ##   the mean
 ## @end table
 ##

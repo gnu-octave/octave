@@ -19,14 +19,31 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cor (@var{x}, @var{y})
+## Compute correlation.
+##
 ## The (@var{i}, @var{j})-th entry of @code{cor (@var{x}, @var{y})} is
 ## the correlation between the @var{i}-th variable in @var{x} and the
 ## @var{j}-th variable in @var{y}.
+##
+## @iftex
+## @tex
+## $$
+## {\rm corrcoef}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) {\rm std}(y)}
+## $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## corrcoef(x,y) = cov(x,y)/(std(x)*std(y))
+## @end example
+## @end ifnottex
 ##
 ## For matrices, each row is an observation and each column a variable;
 ## vectors are always observations and may be row or column vectors.
 ##
 ## @code{cor (@var{x})} is equivalent to @code{cor (@var{x}, @var{x})}.
+##
+## Note that the @code{corrcoef} function does the same as @code{cor}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -1,3 +1,58 @@
+2007-06-25  Joel Keay  <keay@nhn.ou.edu>
+
+	* plot/drawnow.m: Handle GNUTERM=aqua if DISPLAY is not set.
+
+2007-06-25  Søren Hauberg   <hauberg@gmail.com>
+
+        * statistics/base/median.m: Update help text to mention 'dim'
+	argument, and note that the data should be sorted for the
+	definition of the median to be correct.
+
+        * statistics/base/std.m: Add missing square to definition of
+	standard deviation.
+
+        * statistics/base/cov.m: Add definition of covariance to the help text.
+
+        * statistics/base/kurtosis.m, statistics/base/skewness.m,
+	statistics/base/std.m:
+	Note that \bar{x} is the mean value of x in the help text.
+
+        * specfun/nchoosek.m: Add alternative definition of the binomial
+	coefficient to the help text.
+
+        * specfun/perms.m, statistics/base/values.m: Add example in help text.
+
+        * statistics/base/var.m: Put N in @math in help text.
+
+        * statistics/base/qqplot.m, statistics/base/ppplot.m, 
+	statistics/tests/kolmogorov_smirnov_test.m:
+	Write about possible values of 'dist' in help text.
+
+        * statistics/base/corrcoef.m, statistics/base/cor.m:
+	Add definition of correlation to the help text.
+
+        * statistics/base/logit.m, statistics/base/kendall.m,
+        statistics/base/cloglog.m, statistics/tests/hotelling_test_2.m,
+	statistics/distributions/wblcdf.m, statistics/distributions/wblpdf.m:
+	TeXification of help text.
+
+	* statistics/tests/hotelling_test.m: Write T^2 in @math in help text.
+
+	* statistics/tests/var_test.m, statistics/tests/welch_test.m:
+	Add missing @var's to help text.
+
+	* statistics/models/logistic_regression.m: Fix typos in help text.
+
+	* statistics/distributions/kolmogorov_smirnov_cdf.m: Fix TeX part
+	of help text.
+
+	* statistics/distributions/unidinv.m: Add a missing 'discrete' to
+	help text.
+
+	* statistics/distributions/unidpdf.m,
+	statistics/distributions/discrete_pdf.m:
+	Replace 'pDF' with 'PDF' in help text.
+
 2007-06-25  John W. Eaton  <jwe@octave.org>
 
 	* strings/substr.m: Use offset consistently in code and doc string.
@@ -1635,7 +1690,7 @@
 	* image/__img_via_file__.m: New function.
 	* image/image.m: Use image_viewer to determine which program to
 	use for image viewing.
-	* scripts/image/__img__.m: Silently accept more than 3 args.
+	* image/__img__.m: Silently accept more than 3 args.
 
 2006-11-14  John W. Eaton  <jwe@octave.org>
 
@@ -1661,17 +1716,13 @@
 
 2006-11-13  Søren Hauberg  <hauberg@gmail.com>
 
-	* scripts/general/bicubic.m, scripts/general/cart2pol.m
-	scripts/general/cart2sph.m, scripts/plot/contour.m,
-	scripts/linear-algebra/cross.m, scripts/general/cumtrapz.m,
-	scripts/linear-algebra/dot.m, scripts/image/imshow.m,
-	scripts/general/interp2.m, scripts/general/mod.m,
-	scripts/plot/plot3.m, scripts/plot/__plr2__.m,
-	scripts/plot/__plr__.m, scripts/general/pol2cart.m,
-	scripts/general/polyarea.m, scripts/polynomial/polyfit.m,
-	scripts/general/rem.m, scripts/image/rgb2ind.m,
-	scripts/general/sph2cart.m, scripts/general/trapz.m,
-	scripts/miscellaneous/xor.m: Use size_equal
+	* general/bicubic.m, general/cart2pol.m, general/cart2sph.m,
+	plot/contour.m, linear-algebra/cross.m, general/cumtrapz.m,
+	linear-algebra/dot.m, image/imshow.m, general/interp2.m,
+	general/mod.m, plot/plot3.m, plot/__plr2__.m, plot/__plr__.m,
+	general/pol2cart.m, general/polyarea.m, polynomial/polyfit.m,
+	general/rem.m, image/rgb2ind.m, general/sph2cart.m,
+	general/trapz.m, miscellaneous/xor.m: Use size_equal.
 
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
@@ -1741,7 +1792,7 @@
 	* strings/index.m: New arg, direction.  Simplify and speed up.
 	* strings/rindex.m: Implement using index (..., "last");
 
-	* scripts/blanks.m, scripts/strcat.m: Simplify.  Add tests.
+	* blanks.m, strcat.m: Simplify.  Add tests.
 
 2006-11-01  Bill Denney  <denney@seas.upenn.edu>
 
@@ -2389,19 +2440,16 @@
 
 2006-05-22  John W. Eaton  <jwe@octave.org>
 
-	* scripts/general/lookup.m: New file from Octave Forge.
+	* general/lookup.m: New file from Octave Forge.
 
 2006-05-22  David Bateman  <dbateman@free.fr>
 
-	* scripts/general/nthroot.m, scripts/linear-algebra/rref.m,
-	scripts/specfun/isprime.m, scripts/specfun/primes.m,
-	scripts/specfun/factor.m, scripts/specfun/nchoosek.m,
-	scripts/specfun/legendre.m, scripts/specfun/perms.m,
-	scripts/special-matrix/rosser.m,
-	scripts/special-matrix/wilkinson.m,
-	scripts/special-matrix/pascal.m, scripts/special-matrix/magic.m,
-	scripts/special-matrix/hadamard.m, scripts/strings/strtok.m:
-	New files from Octave Forge.
+	* general/nthroot.m, linear-algebra/rref.m, specfun/isprime.m,
+	specfun/primes.m, specfun/factor.m, specfun/nchoosek.m,
+	specfun/legendre.m, specfun/perms.m, special-matrix/rosser.m,
+	special-matrix/wilkinson.m, special-matrix/pascal.m,
+	special-matrix/magic.m, special-matrix/hadamard.m,
+	strings/strtok.m: New files from Octave Forge.
 
 2006-05-19  David Bateman  <dbateman@free.fr>
 
@@ -2470,7 +2518,7 @@
 
 2006-05-03  Bob Weigel <rweigel@gmu.edu>
 
-        * scripts/set/setdiff.m: New arg, byrows.  New tests.
+        * set/setdiff.m: New arg, byrows.  New tests.
 
 2006-04-29  John W. Eaton  <jwe@octave.org>
 
@@ -2503,7 +2551,7 @@
 
 2006-04-04  Bob Weigel  <rweigel@gmu.edu>
 
-        * scripts/set/unique.m: Properly handle single column input when
+        * set/unique.m: Properly handle single column input when
 	"rows" is specified.
 
 2006-04-04  John W. Eaton  <jwe@octave.org>
@@ -3484,7 +3532,7 @@
 
 	* statistics/Makefile.in (bin-dist): Delete target.
 	(BINDISTSUBDIRS): Delete variable.
-	* scripts/control/Makefile.in: Likewise.
+	* control/Makefile.in: Likewise.
 
 	* audio/Makefile.in (bin-dist): Delete target.
 	(BINDISTFILES): Delete variable.

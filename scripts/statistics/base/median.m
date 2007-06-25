@@ -18,9 +18,10 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} median (@var{x})
+## @deftypefn {Function File} {} median (@var{x}, @var{dim})
 ## If @var{x} is a vector, compute the median value of the elements of
-## @var{x}.
+## @var{x}. If the elements of @var{x} are sorted, the median is defined
+## as
 ## @iftex
 ## @tex
 ## $$
@@ -41,7 +42,8 @@
 ## @end example
 ## @end ifinfo
 ## If @var{x} is a matrix, compute the median value for each
-## column and return them in a row vector.
+## column and return them in a row vector. If the optional @var{dim}
+## argument is given, operate along this dimension.
 ## @seealso{std, mean}
 ## @end deftypefn
 

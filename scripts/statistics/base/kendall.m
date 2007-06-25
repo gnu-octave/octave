@@ -61,7 +61,14 @@
 ##
 ## If @var{x} and @var{y} are drawn from independent distributions,
 ## Kendall's @var{tau} is asymptotically normal with mean 0 and variance
+## @iftex
+## @tex
+## ${2 (2n+5) \over 9n(n-1)}$.
+## @end tex
+## @end iftex
+## @ifnottex
 ## @code{(2 * (2@var{n}+5)) / (9 * @var{n} * (@var{n}-1))}.
+## @end ifnottex
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

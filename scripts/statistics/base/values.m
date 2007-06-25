@@ -21,6 +21,9 @@
 ## @deftypefn {Function File} {} values (@var{x})
 ## Return the different values in a column vector, arranged in ascending
 ## order.
+##
+## As an example, @code{values([1, 2, 3, 1])} returns the vector
+## @code{[1, 2, 3]}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

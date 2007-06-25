@@ -28,10 +28,10 @@
 ##
 ## @table @asis 
 ## @item 0:
-## Normalizes with N-1, provides the best unbiased estimator of the
+## Normalizes with @math{N-1}, provides the best unbiased estimator of the
 ## variance [default].
 ## @item 1:
-## Normalizes with N, this provides the second moment around the mean.
+## Normalizes with @math{N}, this provides the second moment around the mean.
 ## @end table
 ##
 ## The third argument @var{dim} determines the dimension along which the 

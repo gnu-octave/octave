@@ -22,8 +22,8 @@
 ## For two samples @var{x} and @var{y} from normal distributions with
 ## unknown means and unknown and not necessarily equal variances,
 ## perform a Welch test of the null hypothesis of equal means.
-## Under the null, the test statistic t approximately follows a Student
-## distribution with df degrees of freedom.
+## Under the null, the test statistic @var{t} approximately follows a
+## Student distribution with @var{df} degrees of freedom.
 ##
 ## With the optional argument string @var{alt}, the alternative of
 ## interest can be selected.  If @var{alt} is @code{"!="} or

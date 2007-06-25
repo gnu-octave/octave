@@ -19,10 +19,26 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} corrcoef (@var{x}, @var{y})
+## Compute correlation.
+##
 ## If each row of @var{x} and @var{y} is an observation and each column is
 ## a variable, the (@var{i}, @var{j})-th entry of
 ## @code{corrcoef (@var{x}, @var{y})} is the correlation between the
 ## @var{i}-th variable in @var{x} and the @var{j}-th variable in @var{y}.
+##
+## @iftex
+## @tex
+## $$
+## {\rm corrcoef}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) {\rm std}(y)}
+## $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## corrcoef(x,y) = cov(x,y)/(std(x)*std(y))
+## @end example
+## @end ifnottex
+##
 ## If called with one argument, compute @code{corrcoef (@var{x}, @var{x})}.
 ## @end deftypefn
 

@@ -23,7 +23,7 @@
 ## mean and covariance matrix, test the null hypothesis that @code{mean
 ## (@var{x}) == @var{m}}.
 ##
-## Hotelling's T^2 is returned in @var{tsq}.  Under the null,
+## Hotelling's @math{T^2} is returned in @var{tsq}.  Under the null,
 ## @math{(n-p) T^2 / (p(n-1))} has an F distribution with @math{p} and
 ## @math{n-p} degrees of freedom, where @math{n} and @math{p} are the
 ## numbers of samples and variables, respectively.

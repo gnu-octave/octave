@@ -32,6 +32,10 @@
 ## kolmogorov_smirnov_test(x, "uniform", 2, 4)
 ## @end example
 ##
+## @noindent
+## @var{dist} can be any string for which a function @var{dist_cdf}
+## that calculates the CDF of distribution @var{dist} exists.
+##
 ## With the optional argument string @var{alt}, the alternative of
 ## interest can be selected.  If @var{alt} is @code{"!="} or
 ## @code{"<>"}, the null is tested against the two-sided alternative F

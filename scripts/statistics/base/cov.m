@@ -19,11 +19,21 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cov (@var{x}, @var{y})
+## Compute covariance.
+##
 ## If each row of @var{x} and @var{y} is an observation and each column is
 ## a variable, the (@var{i}, @var{j})-th entry of
 ## @code{cov (@var{x}, @var{y})} is the covariance between the @var{i}-th
-## variable in @var{x} and the @var{j}-th variable in @var{y}.  If called
-## with one argument, compute @code{cov (@var{x}, @var{x})}.
+## variable in @var{x} and the @var{j}-th variable in @var{y}.
+## @iftex
+## @tex
+## $$
+## \sigma_{ij} = {1 \over N-1} \sum_{i=1}^N (x_i - \bar{x})(y_i - \bar{y})
+## $$
+## where $\bar{x}$ and $\bar{y}$ are the mean values of $x$ and $y$.
+## @end tex
+## @end iftex
+## If called with one argument, compute @code{cov (@var{x}, @var{x})}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

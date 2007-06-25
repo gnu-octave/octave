@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} unidpdf (@var{x}, @var{v})
 ## For each element of @var{x}, compute the probability density function
-## (pDF) at @var{x} of a univariate discrete distribution which assumes
+## (PDF) at @var{x} of a univariate discrete distribution which assumes
 ## the values in @var{v} with equal probability.
 ## @end deftypefn
 

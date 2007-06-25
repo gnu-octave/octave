@@ -5,33 +5,77 @@
 @node Statistics
 @chapter Statistics
 
+Octave has support for various statistical methods.  This includes
+basic descriptive statistics, statistical tests, random number generation,
+and much more.
+
+The functions that analyze data all assume that multidimensional data
+is arranged in a matrix where each row is an observation, and each
+column is a variable.  So, the matrix defined by
+
+@example
+a = [ 0.9, 0.7;
+      0.1, 0.1;
+      0.5, 0.4 ];
+@end example
+
+@noindent
+contains three observations from a two-dimensional distribution.
+While this is the default data arrangement, most functions support
+different arrangements.
+
+It should be noted that the statistics functions doesn't handle data
+containing NaN, NA, or Inf.  Such values needs to be handled explicitly.
+
 @menu
-* Basic Statistical Functions::  
+* Descriptive Statistics::
+* Basic Statistical Functions:: 
+* Statistical Plots:: 
 * Tests::                       
 * Models::                      
-* Distributions::               
+* Distributions::     
+* Random Number Generation::          
 @end menu
 
-@node Basic Statistical Functions
-@section Basic Statistical Functions
+@node Descriptive Statistics
+@section Descriptive Statistics
+
+Octave can compute various statistics such as the moments of a data set.
 
 @DOCSTRING(mean)
 
 @DOCSTRING(median)
 
+@DOCSTRING(meansq)
+
 @DOCSTRING(std)
 
+@DOCSTRING(var)
+
 @DOCSTRING(cov)
+
+@DOCSTRING(cor)
 
 @DOCSTRING(corrcoef)
 
 @DOCSTRING(kurtosis)
 
-@DOCSTRING(mahalanobis)
-
 @DOCSTRING(skewness)
 
-@c FIXME -- these need to be organized.
+@DOCSTRING(statistics)
+
+@DOCSTRING(moment)
+
+@node Basic Statistical Functions
+@section Basic Statistical Functions
+
+Octave also supports various helpful statistical functions.
+
+@DOCSTRING(mahalanobis)
+
+@DOCSTRING(center)
+
+@DOCSTRING(studentize)
 
 @DOCSTRING(nchoosek)
 
@@ -39,13 +83,7 @@
 
 @DOCSTRING(values)
 
-@DOCSTRING(var)
-
 @DOCSTRING(table)
-
-@DOCSTRING(studentize)
-
-@DOCSTRING(statistics)
 
 @DOCSTRING(spearman)
 
@@ -55,17 +93,11 @@
 
 @DOCSTRING(range)
 
-@DOCSTRING(qqplot)
-
 @DOCSTRING(probit)
 
-@DOCSTRING(ppplot)
-
-@DOCSTRING(moment)
-
-@DOCSTRING(meansq)
-
 @DOCSTRING(logit)
+
+@DOCSTRING(cloglog)
 
 @DOCSTRING(kendall)
 
@@ -73,14 +105,64 @@
 
 @DOCSTRING(cut)
 
-@DOCSTRING(cor)
+@node Statistical Plots
+@section Statistical Plots
 
-@DOCSTRING(cloglog)
+@c Should hist be moved to here, or perhaps the qqplot and ppplot
+@c functions should be moved to the Plotting Chapter?
 
-@DOCSTRING(center)
+Octave can create Quantile Plots (QQ-Plots), and Probability Plots
+(PP-Plots).  These are simple graphical tests for determining if a
+data set comes from a certain distribution.
+
+It is worth noticing that Octave can also show histograms of data
+using the @code{hist} function as described in
+@ref{Specialized Two-Dimensional Plots}.
+
+@DOCSTRING(qqplot)
+
+@DOCSTRING(ppplot)
 
 @node Tests
 @section Tests
+
+Octave can perform several different statistical tests.  The following
+table summarizes the available tests.
+
+@multitable @columnfractions .4 .5
+@item @strong{Hypothesis}
+  @tab @strong{Test Functions}
+@item Equal mean values
+  @tab @code{anova}, @code{hotelling_test2}, @code{t_test_2},
+       @code{welch_test}, @code{wilcoxon_test}, @code{z_test_2}
+@item Equal medians
+  @tab @code{kruskal_wallis_test}, @code{sign_test}
+@item Equal variances
+  @tab @code{bartlett_test}, @code{manova}, @code{var_test}
+@item Equal distributions
+  @tab @code{chisquare_test_homogeneity}, @code{kolmogorov_smirnov_test_2},
+       @code{u_test}
+@item Equal marginal frequencies
+  @tab @code{mcnemar_test}
+@item Equal success probabilities
+  @tab @code{prop_test_2}
+@item Independent observations
+  @tab @code{chisquare_test_independence}, @code{run_test}
+@item Uncorrelated observations
+  @tab @code{cor_test}
+@item Given mean value
+  @tab @code{hotelling_test}, @code{t_test}, @code{z_test}
+@item Observations from given distribution
+  @tab @code{kolmogorov_smirnov_test}
+@item Regression
+  @tab @code{f_test_regression}, @code{t_test_regression}
+@end multitable
+
+The tests return a p-value that describes the outcome of the test.
+Assuming that the test hypothesis is true, the p-value is the probability
+of obtaining a worse result then the observed one.  So large p-values
+corresponds to a successful test.  Usually a test hypothesis is accepted
+if the p-value exceeds @math{0.05}.
 
 @DOCSTRING(anova)
 
@@ -140,13 +222,113 @@
 @node Distributions
 @section Distributions
 
+Octave has functions for computing the Probability Density Function
+(PDF), the Cumulative Distribution function (CDF), and the quantile
+(the inverse of the CDF) of a large number of distributions.
+
+The following table summarizes the supported distributions (in 
+alphabetical order).
+
+@multitable @columnfractions .4 .2 .2 .2
+@item @strong{Distribution}
+  @tab @strong{PDF}
+  @tab @strong{CDF}
+  @tab @strong{Quantile}
+@item Beta Distribution
+  @tab @code{betapdf}
+  @tab @code{betacdf}
+  @tab @code{betainv}
+@item Binomial Distribution
+  @tab @code{binopdf}
+  @tab @code{binocdf}
+  @tab @code{binoinv}
+@item Cauchy Distribution
+  @tab @code{cauchy_pdf}
+  @tab @code{cauchy_cdf}
+  @tab @code{cauchy_inv}
+@item Chi-Square Distribution
+  @tab @code{chi2pdf}
+  @tab @code{chi2cdf}
+  @tab @code{chi2inv}
+@item Univariate Discrete Distribution
+  @tab @code{discrete_pdf}
+  @tab @code{discrete_cdf}
+  @tab @code{discrete_inv}
+@item Empirical Distribution
+  @tab @code{empirical_pdf}
+  @tab @code{empirical_cdf}
+  @tab @code{empirical_inv}
+@item Exponential Distribution
+  @tab @code{exppdf}
+  @tab @code{expcdf}
+  @tab @code{expinv}
+@item F Distribution
+  @tab @code{fpdf}
+  @tab @code{fcdf}
+  @tab @code{finv}
+@item Gamma Distribution
+  @tab @code{gampdf}
+  @tab @code{gamcdf}
+  @tab @code{gaminv}
+@item Geometric Distribution
+  @tab @code{geopdf}
+  @tab @code{geocdf}
+  @tab @code{geoinv}
+@item Hypergeometric Distribution
+  @tab @code{hygepdf}
+  @tab @code{hygecdf}
+  @tab @code{hygeinv}
+@item Kolmogorov Smirnov Distribution
+  @tab @emph{Not Available}
+  @tab @code{kolmogorov_smirnov_cdf}
+  @tab @emph{Not Available}
+@item Laplace Distribution
+  @tab @code{laplace_pdf}
+  @tab @code{laplace_cdf}
+  @tab @code{laplace_inv}
+@item Logistic Distribution
+  @tab @code{logistic_pdf}
+  @tab @code{logistic_cdf}
+  @tab @code{logistic_inv}
+@item Log-Normal Distribution
+  @tab @code{lognpdf}
+  @tab @code{logncdf}
+  @tab @code{logninv}
+@item Pascal Distribution
+  @tab @code{nbinpdf}
+  @tab @code{nbincdf}
+  @tab @code{nbininv}
+@item Univariate Normal Distribution
+  @tab @code{normpdf}
+  @tab @code{normcdf}
+  @tab @code{norminv}
+@item Poisson Distribution
+  @tab @code{poisspdf}
+  @tab @code{poisscdf}
+  @tab @code{poissinv}
+@item t (Student) Distribution
+  @tab @code{tpdf}
+  @tab @code{tcdf}
+  @tab @code{tinv}
+@item Univariate Discrete Distribution
+  @tab @code{unidpdf}
+  @tab @code{unidcdf}
+  @tab @code{unidinv}
+@item Uniform Distribution
+  @tab @code{unifpdf}
+  @tab @code{unifcdf}
+  @tab @code{unifinv}
+@item Weibull Distribution
+  @tab @code{wblpdf}
+  @tab @code{wblcdf}
+  @tab @code{wblinv}
+@end multitable
+
 @DOCSTRING(betacdf)
 
 @DOCSTRING(betainv)
 
 @DOCSTRING(betapdf)
-
-@DOCSTRING(betarnd)
 
 @DOCSTRING(binocdf)
 
@@ -154,15 +336,11 @@
 
 @DOCSTRING(binopdf)
 
-@DOCSTRING(binornd)
-
 @DOCSTRING(cauchy_cdf)
 
 @DOCSTRING(cauchy_inv)
 
 @DOCSTRING(cauchy_pdf)
-
-@DOCSTRING(cauchy_rnd)
 
 @DOCSTRING(chi2cdf)
 
@@ -170,15 +348,11 @@
 
 @DOCSTRING(chi2pdf)
 
-@DOCSTRING(chi2rnd)
-
 @DOCSTRING(discrete_cdf)
 
 @DOCSTRING(discrete_inv)
 
 @DOCSTRING(discrete_pdf)
-
-@DOCSTRING(discrete_rnd)
 
 @DOCSTRING(empirical_cdf)
 
@@ -186,15 +360,11 @@
 
 @DOCSTRING(empirical_pdf)
 
-@DOCSTRING(empirical_rnd)
-
 @DOCSTRING(expcdf)
 
 @DOCSTRING(expinv)
 
 @DOCSTRING(exppdf)
-
-@DOCSTRING(exprnd)
 
 @DOCSTRING(fcdf)
 
@@ -202,15 +372,11 @@
 
 @DOCSTRING(fpdf)
 
-@DOCSTRING(frnd)
-
 @DOCSTRING(gamcdf)
 
 @DOCSTRING(gaminv)
 
 @DOCSTRING(gampdf)
-
-@DOCSTRING(gamrnd)
 
 @DOCSTRING(geocdf)
 
@@ -218,15 +384,11 @@
 
 @DOCSTRING(geopdf)
 
-@DOCSTRING(geornd)
-
 @DOCSTRING(hygecdf)
 
 @DOCSTRING(hygeinv)
 
 @DOCSTRING(hygepdf)
-
-@DOCSTRING(hygernd)
 
 @DOCSTRING(kolmogorov_smirnov_cdf)
 
@@ -236,15 +398,11 @@
 
 @DOCSTRING(laplace_pdf)
 
-@DOCSTRING(laplace_rnd)
-
 @DOCSTRING(logistic_cdf)
 
 @DOCSTRING(logistic_inv)
 
 @DOCSTRING(logistic_pdf)
-
-@DOCSTRING(logistic_rnd)
 
 @DOCSTRING(logncdf)
 
@@ -252,15 +410,11 @@
 
 @DOCSTRING(lognpdf)
 
-@DOCSTRING(lognrnd)
-
 @DOCSTRING(nbincdf)
 
 @DOCSTRING(nbininv)
 
 @DOCSTRING(nbinpdf)
-
-@DOCSTRING(nbinrnd)
 
 @DOCSTRING(normcdf)
 
@@ -268,15 +422,11 @@
 
 @DOCSTRING(normpdf)
 
-@DOCSTRING(normrnd)
-
 @DOCSTRING(poisscdf)
 
 @DOCSTRING(poissinv)
 
 @DOCSTRING(poisspdf)
-
-@DOCSTRING(poissrnd)
 
 @DOCSTRING(tcdf)
 
@@ -284,15 +434,11 @@
 
 @DOCSTRING(tpdf)
 
-@DOCSTRING(trnd)
-
 @DOCSTRING(unidcdf)
 
 @DOCSTRING(unidinv)
 
 @DOCSTRING(unidpdf)
-
-@DOCSTRING(unidrnd)
 
 @DOCSTRING(unifcdf)
 
@@ -300,14 +446,90 @@
 
 @DOCSTRING(unifpdf)
 
-@DOCSTRING(unifrnd)
-
 @DOCSTRING(wblcdf)
 
 @DOCSTRING(wblinv)
 
 @DOCSTRING(wblpdf)
 
+@node Random Number Generation
+@section Random Number Generation
+
+Octave can generate random numbers from a large number of distributions.
+The random number generators are based on the random number generators
+described in @ref{Special Utility Matrices}.
+@c Should rand, randn, rande, randp, and randg be moved to here?
+
+The following table summarizes the available random number generators
+(in alphabetical order).
+
+@multitable @columnfractions .4 .3
+@item @strong{Distribution}             @tab @strong{Function}
+@item Beta Distribution                 @tab @code{betarnd}
+@item Binomial Distribution             @tab @code{binornd}
+@item Cauchy Distribution               @tab @code{cauchy_rnd}
+@item Chi-Square Distribution           @tab @code{chi2rnd}
+@item Univariate Discrete Distribution  @tab @code{discrete_rnd}
+@item Empirical Distribution            @tab @code{empirical_rnd}
+@item Exponential Distribution          @tab @code{exprnd}
+@item F Distribution                    @tab @code{frnd}
+@item Gamma Distribution                @tab @code{gamrnd}
+@item Geometric Distribution            @tab @code{geornd}
+@item Hypergeometric Distribution       @tab @code{hygernd}
+@item Laplace Distribution              @tab @code{laplace_rnd}
+@item Logistic Distribution             @tab @code{logistic_rnd}
+@item Log-Normal Distribution           @tab @code{lognrnd}
+@item Pascal Distribution               @tab @code{nbinrnd}
+@item Univariate Normal Distribution    @tab @code{normrnd}
+@item Poisson Distribution              @tab @code{poissrnd}
+@item t (Student) Distribution          @tab @code{trnd}
+@item Univariate Discrete Distribution  @tab @code{unidrnd}
+@item Uniform Distribution              @tab @code{unifrnd}
+@item Weibull Distribution              @tab @code{wblrnd}
+@item Wiener Process                    @tab @code{wienrnd}
+@end multitable
+
+@DOCSTRING(betarnd)
+
+@DOCSTRING(binornd)
+
+@DOCSTRING(cauchy_rnd)
+
+@DOCSTRING(chi2rnd)
+
+@DOCSTRING(discrete_rnd)
+
+@DOCSTRING(empirical_rnd)
+
+@DOCSTRING(exprnd)
+
+@DOCSTRING(frnd)
+
+@DOCSTRING(gamrnd)
+
+@DOCSTRING(geornd)
+
+@DOCSTRING(hygernd)
+
+@DOCSTRING(laplace_rnd)
+
+@DOCSTRING(logistic_rnd)
+
+@DOCSTRING(lognrnd)
+
+@DOCSTRING(nbinrnd)
+
+@DOCSTRING(normrnd)
+
+@DOCSTRING(poissrnd)
+
+@DOCSTRING(trnd)
+
+@DOCSTRING(unidrnd)
+
+@DOCSTRING(unifrnd)
+
 @DOCSTRING(wblrnd)
 
 @DOCSTRING(wienrnd)
+

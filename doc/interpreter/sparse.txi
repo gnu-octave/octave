@@ -473,7 +473,7 @@ used.
   @dfn{dmperm}, @dfn{symamd}, @dfn{randperm}, @dfn{symrcm}
 
 @item Linear algebra:
-  @dfn{matrix\_type}, @dfn{spchol}, @dfn{cpcholinv}, 
+  @dfn{matrix_type}, @dfn{spchol}, @dfn{cpcholinv}, 
   @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv}, @dfn{spkron},
   @dfn{splchol}, @dfn{splu}, @dfn{spqr}, @dfn{normest}, 
   @dfn{sprank}

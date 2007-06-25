@@ -23,12 +23,18 @@
 ## Weibull distribution with shape parameter @var{scale} and scale
 ## parameter @var{shape}, which is
 ##
+## @iftex
+## @tex
+## $$ 1 - \exp(-(x/shape)^{scale}) $$
+## for $x\geq 0$.
+## @end tex
+## @end iftex
+## @ifnottex
 ## @example
 ## 1 - exp(-(x/shape)^scale)
 ## @end example
-##
-## @noindent
 ## for @var{x} >= 0.
+## @end ifnottex
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

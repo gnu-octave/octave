@@ -39,6 +39,10 @@
 ## qqplot (x, "uniform", 2, 4)
 ## @end example
 ##
+## @noindent
+## @var{dist} can be any string for which a function @var{dist_inv}
+## that calculates the inverse CDF of distribution @var{dist} exists.
+##
 ## If no output arguments are given, the data are plotted directly.
 ## @end deftypefn
 

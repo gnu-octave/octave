@@ -19,8 +19,18 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} logit (@var{p})
-## For each component of @var{p}, return the logit @code{log (@var{p} /
-## (1-@var{p}))} of @var{p}.
+## For each component of @var{p}, return the logit of @var{p} defined as
+## @iftex
+## @tex
+## $$
+## {\rm logit}(p) = \log\Big({p \over 1-p}\Big)
+## $$
+## @end tex
+## @ifnottex
+## @example
+## logit(@var{p}) = log (@var{p} / (1-@var{p}))
+## @end example
+## @end ifnottex
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

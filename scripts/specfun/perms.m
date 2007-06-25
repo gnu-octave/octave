@@ -24,6 +24,15 @@
 ## result has size @code{factorial (@var{n}) * @var{n}}, where @var{n}
 ## is the length of @var{v}.
 ##
+## As an example, @code{perms([1, 2, 3])} returns the matrix
+## @example
+##   1   2   3
+##   2   1   3
+##   1   3   2
+##   2   3   1
+##   3   1   2
+##   3   2   1
+## @end example
 ## @end deftypefn
 
 function A = perms (v)

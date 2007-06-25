@@ -21,8 +21,9 @@
 ## @deftypefn {Function File} {[@var{pval}, @var{f}, @var{df_num}, @var{df_den}] =} var_test (@var{x}, @var{y}, @var{alt})
 ## For two samples @var{x} and @var{y} from normal distributions with
 ## unknown means and unknown variances, perform an F-test of the null
-## hypothesis of equal variances.  Under the null, the test statistic f
-## follows an F-distribution with df_num and df_den degrees of freedom.
+## hypothesis of equal variances.  Under the null, the test statistic
+## @var{f} follows an F-distribution with @var{df_num} and @var{df_den}
+## degrees of freedom.
 ##
 ## With the optional argument string @var{alt}, the alternative of
 ## interest can be selected.  If @var{alt} is @code{"!="} or

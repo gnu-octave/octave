@@ -18,7 +18,7 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Functio File} {[@var{theta}, @var{beta}, @var{dev}, @var{dl}, @var{d2l}, @var{p}] =} logistic_regression (@var{y}, @var{x}, @var{print}, @var{theta}, @var{beta})
+## @deftypefn {Function File} {[@var{theta}, @var{beta}, @var{dev}, @var{dl}, @var{d2l}, @var{p}] =} logistic_regression (@var{y}, @var{x}, @var{print}, @var{theta}, @var{beta})
 ## Perform ordinal logistic regression.
 ##
 ## Suppose @var{y} takes values in @var{k} ordered categories, and let
@@ -56,7 +56,7 @@
 ## in which all output arguments and all input arguments except @var{y}
 ## are optional.
 ##
-## Stting @var{print} to 1 requests summary information about the fitted
+## Setting @var{print} to 1 requests summary information about the fitted
 ## model to be displayed.  Setting @var{print} to 2 requests information
 ## about convergence at each iteration.  Other values request no
 ## information to be displayed.  The input arguments @var{theta} and

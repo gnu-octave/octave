@@ -25,6 +25,7 @@
 ## $$
 ## {\rm skewness} (x) = {1\over N \sigma(x)^3} \sum_{i=1}^N (x_i-\bar{x})^3
 ## $$
+## where $\bar{x}$ is the mean value of $x$.
 ## @end tex
 ## @end iftex
 ## @ifinfo

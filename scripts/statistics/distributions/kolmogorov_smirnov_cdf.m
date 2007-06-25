@@ -22,7 +22,7 @@
 ## Return the CDF at @var{x} of the Kolmogorov-Smirnov distribution,
 ## @iftex
 ## @tex
-## $$ Q(x) = sum_{k=-\infty}^\infty (-1)^k exp(-2 k^2 x^2) $$
+## $$ Q(x) = \sum_{k=-\infty}^\infty (-1)^k \exp(-2 k^2 x^2) $$
 ## @end tex
 ## @end iftex
 ## @ifinfo

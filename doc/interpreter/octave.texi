@@ -432,10 +432,13 @@ Optimization
 
 Statistics
 
-* Basic Statistical Functions::  
+* Descriptive Statistics::
+* Basic Statistical Functions:: 
+* Statistical Plots:: 
 * Tests::                       
 * Models::                      
-* Distributions::               
+* Distributions::     
+* Random Number Generation::          
 
 Sets
 

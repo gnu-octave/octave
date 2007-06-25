@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} unidinv (@var{x}, @var{v})
 ## For each component of @var{x}, compute the quantile (the inverse of
-## the CDF) at @var{x} of the univariate distribution which assumes the
+## the CDF) at @var{x} of the univariate discrete distribution which assumes the
 ## values in @var{v} with equal probability
 ## @end deftypefn
 

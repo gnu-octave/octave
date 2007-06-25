@@ -1,3 +1,8 @@
+2007-06-25  John W. Eaton  <jwe@octave.org>
+
+	* strings/substr.m: Use offset consistently in code and doc string.
+	From Rafael Laboissiere <rafael@debian.org>.
+
 2007-06-25  Pete Gustafson <petegus@umich.edu>
 
         * plot/__go_draw_axes__.m: Handle units for text objects.

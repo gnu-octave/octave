@@ -18,25 +18,23 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} substr (@var{s}, @var{beg}, @var{len})
+## @deftypefn {Function File} {} substr (@var{s}, @var{offset}, @var{len})
 ## Return the substring of @var{s} which starts at character number
-## @var{beg} and is @var{len} characters long.
+## @var{offset} and is @var{len} characters long.
 ##
-## If OFFSET is negative, extraction starts that far from the end of
-## the string.  If LEN is omitted, the substring extends to the end
+## If @var{offset} is negative, extraction starts that far from the end of
+## the string.  If @var{len} is omitted, the substring extends to the end
 ## of S.
 ##
-##   For example,
+## For example,
 ##
 ## @example
 ## substr ("This is a test string", 6, 9)
 ##      @result{} "is a test"
 ## @end example
 ##
-## @quotation
 ## This function is patterned after AWK.  You can get the same result by
-## @code{@var{s} (@var{beg} : (@var{beg} + @var{len} - 1))}.
-## @end quotation
+## @code{@var{s} (@var{offset} : (@var{offset} + @var{len} - 1))}.
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
@@ -51,18 +49,16 @@ function t = substr (s, offset, len)
   if (ischar (s))
     nc = columns (s);
     if (abs (offset) > 0 && abs (offset) <= nc)
-      if (offset > 0)
-        beg = offset;
-      else
-        beg = nc + offset + 1;
+      if (offset <= 0)
+        offset += nc + 1;
       endif
       if (nargin == 2)
         eos = nc;
       else
-        eos = beg + len - 1;
+        eos = offset + len - 1;
       endif
       if (eos <= nc)
-        t = s (:, beg:eos);
+        t = s (:, offset:eos);
       else
         error ("substr: length = %d out of range", len);
       endif

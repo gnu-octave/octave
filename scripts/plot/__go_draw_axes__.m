@@ -488,15 +488,22 @@ function __go_draw_axes__ (h, plot_stream)
 	  label = obj.string;
 	  halign = obj.horizontalalignment;
 	  angle = obj.rotation;
+          units = obj.units;
+          if (strcmp (units, "normalized"))
+            units = "graph";
+          else
+            units = "";
+          endif
+	  
 	  if (nd == 3)
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %g,%g,%g %s rotate by %f;\n",
-		     undo_string_escapes (label),
+		     "set label \"%s\" at %s %g,%g,%g %s rotate by %f;\n",
+		     undo_string_escapes (label), units,
 		     lpos(1), lpos(2), lpos(3), halign, angle);
 	  else
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %g,%g %s rotate by %f;\n",
-		     undo_string_escapes (label),
+		     "set label \"%s\" at %s %g,%g %s rotate by %f;\n",
+		     undo_string_escapes (label), units,
 		     lpos(1), lpos(2), halign, angle);
 	  endif
 

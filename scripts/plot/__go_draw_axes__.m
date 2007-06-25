@@ -910,10 +910,13 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\n", ax);
     elseif (strcmp (labelmode, "manual") && ! isempty (labels))
-      k = 1;
-      ntics = numel (tics);
-      nlabels = numel (labels);
+      if (ischar (labels))
+	labels = cellstr (labels);
+      endif
       if (iscellstr (labels))
+	k = 1;
+	ntics = numel (tics);
+	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	fprintf (plot_stream, "set %stics (", ax);
 	for i = 1:ntics

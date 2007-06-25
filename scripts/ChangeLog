@@ -1,3 +1,9 @@
+2007-06-25  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Handle char arrays for tic labels.
+	Recycle tic labels if necessary.  From Juhani Saastamoinen
+	<juhani@cs.joensuu.fi>.
+
 2007-06-20  John W. Eaton  <jwe@octave.org>
 
 	* strings/index.m: Allow strings to be empty.

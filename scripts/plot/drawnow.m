@@ -57,7 +57,7 @@ function drawnow (term, file)
 	  f = get (h);
 	  if (f.__modified__)
 	    plot_stream = f.__plot_stream__;
-	    figure_is_visible = strcmp (f.visible, "on");
+	    figure_is_visible = strcmpi (f.visible, "on");
 	    if (figure_is_visible)
 	      if (isempty (plot_stream))
 		plot_stream = open_gnuplot_stream (h);

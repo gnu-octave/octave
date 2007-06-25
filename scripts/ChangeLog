@@ -1,3 +1,8 @@
+2007-06-25  John W. Eaton  <jwe@octave.org>
+
+	* plot/drawnow.m, plot/__go_draw_axes__.m: Use strcmpi instead of
+	strcmp for selected property comparisons.
+
 2007-06-25  Søren Hauberg  <hauberg@gmail.com>
 
         * image/imshow.m: Fix check for colormap arguments.

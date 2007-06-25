@@ -49,7 +49,7 @@ function __go_draw_axes__ (h, plot_stream)
       fprintf (plot_stream, "set size %g, %g;\n", pos(3), pos(4));
     endif
 
-    if (strcmp (axis_obj.dataaspectratiomode, "manual"))
+    if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
       r = axis_obj.dataaspectratio;
       fprintf (plot_stream, "set size ratio %g;\n", -r(2)/r(1));
     else
@@ -115,39 +115,39 @@ function __go_draw_axes__ (h, plot_stream)
       endif
     endif
 
-    if (strcmp (axis_obj.xgrid, "on"))
+    if (strcmpi (axis_obj.xgrid, "on"))
       fputs (plot_stream, "set grid xtics;\n");
     else
       fputs (plot_stream, "set grid noxtics;\n");
     endif
 
-    if (strcmp (axis_obj.ygrid, "on"))
+    if (strcmpi (axis_obj.ygrid, "on"))
       fputs (plot_stream, "set grid ytics;\n");
     else
       fputs (plot_stream, "set grid noytics;\n");
     endif
 
-    if (strcmp (axis_obj.zgrid, "on"))
+    if (strcmpi (axis_obj.zgrid, "on"))
       fputs (plot_stream, "set grid ztics;\n");
     else
       fputs (plot_stream, "set grid ztics;\n");
     endif
 
-    if (strcmp (axis_obj.xminorgrid, "on"))
+    if (strcmpi (axis_obj.xminorgrid, "on"))
       fputs (plot_stream, "set mxtics 5;\n");
       fputs (plot_stream, "set grid mxtics;\n");
     else
       fputs (plot_stream, "set grid nomxtics;\n");
     endif
 
-    if (strcmp (axis_obj.yminorgrid, "on"))
+    if (strcmpi (axis_obj.yminorgrid, "on"))
       fputs (plot_stream, "set mytics 5;\n");
       fputs (plot_stream, "set grid mytics;\n");
     else
       fputs (plot_stream, "set grid nomytics;\n");
     endif
 
-    if (strcmp (axis_obj.zminorgrid, "on"))
+    if (strcmpi (axis_obj.zminorgrid, "on"))
       fputs (plot_stream, "set mztics 5;\n");
       fputs (plot_stream, "set grid mztics;\n");
     else
@@ -156,30 +156,30 @@ function __go_draw_axes__ (h, plot_stream)
 
     do_tics (axis_obj, plot_stream);
 
-    xlogscale = strcmp (axis_obj.xscale, "log");
+    xlogscale = strcmpi (axis_obj.xscale, "log");
     if (xlogscale)
       fputs (plot_stream, "set logscale x;\n");
     else
       fputs (plot_stream, "unset logscale x;\n");
     endif
 
-    ylogscale = strcmp (axis_obj.yscale, "log");
+    ylogscale = strcmpi (axis_obj.yscale, "log");
     if (ylogscale)
       fputs (plot_stream, "set logscale y;\n");
     else
       fputs (plot_stream, "unset logscale y;\n");
     endif
 
-    zlogscale = strcmp (axis_obj.zscale, "log");
+    zlogscale = strcmpi (axis_obj.zscale, "log");
     if (zlogscale)
       fputs (plot_stream, "set logscale z;\n");
     else
       fputs (plot_stream, "unset logscale z;\n");
     endif
 
-    xautoscale = strcmp (axis_obj.xlimmode, "auto");
-    yautoscale = strcmp (axis_obj.ylimmode, "auto");
-    zautoscale = strcmp (axis_obj.zlimmode, "auto");
+    xautoscale = strcmpi (axis_obj.xlimmode, "auto");
+    yautoscale = strcmpi (axis_obj.ylimmode, "auto");
+    zautoscale = strcmpi (axis_obj.zlimmode, "auto");
 
     kids = axis_obj.children;
 
@@ -489,7 +489,7 @@ function __go_draw_axes__ (h, plot_stream)
 	  halign = obj.horizontalalignment;
 	  angle = obj.rotation;
           units = obj.units;
-          if (strcmp (units, "normalized"))
+          if (strcmpi (units, "normalized"))
             units = "graph";
           else
             units = "";
@@ -522,7 +522,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       xlim = axis_obj.xlim;
     endif
-    if (strcmp (axis_obj.xdir, "reverse"))
+    if (strcmpi (axis_obj.xdir, "reverse"))
       xdir = "reverse";
     else
       xdir = "noreverse";
@@ -535,7 +535,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       ylim = axis_obj.ylim;
     endif
-    if (strcmp (axis_obj.ydir, "reverse"))
+    if (strcmpi (axis_obj.ydir, "reverse"))
       ydir = "reverse";
     else
       ydir = "noreverse";
@@ -549,7 +549,7 @@ function __go_draw_axes__ (h, plot_stream)
       else
 	zlim = axis_obj.zlim;
       endif
-      if (strcmp (axis_obj.zdir, "reverse"))
+      if (strcmpi (axis_obj.zdir, "reverse"))
 	zdir = "reverse";
       else
 	zdir = "noreverse";
@@ -557,7 +557,7 @@ function __go_draw_axes__ (h, plot_stream)
       fprintf (plot_stream, "set zrange [%g:%g] %s;\n", zlim, zdir);
     endif
 
-    if (strcmp (axis_obj.box, "on"))
+    if (strcmpi (axis_obj.box, "on"))
       if (nd == 3)
 	fputs (plot_stream, "set border 4095;\n");
       else
@@ -572,8 +572,8 @@ function __go_draw_axes__ (h, plot_stream)
       endif
     endif
 
-    if (strcmp (axis_obj.key, "on"))
-      if (strcmp (axis_obj.keybox, "on"))
+    if (strcmpi (axis_obj.key, "on"))
+      if (strcmpi (axis_obj.keybox, "on"))
 	box = "box";
       else
 	box = "nobox";
@@ -840,7 +840,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, plot_stream)
     if (have_newer_gnuplot)
       fprintf (plot_stream, " pointsize %f", obj.markersize);
     else
-      if (! strcmp (style, "lines"))
+      if (! strcmpi (style, "lines"))
 	with = sprintf ("%s ps %f", with, obj.markersize);
       endif
     endif
@@ -913,10 +913,10 @@ function do_tics (obj, plot_stream)
 endfunction
 
 function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
-  if (strcmp (ticmode, "manual"))
+  if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\n", ax);
-    elseif (strcmp (labelmode, "manual") && ! isempty (labels))
+    elseif (strcmpi (labelmode, "manual") && ! isempty (labels))
       if (ischar (labels))
 	labels = cellstr (labels);
       endif

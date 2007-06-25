@@ -1,3 +1,11 @@
+2007-06-25  John W. Eaton  <jwe@octave.org>
+
+	* mk-opts.pl (emit_print_function): Make generated function print
+	to ostream (passed as arg) instead of local buffer.  Don't call
+	print_usage in generated function.
+	(emit_options_function): Fix call to print_${class_name} in
+	generated to pass octave_stdout as arg.
+
 2007-06-18  John W. Eaton  <jwe@octave.org>
 
 	* emacs/octave-inf.el (inferior-octave-prompt): Match "octave.bin"

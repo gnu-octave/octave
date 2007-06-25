@@ -595,20 +595,20 @@ sub emit_print_function
   ## FIXME -- determine the width of the table automatically.
 
   print "static void
-print_${class_name} (void)
+print_${class_name} (std::ostream& os)
 {
   std::ostringstream buf;
 
-  buf << \"\\n\"
-      << \"Options for $CLASS include:\\n\\n\"
-      << \"  keyword                                             value\\n\"
-      << \"  -------                                             -----\\n\";
+  os << \"\\n\"
+     << \"Options for $CLASS include:\\n\\n\"
+     << \"  keyword                                             value\\n\"
+     << \"  -------                                             -----\\n\";
 
   $struct_name *list = $static_table_name;\n\n";
 
   for ($i = 0; $i < $opt_num; $i++)
     {
-      print "  {\n    buf << \"  \"
+      print "  {\n    os << \"  \"
         << std::setiosflags (std::ios::left) << std::setw (50)
         << list[$i].keyword
         << std::resetiosflags (std::ios::left)
@@ -617,16 +617,16 @@ print_${class_name} (void)
       if ($type[$i] eq "double")
         {
           print "    double val = $static_object_name.$opt[$i] ();\n\n";
-          print "    buf << val << \"\\n\";\n";
+          print "    os << val << \"\\n\";\n";
         }
       elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
         {
           print "    int val = $static_object_name.$opt[$i] ();\n\n";
-          print "    buf << val << \"\\n\";\n";
+          print "    os << val << \"\\n\";\n";
         }
       elsif ($type[$i] eq "std::string")
         {
-          print "    buf << $static_object_name.$opt[$i] () << \"\\n\";\n";
+          print "    os << $static_object_name.$opt[$i] () << \"\\n\";\n";
         }
       elsif ($type[$i] eq "Array<int>" || $type[$i] eq "Array<octave_idx_type>")
         {
@@ -641,17 +641,17 @@ print_${class_name} (void)
           print "    Array<$elt_type> val = $static_object_name.$opt[$i] ();\n\n";
           print "    if (val.length () == 1)
       {
-        buf << val(0) << \"\\n\";
+        os << val(0) << \"\\n\";
       }
     else
       {
-        buf << \"\\n\\n\";
+        os << \"\\n\\n\";
 	octave_idx_type len = val.length ();
 	Matrix tmp (len, 1);
 	for (octave_idx_type i = 0; i < len; i++)
 	  tmp(i,0) = val(i);
-        octave_print_internal (buf, tmp, false, 2);
-        buf << \"\\n\\n\";
+        octave_print_internal (os, tmp, false, 2);
+        os << \"\\n\\n\";
       }\n";
         }
       elsif ($type[$i] eq "Array<double>")
@@ -659,14 +659,14 @@ print_${class_name} (void)
           print "    Array<double> val = $static_object_name.$opt[$i] ();\n\n";
           print "    if (val.length () == 1)
       {
-        buf << val(0) << \"\\n\";
+        os << val(0) << \"\\n\";
       }
     else
       {
-        buf << \"\\n\\n\";
+        os << \"\\n\\n\";
         Matrix tmp = Matrix (ColumnVector (val));
-        octave_print_internal (buf, tmp, false, 2);
-        buf << \"\\n\\n\";
+        octave_print_internal (os, tmp, false, 2);
+        os << \"\\n\\n\";
       }\n";
         }
       else
@@ -677,8 +677,7 @@ print_${class_name} (void)
       print "  }\n\n";
     }
 
-  print "print_usage ();
-}\n\n";
+  print "  os << \"\\n\";\n}\n\n";
 }
 
 sub emit_set_functions
@@ -857,7 +856,7 @@ Options include\\n\\
 
   if (nargin == 0)
     {
-      print_${class_name} ();
+      print_${class_name} (octave_stdout);
     }
   else if (nargin == 1 || nargin == 2)
     {

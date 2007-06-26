@@ -1648,6 +1648,9 @@ the file @file{data} in Octave's binary format.\n\
 	// don't insert any commands here!  the brace below must go
 	// with the "else" above!
 	{
+	  if (append)
+	    warning ("save: ignoring -append option for output to stdout");
+
 	  // FIXME -- should things intended for the screen end up
 	  // in a octave_value (string)?
 	  
@@ -1669,11 +1672,12 @@ the file @file{data} in Octave's binary format.\n\
 
       i++;
 
-      std::ios::openmode mode = std::ios::out;
-
       // Matlab v7 files are always compressed
       if (format == LS_MAT7_BINARY)
 	use_zlib = false;
+
+      std::ios::openmode mode
+	= append ? (std::ios::app | std::ios::ate) : std::ios::out;
 
       if (format == LS_BINARY
 #ifdef HAVE_HDF5
@@ -1684,11 +1688,17 @@ the file @file{data} in Octave's binary format.\n\
 	  || format == LS_MAT7_BINARY)
 	mode |= std::ios::binary;
 
-      mode |= append ? std::ios::ate : std::ios::trunc;
-
+      bool write_header_info = ! append;
+	      
 #ifdef HAVE_HDF5
       if (format == LS_HDF5)
 	{
+	  if (append)
+	    {
+	      error ("save: appending to HDF5 files is not implemented");
+	      return retval;
+	    }
+
 	  hdf5_ofstream hdf5_file (fname.c_str ());
 
 	  if (hdf5_file.file_id >= 0)
@@ -1716,8 +1726,6 @@ the file @file{data} in Octave's binary format.\n\
 
 	      if (file)
 		{
-		  bool write_header_info = ! file.tellp ();
-	      
 		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);
 
@@ -1736,8 +1744,6 @@ the file @file{data} in Octave's binary format.\n\
 	  
 	      if (file)
 		{
-		  bool write_header_info = ! file.tellp ();
-	      
 		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);
 

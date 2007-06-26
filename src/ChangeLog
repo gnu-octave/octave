@@ -1,3 +1,8 @@
+2007-06-26  John W. Eaton  <jwe@octave.org>
+
+	* src/load-save.cc (Fsave): Open files correctly for -append.
+	Don't write file headers if appending.  Error for -append -hdf5.
+
 2007-06-25  Olaf Till  <i7tiol@t-online.de>
 
 	* oct-stream.h (octave_stream_list::list): Use std::map.

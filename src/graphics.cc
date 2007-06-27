@@ -96,47 +96,30 @@ radio_values::radio_values (const std::string& opt_string)
 }
 
 bool
-color_values::c2rgb (char c)
+color_values::str2rgb (std::string str)
 {
   double tmp_rgb[3] = {0, 0, 0};
   bool retval = true;
+  unsigned int len = str.length();
 
-  switch(c) 
-    {
-    case 'k':
-      break;
-
-    case 'r':
-      tmp_rgb[0] = 1;	
-      break;	
-
-    case 'g': 
-      tmp_rgb[1] = 1;
-      break;
-
-    case 'b':
-      tmp_rgb[2] = 1; 
-      break;
-
-    case 'c': 	
-      tmp_rgb[1] = tmp_rgb[2] = 1;
-      break;
-
-    case 'm':
-      tmp_rgb[0] = tmp_rgb[2] = 1;
-      break;
-
-    case 'y': 
-      tmp_rgb[0] = tmp_rgb[1] = 1;
-      break;
-
-    case 'w': 
-      tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
-      break;
-
-    default:
-      retval = false;
-    }
+  if (str.compare(0, len, "blue", 0, len) == 0)
+    tmp_rgb[2] = 1;
+  else if (str.compare(0, len, "black", 0, len) == 0 || str.compare(0, len, "w", 0, len) == 0)
+    tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 0;
+  else if (str.compare(0, len, "red", 0, len) == 0)
+    tmp_rgb[0] = 1;
+  else if (str.compare(0, len, "green", 0, len) == 0)
+    tmp_rgb[1] = 1;
+  else if (str.compare(0, len, "yellow", 0, len) == 0)
+    tmp_rgb[0] = tmp_rgb[1] = 1;
+  else if (str.compare(0, len, "magenta", 0, len) == 0)
+    tmp_rgb[0] = tmp_rgb[2] = 1;
+  else if (str.compare(0, len, "cyan", 0, len) == 0)
+    tmp_rgb[1] = tmp_rgb[2] = 1;
+  else if (str.compare(0, len, "white", 0, len) == 0)
+    tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
+  else	
+    retval = false;
 
   if (retval)
     {
@@ -146,7 +129,6 @@ color_values::c2rgb (char c)
 
   return retval;
 }
-
 
 color_property::color_property (const octave_value& val)
   : radio_val (), current_val ()
@@ -159,7 +141,7 @@ color_property::color_property (const octave_value& val)
 
       if (! s.empty ())
 	{
-	  color_values col (s[0]);
+	  color_values col (s);
 	  if (! error_state)
 	    {
 	      color_val = col;

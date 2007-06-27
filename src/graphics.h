@@ -144,9 +144,9 @@ public:
     validate ();
   }
 
-  color_values (const char c)
+  color_values (std::string str)
   {
-    if (! c2rgb (c))
+    if (! str2rgb (str))
       error ("invalid color specification");
   }
 
@@ -187,7 +187,7 @@ public:
 private:
   double xrgb[3];
 
-  bool c2rgb (char c);
+  bool str2rgb (std::string str);
 };
 
 

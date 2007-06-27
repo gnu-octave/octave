@@ -1,3 +1,10 @@
+2007-06-27  Kai Habel  <kai.habel@gmx.de>
+
+	* graphics.h (color_values::color_values): Arg is now std:string
+	instead of char.  Call str2rgb, not c2rgb.
+	* graphics.h, graphics.cc: (color_values::str2rgb): Rename from
+	c2rgb.  Handle long color names, not just single char abbreviations.
+
 2007-06-27  David Bateman  <dbateman@free.fr>
 	
 	* src/load-save.cc (Fsave): Ensure header is written for non
@@ -37,7 +44,7 @@
 	New macros. Use them to declare individual properties and define
 	accessor methods for each property in the property classes.
 
-2007-06-15  Kai Habel <kai.habel@gmx.de>
+2007-06-15  Kai Habel  <kai.habel@gmx.de>
 
 	* graphics.cc (Fget, Fset): Handle vectors of handles.
 

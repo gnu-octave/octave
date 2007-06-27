@@ -1,4 +1,4 @@
-/*
+`</*
 
 Copyright (C) 1996, 1997 John W. Eaton
 
@@ -1418,7 +1418,7 @@ dump_octave_core (void)
 #ifdef HAVE_HDF5
       if (format == LS_HDF5)
 	{
-	  hdf5_ofstream file (fname);
+	  hdf5_ofstream file (fname, mode);
 
 	  if (file.file_id >= 0)
 	    {
@@ -1688,23 +1688,25 @@ the file @file{data} in Octave's binary format.\n\
 	  || format == LS_MAT7_BINARY)
 	mode |= std::ios::binary;
 
-      bool write_header_info = ! append;
-	      
 #ifdef HAVE_HDF5
       if (format == LS_HDF5)
 	{
+	  // FIXME. It should be possible to append to HDF5 files.
 	  if (append)
 	    {
 	      error ("save: appending to HDF5 files is not implemented");
 	      return retval;
 	    }
 
-	  hdf5_ofstream hdf5_file (fname.c_str ());
+	  bool write_header_info = ! (append && 
+				      H5Fis_hdf5 (fname.c_str ()) > 0);
 
-	  if (hdf5_file.file_id >= 0)
+	  hdf5_ofstream hdf5_file (fname.c_str (), mode);
+
+	  if (hdf5_file.file_id != -1)
 	    {
 	      save_vars (argv, i, argc, hdf5_file, format,
-			 save_as_floats, true);
+			 save_as_floats, write_header_info);
 
 	      hdf5_file.close ();
 	  }
@@ -1726,6 +1728,8 @@ the file @file{data} in Octave's binary format.\n\
 
 	      if (file)
 		{
+		  bool write_header_info = ! file.tellp ();
+
 		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);
 
@@ -1744,6 +1748,8 @@ the file @file{data} in Octave's binary format.\n\
 	  
 	      if (file)
 		{
+		  bool write_header_info = ! file.tellp ();
+
 		  save_vars (argv, i, argc, file, format,
 			     save_as_floats, write_header_info);
 

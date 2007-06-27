@@ -44,13 +44,20 @@ public:
 
   hdf5_fstreambase () { file_id = -1; }
 
+  ~hdf5_fstreambase () { close (); }
+
   hdf5_fstreambase (const char *name, int mode, int /* prot */ = 0)
     {
       if (mode & std::ios::in)
 	file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
       else if (mode & std::ios::out)
-	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-
+	{
+	  if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
+	    file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
+	  else
+	    file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, 
+				 H5P_DEFAULT);
+	}
       if (file_id < 0)
 	std::ios::setstate (std::ios::badbit);
 
@@ -74,8 +81,13 @@ public:
       if (mode & std::ios::in)
 	file_id = H5Fopen (name, H5F_ACC_RDONLY, H5P_DEFAULT);
       else if (mode & std::ios::out)
-	file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
-
+	{
+	  if (mode & std::ios::app && H5Fis_hdf5 (name) > 0)
+	    file_id = H5Fopen (name, H5F_ACC_RDWR, H5P_DEFAULT);
+	  else
+	    file_id = H5Fcreate (name, H5F_ACC_TRUNC, H5P_DEFAULT, 
+				 H5P_DEFAULT);
+	}
       if (file_id < 0)
 	std::ios::setstate (std::ios::badbit);
 

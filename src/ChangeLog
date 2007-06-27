@@ -1,3 +1,9 @@
+2007-06-27  David Bateman  <dbateman@free.fr>
+	
+	* src/load-save.cc (Fsave): Ensure header is written for non
+	existent file with "-append".
+	* src/ls-hdf5.h: First steps towards having append work for hdf5.
+	
 2007-06-26  John W. Eaton  <jwe@octave.org>
 
 	* src/load-save.cc (Fsave): Open files correctly for -append.

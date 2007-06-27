@@ -295,14 +295,17 @@ public:
   template <class T2>
   octave_int<T>& operator <<= (const T2& x)
   {
-    ival = ((ival << x) > std::numeric_limits<T>::max ()) ? 0 : (ival << x);
+    ival = ival << x;
     return *this;
   }
 
   template <class T2>
   octave_int<T>& operator >>= (const T2& x)
   {
-    ival >>= x;
+    if (ival < 0)
+      ival = - (((-ival) >> x) & std::numeric_limits<T>::max());
+    else
+      ival = ival >> x;
     return *this;
   }
 

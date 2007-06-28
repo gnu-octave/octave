@@ -92,7 +92,7 @@ function __go_draw_axes__ (h, plot_stream)
 	fprintf (plot_stream, "set ylabel \"%s\"",
 		 undo_string_escapes (t.string));
 	if (have_newer_gnuplot)
-	  fprintf (" rotate by %f;\n", angle);
+	  fprintf (plot_stream, " rotate by %f;\n", angle);
 	endif
 	fputs (plot_stream, ";\n");
       endif

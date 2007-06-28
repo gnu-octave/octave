@@ -1047,12 +1047,9 @@ octave_base_stream::gets (octave_idx_type max_len, bool& err, const std::string&
 
 #define OCTAVE_SCAN(is, fmt, arg) octave_scan (is, fmt, arg)
 
-// FIXME -- this needs to be fixed to handle formats which
-// specify a maximum width.
-
 template <class T>
 std::istream&
-octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
+octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 {
   T& ref = *valptr;
 
@@ -1104,6 +1101,30 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
       is >> ref;
       break;
     }
+
+  return is;
+}
+
+template <class T>
+std::istream&
+octave_scan (std::istream& is, const scanf_format_elt& fmt, T* valptr)
+{
+  if (fmt.width)
+    {
+      // Limit input to fmt.width characters by reading into a
+      // temporary stringstream buffer.
+
+      std::string tmp;
+
+      is.width (fmt.width);
+      is >> tmp;
+
+      std::istringstream ss (tmp);
+
+      octave_scan_1 (ss, fmt, valptr);
+    }
+  else
+    octave_scan_1 (is, fmt, valptr);
 
   return is;
 }

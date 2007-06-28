@@ -1,5 +1,11 @@
 2007-06-28  John W. Eaton  <jwe@octave.org>
 
+	* ov-cell.cc (octave_cell::subsasgn): Given x = {}, convert to
+	struct for assignments like x(1).f = val;
+
+	* oct-stream.cc (octave_scan_1): New function
+	(octave_scan): Use it.  Handle fmt.width.
+
 	* graphics.h (axes::axes_properties::visible): New data member.
 	* graphics.cc (axes::axes_properties::axes_properties, 
 	axes::axes_properties::set, axes::axes_properties::get, 

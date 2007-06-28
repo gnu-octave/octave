@@ -137,20 +137,34 @@ octave_cell::subsasgn (const std::string& type,
 	{
 	case '(':
 	  {
-	    octave_value tmp = do_index_op (idx.front (), true);
-
-	    if (! tmp.is_defined ())
-	      tmp = octave_value::empty_conv (type.substr (1), rhs);
-
-	    if (! error_state)
+	    if (is_empty () && type[1] == '.')
 	      {
-		std::list<octave_value_list> next_idx (idx);
+		// Allow conversion of empty cell array to some other
+		// type in cases like
+		//
+		//  x = []; x(i).f = rhs
 
-		next_idx.erase (next_idx.begin ());
+		octave_value tmp = octave_value::empty_conv (type, rhs);
 
-		tmp.make_unique ();
+		return tmp.subsasgn (type, idx, rhs);
+	      }
+	    else
+	      {
+		octave_value tmp = do_index_op (idx.front (), true);
 
-		t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+		if (! tmp.is_defined ())
+		  tmp = octave_value::empty_conv (type.substr (1), rhs);
+
+		if (! error_state)
+		  {
+		    std::list<octave_value_list> next_idx (idx);
+
+		    next_idx.erase (next_idx.begin ());
+
+		    tmp.make_unique ();
+
+		    t_rhs = tmp.subsasgn (type.substr (1), next_idx, rhs);
+		  }
 	      }
 	  }
 	  break;

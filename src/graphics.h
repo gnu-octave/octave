@@ -1208,6 +1208,7 @@ public:
     OCTAVE_GRAPHICS_PROPERTY (octave_value, ydir);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, zdir);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, view);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, visible);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, nextplot);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, outerposition);
 

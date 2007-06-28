@@ -120,6 +120,13 @@ function h = subplot (rows, columns, index)
 
   found = false;
   for child = obj.children
+    ## Check if this child is still valid; this might not be the case
+    ## anymore due to the deletion of previous children (due to DeleteFcn
+    ## callback or for legends/colorbars that get deleted with their
+    ## corresponding axes)
+    if (! ishandle (child))
+      continue;
+    endif
     obj = get (child);
     if (strcmp (obj.type, "axes"))
       objpos = obj.outerposition;

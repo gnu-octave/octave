@@ -1,3 +1,10 @@
+2007-06-28  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/subplot.m: Add 'ishandle' check when parsing the existing axes.
+
+	* plot/axis.m: Also set "visible" property when setting axes to
+	on/off.
+
 2007-06-27  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* image/colormap.m: Only return colormap if nargout > 0.

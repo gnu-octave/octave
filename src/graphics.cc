@@ -921,6 +921,7 @@ axes::axes_properties::axes_properties (const graphics_handle& mh,
     ydir ("normal"),
     zdir ("normal"),
     view (),
+    visible ("on"),
     nextplot ("replace"),
     outerposition ()
 {
@@ -1108,6 +1109,8 @@ axes::axes_properties::set (const property_name& name, const octave_value& val)
     zdir = val;
   else if (name.compare ("view"))
     view = val;
+  else if (name.compare ("visible"))
+    visible = val;
   else if (name.compare ("nextplot"))
     nextplot = val;
   else if (name.compare ("outerposition"))
@@ -1176,6 +1179,7 @@ axes::axes_properties::set_defaults (base_graphics_object& obj,
   tview(1) = 90;
   view = tview;
 
+  visible = "on";
   nextplot = "replace";
 
   // FIXME -- this is not quite right; we should preserve
@@ -1259,6 +1263,7 @@ axes::axes_properties::get (void) const
   m.assign ("ydir", ydir);
   m.assign ("zdir", zdir);
   m.assign ("view", view);
+  m.assign ("visible", visible);
   m.assign ("nextplot", nextplot);
   m.assign ("outerposition", outerposition);
 
@@ -1382,6 +1387,8 @@ axes::axes_properties::get (const property_name& name) const
     retval = zdir;
   else if (name.compare ("view"))
     retval = view;
+  else if (name.compare ("visible"))
+    retval = visible;
   else if (name.compare ("nextplot"))
     retval = nextplot;
   else if (name.compare ("outerposition"))
@@ -1481,6 +1488,7 @@ property_list::pval_map_type axes::axes_properties::factory_defaults (void)
 
   m["view"] = tview;
 
+  m["visible"] = "on";
   m["nextplot"] = "replace";
 
   Matrix touterposition (1, 4, 0.0);

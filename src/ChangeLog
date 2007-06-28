@@ -1,3 +1,10 @@
+2007-06-28  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h (axes::axes_properties::visible): New data member.
+	* graphics.cc (axes::axes_properties::axes_properties, 
+	axes::axes_properties::set, axes::axes_properties::get, 
+	axes::axes_properties::factory_defaults): Handle visible property.
+
 2007-06-27  Kai Habel  <kai.habel@gmx.de>
 
 	* graphics.h (color_values::color_values): Arg is now std:string

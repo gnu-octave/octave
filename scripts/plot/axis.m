@@ -178,8 +178,10 @@ function curr_axis = axis (ax, varargin)
       set (ca, "xtickmode", "auto", "ytickmode", "auto", "ztickmode", "auto");
       set (ca, "xticklabelmode", "auto", "yticklabelmode", "auto",
 	   "zticklabelmode", "auto");
+      set (ca, "visible", "on");
     elseif (strcmp (ax, "off"))
       set (ca, "xtick", [], "ytick", [], "ztick", []);
+      set (ca, "visible", "off");
     elseif (len > 3 && strcmp (ax(1:3), "tic"))
       if (any (ax == "x"))
 	set (ca, "xtickmode", "auto");

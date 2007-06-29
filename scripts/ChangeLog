@@ -1,3 +1,9 @@
+2007-06-29  Marcus W. Reble  <reble@wisc.edu>
+
+	* optimization/sqp.m (sqp): New args, lb, ub, maxiter, and tolerance.
+	(fdjac): Set nx outside of if block.
+	(cf_ub_lb, cigrad_ub_lb): New subfunctons.
+
 2007-06-28  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/subplot.m: Add 'ishandle' check when parsing the existing axes.

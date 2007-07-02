@@ -120,17 +120,6 @@ Sparse Matrices:
       - symmlq 
       - spaugment
 
---------
-Graphics:
---------
-
-  * Make plotting with plplot work.
-
-  * Make it possible to check the current graphics terminal type.
-
-  * If using gnuplot, consider setting a smaller default for the
-    `zero' value (e.g., set zero sqrt (realmin) or something).
-
 -------
 Strings:
 -------
@@ -154,16 +143,6 @@ Other Data Types:
 ----------------
 
   * Template functions for mixed-type ops.
-
-------------------------
-Graphical User Interface:
-------------------------
-
-  * In an X11 or other windowing environment, allow the user to pop up
-    windows for menus and other purposes.  A good place to start might
-    be Tk, as long as Tcl is avoided.
-
-  * Add a way to handle events, like alarms, mouse clicks, etc.
 
 ------------
 Input/Output:

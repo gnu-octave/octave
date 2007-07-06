@@ -1,3 +1,7 @@
+2007-07-06  David Bateman  <dbateman@free.fr>
+
+        * interpreter/arith.txi: Add accumarray.
+
 2007-06-25  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/stats.txi: Reorganize sections and add introductory text.

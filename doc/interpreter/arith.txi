@@ -190,6 +190,8 @@ Octave also provides the following functions which work with degrees.
 
 @DOCSTRING(sumsq)
 
+@DOCSTRING(accumarray)
+
 @node Special Functions
 @section Special Functions
 

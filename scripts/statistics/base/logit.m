@@ -26,6 +26,7 @@
 ## {\rm logit}(p) = \log\Big({p \over 1-p}\Big)
 ## $$
 ## @end tex
+## @end iftex
 ## @ifnottex
 ## @example
 ## logit(@var{p}) = log (@var{p} / (1-@var{p}))

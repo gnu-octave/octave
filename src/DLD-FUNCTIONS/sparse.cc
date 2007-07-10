@@ -1026,6 +1026,21 @@ make_spdiag (const octave_value& a, const octave_value& b)
   return retval;
 }
 
+static octave_value
+make_spdiag (const octave_value& a)
+{
+  octave_value retval;
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.columns ();
+
+  if (nr == 0 || nc == 0)
+    retval = SparseMatrix ();
+  else
+    retval = make_spdiag (a, octave_value (0.));
+
+  return retval;
+}
+
 // PKG_ADD: dispatch ("diag", "spdiag", "sparse matrix");
 // PKG_ADD: dispatch ("diag", "spdiag", "sparse complex matrix");
 // PKG_ADD: dispatch ("diag", "spdiag", "sparse bool matrix");
@@ -1055,7 +1070,7 @@ Compressed Column Sparse (rows=4, cols=4, nnz=3)\n\
   int nargin = args.length ();
 
   if (nargin == 1 && args(0).is_defined ())
-    retval = make_spdiag (args(0), octave_value(0.));
+    retval = make_spdiag (args(0));
   else if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     retval = make_spdiag (args(0), args(1));
   else

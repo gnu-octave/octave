@@ -1,3 +1,8 @@
+2007-06-27  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sparse.cc (Fspdiag): Ensure spdiag(zeros(1,0)) returns
+	0x0 matrix.
+
 2007-06-28  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.cc (octave_cell::subsasgn): Given x = {}, convert to

@@ -1054,6 +1054,7 @@ on the @var{-k}-th sub-diagonal.  The default value of @var{k} is 0, and\n\
 the vector is placed on the main diagonal.  For example,\n\
 \n\
 @example\n\
+@group\n\
 spdiag ([1, 2, 3], 1)\n\
 ans =\n\
 \n\
@@ -1061,7 +1062,12 @@ Compressed Column Sparse (rows=4, cols=4, nnz=3)\n\
   (1 , 2) -> 1\n\
   (2 , 3) -> 2\n\
   (3 , 4) -> 3\n\
+@end group\n\
 @end example\n\
+\n\
+@noindent\n\
+Given a matrix argument, instead of a vector, @code{spdiag} extracts the\n\
+@var{k}-th diagonal of the sparse matrix.\n\ 
 @seealso{diag}\n\
 @end deftypefn")
 {

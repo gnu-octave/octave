@@ -653,6 +653,10 @@ diag ([1, 2, 3], 1)\n\
          0  0  0  0\n\
 @end group\n\
 @end example\n\
+\n\
+@noindent\n\
+Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
+@var{k}-th diagonal of the matrix.\n\ 
 @end deftypefn")
 {
   octave_value retval;

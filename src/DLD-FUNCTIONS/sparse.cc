@@ -1067,7 +1067,7 @@ Compressed Column Sparse (rows=4, cols=4, nnz=3)\n\
 \n\
 @noindent\n\
 Given a matrix argument, instead of a vector, @code{spdiag} extracts the\n\
-@var{k}-th diagonal of the sparse matrix.\n\ 
+@var{k}-th diagonal of the sparse matrix.\n\
 @seealso{diag}\n\
 @end deftypefn")
 {

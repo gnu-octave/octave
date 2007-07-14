@@ -671,11 +671,7 @@ octave_sparse_bool_matrix::load_hdf5 (hid_t loc_id, const char *name,
       return false;
     }
 
-#ifndef _MSC_VER
-  hbool_t htmp[nz];
-#else
-  std::vector<hbool_t> htmp (nz);
-#endif
+  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nz);
   bool retval = false;
   if (H5Dread (data_hid, H5T_NATIVE_HBOOL, H5S_ALL, H5S_ALL, H5P_DEFAULT, htmp) >= 0) 
     {

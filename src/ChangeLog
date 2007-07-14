@@ -1,3 +1,8 @@
+2007-07-14  Michael Goffioul  <michael.goffioul@swing.be>
+
+	* src/ov-bool-sparse.cc (octave_sparse_bool_matrix:load_hdf5):
+	Use OCTAVE_LOCAL_BUFFER for temporary boolean value.
+	
 2007-06-27  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sparse.cc (Fspdiag): Ensure spdiag(zeros(1,0)) returns

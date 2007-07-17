@@ -1587,21 +1587,21 @@ function [out1, out2] = installed_packages (local_list, global_list)
   ## Now check if the package is loaded
   tmppath = strrep (path(), "\\", "/");
   for i = 1:length (installed_packages)
-    if (regexp (tmppath, strrep (installed_packages{i}.dir, "\\", "/")))
+    if (findstr (tmppath, strrep (installed_packages{i}.dir, "\\", "/")))
       installed_packages{i}.loaded = true;
     else
       installed_packages{i}.loaded = false;
     endif
   endfor
   for i = 1:length (local_packages)
-    if (regexp (tmppath, strrep (local_packages{i}.dir, "\\", "/")))
+    if (findstr (tmppath, strrep (local_packages{i}.dir, "\\", "/")))
       local_packages{i}.loaded = true;
     else
       local_packages{i}.loaded = false;
     endif
   endfor
   for i = 1:length (global_packages)
-    if (regexp (tmppath, strrep (global_packages{i}.dir, "\\", "/")))
+    if (findstr (tmppath, strrep (global_packages{i}.dir, "\\", "/")))
       global_packages{i}.loaded = true;
     else
       global_packages{i}.loaded = false;

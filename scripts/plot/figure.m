@@ -61,9 +61,8 @@ function h = figure (varargin)
 
   if (rem (nargs, 2) == 0)
     if (isnan (f) || init_new_figure)
-      f = __go_figure__ (f);
-    endif
-    if (nargs > 0)
+      f = __go_figure__ (f, varargin{:});
+    elseif (nargs > 0)
       set (f, varargin{:});
     endif
     set (0, "currentfigure", f);

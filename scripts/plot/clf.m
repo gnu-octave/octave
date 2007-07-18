@@ -30,7 +30,9 @@ function clf ()
     cf = gcf ();
     set (cf, "currentaxes", []);
     for k = get (cf, "children")
-      delete (k);
+      if (ishandle (k))
+        delete (k);
+      endif
     endfor
   else
     print_usage ();

@@ -1,3 +1,10 @@
+2007-07-18  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/clf.m: Check for valid handle before deleting.
+
+	* plot/figure.m: Pass "figure" property/value pairs directly to
+	__go_figure__ instead of using regular "set" call.
+
 2007-07-18  Paul Kienzle  <pkienzle@users.sf.net>
 
 	* plot/drawnow.m: Prefer GNUTERM to DISPLAY when choosing terminal

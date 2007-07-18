@@ -34,6 +34,10 @@
 
 function rnd = gamma_rnd (varargin)
 
+ if (nargin > 1)
+   varargin{2} = 1 ./ varargin{2};
+ endif
+
  rnd =  gamrnd (varargin{:});
 
 endfunction

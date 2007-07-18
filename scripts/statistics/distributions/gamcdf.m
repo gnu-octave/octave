@@ -52,9 +52,9 @@ function cdf = gamcdf (x, a, b)
   k = find ((x > 0) & (a > 0) & (b > 0));
   if (any (k))
     if (isscalar (a) && isscalar(b))
-      cdf (k) = gammainc (b * x(k), a);
+      cdf (k) = gammainc (x(k) ./ b, a);
     else
-      cdf (k) = gammainc (b(k) .* x(k), a(k));
+      cdf (k) = gammainc (x(k) ./ b(k), a(k));
     endif
   endif
 

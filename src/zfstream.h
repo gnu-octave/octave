@@ -194,6 +194,9 @@ protected:
   seekpos(pos_type sp, std::ios_base::openmode mode = 
 	  std::ios_base::in|std::ios_base::out);
 
+  virtual int_type
+  pbackfail (int_type c = traits_type::eof());
+
 //
 // Some future enhancements
 //

@@ -52,22 +52,22 @@ function pdf = gampdf (x, a, b)
   k = find ((x > 0) & (a > 0) & (a <= 1) & (b > 0));
   if (any (k))
     if (isscalar(a) && isscalar(b))
-      pdf(k) = ((b .^ a) .* (x(k) .^ (a - 1))
-		.* exp(-b .* x(k)) ./ gamma (a));
+      pdf(k) = (x(k) .^ (a - 1)) ...
+		.* exp(- x(k) ./ b) ./ gamma (a) ./ (b .^ a);
     else
-      pdf(k) = ((b(k) .^ a(k)) .* (x(k) .^ (a(k) - 1))
-		.* exp(-b(k) .* x(k)) ./ gamma (a(k)));
+      pdf(k) = (x(k) .^ (a(k) - 1)) ...
+		.* exp(- x(k) ./ b(k)) ./ gamma (a(k)) ./ (b(k) .^ a(k));
     endif
   endif
 
   k = find ((x > 0) & (a > 1) & (b > 0));
   if (any (k))
     if (isscalar(a) && isscalar(b))
-      pdf(k) = exp (a .* log (b) + (a-1) .* log (x(k))
-		    - b .* x(k) - gammaln (a));
+      pdf(k) = exp (- a .* log (b) + (a-1) .* log (x(k))
+		    - x(k) ./ b - gammaln (a));
     else
-      pdf(k) = exp (a(k) .* log (b(k)) + (a(k)-1) .* log (x(k))
-		    - b(k) .* x(k) - gammaln (a(k)));
+      pdf(k) = exp (- a(k) .* log (b(k)) + (a(k)-1) .* log (x(k))
+		    - x(k) ./ b(k) - gammaln (a(k)));
     endif
   endif
 

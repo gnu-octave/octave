@@ -29,6 +29,10 @@
 
 function inv = gamma_inv (varargin)
 
+ if (nargin > 2)
+   varargin{3} = 1 ./ varargin{3};
+ endif
+
  inv =  gaminv (varargin{:});
 
 endfunction

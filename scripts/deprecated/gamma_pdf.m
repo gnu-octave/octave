@@ -29,6 +29,10 @@
 
 function pdf = gamma_pdf (varargin)
 
+ if (nargin > 2)
+   varargin{3} = 1 ./ varargin{3};
+ endif
+
  pdf =  gampdf (varargin{:});
 
 endfunction

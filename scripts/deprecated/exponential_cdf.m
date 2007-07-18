@@ -31,6 +31,10 @@
 
 function cdf = exponential_cdf (varargin)
 
+ if (nargin > 1)
+   varargin{2} = 1 ./ varargin{2};
+ endif
+
  cdf =  expcdf (varargin{:});
 
 endfunction

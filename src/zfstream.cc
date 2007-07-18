@@ -207,6 +207,47 @@ gzfilebuf::showmanyc()
     return 0;
 }
 
+// Puts back a character to the stream in two cases. Firstly, when there
+// is no putback position available, and secondly when the character putback
+// differs from the one in the file. We can only support the first case 
+// with gzipped files.
+gzfilebuf::int_type
+gzfilebuf::pbackfail (gzfilebuf::int_type c)
+{
+  if (this->is_open())
+    {
+      if (gzseek (file, this->gptr() - this->egptr() - 1, SEEK_CUR) < 0)
+	return traits_type::eof();
+  
+      // Invalidates contents of the buffer
+      enable_buffer ();
+
+      // Attempt to fill internal buffer from gzipped file
+      // (buffer must be guaranteed to exist...)
+      int bytes_read = gzread(file, buffer, buffer_size);
+      // Indicates error or EOF
+      if (bytes_read <= 0)
+	{
+	  // Reset get area
+	  this->setg(buffer, buffer, buffer);
+	  return traits_type::eof();
+	}
+
+      // Make all bytes read from file available as get area
+      this->setg(buffer, buffer, buffer + bytes_read);
+
+      // If next character in get area differs from putback character
+      // flag a failure
+      gzfilebuf::int_type ret = traits_type::to_int_type(*(this->gptr()));
+      if (ret != c)
+	return traits_type::eof();
+      else
+	return ret;
+    }
+  else
+    return traits_type::eof();
+}
+
 // Fill get area from gzipped file
 gzfilebuf::int_type
 gzfilebuf::underflow()

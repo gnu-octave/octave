@@ -34,6 +34,10 @@
 
 function rnd = exponential_rnd (varargin)
 
+ if (nargin > 0)
+   varargin{1} = 1 ./ varargin{1};
+ endif
+
  rnd =  exprnd (varargin{:});
 
 endfunction

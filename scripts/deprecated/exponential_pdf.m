@@ -28,6 +28,10 @@
 
 function pdf = exponential_pdf (varargin)
 
+ if (nargin > 1)
+   varargin{2} = 1 ./ varargin{2};
+ endif
+
  pdf =  exppdf (varargin{:});
 
 endfunction

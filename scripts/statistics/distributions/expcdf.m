@@ -63,11 +63,11 @@ function cdf = expcdf (x, l)
   k = find ((x > 0) & (x < Inf) & (l > 0));
   if (any (k))
     if isscalar (l)
-      cdf (k) = 1 - exp (- l .* x(k));
+      cdf (k) = 1 - exp (- x(k) ./ l);
     elseif isscalar (x)
-      cdf (k) = 1 - exp (- l(k) .* x);
+      cdf (k) = 1 - exp (- x ./ l(k));
     else
-      cdf (k) = 1 - exp (- l(k) .* x(k));
+      cdf (k) = 1 - exp (- x(k) ./ l(k));
     endif
   endif
 

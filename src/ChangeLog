@@ -1,3 +1,10 @@
+2007-07-18  David Bateman  <dbateman@free.fr>
+
+         * zfstream.cc (int_type gzfilebuf::pbackfail (int_type)): New
+         method to putback a character when the putback position in the
+         internal buffer doesn't exist.
+         * zfstream.h (int_type pbackfail (int_type)): Declaration it.
+
 2007-07-14  Michael Goffioul  <michael.goffioul@swing.be>
 
 	* src/ov-bool-sparse.cc (octave_sparse_bool_matrix:load_hdf5):

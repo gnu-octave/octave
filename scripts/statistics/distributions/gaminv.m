@@ -59,9 +59,9 @@ function inv = gaminv (x, a, b)
     if (!isscalar(a) || !isscalar(b))
       a = a (k);
       b = b (k);
-      y = a ./ b;
+      y = a .* b;
     else
-      y = a / b * ones (size (k));
+      y = a * b * ones (size (k));
     endif
     x = x (k);
     l = find (x < eps);

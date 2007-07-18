@@ -29,6 +29,10 @@
 
 function cdf = gamma_cdf (varargin)
 
+ if (nargin > 2)
+   varargin{3} = 1 ./ varargin{3};
+ endif
+
  cdf =  gamcdf (varargin{:});
 
 endfunction

@@ -82,7 +82,7 @@ function rnd = gamrnd (a, b, r, c)
     if (find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf)))
       rnd = NaN * ones (sz);
     else
-      rnd = randg(a,sz)/b;
+      rnd = b .* randg(a, sz);
     endif
   else 
     k = find (!(a > 0) | !(a < Inf) | !(b > 0) | !(b < Inf));
@@ -91,7 +91,7 @@ function rnd = gamrnd (a, b, r, c)
     endif
     k = find ((a > 0) & (a < Inf) & (b > 0) & (b < Inf));
     if (any (k))
-      rnd(k) = randg(a(k),size(k))/b(k);
+      rnd(k) = b(k) .* randg(a(k), size(k));
     endif
   endif
 

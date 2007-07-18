@@ -54,11 +54,11 @@ function pdf = exppdf (x, l)
   k = find ((x > 0) & (x < Inf) & (l > 0));
   if (any (k))
     if isscalar (l)
-      pdf(k) = l .* exp (- l .* x(k));
+      pdf(k) = exp (- x(k) ./ l) ./ l;
     elseif isscalar (x)
-      pdf(k) = l(k) .* exp (- l(k) .* x);
+      pdf(k) = exp (- x ./ l(k)) ./ l(k);
     else
-      pdf(k) = l(k) .* exp (- l(k) .* x(k));
+      pdf(k) = exp (- x(k) ./ l(k)) ./ l(k);
     endif
   endif
 

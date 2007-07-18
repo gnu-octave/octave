@@ -29,6 +29,10 @@
 
 function inv = exponential_inv (varargin)
 
+ if (nargin > 1)
+   varargin{2} = 1 ./ varargin{2};
+ endif
+
  inv =  expinv (varargin{:});
 
 endfunction

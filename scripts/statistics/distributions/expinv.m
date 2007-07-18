@@ -61,11 +61,11 @@ function inv = expinv (x, l)
   k = find ((x > 0) & (x < 1) & (l > 0));
   if (any (k))
     if isscalar (l)
-      inv(k) = - log (1 - x(k)) ./ l;
+      inv(k) = - l .* log (1 - x(k));
     elseif isscalar (x)
-      inv(k) = - log (1 - x) ./ l(k);
+      inv(k) = - l(k) .* log (1 - x);
     else
-      inv(k) = - log (1 - x(k)) ./ l(k);
+      inv(k) = - l(k) .* log (1 - x(k));
     endif
   endif
 

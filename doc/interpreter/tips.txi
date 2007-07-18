@@ -1,4 +1,4 @@
-@c Copyright (C) 1996, 1997 John W. Eaton
+@c Copyright (C) 1996, 1997, 2007 John W. Eaton
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
@@ -162,7 +162,7 @@ block of comments that can be used as the help text for the function.
 Here is an example:
 
 @example
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 1996, 1997, 2007 John W. Eaton
 ##
 ## This file is part of Octave.
 ##

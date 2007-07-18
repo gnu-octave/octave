@@ -1,4 +1,4 @@
-@c Copyright (C) 1996, 1997 John W. Eaton
+@c Copyright (C) 1996, 1997, 2007 John W. Eaton
 @c Written by Kurt Hornik <Kurt.Hornik@wu-wien.ac.at> on 1996/05/14
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.

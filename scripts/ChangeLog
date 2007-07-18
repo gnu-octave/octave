@@ -1,17 +1,22 @@
+2007-07-18  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Unconditionally send "unset label" to
+	gnuplot for each set of axes.
+
 2007-07-18  David Bateman  <dbateman@free.fr>
 
-        * statistics/distributions/gamcdf.m, statistics/distributions/gaminv.m,
-        statistics/distributions/gampdf.m, statistics/distributions/gamrnd.m,
-        statistics/distributions/expcdf.m, statistics/distributions/expinv.m,
-        statistics/distributions/exppdf.m, statistics/distributions/exprnd.m:
-        Use standard scale factor rather than one on the scale factor for
-        compatibility.
+	* statistics/distributions/gamcdf.m, statistics/distributions/gaminv.m,
+	statistics/distributions/gampdf.m, statistics/distributions/gamrnd.m,
+	statistics/distributions/expcdf.m, statistics/distributions/expinv.m,
+	statistics/distributions/exppdf.m, statistics/distributions/exprnd.m:
+	Use standard scale factor rather than one on the scale factor for
+	compatibility.
 
-        * deprecated/gamma_cdf.m, deprecated/gamma_inv.m,
-        deprecated/gamma_pdf.m, deprecated/gamma_rnd.m,  
-        deprecated/exponential_cdf.m, deprecated/exponential_inv.m,
-        deprecated/exponential_pdf.m, deprecated/exponential_rnd.m:
-        Preserve backward compatibility.
+	* deprecated/gamma_cdf.m, deprecated/gamma_inv.m,
+	deprecated/gamma_pdf.m, deprecated/gamma_rnd.m,  
+	deprecated/exponential_cdf.m, deprecated/exponential_inv.m,
+	deprecated/exponential_pdf.m, deprecated/exponential_rnd.m:
+	Preserve backward compatibility.
 
 2007-07-17  Michael Goffioul  <michael.goffioul@gmail.com>
 
@@ -20,8 +25,8 @@
 
 2007-07-06  David Bateman  <dbateman@free.fr>
 
-        * general/accumarray.m: New function to create an array by 
-        accumulating the elements.
+	* general/accumarray.m: New function to create an array by 
+	accumulating the elements.
 
 2007-06-29  Marcus W. Reble  <reble@wisc.edu>
 
@@ -48,7 +53,7 @@
 
 2007-06-25  Søren Hauberg  <hauberg@gmail.com>
 
-        * image/imshow.m: Fix check for colormap arguments.
+	* image/imshow.m: Fix check for colormap arguments.
 
 2007-06-25  Joel Keay  <keay@nhn.ou.edu>
 
@@ -56,35 +61,35 @@
 
 2007-06-25  Søren Hauberg  <hauberg@gmail.com>
 
-        * statistics/base/median.m: Update help text to mention 'dim'
+	* statistics/base/median.m: Update help text to mention 'dim'
 	argument, and note that the data should be sorted for the
 	definition of the median to be correct.
 
-        * statistics/base/std.m: Add missing square to definition of
+	* statistics/base/std.m: Add missing square to definition of
 	standard deviation.
 
-        * statistics/base/cov.m: Add definition of covariance to the help text.
+	* statistics/base/cov.m: Add definition of covariance to the help text.
 
-        * statistics/base/kurtosis.m, statistics/base/skewness.m,
+	* statistics/base/kurtosis.m, statistics/base/skewness.m,
 	statistics/base/std.m:
 	Note that \bar{x} is the mean value of x in the help text.
 
-        * specfun/nchoosek.m: Add alternative definition of the binomial
+	* specfun/nchoosek.m: Add alternative definition of the binomial
 	coefficient to the help text.
 
-        * specfun/perms.m, statistics/base/values.m: Add example in help text.
+	* specfun/perms.m, statistics/base/values.m: Add example in help text.
 
-        * statistics/base/var.m: Put N in @math in help text.
+	* statistics/base/var.m: Put N in @math in help text.
 
-        * statistics/base/qqplot.m, statistics/base/ppplot.m, 
+	* statistics/base/qqplot.m, statistics/base/ppplot.m, 
 	statistics/tests/kolmogorov_smirnov_test.m:
 	Write about possible values of 'dist' in help text.
 
-        * statistics/base/corrcoef.m, statistics/base/cor.m:
+	* statistics/base/corrcoef.m, statistics/base/cor.m:
 	Add definition of correlation to the help text.
 
-        * statistics/base/logit.m, statistics/base/kendall.m,
-        statistics/base/cloglog.m, statistics/tests/hotelling_test_2.m,
+	* statistics/base/logit.m, statistics/base/kendall.m,
+	statistics/base/cloglog.m, statistics/tests/hotelling_test_2.m,
 	statistics/distributions/wblcdf.m, statistics/distributions/wblpdf.m:
 	TeXification of help text.
 
@@ -112,7 +117,7 @@
 
 2007-06-25  Pete Gustafson <petegus@umich.edu>
 
-        * plot/__go_draw_axes__.m: Handle units for text objects.
+	* plot/__go_draw_axes__.m: Handle units for text objects.
 
 2007-06-25  John W. Eaton  <jwe@octave.org>
 
@@ -149,19 +154,19 @@
 
 2007-06-18  Søren Hauberg  <hauberg@gmail.com>
 
-        * general/interp1.m, general/interp2.m, general/interp3.m,
+	* general/interp1.m, general/interp2.m, general/interp3.m,
 	general/interpn.m: Replace, NaN with NA.  Use isna instead of ==
 	to check for NA.
 
 2007-06-18  Søren Hauberg  <hauberg@gmail.com>
 
-        * optimization/glpk.m: TeXified the help text.
-        * optimization/qp.m: TeXified the help text.
-        * optimization/sqp.m: TeXified the help text.
+	* optimization/glpk.m: TeXified the help text.
+	* optimization/qp.m: TeXified the help text.
+	* optimization/sqp.m: TeXified the help text.
 
 2007-06-16  Søren Hauberg  <hauberg@gmail.com>
 
-        * plot/legend.m: Replace 'vargin' with 'varargin'.
+	* plot/legend.m: Replace 'vargin' with 'varargin'.
 
 2007-06-15  John W. Eaton  <jwe@octave.org>
 
@@ -170,14 +175,14 @@
 
 2007-06-15  Pete Gustafson  <petegus@umich.edu>
 
-        * plot/__go_draw_axes__.m  Handle rotation arg for axis labels.
-        * plot/__axis_label__.m  Assign ylabel default rotation property
+	* plot/__go_draw_axes__.m  Handle rotation arg for axis labels.
+	* plot/__axis_label__.m  Assign ylabel default rotation property
 	to 90, all others 0.
 
-        * plot/__errplot__.m: Set ifmt from fmt.linestyle.
-        * plot/__go_draw_axes__.m: Removed undefined tx from call to
+	* plot/__errplot__.m: Set ifmt from fmt.linestyle.
+	* plot/__go_draw_axes__.m: Removed undefined tx from call to
 	get_data_limits.
-        * plot/__plotopt1__.m: Intercept and strip format string when
+	* plot/__plotopt1__.m: Intercept and strip format string when
 	called by __errplot__.
 
 2007-06-15  John W. Eaton  <jwe@octave.org>
@@ -332,7 +337,7 @@
 
 2007-05-24  David Bateman  <dbateman@free.fr>
 
-        * pkg/pkg.m (pkg:rebuild): Thinko in rebuild logic.
+	* pkg/pkg.m (pkg:rebuild): Thinko in rebuild logic.
 
 2007-05-22  David Bateman  <dbateman@free.fr>
 
@@ -1620,7 +1625,7 @@
 
 2007-01-09  Søren Hauberg  <hauberg@gmail.com>
 
-         * pkg/pkg.m: Allow filenames to contain glob patterns.
+	 * pkg/pkg.m: Allow filenames to contain glob patterns.
 
 2007-01-08  Søren Hauberg  <hauberg@gmail.com>
 
@@ -2406,7 +2411,7 @@
 	
 2006-08-14  Søren Hauberg  <soren@hauberg.org>
 
-        * pkg/pkg.m: Don't pass function name to print_usage.
+	* pkg/pkg.m: Don't pass function name to print_usage.
 	Use addpath and rmpath instead of manipulating LOADPATH.
 	Handle changes to system function.
 	(rm_rf): New subfunction.  Use it to avoid confirmation dialog for
@@ -2414,7 +2419,7 @@
 
 	* strings/bin2dec.m: Ignore spaces in input for compatibility.
 
-        * colormap.m: Change global variable to persistent.
+	* colormap.m: Change global variable to persistent.
 
 	* rgb2ind.m: Handle single 3-d array as rgb image.
 
@@ -2570,7 +2575,7 @@
 
 2006-05-03  Bob Weigel <rweigel@gmu.edu>
 
-        * set/setdiff.m: New arg, byrows.  New tests.
+	* set/setdiff.m: New arg, byrows.  New tests.
 
 2006-04-29  John W. Eaton  <jwe@octave.org>
 
@@ -2603,7 +2608,7 @@
 
 2006-04-04  Bob Weigel  <rweigel@gmu.edu>
 
-        * set/unique.m: Properly handle single column input when
+	* set/unique.m: Properly handle single column input when
 	"rows" is specified.
 
 2006-04-04  John W. Eaton  <jwe@octave.org>
@@ -2875,15 +2880,15 @@
 
 2006-02-09  David Bateman  <dbateman@free.fr>
 
-        * general/triu.m: Minimum change to allow sparse matrix. More needed
-        for arbitrary user type.
-        * general/tril.m: ditto.
-        * sparse/sprand.m: Doc fix.
-        * sparse/sprandn.m: Ditto.
-        * sparse/sprandsym.m: New function.
-        * audio/setaudio.m, general/cart2pol.m, general/cart2sph.m,
-        general/pol2cart.m, general/sph2cart.m, signal/freqz_plot.m:
-        Update for syntax error for latest texinfo.tex file.
+	* general/triu.m: Minimum change to allow sparse matrix. More needed
+	for arbitrary user type.
+	* general/tril.m: ditto.
+	* sparse/sprand.m: Doc fix.
+	* sparse/sprandn.m: Ditto.
+	* sparse/sprandsym.m: New function.
+	* audio/setaudio.m, general/cart2pol.m, general/cart2sph.m,
+	general/pol2cart.m, general/sph2cart.m, signal/freqz_plot.m:
+	Update for syntax error for latest texinfo.tex file.
 
 2006-02-02  John W. Eaton  <jwe@octave.org>
 
@@ -2922,7 +2927,7 @@
 
 2006-01-13  Bill Denney  <bill@givebillmoney.com>
 
-         * miscellaneous/dir.m: Use filesep instead of "/" where needed.
+	 * miscellaneous/dir.m: Use filesep instead of "/" where needed.
 	 * miscellaneous/fullfile.m: Likewise.
 
 2006-01-12  David Bateman  <dbateman@free.fr>
@@ -3550,7 +3555,7 @@
 
 	* polynomial/polyderiv.m : Accept a*b, a/b.  Auto-reduce common terms.
 	* polynomial/polyder.m: Ditto.
-        * polynomial/polygcd.m: New function.
+	* polynomial/polygcd.m: New function.
 
 2005-03-16  John W. Eaton  <jwe@octave.org>
 
@@ -4390,7 +4395,7 @@
 
 2003-12-15  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
 
-        * control/system/zp2ss.m: Correct definition of pure gain system.
+	* control/system/zp2ss.m: Correct definition of pure gain system.
 
 2003-12-10  Quentin Spencer  <qspencer@ieee.org>
 
@@ -5123,8 +5128,8 @@
 
 2000-12-13   Teemu Ikonen  <tpikonen@pcu.helsinki.fi>
 
-        * polynomial/deconv.m: For compatibility with Matlab, don't reduce
-	  result polynomials.
+	* polynomial/deconv.m: For compatibility with Matlab, don't reduce
+	result polynomials.
 
 2000-12-07  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

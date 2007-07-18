@@ -1,4 +1,4 @@
-% Copyright (C) 1996, 1997 John W. Eaton
+% Copyright (C) 1996, 1997, 2007 John W. Eaton
 % This is part of the Octave manual.
 % For copying conditions, see the file gpl.texi.
 
@@ -58,7 +58,7 @@ END-INFO-DIR-ENTRY
 
 @ifnottex
 
-Copyright (C) 1996, 1997 John W. Eaton.
+Copyright (C) 1996, 1997, 2007 John W. Eaton.
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -85,11 +85,11 @@ modified versions.
 @title GNU Octave
 @subtitle A high-level interactive language for numerical computations
 @subtitle Edition 3 for Octave version @value{VERSION}
-@subtitle February 1997
+@subtitle July 2007
 @author John W. Eaton
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996, 1997 John W. Eaton.
+Copyright @copyright{} 1996, 1997, 2007 John W. Eaton.
 
 This is the third edition of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.

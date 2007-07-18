@@ -56,6 +56,8 @@ function __go_draw_axes__ (h, plot_stream)
       fputs (plot_stream, "set size noratio;\n");
     endif
 
+    fputs (plot_stream, "unset label;\n");
+
     if (! isempty (axis_obj.title))
       t = get (axis_obj.title);
       if (isempty (t.string))

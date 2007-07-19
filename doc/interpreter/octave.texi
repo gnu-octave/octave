@@ -145,7 +145,6 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Plotting::                    
 * Matrix Manipulation::         
 * Arithmetic::                  
-* Bit Manipulations::
 * Linear Algebra::              
 * Nonlinear Equations::         
 * Sparse Matrices::
@@ -250,6 +249,7 @@ Numeric Data Types
 * Matrices::                    
 * Ranges::                      
 * Integer Data Types::
+* Bit Manipulations::
 * Logical Values::              
 * Predicates for Numeric Objects::  
 
@@ -584,7 +584,6 @@ Emacs Octave Support
 @include plot.texi
 @include matrix.texi
 @include arith.texi
-@include bit.texi
 @include linalg.texi
 @include nonlin.texi
 @include sparse.texi

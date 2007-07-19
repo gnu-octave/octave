@@ -78,6 +78,7 @@ You may also use @samp{j}, @samp{I}, or @samp{J} in place of the
 * Matrices::                    
 * Ranges::                      
 * Integer Data Types::
+* Bit Manipulations::
 * Logical Values::              
 * Predicates for Numeric Objects::  
 @end menu
@@ -466,6 +467,87 @@ When doing integer division Octave will round the result to the nearest
 integer. This is different from most programming languages, where the
 result is often floored to the nearest integer. So, the result of
 @code{int32(5)./int32(8)} is @code{1}.
+
+@node Bit Manipulations
+@section Bit Manipulations
+
+Octave provides a number of functions for the manipulation of numeric
+values on a bit by bit basis. The basic functions to set and obtain the
+values of individual bits are @code{bitset} and @code{bitget}.
+
+@DOCSTRING(bitset)
+
+@DOCSTRING(bitget)
+
+The arguments to all of Octave's bitwise operations can be scalar or
+arrays, except for @code{bitcmp}, whose @var{k} argument must a
+scalar. In the case where more than one argument is an array, then all
+arguments must have the same shape, and the bitwise operator is applied
+to each of the elements of the argument individually. If at least one
+argument is a scalar and one an array, then the scalar argument is
+duplicated. Therefore
+
+@example
+bitget (100, 8:-1:1)
+@end example
+
+is the same as
+
+@example
+bitget (100 * ones (1, 8), 8:-1:1)
+@end example
+
+It should be noted that all values passed to the bit manipulation
+functions of Octave are treated as integers. Therefore, even though the
+example for @code{bitset} above passes the floating point value
+@code{10}, it is treated as the bits @code{[1, 0, 1, 0]} rather than the
+bits of the native floating point format representation of @code{10}.
+
+As the maximum number that can be represented by a number is important
+for bit manipulation, particularly when forming masks, Octave supplies
+the function @code{bitmax}.
+
+@DOCSTRING(bitmax)
+
+This is the double precision version of the functions @code{intmax},
+previously discussed.
+
+Octave also include the basic bitwise 'and', 'or' and 'exclusive or'
+operators.
+
+@DOCSTRING(bitand)
+
+@DOCSTRING(bitor)
+
+@DOCSTRING(bitxor)
+
+The bitwise 'not' operator is unary operator that performs a logial
+negation of each of the bits of the value. For this to make sense, the
+mask against which the value is negated must be defined. Octave's
+bitwise 'not' operator is @code{bitcmp}.
+
+@DOCSTRING(bitcmp)
+
+Octave also includes the ability to left and right values bitwise.
+
+@DOCSTRING(bitshift)
+
+Bits that are shifted out of either end of the value are lost. Octave
+also uses arithmetic shifts, where the sign bit of the value is keep
+during a right shift. For example
+
+@example
+@group
+bitshift (-10, -1)
+@result{} -5
+bitshift (int8 (-1), -1)
+@result{} -1
+@end group
+@end example
+
+Note that @code{bitshift (int8 (-1), -1)} is @code{-1} since the bit
+representation of @code{-1} in the @code{int8} data type is @code{[1, 1,
+1, 1, 1, 1, 1, 1]}.
 
 @node Logical Values
 @section Logical Values

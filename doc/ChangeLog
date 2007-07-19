@@ -1,3 +1,10 @@
+2007-07-19  David Bateman  <dbateman@free.fr>
+
+	* interpreter/bit.xi: Remove.
+	* interpreter/numbers.txi: Move here, and add examples.
+	* interpreter/octave.texi: Remove "Bit manipulation" chapter and make
+	it a sub-section of the "Numeric Data Types" chapter.
+
 2007-07-06  David Bateman  <dbateman@free.fr>
 
         * interpreter/arith.txi: Add accumarray.

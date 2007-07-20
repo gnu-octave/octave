@@ -40,7 +40,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <cstdio>           // for BUFSIZ
 
 // Internal buffer sizes (default and "unbuffered" versions)
-#define BIGBUFSIZE BUFSIZ
+#define STASHED_CHARACTERS 16
+#define BIGBUFSIZE (256 * 1024 + STASHED_CHARACTERS) 
 #define SMALLBUFSIZE 1
 
 /*****************************************************************************/
@@ -262,9 +263,21 @@ gzfilebuf::underflow()
   if (!this->is_open() || !(io_mode & std::ios_base::in))
     return traits_type::eof();
 
+  // Copy the final characters to the front of the buffer
+  int stash = 0;
+  if (this->eback() && buffer && buffer_size > STASHED_CHARACTERS)
+    {
+      char_type *ptr1 = buffer;
+      char_type *ptr2 = this->egptr() - STASHED_CHARACTERS + 1;
+      if (ptr2 > this->eback())
+	while (stash++ <= STASHED_CHARACTERS)
+	  *ptr1++ = *ptr2++;
+    }
+
   // Attempt to fill internal buffer from gzipped file
   // (buffer must be guaranteed to exist...)
-  int bytes_read = gzread(file, buffer, buffer_size);
+  int bytes_read = gzread(file, buffer + stash, buffer_size - stash);
+
   // Indicates error or EOF
   if (bytes_read <= 0)
   {
@@ -272,8 +285,8 @@ gzfilebuf::underflow()
     this->setg(buffer, buffer, buffer);
     return traits_type::eof();
   }
-  // Make all bytes read from file available as get area
-  this->setg(buffer, buffer, buffer + bytes_read);
+  // Make all bytes read from file plus the stash available as get area
+  this->setg(buffer, buffer + stash, buffer + bytes_read + stash);
 
   // Return next character in get area
   return traits_type::to_int_type(*(this->gptr()));

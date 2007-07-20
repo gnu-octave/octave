@@ -1,3 +1,9 @@
+2007-07-20  David Bateman  <dbateman@free.fr>
+
+        * zfstream.cc (BUFSIZE): Increase default buffer size to 256kB
+        (gzfilebuf::underflow): Stash the last 16 characters read, so as
+        to avoid calling pbackfail as much as possible.
+
 2007-07-18  David Bateman  <dbateman@free.fr>
 
          * zfstream.cc (int_type gzfilebuf::pbackfail (int_type)): New

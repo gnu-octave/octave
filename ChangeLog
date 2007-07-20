@@ -1,3 +1,7 @@
+2007-07-20  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* mkoctfile.in: Fix typo.
+
 2007-06-25  John W. Eaton  <jwe@octave.org>
 
 	* mk-opts.pl (emit_print_function): Make generated function print

@@ -40,9 +40,9 @@ function [Theta, R, Z] = cart2pol (X, Y, Z)
     error ("cart2pol: number of output arguments must not be greater than number of input arguments");
   endif
 
-  if ((! (ismatrix (X) && ismatrix (Y)))
-      || (! size_equal (X, Y))
-      || (nargin == 3 && (! (size (X) == size (Z) && ismatrix (Z)))))
+  if (! (ismatrix (X) && ismatrix (Y))
+      || ! size_equal (X, Y)
+      || (nargin == 3 && ! (size_equal (X, Z) && ismatrix (Z))))
     error ("cart2pol: arguments must be matrices of same size");
   endif
 

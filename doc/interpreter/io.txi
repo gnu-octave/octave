@@ -25,6 +25,7 @@ after the C standard library are also provided by Octave.
 * Terminal Output::             
 * Terminal Input::              
 * Simple File I/O::             
+* Rational Approximations::
 @end menu
 
 @node Terminal Output
@@ -213,6 +214,12 @@ functions.
 
 @DOCSTRING(octave_core_file_name)
 
+@node Rational Approximations
+@subsection Rational Approximations
+
+@DOCSTRING(rat)
+
+@DOCSTRING(rats)
 
 @node C-Style I/O Functions
 @section C-Style I/O Functions

@@ -482,7 +482,20 @@ function __go_draw_axes__ (h, plot_stream)
 	  fputs (plot_stream, "set style data lines;\n");
 	  fputs (plot_stream, "set surface;\n");
 	  fputs (plot_stream, "unset contour;\n");
-	  fputs (plot_stream, "set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+
+	  if (have_newer_gnuplot)
+	    surf_colormap = parent_figure_obj.colormap;
+	    palette_size = rows (surf_colormap);
+	    fprintf (plot_stream,
+		     "set palette positive color model RGB maxcolors %i;\n",
+		     palette_size);
+	    fprintf (plot_stream,
+		     "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+		     palette_size);
+	    fwrite (plot_stream, [1:palette_size; surf_colormap'], "float32");
+	  else
+	    fputs (plot_stream, "set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+	  endif
 	  fputs (plot_stream, "unset colorbox;\n");
 
 	case "text"

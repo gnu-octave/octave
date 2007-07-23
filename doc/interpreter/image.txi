@@ -106,9 +106,37 @@ between 0 and 1.
 
 @DOCSTRING(colormap)
 
+@DOCSTRING(autumn)
+
+@DOCSTRING(bone)
+
+@DOCSTRING(cool)
+
+@DOCSTRING(copper)
+
 @DOCSTRING(gray)
 
+@DOCSTRING(hot)
+
+@DOCSTRING(hsv)
+
+@DOCSTRING(jet)
+
 @DOCSTRING(ocean)
+
+@DOCSTRING(pink)
+
+@DOCSTRING(prism)
+
+@DOCSTRING(rainbow)
+
+@DOCSTRING(spring)
+
+@DOCSTRING(summer)
+
+@DOCSTRING(white)
+
+@DOCSTRING(winter)
 
 @node Plotting on top of Images
 @section Plotting on top of Images

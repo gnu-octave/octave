@@ -1,3 +1,19 @@
+2007-07-23  David Bateman  <dbateman@free.fr>
+
+	* pr-output.cc (rat_format, rat_string_len): Global variable
+	controlling behavior of rational approximation. Use throughout.
+	(class pr_rational_float): New class for rational approximation of
+	floats, specifically with the << operator defined.
+	(std::ostream& operator << (std::ostream&, const
+	pr_rational_float&)): Operator to print rational approximations of
+	double values.
+	(std::string rational_approx (double, int)): Function to convert a
+	double value to a string of maximum length giving the rational
+	approximation.
+	(pr_any_float): Include the output of rational approximations.
+	(Fformat): Add the "rat" format as an option.
+	(Frats): New function.
+
 2007-07-23  Aquil H. Abdullah  <aquil.abdullah@gmail.com>
 
 	* mex.cc (mxCreateStructArray): Declare second arg as const.

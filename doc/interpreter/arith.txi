@@ -30,6 +30,8 @@ each element of the matrix.
 
 @DOCSTRING(cplxpair)
 
+@DOCSTRING(del2)
+
 @DOCSTRING(exp)
 
 @DOCSTRING(factor)

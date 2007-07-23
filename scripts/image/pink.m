@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 2000  Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -18,39 +18,40 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ocean (@var{n})
-## Create color colormap.  The argument @var{n} should be a scalar.  If it
-## is omitted, 64 is assumed.
+## @deftypefn {Function File} {} pink (@var{n})
+## Create color colormap. This colormap gives a sephia tone on black and
+## white images. The argument @var{n} should be a scalar.  If it
+## is omitted, the length of the current colormap or 64 is assumed.
+## @seealso{colormap}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: July 1994
-## Adapted-By: jwe
+## Author:  Kai Habel <kai.habel@gmx.de>
 
-function map = ocean (number)
+function map = pink (number)
 
   if (nargin == 0)
-    number = 64;
+    number = rows (colormap);
   elseif (nargin == 1)
-    if (! isscalar (number))
-      error ("ocean: argument must be a scalar");
+    if (! is_scalar (number))
+      error ("pink: argument must be a scalar");
     endif
   else
     print_usage ();
   endif
 
-  cutin = fix (number/3);
+  if (number == 1)
+    map = [0, 0, 0];  
+  elseif (number > 1)
+    x = linspace (0, 1, number)';
+    r = (x < 3/8) .* (14/9 * x) + (x >= 3/8) .* (2/3 * x + 1/3);
+    g = (x < 3/8) .* (2/3 * x)\
+      + (x >= 3/8 & x < 3/4) .* (14/9 * x - 1/3)\
+      + (x >= 3/4) .* (2/3 * x + 1/3);
+    b = (x < 3/4) .* (2/3 * x) + (x >= 3/4) .* (2 * x - 1);
 
-  dr = (number - 1) / cutin;
-
-  r = prepad ([0:dr:(number-1)], number)';
-
-  dg = (number - 1) / (2 * cutin);
-
-  g = prepad([0:dg:(number-1)], number)';
-
-  b = [0:(number-1)]';
-
-  map = [ r, g, b ] / (number - 1);
+    map = sqrt ([r, g, b]);
+  else
+    map = [];
+  endif
 
 endfunction

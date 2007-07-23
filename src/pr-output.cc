@@ -90,6 +90,12 @@ static bool plus_format = false;
 // First char for > 0, second for < 0, third for == 0.
 static std::string plus_format_chars = "+  ";
 
+// TRUE means always print in a rational approximation
+static bool rat_format = false;
+
+// Used to force the length of the rational approximation string for Frats
+static int rat_string_len = -1;
+
 // TRUE means always print like dollars and cents.
 static bool bank_format = false;
 
@@ -112,6 +118,7 @@ static bool print_g = false;
 static bool print_big_e = false;
 
 class pr_formatted_float;
+class pr_rational_float;
 
 static int
 current_output_max_field_width (void)
@@ -170,6 +177,9 @@ public:
   friend std::ostream& operator << (std::ostream& os,
 				    const pr_formatted_float& pff);
 
+  friend std::ostream& operator << (std::ostream& os,
+				    const pr_rational_float& pff);
+
 private:
 
   // Field width.  Zero means as wide as necessary.
@@ -215,6 +225,131 @@ operator << (std::ostream& os, const pr_formatted_float& pff)
               (pff.f.fmt | pff.f.up | pff.f.sp));
 
   os << pff.val;
+
+  os.flags (oflags);
+
+  return os;
+}
+
+static inline std::string
+rational_approx (double val, int len)
+{
+  std::string s;
+
+  if (len <= 0)
+    len = 10;
+
+  if (xisinf (val))
+    s = "1/0";
+  else if (xisnan (val))
+    s = "0/0";
+  else if (val < INT_MIN || val > INT_MAX || D_NINT (val) == val)
+    {
+      std::ostringstream buf;
+      buf.flags (std::ios::fixed);
+      buf << std::setprecision (0) << xround(val);
+      s = buf.str ();
+    }
+  else
+    {
+      double lastn = 1.;
+      double lastd = 0.;
+      double n = xround (val);
+      double d = 1.;
+      double frac = val - n;
+      int m = 0;
+
+      std::ostringstream buf2;
+      buf2.flags (std::ios::fixed);
+      buf2 << std::setprecision (0) << static_cast<int>(n); 
+      s = buf2.str();
+
+      while (1)
+	{
+	  double flip = 1. / frac;
+	  double step = xround (flip);
+	  double nextn = n;
+	  double nextd = d;
+	  frac = flip - step;
+	  n = n * step + lastn;
+	  d = d * step + lastd;
+	  lastn = nextn;
+	  lastd = nextd;
+
+	  std::ostringstream buf;
+	  buf.flags (std::ios::fixed);
+	  buf << std::setprecision (0) << static_cast<int>(n) 
+	      << "/" << static_cast<int>(d);
+	  m++;
+
+	  if (n < 0 && d < 0)
+	    {
+	      // Double negative, string can be two characters longer..
+	      if (buf.str().length() > static_cast<unsigned int>(len + 2) && 
+		  m > 1) 
+		break;
+	    }
+	  else if (buf.str().length() > static_cast<unsigned int>(len) && 
+		   m > 1) 
+	    break;
+
+	  s = buf.str();
+
+	  // Have we converged to 1/intmax ?
+	  if (m > 100 || fabs (frac) < 1 / static_cast<double>(INT_MAX))
+	    {
+	      lastn = n;
+	      lastd = d;
+	      break;
+	    }
+	}
+
+      if (lastd < 0.)
+	{
+	  // Move sign to the top
+	  lastd = - lastd;
+	  lastn = - lastn;
+	  std::ostringstream buf;
+	  buf.flags (std::ios::fixed);
+	  buf << std::setprecision (0) << static_cast<int>(lastn) 
+	       << "/" << static_cast<int>(lastd);
+	  s = buf.str();
+	}
+    }
+
+  return s;
+}
+
+class
+pr_rational_float
+{
+public:
+
+  const float_format& f;
+
+  double val;
+
+  pr_rational_float (const float_format& f_arg, double val_arg)
+    : f (f_arg), val (val_arg) { }
+};
+
+std::ostream&
+operator << (std::ostream& os, const pr_rational_float& prf)
+{
+  int fw = (rat_string_len > 0 ? rat_string_len : prf.f.fw);
+  std::string s = rational_approx (prf.val, fw);
+
+  if (fw >= 0)
+    os << std::setw (fw);
+
+  std::ios::fmtflags oflags = 
+    os.flags (static_cast<std::ios::fmtflags> 
+              (prf.f.fmt | prf.f.up | prf.f.sp));
+
+  if (fw > 0 && s.length() > static_cast<unsigned int>(fw))
+    os << "*";
+  else
+    os << s;
 
   os.flags (oflags);
 
@@ -299,7 +434,12 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
 
   int ld, rd;
 
-  if (bank_format)
+  if (rat_format)
+    {
+      fw = 0;
+      rd = 0;
+    }
+  else if (bank_format)
     {
       fw = digits < 0 ? 4 : digits + 3;
       if (inf_or_nan && fw < 4)
@@ -343,7 +483,7 @@ set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
 	fw = 4;
     }
 
-  if (! (bank_format || hex_format || bit_format)
+  if (! (rat_format || bank_format || hex_format || bit_format)
       && (fw > Voutput_max_field_width || print_e || print_g))
     {
       if (print_g)
@@ -412,7 +552,12 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
 
   int ld, rd;
 
-  if (bank_format)
+  if (rat_format)
+    {
+      fw = 9;
+      rd = 0;
+    }
+  else if (bank_format)
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = digits <= 0 ? 4 : digits + 3;
@@ -483,7 +628,7 @@ set_real_matrix_format (bool sign, int x_max, int x_min,
 	fw = 4;
     }
 
-  if (! (bank_format || hex_format || bit_format)
+  if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
 	  || print_g
 	  || (! Vfixed_point_format && fw > Voutput_max_field_width)))
@@ -564,7 +709,13 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
 
   int ld, rd;
 
-  if (bank_format)
+  if (rat_format)
+    {
+      i_fw = 0;
+      r_fw = 0;
+      rd = 0;
+    }
+  else if (bank_format)
     {
       int digits = r_x;
       i_fw = 0;
@@ -639,7 +790,7 @@ set_complex_format (bool sign, int x_max, int x_min, int r_x,
 	}
     }
 
-  if (! (bank_format || hex_format || bit_format)
+  if (! (rat_format || bank_format || hex_format || bit_format)
       && (r_fw > Voutput_max_field_width || print_e || print_g))
     {
       if (print_g)
@@ -749,7 +900,13 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 
   int ld, rd;
 
-  if (bank_format)
+  if (rat_format)
+    {
+      i_fw = 9;
+      r_fw = 9;
+      rd = 0;
+    }
+  else if (bank_format)
     {
       int digits = r_x_max > r_x_min ? r_x_max : r_x_min;
       i_fw = 0;
@@ -835,7 +992,7 @@ set_complex_matrix_format (bool sign, int x_max, int x_min,
 	}
     }
 
-  if (! (bank_format || hex_format || bit_format)
+  if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
 	  || print_g
 	  || (! Vfixed_point_format && r_fw > Voutput_max_field_width)))
@@ -949,7 +1106,12 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
 
   int ld, rd;
 
-  if (bank_format)
+  if (rat_format)
+    {
+      fw = 9;
+      rd = 0;
+    }
+  else if (bank_format)
     {
       int digits = x_max > x_min ? x_max : x_min;
       fw = sign + digits < 0 ? 4 : digits + 3;
@@ -1012,7 +1174,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
       fw = sign + 1 + ld + 1 + rd;
     }
 
-  if (! (bank_format || hex_format || bit_format)
+  if (! (rat_format || bank_format || hex_format || bit_format)
       && (print_e
 	  || print_g
 	  || (! Vfixed_point_format && fw > Voutput_max_field_width)))
@@ -1211,6 +1373,15 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 		}
 	    }
 	}
+      else if (octave_is_NA (d))
+	{
+	  if (fw > 0)
+	    os << std::setw (fw) << "NA";
+	  else
+	    os << "NA";
+	}
+      else if (rat_format)
+	os << pr_rational_float (*fmt, d);
       else if (xisinf (d))
 	{
 	  const char *s;
@@ -1223,13 +1394,6 @@ pr_any_float (const float_format *fmt, std::ostream& os, double d, int fw = 0)
 	    os << std::setw (fw) << s;
 	  else
 	    os << s;
-	}
-      else if (octave_is_NA (d))
-	{
-	  if (fw > 0)
-	    os << std::setw (fw) << "NA";
-	  else
-	    os << "NA";
 	}
       else if (xisnan (d))
 	{
@@ -1695,7 +1859,8 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
       double scale = 1.0;
       set_format (cm, r_fw, i_fw, scale);
       int column_width = i_fw + r_fw;
-      column_width += (bank_format || hex_format|| bit_format) ? 2 : 7;
+      column_width += (rat_format || bank_format || hex_format 
+		       || bit_format) ? 2 : 7;
       octave_idx_type total_width = nc * column_width;
       octave_idx_type max_width = command_editor::terminal_cols ();
 
@@ -2363,7 +2528,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
 	  fw = digits + isneg;
 	}
 
-      int column_width = fw + (bank_format ? 5 : 2);
+      int column_width = fw + (rat_format ?  0 : (bank_format ? 5 : 2));
       octave_idx_type total_width = nc * column_width;
       int max_width = command_editor::terminal_cols () - extra_indent;
       octave_idx_type inc = nc;
@@ -2570,6 +2735,47 @@ octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
   panic_impossible ();
 }
 
+DEFUN (rats, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} rats (@var{x}, @var{len})\n\
+Convert @var{x} into a rational approximation represented as a string.\n\
+You can convert the string back into a matrix as follows:\n\
+\n\
+@example\n\
+   eval(['[',rats(hilb(4)),'];'])\n\
+@end example\n\
+\n\
+The optional second argument defines the maximum length of the string\n\
+representing the elements of @var{x}. By default @var{len} is 9.\n\
+@seealso{format, rat}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  rat_string_len = 9;
+  if (nargin == 2)
+    rat_string_len = args(1).nint_value ();
+
+  if (!error_state)
+    {
+      if (nargin < 3 && nargout < 2)
+	{
+	  bool save_rat_format = rat_format;
+	  rat_format = true;
+	  std::ostringstream buf;
+	  args(0).print (buf);
+	  retval = buf.str ();
+	  rat_format = save_rat_format;
+	}
+      else
+	print_usage ();
+    }
+
+  rat_string_len = -1;
+  return retval;
+}
+
 DEFUN (disp, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} disp (@var{x})\n\
@@ -2659,6 +2865,7 @@ init_format_state (void)
 {
   free_format = false;
   plus_format = false;
+  rat_format = false;
   bank_format = false;
   hex_format = 0;
   bit_format = 0;
@@ -2803,6 +3010,11 @@ set_format_style (int argc, const string_vector& argv)
 
 	  init_format_state ();
 	  plus_format = true;
+	}
+      else if (arg == "rat")
+	{
+	  init_format_state ();
+	  rat_format = true;
 	}
       else if (arg == "bank")
 	{
@@ -2981,6 +3193,9 @@ Remove extra blank space around column number labels.\n\
 @item loose\n\
 Insert blank lines above and below column number labels (this is the\n\
 default).\n\
+@item rat\n\
+Print a rational approximation. That is the values are approximated\n\
+by one small integer divided by another.\n\
 @end table\n\
 \n\
 By default, Octave will try to print numbers with at least 5 significant\n\

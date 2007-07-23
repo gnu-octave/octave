@@ -72,10 +72,12 @@ SOURCES = \
   loglog.m \
   loglogerr.m \
   mesh.m \
+  meshc.m \
   meshgrid.m \
   ndgrid.m \
   newplot.m \
   orient.m \
+  peaks.m \
   plot.m \
   plot3.m \
   polar.m \
@@ -97,7 +99,7 @@ SOURCES = \
   ylabel.m \
   zlabel.m
 
-DISTFILES = Makefile.in include-globals.awk $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

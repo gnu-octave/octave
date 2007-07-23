@@ -1,3 +1,25 @@
+2007-07-23  David Bateman  <dbateman@free.fr>
+
+	* general/rat.m: New function for ration approximation imported
+	from octave-forge.
+	* general/del2.m: New function for discrete laplacian operator.
+	* general/Makefile.in: Include rat.m and del2.m  in SOURCES.
+
+	 * image/autumn.m image/bone.m image/cool.m image/copper.m 
+	image/hot.m image/hsv.m image/jet.m image/pink.m image/prism.m 
+	image/rainbow.m image/spring.m image/summer.m image/white.m 
+	image/winter.m, image/brighten.m: Port image functions from
+	octave-forge.
+	* image/Makefile.in: Add ported functions to SOURCES.
+	* image/gray.m, image/ocean.m: Don't set the colormap for
+	compatibility with matlab.
+	
+	* plot/meshc.m, plot/peaks.m: Port plotting function from
+	octave-forge
+	* plot/Makefile.in: Add ported functions to SOURCES.
+	* plot/__go_draw_axes__.m: Set the palette for the surfaces if
+	using gnuplot 4.2 or greater.
+	
 2007-07-23  Claudio Belotti <c.belotti@imperial.ac.uk>
 
 	* general/cart2sph.m: Fix unbalanced paranthesis.

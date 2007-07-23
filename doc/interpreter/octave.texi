@@ -380,6 +380,7 @@ Plotting
 * Plot Annotations::            
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
+* Test Plotting Functions::
 * Interaction with gnuplot::    
 
 Matrix Manipulation

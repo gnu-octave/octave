@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 1997 John W. Eaton
+## Copyright (C) 1999,2000  Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -18,26 +18,34 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} gray (@var{n})
-## Return a gray colormap with @var{n} entries corresponding to values from
-## 0 to @var{n}-1.  The argument @var{n} should be a scalar.  If it is
-## omitted, 64 is assumed.
+## @deftypefn {Function File} {} hsv (@var{n})
+## Create color colormap. This colormap is red through yellow, green, cyan,
+## blue, magenta to red. The argument @var{n} should be a scalar.  If it
+## is omitted, the length of the current colormap or 64 is assumed.
+## @seealso{colormap}
 ## @end deftypefn
 
-## Author: Tony Richardson <arichard@stark.cc.oh.us>
-## Created: July 1994
-## Adapted-By: jwe
+## Author:  Kai Habel <kai.habel@gmx.de>
 
-function map = gray (number)
+function map = hsv (number)
 
   if (nargin == 0)
-    number = 64;
-  elseif (nargin > 1)
+    number = rows (colormap);
+  elseif (nargin == 1)
+    if (! is_scalar (number))
+      error ("hsv: argument must be a scalar");
+    endif
+  else
     print_usage ();
   endif
 
-  gr = [0:(number-1)]';
-
-  map = [ gr, gr, gr ] / (number - 1);
+  if (number == 1)
+    map = [1, 0, 0];  
+  elseif (number > 1)
+    h = linspace (0, 1, number)';
+    map = hsv2rgb ([h, ones(number, 1), ones(number, 1)]);
+  else
+    map = [];
+  endif
 
 endfunction

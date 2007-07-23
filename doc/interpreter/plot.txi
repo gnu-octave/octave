@@ -14,6 +14,7 @@
 * Multiple Plots on One Page::  
 * Multiple Plot Windows::       
 * Printing Plots::
+* Test Plotting Functions::
 * Interaction with gnuplot::    
 @end menu
 
@@ -81,6 +82,8 @@ The basic plotting commands are:
 
 @DOCSTRING(mesh)
 
+@DOCSTRING(meshc)
+
 @DOCSTRING(meshgrid)
 
 @DOCSTRING(ndgrid)
@@ -141,6 +144,11 @@ The basic plotting commands are:
 @DOCSTRING(print)
 
 @DOCSTRING(orient)
+
+@node Test Plotting Functions
+@section Test Plotting Functions
+
+@DOCSTRING(peaks)
 
 @node Interaction with gnuplot
 @section Interaction with @code{gnuplot}

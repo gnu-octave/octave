@@ -1,3 +1,7 @@
+2007-07-23  Claudio Belotti <c.belotti@imperial.ac.uk>
+
+	* general/cart2sph.m: Fix unbalanced paranthesis.
+
 2007-07-19  David Bateman  <dbateman@free.fr>
 
 	* plot/fplot.m: More compatible version.

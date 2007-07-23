@@ -2495,7 +2495,7 @@ mxCreateString (const char *str)
 }
 
 mxArray *
-mxCreateStructArray (mwSize ndims, mwSize *dims, int num_keys, const char **keys)
+mxCreateStructArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys)
 {
   return maybe_mark_array (new mxArray (ndims, dims, num_keys, keys));
 }

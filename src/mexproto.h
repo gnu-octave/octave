@@ -123,7 +123,7 @@ extern OCTINTERP_API mxArray *mxCreateNumericMatrix (mwSize m, mwSize n, mxClass
 extern OCTINTERP_API mxArray *mxCreateSparse (mwSize m, mwSize n, mwSize nzmax, mxComplexity flag);
 extern OCTINTERP_API mxArray *mxCreateSparseLogicalMatrix (mwSize m, mwSize n, mwSize nzmax);
 extern OCTINTERP_API mxArray *mxCreateString (const char *str);
-extern OCTINTERP_API mxArray *mxCreateStructArray (mwSize ndims, mwSize *dims, int num_keys, const char **keys);
+extern OCTINTERP_API mxArray *mxCreateStructArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys);
 extern OCTINTERP_API mxArray *mxCreateStructMatrix (mwSize rows, mwSize cols, int num_keys, const char **keys);
 
 // Copy constructor.

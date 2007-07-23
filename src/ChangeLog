@@ -1,3 +1,8 @@
+2007-07-23  Aquil H. Abdullah  <aquil.abdullah@gmail.com>
+
+	* mex.cc (mxCreateStructArray): Declare second arg as const.
+	* mexproto.h (mxCreateStructArray): Ditto.
+
 2007-07-20  David Bateman  <dbateman@free.fr>
 
         * zfstream.cc (BUFSIZE): Increase default buffer size to 256kB

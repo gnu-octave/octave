@@ -63,7 +63,7 @@ HTML_IMAGES_PNG = $(addprefix HTML/, $(IMAGES_PNG))
 
 IMAGES = $(IMAGES_EPS) $(IMAGES_PDF) $(IMAGES_PNG) $(IMAGES_TXT)
 
-SUB_SOURCE := arith.txi audio.txi basics.txi bit.txi bugs.txi \
+SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	container.txi control.txi cp-idx.txi data.txi \
 	debug.txi diffeq.txi dynamic.txi emacs.txi errors.txi eval.txi \
 	expr.txi finance.txi fn-idx.txi func.txi geometry.txi gpl.txi \

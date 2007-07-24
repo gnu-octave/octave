@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.567 $)
+AC_REVISION($Revision: 1.568 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1135,7 +1135,7 @@ case "$canonical_host_type" in
     library_path_var=PATH
   ;;
   *-*-msdosmsvc)
-    DL_LDFLAGS="-shared -g"
+    DL_LDFLAGS="-shared"
     CPICFLAG=
     CXXPICFLAG=
     FPICFLAG=
@@ -1143,7 +1143,11 @@ case "$canonical_host_type" in
     SHLLIB=lib
     SHLBIN=dll
     LIBPRE=
-    SH_LDFLAGS="-shared -g"
+    SH_LDFLAGS="-shared"
+      if test -n "`echo $CFLAGS | grep -e '-g'`" -o -n "`echo $CXXFLAGS | grep -e '-g'`"; then
+      DL_LDFLAGS="$DL_LDFLAGS -g"
+      SH_LDFLAGS="$SH_LDFLAGS -g"
+    fi
     NO_OCT_FILE_STRIP=true
     library_path_var=PATH
     NO_OCT_FILE_STRIP=true

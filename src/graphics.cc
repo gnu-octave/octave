@@ -171,6 +171,61 @@ color_property::color_property (const octave_value& val)
     error ("invalid color specification");
 }
 
+// We also provide this assignment operator so that assignment from an
+// octave_value object can happen without wiping out list of possible
+// radio_values set in color_property constructor.
+
+color_property&
+color_property::operator = (const octave_value& val)
+{
+  if (val.is_string ())
+    {
+      std::string s = val.string_value ();
+
+      if (! s.empty ())
+	{
+	  if (radio_val.validate (s))
+	    {
+	      current_val = s;
+	      current_type = radio_t;
+	    }
+          else
+	    {
+	      color_values col (s);
+	      if (! error_state)
+		{
+		  color_val = col;
+		  current_type = color_t;
+		}
+	      else
+		error ("invalid color specification");	  
+	    }	
+	}
+      else
+	error ("invalid color specification");	  
+    }
+  else if (val.is_real_matrix ())
+    {
+      Matrix m = val.matrix_value ();
+
+      if (m.numel () == 3)
+	{
+	  color_values col (m (0), m (1), m(2));
+	  if (! error_state)
+	    {
+	      color_val = col;
+	      current_type = color_t;
+	    }
+	}
+      else
+	error ("invalid color specification");
+    }
+  else 
+    error ("invalid color specification");
+
+  return *this;
+}
+
 
 void
 property_list::set (const property_name& name, const octave_value& val)
@@ -1564,7 +1619,7 @@ line::line_properties::set (const property_name& name, const octave_value& val)
   else if (name.compare ("xudata"))
     xudata = val;
   else if (name.compare ("color"))
-    color = color_property (val);
+    color = val;
   else if (name.compare ("linestyle"))
     linestyle = val;
   else if (name.compare ("linewidth"))

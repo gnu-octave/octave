@@ -1,3 +1,9 @@
+2007-07-24  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.cc (color_property::operator = (const octave_value&)):
+	New method.
+	* graphics.h: Provide decl.
+
 2007-07-24  Rafael Laboissiere  <rafael@debian.org>
 
 	* oct-conf.h.in (OCTAVE_CONF_RUNTEST): Delete definition.

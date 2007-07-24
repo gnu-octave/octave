@@ -261,6 +261,8 @@ public:
     return *this;
   }
 
+  color_property& operator = (const octave_value& newval);
+
   bool is_rgb (void) const { return (current_type == color_t); }
 
   bool is_radio (void) const { return (current_type == radio_t); }

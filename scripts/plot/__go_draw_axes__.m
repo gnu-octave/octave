@@ -408,6 +408,84 @@ function __go_draw_axes__ (h, plot_stream)
 	    endif
 	  endif
 
+       case "patch"
+         if (! have_newer_gnuplot)
+           warning ("patch objects require gnuplot v4.2 or later!, sorry")
+         else
+	   if (! isempty (obj.zdata))
+             warning ("gnuplot (as of v4.2) supports only 2D patches, ignoring z values")
+	   endif
+	   nd = 2;
+           cmap = parent_figure_obj.colormap;
+           clim = axis_obj.clim;
+	   data_idx++;
+	   is_image_data(data_idx) = false;
+           titlespec{data_idx} = "title \"\"";
+	   usingclause{data_idx} = "";
+           if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
+             if (strncmp (obj.facecolor, "none", 4))
+	       color = [1, 1, 1];
+             elseif (strncmp (obj.facecolor, "flat", 4))
+               r = 1 + round ((size (cmap, 1) - 1) * (obj.cdata - clim(1))/(clim(2) - clim(1)));
+               r = max (1, min (r, size (cmap, 1)));
+	       color = cmap(r,:);
+             elseif (strncmp (obj.facecolor, "interp", 6))
+               warning ("\"interp\" not supported, using 1st entry of cdata")
+               r = 1 + round ((size (cmap, 1) - 1) * obj.cdata(1));
+               r = max (1, min (r, size (cmap, 1)));
+	       color = cmap(r,:);
+             else
+	       color = obj.facecolor;
+             endif
+           else
+             color = [1, 0, 0];
+           endif
+
+	   withclause{data_idx} = sprintf ("with filledcurve lc rgb \"#%02x%02x%02x\"",round (255*color));
+	   parametric(data_idx) = true;
+
+	   xdat = obj.xdata(:);
+	   ydat = obj.ydata(:);
+
+	   if (xautoscale)
+             [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
+	   endif
+	   if (yautoscale)
+	     [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
+	   endif
+	   data{data_idx} = [xdat, ydat]';
+	   usingclause{data_idx} = "using ($1):($2)";
+	 endif
+
+         ## patch outline
+         data_idx++;
+         is_image_data(data_idx) = false;
+         ## I had to use data_idx instead of i here, not sure if o.k. (Kai)
+         parametric(data_idx) = true;
+         titlespec{data_idx} = "title \"\"";
+	 usingclause{data_idx} = "";
+         if (isfield (obj, "edgecolor"))
+           if (strncmp (obj.edgecolor, "none", 4))
+             color = [1, 1, 1];
+           elseif (strncmp (obj.edgecolor, "flat", 4))
+             warning("\"flat\" for edgecolor not supported");
+             color = [0, 0, 0];
+           elseif (strncmp (obj.edgecolor, "interp", 6))
+             warning("\"interp\" for edgecolor not supported");
+             color = [0, 0, 0];
+           else
+	     color = obj.edgecolor;
+           endif
+         else
+           color = [0, 0, 0];
+         endif
+	 withclause{data_idx} = sprintf ("with lines lc rgb \"#%02x%02x%02x\"",round (255*color));
+
+         xdat = [xdat; xdat(1)];
+	 ydat = [ydat; ydat(1)];
+	 data{data_idx} = [xdat, ydat]';
+	 usingclause{data_idx} = "using ($1):($2)";
+
 	case "surface"
 	  data_idx++;
 	  is_image_data(data_idx) = false;

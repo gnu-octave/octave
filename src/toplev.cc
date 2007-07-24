@@ -836,7 +836,6 @@ specified option.\n\
       { false, "RANLIB", OCTAVE_CONF_RANLIB },
       { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },
       { false, "RLD_FLAG", OCTAVE_CONF_RLD_FLAG },
-      { false, "RUNTEST", OCTAVE_CONF_RUNTEST },
       { false, "SED", OCTAVE_CONF_SED },
       { false, "SHARED_LIBS", OCTAVE_CONF_SHARED_LIBS },
       { false, "SHLEXT", OCTAVE_CONF_SHLEXT },

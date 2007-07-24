@@ -57,8 +57,6 @@ RANLIB = @RANLIB@
 
 LN_S = @LN_S@
 
-RUNTEST = @RUNTEST@
-
 MAKEINFO = @MAKEINFO@
 TEXI2DVI = @TEXI2DVI@
 TEXI2PDF = @TEXI2PDF@
@@ -506,7 +504,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_RANLIB%|\"${RANLIB}\"|" \
   -e "s|%OCTAVE_CONF_RDYNAMIC_FLAG%|\"${RDYNAMIC_FLAG}\"|" \
   -e "s|%OCTAVE_CONF_RLD_FLAG%|\"${RLD_FLAG}\"|" \
-  -e "s|%OCTAVE_CONF_RUNTEST%|\"${RUNTEST}\"|" \
   -e "s|%OCTAVE_CONF_SED%|\"${SED}\"|" \
   -e "s|%OCTAVE_CONF_SHARED_LIBS%|\"${SHARED_LIBS}\"|" \
   -e "s|%OCTAVE_CONF_SHLEXT%|\"${SHLEXT}\"|" \

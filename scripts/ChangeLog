@@ -1,3 +1,15 @@
+2007-07-24  David Bateman  <dbateman@free.fr>
+
+	* image/flag.m: New colormap function.
+	* images/Makefile.in: Include it in SOURCES.
+
+	* image/autumn.m image/bone.m image/cool.m image/copper.m 
+	image/hot.m image/hsv.m image/jet.m image/pink.m image/prism.m 
+	image/rainbow.m image/spring.m image/summer.m image/white.m 
+	image/winter.m, image/brighten.m: Use isscalar and not is_scalar.
+	* image/gray.m, image/ocean.m: Use the same means of finding the
+	number of colormap elements as the other colormap functions.
+
 2007-07-24  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/__go_draw_axes__.m: Handle patch.

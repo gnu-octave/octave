@@ -34,7 +34,7 @@ function map = rainbow (number)
   if (nargin == 0)
     number = rows (colormap);
   elseif (nargin == 1)
-    if (! is_scalar (number))
+    if (! isscalar (number))
       error ("rainbow: argument must be a scalar");
     endif
   else

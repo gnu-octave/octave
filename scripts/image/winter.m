@@ -32,7 +32,7 @@ function map = winter (number)
   if (nargin == 0)
     number = rows (colormap);
   elseif (nargin == 1)
-    if (! is_scalar (number))
+    if (! isscalar (number))
       error ("winter: argument must be a scalar");
     endif
   else

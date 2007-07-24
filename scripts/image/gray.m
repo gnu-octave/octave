@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} gray (@var{n})
 ## Return a gray colormap with @var{n} entries corresponding to values from
 ## 0 to @var{n}-1.  The argument @var{n} should be a scalar.  If it is
-## omitted, 64 is assumed.
+## omitted, the length of the current colormap or 64 is assumed.
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -31,8 +31,12 @@
 function map = gray (number)
 
   if (nargin == 0)
-    number = 64;
-  elseif (nargin > 1)
+    number = rows (colormap);
+  elseif (nargin == 1)
+    if (! isscalar (number))
+      error ("gray: argument must be a scalar");
+    endif
+  else
     print_usage ();
   endif
 

@@ -52,7 +52,7 @@ function Rmap = brighten (m, beta)
     print_usage ();
   endif
 
-  if ( (!is_scalar (beta)) || (beta <= -1) || (beta >= 1) )
+  if ( (!isscalar (beta)) || (beta <= -1) || (beta >= 1) )
     error ("brighten(...,beta) beta must be a scalar in the range (-1,1).");
   endif
 

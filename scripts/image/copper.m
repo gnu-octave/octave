@@ -32,7 +32,7 @@ function map = copper (number)
   if (nargin == 0)
     number = rows (colormap);
   elseif (nargin == 1)
-    if (! is_scalar (number))
+    if (! isscalar (number))
       error ("copper: argument must be a scalar");
     endif
   else

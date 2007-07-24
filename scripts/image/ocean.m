@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ocean (@var{n})
 ## Create color colormap.  The argument @var{n} should be a scalar.  If it
-## is omitted, 64 is assumed.
+## is omitted, the length of the current colormap or 64 is assumed.
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -30,7 +30,7 @@
 function map = ocean (number)
 
   if (nargin == 0)
-    number = 64;
+    number = rows (colormap);
   elseif (nargin == 1)
     if (! isscalar (number))
       error ("ocean: argument must be a scalar");

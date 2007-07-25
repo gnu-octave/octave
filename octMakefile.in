@@ -174,7 +174,7 @@ dist: all
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
-	ln $(addprefix, $(srcdir)/, $(DISTFILES)) `cat .fname`
+	ln $(addprefix $(srcdir)/, $(DISTFILES)) `cat .fname`
 	ln $(BUILT_DISTFILES) `cat .fname`
 	for dir in $(DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \

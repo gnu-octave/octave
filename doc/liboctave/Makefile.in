@@ -105,5 +105,8 @@ maintainer-clean: distclean
 
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/liboctave
-	for dir in $(DISTDIRS); do ln ../../doc/liboctave/$$dir ../../`cat ../../.fname`/doc/liboctave/$$dir; done
+	for dir in $(DISTDIRS); do \
+	  mkdir ../../`cat ../../.fname`/doc/liboctave/$$dir; \
+	  ln ../../doc/liboctave/$$dir/* ../../`cat ../../.fname`/doc/liboctave/$$dir; \
+	done
 .PHONY: dist

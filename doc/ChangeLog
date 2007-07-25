@@ -1,3 +1,7 @@
+2007-07-25  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (run-octave): Don't set DISPLAY.
+
 2007-07-25  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in, faq/Makefile.in, interpreter/Makwfile.in, 

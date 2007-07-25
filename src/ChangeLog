@@ -1,3 +1,7 @@
+2007-07-25  John W. Eaton  <jwe@octave.org>
+
+	* pt-bp.h (MAYBE_DO_BREAKPOINT): Rename fcn to curr_fcn.
+
 2007-07-25  David Bateman  <dbateman@free.fr>
 	
 	* Makefile.in: 	Adjust DISTFILES to allow out of tree "make dist" 

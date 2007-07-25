@@ -26,7 +26,7 @@ OBJECTS := $(SOURCES:.c=.o)
 
 MAKEDEPS := $(SOURCES:.c=.d)
 
-DISTFILES := $(addprefix $srcdir)/, $(SOURCES) $(INCLUDES) README dl.exp Makefile.in ftp-site)
+DISTFILES := $(addprefix $(srcdir)/, $(SOURCES) $(INCLUDES) README dl.exp Makefile.in ftp-site)
 
 all: libdlfcn.a
 .PHONY: all

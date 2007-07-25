@@ -24,7 +24,7 @@ TEXINFO := Octave-FAQ.texi
 
 FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf
 
-DISTFILES := $(addprefix $srcdir)/, Makefile.in $(TEXINFO) $(FORMATTED))
+DISTFILES := $(addprefix $(srcdir)/, Makefile.in $(TEXINFO) $(FORMATTED))
 
 DISTDIRS := HTML
 
@@ -86,5 +86,8 @@ maintainer-clean: distclean
 
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/faq
-	for dir in $(DISTDIRS); do ln ../../doc/faq/$$dir ../../`cat ../../.fname`/doc/faq/$$dir; done
+	for dir in $(DISTDIRS); do \
+	  mkdir ../../`cat ../../.fname`/doc/faq/$$dir; \
+	  ln ../../doc/faq/$$dir/* ../../`cat ../../.fname`/doc/faq/$$dir; \
+	done
 .PHONY: dist

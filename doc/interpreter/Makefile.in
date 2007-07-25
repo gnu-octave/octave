@@ -97,8 +97,9 @@ MAN_BASE := mkoctfile octave octave-bug octave-config
 MAN_SRC := $(addsuffix .1, $(MAN_BASE))
 
 # FIXME -- need to include generated figures here...
-DISTFILES = $(addprefix $(srcdir)/, Makefile.in contributors.in mkcontrib.awk dir \
-  munge-texi.cc $(MAN_SRC) $(SOURCES) $(TEXINFO_SOURCE)) $(FORMATTED) $(IMAGES)
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in contributors.in \
+  mkcontrib.awk dir  munge-texi.cc $(MAN_SRC) $(SOURCES) $(MAIN_TEXINFO)) \
+  $(SUB_TEXINFO) contributors.texi $(FORMATTED) $(IMAGES)
 
 DISTDIRS = HTML
 
@@ -202,12 +203,10 @@ $(HTML_IMAGES_PNG): HTML/%.png : %.png
 	fi
 	cp $(filter-out html-dir, $<) HTML
 
-## Unset DISPLAY here to avoid problems with the -title option for
-## gnuplot (it doesn't work if we are calling pgnuplot).  Sleep for
-## a second to allow gnuplot to finish writing its output before
-## Octave exits.
+## Sleep for a second after plotting to allow gnuplot to finish
+## writing its output before Octave exits.
 define run-octave
-  DISPLAY= $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
+  $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
     --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))'); sleep (1);"
 endef
 
@@ -306,6 +305,9 @@ clean-texi:
 
 dist: clean-texi all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/interpreter
-	for dir in $(DISTDIRS); do ln ../../doc/interpreter/$$dir ../../`cat ../../.fname`/doc/interpreter/$$dir; done
+	for dir in $(DISTDIRS); do \
+	  mkdir ../../`cat ../../.fname`/doc/interpreter/$$dir; \
+	  ln ../../doc/interpreter/$$dir/* ../../`cat ../../.fname`/doc/interpreter/$$dir; \
+	done
 	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/doc/interpreter/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist

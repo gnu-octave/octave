@@ -160,12 +160,12 @@ extern bool octave_debug_on_interrupt_state;
 #define MAYBE_DO_BREAKPOINT \
   do \
     { \
-      octave_function *fcn = octave_call_stack::current (); \
+      octave_function *curr_fcn = octave_call_stack::current (); \
  \
       if (octave_debug_on_interrupt_state \
 	  || (tree::break_next && tree::last_line == 0) \
 	  || (tree::break_next \
-	      && fcn == tree::break_function \
+	      && curr_fcn == tree::break_function \
 	      && tree::last_line != line ()) \
 	  || is_breakpoint ()) \
         { \
@@ -173,8 +173,8 @@ extern bool octave_debug_on_interrupt_state;
  \
           tree::break_next = false; \
  \
-          if (fcn) \
-            octave_stdout << fcn->name () << ": ";  \
+          if (curr_fcn) \
+            octave_stdout << curr_fcn->name () << ": ";  \
  \
           octave_stdout << "line " << line () << ", " \
 			<< "column " << column () \

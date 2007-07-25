@@ -1,3 +1,8 @@
+2007-07-25  David Bateman  <dbateman@free.fr>
+	
+	* Makefile.in: 	Adjust DISTFILES to allow out of tree "make dist" 
+	to work.
+
 2007-07-24  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.cc (color_property::operator = (const octave_value&)):

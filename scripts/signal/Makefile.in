@@ -29,7 +29,7 @@ SOURCES = arch_fit.m arch_rnd.m arch_test.m arma_rnd.m autocor.m \
   spencer.m stft.m synthesis.m triangle_lw.m triangle_sw.m \
   unwrap.m yulewalker.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

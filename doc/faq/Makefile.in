@@ -24,7 +24,7 @@ TEXINFO := Octave-FAQ.texi
 
 FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf
 
-DISTFILES := Makefile.in $(TEXINFO) $(FORMATTED)
+DISTFILES := $(addprefix $srcdir)/,Makefile.in $(TEXINFO) $(FORMATTED))
 
 DISTDIRS := HTML
 

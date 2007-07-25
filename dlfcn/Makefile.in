@@ -26,7 +26,7 @@ OBJECTS := $(SOURCES:.c=.o)
 
 MAKEDEPS := $(SOURCES:.c=.d)
 
-DISTFILES := $(SOURCES) $(INCLUDES) README dl.exp Makefile.in ftp-site
+DISTFILES := $(addprefix $srcdir)/,$(SOURCES) $(INCLUDES) README dl.exp Makefile.in ftp-site)
 
 all: libdlfcn.a
 .PHONY: all
@@ -71,7 +71,7 @@ dist:
 .PHONY: dist
 
 conf-dist:
-	ln octave.cc Makefile.in ../`cat ../.fname`/dlfcn
+	ln $(addprefix $(srcdir)/,octave.cc Makefile.in) ../`cat ../.fname`/dlfcn
 .PHONY: conf-dist
 
 ifndef omit_deps

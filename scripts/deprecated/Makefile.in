@@ -40,7 +40,7 @@ SOURCES = beta_cdf.m beta_inv.m beta_pdf.m beta_rnd.m \
   weibcdf.m weibinv.m weibpdf.m weibrnd.m weibull_cdf.m \
   weibull_inv.m weibull_pdf.m weibull_rnd.m wiener_rnd.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

@@ -23,7 +23,7 @@ INSTALL_DATA = @INSTALL_DATA@
 SOURCES = lin2mu.m loadaudio.m mu2lin.m playaudio.m record.m \
   saveaudio.m setaudio.m wavread.m wavwrite.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

@@ -37,7 +37,7 @@ CRUFT_CXXDEFS = $(patsubst %.cc, %.def, $(notdir $(CRUFT_CXXSRC)))
 
 CRUFT_DEFS = $(CRUFT_FDEFS) $(CRUFT_CDEFS) $(CRUFT_CXXDEFS)
 
-DISTFILES = Makefile.in $(CRUFT_SRC) $(SPECIAL)
+DISTFILES = $(CRUFT_SRC) $(addprefix $(srcdir)/,Makefile.in $(SPECIAL))
 
 ifeq ($(SHARED_LIBS), true)
   ifdef FPICFLAG

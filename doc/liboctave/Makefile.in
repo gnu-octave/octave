@@ -34,7 +34,8 @@ TEXINFO = $(TEXINFO_SOURCE) ../conf.texi
 
 FORMATTED = liboctave.dvi liboctave.ps liboctave.pdf liboctave.info
 
-DISTFILES = Makefile.in gpl.texi $(TEXINFO_SOURCE) $(FORMATTED)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in gpl.texi $(TEXINFO_SOURCE)) \
+	 $(FORMATTED)
 
 DISTDIRS = HTML
 

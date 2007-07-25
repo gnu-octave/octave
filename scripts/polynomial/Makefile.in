@@ -25,7 +25,7 @@ SOURCES = compan.m conv.m deconv.m mkpp.m pchip.m poly.m \
   polyout.m polyreduce.m polyval.m polyvalm.m ppval.m residue.m \
   roots.m spline.m unmkpp.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

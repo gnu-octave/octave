@@ -36,7 +36,7 @@ SOURCES = __abcddims__.m __syschnamesl__.m __sysconcat__.m \
   sysupdate.m tf.m tf2ss.m tf2sys.m tf2zp.m tfout.m ugain.m zp.m \
   zp2ss.m zp2sys.m zp2tf.m zpout.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

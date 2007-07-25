@@ -16,7 +16,8 @@ include $(TOPDIR)/Makeconf
 
 SOURCES = $(wildcard $(srcdir)/test_*.m)
 
-DISTFILES = ChangeLog Makefile.in build_sparse_tests.sh fntests.m $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,ChangeLog Makefile.in \
+	build_sparse_tests.sh fntests.m) $(SOURCES)
 
 OCTAVE_BINARY = ../src/octave
 

@@ -24,7 +24,7 @@ SOURCES = __fsolve_defopts__.m glpk.m glpkmex.m optimset.m qp.m sqp.m
 
 EXTRAS = glpktest1 glpktest2
 
-DISTFILES = Makefile.in $(SOURCES) $(EXTRAS)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

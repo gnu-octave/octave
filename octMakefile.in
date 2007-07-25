@@ -20,12 +20,16 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_DATA = @INSTALL_DATA@
 
-CONF_DISTFILES = Makefile Makefile.in octMakefile.in Makeconf.in \
+BUILT_CONF_DISTFILES = Makefile
+
+CONF_DISTFILES = Makefile.in octMakefile.in Makeconf.in \
 	configure configure.in config.guess config.sub aclocal.m4 \
 	acx_blas.m4 acx_lapack.m4 config.h.in install-sh autogen.sh
 
+BUILT_DISTFILES = $(BUILT_CONF_DISTFILES) BUGS INSTALL.OCTAVE
+
 DISTFILES = $(CONF_DISTFILES) \
-	BUGS COPYING FLEX.patch INSTALL INSTALL.OCTAVE NEWS \
+	BUGS COPYING FLEX.patch INSTALL NEWS \
 	NEWS.[0-9] PROJECTS README README.Linux README.Windows \
 	README.Cygwin README.MSVC \
 	README.MachTen README.kpathsea ROADMAP SENDING-PATCHES \
@@ -170,7 +174,8 @@ dist: all
 	echo octave-$(version) > .fname
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
-	ln $(DISTFILES) `cat .fname`
+	ln $(addprefix, $(srcdir)/,$(DISTFILES)) `cat .fname`
+	ln $(BUILT_DISTFILES) `cat .fname`
 	for dir in $(DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir dist; \
@@ -223,6 +228,7 @@ conf-dist:
 	rm -rf `cat .fname`
 	mkdir `cat .fname`
 	ln $(CONF_DISTFILES) `cat .fname`
+	ln $(BUILT_CONF_DISTFILES) `cat .fname`
 	for dir in $(CONF_DISTSUBDIRS); do \
 	  mkdir `cat .fname`/$$dir; \
 	  $(MAKE) -C $$dir conf-dist; \

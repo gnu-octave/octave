@@ -1,3 +1,9 @@
+2007-07-25  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in, Makerules.in, fftpack/Makefile.in,
+	randlib/Makefile.in: Adjust DISTFILES to allow out of tree "make dist" 
+	to work.
+
 2007-04-23  John W. Eaton  <jwe@octave.org>
 
 	* ranlib/phrtsd.f (phrtsd): Store result of call to index

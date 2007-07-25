@@ -31,7 +31,7 @@ SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m cast.m comma.m \
   tempdir.m tempname.m texas_lotto.m unix.m unpack.m untar.m \
   unzip.m ver.m version.m warning_ids.m xor.m zip.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

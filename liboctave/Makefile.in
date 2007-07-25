@@ -30,7 +30,7 @@ LINK_DEPS = \
 MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	Array-util.h ArrayN-idx.h MArray-defs.h \
 	MArray.h MArray2.h MDiagArray2.h Matrix.h MArrayN.h \
-	base-lu.h dim-vector.h mx-base.h mx-op-defs.h mx-ops.h \
+	base-lu.h dim-vector.h mx-base.h mx-op-defs.h \
 	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
 	CNDArray.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h \
 	CmplxDET.h CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h \
@@ -71,13 +71,15 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	oct-env.h oct-fftw.h oct-getopt.h oct-group.h oct-inttypes.h \
 	oct-md5.h oct-passwd.h oct-rand.h oct-rl-edit.h oct-rl-hist.h \
 	oct-shlib.h oct-sort.h oct-spparms.h oct-syscalls.h \
-	oct-sparse.h oct-time.h oct-types.h oct-uname.h \
+	oct-sparse.h oct-time.h oct-uname.h \
 	pathlen.h pathsearch.h prog-args.h \
 	randgamma.h randmtzig.h randpoisson.h \
 	so-array.h sparse-sort.h statdefs.h str-vec.h \
 	sparse-util.h sun-utils.h sysdir.h systime.h syswait.h \
+	$(MATRIX_INC)
+
+BUILT_INCLUDES := oct-types.h mx-ops.h \
 	$(OPTS_INC) \
-	$(MATRIX_INC) \
 	$(MX_OP_INC) \
 	$(VX_OP_INC) \
 	$(SPARSE_MX_OP_INC)
@@ -126,7 +128,9 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc \
 	prog-args.cc so-array.cc sparse-sort.cc sparse-util.cc str-vec.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
-	$(MATRIX_SRC) \
+	$(MATRIX_SRC)
+
+BUILT_LIBOCTAVE_CXX_SOURCES := \
 	$(MX_OP_SRC) \
 	$(VX_OP_SRC) \
 	$(SPARSE_MX_OP_SRC)
@@ -137,7 +141,8 @@ LIBOCTAVE_C_SOURCES := f2c-main.c filemode.c getopt.c getopt1.c \
 	rmdir.c strftime.c strptime.c strcasecmp.c strncase.c \
 	tempname.c tempnam.c
 
-LIBOCTAVE_SOURCES := $(LIBOCTAVE_CXX_SOURCES) $(LIBOCTAVE_C_SOURCES)
+LIBOCTAVE_SOURCES := $(LIBOCTAVE_CXX_SOURCES) $(BUILT_LIBOCTAVE_CXX_SOURCES) \
+	$(LIBOCTAVE_C_SOURCES)
 
 LIBOCT_READLINE_CXX_SOURCES := cmd-edit.cc cmd-hist.cc
 
@@ -159,17 +164,23 @@ SOURCES := \
 
 EXTRAS := mx-inlines.cc kpse.cc intNDArray.cc
 
-INCLUDES_FOR_INSTALL := $(INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
+INCLUDES_FOR_INSTALL := $(INCLUDES) $(BUILT_INCLUDES) $(TEMPLATE_SRC) $(EXTRAS)
 
-DISTFILES := Makefile.in ChangeLog mk-ops.awk mx-ops vx-ops \
-	sparse-mk-ops.awk sparse-mx-ops oct-types.h.in \
-	$(SOURCES) $(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)
+DISTFILES := $(addprefix $(srcdir)/, Makefile.in ChangeLog mk-ops.awk \
+	mx-ops vx-ops sparse-mk-ops.awk sparse-mx-ops oct-types.h.in \
+	$(LIBOCTAVE_CXX_SOURCES) \
+	$(LIBOCT_READLINE_SOURCES) \
+	$(LIBOCT_PATHSEARCH_SOURCES) \
+	$(LIBOCTAVE_C_SOURCES) \
+	$(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)) \
+	$(BUILT_LIBOCTAVE_CXX_SOURCES) $(BUILT_INCLUDES)
 
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
 MAKEDEPS := $(patsubst %.c, %.d, $(MAKEDEPS_1))
 
 LIBOCTAVE_OBJECTS := \
 	$(LIBOCTAVE_CXX_SOURCES:.cc=.o) \
+	$(BUILT_LIBOCTAVE_CXX_SOURCES:.cc=.o) \
 	$(LIBOCTAVE_C_SOURCES:.c=.o) \
 	$(LIBOCT_READLINE_CXX_SOURCES:.cc=.o) \
 	$(LIBOCT_READLINE_C_SOURCES:.c=.o) \

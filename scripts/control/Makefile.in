@@ -24,7 +24,7 @@ SUBDIRS = base hinf obsolete system util
 
 DISTSUBDIRS = $(SUBDIRS)
 
-DISTFILES = Makefile.in
+DISTFILES = $(srcdir)/Makefile.in
 
 all:
 .PHONY: all

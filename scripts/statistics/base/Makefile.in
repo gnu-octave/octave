@@ -26,7 +26,7 @@ SOURCES = center.m cloglog.m cor.m corrcoef.m cov.m cut.m gls.m \
   ranks.m run_count.m skewness.m spearman.m statistics.m std.m \
   studentize.m table.m values.m var.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

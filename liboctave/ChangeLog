@@ -1,3 +1,8 @@
+2007-07-25  David Bateman  <dbateman@free.fr>
+	
+	* Makefile.in: 	Adjust DISTFILES to allow out of tree "make dist" 
+	to work.
+
 2007-06-04  David Bateman  <dbateman@free.fr>
 
 	* oct-inttypes.h (octave_int<T>& operator <<= (const T2&),

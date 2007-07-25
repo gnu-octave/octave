@@ -24,7 +24,7 @@ SOURCES = __outlist__.m __zgpbal__.m axis2dlim.m prompt.m \
   run_cmd.m sortcom.m strappend.m swap.m zgfmul.m zgfslv.m \
   zginit.m zgreduce.m zgrownorm.m zgscal.m zgsgiv.m zgshsr.m
 
-DISTFILES = Makefile.in $(SOURCES)
+DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

@@ -73,8 +73,7 @@ function retval = __plt2__ (h, x1, x2, options, properties)
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isempty (x1) && isempty (x2))
-    ## FIXME -- should we do nothing, or should we create a line object
-    ## with empty xdata and ydata properties?
+    retval = zeros (0, 1);
   else
     error ("__plt2__: invalid data for plotting");
   endif

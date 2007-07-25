@@ -1,5 +1,9 @@
 2007-07-25  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.13
+	(OCTAVE_API_VERSION): Now api-v25.
+	(OCTAVE_RELEASE_DATE): Now 2007-07-25.
+
 	* pt-bp.h (MAYBE_DO_BREAKPOINT): Rename fcn to curr_fcn.
 
 2007-07-25  David Bateman  <dbateman@free.fr>

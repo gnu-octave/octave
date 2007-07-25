@@ -28,7 +28,7 @@ SOURCES = DEMOcontrol.m __bodquist__.m __freqresp__.m \
   nyquist.m obsv.m place.m pzmap.m rldemo.m rlocus.m step.m \
   tzero.m tzero2.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

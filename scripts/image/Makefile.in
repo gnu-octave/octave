@@ -28,7 +28,7 @@ SOURCES = __img__.m __img_via_file__.m autumn.m bone.m brighten.m colormap.m \
 
 IMAGES = default.img
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

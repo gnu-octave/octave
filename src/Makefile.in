@@ -517,7 +517,7 @@ maintainer-clean: distclean
 .PHONY: maintainer-clean
 
 dist: parse.cc lex.cc oct-gperf.h
-	ln $(addprefix $(srcdir)/,$(DISTFILES)) ../`cat ../.fname`/src
+	ln $(addprefix $(srcdir)/, $(DISTFILES)) ../`cat ../.fname`/src
 	ln $(BUILT_DISTFILES) ../`cat ../.fname`/src
 	for f in DLD-FUNCTIONS OPERATORS TEMPLATE-INST; do \
 	  if [ -d ../`cat ../.fname`/src/$$f ]; then \
@@ -526,16 +526,16 @@ dist: parse.cc lex.cc oct-gperf.h
 	    mkdir ../`cat ../.fname`/src/$$f; \
 	  fi; \
 	done
-	ln $(addprefix $(srcdir)/,$(DLD_SRC)) ../`cat ../.fname`/src/DLD-FUNCTIONS
-	ln $(addprefix $(srcdir)/,$(OP_SRC)) ../`cat ../.fname`/src/OPERATORS
-	ln $(addprefix $(srcdir)/,$(OP_INCLUDES)) ../`cat ../.fname`/src/OPERATORS
-	ln $(addprefix $(srcdir)/,$(TI_SRC)) ../`cat ../.fname`/src/TEMPLATE-INST
+	ln $(addprefix $(srcdir)/, $(DLD_SRC)) ../`cat ../.fname`/src/DLD-FUNCTIONS
+	ln $(addprefix $(srcdir)/, $(OP_SRC)) ../`cat ../.fname`/src/OPERATORS
+	ln $(addprefix $(srcdir)/, $(OP_INCLUDES)) ../`cat ../.fname`/src/OPERATORS
+	ln $(addprefix $(srcdir)/, $(TI_SRC)) ../`cat ../.fname`/src/TEMPLATE-INST
 	rm -f parse.cc lex.cc y.tab.h y.output yy.lex.c
 	rm -f oct-gperf.h defaults.h oct-conf.h *.d *.df builtins.cc
 .PHONY: dist
 
 conf-dist:
-	ln $(addprefix $(srcdir)/,octave.cc Makefile.in) ../`cat ../.fname`/src
+	ln $(addprefix $(srcdir)/, octave.cc Makefile.in) ../`cat ../.fname`/src
 .PHONY: conf-dist
 
 # Special rules -- these files need special things to be defined.

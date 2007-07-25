@@ -22,7 +22,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = main-rcfile local-rcfile inputrc
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES =
 FCN_FILES_NO_DIR =

@@ -57,7 +57,7 @@ SOURCES = \
 IMAGE_FILES = $(srcdir)/octave-sombrero.png
 IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES) $(SCRIPTS)) \
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES) $(SCRIPTS)) \
 	 $(IMAGE_FILES)
 
 SUBDIRS = 

@@ -25,7 +25,7 @@ SOURCES = acosd.m acot.m acotd.m acoth.m acsc.m acscd.m \
   cot.m cotd.m coth.m csc.m cscd.m csch.m lcm.m sec.m secd.m \
   sech.m sind.m tand.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

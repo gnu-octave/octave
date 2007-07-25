@@ -24,7 +24,7 @@ SOURCES = dgkfdemo.m dhinfdemo.m h2norm.m h2syn.m hinf_ctr.m \
   hinfdemo.m hinfnorm.m hinfsyn.m hinfsyn_chk.m hinfsyn_ric.m \
   is_dgkf.m wgt1o.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

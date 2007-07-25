@@ -38,7 +38,7 @@ SOURCES = betacdf.m betainv.m betapdf.m betarnd.m binocdf.m \
   tpdf.m trnd.m unidrnd.m unifcdf.m unifinv.m unifpdf.m unifrnd.m \
   wblcdf.m wblinv.m wblpdf.m wblrnd.m wienrnd.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

@@ -28,7 +28,7 @@ SOURCES = anova.m bartlett_test.m chisquare_test_homogeneity.m \
   t_test_2.m t_test_regression.m u_test.m var_test.m welch_test.m \
   wilcoxon_test.m z_test.m z_test_2.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

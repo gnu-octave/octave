@@ -23,7 +23,7 @@ INSTALL_DATA = @INSTALL_DATA@
 SOURCES = dezero.m dlqg.m minfo.m packsys.m qzval.m rotg.m \
   series.m swapcols.m swaprows.m syschnames.m unpacksys.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

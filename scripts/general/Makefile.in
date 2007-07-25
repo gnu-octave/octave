@@ -32,7 +32,7 @@ SOURCES = __isequal__.m __splinen__.m accumarray.m arrayfun.m bicubic.m \
   repmat.m rot90.m rotdim.m shift.m shiftdim.m sortrows.m \
   sph2cart.m strerror.m sub2ind.m trapz.m tril.m triu.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

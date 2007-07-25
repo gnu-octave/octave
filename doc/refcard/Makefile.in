@@ -24,7 +24,7 @@ FORMATTED := refcard-a4.dvi refcard-a4.ps refcard-a4.pdf \
 	refcard-legal.dvi refcard-legal.ps refcard-legal.pdf \
 	refcard-letter.dvi refcard-letter.ps refcard-letter.pdf
 
-DISTFILES := $(addprefix $(srcdir)/,Makefile.in $(TEX)) $(FORMATTED)
+DISTFILES := $(addprefix $(srcdir)/, Makefile.in $(TEX)) $(FORMATTED)
 
 all: $(FORMATTED)
 

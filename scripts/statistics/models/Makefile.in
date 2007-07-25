@@ -23,7 +23,7 @@ INSTALL_DATA = @INSTALL_DATA@
 SOURCES = logistic_regression.m logistic_regression_derivatives.m \
   logistic_regression_likelihood.m
 
-DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))

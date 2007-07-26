@@ -1,3 +1,9 @@
+2007-07-26  John W. Eaton  <jwe@octave.org>
+
+	* pt-bp.h (MAYBE_DO_BREAKPOINT): Rename cur_fcn to xfcn.
+
+	* version.h (OCTAVE_VERSION): Now 2.9.13+.
+
 2007-07-25  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.13

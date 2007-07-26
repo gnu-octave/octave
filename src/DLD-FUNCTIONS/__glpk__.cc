@@ -40,7 +40,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 extern "C"
 {
+#if defined (HAVE_GLPK_GLPK_H)
+#include <glpk/glpk.h>
+#else
 #include <glpk.h>
+#endif
 
 #ifdef GLPK_PRE_4_14
 

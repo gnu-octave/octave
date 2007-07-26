@@ -1,3 +1,8 @@
+2007-07-26  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__glpk__.cc: Include glpk/glpk.h if
+	HAVE_GLPK_GLPK_H is defined.
+
 2007-07-26  David Bateman  <dbateman@free.fr>
 
 	* pr-output.cc (Frats): Return character array with same number of

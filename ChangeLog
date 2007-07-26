@@ -1,3 +1,7 @@
+2007-07-26  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Also look for glpk/glpk.h.
+
 2007-07-25  David Bateman  <dbateman@free.fr>
 
 	* octMakefile.in, dlfcn/Makefile.in, emacs/Makefile.in,

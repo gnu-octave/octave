@@ -1,3 +1,8 @@
+2007-07-26  David Bateman  <dbateman@free.fr>
+
+	* pr-output.cc (Frats): Return character array with same number of
+	rows as original value.
+
 2007-07-26  John W. Eaton  <jwe@octave.org>
 
 	* pt-bp.h (MAYBE_DO_BREAKPOINT): Rename cur_fcn to xfcn.
@@ -13,7 +18,7 @@
 	* pt-bp.h (MAYBE_DO_BREAKPOINT): Rename fcn to curr_fcn.
 
 2007-07-25  David Bateman  <dbateman@free.fr>
-	
+
 	* Makefile.in: 	Adjust DISTFILES to allow out of tree "make dist" 
 	to work.
 

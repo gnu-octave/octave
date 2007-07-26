@@ -55,6 +55,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "pager.h"
 #include "pr-output.h"
 #include "sysdep.h"
+#include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -2751,28 +2752,66 @@ representing the elements of @var{x}. By default @var{len} is 9.\n\
 @end deftypefn")
 {
   octave_value retval;
+
   int nargin = args.length ();
 
+  unwind_protect::begin_frame ("Frats");
+
+  unwind_protect_int (rat_string_len);
+
   rat_string_len = 9;
+
   if (nargin == 2)
     rat_string_len = args(1).nint_value ();
 
-  if (!error_state)
+  if (! error_state)
     {
       if (nargin < 3 && nargout < 2)
 	{
-	  bool save_rat_format = rat_format;
-	  rat_format = true;
-	  std::ostringstream buf;
-	  args(0).print (buf);
-	  retval = buf.str ();
-	  rat_format = save_rat_format;
+	  octave_value arg = args(0);
+
+	  if (arg.is_numeric_type ())
+	    {
+	      unwind_protect_bool (rat_format);
+
+	      rat_format = true;
+
+	      std::ostringstream buf;
+	      args(0).print (buf);
+	      std::string s = buf.str ();
+
+	      std::list<std::string> lst;
+
+	      size_t n = 0;
+	      size_t s_len = s.length ();
+
+	      while (n < s_len)
+		{
+		  size_t m = s.find ('\n',  n);
+
+		  if (m == NPOS)
+		    {
+		      lst.push_back (s.substr (n));
+		      break;
+		    }
+		  else
+		    {
+		      lst.push_back (s.substr (n, m - n));
+		      n = m + 1;
+		    }
+		}
+
+	      retval = string_vector (lst);
+	    }
+	  else
+	    error ("rats: expecting numeric input");
 	}
       else
 	print_usage ();
     }
 
-  rat_string_len = -1;
+  unwind_protect::run_frame ("Frats");
+
   return retval;
 }
 

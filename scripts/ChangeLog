@@ -1,3 +1,8 @@
+2007-07-27  John W. Eaton  <jwe@octave.org>
+
+	* plot/drawnow.m: Only set default value for term if GNUTERM is
+	not set in the environment.
+
 2007-07-25  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in, audio/Makefile.in, control/Makefile.in,

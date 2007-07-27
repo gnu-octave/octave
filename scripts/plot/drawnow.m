@@ -109,17 +109,19 @@ function plot_stream = open_gnuplot_stream (h, term, file)
 
       ## Guess the terminal type.
       term = getenv ("GNUTERM");
-      if (isempty (term) && ! isempty (getenv ("DISPLAY")))
-        term = "x11";
-      elseif (! isunix ())
-        term = "windows";
-      else
-        term = "aqua";
-        ## This should really be checking for os x before setting
-        ## the terminal type to aqua, but nobody will notice because
-        ## every other unix will be using x11 and windows will be
-        ## using windows.  Those diehards still running octave from
-        ## a linux console know how to set the GNUTERM variable.
+      if (isempty (term))
+	if (! isempty (getenv ("DISPLAY")))
+          term = "x11";
+	elseif (! isunix ())
+          term = "windows";
+	else
+	  ## This should really be checking for os x before setting
+	  ## the terminal type to aqua, but nobody will notice because
+	  ## every other unix will be using x11 and windows will be
+	  ## using windows.  Those diehards still running octave from
+	  ## a linux console know how to set the GNUTERM variable.
+          term = "aqua";
+	endif
       endif
 
       ## If no 'h' (why not?) then open the terminal as Figure 0.

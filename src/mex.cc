@@ -37,14 +37,14 @@ xfree (void *ptr)
   ::free (ptr);
 }
 
-static int
-max_str_len (int m, const char **str)
+static mwSize
+max_str_len (mwSize m, const char **str)
 {
   int max_len = 0;
 
-  for (int i = 0; i < m; i++)
+  for (mwSize i = 0; i < m; i++)
     {
-      int tmp = strlen (str[i]);
+      mwSize tmp = strlen (str[i]);
 
       if (tmp > max_len)
 	max_len = tmp;
@@ -1107,7 +1107,7 @@ public:
   }
 
   // FIXME??
-  mxArray_number (int m, const char **str)
+  mxArray_number (mwSize m, const char **str)
     : mxArray_matlab (mxCHAR_CLASS, m, max_str_len (m, str)),
       pr (calloc (get_number_of_elements (), get_element_size ())),
       pi (0)

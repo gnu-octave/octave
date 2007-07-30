@@ -145,9 +145,10 @@ public:
 
   mxArray (const char *str);
 
-  mxArray (int m, const char **str);
+  mxArray (mwSize m, const char **str);
 
-  mxArray (mxClassID id, mwSize m, mwSize n, int nzmax, mxComplexity flag = mxREAL);
+  mxArray (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
+	   mxComplexity flag = mxREAL);
 
   mxArray (mwSize ndims, const mwSize *dims, int num_keys, const char **keys);
 
@@ -280,7 +281,7 @@ public:
 
   virtual int get_field_number (const char *key) const { DO_MUTABLE_METHOD (int, get_field_number (key)); }
 
-  virtual int get_string (char *buf, int buflen) const { return rep->get_string (buf, buflen); }
+  virtual int get_string (char *buf, mwSize buflen) const { return rep->get_string (buf, buflen); }
 
   virtual char *array_to_string (void) const { return rep->array_to_string (); }
 

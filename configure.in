@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.569 $)
+AC_REVISION($Revision: 1.570 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -582,32 +582,28 @@ AC_ARG_WITH(glpk,
   with_glpk=$withval, with_glpk=yes)
 
 glpk_lib=
-glpk_missing=no
 if test "$with_glpk" = yes; then
   glpk_lib="glpk"
 elif test "$with_glpk" != no; then
   glpk_lib="$with_glpk"
-else
-  glpk_missing=yes
 fi
 
 GLPK_LIBS=
 if test -n "$glpk_lib"; then
-  AC_CHECK_LIB($glpk_lib, glp_lpx_simplex, [
-    GLPK_LIBS="-l$glpk_lib"
-    AC_DEFINE(GLPK_PRE_4_14, 1, [Define if GLPK version is less than 4.14.])], [
-    AC_CHECK_LIB($glpk_lib, _glp_lpx_simplex, [GLPK_LIBS="-l$glpk_lib"], [])])
-  if test -n "$GLPK_LIBS"; then
-    AC_CHECK_HEADERS([glpk/glpk.h glpk.h], [
-      glpk_missing=no
+  AC_CHECK_HEADERS([glpk/glpk.h glpk.h], [
+    AC_CHECK_LIB($glpk_lib, glp_lpx_simplex, [
       GLPK_LIBS="-l$glpk_lib"
-      AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])], [
-        GLPK_LIBS=
-        glpk_missing=yes])
-  fi
+      AC_DEFINE(GLPK_PRE_4_14, 1, [Define if GLPK version is less than 4.14.])], [
+        AC_CHECK_LIB($glpk_lib, _glp_lpx_simplex, [
+          GLPK_LIBS="-l$glpk_lib"], [])])
+
+    if test -n "$GLPK_LIBS"; then
+      AC_DEFINE(HAVE_GLPK, 1, [Define if GLPK is available.])
+    fi
+    break])
 fi
 AC_SUBST(GLPK_LIBS)
-if test "$glpk_missing" = yes; then
+if test -z "$GLPK_LIBS"; then
   warn_glpk="GLPK library not found.  The glpk function for solving linear programs will be disabled."
 fi
 

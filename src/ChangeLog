@@ -1,3 +1,14 @@
+2007-07-30  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mxArray_number::mxArray_number (int, const char **)):
+	First arg is now mwSize.
+	(max_str_len): Return mwSize value, not int.
+	* mxarray.h.in (mxArray::mxArray (int, const char **)):
+	First arg is now mwSize.
+	(mxArray::mxArray (mxClassID, mwSize, mwSize, int, mxComplexity)):
+	Third arg is now mwSize.
+	(mxArray::get_string (char *, int)): Second arg is now mwSize.
+
 2007-07-26  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__glpk__.cc: Include glpk/glpk.h if

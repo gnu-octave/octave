@@ -1,3 +1,8 @@
+2007-08-10  Peter A. Gustafson  <petegus@umich.edu>
+
+	* graphics.h, graphics.cc (axes::axes_properties): New properties,
+	xaxislocation and yaxislocation.
+
 2007-08-10  Kai Habel  <kai.habel@gmx.de>
 
 	* graphics.cc, graphics.h (patch): New class.

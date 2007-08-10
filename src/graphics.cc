@@ -977,6 +977,8 @@ axes::axes_properties::axes_properties (const graphics_handle& mh,
     xdir ("normal"),
     ydir ("normal"),
     zdir ("normal"),
+    xaxislocation ("bottom"),
+    yaxislocation ("left"),
     view (),
     visible ("on"),
     nextplot ("replace"),
@@ -1174,6 +1176,10 @@ axes::axes_properties::set (const property_name& name, const octave_value& val)
     ydir = val;
   else if (name.compare ("zdir"))
     zdir = val;
+  else if (name.compare ("xaxislocation"))
+    xaxislocation = val;
+  else if (name.compare ("yaxislocation"))
+    yaxislocation = val;
   else if (name.compare ("view"))
     view = val;
   else if (name.compare ("visible"))
@@ -1246,6 +1252,8 @@ axes::axes_properties::set_defaults (base_graphics_object& obj,
   xdir = "normal";
   ydir = "normal";
   zdir = "normal";
+  xaxislocation = "left";
+  yaxislocation = "bottom";
 
   Matrix tview (1, 2, 0.0);
   tview(1) = 90;
@@ -1336,6 +1344,8 @@ axes::axes_properties::get (void) const
   m.assign ("xdir", xdir);
   m.assign ("ydir", ydir);
   m.assign ("zdir", zdir);
+  m.assign ("xaxislocation", xaxislocation);
+  m.assign ("yaxislocation", yaxislocation);
   m.assign ("view", view);
   m.assign ("visible", visible);
   m.assign ("nextplot", nextplot);
@@ -1463,6 +1473,10 @@ axes::axes_properties::get (const property_name& name) const
     retval = ydir;
   else if (name.compare ("zdir"))
     retval = zdir;
+  else if (name.compare ("xaxislocation"))
+    retval = xaxislocation;
+  else if (name.compare ("yaxislocation"))
+    retval = yaxislocation;
   else if (name.compare ("view"))
     retval = view;
   else if (name.compare ("visible"))
@@ -1566,6 +1580,8 @@ property_list::pval_map_type axes::axes_properties::factory_defaults (void)
   m["xdir"] = "normal";
   m["ydir"] = "normal";
   m["zdir"] = "normal";
+  m["xaxislocation"] = "bottom";
+  m["yaxislocation"] = "left";
 
   Matrix tview (1, 2, 0.0);
   tview(1) = 90;

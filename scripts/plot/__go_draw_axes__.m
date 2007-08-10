@@ -117,16 +117,31 @@ function __go_draw_axes__ (h, plot_stream)
       endif
     endif
 
-    if (strcmpi (axis_obj.xgrid, "on"))
-      fputs (plot_stream, "set grid xtics;\n");
+    if (strcmpi (axis_obj.xaxislocation, "top"))
+      xaxisloc = "x2";
+      xaxisloc_using = "x2";
     else
-      fputs (plot_stream, "set grid noxtics;\n");
+      xaxisloc = "x";
+      xaxisloc_using = "x1";
+    endif
+    if (strcmpi (axis_obj.yaxislocation, "right"))
+      yaxisloc = "y2";
+      yaxisloc_using = "y2";
+    else
+      yaxisloc = "y";
+      yaxisloc_using = "y1";
+    endif
+
+    if (strcmpi (axis_obj.xgrid, "on"))
+      fprintf (plot_stream, "set grid %stics;\n", xaxisloc);
+    else
+      fprintf (plot_stream, "set grid no%stics;\n", xaxisloc);
     endif
 
     if (strcmpi (axis_obj.ygrid, "on"))
-      fputs (plot_stream, "set grid ytics;\n");
+      fprintf (plot_stream, "set grid %stics;\n", yaxisloc);
     else
-      fputs (plot_stream, "set grid noytics;\n");
+      fprintf (plot_stream, "set grid no%stics;\n", yaxisloc);
     endif
 
     if (strcmpi (axis_obj.zgrid, "on"))
@@ -136,17 +151,17 @@ function __go_draw_axes__ (h, plot_stream)
     endif
 
     if (strcmpi (axis_obj.xminorgrid, "on"))
-      fputs (plot_stream, "set mxtics 5;\n");
-      fputs (plot_stream, "set grid mxtics;\n");
+      fprintf (plot_stream, "set m%stics 5;\n", xaxisloc);
+      fprintf (plot_stream, "set grid m%stics;\n", xaxisloc);
     else
-      fputs (plot_stream, "set grid nomxtics;\n");
+      fprintf (plot_stream, "set grid nom%stics;\n", xaxisloc);
     endif
 
     if (strcmpi (axis_obj.yminorgrid, "on"))
-      fputs (plot_stream, "set mytics 5;\n");
-      fputs (plot_stream, "set grid mytics;\n");
+      fprintf (plot_stream, "set m%stics 5;\n", yaxisloc);
+      fprintf (plot_stream, "set grid m%stics;\n", yaxisloc);
     else
-      fputs (plot_stream, "set grid nomytics;\n");
+      fprintf (plot_stream, "set grid nom%stics;\n", yaxisloc);
     endif
 
     if (strcmpi (axis_obj.zminorgrid, "on"))
@@ -160,16 +175,16 @@ function __go_draw_axes__ (h, plot_stream)
 
     xlogscale = strcmpi (axis_obj.xscale, "log");
     if (xlogscale)
-      fputs (plot_stream, "set logscale x;\n");
+      fprintf (plot_stream, "set logscale %s;\n", xaxisloc);
     else
-      fputs (plot_stream, "unset logscale x;\n");
+      fprintf (plot_stream, "unset logscale %s;\n", xaxisloc);
     endif
 
     ylogscale = strcmpi (axis_obj.yscale, "log");
     if (ylogscale)
-      fputs (plot_stream, "set logscale y;\n");
+      fprintf (plot_stream, "set logscale %s;\n", yaxisloc);
     else
-      fputs (plot_stream, "unset logscale y;\n");
+      fprintf (plot_stream, "unset logscale %s;\n", yaxisloc);
     endif
 
     zlogscale = strcmpi (axis_obj.zscale, "log");
@@ -397,14 +412,16 @@ function __go_draw_axes__ (h, plot_stream)
 		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
 	      endif
 	      data{data_idx} = [xdat, ydat]';
-	      usingclause{data_idx} = "using ($1):($2)";
+	      usingclause{data_idx} = sprintf ("using ($1):($2) axes %s%s",
+					      xaxisloc_using, yaxisloc_using);
 	    endif
 	  endif
 	  if (! (have_newer_gnuplot || isempty (with)))
 	    if (isempty (withclause{data_idx}))
-	      withclause{data_idx} = sprintf("with %s", with);
+	      withclause{data_idx} = sprintf ("with %s", with);
 	    else
-	      withclause{data_idx} = sprintf("%s %s", withclause{data_idx}, with);
+	      withclause{data_idx} = sprintf ("%s %s", withclause{data_idx},
+					      with);
 	    endif
 	  endif
 
@@ -468,10 +485,10 @@ function __go_draw_axes__ (h, plot_stream)
            if (strncmp (obj.edgecolor, "none", 4))
              color = [1, 1, 1];
            elseif (strncmp (obj.edgecolor, "flat", 4))
-             warning("\"flat\" for edgecolor not supported");
+             warning ("\"flat\" for edgecolor not supported");
              color = [0, 0, 0];
            elseif (strncmp (obj.edgecolor, "interp", 6))
-             warning("\"interp\" for edgecolor not supported");
+             warning ("\"interp\" for edgecolor not supported");
              color = [0, 0, 0];
            else
 	     color = obj.edgecolor;
@@ -620,7 +637,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       xdir = "noreverse";
     endif
-    fprintf (plot_stream, "set xrange [%g:%g] %s;\n", xlim, xdir);
+    fprintf (plot_stream, "set %srange [%g:%g] %s;\n", xaxisloc, xlim, xdir);
 
     if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
@@ -633,7 +650,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       ydir = "noreverse";
     endif
-    fprintf (plot_stream, "set yrange [%g:%g] %s;\n", ylim, ydir);
+    fprintf (plot_stream, "set %srange [%g:%g] %s;\n", yaxisloc, ylim, ydir);
 
     if (nd == 3)
       if (zautoscale && have_data)
@@ -997,10 +1014,28 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
 endfunction
 
 function do_tics (obj, plot_stream)
-  do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	     "x", plot_stream);
-  do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	     "y", plot_stream);
+  if (strcmpi (obj.xaxislocation, "top"))
+    do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
+	       "x2", plot_stream);
+    do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
+	       "x", plot_stream);
+  else
+    do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
+	       "x", plot_stream);
+    do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
+	       "x2", plot_stream);
+  endif
+  if (strcmpi (obj.yaxislocation, "right"))
+    do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
+	       "y2", plot_stream);
+    do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
+	       "y", plot_stream);
+  else
+    do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
+	       "y", plot_stream);
+    do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
+	       "y2", plot_stream);
+  endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zticklabelmode, obj.zticklabel,
 	     "z", plot_stream);
 endfunction

@@ -1,3 +1,8 @@
+2007-08-10  Peter A. Gustafson  <petegus@umich.edu>
+
+	* plot/__go_draw_axes__.m: Add axes position to the usingclause,
+	use axes position in each appropriate gnuplot set statement.
+
 2007-08-10  John W. Eaton  <jwe@octave.org>
 
 	* image/Makefile.in (DISTFILES): Also include $(IMAGES) in the list.

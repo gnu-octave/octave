@@ -28,13 +28,10 @@ SOURCES = __img__.m __img_via_file__.m autumn.m bone.m brighten.m colormap.m \
 
 IMAGES = default.img
 
-DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES) $(IMAGES))
 
 FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
-
-IMAGE_FILES = $(wildcard $(srcdir)/*.img)
-IMAGE_FILES_NO_DIR = $(notdir $(IMAGE_FILES))
 
 all: PKG_ADD
 .PHONY: all
@@ -42,7 +39,7 @@ all: PKG_ADD
 install install-strip:
 	$(do-script-install)
 	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(imagedir)
-	for f in $(IMAGE_FILES_NO_DIR); do \
+	for f in $(IMAGES); do \
 	  rm -f $(DESTDIR)$(imagedir)/$$f; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(imagedir)/$$f; \
 	done
@@ -51,7 +48,7 @@ install install-strip:
 
 uninstall:
 	$(do-script-uninstall)
-	for f in $(IMAGE_FILES_NO_DIR); \
+	for f in $(IMAGES); \
 	  do rm -f $(DESTDIR)$(imagedir)/$$f; \
 	done
 .PHONY: uninstall

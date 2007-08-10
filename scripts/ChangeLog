@@ -1,3 +1,10 @@
+2007-08-10  John W. Eaton  <jwe@octave.org>
+
+	* image/Makefile.in (DISTFILES): Also include $(IMAGES) in the list.
+	(install install-strip): Use $(IMAGES), not $(IMAGE_FILES_NO_DIR).
+	(uninstall): Use $(IMAGES), not $(IMAGE_FILES_NO_DIR).
+	(IMAGE_FILES, IMAGE_FILES_NO_DIR): Delete obsolete variables.
+
 2007-08-10  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/patch.m, plot/__patch__.m: New files.

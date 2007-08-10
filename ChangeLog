@@ -1,3 +1,7 @@
+2007-08-10  Søren Hauberg  <hauberg@gmail.com>
+
+	* ROADMAP: Update for current sources.
+
 2007-07-26  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Also look for glpk/glpk.h.
@@ -318,7 +322,7 @@
 	* Makeconf.in (simple-move-if-change-rule,
 	(builddir-move-if-change-rule): New macros.
 
-2006-11-11  Soren Hauberg  <soren@hauberg.org>
+2006-11-11  Søren Hauberg  <hauberg@gmail.com>
 
 	* examples/Makefile.in (uninstall): Add missing semicolon.
 
@@ -528,7 +532,7 @@
 2006-09-27  John W. Eaton  <jwe@octave.org>
 
 	* mkoctfile.in [--mex]: Include -I. in incflags.
-	From Soren Hauberg <soren@hauberg.org>.
+	From Søren Hauberg <hauberg@gmail.com>.
 
 2006-09-26  John W. Eaton  <jwe@octave.org>
 
@@ -910,7 +914,7 @@
 	* configure.in: Use it.
 	* Makeconf.in: Substitute DESKTOP_FILE_INSTALL.
 
-	* octave.desktop.in: New file.  From Soren Hauberg <soren@hauberg.org>.
+	* octave.desktop.in: New file.  From Søren Hauberg <hauberg@gmail.com>.
 	* examples/Makefile.in (SOURCES): Add it to the list.
 	(octave.desktop): New target.
 	(all): Depend on octave.desktop.

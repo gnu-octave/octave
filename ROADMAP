@@ -1,58 +1,63 @@
 Here is an attempt at a simple explanation of the directory layout for
 Octave's source files.
 
+  dlfcn         -- dlopen, dlsym, dlerror, and dlclose for AIX
+
   doc           -- Texinfo documentation for Octave
 
   emacs         -- Emacs lisp stuff
 
   examples      -- some example files
 
-  glob          -- filename globbing functions
-
-  info          -- a modified version of the GNU Info reader
-
-  kpathsea      -- Karl Berry's path searching library
-
   libcruft      -- various numerical libraries (mostly Fortran)
+    amos           * bessel functions
     blas           * basic linear algebra subroutines
+    blas-xtra      * wrappers for blas functions used in Octave
+    daspk          * large scale differential algebraic equation solver
+    dasrt          * differential algebraic equation solver with root finding
     dassl          * differential-algebraic system solver
     fftpack        * subroutines for fast fourier transforms
     lapack         * linear algebra package
-    linpack        * linear algebra package
+    lapack-xtra    * wrappers for lapack functions used in Octave
     minpack        * nonlinear equation solver
     misc           * miscellaneous utilities
     odepack        * odinary differential equation solver
     ordered-qz     * code for ordering eigenvalues for QZ factorization
     quadpack       * subroutines for numerical integration
     ranlib         * random number generators
+    slatec-err     * slatec error handling library
     slatec-fn      * various special function subroutines
     villad         * subroutines for orthogonal collocation weights
 
   liboctave     -- the C++ interfaces to the numerical libraries and
-                   various OS facilities.
-
-  make          -- configuration and makefile stuff for kpathsea
-
-  readline      -- GNU readline library (from bash), slightly modified
+                   various OS facilities
 
   scripts       -- functions written in the Octave language
     audio          * play and record sound files (system dependent)
     control        * control theory
+    deprecated     * older deprecated functions
     elfun          * elementary mathematical functions
+    finance        * financial functions
     general        * utility functions
     image          * image processing
     io             * input/output functions
     linear-algebra * linear algebra stuff
     miscellaneous  * stuff that doesn't fit anywhere else
+    optimization   * optimizers
+    path           * functions for path handling
+    pkg            * the package manager
     plot           * plotting
     polynomial     * polynomial manipulation
+    quaternion     * quaternions
     set            * set manipulation
     signal         * signal processing
+    sparse         * sparse matrix support
     specfun        * special mathematical functions
     special-matrix * functions for generating special types of matrices
     startup        * initialization functions
     statistics     * statistical stuff
     strings        * character string manipulation
+    testfun        * unit testing
     time           * time and date functions
 
   src           -- the interpreter itself

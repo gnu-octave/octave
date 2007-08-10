@@ -1,3 +1,9 @@
+2007-08-10  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.cc (tree_index_expression::get_struct_index): Improve
+	error message.
+	* ov-struct.cc (Fstruct, Fcell2struct): Trap invalid field names here.
+
 2007-08-10  Peter A. Gustafson  <petegus@umich.edu>
 
 	* graphics.h, graphics.cc (axes::axes_properties): New properties,

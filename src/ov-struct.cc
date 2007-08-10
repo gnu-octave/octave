@@ -35,6 +35,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-list.h"
 #include "ov-struct.h"
 #include "unwind-prot.h"
+#include "utils.h"
 #include "variables.h"
 
 #include "Array-util.h"
@@ -616,6 +617,12 @@ array with the specified field names.\n\
       if (error_state)
 	return retval;
 
+      if (! valid_identifier (key))
+	{
+	  error ("struct: invalid structure field name `%s'", key.c_str ());
+	  return retval;
+	}
+
       // Value may be v, { v }, or { v1, v2, ... }
       // In the first two cases, we need to create a cell array of
       // the appropriate dimensions filled with v.  In the last case, 
@@ -939,6 +946,13 @@ A(1)\n\
 
 			      if (error_state)
 				return retval;
+			    }
+
+			  if (! valid_identifier (field_str))
+			    {
+			      error ("cell2struct: invalid field name `%s'",
+				     field_str.c_str ());
+			      break;
 			    }
 
 			  map.reshape (value_dv);

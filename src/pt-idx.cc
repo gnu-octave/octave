@@ -204,7 +204,7 @@ tree_index_expression::get_struct_index
 	      fn = t.string_value ();
 
 	      if (! valid_identifier (fn))
-		::error ("invalid structure field name");
+		::error ("invalid structure field name `%s'", fn.c_str ());
 	    }
 	}
       else

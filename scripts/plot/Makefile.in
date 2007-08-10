@@ -33,6 +33,7 @@ SOURCES = \
   __gnuplot_version__.m \
   __line__.m \
   __next_line_color__.m \
+  __patch__.m \
   __plr1__.m \
   __plr2__.m \
   __plt1__.m \
@@ -77,6 +78,7 @@ SOURCES = \
   ndgrid.m \
   newplot.m \
   orient.m \
+  patch.m \
   peaks.m \
   plot.m \
   plot3.m \

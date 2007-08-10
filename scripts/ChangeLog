@@ -1,3 +1,13 @@
+2007-08-10  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/patch.m, plot/__patch__.m: New files.
+	* plot/Makefile.in (SOURCES): Add them to the list.
+
+2007-08-07  John W. Eaton  <jwe@octave.org>
+
+	* path/savepath.m: Use single quotes for argument to PATH command
+	that is inserted in file.
+
 2007-07-27  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow.m: Only set default value for term if GNUTERM is

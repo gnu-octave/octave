@@ -245,7 +245,7 @@ property_list::set (const property_name& name, const octave_value& val)
 	{
 	  pfx = name.substr (0, 5);
 
-	  if (pfx.compare ("image"))
+	  if (pfx.compare ("image") || pfx.compare ("patch"))
 	    offset = 5;
 	  else if (len > 6)
 	    {
@@ -318,7 +318,7 @@ property_list::lookup (const property_name& name) const
 	{
 	  pfx = name.substr (0, 5);
 
-	  if (pfx.compare ("image"))
+	  if (pfx.compare ("image") || pfx.compare ("patch"))
 	    offset = 5;
 	  else if (len > 6)
 	    {
@@ -945,9 +945,11 @@ axes::axes_properties::axes_properties (const graphics_handle& mh,
     xlim (),
     ylim (),
     zlim (),
+    clim (),
     xlimmode ("auto"),
     ylimmode ("auto"),
     zlimmode ("auto"),
+    climmode ("auto"),
     xlabel (octave_NaN),
     ylabel (octave_NaN),
     zlabel (octave_NaN),
@@ -985,6 +987,9 @@ axes::axes_properties::axes_properties (const graphics_handle& mh,
   xlim = tlim;
   ylim = tlim;
   zlim = tlim;
+  Matrix cl (1, 2, 0);
+  cl(1) = 1;
+  clim = cl;
 
   Matrix tview (1, 2, 0.0);
   tview(1) = 90;
@@ -1054,12 +1059,19 @@ axes::axes_properties::set (const property_name& name, const octave_value& val)
       zlim = val;
       zlimmode = "manual";
     }
+  else if (name.compare ("clim"))
+    {
+      clim = val;
+      climmode = "manual";
+    }
   else if (name.compare ("xlimmode"))
     xlimmode = val;
   else if (name.compare ("ylimmode"))
     ylimmode = val;
   else if (name.compare ("zlimmode"))
     zlimmode = val;
+  else if (name.compare ("climmode"))
+    climmode = val;
   else if (name.compare ("xlabel"))
     {
       graphics_handle h = ::reparent (val, "set", "xlabel",
@@ -1198,10 +1210,15 @@ axes::axes_properties::set_defaults (base_graphics_object& obj,
   xlim = tlim;
   ylim = tlim;
   zlim = tlim;
-
+  
+  Matrix cl (1, 2, 0);
+  cl(1) = 1;
+  clim = cl;
+  
   xlimmode = "auto";
   ylimmode = "auto";
   zlimmode = "auto";
+  climmode = "auto";
   xlabel = octave_NaN;
   ylabel = octave_NaN;
   zlabel = octave_NaN;
@@ -1287,9 +1304,11 @@ axes::axes_properties::get (void) const
   m.assign ("xlim", xlim);
   m.assign ("ylim", ylim);
   m.assign ("zlim", zlim);
+  m.assign ("clim", clim);
   m.assign ("xlimmode", xlimmode);
   m.assign ("ylimmode", ylimmode);
   m.assign ("zlimmode", zlimmode);
+  m.assign ("climmode", climmode);
   m.assign ("xlabel", xlabel);
   m.assign ("ylabel", ylabel);
   m.assign ("zlabel", zlabel);
@@ -1365,12 +1384,16 @@ axes::axes_properties::get (const property_name& name) const
     retval = ylim;
   else if (name.compare ("zlim"))
     retval = zlim;
+  else if (name.compare ("clim"))
+    retval = clim;
   else if (name.compare ("xlimmode"))
     retval = xlimmode;
   else if (name.compare ("ylimmode"))
     retval = ylimmode;
   else if (name.compare ("zlimmode"))
     retval = zlimmode;
+  else if (name.compare ("climmode"))
+    retval = climmode;
   else if (name.compare ("xlabel"))
     {
       if (xisnan (xlabel))
@@ -1506,10 +1529,16 @@ property_list::pval_map_type axes::axes_properties::factory_defaults (void)
   m["xlim"] = tlim;
   m["ylim"] = tlim;
   m["zlim"] = tlim;
+  
+  Matrix cl(1, 2, 0);
+  cl(1) = 1;
+  
+  m["clim"] = cl;
 
   m["xlimmode"] = "auto";
   m["ylimmode"] = "auto";
   m["zlimmode"] = "auto";
+  m["climmode"] = "auto";
   m["xlabel"] = octave_NaN;
   m["ylabel"] = octave_NaN;
   m["zlabel"] = octave_NaN;
@@ -1952,6 +1981,173 @@ std::string image::image_properties::go_name ("image");
 
 // ---------------------------------------------------------------------
 
+patch::patch_properties::patch_properties (const graphics_handle& mh,
+					   const graphics_handle& p)
+  : base_properties (go_name, mh, p),
+    cdata (Matrix ()),
+    xdata (Matrix ()),
+    ydata (Matrix ()),
+    zdata (Matrix ()),
+    facecolor (radio_values("{flat}|none|interp")),
+    facealpha (1.0),
+    edgecolor (color_values(0, 0, 0), radio_values("flat|none|interp")),
+    linestyle ("-"),
+    linewidth (0.5),
+    marker ("none"),
+    markeredgecolor ("auto"),
+    markerfacecolor ("none"),
+    markersize (1)
+{ }
+
+void
+patch::patch_properties::set (const property_name& name,
+			      const octave_value& val)
+{
+  bool modified = true;
+
+  if (name.compare ("parent"))
+    set_parent (val);
+  else if (name.compare ("children"))
+    children = maybe_set_children (children, val);
+  else if (name.compare ("__modified__"))
+    {
+      __modified__ = val.bool_value ();
+      modified = false;
+    }
+  else if (name.compare ("cdata"))
+    cdata = val;
+  else if (name.compare ("xdata"))
+    xdata = val;
+  else if (name.compare ("ydata"))
+    ydata = val;
+  else if (name.compare ("zdata"))
+    zdata = val;
+  else if (name.compare ("facecolor"))
+    facecolor = val;
+  else if (name.compare ("facealpha"))
+    facealpha = val;
+  else if (name.compare ("edgecolor"))
+    edgecolor = val;
+  else if (name.compare ("linestyle"))
+    linestyle = val;
+  else if (name.compare ("linewidth"))
+    linewidth = val;
+  else if (name.compare ("marker"))
+    marker = val;
+  else if (name.compare ("markeredgecolor"))
+    markeredgecolor = val;
+  else if (name.compare ("markerfacecolor"))
+    markerfacecolor = val;
+  else if (name.compare ("markersize"))
+    markersize = val;
+
+  else
+    {
+      modified = false;
+      warning ("set: invalid property `%s'", name.c_str ());
+    }
+
+  if (modified)
+    mark_modified ();
+}
+
+octave_value
+patch::patch_properties::get (void) const
+{
+  Octave_map m;
+
+  m.assign ("type", type);
+  m.assign ("parent", parent);
+  m.assign ("children", children);
+  m.assign ("__modified__", __modified__);
+  m.assign ("cdata", cdata);
+  m.assign ("xdata", xdata);
+  m.assign ("ydata", ydata);
+  m.assign ("zdata", zdata);
+  m.assign ("facecolor", facecolor);
+  m.assign ("facealpha", facealpha);
+  m.assign ("edgecolor", edgecolor);
+  m.assign ("linestyle", linestyle);
+  m.assign ("linewidth", linewidth);
+  m.assign ("marker", marker);
+  m.assign ("markeredgecolor", markeredgecolor);
+  m.assign ("markerface", markerfacecolor);
+  m.assign ("markersize", markersize);
+
+  return m;
+}
+
+octave_value
+patch::patch_properties::get (const property_name& name) const
+{
+  octave_value retval;
+
+  if (name.compare ("type"))
+    retval = type;
+  else if (name.compare ("parent"))
+    retval = parent;
+  else if (name.compare ("children"))
+    retval = children;
+  else if (name.compare ("__modified__"))
+    retval = __modified__;
+  else if (name.compare ("cdata"))
+    retval = cdata;
+  else if (name.compare ("xdata"))
+    retval = xdata;
+  else if (name.compare ("ydata"))
+    retval = ydata;
+  else if (name.compare ("zdata"))
+    retval = zdata;
+  else if (name.compare ("facecolor"))
+    retval = facecolor;
+  else if (name.compare ("facealpha"))
+    retval = facecolor;
+  else if (name.compare ("egdecolor"))
+    retval = edgecolor;
+  else if (name.compare ("linestyle"))
+    retval = linestyle;
+  else if (name.compare ("linewidth"))
+    retval = linewidth;
+  else if (name.compare ("marker"))
+    retval = marker;
+  else if (name.compare ("markeredgecolor"))
+    retval = markeredgecolor;
+  else if (name.compare ("markerfacecolor"))
+    retval = markerfacecolor;
+  else if (name.compare ("markersize"))
+    retval = markersize;
+  else
+    warning ("get: invalid property `%s'", name.c_str ());
+
+  return retval;
+}
+
+property_list::pval_map_type patch::patch_properties::factory_defaults (void)
+{
+  property_list::pval_map_type m;
+
+  m["cdata"] = Matrix ();
+  m["xdata"] = Matrix ();
+  m["ydata"] = Matrix ();
+  m["zdata"] = Matrix ();
+  m["facecolor"] = color_property();
+  m["facealpha"] = 1.0;
+  m["edgecolor"] = color_property("black");
+  m["linestyle"] = "-";
+  m["linewidth"] = 0.5;
+  m["marker"] = "none";
+  m["markeredgecolor"] = "auto";
+  m["markerfacecolor"] = "none";
+  m["markersize"] = 1;
+
+
+  return m;
+}
+
+std::string patch::patch_properties::go_name ("patch");
+
+// ---------------------------------------------------------------------
+
 surface::surface_properties::surface_properties (const graphics_handle& mh,
 						 const graphics_handle& p)
   : base_properties (go_name, mh, p),
@@ -2096,9 +2292,10 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
     go = new text (h, p);
   else if (go_name == "image")
     go = new image (h, p);
+  else if (go_name == "patch")
+    go = new patch (h, p);
   else if (go_name == "surface")
     go = new surface (h, p);
-
   if (go)
     handle_map[h] = graphics_object (go);
   else
@@ -2151,6 +2348,7 @@ root_figure::init_factory_properties (void)
   plist_map["line"] = line::line_properties::factory_defaults ();
   plist_map["text"] = text::text_properties::factory_defaults ();
   plist_map["image"] = image::image_properties::factory_defaults ();
+  plist_map["patch"] = patch::patch_properties::factory_defaults ();
   plist_map["surface"] = surface::surface_properties::factory_defaults ();
 
   return plist_map;
@@ -2438,6 +2636,15 @@ Create a surface graphics object.\n\
 @end deftypefn")
 {
   GO_BODY (surface);
+}
+
+DEFUN (__go_patch__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_patch__ (@var{parent})\n\
+Create a patch graphics object.\n\
+@end deftypefn")
+{
+  GO_BODY (patch);
 }
 
 DEFUN (__go_delete__, args, ,

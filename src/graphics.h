@@ -1179,9 +1179,11 @@ public:
     OCTAVE_GRAPHICS_PROPERTY (octave_value, xlim);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, ylim);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, zlim);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, clim);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, xlimmode);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, ylimmode);
     OCTAVE_GRAPHICS_PROPERTY (octave_value, zlimmode);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, climmode);
     OCTAVE_GRAPHICS_MUTABLE_PROPERTY (graphics_handle, xlabel);
     OCTAVE_GRAPHICS_MUTABLE_PROPERTY (graphics_handle, ylabel);
     OCTAVE_GRAPHICS_MUTABLE_PROPERTY (graphics_handle, zlabel);
@@ -1539,6 +1541,99 @@ public:
   }
 
   ~image (void) { properties.delete_children (); }
+
+  std::string type (void) const { return properties.graphics_object_name (); }
+
+  void mark_modified (void) { properties.mark_modified (); }
+
+  void override_defaults (base_graphics_object& obj)
+  {
+    // Allow parent (figure) to override first (properties knows how
+    // to find the parent object).
+    properties.override_defaults (obj);
+  }
+
+  void set_from_list (property_list& plist)
+  {
+    properties.set_from_list (*this, plist);
+  }
+
+  void set (const property_name& name, const octave_value& val)
+  {
+    properties.set (name, val);
+  }
+
+  octave_value get (void) const
+  {
+    return properties.get ();
+  }
+
+  octave_value get (const property_name& name) const
+  {
+    return properties.get (name);
+  }
+
+  graphics_handle get_parent (void) const { return properties.get_parent (); }
+
+  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+
+  void adopt (const graphics_handle& h) { properties.adopt (h); }
+
+  void reparent (const graphics_handle& h) { properties.reparent (h); }
+
+  bool valid_object (void) const { return true; }
+};
+
+// ---------------------------------------------------------------------
+
+class patch : public base_graphics_object
+{
+public:
+  class patch_properties : public base_properties
+  {
+  public:
+    patch_properties (const graphics_handle& mh, const graphics_handle& p);
+
+    ~patch_properties (void) { }
+
+    void set (const property_name& name, const octave_value& val);
+
+    octave_value get (void) const;
+
+    octave_value get (const property_name& name) const;
+
+    std::string graphics_object_name (void) const { return go_name; }
+
+    static property_list::pval_map_type factory_defaults (void);
+
+  private:
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, cdata);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, xdata);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, ydata);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, zdata);
+    OCTAVE_GRAPHICS_PROPERTY (color_property, facecolor);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, facealpha);
+    OCTAVE_GRAPHICS_PROPERTY (color_property, edgecolor);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, linestyle);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, linewidth);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, marker);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, markeredgecolor);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, markerfacecolor);
+    OCTAVE_GRAPHICS_PROPERTY (octave_value, markersize);
+
+    static std::string go_name;
+  };
+
+  patch_properties properties;
+
+public:
+  patch (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), properties (mh, p)
+  {
+    properties.override_defaults (*this);
+  }
+
+  ~patch (void) { properties.delete_children (); }
 
   std::string type (void) const { return properties.graphics_object_name (); }
 

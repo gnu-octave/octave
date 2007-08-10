@@ -1,3 +1,10 @@
+2007-08-10  Kai Habel  <kai.habel@gmx.de>
+
+	* graphics.cc, graphics.h (patch): New class.
+	(axes::axes_properties): New properties, clim and climmode.
+	(surface::surface_properties::surface_properties): Handle patch.
+	(F__go_patch__): New function.
+
 2007-07-30  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxArray_number::mxArray_number (int, const char **)):

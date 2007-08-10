@@ -108,7 +108,9 @@ function varargout = savepath (savefile)
     fprintf (fid, "%s\n", pre{i})
   endfor
 
-  fprintf (fid, "%s\n  path (\"%s\");\n%s\n",
+  ## Use single quotes for PATH argument to avoid string escape
+  ## processing.
+  fprintf (fid, "%s\n  path ('%s');\n%s\n",
 	   beginstring, path (), endstring);
 
   for i = 1:length (post)

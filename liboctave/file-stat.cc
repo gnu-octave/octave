@@ -200,6 +200,13 @@ file_stat::update_internal (bool force)
       
       std::string full_file_name = file_ops::tilde_expand (file_name);
 
+#if defined (__WIN32__)
+      // Remove trailing slash.
+      if (file_ops::is_dir_sep (full_file_name[full_file_name.length () - 1])
+          && ! (full_file_name.length() == 3 && full_file_name[1] == ':'))
+        full_file_name.resize (full_file_name.length () - 1);
+#endif
+
       const char *cname = full_file_name.c_str ();
 
       struct stat buf;

@@ -1,3 +1,9 @@
+2007-08-10  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* file-stat.cc (file_stat::update_internal) [__WIN32__]:
+	Remove trailing dir separator when stat'ing directory except for
+	root directory.
+
 2007-07-25  David Bateman  <dbateman@free.fr>
 	
 	* Makefile.in: 	Adjust DISTFILES to allow out of tree "make dist" 

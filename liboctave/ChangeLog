@@ -2,6 +2,7 @@
 
 	* Sparse.cc (Sparse<T>::permute): permutation vector is zero based.
 	Simplify.
+	(Sparse<T>::reshape): Warn about reshaping to N-d array.
 
 2007-08-10  Michael Goffioul <michael.goffioul@gmail.com>
 

@@ -44,10 +44,13 @@ function [xx, yy, zz] = meshgrid (x, y, z)
     y = x;
   endif
 
+  ## Use repmat to ensure that the result values have the same type as
+  ## the arguments.
+
   if (nargout < 3)
     if (isvector (x) && isvector (y))
-      xx = ones (length (y), 1) * x(:).';
-      yy = y(:) * ones (1, length (x));
+      xx = repmat (x(:).', length (y), 1);
+      yy = repmat (y(:), 1, length (x));
     else
       error ("meshgrid: arguments must be vectors");
     endif
@@ -59,11 +62,11 @@ function [xx, yy, zz] = meshgrid (x, y, z)
        lenx = length (x);
        leny = length (y);
        lenz = length (z);
-       xx = repmat (ones (leny, 1) * x(:).', [1, 1, lenz]);
-       yy = repmat (y(:) * ones (1, lenx), [1, 1, lenz]);
+       xx = repmat (repmat (x(:).', leny, 1), [1, 1, lenz]);
+       yy = repmat (repmat (y(:), 1, lenx), [1, 1, lenz]);
        zz = reshape (repmat (z(:).', lenx*leny, 1)(:), leny, lenx, lenz);
     else
-       error ("meshgrid: arguments must be vectors");
+      error ("meshgrid: arguments must be vectors");
     endif
   endif
 

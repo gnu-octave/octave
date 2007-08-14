@@ -780,46 +780,28 @@ template <class T>
 Sparse<T>
 Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
 {
-  dim_vector dv = dims ();
-  dim_vector dv_new;
+  // The only valid permutations of a sparse array are [1, 2] and [2, 1].
 
-  octave_idx_type nd = dv.length ();
+  bool fail = false;
+  bool transpose = false;
 
-  dv_new.resize (nd);
-
-  // Need this array to check for identical elements in permutation array.
-  Array<bool> checked (nd, false);
-
-  // Find dimension vector of permuted array.
-  for (octave_idx_type i = 0; i < nd; i++)
+  if (perm_vec.length () == 2)
     {
-      octave_idx_type perm_el = perm_vec.elem (i);
-
-      if (perm_el > dv.length () || perm_el < 1)
-	{
-	  (*current_liboctave_error_handler)
-	    ("permutation vector contains an invalid element");
-
-	  return Sparse<T> ();
-	}
-
-      if (checked.elem(perm_el - 1))
-	{
-	  (*current_liboctave_error_handler)
-	    ("PERM cannot contain identical elements");
-
-	  return Sparse<T> ();
-	}
+      if (perm_vec(0) == 0 && perm_vec(1) == 1)
+	/* do nothing */;
+      else if (perm_vec(0) == 1 && perm_vec(1) == 0)
+	transpose = true;
       else
-	checked.elem(perm_el - 1) = true;
-
-      dv_new (i) = dv (perm_el - 1);
+	fail = true;
     }
-
-  if (dv_new == dv)
-    return *this;
   else
-    return transpose ();
+    fail = true;
+
+  if (fail)
+    (*current_liboctave_error_handler)
+      ("permutation vector contains an invalid element");
+
+  return transpose ? this->transpose () : *this;
 }
 
 template <class T>

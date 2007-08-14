@@ -1,3 +1,7 @@
+2007-08-13  John W. Eaton  <jwe@octave.org>
+
+	* plot/meshgrid.m: Use repmat instead of multiplication.
+
 2007-08-10  Peter A. Gustafson  <petegus@umich.edu>
 
 	* plot/__go_draw_axes__.m: Add axes position to the usingclause,

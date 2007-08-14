@@ -1,3 +1,8 @@
+2007-08-14  John W. Eaton  <jwe@octave.org>
+
+	* ov-str-mat.cc (octave_char_matrix_str::all_strings):
+	If empty, return a single element string vector containing "".
+
 2007-08-10  John W. Eaton  <jwe@octave.org>
 
 	* pt-idx.cc (tree_index_expression::get_struct_index): Improve

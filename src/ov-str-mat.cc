@@ -229,32 +229,14 @@ octave_char_matrix_str::all_strings (bool) const
 
   if (matrix.ndims () == 2)
     {
-      // FIXME -- is this the best behavior possible?  It does provide
-      // compatible behavior for things like
-      //
-      //   cellstr ("")
-      //   cellstr (char (zeros ((2, 0)))
-      //   cellstr (char (zeros ((0, 2)))
-      //
-      // etc.
+      charMatrix chm = matrix.matrix_value ();
 
-      if (is_empty ())
-	{
-	  retval.resize (1);
+      octave_idx_type n = chm.rows ();
 
-	  retval[0] = "";
-	}
-      else
-	{
-	  charMatrix chm = matrix.matrix_value ();
+      retval.resize (n);
 
-	  octave_idx_type n = chm.rows ();
-
-	  retval.resize (n);
-
-	  for (octave_idx_type i = 0; i < n; i++)
-	    retval[i] = chm.row_as_string (i);
-	}
+      for (octave_idx_type i = 0; i < n; i++)
+	retval[i] = chm.row_as_string (i);
     }
   else
     error ("invalid conversion of charNDArray to string_vector");

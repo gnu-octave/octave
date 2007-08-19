@@ -1,3 +1,7 @@
+2007-08-19  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (Sparse<T>::permute): Avoid shadowing warning.
+
 2007-08-14  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (Sparse<T>::permute): permutation vector is zero based.

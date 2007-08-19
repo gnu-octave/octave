@@ -787,14 +787,14 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
   // The only valid permutations of a sparse array are [1, 2] and [2, 1].
 
   bool fail = false;
-  bool transpose = false;
+  bool trans = false;
 
   if (perm_vec.length () == 2)
     {
       if (perm_vec(0) == 0 && perm_vec(1) == 1)
 	/* do nothing */;
       else if (perm_vec(0) == 1 && perm_vec(1) == 0)
-	transpose = true;
+	trans = true;
       else
 	fail = true;
     }
@@ -805,7 +805,7 @@ Sparse<T>::permute (const Array<octave_idx_type>& perm_vec, bool) const
     (*current_liboctave_error_handler)
       ("permutation vector contains an invalid element");
 
-  return transpose ? this->transpose () : *this;
+  return trans ? this->transpose () : *this;
 }
 
 template <class T>

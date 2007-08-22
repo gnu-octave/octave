@@ -1,3 +1,12 @@
+2007-08-22  David Bateman  <dbateman@free.fr>
+
+	* control/base/nichols.m: Correct for misnamed variable, and ensure
+	outputs are returned only if requested.
+
+2007-08-22  Donald Parsons  <dparsons@brightdsl.net>
+
+	* control/base/nichols.m: Fix typo.
+
 2007-08-13  John W. Eaton  <jwe@octave.org>
 
 	* plot/meshgrid.m: Use repmat instead of multiplication.

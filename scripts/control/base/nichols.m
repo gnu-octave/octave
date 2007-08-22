@@ -82,7 +82,7 @@
 ## and phase information is not computed.
 ## @end deftypefn
 
-function [mag, phase, w] = nichols (sys, w, outputs, inputs)
+function [mag2, phase2, w2] = nichols (sys, w, outputs, inputs)
 
   ## check number of input arguments given
   if (nargin < 1 || nargin > 4)
@@ -111,10 +111,12 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
     ## Plot the information
 
     if (max (mag) > 0)
-      plot (phase, 20 * log10 (mag));
+      md = 20 * log10 (mag);
+      plot (phase, md);
       ylabel ("Gain in dB");
     else
-      plot (phase, mag);
+      md = mag;
+      plot (phase, md);
       ylabel ("Gain |Y/U|")
     endif
 
@@ -131,7 +133,7 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
     if (is_siso (sys))
       title (sprintf ("Nichols plot of |[Y/U]%s|, u=%s, y=%s", tistr,
 		      sysgetsignals (sys, "in", 1, 1),
-		      sysgetsignals (sys, "out", 1, 1));
+		      sysgetsignals (sys, "out", 1, 1)));
     else
       title ([ "||Y(", tistr, ")/U(", tistr, ")||"]);
       printf ("MIMO plot from\n%s\nto\n%s\n", __outlist__ (inname, "    "),
@@ -139,8 +141,10 @@ function [mag, phase, w] = nichols (sys, w, outputs, inputs)
     endif
 
     axis (axis2dlim ([phase(:), md(:)]));
-
-    mag = phase = w = [];
+  else
+    mag2 = mag;
+    phase2 = phase;
+    w2 = w;
   endif
 
 endfunction

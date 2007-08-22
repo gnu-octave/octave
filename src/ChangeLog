@@ -1,3 +1,8 @@
+2007-08-22  David Bateman  <dbateman@free.fr>
+
+	* variables.cc (Fmunlock): Call munlock and not mlock.
+	* symtab.cc (symbol_record::mark_as_formal_parameter): Typo. 
+
 2007-08-10  John W. Eaton  <jwe@octave.org>
 
 	* pt-idx.cc (tree_index_expression::get_struct_index): Improve

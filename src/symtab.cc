@@ -290,7 +290,7 @@ symbol_record::mark_as_formal_parameter (void)
     error ("can't mark global variable `%s' as function parameter",
 	   nm.c_str ());
   else if (is_static ())
-    error ("can't mark static variable `%s' as function paraemter",
+    error ("can't mark static variable `%s' as function parameter",
 	   nm.c_str ());
   else
     formal_param = 1;

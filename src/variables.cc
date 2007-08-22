@@ -1996,7 +1996,7 @@ then unlock the current function.\n\
       octave_user_function *fcn = octave_call_stack::caller_user_function ();
 
       if (fcn)
-        mlock (fcn->name ());
+        munlock (fcn->name ());
       else
         error ("munlock: invalid use outside a function");
     }

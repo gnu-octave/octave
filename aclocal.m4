@@ -474,7 +474,7 @@ else
 fi
 ])
 dnl
-dnl Does gnuplot exist?  Is it a recent version?
+dnl Does gnuplot exist?
 dnl
 AC_DEFUN(OCTAVE_PROG_GNUPLOT, [
 case "$canonical_host_type" in
@@ -487,28 +487,11 @@ case "$canonical_host_type" in
     gp_default=gnuplot
   ;;
 esac
-GNUPLOT_HAS_FRAMES=1
 if test "$cross_compiling" = yes; then
   AC_MSG_RESULT(assuming $GNUPLOT_BINARY exists on $canonical_host_type host)
-  AC_MSG_RESULT(assuming $GNUPLOT_BINARY supports multiple frams)
 else
   AC_CHECK_PROGS(GNUPLOT_BINARY, $gp_names)
-  if test -n "$GNUPLOT_BINARY"; then
-    AC_MSG_CHECKING([to see if your gnuplot supports multiplot])
-    if test -z "`echo 'set term unknown; set multiplot' | \
-      $GNUPLOT_BINARY 2>&1`"; then
-      AC_MSG_RESULT([yes])
-    else
-      AC_MSG_RESULT([no])
-    fi
-    AC_MSG_CHECKING([to see if your gnuplot supports multiple plot windows])
-    if test -z "`echo 'set term x11 2' | $GNUPLOT_BINARY 2>&1`"; then
-      AC_MSG_RESULT([yes])
-    else
-      GNUPLOT_HAS_FRAMES=
-      AC_MSG_RESULT([no])
-    fi
-  else
+  if test -z "$GNUPLOT_BINARY"; then
     warn_gnuplot=yes
 
     GNUPLOT_BINARY="$gp_default"
@@ -531,7 +514,6 @@ else
   fi
 fi
 AC_DEFINE_UNQUOTED(GNUPLOT_BINARY, "$GNUPLOT_BINARY", [Name of gnuplot program.])
-AC_DEFINE_UNQUOTED(GNUPLOT_HAS_FRAMES, $GNUPLOT_HAS_FRAMES, [Define if your gnuplot program supports multiple plot windows.])
 ])
 dnl
 dnl Is gperf installed?

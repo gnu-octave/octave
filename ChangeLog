@@ -1,3 +1,8 @@
+2007-08-23  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* aclocal.m4 (OCTAVE_PROG_GNUPLOT): Drop check for multiple plot
+	windows.
+
 2007-08-10  Søren Hauberg  <hauberg@gmail.com>
 
 	* ROADMAP: Update for current sources.

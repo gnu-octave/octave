@@ -480,7 +480,7 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
   [local_packages, global_packages] = installed_packages (local_list, 
 							  global_list);
 
-  installed_packages = {local_packages{:}, global_packages{:}};        
+  installed_pkgs_lst = {local_packages{:}, global_packages{:}};        
 
   if (global_install)
     packages = global_packages;
@@ -698,12 +698,12 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
       idx = complement (packages_to_uninstall, 1:length(global_packages));
       global_packages = save_order ({global_packages{idx}, descriptions{:}});
       save (global_list, "global_packages");
-      installed_packages = {local_packages{:}, global_packages{:}};
+      installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     else
       idx = complement (packages_to_uninstall, 1:length(local_packages));
       local_packages = save_order ({local_packages{idx}, descriptions{:}});
       save (local_list, "local_packages");
-      installed_packages = {local_packages{:}, global_packages{:}};
+      installed_pkgs_lst = {local_packages{:}, global_packages{:}};
     endif
   catch
     ## Something went wrong, delete tmpdirs
@@ -738,7 +738,7 @@ function install (files, handle_deps, autoload, prefix, verbose, local_list, glo
 	idx (end + 1) = i;
       endif
     endfor
-    load_packages_and_dependencies (idx, handle_deps, installed_packages);
+    load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst);
   endif
 endfunction
 
@@ -748,15 +748,15 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   [local_packages, global_packages] = installed_packages(local_list, 
 							 global_list);
   if (global_install)
-    installed_packages = {local_packages{:}, global_packages{:}};
+    installed_pkgs_lst = {local_packages{:}, global_packages{:}};
   else
-    installed_packages = local_packages;
+    installed_pkgs_lst = local_packages;
   endif
 
-  num_packages = length (installed_packages);
+  num_packages = length (installed_pkgs_lst);
   delete_idx = [];
   for i = 1:num_packages
-    cur_name = installed_packages{i}.name;
+    cur_name = installed_pkgs_lst{i}.name;
     if (any (strcmp (cur_name, pkgnames)))
       delete_idx(end+1) = i;
     endif
@@ -766,12 +766,12 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
   if (length (delete_idx) != length (pkgnames))
     if (global_install)
       ## Try again for a locally installed package
-      installed_packages = local_packages;
+      installed_pkgs_lst = local_packages;
 
-      num_packages = length (installed_packages);
+      num_packages = length (installed_pkgs_lst);
       delete_idx = [];
       for i = 1:num_packages
-	cur_name = installed_packages{i}.name;
+	cur_name = installed_pkgs_lst{i}.name;
 	if (any (strcmp (cur_name, pkgnames)))
 	  delete_idx(end+1) = i;
 	endif
@@ -788,7 +788,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
 
   ## Compute the packages that will remain installed
   idx = complement (delete_idx, 1:num_packages);
-  remaining_packages = {installed_packages{idx}};
+  remaining_packages = {installed_pkgs_lst{idx}};
 
   ## Check dependencies
   if (handle_deps)
@@ -815,7 +815,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
 
   ## Delete the directories containing the packages
   for i = delete_idx
-    desc = installed_packages{i};
+    desc = installed_pkgs_lst{i};
     ## If an 'on_uninstall.m' exist, call it!
     if (exist (fullfile (desc.dir, "packinfo", "on_uninstall.m"), "file"))
       wd = pwd ();
@@ -1519,7 +1519,7 @@ function write_INDEX (desc, dir, INDEX)
   fclose (fid);
 endfunction
 
-function bad_deps = get_unsatisfied_deps (desc, installed_packages)
+function bad_deps = get_unsatisfied_deps (desc, installed_pkgs_lst)
   bad_deps = {};
 
   ## For each dependency
@@ -1534,9 +1534,9 @@ function bad_deps = get_unsatisfied_deps (desc, installed_packages)
     ## Is the current dependency not Octave?
     else
       ok = false;
-      for i = 1:length (installed_packages)
-	cur_name = installed_packages{i}.name;
-	cur_version = installed_packages{i}.version;
+      for i = 1:length (installed_pkgs_lst)
+	cur_name = installed_pkgs_lst{i}.name;
+	cur_version = installed_pkgs_lst{i}.version;
 	if (strcmp (dep.package, cur_name)
 	    && compare_versions (cur_version, dep.version, dep.operator))
 	  ok = true;
@@ -1562,35 +1562,35 @@ function [out1, out2] = installed_packages (local_list, global_list)
   catch
     global_packages = {};
   end_try_catch
-  installed_packages = {local_packages{:}, global_packages{:}};
+  installed_pkgs_lst = {local_packages{:}, global_packages{:}};
 
   ## Eliminate duplicates in the installed package list.
   ## Locally installed packages take precedence
   dup = [];
-  for i = 1:length (installed_packages)
+  for i = 1:length (installed_pkgs_lst)
     if (find (dup, i))
       continue;
     endif
-    for j = (i+1):length (installed_packages)
+    for j = (i+1):length (installed_pkgs_lst)
       if (find (dup, j))
 	continue;
       endif
-      if (strcmp (installed_packages{i}.name, installed_packages{j}.name))
+      if (strcmp (installed_pkgs_lst{i}.name, installed_pkgs_lst{j}.name))
 	dup = [dup, j];
       endif
     endfor
   endfor
   if (! isempty(dup))
-    installed_packages(dup) = [];
+    installed_pkgs_lst(dup) = [];
   endif  
 
   ## Now check if the package is loaded
   tmppath = strrep (path(), "\\", "/");
-  for i = 1:length (installed_packages)
-    if (findstr (tmppath, strrep (installed_packages{i}.dir, "\\", "/")))
-      installed_packages{i}.loaded = true;
+  for i = 1:length (installed_pkgs_lst)
+    if (findstr (tmppath, strrep (installed_pkgs_lst{i}.dir, "\\", "/")))
+      installed_pkgs_lst{i}.loaded = true;
     else
-      installed_packages{i}.loaded = false;
+      installed_pkgs_lst{i}.loaded = false;
     endif
   endfor
   for i = 1:length (local_packages)
@@ -1614,12 +1614,12 @@ function [out1, out2] = installed_packages (local_list, global_list)
     out2 = global_packages;
     return;
   elseif (nargout == 1)
-    out1 = installed_packages;
+    out1 = installed_pkgs_lst;
     return;
   endif
 
   ## We shouldn't return something, so we'll print something
-  num_packages = length (installed_packages);
+  num_packages = length (installed_pkgs_lst);
   if (num_packages == 0)
     printf ("no packages installed.\n");
     return;
@@ -1634,10 +1634,10 @@ function [out1, out2] = installed_packages (local_list, global_list)
   names = cell (num_packages, 1); 
   for i = 1:num_packages
     max_name_length = max (max_name_length,
-			   length (installed_packages{i}.name));
+			   length (installed_pkgs_lst{i}.name));
     max_version_length = max (max_version_length,
-			      length (installed_packages{i}.version));
-    names{i} = installed_packages{i}.name;
+			      length (installed_pkgs_lst{i}.version));
+    names{i} = installed_pkgs_lst{i}.name;
   endfor
   max_dir_length = terminal_size()(2) - max_name_length - ...
 					     max_version_length - 7;
@@ -1661,9 +1661,9 @@ function [out1, out2] = installed_packages (local_list, global_list)
 		    max_version_length);
   [dummy, idx] = sort (names);
   for i = 1:num_packages
-    cur_name = installed_packages{idx(i)}.name;
-    cur_version = installed_packages{idx(i)}.version;
-    cur_dir = installed_packages{idx(i)}.dir;
+    cur_name = installed_pkgs_lst{idx(i)}.name;
+    cur_version = installed_pkgs_lst{idx(i)}.version;
+    cur_dir = installed_pkgs_lst{idx(i)}.dir;
     if (length (cur_dir) > max_dir_length)
       first_char = length (cur_dir) - max_dir_length + 4;
       first_filesep = strfind (cur_dir(first_char:end), filesep());
@@ -1674,7 +1674,7 @@ function [out1, out2] = installed_packages (local_list, global_list)
         cur_dir = strcat ("...", cur_dir(first_char:end));
       endif
     endif
-    if (installed_packages{idx(i)}.loaded)
+    if (installed_pkgs_lst{idx(i)}.loaded)
       cur_loaded = "*";
     else
       cur_loaded = " ";
@@ -1684,23 +1684,23 @@ function [out1, out2] = installed_packages (local_list, global_list)
 endfunction
 
 function load_packages (files, handle_deps, local_list, global_list)
-  installed_packages = installed_packages (local_list, global_list);
-  num_packages = length (installed_packages);
+  installed_pkgs_lst = installed_packages (local_list, global_list);
+  num_packages = length (installed_pkgs_lst);
 
   ## Read package names and installdirs into a more convenient format
   pnames = pdirs = cell (1, num_packages);
   for i = 1:num_packages
-    pnames{i} = installed_packages{i}.name;
-    pdirs{i} = installed_packages{i}.dir;
+    pnames{i} = installed_pkgs_lst{i}.name;
+    pdirs{i} = installed_pkgs_lst{i}.dir;
   endfor
 
   ## load all
   if (length (files) == 1 && strcmp (files{1}, "all"))
-    idx = [1:length(installed_packages)];
+    idx = [1:length(installed_pkgs_lst)];
   ## load auto
   elseif (length (files) == 1 && strcmp (files{1}, "auto")) 
     idx = [];
-    for i = 1:length (installed_packages)
+    for i = 1:length (installed_pkgs_lst)
       if (exist (fullfile (pdirs{i}, "packinfo", ".autoload"), "file"))
 	idx (end + 1) = i;
       endif
@@ -1718,19 +1718,19 @@ function load_packages (files, handle_deps, local_list, global_list)
   endif
 
   ## Load the packages, but take care of the ordering of dependencies
-  load_packages_and_dependencies (idx, handle_deps, installed_packages);
+  load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst);
 endfunction
 
 function unload_packages (files, handle_deps, local_list, global_list)
-  installed_packages = installed_packages (local_list, global_list);
-  num_packages = length (installed_packages);
+  installed_pkgs_lst = installed_packages (local_list, global_list);
+  num_packages = length (installed_pkgs_lst);
 
   ## Read package names and installdirs into a more convenient format
   pnames = pdirs = cell (1, num_packages);
   for i = 1:num_packages
-    pnames{i} = installed_packages{i}.name;
-    pdirs{i} = installed_packages{i}.dir;
-    pdeps{i} = installed_packages{i}.depends;
+    pnames{i} = installed_pkgs_lst{i}.name;
+    pdirs{i} = installed_pkgs_lst{i}.dir;
+    pdeps{i} = installed_pkgs_lst{i}.depends;
   endfor
 
   ## Get the current octave path
@@ -1879,13 +1879,13 @@ function newdesc = save_order (desc)
   newdesc(idx) = [];
 endfunction
 
-function load_packages_and_dependencies (idx, handle_deps, installed_packages)
-  idx = load_package_dirs (idx, [], handle_deps, installed_packages);
+function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst)
+  idx = load_package_dirs (idx, [], handle_deps, installed_pkgs_lst);
   arch = getarch ();
   dirs = {};
   execpath = EXEC_PATH ();
   for i = idx;
-    ndir = installed_packages{i}.dir;
+    ndir = installed_pkgs_lst{i}.dir;
     dirs {end + 1} = ndir;
     if (exist (fullfile (dirs{end}, "bin"), "dir"))
       execpath = strcat (fullfile(dirs{end}, "bin"), ":", execpath);
@@ -1907,27 +1907,27 @@ function load_packages_and_dependencies (idx, handle_deps, installed_packages)
   endif
 endfunction
 
-function idx = load_package_dirs (lidx, idx, handle_deps, installed_packages)
+function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
   for i = lidx
-    if (isfield (installed_packages{i}, "loaded") &&
-	installed_packages{i}.loaded)
+    if (isfield (installed_pkgs_lst{i}, "loaded") &&
+	installed_pkgs_lst{i}.loaded)
       continue;
     else
       if (handle_deps)
-        deps = installed_packages{i}.depends;
+        deps = installed_pkgs_lst{i}.depends;
         if ((length (deps) > 1) || (length (deps) == 1 && 
 	  		  ! strcmp(deps{1}.package, "octave")))
           tmplidx = [];
           for k = 1 : length (deps)
-            for j = 1 : length (installed_packages)
-              if (strcmp (installed_packages{j}.name, deps{k}.package))
+            for j = 1 : length (installed_pkgs_lst)
+              if (strcmp (installed_pkgs_lst{j}.name, deps{k}.package))
                 tmplidx (end + 1) = j;
 	        break;
               endif
             endfor
           endfor
           idx = load_package_dirs (tmplidx, idx, handle_deps, 
-				 installed_packages);
+				 installed_pkgs_lst);
         endif
       endif
       if (isempty (find(idx == i)))

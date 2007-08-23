@@ -1,3 +1,12 @@
+2007-08-23  John W. Eaton  <jwe@octave.org>
+
+	* pkg/pkg.m: Avoid using installed_packages for both function and
+	variable name.
+
+2007-08-23  David Bateman  <dbateman@free.fr>
+
+	* plot/plot.m: Allow first arg to be axes handle.
+
 2007-08-22  David Bateman  <dbateman@free.fr>
 
 	* control/base/nichols.m: Correct for misnamed variable, and ensure

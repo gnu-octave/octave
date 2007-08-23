@@ -169,6 +169,9 @@
 ##
 ## This will plot the cosine and sine functions and label them accordingly
 ## in the key.
+##
+## If the first argument is an axis handle, then plot into these axes, 
+## rather than the current axis handle returned by @code{gca}. 
 ## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
 ## bar, stairs, errorbar, xlabel, ylabel, title, print}
 ## @end deftypefn
@@ -177,9 +180,24 @@
 
 function retval = plot (varargin)
 
-  newplot ();
-
-  tmp = __plt__ ("plot", gca (), varargin{:});
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin {1};
+    obj = get (h);
+    if (! strcmp (obj.type, "axes"))
+      error ("plot: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      newplot ();
+      tmp = __plt__ ("plot", h, varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    newplot ();
+    tmp = __plt__ ("plot", gca (), varargin{:});
+  endif
 
   if (nargout > 0)
     retval = tmp;

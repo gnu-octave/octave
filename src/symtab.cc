@@ -45,6 +45,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "symtab.h"
 #include "utils.h"
 #include "variables.h"
+#include "ov-usr-fcn.h"
+#include "toplev.h"
 
 #include "gripes.h"
 #include "lo-mappers.h"
@@ -794,6 +796,32 @@ symbol_table::clear (void)
 
       while (ptr)
 	{
+	  if (ptr->is_user_function())
+	    {
+	      octave_user_function *fcn = ptr->def ().user_function_value ();
+	      std::string parent = (fcn ? fcn->parent_fcn_name () :
+				    std::string ());
+
+	      if (! parent.empty ())
+		{
+		  if (curr_parent_function &&
+		      parent == curr_parent_function->name ())
+		    {
+		      ptr = ptr->next ();
+		      continue;
+		    }			  
+
+		  symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
+
+		  if (parent_sr && (parent_sr->is_static () ||
+				    parent_sr->is_eternal ()))
+		  {
+		    ptr = ptr->next ();
+		    continue;
+		  }
+		}
+	    }
+
 	  ptr->clear ();
 
 	  ptr = ptr->next ();
@@ -832,7 +860,37 @@ symbol_table::clear_functions (void)
 	  if (ptr->is_user_function ()
 	      || ptr->is_dld_function ()
 	      || ptr->is_mex_function ())
-	    ptr->clear ();
+	    {
+
+	      if (ptr->is_user_function())
+		{
+		  octave_user_function *fcn = 
+		    ptr->def ().user_function_value ();
+		  std::string parent = (fcn ? fcn->parent_fcn_name () :
+					std::string ());
+
+		  if (! parent.empty ())
+		    {
+		      if (curr_parent_function &&
+			  parent == curr_parent_function->name ())
+			{
+			  ptr = ptr->next ();
+			  continue;
+			}			  
+
+		      symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
+
+		      if (parent_sr && (parent_sr->is_static () ||
+					parent_sr->is_eternal ()))
+			{
+			  ptr = ptr->next ();
+			  continue;
+			}
+		    }
+		}
+
+	      ptr->clear ();
+	    }
 
 	  ptr = ptr->next ();
 	}
@@ -884,6 +942,27 @@ symbol_table::clear (const std::string& nm)
     {
       if (ptr->name () == nm)
 	{
+	  if (ptr->is_user_function())
+	    {
+	      octave_user_function *fcn = 
+		ptr->def ().user_function_value ();
+	      std::string parent = (fcn ? fcn->parent_fcn_name () :
+				    std::string ());
+
+	      if (! parent.empty ())
+		{
+		  if (curr_parent_function &&
+		      parent == curr_parent_function->name ())
+		    return true;
+
+		  symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
+		  
+		  if (parent_sr && (parent_sr->is_static () ||
+				    parent_sr->is_eternal ()))
+		    return true;
+		}
+	    }
+
 	  ptr->clear ();
 
 	  return true;
@@ -952,6 +1031,27 @@ symbol_table::clear_function (const std::string& nm)
 	      || ptr->is_dld_function ()
 	      || ptr->is_mex_function ()))
 	{
+	  if (ptr->is_user_function())
+	    {
+	      octave_user_function *fcn = 
+		ptr->def ().user_function_value ();
+	      std::string parent = (fcn ? fcn->parent_fcn_name () :
+				    std::string ());
+
+	      if (! parent.empty ())
+		{
+		  if (curr_parent_function &&
+		      parent == curr_parent_function->name ())
+		    return true;
+
+		  symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
+		  
+		  if (parent_sr && (parent_sr->is_static () ||
+				    parent_sr->is_eternal ()))
+		    return true;
+		}
+	    }
+
 	  ptr->clear ();
 	  return true;
 	}

@@ -1,3 +1,19 @@
+2007-08-24  David Bateman  <dbateman@free.fr>
+
+	* symtab.cc (void symbol_table::clear (void)): If the record in
+	the symbol table to clear is a user function that is a sub
+	function with a static parent or if the parent is the current
+	parent function, don't delete the record.
+	(void symbol_table::clear_functions (void)): ditto.
+	(void symbol_table::clear (const std::string&)): ditto.
+	(void symbol_table::clear_function (const std::string&)): ditto.
+
+	* graphics.h (class text): Add property color.
+	* graphics.cc (text::text_properties::text_properties) ditto.
+	(text::text_properties::set): ditto.
+	(text::text_properties::get): ditto.
+	(text::text_properties::factory_defaults): ditto.
+
 2007-08-24  John W. Eaton  <jwe@octave.org>
 
 	* mappers.cc (octave_is_NA (int), xisnan (int)): New functions.

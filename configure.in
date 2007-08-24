@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.571 $)
+AC_REVISION($Revision: 1.572 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1433,10 +1433,10 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name chmod \
   lstat memmove mkdir mkfifo mkstemp on_exit pipe poll putenv raise \
   readlink realpath rename resolvepath rindex rmdir round select setgrent \
   setlocale setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
-  sigsuspend stat strcasecmp strdup strerror stricmp \
+  sigsuspend snprintf stat strcasecmp strdup strerror stricmp \
   strncasecmp strnicmp strsignal symlink tempnam umask \
   uname unlink usleep utime vfprintf vsprintf vsnprintf waitpid \
-  _chmod _utime _utime32)
+  _chmod _snprintf x_utime _utime32)
 
 case "$canonical_host_type" in
   *-*-msdosmsvc)
@@ -2056,6 +2056,7 @@ Octave is now configured for $canonical_host_type
   HDF5 libraries:       $HDF5_LIBS
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
+  QHULL libraries:	$QHULL_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT_BINARY
@@ -2187,6 +2188,11 @@ fi
 
 if test -n "$warn_pcre"; then
   AC_MSG_WARN($warn_pcre)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_qhull"; then
+  AC_MSG_WARN($warn_qhull)
   warn_msg_printed=true
 fi
 

@@ -1446,6 +1446,7 @@ public:
     octave_value position;
     octave_value rotation;
     octave_value horizontalalignment;
+    octave_value color;
 
     static std::string go_name;
   };

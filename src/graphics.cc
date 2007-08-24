@@ -1800,7 +1800,8 @@ text::text_properties::text_properties (const graphics_handle& mh,
     units ("data"),
     position (Matrix (1, 3, 0.0)),
     rotation (0),
-    horizontalalignment ("left")
+    horizontalalignment ("left"),
+    color (Matrix (1, 3, 1.0))
 { }
 
 void
@@ -1827,6 +1828,8 @@ text::text_properties::set (const property_name& name, const octave_value& val)
     rotation = val;
   else if (name.compare ("horizontalalignment"))
     horizontalalignment = val;
+  else if (name.compare ("color"))
+    color = val;
   else
     {
       modified = false;
@@ -1851,6 +1854,7 @@ text::text_properties::get (void) const
   m.assign ("position", position);
   m.assign ("rotation", rotation);
   m.assign ("horizontalalignment", horizontalalignment);
+  m.assign ("color", color);
 
   return m;
 }
@@ -1878,6 +1882,8 @@ text::text_properties::get (const property_name& name) const
     retval = rotation;
   else if (name.compare ("horizontalalignment"))
     retval = horizontalalignment;
+  else if (name.compare ("color"))
+    retval = color;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -1894,6 +1900,7 @@ text::text_properties::factory_defaults (void)
   m["position"] = Matrix (1, 3, 0.0);
   m["rotation"] = 0;
   m["horizontalalignment"] = "left";
+  m["color"] = Matrix (1, 3, 1.0);
 
   return m;
 }

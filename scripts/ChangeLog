@@ -1,3 +1,7 @@
+2007-08-24  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Treat text color property.
+
 2007-08-24  John W. Eaton  <jwe@octave.org>
 
 	* plot/subplot.m, plot/plot.m, plot/grid.m:

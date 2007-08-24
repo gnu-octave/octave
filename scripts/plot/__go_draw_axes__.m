@@ -599,22 +599,51 @@ function __go_draw_axes__ (h, plot_stream)
 	  halign = obj.horizontalalignment;
 	  angle = obj.rotation;
           units = obj.units;
+	  color = obj.color;
           if (strcmpi (units, "normalized"))
             units = "graph";
           else
             units = "";
           endif
 	  
+	  if (isnumeric (color))
+	    if (have_newer_gnuplot)
+	      colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
+		       round (255*color));
+	    else
+	      if (isequal (color, [0,0,0]))
+		typ = -1;
+	      elseif (isequal (color, [1,0,0]))
+		typ = 1;
+	      elseif (isequal (color, [0,1,0]))
+		typ = 2;
+	      elseif (isequal (color, [0,0,1]))
+		typ = 3;
+	      elseif (isequal (color, [1,0,1]))
+		typ = 4;
+	      elseif (isequal (color, [0,1,1]))
+		typ = 5;
+	      elseif (isequal (color, [1,1,1]))
+		typ = -1;
+	      elseif (isequal (color, [1,1,0]))
+		typ = 7;
+	      else
+		typ = -1;
+	      endif
+	      colorspec = sprintf ("textcolor lt %d", typ);
+	    endif
+	  endif
+
 	  if (nd == 3)
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %g,%g,%g %s rotate by %f;\n",
+		     "set label \"%s\" at %s %g,%g,%g %s rotate by %f %s;\n",
 		     undo_string_escapes (label), units,
-		     lpos(1), lpos(2), lpos(3), halign, angle);
+		     lpos(1), lpos(2), lpos(3), halign, angle, colorspec);
 	  else
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %g,%g %s rotate by %f;\n",
+		     "set label \"%s\" at %s %g,%g %s rotate by %f %s;\n",
 		     undo_string_escapes (label), units,
-		     lpos(1), lpos(2), halign, angle);
+		     lpos(1), lpos(2), halign, angle, colorspec);
 	  endif
 
 	otherwise

@@ -167,7 +167,7 @@ xreal (const Complex& x)
 }
 
 static int
-xdummyp (int)
+dummyp (int)
 {
   return 0;
 }

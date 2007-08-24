@@ -16,9 +16,9 @@
 
 2007-08-24  John W. Eaton  <jwe@octave.org>
 
-	* mappers.cc (octave_is_NA (int), xisnan (int)): New functions.
-	(install_mapper_functions): Use them to handle character data in
-	isna and isnan functions.
+	* mappers.cc (dummyp): New function.
+	(install_mapper_functions): Use it to handle character data in
+	finite, isinf, isna, and isnan functions.
 
 	* load-path.cc (load_path::do_remove): Call remove_hook function
 	before removing directory from list.

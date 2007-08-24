@@ -167,13 +167,7 @@ xreal (const Complex& x)
 }
 
 static int
-octave_is_NA (int)
-{
-  return 0;
-}
-
-static int
-xisnan (int)
+xdummyp (int)
 {
   return 0;
 }
@@ -352,7 +346,7 @@ Compute the exponential of @var{x}.  To compute the matrix exponential,\n\
 see @ref{Linear Algebra}.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (finite, 0, xfinite, xfinite, 0, 0, 0, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (finite, dummyp, xfinite, xfinite, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} finite (@var{x})\n\
 Return 1 for elements of @var{x} that are finite values and zero\n\
@@ -448,7 +442,7 @@ Return 1 for control characters.\n\
 Return 1 for characters that are decimal digits.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isinf, 0, xisinf, xisinf, 0, 0, 0, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (isinf, dummyp, xisinf, xisinf, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isinf (@var{x})\n\
 Return 1 for elements of @var{x} that are infinite and zero\n\
@@ -474,7 +468,7 @@ Return 1 for printable characters (but not the space character).\n\
 Return 1 for characters that are lower case letters.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isna, octave_is_NA, octave_is_NA, octave_is_NA, 0, 0, 0, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (isna, dummyp, octave_is_NA, octave_is_NA, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isna (@var{x})\n\
 Return 1 for elements of @var{x} that are NA (missing) values and zero\n\
@@ -488,7 +482,7 @@ isna ([13, Inf, NA, NaN])\n\
 @end example\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (isnan, xisnan, xisnan, xisnan, 0, 0, 0, 0.0, 0.0, 0, 0,
+  DEFUN_MAPPER (isnan, dummyp, xisnan, xisnan, 0, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
 Return 1 for elements of @var{x} that are NaN values and zero\n\

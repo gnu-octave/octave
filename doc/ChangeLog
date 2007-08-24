@@ -1,3 +1,8 @@
+2007-08-24  David Bateman  <dbateman@free.fr>
+
+        * interpreter/geometry.txi: Document new functions.
+        * interpreter/octave.texi: Update indexing of geometry items.
+
 2007-07-25  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/Makefile.in (run-octave): Don't set DISPLAY.

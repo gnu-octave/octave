@@ -1,3 +1,12 @@
+2007-08-24  John W. Eaton  <jwe@octave.org>
+
+	* plot/subplot.m, plot/plot.m, plot/grid.m:
+	Use p = get (h, "prop") instead of obj = get (h); p = obj.prop.
+
+	* miscellaneous/movefile.m: Separate second and third args and
+	use p1 and p2, not f1 and f2 when constructing arguments for
+	calls to system.  From Michael Goffioul <michael.goffioul@gmail.com>.
+
 2007-08-24  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* set/intersect.m: Make it work with cell arrays of strings.

@@ -96,7 +96,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
 	endif
 
 	## Move the file(s).
-	[err, msg] = system (sprintf ("%s %s\"%s\"", cmd, f1, f2));
+	[err, msg] = system (sprintf ("%s %s \"%s\"", cmd, p1, p2));
 	if (err < 0)
 	  status = false;
 	  msgid = "movefile";
@@ -109,7 +109,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
       endif
 
       ## Move the file(s).
-      [err, msg] = system (sprintf ("%s %s\"%s\"", cmd, f1, f2));
+      [err, msg] = system (sprintf ("%s %s \"%s\"", cmd, p1, p2));
       if (err < 0)
 	status = false;
 	msgid = "movefile";

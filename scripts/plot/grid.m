@@ -46,10 +46,9 @@ function grid (x, y)
   if (nargs == 2)
     if (ishandle (x))
       ax = x;
-      obj = get (x);
       x = y;
       nargs--;
-      if (! strcmp (obj.type, "axes"))
+      if (! strcmp (get (ax, "type"), "axes"))
 	error ("grid: expecting first argument to be an axes object");
       endif
     else

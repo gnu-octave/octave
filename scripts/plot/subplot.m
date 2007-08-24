@@ -116,10 +116,8 @@ function h = subplot (rows, columns, index)
 
   set (cf, "nextplot", "add");
 
-  obj = get (cf);
-
   found = false;
-  for child = obj.children
+  for child = get (cf, "children")
     ## Check if this child is still valid; this might not be the case
     ## anymore due to the deletion of previous children (due to DeleteFcn
     ## callback or for legends/colorbars that get deleted with their
@@ -127,9 +125,8 @@ function h = subplot (rows, columns, index)
     if (! ishandle (child))
       continue;
     endif
-    obj = get (child);
-    if (strcmp (obj.type, "axes"))
-      objpos = obj.outerposition;
+    if (strcmp (get (child, "type"), "axes"))
+      objpos = get (child, "outerposition");
       if (objpos == pos)
 	## If the new axes are in exactly the same position as an
 	## existing axes object, use the existing axes.

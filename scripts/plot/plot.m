@@ -182,8 +182,7 @@ function retval = plot (varargin)
 
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
     h = varargin {1};
-    obj = get (h);
-    if (! strcmp (obj.type, "axes"))
+    if (! strcmp (get (h, "type"), "axes"))
       error ("plot: expecting first argument to be an axes object");
     endif
     oldh = gca ();

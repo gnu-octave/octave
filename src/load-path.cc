@@ -552,6 +552,9 @@ load_path::do_remove (const std::string& dir_arg)
 	    {
 	      retval = true;
 
+	      if (remove_hook)
+		remove_hook (dir);
+
 	      string_vector fcn_files = i->fcn_files;
 
 	      dir_info_list.erase (i);
@@ -590,9 +593,6 @@ load_path::do_remove (const std::string& dir_arg)
 			}
 		    }
 		}
-
-	      if (remove_hook)
-		remove_hook (dir);
 	    }
 	}
     }

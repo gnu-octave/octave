@@ -46,7 +46,11 @@ function [c, ia, ib] = intersect (a, b)
     c = [a(:); b(:)];
     [c, ic] = sort (c);               ## [a(:);b(:)](ic) == c
 
-    ii = find( c(1:end-1) == c(2:end) );  
+    if (iscellstr (c))
+      ii = find (strcmp (c(1:end-1), c(2:end)));
+    else
+      ii = find (c(1:end-1) == c(2:end));
+    endif
 
     c  = c(ii);                       ## The answer
     ia = ja(ic(ii));                  ## a(ia) == c

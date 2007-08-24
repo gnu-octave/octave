@@ -1,3 +1,8 @@
+2007-08-24  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_remove): Call remove_hook function
+	before removing directory from list.
+
 2007-08-24  David Bateman  <dbateman@free.fr>
 
         * ov-bool-sparse.cc (DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA): Class

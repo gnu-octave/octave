@@ -17,15 +17,15 @@ d2="$top_srcdir/scripts"
 d3="$builddir/scripts"
 d4="$builddir/src"
 
-d1_list=$(find "$d1" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
-d2_list=$(find "$d2" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
-d3_list=$(find "$d3" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
-d4_list=$(find "$d4" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';')
+d1_list=`find "$d1" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';'`
+d2_list=`find "$d2" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';'`
+d3_list=`find "$d3" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';'`
+d4_list=`find "$d4" -type d -a ! \( \( -name CVS -o -name private \) -a -prune \) -exec echo '{}': ';'`
 
-d1_path=$(echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
-d2_path=$(echo "$d2_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
-d3_path=$(echo "$d3_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
-d4_path=$(echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }')
+d1_path=`echo "$d1_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
+d2_path=`echo "$d2_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
+d3_path=`echo "$d3_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
+d4_path=`echo "$d4_list" | $AWK '{ t = (s $0); s = t; } END { sub (/:$/, "", s); print s; }'`
 
 LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
@@ -36,7 +36,7 @@ args="--no-initial-path --path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\" --info-
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb"
-    if [ $(/bin/pwd) = "$builddir" ]; then
+    if [ `/bin/pwd` = "$builddir" ]; then
       sed "s|^set args.*$|set args $args|" .gdbinit > .gdbinit-tmp
       mv .gdbinit-tmp .gdbinit
     fi

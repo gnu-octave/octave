@@ -1,3 +1,8 @@
+2007-08-24  Kim Hansen  <kimhanse@gmail.com>
+
+	* run-octave.in: Use `command` instead of $(command) to accomodate
+	brain-dead shells.
+
 2007-08-24  David Bateman  <dbateman@free.fr>
 
         * configure.in: Probe for the use of Qhull.

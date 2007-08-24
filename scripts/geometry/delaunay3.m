@@ -30,25 +30,25 @@
 ## @seealso{delaunay,delaunayn}
 ## @end deftypefn
 
-## Author:	Kai Habel <kai.habel@gmx.de>
+## Author: Kai Habel <kai.habel@gmx.de>
 
-function tetr = delaunay3 (x,y,z,opt)
+function tetr = delaunay3 (x, y, z, opt)
 
-  if ((nargin != 3) && (nargin != 4))
+  if (nargin != 3 && nargin != 4)
     print_usage ();
   endif
 
-  if (isvector(x) && isvector(y) &&isvector(z) && ...
-      (length(x) == length(y)) && (length(x) == length(z)))
+  if (isvector (x) && isvector (y) &&isvector (z)
+      && length (x) == length (y) && length(x) == length (z))
     if (nargin == 3)
-      tetr = delaunayn([x(:),y(:),z(:)]);
-    elseif (ischar(opt) || iscell (opt))
-      tetr = delaunayn([x(:),y(:),z(:)], opt);
+      tetr = delaunayn ([x(:), y(:), z(:)]);
+    elseif (ischar (opt) || iscell (opt))
+      tetr = delaunayn ([x(:), y(:), z(:)], opt);
     else
-      error("delaunay3: fourth argument must be a string or cell array of strings");
+      error ("delaunay3: fourth argument must be a string or cell array of strings");
     endif
   else
-    error("delaunay3: first three input arguments must be vectors of same size");
+    error ("delaunay3: first three input arguments must be vectors of same size");
   endif
 
 endfunction

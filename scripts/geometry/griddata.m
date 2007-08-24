@@ -26,8 +26,8 @@
 ## The interpolation points are all @code{(@var{xi}, @var{yi})}.  If
 ## @var{xi}, @var{yi} are vectors then they are made into a 2D mesh.
 ##
-## The interpolation method can be 'nearest', 'cubic' or 'linear'.
-## If method is omitted it defaults to 'linear'.
+## The interpolation method can be @code{"nearest"}, @code{"cubic"} or
+## @code{"linear"}.  If method is omitted it defaults to @code{"linear"}.
 ## @seealso{delaunay}
 ## @end deftypefn
 
@@ -36,64 +36,72 @@
 ##              xi and yi are not "meshgridded" if both are vectors 
 ##              of the same size (for compatibility)
 
-function [rx, ry, rz] = griddata (x,y,z,xi,yi,method)
+function [rx, ry, rz] = griddata (x, y, z, xi, yi, method)
 	
   if (nargin == 5)
-    method="linear";
+    method = "linear";
   endif
   if (nargin < 5 || nargin > 7) 
-    print_usage();
+    print_usage ();
   endif
 
-  if (ischar(method))
-    method=tolower(method);
+  if (ischar (method))
+    method = tolower (method);
   endif
-  if (!all( (size(x)==size(y)) & (size(x)==size(z))))
-    error("griddata: x,y,z must be vectors of same length");
+  if (! all (size (x) == size (y) & size (x) == size (z)))
+    error ("griddata: x, y, and z must be vectors of same length");
   endif
   
   ## meshgrid xi and yi if they are vectors unless they
   ## are vectors of the same length 
-  if (isvector(xi) && isvector(yi) && numel(xi) ~= numel(yi)) 
-    [xi,yi]=meshgrid(xi,yi);
+  if (isvector (xi) && isvector (yi) && numel (xi) != numel (yi))
+    [xi, yi] = meshgrid (xi, yi);
   endif
 
-  if (any(size(xi) != size(yi)))
-    error("griddata: xi and yi must be vectors or matrices of same size");
+  if (any (size (xi) != size (yi)))
+    error ("griddata: xi and yi must be vectors or matrices of same size");
   endif
 
-  [nr,nc] = size(xi);
+  [nr, nc] = size (xi);
   
   ## triangulate data
-  tri = delaunay(x,y);
-  zi = nan(size(xi));
+  tri = delaunay (x, y);
+  zi = nan (size (xi));
   
-  if strcmp(method,"cubic")
-    error("griddata(...,'cubic') cubic interpolation not yet implemented\n")
+  if (strcmp (method, "cubic"))
+    error ("griddata: cubic interpolation not yet implemented")
 
-  elseif strcmp(method,'nearest')
+  elseif (strcmp (method, "nearest"))
     ## search index of nearest point
-    idx = dsearch(x,y,tri,xi,yi);
-    valid = !isnan(idx);
+    idx = dsearch (x, y, tri, xi, yi);
+    valid = !isnan (idx);
     zi(valid) = z(idx(valid));
 
-  elseif strcmp(method,'linear')
+  elseif (strcmp (method, "linear"))
     ## search for every point the enclosing triangle
-    tri_list= tsearch(x,y,tri,xi(:),yi(:));
+    tri_list= tsearch (x, y, tri, xi(:), yi(:));
 
     ## only keep the points within triangles.
-    valid = !isnan(reshape(tri_list,size(xi)));
-    tri_list = tri_list(!isnan(tri_list));
-    nr_t = rows(tri_list);
+    valid = !isnan (reshape (tri_list, size (xi)));
+    tri_list = tri_list(!isnan (tri_list));
+    nr_t = rows (tri_list);
 
     ## assign x,y,z for each point of triangle
-    x1 = x(tri(tri_list,1));y1=y(tri(tri_list,1));z1=z(tri(tri_list,1));
-    x2 = x(tri(tri_list,2));y2=y(tri(tri_list,2));z2=z(tri(tri_list,2));
-    x3 = x(tri(tri_list,3));y3=y(tri(tri_list,3));z3=z(tri(tri_list,3));
+    x1 = x(tri(tri_list,1));
+    x2 = x(tri(tri_list,2));
+    x3 = x(tri(tri_list,3));
+
+    y1 = y(tri(tri_list,1));
+    y2 = y(tri(tri_list,2));
+    y3 = y(tri(tri_list,3));
+
+    z1 = z(tri(tri_list,1));
+    z2 = z(tri(tri_list,2));
+    z3 = z(tri(tri_list,3));
 
     ## calculate norm vector
-    N = cross([x2-x1, y2-y1, z2-z1],[x3-x1, y3-y1, z3-z1]);
-    N_norm = sqrt(sumsq(N,2));
+    N = cross ([x2-x1, y2-y1, z2-z1], [x3-x1, y3-y1, z3-z1]);
+    N_norm = sqrt (sumsq (N, 2));
     N = N ./ N_norm(:,[1,1,1]);
     
     ## calculate D of plane equation
@@ -104,17 +112,17 @@ function [rx, ry, rz] = griddata (x,y,z,xi,yi,method)
     zi(valid) = -(N(:,1).*xi(valid) + N(:,2).*yi(valid) + D ) ./ N(:,3);
     
   else
-    error("griddata: unknown interpolation method");
+    error ("griddata: unknown interpolation method");
   endif
 
-  if nargout == 3
+  if (nargout == 3)
     rx = xi;
     ry = yi;
     rz = zi;
-  elseif nargout == 1
+  elseif (nargout == 1)
     rx = zi;
-  elseif nargout == 0
-    mesh(xi, yi, zi);
+  elseif (nargout == 0)
+    mesh (xi, yi, zi);
   endif
 endfunction
 

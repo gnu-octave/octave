@@ -24,34 +24,33 @@
 ## The function is defined by @code{@var{y} = f (@var{x},@var{y},@var{z})}.
 ## The interpolation points are all @var{xi}.  
 ##
-## The interpolation method can be 'nearest' or 'linear'. If method is 
-## omitted it defaults to 'linear'.
+## The interpolation method can be @code{"nearest"} or @code{"linear"}.
+## If method is omitted it defaults to @code{"linear"}.
 ## @seealso{griddata, delaunayn}
 ## @end deftypefn
 
-function [yi] = griddata3 (x,y,z,v,xi,yi,zi,method,varargin)
+function [yi] = griddata3 (x, y, z,v, xi, yi, zi, method, varargin)
 	
-  if (nargin < 7) 
-    print_usage();
+  if (nargin < 7)
+    print_usage ();
   endif
 
-  if (!all( (size(x)==size(y)) & (size(x)==size(z)) & ...
-	   (size(x)==size(v))))
-    error("griddata3: x,y,z,v must be vectors of same length");
+  if (!all (size (x) == size (y) & size (x) == size(z) & size(x) == size (v)))
+    error ("griddata3: x, y, z, and v must be vectors of same length");
   endif
 
   ## meshgrid xi, yi and zi if they are vectors unless they
   ## are vectors of the same length 
-  if (isvector(xi) && isvector(yi) && isvector(zi) && ...
-      (numel(xi) != numel(yi) || numel(xi) != numel(zi))) 
-    [xi,yi,zi] = meshgrid(xi,yi,zi);
+  if (isvector (xi) && isvector (yi) && isvector (zi)
+      && (numel (xi) != numel (yi) || numel (xi) != numel (zi)))
+    [xi, yi, zi] = meshgrid (xi, yi, zi);
   endif
 
-  if (any(size(xi) != size(yi)) || any(size(xi) != size(zi)))
-    error("griddata: xi, yi and zi must be vectors or matrices of same size");
+  if (any (size(xi) != size(yi)) || any (size(xi) != size(zi)))
+    error ("griddata: xi, yi and zi must be vectors or matrices of same size");
   endif
 
-  vi = gridata ([x(:),y(:),z(:)], v(:), [xi(:),yi(:),zi(:)], varargin{:});
-  vi = reshape (vi, size(xi));
+  vi = gridata ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});
+  vi = reshape (vi, size (xi));
 endfunction
 

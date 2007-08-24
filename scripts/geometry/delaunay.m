@@ -31,42 +31,43 @@
 ##
 ## @example
 ## @group
-## x = rand(1,10);
-## y = rand(size(x));
-## T = delaunay(x,y);
-## X = [ x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1)) ];
-## Y = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];
-## axis([0,1,0,1]);
-## plot(X,Y,'b',x,y,'r*');
+## x = rand (1, 10);
+## y = rand (size (x));
+## T = delaunay (x, y);
+## X = [x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1))];
+## Y = [y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1))];
+## axis ([0,1,0,1]);
+## plot (X, Y, "b", x, y, "r*");
 ## @end group
 ## @end example
 ## @seealso{voronoi, delaunay3, delaunayn}
 ## @end deftypefn
 
-## Author:	Kai Habel <kai.habel@gmx.de>
+## Author: Kai Habel <kai.habel@gmx.de>
 
-function ret = delaunay (x,y,opt)
+function ret = delaunay (x, y, opt)
 
-  if ((nargin != 2) && (nargin != 3))
+  if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
   
-  if (isvector(x) && isvector(y) && (length(x) == length(y)))
+  if (isvector (x) && isvector (y) && length (x) == length (y))
     if (nargin == 2)
-      tri = delaunayn([x(:), y(:)]);
-    elseif ischar(opt)
-      tri = delaunayn([x(:), y(:)], opt);
+      tri = delaunayn ([x(:), y(:)]);
+    elseif (ischar (opt))
+      tri = delaunayn ([x(:), y(:)], opt);
     else
-      error("third argument must be a string");
+      error ("delaunay: third argument must be a string");
     endif
   else
-    error("first two input arguments must be vectors of same size");
+    error ("delaunay: first two input arguments must be vectors of same size");
   endif
 
-  if nargout == 0
-    x = x(:).'; y = y(:).';
-    X = [ x(tri(:,1)); x(tri(:,2)); x(tri(:,3)); x(tri(:,1)) ];
-    Y = [ y(tri(:,1)); y(tri(:,2)); y(tri(:,3)); y(tri(:,1)) ];
+  if (nargout == 0)
+    x = x(:).';
+    y = y(:).';
+    X = [x(tri(:,1)); x(tri(:,2)); x(tri(:,3)); x(tri(:,1))];
+    Y = [y(tri(:,1)); y(tri(:,2)); y(tri(:,3)); y(tri(:,1))];
     plot(X, Y, 'b', x, y, 'r*');
   else
     ret = tri;

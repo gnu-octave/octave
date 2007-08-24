@@ -30,7 +30,7 @@
 function h = trimesh (tri, x, y, z, varargin)
 
   if (nargin < 3)
-    print_usage();
+    print_usage ();
   endif
 
   if (nargin == 3)
@@ -39,18 +39,18 @@ function h = trimesh (tri, x, y, z, varargin)
     triplot (tri, x, y, z, varargin{:});
   else
     idx = tri(:, [1,2,3,1]).';
-    nt = size(tri, 1);
+    nt = size (tri, 1);
     ## FIXME We should really use patch instead of plot3, but we don't
     ## have a patch function, and probably won't in 3D that works with
     ## gnuplot
     if (nargout > 0)
-      h = plot3([x(idx); NaN*ones(1, nt)](:), ...
-		[y(idx); NaN*ones(1, nt)](:), ...
-		[z(idx); NaN*ones(1, nt)](:), varargin{:});
+      h = plot3 ([x(idx); NaN*ones(1, nt)](:),
+		 [y(idx); NaN*ones(1, nt)](:),
+		 [z(idx); NaN*ones(1, nt)](:), varargin{:});
     else
-      plot3([x(idx); NaN*ones(1, nt)](:), ...
-	    [y(idx); NaN*ones(1, nt)](:), ...
-	    [z(idx); NaN*ones(1, nt)](:), varargin{:});
+      plot3 ([x(idx); NaN*ones(1, nt)](:),
+	     [y(idx); NaN*ones(1, nt)](:),
+	     [z(idx); NaN*ones(1, nt)](:), varargin{:});
     endif
   endif
 endfunction

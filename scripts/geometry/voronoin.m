@@ -40,7 +40,7 @@
 
 function [C, F] = voronoin (pts, opt)
 
-  if ((nargin != 1) && (nargin != 2))
+  if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
@@ -51,7 +51,7 @@ function [C, F] = voronoin (pts, opt)
     elseif ischar(opt)
       [C, F, infi] = __voronoi__ (pts, opt);
     else
-      error("second argument must be a string");
+      error ("voronoin: second argument must be a string");
     endif
 
   else

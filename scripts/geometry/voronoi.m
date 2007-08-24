@@ -33,11 +33,12 @@
 ##
 ## @example
 ## @group
-##   x = rand(10,1); y = rand(size(x));
-##   h = convhull(x,y);
-##   [vx,vy] = voronoi(x,y);
-##   plot(vx, vy, "-b", x, y, "o", x(h), y(h), "-g")
-##   legend("", "points", "hull");
+##   x = rand (10, 1);
+##   y = rand (size (x));
+##   h = convhull (x, y);
+##   [vx, vy] = voronoi (x, y);
+##   plot (vx, vy, "-b", x, y, "o", x(h), y(h), "-g")
+##   legend ("", "points", "hull");
 ## @end group
 ## @end example
 ##
@@ -66,13 +67,12 @@ function [vvx, vvy] = voronoi (varargin)
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
     handl = varargin{1};
     narg++;
-    obj = get (handl);
-    if (! strcmp (obj.type, "axes"))
+    if (! strcmp (get (handl, "type"), "axes"))
       error ("voronoi: expecting first argument to be an axes object");
     endif
   else
     if (nargout < 2)    
-      handl = gca();
+      handl = gca ();
     endif
   endif
 

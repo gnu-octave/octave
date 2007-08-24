@@ -30,29 +30,29 @@
 ## @seealso{delaunay, convhulln}
 ## @end deftypefn
 
-## Author:	Kai Habel <kai.habel@gmx.de>
+## Author: Kai Habel <kai.habel@gmx.de>
 
-function H = convhull (x,y,opt)
+function H = convhull (x, y, opt)
 
-  if ((nargin != 2) && (nargin != 3))
+  if (nargin != 2 && nargin != 3)
     print_usage ();
   endif
 
-  if (isvector(x) && isvector(y) && (length(x) == length(y)))
+  if (isvector (x) && isvector (y) && length (x) == length (y))
     if (nargin == 2)
-      i = convhulln([x(:), y(:)]);
-    elseif (ischar(opt) || iscell (opt))
-      i = convhulln([x(:), y(:)], opt);
+      i = convhulln ([x(:), y(:)]);
+    elseif (ischar (opt) || iscell (opt))
+      i = convhulln ([x(:), y(:)], opt);
     else
-      error("third argument must be a string or cell array of strings");
+      error ("convhull: third argument must be a string or cell array of strings");
     endif
   else
-    error("first two input arguments must be vectors of same size");
+    error ("convhull: first two input arguments must be vectors of same size");
   endif
 
-  n = rows(i);
+  n = rows (i);
   i = i'(:);
-  H = zeros(n + 1,1);
+  H = zeros (n + 1, 1);
 
   H(1) = i(1);
   next_i = i(2);

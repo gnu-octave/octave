@@ -28,9 +28,9 @@
 
 function idx = dsearch (x, y, t, xi, yi, s)
   if (nargin < 5 || nargin > 6)
-    print_usage();
+    print_usage ();
   endif
-  idx = __dsearchn__ ([x(:),y(:)], [xi(:), yi(:)]);
+  idx = __dsearchn__ ([x(:), y(:)], [xi(:), yi(:)]);
 endfunction
 
 %!shared x, y, tri

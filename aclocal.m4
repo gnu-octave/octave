@@ -987,3 +987,40 @@ AC_DEFUN([OCTAVE_HDF5_DLL], [
   if test "$octave_cv_hdf5_dll" = yes; then
     AC_DEFINE(_HDF5USEDLL_, 1, [Define if using HDF5 dll (Win32)])
   fi])
+dnl
+dnl Check for the QHull version.
+dnl
+AC_DEFUN(AC_CHECK_QHULL_VERSION,
+[AC_MSG_CHECKING([for qh_qhull in -lqhull with qh_version])
+AC_CACHE_VAL(octave_cv_lib_qhull_version,  [
+cat > conftest.c <<EOF
+#include <stdio.h>
+char *qh_version = "version";
+char qh_qhull();
+int
+main(argc, argv)
+  int argc;
+  char **argv;
+{
+  qh_qhull();
+  return 0;
+}
+EOF
+
+octave_qhull_try="${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS conftest.c -o conftest -lqhull $LIBS"
+if AC_TRY_EVAL(octave_qhull_try) && test -s conftest ; then
+    octave_cv_lib_qhull_version=yes
+else
+    octave_cv_lib_qhull_version=no
+fi
+rm -f conftest.c conftest.o conftest
+])dnl
+if test "$octave_cv_lib_qhull_version" = "yes"; then
+  AC_MSG_RESULT(yes)
+  ifelse([$1], , , [$1])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$2], , , [$2])
+fi
+])
+

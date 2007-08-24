@@ -1,3 +1,27 @@
+2007-08-24  David Bateman  <dbateman@free.fr>
+
+        * MSparse.h (MSparse<T>& insert (const Sparse<T>&, 
+        const Array<octave_idx_type>&)): New method.
+        (MSparse (const dim_vector&, octave_idx_type)): Ditto.
+        * dSparse.h (SparseMatrix& SparseMatrix::insert (const
+        SparseMatrix&, const Array<octave_idx_type>&)): ditto.
+        (SparseMatrix (const dim_vector&, octave_idx_type)): ditto.
+        * dSparse.cc (SparseMatrix& SparseMatrix::insert (const
+        SparseMatrix&, const Array<octave_idx_type>&)): ditto.
+        * boolSparse.h (SparseBoolMatrix& SparseBoolMatrix::insert (const
+        SparseBoolMatrix&, const Array<octave_idx_type>&)): ditto.
+        * boolSparse.cc (SparseBoolMatrix& SparseBoolMatrix::insert (const
+        SparseBoolMatrix&, const Array<octave_idx_type>&)): ditto.
+        * CSparse.h (SparseComplexMatrix& SparseComplexMatrix::insert (const
+        SparseMatrix&, const Array<octave_idx_type>&),
+        SparseComplexMatrix& SparseComplexMatrix::insert (const
+        SparseComplexMatrix&, const Array<octave_idx_type>&)): ditto.
+        (SparseComplexMatrix (const dim_vector&, octave_idx_type)): ditto.
+        * CSparse.cc (SparseComplexMatrix& SparseComplexMatrix::insert (const
+        SparseMatrix&, const Array<octave_idx_type>&),
+        SparseComplexMatrix& SparseComplexMatrix::insert (const
+        SparseComplexMatrix&, const Array<octave_idx_type>&)): ditto.
+
 2007-08-19  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (Sparse<T>::permute): Avoid shadowing warning.

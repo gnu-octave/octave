@@ -536,6 +536,20 @@ SparseComplexMatrix::insert (const SparseComplexMatrix& a, octave_idx_type r, oc
   return *this;
 }
 
+SparseComplexMatrix&
+SparseComplexMatrix::insert (const SparseMatrix& a, const Array<octave_idx_type>& indx)
+{
+  SparseComplexMatrix tmp (a);
+  return insert (tmp /*a*/, indx);
+}
+
+SparseComplexMatrix&
+SparseComplexMatrix::insert (const SparseComplexMatrix& a, const Array<octave_idx_type>& indx)
+{
+  MSparse<Complex>::insert (a, indx);
+  return *this;
+}
+
 SparseComplexMatrix
 SparseComplexMatrix::concat (const SparseComplexMatrix& rb, 
 			     const Array<octave_idx_type>& ra_idx)

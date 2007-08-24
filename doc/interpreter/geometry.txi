@@ -1,8 +1,215 @@
 @c Copyright (C) 2007 John W. Eaton
+@c Copyright (C) 2007 David Bateman
 @c This is part of the Octave manual.
 @c For copying conditions, see the file gpl.texi.
 
 @node Geometry
 @chapter Geometry
 
+@menu
+* Delaunay Triangulation::
+* Voronoi Diagrams::
+* Convex Hull::
+* Plotting the Triangulation::
+* Interpolation on Scattered Data::
+@end menu
+
+@node Delaunay Triangulation
+@section Delaunay Triangulation
+
+@DOCSTRING(delaunay)
+
+The 3- and N-dimensional extension of the Delaunay triangulation are
+given by @code{delaunay3} and @code{delaunayn} respectively.  
+@code{delaunay3} returns a set of tetrahedra that satisfy the
+Delaunay circum-circle criteria.  Similarly, @code{delaunayn} returns the
+N-dimensional simplex satisfying the Delaunay circum-circle criteria.  
+The N-dimensional extension of a triangulation is called a tesselation.
+
+@DOCSTRING(delaunay3)
+
+@DOCSTRING(delaunayn)
+
+@menu
+* Identifying points in Triangulation::
+@end menu
+
+@node Identifying points in Triangulation
+@subsection Identifying points in Triangulation
+
+It is often necessary to identify whether a particular point in the
+N-dimensional space is within the Delaunay tesselation of a set of
+points in this N-dimensional space, and if so which N-Simplex contains
+the point and which point in the tesselation is closest to the desired
+point.  The functions @code{tsearch} and @code{dsearch} perform this
+function in a triangulation, and @code{tsearchn} and @code{dsearchn} in
+an N-dimensional tesselation.
+
+To identify whether a particular point represented by a vector @var{p}
+falls within one of the simplices of an N-Simplex, we can write the
+Cartesian coordinates of the point in a parametric form with respect to
+the N-Simplex.  This parametric form is called the Barycentric
+Coordinates of the point.  If the points defining the N-Simplex are given
+by @code{@var{N} + 1} vectors @var{t}(@var{i},:), then the Barycentric
+coordinates defining the point @var{p} is given by
+
+@example
+@var{p} = sum (@var{beta}(1:@var{N}+1) * @var{t}(1:@var{N}+1),:)
+@end example
+
+@noindent
+where there are @code{@var{N} + 1} values @code{@var{beta}(@var{i})}
+that together as a vector represent the Barycentric coordinates of the
+point @var{p}.  To ensure a unique solution for the values of
+@code{@var{beta}(@var{i})} an additional criteria of
+
+@example
+sum (@var{beta}(1:@var{N}+1)) == 1
+@end example
+
+@noindent
+is imposed, and we can therefore write the above as
+
+@example
+@var{p} - @var{t}(end, :) = @var{beta}(1:end-1) * (@var{t}(1:end-1, :)
+      - ones(@var{N}, 1) * @var{t}(end, :)
+@end example
+
+@noindent
+Solving for @var{beta} we can then write
+
+@example
+@var{beta}(1:end-1) = (@var{p} - @var{t}(end, :)) / (@var{t}(1:end-1, :)
+      - ones(@var{N}, 1) * @var{t}(end, :))
+@var{beta}(end) = sum(@var{beta}(1:end-1))
+@end example
+
+@noindent
+which gives the formula for the conversion of the Cartesian coordinates
+of the point @var{p} to the Barycentric coordinates @var{beta}.  An
+important property of the Barycentric coordinates is that for all points
+in the N-Simplex
+
+@example
+0 <= @var{beta}(@var{i}) <= 1
+@end example
+
+@noindent
+Therefore, the test in @code{tsearch} and @code{tsearchn} essentially
+only needs to express each point in terms of the Barycentric coordinates
+of each of the simplices of the N-Simplex and test the values of
+@var{beta}. This is exactly the implementation used in
+@code{tsearchn}. @code{tsearch} is optimized for 2-dimensions and the
+Barycentric coordinates are not explicitly formed.
+
+@DOCSTRING(tsearch)
+
+@DOCSTRING(tsearchn)
+
+An example of the use of @code{tsearch} can be seen with the simple
+triangulation
+
+@example
+@group
+@var{x} = [-1; -1; 1; 1];
+@var{y} = [-1; 1; -1; 1];
+@var{tri} = [1, 2, 3; 2, 3, 1];
+@end group
+@end example
+
+@noindent
+consisting of two triangles defined by @var{tri}. We can then identify
+which triangle a point falls in like
+
+@example
+@group
+tsearch (@var{x}, @var{y}, @var{tri}, -0.5, -0.5)
+@result{} 1
+tsearch (@var{x}, @var{y}, @var{tri}, 0.5, 0.5)
+@result{} 2
+@end group
+@end example
+
+@noindent
+and we can confirm that a point doesn't lie within one of the triangles like
+
+@example
+@group
+tsearch (@var{x}, @var{y}, @var{tri}, 2, 2)
+@result{} NaN
+@end group
+@end example
+
+The @code{dsearch} and @code{dsearchn} find the closest point in a
+tessellation to the desired point. The desired point does not
+necessarily have to be in the tessellation, and even if it the returned
+point of the tessellation does not have to be one of the vertices of the
+N-simplex within which the desired point is found.
+
+@DOCSTRING(dsearch)
+
+@DOCSTRING(dsearchn)
+
+An example of the use of @code{dsearch}, using the above values of
+@var{x}, @var{y} and @var{tri} is
+
+@example
+@group
+dsearch (@var{x}, @var{y}, @var{tri}, -2, -2)
+@result{} 1
+@end group
+@end example
+
+If you wish the points that are outside the tessellation to be flagged,
+then @code{dsearchn} can be used as
+
+@example
+@group
+dsearchn ([@var{x}, @var{y}], @var{tri}, [-2, -2], NaN)
+@result{} NaN
+dsearchn ([@var{x}, @var{y}], @var{tri}, [-0.5, -0.5], NaN)
+@result{} 1
+@end group
+@end example
+
+@noindent
+where the point outside the tessellation are then flagged with @code{NaN}.
+
+@node Voronoi Diagrams
+@section Voronoi Diagrams
+
+A Voronoi diagram or Voronoi tessellation of a set of points @var{s} in
+an N-dimensional space, is the tessellation of the N-dimensional space
+such that all points in @code{@var{v}(@var{p})}, a partitions of the
+tessellation where @var{p} is a member of @var{s}, are closer to @var{p}
+than any other point in @var{s}.  The Voronoi diagram is related to the
+Delaunay triangulation of a set of points.
+
+@DOCSTRING(voronoi)
+
+@DOCSTRING(voronoin)
+
+@node Convex Hull
+@section Convex Hull
+
+@DOCSTRING(convhull)
+
+@DOCSTRING(convhulln)
+
+@node Plotting the Triangulation
+@section Plotting the Triangulation
+
+@DOCSTRING(triplot)
+
+@DOCSTRING(trimesh)
+
 @DOCSTRING(polyarea)
+
+@node Interpolation on Scattered Data
+@section Interpolation on Scattered Data
+
+@DOCSTRING(griddata)
+
+@DOCSTRING(griddata3)
+
+@DOCSTRING(griddatan)

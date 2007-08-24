@@ -390,13 +390,6 @@ public:
       id = mxCHAR_CLASS;
     else if (cn == "double")
       id = mxDOUBLE_CLASS;
-    else if (cn == "sparse")
-      {
-	if (val.is_bool_type ())
-	  id = mxLOGICAL_CLASS;
-	else
-	  id = mxDOUBLE_CLASS;
-      }
     else if (cn == "single")
       id = mxSINGLE_CLASS;
     else if (cn == "int8")

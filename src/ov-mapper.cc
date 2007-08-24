@@ -241,7 +241,7 @@ octave_mapper::apply (const octave_value& arg) const
 	    error ("%s: unable to handle real arguments",
 		   name().c_str ());
 	}
-      else if (arg.class_name () == "sparse")
+      else if (arg.is_sparse_type ())
 	{
 	  const SparseMatrix m = arg.sparse_matrix_value ();
 
@@ -309,7 +309,7 @@ octave_mapper::apply (const octave_value& arg) const
 	    error ("%s: unable to handle complex arguments",
 		   name().c_str ());
 	}
-      else if (arg.class_name () == "sparse")
+      else if (arg.is_sparse_type ())
 	{
 	  SparseComplexMatrix cm = arg.sparse_complex_matrix_value ();
 

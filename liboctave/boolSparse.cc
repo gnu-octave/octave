@@ -73,6 +73,13 @@ SparseBoolMatrix::insert (const SparseBoolMatrix& a, octave_idx_type r, octave_i
   return *this;
 }
 
+SparseBoolMatrix&
+SparseBoolMatrix::insert (const SparseBoolMatrix& a, const Array<octave_idx_type>& indx)
+{
+  Sparse<bool>::insert (a, indx);
+  return *this;
+}
+
 SparseBoolMatrix
 SparseBoolMatrix::concat (const SparseBoolMatrix& rb, const Array<octave_idx_type>& ra_idx)
 {

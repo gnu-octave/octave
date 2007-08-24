@@ -51,6 +51,9 @@ public:
 
   SparseComplexMatrix (octave_idx_type r, octave_idx_type c) : MSparse<Complex> (r, c) { }
 
+  SparseComplexMatrix (const dim_vector& dv, octave_idx_type nz = 0) : 
+    MSparse<Complex> (dv, nz) { }
+
   explicit SparseComplexMatrix (octave_idx_type r, octave_idx_type c, Complex val) 
     : MSparse<Complex> (r, c, val) { }
 
@@ -107,6 +110,8 @@ public:
 
   SparseComplexMatrix& insert (const SparseComplexMatrix& a, octave_idx_type r, octave_idx_type c);
   SparseComplexMatrix& insert (const SparseMatrix& a, octave_idx_type r, octave_idx_type c);
+  SparseComplexMatrix& insert (const SparseComplexMatrix& a, const Array<octave_idx_type>& indx);
+  SparseComplexMatrix& insert (const SparseMatrix& a, const Array<octave_idx_type>& indx);
 
   SparseComplexMatrix concat (const SparseComplexMatrix& rb,
 			      const Array<octave_idx_type>& ra_idx);

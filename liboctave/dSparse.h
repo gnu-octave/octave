@@ -50,6 +50,9 @@ SparseMatrix : public MSparse<double>
 
   SparseMatrix (octave_idx_type r, octave_idx_type c) : MSparse<double> (r, c) { }
 
+  SparseMatrix (const dim_vector& dv, octave_idx_type nz = 0) : 
+    MSparse<double> (dv, nz) { }
+
   explicit SparseMatrix (octave_idx_type r, octave_idx_type c, double val) 
     : MSparse<double> (r, c, val) { }
 
@@ -97,6 +100,8 @@ SparseMatrix : public MSparse<double>
   // destructive insert/delete/reorder operations
 
   SparseMatrix& insert (const SparseMatrix& a, octave_idx_type r, octave_idx_type c);
+
+  SparseMatrix& insert (const SparseMatrix& a, const Array<octave_idx_type>& indx);
 
   SparseMatrix concat (const SparseMatrix& rb, const Array<octave_idx_type>& ra_idx);
   SparseComplexMatrix concat (const SparseComplexMatrix& rb,

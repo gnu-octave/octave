@@ -48,17 +48,18 @@ OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
 	LSODE-opts.cc NLEqn-opts.cc Quad-opts.cc
 
 DLD_XSRC := balance.cc besselj.cc betainc.cc cellfun.cc chol.cc \
-	ccolamd.cc colamd.cc colloc.cc conv2.cc daspk.cc dasrt.cc \
-	dassl.cc det.cc dispatch.cc eig.cc expm.cc fft.cc fft2.cc \
-	fftn.cc fftw.cc filter.cc find.cc fsolve.cc \
+	ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
+	dasrt.cc dassl.cc det.cc dispatch.cc eig.cc expm.cc \
+	fft.cc fft2.cc fftn.cc fftw.cc filter.cc find.cc fsolve.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc inv.cc kron.cc lpsolve.cc lsode.cc \
 	lu.cc luinc.cc matrix_type.cc md5sum.cc minmax.cc pinv.cc qr.cc \
 	quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc sparse.cc \
 	spchol.cc spdet.cc spfind.cc spkron.cc splu.cc spparms.cc spqr.cc \
-	sqrtm.cc svd.cc syl.cc symrcm.cc time.cc urlwrite.cc __contourc__.cc \
-	__gnuplot_raw__.l __glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc \
-	__qp__.cc
+	sqrtm.cc svd.cc syl.cc symrcm.cc time.cc tsearch.cc urlwrite.cc \
+	__contourc__.cc __delaunayn__.cc __dsearchn__.cc __gnuplot_raw__.l \
+	__glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc __qp__.cc \
+	__voronoi__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 
@@ -242,7 +243,7 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
     $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
     $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
 else
-  OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
+  OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(QHULL_LIBS) \
     $(GLPK_LIBS) $(REGEX_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
     $(LIBPLPLOT) $(LIBGLOB) $(LIBDLFCN)
 endif
@@ -601,6 +602,12 @@ oct-gperf.h: octave.gperf
 
 ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   ifdef CXXPICFLAG
+    convhulln.oct : pic/convhulln.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
+    __delaunayn__.oct : pic/__delaunayn__.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
+    __voronoi__.oct : pic/__voronoi__.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
     regexp.oct : pic/regexp.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
     urlwrite.oct : pic/urlwrite.o octave$(EXEEXT)
@@ -608,6 +615,12 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
     __glpk__.oct : pic/__glpk__.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
   else
+    convhulln.oct : convhulln.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
+    __delaunayn__.oct : __delaunayn__.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
+    __voronoi__.oct : __voronoi__.o octave$(EXEEXT)
+	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
     regexp.oct : regexp.o octave$(EXEEXT)
 	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
     urlwrite.oct : urlwrite.o octave$(EXEEXT)

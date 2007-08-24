@@ -46,7 +46,7 @@ template class OCTINTERP_API octave_base_sparse<SparseMatrix>;
 
 DEFINE_OCTAVE_ALLOCATOR (octave_sparse_matrix);
 
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix", "sparse");
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_matrix, "sparse matrix", "double");
 
 idx_vector
 octave_sparse_matrix::index_vector (void) const

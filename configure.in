@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.570 $)
+AC_REVISION($Revision: 1.571 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -423,6 +423,24 @@ case "$canonical_host_type" in
     AC_CHECK_LIB(m, sin)
   ;;
 esac
+
+### Check for the QHull library
+AC_SUBST(QHULL_LIBS)
+AC_CHECK_HEADER(qhull/qhull_a.h, have_qhull=yes, have_qhull=no)
+if test "$have_qhull" = yes; then
+  AC_CHECK_LIB(qhull, qh_qhull, have_qhull=yes, have_qhull=no)
+  if test "$have_qhull" != yes; then
+    AC_CHECK_QHULL_VERSION(have_qhull=yes, have_qhull=no)
+    AC_DEFINE(NEED_QHULL_VERSION, 1, [Define if the QHull library needs a wh_version variable defined.])
+  fi
+fi
+if test "$have_qhull" = yes; then
+  AC_DEFINE(HAVE_QHULL, 1, [Define if the QHull library is used.])
+  QHULL_LIBS="-lqhull"
+else
+  warn_qhull="Qhull library not found --- This will result in loss of functionality of some geometry functions."
+  AC_MSG_WARN($warn_qhull)
+fi
 
 ### Check for pcre/regex library.
 AC_SUBST(REGEX_LIBS)

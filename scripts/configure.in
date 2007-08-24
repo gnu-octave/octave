@@ -32,8 +32,8 @@ AC_CONFIG_FILES([Makefile audio/Makefile control/Makefile \
 	  control/base/Makefile control/hinf/Makefile \
 	  control/obsolete/Makefile control/system/Makefile \
 	  control/util/Makefile deprecated/Makefile elfun/Makefile \
-	  finance/Makefile general/Makefile image/Makefile io/Makefile \
-	  linear-algebra/Makefile miscellaneous/Makefile \
+	  finance/Makefile general/Makefile geometry/Makefile image/Makefile \
+	  io/Makefile linear-algebra/Makefile miscellaneous/Makefile \
 	  optimization/Makefile path/Makefile pkg/Makefile plot/Makefile \
 	  polynomial/Makefile quaternion/Makefile set/Makefile \
 	  signal/Makefile sparse/Makefile specfun/Makefile \

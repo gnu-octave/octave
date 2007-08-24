@@ -216,6 +216,13 @@ SparseMatrix::insert (const SparseMatrix& a, octave_idx_type r, octave_idx_type 
   return *this;
 }
 
+SparseMatrix&
+SparseMatrix::insert (const SparseMatrix& a, const Array<octave_idx_type>& indx)
+{
+  MSparse<double>::insert (a, indx);
+  return *this;
+}
+
 SparseMatrix
 SparseMatrix::max (int dim) const
 {

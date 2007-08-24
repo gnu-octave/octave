@@ -791,10 +791,20 @@ tree_matrix::rvalue (void)
 
       if (result_type == "double")
 	{
-	  if (all_real_p)
-	    DO_SINGLE_TYPE_CONCAT (NDArray, array_value);
+	  if (any_sparse_p)
+	    {	    
+	      if (all_real_p)
+		DO_SINGLE_TYPE_CONCAT (SparseMatrix, sparse_matrix_value);
+	      else
+		DO_SINGLE_TYPE_CONCAT (SparseComplexMatrix, sparse_complex_matrix_value);
+	    }
 	  else
-	    DO_SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
+	    {
+	      if (all_real_p)
+		DO_SINGLE_TYPE_CONCAT (NDArray, array_value);
+	      else
+		DO_SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
+	    }
 	}
 #if 0
       else if (result_type == "single")
@@ -812,7 +822,12 @@ tree_matrix::rvalue (void)
 	  retval = octave_value (result, true, type);
 	}
       else if (result_type == "logical")
-	DO_SINGLE_TYPE_CONCAT (boolNDArray, bool_array_value);
+	{
+	  if (any_sparse_p)
+	    DO_SINGLE_TYPE_CONCAT (SparseBoolMatrix, sparse_bool_matrix_value);
+	  else
+	    DO_SINGLE_TYPE_CONCAT (boolNDArray, bool_array_value);
+	}
       else if (result_type == "int8")
 	DO_SINGLE_TYPE_CONCAT (int8NDArray, int8_array_value);
       else if (result_type == "int16")

@@ -45,6 +45,9 @@ public:
 
   MSparse (octave_idx_type n, octave_idx_type m) : Sparse<T> (n, m) { }
 
+  MSparse (const dim_vector& dv, octave_idx_type nz = 0) : 
+    Sparse<T> (dv, nz) { }
+
   MSparse (const MSparse<T>& a) : Sparse<T> (a) { }
 
   MSparse (const MSparse<T>& a, const dim_vector& dv) : Sparse<T> (a, dv) { }
@@ -76,6 +79,12 @@ public:
   MSparse<T>& insert (const Sparse<T>& a, octave_idx_type r, octave_idx_type c)
   {
     Sparse<T>::insert (a, r, c);
+    return *this;
+  }
+
+  MSparse<T>& insert (const Sparse<T>& a, const Array<octave_idx_type>& indx)
+  {
+    Sparse<T>::insert (a, indx);
     return *this;
   }
 

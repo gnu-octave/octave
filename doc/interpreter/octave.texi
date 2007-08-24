@@ -446,8 +446,17 @@ Sets
 * Set Operations::
 
 Interpolation
+
 * One-dimensional Interpolation::
 * Multi-dimensional Interpolation::
+
+Geometry
+
+* Delaunay Triangulation::
+* Voronoi Diagrams::
+* Convex Hull::
+* Plotting the Triangulation::
+* Interpolation on Scattered Data::
 
 Control Theory
 

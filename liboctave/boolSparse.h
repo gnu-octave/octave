@@ -40,6 +40,9 @@ public:
   explicit SparseBoolMatrix (octave_idx_type r, octave_idx_type c, bool val) 
     : Sparse<bool> (r, c, val) { }
 
+  SparseBoolMatrix (const dim_vector& dv, octave_idx_type nz = 0) : 
+    Sparse<bool> (dv, nz) { }
+
   SparseBoolMatrix (const Sparse<bool>& a) : Sparse<bool> (a) { }
 
   SparseBoolMatrix (const SparseBoolMatrix& a) : Sparse<bool> (a) { }
@@ -78,6 +81,8 @@ public:
   // destructive insert/delete/reorder operations
 
   SparseBoolMatrix& insert (const SparseBoolMatrix& a, octave_idx_type r, octave_idx_type c);
+
+  SparseBoolMatrix& insert (const SparseBoolMatrix& a, const Array<octave_idx_type>& indx);
 
   SparseBoolMatrix concat (const SparseBoolMatrix& rb, 
 			   const Array<octave_idx_type>& ra_idx);

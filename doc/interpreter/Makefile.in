@@ -18,7 +18,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SCRIPT_SOURCES = sparseimages.m interpimages.m
+SCRIPT_SOURCES = sparseimages.m interpimages.m geometryimages.m
 
 EXAMPLE_FILES_NODIR = \
   addtwomatrices.cc \
@@ -43,6 +43,11 @@ EXAMPLE_FILES_NODIR = \
 
 EXAMPLE_FILES = $(addprefix $(top_srcdir)/examples/, $(EXAMPLE_FILES_NODIR))
 
+GEOMETRYIMAGES = voronoi triplot griddata convhull delaunay
+GEOMETRYIMAGES_EPS = $(addsuffix .eps, $(GEOMETRYIMAGES))
+GEOMETRYIMAGES_PDF = $(addsuffix .pdf, $(GEOMETRYIMAGES))
+GEOMETRYIMAGES_PNG = $(addsuffix .png, $(GEOMETRYIMAGES))
+
 INTERPIMAGES = interpft interpn interpderiv1 interpderiv2
 INTERPIMAGES_EPS = $(addsuffix .eps, $(INTERPIMAGES))
 INTERPIMAGES_PDF = $(addsuffix .pdf, $(INTERPIMAGES))
@@ -54,9 +59,12 @@ SPARSEIMAGES_PDF = $(addsuffix .pdf, $(SPARSEIMAGES_1))
 SPARSEIMAGES_PNG = $(addsuffix .png, $(SPARSEIMAGES_1))
 SPARSEIMAGES_TXT = $(addsuffix .txt, $(SPARSEIMAGES_1))
 
-IMAGES_EPS = $(SPARSEIMAGES_EPS) $(INTERPIMAGES_EPS)
-IMAGES_PDF = $(SPARSEIMAGES_PDF) $(INTERPIMAGES_PDF)
-IMAGES_PNG = $(SPARSEIMAGES_PNG) $(INTERPIMAGES_PNG)
+IMAGES_EPS = $(SPARSEIMAGES_EPS) $(INTERPIMAGES_EPS) \
+	$(GEOMETRYIMAGES_EPS)
+IMAGES_PDF = $(SPARSEIMAGES_PDF) $(INTERPIMAGES_PDF) \
+	$(GEOMETRYIMAGES_PDF)
+IMAGES_PNG = $(SPARSEIMAGES_PNG) $(INTERPIMAGES_PNG) \
+	$(GEOMETRYIMAGES_PNG)
 IMAGES_TXT = $(SPARSEIMAGES_TXT)
 
 HTML_IMAGES_PNG = $(addprefix HTML/, $(IMAGES_PNG))
@@ -210,7 +218,10 @@ define run-octave
     --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))'); sleep (1);"
 endef
 
-$(INTERPIMAGES_EPS) $(INTERPIMAGES_PNG) $(INTERPIMAGES_TXT): interpimages.m
+$(GEOMETRYIMAGES_EPS) $(GEOMETRYIMAGES_PNG) $(GEOMETRYIMAGES_TXT): geometryimages.m
+	$(run-octave)
+
+$(INTERPIMAGES_EPS) $(INTEgRPIMAGES_PNG) $(INTERPIMAGES_TXT): interpimages.m
 	$(run-octave)
 
 $(SPARSEIMAGES_EPS) $(SPARSEIMAGES_PNG) $(SPARSEIMAGES_TXT): sparseimages.m

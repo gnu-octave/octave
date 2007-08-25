@@ -455,7 +455,6 @@ Geometry
 * Delaunay Triangulation::
 * Voronoi Diagrams::
 * Convex Hull::
-* Plotting the Triangulation::
 * Interpolation on Scattered Data::
 
 Control Theory

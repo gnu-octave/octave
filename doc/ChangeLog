@@ -1,3 +1,13 @@
+2007-08-25  David Bateman  <dbateman@free.fr>
+
+        * interpreter/geometry.txi: Add examples and explanatory text.
+        * interpreter/octave.texi: Update indexing of geometry functions.
+	* interpreter/geometryimage.m: New script to create images for
+	geometry chapter.
+	* interpreter/Makefile.in (SCRIPT_SORCES): add geometryimages.m
+	(GEOMETRYIMAGES*): New variables.
+	(IMAGES_EPS, IMAGES_PDF, IMAGES_PNG): Add the GEOMETRYIMAGES*.
+
 2007-08-24  David Bateman  <dbateman@free.fr>
 
         * interpreter/geometry.txi: Document new functions.

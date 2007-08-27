@@ -633,176 +633,6 @@ private:
   base_graphics_object *rep;
 };
 
-// ---------------------------------------------------------------------
-
-class gh_manager
-{
-protected:
-
-  gh_manager (void);
-
-public:
-
-  static bool instance_ok (void)
-  {
-    bool retval = true;
-
-    if (! instance)
-      instance = new gh_manager ();
-
-    if (! instance)
-      {
-	::error ("unable to create gh_manager!");
-
-	retval = false;
-      }
-
-    return retval;
-  }
-
-  static void free (const graphics_handle& h)
-  {
-    if (instance_ok ())
-      instance->do_free (h);
-  }
-
-  static graphics_handle lookup (double val)
-  {
-    return instance_ok () ? instance->do_lookup (val) : graphics_handle ();
-  }
-
-  static graphics_object get_object (const graphics_handle& h)
-  {
-    return instance_ok () ? instance->do_get_object (h) : graphics_object ();
-  }
-
-  static graphics_handle
-  make_graphics_handle (const std::string& go_name,
-			const graphics_handle& parent)
-  {
-    return instance_ok ()
-      ? instance->do_make_graphics_handle (go_name, parent) : octave_NaN;
-  }
-
-  static graphics_handle make_figure_handle (double val)
-  {
-    return instance_ok ()
-      ? instance->do_make_figure_handle (val) : octave_NaN;
-  }
-
-  static void push_figure (const graphics_handle& h)
-  {
-    if (instance_ok ())
-      instance->do_push_figure (h);
-  }
-
-  static void pop_figure (const graphics_handle& h)
-  {
-    if (instance_ok ())
-      instance->do_pop_figure (h);
-  }
-
-  static graphics_handle current_figure (void)
-  {
-    return instance_ok () ? instance->do_current_figure () : octave_NaN;
-  }
-
-  static Matrix handle_list (void)
-  {
-    return instance_ok () ? instance->do_handle_list () : Matrix ();
-  }
-
-  static Matrix figure_handle_list (void)
-  {
-    return instance_ok () ? instance->do_figure_handle_list () : Matrix ();
-  }
-
-private:
-
-  static gh_manager *instance;
-
-  typedef std::map<graphics_handle, graphics_object>::iterator iterator;
-  typedef std::map<graphics_handle, graphics_object>::const_iterator const_iterator;
-
-  typedef std::set<graphics_handle>::iterator free_list_iterator;
-  typedef std::set<graphics_handle>::const_iterator const_free_list_iterator;
-
-  typedef std::list<graphics_handle>::iterator figure_list_iterator;
-  typedef std::list<graphics_handle>::const_iterator const_figure_list_iterator;
-
-  // A map of handles to graphics objects.
-  std::map<graphics_handle, graphics_object> handle_map;
-
-  // The available graphics handles.
-  std::set<graphics_handle> handle_free_list;
-
-  // The next handle available if handle_free_list is empty.
-  graphics_handle next_handle;
-
-  // The allocated figure handles.  Top of the stack is most recently
-  // created.
-  std::list<graphics_handle> figure_list;
-
-  graphics_handle get_handle (const std::string& go_name);
-
-  void do_free (const graphics_handle& h);
-
-  graphics_handle do_lookup (double val)
-  {
-    iterator p = handle_map.find (val);
-
-    return (p != handle_map.end ()) ? p->first : octave_NaN;
-  }
-
-  graphics_object do_get_object (const graphics_handle& h)
-  {
-    iterator p = handle_map.find (h);
-
-    return (p != handle_map.end ()) ? p->second : graphics_object ();
-  }
-
-  graphics_handle do_make_graphics_handle (const std::string& go_name,
-					   const graphics_handle& p);
-
-  graphics_handle do_make_figure_handle (double val);
-
-  Matrix do_handle_list (void)
-  {
-    Matrix retval (1, handle_map.size ());
-    octave_idx_type i = 0;
-    for (const_iterator p = handle_map.begin (); p != handle_map.end (); p++)
-      retval(i++) = p->first;
-    return retval;
-  }
-
-  Matrix do_figure_handle_list (void)
-  {
-    Matrix retval (1, figure_list.size ());
-    octave_idx_type i = 0;
-    for (const_figure_list_iterator p = figure_list.begin ();
-	 p != figure_list.end ();
-	 p++)
-      retval(i++) = *p;
-    return retval;
-  }
-
-  void do_push_figure (const graphics_handle& h);
-
-  void do_pop_figure (const graphics_handle& h);
-
-  graphics_handle do_current_figure (void) const
-  {
-    return figure_list.empty () ? octave_NaN : figure_list.front ();
-  }
-};
-
-
-// This function is NOT equivalent to the scripting language function gcf.
-graphics_handle gcf (void);
-
-// This function is NOT equivalent to the scripting language function gca.
-graphics_handle gca (void);
-
 class base_properties
 {
 public:
@@ -816,18 +646,9 @@ public:
 
   virtual std::string graphics_object_name (void) const = 0;
 
-  void mark_modified (void)
-  {
-    __modified__ = true;
-    graphics_object parent_obj = gh_manager::get_object (parent);
-    parent_obj.mark_modified ();
-  }
+  void mark_modified (void);
 
-  void override_defaults (base_graphics_object& obj)
-  {
-    graphics_object parent_obj = gh_manager::get_object (parent);
-    parent_obj.override_defaults (obj);
-  }
+  void override_defaults (base_graphics_object& obj);
 
   // Look through DEFAULTS for properties with given CLASS_NAME, and
   // apply them to the current object with set (virtual method).
@@ -851,13 +672,7 @@ public:
 
   void reparent (const graphics_handle& new_parent) { parent = new_parent; }
 
-  virtual void delete_children (void)
-  {
-    octave_idx_type n = children.numel ();
-
-    for (octave_idx_type i = 0; i < n; i++)
-      gh_manager::free (children(i));
-  }
+  virtual void delete_children (void);
 
 protected:
   std::string type;
@@ -1105,20 +920,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const property_name& name) const
-  {
-    octave_value retval = default_properties.lookup (name);
-
-    if (retval.is_undefined ())
-      {
-	graphics_handle parent = get_parent ();
-	graphics_object parent_obj = gh_manager::get_object (parent);
-
-	retval = parent_obj.get_default (name);
-      }
-
-    return retval;
-  }
+  octave_value get_default (const property_name& name) const;
 
   octave_value get_defaults (void) const
   {
@@ -1289,20 +1091,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const property_name& name) const
-  {
-    octave_value retval = default_properties.lookup (name);
-
-    if (retval.is_undefined ())
-      {
-	graphics_handle parent = get_parent ();
-	graphics_object parent_obj = gh_manager::get_object (parent);
-
-	retval = parent_obj.get_default (name);
-      }
-
-    return retval;
-  }
+  octave_value get_default (const property_name& name) const;
 
   octave_value get_defaults (void) const
   {
@@ -1775,6 +1564,176 @@ set_property_in_handle (double handle, const std::string &property,
 #undef OCTAVE_GRAPHICS_PROPERTY_INTERNAL
 #undef OCTAVE_GRAPHICS_PROPERTY
 #undef OCTAVE_GRAPHICS_MUTABLE_PROPERTY
+
+// ---------------------------------------------------------------------
+
+class gh_manager
+{
+protected:
+
+  gh_manager (void);
+
+public:
+
+  static bool instance_ok (void)
+  {
+    bool retval = true;
+
+    if (! instance)
+      instance = new gh_manager ();
+
+    if (! instance)
+      {
+	::error ("unable to create gh_manager!");
+
+	retval = false;
+      }
+
+    return retval;
+  }
+
+  static void free (const graphics_handle& h)
+  {
+    if (instance_ok ())
+      instance->do_free (h);
+  }
+
+  static graphics_handle lookup (double val)
+  {
+    return instance_ok () ? instance->do_lookup (val) : graphics_handle ();
+  }
+
+  static graphics_object get_object (const graphics_handle& h)
+  {
+    return instance_ok () ? instance->do_get_object (h) : graphics_object ();
+  }
+
+  static graphics_handle
+  make_graphics_handle (const std::string& go_name,
+			const graphics_handle& parent)
+  {
+    return instance_ok ()
+      ? instance->do_make_graphics_handle (go_name, parent) : octave_NaN;
+  }
+
+  static graphics_handle make_figure_handle (double val)
+  {
+    return instance_ok ()
+      ? instance->do_make_figure_handle (val) : octave_NaN;
+  }
+
+  static void push_figure (const graphics_handle& h)
+  {
+    if (instance_ok ())
+      instance->do_push_figure (h);
+  }
+
+  static void pop_figure (const graphics_handle& h)
+  {
+    if (instance_ok ())
+      instance->do_pop_figure (h);
+  }
+
+  static graphics_handle current_figure (void)
+  {
+    return instance_ok () ? instance->do_current_figure () : octave_NaN;
+  }
+
+  static Matrix handle_list (void)
+  {
+    return instance_ok () ? instance->do_handle_list () : Matrix ();
+  }
+
+  static Matrix figure_handle_list (void)
+  {
+    return instance_ok () ? instance->do_figure_handle_list () : Matrix ();
+  }
+
+private:
+
+  static gh_manager *instance;
+
+  typedef std::map<graphics_handle, graphics_object>::iterator iterator;
+  typedef std::map<graphics_handle, graphics_object>::const_iterator const_iterator;
+
+  typedef std::set<graphics_handle>::iterator free_list_iterator;
+  typedef std::set<graphics_handle>::const_iterator const_free_list_iterator;
+
+  typedef std::list<graphics_handle>::iterator figure_list_iterator;
+  typedef std::list<graphics_handle>::const_iterator const_figure_list_iterator;
+
+  // A map of handles to graphics objects.
+  std::map<graphics_handle, graphics_object> handle_map;
+
+  // The available graphics handles.
+  std::set<graphics_handle> handle_free_list;
+
+  // The next handle available if handle_free_list is empty.
+  graphics_handle next_handle;
+
+  // The allocated figure handles.  Top of the stack is most recently
+  // created.
+  std::list<graphics_handle> figure_list;
+
+  graphics_handle get_handle (const std::string& go_name);
+
+  void do_free (const graphics_handle& h);
+
+  graphics_handle do_lookup (double val)
+  {
+    iterator p = handle_map.find (val);
+
+    return (p != handle_map.end ()) ? p->first : octave_NaN;
+  }
+
+  graphics_object do_get_object (const graphics_handle& h)
+  {
+    iterator p = handle_map.find (h);
+
+    return (p != handle_map.end ()) ? p->second : graphics_object ();
+  }
+
+  graphics_handle do_make_graphics_handle (const std::string& go_name,
+					   const graphics_handle& p);
+
+  graphics_handle do_make_figure_handle (double val);
+
+  Matrix do_handle_list (void)
+  {
+    Matrix retval (1, handle_map.size ());
+    octave_idx_type i = 0;
+    for (const_iterator p = handle_map.begin (); p != handle_map.end (); p++)
+      retval(i++) = p->first;
+    return retval;
+  }
+
+  Matrix do_figure_handle_list (void)
+  {
+    Matrix retval (1, figure_list.size ());
+    octave_idx_type i = 0;
+    for (const_figure_list_iterator p = figure_list.begin ();
+	 p != figure_list.end ();
+	 p++)
+      retval(i++) = *p;
+    return retval;
+  }
+
+  void do_push_figure (const graphics_handle& h);
+
+  void do_pop_figure (const graphics_handle& h);
+
+  graphics_handle do_current_figure (void) const
+  {
+    return figure_list.empty () ? octave_NaN : figure_list.front ();
+  }
+};
+
+
+// This function is NOT equivalent to the scripting language function gcf.
+graphics_handle gcf (void);
+
+// This function is NOT equivalent to the scripting language function gca.
+graphics_handle gca (void);
 
 #endif
 

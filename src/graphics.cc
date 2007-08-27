@@ -687,7 +687,8 @@ base_properties::remove_child (const graphics_handle& h)
     }
 }
 
-void base_properties::set_parent (const octave_value& val)
+void
+base_properties::set_parent (const octave_value& val)
 {
   double tmp = val.double_value ();
 
@@ -712,6 +713,30 @@ void base_properties::set_parent (const octave_value& val)
     }
   else
     error ("set: expecting parent to be a graphics handle");
+}
+
+void
+base_properties::mark_modified (void)
+{
+  __modified__ = true;
+  graphics_object parent_obj = gh_manager::get_object (parent);
+  parent_obj.mark_modified ();
+}
+
+void
+base_properties::override_defaults (base_graphics_object& obj)
+{
+  graphics_object parent_obj = gh_manager::get_object (parent);
+  parent_obj.override_defaults (obj);
+}
+
+void
+base_properties::delete_children (void)
+{
+  octave_idx_type n = children.numel ();
+
+  for (octave_idx_type i = 0; i < n; i++)
+    gh_manager::free (children(i));
 }
 
 void
@@ -896,7 +921,8 @@ figure::figure_properties::get (const property_name& name) const
   return retval;
 }
 
-void figure::figure_properties::close (void)
+void
+figure::figure_properties::close (void)
 {
   if (! __plot_stream__.is_empty ())
     {
@@ -914,7 +940,8 @@ void figure::figure_properties::close (void)
   xset (0, "currentfigure", gh_manager::current_figure ());
 }
 
-property_list::pval_map_type figure::figure_properties::factory_defaults (void)
+property_list::pval_map_type
+figure::figure_properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -925,6 +952,22 @@ property_list::pval_map_type figure::figure_properties::factory_defaults (void)
   m["paperorientation"] = "portrait";
 
   return m;
+}
+
+octave_value
+figure::get_default (const property_name& name) const
+{
+  octave_value retval = default_properties.lookup (name);
+
+  if (retval.is_undefined ())
+    {
+      graphics_handle parent = get_parent ();
+      graphics_object parent_obj = gh_manager::get_object (parent);
+
+      retval = parent_obj.get_default (name);
+    }
+
+  return retval;
 }
 
 std::string figure::figure_properties::go_name ("figure");
@@ -1524,7 +1567,8 @@ axes::axes_properties::delete_children (void)
     gh_manager::free (zlabel);
 }
 
-property_list::pval_map_type axes::axes_properties::factory_defaults (void)
+property_list::pval_map_type
+axes::axes_properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -1598,6 +1642,22 @@ property_list::pval_map_type axes::axes_properties::factory_defaults (void)
   m["outerposition"] = touterposition;
 
   return m;
+}
+
+octave_value
+axes::get_default (const property_name& name) const
+{
+  octave_value retval = default_properties.lookup (name);
+
+  if (retval.is_undefined ())
+    {
+      graphics_handle parent = get_parent ();
+      graphics_object parent_obj = gh_manager::get_object (parent);
+
+      retval = parent_obj.get_default (name);
+    }
+
+  return retval;
 }
 
 std::string axes::axes_properties::go_name ("axes");
@@ -1766,7 +1826,8 @@ line::line_properties::get (const property_name& name) const
   return retval;
 }
 
-property_list::pval_map_type line::line_properties::factory_defaults (void)
+property_list::pval_map_type
+line::line_properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -1989,7 +2050,8 @@ image::image_properties::get (const property_name& name) const
   return retval;
 }
 
-property_list::pval_map_type image::image_properties::factory_defaults (void)
+property_list::pval_map_type
+image::image_properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -2145,7 +2207,8 @@ patch::patch_properties::get (const property_name& name) const
   return retval;
 }
 
-property_list::pval_map_type patch::patch_properties::factory_defaults (void)
+property_list::pval_map_type
+patch::patch_properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 

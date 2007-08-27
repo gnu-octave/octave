@@ -1,5 +1,11 @@
 2007-08-27  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (base_properties::mark_modified,
+	base_properties::override_defaults,
+	base_properties::delete_children, figure::get_default,
+	axes::get_default): Move definitions here, from graphics.h.
+	* graphics.h (class gh_manager): Move decl to end of file.
+
 	* Cell.h (Cell::Cell (const octave_value_list&)): Create row
 	vector instead of column vector.
 

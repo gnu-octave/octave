@@ -45,7 +45,7 @@ public:
     : ArrayN<octave_value> (dim_vector (1, 1), val) { }
 
   Cell (const octave_value_list& ovl)
-    : ArrayN<octave_value> (dim_vector (ovl.length (), 1))
+    : ArrayN<octave_value> (dim_vector (1, ovl.length ()))
     {
       for (octave_idx_type i = 0; i < ovl.length (); i++)
 	elem (i) = ovl (i);

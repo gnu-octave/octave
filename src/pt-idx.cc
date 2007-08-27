@@ -476,9 +476,22 @@ tree_index_expression::lvalue (void)
 
 	    case '.':
 	      {
-		idx.push_back (octave_value (get_struct_index (p_arg_nm, p_dyn_field)));
+		octave_value tidx = get_struct_index (p_arg_nm, p_dyn_field);
 
-		if (error_state)
+		if (! error_state)
+		  {
+		    idx.push_back (tidx);
+
+		    if (i == n-1)
+		      {
+			// Last indexing element.  Will this result in a
+			// comma-separated list?
+
+			if (first_retval_object.is_map ())
+			  retval.numel (first_retval_object.numel ());
+		      }
+		  }
+		else
 		  eval_error ();
 	      }
 	      break;

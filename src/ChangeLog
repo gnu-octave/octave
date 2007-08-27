@@ -1,3 +1,17 @@
+2007-08-27  John W. Eaton  <jwe@octave.org>
+
+	* Cell.h (Cell::Cell (const octave_value_list&)): Create row
+	vector instead of column vector.
+
+	* pt-idx.cc (tree_index_expression::lvalue): Handle [x.a] =
+	... style assignments.
+	* ov-struct.cc (octave_struct::subsasgn): Handle case of RHS as
+	comma-separated list.
+
+	* ov-cell.cc (gripe_failed_assignment): New function.
+	(octave_cell::subsasgn): Call gripe_failed_assignment if assign
+	methods fail.
+
 2007-08-24  David Bateman  <dbateman@free.fr>
 
 	* symtab.cc (void symbol_table::clear (void)): If the record in

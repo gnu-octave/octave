@@ -59,6 +59,12 @@ DEFINE_OCTAVE_ALLOCATOR (octave_cell);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 
+static void
+gripe_failed_assignment (void)
+{
+  error ("assignment to cell array failed");
+}
+
 octave_value_list
 octave_cell::subsref (const std::string& type,
 		      const std::list<octave_value_list>& idx, int nargout)
@@ -228,8 +234,13 @@ octave_cell::subsasgn (const std::string& type,
 	      else
 		octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-	    count++;
-	    retval = octave_value (this);
+	    if (! error_state)
+	      {
+		count++;
+		retval = octave_value (this);
+	      }
+	    else
+	      gripe_failed_assignment ();
 	  }
 	  break;
 
@@ -250,8 +261,13 @@ octave_cell::subsasgn (const std::string& type,
 	    else
 	      octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-	    count++;
-	    retval = octave_value (this);
+	    if (! error_state)
+	      {
+		count++;
+		retval = octave_value (this);
+	      }
+	    else
+	      gripe_failed_assignment ();
 	  }
 	  break;
 

@@ -363,7 +363,18 @@ octave_struct::subsasgn (const std::string& type,
 
 	    std::string key = key_idx(0).string_value ();
 
-	    map.assign (key, t_rhs);
+	    if (t_rhs.is_cs_list ())
+	      {
+		Cell tmp_cell = Cell (t_rhs.list_value ());
+
+		// FIXME -- shouldn't care if the dimensions of the
+		// RHS don't match the dimensions of the subscriped
+		// LHS.
+
+		map.assign (key, tmp_cell);
+	      }
+	    else
+	      map.assign (key, t_rhs);
 
 	    if (! error_state)
 	      {

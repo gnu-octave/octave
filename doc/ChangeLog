@@ -1,3 +1,13 @@
+2007-08-27  David Bateman  <dbateman@free.fr>
+
+	* interpreter/struct.txi: Remove.
+	* interpreter/containers.txi: Combine with this chapter. Add
+	examples, and section on comma separated lists. Document the
+	difference between "c(1,:) = []" and c{1,:} = []" for a cell
+	arrays.
+	* interpreter/octave.texi: Document new indexing of containers
+	section.
+
 2007-08-25  David Bateman  <dbateman@free.fr>
 
         * interpreter/geometry.txi: Add examples and explanatory text.

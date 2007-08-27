@@ -132,8 +132,7 @@ It corresponds to GNU Octave version @value{VERSION}.
 * Data Types::                  
 * Numeric Data Types::          
 * Strings::                     
-* Data Structures::             
-* Cell Arrays::                  
+* Data Containers::             
 * Variables::                   
 * Expressions::                 Expressions.
 * Evaluation::                  
@@ -265,12 +264,11 @@ Strings
 * String Conversions::          
 * Character Class Functions::   
 
-Cell Arrays
+Data Containers
 
-* Creating Cell Arrays::                 
-* Indexing Cell Arrays::
-* Cell Arrays of Strings::
-* Processing Data in Cell Arrays::
+* Data Structures::
+* Cell Arrays::
+* Comma Separated Lists::
 
 Variables
 
@@ -580,7 +578,6 @@ Emacs Octave Support
 @include data.texi
 @include numbers.texi
 @include strings.texi
-@include struct.texi
 @include container.texi
 @include var.texi
 @include expr.texi

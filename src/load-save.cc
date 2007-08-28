@@ -594,7 +594,8 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
 {
   std::string fname = name;
 
-  if (! octave_env::absolute_pathname (fname))
+  if (! (octave_env::absolute_pathname (fname)
+	 || octave_env::rooted_relative_pathname (fname)))
     {
       file_stat fs (fname);
 
@@ -612,8 +613,14 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
 	}
     }
 
-  if (fname.rfind (".") == NPOS)
+  size_t dot_pos = fname.rfind (".");
+  size_t sep_pos = fname.find_last_of (file_ops::dir_sep_chars);
+    
+  if (dot_pos == NPOS || (sep_pos != NPOS && dot_pos < sep_pos))
     {
+      // Either no '.' in name or no '.' appears after last directory
+      // separator.
+
       file_stat fs (fname);
 
       if (! (fs.exists () && fs.is_reg ()))

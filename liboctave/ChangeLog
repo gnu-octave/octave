@@ -1,3 +1,9 @@
+2007-08-27  John W. Eaton  <jwe@octave.org>
+
+	* oct-env.cc (octave_env::rooted_relative_pathname,
+	octave_env::do_rooted_relative_pathname): New functions.
+	* oct-env.h: Provide decls.
+
 2007-08-24  David Bateman  <dbateman@free.fr>
 
         * MSparse.h (MSparse<T>& insert (const Sparse<T>&, 

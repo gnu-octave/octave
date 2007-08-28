@@ -79,8 +79,8 @@ SUB_SOURCE := arith.txi audio.txi basics.txi bugs.txi \
 	intro.txi io.txi linalg.txi matrix.txi nonlin.txi numbers.txi \
 	op-idx.txi optim.txi package.txi plot.txi poly.txi preface.txi \
 	quad.txi quaternion.txi set.txi signal.txi sparse.txi stats.txi \
-	stmt.txi strings.txi struct.txi system.txi \
-	testfun.txi tips.txi var.txi vr-idx.txi
+	stmt.txi strings.txi system.txi testfun.txi tips.txi var.txi \
+	vr-idx.txi
 
 SOURCES := $(SUB_SOURCE) $(SCRIPT_SOURCES)
 

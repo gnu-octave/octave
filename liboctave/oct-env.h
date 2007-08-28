@@ -40,6 +40,8 @@ public:
 
   static bool absolute_pathname (const std::string& s);
 
+  static bool rooted_relative_pathname (const std::string& s);
+
   static std::string base_pathname (const std::string& s);
 
   static std::string make_absolute (const std::string& s,
@@ -74,6 +76,8 @@ private:
   std::string do_polite_directory_format (const std::string& name) const;
 
   bool do_absolute_pathname (const std::string& s) const;
+
+  bool do_rooted_relative_pathname (const std::string& s) const;
 
   std::string do_base_pathname (const std::string& s) const;
 

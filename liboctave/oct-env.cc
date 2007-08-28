@@ -110,6 +110,13 @@ octave_env::absolute_pathname (const std::string& s)
     ? instance->do_absolute_pathname (s) : false;
 }
 
+bool
+octave_env::rooted_relative_pathname (const std::string& s)
+{
+  return (instance_ok ())
+    ? instance->do_rooted_relative_pathname (s) : false;
+}
+
 std::string
 octave_env::base_pathname (const std::string& s)
 {
@@ -257,6 +264,29 @@ octave_env::do_absolute_pathname (const std::string& s) const
 	  && file_ops::is_dir_sep (s[2])))
     return true;
 #endif
+
+  return false;
+}
+
+bool
+octave_env::do_rooted_relative_pathname (const std::string& s) const
+{
+  size_t len = s.length ();
+
+  if (len == 0)
+    return false;
+
+  if (len == 1 && s[0] == '.')
+    return true;
+
+  if (len > 1 && s[0] == '.' && file_ops::is_dir_sep (s[1]))
+    return true;
+
+  if (len == 2 && s[0] == '.' && s[1] == '.')
+    return true;
+
+  if (len > 2 && s[0] == '.' && s[1] == '.' && file_ops::is_dir_sep (s[2]))
+    return true;
 
   return false;
 }

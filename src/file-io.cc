@@ -394,7 +394,9 @@ do_stream_open (const std::string& name, const std::string& mode,
 	{
 	  std::string fname = file_ops::tilde_expand (name);
 
-	  if (! (md & std::ios::out || octave_env::absolute_pathname (fname)))
+	  if (! (md & std::ios::out
+		 || octave_env::absolute_pathname (fname)
+		 || octave_env::rooted_relative_pathname (fname)))
 	    {
 	      file_stat fs (fname);
 

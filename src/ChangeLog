@@ -1,5 +1,10 @@
 2007-08-27  John W. Eaton  <jwe@octave.org>
 
+	* load-path.cc (load_path::do_find_file): Also files with non
+	rooted relative names.
+	* load-save.cc (find_file_to_load): Likewise.  Also handle
+	appending .mat to files with relative names.
+
 	* graphics.cc (base_properties::mark_modified,
 	base_properties::override_defaults,
 	base_properties::delete_children, figure::get_default,

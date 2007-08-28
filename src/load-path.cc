@@ -743,39 +743,48 @@ load_path::do_find_file (const std::string& file) const
 {
   std::string retval;
 
-  if (octave_env::absolute_pathname (file))
+  if (file.find ('/') != NPOS)
     {
-      file_stat fs (file);
-
-      if (fs.exists ())
-	return file;
-    }
-
-  std::string dir_name;
-
-  for (const_dir_info_list_iterator p = dir_info_list.begin ();
-       p != dir_info_list.end ();
-       p++)
-    {
-      string_vector all_files = p->all_files;
-
-      octave_idx_type len = all_files.length ();
-
-      for (octave_idx_type i = 0; i < len; i++)
+      if (octave_env::absolute_pathname (file)
+	  || octave_env::rooted_relative_pathname (file))
 	{
-	  if (all_files[i] == file)
-	    {
-	      dir_name = p->dir_name;
+	  file_stat fs (file);
 
-	      goto done;
+	  if (fs.exists ())
+	    return file;
+	}
+      else
+	{
+	  for (const_dir_info_list_iterator p = dir_info_list.begin ();
+	       p != dir_info_list.end ();
+	       p++)
+	    {
+	      std::string tfile = p->dir_name + file_ops::dir_sep_str + file;
+
+	      file_stat fs (tfile);
+
+	      if (fs.exists ())
+		return tfile;
 	    }
 	}
     }
+  else
+    {
+      for (const_dir_info_list_iterator p = dir_info_list.begin ();
+	   p != dir_info_list.end ();
+	   p++)
+	{
+	  string_vector all_files = p->all_files;
 
- done:
+	  octave_idx_type len = all_files.length ();
 
-  if (! dir_name.empty ())
-    retval = dir_name + file_ops::dir_sep_str + file;
+	  for (octave_idx_type i = 0; i < len; i++)
+	    {
+	      if (all_files[i] == file)
+		return p->dir_name + file_ops::dir_sep_str + file;
+	    }
+	}
+    }
 
   return retval;
 }

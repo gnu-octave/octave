@@ -59,7 +59,7 @@ public:
 	iterator n = b;
 	n++;
 	if (pred (*b))
-	  erase (b);
+	  lst.erase (b);
 	b = n;
       }
   }

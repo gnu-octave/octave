@@ -851,7 +851,7 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcond,
 
   if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcond, force, calc_cond);
-  else if (typ != MatrixType::Rectangular)
+  else
     {
       if (mattype.is_hermitian ())
 	{
@@ -870,6 +870,9 @@ Matrix::inverse (MatrixType &mattype, octave_idx_type& info, double& rcond,
 
       if (!mattype.is_hermitian ())
 	ret = finverse(mattype, info, rcond, force, calc_cond);
+
+      if (rcond == 0.)
+	ret = Matrix (rows (), columns (), octave_Inf);
     }
 
   return ret;

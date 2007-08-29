@@ -1012,7 +1012,7 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
       MatrixType newtype = mattype.transpose();
       ret = transpose().tinverse (newtype, info, rcond, true, calc_cond);
     }
-  else if (typ != MatrixType::Rectangular)
+  else
     {
       if (mattype.is_hermitian())
 	{
@@ -1053,8 +1053,6 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
 	  ret = fact.Pc().transpose() * InvU * InvL * fact.Pr();
 	}
     }
-  else
-    (*current_liboctave_error_handler) ("inverse requires square matrix");
 
   return ret;
 }

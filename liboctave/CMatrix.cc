@@ -1182,7 +1182,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
 
   if (typ == MatrixType::Upper || typ == MatrixType::Lower)
     ret = tinverse (mattype, info, rcond, force, calc_cond);
-  else if (typ != MatrixType::Rectangular)
+  else
     {
       if (mattype.is_hermitian ())
 	{
@@ -1201,6 +1201,9 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
 
       if (!mattype.is_hermitian ())
 	ret = finverse(mattype, info, rcond, force, calc_cond);
+
+      if (rcond == 0.)
+	ret = ComplexMatrix (rows (), columns (), Complex (octave_Inf, 0.));
     }
 
   return ret;

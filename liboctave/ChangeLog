@@ -1,3 +1,15 @@
+2007-08-29  David Bateman  <dbateman@free.fr>
+
+        * dSparse.cc (SparseMatrix SparseMatrix::inverse (MatrixType &, 
+        octave_idx_type&, double&, int, int)): Calculate with LU even for
+        matrices marked as singular.
+        * CSparse.cc (SparseComplexMatrix SparseComplexMatrix::inverse (
+        MatrixType &, octave_idx_type&, double&, int, int)): ditto.
+        * dMatrix.cc (Matrix Matrix::inverse (MatrixType &, octave_idx_type&,
+        double&, int, int)): ditto. If rcond==0 force matrix of infinities.
+        * dMatrix.cc (ComplexMatrix ComplexMatrix::inverse (MatrixType &,
+         octave_idx_type&, double&, int, int)): ditto.
+
 2007-08-27  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (octave_env::rooted_relative_pathname,

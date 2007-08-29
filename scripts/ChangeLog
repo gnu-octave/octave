@@ -1,3 +1,7 @@
+2007-08-29  Peter A. Gustafson  <petegus@umich.edu>
+
+	* plot/__go_draw_axes__.m: Disable linetype in do_linestyle_command.
+
 2007-08-24  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Treat text color property.

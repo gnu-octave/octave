@@ -103,8 +103,8 @@ function plot_stream = open_gnuplot_stream (h, term, file)
     endif
 
     if (nargin == 3)
-      fprintf (plot_stream, "set terminal %s\n;", term);
-      fprintf (plot_stream, "set output \"%s\"\n;", file);
+      fprintf (plot_stream, "set terminal %s;\n", term);
+      fprintf (plot_stream, "set output \"%s\";\n", file);
     else
 
       ## Guess the terminal type.

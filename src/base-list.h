@@ -42,7 +42,27 @@ public:
   iterator erase (iterator pos) { return lst.erase (pos); }
 
   template <class P>
-  void remove_if (P pred) { lst.remove_if (pred); }
+  void remove_if (P pred)
+  {
+    // We would like to simply call
+    //
+    //   lst.remove_if (pred);
+    //
+    // but the Sun Studio compiler chokes on that.
+    //
+    // FIXME -- this kluge should be removed at some point.
+
+    iterator b = lst.begin ();
+    iterator e = lst.end ();
+    while (b != e)
+      {
+	iterator n = b;
+	n++;
+	if (pred (*b))
+	  erase (b);
+	b = n;
+      }
+  }
 
   void clear (void) { lst.clear (); }
 

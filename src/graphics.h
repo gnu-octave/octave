@@ -40,8 +40,11 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov.h"
 
 #define OCTAVE_GRAPHICS_PROPERTY_INTERNAL(TAG, TYPE, NAME) \
-  private: TAG TYPE NAME; \
-  public: const TYPE& get_ ## NAME () const { return NAME; } \
+  private: \
+    TAG TYPE NAME; \
+  public: \
+    const TYPE& get_ ## NAME () const { return NAME; } \
+    void set_ ## NAME (const TYPE& val) { NAME = val; mark_modified (); } \
   private:
 
 #define OCTAVE_GRAPHICS_PROPERTY(TYPE, NAME) \
@@ -421,6 +424,57 @@ typedef double graphics_handle;
 
 // ---------------------------------------------------------------------
 
+class base_graphics_object;
+
+class base_properties
+{
+public:
+  base_properties (const std::string& t = "unknown",
+		   const graphics_handle& mh = octave_NaN,
+		   const graphics_handle& p = octave_NaN)
+    : type (t), __modified__ (true), __myhandle__ (mh), parent (p),
+      children () { }
+
+  virtual ~base_properties (void) { }
+
+  virtual std::string graphics_object_name (void) const { return "unknonwn"; }
+
+  void mark_modified (void);
+
+  void override_defaults (base_graphics_object& obj);
+
+  // Look through DEFAULTS for properties with given CLASS_NAME, and
+  // apply them to the current object with set (virtual method).
+
+  void set_from_list (base_graphics_object& obj, property_list& defaults);
+
+  virtual void set (const property_name&, const octave_value&) { }
+
+  graphics_handle get_parent (void) const { return parent; }
+
+  void remove_child (const graphics_handle& h);
+
+  void adopt (const graphics_handle& h)
+  {
+    octave_idx_type n = children.numel ();
+    children.resize (1, n+1);
+    children(n) = h;
+  }
+
+  void set_parent (const octave_value& val);
+
+  void reparent (const graphics_handle& new_parent) { parent = new_parent; }
+
+  virtual void delete_children (void);
+
+protected:
+  std::string type;
+  bool __modified__;
+  graphics_handle __myhandle__;
+  graphics_handle parent;
+  Matrix children;
+};
+
 class base_graphics_object
 {
 public:
@@ -509,6 +563,13 @@ public:
   virtual void defaults (void) const
   {
     error ("base_graphics_object::default: invalid graphics object");
+  }
+
+  virtual base_properties& get_properties (void)
+  {
+    static base_properties properties;
+    error ("base_graphics_object::get_properties: invalid graphics object");
+    return properties;
   }
 
   virtual bool valid_object (void) const { return false; }
@@ -625,61 +686,14 @@ public:
 
   bool isa (const std::string& go_name) const { return rep->isa (go_name); }
 
+  base_properties& get_properties (void) { return rep->get_properties (); }
+
   bool valid_object (void) const { return rep->valid_object (); }
 
   operator bool (void) const { return rep->valid_object (); }
 
 private:
   base_graphics_object *rep;
-};
-
-class base_properties
-{
-public:
-  base_properties (const std::string& t = "unknown",
-		   const graphics_handle& mh = octave_NaN,
-		   const graphics_handle& p = octave_NaN)
-    : type (t), __modified__ (true), __myhandle__ (mh), parent (p),
-      children () { }
-
-  virtual ~base_properties (void) { }
-
-  virtual std::string graphics_object_name (void) const = 0;
-
-  void mark_modified (void);
-
-  void override_defaults (base_graphics_object& obj);
-
-  // Look through DEFAULTS for properties with given CLASS_NAME, and
-  // apply them to the current object with set (virtual method).
-
-  void set_from_list (base_graphics_object& obj, property_list& defaults);
-
-  virtual void set (const property_name& name, const octave_value& val) = 0;
-
-  graphics_handle get_parent (void) const { return parent; }
-
-  void remove_child (const graphics_handle& h);
-
-  void adopt (const graphics_handle& h)
-  {
-    octave_idx_type n = children.numel ();
-    children.resize (1, n+1);
-    children(n) = h;
-  }
-
-  void set_parent (const octave_value& val);
-
-  void reparent (const graphics_handle& new_parent) { parent = new_parent; }
-
-  virtual void delete_children (void);
-
-protected:
-  std::string type;
-  bool __modified__;
-  graphics_handle __myhandle__;
-  graphics_handle parent;
-  Matrix children;
 };
 
 // ---------------------------------------------------------------------
@@ -713,6 +727,7 @@ public:
     static std::string go_name;
   };
 
+private:
   root_figure_properties properties;
 
 public:
@@ -808,6 +823,8 @@ public:
 
   void reparent (const graphics_handle& np) { properties.reparent (np); }
 
+  base_properties& get_properties (void) { return properties; }
+
   bool valid_object (void) const { return true; }
 
 private:
@@ -854,6 +871,7 @@ public:
     static std::string go_name;
   };
 
+private:
   figure_properties properties;
 
 public:
@@ -934,6 +952,8 @@ public:
   void adopt (const graphics_handle& h) { properties.adopt (h); }
 
   void reparent (const graphics_handle& np) { properties.reparent (np); }
+
+  base_properties& get_properties (void) { return properties; }
 
   bool valid_object (void) const { return true; }
 
@@ -1023,6 +1043,7 @@ public:
     static std::string go_name;
   };
 
+private:
   axes_properties properties;
 
 public:
@@ -1106,6 +1127,8 @@ public:
 
   void reparent (const graphics_handle& np) { properties.reparent (np); }
 
+  base_properties& get_properties (void) { return properties; }
+
   bool valid_object (void) const { return true; }
 
 private:
@@ -1154,6 +1177,7 @@ public:
     static std::string go_name;
   };
 
+private:
   line_properties properties;
 
 public:
@@ -1204,6 +1228,8 @@ public:
 
   void reparent (const graphics_handle& h) { properties.reparent (h); }
 
+  base_properties& get_properties (void) { return properties; }
+
   bool valid_object (void) const { return true; }
 };
 
@@ -1240,6 +1266,7 @@ public:
     static std::string go_name;
   };
 
+private:
   text_properties properties;
 
 public:
@@ -1290,6 +1317,8 @@ public:
 
   void reparent (const graphics_handle& h) { properties.reparent (h); }
 
+  base_properties& get_properties (void) { return properties; }
+
   bool valid_object (void) const { return true; }
 };
 
@@ -1323,6 +1352,7 @@ public:
     static std::string go_name;
   };
 
+private:
   image_properties properties;
 
 public:
@@ -1373,6 +1403,8 @@ public:
 
   void reparent (const graphics_handle& h) { properties.reparent (h); }
 
+  base_properties& get_properties (void) { return properties; }
+
   bool valid_object (void) const { return true; }
 };
 
@@ -1416,6 +1448,7 @@ public:
     static std::string go_name;
   };
 
+private:
   patch_properties properties;
 
 public:
@@ -1466,6 +1499,8 @@ public:
 
   void reparent (const graphics_handle& h) { properties.reparent (h); }
 
+  base_properties& get_properties (void) { return properties; }
+
   bool valid_object (void) const { return true; }
 };
 
@@ -1500,6 +1535,7 @@ public:
     static std::string go_name;
   };
 
+private:
   surface_properties properties;
 
 public:
@@ -1549,6 +1585,8 @@ public:
   void adopt (const graphics_handle& h) { properties.adopt (h); }
 
   void reparent (const graphics_handle& h) { properties.reparent (h); }
+
+  base_properties& get_properties (void) { return properties; }
 
   bool valid_object (void) const { return true; }
 };

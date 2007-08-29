@@ -1,3 +1,24 @@
+2007-08-29  John W. Eaton  <jwe@octave.org>
+
+	* base-list.h (octave_base_list::remove): Implement our own
+	remove_if function here.
+
+2007-08-28  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h (OCTAVE_GRAPHICS_PROPERTY_INTERNAL): Also define
+	set_X functions for properties.
+	(base_properties): Move class definition before definition of
+	base_graphics_object class.  Provide forward declaration of
+	base_graphics_object prior to definition of base_properties.
+	(base_graphics_object::get_properties): New virtual function.
+	(graphics_object::get_properties, root_figure::get_properties,
+	figure::get_properties, axes::get_properties,
+	line::get_properties, text::get_properties, image::get_properties,
+	patch::get_properties, surface::get_properties): New functions.
+	(root_figure::properties, figure::properties, axes::properties,
+	line::properties, text::properties, image::properties,
+	patch::properties, surface::properties): Data member now private.
+
 2007-08-27  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_find_file): Also files with non

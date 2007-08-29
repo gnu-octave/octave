@@ -2878,6 +2878,60 @@ set_property_in_handle (double handle, const std::string &property,
   return ret;
 }
 
+DEFUN (doit, args, , "")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      graphics_handle h = octave_NaN;
+
+      double val = args(0).double_value ();
+
+      if (! error_state)
+	{
+	  h = gh_manager::lookup (val);
+
+	  if (! xisnan (h))
+	    {
+	      graphics_object obj = gh_manager::get_object (h);
+
+	      if (obj.isa ("line"))
+		{
+		  line::line_properties& lp
+		    = dynamic_cast<line::line_properties&> (obj.get_properties ());
+		  retval = lp.get_xdata ();
+		  Matrix m (1, 5);
+		  m(0) = 0;
+		  m(1) = 1;
+		  m(2) = 2;
+		  m(3) = 3;
+		  m(4) = 4;
+		  lp.set_xdata (m);
+		  m(0) = 0;
+		  m(1) = 1;
+		  m(2) = 0.2;
+		  m(3) = 0.8;
+		  m(4) = 0.4;
+		  lp.set_ydata (m);
+
+		  feval ("__request_drawnow__");
+		}
+	      else
+		error ("doit: looking for line");
+	    }
+	  else
+	    error ("doit: invalid graphics object (= %g)", val);
+	}
+      else
+	error ("doit: invalid graphics object");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

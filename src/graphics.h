@@ -44,7 +44,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
     TAG TYPE NAME; \
   public: \
     const TYPE& get_ ## NAME () const { return NAME; } \
-    void set_ ## NAME (const TYPE& val) { NAME = val; mark_modified (); } \
   private:
 
 #define OCTAVE_GRAPHICS_PROPERTY(TYPE, NAME) \

@@ -15,12 +15,11 @@
 
 2007-08-28  John W. Eaton  <jwe@octave.org>
 
-	* graphics.h (OCTAVE_GRAPHICS_PROPERTY_INTERNAL): Also define
-	set_X functions for properties.
-	(base_properties): Move class definition before definition of
-	base_graphics_object class.  Provide forward declaration of
-	base_graphics_object prior to definition of base_properties.
-	(base_graphics_object::get_properties): New virtual function.
+	* graphics.h (base_properties): Move class definition before
+	definition of base_graphics_object class.  Provide forward
+	declaration of base_graphics_object prior to definition of
+	base_properties.
+ 	(base_graphics_object::get_properties): New virtual function.
 	(graphics_object::get_properties, root_figure::get_properties,
 	figure::get_properties, axes::get_properties,
 	line::get_properties, text::get_properties, image::get_properties,

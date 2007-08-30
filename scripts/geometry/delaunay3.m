@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Loadable Function} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{opt})
+## @deftypefn {Function File} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {@var{T} =} delaunay3 (@var{x}, @var{y}, @var{z}, @var{opt})
 ## A matrix of size [n, 4] is returned. Each row contains a 
 ## set of tetrahedron which are
 ## described by the indices to the data point vectors (x,y,z).

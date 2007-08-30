@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{H} =} convhull (@var{x}, @var{y})
-## @deftypefnx {Loadable Function} {@var{H} =} convhull (@var{x}, @var{y}, @var{opt})
+## @deftypefn {Function File} {@var{H} =} convhull (@var{x}, @var{y})
+## @deftypefnx {Function File} {@var{H} =} convhull (@var{x}, @var{y}, @var{opt})
 ## Returns the index vector to the points of the enclosing convex hull.  The
 ## data points are defined by the x and y vectors.
 ##

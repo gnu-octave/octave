@@ -18,10 +18,10 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
-## @deftypefnx {Loadable Function} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi}, @var{outval})
-## @deftypefnx {Loadable Function} {@var{idx} =} dsearchn (@var{x}, @var{xi})
-## @deftypefnx {Loadable Function} {[@var{idx}, @var{d}] =} dsearchn (@dots{})
+## @deftypefn {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi})
+## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{tri}, @var{xi}, @var{outval})
+## @deftypefnx {Function File} {@var{idx} =} dsearchn (@var{x}, @var{xi})
+## @deftypefnx {Function File} {[@var{idx}, @var{d}] =} dsearchn (@dots{})
 ## Returns the index @var{idx} or the closest point in @var{x} to the elements
 ## @var{xi}. If @var{outval} is supplied, then the values of @var{xi} that are
 ## not contained within one of the simplicies @var{tri} are set to 

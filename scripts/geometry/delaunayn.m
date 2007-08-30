@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{T} =} delaunayn (@var{P})
-## @deftypefnx {Loadable Function} {@var{T} =} delaunayn (@var{P}, @var{opt})
+## @deftypefn {Function File} {@var{T} =} delaunayn (@var{P})
+## @deftypefnx {Function File} {@var{T} =} delaunayn (@var{P}, @var{opt})
 ## Form the Delaunay triangulation for a set of points.
 ## The Delaunay triangulation is a tessellation of the convex hull of the
 ## points such that no n-sphere defined by the n-triangles contains

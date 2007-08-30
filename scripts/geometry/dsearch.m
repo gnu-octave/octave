@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi})
-## @deftypefnx {Loadable Function} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi}, @var{s})
+## @deftypefn {Function File} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi})
+## @deftypefnx {Function File} {@var{idx} =} dsearch (@var{x}, @var{y}, @var{tri}, @var{xi}, @var{yi}, @var{s})
 ## Returns the index @var{idx} or the closest point in @code{@var{x}, @var{y})}
 ## to the elements @code{[@var{xi}(:), @var{yi}(:)]}. The variable @var{s} is
 ## accepted but ignored for compatibility.

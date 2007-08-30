@@ -18,8 +18,8 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Loadable Function} {@var{tri}=} delaunay (@var{x}, @var{y})
-## @deftypefnx {Loadable Function} {@var{tri}=} delaunay (@var{x}, @var{y}, @var{opt})
+## @deftypefn {Function File} {@var{tri}=} delaunay (@var{x}, @var{y})
+## @deftypefnx {Function File} {@var{tri}=} delaunay (@var{x}, @var{y}, @var{opt})
 ## The return matrix of size [n, 3] contains a set triangles which are
 ## described by the indices to the data point x and y vector.
 ## The triangulation satisfies the Delaunay circumcircle criterion.

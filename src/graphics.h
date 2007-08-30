@@ -701,16 +701,16 @@ private:
 class root_figure : public base_graphics_object
 {
 public:
-  class root_figure_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    root_figure_properties (void)
+    properties (void)
       : base_properties ("root figure", 0, octave_NaN),
 	currentfigure (octave_NaN),
 	visible ("on")
     { }
 
-    ~root_figure_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -728,15 +728,15 @@ public:
   };
 
 private:
-  root_figure_properties properties;
+  properties xproperties;
 
 public:
 
-  root_figure (void) : properties (), default_properties () { }
+  root_figure (void) : xproperties (), default_properties () { }
 
-  ~root_figure (void) { properties.delete_children (); }
+  ~root_figure (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
   void mark_modified (void) { }
 
@@ -752,7 +752,7 @@ public:
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& value)
@@ -763,12 +763,12 @@ public:
       // default_properties map.
       default_properties.set (name.substr (7), value);
     else
-      properties.set (name, value);
+      xproperties.set (name, value);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
@@ -780,7 +780,7 @@ public:
     else if (name.compare ("factory", 7))
       return get_factory_default (name.substr (7));
     else
-      retval = properties.get (name);
+      retval = xproperties.get (name);
 
     return retval;
   }
@@ -815,15 +815,15 @@ public:
     return factory_properties.as_struct ("factory");
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& np) { properties.reparent (np); }
+  void reparent (const graphics_handle& np) { xproperties.reparent (np); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 
@@ -840,12 +840,12 @@ private:
 class figure : public base_graphics_object
 {
 public:
-  class figure_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    figure_properties (const graphics_handle& mh, const graphics_handle& p);
+    properties (const graphics_handle& mh, const graphics_handle& p);
 
-    ~figure_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -872,30 +872,30 @@ public:
   };
 
 private:
-  figure_properties properties;
+  properties xproperties;
 
 public:
   figure (const graphics_handle& mh, const graphics_handle& p)
-    : base_graphics_object (), properties (mh, p), default_properties ()
+    : base_graphics_object (), xproperties (mh, p), default_properties ()
   {
-    properties.override_defaults (*this);
+    xproperties.override_defaults (*this);
   }
 
   ~figure (void)
   {
-    properties.delete_children ();
-    properties.close ();
+    xproperties.delete_children ();
+    xproperties.close ();
   }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
-  void mark_modified (void) { properties.mark_modified (); }
+  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (root figure) to override first (properties knows how
     // to find the parent object).
-    properties.override_defaults (obj);
+    xproperties.override_defaults (obj);
 
     // Now override with our defaults.  If the default_properties
     // list includes the properties for all defaults (line,
@@ -907,7 +907,7 @@ public:
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& value)
@@ -918,12 +918,12 @@ public:
       // default_properties map.
       default_properties.set (name.substr (7), value);
     else
-      properties.set (name, value);
+      xproperties.set (name, value);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
@@ -933,7 +933,7 @@ public:
     if (name.compare ("default", 7))
       retval = get_default (name.substr (7));
     else
-      retval = properties.get (name);
+      retval = xproperties.get (name);
 
     return retval;
   }
@@ -945,15 +945,15 @@ public:
     return default_properties.as_struct ("default");
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& np) { properties.reparent (np); }
+  void reparent (const graphics_handle& np) { xproperties.reparent (np); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 
@@ -966,12 +966,12 @@ private:
 class axes : public base_graphics_object
 {
 public:
-  class axes_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    axes_properties (const graphics_handle& mh, const graphics_handle& p);
+    properties (const graphics_handle& mh, const graphics_handle& p);
 
-    ~axes_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -1044,26 +1044,26 @@ public:
   };
 
 private:
-  axes_properties properties;
+  properties xproperties;
 
 public:
   axes (const graphics_handle& mh, const graphics_handle& p)
-    : base_graphics_object (), properties (mh, p), default_properties ()
+    : base_graphics_object (), xproperties (mh, p), default_properties ()
   {
-    properties.override_defaults (*this);
+    xproperties.override_defaults (*this);
   }
 
-  ~axes (void) { properties.delete_children (); }
+  ~axes (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
-  void mark_modified (void) { properties.mark_modified (); }
+  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
     // to find the parent object).
-    properties.override_defaults (obj);
+    xproperties.override_defaults (obj);
 
     // Now override with our defaults.  If the default_properties
     // list includes the properties for all defaults (line,
@@ -1075,7 +1075,7 @@ public:
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& value)
@@ -1086,17 +1086,17 @@ public:
       // default_properties map.
       default_properties.set (name.substr (7), value);
     else
-      properties.set (name, value);
+      xproperties.set (name, value);
   }
 
   void set_defaults (const std::string& mode)
   {
-    properties.set_defaults (*this, mode);
+    xproperties.set_defaults (*this, mode);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
@@ -1107,7 +1107,7 @@ public:
     if (name.compare ("default", 7))
       retval = get_default (name.substr (7));
     else
-      retval = properties.get (name);
+      retval = xproperties.get (name);
 
     return retval;
   }
@@ -1119,15 +1119,15 @@ public:
     return default_properties.as_struct ("default");
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& np) { properties.reparent (np); }
+  void reparent (const graphics_handle& np) { xproperties.reparent (np); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 
@@ -1140,12 +1140,12 @@ private:
 class line : public base_graphics_object
 {
 public:
-  class line_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    line_properties (const graphics_handle& mh, const graphics_handle& p);
+    properties (const graphics_handle& mh, const graphics_handle& p);
 
-    ~line_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -1178,57 +1178,57 @@ public:
   };
 
 private:
-  line_properties properties;
+  properties xproperties;
 
 public:
   line (const graphics_handle& mh, const graphics_handle& p)
-    : base_graphics_object (), properties (mh, p)
+    : base_graphics_object (), xproperties (mh, p)
   {
-    properties.override_defaults (*this);
+    xproperties.override_defaults (*this);
   }
 
-  ~line (void) { properties.delete_children (); }
+  ~line (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
-  void mark_modified (void) { properties.mark_modified (); }
+  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
     // to find the parent object).
-    properties.override_defaults (obj);
+    xproperties.override_defaults (obj);
   }
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& val)
   {
-    properties.set (name, val);
+    xproperties.set (name, val);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
   {
-    return properties.get (name);
+    return xproperties.get (name);
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& h) { properties.reparent (h); }
+  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 };
@@ -1238,12 +1238,12 @@ public:
 class text : public base_graphics_object
 {
 public:
-  class text_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    text_properties (const graphics_handle& mh, const graphics_handle& p);
+    properties (const graphics_handle& mh, const graphics_handle& p);
 
-    ~text_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -1267,57 +1267,57 @@ public:
   };
 
 private:
-  text_properties properties;
+  properties xproperties;
 
 public:
   text (const graphics_handle& mh, const graphics_handle& p)
-    : base_graphics_object (), properties (mh, p)
+    : base_graphics_object (), xproperties (mh, p)
   {
-    properties.override_defaults (*this);
+    xproperties.override_defaults (*this);
   }
 
-  ~text (void) { properties.delete_children (); }
+  ~text (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
-  void mark_modified (void) { properties.mark_modified (); }
+  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
     // to find the parent object).
-    properties.override_defaults (obj);
+    xproperties.override_defaults (obj);
   }
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& val)
   {
-    properties.set (name, val);
+    xproperties.set (name, val);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
   {
-    return properties.get (name);
+    return xproperties.get (name);
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& h) { properties.reparent (h); }
+  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 };
@@ -1327,12 +1327,12 @@ public:
 class image : public base_graphics_object
 {
 public:
-  class image_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    image_properties (const graphics_handle& mh, const graphics_handle& p);
+    properties (const graphics_handle& mh, const graphics_handle& p);
 
-    ~image_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -1353,57 +1353,57 @@ public:
   };
 
 private:
-  image_properties properties;
+  properties xproperties;
 
 public:
   image (const graphics_handle& mh, const graphics_handle& p)
-    : base_graphics_object (), properties (mh, p)
+    : base_graphics_object (), xproperties (mh, p)
   {
-    properties.override_defaults (*this);
+    xproperties.override_defaults (*this);
   }
 
-  ~image (void) { properties.delete_children (); }
+  ~image (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
-  void mark_modified (void) { properties.mark_modified (); }
+  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
     // to find the parent object).
-    properties.override_defaults (obj);
+    xproperties.override_defaults (obj);
   }
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& val)
   {
-    properties.set (name, val);
+    xproperties.set (name, val);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
   {
-    return properties.get (name);
+    return xproperties.get (name);
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& h) { properties.reparent (h); }
+  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 };
@@ -1413,12 +1413,12 @@ public:
 class patch : public base_graphics_object
 {
 public:
-  class patch_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    patch_properties (const graphics_handle& mh, const graphics_handle& p);
+    properties (const graphics_handle& mh, const graphics_handle& p);
 
-    ~patch_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -1449,57 +1449,57 @@ public:
   };
 
 private:
-  patch_properties properties;
+  properties xproperties;
 
 public:
   patch (const graphics_handle& mh, const graphics_handle& p)
-    : base_graphics_object (), properties (mh, p)
+    : base_graphics_object (), xproperties (mh, p)
   {
-    properties.override_defaults (*this);
+    xproperties.override_defaults (*this);
   }
 
-  ~patch (void) { properties.delete_children (); }
+  ~patch (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
-  void mark_modified (void) { properties.mark_modified (); }
+  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
     // to find the parent object).
-    properties.override_defaults (obj);
+    xproperties.override_defaults (obj);
   }
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& val)
   {
-    properties.set (name, val);
+    xproperties.set (name, val);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
   {
-    return properties.get (name);
+    return xproperties.get (name);
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& h) { properties.reparent (h); }
+  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 };
@@ -1509,12 +1509,12 @@ public:
 class surface : public base_graphics_object
 {
 public:
-  class surface_properties : public base_properties
+  class properties : public base_properties
   {
   public:
-    surface_properties (const graphics_handle& mh, const graphics_handle& p);
+    properties (const graphics_handle& mh, const graphics_handle& p);
 
-    ~surface_properties (void) { }
+    ~properties (void) { }
 
     void set (const property_name& name, const octave_value& val);
 
@@ -1536,57 +1536,57 @@ public:
   };
 
 private:
-  surface_properties properties;
+  properties xproperties;
 
 public:
   surface (const graphics_handle& mh, const graphics_handle& p)
-    : base_graphics_object (), properties (mh, p)
+    : base_graphics_object (), xproperties (mh, p)
   {
-    properties.override_defaults (*this);
+    xproperties.override_defaults (*this);
   }
 
-  ~surface (void) { properties.delete_children (); }
+  ~surface (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return properties.graphics_object_name (); }
+  std::string type (void) const { return xproperties.graphics_object_name (); }
 
-  void mark_modified (void) { properties.mark_modified (); }
+  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
     // to find the parent object).
-    properties.override_defaults (obj);
+    xproperties.override_defaults (obj);
   }
 
   void set_from_list (property_list& plist)
   {
-    properties.set_from_list (*this, plist);
+    xproperties.set_from_list (*this, plist);
   }
 
   void set (const property_name& name, const octave_value& val)
   {
-    properties.set (name, val);
+    xproperties.set (name, val);
   }
 
   octave_value get (void) const
   {
-    return properties.get ();
+    return xproperties.get ();
   }
 
   octave_value get (const property_name& name) const
   {
-    return properties.get (name);
+    return xproperties.get (name);
   }
 
-  graphics_handle get_parent (void) const { return properties.get_parent (); }
+  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
 
-  void remove_child (const graphics_handle& h) { properties.remove_child (h); }
+  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
 
-  void adopt (const graphics_handle& h) { properties.adopt (h); }
+  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
 
-  void reparent (const graphics_handle& h) { properties.reparent (h); }
+  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
-  base_properties& get_properties (void) { return properties; }
+  base_properties& get_properties (void) { return xproperties; }
 
   bool valid_object (void) const { return true; }
 };

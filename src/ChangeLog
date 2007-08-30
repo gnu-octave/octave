@@ -1,5 +1,15 @@
 2007-08-29  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (class root_figure::properties):
+	Rename from root_figure::root_figure_properties.
+	(class figure::properties): Rename from figure::figure_properties.
+	(class axes::properties): Rename from axes::axes_properties.
+	(class line::properties): Rename from line::line_properties.
+	(class text::properties): Rename from text::text_properties.
+	(class image::properties): Rename from image::image_properties.
+	(class patch::properties): Rename from patch::patch_properties.
+	(class surface::properties): Rename from surface::surface_properties.
+
 	* base-list.h (octave_base_list::remove): Implement our own
 	remove_if function here.
 

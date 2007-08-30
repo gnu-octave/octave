@@ -740,8 +740,8 @@ base_properties::delete_children (void)
 }
 
 void
-root_figure::root_figure_properties::set (const property_name& name,
-					  const octave_value& val)
+root_figure::properties::set (const property_name& name,
+			      const octave_value& val)
 {
   if (name.compare ("currentfigure"))
     {
@@ -764,7 +764,7 @@ root_figure::root_figure_properties::set (const property_name& name,
     warning ("set: invalid property `%s'", name.c_str ());
 }
 
-octave_value root_figure::root_figure_properties::get (void) const
+octave_value root_figure::properties::get (void) const
 {
   Octave_map m;
 
@@ -777,7 +777,7 @@ octave_value root_figure::root_figure_properties::get (void) const
 }
 
 octave_value 
-root_figure::root_figure_properties::get (const property_name& name) const
+root_figure::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -798,12 +798,12 @@ root_figure::root_figure_properties::get (const property_name& name) const
 property_list
 root_figure::factory_properties = root_figure::init_factory_properties ();
 
-std::string root_figure::root_figure_properties::go_name ("root figure");
+std::string root_figure::properties::go_name ("root figure");
 
 // ---------------------------------------------------------------------
 
-figure::figure_properties::figure_properties (const graphics_handle& mh,
-					      const graphics_handle& p)
+figure::properties::properties (const graphics_handle& mh,
+				const graphics_handle& p)
   : base_properties (go_name, mh, p),
     __plot_stream__ (Matrix ()),
     nextplot ("replace"),
@@ -815,8 +815,8 @@ figure::figure_properties::figure_properties (const graphics_handle& mh,
 { }
 
 void
-figure::figure_properties::set (const property_name& name,
-				const octave_value& val)
+figure::properties::set (const property_name& name,
+			 const octave_value& val)
 {
   bool modified = true;
 
@@ -869,7 +869,7 @@ figure::figure_properties::set (const property_name& name,
 }
 
 octave_value
-figure::figure_properties::get (void) const
+figure::properties::get (void) const
 {
   Octave_map m;
 
@@ -889,7 +889,7 @@ figure::figure_properties::get (void) const
 }
 
 octave_value
-figure::figure_properties::get (const property_name& name) const
+figure::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -922,7 +922,7 @@ figure::figure_properties::get (const property_name& name) const
 }
 
 void
-figure::figure_properties::close (void)
+figure::properties::close (void)
 {
   if (! __plot_stream__.is_empty ())
     {
@@ -941,7 +941,7 @@ figure::figure_properties::close (void)
 }
 
 property_list::pval_map_type
-figure::figure_properties::factory_defaults (void)
+figure::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -970,11 +970,11 @@ figure::get_default (const property_name& name) const
   return retval;
 }
 
-std::string figure::figure_properties::go_name ("figure");
+std::string figure::properties::go_name ("figure");
 
 // ---------------------------------------------------------------------
 
-axes::axes_properties::axes_properties (const graphics_handle& mh,
+axes::properties::properties (const graphics_handle& mh,
 					const graphics_handle& p)
   : base_properties (go_name, mh, p),
     position (Matrix ()),
@@ -1047,7 +1047,7 @@ axes::axes_properties::axes_properties (const graphics_handle& mh,
 }
 
 void
-axes::axes_properties::set (const property_name& name, const octave_value& val)
+axes::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -1242,7 +1242,7 @@ axes::axes_properties::set (const property_name& name, const octave_value& val)
 }
 
 void
-axes::axes_properties::set_defaults (base_graphics_object& obj,
+axes::properties::set_defaults (base_graphics_object& obj,
 				     const std::string& mode)
 {
   position = Matrix ();
@@ -1324,7 +1324,7 @@ axes::axes_properties::set_defaults (base_graphics_object& obj,
 }
 
 octave_value
-axes::axes_properties::get (void) const
+axes::properties::get (void) const
 {
   Octave_map m;
 
@@ -1398,7 +1398,7 @@ axes::axes_properties::get (void) const
 }
 
 octave_value
-axes::axes_properties::get (const property_name& name) const
+axes::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -1535,7 +1535,7 @@ axes::axes_properties::get (const property_name& name) const
 }
 
 void
-axes::axes_properties::remove_child (const graphics_handle& h)
+axes::properties::remove_child (const graphics_handle& h)
 {
   if (! xisnan (title) && h == title)
     title = gh_manager::make_graphics_handle ("text", __myhandle__);
@@ -1550,7 +1550,7 @@ axes::axes_properties::remove_child (const graphics_handle& h)
 }
 
 void
-axes::axes_properties::delete_children (void)
+axes::properties::delete_children (void)
 {
   base_properties::delete_children ();
 
@@ -1568,7 +1568,7 @@ axes::axes_properties::delete_children (void)
 }
 
 property_list::pval_map_type
-axes::axes_properties::factory_defaults (void)
+axes::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -1660,7 +1660,7 @@ axes::get_default (const property_name& name) const
   return retval;
 }
 
-std::string axes::axes_properties::go_name ("axes");
+std::string axes::properties::go_name ("axes");
 
 // ---------------------------------------------------------------------
 
@@ -1675,8 +1675,8 @@ default_data (void)
   return retval;
 }
 
-line::line_properties::line_properties (const graphics_handle& mh,
-					const graphics_handle& p)
+line::properties::properties (const graphics_handle& mh,
+			      const graphics_handle& p)
   : base_properties (go_name, mh, p),
     xdata (default_data ()),
     ydata (default_data ()),
@@ -1696,7 +1696,7 @@ line::line_properties::line_properties (const graphics_handle& mh,
 { }
 
 void
-line::line_properties::set (const property_name& name, const octave_value& val)
+line::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -1750,7 +1750,7 @@ line::line_properties::set (const property_name& name, const octave_value& val)
 }
 
 octave_value
-line::line_properties::get (void) const
+line::properties::get (void) const
 {
   Octave_map m;
 
@@ -1778,7 +1778,7 @@ line::line_properties::get (void) const
 }
 
 octave_value
-line::line_properties::get (const property_name& name) const
+line::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -1827,7 +1827,7 @@ line::line_properties::get (const property_name& name) const
 }
 
 property_list::pval_map_type
-line::line_properties::factory_defaults (void)
+line::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -1850,12 +1850,12 @@ line::line_properties::factory_defaults (void)
   return m;
 }
 
-std::string line::line_properties::go_name ("line");
+std::string line::properties::go_name ("line");
 
 // ---------------------------------------------------------------------
 
-text::text_properties::text_properties (const graphics_handle& mh,
-					const graphics_handle& p)
+text::properties::properties (const graphics_handle& mh,
+			      const graphics_handle& p)
   : base_properties (go_name, mh, p),
     string (""),
     units ("data"),
@@ -1866,7 +1866,7 @@ text::text_properties::text_properties (const graphics_handle& mh,
 { }
 
 void
-text::text_properties::set (const property_name& name, const octave_value& val)
+text::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -1902,7 +1902,7 @@ text::text_properties::set (const property_name& name, const octave_value& val)
 }
 
 octave_value
-text::text_properties::get (void) const
+text::properties::get (void) const
 {
   Octave_map m;
 
@@ -1921,7 +1921,7 @@ text::text_properties::get (void) const
 }
 
 octave_value
-text::text_properties::get (const property_name& name) const
+text::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -1952,7 +1952,7 @@ text::text_properties::get (const property_name& name) const
 }
 
 property_list::pval_map_type
-text::text_properties::factory_defaults (void)
+text::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -1966,12 +1966,12 @@ text::text_properties::factory_defaults (void)
   return m;
 }
 
-std::string text::text_properties::go_name ("text");
+std::string text::properties::go_name ("text");
 
 // ---------------------------------------------------------------------
 
-image::image_properties::image_properties (const graphics_handle& mh,
-					   const graphics_handle& p)
+image::properties::properties (const graphics_handle& mh,
+			       const graphics_handle& p)
   : base_properties (go_name, mh, p),
     cdata (Matrix ()),
     xdata (Matrix ()),
@@ -1979,8 +1979,8 @@ image::image_properties::image_properties (const graphics_handle& mh,
 { }
 
 void
-image::image_properties::set (const property_name& name,
-			      const octave_value& val)
+image::properties::set (const property_name& name,
+			const octave_value& val)
 {
   bool modified = true;
 
@@ -2010,7 +2010,7 @@ image::image_properties::set (const property_name& name,
 }
 
 octave_value
-image::image_properties::get (void) const
+image::properties::get (void) const
 {
   Octave_map m;
 
@@ -2026,7 +2026,7 @@ image::image_properties::get (void) const
 }
 
 octave_value
-image::image_properties::get (const property_name& name) const
+image::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -2051,7 +2051,7 @@ image::image_properties::get (const property_name& name) const
 }
 
 property_list::pval_map_type
-image::image_properties::factory_defaults (void)
+image::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -2062,12 +2062,12 @@ image::image_properties::factory_defaults (void)
   return m;
 }
 
-std::string image::image_properties::go_name ("image");
+std::string image::properties::go_name ("image");
 
 // ---------------------------------------------------------------------
 
-patch::patch_properties::patch_properties (const graphics_handle& mh,
-					   const graphics_handle& p)
+patch::properties::properties (const graphics_handle& mh,
+			       const graphics_handle& p)
   : base_properties (go_name, mh, p),
     cdata (Matrix ()),
     xdata (Matrix ()),
@@ -2085,8 +2085,8 @@ patch::patch_properties::patch_properties (const graphics_handle& mh,
 { }
 
 void
-patch::patch_properties::set (const property_name& name,
-			      const octave_value& val)
+patch::properties::set (const property_name& name,
+			const octave_value& val)
 {
   bool modified = true;
 
@@ -2137,7 +2137,7 @@ patch::patch_properties::set (const property_name& name,
 }
 
 octave_value
-patch::patch_properties::get (void) const
+patch::properties::get (void) const
 {
   Octave_map m;
 
@@ -2163,7 +2163,7 @@ patch::patch_properties::get (void) const
 }
 
 octave_value
-patch::patch_properties::get (const property_name& name) const
+patch::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -2208,7 +2208,7 @@ patch::patch_properties::get (const property_name& name) const
 }
 
 property_list::pval_map_type
-patch::patch_properties::factory_defaults (void)
+patch::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -2230,12 +2230,12 @@ patch::patch_properties::factory_defaults (void)
   return m;
 }
 
-std::string patch::patch_properties::go_name ("patch");
+std::string patch::properties::go_name ("patch");
 
 // ---------------------------------------------------------------------
 
-surface::surface_properties::surface_properties (const graphics_handle& mh,
-						 const graphics_handle& p)
+surface::properties::properties (const graphics_handle& mh,
+				 const graphics_handle& p)
   : base_properties (go_name, mh, p),
     xdata (Matrix ()),
     ydata (Matrix ()),
@@ -2244,8 +2244,8 @@ surface::surface_properties::surface_properties (const graphics_handle& mh,
 { }
 
 void
-surface::surface_properties::set (const property_name& name,
-				  const octave_value& val)
+surface::properties::set (const property_name& name,
+			  const octave_value& val)
 {
   bool modified = true;
 
@@ -2277,7 +2277,7 @@ surface::surface_properties::set (const property_name& name,
 }
 
 octave_value
-surface::surface_properties::get (void) const
+surface::properties::get (void) const
 {
   Octave_map m;
 
@@ -2294,7 +2294,7 @@ surface::surface_properties::get (void) const
 }
 
 octave_value
-surface::surface_properties::get (const property_name& name) const
+surface::properties::get (const property_name& name) const
 {
   octave_value retval;
 
@@ -2321,7 +2321,7 @@ surface::surface_properties::get (const property_name& name) const
 }
 
 property_list::pval_map_type
-surface::surface_properties::factory_defaults (void)
+surface::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
@@ -2333,7 +2333,7 @@ surface::surface_properties::factory_defaults (void)
   return m;
 }
 
-std::string surface::surface_properties::go_name ("surface");
+std::string surface::properties::go_name ("surface");
 
 // ---------------------------------------------------------------------
 
@@ -2429,13 +2429,13 @@ root_figure::init_factory_properties (void)
 {
   property_list::plist_map_type plist_map;
 
-  plist_map["figure"] = figure::figure_properties::factory_defaults ();
-  plist_map["axes"] = axes::axes_properties::factory_defaults ();
-  plist_map["line"] = line::line_properties::factory_defaults ();
-  plist_map["text"] = text::text_properties::factory_defaults ();
-  plist_map["image"] = image::image_properties::factory_defaults ();
-  plist_map["patch"] = patch::patch_properties::factory_defaults ();
-  plist_map["surface"] = surface::surface_properties::factory_defaults ();
+  plist_map["figure"] = figure::properties::factory_defaults ();
+  plist_map["axes"] = axes::properties::factory_defaults ();
+  plist_map["line"] = line::properties::factory_defaults ();
+  plist_map["text"] = text::properties::factory_defaults ();
+  plist_map["image"] = image::properties::factory_defaults ();
+  plist_map["patch"] = patch::properties::factory_defaults ();
+  plist_map["surface"] = surface::properties::factory_defaults ();
 
   return plist_map;
 }
@@ -2898,8 +2898,8 @@ DEFUN (doit, args, , "")
 
 	      if (obj.isa ("line"))
 		{
-		  line::line_properties& lp
-		    = dynamic_cast<line::line_properties&> (obj.get_properties ());
+		  line::properties& lp
+		    = dynamic_cast<line::properties&> (obj.get_properties ());
 		  retval = lp.get_xdata ();
 		  Matrix m (1, 5);
 		  m(0) = 0;

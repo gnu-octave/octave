@@ -1,3 +1,9 @@
+2007-08-30  David Bateman  <dbateman@free.fr>
+
+	* interpreter/geometryimages.m: Add inpolygon example
+	* interpreter/Makefile.in (GEOMETRYIMAGES): Add inpolygon example.
+	* interpret/geometry.txi: Document inpolygon.
+
 2007-08-27  David Bateman  <dbateman@free.fr>
 
 	* interpreter/struct.txi: Remove.

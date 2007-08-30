@@ -21,8 +21,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = convhull.m delaunay3.m delaunayn.m delaunay.m dsearch.m dsearchn.m \
-	griddata.m griddata3.m griddatan.m trimesh.m triplot.m tsearchn.m \
-	voronoi.m voronoin.m
+	griddata.m griddata3.m griddatan.m inpolygon.m trimesh.m triplot.m \
+	tsearchn.m voronoi.m voronoin.m
 
 DISTFILES = $(addprefix $(srcdir)/,Makefile.in $(SOURCES))
 

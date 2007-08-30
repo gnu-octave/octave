@@ -1,3 +1,8 @@
+2007-08-30  David Bateman  <dbateman@free.fr>
+
+	* geometry/inpolygon.m: New file.
+	* geometry/Makefile.in (SOURCES): Add inpolygon.m.
+	
 2007-08-29  Peter A. Gustafson  <petegus@umich.edu>
 
 	* plot/__go_draw_axes__.m: Disable linetype in do_linestyle_command.

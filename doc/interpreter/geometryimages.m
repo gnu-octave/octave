@@ -41,13 +41,23 @@ function geometryimages (nm, typ)
     print (strcat (nm, ".", typ), strcat ("-d", typ)) 
   elseif (strcmp (nm, "delaunay"))
     rand ("state", 1);
-    x = rand (10, 1);
-    y = rand (10, 1);
+    x = rand (1, 10);
+    y = rand (1, 10);
     T = delaunay (x, y);
     X = [ x(T(:,1)); x(T(:,2)); x(T(:,3)); x(T(:,1)) ];
     Y = [ y(T(:,1)); y(T(:,2)); y(T(:,3)); y(T(:,1)) ];
     axis ([0, 1, 0, 1]);
     plot(X, Y, "b", x, y, "r*");
+    print (strcat (nm, ".", typ), strcat ("-d", typ)) 
+  elseif (strcmp (nm, "inpolygon"))
+    randn ("state", 2);
+    x = randn (100, 1);
+    y = randn (100, 1);
+    vx = cos (pi * [-1 : 0.1: 1]);
+    vy = sin (pi * [-1 : 0.1 : 1]);
+    in = inpolygon (x, y, vx, vy);
+    plot(vx, vy, x(in), y(in), "r+", x(!in), y(!in), "bo");
+    axis ([-2, 2, -2, 2]);
     print (strcat (nm, ".", typ), strcat ("-d", typ)) 
   else
     error ("unrecognized plot requested");

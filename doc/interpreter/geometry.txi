@@ -298,8 +298,9 @@ diagram clearer.
 @end float
 @end ifnotinfo
 
-Additional information about the size of the facets of a Voronoi diagram
-can be had with the @code{polyarea} function.
+Additional information about the size of the facets of a Voronoi
+diagram, and which points of a set of points is in a polygon can be had
+with the @code{polyarea} and @code{inpolygon} functions respectively.
 
 @DOCSTRING(polyarea)
 
@@ -319,6 +320,34 @@ endfor
 @end example
 
 Facets of the Voronoi diagram with a vertex at infinity have infinity area.
+
+@DOCSTRING(inpolygon)
+
+An example of the use of @code{inpolygon} might be
+
+@example
+@group
+randn ("state", 2);
+x = randn (100, 1);
+y = randn (100, 1);
+vx = cos (pi * [-1 : 0.1: 1]);
+vy = sin (pi * [-1 : 0.1 : 1]);
+in = inpolygon (x, y, vx, vy);
+plot(vx, vy, x(in), y(in), "r+", x(!in), y(!in), "bo");
+axis ([-2, 2, -2, 2]);
+@end group
+@end example
+
+@ifnotinfo
+@noindent
+The result of which can be seen in @ref{fig:inpolygon}.
+
+@float Figure,fig:inpolygon
+@image{inpolygon,8cm}
+@caption{Demonstration of the @code{inpolygon} function to determine the
+points inside a polygon}
+@end float
+@end ifnotinfo
 
 @node Convex Hull
 @section Convex Hull

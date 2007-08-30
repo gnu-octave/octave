@@ -43,7 +43,7 @@ EXAMPLE_FILES_NODIR = \
 
 EXAMPLE_FILES = $(addprefix $(top_srcdir)/examples/, $(EXAMPLE_FILES_NODIR))
 
-GEOMETRYIMAGES = voronoi triplot griddata convhull delaunay
+GEOMETRYIMAGES = voronoi triplot griddata convhull delaunay inpolygon
 GEOMETRYIMAGES_EPS = $(addsuffix .eps, $(GEOMETRYIMAGES))
 GEOMETRYIMAGES_PDF = $(addsuffix .pdf, $(GEOMETRYIMAGES))
 GEOMETRYIMAGES_PNG = $(addsuffix .png, $(GEOMETRYIMAGES))

@@ -1,3 +1,11 @@
+2007-08-30  John W. Eaton  <jwe@octave.org>
+
+	* sysdep.cc (Fpause): Doc fix.
+
+2007-08-30  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
+
+	* DLD-FUNCTIONS/__qp__.cc (qp): Resize Wact to n_act-neq, not n_act.
+
 2007-08-29  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (class root_figure::properties):

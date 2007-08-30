@@ -713,7 +713,7 @@ screen.\n\
 \n\
 @example\n\
 @group\n\
-fprintf (stderr, \"wait please...\n\");\n\
+fprintf (stderr, \"wait please...\\n\");\n\
 pause (5);\n\
 clc;\n\
 @end group\n\

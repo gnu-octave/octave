@@ -1,3 +1,7 @@
+2007-08-30  John W. Eaton  <jwe@octave.org>
+
+	* optimization/qp.m: Increase maxit to 200.
+
 2007-08-30  David Bateman  <dbateman@free.fr>
 
 	* geometry/inpolygon.m: New file.

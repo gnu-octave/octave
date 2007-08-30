@@ -267,9 +267,10 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     endif
 
     if (info == 0)
+      ## FIXME -- make maxit a user option.
       ## The initial (or computed) guess is feasible.
       ## We call the solver.
-      maxit = 100;
+      maxit = 200;
       [x, lambda, info, iter] = __qp__ (x0, H, q, A, b, Ain, bin, maxit);
     else
       iter = 0;

@@ -130,7 +130,7 @@ qp (const Matrix& H, const ColumnVector& q,
 	      n_act++;
 	      Aact = Aact.stack (Ain.row (i));
 	      bact.resize (n_act, bin(i));
-	      Wact.resize (n_act, i);
+	      Wact.resize (n_act-n_eq, i);
 	    }
 	}
     }
@@ -427,7 +427,7 @@ qp (const Matrix& H, const ColumnVector& q,
 		  n_act++;
 		  Aact = Aact.stack (Ain.row (is_block));
 		  bact.resize (n_act, bin(is_block));
-		  Wact.resize (n_act, is_block);
+		  Wact.resize (n_act-n_eq, is_block);
 
 		  // Adding the reduced step
 		  x += alpha * p;

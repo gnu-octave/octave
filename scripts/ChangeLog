@@ -1,3 +1,8 @@
+2007-08-31  David Bateman  <dbateman@free.fr>
+
+	* geometry/voronoi.m: Add large box around data to get a good
+	approximation of the rays to infinity.
+
 2007-08-31  Michael goffioul  <michael.goffioul@gmail.com>
 
 	* plot/axes.m: Allow parent to be specified when creating axes

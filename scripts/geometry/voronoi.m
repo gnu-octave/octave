@@ -107,42 +107,67 @@ function [vvx, vvy] = voronoi (varargin)
     error ("voronoi: arguments must be vectors of same length");
   endif
 
-  [p, c, infi] = __voronoi__ ([x(:),y(:)], opts{:});
+  ## Add big box to approximate rays to infinity
+  xmax = max (x(:));
+  xmin = min (x(:));
+  ymax = max (y(:));
+  ymin = min (y(:));
+  xdelta = xmax - xmin;
+  ydelta = ymax - ymin;
+  scale = 10e4;
+
+  xbox = [xmin - scale * xdelta; xmin - scale * xdelta; ...
+	  xmax + scale * xdelta; xmax + scale * xdelta];
+  ybox = [xmin - scale * xdelta; xmax + scale * xdelta; ...
+	  xmax + scale * xdelta; xmin - scale * xdelta];
+  x = [x(:) ; xbox(:)];
+  y = [y(:) ; ybox(:)];
+
+  [p, c, infi] = __voronoi__ ([x(:), y(:)], opts{:});
 
   idx = find (!infi);
 
   ll = length (idx);
   k = 0;r = 1;
 
-  for i = 1:ll
+  for i = 1 : ll
     k += length (c{idx(i)});
   endfor
 
   edges = zeros (2, k);
 
-  for i=1:ll
+  for i = 1 : ll
     fac = c {idx(i)};
-    lf = length(fac);
+    lf = length (fac);
     fac = [fac, fac(1)];
-    fst = fac(1:length(fac) - 1);
-    sec = fac(2:length(fac));
-    edges(:,r:r+lf-1) = [fst; sec];
+    fst = fac (1 : length(fac) - 1);
+    sec = fac(2 : length(fac));
+    edges (:, r : r + lf - 1) = [fst; sec];
     r += lf;
   endfor
 
   ## Identify the unique edges of the Voronoi diagram
   edges = sortrows (sort (edges).').';
-  edges = edges (:,[(edges(1,1:end-1) != edges(1,2:end) | ...
-		     edges(2,1:end-1) != edges(2,2:end)), true]);
+  edges = edges (:, [(edges(1, 1: end - 1) != edges(1, 2 : end) | ...
+		      edges(2, 1 :end - 1) != edges(2, 2 : end)), true]);
+
+  ## Eliminate the edges of the diagram representing the box
+  poutside = (1 : rows(p)) ...
+      (p (:, 1) < xmin - xdelta | p (:, 1) > xmax + xdelta | ...
+       p (:, 2) < ymin - ydelta | p (:, 2) > ymax + ydelta);
+  edgeoutside = ismember (edges (1, :), poutside) & ...
+      ismember (edges (2, :), poutside);
+  edges (:, edgeoutside) = [];
 
   ## Get points of the diagram
-  vx = reshape(p(edges, 1), size(edges));
-  vy = reshape(p(edges, 2), size(edges));
+  vx = reshape (p (edges, 1), size(edges));
+  vy = reshape (p (edges, 2), size(edges));
 
   if (nargout < 2)    
-    lim = [min(x(:)), max(x(:)), min(y(:)), max(y(:))];
+    lim = [xmin, xmax, ymin, ymax];
     h = plot (handl, vx, vy, linespec{:}, x, y, '+');
-    axis(lim+0.1*[[-1,1]*(lim(2)-lim(1)),[-1,1]*(lim(4)-lim(3))]);
+    axis (lim + 0.1 * [[-1, 1] * (lim (2) - lim (1)), ...
+		       [-1, 1] * (lim (4) - lim (3))]);
     if (nargout == 1)
       vxx = h;
     endif

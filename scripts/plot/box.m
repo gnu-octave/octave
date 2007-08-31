@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} box (@var{arg})
-## @deftypefnx {Function File} {} grid (@var{h}, @dots{})
+## @deftypefnx {Function File} {} box (@var{h}, @dots{})
 ## Control the display of a border around the plot.
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
 ## omitted, the current box state is toggled.

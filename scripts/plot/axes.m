@@ -31,15 +31,21 @@ function h = axes (varargin)
   if (nargin == 0 || nargin > 1)
     ## make default axes object, and make it the current axes for the
     ## current figure.
-    cf = gcf ();
+    idx = find (strcmpi (varargin(1:2:end), "parent"), 1, "first");
+    if (! isempty (idx) && length (varargin) >= 2*idx)
+      cf = varargin{2*idx};
+      varargin([2*idx-1, 2*idx]) = [];
+    else
+      cf = gcf ();
+    endif
     tmp = __go_axes__ (cf, varargin{:});
-    set (cf, "currentaxes", tmp);
+    set (ancestor (cf, "figure"), "currentaxes", tmp);
   else
     ## arg is axes handle, make it the current axes for the current
     ## figure.
     tmp = varargin{1};
     if (ishandle (tmp) && strcmp (get (tmp, "type"), "axes"))
-      parent = get (tmp, "parent");
+      parent = ancestor (tmp, "figure");
       set (0, "currentfigure", parent);
       set (parent, "currentaxes", tmp);
     else

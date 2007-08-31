@@ -1,3 +1,12 @@
+2007-08-31  Michael goffioul  <michael.goffioul@gmail.com>
+
+	* plot/axes.m: Allow parent to be specified when creating axes
+	objects.  Support non-figure parents.
+
+2007-08-31  John W. Eaton  <jwe@octave.org>
+
+	* plot/ancestor.m: New function, adapted from Octave Forge.
+
 2007-08-31  Søren Hauberg  <hauberg@gmail.com>
 
         * polynomial/polygcd.m: Better layout of example.

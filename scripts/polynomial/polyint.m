@@ -18,11 +18,10 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyinteg (@var{c})
+## @deftypefn {Function File} {} polyint (@var{c}, @var{k})
 ## Return the coefficients of the integral of the polynomial whose
-## coefficients are represented by the vector @var{c}.
-##
-## The constant of integration is set to zero.
+## coefficients are represented by the vector @var{c}. The variable
+## @var{k} is the constant of integration, which by default is set to zero.
 ## @seealso{poly, polyderiv, polyreduce, roots, conv, deconv, residue,
 ## filter, polyval, and polyvalm}
 ## @end deftypefn
@@ -31,10 +30,16 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
-function p = polyinteg (p)
+function p = polyint (p, k)
 
-  if(nargin != 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
+  endif
+
+  if (nargin == 1)
+    k = 0;
+  elseif (! isscalar (k))
+    error ("polyint: the constant of integration must be a scalar");
   endif
 
   if (! (isvector (p) || isempty (p)))
@@ -53,6 +58,6 @@ function p = polyinteg (p)
     p = p.';
   endif
 
-  p = [ p, 0 ] ./ [ lp:-1:1, 1 ];
+  p = [(p ./ [lp:-1:1]), k];
 
 endfunction

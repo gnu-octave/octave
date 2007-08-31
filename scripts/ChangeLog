@@ -1,5 +1,13 @@
-2007-08-31  David Bateman  <dbateman@free.fr>
+2007-09-01  David Bateman  <dbateman@free.fr>
 
+	* polynomial/polyint.m: New function like polyinteg but with
+	explicit integration constant.
+	* polynomial/polyinteg.m: Remove.
+	* polynomial/Makefile.in (SOURCES): Add polyint.m and remove
+	polyinteg.m.
+	* deprecated/polyinteg.m: Move version here.
+	* deprecated/Makefile.in (SOURCES): Add polyinteg.m.
+	
 	* geometry/voronoi.m: Add large box around data to get a good
 	approximation of the rays to infinity.
 

@@ -443,6 +443,15 @@ Sets
 
 * Set Operations::
 
+Polynomial Manipulations
+
+* Evaluating Polynomials::
+* Finding Roots::
+* Products of Polynomials::
+* Derivatives and Integrals::
+* Polynomial Interpolation::
+* Miscellaneous Functions::
+
 Interpolation
 
 * One-dimensional Interpolation::

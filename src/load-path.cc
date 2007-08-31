@@ -743,7 +743,7 @@ load_path::do_find_file (const std::string& file) const
 {
   std::string retval;
 
-  if (file.find ('/') != NPOS)
+  if (file.find_first_of (file_ops::dir_sep_chars) != NPOS)
     {
       if (octave_env::absolute_pathname (file)
 	  || octave_env::rooted_relative_pathname (file))

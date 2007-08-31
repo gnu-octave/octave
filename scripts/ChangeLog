@@ -1,3 +1,11 @@
+2007-08-31  Søren Hauberg  <hauberg@gmail.com>
+
+        * polynomial/polygcd.m: Better layout of example.
+        * polynomial/compan.m: Remove unnecessary check.
+        * polynomial/roots.m: Added example to help text.
+        * polynomial/polyderiv.m: Change 'polyder' to 'polyderiv' in help text.
+        * polynomial/poly.m: Added example to help text.
+
 2007-08-30  John W. Eaton  <jwe@octave.org>
 
 	* optimization/qp.m: Increase maxit to 200.

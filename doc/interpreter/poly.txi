@@ -6,26 +6,13 @@
 @chapter Polynomial Manipulations
 
 In Octave, a polynomial is represented by its coefficients (arranged
-in descending order).  For example, a vector
-@iftex
-@end iftex
-@ifinfo
- $c$
-@end ifinfo
-of length
-@iftex
-@tex
- $N+1$
-@end tex
-@ifinfo
- @var{N+1}
-@end ifinfo
- corresponds to the following polynomial of order
+in descending order).  For example, a vector @var{c} of length
+@math{N+1} corresponds to the following polynomial of order
 @iftex
 @tex
  $N$
 $$
- p (x) = c_1 x^N + ... + c_N x + c_{N+1}.
+ p (x) = c_1 x^N + \ldots + c_N x + c_{N+1}.
 $$
 @end tex
 @end iftex
@@ -37,7 +24,55 @@ p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 @end example
 @end ifinfo
 
+@menu
+* Evaluating Polynomials::
+* Finding Roots::
+* Products of Polynomials::
+* Derivatives and Integrals::
+* Polynomial Interpolation::
+* Miscellaneous Functions::
+@end menu
+
+@node Evaluating Polynomials
+@section Evaluating Polynomials
+
+The value of a polynomial represented by the vector @var{c} can be evaluated
+at the point @var{x} very easily, as the following example shows.
+
+@example
+N = length(c)-1;
+val = dot( x.^(N:-1:0), c );
+@end example
+
+@noindent
+While the above example shows how easy it is to compute the value of a
+polynomial, it isn't the most stable algorithm.  With larger polynomials
+you should use more elegant algorithms, such as Horner's Method, which
+is exactly what the Octave function @code{polyval} does.
+
+In the case where @var{x} is a square matrix, the polynomial given by
+@var{c} is still well-defined.  As when @var{x} is a scalar the obvious
+implementation is easily expressed in Octave, but also in this case
+more elegant algorithms perform better.  The @code{polyvalm} function
+provides such an algorithm.
+
+@DOCSTRING(polyval)
+
+@DOCSTRING(polyvalm)
+
+@node Finding Roots
+@section Finding Roots
+
+Octave can find the roots of a given polynomial.  This is done by computing
+the companion matrix of the polynomial (see the @code{compan} function
+for a definition), and then finding its eigenvalues.
+
+@DOCSTRING(roots)
+
 @DOCSTRING(compan)
+
+@node Products of Polynomials
+@section Products of Polynomials
 
 @DOCSTRING(conv)
 
@@ -45,32 +80,78 @@ p(x) = @var{c}(1) x^@var{N} + ... + @var{c}(@var{N}) x + @var{c}(@var{N}+1).
 
 @DOCSTRING(conv2)
 
-@DOCSTRING(poly)
+@DOCSTRING(polygcd)
+
+@DOCSTRING(residue)
+
+@node Derivatives and Integrals
+@section Derivatives and Integrals
+
+Octave comes with functions for computing the derivative and the integral
+of a polynomial.  The functions @code{polyderiv} and @code{polyinteg}
+both return new polynomials describing the result.  As an example we'll
+compute the definite integral of @math{p(x) = x^2 + 1} from 0 to 3.
+
+@example
+c = [1, 0, 1];
+integral = polyinteg(c);
+area = polyval(integral, 3) - polyval(integral, 0)
+@result{} 12
+@end example
 
 @DOCSTRING(polyderiv)
 
 @DOCSTRING(polyder)
 
-@DOCSTRING(polyfit)
-
-@DOCSTRING(polygcd)
-
 @DOCSTRING(polyinteg)
 
-@DOCSTRING(polyreduce)
+@node Polynomial Interpolation
+@section Polynomial Interpolation
 
-@DOCSTRING(polyval)
+Octave comes with good support for various kinds of interpolation,
+most of which are described in @ref{Interpolation}.  One simple alternative
+to the functions described in the aforementioned chapter, is to fit
+a single polynomial to some given data points.  To avoid a highly
+fluctuating polynomial, one most often wants to fit a low-order polynomial
+to data.  This usually means that it is necessary to fit the polynomial
+in a least-squares sense, which is what the @code{polyfit} function does.
 
-@DOCSTRING(polyvalm)
+@DOCSTRING(polyfit)
 
-@DOCSTRING(residue)
+In situations where a single polynomial isn't good enough, a solution
+is to use several polynomials pieced together.  The function @code{mkpp}
+creates a piece-wise polynomial, @code{ppval} evaluates the function 
+created by @code{mkpp}, and @code{unmkpp} returns detailed information
+about the function.
 
-@DOCSTRING(roots)
+The following example shows how to combine two linear functions and a
+quadratic into one function.  Each of these functions are expressed
+on adjoined intervals.
 
-@DOCSTRING(polyout)
+@example
+x = [-2, -1, 1, 2];
+p = [ 0,  1, 0;
+      1, -2, 1;
+      0, -1, 1 ];
+pp = mkpp(x, p);
+xi = linspace(-2, 2, 50);
+yi = ppval(pp, xi);
+plot(xi, yi);
+@end example
 
 @DOCSTRING(ppval)
 
 @DOCSTRING(mkpp)
 
 @DOCSTRING(unmkpp)
+
+@node Miscellaneous Functions
+@section Miscellaneous Functions
+
+@DOCSTRING(poly)
+
+@DOCSTRING(polyout)
+
+@DOCSTRING(polyreduce)
+
+

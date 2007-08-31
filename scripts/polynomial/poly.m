@@ -21,9 +21,24 @@
 ## @deftypefn {Function File} {} poly (@var{a})
 ## If @var{a} is a square @math{N}-by-@math{N} matrix, @code{poly (@var{a})}
 ## is the row vector of the coefficients of @code{det (z * eye (N) - a)},
-## the characteristic polynomial of @var{a}.  If @var{x} is a vector,
-## @code{poly (@var{x})} is a vector of coefficients of the polynomial
-## whose roots are the elements of @var{x}.
+## the characteristic polynomial of @var{a}.  As an example we can use
+## this to find the eigenvalues of @var{a} as the roots of @code{poly (@var{a})}.
+## @example
+## roots(poly(eye(3)))
+## @result{} 1.00000 + 0.00000i
+## @result{} 1.00000 - 0.00000i
+## @result{} 1.00000 + 0.00000i
+## @end example
+## In real-life examples you should, however, use the @code{eig} function
+## for computing eigenvalues.
+##
+## If @var{x} is a vector, @code{poly (@var{x})} is a vector of coefficients
+## of the polynomial whose roots are the elements of @var{x}.  That is,
+## of @var{c} is a polynomial, then the elements of 
+## @code{@var{d} = roots (poly (@var{c}))} are contained in @var{c}.
+## The vectors @var{c} and @var{d} are, however, not equal due to sorting
+## and numerical errors.
+## @seealso{eig, roots}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -29,12 +29,50 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @example
 ## v(1) * z^(N-1) + ... + v(N-1) * z + v(N)
 ## @end example
-## @end ifinfo
+## @end ifnottex
+##
+## As an example, the following code finds the roots of the quadratic
+## polynomial
+## @iftex
+## @tex
+## $$ p(x) = x^2 - 5. $$
+## @end tex
+## @end iftex
+## @ifnottex
+## @example
+## p(x) = x^2 - 5.
+## @end example
+## @end ifnottex
+## @example
+## c = [1, 0, -5];
+## roots(c)
+## @result{}  2.2361
+## @result{} -2.2361
+## @end example
+## Note that the true result is
+## @iftex
+## @tex
+## $\pm \sqrt{5}$
+## @end tex
+## @end iftex
+## @ifnottex
+## @math{+/- sqrt(5)}
+## @end ifnottex
+## which is roughly
+## @iftex
+## @tex
+## $\pm 2.2361$.
+## @end tex
+## @end iftex
+## @ifnottex
+## @math{+/- 2.2361}.
+## @end ifnottex
+## @seealso{compan}
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

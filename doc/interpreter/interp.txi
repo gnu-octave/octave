@@ -13,6 +13,10 @@
 @node One-dimensional Interpolation
 @section One-dimensional Interpolation
 
+Octave supports several methods for one-dimensional interpolation, most
+of which are described in this section.  @ref{Polynomial Interpolation}
+and @ref{Interpolation on Scattered Data} describes further methods.
+
 @DOCSTRING(interp1)
 
 There are some important differences between the various interpolation
@@ -119,7 +123,8 @@ of interest.
 @section Multi-dimensional Interpolation
 
 There are three multi-dimensional interpolation function in Octave, with
-similar capabilities.
+similar capabilities.  Methods using Delaunay tessellation are described
+in @ref{Interpolation on Scattered Data}.
 
 @DOCSTRING(interp2)
 

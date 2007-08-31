@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} polyderiv (@var{c})
-## @deftypefnx {Function File} {[@var{q}] =} polyder (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{q}, @var{r}] =} polyder (@var{b}, @var{a})
+## @deftypefnx {Function File} {[@var{q}] =} polyderiv (@var{b}, @var{a})
+## @deftypefnx {Function File} {[@var{q}, @var{r}] =} polyderiv (@var{b}, @var{a})
 ## Return the coefficients of the derivative of the polynomial whose
 ## coefficients are given by vector @var{c}.  If a pair of polynomials
 ## is given @var{b} and @var{a}, the derivative of the product is

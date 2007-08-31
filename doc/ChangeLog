@@ -1,3 +1,10 @@
+2007-08-31  Søren Hauberg  <hauberg@gmail.com>
+
+        * interpreter/nonlin.txi: Extended the example.
+
+        * interpreter/poly.txi: Sectioning and documentation.
+        * interpreter/octave.texi: Adapt to changes in poly.txi.
+
 2007-08-30  David Bateman  <dbateman@free.fr>
 
 	* interpreter/geometryimages.m: Add inpolygon example

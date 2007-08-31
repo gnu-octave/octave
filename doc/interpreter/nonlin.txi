@@ -15,16 +15,18 @@ $$
 $$
 @end tex
 @end iftex
-@ifinfo
+@ifnottex
 
 @example
 F (x) = 0
 @end example
-@end ifinfo
+@end ifnottex
 
 @noindent
 using the function @code{fsolve}, which is based on the @sc{Minpack}
-subroutine @code{hybrd}.
+subroutine @code{hybrd}.  This is an iterative technique so a starting
+point will have to be provided.  This also has the consequence that
+convergence is not guarantied even if a solution exists.
 
 @DOCSTRING(fsolve)
 
@@ -63,7 +65,7 @@ roots of the system of equations.  For example, given the function
 @code{f} defined above,
 
 @example
-[x, info] = fsolve ("f", [1; 2])
+[x, info] = fsolve (@@f, [1; 2])
 @end example
 
 @noindent
@@ -78,6 +80,7 @@ x =
 info = 1
 @end example
 
+@noindent
 A value of @code{info = 1} indicates that the solution has converged.
 
 The function @code{perror} may be used to print English messages
@@ -90,4 +93,43 @@ perror ("fsolve", 1)
 @end group
 @end example
 
+When no Jacobian is supplied (as in the example above) it is approximated
+numerically.  This requires more function evaluations, and hence is
+less efficient.  In the example above we could compute the Jacobian 
+analytically as
+
+@iftex
+@tex
+$$
+\left[\matrix{ {\partial f_1 \over \partial x_1} &
+               {\partial f_1 \over \partial x_2} \cr
+               {\partial f_2 \over \partial x_1} &
+               {\partial f_2 \over \partial x_2} \cr}\right] =
+\left[\matrix{ 3 x_2 - 4 x_1                  &
+               4 \cos(x_2) + 3 x_1            \cr
+               -2 x_2^2 - 3 \sin(x_1) + 6 x_1 &
+               -4 x_1 x_2                     \cr }\right]
+$$
+@end tex
+which is computed with the following Octave function
+@end iftex
+
+@example
+function J = jacobian(x)
+  J(1,1) =  3*x(2) - 4*x(1);
+  J(1,2) =  4*cos(x(2)) + 3*x(1);
+  J(2,1) = -2*x(2)^2 - 3*sin(x(1)) + 6*x(1);
+  J(2,2) = -4*x(1)*x(2);
+endfunction
+@end example
+
+@noindent
+Using this Jacobian is done with the following code
+
+@example
+[x, info] = fsolve (@{@@f, @@jacobian@}, [1; 2]);
+@end example
+
+@noindent
+which gives the same solution as before.
 

@@ -1,3 +1,8 @@
+2007-08-31  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* load-path.cc (load_path::do_find_file): Do not assume paths
+	use forward slashes.
+
 2007-08-30  John W. Eaton  <jwe@octave.org>
 
 	* sysdep.cc (Fpause): Doc fix.

@@ -35,7 +35,7 @@
 ## $$
 ## @end tex
 ## @end iftex
-## @ifinfo
+## @ifnottex
 ##
 ## @smallexample
 ##      _                                                        _
@@ -47,7 +47,7 @@
 ##     |       .            .           .    .             .      |
 ##     |_      0            0      ...       1             0     _|
 ## @end smallexample
-## @end ifinfo
+## @end ifnottex
 ##
 ## The eigenvalues of the companion matrix are equal to the roots of the
 ## polynomial.
@@ -67,12 +67,6 @@ function A = compan (c)
 
   if (! isvector (c))
     error ("compan: expecting a vector argument");
-  endif
-
-  ## Ensure that c is a row vector.
-
-  if (rows (c) > 1)
-    c = c.';
   endif
 
   n = length (c);

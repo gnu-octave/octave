@@ -151,7 +151,8 @@ get_lines_and_columns (std::istream& is, const std::string& filename, octave_idx
 	    {
 	      beg = buf.find_first_not_of (", \t", end);
 
-	      if (buf[beg] == '\r' && beg == buf.length () - 1)
+	      if (beg == NPOS || (buf[beg] == '\r' && 
+				  beg == buf.length () - 1))
 		{
 		  // We had a line with trailing spaces and
 		  // ending with a CRLF, so this should look like EOL,

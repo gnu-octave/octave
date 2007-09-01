@@ -1,6 +1,10 @@
 function geometryimages (nm, typ)
   bury_output ();
-  if (strcmp (nm, "voronoi"))
+  if (isempty (findstr (octave_config_info ("DEFS"), "HAVE_QHULL")) && ...
+      (strcmp (nm, "voronoi") || strcmp (nm, "griddata") || ...
+       strcmp (nm, "convhull") || strcmp (nm, "delaunay")))
+    sombreroimage (nm, typ);
+  elseif (strcmp (nm, "voronoi"))
     rand("state",9);
     x = rand(10,1);
     y = rand(10,1);
@@ -140,4 +144,31 @@ endfunction
 function bury_output ()
   f = figure (1);
   set (f, "visible", "off");
+endfunction
+
+function sombreroimage (nm, typ)
+  if (strcmp (typ, "txt"))
+    fid = fopen (sprintf ("%s.txt", nm), "wt");
+    fputs (fid, "+-----------------------------+\n");
+    fputs (fid, "| Image unavailable because   |\n");
+    fputs (fid, "| of a missing QHULL library. |\n");
+    fputs (fid, "+-----------------------------+\n");
+    fclose (fid);
+    return;
+  else ## if (!strcmp (typ, "txt"))
+
+    bury_output ();
+
+    x = y = linspace (-8, 8, 41)';
+    [xx, yy] = meshgrid (x, y);
+    r = sqrt (xx .^ 2 + yy .^ 2) + eps;
+    z = sin (r) ./ r;
+    unwind_protect
+      mesh (x, y, z);
+      title ("Sorry, graphics not available because octave was\\ncompiled without the QHULL library.");
+    unwind_protect_cleanup
+      print (strcat (nm, ".", typ), strcat ("-d", typ));
+      bury_output ();
+    end_unwind_protect
+  endif
 endfunction

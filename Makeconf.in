@@ -227,6 +227,7 @@ USE_64_BIT_IDX_T = @USE_64_BIT_IDX_T@
 TEXINFO_COLAMD = @TEXINFO_COLAMD@
 TEXINFO_CHOLMOD = @TEXINFO_CHOLMOD@
 TEXINFO_UMFPACK = @TEXINFO_UMFPACK@
+TEXINFO_QHULL = @TEXINFO_QHULL@
 
 # The arguments passed to configure.
 config_opts = @config_opts@
@@ -577,7 +578,8 @@ $(SED) < $< \
   -e "s|%OCTAVE_VERSION%|${version}|" \
   -e "s|%TEXINFO_COLAMD%|${TEXINFO_COLAMD}|" \
   -e "s|%TEXINFO_CHOLMOD%|${TEXINFO_CHOLMOD}|" \
-  -e "s|%TEXINFO_UMFPACK%|${TEXINFO_UMFPACK}|" | \
+  -e "s|%TEXINFO_UMFPACK%|${TEXINFO_UMFPACK}|" \
+  -e "s|%TEXINFO_QHULL%|${TEXINFO_QHULL}|" | \
   $(SED) -e "s|%OCTAVE_CONF_DEFS%|\"${UGLY_DEFS}\"|" > $@-t
 $(simple-move-if-change-rule)
 endef

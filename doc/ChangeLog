@@ -1,3 +1,11 @@
+2007-09-01  David Bateman  <dbateman@free.fr>
+
+	* conf.texi.in: Substitute for the variable TEXINFO_QHULL
+	* interpreter/geometryimages.m: Check for the HAVE_QHULL build
+	flag before creating certain figures.
+	* interpreter/geometry.txi: Check whether TEXINFO_QHULL is set
+	before including certain figures.
+
 2007-08-31  Søren Hauberg  <hauberg@gmail.com>
 
         * interpreter/nonlin.txi: Extended the example.

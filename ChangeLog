@@ -1,3 +1,8 @@
+2007-09-01  David Bateman  <dbateman@free.fr>
+
+	* configure.in: AC_SUBST and check the variable TEXINFO_QHULL.
+	* Makeconf.in: Use it.
+
 2007-08-24  David Bateman  <dbateman@free.fr>
 
 	* configure.in: Extra Qhull bits.

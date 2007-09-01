@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.572 $)
+AC_REVISION($Revision: 1.573 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -437,10 +437,13 @@ fi
 if test "$have_qhull" = yes; then
   AC_DEFINE(HAVE_QHULL, 1, [Define if the QHull library is used.])
   QHULL_LIBS="-lqhull"
+  TEXINFO_QHULL="@set HAVE_QHULL"
 else
   warn_qhull="Qhull library not found --- This will result in loss of functionality of some geometry functions."
   AC_MSG_WARN($warn_qhull)
 fi
+
+AC_SUBST(TEXINFO_QHULL)
 
 ### Check for pcre/regex library.
 AC_SUBST(REGEX_LIBS)

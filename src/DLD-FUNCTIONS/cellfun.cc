@@ -44,14 +44,14 @@ Flasterr (const octave_value_list& args_name, int nargout_name);
 
 DEFUN_DLD (cellfun, args, nargout,
   " -*- texinfo -*-\n\
-@deftypefn {Lodable Function} {} cellfun (@var{name}, @var{c})\n\
-@deftypefnx {Lodable Function} {} cellfun (\"size\", @var{c}, @var{k})\n\
-@deftypefnx {Lodable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
-@deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c})\n\
-@deftypefnx {Lodable Function} {} cellfun (@var{func}, @var{c}, @var{d})\n\
-@deftypefnx {Lodable Function} {[@var{a}, @var{b}] =} cellfun (@dots{})\n\
-@deftypefnx {Lodable Function} {} cellfun (@dots{}, 'ErrorHandler', @var{errfunc})\n\
-@deftypefnx {Lodable Function} {} cellfun (@dots{}, 'UniformOutput', @var{val})\n\
+@deftypefn {Loadable Function} {} cellfun (@var{name}, @var{c})\n\
+@deftypefnx {Loadable Function} {} cellfun (\"size\", @var{c}, @var{k})\n\
+@deftypefnx {Loadable Function} {} cellfun (\"isclass\", @var{c}, @var{class})\n\
+@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c})\n\
+@deftypefnx {Loadable Function} {} cellfun (@var{func}, @var{c}, @var{d})\n\
+@deftypefnx {Loadable Function} {[@var{a}, @var{b}] =} cellfun (@dots{})\n\
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'ErrorHandler', @var{errfunc})\n\
+@deftypefnx {Loadable Function} {} cellfun (@dots{}, 'UniformOutput', @var{val})\n\
 \n\
 Evaluate the function named @var{name} on the elements of the cell array\n\
 @var{c}.  Elements in @var{c} are passed on to the named function\n\

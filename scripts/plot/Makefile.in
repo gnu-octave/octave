@@ -47,6 +47,7 @@ SOURCES = \
   __plt_get_axis_arg__.m \
   __pltopt1__.m \
   __pltopt__.m \
+  ancestor.m \
   axes.m \
   axis.m \
   bar.m \

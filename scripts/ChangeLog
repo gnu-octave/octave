@@ -1,3 +1,7 @@
+2007-09-01  John W. Eaton  <jwe@octave.org>
+
+	* plot/Makefile.in (SOURCES): Add ancestor.m to the list.
+
 2007-09-01  David Bateman  <dbateman@free.fr>
 
 	* polynomial/polyint.m: New function like polyinteg but with

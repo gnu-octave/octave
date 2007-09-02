@@ -1,5 +1,7 @@
 2007-09-01  David Bateman  <dbateman@free.fr>
 
+	* interpreter/Makefile.in: Remove stray character from
+	INTERIMAGES_PNG target. 
 	* conf.texi.in: Substitute for the variable TEXINFO_QHULL
 	* interpreter/geometryimages.m: Check for the HAVE_QHULL build
 	flag before creating certain figures.

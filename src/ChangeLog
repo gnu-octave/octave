@@ -1,3 +1,9 @@
+2007-09-04  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
+
+	* DLD-FUNCTIONS/__qp__.cc (qp): Use Wact(j) == i - n_eq when
+	checking for blocking constraint.  Don't resize lambda_tmp.  Only
+	compute Y = Aact.pseudo_inverse () if it is needed.
+
 2007-08-31  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* ls-mat-ascii.cc (get_lines_and_columns): Check beg variable for

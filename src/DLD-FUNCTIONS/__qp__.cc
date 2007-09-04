@@ -227,9 +227,6 @@ qp (const Matrix& H, const ColumnVector& q,
 	  // FIXME -- still remain to handle the case of
 	  // non-full rank active set matrix.
 
-	  // Computing the Y matrix (orthogonal to Z)
-	  Y = Aact.pseudo_inverse ();
-
 	  // Reduced Hessian
 	  Matrix Zt = Z.transpose ();
 	  Matrix rH = Zt * H * Z;
@@ -317,16 +314,10 @@ qp (const Matrix& H, const ColumnVector& q,
 	      // Computing the multipliers only for the inequality
 	      // constraints that are active.  We do NOT compute
 	      // multipliers for the equality constraints.
+ 	      Y = Aact.pseudo_inverse ();
 	      Matrix Yt = Y.transpose ();
 	      Yt = Yt.extract_n (n_eq, 0, n_act-n_eq, n);
 	      lambda_tmp = Yt * (g + H * p);
-	      if (n_act - n_eq < n_in)
-		{
-		  lambda_tmp.resize (n_in, 0.0);
-
-		  for (octave_idx_type i = n_act-n_eq; i < n_in; i++)
-		    lambda_tmp(i) = 0;
-		}
 
 	      // Checking the multipliers.  We remove the most
 	      // negative from the set (if any).
@@ -389,7 +380,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
 		  for (octave_idx_type j = 0; j < n_act-n_eq; j++)
 		    {
-		      if (Wact(j) == i)
+		      if (Wact(j) == i - n_eq)
 			{
 			  found = true;
 			  break;

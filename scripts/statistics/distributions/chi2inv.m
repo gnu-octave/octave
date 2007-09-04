@@ -40,6 +40,6 @@ function inv = chi2inv (x, n)
     endif
   endif
 
-  inv = gaminv (x, n / 2, 1 / 2);
+  inv = gaminv (x, n / 2, 2);
 
 endfunction

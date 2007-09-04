@@ -1,3 +1,11 @@
+2007-09-04  David Bateman  <dbateman@free.fr>
+
+	* statistics/distributions/chi2pdf.m,
+	statistics/distributions/chi2cdf.m,
+	statistics/distributions/chi2inv.m: Modifiy the call to the gamma
+	distribution functions to account for inverse of scale factor in
+	gamma functions.
+
 2007-09-01  John W. Eaton  <jwe@octave.org>
 
 	* plot/Makefile.in (SOURCES): Add ancestor.m to the list.

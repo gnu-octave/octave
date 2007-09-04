@@ -40,6 +40,6 @@ function pdf = chi2pdf (x, n)
     endif
   endif
 
-  pdf = gampdf (x, n / 2, 1 / 2);
+  pdf = gampdf (x, n / 2, 2);
 
 endfunction

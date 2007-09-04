@@ -40,6 +40,6 @@ function cdf = chi2cdf (x, n)
     endif
   endif
 
-  cdf = gamcdf (x, n / 2, 1 / 2);
+  cdf = gamcdf (x, n / 2, 2);
 
 endfunction

@@ -46,11 +46,11 @@ function [t, p] = orderfields (s1, s2)
 
   if (nargin == 1)
     ## One structure: return the fields in alphabetical order.
-    if (isstruct(s1))
+    if (isstruct (s1))
       names = sort (fieldnames (s1));
     endif
   elseif (nargin == 2)
-    if (isstruct(s2))
+    if (isstruct (s2))
       ## Two structures: return the fields in the order of s2.
       names = fieldnames (s2);
       if (! isequal (sort (fieldnames (s1)), sort (names)))
@@ -69,11 +69,11 @@ function [t, p] = orderfields (s1, s2)
       names = fieldnames (s1);
       t1 = sort (s2);
       t1 = t1(:)';
-      t2 = 1:length (names);
+      t2 = 1:numel (names);
       if (! isequal (t1, t2))
 	error ("orderfields: invalid permutation vector");
       endif
-      names = names(s2);
+      names = names (s2);
     endif
   endif
 
@@ -88,9 +88,16 @@ function [t, p] = orderfields (s1, s2)
   endif
 
   ## Permute the names in the structure.
-  for i = 1:length (names)
-    el = names(i);
-    t(:).(el) = s1(:).(el);
-  endfor
+  if (numel (s1) == 0)
+    args = cell (1, 2 * numel (names));
+    args(1:2:end) = names;
+      args{2:2:end} = {};
+    t = struct (args{:});
+  else
+    for i = 1:numel (names)
+      el = names(i);
+      t(:).(el) = s1(:).(el);
+    endfor
+  endif
 
 endfunction

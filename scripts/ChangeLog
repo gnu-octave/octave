@@ -1,5 +1,13 @@
 2007-09-05  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/orderfields.m: Use numel instead of length.
+
+2007-09-05  Michael goffioul  <michael.goffioul@gmail.com>
+
+	* miscellaneous/orderfields.m: Handle empty structs.
+
+2007-09-05  John W. Eaton  <jwe@octave.org>
+
 	* plot/__go_draw_axes__.m: Consistently index PARAMETRIC with
 	DATA_IDX.
 

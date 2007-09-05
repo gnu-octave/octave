@@ -24,7 +24,8 @@
 
 function t = isdir (x)
   if (nargin == 1)
-    t = exist (x, "dir");
+    ## Exist returns an integer but isdir should return a logical.
+    t = exist (x, "dir") == 7;
   else
     print_usage ("isdir");
   endif

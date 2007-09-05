@@ -239,6 +239,7 @@ function __go_draw_axes__ (h, plot_stream)
 
 	    data_idx++;
 	    is_image_data(data_idx) = true;
+	    parametric(data_idx) = false;
 
 	    [y_dim, x_dim] = size (img_data(:,:,1));
 	    if (x_dim > 1)
@@ -301,6 +302,7 @@ function __go_draw_axes__ (h, plot_stream)
 	case "line"
 	  data_idx++;
 	  is_image_data(data_idx) = false;
+	  parametric(data_idx) = true;
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
@@ -315,7 +317,6 @@ function __go_draw_axes__ (h, plot_stream)
 	    withclause{data_idx} = sprintf ("with %s linetype %d",
 					    style, typ);
 	  endif
-	  parametric(i) = true;
 	  if (! isempty (obj.zdata))
 	    nd = 3;
 	    xdat = obj.xdata(:);
@@ -437,6 +438,7 @@ function __go_draw_axes__ (h, plot_stream)
            clim = axis_obj.clim;
 	   data_idx++;
 	   is_image_data(data_idx) = false;
+	   parametric(data_idx) = false;
            titlespec{data_idx} = "title \"\"";
 	   usingclause{data_idx} = "";
            if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
@@ -459,7 +461,6 @@ function __go_draw_axes__ (h, plot_stream)
            endif
 
 	   withclause{data_idx} = sprintf ("with filledcurve lc rgb \"#%02x%02x%02x\"",round (255*color));
-	   parametric(data_idx) = true;
 
 	   xdat = obj.xdata(:);
 	   ydat = obj.ydata(:);
@@ -477,8 +478,7 @@ function __go_draw_axes__ (h, plot_stream)
          ## patch outline
          data_idx++;
          is_image_data(data_idx) = false;
-         ## I had to use data_idx instead of i here, not sure if o.k. (Kai)
-         parametric(data_idx) = true;
+         parametric(data_idx) = false;
          titlespec{data_idx} = "title \"\"";
 	 usingclause{data_idx} = "";
          if (isfield (obj, "edgecolor"))
@@ -506,6 +506,7 @@ function __go_draw_axes__ (h, plot_stream)
 	case "surface"
 	  data_idx++;
 	  is_image_data(data_idx) = false;
+	  parametric(data_idx) = false;
 	  [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
@@ -520,7 +521,6 @@ function __go_draw_axes__ (h, plot_stream)
 	    withclause{data_idx} = sprintf ("with %s linetype %d %s",
 					    style, typ, with);
 	  endif
-	  parametric(i) = false;
 	  nd = 3;
 	  xdat = obj.xdata;
 	  ydat = obj.ydata;

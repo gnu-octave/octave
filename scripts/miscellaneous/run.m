@@ -27,7 +27,7 @@
 ## @seealso{system}
 ## @end deftypefn
 
-## PKG_ADD: mark_as_commnd run
+## PKG_ADD: mark_as_command run
 
 function run (s)
   [d, f, ext] = fileparts (s);

@@ -534,7 +534,19 @@ octave_value::octave_value (const SparseMatrix& m, const MatrixType &t)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const Sparse<double>& m, const MatrixType &t)
+  : rep (new octave_sparse_matrix (m, t))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const SparseComplexMatrix& m, const MatrixType &t)
+  : rep (new octave_sparse_complex_matrix (m, t))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const Sparse<Complex>& m, const MatrixType &t)
   : rep (new octave_sparse_complex_matrix (m, t))
 {
   maybe_mutate ();

@@ -75,6 +75,11 @@ Variables}, for a description of the @code{exist} function.
 
 @DOCSTRING(feval)
 
+A similar function @code{run} exists for calling user script files, that
+are not necessarily on the user path
+
+@DOCSTRING(run)
+
 @node Evaluation in a Different Context
 @section Evaluation in a Different Context
 

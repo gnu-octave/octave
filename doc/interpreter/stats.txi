@@ -52,6 +52,8 @@ Octave can compute various statistics such as the moments of a data set.
 
 @DOCSTRING(var)
 
+@DOCSTRING(mode)
+
 @DOCSTRING(cov)
 
 @DOCSTRING(cor)

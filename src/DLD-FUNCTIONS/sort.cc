@@ -236,6 +236,188 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
   return retval;
 }
 
+template <class T>
+static octave_value
+mx_sort_sparse (Sparse<T> &m, int dim, sortmode mode = UNDEFINED)
+{
+  octave_value retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (m.length () < 1)
+    return Sparse<T> (nr, nc);
+
+  if (dim > 0)
+    {
+      m = m.transpose ();
+      nr = m.rows ();
+      nc = m.columns ();
+    }
+
+  octave_sort<T> sort;
+
+  if (mode == ASCENDING) 
+    sort.set_compare (ascending_compare);
+  else if (mode == DESCENDING)
+    sort.set_compare (descending_compare);
+
+  T *v = m.data ();
+  octave_idx_type *cidx = m.cidx ();
+  octave_idx_type *ridx = m.ridx ();
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_idx_type ns = cidx [j + 1] - cidx [j];
+      sort.sort (v, ns);
+
+      octave_idx_type i;
+      if (mode == ASCENDING) 
+	{
+	  for (i = 0; i < ns; i++)
+	    if (ascending_compare (static_cast<T> (0), v [i]))
+	      break;
+	}
+      else
+	{
+	  for (i = 0; i < ns; i++)
+	    if (descending_compare (static_cast<T> (0), v [i]))
+	      break;
+	}
+      for (octave_idx_type k = 0; k < i; k++)
+	ridx [k] = k;
+      for (octave_idx_type k = i; k < ns; k++)
+	ridx [k] = k - ns + nr; 
+
+      v += ns;
+      ridx += ns;
+    }
+
+  if (dim > 0)
+      m = m.transpose ();
+
+  retval = m;
+
+  return retval;
+}
+
+template <class T>
+static octave_value_list
+mx_sort_sparse_indexed (Sparse<T> &m, int dim, sortmode mode = UNDEFINED)
+{
+  octave_value_list retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (m.length () < 1)
+    {
+      retval (1) = NDArray (dim_vector (nr, nc));
+      retval (0) = octave_value (SparseMatrix (nr, nc));
+      return retval;
+    }
+
+  if (dim > 0)
+    {
+      m = m.transpose ();
+      nr = m.rows ();
+      nc = m.columns ();
+    }
+
+  octave_sort<vec_index<T> *> indexed_sort;
+
+  if (mode == ASCENDING) 
+    indexed_sort.set_compare (ascending_compare);
+  else if (mode == DESCENDING)
+    indexed_sort.set_compare (descending_compare);
+
+  T *v = m.data ();
+  octave_idx_type *cidx = m.cidx ();
+  octave_idx_type *ridx = m.ridx ();
+
+  OCTAVE_LOCAL_BUFFER (vec_index<T> *, vi, nr);
+  OCTAVE_LOCAL_BUFFER (vec_index<T>, vix, nr);
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    vi[i] = &vix[i];
+
+  Matrix idx (nr, nc);
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_idx_type ns = cidx [j + 1] - cidx [j];
+      octave_idx_type offset = j * nr;
+
+      if (ns == 0)
+	{
+	  for (octave_idx_type k = 0; k < nr; k++)
+	    idx (offset + k) = k + 1;
+	}
+      else
+	{
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    {
+	      vi[i]->vec = v[i];
+	      vi[i]->indx = ridx[i] + 1;
+	    }
+
+	  indexed_sort.sort (vi, ns);
+
+	  octave_idx_type i;
+	  if (mode == ASCENDING) 
+	    {
+	      for (i = 0; i < ns; i++)
+		if (ascending_compare (static_cast<T> (0), vi [i] -> vec))
+		  break;
+	    }
+	  else
+	    {
+	      for (i = 0; i < ns; i++)
+		if (descending_compare (static_cast<T> (0), vi [i] -> vec))
+		  break;
+	    }
+
+	  octave_idx_type ii = 0;
+	  octave_idx_type jj = i;
+	  for (octave_idx_type k = 0; k < nr; k++)
+	    {
+	      if (ii < ns && ridx[ii] == k)
+		ii++;
+	      else
+		idx (offset + jj++) = k + 1;
+	    }
+
+	  for (octave_idx_type k = 0; k < i; k++)
+	    {
+	      v [k] = vi [k] -> vec;
+	      idx (k + offset) = vi [k] -> indx;
+	      ridx [k] = k;
+	    }
+
+	  for (octave_idx_type k = i; k < ns; k++)
+	    {
+	      v [k] = vi [k] -> vec;
+	      idx (k - ns + nr + offset) = vi [k] -> indx;
+	      ridx [k] = k - ns + nr; 
+	    }
+
+	  v += ns;
+	  ridx += ns;
+	}
+    }
+
+  if (dim > 0)
+    {
+      m = m.transpose ();
+      idx = idx.transpose ();
+    }
+
+  retval (1) = idx;
+  retval(0) = octave_value (m);
+
+  return retval;
+}
+
 // If we have IEEE 754 data format, then we can use the trick of
 // casting doubles as unsigned eight byte integers, and with a little
 // bit of magic we can automatically sort the NaN's correctly.
@@ -602,11 +784,49 @@ mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode);
 #endif
 #endif
 
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+static octave_value_list
+mx_sort_sparse (Sparse<double> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_sparse_indexed (Sparse<double> &m, int dim, sortmode mode);
+#endif
+
 // std::abs(Inf) returns NaN!!
 static inline double
 xabs (const Complex& x)
 {
   return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+}
+
+template <>
+bool
+ascending_compare (Complex a, Complex b)
+{
+  return (xisnan (b) || (xabs (a) < xabs (b)) || ((xabs (a) == xabs (b))
+	      && (arg (a) < arg (b))));
+}
+
+bool
+operator < (const Complex a, const Complex b)
+{
+  return (xisnan (b) || (xabs (a) < xabs (b)) || ((xabs (a) == xabs (b))
+	      && (arg (a) < arg (b))));
+}
+
+template <>
+bool
+descending_compare (Complex a, Complex b)
+{
+  return (xisnan (a) || (xabs (a) > xabs (b)) || ((xabs (a) == xabs (b))
+	      && (arg (a) > arg (b))));
+}
+
+bool
+operator > (const Complex a, const Complex b)
+{
+  return (xisnan (a) || (xabs (a) > xabs (b)) || ((xabs (a) == xabs (b))
+	      && (arg (a) > arg (b))));
 }
 
 template <>
@@ -629,12 +849,22 @@ descending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
 	      && (arg (a->vec) > arg (b->vec))));
 }
 
+template class octave_sort<Complex>;
 template class vec_index<Complex>;
 template class octave_sort<vec_index<Complex> *>;
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static octave_value_list
+mx_sort (ArrayN<Complex> &m, int dim, sortmode mode);
+
+static octave_value_list
 mx_sort_indexed (ArrayN<Complex> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_sparse (Sparse<Complex> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_sparse_indexed (Sparse<Complex> &m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<char>;
@@ -821,31 +1051,63 @@ ordered lists.\n\
 
   if (arg.is_real_type ())
     {
-      NDArray m = arg.array_value ();
-
-      if (! error_state)
+      if (arg.is_sparse_type ())
 	{
-#ifdef HAVE_IEEE754_DATA_FORMAT
-	  // As operator > gives the right result, can special case here
-	  if (! return_idx && smode == ASCENDING)
-	    retval = mx_sort (m, dim);
-	  else
-#endif
+	  SparseMatrix m = arg.sparse_matrix_value ();
+
+	  if (! error_state)
 	    {
 	      if (return_idx)
-		retval = mx_sort_indexed (m, dim, smode);
+		retval = mx_sort_sparse_indexed (m, dim, smode);
 	      else
-		retval = mx_sort (m, dim, smode);
+		retval = mx_sort_sparse (m, dim, smode);
+	    }
+	}
+      else
+	{
+	  NDArray m = arg.array_value ();
+
+	  if (! error_state)
+	    {
+#ifdef HAVE_IEEE754_DATA_FORMAT
+	      // As operator > gives the right result, can special case here
+	      if (! return_idx && smode == ASCENDING)
+		retval = mx_sort (m, dim);
+	      else
+#endif
+		{
+		  if (return_idx)
+		    retval = mx_sort_indexed (m, dim, smode);
+		  else
+		    retval = mx_sort (m, dim, smode);
+		}
 	    }
 	}
     }
   else if (arg.is_complex_type ())
     {
-      ComplexNDArray cm = arg.complex_array_value ();
+      if (arg.is_sparse_type ())
+	{
+	  SparseComplexMatrix cm = arg.sparse_complex_matrix_value ();
 
-      // Don't have unindexed version as no ">" operator
-      if (! error_state)
-	retval = mx_sort_indexed (cm, dim, smode);
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_sparse_indexed (cm, dim, smode);
+	      else
+		retval = mx_sort_sparse (cm, dim, smode);
+	    }
+	}
+      else
+	{
+	  ComplexNDArray cm = arg.complex_array_value ();
+
+	  if (! error_state)
+	    {
+	      // The indexed version seems to be slightly faster
+	      retval = mx_sort_indexed (cm, dim, smode);
+	    }
+	}
     }
   else if (arg.is_string ())
     {

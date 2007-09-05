@@ -192,8 +192,10 @@ public:
   octave_value (const ArrayN<char>& chnda, bool is_string = false,
 		char type = '"');
   octave_value (const SparseMatrix& m, const MatrixType& t = MatrixType ());
+  octave_value (const Sparse<double>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseComplexMatrix& m, 
 		const MatrixType& t = MatrixType ());
+  octave_value (const Sparse<Complex>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseBoolMatrix& bm, 
 		const MatrixType& t = MatrixType ());
   octave_value (const octave_int8& i);

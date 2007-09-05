@@ -1,0 +1,87 @@
+## Copyright (C) 2007  David Bateman
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2, or (at your option)
+## any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, write to the Free
+## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+## 02110-1301, USA.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {} structfun (@var{func}, @var{s})
+## @deftypefnx {Function File} {[@var{a}, @var{b}] =} structfun (@dots{})
+## @deftypefnx {Function File} {} structfun (@dots{}, 'ErrorHandler', @var{errfunc})
+## @deftypefnx {Function File} {} structfun (@dots{}, 'UniformOutput', @var{val})
+## 
+## Evaluate the function named @var{name} on the fields of the structure
+## @var{s}. The fields of @var{s} are passed the the function @var{func}
+## individually.
+##
+## @code{structfun} accepts an arbitrary function @var{func} in the form of 
+## an inline function, function handle, or the name of a function (in a 
+## character string). In the case of a character string argument, the 
+## function must accept a single argument named @var{x}, and it must return 
+## a string value. If the function returns more than one argument, they are
+## returned as separate output variables.
+##
+## If the param 'UniformOutput' is set to true (the default), then the function
+## must return either a single element which will be concatenated into the
+## return value. If 'UniformOutput is false, the outputs placed in a structure
+## with the same fieldnames as the input structure.
+## 
+## @example
+## @group
+## s.name1 = "John Smith"; 
+## s.name2 = "Jill Jones"; 
+## structfun (@{x@} regexp (x, '(\w+)$', 'matches')@{1@}, s, 
+##            'UniformOutput', false)
+## @end group
+## @end example
+## 
+## Given the parameter 'ErrorHandler', then @var{errfunc} defines a function to
+## call in case @var{func} generates an error. The form of the function is
+## 
+## @example
+## function [@dots{}] = errfunc (@var{se}, @dots{})
+## @end example
+## 
+## where there is an additional input argument to @var{errfunc} relative to
+## @var{func}, given by @var{se}. This is a structure with the elements
+## 'identifier', 'message' and 'index', giving respectively the error
+## identifier, the error message, and the index into the input arguments
+## of the element that caused the error.
+## @seealso{cellfun, arrayfun}
+## @end deftypefn
+
+function varargout = structfun (fun, s, varargin);
+  if (nargin < 2)
+    print_usage ();
+  endif
+
+  varargout = cell (max ([nargout, 1]), 1);
+  [varargout{:}] = cellfun (fun, struct2cell (s), varargin {:});
+
+  if (iscell (varargout{1}))
+    [varargout{:}] = cell2struct (varargout{1}, fieldnames(s), 1);
+  endif
+endfunction
+
+
+%!test
+%! s.name1 = "John Smith"; 
+%! s.name2 = "Jill Jones"; 
+%! l.name1 = "Smith";
+%! l.name2 = "Jones";
+%! o = structfun (@(x) regexp (x, '(\w+)$', 'matches'){1}, s, 
+%!		  'UniformOutput', false);
+%! assert (o, l);

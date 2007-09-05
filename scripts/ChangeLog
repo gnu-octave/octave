@@ -1,3 +1,12 @@
+2007-09-05  David Bateman  <dbateman@free.fr>
+
+        * general/structfun.m: New function.
+        * general/Makefile.in (SOURCES): Add it to sources.
+        * miscellaneous/run.m: New function.
+        * miscellaneous/Makefile.in (SOURCES): Add it to sources.
+        * statistics/base/mode.m: New function.
+        * statistics/base//Makefile.in (SOURCES): Add it to sources.
+
 2007-09-05  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/orderfields.m: Use numel instead of length.

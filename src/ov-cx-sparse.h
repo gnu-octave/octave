@@ -73,6 +73,17 @@ public:
   octave_sparse_complex_matrix (const MSparse<Complex>& m)
     : octave_base_sparse<SparseComplexMatrix> (m) { }
 
+  octave_sparse_complex_matrix (const MSparse<Complex>& m, 
+				const MatrixType &t)
+    : octave_base_sparse<SparseComplexMatrix> (m, t) { }
+
+  octave_sparse_complex_matrix (const Sparse<Complex>& m, 
+				const MatrixType &t)
+    : octave_base_sparse<SparseComplexMatrix> (SparseComplexMatrix (m), t) { }
+
+  octave_sparse_complex_matrix (const Sparse<Complex>& m)
+    : octave_base_sparse<SparseComplexMatrix> (SparseComplexMatrix (m)) { }
+
   octave_sparse_complex_matrix (const octave_sparse_complex_matrix& cm)
     : octave_base_sparse<SparseComplexMatrix> (cm) { }
 

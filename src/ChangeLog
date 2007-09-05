@@ -1,3 +1,23 @@
+2007-09-05  David Bateman  <dbateman@free.fr>
+
+        * DLD-FUNCTIONS/sort.cc (mx_sort_sparse, mx_sort_sparse_indexed):
+        New template classes for sparse sort functions.
+        (Fsort): Use them.
+        * ov.h (octave_value (const Sparse<double>&, const MatrixType&),
+        octave_value (const Sparse<Complex>&, const MatrixType&)): New
+        constructors.
+        * ov.cc (octave_value::octave_value (const Sparse<double>&, 
+        const MatrixType&), octave_value::octave_value (const 
+        Sparse<Complex>&, const MatrixType&)): Define them.
+        * ov-re-sparse.h (octave_sparse_matrix (const MSparse<double>&,
+        const MatrixType&), octave_sparse_matrix (const Sparse<double>&),
+        octave_sparse_matrix (const Sparse<double>&, const MatrixType&)):
+        New constructors.
+        * ov-cx-sparse.h (octave_sparse_complex_matrix (const MSparse<double>&,
+        const MatrixType&), octave_sparse_complex_matrix (const 
+        Sparse<double>&), octave_sparse_complex_matrix (const
+        Sparse<double>&, const MatrixType&)): ditto.
+
 2007-09-04  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
 
 	* DLD-FUNCTIONS/__qp__.cc (qp): Use Wact(j) == i - n_eq when

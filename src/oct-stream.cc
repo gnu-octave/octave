@@ -2618,8 +2618,17 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 		      if (lo_ieee_isnan (val) || xisinf (val))
 			{
 			  std::string tfmt = fmt;
+			  std::string::size_type i1, i2;
 
-			  tfmt.replace (tfmt.rfind (elt->type), 1, 1, 's');
+			  tfmt.replace ((i1 = tfmt.rfind (elt->type)),
+					1, 1, 's');
+
+			  if ((i2 = tfmt.rfind ('.')) != NPOS && i2 < i1)
+			    {
+			      tfmt.erase (i2, i1-i2);
+			      if (elt->prec < 0)
+				nsa--;
+			    }
 
 			  const char *tval = xisinf (val)
 			    ? (val < 0 ? "-Inf" : "Inf")

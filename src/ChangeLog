@@ -1,3 +1,8 @@
+2007-09-05  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* oct-stream.cc (octave_base_stream::do_printf): Ignore precision
+	portion of format string if printing Inf, NaN, or NA values.
+
 2007-09-05  David Bateman  <dbateman@free.fr>
 
         * DLD-FUNCTIONS/sort.cc (mx_sort_sparse, mx_sort_sparse_indexed):

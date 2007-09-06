@@ -120,7 +120,7 @@ function print (varargin)
   devopt = "";
   printer = "";
   debug = false;
-  debug_file = "octave-print-commands.log"
+  debug_file = "octave-print-commands.log";
 
   for i = 1:nargin
     arg = varargin{i};

@@ -1,3 +1,7 @@
+2007-09-06  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Avoid broken strptime function on Cygwin systems.
+
 2007-09-01  David Bateman  <dbateman@free.fr>
 
 	* configure.in: AC_SUBST and check the variable TEXINFO_QHULL.

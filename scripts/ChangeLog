@@ -1,3 +1,9 @@
+2007-09-06  John W. Eaton  <jwe@octave.org>
+
+	* plot/drawnow.m (drawnow): New arg, debug_file.
+	(init_plot_stream): Split from open_plot_stream.
+	* plot/print.m: Accept -debug=FILE argument.
+
 2007-09-06  David Bateman  <dbateman@free.fr>
 
         * general/celldisp.m: New function.

@@ -119,6 +119,8 @@ function print (varargin)
   name = "";
   devopt = "";
   printer = "";
+  debug = false;
+  debug_file = "octave-print-commands.log"
 
   for i = 1:nargin
     arg = varargin{i};
@@ -135,8 +137,13 @@ function print (varargin)
 	orientation = "portrait";
       elseif (strcmp (arg, "-landscape"))
 	orientation = "landscape";
+      elseif (strncmp (arg, "-debug", 6))
+	debug = true;
+	if (length (arg) > 7)
+	  debug_file = arg(7:end);
+	endif
       elseif (length (arg) > 2 && arg(1:2) == "-d")
-	devopt = arg(3:length(arg));
+	devopt = arg(3:end);
       elseif (length (arg) > 2 && arg(1:2) == "-P")
 	printer = arg;
       elseif (length (arg) > 2 && arg(1:2) == "-F")
@@ -332,7 +339,11 @@ function print (varargin)
     new_terminal = dev;
   endif
 
-  drawnow (new_terminal, name);
+  if (debug)
+    drawnow (new_terminal, name, debug_file);
+  else
+    drawnow (new_terminal, name);
+  endif
 
   if (! isempty (convertname))
     command = sprintf ("convert '%s' '%s'", name, convertname);

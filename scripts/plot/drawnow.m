@@ -24,7 +24,7 @@
 
 ## Author: jwe
 
-function drawnow (term, file)
+function drawnow (term, file, debug_file)
 
   persistent drawnow_executing = 0;
 
@@ -35,17 +35,26 @@ function drawnow (term, file)
       return;
     endif
 
-    if (nargin == 2)
+    if (nargin == 2 || nargin == 3)
       h = get (0, "currentfigure");
       if (h)
 	f = get (h);
 	plot_stream = [];
+	fid = [];
 	unwind_protect
 	  plot_stream = open_gnuplot_stream ([], term, file);
 	  __go_draw_figure__ (f, plot_stream);
+	  if (nargin == 3)
+	    fid = fopen (debug_file, "wb");
+	    init_plot_stream (fid, [], term, file);
+	    __go_draw_figure__ (f, fid);
+	  endif
 	unwind_protect_cleanup
 	  if (! isempty (plot_stream))
 	    pclose (plot_stream);
+	  endif
+	  if (! isempty (fid))
+	    fclose (fid);
 	  endif
 	end_unwind_protect
       else
@@ -84,7 +93,7 @@ function drawnow (term, file)
 
 endfunction
 
-function plot_stream = open_gnuplot_stream (h, term, file)
+function plot_stream = open_gnuplot_stream (h, varargin)
 
   ## If drawnow is cleared, it is possible to register __go_close_all__
   ## more than once, but that is not fatal.
@@ -102,52 +111,62 @@ function plot_stream = open_gnuplot_stream (h, term, file)
       set (h, "__plot_stream__", plot_stream);
     endif
 
-    if (nargin == 3)
-      fprintf (plot_stream, "set terminal %s;\n", term);
-      fprintf (plot_stream, "set output \"%s\";\n", file);
-    else
-
-      ## Guess the terminal type.
-      term = getenv ("GNUTERM");
-      if (isempty (term))
-	if (! isempty (getenv ("DISPLAY")))
-          term = "x11";
-	elseif (! isunix ())
-          term = "windows";
-	else
-	  ## This should really be checking for os x before setting
-	  ## the terminal type to aqua, but nobody will notice because
-	  ## every other unix will be using x11 and windows will be
-	  ## using windows.  Those diehards still running octave from
-	  ## a linux console know how to set the GNUTERM variable.
-          term = "aqua";
-	endif
-      endif
-
-      ## If no 'h' (why not?) then open the terminal as Figure 0.
-      if (isempty (h))
-        h = 0;
-      endif
-
-      if (strcmp (term, "x11"))
-        fprintf (plot_stream, "set terminal x11 title \"Figure %d\"\n", h);
-      elseif (strcmp (term, "aqua"))
-        ## Aqua doesn't understand the 'title' option despite what the
-        ## gnuplot 4.2 documentation says.
-        fprintf (plot_stream, "set terminal aqua %d\n", h);
-      elseif (strcmp (term, "wxt"))
-        fprintf (plot_stream, "set terminal wxt title \"Figure %d\"\n", h);
-      endif
-      ## gnuplot will pick up the GNUTERM environment variable itself
-      ## so no need to set the terminal type if not also setting the
-      ## figure title.
-
-    endif
+    init_plot_stream (plot_stream, h, varargin{:})
 
     if (isempty (__go_close_all_registered__))
       atexit ("__go_close_all__");
       __go_close_all_registered__ = true;
     endif
+
+  endif
+
+endfunction
+
+function init_plot_stream (plot_stream, h, term, file)
+
+  if (nargin == 4)
+    if (! isempty (term))
+      fprintf (plot_stream, "set terminal %s;\n", term);
+    endif
+    if (! isempty (file))
+      fprintf (plot_stream, "set output \"%s\";\n", file);
+    endif
+  else
+
+    ## Guess the terminal type.
+    term = getenv ("GNUTERM");
+    if (isempty (term))
+      if (! isempty (getenv ("DISPLAY")))
+	term = "x11";
+      elseif (! isunix ())
+	term = "windows";
+      else
+	## This should really be checking for os x before setting
+	## the terminal type to aqua, but nobody will notice because
+	## every other unix will be using x11 and windows will be
+	## using windows.  Those diehards still running octave from
+	## a linux console know how to set the GNUTERM variable.
+	term = "aqua";
+      endif
+    endif
+
+    ## If no 'h' (why not?) then open the terminal as Figure 0.
+    if (isempty (h))
+      h = 0;
+    endif
+
+    if (strcmp (term, "x11"))
+      fprintf (plot_stream, "set terminal x11 title \"Figure %d\"\n", h);
+    elseif (strcmp (term, "aqua"))
+      ## Aqua doesn't understand the 'title' option despite what the
+      ## gnuplot 4.2 documentation says.
+      fprintf (plot_stream, "set terminal aqua %d\n", h);
+    elseif (strcmp (term, "wxt"))
+      fprintf (plot_stream, "set terminal wxt title \"Figure %d\"\n", h);
+    endif
+    ## gnuplot will pick up the GNUTERM environment variable itself
+    ## so no need to set the terminal type if not also setting the
+    ## figure title.
 
   endif
 

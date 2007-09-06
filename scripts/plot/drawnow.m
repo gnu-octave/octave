@@ -125,7 +125,7 @@ function plot_stream = open_gnuplot_stream (h, term, file)
       endif
 
       ## If no 'h' (why not?) then open the terminal as Figure 0.
-      if isempty (h)
+      if (isempty (h))
         h = 0;
       endif
 

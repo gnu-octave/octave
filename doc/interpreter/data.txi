@@ -47,6 +47,10 @@ use of the following functions.
 
 @DOCSTRING(cast)
 
+@DOCSTRING(typecast)
+
+@DOCSTRING(swapbytes)
+
 @menu
 * Numeric Objects::             
 * Missing Data::                

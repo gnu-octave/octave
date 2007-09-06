@@ -60,10 +60,11 @@ increment_index (Array<octave_idx_type>& ra_idx, const dim_vector& dimensions,
   ra_idx(start_dimension)++;
 
   int n = ra_idx.length () - 1;
+  int nda = dimensions.length ();
 
   for (int i = start_dimension; i < n; i++)
     {
-      if (ra_idx(i) < dimensions(i))
+      if (ra_idx(i) < (i < nda ? dimensions(i) : 1))
  	break;
       else
  	{

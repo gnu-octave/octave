@@ -1,3 +1,11 @@
+2007-09-06  David Bateman  <dbateman@free.fr>
+
+        * general/celldisp.m: New function.
+        * general/Makefile.in (SOURCES): Add celldisp.m.
+        * miscellaneous/swapbytes.m: New function.
+        * miscellaneous/gzip.m: New function.
+        * miscellaneous/Makefile.in (SOURCES): Add swapbytes.m and gzip.m.
+
 2007-09-05  David Bateman  <dbateman@free.fr>
 
         * general/structfun.m: New function.

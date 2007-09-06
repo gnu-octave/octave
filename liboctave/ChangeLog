@@ -1,5 +1,7 @@
 2007-09-06  David Bateman  <dbateman@free.fr>
 
+        * Array-util.cc (increment_index): dimensions can have singleton
+        trailing dimensions.
         * Array.h (range_error, xelem, checkelem, elem, operator ()):
         Modify use of Array<int> to Array<octave_idx_type> and adjust
         where necessary.

@@ -144,6 +144,8 @@ a (i, :)
 
 @DOCSTRING(arrayfun)
 
+@DOCSTRING(bsxfun)
+
 @node Special Utility Matrices
 @section Special Utility Matrices
 

@@ -482,6 +482,12 @@ c@{3@} = 3
 @end group
 @end example
 
+In general nested cell arrays are displayed hierarchically as above. In
+some circumstances it makes sense to reference them by their index, and
+this can be performed by the @code{celldisp} function.
+
+@DOCSTRING(celldisp)
+
 @menu
 * Creating Cell Arrays::                 
 * Indexing Cell Arrays::

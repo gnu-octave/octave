@@ -1,5 +1,9 @@
 2007-09-05  David Bateman  <dbateman@free.fr>
 
+        * interpreter/system.m: Document gzip.
+        * interpreter/container.txi: Document celldisp.
+        * interpreter/matrix.txi: Document bsxfun.
+        * interpreter/data.txi: Document typecast and swapbytes. 
         * interpreter/container.txi: Document struct2cell.
         * interpreter/stats.txi: Document mode.
         * interpreter/eval.txi: Document run.

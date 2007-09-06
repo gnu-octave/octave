@@ -195,6 +195,8 @@ about the status of files.
 
 @DOCSTRING(bunzip2)
 
+@DOCSTRING(gzip)
+
 @DOCSTRING(gunzip)
 
 @DOCSTRING(tar)

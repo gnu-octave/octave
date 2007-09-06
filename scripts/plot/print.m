@@ -140,7 +140,7 @@ function print (varargin)
       elseif (strncmp (arg, "-debug", 6))
 	debug = true;
 	if (length (arg) > 7)
-	  debug_file = arg(7:end);
+	  debug_file = arg(8:end);
 	endif
       elseif (length (arg) > 2 && arg(1:2) == "-d")
 	devopt = arg(3:end);

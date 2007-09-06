@@ -13,9 +13,24 @@
 ## If QUALIFIERS is omitted, we generate the following functions directly
 ## in the class declaration:
 ##
-##   TYPE get_NAME (void) const { return NAME; }
-##   void set_NAME (const TYPE& val) { NAME = val; }
-##   void set_NAME (const octave_value& val) { set_NAME (TYPE (val)); }
+##   TYPE
+##   get_NAME (void) const
+##   {
+##     return NAME;
+##   }
+##
+##   void
+##   set_NAME (const TYPE& val)
+##   {
+##     if (! error_state)
+##       NAME = val;
+##   }
+##
+##   void
+##   set_NAME (const octave_value& val)
+##   {
+##     set_NAME (TYPE (val));
+##   }
 ##
 ## If present, the QUALIFIERS string may include any of the characters
 ## g, G, m, s, S, o, O, which have the following meanings:

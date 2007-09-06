@@ -1,3 +1,11 @@
+2007-09-06  David Bateman  <dbateman@free.fr>
+
+        * ov.cc (do_cat_op): Modify use of Array<int> to 
+        Array<octave_idx_type> and adjust where necessary.
+        * ov.h (do_cat_op): ditto.
+        * data.cc (do_cat): ditto.
+        * pt-mat.cc (tree_matrix::rvalue): ditto.
+
 2007-09-05  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* oct-stream.cc (octave_base_stream::do_printf): Ignore precision

@@ -759,7 +759,7 @@ do_cat (const octave_value_list& args, std::string fname)
 	      if (error_state)
 		return retval;
 
-	      Array<int> ra_idx (dv.length (), 0);
+	      Array<octave_idx_type> ra_idx (dv.length (), 0);
 
 	      for (int j = i; j < n_args; j++)
 		{

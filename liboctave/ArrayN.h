@@ -87,10 +87,10 @@ public:
   ArrayN<T> reshape (const dim_vector& new_dims) const
     { return Array<T>::reshape (new_dims); }
 
-  ArrayN<T> permute (const Array<int>& vec, bool inv = false) const
+  ArrayN<T> permute (const Array<octave_idx_type>& vec, bool inv = false) const
     { return Array<T>::permute (vec, inv); }
 
-  ArrayN<T> ipermute (const Array<int>& vec) const
+  ArrayN<T> ipermute (const Array<octave_idx_type>& vec) const
     { return Array<T>::ipermute (vec); }
 
   void resize (const dim_vector& dv)

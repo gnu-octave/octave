@@ -90,10 +90,11 @@ public:
   MArrayN<T> reshape (const dim_vector& new_dims) const
     { return ArrayN<T>::reshape (new_dims); }
 
-  MArrayN<T> permute (const Array<int>& vec, bool inv = false) const
+  MArrayN<T> permute (const Array<octave_idx_type>& vec, 
+		      bool inv = false) const
     { return ArrayN<T>::permute (vec, inv); }
 
-  MArrayN<T> ipermute (const Array<int>& vec) const
+  MArrayN<T> ipermute (const Array<octave_idx_type>& vec) const
     { return ArrayN<T>::ipermute (vec); }
 
   MArrayN squeeze (void) const { return ArrayN<T>::squeeze (); }

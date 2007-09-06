@@ -333,7 +333,7 @@ Array<T>::range_error (const char *fcn, octave_idx_type i, octave_idx_type j, oc
 
 template <class T>
 T
-Array<T>::range_error (const char *fcn, const Array<int>& ra_idx) const
+Array<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const
 {
   std::ostringstream buf;
 
@@ -358,7 +358,7 @@ Array<T>::range_error (const char *fcn, const Array<int>& ra_idx) const
 
 template <class T>
 T&
-Array<T>::range_error (const char *fcn, const Array<int>& ra_idx)
+Array<T>::range_error (const char *fcn, const Array<octave_idx_type>& ra_idx)
 {
   std::ostringstream buf;
 

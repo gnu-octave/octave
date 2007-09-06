@@ -284,8 +284,8 @@ public:
   T range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k) const;
   T& range_error (const char *fcn, octave_idx_type i, octave_idx_type j, octave_idx_type k);
 
-  T range_error (const char *fcn, const Array<int>& ra_idx) const;
-  T& range_error (const char *fcn, const Array<int>& ra_idx);
+  T range_error (const char *fcn, const Array<octave_idx_type>& ra_idx) const;
+  T& range_error (const char *fcn, const Array<octave_idx_type>& ra_idx);
 
   // No checking, even for multiple references, ever.
 
@@ -298,10 +298,10 @@ public:
   T& xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return xelem (i, dim2()*k+j); }
   T xelem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return xelem (i, dim2()*k+j); }
 
-  T& xelem (const Array<int>& ra_idx)
+  T& xelem (const Array<octave_idx_type>& ra_idx)
     { return xelem (compute_index (ra_idx)); }
 
-  T xelem (const Array<int>& ra_idx) const
+  T xelem (const Array<octave_idx_type>& ra_idx) const
     { return xelem (compute_index (ra_idx)); }
 
   // FIXME -- would be nice to fix this so that we don't
@@ -335,7 +335,7 @@ public:
 	return elem (i, dim2()*k+j);
     }
 
-  T& checkelem (const Array<int>& ra_idx)
+  T& checkelem (const Array<octave_idx_type>& ra_idx)
     {
       octave_idx_type i = compute_index (ra_idx);
 
@@ -355,19 +355,19 @@ public:
 
   T& elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return elem (i, dim2()*k+j); }
 
-  T& elem (const Array<int>& ra_idx)
+  T& elem (const Array<octave_idx_type>& ra_idx)
     { return Array<T>::elem (compute_index (ra_idx)); }
 
 #if defined (BOUNDS_CHECKING)
   T& operator () (octave_idx_type n) { return checkelem (n); }
   T& operator () (octave_idx_type i, octave_idx_type j) { return checkelem (i, j); }
   T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return checkelem (i, j, k); }
-  T& operator () (const Array<int>& ra_idx) { return checkelem (ra_idx); }
+  T& operator () (const Array<octave_idx_type>& ra_idx) { return checkelem (ra_idx); }
 #else
   T& operator () (octave_idx_type n) { return elem (n); }
   T& operator () (octave_idx_type i, octave_idx_type j) { return elem (i, j); }
   T& operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) { return elem (i, j, k); }
-  T& operator () (const Array<int>& ra_idx) { return elem (ra_idx); }
+  T& operator () (const Array<octave_idx_type>& ra_idx) { return elem (ra_idx); }
 #endif
 
   T checkelem (octave_idx_type n) const
@@ -394,7 +394,7 @@ public:
 	return Array<T>::elem (i, Array<T>::dim1()*k+j);
     }
 
-  T checkelem (const Array<int>& ra_idx) const
+  T checkelem (const Array<octave_idx_type>& ra_idx) const
     {
       octave_idx_type i = compute_index (ra_idx);
 
@@ -410,19 +410,19 @@ public:
 
   T elem (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return elem (i, dim2()*k+j); }
 
-  T elem (const Array<int>& ra_idx) const
+  T elem (const Array<octave_idx_type>& ra_idx) const
     { return Array<T>::elem (compute_index (ra_idx)); }
 
 #if defined (BOUNDS_CHECKING)
   T operator () (octave_idx_type n) const { return checkelem (n); }
   T operator () (octave_idx_type i, octave_idx_type j) const { return checkelem (i, j); }
   T operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return checkelem (i, j, k); }
-  T operator () (const Array<int>& ra_idx) const { return checkelem (ra_idx); }
+  T operator () (const Array<octave_idx_type>& ra_idx) const { return checkelem (ra_idx); }
 #else
   T operator () (octave_idx_type n) const { return elem (n); }
   T operator () (octave_idx_type i, octave_idx_type j) const { return elem (i, j); }
   T operator () (octave_idx_type i, octave_idx_type j, octave_idx_type k) const { return elem (i, j, k); }
-  T operator () (const Array<int>& ra_idx) const { return elem (ra_idx); }
+  T operator () (const Array<octave_idx_type>& ra_idx) const { return elem (ra_idx); }
 #endif
 
   Array<T> reshape (const dim_vector& new_dims) const;

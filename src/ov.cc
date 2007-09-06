@@ -1403,7 +1403,7 @@ gripe_cat_op_conv (void)
 
 octave_value
 do_cat_op (const octave_value& v1, const octave_value& v2, 
-	   const Array<int>& ra_idx)
+	   const Array<octave_idx_type>& ra_idx)
 {
   octave_value retval;
 

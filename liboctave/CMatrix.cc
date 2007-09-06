@@ -2761,14 +2761,14 @@ ComplexMatrix::expm (void) const
   OCTAVE_QUIT;
 
   // construct balancing permutation vector
-  Array<int> iperm (nc);
+  Array<octave_idx_type> iperm (nc);
   for (octave_idx_type i = 0; i < nc; i++)
     iperm(i) = i;  // initialize to identity permutation
 
   // leading permutations in forward order
   for (octave_idx_type i = 0; i < (ilo-1); i++)
     {
-      octave_idx_type swapidx = static_cast<int> (dpermute(i)) - 1;
+      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
       octave_idx_type tmp = iperm(i);
       iperm(i) = iperm(swapidx);
       iperm(swapidx) = tmp;
@@ -2777,14 +2777,14 @@ ComplexMatrix::expm (void) const
   // trailing permutations must be done in reverse order
   for (octave_idx_type i = nc - 1; i >= ihi; i--)
     {
-      octave_idx_type swapidx = static_cast<int> (dpermute(i)) - 1;
+      octave_idx_type swapidx = static_cast<octave_idx_type> (dpermute(i)) - 1;
       octave_idx_type tmp = iperm(i);
       iperm(i) = iperm(swapidx);
       iperm(swapidx) = tmp;
     }
 
   // construct inverse balancing permutation vector
-  Array<int> invpvec (nc);
+  Array<octave_idx_type> invpvec (nc);
   for (octave_idx_type i = 0; i < nc; i++)
     invpvec(iperm(i)) = i;     // Thanks to R. A. Lippert for this method
 

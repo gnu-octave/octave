@@ -97,7 +97,7 @@ operator -= (streamoff_array& a, const streamoff_array& b)
 }
 
 octave_idx_type
-streamoff_array::compute_index (Array<int>& ra_idx,
+streamoff_array::compute_index (Array<octave_idx_type>& ra_idx,
 				const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);

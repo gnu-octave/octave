@@ -796,7 +796,7 @@ public:
 
   friend OCTINTERP_API octave_value do_cat_op (const octave_value& a,
 				 const octave_value& b,
-				 const Array<int>& ra_idx);
+				 const Array<octave_idx_type>& ra_idx);
 
   const octave_base_value& get_rep (void) const { return *rep; }
 

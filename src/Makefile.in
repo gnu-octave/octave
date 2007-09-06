@@ -101,7 +101,7 @@ PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
 
 INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
 	defun-dld.h defun-int.h defun.h dirfns.h dynamic-ld.h \
-	error.h file-io.h graphics.h gripes.h help.h input.h \
+	error.h file-io.h gripes.h help.h input.h \
 	lex.h load-path.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \
 	mex.h mexproto.h \
@@ -187,7 +187,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 
 SOURCES := $(DIST_SRC) $(OP_SRC) $(TI_SRC)
 
-BUILT_EXTRAS := mxarray.h
+BUILT_EXTRAS := graphics.h mxarray.h
 
 EXTRAS := ov-base-int.cc ov-base-mat.cc ov-base-scalar.cc
 
@@ -263,7 +263,8 @@ BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
 
 DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
 	mkbuiltins mk-errno-list mk-pkg-add \
-	defaults.h.in mxarray.h.in oct-conf.h.in oct-errno.cc.in octave.gperf \
+	defaults.h.in graphics.h.in mxarray.h.in oct-conf.h.in \
+	oct-errno.cc.in octave.gperf \
 	$(INCLUDES) $(DIST_SRC) $(EXTRAS)
 
 all: octave$(EXEEXT) $(OCT_FILES) PKG_ADD DOCSTRINGS
@@ -351,6 +352,11 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo DEF_FILES = $(DEF_FILES)
 	@echo $(DEF_FILES) > def-files
 	@$(srcdir)/mkbuiltins def-files > $@-t
+	@$(simple-move-if-change-rule)
+
+graphics.h: graphics.h.in genprops.awk
+	@echo making $@
+	@awk -f $(srcdir)/genprops.awk $< > $@-t
 	@$(simple-move-if-change-rule)
 
 PKG_ADD: $(DLD_DEF_FILES)
@@ -509,7 +515,7 @@ mostlyclean: clean
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations oct-errno.cc
 	rm -f stamp-prereq stamp-liboctave-prereq
-	rm -f doc-files gendoc.cc mxarray.h DOCSTRINGS
+	rm -f doc-files gendoc.cc graphics.h mxarray.h DOCSTRINGS
 .PHONY: distclean
 
 maintainer-clean: distclean

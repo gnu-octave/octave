@@ -39,19 +39,6 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-map.h"
 #include "ov.h"
 
-#define OCTAVE_GRAPHICS_PROPERTY_INTERNAL(TAG, TYPE, NAME) \
-  private: \
-    TAG TYPE NAME; \
-  public: \
-    const TYPE& get_ ## NAME () const { return NAME; } \
-  private:
-
-#define OCTAVE_GRAPHICS_PROPERTY(TYPE, NAME) \
-  OCTAVE_GRAPHICS_PROPERTY_INTERNAL ( , TYPE, NAME)
-
-#define OCTAVE_GRAPHICS_MUTABLE_PROPERTY(TYPE, NAME) \
-  OCTAVE_GRAPHICS_PROPERTY_INTERNAL (mutable, TYPE, NAME)
-
 class
 radio_values
 {
@@ -419,7 +406,107 @@ private:
 
 // ---------------------------------------------------------------------
 
-typedef double graphics_handle;
+class graphics_handle
+{
+public:
+  graphics_handle (void) : val (octave_NaN) { }
+
+  graphics_handle (const octave_value& a);
+
+  graphics_handle (int a) : val (a) { }
+
+  graphics_handle (double a) : val (a) { }
+
+  graphics_handle (const graphics_handle& a) : val (a.val) { }
+
+  graphics_handle& operator = (const graphics_handle& a)
+  {
+    if (&a != this)
+      val = a.val;
+
+    return *this;
+  }
+
+  ~graphics_handle (void) { }
+
+  operator double (void) const { return val; }
+
+  double value (void) const { return val; }
+
+  octave_value as_octave_value (void) const
+  {
+    return ok () ? octave_value (val) : octave_value (Matrix ());
+  }
+
+  graphics_handle operator ++ (void)
+  {
+    ++val;
+    return *this;
+  }
+
+  graphics_handle operator ++ (int)
+  {
+    graphics_handle h = *this;
+    ++val;
+    return h;
+  }
+
+  graphics_handle operator -- (void)
+  {
+    --val;
+    return *this;
+  }
+
+  graphics_handle operator -- (int)
+  {
+    graphics_handle h = *this;
+    --val;
+    return h;
+  }
+
+  bool ok (void) const { return ! xisnan (val); }
+
+  operator bool () const { return ok (); }
+
+private:
+  double val;
+};
+
+inline bool
+operator == (const graphics_handle& a, const graphics_handle& b)
+{
+  return a.value () == b.value ();
+}
+
+inline bool
+operator != (const graphics_handle& a, const graphics_handle& b)
+{
+  return a.value () != b.value ();
+}
+
+inline bool
+operator < (const graphics_handle& a, const graphics_handle& b)
+{
+  return a.value () < b.value ();
+}
+
+inline bool
+operator <= (const graphics_handle& a, const graphics_handle& b)
+{
+  return a.value () <= b.value ();
+}
+
+inline bool
+operator >= (const graphics_handle& a, const graphics_handle& b)
+{
+  return a.value () >= b.value ();
+}
+
+inline bool
+operator > (const graphics_handle& a, const graphics_handle& b)
+{
+  return a.value () > b.value ();
+}
 
 // ---------------------------------------------------------------------
 
@@ -429,8 +516,8 @@ class base_properties
 {
 public:
   base_properties (const std::string& t = "unknown",
-		   const graphics_handle& mh = octave_NaN,
-		   const graphics_handle& p = octave_NaN)
+		   const graphics_handle& mh = graphics_handle (),
+		   const graphics_handle& p = graphics_handle ())
     : type (t), __modified__ (true), __myhandle__ (mh), parent (p),
       children () { }
 
@@ -541,7 +628,7 @@ public:
   virtual graphics_handle get_parent (void) const
   {
     error ("base_graphics_object::get_parent: invalid graphics object");
-    return octave_NaN;
+    return graphics_handle ();
   }
 
   virtual void remove_child (const graphics_handle&)
@@ -704,8 +791,8 @@ public:
   {
   public:
     properties (void)
-      : base_properties ("root figure", 0, octave_NaN),
-	currentfigure (octave_NaN),
+      : base_properties ("root figure", 0, graphics_handle ()),
+	currentfigure (),
 	visible ("on")
     { }
 
@@ -719,9 +806,13 @@ public:
 
     std::string graphics_object_name (void) const { return go_name; }
 
-  private:
-    OCTAVE_GRAPHICS_PROPERTY (graphics_handle, currentfigure);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, visible);
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      graphics_handle currentfigure S
+      octave_value visible
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -858,14 +949,18 @@ public:
 
     static property_list::pval_map_type factory_defaults (void);
 
-  private:
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, __plot_stream__);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, nextplot);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, closerequestfcn);
-    OCTAVE_GRAPHICS_PROPERTY (graphics_handle, currentaxes);
-    OCTAVE_GRAPHICS_PROPERTY (colormap_property, colormap);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, visible);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, paperorientation);
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      octave_value __plot_stream__
+      octave_value nextplot
+      octave_value closerequestfcn
+      graphics_handle currentaxes S
+      colormap_property colormap
+      octave_value visible S
+      octave_value paperorientation
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -988,56 +1083,60 @@ public:
 
     static property_list::pval_map_type factory_defaults (void);
 
-  private:
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, position);
-    OCTAVE_GRAPHICS_MUTABLE_PROPERTY (graphics_handle, title);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, box);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, key);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, keybox);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, keypos);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, dataaspectratio);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, dataaspectratiomode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xlim);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ylim);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zlim);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, clim);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xlimmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ylimmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zlimmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, climmode);
-    OCTAVE_GRAPHICS_MUTABLE_PROPERTY (graphics_handle, xlabel);
-    OCTAVE_GRAPHICS_MUTABLE_PROPERTY (graphics_handle, ylabel);
-    OCTAVE_GRAPHICS_MUTABLE_PROPERTY (graphics_handle, zlabel);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xgrid);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ygrid);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zgrid);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xminorgrid);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, yminorgrid);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zminorgrid);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xtick);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ytick);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ztick);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xtickmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ytickmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ztickmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xticklabel);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, yticklabel);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zticklabel);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xticklabelmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, yticklabelmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zticklabelmode);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xscale);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, yscale);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zscale);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xdir);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ydir);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zdir);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xaxislocation);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, yaxislocation);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, view);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, visible);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, nextplot);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, outerposition);
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      octave_value position
+      mutable graphics_handle title GSO
+      octave_value box
+      octave_value key
+      octave_value keybox
+      octave_value keypos
+      octave_value dataaspectratio m
+      octave_value dataaspectratiomode
+      octave_value xlim m
+      octave_value ylim m
+      octave_value zlim m
+      octave_value clim m
+      octave_value xlimmode
+      octave_value ylimmode
+      octave_value zlimmode
+      octave_value climmode
+      mutable graphics_handle xlabel GSO
+      mutable graphics_handle ylabel GSO
+      mutable graphics_handle zlabel GSO
+      octave_value xgrid
+      octave_value ygrid
+      octave_value zgrid
+      octave_value xminorgrid
+      octave_value yminorgrid
+      octave_value zminorgrid
+      octave_value xtick m
+      octave_value ytick m
+      octave_value ztick m
+      octave_value xtickmode
+      octave_value ytickmode
+      octave_value ztickmode
+      octave_value xticklabel m
+      octave_value yticklabel m
+      octave_value zticklabel m
+      octave_value xticklabelmode
+      octave_value yticklabelmode
+      octave_value zticklabelmode
+      octave_value xscale
+      octave_value yscale
+      octave_value zscale
+      octave_value xdir
+      octave_value ydir
+      octave_value zdir
+      octave_value xaxislocation
+      octave_value yaxislocation
+      octave_value view
+      octave_value visible
+      octave_value nextplot
+      octave_value outerposition
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -1156,22 +1255,26 @@ public:
 
     static property_list::pval_map_type factory_defaults (void);
 
-  private:
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ydata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ldata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, udata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xldata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xudata);
-    OCTAVE_GRAPHICS_PROPERTY (color_property, color);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, linestyle);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, linewidth);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, marker);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, markeredgecolor);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, markerfacecolor);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, markersize);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, keylabel);
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      octave_value xdata
+      octave_value ydata
+      octave_value zdata
+      octave_value ldata
+      octave_value udata
+      octave_value xldata
+      octave_value xudata
+      color_property color
+      octave_value linestyle
+      octave_value linewidth
+      octave_value marker
+      octave_value markeredgecolor
+      octave_value markerfacecolor
+      octave_value markersize
+      octave_value keylabel
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -1254,13 +1357,17 @@ public:
 
     static property_list::pval_map_type factory_defaults (void);
 
-  private:
-    octave_value string;
-    octave_value units;
-    octave_value position;
-    octave_value rotation;
-    octave_value horizontalalignment;
-    octave_value color;
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      octave_value string
+      octave_value units
+      octave_value position
+      octave_value rotation
+      octave_value horizontalalignment
+      octave_value color
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -1343,10 +1450,14 @@ public:
 
     static property_list::pval_map_type factory_defaults (void);
 
-  private:
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, cdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ydata);
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      octave_value cdata
+      octave_value xdata
+      octave_value ydata
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -1429,20 +1540,24 @@ public:
 
     static property_list::pval_map_type factory_defaults (void);
 
-  private:
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, cdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ydata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zdata);
-    OCTAVE_GRAPHICS_PROPERTY (color_property, facecolor);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, facealpha);
-    OCTAVE_GRAPHICS_PROPERTY (color_property, edgecolor);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, linestyle);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, linewidth);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, marker);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, markeredgecolor);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, markerfacecolor);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, markersize);
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      octave_value cdata
+      octave_value xdata
+      octave_value ydata
+      octave_value zdata
+      color_property facecolor
+      octave_value facealpha
+      color_property edgecolor
+      octave_value linestyle
+      octave_value linewidth
+      octave_value marker
+      octave_value markeredgecolor
+      octave_value markerfacecolor
+      octave_value markersize
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -1525,11 +1640,15 @@ public:
 
     static property_list::pval_map_type factory_defaults (void);
 
-  private:
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, xdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, ydata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, zdata);
-    OCTAVE_GRAPHICS_PROPERTY (octave_value, keylabel);
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES
+      octave_value xdata
+      octave_value ydata
+      octave_value zdata
+      octave_value keylabel
+    END_PROPERTIES
 
     static std::string go_name;
   };
@@ -1597,11 +1716,6 @@ bool
 set_property_in_handle (double handle, const std::string &property,
 			const octave_value &arg, const std::string &func);
 
-
-#undef OCTAVE_GRAPHICS_PROPERTY_INTERNAL
-#undef OCTAVE_GRAPHICS_PROPERTY
-#undef OCTAVE_GRAPHICS_MUTABLE_PROPERTY
-
 // ---------------------------------------------------------------------
 
 class gh_manager
@@ -1650,13 +1764,14 @@ public:
 			const graphics_handle& parent)
   {
     return instance_ok ()
-      ? instance->do_make_graphics_handle (go_name, parent) : octave_NaN;
+      ? instance->do_make_graphics_handle (go_name, parent)
+      : graphics_handle ();
   }
 
   static graphics_handle make_figure_handle (double val)
   {
     return instance_ok ()
-      ? instance->do_make_figure_handle (val) : octave_NaN;
+      ? instance->do_make_figure_handle (val) : graphics_handle ();
   }
 
   static void push_figure (const graphics_handle& h)
@@ -1673,7 +1788,8 @@ public:
 
   static graphics_handle current_figure (void)
   {
-    return instance_ok () ? instance->do_current_figure () : octave_NaN;
+    return instance_ok ()
+      ? instance->do_current_figure () : graphics_handle ();
   }
 
   static Matrix handle_list (void)
@@ -1720,7 +1836,7 @@ private:
   {
     iterator p = handle_map.find (val);
 
-    return (p != handle_map.end ()) ? p->first : octave_NaN;
+    return (p != handle_map.end ()) ? p->first : graphics_handle ();
   }
 
   graphics_object do_get_object (const graphics_handle& h)
@@ -1761,7 +1877,7 @@ private:
 
   graphics_handle do_current_figure (void) const
   {
-    return figure_list.empty () ? octave_NaN : figure_list.front ();
+    return figure_list.empty () ? graphics_handle () : figure_list.front ();
   }
 };
 

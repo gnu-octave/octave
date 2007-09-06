@@ -48,18 +48,6 @@ gripe_set_invalid (const std::string& pname)
   error ("set: invalid value for %s property", pname.c_str ());
 }
 
-static octave_value
-nan_to_empty (double val)
-{
-  return xisnan (val) ? octave_value (Matrix ()) : octave_value (val);
-}
-
-static octave_value
-empty_to_nan (const octave_value& val)
-{
-  return val.is_empty () ? octave_value (octave_NaN) : val;
-}
-
 // ---------------------------------------------------------------------
 
 radio_values::radio_values (const std::string& opt_string)
@@ -380,6 +368,22 @@ property_list::as_struct (const std::string& prefix_arg) const
   return m;    
 }
 
+graphics_handle::graphics_handle (const octave_value& a)
+  : val (octave_NaN)
+{
+  if (a.is_empty ())
+    /* do nothing */;
+  else
+    {
+      double tval = a.double_value ();
+
+      if (! error_state)
+	val = tval;
+      else
+	error ("invalid graphics handle");
+    }
+}
+
 void
 graphics_object::set (const octave_value_list& args)
 {
@@ -454,24 +458,26 @@ gh_manager::get_handle (const std::string& go_name)
 void
 gh_manager::do_free (const graphics_handle& h)
 {
-  if (h != 0)
+  if (h)
     {
-      iterator p = handle_map.find (h);
-
-      if (p != handle_map.end ())
+      if (h.value () != 0)
 	{
-	  handle_map.erase (p);
+	  iterator p = handle_map.find (h);
 
-	  if (h < 0)
-	    handle_free_list.insert (h);
+	  if (p != handle_map.end ())
+	    {
+	      handle_map.erase (p);
+
+	      if (h.value () < 0)
+		handle_free_list.insert (h);
+	    }
+	  else
+	    error ("graphics_handle::free: invalid object %g", h.value ());
 	}
       else
-	error ("graphics_handle::free: invalid object %g", h);
+	error ("graphics_handle::free: can't delete root figure");
     }
-  else
-    error ("graphics_handle::free: can't delete root figure");
 }
-
 
 gh_manager *gh_manager::instance = 0;
 
@@ -514,7 +520,7 @@ reparent (const octave_value& ov, const std::string& who,
     {
       h = gh_manager::lookup (val);
 
-      if (! xisnan (h))
+      if (h)
 	{
 	  graphics_object obj = gh_manager::get_object (h);
 	  
@@ -525,7 +531,7 @@ reparent (const octave_value& ov, const std::string& who,
 	  parent_obj.remove_child (h);
 
 	  if (adopt)
-	    obj.set ("parent", new_parent);
+	    obj.set ("parent", new_parent.value ());
 	  else
 	    obj.reparent (new_parent);
 	}
@@ -569,7 +575,9 @@ adopt (const graphics_handle& p, const graphics_handle& h)
 static bool
 is_handle (double val)
 {
-  return ! xisnan (gh_manager::lookup (val));
+  graphics_handle h = gh_manager::lookup (val);
+
+  return h.ok ();
 }
 
 static bool
@@ -667,7 +675,7 @@ base_properties::remove_child (const graphics_handle& h)
   octave_idx_type n = children.numel ();
   for (octave_idx_type i = 0; i < n; i++)
     {
-      if (h == children(i))
+      if (h.value () == children(i))
 	{
 	  k = i;
 	  break;
@@ -698,7 +706,7 @@ base_properties::set_parent (const octave_value& val)
     {
       new_parent = gh_manager::lookup (tmp);
 
-      if (! xisnan (new_parent))
+      if (new_parent)
 	{
 	  graphics_object parent_obj = gh_manager::get_object (parent);
 
@@ -740,26 +748,31 @@ base_properties::delete_children (void)
 }
 
 void
+root_figure::properties::set_currentfigure (const graphics_handle& val)
+{
+  if (error_state)
+    return;
+
+  if (is_handle (val))
+    {
+      currentfigure = val;
+
+      gh_manager::push_figure (currentfigure);
+    }
+  else
+    gripe_set_invalid ("currentfigure");
+}
+
+void
 root_figure::properties::set (const property_name& name,
 			      const octave_value& val)
 {
   if (name.compare ("currentfigure"))
-    {
-      octave_value tval = empty_to_nan (val);
-
-      if (is_handle (tval))
-	{
-	  currentfigure = tval.double_value ();
-
-	  gh_manager::push_figure (currentfigure);
-	}
-      else
-	gripe_set_invalid ("currentfigure");
-    }
+    set_currentfigure (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
   else if (name.compare ("visible"))
-    visible = val;
+    set_visible (val);
   else
     warning ("set: invalid property `%s'", name.c_str ());
 }
@@ -769,7 +782,7 @@ octave_value root_figure::properties::get (void) const
   Octave_map m;
 
   m.assign ("type", type);
-  m.assign ("currentfigure", nan_to_empty (currentfigure));
+  m.assign ("currentfigure", currentfigure.as_octave_value ());
   m.assign ("children", children);
   m.assign ("visible", visible);
 
@@ -784,7 +797,7 @@ root_figure::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("currentfigure"))
-    retval = nan_to_empty (currentfigure);
+    retval = currentfigure.as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("visible"))
@@ -815,8 +828,33 @@ figure::properties::properties (const graphics_handle& mh,
 { }
 
 void
-figure::properties::set (const property_name& name,
-			 const octave_value& val)
+figure::properties::set_currentaxes (const graphics_handle& val)
+{
+  if (error_state)
+    return;
+
+  if (is_handle (val))
+    currentaxes = val;
+  else
+    gripe_set_invalid ("currentaxes");
+}
+
+void
+figure::properties::set_visible (const octave_value& val)
+{
+  std::string s = val.string_value ();
+
+  if (! error_state)
+    {
+      if (s == "on")
+	xset (0, "currentfigure", __myhandle__.value ());
+
+      visible = val;
+    }
+}
+
+void
+figure::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -828,36 +866,19 @@ figure::properties::set (const property_name& name,
       modified = false;
     }
   else if (name.compare ("__plot_stream__"))
-    __plot_stream__ = val;
+    set___plot_stream__ (val);
   else if (name.compare ("nextplot"))
-    nextplot = val;
+    set_nextplot (val);
   else if (name.compare ("closerequestfcn"))
-    closerequestfcn = val;
+    set_closerequestfcn (val);
   else if (name.compare ("currentaxes"))
-    {
-      octave_value tval = empty_to_nan (val);
-
-      if (is_handle (tval))
-	currentaxes = tval.double_value ();
-      else
-	gripe_set_invalid ("currentaxes");
-    }
+    set_currentaxes (val);
   else if (name.compare ("colormap"))
-    colormap = colormap_property (val);
+    set_colormap (val);
   else if (name.compare ("visible"))
-    {
-      std::string s = val.string_value ();
-
-      if (! error_state)
-	{
-	  if (s == "on")
-	    xset (0, "currentfigure", __myhandle__);
-
-	  visible = val;
-	}
-    }
+    set_visible (val);
   else if (name.compare ("paperorientation"))
-    paperorientation = val;
+    set_paperorientation (val);
   else
     {
       modified = false;
@@ -874,13 +895,13 @@ figure::properties::get (void) const
   Octave_map m;
 
   m.assign ("type", type);
-  m.assign ("parent", parent);
+  m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("__plot_stream__", __plot_stream__);
   m.assign ("nextplot", nextplot);
   m.assign ("closerequestfcn", closerequestfcn);
-  m.assign ("currentaxes", nan_to_empty (currentaxes));
+  m.assign ("currentaxes", currentaxes.as_octave_value ());
   m.assign ("colormap", colormap);
   m.assign ("visible", visible);
   m.assign ("paperorientation", paperorientation);
@@ -896,7 +917,7 @@ figure::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
-    retval = parent;
+    retval = parent.as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("__modified__"))
@@ -908,7 +929,7 @@ figure::properties::get (const property_name& name) const
   else if (name.compare ("closerequestfcn"))
     retval = closerequestfcn;
   else if (name.compare ("currentaxes"))
-    retval = nan_to_empty (currentaxes);
+    retval = currentaxes.as_octave_value ();
   else if (name.compare ("colormap"))
     retval = colormap;
   else if (name.compare ("visible"))
@@ -937,7 +958,9 @@ figure::properties::close (void)
 
   gh_manager::pop_figure (__myhandle__);
 
-  xset (0, "currentfigure", gh_manager::current_figure ());
+  graphics_handle cf = gh_manager::current_figure ();
+
+  xset (0, "currentfigure", cf.value ());
 }
 
 property_list::pval_map_type
@@ -1047,6 +1070,70 @@ axes::properties::properties (const graphics_handle& mh,
 }
 
 void
+axes::properties::set_title (const graphics_handle& val)
+{
+  if (! error_state)
+    {
+      gh_manager::free (title);
+      title = val;
+    }
+}
+
+void
+axes::properties::set_title (const octave_value& val)
+{
+  set_title (::reparent (val, "set", "title", __myhandle__, false));
+}
+
+void
+axes::properties::set_xlabel (const graphics_handle& val)
+{
+  if (! error_state)
+    {
+      gh_manager::free (xlabel);
+      xlabel = val;
+    }
+}
+
+void
+axes::properties::set_xlabel (const octave_value& val)
+{
+  set_xlabel (::reparent (val, "set", "xlabel", __myhandle__, false));
+}
+
+void
+axes::properties::set_ylabel (const graphics_handle& val)
+{
+  if (! error_state)
+    {
+      gh_manager::free (ylabel);
+      ylabel = val;
+    }
+}
+
+void
+axes::properties::set_ylabel (const octave_value& val)
+{
+  set_ylabel (::reparent (val, "set", "ylabel", __myhandle__, false));
+}
+
+void
+axes::properties::set_zlabel (const graphics_handle& val)
+{
+  if (! error_state)
+    {
+      gh_manager::free (zlabel);
+      zlabel = val;
+    }
+}
+
+void
+axes::properties::set_zlabel (const octave_value& val)
+{
+  set_zlabel (::reparent (val, "set", "zlabel", __myhandle__, false));
+}
+
+void
 axes::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
@@ -1061,176 +1148,103 @@ axes::properties::set (const property_name& name, const octave_value& val)
       modified = false;
     }
   else if (name.compare ("position"))
-    position = val;
+    set_position (val);
   else if (name.compare ("title"))
-    {
-      graphics_handle h = ::reparent (val, "set", "title",
-				      __myhandle__, false);
-      if (! error_state)
-	{
-	  if (! xisnan (title))
-	    gh_manager::free (title);
-
-	  title = h;
-	}
-    }
+    set_title (val);
   else if (name.compare ("box"))
-    box = val;
+    set_box (val);
   else if (name.compare ("key"))
-    key = val;
+    set_key (val);
   else if (name.compare ("keybox"))
-    keybox = val;
+    set_keybox (val);
   else if (name.compare ("keypos"))
-    keypos = val;
+    set_keypos (val);
   else if (name.compare ("dataaspectratio"))
-    {
-      dataaspectratio = val;
-      dataaspectratiomode = "manual";
-    }
+    set_dataaspectratio (val);
   else if (name.compare ("dataaspectratiomode"))
-    dataaspectratiomode = val;
+    set_dataaspectratiomode (val);
   else if (name.compare ("xlim"))
-    {
-      xlim = val;
-      xlimmode = "manual";
-    }
+    set_xlim (val);
   else if (name.compare ("ylim"))
-    {
-      ylim = val;
-      ylimmode = "manual";
-    }
+    set_ylim (val);
   else if (name.compare ("zlim"))
-    {
-      zlim = val;
-      zlimmode = "manual";
-    }
+    set_zlim (val);
   else if (name.compare ("clim"))
-    {
-      clim = val;
-      climmode = "manual";
-    }
+    set_clim (val);
   else if (name.compare ("xlimmode"))
-    xlimmode = val;
+    set_xlimmode (val);
   else if (name.compare ("ylimmode"))
-    ylimmode = val;
+    set_ylimmode (val);
   else if (name.compare ("zlimmode"))
-    zlimmode = val;
+    set_zlimmode (val);
   else if (name.compare ("climmode"))
-    climmode = val;
+    set_climmode (val);
   else if (name.compare ("xlabel"))
-    {
-      graphics_handle h = ::reparent (val, "set", "xlabel",
-				      __myhandle__, false);
-      if (! error_state)
-	{
-	  if (! xisnan (xlabel))
-	    gh_manager::free (xlabel);
-
-	  xlabel = h;
-	}
-    }
+    set_xlabel (val);
   else if (name.compare ("ylabel"))
-    {
-      graphics_handle h = ::reparent (val, "set", "ylabel",
-				      __myhandle__, false);
-      if (! error_state)
-	{
-	  if (! xisnan (ylabel))
-	    gh_manager::free (ylabel);
-
-	  ylabel = h;
-	}
-    }
+    set_ylabel (val);
   else if (name.compare ("zlabel"))
-    {
-      graphics_handle h = ::reparent (val, "set", "zlabel",
-				      __myhandle__, false);
-      if (! error_state)
-	{
-	  if (! xisnan (zlabel))
-	    gh_manager::free (zlabel);
-
-	  zlabel = h;
-	}
-    }
+    set_zlabel (val);
   else if (name.compare ("xgrid"))
-    xgrid = val;
+    set_xgrid (val);
   else if (name.compare ("ygrid"))
-    ygrid = val;
+    set_ygrid (val);
   else if (name.compare ("zgrid"))
-    zgrid = val;
+    set_zgrid (val);
   else if (name.compare ("xminorgrid"))
-    xminorgrid = val;
+    set_xminorgrid (val);
   else if (name.compare ("yminorgrid"))
-    yminorgrid = val;
+    set_yminorgrid (val);
   else if (name.compare ("zminorgrid"))
-    zminorgrid = val;
+    set_zminorgrid (val);
   else if (name.compare ("xtick"))
-    {
-      xtick = val;
-      xtickmode = "manual";
-    }
+    set_xtick (val);
   else if (name.compare ("ytick"))
-    {
-      ytick = val;
-      ytickmode = "manual";
-    }
+    set_xtick (val);
   else if (name.compare ("ztick"))
-    {
-      ztick = val;
-      ztickmode = "manual";
-    }
+    set_ztick (val);
   else if (name.compare ("xtickmode"))
-    xtickmode = val;
+    set_xtickmode (val);
   else if (name.compare ("ytickmode"))
-    ytickmode = val;
+    set_ytickmode (val);
   else if (name.compare ("ztickmode"))
-    ztickmode = val;
+    set_ztickmode (val);
   else if (name.compare ("xticklabel"))
-    {
-      xticklabel = val;
-      xticklabelmode = "manual";
-    }
+    set_xticklabel (val);
   else if (name.compare ("yticklabel"))
-    {
-      yticklabel = val;
-      yticklabelmode = "manual";
-    }
+    set_yticklabel (val);
   else if (name.compare ("zticklabel"))
-    {
-      zticklabel = val;
-      zticklabelmode = "manual";
-    }
+    set_zticklabel (val);
   else if (name.compare ("xticklabelmode"))
-    xticklabelmode = val;
+    set_xticklabelmode (val);
   else if (name.compare ("yticklabelmode"))
-    yticklabelmode = val;
+    set_yticklabelmode (val);
   else if (name.compare ("zticklabelmode"))
-    zticklabelmode = val;
+    set_zticklabelmode (val);
   else if (name.compare ("xscale"))
-    xscale = val;
+    set_xscale (val);
   else if (name.compare ("yscale"))
-    yscale = val;
+    set_yscale (val);
   else if (name.compare ("zscale"))
-    zscale = val;
+    set_zscale (val);
   else if (name.compare ("xdir"))
-    xdir = val;
+    set_xdir (val);
   else if (name.compare ("ydir"))
-    ydir = val;
+    set_ydir (val);
   else if (name.compare ("zdir"))
-    zdir = val;
+    set_zdir (val);
   else if (name.compare ("xaxislocation"))
-    xaxislocation = val;
+    set_xaxislocation (val);
   else if (name.compare ("yaxislocation"))
-    yaxislocation = val;
+    set_yaxislocation (val);
   else if (name.compare ("view"))
-    view = val;
+    set_view (val);
   else if (name.compare ("visible"))
-    visible = val;
+    set_visible (val);
   else if (name.compare ("nextplot"))
-    nextplot = val;
+    set_nextplot (val);
   else if (name.compare ("outerposition"))
-    outerposition = val;
+    set_outerposition (val);
   else
     {
       modified = false;
@@ -1323,29 +1337,53 @@ axes::properties::set_defaults (base_graphics_object& obj,
   override_defaults (obj);
 }
 
+graphics_handle
+axes::properties::get_title (void) const
+{
+  if (! title)
+    title = gh_manager::make_graphics_handle ("text", __myhandle__);
+
+  return title;
+}
+
+graphics_handle
+axes::properties::get_xlabel (void) const
+{
+  if (! xlabel)
+    xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
+
+  return xlabel;
+}
+
+graphics_handle
+axes::properties::get_ylabel (void) const
+{
+  if (! ylabel)
+    ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
+
+  return ylabel;
+}
+
+graphics_handle
+axes::properties::get_zlabel (void) const
+{
+  if (! zlabel)
+    zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
+
+  return zlabel;
+}
+
 octave_value
 axes::properties::get (void) const
 {
   Octave_map m;
 
-  if (xisnan (title))
-    title = gh_manager::make_graphics_handle ("text", __myhandle__);
-
-  if (xisnan (xlabel))
-    xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-
-  if (xisnan (ylabel))
-    ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-
-  if (xisnan (zlabel))
-    zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-
   m.assign ("type", type);
-  m.assign ("parent", parent);
+  m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("position", position);
-  m.assign ("title", title);
+  m.assign ("title", get_title().as_octave_value ());
   m.assign ("box", box);
   m.assign ("key", key);
   m.assign ("keybox", keybox);
@@ -1360,9 +1398,9 @@ axes::properties::get (void) const
   m.assign ("ylimmode", ylimmode);
   m.assign ("zlimmode", zlimmode);
   m.assign ("climmode", climmode);
-  m.assign ("xlabel", xlabel);
-  m.assign ("ylabel", ylabel);
-  m.assign ("zlabel", zlabel);
+  m.assign ("xlabel", get_xlabel().as_octave_value ());
+  m.assign ("ylabel", get_ylabel().as_octave_value ());
+  m.assign ("zlabel", get_zlabel().as_octave_value ());
   m.assign ("xgrid", xgrid);
   m.assign ("ygrid", ygrid);
   m.assign ("zgrid", zgrid);
@@ -1405,7 +1443,7 @@ axes::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
-    retval = parent;
+    retval = parent.value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("__modified__"))
@@ -1413,12 +1451,7 @@ axes::properties::get (const property_name& name) const
   else if (name.compare ("position"))
     retval = position;
   else if (name.compare ("title"))
-    {
-      if (xisnan (title))
-	title = gh_manager::make_graphics_handle ("text", __myhandle__);
-
-      retval = title;
-    }
+    retval = get_title().as_octave_value ();
   else if (name.compare ("box"))
     retval = box;
   else if (name.compare ("key"))
@@ -1448,26 +1481,11 @@ axes::properties::get (const property_name& name) const
   else if (name.compare ("climmode"))
     retval = climmode;
   else if (name.compare ("xlabel"))
-    {
-      if (xisnan (xlabel))
-	xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-
-      retval = xlabel;
-    }
+    retval = get_xlabel().as_octave_value ();
   else if (name.compare ("ylabel"))
-    {
-      if (xisnan (ylabel))
-	ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-
-      retval = ylabel;
-    }
+    retval = get_ylabel().as_octave_value ();
   else if (name.compare ("zlabel"))
-    {
-      if (xisnan (zlabel))
-	zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-
-      retval = zlabel;
-    }
+    retval = get_zlabel().as_octave_value ();
   else if (name.compare ("xgrid"))
     retval = xgrid;
   else if (name.compare ("ygrid"))
@@ -1537,13 +1555,13 @@ axes::properties::get (const property_name& name) const
 void
 axes::properties::remove_child (const graphics_handle& h)
 {
-  if (! xisnan (title) && h == title)
+  if (title && h == title)
     title = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (! xisnan (xlabel) && h == xlabel)
+  else if (xlabel && h == xlabel)
     xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (! xisnan (ylabel) && h == ylabel)
+  else if (ylabel && h == ylabel)
     ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (! xisnan (zlabel) && h == zlabel)
+  else if (zlabel && h == zlabel)
     zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
   else
     base_properties::remove_child (h);
@@ -1554,17 +1572,10 @@ axes::properties::delete_children (void)
 {
   base_properties::delete_children ();
 
-  if (! xisnan (title))
-    gh_manager::free (title);
-
-  if (! xisnan (xlabel))
-    gh_manager::free (xlabel);
-
-  if (! xisnan (ylabel))
-    gh_manager::free (ylabel);
-
-  if (! xisnan (zlabel))
-    gh_manager::free (zlabel);
+  gh_manager::free (title);
+  gh_manager::free (xlabel);
+  gh_manager::free (ylabel);
+  gh_manager::free (zlabel);
 }
 
 property_list::pval_map_type
@@ -1710,35 +1721,35 @@ line::properties::set (const property_name& name, const octave_value& val)
       modified = false;
     }
   else if (name.compare ("xdata"))
-    xdata = val;
+    set_xdata (val);
   else if (name.compare ("ydata"))
-    ydata = val;
+    set_ydata (val);
   else if (name.compare ("zdata"))
-    zdata = val;
+    set_zdata (val);
   else if (name.compare ("ldata"))
-    ldata = val;
+    set_ldata (val);
   else if (name.compare ("udata"))
-    udata = val;
+    set_udata (val);
   else if (name.compare ("xldata"))
-    xldata = val;
+    set_xldata (val);
   else if (name.compare ("xudata"))
-    xudata = val;
+    set_xudata (val);
   else if (name.compare ("color"))
-    color = val;
+    set_color (val);
   else if (name.compare ("linestyle"))
-    linestyle = val;
+    set_linestyle (val);
   else if (name.compare ("linewidth"))
-    linewidth = val;
+    set_linewidth (val);
   else if (name.compare ("marker"))
-    marker = val;
+    set_marker (val);
   else if (name.compare ("markeredgecolor"))
-    markeredgecolor = val;
+    set_markeredgecolor (val);
   else if (name.compare ("markerfacecolor"))
-    markerfacecolor = val;
+    set_markerfacecolor (val);
   else if (name.compare ("markersize"))
-    markersize = val;
+    set_markersize (val);
   else if (name.compare ("keylabel"))
-    keylabel = val;
+    set_keylabel (val);
   else
     {
       modified = false;
@@ -1755,7 +1766,7 @@ line::properties::get (void) const
   Octave_map m;
 
   m.assign ("type", type);
-  m.assign ("parent", parent);
+  m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("xdata", xdata);
@@ -1785,7 +1796,7 @@ line::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
-    retval = parent;
+    retval = parent.as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("__modified__"))
@@ -1880,17 +1891,17 @@ text::properties::set (const property_name& name, const octave_value& val)
       modified = false;
     }
   else if (name.compare ("string"))
-    string = val;
+    set_string (val);
   else if (name.compare ("units"))
-    units = val;
+    set_units (val);
   else if (name.compare ("position"))
-    position = val;
+    set_position (val);
   else if (name.compare ("rotation"))
-    rotation = val;
+    set_rotation (val);
   else if (name.compare ("horizontalalignment"))
-    horizontalalignment = val;
+    set_horizontalalignment (val);
   else if (name.compare ("color"))
-    color = val;
+    set_color (val);
   else
     {
       modified = false;
@@ -1907,7 +1918,7 @@ text::properties::get (void) const
   Octave_map m;
 
   m.assign ("type", type);
-  m.assign ("parent", parent);
+  m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("string", string);
@@ -1928,7 +1939,7 @@ text::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
-    retval = parent;
+    retval = parent.as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("__modified__"))
@@ -1994,11 +2005,11 @@ image::properties::set (const property_name& name,
       modified = false;
     }
   else if (name.compare ("cdata"))
-    cdata = val;
+    set_cdata (val);
   else if (name.compare ("xdata"))
-    xdata = val;
+    set_xdata (val);
   else if (name.compare ("ydata"))
-    ydata = val;
+    set_ydata (val);
   else
     {
       modified = false;
@@ -2015,7 +2026,7 @@ image::properties::get (void) const
   Octave_map m;
 
   m.assign ("type", type);
-  m.assign ("parent", parent);
+  m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("cdata", cdata);
@@ -2033,7 +2044,7 @@ image::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
-    retval = parent;
+    retval = parent.as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("__modified__"))
@@ -2100,32 +2111,31 @@ patch::properties::set (const property_name& name,
       modified = false;
     }
   else if (name.compare ("cdata"))
-    cdata = val;
+    set_cdata (val);
   else if (name.compare ("xdata"))
-    xdata = val;
+    set_xdata (val);
   else if (name.compare ("ydata"))
-    ydata = val;
+    set_ydata (val);
   else if (name.compare ("zdata"))
-    zdata = val;
+    set_zdata (val);
   else if (name.compare ("facecolor"))
-    facecolor = val;
+    set_facecolor (val);
   else if (name.compare ("facealpha"))
-    facealpha = val;
+    set_facealpha (val);
   else if (name.compare ("edgecolor"))
-    edgecolor = val;
+    set_edgecolor (val);
   else if (name.compare ("linestyle"))
-    linestyle = val;
+    set_linestyle (val);
   else if (name.compare ("linewidth"))
-    linewidth = val;
+    set_linewidth (val);
   else if (name.compare ("marker"))
-    marker = val;
+    set_marker (val);
   else if (name.compare ("markeredgecolor"))
-    markeredgecolor = val;
+    set_markeredgecolor (val);
   else if (name.compare ("markerfacecolor"))
-    markerfacecolor = val;
+    set_markerfacecolor (val);
   else if (name.compare ("markersize"))
-    markersize = val;
-
+    set_markersize (val);
   else
     {
       modified = false;
@@ -2142,7 +2152,7 @@ patch::properties::get (void) const
   Octave_map m;
 
   m.assign ("type", type);
-  m.assign ("parent", parent);
+  m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("cdata", cdata);
@@ -2170,7 +2180,7 @@ patch::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
-    retval = parent;
+    retval = parent.as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("__modified__"))
@@ -2259,13 +2269,13 @@ surface::properties::set (const property_name& name,
       modified = false;
     }
   else if (name.compare ("xdata"))
-    xdata = val;
+    set_xdata (val);
   else if (name.compare ("ydata"))
-    ydata = val;
+    set_ydata (val);
   else if (name.compare ("zdata"))
-    zdata = val;
+    set_zdata (val);
   else if (name.compare ("keylabel"))
-    keylabel = val;
+    set_keylabel (val);
   else
     {
       modified = false;
@@ -2282,7 +2292,7 @@ surface::properties::get (void) const
   Octave_map m;
 
   m.assign ("type", type);
-  m.assign ("parent", parent);
+  m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("xdata", xdata);
@@ -2301,7 +2311,7 @@ surface::properties::get (const property_name& name) const
   if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
-    retval = parent;
+    retval = parent.as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
   else if (name.compare ("__modified__"))
@@ -2579,7 +2589,7 @@ values or lists respectively.\n\
 
 static octave_value
 make_graphics_object (const std::string& go_name,
-          const octave_value_list& args)
+		      const octave_value_list& args)
 {
   octave_value retval;
 
@@ -2589,7 +2599,7 @@ make_graphics_object (const std::string& go_name,
     {
       graphics_handle parent = gh_manager::lookup (val);
 
-      if (! xisnan (parent))
+      if (parent)
 	{
 	  graphics_handle h
 	    = gh_manager::make_graphics_handle (go_name, parent);
@@ -2600,7 +2610,7 @@ make_graphics_object (const std::string& go_name,
 
 	      xset (h, args.splice (0, 1));
 
-	      retval = h;
+	      retval = h.value ();
 	    }
 	  else
 	    error ("__go%s__: unable to create graphics handle",
@@ -2635,7 +2645,7 @@ Create a figure graphics object.\n\
 
 	      xset (h, args.splice (0, 1));
 
-	      retval = h;
+	      retval = h.value ();
 	    }
 	  else
 	    {
@@ -2648,13 +2658,13 @@ Create a figure graphics object.\n\
 	      else
 		error ("__go_figure__: invalid figure number");
 
-	      if (! (error_state || xisnan (h)))
+	      if (! error_state && h)
 		{
 		  adopt (0, h);
 
 		  xset (h, args.splice (0, 1));
 
-		  retval = h;
+		  retval = h.value ();
 		}
 	      else
 		error ("__go_figure__: failed to create figure handle");
@@ -2750,7 +2760,7 @@ DEFUN (__go_delete__, args, ,
 	{
 	  h = gh_manager::lookup (val);
 
-	  if (! xisnan (h))
+	  if (h)
 	    {
 	      graphics_object obj = gh_manager::get_object (h);
 
@@ -2804,7 +2814,7 @@ Initialize axes object.\n\
 	{
 	  h = gh_manager::lookup (val);
 
-	  if (! xisnan (h))
+	  if (h)
 	    {
 	      graphics_object obj = gh_manager::get_object (h);
 

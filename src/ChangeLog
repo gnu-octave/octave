@@ -1,3 +1,32 @@
+2007-08-31  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (INCLUDES): Remove graphics.h from the list.
+	(DISTFILES): Include graphics.h.in in the list.
+	(genprops.awk): New file.
+	(graphics.h): New rule.
+	(distclean): Remove graphics.h.
+	* graphics.h.in: New file, from graphics.h.
+	(graphics_handle): Now a class instead of typedef.  Adapt all uses.
+	(OCTAVE_GRAPHICS_PROPERTY_INTERNAL, OCTAVE_GRAPHICS_PROPERTY,
+	OCTAVE_GRAPHICS_MUTABLE_PROPERTY): Delete macros.
+	(class root_figure, class figure, class axes, class line, class
+	text, class image, class patch, class surface): Use genprops.awk
+	to generate property declarations and set/get functions.
+	* graphics.h: Delete.
+	* graphics.cc (nan_to_empty, empty_to_nan): Delete.
+	(root_figure::properties::set, figure::properties::set,
+	axes::properties::set, line::properties::set,
+	text::properties::set, image::properties::set,
+	patch::properties::set, surface::properties::set): Call
+	type-specific set functions to set properties.
+	(root_figure::properties::set_currentfigure,
+	figure::properties::set_currentaxes, figure::properties::set_visible,
+	axes::properties::get_title, axes::properties::get_xlabel,
+	axes::properties::get_ylabel,  axes::properties::get_zlabel,
+	axes::properties::set_title, axes::properties::set_xlabel,
+	axes::properties::set_ylabel,  axes::properties::set_zlabel):
+	Define custom versions.
+
 2007-09-06  David Bateman  <dbateman@free.fr>
 
         * DLD-FUNCTIONS/bsxfun.cc: New function.

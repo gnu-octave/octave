@@ -326,7 +326,7 @@ extern void install_ops (void);
 #define CATOPDECL(name, a1, a2)	\
   static octave_value \
   oct_catop_ ## name (octave_base_value& a1, const octave_base_value& a2, \
-		      const Array<int>& ra_idx)
+		      const Array<octave_idx_type>& ra_idx)
 
 #define DEFCATOPX(name, t1, t2)	\
   CATOPDECL (name, , )

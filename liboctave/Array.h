@@ -143,8 +143,8 @@ public:
 
 protected:
 
-  idx_vector *idx;
-  int idx_count;
+  mutable idx_vector *idx;
+  mutable int idx_count;
 
   Array (T *d, octave_idx_type n)
     : rep (new typename Array<T>::ArrayRep (d, n)), dimensions (n),
@@ -493,9 +493,9 @@ public:
 
   void maybe_delete_dims (void);
 
-  void clear_index (void);
+  void clear_index (void) const;
 
-  void set_index (const idx_vector& i);
+  void set_index (const idx_vector& i) const;
 
   int index_count (void) const { return idx_count; }
 
@@ -513,7 +513,7 @@ public:
 
   void maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv);
 
-  Array<T> value (void);
+  Array<T> value (void) const;
 
   Array<T> index (idx_vector& i, int resize_ok = 0,
 		  const T& rfv = resize_fill_value (T ())) const;

@@ -133,8 +133,8 @@ two column vector arguments of equal length, or one column vector\n\
 argument and a scalar.\n\
 \n\
 The dimensions of @var{a} and @var{b} must be equal or singleton. The\n\
-singleton dimensions a the matirces will be expanded to the same\n\
-dimensioanlity as the other matrix.\n\
+singleton dimensions of the matirces will be expanded to the same\n\
+dimensionality as the other matrix.\n\
 \n\
 @seealso{arrayfun, cellfun}\n\
 @end deftypefn")

@@ -1,3 +1,12 @@
+2007-09-07  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::fortran_vec): Call make_unique instead of
+	manipulating rep directly.
+
+	* Array.h (idx, idx_count): Declare mutable.
+	(Array<T>::set_index, Array<T>::clear_index, Array<T>::value):
+	Now const.
+
 2007-09-06  David Bateman  <dbateman@free.fr>
 
         * Array-util.cc (increment_index): dimensions can have singleton

@@ -1217,11 +1217,8 @@ template <class T>
 T *
 Array<T>::fortran_vec (void)
 {
-  if (rep->count > 1)
-    {
-      --rep->count;
-      rep = new typename Array<T>::ArrayRep (*rep);
-    }
+  make_unique ();
+
   return rep->data;
 }
 
@@ -1256,7 +1253,7 @@ Array<T>::maybe_delete_dims (void)
 
 template <class T>
 void
-Array<T>::clear_index (void)
+Array<T>::clear_index (void) const
 {
   delete [] idx;
   idx = 0;
@@ -1265,7 +1262,7 @@ Array<T>::clear_index (void)
 
 template <class T>
 void
-Array<T>::set_index (const idx_vector& idx_arg)
+Array<T>::set_index (const idx_vector& idx_arg) const
 {
   int nd = ndims ();
 
@@ -2012,7 +2009,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 
 template <class T>
 Array<T>
-Array<T>::value (void)
+Array<T>::value (void) const
 {
   Array<T> retval;
 

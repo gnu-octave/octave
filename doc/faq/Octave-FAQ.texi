@@ -69,7 +69,7 @@ editing interface is also available.  At the end of each session, the
 command history is saved, so that commands entered during previous
 sessions are not lost.
 
-The Octave distribution includes a 550+ page Texinfo manual.  Access
+The Octave distribution includes a 590+ page Texinfo manual.  Access
 to the complete text of the manual is available via the help command
 @c really, the *complete* text?
 at the Octave prompt.
@@ -230,7 +230,7 @@ Here are some features that have been around since 2.1.N
 * Built-in ODE and DAE solvers::
 @end menu
 
-This section refers to Matlab R2007a and Octave 2.9.12.
+This section refers to Matlab R2007a and Octave 2.9.13.
 
 @node Functions defined on the command-line
 @section Functions defined on the command-line
@@ -395,7 +395,7 @@ built in to the interpreter.
 
 @cindex Octave, documentation
 
-The Octave distribution includes a 550+ page manual that is also
+The Octave distribution includes a 590+ page manual that is also
 distributed under the terms of the GNU GPL.
 It is available on the web at
 @url{http://www.octave.org/docs.html} and you will also
@@ -523,10 +523,9 @@ Suse and Fedora Linuxes, Mac OS X, Windows' 98, 2000 and XP.
 @cindex EMX
 @cindex OS/2 support
 
-Octave currently runs on Unix-like systems, Mac OS X, and Windows
-(using the Cygwin tools from Red Hat).  It should be possible
-to make Octave work on other systems as well.  If you are interested in
-porting Octave to other systems, please contact
+Octave currently runs on Unix-like systems, Mac OS X, and Windows.
+It should be possible to make Octave work on other systems as well.  
+If you are interested in porting Octave to other systems, please contact
 @email{bug@@octave.org}.
 
 @c @menu
@@ -722,7 +721,7 @@ these being
 @itemize @bullet
 @item
 Some limitations on the use of function handles. The major difference is
-related to nested function scoping rules (as above) and there use with
+related to nested function scoping rules (as above) and their use with
 function handles.
 
 @item
@@ -736,7 +735,7 @@ remove this restriction in the future.
 
 @item
 @sc{Matlab} private directories are not treated, though as for classes,
-this will change in the near future. This restriction alleviated by
+this will change in the near future. This restriction can be alleviated by
 using addpath on the private directories, but this makes the private
 directories visible in the global scope.
 @end itemize
@@ -746,7 +745,7 @@ directories visible in the global scope.
 A large number of the @sc{Matlab} core functions (ie those that are in
 the core and not a toolbox) are implemented, and certainly all of the
 commonly used ones. There are a few functions that aren't implemented,
-for example condest or to do with specific missing Octave functionality
+for example @code{condest} or to do with specific missing Octave functionality
 (gui, dll, java, activex, dde, web, and serial functions). Some of the
 core functions have limitations that aren't in the @sc{Matlab}
 version. For example the @code{sprandn} function can not force a
@@ -778,7 +777,9 @@ Up to Octave 2.9.9 there was no support for graphic handles in Octave
 itself. There is in Octave 2.9.10 and later, and so the graphics between
 Octave and @sc{Matlab} are currently in the process of converging to a
 common interface.  Note that the basic graphic handle stuff is in place
-since 2.9.10, but not graphics objects like "patch", "barseries", etc.
+since 2.9.10, but not certain graphics objects like "barseries",
+etc. The @code{patch} function is currently limited to 2-D patches, due
+to an underlying limitation in gnuplot/
 
 @item GUI 
 
@@ -786,8 +787,10 @@ There is no @sc{Matlab} compatible GUI functions. There are a number of
 bindings from Octave to tcl/tk, vtk and zenity included in the
 octave-forge project (@url{http://octave.sourceforge.net}) for example
 that can be used for a GUI, but these are not @sc{Matlab}
-compatible. This might be an issue if you intend to exchange Octave code
-with @sc{Matlab} users.
+compatible. Work on a matlab compatiable GUI is in an alpha stage in the
+JHandles package (@url{http://octave.sourceforge.net/jhandles/index.html}).
+This might be an issue if you intend to exchange Octave code with 
+@sc{Matlab} users.
 
 @item Simulink
 
@@ -804,8 +807,8 @@ an API to the internals of @sc{Matlab} and the internals of Octave differ to
 @sc{Matlab}, there is necessarily a manipulation of the data to convert from
 a MEX interface to the Octave equivalent. This is notable for all
 complex matrices, where matlab stores complex arrays as real and
-imaginary parts, whereas octave respects the C99/C++ standards of
-co-locating the real/imag parts in memory. Also due to the way matlab
+imaginary parts, whereas Octave respects the C99/C++ standards of
+co-locating the real/imag parts in memory. Also due to the way @sc{Matlab}
 allows access to the arrays passed through a pointer, the MEX interface
 might require that copies of arrays (even non complex ones). There were
 some serious memory leaks in the MEX API in Octave up to version 2.9.9,
@@ -1008,8 +1011,8 @@ compared to
 @end example
 
 Typing Ctrl-C in the first case returns the user directly to the
-prompt, and the variable "a" is not reset to the save value. In the
-second case the variable "a" is reset correctly. Therefore matlab
+prompt, and the variable "a" is not reset to the saved value. In the
+second case the variable "a" is reset correctly. Therefore @sc{Matlab}
 gives no save way of temporarily changing global variables.
 
 @item

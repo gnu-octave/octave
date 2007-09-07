@@ -50,7 +50,6 @@ extern "C" {
 #ifdef NEED_QHULL_VERSION
 char qh_version[] = "convhulln.oct 2007-07-24";
 #endif
-char flags[250];
 #endif
 
 DEFUN_DLD (convhulln, args, ,
@@ -115,6 +114,8 @@ are \"s Qci Tcv\".\n\n\
   double *pt_array = p.fortran_vec();
 
   boolT ismalloc = False;
+
+  OCTAVE_LOCAL_BUFFER (char, flags, 250);
 
   // hmm, lots of options for qhull here
   // QJ guarantees that the output will be triangles

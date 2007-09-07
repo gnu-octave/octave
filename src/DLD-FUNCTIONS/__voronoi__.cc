@@ -46,11 +46,6 @@ extern "C" {
 #ifdef NEED_QHULL_VERSION
 char qh_version[] = "__voronoi__.oct 2007-07-24";
 #endif
-
-FILE *outfile = stdout;
-FILE *errfile = stderr;
-char flags[250];
-const char *options;
 #endif
 
 DEFUN_DLD (__voronoi__, args, ,
@@ -70,6 +65,8 @@ Internal function for voronoi.\n\
       print_usage ();
       return retval;
     }
+
+  const char *options;
 
   if (nargin == 2) 
     {
@@ -101,8 +98,16 @@ Internal function for voronoi.\n\
 
   boolT ismalloc = false;
 
+  OCTAVE_LOCAL_BUFFER(char, flags, 250);
+
   // hmm  lot's of options for qhull here
   sprintf(flags,"qhull v Fv T0 %s",options);
+
+  // If you want some debugging information replace the NULL
+  // pointer with outfile.
+  FILE *outfile = stdout;
+  FILE *errfile = stderr;
+
   if (!qh_new_qhull (dim, np, pt_array, ismalloc, flags, NULL, errfile)) 
     {
 

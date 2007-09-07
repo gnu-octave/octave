@@ -1,4 +1,9 @@
-2007-09-06  John W. Eaton  <jwe@octave.org>
+2007-09-06  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/__delaunay__.cc, DLD-FUNCRIONS/__voronoi__.cc,
+	DLD-FUNCTIONS/convhulln.cc: Avoid variables in global scope
+
+2007-09-06  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (stamp-prereq): Add graphics.h to the dependency list.
 

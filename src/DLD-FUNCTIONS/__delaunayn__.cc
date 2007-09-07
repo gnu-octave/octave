@@ -56,9 +56,6 @@ extern "C" {
 #ifdef NEED_QHULL_VERSION
 char qh_version[] = "__delaunayn__.oct 2007-08-21";
 #endif
-FILE *outfile = stdout;
-FILE *errfile = stderr;
-char flags[250];
 #endif
 
 DEFUN_DLD (__delaunayn__, args, ,
@@ -128,18 +125,23 @@ Internal function for delaunayn.\n\
 
   //octave_stdout << "options " << options << std::endl;
 
-  if (n > dim) 
+  if (n > dim + 1) 
     {
       p = p.transpose();
       double *pt_array = p.fortran_vec();
       boolT ismalloc = False;
+
+      OCTAVE_LOCAL_BUFFER (char, flags, 250);
 
       sprintf(flags,"qhull d %s",options.c_str());
 
       // If you want some debugging information replace the NULL
       // pointer with outfile.
 
-      int exitcode =  qh_new_qhull (dim, n, pt_array, ismalloc,flags, 
+      FILE *outfile = stdout;
+      FILE *errfile = stderr;
+
+      int exitcode =  qh_new_qhull (dim, n, pt_array, ismalloc, flags, 
 				    NULL, errfile);
 
       if (exitcode)

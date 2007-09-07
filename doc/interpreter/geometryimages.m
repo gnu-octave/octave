@@ -1,8 +1,9 @@
 function geometryimages (nm, typ)
   bury_output ();
-  if (isempty (findstr (octave_config_info ("DEFS"), "HAVE_QHULL")) && ...
-      (strcmp (nm, "voronoi") || strcmp (nm, "griddata") || ...
-       strcmp (nm, "convhull") || strcmp (nm, "delaunay")))
+  if (isempty (findstr (octave_config_info ("DEFS"), "HAVE_QHULL"))
+      && (strcmp (nm, "voronoi") || strcmp (nm, "griddata")
+	  || strcmp (nm, "convhull") || strcmp (nm, "delaunay")
+	  || strcmp (nm, "triplot")))
     sombreroimage (nm, typ);
   elseif (strcmp (nm, "voronoi"))
     rand("state",9);

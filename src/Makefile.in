@@ -316,7 +316,7 @@ $(LIBPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
-stamp-prereq: defaults.h oct-conf.h oct-gperf.h parse.cc lex.cc __gnuplot_raw__.cc $(OPT_HANDLERS)
+stamp-prereq: defaults.h graphics.h oct-conf.h oct-gperf.h parse.cc lex.cc __gnuplot_raw__.cc $(OPT_HANDLERS)
 	touch stamp-prereq
 
 octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)

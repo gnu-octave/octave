@@ -1,3 +1,7 @@
+2007-09-06  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (stamp-prereq): Add graphics.h to the dependency list.
+
 2007-08-31  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (INCLUDES): Remove graphics.h from the list.

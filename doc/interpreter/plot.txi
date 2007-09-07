@@ -49,6 +49,8 @@ The basic plotting commands are:
 
 @DOCSTRING(bar)
 
+@DOCSTRING(barh)
+
 @DOCSTRING(contour)
 
 @DOCSTRING(contourc)
@@ -58,6 +60,8 @@ The basic plotting commands are:
 @DOCSTRING(loglog)
 
 @DOCSTRING(polar)
+
+@DOCSTRING(patch)
 
 @DOCSTRING(semilogx)
 
@@ -103,6 +107,8 @@ The basic plotting commands are:
 
 @DOCSTRING(set)
 
+@DOCSTRING(ancestor)
+
 @DOCSTRING(clf)
 
 @DOCSTRING(delete)
@@ -110,6 +116,8 @@ The basic plotting commands are:
 @DOCSTRING(close)
 
 @DOCSTRING(closereq)
+
+@DOCSTRING(ishandle)
 
 @DOCSTRING(isfigure)
 
@@ -147,6 +155,8 @@ The basic plotting commands are:
 
 @node Test Plotting Functions
 @section Test Plotting Functions
+
+@DOCSTRING(sombrero)
 
 @DOCSTRING(peaks)
 

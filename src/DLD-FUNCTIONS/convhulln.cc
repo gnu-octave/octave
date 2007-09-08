@@ -115,11 +115,11 @@ are \"s Qci Tcv\".\n\n\
 
   boolT ismalloc = False;
 
-  OCTAVE_LOCAL_BUFFER (char, flags, 250);
+  OCTAVE_LOCAL_BUFFER(char, flags, 250);
 
   // hmm, lots of options for qhull here
   // QJ guarantees that the output will be triangles
-  snprintf(flags, sizeof(flags), "qhull QJ %s", options.c_str());
+  snprintf(flags, 250, "qhull QJ %s", options.c_str());
 
   if (!qh_new_qhull (dim, n, pt_array, ismalloc, flags, NULL, stderr)) 
     {

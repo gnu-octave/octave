@@ -75,10 +75,11 @@ function varargout = __bar__ (vertical, func, varargin)
       idx++;
     else
       if ((isstr(varargin{idx}) || iscell(varargin{idx})) && !HaveLineSpec)
-	[dummy, valid] = __pltopt__ (func, varargin{idx}, false);
+	[linespec, valid] = __pltopt__ (func, varargin{idx}, false);
 	if (valid)
 	  HaveLineSpec = true;
-	  newargs = [newargs,varargin(idx++)];
+	  newargs = [{linespec.color}, newargs];
+	  idx++;
 	  continue;
 	endif
       endif
@@ -113,16 +114,15 @@ function varargout = __bar__ (vertical, func, varargin)
   delta_m = [(cutoff(1) - x(1)); (x(2:end) - cutoff)] * width;
   x1 = (x - delta_m)(:)';
   x2 = (x + delta_p)(:)';
-  xb = repmat([x1; x1; x2; x2; NaN * ones(1,ylen)](:), 1, ycols);
+  xb = repmat([x1; x1; x2; x2](:), 1, ycols);
 
   if (group)
     width = width / ycols;
     offset = ((delta_p + delta_m) * [-(ycols - 1) / 2 : (ycols - 1) / 2]);
-    xb(1:5:5*ylen,:) += offset;
-    xb(2:5:5*ylen,:) += offset;
-    xb(3:5:5*ylen,:) += offset;
-    xb(4:5:5*ylen,:) += offset;
-    xb(5:5:5*ylen,:) += offset;
+    xb(1:4:4*ylen,:) += offset;
+    xb(2:4:4*ylen,:) += offset;
+    xb(3:4:4*ylen,:) += offset;
+    xb(4:4:4*ylen,:) += offset;
     y0 = zeros (size (y));
     y1 = y;
   else
@@ -130,27 +130,35 @@ function varargout = __bar__ (vertical, func, varargin)
     y0 = [zeros(ylen,1), y1(:,1:end-1)];
   endif
 
-  yb = zeros (5*ylen, ycols);
-  yb(1:5:5*ylen,:) = y0;
-  yb(2:5:5*ylen,:) = y1;
-  yb(3:5:5*ylen,:) = y1;
-  yb(4:5:5*ylen,:) = y0;
-  yb(5:5:5*ylen,:) = NaN;
+  yb = zeros (4*ylen, ycols);
+  yb(1:4:4*ylen,:) = y0;
+  yb(2:4:4*ylen,:) = y1;
+  yb(3:4:4*ylen,:) = y1;
+  yb(4:4:4*ylen,:) = y0;
+
+  xb = reshape (xb, 4, numel (xb) /  4);
+  yb = reshape (yb, 4, numel (yb) /  4);
+
+  if (! HaveLineSpec)
+    colors = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
+    newargs = [{shiftdim(colors (mod (floor ([0 : (ycols * ylen - 1)] / ylen), 
+				      6) + 1, :), -1)}, newargs];
+  endif
 
   if (vertical)
     if (nargout < 1)
-      plot (xb, yb, newargs{:});
+      patch (xb, yb, newargs {:});
     elseif (nargout < 2)
-      varargout{1} = plot (xb, yb, newargs{:});
+      varargout{1} = patch (xb, yb, newargs {:});
     else
       varargout{1} = xb;
       varargout{2} = yb;
     endif
   else
     if (nargout < 1)
-      plot (yb, xb, newargs{:});
+      patch (yb, xb, newargs{:});
     elseif (nargout < 2)
-      varargout{1} = plot (yb, xb, newargs{:});
+      varargout{1} = patch (yb, xb, newargs{:});
     else
       varargout{1} = yb;
       varargout{2} = xb;

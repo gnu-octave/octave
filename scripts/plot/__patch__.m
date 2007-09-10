@@ -27,77 +27,120 @@
 
 function h = __patch__ (p, varargin)
 
-  if (nargin < 1)
+  if (nargin < 3)
     print_usage ();
   endif
 
-  nvargs = numel (varargin);
+  iarg = 1;
+  have_x = have_z = have_c = false;
+  if (isnumeric (varargin {1}))
+    if (!isnumeric (varargin {2}))
+      print_usage ();
+    endif
 
-  if (nvargs > 1 && isnumeric (varargin{1}) && isnumeric (varargin{2}))
-    num_data_args = 2;
-  else
-    num_data_args = 0;
+    x = varargin {1};
+    y = varargin {2};
+    have_x = true;
+    iarg += 2;
+
+    if (nargin > 3 && ndims (varargin {3}) == 2 && 
+	size (varargin {3}) == size (x))
+      z = varargin {3};
+      have_z = true;
+      iarg ++;
+    endif
   endif
 
-  if (rem (nvargs - num_data_args - 1, 2) == 0 && nvargs > 2)
-  else
-    print_usage ("patch");
+  if (have_x && nargin > iarg && isnumeric (varargin {iarg}))
+    c = varargin {iarg};
+    have_c = true;
+    iarg ++;
+
+    if (ndims (c) == 3 && size (c, 2) == 1)
+      c = permute (c, [1, 3, 2]);
+    endif
   endif
 
-  x = varargin{1};
-  y = varargin{2};
-  c = varargin{3};
-
-  h = __go_patch__ (p);
-  ax = get (h, "parent");
-  if (num_data_args > 1)
-    set (h, "xdata", x, "ydata", y);
+  if (rem (nargin - iarg, 2) != 0)
+    print_usage ();
   endif
 
-  if (isstr (c))
-    ## Have color string.
-    set (h, "FaceColor", c);
-  elseif (length (c) == 1)
-    if (isnan (c))
-      set (h, "FaceColor", [1, 1, 1]);
-      set (h, "CData", c);
-    elseif (isnumeric (c))
-      ## Have color index.
-      set (h, "FaceColor", "flat");
-      set (h, "CData", c);
-
-      clim = get(ax, "CLim");
-      if (c < clim(1))
-        set (ax, "CLim", [c, clim(2)])
+  if (have_x)
+    if (isvector (x))
+      x = x(:);
+      y = y(:);
+      if (have_z)
+	z = z(:);
       endif
-      if (c > clim(2))
-        set (ax, "CLim", [clim(1), c])
-      end
+    endif
 
-    else
-      ## Unknown color value.
-      error ("color value not valid");
-    end
-  elseif (length (c) == 3)
-    ## Have rgb/rgba value.
-    set (h, "FaceColor", c);
-  else
-    ## Color vector.
-    if (length (c) != length (x) || length (c) != length (y))
-      error ("size of x, y, and c must be equal")
-    else
-      set (h, "FaceColor", "interp");
-      set(h, "CData", c);
-      if (abs(max(c) - min(c)) < eps)
-        set (ax, "CLim", [c(1)-1, c(1)+1])
+    [nr, nc] = size (x);
+
+    for i = 1 : nc
+      h = __go_patch__ (p);
+      ax = get (h, "parent");
+      if (have_x)
+	set (h, "xdata", x (:, i), "ydata", y (:, i));
+	if (have_z)
+	  set (h, "zdata", z (:, i));
+	endif
+      endif
+
+      if (have_c)
+	if (ndims (c) == 2 && ((nr > 3 && size (c, 2) == nc) ||
+			       (size (c, 1) > 1 && size (c, 2) == nc)))
+	  c2 = c (:, i);
+	elseif (ndims (c) == 3)
+	  c2 = permute (c (:, i, :), [1, 3, 2]);
+	else
+	  c2 = c;
+	endif
+
+	if (numel (c2) == 1)
+	  if (isnan (c))
+	    set (h, "FaceColor", [1, 1, 1]);
+	    set (h, "CData", c2);
+	  elseif (isnumeric (c2))
+	    ## Have color index.
+	    set (h, "FaceColor", "flat");
+	    set (h, "CData", c2);
+	    clim = get(ax, "CLim");
+	    if (c2 < clim(1))
+              set (ax, "CLim", [c2, clim(2)])
+	    endif
+	    if (c2 > clim(2))
+              set (ax, "CLim", [clim(1), c2])
+	    endif
+	  else
+	    ## Unknown color value.
+	    error ("color value not valid");
+	  endif
+	elseif (numel (c2) == 3)
+	  ## Have rgb/rgba value.
+	  set (h, "FaceColor", c2);
+	else
+	  ## Color vector.
+	  if (length (c2) != length (x) || length (c2) != length (y))
+	    error ("size of x, y, and c must be equal")
+	  else
+	    set (h, "FaceColor", "interp");
+	    set(h, "CData", c2);
+	    if (abs(max(c2) - min(c2)) < eps)
+              set (ax, "CLim", [c2(1)-1, c2(1)+1])
+	    else
+              set (ax, "CLim", [min(c2), max(c2)]);
+	    endif
+	  endif
+	endif
       else
-        set (ax, "CLim", [min(c), max(c)]);
-      end
-    end
-  end 
+	set (h, "FaceColor", [0, 1, 0]);
+      endif
 
-  if (nvargs > num_data_args + 1)
-    set (h, varargin{num_data_args+2:end});
+      if (nargin > iarg + 1)
+	set (h, varargin{iarg:end});
+      endif
+    endfor
+  else
+    error ("Not supported");
   endif
-
 endfunction

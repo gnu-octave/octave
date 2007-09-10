@@ -1,3 +1,11 @@
+2007-09-10  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Allow gnuplot 4.0 with patches, but
+	limit the selection of colors in the same way as for lines.
+	* plot/__patch__.m: Allow matrix arguments with one patch per
+	column.
+	* plot/__bar__.m: Adapt to use "patch".
+
 2007-09-06  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow.m (drawnow): New arg, debug_file.

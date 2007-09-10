@@ -110,6 +110,11 @@ protected:
 
   //--------------------------------------------------------------------
 
+public:
+
+  // !!! WARNING !!! -- these should be protected, not public.  You
+  // should not access these methods directly!
+
   void make_unique (void)
     {
       if (rep->count > 1)
@@ -129,8 +134,6 @@ protected:
       else
 	rep->fill (val);
     }
-
-public:
 
   typedef T element_type;
 

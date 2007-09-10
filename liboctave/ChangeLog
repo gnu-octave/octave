@@ -1,3 +1,27 @@
+2007-09-10  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assign1): Don't call make_unique for invalid assignment.
+
+2007-09-10  David Bateman  <dbateman@free.fr>
+
+	* Array.h (Array<T>::make_unique): Make public so that the
+	::assign functions can access it directly.
+	* Array.cc (Array<T>::maybe_delete_elements_1(idx_vector&),
+	Array<T>::maybe_delete_elements_1(idx_vector&),
+	Array<T>::maybe_delete_elements(idx_vector&, idx_vector&),
+	Array<T>::maybe_delete_elements(Array<idx_vector>&, const T&)):
+	Use xelem for non const RHS to avoid call to make_unique.
+	(int assign1 (Array<LT>&, const Array<RT>&, const LT&)): Use
+	xelem for LHS and call lhs.make_unique() only once. Special case
+	the is_colon index case and use Array<T>::xelem(octave_idx_type)
+	rather than Array<T>::xelem(octave_idx_type,octave_idx_type) and
+	bring the additional multiplication out of the inner loop.
+	(int assign2 (Array<LT>&, const Array<RT>&, const LT&)): ditto.
+	(int assignN (Array<LT>&, const Array<RT>&, const LT&)): ditto.
+	* idx-vector.h (idx_vector::idx_vector_rep::idx_vector_rep 
+	(const Range& r)): Don't use init_state() method but special case
+	as with a Range can avoid exhaustive search.
+
 2007-09-07  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::fortran_vec): Call make_unique instead of

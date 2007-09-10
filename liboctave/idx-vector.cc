@@ -197,7 +197,25 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
       for (octave_idx_type i = 1; i < len; i++)
 	data[i] = data[i-1] + step;
 
-      init_state ();
+      // Don't use init_state(), as it can be vastly accelerated since 
+      // we don't have to search all values for max/min, etc.
+      if (step >= 0)
+	{
+	  min_val = data [0];
+	  max_val = data [len - 1];
+	}
+      else
+	{
+	  min_val = data [len - 1];
+	  max_val = data [0];
+	}
+
+      if ((b <= 0 && step > 0) || (b >= 0 && step < 0))
+	num_zeros = 1;
+      if ((b <= 1 && step > 0) || (b >= 1 && step < 0))
+	num_zeros = 0;
+
+      initialized = 1;
     }
   else
     (*current_liboctave_error_handler)

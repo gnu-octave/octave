@@ -1352,7 +1352,7 @@ Array<T>::maybe_delete_elements_1 (idx_vector& idx_arg)
 		    iidx++;
 		  else
 		    {
-		      new_data[ii] = elem (i);
+		      new_data[ii] = xelem (i);
 		      ii++;
 		    }
 		}
@@ -1438,7 +1438,7 @@ Array<T>::maybe_delete_elements_2 (idx_vector& idx_arg)
 		iidx++;
 	      else
 		{
-		  new_data[ii] = elem (i);
+		  new_data[ii] = xelem (i);
 
 		  ii++;
 		}
@@ -1555,7 +1555,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			  else
 			    {
 			      for (octave_idx_type i = 0; i < nr; i++)
-				new_data[nr*jj+i] = elem (i, j);
+				new_data[nr*jj+i] = xelem (i, j);
 			      jj++;
 			    }
 			}
@@ -1618,7 +1618,7 @@ Array<T>::maybe_delete_elements (idx_vector& idx_i, idx_vector& idx_j)
 			  else
 			    {
 			      for (octave_idx_type j = 0; j < nc; j++)
-				new_data[new_nr*j+ii] = elem (i, j);
+				new_data[new_nr*j+ii] = xelem (i, j);
 			      ii++;
 			    }
 			}
@@ -1916,7 +1916,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 			      octave_idx_type kidx
 				= ::compute_index (temp_result_idx, new_lhs_dim);
 
-			      new_data[kidx] = elem (result_idx);
+			      new_data[kidx] = xelem (result_idx);
 			    }
 
 			  increment_index (result_idx, lhs_dims);
@@ -1974,7 +1974,7 @@ Array<T>::maybe_delete_elements (Array<idx_vector>& ra_idx, const T& rfv)
 		    }
 		  else
 		    {
-		      new_data[ii++] = elem (lhs_ra_idx);
+		      new_data[ii++] = xelem (lhs_ra_idx);
 		    }
 
 		  increment_index (lhs_ra_idx, lhs_dims);
@@ -2505,6 +2505,8 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	{
 	  if (rhs_len == n || rhs_len == 1)
 	    {
+	      lhs.make_unique ();
+
 	      octave_idx_type max_idx = lhs_idx.max () + 1;
 	      if (max_idx > lhs_len)
 		lhs.resize_and_fill (max_idx, rfv);
@@ -2512,20 +2514,40 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	  if (rhs_len == n)
 	    {
-	      for (octave_idx_type i = 0; i < n; i++)
+	      lhs.make_unique ();
+
+	      if (lhs_idx.is_colon ())
 		{
-		  octave_idx_type ii = lhs_idx.elem (i);
-		  lhs.elem (ii) = rhs.elem (i);
+		  for (octave_idx_type i = 0; i < n; i++)
+		    lhs.xelem (i) = rhs.elem (i);
+		}
+	      else
+		{
+		  for (octave_idx_type i = 0; i < n; i++)
+		    {
+		      octave_idx_type ii = lhs_idx.elem (i);
+		      lhs.xelem (ii) = rhs.elem (i);
+		    }
 		}
 	    }
 	  else if (rhs_len == 1)
 	    {
+	      lhs.make_unique ();
+
 	      RT scalar = rhs.elem (0);
 
-	      for (octave_idx_type i = 0; i < n; i++)
+	      if (lhs_idx.is_colon ())
 		{
-		  octave_idx_type ii = lhs_idx.elem (i);
-		  lhs.elem (ii) = scalar;
+		  for (octave_idx_type i = 0; i < n; i++)
+		    lhs.xelem (i) = scalar;
+		}
+	      else
+		{
+		  for (octave_idx_type i = 0; i < n; i++)
+		    {
+		      octave_idx_type ii = lhs_idx.elem (i);
+		      lhs.xelem (ii) = scalar;
+		    }
 		}
 	    }
 	  else
@@ -2543,10 +2565,12 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       if (lhs_dims.all_zero ())
 	{
+	  lhs.make_unique ();
+
 	  lhs.resize_no_fill (rhs_len);
 
 	  for (octave_idx_type i = 0; i < rhs_len; i++)
-	    lhs.elem (i) = rhs.elem (i);
+	    lhs.xelem (i) = rhs.elem (i);
 	}
       else if (rhs_len != lhs_len)
 	(*current_liboctave_error_handler)
@@ -2666,6 +2690,8 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		  if (n > 0 && m > 0)
 		    {
+		      lhs.make_unique ();
+
 		      MAYBE_RESIZE_LHS;
 
 		      RT scalar = xrhs.elem (0, 0);
@@ -2676,7 +2702,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			  for (octave_idx_type i = 0; i < n; i++)
 			    {
 			      octave_idx_type ii = idx_i.elem (i);
-			      lhs.elem (ii, jj) = scalar;
+			      lhs.xelem (ii, jj) = scalar;
 			    }
 			}
 		    }
@@ -2685,6 +2711,8 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		       && (rhs_nr == 1 || rhs_nc == 1)
 		       && n * m == rhs_nr * rhs_nc)
 		{
+		  lhs.make_unique ();
+
 		  MAYBE_RESIZE_LHS;
 
 		  if (n > 0 && m > 0)
@@ -2697,13 +2725,15 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			  for (octave_idx_type i = 0; i < n; i++)
 			    {
 			      octave_idx_type ii = idx_i.elem (i);
-			      lhs.elem (ii, jj) = xrhs.elem (k++);
+			      lhs.xelem (ii, jj) = xrhs.elem (k++);
 			    }
 			}
 		    }
 		}
 	      else if (n == rhs_nr && m == rhs_nc)
 		{
+		  lhs.make_unique ();
+
 		  MAYBE_RESIZE_LHS;
 
 		  if (n > 0 && m > 0)
@@ -2714,7 +2744,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			  for (octave_idx_type i = 0; i < n; i++)
 			    {
 			      octave_idx_type ii = idx_i.elem (i);
-			      lhs.elem (ii, jj) = xrhs.elem (i, j);
+			      lhs.xelem (ii, jj) = xrhs.elem (i, j);
 			    }
 			}
 		    }
@@ -2859,20 +2889,40 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		}
 	      else if (len == rhs_nr * rhs_nc)
 		{
-		  for (octave_idx_type i = 0; i < len; i++)
+		  lhs.make_unique ();
+
+		  if (idx_i.is_colon ())
 		    {
-		      octave_idx_type ii = idx_i.elem (i);
-		      lhs.elem (ii) = xrhs.elem (i);
+		      for (octave_idx_type i = 0; i < len; i++)
+			lhs.xelem (i) = xrhs.elem (i);
+		    }
+		  else
+		    {
+		      for (octave_idx_type i = 0; i < len; i++)
+			{
+			  octave_idx_type ii = idx_i.elem (i);
+			  lhs.xelem (ii) = xrhs.elem (i);
+			}
 		    }
 		}
 	      else if (rhs_is_scalar)
 		{
+		  lhs.make_unique ();
+
 		  RT scalar = rhs.elem (0, 0);
 
-		  for (octave_idx_type i = 0; i < len; i++)
+		  if (idx_i.is_colon ())
 		    {
-		      octave_idx_type ii = idx_i.elem (i);
-		      lhs.elem (ii) = scalar;
+		      for (octave_idx_type i = 0; i < len; i++)
+			lhs.xelem (i) = scalar;
+		    }
+		  else
+		    {
+		      for (octave_idx_type i = 0; i < len; i++)
+			{
+			  octave_idx_type ii = idx_i.elem (i);
+			  lhs.xelem (ii) = scalar;
+			}
 		    }
 		}
 	      else
@@ -2931,8 +2981,9 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
   else if (n_idx == 1)
     {
       idx_vector iidx = idx(0);
+      int iidx_is_colon = iidx.is_colon ();
 
-      if (! (iidx.is_colon ()
+      if (! (iidx_is_colon
 	     || (iidx.one_zero_only ()
 		 && iidx.orig_dimensions () == lhs.dims ())))
 	(*current_liboctave_warning_with_id_handler)
@@ -2956,22 +3007,42 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    }
 	  else if (len == rhs.length ())
 	    {
-	      for (octave_idx_type i = 0; i < len; i++)
-		{
-		  octave_idx_type ii = iidx.elem (i);
+	      lhs.make_unique ();
 
-		  lhs.elem (ii) = rhs.elem (i);
+	      if (iidx_is_colon)
+		{
+		  for (octave_idx_type i = 0; i < len; i++)
+		    lhs.xelem (i) = rhs.elem (i);
+		}
+	      else
+		{
+		  for (octave_idx_type i = 0; i < len; i++)
+		    {
+		      octave_idx_type ii = iidx.elem (i);
+
+		      lhs.xelem (ii) = rhs.elem (i);
+		    }
 		}
 	    }
 	  else if (rhs_is_scalar)
 	    {
 	      RT scalar = rhs.elem (0);
 
-	      for (octave_idx_type i = 0; i < len; i++)
-		{
-		  octave_idx_type ii = iidx.elem (i);
+	      lhs.make_unique ();
 
-		  lhs.elem (ii) = scalar;
+	      if (iidx_is_colon)
+		{
+		  for (octave_idx_type i = 0; i < len; i++)
+		    lhs.xelem (i) = scalar;
+		}
+	      else
+		{
+		  for (octave_idx_type i = 0; i < len; i++)
+		    {
+		      octave_idx_type ii = iidx.elem (i);
+
+		      lhs.xelem (ii) = scalar;
+		    }
 		}
 	    }
 	  else
@@ -3128,6 +3199,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	      if (rhs_is_scalar)
 		{
+		  lhs.make_unique ();
+
 		  if (n_idx < orig_lhs_dims_len)
 		    lhs = lhs.reshape (lhs_dims);
 
@@ -3143,11 +3216,19 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 			  octave_idx_type len = frozen_len(0);
 
-			  for (octave_idx_type i = 0; i < len; i++)
+			  if (iidx.is_colon ())
 			    {
-			      octave_idx_type ii = iidx.elem (i);
+			      for (octave_idx_type i = 0; i < len; i++)
+				lhs.xelem (i) = scalar;
+			    }
+			  else
+			    {
+			      for (octave_idx_type i = 0; i < len; i++)
+				{
+				  octave_idx_type ii = iidx.elem (i);
 
-			      lhs.elem (ii) = scalar;
+				  lhs.xelem (ii) = scalar;
+				}
 			    }
 			}
 		      else if (lhs_dims_len == 2 && n_idx == 2)
@@ -3158,13 +3239,27 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			  octave_idx_type i_len = frozen_len(0);
 			  octave_idx_type j_len = frozen_len(1);
 
-			  for (octave_idx_type j = 0; j < j_len; j++)
+			  if (idx_i.is_colon())
 			    {
-			      octave_idx_type jj = idx_j.elem (j);
-			      for (octave_idx_type i = 0; i < i_len; i++)
+			      for (octave_idx_type j = 0; j < j_len; j++)
 				{
-				  octave_idx_type ii = idx_i.elem (i);
-				  lhs.elem (ii, jj) = scalar;
+				  octave_idx_type off = new_dims (0) *
+				    idx_j.elem (j);
+				  for (octave_idx_type i = 0; i < i_len; i++)
+				    lhs.xelem (i + off) = scalar;
+				}
+			    }
+			  else
+			    {
+			      for (octave_idx_type j = 0; j < j_len; j++)
+				{
+				  octave_idx_type off = new_dims (0) *
+				    idx_j.elem (j);
+				  for (octave_idx_type i = 0; i < i_len; i++)
+				    {
+				      octave_idx_type ii = idx_i.elem (i);
+				      lhs.xelem (ii + off) = scalar;
+				    }
 				}
 			    }
 			}
@@ -3178,7 +3273,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			    {
 			      Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
 
-			      lhs.elem (elt_idx) = scalar;
+			      lhs.xelem (elt_idx) = scalar;
 
 			      increment_index (result_idx, frozen_len);
 			    }
@@ -3200,6 +3295,8 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		    }
 		  else
 		    {
+		      lhs.make_unique ();
+
 		      if (n_idx < orig_lhs_dims_len)
 			lhs = lhs.reshape (lhs_dims);
 
@@ -3213,11 +3310,19 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 			      octave_idx_type len = frozen_len(0);
 
-			      for (octave_idx_type i = 0; i < len; i++)
+			      if (iidx.is_colon ())
 				{
-				  octave_idx_type ii = iidx.elem (i);
+				  for (octave_idx_type i = 0; i < len; i++)
+				    lhs.xelem (i) = rhs.elem (i);
+				}
+			      else
+				{
+				  for (octave_idx_type i = 0; i < len; i++)
+				    {
+				      octave_idx_type ii = iidx.elem (i);
 
-				  lhs.elem (ii) = rhs.elem (i);
+				      lhs.xelem (ii) = rhs.elem (i);
+				    }
 				}
 			    }
 			  else if (lhs_dims_len == 2 && n_idx == 2)
@@ -3229,15 +3334,31 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 			      octave_idx_type j_len = frozen_len(1);
 			      octave_idx_type k = 0;
 
-			      for (octave_idx_type j = 0; j < j_len; j++)
+			      if (idx_i.is_colon())
 				{
-				  octave_idx_type jj = idx_j.elem (j);
-				  for (octave_idx_type i = 0; i < i_len; i++)
+				  for (octave_idx_type j = 0; j < j_len; j++)
 				    {
-				      octave_idx_type ii = idx_i.elem (i);
-				      lhs.elem (ii, jj) = rhs.elem (k++);
+				      octave_idx_type off = new_dims (0) * 
+					idx_j.elem (j);
+				      for (octave_idx_type i = 0; 
+					   i < i_len; i++)
+					lhs.xelem (i + off) = rhs.elem (k++);
 				    }
 				}
+			      else
+				{
+				  for (octave_idx_type j = 0; j < j_len; j++)
+				    {
+				      octave_idx_type off = new_dims (0) * 
+					idx_j.elem (j);
+				      for (octave_idx_type i = 0; i < i_len; i++)
+					{
+					  octave_idx_type ii = idx_i.elem (i);
+					  lhs.xelem (ii + off) = rhs.elem (k++);
+					}
+				    }
+				}
+
 			    }
 			  else
 			    {
@@ -3249,7 +3370,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 				{
 				  Array<octave_idx_type> elt_idx = get_elt_idx (idx, result_idx);
 
-				  lhs.elem (elt_idx) = rhs.elem (i);
+				  lhs.xelem (elt_idx) = rhs.elem (i);
 
 				  increment_index (result_idx, frozen_len);
 				}

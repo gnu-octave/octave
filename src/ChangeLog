@@ -1,3 +1,12 @@
+2007-09-10  John W. Eaton  <jwe@octave.org>
+
+	* genprops.awk: Add missing newline character at end of file.
+	From Alexander Klimov <alserkli@inbox.ru>.
+
+2007-09-10  David Bateman  <dbateman@free.fr>
+
+	* data.cc (do_cat): Avoid invalid indexing into ra_idx vector.
+
 2007-09-06  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/__delaunay__.cc, DLD-FUNCRIONS/__voronoi__.cc,

@@ -759,10 +759,14 @@ do_cat (const octave_value_list& args, std::string fname)
 	      if (error_state)
 		return retval;
 
-	      Array<octave_idx_type> ra_idx (dv.length (), 0);
+	      int dv_len = dv.length ();
+	      Array<octave_idx_type> ra_idx (dv_len, 0);
 
 	      for (int j = i; j < n_args; j++)
 		{
+		  if (args (j). all_zero_dims ())
+		    continue;
+
 		  tmp = do_cat_op (tmp, args (j), ra_idx);
 
 		  if (error_state)
@@ -770,7 +774,15 @@ do_cat (const octave_value_list& args, std::string fname)
 
 		  dim_vector dv_tmp = args (j).dims ();
 
-		  ra_idx (dim) += (dim < dv_tmp.length () ? dv_tmp (dim) : 1);
+		  if (dim >= dv_len)
+		    {
+		      if (j > i)
+			error ("%s: indexing error", fname.c_str ());
+		      break;
+		    }
+		  else
+		    ra_idx (dim) += (dim < dv_tmp.length () ? 
+				     dv_tmp (dim) : 1);
 		}
 
 	      retval = tmp;

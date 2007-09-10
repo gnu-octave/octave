@@ -26,38 +26,39 @@
 ## Author: jwe
 
 function varargout = __bar__ (vertical, func, varargin)
+
   width = 0.8;
   group = true;
 
   if (nargin < 3)
-    print_usage();
+    print_usage ();
   endif
 
-  if (nargin > 3 && isnumeric(varargin{2}))
+  if (nargin > 3 && isnumeric (varargin{2}))
     x = varargin{1};
-    if (isvector(x))
+    if (isvector (x))
       x = x(:);
     endif
     y = varargin{2};
-    if (isvector(y))
+    if (isvector (y))
       y = y(:);
     endif
-    if (size(x,1) != size(y,1))
+    if (size (x, 1) != size (y, 1))
       y = varargin{1};
-      if (isvector(y))
+      if (isvector (y))
 	y = y(:);
       endif
       x = [1:size(y,1)]';
       idx = 2;
     else
-      if (! isvector(x))
+      if (! isvector (x))
 	error ("%s: x must be a vector", func);
       endif
       idx = 3;
     endif
   else
     y = varargin{1};
-    if (isvector(y))
+    if (isvector (y))
       y = y(:);
     endif
     x = [1:size(y,1)]';
@@ -65,19 +66,20 @@ function varargout = __bar__ (vertical, func, varargin)
   endif
       
   newargs = {};
-  HaveLineSpec = false;
+  have_line_spec = false;
   while (idx <= nargin -2)
-    if (isstr(varargin{idx}) && strcmp(varargin{idx},"grouped"))
+    if (isstr (varargin{idx}) && strcmp (varargin{idx}, "grouped"))
       group = true;
       idx++;
-    elseif (isstr(varargin{idx}) && strcmp(varargin{idx},"stacked"))
+    elseif (isstr (varargin{idx}) && strcmp (varargin{idx}, "stacked"))
       group = false;
       idx++;
     else
-      if ((isstr(varargin{idx}) || iscell(varargin{idx})) && !HaveLineSpec)
+      if ((isstr (varargin{idx}) || iscell (varargin{idx}))
+	  && ! have_line_spec)
 	[linespec, valid] = __pltopt__ (func, varargin{idx}, false);
 	if (valid)
-	  HaveLineSpec = true;
+	  have_line_spec = true;
 	  newargs = [{linespec.color}, newargs];
 	  idx++;
 	  continue;
@@ -114,7 +116,7 @@ function varargout = __bar__ (vertical, func, varargin)
   delta_m = [(cutoff(1) - x(1)); (x(2:end) - cutoff)] * width;
   x1 = (x - delta_m)(:)';
   x2 = (x + delta_p)(:)';
-  xb = repmat([x1; x1; x2; x2](:), 1, ycols);
+  xb = repmat ([x1; x1; x2; x2](:), 1, ycols);
 
   if (group)
     width = width / ycols;
@@ -139,7 +141,7 @@ function varargout = __bar__ (vertical, func, varargin)
   xb = reshape (xb, 4, numel (xb) /  4);
   yb = reshape (yb, 4, numel (yb) /  4);
 
-  if (! HaveLineSpec)
+  if (! have_line_spec)
     colors = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
     newargs = [{shiftdim(colors (mod (floor ([0 : (ycols * ylen - 1)] / ylen), 
 				      6) + 1, :), -1)}, newargs];
@@ -163,6 +165,6 @@ function varargout = __bar__ (vertical, func, varargin)
       varargout{1} = yb;
       varargout{2} = xb;
     endif
-  endif    
+  endif
 
 endfunction

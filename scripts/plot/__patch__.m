@@ -33,28 +33,28 @@ function h = __patch__ (p, varargin)
 
   iarg = 1;
   have_x = have_z = have_c = false;
-  if (isnumeric (varargin {1}))
-    if (!isnumeric (varargin {2}))
+  if (isnumeric (varargin{1}))
+    if (! isnumeric (varargin{2}))
       print_usage ();
     endif
 
-    x = varargin {1};
-    y = varargin {2};
+    x = varargin{1};
+    y = varargin{2};
     have_x = true;
     iarg += 2;
 
-    if (nargin > 3 && ndims (varargin {3}) == 2 && 
-	size (varargin {3}) == size (x))
+    if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
+	&& size (varargin{3}) == size (x))
       z = varargin {3};
       have_z = true;
-      iarg ++;
+      iarg++;
     endif
   endif
 
-  if (have_x && nargin > iarg && isnumeric (varargin {iarg}))
-    c = varargin {iarg};
+  if (have_x && nargin > iarg && isnumeric (varargin{iarg}))
+    c = varargin{iarg};
     have_c = true;
-    iarg ++;
+    iarg++;
 
     if (ndims (c) == 3 && size (c, 2) == 1)
       c = permute (c, [1, 3, 2]);
@@ -87,53 +87,53 @@ function h = __patch__ (p, varargin)
       endif
 
       if (have_c)
-	if (ndims (c) == 2 && ((nr > 3 && size (c, 2) == nc) ||
-			       (size (c, 1) > 1 && size (c, 2) == nc)))
+	if (ndims (c) == 2 && ((nr > 3 && size (c, 2) == nc)
+			       || (size (c, 1) > 1 && size (c, 2) == nc)))
 	  c2 = c (:, i);
 	elseif (ndims (c) == 3)
-	  c2 = permute (c (:, i, :), [1, 3, 2]);
+	  c2 = permute (c(:,i,:), [1, 3, 2]);
 	else
 	  c2 = c;
 	endif
 
 	if (numel (c2) == 1)
 	  if (isnan (c))
-	    set (h, "FaceColor", [1, 1, 1]);
-	    set (h, "CData", c2);
+	    set (h, "facecolor", [1, 1, 1]);
+	    set (h, "cdata", c2);
 	  elseif (isnumeric (c2))
 	    ## Have color index.
-	    set (h, "FaceColor", "flat");
-	    set (h, "CData", c2);
-	    clim = get(ax, "CLim");
+	    set (h, "facecolor", "flat");
+	    set (h, "cdata", c2);
+	    clim = get(ax, "clim");
 	    if (c2 < clim(1))
-              set (ax, "CLim", [c2, clim(2)])
+              set (ax, "clim", [c2, clim(2)])
 	    endif
 	    if (c2 > clim(2))
-              set (ax, "CLim", [clim(1), c2])
+              set (ax, "clim", [clim(1), c2])
 	    endif
 	  else
 	    ## Unknown color value.
-	    error ("color value not valid");
+	    error ("patch: color value not valid");
 	  endif
 	elseif (numel (c2) == 3)
 	  ## Have rgb/rgba value.
-	  set (h, "FaceColor", c2);
+	  set (h, "facecolor", c2);
 	else
 	  ## Color vector.
 	  if (length (c2) != length (x) || length (c2) != length (y))
-	    error ("size of x, y, and c must be equal")
+	    error ("patch: size of x, y, and c must be equal")
 	  else
-	    set (h, "FaceColor", "interp");
-	    set(h, "CData", c2);
+	    set (h, "facecolor", "interp");
+	    set(h, "cdata", c2);
 	    if (abs(max(c2) - min(c2)) < eps)
-              set (ax, "CLim", [c2(1)-1, c2(1)+1])
+              set (ax, "clim", [c2(1)-1, c2(1)+1])
 	    else
-              set (ax, "CLim", [min(c2), max(c2)]);
+              set (ax, "clim", [min(c2), max(c2)]);
 	    endif
 	  endif
 	endif
       else
-	set (h, "FaceColor", [0, 1, 0]);
+	set (h, "facecolor", [0, 1, 0]);
       endif
 
       if (nargin > iarg + 1)
@@ -141,6 +141,7 @@ function h = __patch__ (p, varargin)
       endif
     endfor
   else
-    error ("Not supported");
+    error ("patch: not supported");
   endif
+
 endfunction

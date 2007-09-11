@@ -764,7 +764,7 @@ do_cat (const octave_value_list& args, std::string fname)
 
 	      for (int j = i; j < n_args; j++)
 		{
-		  if (args (j). all_zero_dims ())
+		  if (args (j). dims (). any_zero ())
 		    continue;
 
 		  tmp = do_cat_op (tmp, args (j), ra_idx);

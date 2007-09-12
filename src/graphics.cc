@@ -1257,7 +1257,7 @@ axes::properties::set (const property_name& name, const octave_value& val)
 
 void
 axes::properties::set_defaults (base_graphics_object& obj,
-				     const std::string& mode)
+				const std::string& mode)
 {
   position = Matrix ();
   title = octave_NaN;
@@ -1873,7 +1873,7 @@ text::properties::properties (const graphics_handle& mh,
     position (Matrix (1, 3, 0.0)),
     rotation (0),
     horizontalalignment ("left"),
-    color (Matrix (1, 3, 1.0))
+    color (Matrix (1, 3, 0.0))
 { }
 
 void

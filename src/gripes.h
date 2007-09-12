@@ -34,6 +34,9 @@ extern OCTINTERP_API void
 gripe_not_supported (const char *);
 
 extern OCTINTERP_API void
+gripe_not_implemented (const char *);
+
+extern OCTINTERP_API void
 gripe_string_invalid (void);
 
 extern OCTINTERP_API void

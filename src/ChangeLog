@@ -1,3 +1,16 @@
+2007-09-12  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (text::properties::properties): Default color is
+	black, not white.
+	* graphics.h (text::properties::color): Declare as color_property,
+	not octave_value.
+
+	* graphics.h.in (root_figure::defaults, figure::defaults,
+	axes::defaults, line::defaults, text::defaults, image::defaults,
+	patch::defaults, surface::defaults): New functions.
+	* gripes.cc (gripe_not_implemented): New function.
+	* gripes.h: Provide decl.
+
 2007-09-10  John W. Eaton  <jwe@octave.org>
 
 	* genprops.awk: Add missing newline character at end of file.

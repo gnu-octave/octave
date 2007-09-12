@@ -36,6 +36,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <set>
 #include <string>
 
+#include "gripes.h"
 #include "oct-map.h"
 #include "ov.h"
 
@@ -915,6 +916,11 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  void defaults (void) const
+  {
+    gripe_not_implemented ("root_figure::defaults");
+  }
+
   bool valid_object (void) const { return true; }
 
 private:
@@ -1048,6 +1054,8 @@ public:
   void reparent (const graphics_handle& np) { xproperties.reparent (np); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  void defaults (void) const { gripe_not_implemented ("figure::defaults"); }
 
   bool valid_object (void) const { return true; }
 
@@ -1227,6 +1235,8 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  void defaults (void) const { gripe_not_implemented ("axes::defaults"); }
+
   bool valid_object (void) const { return true; }
 
 private:
@@ -1332,6 +1342,8 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  void defaults (void) const { gripe_not_implemented ("line::defaults"); }
+
   bool valid_object (void) const { return true; }
 };
 
@@ -1366,7 +1378,7 @@ public:
       octave_value position
       octave_value rotation
       octave_value horizontalalignment
-      octave_value color
+      color_property color
     END_PROPERTIES
 
     static std::string go_name;
@@ -1424,6 +1436,8 @@ public:
   void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  void defaults (void) const { gripe_not_implemented ("text::defaults"); }
 
   bool valid_object (void) const { return true; }
 };
@@ -1514,6 +1528,8 @@ public:
   void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  void defaults (void) const { gripe_not_implemented ("image::defaults"); }
 
   bool valid_object (void) const { return true; }
 };
@@ -1615,6 +1631,8 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  void defaults (void) const { gripe_not_implemented ("patch::defaults"); }
+
   bool valid_object (void) const { return true; }
 };
 
@@ -1705,6 +1723,8 @@ public:
   void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  void defaults (void) const { gripe_not_implemented ("surface::defaults"); }
 
   bool valid_object (void) const { return true; }
 };

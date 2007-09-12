@@ -38,6 +38,12 @@ gripe_not_supported (const char *fcn)
 }
 
 void
+gripe_not_implemented (const char *fcn)
+{
+  error ("%s: not implemented", fcn);
+}
+
+void
 gripe_string_invalid (void)
 {
   error ("std::string constant used in invalid context");

@@ -344,6 +344,9 @@ at the Octave prompt should display a three dimensional plot.
 @menu
 * Graphics Objects::
 * Graphics Object Properties::  
+* Colors::
+* Line Styles::
+* Marker Styles::
 * Interaction with gnuplot::    
 @end menu
 
@@ -528,7 +531,7 @@ figure window, call the @code{close} function.
 
 @menu
 * Root Figure Properties::      
-* Common Properties::           
+* Figure Properties::           
 * Axes Properties::             
 * Line Properties::             
 * Text Properties::             
@@ -542,19 +545,41 @@ figure window, call the @code{close} function.
 
 @table @code
 @item currentfigure
-@item visible
+Index to graphics object for the current figure.
+
+@c FIXME -- does this work?
+@c @item visible
+@c Either @code{"on"} or @code{"off"} to toggle display of figures.
 @end table
 
-@node Common Properties
-@subsubsection Common Properties
+@node Figure Properties
+@subsubsection Figure Properties
 
 @table @code
 @item nextplot
+May be one of
+@table @code
+@item "new"
+@item "add"
+@item "replace"
+@item "replacechildren"
+@end table
+
 @item closerequestfcn
+Handle of function to call when a figure is closed.
+
 @item currentaxes
+Index to graphics object of current axes.
+
 @item colormap
+An N-by-3 matrix containing the color map for the current axes.
+
 @item visible
+Either @code{"on"} or @code{"off"} to toggle display of the figure.
+
 @item paperorientation
+Indicates the orientation for printing.  Either @code{"landscape"} or
+@code{"portrait"}.
 @end table
 
 @node Axes Properties
@@ -562,54 +587,134 @@ figure window, call the @code{close} function.
 
 @table @code
 @item position
+A four-element vector specifying the coordinates of the lower left
+corner and width and height of the plot, in normalized units.  For
+example, @code{[0.2, 0.3, 0.4, 0.5]} sets the lower left corner of the
+axes at @math{(0.2, 0.3)} and the width and heigth to be 0.4 and 0.5
+respectively.
+
 @item title
+Index of text object for the axes title.
+
 @item box
+Either @code{"on"} or @code{"off"} to toggle display of the box around
+the axes.
+
 @item key
+Either @code{"on"} or @code{"off"} to toggle display of the legend.
+Note that this property is not compatible with @sc{Matlab} and may be
+removed in a future version of Octave.
+
 @item keybox
+Either @code{"on"} or @code{"off"} to toggle display of a box around the
+legend.  Note that this property is not compatible with @sc{Matlab} and
+may be removed in a future version of Octave.
+
 @item keypos
+An integer from 1 to 4 specifying the position of the legend.  1
+indicates upper right corner, 2 indicates upper left, 3 indicates lower
+left, and 4 indicates lower right.  Note that this property is not
+compatible with @sc{Matlab} and may be removed in a future version of
+Octave.
+
 @item dataaspectratio
+A two-element vector specifying the relative height and width of the
+data displayed in the axes.  Setting @code{dataaspectratio} to @samp{1,
+2]} causes the length of one unit as displayed on the y axis to be the
+same as the length of 2 units on the x axis.  Setting
+@code{dataaspectratio} also forces the @code{dataaspectratiomode}
+property to be set to @code{"manual"}.
+
 @item dataaspectratiomode
+Either @code{"manual"} or @code{"auto"}.
+
 @item xlim
 @itemx ylim
 @itemx zlim
 @itemx clim
+Two-element vectors defining the limits for the x, y, and z axes and the 
+Setting one of these properties also forces the corresponding mode
+property to be set to @code{"manual"}.
+
 @item xlimmode
 @itemx ylimmode
 @itemx zlimmode
 @itemx climmode
+Either @code{"manual"} or @code{"auto"}.
+
 @item xlabel
 @itemx ylabel
 @itemx zlabel
+Indices to text objects for the axes labels.
+
 @item xgrid
 @itemx ygrid
 @itemx zgrid
+Either @code{"on"} or @code{"off"} to toggle display of grid lines.
+
 @item xminorgrid
 @itemx yminorgrid
 @itemx zminorgrid
+Either @code{"on"} or @code{"off"} to toggle display of minor grid lines.
+
 @item xtick
 @itemx ytick
 @itemx ztick
+Setting one of these properties also forces the corresponding mode
+property to be set to @code{"manual"}.
+
 @item xtickmode
 @itemx ytickmode
 @itemx ztickmode
+Either @code{"manual"} or @code{"auto"}.
+
 @item xticklabel
 @itemx yticklabel
 @itemx zticklabel
+Setting one of these properties also forces the corresponding mode
+property to be set to @code{"manual"}.
+
 @item xticklabelmode
 @itemx yticklabelmode
 @itemx zticklabelmode
+Either @code{"manual"} or @code{"auto"}.
+
 @item xscale
 @itemx yscale
 @itemx zscale
+Either @code{"linear"} or @code{"log"}.
+
 @item xdir
 @itemx ydir
 @itemx zdir
+Either @code{"forward"} or @code{"reverse"}.
+
 @item xaxislocation
 @itemx yaxislocation
+Either @code{"top"} or @code{"bottom"} for the x axis and @code{"left"}
+or @code{"right"} for the y axis.
+
 @item view
+A three element vector specifying the view point for three-dimensional plots.
+
 @item visible
+Either @code{"on"} or @code{"off"} to toggle display of the axes.
+
 @item nextplot
+May be one of
+@table @code
+@item "new"
+@item "add"
+@item "replace"
+@item "replacechildren"
+@end table
+
 @item outerposition
+A four-element vector specifying the coordinates of the lower left
+corner and width and height of the plot, in normalized units.  For
+example, @code{[0.2, 0.3, 0.4, 0.5]} sets the lower left corner of the
+axes at @math{(0.2, 0.3)} and the width and heigth to be 0.4 and 0.5
+respectively.
 @end table
 
 @node Line Properties
@@ -623,14 +728,27 @@ figure window, call the @code{close} function.
 @itemx udata
 @itemx xldata
 @itemx xudata
+The data to be plotted.  The @code{ldata} and @code{udata} elements are
+for errobars in the y direction, and the @code{xldata} and @code{xudata}
+elements are for errorbars in the x direction.
+
 @item color
+The RGB color of the line, or a color name.  @xref{Colors}.
+
 @item linestyle
-@item linewidth
+@itemx linewidth
+@xref{Line Styles}.
+
 @item marker
 @item markeredgecolor
 @item markerfacecolor
 @item markersize
+@xref{Marker Styles}.
+
 @item keylabel
+The text of the legend entry corresponding to this line.  Note that this
+property is not compatible with @sc{Matlab} and may be removed in a
+future version of Octave.
 @end table
 
 @node Text Properties
@@ -638,11 +756,22 @@ figure window, call the @code{close} function.
 
 @table @code
 @item string
+The character string contained by the text object.
+
 @item units
+May be @code{"normalized"} or @code{"graph"}.
+
 @item position
+The coordinates of the text object.
+
 @item rotation
+The angle of rotation for the displayed text, measured in degrees.
+
 @item horizontalalignment
+May be @code{"left"}, @code{"center"}, or @code{"right"}.
+
 @item color
+The color of the text.  @xref{Colors}.
 @end table
 
 @node Image Properties
@@ -650,8 +779,16 @@ figure window, call the @code{close} function.
 
 @table @code
 @item cdata
-@itemx xdata
+The data for the image.  Each pixel of the image corresponds to an
+element of @code{cdata}.  The value of an element of @code{cdata}
+specifies the row-index into the colormap of the axes object containing
+the image.  The color value found in the color map for the given index
+determines the color of the pixel.
+
+@item xdata
 @itemx ydata
+Two-element vectors specifing the range of the x- and y- coordinates for
+the image.
 @end table
 
 @node Patch Properties
@@ -662,15 +799,26 @@ figure window, call the @code{close} function.
 @itemx xdata
 @itemx ydata
 @itemx zdata
+Data defining the patch object.
+
 @item facecolor
+The fill color of the patch.  @xref{Colors}.
+
 @item facealpha
+A number in the range [0, 1] indicating the transparency of the patch.
+
 @item edgecolor
+The color of the line defining the patch.  @xref{Colors}.
+
 @item linestyle
-@item linewidth
+@itemx linewidth
+@xref{Line Styles}.
+
 @item marker
-@item markeredgecolor
-@item markerfacecolor
-@item markersize
+@itemx markeredgecolor
+@itemx markerfacecolor
+@itemx markersize
+@xref{Marker Styles}.
 @end table
 
 @node Surface Properties
@@ -680,7 +828,65 @@ figure window, call the @code{close} function.
 @item xdata
 @itemx ydata
 @itemx zdata
+The data determining the surface.  The @code{xdata} and @code{ydata}
+elements are vectors and @code{zdata} must be a matrix.
+
 @item keylabel
+The text of the legend entry corresponding to this surface.  Note that
+this property is not compatible with @sc{Matlab} and may be removed in a
+future version of Octave.
+@end table
+
+@node Colors
+@subsection Colors
+
+Colors may be specified as RGB triplets with values ranging from zero to
+one, or by name.  Recognized color names include @code{"blue"},
+@code{"black"}, @code{"cyan"}, @code{"green"}, @code{"magenta"},
+@code{"red"}, @code{"white"}, and @code{"yellow"}.
+
+@node Line Styles
+@subsection Line Styles
+Line styles are specified by the folowing properties:
+
+@table @code
+@item linestyle
+May be one of
+@table @code
+@item "-"
+Solid lines.
+@item "--"
+Dashed lines.
+@item ":"
+Points.
+@item "-."
+A dash-dot line.
+@end table
+
+@item linewidth
+A number specifying the width of the line.  The default is 1.  A value
+of 2 is twice as wide as the default, etc.
+@end table
+
+@node Marker Styles
+@subsection Marker Styles
+Marker styles are specified by the folowing properties:
+@table @code
+@item marker
+A character indicating a plot marker to be place at each data point, or
+@code{"none"}, meaning no markers should be displayed.
+
+@itemx markeredgecolor
+The color of the edge around the marker, or @code{"auto"}, meaning that
+the edge color is the same as the face color.  @xref{Colors}.
+
+@itemx markerfacecolor
+The color of the marker, or @code{"none"} to indicate that the marker
+should not be filled.  @xref{Colors}.
+
+@itemx markersize
+A number specifying the size of the marker.  The default is 1.  A value
+of 2 is twice as large as the default, etc.
 @end table
 
 @node Interaction with gnuplot

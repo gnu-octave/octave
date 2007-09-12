@@ -18,10 +18,10 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} {@var{c} =} contour (@var{z})
-## @deftypefnx {Function File} {} {@var{c} =} contour (@var{z}, @var{vn})
-## @deftypefnx {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefn {Function File} {@var{c} =} contour (@var{z})
+## @deftypefnx {Function File} {@var{c} =} contour (@var{z}, @var{vn})
+## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
 ##
 ## Plot level curves (contour lines) of the matrix @var{z}, using the
 ## contour matrix @var{c} computed by @code{contourc} from the same

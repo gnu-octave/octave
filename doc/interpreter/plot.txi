@@ -4,85 +4,219 @@
 
 @node Plotting
 @chapter Plotting
-
-@menu
-* Two-Dimensional Plotting::    
-* Specialized Two-Dimensional Plots::  
-* Three-Dimensional Plotting::  
-* Manipulating Existing Plots::
-* Plot Annotations::            
-* Multiple Plots on One Page::  
-* Multiple Plot Windows::       
-* Printing Plots::
-* Test Plotting Functions::
-* Interaction with gnuplot::    
-@end menu
-
-@node Two-Dimensional Plotting
-@section Two-Dimensional Plotting
-
-The basic plotting commands are:
-
 @cindex plotting
 @cindex graphics
 
-@DOCSTRING(axes)
+@menu
+* Plotting Basics::             
+* Advanced Plotting::           
+@end menu
+
+@node Plotting Basics
+@section Plotting Basics
+
+Octave makes it easy to create many different types of two- and
+three-dimensional plots using a few high-level functions.
+
+If you need finer control over graphics, see @ref{Advanced Plotting}.
+
+@menu
+* Two-Dimensional Plots::       
+* Three-Dimensional Plotting::  
+* Plot Annotations::            
+* Multiple Plots on One Page::  
+* Multiple Plot Windows::       
+* Printing Plots::              
+* Test Plotting Functions::     
+@end menu
+
+@node Two-Dimensional Plots
+@subsection Two-Dimensional Plots
+
+The @code{plot} function allows you to create simple x-y plots with
+linear axes.  For example,
+
+@example
+@group
+x = -10:0.1:10;
+plot (x, sin (x));
+@end group
+@end example
+
+@noindent
+displays a sine wave shown in @xref{fig:plot}.  On most systems, this
+command will open a separate plot window to display the graph.
+
+@float Figure,fig:plot
+@image{plot,8cm}
+@caption{Simple Two-Dimensional Plot.}
+@end float
+
+The function @code{fplot} also generates two-dimensional plots with
+linear axes using a function name and limits for the range of the
+x-coordinate instead of the x and y data.  For example,
+
+@example
+@group
+fplot (@@sin, [-10, 10], 201);
+@end group
+@end example
+
+@noindent
+produces a plot that is equivalent to the one above, but also includes a
+legend displaying the name of the plotted function.
 
 @DOCSTRING(plot)
 
-@DOCSTRING(line)
-
 @DOCSTRING(fplot)
 
-@DOCSTRING(drawnow)
-
-@DOCSTRING(shg)
-
-@DOCSTRING(hold)
-
-@DOCSTRING(ishold)
-
-@DOCSTRING(newplot)
-
-@node Specialized Two-Dimensional Plots
-@section Specialized Two-Dimensional Plots
-
-@DOCSTRING(bar)
-
-@DOCSTRING(barh)
-
-@DOCSTRING(contour)
-
-@DOCSTRING(contourc)
-
-@DOCSTRING(hist)
-
-@DOCSTRING(loglog)
-
-@DOCSTRING(polar)
-
-@DOCSTRING(patch)
+The functions @code{semilogx}, @code{semilogy}, and @code{loglog} are
+similar to the @code{plot} function, but produce plots in which one or
+both of the axes use log scales.
 
 @DOCSTRING(semilogx)
 
 @DOCSTRING(semilogy)
 
-@DOCSTRING(stem)
+@DOCSTRING(loglog)
+
+The functions @code{bar}, @code{barh}, @code{stairs}, and @code{stem}
+are useful for displaying discrete data.  For example,
+
+@example
+@group
+hist (randn (10000, 1), 30);
+@end group
+@end example
+
+@noindent
+produces the histogram of 10,000 normally distributed random numbers
+shown in @xref{fig:hist}.
+
+@float Figure,fig:hist
+@image{hist,8cm}
+@caption{Histogram.}
+@end float
+
+@DOCSTRING(bar)
+
+@DOCSTRING(barh)
+
+@DOCSTRING(hist)
 
 @DOCSTRING(stairs)
 
-@DOCSTRING(errorbar)
+@DOCSTRING(stem)
 
-@DOCSTRING(loglogerr)
+The @code{contour} and @code{contourc} functions produce two-dimensional
+contour plots from three dimensional data.
+
+@DOCSTRING(contour)
+
+@DOCSTRING(contourc)
+
+The @code{errorbar}, @code{semilogxerr}, @code{semilogyerr}, and
+@code{loglogerr} functions produces plots with error bar markers.  For
+example,
+
+@example
+x = 0:0.1:10;
+y = sin (x);
+yp =  0.1 .* randn (size (x));
+ym = -0.1 .* randn (size (x));
+errorbar (x, sin (x), ym, yp);
+@end example
+
+@noindent
+produces the figure shown in @xref{fig:errorbar}.
+
+@float Figure,fig:errorbar
+@image{errorbar,8cm}
+@caption{Errorbar plot.}
+@end float
+
+@DOCSTRING(errorbar)
 
 @DOCSTRING(semilogxerr)
 
 @DOCSTRING(semilogyerr)
 
-@node Three-Dimensional Plotting
-@section Three-Dimensional Plotting
+@DOCSTRING(loglogerr)
 
-@DOCSTRING(plot3)
+Finally, the @code{polar} function allows you to easily plot data in
+polor coordinates.  However, the display coordinates remain rectangular
+and linear.  For example,
+
+@example
+polar (0:0.1:10*pi, 0:0.1:10*pi);
+@end example
+
+@noindent
+produces the spiral plot shown in @xref{fig:polar}.
+
+@float Figure,fig:polar
+@image{polar,8cm}
+@caption{Polar plot.}
+@end float
+
+@DOCSTRING(polar)
+
+The axis function may be used to change the axis limits of an existing
+plot.
+
+@DOCSTRING(axis)
+
+@node Three-Dimensional Plotting
+@subsection Three-Dimensional Plotting
+
+The function @code{mesh} produces mesh surface plots.  For example,
+
+@example
+@group
+tx = ty = linspace (-8, 8, 41)';
+[xx, yy] = meshgrid (tx, ty);
+r = sqrt (xx .^ 2 + yy .^ 2) + eps;
+tz = sin (r) ./ r;
+mesh (tx, ty, tz);
+@end group
+@end example
+
+@noindent
+produces the familiar ``sombrero'' plot shown in @xref{fig:mesh}.  Note
+the use of the function @code{meshgrid} to create matrices of X and Y
+coordinates to use for plotting the Z data.  The @code{ndgrid} function
+is similar to @code{meshgrid}, but works for N-dimensional matrices.
+
+@float Figure,fig:mesh
+@image{mesh,8cm}
+@caption{Mesh plot.}
+@end float
+
+The @code{meshc} function is similar to @code{mesh}, but also produces a
+plot of contours for the surface.
+
+The @code{plot3} function displays arbitrary three-dimensional data,
+without requiring it to form a surface.  For example
+
+@example
+@group
+t = 0:0.1:10*pi;
+r = linspace (0, 1, numel (t));
+z = linspace (0, 1, numel (t));
+plot3 (r.*sin(t), r.*cos(t), z);
+@end group
+@end example
+
+@noindent
+displays the spiral in three dimensions shown in @xref{fig:plot3}.
+
+@float Figure,fig:plot3
+@image{plot3,8cm}
+@caption{Three dimensional spiral.}
+@end float
+
+Finally, the @code{view} function changes the viewpoint for
+three-dimensional plots.
 
 @DOCSTRING(mesh)
 
@@ -92,37 +226,31 @@ The basic plotting commands are:
 
 @DOCSTRING(ndgrid)
 
+@DOCSTRING(plot3)
+
 @DOCSTRING(view)
 
-@node Manipulating Existing Plots
-@section Manipulating Existing Plots
-
-@DOCSTRING(axis)
-
-@DOCSTRING(gca)
-
-@DOCSTRING(gcf)
-
-@DOCSTRING(get)
-
-@DOCSTRING(set)
-
-@DOCSTRING(ancestor)
-
-@DOCSTRING(clf)
-
-@DOCSTRING(delete)
-
-@DOCSTRING(close)
-
-@DOCSTRING(closereq)
-
-@DOCSTRING(ishandle)
-
-@DOCSTRING(isfigure)
-
 @node Plot Annotations
-@section Plot Annotations
+@subsection Plot Annotations
+
+You can add titles, axis labels, legends, and arbitrary text to an
+existing plot.  For example,
+
+@example
+@group
+x = -10:0.1:10;
+plot (x, sin (x));
+title ("sin(x) for x = -10:0.1:10");
+xlabel ("x");
+ylabel ("sin (x)");
+text (pi, 0.7, "arbitrary text");
+legend ("sin (x)");
+@end group
+@end example
+
+The functions @code{grid} and @code{box} may also be used to add grid
+and border lines to the plot.  By default, the grid is off and the
+border lines are on.
 
 @DOCSTRING(title)
 
@@ -137,31 +265,426 @@ The basic plotting commands are:
 @DOCSTRING(grid)
 
 @node Multiple Plots on One Page
-@section Multiple Plots on One Page
+@subsection Multiple Plots on One Page
+
+Octave can display more than one plot in a single figure.  The simplest
+way to do this is to use the @code{subplot} function to divide the plot
+area into a series of subplot windows that are indexed by an integer.
+For example,
+
+@example
+@group
+subplot (2, 1, 1)
+fplot (@@sin, [-10, 10]);
+subplot (2, 1, 2)
+fplot (@@cos, [-10, 10]);
+@end group
+@end example
+
+@noindent
+creates a figure with two separate axes, one displaying a sine wave and
+the other a cosine wave.  The first call to subplot divides the figure
+into two plotting areas (two rows and one column) and makes the first plot
+area active.  The grid of plot areas created by @code{subplot} is
+numbered in column-major order (top to bottom, left to right).
 
 @DOCSTRING(subplot)
 
 @node Multiple Plot Windows
-@section Multiple Plot Windows
+@subsection Multiple Plot Windows
+
+You can open multiple plot windows using the @code{figure} function.
+For example
+
+@example
+figure (1);
+fplot (@@sin, [-10, 10]);
+figure (2);
+fplot (@@cos, [-10, 10]);
+@end example
+
+@noindent
+creates two figures, with the first displaying a sine wave and
+the second a cosine wave.  Figure numbers must be positive integers.
 
 @DOCSTRING(figure)
 
 @node Printing Plots
-@section Printing Plots
+@subsection Printing Plots
+
+The @code{print} command allows you to save plots in a variety of
+formats.  For example,
+
+@example
+print -deps foo.eps
+@end example
+
+@noindent
+writes the current figure to an encapsulated PostScript file called
+@file{foo.eps}.
 
 @DOCSTRING(print)
 
 @DOCSTRING(orient)
 
 @node Test Plotting Functions
-@section Test Plotting Functions
+@subsection Test Plotting Functions
+
+The functions @code{sombrero} and @code{peaks} provide a way to check
+that plotting is working.  Typing either @code{sombrero} or @code{peaks}
+at the Octave prompt should display a three dimensional plot.
 
 @DOCSTRING(sombrero)
 
 @DOCSTRING(peaks)
 
+@node Advanced Plotting
+@section Advanced Plotting
+
+@menu
+* Graphics Objects::
+* Graphics Object Properties::  
+* Interaction with gnuplot::    
+@end menu
+
+@node Graphics Objects
+@subsection Graphics Objects
+
+Plots in Octave are constructed from the following @dfn{graphics
+objects}.  Each graphics object has a set of properties that define its
+appearance and may also contain links to other graphics objects.
+Graphics objects are only referenced by a numeric index, or @dfn{handle}.
+
+@table @asis
+@item root figure
+The parent of all figure objects.  The index for the root figure is
+defined to be 0.
+
+@item figure
+A figure window.
+
+@item axes
+An set of axes.  This object is a child of a figure object and may be a
+parent of line, text, image, patch, or surface objects.
+
+@item line
+A line in two or three dimensions.
+
+@item text
+Text annotations.
+
+@item image
+A bitmap image.
+
+@item patch
+A filled polygon, currently limited to two dimensions.
+
+@item surface
+A three-dimensional surface.
+@end table
+
+To determine whether an object is a graphics object index or a figure
+index, use the functions @code{ishandle} and @code{isfigure}.
+
+@DOCSTRING(ishandle)
+
+@DOCSTRING(isfigure)
+
+The function @code{gcf} returns an index to the current figure object,
+or creates one if none exists.  Similarly, @code{gca} returns the
+current axes object, or creates one (and its parent figure object) if
+none exists.
+
+@DOCSTRING(gcf)
+
+@DOCSTRING(gca)
+
+The @code{get} and @code{set} functions may be used to examine and set
+properties for graphics objects.  For example,
+
+@example
+@group
+get (0)
+    @result{} ans =
+       @{
+         type = root figure
+         currentfigure = [](0x0)
+         children = [](0x0)
+         visible = on
+       @}
+@end group
+@end example
+
+@noindent
+returns a structure containing all the properties of the root figure.
+As with all functions in Octave, the structure is returned by value, so
+modifying it will not modify the internal root figure plot object.  To
+do that, you must use the @code{set} function.  Also, note that in this
+case, the @code{currentfigure} property is empty, which indicates that
+there is no current figure window.
+
+The @code{get} function may also be used to find the value of a single
+property.  For example,
+
+@example
+@group
+get (gca (), "xlim")
+    @result{} [ 0 1 ]
+@end group
+@end example
+
+@noindent
+returns the range of the x-axis for the current axes object in the
+current figure.
+
+To set graphics object properties, use the set function.  For example,
+
+@example
+set (gca (), "xlim", [-10, 10]);
+@end example
+
+@noindent
+sets the range of the x-axis for the current axes object in the current
+figure to @samp{[-10, 10]}.  Additionally, calling set with a graphics
+object index as the only argument returns a structure containing the
+default values for all the properties for the given object type.  For
+example,
+
+@example
+set (gca ())
+@end example
+
+@noindent
+returns a structure containing the default property values for axes
+objects.
+
+@DOCSTRING(get)
+
+@DOCSTRING(set)
+
+@DOCSTRING(ancestor)
+
+You can create axes, line, and patch objects directly using the
+@code{axes}, @code{line}, and @code{patch} functions.  These objects
+become children of the current axes object.
+
+@DOCSTRING(axes)
+
+@DOCSTRING(line)
+
+@DOCSTRING(patch)
+
+By default, Octave refreshes the plot window when a prompt is printed,
+or when waiting for input.  To force an update at other times, call the
+@code{drawnow} function.
+
+@DOCSTRING(drawnow)
+
+Normally, high-level plot functions like @code{plot} or @code{mesh} call
+@code{newplot} to initialize the state of the current axes so that the
+next plot is drawn in a blank window with default property settings.  To
+have two plots superimposed over one another, call the @code{hold}
+function.  For example,
+
+@example
+@group
+hold ("on");
+x = -10:0.1:10;
+plot (x, sin (x));
+plot (x, cos (x));
+hold ("off");
+@end group
+@end example
+
+@noindent
+displays sine and cosine waves on the same axes.  If the hold state is
+off, consecutive plotting commands like this will only display the last
+plot.
+
+@DOCSTRING(newplot)
+
+@DOCSTRING(hold)
+
+@DOCSTRING(ishold)
+
+To clear the current figure, call the @code{clf} function.  To bring it
+to the top of the window stack, call the @code{shg} function.  To delete
+a graphics object, call @code{delete} on its index.  To close the
+figure window, call the @code{close} function.
+
+@DOCSTRING(clf)
+
+@DOCSTRING(shg)
+
+@DOCSTRING(delete)
+
+@DOCSTRING(close)
+
+@DOCSTRING(closereq)
+
+@node Graphics Object Properties
+@subsection Graphics Object Properties
+@cindex graphics object properties
+
+@menu
+* Root Figure Properties::      
+* Common Properties::           
+* Axes Properties::             
+* Line Properties::             
+* Text Properties::             
+* Image Properties::            
+* Patch Properties::            
+* Surface Properties::          
+@end menu
+
+@node Root Figure Properties
+@subsubsection Root Figure Properties
+
+@table @code
+@item currentfigure
+@item visible
+@end table
+
+@node Common Properties
+@subsubsection Common Properties
+
+@table @code
+@item nextplot
+@item closerequestfcn
+@item currentaxes
+@item colormap
+@item visible
+@item paperorientation
+@end table
+
+@node Axes Properties
+@subsubsection Axes Properties
+
+@table @code
+@item position
+@item title
+@item box
+@item key
+@item keybox
+@item keypos
+@item dataaspectratio
+@item dataaspectratiomode
+@item xlim
+@itemx ylim
+@itemx zlim
+@itemx clim
+@item xlimmode
+@itemx ylimmode
+@itemx zlimmode
+@itemx climmode
+@item xlabel
+@itemx ylabel
+@itemx zlabel
+@item xgrid
+@itemx ygrid
+@itemx zgrid
+@item xminorgrid
+@itemx yminorgrid
+@itemx zminorgrid
+@item xtick
+@itemx ytick
+@itemx ztick
+@item xtickmode
+@itemx ytickmode
+@itemx ztickmode
+@item xticklabel
+@itemx yticklabel
+@itemx zticklabel
+@item xticklabelmode
+@itemx yticklabelmode
+@itemx zticklabelmode
+@item xscale
+@itemx yscale
+@itemx zscale
+@item xdir
+@itemx ydir
+@itemx zdir
+@item xaxislocation
+@itemx yaxislocation
+@item view
+@item visible
+@item nextplot
+@item outerposition
+@end table
+
+@node Line Properties
+@subsubsection Line Properties
+
+@table @code
+@itemx xdata
+@itemx ydata
+@itemx zdata
+@itemx ldata
+@itemx udata
+@itemx xldata
+@itemx xudata
+@item color
+@item linestyle
+@item linewidth
+@item marker
+@item markeredgecolor
+@item markerfacecolor
+@item markersize
+@item keylabel
+@end table
+
+@node Text Properties
+@subsubsection Text Properties
+
+@table @code
+@item string
+@item units
+@item position
+@item rotation
+@item horizontalalignment
+@item color
+@end table
+
+@node Image Properties
+@subsubsection Image Properties
+
+@table @code
+@item cdata
+@itemx xdata
+@itemx ydata
+@end table
+
+@node Patch Properties
+@subsubsection Patch Properties
+
+@table @code
+@item cdata
+@itemx xdata
+@itemx ydata
+@itemx zdata
+@item facecolor
+@item facealpha
+@item edgecolor
+@item linestyle
+@item linewidth
+@item marker
+@item markeredgecolor
+@item markerfacecolor
+@item markersize
+@end table
+
+@node Surface Properties
+@subsubsection Surface Properties
+
+@table @code
+@item xdata
+@itemx ydata
+@itemx zdata
+@item keylabel
+@end table
+
 @node Interaction with gnuplot
-@section Interaction with @code{gnuplot}
+@subsection Interaction with @code{gnuplot}
 
 @DOCSTRING(gnuplot_binary)
 

@@ -119,7 +119,7 @@ data set comes from a certain distribution.
 
 It is worth noticing that Octave can also show histograms of data
 using the @code{hist} function as described in
-@ref{Specialized Two-Dimensional Plots}.
+@ref{Two-Dimensional Plots}.
 
 @DOCSTRING(qqplot)
 

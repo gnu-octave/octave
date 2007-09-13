@@ -2472,7 +2472,7 @@ DEFUN (set, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} set (@var{h}, @var{p}, @var{v}, @dots{})\n\
 Set the named property value or vector @var{p} to the value @var{v}\n\
-in the graphics handle @var{h}.\n\
+for the graphics handle @var{h}.\n\
 @end deftypefn")
 {
   octave_value retval;

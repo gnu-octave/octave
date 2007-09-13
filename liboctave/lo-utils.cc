@@ -217,10 +217,10 @@ read_inf_nan_na (std::istream& is, char c, char sign = '+')
     {
     case 'i': case 'I':
       {
-	is >> c;
+	c = is.get ();
 	if (c == 'n' || c == 'N')
 	  {
-	    is >> c;
+	    c = is.get ();
 	    if (c == 'f' || c == 'F')
 	      d = sign == '-' ? -octave_Inf : octave_Inf;
 	    else
@@ -233,10 +233,10 @@ read_inf_nan_na (std::istream& is, char c, char sign = '+')
 
     case 'n': case 'N':
       {
-	is >> c;
+	c = is.get ();
 	if (c == 'a' || c == 'A')
 	  {
-	    is >> c;
+	    c = is.get ();
 	    if (c == 'n' || c == 'N')
 	      d = octave_NaN;
 	    else
@@ -264,13 +264,13 @@ octave_read_double (std::istream& is)
 
   char c1 = 0;
 
-  is >> c1;
+  c1 = is.get ();
   switch (c1)
     {
     case '-':
       {
 	char c2 = 0;
-	is >> c2;
+	c2 = is.get ();
 	if (c2 == 'i' || c2 == 'I')
 	  d = read_inf_nan_na (is, c2, c1);
 	else
@@ -285,7 +285,7 @@ octave_read_double (std::istream& is)
     case '+':
       {
 	char c2 = 0;
-	is >> c2;
+	c2 = is.get ();
 	if (c2 == 'i' || c2 == 'I')
 	  d = read_inf_nan_na (is, c2, c1);
 	else
@@ -319,17 +319,17 @@ octave_read_complex (std::istream& is)
 
   char ch = 0;
 
-  is >> ch;
+  ch = is.get ();
 
   if (ch == '(')
     {
       re = octave_read_double (is);
-      is >> ch;
+      ch = is.get ();
 
       if (ch == ',')
 	{
 	  im = octave_read_double (is);
-	  is >> ch;
+	  ch = is.get ();
 
 	  if (ch == ')')
 	    cx = Complex (re, im);

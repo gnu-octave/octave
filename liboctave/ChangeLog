@@ -1,3 +1,9 @@
+2007-09-13  John W. Eaton  <jwe@octave.org>
+
+	* lo-utils.cc (read_inf_nan_na, octave_read_double,
+	octave_read_complex): Use istream::get instead of >> to read
+	individual characters.
+
 2007-09-10  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assign1): Don't call make_unique for invalid assignment.

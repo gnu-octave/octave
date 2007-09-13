@@ -186,9 +186,9 @@ persistent d = 3 e f = 5
 
 The behavior of persistent variables is equivalent to the behavior of
 static variables in C. The command @code{static} in octave is also
-recognized and is equivalent to @code{persistent}. Unlike global
-variables, every initialization statement will re-initialize the
-variable. For example, after executing the following code
+recognized and is equivalent to @code{persistent}. Like global
+variables, a persistent variable may only be initialized once.
+For example, after executing the following code
 
 @example
 @group
@@ -198,7 +198,7 @@ persistent pvar = 2
 @end example
 
 @noindent
-the value of the persistent variable @code{pvar} is 2.
+the value of the persistent variable @code{pvar} is 1, not 2.
 
 @node Status of Variables
 @section Status of Variables

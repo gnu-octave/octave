@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} clf ()
 ## Clear the current figure.
+## @seealso{close, delete}
 ## @end deftypefn
 
 ## Author: jwe

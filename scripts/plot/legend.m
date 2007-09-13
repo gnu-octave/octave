@@ -27,13 +27,14 @@
 ## @deftypefnx {Function File} {} legend (@var{cell}, @var{pos})
 ## @deftypefnx {Function File} {} legend ('@var{func}')
 ##
-## Legend puts a legend on the current plot using the specified strings
-## as labels. Use independant strings (@var{st1}, @var{st2}, @dots{}), a
-## matrix of strings (@var{matstr}), or a cell array of strings (@var{cell}) to
-## specify legends. Legend works on line graphs, bar graphs, etc.
-## Be sure to call plot before calling legend.
+## Display a legend for the current axes using the specified strings
+## as labels.  Legend entries may be specified as individual character
+## string arguments, a character array, or a cell array of character
+## strings.  Legend works on line graphs, bar graphs, etc.  A plot must
+## exist before legend is called.
 ##
-## @var{pos} optionally  places the legend in the specified location:
+## The optional parameter @var{pos} specifies the location of the legend
+## as follows:
 ##
 ## @multitable @columnfractions 0.1 0.1 0.8
 ## @item @tab -1 @tab
@@ -53,18 +54,18 @@
 ## Some specific functions are directely avaliable using @var{func}:
 ##
 ## @table @code
-## @item show
+## @item "show"
 ##   Show legends from the plot
-## @item hide
+## @item "hide"
 ## @itemx off
 ##   Hide legends from the plot
-## @item boxon
+## @item "boxon"
 ##   Draw a box around legends
-## @item boxoff
+## @item "boxoff"
 ##   Withdraw the box around legends
-## @item left
+## @item "left"
 ##   Text is to the left of the keys
-## @item right
+## @item "right"
 ##   Text is to the right of the keys
 ## @end table
 ## @end deftypefn

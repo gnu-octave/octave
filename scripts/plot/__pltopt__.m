@@ -17,8 +17,10 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
+## Undocumented internal function.
+
 ## @deftypefn {Function File} {} __pltopt__ (@var{caller}, @var{opt})
+##
 ## Decode plot option strings.
 ##
 ## @var{opt} can currently be some combination of the following:
@@ -82,9 +84,6 @@
 ##
 ## The legend may be fixed to include the name of the variable
 ## plotted in some future version of Octave.
-##
-## @seealso{__pltopt1__}
-## @end deftypefn
 
 ## Author: jwe
 

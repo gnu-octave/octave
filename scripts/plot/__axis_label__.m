@@ -17,10 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __axis_label__ (@var{caller}, @var{text})
-## Utility function for @code{xlabel}, @code{ylabel}, and @code{zlabel}.
-## @end deftypefn
+## Undocumented internal function.
 
 ## Author: jwe
 

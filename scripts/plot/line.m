@@ -21,9 +21,13 @@
 ## @deftypefn {Function File} {} line ()
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y})
 ## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z}, @var{opts})
+## @deftypefnx {Function File} {} line (@var{x}, @var{y}, @var{z}, @var{property}, @var{value}, @dots{})
 ## Create line object from @var{x} and @var{y} and insert in current
-## axes object.  Return handle to line object.
+## axes object.  Return a handle (or vector of handles) to the line
+## objects created.
+##
+## Multiple property-value pairs may be specified for the line, but they
+## must appear in pairs.
 ## @end deftypefn
 
 ## Author: jwe

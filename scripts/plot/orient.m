@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} orient (@var{orientation})
-## Set default print orientation.  Valid values for @var{orientation}
-## include @code{"landscape"} and @code{"portrait"}.  If called with no
-## arguments, return the default print orientation.
+## Set the default print orientation.  Valid values for
+## @var{orientation} include @code{"landscape"} and @code{"portrait"}.
+## If called with no arguments, return the default print orientation.
 ## @end deftypefn
 
 ## Author: Paul Kienzle

@@ -17,10 +17,9 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __next_line_color__ (@var{reset})
+## Undocumented internal function.
+
 ## Return the next line color in the rotation.
-## @end deftypefn
 
 ## Author: jwe
 

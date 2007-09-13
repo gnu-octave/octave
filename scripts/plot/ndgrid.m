@@ -20,10 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{y1}, @var{y2}, @dots{},  @var{y}n] =} ndgrid (@var{x1}, @var{x2}, @dots{}, @var{x}n)
 ## @deftypefnx {Function File} {[@var{y1}, @var{y2}, @dots{},  @var{y}n] =} ndgrid (@var{x})
-## Given n vectors @var{x1}, @dots{} @var{x}n, ndgrid returns n arrays of dimension n. 
-## The elements of the ith output argument contains the elements of the vector 
-## @var{x}i repeated over all dimensions different from the ith dimension.
-## Calling ndgrid with only one input argument @var{x} is equivalent of calling ndgrid with 
+## Given n vectors @var{x1}, @dots{} @var{x}n, @code{ndgrid} returns
+## n arrays of dimension n.  The elements of the ith output argument
+## contains the elements of the vector @var{x}i repeated over all
+## dimensions different from the ith dimension.  Calling ndgrid with
+## only one input argument @var{x} is equivalent of calling ndgrid with
 ## all n input arguments equal to @var{x}:
 ##
 ## [@var{y1}, @var{y2}, @dots{},  @var{y}n] = ndgrid (@var{x}, @dots{}, @var{x})

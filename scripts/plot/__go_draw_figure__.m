@@ -17,10 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __go_draw_figure__ (f)
-## Display the figure @var{f}.
-## @end deftypefn
+## Undocumented internal function.
 
 ## Author: jwe
 

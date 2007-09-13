@@ -27,10 +27,11 @@
 ## contain red, green, and blue intensities respectively.  All entries
 ## should be between 0 and 1 inclusive.  The new colormap is returned.
 ##
-## @code{colormap ("default")} restores the default colormap (a gray scale
-## colormap with 64 entries).  The default colormap is returned.
+## @code{colormap ("default")} restores the default colormap (the
+## @code{jet} map with 64 entries).  The default colormap is returned.
 ##
 ## With no arguments, @code{colormap} returns the current color map.
+## @seealso{jet}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -49,7 +50,7 @@ function cmap = colormap (map)
 
     if (ischar (map))
       if (strcmp (map, "default"))
-        map = __default_colormap__ ();
+        map = jet (64);
       else
         map = feval (map);
       endif

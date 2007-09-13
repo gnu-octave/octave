@@ -17,11 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __default_plot_options__ ()
-## Return a default options structure for __pltopt__.
-## @seealso{__pltopt__}
-## @end deftypefn
+## Undocumented internal function.
 
 ## Author: jwe
 

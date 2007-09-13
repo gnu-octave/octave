@@ -17,11 +17,9 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __pltopt1__ (@var{caller}, @var{opt})
+## Undocumented internal function.
+
 ## Really decode plot option strings.
-## @seealso{__pltopt__}
-## @end deftypefn
 
 ## Author: Rick Niles <niles@axp745.gsfc.nasa.gov>
 ## Adapted-By: jwe

@@ -108,8 +108,8 @@ function [c, lev] = contourc (varargin)
   endif
 
   ## Now call __contourc__ for the real work...
-  c=__contourc__(x,y,z,vv);
-  if nargout==2,
+  c = __contourc__ (x, y, z, vv);
+  if (nargout == 2)
     lev = vv;
   endif
 

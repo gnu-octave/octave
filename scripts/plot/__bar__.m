@@ -17,11 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __bar__ (@dots{})
-## Support function for @code{bar} and @code{hbar}. 
-## @seealso{bar, hbar}
-## @end deftypefn
+## Undocumented internal function.
 
 ## Author: jwe
 

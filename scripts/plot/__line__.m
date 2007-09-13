@@ -17,12 +17,11 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __line__ (@var{p}, @var{x}, @var{y})
-## @deftypefnx {Function File} {} line (@var{p}, @var{x}, @var{y}, @var{z})
-## Create line object from @var{x} and @var{y} with parent @var{p}.
+## Undocumented internal function.
+
+## __line__ (p, x, y, z)
+## Create line object from x, y, and z with parent p.
 ## Return handle to line object.
-## @end deftypefn
 
 ## Author: jwe
 

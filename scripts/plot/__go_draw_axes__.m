@@ -17,10 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __go_draw_axes__ (@var{axis_obj}, @var{plot_stream})
-## Display the axes @var{axis_obj} on @var{plot_stream}.
-## @end deftypefn
+## Undocumented internal function.
 
 ## Author: jwe
 

@@ -19,7 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} closereq ()
-## Close the current figure.
+## Close the current figure and delete all graphics objects associated
+## with it.
+## @seealso{close, delete}
 ## @end deftypefn
 
 ## Author: jwe

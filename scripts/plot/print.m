@@ -20,7 +20,6 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} print (@var{filename}, @var{options})
-##
 ## Print a graph, or save it to a file
 ##
 ## @var{filename} defines the file name of the output file. If no

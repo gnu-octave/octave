@@ -17,17 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __errplot__ (@var{args})
-## Really plot errorbar plots. User interface in function errorbar.
-##
-## @example
-## __errplot__ (@var{arg1}, @var{arg2}, ..., @var{fmt})
-## @end example
-##
-## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
-## bar, stairs, errorbar, xlabel, ylabel, title}
-## @end deftypefn
+## Undocumented internal function.
 
 ## Created: 18.7.2000
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>

@@ -19,11 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} shg
-##
 ## Show the graph window.  Currently, this is the same as executing
 ## @code{drawnow}.
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, xlabel, ylabel}
+## @seealso{drawnow, figure}
 ## @end deftypefn
 
 ## Author: jwe

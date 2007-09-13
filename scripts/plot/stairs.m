@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stairs (@var{x}, @var{y})
-## Given two vectors of x-y data, bar produces a `stairstep' plot.
+## Produce a stairstep plot.  The arguments may be vectors or matrices.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
@@ -35,8 +35,10 @@
 ## and
 ##
 ## @example
+## @group
 ## [xs, ys] = stairs (x, y);
 ## plot (xs, ys);
+## @end group
 ## @end example
 ##
 ## @noindent

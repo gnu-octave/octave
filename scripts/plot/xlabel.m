@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {} xlabel (@var{string})
 ## @deftypefnx {Function File} {} ylabel (@var{string})
 ## @deftypefnx {Function File} {} zlabel (@var{string})
-## Specify x, y, and z axis labels for the plot.
+## Specify x, y, and z axis labels for the current figure.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## bar, stairs,  ylabel, title}
 ## @end deftypefn

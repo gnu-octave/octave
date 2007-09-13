@@ -19,11 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} loglog (@var{args})
-## Make a two-dimensional plot using log scales for both axes.  See the
-## description of @code{plot} for a description of the arguments that
-## @code{loglog} will accept.
-## @seealso{plot, semilogy, loglog, polar, mesh, contour, bar, stairs,
-## xlabel, ylabel, title}
+## Produce a two-dimensional plot using log scales for both axes.  See
+## the description of @code{plot} for a description of the arguments
+## that @code{loglog} will accept.
+## @seealso{plot, semilogx, semilogy}
 ## @end deftypefn
 
 ## Author: jwe

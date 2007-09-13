@@ -49,11 +49,11 @@
 ## corresponding columns of @var{x} and errorbars are drawn from
 ## the corresponding columns of error parameters.
 ##
-## If @var{fmt} is missing, yerrorbars ("~") plot style
-## is assumed.
+## If @var{fmt} is missing, yerrorbars ("~") plot style is assumed.
+##
 ## If the @var{fmt} argument is supplied, it is interpreted as in
-## normal plots (See __pltopt__). In addition the following
-## plot styles are supported by errorbar:
+## normal plots. In addition the following plot styles are supported by
+## errorbar:
 ##
 ## @table @samp
 ## @item ~
@@ -73,36 +73,36 @@
 ##
 ## @item #~>
 ## Set boxxyerrorbars plot style.
-##
 ## @end table
 ##
 ## Examples:
 ##
 ## @example
-## errorbar(@var{x}, @var{y}, @var{ex}, ">")
+## errorbar (@var{x}, @var{y}, @var{ex}, ">")
 ## @end example
 ##
-## xerrorbar plot of @var{y} versus @var{x} with @var{x} errorbars drawn from
-## @var{x}-@var{ex} to @var{x}+@var{ex}.
+## produces an xerrorbar plot of @var{y} versus @var{x} with @var{x}
+## errorbars drawn from @var{x}-@var{ex} to @var{x}+@var{ex}.
 ##
 ## @example
-## errorbar(@var{x}, @var{y1}, @var{ey}, "~", @var{x}, @var{y2}, @var{ly}, @var{uy})
+## errorbar (@var{x}, @var{y1}, @var{ey}, "~",
+##           @var{x}, @var{y2}, @var{ly}, @var{uy})
 ## @end example
 ##
-## Two yerrorbar plots with @var{y1} and @var{y2} versus @var{x}.
+## produces yerrorbar plots with @var{y1} and @var{y2} versus @var{x}.
 ## Errorbars for @var{y1} are drawn from @var{y1}-@var{ey} to
 ## @var{y1}+@var{ey}, errorbars for @var{y2} from @var{y2}-@var{ly} to
 ## @var{y2}+@var{uy}.
 ##
 ## @example
-## errorbar(@var{x}, @var{y}, @var{lx}, @var{ux}, @var{ly}, @var{uy}, "~>")
+## errorbar (@var{x}, @var{y}, @var{lx}, @var{ux},
+##           @var{ly}, @var{uy}, "~>")
 ## @end example
 ##
-## xyerrorbar plot of @var{y} versus @var{x} where @var{x} errorbars
-## are drawn from @var{x}-@var{lx} to @var{x}+@var{ux} and @var{y} errorbars
-## from @var{y}-@var{ly} to @var{y}+@var{uy}.
-## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__,
-## bar, stairs, xlabel, ylabel, title}
+## produces an xyerrorbar plot of @var{y} versus @var{x} in which
+## @var{x} errorbars are drawn from @var{x}-@var{lx} to @var{x}+@var{ux}
+## and @var{y} errorbars from @var{y}-@var{ly} to @var{y}+@var{uy}.
+## @seealso{semilogxerr, semilogyerr, loglogerr}
 ## @end deftypefn
 
 ## Created: 18.7.2000

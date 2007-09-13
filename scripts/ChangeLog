@@ -1,3 +1,8 @@
+2007-09-13  John W. Eaton  <jwe@octave.org>
+
+	* plot/__default_colormap__.m: Delete.
+	* plot/Makefile (SOURCES): Remove from the list.
+
 2007-09-10  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Allow gnuplot 4.0 with patches, but

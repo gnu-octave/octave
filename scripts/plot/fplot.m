@@ -21,15 +21,15 @@
 ## @deftypefn {Function File} {} fplot (@var{fn}, @var{limits})
 ## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{tol})
 ## @deftypefnx {Function File} {} fplot (@var{fn}, @var{limits}, @var{n})
-## @deftypefnx {Function File} {} fplot (@dots{}, @var{LineSpec})
+## @deftypefnx {Function File} {} fplot (@dots{}, @var{fmt})
 ## Plot a function @var{fn}, within the defined limits.  @var{fn}
 ## an be either a string, a function handle or an inline function.
 ## The limits of the plot are given by @var{limits} of the form
 ## @code{[@var{xlo}, @var{xhi}]} or @code{[@var{xlo}, @var{xhi},
 ## @var{ylo}, @var{yhi}]}. @var{tol} is the default tolerance to use for the
 ## plot, and if @var{tol} is an integer it is assumed that it defines the 
-## number points to use in the plot. The @var{LineSpec} is passed to the plot
-## command.
+## number points to use in the plot.  The @var{fmt} argument is passed
+## to the plot command.
 ##
 ## @example
 ##    fplot ("cos", [0, 2*pi])

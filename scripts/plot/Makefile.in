@@ -23,7 +23,6 @@ INSTALL_DATA = @INSTALL_DATA@
 SOURCES = \
   __axis_label__.m \
   __bar__.m \
-  __default_colormap__.m \
   __default_plot_options__.m \
   __errcomm__.m \
   __errplot__.m \

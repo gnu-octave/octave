@@ -17,12 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __errcomm__ (@var{args})
-## Common argument handling code for all error plots (errorbar, loglogerr,
-## semilogyerr, semilogxerr).
-## @seealso{errorbar, semilogxerr, semilogyerr, loglogerr, __pltopt__}
-## @end deftypefn
+## Undocumented internal function.
 
 ## Created: 20.02.2001
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>

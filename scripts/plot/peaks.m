@@ -50,8 +50,9 @@
 ## @seealso{mesh}
 ## @end deftypefn
 
-## Expression for peaks function was taken from the following paper:
-##   http://www.control.hut.fi/Kurssit/AS-74.115/Material/GENALGgoga.pdf
+## Expression for the peaks function was taken from the following paper:
+## http://www.control.hut.fi/Kurssit/AS-74.115/Material/GENALGgoga.pdf
+
 function [X_out, Y_out, Z_out] = peaks (x, y)
 
   if nargin == 0

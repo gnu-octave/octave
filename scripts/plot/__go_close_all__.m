@@ -17,11 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __go_close_all__ ()
-## Internal function to close all figures.
-## @seealso{drawnow}
-## @end deftypefn
+## Undocumented internal function.
 
 ## Author: jwe
 

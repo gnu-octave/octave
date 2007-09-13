@@ -24,12 +24,11 @@
 ## The argument may be either @code{"on"} or @code{"off"}.  If it is
 ## omitted, the current grid state is toggled.
 ##
-## If @var{arg} is @code{"minor"} then the minor grid is toggled. When
+## If @var{arg} is @code{"minor"} then the minor grid is toggled.  When
 ## using a minor grid a second argument @var{arg2} is allowed, which can
 ## be either @code{"on"} or @code{"off"} to explicitly set the state of
 ## the minor grid.
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## bar, stairs, xlabel, ylabel, title}
+## @seealso{plot}
 ## @end deftypefn
 
 ## Author: jwe

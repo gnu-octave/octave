@@ -17,9 +17,7 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __plr1__ (@var{h}, @var{theta}, @var{fmt})
-## @end deftypefn
+## Undocumented internal function.
 
 ## Author: jwe
 

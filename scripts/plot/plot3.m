@@ -19,30 +19,30 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} plot3 (@var{args})
-##
-## This function produces three-dimensional plots.  Many different
-## combinations of arguments are possible.  The simplest form is
+## Produce three-dimensional plots.  Many different combinations of
+## arguments are possible.  The simplest form is
 ##
 ## @example
 ## plot3 (@var{x}, @var{y}, @var{z})
 ## @end example
 ##
 ## @noindent
-## where the arguments are taken to be the vertices of the points to be
-## plotted in three dimensions. If all arguments are vectors of the same
-## length, then a single continuous line is drawn. If all arguments are
-## matrices, then each column of the matrices is treated as a seperate
-## line. No attempt is made to transpose the arguments to make the
-## number of rows match.
+## in which the arguments are taken to be the vertices of the points to
+## be plotted in three dimensions. If all arguments are vectors of the
+## same length, then a single continuous line is drawn. If all arguments
+## are matrices, then each column of the matrices is treated as a
+## seperate line.  No attempt is made to transpose the arguments to make
+## the number of rows match.
 ##
-## Additionally, only two arguments can be given as
+## If only two arguments are given, as
 ##
 ## @example
 ## plot3 (@var{x}, @var{c})
 ## @end example
 ##
-## where the real and imaginary parts of the second argument are used as
-## the @var{y} and @var{z} coordinates, respectively.
+## @noindent
+## the real and imaginary parts of the second argument are used
+## as the @var{y} and @var{z} coordinates, respectively.
 ##
 ## If only one argument is given, as
 ##
@@ -50,44 +50,37 @@
 ## plot3 (@var{c})
 ## @end example
 ##
+## @noindent
 ## the real and imaginary parts of the argument are used as the @var{y}
 ## and @var{z} values, and they are plotted versus their index.
 ##
-## To save a plot, in one of several image formats such as PostScript
-## or PNG, use the @code{print} command.
-##
-## See @code{__pltopt__} for a description of the optional format
-## argument.
-##
-## Arguments can also be given in groups of three as
+## Arguments may also be given in groups of three as
 ##
 ## @example
 ## plot3 (@var{x1}, @var{y1}, @var{z1}, @var{x2}, @var{y2}, @var{z2}, @dots{})
 ## @end example
 ## 
 ## @noindent
-## where each set of three arguments is treated as a seperate line or
+## in which each set of three arguments is treated as a seperate line or
 ## set of lines in three dimensions.
 ##
-## To plot multiple one- or two-argument groups, separate each group with an
-## empty format string, as
+## To plot multiple one- or two-argument groups, separate each group
+## with an empty format string, as
 ##
 ## @example
-## plot3 (@var{x1}, @var{c1}, '', @var{c2}, '', @dots{})
+## plot3 (@var{x1}, @var{c1}, "", @var{c2}, "", @dots{})
 ## @end example
 ##
-## An example of the use of plot3 is
+## An example of the use of @code{plot3} is
 ##
 ## @example
 ## @group
 ##    z = [0:0.05:5];
-##    plot3(cos(2*pi*z), sin(2*pi*z), z, ";helix;");
-##    plot3(z, exp(2i*pi*z), ";complex sinusoid;");
+##    plot3 (cos(2*pi*z), sin(2*pi*z), z, ";helix;");
+##    plot3 (z, exp(2i*pi*z), ";complex sinusoid;");
 ## @end group
 ## @end example
-##
-## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, errorbar, xlabel, ylabel, title, print}
+## @seealso{plot}
 ## @end deftypefn
 
 ## Author: Paul Kienzle

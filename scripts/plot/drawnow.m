@@ -19,7 +19,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} drawnow ()
-## Display the current graphics.
+## Update and display the current graphics.
+##
+## Octave automatically calls drawnow just before printing a prompt,
+## when @code{sleep} or @code{pause} is called, or while waiting for
+## command-line input.
 ## @end deftypefn
 
 ## Author: jwe

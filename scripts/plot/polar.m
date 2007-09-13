@@ -23,8 +23,7 @@
 ## @var{rho}.
 ##
 ## The optional third argument specifies the line type.
-## @seealso{plot, semilogx, semilogy, loglog, mesh, contour, bar,
-## stairs, xlabel, ylabel, title}
+## @seealso{plot}
 ## @end deftypefn
 
 ## Author: jwe

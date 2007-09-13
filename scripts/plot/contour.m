@@ -22,11 +22,10 @@
 ## @deftypefnx {Function File} {@var{c} =} contour (@var{z}, @var{vn})
 ## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
-##
 ## Plot level curves (contour lines) of the matrix @var{z}, using the
 ## contour matrix @var{c} computed by @code{contourc} from the same
-## arguments; see the latter for their interpretation.  @var{c} is only
-## returned if requested.  For example:
+## arguments; see the latter for their interpretation.  The set of
+## contour levels, @var{c}, is only returned if requested.  For example:
 ##
 ## @example
 ## @group

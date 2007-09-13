@@ -17,12 +17,11 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {@var{version} =} __gnuplot_version__ (@var{gplt_exe})
+## Undocumented internal function.
+
 ## Return the version of gnuplot we are using.  Note that we do not
 ## attempt to handle the case of the user switching to different
 ## versions of gnuplot during the same session.
-## @end deftypefn
 
 function version = __gnuplot_version__ ()
 

@@ -21,10 +21,12 @@
 ## @deftypefn {Function File} {} patch ()
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c}, @var{opts})
-## Create patch object from @var{x} and @var{y} with color @var{c} and insert in current
-## axes object.  Return handle to patch object.
-## For an uniform colored patch, @var{c} can be given as [r, g, b]-vector, scalar value refering
-## to the current colormap, or string value (e.g. "r" or "red").
+## Create patch object from @var{x} and @var{y} with color @var{c} and
+## insert in the current axes object.  Return handle to patch object.
+##
+## For a uniform colored patch, @var{c} can be given as an RGB vector,
+## scalar value referring to the current colormap, or string value (for
+## example, "r" or "red"). 
 ## @end deftypefn
 
 ## Author: jwe

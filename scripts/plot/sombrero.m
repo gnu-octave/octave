@@ -19,11 +19,13 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sombrero (@var{n})
-## Draw a `sombrero' in three dimensions using @var{n} grid lines.  The
-## function plotted is
+## Produce the familiar three-dimensional sombrero plot using @var{n}
+## grid lines.  If @var{n} is omitted, a value of 41 is assumed.
+##
+## The function plotted is
 ##
 ## @example
-##   z = sin (sqrt (x^2 + y^2)) / (sqrt (x^2 + y^2))
+## z = sin (sqrt (x^2 + y^2)) / (sqrt (x^2 + y^2))
 ## @end example
 ## @seealso{mesh, meshgrid}
 ## @end deftypefn

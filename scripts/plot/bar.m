@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} bar (@var{x}, @var{y}, @var{style})
 ## @deftypefnx {Function File} {[@var{xb}, @var{yb}] =} bar (@dots{})
-## Given two vectors of x-y data, @code{bar} produces a bar graph.
+## Given two vectors of x-y data, @code{bar} produce a bar graph.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
@@ -47,8 +47,7 @@
 ##
 ## @noindent
 ## are equivalent.
-## @seealso{hbar, plot, semilogx, semilogy, loglog, polar, mesh, contour,
-## stairs, xlabel, ylabel, title}
+## @seealso{hbar, plot}
 ## @end deftypefn
 
 ## Author: jwe

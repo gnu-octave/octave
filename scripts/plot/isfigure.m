@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isfigure (@var{h})
-## Return 1 if @var{h} is a graphics handle that contains a figure
-## object and 0 otherwise.
+## Return true if @var{h} is a graphics handle that contains a figure
+## object and false otherwise.
 ## @end deftypefn
 
 ## Author: jwe

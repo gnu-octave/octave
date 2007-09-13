@@ -20,9 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{h} =} text (@var{x}, @var{y}, @var{label})
 ## @deftypefnx {Function File} {@var{h} =} text (@var{x}, @var{y}, @var{z}, @var{label})
+## @deftypefnx {Function File} {@var{h} =} text (@var{x}, @var{y}, @var{label}, @var{p1}, @var{v1}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} text (@var{x}, @var{y}, @var{z}, @var{label}, @var{p1}, @var{v1}, @dots{})
 ## Create a text object with text @var{label} at position @var{x},
-## @var{y}, @var{z} on the current axes.  The label may be followed by
-## property-value pairs.
+## @var{y}, @var{z} on the current axes.  Property-value pairs following
+## @var{label} may be used to specify the appearance of the text.
 ## @end deftypefn
 
 ## Author: jwe

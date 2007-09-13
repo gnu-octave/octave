@@ -22,7 +22,10 @@
 ## @deftypefnx {Command} {} close (@var{n})
 ## @deftypefnx {Command} {} close all
 ## @deftypefnx {Command} {} close all hidden
-## Close the plot window(s).
+## Close figure window(s) by calling the function specified by the
+## @code{"closerequestfcn"} property for each figure.  By default, the
+## function @code{closereq} is used.
+## @seealso{closereq}
 ## @end deftypefn
 
 ## Author: jwe

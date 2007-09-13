@@ -18,9 +18,13 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} plot (@var{args})
-## This function produces two-dimensional plots.  Many different
-## combinations of arguments are possible.  The simplest form is
+## @deftypefn {Function File} {} plot (@var{y})
+## @deftypefnx {Function File} {} plot (@var{x}, @var{y})
+## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
+## @deftypefnx {Function File} {} plot (@var{x}, @var{y}, @var{fmt})
+## @deftypefnx {Function File} {} plot (@var{h}, @dots{})
+## Produces two-dimensional plots.  Many different combinations of
+## arguments are possible.  The simplest form is
 ##
 ## @example
 ## plot (@var{y})
@@ -37,20 +41,26 @@
 ## If more than one argument is given, they are interpreted as
 ##
 ## @example
-## plot (@var{x}, @var{y}, @var{fmt}, @dots{})
+## plot (@var{y}, @var{property}, @var{value}, @dots{})
 ## @end example
 ##
 ## @noindent
-## or as
+## or
 ##
 ## @example
 ## plot (@var{x}, @var{y}, @var{property}, @var{value}, @dots{})
 ## @end example
 ##
 ## @noindent
-## where @var{y}, @var{fmt}, @var{property} and @var{value} are optional,
-## and any number of argument sets may appear.  The @var{x} and @var{y} 
-## values are interpreted as follows:
+## or
+##
+## @example
+## plot (@var{x}, @var{y}, @var{fmt}, @dots{})
+## @end example
+##
+## @noindent
+## and so on.  Any number of argument sets may appear.  The @var{x} and
+## @var{y} values are interpreted as follows:
 ##
 ## @itemize @bullet
 ## @item
@@ -80,6 +90,10 @@
 ##
 ## If both arguments are scalars, a single point is plotted.
 ## @end itemize
+##
+## Multiple property-value pairs may be specified, but they must appear
+## in pairs.  These arguments are applied to the lines drawn by
+## @code{plot}.
 ##
 ## If the @var{fmt} argument is supplied, it is interpreted as
 ## follows.  If @var{fmt} is missing, the default gnuplot line style
@@ -123,27 +137,11 @@
 ## style.
 ## @end table
 ##
-## The color line styles have the following meanings on terminals that
-## support color.
-##
-## @example
-## Number  Gnuplot colors  (lines)points style
-##   1       red                   *
-##   2       green                 +
-##   3       blue                  o
-##   4       magenta               x
-##   5       cyan                house
-##   6       brown            there exists
-## @end example
-##
-## The @var{fmt} argument can also be used to assign key titles.
+## The @var{fmt} argument may also be used to assign key titles.
 ## To do so, include the desired title between semi-colons after the
 ## formatting sequence described above, e.g. "+3;Key Title;"
 ## Note that the last semi-colon is required and will generate an error if
 ## it is left out.
-##
-## If a @var{property} is given it must be followed by @var{value}.  The
-## property value pairs are applied to the lines drawn by @code{plot}.
 ##
 ## Here are some plot examples:
 ##
@@ -172,8 +170,8 @@
 ##
 ## If the first argument is an axis handle, then plot into these axes, 
 ## rather than the current axis handle returned by @code{gca}. 
-## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, __pltopt__
-## bar, stairs, errorbar, xlabel, ylabel, title, print}
+## @seealso{semilogx, semilogy, loglog, polar, mesh, contour, bar,
+## stairs, errorbar, xlabel, ylabel, title, print}
 ## @end deftypefn
 
 ## Author: jwe

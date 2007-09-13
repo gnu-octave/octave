@@ -19,7 +19,21 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} gca ()
-## Return the current axis handle.
+## Return a handle to the current axis object.  If no axis object
+## exists, create one and return its handle.  The handle may then be
+## used to examine or set properties of the axes.  For example,
+##
+## @example
+## @group
+## ax = gca ();
+## set (ax, "position", [0.5, 0.5, 0.5, 0.5]);
+## @end group
+## @end example
+##
+## @noindent
+## creates an empty axes object, then changes its location and size in
+## the figure window.
+## @seealso{get, set}
 ## @end deftypefn
 
 ## Author: jwe

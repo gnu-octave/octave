@@ -19,8 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} loglogerr (@var{args})
-## This function produces two-dimensional plots on double logarithm axis 
-## with errorbars. Many different combinations of arguments are possible.  
+## Produce two-dimensional plots on double logarithm axis with
+## errorbars.  Many different combinations of arguments are possible.
 ## The most used form is
 ##
 ## @example
@@ -32,8 +32,7 @@
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
 ## format defined by @var{fmt}. See errorbar for available formats and 
 ## additional information.
-## @seealso{errorbar, semilogxerr, semilogyerr, polar, mesh, contour, 
-## __pltopt__, bar, stairs, xlabel, ylabel, title}
+## @seealso{errorbar, semilogxerr, semilogyerr}
 ## @end deftypefn
 
 ## Created: 20.2.2001

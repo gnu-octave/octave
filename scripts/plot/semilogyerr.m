@@ -19,9 +19,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} semilogyerr (@var{args})
-## This function produces two-dimensional plots on a semilogarithm axis 
-## with errorbars. Many different combinations of arguments are possible.  
-## The most used form is
+## Produce two-dimensional plots on a semilogarithm axis with errorbars.
+## Many different combinations of arguments are possible.  The most used
+## form is
 ##
 ## @example
 ## semilogyerr (@var{x}, @var{y}, @var{ey}, @var{fmt})
@@ -30,10 +30,9 @@
 ## @noindent
 ## which produces a semi-logarithm plot of @var{y} versus @var{x}
 ## with errors in the @var{y}-scale defined by @var{ey} and the plot
-## format defined by @var{fmt}. See errorbar for available formats and 
+## format defined by @var{fmt}.  See errorbar for available formats and 
 ## additional information.
-## @seealso{errorbar, loglogerr semilogxerr, polar, mesh, contour, __pltopt__, 
-## bar, stairs,  xlabel, ylabel, title}
+## @seealso{errorbar, loglogerr semilogxerr}
 ## @end deftypefn
 
 ## Created: 20.2.2001

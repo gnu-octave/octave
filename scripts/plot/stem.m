@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {@var{h} =} stem (@var{x}, @var{y}, @var{linespec})
 ## Plot a stem graph and return the handles of the line and marker
 ## objects used to draw the stems.  The default color is @code{"r"}
-## (red). The default line style is @code{"-"} and the default marker is
+## (red).  The default line style is @code{"-"} and the default marker is
 ## @code{"o"}.
 ##
 ## For example,
@@ -87,7 +87,6 @@
 ## row holds the marker handles).
 ##
 ## Color definitions with rgb-triples are not valid!
-##
 ## @seealso{bar, barh, plot}
 ## @end deftypefn
 

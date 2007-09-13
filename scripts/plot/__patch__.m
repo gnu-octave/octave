@@ -17,11 +17,11 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {} __patch__ (@var{p}, @var{x}, @var{y}, @var{c})
-## Create patch object from @var{x} and @var{y} with color @var{c} and parent @var{p}.
+## Undocumented internal function.
+
+## __patch__ (p, x, y, c)
+## Create patch object from x and y with color c and parent p.
 ## Return handle to patch object.
-## @end deftypefn
 
 ## Author: Kai Habel
 

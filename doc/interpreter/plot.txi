@@ -841,9 +841,9 @@ future version of Octave.
 @node Managing Default Properties
 @subsection Managing Default Properties
 
-Object properties have to classes of default values, @dfn{factory}
-defaults (the initial values) and @dfn{user} defaults, which may
-override the factory defaults.
+Object properties have two classes of default values, @dfn{factory
+defaults} (the initial values) and @dfn{user-defined defaults}, which
+may override the factory defaults.
 
 Although default values may be set for any object, they are set in
 parent objects and apply to child objects.  For example,

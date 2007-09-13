@@ -1,3 +1,8 @@
+2007-09-13  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (colormap_property::colormap_property):
+	Use jet colormap as default.
+
 2007-09-12  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (text::properties::properties): Default color is

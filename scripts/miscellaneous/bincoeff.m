@@ -75,16 +75,30 @@ function b = bincoeff (n, k)
   b(ind) = 1;
 
   ind = ((k > 0) & ((n == real (round (n))) & (n < 0)));
-  b(ind) = (-1) .^ k(ind) .* exp (gammaln (abs (n(ind)) + k(ind)) ...
-         - gammaln (k(ind) + 1) - gammaln (abs (n(ind))));
+  b(ind) = (-1) .^ k(ind) .* exp (gammaln (abs (n(ind)) + k(ind))
+				  - gammaln (k(ind) + 1)
+				  - gammaln (abs (n(ind))));
 
-  ind = ((k > 0) & ((n != real (round (n))) | (n >= k)));
-  b(ind) = exp (gammaln (n(ind) + 1) - gammaln (k(ind) + 1) ...
-         - gammaln (n(ind) - k(ind) + 1));
- 
-  ## clean up rounding errors
+  ind = ((k > 0) & (n >= k));
+  b(ind) = exp (gammaln (n(ind) + 1)
+		- gammaln (k(ind) + 1)
+		- gammaln (n(ind) - k(ind) + 1));
+
+  ind = ((k > 0) & ((n != real (round (n))) & (n < k)));
+  b(ind) = (1/pi) * exp (gammaln (n(ind) + 1)
+			 - gammaln (k(ind) + 1)
+			 + gammaln (k(ind) - n(ind))
+			 + log (sin (pi * (n(ind) - k(ind) + 1))));
+
+  ## Clean up rounding errors.
   ind = (n == round (n));
   b(ind) = round (b(ind));
-  
+
+  ind = (n != round (n));
+  b(ind) = real (b(ind));
+
 endfunction
 
+%!assert(bincoeff(4,2), 6)
+%!assert(bincoeff(2,4), 0)
+%!assert(bincoeff(0.4,2), -.12, 8*eps)

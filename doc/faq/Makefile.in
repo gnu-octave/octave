@@ -26,8 +26,6 @@ FORMATTED := Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf
 
 DISTFILES := $(addprefix $(srcdir)/, Makefile.in $(TEXINFO) $(FORMATTED))
 
-DISTDIRS := HTML
-
 SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 
 %.spell : %.texi
@@ -35,7 +33,7 @@ SPELL := $(patsubst %.texi, %.spell, $(ALL_TEXINFO))
 	$(SED) -e 's/@@/ at /g' -e 's/@[a-zA-Z]*//g' $< | spell > $@.tmp
 	mv $@.tmp $@
 
-all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf HTML/index.html
+all: Octave-FAQ.info Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf Octave-FAQ.html
 .PHONY: all
 
 Octave-FAQ.info: $(TEXINFO)
@@ -52,8 +50,8 @@ Octave-FAQ.pdf: $(TEXINFO)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
 	  $(UNSETCOMSPEC) $(TEXI2PDF) $<
 
-HTML/index.html: $(TEXINFO)
-	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $<
+Octave-FAQ.html: $(TEXINFO)
+	-$(MAKEINFO) --html --ifinfo --no-split --output=$@ -I.. -I$(srcdir) -I$(srcdir)/.. $<
 
 check install install-strip uninstall:
 .PHONY: check install install-strip uninstall
@@ -81,13 +79,9 @@ distclean: clean
 maintainer-clean: distclean
 	rm -f tags TAGS Octave-FAQ.info Octave-FAQ.info-*
 	rm -f Octave-FAQ.dvi Octave-FAQ.ps Octave-FAQ.pdf
-	rm -rf HTML
+	rm -f Octave-FAQ.html
 .PHONY: maintainer-clean
 
 dist: all
 	ln $(DISTFILES) ../../`cat ../../.fname`/doc/faq
-	for dir in $(DISTDIRS); do \
-	  mkdir ../../`cat ../../.fname`/doc/faq/$$dir; \
-	  ln ../../doc/faq/$$dir/* ../../`cat ../../.fname`/doc/faq/$$dir; \
-	done
 .PHONY: dist

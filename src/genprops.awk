@@ -53,6 +53,29 @@
 ##   O:  There is a custom extern definition for the octave_value version
 ##       of the set function, so we emit only the declaration.
 ##
+##   a:  The octave_value version of the set function will use assignment:
+##
+##         void
+##         set_NAME (const octave_value& val)
+##         {
+##           TYPE tmp (NAME);
+##           tmp = val;
+##           set_NAME (tmp);
+##         }
+##
+##       This is useful for things like the radio_value classes which
+##       use an overloaded assignment operator of the form
+##
+##         radio_property& operator = (const octave_value& val);
+##
+##       that preserves the list of possible values, which is different
+##       from what would happen if we simply used the
+##
+##         TYPE (const octave_value&)
+##
+##       constructor, which creates a new radio_property and so cannot
+##       preserve the old list of possible values.
+##
 ##   m:  Add the line
 ##
 ##         set_NAMEmode ("manual");
@@ -113,6 +136,11 @@ function emit_decls ()
 
 	  if (emit_ov_set[i] == "defn")
 	      printf (" { set_%s (%s (val)); }\n\n", name[i], type[i]);
+          else if (emit_ov_set[i] == "asign")
+          {
+              printf ("\n  {\n    %s tmp (%s);\n    tmp = val;\n    set_%s (tmp);\n  };\n\n",
+		      type[i], name[i], name[i], name[i]);
+         }
 	  else
 	      printf (";\n");
       }
@@ -193,6 +221,10 @@ BEGIN {
 	    ## but we still emit the declaration.
 	    if (index (quals, "S"))
 		emit_set[idx] = "decl";
+
+            ## emmit an asignment set function
+            if (index (quals, "a"))
+                emit_ov_set[idx] = "asign";
 
 	    if (type[idx] != "octave_value")
 	    {

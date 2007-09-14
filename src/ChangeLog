@@ -1,4 +1,15 @@
+2007-09-14  Kai Habel  <kai.habel@gmx.de>
+
+	* graphics.h.in (radio_values::contains): New function.
+	(radio_values::validate): Use it.
+	* graphics.cc (color_property::operator =): Call it instead of
+	validate here.
+
 2007-09-13  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__glpk__.cc (glpk): Pass LPX_FX, not LB_DB, to
+	lpx_set_col_bnds when lb[i] == ub[i].
+	From: Zhi Wang <zcwang@umich.edu>.
 
 	* graphics.h.in (colormap_property::colormap_property):
 	Use jet colormap as default.

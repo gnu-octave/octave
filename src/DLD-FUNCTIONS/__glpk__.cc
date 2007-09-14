@@ -196,7 +196,12 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
     {
       //-- Define type of the structural variables
       if (! freeLB[i] && ! freeUB[i])
-	lpx_set_col_bnds (lp, i+1, LPX_DB, lb[i], ub[i]);
+	{
+	  if (lb[i] != ub[i])
+	    lpx_set_col_bnds (lp, i+1, LPX_DB, lb[i], ub[i]);
+	  else
+	    lpx_set_col_bnds (lp, i+1, LPX_FX, lb[i], ub[i]);
+	}
       else
 	{
 	  if (! freeLB[i] && freeUB[i])

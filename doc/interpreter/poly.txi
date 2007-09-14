@@ -88,13 +88,13 @@ for a definition), and then finding its eigenvalues.
 @section Derivatives and Integrals
 
 Octave comes with functions for computing the derivative and the integral
-of a polynomial.  The functions @code{polyderiv} and @code{polyinteg}
+of a polynomial.  The functions @code{polyderiv} and @code{polyint}
 both return new polynomials describing the result.  As an example we'll
 compute the definite integral of @math{p(x) = x^2 + 1} from 0 to 3.
 
 @example
 c = [1, 0, 1];
-integral = polyinteg(c);
+integral = polyint(c);
 area = polyval(integral, 3) - polyval(integral, 0)
 @result{} 12
 @end example
@@ -103,7 +103,7 @@ area = polyval(integral, 3) - polyval(integral, 0)
 
 @DOCSTRING(polyder)
 
-@DOCSTRING(polyinteg)
+@DOCSTRING(polyint)
 
 @node Polynomial Interpolation
 @section Polynomial Interpolation

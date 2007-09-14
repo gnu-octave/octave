@@ -67,13 +67,18 @@ public:
   {
     bool retval = true;
 
-    if (possible_vals.find (val) == possible_vals.end ())
+    if (! contains (val))
       {
 	error ("invalid value = %s", val.c_str ());
 	retval = false;
       }
 
     return retval;
+  }
+  
+  bool contains (const std::string& val)
+  {
+    return (possible_vals.find (val) != possible_vals.end ());
   }
 
 private:

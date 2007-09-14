@@ -172,7 +172,7 @@ color_property::operator = (const octave_value& val)
 
       if (! s.empty ())
 	{
-	  if (radio_val.validate (s))
+	  if (radio_val.contains (s))
 	    {
 	      current_val = s;
 	      current_type = radio_t;
@@ -2084,9 +2084,9 @@ patch::properties::properties (const graphics_handle& mh,
     xdata (Matrix ()),
     ydata (Matrix ()),
     zdata (Matrix ()),
-    facecolor (radio_values("{flat}|none|interp")),
+    facecolor (radio_values ("{flat}|none|interp")),
     facealpha (1.0),
-    edgecolor (color_values(0, 0, 0), radio_values("flat|none|interp")),
+    edgecolor (color_values(0, 0, 0), radio_values ("flat|none|interp")),
     linestyle ("-"),
     linewidth (0.5),
     marker ("none"),

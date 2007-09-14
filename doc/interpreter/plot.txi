@@ -44,7 +44,7 @@ plot (x, sin (x));
 @end example
 
 @noindent
-displays a sine wave shown in @xref{fig:plot}.  On most systems, this
+displays a sine wave shown in @ref{fig:plot}.  On most systems, this
 command will open a separate plot window to display the graph.
 
 @float Figure,fig:plot
@@ -91,7 +91,7 @@ hist (randn (10000, 1), 30);
 
 @noindent
 produces the histogram of 10,000 normally distributed random numbers
-shown in @xref{fig:hist}.
+shown in @ref{fig:hist}.
 
 @float Figure,fig:hist
 @image{hist,8cm}
@@ -128,7 +128,7 @@ errorbar (x, sin (x), ym, yp);
 @end example
 
 @noindent
-produces the figure shown in @xref{fig:errorbar}.
+produces the figure shown in @ref{fig:errorbar}.
 
 @float Figure,fig:errorbar
 @image{errorbar,8cm}
@@ -152,7 +152,7 @@ polar (0:0.1:10*pi, 0:0.1:10*pi);
 @end example
 
 @noindent
-produces the spiral plot shown in @xref{fig:polar}.
+produces the spiral plot shown in @ref{fig:polar}.
 
 @float Figure,fig:polar
 @image{polar,8cm}
@@ -182,7 +182,7 @@ mesh (tx, ty, tz);
 @end example
 
 @noindent
-produces the familiar ``sombrero'' plot shown in @xref{fig:mesh}.  Note
+produces the familiar ``sombrero'' plot shown in @ref{fig:mesh}.  Note
 the use of the function @code{meshgrid} to create matrices of X and Y
 coordinates to use for plotting the Z data.  The @code{ndgrid} function
 is similar to @code{meshgrid}, but works for N-dimensional matrices.
@@ -208,7 +208,7 @@ plot3 (r.*sin(t), r.*cos(t), z);
 @end example
 
 @noindent
-displays the spiral in three dimensions shown in @xref{fig:plot3}.
+displays the spiral in three dimensions shown in @ref{fig:plot3}.
 
 @float Figure,fig:plot3
 @image{plot3,8cm}

@@ -727,11 +727,69 @@ file a certain function will be found.
 
 It is sometime desirable to lock a function into memory with the
 @code{mlock} function. This is typically used for dynamically linked
-functions in Oct-files or mex-files, that contain some initialization,
-and it is desireable that a @code{clear} does not remove this
+functions in Oct-files or mex-files that contain some initialization,
+and it is desirable that calling @code{clear} does not remove this
 initialization.
 
-This might equally be used to prevent changes to a function from having
+As an example,
+
+@example
+mlock ("my_function");
+@end example
+
+@noindent
+prevents @code{my_function} from being removed from memory, even if
+@code{clear} is called.  It is possible to determine if a function is
+locked into memory with the @code{mislocked}, and to unlock a function
+with @code{munlock}, which the following illustrates.
+
+@example
+@group
+mlock ("my_function");
+mislocked ("my_function")
+@result{} ans = 1
+munlock ("my_function");
+mislocked ("my_function")
+@result{} ans = 0
+@end group
+@end example
+
+A common use of @code{mlock} is to prevent persistent variables from
+being removed from memory, as the following example shows.
+
+@example
+@group
+function count_calls()
+  persistent calls = 0;
+  printf ("'count_calls' has been called %d times\n", ++calls);
+endfunction
+mlock ("count_calls");
+
+count_calls ();
+@print{} 'count_calls' has been called 1 times
+
+clear count_calls
+count_calls ();
+@print{} 'count_calls' has been called 2 times
+@end group
+@end example
+
+@noindent
+It is, however, often inconvenient to lock a function from the prompt,
+so it is also possible to lock a function from within its body.  This
+is simply done by calling @code{mlock} from within the function.
+
+@example
+@group
+function count_calls ()
+  mlock ();
+  persistent calls = 0;
+  printf ("'count_calls' has been called %d times\n", ++calls);
+endfunction
+@end group
+@end example
+
+@code{mlock} might equally be used to prevent changes to a function from having
 effect in Octave, though a similar effect can be had with the
 @code{ignore_function_time_stamp} function.
 

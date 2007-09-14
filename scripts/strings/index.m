@@ -106,6 +106,7 @@ function n = index (s, t, direction)
 	  break;
 	endif
       endfor
+      v = [];
     endif
 
   endif
@@ -122,9 +123,11 @@ endfunction
 %!assert(index("astringbstringcstring", "st"), 2)
 %!assert(index("astringbstringcstring", "str"), 2)
 %!assert(index("astringbstringcstring", "string"), 2)
+%!assert(index("abc---", "abc+++"), 0) 
 
 ## test everything out in reverse
 %!assert(index("astringbstringcstring", "s", "last"), 16)
 %!assert(index("astringbstringcstring", "st", "last"), 16)
 %!assert(index("astringbstringcstring", "str", "last"), 16)
 %!assert(index("astringbstringcstring", "string", "last"), 16)
+%!assert(index("abc---", "abc+++", "last"), 0)

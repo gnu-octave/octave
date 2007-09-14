@@ -1,3 +1,8 @@
+2007-08-04  Jean-Francois Cardoso  <cardoso@tsi.enst.fr>
+
+	* strings/index.m: Correct for strings differing after the third
+	position (bug reported by Maude Martin).
+
 2007-09-13  John W. Eaton  <jwe@octave.org>
 
 	* plot/__default_colormap__.m: Delete.

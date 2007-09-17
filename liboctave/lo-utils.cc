@@ -26,6 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include <config.h>
 #endif
 
+#include <cctype>
 #include <cstdlib>
 #include <cstdio>
 
@@ -262,9 +263,11 @@ octave_read_double (std::istream& is)
 {
   double d = 0.0;
 
-  char c1 = 0;
+  char c1 = ' ';
 
-  c1 = is.get ();
+  while (isspace (c1))
+    c1 = is.get ();
+
   switch (c1)
     {
     case '-':
@@ -317,9 +320,10 @@ octave_read_complex (std::istream& is)
 
   Complex cx = 0.0;
 
-  char ch = 0;
+  char ch = ' ';
 
-  ch = is.get ();
+  while (isspace (ch))
+    ch = is.get ();
 
   if (ch == '(')
     {

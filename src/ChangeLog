@@ -1,5 +1,8 @@
 2007-09-17  John W. Eaton  <jwe@octave.org>
 
+	* ov-typeinfo.h (cat_op_fcn): Third arg in function pointer
+	typedef is now Array<octave_idx_type> instead of Array<int>.
+
 	* file-io.cc (do_stream_open): Use binary mode by default.
 
 2007-09-14  Shai Ayal  <shaiay@users.sourceforge.net>

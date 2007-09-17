@@ -374,8 +374,7 @@ function __go_draw_axes__ (h, plot_stream)
 		endif
 		data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4):($5):($6)";
-		withclause{data_idx} = sprintf ("with xyerrorbars linestyle %d",
-						data_idx);
+		withclause{data_idx} = "with xyerrorbars";
 	      else
 		## Obtain the limits based on the exact x values.
 		if (xautoscale)
@@ -384,8 +383,7 @@ function __go_draw_axes__ (h, plot_stream)
 		endif
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4)";
-		withclause{data_idx} = sprintf ("with yerrorbars linestyle %d",
-						data_idx);
+		withclause{data_idx} = "with yerrorbars";
 	      endif
 	    elseif (xerr)
 	      xlo = xdat-xldat;
@@ -400,8 +398,7 @@ function __go_draw_axes__ (h, plot_stream)
 	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
 	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
-	      withclause{data_idx} = sprintf ("with xerrorbars linestyle %d",
-					      data_idx);
+	      withclause{data_idx} = "with xerrorbars";
 	    else
 	      if (xautoscale)
 		[xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);

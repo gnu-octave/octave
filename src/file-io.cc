@@ -414,7 +414,6 @@ do_stream_open (const std::string& name, const std::string& mode,
 		}
 	    }
 
-#if defined (HAVE_ZLIB)
 	  std::string tmode = mode;
 
 	  // Use binary mode if 't' is not specified, but don't add
@@ -426,6 +425,7 @@ do_stream_open (const std::string& name, const std::string& mode,
 	  if (bpos == NPOS && tpos == NPOS)
 	    tmode += 'b';
 
+#if defined (HAVE_ZLIB)
 	  size_t pos = tmode.find ('z');
 
 	  if (pos != NPOS)
@@ -445,7 +445,7 @@ do_stream_open (const std::string& name, const std::string& mode,
 	  else
 #endif
 	    {
-	      FILE *fptr = ::fopen (fname.c_str (), mode.c_str ());
+	      FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
 
 	      retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
 

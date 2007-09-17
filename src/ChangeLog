@@ -1,3 +1,7 @@
+2007-09-17  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (do_stream_open): Use binary mode by default.
+
 2007-09-14  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* genprop.awk: Handle "a" modifier.
@@ -1074,7 +1078,7 @@
 2007-03-13  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (do_stream_open): Use binary mode if 't' is not
-	  specified in mode, but don't add 'b' if it is already present.
+	specified in mode, but don't add 'b' if it is already present.
 
 2007-03-09  David Bateman  <dbateman@free.fr>
 

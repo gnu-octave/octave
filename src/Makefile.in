@@ -261,7 +261,7 @@ BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
 	__gnuplot_raw__.cc \
 	$(OPT_HANDLERS) $(BUILT_EXTRAS)
 
-DISTFILES = Makefile.in ChangeLog mkdefs mkops mkgendoc \
+DISTFILES = Makefile.in ChangeLog genprops.awk mkdefs mkops mkgendoc \
 	mkbuiltins mk-errno-list mk-pkg-add \
 	defaults.h.in graphics.h.in mxarray.h.in oct-conf.h.in \
 	oct-errno.cc.in octave.gperf \

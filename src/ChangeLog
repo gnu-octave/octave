@@ -1,5 +1,11 @@
 2007-09-17  John W. Eaton  <jwe@octave.org>
 
+	* version.h (OCTAVE_VERSION): Now 2.9.14
+	(OCTAVE_API_VERSION): Now api-v26.
+	(OCTAVE_RELEASE_DATE): Now 2007-09-17.
+
+	* Makefile.in (DISTFILES): Add genprops.awk to the list.
+
 	* ov-typeinfo.h (cat_op_fcn): Third arg in function pointer
 	typedef is now Array<octave_idx_type> instead of Array<int>.
 

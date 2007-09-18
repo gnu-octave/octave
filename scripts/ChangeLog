@@ -1,3 +1,8 @@
+2007-09-18  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m (__gnuplot_write_data__): Use %e instead
+	of %g when writing data.
+
 2007-09-17  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Omit linestyle clause for errorbar plots.

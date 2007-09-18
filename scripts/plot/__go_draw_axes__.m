@@ -1056,7 +1056,7 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
 
   if (nd == 2)
     nan_elts = find (sum (isnan (data)));
-    fmt = strcat (repmat ("%g ", 1, rows (data)), "\n");
+    fmt = strcat (repmat ("%e ", 1, rows (data)), "\n");
     if (isempty (nan_elts))
       fprintf (plot_stream, fmt, data);
     else
@@ -1076,11 +1076,11 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
   else
     ## FIXME -- handle NaNs here too?
     if (parametric)
-      fprintf (plot_stream, "%g %g %g\n", data);
+      fprintf (plot_stream, "%e %e %e\n", data);
     else
       nc = columns (data);
       for j = 1:3:nc
-	fprintf (plot_stream, "%g %g %g\n", data(:,j:j+2)');
+	fprintf (plot_stream, "%e %e %e\n", data(:,j:j+2)');
 	fputs (plot_stream, "\n");
       endfor
     endif

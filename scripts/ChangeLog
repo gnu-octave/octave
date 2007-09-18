@@ -1,3 +1,8 @@
+2007-09-18  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Use %.15g throughout.
+	(do_tics_1): Set numeric axes formats to "%.15g".
+
 2007-09-18  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m (__gnuplot_write_data__): Use %e instead

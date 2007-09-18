@@ -36,19 +36,19 @@ function __go_draw_axes__ (h, plot_stream)
 
     if (! isempty (axis_obj.outerposition))
       pos = axis_obj.outerposition;
-      fprintf (plot_stream, "set origin %g, %g;\n", pos(1), pos(2));
-      fprintf (plot_stream, "set size %g, %g;\n", pos(3), pos(4));
+      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
+      fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
     endif
 
     if (! isempty (axis_obj.position))
       pos = axis_obj.position;
-      fprintf (plot_stream, "set origin %g, %g;\n", pos(1), pos(2));
-      fprintf (plot_stream, "set size %g, %g;\n", pos(3), pos(4));
+      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
+      fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
     endif
 
     if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
       r = axis_obj.dataaspectratio;
-      fprintf (plot_stream, "set size ratio %g;\n", -r(2)/r(1));
+      fprintf (plot_stream, "set size ratio %.15g;\n", -r(2)/r(1));
     else
       fputs (plot_stream, "set size noratio;\n");
     endif
@@ -288,7 +288,7 @@ function __go_draw_axes__ (h, plot_stream)
 	    endif
 
 	    titlespec{data_idx} = "title \"\"";
-	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%g,%g) dx=%g dy=%g using %s",
+	    usingclause{data_idx} = sprintf ("binary array=%dx%d scan=yx origin=(%.15g,%.15g) dx=%.15g dy=%.15g using %s",
 		x_dim, y_dim, x_origin, y_origin, dx, dy, format);
 	    withclause{data_idx} = sprintf ("with %s", imagetype);
 
@@ -672,12 +672,12 @@ function __go_draw_axes__ (h, plot_stream)
 
 	  if (nd == 3)
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %g,%g,%g %s rotate by %f %s;\n",
+		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s;\n",
 		     undo_string_escapes (label), units,
 		     lpos(1), lpos(2), lpos(3), halign, angle, colorspec);
 	  else
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %g,%g %s rotate by %f %s;\n",
+		     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s;\n",
 		     undo_string_escapes (label), units,
 		     lpos(1), lpos(2), halign, angle, colorspec);
 	  endif
@@ -702,7 +702,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       xdir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%g:%g] %s;\n", xaxisloc, xlim, xdir);
+    fprintf (plot_stream, "set %srange [%.15g:%.15g] %s;\n", xaxisloc, xlim, xdir);
 
     if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
@@ -715,7 +715,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       ydir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%g:%g] %s;\n", yaxisloc, ylim, ydir);
+    fprintf (plot_stream, "set %srange [%.15g:%.15g] %s;\n", yaxisloc, ylim, ydir);
 
     if (nd == 3)
       if (zautoscale && have_data)
@@ -729,7 +729,7 @@ function __go_draw_axes__ (h, plot_stream)
       else
 	zdir = "noreverse";
       endif
-      fprintf (plot_stream, "set zrange [%g:%g] %s;\n", zlim, zdir);
+      fprintf (plot_stream, "set zrange [%.15g:%.15g] %s;\n", zlim, zdir);
     endif
 
     if (strcmpi (axis_obj.box, "on"))
@@ -797,7 +797,7 @@ function __go_draw_axes__ (h, plot_stream)
 	  rot_z += 360;
 	endwhile
  	fputs (plot_stream, "set ticslevel 0;\n");
-	fprintf (plot_stream, "set view %g, %g;\n", rot_x, rot_z);
+	fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
       endif
       fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
 	       usingclause{1}, titlespec{1}, withclause{1});
@@ -1056,7 +1056,7 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
 
   if (nd == 2)
     nan_elts = find (sum (isnan (data)));
-    fmt = strcat (repmat ("%e ", 1, rows (data)), "\n");
+    fmt = strcat (repmat ("%.15g ", 1, rows (data)), "\n");
     if (isempty (nan_elts))
       fprintf (plot_stream, fmt, data);
     else
@@ -1076,11 +1076,11 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
   else
     ## FIXME -- handle NaNs here too?
     if (parametric)
-      fprintf (plot_stream, "%e %e %e\n", data);
+      fprintf (plot_stream, "%.15g %.15g %.15g\n", data);
     else
       nc = columns (data);
       for j = 1:3:nc
-	fprintf (plot_stream, "%e %e %e\n", data(:,j:j+2)');
+	fprintf (plot_stream, "%.15g %.15g %.15g\n", data(:,j:j+2)');
 	fputs (plot_stream, "\n");
       endfor
     endif
@@ -1131,7 +1131,7 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	fprintf (plot_stream, "set %stics (", ax);
 	for i = 1:ntics
-	  fprintf (plot_stream, " \"%s\" %g", labels(k++), tics(i))
+	  fprintf (plot_stream, " \"%s\" %.15g", labels(k++), tics(i))
 	  if (i < ntics)
 	    fputs (plot_stream, ", ");
 	  endif
@@ -1144,11 +1144,13 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
 	error ("unsupported type of ticklabel");
       endif
     else
+      fprintf (plot_stream, "set format %s \"%%.15g\";\n", ax);
       fprintf (plot_stream, "set %stics (", ax);
-      fprintf (plot_stream, " %g,", tics(1:end-1));
-      fprintf (plot_stream, " %g);\n", tics(end));
+      fprintf (plot_stream, " %.15g,", tics(1:end-1));
+      fprintf (plot_stream, " %.15g);\n", tics(end));
     endif
   else
+    fprintf (plot_stream, "set format %s \"%%.15g\";\n", ax);
     fprintf (plot_stream, "set %stics;\n", ax);
   endif
 endfunction

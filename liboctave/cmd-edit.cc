@@ -49,6 +49,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 command_editor *command_editor::instance = 0;
 
+std::set<command_editor::startup_hook_fcn> command_editor::startup_hook_set;
+
+std::set<command_editor::event_hook_fcn> command_editor::event_hook_set;
+
 #if defined (USE_READLINE)
 
 #include <cstdio>
@@ -63,7 +67,7 @@ public:
 
   typedef command_editor::startup_hook_fcn startup_hook_fcn;
 
-  typedef command_editor::event_hook_fcn event_hook_hook_fcn;
+  typedef command_editor::event_hook_fcn event_hook_fcn;
 
   typedef command_editor::completion_fcn completion_fcn;
 
@@ -118,11 +122,13 @@ public:
 
   void do_clear_undo_list (void);
 
-  void do_set_startup_hook (startup_hook_fcn f);
+  void set_startup_hook (startup_hook_fcn f);
 
-  void do_restore_startup_hook (void);
+  void restore_startup_hook (void);
 
-  void do_set_event_hook (event_hook_fcn f);
+  void set_event_hook (event_hook_fcn f);
+
+  void restore_event_hook (void);
 
   void do_restore_event_hook (void);
 
@@ -393,7 +399,7 @@ gnu_readline::do_clear_undo_list ()
 }
 
 void
-gnu_readline::do_set_startup_hook (startup_hook_fcn f)
+gnu_readline::set_startup_hook (startup_hook_fcn f)
 {
   previous_startup_hook = ::octave_rl_get_startup_hook ();
 
@@ -401,13 +407,13 @@ gnu_readline::do_set_startup_hook (startup_hook_fcn f)
 }
 
 void
-gnu_readline::do_restore_startup_hook (void)
+gnu_readline::restore_startup_hook (void)
 {
   ::octave_rl_set_startup_hook (previous_startup_hook);
 }
 
 void
-gnu_readline::do_set_event_hook (event_hook_fcn f)
+gnu_readline::set_event_hook (event_hook_fcn f)
 {
   previous_event_hook = octave_rl_get_event_hook ();
 
@@ -415,7 +421,7 @@ gnu_readline::do_set_event_hook (event_hook_fcn f)
 }
 
 void
-gnu_readline::do_restore_event_hook (void)
+gnu_readline::restore_event_hook (void)
 {
   ::octave_rl_set_event_hook (previous_event_hook);
 }
@@ -452,7 +458,7 @@ gnu_readline::operate_and_get_next (int /* count */, int /* c */)
   else
     command_history::set_mark (x_where + 1);
 
-  command_editor::set_startup_hook (command_history::goto_mark);
+  command_editor::add_startup_hook (command_history::goto_mark);
 
   return 0;
 }
@@ -613,6 +619,36 @@ command_editor::make_command_editor (void)
 #else
   instance = new default_command_editor ();
 #endif
+}
+
+int
+command_editor::startup_handler (void)
+{
+  for (startup_hook_set_iterator p = startup_hook_set.begin ();
+       p != startup_hook_set.end (); p++)
+    {
+      startup_hook_fcn f = *p;
+
+      if (f)
+	f ();
+    }
+
+  return 0;
+}
+
+int
+command_editor::event_handler (void)
+{
+  for (event_hook_set_iterator p = event_hook_set.begin ();
+       p != event_hook_set.end (); p++)
+    {
+      event_hook_fcn f = *p;
+
+      if (f)
+	f ();
+    }
+
+  return 0;
 }
 
 void
@@ -806,31 +842,55 @@ command_editor::clear_undo_list (void)
 }
 
 void
-command_editor::set_startup_hook (startup_hook_fcn f)
+command_editor::add_startup_hook (startup_hook_fcn f)
 {
   if (instance_ok ())
-    instance->do_set_startup_hook (f);
+    {
+      startup_hook_set.insert (f);
+
+      instance->set_startup_hook (startup_handler);
+    }
 }
 
 void
-command_editor::restore_startup_hook (void)
+command_editor::remove_startup_hook (startup_hook_fcn f)
 {
   if (instance_ok ())
-    instance->do_restore_startup_hook ();
+    {
+      startup_hook_set_iterator p = startup_hook_set.find (f);
+
+      if (p != startup_hook_set.end ())
+	event_hook_set.erase (p);
+
+      if (startup_hook_set.empty ())
+	instance->restore_startup_hook ();
+    }
 }
 
 void
-command_editor::set_event_hook (event_hook_fcn f)
+command_editor::add_event_hook (event_hook_fcn f)
 {
   if (instance_ok ())
-    instance->do_set_event_hook (f);
+    {
+      event_hook_set.insert (f);
+
+      instance->set_event_hook (event_handler);
+    }
 }
 
 void
-command_editor::restore_event_hook (void)
+command_editor::remove_event_hook (event_hook_fcn f)
 {
   if (instance_ok ())
-    instance->do_restore_event_hook ();
+    {
+      event_hook_set_iterator p = event_hook_set.find (f);
+
+      if (p != event_hook_set.end ())
+	event_hook_set.erase (p);
+
+      if (event_hook_set.empty ())
+	instance->restore_event_hook ();
+    }
 }
 
 void

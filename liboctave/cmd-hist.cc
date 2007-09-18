@@ -207,7 +207,7 @@ gnu_history::do_goto_mark (void)
   mark = 0;
 
   // FIXME -- for operate_and_get_next.
-  command_editor::restore_startup_hook ();
+  command_editor::remove_startup_hook (command_history::goto_mark);
 
   return 0;
 }

@@ -1,3 +1,8 @@
+2007-07-20  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* aclocal.m4 (OCTAVE_CHECK_STRPTIME): New macro.
+	* configure.in: Use it.
+
 2007-09-06  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Avoid broken strptime function on Cygwin systems.

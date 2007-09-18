@@ -1,3 +1,24 @@
+2007-09-18  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.h, cmd-edit.cc (command_editor::startup_hook_set,
+	command_editor::event_hook_set): New static data.
+	(default_command_editor::set_startup_hook,
+	gnu_readline::set_startup_hook,
+	default_command_editor::restore_startup_hook,
+	gnu_readline_restore_event_hook):
+	Rename from do_set_startup_hook and do_set_event_hook.
+	(gnu_readline::operate_and_get_next): Call
+	command_editor::add_startup_hook, not
+	command_editor::set_startup_hook.
+	(command_editor::startup_handler, command_editor::event_handler):
+	New functions.
+	(command_editor::add_startup_hook, command_editor::add_event_hook,
+	command_editor::remove_startup_hook,
+	command_editor::remove_event_hook): Rename from set_startup_hook
+	and restore_startup_hook.  Handle hook sets here.
+	* cmd-edit.cc (gnu_history::do_goto_mark):
+	Call remove_startup_hook instead of restore_startup_hook.
+
 2007-09-17  John W. Eaton  <jwe@octave.org>
 
 	* lo-utils.cc (octave_read_complex, octave_read_double): Skip

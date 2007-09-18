@@ -1,3 +1,11 @@
+2007-09-18  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (input_event_hook, Finput_event_hook): Call
+	command_editor::add_event_hook and
+	command_editor::remove_event_hook intstead of
+	command_editor::set_event_hook and
+	command_editor::restore_event_hook.
+
 2007-09-17  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.14+.

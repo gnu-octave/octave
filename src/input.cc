@@ -1101,7 +1101,7 @@ input_event_hook (void)
       hook_fcn = std::string ();
       user_data = octave_value ();
 
-      command_editor::set_event_hook (0);
+      command_editor::remove_event_hook (input_event_hook);
     }
 
   return 0;
@@ -1148,11 +1148,11 @@ and the user data are returned.\n\
 	      return retval;
 	    }
 
-	  command_editor::set_event_hook (input_event_hook);
+	  command_editor::add_event_hook (input_event_hook);
 	}
 
       if (nargin == 0)
-	command_editor::set_event_hook (0);
+	command_editor::remove_event_hook (input_event_hook);
 
       retval(1) = user_data;
       retval(0) = hook_fcn;

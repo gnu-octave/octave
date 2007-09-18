@@ -26,6 +26,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <cstdio>
 
+#include <set>
 #include <string>
 
 #include "str-vec.h"
@@ -97,13 +98,13 @@ public:
 
   static void clear_undo_list (void);
 
-  static void set_startup_hook (startup_hook_fcn f);
+  static void add_startup_hook (startup_hook_fcn f);
 
-  static void restore_startup_hook (void);
+  static void remove_startup_hook (startup_hook_fcn f);
 
-  static void set_event_hook (event_hook_fcn f);
+  static void add_event_hook (event_hook_fcn f);
 
-  static void restore_event_hook (void);
+  static void remove_event_hook (event_hook_fcn f);
 
   static void read_init_file (const std::string& file = std::string ());
 
@@ -126,6 +127,20 @@ private:
   static bool instance_ok (void);
 
   static void make_command_editor (void);
+
+  static int startup_handler (void);
+
+  static int event_handler (void);
+
+  static std::set<startup_hook_fcn> startup_hook_set;
+
+  static std::set<event_hook_fcn> event_hook_set;
+
+  typedef std::set<startup_hook_fcn>::iterator startup_hook_set_iterator;
+  typedef std::set<startup_hook_fcn>::const_iterator startup_hook_set_const_iterator;
+
+  typedef std::set<event_hook_fcn>::iterator event_hook_set_iterator;
+  typedef std::set<event_hook_fcn>::const_iterator event_hook_set_const_iterator;
 
   // The real thing.
   static command_editor *instance;
@@ -191,13 +206,13 @@ protected:
 
   virtual void do_clear_undo_list (void) { }
 
-  virtual void do_set_startup_hook (startup_hook_fcn) { }
+  virtual void set_startup_hook (startup_hook_fcn) { }
 
-  virtual void do_restore_startup_hook (void) { }
+  virtual void restore_startup_hook (void) { }
 
-  virtual void do_set_event_hook (event_hook_fcn) { }
+  virtual void set_event_hook (startup_hook_fcn) { }
 
-  virtual void do_restore_event_hook (void) { }
+  virtual void restore_event_hook (void) { }
 
   virtual void do_read_init_file (const std::string&) { }
 

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.574 $)
+AC_REVISION($Revision: 1.575 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1452,17 +1452,7 @@ case "$canonical_host_type" in
   ;;
 esac
 
-case "$canonical_host_type" in
-  *-apple-darwin* | *-*-cygwin*)
-    ## The weekday function, which uses strptime, is broken because
-    ## strptime is apparently not setting wday correctly for formats
-    ## like "%d-%m-%Y", so use our version.  We could use an actual
-    ## configure test for this.
-  ;;
-  *)
-    AC_CHECK_FUNCS(strptime)
-  ;;
-esac
+OCTAVE_CHECK_STRPTIME
 
 OCTAVE_SMART_PUTENV
 

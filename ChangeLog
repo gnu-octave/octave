@@ -1,4 +1,4 @@
-2007-07-20  Thomas Treichl  <Thomas.Treichl@gmx.net>
+2007-09-18  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* aclocal.m4 (OCTAVE_CHECK_STRPTIME): New macro.
 	* configure.in: Use it.
@@ -341,9 +341,6 @@
 	final note about missing libraries.
 
 2006-11-13  John W. Eaton  <jwe@octave.org>
-
-	* octave.cc (maximum_braindamage): Disable
-	Octave:fopen-file-in-path and Octave:load-file-in-path warnings.
 
 	* run-octave.in: Substitute liboctinterp, liboctave, and libcruft.
 	Use them to set LD_PRELOAD.
@@ -1837,7 +1834,6 @@
 	* configure.in (ENABLE_DYNAMIC_LINKING): Rename from
 	WITH_DYNAMIC_LINKING.
 	* Makeconf.in: Likewise.
-	* toplev.cc 
 	* examples/hello.cc: Likewise.  Improve comments.
 
 	* configure.in: Revive --enable-dl to set default value for

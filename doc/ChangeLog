@@ -97,7 +97,7 @@
 
 	* interpreter/stats.txi: Reorganize sections and add introductory text.
 
-        * interpreter/octave.texi: Update to reflect changes in stats.txi.
+	* interpreter/octave.texi: Update to reflect changes in stats.txi.
 
 2007-06-18  David Bateman  <dbateman@free.fr>
 

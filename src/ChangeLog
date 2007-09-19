@@ -1829,6 +1829,9 @@
 
 2006-11-13  John W. Eaton  <jwe@octave.org>
 
+	* octave.cc (maximum_braindamage): Disable
+	Octave:fopen-file-in-path and Octave:load-file-in-path warnings.
+
 	* load-save.cc (find_file_to_load): New function.
 	(Fload): Call find_file_to_load to search load path for file.
 

@@ -860,7 +860,7 @@ command_editor::remove_startup_hook (startup_hook_fcn f)
       startup_hook_set_iterator p = startup_hook_set.find (f);
 
       if (p != startup_hook_set.end ())
-	event_hook_set.erase (p);
+	startup_hook_set.erase (p);
 
       if (startup_hook_set.empty ())
 	instance->restore_startup_hook ();

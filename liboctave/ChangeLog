@@ -1,3 +1,8 @@
+2007-09-19  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.cc (command_editor::remove_startup_hook):
+	Fix cut-and-paste error.
+
 2007-09-18  John W. Eaton  <jwe@octave.org>
 
 	* cmd-edit.h, cmd-edit.cc (command_editor::startup_hook_set,

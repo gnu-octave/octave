@@ -403,7 +403,8 @@ gnu_readline::set_startup_hook (startup_hook_fcn f)
 {
   previous_startup_hook = ::octave_rl_get_startup_hook ();
 
-  ::octave_rl_set_startup_hook (f);
+  if (f != previous_startup_hook)
+    ::octave_rl_set_startup_hook (f);
 }
 
 void

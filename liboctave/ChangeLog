@@ -2,6 +2,8 @@
 
 	* cmd-edit.cc (command_editor::remove_startup_hook):
 	Fix cut-and-paste error.
+	(gnu_readline::set_startup_hook): Only set hook function if new
+	function is different from the current one.
 
 2007-09-18  John W. Eaton  <jwe@octave.org>
 

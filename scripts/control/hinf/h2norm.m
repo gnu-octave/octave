@@ -49,28 +49,29 @@
 
 function h2gain = h2norm (sys)
 
-  if((nargin != 1))
+  if (nargin != 1)
     print_usage ();
-  elseif(!isstruct(sys))
-    error("Sys must be in system data structure");
+  elseif (! isstruct (sys))
+    error ("Sys must be in system data structure");
   end
-  dflg = is_digital(sys);
+  dflg = is_digital (sys);
 
-  if(!is_stable(sys))
-    warning("h2norm: unstable input system; returning Inf");
+  if (! is_stable (sys))
+    warning ("h2norm: unstable input system; returning Inf");
     h2gain = Inf;
   else
     ## compute gain
-    [a,b,c,d] = sys2ss(sys);
-    if(dflg)
-      M = dlyap(a,b*b');
+    [a, b, c, d] = sys2ss (sys);
+    if (dflg)
+      M = dlyap (a, b*b');
     else
-      M = lyap (a,b*b');
+      M = lyap (a, b*b');
     endif
-    if( min(real(eig(M))) < 0)
-      error("h2norm: gramian not >= 0 (lightly damped modes?)")
+    if (min (real (eig (M))) < 0)
+      error ("h2norm: gramian not >= 0 (lightly damped modes?)")
     endif
 
-    h2gain = sqrt(trace(d'*d + c*M*c'));
+    h2gain = sqrt (trace (d*d' + c*M*c'));
   endif
+
 endfunction

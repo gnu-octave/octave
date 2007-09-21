@@ -1,3 +1,7 @@
+2007-09-21  Luther Tychonievich  <lty@cs.byu.edu>
+
+	* control/hinf/h2norm: Compute d*d', not d'*d.
+
 2007-09-21  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* statistics/distributions/Makefile.in (SOURCES): Add unidcdf.m,

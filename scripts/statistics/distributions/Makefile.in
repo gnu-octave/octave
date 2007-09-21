@@ -35,8 +35,9 @@ SOURCES = betacdf.m betainv.m betapdf.m betarnd.m binocdf.m \
   nbinrnd.m normcdf.m norminv.m normpdf.m normrnd.m \
   poisscdf.m poissinv.m poisspdf.m poissrnd.m stdnormal_cdf.m \
   stdnormal_inv.m stdnormal_pdf.m stdnormal_rnd.m tcdf.m tinv.m \
-  tpdf.m trnd.m unidrnd.m unifcdf.m unifinv.m unifpdf.m unifrnd.m \
-  wblcdf.m wblinv.m wblpdf.m wblrnd.m wienrnd.m
+  tpdf.m trnd.m unidrnd.m unidcdf.m unidinv.m unidpdf.m unifrnd.m \
+  unifcdf.m unifinv.m unifpdf.m wblcdf.m wblinv.m wblpdf.m wblrnd.m \
+  wienrnd.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

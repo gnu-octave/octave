@@ -1,3 +1,8 @@
+2007-09-21  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* statistics/distributions/Makefile.in (SOURCES): Add unidcdf.m,
+	unidpdf.m and unidinv.m
+
 2007-09-18  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Use %.15g throughout.

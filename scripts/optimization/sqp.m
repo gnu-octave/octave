@@ -305,7 +305,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 
     iter_max = 100;
     if (nargin > 6 && ! isempty (maxiter))
-      if (isscalar (maxiter) && maxiter > 0 && round (maxiter) == maxiter))
+      if (isscalar (maxiter) && maxiter > 0 && round (maxiter) == maxiter)
 	iter_max = maxiter;
       else
 	error ("sqp: invalid number of maximum iterations");

@@ -1,5 +1,7 @@
 2007-09-21  John W. Eaton  <jwe@octave.org>
 
+	* optimization/sqp.m: Fix typo.
+
 	* plot/__go_draw_axes__.m (do_tics_1): Use %g, not %.15g here.
 
 2007-09-21  Luther Tychonievich  <lty@cs.byu.edu>

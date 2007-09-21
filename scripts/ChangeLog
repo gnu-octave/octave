@@ -1,3 +1,7 @@
+2007-09-21  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m (do_tics_1): Use %g, not %.15g here.
+
 2007-09-21  Luther Tychonievich  <lty@cs.byu.edu>
 
 	* control/hinf/h2norm: Compute d*d', not d'*d.

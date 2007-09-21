@@ -1131,7 +1131,7 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	fprintf (plot_stream, "set %stics (", ax);
 	for i = 1:ntics
-	  fprintf (plot_stream, " \"%s\" %.15g", labels(k++), tics(i))
+	  fprintf (plot_stream, " \"%s\" %g", labels(k++), tics(i))
 	  if (i < ntics)
 	    fputs (plot_stream, ", ");
 	  endif
@@ -1144,13 +1144,13 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
 	error ("unsupported type of ticklabel");
       endif
     else
-      fprintf (plot_stream, "set format %s \"%%.15g\";\n", ax);
+      fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
       fprintf (plot_stream, "set %stics (", ax);
-      fprintf (plot_stream, " %.15g,", tics(1:end-1));
-      fprintf (plot_stream, " %.15g);\n", tics(end));
+      fprintf (plot_stream, " %g,", tics(1:end-1));
+      fprintf (plot_stream, " %g);\n", tics(end));
     endif
   else
-    fprintf (plot_stream, "set format %s \"%%.15g\";\n", ax);
+    fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
     fprintf (plot_stream, "set %stics;\n", ax);
   endif
 endfunction

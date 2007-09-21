@@ -46,9 +46,9 @@
 
 ## size = [0 2]
 %!assert(set_slice([0 2], 11, []), zeros([0 2]));
-%!error <A\(I\) = X: unable to resize A> set_slice([0 2], 11, 1)
-%!error <A\(I\) = X: unable to resize A> set_slice([0 2], 11, 2)
-%!error <A\(I\) = X: unable to resize A> set_slice([0 2], 11, 3)
+%!assert(set_slice([0 2], 11, 1), 2);
+%!assert(set_slice([0 2], 11, 2), [0, 2]);
+%!assert(set_slice([0 2], 11, 3), [0, 0, 2]);
 %!assert(set_slice([0 2], 21, []), zeros([0 2]));
 %!assert(set_slice([0 2], 21, 1), [2 2]);
 %!assert(set_slice([0 2], 21, 2), [0 0;2 2]);

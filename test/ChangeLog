@@ -1,3 +1,8 @@
+2007-09-21  John W. Eaton  <jwe@octave.org>
+
+	* test_slice.m: Fix test for x = ones ([0, 2]); x(idx) = N case.
+	See change for liboctave/Array.cc.
+
 2007-06-15  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m: Also report expected failures in summary.

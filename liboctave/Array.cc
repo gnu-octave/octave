@@ -2494,14 +2494,9 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
     {
       dim_vector lhs_dims = lhs.dims ();
 
-      if (lhs_len == 0 && ! lhs_dims.all_zero ())
-	{
-	  (*current_liboctave_error_handler)
-	    ("A(I) = X: unable to resize A");
-
-	  retval = 0;
-	}
-      else
+      if (lhs_len != 0
+	  || lhs_dims.all_zero ()
+	  || (lhs_dims.length () == 2 && lhs_dims(0) < 2))
 	{
 	  if (rhs_len == n || rhs_len == 1)
 	    {
@@ -2557,6 +2552,13 @@ assign1 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 	      retval = 0;
 	    }
+	}
+      else
+	{
+	  (*current_liboctave_error_handler)
+	    ("A(I) = X: unable to resize A");
+
+	  retval = 0;
 	}
     }
   else if (lhs_idx.is_colon ())

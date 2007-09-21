@@ -1,3 +1,8 @@
+2007-09-21  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (assign1 (Array<LT>&, const Array<RT>&, const LT&)):
+	Also allow resizing empty LHS if it is 1x0 or 0xN.
+
 2007-09-19  John W. Eaton  <jwe@octave.org>
 
 	* cmd-edit.cc (command_editor::remove_startup_hook):

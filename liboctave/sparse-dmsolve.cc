@@ -368,9 +368,11 @@ dmsolve (const ST &a, const T &b, octave_idx_type &info)
   octave_idx_type b_nc = b.cols ();
   RT retval;
 
-  if (nr < 1 || nc < 1 || nr != b_nr)
+  if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch in solution of minimum norm problem");
+  else if (nr == 0 || nc == 0 || b_nc == 0)
+    retval = RT (nc, b_nc, 0.0);
   else
     {
       octave_idx_type nnz_remaining = a.nnz ();

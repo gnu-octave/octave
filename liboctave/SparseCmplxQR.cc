@@ -190,10 +190,12 @@ SparseComplexQR::SparseComplexQR_rep::C (const ComplexMatrix &b) const
   octave_idx_type nr = nrows;
   const cs_complex_t *bvec = 
     reinterpret_cast<const cs_complex_t *>(b.fortran_vec());
-  ComplexMatrix ret(b_nr,b_nc);
+  ComplexMatrix ret(b_nr, b_nc);
   Complex *vec = ret.fortran_vec();
-  if (nr < 1 || nc < 1 || nr != b_nr)
+  if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
+  else if (nr == 0 || nc == 0 || b_nc == 0)
+    ret = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));
   else
     {
       OCTAVE_LOCAL_BUFFER (Complex, buf, S->m2);
@@ -239,9 +241,11 @@ qrsolve(const SparseComplexMatrix&a, const Matrix &b, octave_idx_type &info)
   octave_idx_type b_nr = b.rows();
   ComplexMatrix x;
 
-  if (nr < 1 || nc < 1 || nr != b_nr)
+  if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch in solution of minimum norm problem");
+  else if (nr == 0 || nc == 0 || b_nc == 0)
+    x = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));
   else if (nr >= nc)
     {
       SparseComplexQR q (a, 2);
@@ -366,9 +370,11 @@ qrsolve(const SparseComplexMatrix&a, const SparseMatrix &b, octave_idx_type &inf
   SparseComplexMatrix x;
   volatile octave_idx_type ii, x_nz;
 
-  if (nr < 1 || nc < 1 || nr != b_nr)
+  if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch in solution of minimum norm problem");
+  else if (nr == 0 || nc == 0 || b_nc == 0)
+    x = SparseComplexMatrix (nc, b_nc);
   else if (nr >= nc)
     {
       SparseComplexQR q (a, 2);
@@ -539,9 +545,11 @@ qrsolve(const SparseComplexMatrix&a, const ComplexMatrix &b, octave_idx_type &in
     reinterpret_cast<const cs_complex_t *>(b.fortran_vec());
   ComplexMatrix x;
 
-  if (nr < 1 || nc < 1 || nr != b_nr)
+  if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch in solution of minimum norm problem");
+  else if (nr == 0 || nc == 0 || b_nc == 0)
+    x = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));
   else if (nr >= nc)
     {
       SparseComplexQR q (a, 2);
@@ -657,9 +665,11 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
   SparseComplexMatrix x;
   volatile octave_idx_type ii, x_nz;
 
-  if (nr < 1 || nc < 1 || nr != b_nr)
+  if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch in solution of minimum norm problem");
+  else if (nr == 0 || nc == 0 || b_nc == 0)
+    x = SparseComplexMatrix (nc, b_nc);
   else if (nr >= nc)
     {
       SparseComplexQR q (a, 2);

@@ -1,3 +1,17 @@
+2007-09-25  David Bateman  <dbateman@free.fr>
+
+	* dMatrix.cc (utsolve, ltsolve, fsolve, lssolve): Allow
+	zero dimensioned matrices.
+        * CMatrix.cc (utsolve, ltsolve, fsolve, lssolve): ditto.
+	* dSparse.cc (dsolve, utsolve, ltsolve, bsolve, trisolve, fsolve):
+	ditto.
+	* CSparse.cc (dsolve, utsolve, ltsolve, bsolve, trisolve, fsolve):
+	ditto.
+	* SparseQR.cc (SparseQR::SparseQR_rep::C, qrsolve): ditto.
+	* SparseCmplxQR.cc (SparseComplexQR::SparseComplexQR_rep::C,
+	qrsolve): ditto.
+	* sparse-dmsolve.cc (dmsolve): ditto.
+
 2007-09-21  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (assign1 (Array<LT>&, const Array<RT>&, const LT&)):

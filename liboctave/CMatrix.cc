@@ -1691,9 +1691,11 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       volatile int typ = mattype.type ();
@@ -1798,9 +1800,11 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       volatile int typ = mattype.type ();
@@ -1905,9 +1909,12 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
-      ("matrix dimension mismatch in solution of linear equations");
+      ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       volatile int typ = mattype.type ();
@@ -2422,9 +2429,11 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_id
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-  if (m == 0 || n == 0 || m != b.rows ())
+  if (m != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (m== 0 || n == 0 || b.cols () == 0)
+    retval = ComplexMatrix (n, b.cols (), Complex (0.0, 0.0));
   else
     {
       ComplexMatrix atmp = *this;
@@ -2536,9 +2545,11 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-  if (m == 0 || n == 0 || m != b.length ())
+  if (m != b.length ())
     (*current_liboctave_error_handler)
-      ("matrix dimension mismatch solution of least squares problem");
+      ("matrix dimension mismatch solution of linear equations");
+  else if (m == 0 || n == 0 || b.cols () == 0)
+    retval = ComplexColumnVector (n, Complex (0.0, 0.0));
   else
     {
       ComplexMatrix atmp = *this;

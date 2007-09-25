@@ -1212,9 +1212,11 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const Matrix& b,
   octave_idx_type nm = (nc < nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -1271,9 +1273,11 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseMatrix& b,
   octave_idx_type nm = (nc < nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -1360,9 +1364,11 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nm = (nc < nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -1419,9 +1425,11 @@ SparseComplexMatrix::dsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   octave_idx_type nm = (nc < nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -1508,9 +1516,11 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const Matrix& b,
   octave_idx_type nm = (nc > nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -1742,9 +1752,11 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseMatrix& b,
   octave_idx_type nm = (nc > nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -2027,9 +2039,11 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nm = (nc > nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -2261,9 +2275,11 @@ SparseComplexMatrix::utsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   octave_idx_type nm = (nc > nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -2547,9 +2563,11 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const Matrix& b,
   octave_idx_type nm = (nc > nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -2802,9 +2820,11 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseMatrix& b,
 
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -3107,9 +3127,11 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nm = (nc > nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -3365,9 +3387,11 @@ SparseComplexMatrix::ltsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   octave_idx_type nm = (nc > nr ? nc : nr);
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -3669,9 +3693,11 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else if (calc_cond)
     (*current_liboctave_error_handler) 
       ("calculation of condition number not implemented");
@@ -3824,9 +3850,11 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else if (calc_cond)
     (*current_liboctave_error_handler) 
       ("calculation of condition number not implemented");
@@ -3982,9 +4010,11 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else if (calc_cond)
     (*current_liboctave_error_handler) 
       ("calculation of condition number not implemented");
@@ -4145,9 +4175,11 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else if (calc_cond)
     (*current_liboctave_error_handler) 
       ("calculation of condition number not implemented");
@@ -4314,9 +4346,11 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -4588,9 +4622,11 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -4939,9 +4975,11 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -5216,9 +5254,11 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -5692,9 +5732,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -5950,9 +5992,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested
@@ -6259,9 +6303,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = ComplexMatrix (nc, b.cols (), Complex (0.0, 0.0));
   else
     {
       // Print spparms("spumoni") info if requested
@@ -6499,9 +6545,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
   octave_idx_type nc = cols ();
   err = 0;
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = SparseComplexMatrix (nc, b.cols ());
   else
     {
       // Print spparms("spumoni") info if requested

@@ -1353,9 +1353,11 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = Matrix (nc, b.cols (), 0.0);
   else
     {
       volatile int typ = mattype.type ();
@@ -1459,9 +1461,11 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (nr == 0 || nc == 0 || nr != b.rows ())
+  if (nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || nc == 0 || b.cols () == 0)
+    retval = Matrix (nc, b.cols (), 0.0);
   else
     {
       volatile int typ = mattype.type ();
@@ -1565,9 +1569,11 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
 
-  if (nr == 0 || nc == 0 || nr != nc || nr != b.rows ())
+  if (nr != nc || nr != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
+  else if (nr == 0 || b.cols () == 0)
+    retval = Matrix (nc, b.cols (), 0.0);
   else
     {
       volatile int typ = mattype.type ();
@@ -2046,9 +2052,12 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) 
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-  if (m == 0 || n == 0 || m != b.rows ())
+
+  if (m != b.rows ())
     (*current_liboctave_error_handler)
-      ("matrix dimension mismatch in solution of least squares problem");
+      ("matrix dimension mismatch solution of linear equations");
+  else if (m == 0 || n == 0 || b.cols () == 0)
+    retval = Matrix (n, b.cols (), 0.0);
   else
     {
       Matrix atmp = *this;
@@ -2155,9 +2164,11 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info, octave_idx_type& 
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-  if (m == 0 || n == 0 || m != b.length ())
+  if (m != b.length ())
     (*current_liboctave_error_handler)
-      ("matrix dimension mismatch in solution of least squares problem");
+      ("matrix dimension mismatch solution of linear equations");
+  else if (m == 0 || n == 0)
+    retval = ColumnVector (n, 0.0);
   else
     {
       Matrix atmp = *this;

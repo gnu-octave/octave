@@ -1,3 +1,7 @@
+2007-09-25  Matthias Drochner  <m.drochner@fz-juelich.de>
+
+	* syscalls.cc (Fpopen2): Doc fix.
+
 2007-09-18  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (input_event_hook, Finput_event_hook): Call

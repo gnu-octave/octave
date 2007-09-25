@@ -236,7 +236,7 @@ For example,\n\
 \n\
 @example\n\
 @group\n\
-[in, out, pid] = popen2 (\"sort\", \"-nr\");\n\
+[in, out, pid] = popen2 (\"sort\", \"-r\");\n\
 fputs (in, \"these\\nare\\nsome\\nstrings\\n\");\n\
 fclose (in);\n\
 EAGAIN = errno (\"EAGAIN\");\n\
@@ -352,7 +352,7 @@ fclose (out);\n\
 
 %!test
 %!  if (isunix())
-%!    [in, out, pid] = popen2 ("sort", "-nr");
+%!    [in, out, pid] = popen2 ("sort", "-r");
 %!    EAGAIN = errno ("EAGAIN");
 %!  else
 %!    [in, out, pid] = popen2 ("sort", "/R");

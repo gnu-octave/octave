@@ -37,7 +37,9 @@ function [h, varargin] = __plt_get_axis_arg__ (caller, varargin)
     endif
   else
     h = gca ();
-    varargin = {};
+    if (nargin < 2)
+      varargin = {};
+    endif
   endif
 
 endfunction

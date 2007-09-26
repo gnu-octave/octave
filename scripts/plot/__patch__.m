@@ -51,13 +51,20 @@ function h = __patch__ (p, varargin)
     endif
   endif
 
-  if (have_x && nargin > iarg && isnumeric (varargin{iarg}))
-    c = varargin{iarg};
-    have_c = true;
-    iarg++;
+  if (have_x && nargin > iarg)
+    if (isnumeric (varargin{iarg}))
+      c = varargin{iarg};
+      have_c = true;
+      iarg++;
 
-    if (ndims (c) == 3 && size (c, 2) == 1)
-      c = permute (c, [1, 3, 2]);
+      if (ndims (c) == 3 && size (c, 2) == 1)
+	c = permute (c, [1, 3, 2]);
+      endif
+    elseif (ischar (varargin{iarg}) && rem (nargin - iarg, 2) != 0)
+      ## Assume that any additional argument over an even number is color string
+      c = tolower (varargin{iarg});
+      have_c = true;
+      iarg++;
     endif
   endif
 
@@ -96,7 +103,9 @@ function h = __patch__ (p, varargin)
 	  c2 = c;
 	endif
 
-	if (numel (c2) == 1)
+	if (ischar (c2))
+	  set (h, "facecolor", c2);
+	elseif (numel (c2) == 1)
 	  if (isnan (c))
 	    set (h, "facecolor", [1, 1, 1]);
 	    set (h, "cdata", c2);

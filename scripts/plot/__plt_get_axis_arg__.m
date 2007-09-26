@@ -23,23 +23,21 @@
 
 function [h, varargin] = __plt_get_axis_arg__ (caller, varargin)
 
-
-  if (nargin > 1)
+  if (nargin > 1 && length (varargin) > 0 && ishandle (varargin{1}))
     tmp = varargin{1};
-    if (ishandle (tmp))
-      obj = get (tmp);
-      if (strcmp (obj.type, "axes"))
-	h = tmp;
-	varargin(1) = [];
-	if (isempty (varargin))
-	  varargin = {};
-	endif
-      else
-	error ("%s: expecting first argument to be axes handle", caller);
+    obj = get (tmp);
+    if (strcmp (obj.type, "axes"))
+      h = tmp;
+      varargin(1) = [];
+      if (isempty (varargin))
+	varargin = {};
       endif
     else
-      h = gca ();
+      error ("%s: expecting first argument to be axes handle", caller);
     endif
+  else
+    h = gca ();
+    varargin = {};
   endif
 
 endfunction

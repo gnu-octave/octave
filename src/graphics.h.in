@@ -206,7 +206,8 @@ public:
       current_val (initial_value)
   { }
 
-  color_property (const octave_value& val);
+  color_property (const octave_value& val, 
+		  const radio_values &v = radio_values());
 
   operator octave_value (void) const
   {

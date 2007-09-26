@@ -90,9 +90,12 @@ color_values::str2rgb (std::string str)
   bool retval = true;
   unsigned int len = str.length();
 
+  std::transform (str.begin (), str.end (), str.begin (), tolower);
+
   if (str.compare(0, len, "blue", 0, len) == 0)
     tmp_rgb[2] = 1;
-  else if (str.compare(0, len, "black", 0, len) == 0 || str.compare(0, len, "w", 0, len) == 0)
+  else if (str.compare(0, len, "black", 0, len) == 0 || 
+	   str.compare(0, len, "k", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 0;
   else if (str.compare(0, len, "red", 0, len) == 0)
     tmp_rgb[0] = 1;
@@ -104,7 +107,8 @@ color_values::str2rgb (std::string str)
     tmp_rgb[0] = tmp_rgb[2] = 1;
   else if (str.compare(0, len, "cyan", 0, len) == 0)
     tmp_rgb[1] = tmp_rgb[2] = 1;
-  else if (str.compare(0, len, "white", 0, len) == 0)
+  else if (str.compare(0, len, "white", 0, len) == 0 ||
+	   str.compare(0, len, "w", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
   else	
     retval = false;
@@ -118,8 +122,8 @@ color_values::str2rgb (std::string str)
   return retval;
 }
 
-color_property::color_property (const octave_value& val)
-  : radio_val (), current_val ()
+color_property::color_property (const octave_value& val, const radio_values &v)
+  : radio_val (v), current_val ()
 {
   // FIXME -- need some error checking here.
 
@@ -129,11 +133,19 @@ color_property::color_property (const octave_value& val)
 
       if (! s.empty ())
 	{
-	  color_values col (s);
-	  if (! error_state)
+	  if (radio_val.contains (s))
 	    {
-	      color_val = col;
-	      current_type = color_t;
+	      current_val = s;
+	      current_type = radio_t;
+	    }
+          else
+	    {
+	      color_values col (s);
+	      if (! error_state)
+		{
+		  color_val = col;
+		  current_type = color_t;
+		}
 	    }
 	}
       else
@@ -2119,7 +2131,7 @@ patch::properties::set (const property_name& name,
   else if (name.compare ("zdata"))
     set_zdata (val);
   else if (name.compare ("facecolor"))
-    set_facecolor (val);
+    set_facecolor (color_property (val, radio_values ("flat|none|interp")));
   else if (name.compare ("facealpha"))
     set_facealpha (val);
   else if (name.compare ("edgecolor"))

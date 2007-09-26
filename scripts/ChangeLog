@@ -1,3 +1,31 @@
+2007-09-26  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m: Add second argument to setting for prefix for
+	architecture dependent files. Use throughout.
+	(pkg:issuperuser): New function, use through to check for
+	root user.
+	(pkg:getarchprefix): function to give the archiecture dependent
+	prefix for a package.
+	(pkg:getarchdir): New function giving location of architetcure
+	dependent directory. Use through out.
+	(pkg:install): Treat architecture dependent directory separately
+	as in might not be a sub-directory of the package directory.
+	(pkg:uninstall): ditto.
+	(pkg:create_pkgadddel): Check for global or local install for
+	architecture dependent directory.
+	(pkg:finish_installation): ditto.
+	(pkg:write_INDEX): ditto.
+	(pkg:load_packages_and_dependencies): ditto.
+	(pkg:copy_files): ditto. Add step to copy architecture dependent
+	files to a new location if user is root.
+	(pkg:rm_rf): Check if file or directory exists before removing.
+	(pkg:dirempty): Check if directory exists before checking.
+	
+	* plot/___patch__.m: Allow face colors to be passed as strings
+
+	* plot/__plt_get_axis_arg__.m: Treat case of empty "varargin"
+	needed for calls to "hold" without an argument.
+
 2007-09-21  John W. Eaton  <jwe@octave.org>
 
 	* optimization/sqp.m: Fix typo.

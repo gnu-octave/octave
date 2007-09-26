@@ -1,3 +1,20 @@
+2007-09-26  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (color_values::str2rgb): accept upper, lower and
+	mixed-case versions of the string representing the color. Allow
+	black defined as "k" and white as "w".
+	(color_property::color_property (const octave_value& val, 
+	const radio_values &v)): Modify the constructor to also take a
+	radio_values argument. Use it.
+	(patch::properties::set): Change set_facecolor calls to initialize
+	the color_property argument with the available radio_values.
+	* graphics.h.in (color_property::color_property 
+	(const octave_value& val, const radio_values &v)): Also pass a 
+	radio_values argument.
+
+	* ov-range.h (sparse_matrix_value, sparse_complex_matrix_value):
+	New methods.
+
 2007-09-25  Matthias Drochner  <m.drochner@fz-juelich.de>
 
 	* syscalls.cc (Fpopen2): Doc fix.

@@ -163,6 +163,12 @@ public:
   NDArray array_value (bool = false) const
     { return range.matrix_value (); }
 
+  SparseMatrix sparse_matrix_value (bool = false) const
+    { return SparseMatrix (range.matrix_value ()); }
+
+  SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
+    { return SparseComplexMatrix (sparse_matrix_value ()); }
+
   Complex complex_value (bool = false) const;
 
   boolNDArray bool_array_value (bool warn = false) const

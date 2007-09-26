@@ -16,7 +16,7 @@ for f in "$@"; do
 	if [ "$n" = "$base" ]; then
 	  true
 	else
-          echo "autoload (\"$n\", fullfile (fileparts (mfilename (\"fullpath\")), \"$base.oct\"));"
+          echo "autoload (\"$n\", \"$base.oct\");"
 	fi
       done
     fi

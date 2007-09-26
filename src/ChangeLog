@@ -15,6 +15,10 @@
 	* ov-range.h (sparse_matrix_value, sparse_complex_matrix_value):
 	New methods.
 
+	* mk-pkg-add: Simplfy the autoload commands.
+	* parse.y (Fautoload): Allow bare filename if file is in the same
+	directory as the script from where the autoload command is run.
+
 2007-09-25  Matthias Drochner  <m.drochner@fz-juelich.de>
 
 	* syscalls.cc (Fpopen2): Doc fix.

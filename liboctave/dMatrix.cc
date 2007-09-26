@@ -117,9 +117,9 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dgelss, DGELSS) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+  F77_FUNC (dgelsy, DGELSY) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
 			     double*, const octave_idx_type&, double*,
-			     const octave_idx_type&, double*, double&, octave_idx_type&,
+			     const octave_idx_type&, octave_idx_type*, double&, octave_idx_type&,
 			     double*, const octave_idx_type&, octave_idx_type&);
 
   F77_RET_T
@@ -2072,36 +2072,35 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) 
 
       double *presult = result.fortran_vec ();
 
-      octave_idx_type len_s = m < n ? m : n;
-      Array<double> s (len_s);
-      double *ps = s.fortran_vec ();
+      Array<octave_idx_type> jpvt (n);
+      octave_idx_type *pjpvt = jpvt.fortran_vec ();
 
       double rcond = -1.0;
 
-      // Ask DGELSS what the dimension of WORK should be.
+      // Ask DGELSY what the dimension of WORK should be.
 
       octave_idx_type lwork = -1;
 
       Array<double> work (1);
 
-      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr, ps,
+      F77_XFCN (dgelsy, DGELSY, (m, n, nrhs, tmp_data, m, presult, nrr, pjpvt,
 				 rcond, rank, work.fortran_vec (),
 				 lwork, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
+	(*current_liboctave_error_handler) ("unrecoverable error in dgelsy");
       else
 	{
 	  lwork = static_cast<octave_idx_type> (work(0));
 	  work.resize (lwork);
 
-	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, ps, rcond, rank,
+	  F77_XFCN (dgelsy, DGELSY, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, pjpvt, rcond, rank,
 				     work.fortran_vec (), lwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in dgelss");
+	      ("unrecoverable error in dgelsy");
 	  else
 	    {
 	      retval.resize (n, nrhs);
@@ -2182,36 +2181,35 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info, octave_idx_type& 
 
       double *presult = result.fortran_vec ();
 
-      octave_idx_type len_s = m < n ? m : n;
-      Array<double> s (len_s);
-      double *ps = s.fortran_vec ();
+      Array<octave_idx_type> jpvt (n);
+      octave_idx_type *pjpvt = jpvt.fortran_vec ();
 
       double rcond = -1.0;
 
-      // Ask DGELSS what the dimension of WORK should be.
+      // Ask DGELSY what the dimension of WORK should be.
 
       octave_idx_type lwork = -1;
 
       Array<double> work (1);
 
-      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr, ps,
+      F77_XFCN (dgelsy, DGELSY, (m, n, nrhs, tmp_data, m, presult, nrr, pjpvt,
 				 rcond, rank, work.fortran_vec (),
 				 lwork, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
+	(*current_liboctave_error_handler) ("unrecoverable error in dgelsy");
       else
 	{
 	  lwork = static_cast<octave_idx_type> (work(0));
 	  work.resize (lwork);
 
-	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, ps, rcond, rank,
+	  F77_XFCN (dgelsy, DGELSY, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, pjpvt, rcond, rank,
 				     work.fortran_vec (), lwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in dgelss");
+	      ("unrecoverable error in dgelsy");
 	  else
 	    {
 	      retval.resize (n);

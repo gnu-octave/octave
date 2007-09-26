@@ -1,3 +1,9 @@
+2007-09-26  David Bateman  <dbateman@free.fr>
+
+	* dMatrix.cc (lssolve): Replace the use of xGELSS with xGELSY with
+	is much faster and no less accurate.
+	* CMatrix.cc (lssolve): ditto.
+
 2007-09-25  David Bateman  <dbateman@free.fr>
 
 	* dMatrix.cc (utsolve, ltsolve, fsolve, lssolve): Allow

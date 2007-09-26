@@ -1,3 +1,15 @@
+2007-09-26  David Bateman  <dbateman@free.fr>
+
+	* lapack/dgelsy.f,  lapack/dlatrz.f,  lapack/zlarz.f,
+	lapack/dgeqp3.f,  lapack/dtzrzf.f,  lapack/zlarzt.f,
+	lapack/dlaic1.f,  lapack/zgelsy.f,  lapack/zlatrz.f,
+	lapack/dlaqp2.f,  lapack/zgeqp3.f,  lapack/ztzrzf.f,
+	lapack/dlaqps.f,  lapack/zlaic1.f,  lapack/zunmr3.f,
+	lapack/dlarzb.f,  lapack/zlaqp2.f,  lapack/zunmrz.f,
+	lapack/dlarz.f,   lapack/zlaqps.f, lapack/dlarzt.f,  
+	lapack/zlarzb.f: New files
+	* lapack/Makefile.in (FSRC): Add the new files.
+
 2007-07-25  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in, Makerules.in, fftpack/Makefile.in,

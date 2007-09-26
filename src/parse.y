@@ -3485,28 +3485,29 @@ DEFCMD (autoload, args, ,
 @deftypefn {Built-in Function} {} autoload (@var{function}, @var{file})\n\
 Define @var{function} to autoload from @var{file}.\n\
 \n\
-The second argument, @var{file}, should be an absolute file name and\n\
-should not depend on the Octave load path.\n\
+The second argument, @var{file}, should be an absolute file name or\n\
+a file name in the same directory as the function or script from which\n\
+the autoload command was run. @var{file} should not depend on the\n\
+Octave load path.\n\
 \n\
 Normally, calls to @code{autoload} appear in PKG_ADD script files that\n\
 are evaluated when a directory is added to the Octave's load path.  To\n\
-avoid having to hardcode directory names in @var{file}, it is customary\n\
-to use\n\
+avoid having to hardcode directory names in @var{file}, if @var{file}\n\
+is in the same directory as the PKG_ADD script then\n\
 \n\
 @example\n\
-autoload (\"foo\",\n\
-          fullfile (fileparts (mfilename (\"fullpath\")),\n\
-                    \"bar.oct\"));\n\
+autoload (\"foo\", \"bar.oct\");\n\
 @end example\n\
 \n\
-Uses like\n\
+will load the function @code{foo} from the file @code{bar.oct}. The above\n\
+when @code{bar.oct} is not in the same directory or uses like\n\
 \n\
 @example\n\
 autoload (\"foo\", file_in_loadpath (\"bar.oct\"))\n\
 @end example\n\
 \n\
 @noindent\n\
-are strongly discouraged.\n\
+are strongly discouraged, as their behavior might be unpredictable.\n\
 \n\
 With no arguments, return a structure containing the current autoload map.\n\
 @seealso{PKG_ADD}\n\
@@ -3547,10 +3548,32 @@ With no arguments, return a structure containing the current autoload map.\n\
 	  std::string nm = argv[2];
 
 	  if (! octave_env::absolute_pathname (nm))
-	    warning_with_id ("Octave:autoload-relative-file-name",
-			     "autoload: `%s' is not an absolute file name",
-			     nm.c_str ());
-
+	    {
+	      octave_function *fcn = 
+		octave_call_stack::caller_user_script_or_function ();
+	      bool found = false;
+	      if (fcn)
+		{
+		  std::string fname = fcn->fcn_file_name ();
+		  if (! fname.empty ())
+		    {
+		      fname = octave_env::make_absolute (fname,
+			octave_env::getcwd ());
+		      fname = fname.substr (0, 
+			fname.find_last_of (file_ops::dir_sep_str) + 1);
+		      file_stat fs (fname + nm);
+		      if (fs.exists ())
+			{
+			  nm = fname + nm;
+			  found = true;
+			}
+		    }
+		}
+	      if (! found)
+		warning_with_id ("Octave:autoload-relative-file-name",
+				 "autoload: `%s' is not an absolute file name",
+				 nm.c_str ());
+	    }
 	  autoload_map[argv[1]] = nm;
 	}
     }

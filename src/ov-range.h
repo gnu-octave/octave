@@ -163,6 +163,30 @@ public:
   NDArray array_value (bool = false) const
     { return range.matrix_value (); }
 
+  int8NDArray
+  int8_array_value (void) const { return int8NDArray (array_value ()); }
+
+  int16NDArray
+  int16_array_value (void) const { return int16NDArray (array_value ()); }
+
+  int32NDArray
+  int32_array_value (void) const { return int32NDArray (array_value ()); }
+
+  int64NDArray
+  int64_array_value (void) const { return int64NDArray (array_value ()); }
+
+  uint8NDArray
+  uint8_array_value (void) const { return uint8NDArray (array_value ()); }
+
+  uint16NDArray
+  uint16_array_value (void) const { return uint16NDArray (array_value ()); }
+
+  uint32NDArray
+  uint32_array_value (void) const { return uint32NDArray (array_value ()); }
+
+  uint64NDArray
+  uint64_array_value (void) const { return uint64NDArray (array_value ()); }
+
   SparseMatrix sparse_matrix_value (bool = false) const
     { return SparseMatrix (range.matrix_value ()); }
 

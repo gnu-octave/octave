@@ -1,3 +1,9 @@
+2007-09-28  David Bateman  <dbateman@free.fr>
+
+	* ov-range.h (int8_array_value, int16_array_value, int32_array_value,
+	int64_array_value, uint8_array_value, uint16_array_value, 
+	int32_array_value, uint64_array_value): New methods
+
 2007-09-28  Kai Habel  <kai.habel@gmx.de>
 
 	* graphics.h.in (color_property::colormap_property (const Matrix&)):

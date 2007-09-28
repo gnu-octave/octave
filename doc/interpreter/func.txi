@@ -998,7 +998,7 @@ passes it to @code{quad},
 
 @example
 quad (@@(x) sin (x), 0, pi)
-    @result{} 1.8391
+    @result{} 2
 @end example
 
 @noindent

@@ -163,6 +163,10 @@ public:
   NDArray array_value (bool = false) const
     { return range.matrix_value (); }
 
+  // FIXME -- it would be better to have Range::intXNDArray_value
+  // functions to avoid the intermediate conversion to a matrix
+  // object.
+
   int8NDArray
   int8_array_value (void) const { return int8NDArray (array_value ()); }
 

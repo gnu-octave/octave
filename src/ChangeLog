@@ -1,3 +1,8 @@
+2007-09-28  Kai Habel  <kai.habel@gmx.de>
+
+	* graphics.h.in (color_property::colormap_property (const Matrix&)):
+	Use floating point math in calculation of colormap.
+
 2007-09-26  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (color_values::str2rgb): accept upper, lower and

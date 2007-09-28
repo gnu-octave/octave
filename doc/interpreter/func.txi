@@ -948,7 +948,7 @@ a function as an argument to another function like @code{quad} or
 @example
 f = @@sin;
 quad (f, 0, pi)
-    @result{} 1.8391
+    @result{} 2
 @end example
 
 You may use @code{feval} to call a function using function handle, or
@@ -1008,7 +1008,7 @@ wraps another function, and
 a = 1;
 b = 2;
 quad (@@(x) betainc (x, a, b), 0, 0.4)
-    @result{} 1.3867
+    @result{} 0.13867
 @end example
 
 @noindent

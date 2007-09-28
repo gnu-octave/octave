@@ -1,3 +1,7 @@
+2006-09-28  Henry Mollet  mollet@pacbell.net
+
+	* interpreter/func.txi: Correct results of a couple of examples.
+
 2007-09-14  John W. Eaton  <jwe@octave.org>
 
 	* faq/Makefile.in: Create single Octave-FAQ.html file instead of a

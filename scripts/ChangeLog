@@ -1,3 +1,8 @@
+2007-09-30  Ben Abbott  <bpabbott@mac.com>
+
+	* plot/findobj.m: New function.
+	* plot/Makefile.m (SOURCES): Add it to SOURCES.
+
 2007-09-26  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m: Add second argument to setting for prefix for

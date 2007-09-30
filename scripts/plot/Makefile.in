@@ -60,6 +60,7 @@ SOURCES = \
   drawnow.m \
   errorbar.m \
   figure.m \
+  findobj.m \
   fplot.m \
   gca.m \
   gcf.m \

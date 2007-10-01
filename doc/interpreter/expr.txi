@@ -113,7 +113,7 @@ size whose elements are all one, and then to scale it to produce the
 desired result.  @xref{Special Utility Matrices}.
 
 It is also possible to create a matrix with different values. The
-following example create a 10 dimensional row vector @math{a} containing
+following example creates a 10 dimensional row vector @math{a} containing
 the values
 @iftex
 @tex
@@ -314,7 +314,7 @@ temporary result.
 @subsection Recursion
 @cindex factorial function
 
-With some restrictions@footnote{Some of Octave's function are
+With some restrictions@footnote{Some of Octave's functions are
 implemented in terms of functions that cannot be called recursively.
 For example, the ODE solver @code{lsode} is ultimately implemented in a
 Fortran subroutine that cannot be called recursively, so @code{lsode}

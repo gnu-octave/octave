@@ -565,7 +565,7 @@ endfor
 @end example
 
 @noindent
-In the above case, the mulitdimensional matrix @var{c} is reshaped to a
+In the above case, the multidimensional matrix @var{c} is reshaped to a
 two dimensional matrix as @code{reshape (c, rows(c),
 prod(size(c)(2:end)))} and then the same behavior as a loop over a two
 dimensional matrix is produced.

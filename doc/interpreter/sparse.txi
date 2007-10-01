@@ -787,9 +787,9 @@ solvers can be entirely disabled by using @dfn{spparms} to set @code{bandden}
 to 1 (i.e. @code{spparms ("bandden", 1)}).
 
 The QR solver factorizes the problem with a Dulmage-Mendhelsohn, to
-seperate the problem into blocks that can be treated as over-determined,
+separate the problem into blocks that can be treated as over-determined,
 multiple well determined blocks, and a final over-determined block. For
-matrices with blocks of strongly connectted nodes this is a big win as
+matrices with blocks of strongly connected nodes this is a big win as
 LU decomposition can be used for many blocks. It also significantly
 improves the chance of finding a solution to over-determined problems
 rather than just returning a vector of @dfn{NaN}'s.
@@ -800,8 +800,8 @@ solution and force a minimum norm solution to be used. However, for
 narrow banded, triangular or diagonal matrices, the cost of
 calculating the condition number is significant, and can in fact
 exceed the cost of factoring the matrix. Therefore the condition
-number is not calculated in these case, and Octave relies on simplier
-techniques to detect sinular matrices or the underlying LAPACK code in
+number is not calculated in these cases, and Octave relies on simpler
+techniques to detect singular matrices or the underlying LAPACK code in
 the case of banded matrices.
 
 The user can force the type of the matrix with the @code{matrix_type}

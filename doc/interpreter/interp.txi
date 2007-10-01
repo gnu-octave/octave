@@ -75,7 +75,7 @@ reconverted to the time domain.
 @DOCSTRING(interpft)
 
 There are two significant limitations on Fourier interpolation. Firstly,
-the function signal is assumed to be periodic, and so no periodic
+the function signal is assumed to be periodic, and so non periodic
 signals will be poorly represented at the edges. Secondly, both the
 signal and its interpolation are required to be sampled at equispaced
 points. An example of the use of @code{interpft} is
@@ -122,7 +122,7 @@ of interest.
 @node Multi-dimensional Interpolation
 @section Multi-dimensional Interpolation
 
-There are three multi-dimensional interpolation function in Octave, with
+There are three multi-dimensional interpolation functions in Octave, with
 similar capabilities.  Methods using Delaunay tessellation are described
 in @ref{Interpolation on Scattered Data}.
 
@@ -133,10 +133,10 @@ in @ref{Interpolation on Scattered Data}.
 @DOCSTRING(interpn)
 
 A significant difference between @code{interpn} and the other two
-multidimensional interpolation function is the fashion in which the
+multidimensional interpolation functions is the fashion in which the
 dimensions are treated. For @code{interp2} and @code{interp3}, the 'y'
 axis is considered to be the columns of the matrix, whereas the 'x'
-axis corresponds to the rows the the array. As Octave indexes arrays in
+axis corresponds to the rows of the array. As Octave indexes arrays in
 column major order, the first dimension of any array is the columns, and
 so @code{interpn} effectively reverses the 'x' and 'y' dimensions. 
 Consider the example

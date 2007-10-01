@@ -24,8 +24,8 @@ contains three observations from a two-dimensional distribution.
 While this is the default data arrangement, most functions support
 different arrangements.
 
-It should be noted that the statistics functions doesn't handle data
-containing NaN, NA, or Inf.  Such values needs to be handled explicitly.
+It should be noted that the statistics functions don't handle data
+containing NaN, NA, or Inf.  Such values need to be handled explicitly.
 
 @menu
 * Descriptive Statistics::
@@ -162,7 +162,7 @@ table summarizes the available tests.
 
 The tests return a p-value that describes the outcome of the test.
 Assuming that the test hypothesis is true, the p-value is the probability
-of obtaining a worse result then the observed one.  So large p-values
+of obtaining a worse result than the observed one.  So large p-values
 corresponds to a successful test.  Usually a test hypothesis is accepted
 if the p-value exceeds @math{0.05}.
 

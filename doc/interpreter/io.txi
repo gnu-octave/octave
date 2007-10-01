@@ -930,8 +930,8 @@ reading the same input with the conversion @samp{%10s} produces
 
 Octave can read and write binary data using the functions @code{fread}
 and @code{fwrite}, which are patterned after the standard C functions
-with the same names.  The are able to automatically swap the byte order
-of integer data and convert among ths supported floating point formats
+with the same names.  They are able to automatically swap the byte order
+of integer data and convert among the supported floating point formats
 as the data are read.
 
 @DOCSTRING(fread)

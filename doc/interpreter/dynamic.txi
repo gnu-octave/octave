@@ -38,7 +38,7 @@ address ask yourself
 
 @itemize @bullet
 @item
-Can I get the same functionality using the Octave scripting language only.
+Can I get the same functionality using the Octave scripting language only?
 @item
 Is it thoroughly optimized Octave code?  Vectorization of Octave code,
 doesn't just make it concise, it generally significantly improves its
@@ -1296,7 +1296,7 @@ functions to create @code{mxArray} structures, including
 
 The basic functions to access the data contained in an array is
 @code{mxGetPr}.  As the mex interface assumes that the real and imaginary
-parts of a complex array are stored seperately, there is an equivalent
+parts of a complex array are stored separately, there is an equivalent
 function @code{mxGetPi} that get the imaginary part.  Both of these
 functions are for use only with double precision matrices.  There also
 exists the generic function @code{mxGetData} and @code{mxGetImagData}
@@ -1508,7 +1508,7 @@ b = mystruct(a)
 The Octave format for sparse matrices is identical to the mex format in
 that it is a compressed colument sparse format.  Also in both, sparse
 matrices are required to be two dimensional.  The only difference is that
-the real and imaginary parts of the matrix are stored seperately.
+the real and imaginary parts of the matrix are stored separately.
 
 The mex-file interface, as well as using @code{mxGetM}, @code{mxGetN},
 @code{mxSetM}, @code{mxSetN}, @code{mxGetPr}, @code{mxGetPi},

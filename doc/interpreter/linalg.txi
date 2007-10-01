@@ -32,7 +32,7 @@ inverse is form is given by
 
 @enumerate 1
 @item If the matrix is upper or lower triangular sparse a forward or
-backward substition using the @sc{Lapack} xTRTRS function, and goto 4.
+backward substitution using the @sc{Lapack} xTRTRS function, and goto 4.
 
 @c Permuted triangular matrices currently disabled in the code
 @c

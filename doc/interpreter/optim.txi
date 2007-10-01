@@ -104,7 +104,7 @@ successive quadratic programming solver.
 @section Linear Least Squares
 
 Octave also supports linear least squares minimization.  That is,
-Octave can find the parameter @math{b} such the the model
+Octave can find the parameter @math{b} such that the model
 @iftex
 @tex
 $y = xb$

@@ -94,7 +94,7 @@ referred to as a @var{tm_struct}.
 
 Most of the remaining functions described in this section are not
 patterned after the standard C library.  Some are available for
-compatiblity with @sc{Matlab} and others are provided because they are
+compatibility with @sc{Matlab} and others are provided because they are
 useful.
 
 @DOCSTRING(clock)

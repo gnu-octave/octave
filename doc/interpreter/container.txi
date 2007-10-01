@@ -6,7 +6,7 @@
 @chapter Data Containers
 @cindex containers
 
-Octave includes support for two different mechanaisms to contain
+Octave includes support for two different mechanisms to contain
 arbitrary data types in the same variable. Structures, which are C-like,
 and are indexed with named fields, and cell arrays, where each element
 of the array can have a different data type and or shape.
@@ -262,7 +262,7 @@ ans =
 @end group
 @end example
 
-Furthermore, the structure array can return a comma seperated list
+Furthermore, the structure array can return a comma separated list
 (@pxref{Comma Separated Lists}), if indexed by one of itself field
 names. For example
 
@@ -401,14 +401,14 @@ Other functions that can manipulate the fields of a structure are given below.
 @node Processing Data in Structures
 @subsection Processing Data in Structures
 
-The simpliest way to process data in a structure is within a @code{for}
+The simplest way to process data in a structure is within a @code{for}
 loop or othe means of iterating over the fields. A similar effect can be
 achieved with the @code{structfun} function, where a user defined
-function is applied to eacg field of the structure.
+function is applied to each field of the structure.
 
 @DOCSTRING(structfun)
 
-Alternatively, to process the data in a strcuture, the structure might
+Alternatively, to process the data in a structure, the structure might
 be converted to another type of container before being treated.
 
 @DOCSTRING(struct2cell)
@@ -537,7 +537,7 @@ size(c1)
 @end example
 
 @noindent
-As can be seen, the @code{size} function also work for cell arrays. As
+As can be seen, the @code{size} function also works for cell arrays. As
 do the other functions describing the size of an object, such as
 @code{length}, @code{numel}, @code{rows}, and @code{columns}.
 
@@ -633,7 +633,7 @@ c = cellstr (a)
 
 One further advantage of using cell arrays to store multiple strings, is
 that most functions for string manipulations included with Octave
-supports this representation. As an example, it is possible to compare
+support this representation. As an example, it is possible to compare
 one string with many others using the @code{strcmp} function. If one of
 the arguments to this function is a string and the other is a cell array
 of strings, each element of the cell array will be compared the string
@@ -780,7 +780,7 @@ out = cell (4, 1);
 @end group
 @end example
 
-Structures arrays can equally be used to create comma separated
+Structure arrays can equally be used to create comma separated
 lists. This is done by addresses one of the fields of a structure
 array. For example
 

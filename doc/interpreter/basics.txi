@@ -682,7 +682,7 @@ A backslash.
 @node Diary and Echo Commands
 @subsection Diary and Echo Commands
 @cindex diary of commands and output
-@cindex command and ouput logs
+@cindex command and output logs
 @cindex logging commands and output
 @cindex echoing executing commands
 @cindex command echoing
@@ -849,7 +849,7 @@ Note that some operating systems may place a limit on the number of
 characters that are recognized after @samp{#!}.  Also, the various
 shells/systems parse differently the arguments appearing in a @samp{#!} 
 line.  The majority of them group together all the arguments in a string
-and pass it to the interepreter as a single argument.  In this case, the
+and pass it to the interpreter as a single argument.  In this case, the
 following script:
 
 @example

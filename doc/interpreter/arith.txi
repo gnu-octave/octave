@@ -110,7 +110,7 @@ defined as @code{sqrt (-1)}.
 @section Trigonometry
 
 Octave provides the following trigonometric functions.  Angles are
-specified in radians.  To convert from degrees to radians multipy by
+specified in radians.  To convert from degrees to radians multiply by
 @iftex
 @tex
 $\pi/180$

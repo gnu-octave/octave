@@ -37,12 +37,12 @@ Numerical integration based on Gaussian quadrature.
 Numerical integration using an adaptive Lobatto rule.
 
 @item trapz
-Numerical integration using the trapezodial method.
+Numerical integration using the trapezoidal method.
 @end table
 
 @noindent
 Besides these functions Octave also allows you to perform cumulative
-numerical integration using the trapezodial method through the
+numerical integration using the trapezoidal method through the
 @code{cumtrapz} function.
 
 @DOCSTRING(quad)

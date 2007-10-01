@@ -1,3 +1,8 @@
+2007-10-01  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (archprefix): Set using octave_config_info("libexecdir") 
+	rather than OCTAVE_HOME().
+
 2007-09-30  Ben Abbott  <bpabbott@mac.com>
 
 	* plot/findobj.m: New function.

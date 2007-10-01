@@ -191,7 +191,7 @@ function [local_packages, global_packages] = pkg (varargin)
   if (prefix == -1)
     if (global_install)
       prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-      archprefix = fullfile (OCTAVE_HOME (), "libexec", "octave", "packages");
+      archprefix = fullfile (octave_config_info ("libexecdir"), "octave", "packages");
     else
       prefix = fullfile ("~", "octave");
       archprefix = prefix;

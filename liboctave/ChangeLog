@@ -1,3 +1,8 @@
+2007-10-01  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.cc (command_editor::do_decode_prompt_string): Don't
+	insert extra '\001' when decoding \[ and \].
+
 2007-09-26  David Bateman  <dbateman@free.fr>
 
 	* dMatrix.cc (lssolve): Replace the use of xGELSS with xGELSY with

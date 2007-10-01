@@ -1128,10 +1128,9 @@ command_editor::do_decode_prompt_string (const std::string& s)
 	    case '[':
 	    case ']':
 	      {
-		temp.resize (2);
+		temp.resize (1);
 
-		temp[0] = '\001';
-		temp[1] = ((c == '[')
+		temp[0] = ((c == '[')
 			   ? ::octave_rl_prompt_start_ignore ()
 			   : ::octave_rl_prompt_end_ignore ());
 

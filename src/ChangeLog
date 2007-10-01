@@ -48,6 +48,7 @@
 2007-09-25  Matthias Drochner  <m.drochner@fz-juelich.de>
 
 	* syscalls.cc (Fpopen2): Doc fix.
+	Use "sort -r" instead of "sort -nr" in test.
 
 2007-09-18  John W. Eaton  <jwe@octave.org>
 

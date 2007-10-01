@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.575 $)
+AC_REVISION($Revision: 1.576 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1437,7 +1437,7 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name chmod \
   readlink realpath rename resolvepath rindex rmdir round select setgrent \
   setlocale setpwent setvbuf sigaction siglongjmp sigpending sigprocmask \
   sigsuspend snprintf stat strcasecmp strdup strerror stricmp \
-  strncasecmp strnicmp strsignal symlink tempnam umask \
+  strncasecmp strnicmp strptime strsignal symlink tempnam umask \
   uname unlink usleep utime vfprintf vsprintf vsnprintf waitpid \
   _chmod _snprintf x_utime _utime32)
 
@@ -1451,8 +1451,6 @@ case "$canonical_host_type" in
     AC_CHECK_FUNCS(strftime)
   ;;
 esac
-
-OCTAVE_CHECK_STRPTIME
 
 OCTAVE_SMART_PUTENV
 

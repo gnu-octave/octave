@@ -1,3 +1,9 @@
+2007-10-01  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4 (OCTAVE_CHECK_STRPTIME): Delete.
+	* configure.in: Don't use OCTAVE_CHECK_STRPTIME, simply check for
+	strptime.
+
 2007-09-18  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* aclocal.m4 (OCTAVE_CHECK_STRPTIME): New macro.

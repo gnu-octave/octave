@@ -987,67 +987,6 @@ AC_DEFUN([OCTAVE_HDF5_DLL], [
   if test "$octave_cv_hdf5_dll" = yes; then
     AC_DEFINE(_HDF5USEDLL_, 1, [Define if using HDF5 dll (Win32)])
   fi])
-dnl 
-dnl Check to see if the function 'strptime' fills all fields of the tm
-dnl structure correctly or if some systems maybe forget about the tm_wday
-dnl and tm_yday fields (see inline comments below)
-dnl
-AC_DEFUN([OCTAVE_CHECK_STRPTIME],[
-  AC_CHECK_FUNC(strptime)
-  if test "$ac_cv_func_strptime" == yes; then
-    AC_MSG_CHECKING([whether strptime works])
-    AC_CACHE_VAL([octave_cv_strptime],[
-      AC_TRY_RUN([#include <stdio.h>
-      #include <time.h>
-
-      int main (int argc, char *argv[]) {
-
-        struct tm tm;
-        time_t t;
-
-        /* Checks for a handle error if return value == NULL, if so then
-           return an error number immediately */
-        if (strptime("17-09-2007 12:10:20", "%d-%m-%Y %H:%M:%S", &tm) == NULL) {
-          /* printf ("strptime: An handle error occured\n"); */
-          return (1);
-        }
-        /* printf("year: %d; month: %d; day: %d;\n", 
-             tm.tm_year, tm.tm_mon, tm.tm_mday);
-           printf("hour: %d; minute: %d; second: %d\n", 
-             tm.tm_hour, tm.tm_min, tm.tm_sec);
-           printf("strptime: week day: %d, year day: %d\n",
-             tm.tm_wday, tm.tm_yday); */
-
-        /* The hard coded date from above is a 'Monday' and the day
-           number '259' of the year 2007, so tm_wday == 1 and
-           tm_yday == 259, if these values are not set then return 
-           the error number 1 */
-        if (tm.tm_year != 107) return (1);
-        if (tm.tm_mon  != 8)   return (1);
-        if (tm.tm_mday != 17)  return (1);
-        if (tm.tm_hour != 12)  return (1);
-        if (tm.tm_min  != 10)  return (1);
-        if (tm.tm_sec  != 20)  return (1);
-        /* On some system eg. MacOSX and Cygwin the following two fields
-           may be zero, ie. the function does not work as expected */
-        if (tm.tm_wday != 1)   return (1);
-        if (tm.tm_yday != 259) return (1);
-
-        /* If not already returned from this test program then function
-           seems to work correctly */
-        return (0);
-      }],[octave_cv_strptime=yes],[octave_cv_strptime=no],[octave_cv_strptime=no]
-      ) # end of TRY_RUN
-    ])  # end of CACHE_VAL
-
-    AC_MSG_RESULT([$octave_cv_strptime])
-    if test x$octave_cv_strptime = xyes
-    then
-      AC_DEFINE(HAVE_STRPTIME, 1,
-         [Define to 1 if you have a working `strptime' function.])
-    fi
-  fi # if test "$ac_cv_func_strptime" == yes; then
-]) # end of AC_DEFUN of OCTAVE_CHECK_STRPTIME
 dnl
 dnl Check for the QHull version.
 dnl

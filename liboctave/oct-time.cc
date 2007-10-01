@@ -27,6 +27,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 #include <climits>
 #include <cmath>
+#include <ctime>
 
 #ifdef HAVE_UNISTD_H
 #ifdef HAVE_SYS_TYPES_H
@@ -354,6 +355,10 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   char *p = strsave (str.c_str ());
 
   char *q = oct_strptime (p, fmt.c_str (), &t);
+
+  // Fill in wday and yday.
+  t.tm_isdst = -1;
+  mktime (&t);
 
   if (q)
     nchars = q - p + 1;

@@ -1,3 +1,18 @@
+2007-10-01  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.cc ((color_property::color_property (const
+	octave_value& val)): Undo change from 2007-09-26
+	(patch::properties::properties): use the "a" modifier to
+	face_color & edge_color properties
+	(patch::properties::set): Undo change from 2007-09-26
+	* graphics.h.in	(color_property::color_property
+	(const octave_value& val)): Undo change from 2007-09-26
+
+2007-10-01  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* octave.cc (octave_main): Add "--line-editing" option to force
+	readline line editing.
+
 2007-09-28  David Bateman  <dbateman@free.fr>
 
 	* ov-range.h (int8_array_value, int16_array_value, int32_array_value,

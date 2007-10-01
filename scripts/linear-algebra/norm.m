@@ -78,7 +78,7 @@ function retval = norm (x, p)
 
   ## Do we have a vector or matrix as the first argument?
 
-  if (is_vector (x))
+  if (ndims(x) == 2 && (rows (x) == 1 || columns (x) == 1))
     if (isinteger (x) || issparse (x))
       if (ischar (p))
         if (strcmp (p, "fro"))

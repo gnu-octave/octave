@@ -126,7 +126,7 @@ static bool verbose_flag = false;
 static const char *usage_string = 
   "octave [-?HVdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--exec-path path] [--help] [--image-path path] [--info-file file]\n\
-       [--info-program prog] [--interactive] [--no-history] [--no-init-file]\n\
+       [--info-program prog] [--interactive] [--line-editing] [--no-history] [--no-init-file]\n\
        [--no-line-editing] [--no-site-file] [--no-init-path] [-p path]\n\
        [--path path] [--silent] [--traditional] [--verbose] [--version] [file]";
 
@@ -154,6 +154,7 @@ static bool persist = false;
 #define NO_INITIAL_PATH_OPTION 9
 #define PERSIST_OPTION 10
 #define TRADITIONAL_OPTION 11
+#define LINE_EDITING_OPTION 12
 long_options long_opts[] =
   {
     { "debug",            prog_args::no_arg,       0, 'd' },
@@ -166,6 +167,7 @@ long_options long_opts[] =
     { "info-file",        prog_args::required_arg, 0, INFO_FILE_OPTION },
     { "info-program",     prog_args::required_arg, 0, INFO_PROG_OPTION },
     { "interactive",      prog_args::no_arg,       0, 'i' },
+    { "line-editing",     prog_args::no_arg,       0, LINE_EDITING_OPTION },
     { "no-history",       prog_args::no_arg,       0, 'H' },
     { "no-init-file",     prog_args::no_arg,       0, NO_INIT_FILE_OPTION },
     { "no-line-editing",  prog_args::no_arg,       0, NO_LINE_EDITING_OPTION },
@@ -448,6 +450,7 @@ Options:\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
+  --line-editing          Force readline use for command-line editing.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
@@ -571,6 +574,8 @@ octave_main (int argc, char **argv, int embedded)
 
   prog_args args (argc, argv, short_opts, long_opts);
 
+  bool forced_line_editing = false;
+
   int optc;
   while ((optc = args.getopt ()) != EOF)
     {
@@ -653,6 +658,10 @@ octave_main (int argc, char **argv, int embedded)
 	    bind_internal_variable ("info_program", args.optarg ());
 	  break;
 
+        case LINE_EDITING_OPTION:
+          forced_line_editing = true;
+          break;
+
 	case NO_INIT_FILE_OPTION:
 	  read_init_files = false;
 	  break;
@@ -721,7 +730,7 @@ octave_main (int argc, char **argv, int embedded)
   interactive = (! embedded
 		 && isatty (fileno (stdin)) && isatty (fileno (stdout)));
 
-  if (! interactive)
+  if (! interactive && ! forced_line_editing)
     line_editing = false;
 
   // If there is an extra argument, see if it names a file to read.

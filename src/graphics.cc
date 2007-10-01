@@ -122,8 +122,8 @@ color_values::str2rgb (std::string str)
   return retval;
 }
 
-color_property::color_property (const octave_value& val, const radio_values &v)
-  : radio_val (v), current_val ()
+color_property::color_property (const octave_value& val)
+  : radio_val (), current_val ()
 {
   // FIXME -- need some error checking here.
 
@@ -133,19 +133,11 @@ color_property::color_property (const octave_value& val, const radio_values &v)
 
       if (! s.empty ())
 	{
-	  if (radio_val.contains (s))
+	  color_values col (s);
+	  if (! error_state)
 	    {
-	      current_val = s;
-	      current_type = radio_t;
-	    }
-          else
-	    {
-	      color_values col (s);
-	      if (! error_state)
-		{
-		  color_val = col;
-		  current_type = color_t;
-		}
+	      color_val = col;
+	      current_type = color_t;
 	    }
 	}
       else
@@ -2131,7 +2123,7 @@ patch::properties::set (const property_name& name,
   else if (name.compare ("zdata"))
     set_zdata (val);
   else if (name.compare ("facecolor"))
-    set_facecolor (color_property (val, radio_values ("flat|none|interp")));
+    set_facecolor (val);
   else if (name.compare ("facealpha"))
     set_facealpha (val);
   else if (name.compare ("edgecolor"))

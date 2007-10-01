@@ -1,5 +1,7 @@
 2007-10-01  David Bateman  <dbateman@free.fr>
 
+        * linear-algebra/norm.m: Inline the isvector(x) calculation for
+	speed with small vectors.
 	* pkg/pkg.m (archprefix): Set using octave_config_info("libexecdir") 
 	rather than OCTAVE_HOME().
 

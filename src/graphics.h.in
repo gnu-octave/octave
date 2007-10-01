@@ -206,8 +206,7 @@ public:
       current_val (initial_value)
   { }
 
-  color_property (const octave_value& val, 
-		  const radio_values &v = radio_values());
+  color_property (const octave_value& val);
 
   operator octave_value (void) const
   {
@@ -1600,9 +1599,9 @@ public:
       octave_value xdata
       octave_value ydata
       octave_value zdata
-      color_property facecolor
+      color_property facecolor a
       octave_value facealpha
-      color_property edgecolor
+      color_property edgecolor a
       octave_value linestyle
       octave_value linewidth
       octave_value marker

@@ -1,3 +1,8 @@
+2007-10-01  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Use %.15e instead of %.15g when setting
+	range values.
+
 2007-10-01  David Bateman  <dbateman@free.fr>
 
         * linear-algebra/norm.m: Inline the isvector(x) calculation for

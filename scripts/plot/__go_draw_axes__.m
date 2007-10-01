@@ -702,7 +702,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       xdir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%.15g:%.15g] %s;\n", xaxisloc, xlim, xdir);
+    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n", xaxisloc, xlim, xdir);
 
     if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
@@ -715,7 +715,7 @@ function __go_draw_axes__ (h, plot_stream)
     else
       ydir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%.15g:%.15g] %s;\n", yaxisloc, ylim, ydir);
+    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n", yaxisloc, ylim, ydir);
 
     if (nd == 3)
       if (zautoscale && have_data)
@@ -729,7 +729,7 @@ function __go_draw_axes__ (h, plot_stream)
       else
 	zdir = "noreverse";
       endif
-      fprintf (plot_stream, "set zrange [%.15g:%.15g] %s;\n", zlim, zdir);
+      fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
     endif
 
     if (strcmpi (axis_obj.box, "on"))

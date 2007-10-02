@@ -1,3 +1,8 @@
+2007-10-02  David Bateman  <dbateman@free.fr>
+
+	* miscellaneous/ls.m: If nargout return string array of files
+	returned by ls.
+
 2007-10-01  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Use %.15e instead of %.15g when setting

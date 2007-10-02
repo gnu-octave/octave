@@ -53,12 +53,16 @@ function retval = ls (varargin)
 
     cmd = sprintf ("%s ", __ls_command__, args{:});
 
-    if (page_screen_output ())
+    if (page_screen_output () || nargout > 0)
 
       [status, output] = system (cmd);
 
       if (status == 0)
-	puts (output);
+	if (nargout == 0)
+	  puts (output);
+	else
+	  retval = strvcat (regexp (output, '[^\s]+', 'match'){:});
+	endif
       else
 	error ("ls: command exited abnormally with status %d", status);
       endif

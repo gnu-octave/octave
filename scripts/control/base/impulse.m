@@ -46,7 +46,7 @@
 ## @item t
 ## Times of the impulse response.
 ## @end table
-## @seealso{step, __stepimp__}
+## @seealso{step}
 ## @end deftypefn
 
 ## Author: Kai P. Mueller <mueller@ifr.ing.tu-bs.de>

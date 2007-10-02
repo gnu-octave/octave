@@ -60,7 +60,7 @@
 ## between 0 and 100, and not 0 and 1 like Octave assumes. This is
 ## solved by setting the third argument to 100.
 ##
-## @seealso{image, imshow, __img_gnuplot__, __img_via_file__}
+## @seealso{image, imshow}
 ## @end deftypefn
 
 function [ocmd, ofcn, ozoom] = image_viewer (cmd, fcn, zoom)

@@ -17,6 +17,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
+## Undocumented internal function.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __img_via_file__(@var{x}, @var{y}, @var{im}, @var{zoom}, @var{command})
 ## Display an image by saving it to a file in PPM format and launching

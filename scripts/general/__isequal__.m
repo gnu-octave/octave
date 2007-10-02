@@ -15,6 +15,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
+## Undocumented internal function.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __isequal__ (@var{nans_compare_equal}, @var{x1}, @var{x2}, @dots{})
 ## Return true if @var{x1}, @var{x2}, @dots{} are all equal and

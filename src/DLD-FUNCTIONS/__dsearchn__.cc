@@ -35,7 +35,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 DEFUN_DLD (__dsearchn__, args, ,
 	"-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{idx}, @var{d}] =} dsearch (@var{x}, @var{xi})\n\
-Internal function for dsearchn.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   int nargin = args.length();
@@ -53,7 +53,7 @@ Internal function for dsearchn.\n\
   if (! error_state)
     {
       if (x.rows() != xi.rows() || x.columns() < 1)
-	error ("__dsearch__: dimensional mismatch.");
+	error ("__dsearch__: dimensional mismatch");
       else
 	{
 	  octave_idx_type n = x.rows();

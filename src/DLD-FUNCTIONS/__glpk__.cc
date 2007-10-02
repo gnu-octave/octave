@@ -460,8 +460,7 @@ glpk (int sense, int n, int m, double *c, int nz, int *rn, int *cn,
 DEFUN_DLD (__glpk__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{values}] =} __glpk__ (@var{args})\n\
-Internal interface for the GNU GLPK library.\n\
-You should be using using the @code{glpk} function instead.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   // The list of values to return.  See the declaration in oct-obj.h

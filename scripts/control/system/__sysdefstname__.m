@@ -17,6 +17,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301 USA.
 
+## Undocumented internal function.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __sysdefstname__ (@var{n}, @var{nz})
 ## return default state names given @var{n}, @var{nz}

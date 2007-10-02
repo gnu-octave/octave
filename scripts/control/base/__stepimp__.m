@@ -17,6 +17,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301 USA.
 
+## Undocumented internal function.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{y}, @var{t}] =} __stepimp__ (@var{sitype}, @var{sys} [, @var{inp}, @var{tstop}, @var{n}])
 ## Impulse or step response for a linear system.

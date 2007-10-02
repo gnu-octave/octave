@@ -300,6 +300,7 @@ cl_cntr (RowVector & X, RowVector & Y, Matrix & Z, double flev)
 DEFUN_DLD (__contourc__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __contourc__ (@var{x}, @var{y}, @var{z}, @var{levels})\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -2541,7 +2541,7 @@ With -x, clear the variables that don't match the patterns.\n\
 DEFUN (__print_symtab_info__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __print_symtab_info__ ()\n\
-Print raw symbol table statistices.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2587,7 +2587,7 @@ Print raw symbol table statistices.\n\
 DEFUN (__print_symbol_info__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __dump_symbol_info__ (@var{name})\n\
-Print symbol table information for the symbol @var{name}.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;

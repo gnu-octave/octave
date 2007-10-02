@@ -52,14 +52,16 @@ DEFUN_DLD (__voronoi__, args, ,
         "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{tri} =} __voronoi__ (@var{point})\n\
 @deftypefnx {Loadable Function} {@var{tri} =} __voronoi__ (@var{point}, @var{options})\n\
-Internal function for voronoi.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
 #ifdef HAVE_QHULL
+
   retval(0) = 0.0;
 
-  int nargin = args.length();
+  int nargin = args.length ();
   if (nargin < 1 || nargin > 2) 
     {
       print_usage ();
@@ -70,23 +72,25 @@ Internal function for voronoi.\n\
 
   if (nargin == 2) 
     {
-      if (!args (1).is_string ()) 
+      if (! args (1).is_string ()) 
 	{
 	  error ("__voronoi__: second argument must be a string");
 	  return retval;
 	}
-      options = args (1).string_value().c_str();
+
+      options = args (1).string_value().c_str ();
     }
   else
     options = "";
 
-  Matrix p(args(0).matrix_value());
+  Matrix p (args(0).matrix_value ());
 
-  const octave_idx_type dim = p.columns();
-  const octave_idx_type np = p.rows();
-  p = p.transpose();
+  const octave_idx_type dim = p.columns ();
+  const octave_idx_type np = p.rows ();
+  p = p.transpose ();
 
-  double *pt_array = p.fortran_vec();
+  double *pt_array = p.fortran_vec ();
+
   //double  pt_array[dim * np];
   //for (int i = 0; i < np; i++) 
   //  {
@@ -98,54 +102,55 @@ Internal function for voronoi.\n\
 
   boolT ismalloc = false;
 
-  OCTAVE_LOCAL_BUFFER(char, flags, 250);
+  OCTAVE_LOCAL_BUFFER (char, flags, 250);
 
   // hmm  lot's of options for qhull here
-  sprintf(flags,"qhull v Fv T0 %s",options);
+  sprintf (flags, "qhull v Fv T0 %s", options);
 
-  // If you want some debugging information replace the NULL
-  // pointer with outfile.
-  FILE *outfile = stdout;
+  // If you want some debugging information replace the 0 pointer
+  // with stdout or some other file open for writing.
+
+  FILE *outfile = 0;
   FILE *errfile = stderr;
 
-  if (!qh_new_qhull (dim, np, pt_array, ismalloc, flags, NULL, errfile)) 
+  if (! qh_new_qhull (dim, np, pt_array, ismalloc, flags, outfile, errfile)) 
     {
-
-      // If you want some debugging information replace the NULL
-      // pointer with outfile.
       facetT *facet;
       vertexT *vertex;
 
       octave_idx_type i = 0, n = 1, k = 0, m = 0, fidx = 0, j = 0, r = 0;
-      OCTAVE_LOCAL_BUFFER(octave_idx_type, ni, np);
+      OCTAVE_LOCAL_BUFFER (octave_idx_type, ni, np);
       
       for (i = 0; i < np; i++) 
 	ni[i] = 0;
-      qh_setvoronoi_all();
+      qh_setvoronoi_all ();
       bool infinity_seen = false;
-      facetT *neighbor,**neighborp;
+      facetT *neighbor, **neighborp;
       coordT *voronoi_vertex;
+
       FORALLfacets 
 	{
 	  facet->seen = false;
 	}
+
       FORALLvertices 
 	{
 	  if (qh hull_dim == 3)
-	    qh_order_vertexneighbors(vertex);
+	    qh_order_vertexneighbors (vertex);
 	  infinity_seen = false;
-	  FOREACHneighbor_(vertex)
+
+	  FOREACHneighbor_ (vertex)
 	    {
-	      if (!neighbor->upperdelaunay)
+	      if (! neighbor->upperdelaunay)
 		{
-		  if (!neighbor->seen)
+		  if (! neighbor->seen)
 		    {
 		      n++;
-		      neighbor->seen=True;
+		      neighbor->seen = true;
 		    }
 		  ni[k]++;
 		}
-	      else if (!infinity_seen)
+	      else if (! infinity_seen)
 		{
 		  infinity_seen = true;
 		  ni[k]++;
@@ -154,32 +159,35 @@ Internal function for voronoi.\n\
 	  k++;
 	}
 
-      Matrix v(n, dim);
+      Matrix v (n, dim);
       for (octave_idx_type d = 0; d < dim; d++)
 	v(0,d) = octave_Inf;
 
-      boolMatrix AtInf(np, 1);
+      boolMatrix AtInf (np, 1);
       for (i = 0; i < np; i++) 
 	AtInf(i) = false;
       octave_value_list F;
       k = 0;
       i = 0;
+
       FORALLfacets 
 	{
 	  facet->seen = false;
 	}
+
       FORALLvertices
 	{
 	  if (qh hull_dim == 3)
 	    qh_order_vertexneighbors(vertex);
 	  infinity_seen = false;
-	  RowVector facet_list(ni[k++]);
+	  RowVector facet_list (ni[k++]);
 	  m = 0;
+
 	  FOREACHneighbor_(vertex)
 	    {
 	      if (neighbor->upperdelaunay)
 		{
-		  if (!infinity_seen)
+		  if (! infinity_seen)
 		    {
 		      infinity_seen = true;
 		      facet_list(m++) = 1;
@@ -188,7 +196,7 @@ Internal function for voronoi.\n\
 		} 
 	      else 
 		{
-		  if (!neighbor->seen)
+		  if (! neighbor->seen)
 		    {
 		      voronoi_vertex = neighbor->center;
 		      fidx = neighbor->id;
@@ -200,7 +208,7 @@ Internal function for voronoi.\n\
 		      neighbor->seen = true;
 		      neighbor->visitid = i;
 		    }
-		  facet_list(m++)=neighbor->visitid + 1;
+		  facet_list(m++) = neighbor->visitid + 1;
 		}
 	    }
 	  F(r++) = facet_list;
@@ -215,19 +223,22 @@ Internal function for voronoi.\n\
       retval(1) = C;
       retval(2) = AtInf;
 
-      //free long memory
-      qh_freeqhull(!qh_ALL);
+      // free long memory
+      qh_freeqhull (! qh_ALL);
 
-      //free short memory and memory allocator
+      // free short memory and memory allocator
       int curlong, totlong;
       qh_memfreeshort (&curlong, &totlong);
 
-      if (curlong || totlong) {
-	warning("__voronoi__: did not free %d bytes of long memory (%d pieces)", totlong, curlong);
-      }
+      if (curlong || totlong)
+	warning ("__voronoi__: did not free %d bytes of long memory (%d pieces)", totlong, curlong);
     }
+  else
+    error ("__voronoi__: qhull failed");
+
 #else
   error ("__voronoi__: not available in this version of Octave");
 #endif
+
   return retval;
 }

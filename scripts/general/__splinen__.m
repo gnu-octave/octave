@@ -17,6 +17,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301, USA.
 
+## Undocumented internal function.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{yi} = } __splinen__ (@var{x}, @var{y}, @var{xi})
 ## Internal support function for multi-dimensional splines.

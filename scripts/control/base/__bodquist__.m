@@ -17,6 +17,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301 USA.
 
+## Undocumented internal function.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{f}, @var{w}, @var{rsys}] =} __bodquist__ (@var{sys}, @var{w}, @var{out_idx}, @var{in_idx})
 ## Used internally by @command{bode}, @command{nyquist}; compute system frequency response.

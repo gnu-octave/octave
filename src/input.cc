@@ -1265,7 +1265,7 @@ DEFUN (__request_drawnow__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __request_drawnow__ ()\n\
 @deftypefnx {Built-in Function} {} __request_drawnow__ (@var{flag})\n\
-Request a call drawnow at the next user prompt.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;

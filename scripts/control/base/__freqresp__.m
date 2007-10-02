@@ -17,6 +17,8 @@
 ## Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 ## 02110-1301 USA.
 
+## Undocumented internal function.
+
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} __freqresp__ (@var{sys}, @var{USEW}, @var{w})
 ## Frequency response function - used internally by @command{bode}, @command{nyquist}.

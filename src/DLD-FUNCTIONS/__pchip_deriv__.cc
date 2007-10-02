@@ -40,11 +40,13 @@ extern "C"
 			     octave_idx_type *ierr);
 }
 
+// Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates
+// for piecewise polynomials.
+
 DEFUN_DLD (__pchip_deriv__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __pchip_deriv__ (@var{x}, @var{y})\n\
-Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates for\n\
-piecewise polynomials.  You should be using @code{pchip} function instead.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;

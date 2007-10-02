@@ -138,20 +138,21 @@ lin_interpn (int n, const octave_idx_type *size, const octave_idx_type *scale,
     }
 }
 
+// Perform @var{n}-dimensional interpolation.  Each element of then
+// @var{n}-dimensional array @var{v} represents a value at a location
+// given by the parameters @var{x1}, @var{x2},...,@var{xn}. The parameters
+// @var{x1}, @var{x2}, @dots{}, @var{xn} are either @var{n}-dimensional
+// arrays of the same size as the array @var{v} in the \"ndgrid\" format
+// or vectors.  The parameters @var{y1}, @var{y2}, @dots{}, @var{yn} are
+// all @var{n}-dimensional arrays of the same size and represent the
+// points at which the array @var{vi} is interpolated.
+//
+//This function only performs linear interpolation.
+
 DEFUN_DLD (__lin_interpn__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{vi} =} __lin_interpn__ (@var{x1}, @var{x2}, @dots{}, @var{xn}, @var{v}, @var{y1}, @var{y2}, @dots{}, @var{yn})\n\
-Perform @var{n}-dimensional interpolation.  Each element of then\n\
-@var{n}-dimensional array @var{v} represents a value at a location\n\
-given by the parameters @var{x1}, @var{x2},...,@var{xn}. The parameters\n\
-@var{x1}, @var{x2}, @dots{}, @var{xn} are either @var{n}-dimensional\n\
-arrays of the same size as the array @var{v} in the \"ndgrid\" format\n\
-or vectors.  The parameters @var{y1}, @var{y2}, @dots{}, @var{yn} are\n\
-all @var{n}-dimensional arrays of the same size and represent the\n\
-points at which the array @var{vi} is interpolated.\n\
-\n\
-This function only performs linear interpolation.\n\
-@seealso{interp1, interp2, ndgrid}\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;

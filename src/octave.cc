@@ -227,6 +227,7 @@ initialize_pathsearch (void)
 DEFUN (__version_info__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {retval =} __version_info__ (@var{name}, @var{version}, @var{release}, @var{date})\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;

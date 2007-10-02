@@ -2614,10 +2614,12 @@ Remove singleton dimensions from @var{x} and return the result.\n\
   return retval;
 }
 
+// Compute various norms of the vector X.
+
 DEFUN (__vnorm__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __vnorm__ (@var{x}, @var{p})\n\
-Compute various norms of the vector @var{x}.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;

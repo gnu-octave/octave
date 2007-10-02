@@ -2632,7 +2632,7 @@ make_graphics_object (const std::string& go_name,
 DEFUN (__go_figure__, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_figure__ (@var{fignum})\n\
-Create a figure graphics object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2696,7 +2696,7 @@ Create a figure graphics object.\n\
 DEFUN (__go_axes__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_axes__ (@var{parent})\n\
-Create an axes graphics object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (axes);
@@ -2705,7 +2705,7 @@ Create an axes graphics object.\n\
 DEFUN (__go_line__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_line__ (@var{parent})\n\
-Create a line graphics object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (line);
@@ -2714,7 +2714,7 @@ Create a line graphics object.\n\
 DEFUN (__go_text__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_text__ (@var{parent})\n\
-Create a text graphics object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (text);
@@ -2723,7 +2723,7 @@ Create a text graphics object.\n\
 DEFUN (__go_image__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_image__ (@var{parent})\n\
-Create an image graphics object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (image);
@@ -2732,7 +2732,7 @@ Create an image graphics object.\n\
 DEFUN (__go_surface__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_surface__ (@var{parent})\n\
-Create a surface graphics object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (surface);
@@ -2741,7 +2741,7 @@ Create a surface graphics object.\n\
 DEFUN (__go_patch__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_patch__ (@var{parent})\n\
-Create a patch graphics object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   GO_BODY (patch);
@@ -2750,6 +2750,7 @@ Create a patch graphics object.\n\
 DEFUN (__go_delete__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_delete__ (@var{h})\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -2791,7 +2792,7 @@ DEFUN (__go_delete__, args, ,
 DEFUN (__go_axes_init__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_axes_init__ (@var{h}, @var{mode})\n\
-Initialize axes object.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -2839,7 +2840,7 @@ Initialize axes object.\n\
 DEFUN (__go_handles__, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_handles__ ()\n\
-Return current list of function handles.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   return octave_value (gh_manager::handle_list ());
@@ -2848,7 +2849,7 @@ Return current list of function handles.\n\
 DEFUN (__go_figure_handles__, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_figure_handles__ ()\n\
-Return current list of function handles.\n\
+Undocumented internal function.\n\
 @end deftypefn")
 {
   return octave_value (gh_manager::figure_handle_list ());

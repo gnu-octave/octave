@@ -25,7 +25,4 @@ else
   awkcmd="$AWK '{ printf (\"%s%s\n\", tolower (\$0), \"$uscore\"); }'"
 fi
 
-$SED -n \
-  -e 'y/ABCDEFGHIJLKMNOPQRSTUVWXYZ/abcdefghijlkmnopqrstuvwxyz/' \
-  -e 's/^\(      \|	\)[ 	]*\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$/\3/p' | \
-  eval $awkcmd
+$SED -n -e 'y/ABCDEFGHIJLKMNOPQRSTUVWXYZ/abcdefghijlkmnopqrstuvwxyz/; s/^\(      \|	\)[ 	]*\(.*function\|subroutine\|entry\)[ 	]*\([^ 	(]*\).*$/\3/p' | eval $awkcmd

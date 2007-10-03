@@ -1,3 +1,7 @@
+2007-10-03  John W. Eaton  <jwe@octave.org>
+
+	* mkf77def.in: Combine sed expressions.
+
 2007-09-26  David Bateman  <dbateman@free.fr>
 
 	* lapack/dgelsy.f,  lapack/dlatrz.f,  lapack/zlarz.f,

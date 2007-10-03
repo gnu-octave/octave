@@ -1,3 +1,7 @@
+2007-10-03  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* DLD-FUNCTIONS/typecast.cc: Include <algorithm>.
+
 2007-10-03  John W. Eaton  <jwe@octave.org>
 
 	* oct-map.cc (Octave_map::Octave_map (const dim_vector&, 

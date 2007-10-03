@@ -93,6 +93,8 @@ function retval = norm (x, p)
           retval = max (abs (x));
         elseif (p == -Inf)
           retval = min (abs (x));
+	elseif (p == 1)
+	  retval = sum (abs (x));
         else
           retval = sum (abs (x) .^ p) ^ (1/p);
         endif

@@ -1,3 +1,7 @@
+2007-10-03  Quentin Spencer  <qspencer@ieee.org>
+
+	* linear-algebra/norm.m: Special case vector 1-norm.
+
 2007-10-03  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (is_architecture_dependent): New function to identify

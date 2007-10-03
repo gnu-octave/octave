@@ -95,6 +95,11 @@ function retval = norm (x, p)
           retval = min (abs (x));
 	elseif (p == 1)
 	  retval = sum (abs (x));
+	elseif (p == 2)
+          if (iscomplex (x))
+            x = abs (x);
+          endif
+          retval = sqrt (sum (x .* x));
         else
           retval = sum (abs (x) .^ p) ^ (1/p);
         endif
@@ -138,6 +143,7 @@ endfunction
 %!assert(norm(x,"fro"), 10);
 %!assert(norm(x), 10);
 %!assert(norm([1e200, 1]), 1e200);
+%!assert(norm([3+4i, 3-4i, sqrt(31)]), 9, -4*eps);
 %!shared m
 %! m = magic (4);
 %!assert(norm(m,1), 34);

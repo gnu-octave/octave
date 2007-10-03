@@ -560,7 +560,7 @@ the entire array.  If the cells are empty, create an empty structure\n\
 array with the specified field names.\n\
 @end deftypefn")
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int nargin = args.length ();
 
@@ -572,8 +572,23 @@ array with the specified field names.\n\
   // Note that struct () creates a 1x1 struct with no fields for
   // compatibility with Matlab.
 
-  if (nargin == 1 && args(0).is_empty () && args(0).is_real_matrix ())
-    return octave_value (Octave_map (args(0).dims ()));
+  if ((nargin == 1 || nargin == 2)
+      && args(0).is_empty () && args(0).is_real_matrix ())
+    {
+      Cell fields;
+
+      if (nargin == 2)
+	{
+	  if (args(1).is_cellstr ())
+	    retval = Octave_map (args(0).dims (), args(1).cell_value ());
+	  else
+	    error ("struct: expecting cell array of field names as second argument");
+	}
+      else
+	retval = Octave_map (args(0).dims ());
+
+      return retval;
+    }
     
   // Check for "field", VALUE pairs.
 
@@ -658,7 +673,7 @@ array with the specified field names.\n\
       if (error_state)
 	return retval;
     }
-  
+
   return octave_value (map);
 }
 

@@ -31,18 +31,22 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "oct-map.h"
 #include "utils.h"
 
-Octave_map::Octave_map (const dim_vector& dv,
-			const string_vector& key_list_arg)
+Octave_map::Octave_map (const dim_vector& dv, const Cell& keys)
   : map (), key_list (), dimensions (dv)
 {
   Cell c (dv);
 
-  for (octave_idx_type i = 0; i < key_list_arg.length (); i++)
+  if (keys.is_cellstr ())
     {
-      std::string k = key_list_arg[i];
-      map[k] = c;
-      key_list.push_back (k);
+      for (octave_idx_type i = 0; i < keys.numel (); i++)
+	{
+	  std::string k = keys(i).string_value ();
+	  map[k] = c;
+	  key_list.push_back (k);
+	}
     }
+  else
+    error ("Octave_map: expecting keys to be cellstr");
 }
 
 Cell&

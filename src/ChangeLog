@@ -1,3 +1,12 @@
+2007-10-03  John W. Eaton  <jwe@octave.org>
+
+	* oct-map.cc (Octave_map::Octave_map (const dim_vector&, 
+	const string_vector&)): Delete.
+	(Octave_map::Octave_map (const dim_vector&, const Cell&)):
+	New function.
+	* ov-struct.cc (Fstruct): Allow creation of empty struct arrays
+	with field names.
+
 2007-10-01  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.cc ((color_property::color_property (const

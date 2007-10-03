@@ -47,7 +47,7 @@ Octave_map
   // Warning!  You should always use at least two dimensions.
 
   Octave_map (const dim_vector& dv = dim_vector (0, 0),
-	      const string_vector& key_list_arg = string_vector ());
+	      const Cell& keys = Cell ());
 
   Octave_map (const std::string& k, const octave_value& value)
     : map (), key_list (), dimensions (1, 1)

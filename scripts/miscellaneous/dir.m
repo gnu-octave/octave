@@ -59,7 +59,8 @@ function retval = dir (file)
   endif
 
   ## Prep the retval.
-  info = struct (zeros (0, 1));
+  info = struct (zeros (0, 1),
+		 {"name", "date", "bytes", "isdir", "datenum", "statinfo"});
 
   if (ischar (file))
     if (strcmp (file, "*"))
@@ -101,9 +102,12 @@ function retval = dir (file)
 	  [dummy, fn, ext] = fileparts (fn);
 	  fn = strcat (fn, ext);
 	  info(i,1).name = fn;
-	  info(i,1).date = strftime ("%d-%b-%Y %T", localtime (st.mtime));
+	  lt = localtime (st.mtime)
+	  info(i,1).date = strftime ("%d-%b-%Y %T", lt);
 	  info(i,1).bytes = st.size;
 	  info(i,1).isdir = st.modestr(1) == "d";
+	  info(i,1).datenum = datenum (lt.year + 1900, lt.mon, lt.mday,
+				       lt.hour, lt.min, lt.sec);
 	  info(i,1).statinfo = st;
 	endif
       endfor

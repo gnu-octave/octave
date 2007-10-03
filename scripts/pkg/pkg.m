@@ -1052,6 +1052,7 @@ function configure_make (desc, packdir, verbose)
     files = fullfile (src, "FILES");
     instdir = fullfile (packdir, "inst");
     archdir = fullfile (packdir, "inst", getarch ());
+
     ## Get file names
     if (exist (files, "file"))
       [fid, msg] = fopen (files, "r");
@@ -1073,15 +1074,6 @@ function configure_make (desc, packdir, verbose)
 	endif
       endfor
       filenames(delete_idx) = [];
-      idx1 = cellfun ("isempty", regexp (filenames, '^.*\.mex'));
-      idx2 = cellfun ("isempty", regexp (filenames, '^.*\.oct'));
-      mex = filenames;
-      mex(idx1 != 0) = [];
-      oct = filenames;
-      oct(idx2 != 0) = [];
-      archindependent = filenames;
-      archindependent(idx1 == 0 | idx2 == 0) = [];
-      archdependent = [oct, mex];
     else
       m = dir (fullfile (src, "*.m"));
       oct = dir (fullfile (src, "*.oct"));
@@ -1091,24 +1083,22 @@ function configure_make (desc, packdir, verbose)
       filenames = "";
       if (length (m) > 0)
 	filenames = sprintf (fullfile (src, "%s "), m.name);
-	archindependent = sprintf (fullfile (src, "%s "), m.name);
       endif
       if (length (oct) > 0)
 	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
 						    oct.name));
-	archdependent = strcat (archdependent, " ", ...
-			 sprintf(fullfile(src, "%s "), oct.name));
       endif
       if (length (mex) > 0)
 	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
 						    mex.name));
-	archdependent = strcat (archdependent, " ", ...
-			 sprintf(fullfile(src, "%s "), mex.name));
       endif
       filenames = split_by (filenames, " ");
-      archdependent = split_by (archdependent, " ");
-      archindependent = split_by (archindependent, " ");
     endif
+
+    ## Split into architecture dependent and independent files
+    idx = cellfun (@(x) is_architecture_dependent (x), filenames);
+    archdependent = filenames (idx);
+    archindependent = filenames (!idx);
 
     ## Copy the files
     if (! all (isspace (filenames)))
@@ -1376,6 +1366,7 @@ function copy_files (desc, packdir, global_install)
   endif
 
   ## Is there a bin/ directory that needs to be installed
+  ## FIXME: Need to treat architecture dependent files in bin/
   bindir = fullfile (packdir, "bin");
   if (exist (bindir, "dir") && ! dirempty (bindir))
     [status, output] = copyfile (bindir, desc.dir);
@@ -2027,6 +2018,9 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
     tmpdir = getarchdir (installed_pkgs_lst {i});
     if (exist (tmpdir, "dir"))
       dirs{end + 1} = tmpdir;
+      if (exist (fullfile (dirs{end}, "bin"), "dir"))
+        execpath = strcat (fullfile(dirs{end}, "bin"), ":", execpath);
+      endif
     endif
   endfor
 
@@ -2067,6 +2061,29 @@ function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
       if (isempty (find(idx == i)))
         idx (end + 1) = i;
       endif
+    endif
+  endfor
+endfunction
+
+function dep = is_architecture_dependent (nm)
+  persistent archdepsuffix = {".oct",".mex",".a",".so",".so.*",".dll","dylib"};
+
+  dep = false;
+  for i = 1 : length (archdepsuffix)
+    ext = archdepsuffix {i};
+    if (ext(end) == "*")
+      isglob = true;
+      ext(end) = [];
+    else
+      isglob = false;
+    endif
+    pos = findstr (nm, ext);
+    if (pos)
+      if (! isglob &&  (length(nm) - pos(end) != length(ext) - 1))
+	continue;
+      endif
+      dep = true;
+      break;
     endif
   endfor
 endfunction

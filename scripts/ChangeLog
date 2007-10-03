@@ -1,3 +1,13 @@
+2007-10-03  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (is_architecture_dependent): New function to identify
+	if a file is architecture dependent based on a list of file
+	extensions.
+	(configure_make): Simplify the search for architecture dependent
+	files based on this function.
+	(load_pakages_and_dependencies): Also look for bin directory in
+	the architecture dependent directory.
+
 2007-10-03  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/dir.m: Create empty struct with field names.

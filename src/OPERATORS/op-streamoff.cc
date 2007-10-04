@@ -95,8 +95,8 @@ DEFNDBINOP_OP (sub_s_so, scalar, streamoff, streamoff, streamoff_array, +)
 			     m2, cm2, m1(i,j) OP m2(i,j), #OP, 0.0, 1.0); \
 	  } \
       } \
-    else \
-      return octave_value (); \
+ \
+    return boolMatrix (); \
   }
 
 STREAMOFF_COMP_OP (eq, ==, streamoff, streamoff);

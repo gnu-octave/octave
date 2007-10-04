@@ -356,6 +356,8 @@ randi54 (void)
 #endif
 }
 
+#if 0
+// FIXME -- this doesn't seem to be used anywhere; should it be removed?
 static uint64_t 
 randi64 (void)
 {
@@ -371,7 +373,9 @@ randi64 (void)
   return (((uint64_t)hi<<32)|lo);
 #endif
 }
+#endif
 
+#ifdef ALLBITS
 /* generates a random number on (0,1)-real-interval */
 static double
 randu32 (void)
@@ -379,30 +383,27 @@ randu32 (void)
   return ((double)randi32() + 0.5) * (1.0/4294967296.0); 
   /* divided by 2^32 */
 }
-
+#else
 /* generates a random number on (0,1) with 53-bit resolution */
 static double
 randu53 (void) 
 { 
   const uint32_t a=randi32()>>5;
   const uint32_t b=randi32()>>6; 
-  return(a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
+  return (a*67108864.0+b+0.4) * (1.0/9007199254740992.0);
 } 
+#endif
 
 /* Determine mantissa for uniform doubles */
+double
+oct_randu (void)
+{
 #ifdef ALLBITS
-double
-oct_randu (void)
-{
-  return randu32();
-}
+  return randu32 ();
 #else
-double
-oct_randu (void)
-{
-  return randu53();
-}
+  return randu53 ();
 #endif
+}
 
 /* ===== Ziggurat normal and exponential generators ===== */
 #ifdef ALLBITS

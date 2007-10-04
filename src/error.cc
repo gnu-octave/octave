@@ -837,7 +837,7 @@ location of the error. Typically @var{err} is returned from\n\
   int nargin = args.length();
 
   if (nargin != 1)
-    print_usage();
+    print_usage ();
   else
     {
       Octave_map err = args(0).map_value ();

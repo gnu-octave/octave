@@ -90,6 +90,8 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
     }
 }
 
+#if 0
+// FIXME -- this function is not used; is it OK to delete it?
 static void
 update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
 {
@@ -110,6 +112,7 @@ update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
 	}
     }
 }
+#endif
 
 static void
 update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
@@ -124,7 +127,7 @@ update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
     }
 }
 
-DEFUN_DLD (bsxfun, args, nargout,
+DEFUN_DLD (bsxfun, args, ,
   " -*- texinfo -*-\n\
 @deftypefn {Lodable Function} {} bsxfun (@var{f}, @var{a}, @var{b})\n\
 Applies a binary function @var{f} element-wise to two matrix arguments\n\

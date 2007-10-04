@@ -1,5 +1,29 @@
 2007-10-04  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/symrcm.cc: Move static functions to top of file to
+	avoid forward decls.
+	(Q_enq): Delete unused arg QH.  Change all uses.
+	(Q_deq): Delete unused arg QT.  Change all uses.
+	(find_starting_node): Delete unused local variable J.
+	(H_heapify_min, H_insert, find_starting_node, Fsymrcm):
+	Move local variable decls to point of first use.
+
+	* OPERATORS/op-streamoff.cc (STREAMOFF_COMP_OP):
+	Avoid control-reaches-end-of-non-void-function warning.
+
+	* pt-const.cc (tree_constant::dup): Avoid unused parameter warning.
+
+	* pr-output.cc (set_real_format, set_real_matrix_format,
+	set_complex_format, set_complex_matrix_format):
+	Delete unused arg, SIGN.  Change uses.
+
+	* oct-map.cc (Octave_map::Octave_map): Avoid shadow warning.
+
+	* load-save.cc (write_header): Use reinterpret_cast to avoid
+	old-style cast warning.
+
+	* data.cc (do_permute): Delete unused arg, FNAME.  Change all uses.
+
 	* sysdep.cc (w32_set_quiet_shutdown, MINGW_signal_cleanup): Now static.
 	(w32_set_octave_home, w32_set_quiet_shutdown, MINGW_signal_cleanup): 
 	Only define if defined (__WIN32__) && ! defined (_POSIX_VERSION).

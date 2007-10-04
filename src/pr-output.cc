@@ -426,8 +426,7 @@ pr_min_internal (const Matrix& m)
 // functions,..
 
 static void
-set_real_format (bool sign, int digits, bool inf_or_nan, bool int_only,
-		 int &fw)
+set_real_format (int digits, bool inf_or_nan, bool int_only, int &fw)
 {
   static float_format fmt;
 
@@ -522,8 +521,6 @@ set_format (double d, int& fw)
   if (free_format)
     return;
 
-  bool sign = (d < 0.0);
-
   bool inf_or_nan = (xisinf (d) || xisnan (d));
 
   bool int_only = (! inf_or_nan && D_NINT (d) == d);
@@ -533,7 +530,7 @@ set_format (double d, int& fw)
   int digits = (inf_or_nan || d_abs == 0.0)
     ? 0 : static_cast<int> (floor (log10 (d_abs) + 1.0));
 
-  set_real_format (sign, digits, inf_or_nan, int_only, fw);
+  set_real_format (digits, inf_or_nan, int_only, fw);
 }
 
 static inline void
@@ -544,8 +541,8 @@ set_format (double d)
 }
 
 static void
-set_real_matrix_format (bool sign, int x_max, int x_min,
-			bool inf_or_nan, int int_or_inf_or_nan, int& fw)
+set_real_matrix_format (int x_max, int x_min, bool inf_or_nan,
+			int int_or_inf_or_nan, int& fw)
 {
   static float_format fmt;
 
@@ -669,8 +666,6 @@ set_format (const Matrix& m, int& fw, double& scale)
   if (free_format)
     return;
 
-  bool sign = m.any_element_is_negative (true);
-
   bool inf_or_nan = m.any_element_is_inf_or_nan ();
 
   bool int_or_inf_or_nan = m.all_elements_are_int_or_inf_or_nan ();
@@ -687,8 +682,7 @@ set_format (const Matrix& m, int& fw, double& scale)
 
   scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : std::pow (10.0, x_max - 1);
 
-  set_real_matrix_format (sign, x_max, x_min, inf_or_nan,
-			  int_or_inf_or_nan, fw);
+  set_real_matrix_format (x_max, x_min, inf_or_nan, int_or_inf_or_nan, fw);
 }
 
 static inline void
@@ -700,8 +694,8 @@ set_format (const Matrix& m)
 }
 
 static void
-set_complex_format (bool sign, int x_max, int x_min, int r_x,
-		    bool inf_or_nan, int int_only, int& r_fw, int& i_fw)
+set_complex_format (int x_max, int x_min, int r_x, bool inf_or_nan,
+		    int int_only, int& r_fw, int& i_fw)
 {
   static float_format r_fmt;
   static float_format i_fmt;
@@ -850,8 +844,6 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
   double rp = c.real ();
   double ip = c.imag ();
 
-  bool sign = (rp < 0.0);
-
   bool inf_or_nan = (xisinf (c) || xisnan (c));
 
   bool int_only = (D_NINT (rp) == rp && D_NINT (ip) == ip);
@@ -878,8 +870,7 @@ set_format (const Complex& c, int& r_fw, int& i_fw)
       x_min = r_x;
     }
 
-  set_complex_format (sign, x_max, x_min, r_x, inf_or_nan, int_only,
-		      r_fw, i_fw);
+  set_complex_format (x_max, x_min, r_x, inf_or_nan, int_only, r_fw, i_fw);
 }
 
 static inline void
@@ -890,8 +881,8 @@ set_format (const Complex& c)
 }
 
 static void
-set_complex_matrix_format (bool sign, int x_max, int x_min,
-			   int r_x_max, int r_x_min, bool inf_or_nan,
+set_complex_matrix_format (int x_max, int x_min, int r_x_max,
+			   int r_x_min, bool inf_or_nan,
 			   int int_or_inf_or_nan, int& r_fw, int& i_fw)
 {
   static float_format r_fmt;
@@ -1054,8 +1045,6 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
   Matrix rp = real (cm);
   Matrix ip = imag (cm);
 
-  bool sign = rp.any_element_is_negative (true);
-
   bool inf_or_nan = cm.any_element_is_inf_or_nan ();
 
   bool int_or_inf_or_nan = (rp.all_elements_are_int_or_inf_or_nan ()
@@ -1086,8 +1075,8 @@ set_format (const ComplexMatrix& cm, int& r_fw, int& i_fw, double& scale)
 
   scale = (x_max == 0 || int_or_inf_or_nan) ? 1.0 : std::pow (10.0, x_max - 1);
 
-  set_complex_matrix_format (sign, x_max, x_min, r_x_max, r_x_min,
-			     inf_or_nan, int_or_inf_or_nan, r_fw, i_fw);
+  set_complex_matrix_format (x_max, x_min, r_x_max, r_x_min, inf_or_nan,
+			     int_or_inf_or_nan, r_fw, i_fw);
 }
 
 static inline void

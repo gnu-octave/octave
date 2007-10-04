@@ -88,6 +88,7 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 
       typename T::elt_type::val_type ival = tmp.value ();
 
+      
       if (ival < 0 || ival > UCHAR_MAX)
 	{
 	  // FIXME -- is there something better we could do?
@@ -96,7 +97,6 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 
 	  if (! warned)
 	    {
-
 	      ::warning ("range error for conversion to character value");
 	      warned = true;
 	    }

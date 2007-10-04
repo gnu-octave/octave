@@ -888,7 +888,7 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 }
 
 static octave_value
-do_permute (const octave_value_list& args, bool inv, const std::string& fname)
+do_permute (const octave_value_list& args, bool inv)
 {
   octave_value retval;
 
@@ -924,7 +924,7 @@ The permutation vector @var{perm} must contain the elements\n\
 @seealso{ipermute}\n\
 @end deftypefn")
 {
-  return do_permute (args, false, "permute");
+  return do_permute (args, false);
 }
 
 DEFUN (ipermute, args, ,
@@ -939,7 +939,7 @@ returns the original array @var{a}.\n\
 @seealso{permute}\n\
 @end deftypefn")
 {
-  return do_permute (args, true, "ipermute");
+  return do_permute (args, true);
 }
 
 DEFUN (length, args, ,

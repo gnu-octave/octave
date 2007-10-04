@@ -160,7 +160,8 @@ bool
 gzfilebuf::open_mode(std::ios_base::openmode mode,
                      char* c_mode) const
 {
-  bool testb = mode & std::ios_base::binary;
+  // FIXME -- do we need testb?
+  // bool testb = mode & std::ios_base::binary;
   bool testi = mode & std::ios_base::in;
   bool testo = mode & std::ios_base::out;
   bool testt = mode & std::ios_base::trunc;

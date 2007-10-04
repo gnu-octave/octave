@@ -127,8 +127,8 @@ template <class T>
 void
 octave_sort<T>::binarysort (T *lo, T *hi, T *start)
 {
-  register T *l, *p, *r;
-  register T pivot;
+  T *l, *p, *r;
+  T pivot;
 
   if (lo == start)
     ++start;

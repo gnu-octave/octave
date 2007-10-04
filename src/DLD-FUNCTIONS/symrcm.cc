@@ -82,14 +82,23 @@ struct CMK_Node
 // stored in an array. qh and qt point to queue head and tail.
 
 // Enqueue operation (adds a node "o" at the tail)
+
 inline static void 
-Q_enq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qh,
-       octave_idx_type& qt, const CMK_Node& o);	
+Q_enq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qt, const CMK_Node& o)
+{	
+  Q[qt] = o;
+  qt = (qt + 1) % (N + 1);
+}
 
 // Dequeue operation (removes a node from the head)
+
 inline static CMK_Node 
-Q_deq(CMK_Node * Q, octave_idx_type N, octave_idx_type &qh,
-      octave_idx_type &qt);
+Q_deq (CMK_Node * Q, octave_idx_type N, octave_idx_type& qh)
+{
+  CMK_Node r = Q[qh];
+  qh = (qh + 1) % (N + 1);
+  return r;
+}
 
 // Predicate (queue empty)
 #define Q_empty(Q, N, qh, qt)	((qh) == (qt))
@@ -105,41 +114,305 @@ Q_deq(CMK_Node * Q, octave_idx_type N, octave_idx_type &qh,
 
 // Builds a min-heap (the root contains the smallest element). A is an array
 // with the graph's nodes, i is a starting position, size is the length of A.
+
 static void 
-H_heapify_min(CMK_Node *A, octave_idx_type i, octave_idx_type size);
+H_heapify_min (CMK_Node *A, octave_idx_type i, octave_idx_type size)
+{
+  octave_idx_type j = i;
+  for (;;)
+    {
+      octave_idx_type l = LEFT(j);
+      octave_idx_type r = RIGHT(j);
+
+      octave_idx_type smallest;
+      if (l < size && A[l].deg < A[j].deg)
+	smallest = l;
+      else
+	smallest = j;
+
+      if (r < size && A[r].deg < A[smallest].deg)
+	smallest = r;
+
+      if (smallest != j)
+	{
+	  CMK_Node tmp = A[j];
+	  A[j] = A[smallest];
+	  A[smallest] = tmp;
+	  j = smallest;
+	}
+      else 
+	break;
+    }
+}
 
 // Heap operation insert. Running time is O(log(n))
+
 static void 
-H_insert(CMK_Node *H, octave_idx_type &h, const CMK_Node &o);
+H_insert (CMK_Node *H, octave_idx_type& h, const CMK_Node& o)
+{
+  octave_idx_type i = h++;
+
+  H[i] = o;
+
+  if (i == 0) 
+    return;
+  do
+    {
+      octave_idx_type p = PARENT(i);
+      if (H[i].deg < H[p].deg)
+	{
+	  CMK_Node tmp = H[i];
+	  H[i] = H[p];
+	  H[p] = tmp;
+
+	  i = p;
+	}
+      else 
+	break;
+    }
+  while (i > 0);
+}
 
 // Heap operation remove-min. Removes the smalles element in O(1) and
 // reorganizes the heap optionally in O(log(n))
+
 inline static CMK_Node 
-H_remove_min(CMK_Node *H, octave_idx_type &h, int reorg /*=1*/);
+H_remove_min (CMK_Node *H, octave_idx_type& h, int reorg/*=1*/)
+{
+  CMK_Node r = H[0];
+  H[0] = H[--h];
+  if (reorg) 
+    H_heapify_min(H, 0, h);
+  return r;
+}
 
 // Predicate (heap empty)
 #define H_empty(H, h)	((h) == 0)
 
 // Helper function for the Cuthill-McKee algorithm. Tries to determine a
 // pseudo-peripheral node of the graph as starting node.
+
 static octave_idx_type 
-find_starting_node(octave_idx_type N, const octave_idx_type *ridx,
-		   const octave_idx_type *cidx, const octave_idx_type *ridx2,
-		   const octave_idx_type *cidx2, octave_idx_type *D, 
-		   octave_idx_type start);
+find_starting_node (octave_idx_type N, const octave_idx_type *ridx, 
+		    const octave_idx_type *cidx, const octave_idx_type *ridx2, 
+		    const octave_idx_type *cidx2, octave_idx_type *D, 
+		    octave_idx_type start)
+{
+  CMK_Node w;
+
+  OCTAVE_LOCAL_BUFFER (CMK_Node, Q, N+1);
+  boolNDArray btmp (dim_vector (1, N), false);
+  bool *visit = btmp.fortran_vec ();
+
+  octave_idx_type qh = 0;
+  octave_idx_type qt = 0;
+  CMK_Node x;
+  x.id = start;
+  x.deg = D[start];
+  x.dist = 0;
+  Q_enq (Q, N, qt, x);
+  visit[start] = true;
+
+  // distance level
+  octave_idx_type level = 0;
+  // current largest "eccentricity"
+  octave_idx_type max_dist = 0;
+
+  for (;;)
+    {
+      while (! Q_empty (Q, N, qh, qt))
+	{
+	  CMK_Node v = Q_deq (Q, N, qh);
+
+	  if (v.dist > x.dist || (v.id != x.id && v.deg > x.deg))
+	    x = v;
+
+	  octave_idx_type i = v.id;
+
+	  // add all unvisited neighbors to the queue
+	  octave_idx_type j1 = cidx[i];
+	  octave_idx_type j2 = cidx2[i];
+	  while (j1 < cidx[i+1] || j2 < cidx2[i+1])
+	    {
+	      OCTAVE_QUIT;
+
+	      if (j1 == cidx[i+1])
+		{
+		  octave_idx_type r2 = ridx2[j2++];
+		  if (! visit[r2])
+		    {
+		      // the distance of node j is dist(i)+1
+		      w.id = r2;
+		      w.deg = D[r2];
+		      w.dist = v.dist+1;
+		      Q_enq (Q, N, qt, w);
+		      visit[r2] = true;
+
+		      if (w.dist > level)
+			level = w.dist;
+		    }
+		}
+	      else if (j2 == cidx2[i+1])
+		{
+		  octave_idx_type r1 = ridx[j1++];
+		  if (! visit[r1])
+		    {
+		      // the distance of node j is dist(i)+1
+		      w.id = r1;
+		      w.deg = D[r1];
+		      w.dist = v.dist+1;
+		      Q_enq (Q, N, qt, w);
+		      visit[r1] = true;
+
+		      if (w.dist > level)
+			level = w.dist;
+		    }
+		}
+	      else
+		{
+		  octave_idx_type r1 = ridx[j1];
+		  octave_idx_type r2 = ridx2[j2];
+		  if (r1 <= r2)
+		    {
+		      if (! visit[r1])
+			{
+			  w.id = r1;
+			  w.deg = D[r1];
+			  w.dist = v.dist+1;
+			  Q_enq (Q, N, qt, w);
+			  visit[r1] = true;
+
+			  if (w.dist > level)
+			    level = w.dist;
+			}
+		      j1++;
+		      if (r1 == r2)
+			j2++;
+		    }
+		  else
+		    {
+		      if (! visit[r2])
+			{
+			  w.id = r2;
+			  w.deg = D[r2];
+			  w.dist = v.dist+1;
+			  Q_enq (Q, N, qt, w);
+			  visit[r2] = true;
+
+			  if (w.dist > level)
+			    level = w.dist;
+			}
+		      j2++;
+		    }
+		}
+	    }
+	} // finish of BFS
+
+      if (max_dist < x.dist)
+	{
+	  max_dist = x.dist;
+
+	  for (octave_idx_type i = 0; i < N; i++)
+	    visit[i] = false;
+
+	  visit[x.id] = true;
+	  x.dist = 0;
+	  qt = qh = 0;
+	  Q_enq (Q, N, qt, x);
+	}
+      else
+	break;
+    }
+  return x.id;
+}
 
 // Calculates the node's degrees. This means counting the non-zero elements
 // in the symmetric matrix' rows. This works for non-symmetric matrices 
 // as well.
-static octave_idx_type
-calc_degrees(octave_idx_type N, const octave_idx_type *ridx, 
-	     const octave_idx_type *cidx, octave_idx_type *D);
+
+static octave_idx_type 
+calc_degrees (octave_idx_type N, const octave_idx_type *ridx, 
+	      const octave_idx_type *cidx, octave_idx_type *D)
+{
+  octave_idx_type max_deg = 0;
+
+  for (octave_idx_type i = 0; i < N; i++) 
+    D[i] = 0;
+
+  for (octave_idx_type j = 0; j < N; j++)
+    {
+      for (octave_idx_type i = cidx[j]; i < cidx[j+1]; i++)
+	{
+	  OCTAVE_QUIT;
+	  octave_idx_type k = ridx[i];
+	  // there is a non-zero element (k,j)
+	  D[k]++;
+	  if (D[k] > max_deg) 
+	    max_deg = D[k];
+	  // if there is no element (j,k) there is one in
+	  // the symmetric matrix:
+	  if (k != j)
+	    {
+	      bool found = false;
+	      for (octave_idx_type l = cidx[k]; l < cidx[k + 1]; l++)
+		{
+		  OCTAVE_QUIT;
+
+		  if (ridx[l] == j)
+		    {
+		      found = true;
+		      break;
+		    }
+		  else if (ridx[l] > j)
+		    break;
+		}
+
+	      if (! found)
+		{
+		  // A(j,k) == 0
+		  D[j]++;
+		  if (D[j] > max_deg) 
+		    max_deg = D[j];
+		}
+	    }
+	}
+    }
+  return max_deg;
+}
 
 // Transpose of the structure of a square sparse matrix
+
 static void
 transpose (octave_idx_type N, const octave_idx_type *ridx, 
 	   const octave_idx_type *cidx, octave_idx_type *ridx2, 
-	   octave_idx_type *cidx2);
+	   octave_idx_type *cidx2)
+{
+  octave_idx_type nz = cidx[N];
+
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, w, N + 1);
+  for (octave_idx_type i = 0; i < N; i++)
+    w[i] = 0;
+  for (octave_idx_type i = 0; i < nz; i++)
+    w[ridx[i]]++;
+  nz = 0;
+  for (octave_idx_type i = 0; i < N; i++)
+    {
+      OCTAVE_QUIT;
+      cidx2[i] = nz;
+      nz += w[i];
+      w[i] = cidx2[i];
+    }
+  cidx2[N] = nz;
+  w[N] = nz;
+
+  for (octave_idx_type j = 0; j < N; j++)
+    for (octave_idx_type k = cidx[j]; k < cidx[j + 1]; k++)
+      {
+	OCTAVE_QUIT;
+	octave_idx_type q = w [ridx[k]]++;
+	ridx2[q] = j;
+      }
+}
 
 // An implementation of the Cuthill-McKee algorithm.
 DEFUN_DLD (symrcm, args, ,
@@ -168,7 +441,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length();
+  int nargin = args.length ();
 
   if (nargin != 1)
     {
@@ -176,7 +449,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       return retval;
     }
 
-  octave_value arg = args (0);
+  octave_value arg = args(0);
 
   // the parameter of the matrix is converted into a sparse matrix 
   //(if necessary)
@@ -187,14 +460,14 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 
   if (arg.is_real_type ())
     {
-      Ar = arg.sparse_matrix_value();
+      Ar = arg.sparse_matrix_value ();
       // Note cidx/ridx are const, so use xridx and xcidx...
       cidx = Ar.xcidx ();
       ridx = Ar.xridx ();
     }
   else
     {
-      Ac = arg.sparse_complex_matrix_value();
+      Ac = arg.sparse_complex_matrix_value ();
       cidx = Ac.xcidx ();
       ridx = Ac.xridx ();
     }
@@ -207,32 +480,22 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 
   if (nr != nc)
     {
-      gripe_square_matrix_required("symrcm");
+      gripe_square_matrix_required ("symrcm");
       return retval;
     }
 
   if (nr == 0 && nc == 0)
-    {
-      retval = NDArray (dim_vector (1, 0));
-      return retval;
-    }
-  
+    return octave_value (NDArray (dim_vector (1, 0)));
+
   // sizes of the heaps
   octave_idx_type s = 0;
+
   // head- and tail-indices for the queue
-  octave_idx_type qt=0, qh=0;
+  octave_idx_type qt = 0, qh = 0;
   CMK_Node v, w;
-  octave_idx_type c;
-  octave_idx_type i, j, max_deg;
-  // upper bound for the bandwidth (=quality of solution)
-  octave_idx_type B;
-  // lower bound for the bandwidth of a subgraph
-  octave_idx_type Bsub;
-  octave_idx_type level, level_N;
   // dimension of the matrix
-  octave_idx_type N;
-  
-  N = nr;
+  octave_idx_type N = nr;
+
   OCTAVE_LOCAL_BUFFER (octave_idx_type, cidx2, N + 1);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, ridx2, cidx[N]);
   transpose (N, ridx, cidx, ridx2, cidx2);
@@ -241,34 +504,34 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   NDArray P (dim_vector (1, N));
 
   // compute the node degrees
-  OCTAVE_LOCAL_BUFFER(octave_idx_type, D, N);
-  max_deg = calc_degrees(N, ridx, cidx, D);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, D, N);
+  octave_idx_type max_deg = calc_degrees (N, ridx, cidx, D);
 
   // if none of the nodes has a degree > 0 (a matrix of zeros)
   // the return value corresponds to the identity permutation
   if (max_deg == 0)
     {
-      for (i = 0; i < N; i++) 
-	P (i) = i;
-      retval = P;
-      return retval;
+      for (octave_idx_type i = 0; i < N; i++) 
+	P(i) = i;
+      return octave_value (P);
     }
 
   // a heap for the a node's neighbors. The number of neighbors is
   // limited by the maximum degree max_deg:
-  OCTAVE_LOCAL_BUFFER(CMK_Node, S, max_deg);
+  OCTAVE_LOCAL_BUFFER (CMK_Node, S, max_deg);
 
   // a queue for the BFS. The array is always one element larger than
   // the number of entries that are stored.
-  OCTAVE_LOCAL_BUFFER(CMK_Node, Q, N+1);
+  OCTAVE_LOCAL_BUFFER (CMK_Node, Q, N+1);
 
   // a counter (for building the permutation)
-  c = -1;
+  octave_idx_type c = -1;
 
+  // upper bound for the bandwidth (=quality of solution)
   // initialize the bandwidth of the graph with 0. B contains the
   // the maximum of the theoretical lower limits of the subgraphs
   // bandwidths.
-  B = 0;
+  octave_idx_type B = 0;
 
   // mark all nodes as unvisited; with the exception of the nodes
   // that have degree==0 and build a CC of the graph.
@@ -279,6 +542,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
   do
     {
       // locate an unvisited starting node of the graph
+      octave_idx_type i;
       for (i = 0; i < N; i++)
 	if (! visit[i]) 
 	  break;
@@ -292,20 +556,21 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
       v.deg = D[v.id];
       v.dist = 0;
       visit[v.id] = true;
-      Q_enq (Q, N, qh, qt, v);
+      Q_enq (Q, N, qt, v);
 
+      // lower bound for the bandwidth of a subgraph
       // keep a "level" in the spanning tree (= min. distance to the
       // root) for determining the bandwidth of the computed
       // permutation P
-      Bsub = 0;
+      octave_idx_type Bsub = 0;
       // min. dist. to the root is 0
-      level = 0;
+      octave_idx_type level = 0;
       // the root is the first/only node on level 0
-      level_N = 1;
+      octave_idx_type level_N = 1;
 	
       while (! Q_empty (Q, N, qh, qt))
 	{
-	  v = Q_deq (Q, N, qh, qt);
+	  v = Q_deq (Q, N, qh);
 	  i = v.id;
 
 	  c++;
@@ -386,7 +651,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 	    }
 
 	  // add the neighbors to the queue (sorted by node degree)
-	  while (! H_empty(S, s))
+	  while (! H_empty (S, s))
 	    {
 	      OCTAVE_QUIT;
 
@@ -415,7 +680,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 		}
 	
 	      // enqueue v in O(1)
-	      Q_enq (Q, N, qh, qt, v);
+	      Q_enq (Q, N, qt, v);
 	    }
 	
 	  // synchronize the bandwidth with level_N once again:
@@ -433,7 +698,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
 
   // compute the reverse-ordering
   s = N / 2 - 1;
-  for (i = 0, j = N - 1; i <= s; i++, j--)
+  for (octave_idx_type i = 0, j = N - 1; i <= s; i++, j--)
     {
       double tmp = P.elem(i);
       P.elem(i) = P.elem(j);
@@ -441,313 +706,5 @@ Mathematics, ISBN 0-13-165274-5, 1981.\n\
     }
 
   // increment all indices, since Octave is not C
-  retval = P+1;
-  return retval;
-}
-
-//
-// implementatation of static functions
-//
-
-inline static void 
-Q_enq (CMK_Node *Q, octave_idx_type N, octave_idx_type& qh,
-       octave_idx_type& qt, const CMK_Node& o)
-{	
-  Q[qt] = o;
-  qt = (qt + 1) % (N + 1);
-}
-
-inline static CMK_Node 
-Q_deq(CMK_Node * Q, octave_idx_type N, octave_idx_type &qh,
-      octave_idx_type &qt)
-{
-  CMK_Node r = Q[qh];
-  qh = (qh + 1) % (N + 1);
-  return r;
-}
-
-static void 
-H_heapify_min(CMK_Node *A, octave_idx_type i, octave_idx_type size)
-{
-  octave_idx_type j, l, r;
-  octave_idx_type smallest;
-  CMK_Node tmp;
-
-  j = i;
-  for (;;)
-    {
-      l = LEFT(j);
-      r = RIGHT(j);
-
-      if (l<size && A[l].deg<A[j].deg)
-	smallest = l;
-      else
-	smallest = j;
-
-      if (r < size && A[r].deg < A[smallest].deg)
-	smallest = r;
-
-      if (smallest != j)
-	{
-	  tmp = A[j];
-	  A[j] = A[smallest];
-	  A[smallest] = tmp;
-	  j = smallest;
-	}
-      else 
-	break;
-    }
-}
-
-static void 
-H_insert(CMK_Node *H, octave_idx_type &h, const CMK_Node &o)
-{
-  octave_idx_type i = h++;
-  octave_idx_type p;
-  CMK_Node tmp;
-
-  H[i] = o;
-
-  if (i == 0) 
-    return;
-  do
-    {
-      p = PARENT(i);
-      if (H[i].deg < H[p].deg)
-	{
-	  tmp = H[i];
-	  H[i] = H[p];
-	  H[p] = tmp;
-
-	  i = p;
-	}
-      else 
-	break;
-    }
-  while (i > 0);
-}
-
-inline static CMK_Node 
-H_remove_min(CMK_Node *H, octave_idx_type &h, int reorg/*=1*/)
-{
-  CMK_Node r = H[0];
-  H[0] = H[--h];
-  if (reorg) 
-    H_heapify_min(H, 0, h);
-  return r;
-}
-
-static octave_idx_type 
-find_starting_node(octave_idx_type N, const octave_idx_type *ridx, 
-		   const octave_idx_type *cidx,  const octave_idx_type *ridx2, 
-		   const octave_idx_type *cidx2, octave_idx_type *D, 
-		   octave_idx_type start)
-{
-  octave_idx_type i, j, qt, qh, level, max_dist;
-  CMK_Node v, w, x;
-
-  OCTAVE_LOCAL_BUFFER(CMK_Node, Q, N+1);
-  boolNDArray btmp (dim_vector (1, N), false);
-  bool * visit = btmp.fortran_vec ();
-
-  qh = qt = 0;
-  x.id = start;
-  x.deg = D[start];
-  x.dist = 0;
-  Q_enq (Q, N, qh, qt, x);
-  visit[start] = true;
-
-  // distance level
-  level = 0;
-  // current largest "eccentricity"
-  max_dist = 0;
-
-  for (;;)
-    {
-      while (! Q_empty(Q, N, qh, qt))
-	{
-	  v = Q_deq(Q, N, qh, qt);
-
-	  if (v.dist > x.dist || (v.id != x.id && v.deg > x.deg))
-	    x = v;
-
-	  i = v.id;
-
-	  // add all unvisited neighbors to the queue
-	  octave_idx_type j1 = cidx[i];
-	  octave_idx_type j2 = cidx2[i];
-	  while (j1 < cidx[i+1] || j2 < cidx2[i+1])
-	    {
-	      OCTAVE_QUIT;
-
-	      if (j1 == cidx[i+1])
-		{
-		  octave_idx_type r2 = ridx2[j2++];
-		  if (! visit[r2])
-		    {
-		      // the distance of node j is dist(i)+1
-		      w.id = r2;
-		      w.deg = D[r2];
-		      w.dist = v.dist+1;
-		      Q_enq(Q, N, qh, qt, w);
-		      visit[r2] = true;
-
-		      if (w.dist > level)
-			level = w.dist;
-		    }
-		}
-	      else if (j2 == cidx2[i+1])
-		{
-		  octave_idx_type r1 = ridx[j1++];
-		  if (! visit[r1])
-		    {
-		      // the distance of node j is dist(i)+1
-		      w.id = r1;
-		      w.deg = D[r1];
-		      w.dist = v.dist+1;
-		      Q_enq(Q, N, qh, qt, w);
-		      visit[r1] = true;
-
-		      if (w.dist > level)
-			level = w.dist;
-		    }
-		}
-	      else
-		{
-		  octave_idx_type r1 = ridx[j1];
-		  octave_idx_type r2 = ridx2[j2];
-		  if (r1 <= r2)
-		    {
-		      if (! visit[r1])
-			{
-			  w.id = r1;
-			  w.deg = D[r1];
-			  w.dist = v.dist+1;
-			  Q_enq(Q, N, qh, qt, w);
-			  visit[r1] = true;
-
-			  if (w.dist > level)
-			    level = w.dist;
-			}
-		      j1++;
-		      if (r1 == r2)
-			j2++;
-		    }
-		  else
-		    {
-		      if (! visit[r2])
-			{
-			  w.id = r2;
-			  w.deg = D[r2];
-			  w.dist = v.dist+1;
-			  Q_enq(Q, N, qh, qt, w);
-			  visit[r2] = true;
-
-			  if (w.dist > level)
-			    level = w.dist;
-			}
-		      j2++;
-		    }
-		}
-	    }
-	} // finish of BFS
-
-      if (max_dist < x.dist)
-	{
-	  max_dist = x.dist;
-
-	  for (i = 0; i < N; i++)
-	    visit[i] = false;
-
-	  visit[x.id] = true;
-	  x.dist = 0;
-	  qt = qh = 0;
-	  Q_enq (Q, N, qh, qt, x);
-	}
-      else
-	break;
-    }
-  return x.id;
-}
-
-static octave_idx_type 
-calc_degrees(octave_idx_type N, const octave_idx_type *ridx, 
-	     const octave_idx_type *cidx, octave_idx_type *D)
-{
-  octave_idx_type max_deg = 0;
-
-  for (octave_idx_type i = 0; i < N; i++) 
-    D[i] = 0;
-
-  for (octave_idx_type j = 0; j < N; j++)
-    {
-      for (octave_idx_type i = cidx[j]; i < cidx[j+1]; i++)
-	{
-	  OCTAVE_QUIT;
-	  octave_idx_type k = ridx[i];
-	  // there is a non-zero element (k,j)
-	  D[k]++;
-	  if (D[k] > max_deg) 
-	    max_deg = D[k];
-	  // if there is no element (j,k) there is one in
-	  // the symmetric matrix:
-	  if (k != j)
-	    {
-	      bool found = false;
-	      for (octave_idx_type l = cidx[k]; l < cidx[k + 1]; l++)
-		{
-		  OCTAVE_QUIT;
-
-		  if (ridx[l] == j)
-		    {
-		      found = true;
-		      break;
-		    }
-		  else if (ridx[l] > j)
-		    break;
-		}
-
-	      if (! found)
-		{
-		  // A(j,k) == 0
-		  D[j]++;
-		  if (D[j] > max_deg) 
-		    max_deg = D[j];
-		}
-	    }
-	}
-    }
-  return max_deg;
-}
-
-static void
-transpose (octave_idx_type N, const octave_idx_type *ridx, 
-	   const octave_idx_type *cidx, octave_idx_type *ridx2, 
-	   octave_idx_type *cidx2)
-{
-  octave_idx_type nz = cidx[N];
-
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, w, N + 1);
-  for (octave_idx_type i = 0; i < N; i++)
-    w[i] = 0;
-  for (octave_idx_type i = 0; i < nz; i++)
-    w[ridx[i]]++;
-  nz = 0;
-  for (octave_idx_type i = 0; i < N; i++)
-    {
-      OCTAVE_QUIT;
-      cidx2[i] = nz;
-      nz += w[i];
-      w[i] = cidx2[i];
-    }
-  cidx2[N] = nz;
-  w[N] = nz;
-
-  for (octave_idx_type j = 0; j < N; j++)
-    for (octave_idx_type k = cidx[j]; k < cidx[j + 1]; k++)
-      {
-	OCTAVE_QUIT;
-	octave_idx_type q = w [ridx[k]]++;
-	ridx2[q] = j;
-      }
+  return octave_value (P+1);
 }

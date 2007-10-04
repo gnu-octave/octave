@@ -1247,7 +1247,7 @@ write_header (std::ostream& os, load_save_format format)
     case LS_MAT7_BINARY:
       {
 	char const * versionmagic;
-	int16_t number = *(int16_t *)"\x00\x01";
+	int16_t number = *(reinterpret_cast<const int16_t *>("\x00\x01"));
 	struct tm bdt;
 	time_t now;
 	char headertext[128];

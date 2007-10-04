@@ -66,10 +66,11 @@ are \"s Qci Tcv\".\n\n\
 @end deftypefn")
 {
   octave_value_list retval;
+
 #ifdef HAVE_QHULL
   std::string options;
 
-  int nargin = args.length();
+  int nargin = args.length ();
   if (nargin < 1 || nargin > 2) 
     {
       print_usage ();
@@ -78,19 +79,19 @@ are \"s Qci Tcv\".\n\n\
 
   if (nargin == 2) 
     {
-      if (args (1).is_string () ) 
-	options = args (1).string_value();
-      else if (args (1).is_cell ())
+      if (args (1).is_string ()) 
+	options = args(1).string_value ();
+      else if (args(1).is_cell ())
 	{
-	  Cell c = args (1). cell_value ();
+	  Cell c = args(1).cell_value ();
 	  options = "";
-	  for (octave_idx_type i = 0; i < c.numel(); i++)
+	  for (octave_idx_type i = 0; i < c.numel (); i++)
 	    {
-	      if (!c.elem(i).is_string()) 
+	      if (! c.elem(i).is_string ())
 		{
 		  error ("convhulln: second argument must be a string or cell array of strings");
 		  return retval;
-	      }
+		}
 
 	      options = options + c.elem(i).string_value() + " ";
 	    }
@@ -105,82 +106,83 @@ are \"s Qci Tcv\".\n\n\
     // turn on some consistency checks
     options = "s Qci Tcv";
 
-  Matrix p(args(0).matrix_value());
+  Matrix p (args(0).matrix_value ());
 
-  const octave_idx_type dim = p.columns();
-  const octave_idx_type n = p.rows();
-  p = p.transpose();
+  const octave_idx_type dim = p.columns ();
+  const octave_idx_type n = p.rows ();
+  p = p.transpose ();
 
-  double *pt_array = p.fortran_vec();
+  double *pt_array = p.fortran_vec ();
 
   boolT ismalloc = False;
 
-  OCTAVE_LOCAL_BUFFER(char, flags, 250);
+  OCTAVE_LOCAL_BUFFER (char, flags, 250);
 
   // hmm, lots of options for qhull here
   // QJ guarantees that the output will be triangles
-  snprintf(flags, 250, "qhull QJ %s", options.c_str());
+  snprintf (flags, 250, "qhull QJ %s", options.c_str ());
 
-  if (!qh_new_qhull (dim, n, pt_array, ismalloc, flags, NULL, stderr)) 
+  if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, NULL, stderr)) 
     {
       // If you want some debugging information replace the NULL
       // pointer with stdout
 
-      vertexT *vertex,**vertexp;
+      vertexT *vertex, **vertexp;
       facetT *facet;
       setT *vertices;
       unsigned int nf = qh num_facets;
 
-      Matrix idx(nf, dim);
+      Matrix idx (nf, dim);
 
       octave_idx_type j, i = 0;
       FORALLfacets 
 	{
 	  j = 0;
-	  if (!facet->simplicial)
+	  if (! facet->simplicial)
 	    // should never happen with QJ
-	    error("convhulln: non-simplicial facet");
+	    error ("convhulln: non-simplicial facet");
 
 	  if (dim == 3) 
 	    {
 	      vertices = qh_facet3vertex (facet);
-	      FOREACHvertex_(vertices)
+	      FOREACHvertex_ (vertices)
 		idx(i, j++) = 1 + qh_pointid(vertex->point);
-	      qh_settempfree(&vertices);
+	      qh_settempfree (&vertices);
 	    } 
 	  else 
 	    {
 	      if (facet->toporient ^ qh_ORIENTclock) 
 		{
-		  FOREACHvertex_(facet->vertices)
+		  FOREACHvertex_ (facet->vertices)
 		    idx(i, j++) = 1 + qh_pointid(vertex->point);
 		} 
 	      else 
 		{
-		  FOREACHvertexreverse12_(facet->vertices)
+		  FOREACHvertexreverse12_ (facet->vertices)
 		    idx(i, j++) = 1 + qh_pointid(vertex->point);
 		}
 	    }
 	  if (j < dim)
 	    // likewise but less fatal
-	    warning("facet %d only has %d vertices",i,j);
+	    warning ("facet %d only has %d vertices", i, j);
 	  i++;
 	}
-      retval(0) = octave_value(idx);
+      retval(0) = octave_value (idx);
     }
-  qh_freeqhull (!qh_ALL);
-  //free long memory
+
+  // free long memory
+  qh_freeqhull (! qh_ALL);
+
+  // free short memory and memory allocator
   int curlong, totlong;
   qh_memfreeshort (&curlong, &totlong);
-  //free short memory and memory allocator
 
   if (curlong || totlong) 
-    {
-      warning("convhulln: did not free %d bytes of long memory (%d pieces)",
-	      totlong, curlong);
-    }
+    warning ("convhulln: did not free %d bytes of long memory (%d pieces)",
+	    totlong, curlong);
 #else
   error ("convhulln: not available in this version of Octave");
 #endif
+
   return retval;
 }

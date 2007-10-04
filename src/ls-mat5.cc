@@ -140,6 +140,7 @@ read_mat5_binary_data (std::istream& is, double *data,
       read_doubles (is, data, LS_SHORT, count, swap, flt_fmt);
       break;
 
+    case miUTF16:
     case miUINT16:
       read_doubles (is, data, LS_U_SHORT, count, swap, flt_fmt);
       break;
@@ -148,6 +149,7 @@ read_mat5_binary_data (std::istream& is, double *data,
       read_doubles (is, data, LS_INT, count, swap, flt_fmt);
       break;
 
+    case miUTF32:
     case miUINT32:
       read_doubles (is, data, LS_U_INT, count, swap, flt_fmt);
       break;
@@ -1251,8 +1253,20 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      {
 		if (type == miUTF16 || type == miUTF32)
 		  {
-		    error ("load: can not read Unicode UTF16 and UTF32 encoded characters");
-		    goto data_read_error;
+		    bool found_big_char = false;
+		    for (int i = 0; i < n; i++)
+		      {
+			if (re(i) > 127) {
+			  re(i) = '?';
+			  found_big_char = true;
+			}
+		      }
+
+		    if (found_big_char)
+		      {
+			warning ("load: can not read non-ASCII portions of UTF characters.");
+			warning ("      Replacing unreadable characters with '?'.");
+		      }
 		  }
 		else if (type == miUTF8)
 		  {

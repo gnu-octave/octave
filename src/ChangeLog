@@ -1,3 +1,17 @@
+2007-10-04  Jason Riedy  <jason@acm.org>
+
+        * ls-mat5.cc (read_mat5_binary_data): Map miUTF16 to miUINT16,
+        miUTF32 to miUINT32.  The matfile format currently states that
+        wide UTF formats are in the same byte order as the integers.
+        (read_mat5_binary_element): Replace all UTF16 and UTF32
+        characters with the high bit set (value >127) by '?' and warn
+        that we've done so.
+
+2007-10-04  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* sysdep.cc (w32_set_octave_home): Base OCTAVE_HOME location on
+	octinterp, not the main exe.
+
 2007-10-03  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (Fnorm): New function.

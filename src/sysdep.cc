@@ -119,7 +119,8 @@ w32_set_octave_home (void)
 
   while (true)
     {
-      int status = GetModuleFileName (0, &bin_dir[0], n);
+      HMODULE hMod = GetModuleHandle ("octinterp");
+      int status = GetModuleFileName (hMod, &bin_dir[0], n);
 
       if (status < n)
 	{

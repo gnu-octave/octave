@@ -2627,9 +2627,6 @@ ComplexMatrix::expm (void) const
 
   ComplexMatrix m = *this;
 
-  if (numel () == 1)
-    return ComplexMatrix (1, 1, exp (m(0)));
-
   octave_idx_type nc = columns ();
 
   // Preconditioning step 1: trace normalization to reduce dynamic
@@ -2644,7 +2641,11 @@ ComplexMatrix::expm (void) const
   trshift /= nc;
 
   if (trshift.real () < 0.0)
-    trshift = trshift.imag ();
+    {
+      trshift = trshift.imag ();
+      if (trshift.real () > 709.0)
+	trshift = 709.0;
+    }
 
   for (octave_idx_type i = 0; i < nc; i++)
     m.elem (i, i) -= trshift;
@@ -2722,15 +2723,23 @@ ComplexMatrix::expm (void) const
   // npp, dpp: pade' approx polynomial matrices.
 
   ComplexMatrix npp (nc, nc, 0.0);
+  Complex *pnpp = npp.fortran_vec ();
   ComplexMatrix dpp = npp;
+  Complex *pdpp = dpp.fortran_vec ();
 
   // Now powers a^8 ... a^1.
 
   int minus_one_j = -1;
   for (octave_idx_type j = 7; j >= 0; j--)
     {
-      npp = m * npp + m * padec[j];
-      dpp = m * dpp + m * (minus_one_j * padec[j]);
+      for (octave_idx_type i = 0; i < nc; i++)
+	{
+	  octave_idx_type k = i * nc + i;
+	  pnpp [k] = pnpp [k] + padec [j];
+	  pdpp [k] = pdpp [k] + minus_one_j * padec [j];
+	}      
+      npp = m * npp;
+      dpp = m * dpp;
       minus_one_j *= -1;
     }
 

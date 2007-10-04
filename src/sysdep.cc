@@ -109,10 +109,10 @@ BSD_init (void)
 }
 #endif
 
+#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
 static void
 w32_set_octave_home (void)
 {
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
   int n = 1024;
 
   std::string bin_dir (n, '\0');
@@ -141,23 +141,19 @@ w32_set_octave_home (void)
       if (pos != NPOS)
 	octave_env::putenv ("OCTAVE_HOME", bin_dir.substr (0, pos));
     }
-#endif
 }
 
-void
+static void
 w32_set_quiet_shutdown (void)
 {
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
   // Let the user close the console window or shutdown without the
   // pesky dialog.
   //
   // FIXME -- should this be user configurable?
   SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
-#endif
 }
 
-#if defined (__WIN32__) && ! defined (_POSIX_VERSION)
-void
+static void
 MINGW_signal_cleanup (void)
 {
   w32_set_quiet_shutdown ();

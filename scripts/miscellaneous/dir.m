@@ -40,7 +40,12 @@
 ## named @var{filename}.  @var{directory} may be a list of directories
 ## specified either by name or with wildcard characters (like * and ?)
 ## which will be expanded with glob.
-## @seealso{ls, stat, readdir, glob, filesep}
+##
+## Note that for symbolic links, @code{dir} returns information about
+## the file that a symbolic link points to instead of the link itself.
+## However, if the link points to a nonexisent file, @code{dir} returns
+## information about the link.
+## @seealso{ls, stat, lstat, readdir, glob, filesep}
 ## @end deftypefn
 
 ## Author: jwe
@@ -78,11 +83,11 @@ function retval = dir (file)
     ## specified.
     if (nf == 1)
       fn = flst{1};
-      [st, err, msg] = lstat (fn);
+      [st, err, msg] = stat (fn);
       if (err < 0)
-	warning ("dir: `lstat (%s)' failed: %s", fn, msg);
+	warning ("dir: `stat (%s)' failed: %s", fn, msg);
 	nf = 0;
-      elseif (st.modestr(1) == "d")
+      elseif (S_ISDIR (st.mode))
 	flst = readdir (flst{1});
 	nf = length (flst);
 	for i = 1:nf
@@ -99,13 +104,22 @@ function retval = dir (file)
 	if (err < 0)
 	  warning ("dir: `lstat (%s)' failed: %s", fn, msg);
 	else
+	  ## If we are looking at a link that points to something,
+	  ## return info about the target of the link, otherwise, return
+	  ## info about the link itself.
+	  if (S_ISLNK (st.mode))
+	    [xst, err, msg] = stat (fn);
+	    if (! err)
+	      st = xst;
+	    endif
+	  endif
 	  [dummy, fn, ext] = fileparts (fn);
 	  fn = strcat (fn, ext);
 	  info(i,1).name = fn;
-	  lt = localtime (st.mtime)
+	  lt = localtime (st.mtime);
 	  info(i,1).date = strftime ("%d-%b-%Y %T", lt);
 	  info(i,1).bytes = st.size;
-	  info(i,1).isdir = st.modestr(1) == "d";
+	  info(i,1).isdir = S_ISDIR (st.mode);
 	  info(i,1).datenum = datenum (lt.year + 1900, lt.mon, lt.mday,
 				       lt.hour, lt.min, lt.sec);
 	  info(i,1).statinfo = st;

@@ -1,5 +1,8 @@
 2007-10-03  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/dir.m: Handle symbolic links in compatible way.
+	Use S_ISDIR (st.mode) instead of checking st.modestr(1) == "d".
+
 	* linear-algebra/Makefile.in (SOURCES): Rename norm.m to __norm__.m.
 	* linear-algebra/__norm__.m: Rename from norm.m.  Eliminate
 	special for __vnorm__.

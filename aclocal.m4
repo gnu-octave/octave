@@ -806,9 +806,10 @@ fi
 # OCTAVE_PROG_SED
 # --------------
 # Check for a fully-functional sed program, that truncates
-# as few characters as possible.  Prefer GNU sed if found.
+# as few characters as possible and that supports "\(X\|Y\)"
+# style regular expression alternation.  Prefer GNU sed if found.
 AC_DEFUN([OCTAVE_PROG_SED],
-[AC_MSG_CHECKING([for a sed that does not truncate output])
+[AC_MSG_CHECKING([for a usable sed])
 if test -z "$SED"; then
   AC_CACHE_VAL(ac_cv_path_sed, [
   # Loop through the user's path and test for sed and gsed.
@@ -836,6 +837,10 @@ if test -z "$SED"; then
       if "${_sed}" --version 2>&1 < /dev/null | egrep '(GNU)' > /dev/null; then
 	octave_cv_path_sed=${_sed}
 	break;
+      fi
+      # Reject if RE alternation is not handled.
+      if test "`echo 'this and that' | ${_sed} -n 's/\(this\|that\).*$/\1/p'`" != "this"; then
+        continue;
       fi
       while true; do
 	cat "$tmp/sed.in" "$tmp/sed.in" >"$tmp/sed.tmp"

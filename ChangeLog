@@ -1,3 +1,7 @@
+2007-10-04  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (UGLY_DEFS): Delete special case for darwin.
+
 2007-10-03  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4 (OCTAVE_PROG_SED): Also check for \(X\|Y\) style

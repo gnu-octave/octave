@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.576 $)
+AC_REVISION($Revision: 1.577 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1788,18 +1788,9 @@ OCTAVE_PROG_TEXI2PDF
 
 AC_OUTPUT_MAKE_DEFS
 
-
-dnl Maybe this should really be conditional on "broken sed", or
-dnl "broken shell backslash quoting" or somesuch.
-dnl
-case "$canonical_host_type" in
-  *-*-darwin*)
-    UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\",g'`
-  ;;
-  *)
-    UGLY_DEFS=`echo $DEFS | sed 's,\\",\\\\\\\\\\\\\\\\\\",g'`
-  ;;
-esac
+### We have to insert extra levels of backslash quoting here so that
+### the right thing ends up in oct-conf.h.
+UGLY_DEFS=`echo $DEFS | $(SED) 's,\\",\\\\\\\\\\\\\\\\\\",g'`
 AC_MSG_NOTICE([defining UGLY_DEFS to be $UGLY_DEFS])
 AC_SUBST(UGLY_DEFS)
 

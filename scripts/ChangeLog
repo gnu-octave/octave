@@ -1,3 +1,9 @@
+2007-10-03  John W. Eaton  <jwe@octave.org>
+
+	* linear-algebra/Makefile.in (SOURCES): Rename norm.m to __norm__.m.
+	* linear-algebra/__norm__.m: Rename from norm.m.  Eliminate
+	special for __vnorm__.
+
 2007-10-03  Quentin Spencer  <qspencer@ieee.org>
 
 	* linear-algebra/norm.m: Special case vector 1-norm and 2-norm.

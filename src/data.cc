@@ -34,18 +34,19 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "str-vec.h"
 #include "quit.h"
 
+#include "Cell.h"
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
+#include "oct-map.h"
+#include "oct-obj.h"
 #include "ov.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
-#include "variables.h"
-#include "oct-obj.h"
-#include "utils.h"
-#include "Cell.h"
-#include "oct-map.h"
+#include "parse.h"
 #include "pt-mat.h"
+#include "utils.h"
+#include "variables.h"
 
 #define ANY_ALL(FCN) \
  \
@@ -2614,74 +2615,141 @@ Remove singleton dimensions from @var{x} and return the result.\n\
   return retval;
 }
 
+/*
+%!shared x
+%! x = [1, -3, 4, 5, -7];
+%!assert(norm(x,1), 20);
+%!assert(norm(x,2), 10);
+%!assert(norm(x,3), 8.24257059961711, -4*eps);
+%!assert(norm(x,Inf), 7);
+%!assert(norm(x,-Inf), 1);
+%!assert(norm(x,"inf"), 7);
+%!assert(norm(x,"fro"), 10);
+%!assert(norm(x), 10);
+%!assert(norm([1e200, 1]), 1e200);
+%!assert(norm([3+4i, 3-4i, sqrt(31)]), 9, -4*eps);
+%!shared m
+%! m = magic (4);
+%!assert(norm(m,1), 34);
+%!assert(norm(m,2), 34);
+%!assert(norm(m,Inf), 34);
+%!assert(norm(m,"inf"), 34);
+*/
+
 // Compute various norms of the vector X.
 
-DEFUN (__vnorm__, args, ,
+DEFUN (norm, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __vnorm__ (@var{x}, @var{p})\n\
-Undocumented internal function.\n\
+@deftypefn {Function File} {} norm (@var{a}, @var{p})\n\
+Compute the p-norm of the matrix @var{a}.  If the second argument is\n\
+missing, @code{p = 2} is assumed.\n\
+\n\
+If @var{a} is a matrix:\n\
+\n\
+@table @asis\n\
+@item @var{p} = @code{1}\n\
+1-norm, the largest column sum of the absolute values of @var{a}.\n\
+\n\
+@item @var{p} = @code{2}\n\
+Largest singular value of @var{a}.\n\
+\n\
+@item @var{p} = @code{Inf}\n\
+@cindex infinity norm\n\
+Infinity norm, the largest row sum of the absolute values of @var{a}.\n\
+\n\
+@item @var{p} = @code{\"fro\"}\n\
+@cindex Frobenius norm\n\
+Frobenius norm of @var{a}, @code{sqrt (sum (diag (@var{a}' * @var{a})))}.\n\
+@end table\n\
+\n\
+If @var{a} is a vector or a scalar:\n\
+\n\
+@table @asis\n\
+@item @var{p} = @code{Inf}\n\
+@code{max (abs (@var{a}))}.\n\
+\n\
+@item @var{p} = @code{-Inf}\n\
+@code{min (abs (@var{a}))}.\n\
+\n\
+@item other\n\
+p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
+@end table\n\
+@seealso{cond, svd}\n\
 @end deftypefn")
 {
-  octave_value retval;
+  // Currently only handles vector norms for full double/complex
+  // vectors internally.  Other cases are handled by __norm__.m.
+
+  octave_value_list retval;
 
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
     {
-      double p_val;
-
-      octave_value p_arg;
-
-      if (nargin == 1)
-	p_arg = 2;
-      else
-	p_arg = args(1);
-
-      if (p_arg.is_string ())
-	{
-	  std::string p = args(1).string_value ();
-
-	  if (p == "inf")
-	    p_val = octave_Inf;
-	  else if (p == "fro")
-	    p_val = -1;
-	  else
-	    {
-	      error ("norm: unrecognized norm `%s'", p.c_str ());
-	      return retval;
-	    }
-	}
-      else
-	{
-	  p_val = args(1).double_value ();
-
-	  if (error_state)
-	    {
-	      error ("norm: unrecognized norm value");
-	      return retval;
-	    }
-	}
-
       octave_value x_arg = args(0);
 
-      if (x_arg.is_real_type ())
+      if (x_arg.is_empty ())
+	retval(0) = 0.0;
+      else if (x_arg.ndims () == 2)
 	{
-	  ColumnVector x (x_arg.vector_value ());
+	  if ((x_arg.rows () == 1 || x_arg.columns () == 1)
+	      && ! (x_arg.is_sparse_type () || x_arg.is_integer_type ()))
+	    {
+	      double p_val;
 
-	  if (! error_state)
-	    retval = x.norm (p_val);
+	      octave_value p_arg;
+
+	      if (nargin == 1)
+		p_arg = 2;
+	      else
+		p_arg = args(1);
+
+	      if (p_arg.is_string ())
+		{
+		  std::string p = args(1).string_value ();
+
+		  if (p == "inf")
+		    p_val = octave_Inf;
+		  else if (p == "fro")
+		    p_val = -1;
+		  else
+		    error ("norm: unrecognized norm `%s'", p.c_str ());
+		}
+	      else
+		{
+		  p_val = p_arg.double_value ();
+
+		  if (error_state)
+		    error ("norm: unrecognized norm value");
+		}
+
+	      if (! error_state)
+		{
+		  if (x_arg.is_real_type ())
+		    {
+		      MArray<double> x (x_arg.array_value ());
+
+		      if (! error_state)
+			retval(0) = x.norm (p_val);
+		      else
+			error ("norm: expecting real vector");
+		    }
+		  else
+		    {
+		      MArray<Complex> x (x_arg.complex_array_value ());
+
+		      if (! error_state)
+			retval(0) = x.norm (p_val);
+		      else
+			error ("norm: expecting complex vector");
+		    }
+		}
+	    }
 	  else
-	    error ("norm: expecting real vector");
+	    retval = feval ("__norm__", args);
 	}
       else
-	{
-	  ComplexColumnVector x (x_arg.complex_vector_value ());
-
-	  if (! error_state)
-	    retval = x.norm (p_val);
-	  else
-	    error ("norm: expecting complex vector");
-	}
+	error ("norm: only valid for 2-D objects");
     }
   else
     print_usage ();

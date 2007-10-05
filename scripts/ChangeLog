@@ -1,3 +1,8 @@
+2007-10-05  John W. Eaton  <jwe@octave.org>
+
+	* plot/__next_line_color__.m: Get color_rotation from axes
+	colororder property.
+
 2007-10-03  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/dir.m: Handle symbolic links in compatible way.

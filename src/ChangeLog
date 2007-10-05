@@ -1,5 +1,11 @@
 2007-10-05  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (axes::properties): New property, colororder.
+	* graphics.cc (default_colororder): New function.
+	(axes::properties::properties, axes::properties::get,
+	axes::properties::set_defaults,
+	axes::properties::factory_defaults, ): Handle colororder.
+
 	* mappers.cc (xzlgamma): New static function.
 	(install_mapper_functions): Pass xzlgamma for c_c_map for lgamma
 	mapper.  Pass 1 for can_ret_cmplx_for_real and set hi to

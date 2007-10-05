@@ -1001,6 +1001,33 @@ std::string figure::properties::go_name ("figure");
 
 // ---------------------------------------------------------------------
 
+static Matrix
+default_colororder (void)
+{
+  Matrix retval (7, 3, 0.0);
+
+  retval(0,2) = 1.0;
+
+  retval(1,1) = 0.5;
+
+  retval(2,0) = 1.0;
+
+  retval(3,1) = 0.75;
+  retval(3,2) = 0.75;
+
+  retval(4,0) = 0.75;
+  retval(4,2) = 0.75;
+
+  retval(5,0) = 0.75;
+  retval(5,1) = 0.75;
+
+  retval(6,0) = 0.25;
+  retval(6,1) = 0.25;
+  retval(6,2) = 0.25;
+
+  return retval;
+}
+
 axes::properties::properties (const graphics_handle& mh,
 					const graphics_handle& p)
   : base_properties (go_name, mh, p),
@@ -1010,6 +1037,7 @@ axes::properties::properties (const graphics_handle& mh,
     key ("off"),
     keybox ("off"),
     keypos (1),
+    colororder (default_colororder ()),
     dataaspectratio (Matrix (1, 3, 1.0)),
     dataaspectratiomode ("auto"),
     xlim (),
@@ -1163,6 +1191,8 @@ axes::properties::set (const property_name& name, const octave_value& val)
     set_keybox (val);
   else if (name.compare ("keypos"))
     set_keypos (val);
+  else if (name.compare ("colororder"))
+    set_colororder (val);
   else if (name.compare ("dataaspectratio"))
     set_dataaspectratio (val);
   else if (name.compare ("dataaspectratiomode"))
@@ -1269,6 +1299,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   key = "off";
   keybox = "off";
   keypos = 1;
+  colororder = default_colororder ();
   dataaspectratio = Matrix (1, 3, 1.0);
   dataaspectratiomode = "auto";
 
@@ -1392,6 +1423,7 @@ axes::properties::get (void) const
   m.assign ("key", key);
   m.assign ("keybox", keybox);
   m.assign ("keypos", keypos);
+  m.assign ("colororder", colororder);
   m.assign ("dataaspectratio", dataaspectratio);
   m.assign ("dataaspectratiomode", dataaspectratiomode);
   m.assign ("xlim", xlim);
@@ -1464,6 +1496,8 @@ axes::properties::get (const property_name& name) const
     retval = keybox;
   else if (name.compare ("keypos"))
     retval = keypos;
+  else if (name.compare ("colororder"))
+    retval = colororder;
   else if (name.compare ("dataaspectratio"))
     retval = dataaspectratio;
   else if (name.compare ("dataaspectratiomode"))
@@ -1593,6 +1627,7 @@ axes::properties::factory_defaults (void)
   m["key"] = "off";
   m["keybox"] = "off";
   m["keypos"] = 1;
+  m["colororder"] = default_colororder ();
   m["dataaspectratio"] = Matrix (1, 3, 1.0);
   m["dataaspectratiomode"] = "auto";
 

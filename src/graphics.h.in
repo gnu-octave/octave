@@ -1136,6 +1136,7 @@ public:
       octave_value key
       octave_value keybox
       octave_value keypos
+      octave_value colororder
       octave_value dataaspectratio m
       octave_value dataaspectratiomode
       octave_value xlim m

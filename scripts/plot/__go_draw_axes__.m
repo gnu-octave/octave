@@ -613,6 +613,7 @@ function __go_draw_axes__ (h, plot_stream)
 	  fputs (plot_stream, "set style data lines;\n");
 	  fputs (plot_stream, "set surface;\n");
 	  fputs (plot_stream, "unset contour;\n");
+	  fprintf (plot_stream, "set cbrange [%g:%g];\n", zmin, zmax);
 
 	  if (have_newer_gnuplot)
 	    surf_colormap = parent_figure_obj.colormap;

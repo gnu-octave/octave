@@ -143,7 +143,7 @@ w32_set_octave_home (void)
     }
 }
 
-static void
+void
 w32_set_quiet_shutdown (void)
 {
   // Let the user close the console window or shutdown without the
@@ -153,7 +153,7 @@ w32_set_quiet_shutdown (void)
   SetProcessShutdownParameters (0x280, SHUTDOWN_NORETRY);
 }
 
-static void
+void
 MINGW_signal_cleanup (void)
 {
   w32_set_quiet_shutdown ();

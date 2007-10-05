@@ -24,9 +24,9 @@
 
 	* data.cc (do_permute): Delete unused arg, FNAME.  Change all uses.
 
-	* sysdep.cc (w32_set_quiet_shutdown, MINGW_signal_cleanup): Now static.
-	(w32_set_octave_home, w32_set_quiet_shutdown, MINGW_signal_cleanup): 
-	Only define if defined (__WIN32__) && ! defined (_POSIX_VERSION).
+	* sysdep.cc (w32_set_octave_home, w32_set_quiet_shutdown,
+	MINGW_signal_cleanup):
+	Only define if defined (__WIN32__) && !	defined (_POSIX_VERSION).
 
 2007-10-04  Jason Riedy  <jason@acm.org>
 

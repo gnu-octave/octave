@@ -87,8 +87,8 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 //   d_d_map is a pointer to a function that should be called for real
 //     arguments that are expected to create real results.
 //
-//   d_c_map is a pointer to a function that should be called for real
-//     arguments that are expected to create complex results.
+//   d_c_map is a pointer to a function that should be called for
+//     complex arguments that are expected to create real results.
 //
 //   c_c_map is a pointer to a function that should be called for
 //     complex arguments that are expected to create complex results.

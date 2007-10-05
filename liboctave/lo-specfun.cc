@@ -187,6 +187,25 @@ xlgamma (double x)
   return result;
 }
 
+Complex
+zlgamma (double x)
+{
+  Complex result;
+
+  if (xisnan (x))
+    result = x;
+  else if (x > 0)
+    result = xlgamma (x);
+  else
+    {
+      double tmp = xgamma (x);
+
+      result = tmp < 0 ? std::log (Complex (tmp)) : log (tmp);
+    }
+
+  return result;
+}
+
 static inline Complex
 zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 

@@ -1,3 +1,10 @@
+2007-10-05  John W. Eaton  <jwe@octave.org>
+
+	* mappers.cc (xzlgamma): New static function.
+	(install_mapper_functions): Pass xzlgamma for c_c_map for lgamma
+	mapper.  Pass 1 for can_ret_cmplx_for_real and set hi to
+	octave_Inf.
+
 2007-10-04  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/symrcm.cc: Move static functions to top of file to

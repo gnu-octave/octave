@@ -1,4 +1,9 @@
-2007-10-05  Ben Abbott <bpabbott@mac.com>
+2007-10-06  Francesco Potorti`  <Potorti@isti.cnr.it>
+
+	* plot/print.m: Handle svg output type.  Accept new -S option to
+	specify size for PNG and SVG output types.
+
+2007-10-05  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/mpoles.m: New function.
 	* polynomial/residue.m: Modified to behave in reciprocal

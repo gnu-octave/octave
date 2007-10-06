@@ -68,20 +68,22 @@
 ##   @item cdr
 ##   @itemx corel
 ##     CorelDraw
-##   @item hpgl
-##     HP plotter language
-##   @item fig
-##     XFig
 ##   @item dxf
 ##     AutoCAD
+##   @item emf
+##     Microsoft Enhanced Metafile
+##   @item fig
+##     XFig
+##   @item hpgl
+##     HP plotter language
 ##   @item mf
 ##     Metafont
 ##   @item png
 ##     Portable network graphics
 ##   @item pbm
 ##     PBMplus
-##   @item emf
-##     Microsoft Enhanced Metafile
+##   @item svg
+##     Scalable vector graphics
 ##   @end table
 ##
 ##   Other devices are supported by "convert" from ImageMagick.  Type
@@ -89,6 +91,11 @@
 ##
 ##   If the device is omitted, it is inferred from the file extension,
 ##   or if there is no filename it is sent to the printer as postscript.
+##
+## @itemx -S@var{xsize},@var{ysize}
+##   Plot size in pixels for PNG and SVG.  If using the command form of
+##   the print function, you must quote the @var{xsize},@var{ysize}
+##   option.  For example, by writing @code{"-S640,480"}.
 ##
 ## @item -F@var{fontname}
 ## @itemx -F@var{fontname}:@var{size}
@@ -115,6 +122,7 @@ function print (varargin)
   force_solid = 0; # 0=default, -1=dashed, +1=solid
   fontsize = "";
   font = "";
+  size = "";
   name = "";
   devopt = "";
   printer = "";
@@ -153,6 +161,8 @@ function print (varargin)
 	else
 	  font = arg(3:length(arg));
 	endif
+      elseif (length (arg) > 2 && arg(1:2) == "-S")
+	size = arg(3:length(arg));
       elseif (length (arg) >= 1 && arg(1) == "-")
 	error ("print: unknown option `%s'", arg);
       elseif (length (arg) > 0)
@@ -197,7 +207,7 @@ function print (varargin)
   endif
 
   ## check if we have to use convert
-  dev_list = {"aifm", "corel", "fig", "png", "pbm", "dxf", "mf", ...
+  dev_list = {"aifm", "corel", "fig", "png", "pbm", "dxf", "mf", "svg", ...
 	      "hpgl", "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
 	      "epsc", "epsc2", "emf", "pstex", "pslatex", ...
 	      "epslatex", "epslatexstandalone"};
@@ -331,11 +341,25 @@ function print (varargin)
     ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
     ##endif
 
-    new_terminal = "png large";
+    if (isempty (size))
+      options = " large";
+    else
+      options = strcat (" size ", size);
+    endif
+    new_terminal = strcat ("png", options);
 
   elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
     ## AutoCad DXF, METAFONT, HPGL
     new_terminal = dev;
+
+  elseif (strcmp (dev, "svg"))
+    ## SVG
+    options = "";
+    if (! isempty (size))
+      options = strcat (" size ", size);
+    endif
+    new_terminal = strcat ("svg", options);
+
   endif
 
   if (debug)

@@ -55,7 +55,7 @@ function __img_via_file__ (x, y, im, zoom, command)
     else
       command = sprintf (command, ppm_name);
     endif
-    status = system (sprintf ("( %s && %s) > /dev/null 2>&1 &", command, rm))
+    status = system (sprintf ("( %s && %s) > /dev/null 2>&1 &", command, rm));
   endif
   
   ## Did the system call fail?

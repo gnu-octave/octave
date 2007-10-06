@@ -81,7 +81,11 @@ function saveimage (filename, img, img_form, map)
   endif
 
   if (nargin < 4)
-    map = colormap ();
+    if (size(img, 3) == 3)
+      [img, map] = rgb2ind(img);
+    else
+      map = colormap ();
+    endif
   endif
 
   [map_nr, map_nc] = size (map);

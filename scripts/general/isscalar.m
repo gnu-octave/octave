@@ -28,7 +28,7 @@
 function retval = isscalar (x)
 
   if (nargin == 1)
-    retval = prod (size (x)) == 1;
+    retval = numel (x) == 1;
   else
     print_usage ();
   endif

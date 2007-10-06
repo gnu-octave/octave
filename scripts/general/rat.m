@@ -58,7 +58,7 @@ function [n,d] = rat(x,tol)
   lastd = zeros(size(y));
 
   nd = ndims(y);
-  nsz = prod (size (y));
+  nsz = numel (y);
   steps = zeros([nsz, 0]);
 
   ## grab new factors until all continued fractions converge

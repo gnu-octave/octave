@@ -53,7 +53,7 @@ function retval = dec2base (n, base, len)
     print_usage ();
   endif
 
-  if (prod (size (n)) != length (n))
+  if (numel (n) != length (n))
     n = n(:);
   elseif (any (n < 0 | n != fix (n)))
     error ("dec2base: can only convert non-negative integers")

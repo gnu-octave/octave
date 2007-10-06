@@ -30,7 +30,7 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
   if (nargin != 5)
     error ("Incorrect number of arguments");
   endif
-  isvec = @(x) prod(size(x)) == length(x);   # ND isvector function
+  isvec = @(x) numel (x) == length (x);   # ND isvector function
   if (!iscell (x) || length(x) < ndims(y) || any (! cellfun (isvec, x)) ||
       !iscell (xi) || length(xi) < ndims(y) || any (! cellfun (isvec, xi)))
     error ("%s: non gridded data or dimensions inconsistent", f);

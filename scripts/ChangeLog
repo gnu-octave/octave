@@ -1,3 +1,13 @@
+2007-10-06  Søren Hauberg  <hauberg@gmail.com>
+
+	* image/saveimage.m: Handle saving color images without a colormap.
+	* image/__img_via_file__.m: Add missing semicolon.
+
+2007-10-06  Bill Denney  <wsloand@gmail.com>
+
+        * general/__splinen__.m, general/isscalar.m, general/rat.m,
+	strings/dec2base.m: Use numel(x) instead of prod(size(x)).
+
 2007-10-06  Francesco Potorti`  <Potorti@isti.cnr.it>
 
 	* plot/print.m: Handle svg output type.  Accept new -S option to

@@ -1,3 +1,8 @@
+2007-10-06  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/octave.texi: Add David Bateman and Søren Hauberg as
+	authors.
+
 2006-09-28  Henry Mollet  mollet@pacbell.net
 
 	* interpreter/func.txi: Correct results of a couple of examples.

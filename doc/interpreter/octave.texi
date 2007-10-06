@@ -87,6 +87,8 @@ modified versions.
 @subtitle Edition 3 for Octave version @value{VERSION}
 @subtitle July 2007
 @author John W. Eaton
+@author David Bateman
+@author S@o{}ren Hauberg
 @page
 @vskip 0pt plus 1filll
 Copyright @copyright{} 1996, 1997, 2007 John W. Eaton.

@@ -155,16 +155,6 @@
 %% test/octave.test/poly/polyvalm-2.m
 %!error polyvalm ([1, 1, 1], [1, 2; 3, 4; 5, 6]);
 
-%% test/octave.test/poly/residue-1.m
-%!test
-%! b = [1, 1, 1];
-%! a = [1, -5, 8, -4];
-%! [r, p, k, e] = residue (b, a);
-%! assert((abs (r - [-2; 7; 3]) < 1e-6
-%! && abs (p - [2; 2; 1]) < 1e-7
-%! && isempty (k)
-%! && e == [1; 2; 1]));
-
 %% test/octave.test/poly/roots-1.m
 %!assert(all (all (abs (roots ([1, -6, 11, -6]) - [3; 2; 1]) < sqrt (eps))));
 

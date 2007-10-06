@@ -1,3 +1,7 @@
+2007-10-06  John W. Eaton  <jwe@octave.org>
+
+	* polynomial/residue.m: New test from test/test_poly.m.
+
 2007-10-06  Søren Hauberg  <hauberg@gmail.com>
 
 	* image/saveimage.m: Handle saving color images without a colormap.

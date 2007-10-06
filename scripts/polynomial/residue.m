@@ -314,3 +314,13 @@ function [pnum, pden] = rresidue (r, p, k, toler)
   pden = polyreduce (pden);
 
 endfunction
+
+%% test/octave.test/poly/residue-1.m
+%!test
+%! b = [1, 1, 1];
+%! a = [1, -5, 8, -4];
+%! [r, p, k, e] = residue (b, a);
+%! assert((abs (r - [-2; 7; 3]) < 1e-6
+%! && abs (p - [2; 2; 1]) < 1e-7
+%! && isempty (k)
+%! && e == [1; 2; 1]));

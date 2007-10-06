@@ -20,7 +20,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = compan.m conv.m deconv.m mkpp.m pchip.m poly.m \
+SOURCES = compan.m conv.m deconv.m mkpp.m mpoles.m pchip.m poly.m \
   polyder.m polyderiv.m polyfit.m polygcd.m polyint.m \
   polyout.m polyreduce.m polyval.m polyvalm.m ppval.m residue.m \
   roots.m spline.m unmkpp.m

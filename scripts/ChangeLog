@@ -1,3 +1,13 @@
+2007-10-05  Ben Abbott <bpabbott@mac.com>
+
+	* polynomial/mpoles.m: New function.
+	* polynomial/residue.m: Modified to behave in reciprocal
+	manner.  No longer compute 4th output, "e".  No longer accept
+	tolerance input.  Explicitly set tolerance parameter to 0.001.
+	Respect maximum relative difference in poles when determining
+	their multiplicity.  Use mpoles to determine the multiplicity of
+	poles.
+
 2007-10-05  Peter A. Gustafson  <petegus@umich.edu>
 
 	* plot/__go_draw_axes__.m: Add cbrange to the plot stream 

@@ -160,6 +160,9 @@ erfc (double x)
 double
 xgamma (double x)
 {
+#if defined (HAVE_TGAMMA)
+  return tgamma (x);
+#else
   double result;
 
   if (xisnan (x))
@@ -168,42 +171,29 @@ xgamma (double x)
     result = octave_Inf;
   else
     F77_XFCN (xdgamma, XDGAMMA, (x, result));
+
   return result;
+#endif
 }
 
 double
 xlgamma (double x)
 {
+#if defined (HAVE_LGAMMA)
+  return lgamma (x);
+#else
   double result;
   double sgngam;
 
   if (xisnan (x))
     result = x;
-  else if (x <= 0 || xisinf (x))
+  else if (xisinf (x))
     result = octave_Inf;
   else
     F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
 
   return result;
-}
-
-Complex
-zlgamma (double x)
-{
-  Complex result;
-
-  if (xisnan (x))
-    result = x;
-  else if (x > 0)
-    result = xlgamma (x);
-  else
-    {
-      double tmp = xgamma (x);
-
-      result = tmp < 0 ? std::log (Complex (tmp)) : log (tmp);
-    }
-
-  return result;
+#endif
 }
 
 static inline Complex

@@ -172,21 +172,6 @@ dummyp (int)
   return 0;
 }
 
-// FIXME -- maybe our mapper function structure should alow for
-// functions that take real arguments and produce complex values.
-static Complex
-xzlgamma (const Complex& x)
-{
-  Complex retval;
-
-  if (x.imag () != 0)
-    error ("lgamma: expecting real arguments");
-  else
-    retval = zlgamma (x.real ());
-
-  return retval;
-}
-
 void
 install_mapper_functions (void)
 {
@@ -542,11 +527,12 @@ Return 1 for upper case letters.\n\
 Return 1 for characters that are hexadecimal digits.\n\
 @end deftypefn");
 
-  DEFUN_MAPPER (lgamma, 0, 0, 0, xlgamma, 0, xzlgamma, 0.0, octave_Inf, 0, 1,
+  DEFUN_MAPPER (lgamma, 0, 0, 0, xlgamma, 0, 0, 0.0, 0.0, 0, 0,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} lgamma (@var{x})\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
-Return the natural logarithm of the gamma function.\n\
+Return the natural logarithm of the absolute value of the gamma\n\
+function of @var{x}.\n\
 @seealso{gamma, gammai}\n\
 @end deftypefn");
 

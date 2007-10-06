@@ -59,7 +59,6 @@ extern OCTAVE_API double erfc (double);
 
 extern OCTAVE_API double xgamma (double x);
 extern OCTAVE_API double xlgamma (double x);
-extern OCTAVE_API Complex zlgamma (double x);
 
 extern OCTAVE_API Complex
 besselj (double alpha, const Complex& x, bool scaled, octave_idx_type& ierr);

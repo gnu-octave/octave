@@ -1,3 +1,11 @@
+2007-10-06  John W. Eaton  <jwe@octave.org>
+
+	* lo-specfun.cc: (zlgamma): Delete.
+	(xgamma): Use C library gamma function if available.
+	(xlgamma): Use C library lgamma function if available.
+	(xlgamma) [! HAVE_LGAMMA]: Allow calculation for any value of X
+	other than NaN or Inf.
+
 2007-10-05  John W. Eaton  <jwe@octave.org>
 
 	* lo-specfun.cc (zlgamma): New function.

@@ -149,7 +149,7 @@ zeros.\n\
 \n\
 If @var{a} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
 of @var{a} is treated seperately\n\
-@seealso {ifft2, fft, fftn, fftw_wisdom}\n\
+@seealso {ifft2, fft, fftn, fftw}\n\
 @end deftypefn")
 {
   return do_fft2 (args, "fft2", 0);
@@ -168,7 +168,7 @@ zeros.\n\
 \n\
 If @var{a} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
 of @var{a} is treated seperately\n\
-@seealso {fft2, ifft, ifftn, fftw_wisdom}\n\
+@seealso {fft2, ifft, ifftn, fftw}\n\
 @end deftypefn")
 {
   return do_fft2 (args, "ifft2", 1);

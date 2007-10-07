@@ -180,7 +180,7 @@ smaller than the dimension along which the FFT is calculated, then\n\
 \n\
 If called with three arguments, @var{dim} is an integer specifying the\n\
 dimension of the matrix along which the FFT is performed\n\
-@seealso{ifft, fft2, fftn, fftw_wisdom}\n\
+@seealso{ifft, fft2, fftn, fftw}\n\
 @end deftypefn")
 {
   return do_fft (args, "fft", 0);
@@ -206,7 +206,7 @@ then @var{a} is truncated.\n\
 \n\
 If called with three agruments, @var{dim} is an integer specifying the\n\
 dimension of the matrix along which the inverse FFT is performed\n\
-@seealso{fft, ifft2, ifftn, fftw_wisdom}\n\
+@seealso{fft, ifft2, ifftn, fftw}\n\
 @end deftypefn")
 {
   return do_fft (args, "ifft", 1);

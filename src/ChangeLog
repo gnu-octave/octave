@@ -1,5 +1,9 @@
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (octave_base_stream::do_scanf):
+	Always allow MVAL to re resized if NR > 0.
+	(FINISH_CHARACTER_CONVERSION): Likewise.
+
 	* mappers.cc (install_mapper_functions): Undo previous change.
 	Fix doc string for lgamma.
 	(xzlgamma): Delete.

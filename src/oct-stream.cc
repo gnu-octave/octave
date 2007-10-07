@@ -1618,12 +1618,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
 			    panic_impossible (); \
 			} \
 		      else if (nr > 0) \
-			{ \
-			  if (nc <= 0) \
-			    mval.resize (nr, max_size / nr, 0.0); \
-			  else \
-			    panic_impossible (); \
-			} \
+			mval.resize (nr, max_size / nr, 0.0); \
 		      else \
 			mval.resize (max_size, 1, 0.0); \
  \
@@ -1768,12 +1763,7 @@ octave_base_stream::do_scanf (scanf_format_list& fmt_list,
 			panic_impossible ();
 		    }
 		  else if (nr > 0)
-		    {
-		      if (nc <= 0)
-			mval.resize (nr, max_size / nr, 0.0);
-		      else
-			panic_impossible ();
-		    }
+		    mval.resize (nr, max_size / nr, 0.0);
 		  else
 		    mval.resize (max_size, 1, 0.0);
 

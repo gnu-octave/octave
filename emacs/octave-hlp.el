@@ -1,6 +1,7 @@
 ;;; octave-hlp.el --- getting help on Octave symbols using info
 
-;; Copyright (C) 1997 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2001, 2002, 2003, 2004, 2005, 2006, 2007
+;; Free Software Foundation, Inc.
 
 ;; Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
@@ -11,7 +12,7 @@
 
 ;; GNU Emacs is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; GNU Emacs is distributed in the hope that it will be useful,
@@ -134,4 +135,5 @@ The files specified by `octave-help-files' are searched."
 
 (provide 'octave-hlp)
 
+;;; arch-tag: df5ef8fa-76c9-44e5-9835-cb5a502c6282
 ;;; octave-hlp.el ends here

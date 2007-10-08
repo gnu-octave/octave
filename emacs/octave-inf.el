@@ -1,6 +1,7 @@
 ;;; octave-inf.el --- running Octave as an inferior Emacs process
 
-;; Copyright (C) 1997 Free Software Foundation, Inc.
+;; Copyright (C) 1997, 2001, 2002, 2003, 2004, 2005, 2006, 2007
+;; Free Software Foundation, Inc.
 
 ;; Author: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
 ;; Author: John Eaton <jwe@bevo.che.wisc.edu>
@@ -11,7 +12,7 @@
 
 ;; GNU Emacs is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 2, or (at your option)
+;; the Free Software Foundation; either version 3, or (at your option)
 ;; any later version.
 
 ;; GNU Emacs is distributed in the hope that it will be useful,
@@ -36,18 +37,18 @@
   :group 'octave)
 
 (defcustom inferior-octave-program "octave"
-  "*Program invoked by `inferior-octave'."
+  "Program invoked by `inferior-octave'."
   :type 'string
   :group 'octave-inferior)
 
 (defcustom inferior-octave-prompt
   "\\(^octave\\(\\|.bin\\|.exe\\)\\(-[.0-9]+\\)?\\(:[0-9]+\\)?\\|^debug\\|^\\)>+ "
-  "*Regexp to match prompts for the inferior Octave process."
+  "Regexp to match prompts for the inferior Octave process."
   :type 'regexp
   :group 'octave-inferior)
 
 (defcustom inferior-octave-startup-file nil
-  "*Name of the inferior Octave startup file.
+  "Name of the inferior Octave startup file.
 The contents of this file are sent to the inferior Octave process on
 startup."
   :type '(choice (const :tag "None" nil)
@@ -55,34 +56,31 @@ startup."
   :group 'octave-inferior)
 
 (defcustom inferior-octave-startup-args nil
-  "*List of command line arguments for the inferior Octave process.
+  "List of command line arguments for the inferior Octave process.
 For example, for suppressing the startup message and using `traditional'
 mode, set this to (\"-q\" \"--traditional\")."
   :type '(repeat string)
   :group 'octave-inferior)
 
-(defvar inferior-octave-mode-map nil
-  "Keymap used in Inferior Octave mode.")
-(if inferior-octave-mode-map
-    ()
-  (let ((map (copy-keymap comint-mode-map)))
+(defvar inferior-octave-mode-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map comint-mode-map)
     (define-key map "\t" 'comint-dynamic-complete)
     (define-key map "\M-?" 'comint-dynamic-list-filename-completions)
     (define-key map "\C-c\C-l" 'inferior-octave-dynamic-list-input-ring)
     (define-key map [menu-bar inout list-history]
       '("List Input History" . inferior-octave-dynamic-list-input-ring))
     (define-key map "\C-c\C-h" 'octave-help)
-    (setq inferior-octave-mode-map map)))
+    map)
+  "Keymap used in Inferior Octave mode.")
 
-(defvar inferior-octave-mode-syntax-table nil
-  "Syntax table in use in inferior-octave-mode buffers.")
-(if inferior-octave-mode-syntax-table
-    ()
+(defvar inferior-octave-mode-syntax-table
   (let ((table (make-syntax-table)))
     (modify-syntax-entry ?\` "w" table)
     (modify-syntax-entry ?\# "<" table)
     (modify-syntax-entry ?\n ">" table)
-    (setq inferior-octave-mode-syntax-table table)))
+    table)
+  "Syntax table in use in inferior-octave-mode buffers.")
 
 (defcustom inferior-octave-mode-hook nil
   "*Hook to be run when Inferior Octave mode is started."
@@ -132,7 +130,7 @@ buffer.
 Entry to this mode successively runs the hooks `comint-mode-hook' and
 `inferior-octave-mode-hook'."
   (interactive)
-  (comint-mode)
+  (delay-mode-hooks (comint-mode))
   (setq comint-prompt-regexp inferior-octave-prompt
 	major-mode 'inferior-octave-mode
 	mode-name "Inferior Octave"
@@ -155,13 +153,14 @@ Entry to this mode successively runs the hooks `comint-mode-hook' and
 
   (setq comint-input-ring-file-name
 	(or (getenv "OCTAVE_HISTFILE") "~/.octave_hist")
-	comint-input-ring-size (or (getenv "OCTAVE_HISTSIZE") 1024)
-	comint-input-filter-functions '(inferior-octave-directory-tracker)
-	comint-dynamic-complete-functions
-	inferior-octave-dynamic-complete-functions)
+	comint-input-ring-size (or (getenv "OCTAVE_HISTSIZE") 1024))
+  (set (make-local-variable 'comint-dynamic-complete-functions)
+       inferior-octave-dynamic-complete-functions)
+  (add-hook 'comint-input-filter-functions
+	'inferior-octave-directory-tracker nil t)
   (comint-read-input-ring t)
 
-  (run-hooks 'inferior-octave-mode-hook))
+  (run-mode-hooks 'inferior-octave-mode-hook))
 
 ;;;###autoload
 (defun inferior-octave (&optional arg)
@@ -223,21 +222,21 @@ startup file, `~/.emacs-octave'."
 		   'identity inferior-octave-output-list "\n")
 		  "\n"))))
 
-    ;; Find out whether Octave has built-in variables.
-    (inferior-octave-send-list-and-digest
-     (list "exist \"LOADPATH\"\n"))
-    (setq inferior-octave-has-built-in-variables
-	  (string-match "101$" (car inferior-octave-output-list)))
+     ;; Find out whether Octave has built-in variables.
+     (inferior-octave-send-list-and-digest
+      (list "exist \"LOADPATH\"\n"))
+     (setq inferior-octave-has-built-in-variables
+ 	  (string-match "101$" (car inferior-octave-output-list)))
 
     ;; An empty secondary prompt, as e.g. obtained by '--braindead',
     ;; means trouble.
     (inferior-octave-send-list-and-digest (list "PS2\n"))
     (if (string-match "\\(PS2\\|ans\\) = *$" (car inferior-octave-output-list))
-	(inferior-octave-send-list-and-digest
-	 (list (if inferior-octave-has-built-in-variables
-		   "PS2 = \"> \"\n"
-		 "PS2 (\"> \");\n"))))
-    
+ 	(inferior-octave-send-list-and-digest
+ 	 (list (if inferior-octave-has-built-in-variables
+ 		   "PS2 = \"> \"\n"
+ 		 "PS2 (\"> \");\n"))))
+
     ;; O.k., now we are ready for the Inferior Octave startup commands.
     (let* (commands
 	   (program (file-name-nondirectory inferior-octave-program))
@@ -269,8 +268,9 @@ startup file, `~/.emacs-octave'."
     ;; And finally, everything is back to normal.
     (set-process-filter proc 'inferior-octave-output-filter)
     (run-hooks 'inferior-octave-startup-hook)
-    ;; just in case, to be sure a cd in the startup file 
-    ;; won't have detrimental effects
+    (run-hooks 'inferior-octave-startup-hook)
+    ;; Just in case, to be sure a cd in the startup file
+    ;; won't have detrimental effects.
     (inferior-octave-resync-dirs)))
 
 
@@ -284,8 +284,7 @@ is NOT available with versions of Octave prior to 2.0."
 	  (save-excursion
 	    (skip-syntax-backward "w_" (comint-line-beginning-position))
 	    (buffer-substring-no-properties (point) end)))
-	 (proc (get-buffer-process inferior-octave-buffer))
-	 (filter (process-filter proc)))
+	 (proc (get-buffer-process inferior-octave-buffer)))
     (cond (inferior-octave-complete-impossible
 	   (error (concat
 		   "Your Octave does not have `completion_matches'.  "
@@ -311,7 +310,7 @@ is NOT available with versions of Octave prior to 2.0."
 	    command inferior-octave-output-list)))))
 
 (defun inferior-octave-dynamic-list-input-ring ()
-  "List the buffer's input history in a help buffer"
+  "List the buffer's input history in a help buffer."
   ;; We cannot use `comint-dynamic-list-input-ring', because it replaces
   ;; "completion" by "history reference" ...
   (interactive)
@@ -406,4 +405,5 @@ directory and makes this the current buffer's default directory."
 
 (provide 'octave-inf)
 
+;; arch-tag: bdce0395-24d1-4bb4-bfba-6fb1eeb1a660
 ;;; octave-inf.el ends here

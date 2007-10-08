@@ -35,10 +35,10 @@ extern void sysdep_init (void);
 
 extern void sysdep_cleanup (void);
 
-extern void raw_mode (bool, bool wait = true);
+extern OCTINTERP_API void raw_mode (bool, bool wait = true);
 
-extern FILE *octave_popen (const char *command, const char *mode);
-extern int octave_pclose (FILE *f);
+extern OCTINTERP_API FILE *octave_popen (const char *command, const char *mode);
+extern OCTINTERP_API int octave_pclose (FILE *f);
 
 extern OCTINTERP_API int octave_kbhit (bool wait = true);
 
@@ -52,7 +52,7 @@ extern void MINGW_signal_cleanup (void);
 #define MINGW_SIGNAL_CLEANUP() do { } while (0)
 #endif
 
-extern bool same_file_internal (const std::string&, const std::string&);
+extern OCTINTERP_API bool same_file_internal (const std::string&, const std::string&);
 
 #endif
 

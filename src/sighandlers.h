@@ -95,7 +95,7 @@ octave_interrupt_handler
 extern int pipe_handler_error_count;
 
 // TRUE means we can be interrupted.
-extern bool can_interrupt;
+extern OCTINTERP_API bool can_interrupt;
 
 extern OCTINTERP_API sig_handler *octave_set_signal_handler (int, sig_handler *,
 					       bool restart_syscalls = true);

@@ -1,3 +1,9 @@
+2007-10-08  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* sighandlers.h (can_interrupt): Tag with OCTINERP_API.
+	* sysdep.h (raw_mode, octave_popen, octave_pclose,
+	same_file_internal): Likewise.
+
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (octave_base_stream::do_scanf):

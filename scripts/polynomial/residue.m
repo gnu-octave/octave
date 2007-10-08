@@ -19,37 +19,14 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{r}, @var{p}, @var{k}] =} residue (@var{b}, @var{a})
-## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
-## In the instance of two inputs, they are assumed to correspond to vectors
-## of polynomial coefficients, @var{b} and @var{a}. From these polynomial
-## coefficients, the function residue calculates the partial fraction 
-## expansion corresponding to the ratio of the two polynomials.
-## @cindex partial fraction expansion
+## @deftypefn {Function File} {[@var{r}, @var{p}, @var{k}, @var{e}] =} residue (@var{b}, @var{a})
+## Compute the partial fraction expansion for the quotient of the
+## polynomials, @var{b} and @var{a}.
 ##
-## In this instance, the function @code{residue} returns @var{r}, @var{p},
-## and @var{k}, where the vector @var{r} contains the residue terms,
-## @var{p} contains the pole values, @var{k} contains the coefficients of a 
-## direct polynomial term (if it exists).
-## 
-## In the instance of three inputs, the function 'residue' performs the
-## reciprocal task. Meaning the partial fraction expansion is reconstituted
-## into the corresponding pair of polynomial coefficients.
-##
-## Assuming @var{b} and @var{a} represent polynomials
-## @iftex
-## @tex
-## $P(s)$ and $Q(s)$
-## @end tex
-## @end iftex
-## @ifinfo
-##  P (s) and Q(s)
-## @end ifinfo
-##  we have:
 ## @iftex
 ## @tex
 ## $$
-## {P(s)\over Q(s)} = \sum_{m=1}^M {r_m\over (s-p_m)^e_m}
+## {B(s)\over A(s)} = \sum_{m=1}^M {r_m\over (s-p_m)^e_m}
 ##   + \sum_{i=1}^N k_i s^{N-i}.
 ## $$
 ## @end tex
@@ -57,17 +34,17 @@
 ## @ifinfo
 ##
 ## @example
-##  P(s)    M       r(m)         N
+##  B(s)    M       r(m)         N
 ##  ---- = SUM -------------  + SUM k(i)*s^(N-i)
-##  Q(s)   m=1 (s-p(m))^e(m)    i=1
+##  A(s)   m=1 (s-p(m))^e(m)    i=1
 ## @end example
 ## @end ifinfo
 ##
 ## @noindent
 ## where @math{M} is the number of poles (the length of the @var{r},
-## @var{p}, and @var{e} vectors) and @math{N} is the length of the
-## @var{k} vector. The @var{e} vector specifies the multiplicity of the
-## mth residue's pole.
+## @var{p}, and @var{e}), the @var{k} vector is a polynomial of order @math{N-1}
+## representing the direct contribution, and the @var{e} vector specifies
+## the multiplicity of the mth residue's pole.
 ##
 ## For example,
 ##
@@ -83,7 +60,7 @@
 ## @end example
 ##
 ## @noindent
-## which implies the following partial fraction expansion
+## which represents the following partial fraction expansion
 ## @iftex
 ## @tex
 ## $$
@@ -100,8 +77,14 @@
 ## @end example
 ##
 ## @end ifinfo
-## A similar, but reciprocal example, where the fraction's polynomials are 
-## reconstituted from the residues, poles, and direct term is
+##
+## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
+## Compute the reconstituted quotient of polynomials,
+## @var{b}(s)/@var{a}(s), from the partial fraction expansion
+## represented by the residues, poles, and a direct polynomial specified
+## by @var{r}, @var{p} and @var{k}.
+##
+## For example,
 ##
 ## @example
 ## @group
@@ -110,25 +93,25 @@
 ## k = [1 0];
 ## [b, a] = residue (r, p, k);
 ##      @result{} b = [1, -5, 9, -3, 1]
-##      @result{} a = [1, -5, 8, 4]
+##      @result{} a = [1, -5, 8, -4]
 ## @end group
 ## @end example
 ##
 ## @noindent
-## which implies the following partial fraction expansion
+## which represents the following partial fraction expansion
 ## @iftex
 ## @tex
 ## $$
-## {s^4-5s^3+9s^2-3s+1\over s^3-5s^2+8s-4} = {-2\over s-2} + {7\over (s-2)^2} + {3\over s-1} + s
+## {-2\over s-2} + {7\over (s-2)^2} + {3\over s-1} + s = {s^4-5s^3+9s^2-3s+1\over s^3-5s^2+8s-4}
 ## $$
 ## @end tex
 ## @end iftex
 ## @ifinfo
 ##
 ## @example
-##    s^4 - 5s^3 + 9s^2 - 3s + 1    -2        7        3
-##    -------------------------- = ----- + ------- + ----- + s
-##        s^3 - 5s^2 + 8s - 4      (s-2)   (s-2)^2   (s-1)
+##     -2        7        3         s^4 - 5s^3 + 9s^2 - 3s + 1
+##    ----- + ------- + ----- + s = --------------------------
+##    (s-2)   (s-2)^2   (s-1)          s^3 - 5s^2 + 8s - 4
 ## @end example
 ## @end ifinfo
 ## @seealso{poly, roots, conv, deconv, mpoles, polyval, polyderiv, polyinteg}
@@ -139,7 +122,32 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
-function [r, p, k] = residue (b, a, varargin)
+%!test
+%! b = [1, 1, 1];
+%! a = [1, -5, 8, -4];
+%! [r, p, k, e] = residue (b, a);
+%! assert ((abs (r - [-2; 7; 3]) < 1e-5
+%! && abs (p - [2; 2; 1]) < 1e-7
+%! && isempty (k)
+%! && e == [1; 2; 1]));
+%! k = [1 0];
+%! [b, a] = residue (r, p, k);
+%! assert ((abs (b - [1, -5, 9, -3, 1]) < 1e-12
+%! && abs (a - [1, -5, 8, -4]) < 1e-12));
+
+%!test
+%! b = [1, 0, 1];
+%! a = [1, 0, 18, 0, 81];
+%! [r, p, k, e] = residue(b, a);
+%! assert ((abs (54*r - [-5i; 12; 5i; 12]) < 1e-6
+%! && abs (p - [3i; 3i; -3i; -3i]) < 1e-7
+%! && isempty (k)
+%! && e == [1; 2; 1; 2]));
+%! [br, ar] = residue (r, p, k);
+%! assert ((abs (br - b) < 1e-12
+%! && abs (ar - a) < 1e-12));
+
+function [r, p, k, e] = residue (b, a, varargin)
 
   if (nargin < 2 || nargin > 3)
     print_usage ();
@@ -238,7 +246,7 @@ function [r, p, k] = residue (b, a, varargin)
 
 endfunction
 
-function [pnum, pden] = rresidue (r, p, k, toler)
+function [pnum, pden, multp] = rresidue (r, p, k, toler)
 
   ## Reconstitute the numerator and denominator polynomials from the
   ## residues, poles, and direct term.

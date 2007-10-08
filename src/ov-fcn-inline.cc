@@ -578,7 +578,7 @@ octave_fcn_inline::convert_to_str_internal (bool, bool, char type) const
   return octave_value (fcn_text (), type);
 }
 
-DEFUN (inline, args, ,
+DEFUNX ("inline", Finline, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} inline (@var{str})\n\
 @deftypefnx {Built-in Function} {} inline (@var{str}, @var{arg1}, @dots{})\n\

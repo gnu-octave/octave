@@ -1,3 +1,10 @@
+2007-10-08  John W. Eaton  <jwe@octave.org>
+
+	* emacs/octave-hlp.el, emacs/octave-inf.el, emacs/octave-mod.el:
+	Sync with GNU Emacs versions.
+	* emacs/octave-mod.el: Delete last two args from calls to
+	define-abbrev.
+
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for lgamma and tgamma.

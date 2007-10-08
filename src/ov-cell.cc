@@ -463,7 +463,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
 #define CELL_ELT_TAG "<cell-element>"
 
 bool 
-octave_cell::save_ascii (std::ostream& os, bool& infnan_warned)
+octave_cell::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
   if (d.length () > 2)
@@ -481,8 +481,7 @@ octave_cell::save_ascii (std::ostream& os, bool& infnan_warned)
 	  octave_value o_val = tmp.elem (i);
 
 	  // Recurse to print sub-value.
-	  bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, infnan_warned, 
-				    false, 0);
+	  bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
 	      
 	  if (! b)
 	    return os;
@@ -504,8 +503,7 @@ octave_cell::save_ascii (std::ostream& os, bool& infnan_warned)
 	      octave_value o_val = tmp.elem (i, j);
 
 	      // Recurse to print sub-value.
-	      bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, 
-					infnan_warned, false, 0);
+	      bool b = save_ascii_data (os, o_val, CELL_ELT_TAG, false, 0);
 	      
 	      if (! b)
 		return os;

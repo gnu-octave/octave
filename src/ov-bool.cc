@@ -133,7 +133,7 @@ octave_bool::convert_to_str_internal (bool, bool, char type) const
 }
 
 bool 
-octave_bool::save_ascii (std::ostream& os, bool& /* infnan_warned */)
+octave_bool::save_ascii (std::ostream& os)
 {
   double d = double_value ();
 

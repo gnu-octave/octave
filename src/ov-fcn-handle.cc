@@ -261,7 +261,7 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 }
 
 bool
-octave_fcn_handle::save_ascii (std::ostream& os, bool& infnan_warned)
+octave_fcn_handle::save_ascii (std::ostream& os)
 {
   if (nm == "@<anonymous>")
     {
@@ -293,7 +293,7 @@ octave_fcn_handle::save_ascii (std::ostream& os, bool& infnan_warned)
 	    {
 	      if (vars(i)->is_defined () &&
 		  ! save_ascii_data (os, vars(i)->def(), vars(i)->name(), 
-				     infnan_warned, false, 0))
+				     false, 0))
 		return os;
 	    }
 	}

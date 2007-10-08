@@ -87,7 +87,7 @@ public:
 
   std::string fcn_name (void) const { return nm; }
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned);
+  bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 

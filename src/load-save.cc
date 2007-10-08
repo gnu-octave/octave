@@ -1032,13 +1032,12 @@ glob_pattern_p (const std::string& pattern)
 static void
 do_save (std::ostream& os, const octave_value& tc,
 	 const std::string& name, const std::string& help,
-	 int global, load_save_format fmt, bool save_as_floats,
-	 bool& infnan_warned)
+	 int global, load_save_format fmt, bool save_as_floats)
 {
   switch (fmt)
     {
     case LS_ASCII:
-      save_ascii_data (os, tc, name, infnan_warned, global, 0);
+      save_ascii_data (os, tc, name, global, 0);
       break;
 
     case LS_BINARY:
@@ -1079,7 +1078,7 @@ do_save (std::ostream& os, const octave_value& tc,
 
 void
 do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
-	 bool save_as_floats, bool& infnan_warned)
+	 bool save_as_floats)
 {
   if (! sr->is_variable ())
     {
@@ -1096,8 +1095,7 @@ do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
 
       int global = sr->is_linked_to_global ();
 
-      do_save (os, tc, name, help, global, fmt, save_as_floats,
-	       infnan_warned);
+      do_save (os, tc, name, help, global, fmt, save_as_floats);
     }
 }
 
@@ -1113,11 +1111,9 @@ save_vars (std::ostream& os, const std::string& pattern,
 
   int saved = vars.length ();
 
-  bool infnan_warned = false;
-
   for (int i = 0; i < saved; i++)
     {
-      do_save (os, vars(i), fmt, save_as_floats, infnan_warned);
+      do_save (os, vars(i), fmt, save_as_floats);
 
       if (error_state)
 	break;
@@ -1341,8 +1337,6 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
   int num_to_save = vars.length ();
 
-  bool infnan_warned = false;
-
   double save_mem_size = 0;
 
   for (int i = 0; i < num_to_save; i++)
@@ -1370,8 +1364,7 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 
 		  int global = sr->is_linked_to_global ();
 
-		  do_save (os, tc, name, help, global, fmt, save_as_floats,
-			   infnan_warned);
+		  do_save (os, tc, name, help, global, fmt, save_as_floats);
 
 		  if (error_state)
 		    break;

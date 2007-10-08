@@ -112,7 +112,7 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 
 template <class T>
 bool
-octave_base_int_matrix<T>::save_ascii (std::ostream& os, bool&)
+octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 {
   dim_vector d = this->dims ();
 
@@ -397,7 +397,7 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
 
 template <class T>
 bool
-octave_base_int_scalar<T>::save_ascii (std::ostream& os, bool&)
+octave_base_int_scalar<T>::save_ascii (std::ostream& os)
 {
   os << this->scalar << "\n";
   return true;

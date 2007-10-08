@@ -803,11 +803,9 @@ public:
   void print_info (std::ostream& os,
 			   const std::string& prefix = std::string ()) const;
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned)
-    { return rep->save_ascii (os, infnan_warned); }
+  bool save_ascii (std::ostream& os) { return rep->save_ascii (os); }
 
-  bool load_ascii (std::istream& is)
-    { return rep->load_ascii (is); }
+  bool load_ascii (std::istream& is) { return rep->load_ascii (is); }
 
   bool save_binary (std::ostream& os, bool& save_as_floats)
     { return rep->save_binary (os, save_as_floats); }

@@ -67,7 +67,7 @@ public:
 
   Octave_map map_value (void) const;
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned);
+  bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 

@@ -176,16 +176,10 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
 }
 
 bool 
-octave_complex::save_ascii (std::ostream& os, bool& infnan_warned)
+octave_complex::save_ascii (std::ostream& os)
 {
   Complex c = complex_value ();
 
-  if (! infnan_warned && (xisnan (c) || xisinf (c)))
-    {
-      warning ("save: Inf or NaN values may not be reloadable");
-      infnan_warned = true;
-    }
-      
   octave_write_complex (os, c);
 
   os << "\n";

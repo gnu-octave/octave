@@ -538,7 +538,7 @@ is equivalent to @code{append (@var{list_1}, @var{list_2})}.\n\
 }
 
 bool 
-octave_list::save_ascii (std::ostream& os, bool& infnan_warned)
+octave_list::save_ascii (std::ostream& os)
 {
   octave_value_list lst = list_value ();
   os << "# length: " << lst.length () << "\n";
@@ -551,8 +551,7 @@ octave_list::save_ascii (std::ostream& os, bool& infnan_warned)
       buf << "_" << i;
       std::string s = buf.str ();
 
-      bool b = save_ascii_data (os, lst (i), s.c_str (), infnan_warned,
-				false, 0);
+      bool b = save_ascii_data (os, lst (i), s.c_str (), false, 0);
       
       if (! b)
 	return false;

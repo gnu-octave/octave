@@ -149,7 +149,7 @@ octave_bool_matrix::print_raw (std::ostream& os,
 }
 
 bool 
-octave_bool_matrix::save_ascii (std::ostream& os, bool& /* infnan_warned */)
+octave_bool_matrix::save_ascii (std::ostream& os)
 {
   dim_vector d = dims ();
   if (d.length () > 2)

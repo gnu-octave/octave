@@ -194,7 +194,7 @@ public:
 
   void decrement (void) { --scalar; }
 
-  bool save_ascii (std::ostream& os, bool& infnan_warned);
+  bool save_ascii (std::ostream& os);
 
   bool load_ascii (std::istream& is);
 

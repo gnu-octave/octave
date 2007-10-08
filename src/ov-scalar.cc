@@ -156,15 +156,9 @@ octave_scalar::convert_to_str_internal (bool, bool, char type) const
 }
 
 bool 
-octave_scalar::save_ascii (std::ostream& os, bool& infnan_warned)
+octave_scalar::save_ascii (std::ostream& os)
 {
   double d = double_value ();
-
-  if (! infnan_warned && (xisnan (d) || xisinf (d)))
-    {
-      warning ("save: Inf or NaN values may not be reloadable");
-      infnan_warned = true;
-    }
 
   octave_write_double (os, d);
 

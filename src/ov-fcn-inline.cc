@@ -110,7 +110,7 @@ octave_fcn_inline::map_value (void) const
 }
 
 bool
-octave_fcn_inline::save_ascii (std::ostream& os, bool&)
+octave_fcn_inline::save_ascii (std::ostream& os)
 {
   os << "# nargs: " <<  ifargs.length () << "\n";
   for (int i = 0; i < ifargs.length (); i++)

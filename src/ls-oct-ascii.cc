@@ -321,8 +321,8 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
 
 bool
 save_ascii_data (std::ostream& os, const octave_value& val_arg,
-		 const std::string& name, bool& infnan_warned,
-		 bool mark_as_global, int precision)
+		 const std::string& name, bool mark_as_global,
+		 int precision)
 {
   bool success = true;
 
@@ -342,7 +342,7 @@ save_ascii_data (std::ostream& os, const octave_value& val_arg,
   long old_precision = os.precision ();
   os.precision (precision);
 
-  success = val . save_ascii (os, infnan_warned);
+  success = val.save_ascii (os);
 
   os.precision (old_precision);
 
@@ -353,9 +353,7 @@ bool
 save_ascii_data_for_plotting (std::ostream& os, const octave_value& t,
 			      const std::string& name)
 {
-  bool infnan_warned = true;
-
-  return save_ascii_data (os, t, name, infnan_warned, false, 6);
+  return save_ascii_data (os, t, name, false, 6);
 }
 
 // Maybe this should be a static function in tree-plot.cc?

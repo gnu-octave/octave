@@ -419,7 +419,7 @@ public:
 
   virtual void print_info (std::ostream& os, const std::string& prefix) const;
 
-  virtual bool save_ascii (std::ostream& os, bool& infnan_warned);
+  virtual bool save_ascii (std::ostream& os);
 
   virtual bool load_ascii (std::istream& is);
 

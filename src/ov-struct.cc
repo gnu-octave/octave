@@ -1057,7 +1057,7 @@ named fields.\n\
 }
 
 bool
-octave_struct::save_ascii (std::ostream& os, bool& infnan_warned)
+octave_struct::save_ascii (std::ostream& os)
 {
   Octave_map m = map_value ();
   os << "# length: " << m.nfields () << "\n";
@@ -1067,7 +1067,7 @@ octave_struct::save_ascii (std::ostream& os, bool& infnan_warned)
     {
       octave_value val = map.contents (i);
 
-      bool b = save_ascii_data (os, val, m.key (i), infnan_warned, false, 0);
+      bool b = save_ascii_data (os, val, m.key (i), false, 0);
       
       if (! b)
 	return os;

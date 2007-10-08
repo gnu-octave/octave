@@ -47,6 +47,12 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  \
   strcpy (ss, s)
 
+void
+octave_rl_redisplay (void)
+{
+  rl_redisplay ();
+}
+
 int
 octave_rl_screen_height (void)
 {
@@ -118,10 +124,16 @@ octave_rl_insert_text (const char *s)
   rl_insert_text (s);
 }
 
-void
-octave_rl_newline (void)
+int
+octave_rl_newline (int count, int key)
 {
-  rl_newline (1, '\n');
+  return rl_newline (count, key);
+}
+
+const char *
+octave_rl_line_buffer (void)
+{
+  return rl_line_buffer;
 }
 
 void
@@ -196,6 +208,14 @@ octave_rl_filename_completion_desired (int arg)
   return retval;
 }
 
+int
+octave_rl_filename_quoting_desired (int arg)
+{
+  int retval = rl_filename_quoting_desired;
+  rl_filename_quoting_desired = arg;
+  return retval;
+}
+
 char *
 octave_rl_filename_completion_function (const char *text, int state)
 {
@@ -227,6 +247,22 @@ octave_rl_set_basic_quote_characters (const char *s)
 }
 
 void
+octave_rl_set_filename_quote_characters (const char *s)
+{
+  OCTAVE_RL_SAVE_STRING (ss, s);
+
+  rl_filename_quote_characters = ss;
+}
+
+void
+octave_rl_set_completer_quote_characters (const char *s)
+{
+  OCTAVE_RL_SAVE_STRING (ss, s);
+
+  rl_completer_quote_characters = ss;
+}
+
+void
 octave_rl_set_completion_append_character (char c)
 {
   rl_completion_append_character = c;
@@ -236,6 +272,24 @@ void
 octave_rl_set_completion_function (rl_attempted_completion_fcn_ptr f)
 {
   rl_attempted_completion_function = f;
+}
+
+void
+octave_rl_set_quoting_function (rl_quoting_fcn_ptr f)
+{
+  rl_filename_quoting_function = f;
+}
+
+void
+octave_rl_set_dequoting_function (rl_dequoting_fcn_ptr f)
+{
+  rl_filename_dequoting_function = f;
+}
+
+void
+octave_rl_set_char_is_quoted_function (rl_char_is_quoted_fcn_ptr f)
+{
+  rl_char_is_quoted_p = f;
 }
 
 void

@@ -38,6 +38,8 @@ public:
   boolMatrix (void) : Array2<bool> () { }
   boolMatrix (octave_idx_type r, octave_idx_type c) : Array2<bool> (r, c) { }
   boolMatrix (octave_idx_type r, octave_idx_type c, bool val) : Array2<bool> (r, c, val) { }
+  boolMatrix (const dim_vector& dv) : Array2<bool> (dv) { }
+  boolMatrix (const dim_vector& dv, bool val) : Array2<bool> (dv, val) { }
   boolMatrix (const Array2<bool>& a) : Array2<bool> (a) { }
   boolMatrix (const boolMatrix& a) : Array2<bool> (a) { }
 
@@ -61,6 +63,9 @@ public:
   boolMatrix operator ! (void) const;
 
   // other operations
+
+  boolMatrix diag (void) const;
+  boolMatrix diag (octave_idx_type k) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

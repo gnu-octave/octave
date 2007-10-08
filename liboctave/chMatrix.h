@@ -42,6 +42,8 @@ public:
   charMatrix (void) : MArray2<char> () { }
   charMatrix (octave_idx_type r, octave_idx_type c) : MArray2<char> (r, c) { }
   charMatrix (octave_idx_type r, octave_idx_type c, char val) : MArray2<char> (r, c, val) { }
+  charMatrix (const dim_vector& dv) : MArray2<char> (dv) { }
+  charMatrix (const dim_vector& dv, char val) : MArray2<char> (dv, val) { }
   charMatrix (const MArray2<char>& a) : MArray2<char> (a) { }
   charMatrix (const charMatrix& a) : MArray2<char> (a) { }
   charMatrix (char c);
@@ -70,6 +72,9 @@ public:
   // resize is the destructive equivalent for this one
 
   charMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
+
+  charMatrix diag (void) const;
+  charMatrix diag (octave_idx_type k) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

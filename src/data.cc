@@ -433,89 +433,160 @@ same orientation as @var{x}.\n\
   DATA_REDUCTION (cumsum);
 }
 
-// FIXME -- we could eliminate some duplicate code here with
-// some template functions or macros.
-
+template <class T>
 static octave_value
-make_diag (const Matrix& v, octave_idx_type k)
+make_diag (const T& v, octave_idx_type k)
 {
-  octave_idx_type nr = v.rows ();
-  octave_idx_type nc = v.columns ();
-  assert (nc == 1 || nr == 1);
-
   octave_value retval;
+  dim_vector dv = v.dims ();
+  octave_idx_type nd = dv.length ();
 
-  octave_idx_type roff = 0;
-  octave_idx_type coff = 0;
-  if (k > 0)
-    {
-      roff = 0;
-      coff = k;
-    }
-  else if (k < 0)
-    {
-      roff = -k;
-      coff = 0;
-    }
-
-  if (nr == 1)
-    {
-      octave_idx_type n = nc + std::abs (k);
-      Matrix m (n, n, 0.0);
-      for (octave_idx_type i = 0; i < nc; i++)
-	m (i+roff, i+coff) = v (0, i);
-      retval = m;
-    }
+  if (nd > 2)
+    error ("diag: expecting 2-dimensional matrix");
   else
     {
-      octave_idx_type n = nr + std::abs (k);
-      Matrix m (n, n, 0.0);
-      for (octave_idx_type i = 0; i < nr; i++)
-	m (i+roff, i+coff) = v (i, 0);
-      retval = m;
-    }
+      octave_idx_type nr = dv (0);
+      octave_idx_type nc = dv (1);
 
+      if (nr == 0 || nc == 0)
+	retval = T ();
+      else if (nr != 1 && nc != 1)
+	retval = v.diag (k);
+      else
+	{
+	  octave_idx_type roff = 0;
+	  octave_idx_type coff = 0;
+	  if (k > 0)
+	    {
+	      roff = 0;
+	      coff = k;
+	    }
+	  else if (k < 0)
+	    {
+	      roff = -k;
+	      coff = 0;
+	    }
+
+	  if (nr == 1)
+	    {
+	      octave_idx_type n = nc + std::abs (k);
+	      T m (dim_vector (n, n), T::resize_fill_value ());
+
+	      for (octave_idx_type i = 0; i < nc; i++)
+		m (i+roff, i+coff) = v (0, i);
+	      retval = m;
+	    }
+	  else
+	    {
+	      octave_idx_type n = nr + std::abs (k);
+	      T m (dim_vector (n, n), T::resize_fill_value ());
+	      for (octave_idx_type i = 0; i < nr; i++)
+		m (i+roff, i+coff) = v (i, 0);
+	      retval = m;
+	    }
+	}
+    }
+  
   return retval;
 }
 
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static octave_value
-make_diag (const ComplexMatrix& v, octave_idx_type k)
+make_diag (const Matrix& v, octave_idx_type k);
+
+static octave_value
+make_diag (const ComplexMatrix& v, octave_idx_type k);
+
+static octave_value
+make_diag (const charMatrix& v, octave_idx_type k);
+
+static octave_value
+make_diag (const boolMatrix& v, octave_idx_type k);
+
+static octave_value
+make_diag (const int8NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const int16NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const int32NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const int64NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const uint8NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const uint16NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const uint32NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const uint64NDArray& v, octave_idx_type k);
+#endif
+
+static octave_value
+make_diag (const octave_value& a, octave_idx_type k)
 {
-  octave_idx_type nr = v.rows ();
-  octave_idx_type nc = v.columns ();
-  assert (nc == 1 || nr == 1);
-
   octave_value retval;
+  std::string result_type = a.class_name ();
 
-  octave_idx_type roff = 0;
-  octave_idx_type coff = 0;
-  if (k > 0)
+  if (result_type == "double")
     {
-      roff = 0;
-      coff = k;
+      if (a.is_real_type ())
+	{
+	  Matrix m = a.matrix_value ();
+	  if (!error_state)
+	    retval = make_diag (m, k);
+	}
+      else
+	{
+	  ComplexMatrix m = a.complex_matrix_value ();
+	  if (!error_state)
+	    retval = make_diag (m, k);
+	}
     }
-  else if (k < 0)
+#if 0
+  else if (result_type == "single")
+    retval = make_diag (a.single_array_value (), k);
+#endif
+  else if (result_type == "char")
     {
-      roff = -k;
-      coff = 0;
+      charMatrix m = a.char_matrix_value ();
+      if (!error_state)
+	{
+	  retval = make_diag (m, k);
+	  if (a.is_sq_string ())
+	    retval = octave_value (retval.char_array_value (), true, '\'');
+	}
     }
-
-  if (nr == 1)
+  else if (result_type == "logical")
     {
-      octave_idx_type n = nc + std::abs (k);
-      ComplexMatrix m (n, n, 0.0);
-      for (octave_idx_type i = 0; i < nc; i++)
-	m (i+roff, i+coff) = v (0, i);
-      retval = m;
+      boolMatrix m = a.bool_matrix_value ();
+      if (!error_state)
+	retval = make_diag (m, k);
     }
+  else if (result_type == "int8")
+    retval = make_diag (a.int8_array_value (), k);
+  else if (result_type == "int16")
+    retval = make_diag (a.int16_array_value (), k);
+  else if (result_type == "int32")
+    retval = make_diag (a.int32_array_value (), k);
+  else if (result_type == "int64")
+    retval = make_diag (a.int64_array_value (), k);
+  else if (result_type == "uint8")
+    retval = make_diag (a.uint8_array_value (), k);
+  else if (result_type == "uint16")
+    retval = make_diag (a.uint16_array_value (), k);
+  else if (result_type == "uint32")
+    retval = make_diag (a.uint32_array_value (), k);
+  else if (result_type == "uint64")
+    retval = make_diag (a.uint64_array_value (), k);
   else
-    {
-      octave_idx_type n = nr + std::abs (k);
-      ComplexMatrix m (n, n, 0.0);
-      for (octave_idx_type i = 0; i < nr; i++)
-	m (i+roff, i+coff) = v (i, 0);
-      retval = m;
-    }
+    gripe_wrong_type_arg ("diag", a);
 
   return retval;
 }
@@ -523,58 +594,7 @@ make_diag (const ComplexMatrix& v, octave_idx_type k)
 static octave_value
 make_diag (const octave_value& arg)
 {
-  octave_value retval;
-
-  if (arg.is_real_type ())
-    {
-      Matrix m = arg.matrix_value ();
-
-      if (! error_state)
-	{
-	  octave_idx_type nr = m.rows ();
-	  octave_idx_type nc = m.columns ();
-
-	  if (nr == 0 || nc == 0)
-	    retval = Matrix ();
-	  else if (nr == 1 || nc == 1)
-	    retval = make_diag (m, 0);
-	  else
-	    {
-	      ColumnVector v = m.diag ();
-	      if (v.numel () > 0)
-		retval = v;
-	    }
-	}
-      else
-	gripe_wrong_type_arg ("diag", arg);
-    }
-  else if (arg.is_complex_type ())
-    {
-      ComplexMatrix cm = arg.complex_matrix_value ();
-
-      if (! error_state)
-	{
-	  octave_idx_type nr = cm.rows ();
-	  octave_idx_type nc = cm.columns ();
-
-	  if (nr == 0 || nc == 0)
-	    retval = Matrix ();
-	  else if (nr == 1 || nc == 1)
-	    retval = make_diag (cm, 0);
-	  else
-	    {
-	      ComplexColumnVector v = cm.diag ();
-	      if (v.numel () > 0)
-		retval = v;
-	    }
-	}
-      else
-	gripe_wrong_type_arg ("diag", arg);
-    }
-  else
-    gripe_wrong_type_arg ("diag", arg);
-
-  return retval;
+  return make_diag (arg, 0);
 }
 
 static octave_value
@@ -585,53 +605,9 @@ make_diag (const octave_value& a, const octave_value& b)
   octave_idx_type k = b.int_value ();
 
   if (error_state)
-    {
-      error ("diag: invalid second argument");      
-      return retval;
-    }
-
-  if (a.is_real_type ())
-    {
-      Matrix m = a.matrix_value ();
-
-      if (! error_state)
-	{
-	  octave_idx_type nr = m.rows ();
-	  octave_idx_type nc = m.columns ();
-
-	  if (nr == 1 || nc == 1)
-	    retval = make_diag (m, k);
-	  else if (nr == 0 || nc == 0)
-	    retval = Matrix ();
-	  else
-	    {
-	      ColumnVector d = m.diag (k);
-	      retval = d;
-	    }
-	}
-    }
-  else if (a.is_complex_type ())
-    {
-      ComplexMatrix cm = a.complex_matrix_value ();
-
-      if (! error_state)
-	{
-	  octave_idx_type nr = cm.rows ();
-	  octave_idx_type nc = cm.columns ();
-
-	  if (nr == 1 || nc == 1)
-	    retval = make_diag (cm, k);
-	  else if (nr == 0 || nc == 0)
-	    retval = Matrix ();
-	  else
-	    {
-	      ComplexColumnVector d = cm.diag (k);
-	      retval = d;
-	    }
-	}
-    }
+    error ("diag: invalid second argument");      
   else
-    gripe_wrong_type_arg ("diag", a);
+    retval = make_diag (a, k);
 
   return retval;
 }

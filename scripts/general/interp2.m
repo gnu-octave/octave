@@ -219,7 +219,28 @@ function ZI = interp2 (varargin)
     endif
 
     ## set points outside the table to 'extrapval'
-    ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1)) = extrapval;
+    if (X (1, 1) < X (1, end))
+      if (Y (1, 1) < Y (end, 1))
+        ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1)) = ...
+		extrapval;
+	disp("1\n");
+      else
+        ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(end,1) | YI > Y(1,1)) = ...
+		extrapval;
+	disp("2\n");
+      endif
+    else
+      if (Y (1, 1) < Y (end, 1))
+        ZI (XI < X(1,end) | XI > X(1,1) | YI < Y(1,1) | YI > Y(end,1)) = ...
+		extrapval;
+	disp("3\n");
+      else
+        ZI (XI < X(1,end) | XI > X(1,1) | YI < Y(end,1) | YI > Y(1,1)) = ...
+		extrapval;
+	disp("4\n");
+      endif
+    endif
+
     ZI = reshape (ZI, shape);
   else
 

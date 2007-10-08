@@ -51,6 +51,10 @@ public:
 
   MArray2 (octave_idx_type n, octave_idx_type m, const T& val) : Array2<T> (n, m, val) { }
 
+  MArray2 (const dim_vector& dv) : Array2<T> (dv) { }
+
+  MArray2 (const dim_vector& dv, const T& val) : Array2<T> (dv, val) { }
+
   MArray2 (const MArray2<T>& a) : Array2<T> (a) { }
 
   MArray2 (const Array2<T>& a) : Array2<T> (a) { }

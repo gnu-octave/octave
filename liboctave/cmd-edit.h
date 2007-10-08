@@ -48,6 +48,14 @@ public:
 
   typedef std::string (*completion_fcn) (const std::string&, int);
 
+  typedef std::string (*quoting_fcn) (const std::string&, int, char);
+
+  typedef std::string (*dequoting_fcn) (const std::string&, int);
+
+  typedef int (*char_is_quoted_fcn) (const std::string&, int);
+
+  typedef void (*user_accept_line_fcn) (const std::string&);
+
   virtual ~command_editor (void) { }
 
   static void set_name (const std::string& n);
@@ -84,17 +92,39 @@ public:
 
   static void set_basic_quote_characters (const std::string& s);
 
+  static void set_filename_quote_characters (const std::string& s);
+
+  static void set_completer_quote_characters (const std::string& s);
+
   static void set_completion_append_character (char c);
 
   static void set_completion_function (completion_fcn f);
 
+  static void set_quoting_function (quoting_fcn f);
+
+  static void set_dequoting_function (dequoting_fcn f);
+
+  static void set_char_is_quoted_function (char_is_quoted_fcn f);
+
+  static void set_user_accept_line_function (user_accept_line_fcn f);
+
   static completion_fcn get_completion_function (void);
+
+  static quoting_fcn get_quoting_function (void);
+
+  static dequoting_fcn get_dequoting_function (void);
+
+  static char_is_quoted_fcn get_char_is_quoted_function (void);
+
+  static user_accept_line_fcn get_user_accept_line_function (void);
 
   static string_vector generate_filename_completions (const std::string& text);
 
   static void insert_text (const std::string& text);
 
   static void newline (void);
+
+  static void accept_line (void);
 
   static void clear_undo_list (void);
 
@@ -109,6 +139,8 @@ public:
   static void read_init_file (const std::string& file = std::string ());
 
   static bool filename_completion_desired (bool);
+
+  static bool filename_quoting_desired (bool);
 
   static int current_command_number (void);
 
@@ -192,17 +224,39 @@ protected:
 
   virtual void do_set_basic_quote_characters (const std::string&) { }
 
+  virtual void do_set_filename_quote_characters (const std::string&) { }
+
+  virtual void do_set_completer_quote_characters (const std::string&) { }
+
   virtual void do_set_completion_append_character (char) { }
 
   virtual void do_set_completion_function (completion_fcn) { }
 
+  virtual void do_set_quoting_function (quoting_fcn) { }
+
+  virtual void do_set_dequoting_function (dequoting_fcn) { }
+
+  virtual void do_set_char_is_quoted_function (char_is_quoted_fcn) { }
+
+  virtual void do_set_user_accept_line_function (user_accept_line_fcn) { }
+
   virtual completion_fcn do_get_completion_function (void) const { return 0; }
+
+  virtual quoting_fcn do_get_quoting_function (void) const { return 0; }
+
+  virtual dequoting_fcn do_get_dequoting_function (void) const { return 0; }
+
+  virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const { return 0; }
+
+  virtual user_accept_line_fcn do_get_user_accept_line_function (void) const { return 0; }
 
   virtual string_vector do_generate_filename_completions (const std::string& text) = 0;
 
   virtual void do_insert_text (const std::string&) = 0;
 
   virtual void do_newline (void) = 0;
+
+  virtual void do_accept_line (void) = 0;
 
   virtual void do_clear_undo_list (void) { }
 
@@ -217,6 +271,8 @@ protected:
   virtual void do_read_init_file (const std::string&) { }
 
   virtual bool do_filename_completion_desired (bool) { return false; }
+
+  virtual bool do_filename_quoting_desired (bool) { return false; }
 
   int read_octal (const std::string& s);
 

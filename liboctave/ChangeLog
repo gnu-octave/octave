@@ -1,3 +1,91 @@
+2007-10-08  David Bateman  <dbateman@free.fr>
+
+	* oct-rl-edit. (typedef rl_quoting_fcn_ptr, rl_dequoting_fcn_ptr,
+	rl_char_is_quoted_fcn_ptr, rl_command_fcn_ptr): New  typedefs
+	for readline compatible functions.
+	(octave_rl_redisplay): Redisplay the current line of text.
+	(octave_rl_newline):  Change interface to the same
+	as used by the equivalent readline function itself.
+	(octave_rl_filename_quoting_desired,
+	octave_rl_set_filename_quote_characters,
+	octave_rl_set_completer_quote_characters,
+	octave_rl_qet_quoting_function, octave_rl_qet_dequoting_function,
+	octave_rl_set_char_is_quoted_function): New functions to control
+	readline filename quoting and line acceptace.
+	* oct-rl-edit.c (octave_rl_newline): Change interface to the same
+	as used by the equivalent readline function itself.
+	(octave_rl_redisplay): Redisplay the current line of text.
+	(octave_rl_filename_quoting_desired,
+	octave_rl_set_filename_quote_characters,
+	octave_rl_set_completer_quote_characters,
+	octave_rl_qet_quoting_function, octave_rl_qet_dequoting_function,
+	octave_rl_set_char_is_quoted_function): New functions to control
+	readline filename quoting and line acceptace.
+	* cmd-edit.h (typedef quoting_fcn, typedef dequoting_fcn,
+	typedef char_is_quoted_fcn, user_accept_line_fcn): New typedefs
+	to map C++ function to readline compatible functions.
+	(set_filename_quote_characters): New function to set the
+	characters to if they appear in a filename that force the filename
+	to be quoted.
+	(set_completer_quote_characters): The characters that the readline
+	completion function considers as quotation characters.
+	(set_quoting_function, set_dequoting_function,
+	set_char_is_quoted_function, set_user_accept_line_function):
+	Functions to set the Octave functions to perform quoting and the
+	acceptance of a line of text by readline.
+	(get_quoting_function, get_dequoting_function,
+	get_char_is_quoted_function, get_user_accept_line_function):
+	Functions to get the above functions.
+	(accept_line): New method for the command_editor to accept a line
+	of text.
+	(file_quoting_desired): Function to set whether readline should
+	attempt to quote filenames.
+	(do_set_filename_quoting_characters, 
+	do_set_completer_quote_characters, do_set_quoting_function,
+	do_set_dequoting_function, do_set_char_is_quoted_function,
+	do_set_user_accept_line_function, do_get_quoting_function,
+	do_get_dequoting_function, do_get_char_is_quoted_function,
+	do_get_user_accept_line_function, do_filename_quoting_desired):
+	Virtual functions to control the behavior of readline quoting and
+	acceptance of lines.
+	(do_accept_line): Virtual function for the accept line function.
+	* cmd-edit.cc (class gnu_readline do_set_filename_quote_characters, 
+	do_completer_quote_characters, do_set_quoting_function,
+	do_set_dequoting_function, do_set_char_is_quoted_function,
+	do_set_user_accept_line_function, do_get_quoting_function,
+	do_get_dequoting_function, do_get_user_accept_line_function, 
+	do_accept_line, do_filename_quoting_desired, command_quoter,
+	command_dequoter, command_char_is_quoted, command_accept_line):
+	New functions in gnu_readline class to control filename quoting 
+	and line acceptance.
+	(quoting_function, dequoting_function, char_is_quoted_function,
+	user_accept_line_function): private variable to store functions
+	supplied for readline quoting and line acceptance.
+	(gnu_readline::gnu_readline): Also set the new function pointers
+	to zero.
+	(gnu_readline::do_newline): Adapt to new octave_rl_newline
+	interface.
+	(gnu_readeline::operate_and_get_next): Use new accept_line
+	function rather than newline.
+	(default_ommand_editor::do_accept_line): New method.
+	(class command_editor set_filename_quote_characters, 
+	set_completer_quote_characters, set_quoting_function,
+	set_dequoting_function, set_char_is_quoted_function,
+	set_user_accept_line_function, get_quoting_function,
+	get_dequoting_function, get_user_accept_line_function, 
+	accept_line, filename_quoting_desired): New functions checking
+	instance before calling virtual function.
+
+	* CMatrix.h, dMatrix.h, boolMatrix.h, chMatrix.h, MArray2.h,
+	Array2.h: Add dim_vector constructors.
+	* charNDArray.h (charNDArray (const dim_vector&)): Add missing
+	const to dim_vector constructors. 
+	* boolMatrix.cc, chMatrix.cc, intNDArray.cc (diag (void), diag
+	(octave_idx_type)): New methods to constructor diagonal matrices.
+	* boolMatrix.h, chMatrix.h, intNDArray.h (diag (void), diag
+	(octave_idx_type)): Declare them.
+
+
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
 	* lo-specfun.cc: (zlgamma): Delete.

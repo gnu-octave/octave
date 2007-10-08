@@ -38,9 +38,9 @@ public:
 
   charNDArray (void) : MArrayN<char> () { }
 
-  charNDArray (dim_vector& dv) : MArrayN<char> (dv) { }
+  charNDArray (const dim_vector& dv) : MArrayN<char> (dv) { }
 
-  charNDArray (dim_vector& dv, char val) : MArrayN<char> (dv, val) { }
+  charNDArray (const dim_vector& dv, char val) : MArrayN<char> (dv, val) { }
   
   charNDArray (const charNDArray& a) : MArrayN<char> (a) { }
 

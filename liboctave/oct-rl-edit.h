@@ -34,10 +34,20 @@ typedef char ** (*rl_attempted_completion_fcn_ptr) (const char *, int, int);
 
 typedef char * (*rl_completer_fcn_ptr) (const char *, int);
 
+typedef char * (*rl_quoting_fcn_ptr) (char *, int, char *);
+
+typedef char * (*rl_dequoting_fcn_ptr) (char *, int);
+
+typedef int (*rl_char_is_quoted_fcn_ptr) (char *, int);
+
+typedef int (*rl_command_fcn_ptr) (int, int);
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+  extern void octave_rl_redisplay (void);
 
 extern int octave_rl_screen_height (void);
 
@@ -55,7 +65,9 @@ extern void octave_rl_restore_terminal_state (void);
 
 extern void octave_rl_insert_text (const char *);
 
-extern void octave_rl_newline (void);
+extern int octave_rl_newline (int, int);
+
+extern const char *octave_rl_line_buffer (void);
 
 extern void octave_rl_clear_undo_list (void);
 
@@ -75,6 +87,8 @@ extern void octave_rl_read_init_file (const char *);
 
 extern int octave_rl_filename_completion_desired (int);
 
+extern int octave_rl_filename_quoting_desired (int);
+
 extern char *octave_rl_filename_completion_function (const char *, int);
 
 extern void octave_rl_set_basic_word_break_characters (const char *);
@@ -83,10 +97,22 @@ extern void octave_rl_set_completer_word_break_characters (const char *);
 
 extern void octave_rl_set_basic_quote_characters (const char *);
 
+extern void octave_rl_set_filename_quote_characters (const char *);
+
+extern void octave_rl_set_completer_quote_characters (const char *);
+
 extern void octave_rl_set_completion_append_character (char);
 
 extern void
 octave_rl_set_completion_function (rl_attempted_completion_fcn_ptr);
+
+extern void
+octave_rl_set_quoting_function (rl_quoting_fcn_ptr);
+
+extern void
+octave_rl_set_dequoting_function (rl_dequoting_fcn_ptr);
+
+extern void octave_rl_set_char_is_quoted_function (rl_char_is_quoted_fcn_ptr);
 
 extern void octave_rl_set_startup_hook (rl_startup_hook_fcn_ptr);
 

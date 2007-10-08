@@ -107,11 +107,31 @@ public:
 
   void do_set_basic_quote_characters (const std::string& s);
 
+  void do_set_filename_quote_characters (const std::string& s);
+
+  void do_set_completer_quote_characters (const std::string& s);
+
   void do_set_completion_append_character (char c);
 
   void do_set_completion_function (completion_fcn f);
 
+  void do_set_quoting_function (quoting_fcn f);
+
+  void do_set_dequoting_function (dequoting_fcn f);
+
+  void do_set_char_is_quoted_function (char_is_quoted_fcn f);
+
+  void do_set_user_accept_line_function (user_accept_line_fcn f);
+
   completion_fcn do_get_completion_function (void) const;
+
+  quoting_fcn do_get_quoting_function (void) const;
+
+  dequoting_fcn do_get_dequoting_function (void) const;
+
+  char_is_quoted_fcn do_get_char_is_quoted_function (void) const;
+
+  user_accept_line_fcn do_get_user_accept_line_function (void) const;
 
   string_vector
   do_generate_filename_completions (const std::string& text);
@@ -119,6 +139,8 @@ public:
   void do_insert_text (const std::string& text);
 
   void do_newline (void);
+
+  void do_accept_line (void);
 
   void do_clear_undo_list (void);
 
@@ -136,6 +158,8 @@ public:
 
   bool do_filename_completion_desired (bool);
 
+  bool do_filename_quoting_desired (bool);
+
   static int operate_and_get_next (int, int);
 
   static int history_search_backward (int, int);
@@ -150,14 +174,31 @@ private:
 
   completion_fcn completion_function;
 
+  quoting_fcn quoting_function;
+
+  dequoting_fcn dequoting_function;
+
+  char_is_quoted_fcn char_is_quoted_function;
+
+  user_accept_line_fcn user_accept_line_function;
+
   static char *command_generator (const char *text, int state);
+
+  static char *command_quoter (char *text, int match_type, char *quote_pointer);
+  static char *command_dequoter (char *text, int match_type);
+
+  static int command_char_is_quoted (char *text, int index);
+
+  static int command_accept_line (int count, int key);
 
   static char **command_completer (const char *text, int start, int end);
 };
 
 gnu_readline::gnu_readline ()
   : command_editor (), previous_startup_hook (0),
-    previous_event_hook (0), completion_function (0)
+    previous_event_hook (0), completion_function (0),
+    quoting_function (0), dequoting_function (0),
+    char_is_quoted_function (0), user_accept_line_function (0)
 {
   // FIXME -- need interface to rl_add_defun, rl_initialize, and
   // a function to set rl_terminal_name
@@ -186,8 +227,6 @@ gnu_readline::gnu_readline ()
 		       gnu_readline::history_search_forward,
 		       octave_rl_meta ('N'));
 }
-
-
 
 void
 gnu_readline::do_set_name (const std::string& nm)
@@ -319,6 +358,18 @@ gnu_readline::do_set_basic_quote_characters (const std::string& s)
 }
 
 void
+gnu_readline::do_set_filename_quote_characters (const std::string& s)
+{
+  ::octave_rl_set_filename_quote_characters (s.c_str ());
+}
+
+void
+gnu_readline::do_set_completer_quote_characters (const std::string& s)
+{
+  ::octave_rl_set_completer_quote_characters (s.c_str ());
+}
+
+void
 gnu_readline::do_set_completion_append_character (char c)
 {
   ::octave_rl_set_completion_append_character (c);
@@ -335,10 +386,80 @@ gnu_readline::do_set_completion_function (completion_fcn f)
   ::octave_rl_set_completion_function (fp);
 }
 
+void
+gnu_readline::do_set_quoting_function (quoting_fcn f)
+{
+  quoting_function = f;
+
+  rl_quoting_fcn_ptr fp
+    = f ? gnu_readline::command_quoter : 0;
+
+  ::octave_rl_set_quoting_function (fp);
+}
+
+void
+gnu_readline::do_set_dequoting_function (dequoting_fcn f)
+{
+  dequoting_function = f;
+
+  rl_dequoting_fcn_ptr fp
+    = f ? gnu_readline::command_dequoter : 0;
+
+  ::octave_rl_set_dequoting_function (fp);
+}
+
+void
+gnu_readline::do_set_char_is_quoted_function (char_is_quoted_fcn f)
+{
+  char_is_quoted_function = f;
+
+  rl_char_is_quoted_fcn_ptr fp
+    = f ? gnu_readline::command_char_is_quoted : 0;
+
+  ::octave_rl_set_char_is_quoted_function (fp);
+}
+
+void
+gnu_readline::do_set_user_accept_line_function (user_accept_line_fcn f)
+{
+  user_accept_line_function = f;
+
+  if (f)
+    octave_rl_add_defun ("accept-line", gnu_readline::command_accept_line, 
+			 ::octave_rl_ctrl ('M'));
+  else
+    octave_rl_add_defun ("accept-line", ::octave_rl_newline,
+			 ::octave_rl_ctrl ('M'));
+}
+
 gnu_readline::completion_fcn
 gnu_readline::do_get_completion_function (void) const
 {
   return completion_function;
+}
+
+gnu_readline::quoting_fcn
+gnu_readline::do_get_quoting_function (void) const
+{
+  return quoting_function;
+}
+
+gnu_readline::dequoting_fcn
+gnu_readline::do_get_dequoting_function (void) const
+{
+  return dequoting_function;
+}
+
+gnu_readline::char_is_quoted_fcn
+gnu_readline::do_get_char_is_quoted_function (void) const
+{
+  return char_is_quoted_function;
+}
+
+gnu_readline::user_accept_line_fcn
+gnu_readline::do_get_user_accept_line_function (void) const
+{
+  return user_accept_line_function;
 }
 
 string_vector
@@ -389,7 +510,13 @@ gnu_readline::do_insert_text (const std::string& text)
 void
 gnu_readline::do_newline (void)
 {
-  ::octave_rl_newline ();
+  ::octave_rl_newline (1, '\n');
+}
+
+void
+gnu_readline::do_accept_line (void)
+{
+  command_accept_line (1, '\n');
 }
 
 void
@@ -439,12 +566,18 @@ gnu_readline::do_filename_completion_desired (bool arg)
   return ::octave_rl_filename_completion_desired (arg);
 }
 
+bool
+gnu_readline::do_filename_quoting_desired (bool arg)
+{
+  return ::octave_rl_filename_quoting_desired (arg);
+}
+
 int
 gnu_readline::operate_and_get_next (int /* count */, int /* c */)
 {
   // Accept the current line.
 
-  command_editor::newline ();
+  command_editor::accept_line ();
 
   // Find the current line, and find the next line to use.
 
@@ -497,6 +630,69 @@ gnu_readline::command_generator (const char *text, int state)
   return retval;
 }
 
+char *
+gnu_readline::command_quoter (char *text, int matches, char *qcp)
+{
+  char *retval = 0;
+
+  quoting_fcn f = command_editor::get_quoting_function ();
+
+  std::string tmp = f (text, matches, *qcp);
+
+  size_t len = tmp.length ();
+
+  if (len > 0)
+    {
+      retval = static_cast<char *> (malloc (len+1));
+
+      strcpy (retval, tmp.c_str ());
+    }
+
+  return retval;
+}
+
+char *
+gnu_readline::command_dequoter (char *text, int quote)
+{
+  char *retval = 0;
+
+  dequoting_fcn f = command_editor::get_dequoting_function ();
+
+  std::string tmp = f (text, quote);
+
+  size_t len = tmp.length ();
+
+  if (len > 0)
+    {
+      retval = static_cast<char *> (malloc (len+1));
+
+      strcpy (retval, tmp.c_str ());
+    }
+
+  return retval;
+}
+
+int
+gnu_readline::command_char_is_quoted (char *text, int quote)
+{
+  char_is_quoted_fcn f = command_editor::get_char_is_quoted_function ();
+
+  return f (text, quote);
+}
+
+int
+gnu_readline::command_accept_line (int count, int key)
+{
+  user_accept_line_fcn f = command_editor::get_user_accept_line_function ();
+
+  if (f)
+    f (::octave_rl_line_buffer ());
+
+  ::octave_rl_redisplay ();
+
+  return ::octave_rl_newline (count, key);
+}
+
 char **
 gnu_readline::command_completer (const char *text, int, int)
 {
@@ -533,6 +729,8 @@ public:
   void do_insert_text (const std::string&);
 
   void do_newline (void);
+
+  void do_accept_line (void);
 
 private:
 
@@ -589,6 +787,12 @@ default_command_editor::do_insert_text (const std::string&)
 
 void
 default_command_editor::do_newline (void)
+{
+  // FIXME
+}
+
+void
+default_command_editor::do_accept_line (void)
 {
   // FIXME
 }
@@ -794,6 +998,20 @@ command_editor::set_basic_quote_characters (const std::string& s)
 }
 
 void
+command_editor::set_filename_quote_characters (const std::string& s)
+{
+  if (instance_ok ())
+    instance->do_set_filename_quote_characters (s);
+}
+
+void
+command_editor::set_completer_quote_characters (const std::string& s)
+{
+  if (instance_ok ())
+    instance->do_set_completer_quote_characters (s);
+}
+
+void
 command_editor::set_completion_append_character (char c)
 {
   if (instance_ok ())
@@ -807,11 +1025,67 @@ command_editor::set_completion_function (completion_fcn f)
     instance->do_set_completion_function (f);
 }
 
+void
+command_editor::set_quoting_function (quoting_fcn f)
+{
+  if (instance_ok ())
+    instance->do_set_quoting_function (f);
+}
+
+void
+command_editor::set_dequoting_function (dequoting_fcn f)
+{
+  if (instance_ok ())
+    instance->do_set_dequoting_function (f);
+}
+
+void
+command_editor::set_char_is_quoted_function (char_is_quoted_fcn f)
+{
+  if (instance_ok ())
+    instance->do_set_char_is_quoted_function (f);
+}
+
+void
+command_editor::set_user_accept_line_function (user_accept_line_fcn f)
+{
+  if (instance_ok ())
+    instance->do_set_user_accept_line_function (f);
+}
+
 command_editor::completion_fcn
 command_editor::get_completion_function (void)
 {
   return (instance_ok ())
     ? instance->do_get_completion_function () : 0;
+}
+
+command_editor::quoting_fcn
+command_editor::get_quoting_function (void)
+{
+  return (instance_ok ())
+    ? instance->do_get_quoting_function () : 0;
+}
+
+command_editor::dequoting_fcn
+command_editor::get_dequoting_function (void)
+{
+  return (instance_ok ())
+    ? instance->do_get_dequoting_function () : 0;
+}
+
+command_editor::char_is_quoted_fcn
+command_editor::get_char_is_quoted_function (void)
+{
+  return (instance_ok ())
+    ? instance->do_get_char_is_quoted_function () : 0;
+}
+
+command_editor::user_accept_line_fcn
+command_editor::get_user_accept_line_function (void)
+{
+  return (instance_ok ())
+    ? instance->do_get_user_accept_line_function () : 0;
 }
 
 string_vector
@@ -833,6 +1107,13 @@ command_editor::newline (void)
 {
   if (instance_ok ())
     instance->do_newline ();
+}
+
+void
+command_editor::accept_line (void)
+{
+  if (instance_ok ())
+    instance->do_accept_line ();
 }
 
 void
@@ -910,6 +1191,13 @@ command_editor::filename_completion_desired (bool arg)
 {
   return (instance_ok ())
     ? instance->do_filename_completion_desired (arg) : false;
+}
+
+bool
+command_editor::filename_quoting_desired (bool arg)
+{
+  return (instance_ok ())
+    ? instance->do_filename_quoting_desired (arg) : false;
 }
 
 // Return a string which will be printed as a prompt.  The string may

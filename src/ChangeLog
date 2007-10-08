@@ -1,3 +1,19 @@
+2007-10-08  David Bateman  <dbateman@free.fr>
+
+	*  input.cc (quoting_filename): Function to add a leading quote to
+	a string if needed.
+	(accept_line): Function to check if a string needs a closing quote
+	before calling the rl_newline function.
+	(initialize_command_input): Initialize completer_quote_characters,
+	filename_quote_characters, quoting_function,
+	user_accept_line_function.
+
+	* data.cc (template <class T> static make_diag (...)): New
+	template class version of make_diag. Make other make_diag
+	functions depend on it.
+	( static octave_value make_diag (const octave_value&, 
+	octave_idx_type)): Treat all possible internal Octave types.
+
 2007-10-08  John W. Eaton  <jwe@octave.org>
 
 	* load-save.cc 	(save_vars, dump_octave_core):

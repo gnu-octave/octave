@@ -47,6 +47,11 @@ public:
   ComplexMatrix (octave_idx_type r, octave_idx_type c, const Complex& val)
     : MArray2<Complex> (r, c, val) { }
 
+  ComplexMatrix (const dim_vector& dv) : MArray2<Complex> (dv) { }
+
+  ComplexMatrix (const dim_vector& dv, const Complex& val) 
+    : MArray2<Complex> (dv, val) { }
+
   ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
 
   ComplexMatrix (const MArray2<Complex>& a) : MArray2<Complex> (a) { }

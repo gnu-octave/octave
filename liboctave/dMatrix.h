@@ -45,6 +45,10 @@ public:
 
   Matrix (octave_idx_type r, octave_idx_type c, double val) : MArray2<double> (r, c, val) { }
 
+  Matrix (const dim_vector& dv) : MArray2<double> (dv) { }
+
+  Matrix (const dim_vector& dv, double val) : MArray2<double> (dv, val) { }
+
   Matrix (const Matrix& a) : MArray2<double> (a) { }
 
   Matrix (const MArray2<double>& a) : MArray2<double> (a) { }

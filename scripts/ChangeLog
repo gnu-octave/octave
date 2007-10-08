@@ -1,3 +1,8 @@
+2007-10-08  Peter A. Gustafson  <petegus@umich.edu>
+
+	* plot/__go_draw_axes__.m, plot/legend.m:
+	Handle compatible position specifiers as strings.
+
 2007-10-08  John Swensen  <jpswensen@comcast.net>
 
 	* general/num2str.m: Eliminate extra whitespace in output.

@@ -755,9 +755,18 @@ function __go_draw_axes__ (h, plot_stream)
 	box = "nobox";
       endif
       inout = "inside";
-      switch (axis_obj.keypos)
+      keypos = axis_obj.keypos;
+      if (ischar (keypos))
+	keypos = lower (keypos);
+	keyout = findstr (keypos, "outside");
+	if (! isempty (keyout))
+	  inout = "outside";
+	  keypos = keypos (1:keyout-1);
+	endif
+      endif
+      switch (keypos)
 	case -1
-	  pos = "right bottom";
+	  pos = "right top";
 	  inout = "outside";
 	case 1
 	  pos = "right top";
@@ -765,8 +774,29 @@ function __go_draw_axes__ (h, plot_stream)
 	  pos = "left top";
 	case 3
 	  pos = "left bottom";
-	case 4
+	case {4, 0}
 	  pos = "right bottom";
+	case "north"
+	  pos = "center top";
+	case "south"
+	  pos = "center bottom";
+	case "east"
+	  pos = "right center";
+	case "west"
+	  pos = "left center";
+	case "northeast"
+	  pos = "right top";
+	case "northwest"
+	  pos = "left top";
+	case "southeast"
+	  pos = "right bottom";
+	case "southwest"
+	  pos = "left bottom";
+	case "best" 
+	  pos = "";
+	  warning ("legend: 'Best' not yet implemented for location specifier.\n");
+	  ## least conflict with data in plot
+	  ## least unused space outside plot
 	otherwise
 	  pos = "";
       endswitch

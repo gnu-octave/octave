@@ -20,11 +20,11 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} legend (@var{st1}, @var{st2}, @dots{})
-## @deftypefnx {Function File} {} legend (@var{st1}, @var{st2}, @dots{}, @var{pos})
+## @deftypefnx {Function File} {} legend (@var{st1}, @var{st2}, @dots{}, "location", @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{matstr})
-## @deftypefnx {Function File} {} legend (@var{matstr}, @var{pos})
+## @deftypefnx {Function File} {} legend (@var{matstr}, "location", @var{pos})
 ## @deftypefnx {Function File} {} legend (@var{cell})
-## @deftypefnx {Function File} {} legend (@var{cell}, @var{pos})
+## @deftypefnx {Function File} {} legend (@var{cell}, "location", @var{pos})
 ## @deftypefnx {Function File} {} legend ('@var{func}')
 ##
 ## Display a legend for the current axes using the specified strings
@@ -36,19 +36,26 @@
 ## The optional parameter @var{pos} specifies the location of the legend
 ## as follows:
 ##
-## @multitable @columnfractions 0.1 0.1 0.8
-## @item @tab -1 @tab
-##   To the top right of the plot
-## @item @tab 0 @tab
-##   Don't move the legend box (default)
-## @item @tab 1 @tab
-##   Upper right-hand corner
-## @item @tab 2 @tab
-##   Upper left-hand corner
-## @item @tab 3 @tab
-##   Lower left-hand corner
-## @item @tab 4 @tab
-##   Lower right-hand corner
+## @multitable @columnfractions 0.06 0.14 0.80
+## @item @tab north @tab
+##   center top
+## @item @tab south @tab
+##   center bottom
+## @item @tab east @tab
+##   right center
+## @item @tab west @tab
+##   left center
+## @item @tab northeast @tab
+##   right top (default)
+## @item @tab northwest @tab
+##   left top
+## @item @tab southeast @tab
+##   right bottom
+## @item @tab southwest @tab
+##   left bottom
+## @item 
+## @item @tab outside @tab
+##   can be appended to any location string
 ## @end multitable
 ##
 ## Some specific functions are directely avaliable using @var{func}:
@@ -87,6 +94,14 @@ function legend (varargin)
       else
 	error ("legend: invalid position specified");
       endif
+    endif
+  endif
+  
+  if (nargs > 1)
+    pos = varargin{nargs-1};
+    if (strcmpi (pos, "location")  && ischar (str))
+      set (ca, "keypos", str);
+      nargs -= 2;
     endif
   endif
 
@@ -183,7 +198,7 @@ endfunction
 %! close all;
 %! plot(1:10, 1:10);
 %! title("a very long label can sometimes cause problems");
-%! legend({"hello world"}, -1)
+%! legend({"hello world"}, "location", "northeastoutside")
 
 %!demo
 %! close all;
@@ -194,5 +209,5 @@ endfunction
 %! endfor; hold off;
 %! title("Signals with random offset and uniform noise")
 %! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");
-%! legend(labels, -1)
+%! legend(labels, "location", "southoutside")
 %! legend("boxon")

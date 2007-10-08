@@ -56,11 +56,16 @@ function retval = num2str (x, arg)
 	dgt1 = ceil (log10 (max (max (abs (real (x(:)))),
 				 max (abs (imag (x(:))))))) + 1;
 	dgt2 = dgt1 - (min (real (x(:))) >= 0);
-	fmt = sprintf("%%%dd%%+-%ddi  ", dgt2, dgt1);
+	
+	if (length (abs (x) == x) > 0)
+	  fmt = sprintf("%%%dg%%+-%dgi  ", dgt2, dgt1);
+	else
+	  fmt = sprintf("%%%dd%%+-%ddi  ", dgt2, dgt1);
+	endif
       elseif (isscalar (x))
-	fmt = "%.4g%-+.4gi";
+	fmt = "%.6g%-+.6gi";
       else
-	fmt = "%11.4g%-+11.4gi";
+	fmt = "%11.6g%-+11.6gi";
       endif
     endif
 
@@ -101,7 +106,7 @@ function retval = num2str (x, arg)
     endwhile
 
     tmp(length (tmp)) = "";
-    retval = split (tmp, "\n");
+    retval = strtrim (split (tmp, "\n"));
   else
     if (nargin == 2)
       if (ischar (arg))
@@ -120,18 +125,22 @@ function retval = num2str (x, arg)
 	else
 	  dgt = floor (log10 (max (abs(x(:))))) + (min (real (x(:))) < 0) + 1;
 	endif
-	fmt = sprintf ("%%%dd  ", dgt);
+	if (length (abs (x) == x) > 0)
+	  fmt = sprintf ("%%%dg  ", dgt);
+	else
+	  fmt = sprintf ("%%%dd  ", dgt);
+	endif
       elseif (isscalar (x))
-	fmt = "%.4g";
+	fmt = "%11.5g";
       else
-	fmt = "%11.4g";
+	fmt = "%11.5g";
       endif
     endif
     fmt = strcat (deblank (repmat (fmt, 1, columns (x))), "\n");
     nd = ndims (x);
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
     tmp(length (tmp)) = "";
-    retval = split (tmp, "\n");
+    retval = strtrim (split (tmp, "\n"));
   endif
 
 endfunction

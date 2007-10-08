@@ -1,3 +1,9 @@
+2007-10-08  John Swensen  <jpswensen@comcast.net>
+
+	* general/num2str.m: Eliminate extra whitespace in output.
+	* strings/strtrim.m: New function.
+	* strings/Makefile.in (SOURCES): Add it to the list.
+
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/residue.m: New test from test/test_poly.m.

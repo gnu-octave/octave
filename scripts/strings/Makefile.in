@@ -24,7 +24,8 @@ SOURCES = base2dec.m bin2dec.m blanks.m deblank.m dec2base.m \
   dec2bin.m dec2hex.m findstr.m hex2dec.m index.m isletter.m \
   lower.m mat2str.m rindex.m split.m str2double.m str2mat.m \
   str2num.m strcat.m strcmpi.m strfind.m strjust.m strmatch.m \
-  strncmpi.m strrep.m strtok.m strtrunc.m strvcat.m substr.m upper.m
+  strncmpi.m strrep.m strtok.m strtrim.m strtrunc.m strvcat.m \
+  substr.m upper.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

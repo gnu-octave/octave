@@ -18,29 +18,59 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} wavwrite (@var{filename}, @var{y})
-## Write @var{y} to the canonical RIFF/WAVE sound file @var{filename}. A sample 
-## rate of 8000 Hz and 16-bit samples are assumed. Each column of the data 
-## represents a separate channel.
-##
-## @deftypefnx {Function File} {} wavwrite (@var{filename}, @var{y}, @var{fs})
-## Set the sample rate to @var{fs} Hz.
-##
-## @deftypefnx {Function File} {} wavwrite (@var{filename}, @var{y}, @var{fs}, @var{bits})
-## Set the sample rate to @var{fs} Hz and resolution to @var{bits} bits.
+## @deftypefn {Function File} {} wavwrite (@var{y}, @var{filename})
+## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{filename})
+## @deftypefnx {Function File} {} wavwrite (@var{y}, @var{fs}, @var{bits}, @var{filename})
+## Write @var{y} to the canonical RIFF/WAVE sound file @var{filename}
+## with sample rate @var{fs} and bits per sample @var{bits}.  The
+## default sample rate is 8000 Hz with 16-bits per sample.  Each column
+## of the data represents a separate channel.
 ## @seealso{wavread}
 ## @end deftypefn
 
 ## Author: Michael Zeising <michael.zeising@stud.uni-erlangen.de>
 ## Created: 06 December 2005
 
-function wavwrite (filename, y, samples_per_sec, bits_per_sample)
+function wavwrite (y, varargin)
 
   BYTEORDER = "ieee-le";
-  
+
+  ## For backward compatibility with previous versions of Octave, also
+  ## accept the inputs
+  ##
+  ##   wavwrite (filename, y)
+  ##   wavwrite (filename, y, fs)
+  ##   wavwrite (filename, y, fs, bits)
+
   if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
+
+  ## Defaults.
+  samples_per_sec = 8000;
+  bits_per_sample = 16;
+
+  if (ischar (y))
+    filename = y;
+    y = varargin{1};
+    if (nargin > 2)
+      samples_per_sec = varargin{2};
+      if (nargin > 3)
+	bits_per_sample = varargin{3};
+      endif
+    endif
+  else
+    filename = varargin{end};
+    if (nargin > 2)
+      samples_per_sec = varargin{1};
+      if (nargin > 3)
+	bits_per_sample = varargin{2};
+      endif
+    endif
+  endif
+
+  samples_per_sec
+bits_per_sample
 
   ## test arguments
   if (columns (y) < 1)
@@ -48,15 +78,6 @@ function wavwrite (filename, y, samples_per_sec, bits_per_sample)
   endif
   if (columns (y) > 2^15-1)
     error ("wavwrite: Y has more than 32767 columns (too many for a WAV-file)");
-  endif
-
-  ## parse arguments
-  if (nargin < 3)
-    samples_per_sec = 8000;
-  endif
-
-  if (nargin < 4)
-    bits_per_sample = 16;
   endif
 
   ## determine sample format

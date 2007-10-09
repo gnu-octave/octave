@@ -35,12 +35,7 @@ args="--no-initial-path --path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\" --info-
 
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
-    driver="gdb"
-    if [ `/bin/pwd` = "$builddir" ]; then
-      sed "s|^set args.*$|set args $args|" .gdbinit > .gdbinit-tmp
-      mv .gdbinit-tmp .gdbinit
-    fi
-    args=""
+    driver="gdb --args"
     shift
   elif [ "x$1" = "x-valgrind" ]; then
     driver="valgrind --tool=memcheck"

@@ -1,3 +1,14 @@
+2007-10-09  John W. Eaton  <jwe@octave.org>
+
+	* gdbinit.in: Delete.
+	* octMakefile.in (DISTFILES): Remove it from the list.
+	(.gdbinit): Delete rule.
+	(maintainer-clean, distclean): No need to delete .gdbinit.
+
+2007-10-09  Kim Hansen  <kimhanse@gmail.com>
+
+        * run-octave.in: Use gdb with --args, not .gdbinit.
+
 2007-10-08  John W. Eaton  <jwe@octave.org>
 
 	* emacs/octave-hlp.el, emacs/octave-inf.el, emacs/octave-mod.el:

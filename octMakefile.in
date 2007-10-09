@@ -35,7 +35,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	README.MachTen README.kpathsea ROADMAP SENDING-PATCHES \
 	THANKS move-if-change octave-sh octave-bug.in \
 	octave-config.in mk-opts.pl mkinstalldirs \
-	mkoctfile.in run-octave.in gdbinit.in ChangeLog ChangeLog.[0-9]
+	mkoctfile.in run-octave.in ChangeLog ChangeLog.[0-9]
 
 # Subdirectories in which to run `make all'.
 SUBDIRS = @DLFCN_DIR@ libcruft liboctave src scripts doc examples
@@ -92,9 +92,6 @@ mkoctfile: mkoctfile.in Makeconf octMakefile
 run-octave: run-octave.in Makeconf octMakefile
 	@$(do-subst-script-vals)
 	chmod a+rx "$@"
-
-.gdbinit: gdbinit.in Makeconf octMakefile
-	$(do-subst-script-vals)
 
 check:
 	$(MAKE) -C test $@
@@ -155,7 +152,7 @@ maintainer-clean distclean::
 	rm -f octMakefile Makefile Makeconf Makefrag.f77 Makerules.f77
 	rm -f config.cache config.h config.log config.status
 	rm -rf autom4te.cache
-	rm -f $(SHELL_SCRIPTS) .gdbinit
+	rm -f $(SHELL_SCRIPTS)
 	rm -f unistd.h
 
 maintainer-clean::

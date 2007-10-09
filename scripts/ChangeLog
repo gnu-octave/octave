@@ -1,3 +1,7 @@
+2007-10-09:  Kim Hansen  <kimhanse@gmail.com>
+
+        * general/repmat.m: Handle sparse input.  Add tests.
+
 2007-10-09  John W. Eaton  <jwe@octave.org>
 
 	* audio/wavwrite.m: Accept arguments in compatible order.

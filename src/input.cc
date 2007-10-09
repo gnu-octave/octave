@@ -535,31 +535,6 @@ quoting_filename (const std::string &text, int, char quote)
     return (std::string ("'") + text);
 }
 
-static void
-accept_line (const std::string &text)
-{
-  // Close open strings if needed
-  bool sq = false;
-  bool dq = false;
-  bool pass_next = false;
-
-  for (std::string::const_iterator it = text.begin(); it < text.end(); it++)
-    {
-      if (pass_next)
-	pass_next = false;
-      else if (*it == '\\')
-	pass_next = true;
-      else if (*it == '\'' && ! dq)
-	sq = !sq;
-      else if (*it == '"' && ! sq)
-	dq = !dq;
-    }
-  if (sq)
-    command_editor::insert_text("'");
-  if (dq)
-    command_editor::insert_text("\"");
-}
-
 void
 initialize_command_input (void)
 {
@@ -585,8 +560,6 @@ initialize_command_input (void)
   command_editor::set_completion_function (generate_completion);
 
   command_editor::set_quoting_function (quoting_filename);
-
-  command_editor::set_user_accept_line_function (accept_line);
 }
 
 static bool

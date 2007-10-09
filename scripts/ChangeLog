@@ -1,3 +1,7 @@
+2007-10-09  David Bateman  <dbateman@free.fr>
+
+	* plot/patch.m: Accept a handle as the first argument.
+
 2007-10-09:  Kim Hansen  <kimhanse@gmail.com>
 
         * general/repmat.m: Handle sparse input.  Add tests.

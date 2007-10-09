@@ -1,3 +1,13 @@
+2007-10-09  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (Sparse<T> Sparse<T>::index (idx_vector&, idx_vector&,
+	int)): Remove a for loop in the random indexing case at the
+	expense of maintaining a set of linked lists of indices that point 
+	to the same column in the original matrix.
+	(int assign (Sparse<LT>&, Sparse<RT>)): Take a const copy of lhs
+	and use it on the RHS of expressions to avoid unnecessary calls to
+	make_unique.
+
 2007-10-08  David Bateman  <dbateman@free.fr>
 
 	* oct-rl-edit. (typedef rl_quoting_fcn_ptr, rl_dequoting_fcn_ptr,

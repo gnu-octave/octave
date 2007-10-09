@@ -21,6 +21,7 @@
 ## @deftypefn {Function File} {} patch ()
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c}, @var{opts})
+## @deftypefnx {Function File} {} patch (@var{h}, @dots{})
 ## Create patch object from @var{x} and @var{y} with color @var{c} and
 ## insert in the current axes object.  Return handle to patch object.
 ##
@@ -33,9 +34,21 @@
 
 function h = patch (varargin)
 
-  ## make a default patch object, and make it the current axes for
-  ## the current figure.
-  tmp = __patch__ (gca (), varargin{:});
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin {1};
+    if (! strcmp (get (h, "type"), "axes"))
+      error ("patch: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      tmp = __patch__ (h, varargin{:});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    tmp = __patch__ (gca (), varargin{:});
+  endif
 
   if (nargout > 0)
     h = tmp;

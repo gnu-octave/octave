@@ -1811,6 +1811,13 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
   return retval;
 }
 
+struct 
+idx_node 
+{
+  octave_idx_type i;
+  struct idx_node *next;
+};		    
+
 template <class T>
 Sparse<T>
 Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
@@ -1903,6 +1910,8 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 		      octave_idx_type jj = idx_j.elem (j);
 		      for (octave_idx_type i = cidx(jj); i < cidx(jj+1); i++)
 			{
+			  OCTAVE_QUIT;
+
 			  octave_idx_type ii = itmp [ridx(i)];
 			  if (ii >= 0)
 			    {
@@ -1919,56 +1928,109 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 		}
 	      else
 		{
+		  OCTAVE_LOCAL_BUFFER (struct idx_node, nodes, n); 
+		  OCTAVE_LOCAL_BUFFER (octave_idx_type, start_nodes, nr); 
+
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    start_nodes[i] = -1;
+
+		  for (octave_idx_type i = 0; i < n; i++)
+		    {
+		      octave_idx_type ii = idx_i.elem (i);
+		      nodes[i].i = i;
+		      nodes[i].next = 0;
+
+		      octave_idx_type node = start_nodes[ii];
+		      if (node == -1)
+			start_nodes[ii] = i;
+		      else
+			{
+			  struct idx_node inode = nodes[node];
+			  while (inode.next)
+			    inode = *inode.next;
+			  inode.next = nodes + i;
+			}
+		    }
+
 		  // First count the number of non-zero elements
 		  octave_idx_type new_nzmx = 0;
 		  for (octave_idx_type j = 0; j < m; j++)
 		    {
 		      octave_idx_type jj = idx_j.elem (j);
-		      for (octave_idx_type i = 0; i < n; i++)
-			{
-			  OCTAVE_QUIT;
 
-			  octave_idx_type ii = idx_i.elem (i);
-			  if (ii < nr && jj < nc)
+		      if (jj < nc)
+			{
+			  for (octave_idx_type i = cidx(jj); 
+			       i < cidx(jj+1); i++)
 			    {
-			      for (octave_idx_type k = cidx(jj); k < cidx(jj+1); k++)
+			      OCTAVE_QUIT;
+
+			      octave_idx_type ii = start_nodes [ridx(i)];
+
+			      if (ii >= 0)
 				{
-				  if (ridx(k) == ii)
-				    new_nzmx++;
-				  if (ridx(k) >= ii)
-				    break;
+				  struct idx_node inode = nodes[ii];
+			      
+				  while (true)
+				    {
+				      if (inode.i >= 0 && 
+					  idx_i.elem (inode.i) < nc)
+					new_nzmx ++;
+				      if (inode.next == 0)
+					break;
+				      else
+					inode = *inode.next;
+				    }
 				}
 			    }
 			}
 		    }
 
+		  std::vector<T> X (n);
 		  retval = Sparse<T> (n, m, new_nzmx);
+		  octave_idx_type *ri = retval.xridx ();
 
 		  octave_idx_type kk = 0;
 		  retval.xcidx(0) = 0;
 		  for (octave_idx_type j = 0; j < m; j++)
 		    {
 		      octave_idx_type jj = idx_j.elem (j);
-		      for (octave_idx_type i = 0; i < n; i++)
+		      if (jj < nc)
 			{
-			  OCTAVE_QUIT;
-
-			  octave_idx_type ii = idx_i.elem (i);
-			  if (ii < nr && jj < nc)
+			  for (octave_idx_type i = cidx(jj); 
+			       i < cidx(jj+1); i++)
 			    {
-			      for (octave_idx_type k = cidx(jj); k < cidx(jj+1); k++)
+			      OCTAVE_QUIT;
+
+			      octave_idx_type ii = start_nodes [ridx(i)];
+
+			      if (ii >= 0)
 				{
-				  if (ridx(k) == ii)
+				  struct idx_node inode = nodes[ii];
+			      
+				  while (true)
 				    {
-				      retval.xdata(kk) = data(k);
-				      retval.xridx(kk++) = i;
+				      if (inode.i >= 0 && 
+					  idx_i.elem (inode.i) < nc)
+					{
+					  X [inode.i] = data (i);
+					  retval.xridx (kk++) = inode.i;
+					}
+
+				      if (inode.next == 0)
+					break;
+				      else
+					inode = *inode.next;
 				    }
-				  if (ridx(k) >= ii)
-				    break;
 				}
 			    }
+			  sort.sort (ri + retval.xcidx (j), 
+				     kk - retval.xcidx (j));
+			  for (octave_idx_type p = retval.xcidx (j); 
+			       p < kk; p++)
+			    retval.xdata (p) = X [retval.xridx (p)]; 
+			  retval.xcidx(j+1) = kk;
 			}
-		      retval.xcidx(j+1) = kk;
 		    }
 		}
 	    }
@@ -2396,6 +2458,10 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
   if (n_idx > 0)
     idx_i = tmp[0];
 
+  // Take a constant copy of lhs. This means that ridx and family won't 
+  // call make_unique.
+  const Sparse<LT> c_lhs (lhs);
+
   if (n_idx == 2)
     {
       octave_idx_type n = idx_i.freeze (lhs_nr, "row", true);
@@ -2453,12 +2519,12 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			      
 				  if (ii < lhs_nr)
 				    {
-				      for (octave_idx_type k = lhs.cidx(jj); 
-					   k < lhs.cidx(jj+1); k++)
+				      for (octave_idx_type k = c_lhs.cidx(jj); 
+					   k < c_lhs.cidx(jj+1); k++)
 					{
-					  if (lhs.ridx(k) == ii)
+					  if (c_lhs.ridx(k) == ii)
 					    new_nzmx--;
-					  if (lhs.ridx(k) >= ii)
+					  if (c_lhs.ridx(k) >= ii)
 					    break;
 					}
 				    }
@@ -2483,11 +2549,11 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			      octave_idx_type ii = idx_i.elem (iii);
 			      octave_idx_type ppp = 0;
 			      octave_idx_type ppi = (j >= lhs_nc ? 0 : 
-						     lhs.cidx(j+1) - 
-						     lhs.cidx(j));
+						     c_lhs.cidx(j+1) - 
+						     c_lhs.cidx(j));
 			      octave_idx_type pp = (ppp < ppi ? 
-						    lhs.ridx(lhs.cidx(j)+ppp) :
-						    new_nr);
+					c_lhs.ridx(c_lhs.cidx(j)+ppp) :
+					new_nr);
 			      while (ppp < ppi || iii < n)
 				{
 				  if (iii < n && ii <= pp)
@@ -2498,28 +2564,28 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 					  stmp.ridx(kk++) = ii;
 					}
 				      if (ii == pp)
-					pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);					
+					pp = (++ppp < ppi ? c_lhs.ridx(c_lhs.cidx(j)+ppp) : new_nr);					
 				      if (++iii < n)
 					ii = idx_i.elem(iii);
 				    }
 				  else
 				    {
 				      stmp.data(kk) = 
-					lhs.data(lhs.cidx(j)+ppp);
+					c_lhs.data(c_lhs.cidx(j)+ppp);
 				      stmp.ridx(kk++) = pp;
-				      pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);
+				      pp = (++ppp < ppi ? c_lhs.ridx(c_lhs.cidx(j)+ppp) : new_nr);
 				    }
 				}
 			      if (++jji < m)
 				jj = idx_j.elem(jji);
 			    }
-			  else if (j < lhs.cols()) 
+			  else if (j < lhs_nc) 
 			    {
-			      for (octave_idx_type i = lhs.cidx(j); 
-				   i < lhs.cidx(j+1); i++)
+			      for (octave_idx_type i = c_lhs.cidx(j); 
+				   i < c_lhs.cidx(j+1); i++)
 				{
-				  stmp.data(kk) = lhs.data(i);
-				  stmp.ridx(kk++) = lhs.ridx(i);
+				  stmp.data(kk) = c_lhs.data(i);
+				  stmp.ridx(kk++) = c_lhs.ridx(i);
 				}
 			    }
 			  stmp.cidx(j+1) = kk;
@@ -2636,11 +2702,11 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			      octave_idx_type ii = idx_i.elem (iii);
 			      octave_idx_type ppp = 0;
 			      octave_idx_type ppi = (j >= lhs_nc ? 0 : 
-						     lhs.cidx(j+1) - 
-						     lhs.cidx(j));
+						     c_lhs.cidx(j+1) - 
+						     c_lhs.cidx(j));
 			      octave_idx_type pp = (ppp < ppi ? 
-						    lhs.ridx(lhs.cidx(j)+ppp) :
-						    new_nr);
+						c_lhs.ridx(c_lhs.cidx(j)+ppp) :
+						new_nr);
 			      while (ppp < ppi || iii < n)
 				{
 				  if (iii < n && ii <= pp)
@@ -2653,28 +2719,28 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 					  stmp.ridx(kk++) = ii;
 					}
 				      if (ii == pp)
-					pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);					
+					pp = (++ppp < ppi ? c_lhs.ridx(c_lhs.cidx(j)+ppp) : new_nr);					
 				      if (++iii < n)
 					ii = idx_i.elem(iii);
 				    }
 				  else
 				    {
 				      stmp.data(kk) = 
-					lhs.data(lhs.cidx(j)+ppp);
+					c_lhs.data(c_lhs.cidx(j)+ppp);
 				      stmp.ridx(kk++) = pp;
-				      pp = (++ppp < ppi ? lhs.ridx(lhs.cidx(j)+ppp) : new_nr);
+				      pp = (++ppp < ppi ? c_lhs.ridx(c_lhs.cidx(j)+ppp) : new_nr);
 				    }
 				}
 			      if (++jji < m)
 				jj = idx_j.elem(jji);
 			    }
-			  else if (j < lhs.cols()) 
+			  else if (j < lhs_nc) 
 			    {
-			      for (octave_idx_type i = lhs.cidx(j); 
-				   i < lhs.cidx(j+1); i++)
+			      for (octave_idx_type i = c_lhs.cidx(j); 
+				   i < c_lhs.cidx(j+1); i++)
 				{
-				  stmp.data(kk) = lhs.data(i);
-				  stmp.ridx(kk++) = lhs.ridx(i);
+				  stmp.data(kk) = c_lhs.data(i);
+				  stmp.ridx(kk++) = c_lhs.ridx(i);
 				}
 			    }
 			  stmp.cidx(j+1) = kk;
@@ -2795,10 +2861,6 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 	  if (idx_i)
 	    {
-	      // Take a constant copy of lhs. This means that elem won't 
-	      // create missing elements.
-	      const Sparse<LT> c_lhs (lhs);
-
 	      if (rhs_nr == 0 && rhs_nc == 0)
 		lhs.maybe_delete_elements (idx_i);
 	      else if (len == 0)

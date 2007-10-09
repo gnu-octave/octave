@@ -1,9 +1,15 @@
+2007-10-09  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/urlwrite.cc (urlget_cleanup): New function.
+	(urlget): Protect call to curl_easy_perform with
+	BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE and
+	END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE.
+
 2007-10-09  David Bateman  <dbateman@free.fr>
 
 	* input.cc (accept_line): Drop this function and remove automatic
 	insertion of closing quotes as the transpose operator confuses it.
 	(initialize_command_input): Remove accept_line from here as well.
-
 	
 2007-10-09  John W. Eaton  <jwe@octave.org>
 

@@ -90,6 +90,13 @@ form_query_string (CURL *curl, const Cell& param)
 
 // curl front-end
 
+static void
+urlget_cleanup (CURL *curl)
+{
+  curl_easy_cleanup (curl);
+  curl_global_cleanup ();
+}
+
 static CURLcode
 urlget (const std::string& url, const std::string& method,
 	const Cell& param, std::ostream& stream)
@@ -130,19 +137,44 @@ urlget (const std::string& url, const std::string& method,
   // Follow redirects.
   curl_easy_setopt (curl, CURLOPT_FOLLOWLOCATION, 1);
 
-  curl_easy_setopt (curl, CURLOPT_NOPROGRESS, false);
+  curl_easy_setopt (curl, CURLOPT_NOPROGRESS, true);
   curl_easy_setopt (curl, CURLOPT_PROGRESSDATA, url.c_str ());
   curl_easy_setopt (curl, CURLOPT_FAILONERROR, true);
 
   // Switch on full protocol/debug output
   // curl_easy_setopt(curl, CURLOPT_VERBOSE, true);
 
-  CURLcode res = curl_easy_perform (curl);
+  CURLcode res = CURLE_OK;
 
-  // Always cleanup.
-  curl_easy_cleanup (curl);
+  // To understand the following, see the definitions of these macros
+  // in libcruft/misc/quit.h.  The idea is that we call sigsetjmp here
+  // then the signal handler calls siglongjmp to get back here
+  // immediately.  Then we perform some cleanup and throw an interrupt
+  // exception which will get us back to the top level, cleaning up
+  // any local C++ objects on the stack as we go.
 
-  curl_global_cleanup ();
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1;
+
+  // We were interrupted (this code is inside a block that is only
+  // called when siglongjmp is called from a signal handler).
+
+  // Is there a better error code to use?  Maybe it doesn't matter
+  // because we are about to throw an execption.
+
+  res = CURLE_ABORTED_BY_CALLBACK;
+  urlget_cleanup (curl);
+  octave_throw_interrupt_exception ();
+
+  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2;
+
+  res = curl_easy_perform (curl);
+
+  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+  // If we are not interuppted, we will end up here, so we still need
+  // to clean up.
+
+  urlget_cleanup (curl);
 
   return res;
 }

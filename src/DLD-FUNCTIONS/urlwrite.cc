@@ -320,9 +320,7 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
     error ("urlwrite: curl: %s", curl_easy_strerror (res));
 
 #else
-  retval(2) = "urlwrite: not available in this version of Octave";
-  retval(1) = 0;
-  retval(0) = "";
+  error ("urlwrite: not available in this version of Octave");
 #endif
 
   return retval;
@@ -439,9 +437,7 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
     error ("urlread: curl: %s", curl_easy_strerror (res));
 
 #else
-  retval(2) = "urlread: not available in this version of Octave";
-  retval(1) = 0;
-  retval(0) = "";
+  error ("urlread: not available in this version of Octave");
 #endif
 
   return retval;

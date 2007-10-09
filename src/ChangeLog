@@ -1,3 +1,9 @@
+2007-10-09  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread) [! HAVE_CURL]:
+	Throw error instead of returning empty string hiding error message
+	in third return value.
+
 2007-10-08  David Bateman  <dbateman@free.fr>
 
 	*  input.cc (quoting_filename): Function to add a leading quote to

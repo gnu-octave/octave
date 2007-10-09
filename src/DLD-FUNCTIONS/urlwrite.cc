@@ -58,30 +58,6 @@ write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
   return (stream.fail () ? 0 : size * nmemb);
 }
 
-// Progress callback function for curl.
-
-int
-progress_func (const char *url, double dltotal, double dlnow,
-	       double /*ultotal*/, double /*ulnow*/)
-{
-  // macro that picks up Ctrl-C signalling
-  OCTAVE_QUIT;
-
-#if !defined (URL_QUITE_DOWNLOAD)
-  if (dltotal != 0)
-    {
-      // Is the carriage return character "\r" portable?
-      octave_stdout << "\r" << url << ": "
-		    << std::fixed << std::setw(5) << std::setprecision(1)
-		    << dlnow*100.0/dltotal << " %";
-
-      octave_stdout.flush ();
-    }
-#endif
-
-  return 0;
-}
-
 // Form the query string based on param.
 
 std::string
@@ -157,7 +133,6 @@ urlget (const std::string& url, const std::string& method,
   curl_easy_setopt (curl, CURLOPT_FOLLOWLOCATION, 1);
 
   curl_easy_setopt (curl, CURLOPT_NOPROGRESS, false);
-  curl_easy_setopt (curl, CURLOPT_PROGRESSFUNCTION, progress_func);
   curl_easy_setopt (curl, CURLOPT_PROGRESSDATA, url.c_str ());
   curl_easy_setopt (curl, CURLOPT_FAILONERROR, true);
 
@@ -165,16 +140,6 @@ urlget (const std::string& url, const std::string& method,
   // curl_easy_setopt(curl, CURLOPT_VERBOSE, true);
 
   CURLcode res = curl_easy_perform(curl);
-
-#if !defined (URL_QUITE_DOWNLOAD)
-  if (res == CURLE_OK)
-    {
-      // download is complete
-      progress_func (url.c_str (), 1, 1, 0, 0);
-      // new line after progress_func
-      octave_stdout << std::endl;
-    }
-#endif
 
   // always cleanup
   curl_easy_cleanup (curl);

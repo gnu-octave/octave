@@ -3,6 +3,8 @@
 	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread) [! HAVE_CURL]:
 	Throw error instead of returning empty string hiding error message
 	in third return value.
+	(progress_func): Delete.
+	(Furlread): Don't set progress callback for curl.
 
 2007-10-08  David Bateman  <dbateman@free.fr>
 

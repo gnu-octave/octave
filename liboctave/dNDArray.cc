@@ -546,6 +546,18 @@ NDArray::any_element_not_one_or_zero (void) const
 }
 
 bool
+NDArray::all_elements_are_zero (void) const
+{
+  octave_idx_type nel = nelem ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    if (elem (i) != 0)
+      return false;
+
+  return true;
+}
+
+bool
 NDArray::all_elements_are_int_or_inf_or_nan (void) const
 {
   octave_idx_type nel = nelem ();

@@ -7651,6 +7651,18 @@ SparseMatrix::any_element_is_inf_or_nan (void) const
 }
 
 bool
+SparseMatrix::all_elements_are_zero (void) const
+{
+  octave_idx_type nel = nnz ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    if (data (i) != 0)
+      return false;
+
+  return true;
+}
+
+bool
 SparseMatrix::all_elements_are_int_or_inf_or_nan (void) const
 {
   octave_idx_type nel = nnz ();

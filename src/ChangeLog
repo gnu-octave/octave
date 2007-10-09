@@ -1,5 +1,8 @@
 2007-10-09  John W. Eaton  <jwe@octave.org>
 
+	* ov-mapper.cc (octave_mapper::apply): If possible, use
+	d_d_map_fcn to handle complex values which have imag(z) == 0.
+
 	* DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread) [! HAVE_CURL]:
 	Throw error instead of returning empty string hiding error message
 	in third return value.

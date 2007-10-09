@@ -295,16 +295,23 @@ octave_mapper::apply (const octave_value& arg) const
     }
   else if (arg.is_complex_type ())
     {
+      // In the following, we use d_d_map_fcn to handle the case of
+      // imag (z) == 0.  This can happen when a complex value is not
+      // narrowed to a real value automatically, possibly due to some
+      // imaginary parts being -0.
+
       if (arg.is_scalar_type ())
 	{
 	  Complex c = arg.complex_value ();
 
-	  if (d_c_map_fcn)
-	    retval = d_c_map_fcn (c);
+	  if (c_d_map_fcn)
+	    retval = c_d_map_fcn (c);
 	  else if (c_c_map_fcn)
 	    retval = c_c_map_fcn (c);
 	  else if (c_b_map_fcn)
 	    retval = c_b_map_fcn (c);
+	  else if (d_d_map_fcn && imag (c) == 0)
+	    retval = d_d_map_fcn (real (c));
 	  else
 	    error ("%s: unable to handle complex arguments",
 		   name().c_str ());
@@ -316,8 +323,8 @@ octave_mapper::apply (const octave_value& arg) const
 	  if (error_state)
 	    return retval;
 
-	  if (d_c_map_fcn)
-	    SPARSE_MAPPER_LOOP (SparseMatrix, double, d_c_map_fcn, cm);
+	  if (c_d_map_fcn)
+	    SPARSE_MAPPER_LOOP (SparseMatrix, double, c_d_map_fcn, cm);
 	  else if (c_c_map_fcn)
 	    SPARSE_MAPPER_LOOP (SparseComplexMatrix, Complex, 
 				c_c_map_fcn, cm);
@@ -325,8 +332,15 @@ octave_mapper::apply (const octave_value& arg) const
 	    SPARSE_MAPPER_LOOP (SparseBoolMatrix, bool, 
 				c_b_map_fcn, cm);
 	  else
-	    error ("%s: unable to handle complex arguments",
-		   name().c_str ());
+	    {
+	      SparseMatrix im = imag (cm);
+
+	      if (d_d_map_fcn && im.all_elements_are_zero ())
+		SPARSE_MAPPER_LOOP (SparseMatrix, double, d_d_map_fcn, real (cm));
+	      else
+		error ("%s: unable to handle complex arguments",
+		       name().c_str ());
+	    }
 	}
       else
 	{
@@ -335,15 +349,22 @@ octave_mapper::apply (const octave_value& arg) const
 	  if (error_state)
 	    return retval;
 
-	  if (d_c_map_fcn)
-	    MAPPER_LOOP (NDArray, d_c_map_fcn, cm);
+	  if (c_d_map_fcn)
+	    MAPPER_LOOP (NDArray, c_d_map_fcn, cm);
 	  else if (c_c_map_fcn)
 	    MAPPER_LOOP (ComplexNDArray, c_c_map_fcn, cm);
 	  else if (c_b_map_fcn)
 	    MAPPER_LOOP (boolNDArray, c_b_map_fcn, cm);
 	  else
-	    error ("%s: unable to handle complex arguments",
-		   name().c_str ());
+	    {
+	      NDArray im = imag (cm);
+
+	      if (d_d_map_fcn && im.all_elements_are_zero ())
+		MAPPER_LOOP (NDArray, d_d_map_fcn, real (cm));
+	      else
+		error ("%s: unable to handle complex arguments",
+		       name().c_str ());
+	    }
 	}
     }
   else if (ch_map_fcn)

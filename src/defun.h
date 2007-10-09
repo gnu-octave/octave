@@ -87,7 +87,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 //   d_d_map is a pointer to a function that should be called for real
 //     arguments that are expected to create real results.
 //
-//   d_c_map is a pointer to a function that should be called for
+//   c_d_map is a pointer to a function that should be called for
 //     complex arguments that are expected to create real results.
 //
 //   c_c_map is a pointer to a function that should be called for
@@ -112,10 +112,10 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 //   doc is the simple help text for the function.
 
 #define DEFUN_MAPPER(name, ch_map, d_b_map, c_b_map, d_d_map, \
-		     d_c_map, c_c_map, lo, hi, ch_map_flag, \
+		     c_d_map, c_c_map, lo, hi, ch_map_flag, \
 		     can_ret_cmplx_for_real, doc) \
   DEFUN_MAPPER_INTERNAL (name, ch_map, d_b_map, c_b_map, d_d_map, \
-			 d_c_map, c_c_map, lo, hi, ch_map_flag, \
+			 c_d_map, c_c_map, lo, hi, ch_map_flag, \
 			 can_ret_cmplx_for_real, doc)
 
 // Make alias another name for the existing function name.  This macro

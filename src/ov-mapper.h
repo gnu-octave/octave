@@ -46,18 +46,18 @@ public:
   typedef bool (*d_b_mapper) (double);
   typedef bool (*c_b_mapper) (const Complex&);
   typedef double (*d_d_mapper) (double);
-  typedef double (*d_c_mapper) (const Complex&);
+  typedef double (*c_d_mapper) (const Complex&);
   typedef Complex (*c_c_mapper) (const Complex&);
 
   octave_mapper (ch_mapper ch, d_b_mapper db, c_b_mapper cb,
-		 d_d_mapper dd, d_c_mapper dc,
+		 d_d_mapper dd, c_d_mapper dc,
 		 c_c_mapper cc, double ll, double ul,
 		 int cmf, bool crcfr,
 		 const std::string& nm = std::string (),
 		 const std::string& ds = std::string ())
     : octave_function (nm, ds), ch_map_fcn (ch),
       d_b_map_fcn (db), c_b_map_fcn (cb),
-      d_d_map_fcn (dd), d_c_map_fcn (dc), c_c_map_fcn (cc),
+      d_d_map_fcn (dd), c_d_map_fcn (dc), c_c_map_fcn (cc),
       lower_limit (ll), upper_limit (ul), ch_map_flag (cmf),
       can_ret_cmplx_for_real (crcfr) { }
 
@@ -89,7 +89,7 @@ private:
   d_b_mapper d_b_map_fcn;
   c_b_mapper c_b_map_fcn;
   d_d_mapper d_d_map_fcn;
-  d_c_mapper d_c_map_fcn;
+  c_d_mapper c_d_map_fcn;
   c_c_mapper c_c_map_fcn;
 
   // If flag is nonzero and we are not calling ch_map_fcn, lower_limit

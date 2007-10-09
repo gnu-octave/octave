@@ -49,7 +49,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 
 // Write callback function for curl.
 
-int
+static int
 write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
 {
   // *stream is actually an ostream object.
@@ -60,7 +60,7 @@ write_data (void *buffer, size_t size, size_t nmemb, void *streamp)
 
 // Form the query string based on param.
 
-std::string
+static std::string
 form_query_string (CURL *curl, const Cell& param)
 {
   std::ostringstream query;
@@ -90,7 +90,7 @@ form_query_string (CURL *curl, const Cell& param)
 
 // curl front-end
 
-CURLcode
+static CURLcode
 urlget (const std::string& url, const std::string& method,
 	const Cell& param, std::ostream& stream)
 {
@@ -119,9 +119,7 @@ urlget (const std::string& url, const std::string& method,
       curl_easy_setopt (curl, CURLOPT_POSTFIELDS, query_string.c_str ());
     }
   else
-    {
-      curl_easy_setopt (curl, CURLOPT_URL,url.c_str());
-    }
+    curl_easy_setopt (curl, CURLOPT_URL,url.c_str());
 
   // Define our callback to get called when there's data to be written.
   curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, write_data);
@@ -139,9 +137,9 @@ urlget (const std::string& url, const std::string& method,
   // Switch on full protocol/debug output
   // curl_easy_setopt(curl, CURLOPT_VERBOSE, true);
 
-  CURLcode res = curl_easy_perform(curl);
+  CURLcode res = curl_easy_perform (curl);
 
-  // always cleanup
+  // Always cleanup.
   curl_easy_cleanup (curl);
 
   curl_global_cleanup ();
@@ -256,28 +254,22 @@ urlwrite (\"http://www.google.com/search\", \"search.html\",\n\
 	}
     }
 
-  // create and open file stream
+  std::ofstream ofile (filename.c_str(), std::ios::out | std::ios::binary);
 
-  std::ofstream stream (filename.c_str(), std::ios::out | std::ios::binary);
-
-  if (! stream.is_open ())
+  if (! ofile.is_open ())
     {
       error ("urlwrite: unable to open file");
       return retval;
     }
 
-  CURLcode res = urlget (url, method, param, stream);
+  CURLcode res = urlget (url, method, param, ofile);
 
-  // close the local file
-  stream.close ();
+  ofile.close ();
 
   if (nargout > 0)
     {
-      // FIXME: urlwrite should return full file path
       retval(0) = octave_env::make_absolute (filename, octave_env::getcwd ());
-      //      retval(0) = filename;
       retval(1) = res == CURLE_OK;
-      // return empty string if no error occured
       retval(2) = std::string (res == CURLE_OK ? "" : curl_easy_strerror (res));
     }
 
@@ -385,16 +377,15 @@ s = urlread (\"http://www.google.com/search\", \"get\",\n\
 	}
     }
 
-  // string stream for output
-  std::ostringstream stream;
+  std::ostringstream buf;
 
-  CURLcode res = urlget (url, method, param, stream);
+  CURLcode res = urlget (url, method, param, buf);
 
   if (nargout > 0)
     {
-      retval(0) = stream.str ();
+      retval(0) = buf.str ();
       retval(1) = res == CURLE_OK;
-      // return empty string if no error occured
+      // Return empty string if no error occured.
       retval(2) = std::string (res == CURLE_OK ? "" : curl_easy_strerror (res));
     }
 

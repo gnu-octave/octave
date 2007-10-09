@@ -5,6 +5,7 @@
 	in third return value.
 	(progress_func): Delete.
 	(Furlread): Don't set progress callback for curl.
+	(write_data, form_query_string, urlget): Now static.
 
 2007-10-08  David Bateman  <dbateman@free.fr>
 

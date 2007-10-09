@@ -56,10 +56,19 @@ public:
   Array2 (octave_idx_type r, octave_idx_type c, const T& val)
     : Array<T> (dim_vector (r, c), val) { }
 
-  Array2 (const dim_vector& dv) : Array<T> (dv) { }
+  Array2 (const dim_vector& dv) : Array<T> (dv) 
+    { 
+      if (dv.length () != 2)
+	(*current_liboctave_error_handler) ("too many dimensions");
+    }
 
-  Array2 (const dim_vector& dv, const T& val) 
-    : Array<T> (dv) { Array<T>::fill (val); }
+  Array2 (const dim_vector& dv, const T& val) : Array<T> (dv) 
+    { 
+      if (dv.length () != 2)
+	(*current_liboctave_error_handler) ("too many dimensions");
+      else
+	Array<T>::fill (val); 
+    }
 
   Array2 (const Array2<T>& a) : Array<T> (a, a.dims ()) { }
 

@@ -5,6 +5,10 @@
 
 2007-10-09  David Bateman  <dbateman@free.fr>
 
+	* Array2.h (Array2<T>::Array2(const dim_vector&),
+	Array2<T>::Array(const dim_vector&, const T&)): Check that
+	dim_vector is 2 dimensional.
+
 	* Sparse.cc (Sparse<T> Sparse<T>::index (idx_vector&, idx_vector&,
 	int)): Remove a for loop in the random indexing case at the
 	expense of maintaining a set of linked lists of indices that point 

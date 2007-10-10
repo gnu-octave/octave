@@ -1,5 +1,8 @@
 2007-10-10  Kim Hansen  <kimhanse@gmail.com>
 
+	* DLD-FUNCTIONS/lpsolve.cc: Delete.
+	* Makefile.in (DLD_XSRC): Remove it from the list.
+
         * data.cc (Fsqueeze): Document 2d behaviour.
         * ov-range.h (octave_range::squeeze): New function.
 

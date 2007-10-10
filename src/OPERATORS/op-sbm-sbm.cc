@@ -74,6 +74,15 @@ DEFNDCATOP_FN (sm_sbm, sparse_matrix, sparse_bool_matrix, sparse_matrix,
 DEFASSIGNOP_FN (assign, sparse_bool_matrix, sparse_bool_matrix, 
 		assign)
 
+CONVDECL (bool_matrix_to_double_matrix)
+{
+  CAST_CONV_ARG (const octave_sparse_bool_matrix&);
+
+  return new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
+}
+
+DEFDBLCONVFN (, sparse_bool_matrix, bool_array)
+
 void
 install_sbm_sbm_ops (void)
 {
@@ -99,7 +108,10 @@ install_sbm_sbm_ops (void)
   INSTALL_CATOP (octave_sparse_matrix, octave_sparse_bool_matrix, sm_sbm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_sparse_bool_matrix, 
-		    octave_sparse_bool_matrix, assign);
+		    octave_sparse_bool_matrix, assign); 
+
+  INSTALL_CONVOP (octave_sparse_bool_matrix, octave_sparse_matrix, 
+		  bool_matrix_to_double_matrix);
 }
 
 /*

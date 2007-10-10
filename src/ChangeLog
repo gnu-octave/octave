@@ -1,3 +1,11 @@
+2007-10-10  John W. Eaton  <jwe@octave.org>
+
+	* OPERATORS/op-sbm-sbm.cc (bool_matrix_to_double_matrix):
+	New conversion function.
+	(install_sbm_sbm_ops): Install it.
+
+	* ov-re-mat.cc (double): Handle sparse as a special case.
+
 2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
 
 	* data.cc, debug.cc, dirfns.cc, error.cc, file-io.cc, help.cc,

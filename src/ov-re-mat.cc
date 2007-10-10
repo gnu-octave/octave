@@ -48,6 +48,7 @@ Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 #include "ov-base-mat.cc"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-re-sparse.h"
 #include "ov-type-conv.h"
 #include "pr-output.h"
 #include "variables.h"
@@ -653,7 +654,25 @@ DEFUN (double, args, ,
 Convert @var{x} to double precision type.\n\
 @end deftypefn")
 {
-  OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
+  // The OCTAVE_TYPE_CONV_BODY3 macro declares retval, so they go
+  // inside their own scopes, and we don't declare retval here to
+  // avoid a shadowed declaration warning.
+
+  if (args.length () == 1)
+    {
+      if (args(0).is_sparse_type ())
+	{
+	  OCTAVE_TYPE_CONV_BODY3 (double, octave_sparse_matrix, octave_scalar);
+	}
+      else
+	{
+	  OCTAVE_TYPE_CONV_BODY3 (double, octave_matrix, octave_scalar);
+	}
+    }
+  else
+    print_usage ();
+
+  return octave_value ();
 }
 
 /*

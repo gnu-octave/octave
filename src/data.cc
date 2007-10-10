@@ -2579,6 +2579,8 @@ DEFUN (squeeze, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} squeeze (@var{x})\n\
 Remove singleton dimensions from @var{x} and return the result.\n\
+Note that for compatibility with @sc{Matlab}, all objects have\n\
+a minimum of two dimensions.\n\
 @end deftypefn")
 {
   octave_value retval;

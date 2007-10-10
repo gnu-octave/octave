@@ -120,6 +120,8 @@ public:
   octave_value permute (const Array<int>& vec, bool inv = false) const
     { return NDArray (array_value().permute (vec, inv)); }
 
+  octave_value squeeze (void) const { return range; }
+
   bool is_defined (void) const { return true; }
 
   bool is_constant (void) const { return true; }

@@ -1,3 +1,8 @@
+2007-10-10  Kim Hansen  <kimhanse@gmail.com>
+
+        * data.cc (Fsqueeze): Document 2d behaviour.
+        * ov-range.h (octave_range::squeeze): New function.
+
 2007-10-09  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/urlwrite.cc (urlget_cleanup): New function.

@@ -1,3 +1,11 @@
+2007-10-10  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* time/tic.m: New optional output value.
+
+* 2007-10-10  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* general/int2str.m: Doc fix.
+
 2007-10-10  Arno Onken  <asnelt@asnelt.org>
 
 	* statistics/distributions/hygecdf.m,

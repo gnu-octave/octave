@@ -20,7 +20,9 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} tic ()
 ## @deftypefnx {Function File} {} toc ()
-## These functions set and check a wall-clock timer.  For example,
+## Set or check a wall-clock timer.  Calling @code{tic} without an
+## output argument sets the timer.  Subsequent calls to @code{toc}
+## return the number of seconds since the timer was set.  For example,
 ##
 ## @example
 ## tic ();
@@ -31,6 +33,16 @@
 ## @noindent
 ## will set the variable @code{elapsed_time} to the number of seconds since
 ## the most recent call to the function @code{tic}.
+##
+## If called with one output argument then this function returns a scalar
+## of type @code{uint64} and the wall-clock timer is not started.
+##
+## @example
+## @group
+## t = tic; sleep (5); (double (tic ()) - double (t)) * 1e-6
+##      @result{} 5
+## @end group
+## @end example
 ##
 ## Nested timing with @code{tic} and @code{toc} is not supported.
 ## Therefore @code{toc} will always return the elapsed time from the most
@@ -58,14 +70,17 @@
 
 ## Author: jwe
 
-function tic ()
+function ret = tic ()
 
   if (nargin != 0)
     warning ("tic: ignoring extra arguments");
   endif
 
-  global __tic_toc_timestamp__;
-
-  __tic_toc_timestamp__ = clock ();
+  if (nargout == 1)
+    ret = uint64 (time () * 1e6);
+  else
+    global __tic_toc_timestamp__;
+    __tic_toc_timestamp__ = clock ();
+  endif
 
 endfunction

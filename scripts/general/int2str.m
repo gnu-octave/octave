@@ -19,8 +19,6 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} int2str (@var{n})
-## @deftypefnx {Function File} {} int2str (@var{x}, @var{precision})
-## @deftypefnx {Function File} {} int2str (@var{x}, @var{format})
 ## Convert an integer to a string.  This function is not very flexible.
 ## For better control over the results, use @code{sprintf}
 ## (@pxref{Formatted Output}). 

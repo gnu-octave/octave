@@ -26,7 +26,7 @@
 ## The optional argument @var{l} may be used to specify an
 ## additional lump-sum payment.
 ##
-## The optional argument @var{method} may be used ot specify whether the
+## The optional argument @var{method} may be used to specify whether the
 ## payments are made at the end (@code{"e"}, default) or at the
 ## beginning (@code{"b"}) of each period.
 ##

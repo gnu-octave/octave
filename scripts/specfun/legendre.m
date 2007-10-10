@@ -35,7 +35,7 @@
 ## @end group
 ##
 ## with:
-## Legendre Polynom of degree n
+## Legendre polynomial of degree n
 ##
 ## @group
 ##           1     d^n   2    n

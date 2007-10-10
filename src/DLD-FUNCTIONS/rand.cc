@@ -344,7 +344,7 @@ fraction of a second.\n\
 @code{rand} uses the Mersenne Twister with a period of 2^19937-1\n\
 (See M. Matsumoto and T. Nishimura, ``Mersenne Twister: A 623-dimensionally\n\
 equidistributed uniform pseudorandom number generator'', ACM Trans. on\n\
-Modeling and Computer Simulation Vol. 8, No. 1, Januray pp.3-30 1998,\n\
+Modeling and Computer Simulation Vol. 8, No. 1, January pp.3-30 1998,\n\
 @url{http://www.math.keio.ac.jp/~matumoto/emt.html}).\n\
 Do @strong{not} use for cryptography without securely hashing\n\
 several returned values together, otherwise the generator state\n\

@@ -1,6 +1,6 @@
 ## -*- texinfo -*-
 ## @defvr {Automatic Variable} ans
-## The the most recently computed result that was not
+## The most recently computed result that was not
 ## explicitly assigned to a variable.  For example, after the expression
 ## 
 ## @example

@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} var (@var{x})
 ## For vector arguments, return the (real) variance of the values.
-## For matrix arguments, return a row vector contaning the variance for
+## For matrix arguments, return a row vector containing the variance for
 ## each column.
 ##
 ## The argument @var{opt} determines the type of normalization to use.

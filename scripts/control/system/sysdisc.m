@@ -33,7 +33,7 @@
 ## no purely discrete path from inputs to outputs).
 ## @item    adc
 ## @itemx   cdc
-## Connections from continuous states to discrete states and discrete.
+## Connections from continuous states to discrete states and discrete
 ## outputs, respectively.
 ## @end table
 ## @end deftypefn
@@ -53,7 +53,7 @@ function [dsys, Adc, Cdc] = sysdisc (sys)
   Add = Adc = Bdd = Cdd = Cdc = Ddd = [];
 
   if(isempty(st_d) & isempty(y_d))
-    error("sysdisc: expecting discrete states and/or continous outputs");
+    error("sysdisc: expecting discrete states and/or continuous outputs");
   elseif (isempty(st_d))
     warning("sysdisc: no discrete states");
   elseif(isempty(y_d))

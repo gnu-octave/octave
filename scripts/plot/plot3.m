@@ -31,7 +31,7 @@
 ## be plotted in three dimensions. If all arguments are vectors of the
 ## same length, then a single continuous line is drawn. If all arguments
 ## are matrices, then each column of the matrices is treated as a
-## seperate line.  No attempt is made to transpose the arguments to make
+## separate line.  No attempt is made to transpose the arguments to make
 ## the number of rows match.
 ##
 ## If only two arguments are given, as
@@ -61,7 +61,7 @@
 ## @end example
 ## 
 ## @noindent
-## in which each set of three arguments is treated as a seperate line or
+## in which each set of three arguments is treated as a separate line or
 ## set of lines in three dimensions.
 ##
 ## To plot multiple one- or two-argument groups, separate each group

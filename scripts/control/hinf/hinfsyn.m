@@ -73,7 +73,7 @@
 ## @item tol
 ## threshold for 0.  Default: 200*@code{eps}.
 ##
-## @var{gmax}, @var{min}, @var{tol}, and @var{tol} must all be postive scalars.
+## @var{gmax}, @var{min}, @var{tol}, and @var{tol} must all be positive scalars.
 ## @end table
 ## @strong{Outputs}
 ## @table @var

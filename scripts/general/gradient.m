@@ -34,7 +34,7 @@
 ##
 ## Spacing values between two points can be provided by the
 ## @var{dx}, @var{dy} or @var{h} parameters. If @var{h} is supplied it
-## is assumed to be the spacing in all directions. Otherwise, seperate
+## is assumed to be the spacing in all directions. Otherwise, separate
 ## values of the spacing can be supplied by the @var{dx}, etc variables.
 ## A scalar value specifies an equidistant spacing, while a vector value
 ## can be used to specify a variable spacing. The length must match

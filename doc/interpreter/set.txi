@@ -6,7 +6,7 @@
 @chapter Sets
 
 Octave has a limited set of functions for managing sets of data, where a
-set is defined as a collection unique elements.  In Octave a set is
+set is defined as a collection of unique elements.  In Octave a set is
 represented as a vector of numbers.
 
 @DOCSTRING(create_set)

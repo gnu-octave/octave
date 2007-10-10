@@ -1,3 +1,14 @@
+2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
+
+	* interpreter/arith.txi, interpreter/basics.txi,
+	interpreter/container.txi, interpreter/dynamic.txi,
+	interpreter/eval.txi, interpreter/expr.txi, interpreter/func.txi,
+	interpreter/geometry.txi, interpreter/intro.txi,
+	interpreter/numbers.txi, interpreter/plot.txi,
+	interpreter/poly.txi, interpreter/set.txi, interpreter/sparse.txi,
+	interpreter/stmt.txi, interpreter/strings.txi,
+	interpreter/testfun.txi, interpreter/tips.txi: Spelling fixes. 
+
 2007-10-06  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/octave.texi: Add David Bateman and Søren Hauberg as

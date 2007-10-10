@@ -265,7 +265,7 @@ END_OPTION
 OPTION
   NAME = "initial step size"
   DOC_ITEM
-Differential-algebraic problems may occaisionally suffer from severe
+Differential-algebraic problems may occasionally suffer from severe
 scaling difficulties on the first step.  If you know a great deal
 about the scaling of your problem, you can help to alleviate this
 problem by specifying an initial stepsize (default is computed

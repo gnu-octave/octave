@@ -39,7 +39,7 @@
 ## @ifinfo
 ## @code{[@var{s1}, @var{s2}, @dots{}, @var{sk}, @var{n}]}
 ## @end ifinfo
-## The array is then reshaped internally to a matrix where to leading
+## The array is then reshaped internally to a matrix where the leading
 ## dimension is given by 
 ## @iftex
 ## @tex
@@ -49,9 +49,9 @@
 ## @ifinfo
 ## @code{@var{s1} * @var{s2} * @dots{} * @var{sk}}
 ## @end ifinfo
-## and each row this matrix is then treated seperately. Note that this
+## and each row in this matrix is then treated separately. Note that this
 ## is exactly the opposite treatment than @code{interp1} and is done
-## for compatiability.
+## for compatibility.
 ##
 ## Called with a third input argument, @code{pchip} evaluates the 
 ## piece-wise polynomial at the points @var{xi}. There is an equivalence

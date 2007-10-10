@@ -61,7 +61,7 @@
 ## @item  yd
 ##  binary vector; @var{yd}(@var{ii}) is nonzero if output @var{ii} is
 ## discrete.
-## @math{yd(ii) = 0} if output @var{ii} is continous
+## @math{yd(ii) = 0} if output @var{ii} is continuous
 ## @end table
 ## @seealso{sysgetsignals, sysgettsam}
 ## @end deftypefn

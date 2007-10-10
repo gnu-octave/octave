@@ -690,7 +690,7 @@ atexit (\"bye_bye\", false);\n\
 will remove the function from the list and Octave will not call\n\
 the function @code{bye_by} when it exits.\n\
 \n\
-Note that @code{atexit} only removes the first occurence of a function\n\
+Note that @code{atexit} only removes the first occurrence of a function\n\
 from the list, so if a function was placed in the list multiple\n\
 times with @code{atexit}, it must also be removed from the list\n\
 multiple times.\n\

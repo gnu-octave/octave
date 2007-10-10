@@ -24,11 +24,11 @@
 ## Fourier interpolation. If @var{x} is a vector, then @var{x} is
 ## resampled with @var{n} points. The data in @var{x} is assumed to be
 ## equispaced. If @var{x} is an array, then operate along each column of
-## the array seperately. If @var{dim} is specified, then interpolate
+## the array separately. If @var{dim} is specified, then interpolate
 ## along the dimension @var{dim}.
 ##
 ## @code{interpft} assumes that the interpolated function is periodic,
-## and so assumption are made about the end points of the inetrpolation.
+## and so assumptions are made about the end points of the interpolation.
 ##
 ## @seealso{interp1}
 ## @end deftypefn

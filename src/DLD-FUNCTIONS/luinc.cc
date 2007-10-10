@@ -54,7 +54,7 @@ positions as in the matrix @var{a}.\n\
 Alternatively, the fill-in of the incomplete LU factorization can\n\
 be controlled through the variable @var{droptol} or the structure\n\
 @var{opts}. The UMFPACK multifrontal factorization code by Tim A.\n\
-Davis is used for the incomplete LU factorication, (availability\n\
+Davis is used for the incomplete LU factorization, (availability\n\
 @url{http://www.cise.ufl.edu/research/sparse/umfpack/})\n\
 \n\
 @var{droptol} determines the values below which the values in the LU\n\
@@ -74,7 +74,7 @@ then this is equivalent to using the variable @var{droptol}.\n\
 @item milu\n\
 A logical variable flagging whether to use the modified incomplete LU\n\
 factorization. In the case that @code{milu} is true, the dropped values\n\
-are subtract from the diagonal of the matrix U of the factorization.\n\
+are subtracted from the diagonal of the matrix U of the factorization.\n\
 The default is @code{false}.\n\
 \n\
 @item udiag\n\

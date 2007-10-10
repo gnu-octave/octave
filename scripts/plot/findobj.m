@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {@var{h} =} findobj ('flat', @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, @dots{})
 ## @deftypefnx {Function File} {@var{h} =} findobj (@var{h}, '-depth', @var{d}, @dots{})
-## Find object with specified property values. The simpliest form is
+## Find object with specified property values. The simplest form is
 ##
 ## @example
 ## findobj (@var{propName}, @var{propValue})

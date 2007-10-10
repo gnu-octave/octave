@@ -1358,7 +1358,7 @@ The text of the last error message\n\
 @item 'identifier'\n\
 The message identifier of this error message\n\
 @item 'stack'\n\
-A structure containing information on where the message occured. This might\n\
+A structure containing information on where the message occurred. This might\n\
 be an empty structure if this in the case where this information can not\n\
 be obtained. The fields of this structure are:\n\
 \n\
@@ -1366,9 +1366,9 @@ be obtained. The fields of this structure are:\n\
 @item 'file'\n\
 The name of the file where the error occurred\n\
 @item 'name'\n\
-The name of function in which the error occured\n\
+The name of function in which the error occurred\n\
 @item 'line'\n\
-The line number at which the error occured\n\
+The line number at which the error occurred\n\
 @item 'column'\n\
 An optional field with the column number at which the error occurred\n\
 @end table\n\

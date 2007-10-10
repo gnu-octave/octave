@@ -148,7 +148,7 @@ larger than the size of @var{a}, @var{a} is resized and padded with\n\
 zeros.\n\
 \n\
 If @var{a} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
-of @var{a} is treated seperately\n\
+of @var{a} is treated separately\n\
 @seealso {ifft2, fft, fftn, fftw}\n\
 @end deftypefn")
 {
@@ -167,7 +167,7 @@ larger than the size of @var{a}, @var{a} is resized and padded with\n\
 zeros.\n\
 \n\
 If @var{a} is a multi-dimensional matrix, each two-dimensional sub-matrix\n\
-of @var{a} is treated seperately\n\
+of @var{a} is treated separately\n\
 @seealso {fft2, ifft, ifftn, fftw}\n\
 @end deftypefn")
 {

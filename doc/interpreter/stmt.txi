@@ -551,7 +551,7 @@ endfor
 @noindent
 In this case the variable @code{i} takes on the value of the columns of
 the matrix or cell matrix. So the first loop iterates twice, producing
-two column vectors @code{[1;2]}, follwed by @code{[3;4]}, and likewise
+two column vectors @code{[1;2]}, followed by @code{[3;4]}, and likewise
 for the loop over the cell array. This can be extended to loops over
 multidimensional arrays. For example
 

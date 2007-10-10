@@ -42,7 +42,7 @@
 ## Compute the (ordinary) arithmetic mean.  This is the default.
 ##
 ## @item "g"
-## Computer the geometric mean.
+## Compute the geometric mean.
 ##
 ## @item "h"
 ## Compute the harmonic mean.

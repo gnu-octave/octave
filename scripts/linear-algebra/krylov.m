@@ -35,7 +35,7 @@
 ## subspace (based on @var{eps1}).
 ##
 ## If @var{b} is a vector and @var{k} is greater than @var{m-1}, then
-## @var{h} contains the Hessenberg decompostion of @var{a}.
+## @var{h} contains the Hessenberg decomposition of @var{a}.
 ##
 ## The optional parameter @var{eps1} is the threshold for zero.  The
 ## default value is 1e-12.

@@ -96,7 +96,7 @@ Note that the matrix type will be discovered automatically on the first attempt 
 solve a linear equation involving @var{a}. Therefore @code{matrix_type} is only\n\
 useful to give Octave hints of the matrix type. Incorrectly defining the\n\
 matrix type will result in incorrect results from solutions of linear equations,\n\
-and so it is entirely the responsibility of the user to correctly indentify the\n\
+and so it is entirely the responsibility of the user to correctly identify the\n\
 matrix type.\n\
 @end deftypefn")
 {

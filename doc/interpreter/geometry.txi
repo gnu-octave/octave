@@ -356,7 +356,7 @@ points inside a polygon}
 @node Convex Hull
 @section Convex Hull
 
-The convex hull of a set of points, is the minimum convex envelope
+The convex hull of a set of points is the minimum convex envelope
 containing all of the points. Octave has the functions @code{convhull}
 and @code{convhulln} to calculate the convec hull of 2-dimensional and
 N-dimensional sets of points.

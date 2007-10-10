@@ -1744,9 +1744,9 @@ DEFCMD (lookfor, args, nargout,
 @deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor (@var{str})\n\
 @deffnx {Function} {[@var{fun}, @var{helpstring}] = } lookfor ('-all', @var{str})\n\
 Search for the string @var{str} in all of the functions found in the\n\
-function search path.  By default @code{lookfor} searchs for @var{str}\n\
+function search path.  By default @code{lookfor} searches for @var{str}\n\
 in the first sentence of the help string of each function found. The entire\n\
-help string of each function found in the path can be search if\n\
+help string of each function found in the path can be searched if\n\
 the '-all' argument is supplied. All searches are case insensitive.\n\
 \n\
 Called with no output arguments, @code{lookfor} prints the list of matching\n\
@@ -2161,7 +2161,7 @@ DEFUN (suppress_verbose_help_message, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} suppress_verbose_help_message ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} suppress_verbose_help_message (@var{new_val})\n\
-Query or set the internal vaiable that controls whether Octave\n\
+Query or set the internal variable that controls whether Octave\n\
 will add additional help information to the end of the output from\n\
 the @code{help} command and usage messages for built-in commands.\n\
 @end deftypefn")

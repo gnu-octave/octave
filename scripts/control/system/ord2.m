@@ -30,7 +30,7 @@
 ## @item gain
 ## dc-gain
 ## This is steady state value only for damp > 0.
-## gain is assumed to be 1.0 if ommitted.
+## gain is assumed to be 1.0 if omitted.
 ## @end table
 ##
 ## @strong{Output}

@@ -79,7 +79,7 @@ function csys = d2c (sys, opt)
       error(["d2c: invalid opt passed=",opt]);
     endif
   elseif(!is_sample(opt))
-    error("tol must be a postive scalar")
+    error("tol must be a positive scalar")
   elseif(opt > 1e-2)
     warning(["d2c: ridiculous error tolerance passed=",num2str(opt); ...
         ", intended c2d call?"])

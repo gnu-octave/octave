@@ -157,7 +157,7 @@ r' * r = q * a * q'.\n\
 @end example\n\
 @end ifinfo\n\
 \n\
-Note that @code{splchol} factorizations is faster and use less memory.\n\
+Note that @code{splchol} factorization is faster and uses less memory.\n\
 @seealso{spcholinv, spchol2inv, splchol}\n\
 @end deftypefn")
 {
@@ -205,7 +205,7 @@ r * r' = a (q, q).\n\
 @end example\n\
 @end ifinfo\n\
 \n\
-Note that @code{splchol} factorizations is faster and use less memory\n\
+Note that @code{splchol} factorization is faster and uses less memory\n\
 than @code{spchol}. @code{splchol(@var{a})} is equivalent to\n\
 @code{spchol(@var{a})'}.\n\
 @seealso{spcholinv, spchol2inv, splchol}\n\
@@ -359,7 +359,7 @@ Factorize @code{@var{s}'}\n\
 \n\
 @item @var{mode}\n\
 The default is to return the Cholesky factorization for @var{r}, and if\n\
-@var{mode} is 'L', the conjugate transpose of the Choleksy factorization\n\
+@var{mode} is 'L', the conjugate transpose of the Cholesky factorization\n\
 is returned. The conjugate transpose version is faster and uses less\n\
 memory, but returns the same values for @var{count}, @var{h}, @var{parent}\n\
 and @var{post} outputs.\n\

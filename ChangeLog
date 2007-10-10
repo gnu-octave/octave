@@ -1,3 +1,7 @@
+2007-10-10  Kim Hansen  <kimhanse@gmail.com>
+
+        * run-octave.in: Use $args.  Eliminate "if [ -n "$args" ]" conditional.
+
 2007-10-09  John W. Eaton  <jwe@octave.org>
 
 	* gdbinit.in: Delete.

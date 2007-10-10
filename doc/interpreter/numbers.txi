@@ -599,7 +599,7 @@ Since the type of a variable may change during the execution of a
 program, it can be necessary to type checking at run-time. Doing this
 also allows you to change the behaviour of a function depending on the
 type of the input. As an example, this naive implementation of @code{abs}
-return the absolute value of the input if it is a real number, and the
+returns the absolute value of the input if it is a real number, and the
 length of the input if it is a complex number.
 
 @example

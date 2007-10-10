@@ -58,7 +58,7 @@
 ##   can be appended to any location string
 ## @end multitable
 ##
-## Some specific functions are directely avaliable using @var{func}:
+## Some specific functions are directly available using @var{func}:
 ##
 ## @table @code
 ## @item "show"

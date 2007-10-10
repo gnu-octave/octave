@@ -41,7 +41,7 @@
 ##
 ## Called without a return argument, @code{peaks} plots the surface of the 
 ## above function using @code{mesh}. If @var{n} is a scalar, the @code{peaks}
-## returns the values of the above funxtion on a @var{n}-by-@var{n} mesh over
+## returns the values of the above function on a @var{n}-by-@var{n} mesh over
 ## the range @code{[-3,3]}. The default value for @var{n} is 49.
 ##
 ## If @var{n} is a vector, then it represents the @var{x} and @var{y} values

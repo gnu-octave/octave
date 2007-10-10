@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{outsys} =} ss (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
-## Create system structure from state-space data.   May be continous,
+## Create system structure from state-space data.   May be continuous,
 ## discrete, or mixed (sampled data)
 ##
 ## @strong{Inputs}
@@ -71,7 +71,7 @@
 ## If @var{tsam} is greater than 0, @math{outlist = 1:@code{rows}(@var{c})}.
 ## @end table
 ##
-## Unlike states, discrete/continous outputs may appear in any order.
+## Unlike states, discrete/continuous outputs may appear in any order.
 ##
 ## @code{sys2ss} returns a vector @var{yd} where
 ## @var{yd}(@var{outlist}) = 1; all other entries of @var{yd} are 0.

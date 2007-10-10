@@ -206,7 +206,7 @@ function sysrepdemo ()
               run_cmd;
               cmd = "outname = \"e(t)\";";
               run_cmd
-              disp("Since the system is continous time and without states,")
+              disp("Since the system is continuous time and without states,")
               disp("the ss inputs tsam, n, and nz are all zero:")
               cmd = "sys = ss([],[],[],D,0,0,0,[],inname,outname);";
               run_cmd

@@ -56,7 +56,7 @@ of your time, relative to staying in Octave?
 
 Also, as oct- and mex-files are dynamically linked to octave, they
 introduce to possibility of having Octave abort due to coding errors in
-the user code.  For example a segmentation violation in the users code
+the user code.  For example a segmentation violation in the user's code
 will cause Octave to abort.
 
 @menu
@@ -244,8 +244,8 @@ array.  Additionally, the matrix type allows two argument versions of the
 value to obtain or set.
 @end deftypefn
 
-Note that these function do significant error checking and so in some
-circumstances the user might prefer the access the data of the array or
+Note that these functions do significant error checking and so in some
+circumstances the user might prefer to access the data of the array or
 matrix directly through the fortran_vec method discussed below.
 
 @deftypefn Method octave_idx_type nelem (void) const
@@ -393,7 +393,7 @@ retval(0) = octave_value (ch, true);
 @node Cell Arrays in Oct-Files
 @subsection Cell Arrays in Oct-Files
 
-Octave's cell type is equally accessible within an oct-files.  A cell
+Octave's cell type is equally accessible within oct-files.  A cell
 array is just an array of @code{octave_value}s, and so each element of the cell
 array can then be treated just like any other @code{octave_value}.  A simple
 example is
@@ -440,7 +440,7 @@ structdemo (x, "b")
 @end group
 @end example
 
-The commented code above demonstrates how to iterated over all of the
+The commented code above demonstrates how to iterate over all of the
 fields of the structure, where as the following code demonstrates finding
 a particular field in a more concise manner.
 
@@ -510,8 +510,8 @@ int nel = sm.nelem ();
 returns the number of non-zero elements.  If the user really requires the
 number of elements in the matrix, including the non-zero elements, they
 should use @code{numel} rather than @code{nelem}.  Note that for very
-large matrices, where the product of the two dimensions is large that
-the representation of the an unsigned int, then @code{numel} can overflow.
+large matrices, where the product of the two dimensions is larger than
+the representation of an unsigned int, then @code{numel} can overflow.
 An example is @code{speye(1e6)} which will create a matrix with a million
 rows and columns, but only a million non-zero elements.  Therefore the
 number of rows by the number of columns in this case is more than two
@@ -984,8 +984,8 @@ that returns a pointer @code{tmp} of type @code{double *} of length
 @subsection Input Parameter Checking in Oct-Files
 
 As oct-files are compiled functions they have the possibility of causing
-Octave to abort abnormally.  It is therefore inportant that the input
-parameters to each and every function has the minimum of parameter
+Octave to abort abnormally.  It is therefore important that
+each and every function has the minimum of parameter
 checking needed to ensure that Octave behaves well.
 
 The minimum requirement, as previously discussed, is to check the number
@@ -1099,7 +1099,7 @@ help strings within oct-files.
 
 The major issue is that the help string will typically be longer than a
 single line of text, and so the formatting of long help strings need to
-be taken into account.  There are several manner in which to treat this
+be taken into account.  There are several manners in which to treat this
 issue, but the most common is illustrated in the following example
 
 @example
@@ -1506,7 +1506,7 @@ b = mystruct(a)
 @subsection Sparse Matrices with Mex-Files
 
 The Octave format for sparse matrices is identical to the mex format in
-that it is a compressed colument sparse format.  Also in both, sparse
+that it is a compressed column sparse format.  Also in both, sparse
 matrices are required to be two dimensional.  The only difference is that
 the real and imaginary parts of the matrix are stored separately.
 

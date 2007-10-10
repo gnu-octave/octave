@@ -92,7 +92,7 @@
 ## @item 
 ## @var{resvec} describes the convergence history of the method,
 ## so that @code{@var{resvec} (i)} contains the Euclidean norms of the 
-## residualafter the (@var{i}-1)-th iteration, @code{@var{i} =
+## residual after the (@var{i}-1)-th iteration, @code{@var{i} =
 ## 1,2, @dots{}, @var{iter}+1}.
 ## @end itemize
 ## 
@@ -291,7 +291,7 @@ function [x, flag, relres, iter, resvec] = pcr (A, b, tol, maxit, M, x0, varargi
   if (breakdown)
     flag = 3;
     if (nargout < 2)
-      warning ("pcr: breakdown occured:\n");
+      warning ("pcr: breakdown occurred:\n");
       warning ("system matrix singular or preconditioner indefinite?\n");
     endif
   endif

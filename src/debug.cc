@@ -95,7 +95,7 @@ String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 @item line\n\
 Line you would like the breakpoint to be set on. Multiple\n\
-lines might be given as seperate arguments or as a vector.\n\
+lines might be given as separate arguments or as a vector.\n\
 @end table\n\
 \n\
 The rline returned is the real line that the breakpoint was set at.\n\
@@ -190,7 +190,7 @@ String representing the function name.  When already in debug\n\
 mode this should be left out and only the line should be given.\n\
 @item line\n\
 Line where you would like to remove the breakpoint. Multiple\n\
-lines might be given as seperate arguments or as a vector.\n\
+lines might be given as separate arguments or as a vector.\n\
 @end table\n\
 No checking is done to make sure that the line you requested is really\n\
 a breakpoint. If you get the wrong line nothing will happen.\n\

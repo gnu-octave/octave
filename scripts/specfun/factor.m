@@ -24,8 +24,8 @@
 ## Return prime factorization of @var{q}. That is @code{prod (@var{p})
 ## == @var{q}}. If @code{@var{q} == 1}, returns 1. 
 ##
-## With two output arguments, returns the uniques primes @var{p} and
-## their mulyiplicities. That is @code{prod (@var{p} .^ @var{n}) ==
+## With two output arguments, returns the unique primes @var{p} and
+## their multiplicities. That is @code{prod (@var{p} .^ @var{n}) ==
 ## @var{q}}.
 ## 
 ## @end deftypefn

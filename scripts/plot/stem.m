@@ -48,7 +48,7 @@
 ## @noindent
 ## plots 10 bars with heights from 2 to 20
 ## (the color is blue, and @var{h} is a 2-by-10 array of handles in
-## which the first row holds the line handles and the 
+## which the first row holds the line handles and
 ## the second row holds the marker handles);
 ##
 ## @example
@@ -60,7 +60,7 @@
 ## plots 10 stems with heights from 2 to 20
 ## (the color is black, line style is @code{"-."}, and @var{h} is a 2-by-10
 ## array of handles in which the first row holds the line handles and
-## the second rows holds the marker handles);
+## the second row holds the marker handles);
 ##
 ## @example
 ## x = 1:10;

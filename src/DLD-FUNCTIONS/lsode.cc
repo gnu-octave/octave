@@ -252,7 +252,7 @@ jac = ---- = |                       |\n\
 \n\
 @end ifinfo\n\
 \n\
-The second and third arguments specify the intial state of the system,\n\
+The second and third arguments specify the initial state of the system,\n\
 @math{x_0}, and the initial value of the independent variable @math{t_0}.\n\
 \n\
 The fourth argument is optional, and may be used to specify a set of\n\

@@ -20,7 +20,7 @@
 ## Returns an empty sparse matrix of size @var{r}-by-@var{c}. As Octave
 ## resizes sparse matrices at the first opportunity, so that no additional 
 ## space is needed, the argument @var{nz} is ignored. This function is 
-## provided only for compatiability reasons.
+## provided only for compatibility reasons.
 ##
 ## It should be noted that this means that code like
 ##

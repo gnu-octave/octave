@@ -29,7 +29,7 @@
 ##    rat(e) = 3 + 1/(-4 + 1/(2 + 1/(5 + 1/(-2 + 1/(-7))))) = 1457/536
 ## @end example
 ##
-## Called with two arguments returns the numerator and deniminator seperately
+## Called with two arguments returns the numerator and denominator separately
 ## as two matrices.
 ## @end deftypefn
 ## @seealso{rats}

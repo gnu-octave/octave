@@ -85,7 +85,7 @@ matrix, we win in terms of the amount of memory used.
 
 In fact, the column index contains one more element than the number of
 columns, with the first element always being zero. The advantage of
-this is a simplification in the code, in that their is no special case
+this is a simplification in the code, in that there is no special case
 for the first or last columns. A short example, demonstrating this in
 C is.
 
@@ -148,7 +148,7 @@ A further constraint on the sparse matrix storage used by Octave is that
 all elements in the rows are stored in increasing order of their row
 index, which makes certain operations faster. However, it imposes
 the need to sort the elements on the creation of sparse matrices. Having
-dis-ordered elements is potentially an advantage in that it makes operations
+disordered elements is potentially an advantage in that it makes operations
 such as concatenating two sparse matrices together easier and faster, however
 it adds complexity and speed problems elsewhere.
 
@@ -187,7 +187,7 @@ the same calling convention, where @code{sprand (@var{r}, @var{c}, @var{d})},
 creates an @var{r}-by-@var{c} sparse matrix with a density of filled
 elements of @var{d}.
 
-Other functions of interest that directly creates a sparse matrices, are
+Other functions of interest that directly create sparse matrices, are
 @dfn{spdiag} or its generalization @dfn{spdiags}, that can take the
 definition of the diagonals of the matrix and create the sparse matrix 
 that corresponds to this. For example
@@ -376,7 +376,7 @@ matrix. @xref{fig:spmatrix}, for an exaple of the use of
 @end float
 
 One use of sparse matrices is in graph theory, where the
-interconnections between nodes is represented as an adjacency
+interconnections between nodes are represented as an adjacency
 matrix. That is, if the i-th node in a graph is connected to the j-th
 node. Then the ij-th node (and in the case of undirected graphs the
 ji-th node) of the sparse adjacency matrix is non-zero. If each node
@@ -444,7 +444,8 @@ sparse matrix specific version of the function can be used by
 explicitly calling its function name. 
 
 The table below lists all of the sparse functions of Octave.  Note that
-in this specific sparse forms of the functions are typically the same as
+the names of the 
+specific sparse forms of the functions are typically the same as
 the general versions with a @dfn{sp} prefix. In the table below, and the
 rest of this article the specific sparse versions of the functions are
 used.
@@ -631,7 +632,7 @@ positive definite matrix.
 @caption{Structure of simple sparse matrix.}
 @end float
 
-The standard Cholesky factorization of this matrix, can be
+The standard Cholesky factorization of this matrix can be
 obtained by the same command that would be used for a full
 matrix. This can be visualized with the command 
 @code{r = chol(A); spy(r);}.
@@ -1010,7 +1011,7 @@ Based on the finite element geometry, we first calculate a system (or
 stiffness) matrix for each simplex (represented as 3-by-3 elements on the
 diagonal of the element-wise system matrix @code{SE}. Based on @code{SE} 
 and a N-by-DE connectivity matrix @code{C}, representing the connections 
-between simplices and vectices, the global connectivity matrix @code{S} is
+between simplices and vertices, the global connectivity matrix @code{S} is
 calculated.
 
 @example

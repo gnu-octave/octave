@@ -81,8 +81,8 @@ $g = v_1 a_1 + v_2 a_2 + \\cdots$\n\
 @end tex\n\
 @end iftex\n\
 \n\
-For backward compatiability with previous versions of this function, when\n\
-all arguments are scalr, a single return argument @var{v1} containing\n\
+For backward compatibility with previous versions of this function, when\n\
+all arguments are scalar, a single return argument @var{v1} containing\n\
 all of the values of @var{v1}, @dots{} is acceptable.\n\
 @seealso{lcm, min, max, ceil, floor}\n\
 @end deftypefn")

@@ -1,3 +1,16 @@
+2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
+
+	* data.cc, debug.cc, dirfns.cc, error.cc, file-io.cc, help.cc,
+	load-save.cc, ov-fcn-inline.cc, parse.y, pr-output.cc, symtab.cc,
+	syscalls.cc, toplev.cc, variables.cc, DLD-FUNCTIONS/bsxfun.cc,
+	DLD-FUNCTIONS/cellfun.cc, DLD-FUNCTIONS/fft.cc,
+	DLD-FUNCTIONS/fft2.cc, DLD-FUNCTIONS/fftw.cc,
+	DLD-FUNCTIONS/gcd.cc, DLD-FUNCTIONS/lsode.cc,
+	DLD-FUNCTIONS/luinc.cc, DLD-FUNCTIONS/matrix_type.cc,
+	DLD-FUNCTIONS/rand.cc, DLD-FUNCTIONS/regexp.cc,
+	DLD-FUNCTIONS/sparse.cc, DLD-FUNCTIONS/spchol.cc,
+	DLD-FUNCTIONS/splu.cc, DLD-FUNCTIONS/spparms.cc: Spelling fixes.
+
 2007-10-10  Kim Hansen  <kimhanse@gmail.com>
 
 	* DLD-FUNCTIONS/lpsolve.cc: Delete.

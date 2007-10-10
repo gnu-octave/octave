@@ -60,7 +60,7 @@ a fourth output argument, the sparsity preserving column transformation\n\
 An additional input argument @var{thres}, that defines the pivoting\n\
 threshold can be given. Alternatively, the desired sparsity preserving\n\
 column permutations @var{Q} can be passed. Note that @var{Q} is assumed\n\
-to be fixed if three are fewer than four output arguments. Otherwise,\n\
+to be fixed if there are fewer than four output arguments. Otherwise,\n\
 the updated column permutations are returned as the fourth argument.\n\
 \n\
 With two output arguments, returns the permuted forms of the upper and\n\

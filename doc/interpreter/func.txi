@@ -1072,7 +1072,7 @@ which translates directly to
 @var{name} ("@var{arg1}", "@var{arg2}", @dots{})
 @end example
 
-A function can be used as a command if it accept string input arguments.
+A function can be used as a command if it accepts string input arguments.
 To do this, the function must be marked as a command, which can be done
 with the @code{mark_as_command} command like this
 

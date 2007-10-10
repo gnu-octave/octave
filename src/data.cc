@@ -1148,7 +1148,7 @@ DEFUN (nzmax, args, ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{scalar} =} nzmax (@var{SM})\n\
 Return the amount of storage allocated to the sparse matrix @var{SM}.\n\
-Note that Octave tends to crop unused memory at the first oppurtunity\n\
+Note that Octave tends to crop unused memory at the first opportunity\n\
 for sparse objects. There are some cases of user created sparse objects\n\
 where the value returned by @dfn{nzmaz} will not be the same as @dfn{nnz},\n\
 but in general they will give the same result.\n\
@@ -2057,7 +2057,7 @@ to the pure imaginary unit, defined as\n\
 @ifinfo\n\
   @code{sqrt (-1)}.\n\
 @end ifinfo\n\
-Since I (also i, J, and J) is a function, you can use the name(s) for\n\
+Since I (also i, J, and j) is a function, you can use the name(s) for\n\
 other purposes.\n\
 @end deftypefn")
 {

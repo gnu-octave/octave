@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dec2base (@var{n}, @var{b}, @var{len})
-## Return a string of symbols in base @var{b} corresponding to the
+## Return a string of symbols in base @var{b} corresponding to
 ## the nonnegative integer @var{n}.
 ##
 ## @example

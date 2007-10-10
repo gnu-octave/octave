@@ -23,7 +23,7 @@ been computed and stored in a string, which is exactly what the
 @node Calling a Function by its Name
 @section Calling a Function by its Name
 
-The @code{feval} function allow you to call a function from a string
+The @code{feval} function allows you to call a function from a string
 containing its name. This is useful when writing a function that need to
 call user-supplied functions. The @code{feval} function takes the name
 of the function to call as its first argument, and the remaining 

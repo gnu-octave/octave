@@ -101,7 +101,7 @@ DEFCMD (cd, args, ,
 @deffn {Command} cd dir\n\
 @deffnx {Command} chdir dir\n\
 Change the current working directory to @var{dir}.  If @var{dir} is\n\
-omitted, the current directory is changed to the users home\n\
+omitted, the current directory is changed to the user's home\n\
 directory.  For example,\n\
 \n\
 @example\n\

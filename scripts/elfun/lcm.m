@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} lcm (@var{x}, @dots{})
-## Compute the least common multiple of the elements elements of @var{x}, or
+## Compute the least common multiple of the elements of @var{x}, or
 ## the list of all the arguments.  For example,
 ##
 ## @example

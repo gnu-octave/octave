@@ -54,12 +54,12 @@
 ##
 ## Called with a single output argument @var{success}, @code{test} returns
 ## true if all of the tests were successful. Called with two output arguments
-## @var{n} and @var{max}, the number of sucessful test and the total number
+## @var{n} and @var{max}, the number of successful tests and the total number
 ## of tests in the file @var{name} are returned.
 ##
 ## If the second argument is the string 'grabdemo', the contents of the demo
 ## blocks are extracted but not executed. Code for all code blocks is
-## concatented and returned as @var{code} with @var{idx} being a vector of
+## concatenated and returned as @var{code} with @var{idx} being a vector of
 ## positions of the ends of the demo blocks.
 ##
 ## If the second argument is 'explain', then @var{name} is ignored and an

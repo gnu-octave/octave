@@ -1802,7 +1802,7 @@ Query or set the internal variable that specifies the maximum amount\n\
 of memory (in kilobytes) of the top-level workspace that Octave will\n\
 attempt to save when writing data to the crash dump file (the name of\n\
 the file is specified by @var{octave_core_file_name}).  If\n\
-@var{octave_core_file_options} flags specifies a binary format,\n\
+@var{octave_core_file_options} flags specify a binary format,\n\
 then @var{octave_core_file_limit} will be approximately the maximum\n\
 size of the file.  If a text file format is used, then the file could\n\
 be much larger than the limit.  The default value is -1 (unlimited)\n\

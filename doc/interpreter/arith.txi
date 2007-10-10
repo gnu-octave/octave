@@ -149,7 +149,7 @@ $\pi/180$
 @DOCSTRING(acsch)
 @DOCSTRING(acoth)
 
-Each of these functions expect a single argument.  For matrix arguments,
+Each of these functions expects a single argument.  For matrix arguments,
 they work on an element by element basis.  For example,
 
 @example

@@ -219,7 +219,7 @@ cellfun (@@factorial, @{-1,2@},'ErrorHandler',@@foo)\n\
           int d = args(2).nint_value () - 1;
 
           if (d < 0)
-	    error ("cellfun: third argument must be a postive integer");
+	    error ("cellfun: third argument must be a positive integer");
 
 	  if (! error_state)
             {

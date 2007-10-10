@@ -31,7 +31,7 @@
 ## H-2/H-infinity
 ## @end ifinfo
 ## design procedure.
-## These function are part of the augmented plant @var{P}
+## These functions are part of the augmented plant @var{P}
 ## (see @command{hinfdemo} for an application example).
 ##
 ## @strong{Inputs}

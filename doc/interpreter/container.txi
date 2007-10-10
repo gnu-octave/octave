@@ -291,7 +291,7 @@ ans =
 @end example
 
 Elements can be deleted from a structure array in a similar manner to a
-numerial array, by assignment the elements to an empty matrix. For
+numerical array, by assigning the elements to an empty matrix. For
 example
 
 @example
@@ -690,7 +690,7 @@ max (@var{a}, @var{b})
 @end example
 
 @noindent
-@code{@var{a}, @var{b}} is a somma separated list. Comma separated lists
+@code{@var{a}, @var{b}} is a comma separated list. Comma separated lists
 can appear on both the right and left hand side of an equation. For
 example
 
@@ -701,7 +701,7 @@ example
 @noindent
 where @code{@var{i}, @var{j}} is equally a comma separated list. Comma
 separated lists can not be directly manipulated by the user. However,
-both structures are cell arrays can be converted into into comma
+both structures are cell arrays can be converted into comma
 separated lists, which makes them useful to keep the input arguments and
 return values of functions organized. Another example of where a comma
 separated list can be used is in the creation of a new array. If all the
@@ -721,7 +721,7 @@ It is also possible to pass the accessed elements directly to a
 function.  The list of elements from the cell array will be passed as an
 argument list to a given function as if it is called with the elements as
 arguments.  The two calls to @code{printf} in the following example are
-identical but the latter is more simple and handles more situations
+identical but the latter is simpler and handles more situations
 
 @example
 c = @{"GNU", "Octave", "is", "Free", "Software"@};

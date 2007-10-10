@@ -52,7 +52,7 @@
 ## expression @var{f} should produce a value @var{v} and expression @var{f2} 
 ## should produce a value @var{v2}, and these shall be compared using 
 ## @code{assert(@var{v},@var{v2},@var{tol})}. If @var{tol} is positive,
-## the tolerance is assumed to be absolutr. If @var{tol} is negative,
+## the tolerance is assumed to be absolute. If @var{tol} is negative,
 ## the tolerance is assumed to be relative. The default is @code{eps}.
 ##
 ## @item @var{order}
@@ -60,7 +60,7 @@
 ## is a structure with fields @code{a} and @code{p}.
 ##
 ## @item @var{n}
-## The values @var{n} for which the expression was calculated and the
+## The values @var{n} for which the expression was calculated and
 ## the execution time was greater than zero.
 ##
 ## @item @var{T_f}
@@ -128,7 +128,7 @@
 ##         "v2=xcorr_orig(x,n)", -100*eps)
 ## @end example
 ##
-## Assuming one of the two versions is in @var{xcorr_orig}, this would
+## Assuming one of the two versions is in @var{xcorr_orig}, this
 ## would compare their speed and their output values.  Note that the
 ## FFT version is not exact, so we specify an acceptable tolerance on
 ## the comparison @code{100*eps}, and the errors should be computed

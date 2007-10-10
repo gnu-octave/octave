@@ -44,7 +44,7 @@
 ## 1:columns (@var{z})}
 ## 
 ## @item interp2 (@var{z}, @var{n}) 
-## Interleaves the Matrix @var{z} n-times. If @var{n} is ommited a value
+## Interleaves the Matrix @var{z} n-times. If @var{n} is omitted a value
 ## of @code{@var{n} = 1} is assumed.
 ## @end table
 ##

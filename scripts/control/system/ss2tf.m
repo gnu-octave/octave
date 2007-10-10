@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{num}, @var{den}] =} ss2tf (@var{a}, @var{b}, @var{c}, @var{d})
-## Conversion from tranfer function to state-space.
+## Conversion from transfer function to state-space.
 ## The state space system:
 ## @iftex
 ## @tex

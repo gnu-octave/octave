@@ -3118,7 +3118,7 @@ the @samp{long E} format, @code{pi} is displayed as\n\
 @code{3.14159265358979E+00}.\n\
 @item long g\n\
 @itemx short g\n\
-Choose between normal @samp{long} (or @samp{short}) and and\n\
+Choose between normal @samp{long} (or @samp{short}) and\n\
 @samp{long e} (or @samp{short e}) formats based on the magnitude\n\
 of the number.  For example, with the @samp{short g} format,\n\
 @code{pi .^ [2; 4; 8; 16; 32]} is displayed as\n\
@@ -3288,7 +3288,7 @@ DEFUN (print_empty_dimensions, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} print_empty_dimensions ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} print_empty_dimensions (@var{new_val})\n\
-Query or set the internal varaible that controls whether the\n\
+Query or set the internal variable that controls whether the\n\
 dimensions of empty matrices are printed along with the empty matrix\n\
 symbol, @samp{[]}.  For example, the expression\n\
 \n\

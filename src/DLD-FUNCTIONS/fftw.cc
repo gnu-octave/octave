@@ -42,7 +42,7 @@ DEFUN_DLD (fftw, args, ,
 @deftypefnx {Loadable Function} {@var{wisdom} =} fftw ('dwisdom', @var{wisdom})\n\
 \n\
 Manage FFTW wisdom data. Wisdom data can be used to significantly\n\
-accelerate the calculation of the FFTs but implies a initial cost\n\
+accelerate the calculation of the FFTs but implies an initial cost\n\
 in its calculation. The wisdom used by Octave can be imported directly,\n\
 usually from a file /etc/fftw/wisdom, or @dfn{fftw} can be used\n\
 to import wisdom. For example\n\
@@ -81,13 +81,13 @@ and the best is selected based on their execution time.\n\
 @item 'patient'\n\
 This is like 'measure', but a wider range of algorithms is considered.\n\
 \n\
-@item 'exhasutive'\n\
-This is like 'meaure', but all possible algorithms that may be used to\n\
+@item 'exhaustive'\n\
+This is like 'measure', but all possible algorithms that may be used to\n\
 treat the transform are considered.\n\
 \n\
 @item 'hybrid'\n\
 As run-time measurement of the algorithm can be expensive, this is a\n\
-compromise where 'measure' is used for transforms upto the size of 8192\n\
+compromise where 'measure' is used for transforms up to the size of 8192\n\
 and beyond that the 'estimate' method is used.\n\
 @end table\n\
 \n\

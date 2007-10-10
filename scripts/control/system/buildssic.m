@@ -62,14 +62,14 @@
 ## are input numbers of @var{s1}--@var{s8}.
 ##
 ## @item olst
-## output list, specifiy the outputs of the resulting
+## output list, specifies the outputs of the resulting
 ## systems. Elements are output numbers of @var{s1}--@var{s8}.
 ## The numbers are allowed to be negative and may
 ## appear in any order. An empty matrix means
 ## all outputs.
 ##
 ## @item ilst
-## input list, specifiy the inputs of the resulting
+## input list, specifies the inputs of the resulting
 ## systems. Elements are input numbers of @var{s1}--@var{s8}.
 ## The numbers are allowed to be negative and may
 ## appear in any order. An empty matrix means
@@ -91,7 +91,7 @@
 ## @end group
 ## @end example
 ##
-## The closed loop system @var{GW} can be optained by
+## The closed loop system @var{GW} can be obtained by
 ## @example
 ## GW = buildssic([1 2; 2 -1], 2, [1 2 3], 2, G, K);
 ## @end example
@@ -151,7 +151,7 @@
 ## GW = buildssic([1, 4; 2, 4; 3, 1], 3, [2, 3, 5],
 ##                [3, 4], G, W1, W2, One);
 ## @end example
-## where ``One'' is a unity gain (auxillary) function with order 0.
+## where ``One'' is a unity gain (auxiliary) function with order 0.
 ## (e.g. @code{One = ugain(1);})
 ## @end deftypefn
 

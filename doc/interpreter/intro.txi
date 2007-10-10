@@ -267,7 +267,7 @@ print -deps foo.eps
 @end example
 
 @noindent
-will create a fille called @file{foo.eps} that contains a rendering of
+will create a file called @file{foo.eps} that contains a rendering of
 the current plot.  The command
 
 @example
@@ -513,7 +513,7 @@ features common to parameters of several functions are described at the
 beginning.
 
 Functions in Octave may be defined in several different ways.  The
-catagory name for functions may include another name that indicates the
+category name for functions may include another name that indicates the
 way that the function is defined.  These additional tags include
 
 @table @asis
@@ -546,7 +546,7 @@ arguments.
 
 Command descriptions have a format similar to function descriptions,
 except that the word `Function' is replaced by `Command.  Commands are
-functions that may called without surrounding their arguments in
+functions that may be called without surrounding their arguments in
 parentheses.  For example, here is the description for Octave's
 @code{cd} command:
 

@@ -26,7 +26,7 @@
 ## One-dimensional interpolation. Interpolate @var{y}, defined at the
 ## points @var{x}, at the points @var{xi}. The sample points @var{x} 
 ## must be strictly monotonic. If @var{y} is an array, treat the columns
-## of @var{y} seperately.
+## of @var{y} separately.
 ##
 ## Method is one of:
 ##

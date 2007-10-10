@@ -21,7 +21,7 @@
 ## produced by other programs into Octave's internal sparse format. The
 ## input @var{x} is either a 3 or 4 column real matrix, containing
 ## the row, column, real and imaginary parts of the elements of the
-## sparse matrix. An element with a zero real and imaginay part can
+## sparse matrix. An element with a zero real and imaginary part can
 ## be used to force a particular matrix size.
 ## @end deftypefn
 

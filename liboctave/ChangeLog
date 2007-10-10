@@ -1,3 +1,7 @@
+2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
+
+	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in: Spelling fixes.
+
 2007-10-10  John W. Eaton  <jwe@octave.org>
 
 	* LPsolve.h, LPsolve.cc: Delete.

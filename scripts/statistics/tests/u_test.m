@@ -31,7 +31,7 @@
 ## PROB (@var{x} > @var{y}) != 1/2.  If @var{alt} is @code{">"}, the
 ## one-sided alternative PROB (@var{x} > @var{y}) > 1/2 is considered.
 ## Similarly for @code{"<"}, the one-sided alternative PROB (@var{x} >
-## @var{y}) < 1/2 is considered,  The default is the two-sided case.
+## @var{y}) < 1/2 is considered.  The default is the two-sided case.
 ##
 ## The p-value of the test is returned in @var{pval}.
 ##

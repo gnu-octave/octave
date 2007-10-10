@@ -2631,7 +2631,7 @@ search path if they change.  If set to @code{\"all\"}, Octave will not\n\
 recompile any function files unless their definitions are removed with\n\
 @code{clear}.  If set to \"none\", Octave will always check time stamps\n\
 on files to determine whether functions defined in function files\n\
-need to recompiled.\n\
+need to be recompiled.\n\
 @end deftypefn")
 {
   octave_value retval;

@@ -73,7 +73,7 @@ is forced back to a full matrix is resulting matrix is sparse\n\
 Create a sparse matrix given integer index vectors @var{i} and @var{j},\n\
 a 1-by-@code{nnz} vector of real of complex values @var{sv}, overall\n\
 dimensions @var{m} and @var{n} of the sparse matrix.  The argument\n\
-@code{nzmax} is ignored but accepted for compatability with @sc{Matlab}.\n\
+@code{nzmax} is ignored but accepted for compatibility with @sc{Matlab}.\n\
 \n\
 @strong{Note}: if multiple values are specified with the same\n\
 @var{i}, @var{j} indices, the corresponding values in @var{s} will\n\

@@ -539,7 +539,7 @@ The possible values @samp{mode} may have are\n\
 Open a file for reading.\n\
 \n\
 @item @samp{w}\n\
-Open a file for writing.  The previous contents are discared.\n\
+Open a file for writing.  The previous contents are discarded.\n\
 \n\
 @item @samp{a}\n\
 Open or create a file for writing at the end of the file.\n\
@@ -1874,7 +1874,7 @@ the file will be deleted automatically when Octave exits, or when\n\
 the function @code{purge_tmp_files} is called.\n\
 \n\
 If successful, @var{fid} is a valid file ID, @var{name} is the name of\n\
-the file, and and @var{msg} is an empty string.  Otherwise, @var{fid}\n\
+the file, and @var{msg} is an empty string.  Otherwise, @var{fid}\n\
 is -1, @var{name} is empty, and @var{msg} contains a system-dependent\n\
 error message.\n\
 @seealso{tmpfile, tmpnam, P_tmpdir}\n\

@@ -130,7 +130,7 @@ function dsys = c2d (sys, opt, T)
   endif
 
   if (!is_sample(T))
-    error("sampling period T must be a postive, real scalar");
+    error("sampling period T must be a positive, real scalar");
   elseif (! (strcmp (opt, "ex")
 	     || strcmp (opt, "bi")
 	     || strcmp (opt, "matched")))

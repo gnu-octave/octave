@@ -444,7 +444,7 @@ by each corresponding element of @var{x}.
 Power operator.  If @var{x} and @var{y} are both scalars, this operator
 returns @var{x} raised to the power @var{y}.  If @var{x} is a scalar and
 @var{y} is a square matrix, the result is computed using an eigenvalue
-expansion.  If @var{x} is a square matrix. the result is computed by
+expansion.  If @var{x} is a square matrix, the result is computed by
 repeated multiplication if @var{y} is an integer, and by an eigenvalue
 expansion if @var{y} is not an integer.  An error results if both
 @var{x} and @var{y} are matrices.

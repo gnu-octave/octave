@@ -1949,7 +1949,7 @@ Prints elements held by variables.\n\
 @item %n\n\
 Prints variable names.\n\
 @item %p\n\
-Prints protection attributtes of variables.\n\
+Prints protection attributes of variables.\n\
 @item %s\n\
 Prints dimensions of variables.\n\
 @item %t\n\

@@ -23,8 +23,8 @@
 ##
 ## Determines area of a polygon by triangle method. The variables
 ## @var{x} and @var{y} define the vertex pairs, and must therefore have
-## the same shape. Then might be either vectors or arrays. If they are
-## arrays then the columns of @var{x} and @var{y} are treated seperately
+## the same shape. They can be either vectors or arrays. If they are
+## arrays then the columns of @var{x} and @var{y} are treated separately
 ## and an area returned for each.
 ##
 ## If the optional @var{dim} argument is given, then @code{polyarea}

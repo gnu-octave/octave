@@ -21,7 +21,7 @@
 ## @deftypefn {Function File} {@var{s} =} mat2str (@var{x}, @var{n})
 ## @deftypefnx {Function File} {@var{s} =} mat2str (@dots{}, 'class')
 ##
-## Format real/complex numerial matrices as strings. This function
+## Format real/complex numerical matrices as strings. This function
 ## returns values that are suitable for the use of the @code{eval}
 ## function.
 ##

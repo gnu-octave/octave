@@ -58,7 +58,7 @@ function [csys, Acd, Ccd] = syscont (sys)
   Acc = Acd = Bcc = Ccc = Ccd = Dcc = [];
 
   if(isempty(st_c) & isempty(y_c))
-    error("syscont: expecting continous states and/or continous outputs");
+    error("syscont: expecting continuous states and/or continuous outputs");
   elseif (isempty(st_c))
     warning("syscont: no continuous states");
   elseif(isempty(y_c))

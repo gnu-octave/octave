@@ -125,7 +125,7 @@ created by @code{mkpp}, and @code{unmkpp} returns detailed information
 about the function.
 
 The following example shows how to combine two linear functions and a
-quadratic into one function.  Each of these functions are expressed
+quadratic into one function.  Each of these functions is expressed
 on adjoined intervals.
 
 @example

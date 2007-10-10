@@ -351,7 +351,7 @@ such as @kbd{Control-a} are written as @kbd{C-a}.
 Another set of command-line editing functions use Meta characters.  On
 some terminals, you type @kbd{M-u} by holding down @key{META} and
 pressing @key{u}.  If your terminal does not have a @key{META} key, you
-can still type Meta charcters using two-character sequences starting
+can still type Meta characters using two-character sequences starting
 with @kbd{ESC}.  Thus, to enter @kbd{M-u}, you could type
 @key{ESC}@key{u}.  The @kbd{ESC} character sequences are also allowed on
 terminals with real Meta keys.  In the following sections, Meta

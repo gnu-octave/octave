@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} structfun (@dots{}, 'UniformOutput', @var{val})
 ## 
 ## Evaluate the function named @var{name} on the fields of the structure
-## @var{s}. The fields of @var{s} are passed the the function @var{func}
+## @var{s}. The fields of @var{s} are passed to the function @var{func}
 ## individually.
 ##
 ## @code{structfun} accepts an arbitrary function @var{func} in the form of 

@@ -748,7 +748,7 @@ List operators, where for example @code{[ab]c} matches @code{ac} and @code{bc}\n
 Grouping operator\n\
 @item |\n\
 Alternation operator. Match one of a choice of regular expressions. The\n\
-alternatives must be delimited by the grouoing operator @code{()} above\n\
+alternatives must be delimited by the grouping operator @code{()} above\n\
 @item ^ $\n\
 Anchoring operator. @code{^} matches the start of the string @var{str} and\n\
 @code{$} the end\n\
@@ -1407,7 +1407,7 @@ returns \"Dunn, Bill\"\n\
 @table @samp\n\
 \n\
 @item once\n\
-Replace only the first occurance of @var{pat} in the result.\n\
+Replace only the first occurrence of @var{pat} in the result.\n\
 \n\
 @item warnings\n\
 This option is present for compatibility but is ignored.\n\

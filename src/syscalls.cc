@@ -689,7 +689,7 @@ process in the process group @var{-pid}.\n\
 If @var{sig} is 0, then no signal is sent, but error checking is still\n\
 performed.\n\
 \n\
-Return 0 if sucessful, otherwise return -1.\n\
+Return 0 if successful, otherwise return -1.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -932,7 +932,7 @@ is an empty matrix, @var{err} is @minus{}1, and @var{msg} contains the\n\
 corresponding system error message.\n\
 \n\
 If @var{file} is a symbolic link, @code{stat} will return information\n\
-about the actual file the is referenced by the link.  Use @code{lstat}\n\
+about the actual file that is referenced by the link.  Use @code{lstat}\n\
 if you want information about the symbolic link itself.\n\
 \n\
 For example,\n\
@@ -1292,7 +1292,7 @@ This value may not be meaningful on all systems.\n\
 If the returned value of @var{pid} is greater than 0, it is the process\n\
 ID of the child process that exited.  If an error occurs, @var{pid} will\n\
 be less than zero and @var{msg} will contain a system-dependent error\n\
-message.  The value of @var{status} contains additional system-depenent\n\
+message.  The value of @var{status} contains additional system-dependent\n\
 information about the subprocess that exited.\n\
 @seealso{WNOHANG, WUNTRACED, WCONTINUED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
 @end deftypefn")

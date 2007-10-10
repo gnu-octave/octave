@@ -79,7 +79,7 @@ function sys = sysmult (varargin)
       if(An)
         bd = Ab(1:An)* Bd(alist,:);
         if(norm(bd,1))
-          warning("sysmult: inputs -> Bsys discrete outputs -> continous states of Asys");
+          warning("sysmult: inputs -> Bsys discrete outputs -> continuous states of Asys");
         endif
       endif
       ## check direct feed-through of continuous state through discrete outputs

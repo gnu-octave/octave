@@ -168,9 +168,9 @@
 ## Scaling option: 
 ## @table @asis
 ## @item 0
-## No scaling .
+## No scaling.
 ## @item 1
-## Equilibration scaling .
+## Equilibration scaling.
 ## @item 2
 ## Geometric mean scaling, then equilibration scaling.
 ## @end table
@@ -249,7 +249,7 @@
 ## Interior point method.
 ## @end table
 ## @item save (default: 0)
-## If this parameter is nonzero, save a copy of the problem problem in
+## If this parameter is nonzero, save a copy of the problem in
 ## CPLEX LP format to the file @file{"outpb.lp"}.  There is currently no
 ## way to change the name of the output file.
 ## @end table

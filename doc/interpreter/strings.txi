@@ -203,7 +203,7 @@ spaces = (GNU == " ")
 @noindent
 To determine if two functions are identical it is therefore necessary
 to use the @code{strcmp} or @code{strncpm} functions. Similar 
-functions exists for doing case-insensitive comparisons.
+functions exist for doing case-insensitive comparisons.
 
 @DOCSTRING(strcmp)
 
@@ -228,7 +228,7 @@ quote( quote == " " ) = "_"
 @end example
 
 For more complex manipulations, such as searching, replacing, and
-general regular expressions, the following function come with Octave.
+general regular expressions, the following functions come with Octave.
 
 @DOCSTRING(deblank)
 

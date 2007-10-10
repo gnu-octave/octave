@@ -56,7 +56,7 @@
 ##
 ## The first argument is the initial guess for the vector @var{x}.
 ##
-## The second argument is a function handle pointing to the ojective
+## The second argument is a function handle pointing to the objective
 ## function.  The objective function must be of the form
 ##
 ## @example

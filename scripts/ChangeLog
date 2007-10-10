@@ -1,3 +1,29 @@
+2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
+
+	* control/hinf/hinfsyn.m, control/hinf/wgt1o.m,
+	control/system/buildssic.m, control/system/c2d.m,
+	control/system/d2c.m, control/system/ord2.m, control/system/ss.m,
+	control/system/ss2sys.m, control/system/ss2tf.m,
+	control/system/syscont.m, control/system/sysdimensions.m,
+	control/system/sysdisc.m, control/system/sysmult.m,
+	control/system/sysrepdemo.m, control/system/tf2ss.m, elfun/lcm.m,
+	finance/fv.m, general/cumtrapz.m, general/gradient.m,
+	general/interp1.m, general/interp2.m, general/interp3.m,
+	general/interpft.m, general/interpn.m, general/polyarea.m,
+	general/rat.m, general/structfun.m, general/trapz.m,
+	geometry/tsearchn.m, image/rgb2hsv.m, linear-algebra/krylov.m,
+	miscellaneous/ans.m, miscellaneous/gzip.m, optimization/glpk.m,
+	optimization/sqp.m, plot/findobj.m, plot/legend.m, plot/peaks.m,
+	plot/plot3.m, plot/stem.m, polynomial/deconv.m,
+	polynomial/pchip.m, polynomial/spline.m, polynomial/unmkpp.m,
+	sparse/pcr.m, sparse/spalloc.m, sparse/spconvert.m,
+	specfun/factor.m, specfun/legendre.m, statistics/base/mean.m,
+	statistics/base/meansq.m, statistics/base/var.m,
+	statistics/tests/chisquare_test_independence.m,
+	statistics/tests/t_test.m, statistics/tests/u_test.m,
+	strings/dec2base.m, strings/mat2str.m, testfun/speed.m,
+	testfun/test.m: Spelling fixes.
+
 2007-10-10  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/mpoles.m: Return indx = ordr(indx), not indx(ordr).

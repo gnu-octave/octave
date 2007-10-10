@@ -33,10 +33,10 @@
 ## respect a similar format to @var{x}, etc, and they represent the points 
 ## at which the array @var{vi} is interpolated.
 ##
-## If @var{x}, @var{y}, @var{z} are ommitted, they are assumed to be 
+## If @var{x}, @var{y}, @var{z} are omitted, they are assumed to be 
 ## @code{x = 1 : size (@var{v}, 2)}, @code{y = 1 : size (@var{v}, 1)} and
 ## @code{z = 1 : size (@var{v}, 3)}. If @var{m} is specified, then
-## the interpolation adds a point half way between each of the interplation 
+## the interpolation adds a point half way between each of the interpolation 
 ## points. This process is performed @var{m} times. If only @var{v} is 
 ## specified, then @var{m} is assumed to be @code{1}.
 ##

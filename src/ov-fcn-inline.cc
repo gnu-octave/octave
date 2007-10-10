@@ -589,7 +589,7 @@ function are extracted from the function itself. The generated\n\
 function arguments will then be in alphabetical order. It should\n\
 be noted that i, and j are ignored as arguments due to the\n\
 ambiguity between their use as a variable or their use as an inbuilt\n\
-constant. All arguments followed by a parentheses are considered\n\
+constant. All arguments followed by a parenthesis are considered\n\
 to be functions.\n\
 \n\
 If the second and subsequent arguments are character strings,\n\

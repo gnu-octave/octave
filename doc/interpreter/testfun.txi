@@ -112,7 +112,7 @@ which is equivalent to:
 Sometimes during development there is a test that should work but is
 known to fail.  You still want to leave the test in because when the
 final code is ready the test should pass, but you may not be able to
-fix it immediately.  To avoid unecessary bug reports for these known
+fix it immediately.  To avoid unnecessary bug reports for these known
 failures, mark the block with @code{xtest} rather than @code{test}:
 
 @example

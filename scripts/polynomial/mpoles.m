@@ -107,6 +107,6 @@ function [multp, indx] = mpoles (p, tol, reorder)
     n = find (multp == 0, 1);
   endwhile
   multp = multp(indx);
-  indx = indx(ordr);
+  indx = ordr(indx);
 
 endfunction

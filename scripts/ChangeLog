@@ -1,3 +1,7 @@
+2007-10-10  Ben Abbott  <bpabbott@mac.com>
+
+	* polynomial/mpoles.m: Return indx = ordr(indx), not indx(ordr).
+
 2007-10-10  John W. Eaton  <jwe@octave.org>
 
 	* general/num2str.m: Always allow for sign for automatically

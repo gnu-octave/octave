@@ -53,8 +53,12 @@ function retval = num2str (x, arg)
     else
       ## Setup a suitable format string
       if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
-	dgt1 = ceil (log10 (max (max (abs (real (x(:)))),
-				 max (abs (imag (x(:))))))) + 1;
+	if (max (abs (real (x(:)))) == 0)
+	  dgt1 = 2;
+	else
+	  dgt1 = ceil (log10 (max (max (abs (real (x(:)))),
+				   max (abs (imag (x(:))))))) + 2;
+	endif
 	dgt2 = dgt1 - (min (real (x(:))) >= 0);
 	
 	if (length (abs (x) == x) > 0)
@@ -121,9 +125,9 @@ function retval = num2str (x, arg)
     else
       if (isnumeric (x) && round (x) == x && abs (x) < 1e10)
 	if (max (abs (x(:))) == 0)
-	  dgt = 1;
+	  dgt = 2;
 	else
-	  dgt = floor (log10 (max (abs(x(:))))) + (min (real (x(:))) < 0) + 1;
+	  dgt = floor (log10 (max (abs(x(:))))) + (min (real (x(:))) < 0) + 2;
 	endif
 	if (length (abs (x) == x) > 0)
 	  fmt = sprintf ("%%%dg  ", dgt);

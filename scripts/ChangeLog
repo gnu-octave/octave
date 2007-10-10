@@ -1,3 +1,8 @@
+2007-10-10  John W. Eaton  <jwe@octave.org>
+
+	* general/num2str.m: Always allow for sign for automatically
+	computed format widths.
+
 2007-10-09  David Bateman  <dbateman@free.fr>
 
 	* plot/patch.m: Accept a handle as the first argument.

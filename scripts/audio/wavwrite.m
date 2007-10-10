@@ -69,9 +69,6 @@ function wavwrite (y, varargin)
     endif
   endif
 
-  samples_per_sec
-bits_per_sample
-
   ## test arguments
   if (columns (y) < 1)
     error ("wavwrite: Y must have at least one column");

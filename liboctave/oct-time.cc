@@ -341,8 +341,8 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   t.tm_min = 0;
   t.tm_hour = 0;
   t.tm_mday = 0;
-  t.tm_mon = 0;
-  t.tm_year = 0;
+  t.tm_mon = -1;
+  t.tm_year = INT_MIN;
   t.tm_wday = 0;
   t.tm_yday = 0;
   t.tm_isdst = 0;
@@ -358,11 +358,17 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
 
   // Fill in wday and yday, but only if mday is valid and the mon and year
   // are filled in, avoiding issues with mktime and invalid dates.
-  if (t.tm_mday != 0 && t.tm_mon >= 0 && t.tm_year != 0)
+  if (t.tm_mday != 0 && t.tm_mon >= 0 && t.tm_year != INT_MIN)
     {
       t.tm_isdst = -1;
       mktime (&t);
     }
+
+  if (t.tm_mon < 0)
+    t.tm_mon = 0;
+
+  if (t.tm_year == INT_MIN)
+    t.tm_year = 0;
 
   if (q)
     nchars = q - p + 1;

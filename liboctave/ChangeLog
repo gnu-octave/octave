@@ -1,5 +1,9 @@
 2007-10-09  John W. Eaton  <jwe@octave.org>
 
+	* oct-time.cc (octave_strptime::init): Initialize t.tm_mon to -1
+	and t.tm_year to INT_MIN before call to oct_strptime.  Adjust
+	values to zero after call if they remain unchanged.
+
 	* dSparse.cc (SparseMatrix::all_elements_are_zero): New function.
 	* dNDArray.cc (NDArray::all_elements_are_zero): New function.
 

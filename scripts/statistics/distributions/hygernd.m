@@ -18,18 +18,17 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} hygernd (@var{m}, @var{t}, @var{n}, @var{sz})
+## @deftypefn {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c})
+## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
-## hypergeometric distribution with parameters @var{m}, @var{t},
+## hypergeometric distribution with parameters @var{t}, @var{m},
 ## and @var{n}.
 ##
-## The parameters @var{m}, @var{t}, and @var{n} must positive integers
+## The parameters @var{t}, @var{m}, and @var{n} must positive integers
 ## with @var{m} and @var{n} not greater than @var{t}.
 ## @end deftypefn
 
-## function rnd = hygernd (N, m, t, n)
-function rnd = hygernd (m, t, n, r, c)
+function rnd = hygernd (t, m, n, r, c)
 
   if (nargin == 5)
     if (! (isscalar (r) && (r > 0) && (r == round (r))))
@@ -60,15 +59,15 @@ function rnd = hygernd (m, t, n, r, c)
     print_usage ();
   endif
 
-  if (!isscalar (m) || !isscalar (t) || !isscalar (n))
-    error ("hygernd: m, t and n must all be positive integers");
+  if (!isscalar (t) || !isscalar (m) || !isscalar (n))
+    error ("hygernd: t, m and n must all be positive integers");
   endif
 
-  if ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |
-      (t != round (t)) | (n != round (n)) | (m > t) | (n > t))
+  if ((t < 0) | (m < 0) | (n <= 0) | (t != round (t)) |
+      (m != round (m)) | (n != round (n)) | (m > t) | (n > t))
     rnd = NaN * ones (sz)
   else
-    rnd = discrete_rnd (0 : n, hygepdf (0 : n, m, t, n), sz);
+    rnd = discrete_rnd (0 : n, hygepdf (0 : n, t, m, n), sz);
   endif
 
 endfunction

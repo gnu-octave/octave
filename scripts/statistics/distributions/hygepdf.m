@@ -18,9 +18,9 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygepdf (@var{x}, @var{m}, @var{t}, @var{n})
+## @deftypefn {Function File} {} hygepdf (@var{x}, @var{t}, @var{m}, @var{n})
 ## Compute the probability density function (PDF) at @var{x} of the
-## hypergeometric distribution with parameters @var{m}, @var{t}, and
+## hypergeometric distribution with parameters @var{t}, @var{m}, and
 ## @var{n}. This is the probability of obtaining @var{x} marked items
 ## when randomly drawing a sample of size @var{n} without replacement
 ## from a population of total size @var{t} containing @var{m} marked items.
@@ -31,29 +31,29 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the hypergeometric distribution
 
-function pdf = hygepdf (x, m, t, n)
+function pdf = hygepdf (x, t, m, n)
 
   if (nargin != 4)
     print_usage ();
   endif
 
-  if (!isscalar (m) || !isscalar (t) || !isscalar (n))
-    [retval, x, m, t, n] = common_size (x, m, t, n);
+  if (!isscalar (t) || !isscalar (m) || !isscalar (n))
+    [retval, x, t, m, n] = common_size (x, t, m, n);
     if (retval > 0)
-      error ("hygepdf: x, m, t, and n must be of common size or scalar");
+      error ("hygepdf: x, t, m, and n must be of common size or scalar");
     endif
   endif
 
   pdf = zeros (size (x));
 
   ## everything in i1 gives NaN
-  i1 = ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |
-        (t != round (t)) | (n != round (n)) | (m > t) | (n > t));
+  i1 = ((t < 0) | (m < 0) | (n <= 0) | (t != round (t)) |
+        (m != round (m)) | (n != round (n)) | (m > t) | (n > t));
   ## everything in i2 gives 0 unless in i1
   i2 = ((x != round (x)) | (x < 0) | (x > m) | (n < x) | (n-x > t-m));
   k = find (i1);
   if (any (k))
-    if (isscalar (m) && isscalar (t) && isscalar (n))
+    if (isscalar (t) && isscalar (m) && isscalar (n))
       pdf = NaN * ones ( size (x));
     else
       pdf (k) = NaN;
@@ -61,7 +61,7 @@ function pdf = hygepdf (x, m, t, n)
   endif
   k = find (!i1 & !i2);
   if (any (k))
-    if (isscalar (m) && isscalar (t) && isscalar (n))
+    if (isscalar (t) && isscalar (m) && isscalar (n))
       pdf (k) = (bincoeff (m, x(k)) .* bincoeff (t-m, n-x(k))
 		 / bincoeff (t, n));
     else

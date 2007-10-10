@@ -1,3 +1,11 @@
+2007-10-10  Arno Onken  <asnelt@asnelt.org>
+
+	* statistics/distributions/hygecdf.m,
+	statistics/distributions/hygeinv.m,
+	statistics/distributions/hygepdf.m,
+	statistics/distributions/hygernd.m:
+	Swap order of T and M args for compatibility.
+
 2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
 
 	* control/hinf/hinfsyn.m, control/hinf/wgt1o.m,

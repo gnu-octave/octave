@@ -18,33 +18,33 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} hygeinv (@var{x}, @var{m}, @var{t}, @var{n})
+## @deftypefn {Function File} {} hygeinv (@var{x}, @var{t}, @var{m}, @var{n})
 ## For each element of @var{x}, compute the quantile at @var{x} of the
-## hypergeometric distribution with parameters @var{m}, @var{t}, and
+## hypergeometric distribution with parameters @var{t}, @var{m}, and
 ## @var{n}.
 ##
-## The parameters @var{m}, @var{t}, and @var{n} must positive integers
+## The parameters @var{t}, @var{m}, and @var{n} must positive integers
 ## with @var{m} and @var{n} not greater than @var{t}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the hypergeometric distribution
 
-function inv = hygeinv (x, m, t, n)
+function inv = hygeinv (x, t, m, n)
 
   if (nargin != 4)
     print_usage ();
   endif
 
-  if (!isscalar (m) || !isscalar (t) || !isscalar (n))
-    error ("hygeinv: m, t and n must all be positive integers");
+  if (!isscalar (t) || !isscalar (m) || !isscalar (n))
+    error ("hygeinv: t, m and n must all be positive integers");
   endif
 
-  if ((m < 0) | (t < 0) | (n <= 0) | (m != round (m)) |
-      (t != round (t)) | (n != round (n)) | (m > t) | (n > t))
+  if ((t < 0) | (m < 0) | (n <= 0) | (t != round (t)) |
+      (m != round (m)) | (n != round (n)) | (m > t) | (n > t))
     inv = NaN * ones (size (x))
   else
-    inv = discrete_inv (x, 0 : n, hygepdf (0 : n, m, t, n));
+    inv = discrete_inv (x, 0 : n, hygepdf (0 : n, t, m, n));
   endif
 
 endfunction

@@ -5,6 +5,9 @@
 
 2007-10-09  David Bateman  <dbateman@free.fr>
 
+	* oct-time.cc (octave_strptime::init): Only call mktime if mday is
+	valud and mon and year are also filled in.
+
 	* Array2.h (Array2<T>::Array2(const dim_vector&),
 	Array2<T>::Array(const dim_vector&, const T&)): Check that
 	dim_vector is 2 dimensional.

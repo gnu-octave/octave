@@ -122,31 +122,6 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
-%!test
-%! b = [1, 1, 1];
-%! a = [1, -5, 8, -4];
-%! [r, p, k, e] = residue (b, a);
-%! assert ((abs (r - [-2; 7; 3]) < 1e-5
-%! && abs (p - [2; 2; 1]) < 1e-7
-%! && isempty (k)
-%! && e == [1; 2; 1]));
-%! k = [1 0];
-%! [b, a] = residue (r, p, k);
-%! assert ((abs (b - [1, -5, 9, -3, 1]) < 1e-12
-%! && abs (a - [1, -5, 8, -4]) < 1e-12));
-
-%!test
-%! b = [1, 0, 1];
-%! a = [1, 0, 18, 0, 81];
-%! [r, p, k, e] = residue(b, a);
-%! assert ((abs (54*r - [-5i; 12; 5i; 12]) < 1e-6
-%! && abs (p - [3i; 3i; -3i; -3i]) < 1e-7
-%! && isempty (k)
-%! && e == [1; 2; 1; 2]));
-%! [br, ar] = residue (r, p, k);
-%! assert ((abs (br - b) < 1e-12
-%! && abs (ar - a) < 1e-12));
-
 function [r, p, k, e] = residue (b, a, varargin)
 
   if (nargin < 2 || nargin > 3)
@@ -323,12 +298,31 @@ function [pnum, pden, multp] = rresidue (r, p, k, toler)
 
 endfunction
 
-%% test/octave.test/poly/residue-1.m
 %!test
 %! b = [1, 1, 1];
 %! a = [1, -5, 8, -4];
 %! [r, p, k, e] = residue (b, a);
-%! assert((abs (r - [-2; 7; 3]) < 1e-6
+%! assert ((abs (r - [-2; 7; 3]) < 1e-5
 %! && abs (p - [2; 2; 1]) < 1e-7
 %! && isempty (k)
 %! && e == [1; 2; 1]));
+%! k = [1 0];
+%! [b, a] = residue (r, p, k);
+%! assert ((abs (b - [1, -5, 9, -3, 1]) < 1e-12
+%! && abs (a - [1, -5, 8, -4]) < 1e-12));
+
+%!test
+%! b = [1, 0, 1];
+%! a = [1, 0, 18, 0, 81];
+%! [r, p, k, e] = residue(b, a);
+%! r1 = [-5i; 12; +5i; 12]/54;
+%! r2 = conj(r1);
+%! p1 = [+3i; +3i; -3i; -3i];
+%! p2 = conj(p1);
+%! assert ((((abs (r - r1) < 1e-7) && (abs (p - p1) < 1e-7))
+%! ||       ((abs (r - r2) < 1e-7) && (abs (p - p2) < 1e-7)))
+%! && isempty (k)
+%! && (e == [1; 2; 1; 2]));
+%! [br, ar] = residue (r, p, k);
+%! assert ((abs (br - b) < 1e-12
+%! && abs (ar - a) < 1e-12));

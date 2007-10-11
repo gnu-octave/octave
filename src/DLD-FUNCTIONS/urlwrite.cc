@@ -126,7 +126,7 @@ urlget (const std::string& url, const std::string& method,
       curl_easy_setopt (curl, CURLOPT_POSTFIELDS, query_string.c_str ());
     }
   else
-    curl_easy_setopt (curl, CURLOPT_URL,url.c_str());
+    curl_easy_setopt (curl, CURLOPT_URL, url.c_str());
 
   // Define our callback to get called when there's data to be written.
   curl_easy_setopt (curl, CURLOPT_WRITEFUNCTION, write_data);
@@ -135,14 +135,19 @@ urlget (const std::string& url, const std::string& method,
   curl_easy_setopt (curl, CURLOPT_WRITEDATA, static_cast<void*> (&stream));
 
   // Follow redirects.
-  curl_easy_setopt (curl, CURLOPT_FOLLOWLOCATION, 1);
+  curl_easy_setopt (curl, CURLOPT_FOLLOWLOCATION, true);
+
+  // Don't use EPSV since connecting to sites that don't support it
+  // will hang for some time (3 minutes?) before moving on to try PASV
+  // instead.
+  curl_easy_setopt (curl, CURLOPT_FTP_USE_EPSV, false);
 
   curl_easy_setopt (curl, CURLOPT_NOPROGRESS, true);
   curl_easy_setopt (curl, CURLOPT_PROGRESSDATA, url.c_str ());
   curl_easy_setopt (curl, CURLOPT_FAILONERROR, true);
 
-  // Switch on full protocol/debug output
-  // curl_easy_setopt(curl, CURLOPT_VERBOSE, true);
+  // Switch on full protocol/debug output.
+  // curl_easy_setopt (curl, CURLOPT_VERBOSE, true);
 
   CURLcode res = CURLE_OK;
 

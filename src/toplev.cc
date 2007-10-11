@@ -921,7 +921,7 @@ specified option.\n\
 	}
 
       bool unix_system = true;
-      bool macos_system = false;
+      bool mac_system = false;
       bool windows_system = false;
 
 #if defined (WIN32)

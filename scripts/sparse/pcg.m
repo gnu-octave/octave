@@ -107,7 +107,7 @@
 ## @var{eigest} returns the estimate for the smallest @code{@var{eigest}
 ## (1)} and largest @code{@var{eigest} (2)} eigenvalues of the
 ## preconditioned matrix @code{@var{P} = @var{m} \ @var{a}}. In 
-## particular, if no preconditioning is used, the extimates for the
+## particular, if no preconditioning is used, the estimates for the
 ## extreme eigenvalues of @var{a} are returned. @code{@var{eigest} (1)}
 ## is an overestimate and @code{@var{eigest} (2)} is an underestimate, 
 ## so that @code{@var{eigest} (2) / @var{eigest} (1)} is a lower bound
@@ -189,7 +189,7 @@
 ##   K = varargin@{1@}; 
 ##   y = x;
 ##   y(1:K) = x(1:K)./[1:K]';
-##   endfuntion
+##   endfunction
 ## 
 ##   [x, flag, relres, iter, resvec, eigest] = ...
 ##        pcg (A, b, [], [], "applyM", [], [], 3)

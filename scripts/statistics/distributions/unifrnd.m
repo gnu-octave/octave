@@ -61,7 +61,7 @@ function rnd = unifrnd (a, b, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("unifrnd: r must be a postive integer or vector");
+      error ("unifrnd: r must be a positive integer or vector");
     endif
 
     if (any (size (a) != 1)

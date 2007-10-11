@@ -63,7 +63,7 @@ function rnd = nbinrnd (n, p, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("nbinrnd: r must be a postive integer or vector");
+      error ("nbinrnd: r must be a positive integer or vector");
     endif
 
     if (any (size (n) != 1) && 

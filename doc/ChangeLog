@@ -1,3 +1,9 @@
+2007-10-11  Brian Gough  <bjg@network-theory.co.uk>
+
+	* interpreter/dynamic.txi, interpreter/geometry.txi,
+	interpreter/package.txi, interpreter/sparse.txi,
+	interpreter/system.txi: Spelling fixes.
+
 2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
 
 	* interpreter/arith.txi, interpreter/basics.txi,

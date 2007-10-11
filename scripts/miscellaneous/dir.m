@@ -43,7 +43,7 @@
 ##
 ## Note that for symbolic links, @code{dir} returns information about
 ## the file that a symbolic link points to instead of the link itself.
-## However, if the link points to a nonexisent file, @code{dir} returns
+## However, if the link points to a nonexistent file, @code{dir} returns
 ## information about the link.
 ## @seealso{ls, stat, lstat, readdir, glob, filesep}
 ## @end deftypefn

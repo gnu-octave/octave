@@ -52,7 +52,7 @@ function rnd = chi2rnd (n, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("chi2rnd: r must be a postive integer or vector");
+      error ("chi2rnd: r must be a positive integer or vector");
     endif
 
     if (any (size (n) != 1)

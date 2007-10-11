@@ -158,7 +158,7 @@ function sys = sysgroup (varargin)
     inname = __sysconcat__(Ain,Bin);
     outname = __sysconcat__(Aout,Bout);
 
-    ## Sort states into continous first, then discrete
+    ## Sort states into continuous first, then discrete
     dstates = ones(1,(nA+nB));
     if(An)
 	dstates(1:(An)) = zeros(1,An);

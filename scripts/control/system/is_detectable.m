@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{retval} =} is_detectable (@var{a}, @var{c}, @var{tol}, @var{dflg})
 ## @deftypefnx {Function File} {@var{retval} =} is_detectable (@var{sys}, @var{tol})
-## Test for detactability (observability of unstable modes) of (@var{a}, @var{c}).
+## Test for detectability (observability of unstable modes) of (@var{a}, @var{c}).
 ##
 ## Returns 1 if the system @var{a} or the pair (@var{a}, @var{c}) is
 ## detectable, 0 if not, and -1 if the system has unobservable modes at the

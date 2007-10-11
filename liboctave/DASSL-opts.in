@@ -64,7 +64,7 @@ END_OPTION
 OPTION
   NAME = "compute consistent initial condition"
   DOC_ITEM
-If nonzero, @code{dassl} will attempt to compute a consistent set of intial
+If nonzero, @code{dassl} will attempt to compute a consistent set of initial
 conditions.  This is generally not reliable, so it is best to provide
 a consistent set and leave this option set to zero.
   END_DOC_ITEM

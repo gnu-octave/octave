@@ -36,7 +36,7 @@
 ## connections from discrete states to continuous states,
 ## discrete states to continuous outputs, respectively.
 ##
-## returns @var{csys} empty if no continuous/continous path exists
+## If no continuous path exists, @var{csys} will be empty.
 ## @end table
 ## @end deftypefn
 

@@ -47,7 +47,7 @@ END_OPTION
 OPTION
   NAME = "integration method"
   DOC_ITEM
-A string specifing the method of integration to use to solve the ODE
+A string specifying the method of integration to use to solve the ODE
 system.  Valid values are
 
 @table @asis

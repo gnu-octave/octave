@@ -19,7 +19,7 @@
 ## @deftypefn {Function File} {} treeplot (@var{Tree})
 ## @deftypefnx {Function File} {} treeplot (@var{Tree}, @var{LineStyle}, @var{EdgeStyle})
 ## Produces a graph of tree or forest. The first argument is vector of
-## predecessors, optional parametres @var{LineStyle} and @var{EdgeStyle}
+## predecessors, optional parameters @var{LineStyle} and @var{EdgeStyle}
 ## define the output style. The complexity of the algorithm is O(n) in
 ## terms of is time and memory requirements.
 ## @seealso{etreeplot, gplot}

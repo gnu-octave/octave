@@ -47,7 +47,7 @@ function rnd = stdnormal_rnd (r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("stdnormal_rnd: r must be a postive integer or vector");
+      error ("stdnormal_rnd: r must be a positive integer or vector");
     endif
   endif
 

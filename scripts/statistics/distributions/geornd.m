@@ -53,7 +53,7 @@ function rnd = geornd (p, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("geornd: r must be a postive integer or vector");
+      error ("geornd: r must be a positive integer or vector");
     endif
 
     if (any (size (p) != 1) && ((length (size (p)) != length (sz)) ||

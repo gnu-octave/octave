@@ -1378,7 +1378,7 @@ interest in the treatment of strings.  These are @code{mxCreateString},
 @code{mxArrayToString} and @code{mxCreateCharMatrixFromStrings}.  A
 string in a mex-file is considered to be a vector rather than a
 matrix.  This is perhaps an arbitrary distinction as the data in the
-mxArray for the matrix is consequetive in any case.
+mxArray for the matrix is consecutive in any case.
 
 @node Cell Arrays with Mex-Files
 @subsection Cell Arrays with Mex-Files
@@ -1416,7 +1416,7 @@ might be deallocated.  The inverse function to @code{mxGetCell} is
 void mxSetCell (mxArray *ptr, int idx, mxArray *val);
 @end example
 
-Finally, to create a cell array or matrix, the appropraiate functions are
+Finally, to create a cell array or matrix, the appropriate functions are
 
 @example
 @group

@@ -26,7 +26,7 @@
 ## @var{dim} parameter.
 ##
 ## The variable @var{f} counts the frequency of each of the most frequently 
-## occuring ellements. The cell array @var{c} contains all of the elements
+## occurring elements. The cell array @var{c} contains all of the elements
 ## with the maximum frequency .
 ## @end deftypefn
 

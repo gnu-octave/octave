@@ -41,7 +41,7 @@ given by @code{delaunay3} and @code{delaunayn} respectively.
 @code{delaunay3} returns a set of tetrahedra that satisfy the
 Delaunay circum-circle criteria.  Similarly, @code{delaunayn} returns the
 N-dimensional simplex satisfying the Delaunay circum-circle criteria.  
-The N-dimensional extension of a triangulation is called a tesselation.
+The N-dimensional extension of a triangulation is called a tessellation.
 
 @DOCSTRING(delaunay3)
 
@@ -119,12 +119,12 @@ The output of the above can be seen in @ref{fig:triplot}.
 @subsection Identifying points in Triangulation
 
 It is often necessary to identify whether a particular point in the
-N-dimensional space is within the Delaunay tesselation of a set of
+N-dimensional space is within the Delaunay tessellation of a set of
 points in this N-dimensional space, and if so which N-Simplex contains
-the point and which point in the tesselation is closest to the desired
+the point and which point in the tessellation is closest to the desired
 point.  The functions @code{tsearch} and @code{dsearch} perform this
 function in a triangulation, and @code{tsearchn} and @code{dsearchn} in
-an N-dimensional tesselation.
+an N-dimensional tessellation.
 
 To identify whether a particular point represented by a vector @var{p}
 falls within one of the simplices of an N-Simplex, we can write the
@@ -358,7 +358,7 @@ points inside a polygon}
 
 The convex hull of a set of points is the minimum convex envelope
 containing all of the points. Octave has the functions @code{convhull}
-and @code{convhulln} to calculate the convec hull of 2-dimensional and
+and @code{convhulln} to calculate the convex hull of 2-dimensional and
 N-dimensional sets of points.
 
 @DOCSTRING(convhull)

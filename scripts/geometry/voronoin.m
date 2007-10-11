@@ -20,7 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts})
 ## @deftypefnx {Function File} {[@var{C}, @var{F}] =} voronoin (@var{pts}, @var{options})
-## computes n- dimensinal voronoi facets.  The input matrix @var{pts}
+## computes n- dimensional voronoi facets.  The input matrix @var{pts}
 ## of size [n, dim] contains n points of dimension dim.
 ## @var{C} contains the points of the voronoi facets. The list @var{F}
 ## contains for each facet the indices of the voronoi points.

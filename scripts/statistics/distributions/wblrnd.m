@@ -63,7 +63,7 @@ function rnd = wblrnd (scale, shape, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("wblrnd: r must be a postive integer or vector");
+      error ("wblrnd: r must be a positive integer or vector");
     endif
 
     if (any (size (scale) != 1) && 

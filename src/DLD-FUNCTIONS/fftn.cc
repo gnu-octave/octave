@@ -139,7 +139,7 @@ is resized and padded with zeros.\n\
 DEFUN_DLD (ifftn, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} ifftn (@var{a}, @var{size})\n\
-Compute the invesre N dimensional FFT of @var{a} using subroutines from\n"
+Compute the inverse N dimensional FFT of @var{a} using subroutines from\n"
 FFTSRC
 ". The optional vector argument @var{size} may be used specify the\n\
 dimensions of the array to be used. If an element of @var{size} is\n\

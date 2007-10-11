@@ -886,7 +886,7 @@ of Octave. It is still under construction, don't rely on details.
       C { }
     @Rowb above { yes }
       A { tf2sys }
-      B { tranfer function to system conversion
+      B { transfer function to system conversion
           @DP { Helvetica Base -2p } @Font @CurveBox {
 	  *** no description ***
 	}
@@ -902,7 +902,7 @@ of Octave. It is still under construction, don't rely on details.
       C { internal use (used by tf2sys) }
     @Rowb above { yes }
       A { tf2zp }
-      B { tranfer function to state-space conversion
+      B { transfer function to state-space conversion
           @DP { Helvetica Base -2p } @Font @CurveBox {
 	  *** no description ***
 	}

@@ -1,3 +1,8 @@
+2007-10-11  Brian Gough  <bjg@network-theory.co.uk>
+
+	* DLD-FUNCTIONS/fftn.cc, DLD-FUNCTIONS/regexp.cc, dirfns.cc,
+	input.cc: Spelling fixes.
+
 2007-10-10  John W. Eaton  <jwe@octave.org>
 
 	* OPERATORS/op-sbm-sbm.cc (bool_matrix_to_double_matrix):

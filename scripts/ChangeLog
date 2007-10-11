@@ -1,3 +1,28 @@
+2007-10-11  Brian Gough  <bjg@network-theory.co.uk>
+
+	* control/csrefcard.lt, control/system/is_detectable.m,
+	control/system/sysgroup.m, geometry/voronoin.m,
+	miscellaneous/dir.m, sparse/pcg.m, sparse/treeplot.m,
+	statistics/base/mode.m, statistics/distributions/betarnd.m,
+	statistics/distributions/binornd.m,
+	statistics/distributions/cauchy_rnd.m,
+	statistics/distributions/chi2rnd.m,
+	statistics/distributions/discrete_rnd.m,
+	statistics/distributions/exprnd.m,
+	statistics/distributions/frnd.m,
+	statistics/distributions/gamrnd.m,
+	statistics/distributions/geornd.m,
+	statistics/distributions/laplace_rnd.m,
+	statistics/distributions/logistic_rnd.m,
+	statistics/distributions/lognrnd.m,
+	statistics/distributions/nbinrnd.m,
+	statistics/distributions/normrnd.m,
+	statistics/distributions/poissrnd.m,
+	statistics/distributions/stdnormal_rnd.m,
+	statistics/distributions/trnd.m,
+	statistics/distributions/unifrnd.m,
+	statistics/distributions/wblrnd.m: Spelling fixes.
+
 2007-10-10  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* time/tic.m: New optional output value.

@@ -430,7 +430,7 @@ Category Name 1
  function1 function2 function3
  function4
 Category Name 2
- functio2 function5
+ function2 function5
 @end example
 
 @node PKG_ADD and PKG_DEL directives

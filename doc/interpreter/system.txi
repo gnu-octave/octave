@@ -416,7 +416,7 @@ user can check the hash of the file against a known value and find if
 the file they have is the same as the one that the original hash was
 produced with.
 
-Octave supplies the @code{md5sum} function to perfrom MD5 hashes on
+Octave supplies the @code{md5sum} function to perform MD5 hashes on
 strings and files. An example of the use of @code{md5sum} function might
 be
 

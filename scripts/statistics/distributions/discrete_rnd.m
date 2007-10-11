@@ -59,7 +59,7 @@ function rnd = discrete_rnd (v, p, r, c)
       elseif (isvector(r) && all (r > 0))
 	sz = r(:)';
       else
-	error ("discrete_rnd: r must be a postive integer or vector");
+	error ("discrete_rnd: r must be a positive integer or vector");
       endif
     endif
   else

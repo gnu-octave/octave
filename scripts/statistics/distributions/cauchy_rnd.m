@@ -61,7 +61,7 @@ function rnd = cauchy_rnd (l, scale, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("cauchy_rnd: r must be a postive integer or vector");
+      error ("cauchy_rnd: r must be a positive integer or vector");
     endif
 
     if (any (size (l) != 1)

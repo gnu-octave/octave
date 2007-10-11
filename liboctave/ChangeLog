@@ -1,3 +1,7 @@
+2007-10-11  Brian Gough  <bjg@network-theory.co.uk>
+
+	* DASSL-opts.in, LSODE-opts.in: Spelling fixes.
+
 2007-10-10  Olli Saarela  <Olli.Saarela@kcl.fi>
 
 	* DASPK-opts.in, DASRT-opts.in, DASSL-opts.in: Spelling fixes.

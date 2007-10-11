@@ -63,7 +63,7 @@ function rnd = gamrnd (a, b, r, c)
     elseif (isvector(r) && all (r > 0))
       sz = r(:)';
     else
-      error ("gamrnd: r must be a postive integer or vector");
+      error ("gamrnd: r must be a positive integer or vector");
     endif
 
     if (any (size (a) != 1)

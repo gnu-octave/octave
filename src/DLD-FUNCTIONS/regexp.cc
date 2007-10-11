@@ -1394,7 +1394,7 @@ DEFUN_DLD (regexprep, args, ,
 Replace matches of @var{pat} in  @var{string} with @var{repstr}.\n\
 \n\
 \n\
-The replacement can contain @code{$i}, which subsubstitutes\n\
+The replacement can contain @code{$i}, which substitutes\n\
 for the ith set of parentheses in the match string.  E.g.,\n\
 @example\n\
 \n\

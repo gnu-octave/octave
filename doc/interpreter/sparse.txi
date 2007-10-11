@@ -366,7 +366,7 @@ matrix type
 There are several graphical means of finding out information about
 sparse matrices. The first is the @dfn{spy} command, which displays
 the structure of the non-zero elements of the
-matrix. @xref{fig:spmatrix}, for an exaple of the use of
+matrix. @xref{fig:spmatrix}, for an example of the use of
 @dfn{spy}.  More advanced graphical information can be obtained with the
 @dfn{treeplot}, @dfn{etreeplot} and @dfn{gplot} commands.
 

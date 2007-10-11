@@ -1,3 +1,7 @@
+2007-10-11  John W. Eaton  <jwe@octave.org>
+
+	* config.guess, config.sub: Update from FSF sources.
+
 2007-10-10  Kim Hansen  <kimhanse@gmail.com>
 
         * run-octave.in: Use $args.  Eliminate "if [ -n "$args" ]" conditional.

@@ -52,10 +52,11 @@
 ## @group
 ## b = [1, 1, 1];
 ## a = [1, -5, 8, -4];
-## [r, p, k] = residue (b, a);
-##      @result{} r = [-2, 7, 3]
-##      @result{} p = [2, 2, 1]
+## [r, p, k, e] = residue (b, a);
+##      @result{} r = [-2; 7; 3]
+##      @result{} p = [2; 2; 1]
 ##      @result{} k = [](0x0)
+##      @result{} e = [1; 2; 1]
 ## @end group
 ## @end example
 ##
@@ -79,19 +80,40 @@
 ## @end ifinfo
 ##
 ## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
+## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
 ## Compute the reconstituted quotient of polynomials,
 ## @var{b}(s)/@var{a}(s), from the partial fraction expansion
 ## represented by the residues, poles, and a direct polynomial specified
-## by @var{r}, @var{p} and @var{k}.
+## by @var{r}, @var{p} and @var{k}, and the pole multiplicity @var{e}.
+##
+## If the multiplicity, @var{e}, is not explicitly specified the multiplicity is
+## determined by the script mpoles.m.
 ##
 ## For example,
 ##
 ## @example
 ## @group
-## r = [-2, 7, 3];
-## p = [2, 2, 1];
-## k = [1 0];
+## r = [-2; 7; 3];
+## p = [2; 2; 1];
+## k = [1, 0];
 ## [b, a] = residue (r, p, k);
+##      @result{} b = [1, -5, 9, -3, 1]
+##      @result{} a = [1, -5, 8, -4]
+##
+## where mpoles.m is used to determine e = [1; 2; 1]
+##
+## @end group
+## @end example
+##
+## Alternatively the multiplicity may be defined explicitly, for example,
+##
+## @example
+## @group
+## r = [7; 3; -2];
+## p = [2; 1; 2];
+## k = [1, 0];
+## e = [2; 1; 1];
+## [b, a] = residue (r, p, k, e);
 ##      @result{} b = [1, -5, 9, -3, 1]
 ##      @result{} a = [1, -5, 8, -4]
 ## @end group
@@ -124,18 +146,23 @@
 
 function [r, p, k, e] = residue (b, a, varargin)
 
-  if (nargin < 2 || nargin > 3)
+  if (nargin < 2 || nargin > 4)
     print_usage ();
   endif
 
   toler = .001;
 
-  if (nargin == 3)
+  if (nargin >= 3)
+    if (nargin >= 4)
+      e = varargin{2};
+    else
+      e = [];
+    endif
     ## The inputs are the residue, pole, and direct part. Solve for the
     ## corresponding numerator and denominator polynomials
-    [r, p] = rresidue (b, a, varargin{1}, toler);
+    [r, p] = rresidue (b, a, varargin{1}, toler, e);
     return
-  end
+  endif
 
   ## Make sure both polynomials are in reduced form.
 
@@ -221,13 +248,17 @@ function [r, p, k, e] = residue (b, a, varargin)
 
 endfunction
 
-function [pnum, pden, multp] = rresidue (r, p, k, toler)
+function [pnum, pden, e] = rresidue (r, p, k, toler, e)
 
   ## Reconstitute the numerator and denominator polynomials from the
   ## residues, poles, and direct term.
 
-  if (nargin < 2 || nargin > 4)
+  if (nargin < 2 || nargin > 5)
     print_usage ();
+  endif
+
+  if (nargin < 5)
+    e = [];
   endif
 
   if (nargin < 4)
@@ -237,11 +268,14 @@ function [pnum, pden, multp] = rresidue (r, p, k, toler)
   if (nargin < 3)
     k = [];
   endif
-  
-  [multp, indx] = mpoles (p, toler, 0);
-
-  p = p (indx);
-  r = r (indx);
+ 
+  if numel (e)
+    indx = 1:numel(p);
+  else
+    [e, indx] = mpoles (p, toler, 0);
+    p = p (indx);
+    r = r (indx);
+  endif
 
   indx = 1:numel(p);
 
@@ -266,10 +300,10 @@ function [pnum, pden, multp] = rresidue (r, p, k, toler)
   K = numel (k) - 1;
   N = K + D;
   pnum = zeros (1, N+1);
-  for n = indx(abs(r)>0)
+  for n = indx(abs (r) > 0)
     p1 = [1, -p(n)];
-    for m = 1:multp(n)
-      if m == 1
+    for m = 1:e(n)
+      if (m == 1)
         pm = p1;
       else
         pm = conv (pm, p1);
@@ -277,7 +311,7 @@ function [pnum, pden, multp] = rresidue (r, p, k, toler)
     endfor
     pn = deconv (pden, pm);
     pn = r(n) * pn;
-    pnum = pnum + prepad ( pn, N+1, 0);
+    pnum = pnum + prepad (pn, N+1, 0);
   endfor
 
   ## Add the direct term.
@@ -290,8 +324,8 @@ function [pnum, pden, multp] = rresidue (r, p, k, toler)
 
   small = max ([max(abs(pden)), max(abs(pnum)), 1]) * eps;
 
-  pnum (abs (pnum) < small) = 0;
-  pden (abs (pden) < small) = 0;
+  pnum(abs (pnum) < small) = 0;
+  pden(abs (pden) < small) = 0;
 
   pnum = polyreduce (pnum);
   pden = polyreduce (pden);
@@ -307,16 +341,20 @@ endfunction
 %!   && isempty (k)
 %!   && e == [1; 2; 1]);
 %! k = [1 0];
-%! [b, a] = residue (r, p, k);
-%! assert ((abs (b - [1, -5, 9, -3, 1]) < 1e-12
-%!   && abs (a - [1, -5, 8, -4]) < 1e-12));
+%! b = conv (k, a) + prepad (b, numel (k) + numel (a) - 1, 0);
+%! a = a;
+%! [br, ar] = residue (r, p, k);
+%! assert ((abs (br - b) < 1e-12
+%!   && abs (ar - a) < 1e-12));
+%! [br, ar] = residue (r, p, k, e);
+%! assert ((abs (br - b) < 1e-12
+%!   && abs (ar - a) < 1e-12));
 
 %!test
 %! b = [1, 0, 1];
 %! a = [1, 0, 18, 0, 81];
 %! [r, p, k, e] = residue(b, a);
 %! r1 = [-5i; 12; +5i; 12]/54;
-%! r2 = conj(r1);
 %! p1 = [+3i; +3i; -3i; -3i];
 %! assert (abs (r - r1) < 1e-7 && abs (p - p1) < 1e-7
 %!   && isempty (k)
@@ -324,3 +362,20 @@ endfunction
 %! [br, ar] = residue (r, p, k);
 %! assert ((abs (br - b) < 1e-12
 %!   && abs (ar - a) < 1e-12));
+
+%!test
+%! r = [7; 3; -2];
+%! p = [2; 1; 2];
+%! k = [1 0];
+%! e = [2; 1; 1];
+%! [b, a] = residue (r, p, k, e);
+%! assert ((abs (b - [1, -5, 9, -3, 1]) < 1e-12
+%!   && abs (a - [1, -5, 8, -4]) < 1e-12));
+%! [rr, pr, kr, er] = residue (b, a);
+%! [jnk, n] = mpoles(p);
+%! assert ((abs (rr - r(n)) < 1e-5
+%!   && abs (pr - p(n)) < 1e-7
+%!   && abs (kr - k) < 1e-12
+%!   && abs (er - e(n)) < 1e-12));
+
+

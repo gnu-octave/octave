@@ -1,3 +1,8 @@
+2007-10-11  Ben Abbott  <bpabbott@mac.com>
+
+	* polynomial/residue.m: New optional input for pole multiplicity.
+	Doc fix.  Fix tests.
+
 2007-10-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
          * toplev.cc (Foctave_config_info): Add field "mac".

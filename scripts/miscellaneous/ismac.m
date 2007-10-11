@@ -1,4 +1,4 @@
-## Copyright (C) 2004 John W. Eaton
+## Copyright (C) 2007 Thomas Treichl
 ##
 ## This file is part of Octave.
 ##
@@ -18,17 +18,18 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ispc ()
-## Return 1 if Octave is running on a Windows system and 0 otherwise.
-## @seealso{ismac, isunix}
+## @deftypefn {Function File} {} ismac ()
+## Return 1 if Octave is running on a Mac OS X system and 0 otherwise.
+## @seealso{ispc, isunix}
 ## @end deftypefn
 
-function retval = ispc ()
+function retval = ismac ()
 
   if (nargin == 0)
-    retval = octave_config_info ("windows");
+    retval = octave_config_info ("mac");
   else
     print_usage ();
   endif
 
 endfunction
+

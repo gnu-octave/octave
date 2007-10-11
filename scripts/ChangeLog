@@ -1,3 +1,13 @@
+2007-10-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+         * toplev.cc (Foctave_config_info): Add field "mac".
+
+2007-10-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* miscellaneous/ismac.m: New function.
+	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
+	* miscellaneous/ispc.m, miscellaneous/isunix.m: Doc fix.
+
 2007-10-11  Arno Onken  <asnelt@asnelt.org>
 
 	* statistics/distributions/hygernd.m: Allow size to be specified
@@ -90,7 +100,7 @@
 
 2007-10-09:  Kim Hansen  <kimhanse@gmail.com>
 
-        * general/repmat.m: Handle sparse input.  Add tests.
+	* general/repmat.m: Handle sparse input.  Add tests.
 
 2007-10-09  John W. Eaton  <jwe@octave.org>
 
@@ -128,7 +138,7 @@
 
 2007-10-06  Bill Denney  <wsloand@gmail.com>
 
-        * general/__splinen__.m, general/isscalar.m, general/rat.m,
+	* general/__splinen__.m, general/isscalar.m, general/rat.m,
 	strings/dec2base.m: Use numel(x) instead of prod(size(x)).
 
 2007-10-06  Francesco Potorti`  <Potorti@isti.cnr.it>
@@ -196,7 +206,7 @@
 
 2007-10-01  David Bateman  <dbateman@free.fr>
 
-        * linear-algebra/norm.m: Inline the isvector(x) calculation for
+	* linear-algebra/norm.m: Inline the isvector(x) calculation for
 	speed with small vectors.
 	* pkg/pkg.m (archprefix): Set using octave_config_info("libexecdir") 
 	rather than OCTAVE_HOME().
@@ -298,20 +308,20 @@
 
 2007-09-06  David Bateman  <dbateman@free.fr>
 
-        * general/celldisp.m: New function.
-        * general/Makefile.in (SOURCES): Add celldisp.m.
-        * miscellaneous/swapbytes.m: New function.
-        * miscellaneous/gzip.m: New function.
-        * miscellaneous/Makefile.in (SOURCES): Add swapbytes.m and gzip.m.
+	* general/celldisp.m: New function.
+	* general/Makefile.in (SOURCES): Add celldisp.m.
+	* miscellaneous/swapbytes.m: New function.
+	* miscellaneous/gzip.m: New function.
+	* miscellaneous/Makefile.in (SOURCES): Add swapbytes.m and gzip.m.
 
 2007-09-05  David Bateman  <dbateman@free.fr>
 
-        * general/structfun.m: New function.
-        * general/Makefile.in (SOURCES): Add it to sources.
-        * miscellaneous/run.m: New function.
-        * miscellaneous/Makefile.in (SOURCES): Add it to sources.
-        * statistics/base/mode.m: New function.
-        * statistics/base//Makefile.in (SOURCES): Add it to sources.
+	* general/structfun.m: New function.
+	* general/Makefile.in (SOURCES): Add it to sources.
+	* miscellaneous/run.m: New function.
+	* miscellaneous/Makefile.in (SOURCES): Add it to sources.
+	* statistics/base/mode.m: New function.
+	* statistics/base//Makefile.in (SOURCES): Add it to sources.
 
 2007-09-05  John W. Eaton  <jwe@octave.org>
 
@@ -366,11 +376,11 @@
 
 2007-08-31  Søren Hauberg  <hauberg@gmail.com>
 
-        * polynomial/polygcd.m: Better layout of example.
-        * polynomial/compan.m: Remove unnecessary check.
-        * polynomial/roots.m: Added example to help text.
-        * polynomial/polyderiv.m: Change 'polyder' to 'polyderiv' in help text.
-        * polynomial/poly.m: Added example to help text.
+	* polynomial/polygcd.m: Better layout of example.
+	* polynomial/compan.m: Remove unnecessary check.
+	* polynomial/roots.m: Added example to help text.
+	* polynomial/polyderiv.m: Change 'polyder' to 'polyderiv' in help text.
+	* polynomial/poly.m: Added example to help text.
 
 2007-08-30  John W. Eaton  <jwe@octave.org>
 
@@ -404,16 +414,16 @@
 
 2007-08-24  David Bateman  <dbateman@free.fr>
 
-        * geometry/convhull.m, geometry/delaunay.m, geometry/delaunay3.m, 
+	* geometry/convhull.m, geometry/delaunay.m, geometry/delaunay3.m, 
         geometry/griddata.m, geometry/voronoi.m, geometry/voronoin.m: New 
         functions ported from octave-forge.
-        * geometry/delaunayn.m, geometry/dsearch.m, geometry/dsearchn.m,
+	* geometry/delaunayn.m, geometry/dsearch.m, geometry/dsearchn.m,
         geometry/griddata3.m, geometry/griddatan.m, geometry/trimesh.m, 
         geometry/triplot.m, geometry/tsearchn.m:
         New functions.
-        * geometry/voronoi.m: Remove duplicate edges from Voronoi diagram.
-        * geometry/Makefile.in (SOURCES): Add functions above.
-        * configure.in (AC_CONFIG_FILES): Add new file geometry/Makefile.
+	* geometry/voronoi.m: Remove duplicate edges from Voronoi diagram.
+	* geometry/Makefile.in (SOURCES): Add functions above.
+	* configure.in (AC_CONFIG_FILES): Add new file geometry/Makefile.
         
 2007-08-23  John W. Eaton  <jwe@octave.org>
 

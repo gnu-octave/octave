@@ -20,6 +20,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} isunix ()
 ## Return 1 if Octave is running on a Unix-like system and 0 otherwise.
+## @seealso{ismac, ispc}
 ## @end deftypefn
 
 function retval = isunix ()

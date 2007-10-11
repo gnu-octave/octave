@@ -921,6 +921,7 @@ specified option.\n\
 	}
 
       bool unix_system = true;
+      bool macos_system = false;
       bool windows_system = false;
 
 #if defined (WIN32)
@@ -930,7 +931,12 @@ specified option.\n\
 #endif
 #endif
 
+#if defined (__APPLE__) && defined (__MACH__)
+      mac_system = true;
+#endif
+
       m.assign ("unix", octave_value (unix_system));
+      m.assign ("mac", octave_value (mac_system));
       m.assign ("windows", octave_value (windows_system));
 
       initialized = true;

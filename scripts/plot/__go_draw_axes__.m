@@ -694,6 +694,9 @@ function __go_draw_axes__ (h, plot_stream)
 
     if (xautoscale && have_data)
       xlim = get_axis_limits (xmin, xmax, xminp, xlogscale);
+      if (isempty (xlim))
+	return;
+      endif
       set (h, "xlim", xlim, "xlimmode", "auto");
     else
       xlim = axis_obj.xlim;
@@ -707,6 +710,9 @@ function __go_draw_axes__ (h, plot_stream)
 
     if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
+      if (isempty (ylim))
+	return;
+      endif
       set (h, "ylim", ylim, "ylimmode", "auto");
     else
       ylim = axis_obj.ylim;
@@ -721,6 +727,9 @@ function __go_draw_axes__ (h, plot_stream)
     if (nd == 3)
       if (zautoscale && have_data)
 	zlim = get_axis_limits (zmin, zmax, zminp, zlogscale);
+	if (isempty (zlim))
+	  return;
+	endif
 	set (h, "zlim", zlim, "zlimmode", "auto");
       else
 	zlim = axis_obj.zlim;
@@ -875,15 +884,14 @@ endfunction
 function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
 
   if (logscale)
-    if (isinf (min_pos))
+    if (isinf (min_pos) || isempty (min_pos))
+      lim = [];
       warning ("axis: logscale with no positive values to plot");
+      return;
     endif
     if (min_val <= 0)
-      min_val = min_pos;
-      if (max_val <= 0)
-	max_val = min_pos;
-      endif
       warning ("axis: omitting nonpositive data in log plot");
+      min_val = min_pos;
     endif
     ## FIXME -- maybe this test should also be relative?
     if (abs (min_val - max_val) < sqrt (eps))

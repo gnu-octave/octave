@@ -202,9 +202,9 @@ function __go_draw_axes__ (h, plot_stream)
     data = cell ();
     is_image_data = [];
 
-    xminp = yminp = zminp = realmax ();
-    xmax = ymax = zmax = -realmax ();
-    xmin = ymin = zmin = realmax ();
+    xminp = yminp = zminp = Inf;
+    xmax = ymax = zmax = -Inf;
+    xmin = ymin = zmin = Inf;
 
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
     use_gnuplot_for_images = (ischar (view_fcn)
@@ -871,9 +871,14 @@ function [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat, tx)
   xmax = max (xmax, max (xdat));
   if (nargin == 5)
     tx = tx(! isinf (xdat) & tx > 0);
-    xminp = min (xminp, min (tx));
+    if (! isempty (tx))
+      xminp = min (xminp, min (tx));
+    endif
   else
-    xminp = min (xminp, min (xdat(xdat>0)));
+    tmp = min (xdat(xdat > 0));
+    if (! isempty (tmp))
+      xminp = min (xminp, tmp);
+    endif
   endif
 endfunction
 
@@ -884,7 +889,7 @@ endfunction
 function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
 
   if (logscale)
-    if (isinf (min_pos) || isempty (min_pos))
+    if (isinf (min_pos))
       lim = [];
       warning ("axis: logscale with no positive values to plot");
       return;

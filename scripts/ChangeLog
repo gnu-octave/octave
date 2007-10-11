@@ -1,3 +1,12 @@
+2007-10-11  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m (get_axis_limits):
+	Return lim = [] if logscale and no positive values.
+	(__go_draw_axes__): Skip plotting if computed axis limits are empty.
+	Set initial min and min positive values to Inf, max values to -Inf.
+	(get_data_limits): Correctly handle xminp when no positive values
+	are found.
+
 2007-10-11  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/residue.m: New optional input for pole multiplicity.
@@ -6,8 +15,6 @@
 2007-10-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
          * toplev.cc (Foctave_config_info): Add field "mac".
-
-2007-10-11  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* miscellaneous/ismac.m: New function.
 	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
@@ -18,12 +25,6 @@
 	* statistics/distributions/hygernd.m: Allow size to be specified
 	as a scalar.  Handle three argument case.  Allow T, M, and N to be
 	scalars or matrices of a common size.
-
-2007-10-11  John W. Eaton  <jwe@octave.org>
-
-	* plot/__go_draw_axes__.m (get_axis_limits):
-	Return lim = [] if logscale and no positive values.
-	(__go_draw_axes__): Skip plotting if computed axis limits are empty.
 
 2007-10-11  Brian Gough  <bjg@network-theory.co.uk>
 

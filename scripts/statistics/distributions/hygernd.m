@@ -20,12 +20,17 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n}, @var{sz})
+## @deftypefnx {Function File} {} hygernd (@var{t}, @var{m}, @var{n})
 ## Return an @var{r} by @var{c} matrix of random samples from the
 ## hypergeometric distribution with parameters @var{t}, @var{m},
 ## and @var{n}.
 ##
 ## The parameters @var{t}, @var{m}, and @var{n} must positive integers
 ## with @var{m} and @var{n} not greater than @var{t}.
+##
+## The parameter @var{sz} must be scalar or a vector of matrix
+## dimensions. If @var{sz} is scalar, then a @var{sz} by @var{sz}
+## matrix of random samples is generated.
 ## @end deftypefn
 
 function rnd = hygernd (t, m, n, r, c)
@@ -39,35 +44,55 @@ function rnd = hygernd (t, m, n, r, c)
     endif
     sz = [r, c];
   elseif (nargin == 4)
-    ## A potential problem happens here if all args are scalar, as
-    ## we can distiguish between the command syntax. This is quite
-    ## ambigous! I assume that if the last arg is a vector then 
-    ## then third form is assumed. This means that you can't define
-    ## and r-by-r matrix with a single scalar!
-
-    if (isscalar (r))
-      sz = [1, floor(m)];
-      m = t;
-      t = n;
-      n = r;
-    elseif (isvector(r) && all (r > 0))
-      sz = r(:)';
+    if (isvector (r) && all (r > 0) && all (r == round (r)))
+      if (isscalar (r))
+        sz = [r, r];
+      else
+        sz = r(:)';
+      endif
     else
       error ("hygernd: r must be a vector of positive integers");
     endif
-  else
+  elseif (nargin != 3)
     print_usage ();
   endif
 
-  if (!isscalar (t) || !isscalar (m) || !isscalar (n))
-    error ("hygernd: t, m and n must all be positive integers");
+  if (! isscalar (t) || ! isscalar (m) || ! isscalar (n))
+    [retval, t, m, n] = common_size (t, m, n);
+    if (retval > 0)
+      error ("hygernd: t, m and n must be of common size or scalar");
+    endif
+    if (nargin > 3)
+      if (any (sz != size (t)))
+        error ("hygernd: t, m and n must have the same size as implied by r and c or must be scalar");
+      endif
+    else
+      sz = size (t);
+    endif
+  elseif (nargin == 3)
+    sz = 1;
   endif
 
-  if ((t < 0) | (m < 0) | (n <= 0) | (t != round (t)) |
-      (m != round (m)) | (n != round (n)) | (m > t) | (n > t))
-    rnd = NaN * ones (sz)
+  ## NaN elements
+  ne = (! (t >= 0) | ! (m >= 0) | ! (n > 0) | ! (t == round (t)) | ! (m == round (m)) | ! (n == round (n)) | ! (m <= t) | ! (n <= t));
+
+  if (! isscalar (t))
+    rnd = zeros (sz);
+    rnd(ne) = NaN;
+    rn = rand (sz);
+    for i = find (! ne)
+      v = 0 : n(i);
+      p = hygepdf (v, t(i), m(i), n(i));
+      rnd(i) = v(lookup (cumsum (p(1 : end-1)) / sum (p), rn(i)) + 1);
+    endfor
   else
-    rnd = discrete_rnd (0 : n, hygepdf (0 : n, t, m, n), sz);
+    if (ne)
+      rnd = NaN * ones (sz);
+    else
+      v = 0:n;
+      p = hygepdf (v, t, m, n);
+      rnd = v(lookup (cumsum (p(1:end-1)) / sum (p), rand (sz)) + 1);
+    endif
   endif
 
 endfunction

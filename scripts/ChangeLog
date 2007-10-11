@@ -1,3 +1,9 @@
+2007-10-11  Arno Onken  <asnelt@asnelt.org>
+
+	* statistics/distributions/hygernd.m: Allow size to be specified
+	as a scalar.  Handle three argument case.  Allow T, M, and N to be
+	scalars or matrices of a common size.
+
 2007-10-11  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m (get_axis_limits):

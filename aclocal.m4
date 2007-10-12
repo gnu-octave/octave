@@ -6,8 +6,8 @@ dnl This file is part of Octave.
 dnl 
 dnl Octave is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
-dnl Free Software Foundation; either version 2, or (at your option) any
-dnl later version.
+dnl Free Software Foundation; either version 3 of the License, or (at
+dnl your option) any later version.
 dnl 
 dnl Octave is distributed in the hope that it will be useful, but WITHOUT
 dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -15,9 +15,8 @@ dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 dnl for more details.
 dnl 
 dnl You should have received a copy of the GNU General Public License
-dnl along with Octave; see the file COPYING.  If not, write to the Free
-dnl Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-dnl 02110-1301, USA. 
+dnl along with Octave; see the file COPYING.  If not, see
+dnl <http://www.gnu.org/licenses/>.
 dnl
 dnl ----------------------------------------------------------------------
 dnl

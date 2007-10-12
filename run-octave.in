@@ -1,4 +1,22 @@
 #! /bin/sh
+##
+## run-octavee -- run Octave in the build tree.
+## 
+## This file is part of Octave.
+## 
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by the
+## Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+## 
+## Octave is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+## FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+## for more details.
+## 
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 AWK=${AWK:-'awk'}
 
@@ -31,8 +49,6 @@ LOADPATH="$d1_path:$d2_path:$d3_path:$d4_path"
 IMAGEPATH="$top_srcdir/scripts/image"
 INFOFILE="$builddir/doc/interperter/octave.info"
 
-args="--no-initial-path --path=\"$LOADPATH\" --image-path=\"$IMAGEPATH\" --info-file=\"$INFOFILE\""
-
 if [ $# -gt 0 ]; then
   if [ "x$1" = "x-g" ]; then
     driver="gdb --args"
@@ -49,5 +65,5 @@ fi
 OCTAVE_SITE_INITFILE="$top_srcdir/scripts/startup/main-rcfile" \
 LD_PRELOAD="$liboctinterp $liboctave $libcruft" \
 %library_path_var%="$builddir/src:$builddir/liboctave:$builddir/libcruft:$%library_path_var%" \
-  exec $driver "$builddir/src/octave" $args "$@"
+  exec $driver "$builddir/src/octave" --no-initial-path --path="$LOADPATH" --image-path="$IMAGEPATH" --info-file="$INFOFILE" "$@"
 

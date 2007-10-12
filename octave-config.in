@@ -1,9 +1,25 @@
 #! /bin/sh -
-#
-# octave-config - reports some configuration values for Octave
-#
-# Rafael Laboissiere <rafael@laboissiere.net>
-# This script is in the public domain
+##
+## octave-config - reports some configuration values for Octave
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+## 
+## Original version by Rafael Laboissiere <rafael@laboissiere.net>
+## distributed as free software in the public domain.
 
 API_VERSION=%OCTAVE_API_VERSION%
 CANONICAL_HOST_TYPE=%OCTAVE_CANONICAL_HOST_TYPE%

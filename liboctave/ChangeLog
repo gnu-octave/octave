@@ -1,3 +1,8 @@
+2007-10-12  John W. Eaton  <jwe@octave.org>
+
+	* Change copyright notices in all files that are part of Octave to
+	GPLv3 or any later version.
+
 2007-10-11  Brian Gough  <bjg@network-theory.co.uk>
 
 	* DASSL-opts.in, LSODE-opts.in: Spelling fixes.

@@ -1,6 +1,23 @@
 ## Copyright (C) 2004 Paul Kienzle
 ##
-## This program is free software and is in the public domain
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+##
+## Original version by Paul Kienzle distributed as free software in the
+## public domain.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} sprandn (@var{m}, @var{n}, @var{d})
@@ -18,7 +35,6 @@
 ## @seealso{sprand}
 ## @end deftypefn
 
-## This program is public domain
 ## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function S = sprandn (m, n, d)

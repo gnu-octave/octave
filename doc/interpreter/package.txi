@@ -298,7 +298,7 @@ Title: The title of the package
 Description: A short description of the package. If this description
  gets too long for one line it can continue on the next by adding a
  space to the beginning of the following lines.
-License: GPL version 2 or later
+License: GPL version 3 or later
 @end example
 
 The package manager currently recognizes the following keywords
@@ -359,7 +359,7 @@ defined either as a comma separated list or on separate @code{Depends}
 lines.
 
 @item License
-An optional short description of the used license (e.g. GPL version 2
+An optional short description of the used license (e.g. GPL version 3
 or newer). This is optional since the file @code{COPYING} is mandatory.
 
 @item SystemRequirements

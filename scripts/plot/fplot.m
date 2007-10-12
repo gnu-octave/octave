@@ -1,4 +1,4 @@
-## Copyright (C) 2005 Paul Kienzle <pkienzle@users.sf.net>
+## Copyright (C) 2005, 2006, 2007 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -36,6 +36,8 @@
 ## @end example
 ## @seealso{plot}
 ## @end deftypefn
+
+## Author: Paul Kienzle <pkienzle@users.sf.net>
 
 function fplot (fn, limits, n, linespec)
   if (nargin < 2 || nargin > 3)

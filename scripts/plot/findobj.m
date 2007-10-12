@@ -1,4 +1,4 @@
-## Copyright (C) 2007   Ben Abbott  <bpabbott@mac.com>
+## Copyright (C) 2007 Ben Abbott
 ##
 ## This file is part of Octave.
 ##
@@ -59,6 +59,8 @@
 ## matched by property name only, using the '-property' option.
 ## @seealso{get, set}
 ## @end deftypefn
+
+## Author: Ben Abbott <bpabbott@mac.com>
 
 function h = findobj (varargin)
 

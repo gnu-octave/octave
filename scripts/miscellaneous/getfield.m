@@ -1,4 +1,4 @@
-## Copyright (C) 2000  Etienne Grossmann
+## Copyright (C) 2000, 2006, 2007 Etienne Grossmann
 ##
 ## This file is part of Octave.
 ##

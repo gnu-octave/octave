@@ -1,6 +1,7 @@
 /*
 
-Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005 Andy Adler
+Copyright (C) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007
+              Andy Adler
 
 This file is part of Octave.
 

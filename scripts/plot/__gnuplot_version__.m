@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Daniel Sebald
+## Copyright (C) 2006, 2007 Daniel Sebald
 ##
 ## This file is part of Octave.
 ##

@@ -2,7 +2,8 @@ dnl configure.in
 dnl
 dnl Process this file with autoconf to produce a configure script.
 dnl
-dnl Copyright (C) 1996, 1997 John W. Eaton
+dnl Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
+dnl               2002, 2003, 2004, 2005, 2006, 2007 John W. Eaton
 ### 
 ### This file is part of Octave.
 ### 
@@ -28,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.580 $)
+AC_REVISION($Revision: 1.581 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)

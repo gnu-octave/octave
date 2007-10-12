@@ -1,4 +1,4 @@
-## Copyright (C) 2000,2001  Kai Habel
+## Copyright (C) 2000, 2001, 2006, 2007 Kai Habel
 ## Copyright (C) 2006 David Bateman
 ##
 ## This file is part of Octave.

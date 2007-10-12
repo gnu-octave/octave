@@ -1,4 +1,5 @@
-## Copyright (C) 1997 Jose Daniel Munoz Frias
+## Copyright (C) 1997, 2000, 2002, 2003, 2004, 2005, 2007
+##               Jose Daniel Munoz Frias
 ##
 ## This file is part of Octave.
 ##

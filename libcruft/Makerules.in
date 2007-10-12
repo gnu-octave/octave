@@ -5,6 +5,9 @@
 # FIXME -- assumes that the libcruft directory tree is only
 # one level deep.
 #
+# Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2003, 2005,
+#               2006, 2007 John W. Eaton
+#
 # This file is part of Octave.
 # 
 # Octave is free software; you can redistribute it and/or modify it

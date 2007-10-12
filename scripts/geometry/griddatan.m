@@ -1,4 +1,4 @@
-## Copyright (C) 2007  David Bateman  <dbateman@free.fr>
+## Copyright (C) 2007 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -27,6 +27,8 @@
 ## If method is omitted it defaults to @code{"linear"}.
 ## @seealso{griddata, delaunayn}
 ## @end deftypefn
+
+## Author: David Bateman <dbateman@free.fr>
 
 function yi = griddatan (x, y, xi, method, varargin)
 

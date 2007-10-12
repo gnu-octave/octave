@@ -1,4 +1,4 @@
-## Copyright (C) 2005 John W. Eaton
+## Copyright (C) 2005, 2006, 2007 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -678,6 +678,7 @@ function jac = fd_ci_jac (x)
 
 ### endfunction
 
+
 function res = cf_ub_lb (x)
 
   ## combine constraint function with ub and lb
@@ -690,6 +691,7 @@ function res = cf_ub_lb (x)
   endif
 
 ### endfunction
+
 
 function res = cigrad_ub_lb (x)
 

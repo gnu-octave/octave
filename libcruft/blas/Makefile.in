@@ -1,5 +1,7 @@
 # Makefile for octave's libcruft/blas directory
 #
+# Copyright (C) 1993, 1994, 1995, 2007 John W. Eaton
+#
 # This file is part of Octave.
 # 
 # Octave is free software; you can redistribute it and/or modify it

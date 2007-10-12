@@ -1,7 +1,7 @@
 // oct-errno.h.in
 /*
 
-Copyright (C) 2005 John W. Eaton
+Copyright (C) 2005, 2007 John W. Eaton
 
 This file is part of Octave.
 

@@ -1,4 +1,4 @@
-## Copyright (C) 2004 Piotr Krzyzanowski <piotr.krzyzanowski@mimuw.edu.pl>
+## Copyright (C) 2004, 2006, 2007 Piotr Krzyzanowski
 ##
 ## This file is part of Octave.
 ##

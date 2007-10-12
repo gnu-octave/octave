@@ -1,4 +1,4 @@
-## Copyright (C) 1993, 1994, 1995 Auburn University
+## Copyright (C) 1993, 1994, 1995, 2000, 2005, 2007 Auburn University
 ##
 ## This file is part of Octave.
 ##

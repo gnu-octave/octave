@@ -1,4 +1,4 @@
-## Copyright (C) 2006 David Bateman <dbateman@free.fr>
+## Copyright (C) 2006, 2007 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -22,6 +22,8 @@
 ## for which @code{(@var{x}-90)/180} is an integer.
 ## @seealso{cos, sind, tand, acosd, asind, atand}
 ## @end deftypefn
+
+## Author: David Bateman <dbateman@free.fr>
 
 function y = cosd (x)
   if (nargin != 1)

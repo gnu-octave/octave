@@ -1,4 +1,4 @@
-## Copyright (C) 2006 David Bateman <dbateman@free.fr>
+## Copyright (C) 2006, 2007 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -23,6 +23,8 @@
 ## where @code{(@var{x}-90)/180} is an integer.
 ## @seealso{tan, cosd, sind, acosd, asind, atand}
 ## @end deftypefn
+
+## Author: David Bateman <dbateman@free.fr>
 
 function y = tand (x)
   if (nargin != 1)

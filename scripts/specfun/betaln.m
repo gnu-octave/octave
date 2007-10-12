@@ -1,4 +1,4 @@
-## Copyright (C) 1998 by Nicol N. Schraudolph
+## Copyright (C) 1998, 2006, 2007 by Nicol N. Schraudolph
 ##
 ## This file is part of Octave.
 ##

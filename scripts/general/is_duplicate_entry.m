@@ -1,4 +1,5 @@
-## Copyright (C) 1996, 1997 A. S. Hodel <scotte@eng.auburn.edu>
+## Copyright (C) 1996, 1997, 1998, 2000, 2002, 2004, 2005, 2006, 2007
+##               A. S. Hodel
 ##
 ## This file is part of Octave.
 ##

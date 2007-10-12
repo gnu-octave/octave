@@ -1,4 +1,4 @@
-## Copyright (C) 2006 David Bateman <dbateman@free.fr>
+## Copyright (C) 2006, 2007 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -21,6 +21,8 @@
 ## Compute the inverse cosine of an angle in degrees.
 ## @seealso{acos, cosd, asecd}
 ## @end deftypefn
+
+## Author: David Bateman <dbateman@free.fr>
 
 function y = acosd (x)
   if (nargin != 1)

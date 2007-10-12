@@ -1,5 +1,7 @@
 # Makefile for octave's libcruft/slatec-err directory
 #
+# Copyright (C) 1999, 2007 John W. Eaton
+#
 # This file is part of Octave.
 # 
 # Octave is free software; you can redistribute it and/or modify it

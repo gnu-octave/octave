@@ -1,4 +1,4 @@
-## Copyright (C) 2004 David BAteman
+## Copyright (C) 2004, 2005, 2006, 2007 David BAteman
 ##
 ## This file is part of Octave.
 ##

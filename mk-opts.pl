@@ -71,6 +71,7 @@ sub parse_input
   while (<INFILE>)
     {
       next if (/^\s*$/);
+      next if (/^\s*#.*$/);
 
       if (/^\s*OPTION\s*$/)
         {

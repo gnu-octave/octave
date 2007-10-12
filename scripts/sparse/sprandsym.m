@@ -1,4 +1,4 @@
-## Copyright (C) 2004 David Bateman & Andy Adler
+## Copyright (C) 2004, 2006, 2007 David Bateman & Andy Adler
 ##
 ## This file is part of Octave.
 ##
@@ -64,7 +64,7 @@ function S = sprandsym (n, d)
       S = sparse (n, n);
     else
       S1 = sparse (i1, j1+1, randn (k1, 1), m1, n1);
-      S = [tril(S1), sparse (m1, m1); ...
+      S = [tril(S1), sparse(m1,m1); ...
 	   sparse(i2,j2+1,randn(k2,1),n2,n2), triu(S1,1)'];
       S = S + tril (S, -1)';
     endif

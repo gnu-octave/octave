@@ -1,4 +1,4 @@
-## Copyright (C) 2001 Laurent Mazet
+## Copyright (C) 2001, 2006, 2007 Laurent Mazet
 ## Copyright (C) 2006 John W. Eaton
 ##
 ## This file is part of Octave.

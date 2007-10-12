@@ -1,4 +1,4 @@
-## Copyright (C) 2001 Rolf Fabian and Paul Kienzle
+## Copyright (C) 2001, 2006, 2007 Rolf Fabian and Paul Kienzle
 ##
 ## This file is part of Octave.
 ##

@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2002 Andreas Stahel
+Copyright (C) 2002, 2007 Andreas Stahel
 
 This file is part of Octave.
 

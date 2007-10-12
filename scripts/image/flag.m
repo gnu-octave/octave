@@ -1,4 +1,4 @@
-## Copyright (C) 1999,2000  Kai Habel
+## Copyright (C) 1999, 2000, 2007 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -45,7 +45,9 @@ function map = flag (number)
   if (rem(number,4) == 0)
     map = kron (ones (number / 4, 1), p);
   else
-    map = [kron (ones (fix (number / 4), 1), p); p(1:rem (number, 4), :)];
+    m1 = kron (ones (fix (number / 4), 1), p);
+    m2 = p(1:rem (number, 4), :);
+    map = [m1; m2];
   endif
 
 endfunction

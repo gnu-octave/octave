@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2004 John W. Eaton and Teemu Ikonen
+Copyright (C) 2004, 2005, 2006, 2007 John W. Eaton and Teemu Ikonen
 
 This file is part of Octave.
 

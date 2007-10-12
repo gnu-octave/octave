@@ -1,4 +1,4 @@
-## Copyright (C) 2006 David Bateman <dbateman@free.fr>
+## Copyright (C) 2006, 2007 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -21,6 +21,8 @@
 ## Compute the cotangent of an angle in degrees.
 ## @seealso{cot, tand}
 ## @end deftypefn
+
+## Author: David Bateman <dbateman@free.fr>
 
 function y = cotd (x)
   if (nargin != 1)

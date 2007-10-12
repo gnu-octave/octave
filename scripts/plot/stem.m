@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Michel D. Schmid
+## Copyright (C) 2006, 2007 Michel D. Schmid
 ##
 ## This file is part of Octave.
 ##

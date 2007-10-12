@@ -1,4 +1,5 @@
-## Copyright (C) 2001 Daniel Calvelo
+## Copyright (C) 1996, 1999, 2000, 2001, 2003, 2005, 2006, 2007
+##               Daniel Calvelo
 ##
 ## This file is part of Octave.
 ##

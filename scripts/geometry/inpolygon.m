@@ -1,4 +1,4 @@
-## Copyright (C) 2006 Frederick (Rick) A Niles, Søren Hauberg
+## Copyright (C) 2006, 2007 Frederick (Rick) A Niles, Søren Hauberg
 ##
 ## This file is part of Octave.
 ##

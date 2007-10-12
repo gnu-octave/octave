@@ -1,4 +1,4 @@
-## Copyright (C) 2004 John Eaton, David Bateman
+## Copyright (C) 2004, 2005, 2006, 2007 John Eaton, David Bateman
 ##
 ## This file is part of Octave.
 ##

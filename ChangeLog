@@ -1,5 +1,7 @@
 2007-10-12  John W. Eaton  <jwe@octave.org>
 
+	* mk-opts.pl (parse_input): Allow comment lines beginning with #.
+
 	* Change copyright notices in all files that are part of Octave to
 	GPLv3 or any later version.
 

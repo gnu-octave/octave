@@ -1,4 +1,4 @@
-## Copyright (C) 2006  Bill Denney  <denney@seas.upenn.edu>
+## Copyright (C) 2006, 2007 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -29,6 +29,8 @@
 ## See @code{cellfun} for complete usage instructions.
 ## @seealso{cellfun}
 ## @end deftypefn
+
+## Author: Bill Denney <denney@seas.upenn.edu>
 
 function varargout = arrayfun (func, varargin)
 

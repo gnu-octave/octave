@@ -1,4 +1,4 @@
-## Copyright (C) 1995, 1996, 1997  Kurt Hornik
+## Copyright (C) 1995, 1996, 1997, 2006, 2007 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -52,8 +52,8 @@ function rnd = wblrnd (scale, shape, r, c)
     sz = [r, c];
 
     if (any (size (scale) != 1) && 
-	((length (size (scale)) != length (sz)) ||
-	 any (size (scale) != sz)))
+	((length (size (scale)) != length (sz))
+	 || any (size (scale) != sz)))
       error ("wblrnd: shape and scale must be scalar or of size [r, c]");
     endif
   elseif (nargin == 3)
@@ -66,8 +66,8 @@ function rnd = wblrnd (scale, shape, r, c)
     endif
 
     if (any (size (scale) != 1) && 
-	((length (size (scale)) != length (sz)) ||
-	 any (size (scale) != sz)))
+	((length (size (scale)) != length (sz))
+	 || any (size (scale) != sz)))
       error ("wblrnd: shape and scale must be scalar or of size sz");
     endif
   elseif (nargin == 2)
@@ -84,7 +84,7 @@ function rnd = wblrnd (scale, shape, r, c)
     endif
   else
     rnd = scale .* rande(sz) .^ (1./shape);
-    k = find ((shape <= 0) | (shape == Inf) | (scale <= 0) & (scale == Inf));
+    k = find ((shape <= 0) | (shape == Inf) | ((scale <= 0) & (scale == Inf)));
     if (any(k))
       rnd(k) = NaN;
     endif

@@ -1,5 +1,7 @@
 /*
 
+Copyright (C) 2001, 2004, 2005, 2007 John W. Eaton
+
 This file is part of Octave.
 
 Octave is free software; you can redistribute it and/or modify it

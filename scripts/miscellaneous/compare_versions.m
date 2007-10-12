@@ -1,4 +1,4 @@
-## Copyright (C) 2006  Bill Denney  <denney@seas.upenn.edu>
+## Copyright (C) 2006, 2007 Bill Denney
 ##
 ## This file is part of Octave.
 ##
@@ -62,6 +62,8 @@
 ## compares less than "1a" because the second string starts with a
 ## numeric part even though double("a") is greater than double("1").
 ## @end deftypefn
+
+## Author: Bill Denney <denney@seas.upenn.edu>
 
 ## TODO?: This allows a single equal sign "=" to indicate equality, do
 ## we want to require a double equal since that is the boolean operator?

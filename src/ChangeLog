@@ -1,3 +1,9 @@
+2007-09-17  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.15.
+	(OCTAVE_API_VERSION): Now api-v27.
+	(OCTAVE_RELEASE_DATE): Now 2007-10-13.
+
 2007-10-13  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (class patch): Add the faces and vertices properties.

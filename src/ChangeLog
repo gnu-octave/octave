@@ -1,4 +1,8 @@
-2007-09-17  John W. Eaton  <jwe@octave.org>
+2007-10-13  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.15+.
+
+2007-10-13  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.15.
 	(OCTAVE_API_VERSION): Now api-v27.

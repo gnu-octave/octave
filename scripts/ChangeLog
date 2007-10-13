@@ -1,3 +1,15 @@
+2007-10-13  David Bateman  <dbateman@free.fr>
+
+	* plot/__patch__.m: Allow multiple patches to be defined and
+	return a single patch object. Allow Faces/Vertices form of
+	patch. Flag failure so the patch can call print_usage.
+	* plot/patch.m: Update help string for Faces/Vertices
+	call. Respect the fail flag returned by __patch__. Add demo code
+	that tests the functionality of patch.
+	* plot/__go_draw_axes__.m: Treat an array of patches in a single
+	patch object.
+	* plot/fill.m: New function.
+
 2007-10-12  John W. Eaton  <jwe@octave.org>
 
 	* Change copyright notices in all files that are part of Octave to

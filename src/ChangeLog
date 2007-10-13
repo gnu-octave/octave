@@ -1,3 +1,11 @@
+2007-10-13  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (class patch): Add the faces and vertices properties.
+	* graphics.cc (patch::properties::properties): Initialize faces
+	and vertices.
+	(patch::properties::get): Also fetch faces and vertices.
+	(patch::properties::factory_defaults): Set faces and vertices.
+
 2007-10-12  John W. Eaton  <jwe@octave.org>
 
 	* Change copyright notices in all files that are part of Octave to

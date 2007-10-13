@@ -426,117 +426,149 @@ function __go_draw_axes__ (h, plot_stream)
 	 nd = 2;
          cmap = parent_figure_obj.colormap;
          clim = axis_obj.clim;
-	 data_idx++;
-	 is_image_data(data_idx) = false;
-	 parametric(data_idx) = false;
-         titlespec{data_idx} = "title \"\"";
-	 usingclause{data_idx} = "";
-         if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
-           if (strncmp (obj.facecolor, "none", 4))
-	     color = [1, 1, 1];
-           elseif (strncmp (obj.facecolor, "flat", 4))
-             r = 1 + round ((size (cmap, 1) - 1) * (obj.cdata - clim(1))/(clim(2) - clim(1)));
-             r = max (1, min (r, size (cmap, 1)));
-	     color = cmap(r,:);
-           elseif (strncmp (obj.facecolor, "interp", 6))
-             warning ("\"interp\" not supported, using 1st entry of cdata")
-             r = 1 + round ((size (cmap, 1) - 1) * obj.cdata(1));
-             r = max (1, min (r, size (cmap, 1)));
-	     color = cmap(r,:);
-           else
-	     color = obj.facecolor;
-           endif
-         else
-           color = [1, 0, 0];
-         endif
+	 [nr, nc] = size (obj.xdata);
 
-	 if (have_newer_gnuplot)
-	   withclause{data_idx} = sprintf ("with filledcurve lc rgb \"#%02x%02x%02x\"",round (255*color));
-	 else
-	   if (isequal (color, [0,0,0]))
-	     typ = -1;
-	   elseif (isequal (color, [1,0,0]))
-	     typ = 1;
-	   elseif (isequal (color, [0,1,0]))
-	     typ = 2;
-	   elseif (isequal (color, [0,0,1]))
-	     typ = 3;
-	   elseif (isequal (color, [1,0,1]))
-	     typ = 4;
-	   elseif (isequal (color, [0,1,1]))
-	     typ = 5;
-	   elseif (isequal (color, [1,1,1]))
-	     typ = -1;
-	   elseif (isequal (color, [1,1,0]))
-	     typ = 7;
-	   else
-	     typ = -1;
+	 for i = 1 : nc
+	   xcol = obj.xdata(:,i);
+	   ycol = obj.ydata(:,i);
+
+	   if (xautoscale)
+             [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xcol);
 	   endif
-	   withclause{data_idx} = sprintf ("with filledcurve lt %d", typ);
-	 endif
-
-	 xdat = obj.xdata(:);
-	 ydat = obj.ydata(:);
-
-	 if (xautoscale)
-           [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
-	 endif
-	 if (yautoscale)
-	   [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
-	 endif
-	 data{data_idx} = [xdat, ydat]';
-	 usingclause{data_idx} = "using ($1):($2)";
-
-         ## patch outline
-         data_idx++;
-         is_image_data(data_idx) = false;
-         parametric(data_idx) = false;
-         titlespec{data_idx} = "title \"\"";
-	 usingclause{data_idx} = "";
-         if (isfield (obj, "edgecolor"))
-           if (strncmp (obj.edgecolor, "none", 4))
-             color = [1, 1, 1];
-           elseif (strncmp (obj.edgecolor, "flat", 4))
-             warning ("\"flat\" for edgecolor not supported");
-             color = [0, 0, 0];
-           elseif (strncmp (obj.edgecolor, "interp", 6))
-             warning ("\"interp\" for edgecolor not supported");
-             color = [0, 0, 0];
-           else
-	     color = obj.edgecolor;
-           endif
-         else
-           color = [0, 0, 0];
-         endif
-	 if (have_newer_gnuplot)
-	   withclause{data_idx} = sprintf ("with lines lc rgb \"#%02x%02x%02x\"",round (255*color));
-	 else
-	   if (isequal (color, [0,0,0]))
-	     typ = -1;
-	   elseif (isequal (color, [1,0,0]))
-	     typ = 1;
-	   elseif (isequal (color, [0,1,0]))
-	     typ = 2;
-	   elseif (isequal (color, [0,0,1]))
-	     typ = 3;
-	   elseif (isequal (color, [1,0,1]))
-	     typ = 4;
-	   elseif (isequal (color, [0,1,1]))
-	     typ = 5;
-	   elseif (isequal (color, [1,1,1]))
-	     typ = -1;
-	   elseif (isequal (color, [1,1,0]))
-	     typ = 7;
-	   else
-	     typ = -1;
+	   if (yautoscale)
+	     [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ycol);
 	   endif
-	   withclause{data_idx} = sprintf ("with lines lt %d", typ);
-	 endif
 
-         xdat = [xdat; xdat(1)];
-	 ydat = [ydat; ydat(1)];
-	 data{data_idx} = [xdat, ydat]';
-	 usingclause{data_idx} = "using ($1):($2)";
+	   if (! isnan (xcol) && ! isnan (ycol))
+	     ## Is the patch closed or not
+	     data_idx++;
+	     is_image_data(data_idx) = false;
+	     parametric(data_idx) = false;
+             titlespec{data_idx} = "title \"\"";
+	     usingclause{data_idx} = "";
+             if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
+               if (strncmp (obj.facecolor, "none", 4))
+		 color = [1, 1, 1];
+
+               elseif (strncmp (obj.facecolor, "flat", 4) ||
+		       strncmp (obj.facecolor, "interp", 6))
+		 if (ndims (obj.cdata) == 2 && ... 
+		     ((nr > 3 && size (obj.cdata, 2) == nc) ...
+                      || (size (obj.cdata, 1) > 1 && ...
+			  size (obj.cdata, 2) == nc)))
+		   ccol = obj.cdata (:, i);
+		 elseif (ndims (obj.cdata) == 3)
+		   ccol = permute (obj.cdata (:, i, :), [1, 3, 2]);
+		 else
+		   ccol = obj.cdata;
+		 endif
+		 if (strncmp (obj.facecolor, "flat", 4))
+		   if (numel(ccol) == 3)
+		     color = ccol;
+		   else
+		     r = 1 + round ((size (cmap, 1) - 1) * ...
+				    (ccol - clim(1))/(clim(2) - clim(1)));
+		     r = max (1, min (r, size (cmap, 1)));
+		     color = cmap(r, :);
+		   endif
+		 elseif (strncmp (obj.facecolor, "interp", 6))
+		   warning ("\"interp\" not supported, using 1st entry of cdata")
+		   r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
+		   r = max (1, min (r, size (cmap, 1)));
+		   color = cmap(r,:);
+		 endif
+	       else
+		 color = obj.facecolor;
+	       endif
+             else
+	       color = [0, 1, 0];
+             endif
+
+	     if (have_newer_gnuplot)
+	       withclause{data_idx} = ...
+	       sprintf ("with filledcurve lc rgb \"#%02x%02x%02x\"", ...
+			round (255*color));
+	     else
+	       if (isequal (color, [0,0,0]))
+		 typ = -1;
+	       elseif (isequal (color, [1,0,0]))
+		 typ = 1;
+	       elseif (isequal (color, [0,1,0]))
+		 typ = 2;
+	       elseif (isequal (color, [0,0,1]))
+		 typ = 3;
+	       elseif (isequal (color, [1,0,1]))
+		 typ = 4;
+	       elseif (isequal (color, [0,1,1]))
+		 typ = 5;
+	       elseif (isequal (color, [1,1,1]))
+		 typ = -1;
+	       elseif (isequal (color, [1,1,0]))
+		 typ = 7;
+	       else
+		 typ = -1;
+	       endif
+	       withclause{data_idx} = sprintf ("with filledcurve lt %d", typ);
+	     endif
+	     data{data_idx} = [xcol, ycol]';
+	     usingclause{data_idx} = "using ($1):($2)";
+	   endif
+
+           ## patch outline
+	   data_idx++;
+           is_image_data(data_idx) = false;
+           parametric(data_idx) = false;
+           titlespec{data_idx} = "title \"\"";
+	   usingclause{data_idx} = "";
+           if (isfield (obj, "edgecolor"))
+             if (strncmp (obj.edgecolor, "none", 4))
+               color = [1, 1, 1];
+             elseif (strncmp (obj.edgecolor, "flat", 4))
+               warning ("\"flat\" for edgecolor not supported");
+               color = [0, 0, 0];
+             elseif (strncmp (obj.edgecolor, "interp", 6))
+               warning ("\"interp\" for edgecolor not supported");
+               color = [0, 0, 0];
+             else
+	       color = obj.edgecolor;
+             endif
+           else
+             color = [0, 0, 0];
+           endif
+	   if (have_newer_gnuplot)
+	     withclause{data_idx} = ...
+	     sprintf ("with lines lc rgb \"#%02x%02x%02x\"", ...
+		      round (255*color));
+	   else
+	     if (isequal (color, [0,0,0]))
+	       typ = -1;
+	     elseif (isequal (color, [1,0,0]))
+	       typ = 1;
+	     elseif (isequal (color, [0,1,0]))
+	       typ = 2;
+	     elseif (isequal (color, [0,0,1]))
+	       typ = 3;
+	     elseif (isequal (color, [1,0,1]))
+	       typ = 4;
+	     elseif (isequal (color, [0,1,1]))
+	       typ = 5;
+	     elseif (isequal (color, [1,1,1]))
+	       typ = -1;
+	     elseif (isequal (color, [1,1,0]))
+	       typ = 7;
+	     else
+	       typ = -1;
+	     endif
+	     withclause{data_idx} = sprintf ("with lines lt %d", typ);
+	   endif
+
+	   if (!isnan (xcol) && !isnan (ycol))
+	     data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
+	   else
+	     data{data_idx} = [xcol, ycol]';
+	   endif
+	   usingclause{data_idx} = "using ($1):($2)";
+	 endfor
 
 	case "surface"
 	  data_idx++;

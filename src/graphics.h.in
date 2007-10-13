@@ -1599,6 +1599,8 @@ public:
       octave_value xdata
       octave_value ydata
       octave_value zdata
+      octave_value faces
+      octave_value vertices
       color_property facecolor a
       octave_value facealpha
       color_property edgecolor a

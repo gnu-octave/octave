@@ -20,7 +20,10 @@
 ## @deftypefn {Function File} {} patch ()
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c})
 ## @deftypefnx {Function File} {} patch (@var{x}, @var{y}, @var{c}, @var{opts})
+## @deftypefnx {Function File} {} patch ('Faces', @var{f}, 'Vertices', @var{v}, @dots{})
+## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} patch (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} = } patch (@dots{})
 ## Create patch object from @var{x} and @var{y} with color @var{c} and
 ## insert in the current axes object.  Return handle to patch object.
 ##
@@ -41,12 +44,16 @@ function h = patch (varargin)
     oldh = gca ();
     unwind_protect
       axes (h);
-      tmp = __patch__ (h, varargin{:});
+      [tmp, fail] = __patch__ (h, varargin{:});
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect
   else
-    tmp = __patch__ (gca (), varargin{:});
+    [tmp, fail] = __patch__ (gca (), varargin{:});
+  endif
+
+  if (fail)
+    print_usage ();
   endif
 
   if (nargout > 0)
@@ -54,3 +61,51 @@ function h = patch (varargin)
   endif
 
 endfunction
+
+%!demo
+%! ## Patches with same number of vertices
+%! close all;
+%! t1 = (1/16:1/8:1)'*2*pi;
+%! t2 = ((1/16:1/8:1)' + 1/32)*2*pi;
+%! x1 = sin(t1) - 0.8;
+%! y1 = cos(t1);
+%! x2 = sin(t2) + 0.8;
+%! y2 = cos(t2);
+%! patch([x1,x2],[y1,y2],'r');
+
+%!demo
+%! ## Unclosed patch
+%! close all;
+%! t1 = (1/16:1/8:1)'*2*pi;
+%! t2 = ((1/16:1/16:1)' + 1/32)*2*pi;
+%! x1 = sin(t1) - 0.8;
+%! y1 = cos(t1);
+%! x2 = sin(t2) + 0.8;
+%! y2 = cos(t2);
+%! patch([[x1;NaN(8,1)],x2],[[y1;NaN(8,1)],y2],'r');
+
+%!demo
+%! ## Specify vertices and faces separately
+%! close all;
+%! t1 = (1/16:1/8:1)'*2*pi;
+%! t2 = ((1/16:1/16:1)' + 1/32)*2*pi;
+%! x1 = sin(t1) - 0.8;
+%! y1 = cos(t1);
+%! x2 = sin(t2) + 0.8;
+%! y2 = cos(t2);
+%! vert = [x1, y1; x2, y2];
+%! fac = [1:8,NaN(1,8);9:24];
+%! patch('Faces',fac,'Vertices',vert,'FaceColor','r');
+
+%!demo
+%! ## Property change on multiple patches
+%! close all;
+%! t1 = (1/16:1/8:1)'*2*pi;
+%! t2 = ((1/16:1/8:1)' + 1/32)*2*pi;
+%! x1 = sin(t1) - 0.8;
+%! y1 = cos(t1);
+%! x2 = sin(t2) + 0.8;
+%! y2 = cos(t2);
+%! h = patch([x1,x2],[y1,y2],cat (3,[0,0],[1,0],[0,1]));
+%! pause (1);
+%! set (h, 'FaceColor', 'r');

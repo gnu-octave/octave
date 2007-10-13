@@ -2122,6 +2122,8 @@ patch::properties::properties (const graphics_handle& mh,
     xdata (Matrix ()),
     ydata (Matrix ()),
     zdata (Matrix ()),
+    faces (Matrix ()),
+    vertices (Matrix ()),
     facecolor (radio_values ("{flat}|none|interp")),
     facealpha (1.0),
     edgecolor (color_values(0, 0, 0), radio_values ("flat|none|interp")),
@@ -2156,6 +2158,10 @@ patch::properties::set (const property_name& name,
     set_ydata (val);
   else if (name.compare ("zdata"))
     set_zdata (val);
+  else if (name.compare ("faces"))
+    set_faces (val);
+  else if (name.compare ("vertices"))
+    set_vertices (val);
   else if (name.compare ("facecolor"))
     set_facecolor (val);
   else if (name.compare ("facealpha"))
@@ -2197,6 +2203,8 @@ patch::properties::get (void) const
   m.assign ("xdata", xdata);
   m.assign ("ydata", ydata);
   m.assign ("zdata", zdata);
+  m.assign ("faces", faces);
+  m.assign ("vertices", vertices);
   m.assign ("facecolor", facecolor);
   m.assign ("facealpha", facealpha);
   m.assign ("edgecolor", edgecolor);
@@ -2231,6 +2239,10 @@ patch::properties::get (const property_name& name) const
     retval = ydata;
   else if (name.compare ("zdata"))
     retval = zdata;
+  else if (name.compare ("faces"))
+    retval = faces;
+  else if (name.compare ("vertices"))
+    retval = vertices;
   else if (name.compare ("facecolor"))
     retval = facecolor;
   else if (name.compare ("facealpha"))
@@ -2264,6 +2276,8 @@ patch::properties::factory_defaults (void)
   m["xdata"] = Matrix ();
   m["ydata"] = Matrix ();
   m["zdata"] = Matrix ();
+  m["faces"] = Matrix ();
+  m["vertices"] = Matrix ();
   m["facecolor"] = color_property();
   m["facealpha"] = 1.0;
   m["edgecolor"] = color_property("black");

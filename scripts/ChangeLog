@@ -1,3 +1,9 @@
+2007-10-14  David Bateman  <dbateman@free.fr>
+
+	* pkg/pkg.m (pkg:configure_make): Treat case of no files to install in
+	src directory.
+	* plot/Makefile.in (SOURCES): Add fill.m.
+
 2007-10-13  David Bateman  <dbateman@free.fr>
 
 	* plot/__patch__.m: Allow multiple patches to be defined and

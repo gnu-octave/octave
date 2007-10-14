@@ -1095,7 +1095,11 @@ function configure_make (desc, packdir, verbose)
     endif
 
     ## Split into architecture dependent and independent files
-    idx = cellfun (@(x) is_architecture_dependent (x), filenames);
+    if (isempty (filenames))
+      idx = [];
+    else
+      idx = cellfun (@(x) is_architecture_dependent (x), filenames);
+    endif
     archdependent = filenames (idx);
     archindependent = filenames (!idx);
 

@@ -35,10 +35,12 @@
 ## lists or structures.
 ##
 ## @item assert(@var{observed}, @var{expected}, @var{tol})
-## Produce an error if relative error is less than tolerance. That is, 
-## @code{abs(@var{observed} - @var{expected}) > @var{tol} * @var{expected}}.  
-## Absolute error @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})} 
-## will be used when tolerance is negative or when the expected value is zero.
+## Accept a tolerance when comparing numbers. 
+## If @var{tol} is possitive use it as an absolute tolerance, will produce an error if
+## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol})}.
+## If @var{tol} is negative use it as a relative tolerance, will produce an error if
+## @code{abs(@var{observed} - @var{expected}) > abs(@var{tol} * @var{expected})}.
+## If @var{expected} is zero @var{tol} will always be used as an absolute tolerance.
 ## @end table
 ## @seealso{test}
 ## @end deftypefn
@@ -249,13 +251,19 @@ endfunction
 %!error assert(3+2*eps, 3, eps);
 %!error assert(3, 3+2*eps, eps);
 
-%## must give a little space for floating point errors on relative
+## must give a little space for floating point errors on relative
 %!assert(100+100*eps, 100, -2*eps); 
 %!assert(100, 100+100*eps, -2*eps);
 %!error assert(100+300*eps, 100, -2*eps); 
 %!error assert(100, 100+300*eps, -2*eps);
 %!error assert(3, [3,3]);
 %!error assert(3,4);
+
+## test relative vs. absolute tolerances
+%!test  assert (0.1+eps, 0.1,  2*eps);  # accept absolute
+%!error assert (0.1+eps, 0.1, -2*eps);  # fail relative
+%!test  assert (100+100*eps, 100, -2*eps);  # accept relative
+%!error assert (100+100*eps, 100,  2*eps);  # fail absolute
 
 ## structures
 %!shared x,y

@@ -311,7 +311,7 @@ example
 @example
 @group
 in = struct ('call1', @{x, Inf, 'last'@}, 'call2', @{x, Inf, 'first'@});
-in (1, :) = []
+in (:, 1) = []
 @result{} in =
       @{
         call1 =

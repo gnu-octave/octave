@@ -1,3 +1,13 @@
+2007-10-15  Søren Hauberg  <hauberg@gmail.com>
+
+	* general/rat.m, sparse/pcg.m, sparse/pcr.m, optimization/sqp.m,
+	statistics/models/logistic_regression.m, polynomial/polygcd.m,
+	control/system/ss.m, signal/arch_rnd.m, control/system/ss2sys.m,
+	control/system/syssetsignals.m, control/base/lqg.m,
+	strings/str2double.m, control/system/sysscale.m,
+	control/hinf/hinfdemo.m, general/cplxpair.m:
+	Make help text fit on pages when using smallbook.
+
 2007-10-15  David Bateman  <dbateman@free.fr>
 
 	* testfun/test.m: In error/warning blocks test for an error before

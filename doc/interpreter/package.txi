@@ -63,9 +63,9 @@ To see which packages are installed type
 @example
 @group
 pkg list
-     @print{} Package Name  | Version | Installation directory
-     @print{} --------------+---------+-----------------------
-     @print{}        image *|   1.0.0 | /home/jwe/octave/image-1.0.0
+@print{} Package Name  | Version | Installation directory
+@print{} --------------+---------+-----------------------
+@print{}        image *|   1.0.0 | /home/jwe/octave/image-1.0.0
 @end group
 @end example
 
@@ -307,11 +307,13 @@ Name: The name of my package
 Version: 1.0.0
 Date: 2007-18-04
 Author: The name (and possibly email) of the package author.
-Maintainer: The name (and possibly email) of the current package maintainer.
+Maintainer: The name (and possibly email) of the current
+ package maintainer.
 Title: The title of the package
-Description: A short description of the package. If this description
- gets too long for one line it can continue on the next by adding a
- space to the beginning of the following lines.
+Description: A short description of the package. If this
+ description gets too long for one line it can continue
+ on the next by adding a space to the beginning of the
+ following lines.
 License: GPL version 3 or later
 @end example
 

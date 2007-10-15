@@ -77,7 +77,7 @@
 ## If supplied, the gradient function must be of the form
 ##
 ## @example
-##      g = gradient (x)
+## g = gradient (x)
 ## @end example
 ##
 ## @noindent
@@ -86,7 +86,7 @@
 ## If supplied, the hessian function must be of the form
 ##
 ## @example
-##      h = hessian (x)
+## h = hessian (x)
 ## @end example
 ##
 ## @noindent
@@ -103,7 +103,7 @@
 ## of the form
 ##
 ## @example
-##      r = f (x)
+## r = f (x)
 ## @end example
 ##
 ## @noindent
@@ -134,35 +134,37 @@
 ## Here is an example of calling @code{sqp}:
 ##
 ## @example
-##      function r = g (x)
-##        r = [ sumsq(x)-10; x(2)*x(3)-5*x(4)*x(5); x(1)^3+x(2)^3+1];
-##      endfunction
+## function r = g (x)
+##   r = [ sumsq(x)-10;
+##         x(2)*x(3)-5*x(4)*x(5); 
+##         x(1)^3+x(2)^3+1 ];
+## endfunction
 ##
-##      function obj = phi (x)
-##        obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
-##      endfunction
+## function obj = phi (x)
+##   obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+## endfunction
 ##
-##      x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
+## x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
 ##
-##      [x, obj, info, iter, nf, lambda] = sqp (x0, @@phi, @@g, [])
+## [x, obj, info, iter, nf, lambda] = sqp (x0, @@phi, @@g, [])
 ##
-##      x =
+## x =
+##     
+##   -1.71714
+##    1.59571
+##    1.82725
+##   -0.76364
+##   -0.76364
 ##      
-##        -1.71714
-##         1.59571
-##         1.82725
-##        -0.76364
-##        -0.76364
-##      
-##      obj = 0.053950
-##      info = 101
-##      iter = 8
-##      nf = 10
-##      lambda =
-##      
-##        -0.0401627
-##         0.0379578
-##        -0.0052227
+## obj = 0.053950
+## info = 101
+## iter = 8
+## nf = 10
+## lambda =
+##     
+##   -0.0401627
+##    0.0379578
+##   -0.0052227
 ## @end example
 ##
 ## The value returned in @var{info} may be one of the following:

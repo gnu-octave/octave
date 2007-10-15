@@ -226,10 +226,10 @@ and if not issues a warning and sets @samp{a} to zero.
 @example
 a = -1;
 if (a < 0)
-  warning ("'a' must be non-negative number. Setting 'a' to zero.");
+  warning ("'a' must be non-negative. Setting 'a' to zero.");
   a = 0;
 endif
-     @print{} 'a' must be non-negative number. Setting 'a' to zero.
+     @print{} 'a' must be non-negative. Setting 'a' to zero.
 @end example
 
 Since warnings aren't fatal to a running program, it is not possible
@@ -260,7 +260,7 @@ their string identifications.  The following code will issue a warning
 
 @example
 warning ("non-negative-variable", 
-         "'a' must be non-negative number. Setting 'a' to zero.");
+         "'a' must be non-negative. Setting 'a' to zero.");
 @end example
 
 @noindent
@@ -269,7 +269,7 @@ while the following won't issue a warning
 @example
 warning ("off", "non-negative-variable");
 warning ("non-negative-variable", 
-         "'a' must be non-negative number. Setting 'a' to zero.");
+         "'a' must be non-negative. Setting 'a' to zero.");
 @end example
 
 The functions distributed with Octave can issue one of the following

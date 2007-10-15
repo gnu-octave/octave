@@ -775,7 +775,8 @@ being removed from memory, as the following example shows.
 @group
 function count_calls()
   persistent calls = 0;
-  printf ("'count_calls' has been called %d times\n", ++calls);
+  printf ("'count_calls' has been called %d times\n",
+          ++calls);
 endfunction
 mlock ("count_calls");
 
@@ -798,7 +799,8 @@ is simply done by calling @code{mlock} from within the function.
 function count_calls ()
   mlock ();
   persistent calls = 0;
-  printf ("'count_calls' has been called %d times\n", ++calls);
+  printf ("'count_calls' has been called %d times\n",
+          ++calls);
 endfunction
 @end group
 @end example

@@ -1853,9 +1853,9 @@ passed to @code{strftime} and should begin with the character\n\
 the header comment is omitted from text-format data files.  The\n\
 default value is\n\
 \n\
-@example\n\
+@smallexample\n\
 \"# Created by Octave VERSION, %a %b %d %H:%M:%S %Y %Z <USER@@HOST>\"\n\
-@end example\n\
+@end smallexample\n\
 @seealso{strftime}\n\
 @end deftypefn")
 {

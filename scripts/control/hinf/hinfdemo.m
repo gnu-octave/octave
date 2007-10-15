@@ -62,7 +62,7 @@
 ## @end example
 ## @end ifinfo
 ##
-## @example
+## @smallexample
 ## @group
 ##
 ##                               +----+
@@ -78,7 +78,7 @@
 ##          -----| K |<-------
 ##               +---+
 ## @end group
-## @end example
+## @end smallexample
 ## 
 ## @iftex
 ## @tex
@@ -107,7 +107,7 @@
 ## @end ifinfo
 ## norm of the
 ## augmented plant @var{P} (mixed-sensitivity problem):
-## @example
+## @smallexample
 ## @group
 ##      w
 ##       1 -----------+
@@ -124,7 +124,7 @@
 ##             u                       y (to K)
 ##          (from controller K)
 ## @end group
-## @end example
+## @end smallexample
 ##
 ## @iftex
 ## @tex
@@ -137,7 +137,7 @@
 ## @end tex
 ## @end iftex
 ## @ifinfo
-## @example
+## @smallexample
 ## @group
 ##                   +    +           +    +
 ##                   | z  |           | w  |
@@ -147,7 +147,7 @@
 ##                   | y  |           | u  |
 ##                   +    +           +    +
 ## @end group
-## @end example
+## @end smallexample
 ## @end ifinfo
 ##
 ## @item Discrete system:
@@ -192,7 +192,7 @@
 ## @end example
 ## @end ifinfo
 ##
-## @example
+## @smallexample
 ## @group
 ##
 ##                               +----+
@@ -208,7 +208,7 @@
 ##          -----| K |<-------
 ##               +---+
 ## @end group
-## @end example
+## @end smallexample
 ## @iftex
 ## @tex
 ## $$ { \rm min } \Vert T_{vz} \Vert _\infty $$

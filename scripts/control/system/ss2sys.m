@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} ss (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
+## @deftypefn {Function File} {} ss2sys (@var{a}, @var{b}, @var{c}, @var{d}, @var{tsam}, @var{n}, @var{nz}, @var{stname}, @var{inname}, @var{outname}, @var{outlist})
 ## Create system structure from state-space data.   May be continuous,
 ## discrete, or mixed (sampled data)
 ##
@@ -141,7 +141,8 @@
 ## octave:1> a = [1 2 3; 4 5 6; 7 8 10];
 ## octave:2> b = [0 0 ; 0 1 ; 1 0];
 ## octave:3> c = eye (3);
-## octave:4> sys = ss (a, b, c, [], 0, 3, 0, @{"volts", "amps", "joules"@});
+## octave:4> sys = ss (a, b, c, [], 0, 3, 0, 
+## >                   @{"volts", "amps", "joules"@});
 ## octave:5> sysout(sys);
 ## Input(s)
 ##         1: u_1

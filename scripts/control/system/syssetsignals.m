@@ -65,8 +65,9 @@
 ##
 ## @strong{Example}
 ## @example
-## octave:1> sys=ss([1 2; 3 4],[5;6],[7 8]);
-## octave:2> sys = syssetsignals(sys,"st",str2mat("Posx","Velx"));
+## octave:1> sys=ss ([1 2; 3 4],[5;6],[7 8]);
+## octave:2> sys = syssetsignals (sys, "st",
+## >                              str2mat("Posx","Velx"));
 ## octave:3> sysout(sys)
 ## Input(s)
 ##         1: u_1

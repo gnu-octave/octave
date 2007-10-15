@@ -174,7 +174,8 @@
 ##     y(1:K) = x(1:K)./[1:K]';
 ##   endfunction
 ## 
-##   [x, flag, relres, iter, resvec, eigest] = pcg (A, b, [], [], "applyM");
+##   [x, flag, relres, iter, resvec, eigest] = ...
+##                      pcg (A, b, [], [], "applyM");
 ##   semilogy (1:iter+1, resvec);
 ## @end group
 ## @end example

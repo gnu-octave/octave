@@ -67,12 +67,12 @@
 ##    3.1400    4.4440    0.7000
 ##  -10.0000       NaN       NaN
 ##
-## line = "200,300,400,NaN,-inf,cd,yes,no,999,maybe,NaN";
+## line = "200, 300, NaN, -inf, yes, no, 999, maybe, NaN";
 ## [x, status] = str2double (line)
-## x =
-##    200   300   400   NaN  -Inf   NaN   NaN   NaN   999   NaN   NaN
-## status =
-##     0     0     0     0     0    -1    -1    -1     0    -1     0
+## @result{} x =
+##     200   300   NaN  -Inf   NaN   NaN   999   NaN   NaN
+## @result{} status =
+##       0     0     0     0    -1    -1     0    -1     0
 ## @end example
 ## @end deftypefn
 

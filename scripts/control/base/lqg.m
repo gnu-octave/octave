@@ -26,8 +26,8 @@
 ## @end example
 ## or
 ## @example
-## x(k+1) = A x(k) + B u(k) + G w(k)       [w]=N(0,[Sigw 0    ])
-##   y(k) = C x(k) + v(k)                  [v]  (    0   Sigv ])
+## x(k+1) = A x(k) + B u(k) + G w(k)   [w]=N(0,[Sigw 0    ])
+##   y(k) = C x(k) + v(k)              [v]  (    0   Sigv ])
 ## @end example
 ##
 ## @strong{Inputs}

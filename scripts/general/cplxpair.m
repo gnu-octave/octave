@@ -35,9 +35,10 @@
 ## error. Note that there are no guarantees on the order of the returned
 ## pairs with identical real parts but differing imaginary parts.
 ##
-## @example
+## @c Using 'smallexample' to make text fit in page when using 'smallbook'
+## @smallexample
 ## cplxpair (exp(2i*pi*[0:4]'/5)) == exp(2i*pi*[3; 2; 4; 1; 0]/5)
-## @end example
+## @end smallexample
 ## @end deftypefn
 
 ## TODO: subsort returned pairs by imaginary magnitude

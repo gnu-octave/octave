@@ -195,7 +195,8 @@ Download a remote file specified by its @var{URL} and save it as\n\
 @var{localfile}.  For example,\n\
 \n\
 @example\n\
-urlwrite (\"ftp://ftp.octave.org/pub/octave/README\", \"README.txt\");\n\
+urlwrite (\"ftp://ftp.octave.org/pub/octave/README\", \n\
+          \"README.txt\");\n\
 @end example\n\
 \n\
 The full path of the downloaded file is returned in @var{f}.  The\n\
@@ -342,7 +343,7 @@ FTP and FILE protocols.  Username and password may be specified in the\n\
 URL.  For example,\n\
 \n\
 @example\n\
-s = urlread (\"http://username:password@@example.com/file.txt\");\n\
+s = urlread (\"http://user:password@@example.com/file.txt\");\n\
 @end example\n\
 \n\
 GET and POST requests can be specified by @var{method} and @var{param}.\n\

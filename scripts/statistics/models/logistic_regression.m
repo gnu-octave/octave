@@ -34,7 +34,7 @@
 ## fits the model
 ##
 ## @example
-## logit (gamma_i (x)) = theta_i - beta' * x,   i = 1, ..., k-1
+## logit (gamma_i (x)) = theta_i - beta' * x,   i = 1...k-1
 ## @end example
 ##
 ## The number of ordinal categories, @var{k}, is taken to be the number

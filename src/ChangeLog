@@ -1,3 +1,11 @@
+2007-10-15  Søren Hauberg  <hauberg@gmail.com>
+
+	* error.cc (Ferror): Make text fit on pages when using smallbook.
+	* load-save.cc (Fsave_header_format_string): Ditto.
+        * ov-struct.cc (Fcell2struct): Ditto.
+        * DLD-FUNCTIONS/besselj.cc (Fairy): Ditto.
+        * DLD-FUNCTIONS/urlwrite.cc (Furlwrite, Furlread): Ditto.
+
 2007-10-15  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc (axes::properties::get): Fix typo.

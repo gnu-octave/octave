@@ -211,8 +211,8 @@ element by element as the following example shows.
 @example
 GNU = "GNU's Not UNIX";
 spaces = (GNU == " ")
-     @result{} spaces =
-           0   0   0   0   0   1   0   0   0   1   0   0   0   0
+@result{} spaces =
+      0   0   0   0   0   1   0   0   0   1   0   0   0   0
 @end example
 
 @noindent

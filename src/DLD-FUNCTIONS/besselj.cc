@@ -415,12 +415,12 @@ Compute Airy functions of the first and second kind, and their\n\
 derivatives.\n\
 \n\
 @example\n\
-  K   Function   Scale factor (if a third argument is supplied)\n\
- ---  --------   ----------------------------------------------\n\
-  0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
-  1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\
-  2   Bi (Z)     exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
-  3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
+ K   Function   Scale factor (if 'opt' is supplied)\n\
+---  --------   ---------------------------------------\n\
+ 0   Ai (Z)     exp ((2/3) * Z * sqrt (Z))\n\
+ 1   dAi(Z)/dZ  exp ((2/3) * Z * sqrt (Z))\n\
+ 2   Bi (Z)     exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
+ 3   dBi(Z)/dZ  exp (-abs (real ((2/3) * Z *sqrt (Z))))\n\
 @end example\n\
 \n\
 The function call @code{airy (@var{z})} is equivalent to\n\

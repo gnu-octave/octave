@@ -984,7 +984,7 @@ function h () nargin == 1 || error (\"nargin != 1\"); end\n\
 calling the function @code{f} will result in a list of messages that\n\
 can help you to quickly locate the exact location of the error:\n\
 \n\
-@example\n\
+@smallexample\n\
 @group\n\
 f ()\n\
 error: nargin != 1\n\
@@ -994,7 +994,7 @@ error: called from `h'\n\
 error: called from `g'\n\
 error: called from `f'\n\
 @end group\n\
-@end example\n\
+@end smallexample\n\
 \n\
 If the error message ends in a new line character, Octave will print the\n\
 message but will not display any traceback messages as it returns\n\

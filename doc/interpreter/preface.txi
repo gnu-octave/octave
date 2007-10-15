@@ -179,7 +179,6 @@ Free Software Foundation@*
 Boston, MA 02110-1301--1307@*
 USA
 @end quotation
- 
-Octave is also available on the Internet from
-@url{ftp://ftp.octave.org/pub/octave}, and additional information is
-available from @url{http://www.octave.org}.
+
+Octave can also be downloaded from @url{http://www.octave.org}, where
+additional information also is available.

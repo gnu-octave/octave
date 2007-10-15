@@ -137,7 +137,8 @@
 ##     y(1:K) = x(1:K)./[1:K]';	
 ##   endfunction
 ## 
-##   [x, flag, relres, iter, resvec] = pcr(A,b,[],[],'applyM')
+##   [x, flag, relres, iter, resvec] = ...
+##                      pcr(A, b, [], [], 'applyM')
 ##   semilogy([1:iter+1], resvec);
 ## @end group
 ## @end example
@@ -152,7 +153,8 @@
 ##     y = x; y(1:K) = x(1:K)./[1:K]';	 
 ##   endfunction
 ## 
-##   [x, flag, relres, iter, resvec] = pcr(A,b,[],[],'applyM',[],3)
+##   [x, flag, relres, iter, resvec] = ...
+##                      pcr(A, b, [], [], 'applyM', [], 3)
 ## @end group
 ## @end example
 ## 

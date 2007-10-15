@@ -1,3 +1,11 @@
+2007-10-15  Søren Hauberg  <hauberg@gmail.com>
+
+	* interpreter/preface.txi, interpreter/basics.txi,
+	interpreter/strings.txi, interpreter/container.txi,
+	interpreter/var.txi, interpreter/expr.txi, interpreter/errors.txi,
+	interpreter/io.txi, interpreter/func.txi, interpreter/package.txi:
+	Make text fit on pages when using smallbook.
+
 2007-10-12  John W. Eaton  <jwe@octave.org>
 
 	* Change copyright notices in all files that are part of Octave to
@@ -828,7 +836,7 @@
 
 2003-05-14  John W. Eaton  <jwe@bevo.che.wisc.edu>
 
-	* interpreter/Makefile.in, doc/liboctave/Makefile.in: Handle DESTDIR.
+	* interpreter/Makefile.in, liboctave/Makefile.in: Handle DESTDIR.
 
 2003-02-19  John W. Eaton  <jwe@bevo.che.wisc.edu>
 

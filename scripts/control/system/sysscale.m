@@ -37,11 +37,11 @@
 ## @table @var
 ## @item retsys
 ## resulting open loop system:
-## @example
+## @smallexample
 ##       -----------    -------    -----------
 ## u --->| inscale |--->| sys |--->| outscale |---> y
 ##       -----------    -------    -----------
-## @end example
+## @end smallexample
 ## @end table
 ## If the input names and output names (each a list of strings)
 ## are not given and the scaling matrices

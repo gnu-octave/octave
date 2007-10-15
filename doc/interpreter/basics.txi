@@ -187,15 +187,16 @@ user-preferences to the following values
 
 @example
 @group
-  PS1                             = ">> "
-  PS2                             = ""
-  beep_on_error                   = true
-  crash_dumps_octave_core         = false
-  default_save_options            = "-mat-binary"
-  fixed_point_format              = true
-  history_timestamp_format_string = "%%-- %D %I:%M %p --%%"
-  page_screen_output              = false
-  print_empty_dimensions          = false
+PS1                     = ">> "
+PS2                     = ""
+beep_on_error           = true
+crash_dumps_octave_core = false
+default_save_options    = "-mat-binary"
+fixed_point_format      = true
+history_timestamp_format_string
+                        = "%%-- %D %I:%M %p --%%"
+page_screen_output      = false
+print_empty_dimensions  = false
 @end group
 @end example
 
@@ -203,9 +204,9 @@ user-preferences to the following values
 and disable the following warnings
 @example
 @group
-  Octave:fopen-file-in-path
-  Octave:function-name-clash
-  Octave:load-file-in-path
+Octave:fopen-file-in-path
+Octave:function-name-clash
+Octave:load-file-in-path
 @end group
 @end example
 
@@ -762,14 +763,15 @@ octave:13> f ()
 @noindent
 Octave will respond with
 
-@example
+@c Using 'smallexample' to make text fit on page when creating smallbook.
+@smallexample
 @group
 error: `x' undefined near line 1 column 24
 error: evaluating expression near line 1, column 24
 error: evaluating assignment expression near line 1, column 22
 error: called from `f'
 @end group
-@end example
+@end smallexample
 
 @noindent
 This error message has several parts, and gives you quite a bit of

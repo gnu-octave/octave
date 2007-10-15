@@ -24,8 +24,9 @@
 ## by @var{tol} using a continued fraction expansion. E.g,
 ##
 ## @example
-##    rat(pi) = 3 + 1/(7 + 1/16) = 355/113
-##    rat(e) = 3 + 1/(-4 + 1/(2 + 1/(5 + 1/(-2 + 1/(-7))))) = 1457/536
+## rat(pi) = 3 + 1/(7 + 1/16) = 355/113
+## rat(e) = 3 + 1/(-4 + 1/(2 + 1/(5 + 1/(-2 + 1/(-7))))) 
+##        = 1457/536
 ## @end example
 ##
 ## Called with two arguments returns the numerator and denominator separately

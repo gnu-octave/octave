@@ -144,7 +144,8 @@
 ## octave:1> a = [1 2 3; 4 5 6; 7 8 10];
 ## octave:2> b = [0 0 ; 0 1 ; 1 0];
 ## octave:3> c = eye (3);
-## octave:4> sys = ss (a, b, c, [], 0, 3, 0, @{"volts", "amps", "joules"@});
+## octave:4> sys = ss (a, b, c, [], 0, 3, 0, ...
+## >                   @{"volts", "amps", "joules"@});
 ## octave:5> sysout(sys);
 ## Input(s)
 ##         1: u_1

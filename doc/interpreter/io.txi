@@ -376,15 +376,15 @@ formatted and written to the output stream.  For example,
 @example
 pct = 37;
 filename = "foo.txt";
-printf ("Processing of `%s' is %d%% finished.\nPlease be patient.\n",
-        filename, pct);
+printf ("Processed %d%% of `%s'.\nPlease be patient.\n",
+        pct, filename);
 @end example
 
 @noindent
 produces output like
 
 @example
-Processing of `foo.txt' is 37% finished.
+Processed 37% of `foo.txt'.
 Please be patient.
 @end example
 

@@ -649,8 +649,8 @@ r = randn () / sqrt (2 * randg (df / 2) / df)\n\
 @end example\n\
 @item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}\n\
 @example\n\
-r1 = 2 * randg (n1 / 2) / n1 or 1 if n1 is infinite\n\
-r2 = 2 * randg (n2 / 2) / n2 or 1 if n2 is infinite\n\
+r1 = 2 * randg (n1 / 2) / n1 ## r1 equals 1 if n1 is infinite\n\
+r2 = 2 * randg (n2 / 2) / n2 ## r2 equals 1 if n2 is infinite\n\
 r = r1 / r2\n\n\
 @end example\n\
 @item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}\n\

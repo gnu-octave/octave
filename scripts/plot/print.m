@@ -128,6 +128,10 @@ function print (varargin)
   debug = false;
   debug_file = "octave-print-commands.log";
 
+  ## Ensure the last figure is on the screen for single line commands like
+  ##   plot(...); print(...);
+  drawnow ();
+
   for i = 1:nargin
     arg = varargin{i};
     if (ischar (arg))

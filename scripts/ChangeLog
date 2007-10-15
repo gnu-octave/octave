@@ -10,6 +10,9 @@
 
 2007-10-15  David Bateman  <dbateman@free.fr>
 
+	* plot/print.m: Call drawnow before printing to ensure the plot is
+	on the screen.
+
 	* testfun/test.m: In error/warning blocks test for an error before
 	a warning to avoid unexpected failures.
 

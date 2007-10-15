@@ -78,16 +78,33 @@ function rnd = frnd (m, n, r, c)
 
 
   if (isscalar (m) && isscalar (n))
-    if ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
-      rnd = n ./ m .* randg(m/2,sz) ./ randg(n/2,sz);
+    if (isinf (m) || isinf (n))
+      if (isinf (m))
+	rnd = ones (sz);
+      else
+	rnd = 2 ./ m .* randg(m / 2, sz);
+      endif
+      if (! isinf (n))
+	rnd = 0.5 .* n .* rnd ./ randg (n / 2, sz); 
+      endif
+    elseif ((m > 0) && (m < Inf) && (n > 0) && (n < Inf))
+      rnd = n ./ m .* randg (m / 2, sz) ./ randg (n / 2, sz);
     else
       rnd = NaN * ones (sz);
     endif
   else
     rnd = zeros (sz);
 
-    k = find (!(m > 0) | !(m < Inf) |
-              !(n > 0) | !(n < Inf));
+    k = find (isinf(m) | isinf(n));
+    if (any (k))
+      rnd (k) = 1;
+      k2 = find (!isinf(m) & isinf(n));
+      rnd (k2) = 2 ./ m(k2) .* randg (m(k2) ./ 2, size(k2));
+      k2 = find (isinf(m) & !isinf(n));
+      rnd (k2) = 0.5 .* n(k2) .* rnd(k2) ./ randg (n(k2) ./ 2, size(k2));
+    endif
+
+    k = find (!(m > 0) | !(n > 0));
     if (any (k))
       rnd(k) = NaN;
     endif

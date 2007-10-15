@@ -381,21 +381,22 @@ function [__ret1, __ret2, __ret3] = test (__name, __flag, __fid)
 	warning ("on", "quiet");
       	try
  	  eval (sprintf ("__test__(%s);", __shared));
-	  __err = trimerr (lastwarn, "warning");
-          warning (__warnstate.state, "quiet");
-
           if (! __warning)
        	    __msg = sprintf ("%sexpected <%s> but got no error\n",
  			     __signal_fail, __pattern);
-          elseif (isempty (__err))
-            __msg = sprintf ("%sexpected <%s> but got no warning\n",
+	  else
+	    __err = trimerr (lastwarn, "warning");
+            warning (__warnstate.state, "quiet");
+            if (isempty (__err))
+              __msg = sprintf ("%sexpected <%s> but got no warning\n",
 			     __signal_fail, __pattern);
-          elseif (isempty (regexp (__err, __pattern, "once")))
-            __msg = sprintf ("%sexpected <%s> but got %s\n",
- 			     __signal_fail, __pattern, __err);
-          else
-            __success = 1;
-          endif
+            elseif (isempty (regexp (__err, __pattern, "once")))
+              __msg = sprintf ("%sexpected <%s> but got %s\n",
+ 			       __signal_fail, __pattern, __err);
+            else
+              __success = 1;
+            endif
+	  endif
 
       	catch
 	  __err = trimerr (lasterr, "error");

@@ -1,3 +1,7 @@
+2007-10-15  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (axes::properties::get): Fix typo.
+
 2007-10-13  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.15+.

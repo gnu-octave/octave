@@ -1233,7 +1233,7 @@ axes::properties::set (const property_name& name, const octave_value& val)
   else if (name.compare ("xtick"))
     set_xtick (val);
   else if (name.compare ("ytick"))
-    set_xtick (val);
+    set_ytick (val);
   else if (name.compare ("ztick"))
     set_ztick (val);
   else if (name.compare ("xtickmode"))

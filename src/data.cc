@@ -2609,7 +2609,7 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 %!shared m
 %! m = magic (4);
 %!assert(norm(m,1), 34);
-%!assert(norm(m,2), 34);
+%!assert(norm(m,2), 34, -eps);
 %!assert(norm(m,Inf), 34);
 %!assert(norm(m,"inf"), 34);
 */

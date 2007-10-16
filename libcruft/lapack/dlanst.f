@@ -1,9 +1,8 @@
       DOUBLE PRECISION FUNCTION DLANST( NORM, N, D, E )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     February 29, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM
@@ -36,7 +35,7 @@
 *  where  norm1  denotes the  one norm of a matrix (maximum column sum),
 *  normI  denotes the  infinity norm  of a matrix  (maximum row sum) and
 *  normF  denotes the  Frobenius norm of a matrix (square root of sum of
-*  squares).  Note that  max(abs(A(i,j)))  is not a  matrix norm.
+*  squares).  Note that  max(abs(A(i,j)))  is not a consistent matrix norm.
 *
 *  Arguments
 *  =========

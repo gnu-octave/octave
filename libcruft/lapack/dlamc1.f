@@ -1,9 +1,8 @@
       SUBROUTINE DLAMC1( BETA, T, RND, IEEE1 )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       LOGICAL            IEEE1, RND
@@ -68,7 +67,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          ONE = 1
 *
 *        LBETA,  LIEEE1,  LT and  LRND  are the  local values  of  BETA,
@@ -177,6 +175,7 @@
       T = LT
       RND = LRND
       IEEE1 = LIEEE1
+      FIRST = .FALSE.
       RETURN
 *
 *     End of DLAMC1

@@ -1,9 +1,8 @@
       INTEGER          FUNCTION IZMAX1( N, CX, INCX )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INCX, N
@@ -43,7 +42,7 @@
       COMPLEX*16         ZDUM
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE
+      INTRINSIC          ABS
 *     ..
 *     .. Statement Functions ..
       DOUBLE PRECISION   CABS1

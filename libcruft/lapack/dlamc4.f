@@ -1,9 +1,8 @@
       SUBROUTINE DLAMC4( EMIN, START, BASE )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            BASE, EMIN
@@ -18,7 +17,7 @@
 *  Arguments
 *  =========
 *
-*  EMIN    (output) EMIN
+*  EMIN    (output) INTEGER 
 *          The minimum exponent before (gradual) underflow, computed by
 *          setting A = START and dividing by BASE until the previous A
 *          can not be recovered.

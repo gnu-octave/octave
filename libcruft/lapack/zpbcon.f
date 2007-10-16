@@ -1,10 +1,11 @@
       SUBROUTINE ZPBCON( UPLO, N, KD, AB, LDAB, ANORM, RCOND, WORK,
      $                   RWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     Modified to call ZLACN2 in place of ZLACON, 10 Feb 03, SJH.
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -81,6 +82,9 @@
       DOUBLE PRECISION   AINVNM, SCALE, SCALEL, SCALEU, SMLNUM
       COMPLEX*16         ZDUM
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            IZAMAX
@@ -88,7 +92,7 @@
       EXTERNAL           LSAME, IZAMAX, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZDRSCL, ZLACON, ZLATBS
+      EXTERNAL           XERBLA, ZDRSCL, ZLACN2, ZLATBS
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DIMAG
@@ -138,7 +142,7 @@
       KASE = 0
       NORMIN = 'N'
    10 CONTINUE
-      CALL ZLACON( N, WORK( N+1 ), WORK, AINVNM, KASE )
+      CALL ZLACN2( N, WORK( N+1 ), WORK, AINVNM, KASE, ISAVE )
       IF( KASE.NE.0 ) THEN
          IF( UPPER ) THEN
 *

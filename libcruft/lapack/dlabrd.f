@@ -1,10 +1,9 @@
       SUBROUTINE DLABRD( M, N, NB, A, LDA, D, E, TAUQ, TAUP, X, LDX, Y,
      $                   LDY )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     February 29, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            LDA, LDX, LDY, M, N, NB
@@ -87,7 +86,7 @@
 *          The n-by-nb matrix Y required to update the unreduced part
 *          of A.
 *
-*  LDY     (output) INTEGER
+*  LDY     (input) INTEGER
 *          The leading dimension of the array Y. LDY >= N.
 *
 *  Further Details

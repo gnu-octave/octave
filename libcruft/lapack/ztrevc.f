@@ -1,10 +1,9 @@
       SUBROUTINE ZTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
      $                   LDVR, MM, M, WORK, RWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
@@ -22,20 +21,23 @@
 *
 *  ZTREVC computes some or all of the right and/or left eigenvectors of
 *  a complex upper triangular matrix T.
-*
+*  Matrices of this type are produced by the Schur factorization of
+*  a complex general matrix:  A = Q*T*Q**H, as computed by ZHSEQR.
+*  
 *  The right eigenvector x and the left eigenvector y of T corresponding
 *  to an eigenvalue w are defined by:
-*
-*               T*x = w*x,     y'*T = w*y'
-*
-*  where y' denotes the conjugate transpose of the vector y.
-*
-*  If all eigenvectors are requested, the routine may either return the
-*  matrices X and/or Y of right or left eigenvectors of T, or the
-*  products Q*X and/or Q*Y, where Q is an input unitary
-*  matrix. If T was obtained from the Schur factorization of an
-*  original matrix A = Q*T*Q', then Q*X and Q*Y are the matrices of
-*  right or left eigenvectors of A.
+*  
+*               T*x = w*x,     (y**H)*T = w*(y**H)
+*  
+*  where y**H denotes the conjugate transpose of the vector y.
+*  The eigenvalues are not input to this routine, but are read directly
+*  from the diagonal of T.
+*  
+*  This routine returns the matrices X and/or Y of right and left
+*  eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
+*  input matrix.  If Q is the unitary factor that reduces a matrix A to
+*  Schur form T, then Q*X and Q*Y are the matrices of right and left
+*  eigenvectors of A.
 *
 *  Arguments
 *  =========
@@ -48,17 +50,17 @@
 *  HOWMNY  (input) CHARACTER*1
 *          = 'A':  compute all right and/or left eigenvectors;
 *          = 'B':  compute all right and/or left eigenvectors,
-*                  and backtransform them using the input matrices
-*                  supplied in VR and/or VL;
+*                  backtransformed using the matrices supplied in
+*                  VR and/or VL;
 *          = 'S':  compute selected right and/or left eigenvectors,
-*                  specified by the logical array SELECT.
+*                  as indicated by the logical array SELECT.
 *
 *  SELECT  (input) LOGICAL array, dimension (N)
 *          If HOWMNY = 'S', SELECT specifies the eigenvectors to be
 *          computed.
-*          If HOWMNY = 'A' or 'B', SELECT is not referenced.
-*          To select the eigenvector corresponding to the j-th
-*          eigenvalue, SELECT(j) must be set to .TRUE..
+*          The eigenvector corresponding to the j-th eigenvalue is
+*          computed if SELECT(j) = .TRUE..
+*          Not referenced if HOWMNY = 'A' or 'B'.
 *
 *  N       (input) INTEGER
 *          The order of the matrix T. N >= 0.
@@ -76,19 +78,16 @@
 *          Schur vectors returned by ZHSEQR).
 *          On exit, if SIDE = 'L' or 'B', VL contains:
 *          if HOWMNY = 'A', the matrix Y of left eigenvectors of T;
-*                           VL is lower triangular. The i-th column
-*                           VL(i) of VL is the eigenvector corresponding
-*                           to T(i,i).
 *          if HOWMNY = 'B', the matrix Q*Y;
 *          if HOWMNY = 'S', the left eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
 *                           of VL, in the same order as their
 *                           eigenvalues.
-*          If SIDE = 'R', VL is not referenced.
+*          Not referenced if SIDE = 'R'.
 *
 *  LDVL    (input) INTEGER
-*          The leading dimension of the array VL.  LDVL >= max(1,N) if
-*          SIDE = 'L' or 'B'; LDVL >= 1 otherwise.
+*          The leading dimension of the array VL.  LDVL >= 1, and if
+*          SIDE = 'L' or 'B', LDVL >= N.
 *
 *  VR      (input/output) COMPLEX*16 array, dimension (LDVR,MM)
 *          On entry, if SIDE = 'R' or 'B' and HOWMNY = 'B', VR must
@@ -96,19 +95,16 @@
 *          Schur vectors returned by ZHSEQR).
 *          On exit, if SIDE = 'R' or 'B', VR contains:
 *          if HOWMNY = 'A', the matrix X of right eigenvectors of T;
-*                           VR is upper triangular. The i-th column
-*                           VR(i) of VR is the eigenvector corresponding
-*                           to T(i,i).
 *          if HOWMNY = 'B', the matrix Q*X;
 *          if HOWMNY = 'S', the right eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
 *                           of VR, in the same order as their
 *                           eigenvalues.
-*          If SIDE = 'L', VR is not referenced.
+*          Not referenced if SIDE = 'L'.
 *
 *  LDVR    (input) INTEGER
-*          The leading dimension of the array VR.  LDVR >= max(1,N) if
-*           SIDE = 'R' or 'B'; LDVR >= 1 otherwise.
+*          The leading dimension of the array VR.  LDVR >= 1, and if
+*          SIDE = 'R' or 'B'; LDVR >= N.
 *
 *  MM      (input) INTEGER
 *          The number of columns in the arrays VL and/or VR. MM >= M.

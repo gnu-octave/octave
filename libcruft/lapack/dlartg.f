@@ -1,9 +1,8 @@
       SUBROUTINE DLARTG( F, G, CS, SN, R )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   CS, F, G, R, SN
@@ -45,6 +44,9 @@
 *  R       (output) DOUBLE PRECISION
 *          The nonzero component of the rotated vector.
 *
+*  This version has a few statements commented out for thread safety
+*  (machine parameters are computed on each entry). 10 feb 03, SJH.
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -56,7 +58,7 @@
       PARAMETER          ( TWO = 2.0D0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            FIRST
+*     LOGICAL            FIRST
       INTEGER            COUNT, I
       DOUBLE PRECISION   EPS, F1, G1, SAFMIN, SAFMN2, SAFMX2, SCALE
 *     ..
@@ -68,21 +70,21 @@
       INTRINSIC          ABS, INT, LOG, MAX, SQRT
 *     ..
 *     .. Save statement ..
-      SAVE               FIRST, SAFMX2, SAFMIN, SAFMN2
+*     SAVE               FIRST, SAFMX2, SAFMIN, SAFMN2
 *     ..
 *     .. Data statements ..
-      DATA               FIRST / .TRUE. /
+*     DATA               FIRST / .TRUE. /
 *     ..
 *     .. Executable Statements ..
 *
-      IF( FIRST ) THEN
-         FIRST = .FALSE.
+*     IF( FIRST ) THEN
          SAFMIN = DLAMCH( 'S' )
          EPS = DLAMCH( 'E' )
          SAFMN2 = DLAMCH( 'B' )**INT( LOG( SAFMIN / EPS ) /
      $            LOG( DLAMCH( 'B' ) ) / TWO )
          SAFMX2 = ONE / SAFMN2
-      END IF
+*        FIRST = .FALSE.
+*     END IF
       IF( G.EQ.ZERO ) THEN
          CS = ONE
          SN = ZERO

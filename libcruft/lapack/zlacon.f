@@ -1,9 +1,8 @@
       SUBROUTINE ZLACON( N, V, X, EST, KASE )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            KASE, N
@@ -36,8 +35,10 @@
 *         where A' is the conjugate transpose of A, and ZLACON must be
 *         re-called with all the other parameters unchanged.
 *
-*  EST    (output) DOUBLE PRECISION
-*         An estimate (a lower bound) for norm(A).
+*  EST    (input/output) DOUBLE PRECISION
+*         On entry with KASE = 1 or 2 and JUMP = 3, EST should be
+*         unchanged from the previous call to ZLACON.
+*         On exit, EST is an estimate (a lower bound) for norm(A). 
 *
 *  KASE   (input/output) INTEGER
 *         On the initial call to ZLACON, KASE should be 0.
@@ -126,7 +127,7 @@
       RETURN
 *
 *     ................ ENTRY   (JUMP = 2)
-*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY ZTRANS(A)*X.
+*     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY CTRANS(A)*X.
 *
    40 CONTINUE
       J = IZMAX1( N, X, 1 )
@@ -169,7 +170,7 @@
       RETURN
 *
 *     ................ ENTRY   (JUMP = 4)
-*     X HAS BEEN OVERWRITTEN BY ZTRANS(A)*X.
+*     X HAS BEEN OVERWRITTEN BY CTRANS(A)*X.
 *
    90 CONTINUE
       JLAST = J

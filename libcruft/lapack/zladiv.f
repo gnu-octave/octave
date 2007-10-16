@@ -1,9 +1,8 @@
-      DOUBLE COMPLEX   FUNCTION ZLADIV( X, Y )
+      COMPLEX*16     FUNCTION ZLADIV( X, Y )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       COMPLEX*16         X, Y

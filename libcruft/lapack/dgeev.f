@@ -1,10 +1,9 @@
       SUBROUTINE DGEEV( JOBVL, JOBVR, N, A, LDA, WR, WI, VL, LDVL, VR,
      $                  LDVR, WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     December 8, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVL, JOBVR
@@ -90,7 +89,7 @@
 *          The leading dimension of the array VR.  LDVR >= 1; if
 *          JOBVR = 'V', LDVR >= N.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -121,7 +120,7 @@
       LOGICAL            LQUERY, SCALEA, WANTVL, WANTVR
       CHARACTER          SIDE
       INTEGER            HSWORK, I, IBAL, IERR, IHI, ILO, ITAU, IWRK, K,
-     $                   MAXB, MAXWRK, MINWRK, NOUT
+     $                   MAXWRK, MINWRK, NOUT
       DOUBLE PRECISION   ANRM, BIGNUM, CS, CSCALE, EPS, R, SCL, SMLNUM,
      $                   SN
 *     ..
@@ -130,8 +129,9 @@
       DOUBLE PRECISION   DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLACPY, DLARTG,
-     $                   DLASCL, DORGHR, DROT, DSCAL, DTREVC, XERBLA
+      EXTERNAL           DGEBAK, DGEBAL, DGEHRD, DHSEQR, DLABAD, DLACPY,
+     $                   DLARTG, DLASCL, DORGHR, DROT, DSCAL, DTREVC,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -141,7 +141,7 @@
      $                   DNRM2
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, SQRT
+      INTRINSIC          MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -175,32 +175,46 @@
 *       calculated below. HSWORK is computed assuming ILO=1 and IHI=N,
 *       the worst case.)
 *
-      MINWRK = 1
-      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 .OR. LQUERY ) ) THEN
-         MAXWRK = 2*N + N*ILAENV( 1, 'DGEHRD', ' ', N, 1, N, 0 )
-         IF( ( .NOT.WANTVL ) .AND. ( .NOT.WANTVR ) ) THEN
-            MINWRK = MAX( 1, 3*N )
-            MAXB = MAX( ILAENV( 8, 'DHSEQR', 'EN', N, 1, N, -1 ), 2 )
-            K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'DHSEQR', 'EN', N, 1,
-     $          N, -1 ) ) )
-            HSWORK = MAX( K*( K+2 ), 2*N )
-            MAXWRK = MAX( MAXWRK, N+1, N+HSWORK )
+      IF( INFO.EQ.0 ) THEN
+         IF( N.EQ.0 ) THEN
+            MINWRK = 1
+            MAXWRK = 1
          ELSE
-            MINWRK = MAX( 1, 4*N )
-            MAXWRK = MAX( MAXWRK, 2*N+( N-1 )*
-     $               ILAENV( 1, 'DORGHR', ' ', N, 1, N, -1 ) )
-            MAXB = MAX( ILAENV( 8, 'DHSEQR', 'SV', N, 1, N, -1 ), 2 )
-            K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'DHSEQR', 'SV', N, 1,
-     $          N, -1 ) ) )
-            HSWORK = MAX( K*( K+2 ), 2*N )
-            MAXWRK = MAX( MAXWRK, N+1, N+HSWORK )
-            MAXWRK = MAX( MAXWRK, 4*N )
+            MAXWRK = 2*N + N*ILAENV( 1, 'DGEHRD', ' ', N, 1, N, 0 )
+            IF( WANTVL ) THEN
+               MINWRK = 4*N
+               MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
+     $                       'DORGHR', ' ', N, 1, N, -1 ) )
+               CALL DHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VL, LDVL,
+     $                WORK, -1, INFO )
+               HSWORK = WORK( 1 )
+               MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
+               MAXWRK = MAX( MAXWRK, 4*N )
+            ELSE IF( WANTVR ) THEN
+               MINWRK = 4*N
+               MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
+     $                       'DORGHR', ' ', N, 1, N, -1 ) )
+               CALL DHSEQR( 'S', 'V', N, 1, N, A, LDA, WR, WI, VR, LDVR,
+     $                WORK, -1, INFO )
+               HSWORK = WORK( 1 )
+               MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
+               MAXWRK = MAX( MAXWRK, 4*N )
+            ELSE 
+               MINWRK = 3*N
+               CALL DHSEQR( 'E', 'N', N, 1, N, A, LDA, WR, WI, VR, LDVR,
+     $                WORK, -1, INFO )
+               HSWORK = WORK( 1 )
+               MAXWRK = MAX( MAXWRK, N + 1, N + HSWORK )
+            END IF
+            MAXWRK = MAX( MAXWRK, MINWRK )
          END IF
          WORK( 1 ) = MAXWRK
+*
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
+            INFO = -13
+         END IF
       END IF
-      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
-         INFO = -13
-      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGEEV ', -INFO )
          RETURN

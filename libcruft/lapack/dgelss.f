@@ -1,10 +1,9 @@
       SUBROUTINE DGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -78,7 +77,7 @@
 *          The effective rank of A, i.e., the number of singular values
 *          which are greater than RCOND*S(1).
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -134,7 +133,6 @@
       INFO = 0
       MINMN = MIN( M, N )
       MAXMN = MAX( M, N )
-      MNTHR = ILAENV( 6, 'DGELSS', ' ', M, N, NRHS, -1 )
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -155,85 +153,91 @@
 *       NB refers to the optimal block size for the immediately
 *       following subroutine, as returned by ILAENV.)
 *
-      MINWRK = 1
-      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 .OR. LQUERY ) ) THEN
-         MAXWRK = 0
-         MM = M
-         IF( M.GE.N .AND. M.GE.MNTHR ) THEN
+      IF( INFO.EQ.0 ) THEN
+         MINWRK = 1
+         MAXWRK = 1
+         IF( MINMN.GT.0 ) THEN
+            MM = M
+            MNTHR = ILAENV( 6, 'DGELSS', ' ', M, N, NRHS, -1 )
+            IF( M.GE.N .AND. M.GE.MNTHR ) THEN
 *
-*           Path 1a - overdetermined, with many more rows than columns
+*              Path 1a - overdetermined, with many more rows than
+*                        columns
 *
-            MM = N
-            MAXWRK = MAX( MAXWRK, N+N*ILAENV( 1, 'DGEQRF', ' ', M, N,
-     $               -1, -1 ) )
-            MAXWRK = MAX( MAXWRK, N+NRHS*
-     $               ILAENV( 1, 'DORMQR', 'LT', M, NRHS, N, -1 ) )
-         END IF
-         IF( M.GE.N ) THEN
+               MM = N
+               MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'DGEQRF', ' ', M,
+     $                       N, -1, -1 ) )
+               MAXWRK = MAX( MAXWRK, N + NRHS*ILAENV( 1, 'DORMQR', 'LT',
+     $                       M, NRHS, N, -1 ) )
+            END IF
+            IF( M.GE.N ) THEN
 *
-*           Path 1 - overdetermined or exactly determined
+*              Path 1 - overdetermined or exactly determined
 *
-*           Compute workspace needed for DBDSQR
+*              Compute workspace needed for DBDSQR
 *
-            BDSPAC = MAX( 1, 5*N )
-            MAXWRK = MAX( MAXWRK, 3*N+( MM+N )*
-     $               ILAENV( 1, 'DGEBRD', ' ', MM, N, -1, -1 ) )
-            MAXWRK = MAX( MAXWRK, 3*N+NRHS*
-     $               ILAENV( 1, 'DORMBR', 'QLT', MM, NRHS, N, -1 ) )
-            MAXWRK = MAX( MAXWRK, 3*N+( N-1 )*
-     $               ILAENV( 1, 'DORGBR', 'P', N, N, N, -1 ) )
-            MAXWRK = MAX( MAXWRK, BDSPAC )
-            MAXWRK = MAX( MAXWRK, N*NRHS )
-            MINWRK = MAX( 3*N+MM, 3*N+NRHS, BDSPAC )
-            MAXWRK = MAX( MINWRK, MAXWRK )
-         END IF
-         IF( N.GT.M ) THEN
-*
-*           Compute workspace needed for DBDSQR
-*
-            BDSPAC = MAX( 1, 5*M )
-            MINWRK = MAX( 3*M+NRHS, 3*M+N, BDSPAC )
-            IF( N.GE.MNTHR ) THEN
-*
-*              Path 2a - underdetermined, with many more columns
-*              than rows
-*
-               MAXWRK = M + M*ILAENV( 1, 'DGELQF', ' ', M, N, -1, -1 )
-               MAXWRK = MAX( MAXWRK, M*M+4*M+2*M*
-     $                  ILAENV( 1, 'DGEBRD', ' ', M, M, -1, -1 ) )
-               MAXWRK = MAX( MAXWRK, M*M+4*M+NRHS*
-     $                  ILAENV( 1, 'DORMBR', 'QLT', M, NRHS, M, -1 ) )
-               MAXWRK = MAX( MAXWRK, M*M+4*M+( M-1 )*
-     $                  ILAENV( 1, 'DORGBR', 'P', M, M, M, -1 ) )
-               MAXWRK = MAX( MAXWRK, M*M+M+BDSPAC )
-               IF( NRHS.GT.1 ) THEN
-                  MAXWRK = MAX( MAXWRK, M*M+M+M*NRHS )
-               ELSE
-                  MAXWRK = MAX( MAXWRK, M*M+2*M )
-               END IF
-               MAXWRK = MAX( MAXWRK, M+NRHS*
-     $                  ILAENV( 1, 'DORMLQ', 'LT', N, NRHS, M, -1 ) )
-            ELSE
-*
-*              Path 2 - underdetermined
-*
-               MAXWRK = 3*M + ( N+M )*ILAENV( 1, 'DGEBRD', ' ', M, N,
-     $                  -1, -1 )
-               MAXWRK = MAX( MAXWRK, 3*M+NRHS*
-     $                  ILAENV( 1, 'DORMBR', 'QLT', M, NRHS, M, -1 ) )
-               MAXWRK = MAX( MAXWRK, 3*M+M*
-     $                  ILAENV( 1, 'DORGBR', 'P', M, N, M, -1 ) )
+               BDSPAC = MAX( 1, 5*N )
+               MAXWRK = MAX( MAXWRK, 3*N + ( MM + N )*ILAENV( 1,
+     $                       'DGEBRD', ' ', MM, N, -1, -1 ) )
+               MAXWRK = MAX( MAXWRK, 3*N + NRHS*ILAENV( 1, 'DORMBR',
+     $                       'QLT', MM, NRHS, N, -1 ) )
+               MAXWRK = MAX( MAXWRK, 3*N + ( N - 1 )*ILAENV( 1,
+     $                       'DORGBR', 'P', N, N, N, -1 ) )
                MAXWRK = MAX( MAXWRK, BDSPAC )
                MAXWRK = MAX( MAXWRK, N*NRHS )
+               MINWRK = MAX( 3*N + MM, 3*N + NRHS, BDSPAC )
+               MAXWRK = MAX( MINWRK, MAXWRK )
             END IF
+            IF( N.GT.M ) THEN
+*
+*              Compute workspace needed for DBDSQR
+*
+               BDSPAC = MAX( 1, 5*M )
+               MINWRK = MAX( 3*M+NRHS, 3*M+N, BDSPAC )
+               IF( N.GE.MNTHR ) THEN
+*
+*                 Path 2a - underdetermined, with many more columns
+*                 than rows
+*
+                  MAXWRK = M + M*ILAENV( 1, 'DGELQF', ' ', M, N, -1,
+     $                                  -1 )
+                  MAXWRK = MAX( MAXWRK, M*M + 4*M + 2*M*ILAENV( 1,
+     $                          'DGEBRD', ' ', M, M, -1, -1 ) )
+                  MAXWRK = MAX( MAXWRK, M*M + 4*M + NRHS*ILAENV( 1,
+     $                          'DORMBR', 'QLT', M, NRHS, M, -1 ) )
+                  MAXWRK = MAX( MAXWRK, M*M + 4*M +
+     $                          ( M - 1 )*ILAENV( 1, 'DORGBR', 'P', M,
+     $                          M, M, -1 ) )
+                  MAXWRK = MAX( MAXWRK, M*M + M + BDSPAC )
+                  IF( NRHS.GT.1 ) THEN
+                     MAXWRK = MAX( MAXWRK, M*M + M + M*NRHS )
+                  ELSE
+                     MAXWRK = MAX( MAXWRK, M*M + 2*M )
+                  END IF
+                  MAXWRK = MAX( MAXWRK, M + NRHS*ILAENV( 1, 'DORMLQ',
+     $                          'LT', N, NRHS, M, -1 ) )
+               ELSE
+*
+*                 Path 2 - underdetermined
+*
+                  MAXWRK = 3*M + ( N + M )*ILAENV( 1, 'DGEBRD', ' ', M,
+     $                     N, -1, -1 )
+                  MAXWRK = MAX( MAXWRK, 3*M + NRHS*ILAENV( 1, 'DORMBR',
+     $                          'QLT', M, NRHS, M, -1 ) )
+                  MAXWRK = MAX( MAXWRK, 3*M + M*ILAENV( 1, 'DORGBR',
+     $                          'P', M, N, M, -1 ) )
+                  MAXWRK = MAX( MAXWRK, BDSPAC )
+                  MAXWRK = MAX( MAXWRK, N*NRHS )
+               END IF
+            END IF
+            MAXWRK = MAX( MINWRK, MAXWRK )
          END IF
-         MAXWRK = MAX( MINWRK, MAXWRK )
          WORK( 1 ) = MAXWRK
+*
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
+     $      INFO = -12
       END IF
 *
-      MINWRK = MAX( MINWRK, 1 )
-      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
-     $   INFO = -12
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGELSS', -INFO )
          RETURN

@@ -1,10 +1,9 @@
       SUBROUTINE ZBDSQR( UPLO, N, NCVT, NRU, NCC, D, E, VT, LDVT, U,
      $                   LDU, C, LDC, RWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -18,14 +17,26 @@
 *  Purpose
 *  =======
 *
-*  ZBDSQR computes the singular value decomposition (SVD) of a real
-*  N-by-N (upper or lower) bidiagonal matrix B:  B = Q * S * P' (P'
-*  denotes the transpose of P), where S is a diagonal matrix with
-*  non-negative diagonal elements (the singular values of B), and Q
-*  and P are orthogonal matrices.
-*
-*  The routine computes S, and optionally computes U * Q, P' * VT,
-*  or Q' * C, for given complex input matrices U, VT, and C.
+*  ZBDSQR computes the singular values and, optionally, the right and/or
+*  left singular vectors from the singular value decomposition (SVD) of
+*  a real N-by-N (upper or lower) bidiagonal matrix B using the implicit
+*  zero-shift QR algorithm.  The SVD of B has the form
+* 
+*     B = Q * S * P**H
+* 
+*  where S is the diagonal matrix of singular values, Q is an orthogonal
+*  matrix of left singular vectors, and P is an orthogonal matrix of
+*  right singular vectors.  If left singular vectors are requested, this
+*  subroutine actually returns U*Q instead of Q, and, if right singular
+*  vectors are requested, this subroutine returns P**H*VT instead of
+*  P**H, for given complex input matrices U and VT.  When U and VT are
+*  the unitary matrices that reduce a general matrix A to bidiagonal
+*  form: A = U*B*VT, as computed by ZGEBRD, then
+* 
+*     A = (U*Q) * S * (P**H*VT)
+* 
+*  is the SVD of A.  Optionally, the subroutine may also compute Q**H*C
+*  for a given complex input matrix C.
 *
 *  See "Computing  Small Singular Values of Bidiagonal Matrices With
 *  Guaranteed High Relative Accuracy," by J. Demmel and W. Kahan,
@@ -60,19 +71,18 @@
 *          On exit, if INFO=0, the singular values of B in decreasing
 *          order.
 *
-*  E       (input/output) DOUBLE PRECISION array, dimension (N)
-*          On entry, the elements of E contain the
-*          offdiagonal elements of the bidiagonal matrix whose SVD
-*          is desired. On normal exit (INFO = 0), E is destroyed.
-*          If the algorithm does not converge (INFO > 0), D and E
+*  E       (input/output) DOUBLE PRECISION array, dimension (N-1)
+*          On entry, the N-1 offdiagonal elements of the bidiagonal
+*          matrix B.
+*          On exit, if INFO = 0, E is destroyed; if INFO > 0, D and E
 *          will contain the diagonal and superdiagonal elements of a
 *          bidiagonal matrix orthogonally equivalent to the one given
-*          as input. E(N) is used for workspace.
+*          as input.
 *
 *  VT      (input/output) COMPLEX*16 array, dimension (LDVT, NCVT)
 *          On entry, an N-by-NCVT matrix VT.
-*          On exit, VT is overwritten by P' * VT.
-*          VT is not referenced if NCVT = 0.
+*          On exit, VT is overwritten by P**H * VT.
+*          Not referenced if NCVT = 0.
 *
 *  LDVT    (input) INTEGER
 *          The leading dimension of the array VT.
@@ -81,21 +91,22 @@
 *  U       (input/output) COMPLEX*16 array, dimension (LDU, N)
 *          On entry, an NRU-by-N matrix U.
 *          On exit, U is overwritten by U * Q.
-*          U is not referenced if NRU = 0.
+*          Not referenced if NRU = 0.
 *
 *  LDU     (input) INTEGER
 *          The leading dimension of the array U.  LDU >= max(1,NRU).
 *
 *  C       (input/output) COMPLEX*16 array, dimension (LDC, NCC)
 *          On entry, an N-by-NCC matrix C.
-*          On exit, C is overwritten by Q' * C.
-*          C is not referenced if NCC = 0.
+*          On exit, C is overwritten by Q**H * C.
+*          Not referenced if NCC = 0.
 *
 *  LDC     (input) INTEGER
 *          The leading dimension of the array C.
 *          LDC >= max(1,N) if NCC > 0; LDC >=1 if NCC = 0.
 *
-*  RWORK   (workspace) DOUBLE PRECISION array, dimension (4*N)
+*  RWORK   (workspace) DOUBLE PRECISION array, dimension (2*N)
+*          if NCVT = NRU = NCC = 0, (max(1, 4*N-4)) otherwise
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -155,7 +166,7 @@
      $                   NM12, NM13, OLDLL, OLDM
       DOUBLE PRECISION   ABSE, ABSS, COSL, COSR, CS, EPS, F, G, H, MU,
      $                   OLDCS, OLDSN, R, SHIFT, SIGMN, SIGMX, SINL,
-     $                   SINR, SLL, SMAX, SMIN, SMINL, SMINLO, SMINOA,
+     $                   SINR, SLL, SMAX, SMIN, SMINL, SMINOA,
      $                   SN, THRESH, TOL, TOLMUL, UNFL
 *     ..
 *     .. External Functions ..
@@ -415,7 +426,6 @@
                   E( LLL ) = ZERO
                   GO TO 60
                END IF
-               SMINLO = SMINL
                MU = ABS( D( LLL+1 ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
                SMINL = MIN( SMINL, MU )
   100       CONTINUE
@@ -444,7 +454,6 @@
                   E( LLL ) = ZERO
                   GO TO 60
                END IF
-               SMINLO = SMINL
                MU = ABS( D( LLL ) )*( MU / ( MU+ABS( E( LLL ) ) ) )
                SMINL = MIN( SMINL, MU )
   110       CONTINUE

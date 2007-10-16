@@ -1,9 +1,8 @@
       DOUBLE PRECISION FUNCTION DLANSY( NORM, UPLO, N, A, LDA, WORK )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          NORM, UPLO
@@ -36,7 +35,7 @@
 *  where  norm1  denotes the  one norm of a matrix (maximum column sum),
 *  normI  denotes the  infinity norm  of a matrix  (maximum row sum) and
 *  normF  denotes the  Frobenius norm of a matrix (square root of sum of
-*  squares).  Note that  max(abs(A(i,j)))  is not a  matrix norm.
+*  squares).  Note that  max(abs(A(i,j)))  is not a consistent matrix norm.
 *
 *  Arguments
 *  =========
@@ -67,7 +66,7 @@
 *  LDA     (input) INTEGER
 *          The leading dimension of the array A.  LDA >= max(N,1).
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (LWORK),
+*  WORK    (workspace) DOUBLE PRECISION array, dimension (MAX(1,LWORK)),
 *          where LWORK >= N when NORM = 'I' or '1' or 'O'; otherwise,
 *          WORK is not referenced.
 *

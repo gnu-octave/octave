@@ -1,10 +1,9 @@
       SUBROUTINE ZHEEV( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK,
      $                  INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBZ, UPLO
@@ -53,7 +52,7 @@
 *  W       (output) DOUBLE PRECISION array, dimension (N)
 *          If INFO = 0, the eigenvalues in ascending order.
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -86,7 +85,7 @@
 *     .. Local Scalars ..
       LOGICAL            LOWER, LQUERY, WANTZ
       INTEGER            IINFO, IMAX, INDE, INDTAU, INDWRK, ISCALE,
-     $                   LLWORK, LOPT, LWKOPT, NB
+     $                   LLWORK, LWKOPT, NB
       DOUBLE PRECISION   ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN, SIGMA,
      $                   SMLNUM
 *     ..
@@ -120,14 +119,15 @@
          INFO = -3
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -5
-      ELSE IF( LWORK.LT.MAX( 1, 2*N-1 ) .AND. .NOT.LQUERY ) THEN
-         INFO = -8
       END IF
 *
       IF( INFO.EQ.0 ) THEN
          NB = ILAENV( 1, 'ZHETRD', UPLO, N, -1, -1, -1 )
          LWKOPT = MAX( 1, ( NB+1 )*N )
          WORK( 1 ) = LWKOPT
+*
+         IF( LWORK.LT.MAX( 1, 2*N-1 ) .AND. .NOT.LQUERY )
+     $      INFO = -8
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -140,13 +140,12 @@
 *     Quick return if possible
 *
       IF( N.EQ.0 ) THEN
-         WORK( 1 ) = 1
          RETURN
       END IF
 *
       IF( N.EQ.1 ) THEN
          W( 1 ) = A( 1, 1 )
-         WORK( 1 ) = 3
+         WORK( 1 ) = 1
          IF( WANTZ )
      $      A( 1, 1 ) = CONE
          RETURN
@@ -183,7 +182,6 @@
       LLWORK = LWORK - INDWRK + 1
       CALL ZHETRD( UPLO, N, A, LDA, W, RWORK( INDE ), WORK( INDTAU ),
      $             WORK( INDWRK ), LLWORK, IINFO )
-      LOPT = N + WORK( INDWRK )
 *
 *     For eigenvalues only, call DSTERF.  For eigenvectors, first call
 *     ZUNGTR to generate the unitary matrix, then call ZSTEQR.

@@ -1,3 +1,14 @@
+2007-10-16  John W. Eaton  <jwe@octave.org>
+
+	* lapack/dlacn2.f, lapack/dlacn2.f, lapack/dlahr2.f,
+	lapack/dlahr2.f, lapack/dlaqr0.f, lapack/dlazq3.f,
+	lapack/dlazq3.f, lapack/dormr3.f, lapack/dormrz.f,
+	lapack/iparmq.f, lapack/iparmq.f, lapack/zlacn2.f,
+	lapack/zlahr2.f, lapack/zlaqr0.f: New files.
+	* lapack/Makefile.in (FSRC): Add them to the list.
+
+	* lapack: Update all files to current versions from Lapack 3.1.1.
+
 2007-10-12  John W. Eaton  <jwe@octave.org>
 
 	* Change copyright notices in all files that are part of Octave to

@@ -1,9 +1,8 @@
       SUBROUTINE DLAMC2( BETA, T, RND, EPS, EMIN, RMIN, EMAX, RMAX )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       LOGICAL            RND
@@ -90,7 +89,6 @@
 *     .. Executable Statements ..
 *
       IF( FIRST ) THEN
-         FIRST = .FALSE.
          ZERO = 0
          ONE = 1
          TWO = 2
@@ -204,6 +202,7 @@
 *         ( A guess; no known machine )
             IWARN = .TRUE.
          END IF
+         FIRST = .FALSE.
 ***
 * Comment out this if block if EMIN is ok
          IF( IWARN ) THEN

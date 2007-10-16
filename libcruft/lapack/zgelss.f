@@ -1,10 +1,9 @@
       SUBROUTINE ZGELSS( M, N, NRHS, A, LDA, B, LDB, S, RCOND, RANK,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS, RANK
@@ -61,7 +60,7 @@
 *          On exit, B is overwritten by the N-by-NRHS solution matrix X.
 *          If m >= n and RANK = n, the residual sum-of-squares for
 *          the solution in the i-th column is given by the sum of
-*          squares of elements n+1:m in that column.
+*          squares of the modulus of elements n+1:m in that column.
 *
 *  LDB     (input) INTEGER
 *          The leading dimension of the array B.  LDB >= max(1,M,N).
@@ -79,7 +78,7 @@
 *          The effective rank of A, i.e., the number of singular values
 *          which are greater than RCOND*S(1).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -141,7 +140,6 @@
       INFO = 0
       MINMN = MIN( M, N )
       MAXMN = MAX( M, N )
-      MNTHR = ILAENV( 6, 'ZGELSS', ' ', M, N, NRHS, -1 )
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -163,82 +161,79 @@
 *       to real workspace. NB refers to the optimal block size for the
 *       immediately following subroutine, as returned by ILAENV.)
 *
-      MINWRK = 1
-      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 .OR. LQUERY ) ) THEN
-         MAXWRK = 0
-         MM = M
-         IF( M.GE.N .AND. M.GE.MNTHR ) THEN
+      IF( INFO.EQ.0 ) THEN
+         MINWRK = 1
+         MAXWRK = 1
+         IF( MINMN.GT.0 ) THEN
+            MM = M
+            MNTHR = ILAENV( 6, 'ZGELSS', ' ', M, N, NRHS, -1 )
+            IF( M.GE.N .AND. M.GE.MNTHR ) THEN
 *
-*           Path 1a - overdetermined, with many more rows than columns
+*              Path 1a - overdetermined, with many more rows than
+*                        columns
 *
-*           Space needed for ZBDSQR is BDSPAC = 5*N
-*
-            MM = N
-            MAXWRK = MAX( MAXWRK, N+N*ILAENV( 1, 'ZGEQRF', ' ', M, N,
-     $               -1, -1 ) )
-            MAXWRK = MAX( MAXWRK, N+NRHS*
-     $               ILAENV( 1, 'ZUNMQR', 'LC', M, NRHS, N, -1 ) )
-         END IF
-         IF( M.GE.N ) THEN
-*
-*           Path 1 - overdetermined or exactly determined
-*
-*           Space needed for ZBDSQR is BDSPC = 7*N+12
-*
-            MAXWRK = MAX( MAXWRK, 2*N+( MM+N )*
-     $               ILAENV( 1, 'ZGEBRD', ' ', MM, N, -1, -1 ) )
-            MAXWRK = MAX( MAXWRK, 2*N+NRHS*
-     $               ILAENV( 1, 'ZUNMBR', 'QLC', MM, NRHS, N, -1 ) )
-            MAXWRK = MAX( MAXWRK, 2*N+( N-1 )*
-     $               ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
-            MAXWRK = MAX( MAXWRK, N*NRHS )
-            MINWRK = 2*N + MAX( NRHS, M )
-         END IF
-         IF( N.GT.M ) THEN
-            MINWRK = 2*M + MAX( NRHS, N )
-            IF( N.GE.MNTHR ) THEN
-*
-*              Path 2a - underdetermined, with many more columns
-*              than rows
-*
-*              Space needed for ZBDSQR is BDSPAC = 5*M
-*
-               MAXWRK = M + M*ILAENV( 1, 'ZGELQF', ' ', M, N, -1, -1 )
-               MAXWRK = MAX( MAXWRK, 3*M+M*M+2*M*
-     $                  ILAENV( 1, 'ZGEBRD', ' ', M, M, -1, -1 ) )
-               MAXWRK = MAX( MAXWRK, 3*M+M*M+NRHS*
-     $                  ILAENV( 1, 'ZUNMBR', 'QLC', M, NRHS, M, -1 ) )
-               MAXWRK = MAX( MAXWRK, 3*M+M*M+( M-1 )*
-     $                  ILAENV( 1, 'ZUNGBR', 'P', M, M, M, -1 ) )
-               IF( NRHS.GT.1 ) THEN
-                  MAXWRK = MAX( MAXWRK, M*M+M+M*NRHS )
-               ELSE
-                  MAXWRK = MAX( MAXWRK, M*M+2*M )
-               END IF
-               MAXWRK = MAX( MAXWRK, M+NRHS*
-     $                  ILAENV( 1, 'ZUNMLQ', 'LC', N, NRHS, M, -1 ) )
-            ELSE
-*
-*              Path 2 - underdetermined
-*
-*              Space needed for ZBDSQR is BDSPAC = 5*M
-*
-               MAXWRK = 2*M + ( N+M )*ILAENV( 1, 'ZGEBRD', ' ', M, N,
-     $                  -1, -1 )
-               MAXWRK = MAX( MAXWRK, 2*M+NRHS*
-     $                  ILAENV( 1, 'ZUNMBR', 'QLC', M, NRHS, M, -1 ) )
-               MAXWRK = MAX( MAXWRK, 2*M+M*
-     $                  ILAENV( 1, 'ZUNGBR', 'P', M, N, M, -1 ) )
-               MAXWRK = MAX( MAXWRK, N*NRHS )
+               MM = N
+               MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'ZGEQRF', ' ', M,
+     $                       N, -1, -1 ) )
+               MAXWRK = MAX( MAXWRK, N + NRHS*ILAENV( 1, 'ZUNMQR', 'LC',
+     $                       M, NRHS, N, -1 ) )
             END IF
+            IF( M.GE.N ) THEN
+*
+*              Path 1 - overdetermined or exactly determined
+*
+               MAXWRK = MAX( MAXWRK, 2*N + ( MM + N )*ILAENV( 1,
+     $                       'ZGEBRD', ' ', MM, N, -1, -1 ) )
+               MAXWRK = MAX( MAXWRK, 2*N + NRHS*ILAENV( 1, 'ZUNMBR',
+     $                       'QLC', MM, NRHS, N, -1 ) )
+               MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
+     $                       'ZUNGBR', 'P', N, N, N, -1 ) )
+               MAXWRK = MAX( MAXWRK, N*NRHS )
+               MINWRK = 2*N + MAX( NRHS, M )
+            END IF
+            IF( N.GT.M ) THEN
+               MINWRK = 2*M + MAX( NRHS, N )
+               IF( N.GE.MNTHR ) THEN
+*
+*                 Path 2a - underdetermined, with many more columns
+*                 than rows
+*
+                  MAXWRK = M + M*ILAENV( 1, 'ZGELQF', ' ', M, N, -1,
+     $                     -1 )
+                  MAXWRK = MAX( MAXWRK, 3*M + M*M + 2*M*ILAENV( 1,
+     $                          'ZGEBRD', ' ', M, M, -1, -1 ) )
+                  MAXWRK = MAX( MAXWRK, 3*M + M*M + NRHS*ILAENV( 1,
+     $                          'ZUNMBR', 'QLC', M, NRHS, M, -1 ) )
+                  MAXWRK = MAX( MAXWRK, 3*M + M*M + ( M - 1 )*ILAENV( 1,
+     $                          'ZUNGBR', 'P', M, M, M, -1 ) )
+                  IF( NRHS.GT.1 ) THEN
+                     MAXWRK = MAX( MAXWRK, M*M + M + M*NRHS )
+                  ELSE
+                     MAXWRK = MAX( MAXWRK, M*M + 2*M )
+                  END IF
+                  MAXWRK = MAX( MAXWRK, M + NRHS*ILAENV( 1, 'ZUNMLQ',
+     $                          'LC', N, NRHS, M, -1 ) )
+               ELSE
+*
+*                 Path 2 - underdetermined
+*
+                  MAXWRK = 2*M + ( N + M )*ILAENV( 1, 'ZGEBRD', ' ', M,
+     $                     N, -1, -1 )
+                  MAXWRK = MAX( MAXWRK, 2*M + NRHS*ILAENV( 1, 'ZUNMBR',
+     $                          'QLC', M, NRHS, M, -1 ) )
+                  MAXWRK = MAX( MAXWRK, 2*M + M*ILAENV( 1, 'ZUNGBR',
+     $                          'P', M, N, M, -1 ) )
+                  MAXWRK = MAX( MAXWRK, N*NRHS )
+               END IF
+            END IF
+            MAXWRK = MAX( MINWRK, MAXWRK )
          END IF
-         MINWRK = MAX( MINWRK, 1 )
-         MAXWRK = MAX( MINWRK, MAXWRK )
          WORK( 1 ) = MAXWRK
+*
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
+     $      INFO = -12
       END IF
 *
-      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY )
-     $   INFO = -12
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGELSS', -INFO )
          RETURN

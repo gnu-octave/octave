@@ -1,9 +1,8 @@
       SUBROUTINE ZGEBD2( M, N, A, LDA, D, E, TAUQ, TAUP, WORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -172,8 +171,9 @@
 *
 *           Apply H(i)' to A(i:m,i+1:n) from the left
 *
-            CALL ZLARF( 'Left', M-I+1, N-I, A( I, I ), 1,
-     $                  DCONJG( TAUQ( I ) ), A( I, I+1 ), LDA, WORK )
+            IF( I.LT.N )
+     $         CALL ZLARF( 'Left', M-I+1, N-I, A( I, I ), 1,
+     $                     DCONJG( TAUQ( I ) ), A( I, I+1 ), LDA, WORK )
             A( I, I ) = D( I )
 *
             IF( I.LT.N ) THEN
@@ -215,8 +215,9 @@
 *
 *           Apply G(i) to A(i+1:m,i:n) from the right
 *
-            CALL ZLARF( 'Right', M-I, N-I+1, A( I, I ), LDA, TAUP( I ),
-     $                  A( MIN( I+1, M ), I ), LDA, WORK )
+            IF( I.LT.M )
+     $         CALL ZLARF( 'Right', M-I, N-I+1, A( I, I ), LDA,
+     $                     TAUP( I ), A( I+1, I ), LDA, WORK )
             CALL ZLACGV( N-I+1, A( I, I ), LDA )
             A( I, I ) = D( I )
 *

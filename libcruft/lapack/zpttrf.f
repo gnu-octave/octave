@@ -1,9 +1,8 @@
       SUBROUTINE ZPTTRF( N, D, E, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, N
@@ -44,7 +43,7 @@
 *          > 0: if INFO = k, the leading minor of order k is not
 *               positive definite; if k < N, the factorization could not
 *               be completed, while if k = N, the factorization was
-*               completed, but D(N) = 0.
+*               completed, but D(N) <= 0.
 *
 *  =====================================================================
 *

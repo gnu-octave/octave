@@ -1,18 +1,17 @@
-      SUBROUTINE DTGEVC( SIDE, HOWMNY, SELECT, N, A, LDA, B, LDB, VL,
+      SUBROUTINE DTGEVC( SIDE, HOWMNY, SELECT, N, S, LDS, P, LDP, VL,
      $                   LDVL, VR, LDVR, MM, M, WORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
-      INTEGER            INFO, LDA, LDB, LDVL, LDVR, M, MM, N
+      INTEGER            INFO, LDP, LDS, LDVL, LDVR, M, MM, N
 *     ..
 *     .. Array Arguments ..
       LOGICAL            SELECT( * )
-      DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), VL( LDVL, * ),
+      DOUBLE PRECISION   P( LDP, * ), S( LDS, * ), VL( LDVL, * ),
      $                   VR( LDVR, * ), WORK( * )
 *     ..
 *
@@ -20,35 +19,31 @@
 *  Purpose
 *  =======
 *
-*  DTGEVC computes some or all of the right and/or left generalized
-*  eigenvectors of a pair of real upper triangular matrices (A,B).
+*  DTGEVC computes some or all of the right and/or left eigenvectors of
+*  a pair of real matrices (S,P), where S is a quasi-triangular matrix
+*  and P is upper triangular.  Matrix pairs of this type are produced by
+*  the generalized Schur factorization of a matrix pair (A,B):
 *
-*  The right generalized eigenvector x and the left generalized
-*  eigenvector y of (A,B) corresponding to a generalized eigenvalue
-*  w are defined by:
+*     A = Q*S*Z**T,  B = Q*P*Z**T
 *
-*          (A - wB) * x = 0  and  y**H * (A - wB) = 0
+*  as computed by DGGHRD + DHGEQZ.
 *
+*  The right eigenvector x and the left eigenvector y of (S,P)
+*  corresponding to an eigenvalue w are defined by:
+*  
+*     S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
+*  
 *  where y**H denotes the conjugate tranpose of y.
-*
-*  If an eigenvalue w is determined by zero diagonal elements of both A
-*  and B, a unit vector is returned as the corresponding eigenvector.
-*
-*  If all eigenvectors are requested, the routine may either return
-*  the matrices X and/or Y of right or left eigenvectors of (A,B), or
-*  the products Z*X and/or Q*Y, where Z and Q are input orthogonal
-*  matrices.  If (A,B) was obtained from the generalized real-Schur
-*  factorization of an original pair of matrices
-*     (A0,B0) = (Q*A*Z**H,Q*B*Z**H),
-*  then Z*X and Q*Y are the matrices of right or left eigenvectors of
-*  A.
-*
-*  A must be block upper triangular, with 1-by-1 and 2-by-2 diagonal
-*  blocks.  Corresponding to each 2-by-2 diagonal block is a complex
-*  conjugate pair of eigenvalues and eigenvectors; only one
-*  eigenvector of the pair is computed, namely the one corresponding
-*  to the eigenvalue with positive imaginary part.
-*
+*  The eigenvalues are not input to this routine, but are computed
+*  directly from the diagonal blocks of S and P.
+*  
+*  This routine returns the matrices X and/or Y of right and left
+*  eigenvectors of (S,P), or the products Z*X and/or Q*Y,
+*  where Z and Q are input matrices.
+*  If Q and Z are the orthogonal factors from the generalized Schur
+*  factorization of a matrix pair (A,B), then Z*X and Q*Y
+*  are the matrices of right and left eigenvectors of (A,B).
+* 
 *  Arguments
 *  =========
 *
@@ -59,78 +54,84 @@
 *
 *  HOWMNY  (input) CHARACTER*1
 *          = 'A': compute all right and/or left eigenvectors;
-*          = 'B': compute all right and/or left eigenvectors, and
-*                 backtransform them using the input matrices supplied
-*                 in VR and/or VL;
+*          = 'B': compute all right and/or left eigenvectors,
+*                 backtransformed by the matrices in VR and/or VL;
 *          = 'S': compute selected right and/or left eigenvectors,
 *                 specified by the logical array SELECT.
 *
 *  SELECT  (input) LOGICAL array, dimension (N)
 *          If HOWMNY='S', SELECT specifies the eigenvectors to be
-*          computed.
-*          If HOWMNY='A' or 'B', SELECT is not referenced.
-*          To select the real eigenvector corresponding to the real
-*          eigenvalue w(j), SELECT(j) must be set to .TRUE.  To select
-*          the complex eigenvector corresponding to a complex conjugate
-*          pair w(j) and w(j+1), either SELECT(j) or SELECT(j+1) must
-*          be set to .TRUE..
+*          computed.  If w(j) is a real eigenvalue, the corresponding
+*          real eigenvector is computed if SELECT(j) is .TRUE..
+*          If w(j) and w(j+1) are the real and imaginary parts of a
+*          complex eigenvalue, the corresponding complex eigenvector
+*          is computed if either SELECT(j) or SELECT(j+1) is .TRUE.,
+*          and on exit SELECT(j) is set to .TRUE. and SELECT(j+1) is
+*          set to .FALSE..
+*          Not referenced if HOWMNY = 'A' or 'B'.
 *
 *  N       (input) INTEGER
-*          The order of the matrices A and B.  N >= 0.
+*          The order of the matrices S and P.  N >= 0.
 *
-*  A       (input) DOUBLE PRECISION array, dimension (LDA,N)
-*          The upper quasi-triangular matrix A.
+*  S       (input) DOUBLE PRECISION array, dimension (LDS,N)
+*          The upper quasi-triangular matrix S from a generalized Schur
+*          factorization, as computed by DHGEQZ.
 *
-*  LDA     (input) INTEGER
-*          The leading dimension of array A.  LDA >= max(1, N).
+*  LDS     (input) INTEGER
+*          The leading dimension of array S.  LDS >= max(1,N).
 *
-*  B       (input) DOUBLE PRECISION array, dimension (LDB,N)
-*          The upper triangular matrix B.  If A has a 2-by-2 diagonal
-*          block, then the corresponding 2-by-2 block of B must be
-*          diagonal with positive elements.
+*  P       (input) DOUBLE PRECISION array, dimension (LDP,N)
+*          The upper triangular matrix P from a generalized Schur
+*          factorization, as computed by DHGEQZ.
+*          2-by-2 diagonal blocks of P corresponding to 2-by-2 blocks
+*          of S must be in positive diagonal form.
 *
-*  LDB     (input) INTEGER
-*          The leading dimension of array B.  LDB >= max(1,N).
+*  LDP     (input) INTEGER
+*          The leading dimension of array P.  LDP >= max(1,N).
 *
 *  VL      (input/output) DOUBLE PRECISION array, dimension (LDVL,MM)
 *          On entry, if SIDE = 'L' or 'B' and HOWMNY = 'B', VL must
 *          contain an N-by-N matrix Q (usually the orthogonal matrix Q
 *          of left Schur vectors returned by DHGEQZ).
 *          On exit, if SIDE = 'L' or 'B', VL contains:
-*          if HOWMNY = 'A', the matrix Y of left eigenvectors of (A,B);
+*          if HOWMNY = 'A', the matrix Y of left eigenvectors of (S,P);
 *          if HOWMNY = 'B', the matrix Q*Y;
-*          if HOWMNY = 'S', the left eigenvectors of (A,B) specified by
+*          if HOWMNY = 'S', the left eigenvectors of (S,P) specified by
 *                      SELECT, stored consecutively in the columns of
 *                      VL, in the same order as their eigenvalues.
-*          If SIDE = 'R', VL is not referenced.
 *
 *          A complex eigenvector corresponding to a complex eigenvalue
 *          is stored in two consecutive columns, the first holding the
 *          real part, and the second the imaginary part.
 *
+*          Not referenced if SIDE = 'R'.
+*
 *  LDVL    (input) INTEGER
-*          The leading dimension of array VL.
-*          LDVL >= max(1,N) if SIDE = 'L' or 'B'; LDVL >= 1 otherwise.
+*          The leading dimension of array VL.  LDVL >= 1, and if
+*          SIDE = 'L' or 'B', LDVL >= N.
 *
 *  VR      (input/output) DOUBLE PRECISION array, dimension (LDVR,MM)
 *          On entry, if SIDE = 'R' or 'B' and HOWMNY = 'B', VR must
-*          contain an N-by-N matrix Q (usually the orthogonal matrix Z
+*          contain an N-by-N matrix Z (usually the orthogonal matrix Z
 *          of right Schur vectors returned by DHGEQZ).
+*
 *          On exit, if SIDE = 'R' or 'B', VR contains:
-*          if HOWMNY = 'A', the matrix X of right eigenvectors of (A,B);
-*          if HOWMNY = 'B', the matrix Z*X;
-*          if HOWMNY = 'S', the right eigenvectors of (A,B) specified by
-*                      SELECT, stored consecutively in the columns of
-*                      VR, in the same order as their eigenvalues.
-*          If SIDE = 'L', VR is not referenced.
+*          if HOWMNY = 'A', the matrix X of right eigenvectors of (S,P);
+*          if HOWMNY = 'B' or 'b', the matrix Z*X;
+*          if HOWMNY = 'S' or 's', the right eigenvectors of (S,P)
+*                      specified by SELECT, stored consecutively in the
+*                      columns of VR, in the same order as their
+*                      eigenvalues.
 *
 *          A complex eigenvector corresponding to a complex eigenvalue
 *          is stored in two consecutive columns, the first holding the
 *          real part and the second the imaginary part.
+*          
+*          Not referenced if SIDE = 'L'.
 *
 *  LDVR    (input) INTEGER
-*          The leading dimension of the array VR.
-*          LDVR >= max(1,N) if SIDE = 'R' or 'B'; LDVR >= 1 otherwise.
+*          The leading dimension of the array VR.  LDVR >= 1, and if
+*          SIDE = 'R' or 'B', LDVR >= N.
 *
 *  MM      (input) INTEGER
 *          The number of columns in the arrays VL and/or VR. MM >= M.
@@ -199,7 +200,7 @@
 *  partial sums.  Since FORTRAN arrays are stored columnwise, this has
 *  the advantage that at each step, the elements of C that are accessed
 *  are adjacent to one another, whereas with the rowwise method, the
-*  elements accessed at a step are spaced LDA (and LDB) words apart.
+*  elements accessed at a step are spaced LDS (and LDP) words apart.
 *
 *  When finding left eigenvectors, the matrix in question is the
 *  transpose of the one in storage, so the rowwise method then
@@ -226,8 +227,8 @@
      $                   XSCALE
 *     ..
 *     .. Local Arrays ..
-      DOUBLE PRECISION   BDIAG( 2 ), SUM( 2, 2 ), SUMA( 2, 2 ),
-     $                   SUMB( 2, 2 )
+      DOUBLE PRECISION   BDIAG( 2 ), SUM( 2, 2 ), SUMS( 2, 2 ),
+     $                   SUMP( 2, 2 )
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -235,7 +236,7 @@
       EXTERNAL           LSAME, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGEMV, DLACPY, DLAG2, DLALN2, XERBLA
+      EXTERNAL           DGEMV, DLABAD, DLACPY, DLAG2, DLALN2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
@@ -252,7 +253,7 @@
          IHWMNY = 2
          ILALL = .FALSE.
          ILBACK = .FALSE.
-      ELSE IF( LSAME( HOWMNY, 'B' ) .OR. LSAME( HOWMNY, 'T' ) ) THEN
+      ELSE IF( LSAME( HOWMNY, 'B' ) ) THEN
          IHWMNY = 3
          ILALL = .TRUE.
          ILBACK = .TRUE.
@@ -284,9 +285,9 @@
          INFO = -2
       ELSE IF( N.LT.0 ) THEN
          INFO = -4
-      ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
+      ELSE IF( LDS.LT.MAX( 1, N ) ) THEN
          INFO = -6
-      ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
+      ELSE IF( LDP.LT.MAX( 1, N ) ) THEN
          INFO = -8
       END IF
       IF( INFO.NE.0 ) THEN
@@ -305,7 +306,7 @@
                GO TO 10
             END IF
             IF( J.LT.N ) THEN
-               IF( A( J+1, J ).NE.ZERO )
+               IF( S( J+1, J ).NE.ZERO )
      $            ILCPLX = .TRUE.
             END IF
             IF( ILCPLX ) THEN
@@ -325,11 +326,11 @@
       ILABAD = .FALSE.
       ILBBAD = .FALSE.
       DO 20 J = 1, N - 1
-         IF( A( J+1, J ).NE.ZERO ) THEN
-            IF( B( J, J ).EQ.ZERO .OR. B( J+1, J+1 ).EQ.ZERO .OR.
-     $          B( J, J+1 ).NE.ZERO )ILBBAD = .TRUE.
+         IF( S( J+1, J ).NE.ZERO ) THEN
+            IF( P( J, J ).EQ.ZERO .OR. P( J+1, J+1 ).EQ.ZERO .OR.
+     $          P( J, J+1 ).NE.ZERO )ILBBAD = .TRUE.
             IF( J.LT.N-1 ) THEN
-               IF( A( J+2, J+1 ).NE.ZERO )
+               IF( S( J+2, J+1 ).NE.ZERO )
      $            ILABAD = .TRUE.
             END IF
          END IF
@@ -372,30 +373,30 @@
 *     blocks) of A and B to check for possible overflow in the
 *     triangular solver.
 *
-      ANORM = ABS( A( 1, 1 ) )
+      ANORM = ABS( S( 1, 1 ) )
       IF( N.GT.1 )
-     $   ANORM = ANORM + ABS( A( 2, 1 ) )
-      BNORM = ABS( B( 1, 1 ) )
+     $   ANORM = ANORM + ABS( S( 2, 1 ) )
+      BNORM = ABS( P( 1, 1 ) )
       WORK( 1 ) = ZERO
       WORK( N+1 ) = ZERO
 *
       DO 50 J = 2, N
          TEMP = ZERO
          TEMP2 = ZERO
-         IF( A( J, J-1 ).EQ.ZERO ) THEN
+         IF( S( J, J-1 ).EQ.ZERO ) THEN
             IEND = J - 1
          ELSE
             IEND = J - 2
          END IF
          DO 30 I = 1, IEND
-            TEMP = TEMP + ABS( A( I, J ) )
-            TEMP2 = TEMP2 + ABS( B( I, J ) )
+            TEMP = TEMP + ABS( S( I, J ) )
+            TEMP2 = TEMP2 + ABS( P( I, J ) )
    30    CONTINUE
          WORK( J ) = TEMP
          WORK( N+J ) = TEMP2
          DO 40 I = IEND + 1, MIN( J+1, N )
-            TEMP = TEMP + ABS( A( I, J ) )
-            TEMP2 = TEMP2 + ABS( B( I, J ) )
+            TEMP = TEMP + ABS( S( I, J ) )
+            TEMP2 = TEMP2 + ABS( P( I, J ) )
    40    CONTINUE
          ANORM = MAX( ANORM, TEMP )
          BNORM = MAX( BNORM, TEMP2 )
@@ -425,7 +426,7 @@
             END IF
             NW = 1
             IF( JE.LT.N ) THEN
-               IF( A( JE+1, JE ).NE.ZERO ) THEN
+               IF( S( JE+1, JE ).NE.ZERO ) THEN
                   ILCPLX = .TRUE.
                   NW = 2
                END IF
@@ -444,8 +445,8 @@
 *           (c) complex eigenvalue.
 *
             IF( .NOT.ILCPLX ) THEN
-               IF( ABS( A( JE, JE ) ).LE.SAFMIN .AND.
-     $             ABS( B( JE, JE ) ).LE.SAFMIN ) THEN
+               IF( ABS( S( JE, JE ) ).LE.SAFMIN .AND.
+     $             ABS( P( JE, JE ) ).LE.SAFMIN ) THEN
 *
 *                 Singular matrix pencil -- return unit eigenvector
 *
@@ -472,10 +473,10 @@
 *
 *              Real eigenvalue
 *
-               TEMP = ONE / MAX( ABS( A( JE, JE ) )*ASCALE,
-     $                ABS( B( JE, JE ) )*BSCALE, SAFMIN )
-               SALFAR = ( TEMP*A( JE, JE ) )*ASCALE
-               SBETA = ( TEMP*B( JE, JE ) )*BSCALE
+               TEMP = ONE / MAX( ABS( S( JE, JE ) )*ASCALE,
+     $                ABS( P( JE, JE ) )*BSCALE, SAFMIN )
+               SALFAR = ( TEMP*S( JE, JE ) )*ASCALE
+               SBETA = ( TEMP*P( JE, JE ) )*BSCALE
                ACOEF = SBETA*ASCALE
                BCOEFR = SALFAR*BSCALE
                BCOEFI = ZERO
@@ -517,7 +518,7 @@
 *
 *              Complex eigenvalue
 *
-               CALL DLAG2( A( JE, JE ), LDA, B( JE, JE ), LDB,
+               CALL DLAG2( S( JE, JE ), LDS, P( JE, JE ), LDP,
      $                     SAFMIN*SAFETY, ACOEF, TEMP, BCOEFR, TEMP2,
      $                     BCOEFI )
                BCOEFI = -BCOEFI
@@ -549,9 +550,9 @@
 *
 *              Compute first two components of eigenvector
 *
-               TEMP = ACOEF*A( JE+1, JE )
-               TEMP2R = ACOEF*A( JE, JE ) - BCOEFR*B( JE, JE )
-               TEMP2I = -BCOEFI*B( JE, JE )
+               TEMP = ACOEF*S( JE+1, JE )
+               TEMP2R = ACOEF*S( JE, JE ) - BCOEFR*P( JE, JE )
+               TEMP2I = -BCOEFI*P( JE, JE )
                IF( ABS( TEMP ).GT.ABS( TEMP2R )+ABS( TEMP2I ) ) THEN
                   WORK( 2*N+JE ) = ONE
                   WORK( 3*N+JE ) = ZERO
@@ -560,10 +561,10 @@
                ELSE
                   WORK( 2*N+JE+1 ) = ONE
                   WORK( 3*N+JE+1 ) = ZERO
-                  TEMP = ACOEF*A( JE, JE+1 )
-                  WORK( 2*N+JE ) = ( BCOEFR*B( JE+1, JE+1 )-ACOEF*
-     $                             A( JE+1, JE+1 ) ) / TEMP
-                  WORK( 3*N+JE ) = BCOEFI*B( JE+1, JE+1 ) / TEMP
+                  TEMP = ACOEF*S( JE, JE+1 )
+                  WORK( 2*N+JE ) = ( BCOEFR*P( JE+1, JE+1 )-ACOEF*
+     $                             S( JE+1, JE+1 ) ) / TEMP
+                  WORK( 3*N+JE ) = BCOEFI*P( JE+1, JE+1 ) / TEMP
                END IF
                XMAX = MAX( ABS( WORK( 2*N+JE ) )+ABS( WORK( 3*N+JE ) ),
      $                ABS( WORK( 2*N+JE+1 ) )+ABS( WORK( 3*N+JE+1 ) ) )
@@ -586,11 +587,11 @@
                END IF
 *
                NA = 1
-               BDIAG( 1 ) = B( J, J )
+               BDIAG( 1 ) = P( J, J )
                IF( J.LT.N ) THEN
-                  IF( A( J+1, J ).NE.ZERO ) THEN
+                  IF( S( J+1, J ).NE.ZERO ) THEN
                      IL2BY2 = .TRUE.
-                     BDIAG( 2 ) = B( J+1, J+1 )
+                     BDIAG( 2 ) = P( J+1, J+1 )
                      NA = 2
                   END IF
                END IF
@@ -616,13 +617,13 @@
 *              Compute dot products
 *
 *                    j-1
-*              SUM = sum  conjg( a*A(k,j) - b*B(k,j) )*x(k)
+*              SUM = sum  conjg( a*S(k,j) - b*P(k,j) )*x(k)
 *                    k=je
 *
 *              To reduce the op count, this is done as
 *
 *              _        j-1                  _        j-1
-*              a*conjg( sum  A(k,j)*x(k) ) - b*conjg( sum  B(k,j)*x(k) )
+*              a*conjg( sum  S(k,j)*x(k) ) - b*conjg( sum  P(k,j)*x(k) )
 *                       k=je                          k=je
 *
 *              which may cause underflow problems if A or B are close
@@ -659,15 +660,15 @@ CIBM              PREFER SCALAR
 *$PL$ CMCHAR='*'
 *
                   DO 110 JA = 1, NA
-                     SUMA( JA, JW ) = ZERO
-                     SUMB( JA, JW ) = ZERO
+                     SUMS( JA, JW ) = ZERO
+                     SUMP( JA, JW ) = ZERO
 *
                      DO 100 JR = JE, J - 1
-                        SUMA( JA, JW ) = SUMA( JA, JW ) +
-     $                                   A( JR, J+JA-1 )*
+                        SUMS( JA, JW ) = SUMS( JA, JW ) +
+     $                                   S( JR, J+JA-1 )*
      $                                   WORK( ( JW+1 )*N+JR )
-                        SUMB( JA, JW ) = SUMB( JA, JW ) +
-     $                                   B( JR, J+JA-1 )*
+                        SUMP( JA, JW ) = SUMP( JA, JW ) +
+     $                                   P( JR, J+JA-1 )*
      $                                   WORK( ( JW+1 )*N+JR )
   100                CONTINUE
   110             CONTINUE
@@ -687,15 +688,15 @@ CIBM           PREFER SCALAR
 *
                DO 130 JA = 1, NA
                   IF( ILCPLX ) THEN
-                     SUM( JA, 1 ) = -ACOEF*SUMA( JA, 1 ) +
-     $                              BCOEFR*SUMB( JA, 1 ) -
-     $                              BCOEFI*SUMB( JA, 2 )
-                     SUM( JA, 2 ) = -ACOEF*SUMA( JA, 2 ) +
-     $                              BCOEFR*SUMB( JA, 2 ) +
-     $                              BCOEFI*SUMB( JA, 1 )
+                     SUM( JA, 1 ) = -ACOEF*SUMS( JA, 1 ) +
+     $                              BCOEFR*SUMP( JA, 1 ) -
+     $                              BCOEFI*SUMP( JA, 2 )
+                     SUM( JA, 2 ) = -ACOEF*SUMS( JA, 2 ) +
+     $                              BCOEFR*SUMP( JA, 2 ) +
+     $                              BCOEFI*SUMP( JA, 1 )
                   ELSE
-                     SUM( JA, 1 ) = -ACOEF*SUMA( JA, 1 ) +
-     $                              BCOEFR*SUMB( JA, 1 )
+                     SUM( JA, 1 ) = -ACOEF*SUMS( JA, 1 ) +
+     $                              BCOEFR*SUMP( JA, 1 )
                   END IF
   130          CONTINUE
 *
@@ -703,7 +704,7 @@ CIBM           PREFER SCALAR
 *              Solve  ( a A - b B )  y = SUM(,)
 *              with scaling and perturbation of the denominator
 *
-               CALL DLALN2( .TRUE., NA, NW, DMIN, ACOEF, A( J, J ), LDA,
+               CALL DLALN2( .TRUE., NA, NW, DMIN, ACOEF, S( J, J ), LDS,
      $                      BDIAG( 1 ), BDIAG( 2 ), SUM, 2, BCOEFR,
      $                      BCOEFI, WORK( 2*N+J ), N, SCALE, TEMP,
      $                      IINFO )
@@ -790,7 +791,7 @@ CIBM           PREFER SCALAR
             END IF
             NW = 1
             IF( JE.GT.1 ) THEN
-               IF( A( JE, JE-1 ).NE.ZERO ) THEN
+               IF( S( JE, JE-1 ).NE.ZERO ) THEN
                   ILCPLX = .TRUE.
                   NW = 2
                END IF
@@ -809,8 +810,8 @@ CIBM           PREFER SCALAR
 *           (c) complex eigenvalue.
 *
             IF( .NOT.ILCPLX ) THEN
-               IF( ABS( A( JE, JE ) ).LE.SAFMIN .AND.
-     $             ABS( B( JE, JE ) ).LE.SAFMIN ) THEN
+               IF( ABS( S( JE, JE ) ).LE.SAFMIN .AND.
+     $             ABS( P( JE, JE ) ).LE.SAFMIN ) THEN
 *
 *                 Singular matrix pencil -- unit eigenvector
 *
@@ -839,10 +840,10 @@ CIBM           PREFER SCALAR
 *
 *              Real eigenvalue
 *
-               TEMP = ONE / MAX( ABS( A( JE, JE ) )*ASCALE,
-     $                ABS( B( JE, JE ) )*BSCALE, SAFMIN )
-               SALFAR = ( TEMP*A( JE, JE ) )*ASCALE
-               SBETA = ( TEMP*B( JE, JE ) )*BSCALE
+               TEMP = ONE / MAX( ABS( S( JE, JE ) )*ASCALE,
+     $                ABS( P( JE, JE ) )*BSCALE, SAFMIN )
+               SALFAR = ( TEMP*S( JE, JE ) )*ASCALE
+               SBETA = ( TEMP*P( JE, JE ) )*BSCALE
                ACOEF = SBETA*ASCALE
                BCOEFR = SALFAR*BSCALE
                BCOEFI = ZERO
@@ -885,14 +886,14 @@ CIBM           PREFER SCALAR
 *              (See "Further Details", above.)
 *
                DO 260 JR = 1, JE - 1
-                  WORK( 2*N+JR ) = BCOEFR*B( JR, JE ) -
-     $                             ACOEF*A( JR, JE )
+                  WORK( 2*N+JR ) = BCOEFR*P( JR, JE ) -
+     $                             ACOEF*S( JR, JE )
   260          CONTINUE
             ELSE
 *
 *              Complex eigenvalue
 *
-               CALL DLAG2( A( JE-1, JE-1 ), LDA, B( JE-1, JE-1 ), LDB,
+               CALL DLAG2( S( JE-1, JE-1 ), LDS, P( JE-1, JE-1 ), LDP,
      $                     SAFMIN*SAFETY, ACOEF, TEMP, BCOEFR, TEMP2,
      $                     BCOEFI )
                IF( BCOEFI.EQ.ZERO ) THEN
@@ -924,9 +925,9 @@ CIBM           PREFER SCALAR
 *              Compute first two components of eigenvector
 *              and contribution to sums
 *
-               TEMP = ACOEF*A( JE, JE-1 )
-               TEMP2R = ACOEF*A( JE, JE ) - BCOEFR*B( JE, JE )
-               TEMP2I = -BCOEFI*B( JE, JE )
+               TEMP = ACOEF*S( JE, JE-1 )
+               TEMP2R = ACOEF*S( JE, JE ) - BCOEFR*P( JE, JE )
+               TEMP2I = -BCOEFI*P( JE, JE )
                IF( ABS( TEMP ).GE.ABS( TEMP2R )+ABS( TEMP2I ) ) THEN
                   WORK( 2*N+JE ) = ONE
                   WORK( 3*N+JE ) = ZERO
@@ -935,10 +936,10 @@ CIBM           PREFER SCALAR
                ELSE
                   WORK( 2*N+JE-1 ) = ONE
                   WORK( 3*N+JE-1 ) = ZERO
-                  TEMP = ACOEF*A( JE-1, JE )
-                  WORK( 2*N+JE ) = ( BCOEFR*B( JE-1, JE-1 )-ACOEF*
-     $                             A( JE-1, JE-1 ) ) / TEMP
-                  WORK( 3*N+JE ) = BCOEFI*B( JE-1, JE-1 ) / TEMP
+                  TEMP = ACOEF*S( JE-1, JE )
+                  WORK( 2*N+JE ) = ( BCOEFR*P( JE-1, JE-1 )-ACOEF*
+     $                             S( JE-1, JE-1 ) ) / TEMP
+                  WORK( 3*N+JE ) = BCOEFI*P( JE-1, JE-1 ) / TEMP
                END IF
 *
                XMAX = MAX( ABS( WORK( 2*N+JE ) )+ABS( WORK( 3*N+JE ) ),
@@ -958,12 +959,12 @@ CIBM           PREFER SCALAR
                CRE2B = BCOEFR*WORK( 2*N+JE ) - BCOEFI*WORK( 3*N+JE )
                CIM2B = BCOEFI*WORK( 2*N+JE ) + BCOEFR*WORK( 3*N+JE )
                DO 270 JR = 1, JE - 2
-                  WORK( 2*N+JR ) = -CREALA*A( JR, JE-1 ) +
-     $                             CREALB*B( JR, JE-1 ) -
-     $                             CRE2A*A( JR, JE ) + CRE2B*B( JR, JE )
-                  WORK( 3*N+JR ) = -CIMAGA*A( JR, JE-1 ) +
-     $                             CIMAGB*B( JR, JE-1 ) -
-     $                             CIM2A*A( JR, JE ) + CIM2B*B( JR, JE )
+                  WORK( 2*N+JR ) = -CREALA*S( JR, JE-1 ) +
+     $                             CREALB*P( JR, JE-1 ) -
+     $                             CRE2A*S( JR, JE ) + CRE2B*P( JR, JE )
+                  WORK( 3*N+JR ) = -CIMAGA*S( JR, JE-1 ) +
+     $                             CIMAGB*P( JR, JE-1 ) -
+     $                             CIM2A*S( JR, JE ) + CIM2B*P( JR, JE )
   270          CONTINUE
             END IF
 *
@@ -978,23 +979,23 @@ CIBM           PREFER SCALAR
 *              next iteration to process it (when it will be j:j+1)
 *
                IF( .NOT.IL2BY2 .AND. J.GT.1 ) THEN
-                  IF( A( J, J-1 ).NE.ZERO ) THEN
+                  IF( S( J, J-1 ).NE.ZERO ) THEN
                      IL2BY2 = .TRUE.
                      GO TO 370
                   END IF
                END IF
-               BDIAG( 1 ) = B( J, J )
+               BDIAG( 1 ) = P( J, J )
                IF( IL2BY2 ) THEN
                   NA = 2
-                  BDIAG( 2 ) = B( J+1, J+1 )
+                  BDIAG( 2 ) = P( J+1, J+1 )
                ELSE
                   NA = 1
                END IF
 *
 *              Compute x(j) (and x(j+1), if 2-by-2 block)
 *
-               CALL DLALN2( .FALSE., NA, NW, DMIN, ACOEF, A( J, J ),
-     $                      LDA, BDIAG( 1 ), BDIAG( 2 ), WORK( 2*N+J ),
+               CALL DLALN2( .FALSE., NA, NW, DMIN, ACOEF, S( J, J ),
+     $                      LDS, BDIAG( 1 ), BDIAG( 2 ), WORK( 2*N+J ),
      $                      N, BCOEFR, BCOEFI, SUM, 2, SCALE, TEMP,
      $                      IINFO )
                IF( SCALE.LT.ONE ) THEN
@@ -1014,7 +1015,7 @@ CIBM           PREFER SCALAR
   300             CONTINUE
   310          CONTINUE
 *
-*              w = w + x(j)*(a A(*,j) - b B(*,j) ) with scaling
+*              w = w + x(j)*(a S(*,j) - b P(*,j) ) with scaling
 *
                IF( J.GT.1 ) THEN
 *
@@ -1052,19 +1053,19 @@ CIBM           PREFER SCALAR
      $                           BCOEFR*WORK( 3*N+J+JA-1 )
                         DO 340 JR = 1, J - 1
                            WORK( 2*N+JR ) = WORK( 2*N+JR ) -
-     $                                      CREALA*A( JR, J+JA-1 ) +
-     $                                      CREALB*B( JR, J+JA-1 )
+     $                                      CREALA*S( JR, J+JA-1 ) +
+     $                                      CREALB*P( JR, J+JA-1 )
                            WORK( 3*N+JR ) = WORK( 3*N+JR ) -
-     $                                      CIMAGA*A( JR, J+JA-1 ) +
-     $                                      CIMAGB*B( JR, J+JA-1 )
+     $                                      CIMAGA*S( JR, J+JA-1 ) +
+     $                                      CIMAGB*P( JR, J+JA-1 )
   340                   CONTINUE
                      ELSE
                         CREALA = ACOEF*WORK( 2*N+J+JA-1 )
                         CREALB = BCOEFR*WORK( 2*N+J+JA-1 )
                         DO 350 JR = 1, J - 1
                            WORK( 2*N+JR ) = WORK( 2*N+JR ) -
-     $                                      CREALA*A( JR, J+JA-1 ) +
-     $                                      CREALB*B( JR, J+JA-1 )
+     $                                      CREALA*S( JR, J+JA-1 ) +
+     $                                      CREALB*P( JR, J+JA-1 )
   350                   CONTINUE
                      END IF
   360             CONTINUE

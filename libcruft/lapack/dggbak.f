@@ -1,10 +1,9 @@
       SUBROUTINE DGGBAK( JOB, SIDE, N, ILO, IHI, LSCALE, RSCALE, M, V,
      $                   LDV, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB, SIDE
@@ -108,10 +107,15 @@
          INFO = -3
       ELSE IF( ILO.LT.1 ) THEN
          INFO = -4
-      ELSE IF( IHI.LT.ILO .OR. IHI.GT.MAX( 1, N ) ) THEN
+      ELSE IF( N.EQ.0 .AND. IHI.EQ.0 .AND. ILO.NE.1 ) THEN
+         INFO = -4
+      ELSE IF( N.GT.0 .AND. ( IHI.LT.ILO .OR. IHI.GT.MAX( 1, N ) ) )
+     $   THEN
+         INFO = -5
+      ELSE IF( N.EQ.0 .AND. ILO.EQ.1 .AND. IHI.NE.0 ) THEN
          INFO = -5
       ELSE IF( M.LT.0 ) THEN
-         INFO = -6
+         INFO = -8
       ELSE IF( LDV.LT.MAX( 1, N ) ) THEN
          INFO = -10
       END IF

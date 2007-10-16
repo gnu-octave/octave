@@ -1,159 +1,267 @@
       SUBROUTINE ZHSEQR( JOB, COMPZ, N, ILO, IHI, H, LDH, W, Z, LDZ,
      $                   WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
-      CHARACTER          COMPZ, JOB
       INTEGER            IHI, ILO, INFO, LDH, LDZ, LWORK, N
+      CHARACTER          COMPZ, JOB
 *     ..
 *     .. Array Arguments ..
       COMPLEX*16         H( LDH, * ), W( * ), WORK( * ), Z( LDZ, * )
 *     ..
+*     Purpose
+*     =======
 *
-*  Purpose
-*  =======
+*     ZHSEQR computes the eigenvalues of a Hessenberg matrix H
+*     and, optionally, the matrices T and Z from the Schur decomposition
+*     H = Z T Z**H, where T is an upper triangular matrix (the
+*     Schur form), and Z is the unitary matrix of Schur vectors.
 *
-*  ZHSEQR computes the eigenvalues of a complex upper Hessenberg
-*  matrix H, and, optionally, the matrices T and Z from the Schur
-*  decomposition H = Z T Z**H, where T is an upper triangular matrix
-*  (the Schur form), and Z is the unitary matrix of Schur vectors.
+*     Optionally Z may be postmultiplied into an input unitary
+*     matrix Q so that this routine can give the Schur factorization
+*     of a matrix A which has been reduced to the Hessenberg form H
+*     by the unitary matrix Q:  A = Q*H*Q**H = (QZ)*H*(QZ)**H.
 *
-*  Optionally Z may be postmultiplied into an input unitary matrix Q,
-*  so that this routine can give the Schur factorization of a matrix A
-*  which has been reduced to the Hessenberg form H by the unitary
-*  matrix Q:  A = Q*H*Q**H = (QZ)*T*(QZ)**H.
+*     Arguments
+*     =========
 *
-*  Arguments
-*  =========
+*     JOB   (input) CHARACTER*1
+*           = 'E':  compute eigenvalues only;
+*           = 'S':  compute eigenvalues and the Schur form T.
 *
-*  JOB     (input) CHARACTER*1
-*          = 'E': compute eigenvalues only;
-*          = 'S': compute eigenvalues and the Schur form T.
+*     COMPZ (input) CHARACTER*1
+*           = 'N':  no Schur vectors are computed;
+*           = 'I':  Z is initialized to the unit matrix and the matrix Z
+*                   of Schur vectors of H is returned;
+*           = 'V':  Z must contain an unitary matrix Q on entry, and
+*                   the product Q*Z is returned.
 *
-*  COMPZ   (input) CHARACTER*1
-*          = 'N': no Schur vectors are computed;
-*          = 'I': Z is initialized to the unit matrix and the matrix Z
-*                 of Schur vectors of H is returned;
-*          = 'V': Z must contain an unitary matrix Q on entry, and
-*                 the product Q*Z is returned.
+*     N     (input) INTEGER
+*           The order of the matrix H.  N .GE. 0.
 *
-*  N       (input) INTEGER
-*          The order of the matrix H.  N >= 0.
+*     ILO   (input) INTEGER
+*     IHI   (input) INTEGER
+*           It is assumed that H is already upper triangular in rows
+*           and columns 1:ILO-1 and IHI+1:N. ILO and IHI are normally
+*           set by a previous call to ZGEBAL, and then passed to ZGEHRD
+*           when the matrix output by ZGEBAL is reduced to Hessenberg
+*           form. Otherwise ILO and IHI should be set to 1 and N
+*           respectively.  If N.GT.0, then 1.LE.ILO.LE.IHI.LE.N.
+*           If N = 0, then ILO = 1 and IHI = 0.
 *
-*  ILO     (input) INTEGER
-*  IHI     (input) INTEGER
-*          It is assumed that H is already upper triangular in rows
-*          and columns 1:ILO-1 and IHI+1:N. ILO and IHI are normally
-*          set by a previous call to ZGEBAL, and then passed to CGEHRD
-*          when the matrix output by ZGEBAL is reduced to Hessenberg
-*          form. Otherwise ILO and IHI should be set to 1 and N
-*          respectively.
-*          1 <= ILO <= IHI <= N, if N > 0; ILO=1 and IHI=0, if N=0.
+*     H     (input/output) COMPLEX*16 array, dimension (LDH,N)
+*           On entry, the upper Hessenberg matrix H.
+*           On exit, if INFO = 0 and JOB = 'S', H contains the upper
+*           triangular matrix T from the Schur decomposition (the
+*           Schur form). If INFO = 0 and JOB = 'E', the contents of
+*           H are unspecified on exit.  (The output value of H when
+*           INFO.GT.0 is given under the description of INFO below.)
 *
-*  H       (input/output) COMPLEX*16 array, dimension (LDH,N)
-*          On entry, the upper Hessenberg matrix H.
-*          On exit, if JOB = 'S', H contains the upper triangular matrix
-*          T from the Schur decomposition (the Schur form). If
-*          JOB = 'E', the contents of H are unspecified on exit.
+*           Unlike earlier versions of ZHSEQR, this subroutine may
+*           explicitly H(i,j) = 0 for i.GT.j and j = 1, 2, ... ILO-1
+*           or j = IHI+1, IHI+2, ... N.
 *
-*  LDH     (input) INTEGER
-*          The leading dimension of the array H. LDH >= max(1,N).
+*     LDH   (input) INTEGER
+*           The leading dimension of the array H. LDH .GE. max(1,N).
 *
-*  W       (output) COMPLEX*16 array, dimension (N)
-*          The computed eigenvalues. If JOB = 'S', the eigenvalues are
-*          stored in the same order as on the diagonal of the Schur form
-*          returned in H, with W(i) = H(i,i).
+*     W        (output) COMPLEX*16 array, dimension (N)
+*           The computed eigenvalues. If JOB = 'S', the eigenvalues are
+*           stored in the same order as on the diagonal of the Schur
+*           form returned in H, with W(i) = H(i,i).
 *
-*  Z       (input/output) COMPLEX*16 array, dimension (LDZ,N)
-*          If COMPZ = 'N': Z is not referenced.
-*          If COMPZ = 'I': on entry, Z need not be set, and on exit, Z
-*          contains the unitary matrix Z of the Schur vectors of H.
-*          If COMPZ = 'V': on entry Z must contain an N-by-N matrix Q,
-*          which is assumed to be equal to the unit matrix except for
-*          the submatrix Z(ILO:IHI,ILO:IHI); on exit Z contains Q*Z.
-*          Normally Q is the unitary matrix generated by ZUNGHR after
-*          the call to ZGEHRD which formed the Hessenberg matrix H.
+*     Z     (input/output) COMPLEX*16 array, dimension (LDZ,N)
+*           If COMPZ = 'N', Z is not referenced.
+*           If COMPZ = 'I', on entry Z need not be set and on exit,
+*           if INFO = 0, Z contains the unitary matrix Z of the Schur
+*           vectors of H.  If COMPZ = 'V', on entry Z must contain an
+*           N-by-N matrix Q, which is assumed to be equal to the unit
+*           matrix except for the submatrix Z(ILO:IHI,ILO:IHI). On exit,
+*           if INFO = 0, Z contains Q*Z.
+*           Normally Q is the unitary matrix generated by ZUNGHR
+*           after the call to ZGEHRD which formed the Hessenberg matrix
+*           H. (The output value of Z when INFO.GT.0 is given under
+*           the description of INFO below.)
 *
-*  LDZ     (input) INTEGER
-*          The leading dimension of the array Z.
-*          LDZ >= max(1,N) if COMPZ = 'I' or 'V'; LDZ >= 1 otherwise.
+*     LDZ   (input) INTEGER
+*           The leading dimension of the array Z.  if COMPZ = 'I' or
+*           COMPZ = 'V', then LDZ.GE.MAX(1,N).  Otherwize, LDZ.GE.1.
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
-*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*     WORK  (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*           On exit, if INFO = 0, WORK(1) returns an estimate of
+*           the optimal value for LWORK.
 *
-*  LWORK   (input) INTEGER
-*          The dimension of the array WORK.  LWORK >= max(1,N).
+*     LWORK (input) INTEGER
+*           The dimension of the array WORK.  LWORK .GE. max(1,N)
+*           is sufficient, but LWORK typically as large as 6*N may
+*           be required for optimal performance.  A workspace query
+*           to determine the optimal workspace size is recommended.
 *
-*          If LWORK = -1, then a workspace query is assumed; the routine
-*          only calculates the optimal size of the WORK array, returns
-*          this value as the first entry of the WORK array, and no error
-*          message related to LWORK is issued by XERBLA.
+*           If LWORK = -1, then ZHSEQR does a workspace query.
+*           In this case, ZHSEQR checks the input parameters and
+*           estimates the optimal workspace size for the given
+*           values of N, ILO and IHI.  The estimate is returned
+*           in WORK(1).  No error message related to LWORK is
+*           issued by XERBLA.  Neither H nor Z are accessed.
 *
-*  INFO    (output) INTEGER
-*          = 0:  successful exit
-*          < 0:  if INFO = -i, the i-th argument had an illegal value
-*          > 0:  if INFO = i, ZHSEQR failed to compute all the
-*                eigenvalues in a total of 30*(IHI-ILO+1) iterations;
-*                elements 1:ilo-1 and i+1:n of W contain those
-*                eigenvalues which have been successfully computed.
 *
-*  =====================================================================
+*     INFO  (output) INTEGER
+*             =  0:  successful exit
+*           .LT. 0:  if INFO = -i, the i-th argument had an illegal
+*                    value
+*           .GT. 0:  if INFO = i, ZHSEQR failed to compute all of
+*                the eigenvalues.  Elements 1:ilo-1 and i+1:n of WR
+*                and WI contain those eigenvalues which have been
+*                successfully computed.  (Failures are rare.)
 *
+*                If INFO .GT. 0 and JOB = 'E', then on exit, the
+*                remaining unconverged eigenvalues are the eigen-
+*                values of the upper Hessenberg matrix rows and
+*                columns ILO through INFO of the final, output
+*                value of H.
+*
+*                If INFO .GT. 0 and JOB   = 'S', then on exit
+*
+*           (*)  (initial value of H)*U  = U*(final value of H)
+*
+*                where U is a unitary matrix.  The final
+*                value of  H is upper Hessenberg and triangular in
+*                rows and columns INFO+1 through IHI.
+*
+*                If INFO .GT. 0 and COMPZ = 'V', then on exit
+*
+*                  (final value of Z)  =  (initial value of Z)*U
+*
+*                where U is the unitary matrix in (*) (regard-
+*                less of the value of JOB.)
+*
+*                If INFO .GT. 0 and COMPZ = 'I', then on exit
+*                      (final value of Z)  = U
+*                where U is the unitary matrix in (*) (regard-
+*                less of the value of JOB.)
+*
+*                If INFO .GT. 0 and COMPZ = 'N', then Z is not
+*                accessed.
+*
+*     ================================================================
+*             Default values supplied by
+*             ILAENV(ISPEC,'ZHSEQR',JOB(:1)//COMPZ(:1),N,ILO,IHI,LWORK).
+*             It is suggested that these defaults be adjusted in order
+*             to attain best performance in each particular
+*             computational environment.
+*
+*            ISPEC=1:  The ZLAHQR vs ZLAQR0 crossover point.
+*                      Default: 75. (Must be at least 11.)
+*
+*            ISPEC=2:  Recommended deflation window size.
+*                      This depends on ILO, IHI and NS.  NS is the
+*                      number of simultaneous shifts returned
+*                      by ILAENV(ISPEC=4).  (See ISPEC=4 below.)
+*                      The default for (IHI-ILO+1).LE.500 is NS.
+*                      The default for (IHI-ILO+1).GT.500 is 3*NS/2.
+*
+*            ISPEC=3:  Nibble crossover point. (See ILAENV for
+*                      details.)  Default: 14% of deflation window
+*                      size.
+*
+*            ISPEC=4:  Number of simultaneous shifts, NS, in
+*                      a multi-shift QR iteration.
+*
+*                      If IHI-ILO+1 is ...
+*
+*                      greater than      ...but less    ... the
+*                      or equal to ...      than        default is
+*
+*                           1               30          NS -   2(+)
+*                          30               60          NS -   4(+)
+*                          60              150          NS =  10(+)
+*                         150              590          NS =  **
+*                         590             3000          NS =  64
+*                        3000             6000          NS = 128
+*                        6000             infinity      NS = 256
+*
+*                  (+)  By default some or all matrices of this order 
+*                       are passed to the implicit double shift routine
+*                       ZLAHQR and NS is ignored.  See ISPEC=1 above 
+*                       and comments in IPARM for details.
+*
+*                       The asterisks (**) indicate an ad-hoc
+*                       function of N increasing from 10 to 64.
+*
+*            ISPEC=5:  Select structured matrix multiply.
+*                      (See ILAENV for details.) Default: 3.
+*
+*     ================================================================
+*     Based on contributions by
+*        Karen Braman and Ralph Byers, Department of Mathematics,
+*        University of Kansas, USA
+*
+*     ================================================================
+*     References:
+*       K. Braman, R. Byers and R. Mathias, The Multi-Shift QR
+*       Algorithm Part I: Maintaining Well Focused Shifts, and Level 3
+*       Performance, SIAM Journal of Matrix Analysis, volume 23, pages
+*       929--947, 2002.
+*
+*       K. Braman, R. Byers and R. Mathias, The Multi-Shift QR
+*       Algorithm Part II: Aggressive Early Deflation, SIAM Journal
+*       of Matrix Analysis, volume 23, pages 948--973, 2002.
+*
+*     ================================================================
 *     .. Parameters ..
+*
+*     ==== Matrices of order NTINY or smaller must be processed by
+*     .    ZLAHQR because of insufficient subdiagonal scratch space.
+*     .    (This is a hard limit.) ====
+*
+*     ==== NL allocates some local workspace to help small matrices
+*     .    through a rare ZLAHQR failure.  NL .GT. NTINY = 11 is
+*     .    required and NL .LE. NMIN = ILAENV(ISPEC=1,...) is recom-
+*     .    mended.  (The default value of NMIN is 75.)  Using NL = 49
+*     .    allows up to six simultaneous shifts and a 16-by-16
+*     .    deflation window.  ====
+*
+      INTEGER            NTINY
+      PARAMETER          ( NTINY = 11 )
+      INTEGER            NL
+      PARAMETER          ( NL = 49 )
       COMPLEX*16         ZERO, ONE
-      PARAMETER          ( ZERO = ( 0.0D+0, 0.0D+0 ),
-     $                   ONE = ( 1.0D+0, 0.0D+0 ) )
-      DOUBLE PRECISION   RZERO, RONE, CONST
-      PARAMETER          ( RZERO = 0.0D+0, RONE = 1.0D+0,
-     $                   CONST = 1.5D+0 )
-      INTEGER            NSMAX, LDS
-      PARAMETER          ( NSMAX = 15, LDS = NSMAX )
-*     ..
-*     .. Local Scalars ..
-      LOGICAL            INITZ, LQUERY, WANTT, WANTZ
-      INTEGER            I, I1, I2, IERR, II, ITEMP, ITN, ITS, J, K, L,
-     $                   MAXB, NH, NR, NS, NV
-      DOUBLE PRECISION   OVFL, RTEMP, SMLNUM, TST1, ULP, UNFL
-      COMPLEX*16         CDUM, TAU, TEMP
+      PARAMETER          ( ZERO = ( 0.0d0, 0.0d0 ),
+     $                   ONE = ( 1.0d0, 0.0d0 ) )
+      DOUBLE PRECISION   RZERO
+      PARAMETER          ( RZERO = 0.0d0 )
 *     ..
 *     .. Local Arrays ..
-      DOUBLE PRECISION   RWORK( 1 )
-      COMPLEX*16         S( LDS, NSMAX ), V( NSMAX+1 ), VV( NSMAX+1 )
+      COMPLEX*16         HL( NL, NL ), WORKL( NL )
+*     ..
+*     .. Local Scalars ..
+      INTEGER            KBOT, NMIN
+      LOGICAL            INITZ, LQUERY, WANTT, WANTZ
 *     ..
 *     .. External Functions ..
+      INTEGER            ILAENV
       LOGICAL            LSAME
-      INTEGER            ILAENV, IZAMAX
-      DOUBLE PRECISION   DLAMCH, DLAPY2, ZLANHS
-      EXTERNAL           LSAME, ILAENV, IZAMAX, DLAMCH, DLAPY2, ZLANHS
+      EXTERNAL           ILAENV, LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZCOPY, ZDSCAL, ZGEMV, ZLACPY, ZLAHQR,
-     $                   ZLARFG, ZLARFX, ZLASET, ZSCAL
+      EXTERNAL           XERBLA, ZCOPY, ZLACPY, ZLAHQR, ZLAQR0, ZLASET
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, DBLE, DCONJG, DIMAG, MAX, MIN
-*     ..
-*     .. Statement Functions ..
-      DOUBLE PRECISION   CABS1
-*     ..
-*     .. Statement Function definitions ..
-      CABS1( CDUM ) = ABS( DBLE( CDUM ) ) + ABS( DIMAG( CDUM ) )
+      INTRINSIC          DBLE, DCMPLX, MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
-*     Decode and test the input parameters
+*     ==== Decode and check the input parameters. ====
 *
       WANTT = LSAME( JOB, 'S' )
       INITZ = LSAME( COMPZ, 'I' )
       WANTZ = INITZ .OR. LSAME( COMPZ, 'V' )
+      WORK( 1 ) = DCMPLX( DBLE( MAX( 1, N ) ), RZERO )
+      LQUERY = LWORK.EQ.-1
 *
       INFO = 0
-      WORK( 1 ) = MAX( 1, N )
-      LQUERY = ( LWORK.EQ.-1 )
       IF( .NOT.LSAME( JOB, 'E' ) .AND. .NOT.WANTT ) THEN
          INFO = -1
       ELSE IF( .NOT.LSAME( COMPZ, 'N' ) .AND. .NOT.WANTZ ) THEN
@@ -166,309 +274,122 @@
          INFO = -5
       ELSE IF( LDH.LT.MAX( 1, N ) ) THEN
          INFO = -7
-      ELSE IF( LDZ.LT.1 .OR. WANTZ .AND. LDZ.LT.MAX( 1, N ) ) THEN
+      ELSE IF( LDZ.LT.1 .OR. ( WANTZ .AND. LDZ.LT.MAX( 1, N ) ) ) THEN
          INFO = -10
       ELSE IF( LWORK.LT.MAX( 1, N ) .AND. .NOT.LQUERY ) THEN
          INFO = -12
       END IF
+*
       IF( INFO.NE.0 ) THEN
+*
+*        ==== Quick return in case of invalid argument. ====
+*
          CALL XERBLA( 'ZHSEQR', -INFO )
          RETURN
+*
+      ELSE IF( N.EQ.0 ) THEN
+*
+*        ==== Quick return in case N = 0; nothing to do. ====
+*
+         RETURN
+*
       ELSE IF( LQUERY ) THEN
+*
+*        ==== Quick return in case of a workspace query ====
+*
+         CALL ZLAQR0( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILO, IHI, Z,
+     $                LDZ, WORK, LWORK, INFO )
+*        ==== Ensure reported workspace size is backward-compatible with
+*        .    previous LAPACK versions. ====
+         WORK( 1 ) = DCMPLX( MAX( DBLE( WORK( 1 ) ), DBLE( MAX( 1,
+     $               N ) ) ), RZERO )
          RETURN
-      END IF
 *
-*     Initialize Z, if necessary
-*
-      IF( INITZ )
-     $   CALL ZLASET( 'Full', N, N, ZERO, ONE, Z, LDZ )
-*
-*     Store the eigenvalues isolated by ZGEBAL.
-*
-      DO 10 I = 1, ILO - 1
-         W( I ) = H( I, I )
-   10 CONTINUE
-      DO 20 I = IHI + 1, N
-         W( I ) = H( I, I )
-   20 CONTINUE
-*
-*     Quick return if possible.
-*
-      IF( N.EQ.0 )
-     $   RETURN
-      IF( ILO.EQ.IHI ) THEN
-         W( ILO ) = H( ILO, ILO )
-         RETURN
-      END IF
-*
-*     Set rows and columns ILO to IHI to zero below the first
-*     subdiagonal.
-*
-      DO 40 J = ILO, IHI - 2
-         DO 30 I = J + 2, N
-            H( I, J ) = ZERO
-   30    CONTINUE
-   40 CONTINUE
-      NH = IHI - ILO + 1
-*
-*     I1 and I2 are the indices of the first row and last column of H
-*     to which transformations must be applied. If eigenvalues only are
-*     being computed, I1 and I2 are re-set inside the main loop.
-*
-      IF( WANTT ) THEN
-         I1 = 1
-         I2 = N
       ELSE
-         I1 = ILO
-         I2 = IHI
-      END IF
 *
-*     Ensure that the subdiagonal elements are real.
+*        ==== copy eigenvalues isolated by ZGEBAL ====
 *
-      DO 50 I = ILO + 1, IHI
-         TEMP = H( I, I-1 )
-         IF( DIMAG( TEMP ).NE.RZERO ) THEN
-            RTEMP = DLAPY2( DBLE( TEMP ), DIMAG( TEMP ) )
-            H( I, I-1 ) = RTEMP
-            TEMP = TEMP / RTEMP
-            IF( I2.GT.I )
-     $         CALL ZSCAL( I2-I, DCONJG( TEMP ), H( I, I+1 ), LDH )
-            CALL ZSCAL( I-I1, TEMP, H( I1, I ), 1 )
-            IF( I.LT.IHI )
-     $         H( I+1, I ) = TEMP*H( I+1, I )
-            IF( WANTZ )
-     $         CALL ZSCAL( NH, TEMP, Z( ILO, I ), 1 )
-         END IF
-   50 CONTINUE
+         IF( ILO.GT.1 )
+     $      CALL ZCOPY( ILO-1, H, LDH+1, W, 1 )
+         IF( IHI.LT.N )
+     $      CALL ZCOPY( N-IHI, H( IHI+1, IHI+1 ), LDH+1, W( IHI+1 ), 1 )
 *
-*     Determine the order of the multi-shift QR algorithm to be used.
+*        ==== Initialize Z, if requested ====
 *
-      NS = ILAENV( 4, 'ZHSEQR', JOB // COMPZ, N, ILO, IHI, -1 )
-      MAXB = ILAENV( 8, 'ZHSEQR', JOB // COMPZ, N, ILO, IHI, -1 )
-      IF( NS.LE.1 .OR. NS.GT.NH .OR. MAXB.GE.NH ) THEN
+         IF( INITZ )
+     $      CALL ZLASET( 'A', N, N, ZERO, ONE, Z, LDZ )
 *
-*        Use the standard double-shift algorithm
+*        ==== Quick return if possible ====
 *
-         CALL ZLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILO, IHI, Z,
-     $                LDZ, INFO )
-         RETURN
-      END IF
-      MAXB = MAX( 2, MAXB )
-      NS = MIN( NS, MAXB, NSMAX )
-*
-*     Now 1 < NS <= MAXB < NH.
-*
-*     Set machine-dependent constants for the stopping criterion.
-*     If norm(H) <= sqrt(OVFL), overflow should not occur.
-*
-      UNFL = DLAMCH( 'Safe minimum' )
-      OVFL = RONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
-      ULP = DLAMCH( 'Precision' )
-      SMLNUM = UNFL*( NH / ULP )
-*
-*     ITN is the total number of multiple-shift QR iterations allowed.
-*
-      ITN = 30*NH
-*
-*     The main loop begins here. I is the loop index and decreases from
-*     IHI to ILO in steps of at most MAXB. Each iteration of the loop
-*     works with the active submatrix in rows and columns L to I.
-*     Eigenvalues I+1 to IHI have already converged. Either L = ILO, or
-*     H(L,L-1) is negligible so that the matrix splits.
-*
-      I = IHI
-   60 CONTINUE
-      IF( I.LT.ILO )
-     $   GO TO 180
-*
-*     Perform multiple-shift QR iterations on rows and columns ILO to I
-*     until a submatrix of order at most MAXB splits off at the bottom
-*     because a subdiagonal element has become negligible.
-*
-      L = ILO
-      DO 160 ITS = 0, ITN
-*
-*        Look for a single small subdiagonal element.
-*
-         DO 70 K = I, L + 1, -1
-            TST1 = CABS1( H( K-1, K-1 ) ) + CABS1( H( K, K ) )
-            IF( TST1.EQ.RZERO )
-     $         TST1 = ZLANHS( '1', I-L+1, H( L, L ), LDH, RWORK )
-            IF( ABS( DBLE( H( K, K-1 ) ) ).LE.MAX( ULP*TST1, SMLNUM ) )
-     $         GO TO 80
-   70    CONTINUE
-   80    CONTINUE
-         L = K
-         IF( L.GT.ILO ) THEN
-*
-*           H(L,L-1) is negligible.
-*
-            H( L, L-1 ) = ZERO
+         IF( ILO.EQ.IHI ) THEN
+            W( ILO ) = H( ILO, ILO )
+            RETURN
          END IF
 *
-*        Exit from loop if a submatrix of order <= MAXB has split off.
+*        ==== ZLAHQR/ZLAQR0 crossover point ====
 *
-         IF( L.GE.I-MAXB+1 )
-     $      GO TO 170
+         NMIN = ILAENV( 1, 'ZHSEQR', JOB( : 1 ) // COMPZ( : 1 ), N, ILO,
+     $          IHI, LWORK )
+         NMIN = MAX( NTINY, NMIN )
 *
-*        Now the active submatrix is in rows and columns L to I. If
-*        eigenvalues only are being computed, only the active submatrix
-*        need be transformed.
+*        ==== ZLAQR0 for big matrices; ZLAHQR for small ones ====
 *
-         IF( .NOT.WANTT ) THEN
-            I1 = L
-            I2 = I
-         END IF
-*
-         IF( ITS.EQ.20 .OR. ITS.EQ.30 ) THEN
-*
-*           Exceptional shifts.
-*
-            DO 90 II = I - NS + 1, I
-               W( II ) = CONST*( ABS( DBLE( H( II, II-1 ) ) )+
-     $                   ABS( DBLE( H( II, II ) ) ) )
-   90       CONTINUE
+         IF( N.GT.NMIN ) THEN
+            CALL ZLAQR0( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILO, IHI,
+     $                   Z, LDZ, WORK, LWORK, INFO )
          ELSE
 *
-*           Use eigenvalues of trailing submatrix of order NS as shifts.
+*           ==== Small matrix ====
 *
-            CALL ZLACPY( 'Full', NS, NS, H( I-NS+1, I-NS+1 ), LDH, S,
-     $                   LDS )
-            CALL ZLAHQR( .FALSE., .FALSE., NS, 1, NS, S, LDS,
-     $                   W( I-NS+1 ), 1, NS, Z, LDZ, IERR )
-            IF( IERR.GT.0 ) THEN
+            CALL ZLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, W, ILO, IHI,
+     $                   Z, LDZ, INFO )
 *
-*              If ZLAHQR failed to compute all NS eigenvalues, use the
-*              unconverged diagonal elements as the remaining shifts.
+            IF( INFO.GT.0 ) THEN
 *
-               DO 100 II = 1, IERR
-                  W( I-NS+II ) = S( II, II )
-  100          CONTINUE
+*              ==== A rare ZLAHQR failure!  ZLAQR0 sometimes succeeds
+*              .    when ZLAHQR fails. ====
+*
+               KBOT = INFO
+*
+               IF( N.GE.NL ) THEN
+*
+*                 ==== Larger matrices have enough subdiagonal scratch
+*                 .    space to call ZLAQR0 directly. ====
+*
+                  CALL ZLAQR0( WANTT, WANTZ, N, ILO, KBOT, H, LDH, W,
+     $                         ILO, IHI, Z, LDZ, WORK, LWORK, INFO )
+*
+               ELSE
+*
+*                 ==== Tiny matrices don't have enough subdiagonal
+*                 .    scratch space to benefit from ZLAQR0.  Hence,
+*                 .    tiny matrices must be copied into a larger
+*                 .    array before calling ZLAQR0. ====
+*
+                  CALL ZLACPY( 'A', N, N, H, LDH, HL, NL )
+                  HL( N+1, N ) = ZERO
+                  CALL ZLASET( 'A', NL, NL-N, ZERO, ZERO, HL( 1, N+1 ),
+     $                         NL )
+                  CALL ZLAQR0( WANTT, WANTZ, NL, ILO, KBOT, HL, NL, W,
+     $                         ILO, IHI, Z, LDZ, WORKL, NL, INFO )
+                  IF( WANTT .OR. INFO.NE.0 )
+     $               CALL ZLACPY( 'A', N, N, HL, NL, H, LDH )
+               END IF
             END IF
          END IF
 *
-*        Form the first column of (G-w(1)) (G-w(2)) . . . (G-w(ns))
-*        where G is the Hessenberg submatrix H(L:I,L:I) and w is
-*        the vector of shifts (stored in W). The result is
-*        stored in the local array V.
+*        ==== Clear out the trash, if necessary. ====
 *
-         V( 1 ) = ONE
-         DO 110 II = 2, NS + 1
-            V( II ) = ZERO
-  110    CONTINUE
-         NV = 1
-         DO 130 J = I - NS + 1, I
-            CALL ZCOPY( NV+1, V, 1, VV, 1 )
-            CALL ZGEMV( 'No transpose', NV+1, NV, ONE, H( L, L ), LDH,
-     $                  VV, 1, -W( J ), V, 1 )
-            NV = NV + 1
+         IF( ( WANTT .OR. INFO.NE.0 ) .AND. N.GT.2 )
+     $      CALL ZLASET( 'L', N-2, N-2, ZERO, ZERO, H( 3, 1 ), LDH )
 *
-*           Scale V(1:NV) so that max(abs(V(i))) = 1. If V is zero,
-*           reset it to the unit vector.
+*        ==== Ensure reported workspace size is backward-compatible with
+*        .    previous LAPACK versions. ====
 *
-            ITEMP = IZAMAX( NV, V, 1 )
-            RTEMP = CABS1( V( ITEMP ) )
-            IF( RTEMP.EQ.RZERO ) THEN
-               V( 1 ) = ONE
-               DO 120 II = 2, NV
-                  V( II ) = ZERO
-  120          CONTINUE
-            ELSE
-               RTEMP = MAX( RTEMP, SMLNUM )
-               CALL ZDSCAL( NV, RONE / RTEMP, V, 1 )
-            END IF
-  130    CONTINUE
+         WORK( 1 ) = DCMPLX( MAX( DBLE( MAX( 1, N ) ),
+     $               DBLE( WORK( 1 ) ) ), RZERO )
+      END IF
 *
-*        Multiple-shift QR step
-*
-         DO 150 K = L, I - 1
-*
-*           The first iteration of this loop determines a reflection G
-*           from the vector V and applies it from left and right to H,
-*           thus creating a nonzero bulge below the subdiagonal.
-*
-*           Each subsequent iteration determines a reflection G to
-*           restore the Hessenberg form in the (K-1)th column, and thus
-*           chases the bulge one step toward the bottom of the active
-*           submatrix. NR is the order of G.
-*
-            NR = MIN( NS+1, I-K+1 )
-            IF( K.GT.L )
-     $         CALL ZCOPY( NR, H( K, K-1 ), 1, V, 1 )
-            CALL ZLARFG( NR, V( 1 ), V( 2 ), 1, TAU )
-            IF( K.GT.L ) THEN
-               H( K, K-1 ) = V( 1 )
-               DO 140 II = K + 1, I
-                  H( II, K-1 ) = ZERO
-  140          CONTINUE
-            END IF
-            V( 1 ) = ONE
-*
-*           Apply G' from the left to transform the rows of the matrix
-*           in columns K to I2.
-*
-            CALL ZLARFX( 'Left', NR, I2-K+1, V, DCONJG( TAU ),
-     $                   H( K, K ), LDH, WORK )
-*
-*           Apply G from the right to transform the columns of the
-*           matrix in rows I1 to min(K+NR,I).
-*
-            CALL ZLARFX( 'Right', MIN( K+NR, I )-I1+1, NR, V, TAU,
-     $                   H( I1, K ), LDH, WORK )
-*
-            IF( WANTZ ) THEN
-*
-*              Accumulate transformations in the matrix Z
-*
-               CALL ZLARFX( 'Right', NH, NR, V, TAU, Z( ILO, K ), LDZ,
-     $                      WORK )
-            END IF
-  150    CONTINUE
-*
-*        Ensure that H(I,I-1) is real.
-*
-         TEMP = H( I, I-1 )
-         IF( DIMAG( TEMP ).NE.RZERO ) THEN
-            RTEMP = DLAPY2( DBLE( TEMP ), DIMAG( TEMP ) )
-            H( I, I-1 ) = RTEMP
-            TEMP = TEMP / RTEMP
-            IF( I2.GT.I )
-     $         CALL ZSCAL( I2-I, DCONJG( TEMP ), H( I, I+1 ), LDH )
-            CALL ZSCAL( I-I1, TEMP, H( I1, I ), 1 )
-            IF( WANTZ ) THEN
-               CALL ZSCAL( NH, TEMP, Z( ILO, I ), 1 )
-            END IF
-         END IF
-*
-  160 CONTINUE
-*
-*     Failure to converge in remaining number of iterations
-*
-      INFO = I
-      RETURN
-*
-  170 CONTINUE
-*
-*     A submatrix of order <= MAXB in rows and columns L to I has split
-*     off. Use the double-shift QR algorithm to handle it.
-*
-      CALL ZLAHQR( WANTT, WANTZ, N, L, I, H, LDH, W, ILO, IHI, Z, LDZ,
-     $             INFO )
-      IF( INFO.GT.0 )
-     $   RETURN
-*
-*     Decrement number of remaining iterations, and return to start of
-*     the main loop with a new value of I.
-*
-      ITN = ITN - ITS
-      I = L - 1
-      GO TO 60
-*
-  180 CONTINUE
-      WORK( 1 ) = MAX( 1, N )
-      RETURN
-*
-*     End of ZHSEQR
+*     ==== End of ZHSEQR ====
 *
       END

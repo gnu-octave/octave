@@ -1,10 +1,9 @@
       SUBROUTINE DGTTRS( TRANS, N, NRHS, DL, D, DU, DU2, IPIV, B, LDB,
      $                   INFO )
 *
-*  -- LAPACK routine (version 2.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          TRANS
@@ -26,14 +25,14 @@
 *  Arguments
 *  =========
 *
-*  TRANS   (input) CHARACTER
-*          Specifies the form of the system of equations:
+*  TRANS   (input) CHARACTER*1
+*          Specifies the form of the system of equations.
 *          = 'N':  A * X = B  (No transpose)
 *          = 'T':  A'* X = B  (Transpose)
 *          = 'C':  A'* X = B  (Conjugate transpose = Transpose)
 *
 *  N       (input) INTEGER
-*          The order of the matrix A.  N >= 0.
+*          The order of the matrix A.
 *
 *  NRHS    (input) INTEGER
 *          The number of right hand sides, i.e., the number of columns
@@ -48,10 +47,10 @@
 *          the LU factorization of A.
 *
 *  DU      (input) DOUBLE PRECISION array, dimension (N-1)
-*          The (n-1) elements of the first superdiagonal of U.
+*          The (n-1) elements of the first super-diagonal of U.
 *
 *  DU2     (input) DOUBLE PRECISION array, dimension (N-2)
-*          The (n-2) elements of the second superdiagonal of U.
+*          The (n-2) elements of the second super-diagonal of U.
 *
 *  IPIV    (input) INTEGER array, dimension (N)
 *          The pivot indices; for 1 <= i <= n, row i of the matrix was
@@ -60,8 +59,8 @@
 *          required.
 *
 *  B       (input/output) DOUBLE PRECISION array, dimension (LDB,NRHS)
-*          On entry, the right hand side matrix B.
-*          On exit, B is overwritten by the solution matrix X.
+*          On entry, the matrix of right hand side vectors B.
+*          On exit, B is overwritten by the solution vectors X.
 *
 *  LDB     (input) INTEGER
 *          The leading dimension of the array B.  LDB >= max(1,N).
@@ -74,25 +73,24 @@
 *
 *     .. Local Scalars ..
       LOGICAL            NOTRAN
-      INTEGER            I, J
-      DOUBLE PRECISION   TEMP
+      INTEGER            ITRANS, J, JB, NB
 *     ..
 *     .. External Functions ..
-      LOGICAL            LSAME
-      EXTERNAL           LSAME
+      INTEGER            ILAENV
+      EXTERNAL           ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA
+      EXTERNAL           DGTTS2, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
       INFO = 0
-      NOTRAN = LSAME( TRANS, 'N' )
-      IF( .NOT.NOTRAN .AND. .NOT.LSAME( TRANS, 'T' ) .AND. .NOT.
-     $    LSAME( TRANS, 'C' ) ) THEN
+      NOTRAN = ( TRANS.EQ.'N' .OR. TRANS.EQ.'n' )
+      IF( .NOT.NOTRAN .AND. .NOT.( TRANS.EQ.'T' .OR. TRANS.EQ.
+     $    't' ) .AND. .NOT.( TRANS.EQ.'C' .OR. TRANS.EQ.'c' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
@@ -111,64 +109,30 @@
       IF( N.EQ.0 .OR. NRHS.EQ.0 )
      $   RETURN
 *
+*     Decode TRANS
+*
       IF( NOTRAN ) THEN
-*
-*        Solve A*X = B using the LU factorization of A,
-*        overwriting each right hand side vector with its solution.
-*
-         DO 30 J = 1, NRHS
-*
-*           Solve L*x = b.
-*
-            DO 10 I = 1, N - 1
-               IF( IPIV( I ).EQ.I ) THEN
-                  B( I+1, J ) = B( I+1, J ) - DL( I )*B( I, J )
-               ELSE
-                  TEMP = B( I, J )
-                  B( I, J ) = B( I+1, J )
-                  B( I+1, J ) = TEMP - DL( I )*B( I, J )
-               END IF
-   10       CONTINUE
-*
-*           Solve U*x = b.
-*
-            B( N, J ) = B( N, J ) / D( N )
-            IF( N.GT.1 )
-     $         B( N-1, J ) = ( B( N-1, J )-DU( N-1 )*B( N, J ) ) /
-     $                       D( N-1 )
-            DO 20 I = N - 2, 1, -1
-               B( I, J ) = ( B( I, J )-DU( I )*B( I+1, J )-DU2( I )*
-     $                     B( I+2, J ) ) / D( I )
-   20       CONTINUE
-   30    CONTINUE
+         ITRANS = 0
       ELSE
+         ITRANS = 1
+      END IF
 *
-*        Solve A' * X = B.
+*     Determine the number of right-hand sides to solve at a time.
 *
-         DO 60 J = 1, NRHS
+      IF( NRHS.EQ.1 ) THEN
+         NB = 1
+      ELSE
+         NB = MAX( 1, ILAENV( 1, 'DGTTRS', TRANS, N, NRHS, -1, -1 ) )
+      END IF
 *
-*           Solve U'*x = b.
-*
-            B( 1, J ) = B( 1, J ) / D( 1 )
-            IF( N.GT.1 )
-     $         B( 2, J ) = ( B( 2, J )-DU( 1 )*B( 1, J ) ) / D( 2 )
-            DO 40 I = 3, N
-               B( I, J ) = ( B( I, J )-DU( I-1 )*B( I-1, J )-DU2( I-2 )*
-     $                     B( I-2, J ) ) / D( I )
-   40       CONTINUE
-*
-*           Solve L'*x = b.
-*
-            DO 50 I = N - 1, 1, -1
-               IF( IPIV( I ).EQ.I ) THEN
-                  B( I, J ) = B( I, J ) - DL( I )*B( I+1, J )
-               ELSE
-                  TEMP = B( I+1, J )
-                  B( I+1, J ) = B( I, J ) - DL( I )*TEMP
-                  B( I, J ) = TEMP
-               END IF
-   50       CONTINUE
-   60    CONTINUE
+      IF( NB.GE.NRHS ) THEN
+         CALL DGTTS2( ITRANS, N, NRHS, DL, D, DU, DU2, IPIV, B, LDB )
+      ELSE
+         DO 10 J = 1, NRHS, NB
+            JB = MIN( NRHS-J+1, NB )
+            CALL DGTTS2( ITRANS, N, JB, DL, D, DU, DU2, IPIV, B( 1, J ),
+     $                   LDB )
+   10    CONTINUE
       END IF
 *
 *     End of DGTTRS

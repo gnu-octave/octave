@@ -1,56 +1,74 @@
-      SUBROUTINE DHGEQZ( JOB, COMPQ, COMPZ, N, ILO, IHI, A, LDA, B, LDB,
+      SUBROUTINE DHGEQZ( JOB, COMPQ, COMPZ, N, ILO, IHI, H, LDH, T, LDT,
      $                   ALPHAR, ALPHAI, BETA, Q, LDQ, Z, LDZ, WORK,
      $                   LWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, COMPZ, JOB
-      INTEGER            IHI, ILO, INFO, LDA, LDB, LDQ, LDZ, LWORK, N
+      INTEGER            IHI, ILO, INFO, LDH, LDQ, LDT, LDZ, LWORK, N
 *     ..
 *     .. Array Arguments ..
-      DOUBLE PRECISION   A( LDA, * ), ALPHAI( * ), ALPHAR( * ),
-     $                   B( LDB, * ), BETA( * ), Q( LDQ, * ), WORK( * ),
-     $                   Z( LDZ, * )
+      DOUBLE PRECISION   ALPHAI( * ), ALPHAR( * ), BETA( * ),
+     $                   H( LDH, * ), Q( LDQ, * ), T( LDT, * ),
+     $                   WORK( * ), Z( LDZ, * )
 *     ..
 *
 *  Purpose
 *  =======
 *
-*  DHGEQZ implements a single-/double-shift version of the QZ method for
-*  finding the generalized eigenvalues
+*  DHGEQZ computes the eigenvalues of a real matrix pair (H,T),
+*  where H is an upper Hessenberg matrix and T is upper triangular,
+*  using the double-shift QZ method.
+*  Matrix pairs of this type are produced by the reduction to
+*  generalized upper Hessenberg form of a real matrix pair (A,B):
 *
-*  w(j)=(ALPHAR(j) + i*ALPHAI(j))/BETAR(j)   of the equation
+*     A = Q1*H*Z1**T,  B = Q1*T*Z1**T,
 *
-*       det( A - w(i) B ) = 0
+*  as computed by DGGHRD.
 *
-*  In addition, the pair A,B may be reduced to generalized Schur form:
-*  B is upper triangular, and A is block upper triangular, where the
-*  diagonal blocks are either 1-by-1 or 2-by-2, the 2-by-2 blocks having
-*  complex generalized eigenvalues (see the description of the argument
-*  JOB.)
+*  If JOB='S', then the Hessenberg-triangular pair (H,T) is
+*  also reduced to generalized Schur form,
+*  
+*     H = Q*S*Z**T,  T = Q*P*Z**T,
+*  
+*  where Q and Z are orthogonal matrices, P is an upper triangular
+*  matrix, and S is a quasi-triangular matrix with 1-by-1 and 2-by-2
+*  diagonal blocks.
 *
-*  If JOB='S', then the pair (A,B) is simultaneously reduced to Schur
-*  form by applying one orthogonal tranformation (usually called Q) on
-*  the left and another (usually called Z) on the right.  The 2-by-2
-*  upper-triangular diagonal blocks of B corresponding to 2-by-2 blocks
-*  of A will be reduced to positive diagonal matrices.  (I.e.,
-*  if A(j+1,j) is non-zero, then B(j+1,j)=B(j,j+1)=0 and B(j,j) and
-*  B(j+1,j+1) will be positive.)
+*  The 1-by-1 blocks correspond to real eigenvalues of the matrix pair
+*  (H,T) and the 2-by-2 blocks correspond to complex conjugate pairs of
+*  eigenvalues.
 *
-*  If JOB='E', then at each iteration, the same transformations
-*  are computed, but they are only applied to those parts of A and B
-*  which are needed to compute ALPHAR, ALPHAI, and BETAR.
+*  Additionally, the 2-by-2 upper triangular diagonal blocks of P
+*  corresponding to 2-by-2 blocks of S are reduced to positive diagonal
+*  form, i.e., if S(j+1,j) is non-zero, then P(j+1,j) = P(j,j+1) = 0,
+*  P(j,j) > 0, and P(j+1,j+1) > 0.
 *
-*  If JOB='S' and COMPQ and COMPZ are 'V' or 'I', then the orthogonal
-*  transformations used to reduce (A,B) are accumulated into the arrays
-*  Q and Z s.t.:
+*  Optionally, the orthogonal matrix Q from the generalized Schur
+*  factorization may be postmultiplied into an input matrix Q1, and the
+*  orthogonal matrix Z may be postmultiplied into an input matrix Z1.
+*  If Q1 and Z1 are the orthogonal matrices from DGGHRD that reduced
+*  the matrix pair (A,B) to generalized upper Hessenberg form, then the
+*  output matrices Q1*Q and Z1*Z are the orthogonal factors from the
+*  generalized Schur factorization of (A,B):
 *
-*       Q(in) A(in) Z(in)* = Q(out) A(out) Z(out)*
-*       Q(in) B(in) Z(in)* = Q(out) B(out) Z(out)*
+*     A = (Q1*Q)*S*(Z1*Z)**T,  B = (Q1*Q)*P*(Z1*Z)**T.
+*  
+*  To avoid overflow, eigenvalues of the matrix pair (H,T) (equivalently,
+*  of (A,B)) are computed as a pair of values (alpha,beta), where alpha is
+*  complex and beta real.
+*  If beta is nonzero, lambda = alpha / beta is an eigenvalue of the
+*  generalized nonsymmetric eigenvalue problem (GNEP)
+*     A*x = lambda*B*x
+*  and if alpha is nonzero, mu = beta / alpha is an eigenvalue of the
+*  alternate form of the GNEP
+*     mu*A*y = B*y.
+*  Real eigenvalues can be read directly from the generalized Schur
+*  form: 
+*    alpha = S(i,i), beta = P(i,i).
 *
 *  Ref: C.B. Moler & G.W. Stewart, "An Algorithm for Generalized Matrix
 *       Eigenvalue Problems", SIAM J. Numer. Anal., 10(1973),
@@ -60,120 +78,104 @@
 *  =========
 *
 *  JOB     (input) CHARACTER*1
-*          = 'E': compute only ALPHAR, ALPHAI, and BETA.  A and B will
-*                 not necessarily be put into generalized Schur form.
-*          = 'S': put A and B into generalized Schur form, as well
-*                 as computing ALPHAR, ALPHAI, and BETA.
+*          = 'E': Compute eigenvalues only;
+*          = 'S': Compute eigenvalues and the Schur form. 
 *
 *  COMPQ   (input) CHARACTER*1
-*          = 'N': do not modify Q.
-*          = 'V': multiply the array Q on the right by the transpose of
-*                 the orthogonal tranformation that is applied to the
-*                 left side of A and B to reduce them to Schur form.
-*          = 'I': like COMPQ='V', except that Q will be initialized to
-*                 the identity first.
+*          = 'N': Left Schur vectors (Q) are not computed;
+*          = 'I': Q is initialized to the unit matrix and the matrix Q
+*                 of left Schur vectors of (H,T) is returned;
+*          = 'V': Q must contain an orthogonal matrix Q1 on entry and
+*                 the product Q1*Q is returned.
 *
 *  COMPZ   (input) CHARACTER*1
-*          = 'N': do not modify Z.
-*          = 'V': multiply the array Z on the right by the orthogonal
-*                 tranformation that is applied to the right side of
-*                 A and B to reduce them to Schur form.
-*          = 'I': like COMPZ='V', except that Z will be initialized to
-*                 the identity first.
+*          = 'N': Right Schur vectors (Z) are not computed;
+*          = 'I': Z is initialized to the unit matrix and the matrix Z
+*                 of right Schur vectors of (H,T) is returned;
+*          = 'V': Z must contain an orthogonal matrix Z1 on entry and
+*                 the product Z1*Z is returned.
 *
 *  N       (input) INTEGER
-*          The order of the matrices A, B, Q, and Z.  N >= 0.
+*          The order of the matrices H, T, Q, and Z.  N >= 0.
 *
 *  ILO     (input) INTEGER
 *  IHI     (input) INTEGER
-*          It is assumed that A is already upper triangular in rows and
-*          columns 1:ILO-1 and IHI+1:N.
-*          1 <= ILO <= IHI <= N, if N > 0; ILO=1 and IHI=0, if N=0.
+*          ILO and IHI mark the rows and columns of H which are in
+*          Hessenberg form.  It is assumed that A is already upper
+*          triangular in rows and columns 1:ILO-1 and IHI+1:N.
+*          If N > 0, 1 <= ILO <= IHI <= N; if N = 0, ILO=1 and IHI=0.
 *
-*  A       (input/output) DOUBLE PRECISION array, dimension (LDA, N)
-*          On entry, the N-by-N upper Hessenberg matrix A.  Elements
-*          below the subdiagonal must be zero.
-*          If JOB='S', then on exit A and B will have been
-*             simultaneously reduced to generalized Schur form.
-*          If JOB='E', then on exit A will have been destroyed.
-*             The diagonal blocks will be correct, but the off-diagonal
-*             portion will be meaningless.
+*  H       (input/output) DOUBLE PRECISION array, dimension (LDH, N)
+*          On entry, the N-by-N upper Hessenberg matrix H.
+*          On exit, if JOB = 'S', H contains the upper quasi-triangular
+*          matrix S from the generalized Schur factorization;
+*          2-by-2 diagonal blocks (corresponding to complex conjugate
+*          pairs of eigenvalues) are returned in standard form, with
+*          H(i,i) = H(i+1,i+1) and H(i+1,i)*H(i,i+1) < 0.
+*          If JOB = 'E', the diagonal blocks of H match those of S, but
+*          the rest of H is unspecified.
 *
-*  LDA     (input) INTEGER
-*          The leading dimension of the array A.  LDA >= max( 1, N ).
+*  LDH     (input) INTEGER
+*          The leading dimension of the array H.  LDH >= max( 1, N ).
 *
-*  B       (input/output) DOUBLE PRECISION array, dimension (LDB, N)
-*          On entry, the N-by-N upper triangular matrix B.  Elements
-*          below the diagonal must be zero.  2-by-2 blocks in B
-*          corresponding to 2-by-2 blocks in A will be reduced to
-*          positive diagonal form.  (I.e., if A(j+1,j) is non-zero,
-*          then B(j+1,j)=B(j,j+1)=0 and B(j,j) and B(j+1,j+1) will be
-*          positive.)
-*          If JOB='S', then on exit A and B will have been
-*             simultaneously reduced to Schur form.
-*          If JOB='E', then on exit B will have been destroyed.
-*             Elements corresponding to diagonal blocks of A will be
-*             correct, but the off-diagonal portion will be meaningless.
+*  T       (input/output) DOUBLE PRECISION array, dimension (LDT, N)
+*          On entry, the N-by-N upper triangular matrix T.
+*          On exit, if JOB = 'S', T contains the upper triangular
+*          matrix P from the generalized Schur factorization;
+*          2-by-2 diagonal blocks of P corresponding to 2-by-2 blocks of S
+*          are reduced to positive diagonal form, i.e., if H(j+1,j) is
+*          non-zero, then T(j+1,j) = T(j,j+1) = 0, T(j,j) > 0, and
+*          T(j+1,j+1) > 0.
+*          If JOB = 'E', the diagonal blocks of T match those of P, but
+*          the rest of T is unspecified.
 *
-*  LDB     (input) INTEGER
-*          The leading dimension of the array B.  LDB >= max( 1, N ).
+*  LDT     (input) INTEGER
+*          The leading dimension of the array T.  LDT >= max( 1, N ).
 *
 *  ALPHAR  (output) DOUBLE PRECISION array, dimension (N)
-*          ALPHAR(1:N) will be set to real parts of the diagonal
-*          elements of A that would result from reducing A and B to
-*          Schur form and then further reducing them both to triangular
-*          form using unitary transformations s.t. the diagonal of B
-*          was non-negative real.  Thus, if A(j,j) is in a 1-by-1 block
-*          (i.e., A(j+1,j)=A(j,j+1)=0), then ALPHAR(j)=A(j,j).
-*          Note that the (real or complex) values
-*          (ALPHAR(j) + i*ALPHAI(j))/BETA(j), j=1,...,N, are the
-*          generalized eigenvalues of the matrix pencil A - wB.
+*          The real parts of each scalar alpha defining an eigenvalue
+*          of GNEP.
 *
 *  ALPHAI  (output) DOUBLE PRECISION array, dimension (N)
-*          ALPHAI(1:N) will be set to imaginary parts of the diagonal
-*          elements of A that would result from reducing A and B to
-*          Schur form and then further reducing them both to triangular
-*          form using unitary transformations s.t. the diagonal of B
-*          was non-negative real.  Thus, if A(j,j) is in a 1-by-1 block
-*          (i.e., A(j+1,j)=A(j,j+1)=0), then ALPHAR(j)=0.
-*          Note that the (real or complex) values
-*          (ALPHAR(j) + i*ALPHAI(j))/BETA(j), j=1,...,N, are the
-*          generalized eigenvalues of the matrix pencil A - wB.
+*          The imaginary parts of each scalar alpha defining an
+*          eigenvalue of GNEP.
+*          If ALPHAI(j) is zero, then the j-th eigenvalue is real; if
+*          positive, then the j-th and (j+1)-st eigenvalues are a
+*          complex conjugate pair, with ALPHAI(j+1) = -ALPHAI(j).
 *
 *  BETA    (output) DOUBLE PRECISION array, dimension (N)
-*          BETA(1:N) will be set to the (real) diagonal elements of B
-*          that would result from reducing A and B to Schur form and
-*          then further reducing them both to triangular form using
-*          unitary transformations s.t. the diagonal of B was
-*          non-negative real.  Thus, if A(j,j) is in a 1-by-1 block
-*          (i.e., A(j+1,j)=A(j,j+1)=0), then BETA(j)=B(j,j).
-*          Note that the (real or complex) values
-*          (ALPHAR(j) + i*ALPHAI(j))/BETA(j), j=1,...,N, are the
-*          generalized eigenvalues of the matrix pencil A - wB.
-*          (Note that BETA(1:N) will always be non-negative, and no
-*          BETAI is necessary.)
+*          The scalars beta that define the eigenvalues of GNEP.
+*          Together, the quantities alpha = (ALPHAR(j),ALPHAI(j)) and
+*          beta = BETA(j) represent the j-th eigenvalue of the matrix
+*          pair (A,B), in one of the forms lambda = alpha/beta or
+*          mu = beta/alpha.  Since either lambda or mu may overflow,
+*          they should not, in general, be computed.
 *
 *  Q       (input/output) DOUBLE PRECISION array, dimension (LDQ, N)
-*          If COMPQ='N', then Q will not be referenced.
-*          If COMPQ='V' or 'I', then the transpose of the orthogonal
-*             transformations which are applied to A and B on the left
-*             will be applied to the array Q on the right.
+*          On entry, if COMPZ = 'V', the orthogonal matrix Q1 used in
+*          the reduction of (A,B) to generalized Hessenberg form.
+*          On exit, if COMPZ = 'I', the orthogonal matrix of left Schur
+*          vectors of (H,T), and if COMPZ = 'V', the orthogonal matrix
+*          of left Schur vectors of (A,B).
+*          Not referenced if COMPZ = 'N'.
 *
 *  LDQ     (input) INTEGER
 *          The leading dimension of the array Q.  LDQ >= 1.
 *          If COMPQ='V' or 'I', then LDQ >= N.
 *
 *  Z       (input/output) DOUBLE PRECISION array, dimension (LDZ, N)
-*          If COMPZ='N', then Z will not be referenced.
-*          If COMPZ='V' or 'I', then the orthogonal transformations
-*             which are applied to A and B on the right will be applied
-*             to the array Z on the right.
+*          On entry, if COMPZ = 'V', the orthogonal matrix Z1 used in
+*          the reduction of (A,B) to generalized Hessenberg form.
+*          On exit, if COMPZ = 'I', the orthogonal matrix of
+*          right Schur vectors of (H,T), and if COMPZ = 'V', the
+*          orthogonal matrix of right Schur vectors of (A,B).
+*          Not referenced if COMPZ = 'N'.
 *
 *  LDZ     (input) INTEGER
 *          The leading dimension of the array Z.  LDZ >= 1.
 *          If COMPZ='V' or 'I', then LDZ >= N.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO >= 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -187,13 +189,12 @@
 *  INFO    (output) INTEGER
 *          = 0: successful exit
 *          < 0: if INFO = -i, the i-th argument had an illegal value
-*          = 1,...,N: the QZ iteration did not converge.  (A,B) is not
+*          = 1,...,N: the QZ iteration did not converge.  (H,T) is not
 *                     in Schur form, but ALPHAR(i), ALPHAI(i), and
 *                     BETA(i), i=INFO+1,...,N should be correct.
-*          = N+1,...,2*N: the shift calculation failed.  (A,B) is not
+*          = N+1,...,2*N: the shift calculation failed.  (H,T) is not
 *                     in Schur form, but ALPHAR(i), ALPHAI(i), and
 *                     BETA(i), i=INFO-N+1,...,N should be correct.
-*          > 2*N:     various "impossible" errors.
 *
 *  Further Details
 *  ===============
@@ -225,7 +226,7 @@
      $                   B1R, B22, B2A, B2I, B2R, BN, BNORM, BSCALE,
      $                   BTOL, C, C11I, C11R, C12, C21, C22I, C22R, CL,
      $                   CQ, CR, CZ, ESHIFT, S, S1, S1INV, S2, SAFMAX,
-     $                   SAFMIN, SCALE, SL, SQI, SQR, SR, SZI, SZR, T,
+     $                   SAFMIN, SCALE, SL, SQI, SQR, SR, SZI, SZR, T1,
      $                   TAU, TEMP, TEMP2, TEMPI, TEMPR, U1, U12, U12L,
      $                   U2, ULP, VS, W11, W12, W21, W22, WABS, WI, WR,
      $                   WR2
@@ -302,9 +303,9 @@
          INFO = -5
       ELSE IF( IHI.GT.N .OR. IHI.LT.ILO-1 ) THEN
          INFO = -6
-      ELSE IF( LDA.LT.N ) THEN
+      ELSE IF( LDH.LT.N ) THEN
          INFO = -8
-      ELSE IF( LDB.LT.N ) THEN
+      ELSE IF( LDT.LT.N ) THEN
          INFO = -10
       ELSE IF( LDQ.LT.1 .OR. ( ILQ .AND. LDQ.LT.N ) ) THEN
          INFO = -15
@@ -340,8 +341,8 @@
       SAFMIN = DLAMCH( 'S' )
       SAFMAX = ONE / SAFMIN
       ULP = DLAMCH( 'E' )*DLAMCH( 'B' )
-      ANORM = DLANHS( 'F', IN, A( ILO, ILO ), LDA, WORK )
-      BNORM = DLANHS( 'F', IN, B( ILO, ILO ), LDB, WORK )
+      ANORM = DLANHS( 'F', IN, H( ILO, ILO ), LDH, WORK )
+      BNORM = DLANHS( 'F', IN, T( ILO, ILO ), LDT, WORK )
       ATOL = MAX( SAFMIN, ULP*ANORM )
       BTOL = MAX( SAFMIN, ULP*BNORM )
       ASCALE = ONE / MAX( SAFMIN, ANORM )
@@ -350,15 +351,15 @@
 *     Set Eigenvalues IHI+1:N
 *
       DO 30 J = IHI + 1, N
-         IF( B( J, J ).LT.ZERO ) THEN
+         IF( T( J, J ).LT.ZERO ) THEN
             IF( ILSCHR ) THEN
                DO 10 JR = 1, J
-                  A( JR, J ) = -A( JR, J )
-                  B( JR, J ) = -B( JR, J )
+                  H( JR, J ) = -H( JR, J )
+                  T( JR, J ) = -T( JR, J )
    10          CONTINUE
             ELSE
-               A( J, J ) = -A( J, J )
-               B( J, J ) = -B( J, J )
+               H( J, J ) = -H( J, J )
+               T( J, J ) = -T( J, J )
             END IF
             IF( ILZ ) THEN
                DO 20 JR = 1, N
@@ -366,9 +367,9 @@
    20          CONTINUE
             END IF
          END IF
-         ALPHAR( J ) = A( J, J )
+         ALPHAR( J ) = H( J, J )
          ALPHAI( J ) = ZERO
-         BETA( J ) = B( J, J )
+         BETA( J ) = T( J, J )
    30 CONTINUE
 *
 *     If IHI < ILO, skip QZ steps
@@ -408,8 +409,8 @@
 *        Split the matrix if possible.
 *
 *        Two tests:
-*           1: A(j,j-1)=0  or  j=ILO
-*           2: B(j,j)=0
+*           1: H(j,j-1)=0  or  j=ILO
+*           2: T(j,j)=0
 *
          IF( ILAST.EQ.ILO ) THEN
 *
@@ -417,14 +418,14 @@
 *
             GO TO 80
          ELSE
-            IF( ABS( A( ILAST, ILAST-1 ) ).LE.ATOL ) THEN
-               A( ILAST, ILAST-1 ) = ZERO
+            IF( ABS( H( ILAST, ILAST-1 ) ).LE.ATOL ) THEN
+               H( ILAST, ILAST-1 ) = ZERO
                GO TO 80
             END IF
          END IF
 *
-         IF( ABS( B( ILAST, ILAST ) ).LE.BTOL ) THEN
-            B( ILAST, ILAST ) = ZERO
+         IF( ABS( T( ILAST, ILAST ) ).LE.BTOL ) THEN
+            T( ILAST, ILAST ) = ZERO
             GO TO 70
          END IF
 *
@@ -432,36 +433,36 @@
 *
          DO 60 J = ILAST - 1, ILO, -1
 *
-*           Test 1: for A(j,j-1)=0 or j=ILO
+*           Test 1: for H(j,j-1)=0 or j=ILO
 *
             IF( J.EQ.ILO ) THEN
                ILAZRO = .TRUE.
             ELSE
-               IF( ABS( A( J, J-1 ) ).LE.ATOL ) THEN
-                  A( J, J-1 ) = ZERO
+               IF( ABS( H( J, J-1 ) ).LE.ATOL ) THEN
+                  H( J, J-1 ) = ZERO
                   ILAZRO = .TRUE.
                ELSE
                   ILAZRO = .FALSE.
                END IF
             END IF
 *
-*           Test 2: for B(j,j)=0
+*           Test 2: for T(j,j)=0
 *
-            IF( ABS( B( J, J ) ).LT.BTOL ) THEN
-               B( J, J ) = ZERO
+            IF( ABS( T( J, J ) ).LT.BTOL ) THEN
+               T( J, J ) = ZERO
 *
 *              Test 1a: Check for 2 consecutive small subdiagonals in A
 *
                ILAZR2 = .FALSE.
                IF( .NOT.ILAZRO ) THEN
-                  TEMP = ABS( A( J, J-1 ) )
-                  TEMP2 = ABS( A( J, J ) )
+                  TEMP = ABS( H( J, J-1 ) )
+                  TEMP2 = ABS( H( J, J ) )
                   TEMPR = MAX( TEMP, TEMP2 )
                   IF( TEMPR.LT.ONE .AND. TEMPR.NE.ZERO ) THEN
                      TEMP = TEMP / TEMPR
                      TEMP2 = TEMP2 / TEMPR
                   END IF
-                  IF( TEMP*( ASCALE*ABS( A( J+1, J ) ) ).LE.TEMP2*
+                  IF( TEMP*( ASCALE*ABS( H( J+1, J ) ) ).LE.TEMP2*
      $                ( ASCALE*ATOL ) )ILAZR2 = .TRUE.
                END IF
 *
@@ -473,21 +474,21 @@
 *
                IF( ILAZRO .OR. ILAZR2 ) THEN
                   DO 40 JCH = J, ILAST - 1
-                     TEMP = A( JCH, JCH )
-                     CALL DLARTG( TEMP, A( JCH+1, JCH ), C, S,
-     $                            A( JCH, JCH ) )
-                     A( JCH+1, JCH ) = ZERO
-                     CALL DROT( ILASTM-JCH, A( JCH, JCH+1 ), LDA,
-     $                          A( JCH+1, JCH+1 ), LDA, C, S )
-                     CALL DROT( ILASTM-JCH, B( JCH, JCH+1 ), LDB,
-     $                          B( JCH+1, JCH+1 ), LDB, C, S )
+                     TEMP = H( JCH, JCH )
+                     CALL DLARTG( TEMP, H( JCH+1, JCH ), C, S,
+     $                            H( JCH, JCH ) )
+                     H( JCH+1, JCH ) = ZERO
+                     CALL DROT( ILASTM-JCH, H( JCH, JCH+1 ), LDH,
+     $                          H( JCH+1, JCH+1 ), LDH, C, S )
+                     CALL DROT( ILASTM-JCH, T( JCH, JCH+1 ), LDT,
+     $                          T( JCH+1, JCH+1 ), LDT, C, S )
                      IF( ILQ )
      $                  CALL DROT( N, Q( 1, JCH ), 1, Q( 1, JCH+1 ), 1,
      $                             C, S )
                      IF( ILAZR2 )
-     $                  A( JCH, JCH-1 ) = A( JCH, JCH-1 )*C
+     $                  H( JCH, JCH-1 ) = H( JCH, JCH-1 )*C
                      ILAZR2 = .FALSE.
-                     IF( ABS( B( JCH+1, JCH+1 ) ).GE.BTOL ) THEN
+                     IF( ABS( T( JCH+1, JCH+1 ) ).GE.BTOL ) THEN
                         IF( JCH+1.GE.ILAST ) THEN
                            GO TO 80
                         ELSE
@@ -495,35 +496,35 @@
                            GO TO 110
                         END IF
                      END IF
-                     B( JCH+1, JCH+1 ) = ZERO
+                     T( JCH+1, JCH+1 ) = ZERO
    40             CONTINUE
                   GO TO 70
                ELSE
 *
-*                 Only test 2 passed -- chase the zero to B(ILAST,ILAST)
-*                 Then process as in the case B(ILAST,ILAST)=0
+*                 Only test 2 passed -- chase the zero to T(ILAST,ILAST)
+*                 Then process as in the case T(ILAST,ILAST)=0
 *
                   DO 50 JCH = J, ILAST - 1
-                     TEMP = B( JCH, JCH+1 )
-                     CALL DLARTG( TEMP, B( JCH+1, JCH+1 ), C, S,
-     $                            B( JCH, JCH+1 ) )
-                     B( JCH+1, JCH+1 ) = ZERO
+                     TEMP = T( JCH, JCH+1 )
+                     CALL DLARTG( TEMP, T( JCH+1, JCH+1 ), C, S,
+     $                            T( JCH, JCH+1 ) )
+                     T( JCH+1, JCH+1 ) = ZERO
                      IF( JCH.LT.ILASTM-1 )
-     $                  CALL DROT( ILASTM-JCH-1, B( JCH, JCH+2 ), LDB,
-     $                             B( JCH+1, JCH+2 ), LDB, C, S )
-                     CALL DROT( ILASTM-JCH+2, A( JCH, JCH-1 ), LDA,
-     $                          A( JCH+1, JCH-1 ), LDA, C, S )
+     $                  CALL DROT( ILASTM-JCH-1, T( JCH, JCH+2 ), LDT,
+     $                             T( JCH+1, JCH+2 ), LDT, C, S )
+                     CALL DROT( ILASTM-JCH+2, H( JCH, JCH-1 ), LDH,
+     $                          H( JCH+1, JCH-1 ), LDH, C, S )
                      IF( ILQ )
      $                  CALL DROT( N, Q( 1, JCH ), 1, Q( 1, JCH+1 ), 1,
      $                             C, S )
-                     TEMP = A( JCH+1, JCH )
-                     CALL DLARTG( TEMP, A( JCH+1, JCH-1 ), C, S,
-     $                            A( JCH+1, JCH ) )
-                     A( JCH+1, JCH-1 ) = ZERO
-                     CALL DROT( JCH+1-IFRSTM, A( IFRSTM, JCH ), 1,
-     $                          A( IFRSTM, JCH-1 ), 1, C, S )
-                     CALL DROT( JCH-IFRSTM, B( IFRSTM, JCH ), 1,
-     $                          B( IFRSTM, JCH-1 ), 1, C, S )
+                     TEMP = H( JCH+1, JCH )
+                     CALL DLARTG( TEMP, H( JCH+1, JCH-1 ), C, S,
+     $                            H( JCH+1, JCH ) )
+                     H( JCH+1, JCH-1 ) = ZERO
+                     CALL DROT( JCH+1-IFRSTM, H( IFRSTM, JCH ), 1,
+     $                          H( IFRSTM, JCH-1 ), 1, C, S )
+                     CALL DROT( JCH-IFRSTM, T( IFRSTM, JCH ), 1,
+     $                          T( IFRSTM, JCH-1 ), 1, C, S )
                      IF( ILZ )
      $                  CALL DROT( N, Z( 1, JCH ), 1, Z( 1, JCH-1 ), 1,
      $                             C, S )
@@ -547,34 +548,34 @@
          INFO = N + 1
          GO TO 420
 *
-*        B(ILAST,ILAST)=0 -- clear A(ILAST,ILAST-1) to split off a
+*        T(ILAST,ILAST)=0 -- clear H(ILAST,ILAST-1) to split off a
 *        1x1 block.
 *
    70    CONTINUE
-         TEMP = A( ILAST, ILAST )
-         CALL DLARTG( TEMP, A( ILAST, ILAST-1 ), C, S,
-     $                A( ILAST, ILAST ) )
-         A( ILAST, ILAST-1 ) = ZERO
-         CALL DROT( ILAST-IFRSTM, A( IFRSTM, ILAST ), 1,
-     $              A( IFRSTM, ILAST-1 ), 1, C, S )
-         CALL DROT( ILAST-IFRSTM, B( IFRSTM, ILAST ), 1,
-     $              B( IFRSTM, ILAST-1 ), 1, C, S )
+         TEMP = H( ILAST, ILAST )
+         CALL DLARTG( TEMP, H( ILAST, ILAST-1 ), C, S,
+     $                H( ILAST, ILAST ) )
+         H( ILAST, ILAST-1 ) = ZERO
+         CALL DROT( ILAST-IFRSTM, H( IFRSTM, ILAST ), 1,
+     $              H( IFRSTM, ILAST-1 ), 1, C, S )
+         CALL DROT( ILAST-IFRSTM, T( IFRSTM, ILAST ), 1,
+     $              T( IFRSTM, ILAST-1 ), 1, C, S )
          IF( ILZ )
      $      CALL DROT( N, Z( 1, ILAST ), 1, Z( 1, ILAST-1 ), 1, C, S )
 *
-*        A(ILAST,ILAST-1)=0 -- Standardize B, set ALPHAR, ALPHAI,
+*        H(ILAST,ILAST-1)=0 -- Standardize B, set ALPHAR, ALPHAI,
 *                              and BETA
 *
    80    CONTINUE
-         IF( B( ILAST, ILAST ).LT.ZERO ) THEN
+         IF( T( ILAST, ILAST ).LT.ZERO ) THEN
             IF( ILSCHR ) THEN
                DO 90 J = IFRSTM, ILAST
-                  A( J, ILAST ) = -A( J, ILAST )
-                  B( J, ILAST ) = -B( J, ILAST )
+                  H( J, ILAST ) = -H( J, ILAST )
+                  T( J, ILAST ) = -T( J, ILAST )
    90          CONTINUE
             ELSE
-               A( ILAST, ILAST ) = -A( ILAST, ILAST )
-               B( ILAST, ILAST ) = -B( ILAST, ILAST )
+               H( ILAST, ILAST ) = -H( ILAST, ILAST )
+               T( ILAST, ILAST ) = -T( ILAST, ILAST )
             END IF
             IF( ILZ ) THEN
                DO 100 J = 1, N
@@ -582,9 +583,9 @@
   100          CONTINUE
             END IF
          END IF
-         ALPHAR( ILAST ) = A( ILAST, ILAST )
+         ALPHAR( ILAST ) = H( ILAST, ILAST )
          ALPHAI( ILAST ) = ZERO
-         BETA( ILAST ) = B( ILAST, ILAST )
+         BETA( ILAST ) = T( ILAST, ILAST )
 *
 *        Go to next block -- exit if finished.
 *
@@ -617,7 +618,7 @@
 *        Compute single shifts.
 *
 *        At this point, IFIRST < ILAST, and the diagonal elements of
-*        B(IFIRST:ILAST,IFIRST,ILAST) are larger than BTOL (in
+*        T(IFIRST:ILAST,IFIRST,ILAST) are larger than BTOL (in
 *        magnitude)
 *
          IF( ( IITER / 10 )*10.EQ.IITER ) THEN
@@ -625,10 +626,10 @@
 *           Exceptional shift.  Chosen for no particularly good reason.
 *           (Single shift only.)
 *
-            IF( ( DBLE( MAXIT )*SAFMIN )*ABS( A( ILAST-1, ILAST ) ).LT.
-     $          ABS( B( ILAST-1, ILAST-1 ) ) ) THEN
-               ESHIFT = ESHIFT + A( ILAST-1, ILAST ) /
-     $                  B( ILAST-1, ILAST-1 )
+            IF( ( DBLE( MAXIT )*SAFMIN )*ABS( H( ILAST-1, ILAST ) ).LT.
+     $          ABS( T( ILAST-1, ILAST-1 ) ) ) THEN
+               ESHIFT = ESHIFT + H( ILAST-1, ILAST ) /
+     $                  T( ILAST-1, ILAST-1 )
             ELSE
                ESHIFT = ESHIFT + ONE / ( SAFMIN*DBLE( MAXIT ) )
             END IF
@@ -641,8 +642,8 @@
 *           bottom-right 2x2 block of A and B. The first eigenvalue
 *           returned by DLAG2 is the Wilkinson shift (AEP p.512),
 *
-            CALL DLAG2( A( ILAST-1, ILAST-1 ), LDA,
-     $                  B( ILAST-1, ILAST-1 ), LDB, SAFMIN*SAFETY, S1,
+            CALL DLAG2( H( ILAST-1, ILAST-1 ), LDH,
+     $                  T( ILAST-1, ILAST-1 ), LDT, SAFMIN*SAFETY, S1,
      $                  S2, WR, WR2, WI )
 *
             TEMP = MAX( S1, SAFMIN*MAX( ONE, ABS( WR ), ABS( WI ) ) )
@@ -669,14 +670,14 @@
 *
          DO 120 J = ILAST - 1, IFIRST + 1, -1
             ISTART = J
-            TEMP = ABS( S1*A( J, J-1 ) )
-            TEMP2 = ABS( S1*A( J, J )-WR*B( J, J ) )
+            TEMP = ABS( S1*H( J, J-1 ) )
+            TEMP2 = ABS( S1*H( J, J )-WR*T( J, J ) )
             TEMPR = MAX( TEMP, TEMP2 )
             IF( TEMPR.LT.ONE .AND. TEMPR.NE.ZERO ) THEN
                TEMP = TEMP / TEMPR
                TEMP2 = TEMP2 / TEMPR
             END IF
-            IF( ABS( ( ASCALE*A( J+1, J ) )*TEMP ).LE.( ASCALE*ATOL )*
+            IF( ABS( ( ASCALE*H( J+1, J ) )*TEMP ).LE.( ASCALE*ATOL )*
      $          TEMP2 )GO TO 130
   120    CONTINUE
 *
@@ -687,26 +688,26 @@
 *
 *        Initial Q
 *
-         TEMP = S1*A( ISTART, ISTART ) - WR*B( ISTART, ISTART )
-         TEMP2 = S1*A( ISTART+1, ISTART )
+         TEMP = S1*H( ISTART, ISTART ) - WR*T( ISTART, ISTART )
+         TEMP2 = S1*H( ISTART+1, ISTART )
          CALL DLARTG( TEMP, TEMP2, C, S, TEMPR )
 *
 *        Sweep
 *
          DO 190 J = ISTART, ILAST - 1
             IF( J.GT.ISTART ) THEN
-               TEMP = A( J, J-1 )
-               CALL DLARTG( TEMP, A( J+1, J-1 ), C, S, A( J, J-1 ) )
-               A( J+1, J-1 ) = ZERO
+               TEMP = H( J, J-1 )
+               CALL DLARTG( TEMP, H( J+1, J-1 ), C, S, H( J, J-1 ) )
+               H( J+1, J-1 ) = ZERO
             END IF
 *
             DO 140 JC = J, ILASTM
-               TEMP = C*A( J, JC ) + S*A( J+1, JC )
-               A( J+1, JC ) = -S*A( J, JC ) + C*A( J+1, JC )
-               A( J, JC ) = TEMP
-               TEMP2 = C*B( J, JC ) + S*B( J+1, JC )
-               B( J+1, JC ) = -S*B( J, JC ) + C*B( J+1, JC )
-               B( J, JC ) = TEMP2
+               TEMP = C*H( J, JC ) + S*H( J+1, JC )
+               H( J+1, JC ) = -S*H( J, JC ) + C*H( J+1, JC )
+               H( J, JC ) = TEMP
+               TEMP2 = C*T( J, JC ) + S*T( J+1, JC )
+               T( J+1, JC ) = -S*T( J, JC ) + C*T( J+1, JC )
+               T( J, JC ) = TEMP2
   140       CONTINUE
             IF( ILQ ) THEN
                DO 150 JR = 1, N
@@ -716,19 +717,19 @@
   150          CONTINUE
             END IF
 *
-            TEMP = B( J+1, J+1 )
-            CALL DLARTG( TEMP, B( J+1, J ), C, S, B( J+1, J+1 ) )
-            B( J+1, J ) = ZERO
+            TEMP = T( J+1, J+1 )
+            CALL DLARTG( TEMP, T( J+1, J ), C, S, T( J+1, J+1 ) )
+            T( J+1, J ) = ZERO
 *
             DO 160 JR = IFRSTM, MIN( J+2, ILAST )
-               TEMP = C*A( JR, J+1 ) + S*A( JR, J )
-               A( JR, J ) = -S*A( JR, J+1 ) + C*A( JR, J )
-               A( JR, J+1 ) = TEMP
+               TEMP = C*H( JR, J+1 ) + S*H( JR, J )
+               H( JR, J ) = -S*H( JR, J+1 ) + C*H( JR, J )
+               H( JR, J+1 ) = TEMP
   160       CONTINUE
             DO 170 JR = IFRSTM, J
-               TEMP = C*B( JR, J+1 ) + S*B( JR, J )
-               B( JR, J ) = -S*B( JR, J+1 ) + C*B( JR, J )
-               B( JR, J+1 ) = TEMP
+               TEMP = C*T( JR, J+1 ) + S*T( JR, J )
+               T( JR, J ) = -S*T( JR, J+1 ) + C*T( JR, J )
+               T( JR, J+1 ) = TEMP
   170       CONTINUE
             IF( ILZ ) THEN
                DO 180 JR = 1, N
@@ -759,8 +760,8 @@
 *                   B = (         )  with B11 non-negative.
 *                       (  0  B22 )
 *
-            CALL DLASV2( B( ILAST-1, ILAST-1 ), B( ILAST-1, ILAST ),
-     $                   B( ILAST, ILAST ), B22, B11, SR, CR, SL, CL )
+            CALL DLASV2( T( ILAST-1, ILAST-1 ), T( ILAST-1, ILAST ),
+     $                   T( ILAST, ILAST ), B22, B11, SR, CR, SL, CL )
 *
             IF( B11.LT.ZERO ) THEN
                CR = -CR
@@ -769,17 +770,17 @@
                B22 = -B22
             END IF
 *
-            CALL DROT( ILASTM+1-IFIRST, A( ILAST-1, ILAST-1 ), LDA,
-     $                 A( ILAST, ILAST-1 ), LDA, CL, SL )
-            CALL DROT( ILAST+1-IFRSTM, A( IFRSTM, ILAST-1 ), 1,
-     $                 A( IFRSTM, ILAST ), 1, CR, SR )
+            CALL DROT( ILASTM+1-IFIRST, H( ILAST-1, ILAST-1 ), LDH,
+     $                 H( ILAST, ILAST-1 ), LDH, CL, SL )
+            CALL DROT( ILAST+1-IFRSTM, H( IFRSTM, ILAST-1 ), 1,
+     $                 H( IFRSTM, ILAST ), 1, CR, SR )
 *
             IF( ILAST.LT.ILASTM )
-     $         CALL DROT( ILASTM-ILAST, B( ILAST-1, ILAST+1 ), LDB,
-     $                    B( ILAST, ILAST+1 ), LDA, CL, SL )
+     $         CALL DROT( ILASTM-ILAST, T( ILAST-1, ILAST+1 ), LDT,
+     $                    T( ILAST, ILAST+1 ), LDH, CL, SL )
             IF( IFRSTM.LT.ILAST-1 )
-     $         CALL DROT( IFIRST-IFRSTM, B( IFRSTM, ILAST-1 ), 1,
-     $                    B( IFRSTM, ILAST ), 1, CR, SR )
+     $         CALL DROT( IFIRST-IFRSTM, T( IFRSTM, ILAST-1 ), 1,
+     $                    T( IFRSTM, ILAST ), 1, CR, SR )
 *
             IF( ILQ )
      $         CALL DROT( N, Q( 1, ILAST-1 ), 1, Q( 1, ILAST ), 1, CL,
@@ -788,17 +789,17 @@
      $         CALL DROT( N, Z( 1, ILAST-1 ), 1, Z( 1, ILAST ), 1, CR,
      $                    SR )
 *
-            B( ILAST-1, ILAST-1 ) = B11
-            B( ILAST-1, ILAST ) = ZERO
-            B( ILAST, ILAST-1 ) = ZERO
-            B( ILAST, ILAST ) = B22
+            T( ILAST-1, ILAST-1 ) = B11
+            T( ILAST-1, ILAST ) = ZERO
+            T( ILAST, ILAST-1 ) = ZERO
+            T( ILAST, ILAST ) = B22
 *
 *           If B22 is negative, negate column ILAST
 *
             IF( B22.LT.ZERO ) THEN
                DO 210 J = IFRSTM, ILAST
-                  A( J, ILAST ) = -A( J, ILAST )
-                  B( J, ILAST ) = -B( J, ILAST )
+                  H( J, ILAST ) = -H( J, ILAST )
+                  T( J, ILAST ) = -T( J, ILAST )
   210          CONTINUE
 *
                IF( ILZ ) THEN
@@ -812,8 +813,8 @@
 *
 *           Recompute shift
 *
-            CALL DLAG2( A( ILAST-1, ILAST-1 ), LDA,
-     $                  B( ILAST-1, ILAST-1 ), LDB, SAFMIN*SAFETY, S1,
+            CALL DLAG2( H( ILAST-1, ILAST-1 ), LDH,
+     $                  T( ILAST-1, ILAST-1 ), LDT, SAFMIN*SAFETY, S1,
      $                  TEMP, WR, TEMP2, WI )
 *
 *           If standardization has perturbed the shift onto real line,
@@ -825,10 +826,10 @@
 *
 *           Do EISPACK (QZVAL) computation of alpha and beta
 *
-            A11 = A( ILAST-1, ILAST-1 )
-            A21 = A( ILAST, ILAST-1 )
-            A12 = A( ILAST-1, ILAST )
-            A22 = A( ILAST, ILAST )
+            A11 = H( ILAST-1, ILAST-1 )
+            A21 = H( ILAST, ILAST-1 )
+            A12 = H( ILAST-1, ILAST )
+            A22 = H( ILAST, ILAST )
 *
 *           Compute complex Givens rotation on right
 *           (Assume some element of C = (sA - wB) > unfl )
@@ -845,10 +846,10 @@
 *
             IF( ABS( C11R )+ABS( C11I )+ABS( C12 ).GT.ABS( C21 )+
      $          ABS( C22R )+ABS( C22I ) ) THEN
-               T = DLAPY3( C12, C11R, C11I )
-               CZ = C12 / T
-               SZR = -C11R / T
-               SZI = -C11I / T
+               T1 = DLAPY3( C12, C11R, C11I )
+               CZ = C12 / T1
+               SZR = -C11R / T1
+               SZI = -C11I / T1
             ELSE
                CZ = DLAPY2( C22R, C22I )
                IF( CZ.LE.SAFMIN ) THEN
@@ -858,10 +859,10 @@
                ELSE
                   TEMPR = C22R / CZ
                   TEMPI = C22I / CZ
-                  T = DLAPY2( CZ, C21 )
-                  CZ = CZ / T
-                  SZR = -C21*TEMPR / T
-                  SZI = C21*TEMPI / T
+                  T1 = DLAPY2( CZ, C21 )
+                  CZ = CZ / T1
+                  SZR = -C21*TEMPR / T1
+                  SZI = C21*TEMPI / T1
                END IF
             END IF
 *
@@ -895,10 +896,10 @@
                   SQI = TEMPI*A2R - TEMPR*A2I
                END IF
             END IF
-            T = DLAPY3( CQ, SQR, SQI )
-            CQ = CQ / T
-            SQR = SQR / T
-            SQI = SQI / T
+            T1 = DLAPY3( CQ, SQR, SQI )
+            CQ = CQ / T1
+            SQR = SQR / T1
+            SQI = SQI / T1
 *
 *           Compute diagonal elements of QBZ
 *
@@ -950,26 +951,26 @@
 *
 *           We assume that the block is at least 3x3
 *
-            AD11 = ( ASCALE*A( ILAST-1, ILAST-1 ) ) /
-     $             ( BSCALE*B( ILAST-1, ILAST-1 ) )
-            AD21 = ( ASCALE*A( ILAST, ILAST-1 ) ) /
-     $             ( BSCALE*B( ILAST-1, ILAST-1 ) )
-            AD12 = ( ASCALE*A( ILAST-1, ILAST ) ) /
-     $             ( BSCALE*B( ILAST, ILAST ) )
-            AD22 = ( ASCALE*A( ILAST, ILAST ) ) /
-     $             ( BSCALE*B( ILAST, ILAST ) )
-            U12 = B( ILAST-1, ILAST ) / B( ILAST, ILAST )
-            AD11L = ( ASCALE*A( IFIRST, IFIRST ) ) /
-     $              ( BSCALE*B( IFIRST, IFIRST ) )
-            AD21L = ( ASCALE*A( IFIRST+1, IFIRST ) ) /
-     $              ( BSCALE*B( IFIRST, IFIRST ) )
-            AD12L = ( ASCALE*A( IFIRST, IFIRST+1 ) ) /
-     $              ( BSCALE*B( IFIRST+1, IFIRST+1 ) )
-            AD22L = ( ASCALE*A( IFIRST+1, IFIRST+1 ) ) /
-     $              ( BSCALE*B( IFIRST+1, IFIRST+1 ) )
-            AD32L = ( ASCALE*A( IFIRST+2, IFIRST+1 ) ) /
-     $              ( BSCALE*B( IFIRST+1, IFIRST+1 ) )
-            U12L = B( IFIRST, IFIRST+1 ) / B( IFIRST+1, IFIRST+1 )
+            AD11 = ( ASCALE*H( ILAST-1, ILAST-1 ) ) /
+     $             ( BSCALE*T( ILAST-1, ILAST-1 ) )
+            AD21 = ( ASCALE*H( ILAST, ILAST-1 ) ) /
+     $             ( BSCALE*T( ILAST-1, ILAST-1 ) )
+            AD12 = ( ASCALE*H( ILAST-1, ILAST ) ) /
+     $             ( BSCALE*T( ILAST, ILAST ) )
+            AD22 = ( ASCALE*H( ILAST, ILAST ) ) /
+     $             ( BSCALE*T( ILAST, ILAST ) )
+            U12 = T( ILAST-1, ILAST ) / T( ILAST, ILAST )
+            AD11L = ( ASCALE*H( IFIRST, IFIRST ) ) /
+     $              ( BSCALE*T( IFIRST, IFIRST ) )
+            AD21L = ( ASCALE*H( IFIRST+1, IFIRST ) ) /
+     $              ( BSCALE*T( IFIRST, IFIRST ) )
+            AD12L = ( ASCALE*H( IFIRST, IFIRST+1 ) ) /
+     $              ( BSCALE*T( IFIRST+1, IFIRST+1 ) )
+            AD22L = ( ASCALE*H( IFIRST+1, IFIRST+1 ) ) /
+     $              ( BSCALE*T( IFIRST+1, IFIRST+1 ) )
+            AD32L = ( ASCALE*H( IFIRST+2, IFIRST+1 ) ) /
+     $              ( BSCALE*T( IFIRST+1, IFIRST+1 ) )
+            U12L = T( IFIRST, IFIRST+1 ) / T( IFIRST+1, IFIRST+1 )
 *
             V( 1 ) = ( AD11-AD11L )*( AD22-AD11L ) - AD12*AD21 +
      $               AD21*U12*AD11L + ( AD12L-AD11L*U12L )*AD21L
@@ -991,27 +992,27 @@
 *              Zero (j-1)st column of A
 *
                IF( J.GT.ISTART ) THEN
-                  V( 1 ) = A( J, J-1 )
-                  V( 2 ) = A( J+1, J-1 )
-                  V( 3 ) = A( J+2, J-1 )
+                  V( 1 ) = H( J, J-1 )
+                  V( 2 ) = H( J+1, J-1 )
+                  V( 3 ) = H( J+2, J-1 )
 *
-                  CALL DLARFG( 3, A( J, J-1 ), V( 2 ), 1, TAU )
+                  CALL DLARFG( 3, H( J, J-1 ), V( 2 ), 1, TAU )
                   V( 1 ) = ONE
-                  A( J+1, J-1 ) = ZERO
-                  A( J+2, J-1 ) = ZERO
+                  H( J+1, J-1 ) = ZERO
+                  H( J+2, J-1 ) = ZERO
                END IF
 *
                DO 230 JC = J, ILASTM
-                  TEMP = TAU*( A( J, JC )+V( 2 )*A( J+1, JC )+V( 3 )*
-     $                   A( J+2, JC ) )
-                  A( J, JC ) = A( J, JC ) - TEMP
-                  A( J+1, JC ) = A( J+1, JC ) - TEMP*V( 2 )
-                  A( J+2, JC ) = A( J+2, JC ) - TEMP*V( 3 )
-                  TEMP2 = TAU*( B( J, JC )+V( 2 )*B( J+1, JC )+V( 3 )*
-     $                    B( J+2, JC ) )
-                  B( J, JC ) = B( J, JC ) - TEMP2
-                  B( J+1, JC ) = B( J+1, JC ) - TEMP2*V( 2 )
-                  B( J+2, JC ) = B( J+2, JC ) - TEMP2*V( 3 )
+                  TEMP = TAU*( H( J, JC )+V( 2 )*H( J+1, JC )+V( 3 )*
+     $                   H( J+2, JC ) )
+                  H( J, JC ) = H( J, JC ) - TEMP
+                  H( J+1, JC ) = H( J+1, JC ) - TEMP*V( 2 )
+                  H( J+2, JC ) = H( J+2, JC ) - TEMP*V( 3 )
+                  TEMP2 = TAU*( T( J, JC )+V( 2 )*T( J+1, JC )+V( 3 )*
+     $                    T( J+2, JC ) )
+                  T( J, JC ) = T( J, JC ) - TEMP2
+                  T( J+1, JC ) = T( J+1, JC ) - TEMP2*V( 2 )
+                  T( J+2, JC ) = T( J+2, JC ) - TEMP2*V( 3 )
   230          CONTINUE
                IF( ILQ ) THEN
                   DO 240 JR = 1, N
@@ -1028,27 +1029,27 @@
 *              Swap rows to pivot
 *
                ILPIVT = .FALSE.
-               TEMP = MAX( ABS( B( J+1, J+1 ) ), ABS( B( J+1, J+2 ) ) )
-               TEMP2 = MAX( ABS( B( J+2, J+1 ) ), ABS( B( J+2, J+2 ) ) )
+               TEMP = MAX( ABS( T( J+1, J+1 ) ), ABS( T( J+1, J+2 ) ) )
+               TEMP2 = MAX( ABS( T( J+2, J+1 ) ), ABS( T( J+2, J+2 ) ) )
                IF( MAX( TEMP, TEMP2 ).LT.SAFMIN ) THEN
                   SCALE = ZERO
                   U1 = ONE
                   U2 = ZERO
                   GO TO 250
                ELSE IF( TEMP.GE.TEMP2 ) THEN
-                  W11 = B( J+1, J+1 )
-                  W21 = B( J+2, J+1 )
-                  W12 = B( J+1, J+2 )
-                  W22 = B( J+2, J+2 )
-                  U1 = B( J+1, J )
-                  U2 = B( J+2, J )
+                  W11 = T( J+1, J+1 )
+                  W21 = T( J+2, J+1 )
+                  W12 = T( J+1, J+2 )
+                  W22 = T( J+2, J+2 )
+                  U1 = T( J+1, J )
+                  U2 = T( J+2, J )
                ELSE
-                  W21 = B( J+1, J+1 )
-                  W11 = B( J+2, J+1 )
-                  W22 = B( J+1, J+2 )
-                  W12 = B( J+2, J+2 )
-                  U2 = B( J+1, J )
-                  U1 = B( J+2, J )
+                  W21 = T( J+1, J+1 )
+                  W11 = T( J+2, J+1 )
+                  W22 = T( J+1, J+2 )
+                  W12 = T( J+2, J+2 )
+                  U2 = T( J+1, J )
+                  U1 = T( J+2, J )
                END IF
 *
 *              Swap columns if nec.
@@ -1098,9 +1099,9 @@
 *
 *              Compute Householder Vector
 *
-               T = SQRT( SCALE**2+U1**2+U2**2 )
-               TAU = ONE + SCALE / T
-               VS = -ONE / ( SCALE+T )
+               T1 = SQRT( SCALE**2+U1**2+U2**2 )
+               TAU = ONE + SCALE / T1
+               VS = -ONE / ( SCALE+T1 )
                V( 1 ) = ONE
                V( 2 ) = VS*U1
                V( 3 ) = VS*U2
@@ -1108,18 +1109,18 @@
 *              Apply transformations from the right.
 *
                DO 260 JR = IFRSTM, MIN( J+3, ILAST )
-                  TEMP = TAU*( A( JR, J )+V( 2 )*A( JR, J+1 )+V( 3 )*
-     $                   A( JR, J+2 ) )
-                  A( JR, J ) = A( JR, J ) - TEMP
-                  A( JR, J+1 ) = A( JR, J+1 ) - TEMP*V( 2 )
-                  A( JR, J+2 ) = A( JR, J+2 ) - TEMP*V( 3 )
+                  TEMP = TAU*( H( JR, J )+V( 2 )*H( JR, J+1 )+V( 3 )*
+     $                   H( JR, J+2 ) )
+                  H( JR, J ) = H( JR, J ) - TEMP
+                  H( JR, J+1 ) = H( JR, J+1 ) - TEMP*V( 2 )
+                  H( JR, J+2 ) = H( JR, J+2 ) - TEMP*V( 3 )
   260          CONTINUE
                DO 270 JR = IFRSTM, J + 2
-                  TEMP = TAU*( B( JR, J )+V( 2 )*B( JR, J+1 )+V( 3 )*
-     $                   B( JR, J+2 ) )
-                  B( JR, J ) = B( JR, J ) - TEMP
-                  B( JR, J+1 ) = B( JR, J+1 ) - TEMP*V( 2 )
-                  B( JR, J+2 ) = B( JR, J+2 ) - TEMP*V( 3 )
+                  TEMP = TAU*( T( JR, J )+V( 2 )*T( JR, J+1 )+V( 3 )*
+     $                   T( JR, J+2 ) )
+                  T( JR, J ) = T( JR, J ) - TEMP
+                  T( JR, J+1 ) = T( JR, J+1 ) - TEMP*V( 2 )
+                  T( JR, J+2 ) = T( JR, J+2 ) - TEMP*V( 3 )
   270          CONTINUE
                IF( ILZ ) THEN
                   DO 280 JR = 1, N
@@ -1130,8 +1131,8 @@
                      Z( JR, J+2 ) = Z( JR, J+2 ) - TEMP*V( 3 )
   280             CONTINUE
                END IF
-               B( J+1, J ) = ZERO
-               B( J+2, J ) = ZERO
+               T( J+1, J ) = ZERO
+               T( J+2, J ) = ZERO
   290       CONTINUE
 *
 *           Last elements: Use Givens rotations
@@ -1139,17 +1140,17 @@
 *           Rotations from the left
 *
             J = ILAST - 1
-            TEMP = A( J, J-1 )
-            CALL DLARTG( TEMP, A( J+1, J-1 ), C, S, A( J, J-1 ) )
-            A( J+1, J-1 ) = ZERO
+            TEMP = H( J, J-1 )
+            CALL DLARTG( TEMP, H( J+1, J-1 ), C, S, H( J, J-1 ) )
+            H( J+1, J-1 ) = ZERO
 *
             DO 300 JC = J, ILASTM
-               TEMP = C*A( J, JC ) + S*A( J+1, JC )
-               A( J+1, JC ) = -S*A( J, JC ) + C*A( J+1, JC )
-               A( J, JC ) = TEMP
-               TEMP2 = C*B( J, JC ) + S*B( J+1, JC )
-               B( J+1, JC ) = -S*B( J, JC ) + C*B( J+1, JC )
-               B( J, JC ) = TEMP2
+               TEMP = C*H( J, JC ) + S*H( J+1, JC )
+               H( J+1, JC ) = -S*H( J, JC ) + C*H( J+1, JC )
+               H( J, JC ) = TEMP
+               TEMP2 = C*T( J, JC ) + S*T( J+1, JC )
+               T( J+1, JC ) = -S*T( J, JC ) + C*T( J+1, JC )
+               T( J, JC ) = TEMP2
   300       CONTINUE
             IF( ILQ ) THEN
                DO 310 JR = 1, N
@@ -1161,19 +1162,19 @@
 *
 *           Rotations from the right.
 *
-            TEMP = B( J+1, J+1 )
-            CALL DLARTG( TEMP, B( J+1, J ), C, S, B( J+1, J+1 ) )
-            B( J+1, J ) = ZERO
+            TEMP = T( J+1, J+1 )
+            CALL DLARTG( TEMP, T( J+1, J ), C, S, T( J+1, J+1 ) )
+            T( J+1, J ) = ZERO
 *
             DO 320 JR = IFRSTM, ILAST
-               TEMP = C*A( JR, J+1 ) + S*A( JR, J )
-               A( JR, J ) = -S*A( JR, J+1 ) + C*A( JR, J )
-               A( JR, J+1 ) = TEMP
+               TEMP = C*H( JR, J+1 ) + S*H( JR, J )
+               H( JR, J ) = -S*H( JR, J+1 ) + C*H( JR, J )
+               H( JR, J+1 ) = TEMP
   320       CONTINUE
             DO 330 JR = IFRSTM, ILAST - 1
-               TEMP = C*B( JR, J+1 ) + S*B( JR, J )
-               B( JR, J ) = -S*B( JR, J+1 ) + C*B( JR, J )
-               B( JR, J+1 ) = TEMP
+               TEMP = C*T( JR, J+1 ) + S*T( JR, J )
+               T( JR, J ) = -S*T( JR, J+1 ) + C*T( JR, J )
+               T( JR, J+1 ) = TEMP
   330       CONTINUE
             IF( ILZ ) THEN
                DO 340 JR = 1, N
@@ -1196,7 +1197,6 @@
 *
 *     Drop-through = non-convergence
 *
-  370 CONTINUE
       INFO = ILAST
       GO TO 420
 *
@@ -1207,15 +1207,15 @@
 *     Set Eigenvalues 1:ILO-1
 *
       DO 410 J = 1, ILO - 1
-         IF( B( J, J ).LT.ZERO ) THEN
+         IF( T( J, J ).LT.ZERO ) THEN
             IF( ILSCHR ) THEN
                DO 390 JR = 1, J
-                  A( JR, J ) = -A( JR, J )
-                  B( JR, J ) = -B( JR, J )
+                  H( JR, J ) = -H( JR, J )
+                  T( JR, J ) = -T( JR, J )
   390          CONTINUE
             ELSE
-               A( J, J ) = -A( J, J )
-               B( J, J ) = -B( J, J )
+               H( J, J ) = -H( J, J )
+               T( J, J ) = -T( J, J )
             END IF
             IF( ILZ ) THEN
                DO 400 JR = 1, N
@@ -1223,9 +1223,9 @@
   400          CONTINUE
             END IF
          END IF
-         ALPHAR( J ) = A( J, J )
+         ALPHAR( J ) = H( J, J )
          ALPHAI( J ) = ZERO
-         BETA( J ) = B( J, J )
+         BETA( J ) = T( J, J )
   410 CONTINUE
 *
 *     Normal Termination

@@ -1,9 +1,8 @@
       SUBROUTINE ZGETF2( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -64,11 +63,13 @@
      $                   ZERO = ( 0.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            J, JP
+      DOUBLE PRECISION   SFMIN
+      INTEGER            I, J, JP
 *     ..
 *     .. External Functions ..
+      DOUBLE PRECISION   DLAMCH
       INTEGER            IZAMAX
-      EXTERNAL           IZAMAX
+      EXTERNAL           DLAMCH, IZAMAX
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, ZGERU, ZSCAL, ZSWAP
@@ -98,6 +99,10 @@
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *
+*     Compute machine safe minimum
+*
+      SFMIN = DLAMCH('S') 
+*
       DO 10 J = 1, MIN( M, N )
 *
 *        Find pivot and test for singularity.
@@ -113,8 +118,15 @@
 *
 *           Compute elements J+1:M of J-th column.
 *
-            IF( J.LT.M )
-     $         CALL ZSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
+            IF( J.LT.M ) THEN
+               IF( ABS(A( J, J )) .GE. SFMIN ) THEN
+                  CALL ZSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
+               ELSE
+                  DO 20 I = 1, M-J
+                     A( J+I, J ) = A( J+I, J ) / A( J, J )
+   20             CONTINUE
+               END IF
+            END IF
 *
          ELSE IF( INFO.EQ.0 ) THEN
 *

@@ -1,10 +1,9 @@
       SUBROUTINE DTRSEN( JOB, COMPQ, SELECT, N, T, LDT, Q, LDQ, WR, WI,
      $                   M, S, SEP, WORK, LWORK, IWORK, LIWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, JOB
@@ -112,27 +111,27 @@
 *          M = 0 or N, SEP = norm(T).
 *          If JOB = 'N' or 'E', SEP is not referenced.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.
 *          If JOB = 'N', LWORK >= max(1,N);
-*          if JOB = 'E', LWORK >= M*(N-M);
-*          if JOB = 'V' or 'B', LWORK >= 2*M*(N-M).
+*          if JOB = 'E', LWORK >= max(1,M*(N-M));
+*          if JOB = 'V' or 'B', LWORK >= max(1,2*M*(N-M)).
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
 *          only calculates the optimal size of the WORK array, returns
 *          this value as the first entry of the WORK array, and no error
 *          message related to LWORK is issued by XERBLA.
 *
-*  IWORK   (workspace) INTEGER array, dimension (LIWORK)
-*          IF JOB = 'N' or 'E', IWORK is not referenced.
+*  IWORK   (workspace) INTEGER array, dimension (MAX(1,LIWORK))
+*          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER
 *          The dimension of the array IWORK.
 *          If JOB = 'N' or 'E', LIWORK >= 1;
-*          if JOB = 'V' or 'B', LIWORK >= M*(N-M).
+*          if JOB = 'V' or 'B', LIWORK >= max(1,M*(N-M)).
 *
 *          If LIWORK = -1, then a workspace query is assumed; the
 *          routine only calculates the optimal size of the IWORK array,
@@ -233,13 +232,16 @@
      $                   NN
       DOUBLE PRECISION   EST, RNORM, SCALE
 *     ..
+*     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
+*     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       DOUBLE PRECISION   DLANGE
       EXTERNAL           LSAME, DLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLACON, DLACPY, DTREXC, DTRSYL, XERBLA
+      EXTERNAL           DLACN2, DLACPY, DTREXC, DTRSYL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, SQRT
@@ -408,7 +410,7 @@
          EST = ZERO
          KASE = 0
    30    CONTINUE
-         CALL DLACON( NN, WORK( NN+1 ), WORK, IWORK, EST, KASE )
+         CALL DLACN2( NN, WORK( NN+1 ), WORK, IWORK, EST, KASE, ISAVE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.1 ) THEN
 *

@@ -1,10 +1,9 @@
       SUBROUTINE ZGESVD( JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT,
      $                   WORK, LWORK, RWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBU, JOBVT
@@ -106,12 +105,12 @@
 *          The leading dimension of the array VT.  LDVT >= 1; if
 *          JOBVT = 'A', LDVT >= N; if JOBVT = 'S', LDVT >= min(M,N).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
-*          The dimension of the array WORK. LWORK >= 1.
-*          LWORK >=  2*MIN(M,N)+MAX(M,N).
+*          The dimension of the array WORK.
+*          LWORK >=  MAX(1,2*MIN(M,N)+MAX(M,N)).
 *          For good performance, LWORK should generally be larger.
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
@@ -176,7 +175,6 @@
 *
       INFO = 0
       MINMN = MIN( M, N )
-      MNTHR = ILAENV( 6, 'ZGESVD', JOBU // JOBVT, M, N, 0, 0 )
       WNTUA = LSAME( JOBU, 'A' )
       WNTUS = LSAME( JOBU, 'S' )
       WNTUAS = WNTUA .OR. WNTUS
@@ -187,7 +185,6 @@
       WNTVAS = WNTVA .OR. WNTVS
       WNTVO = LSAME( JOBVT, 'O' )
       WNTVN = LSAME( JOBVT, 'N' )
-      MINWRK = 1
       LQUERY = ( LWORK.EQ.-1 )
 *
       IF( .NOT.( WNTUA .OR. WNTUS .OR. WNTUO .OR. WNTUN ) ) THEN
@@ -216,12 +213,14 @@
 *       real workspace. NB refers to the optimal block size for the
 *       immediately following subroutine, as returned by ILAENV.)
 *
-      IF( INFO.EQ.0 .AND. ( LWORK.GE.1 .OR. LQUERY ) .AND. M.GT.0 .AND.
-     $    N.GT.0 ) THEN
-         IF( M.GE.N ) THEN
+      IF( INFO.EQ.0 ) THEN
+         MINWRK = 1
+         MAXWRK = 1
+         IF( M.GE.N .AND. MINMN.GT.0 ) THEN
 *
 *           Space needed for ZBDSQR is BDSPAC = 5*N
 *
+            MNTHR = ILAENV( 6, 'ZGESVD', JOBU // JOBVT, M, N, 0, 0 )
             IF( M.GE.MNTHR ) THEN
                IF( WNTUN ) THEN
 *
@@ -235,7 +234,6 @@
      $               MAXWRK = MAX( MAXWRK, 2*N+( N-1 )*
      $                        ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
                   MINWRK = 3*N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUO .AND. WNTVN ) THEN
 *
 *                 Path 2 (M much larger than N, JOBU='O', JOBVT='N')
@@ -249,7 +247,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', N, N, N, -1 ) )
                   MAXWRK = MAX( N*N+WRKBL, N*N+M*N )
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUO .AND. WNTVAS ) THEN
 *
 *                 Path 3 (M much larger than N, JOBU='O', JOBVT='S' or
@@ -266,7 +263,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
                   MAXWRK = MAX( N*N+WRKBL, N*N+M*N )
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUS .AND. WNTVN ) THEN
 *
 *                 Path 4 (M much larger than N, JOBU='S', JOBVT='N')
@@ -280,7 +276,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', N, N, N, -1 ) )
                   MAXWRK = N*N + WRKBL
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUS .AND. WNTVO ) THEN
 *
 *                 Path 5 (M much larger than N, JOBU='S', JOBVT='O')
@@ -296,7 +291,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
                   MAXWRK = 2*N*N + WRKBL
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUS .AND. WNTVAS ) THEN
 *
 *                 Path 6 (M much larger than N, JOBU='S', JOBVT='S' or
@@ -313,7 +307,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
                   MAXWRK = N*N + WRKBL
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUA .AND. WNTVN ) THEN
 *
 *                 Path 7 (M much larger than N, JOBU='A', JOBVT='N')
@@ -327,7 +320,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', N, N, N, -1 ) )
                   MAXWRK = N*N + WRKBL
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUA .AND. WNTVO ) THEN
 *
 *                 Path 8 (M much larger than N, JOBU='A', JOBVT='O')
@@ -343,7 +335,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
                   MAXWRK = 2*N*N + WRKBL
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTUA .AND. WNTVAS ) THEN
 *
 *                 Path 9 (M much larger than N, JOBU='A', JOBVT='S' or
@@ -360,7 +351,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
                   MAXWRK = N*N + WRKBL
                   MINWRK = 2*N + M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                END IF
             ELSE
 *
@@ -378,12 +368,12 @@
      $            MAXWRK = MAX( MAXWRK, 2*N+( N-1 )*
      $                     ILAENV( 1, 'ZUNGBR', 'P', N, N, N, -1 ) )
                MINWRK = 2*N + M
-               MAXWRK = MAX( MINWRK, MAXWRK )
             END IF
-         ELSE
+         ELSE IF( MINMN.GT.0 ) THEN
 *
 *           Space needed for ZBDSQR is BDSPAC = 5*M
 *
+            MNTHR = ILAENV( 6, 'ZGESVD', JOBU // JOBVT, M, N, 0, 0 )
             IF( N.GE.MNTHR ) THEN
                IF( WNTVN ) THEN
 *
@@ -397,7 +387,6 @@
      $               MAXWRK = MAX( MAXWRK, 2*M+M*
      $                        ILAENV( 1, 'ZUNGBR', 'Q', M, M, M, -1 ) )
                   MINWRK = 3*M
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVO .AND. WNTUN ) THEN
 *
 *                 Path 2t(N much larger than M, JOBU='N', JOBVT='O')
@@ -411,7 +400,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', M, M, M, -1 ) )
                   MAXWRK = MAX( M*M+WRKBL, M*M+M*N )
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVO .AND. WNTUAS ) THEN
 *
 *                 Path 3t(N much larger than M, JOBU='S' or 'A',
@@ -428,7 +416,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', M, M, M, -1 ) )
                   MAXWRK = MAX( M*M+WRKBL, M*M+M*N )
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVS .AND. WNTUN ) THEN
 *
 *                 Path 4t(N much larger than M, JOBU='N', JOBVT='S')
@@ -442,7 +429,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', M, M, M, -1 ) )
                   MAXWRK = M*M + WRKBL
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVS .AND. WNTUO ) THEN
 *
 *                 Path 5t(N much larger than M, JOBU='O', JOBVT='S')
@@ -458,7 +444,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', M, M, M, -1 ) )
                   MAXWRK = 2*M*M + WRKBL
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVS .AND. WNTUAS ) THEN
 *
 *                 Path 6t(N much larger than M, JOBU='S' or 'A',
@@ -475,7 +460,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', M, M, M, -1 ) )
                   MAXWRK = M*M + WRKBL
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVA .AND. WNTUN ) THEN
 *
 *                 Path 7t(N much larger than M, JOBU='N', JOBVT='A')
@@ -489,7 +473,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'P', M, M, M, -1 ) )
                   MAXWRK = M*M + WRKBL
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVA .AND. WNTUO ) THEN
 *
 *                 Path 8t(N much larger than M, JOBU='O', JOBVT='A')
@@ -505,7 +488,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', M, M, M, -1 ) )
                   MAXWRK = 2*M*M + WRKBL
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                ELSE IF( WNTVA .AND. WNTUAS ) THEN
 *
 *                 Path 9t(N much larger than M, JOBU='S' or 'A',
@@ -522,7 +504,6 @@
      $                    ILAENV( 1, 'ZUNGBR', 'Q', M, M, M, -1 ) )
                   MAXWRK = M*M + WRKBL
                   MINWRK = 2*M + N
-                  MAXWRK = MAX( MINWRK, MAXWRK )
                END IF
             ELSE
 *
@@ -540,15 +521,16 @@
      $            MAXWRK = MAX( MAXWRK, 2*M+( M-1 )*
      $                     ILAENV( 1, 'ZUNGBR', 'Q', M, M, M, -1 ) )
                MINWRK = 2*M + N
-               MAXWRK = MAX( MINWRK, MAXWRK )
             END IF
          END IF
+         MAXWRK = MAX( MAXWRK, MINWRK )
          WORK( 1 ) = MAXWRK
+*
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
+            INFO = -13
+         END IF
       END IF
 *
-      IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
-         INFO = -13
-      END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'ZGESVD', -INFO )
          RETURN
@@ -559,8 +541,6 @@
 *     Quick return if possible
 *
       IF( M.EQ.0 .OR. N.EQ.0 ) THEN
-         IF( LWORK.GE.1 )
-     $      WORK( 1 ) = ONE
          RETURN
       END IF
 *
@@ -823,8 +803,9 @@
 *                 Copy R to VT, zeroing out below it
 *
                   CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO, VT( 2, 1 ),
-     $                         LDVT )
+                  IF( N.GT.1 )
+     $               CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                            VT( 2, 1 ), LDVT )
 *
 *                 Generate Q in A
 *                 (CWorkspace: need N*N+2*N, prefer N*N+N+N*NB)
@@ -904,8 +885,9 @@
 *                 Copy R to VT, zeroing out below it
 *
                   CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO, VT( 2, 1 ),
-     $                         LDVT )
+                  IF( N.GT.1 )
+     $               CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                            VT( 2, 1 ), LDVT )
 *
 *                 Generate Q in A
 *                 (CWorkspace: need 2*N, prefer N+N*NB)
@@ -1407,8 +1389,9 @@
 *                    Copy R to VT, zeroing out below it
 *
                      CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            VT( 2, 1 ), LDVT )
+                     IF( N.GT.1 )
+     $                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               VT( 2, 1 ), LDVT )
                      IE = 1
                      ITAUQ = ITAU
                      ITAUP = ITAUQ + N
@@ -1921,8 +1904,9 @@
 *                    Copy R from A to VT, zeroing out below it
 *
                      CALL ZLACPY( 'U', N, N, A, LDA, VT, LDVT )
-                     CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
-     $                            VT( 2, 1 ), LDVT )
+                     IF( N.GT.1 )
+     $                  CALL ZLASET( 'L', N-1, N-1, CZERO, CZERO,
+     $                               VT( 2, 1 ), LDVT )
                      IE = 1
                      ITAUQ = ITAU
                      ITAUP = ITAUQ + N

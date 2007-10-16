@@ -1,10 +1,9 @@
       SUBROUTINE DLASQ4( I0, N0, Z, PP, N0IN, DMIN, DMIN1, DMIN2, DN,
      $                   DN1, DN2, TAU, TTYPE )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1999
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            I0, N0, N0IN, PP, TTYPE
@@ -32,7 +31,7 @@
 *  PP    (input) INTEGER
 *        PP=0 for ping, PP=1 for pong.
 *
-*  NOIN  (input) INTEGER
+*  N0IN  (input) INTEGER
 *        The value of N0 at start of EIGTEST.
 *
 *  DMIN  (input) DOUBLE PRECISION

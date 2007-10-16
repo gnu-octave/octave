@@ -1,10 +1,9 @@
       SUBROUTINE ZUNMBR( VECT, SIDE, TRANS, M, N, K, A, LDA, TAU, C,
      $                   LDC, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          SIDE, TRANS, VECT
@@ -98,16 +97,17 @@
 *  LDC     (input) INTEGER
 *          The leading dimension of the array C. LDC >= max(1,M).
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.
 *          If SIDE = 'L', LWORK >= max(1,N);
-*          if SIDE = 'R', LWORK >= max(1,M).
-*          For optimum performance LWORK >= N*NB if SIDE = 'L', and
-*          LWORK >= M*NB if SIDE = 'R', where NB is the optimal
-*          blocksize.
+*          if SIDE = 'R', LWORK >= max(1,M);
+*          if N = 0 or M = 0, LWORK >= 1.
+*          For optimum performance LWORK >= max(1,N*NB) if SIDE = 'L',
+*          and LWORK >= max(1,M*NB) if SIDE = 'R', where NB is the
+*          optimal blocksize. (NB = 0 if M = 0 or N = 0.)
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
 *          only calculates the optimal size of the WORK array, returns
@@ -155,6 +155,9 @@
          NQ = N
          NW = M
       END IF
+      IF( M.EQ.0 .OR. N.EQ.0 ) THEN
+         NW = 0
+      END IF
       IF( .NOT.APPLYQ .AND. .NOT.LSAME( VECT, 'P' ) ) THEN
          INFO = -1
       ELSE IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
@@ -178,24 +181,28 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         IF( APPLYQ ) THEN
-            IF( LEFT ) THEN
-               NB = ILAENV( 1, 'ZUNMQR', SIDE // TRANS, M-1, N, M-1,
-     $              -1 )
+         IF( NW.GT.0 ) THEN
+            IF( APPLYQ ) THEN
+               IF( LEFT ) THEN
+                  NB = ILAENV( 1, 'ZUNMQR', SIDE // TRANS, M-1, N, M-1,
+     $                 -1 )
+               ELSE
+                  NB = ILAENV( 1, 'ZUNMQR', SIDE // TRANS, M, N-1, N-1,
+     $                 -1 )
+               END IF
             ELSE
-               NB = ILAENV( 1, 'ZUNMQR', SIDE // TRANS, M, N-1, N-1,
-     $              -1 )
+               IF( LEFT ) THEN
+                  NB = ILAENV( 1, 'ZUNMLQ', SIDE // TRANS, M-1, N, M-1,
+     $                 -1 )
+               ELSE
+                  NB = ILAENV( 1, 'ZUNMLQ', SIDE // TRANS, M, N-1, N-1,
+     $                 -1 )
+               END IF
             END IF
+            LWKOPT = MAX( 1, NW*NB )
          ELSE
-            IF( LEFT ) THEN
-               NB = ILAENV( 1, 'ZUNMLQ', SIDE // TRANS, M-1, N, M-1,
-     $              -1 )
-            ELSE
-               NB = ILAENV( 1, 'ZUNMLQ', SIDE // TRANS, M, N-1, N-1,
-     $              -1 )
-            END IF
+            LWKOPT = 1
          END IF
-         LWKOPT = MAX( 1, NW )*NB
          WORK( 1 ) = LWKOPT
       END IF
 *
@@ -203,11 +210,11 @@
          CALL XERBLA( 'ZUNMBR', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
+         RETURN
       END IF
 *
 *     Quick return if possible
 *
-      WORK( 1 ) = 1
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *

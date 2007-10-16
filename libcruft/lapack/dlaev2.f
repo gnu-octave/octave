@@ -1,9 +1,8 @@
       SUBROUTINE DLAEV2( A, B, C, RT1, RT2, CS1, SN1 )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   A, B, C, CS1, RT1, RT2, SN1

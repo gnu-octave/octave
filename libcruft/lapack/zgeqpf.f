@@ -1,9 +1,8 @@
       SUBROUTINE ZGEQPF( M, N, A, LDA, JPVT, TAU, WORK, RWORK, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK deprecated driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
@@ -78,6 +77,12 @@
 *     jpvt(j) = i
 *  then the jth column of P is the ith canonical unit vector.
 *
+*  Partial column norm updating strategy modified by
+*    Z. Drmac and Z. Bujanovic, Dept. of Mathematics,
+*    University of Zagreb, Croatia.
+*    June 2006.
+*  For more details see LAPACK Working Note 176.
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -86,7 +91,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, ITEMP, J, MA, MN, PVT
-      DOUBLE PRECISION   TEMP, TEMP2
+      DOUBLE PRECISION   TEMP, TEMP2, TOL3Z
       COMPLEX*16         AII
 *     ..
 *     .. External Subroutines ..
@@ -97,8 +102,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            IDAMAX
-      DOUBLE PRECISION   DZNRM2
-      EXTERNAL           IDAMAX, DZNRM2
+      DOUBLE PRECISION   DLAMCH, DZNRM2
+      EXTERNAL           IDAMAX, DLAMCH, DZNRM2
 *     ..
 *     .. Executable Statements ..
 *
@@ -118,6 +123,7 @@
       END IF
 *
       MN = MIN( M, N )
+      TOL3Z = SQRT(DLAMCH('Epsilon'))
 *
 *     Move initial columns up front
 *
@@ -198,11 +204,14 @@
 *
             DO 30 J = I + 1, N
                IF( RWORK( J ).NE.ZERO ) THEN
-                  TEMP = ONE - ( ABS( A( I, J ) ) / RWORK( J ) )**2
-                  TEMP = MAX( TEMP, ZERO )
-                  TEMP2 = ONE + 0.05D0*TEMP*
-     $                    ( RWORK( J ) / RWORK( N+J ) )**2
-                  IF( TEMP2.EQ.ONE ) THEN
+*
+*                 NOTE: The following 4 lines follow from the analysis in
+*                 Lapack Working Note 176.
+*                 
+                  TEMP = ABS( A( I, J ) ) / RWORK( J )
+                  TEMP = MAX( ZERO, ( ONE+TEMP )*( ONE-TEMP ) )
+                  TEMP2 = TEMP*( RWORK( J ) / RWORK( N+J ) )**2
+                  IF( TEMP2 .LE. TOL3Z ) THEN 
                      IF( M-I.GT.0 ) THEN
                         RWORK( J ) = DZNRM2( M-I, A( I+1, J ), 1 )
                         RWORK( N+J ) = RWORK( J )

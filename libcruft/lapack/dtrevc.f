@@ -1,10 +1,9 @@
       SUBROUTINE DTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
      $                   LDVR, MM, M, WORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          HOWMNY, SIDE
@@ -21,28 +20,23 @@
 *
 *  DTREVC computes some or all of the right and/or left eigenvectors of
 *  a real upper quasi-triangular matrix T.
-*
+*  Matrices of this type are produced by the Schur factorization of
+*  a real general matrix:  A = Q*T*Q**T, as computed by DHSEQR.
+*  
 *  The right eigenvector x and the left eigenvector y of T corresponding
 *  to an eigenvalue w are defined by:
-*
-*               T*x = w*x,     y'*T = w*y'
-*
-*  where y' denotes the conjugate transpose of the vector y.
-*
-*  If all eigenvectors are requested, the routine may either return the
-*  matrices X and/or Y of right or left eigenvectors of T, or the
-*  products Q*X and/or Q*Y, where Q is an input orthogonal
-*  matrix. If T was obtained from the real-Schur factorization of an
-*  original matrix A = Q*T*Q', then Q*X and Q*Y are the matrices of
-*  right or left eigenvectors of A.
-*
-*  T must be in Schur canonical form (as returned by DHSEQR), that is,
-*  block upper triangular with 1-by-1 and 2-by-2 diagonal blocks; each
-*  2-by-2 diagonal block has its diagonal elements equal and its
-*  off-diagonal elements of opposite sign.  Corresponding to each 2-by-2
-*  diagonal block is a complex conjugate pair of eigenvalues and
-*  eigenvectors; only one eigenvector of the pair is computed, namely
-*  the one corresponding to the eigenvalue with positive imaginary part.
+*  
+*     T*x = w*x,     (y**H)*T = w*(y**H)
+*  
+*  where y**H denotes the conjugate transpose of y.
+*  The eigenvalues are not input to this routine, but are read directly
+*  from the diagonal blocks of T.
+*  
+*  This routine returns the matrices X and/or Y of right and left
+*  eigenvectors of T, or the products Q*X and/or Q*Y, where Q is an
+*  input matrix.  If Q is the orthogonal factor that reduces a matrix
+*  A to Schur form T, then Q*X and Q*Y are the matrices of right and
+*  left eigenvectors of A.
 *
 *  Arguments
 *  =========
@@ -55,21 +49,21 @@
 *  HOWMNY  (input) CHARACTER*1
 *          = 'A':  compute all right and/or left eigenvectors;
 *          = 'B':  compute all right and/or left eigenvectors,
-*                  and backtransform them using the input matrices
-*                  supplied in VR and/or VL;
+*                  backtransformed by the matrices in VR and/or VL;
 *          = 'S':  compute selected right and/or left eigenvectors,
-*                  specified by the logical array SELECT.
+*                  as indicated by the logical array SELECT.
 *
 *  SELECT  (input/output) LOGICAL array, dimension (N)
 *          If HOWMNY = 'S', SELECT specifies the eigenvectors to be
 *          computed.
-*          If HOWMNY = 'A' or 'B', SELECT is not referenced.
-*          To select the real eigenvector corresponding to a real
-*          eigenvalue w(j), SELECT(j) must be set to .TRUE..  To select
-*          the complex eigenvector corresponding to a complex conjugate
-*          pair w(j) and w(j+1), either SELECT(j) or SELECT(j+1) must be
-*          set to .TRUE.; then on exit SELECT(j) is .TRUE. and
-*          SELECT(j+1) is .FALSE..
+*          If w(j) is a real eigenvalue, the corresponding real
+*          eigenvector is computed if SELECT(j) is .TRUE..
+*          If w(j) and w(j+1) are the real and imaginary parts of a
+*          complex eigenvalue, the corresponding complex eigenvector is
+*          computed if either SELECT(j) or SELECT(j+1) is .TRUE., and
+*          on exit SELECT(j) is set to .TRUE. and SELECT(j+1) is set to
+*          .FALSE..
+*          Not referenced if HOWMNY = 'A' or 'B'.
 *
 *  N       (input) INTEGER
 *          The order of the matrix T. N >= 0.
@@ -86,15 +80,6 @@
 *          of Schur vectors returned by DHSEQR).
 *          On exit, if SIDE = 'L' or 'B', VL contains:
 *          if HOWMNY = 'A', the matrix Y of left eigenvectors of T;
-*                           VL has the same quasi-lower triangular form
-*                           as T'. If T(i,i) is a real eigenvalue, then
-*                           the i-th column VL(i) of VL  is its
-*                           corresponding eigenvector. If T(i:i+1,i:i+1)
-*                           is a 2-by-2 block whose eigenvalues are
-*                           complex-conjugate eigenvalues of T, then
-*                           VL(i)+sqrt(-1)*VL(i+1) is the complex
-*                           eigenvector corresponding to the eigenvalue
-*                           with positive real part.
 *          if HOWMNY = 'B', the matrix Q*Y;
 *          if HOWMNY = 'S', the left eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
@@ -103,11 +88,11 @@
 *          A complex eigenvector corresponding to a complex eigenvalue
 *          is stored in two consecutive columns, the first holding the
 *          real part, and the second the imaginary part.
-*          If SIDE = 'R', VL is not referenced.
+*          Not referenced if SIDE = 'R'.
 *
 *  LDVL    (input) INTEGER
-*          The leading dimension of the array VL.  LDVL >= max(1,N) if
-*          SIDE = 'L' or 'B'; LDVL >= 1 otherwise.
+*          The leading dimension of the array VL.  LDVL >= 1, and if
+*          SIDE = 'L' or 'B', LDVL >= N.
 *
 *  VR      (input/output) DOUBLE PRECISION array, dimension (LDVR,MM)
 *          On entry, if SIDE = 'R' or 'B' and HOWMNY = 'B', VR must
@@ -115,15 +100,6 @@
 *          of Schur vectors returned by DHSEQR).
 *          On exit, if SIDE = 'R' or 'B', VR contains:
 *          if HOWMNY = 'A', the matrix X of right eigenvectors of T;
-*                           VR has the same quasi-upper triangular form
-*                           as T. If T(i,i) is a real eigenvalue, then
-*                           the i-th column VR(i) of VR  is its
-*                           corresponding eigenvector. If T(i:i+1,i:i+1)
-*                           is a 2-by-2 block whose eigenvalues are
-*                           complex-conjugate eigenvalues of T, then
-*                           VR(i)+sqrt(-1)*VR(i+1) is the complex
-*                           eigenvector corresponding to the eigenvalue
-*                           with positive real part.
 *          if HOWMNY = 'B', the matrix Q*X;
 *          if HOWMNY = 'S', the right eigenvectors of T specified by
 *                           SELECT, stored consecutively in the columns
@@ -132,11 +108,11 @@
 *          A complex eigenvector corresponding to a complex eigenvalue
 *          is stored in two consecutive columns, the first holding the
 *          real part and the second the imaginary part.
-*          If SIDE = 'L', VR is not referenced.
+*          Not referenced if SIDE = 'L'.
 *
 *  LDVR    (input) INTEGER
-*          The leading dimension of the array VR.  LDVR >= max(1,N) if
-*          SIDE = 'R' or 'B'; LDVR >= 1 otherwise.
+*          The leading dimension of the array VR.  LDVR >= 1, and if
+*          SIDE = 'R' or 'B', LDVR >= N.
 *
 *  MM      (input) INTEGER
 *          The number of columns in the arrays VL and/or VR. MM >= M.
@@ -940,7 +916,6 @@
 *
 *              Copy the vector x or Q*x to VL and normalize.
 *
-  210          CONTINUE
                IF( .NOT.OVER ) THEN
                   CALL DCOPY( N-KI+1, WORK( KI+N ), 1, VL( KI, IS ), 1 )
                   CALL DCOPY( N-KI+1, WORK( KI+N2 ), 1, VL( KI, IS+1 ),

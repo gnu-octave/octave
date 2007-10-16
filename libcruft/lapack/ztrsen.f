@@ -1,10 +1,11 @@
       SUBROUTINE ZTRSEN( JOB, COMPQ, SELECT, N, T, LDT, Q, LDQ, W, M, S,
      $                   SEP, WORK, LWORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
+*
+*     Modified to call ZLACN2 in place of ZLACON, 10 Feb 03, SJH.
 *
 *     .. Scalar Arguments ..
       CHARACTER          COMPQ, JOB
@@ -92,15 +93,14 @@
 *          M = 0 or N, SEP = norm(T).
 *          If JOB = 'N' or 'E', SEP is not referenced.
 *
-*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK)
-*          If JOB = 'N', WORK is not referenced.  Otherwise,
-*          on exit, if INFO = 0, WORK(1) returns the optimal LWORK.
+*  WORK    (workspace/output) COMPLEX*16 array, dimension (MAX(1,LWORK))
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
 *          The dimension of the array WORK.
 *          If JOB = 'N', LWORK >= 1;
-*          if JOB = 'E', LWORK = M*(N-M);
-*          if JOB = 'V' or 'B', LWORK >= 2*M*(N-M).
+*          if JOB = 'E', LWORK = max(1,M*(N-M));
+*          if JOB = 'V' or 'B', LWORK >= max(1,2*M*(N-M)).
 *
 *          If LWORK = -1, then a workspace query is assumed; the routine
 *          only calculates the optimal size of the WORK array, returns
@@ -194,6 +194,7 @@
       DOUBLE PRECISION   EST, RNORM, SCALE
 *     ..
 *     .. Local Arrays ..
+      INTEGER            ISAVE( 3 )
       DOUBLE PRECISION   RWORK( 1 )
 *     ..
 *     .. External Functions ..
@@ -202,7 +203,7 @@
       EXTERNAL           LSAME, ZLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZLACON, ZLACPY, ZTREXC, ZTRSYL
+      EXTERNAL           XERBLA, ZLACN2, ZLACPY, ZTREXC, ZTRSYL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, SQRT
@@ -318,7 +319,7 @@
          EST = ZERO
          KASE = 0
    30    CONTINUE
-         CALL ZLACON( NN, WORK( NN+1 ), WORK, EST, KASE )
+         CALL ZLACN2( NN, WORK( NN+1 ), WORK, EST, KASE, ISAVE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.1 ) THEN
 *

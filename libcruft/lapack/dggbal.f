@@ -1,10 +1,9 @@
       SUBROUTINE DGGBAL( JOB, N, A, LDA, B, LDB, ILO, IHI, LSCALE,
      $                   RSCALE, WORK, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOB
@@ -88,7 +87,9 @@
 *          The order in which the interchanges are made is N to IHI+1,
 *          then 1 to ILO-1.
 *
-*  WORK    (workspace) DOUBLE PRECISION array, dimension (6*N)
+*  WORK    (workspace) REAL array, dimension (lwork)
+*          lwork must be at least max(1,6*N) when JOB = 'S' or 'B', and
+*          at least 1 when JOB = 'N' or 'P'.
 *
 *  INFO    (output) INTEGER
 *          = 0:  successful exit
@@ -141,20 +142,28 @@
       ELSE IF( LDA.LT.MAX( 1, N ) ) THEN
          INFO = -4
       ELSE IF( LDB.LT.MAX( 1, N ) ) THEN
-         INFO = -5
+         INFO = -6
       END IF
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGGBAL', -INFO )
          RETURN
       END IF
 *
-      K = 1
-      L = N
-*
 *     Quick return if possible
 *
-      IF( N.EQ.0 )
-     $   RETURN
+      IF( N.EQ.0 ) THEN
+         ILO = 1
+         IHI = N
+         RETURN
+      END IF
+*
+      IF( N.EQ.1 ) THEN
+         ILO = 1
+         IHI = N
+         LSCALE( 1 ) = ONE
+         RSCALE( 1 ) = ONE
+         RETURN
+      END IF
 *
       IF( LSAME( JOB, 'N' ) ) THEN
          ILO = 1
@@ -166,14 +175,8 @@
          RETURN
       END IF
 *
-      IF( K.EQ.L ) THEN
-         ILO = 1
-         IHI = 1
-         LSCALE( 1 ) = ONE
-         RSCALE( 1 ) = ONE
-         RETURN
-      END IF
-*
+      K = 1
+      L = N
       IF( LSAME( JOB, 'S' ) )
      $   GO TO 190
 *
@@ -188,8 +191,8 @@
       IF( L.NE.1 )
      $   GO TO 30
 *
-      RSCALE( 1 ) = 1
-      LSCALE( 1 ) = 1
+      RSCALE( 1 ) = ONE
+      LSCALE( 1 ) = ONE
       GO TO 190
 *
    30 CONTINUE
@@ -269,10 +272,15 @@
       ILO = K
       IHI = L
 *
-      IF( ILO.EQ.IHI )
-     $   RETURN
+      IF( LSAME( JOB, 'P' ) ) THEN
+         DO 195 I = ILO, IHI
+            LSCALE( I ) = ONE
+            RSCALE( I ) = ONE
+  195    CONTINUE
+         RETURN
+      END IF
 *
-      IF( LSAME( JOB, 'P' ) )
+      IF( ILO.EQ.IHI )
      $   RETURN
 *
 *     Balance the submatrix in rows ILO to IHI.
@@ -424,7 +432,7 @@
       DO 360 I = ILO, IHI
          IRAB = IDAMAX( N-ILO+1, A( I, ILO ), LDA )
          RAB = ABS( A( I, IRAB+ILO-1 ) )
-         IRAB = IDAMAX( N-ILO+1, B( I, ILO ), LDA )
+         IRAB = IDAMAX( N-ILO+1, B( I, ILO ), LDB )
          RAB = MAX( RAB, ABS( B( I, IRAB+ILO-1 ) ) )
          LRAB = INT( LOG10( RAB+SFMIN ) / BASL+ONE )
          IR = LSCALE( I ) + SIGN( HALF, LSCALE( I ) )

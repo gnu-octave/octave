@@ -1,10 +1,8 @@
-      INTEGER          FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3,
-     $                 N4 )
+      INTEGER FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK auxiliary routine (version 3.1.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     January 2007
 *
 *     .. Scalar Arguments ..
       CHARACTER*( * )    NAME, OPTS
@@ -17,6 +15,10 @@
 *  ILAENV is called from the LAPACK routines to choose problem-dependent
 *  parameters for the local environment.  See ISPEC for a description of
 *  the parameters.
+*
+*  ILAENV returns an INTEGER
+*  if ILAENV >= 0: ILAENV returns the value of the parameter specified by ISPEC
+*  if ILAENV < 0:  if ILAENV = -k, the k-th argument had an illegal value.
 *
 *  This version provides a set of parameters which should give good,
 *  but not optimal, performance on many of the currently available
@@ -41,7 +43,7 @@
 *          = 3: the crossover point (in a block routine, for N less
 *               than this value, an unblocked routine should be used)
 *          = 4: the number of shifts, used in the nonsymmetric
-*               eigenvalue routines
+*               eigenvalue routines (DEPRECATED)
 *          = 5: the minimum column dimension for blocking to be used;
 *               rectangular blocks must have dimension at least k by m,
 *               where k is given by ILAENV(2,...) and m by ILAENV(5,...)
@@ -50,13 +52,16 @@
 *               this value, a QR factorization is used first to reduce
 *               the matrix to a triangular form.)
 *          = 7: the number of processors
-*          = 8: the crossover point for the multishift QR and QZ methods
-*               for nonsymmetric eigenvalue problems.
+*          = 8: the crossover point for the multishift QR method
+*               for nonsymmetric eigenvalue problems (DEPRECATED)
 *          = 9: maximum size of the subproblems at the bottom of the
 *               computation tree in the divide-and-conquer algorithm
 *               (used by xGELSD and xGESDD)
 *          =10: ieee NaN arithmetic can be trusted not to trap
 *          =11: infinity arithmetic can be trusted not to trap
+*          12 <= ISPEC <= 16:
+*               xHSEQR or one of its subroutines,
+*               see IPARMQ for detailed explanation
 *
 *  NAME    (input) CHARACTER*(*)
 *          The name of the calling subroutine, in either upper case or
@@ -74,10 +79,6 @@
 *  N4      (input) INTEGER
 *          Problem dimensions for the subroutine NAME; these may not all
 *          be required.
-*
-* (ILAENV) (output) INTEGER
-*          >= 0: the value of the parameter specified by ISPEC
-*          < 0:  if ILAENV = -k, the k-th argument had an illegal value.
 *
 *  Further Details
 *  ===============
@@ -102,49 +103,46 @@
 *  =====================================================================
 *
 *     .. Local Scalars ..
-      LOGICAL            CNAME, SNAME
-      CHARACTER*1        C1
-      CHARACTER*2        C2, C4
-      CHARACTER*3        C3
-      CHARACTER*6        SUBNAM
       INTEGER            I, IC, IZ, NB, NBMIN, NX
+      LOGICAL            CNAME, SNAME
+      CHARACTER          C1*1, C2*2, C4*2, C3*3, SUBNAM*6
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          CHAR, ICHAR, INT, MIN, REAL
 *     ..
 *     .. External Functions ..
-      INTEGER            IEEECK
-      EXTERNAL           IEEECK
+      INTEGER            IEEECK, IPARMQ
+      EXTERNAL           IEEECK, IPARMQ
 *     ..
 *     .. Executable Statements ..
 *
-      GO TO ( 100, 100, 100, 400, 500, 600, 700, 800, 900, 1000,
-     $        1100 ) ISPEC
+      GO TO ( 10, 10, 10, 80, 90, 100, 110, 120,
+     $        130, 140, 150, 160, 160, 160, 160, 160 )ISPEC
 *
 *     Invalid value for ISPEC
 *
       ILAENV = -1
       RETURN
 *
-  100 CONTINUE
+   10 CONTINUE
 *
 *     Convert NAME to upper case if the first character is lower case.
 *
       ILAENV = 1
       SUBNAM = NAME
-      IC = ICHAR( SUBNAM( 1:1 ) )
+      IC = ICHAR( SUBNAM( 1: 1 ) )
       IZ = ICHAR( 'Z' )
       IF( IZ.EQ.90 .OR. IZ.EQ.122 ) THEN
 *
 *        ASCII character set
 *
          IF( IC.GE.97 .AND. IC.LE.122 ) THEN
-            SUBNAM( 1:1 ) = CHAR( IC-32 )
-            DO 10 I = 2, 6
-               IC = ICHAR( SUBNAM( I:I ) )
+            SUBNAM( 1: 1 ) = CHAR( IC-32 )
+            DO 20 I = 2, 6
+               IC = ICHAR( SUBNAM( I: I ) )
                IF( IC.GE.97 .AND. IC.LE.122 )
-     $            SUBNAM( I:I ) = CHAR( IC-32 )
-   10       CONTINUE
+     $            SUBNAM( I: I ) = CHAR( IC-32 )
+   20       CONTINUE
          END IF
 *
       ELSE IF( IZ.EQ.233 .OR. IZ.EQ.169 ) THEN
@@ -154,14 +152,14 @@
          IF( ( IC.GE.129 .AND. IC.LE.137 ) .OR.
      $       ( IC.GE.145 .AND. IC.LE.153 ) .OR.
      $       ( IC.GE.162 .AND. IC.LE.169 ) ) THEN
-            SUBNAM( 1:1 ) = CHAR( IC+64 )
-            DO 20 I = 2, 6
-               IC = ICHAR( SUBNAM( I:I ) )
+            SUBNAM( 1: 1 ) = CHAR( IC+64 )
+            DO 30 I = 2, 6
+               IC = ICHAR( SUBNAM( I: I ) )
                IF( ( IC.GE.129 .AND. IC.LE.137 ) .OR.
      $             ( IC.GE.145 .AND. IC.LE.153 ) .OR.
-     $             ( IC.GE.162 .AND. IC.LE.169 ) )
-     $            SUBNAM( I:I ) = CHAR( IC+64 )
-   20       CONTINUE
+     $             ( IC.GE.162 .AND. IC.LE.169 ) )SUBNAM( I:
+     $             I ) = CHAR( IC+64 )
+   30       CONTINUE
          END IF
 *
       ELSE IF( IZ.EQ.218 .OR. IZ.EQ.250 ) THEN
@@ -169,27 +167,27 @@
 *        Prime machines:  ASCII+128
 *
          IF( IC.GE.225 .AND. IC.LE.250 ) THEN
-            SUBNAM( 1:1 ) = CHAR( IC-32 )
-            DO 30 I = 2, 6
-               IC = ICHAR( SUBNAM( I:I ) )
+            SUBNAM( 1: 1 ) = CHAR( IC-32 )
+            DO 40 I = 2, 6
+               IC = ICHAR( SUBNAM( I: I ) )
                IF( IC.GE.225 .AND. IC.LE.250 )
-     $            SUBNAM( I:I ) = CHAR( IC-32 )
-   30       CONTINUE
+     $            SUBNAM( I: I ) = CHAR( IC-32 )
+   40       CONTINUE
          END IF
       END IF
 *
-      C1 = SUBNAM( 1:1 )
+      C1 = SUBNAM( 1: 1 )
       SNAME = C1.EQ.'S' .OR. C1.EQ.'D'
       CNAME = C1.EQ.'C' .OR. C1.EQ.'Z'
       IF( .NOT.( CNAME .OR. SNAME ) )
      $   RETURN
-      C2 = SUBNAM( 2:3 )
-      C3 = SUBNAM( 4:6 )
-      C4 = C3( 2:3 )
+      C2 = SUBNAM( 2: 3 )
+      C3 = SUBNAM( 4: 6 )
+      C4 = C3( 2: 3 )
 *
-      GO TO ( 110, 200, 300 ) ISPEC
+      GO TO ( 50, 60, 70 )ISPEC
 *
-  110 CONTINUE
+   50 CONTINUE
 *
 *     ISPEC = 1:  block size
 *
@@ -261,30 +259,30 @@
             NB = 64
          END IF
       ELSE IF( SNAME .AND. C2.EQ.'OR' ) THEN
-         IF( C3( 1:1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         IF( C3( 1: 1 ).EQ.'G' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NB = 32
             END IF
-         ELSE IF( C3( 1:1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NB = 32
             END IF
          END IF
       ELSE IF( CNAME .AND. C2.EQ.'UN' ) THEN
-         IF( C3( 1:1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         IF( C3( 1: 1 ).EQ.'G' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NB = 32
             END IF
-         ELSE IF( C3( 1:1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NB = 32
             END IF
          END IF
@@ -344,14 +342,14 @@
       ILAENV = NB
       RETURN
 *
-  200 CONTINUE
+   60 CONTINUE
 *
 *     ISPEC = 2:  minimum block size
 *
       NBMIN = 2
       IF( C2.EQ.'GE' ) THEN
-         IF( C3.EQ.'QRF' .OR. C3.EQ.'RQF' .OR. C3.EQ.'LQF' .OR.
-     $       C3.EQ.'QLF' ) THEN
+         IF( C3.EQ.'QRF' .OR. C3.EQ.'RQF' .OR. C3.EQ.'LQF' .OR. C3.EQ.
+     $       'QLF' ) THEN
             IF( SNAME ) THEN
                NBMIN = 2
             ELSE
@@ -391,30 +389,30 @@
             NBMIN = 2
          END IF
       ELSE IF( SNAME .AND. C2.EQ.'OR' ) THEN
-         IF( C3( 1:1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         IF( C3( 1: 1 ).EQ.'G' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NBMIN = 2
             END IF
-         ELSE IF( C3( 1:1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NBMIN = 2
             END IF
          END IF
       ELSE IF( CNAME .AND. C2.EQ.'UN' ) THEN
-         IF( C3( 1:1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         IF( C3( 1: 1 ).EQ.'G' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NBMIN = 2
             END IF
-         ELSE IF( C3( 1:1 ).EQ.'M' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         ELSE IF( C3( 1: 1 ).EQ.'M' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NBMIN = 2
             END IF
          END IF
@@ -422,14 +420,14 @@
       ILAENV = NBMIN
       RETURN
 *
-  300 CONTINUE
+   70 CONTINUE
 *
 *     ISPEC = 3:  crossover point
 *
       NX = 0
       IF( C2.EQ.'GE' ) THEN
-         IF( C3.EQ.'QRF' .OR. C3.EQ.'RQF' .OR. C3.EQ.'LQF' .OR.
-     $       C3.EQ.'QLF' ) THEN
+         IF( C3.EQ.'QRF' .OR. C3.EQ.'RQF' .OR. C3.EQ.'LQF' .OR. C3.EQ.
+     $       'QLF' ) THEN
             IF( SNAME ) THEN
                NX = 128
             ELSE
@@ -457,18 +455,18 @@
             NX = 32
          END IF
       ELSE IF( SNAME .AND. C2.EQ.'OR' ) THEN
-         IF( C3( 1:1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         IF( C3( 1: 1 ).EQ.'G' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NX = 128
             END IF
          END IF
       ELSE IF( CNAME .AND. C2.EQ.'UN' ) THEN
-         IF( C3( 1:1 ).EQ.'G' ) THEN
-            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR.
-     $          C4.EQ.'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR.
-     $          C4.EQ.'BR' ) THEN
+         IF( C3( 1: 1 ).EQ.'G' ) THEN
+            IF( C4.EQ.'QR' .OR. C4.EQ.'RQ' .OR. C4.EQ.'LQ' .OR. C4.EQ.
+     $          'QL' .OR. C4.EQ.'HR' .OR. C4.EQ.'TR' .OR. C4.EQ.'BR' )
+     $           THEN
                NX = 128
             END IF
          END IF
@@ -476,42 +474,42 @@
       ILAENV = NX
       RETURN
 *
-  400 CONTINUE
+   80 CONTINUE
 *
 *     ISPEC = 4:  number of shifts (used by xHSEQR)
 *
       ILAENV = 6
       RETURN
 *
-  500 CONTINUE
+   90 CONTINUE
 *
 *     ISPEC = 5:  minimum column dimension (not used)
 *
       ILAENV = 2
       RETURN
 *
-  600 CONTINUE 
+  100 CONTINUE
 *
 *     ISPEC = 6:  crossover point for SVD (used by xGELSS and xGESVD)
 *
       ILAENV = INT( REAL( MIN( N1, N2 ) )*1.6E0 )
       RETURN
 *
-  700 CONTINUE
+  110 CONTINUE
 *
 *     ISPEC = 7:  number of processors (not used)
 *
       ILAENV = 1
       RETURN
 *
-  800 CONTINUE
+  120 CONTINUE
 *
 *     ISPEC = 8:  crossover point for multishift (used by xHSEQR)
 *
       ILAENV = 50
       RETURN
 *
-  900 CONTINUE
+  130 CONTINUE
 *
 *     ISPEC = 9:  maximum size of the subproblems at the bottom of the
 *                 computation tree in the divide-and-conquer algorithm
@@ -520,26 +518,33 @@
       ILAENV = 25
       RETURN
 *
- 1000 CONTINUE
+  140 CONTINUE
 *
 *     ISPEC = 10: ieee NaN arithmetic can be trusted not to trap
 *
-C     ILAENV = 0
+*     ILAENV = 0
       ILAENV = 1
       IF( ILAENV.EQ.1 ) THEN
-         ILAENV = IEEECK( 0, 0.0, 1.0 ) 
+         ILAENV = IEEECK( 0, 0.0, 1.0 )
       END IF
       RETURN
 *
- 1100 CONTINUE
+  150 CONTINUE
 *
 *     ISPEC = 11: infinity arithmetic can be trusted not to trap
 *
-C     ILAENV = 0
+*     ILAENV = 0
       ILAENV = 1
       IF( ILAENV.EQ.1 ) THEN
-         ILAENV = IEEECK( 1, 0.0, 1.0 ) 
+         ILAENV = IEEECK( 1, 0.0, 1.0 )
       END IF
+      RETURN
+*
+  160 CONTINUE
+*
+*     12 <= ISPEC <= 16: xHSEQR or one of its subroutines. 
+*
+      ILAENV = IPARMQ( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
       RETURN
 *
 *     End of ILAENV

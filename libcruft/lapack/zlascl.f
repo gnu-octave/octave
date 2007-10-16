@@ -1,9 +1,8 @@
       SUBROUTINE ZLASCL( TYPE, KL, KU, CFROM, CTO, M, N, A, LDA, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     February 29, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          TYPE
@@ -62,7 +61,7 @@
 *  N       (input) INTEGER
 *          The number of columns of the matrix A.  N >= 0.
 *
-*  A       (input/output) COMPLEX*16 array, dimension (LDA,M)
+*  A       (input/output) COMPLEX*16 array, dimension (LDA,N)
 *          The matrix to be multiplied by CTO/CFROM.  See TYPE for the
 *          storage type.
 *

@@ -1,9 +1,8 @@
       SUBROUTINE ZLARTG( F, G, CS, SN, R )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   CS
@@ -48,6 +47,9 @@
 *
 *  3-5-96 - Modified with a new algorithm by W. Kahan and J. Demmel
 *
+*  This version has a few statements commented out for thread safety
+*  (machine parameters are computed on each entry). 10 feb 03, SJH.
+*
 *  =====================================================================
 *
 *     .. Parameters ..
@@ -57,7 +59,7 @@
       PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            FIRST
+*     LOGICAL            FIRST
       INTEGER            COUNT, I
       DOUBLE PRECISION   D, DI, DR, EPS, F2, F2S, G2, G2S, SAFMIN,
      $                   SAFMN2, SAFMX2, SCALE
@@ -75,10 +77,10 @@
       DOUBLE PRECISION   ABS1, ABSSQ
 *     ..
 *     .. Save statement ..
-      SAVE               FIRST, SAFMX2, SAFMIN, SAFMN2
+*     SAVE               FIRST, SAFMX2, SAFMIN, SAFMN2
 *     ..
 *     .. Data statements ..
-      DATA               FIRST / .TRUE. /
+*     DATA               FIRST / .TRUE. /
 *     ..
 *     .. Statement Function definitions ..
       ABS1( FF ) = MAX( ABS( DBLE( FF ) ), ABS( DIMAG( FF ) ) )
@@ -86,14 +88,14 @@
 *     ..
 *     .. Executable Statements ..
 *
-      IF( FIRST ) THEN
-         FIRST = .FALSE.
+*     IF( FIRST ) THEN
          SAFMIN = DLAMCH( 'S' )
          EPS = DLAMCH( 'E' )
          SAFMN2 = DLAMCH( 'B' )**INT( LOG( SAFMIN / EPS ) /
      $            LOG( DLAMCH( 'B' ) ) / TWO )
          SAFMX2 = ONE / SAFMN2
-      END IF
+*        FIRST = .FALSE.
+*     END IF
       SCALE = MAX( ABS1( F ), ABS1( G ) )
       FS = F
       GS = G

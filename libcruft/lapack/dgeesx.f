@@ -2,10 +2,9 @@
      $                   WR, WI, VS, LDVS, RCONDE, RCONDV, WORK, LWORK,
      $                   IWORK, LIWORK, BWORK, INFO )
 *
-*  -- LAPACK driver routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK driver routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       CHARACTER          JOBVS, SENSE, SORT
@@ -63,7 +62,7 @@
 *          = 'N': Eigenvalues are not ordered;
 *          = 'S': Eigenvalues are ordered (see SELECT).
 *
-*  SELECT  (input) LOGICAL FUNCTION of two DOUBLE PRECISION arguments
+*  SELECT  (external procedure) LOGICAL FUNCTION of two DOUBLE PRECISION arguments
 *          SELECT must be declared EXTERNAL in the calling subroutine.
 *          If SORT = 'S', SELECT is used to select eigenvalues to sort
 *          to the top left of the Schur form.
@@ -129,7 +128,7 @@
 *          condition number for the selected right invariant subspace.
 *          Not referenced if SENSE = 'N' or 'E'.
 *
-*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (MAX(1,LWORK))
 *          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
 *  LWORK   (input) INTEGER
@@ -137,16 +136,32 @@
 *          Also, if SENSE = 'E' or 'V' or 'B',
 *          LWORK >= N+2*SDIM*(N-SDIM), where SDIM is the number of
 *          selected eigenvalues computed by this routine.  Note that
-*          N+2*SDIM*(N-SDIM) <= N+N*N/2.
+*          N+2*SDIM*(N-SDIM) <= N+N*N/2. Note also that an error is only
+*          returned if LWORK < max(1,3*N), but if SENSE = 'E' or 'V' or
+*          'B' this may not be large enough.
 *          For good performance, LWORK must generally be larger.
 *
-*  IWORK   (workspace/output) INTEGER array, dimension (LIWORK)
-*          Not referenced if SENSE = 'N' or 'E'.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates upper bounds on the optimal sizes of the
+*          arrays WORK and IWORK, returns these values as the first
+*          entries of the WORK and IWORK arrays, and no error messages
+*          related to LWORK or LIWORK are issued by XERBLA.
+*
+*  IWORK   (workspace/output) INTEGER array, dimension (MAX(1,LIWORK))
 *          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *
 *  LIWORK  (input) INTEGER
 *          The dimension of the array IWORK.
 *          LIWORK >= 1; if SENSE = 'V' or 'B', LIWORK >= SDIM*(N-SDIM).
+*          Note that SDIM*(N-SDIM) <= N*N/4. Note also that an error is
+*          only returned if LIWORK < 1, but if SENSE = 'V' or 'B' this
+*          may not be large enough.
+*
+*          If LIWORK = -1, then a workspace query is assumed; the
+*          routine only calculates upper bounds on the optimal sizes of
+*          the arrays WORK and IWORK, returns these values as the first
+*          entries of the WORK and IWORK arrays, and no error messages
+*          related to LWORK or LIWORK are issued by XERBLA.
 *
 *  BWORK   (workspace) LOGICAL array, dimension (N)
 *          Not referenced if SORT = 'N'.
@@ -175,10 +190,10 @@
       PARAMETER          ( ZERO = 0.0D0, ONE = 1.0D0 )
 *     ..
 *     .. Local Scalars ..
-      LOGICAL            CURSL, LASTSL, LST2SL, SCALEA, WANTSB, WANTSE,
-     $                   WANTSN, WANTST, WANTSV, WANTVS
+      LOGICAL            CURSL, LASTSL, LQUERY, LST2SL, SCALEA, WANTSB,
+     $                   WANTSE, WANTSN, WANTST, WANTSV, WANTVS
       INTEGER            HSWORK, I, I1, I2, IBAL, ICOND, IERR, IEVAL,
-     $                   IHI, ILO, INXT, IP, ITAU, IWRK, K, MAXB,
+     $                   IHI, ILO, INXT, IP, ITAU, IWRK, LIWRK, LWRK,
      $                   MAXWRK, MINWRK
       DOUBLE PRECISION   ANRM, BIGNUM, CSCALE, EPS, SMLNUM
 *     ..
@@ -193,10 +208,10 @@
       LOGICAL            LSAME
       INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, DLANGE
-      EXTERNAL           LSAME, ILAENV, DLAMCH, DLANGE
+      EXTERNAL           LSAME, ILAENV, DLABAD, DLAMCH, DLANGE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, SQRT
+      INTRINSIC          MAX, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -209,6 +224,7 @@
       WANTSE = LSAME( SENSE, 'E' )
       WANTSV = LSAME( SENSE, 'V' )
       WANTSB = LSAME( SENSE, 'B' )
+      LQUERY = ( LWORK.EQ.-1 .OR. LIWORK.EQ.-1 )
       IF( ( .NOT.WANTVS ) .AND. ( .NOT.LSAME( JOBVS, 'N' ) ) ) THEN
          INFO = -1
       ELSE IF( ( .NOT.WANTST ) .AND. ( .NOT.LSAME( SORT, 'N' ) ) ) THEN
@@ -238,33 +254,42 @@
 *       depends on SDIM, which is computed by the routine DTRSEN later
 *       in the code.)
 *
-      MINWRK = 1
-      IF( INFO.EQ.0 .AND. LWORK.GE.1 ) THEN
-         MAXWRK = 2*N + N*ILAENV( 1, 'DGEHRD', ' ', N, 1, N, 0 )
-         MINWRK = MAX( 1, 3*N )
-         IF( .NOT.WANTVS ) THEN
-            MAXB = MAX( ILAENV( 8, 'DHSEQR', 'SN', N, 1, N, -1 ), 2 )
-            K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'DHSEQR', 'SN', N, 1,
-     $          N, -1 ) ) )
-            HSWORK = MAX( K*( K+2 ), 2*N )
-            MAXWRK = MAX( MAXWRK, N+HSWORK, 1 )
+      IF( INFO.EQ.0 ) THEN
+         LIWRK = 1
+         IF( N.EQ.0 ) THEN
+            MINWRK = 1
+            LWRK = 1
          ELSE
-            MAXWRK = MAX( MAXWRK, 2*N+( N-1 )*
-     $               ILAENV( 1, 'DORGHR', ' ', N, 1, N, -1 ) )
-            MAXB = MAX( ILAENV( 8, 'DHSEQR', 'SV', N, 1, N, -1 ), 2 )
-            K = MIN( MAXB, N, MAX( 2, ILAENV( 4, 'DHSEQR', 'SV', N, 1,
-     $          N, -1 ) ) )
-            HSWORK = MAX( K*( K+2 ), 2*N )
-            MAXWRK = MAX( MAXWRK, N+HSWORK, 1 )
+            MAXWRK = 2*N + N*ILAENV( 1, 'DGEHRD', ' ', N, 1, N, 0 )
+            MINWRK = 3*N
+*
+            CALL DHSEQR( 'S', JOBVS, N, 1, N, A, LDA, WR, WI, VS, LDVS,
+     $             WORK, -1, IEVAL )
+            HSWORK = WORK( 1 )
+*
+            IF( .NOT.WANTVS ) THEN
+               MAXWRK = MAX( MAXWRK, N + HSWORK )
+            ELSE
+               MAXWRK = MAX( MAXWRK, 2*N + ( N - 1 )*ILAENV( 1,
+     $                       'DORGHR', ' ', N, 1, N, -1 ) )
+               MAXWRK = MAX( MAXWRK, N + HSWORK )
+            END IF
+            LWRK = MAXWRK
+            IF( .NOT.WANTSN )
+     $         LWRK = MAX( LWRK, N + ( N*N )/2 )
+            IF( WANTSV .OR. WANTSB )
+     $         LIWRK = ( N*N )/4
          END IF
-         WORK( 1 ) = MAXWRK
+         IWORK( 1 ) = LIWRK
+         WORK( 1 ) = LWRK
+*
+         IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
+            INFO = -16
+         ELSE IF( LIWORK.LT.1 .AND. .NOT.LQUERY ) THEN
+            INFO = -18
+         END IF
       END IF
-      IF( LWORK.LT.MINWRK ) THEN
-         INFO = -16
-      END IF
-      IF( LIWORK.LT.1 ) THEN
-         INFO = -18
-      END IF
+*
       IF( INFO.NE.0 ) THEN
          CALL XERBLA( 'DGEESX', -INFO )
          RETURN
@@ -490,7 +515,7 @@
 *
       WORK( 1 ) = MAXWRK
       IF( WANTSV .OR. WANTSB ) THEN
-         IWORK( 1 ) = SDIM*( N-SDIM )
+         IWORK( 1 ) = MAX( 1, SDIM*( N-SDIM ) )
       ELSE
          IWORK( 1 ) = 1
       END IF

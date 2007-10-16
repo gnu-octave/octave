@@ -1,42 +1,42 @@
       SUBROUTINE DLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      $                   ILOZ, IHIZ, Z, LDZ, INFO )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     June 30, 1999
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
-      LOGICAL            WANTT, WANTZ
       INTEGER            IHI, IHIZ, ILO, ILOZ, INFO, LDH, LDZ, N
+      LOGICAL            WANTT, WANTZ
 *     ..
 *     .. Array Arguments ..
       DOUBLE PRECISION   H( LDH, * ), WI( * ), WR( * ), Z( LDZ, * )
 *     ..
 *
-*  Purpose
-*  =======
+*     Purpose
+*     =======
 *
-*  DLAHQR is an auxiliary routine called by DHSEQR to update the
-*  eigenvalues and Schur decomposition already computed by DHSEQR, by
-*  dealing with the Hessenberg submatrix in rows and columns ILO to IHI.
+*     DLAHQR is an auxiliary routine called by DHSEQR to update the
+*     eigenvalues and Schur decomposition already computed by DHSEQR, by
+*     dealing with the Hessenberg submatrix in rows and columns ILO to
+*     IHI.
 *
-*  Arguments
-*  =========
+*     Arguments
+*     =========
 *
-*  WANTT   (input) LOGICAL
+*     WANTT   (input) LOGICAL
 *          = .TRUE. : the full Schur form T is required;
 *          = .FALSE.: only eigenvalues are required.
 *
-*  WANTZ   (input) LOGICAL
+*     WANTZ   (input) LOGICAL
 *          = .TRUE. : the matrix of Schur vectors Z is required;
 *          = .FALSE.: Schur vectors are not required.
 *
-*  N       (input) INTEGER
+*     N       (input) INTEGER
 *          The order of the matrix H.  N >= 0.
 *
-*  ILO     (input) INTEGER
-*  IHI     (input) INTEGER
+*     ILO     (input) INTEGER
+*     IHI     (input) INTEGER
 *          It is assumed that H is already upper quasi-triangular in
 *          rows and columns IHI+1:N, and that H(ILO,ILO-1) = 0 (unless
 *          ILO = 1). DLAHQR works primarily with the Hessenberg
@@ -44,18 +44,20 @@
 *          transformations to all of H if WANTT is .TRUE..
 *          1 <= ILO <= max(1,IHI); IHI <= N.
 *
-*  H       (input/output) DOUBLE PRECISION array, dimension (LDH,N)
+*     H       (input/output) DOUBLE PRECISION array, dimension (LDH,N)
 *          On entry, the upper Hessenberg matrix H.
-*          On exit, if WANTT is .TRUE., H is upper quasi-triangular in
-*          rows and columns ILO:IHI, with any 2-by-2 diagonal blocks in
-*          standard form. If WANTT is .FALSE., the contents of H are
-*          unspecified on exit.
+*          On exit, if INFO is zero and if WANTT is .TRUE., H is upper
+*          quasi-triangular in rows and columns ILO:IHI, with any
+*          2-by-2 diagonal blocks in standard form. If INFO is zero
+*          and WANTT is .FALSE., the contents of H are unspecified on
+*          exit.  The output state of H if INFO is nonzero is given
+*          below under the description of INFO.
 *
-*  LDH     (input) INTEGER
+*     LDH     (input) INTEGER
 *          The leading dimension of the array H. LDH >= max(1,N).
 *
-*  WR      (output) DOUBLE PRECISION array, dimension (N)
-*  WI      (output) DOUBLE PRECISION array, dimension (N)
+*     WR      (output) DOUBLE PRECISION array, dimension (N)
+*     WI      (output) DOUBLE PRECISION array, dimension (N)
 *          The real and imaginary parts, respectively, of the computed
 *          eigenvalues ILO to IHI are stored in the corresponding
 *          elements of WR and WI. If two eigenvalues are computed as a
@@ -67,62 +69,90 @@
 *          H(i:i+1,i:i+1) is a 2-by-2 diagonal block,
 *          WI(i) = sqrt(H(i+1,i)*H(i,i+1)) and WI(i+1) = -WI(i).
 *
-*  ILOZ    (input) INTEGER
-*  IHIZ    (input) INTEGER
+*     ILOZ    (input) INTEGER
+*     IHIZ    (input) INTEGER
 *          Specify the rows of Z to which transformations must be
 *          applied if WANTZ is .TRUE..
 *          1 <= ILOZ <= ILO; IHI <= IHIZ <= N.
 *
-*  Z       (input/output) DOUBLE PRECISION array, dimension (LDZ,N)
+*     Z       (input/output) DOUBLE PRECISION array, dimension (LDZ,N)
 *          If WANTZ is .TRUE., on entry Z must contain the current
 *          matrix Z of transformations accumulated by DHSEQR, and on
 *          exit Z has been updated; transformations are applied only to
 *          the submatrix Z(ILOZ:IHIZ,ILO:IHI).
 *          If WANTZ is .FALSE., Z is not referenced.
 *
-*  LDZ     (input) INTEGER
+*     LDZ     (input) INTEGER
 *          The leading dimension of the array Z. LDZ >= max(1,N).
 *
-*  INFO    (output) INTEGER
-*          = 0: successful exit
-*          > 0: DLAHQR failed to compute all the eigenvalues ILO to IHI
-*               in a total of 30*(IHI-ILO+1) iterations; if INFO = i,
-*               elements i+1:ihi of WR and WI contain those eigenvalues
-*               which have been successfully computed.
+*     INFO    (output) INTEGER
+*           =   0: successful exit
+*          .GT. 0: If INFO = i, DLAHQR failed to compute all the
+*                  eigenvalues ILO to IHI in a total of 30 iterations
+*                  per eigenvalue; elements i+1:ihi of WR and WI
+*                  contain those eigenvalues which have been
+*                  successfully computed.
 *
-*  Further Details
-*  ===============
+*                  If INFO .GT. 0 and WANTT is .FALSE., then on exit,
+*                  the remaining unconverged eigenvalues are the
+*                  eigenvalues of the upper Hessenberg matrix rows
+*                  and columns ILO thorugh INFO of the final, output
+*                  value of H.
 *
-*  2-96 Based on modifications by
+*                  If INFO .GT. 0 and WANTT is .TRUE., then on exit
+*          (*)       (initial value of H)*U  = U*(final value of H)
+*                  where U is an orthognal matrix.    The final
+*                  value of H is upper Hessenberg and triangular in
+*                  rows and columns INFO+1 through IHI.
+*
+*                  If INFO .GT. 0 and WANTZ is .TRUE., then on exit
+*                      (final value of Z)  = (initial value of Z)*U
+*                  where U is the orthogonal matrix in (*)
+*                  (regardless of the value of WANTT.)
+*
+*     Further Details
+*     ===============
+*
+*     02-96 Based on modifications by
 *     David Day, Sandia National Laboratory, USA
 *
-*  =====================================================================
+*     12-04 Further modifications by
+*     Ralph Byers, University of Kansas, USA
+*
+*       This is a modified version of DLAHQR from LAPACK version 3.0.
+*       It is (1) more robust against overflow and underflow and
+*       (2) adopts the more conservative Ahues & Tisseur stopping
+*       criterion (LAWN 122, 1997).
+*
+*     =========================================================
 *
 *     .. Parameters ..
-      DOUBLE PRECISION   ZERO, ONE, HALF
-      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, HALF = 0.5D0 )
+      INTEGER            ITMAX
+      PARAMETER          ( ITMAX = 30 )
+      DOUBLE PRECISION   ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0d0, ONE = 1.0d0, TWO = 2.0d0 )
       DOUBLE PRECISION   DAT1, DAT2
-      PARAMETER          ( DAT1 = 0.75D+0, DAT2 = -0.4375D+0 )
+      PARAMETER          ( DAT1 = 3.0d0 / 4.0d0, DAT2 = -0.4375d0 )
 *     ..
 *     .. Local Scalars ..
-      INTEGER            I, I1, I2, ITN, ITS, J, K, L, M, NH, NR, NZ
-      DOUBLE PRECISION   AVE, CS, DISC, H00, H10, H11, H12, H21, H22,
-     $                   H33, H33S, H43H34, H44, H44S, OVFL, S, SMLNUM,
-     $                   SN, SUM, T1, T2, T3, TST1, ULP, UNFL, V1, V2,
-     $                   V3
+      DOUBLE PRECISION   AA, AB, BA, BB, CS, DET, H11, H12, H21, H21S,
+     $                   H22, RT1I, RT1R, RT2I, RT2R, RTDISC, S, SAFMAX,
+     $                   SAFMIN, SMLNUM, SN, SUM, T1, T2, T3, TR, TST,
+     $                   ULP, V2, V3
+      INTEGER            I, I1, I2, ITS, J, K, L, M, NH, NR, NZ
 *     ..
 *     .. Local Arrays ..
-      DOUBLE PRECISION   V( 3 ), WORK( 1 )
+      DOUBLE PRECISION   V( 3 )
 *     ..
 *     .. External Functions ..
-      DOUBLE PRECISION   DLAMCH, DLANHS
-      EXTERNAL           DLAMCH, DLANHS
+      DOUBLE PRECISION   DLAMCH
+      EXTERNAL           DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLANV2, DLARFG, DROT
+      EXTERNAL           DCOPY, DLABAD, DLANV2, DLARFG, DROT
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, MAX, MIN, SIGN, SQRT
+      INTRINSIC          ABS, DBLE, MAX, MIN, SQRT
 *     ..
 *     .. Executable Statements ..
 *
@@ -138,17 +168,24 @@
          RETURN
       END IF
 *
+*     ==== clear out the trash ====
+      DO 10 J = ILO, IHI - 3
+         H( J+2, J ) = ZERO
+         H( J+3, J ) = ZERO
+   10 CONTINUE
+      IF( ILO.LE.IHI-2 )
+     $   H( IHI, IHI-2 ) = ZERO
+*
       NH = IHI - ILO + 1
       NZ = IHIZ - ILOZ + 1
 *
 *     Set machine-dependent constants for the stopping criterion.
-*     If norm(H) <= sqrt(OVFL), overflow should not occur.
 *
-      UNFL = DLAMCH( 'Safe minimum' )
-      OVFL = ONE / UNFL
-      CALL DLABAD( UNFL, OVFL )
-      ULP = DLAMCH( 'Precision' )
-      SMLNUM = UNFL*( NH / ULP )
+      SAFMIN = DLAMCH( 'SAFE MINIMUM' )
+      SAFMAX = ONE / SAFMIN
+      CALL DLABAD( SAFMIN, SAFMAX )
+      ULP = DLAMCH( 'PRECISION' )
+      SMLNUM = SAFMIN*( DBLE( NH ) / ULP )
 *
 *     I1 and I2 are the indices of the first row and last column of H
 *     to which transformations must be applied. If eigenvalues only are
@@ -159,10 +196,6 @@
          I2 = N
       END IF
 *
-*     ITN is the total number of QR iterations allowed.
-*
-      ITN = 30*NH
-*
 *     The main loop begins here. I is the loop index and decreases from
 *     IHI to ILO in steps of 1 or 2. Each iteration of the loop works
 *     with the active submatrix in rows and columns L to I.
@@ -170,27 +203,46 @@
 *     H(L,L-1) is negligible so that the matrix splits.
 *
       I = IHI
-   10 CONTINUE
+   20 CONTINUE
       L = ILO
       IF( I.LT.ILO )
-     $   GO TO 150
+     $   GO TO 160
 *
 *     Perform QR iterations on rows and columns ILO to I until a
 *     submatrix of order 1 or 2 splits off at the bottom because a
 *     subdiagonal element has become negligible.
 *
-      DO 130 ITS = 0, ITN
+      DO 140 ITS = 0, ITMAX
 *
 *        Look for a single small subdiagonal element.
 *
-         DO 20 K = I, L + 1, -1
-            TST1 = ABS( H( K-1, K-1 ) ) + ABS( H( K, K ) )
-            IF( TST1.EQ.ZERO )
-     $         TST1 = DLANHS( '1', I-L+1, H( L, L ), LDH, WORK )
-            IF( ABS( H( K, K-1 ) ).LE.MAX( ULP*TST1, SMLNUM ) )
-     $         GO TO 30
-   20    CONTINUE
+         DO 30 K = I, L + 1, -1
+            IF( ABS( H( K, K-1 ) ).LE.SMLNUM )
+     $         GO TO 40
+            TST = ABS( H( K-1, K-1 ) ) + ABS( H( K, K ) )
+            IF( TST.EQ.ZERO ) THEN
+               IF( K-2.GE.ILO )
+     $            TST = TST + ABS( H( K-1, K-2 ) )
+               IF( K+1.LE.IHI )
+     $            TST = TST + ABS( H( K+1, K ) )
+            END IF
+*           ==== The following is a conservative small subdiagonal
+*           .    deflation  criterion due to Ahues & Tisseur (LAWN 122,
+*           .    1997). It has better mathematical foundation and
+*           .    improves accuracy in some cases.  ====
+            IF( ABS( H( K, K-1 ) ).LE.ULP*TST ) THEN
+               AB = MAX( ABS( H( K, K-1 ) ), ABS( H( K-1, K ) ) )
+               BA = MIN( ABS( H( K, K-1 ) ), ABS( H( K-1, K ) ) )
+               AA = MAX( ABS( H( K, K ) ),
+     $              ABS( H( K-1, K-1 )-H( K, K ) ) )
+               BB = MIN( ABS( H( K, K ) ),
+     $              ABS( H( K-1, K-1 )-H( K, K ) ) )
+               S = AA + AB
+               IF( BA*( AB / S ).LE.MAX( SMLNUM,
+     $             ULP*( BB*( AA / S ) ) ) )GO TO 40
+            END IF
    30    CONTINUE
+   40    CONTINUE
          L = K
          IF( L.GT.ILO ) THEN
 *
@@ -202,7 +254,7 @@
 *        Exit from loop if a submatrix of order 1 or 2 has split off.
 *
          IF( L.GE.I-1 )
-     $      GO TO 140
+     $      GO TO 150
 *
 *        Now the active submatrix is in rows and columns L to I. If
 *        eigenvalues only are being computed, only the active submatrix
@@ -217,74 +269,90 @@
 *
 *           Exceptional shift.
 *
-            S = ABS( H( I, I-1 ) ) + ABS( H( I-1, I-2 ) )
-            H44 = DAT1*S + H( I, I )
-            H33 = H44
-            H43H34 = DAT2*S*S
+            H11 = DAT1*S + H( I, I )
+            H12 = DAT2*S
+            H21 = S
+            H22 = H11
          ELSE
 *
 *           Prepare to use Francis' double shift
 *           (i.e. 2nd degree generalized Rayleigh quotient)
 *
-            H44 = H( I, I )
-            H33 = H( I-1, I-1 )
-            H43H34 = H( I, I-1 )*H( I-1, I )
-            S = H( I-1, I-2 )*H( I-1, I-2 )
-            DISC = ( H33-H44 )*HALF
-            DISC = DISC*DISC + H43H34
-            IF( DISC.GT.ZERO ) THEN
+            H11 = H( I-1, I-1 )
+            H21 = H( I, I-1 )
+            H12 = H( I-1, I )
+            H22 = H( I, I )
+         END IF
+         S = ABS( H11 ) + ABS( H12 ) + ABS( H21 ) + ABS( H22 )
+         IF( S.EQ.ZERO ) THEN
+            RT1R = ZERO
+            RT1I = ZERO
+            RT2R = ZERO
+            RT2I = ZERO
+         ELSE
+            H11 = H11 / S
+            H21 = H21 / S
+            H12 = H12 / S
+            H22 = H22 / S
+            TR = ( H11+H22 ) / TWO
+            DET = ( H11-TR )*( H22-TR ) - H12*H21
+            RTDISC = SQRT( ABS( DET ) )
+            IF( DET.GE.ZERO ) THEN
 *
-*              Real roots: use Wilkinson's shift twice
+*              ==== complex conjugate shifts ====
 *
-               DISC = SQRT( DISC )
-               AVE = HALF*( H33+H44 )
-               IF( ABS( H33 )-ABS( H44 ).GT.ZERO ) THEN
-                  H33 = H33*H44 - H43H34
-                  H44 = H33 / ( SIGN( DISC, AVE )+AVE )
+               RT1R = TR*S
+               RT2R = RT1R
+               RT1I = RTDISC*S
+               RT2I = -RT1I
+            ELSE
+*
+*              ==== real shifts (use only one of them)  ====
+*
+               RT1R = TR + RTDISC
+               RT2R = TR - RTDISC
+               IF( ABS( RT1R-H22 ).LE.ABS( RT2R-H22 ) ) THEN
+                  RT1R = RT1R*S
+                  RT2R = RT1R
                ELSE
-                  H44 = SIGN( DISC, AVE ) + AVE
+                  RT2R = RT2R*S
+                  RT1R = RT2R
                END IF
-               H33 = H44
-               H43H34 = ZERO
+               RT1I = ZERO
+               RT2I = ZERO
             END IF
          END IF
 *
 *        Look for two consecutive small subdiagonal elements.
 *
-         DO 40 M = I - 2, L, -1
+         DO 50 M = I - 2, L, -1
 *           Determine the effect of starting the double-shift QR
 *           iteration at row M, and see if this would make H(M,M-1)
-*           negligible.
+*           negligible.  (The following uses scaling to avoid
+*           overflows and most underflows.)
 *
-            H11 = H( M, M )
-            H22 = H( M+1, M+1 )
-            H21 = H( M+1, M )
-            H12 = H( M, M+1 )
-            H44S = H44 - H11
-            H33S = H33 - H11
-            V1 = ( H33S*H44S-H43H34 ) / H21 + H12
-            V2 = H22 - H11 - H33S - H44S
-            V3 = H( M+2, M+1 )
-            S = ABS( V1 ) + ABS( V2 ) + ABS( V3 )
-            V1 = V1 / S
-            V2 = V2 / S
-            V3 = V3 / S
-            V( 1 ) = V1
-            V( 2 ) = V2
-            V( 3 ) = V3
+            H21S = H( M+1, M )
+            S = ABS( H( M, M )-RT2R ) + ABS( RT2I ) + ABS( H21S )
+            H21S = H( M+1, M ) / S
+            V( 1 ) = H21S*H( M, M+1 ) + ( H( M, M )-RT1R )*
+     $               ( ( H( M, M )-RT2R ) / S ) - RT1I*( RT2I / S )
+            V( 2 ) = H21S*( H( M, M )+H( M+1, M+1 )-RT1R-RT2R )
+            V( 3 ) = H21S*H( M+2, M+1 )
+            S = ABS( V( 1 ) ) + ABS( V( 2 ) ) + ABS( V( 3 ) )
+            V( 1 ) = V( 1 ) / S
+            V( 2 ) = V( 2 ) / S
+            V( 3 ) = V( 3 ) / S
             IF( M.EQ.L )
-     $         GO TO 50
-            H00 = H( M-1, M-1 )
-            H10 = H( M, M-1 )
-            TST1 = ABS( V1 )*( ABS( H00 )+ABS( H11 )+ABS( H22 ) )
-            IF( ABS( H10 )*( ABS( V2 )+ABS( V3 ) ).LE.ULP*TST1 )
-     $         GO TO 50
-   40    CONTINUE
+     $         GO TO 60
+            IF( ABS( H( M, M-1 ) )*( ABS( V( 2 ) )+ABS( V( 3 ) ) ).LE.
+     $          ULP*ABS( V( 1 ) )*( ABS( H( M-1, M-1 ) )+ABS( H( M,
+     $          M ) )+ABS( H( M+1, M+1 ) ) ) )GO TO 60
    50    CONTINUE
+   60    CONTINUE
 *
 *        Double-shift QR step
 *
-         DO 120 K = M, I - 1
+         DO 130 K = M, I - 1
 *
 *           The first iteration of this loop determines a reflection G
 *           from the vector V and applies it from left and right to H,
@@ -316,75 +384,75 @@
 *              Apply G from the left to transform the rows of the matrix
 *              in columns K to I2.
 *
-               DO 60 J = K, I2
+               DO 70 J = K, I2
                   SUM = H( K, J ) + V2*H( K+1, J ) + V3*H( K+2, J )
                   H( K, J ) = H( K, J ) - SUM*T1
                   H( K+1, J ) = H( K+1, J ) - SUM*T2
                   H( K+2, J ) = H( K+2, J ) - SUM*T3
-   60          CONTINUE
+   70          CONTINUE
 *
 *              Apply G from the right to transform the columns of the
 *              matrix in rows I1 to min(K+3,I).
 *
-               DO 70 J = I1, MIN( K+3, I )
+               DO 80 J = I1, MIN( K+3, I )
                   SUM = H( J, K ) + V2*H( J, K+1 ) + V3*H( J, K+2 )
                   H( J, K ) = H( J, K ) - SUM*T1
                   H( J, K+1 ) = H( J, K+1 ) - SUM*T2
                   H( J, K+2 ) = H( J, K+2 ) - SUM*T3
-   70          CONTINUE
+   80          CONTINUE
 *
                IF( WANTZ ) THEN
 *
 *                 Accumulate transformations in the matrix Z
 *
-                  DO 80 J = ILOZ, IHIZ
+                  DO 90 J = ILOZ, IHIZ
                      SUM = Z( J, K ) + V2*Z( J, K+1 ) + V3*Z( J, K+2 )
                      Z( J, K ) = Z( J, K ) - SUM*T1
                      Z( J, K+1 ) = Z( J, K+1 ) - SUM*T2
                      Z( J, K+2 ) = Z( J, K+2 ) - SUM*T3
-   80             CONTINUE
+   90             CONTINUE
                END IF
             ELSE IF( NR.EQ.2 ) THEN
 *
 *              Apply G from the left to transform the rows of the matrix
 *              in columns K to I2.
 *
-               DO 90 J = K, I2
+               DO 100 J = K, I2
                   SUM = H( K, J ) + V2*H( K+1, J )
                   H( K, J ) = H( K, J ) - SUM*T1
                   H( K+1, J ) = H( K+1, J ) - SUM*T2
-   90          CONTINUE
+  100          CONTINUE
 *
 *              Apply G from the right to transform the columns of the
 *              matrix in rows I1 to min(K+3,I).
 *
-               DO 100 J = I1, I
+               DO 110 J = I1, I
                   SUM = H( J, K ) + V2*H( J, K+1 )
                   H( J, K ) = H( J, K ) - SUM*T1
                   H( J, K+1 ) = H( J, K+1 ) - SUM*T2
-  100          CONTINUE
+  110          CONTINUE
 *
                IF( WANTZ ) THEN
 *
 *                 Accumulate transformations in the matrix Z
 *
-                  DO 110 J = ILOZ, IHIZ
+                  DO 120 J = ILOZ, IHIZ
                      SUM = Z( J, K ) + V2*Z( J, K+1 )
                      Z( J, K ) = Z( J, K ) - SUM*T1
                      Z( J, K+1 ) = Z( J, K+1 ) - SUM*T2
-  110             CONTINUE
+  120             CONTINUE
                END IF
             END IF
-  120    CONTINUE
+  130    CONTINUE
 *
-  130 CONTINUE
+  140 CONTINUE
 *
 *     Failure to converge in remaining number of iterations
 *
       INFO = I
       RETURN
 *
-  140 CONTINUE
+  150 CONTINUE
 *
       IF( L.EQ.I ) THEN
 *
@@ -420,14 +488,12 @@
          END IF
       END IF
 *
-*     Decrement number of remaining iterations, and return to start of
-*     the main loop with new value of I.
+*     return to start of the main loop with new value of I.
 *
-      ITN = ITN - ITS
       I = L - 1
-      GO TO 10
+      GO TO 20
 *
-  150 CONTINUE
+  160 CONTINUE
       RETURN
 *
 *     End of DLAHQR

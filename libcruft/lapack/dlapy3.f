@@ -1,9 +1,8 @@
       DOUBLE PRECISION FUNCTION DLAPY3( X, Y, Z )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK auxiliary routine (version 3.1) --
+*     Univ. of Tennessee, Univ. of California Berkeley and NAG Ltd..
+*     November 2006
 *
 *     .. Scalar Arguments ..
       DOUBLE PRECISION   X, Y, Z
@@ -42,7 +41,10 @@
       ZABS = ABS( Z )
       W = MAX( XABS, YABS, ZABS )
       IF( W.EQ.ZERO ) THEN
-         DLAPY3 = ZERO
+*     W can be zero for max(0,nan,0)
+*     adding all three entries together will make sure
+*     NaN will not disappear.
+         DLAPY3 =  XABS + YABS + ZABS
       ELSE
          DLAPY3 = W*SQRT( ( XABS / W )**2+( YABS / W )**2+
      $            ( ZABS / W )**2 )

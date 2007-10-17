@@ -72,7 +72,10 @@
 ##   @item emf
 ##     Microsoft Enhanced Metafile
 ##   @item fig
-##     XFig
+##     XFig.  If this format is selected the additional options
+##     @code{-textspecial} or @{-textnormal} can be used to control
+##     whether the special flag should be set for the text in the figure
+##     (default is @{-textnormal}). 
 ##   @item hpgl
 ##     HP plotter language
 ##   @item mf
@@ -127,6 +130,7 @@ function print (varargin)
   printer = "";
   debug = false;
   debug_file = "octave-print-commands.log";
+  special_flag = "textnormal";
 
   ## Ensure the last figure is on the screen for single line commands like
   ##   plot(...); print(...);
@@ -147,6 +151,8 @@ function print (varargin)
 	orientation = "portrait";
       elseif (strcmp (arg, "-landscape"))
 	orientation = "landscape";
+      elseif (strcmp (arg, "-textspecial"))
+	special_flag = "textspecial";
       elseif (strncmp (arg, "-debug", 6))
 	debug = true;
 	if (length (arg) > 7)
@@ -302,11 +308,13 @@ function print (varargin)
     else
       options = " mono";
     endif
+    options = strcat (options, " ", special_flag);
     if (! isempty (fontsize))
       options = strcat (options, " fontsize ", fontsize);
     endif
 
     new_terminal = strcat ("fig ", options);
+
 
   elseif (strcmp (dev, "emf"))
     ## Enhanced Metafile format

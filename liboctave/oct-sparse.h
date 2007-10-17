@@ -57,16 +57,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <ccolamd.h>
 #endif
 
-#if defined (HAVE_SUITESPARSE_METIS_H)
-#include <suitesparse/metis.h>
-#elif defined (HAVE_UFSPARSE_METIS_H)
-#include <ufsparse/metis.h>
-#elif defined (HAVE_METIS_METIS_H)
-#include <metis/metis.h>
-#elif defined (HAVE_METIS_H)
-#include <metis.h>
-#endif
-
 #if defined (HAVE_SUITESPARSE_CHOLMOD_H)
 #include <suitesparse/cholmod.h>
 #elif defined (HAVE_UFSPARSE_CHOLMOD_H)

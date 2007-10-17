@@ -415,24 +415,6 @@ factorization as determined by @var{typ}.\n\
   cm->complex_divide = CHOLMOD_NAME(divcomplex);
   cm->hypotenuse = CHOLMOD_NAME(hypot);
 
-#ifdef HAVE_METIS
-  // METIS 4.0.1 uses malloc and free, and will terminate if it runs
-  // out of memory.  Use CHOLMOD's memory guard for METIS, which
-  // allocates a huge block of memory (and then immediately frees it)
-  // before calling METIS.
-  cm->metis_memory = 2.0;
-
-#if defined(METIS_VERSION)
-#if (METIS_VERSION >= METIS_VER(4,0,2))
-  // METIS 4.0.2 uses function pointers for malloc and free.
-  METIS_malloc = cm->malloc_memory;
-  METIS_free   = cm->free_memory;
-  // Turn off METIS memory guard.
-  cm->metis_memory   = 0.0;
-#endif
-#endif
-#endif
-  
   double dummy;
   cholmod_sparse Astore;
   cholmod_sparse *A = &Astore;

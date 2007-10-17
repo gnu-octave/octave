@@ -5986,24 +5986,6 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
 	  cm->hypotenuse = CHOLMOD_NAME(hypot);
 
-#ifdef HAVE_METIS
-	  // METIS 4.0.1 uses malloc and free, and will terminate if
-	  // it runs out of memory.  Use CHOLMOD's memory guard for
-	  // METIS, which allocates a huge block of memory (and then
-	  // immediately frees it) before calling METIS
-	  cm->metis_memory = 2.0;
-
-#if defined(METIS_VERSION)
-#if (METIS_VERSION >= METIS_VER(4,0,2))
-	  // METIS 4.0.2 uses function pointers for malloc and free.
-	  METIS_malloc = cm->malloc_memory;
-	  METIS_free   = cm->free_memory;
-	  // Turn off METIS memory guard.
-	  cm->metis_memory   = 0.0;
-#endif
-#endif
-#endif
-
 	  cm->final_ll = true;
 
 	  cholmod_sparse Astore;
@@ -6219,26 +6201,6 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  cm->error_handler = &SparseCholError;
 	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
 	  cm->hypotenuse = CHOLMOD_NAME(hypot);
-
-#ifdef HAVE_METIS
-	  // METIS 4.0.1 uses malloc and free, and will terminate MATLAB if
-	  // it runs out of memory.  Use CHOLMOD's memory guard for METIS, 
-	  // which mxMalloc's a huge block of memory (and then immediately 
-	  // mxFree's it) before calling METIS
-	  cm->metis_memory = 2.0;
-
-#if defined(METIS_VERSION)
-#if (METIS_VERSION >= METIS_VER(4,0,2))
-	  // METIS 4.0.2 uses function pointers for malloc and free
-	  METIS_malloc = cm->malloc_memory;
-	  METIS_free   = cm->free_memory;
-	  // Turn off METIS memory guard.  It is not needed, because mxMalloc
-	  // will safely terminate the mexFunction and free any workspace
-	  // without killing all of octave.
-	  cm->metis_memory   = 0.0;
-#endif
-#endif
-#endif
 
 	  cm->final_ll = true;
 
@@ -6502,26 +6464,6 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
 	  cm->hypotenuse = CHOLMOD_NAME(hypot);
 
-#ifdef HAVE_METIS
-	  // METIS 4.0.1 uses malloc and free, and will terminate MATLAB if
-	  // it runs out of memory.  Use CHOLMOD's memory guard for METIS, 
-	  // which mxMalloc's a huge block of memory (and then immediately 
-	  // mxFree's it) before calling METIS
-	  cm->metis_memory = 2.0;
-
-#if defined(METIS_VERSION)
-#if (METIS_VERSION >= METIS_VER(4,0,2))
-	  // METIS 4.0.2 uses function pointers for malloc and free
-	  METIS_malloc = cm->malloc_memory;
-	  METIS_free   = cm->free_memory;
-	  // Turn off METIS memory guard.  It is not needed, because mxMalloc
-	  // will safely terminate the mexFunction and free any workspace
-	  // without killing all of octave.
-	  cm->metis_memory   = 0.0;
-#endif
-#endif
-#endif
-
 	  cm->final_ll = true;
 
 	  cholmod_sparse Astore;
@@ -6755,26 +6697,6 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  cm->error_handler = &SparseCholError;
 	  cm->complex_divide = CHOLMOD_NAME(divcomplex);
 	  cm->hypotenuse = CHOLMOD_NAME(hypot);
-
-#ifdef HAVE_METIS
-	  // METIS 4.0.1 uses malloc and free, and will terminate MATLAB if
-	  // it runs out of memory.  Use CHOLMOD's memory guard for METIS, 
-	  // which mxMalloc's a huge block of memory (and then immediately 
-	  // mxFree's it) before calling METIS
-	  cm->metis_memory = 2.0;
-
-#if defined(METIS_VERSION)
-#if (METIS_VERSION >= METIS_VER(4,0,2))
-	  // METIS 4.0.2 uses function pointers for malloc and free
-	  METIS_malloc = cm->malloc_memory;
-	  METIS_free   = cm->free_memory;
-	  // Turn off METIS memory guard.  It is not needed, because mxMalloc
-	  // will safely terminate the mexFunction and free any workspace
-	  // without killing all of octave.
-	  cm->metis_memory   = 0.0;
-#endif
-#endif
-#endif
 
 	  cm->final_ll = true;
 

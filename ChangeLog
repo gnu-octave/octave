@@ -1,3 +1,7 @@
+2007-10-17  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Delete checks for METIS.
+
 2007-10-12  John W. Eaton  <jwe@octave.org>
 
 	* mk-opts.pl (parse_input): Allow comment lines beginning with #.

@@ -1,3 +1,12 @@
+2007-10-17  John W. Eaton  <jwe@octave.org>
+
+	* oct-sparse.h: Don't include metis.h.
+
+	* dSparse.cc (SparseMatrix::fsolve): Delete special code for METIS.
+	* CSparse.cc (SparseComplexMatrix::fsolve): Likewise.
+	* sparse-base-chol.cc (sparse_base_chol<chol_type, chol_elt,
+	p_type>::sparse_base_chol_rep::init): Likewise.
+
 2007-10-16  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc (Matrix::inverse): Only check rcond == 0 if the

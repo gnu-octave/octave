@@ -1,3 +1,7 @@
+2007-10-17  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/spchol.cc (Fsymbfact): Delete special code for METIS.
+
 2007-10-17  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
 
 	* DLD-FUNCTIONS/__qp__.cc (qp): Fix check for Wact(j).

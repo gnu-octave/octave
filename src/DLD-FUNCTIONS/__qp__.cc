@@ -379,7 +379,7 @@ qp (const Matrix& H, const ColumnVector& q,
 
 		  for (octave_idx_type j = 0; j < n_act-n_eq; j++)
 		    {
-		      if (Wact(j) == i - n_eq)
+		      if (Wact(j) == i)
 			{
 			  found = true;
 			  break;
@@ -452,7 +452,7 @@ qp (const Matrix& H, const ColumnVector& q,
     {
       for (octave_idx_type j = 0; j < n_act-n_eq; j++)
 	{
-	  if (Wact(j) == i)
+	  if (Wact(j) == i - n_eq)
 	    {
 	      lambda(i) = lambda_tmp(n_eq+j);
 	      break;

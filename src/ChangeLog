@@ -1,3 +1,7 @@
+2007-10-17  Gabriele Pannocchia  <g.pannocchia@ing.unipi.it>
+
+	* DLD-FUNCTIONS/__qp__.cc (qp): Fix check for Wact(j).
+
 2007-10-15  Søren Hauberg  <hauberg@gmail.com>
 
 	* error.cc (Ferror): Make text fit on pages when using smallbook.

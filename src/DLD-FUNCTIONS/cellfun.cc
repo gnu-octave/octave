@@ -676,7 +676,7 @@ mat2cell (reshape(1:16,4,4),[3,1],[3,1])\n\
   octave_value retval;
 
   if (nargin < 2)
-    usage ("mat2cell");
+    print_usage ();
   else
     {
       dim_vector dv = args(0).dims();

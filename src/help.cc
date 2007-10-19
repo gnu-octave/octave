@@ -1769,7 +1769,7 @@ to find related functions that are not part of Octave.\n\
 
   if (nargin != 1 && nargin != 2)
     {
-      usage ("lookfor");
+      print_usage ();
       return retval;
     }
 

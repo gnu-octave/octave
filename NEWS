@@ -6,7 +6,7 @@ Summary of important user-visible changes for version 3.0:
     Graphics (tm):
 
     + You can make a subplot and then use the print function to
-      generate file with the plot.
+      generate a file with the plot.
 
     + RGB line colors are supported if you use gnuplot 4.2.  Octave
       can still use gnuplot 4.0, but there is no way to set arbitrary
@@ -34,10 +34,18 @@ Summary of important user-visible changes for version 3.0:
       this allows you to plot additional 2-d data on top of a contour
       plot.
 
-    + It is no longer possible to mix Matlab-style plot commands with
-      the old (and now considered obsolete) style of plot commands
-      (__gnuplot_set__, etc.).  You can do one or the other, but not
-      both for the same plot.
+    + The following plot commands are now considered obsolete and will
+      be removed from a future version of Octave:
+
+	__gnuplot_set__
+	__gnuplot_show__
+	__gnuplot_plot__
+	__gnuplot_splot__
+	__gnuplot_replot__
+
+      Additionally, these functions no longer have any effect on plots
+      created with the Matlab-style plot commands (plot, line, mesh,
+      semilogx, etc.).
 
     + Plot property values are not extensively checked.  Specifying
       invalid property values may produce unpredictible results.
@@ -47,7 +55,12 @@ Summary of important user-visible changes for version 3.0:
       cluttering /tmp with data files, it is no longer possible to use
       the mouse to zoom in on plots.  This is a limitation of gnuplot,
       which is unable to zoom when the data it plots is not stored in
-      a file.
+      a file.  Some work has been done to fix this problem in newer
+      versions of gnuplot (> 4.2.2).  See for example, this thread
+
+        http://www.nabble.com/zooming-of-inline-data-tf4357017.html#a12416496
+
+      on the gnuplot development list.
 
  ** The way Octave handles search paths has changed.  Instead of
     setting the built-in variable LOADPATH, you must use addpath,

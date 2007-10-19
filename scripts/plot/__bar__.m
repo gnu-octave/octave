@@ -144,8 +144,10 @@ function varargout = __bar__ (vertical, func, varargin)
 
   if (vertical)
     if (nargout < 1)
+      newplot ();
       patch (xb, yb, newargs {:});
     elseif (nargout < 2)
+      newplot ();
       varargout{1} = patch (xb, yb, newargs {:});
     else
       varargout{1} = xb;
@@ -153,8 +155,10 @@ function varargout = __bar__ (vertical, func, varargin)
     endif
   else
     if (nargout < 1)
+      newplot ();
       patch (yb, xb, newargs{:});
     elseif (nargout < 2)
+      newplot ();
       varargout{1} = patch (yb, xb, newargs{:});
     else
       varargout{1} = yb;

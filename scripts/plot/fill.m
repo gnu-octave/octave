@@ -46,7 +46,7 @@ function h = fill (varargin)
         else
 	  args = varargin (iargs(i):iargs(i+1)-1);
 	endif
-
+	newplot ();
 	[tmp, fail] = __patch__ (h, args{:});
 	if (fail)
 	  print_usage();
@@ -64,6 +64,7 @@ function h = fill (varargin)
       else
         args = varargin (iargs(i):iargs(i+1)-1);
       endif
+      newplot ();
       [tmp, fail] = __patch__ (gca (), args{:});
       if (fail)
 	print_usage();

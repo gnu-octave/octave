@@ -4,7 +4,7 @@
 
 2007-10-19  David Bateman  <dbateman@free.fr>
 
-	* plot/__bar__.m: Call newplot as needed.
+	* plot/__bar__.m, plot/fill.m: Call newplot as needed.
 
 2007-10-17  Carlo de Falco  <kingcrimson@tiscali.it>
 

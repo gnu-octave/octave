@@ -245,6 +245,7 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, f, p)
   f = strrep (f, "MM", "%M");
   f = strrep (f, "SS", "%S");
 
+  ds, f
   [tm, nc] = strptime (ds, f);
 
   if (nc == length (ds) + 1)

@@ -488,7 +488,18 @@ tree_index_expression::lvalue (void)
 			// comma-separated list?
 
 			if (first_retval_object.is_map ())
-			  retval.numel (first_retval_object.numel ());
+			  {
+			    octave_value_list tmp_list
+			      = first_retval_object.subsref (type, idx, 1);
+
+			    if (! error_state)
+			      {
+				octave_value val = tmp_list(0);
+
+				retval.numel (val.is_cs_list ()
+					      ? val.numel () : 1);
+			      }
+			  }
 		      }
 		  }
 		else

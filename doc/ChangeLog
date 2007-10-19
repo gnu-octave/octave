@@ -1,3 +1,7 @@
+2007-10-19  David Bateman  <dbateman@free.fr>
+
+	* refcard/refcard.tex: Update for 3.0.
+
 2007-10-15  Søren Hauberg  <hauberg@gmail.com>
 
 	* interpreter/preface.txi, interpreter/basics.txi,

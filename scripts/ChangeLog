@@ -1,3 +1,7 @@
+2007-10-19  John W. Eaton  <jwe@octave.org>
+
+	* plot/subplot.m: Doc fix.
+
 2007-10-19  David Bateman  <dbateman@free.fr>
 
 	* plot/__bar__.m: Call newplot as needed.

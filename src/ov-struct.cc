@@ -367,9 +367,12 @@ octave_struct::subsasgn (const std::string& type,
 	      {
 		Cell tmp_cell = Cell (t_rhs.list_value ());
 
-		// FIXME -- shouldn't care if the dimensions of the
-		// RHS don't match the dimensions of the subscriped
-		// LHS.
+		// The shape of the RHS is irrelevant, we just want
+		// the number of elements to agree and to preserve the
+		// shape of the left hand side of the assignment.
+
+		if (numel () == tmp_cell.numel ())
+		  tmp_cell = tmp_cell.reshape (dims ());
 
 		map.assign (key, tmp_cell);
 	      }

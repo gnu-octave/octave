@@ -73,9 +73,9 @@
 ##     Microsoft Enhanced Metafile
 ##   @item fig
 ##     XFig.  If this format is selected the additional options
-##     @code{-textspecial} or @{-textnormal} can be used to control
+##     @code{-textspecial} or @code{-textnormal} can be used to control
 ##     whether the special flag should be set for the text in the figure
-##     (default is @{-textnormal}). 
+##     (default is @code{-textnormal}). 
 ##   @item hpgl
 ##     HP plotter language
 ##   @item mf

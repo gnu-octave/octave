@@ -1,5 +1,6 @@
 /* Contour lines for function evaluated on a grid.
 
+Copyright (C) 2007 Kai Habel
 Copyright (C) 2004, 2007 Shai Ayal
 
 Adapted to an oct file from the stand alone contourl by Victro Munoz
@@ -35,6 +36,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <cfloat>
+
 #include "quit.h"
 
 #include "defun-dld.h"
@@ -45,15 +48,13 @@ static Matrix this_contour;
 static Matrix contourc;
 static int elem;
 
-// this is the quanta in which we increase this_contour
+// This is the quanta in which we increase this_contour.
 #define CONTOUR_QUANT 50
 
-// cl_add_point(x,y);
-//
-// Add a coordinate point (x,y) to this_contour 
+// Add a coordinate point (x,y) to this_contour.
 
 static void
-cl_add_point (double x, double y)
+add_point (double x, double y)
 {
   if (elem % CONTOUR_QUANT == 0)
     this_contour = this_contour.append (Matrix (2, CONTOUR_QUANT, 0));
@@ -63,237 +64,238 @@ cl_add_point (double x, double y)
   elem++;
 }
 
-// cl_end_contour();
-//
-// Adds contents of current contour to contourc.
+// Add contents of current contour to contourc.
 // this_contour.cols () - 1;
 
 static void
-cl_end_contour (void)
+end_contour (void)
 {
   if (elem > 2)
     {
       this_contour (1, 0) = elem - 1;
       contourc = contourc.append (this_contour.extract_n (0, 0, 2, elem));
     }
+
   this_contour = Matrix ();
   elem = 0;
 }
 
-// cl_start_contour(flev,x,y);
-//
-// Start a new contour, and adds contents of current one to contourc
+// Start a new contour, and add contents of current one to contourc.
 
 static void
-cl_start_contour (double flev, double x, double y)
+start_contour (double lvl, double x, double y)
 {
-  cl_end_contour ();
+  end_contour ();
   this_contour.resize (2, 0);
-  cl_add_point (flev, flev);
-  cl_add_point (x, y);
+  add_point (lvl, 0);
+  add_point (x, y);
 }
 
 static void
-cl_drawcn (RowVector & X, RowVector & Y, Matrix & Z, double flev,
-	   int krow, int kcol, double lastx, double lasty, int startedge,
-	   Matrix & ipts)
+drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
+	double lvl, int r, int c, double ct_x, double ct_y,
+	uint start_edge, bool first, charMatrix& mark)
 {
+  double px[4], py[4], pz[4], tmp;
+  uint stop_edge, next_edge, pt[2];
+  int next_r, next_c;
 
-  int kx = 0, lx = Z.cols () - 1, ky = 0, ly = Z.rows () - 1;
+  //get x, y, and z - lvl for current facet
+  px[0] = px[3] = X(c);
+  px[1] = px[2] = X(c+1);
 
-  double f[4];
-  double px[4], py[4], locx[4], locy[4];
-  int iedge[4];
-  int num, first, inext, kcolnext, krownext;
+  py[0] = py[1] = Y(r);
+  py[2] = py[3] = Y(r+1);
 
-  px[0] = X (krow + 1);
-  px[1] = X (krow);
-  px[2] = X (krow);
-  px[3] = X (krow + 1);
-  py[0] = Y (kcol);
-  py[1] = Y (kcol);
-  py[2] = Y (kcol + 1);
-  py[3] = Y (kcol + 1);
+  pz[3] = Z(r+1, c) - lvl;
+  pz[2] = Z(r+1, c + 1) - lvl;
+  pz[1] = Z(r, c+1) - lvl;
+  pz[0] = Z(r, c) - lvl;
 
-  f[0] = Z (krow + 1, kcol) - flev;
-  f[1] = Z (krow, kcol) - flev;
-  f[2] = Z (krow, kcol + 1) - flev;
-  f[3] = Z (krow + 1, kcol + 1) - flev;
+  // Facet edge and point naming assignment.
+  //
+  //  0-----1   .-0-.
+  //  |     |   |   |
+  //  |     |   3   1
+  //  |     |   |   |
+  //  3-----2   .-2-.
 
-  for (int i = 0, j = 1; i < 4; i++, j = (j + 1) % 4)
+  // Get mark value of current facet.
+  char id = static_cast<char> (mark(r, c));
+
+  // Check startedge s.
+  if (start_edge == 255)
     {
-      iedge[i] = (f[i] * f[j] > 0.0) ? -1 : ((f[i] * f[j] < 0.0) ? 1 : 0);
+      // Find start edge.
+      for (uint k = 0; k < 4; k++)
+        if (static_cast<char> (pow(2, k)) & id)
+          start_edge = k;
     }
 
-  // Mark this square as done
-  ipts(krow,kcol) = 1;
-
-  // Check if no contour has been crossed i.e. iedge[i] = -1
-  if (iedge[0] == -1 && iedge[1] == -1 && iedge[2] == -1 && iedge[3] == -1)
+  if (start_edge == 255)
     return;
 
-  // Check if this is a completely flat square - in which case ignore it
-  if (f[0] == 0.0 && f[1] == 0.0 && f[2] == 0.0 && f[3] == 0.0)
-    return;
+  // Decrease mark value of current facet for start edge.
+  mark(r, c) -= static_cast<char> (pow(2, start_edge));
 
-  // Calculate intersection points
-  num = 0;
-  if (startedge < 0)
+  // Next point (clockwise).
+  pt[0] = start_edge;
+  pt[1] = (pt[0] + 1) % 4;
+
+  // Calculate contour segment start if first of contour.
+  if (first)
     {
-      first = 1;
+      tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
+
+      if (xisnan (tmp))
+        ct_x = ct_y = 0.5;
+      else
+	{
+	  ct_x = px[pt[0]] + (px[pt[1]] - px[pt[0]])/(1 + tmp);
+	  ct_y = py[pt[0]] + (py[pt[1]] - py[pt[0]])/(1 + tmp);
+	}
+
+      start_contour (lvl, ct_x, ct_y);
     }
+
+  // Find stop edge FIXME: control flow --> while.
+  for (uint k = 1; k <= 4; k++)
+    {
+      if (start_edge == 0 || start_edge == 2)
+        stop_edge = (start_edge + k) % 4;
+      else
+        stop_edge = (start_edge - k) % 4;
+
+      if (static_cast<char> (pow(2, stop_edge)) & id)
+        break;
+    }
+
+  pt[0] = stop_edge;
+  pt[1] = (pt[0] + 1) % 4;
+  tmp = fabs (pz[pt[1]]) / fabs (pz[pt[0]]);
+
+  if (xisnan (tmp))
+    ct_x = ct_y = 0.5;
   else
     {
-      locx[num] = lastx;
-      locy[num] = lasty;
-      num++;
-      first = 0;
+      ct_x = px[pt[0]] + (px[pt[1]] - px[pt[0]])/(1 + tmp);
+      ct_y = py[pt[0]] + (py[pt[1]] - py[pt[0]])/(1 + tmp);
     }
 
-  for (int k = 0, i = (startedge < 0 ? 0 : startedge); k < 4;
-       k++, i = (i + 1) % 4)
+  // Add point to contour.
+  add_point (ct_x, ct_y);
+
+  // Decrease id value of current facet for start edge.
+  mark(r, c) -= static_cast<char>(pow(2,stop_edge));
+
+  // Find next facet.
+  next_c = c;
+  next_r = r;
+
+  if (stop_edge == 0)
+    next_r--; 
+  else if (stop_edge == 1)
+    next_c++;
+  else if (stop_edge == 2)
+    next_r++;
+  else if (stop_edge == 3)
+    next_c--;
+
+  // Check if next facet is not done yet.
+  // Go to next facet.
+  if (next_r >= 0 && next_c >= 0 && next_r < mark.rows ()
+      && next_c < mark.cols () && mark(next_r, next_c) > 0)
     {
-      if (i == startedge)
-	continue;
-
-      // If the contour is an edge check it hasn't already been done
-      if (f[i] == 0.0 && f[(i + 1) % 4] == 0.0)
-	{
-	  kcolnext = kcol;
-	  krownext = krow;
-	  if (i == 0)
-	    kcolnext--;
-	  if (i == 1)
-	    krownext--;
-	  if (i == 2)
-	    kcolnext++;
-	  if (i == 3)
-	    krownext++;
-	  if (kcolnext < kx || kcolnext >= lx || krownext < ky
-	      || krownext >= ly || ipts(krownext,kcolnext) == 1)
-	    continue;
-	}
-      if (iedge[i] == 1 || f[i] == 0.0)
-	{
-	  int j = (i + 1) % 4;
-	  if (f[i] != 0.0)
-	    {
-	      locx[num] =
-		(px[i] * fabs (f[j]) + px[j] * fabs (f[i])) / fabs (f[j] -
-								    f[i]);
-	      locy[num] =
-		(py[i] * fabs (f[j]) + py[j] * fabs (f[i])) / fabs (f[j] -
-								    f[i]);
-	    }
-	  else
-	    {
-	      locx[num] = px[i];
-	      locy[num] = py[i];
-	    }
-	  // If this is the start of the contour then move to the point
-	  if (first == 1)
-	    {
-	      cl_start_contour (flev, locx[num], locy[num]);
-	      first = 0;
-	    }
-	  else
-	    {
-	      // Link to the next point on the contour
-	      cl_add_point (locx[num], locy[num]);
-	      // Need to follow contour into next grid box
-	      // Easy case where contour does not pass through corner
-	      if (f[i] != 0.0)
-		{
-		  kcolnext = kcol;
-		  krownext = krow;
-		  inext = (i + 2) % 4;
-		  if (i == 0)
-		    kcolnext--;
-		  if (i == 1)
-		    krownext--;
-		  if (i == 2)
-		    kcolnext++;
-		  if (i == 3)
-		    krownext++;
-		  if (kcolnext >= kx && kcolnext < lx
-		      && krownext >= ky && krownext < ly
-		      && ipts(krownext,kcolnext) == 0)
-		    {
-		      cl_drawcn (X, Y, Z, flev, krownext, kcolnext,
-				 locx[num], locy[num], inext, ipts);
-		    }
-		}
-	      // Hard case where contour passes through corner.  This
-	      // is still not perfect - it may lose the contour  which
-	      // won't upset the contour itself (we can find it again
-	      // later) but might upset the labelling (which is only
-	      // relevant for the PLPlot implementation, since we
-	      // don't worry about labels---for now!)
-	      else
-		{
-		  kcolnext = kcol;
-		  krownext = krow;
-		  inext = (i + 2) % 4;
-		  if (i == 0)
-		    {
-		      kcolnext--;
-		      krownext++;
-		    }
-		  if (i == 1)
-		    {
-		      krownext--;
-		      kcolnext--;
-		    }
-		  if (i == 2)
-		    {
-		      kcolnext++;
-		      krownext--;
-		    }
-		  if (i == 3)
-		    {
-		      krownext++;
-		      kcolnext++;
-		    }
-		  if (kcolnext >= kx && kcolnext < lx
-		      && krownext >= ky && krownext < ly
-		      && ipts(krownext,kcolnext) == 0)
-		    {
-		      cl_drawcn (X, Y, Z, flev, krownext, kcolnext,
-				 locx[num], locy[num], inext, ipts);
-		    }
-
-		}
-	      if (first == 1)
-		{
-		  // Move back to first point
-		  cl_start_contour (flev, locx[num], locy[num]);
-		  first = 0;
-		}
-	      else
-		{
-		  first = 1;
-		}
-	      num++;
-	    }
-	}
+      next_edge = (stop_edge + 2) % 4;
+      drawcn (X, Y, Z, lvl, next_r, next_c, ct_x, ct_y, next_edge, false, mark);
     }
 }
 
 static void
-cl_cntr (RowVector & X, RowVector & Y, Matrix & Z, double flev)
+mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
 {
-  Matrix ipts (Z.rows (), Z.cols (), 0);
+  uint nr = mark.rows ();
+  uint nc = mark.cols ();
 
-  for (int krow = 0; krow < Z.rows () - 1; krow++)
+  double f[4];
+
+  for (uint c = 0; c < nc; c++)
+    for (uint r = 0; r < nr; r++)
+      {
+        f[0] = Z(r, c) - lvl;
+        f[1] = Z(r, c+1) - lvl;
+        f[3] = Z(r+1, c) - lvl;
+        f[2] = Z(r+1, c+1) - lvl;
+
+        for (uint i = 0; i < 4; i++)
+          if (fabs(f[i]) < DBL_EPSILON)
+            f[i] = DBL_EPSILON;
+
+        if (f[1] * f[2] < 0)
+	  mark(r, c) += 2;
+
+        if (f[0] * f[3] < 0)
+	  mark(r, c) += 8;
+      }
+
+  for (uint r = 0; r < nr; r++)
+    for (uint c = 0; c < nc; c++)
+      {
+        f[0] = Z(r, c) - lvl;
+        f[1] = Z(r, c+1) - lvl;
+        f[3] = Z(r+1, c) - lvl;
+        f[2] = Z(r+1, c+1) - lvl;
+
+        for (uint i = 0; i < 4; i++)
+          if (fabs(f[i]) < DBL_EPSILON)
+            f[i] = DBL_EPSILON;
+
+        if (f[0] * f[1] < 0)
+	  mark(r, c) += 1;
+
+        if (f[2] * f[3] < 0)
+	  mark(r, c) += 4;
+      }
+}
+
+static void
+cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
+{
+  uint nr = Z.rows ();
+  uint nc = Z.cols ();
+
+  charMatrix mark (nr - 1, nc - 1, 0);
+
+  mark_facets (Z, mark, lvl);
+
+  // Find contours that start at a domain edge.
+
+  for (uint c = 0; c < nc - 1; c++)
     {
-      for (int kcol = 0; kcol < Z.cols () - 1; kcol++)
-	{
-	  if (ipts(krow,kcol) == 0)
-	    {
-	      cl_drawcn (X, Y, Z, flev, krow, kcol, 0.0, 0.0, -2, ipts);
-	    }
-	}
+      // Top.
+      if (mark(0, c) & 1)
+        drawcn (X, Y, Z, lvl, 0, c, 0.0, 0.0, 0, true, mark);
+
+      // Bottom.
+      if (mark(nr - 2, c) & 4)
+	drawcn (X, Y, Z, lvl, nr - 2, c, 0.0, 0.0, 2, true, mark);
     }
+
+  for (uint r = 0; r < nr - 1; r++)
+    {
+      // Left.
+      if (mark(r, 0) & 8)
+        drawcn (X, Y, Z, lvl, r, 0, 0.0, 0.0, 3, true, mark);
+
+      // Right.
+      if (mark(r, nc - 2) & 2)
+        drawcn (X, Y, Z, lvl, r, nc - 2, 0.0, 0.0, 1, true, mark);
+    }
+
+  for (uint r = 0; r < nr - 1; r++)
+    for (uint c = 0; c < nc - 1; c++)
+      if (mark (r, c) > 0)
+        drawcn (X, Y, Z, lvl, r, c, 0.0, 0.0, 255, true, mark);
 }
 
 DEFUN_DLD (__contourc__, args, ,
@@ -308,7 +310,7 @@ Undocumented internal function.\n\
     {
       RowVector X = args (0).row_vector_value ();
       RowVector Y = args (1).row_vector_value ();
-      Matrix Z = args (2).matrix_value ().transpose ();
+      Matrix Z = args (2).matrix_value ();
       RowVector L = args (3).row_vector_value ();
 
       if (! error_state)
@@ -316,9 +318,9 @@ Undocumented internal function.\n\
 	  contourc.resize (2, 0);
 
 	  for (int i = 0; i < L.length (); i++)
-	    cl_cntr (X, Y, Z, L (i));
+	    cntr (X, Y, Z, L (i));
 
-	  cl_end_contour ();
+	  end_contour ();
 
 	  retval = contourc;
 	}

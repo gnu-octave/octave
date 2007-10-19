@@ -70,6 +70,7 @@ SOURCES = \
   closereq.m \
   contour.m \
   contourc.m \
+  contourf.m \
   drawnow.m \
   errorbar.m \
   figure.m \

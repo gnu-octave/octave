@@ -1,3 +1,8 @@
+2007-10-19  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/contourf.m: New function.
+	* plot/Makefile.in (SOURCES): Add it to the list.
+
 2007-10-19  John W. Eaton  <jwe@octave.org>
 
 	* plot/subplot.m: Doc fix.

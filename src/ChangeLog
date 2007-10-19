@@ -1,3 +1,14 @@
+2007-10-19  Kai Habel  <kai.habel@gmx.de>
+
+	* DLD-FUNCTIONS/__contourc__.cc (add_point): Rename from
+	cl_add_point.  Change all uses.
+	(end_contour): Rename from cl_end_contour.  Change all uses.
+	(start_contour): Rename from cl_start_contour.  Change all uses.
+	(drawcn): Rename from cl_drawcn.  New algorithm for locating contours.
+	(mark_facets): New function.
+	(cntr): Rename from cl_cntr.  Change all uses.  New algorithm for
+	locating contours.
+
 2007-10-19  John W. Eaton  <jwe@octave.org>
 
 	* pt-idx.cc (tree_index_expression::lvalue): Correctly compute

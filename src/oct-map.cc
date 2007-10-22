@@ -49,6 +49,42 @@ Octave_map::Octave_map (const dim_vector& dv, const Cell& key_vals)
     error ("Octave_map: expecting keys to be cellstr");
 }
 
+Octave_map
+Octave_map::squeeze (void) const
+{
+  Octave_map retval (dims ().squeeze ());
+
+  for (const_iterator pa = begin (); pa != end (); pa++)
+    {
+      Cell tmp = contents (pa).squeeze ();
+
+      if (error_state)
+	break;
+
+      retval.assign (key (pa), tmp);
+    }
+
+  return retval;
+}
+
+Octave_map
+Octave_map::permute (const Array<int>& vec, bool inv) const
+{
+  Octave_map retval (dims ());
+
+  for (const_iterator pa = begin (); pa != end (); pa++)
+    {
+      Cell tmp = contents (pa).permute (vec, inv);
+
+      if (error_state)
+	break;
+
+      retval.assign (key (pa), tmp);
+    }
+
+  return retval;
+}
+
 Cell&
 Octave_map::contents (const std::string& k)
 {
@@ -422,15 +458,15 @@ Octave_map::assign (const std::string& k, const Cell& rhs)
 }
 
 Octave_map
-Octave_map::index (const octave_value_list& idx)
+Octave_map::index (const octave_value_list& idx, bool resize_ok) const
 {
   Octave_map retval;
 
   if (idx.length () > 0)
     {
-      for (iterator p = begin (); p != end (); p++)
+      for (const_iterator p = begin (); p != end (); p++)
 	{
-	  Cell tmp = contents(p).index (idx);
+	  Cell tmp = contents(p).index (idx, resize_ok);
 
 	  if (error_state)
 	    break;
@@ -440,6 +476,62 @@ Octave_map::index (const octave_value_list& idx)
     }
   else
     retval = *this;
+
+  return retval;
+}
+
+Octave_map
+Octave_map::index (idx_vector& i, int resize_ok, const octave_value& rfv) const
+{
+  Octave_map retval (dims ());
+
+  for (const_iterator p = begin (); p != end (); p++)
+    {
+      Cell tmp = contents (p).index (i, resize_ok, rfv);
+
+      if (error_state)
+	break;
+
+      retval.assign (key (p), tmp);
+    }
+
+  return retval;
+}
+
+Octave_map
+Octave_map::index (idx_vector& i, idx_vector& j, int resize_ok,
+		   const octave_value& rfv) const
+{
+  Octave_map retval (dims ());
+
+  for (const_iterator p = begin (); p != end (); p++)
+    {
+      Cell tmp = contents (p).index (i, j, resize_ok, rfv);
+
+      if (error_state)
+	break;
+
+      retval.assign (key (p), tmp);
+    }
+
+  return retval;
+}
+
+Octave_map
+Octave_map::index (Array<idx_vector>& ra_idx, int resize_ok,
+		   const octave_value& rfv) const
+{
+  Octave_map retval (dims ());
+
+  for (const_iterator p = begin (); p != end (); p++)
+    {
+      Cell tmp = contents (p).index (ra_idx, resize_ok, rfv);
+
+      if (error_state)
+	break;
+
+      retval.assign (key (p), tmp);
+    }
 
   return retval;
 }

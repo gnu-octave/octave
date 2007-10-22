@@ -83,6 +83,14 @@ public:
 			 const std::list<octave_value_list>& idx,
 			 const octave_value& rhs);
 
+  octave_value squeeze (void) const { return map.squeeze (); }
+
+  octave_value permute (const Array<int>& vec, bool inv = false) const
+    { return map.permute (vec, inv); }
+
+  octave_value do_index_op (const octave_value_list& idx,
+			    bool resize_ok = false);
+
   dim_vector dims (void) const { return map.dims (); }
 
   size_t byte_size (void) const;

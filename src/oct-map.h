@@ -87,6 +87,10 @@ Octave_map
 
   ~Octave_map (void) { }
 
+  Octave_map squeeze (void) const; 
+
+  Octave_map permute (const Array<int>& vec, bool inv = false) const; 
+
   // This is the number of keys.
   octave_idx_type nfields (void) const { return map.size (); }
 
@@ -172,7 +176,17 @@ Octave_map
 
   Octave_map& assign (const std::string& k, const Cell& rhs);
 
-  Octave_map index (const octave_value_list& idx);
+  Octave_map index (const octave_value_list& idx, 
+		    bool resize_ok = false) const;
+
+  Octave_map index (idx_vector& i, int resize_ok = 0, 
+		    const octave_value& rfv = Cell::resize_fill_value ()) const;
+
+  Octave_map index (idx_vector& i, idx_vector& j, int resize_ok = 0,
+		    const octave_value& rfv = Cell::resize_fill_value ()) const;
+
+  Octave_map index (Array<idx_vector>& ra_idx, int resize_ok = 0,
+		    const octave_value& rfv = Cell::resize_fill_value ()) const;
 
 private:
 

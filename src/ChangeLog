@@ -2,6 +2,19 @@
 
         * data.cc (Ftic, Ftoc, Fcputime): New builtin versions of the
         benchmarking functions for speed.
+	* oct-map.cc (Octave_map::squeeze, Octave_map::permute): New methods.
+	(Octave_map::index (const octave_value_list&, bool)): Add resize_ok
+	argument, define as const and use const_iterator internally.
+	(Octave_map::index (idx_vector&, ...), Octave_map::index (Array 
+	<idx_vector>&, ...)): New forms of the index function.
+	* oct-map.h (squeeze, permute, indx (const octave_value_list&, bool),
+	index (idx_vector&, ...), index (Array <idx_vector>&, ...)): Add
+	or update declaration.
+	* ov-struct.cc (octave_struct::do_index_op (const octave_value_list&,
+	bool)): New method.
+	* ov-struct.h (do_index_op (const octave_value_list&, bool)): Declare
+	it.
+	(squeeze (void), permute (const Arra<int>&, bool): New methods.
 
 2007-10-19  Kai Habel  <kai.habel@gmx.de>
 

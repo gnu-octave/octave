@@ -1,3 +1,9 @@
+2007-10-22  David Bateman  <dbateman@free.fr>
+
+        * miscellaneous/cputime.m, time/tic.m, time/toc.m: Delete.
+	* miscellaneous/Makefile.in (SOURCES): remove cputim.m
+	* time/Makefile.in (SOURCES): Remov tic.m and toc.m
+
 2007-10-19  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/contourf.m: New function.

@@ -34,7 +34,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = asctime.m calendar.m clock.m ctime.m date.m datenum.m \
   datestr.m datevec.m eomday.m etime.m is_leap_year.m now.m \
-  tic.m toc.m weekday.m
+  weekday.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

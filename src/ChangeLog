@@ -1,3 +1,8 @@
+2007-10-22  David Bateman  <dbateman@free.fr>
+
+        * data.cc (Ftic, Ftoc, Fcputime): New builtin versions of the
+        benchmarking functions for speed.
+
 2007-10-19  Kai Habel  <kai.habel@gmx.de>
 
 	* DLD-FUNCTIONS/__contourc__.cc (add_point): Rename from

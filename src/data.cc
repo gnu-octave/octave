@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-mat.h"
 #include "utils.h"
 #include "variables.h"
+#include "pager.h"
 
 #define ANY_ALL(FCN) \
  \
@@ -2961,6 +2962,180 @@ This function is equivalent to @code{x | y}.\n\
 @end deftypefn")
 {
   BINARY_OP_DEFUN_BODY (op_el_or);
+}
+
+static double __tic_toc_timestamp__ = -1.0;
+
+DEFUN (tic, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} tic ()\n\
+@deftypefnx {Built-in Function} {} toc ()\n\
+Set or check a wall-clock timer.  Calling @code{tic} without an\n\
+output argument sets the timer.  Subsequent calls to @code{toc}\n\
+return the number of seconds since the timer was set.  For example,\n\
+\n\
+@example\n\
+tic ();\n\
+# many computations later...\n\
+elapsed_time = toc ();\n\
+@end example\n\
+\n\
+@noindent\n\
+will set the variable @code{elapsed_time} to the number of seconds since\n\
+the most recent call to the function @code{tic}.\n\
+\n\
+If called with one output argument then this function returns a scalar\n\
+of type @code{uint64} and the wall-clock timer is not started.\n\
+\n\
+@example\n\
+@group\n\
+t = tic; sleep (5); (double (tic ()) - double (t)) * 1e-6\n\
+     @result{} 5\n\
+@end group\n\
+@end example\n\
+\n\
+Nested timing with @code{tic} and @code{toc} is not supported.\n\
+Therefore @code{toc} will always return the elapsed time from the most\n\
+recent call to @code{tic}.\n\
+\n\
+If you are more interested in the CPU time that your process used, you\n\
+should use the @code{cputime} function instead.  The @code{tic} and\n\
+@code{toc} functions report the actual wall clock time that elapsed\n\
+between the calls.  This may include time spent processing other jobs or\n\
+doing nothing at all.  For example,\n\
+\n\
+@example\n\
+@group\n\
+tic (); sleep (5); toc ()\n\
+     @result{} 5\n\
+t = cputime (); sleep (5); cputime () - t\n\
+     @result{} 0\n\
+@end group\n\
+@end example\n\
+\n\
+@noindent\n\
+(This example also illustrates that the CPU timer may have a fairly\n\
+coarse resolution.)\n\
+@end deftypefn")
+{
+  octave_value retval;
+  int nargin = args.length ();
+
+  if (nargin != 0)
+    warning ("tic: ignoring extra arguments");
+
+  if (nargout > 0)
+    retval = static_cast<octave_uint64> (static_cast<double> (octave_time ()) * 1.0e6);
+  else
+    __tic_toc_timestamp__= static_cast<double>(octave_time ());
+      
+  return retval;
+}
+
+DEFUN (toc, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} toc ()\n\
+See tic.\n\
+@end deftypefn")
+{
+  double sec = static_cast<double>(octave_time ());
+  octave_value retval;
+  int nargin = args.length ();
+
+  if (nargin != 0)
+    warning ("tic: ignoring extra arguments");
+
+  if (__tic_toc_timestamp__ < 0)
+    {
+      warning ("toc called before timer set");
+      if (nargout > 0)
+	retval = Matrix();
+    }
+  else if (nargout > 0)
+    retval = sec - __tic_toc_timestamp__;
+  else
+    octave_stdout << "Elapsed time is " << sec - __tic_toc_timestamp__ 
+		  << " seconds.\n";
+    
+  return retval;
+}
+
+DEFUN (cputime, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{total}, @var{user}, @var{system}] =} cputime ();\n\
+Return the CPU time used by your Octave session.  The first output is\n\
+the total time spent executing your process and is equal to the sum of\n\
+second and third outputs, which are the number of CPU seconds spent\n\
+executing in user mode and the number of CPU seconds spent executing in\n\
+system mode, respectively.  If your system does not have a way to report\n\
+CPU time usage, @code{cputime} returns 0 for each of its output values.\n\
+Note that because Octave used some CPU time to start, it is reasonable\n\
+to check to see if @code{cputime} works by checking to see if the total\n\
+CPU time used is nonzero.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+  int nargin = args.length ();
+  double usr = 0.0;
+  double sys = 0.0;
+
+  if (nargin != 0)
+    warning ("tic: ignoring extra arguments");
+
+#if defined (HAVE_GETRUSAGE)
+
+  struct rusage ru;
+
+  getrusage (RUSAGE_SELF, &ru);
+
+  usr = static_cast<double> (ru.ru_utime.tv_sec) +
+    static_cast<double> (ru.ru_utime.tv_usec) * 1e-6;
+
+  sys = static_cast<double> (ru.ru_stime.tv_sec) +
+    static_cast<double> (ru.ru_stime.tv_usec) * 1e-6;
+
+#elif defined (HAVE_TIMES) && defined (HAVE_SYS_TIMES_H)
+
+  struct tms t;
+
+  times (&t);
+
+  unsigned long ticks;
+  unsigned long seconds;
+  unsigned long fraction;
+
+  ticks = t.tms_utime + t.tms_cutime;
+  fraction = ticks % HZ;
+  seconds = ticks / HZ;
+
+  usr = static_cast<double> (seconds) + static_cast<double>(fraction) /
+    static_cast<double>(HZ);
+
+  ticks = t.tms_stime + t.tms_cstime;
+  fraction = ticks % HZ;
+  seconds = ticks / HZ;
+
+  sys = static_cast<double> (seconds) + static_cast<double>(fraction) /
+    static_cast<double>(HZ);
+
+#elif defined (__WIN32__)
+  HANDLE hProcess = GetCurrentProcess ();
+  FILETIME ftCreation, ftExit, ftUser, ftKernel;
+  GetProcessTimes (hProcess, &ftCreation, &ftExit, &ftKernel, &ftUser);
+
+  int64_t itmp = *(reinterpret_cast<int64_t *> (&ftUser));
+  usr = static_cast<double> (itmp) * 1e-1;
+
+  itmp = *(reinterpret_cast<int64_t *> (&ftKernel));
+  sys = static_cast<double> (itmp) * 1e-1;
+
+#endif
+
+  retval (2) = sys;
+  retval (1) = usr;
+  retval (0) = sys + usr;
+
+  return retval;
 }
 
 /*

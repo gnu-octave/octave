@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cctype>
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
 
 #include <limits>
 #include <string>

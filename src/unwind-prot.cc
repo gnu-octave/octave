@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cstddef>
+#include <cstring>
 
 #include "CMatrix.h"
 

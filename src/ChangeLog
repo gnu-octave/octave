@@ -1,3 +1,7 @@
+2007-10-22  Kim Hansen  <kimhanse@gmail.com>
+
+	* unwind-prot.cc: Include <cstring>.
+
 2007-10-22  David Bateman  <dbateman@free.fr>
 
         * data.cc (Ftic, Ftoc, Fcputime): New builtin versions of the

@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <map>
 
+#include <cstdlib>
+#include <cstring>
+
 static const char doc_delim = '';
 
 static std::map<std::string, std::string> help_text;

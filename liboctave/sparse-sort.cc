@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cassert>
+#include <cstring>
 
 #include "oct-sort.cc"
 #include "quit.h"

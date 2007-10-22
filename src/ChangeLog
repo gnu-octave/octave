@@ -29,10 +29,6 @@
 
 2007-10-19  John W. Eaton  <jwe@octave.org>
 
-	* pt-idx.cc (tree_index_expression::lvalue): Correctly compute
-	number of elements in lvalue expression when last indexing
-	element is ".".
-
 	* ov-cell.cc (octave_cell::subsasgn): If RHS is cs-list, don't
 	fail if shape of LHS is different.
 	* ov-struct.cc (octave_struct::subsasgn): Likewise.

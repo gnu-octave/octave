@@ -98,6 +98,7 @@ function legend (varargin)
   
   if (nargs > 1)
     pos = varargin{nargs-1};
+    str = varargin{nargs};
     if (strcmpi (pos, "location")  && ischar (str))
       set (ca, "keypos", str);
       nargs -= 2;

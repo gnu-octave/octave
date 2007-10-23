@@ -1,3 +1,8 @@
+2007-10-23  Peter A. Gustafson  <petegus@umich.edu>
+
+	* plot/legend.m: Also extract location string from varargin (lost
+	when 2007-10-08 patch was applied).
+
 2007-10-23  David Bateman  <dbateman@free.fr>
 
 	* plot/xlim.m, plot/ylim.m, plot/zlim.m, plot/__axes_limits__.m,

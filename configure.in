@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.583 $)
+AC_REVISION($Revision: 1.584 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -795,17 +795,21 @@ elif $have_f2c; then
       CONFLIB_ARG="-MD"
       ;;
   esac
-  AC_CHECK_LIB(f2c, f_open, FLIBS=-lf2c, FLIBS=, $CONFLIB_ARG)
+  XLIBS="$LIBS"
+  LIBS="-lf2c $LIBS $CONFLIB_ARG"
+  AC_LINK_IFELSE([AC_LANG_CALL([int MAIN__ () { return 1; }], [f_open])],
+                 [F2CLIBS=-lf2c], [F2CLIBS=])
+  LIBS="$XLIBS"
   rm -f $oct_conflib
 
-  if test -z "$FLIBS"; then
-    AC_CHECK_LIB(F77, d_sin, FLIBS=-lF77, FLIBS=)
-    if test -n "$FLIBS"; then
-      AC_CHECK_LIB(I77, f_rew, FLIBS="$FLIBS -lI77", FLIBS=, -lF77)
+  if test -z "$F2CLIBS"; then
+    AC_CHECK_LIB(F77, d_sin, F2CLIBS=-lF77, FLIBS=)
+    if test -n "$F2CLIBS"; then
+      AC_CHECK_LIB(I77, f_rew, F2CLIBS="$F2CLIBS -lI77", F2CLIBS=, -lF77)
     fi
   fi
 
-  if test -z "$FLIBS"; then
+  if test -z "$F2CLIBS"; then
     warn_f2c_no_lib="I found f2c but not libf2c.a, or libF77.a and libI77.a"
     AC_MSG_WARN($warn_f2c_no_lib)
   fi
@@ -857,16 +861,16 @@ dnl I see no clean way to do the following check with autoconf macros,
 dnl hence the big mess.
 
 AC_MSG_CHECKING([BLAS library calling convention compatibility])
-cat << EOF > conftest.$ac_fc_srcext
+cat << EOF > conftest.f
       program foo
-      double complex zdotu, tmp, zx(10), zy(10), retval
+      double complex zdotu, zx(10), zy(10), retval
       integer n, incx, incy
       n = 10
       incx = 1
       incy = 1
       do 10 i = 1, n
-        zx(i) = dcmplx (i, 0);
-        zy(i) = dcmplx (0, i);
+        zx(i) = dcmplx (i, 0)
+        zy(i) = dcmplx (0, i)
    10 continue
       retval = zdotu (n, zx, incx, zy, incy)
       if (retval .eq. dcmplx (0, 385)) then
@@ -878,22 +882,22 @@ cat << EOF > conftest.$ac_fc_srcext
       end
 EOF
 XLIBS="$LIBS"
-LIBS="$BLAS_LIBS $LIBS $FLIBS"
 if $have_fortran_compiler; then
+  LIBS="$BLAS_LIBS $FLIBS $LIBS"
   AC_LANG_PUSH(Fortran 77)
-  $ac_compile
-  $ac_link
+  (eval "$ac_compile"; eval "$ac_link") 2>conftest.er1
   AC_LANG_POP(Fortran 77)
 elif $have_f2c; then
+  LIBS="$BLAS_LIBS $F2CLIBS $LIBS"
   AC_LANG_PUSH(C)
-  $(F2C) $(F2CFLAGS) < conftest.$ac_fc_srcext > conftest.$ac_ext
-  $ac_compile
-  $ac_link
+  octave_xlate="$F2C $F2CFLAGS < conftest.f > conftest.c"
+  (eval "$octave_xlate")
+  (eval "$ac_compile"; eval "$ac_link") 2>conftest.er1
   AC_LANG_POP(C)
 fi
 LIBS="$XLIBS"
-case "`conftest.$ac_exeext`" in
-  *success*)
+case "`./conftest$ac_exeext`" in
+  *succeeded*)
   AC_MSG_RESULT(yes)
 ;;
   *)
@@ -2050,6 +2054,12 @@ if test -z "$F77"; then
   FORT="$F2C $F2CFLAGS"
 else
   FORT="$F77 $FFLAGS"
+fi
+
+if $have_fortran_compiler; then
+  true
+elif $have_f2c; then
+  FLIBS="$F2CLIBS"
 fi
 
 AC_MSG_NOTICE([

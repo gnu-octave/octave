@@ -334,7 +334,7 @@ gen_sparsesparse_elementop_tests() {
 %!assert(as+bs,sparse(af+bf,true))
 %!assert(as-bs,sparse(af-bf,true))
 %!assert(as.*bs,sparse(af.*bf,true))
-%!assert(as./bs,sparse(af./bf,true),100*eps);
+%!xtest assert(as./bs,sparse(af./bf,true),100*eps);
 %!test
 %! sv = as.^bs;
 %! fv = af.^bf;

@@ -42,7 +42,7 @@ SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m cast.m comma.m \
   news.m orderfields.m pack.m paren.m parseparams.m \
   run.m semicolon.m setfield.m single.m substruct.m swapbytes.m tar.m \
   tempdir.m tempname.m texas_lotto.m unix.m unpack.m untar.m \
-  unzip.m ver.m version.m warning_ids.m xor.m zip.m
+  unzip.m ver.m version.m warning_ids.m what.m xor.m zip.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

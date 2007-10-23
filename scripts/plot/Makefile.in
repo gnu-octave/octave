@@ -34,6 +34,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
+  __axes_limits__.m \
   __axis_label__.m \
   __bar__.m \
   __default_plot_options__.m \
@@ -114,8 +115,11 @@ SOURCES = \
   title.m \
   view.m \
   xlabel.m \
+  xlim.m \
   ylabel.m \
-  zlabel.m
+  ylim.m \
+  zlabel.m \
+  zlim.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

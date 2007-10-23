@@ -499,7 +499,7 @@ symbol_table
 {
 public:
 
-  symbol_table (unsigned int tab_size = 128,
+  symbol_table (unsigned int tab_size = 64,
 		const std::string& nm = std::string ())
     : table_size (tab_size), table (new symbol_record [table_size]),
       table_name (nm)

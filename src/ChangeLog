@@ -1,3 +1,8 @@
+2007-10-23  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h (symbol_table::symbol_table): Reduce default table size
+	to 64.
+
 2007-10-22  Kim Hansen  <kimhanse@gmail.com>
 
 	* unwind-prot.cc: Include <cstring>.

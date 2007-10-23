@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.582 $)
+AC_REVISION($Revision: 1.583 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -852,6 +852,58 @@ ACX_BLAS([], [BLAS_DIR="blas"])
 ACX_LAPACK([BLAS_LIBS="$LAPACK_LIBS $BLAS_LIBS"], [LAPACK_DIR="lapack"])
 AC_SUBST(BLAS_DIR)
 AC_SUBST(LAPACK_DIR)
+
+dnl I see no clean way to do the following check with autoconf macros,
+dnl hence the big mess.
+
+AC_MSG_CHECKING([BLAS library calling convention compatibility])
+cat << EOF > conftest.$ac_fc_srcext
+      program foo
+      double complex zdotu, tmp, zx(10), zy(10), retval
+      integer n, incx, incy
+      n = 10
+      incx = 1
+      incy = 1
+      do 10 i = 1, n
+        zx(i) = dcmplx (i, 0);
+        zy(i) = dcmplx (0, i);
+   10 continue
+      retval = zdotu (n, zx, incx, zy, incy)
+      if (retval .eq. dcmplx (0, 385)) then
+        print *, 'succeeded'
+      else
+        print *, 'failed'
+        print *, retval
+      endif
+      end
+EOF
+XLIBS="$LIBS"
+LIBS="$BLAS_LIBS $LIBS $FLIBS"
+if $have_fortran_compiler; then
+  AC_LANG_PUSH(Fortran 77)
+  $ac_compile
+  $ac_link
+  AC_LANG_POP(Fortran 77)
+elif $have_f2c; then
+  AC_LANG_PUSH(C)
+  $(F2C) $(F2CFLAGS) < conftest.$ac_fc_srcext > conftest.$ac_ext
+  $ac_compile
+  $ac_link
+  AC_LANG_POP(C)
+fi
+LIBS="$XLIBS"
+case "`conftest.$ac_exeext`" in
+  *success*)
+  AC_MSG_RESULT(yes)
+;;
+  *)
+  AC_MSG_RESULT(no)
+  AC_MSG_WARN([Your BLAS library was apparently compiled with a Fortran])
+  AC_MSG_WARN([compiler that uses a different calling convention from])
+  AC_MSG_WARN([the one used by the selected compiler, $F77.])
+  AC_MSG_ERROR([You must correct this problem before building Octave.])
+;;
+esac
 
 # Check for AMD library
 AMD_LIBS=

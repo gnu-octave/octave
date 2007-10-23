@@ -1,3 +1,8 @@
+2007-10-23  John W. Eaton  <jwe@octave.org>
+
+	* CRowVector.cc (operator * const ComplexRowVector&, const
+	ComplexColumnVector&)): Delete spurious code left from patch.
+
 2007-10-22  Kim Hansen  <kimhanse@gmail.com>
 
 	* chMatrix.cc, lo-utils.cc, oct-env.cc, oct-uname.cc,

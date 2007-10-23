@@ -502,8 +502,6 @@ operator * (const ComplexRowVector& v, const ComplexColumnVector& a)
     gripe_nonconformant ("operator *", len, a_len);
   else if (len != 0)
     F77_FUNC (xzdotu, XZDOTU) (len, v.data (), 1, a.data (), 1, retval);
-  for (octave_idx_type i = 0; i < len; i++)
-    retval += v.elem (i) * a.elem (i);
 
   return retval;
 }

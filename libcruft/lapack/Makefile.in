@@ -30,7 +30,7 @@ FSRC = dbdsqr.f dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f \
   dgebd2.f dgebrd.f dgecon.f dgeesx.f dgeev.f dgehd2.f dgehrd.f \
   dgelq2.f dgelqf.f dgelss.f dgelsy.f dgeqp3.f dgeqpf.f dgeqr2.f \
   dgeqrf.f dgesv.f dgesvd.f dgetf2.f dgetrf.f dgetri.f dgetrs.f \
-  dggbak.f dggbal.f dgghrd.f dgtsv.f dgttrf.f dgttrs.f dhgeqz.f \
+  dggbak.f dggbal.f dgghrd.f dgtsv.f dgttrf.f dgttrs.f dgtts2.f dhgeqz.f \
   dhseqr.f dlabad.f dlabrd.f dlacn2.f dlacon.f dlacpy.f dladiv.f \
   dlae2.f dlaev2.f dlaexc.f dlag2.f dlahqr.f dlahr2.f dlahrd.f \
   dlaic1.f dlaln2.f dlamc1.f dlamc2.f dlamc3.f dlamc4.f dlamc5.f \
@@ -53,7 +53,7 @@ FSRC = dbdsqr.f dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f \
   zgeesx.f zgeev.f zgehd2.f zgehrd.f zgelq2.f zgelqf.f zgelss.f \
   zgelsy.f zgeqp3.f zgeqpf.f zgeqr2.f zgeqrf.f zgesv.f zgesvd.f \
   zgetf2.f zgetrf.f zgetri.f zgetrs.f zggbal.f zgtsv.f zgttrf.f \
-  zgttrs.f zheev.f zhetd2.f zhetrd.f zhseqr.f zlabrd.f zlacgv.f \
+  zgttrs.f zgtts2.f zheev.f zhetd2.f zhetrd.f zhseqr.f zlabrd.f zlacgv.f \
   zlacn2.f zlacon.f zlacpy.f zladiv.f zlahqr.f zlahr2.f zlahrd.f \
   zlaic1.f zlange.f zlanhe.f zlanhs.f zlantr.f zlaqp2.f zlaqps.f \
   zlaqr0.f zlaqr1.f zlaqr2.f zlaqr3.f zlaqr4.f zlaqr5.f zlarf.f \

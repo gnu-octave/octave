@@ -1,3 +1,8 @@
+2007-10-23  John W. Eaton  <jwe@octave.org>
+
+	* lapack/dgtts2.f, lapack/zgtts2.f: New files.
+	* lapack/Makefile.in (FSRC): Add them to the list.
+
 2007-10-16  John W. Eaton  <jwe@octave.org>
 
 	* lapack/dlacn2.f, lapack/dlacn2.f, lapack/dlahr2.f,

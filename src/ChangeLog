@@ -1,3 +1,9 @@
+2007-10-24  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.cc (tree_index_expression::lvalue): Correctly compute
+	number of elements in lvalue expression when last indexing
+	element is ".".
+
 2007-10-23  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (is_handle (const graphics_handle&)): New function.

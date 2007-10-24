@@ -480,16 +480,53 @@ tree_index_expression::lvalue (void)
 
 		if (! error_state)
 		  {
-		    idx.push_back (tidx);
-
 		    if (i == n-1)
 		      {
 			// Last indexing element.  Will this result in a
 			// comma-separated list?
 
 			if (first_retval_object.is_map ())
-			  retval.numel (first_retval_object.numel ());
+			  {
+			    if (i > 0)
+			      {
+				octave_value_list xidx = idx.back ();
+
+				if (xidx.has_magic_colon ())
+				  {
+				    std::string ttype = type.substr (0, i);
+
+				    octave_value_list tmp_list
+				      = first_retval_object.subsref (ttype, idx, 1);
+
+				    if (! error_state)
+				      {
+					octave_value val = tmp_list(0);
+
+					retval.numel (val.numel ());
+				      }
+				  }
+				else
+				  {
+				    octave_idx_type nel = 1;
+
+				    octave_idx_type nidx = xidx.length ();
+
+				    for (octave_idx_type j = 0; j < nidx; j++)
+				      {
+					octave_value val = xidx(j);
+
+					nel *= val.numel ();
+				      }
+
+				    retval.numel (nel);
+				  }
+			      }
+			    else
+			      retval.numel (first_retval_object.numel ());
+			  }
 		      }
+
+		    idx.push_back (octave_value (tidx));
 		  }
 		else
 		  eval_error ();

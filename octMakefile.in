@@ -162,7 +162,7 @@ clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 maintainer-clean distclean::
-	rm -f octMakefile Makefile Makeconf Makefrag.f77 Makerules.f77
+	rm -f octMakefile Makefile Makeconf
 	rm -f config.cache config.h config.log config.status
 	rm -rf autom4te.cache
 	rm -f $(SHELL_SCRIPTS)

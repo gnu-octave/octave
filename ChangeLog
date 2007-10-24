@@ -1,5 +1,14 @@
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
+	* octMakefile.in (maintainer-clean distclean): No need to delete
+	Makefrag.f77 and Makerules.f77.
+	* Makeconf.in: Include rules for making .o files from .f files
+	instead of substituting @f77_rules_frag@.  
+	* configure.in): Delete handling of --with-f2c and --with-f77
+	options.  No need to call OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS.
+	Delete all special cases for f2c.
+	* aclocal.m4 (OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS): Delete macro.
+
 	* FLEX.patch: Delete obsolete file.
 	* octMakefile.in (DISTFILES): Remove it from the list.
 

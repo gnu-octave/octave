@@ -370,26 +370,19 @@ NO_OCT_FILE_STRIP = @NO_OCT_FILE_STRIP@
 # The following pattern rules and the substitution functions require
 # GNU make.  If you don't have it, get it!
 
-# Rules for making object files from Fortran source.
-#
-# If we are using f2c there will be a command for the `%.c : %.f'
-# pattern and no command for the `%.o : %.f' pattern, so that make
-# will not invoke the fortran compiler by mistake.
-#
-# If we are not using f2c, it should be ok to have an empty rule for
-# the pattern `%.c : %.f', but we don't want to replace make's default
-# rule for making object from Fortran source files, so there should be
-# no pattern or command for that.
-
-@f77_rules_frag@
-
 # How to make .o files:
+
+%.o : %.f
+	$(FC) -c $(ALL_FFLAGS) -o $@ $<
 
 %.o : %.c
 	$(CC) -c $(CPPFLAGS) $(ALL_CFLAGS) $< -o $@
 
 %.o : %.cc
 	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $< -o $@
+
+pic/%.o : %.f
+	$(FC) -c $(FPICFLAG) $(ALL_FFLAGS) $< -o $@
 
 pic/%.o : %.c
 	$(CC) -c $(CPPFLAGS) $(CPICFLAG) $(ALL_CFLAGS) $< -o $@

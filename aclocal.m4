@@ -45,19 +45,6 @@ AC_DEFUN(OCTAVE_SET_DEFAULT,
 AC_MSG_RESULT([defining $1 to be $$1])
 AC_SUBST($1)])
 dnl
-dnl 
-dnl OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS
-AC_DEFUN(OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS,
-[if test "${with_$1+set}" = set; then
-  if test "${with_$2+set}" = set; then
-    if test "$with_$2" = no; then
-      true
-    else
-      $3
-    fi
-  fi
-fi])
-dnl
 dnl Check for ar.
 dnl
 AC_DEFUN(OCTAVE_PROG_AR,

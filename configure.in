@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.586 $)
+AC_REVISION($Revision: 1.587 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -118,29 +118,6 @@ OCTAVE_SET_DEFAULT(imagedir, '$(datadir)/octave/$(version)/imagelib')
 
 config_opts=$ac_configure_args
 AC_SUBST(config_opts)
-
-### Allow the user to force us to use f2c.
-
-AC_ARG_WITH(f2c,
-  [AS_HELP_STRING([--with-f2c],
-     [use f2c even if Fortran compiler is available])],
-  [if test "$withval" = no; then use_f2c=false; else use_f2c=true; fi],
-  use_f2c=false)
-
-### Allow the user to force us to use f77.
-
-AC_ARG_WITH(f77,
-  [AS_HELP_STRING([--with-f77], [use f77 to compile Fortran subroutines])],
-  [if test "$withval" = no; then use_f77=false; else use_f77=true; fi],
-  use_f77=false)
-
-### Make sure only one of the above options for Fortran compilers was
-### specified (multiple "no" or --without-FOO options are ok).
-
-OCTAVE_CHECK_EXCLUSIVE_WITH_OPTIONS(f77, f2c,
-  [warn_f2c_and_f77="--with-f2c and --with-f77 both specified!  Using f77..."
-  AC_MSG_WARN($warn_f2c_and_f77)
-  use_f2c=false])
 
 ### Make it possible to have Octave's array and matrix classes do bounds
 ### checking on element references.  This slows some operations down a
@@ -661,170 +638,67 @@ OCTAVE_IEEE754_DATA_FORMAT
 
 # ----------------------------------------------------------------------
 
-### We need these before trying to find libf2c.
-
 OCTAVE_PROG_AR
 
 AC_PROG_RANLIB
 
-### If we haven't been forced to use a particular Fortran compiler,
-### try to find one using any one of several common Un*x Fortran
-### compiler names using the AC_PROG_F77 macro.
-###
-### The configure options --with-f77 or --with-f2c
-### force f77 or f2c to be used.  It is also possible to use
-### these options to specify the name of the compiler.  For example,
-### `--with-f77=g77' says that we are using g77 as the Fortran compiler.
-
-if $use_f77; then
-  if test "$with_f77" = yes; then
-    F77=f77
-  else
-    F77="$with_f77"
-  fi
-  AC_MSG_NOTICE([defining F77 to be $F77])
-elif $use_f2c; then
-  F77=
-  if test "$with_f2c" = yes; then
-    F2C=f2c
-  else
-    F2C="$with_f2c"
-  fi
-  AC_MSG_NOTICE([defining F2C to be $F2C])
-fi
-
+## Default FFLAGS is -O.
 if test "x$FFLAGS" = x; then
-  FFLAGS="-O" # override -g -O default by AC_PROG_F77
+  FFLAGS="-O"
 fi
 
-# the F77 variable, if set, overrides AC_PROG_F77 automatically
+## the F77 variable, if set, overrides AC_PROG_F77 automatically
 AC_PROG_F77
-
-have_fortran_compiler=false
-have_f2c=false
+AC_F77_LIBRARY_LDFLAGS
+AC_F77_DUMMY_MAIN
+AC_F77_WRAPPERS
 
 F77_TOLOWER=true
 F77_APPEND_UNDERSCORE=true
 F77_APPEND_EXTRA_UNDERSCORE=true
-if $use_f2c; then
-  have_f2c=true
-else
-  if test -n "$F77"; then
-    AC_F77_LIBRARY_LDFLAGS
-    AC_F77_DUMMY_MAIN
-    AC_F77_WRAPPERS
-    case "$ac_cv_f77_mangling" in
-      "upper case") F77_TOLOWER=false ;;
-    esac
-    case "$ac_cv_f77_mangling" in
-      "no underscore") F77_APPEND_UNDERSCORE=false ;;
-    esac
-    case "$ac_cv_f77_mangling" in
-      "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=false ;;
-    esac
 
-    case "$canonical_host_type" in
-      i[[3456789]]86-*-*)
-        if test "$ac_cv_f77_compiler_gnu" = yes; then
-	  OCTAVE_F77_FLAG(-mieee-fp)
-###          OCTAVE_F77_FLAG(-ffloat-store)
-	fi
-      ;;
-      alpha*-*-*)
-        if test "$ac_cv_f77_compiler_gnu" = yes; then
-	  OCTAVE_F77_FLAG(-mieee)
-	else
-	  OCTAVE_F77_FLAG(-ieee)
-	  OCTAVE_F77_FLAG(-fpe1)
-	fi
-      ;;
-      powerpc-apple-machten*)
-	FFLAGS=
-      ;;
-    esac
-    if test -n "$FFLAGS"; then
-      AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
+case "$ac_cv_f77_mangling" in
+  "upper case") F77_TOLOWER=false ;;
+esac
+case "$ac_cv_f77_mangling" in
+  "no underscore") F77_APPEND_UNDERSCORE=false ;;
+esac
+case "$ac_cv_f77_mangling" in
+  "no extra underscore") F77_APPEND_EXTRA_UNDERSCORE=false ;;
+esac
+
+case "$canonical_host_type" in
+  i[[3456789]]86-*-*)
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
+      OCTAVE_F77_FLAG(-mieee-fp)
+###      OCTAVE_F77_FLAG(-ffloat-store)
     fi
-    have_fortran_compiler=true
-  else
-    AC_CHECK_PROG(F2C, f2c, f2c, [])
-    AC_ARG_VAR(F2C, [Fortran to C translator command])
-    AC_ARG_VAR(F2CFLAGS, [Fortran to C translator flags])
-    if test -n "$F2C"; then
-      have_f2c=true
+  ;;
+  alpha*-*-*)
+    if test "$ac_cv_f77_compiler_gnu" = yes; then
+      OCTAVE_F77_FLAG(-mieee)
+    else
+      OCTAVE_F77_FLAG(-ieee)
+      OCTAVE_F77_FLAG(-fpe1)
     fi
-  fi
+  ;;
+  powerpc-apple-machten*)
+    FFLAGS=
+  ;;
+esac
+
+if test -n "$FFLAGS"; then
+  AC_MSG_NOTICE([defining FFLAGS to be $FFLAGS])
 fi
+
 AC_SUBST(F77_TOLOWER)
 AC_SUBST(F77_APPEND_UNDERSCORE)
 AC_SUBST(F77_APPEND_EXTRA_UNDERSCORE)
 
-f77_rules_frag=/dev/null
-if $have_fortran_compiler; then
-  f77_rules_frag=Makefrag.f77
-  cat << \EOF > $f77_rules_frag
-
-%.c : %.f
-
-%.o : %.f
-	$(FC) -c $(ALL_FFLAGS) -o $@ $<
-
-pic/%.o : %.f
-	$(FC) -c $(FPICFLAG) $(ALL_FFLAGS) $< -o $@
-
-EOF
-elif $have_f2c; then
-  AC_DEFINE(HAVE_F2C, 1, [Define if we are using f2c.])
-
-### FIXME -- these shouldn't be fixed names, eh?
-
-  oct_conflib=libconflib.a
-  oct_obj_ext=o
-
-  CONFLIB_ARG=
-  if (eval "$ac_compile") 2>&AS_MESSAGE_LOG_FD; then
-    $AR $ARFLAGS $oct_conflib conftest.$oct_obj_ext 1>&AS_MESSAGE_LOG_FD()
-    if test -n "$RANLIB"; then
-      $RANLIB $oct_conflib 1>&AS_MESSAGE_LOG_FD()
-    fi
-    CONFLIB_ARG="-L. -lconflib"
-  fi
-  rm -f conftest*
-  case "$canonical_host_type" in
-    *-*-msdosmsvc)
-      CONFLIB_ARG="-MD"
-      ;;
-  esac
-  XLIBS="$LIBS"
-  LIBS="-lf2c $LIBS $CONFLIB_ARG"
-  AC_LINK_IFELSE([AC_LANG_CALL([int MAIN__ () { return 1; }], [f_open])],
-                 [F2CLIBS=-lf2c], [F2CLIBS=])
-  LIBS="$XLIBS"
-  rm -f $oct_conflib
-
-  if test -z "$F2CLIBS"; then
-    AC_CHECK_LIB(F77, d_sin, F2CLIBS=-lF77, FLIBS=)
-    if test -n "$F2CLIBS"; then
-      AC_CHECK_LIB(I77, f_rew, F2CLIBS="$F2CLIBS -lI77", F2CLIBS=, -lF77)
-    fi
-  fi
-
-  if test -z "$F2CLIBS"; then
-    warn_f2c_no_lib="I found f2c but not libf2c.a, or libF77.a and libI77.a"
-    AC_MSG_WARN($warn_f2c_no_lib)
-  fi
-  f77_rules_frag=Makefrag.f77
-  cat << \EOF > $f77_rules_frag
-
-%.c : %.f
-	$(F2C) $(F2CFLAGS) < $< > $(@F)
-
-%.o : %.f
-
-EOF
-else
+if test -z "$F77"; then
   AC_MSG_WARN([in order to build octave, you must have a compatible])
-  AC_MSG_WARN([Fortran compiler or f2c installed and in your path.])
+  AC_MSG_WARN([Fortran compiler or wrapper script for f2c that functions])
+  AC_MSG_WARN([as a Fortran compiler installed and in your path.])
   AC_MSG_ERROR([See the file INSTALL for more information.])
 fi
 
@@ -882,19 +756,10 @@ cat << EOF > conftest.f
       end
 EOF
 XLIBS="$LIBS"
-if $have_fortran_compiler; then
-  LIBS="$BLAS_LIBS $FLIBS $LIBS"
-  AC_LANG_PUSH(Fortran 77)
-  (eval "$ac_compile"; eval "$ac_link") 2>&AS_MESSAGE_LOG_FD
-  AC_LANG_POP(Fortran 77)
-elif $have_f2c; then
-  LIBS="$BLAS_LIBS $F2CLIBS $LIBS"
-  AC_LANG_PUSH(C)
-  octave_xlate="$F2C $F2CFLAGS < conftest.f > conftest.c"
-  (eval "$octave_xlate")
-  (eval "$ac_compile"; eval "$ac_link") 2>&AS_MESSAGE_LOG_FD
-  AC_LANG_POP(C)
-fi
+LIBS="$BLAS_LIBS $FLIBS $LIBS"
+AC_LANG_PUSH(Fortran 77)
+(eval "$ac_compile"; eval "$ac_link") 2>&AS_MESSAGE_LOG_FD
+AC_LANG_POP(Fortran 77)
 LIBS="$XLIBS"
 case "`./conftest$ac_exeext`" in
   *succeeded*)
@@ -2057,12 +1922,6 @@ else
   FORT="$F77 $FFLAGS"
 fi
 
-if $have_fortran_compiler; then
-  true
-elif $have_f2c; then
-  FLIBS="$F2CLIBS"
-fi
-
 AC_MSG_NOTICE([
 
 Octave is now configured for $canonical_host_type
@@ -2111,11 +1970,6 @@ if $ENABLE_DYNAMIC_LINKING; then
   fi
 fi
 
-if test -n "$warn_f2c_and_f77"; then
-  AC_MSG_WARN($warn_f2c_and_f77)
-  warn_msg_printed=true
-fi
-
 if test -n "$gxx_only"; then
   AC_MSG_WARN($gxx_only)
   warn_msg_printed=true
@@ -2128,11 +1982,6 @@ fi
 
 if test -n "$warn_gcc_only"; then
   AC_MSG_WARN($warn_gcc_only)
-  warn_msg_printed=true
-fi
-
-if test -n "$warn_f2c_no_lib"; then
-  AC_MSG_WARN($warn_f2c_no_lib)
   warn_msg_printed=true
 fi
 

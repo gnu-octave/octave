@@ -659,7 +659,7 @@ AC_DEFUN(OCTAVE_CXX_PREPENDS_UNDERSCORE, [
     cat > conftest.$ac_ext <<EOF
 bool FSmy_dld_fcn (void) { return false; }
 EOF
-    if AC_TRY_EVAL(ac_compile); then
+    if (eval "$ac_compile") 2>&AS_MESSAGE_LOG_FD; then
       if test "`${NM-nm} conftest.$ac_objext | grep _FSmy_dld_fcn`" != ""; then
         octave_cv_cxx_prepends_underscore=yes
       fi
@@ -768,7 +768,7 @@ AC_DEFUN(OCTAVE_CXX_ABI, [
     cat > conftest.$ac_ext <<EOF
 bool FSmy_dld_fcn (void) { return false; }
 EOF
-    if AC_TRY_EVAL(ac_compile); then
+    if (eval "$ac_compile") 2>&AS_MESSAGE_LOG_FD; then
       if test "`${NM-nm} conftest.$ac_objext | grep FSmy_dld_fcn__Fv`" != ""; then
         octave_cv_cxx_abi='gnu_v2'
       fi
@@ -1040,7 +1040,7 @@ main(argc, argv)
 EOF
 
 octave_qhull_try="${CC-cc} $CFLAGS $CPPFLAGS $LDFLAGS conftest.c -o conftest -lqhull $LIBS"
-if AC_TRY_EVAL(octave_qhull_try) && test -s conftest ; then
+if (eval "$octave_qhull_try") 2>&AS_MESSAGE_LOG_FD && test -s conftest ; then
     octave_cv_lib_qhull_version=yes
 else
     octave_cv_lib_qhull_version=no

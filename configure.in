@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.585 $)
+AC_REVISION($Revision: 1.586 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -782,7 +782,7 @@ elif $have_f2c; then
   oct_obj_ext=o
 
   CONFLIB_ARG=
-  if AC_TRY_EVAL(ac_compile); then
+  if (eval "$ac_compile") 2>&AS_MESSAGE_LOG_FD; then
     $AR $ARFLAGS $oct_conflib conftest.$oct_obj_ext 1>&AS_MESSAGE_LOG_FD()
     if test -n "$RANLIB"; then
       $RANLIB $oct_conflib 1>&AS_MESSAGE_LOG_FD()
@@ -885,14 +885,14 @@ XLIBS="$LIBS"
 if $have_fortran_compiler; then
   LIBS="$BLAS_LIBS $FLIBS $LIBS"
   AC_LANG_PUSH(Fortran 77)
-  (eval "$ac_compile"; eval "$ac_link") 2>conftest.er1
+  (eval "$ac_compile"; eval "$ac_link") 2>&AS_MESSAGE_LOG_FD
   AC_LANG_POP(Fortran 77)
 elif $have_f2c; then
   LIBS="$BLAS_LIBS $F2CLIBS $LIBS"
   AC_LANG_PUSH(C)
   octave_xlate="$F2C $F2CFLAGS < conftest.f > conftest.c"
   (eval "$octave_xlate")
-  (eval "$ac_compile"; eval "$ac_link") 2>conftest.er1
+  (eval "$ac_compile"; eval "$ac_link") 2>&AS_MESSAGE_LOG_FD
   AC_LANG_POP(C)
 fi
 LIBS="$XLIBS"

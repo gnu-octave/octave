@@ -1,5 +1,8 @@
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
+	* image/saveimage.m: Use functional form of save instead of eval.
+	Use -text instead of -ascii.
+
 	* plot/__go_draw_axes__.m: Handle visible = "off" for axes objects.
 
 2007-10-23  Peter A. Gustafson  <petegus@umich.edu>

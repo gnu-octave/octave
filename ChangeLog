@@ -1,5 +1,7 @@
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
+	* configure.in, aclocal.m4: Avoid AC_TRY_EVAL.
+
 	* aclocal.m4 (OCTAVE_STRPTIME_BROKEN): New macro.
 	* configure.in: Use it.
 

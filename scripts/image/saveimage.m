@@ -115,7 +115,7 @@ function saveimage (filename, img, img_form, map)
   ## If we just want Octave image format, save and return.
 
   if (strcmp (img_form, "img"))
-    eval (strcat ("save -ascii ", filename, " map img"));
+    save ("-text", filename, "map", "img");
     return;
   endif
 

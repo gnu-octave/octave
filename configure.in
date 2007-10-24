@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.584 $)
+AC_REVISION($Revision: 1.585 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1493,6 +1493,7 @@ case "$canonical_host_type" in
   ;;
 esac
 
+OCTAVE_STRPTIME_BROKEN
 OCTAVE_SMART_PUTENV
 
 case "$canonical_host_type" in

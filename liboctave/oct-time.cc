@@ -379,7 +379,7 @@ octave_strptime::init (const std::string& str, const std::string& fmt)
   octave_base_tm::init (&t);
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
-  delete ps;
+  delete [] ps;
 #endif
 }
 

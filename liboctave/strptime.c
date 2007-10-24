@@ -27,7 +27,7 @@
 # include <config.h>
 #endif
 
-#ifndef HAVE_STRPTIME
+#if ! defined (HAVE_STRPTIME) || defined (OCTAVE_HAVE_BROKEN_STRPTIME)
 
 #include <ctype.h>
 #ifdef _LIBC

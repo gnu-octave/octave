@@ -1,3 +1,7 @@
+2007-10-24  John W. Eaton  <jwe@octave.org>
+
+	* strptime.c: Also compile if OCTAVE_HAVE_BROKEN_STRPTIME is defined.
+
 2007-10-23  John W. Eaton  <jwe@octave.org>
 
 	* CRowVector.cc (operator * const ComplexRowVector&, const

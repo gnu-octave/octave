@@ -90,7 +90,7 @@ fi
 
 # BLAS in Apple vecLib framework? (Mac OS X)
 if test $acx_blas_ok = no; then
-	vlib_flags="-framework vecLib"
+	vlib_flags="-Wl,-framework -Wl,vecLib"
 	save_LIBS="$LIBS"; LIBS="$vlib_flags $LIBS"
 	AC_MSG_CHECKING([for $sgemm in $vlib_flags])
 	AC_LINK_IFELSE([AC_LANG_CALL([], [$sgemm])],

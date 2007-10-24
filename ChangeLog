@@ -1,5 +1,11 @@
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
+	* FLEX.patch: Delete obsolete file.
+	* octMakefile.in (DISTFILES): Remove it from the list.
+
+	* acx_blas.m4: Use "-Wl,-framework -Wl,vecLib" instead of
+	just "-framework vecLib" in test for Mac OS X test.
+
 	* configure.in, aclocal.m4: Avoid AC_TRY_EVAL.
 
 	* aclocal.m4 (OCTAVE_STRPTIME_BROKEN): New macro.

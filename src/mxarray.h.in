@@ -71,7 +71,7 @@ typedef enum
     mxUINT32_CLASS,
     mxINT64_CLASS,
     mxUINT64_CLASS,
-    mxFUNCTION_CLASS,
+    mxFUNCTION_CLASS
   }
   mxClassID;
 

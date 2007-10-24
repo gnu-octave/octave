@@ -61,7 +61,7 @@ class tree_walker;
 // T_ID is the type id of struct objects, set by register_type().
 // T_NAME is the type name of struct objects.
 #define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA \
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2()
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 ( )
 
 #define DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA \
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(virtual)

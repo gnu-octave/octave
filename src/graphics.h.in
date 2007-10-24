@@ -464,8 +464,6 @@ public:
 
   ~graphics_handle (void) { }
 
-  operator double (void) const { return val; }
-
   double value (void) const { return val; }
 
   octave_value as_octave_value (void) const
@@ -500,8 +498,6 @@ public:
   }
 
   bool ok (void) const { return ! xisnan (val); }
-
-  operator bool () const { return ok (); }
 
 private:
   double val;
@@ -579,7 +575,7 @@ public:
   {
     octave_idx_type n = children.numel ();
     children.resize (1, n+1);
-    children(n) = h;
+    children(n) = h.value ();
   }
 
   void set_parent (const octave_value& val);
@@ -1913,7 +1909,10 @@ private:
     Matrix retval (1, handle_map.size ());
     octave_idx_type i = 0;
     for (const_iterator p = handle_map.begin (); p != handle_map.end (); p++)
-      retval(i++) = p->first;
+      {
+	graphics_handle h = p->first;
+	retval(i++) = h.value ();
+      }
     return retval;
   }
 
@@ -1924,7 +1923,10 @@ private:
     for (const_figure_list_iterator p = figure_list.begin ();
 	 p != figure_list.end ();
 	 p++)
-      retval(i++) = *p;
+      {
+	graphics_handle h = *p;
+	retval(i++) = h.value ();
+      }
     return retval;
   }
 

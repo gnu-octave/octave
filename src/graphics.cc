@@ -461,7 +461,7 @@ gh_manager::get_handle (const std::string& go_name)
 void
 gh_manager::do_free (const graphics_handle& h)
 {
-  if (h)
+  if (h.ok ())
     {
       if (h.value () != 0)
 	{
@@ -523,7 +523,7 @@ reparent (const octave_value& ov, const std::string& who,
     {
       h = gh_manager::lookup (val);
 
-      if (h)
+      if (h.ok ())
 	{
 	  graphics_object obj = gh_manager::get_object (h);
 	  
@@ -573,6 +573,12 @@ adopt (const graphics_handle& p, const graphics_handle& h)
   graphics_object parent_obj = gh_manager::get_object (p);
 
   parent_obj.adopt (h);
+}
+
+static bool
+is_handle (const graphics_handle& h)
+{
+  return h.ok ();
 }
 
 static bool
@@ -709,7 +715,7 @@ base_properties::set_parent (const octave_value& val)
     {
       new_parent = gh_manager::lookup (tmp);
 
-      if (new_parent)
+      if (new_parent.ok ())
 	{
 	  graphics_object parent_obj = gh_manager::get_object (parent);
 
@@ -1374,7 +1380,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
 graphics_handle
 axes::properties::get_title (void) const
 {
-  if (! title)
+  if (! title.ok ())
     title = gh_manager::make_graphics_handle ("text", __myhandle__);
 
   return title;
@@ -1383,7 +1389,7 @@ axes::properties::get_title (void) const
 graphics_handle
 axes::properties::get_xlabel (void) const
 {
-  if (! xlabel)
+  if (! xlabel.ok ())
     xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
 
   return xlabel;
@@ -1392,7 +1398,7 @@ axes::properties::get_xlabel (void) const
 graphics_handle
 axes::properties::get_ylabel (void) const
 {
-  if (! ylabel)
+  if (! ylabel.ok ())
     ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
 
   return ylabel;
@@ -1401,7 +1407,7 @@ axes::properties::get_ylabel (void) const
 graphics_handle
 axes::properties::get_zlabel (void) const
 {
-  if (! zlabel)
+  if (! zlabel.ok ())
     zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
 
   return zlabel;
@@ -1592,13 +1598,13 @@ axes::properties::get (const property_name& name) const
 void
 axes::properties::remove_child (const graphics_handle& h)
 {
-  if (title && h == title)
+  if (title.ok () && h == title)
     title = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (xlabel && h == xlabel)
+  else if (xlabel.ok () && h == xlabel)
     xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (ylabel && h == ylabel)
+  else if (ylabel.ok () && h == ylabel)
     ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (zlabel && h == zlabel)
+  else if (zlabel.ok () && h == zlabel)
     zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
   else
     base_properties::remove_child (h);
@@ -2651,7 +2657,7 @@ make_graphics_object (const std::string& go_name,
     {
       graphics_handle parent = gh_manager::lookup (val);
 
-      if (parent)
+      if (parent.ok ())
 	{
 	  graphics_handle h
 	    = gh_manager::make_graphics_handle (go_name, parent);
@@ -2710,7 +2716,7 @@ Undocumented internal function.\n\
 	      else
 		error ("__go_figure__: invalid figure number");
 
-	      if (! error_state && h)
+	      if (! error_state && h.ok ())
 		{
 		  adopt (0, h);
 
@@ -2813,7 +2819,7 @@ Undocumented internal function.\n\
 	{
 	  h = gh_manager::lookup (val);
 
-	  if (h)
+	  if (h.ok ())
 	    {
 	      graphics_object obj = gh_manager::get_object (h);
 
@@ -2867,7 +2873,7 @@ Undocumented internal function.\n\
 	{
 	  h = gh_manager::lookup (val);
 
-	  if (h)
+	  if (h.ok ())
 	    {
 	      graphics_object obj = gh_manager::get_object (h);
 

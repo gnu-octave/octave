@@ -1,5 +1,24 @@
 2007-10-23  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (is_handle (const graphics_handle&)): New function.
+	(gh_manager::do_free, reparent, base_properties::set_parent,
+	properties::get_title, properties::get_xlabel,
+	properties::get_ylabel, properties::get_zlabel,
+	properties::remove_child, make_graphics_object, F__go_figure__,
+	F__go_delete__, __go_axes_init__): Call OK on graphics handle
+	object instead of relying on implicit conversion operator.
+	* graphics.h.in (graphics_handle::operator double ()): Delete.
+	(graphics_handle::operator bool ()): Delete.
+	(gh_manager::do_handle_list, gh_manager::do_figure_handle_list,
+	base_properties::adopt): Call VALUE on graphics handle object
+	instead of relying on implicit conversion operator.
+
+	* ov-base.h (DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Call
+	DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 with "( )" as arg list
+	instead of "()".
+
+	* mxarray.h.in (mxClassID): Delete trailing comma in enum decl.
+
 	* symtab.h (symbol_table::symbol_table): Reduce default table size
 	to 64.
 

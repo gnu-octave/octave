@@ -612,7 +612,19 @@ octave_value::octave_value (const int8NDArray& inda)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<octave_int8>& inda)
+  : rep (new octave_int8_matrix (inda))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const uint8NDArray& inda)
+  : rep (new octave_uint8_matrix (inda))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const ArrayN<octave_uint8>& inda)
   : rep (new octave_uint8_matrix (inda))
 {
   maybe_mutate ();
@@ -624,7 +636,19 @@ octave_value::octave_value (const int16NDArray& inda)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<octave_int16>& inda)
+  : rep (new octave_int16_matrix (inda))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const uint16NDArray& inda)
+  : rep (new octave_uint16_matrix (inda))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const ArrayN<octave_uint16>& inda)
   : rep (new octave_uint16_matrix (inda))
 {
   maybe_mutate ();
@@ -636,7 +660,19 @@ octave_value::octave_value (const int32NDArray& inda)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<octave_int32>& inda)
+  : rep (new octave_int32_matrix (inda))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const uint32NDArray& inda)
+  : rep (new octave_uint32_matrix (inda))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const ArrayN<octave_uint32>& inda)
   : rep (new octave_uint32_matrix (inda))
 {
   maybe_mutate ();
@@ -648,7 +684,19 @@ octave_value::octave_value (const int64NDArray& inda)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<octave_int64>& inda)
+  : rep (new octave_int64_matrix (inda))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const uint64NDArray& inda)
+  : rep (new octave_uint64_matrix (inda))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const ArrayN<octave_uint64>& inda)
   : rep (new octave_uint64_matrix (inda))
 {
   maybe_mutate ();

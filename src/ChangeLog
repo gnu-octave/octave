@@ -1,3 +1,23 @@
+2007-10-24  David Bateman  <dbateman@free.fr>
+
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::OCTAVE_VALUE_INT_MATRIX_T
+	(const ArrayN<OCTAVE_INT_T>&)): New constructor.
+	* ov.cc (octave_value::octave_value(const ArrayN<T>) with T being
+	octave_int8, octave_uint8, octave_int16, octave_uint16,
+	octave_int32, octave_uint32, octave_int64, octave_uint64): New
+	constructors.
+	* ov.h (octave_value::octave_value(const ArrayN<T>) with T being
+	octave_int8, octave_uint8, octave_int16, octave_uint16,
+	octave_int32, octave_uint32, octave_int64, octave_uint64):
+	Declare them.
+	* DLD-FUNCTIONS/sort.cc (template class octave_sort<T>,
+	template class vec_index<T>, template class
+	octave_sort<vec_index<T> *>,  with T being
+	octave_int8, octave_uint8, octave_int16, octave_uint16,
+	octave_int32, octave_uint32, octave_int64, octave_uint64): New
+	instantiations of sort template classes.
+	(Fsort): Use them.
+
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (root_figure::properties::set_currentfigure):

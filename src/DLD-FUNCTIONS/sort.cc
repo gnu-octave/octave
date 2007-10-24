@@ -890,6 +890,198 @@ static octave_value_list
 mx_sort_indexed (ArrayN<char> &m, int dim, sortmode mode);
 #endif
 
+template class octave_sort<octave_int8>;
+template class vec_index<octave_int8>;
+template class octave_sort<vec_index<octave_int8> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_int8 a, octave_int8 b);
+
+bool
+ascending_compare (vec_index<octave_int8> *a, vec_index<octave_int8> *b);
+
+bool
+descending_compare (octave_int8 a, octave_int8 b);
+
+bool
+descending_compare (vec_index<octave_int8> *a, vec_index<octave_int8> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_int8> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_int8> &m, int dim, sortmode mode);
+#endif
+
+template class octave_sort<octave_uint8>;
+template class vec_index<octave_uint8>;
+template class octave_sort<vec_index<octave_uint8> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_uint8 a, octave_uint8 b);
+
+bool
+ascending_compare (vec_index<octave_uint8> *a, vec_index<octave_uint8> *b);
+
+bool
+descending_compare (octave_uint8 a, octave_uint8 b);
+
+bool
+descending_compare (vec_index<octave_uint8> *a, vec_index<octave_uint8> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_uint8> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_uint8> &m, int dim, sortmode mode);
+#endif
+
+template class octave_sort<octave_int16>;
+template class vec_index<octave_int16>;
+template class octave_sort<vec_index<octave_int16> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_int16 a, octave_int16 b);
+
+bool
+ascending_compare (vec_index<octave_int16> *a, vec_index<octave_int16> *b);
+
+bool
+descending_compare (octave_int16 a, octave_int16 b);
+
+bool
+descending_compare (vec_index<octave_int16> *a, vec_index<octave_int16> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_int16> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_int16> &m, int dim, sortmode mode);
+#endif
+
+template class octave_sort<octave_uint16>;
+template class vec_index<octave_uint16>;
+template class octave_sort<vec_index<octave_uint16> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_uint16 a, octave_uint16 b);
+
+bool
+ascending_compare (vec_index<octave_uint16> *a, vec_index<octave_uint16> *b);
+
+bool
+descending_compare (octave_uint16 a, octave_uint16 b);
+
+bool
+descending_compare (vec_index<octave_uint16> *a, vec_index<octave_uint16> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_uint16> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_uint16> &m, int dim, sortmode mode);
+#endif
+
+template class octave_sort<octave_int32>;
+template class vec_index<octave_int32>;
+template class octave_sort<vec_index<octave_int32> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_int32 a, octave_int32 b);
+
+bool
+ascending_compare (vec_index<octave_int32> *a, vec_index<octave_int32> *b);
+
+bool
+descending_compare (octave_int32 a, octave_int32 b);
+
+bool
+descending_compare (vec_index<octave_int32> *a, vec_index<octave_int32> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_int32> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_int32> &m, int dim, sortmode mode);
+#endif
+
+template class octave_sort<octave_uint32>;
+template class vec_index<octave_uint32>;
+template class octave_sort<vec_index<octave_uint32> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_uint32 a, octave_uint32 b);
+
+bool
+ascending_compare (vec_index<octave_uint32> *a, vec_index<octave_uint32> *b);
+
+bool
+descending_compare (octave_uint32 a, octave_uint32 b);
+
+bool
+descending_compare (vec_index<octave_uint32> *a, vec_index<octave_uint32> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_uint32> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_uint32> &m, int dim, sortmode mode);
+#endif
+
+template class octave_sort<octave_int64>;
+template class vec_index<octave_int64>;
+template class octave_sort<vec_index<octave_int64> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_int64 a, octave_int64 b);
+
+bool
+ascending_compare (vec_index<octave_int64> *a, vec_index<octave_int64> *b);
+
+bool
+descending_compare (octave_int64 a, octave_int64 b);
+
+bool
+descending_compare (vec_index<octave_int64> *a, vec_index<octave_int64> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_int64> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_int64> &m, int dim, sortmode mode);
+#endif
+
+template class octave_sort<octave_uint64>;
+template class vec_index<octave_uint64>;
+template class octave_sort<vec_index<octave_uint64> *>;
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+bool
+ascending_compare (octave_uint64 a, octave_uint64 b);
+
+bool
+ascending_compare (vec_index<octave_uint64> *a, vec_index<octave_uint64> *b);
+
+bool
+descending_compare (octave_uint64 a, octave_uint64 b);
+
+bool
+descending_compare (vec_index<octave_uint64> *a, vec_index<octave_uint64> *b);
+
+static octave_value_list
+mx_sort (ArrayN<octave_uint64> &m, int dim, sortmode mode);
+
+static octave_value_list
+mx_sort_indexed (ArrayN<octave_uint64> &m, int dim, sortmode mode);
+#endif
+
 template <>
 bool
 ascending_compare (vec_index<octave_value> *a, vec_index<octave_value> *b)
@@ -1048,6 +1240,10 @@ ordered lists.\n\
 	}
     }
 
+  // FIXME Perhaps sort should be made a method of the octave_value classes
+  // and then the mess of if statements both might be replaced with 
+  //   retval = arg.sort (dim, smode, return_idx);
+
   if (arg.is_real_type ())
     {
       if (arg.is_sparse_type ())
@@ -1060,6 +1256,94 @@ ordered lists.\n\
 		retval = mx_sort_sparse_indexed (m, dim, smode);
 	      else
 		retval = mx_sort_sparse (m, dim, smode);
+	    }
+	}
+      else if (arg.is_int8_type ())
+	{
+	  int8NDArray m = arg.int8_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
+	    }
+	}
+      else if (arg.is_uint8_type ())
+	{
+	  uint8NDArray m = arg.uint8_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
+	    }
+	}
+      else if (arg.is_int16_type ())
+	{
+	  int16NDArray m = arg.int16_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
+	    }
+	}
+      else if (arg.is_uint16_type ())
+	{
+	  uint16NDArray m = arg.uint16_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
+	    }
+	}
+      else if (arg.is_int32_type ())
+	{
+	  int32NDArray m = arg.int32_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
+	    }
+	}
+      else if (arg.is_uint32_type ())
+	{
+	  uint32NDArray m = arg.uint32_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
+	    }
+	}
+      else if (arg.is_int64_type ())
+	{
+	  int64NDArray m = arg.int64_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
+	    }
+	}
+      else if (arg.is_uint64_type ())
+	{
+	  uint64NDArray m = arg.uint64_array_value ();
+	  if (! error_state)
+	    {
+	      if (return_idx)
+		retval = mx_sort_indexed (m, dim, smode);
+	      else
+		retval = mx_sort (m, dim, smode);
 	    }
 	}
       else

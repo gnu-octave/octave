@@ -50,6 +50,9 @@ public:
   OCTAVE_VALUE_INT_MATRIX_T (const OCTAVE_INT_NDARRAY_T& nda)
     : octave_base_int_matrix<OCTAVE_INT_NDARRAY_T> (nda) { }
 
+  OCTAVE_VALUE_INT_MATRIX_T (const ArrayN<OCTAVE_INT_T>& nda)
+    : octave_base_int_matrix<OCTAVE_INT_NDARRAY_T> (OCTAVE_INT_NDARRAY_T (nda)) { }
+
   ~OCTAVE_VALUE_INT_MATRIX_T (void) { }
 
   octave_base_value *clone (void) const

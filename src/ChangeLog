@@ -1,5 +1,8 @@
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (root_figure::properties::set_currentfigure):
+	Allow currentfigure to be NaN.
+
 	* pt-idx.cc (tree_index_expression::lvalue): Correctly compute
 	number of elements in lvalue expression when last indexing
 	element is ".".

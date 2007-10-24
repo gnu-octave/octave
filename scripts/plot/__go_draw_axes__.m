@@ -788,6 +788,10 @@ function __go_draw_axes__ (h, plot_stream)
       endif
     endif
 
+    if (strcmpi (axis_obj.visible, "off"))
+      fputs (plot_stream, "unset border; unset tics\n");
+    endif
+
     if (strcmpi (axis_obj.key, "on"))
       if (strcmpi (axis_obj.keybox, "on"))
 	box = "box";

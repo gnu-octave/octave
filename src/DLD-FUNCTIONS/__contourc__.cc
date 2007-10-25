@@ -94,10 +94,10 @@ start_contour (double lvl, double x, double y)
 static void
 drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
 	double lvl, int r, int c, double ct_x, double ct_y,
-	uint start_edge, bool first, charMatrix& mark)
+	unsigned int start_edge, bool first, charMatrix& mark)
 {
   double px[4], py[4], pz[4], tmp;
-  uint stop_edge, next_edge, pt[2];
+  unsigned int stop_edge, next_edge, pt[2];
   int next_r, next_c;
 
   //get x, y, and z - lvl for current facet
@@ -127,8 +127,8 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
   if (start_edge == 255)
     {
       // Find start edge.
-      for (uint k = 0; k < 4; k++)
-        if (static_cast<char> (pow(2, k)) & id)
+      for (unsigned int k = 0; k < 4; k++)
+        if (static_cast<char> (1 << k) & id)
           start_edge = k;
     }
 
@@ -136,7 +136,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
     return;
 
   // Decrease mark value of current facet for start edge.
-  mark(r, c) -= static_cast<char> (pow(2, start_edge));
+  mark(r, c) -= static_cast<char> (1 << start_edge);
 
   // Next point (clockwise).
   pt[0] = start_edge;
@@ -159,14 +159,14 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
     }
 
   // Find stop edge FIXME: control flow --> while.
-  for (uint k = 1; k <= 4; k++)
+  for (unsigned int k = 1; k <= 4; k++)
     {
       if (start_edge == 0 || start_edge == 2)
         stop_edge = (start_edge + k) % 4;
       else
         stop_edge = (start_edge - k) % 4;
 
-      if (static_cast<char> (pow(2, stop_edge)) & id)
+      if (static_cast<char> (1 << stop_edge) & id)
         break;
     }
 
@@ -186,7 +186,7 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
   add_point (ct_x, ct_y);
 
   // Decrease id value of current facet for start edge.
-  mark(r, c) -= static_cast<char>(pow(2,stop_edge));
+  mark(r, c) -= static_cast<char> (1 << stop_edge);
 
   // Find next facet.
   next_c = c;
@@ -214,20 +214,20 @@ drawcn (const RowVector& X, const RowVector& Y, const Matrix& Z,
 static void
 mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
 {
-  uint nr = mark.rows ();
-  uint nc = mark.cols ();
+  unsigned int nr = mark.rows ();
+  unsigned int nc = mark.cols ();
 
   double f[4];
 
-  for (uint c = 0; c < nc; c++)
-    for (uint r = 0; r < nr; r++)
+  for (unsigned int c = 0; c < nc; c++)
+    for (unsigned int r = 0; r < nr; r++)
       {
         f[0] = Z(r, c) - lvl;
         f[1] = Z(r, c+1) - lvl;
         f[3] = Z(r+1, c) - lvl;
         f[2] = Z(r+1, c+1) - lvl;
 
-        for (uint i = 0; i < 4; i++)
+        for (unsigned int i = 0; i < 4; i++)
           if (fabs(f[i]) < DBL_EPSILON)
             f[i] = DBL_EPSILON;
 
@@ -238,15 +238,15 @@ mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
 	  mark(r, c) += 8;
       }
 
-  for (uint r = 0; r < nr; r++)
-    for (uint c = 0; c < nc; c++)
+  for (unsigned int r = 0; r < nr; r++)
+    for (unsigned int c = 0; c < nc; c++)
       {
         f[0] = Z(r, c) - lvl;
         f[1] = Z(r, c+1) - lvl;
         f[3] = Z(r+1, c) - lvl;
         f[2] = Z(r+1, c+1) - lvl;
 
-        for (uint i = 0; i < 4; i++)
+        for (unsigned int i = 0; i < 4; i++)
           if (fabs(f[i]) < DBL_EPSILON)
             f[i] = DBL_EPSILON;
 
@@ -261,8 +261,8 @@ mark_facets (const Matrix& Z, charMatrix& mark, double lvl)
 static void
 cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 {
-  uint nr = Z.rows ();
-  uint nc = Z.cols ();
+  unsigned int nr = Z.rows ();
+  unsigned int nc = Z.cols ();
 
   charMatrix mark (nr - 1, nc - 1, 0);
 
@@ -270,7 +270,7 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 
   // Find contours that start at a domain edge.
 
-  for (uint c = 0; c < nc - 1; c++)
+  for (unsigned int c = 0; c < nc - 1; c++)
     {
       // Top.
       if (mark(0, c) & 1)
@@ -281,7 +281,7 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
 	drawcn (X, Y, Z, lvl, nr - 2, c, 0.0, 0.0, 2, true, mark);
     }
 
-  for (uint r = 0; r < nr - 1; r++)
+  for (unsigned int r = 0; r < nr - 1; r++)
     {
       // Left.
       if (mark(r, 0) & 8)
@@ -292,8 +292,8 @@ cntr (const RowVector& X, const RowVector& Y, const Matrix& Z, double lvl)
         drawcn (X, Y, Z, lvl, r, nc - 2, 0.0, 0.0, 1, true, mark);
     }
 
-  for (uint r = 0; r < nr - 1; r++)
-    for (uint c = 0; c < nc - 1; c++)
+  for (unsigned int r = 0; r < nr - 1; r++)
+    for (unsigned int c = 0; c < nc - 1; c++)
       if (mark (r, c) > 0)
         drawcn (X, Y, Z, lvl, r, c, 0.0, 0.0, 255, true, mark);
 }

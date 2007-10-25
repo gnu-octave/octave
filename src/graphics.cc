@@ -842,7 +842,7 @@ figure::properties::set_currentaxes (const graphics_handle& val)
   if (error_state)
     return;
 
-  if (is_handle (val))
+  if (xisnan (val.value ()) || is_handle (val))
     currentaxes = val;
   else
     gripe_set_invalid ("currentaxes");

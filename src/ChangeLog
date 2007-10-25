@@ -1,5 +1,15 @@
 2007-10-25  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (figure::properties::set_currentaxes): 
+	Allow currentfigure to be NaN.
+
+2007-10-25  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* DLD-FUNCTIONS/__contourc__.cc: Use unsigned int instead of uint.
+	(drawcn): Use 1 << k instead of pow (2, k).
+
+2007-10-25  John W. Eaton  <jwe@octave.org>
+
 	* symtab.h (symbol_record::TYPE): Delete trailing comma in enum decl.
 
 	* ov-base.h (DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Use

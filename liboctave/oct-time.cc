@@ -316,7 +316,7 @@ octave_localtime::init (const octave_time& ot)
 {
   tm_usec = ot.usec ();
 
-  time_t t = ot;
+  time_t t = ot.unix_time ();
 
   octave_base_tm::init (localtime (&t));
 }
@@ -326,7 +326,7 @@ octave_gmtime::init (const octave_time& ot)
 {
   tm_usec = ot.usec ();
 
-  time_t t = ot;
+  time_t t = ot.unix_time ();
 
   octave_base_tm::init (gmtime (&t));
 }

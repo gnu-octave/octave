@@ -89,7 +89,7 @@ value returned by @code{time} was 856163706.\n\
   octave_value retval;
 
   if (args.length () == 0)
-    retval = static_cast<double> (octave_time ());
+    retval = octave_time ();
   else
     print_usage ();
 
@@ -206,7 +206,7 @@ mktime (localtime (time ())\n\
 	  octave_base_tm tm = extract_tm (map);
 
 	  if (! error_state)
-	    retval = static_cast<double> (octave_time (tm));
+	    retval = octave_time (tm);
 	  else
 	    error ("mktime: invalid TMSTRUCT argument");
 	}

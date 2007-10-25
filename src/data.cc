@@ -2964,7 +2964,7 @@ This function is equivalent to @code{x | y}.\n\
   BINARY_OP_DEFUN_BODY (op_el_or);
 }
 
-static double __tic_toc_timestamp__ = -1.0;
+static double tic_toc_timestamp = -1.0;
 
 DEFUN (tic, args, nargout,
   "-*- texinfo -*-\n\
@@ -3019,15 +3019,20 @@ coarse resolution.)\n\
 @end deftypefn")
 {
   octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 0)
     warning ("tic: ignoring extra arguments");
 
+  octave_time now;
+
+  double tmp = now.double_value ();
+
   if (nargout > 0)
-    retval = static_cast<octave_uint64> (static_cast<double> (octave_time ()) * 1.0e6);
+    retval = static_cast<octave_uint64> (1e6 * tmp);
   else
-    __tic_toc_timestamp__= static_cast<double>(octave_time ());
+    tic_toc_timestamp = tmp;
       
   return retval;
 }
@@ -3038,24 +3043,30 @@ DEFUN (toc, args, nargout,
 See tic.\n\
 @end deftypefn")
 {
-  double sec = static_cast<double>(octave_time ());
   octave_value retval;
+
   int nargin = args.length ();
 
   if (nargin != 0)
     warning ("tic: ignoring extra arguments");
 
-  if (__tic_toc_timestamp__ < 0)
+  if (tic_toc_timestamp < 0)
     {
       warning ("toc called before timer set");
       if (nargout > 0)
-	retval = Matrix();
+	retval = Matrix ();
     }
-  else if (nargout > 0)
-    retval = sec - __tic_toc_timestamp__;
   else
-    octave_stdout << "Elapsed time is " << sec - __tic_toc_timestamp__ 
-		  << " seconds.\n";
+    {
+      octave_time now;
+
+      double tmp = now.double_value () - tic_toc_timestamp;
+
+      if (nargout > 0)
+	retval = tmp;
+      else
+	octave_stdout << "Elapsed time is " << tmp << " seconds.\n";
+    }
     
   return retval;
 }

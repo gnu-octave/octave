@@ -92,7 +92,8 @@ octave_fcn_handle::subsref (const std::string& type,
 	  {
 	    std::string ff_nm = f->fcn_file_name ();
 
-	    time_t tp = f->time_parsed ();
+	    octave_time ottp = f->time_parsed ();
+	    time_t tp = ottp.unix_time ();
 
 	    if (ff_nm.empty ())
 	      {

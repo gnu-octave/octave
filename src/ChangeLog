@@ -1,3 +1,20 @@
+2007-10-25  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (graphics.h): Use $(AWK) instead of awk.
+
+	* DLD-FUNCTIONS/time.cc (Ftime, Fmktime): Avoid unnecessary cast.
+
+	* data.cc (Ftic, Ftoc): Call double_value on octave_time objects
+	instead of relying on conversion operator.
+	* ov.cc (octave_value::octave_value (octave_time)): Likewise.
+
+	* variables.cc (symbol_out_of_date): Use explicit conversion to
+	time_t instead of relying on conversion operator.
+	* ov-fcn-handle.cc (octave_fcn_handle::subsref): Likewise.
+
+	* data.cc (tic_toc_timestamp): Rename from __tic_toc_timestamp__.
+	Change all uses.
+
 2007-10-24  David Bateman  <dbateman@free.fr>
 
 	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::OCTAVE_VALUE_INT_MATRIX_T

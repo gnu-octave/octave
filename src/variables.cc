@@ -1008,7 +1008,8 @@ symbol_out_of_date (symbol_record *sr)
 	      if (tc < Vlast_prompt_time
 		  || (relative && tc < Vlast_chdir_time))
 		{
-		  time_t tp = fcn->time_parsed ();
+		  octave_time ottp = fcn->time_parsed ();
+		  time_t tp = ottp.unix_time ();
 
 		  std::string nm = fcn->is_nested_function ()
 		    ? fcn->parent_fcn_name () : fcn->name ();

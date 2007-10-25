@@ -70,9 +70,7 @@ public:
 
   void stamp (void);
 
-  operator double () const { return ot_unix_time + ot_usec / 1e6; }
-
-  operator time_t () const { return ot_unix_time; }
+  double double_value (void) const { return ot_unix_time + ot_usec / 1e6; }
 
   time_t unix_time (void) const { return ot_unix_time; }
 

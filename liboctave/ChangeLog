@@ -1,3 +1,12 @@
+2007-10-25  John W. Eaton  <jwe@octave.org>
+
+	* oct-time.cc (octave_gmtime::init, octave_localtime::init):
+	Call unix_time on arg instead of relying on conversion operator.
+
+	* oct-time.h (octave_time::double_value): New function.
+	(octave_time::operator double () const): Delete.
+	(octave_time::operator time_t () const): Delete.
+
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
 	* strptime.c: Also compile if OCTAVE_HAVE_BROKEN_STRPTIME is defined.

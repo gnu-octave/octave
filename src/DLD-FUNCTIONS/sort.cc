@@ -1240,8 +1240,10 @@ ordered lists.\n\
 	}
     }
 
-  // FIXME Perhaps sort should be made a method of the octave_value classes
-  // and then the mess of if statements both might be replaced with 
+  // FIXME -- Perhaps sort should be made a method of the octave_value
+  // classes and then the mess of if statements below might be
+  // replaced with
+  //
   //   retval = arg.sort (dim, smode, return_idx);
 
   if (arg.is_real_type ())

@@ -369,7 +369,7 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 
 graphics.h: graphics.h.in genprops.awk
 	@echo making $@
-	@awk -f $(srcdir)/genprops.awk $< > $@-t
+	@$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
 	@$(simple-move-if-change-rule)
 
 PKG_ADD: $(DLD_DEF_FILES)

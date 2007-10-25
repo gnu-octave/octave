@@ -348,7 +348,7 @@ octave_value::octave_value (unsigned long long int i)
 #endif
 
 octave_value::octave_value (octave_time t)
-  : rep (new octave_scalar (t))
+  : rep (new octave_scalar (t.double_value ()))
 {
 }
 

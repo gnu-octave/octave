@@ -68,36 +68,36 @@
 ## TODO?: This allows a single equal sign "=" to indicate equality, do
 ## we want to require a double equal since that is the boolean operator?
 
-function out = compare_versions(v1, v2, operator)
+function out = compare_versions (v1, v2, operator)
 
-  ## make sure that the version numbers are valid
-  if ~ (ischar (v1) && ischar (v2))
-    error ("Both version numbers must be strings");
-  elseif (size (v1, 1) ~= 1) || (size (v2, 1) ~= 1)
-    error ("Version numbers must be a single row")
+  ## Make sure that the version numbers are valid.
+  if (! (ischar (v1) && ischar (v2)))
+    error ("compare_versions: both version numbers must be strings");
+  elseif (size (v1, 1) != 1 || size (v2, 1) != 1)
+    error ("compare_versions: version numbers must be a single row")
   endif
 
   ## check and make sure that the operator is valid
-  if (~ ischar (operator))
-    error("Operator must be a character string");
+  if (! ischar (operator))
+    error ("compare_versions: operator must be a character string");
   elseif (numel (operator) > 2)
-    error("Operator cannot be more than 2 characters long");
+    error("compare_versions: operator cannot be more than 2 characters long");
   endif
 
   ## trim off any character data that is not part of a normal version
   ## number
   numbers = "0123456789.";
-  v1, numbers, ismember (v1, numbers)
-  v1firstchar = find(~ ismember(v1, numbers), 1);
-  v2firstchar = find(~ ismember(v2, numbers), 1);
-  if ~ isempty (v1firstchar)
+
+  v1firstchar = find (! ismember (v1, numbers), 1);
+  v2firstchar = find (! ismember (v2, numbers), 1);
+  if (! isempty (v1firstchar))
     v1c = v1(v1firstchar:length(v1));
     v1nochar = v1(1:v1firstchar-1);
   else
     v1c = "";
     v1nochar = v1;
   endif
-  if ~ isempty (v2firstchar)
+  if (! isempty (v2firstchar))
     v2c = v2(v2firstchar:length(v2));
     v2nochar = v2(1:v2firstchar-1);
   else
@@ -105,14 +105,15 @@ function out = compare_versions(v1, v2, operator)
     v2nochar = v2;
   endif
 
-  v1n = str2num (split (v1nochar, '.'));
-  v2n = str2num (split (v2nochar, '.'));
+  v1n = str2num (split (v1nochar, "."));
+  v2n = str2num (split (v2nochar, "."));
   if ((isempty (v1n) && isempty (v1c)) || (isempty (v2n) && isempty(v2c)))
-    error ("Given version strings are not valid: %s %s", v1, v2);
+    error ("compare_versions: given version strings are not valid: %s %s",
+	   v1, v2);
   endif
 
-  ## assume that any additional elements would be 0 if one is longer
-  ## than the other
+  ## Assume that any additional elements would be 0 if one is longer
+  ## than the other.
   maxnumlen = max ([length(v1n) length(v2n)]);
   if (length (v1n) < maxnumlen)
     v1n(length(v1n)+1:maxnumlen) = 0;
@@ -121,9 +122,9 @@ function out = compare_versions(v1, v2, operator)
     v2n(length(v2n)+1:maxnumlen) = 0;
   endif
 
-  ## assume that any additional character elements would be 0 if one is
-  ## longer than the other
-  maxcharlen = max ([length(v1c) length(v2c)]);
+  ## Assume that any additional character elements would be 0 if one is
+  ## longer than the other.
+  maxcharlen = max ([length(v1c), length(v2c)]);
   if (length (v1c) < maxcharlen)
     v1c(length(v1c)+1:maxcharlen) = "\0";
   endif
@@ -131,7 +132,7 @@ function out = compare_versions(v1, v2, operator)
     v2c(length(v2c)+1:maxcharlen) = "\0";
   endif
 
-  ## determine the operator
+  ## Determine the operator.
   if any (ismember (operator, "="))
     equal_op = true;
   else
@@ -153,34 +154,35 @@ function out = compare_versions(v1, v2, operator)
     gt_op = false;
   endif
 
-  ## make sure that we don't have conflicting operators
+  ## Make sure that we don't have conflicting operators.
   if (gt_op && lt_op)
-    error("Operator cannot contain both greater and less than symbols");
+    error ("compare_versions: operator cannot contain both greater and less than symbols");
   elseif ((gt_op || lt_op) && not_op)
-    error("Operator cannot contain not and greater than or less than symbols");
+    error ("compare_versions: operator cannot contain not and greater than or less than symbols");
   endif
 
-  ## compare the versions (making sure that they're the same shape)
+  ## Compare the versions (making sure that they're the same shape)
   vcmp = v1n(:) - v2n(:);
   vcmp = [vcmp; (v1c - v2c)(:)];
   if (lt_op)
     ## so that we only need to check for the output being greater than 1
     vcmp = -vcmp;
   endif
-  firstdiff = find(vcmp != 0, 1);
+  firstdiff = find (vcmp != 0, 1);
 
-  if isempty (firstdiff)
-    ## they're equal
+  if (isempty (firstdiff))
+    ## They're equal.
     out = equal_op;
   elseif (lt_op || gt_op)
-    ## they're correctly less than or greater than
+    ## They're correctly less than or greater than.
     out = (vcmp(firstdiff) > 0);
   else
-    ## they're not correctly less than or greater than, and they're not equal
+    ## They're not correctly less than or greater than, and they're not
+    ## equal.
     out = false;
   endif
 
-  ## reverse the output if not is given
+  ## Reverse the output if not is given.
   out = xor (not_op, out);
 endfunction
 

@@ -1,3 +1,7 @@
+2007-10-25  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/compare_versions.m: Style fixes.
+
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
 	* image/saveimage.m: Use functional form of save instead of eval.

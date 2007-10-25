@@ -87,6 +87,7 @@ function out = compare_versions(v1, v2, operator)
   ## trim off any character data that is not part of a normal version
   ## number
   numbers = "0123456789.";
+  v1, numbers, ismember (v1, numbers)
   v1firstchar = find(~ ismember(v1, numbers), 1);
   v2firstchar = find(~ ismember(v2, numbers), 1);
   if ~ isempty (v1firstchar)

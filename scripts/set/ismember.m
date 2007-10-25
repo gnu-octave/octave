@@ -17,67 +17,58 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} [@var{bool}, @var{index}] = ismember (@var{a}, @var{s})
-## Return a matrix @var{bool} the same shape as @var{a} which has 1 if
-## @code{a(i,j)} is in @var{s} or 0 if it isn't. If a second output argument
-## is requested, the indexes into @var{s} of the matching elements is
-## also returned.
+## @deftypefn {Function File} {} ismember (@var{A}, @var{S})
+## Return a matrix the same shape as @var{A} which has 1 if
+## @code{A(i,j)} is in @var{S} or 0 if it isn't.
 ## @seealso{unique, union, intersection, setxor, setdiff}
 ## @end deftypefn
 
 ## Author: Paul Kienzle
 ## Adapted-by: jwe
 
-function [c, index] = ismember (a, s)
+function c = ismember (a, S)
 
   if (nargin != 2)
     print_usage ();
   endif
 
-  ## Convert char matrices to cell arrays.
-  if (ischar (a))
-    a = cellstr (a);
-  endif
-  if (ischar (s))
-    s = cellstr (s);
-  endif
-  
-  ## Input checking.
-  if (! isa (a, class (s)))
-    error ("ismember: both input arguments must be the same type");
-  endif
-
-  if (iscell (a) && ! iscellstr (a))
-    error ("ismember: cell arrays may only contain strings");
-  endif
-
-  if (! isnumeric(a) && ! iscell (a))
-    error ("ismember: input arguments must be arrays, cell arrays, or strings");
-  endif
-  
-  ## Do the actual work.
-  if (isempty (a) || isempty (s))
+  if (isempty (a) || isempty (S))
     c = zeros (size (a), "logical");
   else
-    if (numel (s) == 1)
-      if (iscell (a))
-        c = strcmp (a, s);
+    if (iscell (a) && ! iscell (S))
+      tmp{1} = S;
+      S = tmp;
+    endif
+    if (! iscell (a) && iscell (S))
+      tmp{1} = a;
+      a = tmp;
+    endif
+    S = unique (S(:));
+    lt = length (S);
+    if (lt == 1)
+      if (iscell (a) || iscell (S))
+        c = cellfun ("length", a) == cellfun ("length", S);
+        idx = find (c);
+	if (isempty (idx))
+	  c = zeros (size (a), "logical");
+	else
+	  c(idx) = all (char (a(idx)) == repmat (char (S), length (idx), 1), 2);
+	endif
       else
-	## Both A and S are matrices.
-        c = (a == s);
+        c = (a == S);
       endif
-      index = double (c);
     elseif (numel (a) == 1)
-      if (iscell (a))
-        f = find (strcmp (a, s), 1);
+      if (iscell (a) || iscell (S))
+        c = cellfun ("length", a) == cellfun ("length", S);
+        idx = find (c);
+	if (isempty (idx))
+	  c = zeros (size (a), "logical");
+	else
+          c(idx) = all (repmat (char (a), length (idx), 1) == char (S(idx)), 2);
+          c = any(c);
+	endif
       else
-	## Both A and S are matrices.
-        f = find (a == s, 1);
-      endif
-      c = ! isempty (f);
-      index = f;
-      if (isempty (index))
-	index = 0;
+        c = any (a == S);
       endif
     else
       ## Magic:  the following code determines for each a, the index i
@@ -109,23 +100,16 @@ function [c, index] = ismember (a, s)
       ## easy to now check membership by comparing S(a_idx) == a.  This
       ## magic works because S starts out sorted, and because sort
       ## preserves the relative order of identical elements.
-      lt = length (s);
-      [s, sidx] = sort (s);
-      [v, p] = sort ([s(2:lt); a(:)]);
+      [v, p] = sort ([S(2:lt); a(:)]);
       idx(p) = cumsum (p <= lt-1) + 1;
       idx = idx(lt:end);
-      if (iscell (a) || iscell (s))
+      if (iscell (a) || iscell (S))
         c = (cellfun ("length", a)
-             == reshape (cellfun ("length", s(idx)), size (a)));
+	     == reshape (cellfun ("length", S(idx)), size (a)));
         idx2 = find (c);
-        c(idx2) = all (char (a(idx2)) == char (s(idx)(idx2)), 2);
-        index = zeros (size (c));
-        index(c) = sidx(idx(c));
+        c(idx2) = all (char (a(idx2)) == char (S(idx)(idx2)), 2);
       else
-	## Both A and S are matrices.
-         c = (a == reshape (s (idx), size (a)));
-        index = zeros (size (c));
-        index(c) = sidx(idx(c));
+        c = (a == reshape (S (idx), size (a)));
       endif
     endif
   endif
@@ -136,7 +120,7 @@ endfunction
 %!assert (ismember ('abc', {'abc', 'def'}), true);
 %!assert (isempty (ismember ([], [1, 2])), true);
 %!xtest assert (ismember ('', {'abc', 'def'}), false);
-%!fail ('ismember ([], {1, 2})', 'error:.*');
+%!xtest fail ('ismember ([], {1, 2})', 'error:.*');
 %!fail ('ismember ({[]}, {1, 2})', 'error:.*');
 %!assert (ismember ({'foo', 'bar'}, {'foobar'}), logical ([0, 0]))
 %!assert (ismember ({'foo'}, {'foobar'}), false)
@@ -144,3 +128,4 @@ endfunction
 %!assert (ismember ({'bar'}, {'foobar', 'bar'}), true)
 %!assert (ismember ({'foo', 'bar'}, {'foobar', 'bar'}), logical ([0, 1]))
 %!assert (ismember ({'xfb', 'f', 'b'}, {'fb', 'b'}), logical ([0, 0, 1]))
+%!assert (ismember ("1", "0123456789."), true)

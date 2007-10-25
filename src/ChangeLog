@@ -1,5 +1,8 @@
 2007-10-25  John W. Eaton  <jwe@octave.org>
 
+	* ov-base.h (DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Use
+	OCTAVE_EMPTY_CPP_ARG to avoid annoying Sun compiler warning.
+
 	* Makefile.in (graphics.h): Use $(AWK) instead of awk.
 
 	* DLD-FUNCTIONS/time.cc (Ftime, Fmktime): Avoid unnecessary cast.

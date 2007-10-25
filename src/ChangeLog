@@ -1,5 +1,7 @@
 2007-10-25  John W. Eaton  <jwe@octave.org>
 
+	* symtab.h (symbol_record::TYPE): Delete trailing comma in enum decl.
+
 	* ov-base.h (DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA): Use
 	OCTAVE_EMPTY_CPP_ARG to avoid annoying Sun compiler warning.
 

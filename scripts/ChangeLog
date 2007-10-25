@@ -1,3 +1,8 @@
+2007-10-25  Søren Hauberg  <hauberg@gmail.com>
+
+	* set/ismember.m: Improve handling of cell arrays.
+        Improve error handling.  New output arg INDEX.
+
 2007-10-24  John W. Eaton  <jwe@octave.org>
 
 	* image/saveimage.m: Use functional form of save instead of eval.

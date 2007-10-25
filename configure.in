@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.587 $)
+AC_REVISION($Revision: 1.588 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1889,6 +1889,8 @@ typedef int sig_atomic_t;
 #else
 #define SIZEOF_OCTAVE_IDX_TYPE SIZEOF_INT
 #endif
+
+#define OCTAVE_EMPTY_CPP_ARG
 
 #include "oct-dlldefs.h"
 #include "oct-types.h"

@@ -76,7 +76,7 @@ public:
       COMMAND = 16,
       RAWCOMMAND = 32,
       MAPPER_FUNCTION = 64,
-      MEX_FUNCTION = 128,
+      MEX_FUNCTION = 128
     };
 
 private:

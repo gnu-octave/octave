@@ -120,9 +120,9 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zgelsy, ZGELSY) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+  F77_FUNC (zgelss, ZGELSS) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
 			     Complex*, const octave_idx_type&, Complex*,
-			     const octave_idx_type&, octave_idx_type*, double&, octave_idx_type&,
+			     const octave_idx_type&, double*, double&, octave_idx_type&,
 			     Complex*, const octave_idx_type&, double*, octave_idx_type&);
 
   F77_RET_T
@@ -2448,40 +2448,43 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_id
 
       Complex *presult = result.fortran_vec ();
 
-      Array<octave_idx_type> jpvt (n);
-      octave_idx_type *pjpvt = jpvt.fortran_vec ();
+      octave_idx_type len_s = m < n ? m : n;
+      Array<double> s (len_s);
+      double *ps = s.fortran_vec ();
 
       double rcond = -1.0;
 
-      Array<double> rwork (2 * n);
+      octave_idx_type lrwork = (5 * (m < n ? m : n)) - 4;
+      lrwork = lrwork > 1 ? lrwork : 1;
+      Array<double> rwork (lrwork);
       double *prwork = rwork.fortran_vec ();
 
-      // Ask ZGELSY what the dimension of WORK should be.
+      // Ask ZGELSS what the dimension of WORK should be.
 
       octave_idx_type lwork = -1;
 
       Array<Complex> work (1);
 
-      F77_XFCN (zgelsy, ZGELSY, (m, n, nrhs, tmp_data, m, presult,
-				 nrr, pjpvt, rcond, rank,
+      F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
+				 nrr, ps, rcond, rank,
 				 work.fortran_vec (), lwork, prwork,
 				 info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgelsy");
+	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
 	  lwork = static_cast<octave_idx_type> (std::real (work(0)));
 	  work.resize (lwork);
 
-	  F77_XFCN (zgelsy, ZGELSY, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, pjpvt, rcond, rank,
+	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, ps, rcond, rank,
 				     work.fortran_vec (), lwork,
 				     prwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in zgelsy");
+	      ("unrecoverable error in zgelss");
 	  else
 	    {
 	      retval.resize (n, nrhs);
@@ -2560,40 +2563,43 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 
       Complex *presult = result.fortran_vec ();
 
-      Array<octave_idx_type> jpvt (n);
-      octave_idx_type *pjpvt = jpvt.fortran_vec ();
+      octave_idx_type len_s = m < n ? m : n;
+      Array<double> s (len_s);
+      double *ps = s.fortran_vec ();
 
       double rcond = -1.0;
 
-      Array<double> rwork (2 * n);
+      octave_idx_type lrwork = (5 * (m < n ? m : n)) - 4;
+      lrwork = lrwork > 1 ? lrwork : 1;
+      Array<double> rwork (lrwork);
       double *prwork = rwork.fortran_vec ();
 
-      // Ask ZGELSY what the dimension of WORK should be.
+      // Ask ZGELSS what the dimension of WORK should be.
 
       octave_idx_type lwork = -1;
 
       Array<Complex> work (1);
 
-      F77_XFCN (zgelsy, ZGELSY, (m, n, nrhs, tmp_data, m, presult,
-				 nrr, pjpvt, rcond, rank,
+      F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
+				 nrr, ps, rcond, rank,
 				 work.fortran_vec (), lwork, prwork,
 				 info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgelsy");
+	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
       else
 	{
 	  lwork = static_cast<int> (std::real (work(0)));
 	  work.resize (lwork);
 
-	  F77_XFCN (zgelsy, ZGELSY, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, pjpvt, rcond, rank,
+	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
+				     nrr, ps, rcond, rank,
 				     work.fortran_vec (), lwork,
 				     prwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in zgelsy");
+	      ("unrecoverable error in zgelss");
 	  else
 	    {
 	      retval.resize (n);

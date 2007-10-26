@@ -1,3 +1,7 @@
+2007-10-26  John W. Eaton  <jwe@octave.org>
+
+	* pkg/pkg.m: Delete PKG_ADD directive for autoloading packes.
+
 2007-10-25  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/compare_versions.m: Style fixes.

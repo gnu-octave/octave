@@ -173,7 +173,6 @@
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command pkg
-## PKG_ADD: pkg ("load", "auto");
 
 function [local_packages, global_packages] = pkg (varargin)
   ## Installation prefix (XXX: what should these be on windows?)

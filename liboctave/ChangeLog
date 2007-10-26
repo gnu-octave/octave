@@ -1,7 +1,8 @@
-2007-09-26  John W. Eaton  <jwe@octave.org>
+2007-10-26  David Bateman  <dbateman@free.fr>
 
-	* dMatrix.cc (lssolve): Revert change of 2007-09-26.
-	* CMatrix.cc (lssolve): Ditto.
+	* dMatrix.cc (Matrix::lssolve): Use xGELSD for rank deficient
+	matrices to avoid reliability issues with xGELSY.
+	* CMatrix.cc (ComplexMatrix::lssolve): Likewise.
 
 2007-10-25  John W. Eaton  <jwe@octave.org>
 

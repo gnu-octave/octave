@@ -117,10 +117,17 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (dgelss, DGELSS) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+  F77_FUNC (dgelsy, DGELSY) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     double*, const octave_idx_type&, double*,
+			     const octave_idx_type&, octave_idx_type*, double&, octave_idx_type&,
+			     double*, const octave_idx_type&, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (dgelsd, DGELSD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
 			     double*, const octave_idx_type&, double*,
 			     const octave_idx_type&, double*, double&, octave_idx_type&,
-			     double*, const octave_idx_type&, octave_idx_type&);
+			     double*, const octave_idx_type&, octave_idx_type*,
+			     octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (dpotrf, DPOTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
@@ -2043,7 +2050,8 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info) const
 }
 
 Matrix
-Matrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) const
+Matrix::lssolve (const Matrix& b, octave_idx_type& info,
+		 octave_idx_type& rank) const
 {
   Matrix retval;
 
@@ -2052,7 +2060,6 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) 
   octave_idx_type m = rows ();
   octave_idx_type n = cols ();
 
-
   if (m != b.rows ())
     (*current_liboctave_error_handler)
       ("matrix dimension mismatch solution of linear equations");
@@ -2060,55 +2067,60 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) 
     retval = Matrix (n, b.cols (), 0.0);
   else
     {
+      volatile octave_idx_type minmn = (m < n ? m : n);
+      octave_idx_type maxmn = m > n ? m : n;
+      double rcond = -1.0;
+      if (m != n)
+	{
+	  retval = Matrix (maxmn, nrhs, 0.0);
+
+	  for (octave_idx_type j = 0; j < nrhs; j++)
+	    for (octave_idx_type i = 0; i < m; i++)
+	      retval.elem (i, j) = b.elem (i, j);
+	}
+      else
+	retval = b;
+
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
-      octave_idx_type nrr = m > n ? m : n;
-      Matrix result (nrr, nrhs, 0.0);
-
-      for (octave_idx_type j = 0; j < nrhs; j++)
-	for (octave_idx_type i = 0; i < m; i++)
-	  result.elem (i, j) = b.elem (i, j);
-
-      double *presult = result.fortran_vec ();
-
-      octave_idx_type len_s = m < n ? m : n;
-      Array<double> s (len_s);
+      double *pretval = retval.fortran_vec ();
+      Array<double> s (minmn);
       double *ps = s.fortran_vec ();
 
-      double rcond = -1.0;
-
-      // Ask DGELSS what the dimension of WORK should be.
-
+      // Ask DGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
       Array<double> work (1);
 
-      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr, ps,
-				 rcond, rank, work.fortran_vec (),
-				 lwork, info));
+      // FIXME: Can SMLSIZ be other than 25?
+      octave_idx_type liwork = 3 * minmn * 25 + 11 * minmn;
+      Array<octave_idx_type> iwork (liwork);
+      octave_idx_type* piwork = iwork.fortran_vec ();
+
+      F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
+				 ps, rcond, rank, work.fortran_vec (),
+				 lwork, piwork, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
+	(*current_liboctave_error_handler) 
+	  ("unrecoverable error in dgelsd");
       else
 	{
 	  lwork = static_cast<octave_idx_type> (work(0));
 	  work.resize (lwork);
 
-	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, ps, rcond, rank,
-				     work.fortran_vec (), lwork, info));
+	  F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				     maxmn, ps, rcond, rank,
+				     work.fortran_vec (), lwork, 
+				     piwork, info));
 
 	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in dgelss");
-	  else
-	    {
-	      retval.resize (n, nrhs);
-	      for (octave_idx_type j = 0; j < nrhs; j++)
-		for (octave_idx_type i = 0; i < n; i++)
-		  retval.elem (i, j) = result.elem (i, j);
-	    }
+	    (*current_liboctave_error_handler) 
+	      ("unrecoverable error in dgelsd");
+	  else if (rank < minmn)
+	    (*current_liboctave_warning_handler) 
+	      ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
 	}
     }
 
@@ -2155,7 +2167,8 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info) const
 }
 
 ColumnVector
-Matrix::lssolve (const ColumnVector& b, octave_idx_type& info, octave_idx_type& rank) const
+Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
+		 octave_idx_type& rank) const
 {
   ColumnVector retval;
 
@@ -2171,53 +2184,60 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info, octave_idx_type& 
     retval = ColumnVector (n, 0.0);
   else
     {
+      volatile octave_idx_type minmn = (m < n ? m : n);
+      octave_idx_type maxmn = m > n ? m : n;
+      double rcond = -1.0;
+ 
+      if (m != n)
+	{
+	  retval = ColumnVector (maxmn, 0.0);
+
+	  for (octave_idx_type i = 0; i < m; i++)
+	    retval.elem (i) = b.elem (i);
+	}
+      else
+	retval = b;
+
       Matrix atmp = *this;
       double *tmp_data = atmp.fortran_vec ();
 
-      octave_idx_type nrr = m > n ? m : n;
-      ColumnVector result (nrr);
-
-      for (octave_idx_type i = 0; i < m; i++)
-	result.elem (i) = b.elem (i);
-
-      double *presult = result.fortran_vec ();
-
-      octave_idx_type len_s = m < n ? m : n;
-      Array<double> s (len_s);
+      double *pretval = retval.fortran_vec ();
+      Array<double> s (minmn);
       double *ps = s.fortran_vec ();
 
-      double rcond = -1.0;
-
-      // Ask DGELSS what the dimension of WORK should be.
-
+      // Ask DGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
       Array<double> work (1);
 
-      F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult, nrr, ps,
-				 rcond, rank, work.fortran_vec (),
-				 lwork, info));
+      // FIXME: Can SMLSIZ be other than 25?
+      octave_idx_type liwork = 3 * minmn * 25 + 11 * minmn;
+      Array<octave_idx_type> iwork (liwork);
+      octave_idx_type* piwork = iwork.fortran_vec ();
+
+      F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
+				 ps, rcond, rank, work.fortran_vec (),
+				 lwork, piwork, info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgelss");
+	(*current_liboctave_error_handler) 
+	  ("unrecoverable error in dgelsd");
       else
 	{
 	  lwork = static_cast<octave_idx_type> (work(0));
 	  work.resize (lwork);
 
-	  F77_XFCN (dgelss, DGELSS, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, ps, rcond, rank,
-				     work.fortran_vec (), lwork, info));
+	  F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				     maxmn, ps, rcond, rank,
+				     work.fortran_vec (), lwork, 
+				     piwork, info));
 
 	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in dgelss");
-	  else
-	    {
-	      retval.resize (n);
-	      for (octave_idx_type i = 0; i < n; i++)
-		retval.elem (i) = result.elem (i);
-	    }
+	    (*current_liboctave_error_handler) 
+	      ("unrecoverable error in dgelsd");
+	  else if (rank < minmn)
+	    (*current_liboctave_warning_handler) 
+	      ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
 	}
     }
 

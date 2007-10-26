@@ -1,3 +1,19 @@
+2007-10-26  John W. Eaton  <jwe@octave.org>
+
+	* lapack/dlals0.f: New file.
+	* lapack/Makefile.in (FSRC): Add it to the list.
+
+2007-10-26  David Bateman  <dbateman@free.fr>
+
+	* lapack/dgelsd.f, lapack/dlalsd.f, lapack/dlalsa.f,
+	lapack/dlasda.f, lapack/dlasdt.f, lapack/dlasdq.f 
+	lapack/dlamrg.f, lapack/dlasd0.f, lapack/dlasd1.f, 
+	lapack/dlasd2.f, lapack/dlasd3.f, lapack/dlasd4.f, 
+	lapack/dlasd5.f, lapack/dlasd6.f, lapack/dlasd7.f, 
+	lapack/dlasd8.f, lapack/dlaed6.f, lapack/zgelsd.f, 
+	lapack/zlalsd.f , lapack/zlalsa.f, lapack/zlals0.f: New files.
+	* lapack/Makefile.in (FSRC): Include them here.
+
 2007-10-23  John W. Eaton  <jwe@octave.org>
 
 	* lapack/dgtts2.f, lapack/zgtts2.f: New files.

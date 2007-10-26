@@ -63,7 +63,7 @@ using the @sc{Lapack} xGETRF function.
 
 @item  If the matrix is not square, or any of the previous solvers flags
 a singular or near singular matrix, find a least squares solution using
-the @sc{Lapack} xGELSS function.
+the @sc{Lapack} xGELSD function.
 @end enumerate
 
 The user can force the type of the matrix with the @code{matrix_type}

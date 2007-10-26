@@ -120,10 +120,17 @@ extern "C"
 			     F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
-  F77_FUNC (zgelss, ZGELSS) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+  F77_FUNC (zgelsy, ZGELSY) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+			     Complex*, const octave_idx_type&, Complex*,
+			     const octave_idx_type&, octave_idx_type*, double&, octave_idx_type&,
+			     Complex*, const octave_idx_type&, double*, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (zgelsd, ZGELSD) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
 			     Complex*, const octave_idx_type&, Complex*,
 			     const octave_idx_type&, double*, double&, octave_idx_type&,
-			     Complex*, const octave_idx_type&, double*, octave_idx_type&);
+			     Complex*, const octave_idx_type&, double*, 
+			     octave_idx_type*, octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (zpotrf, ZPOTRF) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type&, 
@@ -2436,62 +2443,63 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_id
     retval = ComplexMatrix (n, b.cols (), Complex (0.0, 0.0));
   else
     {
+      volatile octave_idx_type minmn = (m < n ? m : n);
+      octave_idx_type maxmn = m > n ? m : n;
+      double rcond = -1.0;
+
+      if (m != n)
+	{
+	  retval = ComplexMatrix (maxmn, nrhs);
+
+	  for (octave_idx_type j = 0; j < nrhs; j++)
+	    for (octave_idx_type i = 0; i < m; i++)
+	      retval.elem (i, j) = b.elem (i, j);
+	}
+      else
+	retval = b;
+
       ComplexMatrix atmp = *this;
       Complex *tmp_data = atmp.fortran_vec ();
 
-      octave_idx_type nrr = m > n ? m : n;
-      ComplexMatrix result (nrr, nrhs);
-
-      for (octave_idx_type j = 0; j < nrhs; j++)
-	for (octave_idx_type i = 0; i < m; i++)
-	  result.elem (i, j) = b.elem (i, j);
-
-      Complex *presult = result.fortran_vec ();
-
-      octave_idx_type len_s = m < n ? m : n;
-      Array<double> s (len_s);
+      Complex *pretval = retval.fortran_vec ();
+      Array<double> s (minmn);
       double *ps = s.fortran_vec ();
 
-      double rcond = -1.0;
-
-      octave_idx_type lrwork = (5 * (m < n ? m : n)) - 4;
-      lrwork = lrwork > 1 ? lrwork : 1;
-      Array<double> rwork (lrwork);
-      double *prwork = rwork.fortran_vec ();
-
-      // Ask ZGELSS what the dimension of WORK should be.
-
+      // Ask ZGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
       Array<Complex> work (1);
+      Array<double> rwork (1);
+      Array<octave_idx_type> iwork (1);
 
-      F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
-				 nrr, ps, rcond, rank,
-				 work.fortran_vec (), lwork, prwork,
-				 info));
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
+				 ps, rcond, rank, work.fortran_vec (),
+				 lwork, rwork.fortran_vec (),
+				 iwork.fortran_vec (), info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
+	(*current_liboctave_error_handler) 
+	  ("unrecoverable error in zgelsd");
       else
 	{
 	  lwork = static_cast<octave_idx_type> (std::real (work(0)));
 	  work.resize (lwork);
+	  rwork.resize (static_cast<octave_idx_type> (rwork(0)));
+	  iwork.resize (iwork(0));
 
-	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, ps, rcond, rank,
-				     work.fortran_vec (), lwork,
-				     prwork, info));
+	  F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				     maxmn, ps, rcond, rank,
+				     work.fortran_vec (), lwork, 
+				     rwork.fortran_vec (), 
+				     iwork.fortran_vec (), info));
 
 	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in zgelss");
-	  else
-	    {
-	      retval.resize (n, nrhs);
-	      for (octave_idx_type j = 0; j < nrhs; j++)
-		for (octave_idx_type i = 0; i < n; i++)
-		  retval.elem (i, j) = result.elem (i, j);
-	    }
+	    (*current_liboctave_error_handler) 
+	      ("unrecoverable error in zgelsd");
+	  else if (rank < minmn)
+	    (*current_liboctave_warning_handler) 
+	      ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
+	       m, n, rank, rcond);
 	}
     }
 
@@ -2552,60 +2560,62 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
     retval = ComplexColumnVector (n, Complex (0.0, 0.0));
   else
     {
+      volatile octave_idx_type minmn = (m < n ? m : n);
+      octave_idx_type maxmn = m > n ? m : n;
+      double rcond = -1.0;
+
+      if (m != n)
+	{
+	  retval = ComplexColumnVector (maxmn);
+
+	  for (octave_idx_type i = 0; i < m; i++)
+	    retval.elem (i) = b.elem (i);
+	}
+      else
+	retval = b;
+
       ComplexMatrix atmp = *this;
       Complex *tmp_data = atmp.fortran_vec ();
 
-      octave_idx_type nrr = m > n ? m : n;
-      ComplexColumnVector result (nrr);
-
-      for (octave_idx_type i = 0; i < m; i++)
-	result.elem (i) = b.elem (i);
-
-      Complex *presult = result.fortran_vec ();
-
-      octave_idx_type len_s = m < n ? m : n;
-      Array<double> s (len_s);
+      Complex *pretval = retval.fortran_vec ();
+      Array<double> s (minmn);
       double *ps = s.fortran_vec ();
 
-      double rcond = -1.0;
-
-      octave_idx_type lrwork = (5 * (m < n ? m : n)) - 4;
-      lrwork = lrwork > 1 ? lrwork : 1;
-      Array<double> rwork (lrwork);
-      double *prwork = rwork.fortran_vec ();
-
-      // Ask ZGELSS what the dimension of WORK should be.
-
+      // Ask ZGELSD what the dimension of WORK should be.
       octave_idx_type lwork = -1;
 
       Array<Complex> work (1);
+      Array<double> rwork (1);
+      Array<octave_idx_type> iwork (1);
 
-      F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
-				 nrr, ps, rcond, rank,
-				 work.fortran_vec (), lwork, prwork,
-				 info));
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
+				 ps, rcond, rank, work.fortran_vec (),
+				 lwork, rwork.fortran_vec (),
+				 iwork.fortran_vec (), info));
 
       if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgelss");
+	(*current_liboctave_error_handler) 
+	  ("unrecoverable error in zgelsd");
       else
 	{
-	  lwork = static_cast<int> (std::real (work(0)));
+	  lwork = static_cast<octave_idx_type> (std::real (work(0)));
 	  work.resize (lwork);
+	  rwork.resize (static_cast<octave_idx_type> (rwork(0)));
+	  iwork.resize (iwork(0));
 
-	  F77_XFCN (zgelss, ZGELSS, (m, n, nrhs, tmp_data, m, presult,
-				     nrr, ps, rcond, rank,
-				     work.fortran_vec (), lwork,
-				     prwork, info));
+	  F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				     maxmn, ps, rcond, rank,
+				     work.fortran_vec (), lwork, 
+				     rwork.fortran_vec (), 
+				     iwork.fortran_vec (), info));
 
 	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in zgelss");
-	  else
-	    {
-	      retval.resize (n);
-	      for (octave_idx_type i = 0; i < n; i++)
-		retval.elem (i) = result.elem (i);
-	    }
+	    (*current_liboctave_error_handler) 
+	      ("unrecoverable error in zgelsd");
+	  else if (rank < minmn)
+	    (*current_liboctave_warning_handler) 
+	      ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
+	       m, n, rank, rcond);
 	}
     }
 

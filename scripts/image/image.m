@@ -39,7 +39,7 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function image (x, y, img)
+function h = image (x, y, img)
 
   ## Deprecated zoom.  Remove this hunk of code if old zoom argument
   ## is outmoded.

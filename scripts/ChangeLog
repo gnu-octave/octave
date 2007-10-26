@@ -1,5 +1,8 @@
 2007-10-26  John W. Eaton  <jwe@octave.org>
 
+	* image/imshow.m: Improve compatibility.
+	* image/image.m: Return handle if nargou > 0.
+
 	* pkg/pkg.m: Delete PKG_ADD directive for autoloading packes.
 
 2007-10-25  John W. Eaton  <jwe@octave.org>

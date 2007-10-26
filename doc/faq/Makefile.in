@@ -54,14 +54,14 @@ Octave-FAQ.info: $(TEXINFO)
 
 Octave-FAQ.dvi: $(TEXINFO)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
-	  $(UNSETCOMSPEC) $(TEXI2DVI) $<
+	  $(TEXI2DVI) $<
 
 Octave-FAQ.ps: Octave-FAQ.dvi
 	-dvips -o $@ $<
 
 Octave-FAQ.pdf: $(TEXINFO)
 	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
-	  $(UNSETCOMSPEC) $(TEXI2PDF) $<
+	  $(TEXI2PDF) $<
 
 Octave-FAQ.html: $(TEXINFO)
 	-$(MAKEINFO) --html --ifinfo --no-split --output=$@ -I.. -I$(srcdir) -I$(srcdir)/.. $<

@@ -111,11 +111,17 @@ TEXINFO_SOURCE := $(MAIN_TEXINFO) $(SUB_TEXINFO) contributors.texi
 
 TEXINFO := $(TEXINFO_SOURCE) ../conf.texi
 
-TEXI2DVICOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
-	  $(UNSETCOMSPEC) $(TEXI2DVI) $(MAIN_TEXINFO) --output $@
+# Do not use --output option argument, because this is not supported
+# by MiKTeX (compilation under Windows/MSVC assumes the use of MiKTeX
+# to build the doc).  Instead, copy the source .texi using the
+# targeted file name (e.g. to generate octave-a4.pdf, copy to
+# octave-a4.texi) and call texi2[dvi|pdf] on it.
 
-TEXI2PDFCOMMAND = TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
-	  $(UNSETCOMSPEC) $(TEXI2PDF) $(MAIN_TEXINFO) --output $@
+TEXI2DVICOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+	  $(TEXI2DVI)
+
+TEXI2PDFCOMMAND = TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+	  $(TEXI2PDF)
 
 FORMATTED = octave.info octave.pdf octave-a4.pdf octave.info-[0-9]*
 
@@ -165,6 +171,12 @@ contributors.texi: contributors.in
 	$(AWK) -f $(srcdir)/mkcontrib.awk $(srcdir)/contributors.in > $@-t
 	@$(simple-move-if-change-rule)
 
+octave-a4.texi: $(MAIN_TEXINFO)
+	cp $< $@
+
+octave-smallbook.texi: $(MAIN_TEXINFO)
+	cp $< $@
+
 $(SUB_TEXINFO) : %.texi : %.txi
 	@echo making $@ from $<
 	@./munge-texi \
@@ -176,14 +188,14 @@ octave.info: $(IMAGES_TXT) $(TEXINFO) $(EXAMPLE_FILES)
 	-$(MAKEINFO) -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
 octave.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
-	-TEXINPUTS="..:$(srcdir):$(srcdir)/..:$(TEXINPUTS):" \
-	  $(UNSETCOMSPEC) $(TEXI2DVI) $(MAIN_TEXINFO)
+	-TEXINPUTS="..$(sepchar)$(srcdir)$(sepchar)$(srcdir)/..$(sepchar)$(TEXINPUTS)$(sepchar)" \
+	  $(TEXI2DVI) $(MAIN_TEXINFO)
 
-octave-a4.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
-	-$(TEXI2DVICOMMAND) -t @afourpaper
+octave-a4.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES) octave-a4.texi
+	-$(TEXI2DVICOMMAND) octave-a4.texi -t @afourpaper
 
-octave-smallbook.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES)
-	-$(TEXI2DVICOMMAND) -t @smallbook
+octave-smallbook.dvi: $(IMAGES_EPS) $(TEXINFO) $(EXAMPLE_FILES) octave-smallbook.texi
+	-$(TEXI2DVICOMMAND) octave-smallbook.texi -t @smallbook
 
 octave.ps: octave.dvi
 	-dvips -o $@ $<
@@ -195,13 +207,13 @@ octave-smallbook.ps: octave-smallbook.dvi
 	-dvips -o $@ $<
 
 octave.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
-	-$(TEXI2PDFCOMMAND)
+	-$(TEXI2PDFCOMMAND) $(MAIN_TEXINFO)
 
-octave-a4.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
-	-$(TEXI2PDFCOMMAND) -t @afourpaper
+octave-a4.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES) octave-a4.texi
+	-$(TEXI2PDFCOMMAND) octave-a4.texi -t @afourpaper
 
-octave-smallbook.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES)
-	-$(TEXI2PDFCOMMAND) -t @smallbook
+octave-smallbook.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES) octave-smallbook.texi
+	-$(TEXI2PDFCOMMAND) octave-smallbook.texi -t @smallbook
 
 ../../INSTALL.OCTAVE: install.texi
 	rm -f INSTALL
@@ -318,7 +330,17 @@ mostlyclean clean:
 	octave.cps octave.fns octave.ins octave.kys octave.ops \
 	octave.pgs octave.rds octave.tps octave.vrs octave.aux \
 	octave.log octave.toc \
-	munge-texi$(BUILD_EXEEXT) munge-texi.o
+	munge-texi$(BUILD_EXEEXT) munge-texi.o \
+	octave-a4.cp octave-a4.fn octave-a4.in \
+	octave-a4.ky octave-a4.op octave-a4.pg octave-a4.rd octave-a4.tp octave-a4.vr \
+	octave-a4.cps octave-a4.fns octave-a4.ins octave-a4.kys octave-a4.ops \
+	octave-a4.pgs octave-a4.rds octave-a4.tps octave-a4.vrs octave-a4.aux \
+	octave-a4.log octave-a4.toc \
+	octave-smallbook.cp octave-smallbook.fn octave-smallbook.in \
+	octave-smallbook.ky octave-smallbook.op octave-smallbook.pg octave-smallbook.rd octave-smallbook.tp octave-smallbook.vr \
+	octave-smallbook.cps octave-smallbook.fns octave-smallbook.ins octave-smallbook.kys octave-smallbook.ops \
+	octave-smallbook.pgs octave-smallbook.rds octave-smallbook.tps octave-smallbook.vrs octave-smallbook.aux \
+	octave-smallbook.log octave-smallbook.toc
 .PHONY: mostlyclean clean 
 
 distclean: clean
@@ -332,7 +354,7 @@ maintainer-clean: clean clean-texi
 .PHONY: maintainer-clean
 
 clean-texi:
-	rm -f $(SUB_TEXINFO) contributors.texi
+	rm -f $(SUB_TEXINFO) contributors.texi octave-a4.texi octave-smallbook.texi
 .PHONY: clean-texi
 
 dist: clean-texi all

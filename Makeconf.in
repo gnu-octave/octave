@@ -75,14 +75,6 @@ MAKEINFO = @MAKEINFO@
 TEXI2DVI = @TEXI2DVI@
 TEXI2PDF = @TEXI2PDF@
 
-# Both texi2dvi and texi2pdf check COMSPEC to decide what path
-# separator to use.  We build Octave with a Unixy shell, even on
-# Windows sytems, so we need to unset COMSPEC when invoking these
-# scripts.  Used in the doc/*/Makefiles.
-ifneq ($(COMSPEC),)
-  UNSETCOMSPEC = COMSPEC=
-endif
-
 GHOSTSCRIPT = @GHOSTSCRIPT@
 
 DEFAULT_PAGER = @DEFAULT_PAGER@

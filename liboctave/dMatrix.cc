@@ -1819,7 +1819,7 @@ Matrix::solve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
   if (singular_fallback && mattype.type () == MatrixType::Rectangular)
     {
       octave_idx_type rank;
-      retval = lssolve (b, info, rank);
+      retval = lssolve (b, info, rank, rcond);
     }
 
   return retval;
@@ -2039,19 +2039,29 @@ Matrix::lssolve (const Matrix& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 Matrix
 Matrix::lssolve (const Matrix& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 Matrix
 Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 		 octave_idx_type& rank) const
+{
+  double rcond;
+  return lssolve (b, info, rank, rcond);
+}
+
+Matrix
+Matrix::lssolve (const Matrix& b, octave_idx_type& info,
+		 octave_idx_type& rank, double &rcond) const
 {
   Matrix retval;
 
@@ -2069,7 +2079,7 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
     {
       volatile octave_idx_type minmn = (m < n ? m : n);
       octave_idx_type maxmn = m > n ? m : n;
-      double rcond = -1.0;
+      rcond = -1.0;
       if (m != n)
 	{
 	  retval = Matrix (maxmn, nrhs, 0.0);
@@ -2118,9 +2128,16 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler) 
 	      ("unrecoverable error in dgelsd");
-	  else if (rank < minmn)
-	    (*current_liboctave_warning_handler) 
-	      ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
+	  else 
+	    {
+	      if (rank < minmn)
+		(*current_liboctave_warning_handler) 
+		  ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
+	      if (s.elem (0) == 0.0)
+		rcond = 0.0;
+	      else
+		rcond = s.elem (minmn - 1) / s.elem (0);
+	    }
 	}
     }
 
@@ -2133,7 +2150,8 @@ Matrix::lssolve (const ComplexMatrix& b) const
   ComplexMatrix tmp (*this);
   octave_idx_type info;
   octave_idx_type rank;
-  return tmp.lssolve (b, info, rank);
+  double rcond;
+  return tmp.lssolve (b, info, rank, rcond);
 }
 
 ComplexMatrix
@@ -2141,14 +2159,25 @@ Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
   octave_idx_type rank;
-  return tmp.lssolve (b, info, rank);
+  double rcond;
+  return tmp.lssolve (b, info, rank, rcond);
 }
 
 ComplexMatrix
-Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_idx_type& rank) const
+Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, 
+		 octave_idx_type& rank) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b, info, rank);
+  double rcond;
+  return tmp.lssolve (b, info, rank, rcond);
+}
+
+ComplexMatrix
+Matrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, 
+		 octave_idx_type& rank, double& rcond) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.lssolve (b, info, rank, rcond);
 }
 
 ColumnVector
@@ -2156,19 +2185,29 @@ Matrix::lssolve (const ColumnVector& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 ColumnVector
 Matrix::lssolve (const ColumnVector& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 ColumnVector
 Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
 		 octave_idx_type& rank) const
+{
+  double rcond;
+  return lssolve (b, info, rank, rcond);
+}
+
+ColumnVector
+Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
+		 octave_idx_type& rank, double &rcond) const
 {
   ColumnVector retval;
 
@@ -2186,7 +2225,7 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
     {
       volatile octave_idx_type minmn = (m < n ? m : n);
       octave_idx_type maxmn = m > n ? m : n;
-      double rcond = -1.0;
+      rcond = -1.0;
  
       if (m != n)
 	{
@@ -2236,8 +2275,15 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
 	    (*current_liboctave_error_handler) 
 	      ("unrecoverable error in dgelsd");
 	  else if (rank < minmn)
-	    (*current_liboctave_warning_handler) 
-	      ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
+	    {
+	      if (rank < minmn)
+		(*current_liboctave_warning_handler) 
+		  ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
+	      if (s.elem (0) == 0.0)
+		rcond = 0.0;
+	      else
+		rcond = s.elem (minmn - 1) / s.elem (0);
+	    }
 	}
     }
 
@@ -2248,21 +2294,36 @@ ComplexColumnVector
 Matrix::lssolve (const ComplexColumnVector& b) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b);
+  octave_idx_type info;
+  octave_idx_type rank;
+  double rcond;
+  return tmp.lssolve (b, info, rank, rcond);
 }
 
 ComplexColumnVector
 Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b, info);
+  octave_idx_type rank;
+  double rcond;
+  return tmp.lssolve (b, info, rank, rcond);
 }
 
 ComplexColumnVector
-Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info, octave_idx_type& rank) const
+Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info, 
+		 octave_idx_type& rank) const
 {
   ComplexMatrix tmp (*this);
-  return tmp.lssolve (b, info, rank);
+  double rcond;
+  return tmp.lssolve (b, info, rank, rcond);
+}
+
+ComplexColumnVector
+Matrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info, 
+		 octave_idx_type& rank, double &rcond) const
+{
+  ComplexMatrix tmp (*this);
+  return tmp.lssolve (b, info, rank, rcond);
 }
 
 // Constants for matrix exponential calculation.

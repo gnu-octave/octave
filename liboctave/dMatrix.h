@@ -226,21 +226,34 @@ public:
   // Singular solvers
   Matrix lssolve (const Matrix& b) const;
   Matrix lssolve (const Matrix& b, octave_idx_type& info) const;
-  Matrix lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) const;
+  Matrix lssolve (const Matrix& b, octave_idx_type& info, 
+		  octave_idx_type& rank) const;
+  Matrix lssolve (const Matrix& b, octave_idx_type& info, 
+		  octave_idx_type& rank, double& rcond) const;
 
   ComplexMatrix lssolve (const ComplexMatrix& b) const;
   ComplexMatrix lssolve (const ComplexMatrix& b, octave_idx_type& info) const;
   ComplexMatrix lssolve (const ComplexMatrix& b, octave_idx_type& info,
 			 octave_idx_type& rank) const;
+  ComplexMatrix lssolve (const ComplexMatrix& b, octave_idx_type& info,
+			 octave_idx_type& rank, double &rcond) const;
 
   ColumnVector lssolve (const ColumnVector& b) const;
   ColumnVector lssolve (const ColumnVector& b, octave_idx_type& info) const;
-  ColumnVector lssolve (const ColumnVector& b, octave_idx_type& info, octave_idx_type& rank) const;
+  ColumnVector lssolve (const ColumnVector& b, octave_idx_type& info,
+			octave_idx_type& rank) const;
+  ColumnVector lssolve (const ColumnVector& b, octave_idx_type& info,
+			octave_idx_type& rank, double& rcond) const;
 
   ComplexColumnVector lssolve (const ComplexColumnVector& b) const;
-  ComplexColumnVector lssolve (const ComplexColumnVector& b, octave_idx_type& info) const;
-  ComplexColumnVector lssolve (const ComplexColumnVector& b, octave_idx_type& info,
+  ComplexColumnVector lssolve (const ComplexColumnVector& b, 
+			       octave_idx_type& info) const;
+  ComplexColumnVector lssolve (const ComplexColumnVector& b,
+			       octave_idx_type& info,
 			       octave_idx_type& rank) const;
+  ComplexColumnVector lssolve (const ComplexColumnVector& b, 
+			       octave_idx_type& info,
+			       octave_idx_type& rank, double& rcond) const;
 
   Matrix expm (void) const;
 

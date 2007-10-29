@@ -2201,7 +2201,7 @@ ComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
   if (singular_fallback && mattype.type () == MatrixType::Rectangular)
     {
       octave_idx_type rank;
-      retval = lssolve (b, info, rank);
+      retval = lssolve (b, info, rank, rcond);
     }
 
   return retval;
@@ -2395,20 +2395,31 @@ ComplexMatrix::lssolve (const Matrix& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  return lssolve (ComplexMatrix (b), info, rank);
+  double rcond;
+  return lssolve (ComplexMatrix (b), info, rank, rcond);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const Matrix& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  return lssolve (ComplexMatrix (b), info, rank);
+  double rcond;
+  return lssolve (ComplexMatrix (b), info, rank, rcond);
 }
 
 ComplexMatrix
-ComplexMatrix::lssolve (const Matrix& b, octave_idx_type& info, octave_idx_type& rank) const
+ComplexMatrix::lssolve (const Matrix& b, octave_idx_type& info,
+			octave_idx_type& rank) const
 {
-  return lssolve (ComplexMatrix (b), info, rank);
+  double rcond;
+  return lssolve (ComplexMatrix (b), info, rank, rcond);
+}
+
+ComplexMatrix
+ComplexMatrix::lssolve (const Matrix& b, octave_idx_type& info,
+			octave_idx_type& rank, double& rcond) const
+{
+  return lssolve (ComplexMatrix (b), info, rank, rcond);
 }
 
 ComplexMatrix
@@ -2416,18 +2427,29 @@ ComplexMatrix::lssolve (const ComplexMatrix& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 ComplexMatrix
-ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_idx_type& rank) const
+ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
+			octave_idx_type& rank) const
+{
+  double rcond;
+  return lssolve (b, info, rank, rcond);
+}
+
+ComplexMatrix
+ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, 
+			octave_idx_type& rank, double& rcond) const
 {
   ComplexMatrix retval;
 
@@ -2445,7 +2467,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_id
     {
       volatile octave_idx_type minmn = (m < n ? m : n);
       octave_idx_type maxmn = m > n ? m : n;
-      double rcond = -1.0;
+      rcond = -1.0;
 
       if (m != n)
 	{
@@ -2496,10 +2518,18 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, octave_id
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler) 
 	      ("unrecoverable error in zgelsd");
-	  else if (rank < minmn)
-	    (*current_liboctave_warning_handler) 
-	      ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-	       m, n, rank, rcond);
+	  else
+	    {
+	      if (rank < minmn)
+		(*current_liboctave_warning_handler) 
+		  ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
+		   m, n, rank, rcond);
+
+	      if (s.elem (0) == 0.0)
+		rcond = 0.0;
+	      else
+		rcond = s.elem (minmn - 1) / s.elem (0);
+	    }
 	}
     }
 
@@ -2511,20 +2541,31 @@ ComplexMatrix::lssolve (const ColumnVector& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  return lssolve (ComplexColumnVector (b), info, rank);
+  double rcond;
+  return lssolve (ComplexColumnVector (b), info, rank, rcond);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ColumnVector& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  return lssolve (ComplexColumnVector (b), info, rank);
+  double rcond;
+  return lssolve (ComplexColumnVector (b), info, rank, rcond);
 }
 
 ComplexColumnVector
-ComplexMatrix::lssolve (const ColumnVector& b, octave_idx_type& info, octave_idx_type& rank) const
+ComplexMatrix::lssolve (const ColumnVector& b, octave_idx_type& info, 
+			octave_idx_type& rank) const
 {
-  return lssolve (ComplexColumnVector (b), info, rank);
+  double rcond;
+  return lssolve (ComplexColumnVector (b), info, rank, rcond);
+}
+
+ComplexColumnVector
+ComplexMatrix::lssolve (const ColumnVector& b, octave_idx_type& info, 
+			octave_idx_type& rank, double& rcond) const
+{
+  return lssolve (ComplexColumnVector (b), info, rank, rcond);
 }
 
 ComplexColumnVector
@@ -2532,19 +2573,30 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  return lssolve (b, info, rank);
+  double rcond;
+  return lssolve (b, info, rank, rcond);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 			octave_idx_type& rank) const
+{
+  double rcond;
+  return lssolve (b, info, rank, rcond);
+
+}
+
+ComplexColumnVector
+ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
+			octave_idx_type& rank, double& rcond) const
 {
   ComplexColumnVector retval;
 
@@ -2562,7 +2614,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
     {
       volatile octave_idx_type minmn = (m < n ? m : n);
       octave_idx_type maxmn = m > n ? m : n;
-      double rcond = -1.0;
+      rcond = -1.0;
 
       if (m != n)
 	{
@@ -2613,9 +2665,17 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 	    (*current_liboctave_error_handler) 
 	      ("unrecoverable error in zgelsd");
 	  else if (rank < minmn)
-	    (*current_liboctave_warning_handler) 
-	      ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-	       m, n, rank, rcond);
+	    {
+	      if (rank < minmn)
+		(*current_liboctave_warning_handler) 
+		  ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
+		   m, n, rank, rcond);
+
+	      if (s.elem (0) == 0.0)
+		rcond = 0.0;
+	      else
+		rcond = s.elem (minmn - 1) / s.elem (0);
+	    }
 	}
     }
 

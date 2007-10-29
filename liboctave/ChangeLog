@@ -1,3 +1,42 @@
+2007-10-29  David Bateman  <dbateman@free.fr>
+
+	* CMatrix.h (lssolve (const Matrix&, octave_idx_type&, 
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
+	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	octave_idx_type&, octave_idx_type&, double& rcond) const): New
+	declarations.
+	* CMatrix.cc (lssolve (const Matrix&, octave_idx_type&, 
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
+	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	octave_idx_type&, octave_idx_type&, double& rcond) const): New
+	methods.
+	(lssolve (const Matrix&, octave_idx_type&, octave_idx_type&,
+	double&) const, lssolve (const ComplexMatrix&, octave_idx_type&, 
+	octave_idx_type&, double&) const): Also return rcond from the
+	singular values returned by XGELSD.
+	* dMatrix.h (lssolve (const Matrix&, octave_idx_type&, 
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
+	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	octave_idx_type&, octave_idx_type&, double& rcond) const): New
+	declarations.
+	* dMatrix.cc (lssolve (const Matrix&, octave_idx_type&, 
+	octave_idx_type&, double&) const, lssolve (const ComplexMatrix&, 
+	octave_idx_type&, octave_idx_type&, double&) const, lssolve 
+	(const ColumnVector&, octave_idx_type&, octave_idx_type&, 
+	double& rcond) const, lssolve (const ComplexColumnVector&, 
+	octave_idx_type&, octave_idx_type&, double& rcond) const): New
+	methods.
+	(lssolve (const Matrix&, octave_idx_type&, octave_idx_type&,
+	double&) const, lssolve (const ComplexMatrix&, octave_idx_type&, 
+	octave_idx_type&, double&) const): Also return rcond from the
+	singular values returned by XGELSD.
+		
 2007-10-26  David Bateman  <dbateman@free.fr>
 
 	* dMatrix.cc (Matrix::lssolve): Use xGELSD for rank deficient

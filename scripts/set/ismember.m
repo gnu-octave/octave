@@ -119,9 +119,11 @@ endfunction
 %!assert (ismember ({''}, {'abc', 'def'}), false);
 %!assert (ismember ('abc', {'abc', 'def'}), true);
 %!assert (isempty (ismember ([], [1, 2])), true);
+%!assert (isempty (ismember ({}, {'a', 'b'})), true);
 %!xtest assert (ismember ('', {'abc', 'def'}), false);
 %!xtest fail ('ismember ([], {1, 2})', 'error:.*');
 %!fail ('ismember ({[]}, {1, 2})', 'error:.*');
+%!xtest fail ('ismember ({}, {1, 2})', 'error:.*');
 %!assert (ismember ({'foo', 'bar'}, {'foobar'}), logical ([0, 0]))
 %!assert (ismember ({'foo'}, {'foobar'}), false)
 %!assert (ismember ({'bar'}, {'foobar'}), false)
@@ -129,3 +131,4 @@ endfunction
 %!assert (ismember ({'foo', 'bar'}, {'foobar', 'bar'}), logical ([0, 1]))
 %!assert (ismember ({'xfb', 'f', 'b'}, {'fb', 'b'}), logical ([0, 0, 1]))
 %!assert (ismember ("1", "0123456789."), true)
+%!assert (ismember ("1.1", "0123456789."), logical ([1, 1, 1]))

@@ -144,7 +144,27 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 
       std::string mode = mode_arg;
 
-      size_t pos = mode.find ('z');
+      // 'W' and 'R' are accepted as 'w' and 'r', but we warn about
+      // them because Matlab says they perform "automatic flushing"
+      // but we don't know precisely what action that implies.
+
+      size_t pos = mode.find ('W');
+
+      if (pos != NPOS)
+	{
+	  warning ("fopen: treating mode \"W\" as equivalent to \"w\"");
+	  mode[pos] = 'w';
+	}
+
+      pos = mode.find ('R');
+
+      if (pos != NPOS)
+	{
+	  warning ("fopen: treating mode \"R\" as equivalent to \"r\"");
+	  mode[pos] = 'r';
+	}
+
+      pos = mode.find ('z');
 
       if (pos != NPOS)
 	{

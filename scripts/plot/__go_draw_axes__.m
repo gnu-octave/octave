@@ -1056,7 +1056,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, plot_stream)
       case "*"
 	pt = "3";
       case "."
-	pt = "7";
+	pt = "0";
       case "x"
 	pt = "2";
       case {"square", "s"}

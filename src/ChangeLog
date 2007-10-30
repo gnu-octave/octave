@@ -1,3 +1,12 @@
+2007-10-30  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (fopen_mode_to_ios_mode): Handle 'W' as 'w' and 'R'
+	as 'r', but warn about them.
+
+2007-10-29  Thomas Treichl <Thomas.Treichl@gmx.net>
+
+	* data.cc: Include sytime.h, sys/types.h, and sys/resource.h.
+
 2007-10-25  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (figure::properties::set_currentaxes): 

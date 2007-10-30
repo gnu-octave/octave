@@ -25,6 +25,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include "systime.h"
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h>
+#endif
+
 #include <cfloat>
 #include <cmath>
 

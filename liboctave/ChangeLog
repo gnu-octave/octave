@@ -1,3 +1,8 @@
+2007-10-30  John W. Eaton  <jwe@octave.org>
+
+	* CMatrix.cc (lssolve): Compute size of rwork and iwork arrays.
+	* dMatrix.cc (lssolve): Compute size of iwork array.
+
 2007-10-29  David Bateman  <dbateman@free.fr>
 
 	* CMatrix.h (lssolve (const Matrix&, octave_idx_type&, 

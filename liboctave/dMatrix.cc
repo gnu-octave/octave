@@ -2104,7 +2104,22 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       Array<double> work (1);
 
       // FIXME: Can SMLSIZ be other than 25?
-      octave_idx_type liwork = 3 * minmn * 25 + 11 * minmn;
+      octave_idx_type smlsiz = 25;
+
+      // We compute the size of iwork because DGELSD in older versions
+      // of LAPACK does not return it on a query call.
+#if defined (HAVE_LOG2)
+      double tmp = log2 (minmn) / static_cast<double> (smlsiz+1) + 1;
+#else
+      double tmp = log (minmn) / static_cast<double> (smlsiz+1) / log (2) + 1;
+#endif
+      octave_idx_type nlvl = static_cast<int> (tmp);
+      if (nlvl < 0)
+	nlvl = 0;
+
+      octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
+      if (liwork < 1)
+	liwork = 1;
       Array<octave_idx_type> iwork (liwork);
       octave_idx_type* piwork = iwork.fortran_vec ();
 
@@ -2137,6 +2152,8 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 		rcond = 0.0;
 	      else
 		rcond = s.elem (minmn - 1) / s.elem (0);
+
+	      retval.resize (n, nrhs);
 	    }
 	}
     }
@@ -2250,7 +2267,22 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
       Array<double> work (1);
 
       // FIXME: Can SMLSIZ be other than 25?
-      octave_idx_type liwork = 3 * minmn * 25 + 11 * minmn;
+      octave_idx_type smlsiz = 25;
+
+      // We compute the size of iwork because DGELSD in older versions
+      // of LAPACK does not return it on a query call.
+#if defined (HAVE_LOG2)
+      double tmp = log2 (minmn) / static_cast<double> (smlsiz+1) + 1;
+#else
+      double tmp = log (minmn) / static_cast<double> (smlsiz+1) / log (2) + 1;
+#endif
+      octave_idx_type nlvl = static_cast<int> (tmp);
+      if (nlvl < 0)
+	nlvl = 0;
+
+      octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
+      if (liwork < 1)
+	liwork = 1;
       Array<octave_idx_type> iwork (liwork);
       octave_idx_type* piwork = iwork.fortran_vec ();
 
@@ -2284,6 +2316,8 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
 	      else
 		rcond = s.elem (minmn - 1) / s.elem (0);
 	    }
+
+	  retval.resize (n, nrhs);
 	}
     }
 

@@ -2491,13 +2491,38 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       octave_idx_type lwork = -1;
 
       Array<Complex> work (1);
-      Array<double> rwork (1);
-      Array<octave_idx_type> iwork (1);
+
+      // FIXME: Can SMLSIZ be other than 25?
+      octave_idx_type smlsiz = 25;
+
+      // We compute the size of rwork and iwork because ZGELSD in
+      // older versions of LAPACK does not return them on a query
+      // call.
+#if defined (HAVE_LOG2)
+      double tmp = log2 (minmn) / static_cast<double> (smlsiz+1) + 1;
+#else
+      double tmp = log (minmn) / static_cast<double> (smlsiz+1) / log (2) + 1;
+#endif
+      octave_idx_type nlvl = static_cast<int> (tmp);
+      if (nlvl < 0)
+	nlvl = 0;
+
+      octave_idx_type lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
+	+ 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
+      if (lrwork < 1)
+	lrwork = 1;
+      Array<double> rwork (lrwork);
+      double *prwork = rwork.fortran_vec ();
+
+      octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
+      if (liwork < 1)
+	liwork = 1;
+      Array<octave_idx_type> iwork (liwork);
+      octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
 				 ps, rcond, rank, work.fortran_vec (),
-				 lwork, rwork.fortran_vec (),
-				 iwork.fortran_vec (), info));
+				 lwork, prwork, piwork, info));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) 
@@ -2506,14 +2531,11 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 	{
 	  lwork = static_cast<octave_idx_type> (std::real (work(0)));
 	  work.resize (lwork);
-	  rwork.resize (static_cast<octave_idx_type> (rwork(0)));
-	  iwork.resize (iwork(0));
 
 	  F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
 				     maxmn, ps, rcond, rank,
 				     work.fortran_vec (), lwork, 
-				     rwork.fortran_vec (), 
-				     iwork.fortran_vec (), info));
+				     prwork, piwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler) 
@@ -2529,6 +2551,8 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 		rcond = 0.0;
 	      else
 		rcond = s.elem (minmn - 1) / s.elem (0);
+
+	      retval.resize (n, nrhs);
 	    }
 	}
     }
@@ -2637,13 +2661,38 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       octave_idx_type lwork = -1;
 
       Array<Complex> work (1);
-      Array<double> rwork (1);
-      Array<octave_idx_type> iwork (1);
+
+      // FIXME: Can SMLSIZ be other than 25?
+      octave_idx_type smlsiz = 25;
+
+      // We compute the size of rwork and iwork because ZGELSD in
+      // older versions of LAPACK does not return them on a query
+      // call.
+#if defined (HAVE_LOG2)
+      double tmp = log2 (minmn) / static_cast<double> (smlsiz+1) + 1;
+#else
+      double tmp = log (minmn) / static_cast<double> (smlsiz+1) / log (2) + 1;
+#endif
+      octave_idx_type nlvl = static_cast<int> (tmp);
+      if (nlvl < 0)
+	nlvl = 0;
+
+      octave_idx_type lrwork = minmn*(10 + 2*smlsiz + 8*nlvl)
+	+ 3*smlsiz*nrhs + (smlsiz+1)*(smlsiz+1);
+      if (lrwork < 1)
+	lrwork = 1;
+      Array<double> rwork (lrwork);
+      double *prwork = rwork.fortran_vec ();
+
+      octave_idx_type liwork = 3 * minmn * nlvl + 11 * minmn;
+      if (liwork < 1)
+	liwork = 1;
+      Array<octave_idx_type> iwork (liwork);
+      octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
 				 ps, rcond, rank, work.fortran_vec (),
-				 lwork, rwork.fortran_vec (),
-				 iwork.fortran_vec (), info));
+				 lwork, prwork, piwork, info));
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) 
@@ -2658,8 +2707,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 	  F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
 				     maxmn, ps, rcond, rank,
 				     work.fortran_vec (), lwork, 
-				     rwork.fortran_vec (), 
-				     iwork.fortran_vec (), info));
+				     prwork, piwork, info));
 
 	  if (f77_exception_encountered)
 	    (*current_liboctave_error_handler) 
@@ -2675,6 +2723,8 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 		rcond = 0.0;
 	      else
 		rcond = s.elem (minmn - 1) / s.elem (0);
+
+	      retval.resize (n, nrhs);
 	    }
 	}
     }

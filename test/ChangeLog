@@ -1,3 +1,7 @@
+2007-10-30  Kim Hansen  <kimhanse@gmail.com>
+
+	* build_sparse_tests.sh: Fix typo.
+
 2007-10-23  John W. Eaton  <jwe@octave.org>
 
 	* build_sparse_tests.sh (gen_sparsesparse_elementop_tests):

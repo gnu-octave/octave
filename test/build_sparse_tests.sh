@@ -908,7 +908,7 @@ cat >>$TESTS <<EOF
 %! bcf = bf + bf'; bcs = sparse(bcf);
 %! tcf = tf + tf'; tcs = sparse(tcf);
 %! xf = diag(1:n) + fliplr(diag(1:n)).*beta; xs = sparse(xf);
-%!assert(ds\xf,df\xf),1e-10;
+%!assert(ds\xf,df\xf,1e-10);
 %!assert(ds\xs,sparse(df\xf,1),1e-10);
 %!assert(pds\xf,pdf\xf,1e-10);
 %!assert(pds\xs,sparse(pdf\xf,1),1e-10);

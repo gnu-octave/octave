@@ -59,45 +59,82 @@ of @var{prefix} is @file{/usr/local}.
 @item --srcdir=@var{dir}
 Look for Octave sources in the directory @var{dir}.
 
-@item --with-f2c
-Use @code{f2c} even if a Fortran compiler is available.
+@item --enable-bounds-check
+Enable bounds checking for indexing operators in the internal array
+classes.  This option is primarily used for debugging Octave.  Building
+Octave with this option has a negative impact on performace and is not
+recommended for general use.
 
-@item --with-f77
-Use @code{f77} to compile Fortran code.  You may also specify the name
-of the compiler to use as an optional argument.  For example,
-@code{--with-f77=g77} sets the name of the Fortran compiler to
-@code{g77}.
+@item --enable-64
+This is an @strong{experimental} option to enable Octave to use 64-bit
+integers for array dimensions and indexing on 64-bit platforms.  You
+probably don't want to use this option unless you know what you are
+doing.
+
+If you use @code{--enable-64}, you must ensure that your Fortran
+compiler generates code with 8 byte signed @code{INTEGER} values, and
+that your BLAS and LAPACK libraries are compiled to use 8 byte
+signed integers for array dimensions and indexing.
 
 @item --enable-shared
-Create shared libraries.  If you are planning to use
-@code{--enable-lite-kernel} or the dynamic loading features, you will
-probably want to use this option.  It will make your @file{.oct} files
-much smaller and on some systems it may be necessary to build shared
-libraries in order to use dynamically linked functions.
+Create shared libraries (this is the default).  If you are planning to
+use the dynamic loading features, you will probably want to use this
+option.  It will make your @file{.oct} files much smaller and on some
+systems it may be necessary to build shared libraries in order to use
+dynamically linked functions.
 
 You may also want to build a shared version of @code{libstdc++}, if your
 system doesn't already have one.
 
 @item --enable-dl
 Use @code{dlopen} and friends to make Octave capable of dynamically
-linking externally compiled functions.  This only works on systems that
-actually have these functions.  If you plan on using this feature, you
+linking externally compiled functions (this is the default if
+@code{--enable-shared} is specified).  This option only works on systems
+that actually have these functions.  If you plan on using this feature, you
 should probably also use @code{--enable-shared} to reduce the size of
 your @file{.oct} files.
 
-@item --enable-shl
-Use @code{shl_load} and friends to make Octave capable of dynamically
-linking externally compiled functions.  This only works on systems that
-actually have these functions (only HP-UX systems).  If you plan on
-using this feature, you should probably also use @code{--enable-shared}
-to reduce the size of your @file{.oct} files.
-
-@item --enable-lite-kernel
-Compile smaller kernel.  This currently requires the dynamic linking
-functions @code{dlopen} or @code{shl_load} and friends so that Octave
-can load functions at run time that are not loaded at compile time.
-
 @item --without-blas
+Compile and use the generic BLAS and LAPACK versions included with
+Octave.  By default, configure first looks for BLAS and LAPACK matrix
+libraries on your system, including optimized BLAS implementations such
+as the free ATLAS 3.0, as well as vendor-tuned libraries.  (The use of
+an optimized BLAS will generally result in several-times faster matrix
+operations.)  Only use this option if your system has BLAS/LAPACK
+libraries that cause problems for some reason.  You can also use
+@code{--with-blas=lib} to specify a particular BLAS library
+@code{-llib} that configure doesn't check for automatically.
+
+@item --without-ccolamd
+Don't use CCOLAMD, disable some sparse matrix functionality.
+
+@item --without-colamd
+Don't use COLAMD, disable some sparse matrix functionality.
+
+@item --without-curl
+Don't use the cURL, disable the @code{urlread} and @code{urlwrite}
+functions.
+
+@item --without-cxsparse
+Don't use CXSPARSE, disable some sparse matrix functionality.
+
+@item --without-umfpack
+Don't use UMFPACK, disable some sparse matrix functionality.
+
+@item --without-fftw
+Use the included fftpack library instead of the FFTW library.
+
+@item --without-glpk
+Don't use the GLPK library for linear programming.
+
+@item --without-hdf5
+Don't use the HDF5 library for reading and writing HDF5 files.
+
+@item --without-zlib
+Don't use the zlib library, disable data file compression and support
+for recent MAT file formats.
+
+@item --without-lapack
 Compile and use the generic BLAS and LAPACK versions included with
 Octave.  By default, configure first looks for BLAS and LAPACK matrix
 libraries on your system, including optimized BLAS implementations such
@@ -129,17 +166,12 @@ Gnuplot is copyrighted, but freely distributable.  The `gnu' in gnuplot
 is a coincidence---it is not related to the GNU project or the FSF in
 any but the most peripheral sense.
 
-To compile Octave, you will need a recent version of GNU Make.  You
-will also need @code{g++} 2.7.2 or later.  Version 2.8.0 or @code{egcs}
-1.0.x should work.  Later versions may work, but C++ is still evolving,
-so don't be too surprised if you run into some trouble.
-
-It is no longer necessary to have @code{libg++}, but you do need to have
-the GNU implementation of @code{libstdc++}.  If you are using @code{g++}
-2.7.2, @code{libstdc++} is distributed along with @code{libg++}, but for
-later versions, @code{libstdc++} is distributed separately.  For
-@code{egcs}, @code{libstdc++} is included with the compiler
-distribution.
+To compile Octave, you will need a recent version of GNU Make.  You will
+also need a recent version of @code{g++} or other ANSI C++ compiler. You
+will also need a Fortran 77 compiler or @code{f2c}.  If you use
+@code{f2c}, you will need a script like @code{fort77} that works like a
+normal Fortran compiler by combining @code{f2c} with your C compiler in
+a single script.
 
 If you plan to modify the parser you will also need GNU @code{bison} and
 @code{flex}.  If you modify the documentation, you will need GNU
@@ -153,17 +185,9 @@ is often very busy.  A list of sites that mirror the software on
 @url{ftp.gnu.org} is available by anonymous ftp from
 @url{ftp://ftp.gnu.org/pub/gnu/GNUinfo/FTP}.
 
-If you don't have a Fortran compiler, or if your Fortran compiler
-doesn't work like the traditional Unix f77, you will need to have the
-Fortran to C translator @code{f2c}.  You can get @code{f2c} from any
-number of anonymous ftp archives.  The most recent version of @code{f2c}
-is always available from @url{netlib.att.com}.
-
-On an otherwise idle Pentium 133 running Linux, it will take somewhere
-between 1-1/2 to 3 hours to compile everything, depending on whether you
-are building shared libraries.  You will need about 100 megabytes of disk
-storage to work with (considerably less if you don't compile with debugging
-symbols).  To do that, use the command
+You will need about 925 megabytes of disk storage to work with when
+building Octave from source (considerably less if you don't compile with
+debugging symbols).  To do that, use the command
 
 @example
 make CFLAGS=-O CXXFLAGS=-O LDFLAGS=

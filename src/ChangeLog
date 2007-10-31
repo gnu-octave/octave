@@ -1,3 +1,9 @@
+2007-10-31  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.16.
+	(OCTAVE_API_VERSION): Now api-v28.
+	(OCTAVE_RELEASE_DATE): Now 2007-10-31.
+
 2007-10-31  Muthiah Annamalai  <muthuspost@gmail.com>
 
 	* pt-assign.h (tree_simple_assignment::op_type,

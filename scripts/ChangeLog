@@ -1,3 +1,9 @@
+2007-10-31  Michael goffioul  <michael.goffioul@gmail.com>
+
+	* plot/subplot.m: Ignore legend objects when parsing existing axes
+	objects and legend objects are implemented with a separate axes
+	object.
+
 2007-10-30  David Bateman  <dbateman@free.fr>
 
 	* control/base/DEMOcontrol.m: Doc fixes for small book format.

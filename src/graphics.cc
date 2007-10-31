@@ -1825,7 +1825,7 @@ line::properties::get (void) const
   m.assign ("linewidth", linewidth);
   m.assign ("marker", marker);
   m.assign ("markeredgecolor", markeredgecolor);
-  m.assign ("markerface", markerfacecolor);
+  m.assign ("markerfacecolor", markerfacecolor);
   m.assign ("markersize", markersize);
   m.assign ("keylabel", keylabel);
 

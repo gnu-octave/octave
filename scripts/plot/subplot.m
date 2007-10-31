@@ -118,14 +118,18 @@ function h = subplot (rows, columns, index)
 
   found = false;
   for child = get (cf, "children")
-    ## Check if this child is still valid; this might not be the case
-    ## anymore due to the deletion of previous children (due to DeleteFcn
-    ## callback or for legends/colorbars that get deleted with their
-    ## corresponding axes)
+    ## Check whether this child is still valid; this might not be the
+    ## case anymore due to the deletion of previous children (due to
+    ## "deletefcn" callback or for legends/colorbars that are deleted
+    ## with their corresponding axes).
     if (! ishandle (child))
       continue;
     endif
     if (strcmp (get (child, "type"), "axes"))
+      ## Skip legend objects.
+      if (strcmp (get (child, "tag"), "legend"))
+        continue;
+      endif
       objpos = get (child, "outerposition");
       if (objpos == pos)
 	## If the new axes are in exactly the same position as an

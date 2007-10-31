@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} bar (@var{x}, @var{y}, @var{style})
+## @deftypefn {Function File} {@var{h} =} bar (@var{x}, @var{y}, @var{p1}, @var{v1}, @dots{})
 ## @deftypefnx {Function File} {[@var{xb}, @var{yb}] =} bar (@dots{})
 ## Given two vectors of x-y data, @code{bar} produce a bar graph.
 ##
@@ -28,7 +28,8 @@
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
 ## separate bar graph plotted on the same graph. By default the columns
 ## are plotted side-by-side. This behavior can be changed by the @var{style}
-## argument, which can take the values 'group' (the default), or 'stack'.
+## argument, which can take the values @code{"grouped"} (the default),
+## or @code{"stacked"}.
 ##
 ## If two output arguments are specified, the data are generated but
 ## not plotted.  For example,

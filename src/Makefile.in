@@ -113,7 +113,7 @@ PT_INCLUDES := pt.h pt-all.h pt-arg-list.h pt-assign.h pt-binop.h \
 	pt-pr-code.h pt-select.h pt-stmt.h pt-unop.h pt-walk.h \
 
 INCLUDES := Cell.h base-list.h c-file-ptr-stream.h comment-list.h \
-	defun-dld.h defun-int.h defun.h dirfns.h dynamic-ld.h \
+	debug.h defun-dld.h defun-int.h defun.h dirfns.h dynamic-ld.h \
 	error.h file-io.h gripes.h help.h input.h \
 	lex.h load-path.h load-save.h ls-hdf5.h ls-mat-ascii.h ls-mat4.h \
 	ls-mat5.h ls-oct-ascii.h ls-oct-binary.h ls-utils.h \

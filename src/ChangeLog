@@ -1,3 +1,7 @@
+2007-10-31  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (INCLUDES): Add debug.h to the list.
+
 2007-10-30  John Swensen  <jpswensen@comcast.net>
 
 	* debug.h: New file.

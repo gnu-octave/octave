@@ -1,5 +1,12 @@
 2007-10-31  John W. Eaton  <jwe@octave.org>
 
+	* data.cc (Fnorm): Avoid warning about p_val possibly being used
+	uninitialized.
+
+	* version.h (OCTAVE_VERSION): Now 2.9.16+.
+
+2007-10-31  John W. Eaton  <jwe@octave.org>
+
 	* version.h (OCTAVE_VERSION): Now 2.9.16.
 	(OCTAVE_API_VERSION): Now api-v28.
 	(OCTAVE_RELEASE_DATE): Now 2007-10-31.

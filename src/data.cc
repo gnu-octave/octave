@@ -2684,32 +2684,30 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
 	  if ((x_arg.rows () == 1 || x_arg.columns () == 1)
 	      && ! (x_arg.is_sparse_type () || x_arg.is_integer_type ()))
 	    {
-	      double p_val;
+	      double p_val = 2;
 
-	      octave_value p_arg;
-
-	      if (nargin == 1)
-		p_arg = 2;
-	      else
-		p_arg = args(1);
-
-	      if (p_arg.is_string ())
+	      if (nargin == 2)
 		{
-		  std::string p = args(1).string_value ();
+		  octave_value p_arg = args(1);
 
-		  if (p == "inf")
-		    p_val = octave_Inf;
-		  else if (p == "fro")
-		    p_val = -1;
+		  if (p_arg.is_string ())
+		    {
+		      std::string p = args(1).string_value ();
+
+		      if (p == "inf")
+			p_val = octave_Inf;
+		      else if (p == "fro")
+			p_val = -1;
+		      else
+			error ("norm: unrecognized norm `%s'", p.c_str ());
+		    }
 		  else
-		    error ("norm: unrecognized norm `%s'", p.c_str ());
-		}
-	      else
-		{
-		  p_val = p_arg.double_value ();
+		    {
+		      p_val = p_arg.double_value ();
 
-		  if (error_state)
-		    error ("norm: unrecognized norm value");
+		      if (error_state)
+			error ("norm: unrecognized norm value");
+		    }
 		}
 
 	      if (! error_state)

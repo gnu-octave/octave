@@ -1,3 +1,15 @@
+2007-10-30  John Swensen  <jpswensen@comcast.net>
+
+	* debug.h: New file.
+	* debug.cc (parse_dbfunction_params, do_find_bkpt_list,
+	intmap_to_ov): New functions.
+	(Fdbstop, Fdbclear): Use parse_dbfunction_params.
+	Improve compatibility.
+	(Fdbstatus): Improve compatibility.
+
+	* help.cc (do_which): No longer static.
+	* help.h: Provide decl.
+
 2007-10-30  David Bateman  <dbateman@free.fr>
 
 	* symtab.cc: Doc fixes for small book format.

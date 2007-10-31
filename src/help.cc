@@ -1295,7 +1295,7 @@ the @code{-q} option suppresses this behaviour.\n\
   return retval;
 }
 
-static std::string
+std::string
 do_which (const std::string& name)
 {
   std::string retval;

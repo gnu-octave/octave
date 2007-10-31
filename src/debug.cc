@@ -19,7 +19,6 @@ along with Octave; see the file COPYING.  If not, see
 <http://www.gnu.org/licenses/>.
 
 */
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -27,9 +26,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <set>
+
 
 #include "defun.h"
 #include "error.h"
+#include "help.h"
 #include "input.h"
 #include "pager.h"
 #include "oct-obj.h"
@@ -40,6 +42,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-usr-fcn.h"
 #include "ov-fcn.h"
+#include "ov-list.h"
+#include "ov-struct.h"
 #include "pt-pr-code.h"
 #include "pt.h"
 #include "pt-bp.h"
@@ -48,12 +52,16 @@ along with Octave; see the file COPYING.  If not, see
 #include "unwind-prot.h"
 #include "variables.h"
 
+#include "debug.h"
+
+// Initialize the singleton object
+bp_table *bp_table::instance = NULL;
+
 // Return a pointer to the user-defined function FNAME.  If FNAME is
 // empty, search backward for the first user-defined function in the
 // current call stack.
-
 static octave_user_function *
-get_user_function (std::string fname = "")
+get_user_function (const std::string& fname = "")
 {
   octave_user_function *dbg_fcn = 0;
 
@@ -71,7 +79,6 @@ get_user_function (std::string fname = "")
       else
 	{
 	  ptr = lookup_by_name (fname, false);
-	
 	  if (ptr && ptr->is_user_function ())
 	    {
 	      octave_value tmp = ptr->def ();
@@ -83,6 +90,248 @@ get_user_function (std::string fname = "")
   return dbg_fcn;
 }
 
+static void
+parse_dbfunction_params (const octave_value_list& args, 
+			 std::string& symbol_name, 
+			 intmap& lines)
+{
+  octave_idx_type len = 0;
+  int nargin = args.length ();
+  int idx = 0;
+  int list_idx = 0;
+  symbol_name = std::string ();
+
+  // If we are already in a debugging function
+  if (octave_call_stack::caller_user_function () != NULL)
+    {
+      idx = 0;
+    }
+  else
+    {
+      symbol_name = args (0).string_value ();
+      if (error_state)
+	return;
+      idx = 1;
+    }
+
+  for (int i = idx; i < nargin; i++ )
+    {
+      if (args (i).is_string ())
+	len += 1;
+      else
+	len += args (i).numel ();
+    }
+
+  lines = intmap();
+  for (int i = idx; i < nargin; i++ )
+    {
+      if (args (i).is_string ())
+	{
+	  int line = atoi (args (i).string_value ().c_str ());
+	  if (error_state)
+	      break;
+	  lines[list_idx++] = line;
+	}
+      else
+	{
+	  const NDArray arg = args (i).array_value ();
+	  
+	  if (error_state)
+	    break;
+	  
+	  for (octave_idx_type j = 0; j < arg.nelem(); j++)
+	    {
+	      int line = static_cast<int> (arg.elem (j));
+	      if (error_state)
+		break;
+	      lines[list_idx++] = line;
+	    }
+	  
+	  if (error_state)
+	    break;
+	}
+    } 
+}
+
+intmap
+bp_table::add_breakpoint (const std::string& fname, 
+			  const intmap& line)
+{
+  if (!instance_ok ())
+    return intmap();
+
+  octave_idx_type len = line.size ();
+  intmap retval;
+  octave_user_function *dbg_fcn = get_user_function (fname);
+
+  if (dbg_fcn)
+    {
+      tree_statement_list *cmds = dbg_fcn->body ();
+      for (int i = 0; i < len; i++)
+	{
+	  intmap::const_iterator p = line.find (i);
+	  if (p != line.end ())
+	    {
+	      int lineno = p->second;
+	      retval[i] = cmds->set_breakpoint (lineno);
+	      if (retval[i] != 0)
+		instance->bp_map[fname] = dbg_fcn;
+	    }
+	}
+    }
+  else
+    error ("add_breakpoint: unable to find the function requested\n");
+
+  return retval;
+}
+
+
+int 
+bp_table::remove_breakpoint (const std::string& fname, 
+			     const intmap& line)
+{
+  if (!instance_ok ())
+    return 0;
+
+  octave_idx_type len = line.size ();
+  int retval = 0;
+
+  if (len == 0)
+    {
+      intmap results = remove_all_breakpoints_in_file (fname);
+      retval = results.size ();
+    }
+  else
+    {
+      octave_user_function *dbg_fcn = get_user_function (fname);
+      if (dbg_fcn)
+	{
+	  tree_statement_list *cmds = dbg_fcn->body ();
+	  for (int i = 0; i < len; i++)
+	    {
+	      intmap::const_iterator p = line.find (i);
+	      if (p != line.end ())
+		{
+		  int lineno = p->second;
+		  cmds->delete_breakpoint (lineno);
+		}
+	    }
+	  octave_value_list results = cmds->list_breakpoints ();
+	  if (results.length () == 0)
+	    instance->bp_map.erase (instance->bp_map.find (fname));
+	  retval = results.length ();
+	}
+      else
+	error ("remove_breakpoint: unable to find the function requested\n");
+    }
+  return retval;
+}
+
+
+intmap
+bp_table::remove_all_breakpoints_in_file (const std::string& fname)
+{
+  if (!instance_ok ())
+    return intmap();
+
+  octave_value_list bkpts;
+  intmap retval;
+  octave_user_function *dbg_fcn = get_user_function (fname);
+  
+  if (dbg_fcn)
+    {
+      tree_statement_list *cmds = dbg_fcn->body ();
+      bkpts = cmds->list_breakpoints ();
+      for (int i = 0; i < bkpts.length (); i++)
+	{
+	  int lineno = static_cast<int> (bkpts (i).int_value ());
+	  cmds->delete_breakpoint (lineno);
+	  retval[i] = lineno;
+	}
+      instance->bp_map.erase (instance->bp_map.find (fname));
+    }
+  else
+    error ("remove_all_breakpoint_in_file: "
+	   "unable to find the function requested\n");
+
+  return retval;
+}
+
+
+void 
+bp_table::remove_all_breakpoints (void)
+{
+  if (!instance_ok ())
+    return;
+
+  std::map< std::string, octave_user_function* >::iterator it;
+  for (it = instance->bp_map.begin (); it != instance->bp_map.end (); it++)
+    {
+      remove_all_breakpoints_in_file (it->first);
+    }
+}
+
+std::string 
+do_find_bkpt_list (octave_value_list slist, 
+		   std::string match)
+{
+  std::string retval;
+  for (int i = 0; i < slist.length (); i++)
+    {
+      if (slist (i).string_value () == match)
+	{
+	  retval = slist (i).string_value ();
+	  break;
+	}
+    }
+  return retval;
+}
+
+
+std::map< std::string, intmap> 
+bp_table::get_breakpoint_list (const octave_value_list& fname_list)
+{
+  std::map<std::string, intmap> retval;
+
+  if (!instance_ok ())
+    return retval;
+
+  // Iterate through each of the files in the map and get the 
+  // name and list of breakpoints
+  std::map< std::string, octave_user_function* >::iterator it;
+  for (it = instance->bp_map.begin (); it != instance->bp_map.end (); it++)
+    {
+      if (fname_list.length () == 0 || 
+	  do_find_bkpt_list (fname_list, it->first) != "")
+	{
+	  octave_value_list bkpts = it->second->body ()->list_breakpoints ();
+	  octave_idx_type len = bkpts.length (); 
+	  intmap bkpts_vec;
+	  for (int i = 0; i < len; i++)
+	    bkpts_vec[i] = bkpts (i).double_value ();
+	  retval[ it->first ] = bkpts_vec;
+	}
+    }
+  return retval;
+}
+
+static octave_value
+intmap_to_ov (const intmap& line) 
+{
+  int idx = 0;
+  NDArray retval (dim_vector (1, line.size()));
+  for (int i = 0; i < line.size(); i++ )
+    {
+      intmap::const_iterator p = line.find (i);
+      if (p != line.end ())
+	{
+	  int lineno = p->second;
+	  retval (idx++) = lineno;
+	}
+    }
+  retval.resize (dim_vector (1, idx));
+  return retval;
+}
 
 DEFCMD (dbstop, args, ,
   "-*- texinfo -*-\n\
@@ -101,82 +350,15 @@ The rline returned is the real line that the breakpoint was set at.\n\
 @seealso{dbclear, dbstatus, dbnext}\n\
 @end deftypefn")
 {
-  octave_value retval;
-  int nargin = args.length ();
-  int idx = 0;
+  intmap retval;
   std::string symbol_name = "";
+  intmap lines;
+  parse_dbfunction_params (args, symbol_name, lines);
 
-  if (nargin != 1 && args(0).is_string())
-    {
-      symbol_name = args(0).string_value ();
-      idx = 1;
-    }
+  if (!error_state)
+    retval = bp_table::add_breakpoint (symbol_name, lines);
 
-  octave_user_function *dbg_fcn = get_user_function (symbol_name);
-
-  if (dbg_fcn)
-    {
-      octave_idx_type nsize = 10;
-      RowVector results (nsize);
-      octave_idx_type nr = 0;
-
-      tree_statement_list *cmds = dbg_fcn->body ();
-
-      for (int i = idx; i < nargin; i++)
-	{
-	  if (args(i).is_string ())
-	    {
-	      int line = atoi (args(i).string_value ().c_str ());
-
-	      if (error_state)
-		break;
-
-	      if (nr == nsize)
-		{
-		  nsize *= 2;
-		  results.resize (nsize);
-		}
-
-	      results(nr++) = cmds->set_breakpoint (line);
-	    }
-	  else
-	    {
-	      const NDArray arg = args(i).array_value ();
-
-	      if (error_state)
-		break;
-
-	      for (octave_idx_type j = 0; j < arg.nelem(); j++)
-		{
-		  int line = static_cast<int> (arg.elem (j));
-
-		  if (error_state)
-		    break;
-
-		  if (nr == nsize)
-		    {
-		      nsize *= 2;
-		      results.resize (nsize);
-		    }
-
-		  results(nr++) = cmds->set_breakpoint (line);
-		}
-
-	      if (error_state)
-		break;
-	    }
-	}
-
-      if (! error_state)
-	{
-	  results.resize (nr);
-	  retval = results;
-	}
-    }
-  else
-    error ("dbstop: unable to find the function requested\n");
-
-  return retval;
+  return intmap_to_ov(retval);
 }
 
 DEFCMD (dbclear, args, ,
@@ -197,62 +379,17 @@ a breakpoint. If you get the wrong line nothing will happen.\n\
 @end deftypefn")
 {
   octave_value retval;
-  int nargin = args.length ();
-  int idx = 0;
   std::string symbol_name = "";
-
-  if (nargin != 1 && args(0).is_string())
-    {
-      symbol_name = args(0).string_value ();
-      idx = 1;
-    }
-
-  octave_user_function *dbg_fcn = get_user_function (symbol_name);
-
-  if (dbg_fcn)
-    {
-      tree_statement_list *cmds = dbg_fcn->body ();
-
-      for (int i = idx; i < nargin; i++)
-	{
-	  if (args(i).is_string ())
-	    {
-	      int line = atoi (args(i).string_value ().c_str ());
-
-	      if (error_state)
-		break;
-
-	      cmds->delete_breakpoint (line);
-	    }
-	  else
-	    {
-	      const NDArray arg = args(i).array_value ();
-
-	      if (error_state)
-		break;
-
-	      for (octave_idx_type j = 0; j < arg.nelem (); j++)
-		{
-		  int line = static_cast<int> (arg.elem (j));
-
-		  if (error_state)
-		    break;
-
-		  cmds->delete_breakpoint (line);
-		}
-
-	      if (error_state)
-		break;
-	    }
-	}
-    }
-  else
-    error ("dbclear: unable to find the function requested\n");
+  intmap lines;
+  parse_dbfunction_params (args, symbol_name, lines);
+      
+  if (!error_state)
+    bp_table::remove_breakpoint (symbol_name, lines);
 
   return retval;
 }
 
-DEFCMD (dbstatus, args, ,
+DEFCMD (dbstatus, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {lst =} dbstatus ([func])\n\
 Return a vector containing the lines on which a function has \n\
@@ -265,50 +402,74 @@ mode this should be left out.\n\
 @seealso{dbclear, dbwhere}\n\
 @end deftypefn")
 {
-  octave_value retval;
-
+  Octave_map retval;
   int nargin = args.length ();
+  octave_value_list fcn_list;
+  std::map< std::string, intmap> bp_list;
+  std::string symbol_name = "";
 
   if (nargin != 0 && nargin != 1)
     {
       error ("dbstatus: only zero or one arguements accepted\n");
-      return retval;
+      return octave_value ();
     }
-
-  std::string symbol_name = "";
 
   if (nargin == 1)
     {
       if (args(0).is_string ())
-	symbol_name = args(0).string_value ();
-      else
-	gripe_wrong_type_arg ("dbstatus", args(0));
-    }
-
-  octave_user_function *dbg_fcn = get_user_function (symbol_name);
-
-  if (dbg_fcn)
-    {
-      tree_statement_list *cmds = dbg_fcn->body ();
-
-      octave_value_list lst = cmds->list_breakpoints ();
-
-      RowVector vec (lst.length (), 0.0);
-
-      for (int i = 0; i < lst.length (); i++)
 	{
-	  vec(i) = lst(i).double_value ();
-
-	  if (error_state)
-	    panic_impossible ();
+	  symbol_name = args (0).string_value ();
+	  fcn_list (0) = symbol_name;
+	  bp_list = bp_table::get_breakpoint_list (fcn_list);
 	}
-
-      retval = octave_value (vec);
+      else
+	gripe_wrong_type_arg ("dbstatus", args (0));
     }
   else
-    error ("dbstatus: unable to find the function you requested\n");
+    {
+       octave_user_function *dbg_fcn = get_user_function ();
+       if (dbg_fcn)
+	 {
+	   symbol_name = dbg_fcn->name ();
+	   fcn_list (0) = symbol_name;
+	 }
+       bp_list = bp_table::get_breakpoint_list (fcn_list);
+    }
 
-  return retval;
+  std::map< std::string, intmap>::iterator it;
+  if (nargout == 1)
+    {
+      // Fill in an array for return
+      int i = 0;
+      Cell names (dim_vector (bp_list.size (), 1));
+      Cell file (dim_vector (bp_list.size (), 1));
+      Cell line (dim_vector (bp_list.size (), 1));
+      for (it = bp_list.begin (); it != bp_list.end (); it++)
+	{
+	  names (i) = it->first;
+	  line (i) = intmap_to_ov(it->second);
+	  file (i)  = do_which (it->first);
+	  i++;
+	}
+      retval.assign ("name", names);
+      retval.assign ("file", file);
+      retval.assign ("line", line);
+      return octave_value (retval);
+    }
+  else
+    {
+      // Print out the breakpoint information
+      for (it = bp_list.begin(); it != bp_list.end(); it++)
+	{	  
+	  octave_stdout << "Breakpoint in " << it->first << " at line(s) ";
+	  for (int j = 0; j < it->second.size (); j++)
+	    if (j < it->second.size()-1)
+	      octave_stdout << it->second [j] << ", ";
+	    else
+	      octave_stdout << it->second [j] << "." << std::endl;
+	}
+      return octave_value ();
+    }
 }
 
 DEFCMD (dbwhere, , ,

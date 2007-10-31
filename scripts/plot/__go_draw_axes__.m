@@ -143,7 +143,7 @@ function __go_draw_axes__ (h, plot_stream)
     if (strcmpi (axis_obj.zgrid, "on"))
       fputs (plot_stream, "set grid ztics;\n");
     else
-      fputs (plot_stream, "set grid ztics;\n");
+      fputs (plot_stream, "set grid noztics;\n");
     endif
 
     if (strcmpi (axis_obj.xminorgrid, "on"))

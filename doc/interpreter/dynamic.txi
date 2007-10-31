@@ -353,7 +353,7 @@ listed below.
 In Octave a character string is just a special @code{Array} class.
 Consider the example 
 
-@examplefile{stringdemo.cc}
+@longexamplefile{stringdemo.cc}
 
 An example of the of the use of this function is
 
@@ -381,9 +381,11 @@ between single quoted and double quoted strings.  To find out if an
 @example
 @group
     if (args(0).is_sq_string ())
-      octave_stdout << "First argument is a singularly quoted string\n";
+      octave_stdout << 
+        "First argument is a singularly quoted string\n";
     else if (args(0).is_dq_string ())
-      octave_stdout << "First argument is a doubly quoted string\n";
+      octave_stdout << 
+        "First argument is a doubly quoted string\n";
 @end group
 @end example
 
@@ -442,7 +444,7 @@ with the pair consisting of a @code{std::string} and an octave
 
 A simple example demonstrating the use of structures within oct-files is
 
-@examplefile{structdemo.cc}
+@longexamplefile{structdemo.cc}
 
 An example of its use is
 
@@ -731,7 +733,8 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_compress ();  // If don't know a-priori the final no of nz.
+sm.maybe_compress ();  // If don't know a-priori 
+                       // the final no of nz.
 @end group
 @end example
 
@@ -772,7 +775,8 @@ for (int j = 1; j < nc; j++)
       @}
     sm.cidx(j+1) = ii;
  @}
-sm.maybe_mutate ();  // If don't know a-priori the final no of nz.
+sm.maybe_mutate ();  // If don't know a-priori 
+                     // the final no of nz.
 @end group
 @end example
 
@@ -796,7 +800,8 @@ following example
 octave_value_list retval;
 
 SparseMatrix sm = args(0).sparse_matrix_value ();
-SparseComplexMatrix scm = args(1).sparse_complex_matrix_value ();
+SparseComplexMatrix scm = 
+    args(1).sparse_complex_matrix_value ();
 SparseBoolMatrix sbm = args(2).sparse_bool_matrix_value ();
 @dots{}
 retval(2) = sbm;
@@ -820,7 +825,7 @@ second argument is a boolean argument specifying what to do in the case
 that no global variable of the desired name is found.  An example of the
 use of these two functions is
 
-@examplefile{globaldemo.cc}
+@longexamplefile{globaldemo.cc}
 
 An example of its use is
 
@@ -859,7 +864,7 @@ be passed as one of
 The example below demonstrates an example that accepts all four means of
 passing a function to an oct-file.
 
-@examplefile{funcdemo.cc}
+@longexamplefile{funcdemo.cc}
 
 The first argument to this demonstration is the user supplied function
 and the following arguments are all passed to the user function.
@@ -954,12 +959,12 @@ segmentation fault.
 An example of the inclusion of a Fortran function in an oct-file is
 given in the following example, where the C++ wrapper is
 
-@examplefile{fortdemo.cc}
+@longexamplefile{fortdemo.cc}
 
 @noindent
 and the fortran function is
 
-@examplefile{fortsub.f}
+@longexamplefile{fortsub.f}
 
 This example demonstrates most of the features needed to link to an
 external Fortran function, including passing arrays and strings, as well
@@ -1016,7 +1021,7 @@ octave_value class like @code{is_real_matrix}, etc, but equally include
 more specialized functions.  Some of the more common ones are
 demonstrated in the following example
 
-@examplefile{paramdemo.cc}
+@longexamplefile{paramdemo.cc}
 
 @noindent
 and an example of its use is
@@ -1085,7 +1090,7 @@ handling of Octave, it is important to enforce that certain code is run
 to allow variables, etc to be restored even if an exception occurs.  An
 example of the use of this mechanism is
 
-@examplefile{unwinddemo.cc}
+@longexamplefile{unwinddemo.cc}
 
 As can be seen in the example
 
@@ -1121,8 +1126,8 @@ issue, but the most common is illustrated in the following example
 DEFUN_DLD (do_what_i_want, args, nargout, 
   "-*- texinfo -*-\n\
 @@deftypefn @{Function File@} @{@} do_what_i_say (@@var@{n@})\n\
-A function that does what the user actually wants rather than what\n\
-they requested.\n\
+A function that does what the user actually wants rather\n\
+than what they requested.\n\
 @@end deftypefn")
 @{
 @dots{}
@@ -1345,7 +1350,7 @@ An example that demonstration how to work with arbitrary real or complex
 double precision arrays is given by the file @file{mypow2.c} as given
 below.
 
-@examplefile{mypow2.c}
+@longexamplefile{mypow2.c}
 
 @noindent
 with an example of its use
@@ -1359,8 +1364,8 @@ all(b.^2 == mypow2(b))
 @end example
 
 
-The example above uses the @code{mxGetNumberOfElements},
-@code{mxGetNumberOfDimensions} and @code{mxGetDimensions}, to work with
+The example above uses @code{mxGetDimensions},
+@code{mxGetNumberOfElements}, @code{mxGetNumberOfDimensions}, to work with
 the dimensional parameters of multi-dimensional arrays.  The also exists
 the functions @code{mxGetM}, and @code{mxGetN} that probe the number of
 rows and columns in a matrix.
@@ -1374,7 +1379,7 @@ use of strings and character matrices in mex-files.  An example of their
 use, that parallels the demo in @file{stringdemo.cc}, is given in the
 file @file{mystring.c}, as seen below.
 
-@examplefile{mystring.c}
+@longexamplefile{mystring.c}
 
 @noindent
 An example of its expected output is
@@ -1448,9 +1453,11 @@ dimensional matrix, or @code{mxCreateStructArray}.
 
 @example
 @group
-mxArray *mxCreateStructArray (int ndims, int *dims, int num_keys, 
+mxArray *mxCreateStructArray (int ndims, int *dims, 
+                              int num_keys, 
                               const char **keys);
-mxArray *mxCreateStructMatrix (int rows, int cols, int num_keys, 
+mxArray *mxCreateStructMatrix (int rows, int cols, 
+                               int num_keys, 
                                const char **keys);
 @end group
 @end example
@@ -1461,7 +1468,8 @@ Accessing the fields of the structure can then be performed with the
 
 @example
 @group
-mxArray *mxGetField (const mxArray *ptr, mwIndex index, const char *key);
+mxArray *mxGetField (const mxArray *ptr, mwIndex index,
+                     const char *key);
 mxArray *mxGetFieldByNumber (const mxArray *ptr, 
                              mwIndex index, int key_num);
 void mxSetField (mxArray *ptr, mwIndex index, 
@@ -1480,13 +1488,14 @@ includes a Cell Array per field of the structure.
 An example that demonstrates the use of structures in mex-file can be
 found in the file @file{mystruct.c}, as seen below
 
-@examplefile{mystruct.c}
+@longexamplefile{mystruct.c}
 
 An example of the behavior of this function within Octave is then
 
 @example
 @group
-a(1).f1 = "f11"; a(1).f2 = "f12"; a(2).f1 = "f21"; a(2).f2 = "f22";
+a(1).f1 = "f11"; a(1).f2 = "f12"; 
+a(2).f1 = "f21"; a(2).f2 = "f22";
 b = mystruct(a)
 @result{} field f1(0) = f11
     field f1(1) = f21
@@ -1579,7 +1588,7 @@ It is also possible call other Octave functions from within a mex-file
 using @code{mexCallMATLAB}.  An example of the use of
 @code{mexCallMATLAB} can be see in the example below
 
-@examplefile{myfeval.c}
+@longexamplefile{myfeval.c}
 
 If this code is in the file @file{myfeval.c}, and is compiled to
 @file{myfeval.mex}, then an example of its use is

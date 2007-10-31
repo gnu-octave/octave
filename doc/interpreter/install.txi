@@ -76,10 +76,7 @@ much smaller and on some systems it may be necessary to build shared
 libraries in order to use dynamically linked functions.
 
 You may also want to build a shared version of @code{libstdc++}, if your
-system doesn't already have one.  Note that a patch is needed to build
-shared versions of version 2.7.2 of @code{libstdc++} on the HP-PA
-architecture.  You can find the patch at
-@url{ftp://ftp.cygnus.com/pub/g++/libg++-2.7.2-hppa-gcc-fix}.
+system doesn't already have one.
 
 @item --enable-dl
 Use @code{dlopen} and friends to make Octave capable of dynamically
@@ -306,7 +303,8 @@ passing `void (*)()' as argument 2 of
 or
 
 @example
-warning: ANSI C++ prohibits conversion from `(int)' to `(...)'
+warning: ANSI C++ prohibits conversion from `(int)' 
+         to `(...)'
 @end example
 
 @noindent
@@ -380,8 +378,10 @@ with optimization turned off.
 On NeXT systems, if you get errors like this:
 
 @example
-/usr/tmp/cc007458.s:unknown:Undefined local symbol LBB7656
-/usr/tmp/cc007458.s:unknown:Undefined local symbol LBE7656
+/usr/tmp/cc007458.s:unknown:Undefined local 
+      symbol LBB7656
+/usr/tmp/cc007458.s:unknown:Undefined local
+      symbol LBE7656
 @end example
 
 @noindent

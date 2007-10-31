@@ -1,3 +1,14 @@
+2007-10-30  David Bateman  <dbateman@free.fr>
+
+	* examples/addtwomatrices.cc, examples/celldemo.cc,
+	examples/firstmexdemo.c, examples/fortdemo.cc, examples/fortsub.f,
+	examples/funcdemo.cc, examples/globaldemo.cc,
+	examples/helloworld.cc, examples/mycell.c, examples/myfeval.c,
+	examples/myfunc.c, examples/mypow2.c, examples/mysparse.c,
+	examples/mystring.c, examples/mystruct.c, examples/paramdemo.cc,
+	examples/stringdemo.cc, examples/structdemo.cc,
+	examples/unwinddemo.cc: Doc fixes for small book format.
+
 2007-10-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Makeconf.in: Remove UNSETCOMSPEC trick.

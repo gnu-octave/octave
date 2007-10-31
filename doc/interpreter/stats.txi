@@ -146,6 +146,35 @@ using the @code{hist} function as described in
 Octave can perform several different statistical tests.  The following
 table summarizes the available tests.
 
+@iftex
+@tex
+\vskip 6pt
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+\halign{
+\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
+# \hfil & \vrule # & # \hfil & # \vrule width 0.6pt \tabskip=0pt\cr
+\noalign{\hrule height 0.6pt}
+& @strong{Hypothesis} && {\bf Test Functions} &\cr
+\noalign{\hrule}
+& Equal mean values && anova, hotelling\_test2, t\_test\_2, &\cr
+&                   && welch\_test, wilcoxon\_test, z\_test\_2 &\cr
+& Equal medians && kruskal\_wallis\_test, sign\_test &\cr
+& Equal variances && bartlett\_test, manova, var\_test &\cr
+& Equal distributions && chisquare\_test\_homogeneity, &\cr
+&                     && kolmogorov\_smirnov\_test\_2, u\_test &\cr
+& Equal marginal frequencies && mcnemar\_test &\cr
+& Equal success probabilities && prop\_test\_2 &\cr
+& Independent observations && chisquare\_test\_independence, &\cr
+&                          && run\_test &\cr
+& Uncorrelated observations && cor\_test &\cr
+& Given mean value && hotelling\_test, t\_test, z\_test &\cr
+& Observations from distribution && kolmogorov\_smirnov\_test &\cr
+& Regression && f\_test\_regression, t\_test\_regression &\cr
+\noalign{\hrule height 0.6pt}
+}}\hfill}}
+@end tex
+@end iftex
+@ifnottex
 @multitable @columnfractions .4 .5
 @item @strong{Hypothesis}
   @tab @strong{Test Functions}
@@ -174,6 +203,7 @@ table summarizes the available tests.
 @item Regression
   @tab @code{f_test_regression}, @code{t_test_regression}
 @end multitable
+@end ifnottex
 
 The tests return a p-value that describes the outcome of the test.
 Assuming that the test hypothesis is true, the p-value is the probability
@@ -246,7 +276,47 @@ Octave has functions for computing the Probability Density Function
 The following table summarizes the supported distributions (in 
 alphabetical order).
 
-@multitable @columnfractions .4 .2 .2 .2
+@c Do the table explicitly in TeX if possible to get a better layout.
+@iftex
+@tex
+\vskip 6pt
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+\halign{
+\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
+# \hfil & \vrule # & # \hfil & \vrule # & # \hfil & \vrule # & # \hfil &
+# \vrule width 0.6pt \tabskip=0pt\cr
+\noalign{\hrule height 0.6pt}
+& {\bf Distribution} && {\bf PDF}      && {\bf CDF}     && {\bf Quantile}&\cr
+\noalign{\hrule}
+&Beta         && betapdf        && betacdf       && betainv&\cr
+&Binomial     && binopdf        && binocdf       && binoinv&\cr
+&Cauchy       && cauchy\_pdf    && cauchy\_cdf   && cauchy\_inv&\cr
+&Chi-Square   && chi2pdf        && chi2cdf       && chi2inv&\cr
+&Univariate Discrete       && discrete\_pdf  && discrete\_cdf && discrete\_inv&\cr
+&Empirical    && empirical\_pdf  && empirical\_cdf && empirical\_inv&\cr
+&Exponential  && exppdf         && expcdf        && expinv&\cr
+&F            && fpdf           && fcdf          && finv&\cr
+&Gamma        && gampdf         && gamcdf        && gaminv&\cr
+&Geometric    && geopdf         && geocdf        && geoinv&\cr
+&Hypergeometric            && hygepdf      && hygecdf       && hygeinv&\cr
+&Kolmogorov Smirnov && {\it Not Available} && kolmogorov\_&& {\it Not Available}&\cr
+&             &&                && smirnov\_cdf &&&\cr
+&Laplace      && laplace\_pdf    && laplace\_cdf   && laplace\_inv&\cr
+&Logistic     && logistic\_pdf   && logistic\_cdf  && logistic\_inv&\cr
+&Log-Normal   && lognpdf        && logncdf       && logninv&\cr
+&Pascal       && nbinpdf        && nbincdf       && nbininv&\cr
+&Univariate Normal && normpdf   && normcdf       && norminv&\cr
+&Poisson      && poisspdf       && poisscdf      && poissinv&\cr
+&t (Student)  && tpdf           && tcdf          && tinv&\cr
+&Univariate Discrete && unidpdf && unidcdf       && unidinv&\cr
+&Uniform      && unifpdf        && unifcdf       && unifinv&\cr
+&Weibull      && wblpdf         && wblcdf        && wblinv&\cr
+\noalign{\hrule height 0.6pt}
+}}\hfill}}
+@end tex
+@end iftex
+@ifnottex
+@multitable @columnfractions .31 .23 .23 .23
 @item @strong{Distribution}
   @tab @strong{PDF}
   @tab @strong{CDF}
@@ -327,7 +397,7 @@ alphabetical order).
   @tab @code{tpdf}
   @tab @code{tcdf}
   @tab @code{tinv}
-@item Univariate Discrete Distribution
+@item  Univariate Discrete Distribution
   @tab @code{unidpdf}
   @tab @code{unidcdf}
   @tab @code{unidinv}
@@ -340,6 +410,7 @@ alphabetical order).
   @tab @code{wblcdf}
   @tab @code{wblinv}
 @end multitable
+@end ifnottex
 
 @DOCSTRING(betacdf)
 
@@ -480,6 +551,43 @@ described in @ref{Special Utility Matrices}.
 The following table summarizes the available random number generators
 (in alphabetical order).
 
+@iftex
+@tex
+\vskip 6pt
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+\halign{
+\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
+# \hfil & \vrule # & # \hfil & # \vrule width 0.6pt \tabskip=0pt\cr
+\noalign{\hrule height 0.6pt}
+& {\bf Distribution}                && {\bf Function} &\cr
+\noalign{\hrule}
+& Beta Distribution                 && betarnd &\cr
+& Binomial Distribution             && binornd &\cr
+& Cauchy Distribution               && cauchy\_rnd &\cr
+& Chi-Square Distribution           && chi2rnd &\cr
+& Univariate Discrete Distribution  && discrete\_rnd &\cr
+& Empirical Distribution            && empirical\_rnd &\cr
+& Exponential Distribution          && exprnd &\cr
+& F Distribution                    && frnd &\cr
+& Gamma Distribution                && gamrnd &\cr
+& Geometric Distribution            && geornd &\cr
+& Hypergeometric Distribution       && hygernd &\cr
+& Laplace Distribution              && laplace\_rnd &\cr
+& Logistic Distribution             && logistic\_rnd &\cr
+& Log-Normal Distribution           && lognrnd &\cr
+& Pascal Distribution               && nbinrnd &\cr
+& Univariate Normal Distribution    && normrnd &\cr
+& Poisson Distribution              && poissrnd &\cr
+& t (Student) Distribution          && trnd &\cr
+& Univariate Discrete Distribution  && unidrnd &\cr
+& Uniform Distribution              && unifrnd &\cr
+& Weibull Distribution              && wblrnd &\cr
+& Wiener Process                    && wienrnd &\cr
+\noalign{\hrule height 0.6pt}
+}}\hfill}}
+@end tex
+@end iftex
+@ifnottex
 @multitable @columnfractions .4 .3
 @item @strong{Distribution}             @tab @strong{Function}
 @item Beta Distribution                 @tab @code{betarnd}
@@ -505,6 +613,7 @@ The following table summarizes the available random number generators
 @item Weibull Distribution              @tab @code{wblrnd}
 @item Wiener Process                    @tab @code{wienrnd}
 @end multitable
+@end ifnottex
 
 @DOCSTRING(betarnd)
 

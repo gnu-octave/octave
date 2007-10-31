@@ -24,7 +24,6 @@
 ## @example
 ## @group
 ## octave:1> DEMOcontrol
-## O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X
 ## Octave Controls System Toolbox Demo
 ##
 ##   [ 1] System representation
@@ -46,8 +45,6 @@
 ## Created: August 15, 1994
 
 function DEMOcontrol ()
-
-  puts ("O C T A V E    C O N T R O L   S Y S T E M S   T O O L B O X");
 
   while (1)
 

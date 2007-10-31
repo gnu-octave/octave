@@ -47,7 +47,7 @@ block evaluated separately.  Blocks are introduced by the keyword
 @example
 @group
    %!test error ("this test fails!");
-   %!test "this test doesn't fail since it doesn't generate an error";
+   %!test "test doesn't fail. it doesn't generate an error";
 @end group
 @end example
 

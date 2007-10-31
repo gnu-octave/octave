@@ -1,3 +1,7 @@
+2007-10-30  David Bateman  <dbateman@free.fr>
+
+	* symtab.cc: Doc fixes for small book format.
+
 2007-10-30  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (fopen_mode_to_ios_mode): Handle 'W' as 'w' and 'R'

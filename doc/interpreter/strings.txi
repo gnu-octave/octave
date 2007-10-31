@@ -237,9 +237,11 @@ using standard operators. The following example shows how to replace
 all blank characters with underscores.
 
 @example
-quote = "First things first, but not necessarily in that order";
+quote = ...
+  "First things first, but not necessarily in that order";
 quote( quote == " " ) = "_"
-     @print{} quote = First_things_first,_but_not_necessarily_in_that_order
+@result{} quote = 
+    First_things_first,_but_not_necessarily_in_that_order
 @end example
 
 For more complex manipulations, such as searching, replacing, and

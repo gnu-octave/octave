@@ -1,3 +1,7 @@
+2007-10-30  David Bateman  <dbateman@free.fr>
+
+	* DASRT-opts.in, LSODE-opts.in: Doc fixes for small book format.
+
 2007-10-30  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc (lssolve): Compute size of rwork and iwork arrays.

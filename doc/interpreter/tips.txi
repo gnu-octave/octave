@@ -183,8 +183,8 @@ Here is an example:
 ## Octave is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public
 ## License as published by the Free Software Foundation;
-## either version 3 of the License, or (at your option) any later
-## version.
+## either version 3 of the License, or (at your option) any 
+## later version.
 ##
 ## Octave is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied
@@ -382,12 +382,12 @@ therefore looks like this
 @example
 @group
 -*- texinfo -*-
-@@deftypefn@{Function File@} @{@@var@{return_value@} = @} function_name (@dots{})
+@@deftypefn@{Function File@} @{@@var@{ret@} = @} fn (@dots{})
 @@cindex index term
-Help text in Texinfo format.  Code samples should be marked like
-@@code@{sample of code@} and variables should be marked as
-@@var@{variable@}.
-@@seealso@{function2@}
+Help text in Texinfo format.  Code samples should be marked 
+like @@code@{sample of code@} and variables should be marked
+as @@var@{variable@}.
+@@seealso@{fn2@}
 @@end deftypefn
 @end group
 @end example
@@ -491,8 +491,8 @@ example
 @example
 @group
 -*- texinfo -*-
-@@deftypefn@{Function File@} @{@@var@{a@} = @} function_name (@@var@{x@}, @dots{})
-@@deftypefnx@{Function File@} @{@@var@{a@} = @} function_name (@@var@{y@}, @dots{})
+@@deftypefn@{Function File@} @{@@var@{a@} = @} fn (@@var@{x@}, @dots{})
+@@deftypefnx@{Function File@} @{@@var@{a@} = @} fn (@@var@{y@}, @dots{})
 Help text in Texinfo format.
 @@end deftypefn
 @end group
@@ -506,11 +506,11 @@ documentation string of @code{nchoosek} is
 @example
 @group
 -*- texinfo -*-
-@@deftypefn @{Function File@} @{@@var@{c@} =@} nchoosek (@@var@{n@}, @@var@{k@})
+@@deftypefn @{Function File@} @{@} nchoosek (@@var@{n@}, @@var@{k@})
 
-Compute the binomial coefficient or all combinations of @@var@{n@}.
-If @@var@{n@} is a scalar then, calculate the binomial coefficient
-of @@var@{n@} and @@var@{k@}, defined as
+Compute the binomial coefficient or all combinations of 
+@@var@{n@}. If @@var@{n@} is a scalar then, calculate the
+binomial coefficient of @@var@{n@} and @@var@{k@}, defined as
 
 @@iftex
 @@tex
@@ -532,10 +532,10 @@ $$
 @@end example
 @@end ifinfo
 
-If @@var@{n@} is a vector, this generates all combinations of the elements
-of @@var@{n@}, taken @@var@{k@} at a time, one row per combination. The 
-resulting @@var@{c@} has size @@code@{[nchoosek (length (@@var@{n@}), 
-@@var@{k@}), @@var@{k@}]@}.
+If @@var@{n@} is a vector, this generates all combinations
+of the elements of @@var@{n@}, taken @@var@{k@} at a time,
+one row per combination. The resulting @@var@{c@} has size
+@@code@{[nchoosek (length (@@var@{n@}),@@var@{k@}), @@var@{k@}]@}.
 
 @@seealso@{bincoeff@}
 @@end deftypefn
@@ -552,19 +552,20 @@ This documentation string renders as
 @example
 @group
  -- Function File: C = nchoosek (N, K)
-     Compute the binomial coefficient or all combinations of N.  If N
-     is a scalar then, calculate the binomial coefficient of N and K,
-     defined as
+     Compute the binomial coefficient or all combinations
+     of N.  If N is a scalar then, calculate the binomial
+     coefficient of N and K, defined as
 
            /   \
-           | n |    n (n-1) (n-2) ... (n-k+1)
-           |   |  = -------------------------
-           | k |               k!
+           | n |    n (n-1) (n-2) ... (n-k+1)       n!
+           |   |  = ------------------------- =  ---------
+           | k |               k!                k! (n-k)!
            \   /
 
-     If N is a vector generate all combinations of the elements of N,
-     taken K at a time, one row per combination. The resulting C has
-     size `[nchoosek (length (N), K), K]'.
+     If N is a vector generate all combinations of the
+     elements of N, taken K at a time, one row per
+     combination. The resulting C has size `[nchoosek
+     (length (N), K), K]'.
 
 
      See also: bincoeff.

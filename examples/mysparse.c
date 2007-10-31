@@ -4,26 +4,28 @@ Copyright (C) 2006, 2007 David Bateman
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software; you can redistribute it and/or 
+modify it under the terms of the GNU General Public License 
+as published by the Free Software Foundation; either
+version 3  of the License, or (at your option) any later 
+version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public 
+License along with Octave; see the file COPYING.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
 #include "mex.h"
 
 void
-mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
+mexFunction (int nlhs, mxArray *plhs[], int nrhs, 
+	     const mxArray *prhs[])
 {
   mwSize n, m, nz;
   mxArray *v;
@@ -42,7 +44,8 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   
   if (mxIsComplex (prhs[0]))
     {
-      mexPrintf ("Matrix is %d-by-%d complex sparse matrix", m, n);
+      mexPrintf ("Matrix is %d-by-%d complex",
+		 " sparse matrix", m, n);
       mexPrintf (" with %d elements\n", nz);
 
       pr = mxGetPr (prhs[0]);
@@ -52,8 +55,9 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
-      mexPrintf ("last non-zero element (%d, %d) = (%g, %g)\n", 
-                ir[nz-1]+ 1, i, pr[nz-1], pi[nz-1]);
+      mexPrintf ("last non-zero element (%d, %d) =", 
+		 ir[nz-1]+ 1, i);
+      mexPrintf (" (%g, %g)\n", pr[nz-1], pi[nz-1]);
 
       v = mxCreateSparse (m, n, nz, mxCOMPLEX);
       pr2 = mxGetPr (v);
@@ -76,7 +80,8 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
   else if (mxIsLogical (prhs[0]))
     {
       bool *pbr, *pbr2;
-      mexPrintf ("Matrix is %d-by-%d logical sparse matrix", m, n);
+      mexPrintf ("Matrix is %d-by-%d logical",
+		 " sparse matrix", m, n);
       mexPrintf (" with %d elements\n", nz);
 
       pbr = mxGetLogicals (prhs[0]);
@@ -85,8 +90,8 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
-      mexPrintf ("last non-zero element (%d, %d) = %d\n", ir[nz-1]+ 1, 
-                i, pbr[nz-1]);
+      mexPrintf ("last non-zero element (%d, %d) = %d\n",
+                 ir[nz-1]+ 1, i, pbr[nz-1]);
 
       v = mxCreateSparseLogicalMatrix (m, n, nz);
       pbr2 = mxGetLogicals (v);
@@ -106,7 +111,8 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     }
   else
     {
-      mexPrintf ("Matrix is %d-by-%d real sparse matrix", m, n);
+      mexPrintf ("Matrix is %d-by-%d real",
+		 " sparse matrix", m, n);
       mexPrintf (" with %d elements\n", nz);
 
       pr = mxGetPr (prhs[0]);
@@ -115,8 +121,8 @@ mexFunction (int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
       i = n;
       while (jc[i] == jc[i-1] && i != 0) i--;
-      mexPrintf ("last non-zero element (%d, %d) = %g\n", ir[nz-1]+ 1, 
-                i, pr[nz-1]);
+      mexPrintf ("last non-zero element (%d, %d) = %g\n",
+                ir[nz-1]+ 1, i, pr[nz-1]);
 
       v = mxCreateSparse (m, n, nz, mxREAL);
       pr2 = mxGetPr (v);

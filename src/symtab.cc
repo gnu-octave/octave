@@ -1967,7 +1967,11 @@ Centered (may only be applied to command %s).\n\
 @end table\n\
 \n\
 A command is composed like this:\n\
-%[modifier]<command>[:size_of_parameter[:center-specific[:print_dims[:balance]]]];\n\
+\n\
+@example\n\
+%[modifier]<command>[:size_of_parameter[:center-specific[\n\
+       :print_dims[:balance]]]];\n\
+@end example\n\
 \n\
 Command and modifier is already explained. Size_of_parameter\n\
 tells how many columns the parameter will need for printing.\n\

@@ -1,28 +1,30 @@
 /*
 
-Copyright (C) 2007 John W. Eaton
+Copyright (C) 2006, 2007 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software; you can redistribute it and/or 
+modify it under the terms of the GNU General Public License 
+as published by the Free Software Foundation; either
+version 3  of the License, or (at your option) any later 
+version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public 
+License along with Octave; see the file COPYING.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
 #include <octave/oct.h>
 
-DEFUN_DLD (paramdemo, args, nargout, "Parameter Check Demo.")
+DEFUN_DLD (paramdemo, args, nargout, 
+	   "Parameter Check Demo.")
 {
   int nargin = args.length ();
   octave_value retval;
@@ -42,11 +44,14 @@ DEFUN_DLD (paramdemo, args, nargout, "Parameter Check Demo.")
       if (m.any_element_is_inf_or_nan())
         octave_stdout << "  includes Inf or NaN values\n";
       if (m.any_element_not_one_or_zero())
-        octave_stdout << "  includes other values than 1 and 0\n";
+        octave_stdout << 
+	  "  includes other values than 1 and 0\n";
       if (m.all_elements_are_int_or_inf_or_nan())
-        octave_stdout << "  includes only int, Inf or NaN values\n";
+        octave_stdout << 
+	  "  includes only int, Inf or NaN values\n";
       if (m.all_integers (min_val, max_val))
-        octave_stdout << "  includes only integers in [-10,10]\n";
+        octave_stdout << 
+	  "  includes only integers in [-10,10]\n";
     }
   return retval;
 }

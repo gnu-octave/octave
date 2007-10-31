@@ -1,22 +1,23 @@
 /*
 
-Copyright (C) 2007 John W. Eaton
+Copyright (C) 2006, 2007 John W. Eaton
 
 This file is part of Octave.
 
-Octave is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation; either version 3 of the License, or (at your
-option) any later version.
+Octave is free software; you can redistribute it and/or 
+modify it under the terms of the GNU General Public License 
+as published by the Free Software Foundation; either
+version 3  of the License, or (at your option) any later 
+version.
 
-Octave is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-for more details.
+Octave is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with Octave; see the file COPYING.  If not, see
-<http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public 
+License along with Octave; see the file COPYING.  If not,
+see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -47,7 +48,7 @@ DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
           OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
           F77_XFCN (fortsub, FORTSUB, (na, av, ctmp 
-                                       F77_CHAR_ARG_LEN (128)));
+                    F77_CHAR_ARG_LEN (128)));
 
           if (f77_exception_encountered)
             error ("fortdemo: error in fortran");

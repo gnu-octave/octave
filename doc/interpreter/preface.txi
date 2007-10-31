@@ -83,8 +83,16 @@ supporting the development of Octave:
 
 @itemize @bullet
 @item
+The United States Department of Energy, through grant number
+DE-FG02-04ER25635.
+
+@item
+Ashok Krishnamurthy, David Hudak, Juan Carlos Chaves, and Stanley
+C. Ahalt of the Ohio Supercomputer Center.
+
+@item
 The National Science Foundation, through grant numbers CTS-0105360,
-CTS-9708497, CTS-9311420, and CTS-8957123.
+CTS-9708497, CTS-9311420, CTS-8957123, and CNS-0540147.
 
 @item
 The industrial members of the Texas-Wisconsin Modeling and Control

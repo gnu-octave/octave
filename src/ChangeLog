@@ -1,3 +1,9 @@
+2007-10-31  Muthiah Annamalai  <muthuspost@gmail.com>
+
+	* pt-assign.h (tree_simple_assignment::op_type,
+	tree_multi_assignment::op_type): New functions.
+	* pt-unop.h (tree_unary_expression::op_type): New function.
+
 2007-10-31  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (line::properties::get): Fix property name

@@ -58,6 +58,8 @@ public:
   tree_expression *operand (void) { return op; }
 
   std::string oper (void) const;
+  
+  octave_value::unary_op op_type (void) const { return etype; }
 
 protected:
 

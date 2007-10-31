@@ -76,6 +76,8 @@ public:
 
   void accept (tree_walker& tw);
 
+  octave_value::assign_op op_type (void) const { return etype; }
+
 private:
 
   void do_assign (octave_lvalue& ult, const octave_value_list& args,
@@ -143,6 +145,8 @@ public:
   tree_expression *dup (symbol_table *sym_tab);
 
   void accept (tree_walker& tw);
+  
+  octave_value::assign_op op_type (void) const { return etype; }
 
 private:
 

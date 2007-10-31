@@ -2,8 +2,6 @@ GNU Octave -- a high-level language for numerical computations.
 
 Copyright (C) 1996, 1997, 1998, 2002, 2007 John W. Eaton
 
-Last updated: Thu, 11 Oct 2007 19:26:42 EDT
-
 Overview
 --------
 
@@ -34,23 +32,18 @@ sites around the world.
 Installation and Bugs
 ---------------------
 
-Octave requires approximately 125MB of disk storage to unpack and
+Octave requires approximately 925MB of disk storage to unpack and
 compile from source (significantly less if you don't compile with
-debugging symbols or create shared libraries).  Once installed, Octave
-requires approximately 65MB of disk space (again, considerably less if
-you don't build shared libraries or the binaries and libraries do not
-include debugging symbols).
+debugging symbols).  Once installed, Octave requires approximately
+350MB of disk space (again, considerably less if you don't build
+shared libraries or the binaries and libraries do not include
+debugging symbols).
 
 To compile Octave, you will need a recent version of GNU Make.  You
-will also need g++ 2.7.2 or later.  Version 2.8.0 or egcs 1.0.x should
-work.  Later versions may work, but C++ is still evolving, so don't be
-too surprised if you run into some trouble.
-
-It is no longer necessary to have libg++, but you do need to have the
-GNU implementation of libstdc++.  If you are using g++ 2.7.2,
-libstdc++ is distributed along with libg++, but for later versions,
-libstdc++ is distributed separately.  For egcs, libstdc++ is included
-with the compiler distribution.
+will also need a recent version of g++ or other ANSI C++ compiler.
+You will also need a Fortran 77 compiler or f2c.  If you use f2c, you
+will need a script like fort77 that works like a normal Fortran
+compiler by combining f2c with your C compiler in a single script.
 
 YOU MUST HAVE GNU MAKE TO COMPILE OCTAVE.  Octave's Makefiles use
 features of GNU Make that are not present in other versions of make.
@@ -66,48 +59,25 @@ well as a list of known problems and possible fixes.
 Documentation
 -------------
 
-Octave's manual has been revised for version 2.0, but it is lagging a
+Octave's manual has been revised for version 3.0, but it is lagging a
 bit behind the development of the software.  In particular, there is
-currently no complete documentation of the C++ class libraries or the
-support for dynamic linking and user-defined data types.  If you
-notice ommissions or inconsistencies, please report them as bugs to
-bug@octave.org.  Specific suggestions for ways to improve Octave and
-its documentation are always welcome.
-
-Implementation
---------------
-
-Octave is being developed with the Free Software Foundation's make,
-bison (a replacement for YACC), flex (a replacement for lex), gcc/g++,
-and libstdc++ on an Intel Pentium II system running Linux/GNU.  It
-should be possible to install it on any machine that runs GCC/G++.  It
-may also be possible to install it using other implementations of
-these tools, but it will most certainly require much more work.  Do
-yourself a favor and get the GNU development tools, either via
-anonymous ftp from ftp.gnu.org or by writing the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-02110-1301, USA.
-
-The underlying numerical solvers are currently standard Fortran ones
-like Lapack, Linpack, Odepack, the Blas, etc., packaged in a library
-of C++ classes (see the files in the libcruft and liboctave
-subdirectories).  If possible, the Fortran subroutines are compiled
-with the system's Fortran compiler, and called directly from the C++
-functions.  If that's not possible, they are translated with f2c and
-compiled with a C compiler.  Better performance is usually achieved if
-the intermediate translation to C is avoided.
-
-The library of C++ classes may also be useful by itself.
+currently no complete documentation of the C++ class libraries.  If
+you notice ommissions or inconsistencies, please report them as bugs
+to bug@octave.org.  Specific suggestions for ways to improve Octave
+and its documentation are always welcome.  Reports with patches are
+even more welcome.
 
 Additional Information
 ----------------------
 
 Up to date information about Octave is available on the WWW at the
-URL http://www.octave.org, including archives of the help-octave,
-bug-octave, and octave-sources mailing lists.
+URL http://www.octave.org, including archives of the help, bug, and
+maintainers mailing lists.
 
---
+
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
-Department of Chemical Engineering
+Department of Chemical & Biological Engineering
+
+Last updated: Thu, 11 Oct 2007 19:26:42 EDT

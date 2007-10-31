@@ -1,88 +1,12 @@
-NOTE: This file was originally written several years ago, when many
-people were complaining that Octave would not work for them on Linux
-systems.  Generally, the problems were not actually bugs in Octave.
-More recently, the compilers are better, most distributions are more
-complete, and it seems harder to install incompatible sets of
-libraries or header files (but some people still manage to do it).
+There are binary packages for Debian, Fedora, and other GNU/Linux
+distributions.
 
-Since July 1996, most work on Octave has been done using a Linux
-system, and a number of people who regularly test Octave snapshot
-releases also primarily use Linux systems.  Because of this, I believe
-Octave should run reasonably well on most current Linux systems.
-However, there have been some problems in the past, usually the result
-of improper installation of compilers or libraries.  Sometimes the
-problems have happened because of a botched upgrade or even a buggy
-Linux distribution.
+Octave should build cleanly from source on most GNU/Linux systems.
 
-If you can, you should probably install Octave using one of the Debian
-or RPM packages for Octave that are available with the major Linux
-distributions.  For example, Dirk Eddelbuettel <edd@debian.org>
-maintains the Debian Octave package and usually has them ready within
-a day or so of new Octave releases.  They are available via the WWW at
-http://www.debian.org/distrib/packages.
-
-If for some reason you can't (or choose not to) install Octave from
-one of the binary distributions or by using one of the Debian or RPM
-packages and something goes wrong, please check the following list to
-see if your problem is already well known before reporting a bug.
-
-Octave compiles, but it won't run
----------------------------------
-
-If you can compile Octave, but it crashes with a segmentation fault
-right away, you probably have incompatible versions of libc and
-libstdc++ installed, or you have a version of the dynamic loader,
-ld.so, that is incompatible with your versions of the libraries, or
-both.
-
-Octave won't even compile
--------------------------
-
-If you can't compile Octave, you should first check to see that your
-compiler and header files are properly installed.  Do you have
-multiple versions of the g++ include files on your system?  Are you
-sure that your copy of g++ is finding the right set?  You can find out
-by compiling a simple C++ program with -v:
-
-bash$ cat foo.cc
-#include <iostream.h>
-int main (void) { cerr << "yo\n"; return 0; }
-
-bash$ g++ -v foo.cc
-gcc -v foo.cc -lstdc++ -lm
-Reading specs from /usr/lib/gcc-lib/i486-linux/2.7.2/specs
-gcc version 2.7.2
- /usr/lib/gcc-lib/i486-linux/2.7.2/cpp -lang-c++ -v -undef ...
-#include "..." search starts here:
-#include <...> search starts here:
- /usr/lib/g++-include
- /usr/local/include
- /usr/i486-linux/include
- /usr/lib/gcc-lib/i486-linux/2.7.2/include
- /usr/include
-End of search list.
-...
-
-If the location of the correct set of include files is not listed in
-the search path, then you might be able to fix that with a symbolic
-link.  However, if your version of libstdc++ was not compiled with your
-current version of gcc, you are likely to run into more trouble.
-
-I/O in dynamically loaded .oct files doesn't work
--------------------------------------------------
-
-If Octave prints things like `%.-1e' instead of numbers when you use a
-dynamically linked .oct file, you probably need to create shared
-versions of the Octave libraries.  To do that, configure Octave with
---enable-shared, recompile, and reinstall.
-
-
-If you have comments or suggestions for this document, please contact
-bug@octave.org.
 
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
-Department of Chemical Engineering
+Department of Chemical & Biological Engineering
 
-Fri Oct  1 13:04:36 2004
+Last updated: Wed, 31 Oct 2007 16:22:26 EDT

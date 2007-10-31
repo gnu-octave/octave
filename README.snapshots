@@ -1,10 +1,5 @@
 Octave Snapshots -- general info
 
-Last updated: Mon May 23 18:58:05 1994
-
-This file was adapted from a similar document written by Fred Fish and
-used by the GDB developers.
-
 Snapshots are an "image" of the main Octave development tree, captured
 at a particular random instant in time.  When you use the snapshots,
 you should be able to maintain a local copy of Octave that is
@@ -159,4 +154,10 @@ Thanks,
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
-Department of Chemical Engineering
+Department of Chemical & Biological Engineering
+
+Wed, 31 Oct 2007 16:31:54 EDT
+
+This file was adapted from a similar document written by Fred Fish and
+used by the GDB developers.
+

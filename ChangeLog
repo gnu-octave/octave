@@ -1,3 +1,10 @@
+2007-10-31  John W. Eaton  <jwe@octave.org>
+
+	* README.binary-dist: Delete.
+
+	* README.MachTen: Delete.
+	* octMakefile.in (DISTFILES): Remove it from the list.
+
 2007-10-30  David Bateman  <dbateman@free.fr>
 
 	* examples/addtwomatrices.cc, examples/celldemo.cc,

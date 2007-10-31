@@ -1,73 +1,21 @@
-Octave is now part of the normal net distribution of Cygwin, available
-from http://www.cygwin.com.  To install the Cygwin package of Octave:
+An obsolete version of Octave (2.1.73) is part of the normal net
+distribution of Cygwin, available from http://www.cygwin.com.  Check
+the package list in Cygwin's setup.exe installer if you would like to
+try using it.  However, 2.1.73 is unsupported and we STRONGLY
+recommended that you use a more recent version of Octave.
 
- 1. Use your favorite browser to view the page http://www.cygwin.com
-
- 2. Click on the "Install or update now" link.
-
- 3. A dialog should appear with the option to run the setup program
-    from its current location or save it to disk.  Either will work,
-    but I usually choose to save the setup program to disk so that it
-    is possible to run it later to update the installation without
-    having to go back to the web page using a browser.
-
- 4. Run the setup program.
-
- 5. Choose "Install from Internet".
-
- 6. Select a root install directory.  You may choose any directory, but
-    it needs to have enough space for Octave and all the related
-    tools.  Sorry, I don't know how much space that is at present.
-
- 7. Select a local package directory.  This is a directory that the
-    setup program will use to temporarily store package files before
-    installing them.  It should have plenty of space (probably 70MB
-    or more).  You may delete this directory once the installation is
-    complete.
-
- 8. Select your Internet Connection.  Probably "Direct Connection" is
-    OK unless you are behind a firewall of some kind that limits your
-    access to the Internet.
-
- 9. Choose a download site.  One that is "near" you on the net is
-    probably best.
-
-10. Select packages.  Choose Octave from the Math category and gnuplot
-    from the graphics category.
-
-11. Once the download and file installation is done, click Finish.  I
-    usually choose to create an icon on the desktop and put an icon in
-    the start menu.  After you click finish, a series of scripts will
-    run, displaying some output in a terminal window.  It will take a
-    few minutes.
-
-12. To run Octave, start Cygwin.  This will bring up a terminal
-    window.  In that window type
-
-      startx
-
-    (a running X server is needed for plotting).  Running startx will
-    bring up a new window.  In that window, type
-
-      octave
-
-    That should present you with an Octave prompt.  Type
-
-      sombrero (41)
-
-    at this prompt and a new window with the sombrero plot should appear.
-
-13. IMPORTANT: to build .oct files (dynamically loaded functions) for
-    Octave, you will also need the octave-headers package.  Currently,
-    due to some bugs in the most recent version of the C++ compiler
-    and libraries for Cygwin, you will also need gcc and g++ 3.3
-    rather than 3.4.  You can use the setup.exe installer to select
-    and install the older version.
+It should be possible to build Octave on Windows systems with Cygwin,
+but at the time of this writing, there are some performance problems
+related to the way C++ exception handling is implemented with the
+default Cygwin compiler.  This is a known problem with a long history.
+If you would like to see this problem corrected, please search the
+Cygwin mailing lists for threads related to "sjlj exception handling"
+(or similar).
 
 
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
-Department of Chemical Engineering
+Department of Chemical & Biological Engineering
 
-Tue Apr 18 15:22:59 2006
+Last updated: Wed, 31 Oct 2007 16:21:43 EDT

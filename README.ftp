@@ -1,5 +1,3 @@
-This file last updated: Fri Nov 14 21:19:27 2003
-
 This directory contains the source for Octave, a high-level interactive
 language for solving numerical problems.  See the files README.octave
 and Announce for more general information, and the file NEWS for a
@@ -34,8 +32,10 @@ or gzipped tar format (for those who already have a prior version of
 gzip and want faster data transmission).  It works on virtually every
 unix system, MSDOS, OS/2, and VMS.
 
---
+
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
-Department of Chemical Engineering
+Department of Chemical & Biological Engineering
+
+Last updated: Wed, 31 Oct 2007 16:28:00 EDT

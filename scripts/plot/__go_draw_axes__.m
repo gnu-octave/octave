@@ -302,7 +302,8 @@ function __go_draw_axes__ (h, plot_stream)
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
-	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
+	    tmp = undo_string_escapes (obj.keylabel);
+	    titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	  endif
 	  [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
 	  usingclause{data_idx} = "";
@@ -578,7 +579,8 @@ function __go_draw_axes__ (h, plot_stream)
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
-	    titlespec{data_idx} = strcat ("title \"", obj.keylabel, "\"");
+	    tmp = undo_string_escapes (obj.keylabel);
+	    titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	  endif
 	  usingclause{data_idx} = "";
 	  if (have_newer_gnuplot || isnan (typ))

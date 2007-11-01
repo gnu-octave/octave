@@ -1,3 +1,7 @@
+2007-10-31  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Call undo_string_escapes on obj.keylabel.
+
 2007-10-31  Michael goffioul  <michael.goffioul@gmail.com>
 
 	* plot/subplot.m: Ignore legend objects when parsing existing axes

@@ -1,3 +1,11 @@
+2007-11-01  John W. Eaton  <jwe@octave.org>
+
+	* lapack-xtra/xzlange.f: Include complete implementation of ZLANGE
+	function here.
+
+	* blas-xtra/xzdotu.f: Include complete implementation of ZDOTU
+	function here.
+
 2007-10-26  John W. Eaton  <jwe@octave.org>
 
 	* lapack/dlals0.f: New file.

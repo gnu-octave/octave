@@ -1,3 +1,8 @@
+2007-11-01  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Delete BLAS library calling convention
+	compatibility check.
+
 2007-10-31  John W. Eaton  <jwe@octave.org>
 
 	* README.binary-dist: Delete.

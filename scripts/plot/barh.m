@@ -17,12 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{h} =} barh (@var{x}, @var{y}, @var{style})
-## @deftypefnx {Function File} {[@var{xb}, @var{yb}] =} barh (@dots{})
-## Given two vectors of x-y data, @code{bar} produce a horizontal bar graph.
+## @deftypefn {Function File}  barh (@var{x}, @var{y})
+## @deftypefnx {Function File} barh (@var{y})
+## @deftypefnx {Function File} barh (@var{x}, @var{y}, @var{w})
+## @deftypefnx {Function File} barh (@var{x}, @var{y}, @var{w}, @var{style})
+## @deftypefnx {Function File} {@var{h} =} barh (...,@var{prop}, @var{val})
+## Produce a horizontal bar graph from two vectors of x-y data.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
 ## and the x coordinates are taken to be the indices of the elements.
+##
+## The default width of 0.8 for the bars can be changed using @var{w}. 
 ##
 ## If @var{y} is a matrix, then each column of @var{y} is taken to be a
 ## separate bar graph plotted on the same graph. By default the columns
@@ -30,23 +35,10 @@
 ## argument, which can take the values @code{"grouped"} (the default),
 ## or @code{"stacked"}.
 ##
-## If two output arguments are specified, the data are generated but
-## not plotted.  For example,
+## The optional return value @var{h} provides a handle to the patch object.
+## Properties of the patch graphics object can be changed using 
+## @var{prop}, @var{val} pairs.
 ##
-## @example
-## barh (x, y);
-## @end example
-##
-## @noindent
-## and
-##
-## @example
-## [xb, yb] = barh (x, y);
-## plot (xb, yb);
-## @end example
-##
-## @noindent
-## are equivalent.
 ## @seealso{bar, plot}
 ## @end deftypefn
 

@@ -115,26 +115,25 @@
 ## following values
 ## @table @code
 ## @item "F"
-## Free (unbounded) variable (the constraint is ignored).
+## A free (unbounded) constraint (the constraint is ignored).
 ## @item "U"
-## Variable with upper bound (@code{A(i,:)*x <= b(i)}).
+## An inequality constraint with an upper bound (@code{A(i,:)*x <= b(i)}).
 ## @item "S"
-## Fixed Variable (@code{A(i,:)*x = b(i)}).
+## An equality constraint (@code{A(i,:)*x = b(i)}).
 ## @item "L"
-## Variable with lower bound (@code{A(i,:)*x >= b(i)}).
+## An inequality with a lower bound (@code{A(i,:)*x >= b(i)}).
 ## @item "D"
-## Double-bounded variable (@code{A(i,:)*x >= -b(i)} @emph{and}
-## (@code{A(i,:)*x <= b(i)}).
+## An inequality constraint with both upper and lower bounds
+## (@code{A(i,:)*x >= -b(i)} @emph{and} (@code{A(i,:)*x <= b(i)}).
 ## @end table
 ## 
 ## @item vartype
 ## A column array containing the types of the variables.
 ## @table @code
-## @item "F"
-## "C"
-## Continuous variable.
-## "I"
-## Integer variable
+## @item "C"
+## A continuous variable.
+## @item "I"
+## An integer variable.
 ## @end table
 ## 
 ## @item sense

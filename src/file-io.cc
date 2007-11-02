@@ -1424,10 +1424,11 @@ integer values and return an array of 32-bit integer values.  By\n\
 default, @code{fread} returns a double precision array.  The special\n\
 form @samp{*TYPE} is shorthand for @samp{TYPE=>TYPE}.\n\
 \n\
-The conversion and repeat counts may be combined.  For example,\n\
-@samp{32*single=>single} causes @code{fread} to read blocks of single\n\
-precision floating point values and return an array of single precision\n\
-values instead of the default array of double precision values.\n\
+The conversion and repeat counts may be combined.  For example, the\n\
+specification @samp{32*single=>single} causes @code{fread} to read\n\
+blocks of single precision floating point values and return an array\n\
+of single precision values instead of the default array of double\n\
+precision values.\n\
 \n\
 The optional argument @var{skip} specifies the number of bytes to skip\n\
 after each element (or block of elements) is read.  If it is not\n\

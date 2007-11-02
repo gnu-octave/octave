@@ -792,8 +792,9 @@ using UMFPACK.
 
 @item If the matrix is not square, or any of the previous solvers flags
 a singular or near singular matrix, find a minimum norm solution using
-CXSPARSE@footnote{CHOLMOD, UMFPACK and CXSPARSE are written by Tim Davis
-and are available at http://www.cise.ufl.edu/research/sparse/}.
+CXSPARSE@footnote{The CHOLMOD, UMFPACK and CXSPARSE packages were
+written by Tim Davis and are available at
+http://www.cise.ufl.edu/research/sparse/}.
 @end enumerate
 
 The band density is defined as the number of non-zero values in the matrix
@@ -1137,7 +1138,3 @@ The height of each vertex corresponds to the solution value.}
 @end ifset
 @end ifset
 @end ifset
-
-@c Local Variables: ***
-@c Mode: texinfo ***
-@c End: ***

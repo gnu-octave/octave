@@ -2130,7 +2130,7 @@ DEFUN (info_program, args, nargout,
 @deftypefn {Built-in Function} {@var{val} =} info_program ()\n\
 @deftypefnx {Built-in Function} {@var{old_val} =} info_program (@var{new_val})\n\
 Query or set the internal variable that specifies the name of the\n\
-info program to run.  The default initial value is\n\
+info program to run.  The default value is\n\
 @code{\"@var{octave-home}/libexec/octave/@var{version}/exec/@var{arch}/info\"}\n\
 in which @var{octave-home} is the directory where all of Octave is\n\
 installed, @var{version} is the Octave version number, and @var{arch}\n\

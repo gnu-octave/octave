@@ -1294,7 +1294,7 @@ ID of the child process that exited.  If an error occurs, @var{pid} will\n\
 be less than zero and @var{msg} will contain a system-dependent error\n\
 message.  The value of @var{status} contains additional system-dependent\n\
 information about the subprocess that exited.\n\
-@seealso{WNOHANG, WUNTRACED, WCONTINUED, WEXITSTATUS, WIFSIGNALED, WTERMSIG, WCOREDUMP, WIFSTOPPED, WSTOPSIG, WIFCONTINUED}\n\
+@seealso{WCONTINUED, WCOREDUMP, WEXITSTATUS, WIFCONTINUED, WIFSIGNALED, WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}\n\
 @end deftypefn")
 {
   octave_value_list retval;

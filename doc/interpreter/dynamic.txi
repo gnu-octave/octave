@@ -1364,11 +1364,11 @@ all(b.^2 == mypow2(b))
 @end example
 
 
-The example above uses @code{mxGetDimensions},
-@code{mxGetNumberOfElements}, @code{mxGetNumberOfDimensions}, to work with
-the dimensional parameters of multi-dimensional arrays.  The also exists
-the functions @code{mxGetM}, and @code{mxGetN} that probe the number of
-rows and columns in a matrix.
+The example above uses the functions @code{mxGetDimensions},
+@code{mxGetNumberOfElements}, and @code{mxGetNumberOfDimensions} to work
+with the dimensions of multi-dimensional arrays.  The functions
+@code{mxGetM}, and @code{mxGetN} are also available to find the number
+of rows and columns in a matrix.
 
 @node Character Strings in Mex-Files
 @subsection Character Strings in Mex-Files
@@ -1392,12 +1392,12 @@ mystring(["First String"; "Second String"])
 @end group
 @end example
 
-There are a couple of additional functions available in mex-files of
-interest in the treatment of strings.  These are @code{mxCreateString},
-@code{mxArrayToString} and @code{mxCreateCharMatrixFromStrings}.  A
-string in a mex-file is considered to be a vector rather than a
-matrix.  This is perhaps an arbitrary distinction as the data in the
-mxArray for the matrix is consecutive in any case.
+Other functions in the mex interface for handling character strings are
+@code{mxCreateString}, @code{mxArrayToString}, and
+@code{mxCreateCharMatrixFromStrings}.  In a mex-file, a character string
+is considered to be a vector rather than a matrix.  This is perhaps an
+arbitrary distinction as the data in the mxArray for the matrix is
+consecutive in any case.
 
 @node Cell Arrays with Mex-Files
 @subsection Cell Arrays with Mex-Files

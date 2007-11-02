@@ -133,7 +133,7 @@ Maximum number of values of the artificial stepsize parameter to be
 tried if the @code{\"compute consistent initial condition\"} option has
 been set to 1 (default is 5).
 
-Note that the maximum number of Newton iterations allowed in all is
+Note that the maximum total number of Newton iterations allowed is
 @code{MXNIT*MXNJ*MXNH} if the @code{\"compute consistent initial
 condition\"} option has been set to 1 and @code{MXNIT*MXNJ} if it is
 set to 2.

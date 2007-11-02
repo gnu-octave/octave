@@ -1,3 +1,7 @@
+2007-11-02  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/bar.m, plot/barh.m: Doc fix.
+
 2007-10-31  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Call undo_string_escapes on obj.keylabel.

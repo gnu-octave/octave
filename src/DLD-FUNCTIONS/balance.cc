@@ -77,20 +77,20 @@ DEFUN_DLD (balance, args, nargout,
 @deftypefnx {Loadable Function} {[@var{dd}, @var{aa}] =} balance (@var{a}, @var{opt})\n\
 @deftypefnx {Loadable Function} {[@var{cc}, @var{dd}, @var{aa}, @var{bb}] =} balance (@var{a}, @var{b}, @var{opt})\n\
 \n\
-@code{[dd, aa] = balance (a)} returns @code{aa = dd \\ a * dd}.\n\
-@code{aa} is a matrix whose row and column norms are roughly equal in\n\
-magnitude, and @code{dd} = @code{p * d}, where @code{p} is a permutation\n\
+Compute @code{aa = dd \\ a * dd} in which @code{aa} is a matrix whose\n\
+row and column norms are roughly equal in magnitude, and\n\
+@code{dd} = @code{p * d}, in which @code{p} is a permutation\n\
 matrix and @code{d} is a diagonal matrix of powers of two.  This allows\n\
 the equilibration to be computed without roundoff.  Results of\n\
 eigenvalue calculation are typically improved by balancing first.\n\
 \n\
-@code{[cc, dd, aa, bb] = balance (a, b)} returns @code{aa = cc*a*dd} and\n\
-@code{bb = cc*b*dd)}, where @code{aa} and @code{bb} have non-zero\n\
+If four output values are requested, compute @code{aa = cc*a*dd} and\n\
+@code{bb = cc*b*dd)}, in which @code{aa} and @code{bb} have non-zero\n\
 elements of approximately the same magnitude and @code{cc} and @code{dd}\n\
 are permuted diagonal matrices as in @code{dd} for the algebraic\n\
 eigenvalue problem.\n\
 \n\
-The eigenvalue balancing option @code{opt} is selected as follows:\n\
+The eigenvalue balancing option @code{opt} may be one of:\n\
 \n\
 @table @asis\n\
 @item @code{\"N\"}, @code{\"n\"}\n\

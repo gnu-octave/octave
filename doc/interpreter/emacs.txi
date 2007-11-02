@@ -480,15 +480,8 @@ when Octave is waiting for input, or done sending output.
 @node Using the Emacs Info Reader for Octave
 @appendixsec Using the Emacs Info Reader for Octave
 
-You can also set up the Emacs Info reader for dealing with the results
-of Octave's @samp{help -i}.  For this, the package @file{gnuserv} needs
-to be installed, which unfortunately still does not come with GNU Emacs
-(it does with XEmacs).  It can be retrieved from any GNU Emacs Lisp Code
-Directory archive, e.g.@:
-@url{ftp://ftp.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive},
-in the @file{packages} subdirectory.  A recent version of gnuserv is
-available from
-@url{http://www.meltin.net/hacks/emacs/src/gnuserv-3.12.2.tar.gz}.
+You may also use the Emacs Info reader with Octave's @code{doc} function.
+For this, the package @file{gnuserv} needs to be installed.
 
 If @file{gnuserv} is installed, add the lines
 @lisp
@@ -507,10 +500,6 @@ in the indices of @emph{several} info files related to Octave (provided
 that the Emacs variable @code{octave-help-files} is set correctly).  In
 this case, use @code{info_program ("info-emacs-octave-help")}.
 
-If you use Octave from within Emacs, these settings are best done in the
-@file{~/.emacs-octave} startup file (or the file pointed to by the Emacs
-variable @code{inferior-octave-startup-file}).
-
-@c Local Variables:
-@c TeX-command-default: "Texinfo"
-@c End:
+If you use Octave from within Emacs, it is best to add these settings to
+your @file{~/.emacs-octave} startup file (or the file pointed to by the
+Emacs variable @code{inferior-octave-startup-file}).

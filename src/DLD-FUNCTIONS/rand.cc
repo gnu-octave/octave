@@ -341,8 +341,9 @@ By default, the generator is initialized from @code{/dev/urandom} if it is\n\
 available, otherwise from cpu time, wall clock time and the current\n\
 fraction of a second.\n\
 \n\
-@code{rand} uses the Mersenne Twister with a period of 2^19937-1\n\
-(See M. Matsumoto and T. Nishimura, ``Mersenne Twister: A 623-dimensionally\n\
+To compute the psuedo-random sequence, @code{rand} uses the Mersenne\n\
+Twister with a period of 2^19937-1 (See M. Matsumoto and T. Nishimura,\n\
+``Mersenne Twister: A 623-dimensionally\n\
 equidistributed uniform pseudorandom number generator'', ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, January pp.3-30 1998,\n\
 @url{http://www.math.keio.ac.jp/~matumoto/emt.html}).\n\
@@ -350,8 +351,8 @@ Do @strong{not} use for cryptography without securely hashing\n\
 several returned values together, otherwise the generator state\n\
 can be learned after reading 624 consecutive values.\n\
 \n\
-@code{rand} includes a second random number generator, that was the\n\
-previous generator used in Octave. The new generator is used by default\n\
+Older versions of Octave used a different random number generator.\n\
+The new generator is used by default\n\
 as it is significantly faster than the old generator, and produces\n\
 random numbers with a significantly longer cycle time. However, in\n\
 some circumstances it might be desirable to obtain the same random\n\
@@ -649,9 +650,13 @@ r = randn () / sqrt (2 * randg (df / 2) / df)\n\
 @end example\n\
 @item @code{F (n1, n2)} for @code{0 < n1}, @code{0 < n2}\n\
 @example\n\
-r1 = 2 * randg (n1 / 2) / n1 ## r1 equals 1 if n1 is infinite\n\
-r2 = 2 * randg (n2 / 2) / n2 ## r2 equals 1 if n2 is infinite\n\
+@group\n\
+## r1 equals 1 if n1 is infinite\n\
+r1 = 2 * randg (n1 / 2) / n1\n\
+## r2 equals 1 if n2 is infinite\n\
+r2 = 2 * randg (n2 / 2) / n2\n\
 r = r1 / r2\n\n\
+@end group\n\
 @end example\n\
 @item negative @code{binomial (n, p)} for @code{n > 0}, @code{0 < p <= 1}\n\
 @example\n\

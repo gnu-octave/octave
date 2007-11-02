@@ -188,7 +188,7 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 	  else if (mode == "w+t")
 	    retval = std::ios::in | std::ios::out | std::ios::trunc;
 	  else if (mode == "a+t")
-	    retval = std::ios::in | std::ios::out | std::ios::ate;
+	    retval = std::ios::in | std::ios::out | std::ios::app;
 	  else if (mode == "rb" || mode == "r")
 	    retval = std::ios::in | std::ios::binary;
 	  else if (mode == "wb" || mode == "w")
@@ -201,7 +201,7 @@ fopen_mode_to_ios_mode (const std::string& mode_arg)
 	    retval = (std::ios::in | std::ios::out | std::ios::trunc
 		      | std::ios::binary);
 	  else if (mode == "a+b" || mode == "a+")
-	    retval = (std::ios::in | std::ios::out | std::ios::ate
+	    retval = (std::ios::in | std::ios::out | std::ios::app
 		      | std::ios::binary);
 	  else
 	    ::error ("invalid mode specified");

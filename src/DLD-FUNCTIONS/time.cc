@@ -188,7 +188,7 @@ of seconds since the epoch.  For example,\n\
 \n\
 @example\n\
 @group\n\
-mktime (localtime (time ())\n\
+mktime (localtime (time ()))\n\
      @result{} 856163706\n\
 @end group\n\
 @end example\n\

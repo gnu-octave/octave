@@ -1,3 +1,13 @@
+2007-11-02  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (fopen_mode_to_ios_mode): Use std::ios::app instead
+	of std::ios::ate.
+
+2007-11-02  Olli Saarela  <Olli.Saarela@kcl.fi>
+
+	* input.cc, pr-output.cc, bitfcns.cc, DLD-FUNCTIONS/time.cc:
+        Fix broken @examples in help texts.
+
 2007-10-31  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (Fnorm): Avoid warning about p_val possibly being used

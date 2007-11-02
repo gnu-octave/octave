@@ -42,7 +42,7 @@
 ## @group
 ## s.name1 = "John Smith"; 
 ## s.name2 = "Jill Jones"; 
-## structfun (@{x@} regexp (x, '(\w+)$', 'matches')@{1@}, s, 
+## structfun (@@(x) regexp (x, '(\w+)$', 'matches')@{1@}, s, 
 ##            'UniformOutput', false)
 ## @end group
 ## @end example

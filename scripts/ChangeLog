@@ -1,3 +1,8 @@
+2007-11-02  Olli Saarela  <Olli.Saarela@kcl.fi>
+
+	* time/asctime.m, general/structfun.m: Fix broken @examples in
+	help texts.
+
 2007-11-02  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/bar.m, plot/barh.m: Doc fix.

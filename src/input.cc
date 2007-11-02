@@ -1189,7 +1189,7 @@ The default value of the primary prompt string is @code{\"\\s:\\#> \"}.\n\
 To change it, use a command like\n\
 \n\
 @example\n\
-octave:13> PS1 = \"\\\\u@@\\\\H> \"\n\
+octave:13> PS1 (\"\\\\u@@\\\\H> \")\n\
 @end example\n\
 \n\
 @noindent\n\

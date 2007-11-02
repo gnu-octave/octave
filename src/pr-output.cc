@@ -2732,7 +2732,8 @@ Convert @var{x} into a rational approximation represented as a string.\n\
 You can convert the string back into a matrix as follows:\n\
 \n\
 @example\n\
-   eval(['[',rats(hilb(4)),'];'])\n\
+   r = rats(hilb(4));\n\
+   x = str2num(r)\n\
 @end example\n\
 \n\
 The optional second argument defines the maximum length of the string\n\
@@ -3127,7 +3128,6 @@ of the number.  For example, with the @samp{short g} format,\n\
 @group\n\
 ans =\n\
 \n\
-      3.1416\n\
       9.8696\n\
       97.409\n\
       9488.5\n\
@@ -3146,7 +3146,6 @@ uppercase @samp{E} format.  For example, with the @samp{short G} format,\n\
 @group\n\
 ans =\n\
 \n\
-      3.1416\n\
       9.8696\n\
       97.409\n\
       9488.5\n\

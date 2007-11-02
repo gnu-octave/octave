@@ -393,7 +393,7 @@ to log2(bitmax)+1.\n\
 @var{n} must be in range [1,log2(bitmax)+1] usually [1,33]\n\
 \n\
 @example\n\
-bitshift (eye (3), 1))\n\
+bitshift (eye (3), 1)\n\
 @result{}\n\
 @group\n\
 2 0 0\n\

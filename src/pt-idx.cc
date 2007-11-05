@@ -495,7 +495,8 @@ tree_index_expression::lvalue (void)
 			  {
 			    std::string ttype = type.substr (0, i);
 
-			    if (ttype[ttype.length()-1] == '(')
+			    char c = ttype[ttype.length()-1];
+			    if (c == '(' || c == '{')
 			      {
 				octave_idx_type nel = 1;
 
@@ -545,7 +546,9 @@ tree_index_expression::lvalue (void)
 			      {
 				std::string ttype = type.substr (0, i);
 
-				if (ttype[ttype.length()-1] != '(')
+				char c = ttype[ttype.length()-1];
+
+				if (! (c == '(' || c == '{'))
 				  {
 				    octave_value_list tmp_list
 				      = first_retval_object.subsref (ttype, idx, 1);

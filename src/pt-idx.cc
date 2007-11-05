@@ -385,6 +385,10 @@ tree_index_expression::lvalue (void)
 
   if (! error_state)
     {
+      bool have_new_struct_field = false;
+
+      octave_idx_type new_struct_field_nel = 0;
+
       // I think it is OK to have a copy here.
 
       const octave_value *tro = retval.object ();
@@ -485,44 +489,88 @@ tree_index_expression::lvalue (void)
 			// Last indexing element.  Will this result in a
 			// comma-separated list?
 
-			if (first_retval_object.is_map ())
+			if (have_new_struct_field)
+			  retval.numel (new_struct_field_nel);
+			else if (i > 0)
 			  {
-			    if (i > 0)
+			    std::string ttype = type.substr (0, i);
+
+			    if (ttype[ttype.length()-1] == '(')
 			      {
+				octave_idx_type nel = 1;
+
 				octave_value_list xidx = idx.back ();
 
-				if (xidx.has_magic_colon ())
-				  {
-				    std::string ttype = type.substr (0, i);
+				octave_idx_type nidx = xidx.length ();
 
+				for (octave_idx_type j = 0; j < nidx; j++)
+				  {
+				    octave_value val = xidx(j);
+
+				    nel *= val.numel ();
+				  }
+
+				retval.numel (nel);
+			      }
+			    else if (first_retval_object.is_defined ())
+			      {
+				octave_value_list tmp_list
+				  = first_retval_object.subsref (ttype, idx, 1);
+
+				if (! error_state)
+				  {
+				    octave_value val = tmp_list(0);
+
+				    retval.numel (val.numel ());
+				  }
+			      }
+			    else
+			      retval.numel (1);
+			  }
+			else
+			  {
+			    if (first_retval_object.is_defined ())
+			      retval.numel (first_retval_object.numel ());
+			    else
+			      retval.numel (1);
+			  }
+		      }
+		    else
+		      {
+			octave_value tobj = first_retval_object;
+
+			if (! have_new_struct_field)
+			  {
+			    if (i > 0 && first_retval_object.is_defined ())
+			      {
+				std::string ttype = type.substr (0, i);
+
+				if (ttype[ttype.length()-1] != '(')
+				  {
 				    octave_value_list tmp_list
 				      = first_retval_object.subsref (ttype, idx, 1);
 
 				    if (! error_state)
-				      {
-					octave_value val = tmp_list(0);
-
-					retval.numel (val.numel ());
-				      }
-				  }
-				else
-				  {
-				    octave_idx_type nel = 1;
-
-				    octave_idx_type nidx = xidx.length ();
-
-				    for (octave_idx_type j = 0; j < nidx; j++)
-				      {
-					octave_value val = xidx(j);
-
-					nel *= val.numel ();
-				      }
-
-				    retval.numel (nel);
+				      tobj = tmp_list(0);
 				  }
 			      }
-			    else
-			      retval.numel (first_retval_object.numel ());
+
+			    if (! error_state && tobj.is_map ())
+			      {
+				if (tidx.is_string ())
+				  {
+				    Octave_map m = tobj.map_value ();
+
+				    std::string s = tidx.string_value ();
+
+				    if (! m.contains (s))
+				      {
+					have_new_struct_field = true;
+
+					new_struct_field_nel = m.numel ();
+				      }
+				  }
+			      }
 			  }
 		      }
 
@@ -551,6 +599,31 @@ tree_index_expression::lvalue (void)
 
   return retval;
 }
+
+/*
+%!test
+%! x = {1, 2, 3};
+%! [x{:}] = deal (4, 5, 6);
+%! assert (x, {4, 5, 6});
+
+%!test
+%! [x.a, x.b.c] = deal (1, 2);
+%! assert (x.a == 1 && x.b.c == 2);
+
+%!test
+%! [x.a, x(2).b] = deal (1, 2);
+%! assert (x(1).a == 1 && isempty (x(2).a) && isempty (x(1).b) && x(2).b == 2);
+
+%!test
+%! x = struct (zeros (0, 1), {"a", "b"});
+%! x(2).b = 1;
+%! assert (x(2).b == 1);
+
+%!test
+%! x = struct (zeros (0, 1), {"a", "b"});
+%! x(2).b = 1;
+%! assert (x(2).b == 1);
+*/
 
 void
 tree_index_expression::eval_error (void) const

@@ -1,3 +1,9 @@
+2007-11-05  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.cc (tree_index_expression::lvalue): Try to do a better
+	job of computing the number of elements in lvalue expressions when
+	the last indexing element is ".".
+
 2007-11-02  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (fopen_mode_to_ios_mode): Use std::ios::app instead

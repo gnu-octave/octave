@@ -531,6 +531,12 @@ variable @code{status} to the integer @samp{2}.\n\
 
       if (! error_state)
 	{
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+	  // Work around weird double-quote handling on Windows systems.
+          if (type == et_sync)
+            cmd_str = "\"" + cmd_str + "\"";
+#endif
+
 	  if (type == et_async)
 	    {
 	      // FIXME -- maybe this should go in sysdep.cc?

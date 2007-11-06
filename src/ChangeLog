@@ -1,3 +1,8 @@
+2007-11-06  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* toplev.cc (Fsystem) [__WIN32__ && ! __CYGWIN__]:
+	Quote the complete command.
+
 2007-11-06  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (Fnorm): New tests.

@@ -1,3 +1,4 @@
+
 ## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2004,
 ##               2005, 2006, 2007 John W. Eaton
 ##
@@ -18,26 +19,25 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mesh (@var{x}, @var{y}, @var{z})
-## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshgrid} and
+## @deftypefn {Function File} {} surf (@var{x}, @var{y}, @var{z})
+## Plot a surface given matrices @var{x}, and @var{y} from @code{meshgrid} and
 ## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
 ## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
 ## correspond to different @var{x} values and rows of @var{z} correspond
 ## to different @var{y} values.
-## @seealso{meshgrid, contour}
+## @seealso{mesh, surface}
 ## @end deftypefn
 
 ## Author: jwe
 
-function h = mesh (varargin)
+function h = surf (varargin)
 
   newplot ();
 
   tmp = surface (varargin{:});
   ax = get(tmp, "parent");
-  set (tmp, "FaceColor", "none");
-  set (tmp, "EdgeColor", "flat");
+  set (tmp, "FaceColor", "flat");
   set (ax, "view", [-37.5, 30]);
   if (nargout > 0)
     h = tmp;

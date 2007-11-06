@@ -1,3 +1,16 @@
+2007-11-06  John W. Eaton  <jwe@octave.org>
+
+2007-11-06  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/pcolor.m, plot/shading.m, plot/surf.m, plot/surface.m:
+	New files.
+	* plot/mesh.m: Call surface to do the real work.
+	* plot/__go_draw_axes__.m: Use pm3d mode to handle new surface
+	properties.
+
+	* image/colormap.m: Also return current colormap if nargout and
+	nargin are both 0.
+
 2007-11-05  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* startup/inputrc: Delete key bindings starting with \340 code.

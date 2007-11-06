@@ -193,6 +193,7 @@ function __go_draw_axes__ (h, plot_stream)
     xautoscale = strcmpi (axis_obj.xlimmode, "auto");
     yautoscale = strcmpi (axis_obj.ylimmode, "auto");
     zautoscale = strcmpi (axis_obj.zlimmode, "auto");
+    cautoscale = strcmpi (axis_obj.climmode, "auto");
 
     kids = axis_obj.children;
 
@@ -201,9 +202,9 @@ function __go_draw_axes__ (h, plot_stream)
     data = cell ();
     is_image_data = [];
 
-    xminp = yminp = zminp = Inf;
-    xmax = ymax = zmax = -Inf;
-    xmin = ymin = zmin = Inf;
+    xminp = yminp = zminp = cminp = Inf;
+    xmax = ymax = zmax = cmax = -Inf;
+    xmin = ymin = zmin = cmin = Inf;
 
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
     use_gnuplot_for_images = (ischar (view_fcn)
@@ -572,96 +573,149 @@ function __go_draw_axes__ (h, plot_stream)
 	 endfor
 
 	case "surface"
-	  data_idx++;
-	  is_image_data(data_idx) = false;
-	  parametric(data_idx) = false;
-	  [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
-	  if (isempty (obj.keylabel))
-	    titlespec{data_idx} = "title \"\"";
-	  else
-	    tmp = undo_string_escapes (obj.keylabel);
-	    titlespec{data_idx} = strcat ("title \"", tmp, "\"");
-	  endif
-	  usingclause{data_idx} = "";
-	  if (have_newer_gnuplot || isnan (typ))
-	    withclause{data_idx} = sprintf ("with %s linestyle %d",
-					    style, data_idx);
-	  else
-	    withclause{data_idx} = sprintf ("with %s linetype %d %s",
-					    style, typ, with);
-	  endif
-	  nd = 3;
-	  xdat = obj.xdata;
-	  ydat = obj.ydata;
-	  zdat = obj.zdata;
-	  if (xautoscale)
-	    tx = xdat(:);
-	    [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
-	  endif
-	  if (yautoscale)
-	    ty = ydat(:);
-	    [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ty);
-	  endif
-	  if (zautoscale)
-	    tz = zdat(:);
-	    [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, tz);
-	  endif
-	  err = false;
-	  if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
-	    if (rows (zdat) == length (ydat) && columns (zdat) == length (xdat))
-              [xdat, ydat] = meshgrid (xdat, ydat);
+	  nd = 4;
+          if !((strncmp(obj.edgecolor,"none",4)) && (strncmp(obj.facecolor,"none",4)))
+	    data_idx++;
+	    is_image_data(data_idx) = false;
+	    parametric(data_idx) = false;
+	    [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
+	    if (isempty (obj.keylabel))
+	      titlespec{data_idx} = "title \"\"";
 	    else
-              err = true;
+	      tmp = undo_string_escapes (obj.keylabel);
+	      titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	    endif
-	  elseif (ismatrix (xdat) && ismatrix (ydat) && ismatrix (zdat))
-	    if (! (size_equal (xdat, ydat) && size_equal (xdat, zdat)))
-              err = true;
+	    usingclause{data_idx} = "";
+	    if (have_newer_gnuplot || isnan (typ))
+	      withclause{data_idx} = sprintf ("with %s linestyle %d",
+		           		      style, data_idx);
+	    else
+	      withclause{data_idx} = sprintf ("with %s linetype %d %s",
+		 			      style, typ, with);
 	    endif
-	  else
-	    err = true;
-	  endif
-	  if (err)
-	    error ("__go_draw_axes__: invalid grid data");
-	  endif
-	  xlen = columns (zdat);
-	  ylen = rows (zdat);
-	  if (xlen == columns (xdat) && xlen == columns (ydat)
-	      && ylen == rows (xdat) && ylen == rows (ydat))
-	    len = 3 * xlen;
-	    zz = zeros (ylen, len);
-	    k = 1;
-	    for kk = 1:3:len
-	      zz(:,kk)   = xdat(:,k);
-	      zz(:,kk+1) = ydat(:,k);
-	      zz(:,kk+2) = zdat(:,k);
-	      k++;
-	    endfor
-	    data{data_idx} = zz;
-	  endif
-	  usingclause{data_idx} = "using ($1):($2):($3)";
-	  withclause{data_idx} = "with line palette";
 
-	  fputs (plot_stream, "unset parametric;\n");
-	  fputs (plot_stream, "set hidden3d;\n");
-	  fputs (plot_stream, "set style data lines;\n");
-	  fputs (plot_stream, "set surface;\n");
-	  fputs (plot_stream, "unset contour;\n");
-	  fprintf (plot_stream, "set cbrange [%g:%g];\n", zmin, zmax);
+	    xdat = obj.xdata;
+	    ydat = obj.ydata;
+	    zdat = obj.zdata;
+	    cdat = obj.cdata;
+	  
+	    if (xautoscale)
+	      tx = xdat(:);
+	      [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
+	    endif
+	    if (yautoscale)
+	      ty = ydat(:);
+	      [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ty);
+	    endif
+	    if (zautoscale)
+	      tz = zdat(:);
+	      [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, tz);
+	    endif
+	    if (cautoscale)
+	      tc = cdat(:);
+	      [cmin, cmax, cminp] = get_data_limits (cmin, cmax, cminp, tc);
+	    endif
 
-	  if (have_newer_gnuplot)
-	    surf_colormap = parent_figure_obj.colormap;
-	    palette_size = rows (surf_colormap);
-	    fprintf (plot_stream,
-		     "set palette positive color model RGB maxcolors %i;\n",
-		     palette_size);
-	    fprintf (plot_stream,
-		     "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
-		     palette_size);
-	    fwrite (plot_stream, [1:palette_size; surf_colormap'], "float32");
-	  else
-	    fputs (plot_stream, "set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+  	    err = false;
+            if (! size_equal(zdat, cdat))
+              err = true;
+            endif
+	    if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
+	      if (rows (zdat) == length (ydat) && columns (zdat) == length (xdat))
+                [xdat, ydat] = meshgrid (xdat, ydat);
+	      else
+                err = true;
+	      endif
+	    elseif (ismatrix (xdat) && ismatrix (ydat) && ismatrix (zdat))
+	      if (! (size_equal (xdat, ydat) && size_equal (xdat, zdat)))
+                err = true;
+	      endif
+	    else
+	      err = true;
+	    endif
+	    if (err)
+	      error ("__go_draw_axes__: invalid grid data");
+	    endif
+	    xlen = columns (zdat);
+	    ylen = rows (zdat);
+	    if (xlen == columns (xdat) && xlen == columns (ydat)
+	        && ylen == rows (xdat) && ylen == rows (ydat))
+	      len = 4 * xlen;
+	      zz = zeros (ylen, len);
+	      k = 1;
+	      for kk = 1:4:len
+	        zz(:,kk)   = xdat(:,k);
+	        zz(:,kk+1) = ydat(:,k);
+	        zz(:,kk+2) = zdat(:,k);
+	        zz(:,kk+3) = cdat(:,k);
+	        k++;
+	      endfor
+	      data{data_idx} = zz;
+	    endif
+	    usingclause{data_idx} = "using ($1):($2):($3):($4)";
+	    withclause{data_idx} = "with line palette";
+
+	    fputs (plot_stream, "unset parametric;\n");
+	    fputs (plot_stream, "set hidden3d;\n");
+	    fputs (plot_stream, "set style data lines;\n");
+	    fputs (plot_stream, "set surface;\n");
+	    fputs (plot_stream, "unset contour;\n");
+	    fprintf (plot_stream, "set cbrange [%g:%g];\n", cmin, cmax);
+
+	    if (have_newer_gnuplot)
+	      ## Interpolation does not work for flat surfaces (e.g. pcolor)
+              ## and color mapping --> currently set empty
+              interp_str = "";
+              surf_colormap = parent_figure_obj.colormap;
+              flat_interp_face = strncmp(obj.facecolor,"flat",4) || strncmp(obj.facecolor,"interp",6);
+              flat_interp_edge = strncmp(obj.edgecolor,"flat",4) || strncmp(obj.edgecolor,"interp",6);
+              palette_data = [];
+
+              if ((flat_interp_face) || 
+                  (flat_interp_edge && strncmp(obj.facecolor,"none",4)))
+                palette_data = [1:rows(surf_colormap); surf_colormap'];
+              endif 
+
+              if (isnumeric(obj.facecolor))
+                palette_data = [1:2; [obj.facecolor; obj.facecolor]'];
+              endif
+
+              if ((strncmp(obj.facecolor,"none",4) && isnumeric(obj.edgecolor)))
+                palette_data = [1:2; [obj.edgecolor; obj.edgecolor]'];
+              endif
+
+              if (strncmp(obj.facecolor,"none",4))
+              elseif (flat_interp_face && strncmp(obj.edgecolor,"flat",4))
+                fprintf (plot_stream, "set pm3d at s %s\n", interp_str);
+              else
+                if (strncmp(obj.edgecolor,"none",4))
+                  fprintf (plot_stream, "set pm3d at s %s\n", interp_str);
+                else
+                  edgecol = obj.edgecolor;
+                  if (ischar(obj.edgecolor))
+                    edgecol = [0 0 0];
+                  endif
+                  fprintf (plot_stream, "set pm3d at s hidden3d %d %s \n", data_idx, interp_str);
+                  fprintf (plot_stream, 
+                           "set style line %d linecolor rgb \"#%02x%02x%02x\" lw %f\n",
+                           data_idx, round (255*edgecol), obj.linewidth);
+                endif
+              endif
+
+              if (length(palette_data) > 0)
+                fprintf (plot_stream,
+	                 "set palette positive color model RGB maxcolors %i;\n",
+	                 columns(palette_data));
+	        fprintf (plot_stream,
+	                 "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+	                 columns(palette_data));
+	        fwrite (plot_stream, palette_data, "float32");
+              endif
+	    else
+	      fputs (plot_stream, "set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+	    endif
+	    fputs (plot_stream, "unset colorbox;\n");
 	  endif
-	  fputs (plot_stream, "unset colorbox;\n");
 
 	case "text"
 	  lpos = obj.position;
@@ -757,7 +811,7 @@ function __go_draw_axes__ (h, plot_stream)
     endif
     fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n", yaxisloc, ylim, ydir);
 
-    if (nd == 3)
+    if (nd == 3 || nd == 4)
       if (zautoscale && have_data)
 	zlim = get_axis_limits (zmin, zmax, zminp, zlogscale);
 	if (isempty (zlim))
@@ -774,15 +828,15 @@ function __go_draw_axes__ (h, plot_stream)
       endif
       fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
     endif
-
+		      
     if (strcmpi (axis_obj.box, "on"))
-      if (nd == 3)
+      if (nd == 3 || nd == 4)
 	fputs (plot_stream, "set border 4095;\n");
       else
 	fputs (plot_stream, "set border 431;\n");
       endif
     else
-      if (nd == 3)
+      if (nd == 3 || nd == 4)
 	fputs (plot_stream, "set border 895;\n");
       else
 	fputs (plot_stream, "set border 3;\n");
@@ -898,7 +952,7 @@ function __go_draw_axes__ (h, plot_stream)
 
   else
     print_usage ();
-  endif    
+  endif
 
 endfunction
 
@@ -1154,7 +1208,7 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
 	endif
       endfor
     endif
-  else
+  elseif (nd == 3)
     ## FIXME -- handle NaNs here too?
     if (parametric)
       fprintf (plot_stream, "%.15g %.15g %.15g\n", data);
@@ -1162,6 +1216,17 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric)
       nc = columns (data);
       for j = 1:3:nc
 	fprintf (plot_stream, "%.15g %.15g %.15g\n", data(:,j:j+2)');
+	fputs (plot_stream, "\n");
+      endfor
+    endif
+  elseif (nd == 4)
+    ## FIXME -- handle NaNs here too?
+    if (parametric)
+      fprintf (plot_stream, "%.15g %.15g %.15g\n", data);
+    else
+      nc = columns (data);
+      for j = 1:4:nc
+	fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data(:,j:j+3)');
 	fputs (plot_stream, "\n");
       endfor
     endif

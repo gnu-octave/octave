@@ -1,3 +1,4 @@
+
 ## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2004,
 ##               2005, 2006, 2007 John W. Eaton
 ##
@@ -18,27 +19,39 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} mesh (@var{x}, @var{y}, @var{z})
-## Plot a mesh given matrices @var{x}, and @var{y} from @code{meshgrid} and
-## a matrix @var{z} corresponding to the @var{x} and @var{y} coordinates of
+## @deftypefn {Function File} {} pcolor (@var{x}, @var{y}, @var{c})
+## @deftypefnx {Function File} {} pcolor (@var{c})
+## Density plot for given matrices @var{x}, and @var{y} from @code{meshgrid} and
+## a matrix @var{c} corresponding to the @var{x} and @var{y} coordinates of
 ## the mesh.  If @var{x} and @var{y} are vectors, then a typical vertex
-## is (@var{x}(j), @var{y}(i), @var{z}(i,j)).  Thus, columns of @var{z}
-## correspond to different @var{x} values and rows of @var{z} correspond
+## is (@var{x}(j), @var{y}(i), @var{c}(i,j)).  Thus, columns of @var{c}
+## correspond to different @var{x} values and rows of @var{c} correspond
 ## to different @var{y} values.
 ## @seealso{meshgrid, contour}
 ## @end deftypefn
 
 ## Author: jwe
 
-function h = mesh (varargin)
+function h = pcolor (x,y,c)
 
   newplot ();
 
-  tmp = surface (varargin{:});
+  if (nargin == 1)
+    C = x;
+    Z = zeros(size(C));
+    [nr, nc] = size(C);
+    [X, Y] = meshgrid(1:nr, 1:nc);
+  elseif (nargin == 3)
+    Z = zeros(size(C));
+  else
+    print_usage();
+  end;
+
+
+  tmp = surface (X,Y,Z,C);
   ax = get(tmp, "parent");
-  set (tmp, "FaceColor", "none");
-  set (tmp, "EdgeColor", "flat");
-  set (ax, "view", [-37.5, 30]);
+  set (tmp, "FaceColor", "flat");
+  set (ax, "view", [0, 90]);
   if (nargout > 0)
     h = tmp;
   endif

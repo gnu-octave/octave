@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-bool-mat.h"
+#include "ov-scalar.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
 #include "ov-re-sparse.h"
@@ -100,6 +101,9 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
   return octave_value ();
 }
 
+DEFCONVFN (matrix_to_bool_matrix, matrix, bool)
+DEFCONVFN (scalar_to_bool_matrix, scalar, bool)
+
 void
 install_bm_bm_ops (void)
 {
@@ -118,6 +122,9 @@ install_bm_bm_ops (void)
   INSTALL_CATOP (octave_bool_matrix, octave_bool_matrix, bm_bm);
   INSTALL_CATOP (octave_bool_matrix, octave_matrix, bm_m);
   INSTALL_CATOP (octave_matrix, octave_bool_matrix, m_bm);
+
+  INSTALL_CONVOP (octave_matrix, octave_bool_matrix, matrix_to_bool_matrix);
+  INSTALL_CONVOP (octave_scalar, octave_bool_matrix, scalar_to_bool_matrix);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool_matrix, assign);
 

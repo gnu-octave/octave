@@ -18,11 +18,11 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  bar (@var{x}, @var{y})
-## @deftypefnx {Function File} bar (@var{y})
-## @deftypefnx {Function File} bar (@var{x}, @var{y}, @var{w})
-## @deftypefnx {Function File} bar (@var{x}, @var{y}, @var{w}, @var{style})
-## @deftypefnx {Function File} {@var{h} =} bar (...,@var{prop}, @var{val})
+## @deftypefn {Function File} {} bar (@var{x}, @var{y})
+## @deftypefnx {Function File} {} bar (@var{y})
+## @deftypefnx {Function File} {} bar (@var{x}, @var{y}, @var{w})
+## @deftypefnx {Function File} {} bar (@var{x}, @var{y}, @var{w}, @var{style})
+## @deftypefnx {Function File} {@var{h} =} bar (@dots{}, @var{prop}, @var{val})
 ## Produce a bar graph from two vectors of x-y data.
 ##
 ## If only one argument is given, it is taken as a vector of y-values

@@ -10,7 +10,6 @@
 ##   sequence for the UP arrow.
 
 "\e[A": history-search-backward
-"\340H": history-search-backward
 
 ## history-search-forward:
 ## 
@@ -20,4 +19,3 @@
 ##   sequence for the DOWN arrow.
 
 "\e[B": history-search-forward
-"\340P": history-search-forward

@@ -1,4 +1,7 @@
-2007-11-06  John W. Eaton  <jwe@octave.org>
+2007-11-06  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* pkg/pkg.m.m: Check for environment variables CC, CXX, AR, RANLIB
+	when calling ./configure and add quotes to preserve spaces.
 
 2007-11-06  Kai Habel  <kai.habel@gmx.de>
 

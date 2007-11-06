@@ -1019,12 +1019,21 @@ function configure_make (desc, packdir, verbose)
     src = fullfile (packdir, "src");
     ## configure
     if (exist (fullfile (src, "configure"), "file"))
+      flags = "";
+      if (isempty (getenv ("CC")))
+        flags = strcat (flags, " CC=\"", octave_config_info ("CC"), "\"");
+      endif
+      if (isempty (getenv ("CXX")))
+        flags = strcat (flags, " CXX=\"", octave_config_info ("CXX"), "\"");
+      endif
+      if (isempty (getenv ("AR")))
+        flags = strcat (flags, " AR=\"", octave_config_info ("AR"), "\"");
+      endif
+      if (isempty (getenv ("RANLIB")))
+        flags = strcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
+      endif
       [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
-					 desc.dir, "\"",
-					 " CC=", octave_config_info ("CC"),
-					 " CXX=", octave_config_info ("CXX"),
-					 " AR=", octave_config_info ("AR"),
-					 " RANLIB=", octave_config_info ("RANLIB")));
+                                        desc.dir, "\"", flags));
       if (status != 0)
 	rm_rf (desc.dir);
 	error ("the configure script returned the following error: %s", output);

@@ -37,7 +37,7 @@ extern int octave_parse (void);
 class tree;
 class tree_matrix;
 class tree_identifier;
-class octaev_function;
+class octave_function;
 class symbol_record;
 class symbol_table;
 

@@ -1,13 +1,9 @@
 2007-11-06  John W. Eaton  <jwe@octave.org>
 
+	* data.cc (Fnorm): New tests.
+
 	* defun-int.h (DEFINE_FUNX_INSTALLER_FUN3): Don't install function
 	if check_version produces an error.
-
-2007-11-06  David Bateman  <dbateman@free.fr>
-
-	* MArray-def.h (MARRAY_NORM_BODY): Scale frobenius norm by infinity
-	norm to avoid issues of over- and underflow.  From Rolf Fabian
-	<Rolf.Fabian@gmx.de>.
 
 2007-11-05  John W. Eaton  <jwe@octave.org>
 

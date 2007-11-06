@@ -2623,6 +2623,12 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 %!assert(norm(m,2), 34, -eps);
 %!assert(norm(m,Inf), 34);
 %!assert(norm(m,"inf"), 34);
+%!shared m2
+%! m2 = [1,2;3,4];
+%! flo = 1e-300;
+%! fhi = 1e+300;
+%!assert (norm (flo*m2, "fro"), sqrt (30)*flo, -eps)
+%!assert (norm (fhi*m2, "fro"), sqrt (30)*fhi, -eps)
 */
 
 // Compute various norms of the vector X.

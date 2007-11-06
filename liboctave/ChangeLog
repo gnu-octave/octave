@@ -1,3 +1,9 @@
+2007-11-06  David Bateman  <dbateman@free.fr>
+
+	* MArray-def.h (MARRAY_NORM_BODY): Scale frobenius norm by infinity
+	norm to avoid issues of over- and underflow.  From Rolf Fabian
+	<Rolf.Fabian@gmx.de>.
+
 2007-10-30  David Bateman  <dbateman@free.fr>
 
 	* DASRT-opts.in, LSODE-opts.in: Doc fixes for small book format.

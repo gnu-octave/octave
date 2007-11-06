@@ -43,7 +43,7 @@ function retval = __norm__ (x, p)
   if (ndims(x) == 2 && (rows (x) == 1 || columns (x) == 1))
     if (ischar (p))
       if (strcmp (p, "fro"))
-        inf_norm = norm (x, "inf")
+        inf_norm = norm (x, "inf");
 	retval = inf_norm .* sqrt (sum (abs (x ./ inf_norm) .^ 2));
       elseif (strcmp (p, "inf"))
         retval = max (abs (x));
@@ -69,7 +69,7 @@ function retval = __norm__ (x, p)
   else
     if (ischar (p))
       if (strcmp (p, "fro"))
-        inf_norm = norm (x, "inf")
+        inf_norm = norm (x, "inf");
 	retval = inf_norm .* sqrt (sum (sum (abs (x ./ inf_norm) .^ 2)));
       elseif (strcmp (p, "inf"))
         retval = max (sum (abs (x')));

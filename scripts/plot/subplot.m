@@ -37,8 +37,8 @@
 ## \vskip 10pt
 ## \hfil\vbox{\offinterlineskip\hrule
 ## \halign{\vrule#&&\qquad\hfil#\hfil\qquad\vrule\cr
-## height13pt&1&2&3\cr height12pt&&&&\cr\noalign{\hrule}
-## height13pt&4&5&6\cr height12pt&&&&\cr\noalign{\hrule}}}
+## height13pt&1&2&3\cr height12pt&&&\cr\noalign{\hrule}
+## height13pt&4&5&6\cr height12pt&&&\cr\noalign{\hrule}}}
 ## \hfil
 ## \vskip 10pt
 ## @end tex

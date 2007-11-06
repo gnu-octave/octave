@@ -358,13 +358,25 @@ along with Octave; see the file COPYING.  If not, see
 	  /* Frobenius norm.  */ \
 	  retval = 0; \
  \
+          /* precondition */ \
+          double inf_norm = 0.; \
 	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
-	      double d_abs = std::abs (d[i]); \
+              double d_abs = std::abs (d[i]); \
+              if (d_abs > inf_norm) \
+                inf_norm = d_abs; \
+            } \
+          inf_norm = (inf_norm == octave_Inf || inf_norm == 0. ? 1.0 : \
+		      inf_norm); \
+          double scale = 1. / inf_norm; \
+\
+	  for (octave_idx_type i = 0; i < len; i++) \
+	    { \
+	      double d_abs = std::abs (d[i]) * scale; \
 	      retval += d_abs * d_abs; \
 	    } \
  \
-	  retval = ::sqrt (retval); \
+	  retval = ::sqrt (retval) * inf_norm; \
 	} \
       else if (p == 2) \
 	F77_FCN (blas_norm, BLAS_NORM) (len, d, 1, retval); \

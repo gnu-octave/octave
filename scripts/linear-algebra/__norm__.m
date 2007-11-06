@@ -40,11 +40,11 @@ function retval = __norm__ (x, p)
   endif
 
   ## Do we have a vector or matrix as the first argument?
-
   if (ndims(x) == 2 && (rows (x) == 1 || columns (x) == 1))
     if (ischar (p))
       if (strcmp (p, "fro"))
-	retval = sqrt (sum (abs (x) .^ 2));
+        inf_norm = norm (x, "inf")
+	retval = inf_norm .* sqrt (sum (abs (x ./ inf_norm) .^ 2));
       elseif (strcmp (p, "inf"))
         retval = max (abs (x));
       else
@@ -69,7 +69,8 @@ function retval = __norm__ (x, p)
   else
     if (ischar (p))
       if (strcmp (p, "fro"))
-	retval = sqrt (sum (sum (abs (x) .^ 2)));
+        inf_norm = norm (x, "inf")
+	retval = inf_norm .* sqrt (sum (sum (abs (x ./ inf_norm) .^ 2)));
       elseif (strcmp (p, "inf"))
         retval = max (sum (abs (x')));
       else

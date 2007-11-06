@@ -95,9 +95,16 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
   bool \
   fsname ## _ ## cxx_abi (const octave_shlib& shl, bool relative) \
   { \
+    bool retval = true; \
+ \
     check_version (OCTAVE_API_VERSION, name); \
-    install_dld_function (fname, name, shl, doc, false, relative); \
-    return error_state ? false : true; \
+ \
+    if (error_state) \
+      retval = false; \
+    else \
+      install_dld_function (fname, name, shl, doc, false, relative); \
+ \
+    return retval; \
   }
 
 // MAKE_BUILTINS is defined to extract function names and related

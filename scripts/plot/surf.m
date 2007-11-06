@@ -1,6 +1,4 @@
-
-## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2004,
-##               2005, 2006, 2007 John W. Eaton
+## Copyright (C) 2007 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -29,16 +27,20 @@
 ## @seealso{mesh, surface}
 ## @end deftypefn
 
-## Author: jwe
+## Author: Kai Habel <kai.habel@gmx.de>
 
 function h = surf (varargin)
 
   newplot ();
 
   tmp = surface (varargin{:});
-  ax = get(tmp, "parent");
-  set (tmp, "FaceColor", "flat");
+
+  ax = get (tmp, "parent");
+
+  set (tmp, "facecolor", "flat");
+
   set (ax, "view", [-37.5, 30]);
+
   if (nargout > 0)
     h = tmp;
   endif

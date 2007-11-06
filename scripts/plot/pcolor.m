@@ -1,6 +1,4 @@
-
-## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2004,
-##               2005, 2006, 2007 John W. Eaton
+## Copyright (C) 2007 Kai Habel
 ##
 ## This file is part of Octave.
 ##
@@ -30,28 +28,31 @@
 ## @seealso{meshgrid, contour}
 ## @end deftypefn
 
-## Author: jwe
+## Author: Kai Habel <kai.habel@gmx.de>
 
-function h = pcolor (x,y,c)
+function h = pcolor (x, y, c)
 
   newplot ();
 
   if (nargin == 1)
-    C = x;
-    Z = zeros(size(C));
-    [nr, nc] = size(C);
-    [X, Y] = meshgrid(1:nr, 1:nc);
+    c = x;
+    z = zeros (size (c));
+    [nr, nc] = size (c);
+    [x, y] = meshgrid (1:nr, 1:nc);
   elseif (nargin == 3)
-    Z = zeros(size(C));
+    z = zeros (size (c));
   else
-    print_usage();
-  end;
+    print_usage ();
+  endif
 
+  tmp = surface (X, Y, Z, c);
 
-  tmp = surface (X,Y,Z,C);
-  ax = get(tmp, "parent");
-  set (tmp, "FaceColor", "flat");
+  ax = get (tmp, "parent");
+
+  set (tmp, "facecolor", "flat");
+
   set (ax, "view", [0, 90]);
+
   if (nargout > 0)
     h = tmp;
   endif

@@ -35,10 +35,14 @@ function h = mesh (varargin)
   newplot ();
 
   tmp = surface (varargin{:});
-  ax = get(tmp, "parent");
-  set (tmp, "FaceColor", "none");
-  set (tmp, "EdgeColor", "flat");
+
+  ax = get (tmp, "parent");
+
+  set (tmp, "facecolor", "none");
+  set (tmp, "edgecolor", "flat");
+
   set (ax, "view", [-37.5, 30]);
+
   if (nargout > 0)
     h = tmp;
   endif

@@ -1,5 +1,4 @@
-
-## Copyright (C) 2006,2007  Kai Habel
+## Copyright (C) 2006, 2007  Kai Habel
 ##
 ## Octave is free software; you can redistribute it and/or modify it
 ## under the terms of the GNU General Public License as published by
@@ -31,33 +30,38 @@
 ##
 ## @end deftypefn
 
-function shading(ax, mode)
+## Author: Kai Habel <kai.habel@gmx.de>
+
+function shading (ax, mode)
 
   if (nargin == 1)
     mode = ax;
-    ax = gca();
+    ax = gca ();
   end
 
-  if ((nargin !=1 ) && (nargin != 2))
-    print_usage();
-  end
+  if (nargin != 1 && nargin != 2)
+    print_usage ();
+  endif
 
-  obj = findobj(ax,"Type","patch");
-  obj = [obj; findobj(ax,"Type","surface")];
+  h1 = findobj (ax, "type", "patch");
+  h2 = findobj (ax, "type", "surface");
 
-  for n = 1 : length(obj)
+  obj = [h1, h2];
+
+  for n = 1:numel(obj)
     h = obj(n); 
-    if strcmp(mode, "flat") 
-      set(h,"FaceColor","flat");
-      set(h,"EdgeColor","none");
-    elseif strcmp(mode,"interp")
-      set(h,"FaceColor","interp");
-      set(h,"EdgeColor","none");
-    elseif strcmp(mode,"faceted")
-      set(h,"FaceColor","flat");
-      set(h,"EdgeColor",[0 0 0]);
+    if (strcmp (mode, "flat"))
+      set (h, "facecolor", "flat");
+      set (h, "edgecolor", "none");
+    elseif (strcmp (mode, "interp"))
+      set (h, "facecolor", "interp");
+      set (h, "edgecolor", "none");
+    elseif (strcmp (mode, "faceted"))
+      set (h, "facecolor", "flat");
+      set (h, "edgecolor", [0 0 0]);
     else
-      error("unknown argument")
+      error ("unknown argument");
     endif
   endfor
+
 endfunction

@@ -1,4 +1,3 @@
-
 ## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2004,
 ##               2005, 2006, 2007 John W. Eaton
 ##
@@ -34,7 +33,7 @@
 
 function h = surface (x, y, z, c)
 
-  ax = gca();
+  ax = gca ();
 
   if (nargin == 1)
     c = z = x;
@@ -46,25 +45,23 @@ function h = surface (x, y, z, c)
       error ("surface: argument must be a matrix");
     endif
   elseif (nargin == 3)
+    c = z;
     if (isvector (x) && isvector (y) && ismatrix (z))
       if (rows (z) == length (y) && columns (z) == length (x))
         x = x(:)';
         y = y(:);
       else
-        msg = "surface: rows (z) must be the same as length (y) and";
-        msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
-        error (msg);
+        error ("surface: rows (z) must be the same as length (y) and columns (z) must be the same as length (x)");
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
       if (! (size_equal (x, y) && size_equal (x, z)))
         error ("surface: x, y, and z must have same dimensions");
       endif
-      c = z;
     else
       error ("surface: x and y must be vectors and z must be a matrix");
     endif
   elseif (nargin == 4)
-    if !(size_equal (z, c))
+    if (! size_equal (z, c))
       error ("surface: z and c must have same size");
     endif
     if (isvector (x) && isvector (y) && ismatrix (z))
@@ -72,9 +69,7 @@ function h = surface (x, y, z, c)
         x = x(:)';
         y = y(:);
       else
-        msg = "surface: rows (z) must be the same as length (y) and";
-        msg = sprintf ("%s\ncolumns (z) must be the same as length (x)", msg);
-        error (msg);
+        error ("surface: rows (z) must be the same as length (y) and columns (z) must be the same as length (x)"
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
       if (! (size_equal (x, y) && size_equal (x, z)))
@@ -87,11 +82,11 @@ function h = surface (x, y, z, c)
     print_usage ();
   endif
 
-  ## make a default surface object
+  ## Make a default surface object.
   tmp = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c);
 
   set (ax, "view", [0, 90], "box", "off");
-  set (tmp, "FaceColor","flat");
+  set (tmp, "facecolor","flat");
 
   if (nargout > 0)
     h = tmp;

@@ -574,7 +574,8 @@ function __go_draw_axes__ (h, plot_stream)
 
 	case "surface"
 	  nd = 4;
-          if !((strncmp(obj.edgecolor,"none",4)) && (strncmp(obj.facecolor,"none",4)))
+          if (! (strncmp (obj.edgecolor, "none", 4)
+		 && strncmp (obj.facecolor, "none", 4)))
 	    data_idx++;
 	    is_image_data(data_idx) = false;
 	    parametric(data_idx) = false;
@@ -598,7 +599,7 @@ function __go_draw_axes__ (h, plot_stream)
 	    ydat = obj.ydata;
 	    zdat = obj.zdata;
 	    cdat = obj.cdata;
-	  
+
 	    if (xautoscale)
 	      tx = xdat(:);
 	      [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
@@ -621,7 +622,8 @@ function __go_draw_axes__ (h, plot_stream)
               err = true;
             endif
 	    if (isvector (xdat) && isvector (ydat) && ismatrix (zdat))
-	      if (rows (zdat) == length (ydat) && columns (zdat) == length (xdat))
+	      if (rows (zdat) == length (ydat)
+		  && columns (zdat) == length (xdat))
                 [xdat, ydat] = meshgrid (xdat, ydat);
 	      else
                 err = true;
@@ -664,40 +666,43 @@ function __go_draw_axes__ (h, plot_stream)
 
 	    if (have_newer_gnuplot)
 	      ## Interpolation does not work for flat surfaces (e.g. pcolor)
-              ## and color mapping --> currently set empty
+              ## and color mapping --> currently set empty.
               interp_str = "";
               surf_colormap = parent_figure_obj.colormap;
-              flat_interp_face = strncmp(obj.facecolor,"flat",4) || strncmp(obj.facecolor,"interp",6);
-              flat_interp_edge = strncmp(obj.edgecolor,"flat",4) || strncmp(obj.edgecolor,"interp",6);
+              flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
+				  || strncmp (obj.facecolor, "interp", 6));
+              flat_interp_edge = (strncmp (obj.edgecolor, "flat", 4)
+				  || strncmp (obj.edgecolor, "interp", 6));
               palette_data = [];
 
-              if ((flat_interp_face) || 
-                  (flat_interp_edge && strncmp(obj.facecolor,"none",4)))
+              if (flat_interp_face
+		  || (flat_interp_edge && strncmp (obj.facecolor, "none", 4)))
                 palette_data = [1:rows(surf_colormap); surf_colormap'];
-              endif 
+              endif
 
-              if (isnumeric(obj.facecolor))
+              if (isnumeric (obj.facecolor))
                 palette_data = [1:2; [obj.facecolor; obj.facecolor]'];
               endif
 
-              if ((strncmp(obj.facecolor,"none",4) && isnumeric(obj.edgecolor)))
+              if (strncmp (obj.facecolor, "none", 4)
+		  && isnumeric (obj.edgecolor))
                 palette_data = [1:2; [obj.edgecolor; obj.edgecolor]'];
               endif
 
-              if (strncmp(obj.facecolor,"none",4))
-              elseif (flat_interp_face && strncmp(obj.edgecolor,"flat",4))
-                fprintf (plot_stream, "set pm3d at s %s\n", interp_str);
+              if (strncmp (obj.facecolor, "none", 4))
+              elseif (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
+                fprintf (plot_stream, "set pm3d at s %s;\n", interp_str);
               else
-                if (strncmp(obj.edgecolor,"none",4))
-                  fprintf (plot_stream, "set pm3d at s %s\n", interp_str);
+                if (strncmp(obj.edgecolor, "none", 4))
+                  fprintf (plot_stream, "set pm3d at s %s;\n", interp_str);
                 else
                   edgecol = obj.edgecolor;
                   if (ischar(obj.edgecolor))
                     edgecol = [0 0 0];
                   endif
-                  fprintf (plot_stream, "set pm3d at s hidden3d %d %s \n", data_idx, interp_str);
-                  fprintf (plot_stream, 
-                           "set style line %d linecolor rgb \"#%02x%02x%02x\" lw %f\n",
+                  fprintf (plot_stream, "set pm3d at s hidden3d %d %s;\n", data_idx, interp_str);
+                  fprintf (plot_stream,
+                           "set style line %d linecolor rgb \"#%02x%02x%02x\" lw %f;\n",
                            data_idx, round (255*edgecol), obj.linewidth);
                 endif
               endif
@@ -809,7 +814,8 @@ function __go_draw_axes__ (h, plot_stream)
     else
       ydir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n", yaxisloc, ylim, ydir);
+    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n",
+	     yaxisloc, ylim, ydir);
 
     if (nd == 3 || nd == 4)
       if (zautoscale && have_data)
@@ -828,7 +834,7 @@ function __go_draw_axes__ (h, plot_stream)
       endif
       fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
     endif
-		      
+
     if (strcmpi (axis_obj.box, "on"))
       if (nd == 3 || nd == 4)
 	fputs (plot_stream, "set border 4095;\n");

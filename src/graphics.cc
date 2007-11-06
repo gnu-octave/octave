@@ -2252,7 +2252,7 @@ patch::properties::get (const property_name& name) const
   else if (name.compare ("facecolor"))
     retval = facecolor;
   else if (name.compare ("facealpha"))
-    retval = facecolor;
+    retval = facealpha;
   else if (name.compare ("egdecolor"))
     retval = edgecolor;
   else if (name.compare ("linestyle"))
@@ -2284,9 +2284,9 @@ patch::properties::factory_defaults (void)
   m["zdata"] = Matrix ();
   m["faces"] = Matrix ();
   m["vertices"] = Matrix ();
-  m["facecolor"] = color_property();
+  m["facecolor"] = color_property ();
   m["facealpha"] = 1.0;
-  m["edgecolor"] = color_property("black");
+  m["edgecolor"] = color_property ("black");
   m["linestyle"] = "-";
   m["linewidth"] = 0.5;
   m["marker"] = "none";
@@ -2308,6 +2308,16 @@ surface::properties::properties (const graphics_handle& mh,
     xdata (Matrix ()),
     ydata (Matrix ()),
     zdata (Matrix ()),
+    cdata (Matrix ()),
+    facecolor (radio_values ("{flat}|none|interp")),
+    facealpha (1.0),
+    edgecolor (color_values(0, 0, 0), radio_values ("flat|none|interp")),
+    linestyle ("-"),
+    linewidth (0.5),
+    marker ("none"),
+    markeredgecolor ("auto"),
+    markerfacecolor ("none"),
+    markersize (1),
     keylabel ("")
 { }
 
@@ -2332,6 +2342,26 @@ surface::properties::set (const property_name& name,
     set_ydata (val);
   else if (name.compare ("zdata"))
     set_zdata (val);
+  else if (name.compare ("cdata"))
+    set_cdata (val);
+  else if (name.compare ("facecolor"))
+    set_facecolor (val);
+  else if (name.compare ("facealpha"))
+    set_facealpha (val);
+  else if (name.compare ("edgecolor"))
+    set_edgecolor (val);
+  else if (name.compare ("linestyle"))
+    set_linestyle (val);
+  else if (name.compare ("linewidth"))
+    set_linewidth (val);
+  else if (name.compare ("marker"))
+    set_marker (val);
+  else if (name.compare ("markeredgecolor"))
+    set_markeredgecolor (val);
+  else if (name.compare ("markerfacecolor"))
+    set_markerfacecolor (val);
+  else if (name.compare ("markersize"))
+    set_markersize (val);
   else if (name.compare ("keylabel"))
     set_keylabel (val);
   else
@@ -2356,6 +2386,16 @@ surface::properties::get (void) const
   m.assign ("xdata", xdata);
   m.assign ("ydata", ydata);
   m.assign ("zdata", zdata);
+  m.assign ("cdata", cdata);
+  m.assign ("facecolor", facecolor);
+  m.assign ("facealpha", facealpha);
+  m.assign ("edgecolor", edgecolor);
+  m.assign ("linestyle", linestyle);
+  m.assign ("linewidth", linewidth);
+  m.assign ("marker", marker);
+  m.assign ("markeredgecolor", markeredgecolor);
+  m.assign ("markerface", markerfacecolor);
+  m.assign ("markersize", markersize);
   m.assign ("keylabel", keylabel);
 
   return m;
@@ -2380,6 +2420,26 @@ surface::properties::get (const property_name& name) const
     retval = ydata;
   else if (name.compare ("zdata"))
     retval = zdata;
+  else if (name.compare ("cdata"))
+    retval = cdata;
+  else if (name.compare ("facecolor"))
+    retval = facecolor;
+  else if (name.compare ("facealpha"))
+    retval = facealpha;
+  else if (name.compare ("edgecolor"))
+    retval = edgecolor;
+  else if (name.compare ("linestyle"))
+    retval = linestyle;
+  else if (name.compare ("linewidth"))
+    retval = linewidth;
+  else if (name.compare ("marker"))
+    retval = marker;
+  else if (name.compare ("markeredgecolor"))
+    retval = markeredgecolor;
+  else if (name.compare ("markerfacecolor"))
+    retval = markerfacecolor;
+  else if (name.compare ("markersize"))
+    retval = markersize;
   else if (name.compare ("keylabel"))
     retval = keylabel;
   else
@@ -2396,6 +2456,16 @@ surface::properties::factory_defaults (void)
   m["xdata"] = Matrix ();
   m["ydata"] = Matrix ();
   m["zdata"] = Matrix ();
+  m["cdata"] = Matrix ();
+  m["facecolor"] = color_property ();
+  m["facealpha"] = 1.0;
+  m["edgecolor"] = color_property ("black");
+  m["linestyle"] = "-";
+  m["linewidth"] = 0.5;
+  m["marker"] = "none";
+  m["markeredgecolor"] = "auto";
+  m["markerfacecolor"] = "none";
+  m["markersize"] = 1;
   m["keylabel"] = "";
 
   return m;

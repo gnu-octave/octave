@@ -1,3 +1,12 @@
+2007-11-06  Kai Habel  <kai.habel@gmx.de>
+
+	* graphics.h.in (class surface::properties): New properties, 
+	cdata, facecolor, facealpha, edgecolor, linestyle,
+	linewidth, marker, markeredgecolor, markerfacecolor, markersize.
+	* graphics.cc (surface::properties::properties,
+	surface::properties::set, surface::properties::get,
+	surface::properties::factory_defaults): Handle new properities.
+
 2007-11-06  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-bm-bm.cc (matrix_to_bool_matrix,

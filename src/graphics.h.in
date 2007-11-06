@@ -1698,6 +1698,16 @@ public:
       octave_value xdata
       octave_value ydata
       octave_value zdata
+      octave_value cdata
+      color_property facecolor a
+      octave_value facealpha
+      color_property edgecolor a
+      octave_value linestyle
+      octave_value linewidth
+      octave_value marker
+      octave_value markeredgecolor
+      octave_value markerfacecolor
+      octave_value markersize
       octave_value keylabel
     END_PROPERTIES
 

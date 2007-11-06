@@ -70,7 +70,7 @@ function cmap = colormap (map)
   endif
 
   ## Return current color map.
-  if (nargout > 0)
+  if (nargout > 0 || (nargout == 0 && nargin == 0))
     cmap = get (gcf (), "colormap");
   endif
 

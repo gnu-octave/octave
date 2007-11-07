@@ -1,3 +1,9 @@
+2007-11-07  David Bateman  <dbateman@free.fr>
+
+	* plot/surfc.m, plot/meshc.m: New files.
+	* plot/Makefile.in (SOURCES): Add them to the list.
+	Also add pcolor.m, shading.m, surf.m, and surface.m to the list.
+
 2007-11-07  Michael Zeising  <michael@michaels-website.de>
 
 	* audio/wavwrite.m, audio/wavwrite.m: Correct sample scaling.

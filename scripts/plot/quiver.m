@@ -46,17 +46,18 @@
 ## The optional return value @var{h} provides a list of handles to the 
 ## the parts of the vector field (body, arrow and marker).
 ##
-## @group
 ## @example
-##   [x,y] = meshgrid(1:2:20);
-##   quiver(x,y,sin(2*pi*x/10),sin(2*pi*y/10))
-## @end example
+## @group
+## [x, y] = meshgrid (1:2:20);
+## quiver (x, y, sin (2*pi*x/10), sin (2*pi*y/10));
 ## @end group
+## @end example
 ##
 ## @seealso{plot}
 ## @end deftypefn
 
 function retval = quiver (varargin)
+
   if (nargin < 2)
     print_usage ();
   elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
@@ -80,6 +81,7 @@ function retval = quiver (varargin)
   if (nargout > 0)
     retval = tmp;
   endif
+
 endfunction
 
 function hlist = __quiver__ (varargin)
@@ -89,8 +91,8 @@ function hlist = __quiver__ (varargin)
   arrowsize = 0.33;
 
   firstnonnumeric = Inf;
-  for i = 2 : nargin
-    if (!isnumeric (varargin {i}))
+  for i = 2:nargin
+    if (! isnumeric (varargin {i}))
       firstnonnumeric = i;
       break;
     endif
@@ -105,7 +107,7 @@ function hlist = __quiver__ (varargin)
     else
       iarg = 4;
     endif
-    [x, y] = meshgrid (1 : size(u,1), 1 : size(u,2));
+    [x, y] = meshgrid (1:size(u,1), 1:size(u,2));
   else
     x = varargin{2};
     y = varargin{3};
@@ -211,6 +213,7 @@ function hlist = __quiver__ (varargin)
   end_unwind_protect
 
   hlist = [h1; h2; h3];
+
 endfunction
 
 %!demo

@@ -1,3 +1,11 @@
+2007-11-07  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Also set have_data to false if any of
+	the data limits are infinite.
+	(get_data_limits): Don't do anything if xdat or tx are empty.
+	(get_axis_limits): Don't do anything if min_val or max_val are
+	infinite.
+
 2007-11-06  David Bateman  <dbateman@free.fr>
 
 	* plot/hist.m: Pass any additional arguments to bar for

@@ -782,7 +782,10 @@ function __go_draw_axes__ (h, plot_stream)
 
     endfor
 
-    have_data = ! isempty (data);
+    have_data = (! (isempty (data)
+		    || isinf (xmin) || isinf (xmax)
+		    || isinf (ymin) || isinf (ymax)
+		    || isinf (zmin) || isinf (zmax)));
 
     if (xautoscale && have_data)
       xlim = get_axis_limits (xmin, xmax, xminp, xlogscale);
@@ -798,7 +801,8 @@ function __go_draw_axes__ (h, plot_stream)
     else
       xdir = "noreverse";
     endif
-    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n", xaxisloc, xlim, xdir);
+    fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n",
+	     xaxisloc, xlim, xdir);
 
     if (yautoscale && have_data)
       ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
@@ -963,18 +967,20 @@ function __go_draw_axes__ (h, plot_stream)
 endfunction
 
 function [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat, tx)
-  xdat = xdat(! isinf (xdat));
-  xmin = min (xmin, min (xdat));
-  xmax = max (xmax, max (xdat));
-  if (nargin == 5)
-    tx = tx(! isinf (xdat) & tx > 0);
-    if (! isempty (tx))
-      xminp = min (xminp, min (tx));
-    endif
-  else
-    tmp = min (xdat(xdat > 0));
-    if (! isempty (tmp))
-      xminp = min (xminp, tmp);
+  if (! (isempty (xdat) || isempty (tx)))
+    xdat = xdat(! isinf (xdat));
+    xmin = min (xmin, min (xdat));
+    xmax = max (xmax, max (xdat));
+    if (nargin == 5)
+      tx = tx(! isinf (xdat) & tx > 0);
+      if (! isempty (tx))
+	xminp = min (xminp, min (tx));
+      endif
+    else
+      tmp = min (xdat(xdat > 0));
+      if (! isempty (tmp))
+	xminp = min (xminp, tmp);
+      endif
     endif
   endif
 endfunction
@@ -985,36 +991,38 @@ endfunction
 
 function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
 
-  if (logscale)
-    if (isinf (min_pos))
-      lim = [];
-      warning ("axis: logscale with no positive values to plot");
-      return;
+  if (! (isinf (min_val) || isinf (max_val)))
+    if (logscale)
+      if (isinf (min_pos))
+	lim = [];
+	warning ("axis: logscale with no positive values to plot");
+	return;
+      endif
+      if (min_val <= 0)
+	warning ("axis: omitting nonpositive data in log plot");
+	min_val = min_pos;
+      endif
+      ## FIXME -- maybe this test should also be relative?
+      if (abs (min_val - max_val) < sqrt (eps))
+	min_val *= 0.9;
+	max_val *= 1.1;
+      endif
+      min_val = 10 ^ floor (log10 (min_val));
+      max_val = 10 ^ ceil (log10 (max_val));
+    else
+      if (min_val == 0 && max_val == 0)
+	min_val = -1;
+	max_val = 1;
+      ## FIXME -- maybe this test should also be relative?
+      elseif (abs (min_val - max_val) < sqrt (eps))
+	min_val -= 0.1 * abs (min_val);
+	max_val += 0.1 * abs (max_val);
+      endif
+      ## FIXME -- to do a better job, we should consider the tic spacing.
+      scale = 10 ^ floor (log10 (max_val - min_val) - 1);
+      min_val = scale * floor (min_val / scale);
+      max_val = scale * ceil (max_val / scale);
     endif
-    if (min_val <= 0)
-      warning ("axis: omitting nonpositive data in log plot");
-      min_val = min_pos;
-    endif
-    ## FIXME -- maybe this test should also be relative?
-    if (abs (min_val - max_val) < sqrt (eps))
-      min_val *= 0.9;
-      max_val *= 1.1;
-    endif
-    min_val = 10 ^ floor (log10 (min_val));
-    max_val = 10 ^ ceil (log10 (max_val));
-  else
-    if (min_val == 0 && max_val == 0)
-      min_val = -1;
-      max_val = 1;
-    ## FIXME -- maybe this test should also be relative?
-    elseif (abs (min_val - max_val) < sqrt (eps))
-      min_val -= 0.1 * abs (min_val);
-      max_val += 0.1 * abs (max_val);
-    endif
-    ## FIXME -- to do a better job, we should consider the tic spacing.
-    scale = 10 ^ floor (log10 (max_val - min_val) - 1);
-    min_val = scale * floor (min_val / scale);
-    max_val = scale * ceil (max_val / scale);
   endif
 
   lim = [min_val, max_val];

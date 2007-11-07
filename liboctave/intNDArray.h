@@ -73,6 +73,8 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+  intNDArray sum (int dim) const;
+
   intNDArray squeeze (void) const
     { return intNDArray<T> (MArrayN<T>::squeeze ()); }
 

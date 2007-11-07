@@ -222,6 +222,13 @@ operator >> (std::istream& is, intNDArray<T>& a)
   return is;
 }
 
+template <class T>
+intNDArray<T>
+intNDArray<T>::sum (int dim) const
+{
+  MX_ND_REDUCTION (retval(result_idx) += intNDArray<T>::elem (iter_idx), 0, intNDArray<T>);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

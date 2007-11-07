@@ -66,6 +66,8 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+  boolNDArray sum (int dim = -1) const;
+
   boolNDArray concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx);
 
   boolNDArray& insert (const boolNDArray& a, octave_idx_type r, octave_idx_type c);

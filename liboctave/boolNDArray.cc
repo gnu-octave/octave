@@ -57,6 +57,12 @@ boolNDArray::any (int dim) const
   MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (MX_ND_ANY_EXPR), false);
 }
 
+boolNDArray 
+boolNDArray::sum (int dim) const
+{
+  MX_ND_REDUCTION (retval(result_idx) |= elem (iter_idx), true, boolNDArray);
+}
+
 boolNDArray
 boolNDArray::concat (const boolNDArray& rb, const Array<octave_idx_type>& ra_idx)
 {

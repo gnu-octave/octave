@@ -1,5 +1,11 @@
 2007-11-06  David Bateman  <dbateman@free.fr>
 
+	* intNDArray.cc (intNDArray<T> intNDArray<T>::sum (int) const):
+	New method.
+	* intNDarray.h (intNDArray sum (int) const): Declare it.
+	* boolNDArray.cc (boolNDArray boolNDArray::sum (int) const):
+	New method.
+	* boolNDarray.cc (boolNDArray sum (int) const): Declare it.
 	* MArray-def.h (MARRAY_NORM_BODY): Scale frobenius norm by infinity
 	norm to avoid issues of over- and underflow.  From Rolf Fabian
 	<Rolf.Fabian@gmx.de>.

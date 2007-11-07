@@ -298,6 +298,12 @@ function __go_draw_axes__ (h, plot_stream)
 	  endif
 
 	case "line"
+	  if (strncmp (obj.linestyle, "none", 4)
+	      && (! isfield (obj, "marker")
+		  || (isfield (obj, "marker")
+		      && strncmp (obj.marker, "none", 4))))
+	    continue;
+	  endif
 	  data_idx++;
 	  is_image_data(data_idx) = false;
 	  parametric(data_idx) = true;

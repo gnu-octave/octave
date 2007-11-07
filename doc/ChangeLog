@@ -1,3 +1,7 @@
+2007-11-07  David Bateman  <dbateman@free.fr>
+
+	* interpreter/plot.txi: Document new functions.
+
 2007-10-30  David Bateman  <dbateman@free.fr>
 
 	* interpreter/dynamic.txi, interpreter/install.txi,

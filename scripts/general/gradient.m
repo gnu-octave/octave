@@ -87,17 +87,26 @@ function [varargout] = gradient (M, varargin)
     endif
   else
     for i=1:nd
-      if (isscalar (varargin{1}))
-	d{i} = varargin{i} * ones (sz(i), 1);
+      if (isscalar (varargin{i}))
+	## Why the hell did matlab decide to swap these two values?
+	if (i == 1)
+	  d{2} = varargin{1} * ones (sz(2), 1);
+	elseif (i == 2)
+	  d{1} = varargin{2} * ones (sz(1), 1);
+	else
+	  d{i} = varargin{i} * ones (sz(i), 1);
+	endif
       else
-	d{i} = varargin{i};
+	## Why the hell did matlab decide to swap these two values?
+	if (i == 1)
+	  d{2} = varargin{1};
+	elseif (i == 2)
+	  d{1} = varargin{2};
+	else
+	  d{i} = varargin{i};
+	endif
       endif
     endfor
-
-    ## Why the hell did matlab decide to swap these two values?
-    tmp = d{1};
-    d{1} = d{2};
-    d{2} = tmp;
   endif
 
   for i = 1:max (2, min (nd, nargout))

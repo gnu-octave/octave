@@ -176,6 +176,12 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(polar)
 
+@DOCSTRING(pie)
+
+@DOCSTRING(quiver)
+
+@DOCSTRING(pcolor)
+
 The axis function may be used to change the axis limits of an existing
 plot.
 
@@ -237,6 +243,10 @@ three-dimensional plots.
 
 @DOCSTRING(meshc)
 
+@DOCSTRING(surf)
+
+@DOCSTRING(surfc)
+
 @DOCSTRING(meshgrid)
 
 @DOCSTRING(ndgrid)
@@ -244,6 +254,8 @@ three-dimensional plots.
 @DOCSTRING(plot3)
 
 @DOCSTRING(view)
+
+@DOCSTRING(shading)
 
 @node Plot Annotations
 @subsection Plot Annotations
@@ -492,6 +504,8 @@ become children of the current axes object.
 @DOCSTRING(line)
 
 @DOCSTRING(patch)
+
+@DOCSTRING(surface)
 
 By default, Octave refreshes the plot window when a prompt is printed,
 or when waiting for input.  To force an update at other times, call the

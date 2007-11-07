@@ -1,10 +1,13 @@
 2007-11-07  David Bateman  <dbateman@free.fr>
 
+	* general/gradient.m: Correctly convert deltax and deltay scalar
+	values are scalars to vectors.
+
 	* plot/__go_draw_axes__.m: Fix surfaces for gnuplot 4.0 and for
 	the meshc.m function.
 	* plot/meshc.m: Also use the surface function.
 	
-	* plot/surfc.m, plot/meshc.m: New files.
+	* plot/meshc.m, plot/quiver.m, plot/surfc.m, : New files.
 	* plot/Makefile.in (SOURCES): Add them to the list.
 	Also add pcolor.m, shading.m, surf.m, and surface.m to the list.
 

@@ -149,7 +149,15 @@ function hlist = __pie__ (varargin)
     set (h, "clim", [1, len]);
   endif
 
-  axis ([-1.5, 1.5, -1.5, 1.5]);
+  axis ([-1.5, 1.5, -1.5, 1.5], "square");
 
 endfunction
-  
+
+%!demo
+%! pie ([3, 2, 1], [0, 0, 1]);
+%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+
+%!demo
+%! pie ([3, 2, 1], [0, 0, 1], {"Cheddar", "Swiss", "Camembert"});
+%! colormap([1,0,0;0,1,0;0,0,1;1,1,0;1,0,1;0,1,1]);
+%! axis ([-2,2,-2,2]);

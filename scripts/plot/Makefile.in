@@ -103,6 +103,7 @@ SOURCES = \
   plot3.m \
   polar.m \
   print.m \
+  quiver.m \
   replot.m \
   semilogx.m \
   semilogxerr.m \

@@ -16,18 +16,12 @@
 ## 02110-1301, USA.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File}  shading (@var{type})
-## @deftypefnx {Function File}  shading (@var{ax}, ...)
-##
-## Sets the shading of surface or patch graphic objects. Valid arguments for
-## @var{type} are "flat", "interp", or "faceted".
-## If @var{ax} is given the shading is applied to axis @var{ax} instead of the 
-## current axis.
-##
-## @example
-## shading ("interp")
-## @end example
-##
+## @deftypefn {Function File} {} shading (@var{type})
+## @deftypefnx {Function File} {} shading (@var{ax}, @dots{})
+## Set the shading of surface or patch graphic objects. Valid arguments
+## for @var{type} are @code{"flat"}, @code{"interp"}, or
+## @code{"faceted"}.  If @var{ax} is given the shading is applied to
+## axis @var{ax} instead of the current axis.
 ## @end deftypefn
 
 ## Author: Kai Habel <kai.habel@gmx.de>

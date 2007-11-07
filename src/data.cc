@@ -370,6 +370,112 @@ sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
   return retval;
 }
 
+#define NATIVE_REDUCTION_1(FCN, TYPE, DIM) \
+  (arg.is_ ## TYPE ## _type ()) \
+    { \
+      TYPE ## NDArray tmp = arg. TYPE ##_array_value (); \
+      \
+      if (! error_state) \
+        retval = tmp.FCN (DIM); \
+    }
+
+#define NATIVE_REDUCTION(FCN) \
+ \
+  octave_value retval; \
+ \
+  int nargin = args.length (); \
+ \
+  bool isnative = false; \
+  \
+  if (nargin > 1 && args(nargin - 1).is_string ()) \
+    { \
+      std::string str = args(nargin - 1).string_value (); \
+      \
+      if (! error_state) \
+	{ \
+	  if (str == "native") \
+	    isnative = true; \
+	  else if (str != "double") /* Ignore double as no single type */ \
+	    error ("sum: unrecognized string argument"); \
+          nargin --; \
+	} \
+    } \
+  \
+  if (nargin == 1 || nargin == 2) \
+    { \
+      octave_value arg = args(0); \
+ \
+      int dim = (nargin == 1 ? -1 : args(1).int_value (true) - 1); \
+ \
+      if (! error_state) \
+	{ \
+	  if (dim >= -1) \
+	    { \
+              if (isnative) \
+                { \
+                  if NATIVE_REDUCTION_1 (FCN, uint8, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, uint16, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, uint32, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, uint64, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int8, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int16, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int32, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, int64, dim) \
+                  else if NATIVE_REDUCTION_1 (FCN, bool, dim) \
+                  else if (arg.is_char_matrix ()) \
+                    { \
+                       error (#FCN, ": invalid char type"); \
+                    } \
+	          else if (arg.is_complex_type ()) \
+		    { \
+		      ComplexNDArray tmp = arg.complex_array_value (); \
+                      \
+		      if (! error_state) \
+		        retval = tmp.FCN (dim); \
+		    } \
+	          else if (arg.is_real_type ()) \
+		    { \
+		      NDArray tmp = arg.array_value (); \
+                      \
+		      if (! error_state) \
+		        retval = tmp.FCN (dim); \
+		    } \
+                  else \
+		    { \
+		      gripe_wrong_type_arg (#FCN, arg); \
+		      return retval; \
+		    } \
+                } \
+	      else if (arg.is_real_type ()) \
+		{ \
+		  NDArray tmp = arg.array_value (); \
+                  \
+		  if (! error_state) \
+		    retval = tmp.FCN (dim); \
+		} \
+	      else if (arg.is_complex_type ()) \
+		{ \
+		  ComplexNDArray tmp = arg.complex_array_value (); \
+                  \
+		  if (! error_state) \
+		    retval = tmp.FCN (dim); \
+		} \
+	      else \
+		{ \
+		  gripe_wrong_type_arg (#FCN, arg); \
+		  return retval; \
+		} \
+	    } \
+	  else \
+	    error (#FCN ": invalid dimension argument = %d", dim + 1); \
+	} \
+      \
+    } \
+  else \
+    print_usage (); \
+ \
+  return retval
+
 #define DATA_REDUCTION(FCN) \
  \
   octave_value retval; \
@@ -1213,15 +1319,36 @@ Return the number of columns of @var{a}.\n\
 DEFUN (sum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} sum (@var{x}, @var{dim})\n\
+@deftypefnx {Built-in Function} {} sum (@dots{}, 'native')\n\
 Sum of elements along dimension @var{dim}.  If @var{dim} is\n\
 omitted, it defaults to 1 (column-wise sum).\n\
 \n\
 As a special case, if @var{x} is a vector and @var{dim} is omitted,\n\
 return the sum of the elements.\n\
+\n\
+If the optional argument 'native' is given, then the sum is performed\n\
+in the same type as the original argument, rather than in the default\n\
+double type. For example\n\
+\n\
+@example\n\
+sum ([true, true])\n\
+  @result{} 2\n\
+sum ([true, true], 'native')\n\
+  @result{} true\n\
+@end example\n\
 @end deftypefn")
 {
-  DATA_REDUCTION (sum);
+  NATIVE_REDUCTION (sum);
 }
+
+/*
+
+%!assert (sum([true,true]), 2)
+%!assert (sum([true,true],'native'), true)
+%!assert (sum(int8([127,10,-20])), 117);
+%!assert (sum(int8([127,10,-20]),'native'), int8(107));
+
+*/
 
 DEFUN (sumsq, args, ,
   "-*- texinfo -*-\n\

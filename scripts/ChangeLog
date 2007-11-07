@@ -1,3 +1,8 @@
+2007-11-06  David Bateman  <dbateman@free.fr>
+
+	* plot/hist.m: Pass any additional arguments to bar for
+	treatment. Create a default x value that is always a vector.
+
 2007-11-06  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* pkg/pkg.m.m: Check for environment variables CC, CXX, AR, RANLIB
@@ -18,7 +23,7 @@
 
 	* startup/inputrc: Delete key bindings starting with \340 code.
 
-2007-11-06  David Bateman  <dbateman@free.fr>
+2007-11-05  David Bateman  <dbateman@free.fr>
 
 	* linear-algebra/__norm__.m: Scale frobenius norm by infinity norm
 	to avoid issues of over- and underflow.  From Rolf Fabian

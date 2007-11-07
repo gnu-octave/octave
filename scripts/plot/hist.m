@@ -43,9 +43,9 @@
 
 ## Author: jwe
 
-function [nn, xx] = hist (y, x, norm)
+function [nn, xx] = hist (y, varargin)
 
-  if (nargin < 1 || nargin > 3)
+  if (nargin < 1)
     print_usage ();
   endif
 
@@ -56,18 +56,20 @@ function [nn, xx] = hist (y, x, norm)
   endif
 
   if (isreal (y))
-    max_val = max (y);
-    min_val = min (y);
+    max_val = max (y(:));
+    min_val = min (y(:));
   else
     error ("hist: first argument must be a vector");
   endif
 
-  if (nargin == 1)
+  iarg = 1;
+  if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
     x = [0.5:n]'/n;
     x = x * (max_val - min_val) + ones(size(x)) * min_val;
   else
     ## nargin is either 2 or 3
+    x = varargin {iarg++};
     if (isscalar (x))
       n = x;
       if (n <= 0)
@@ -113,8 +115,9 @@ function [nn, xx] = hist (y, x, norm)
 
   freq = diff (chist);
 
-  if (nargin == 3)
+  if (nargin > 2 && !ischar (varargin{iarg}))
     ## Normalise the histogram.
+    norm = varargin{iarg++};
     freq = freq / rows (y) * norm;
   endif
 
@@ -126,8 +129,10 @@ function [nn, xx] = hist (y, x, norm)
       nn = freq;
       xx = x;
     endif
+  elseif (size (freq, 2) != 1)
+    bar (x, freq, 0.8, varargin{iarg:end});
   else
-    bar (x, freq, 1.0);
+    bar (x, freq, 1.0, varargin{iarg:end});
   endif
 
 endfunction
@@ -146,7 +151,7 @@ endfunction
 %!  assert(nn, [3,2,1]);
 %!test
 %!  [nn,xx]=hist([[1:4]',[1:4]'],3);
-%!  assert(xx, [[1.5,2.5,3.5]',[1.5,2.5,3.5]']);
+%!  assert(xx, [1.5;2.5;3.5]);
 %!  assert(nn, [[2,1,1]',[2,1,1]']);
 %!assert(hist(1,1),1);
 %!test

@@ -9,6 +9,8 @@
 
 2007-11-06  David Bateman  <dbateman@free.fr>
 
+	* data.cc (DATA_REDUCTION): Handle the 'native' and 'double'
+	arguments of the Fsum function.
 	* OPERATORS/op-bm-bm.cc (matrix_to_bool_matrix,
 	scalar_to_bool_matrix): New type conversion functions.
 	(install_bm_bm_ops): Install new type conversions functions.

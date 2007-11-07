@@ -1,3 +1,18 @@
+2007-11-07  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/regexp.cc: Handle HAVE_PCRE_PCRE_H.  Check
+	HAVE_PCRE_H instead of HAVE_PCRE to decide whether to include pcre.h.
+
+	* DLD-FUNCTIONS/__gnuplot_raw__.l (Fgnuplot_command_plot,
+	Fgnuplot_command_replot, Fgnuplot_command_splot,
+	Fgnuplot_command_using, Fgnuplot_command_with,
+	Fgnuplot_command_axes, Fgnuplot_command_title,
+	Fgnuplot_command_end, Fgnuplot_use_title_option,
+	F__clear_plot_window__, Fcloseplot, Fpurge_tmp_files,
+	F__gnuplot_raw__, F__gnuplot_send_inline_data__, F__gnuplot_set__,
+	F__gnuplot_show__, F__gnuplot_plot__, F__gnuplot_splot__,
+	F__gnuplot_replot__): Note obsolescence in doc string.
+
 2007-11-06  Kai Habel  <kai.habel@gmx.de>
 
 	* graphics.h.in (class surface::properties): New properties, 

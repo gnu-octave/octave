@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.590 $)
+AC_REVISION($Revision: 1.591 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -425,7 +425,7 @@ AC_SUBST(TEXINFO_QHULL)
 ### Check for pcre/regex library.
 AC_SUBST(REGEX_LIBS)
 WITH_PCRE_CONFIG=no
-AC_CHECK_HEADER(pcre.h, WITH_PCRE=yes, WITH_PCRE=no)
+AC_CHECK_HEADERS([pcre/pcre.h pcre.h], WITH_PCRE=yes, WITH_PCRE=no)
 if test $WITH_PCRE = no ; then
   AC_CHECK_PROG(WITH_PCRE_CONFIG, pcre-config, yes, no)
   if test $WITH_PCRE_CONFIG = yes ; then

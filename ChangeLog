@@ -1,3 +1,7 @@
+2007-11-07  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Also check for pcre/pcre.h.
+
 2007-11-01  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Delete BLAS library calling convention

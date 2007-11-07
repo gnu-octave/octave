@@ -40,15 +40,15 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "parse.h"
 
-#ifdef HAVE_PCRE
+#if defined (HAVE_PCRE_PCRE_H)
+#include <pcre/pcre.h>
+#elif defined (HAVE_PCRE_H)
 #include <pcre.h>
-#else
-#ifdef HAVE_REGEX
-#ifdef __MINGW32__
+#elif defined (HAVE_REGEX)
+#if defined (__MINGW32__)
 #define __restrict
 #endif
 #include <regex.h>
-#endif
 #endif
 
 // The regexp is constructed as a linked list to avoid resizing the

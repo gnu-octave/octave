@@ -1567,6 +1567,8 @@ DEFUN_DLD (gnuplot_command_plot, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} = } gnuplot_command_plot ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} = } gnuplot_command_plot (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_plot);
@@ -1576,6 +1578,8 @@ DEFUN_DLD (gnuplot_command_replot, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_replot ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_replot (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_replot);
@@ -1585,6 +1589,8 @@ DEFUN_DLD (gnuplot_command_splot, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_splot ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_splot (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_splot);
@@ -1594,6 +1600,8 @@ DEFUN_DLD (gnuplot_command_using, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_using ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_using (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_using);
@@ -1603,6 +1611,7 @@ DEFUN_DLD (gnuplot_command_with, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_with ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_with (@var{new_val})\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_with);
@@ -1612,6 +1621,8 @@ DEFUN_DLD (gnuplot_command_axes, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_axes ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_axes (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_axes);
@@ -1621,6 +1632,8 @@ DEFUN_DLD (gnuplot_command_title, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_title ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_title (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_title);
@@ -1630,6 +1643,9 @@ DEFUN_DLD (gnuplot_command_end, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_end ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_end (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
+\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_command_end);
@@ -1642,6 +1658,9 @@ DEFUN_DLD (gnuplot_use_title_option, args, nargout,
 If enabled, append @samp{-title \"Figure NN\"} to the gnuplot command.\n\
 By default, this feature is enabled if the @code{DISPLAY} environment\n\
 variable is set when Octave starts.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (gnuplot_use_title_option);
@@ -1652,6 +1671,9 @@ DEFUN_DLD (__clear_plot_window__, , ,
 @deftypefn {Loadable Function} {} clearplot\n\
 @deftypefnx {Loadable Function} {} clg\n\
 Clear the plot window and any titles or axis labels.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   gnuplot::clear ();
@@ -1662,8 +1684,12 @@ Clear the plot window and any titles or axis labels.\n\
 DEFUN_DLD (closeplot, , ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} closeplot\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
+\n\
 Close stream to the @code{gnuplot} subprocess.  If you are using X11,\n\
 this will close the plot window.\n\
+@seealso{close}\n\
 @end deftypefn")
 {
   gnuplot::close ();
@@ -1681,8 +1707,8 @@ commands to @code{gnuplot} through a pipe.  Octave will delete the\n\
 temporary files on exit, but if you are doing a lot of plotting you may\n\
 want to clean up in the middle of a session.\n\
 \n\
-A future version of Octave will eliminate the need to use temporary\n\
-files to hold the plot data.\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   gnuplot::cleanup_tmp_files ();
@@ -1694,6 +1720,9 @@ DEFUN_DLD (__gnuplot_raw__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __gnuplot_raw__ (@var{string})\n\
 Send @var{string} directly to gnuplot subprocess.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   if (args.length () == 1 && args(0).is_string ())
@@ -1712,6 +1741,9 @@ DEFUN_DLD (__gnuplot_send_inline_data__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __gnuplot_send_inline_data__ (@var{data}, @var{ndim}, @var{parametric})\n\
 Send @var{val} to gnuplot subprocess as inline data.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -1747,6 +1779,9 @@ DEFUN_DLD (__gnuplot_set__, args, ,
   "-*- texinfo -*-\n\
 @deffn {Loadable Function} __gnuplot_set__ options\n\
 Set plotting options for gnuplot\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deffn")
 {
   string_vector argv = args.make_argv ("set");
@@ -1761,6 +1796,9 @@ DEFUN_DLD (__gnuplot_show__, args, ,
   "-*- texinfo -*-\n\
 @deffn {Loadable Function} __gnuplot_show__ options\n\
 Show plotting options.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deffn")
 {
   string_vector argv = args.make_argv ("show");
@@ -1772,7 +1810,11 @@ Show plotting options.\n\
 }
 
 DEFUN_DLD (__gnuplot_plot__, args, ,
-  "Plot with gnuplot.\n")
+  "-*- texinfo -*-\n\
+Plot with gnuplot.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}")
 {
   string_vector argv = args.make_argv ("plot");
 
@@ -1783,7 +1825,11 @@ DEFUN_DLD (__gnuplot_plot__, args, ,
 }
 
 DEFUN_DLD (__gnuplot_splot__, args, ,
-  "Plot with gnuplot.\n")
+  "-*- texinfo -*-\n\
+Plot with gnuplot.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}")
 {
   string_vector argv = args.make_argv ("splot");
 
@@ -1794,7 +1840,11 @@ DEFUN_DLD (__gnuplot_splot__, args, ,
 }
 
 DEFUN_DLD (__gnuplot_replot__, args, ,
-  "Plot with gnuplot.\n")
+  "-*- texinfo -*-\n\
+Plot with gnuplot.\n\
+\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}")
 {
   string_vector argv = args.make_argv ("replot");
 

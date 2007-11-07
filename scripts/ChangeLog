@@ -1,3 +1,7 @@
+2007-11-07  Michael Zeising  <michael@michaels-website.de>
+
+	* audio/wavwrite.m, audio/wavwrite.m: Correct sample scaling.
+
 2007-11-07  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Also set have_data to false if any of

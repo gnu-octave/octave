@@ -27,7 +27,7 @@
 ## @seealso{wavread}
 ## @end deftypefn
 
-## Author: Michael Zeising <michael.zeising@stud.uni-erlangen.de>
+## Author: Michael Zeising <michael@michaels-website.de>
 ## Created: 06 December 2005
 
 function wavwrite (y, varargin)
@@ -147,11 +147,11 @@ function wavwrite (y, varargin)
   ## scale samples
   switch (bits_per_sample)
     case 8
-      yi = round (yi*128 + 128);
+      yi = round (yi*127 + 128);
     case 16
-      yi = round (yi*32768);
+      yi = round (yi*32767);
     case 32
-      yi = round (yi*2147483648);
+      yi = round (yi*2147483647);
   endswitch
   
   ## write to file

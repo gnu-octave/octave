@@ -38,7 +38,7 @@
 ## @seealso{wavwrite}
 ## @end deftypefn
 
-## Author: Michael Zeising <michael.zeising@stud.uni-erlangen.de>
+## Author: Michael Zeising <michael@michaels-website.de>
 ## Created: 06 December 2005
 
 function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
@@ -195,13 +195,13 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     ## normalize samples
     switch (bits_per_sample)
       case 8
-        yi = (yi - 127.5)/127.5;
+        yi = (yi - 128)/127;
       case 16
-        yi /= 32768;
+        yi /= 32767;
       case 24
-	yi /= 8388608;
+		yi /= 8388607;
       case 32
-        yi /= 2147483648;
+        yi /= 2147483647;
     endswitch
   endif
   

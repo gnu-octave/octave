@@ -216,7 +216,7 @@ The 2.9.N and 3.0.N series brings
 
 @item better support for both msvc and mingw
 
-@item a fully compatiable MEX interface
+@item a fully compatible MEX interface
 
 @item many many other minor features and compatibility changes
 
@@ -798,7 +798,7 @@ There are no @sc{Matlab} compatible GUI functions.  There are a number of
 bindings from Octave to Tcl/Tk, Vtk and zenity included in the
 Octave Forge project (@url{http://octave.sourceforge.net}) for example
 that can be used for a GUI, but these are not @sc{Matlab}
-compatible. Work on a matlab compatiable GUI is in an alpha stage in the
+compatible. Work on a matlab compatible GUI is in an alpha stage in the
 JHandles package (@url{http://octave.sourceforge.net/jhandles/index.html}).
 This might be an issue if you intend to exchange Octave code with 
 @sc{Matlab} users.

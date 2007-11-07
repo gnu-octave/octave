@@ -67,9 +67,11 @@ function retval = pie (varargin)
   if (nargout > 0)
     retval = tmp;
   endif
+
 endfunction
 
 function hlist = __pie__ (varargin)
+
   h = varargin{1};
   x = abs (varargin{2});
   iarg = 3;
@@ -81,7 +83,7 @@ function hlist = __pie__ (varargin)
   len = length (x);
 
   while (iarg <= nargin)
-    arg = varargin {iarg++};
+    arg = varargin{iarg++};
     if (iscell (arg))
       labels = arg;
       if (! size_equal (x, labels))
@@ -101,23 +103,23 @@ function hlist = __pie__ (varargin)
 
   if (! exist ("labels", "var"))
     xp = round (100 * x ./ sum (x)); 
-    for i = 1 : len
+    for i = 1:len
       labels{i} = sprintf ("%d%%", xp(i));
     endfor
   endif
 
   hlist = [];
   refinement = 90;
-  phi = 0 : refinement : 360;
-  xphi = cumsum (x / sum(x) * 360);
-  for i = 1 : len 
+  phi = 0:refinement:360;
+  xphi = cumsum (x / sum (x) * 360);
+  for i = 1:len 
     if (i == 1)
       xn = 0 : 360 / refinement : xphi(i);
     else
       xn = xphi(i-1) : 360 / refinement : xphi(i);
     endif
 
-    if (xn (length (xn)) != xphi(i))
+    if (xn(end) != xphi(i))
       xn = [xn, xphi(i)];
     endif
 
@@ -138,13 +140,16 @@ function hlist = __pie__ (varargin)
     endif
 
     hlist = [hlist; patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], i);
-    	     text(xt, yt, labels {i}, "HorizontalAlignment", align)];
+    	     text(xt, yt, labels {i}, "horizontalalignment", align)];
   endfor
+
   if (len == 1)
     set (h, "clim", [1, 2]);
   else
     set (h, "clim", [1, len]);
   endif
-  axis ([-1.5,1.5,-1.5,1.5]);
+
+  axis ([-1.5, 1.5, -1.5, 1.5]);
+
 endfunction
   

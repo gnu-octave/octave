@@ -820,10 +820,7 @@ function __go_draw_axes__ (h, plot_stream)
 
     endfor
 
-    have_data = (! (isempty (data)
-		    || isinf (xmin) || isinf (xmax)
-		    || isinf (ymin) || isinf (ymax)
-		    || isinf (zmin) || isinf (zmax)));
+    have_data = (! (isempty (data) && any (cellfun (@isempty, data))));
 
     if (xautoscale && have_data)
       xlim = get_axis_limits (xmin, xmax, xminp, xlogscale);

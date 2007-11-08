@@ -33,7 +33,8 @@
 ##
 ## System outputs:  (1) airspeed and (2) pitch angle.
 ##
-## @strong{Reference}: R. Brockhaus: @cite{Flugregelung} (Flight Control), Springer, 1994.
+## @strong{Reference}: R. Brockhaus: @cite{Flugregelung} (Flight
+## Control), Springer, 1994.
 ## @seealso{ord2}
 ## @end deftypefn
 
@@ -45,24 +46,26 @@ function outsys = jet707 ()
   if (nargin != 0)
     print_usage ();
   endif
-  if (nargin > 1)
-    print_usage ();
-  endif
 
-  a = [ -0.46E-01,            0.10681415316, 0.0,   -0.17121680433;
-        -0.1675901504661613, -0.515,         1.0,    0.6420630320636088E-02;
-         0.1543104215347786, -0.547945,     -0.906, -0.1521689385990753E-02;
-         0.0,                 0.0,           1.0,    0.0 ];
-  b = [ 0.1602300107479095,      0.2111848453E-02;
-        0.8196877780963616E-02, -0.3025E-01;
-        0.9173594317692437E-01, -0.75283075;
-        0.0,                     0.0 ];
-  c = [ 1.0,  0.0,  0.0,  0.0;
-        0.0,  0.0,  0.0,  1.0 ];
-  d=zeros(2,2);
-  inam = ["thrust"; "rudder"];
-  onam = ["speed"; "pitch"];
-  snam = ["x1"; "x2"; "x3"; "x4"];
-  outsys = ss(a, b, c, d, 0.0, 4, 0, snam, inam, onam);
+  a = [-0.46E-01,            0.10681415316, 0.0,   -0.17121680433;
+       -0.1675901504661613, -0.515,         1.0,    0.6420630320636088E-02;
+        0.1543104215347786, -0.547945,     -0.906, -0.1521689385990753E-02;
+        0.0,                 0.0,           1.0,    0.0];
+
+  b = [0.1602300107479095,      0.2111848453E-02;
+       0.8196877780963616E-02, -0.3025E-01;
+       0.9173594317692437E-01, -0.75283075;
+       0.0,                     0.0];
+
+  c = [1.0, 0.0, 0.0, 0.0;
+       0.0, 0.0, 0.0, 1.0];
+
+  d = zeros(2,2);
+
+  inam = {"thrust"; "rudder"};
+  onam = {"speed"; "pitch"};
+  snam = {"x1"; "x2"; "x3"; "x4"};
+
+  outsys = ss (a, b, c, d, 0.0, 4, 0, snam, inam, onam);
 
 endfunction

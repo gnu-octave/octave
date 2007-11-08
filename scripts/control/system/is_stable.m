@@ -48,30 +48,39 @@
 
 function retval = is_stable (a, tol, disc)
 
-  if( (nargin < 1) | (nargin > 3) )   print_usage ();
-  elseif(isstruct(a))
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  elseif (isstruct (a))
     ## system was passed
-    if(nargin < 3)                      disc = is_digital(a);
-    elseif(disc != is_digital(a))
-      warning("is_stable: disc =%d does not match system",disc)
+    if (nargin < 3)
+      disc = is_digital(a);
+    elseif (disc != is_digital (a))
+      warning ("is_stable: disc =%d does not match system", disc)
     endif
-    sys = sysupdate(a,"ss");
-    a = sys2ss(sys);
+    sys = sysupdate (a, "ss");
+    a = sys2ss (sys);
   else
-    if(nargin < 3)              disc = 0;               endif
-    if(issquare(a) == 0)
-      error("A(%dx%d) must be square",rows(A), columns(A));
+    if (nargin < 3)
+      disc = 0;
+    endif
+    if (issquare (a) == 0)
+      error ("A(%dx%d) must be square", rows (A), columns (A));
     endif
   endif
 
-  if(nargin < 2)                tol = 200*eps;
-  elseif( !isscalar(tol) )
-    error("is_stable: tol(%dx%d) must be a scalar",rows(tol),columns(tol));
+  if (nargin < 2)
+    tol = 200*eps;
+  elseif (! isscalar (tol))
+    error ("is_stable: tol(%dx%d) must be a scalar", rows (tol),
+	   columns (tol));
   endif
 
-  l = eig(a);
-  if(disc)      nbad = sum(abs(l)*(1+tol) > 1);
-  else          nbad = sum(real(l)+tol > 0);            endif
+  l = eig (a);
+  if (disc)
+    nbad = sum (abs(l)*(1+tol) > 1);
+  else
+    nbad = sum (real(l)+tol > 0);
+  endif
   retval = (nbad == 0);
 
 endfunction

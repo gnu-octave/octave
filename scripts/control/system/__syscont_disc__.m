@@ -47,11 +47,11 @@
 function [n_tot, st_c, st_d, y_c, y_d] = __syscont_disc__ (sys)
 
   ## get ranges for discrete/continuous states and outputs
-  [nn,nz,mm,pp,yd] = sysdimensions(sys);
+  [nn, nz, mm, pp, yd] = sysdimensions (sys);
   n_tot = nn + nz;
   st_c = 1:(nn);
   st_d = nn + (1:nz);
-  y_c = find(yd == 0);          # y_c, y_d will be empty if there are none.
-  y_d = find(yd == 1);
+  y_c = find (yd == 0);          # y_c, y_d will be empty if there are none.
+  y_d = find (yd == 1);
 
 endfunction

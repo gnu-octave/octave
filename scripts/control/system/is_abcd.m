@@ -32,61 +32,67 @@
 function retval = is_abcd (a, b, c, d)
 
   retval = 0;
+
   switch (nargin)
-    case (1)
+    case 1
       ## A only
-      [na, ma] = size(a);
+      [na, ma] = size (a);
       if (na != ma)
-        disp("Matrix A ist not square.")
+        disp ("Matrix A ist not square.")
       endif
-    case (2)
+    case 2
       ## A, B only
-      [na, ma] = size(a);  [nb, mb] = size(b);
+      [na, ma] = size (a);
+      [nb, mb] = size(b);
       if (na != ma)
-        disp("Matrix A ist not square.")
+        disp ("Matrix A ist not square.")
         return;
       endif
       if (na != nb)
-        disp("A and B column dimension different.")
+        disp ("A and B column dimension different.")
         return;
       endif
-    case (3)
+    case 3
       ## A, B, C only
-      [na, ma] = size(a);  [nb, mb] = size(b);  [nc, mc] = size(c);
+      [na, ma] = size(a);
+      [nb, mb] = size(b);
+      [nc, mc] = size(c);
       if (na != ma)
-        disp("Matrix A ist not square.")
+        disp ("Matrix A ist not square.")
         return;
       endif
       if (na != nb)
-        disp("A and B column dimensions not compatible.")
+        disp ("A and B column dimensions not compatible.")
         return;
       endif
       if (ma != mc)
-        disp("A and C row dimensions not compatible.")
+        disp ("A and C row dimensions not compatible.")
         return;
       endif
-    case (4)
+    case 4
       ## all matrices A, B, C, D
-      [na, ma] = size(a);  [nb, mb] = size(b);
-      [nc, mc] = size(c);  [nd, md] = size(d);
+      [na, ma] = size(a);
+      [nb, mb] = size(b);
+      [nc, mc] = size(c);
+      [nd, md] = size(d);
       if (na != ma)
-        disp("Matrix A ist not square.")
+        disp ("Matrix A ist not square.")
         return;
       endif
       if (na != nb)
-        disp("A and B column dimensions not compatible.")
+        disp ("A and B column dimensions not compatible.")
         return;
       endif
       if (ma != mc)
-        disp("A and C row dimensions not compatible.")
+        disp ("A and C row dimensions not compatible.")
         return;
       endif
       if (mb != md)
-        disp("B and D row dimensions not compatible.")
+        disp ("B and D row dimensions not compatible.")
         return;
       endif
       if (nc != nd)
-        disp("C and D column dimensions not compatible.")
+        disp ("C and D column dimensions not compatible.")
         return;
       endif
     otherwise
@@ -94,4 +100,5 @@ function retval = is_abcd (a, b, c, d)
   endswitch
   ## all tests passed, signal ok.
   retval = 1;
+
 endfunction

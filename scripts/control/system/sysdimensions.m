@@ -78,19 +78,19 @@ function [n, nz, m, p, yd] = sysdimensions (sys, opt)
 
   n = sys.n;
   nz = sys.nz;
-  m = length(sysgetsignals(sys,"in"));
-  p = length(sysgetsignals(sys,"out"));
+  m = length (sysgetsignals (sys, "in"));
+  p = length (sysgetsignals (sys, "out"));
   yd = sys.yd;
-  valid_options = {"all","cst","dst","st","in","out"};
+  valid_options = {"all", "cst", "dst", "st", "in", "out"};
   valid_values = {n,n,nz,n+nz,m,p};
 
   valid_opt = 0;
-  for ii=1:length(valid_options)
-    if(strcmp(valid_options{ii},opt))
+  for ii = 1:length(valid_options)
+    if (strcmp(valid_options{ii}, opt))
       n = valid_values{ii};
       valid_opt = 1;
-      if(ii > 1 & nargout > 1)
-        warning("opt=%s, %d output arguments requested",opt,nargout);
+      if (ii > 1 && nargout > 1)
+        warning ("opt=%s, %d output arguments requested", opt, nargout);
       endif
     endif
   endfor

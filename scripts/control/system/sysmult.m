@@ -39,75 +39,81 @@
 
 function sys = sysmult (varargin)
 
-  if(nargin < 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
   ## collect all arguments
   arglist = {};
-  for kk=1:nargin
+  for kk = 1:nargin
     arglist{kk} = varargin{kk};
-    if(!isstruct(arglist{kk}))
-      error("sysadd: argument %d is not a data structure",kk);
+    if (! isstruct (arglist{kk}))
+      error ("sysadd: argument %d is not a data structure", kk);
     endif
   endfor
 
   ## check system dimensions
-  [n,nz,mg,pg,Gyd] = sysdimensions(arglist{1});
-  for kk=2:nargin
-    [n,nz,mh,ph,Hyd] = sysdimensions(arglist{kk});
+  [n, nz, mg, pg, Gyd] = sysdimensions (arglist{1});
+  for kk = 2:nargin
+    [n, nz, mh, ph, Hyd] = sysdimensions (arglist{kk});
     if(ph != mg)
-      error("arg %d has %d outputs; arg %d has %d inputs",kk,ph,kk-1,mg);
+      error ("arg %d has %d outputs; arg %d has %d inputs", kk, ph, kk-1, mg);
     endif
-    [n,nz,mg,pg,Gyd] = sysdimensions(arglist{kk});   # for next iteration
+    [n, nz, mg, pg, Gyd] = sysdimensions (arglist{kk});   # for next iteration
   endfor
 
   ## perform the multiply
-  if(nargin == 2)
+  if (nargin == 2)
     Asys = arglist{1};
     Bsys = arglist{2};
 
-    [An,Anz,Am,Ap] = sysdimensions(Asys);
-    [Bn,Bnz,Bm,Bp] = sysdimensions(Bsys);
+    [An, Anz, Am, Ap] = sysdimensions (Asys);
+    [Bn, Bnz, Bm, Bp] = sysdimensions (Bsys);
 
-    [Aa,Ab,Ac,Ad,Atsam,An,Anz,Astname,Ainname,Aoutname,Ayd] = sys2ss(Asys);
-    [Ba,Bb,Bc,Bd,Btsam,Bn,Bnz,Bstname,Binname,Boutname,Byd] = sys2ss(Bsys);
+    [Aa, Ab, Ac, Ad, Atsam, An, Anz, ...
+     Astname, Ainname, Aoutname, Ayd] = sys2ss(Asys);
 
-    if(Byd)
+    [Ba, Bb, Bc, Bd, Btsam, Bn, Bnz, ...
+     Bstname, Binname, Boutname, Byd] = sys2ss(Bsys);
+
+    if (Byd)
       ## check direct feed-through of inputs through discrete outputs
-      alist = find(Byd);
-      if(An)
-        bd = Ab(1:An)* Bd(alist,:);
-        if(norm(bd,1))
-          warning("sysmult: inputs -> Bsys discrete outputs -> continuous states of Asys");
+      alist = find (Byd);
+      if (An)
+        bd = Ab(1:An) * Bd(alist,:);
+        if (norm (bd, 1))
+          warning ("sysmult: inputs -> Bsys discrete outputs -> continuous states of Asys");
         endif
       endif
       ## check direct feed-through of continuous state through discrete outputs
-      if(Bn)
-        bc = Ab(1:An)* Bc(alist,1:(Bn));
-        if( norm(bc,1) )
-          warning("sysmult: Bsys states -> Bsys discrete outputs -> continuous states of Asys");
+      if (Bn)
+        bc = Ab(1:An) * Bc(alist,1:(Bn));
+        if (norm (bc, 1))
+          warning ("sysmult: Bsys states -> Bsys discrete outputs -> continuous states of Asys");
         endif
       endif
     endif
 
     ## change signal names to avoid spurious warnings from sysgroup
-    Asys = syssetsignals(Asys,"in",__sysdefioname__(Am,"A_sysmult_tmp_name"));
-    Bsys = syssetsignals(Bsys,"out",__sysdefioname__(Bp,"B_sysmult_tmp_name"));
+    Asys = syssetsignals (Asys, "in",
+			  __sysdefioname__ (Am, "A_sysmult_tmp_name"));
 
-    sys = sysgroup(Asys,Bsys);
+    Bsys = syssetsignals (Bsys, "out",
+			  __sysdefioname__ (Bp, "B_sysmult_tmp_name"));
+
+    sys = sysgroup (Asys, Bsys);
 
     ## connect outputs of B to inputs of A
-    sys = sysconnect(sys,Ap+(1:Bp),1:Am);
+    sys = sysconnect (sys, Ap+(1:Bp), 1:Am);
 
     ## now keep only  outputs of A and inputs of B
-    sys = sysprune(sys,1:Ap,Am+(1:Bm));
+    sys = sysprune (sys, 1:Ap, Am+(1:Bm));
 
   else
     ## multiple systems (or a single system); combine together one by one
     sys = arglist{1};
-    for kk=2:length(arglist)
-      sys = sysmult(sys,arglist{kk});
+    for kk = 2:length(arglist)
+      sys = sysmult (sys, arglist{kk});
     endfor
   endif
 

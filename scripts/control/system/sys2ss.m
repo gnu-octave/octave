@@ -82,19 +82,19 @@ function [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys)
     print_usage ();
   endif
 
-  if( ! isstruct(sys) )
-    error("input argument must be a system data structure");
+  if (! isstruct (sys))
+    error ("input argument must be a system data structure");
   endif
 
-  sys = sysupdate(sys,"ss");        # make sure state space data is there
-  [n,nz,m,p] = sysdimensions(sys);
-  [stname,inname,outname,yd] = sysgetsignals(sys);
-  tsam = sysgettsam(sys);
+  sys = sysupdate (sys, "ss");        # make sure state space data is there
+  [n, nz, m, p] = sysdimensions (sys);
+  [stname, inname, outname, yd] = sysgetsignals (sys);
+  tsam = sysgettsam (sys);
 
-  cont = sum(yd == 0) + n;
-  dig = sum(yd != 0) + nz + tsam;
-  if(cont*dig)
-    warning("sys2ss: input system is mixed continuous/discrete");
+  cont = sum (yd == 0) + n;
+  dig = sum (yd != 0) + nz + tsam;
+  if (cont*dig)
+    warning ("sys2ss: input system is mixed continuous/discrete");
   endif
 
   a = sys.a;

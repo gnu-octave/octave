@@ -32,25 +32,25 @@
 
 function [zer, pol, k] = ss2zp (a, b, c, d)
 
-  if(nargin != 4)
+  if (nargin != 4)
     print_usage ();
   endif
 
-  [n,m,p] = abcddim(a,b,c,d);
+  [n, m, p] = abcddim (a, b, c, d);
   if (n == -1)
-    error("ss2tf: Non compatible matrix arguments");
-  elseif ( (m != 1) | (p != 1))
-    error(["ss2tf: not SISO system: m=",num2str(m)," p=",num2str(p)]);
+    error ("ss2tf: Non compatible matrix arguments");
+  elseif (m != 1 || p != 1)
+    error ("ss2tf: not SISO system: m=%d p=%d", m, p);
   endif
 
-  if(n == 0)
+  if (n == 0)
     ## gain block only
     k = d;
     zer = pol = [];
   else
     ## First, get the denominator coefficients
-    [zer,k] = tzero(a,b,c,d);
-    pol = eig(a);
+    [zer, k] = tzero (a, b, c, d);
+    pol = eig (a);
   endif
-endfunction
 
+endfunction

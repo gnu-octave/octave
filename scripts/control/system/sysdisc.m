@@ -42,8 +42,8 @@ function [dsys, Adc, Cdc] = sysdisc (sys)
 
   if (nargin != 1)
     print_usage ();
-  elseif (!isstruct(sys))
-    error("sys must be in system data structure form");
+  elseif (! isstruct (sys))
+    error ("sys must be in system data structure form");
   endif
 
   sys = sysupdate (sys, "ss");
@@ -52,46 +52,47 @@ function [dsys, Adc, Cdc] = sysdisc (sys)
   ## assume there's nothing there; build partitions as appropriate
   Add = Adc = Bdd = Cdd = Cdc = Ddd = [];
 
-  if(isempty(st_d) & isempty(y_d))
-    error("sysdisc: expecting discrete states and/or continuous outputs");
-  elseif (isempty(st_d))
-    warning("sysdisc: no discrete states");
-  elseif(isempty(y_d))
-    warning("sysdisc: no discrete outputs");
+  if (isempty (st_d) && isempty (y_d))
+    error ("sysdisc: expecting discrete states and/or continuous outputs");
+  elseif (isempty (st_d))
+    warning ("sysdisc: no discrete states");
+  elseif (isempty (y_d))
+    warning ("sysdisc: no discrete outputs");
   endif
 
-  [aa,bb,cc,dd] = sys2ss(sys);
-  if(!isempty(st_d) )
-    Add = aa( st_d , st_d);
-    stname = sysgetsignals(sys,"st",st_d);
-    Bdd = bb( st_d , :);
-    if(!isempty(st_c))
-	Adc = aa( st_d , st_c);
+  [aa, bb, cc, dd] = sys2ss (sys);
+  if (! isempty(st_d))
+    Add = aa(st_d,st_d);
+    stname = sysgetsignals (sys, "st", st_d);
+    Bdd = bb(st_d,:);
+    if (! isempty (st_c))
+      Adc = aa(st_d,st_c);
     endif
-    if(!isempty(y_d))
-	Cdd = cc(y_d , st_d);
+    if (! isempty (y_d))
+	Cdd = cc(y_d,st_d);
     endif
   else
     stname = [];
   endif
-  if(!isempty(y_d))
+  if (! isempty (y_d))
     Ddd = dd(y_d , :);
-    outname = sysgetsignals(sys,"out",y_d);
-    if(!isempty(st_c))
-	Cdc = cc(y_d , st_c);
+    outname = sysgetsignals (sys, "out", y_d);
+    if (! isempty (st_c))
+	Cdc = cc(y_d,st_c);
     endif
   else
-    outname=[];
+    outname = [];
   endif
-  inname = sysgetsignals(sys,"in");
+  inname = sysgetsignals (sys, "in");
   outlist = 1:rows(outname);
 
-  if(!isempty(outname))
-    tsam = sysgettsam(sys);
-    [nc,nz] = sysdimensions(sys);
-    dsys = ss(Add,Bdd,Cdd,Ddd,tsam,0,nz,stname,inname,outname,outlist);
+  if (! isempty (outname))
+    tsam = sysgettsam (sys);
+    [nc, nz] = sysdimensions (sys);
+    dsys = ss (Add, Bdd, Cdd, Ddd, tsam, 0, nz, stname, inname,
+	       outname, outlist);
   else
-    dsys=[];
+    dsys = [];
   endif
 
 endfunction

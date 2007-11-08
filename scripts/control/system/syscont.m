@@ -47,8 +47,8 @@ function [csys, Acd, Ccd] = syscont (sys)
 
   if (nargin != 1)
     print_usage ();
-  elseif (!isstruct(sys))
-    error("sys must be in system data structure form");
+  elseif (! isstruct (sys))
+    error ("sys must be in system data structure form");
   endif
 
   sys = sysupdate (sys, "ss");
@@ -57,31 +57,31 @@ function [csys, Acd, Ccd] = syscont (sys)
   ## assume there's nothing there; build partitions as appropriate
   Acc = Acd = Bcc = Ccc = Ccd = Dcc = [];
 
-  if(isempty(st_c) & isempty(y_c))
-    error("syscont: expecting continuous states and/or continuous outputs");
-  elseif (isempty(st_c))
-    warning("syscont: no continuous states");
-  elseif(isempty(y_c))
-    warning("syscont: no continuous outputs");
+  if (isempty (st_c) && isempty (y_c))
+    error ("syscont: expecting continuous states and/or continuous outputs");
+  elseif (isempty (st_c))
+    warning ("syscont: no continuous states");
+  elseif (isempty (y_c))
+    warning ("syscont: no continuous outputs");
   endif
 
-  [sys_a, sys_b, sys_c, sys_d ] = sys2ss(sys);
-  [sys_stname, sys_inname, sys_outname] = sysgetsignals(sys);
-  [sys_n, sys_nz, sys_m, sys_p] = sysdimensions(sys);
-  if(!isempty(st_c))
+  [sys_a, sys_b, sys_c, sys_d ] = sys2ss (sys);
+  [sys_stname, sys_inname, sys_outname] = sysgetsignals (sys);
+  [sys_n, sys_nz, sys_m, sys_p] = sysdimensions (sys);
+  if (! isempty (st_c))
     Acc = sys_a(st_c,st_c);
     stname = sys_stname(st_c);
     Bcc = sys_b(st_c,:);
     Ccc = sys_c(y_c,st_c);
     Acd = sys_a(st_c,st_d);
   else
-    stname=[];
+    stname = [];
   endif
   outname = sys_outname(y_c);
   Dcc = sys_d(y_c,:);
   Ccd = sys_c(y_c,st_d);
   inname = sys_inname;
 
-  csys = ss(Acc,Bcc,Ccc,Dcc,0,sys_n,0,stname,inname,outname);
+  csys = ss (Acc, Bcc, Ccc, Dcc, 0, sys_n, 0, stname, inname, outname);
 
 endfunction

@@ -61,7 +61,7 @@
 
 function outsys = zp2sys ( varargin )
 
-  warning("zp2sys is deprecated.  Use zp() instead.");
-  outsys = zp(varargin{:});
+  warning ("zp2sys is deprecated.  Use zp instead.");
+  outsys = zp (varargin{:});
 
 endfunction

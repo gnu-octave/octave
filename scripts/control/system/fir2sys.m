@@ -87,18 +87,16 @@
 function sys = fir2sys (num, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
-  if (nargin < 1 | nargin > 4)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
   ## let tf do the argument checking
-  den = [1,zeros(1,length(num)-1)];
+  den = [1, zeros(1,length(num)-1)];
 
   ## check sampling interval (if any)
-  if (nargin <= 1)
+  if (nargin < 2 || isempty (tsam))
     tsam = 1;           # default
-  elseif (isempty(tsam))
-    tsam = 1;
   endif
 
   ## Set name of input

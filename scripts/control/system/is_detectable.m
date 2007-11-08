@@ -38,30 +38,31 @@
 
 function [retval, U] = is_detectable (a, c, tol, dflg)
 
-  if( nargin < 1)
+  if (nargin < 1)
     print_usage ();
-  elseif(isstruct(a))
+  elseif (isstruct (a))
     ## system form
-    if(nargin == 2)
+    if (nargin == 2)
       tol = c;
-    elseif(nargin > 2)
+    elseif (nargin > 2)
       print_usage ();
     endif
-    dflg = is_digital(a);
-    [a,b,c] = sys2ss(a);
+    dflg = is_digital (a);
+    [a,b,c] = sys2ss (a);
   else
-    if ((nargin > 4)||(nargin == 1))
+    if (nargin > 4 || nargin == 1)
       print_usage ();
     endif
-    if (~exist("dflg"))
+    if (! exist ("dflg"))
       dflg = 0;
-    end
-  end
+    endif
+  endif
 
-  if(~exist("tol"))
+  if (! exist ("tol"))
     tol = 200*eps;
   end    
-  retval = is_stabilizable(a',c',tol,dflg);
+
+  retval = is_stabilizable (a', c', tol, dflg);
 
 endfunction
 

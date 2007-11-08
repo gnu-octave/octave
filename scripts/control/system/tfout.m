@@ -34,24 +34,24 @@ function tfout (num, denom, x)
     print_usage ();
   endif
 
-  if ( (!isvector(num)) | (!isvector(denom)) )
-    error("tfout: first two argument must be vectors");
+  if (! isvector (num) || ! isvector (denom))
+    error ("tfout: first two argument must be vectors");
   endif
 
   if (nargin == 2)
     x = "s";
-  elseif( ! ischar(x) )
-    error("tfout: third argument must be a string");
+  elseif (! ischar (x))
+    error ("tfout: third argument must be a string");
   endif
 
-  numstring = polyout(num,x);
-  denomstring = polyout(denom,x);
-  len = max(length(numstring),length(denomstring));
-  if(len > 0)
-    y = strrep(blanks(len)," ","-");
-    disp(numstring)
-    disp(y)
-    disp(denomstring)
+  numstring = polyout (num, x);
+  denomstring = polyout (denom, x);
+  len = max (length (numstring), length (denomstring));
+  if (len > 0)
+    y = strrep (blanks (len), " ", "-");
+    disp (numstring)
+    disp (y)
+    disp (denomstring)
   else
     error ("tfout: empty transfer function")
   end

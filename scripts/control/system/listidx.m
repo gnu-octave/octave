@@ -34,66 +34,69 @@
 ## screen and exits with an error.
 ## @end deftypefn
 
-function [idxvec,errmsg]  = listidx(listvar,strlist)
-  error("listidx: don't use this anymore, ok?\n");
+function [idxvec, errmsg]  = listidx (listvar, strlist)
 
-if(nargin != 2)
-  print_usage ();
-endif
+  error ("listidx: don't use this anymore, ok?");
 
-if(ischar(strlist))
-  tmp = strlist;
-  strlist = list();
-  for kk=1:rows(tmp)
-    strlist(kk) = deblank(tmp(kk,:));
-  endfor
-endif
-
-if(ischar(listvar))
-  tmp = listvar;
-  listvar = list();
-  for kk=1:rows(tmp)
-    listvar(kk) = deblank(tmp(kk,:));
-  endfor
-endif
-
-## initialize size of idxvec (for premature return)
-idxvec = zeros(length(strlist),1);
-
-errmsg = "";
-if(!is_signal_list(listvar))
-  errmsg = "listvar must be a list of strings";
-elseif(!is_signal_list(strlist))
-  errmsg = "strlist must be a list of strings";
-endif
-
-if(length(errmsg))
-  if(nargout < 2) error(errmsg);
-  else return;
+  if (nargin != 2)
+    print_usage ();
   endif
-endif
 
-nsigs = length(listvar);
-for idx = 1:length(strlist)
-  signame = strlist{idx};
-  for jdx = 1:nsigs
-    if( strcmp(signame,listvar{jdx}) )
-      if(idxvec(idx) != 0)
-        warning("Duplicate signal name %s (%d,%d)\n", ...
-          listvar{jdx},jdx,idxvec(idx));
+  if (ischar (strlist))
+    tmp = strlist;
+    strlist = list();
+    for kk = 1:rows(tmp)
+      strlist(kk) = deblank (tmp(kk,:));
+    endfor
+  endif
+
+  if (ischar (listvar))
+    tmp = listvar;
+    listvar = list();
+    for kk = 1:rows(tmp)
+      listvar(kk) = deblank (tmp(kk,:));
+    endfor
+  endif
+
+  ## initialize size of idxvec (for premature return)
+  idxvec = zeros (length(strlist), 1);
+
+  errmsg = "";
+  if (! is_signal_list (listvar))
+    errmsg = "listvar must be a list of strings";
+  elseif (! is_signal_list(strlist))
+    errmsg = "strlist must be a list of strings";
+  endif
+
+  if (length (errmsg))
+    if (nargout < 2)
+      error(errmsg);
+    else
+      return;
+    endif
+  endif
+
+  nsigs = length (listvar);
+  for idx = 1:length(strlist)
+    signame = strlist{idx};
+    for jdx = 1:nsigs
+      if (strcmp (signame, listvar{jdx}))
+	if (idxvec(idx) != 0)
+	  warning ("Duplicate signal name %s (%d,%d)\n",
+		   listvar{jdx}, jdx, idxvec(idx));
+	else
+	  idxvec(idx) = jdx;
+	endif
+      endif
+    endfor
+    if (idxvec (idx) == 0)
+      errmsg = sprintf ("Did not find %s", signame);
+      if (nargout == 1)
+	error (errmsg);
       else
-        idxvec(idx) = jdx;
+	break;
       endif
     endif
   endfor
-  if(idxvec(idx) == 0)
-    errmsg = sprintf("Did not find %s",signame);
-    if(nargout == 1)
-      error(errmsg);
-    else
-      break
-    end
-  endif
-endfor
 
 endfunction

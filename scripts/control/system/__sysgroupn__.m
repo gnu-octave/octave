@@ -35,25 +35,25 @@
 function names = __sysgroupn__ (names, kind)
 
   ## check for duplicate names
-  l = length(names);
+  l = length (names);
   ii = 1;
-  while(ii <= l-1)
+  while (ii <= l-1)
     st1 = names{ii};
     jj = ii+1;
-    while ( jj <= l)
+    while (jj <= l)
       st2 = names{jj};
-      if(strcmp(st1,st2))
-        suffix = ["_",num2str(jj)];
-        warning("sysgroup: %s name(%d) = %s name(%d) = %s", ...
-          kind,ii,kind,jj,st1);
-        strval = sprintf("%s%s",st2,suffix);
+      if (strcmp (st1, st2))
+        warning ("sysgroup: %s name(%d) = %s name(%d) = %s",
+		 kind, ii, kind, jj, st1);
+        strval = sprintf ("%s_%d", st2, jj)
         names{jj} = strval;
-        warning("sysgroup:     changed %s name %d to %s",kind,jj,strval);
+        warning ("sysgroup:     changed %s name %d to %s", kind, jj, strval);
         ## restart the check (just to be sure there's no further duplications)
-        ii = 0; jj = l;
+        ii = 0;
+	jj = l;
       endif
-      jj = jj+1;
+      jj++;
     endwhile
-    ii = ii+1;
+    ii++;
   endwhile
 endfunction

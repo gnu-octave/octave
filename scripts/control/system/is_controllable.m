@@ -65,22 +65,23 @@
 function [retval, U] = is_controllable (a, b, tol)
 
   deftol = 1;    # assume default tolerance
-  if(nargin < 1 | nargin > 3)
+
+  if (nargin < 1 || nargin > 3)
     print_usage ();
-  elseif(isstruct(a))
+  elseif (isstruct (a))
     ## system structure passed.
-    sys = sysupdate(a,"ss");
-    [a,bs] = sys2ss(sys);
-    if(nargin > 2)
+    sys = sysupdate (a, "ss");
+    [a, bs] = sys2ss (sys);
+    if (nargin > 2)
       print_usage ();
-    elseif(nargin == 2)
+    elseif (nargin == 2)
       tol = b;          % get tolerance
       deftol = 0;
     endif
     b = bs;
   else
     ## a,b arguments sent directly.
-    if(nargin < 2)
+    if (nargin < 2)
       print_usage ();
     else
       deftol = 1;
@@ -88,27 +89,30 @@ function [retval, U] = is_controllable (a, b, tol)
   endif
 
   ## check for default tolerance
-  if(deftol) tol = 1000*eps; endif
+  if (deftol)
+    tol = 1000*eps;
+  endif
 
   ## check tol dimensions
-  if( !isscalar(tol) )
-    error("is_controllable: tol(%dx%d) must be a scalar", ...
-        rows(tol),columns(tol));
-  elseif( !is_sample(tol) )
-    error("is_controllable: tol=%e must be positive",tol);
+  if (! isscalar (tol))
+    error ("is_controllable: tol(%dx%d) must be a scalar", ...
+           rows (tol), columns (tol));
+  elseif (! is_sample (tol))
+    error ("is_controllable: tol=%e must be positive",tol);
   endif
 
   ## check dimensions compatibility
   n = issquare (a);
   [nr, nc] = size (b);
 
-  if (n == 0 | n != nr | nc == 0)
-    warning("is_controllable: a=(%dx%d), b(%dx%d)",rows(a),columns(a),nr,nc);
+  if (n == 0 || n != nr || nc == 0)
+    warning ("is_controllable: a=(%dx%d), b(%dx%d)",rows(a),columns(a),nr,nc);
     retval = 0;
   else
     ## call block-krylov subspace routine to get an orthogonal basis
     ## of the controllable subspace.
-    [U,H,Ucols] = krylov(a,b,n,tol,1);
+    [U, H, Ucols] = krylov (a, b, n, tol, 1);
     retval = (Ucols == n);
   endif
+
 endfunction

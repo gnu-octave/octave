@@ -59,63 +59,61 @@ function sys = sysupdate (sys, opt)
   ## check for correct number of inputs
   if (nargin != 2)
     print_usage ();
-  elseif(! isstruct(sys) )
-   error("1st argument must be system data structure")
-  elseif(! (strcmp(opt,"tf") + strcmp(opt,"zp") + ...
-        strcmp(opt,"ss") + strcmp(opt,"all")) )
-    error("2nd argument must be \"tf\", \"zp\", \"ss\", or \"all\"");
+  elseif (! isstruct (sys))
+   error ("first argument must be system data structure");
+  elseif (! (strcmp (opt, "tf") || strcmp (opt, "zp")
+             || strcmp (opt, "ss") || strcmp (opt, "all")))
+    error ("second argument must be \"tf\", \"zp\", \"ss\", or \"all\"");
   endif
 
   ## check to make sure not trying to make a SISO system out of a MIMO sys
-  if ( (strcmp(opt,"tf") + strcmp(opt,"zp") + strcmp(opt,"all")) ...
-        & strcmp(sysgettype(sys),"ss") &  (! is_siso(sys) ) )
-    error("MIMO -> SISO update requested");
+  if ((strcmp (opt, "tf") || strcmp(opt,"zp") || strcmp (opt, "all"))
+      && strcmp (sysgettype (sys), "ss") && ! is_siso (sys))
+    error ("MIMO -> SISO update requested");
   endif
 
   ## update transfer function if desired
-  if ( (strcmp(opt, "tf") + strcmp(opt,"all"))&&  (!sys.sys(2)))
+  if ((strcmp (opt, "tf") || strcmp (opt, "all")) && (! sys.sys(2)))
     ## check to make sure the system is not discrete and continuous
-    is_digital(sys);
+    is_digital (sys);
 
     ## if original system zero-pole
-    if strcmp(sysgettype(sys),"zp")
-      [sys.num,sys.den] = zp2tf(sys.zer,sys.pol,sys.k);
+    if (strcmp (sysgettype (sys), "zp"))
+      [sys.num, sys.den] = zp2tf (sys.zer, sys.pol, sys.k);
       sys.sys(2) = 1;
     ## if original system is state-space
-    elseif(sys.sys(1) == 2)
-      [sys.num,sys.den] = ss2tf(sys.a,sys.b,sys.c,sys.d);
+    elseif (sys.sys(1) == 2)
+      [sys.num, sys.den] = ss2tf (sys.a, sys.b, sys.c, sys.d);
       sys.sys(2) = 1;
     endif
   endif
 
 
   ## update zero-pole if desired
-  if ( (strcmp(opt, "zp") + strcmp(opt,"all")) && (! sys.sys(3)) )
+  if ((strcmp (opt, "zp") || strcmp (opt, "all")) && ! sys.sys(3))
     ## check to make sure the system is not discrete and continuous
-    is_digital(sys);
+    is_digital (sys);
 
     ## original system is transfer function
     if (sys.sys(1) == 0)
-      [sys.zer,sys.pol,sys.k] = tf2zp(sys.num,sys.den);
+      [sys.zer, sys.pol, sys.k] = tf2zp (sys.num, sys.den);
       sys.sys(3) = 1;
     ## original system is state-space
-
-    elseif(sys.sys(1) == 2)
-      [sys.zer,sys.pol,sys.k] = ss2zp(sys.a,sys.b,sys.c,sys.d);
+    elseif (sys.sys(1) == 2)
+      [sys.zer, sys.pol, sys.k] = ss2zp (sys.a, sys.b, sys.c, sys.d);
       sys.sys(3) = 1;
     endif
-
   endif
 
   ## update state-space if desired
-  if ( (strcmp(opt, "ss") + strcmp(opt,"all")) && (! sys.sys(4)) )
+  if ((strcmp (opt, "ss") || strcmp (opt, "all")) && ! sys.sys(4))
     ## original system is transfer function
     if (sys.sys(1) == 0)
-      [sys.a,sys.b,sys.c,sys.d] = tf2ss(sys.num,sys.den);
+      [sys.a, sys.b, sys.c, sys.d] = tf2ss (sys.num, sys.den);
       sys.sys(4) = 1;
     ## original system is zero-pole
-    elseif(sys.sys(1) == 1)
-      [sys.a,sys.b,sys.c,sys.d] = zp2ss(sys.zer,sys.pol,sys.k);
+    elseif (sys.sys(1) == 1)
+      [sys.a, sys.b, sys.c, sys.d] = zp2ss (sys.zer, sys.pol, sys.k);
       sys.sys(4) = 1;
     endif
 

@@ -59,34 +59,34 @@
 function outsys = zp (zer, pol, k, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
-  if ((nargin < 3) || (nargin > 6))
+  if (nargin < 3 || nargin > 6)
     print_usage ();
   endif
 
   ## check input format
-  if( ! (isvector(zer) | isempty(zer) ) )
-    error("zer must be a vector or empty");
+  if (! (isvector (zer) || isempty (zer)))
+    error ("zer must be a vector or empty");
   endif
-  if(!isempty(zer))
-    zer = reshape(zer,1,length(zer));           # make it a row vector
-  endif
-
-  if( ! (isvector(pol) | isempty(pol)))
-    error("pol must be a vector");
-  endif
-  if(!isempty(pol))
-    pol = reshape(pol,1,length(pol));
+  if (! isempty (zer))
+    zer = reshape (zer, 1, length (zer));           # make it a row vector
   endif
 
-  if (! isscalar(k))
-     error("k must be a scalar");
+  if (! (isvector (pol) || isempty (pol)))
+    error ("pol must be a vector");
+  endif
+  if (! isempty (pol))
+    pol = reshape (pol, 1, length (pol));
+  endif
+
+  if (! isscalar (k))
+    error ("k must be a scalar");
   endif
 
   ## Test proper numbers of poles and zeros.  The number of poles must be
   ## greater than or equal to the number of zeros.
-  if (length(zer) >  length(pol))
-    error(["number of poles (", num2str(length(pol)), ...
-        ") < number of zeros (", num2str(length(zer)),")"]);
+  if (length (zer) > length (pol))
+    error ("number of poles (%d) < number of zeros (%d)",
+	   length (pol), length (zer));
   endif
 
   ## Set the system transfer function
@@ -99,19 +99,19 @@ function outsys = zp (zer, pol, k, tsam, inname, outname)
 
   ## Set defaults
   outsys.tsam = 0;
-  outsys.n = length(pol);
+  outsys.n = length (pol);
   outsys.nz = 0;
   outsys.yd = 0;        # assume (for now) continuous time outputs
 
   ## Set the type of system
   if (nargin > 3)
-    if( !isscalar(tsam) )
-      error("tsam must be a nonnegative scalar");
+    if (! isscalar (tsam))
+      error ("tsam must be a nonnegative scalar");
     endif
     if (tsam < 0)
-      error("sampling time must be positve")
+      error ("sampling time must be positve")
     elseif (tsam > 0)
-      [outsys.n,outsys.nz] = swap(outsys.n, outsys.nz);
+      [outsys.n, outsys.nz] = swap (outsys.n, outsys.nz);
       outsys.yd = 1;            # discrete-time output
     endif
 
@@ -125,12 +125,12 @@ function outsys = zp (zer, pol, k, tsam, inname, outname)
   ## Set name of input
   if (nargin > 4)
     ## make sure its a string
-    if(!isempty(inname))
-      if(!iscell(inname))
+    if (! isempty (inname))
+      if (! iscell (inname))
         inname = {inname}; 
       endif
-      if(!is_signal_list(inname))
-        error("inname must be a single signal name");
+      if (! is_signal_list (inname))
+        error ("inname must be a single signal name");
       endif
       outsys.inname = inname(1);
     endif
@@ -138,12 +138,12 @@ function outsys = zp (zer, pol, k, tsam, inname, outname)
 
   ## Set name of output
   if (nargin > 5)
-    if(!isempty(outname))
-      if(!iscell(outname))
+    if (! isempty (outname))
+      if (! iscell (outname))
         outname = {outname};
       endif
-      if(!is_signal_list(outname))
-        error("outname must be a single signal name");
+      if (! is_signal_list (outname))
+        error ("outname must be a single signal name");
       endif
       outsys.outname = outname(1);
     endif

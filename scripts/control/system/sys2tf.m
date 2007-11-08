@@ -39,26 +39,25 @@
 
 function [num, den, tsam, inname, outname] = sys2tf (Asys)
 
-  if(nargin != 1)
+  if (nargin != 1)
     print_usage ();
   endif
 
-  if( !isstruct(Asys))
-    error("Asys must be a system data structure (see ss, tf, zp)");
-  elseif (! is_siso(Asys) )
-    [n, nz, m, p] = sysdimensions(Asys);
-    error(["system is not SISO (",num2str(m)," inputs, ...
-        ", num2str(p)," outputs"]);
+  if (! isstruct (Asys))
+    error ("Asys must be a system data structure (see ss, tf, zp)");
+  elseif (! is_siso (Asys))
+    [n, nz, m, p] = sysdimensions (Asys);
+    error ("system is not SISO: %d inputs, %d outputs", m, p);
   endif
 
-  Asys = sysupdate(Asys,"tf");          # just in case
+  Asys = sysupdate (Asys, "tf");          # just in case
 
   num = Asys.num;
   den = Asys.den;
 
-  tsam = sysgettsam(Asys);
-  inname = sysgetsignals(Asys,"in");
-  outname = sysgetsignals(Asys,"out");
+  tsam = sysgettsam (Asys);
+  inname = sysgetsignals (Asys, "in");
+  outname = sysgetsignals (Asys, "out");
 
 endfunction
 

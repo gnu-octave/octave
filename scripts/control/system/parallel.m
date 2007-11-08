@@ -46,28 +46,28 @@ function sysp = parallel (Asys, Bsys)
   if(nargin != 2)
     print_usage ();
   endif
-  if(! isstruct(Asys) )
-    error("1st input argument is not a system data structure")
+  if (! isstruct(Asys) )
+    error ("1st input argument is not a system data structure");
   elseif (! isstruct(Bsys) )
-    error("2nd input argument is not a system data structure")
+    error ("2nd input argument is not a system data structure");
   endif
-  [Ann,Anz,mA] = sysdimensions(Asys);
-  [Bnn,Bnz,mB] = sysdimensions(Bsys);
-  if(mA != mB)
-    error(["Asys has ",num2str(mA)," inputs, Bsys has ",num2str(mB)," inputs"]);
+  [Ann, Anz, mA] = sysdimensions(Asys);
+  [Bnn, Bnz, mB] = sysdimensions(Bsys);
+  if (mA != mB)
+    error ("Asys has %d inputs, Bsys has %d inputs", mA, mB);
   endif
 
   ## save signal names
-  Ain = sysgetsignals(Asys,"in");
+  Ain = sysgetsignals (Asys, "in");
 
   ## change signal names to avoid warning messages from sysgroup
-  Asys = syssetsignals(Asys,"in",__sysdefioname__(length(Ain),"Ain_u"));
-  Bsys = syssetsignals(Bsys,"in",__sysdefioname__(length(Ain),"Bin_u"));
+  Asys = syssetsignals (Asys, "in", __sysdefioname__ (length (Ain), "Ain_u"));
+  Bsys = syssetsignals (Bsys, "in", __sysdefioname__ (length (Ain), "Bin_u"));
 
-  sysp = sysgroup(Asys,Bsys);
-  sysD = ss([],[],[],[eye(mA);eye(mA)]);
+  sysp = sysgroup (Asys, Bsys);
+  sysD = ss ([], [], [], [eye(mA); eye(mA)]);
 
-  sysp = sysmult(sysp,sysD);
-  sysp = syssetsignals(sysp,"in",Ain);
+  sysp = sysmult (sysp, sysD);
+  sysp = syssetsignals (sysp, "in", Ain);
 
 endfunction

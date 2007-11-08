@@ -41,25 +41,24 @@
 
 function [zer, pol, k, tsam, inname, outname] = sys2zp (sys)
 
-  if(nargin != 1)
+  if (nargin != 1)
     print_usage ();
-  elseif( !isstruct(sys))
-    error("sysconnect: sys must be in system data structure form")
-  elseif (! is_siso(sys) )
-    [n, nz, m, p] = sysdimensions(sys);
-    error(["system is not SISO (",num2str(m)," inputs, ...
-        ", num2str(p)," outputs"]);
+  elseif (! isstruct (sys))
+    error ("sysconnect: sys must be in system data structure form")
+  elseif (! is_siso (sys))
+    [n, nz, m, p] = sysdimensions (sys);
+    error ("system is not SISO: %d inputs, %d outputs", m, p);
   endif
 
   ## update zero-pole form
-  sys = sysupdate(sys,"zp");
+  sys = sysupdate (sys, "zp");
 
   zer = sys.zer;
   pol = sys.pol;
   k = sys.k;
-  tsam    = sysgettsam(sys);
-  inname  = sysgetsignals(sys,"in");
-  outname = sysgetsignals(sys,"out");
+  tsam    = sysgettsam (sys);
+  inname  = sysgetsignals (sys, "in");
+  outname = sysgetsignals (sys, "out");
 
 endfunction
 

@@ -32,25 +32,27 @@
 function [poly, rvals] = __zp2ssg2__ (rvals)
 
   ## locate imaginary roots (if any)
-  cidx = find(imag(rvals));
+  cidx = find (imag (rvals));
 
-  if(!isempty(cidx))
+  if (! isempty (cidx))
     ## select first complex root, omit from cidx
-    r1i = cidx(1);      r1 = rvals(r1i);     cidx = complement(r1i,cidx);
+    r1i = cidx(1);
+    r1 = rvals(r1i);
+    cidx = complement (r1i, cidx);
 
     ## locate conjugate root (must be in cidx list, just in case there's
     ## roundoff)
-    err = abs(rvals(cidx) - r1');
-    minerr = min(err);
-    c2i = find(err == minerr, 1);
+    err = abs (rvals(cidx) - r1');
+    minerr = min (err);
+    c2i = find (err == minerr, 1);
     r2i = cidx(c2i);
     r2 = rvals(r2i);
-    cidx = complement(r2i,cidx);
+    cidx = complement (r2i, cidx);
 
     ## don't check for divide by zero, since 0 is not complex.
-    if(abs(r2 - r1')/abs(r1) > 1e-12)
-      error(sprintf("r1=(%f,%f); r2=(%f,%f), not conjugates.", ...
-        real(r1),imag(r1),real(r2),imag(r2)));
+    if (abs (r2-r1') / abs (r1) > 1e-12)
+      error ("r1=(%f,%f); r2=(%f,%f), not conjugates.",
+             real (r1), imag (r1), real (r2), imag(r2));
     endif
 
     ## complex conjugate pair
@@ -60,11 +62,12 @@ function [poly, rvals] = __zp2ssg2__ (rvals)
     r1 = rvals(1);
     r2 = rvals(2);
     poly = [1, -(r1+r2), (r1*r2)];
-    r1i = 1;  r2i = 2;
+    r1i = 1;
+    r2i = 2;
   endif
 
   ## remove roots used
-  idx = complement([r1i, r2i],1:length(rvals));
+  idx = complement ([r1i, r2i], 1:length(rvals));
   rvals = rvals(idx);
 
 endfunction

@@ -41,20 +41,22 @@
 
 function ioname = __sysdefioname__ (n, str, m)
 
-  if (nargin < 2 | nargin > 3)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-  if (nargin == 2)           m = min(1,n);            endif
+  if (nargin == 2)
+    m = min (1, n);
+  endif
 
   ioname = {};
   jj = 1;
-  if(n > 0 & m > 0 & m <= n)
+  if (n > 0 && m > 0 && m <= n)
     for ii = m:n
-      ioname{ii+1-m} = sprintf("%s_%d",str,ii);
+      ioname{ii+1-m} = sprintf ("%s_%d", str, ii);
     endfor
-  elseif(m > n)
-    error("str=%s; start value m=%d > final value n=%d",str,m,n);
+  elseif (m > n)
+    error ("str=%s; start value m=%d > final value n=%d", str, m, n);
   endif
 
 endfunction

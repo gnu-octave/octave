@@ -46,79 +46,81 @@
 
 function retval = is_stabilizable (a, b, tol, dflg)
 
-  if(nargin < 1)        
+  if (nargin < 1)        
     print_usage ();
-  elseif(isstruct(a))
+  elseif (isstruct (a))
     ## system passed.
-    if(nargin == 2)
+    if (nargin == 2)
       tol = b;          % get tolerance
-    elseif(nargin > 2)
+    elseif (nargin > 2)
       print_usage ();
     endif
     disc = is_digital(a);
-    [a,b] = sys2ss(a);
+    [a, b] = sys2ss (a);
   else
     ## a,b arguments sent directly.
-    if ((nargin > 4)||(nargin == 1))
+    if (nargin > 4 || nargin == 1)
       print_usage ();
     endif
-    if(exist("dflg"))
+    if (exist ("dflg"))
       disc = dflg;
     else
       disc = 0;
     end
   endif
 
-  if(~exist("tol"))
+  if (! exist ("tol"))
     tol = 200*eps;
-  end    
+  endif
 
 
   ## Checking dimensions
-  n = is_square(a);
-  if (n==0)
-    error("is_stabilizable: a must be square");
-  end
-  [nr,m] = size(b);
-  if (nr!=n)
-    error("is_stabilizable:  (a,b) not conformal");
-  end
+  n = is_square (a);
+  if (n == 0)
+    error ("is_stabilizable: a must be square");
+  endif
+  [nr, m] = size (b);
+  if (nr != n)
+    error ("is_stabilizable:  (a,b) not conformal");
+  endif
   
   ##Computing the eigenvalue of A
-  L = eig(a);
+  L = eig (a);
   retval = 1;
   specflag = 0;
-  for i=1:n
-    if (disc==0)
+  for i = 1:n
+    if (disc == 0)
       ## Continuous time case
-      rL = real(L(i));
-      if (rL>=0)
+      rL = real (L(i));
+      if (rL >= 0)
 	H = [eye(n)*L(i)-a, b];
-	f = (rank(H,tol)==n);
-	if (f==0)
+	f = (rank (H, tol) == n);
+	if (f == 0)
 	  retval = 0;
-	  if (rL==0)
+	  if (rL == 0)
 	    specflag = 1;
-	  end
-	end
-      end
+	  endif
+	endif
+      endif
     else
       ## Discrete time case
-      rL = abs(L(i));
-      if (rL>=1)
+      rL = abs (L(i));
+      if (rL >= 1)
 	H = [eye(n)*L(i)-a, b];
-	f = (rank(H,tol)==n);
-	if (f==0)
+	f = (rank (H, tol) == n);
+	if (f == 0)
 	  retval = 0;
-	  if (rL==1)
+	  if (rL == 1)
 	    specflag = 1;
-	  end
-	end
-      end
-    end
-  end
-  if (specflag==1)
+	  endif
+	endif
+      endif
+    endif
+  endfor
+  if (specflag == 1)
     ## This means that the system has uncontrollable modes at the imaginary axis 
     ## (or at the unit circle for discrete time systems)
     retval = -1;
-  end
+  endif
+
+endfunction

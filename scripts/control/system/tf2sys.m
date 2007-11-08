@@ -64,7 +64,7 @@
 
 function outsys = tf2sys (varargin)
 
-  warning("tf2sys is deprecated.  Use tf() instead.");
-  outsys = tf(varargin{:});
+  warning ("tf2sys is deprecated.  Use tf instead.");
+  outsys = tf (varargin{:});
 
 endfunction

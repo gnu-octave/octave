@@ -27,6 +27,6 @@
 
 function vec = __tf2sysl__ (vec)
 
-  error("__tf2sysl__ no longer used; use the tf function.");
+  error ("__tf2sysl__ no longer used; use the tf function.");
 
 endfunction

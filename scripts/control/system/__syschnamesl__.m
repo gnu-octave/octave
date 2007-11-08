@@ -33,45 +33,46 @@
 function old_names = __syschnamesl__ (olist, old_names, inames, listname)
 
   probstr = [];
-  if( max(olist) > rows(old_names) )
-    probstr = ["index list value(s) exceed(s) number of signals (", ...
-      num2str(rows(old_names)),")"];
 
-  elseif( length(olist) > rows(inames) )
-    probstr = ["index list dimension exceeds number of replacement names (", ...
-      num2str(rows(inames)),")"];
+  if (max (olist) > rows (old_names))
+    probstr = sprintf ("index list value(s) exceed(s) number of signals (%d)",
+		       rows (old_names));
 
-  elseif(isempty(olist))
+  elseif (length (olist) > rows (inames))
+    probstr = sprintf ("index list dimension exceeds number of replacement names (%d)",
+		       rows (inames));
+
+  elseif (isempty (olist))
     probstr = [];    # do nothing, no changes
 
-  elseif(min(size(olist)) != 1 )
+  elseif (min (size (olist)) != 1)
     probstr = "index list must be either a vector or an empty matrix";
 
-  elseif(max(olist) > rows(old_names))
-    probstr = ["max(",listname,")=",num2str(max(olist))," > ", ...
-        num2str(rows(old_names)),", too big"];
+  elseif (max (olist) > rows (old_names))
+    probstr = sprintf ("max(%s)=%d > %d, too big", listname,
+		       max (olist), rows (old_names));
 
-  elseif(min(olist) < 1)
-    probstr = ["min(",listname,")=",num2str(min(olist))," < 1, too small"];
+  elseif (min (olist) < 1)
+    probstr = sprintf ("min(%s)=%d < 1, too small", listname, min (olist));
 
   else
-    if( length(olist)  == 1)
-        len_in = columns(inames);
-        len_out = columns(old_names);
+    if (length(olist) == 1)
+        len_in = columns (inames);
+        len_out = columns (old_names);
 
       if (len_in < len_out)
-        inames(1,(len_in+1):(len_out)) = zeros(1,(len_out - len_in));
+        inames(1,(len_in+1):(len_out)) = zeros (1, len_out-len_in);
       endif
 
       old_names(olist,1:length(inames)) = inames;
-    elseif(length(olist) > 1)
-      for ii=1:length(olist)
+    elseif (length(olist) > 1)
+      for ii = 1:length(olist)
         mystr = inames(ii,:);
-        len_my = columns(mystr);
-        len_out = columns(old_names);
+        len_my = columns (mystr);
+        len_out = columns (old_names);
 
         if (len_my < len_out)
-          mystr(1,(len_my+1):(len_out)) = " "*ones(1,(len_out - len_my));
+          mystr(1,(len_my+1):len_out) = repmat (" ", 1, len_out-len_my);
           len_my = len_out;
         endif
 
@@ -79,26 +80,26 @@ function old_names = __syschnamesl__ (olist, old_names, inames, listname)
       endfor
     endif
   endif
-  if(!isempty(probstr))
+  if (! isempty (probstr))
     ## the following lines are NOT debugging code!
-    disp("Problem in syschnames: old names are")
-    __outlist__(old_names," ")
-    disp("new names are")
+    disp ("Problem in syschnames: old names are")
+    __outlist__ (old_names," ")
+    disp ("new names are")
     __outlist__(inames,"    ")
-    disp("list indices are")
-    disp(olist)
-    error(sprintf("syschnames: \"%s\" dim=(%d x %d)--\n\t%s\n", ...
-        listname, rows(olist), columns(olist),probstr));
+    disp ("list indices are")
+    disp (olist)
+    error (sprintf ("syschnames: \"%s\" dim=(%d x %d)--\n\t%s\n", ...
+		    listname, rows (olist), columns (olist), probstr));
   endif
 
   ## change zeros  to blanks
-  if( find(old_names == 0) )
+  if (find (old_names == 0))
     ## disp("__syschnamesl__: old_names contains zeros ")
     ## old_names
     ## disp("/__syschnamesl__");
 
-    [ii,jj] = find(old_names == 0);
-    for idx=1:length(ii)
+    [ii, jj] = find (old_names == 0);
+    for idx = 1:length(ii)
       old_names(ii(idx),jj(idx)) = " ";
     endfor
 
@@ -108,8 +109,8 @@ function old_names = __syschnamesl__ (olist, old_names, inames, listname)
   endif
 
   ## just in case it's not a string anymore
-  if( !ischar(old_names) )
-    old_names = char(old_names);
+  if (! ischar (old_names))
+    old_names = char (old_names);
   endif
 
   ## disp("__syschnamesl__: exit, old_names=")

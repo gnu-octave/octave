@@ -49,7 +49,7 @@ function [num, den] = zp2tf (zer, pol, k)
 
   if (! (isvector (zer) || isempty (zer)))
     error ("zer(%dx%d) must be a vector", rz, cz);
-  elseif(! (isvector (pol) || isempty (pol)))
+  elseif (! (isvector (pol) || isempty (pol)))
     error ("pol(%dx%d) must be a vector", rp, cp);
   elseif (length (zer) > length (pol))
     error ("zer(%dx%d) longer than pol(%dx%d)", rz, cz, rp, cp);
@@ -57,12 +57,13 @@ function [num, den] = zp2tf (zer, pol, k)
 
   ## initialize converted polynomials
 
-  num = k;  den = 1;
+  num = k;
+  den = 1;
 
   ## call __zp2ssg2__ if there are complex conjugate pairs left, otherwise
   ## construct real zeros one by one.  Repeat for poles.
 
-  while(! isempty (zer))
+  while (! isempty (zer))
     if (max (abs (imag (zer))))
       [poly, zer] = __zp2ssg2__ (zer);
     else

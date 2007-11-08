@@ -53,16 +53,16 @@ function pv = sysreorder (vlen, list)
   pv = 1:vlen;
   ## make it a row vector
   list = reshape(list,1,length(list));
-  A = pv'*ones(size(list));
-  B = ones(size(pv'))*list;
+  A = pv' * ones (size (list));
+  B = ones (size (pv')) * list;
   X = (A != B);
-  if(!isvector(X))
-    y = min(X');
+  if (! isvector (X))
+    y = min (X');
   else
    y = X';
   endif
-  z = find(y == 1);
-  if(!isempty(z))
+  z = find (y == 1);
+  if (! isempty (z))
     pv = [z, list];
   else
     pv = list;

@@ -1,3 +1,16 @@
+2007-11-07  John W. Eaton  <jwe@octave.org>
+
+	* control/base/__bodquist__.m, control/base/__freqresp__.m,
+	control/base/__stepimp__.m, control/base/are.m,
+	control/base/ctrb.m, control/base/damp.m, control/base/dare.m,
+	control/base/dcgain.m, control/base/dgram.m, control/base/dlqr.m,
+	control/base/dre.m, control/base/impulse.m, control/base/lqe.m,
+	control/base/lqg.m, control/base/lqr.m, control/base/lsim.m,
+	control/base/ltifr.m, control/base/nichols.m,
+	control/base/nyquist.m, control/base/obsv.m, control/base/place.m,
+	control/base/rlocus.m, control/base/step.m, control/base/tzero.m:
+	Style fixes.
+
 2007-11-07  Muthiah Annamalai  <muthuspost@gmail.com>
 
 	* control/base/bode_bounds.m, control/base/dgram.m,

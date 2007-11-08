@@ -28,6 +28,10 @@
 
 function cdf = empirical_cdf (x, data)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   if (! isvector (data))
     error ("empirical_cdf: data must be a vector");
   endif

@@ -70,6 +70,10 @@
 
 function out = compare_versions (v1, v2, operator)
 
+  if (nargin != 3)
+    print_usage ();
+  endif
+
   ## Make sure that the version numbers are valid.
   if (! (ischar (v1) && ischar (v2)))
     error ("compare_versions: both version numbers must be strings");
@@ -184,6 +188,7 @@ function out = compare_versions (v1, v2, operator)
 
   ## Reverse the output if not is given.
   out = xor (not_op, out);
+
 endfunction
 
 ## tests

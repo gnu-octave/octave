@@ -25,6 +25,10 @@
 
 function retsys = zgreduce (Asys, meps)
 
+  if (nargin != 2)
+    print_usage ();
+  endif  
+
   ## SYS_INTERNAL accesses members of system data structure
 
   is_digital(Asys);             # make sure it's pure digital/continuous

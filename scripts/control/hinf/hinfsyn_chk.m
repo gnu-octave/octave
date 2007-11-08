@@ -80,6 +80,10 @@
 
 function [retval, Pc, Pf] = hinfsyn_chk (A, B1, B2, C1, C2, D12, D21, g, ptol)
 
+  if (nargin != 9)
+    print_usage ();
+  endif
+
   Pc = Pf = [];
 
   ## Construct the two Hamiltonians
@@ -88,39 +92,39 @@ function [retval, Pc, Pf] = hinfsyn_chk (A, B1, B2, C1, C2, D12, D21, g, ptol)
   Hf = [ A' , g2*C1'*C1 - C2'*C2; -B1*B1' , -A];
 
   ## check if Hc, Hf are in dom(Ric)
-  Hcminval = min(abs(real(eig(Hc))));
-  Hfminval = min(abs(real(eig(Hf))));
-  if(Hcminval < ptol);
-    disp("hinfsyn_chk: Hc is not in dom(Ric)");
+  Hcminval = min (abs (real (eig (Hc))));
+  Hfminval = min (abs (real (eig (Hf))));
+  if (Hcminval < ptol);
+    warning ("hinfsyn_chk: Hc is not in dom(Ric)");
     retval = 0;
     return
   endif
   if(Hfminval < ptol)
-    disp("hinfsyn_chk: Hf is not in dom(Ric)");
+    warning ("hinfsyn_chk: Hf is not in dom(Ric)");
     retval = 0;
     return
   endif
 
   ## Solve ARE's
-  Pc = are(A, B2*B2'-g2*B1*B1',C1'*C1);
-  Pf = are(A',C2'*C2-g2*C1'*C1,B1*B1');
+  Pc = are (A, B2*B2'-g2*B1*B1', C1'*C1);
+  Pf = are (A', C2'*C2-g2*C1'*C1, B1*B1');
 
-  Pceig = eig(Pc);
-  Pfeig = eig(Pf);
-  Pcfeig = eig(Pc*Pf);
+  Pceig = eig (Pc);
+  Pfeig = eig (Pf);
+  Pcfeig = eig (Pc*Pf);
 
-  if(min(Pceig) < -ptol)
-    disp("hinfsyn_chk: Pc is not >= 0");
+  if (min (Pceig) < -ptol)
+    warning ("hinfsyn_chk: Pc is not >= 0");
     retval = 0;
     return
   endif
-  if(min(Pfeig) < -ptol)
-    disp("hinfsyn_chk: Pf is not >= 0");
+  if (min (Pfeig) < -ptol)
+    warning ("hinfsyn_chk: Pf is not >= 0");
     retval = 0;
     return
   endif
-  if(max(abs(Pcfeig)) >= g*g)
-    disp("hinfsyn_chk: rho(Pf*Pc) is not < g^2");
+  if (max (abs (Pcfeig)) >= g*g)
+    warning ("hinfsyn_chk: rho(Pf*Pc) is not < g^2");
     retval = 0;
     return
   endif

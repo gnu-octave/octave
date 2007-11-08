@@ -41,5 +41,10 @@
 ## @end deftypefn
 
 function s = spalloc (r, c, nz)
+
+  if (nargin < 2)
+    print_usage ();
+  endif
+
   s = sparse (r, c);
 endfunction

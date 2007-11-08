@@ -22,6 +22,11 @@
 ## @end deftypefn
 
 function t = nonzeros (s)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (issparse (s))
     [i, j, t] = spfind (s);
   else

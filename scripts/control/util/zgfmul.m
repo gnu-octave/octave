@@ -33,6 +33,10 @@
 
 function y = zgfmul (a, b, c, d, x)
 
+  if (nargin != 5)
+    print_usage ();
+  endif 
+
   [n,m] = size(b);
   [p,m1] = size(c);
   nm = n+m;

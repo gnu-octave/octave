@@ -57,6 +57,10 @@
 
 function K = hinf_ctr (dgs, F, H, Z, g)
 
+  if (nargin != 5)
+    print_usage ();
+  endif
+
   nw = dgs.nw;
   nu = dgs.nu;
   nz = dgs.nz;
@@ -78,7 +82,7 @@ function K = hinf_ctr (dgs, F, H, Z, g)
 
   nout = nz + ny;
   nin = nw + nu;
-  nstates = size(A, 1);
+  nstates = size (A, 1);
 
   F11 = F(1:(nw-ny),:);
   F12 = F((nw-ny+1):nw,:);
@@ -94,33 +98,33 @@ function K = hinf_ctr (dgs, F, H, Z, g)
   D1122 = D11((nz-nu+1):nz,(nw-ny+1):nw);
 
   ## D11ik may be the empty matrix, don't calculate with empty matrices
-  [nd1111,md1111] = size(D1111);
-  md1112 = length(D1112);
-  md1121 = length(D1121);
+  [nd1111, md1111] = size (D1111);
+  md1112 = length (D1112);
+  md1121 = length (D1121);
 
-  if ((nd1111 == 0) || (md1112 == 0))
+  if (nd1111 == 0) || md1112 == 0)
     d11hat = -D1122;
   else
-    xx = inv(g*g*eye(nz-nu) - D1111*D1111');
+    xx = inv (g*g*eye(nz-nu) - D1111*D1111');
     d11hat = -D1121*D1111'*xx*D1112 - D1122;
   endif
   if (md1112 == 0)
-    d21hat = eye(ny);
+    d21hat = eye (ny);
   elseif (nd1111 == 0)
-    d21hat = chol(eye(ny) - D1112'*D1112/g/g);
+    d21hat = chol (eye(ny) - D1112'*D1112/g/g);
   else
-    xx = inv(g*g*eye(nz-nu) - D1111*D1111');
-    xx = eye(ny) - D1112'*xx*D1112;
-    d21hat = chol(xx);
+    xx = inv (g*g*eye(nz-nu) - D1111*D1111');
+    xx = eye (ny) - D1112'*xx*D1112;
+    d21hat = chol (xx);
   endif
   if (md1121 == 0)
-    d12hat = eye(nu);
+    d12hat = eye (nu);
   elseif (md1111 == 0)
-    d12hat = chol(eye(nu) - D1121*D1121'/g/g)';
+    d12hat = chol (eye(nu) - D1121*D1121'/g/g)';
   else
-    xx = inv(g*g*eye(nw-ny) - D1111'*D1111);
-    xx = eye(nu)-D1121*xx*D1121';
-    d12hat = chol(xx)';
+    xx = inv (g*g*eye(nw-ny) - D1111'*D1111);
+    xx = eye (nu)-D1121*xx*D1121';
+    d12hat = chol (xx)';
   endif
 
   b2hat = (B2+H12)*d12hat;
@@ -138,13 +142,13 @@ function K = hinf_ctr (dgs, F, H, Z, g)
 
   ## non-zero D22 is a special case
   if (d22nz)
-    if (rank(eye(nu) + d11hat*D22) < nu)
+    if (rank (eye(nu) + d11hat*D22) < nu)
       error(" *** cannot compute controller for D22 non-zero.");
     endif
 
     d22new = [D22, zeros(ny,ny); zeros(nu,nu), 0*D22'];
-    xx = inv(eye(nu+ny) + d22new*dhat);
-    mhat = inv(eye(nu+ny) + dhat*d22new);
+    xx = inv (eye(nu+ny) + d22new*dhat);
+    mhat = inv (eye(nu+ny) + dhat*d22new);
     ahat = ahat - bhat*((eye(nu+ny)-xx)/dhat)*chat;
     bhat = bhat*xx;
     chat = mhat*chat;
@@ -152,6 +156,6 @@ function K = hinf_ctr (dgs, F, H, Z, g)
 
   endif
 
-  K = ss(ahat,bhat(:,1:ny),chat(1:nu,:),dhat(1:nu,1:ny));
+  K = ss (ahat, bhat(:,1:ny), chat(1:nu,:), dhat(1:nu,1:ny));
 
 endfunction

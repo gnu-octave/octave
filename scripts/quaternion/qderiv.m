@@ -43,6 +43,10 @@
 
 function Dmat = qderivmat (Omega)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   Omega = vec (Omega);
 
   if (length (Omega) != 3)

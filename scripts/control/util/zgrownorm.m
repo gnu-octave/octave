@@ -26,6 +26,10 @@
 
 function [sig, tau] = zgrownorm (mat, meps)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   rownorm = [];
   for ii = 1:rows (mat)
     rownorm(ii) = norm (mat(ii,:));

@@ -90,6 +90,10 @@
 
 function x = dlyap (a, b)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   if ((n = issquare (a)) == 0)
     warning ("dlyap: a must be square");
   endif
@@ -129,19 +133,19 @@ function x = dlyap (a, b)
       blksiz = 1;
     endif
 
-    Ajj = kron (s (j:j1, j:j1), s) - eye (blksiz*n);
+    Ajj = kron (s(j:j1,j:j1), s) - eye (blksiz*n);
 
-    rhs = reshape (b (:, j:j1), blksiz*n, 1);
+    rhs = reshape (b (:,j:j1), blksiz*n, 1);
 
     if (j1 < n)
-      rhs2 = s*(x (:, (j1+1):n) * s (j:j1, (j1+1):n)');
+      rhs2 = s*(x(:,(j1+1):n) * s(j:j1,(j1+1):n)');
       rhs = rhs + reshape (rhs2, blksiz*n, 1);
     endif
 
     v = - Ajj\rhs;
-    x (:, j) = v (1:n);
+    x(:,j) = v (1:n);
 
-    if(blksiz == 2)
+    if (blksiz == 2)
       x (:, j1) = v ((n+1):blksiz*n);
     endif
 

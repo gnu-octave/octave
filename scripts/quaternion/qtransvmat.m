@@ -29,6 +29,10 @@
 
 function Aib = qtransvmat (qib)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (! isvector(qib) || length (qib) != 4)
     error ("qtransvmat: q(%d,%d) must be a quaternion", rows (qib), \
 	   columns (qib));

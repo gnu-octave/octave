@@ -38,15 +38,19 @@
 
 function [IN, ON] = inpolygon (X, Y, xv, yv)
 
-  if ( !(isreal(X) && isreal(Y) && ismatrix(Y) && ...
-	 ismatrix(Y) && size_equal(X,Y)) )
+  if (nargin != 4)
+    print_usage ();
+  endif
+
+  if (! (isreal (X) && isreal (Y) && ismatrix (Y) && ismatrix (Y)
+	 && size_equal (X, Y)))
     error ("inpolygon: first two arguments must be real matrices of same size");
-  elseif ( !(isreal(xv) && isreal(yv) && isvector(xv) && ...
-	     isvector(yv) && size_equal(xv,yv)) )
+  elseif (! (isreal (xv) && isreal (yv) && isvector (xv) && isvector (yv)
+	     && size_equal (xv, yv)))
     error ("inpolygon: last two arguments must be real vectors of same size");
   endif
 
-  npol = length(xv);
+  npol = length (xv);
   do_boundary = (nargout >= 2);
   
   IN = zeros (size(X), "logical");
@@ -76,6 +80,7 @@ function [IN, ON] = inpolygon (X, Y, xv, yv)
     endif
     j = i;
   endfor
+
 endfunction
 
 %!demo

@@ -32,6 +32,10 @@
 
 function retval = qconj (q)
 
+  if (nargin != 1 )
+    print_usage ();
+  endif
+
   [a, b, c, d] = quaternion (q);
 
   retval = quaternion (-a, -b, -c, d);

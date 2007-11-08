@@ -28,6 +28,10 @@
 
 function out = is_sample (Ts)
 
+  if (nargin != 1)
+    print_usage (); 
+  endif
+
   out = (isscalar (Ts) && (Ts == abs (Ts)) && (Ts != 0));
 
 endfunction

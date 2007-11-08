@@ -30,6 +30,10 @@
 
 function spy (S, varargin) 
 
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   markersize = NaN;
   if (numel (i) < 1000)
     LineSpec = "*";

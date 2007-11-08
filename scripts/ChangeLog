@@ -1,3 +1,36 @@
+2007-11-07  Muthiah Annamalai  <muthuspost@gmail.com>
+
+	* control/base/bode_bounds.m, control/base/dgram.m,
+	control/base/dlyap.m, control/base/freqchkw.m,
+	control/base/gram.m, control/base/place.m,
+	control/hinf/hinf_ctr.m, control/hinf/hinfsyn_chk.m,
+	control/hinf/hinfsyn_ric.m, control/system/is_sample.m,
+	control/system/is_signal_list.m, control/system/ss2tf.m,
+	control/system/sys2fir.m, control/system/sysgettsam.m,
+	control/system/sysgettype.m, control/system/sysreorder.m,
+	control/system/tf2sys.m, control/system/zp2tf.m,
+	control/util/axis2dlim.m, control/util/swap.m,
+	control/util/zgfmul.m, control/util/zgfslv.m,
+	control/util/zginit.m, control/util/zgreduce.m,
+	control/util/zgrownorm.m, control/util/zgscal.m,
+	control/util/zgsgiv.m, control/util/zgshsr.m, general/isa.m,
+	geometry/inpolygon.m, linear-algebra/housh.m,
+	miscellaneous/compare_versions.m, miscellaneous/inputname.m,
+	miscellaneous/run.m, quaternion/qconj.m,
+	quaternion/qcoordinate_plot.m, quaternion/qderiv.m,
+	quaternion/qderivmat.m, quaternion/qinv.m, quaternion/qmult.m,
+	quaternion/qtrans.m, quaternion/qtransvmat.m, signal/fractdiff.m,
+	signal/freqz_plot.m, signal/periodogram.m, signal/rectangle_lw.m,
+	signal/rectangle_sw.m, signal/sinc.m, signal/triangle_lw.m,
+	signal/triangle_sw.m, signal/yulewalker.m, sparse/colperm.m,
+	sparse/etreeplot.m, sparse/nonzeros.m, sparse/spalloc.m,
+	sparse/spones.m, sparse/spy.m, specfun/isprime.m,
+	statistics/distributions/empirical_cdf.m,
+	statistics/distributions/empirical_inv.m,
+	statistics/distributions/empirical_pdf.m,
+	statistics/models/logistic_regression_derivatives.m,
+	statistics/models/logistic_regression_likelihood.m: Check nargin.
+
 2007-11-07  David Bateman  <dbateman@free.fr>
 
 	* general/gradient.m: Correctly convert deltax and deltay scalar

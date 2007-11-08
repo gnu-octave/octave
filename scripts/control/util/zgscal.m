@@ -34,6 +34,10 @@
 
 function x = zgscal (a, b, c, d, z, n, m, p)
 
+  if (nargin != 8)
+    print_usage ();
+  endif
+
   ## initialize parameters:
   ## Givens rotations, diagonalized 2x2 block of F, gcg vector initialization
 

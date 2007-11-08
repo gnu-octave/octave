@@ -28,6 +28,10 @@
 
 function retval = fractdiff (x, d)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   N = 100;
 
   if (! isvector (x))

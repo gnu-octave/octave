@@ -36,32 +36,51 @@
 
 function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
 
+  if (nargin != 4)
+    print_usage ();
+  endif
+
   ## make sure zer,pol are row vectors
-  if(!isempty(pol)) pol = reshape(pol,1,length(pol)); endif
-  if(!isempty(zer)) zer = reshape(zer,1,length(zer)); endif
+  if (! isempty (pol))
+    pol = reshape (pol, 1, length (pol));
+  endif
+  if (! isempty (zer))
+    zer = reshape (zer, 1, length (zer));
+  endif
 
   ## check for natural frequencies away from omega = 0
   if (DIGITAL)
     ## The 2nd conditions prevents log(0) in the next log command
-    iiz = find(abs(zer - 1) > norm(zer) * eps && abs(zer) > norm(zer) * eps);
-    iip = find(abs(pol - 1) > norm(pol) * eps && abs(pol) > norm(pol) * eps);
+    iiz = find (abs(zer-1) > norm(zer)*eps && abs(zer) > norm(zer)*eps);
+    iip = find (abs(pol-1) > norm(pol)*eps && abs(pol) > norm(pol)*eps);
 
     ## avoid dividing empty matrices, it would work but looks nasty
-    if (!isempty(iiz)) czer = log(zer(iiz))/tsam;
-    else               czer = [];                 endif
+    if (! isempty (iiz))
+      czer = log (zer(iiz))/tsam;
+    else
+      czer = [];
+    endif
 
-    if (!isempty(iip)) cpol = log(pol(iip))/tsam;
-    else               cpol = [];                 endif
-
+    if (! isempty (iip))
+      cpol = log (pol(iip))/tsam;
+    else
+      cpol = [];
+    endif
   else
     ## continuous
-    iip = find((abs(pol)) > (norm(pol) * eps));
-    iiz = find((abs(zer)) > (norm(zer) * eps));
+    iip = find (abs(pol) > norm(pol)*eps));
+    iiz = find (abs(zer) > norm(zer)*eps));
 
-    if(!isempty(zer)) czer = zer(iiz);
-    else              czer = [];                endif
-    if(!isempty(pol)) cpol = pol(iip);
-    else              cpol = [];                endif
+    if (! isempty (zer))
+      czer = zer(iiz);
+    else
+      czer = [];
+    endif
+    if (! isempty (pol))
+      cpol = pol(iip);
+    else
+      cpol = [];
+    endif
   endif
   
   if (isempty (iip) && isempty (iiz))
@@ -69,8 +88,8 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
     wmin = -1;
     wmax = 3;
   else
-    wmin = floor(log10(min(abs([cpol,czer]))));
-    wmax = ceil(log10(max(abs([cpol,czer]))));
+    wmin = floor (log10 (min (abs ([cpol, czer]))));
+    wmax = ceil (log10 (max (abs ([cpol, czer]))));
   endif
 
   ## expand to show the entirety of the "interesting" portion of the plot
@@ -78,6 +97,8 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
   wmax++;
 
   ## run digital frequency all the way to pi
-  if (DIGITAL) wmax = log10(pi/tsam); endif
+  if (DIGITAL)
+    wmax = log10 (pi/tsam);
+  endif
 
 endfunction

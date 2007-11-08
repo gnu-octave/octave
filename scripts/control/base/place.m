@@ -45,78 +45,81 @@
 
 function K = place (sys, P)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   ## check arguments
 
-  if(!isstruct(sys))
-    error("sys must be in system data structure format (see ss)");
+  if(! isstruct (sys))
+    error ("sys must be in system data structure format (see ss)");
   endif
-  sys = sysupdate(sys,"ss");    # make sure it has state space form up to date
-  if(!is_controllable(sys))
-    error("sys is not controllable.");
-  elseif( min(size(P)) != 1)
-    error("P must be a vector")
+  sys = sysupdate (sys, "ss");    # make sure it has state space form up to date
+  if (! is_controllable (sys))
+    error ("sys is not controllable");
+  elseif (min (size (P)) != 1)
+    error ("P must be a vector")
   else
-    P = reshape(P,length(P),1); # make P a column vector
+    P = P(:); # make P a column vector
   endif
   ## system must be purely continuous or discrete
-  is_digital(sys);
-  [n,nz,m,p] = sysdimensions(sys);
+  is_digital (sys);
+  [n, nz, m, p] = sysdimensions (sys);
   nx = n+nz;    # already checked that it's not a mixed system.
   if(m != 1)
-    error(["sys has ", num2str(m)," inputs; need only 1"]);
+    error ("sys has %d inputs; need only 1", m);
   endif
 
   ## takes the A and B matrix from the system representation
-  [A,B]=sys2ss(sys);
-  sp = length(P);
-  if(nx == 0)
-    error("place: A matrix is empty (0x0)");
-  elseif(nx != length(P))
-    error(["A=(",num2str(nx),"x",num2str(nx),", P has ", num2str(length(P)), ...
-	"entries."])
+  [A, B] = sys2ss (sys);
+  sp = length (P);
+  if (nx == 0)
+    error ("place: A matrix is empty (0x0)");
+  elseif (nx != length (P))
+    error ("A=(%dx%d), P has %d entries", nx, nx, length (P))
   endif
 
   ## arguments appear to be compatible; let's give it a try!
   ## The second step is the calculation of the characteristic polynomial ofA
-  PC=poly(A);
+  PC = poly (A);
 
   ## Third step: Calculate the transformation matrix T that transforms the state
   ## equation in the controllable canonical form.
 
   ## first we must calculate the controllability matrix M:
-  M=B;
-  AA=A;
+  M = B;
+  AA = A;
   for n = 2:nx
-    M(:,n)=AA*B;
-    AA=AA*A;
+    M(:,n) = AA*B;
+    AA = AA*A;
   endfor
 
   ## second, construct the matrix W
-  PCO=PC(nx:-1:1);
-  PC1=PCO;      # Matrix to shift and create W row by row
+  PCO = PC(nx:-1:1);
+  PC1 = PCO;      # Matrix to shift and create W row by row
 
   for n = 1:nx
     W(n,:) = PC1;
-    PC1=[PCO(n+1:nx),zeros(1,n)];
+    PC1 = [PCO(n+1:nx), zeros(1,n)];
   endfor
 
-  T=M*W;
+  T = M*W;
 
   ## finaly the matrix K is calculated
-  PD = poly(P); # The desired characteristic polynomial
+  PD = poly (P); # The desired characteristic polynomial
   PD = PD(nx+1:-1:2);
   PC = PC(nx+1:-1:2);
 
   K = (PD-PC)/T;
 
   ## Check if the eigenvalues of (A-BK) are the same specified in P
-  Pcalc = eig(A-B*K);
+  Pcalc = eig (A-B*K);
 
-  Pcalc = sortcom(Pcalc);
-  P = sortcom(P);
+  Pcalc = sortcom (Pcalc);
+  P = sortcom (P);
 
-  if(max( (abs(Pcalc)-abs(P))./abs(P) ) > 0.1)
-    disp("Place: Pole placed at more than 10% relative error from specified");
+  if (max ((abs(Pcalc)-abs(P))./abs(P) ) > 0.1)
+    warning ("place: Pole placed at more than 10% relative error from specified");
   endif
 
 endfunction

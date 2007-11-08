@@ -38,8 +38,12 @@
 
 function x = zgshsr (y)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (! isvector (y))
-    error (sprintf ("y(%dx%d) must be a vector", rows (y), columns (y)));
+    error ("y(%dx%d) must be a vector", rows (y), columns (y));
   endif
   x = vec (y);
   m = length (x);

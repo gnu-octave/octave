@@ -29,6 +29,10 @@
 
 function USEW = freqchkw (w)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (isempty (w))
     USEW = 0;
   elseif (! isvector (w))

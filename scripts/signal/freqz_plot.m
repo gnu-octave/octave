@@ -25,38 +25,42 @@
 
 function freqz_plot (w, h)
 
-    n = length (w);
+  if (nargin != 2)
+    print_usage ();
+  endif
 
-    ## ## exclude zero-frequency
-    ## h = h (2 : length (h));
-    ## w = w (2 : length (w));
-    ## n = n-1;
+  n = length (w);
 
-    mag = 20 * log10 (abs (h));
-    phase = unwrap (arg (h));
-    maxmag = max (mag);
+  ## ## exclude zero-frequency
+  ## h = h (2 : length (h));
+  ## w = w (2 : length (w));
+  ## n = n-1;
 
-    subplot (3, 1, 1);
-    plot (w, mag);
-    grid ("on");
-    legend("Pass band (dB)");
-    axis ([w(1), w(n), maxmag-3, maxmag], "labely");
+  mag = 20 * log10 (abs (h));
+  phase = unwrap (arg (h));
+  maxmag = max (mag);
 
-    subplot (3, 1, 2);
-    plot (w, mag);
-    grid ("on");
-    legend ("Stop band (dB)");
-    if (maxmag - min (mag) > 100)
-      axis ([w(1), w(n), maxmag-100, maxmag], "labely");
-    else
-      axis ("autoy", "labely");
-    endif
+  subplot (3, 1, 1);
+  plot (w, mag);
+  grid ("on");
+  legend("Pass band (dB)");
+  axis ([w(1), w(n), maxmag-3, maxmag], "labely");
 
-    subplot (3, 1, 3);
-    plot (w, phase*360/(2*pi));
-    grid ("on");
-    legend ("Phase (degrees)");
-    xlabel ("Frequency");
-    axis ([w(1), w(n)], "autoy", "label");
+  subplot (3, 1, 2);
+  plot (w, mag);
+  grid ("on");
+  legend ("Stop band (dB)");
+  if (maxmag - min (mag) > 100)
+    axis ([w(1), w(n), maxmag-100, maxmag], "labely");
+  else
+    axis ("autoy", "labely");
+  endif
+
+  subplot (3, 1, 3);
+  plot (w, phase*360/(2*pi));
+  grid ("on");
+  legend ("Phase (degrees)");
+  xlabel ("Frequency");
+  axis ([w(1), w(n)], "autoy", "label");
 
 endfunction

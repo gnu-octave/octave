@@ -35,8 +35,12 @@
 
 function [housv, beta, zer] = housh (x, j, z)
 
-  ## check for valid inputs
-  if (!isvector (x) && ! isscalar (x))
+  if (nargin != 3)
+    print_usage ();
+  endif
+
+  ## Check for valid inputs.
+  if (! isvector (x) && ! isscalar (x))
     error ("housh: first input must be a vector")
   elseif (! isscalar(j))
     error ("housh: second argment must be an integer scalar")

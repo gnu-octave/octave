@@ -59,16 +59,20 @@
 
 function [num, den] = ss2tf (a, b, c, d)
 
+  if (nargin != 4)
+    print_usage ();
+  endif
+
   ## Check args
-  [n,m,p] = abcddim(a,b,c,d);
+  [n, m, p] = abcddim (a, b, c, d);
   if (n == -1)
     num = [];
     den = [];
     error("ss2tf: Non compatible matrix arguments");
-  elseif ( (m != 1) | (p != 1))
+  elseif (m != 1 || p != 1)
     num = [];
     den = [];
-    error(["ss2tf: not SISO system: m=",num2str(m)," p=",num2str(p)]);
+    error ("ss2tf: not SISO system: m=%d, p=%d", m, p);
   endif
 
   if(n == 0)
@@ -77,21 +81,21 @@ function [num, den] = ss2tf (a, b, c, d)
     den = 1;
   else
     ## First, get the denominator coefficients
-    den = poly(a);
+    den = poly (a);
 
     ## Get the zeros of the system
-    [zz,g] = tzero(a,b,c,d);
+    [zz, g] = tzero (a, b, c, d);
 
     ## Form the Numerator (and include the gain)
-    if (!isempty(zz))
-      num = g * poly(zz);
+    if (! isempty (zz))
+      num = g * poly (zz);
     else
       num = g;
     endif
 
     ## the coefficients must be real
-    den = real(den);
-    num = real(num);
+    den = real (den);
+    num = real (num);
   endif
-endfunction
 
+endfunction

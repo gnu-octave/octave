@@ -24,8 +24,12 @@
 
 function T = sysgettsam (sys)
 
-  if (! isstruct (sys))
+  if (nargin != 1)
     print_usage ();
+  endif
+
+  if (! isstruct (sys))
+    error ("sysgettsam: expecting argument to be system structure");
   endif
 
   T = sys.tsam;

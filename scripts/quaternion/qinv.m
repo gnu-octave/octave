@@ -32,6 +32,10 @@
 
 function retval = qinv (q)
 
+  if (nargin !=  1)
+    print_usage ();
+  endif
+
   if (norm (q) != 0)
     retval = qconj (q) / sum (q .* q);
   else

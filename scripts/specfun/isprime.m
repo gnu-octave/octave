@@ -35,6 +35,11 @@
 ## @end deftypefn
 
 function t = isprime (n)
+
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   if (! isscalar (n))
     nel = numel (n);
     t = n;

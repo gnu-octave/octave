@@ -23,6 +23,11 @@
 ## @end deftypefn
 
 function s = spones (s)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (issparse (s))
     [i, j, v, m, n] = spfind (s);
   else

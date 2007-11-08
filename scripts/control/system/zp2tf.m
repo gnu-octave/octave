@@ -37,18 +37,22 @@
 
 function [num, den] = zp2tf (zer, pol, k)
 
+  if (nargin != 3)
+    print_usage ();
+  endif  
+
   ## Find out whether data was entered as a row or a column vector and
   ## convert to a column vector if necessary.
 
-  [rp,cp] = size(pol);
-  [rz,cz] = size(zer);
+  [rp, cp] = size (pol);
+  [rz, cz] = size (zer);
 
-  if(!(isvector(zer) | isempty(zer)) )
-    error(sprintf("zer(%dx%d) must be a vector",rz,cz));
-  elseif(!(isvector(pol) | isempty(pol)) )
-    error(sprintf("pol(%dx%d) must be a vector",rp,cp));
-  elseif(length(zer) > length(pol))
-    error(sprintf("zer(%dx%d) longer than pol(%dx%d)",rz,cz,rp,cp));
+  if (! (isvector (zer) || isempty (zer)))
+    error ("zer(%dx%d) must be a vector", rz, cz);
+  elseif(! (isvector (pol) || isempty (pol)))
+    error ("pol(%dx%d) must be a vector", rp, cp);
+  elseif (length (zer) > length (pol))
+    error ("zer(%dx%d) longer than pol(%dx%d)", rz, cz, rp, cp);
   endif
 
   ## initialize converted polynomials
@@ -58,18 +62,24 @@ function [num, den] = zp2tf (zer, pol, k)
   ## call __zp2ssg2__ if there are complex conjugate pairs left, otherwise
   ## construct real zeros one by one.  Repeat for poles.
 
-  while(!isempty(zer))
-    if( max(abs(imag(zer))) )     [poly, zer] = __zp2ssg2__ (zer);
-    else                          poly = [1, -zer(1)];
-                                  zer = zer(2:length(zer));      endif
-    num = conv(num,poly);
+  while(! isempty (zer))
+    if (max (abs (imag (zer))))
+      [poly, zer] = __zp2ssg2__ (zer);
+    else
+      poly = [1, -zer(1)];
+      zer = zer(2:length(zer));
+    endif
+    num = conv (num, poly);
   endwhile
 
-  while(!isempty(pol))
-    if( max(abs(imag(pol))) )     [poly, pol] = __zp2ssg2__ (pol);
-    else                          poly = [1, -pol(1)];
-                                  pol = pol(2:length(pol));      endif
-    den = conv(den,poly);
+  while (! isempty (pol))
+    if (max (abs (imag (pol))))
+      [poly, pol] = __zp2ssg2__ (pol);
+    else
+      poly = [1, -pol(1)];
+      pol = pol(2:length(pol));
+    endif
+    den = conv (den, poly);
   endwhile
 
 endfunction

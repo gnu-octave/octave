@@ -38,6 +38,10 @@
 
 function qcoordinate_plot (qf, qb, qv)
 
+  if (nargin != 3 )
+    print_usage ();
+  endif
+
   degrees = pi / 180;
   d180 = 180 * degrees;
 

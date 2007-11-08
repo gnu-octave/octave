@@ -39,13 +39,13 @@
 
 function axvec = axis2dlim (axdata)
 
-  if(isempty(axdata))
+  if (nargin < 1 || isempty (axdata))
     axdata = 0;
   endif
 
   ## compute axis limits
-  minv = min(axdata);
-  maxv = max(axdata);
+  minv = min (axdata);
+  maxv = max (axdata);
   delv = (maxv-minv)/2;      # breadth of the plot
   midv = (minv + maxv)/2;    # midpoint of the plot
   axmid = [midv(1), midv(1), midv(2), midv(2)];

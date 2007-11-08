@@ -26,6 +26,11 @@
 ## @end deftypefn
 
 function p = colperm (s)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   [i, j] = spfind (s);
   idx = find (diff ([j; Inf]) != 0);
   [dummy, p] = sort (idx - [0; idx(1:(end-1))]);

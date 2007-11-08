@@ -39,11 +39,15 @@
 
 function systype = sysgettype (sys)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   if (! isstruct (sys))
     error ("sysgettype: input sys is not a structure");
   endif
 
   typestr = {"tf", "zp", "ss"};
-  systype = typestr{ sys.sys(1) + 1};
+  systype = typestr{sys.sys(1) + 1};
 
 endfunction

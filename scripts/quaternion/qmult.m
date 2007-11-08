@@ -40,7 +40,11 @@
 ## Adapted-By: jwe
 
 function retval = qmult (a, b)
-  
+
+  if (nargin != 2 )
+    print_usage ();
+  endif
+
   [a1, b1, c1, d1] = quaternion (a);
   [a2, b2, c2, d2] = quaternion (b);
   

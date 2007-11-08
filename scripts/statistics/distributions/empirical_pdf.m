@@ -28,6 +28,10 @@
 
 function pdf = empirical_pdf (x, data)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   if (! isvector (data))
     error ("empirical_pdf: data must be a vector");
   endif

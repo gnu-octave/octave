@@ -28,6 +28,10 @@
 
 function retval = triangle_sw (n, b)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   retval = zeros(n,1);
   retval(1) = 1 / b;
 

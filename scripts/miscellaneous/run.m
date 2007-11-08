@@ -29,6 +29,11 @@
 ## PKG_ADD: mark_as_command run
 
 function run (s)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   [d, f, ext] = fileparts (s);
   if (! isempty (d))
     if (exist (d, "dir"))

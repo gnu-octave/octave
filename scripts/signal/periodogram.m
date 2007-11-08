@@ -28,6 +28,10 @@
 
 function retval = periodogram (x)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   [r, c] = size(x);
 
   if (r == 1)

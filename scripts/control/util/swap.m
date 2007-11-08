@@ -31,6 +31,10 @@
 
 function [a1, b1] = swap (a, b)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   a1 = b;
   b1 = a;
 

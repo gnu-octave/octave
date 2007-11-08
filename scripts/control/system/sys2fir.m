@@ -30,6 +30,10 @@
 
 function [c, tsam, inname, outname] = sys2fir (sys)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   ## let sys2tf do most of the work
 
   [num, den, tsam, inname, outname] = sys2tf (sys);

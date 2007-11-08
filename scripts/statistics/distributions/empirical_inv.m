@@ -28,6 +28,10 @@
 
 function inv = empirical_inv (x, data)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   if (! isvector (data))
     error ("empirical_inv: data must be a vector");
   endif

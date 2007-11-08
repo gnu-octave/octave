@@ -27,6 +27,10 @@
 
 function x = zgfslv (n, m, p, b)
 
+  if (nargin != 4)
+    print_usage ();
+  endif
+
   nmp = n+m+p;
   gam1 = (2*n)+m+p;    gam2 = n+p;     gam3 = n+m;
 

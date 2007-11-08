@@ -25,5 +25,11 @@
 ## Adapted-by: jwe
 
 function retval = isa (x, cname)
+
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   retval = strcmp (class (x), cname);
+
 endfunction

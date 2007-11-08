@@ -31,6 +31,10 @@
 
 function [a, v] = yulewalker (c)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   p = length (c) - 1;
 
   if (columns (c) > 1)

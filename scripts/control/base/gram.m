@@ -29,6 +29,10 @@
 
 function m = gram (a, b)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   ## Let lyap do the error checking...
 
   m = lyap (a, b*b');

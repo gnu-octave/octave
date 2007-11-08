@@ -44,6 +44,10 @@
 
 function pv = sysreorder (vlen, list)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   ## disp('sysreorder: entry')
 
   pv = 1:vlen;

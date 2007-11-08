@@ -24,9 +24,13 @@
 
 function flg = is_signal_list (mylist)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   flg = iscell (mylist);
-  if(flg)
-    flg = (rows(mylist) == 1 | columns(mylist) == 1);
+  if (flg)
+    flg = (rows (mylist) == 1 || columns (mylist) == 1);
   end
   if (flg)
     for ii = 1:length (mylist)

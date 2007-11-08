@@ -30,6 +30,10 @@
 
 function [a, b] = zgsgiv (c, s, a, b)
 
+  if (nargin != 4)
+    print_usage ();
+  endif
+
   t1 = c*a + s*b;
   t2 = -s*a + c*b;
   a = t1;

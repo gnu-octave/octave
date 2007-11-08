@@ -61,6 +61,10 @@
 
 function m = dgram (a, b)
 
+  if (nargin != 2)
+    print_usage();
+  endif
+
   ## let dlyap do the error checking...
 
   m = dlyap (a, b*b');

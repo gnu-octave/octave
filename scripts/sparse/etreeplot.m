@@ -27,5 +27,10 @@
 ## @end deftypefn
 
 function etreeplot (s, varargin)
+
+  if (nargin < 1)
+    print_usage ();
+  endif
+
   treeplot (etree (s+s'), varargin{:});
 endfunction

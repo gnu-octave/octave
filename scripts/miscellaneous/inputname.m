@@ -25,7 +25,13 @@
 ## @end deftypefn
 
 function s = inputname (n)
+
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   s = evalin ("caller", sprintf ("deblank (argn(%d,:));", n));
+
 endfunction
 
 ## Warning: heap big magic in the following tests!!!

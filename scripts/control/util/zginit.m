@@ -34,6 +34,10 @@
 
 function zz = zginit (a, b, c, d)
 
+  if (nargin != 4)
+    print_usage ();
+  endif
+
   [nn,mm] = size(b);
   [pp,mm] = size(d);
 

@@ -34,6 +34,10 @@
 
 function result = sinc (x)
 
+  if (nargin != 1)
+    print_usage ();
+  endif
+
   result = ones (size (x));
 
   i = (x != 0);

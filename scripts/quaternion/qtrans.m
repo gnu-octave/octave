@@ -28,6 +28,10 @@
 
 function v = qtrans (v, q)
 
+  if (nargin != 2)
+    print_usage ();
+  endif
+
   if (! isvector (v) || length (v) != 4)
     error ("qtrans: v(%d,%d) must be a quaternion", rows (v), columns (v));
   elseif (! isvector (q) || length (q) != 4)

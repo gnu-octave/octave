@@ -49,33 +49,33 @@
 
 function str_val = __outlist__ (name_list, tabchar, yd, ilist)
 
-  if( nargin < 1 | nargin > 4 )
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
-  m = length(name_list);
-  if(nargin < 4)
+  m = length (name_list);
+  if (nargin < 4)
     ilist = 1:m;
   endif
-  if(nargin ==1)
+  if (nargin == 1)
     tabchar = "";
   endif
 
-  if(nargin < 3)
-    yd = zeros(1,m);
-  elseif(isempty(yd))
-    yd = zeros(1,m);
+  if (nargin < 3)
+    yd = zeros (1, m);
+  elseif (isempty (yd))
+    yd = zeros (1, m);
   endif
 
   str_val = "";
-  dstr = {""," (discrete)"};
-  if((m >= 1) && (iscell(name_list)))
-    for ii=1:m
-	str_val = sprintf("%s%s%d: %s%s\n",str_val,tabchar, ilist(ii), ...
-			  name_list{ii},dstr{yd(ii)+1});
+  dstr = {"", " (discrete)"};
+  if (m >= 1 && iscell (name_list))
+    for ii = 1:m
+      str_val = sprintf ("%s%s%d: %s%s\n", str_val, tabchar, ilist(ii),
+			 name_list{ii}, dstr{yd(ii)+1});
     endfor
   else
-    str_val = sprintf("%sNone",tabchar);
+    str_val = sprintf ("%sNone", tabchar);
   endif
 
 endfunction

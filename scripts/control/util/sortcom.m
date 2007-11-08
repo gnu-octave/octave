@@ -53,42 +53,47 @@
 
 function [yy, idx] = sortcom (xx, opt)
 
-  if( nargin < 1 | nargin > 2 )
+  if (nargin < 1 || nargin > 2)
      print_usage ();
-  elseif( !(isvector(xx) | isempty(xx) ))
-    error("sortcom: first argument must be a vector");
+  elseif (! (isvector (xx) || isempty (xx)))
+    error ("sortcom: first argument must be a vector");
   endif
 
-  if(nargin == 1)         opt = "re";
+  if (nargin == 1)
+    opt = "re";
   else
-    if (!ischar(opt))
-      error("sortcom: second argument must be a string");
+    if (! ischar (opt))
+      error ("sortcom: second argument must be a string");
     endif
   endif
 
-  if(isempty(xx))
+  if (isempty (xx))
     yy = idx = [];
   else
-    if(strcmp(opt,"re"))        datavec = real(xx);
-    elseif(strcmp(opt,"im"))    datavec = imag(xx);
-    elseif(strcmp(opt,"mag"))   datavec = abs(xx);
-    else                        error(["sortcom: invalid option = ", opt])
+    if (strcmp (opt, "re"))
+      datavec = real (xx);
+    elseif (strcmp (opt, "im"))
+      datavec = imag (xx);
+    elseif (strcmp (opt, "mag"))
+      datavec = abs (xx);
+    else
+      error ("sortcom: invalid option = %s", opt);
     endif
 
-    [datavec,idx] = sort(datavec);
+    [datavec, idx] = sort (datavec);
     yy= xx(idx);
 
-    if(strcmp(opt,"re") | strcmp(opt,"mag"))
+    if (strcmp (opt, "re") || strcmp (opt, "mag"))
       ## sort so that complex conjugate pairs appear together
 
-      ddiff = diff(datavec);
-      zidx = find(ddiff == 0);
+      ddiff = diff (datavec);
+      zidx = find (ddiff == 0);
 
       ## sort common datavec values
-      if(!isempty(zidx))
-        for iv=create_set(datavec(zidx))
-          vidx = find(datavec == iv);
-          [vals,imidx] = sort(imag(yy(vidx)));
+      if (! isempty (zidx))
+        for iv = create_set (datavec(zidx))
+          vidx = find (datavec == iv);
+          [vals, imidx] = sort (imag (yy(vidx)));
           yy(vidx)  = yy(vidx(imidx));
           idx(vidx) = idx(vidx(imidx));
         endfor

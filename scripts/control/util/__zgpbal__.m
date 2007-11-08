@@ -47,67 +47,67 @@
 
 function retsys = __zgpbal__ (Asys)
 
-  if( (nargin != 1) | (!isstruct(Asys)))
+  if (nargin != 1 || ! isstruct (Asys))
     print_usage ();
   endif
 
-  Asys = sysupdate(Asys,"ss");
-  [a,b,c,d] = sys2ss(Asys);
+  Asys = sysupdate (Asys, "ss");
+  [a, b, c, d] = sys2ss (Asys);
 
-  [nn,mm,pp] = abcddim(a,b,c,d);
+  [nn, mm, pp] = abcddim (a, b, c, d);
 
   np1 = nn+1;
   nmp = nn+mm+pp;
 
   ## set up log vector zz, incidence matrix ff
-  zz = zginit(a,b,c,d);
+  zz = zginit (a, b, c, d);
 
   ## disp("__zgpbal__: zginit returns")
   ## zz
   ## disp("/__zgpbal__")
 
-  if (norm(zz))
+  if (norm (zz))
     ## generalized conjugate gradient approach
-    xx = zgscal(a,b,c,d,zz,nn,mm,pp);
+    xx = zgscal (a, b, c, d, zz, nn, mm, pp);
 
-    for i=1:nmp
-      xx(i) = floor(xx(i)+0.5);
+    for i = 1:nmp
+      xx(i) = floor (xx(i)+0.5);
       xx(i) = 2.0^xx(i);
     endfor
 
     ## now scale a
     ## block 1: a = sigma a inv(sigma)
-    for i=1:nn
+    for i = 1:nn
       a(i,1:nn) = a(i,1:nn)*xx(i);
       a(1:nn,i) = a(1:nn,i)/xx(i);
     endfor
     ## block 2: b= sigma a phi
-    for j=1:mm
+    for j = 1:mm
       j1 = j+nn;
       b(1:nn,j) = b(1:nn,j)*xx(j1);
     endfor
-    for i=1:nn
+    for i = 1:nn
       b(i,1:mm) = b(i,1:mm)*xx(i);
     endfor
-    for i=1:pp
+    for i = 1:pp
       i1 = i+nn+mm;
       ## block 3: c = psi C inv(sigma)
       c(i,1:nn) = c(i,1:nn)*xx(i1);
     endfor
-    for j=1:nn
+    for j = 1:nn
       c(1:pp,j) = c(1:pp,j)/xx(j);
     endfor
     ## block 4: d = psi D phi
-    for j=1:mm
+    for j = 1:mm
       j1 = j+nn;
       d(1:pp,j) = d(1:pp,j)*xx(j1);
     endfor
-    for i=1:pp
+    for i = 1:pp
       i1 = i + nn + mm;
       d(i,1:mm) = d(i,1:mm)*xx(i1);
     endfor
   endif
 
-  retsys = ss(a,b,c,d);
-endfunction
+  retsys = ss (a, b, c, d);
 
+endfunction

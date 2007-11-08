@@ -38,4 +38,3 @@ function [sig, tau] = zgrownorm (mat, meps)
   tau = sum (rownorm <= meps);
 
 endfunction
-

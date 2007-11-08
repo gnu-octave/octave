@@ -31,43 +31,43 @@ function retsys = zgreduce (Asys, meps)
 
   ## SYS_INTERNAL accesses members of system data structure
 
-  is_digital(Asys);             # make sure it's pure digital/continuous
+  is_digital (Asys);            # make sure it's pure digital/continuous
 
   exit_1 = 0;                   # exit_1 = 1 or 2 on exit of loop
 
-  if(Asys.n + Asys.nz == 0)
+  if (Asys.n + Asys.nz == 0)
     exit_1 = 2;                 # there are no finite zeros
   endif
 
   while (! exit_1)
-    [Q,R,Pi] = qr(Asys.d);              # compress rows of D
+    [Q, R, Pi] = qr (Asys.d);              # compress rows of D
     Asys.d = Q'*Asys.d;
     Asys.c = Q'*Asys.c;
 
     ## check row norms of Asys.d
-    [sig,tau] = zgrownorm(Asys.d,meps);
+    [sig, tau] = zgrownorm (Asys.d, meps);
 
     ## disp("=======================================")
     ## disp(["zgreduce: meps=",num2str(meps), ", sig=",num2str(sig), ...
     ##   ", tau=",num2str(tau)])
     ## sysout(Asys)
 
-    if(tau == 0)
+    if (tau == 0)
       exit_1 = 1;               # exit_1 - reduction complete and correct
     else
       Cb = Db = [];
-      if(sig)
+      if (sig)
         Cb = Asys.c(1:sig,:);
         Db = Asys.d(1:sig,:);
       endif
-      Ct =Asys.c(sig+(1:tau),:);
+      Ct = Asys.c(sig+(1:tau),:);
 
       ## compress columns of Ct
-      [pp,nn] = size(Ct);
+      [pp, nn] = size (Ct);
       rvec = nn:-1:1;
-      [V,Sj,Pi] = qr(Ct');
+      [V, Sj, Pi] = qr (Ct');
       V = V(:,rvec);
-      [rho,gnu] = zgrownorm(Sj,meps);
+      [rho, gnu] = zgrownorm (Sj, meps);
 
       ## disp(["zgreduce: rho=",num2str(rho),", gnu=",num2str(gnu)])
       ## Cb
@@ -75,22 +75,22 @@ function retsys = zgreduce (Asys, meps)
       ## Ct
       ## Sj'
 
-      if(rho == 0)
+      if (rho == 0)
         exit_1 = 1;     # exit_1 - reduction complete and correct
-      elseif(gnu == 0)
+      elseif (gnu == 0)
         exit_1 = 2;     # there are no zeros at all
       else
         mu = rho + sig;
 
         ## update system with Q
-        M = [Asys.a , Asys.b ];
-        [nn,mm] = size(Asys.b);
+        M = [Asys.a, Asys.b ];
+        [nn, mm] = size (Asys.b);
 
         pp = rows(Asys.d);
-        Vm =[V,zeros(nn,mm) ; zeros(mm,nn), eye(mm)];
-        if(sig)
+        Vm =[V, zeros(nn,mm); zeros(mm,nn), eye(mm)];
+        if (sig)
           M = [M; Cb, Db];
-          Vs =[V',zeros(nn,sig) ; zeros(sig,nn), eye(sig)];
+          Vs =[V', zeros(nn,sig); zeros(sig,nn), eye(sig)];
         else
           Vs = V';
         endif
@@ -130,16 +130,16 @@ function retsys = zgreduce (Asys, meps)
 
   ## disp(["zgreduce: while loop done: exit_1=",num2str(exit_1)]);
 
-  if(exit_1 == 2)
+  if (exit_1 == 2)
     ## there are no zeros at all!
     Asys.a = Asys.b = Asys.c = [];
   endif
 
   ## update dimensions
-  if(is_digital(Asys))
-    Asys.nz = rows(Asys.a);
+  if (is_digital (Asys))
+    Asys.nz = rows (Asys.a);
   else
-    Asys.n = rows(Asys.a);
+    Asys.n = rows (Asys.a);
   endif
 
   retsys = Asys;

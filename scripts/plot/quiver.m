@@ -179,8 +179,8 @@ function hlist = __quiver__ (varargin)
     ytmp = y + v(:) .* (1 - arrowsize);
     xarrw1 = xtmp + (y - yend) * arrowsize / 3;
     xarrw2 = xtmp - (y - yend) * arrowsize / 3;
-    yarrw1 = ytmp + (x - xend) * arrowsize / 3;
-    yarrw2 = ytmp - (x - xend) * arrowsize / 3;
+    yarrw1 = ytmp - (x - xend) * arrowsize / 3;
+    yarrw2 = ytmp + (x - xend) * arrowsize / 3;
 
     if (have_line_spec)
       if (isfield (linespec, "marker") && 

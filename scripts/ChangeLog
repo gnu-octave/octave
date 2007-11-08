@@ -1,3 +1,7 @@
+2007-11-08  David Bateman  <dbateman@free.fr>
+
+	* plot/quiver.m: Fix arrowheads.
+
 2007-11-07  Ben Abbott  <bpabbott@mac.com>
 
 	* set/ismember.m: Call cell_ismember to handle cellstr args.

@@ -202,7 +202,7 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
   ## nc
   ## disp("/sysconnect");
 
-  if ((nc > 0 & find (dyi > 0))
+  if ((nc > 0) & find (dyi > 0))
     B2con = B2(1:nc,dyi);       # connection to cont states
     C2hd = C2h(dyi,1:nc);       # cont states -> outputs
   else

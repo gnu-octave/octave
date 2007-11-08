@@ -108,7 +108,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
   endif
 
   if (make_d)
-    d = zeros (rows(c)+Ap, columns(b) + Am);
+    d = zeros (rows(c)+Ap, columns(b)+Am);
   endif
 
   ## Append new input(s) if any
@@ -171,7 +171,7 @@ function retsys = sysappend (sys, b, c, d, outname, inname, yd)
 	error ("yd(%dx%d) must be a vector", rows (yd), columns (yd));
       elseif (rows (c) != length (yd) && rows (d) != length (yd))
 	error ("length(yd) = %d; c(%dx%d), d(%dx%d); mismatch",
-	       length (yd), rows (c), columns (c), rows (d), columns (d)));
+	       length (yd), rows (c), columns (c), rows (d), columns (d));
       endif
     else
       ## default yd values

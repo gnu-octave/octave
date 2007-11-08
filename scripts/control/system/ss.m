@@ -214,8 +214,9 @@ function retsys = ss (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
   endif
 
   ## check for tsam input
-  if (nargin < 5) tsam = 0;
-  elseif (! (is_sample (tsam) || tsam == 0)))
+  if (nargin < 5)
+    tsam = 0;
+  elseif (! (is_sample (tsam) || tsam == 0))
     error ("tsam must be a nonnegative real scalar");
   endif
 

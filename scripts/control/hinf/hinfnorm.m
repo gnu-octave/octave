@@ -154,7 +154,7 @@ function [g, gmin, gmax] = hinfnorm (sys, tol, gmin, gmax, ptol)
 
   ## check for scalar input arguments 2...5
   if (! isscalar (tol) && isscalar (gmin)
-      && isscalar (gmax) && isscalar (ptol)) )
+      && isscalar (gmax) && isscalar (ptol))
     error ("hinfnorm: tol, gmin, gmax, ptol must be scalars");
   endif
 

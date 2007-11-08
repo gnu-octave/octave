@@ -45,7 +45,7 @@ function Asys = packsys (a, b, c, d, dflg)
   if (nargin == 5)
     if (! isscalar (dflg))
       [m, n] = size(dflg);
-      error (["packsys: dflg (%d,%d) must be a scalar", m, n);
+      error ("packsys: dflg (%d,%d) must be a scalar", m, n);
     elseif (dflg != 0 && dflg != 1)
       error ("packsys: dflg=%g must be 0 or 1", dflg);
     endif

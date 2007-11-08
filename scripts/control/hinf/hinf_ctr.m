@@ -102,7 +102,7 @@ function K = hinf_ctr (dgs, F, H, Z, g)
   md1112 = length (D1112);
   md1121 = length (D1121);
 
-  if (nd1111 == 0) || md1112 == 0)
+  if (nd1111 == 0 || md1112 == 0)
     d11hat = -D1122;
   else
     xx = inv (g*g*eye(nz-nu) - D1111*D1111');

@@ -66,7 +66,7 @@ function [y, x] = lsim (sys, u, t, x0)
   if (columns (x0) > 1)
     error ("lsim: Initial condition vector should have only one column");
   endif
-  if (rows (x0) > rows p(a))
+  if (rows (x0) > rows (a))
     error ("lsim: Initial condition vector is too large");
   endif
 

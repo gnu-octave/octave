@@ -93,7 +93,7 @@ function [a, b, c, d] = tf2ss (num, den)
   nn = length (num);
   nd = length (den);
   if (nn > nd)
-    error ("deg(num)=%d > deg(den)= %d", nn, nd));
+    error ("deg(num)=%d > deg(den)= %d", nn, nd);
   endif
 
    ## Check sizes

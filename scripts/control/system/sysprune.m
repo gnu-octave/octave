@@ -129,7 +129,7 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   if (! isstruct (sys))
     error ("Asys must be a system data structure (see ss, tf, or zp)");
   elseif (pp < lo)
-    error("%d output_idx entries, system has only %d outputs", lo, pp]);
+    error("%d output_idx entries, system has only %d outputs", lo, pp);
   elseif (mm < li)
     error("%d input_idx entries, system has only %d inputs", li, mm);
   elseif (nn+nz < lst)

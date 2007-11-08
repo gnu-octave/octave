@@ -68,8 +68,8 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
     endif
   else
     ## continuous
-    iip = find (abs(pol) > norm(pol)*eps));
-    iiz = find (abs(zer) > norm(zer)*eps));
+    iip = find (abs(pol) > norm(pol)*eps);
+    iiz = find (abs(zer) > norm(zer)*eps);
 
     if (! isempty (zer))
       czer = zer(iiz);

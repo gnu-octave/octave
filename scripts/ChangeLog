@@ -1,3 +1,9 @@
+2007-11-07  Ben Abbott  <bpabbott@mac.com>
+
+	* set/ismember.m: Call cell_ismember to handle cellstr args.
+	New tests.
+	(cell_ismember): New function.
+
 2007-11-07  John W. Eaton  <jwe@octave.org>
 
 	* control/base/__bodquist__.m, control/base/__freqresp__.m,

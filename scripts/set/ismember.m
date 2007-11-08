@@ -18,9 +18,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{tf}, @var{a_idx}] =} ismember (@var{A}, @var{S}) 
+## @deftypefnx {Function File} {[@var{tf}, @var{a_idx}] =} ismember (@var{A}, @var{S}, "rows")
 ## Return a matrix @var{tf} the same shape as @var{A} which has 1 if 
 ## @code{A(i,j)} is in @var{S} or 0 if it isn't. If a second output argument 
-## is requested, the indexes into  @var{S} of the matching elements is 
+## is requested, the indexes into @var{S} of the matching elements are
 ## also returned. 
 ##
 ## @example
@@ -45,9 +46,9 @@
 ## @end group
 ## @end example
 ##
-## @deftypefnx {Function File} {[@var{tf}, @var{a_idx}] =} ismember (@var{A}, @var{S}, 'rows')
-## When @var{A} and @var{S} are matrices with the same number of columes,
-## the row vectors may matched.
+## With the optional third argument @code{"rows"}, and matrices 
+## @var{A} and @var{S} with the same number of columns, compare rows in
+## @var{A} with the rows in @var{S}.
 ##
 ## @example
 ## @group
@@ -62,15 +63,15 @@
 ## @seealso{unique, union, intersection, setxor, setdiff}
 ## @end deftypefn
 
-## Author: Paul Kienzle
-## Author: Søren Hauberg
-## Author: Ben Abbott
+## Author: Paul Kienzle <pkienzle@users.sf.net>
+## Author: Søren Hauberg <hauberg@gmail.com>
+## Author: Ben Abbott <bpabbott@mac.com>
 ## Adapted-by: jwe
 
 function [tf, a_idx] = ismember (a, s, rows_opt) 
 
   if (nargin == 2 || nargin == 3) 
-    if (iscell(a) || iscell(s))
+    if (iscell (a) || iscell (s))
       if (nargin == 3)
         error ("ismember: with 'rows' both sets must be matrices"); 
       else
@@ -80,42 +81,42 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
       if (nargin == 3) 
         ## The 'rows' argument is handled in a fairly ugly way. A better
         ## solution would be to vectorize this loop over 'r' below.
-        if (strcmpi (rows_opt, "rows") && ismatrix (a) && ismatrix (s) && ...
-            columns (a) == columns (s)) 
+        if (strcmpi (rows_opt, "rows") && ismatrix (a) && ismatrix (s)
+	    && columns (a) == columns (s)) 
           rs = rows (s);
           ra = rows (a);
           a_idx = zeros (ra, 1);
           for r = 1:ra
            tmp = ones (rs, 1) * a(r,:);
             f = find (all (tmp' == s'), 1);
-            if ! isempty (f)
+            if (! isempty (f))
               a_idx(r) = f;
             endif
           endfor
           tf = logical (a_idx);
-        elseif strcmpi (rows_opt, "rows")
+        elseif (strcmpi (rows_opt, "rows"))
           error ("ismember: with 'rows' both sets must be matrices with an equal number of columns"); 
         else
           error ("ismember: invalid input"); 
         endif
       else
         ## Input checking 
-        if ( ! isa (a, class (s)) ) 
+        if (! isa (a, class (s))) 
           error ("ismember: both input arguments must be the same type");
-        elseif ( ! ischar (a) && ! isnumeric (a) )
+        elseif (! ischar (a) && ! isnumeric (a))
           error ("ismember: input arguments must be arrays, cell arrays, or strings"); 
-        elseif ( ischar (a) && ischar (s) ) 
+        elseif (ischar (a) && ischar (s))
           a = uint8 (a);
           s = uint8 (s);
         endif
-        ## Convert matrices to vectors 
+        ## Convert matrices to vectors.
         if (all (size (a) > 1))
           a = a(:);
         endif 
         if (all (size (s) > 1))
           s = s(:);
         endif 
-        ## Do the actual work
+        ## Do the actual work.
         if (isempty (a) || isempty (s))
           tf = zeros (size (a), "logical");
           a_idx = []; 
@@ -124,7 +125,7 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
           a_idx = double (tf);
         elseif (numel (a) == 1) 
           f = find (a == s, 1); 
-          tf = !isempty (f); 
+          tf = !isempty (f);
           a_idx = f; 
           if (isempty (a_idx))
             a_idx = 0;
@@ -186,13 +187,13 @@ function [tf, a_idx] = cell_ismember (a, s)
       if (isempty (a)) # Work around bug in 'cellstr' 
         a = {''};
       else
-        a = cellstr(a);
+        a = cellstr (a);
       endif
     elseif (iscellstr (a) && ischar (s))
       if (isempty (s)) # Work around bug in 'cellstr' 
         s = {''};
       else
-        s = cellstr(s);
+        s = cellstr (s);
       endif
     endif 
     if (iscellstr (a) && iscellstr (s))
@@ -211,15 +212,15 @@ function [tf, a_idx] = cell_ismember (a, s)
           a_idx = 0;
         endif 
       else 
-        lt = numel(s);
+        lt = numel (s);
         [s, sidx] = sort (s);
         [v, p] = sort ([s(2:lt)(:); a(:)]);
         idx(p) = cumsum (p <= lt-1) + 1;
         idx = idx(lt:end);
         tf = (cellfun ("length", a) 
-            == reshape (cellfun ("length", s(idx)), size (a)));
+              == reshape (cellfun ("length", s(idx)), size (a)));
         idx2 = find (tf);
-        tf(idx2) = all (char (a(idx2)) == char (s(idx)(idx2)), 2);
+        tf(idx2) = (all (char (a(idx2)) == char (s(idx)(idx2)), 2));
         a_idx = zeros (size (tf));
         a_idx(tf) = sidx(idx(tf));
       endif
@@ -230,7 +231,7 @@ function [tf, a_idx] = cell_ismember (a, s)
     print_usage ();
   endif
   ## Resize result to the original size of 'a' 
-  size_a = size(a);
+  size_a = size (a);
   tf = reshape (tf, size_a); 
   a_idx = reshape (a_idx, size_a); 
 endfunction

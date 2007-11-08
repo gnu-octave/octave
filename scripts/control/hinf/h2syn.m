@@ -79,43 +79,59 @@
 
 function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
 
-  if ((nargin < 3) | (nargin > 4))
+  if (nargin < 3 || nargin > 4)
     print_usage ();
-  elseif(nargin == 3 )
-    [chkdgkf,dgs] = is_dgkf(Asys,nu,ny);
-  elseif(nargin == 4)
-    [chkdgkf,dgs] = is_dgkf(Asys,nu,ny,tol);
+  elseif (nargin == 3)
+    [chkdgkf, dgs] = is_dgkf (Asys, nu, ny);
+  elseif (nargin == 4)
+    [chkdgkf, dgs] = is_dgkf (Asys, nu, ny, tol);
   endif
 
-  if (!chkdgkf )
-    disp("h2syn: system does not meet required assumptions")
-    help is_dgkf
-    error("h2syn: exit");
+  if (! chkdgkf)
+    error ("h2syn: system does not meet required assumptions")
   endif
 
   ## extract dgs information
-                        nw = dgs.nw;    nu = dgs.nu;
-  A = dgs.A;            Bw = dgs.Bw;    Bu = dgs.Bu;
-  Cz = dgs.Cz;          Dzw = dgs.Dzw;  Dzu = dgs.Dzu;  nz = dgs.nz;
-  Cy = dgs.Cy;          Dyw = dgs.Dyw;  Dyu = dgs.Dyu;  ny = dgs.ny;
+  nw = dgs.nw;
+  nu = dgs.nu;
+  nz = dgs.nz;
+  ny = dgs.ny;
+
+  A = dgs.A;
+
+  Bw = dgs.Bw;
+  Bu = dgs.Bu;
+
+  Cz = dgs.Cz;
+  Cy = dgs.Cy;
+
+  Dzw = dgs.Dzw;
+  Dzu = dgs.Dzu;
+
+  Dyw = dgs.Dyw;
+  Dyu = dgs.Dyu;
+
   d22nz = dgs.Dyu_nz;
+
   dflg = dgs.dflg;
 
-  if(norm(Dzw,Inf) > norm([Dzw, Dzu ; Dyw, Dyu],Inf)*1e-12)
-    warning("h2syn: Dzw nonzero; feedforward not implemented")
+  if (norm (Dzw, Inf) > norm ([Dzw, Dzu; Dyw, Dyu], Inf)*1e-12)
+    warning ("h2syn: Dzw nonzero; feedforward not implemented")
     Dzw
     D = [Dzw, Dzu ; Dyw, Dyu]
   endif
 
   ## recover i/o transformations
-  Ru = dgs.Ru;         Ry = dgs.Ry;
-  [ncstates, ndstates, nout, nin] = sysdimensions(Asys);
-  Atsam = sysgettsam(Asys);
-  [Ast, Ain, Aout] = sysgetsignals(Asys);
+  Ru = dgs.Ru;
+  Ry = dgs.Ry;
 
-  if(dgs.dflg == 0)
-    Pc = are(A,Bu*Bu',Cz'*Cz);    # solve control, filtering ARE's
-    Pf = are(A',Cy'*Cy,Bw*Bw');
+  [ncstates, ndstates, nout, nin] = sysdimensions (Asys);
+  Atsam = sysgettsam (Asys);
+  [Ast, Ain, Aout] = sysgetsignals (Asys);
+
+  if (dgs.dflg == 0)
+    Pc = are (A, Bu*Bu', Cz'*Cz);    # solve control, filtering ARE's
+    Pf = are(A', Cy'*Cy, Bw*Bw');
     F2 = -Bu'*Pc;                 # calculate feedback gains
     L2 = -Pf*Cy';
 
@@ -126,61 +142,62 @@ function [K, gain, Kc, Kf, Pc, Pf] = h2syn (Asys, nu, ny, tol)
 
   else
     ## discrete time solution
-    error("h2syn: discrete-time case not yet implemented")
-    Pc = dare(A,Bu*Bu',Cz'*Cz);
-    Pf = dare(A',Cy'*Cy,Bw*Bw');
+    error ("h2syn: discrete-time case not yet implemented")
+    Pc = dare (A, Bu*Bu', Cz'*Cz);
+    Pf = dare (A', Cy'*Cy, Bw*Bw');
   endif
 
   nn = ncstates + ndstates;
-  In = eye(nn);
+  In = eye (nn);
   KA = A + Bu*F2 + L2*Cy;
-  Kc1 = ss(AF2,Bw,CzF2,zeros(nz,nw));
-  Kf1 = ss(AL2,BwL2,F2,zeros(nu,nw));
+  Kc1 = ss (AF2, Bw, CzF2, zeros (nz, nw));
+  Kf1 = ss (AL2, BwL2, F2, zeros (nu, nw));
 
-  g1 = h2norm(Kc1);
-  g2 = h2norm(Kf1);
+  g1 = h2norm (Kc1);
+  g2 = h2norm (Kf1);
 
   ## compute optimal closed loop gain
-  gain = sqrt ( g1*g1 + g2*g2 );
+  gain = sqrt (g1*g1 + g2*g2);
 
-  if(nargout)
-    Kst = strappend(Ast,"_K");
-    Kin = strappend(Aout((nout-ny+1):(nout)),"_K");
-    Kout = strappend(Ain((nin-nu+1):(nin)),"_K");
+  if (nargout)
+    Kst = strappend (Ast, "_K");
+    Kin = strappend (Aout((nout-ny+1):(nout)), "_K");
+    Kout = strappend (Ain((nin-nu+1):(nin)), "_K");
 
     ## compute systems for return
-    K = ss(KA,-L2/Ru,Ry\F2,zeros(nu,ny),Atsam,ncstates,ndstates,Kst,Kin,Kout);
+    K = ss (KA, -L2/Ru, Ry\F2, zeros(nu,ny), Atsam, ncstates,
+	    ndstates, Kst, Kin, Kout);
   endif
 
   if (nargout > 2)
     ## system full information control state names
-    stname2 = strappend(Ast,"_FI");
+    stname2 = strappend (Ast, "_FI");
 
    ## system full information control input names
-   inname2 = strappend(Ast,"_FI_in");
+   inname2 = strappend (Ast, "_FI_in");
 
     ## system full information control output names
-    outname2 = strappend(Aout(1:(nout-ny)),"_FI_out");
+    outname2 = strappend (Aout(1:(nout-ny)), "_FI_out");
 
     nz = rows (Cz);
     nw = columns (Bw);
 
-    Kc = ss(AF2, In, CzF2, zeros(nz,nn), Atsam, ...
-        ncstates, ndstates, stname2, inname2, outname2);
+    Kc = ss (AF2, In, CzF2, zeros(nz,nn), Atsam, 
+             ncstates, ndstates, stname2, inname2, outname2);
   endif
 
   if (nargout >3)
     ## fix system state estimator state names
-    stname3 = strappend(Ast,"_Kf");
+    stname3 = strappend (Ast, "_Kf");
 
     ## fix system state estimator input names
-    inname3 = strappend(Ast,"_Kf_noise");
+    inname3 = strappend (Ast, "_Kf_noise");
 
     ## fix system state estimator output names
-    outname3 = strappend(Ast,"_est");
+    outname3 = strappend (Ast, "_est");
 
-    Kf = ss(AL2, BwL2, In, zeros(nn,nw),Atsam,  ...
-      ncstates, ndstates, stname3, inname3,outname3);
+    Kf = ss (AL2, BwL2, In, zeros(nn,nw),Atsam,
+	    ncstates, ndstates, stname3, inname3, outname3);
   endif
 
 endfunction

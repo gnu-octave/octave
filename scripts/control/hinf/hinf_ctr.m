@@ -143,7 +143,7 @@ function K = hinf_ctr (dgs, F, H, Z, g)
   ## non-zero D22 is a special case
   if (d22nz)
     if (rank (eye(nu) + d11hat*D22) < nu)
-      error(" *** cannot compute controller for D22 non-zero.");
+      error (" *** cannot compute controller for D22 non-zero.");
     endif
 
     d22new = [D22, zeros(ny,ny); zeros(nu,nu), 0*D22'];

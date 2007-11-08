@@ -88,8 +88,8 @@ function [retval, Pc, Pf] = hinfsyn_chk (A, B1, B2, C1, C2, D12, D21, g, ptol)
 
   ## Construct the two Hamiltonians
   g2 = 1/(g*g);
-  Hc = [ A ,  g2*B1*B1' - B2*B2'; -C1'*C1 , -A'];
-  Hf = [ A' , g2*C1'*C1 - C2'*C2; -B1*B1' , -A];
+  Hc = [A,  g2*B1*B1' - B2*B2'; -C1'*C1, -A'];
+  Hf = [A', g2*C1'*C1 - C2'*C2; -B1*B1', -A];
 
   ## check if Hc, Hf are in dom(Ric)
   Hcminval = min (abs (real (eig (Hc))));

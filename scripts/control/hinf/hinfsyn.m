@@ -131,47 +131,64 @@
 
 function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol, tol)
 
-  if( (nargin < 1) | (nargin > 8) )
+  if (nargin < 1 || nargin > 8)
     print_usage ();
   endif
   ## set default arguments
-  if(nargin < 8)
+  if (nargin < 8)
     tol = 200*eps;
-  elseif(!is_sample(tol))
-    error("tol must be a positive scalar.")
+  elseif (! is_sample (tol))
+    error ("tol must be a positive scalar.")
   endif
-  if(nargin < 7)
+  if (nargin < 7)
     ptol = 1e-9;
-  elseif(!is_sample(ptol))
-    error("hinfsyn: ptol must be a positive scalar");
+  elseif (! is_sample (ptol))
+    error ("hinfsyn: ptol must be a positive scalar");
   endif
 
-  if(!is_sample(gmax) | !is_sample(gmin) | !is_sample(gtol) )
-    error(["hinfsyn: gmax=",num2str(gmax),", gmin=",num2str(gmin), ...
-      "gtol=",num2str(gtol), " must be positive scalars."])
+  if (! is_sample (gmax) || ! is_sample (gmin) || ! is_sample (gtol))
+    error ("hinfsyn: gmax=%g, gmin=%g, gtol=%g must be positive scalars",
+	   gmax, gmin, gtol);
   endif
 
-  [chkdgkf,dgs] = is_dgkf(Asys,nu,ny,tol);
+  [chkdgkf, dgs] = is_dgkf (Asys, nu, ny, tol);
 
   if (! chkdgkf )
-    disp("hinfsyn: system does not meet required assumptions")
-    help is_dgkf
-    error("hinfsyn: exit");
+    error ("hinfsyn: system does not meet required assumptions")
   endif
 
   ## extract dgs information
-                        nw = dgs.nw;    nu = dgs.nu;
-  A = dgs.A;            B1 = dgs.Bw;    B2 = dgs.Bu;
-  C1 = dgs.Cz;          D11 = dgs.Dzw;  D12 = dgs.Dzu;          nz = dgs.nz;
-  C2 = dgs.Cy;          D21 = dgs.Dyw;  D22 = dgs.Dyu;          ny = dgs.ny;
+  nw = dgs.nw;
+  nu = dgs.nu;
+  nz = dgs.nz;
+  ny = dgs.ny;
+
+  A = dgs.A;
+
+  B1 = dgs.Bw;
+  B2 = dgs.Bu;
+
+  C1 = dgs.Cz;
+  C2 = dgs.Cy;
+
+  D11 = dgs.Dzw;
+  D12 = dgs.Dzu;
+  D21 = dgs.Dyw;
+  D22 = dgs.Dyu;
+
   d22nz = dgs.Dyu_nz;
+
   dflg = dgs.dflg;
 
   ## recover i/o transformations
-  R12 = dgs.Ru;         R21 = dgs.Ry;
-  [ncstates, ndstates, nin, nout] = sysdimensions(Asys);
-  Atsam = sysgettsam(Asys);
-  [Ast, Ain, Aout] = sysgetsignals(Asys);
+  R12 = dgs.Ru;
+  R21 = dgs.Ry;
+
+  [ncstates, ndstates, nin, nout] = sysdimensions (Asys);
+
+  Atsam = sysgettsam (Asys);
+
+  [Ast, Ain, Aout] = sysgetsignals (Asys);
 
   BB = [B1, B2];
   CC = [C1 ; C2];
@@ -182,21 +199,19 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
     ## perform binary search to find gamma min
     ghi = gmax;
     ## derive a lower lower bound for gamma from D matrices
-    xx1 = norm((eye(nz) - (D12/(D12'*D12))*D12')*D11);
-    xx2 = norm(D11*(eye(nw)-(D21'/(D21*D21'))*D21));
-    glo = max(xx1, xx2);
+    xx1 = norm ((eye(nz) - (D12/(D12'*D12))*D12')*D11);
+    xx2 = norm (D11*(eye(nw)-(D21'/(D21*D21'))*D21));
+    glo = max (xx1, xx2);
     if (glo > gmin)
-      disp(" *** D matrices indicate a greater value of gamma min.");
-      fprintf("     gamma min (%f) superseeded by %f.", gmin, glo);
+      warning (" *** D matrices indicate a greater value of gamma min.");
+      warning ("     gamma min (%f) superseeded by %f.", gmin, glo);
       glo = xx1;
     else
       glo = gmin;
     endif
     if (glo > ghi)
-      fprintf(" *** lower bound of gamma greater than upper bound(%f)", ...
-              glo, ghi);
-      disp(" *** unable to continue, Goodbye.");
-      return;
+      error (" *** lower bound of gamma greater than upper bound (%g, %g)",
+             glo, ghi);
     endif
 
     de = ghi - glo;
@@ -242,118 +257,131 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
 
 
     ## now do the search
-    while (!iteration_finished)
+    while (! iteration_finished)
       switch (search_state)
-        case (0)        g = ghi;
-        case (1)        g = glo;
-        case (2)        g = 0.5 * (ghi + glo);
-        otherwise       error(" *** This should never happen!");
+        case 0
+          g = ghi;
+        case 1
+          g = glo;
+        case 2
+          g = 0.5 * (ghi + glo);
+        otherwise
+	  error (" *** This should never happen!");
       endswitch
-      printf("%10.4f ", g);
+      printf ("%10.4f ", g);
 
       ## computing R and R~
       d1dot = [D11, D12];
-      R = zeros(nin, nin);
+      R = zeros (nin, nin);
       R(1:nw,1:nw) = -g*g*eye(nw);
       R = R + d1dot' * d1dot;
       ddot1 = [D11; D21];
-      Rtilde = zeros(nout, nout);
+      Rtilde = zeros (nout, nout);
       Rtilde(1:nz,1:nz) = -g*g*eye(nz);
       Rtilde = Rtilde + ddot1 * ddot1';
 
-      [Xinf,x_ha_err] = hinfsyn_ric(A,BB,C1,d1dot,R,ptol);
-      [Yinf,y_ha_err] = hinfsyn_ric(A',CC',B1',ddot1',Rtilde,ptol);
+      [Xinf, x_ha_err] = hinfsyn_ric (A, BB, C1, d1dot, R, ptol);
+      [Yinf, y_ha_err] = hinfsyn_ric (A', CC', B1', ddot1', Rtilde, ptol);
 
       ## assume failure for this gamma
       passed = 0;
-      rerr="";
-      if (!x_ha_err && !y_ha_err)
+      rerr = "";
+      if (! x_ha_err && ! y_ha_err)
         ## test spectral radius condition
-        rho = max(abs(eig(Xinf * Yinf)));
+        rho = max (abs (eig (Xinf * Yinf)));
         if (rho < g*g)
           ## spectral radius condition passed
           passed = 1;
         else
-          rerr = sprintf("rho=%f",rho);
+          rerr = sprintf ("rho=%f",rho);
         endif
       endif
 
-      if(x_ha_err >= 0 & x_ha_err <= 6)
-        printf("%s",errmesg{x_ha_err+1});
+      if (x_ha_err >= 0 && x_ha_err <= 6)
+        printf ("%s", errmesg{x_ha_err+1});
         xerr = errdesx{x_ha_err+1};
       else
-        error(" *** Xinf fail: this should never happen!");
+        error (" *** Xinf fail: this should never happen!");
       endif
 
-      if(y_ha_err >= 0 & y_ha_err <= 6)
-        printf("%s",errmesg{y_ha_err+1});
+      if (y_ha_err >= 0 && y_ha_err <= 6)
+        printf ("%s", errmesg{y_ha_err+1});
         yerr = errdesy{y_ha_err+1};
       else
-        error(" *** Yinf fail: this should never happen!");
+        error (" *** Yinf fail: this should never happen!");
       endif
 
-      if(passed)  printf("  y all tests passed.\n");
-      else        printf("  n %s/%s%s\n",xerr,yerr,rerr);          endif
+      if (passed)
+	printf ("  y all tests passed.\n");
+      else
+        printf ("  n %s/%s%s\n", xerr, yerr, rerr);
+      endif
 
       if (passed && (de/g < gtol))
         search_state = 3;
       endif
 
       switch (search_state)
-        case (0)
-          if (!passed)
+        case 0
+          if (! passed)
             ## upper bound must pass but did not
             fprintf(" *** the upper bound of gamma (%f) is too small.\n", g);
             iteration_finished = 2;
           else
             search_state = 1;
           endif
-        case (1)
-          if (!passed)      search_state = 2;
+        case 1
+          if (! passed)
+	    search_state = 2;
           else
             ## lower bound must not pass but passed
-            fprintf(" *** the lower bound of gamma (%f) passed.\n", g);
+            fprintf (" *** the lower bound of gamma (%f) passed.\n", g);
             iteration_finished = 3;
           endif
-        case (2)
+        case 2
           ## Normal case; must check that singular R, Rtilde wasn't the problem.
-          if ((!passed) & (x_ha_err != 6) & (y_ha_err != 6) ) glo = g;
-          else         ghi = g;        endif
+          if (! passed && x_ha_err != 6 && y_ha_err != 6)
+	    glo = g;
+          else
+            ghi = g;
+          endif
           de = ghi - glo;
-        case (3)       iteration_finished = 1;        # done
-        otherwise      error(" *** This should never happen!");
+        case 3
+	  iteration_finished = 1;        # done
+        otherwise
+	  error (" *** This should never happen!");
       endswitch
     endwhile
 
-    printf("----------------------------------------");
-    printf("--------------------------------------\n");
+    printf ("----------------------------------------");
+    printf ("--------------------------------------\n");
     if (iteration_finished != 1)
       K = [];
     else
       ## success: compute controller
-      fprintf("   hinfsyn final: glo=%f ghi=%f, test gain g=%f\n", \
-              glo, ghi, g);
-      printf("----------------------------------------");
-      printf("--------------------------------------\n");
-      Z = inv(eye(ncstates) - Yinf*Xinf/g/g);
+      fprintf ("   hinfsyn final: glo=%f ghi=%f, test gain g=%f\n",
+               glo, ghi, g);
+      printf ("----------------------------------------");
+      printf ("--------------------------------------\n");
+      Z = inv (eye(ncstates) - Yinf*Xinf/g/g);
       F = -R \ (d1dot'*C1 + BB'*Xinf);
       H = -(B1*ddot1' + Yinf*CC') / Rtilde;
-      K = hinf_ctr(dgs,F,H,Z,g);
+      K = hinf_ctr (dgs, F, H, Z, g);
 
-      Kst = strappend(Ast,"_K");
-      Kin = strappend(Aout((nout-ny+1):(nout)),"_K");
-      Kout = strappend(Ain((nin-nu+1):(nin)),"_K");
-      [Ac, Bc, Cc, Dc] = sys2ss(K);
-      K = ss(Ac,Bc,Cc,Dc,Atsam,ncstates,ndstates,Kst,Kin,Kout);
+      Kst = strappend (Ast, "_K");
+      Kin = strappend (Aout((nout-ny+1):(nout)),"_K");
+      Kout = strappend (Ain((nin-nu+1):(nin)),"_K");
+      [Ac, Bc, Cc, Dc] = sys2ss (K);
+      K = ss (Ac, Bc, Cc, Dc, Atsam, ncstates, ndstates, Kst, Kin, Kout);
       if (nargout >= 3)
-        GW = starp(Asys, K);
+        GW = starp (Asys, K);
       endif
     endif
 
-  elseif(ndstates)
+  elseif (ndstates)
 
     ## discrete time solution
-    error("hinfsyn: discrete-time case not yet implemented")
+    error ("hinfsyn: discrete-time case not yet implemented")
 
   endif
 

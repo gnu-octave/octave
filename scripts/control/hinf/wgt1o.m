@@ -59,20 +59,17 @@ function wsys = wgt1o (vl, vh, fc)
     print_usage ();
   endif
 
-  if(nargout > 1)
-    print_usage ();
-  endif
-
   if (vl == vh)
       a = [];
       b = [];
       c = [];
   else
-      a = [-2*pi*fc];
-      b = [-2*pi*fc];
-      c = [vh-vl];
+      a = -2*pi*fc;
+      b = -2*pi*fc;
+      c = vh-vl;
   endif
-  d=[vh];
+  d = vh;
 
-  wsys = ss(a,b,c,d);
+  wsys = ss (a, b, c, d);
+
 endfunction

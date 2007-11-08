@@ -35,51 +35,53 @@ function damp (p, tsam)
 
   ## assume a continuous system
   DIGITAL = 0;
-  if(nargin < 1 || nargin > 2)
+
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-  if(isstruct(p))
+
+  if (isstruct (p))
     if (nargin != 1)
       error("damp: when p is a system, tsamp parameter is not allowed.");
     endif
-    [aa, b, c, d, t_samp] = sys2ss(p);
-    DIGITAL = is_digital(p);
+    [aa, b, c, d, t_samp] = sys2ss (p);
+    DIGITAL = is_digital (p);
   else
     aa = p;
     if (nargin == 2)
-        DIGITAL = 1;
-        t_samp = tsam;
+      DIGITAL = 1;
+      t_samp = tsam;
     endif
   endif
-  if (!issquare(aa))
-    error("damp: Matrix p is not square.")
+  if (! issquare (aa))
+    error ("damp: Matrix p is not square.")
   endif
   if (DIGITAL && t_samp <= 0.0)
-    error("damp: Sampling time tsam must not be <= 0.")
+    error ("damp: Sampling time tsam must not be <= 0.")
   endif
 
   ## all checks done.
-  e = eig(aa);
-  [n, m] = size(aa);
+  e = eig (aa);
+  [n, m] = size (aa);
   if (DIGITAL)
-    printf("  (discrete system with sampling time %f)\n", t_samp);
+    printf ("  (discrete system with sampling time %f)\n", t_samp);
   endif
-  printf("............... Eigenvalue ...........     Damping     Frequency\n");
-  printf("--------[re]---------[im]--------[abs]----------------------[Hz]\n");
+  printf ("............... Eigenvalue ...........     Damping     Frequency\n");
+  printf ("--------[re]---------[im]--------[abs]----------------------[Hz]\n");
   for i = 1:n
     pole = e(i);
     cpole = pole;
     if (DIGITAL)
-      cpole = log(pole) / t_samp;
+      cpole = log (pole) / t_samp;
     endif
-    d0 = -cos(atan2(imag(cpole), real(cpole)));
-    f0 = 0.5 / pi * abs(cpole);
-    if (abs(imag(cpole)) < eps)
-      printf("%12f         ---  %12f  %10f  %12f\n",
-             real(pole), abs(pole), d0, f0);
+    d0 = -cos (atan2 (imag (cpole), real (cpole)));
+    f0 = 0.5 / pi * abs (cpole);
+    if (abs (imag (cpole)) < eps)
+      printf ("%12f         ---  %12f  %10f  %12f\n",
+             real (pole), abs (pole), d0, f0);
     else
-      printf("%12f %12f %12f  %10f  %12f\n",
-             real(pole), imag(pole), abs(pole), d0, f0);
+      printf ("%12f %12f %12f  %10f  %12f\n",
+             real (pole), imag (pole), abs (pole), d0, f0);
     endif
   endfor
 

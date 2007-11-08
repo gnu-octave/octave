@@ -92,7 +92,7 @@
 
 function [k, p, e] = lqe (a, g, c, sigw, sigv, zz)
 
-  if ( (nargin != 5) && (nargin != 6))
+  if (nargin != 5 && nargin != 6)
     error ("lqe: invalid number of arguments");
   endif
 

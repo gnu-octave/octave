@@ -119,7 +119,7 @@ function [k, p, e] = lqr (a, b, q, r, s)
 
   ## disp("lqr: entry");
 
-  if ((nargin != 4) && (nargin != 5))
+  if (nargin != 4 && nargin != 5)
     error ("lqr: invalid number of arguments");
   endif
 
@@ -135,19 +135,19 @@ function [k, p, e] = lqr (a, b, q, r, s)
   endif
 
   ## Check q.
-  if ( ((n1 = issquare (q)) == 0) || (n1 != n))
+  if ((n1 = issquare (q)) == 0 || n1 != n)
     error ("lqr: q must be square and conformal with a");
   endif
 
   ## Check r.
-  if ( ((m1 = issquare(r)) == 0) || (m1 != m))
+  if ((m1 = issquare(r)) == 0 || m1 != m)
     error ("lqr: r must be square and conformal with column dimension of b");
   endif
 
   ## Check if n is there.
   if (nargin == 5)
     [n1, m1] = size (s);
-    if ( (n1 != n) || (m1 != m))
+    if (n1 != n || m1 != m)
       error ("lqr: z must be identically dimensioned with b");
     endif
 
@@ -162,7 +162,7 @@ function [k, p, e] = lqr (a, b, q, r, s)
 
   ## Check that q, (r) are symmetric, positive (semi)definite
 
-  if (issymmetric (q) && issymmetric (r) ...
+  if (issymmetric (q) && issymmetric (r)
       && all (eig (q) >= 0) && all (eig (r) > 0))
     p = are (ao, (b/r)*b', qo);
     k = r\(b'*p + s');
@@ -171,5 +171,4 @@ function [k, p, e] = lqr (a, b, q, r, s)
     error ("lqr: q (r) must be symmetric positive (semi) definite");
   endif
 
-  ## disp("lqr: exit");
 endfunction

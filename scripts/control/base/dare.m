@@ -78,9 +78,11 @@
 
 function x = dare (a, b, q, r, opt)
 
-  if (nargin == 4 | nargin == 5)
+  if (nargin == 4 || nargin == 5)
     if (nargin == 5)
-      if (opt != "N" || opt != "P" || opt != "S" || opt != "B")
+      if (! (ischar (opt)
+	     && (strcmp (opt, "N") || strcmp (opt, "P")
+		 || strcmp (opt, "S") || strcmp (opt, "B"))))
         warning ("dare: opt has an invalid value -- setting to B");
         opt = "B";
       endif
@@ -88,22 +90,20 @@ function x = dare (a, b, q, r, opt)
       opt = "B";
     endif
 
-    
     if ((p = issquare (q)) == 0)
       q = q'*q;
     endif
 
     ##Checking positive definiteness
-    if (isdefinite(r)<=0)
-      error("dare: r not positive definite");
+    if (isdefinite (r) <= 0)
+      error ("dare: r not positive definite");
     end
-    if (isdefinite(q)<0)
-      error("dare: q not positive semidefinite");
+    if (isdefinite (q) < 0)
+      error ("dare: q not positive semidefinite");
     end
-
 
     ## Check r dimensions.
-    [n,m] = size(b);
+    [n, m] = size (b);
     if ((m1 = issquare (r)) == 0)
       error ("dare: r is not square");
     elseif (m1 != m)
@@ -112,8 +112,11 @@ function x = dare (a, b, q, r, opt)
 
     s1 = [a, zeros(n) ; -q, eye(n)];
     s2 = [eye(n), (b/r)*b' ; zeros(n), a'];
-    [c,d,s1,s2] = balance(s1,s2,opt);
-    [aa,bb,u,lam] = qz(s1,s2,"S");
+
+    [c, d, s1, s2] = balance (s1, s2, opt);
+
+    [aa, bb, u, lam] = qz (s1, s2, "S");
+
     u = d*u;
     n1 = n+1;
     n2 = 2*n;

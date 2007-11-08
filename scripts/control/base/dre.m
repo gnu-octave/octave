@@ -97,72 +97,79 @@
 
 function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 
-  if(nargin < 6 | nargin > 8 | nargout != 2)
+  if (nargin < 6 || nargin > 8 || nargout != 2)
     print_usage ();
-  elseif(!isstruct(sys))
-    error("sys must be a system data structure")
-  elseif(is_digital(sys))
-    error("sys must be a continuous time system")
-  elseif(!ismatrix(Q) | !ismatrix(R) | !ismatrix(Qf))
-    error("Q, R, and Qf must be matrices.");
-  elseif(!isscalar(t0) | !isscalar(tf))
-    error("t0 and tf must be scalars")
-  elseif(t0 >= tf)              error("t0=%e >= tf=%e",t0,tf);
-  elseif(nargin == 6)           Ptol = 0.1;
-  elseif(!isscalar(Ptol))      error("Ptol must be a scalar");
-  elseif(Ptol <= 0)             error("Ptol must be positive");
+  elseif (! isstruct (sys))
+    error ("sys must be a system data structure")
+  elseif (is_digital (sys))
+    error ("sys must be a continuous time system")
+  elseif (! ismatrix (Q) || ! ismatrix (R) || ! ismatrix (Qf))
+    error ("Q, R, and Qf must be matrices");
+  elseif (! isscalar (t0) || ! isscalar (tf))
+    error ("t0 and tf must be scalars")
+  elseif (t0 >= tf)
+    error ("t0=%e >= tf=%e", t0, tf);
+  elseif (nargin < 7)
+    Ptol = 0.1;
+  elseif (! isscalar (Ptol))
+    error ("Ptol must be a scalar");
+  elseif (Ptol <= 0)
+    error ("Ptol must be positive");
   endif
 
-  if(nargin < 8) maxits = 10;
-  elseif(!isscalar(maxits))    error("maxits must be a scalar");
-  elseif(maxits <= 0)           error("maxits must be positive");
+  if (nargin < 8)
+    maxits = 10;
+  elseif (! isscalar (maxits))
+    error ("maxits must be a scalar");
+  elseif (maxits <= 0)
+    error ("maxits must be positive");
   endif
-  maxits = ceil(maxits);
+  maxits = ceil (maxits);
 
-  [aa,bb] = sys2ss(sys);
-  nn = sysdimensions(sys,"cst");
-  mm = sysdimensions(sys,"in");
-  pp = sysdimensions(sys,"out");
+  [aa, bb] = sys2ss (sys);
+  nn = sysdimensions (sys, "cst");
+  mm = sysdimensions (sys, "in");
+  pp = sysdimensions (sys, "out");
 
-  if(size(Q) != [nn, nn])
-    error("Q(%dx%d); sys has %d states",rows(Q),columns(Q),nn);
-  elseif(size(Qf) != [nn, nn])
-    error("Qf(%dx%d); sys has %d states",rows(Qf),columns(Qf),nn);
-  elseif(size(R) != [mm, mm])
-    error("R(%dx%d); sys has %d inputs",rows(R),columns(R),mm);
+  if (size (Q) != [nn, nn])
+    error ("Q(%dx%d); sys has %d states", rows (Q), columns (Q), nn);
+  elseif (size (Qf) != [nn, nn])
+    error ("Qf(%dx%d); sys has %d states", rows (Qf), columns (Qf), nn);
+  elseif (size (R) != [mm, mm])
+    error ("R(%dx%d); sys has %d inputs", rows (R), columns (R), mm);
   endif
 
   ## construct Hamiltonian matrix
   H = [aa , -(bb/R)*bb' ; -Q, -aa'];
 
   ## select time step to avoid numerical overflow
-  fast_eig = max(abs(eig(H)));
-  tc = log(10)/fast_eig;
-  nst = ceil((tf-t0)/tc);
-  tvals = -linspace(-tf,-t0,nst);
-  Plist = list(Qf);
-  In = eye(nn);
+  fast_eig = max (abs (eig (H)));
+  tc = log (10) / fast_eig;
+  nst = ceil ((tf-t0)/tc);
+  tvals = -linspace (-tf, -t0, nst);
+  Plist = list (Qf);
+  In = eye (nn);
   n1 = nn+1;
   n2 = nn+nn;
   done = 0;
-  while(!done)
+  while (! done)
     done = 1;      # assume this pass will do the job
     ## sort time values in reverse order
-    tvals = -sort(-tvals);
-    tvlen = length(tvals);
+    tvals = -sort (-tvals);
+    tvlen = length (tvals);
     maxerr = 0;
     ## compute new values of P(t); recompute old values just in case
-    for ii=2:tvlen
-      uv_i_minus_1 = [ In ; Plist{ii-1} ];
+    for ii = 2:tvlen
+      uv_i_minus_1 = [In; Plist{ii-1}];
       delta_t = tvals(ii-1) - tvals(ii);
-      uv = expm(-H*delta_t)*uv_i_minus_1;
+      uv = expm (-H*delta_t)*uv_i_minus_1;
       Qi = uv(n1:n2,1:nn)/uv(1:nn,1:nn);
       Plist(ii) = (Qi+Qi')/2;
       ## check error
-      Perr = norm(Plist{ii} - Plist{ii-1})/norm(Plist{ii});
-      maxerr = max(maxerr,Perr);
-      if(Perr > Ptol)
-        new_t = mean(tvals([ii,ii-1]));
+      Perr = norm (Plist{ii} - Plist{ii-1})/norm(Plist{ii});
+      maxerr = max (maxerr,Perr);
+      if (Perr > Ptol)
+        new_t = mean (tvals([ii,ii-1]));
         tvals = [tvals, new_t];
         done = 0;
       endif
@@ -170,11 +177,11 @@ function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 
     ## check number of iterations
     maxits = maxits - 1;
-    done = done+(maxits==0);
+    done = done + (maxits == 0);
   endwhile
-  if(maxerr > Ptol)
-    warning("dre: \n\texiting with%4d points, max rel chg. =%e, Ptol=%e\n", ...
-          tvlen,maxerr,Ptol);
+  if (maxerr > Ptol)
+    warning ("dre: exiting with %d points, max rel chg. = %e, Ptol = %e",
+             tvlen, maxerr, Ptol);
     tvals = tvals(1:length(Plist));
   endif
 

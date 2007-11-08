@@ -62,7 +62,7 @@
 function m = dgram (a, b)
 
   if (nargin != 2)
-    print_usage();
+    print_usage ();
   endif
 
   ## let dlyap do the error checking...

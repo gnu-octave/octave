@@ -57,11 +57,7 @@
 
 function [y, t] = step (sys, inp, tstop, n)
 
-  if ((nargin < 1) || (nargin > 4))
-    print_usage ();
-  endif
-
-  if (nargout > 2)
+  if (nargin < 1 || nargin > 4 || nargout > 2)
     print_usage ();
   endif
 

@@ -61,36 +61,36 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
   endif
 
   ## check each argument to see if it's in the correct form
-  if (!isstruct(sys))
-    error("sys must be a system data structure");
+  if (! isstruct (sys))
+    error ("sys must be a system data structure");
   endif
 
   ## let __freqresp__ determine w if it's not already given
-  USEW = freqchkw(w);
+  USEW = freqchkw (w);
 
   ## get initial dimensions (revised below if sysprune is called)
-  [nn,nz,mm,pp ] = sysdimensions(sys);
+  [nn, nz, mm, pp] = sysdimensions (sys);
 
   ## check for an output vector and to see whether it`s correct
-  if (!isempty(outputs))
-    if (isempty(inputs))
+  if (! isempty (outputs))
+    if (isempty (inputs))
       inputs = 1:mm;                    # use all inputs
-      warning([rname,": outputs specified but not inputs"]);
-    elseif(is_signal_list(inputs) | ischar(inputs))
-      inputs = sysidx(sys,"in",inputs);
+      warning ("%s: outputs specified but not inputs", rname);
+    elseif (is_signal_list (inputs) || ischar (inputs))
+      inputs = sysidx (sys, "in", inputs);
     endif
-    if(is_signal_list(outputs) | ischar(outputs))
-      outputs = sysidx(sys,"out",outputs);
+    if (is_signal_list (outputs) || ischar (outputs))
+      outputs = sysidx (sys, "out", outputs);
     end
-    sys = sysprune(sys,outputs,inputs);
-    [nn,nz,mm,pp ] = sysdimensions(sys);
+    sys = sysprune (sys, outputs, inputs);
+    [nn, nz, mm, pp] = sysdimensions (sys);
   endif
 
   ## for speed in computation, convert local copy of
   ## SISO state space systems to zero-pole  form
-  if( is_siso(sys) & strcmp( sysgettype(sys), "ss") )
-    [zer,pol,k,tsam,inname,outname] = sys2zp(sys);
-    sys = zp(zer,pol,k,tsam,inname,outname);
+  if (is_siso (sys) && strcmp (sysgettype (sys), "ss"))
+    [zer, pol, k, tsam, inname, outname] = sys2zp (sys);
+    sys = zp (zer, pol, k, tsam, inname, outname);
   endif
 
   ## get system frequency response
@@ -98,46 +98,49 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
 
   phase = arg(f)*180.0/pi;
 
-  if(!USEW)
+  if (! USEW)
     ## smooth plots
     pcnt = 5;           # max number of refinement steps
     dphase = 5;         # desired max change in phase
     dmag = 0.2;         # desired max change in magnitude
-    while(pcnt)
-      pd = abs(diff(phase));                    # phase variation
-      pdbig = find(pd > dphase);
+    while (pcnt)
+      pd = abs (diff (phase));                    # phase variation
+      pdbig = find (pd > dphase);
 
-      lp = length(f);  lp1 = lp-1;              # relative variation
-      fd = abs(diff(f));
-      fm = max(abs([f(1:lp1); f(2:lp)]));
-      fdbig = find(fd > fm/10);
+      ## relative variation
+      lp = length (f);
+      lp1 = lp-1;
 
-      bigpts = union(fdbig, pdbig);
+      fd = abs (diff (f));
+      fm = max (abs ([f(1:lp1); f(2:lp)]));
+      fdbig = find (fd > fm/10);
 
-      if(isempty(bigpts) )
+      bigpts = union (fdbig, pdbig);
+
+      if (isempty (bigpts))
         pcnt = 0;
       else
         pcnt = pcnt - 1;
         wnew = [];
-        crossover_points = find ( phase(1:lp1).*phase(2:lp) < 0);
-        pd(crossover_points) = abs(359.99+dphase - pd(crossover_points));
-        np_pts = max(3,ceil(pd/dphase)+2);              # phase points
-        nm_pts = max(3,ceil(log(fd./fm)/log(dmag))+2);  # magnitude points
-        npts = min(5,max(np_pts, nm_pts));
+        crossover_points = find (phase(1:lp1).*phase(2:lp) < 0);
+        pd(crossover_points) = abs (359.99+dphase - pd(crossover_points));
+        np_pts = max (3, ceil(pd/dphase)+2);              # phase points
+        nm_pts = max (3, ceil(log(fd./fm)/log(dmag))+2);  # magnitude points
+        npts = min (5, max(np_pts, nm_pts));
 
-        w1 = log10(w(1:lp1));
-        w2 = log10(w(2:lp));
-        for ii=bigpts
-          if(npts(ii))
-            wtmp = logspace(w1(ii),w2(ii),npts(ii));
+        w1 = log10 (w(1:lp1));
+        w2 = log10 (w(2:lp));
+        for ii = bigpts
+          if (npts(ii))
+            wtmp = logspace (w1(ii), w2(ii), npts(ii));
             wseg(ii,1:(npts(ii)-2)) = wtmp(2:(npts(ii)-1));
           endif
         endfor
         wnew = vec(wseg)'; # make a row vector
-        wnew = wnew(find(wnew != 0));
-        wnew = sort(wnew);
-        wnew = create_set(wnew);
-        if(isempty(wnew))   # all small crossovers
+        wnew = wnew(find (wnew != 0));
+        wnew = sort (wnew);
+        wnew = create_set (wnew);
+        if (isempty (wnew))   # all small crossovers
           pcnt = 0;
         else
 	  ## get new freq resp points, combine with old, and sort.
@@ -153,12 +156,12 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
   endif
 
   ## ensure unique frequency values
-  [w,idx] = sort(w);
+  [w, idx] = sort (w);
   f = f(idx);
 
-  w_diff = diff(w);
-  w_dup = find(w_diff == 0);
-  w_idx = complement(w_dup,1:length(w));
+  w_diff = diff (w);
+  w_dup = find (w_diff == 0);
+  w_idx = complement (w_dup, 1:length(w));
   w = w(w_idx);
   f = f(w_idx);
 

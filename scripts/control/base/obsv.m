@@ -54,19 +54,19 @@ function Qb = obsv (sys, c)
   if (nargin == 2)
     a = sys;
   elseif (nargin == 1 && isstruct(sys))
-    sysupdate(sys,"ss");
-    [a,b,c] = sys2ss(sys);
+    sysupdate (sys, "ss");
+    [a, b, c] = sys2ss (sys);
   else
     print_usage ();
   endif
 
-  if (!is_abcd(a,c'))
+  if (! is_abcd (a, c'))
     Qb = [];
   else
     ## no need to check dimensions, we trust is_abcd().
-    [na, ma] = size(a);
-    [nc, mc] = size(c);
-    Qb = zeros(na*nc, ma);
+    [na, ma] = size (a);
+    [nc, mc] = size (c);
+    Qb = zeros (na*nc, ma);
     for i = 1:na
       Qb((i-1)*nc+1:i*nc, :) = c;
       c = c * a;

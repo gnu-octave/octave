@@ -168,7 +168,7 @@ function [realp, imagp, w] = nyquist (sys, w, outputs, inputs, atol)
         th = atan2 (real (df), imag (df)) * 180 / pi;
 
         ## get angle at fmax
-        if (fi == length(f))
+        if (fi == length (f))
 	  fi = fi-1;
 	endif
         thm = th(fi);

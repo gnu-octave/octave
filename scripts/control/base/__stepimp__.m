@@ -269,5 +269,5 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
     y = [];
     t = [];
   endif
-  ## printf("##STEPIMP-DEBUG: gratulations, successfull completion.\n");
+
 endfunction  

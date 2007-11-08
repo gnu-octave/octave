@@ -70,89 +70,98 @@
 
 function [K, Q1, P1, Ee, Er] = lqg (sys, Sigw, Sigv, Q, R, input_list)
 
-  if ( (nargin < 5) | (nargin > 6))
+  if (nargin < 5 || nargin > 6)
     print_usage ();
-
-  elseif(!isstruct(sys) )
-    error("sys must be in system data structure");
+  elseif (! isstruct (sys))
+    error ("sys must be in system data structure");
   endif
 
-  DIG = is_digital(sys);
-  [A,B,C,D,tsam,n,nz,stname,inname,outname] = sys2ss(sys);
-  [n,nz,nin,nout] = sysdimensions(sys);
-  if(nargin == 5)
+  DIG = is_digital (sys);
+  [A, B, C, D, tsam, n, nz, stname, inname, outname] = sys2ss (sys);
+  [n, nz, nin, nout] = sysdimensions (sys);
+  if (nargin == 5)
     ## construct default input_list
     input_list = (columns(Sigw)+1):nin;
   endif
 
-  if( !(n+nz) )
-      error(["lqg: 0 states in system"]);
+  if (! (n+nz))
+    error("lqg: 0 states in system");
 
-  elseif(nin != columns(Sigw)+ columns(R))
-    error(["lqg: sys has ",num2str(nin)," inputs, dim(Sigw)=", ...
-          num2str(columns(Sigw)),", dim(u)=",num2str(columns(R))])
+  elseif (nin != columns (Sigw) + columns (R))
+    error ("lqg: sys has %d inputs, dim(Sigw)=%d, dim(u)=%d",
+	   nin, columns (Sigw), columns (R));
 
-  elseif(nout != columns(Sigv))
-    error(["lqg: sys has ",num2str(nout)," outputs, dim(Sigv)=", ...
-          num2str(columns(Sigv)),")"])
+  elseif (nout != columns (Sigv))
+    error ("lqg: sys has %d outputs, dim(Sigv)=%d", nout, columns (Sigv));
   endif
 
   ## check for names of signals
-  if(is_signal_list(input_list) | ischar(input_list))
-    input_list = sysidx(sys,"in",input_list);
+  if (is_signal_list (input_list) || ischar (input_list))
+    input_list = sysidx (sys, "in", input_list);
   endif
 
-  if(length(input_list) != columns(R))
-    error(["lqg: length(input_list)=",num2str(length(input_list)), ...
-          ", columns(R)=", num2str(columns(R))]);
+  if (length (input_list) != columns (R))
+    error ("lqg: length(input_list)=%d, columns(R)=%d",
+	   length (input_list), columns (R));
   endif
 
-  varname = {"Sigw","Sigv","Q","R"};
-  for kk=1:length(varname);
-    eval(sprintf("chk = issquare(%s);",varname{kk}));
-    if(! chk ) error("lqg: %s is not square",varname{kk}); endif
-  endfor
+  if (! issquare (Sigw))
+    error ("lqg: Sigw is not square");
+  endif
+
+  if (! issquare (Sigv))
+    error ("lqg: Sigv is not square");
+  endif
+
+  if (! issquare (Q))
+    error ("lqg: Q is not square");
+  endif
+
+  if (! issquare (R))
+    error ("lqg: Q is not square");
+  endif
 
   ## permute (if need be)
-  if(nargin == 6)
-    all_inputs = sysreorder(nin,input_list);
+  if (nargin == 6)
+    all_inputs = sysreorder (nin, input_list);
     B = B(:,all_inputs);
-    inname = inname(all_inputs);
+    inname = inname (all_inputs);
   endif
 
   ## put parameters into correct variables
-  m1 = columns(Sigw);
+  m1 = columns (Sigw);
   m2 = m1+1;
   G = B(:,1:m1);
   B = B(:,m2:nin);
 
   ## now we can just do the design; call dlqr and dlqe, since all matrices
   ## are not given in Cholesky factor form (as in h2syn case)
-  if(DIG)
-    [Ks, P1, Er] = dlqr(A,B,Q,R);
-    [Ke, Q1, jnk, Ee] = dlqe(A,G,C,Sigw,Sigv);
+  if (DIG)
+    [Ks, P1, Er] = dlqr (A, B, Q, R);
+    [Ke, Q1, jnk, Ee] = dlqe (A, G, C, Sigw, Sigv);
   else
-    [Ks, P1, Er] = lqr(A,B,Q,R);
-    [Ke, Q1, Ee] = lqe(A,G,C,Sigw,Sigv);
+    [Ks, P1, Er] = lqr (A, B, Q, R);
+    [Ke, Q1, Ee] = lqe (A, G, C, Sigw, Sigv);
   endif
   Ac = A - Ke*C - B*Ks;
   Bc = Ke;
   Cc = -Ks;
-  Dc = zeros(rows(Cc),columns(Bc));
+  Dc = zeros (rows (Cc), columns (Bc));
 
   ## fix state names
-  stname1 = strappend(stname,"_e");
+  stname1 = strappend (stname, "_e");
 
   ## fix controller output names
-  outname1 = strappend(inname(m2:nin),"_K");
+  outname1 = strappend (inname(m2:nin), "_K");
 
   ## fix controller input names
-  inname1 = strappend(outname,"_K");
+  inname1 = strappend (outname, "_K");
 
-  if(DIG)
-    K = ss(Ac,Bc,Cc,Dc,tsam,n,nz,stname1,inname1,outname1,1:rows(Cc));
+  if (DIG)
+    K = ss (Ac, Bc, Cc, Dc, tsam, n, nz, stname1, inname1, outname1,
+	    1:rows(Cc));
   else
-    K = ss(Ac,Bc,Cc,Dc,tsam,n,nz,stname,inname1,outname1);
+    K = ss (Ac, Bc, Cc, Dc, tsam, n, nz, stname, inname1, outname1);
   endif
 
 endfunction

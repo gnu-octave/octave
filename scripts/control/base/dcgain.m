@@ -30,26 +30,30 @@
 
 function gm = dcgain (sys, tol)
 
-  if((nargin < 1) || (nargin > 2) || (nargout > 1))
+  if (nargin < 1 || nargin > 2 || nargout > 1)
     print_usage ();
   endif
-  if(!isstruct(sys))
-    error("dcgain: first argument is not a system data structure.")
+  if (! isstruct (sys))
+    error ("dcgain: first argument is not a system data structure.")
   endif
-  sys = sysupdate(sys, "ss");
-  [aa,bb,cc,dd] = sys2ss(sys);
-  if (is_digital(sys))  aa = aa - eye(size(aa));  endif
-  if (nargin == 1)  tol = 1.0e-10;  endif
-  r = rank(aa, tol);
-  if (r < rows(aa))
+  sys = sysupdate (sys, "ss");
+  [aa, bb, cc, dd] = sys2ss (sys);
+  if (is_digital (sys))
+    aa = aa - eye (size (aa));
+  endif
+  if (nargin == 1)
+    tol = 1.0e-10;
+  endif
+  r = rank (aa, tol);
+  if (r < rows (aa))
     gm = [];
   else
     gm = -cc / aa * bb + dd;
   endif
-  if(!is_stable(sys))
-    [nn,nz,mm,pp] = sysdimensions(sys);
-    warning("dcgain: unstable system; dimensions [nc=%d,nz=%d,mm=%d,pp=%d]", ...
-      nn,nz,mm,pp);
+  if (! is_stable (sys))
+    [nn, nz, mm, pp] = sysdimensions (sys);
+    warning ("dcgain: unstable system; dimensions: nc=%d, nz=%d, mm=%d, pp=%d",
+	     nn, nz, mm, pp);
   endif
 
 endfunction

@@ -51,7 +51,7 @@ function K = place (sys, P)
 
   ## check arguments
 
-  if(! isstruct (sys))
+  if (! isstruct (sys))
     error ("sys must be in system data structure format (see ss)");
   endif
   sys = sysupdate (sys, "ss");    # make sure it has state space form up to date
@@ -66,7 +66,7 @@ function K = place (sys, P)
   is_digital (sys);
   [n, nz, m, p] = sysdimensions (sys);
   nx = n+nz;    # already checked that it's not a mixed system.
-  if(m != 1)
+  if (m != 1)
     error ("sys has %d inputs; need only 1", m);
   endif
 

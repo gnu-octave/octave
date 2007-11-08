@@ -59,53 +59,56 @@
 
 function out = ltifr (a, b, w)
 
-  if ((nargin < 2) || (nargin > 3))
+  if (nargin < 2 || nargin > 3)
     error("incorrect number of input arguments");
   endif
 
   if (nargin == 2)
     sys = a;
     w = b;
-    if(!isstruct(sys))
-      error("two arguments: 1st must be a system data structure");
+    if(! isstruct (sys))
+      error ("two arguments: 1st must be a system data structure");
     endif
 
-    if (!isvector(w))
-      error("w must be a vector");
+    if (! isvector (w))
+      error ("w must be a vector");
     endif
 
-    [nn,nz,mm,pp] = sysdimensions(sys);
-    if(mm != 1)       error("sys has %d > 1 inputs",mm); endif
+    [nn, nz, mm, pp] = sysdimensions (sys);
+    if (mm != 1)
+      error("sys has %d > 1 inputs", mm);
+    endif
 
-    [a,b] = sys2ss(sys);
+    [a, b] = sys2ss (sys);
 
   else
 
-    if (columns(a) != rows(b)),
-      error("ltifr:  A(%dx%d), B(%dx%d) not compatibly dimensioned", ...
-        rows(a), columns(a), rows(b), columns(b));
+    if (columns (a) != rows (b)),
+      error ("ltifr:  A(%dx%d), B(%dx%d) not compatibly dimensioned",
+             rows (a), columns(a), rows(b), columns(b));
     endif
 
-    if(columns(b) != 1)
-      error("ltifr: b(%dx%d) must be a single column vector", ...
-        rows(b),columns(b));
+    if (columns (b) != 1)
+      error ("ltifr: b(%dx%d) must be a single column vector",
+             rows(b), columns(b));
     endif
 
-    if (!issquare(a))
-      error("ltifr:  A(%dx$d) must be square.",rows(a),columns(a))
+    if (! issquare (a))
+      error ("ltifr:  A(%dx$d) must be square", rows(a), columns(a))
     endif
 
   endif
 
-  if (!isvector(w))
-    error("w must be a vector");
+  if (! isvector (w))
+    error ("w must be a vector");
   endif
 
-  ey = eye(size(a));
-  lw = length(w);
-  out = ones(columns(a),lw);
+  ey = eye (size (a));
+  lw = length (w);
+  out = ones (columns (a), lw);
 
-  for ii=1:lw,
+  for ii = 1:lw,
     out(:,ii) = (w(ii)*ey-a)\b;
   endfor
+
 endfunction

@@ -40,38 +40,40 @@
 
 function [y, x] = lsim (sys, u, t, x0)
 
-  if((nargin < 3)||(nargin > 4))
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 
-  if(!isstruct(sys))
-    error("sys must be in system data structure");
+  if (! isstruct (sys))
+    error ("sys must be in system data structure");
   endif
 
-  sys = sysupdate(sys,"ss");
+  sys = sysupdate (sys,"ss");
 
-  [ncstates, ndstates, nin, nout] = sysdimensions(sys);
-  [a,b,c,d] = sys2ss(sys);
+  [ncstates, ndstates, nin, nout] = sysdimensions (sys);
+  [a, b, c, d] = sys2ss (sys);
 
-  if (nargin == 3)     x0 = zeros(columns(a),1);        endif
+  if (nargin == 3)
+    x0 = zeros (columns (a), 1);
+  endif
 
-  if(rows(u) ~= length(t))
-    error("lsim: There should be an input value (row) for each time instant");
+  if (rows (u) != length (t))
+    error ("lsim: There should be an input value (row) for each time instant");
   endif
-  if(columns(u) ~= columns(d))
-    error("lsim: U and d should have the same number of inputs");
+  if (columns (u) != columns (d))
+    error ("lsim: U and d should have the same number of inputs");
   endif
-  if(columns(x0) > 1)
-    error("lsim: Initial condition vector should have only one column");
+  if (columns (x0) > 1)
+    error ("lsim: Initial condition vector should have only one column");
   endif
-  if(rows(x0) > rows(a))
-    error("lsim: Initial condition vector is too large");
+  if (rows (x0) > rows p(a))
+    error ("lsim: Initial condition vector is too large");
   endif
 
   Ts = 0;
   t(2)-t(1);
   u=u';
-  n = max(size(t));
+  n = max (size (t));
 
   for ii = 1:(n-1)
 
@@ -81,8 +83,8 @@ function [y, x] = lsim (sys, u, t, x0)
     if (abs (t(ii+1) - t(ii) - Ts) > 10 * eps)
       Ts = t(ii+1) - t(ii);
       ## [F,G] = c2d(a,b,Ts);
-      dsys = c2d(sys, Ts);
-      [F,G] = sys2ss(dsys);
+      dsys = c2d (sys, Ts);
+      [F, G] = sys2ss (dsys);
     endif
 
     x(:,ii) = x0;
@@ -93,9 +95,10 @@ function [y, x] = lsim (sys, u, t, x0)
   x(:,n) = x0;
 
   y = c*x + d*u;
-  if(nargout == 0)
-   plot(t,y);
-   y=[];
-   x=[];
+  if (nargout == 0)
+   plot (t, y);
+   y = [];
+   x = [];
   endif
+
 endfunction

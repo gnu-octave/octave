@@ -128,16 +128,17 @@ function [k, p, e] = dlqr (a, b, q, r, s)
     qo = q;
   endif
 
-  ## Checking stabilizability and detectability (dimensions are checked inside these calls)
+  ## Checking stabilizability and detectability (dimensions are checked
+  ## inside these calls).
   tol = 200*eps;
-  if (is_stabilizable (ao, b,tol,1) == 0)
+  if (is_stabilizable (ao, b, tol, 1) == 0)
     error ("dlqr: (a,b) not stabilizable");
   endif
-  dflag = is_detectable (ao, qo, tol,1);
-  if ( dflag == 0)
+  dflag = is_detectable (ao, qo, tol, 1);
+  if (dflag == 0)
     warning ("dlqr: (a,q) not detectable");
-  elseif ( dflag == -1)
-    error("dlqr: (a,q) has non minimal modes near unit circle");
+  elseif (dflag == -1)
+    error ("dlqr: (a,q) has non minimal modes near unit circle");
   end
 
   ## Compute the Riccati solution
@@ -145,6 +146,4 @@ function [k, p, e] = dlqr (a, b, q, r, s)
   k = (r+b'*p*b)\(b'*p*a + s');
   e = eig (a - b*k);
 
-
 endfunction
-

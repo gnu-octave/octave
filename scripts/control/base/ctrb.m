@@ -47,23 +47,23 @@ function Qs = ctrb (sys, b)
 
   if (nargin == 2)
     a = sys;
-  elseif (nargin == 1 && isstruct(sys))
-    sysupdate(sys,"ss");
-    [a,b] = sys2ss(sys);
+  elseif (nargin == 1 && isstruct (sys))
+    sysupdate (sys, "ss");
+    [a, b] = sys2ss (sys);
   else
     print_usage ();
   endif
 
-  if (!is_abcd(a,b))
+  if (! is_abcd (a, b))
     Qs = [];
   else
     ## no need to check dimensions, we trust is_abcd().
-    [na, ma] = size(a);
+    [na, ma] = size (a);
     ## using imb avoids name conflict with the "mb" function
-    [inb, imb] = size(b);
-    Qs = zeros(na, ma*imb);
+    [inb, imb] = size (b);
+    Qs = zeros (na, ma*imb);
     for i = 1:na
-      Qs(:, (i-1)*imb+1:i*imb) = b;
+      Qs(:,(i-1)*imb+1:i*imb) = b;
       b = a * b;
     endfor
   endif

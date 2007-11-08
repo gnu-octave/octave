@@ -70,10 +70,11 @@ function x = are (a, b, c, opt)
 
   if (nargin == 3 || nargin == 4)
     if (nargin == 4)
-      if (! (strcmp (opt, "N") || strcmp (opt, "P") ...
-             || strcmp (opt, "S") || strcmp (opt, "B") ...
-             || strcmp (opt, "n") || strcmp (opt, "p") ...
-             || strcmp (opt, "s") || strcmp (opt, "b")))
+      if (! (ischar (opt)
+	     && (strcmp (opt, "N") || strcmp (opt, "P")
+		 || strcmp (opt, "S") || strcmp (opt, "B")
+		 || strcmp (opt, "n") || strcmp (opt, "p")
+		 || strcmp (opt, "s") || strcmp (opt, "b"))))
         warning ("are: opt has an invalid value; setting to B");
         opt = "B";
       endif

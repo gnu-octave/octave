@@ -70,23 +70,23 @@
 function [zer, gain] = tzero (A, B, C, D)
 
   ## get A,B,C,D and Asys variables, regardless of initial form
-  if(nargin == 4)
-    Asys = ss(A,B,C,D);
-  elseif( (nargin == 1) && (! isstruct(A)))
-    print_usage ();
-  elseif(nargin != 1)
+  if (nargin == 4)
+    Asys = ss (A, B, C, D);
+  elseif (nargin == 1 && ! isstruct (A))
+    error ("tzero: expecting argument to be system structure");
+  elseif (nargin != 1)
     print_usage ();
   else
     Asys = A;
-    [A,B,C,D] = sys2ss(Asys);
+    [A, B, C, D] = sys2ss (Asys);
   endif
 
   Ao = Asys;                    # save for leading coefficient
-  siso = is_siso(Asys);
-  digital = is_digital(Asys);   # check if it's mixed or not
+  siso = is_siso (Asys);
+  digital = is_digital (Asys);   # check if it's mixed or not
 
   ## see if it's a gain block
-  if(isempty(A))
+  if (isempty (A))
     zer = [];
     gain = D;
     return;
@@ -95,44 +95,50 @@ function [zer, gain] = tzero (A, B, C, D)
   ## First, balance the system via the zero computation generalized eigenvalue
   ## problem balancing method (Hodel and Tiller, Linear Alg. Appl., 1992)
 
-  Asys = __zgpbal__ (Asys); [A,B,C,D] = sys2ss(Asys);   # balance coefficients
+  ## balance coefficients
+  Asys = __zgpbal__ (Asys);
+  [A, B, C, D] = sys2ss (Asys);
   meps = 2*eps*norm ([A, B; C, D], "fro");
-  Asys = zgreduce(Asys,meps);  [A, B, C, D] = sys2ss(Asys); # ENVD algorithm
-  if(!isempty(A))
+  ## ENVD algorithm
+  Asys = zgreduce (Asys, meps);
+  [A, B, C, D] = sys2ss (Asys);
+  if (! isempty (A))
     ## repeat with dual system
-    Asys = ss(A', C', B', D');   Asys = zgreduce(Asys,meps);
+    Asys = ss (A', C', B', D');
+    Asys = zgreduce (Asys, meps);
 
     ## transform back
-    [A,B,C,D] = sys2ss(Asys);    Asys = ss(A', C', B', D');
+    [A, B, C, D] = sys2ss (Asys);
+    Asys = ss (A', C', B', D');
   endif
 
   zer = [];                     # assume none
-  [A,B,C,D] = sys2ss(Asys);
-  if( !isempty(C) )
-    [W,r,Pi] = qr([C, D]');
-    [nonz,ztmp] = zgrownorm(r,meps);
-    if(nonz)
+  [A, B, C, D] = sys2ss (Asys);
+  if (! isempty (C))
+    [W, r, Pi] = qr ([C, D]');
+    [nonz, ztmp] = zgrownorm (r, meps);
+    if (nonz)
       ## We can now solve the generalized eigenvalue problem.
-      [pp,mm] = size(D);
-      nn = rows(A);
+      [pp, mm] = size (D);
+      nn = rows (A);
       Afm = [A , B ; C, D] * W';
       Bfm = [eye(nn), zeros(nn,mm); zeros(pp,nn+mm)]*W';
 
       jdx = (mm+1):(mm+nn);
       Af = Afm(1:nn,jdx);
       Bf = Bfm(1:nn,jdx);
-      zer = qz(Af,Bf);
+      zer = qz (Af, Bf);
     endif
   endif
 
-  mz = length(zer);
-  [A,B,C,D] = sys2ss(Ao);               # recover original system
+  mz = length (zer);
+  [A, B, C, D] = sys2ss (Ao);               # recover original system
   ## compute leading coefficient
-  if ( (nargout == 2) && siso)
-    n = rows(A);
-    if ( mz == n)
+  if (nargout == 2 && siso)
+    n = rows (A);
+    if (mz == n)
       gain = D;
-    elseif ( mz < n )
+    elseif (mz < n)
       gain = C*(A^(n-1-mz))*B;
     endif
   else

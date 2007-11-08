@@ -100,7 +100,7 @@ function [mag2, phase2, w2] = nichols (sys, w, outputs, inputs)
 
   [f, w, sys] = __bodquist__ (sys, w, outputs, inputs, "nichols");
 
-  [stname,inname,outname] = sysgetsignals (sys);
+  [stname, inname, outname] = sysgetsignals (sys);
   systsam = sysgettsam (sys);
 
   ## Get the magnitude and phase of f.

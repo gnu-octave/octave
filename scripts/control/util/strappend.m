@@ -24,7 +24,7 @@
 
 function retval = strappend (strlist, suffix);
 
-  if (nargin != 2 || nargout > 1)
+  if (nargin != 2)
     print_usage ();
   elseif (! is_signal_list (strlist))
     error ("strlist must be a list of strings (see is_signal_list)");

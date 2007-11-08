@@ -30,7 +30,7 @@
 
 function tfout (num, denom, x)
 
-  if (nargin < 2 ) | (nargin > 3) | (nargout != 0 )
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 

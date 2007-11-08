@@ -68,11 +68,11 @@
 
 function [n, nz, m, p, yd] = sysdimensions (sys, opt)
 
-  if(nargout > 5 | nargin < 1 | nargin > 2)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
-  elseif(!isstruct(sys))
-    print_usage ();
-  elseif(nargin == 1)
+  elseif (! isstruct (sys))
+    error ("sysdimensions: expecting system structure as first argument");
+  elseif (nargin == 1)
     opt = "all";
   endif
 

@@ -78,12 +78,7 @@
 
 function [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys)
 
-  if(nargin != 1)
-    print_usage ();
-  endif
-
-  if (nargout > 11)
-    warning(["sys2ss: ",num2str(nargout)," out arguments exceeds max=11"])
+  if (nargin != 1)
     print_usage ();
   endif
 

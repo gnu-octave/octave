@@ -143,7 +143,7 @@ function retsys = sysout (sys, opt)
     if(dmat)       disp(dd);         endif
   endif
 
-  if(nargout >= 1)
+  if (nargout >= 1)
     retsys = sys;
   endif
 

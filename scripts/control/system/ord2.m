@@ -65,16 +65,14 @@ function outsys = ord2 (nfreq, damp, gain)
 
   ## Updates
 
-  if(nargin != 2 & nargin != 3)
+  if (nargin == 2 || nargin == 3)
+    if (nargin == 2)
+      gain = 1.0;
+    endif
+    w = 2.0 * pi * nfreq;
+    outsys = ss ([-2.0*w*damp, -w; w, 0], [w; 0], [0, gain]);
+  else
     print_usage ();
-  endif
-  if (nargout > 1)
-    print_usage ();
-  endif
-  if (nargin == 2)
-    gain = 1.0;
   endif
 
-  w = 2.0 * pi * nfreq;
-  outsys = ss ([-2.0*w*damp, -w; w, 0], [w; 0], [0, gain]);
 endfunction

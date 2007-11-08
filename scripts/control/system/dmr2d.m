@@ -76,7 +76,7 @@
 function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
 
   ## parse input arguments
-  if(nargin != 4 | nargout > 2)
+  if (nargin != 4)
     print_usage ();
 
   elseif (!isstruct(sys))

@@ -1,5 +1,14 @@
 2007-11-08  John W. Eaton  <jwe@octave.org>
 
+	* control/base/dcgain.m, control/base/dre.m,
+	control/base/impulse.m, control/base/step.m,
+	control/system/dmr2d.m, control/system/ord2.m,
+	control/system/sys2ss.m, control/system/sysdimensions.m,
+	control/system/sysgetsignals.m, control/system/sysout.m,
+	control/system/tfout.m, control/system/ugain.m,
+	control/system/zpout.m, control/util/strappend.m:
+	Don't fail with usage message if nargout is too large.
+
 	* control/hinf/h2syn.m, control/hinf/hinf_ctr.m,
 	control/hinf/hinfnorm.m, control/hinf/hinfsyn.m,
 	control/hinf/hinfsyn_chk.m, control/hinf/is_dgkf.m,

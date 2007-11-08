@@ -30,7 +30,7 @@
 
 function zpout (zer, pol, k, x)
 
-  if (nargin < 3 ) | (nargin > 4) | (nargout != 0 )
+  if (nargin < 3 || nargin > 4)
     print_usage ();
   endif
 

@@ -97,7 +97,7 @@
 
 function [tvals, Plist] = dre (sys, Q, R, Qf, t0, tf, Ptol, maxits)
 
-  if (nargin < 6 || nargin > 8 || nargout != 2)
+  if (nargin < 6 || nargin > 8)
     print_usage ();
   elseif (! isstruct (sys))
     error ("sys must be a system data structure")

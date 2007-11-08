@@ -30,7 +30,7 @@
 
 function gm = dcgain (sys, tol)
 
-  if (nargin < 1 || nargin > 2 || nargout > 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
   if (! isstruct (sys))

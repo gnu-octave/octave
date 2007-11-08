@@ -49,32 +49,32 @@
 
 function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
 
-  warning("dlqg: obsolete. use lqg instead (system data structure format)");
+  warning ("dlqg: obsolete. use lqg instead (system data structure format)");
 
   if (nargin == 5)
     ## system data structure format
 
     ## check that it really is system data structure
-    if(! isstruct(A) )
-      error("dlqg: 5 arguments, first argument is not a system data structure structure")
+    if (! isstruct (A))
+      error ("dlqg: 5 arguments, first argument is not a system data structure structure")
     endif
 
-    sys = sysupdate(sys,"ss");    # make sure in proper form
-    [ncstates,ndstates,nin,nout] = sysdimensions(sys);
-    if(ndstates == -1)
-      error("this message should never appear: bad system dimensions");
+    sys = sysupdate (sys, "ss");    # make sure in proper form
+    [ncstates, ndstates, nin, nout] = sysdimensions (sys);
+    if (ndstates == -1)
+      error ("this message should never appear: bad system dimensions");
     endif
 
-    if(ncstates)
-      error("dlqg: system has continuous-time states (try lqg?)")
-    elseif(ndstates < 1)
-      error("dlqg: system has no discrete time states")
-    elseif(nin <= columns(Sigw))
-      error(["dlqg: ",num2str(nin)," inputs provided, noise dimension is ", ...
-          num2str(columns(Sigw))])
-    elseif(nout != columns(Sigv))
-      error(["dlqg: number of outputs (",num2str(nout),") incompatible with ", ...
-          "dimension of Sigv (",num2str(columns(Sigv)),")"])
+    if (ncstates)
+      error ("dlqg: system has continuous-time states (try lqg?)")
+    elseif (ndstates < 1)
+      error ("dlqg: system has no discrete time states")
+    elseif (nin <= columns (Sigw))
+      error ("dlqg: %d inputs provided, noise dimension is %d",
+	      nin, columns (Sigw));
+    elseif (nout != columns(Sigv))
+      error ("dlqg: number of outputs (%d) incompatible with dimension of Sigv (%d)",
+	     nout, columns (Sigv));
     endif
 
     ## put parameters into correct variables
@@ -82,8 +82,8 @@ function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
     Q = G;
     Sigv = C;
     Sigw = B;
-    [A,B,C,D] = sys2ss(Sys)
-    [n,m] = size(B)
+    [A, B, C, D] = sys2ss (Sys)
+    [n, m] = size (B)
     m1 = columns(Sigw);
     m2 = m1+1;
     G = B(:,1:m1);
@@ -91,35 +91,35 @@ function [K, Q, P, Ee, Er] = dlqg (A, B, C, G, Sigw, Sigv, Q, R)
 
   elseif (nargin == 8)
     ## state-space format
-    m = columns(B);
-    m1 = columns(G);
-    p = rows(C);
-    n = abcddim(A,B,C,zeros(p,m));
-    n1 = abcddim(A,G,C,zeros(p,m1));
-    if( (n == -1) || (n1 == -1))
-      error("dlqg: A,B,C,G incompatibly dimensioned");
-    elseif(p != columns(Sigv))
-      error("dlqg: C, Sigv incompatibly dimensioned");
-    elseif(m1 != columns(Sigw))
-      error("dlqg: G, Sigw incompatibly dimensioned");
+    m = columns (B);
+    m1 = columns (G);
+    p = rows (C);
+    n = abcddim (A, B, C, zeros (p, m));
+    n1 = abcddim (A, G, C, zeros (p, m1));
+    if (n == -1 || n1 == -1)
+      error ("dlqg: A,B,C,G incompatibly dimensioned");
+    elseif (p != columns (Sigv))
+      error ("dlqg: C, Sigv incompatibly dimensioned");
+    elseif (m1 != columns (Sigw))
+      error ("dlqg: G, Sigw incompatibly dimensioned");
     endif
   else
     error ("dlqg: invalid number of arguments")
   endif
 
-  if (! (issquare(Sigw) && issquare(Sigv) ) )
-    error("dlqg: Sigw, Sigv must be square");
+  if (! (issquare (Sigw) && issquare (Sigv)))
+    error ("dlqg: Sigw, Sigv must be square");
   endif
 
   ## now we can just do the design; call dlqr and dlqe, since all matrices
   ## are not given in Cholesky factor form (as in h2syn case)
-  [Ks, P, Er] = dlqr(A,B,Q,R);
-  [Ke, Q, jnk, Ee] = dlqe(A,G,C,Sigw,Sigv);
+  [Ks, P, Er] = dlqr (A, B, Q, R);
+  [Ke, Q, jnk, Ee] = dlqe (A, G, C, Sigw, Sigv);
   Ac = A - Ke*C - B*Ks;
   Bc = Ke;
   Cc = -Ks;
-  Dc = zeros(rows(Cc),columns(Bc));
-  K = ss(Ac,Bc,Cc,Dc,1);
-  disp("HODEL: need to add names to this guy!")
+  Dc = zeros (rows(Cc), columns(Bc));
+  K = ss (Ac, Bc, Cc, Dc, 1);
+  disp ("HODEL: need to add names to this guy!")
 
 endfunction

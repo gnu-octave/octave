@@ -31,7 +31,7 @@
 
 function B = swaprows (A)
 
-  m = rows(A);
+  m = rows (A);
   idx = m:-1:1;
   B = A(idx,:);
 

@@ -38,17 +38,16 @@ function Asys = packsys (a, b, c, d, dflg)
   warning("packsys is obsolete!  Use ss instead.");
 
   if (nargin < 3 || nargin > 5)
-    disp("packsys: Invalid number of arguments")
+    disp ("packsys: Invalid number of arguments");
   endif
 
   ## check dflg
-  if(nargin == 5)
-    if( !isscalar(dflg))
-      [m,n] = size(dflg);
-      error(["packsys: dflg (",num2str(m),",",num2str(n), ...
-        ") must be a scalar."]);
-    elseif( (dflg != 0) && (dflg != 1))
-      error(["packsys: dflg=",num2str(dflg),"must be 0 or 1"]);
+  if (nargin == 5)
+    if (! isscalar (dflg))
+      [m, n] = size(dflg);
+      error (["packsys: dflg (%d,%d) must be a scalar", m, n);
+    elseif (dflg != 0 && dflg != 1)
+      error ("packsys: dflg=%g must be 0 or 1", dflg);
     endif
   else
     ## default condition
@@ -57,16 +56,16 @@ function Asys = packsys (a, b, c, d, dflg)
 
   if (nargin == 3)
     ## No D matrix.  Form a zero one!
-    [brows,bcols] = size(b);
-    [crows,ccols] = size(c);
-    d = zeros(crows,bcols);
+    [brows, bcols] = size (b);
+    [crows, ccols] = size (c);
+    d = zeros (crows, bcols);
   endif
 
-  [n,m,p] = abcddim(a,b,c,d);
+  [n, m, p] = abcddim (a, b, c, d);
   if (n == -1 || m == -1 || p == -1)
-    error("packsys: incompatible dimensions")
+    error ("packsys: incompatible dimensions")
   endif
 
-  Asys = ss(a,b,c,d,dflg);
+  Asys = ss (a, b, c, d, dflg);
 
 endfunction

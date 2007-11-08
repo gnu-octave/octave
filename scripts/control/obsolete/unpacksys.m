@@ -25,8 +25,8 @@
 
 function [a, b, c, d] = unpacksys (syst)
 
-  warning("unpacksys obsolete; calling sys2ss");
-  [a,b,c,d] = sys2ss(syst);
+  warning ("unpacksys obsolete; calling sys2ss");
+  [a, b, c, d] = sys2ss (syst);
 
 endfunction
 

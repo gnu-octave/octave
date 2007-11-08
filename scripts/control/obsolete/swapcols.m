@@ -31,7 +31,7 @@
 
 function B = swapcols (A)
 
-  m = length(A(1,:));
+  m = length (A(1,:));
   idx = m:-1:1;
   B = A(:,idx);
 

@@ -28,6 +28,6 @@
 
 function retsys = syschnames (sys, opt, list, names)
 
-  retsys = syssetsignals(sys,opt,names,list);
+  retsys = syssetsignals (sys, opt, names, list);
 
 endfunction

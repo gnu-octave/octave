@@ -43,56 +43,56 @@ function [a, b, c, d] = series (a1, b1, c1, d1, a2, b2, c2, d2)
 
   ## If two arguments input, take care of mu system case
 
-  warning("series is superseded by sysmult; use sysmult instead.")
+  warning ("series is superseded by sysmult; use sysmult instead.")
 
   muflag = 0;
-  if(nargin == 2)
-    temp=b1;
-    [a1,b1,c1,d1]=sys2ss(a1);
-    [a2,b2,c2,d2]=sys2ss(temp);
+  if (nargin == 2)
+    temp = b1;
+    [a1, b1, c1, d1] = sys2ss (a1);
+    [a2, b2, c2, d2] = sys2ss (temp);
     muflag = 1;
   endif
 
   ## If four arguments input, put two transfer functions in series
 
-  if(nargin == 4)
-    a = conv(a1,c1);    % was conv1
-    b = conv(b1,d1);    % was conv1
+  if (nargin == 4)
+    a = conv (a1, c1);    # was conv1
+    b = conv (b1, d1);    # was conv1
     c = 0;
     d = 0;
 
     ## Find series combination of 2 state space systems
 
-  elseif((nargin == 8)||(muflag == 1))
+  elseif (nargin == 8 || muflag == 1)
 
     ## check matrix dimensions
 
-    [n1,m1,p1] = abcddim(a1,b1,c1,d1);
-    [n2,m2,p2] = abcddim(a2,b2,c2,d2);
+    [n1, m1, p1] = abcddim (a1, b1, c1, d1);
+    [n2, m2, p2] = abcddim (a2, b2, c2, d2);
 
-    if((n1 == -1) || (n2 == -1))
-      error("Incorrect matrix dimensions");
+    if (n1 == -1 || n2 == -1)
+      error ("incorrect matrix dimensions");
     endif
 
     ## check to make sure the number of outputs of system1 equals the number
     ## of inputs of system2
 
-   if(p1 ~= m2)
-     error("System 1 output / System 2 input connection sizes do not match");
+   if(p1 != m2)
+     error ("system 1 output / system 2 input connection sizes do not match");
    endif
 
    ## put the two state space systems in series
 
-    a = [a1, zeros(rows(a1),columns(a2));b2*c1, a2];
-    b = [b1;b2*d1];
+    a = [a1, zeros(rows(a1), columns(a2)); b2*c1, a2];
+    b = [b1; b2*d1];
     c = [d2*c1, c2];
     d = [d2*d1];
 
     ## take care of mu output
 
-    if(muflag == 1)
-      a=ss(a,b,c,d);
-      b=c=d=0;
+    if (muflag == 1)
+      a = ss (a, b, c, d);
+      b = c = d = 0;
     endif
   endif
 

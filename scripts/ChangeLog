@@ -12,12 +12,18 @@
 	* control/hinf/h2syn.m, control/hinf/hinf_ctr.m,
 	control/hinf/hinfnorm.m, control/hinf/hinfsyn.m,
 	control/hinf/hinfsyn_chk.m, control/hinf/is_dgkf.m,
-	control/hinf/wgt1o.m, control/util/__outlist__.m,
-	control/util/__zgpbal__.m, control/util/axis2dlim.m,
-	control/util/prompt.m, control/util/sortcom.m,
-	control/util/zgfmul.m, control/util/zgfslv.m,
-	control/util/zginit.m, control/util/zgreduce.m,
-	control/util/zgrownorm.m, control/util/zgscal.m: Style fixes.
+	control/hinf/wgt1o.m, control/obsolete/dezero.m,
+	control/obsolete/dlqg.m, control/obsolete/minfo.m,
+	control/obsolete/packsys.m, control/obsolete/qzval.m,
+	control/obsolete/rotg.m, control/obsolete/series.m,
+	control/obsolete/swapcols.m, control/obsolete/swaprows.m,
+	control/obsolete/syschnames.m, control/obsolete/unpacksys.m,
+	control/util/__outlist__.m, control/util/__zgpbal__.m,
+	control/util/axis2dlim.m, control/util/prompt.m,
+	control/util/sortcom.m, control/util/zgfmul.m,
+	control/util/zgfslv.m, control/util/zginit.m,
+	control/util/zgreduce.m, control/util/zgrownorm.m,
+	control/util/zgscal.m: Style fixes.
 
 2007-11-08  David Bateman  <dbateman@free.fr>
 

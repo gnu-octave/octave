@@ -41,7 +41,7 @@
 
 function lam = qzval (A, B)
 
-  warning("qzval is obsolete; calling qz instead")
-  lam = qz(A,B);
+  warning ("qzval is obsolete; calling qz instead")
+  lam = qz (A, B);
 
 endfunction

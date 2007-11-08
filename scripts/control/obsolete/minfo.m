@@ -44,17 +44,17 @@
 
 function [systype, nout, nin, ncstates, ndstates] = minfo (inmat)
 
-  warning("minfo: obsolete.  Use sys2ss, sys2tf, or sys2zp.");
+  warning ("minfo: obsolete.  Use sys2ss, sys2tf, or sys2zp.");
 
-  if (nargin ~= 1 )
+  if (nargin != 1 )
     disp ("MINFO: Wrong number of arguments")
     systype = nout = nin = ncstates = ndstates = [];
   endif
 
-  [rr,cc] = size(inmat);
+  [rr, cc] = size (inmat);
 
   ## Check for empty matrix first!
-  if (isempty(inmat))
+  if (isempty (inmat))
     systype = "empty";
     nout = nin = ncstates = ndstates = 0;
     return
@@ -91,4 +91,5 @@ function [systype, nout, nin, ncstates, ndstates] = minfo (inmat)
     ncstates = 0;
     ndstates = 0;
   endif
+
 endfunction

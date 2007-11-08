@@ -31,7 +31,7 @@
 function t = dezero (s)
 
   ## delete the next line if you're stubbornly going to use dezero.
-  error("dezero is no longer supported.");
+  error ("dezero is no longer supported.");
 
   if (nargin != 1)
     print_usage ();
@@ -48,7 +48,7 @@ function t = dezero (s)
 
       ## need to remove zeros first, then call deblank
       s = toascii (s);
-      t = deblank(char(s(find(s != 0) )));
+      t = deblank (char (s(find (s != 0))));
     endif
 
   else

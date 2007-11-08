@@ -191,60 +191,67 @@
 function retsys = ss (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
 
   ## Test for correct number of inputs
-  if ((nargin < 3) | (nargin > 11))
+  if (nargin < 3 || nargin > 11)
     print_usage ();
   endif
 
   ## verify A, B, C, D arguments
   ## If D is not specified, set it to a zero matrix of appriate dimension.
-  if (nargin == 3)          d = zeros(rows(c) , columns(b));
-  elseif (isempty(d))       d = zeros(rows(c) , columns(b));      endif
+  if (nargin == 3)
+    d = zeros (rows (c), columns (b));
+  elseif (isempty (d))
+    d = zeros (rows (c), columns (b));
+  endif
 
   ## Check the dimensions
-  [na,m,p] = abcddim(a,b,c,d);
+  [na, m, p] = abcddim (a, b, c, d);
 
   ## If dimensions are wrong, exit function
   if (m == -1)
-    error("a(%dx%d), b(%dx%d), c(%dx%d), d(%dx%d); incompatible", ...
-      rows(a), columns(a), rows(b), columns(b), rows(c), columns(c), ...
-      rows(d), columns(d));
+    error ("a(%dx%d), b(%dx%d), c(%dx%d), d(%dx%d); incompatible",
+	   rows (a), columns (a), rows (b), columns (b),
+	   rows (c), columns (c), rows (d), columns (d));
   endif
 
   ## check for tsam input
-  if(nargin < 5) tsam = 0;
-  elseif( !( is_sample(tsam) | (tsam == 0) ) )
-    error("tsam must be a nonnegative real scalar");
+  if (nargin < 5) tsam = 0;
+  elseif (! (is_sample (tsam) || tsam == 0)))
+    error ("tsam must be a nonnegative real scalar");
   endif
 
   ## check for continuous states
-  if( (nargin < 6) & (tsam == 0) )               n = na;
-  elseif(nargin < 6)                             n = 0;
-  elseif((!ismatrix(n)) | ischar(n))
-    error("Parameter n is not a numerical value.");
-  elseif( (!isscalar(n)) | (n < 0 ) | (n != round(n)) )
-    if(isscalar(n))     error("invalid value of n=%d,%e",n,n);
-    else                 error("invalid value of n=(%dx%d)", ...
-                           rows(n), columns(n));                endif
+  if (nargin < 6 && tsam == 0)
+    n = na;
+  elseif (nargin < 6)
+    n = 0;
+  elseif (! ismatrix (n) || ischar (n))
+    error ("Parameter n is not a numerical value.");
+  elseif (! isscalar(n) || n < 0 || n != round (n))
+    if (isscalar (n))
+      error ("invalid value of n=%d,%e", n, n);
+    else
+      error ("invalid value of n=(%dx%d)", rows (n), columns (n));
+    endif
   endif
 
   ## check for num discrete states
-  if( (nargin < 7) & (tsam == 0))               nz = 0;
-  elseif(nargin < 7)                            nz = na - n;
-  elseif((!ismatrix(nz)) | ischar(nz))
-    error("Parameter nz is not a numerical value.");
-  elseif( (!isscalar(nz)) | (nz < 0 ) | (nz != round(nz)) )
-    if(isscalar(nz))
-      error(["invalid value of nz=",num2str(nz)]);
+  if (nargin < 7 && tsam == 0)
+    nz = 0;
+  elseif (nargin < 7)
+    nz = na - n;
+  elseif (! ismatrix(nz) || ischar (nz))
+    error ("Parameter nz is not a numerical value.");
+  elseif (! isscalar(nz) || nz < 0 || nz != round(nz))
+    if (isscalar (nz))
+      error ("invalid value of nz=%d", nz);
     else
-      error(["invalid value of nz=(",num2str(rows(nz)),"x", ...
-        num2str(columns(nz)),")"]);
+      error ("invalid value of nz=(%d,%d)", rows (nz), columns (nz));
     endif
   endif
 
   ## check for total number of states
-  if( (n + nz) != na )
-    error(["invalid: a is ",num2str(na),"x",num2str(na),", n=", ...
-        num2str(n),", nz=",num2str(nz)]);
+  if ((n + nz) != na)
+    error ("invalid: a is %dx%d, n=%d, nz=%d", na, na, n, nz);
   endif
 
   ## construct system with default names
@@ -256,7 +263,7 @@ function retsys = ss (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
   retsys.n = n;
   retsys.nz = nz;
   retsys.tsam = tsam;
-  retsys.yd = zeros(1,p);     # default value entered below
+  retsys.yd = zeros (1, p);     # default value entered below
 
   ## Set the system vector:  active = 2(ss), updated = [0 0 1];
   retsys.sys = [2, 0, 0, 1];
@@ -266,26 +273,32 @@ function retsys = ss (a, b, c, d, tsam, n, nz, stname, inname, outname, outlist)
   retsys.outname = __sysdefioname__ (p, "y");
 
   ## check for state names
-  if(nargin >= 8)
-    if(!isempty(stname)) retsys = syssetsignals(retsys,"st",stname); endif
+  if (nargin >= 8)
+    if (! isempty (stname))
+      retsys = syssetsignals (retsys, "st", stname);
+    endif
   endif
 
   ## check for input names
-  if(nargin >= 9)
-    if(!isempty(inname)) retsys = syssetsignals(retsys,"in",inname); endif
+  if (nargin >= 9)
+    if (! isempty (inname))
+      retsys = syssetsignals (retsys, "in", inname);
+    endif
   endif
 
   ## check for output names
-  if(nargin >= 10)
-    if(!isempty(outname)) retsys = syssetsignals(retsys,"out",outname); endif
+  if (nargin >= 10)
+    if (! isempty (outname))
+      retsys = syssetsignals (retsys, "out", outname);
+    endif
   endif
 
   ## set up yd
-  if(nargin < 11)
-    retsys = syssetsignals(retsys,"yd",ones(1,p)*(tsam > 0));
+  if (nargin < 11)
+    retsys = syssetsignals (retsys, "yd", ones(1,p)*(tsam > 0));
   else
-    if(!isempty(outlist))
-      retsys = syssetsignals(retsys,"yd",ones(size(outlist)),outlist);
+    if (! isempty (outlist))
+      retsys = syssetsignals (retsys, "yd", ones (size (outlist)), outlist);
     endif
   endif
 

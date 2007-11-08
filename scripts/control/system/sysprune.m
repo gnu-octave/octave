@@ -60,103 +60,112 @@
 
 function sys = sysprune (sys, output_idx, input_idx, state_idx)
 
-  if( nargin < 3 | nargin > 4  )
+  if (nargin < 3 || nargin > 4)
     print_usage ();
-  elseif(nargin < 4)
+  elseif (nargin < 4)
     state_idx = [];
   endif
 
   ## default: no action
-  [nn,nz,mm,pp] = sysdimensions(sys);
-  if(isempty(output_idx)) output_idx = 1:pp; endif
-  if(isempty(input_idx)) input_idx = 1:mm; endif
-  if(isempty(state_idx)) state_idx = 1:(nn+nz); endif
+  [nn, nz, mm, pp] = sysdimensions (sys);
+  if (isempty (output_idx))
+    output_idx = 1:pp;
+  endif
+  if (isempty (input_idx))
+    input_idx = 1:mm;
+  endif
+  if (isempty (state_idx))
+    state_idx = 1:(nn+nz);
+  endif
 
   ## check for signal names
-  if(is_signal_list(output_idx) | ischar(output_idx))
-    output_idx = sysidx(sys,"out",output_idx);
+  if (is_signal_list (output_idx) || ischar (output_idx))
+    output_idx = sysidx (sys, "out", output_idx);
   endif
-  if(is_signal_list(input_idx) | ischar(input_idx))
-    input_idx = sysidx(sys,"in",input_idx);
+  if (is_signal_list (input_idx) || ischar (input_idx))
+    input_idx = sysidx (sys, "in", input_idx);
   endif
 
   ## check dimensions
-  if( !(isvector(output_idx) | isempty(output_idx) )  )
-    if(!ismatrix(output_idx))
-      error("sysprune: bad argument passed for output_idx");
+  if (! (isvector (output_idx) || isempty (output_idx)))
+    if (! ismatrix (output_idx))
+      error ("sysprune: bad argument passed for output_idx");
     else
-      error("sysprune: output_idx (%d x %d) must be a vector or empty", ...
-        rows(output_idx),columns(output_idx));
+      error ("sysprune: output_idx (%d x %d) must be a vector or empty",
+             rows (output_idx), columns (output_idx));
     endif
-  elseif(is_duplicate_entry(output_idx))
-     error("sysprune: duplicate entries found in output_idx");
+  elseif (is_duplicate_entry (output_idx))
+     error ("sysprune: duplicate entries found in output_idx");
   endif
 
-  if( !(isvector(input_idx) | isempty(input_idx) )  )
-    if(!ismatrix(input_idx))
-      error("sysprune: bad argument passed for input_idx");
+  if (! (isvector (input_idx) || isempty (input_idx)))
+    if (! ismatrix (input_idx))
+      error ("sysprune: bad argument passed for input_idx");
     else
-      error("sysprune: input_idx (%d x %d) must be a vector or empty", ...
-        rows(input_idx),columns(input_idx));
+      error ("sysprune: input_idx (%d x %d) must be a vector or empty",
+             rows (input_idx), columns(input_idx));
     endif
-  elseif(is_duplicate_entry(input_idx))
-     error("sysprune: duplicate entries found in input_idx");
+  elseif (is_duplicate_entry (input_idx))
+     error ("sysprune: duplicate entries found in input_idx");
   endif
 
-  if( !(isvector(state_idx) | isempty(state_idx) )  )
-    if(!ismatrix(state_idx))
-      error("sysprune: bad argument passed for state_idx");
+  if (! (isvector (state_idx) || isempty (state_idx)))
+    if (! ismatrix (state_idx))
+      error ("sysprune: bad argument passed for state_idx");
     else
-      error("sysprune: state_idx (%d x %d) must be a vector or empty", ...
-        rows(state_idx),columns(state_idx));
+      error ("sysprune: state_idx (%d x %d) must be a vector or empty",
+             rows (state_idx), columns (state_idx));
     endif
-  elseif(nn+nz > 0)
-    if(is_duplicate_entry(state_idx))
-      error("sysprune: duplicate entries found in state_idx");
+  elseif (nn+nz > 0)
+    if (is_duplicate_entry (state_idx))
+      error ("sysprune: duplicate entries found in state_idx");
     endif
   endif
 
-  lo = length(output_idx);
-  li = length(input_idx);
-  lst = length(state_idx);
+  lo = length (output_idx);
+  li = length (input_idx);
+  lst = length (state_idx);
 
-  if( !isstruct(sys))
-    error("Asys must be a system data structure (see ss, tf, or zp)")
-  elseif(pp < lo)
-    error([num2str(lo)," output_idx entries, system has only ", ...
-        num2str(pp)," outputs"]);
-  elseif(mm < li)
-    error([num2str(li)," input_idx entries, system has only ", ...
-        num2str(mm)," inputs"]);
-  elseif(nn+nz < lst)
-    error([num2str(lst)," state_idx entries, system has only ", ...
-        num2str(nn+nz)," states"]);
+  if (! isstruct (sys))
+    error ("Asys must be a system data structure (see ss, tf, or zp)");
+  elseif (pp < lo)
+    error("%d output_idx entries, system has only %d outputs", lo, pp]);
+  elseif (mm < li)
+    error("%d input_idx entries, system has only %d inputs", li, mm);
+  elseif (nn+nz < lst)
+    error("%d state_idx entries, system has only %d states", lst, nn+nz);
   endif
 
-  [aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,yd] = sys2ss(sys);
+  [aa, bb, cc, dd, tsam, nn, nz, stnam, innam, outnam, yd] = sys2ss (sys);
 
   ## check for valid state permutation
-  if(nn & nz)
-    c_idx = find(state_idx <= nn);
-    if(!isempty(c_idx)) max_c = max(c_idx);
-    else                max_c = 0;            endif
-    d_idx = find(state_idx > nn);
-    if(!isempty(d_idx)) min_d = min(d_idx);
-    else                min_d = nn+nz;            endif
-    if(max_c > min_d)
-      warning("sysprune: state_idx(%d)=%d (discrete) preceeds", ...
-        min_d,state_idx(min_d));
-      warning("          state_idx(%d)=%d (continuous)",...
-        max_c,state_idx(max_c));
-      warning("sysprune: sys has %d continuous states, %d discrete states", ...
-        nn,nz);
-      error("continuous/discrete state partition not preserved ; see ss");
+  if (nn & nz)
+    c_idx = find (state_idx <= nn);
+    if (! isempty (c_idx))
+      max_c = max (c_idx);
+    else
+      max_c = 0;
+    endif
+    d_idx = find (state_idx > nn);
+    if (! isempty (d_idx))
+      min_d = min (d_idx);
+    else
+      min_d = nn+nz;
+    endif
+    if (max_c > min_d)
+      warning ("sysprune: state_idx(%d)=%d (discrete) preceeds",
+               min_d, state_idx(min_d));
+      warning("          state_idx(%d)=%d (continuous)",
+              max_c, state_idx(max_c));
+      warning ("sysprune: sys has %d continuous states, %d discrete states",
+               nn, nz);
+      error("continuous/discrete state partition not preserved; see ss");
     endif
   endif
 
   idx = input_idx;
   odx = output_idx;
-  if(isempty(state_idx))
+  if (isempty (state_idx))
     idx = [];
     odx = [];
   endif
@@ -169,7 +178,9 @@ function sys = sysprune (sys, output_idx, input_idx, state_idx)
   innam  = innam(input_idx);
   outnam = outnam(output_idx);
   stnam = stnam(state_idx);
-  nn1 = length(find(state_idx <= nn));
-  nz1 = length(find(state_idx > nn));
-  sys = ss(aa,bb,cc,dd,tsam,nn1,nz1,stnam,innam,outnam,find(yd));
+  nn1 = length (find (state_idx <= nn));
+  nz1 = length (find (state_idx > nn));
+
+  sys = ss (aa, bb, cc, dd, tsam, nn1, nz1, stnam, innam, outnam, find (yd));
+
 endfunction

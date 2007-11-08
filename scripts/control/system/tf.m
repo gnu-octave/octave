@@ -61,32 +61,33 @@
 function outsys = tf (num, den, tsam, inname, outname)
 
   ## Test for the correct number of input arguments
-  if ((nargin < 2) || (nargin > 5))
+  if (nargin < 2 || nargin > 5)
     print_usage ();
-    return
   endif
 
   ## check input format
-  if( ! ( (isvector(num) || isscalar(num)) && ...
-        (isvector(den) || isscalar(den))) )
-    error(["num (",num2str(rows(num)),"x",num2str(columns(num)), ...
-      ") and den (",num2str(rows(den)),"x",num2str(columns(den)), ...
-      ") must be vectors"])
+  if (! ((isvector (num) || isscalar (num))
+	 && (isvector (den) || isscalar (den))))
+    error ("num (%dx%d) and den (%dx%d) must be vectors",
+	   rows (num), columns (num), rows (den), columns (den));
   endif
 
   ## strip leading zero coefficients
   num = __tfl__ (num);
   den = __tfl__ (den);
 
-  if (length(num) >  length(den))
-    error("# of poles (%d) < # of zeros (%d)",length(den)-1, length(num)-1);
+  if (length (num) > length (den))
+    error ("# of poles (%d) < # of zeros (%d)", length(den)-1, length(num)-1);
   endif
 
   ## check sampling interval (if any)
-  if(nargin <= 2)           tsam = 0;           # default
-  elseif (isempty(tsam))    tsam = 0;           endif
-  if ( (! (isscalar(tsam) && (imag(tsam) == 0) )) || (tsam < 0) )
-    error("tsam must be a positive real scalar")
+  if (nargin <= 2)
+    tsam = 0;           # default
+  elseif (isempty (tsam))
+    tsam = 0;
+  endif
+  if (! (isscalar (tsam) && imag (tsam) == 0) || tsam < 0)
+    error ("tsam must be a positive real scalar")
   endif
 
   outsys.num = num;
@@ -97,12 +98,12 @@ function outsys = tf (num, den, tsam, inname, outname)
 
   ## Set defaults
   outsys.tsam = tsam;
-  outsys.n = length(den)-1;
+  outsys.n = length (den) - 1;
   outsys.nz = 0;
   outsys.yd = 0;        # assume discrete-time
   ## check discrete time
-  if(tsam > 0)
-    [outsys.n,outsys.nz] = swap(outsys.n, outsys.nz);
+  if (tsam > 0)
+    [outsys.n, outsys.nz] = swap (outsys.n, outsys.nz);
     outsys.yd = 1;
   endif
 
@@ -113,31 +114,35 @@ function outsys = tf (num, den, tsam, inname, outname)
   ## Set name of input
   if (nargin > 3)
     ## make sure it's a cell array of a single string
-    if(!isempty(inname))
-      if(!iscell(inname))  inname = {inname};  endif
-      if( !is_signal_list(inname) )
-        error("inname must be a string or cell array of strings");
+    if (! isempty (inname))
+      if (! iscell (inname))
+	inname = {inname};
       endif
-      if(length(inname) > 1)
-        warning("tf: %d input names provided; first used",length(inname));
+      if (! is_signal_list (inname))
+        error ("inname must be a string or cell array of strings");
+      endif
+      if (length (inname) > 1)
+        warning ("tf: %d input names provided; first used", length (inname));
         inname = inname(1);
       endif
-      outsys = syssetsignals(outsys,"in",inname);
+      outsys = syssetsignals (outsys, "in", inname);
     endif
   endif
 
   ## Set name of output
   if (nargin > 4)
-    if(!isempty(outname))
-      if(!iscell(outname))  outname = {outname};  endif
-      if(!is_signal_list(outname))
-        error("outname must be a string or a cell array of strings");
+    if (! isempty (outname))
+      if (! iscell (outname))
+	outname = {outname};
       endif
-      if(length(outname) > 1)
-        warning("tf: %d output names provided; first used",length(outname));
+      if (! is_signal_list (outname))
+        error ("outname must be a string or a cell array of strings");
+      endif
+      if (length (outname) > 1)
+        warning ("tf: %d output names provided; first used", length(outname));
         outname = outname(1);
       endif
-      outsys = syssetsignals(outsys,"out",outname);
+      outsys = syssetsignals (outsys, "out", outname);
     endif
   endif
 

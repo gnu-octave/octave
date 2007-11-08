@@ -187,7 +187,7 @@
 
 function retsys = ss2sys (varargin )
   
-  warning("ss2sys is deprecated.  Use ss() instead.");
-  retsys = ss(varargin{:});
+  warning ("ss2sys is deprecated.  Use ss instead.");
+  retsys = ss (varargin{:});
 
 endfunction

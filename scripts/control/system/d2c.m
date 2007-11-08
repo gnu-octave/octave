@@ -66,106 +66,106 @@ function csys = d2c (sys, opt)
 
   ## SYS_INTERNAL accesses members of system data structure
 
-  if( (nargin != 1) & (nargin != 2) )
+  if (nargin != 1 && nargin != 2)
     print_usage ();
-  elseif (!isstruct(sys))
-    error("sys must be in system data structure");
-  elseif(nargin == 1)
+  elseif (! isstruct (sys))
+    error ("sys must be in system data structure");
+  elseif (nargin == 1)
     opt = "log";
     tol = 1e-12;
-  elseif(ischar(opt))   # all remaining cases are for nargin == 2
+  elseif (ischar (opt))   # all remaining cases are for nargin == 2
     tol = 1e-12;
-    if( !(strcmp(opt,"log") | strcmp(opt,"bi") ) )
-      error(["d2c: invalid opt passed=",opt]);
+    if (! (strcmp (opt, "log") || strcmp (opt, "bi")))
+      error ("d2c: invalid opt passed=%s", opt);
     endif
-  elseif(!is_sample(opt))
-    error("tol must be a positive scalar")
-  elseif(opt > 1e-2)
-    warning(["d2c: ridiculous error tolerance passed=",num2str(opt); ...
-        ", intended c2d call?"])
+  elseif (! is_sample (opt))
+    error ("tol must be a positive scalar")
+  elseif (opt > 1e-2)
+    warning ("d2c: ridiculous error tolerance passed=%g, intended c2d call?",
+	     opt);
   else
     tol = opt;
     opt = "log";
   endif
-  T = sysgettsam(sys);
+  T = sysgettsam (sys);
 
-  if(strcmp(opt,"bi"))
+  if (strcmp (opt, "bi"))
     ## bilinear transform
     ## convert with bilinear transform
-    if (! is_digital(sys) )
-       error("d2c requires a discrete time system for input")
+    if (! is_digital (sys) )
+       error ("d2c requires a discrete time system for input")
     endif
-    [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys);
+    [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys);
 
-    poles = eig(a);
-    if( find(abs(poles-1) < 200*(n+nz)*eps) )
-      warning("d2c: some poles very close to one.  May get bad results.");
+    poles = eig (a);
+    if (find (abs (poles-1) < 200*(n+nz)*eps))
+      warning ("d2c: some poles very close to one.  May get bad results.");
     endif
 
-    I = eye(size(a));
-    tk = 2/sqrt(T);
+    I = eye (size (a));
+    tk = 2 / sqrt (T);
     A = (2/T)*(a-I)/(a+I);
     iab = (I+a)\b;
     B = tk*iab;
     C = tk*(c/(I+a));
     D = d- (c*iab);
-    stnamec = strappend(stname,"_c");
-    csys = ss(A,B,C,D,0,rows(A),0,stnamec,inname,outname);
-  elseif(strcmp(opt,"log"))
-    sys = sysupdate(sys,"ss");
-    [n,nz,m,p] = sysdimensions(sys);
+    stnamec = strappend (stname, "_c");
+    csys = ss (A, B, C, D, 0, rows (A), 0, stnamec, inname, outname);
+  elseif (strcmp (opt, "log"))
+    sys = sysupdate (sys, "ss");
+    [n, nz, m, p] = sysdimensions (sys);
 
-    if(nz == 0)
-      warning("d2c: all states continuous; setting outputs to agree");
-      csys = syssetsignals(sys,"yd",zeros(1,1:p));
+    if (nz == 0)
+      warning ("d2c: all states continuous; setting outputs to agree");
+      csys = syssetsignals (sys, "yd", zeros (1, 1:p));
       return;
-    elseif(n != 0)
-      warning(["d2c: n=",num2str(n),">0; performing c2d first"]);
-      sys = c2d(sys,T);
+    elseif (n != 0)
+      warning ("d2c: n=%d > 0; performing c2d first", n);
+      sys = c2d (sys, T);
     endif
-    [a,b] = sys2ss(sys);
+    [a, b] = sys2ss (sys);
 
-    [ma,na] = size(a);
-    [mb,nb] = size(b);
+    [ma, na] = size (a);
+    [mb, nb] = size (b);
 
-    if(isempty(b) )
-      warning("d2c: empty b matrix");
+    if (isempty (b))
+      warning ("d2c: empty b matrix");
       Amat = a;
     else
       Amat = [a, b; zeros(nb,na), eye(nb)];
     endif
 
-    poles = eig(a);
-    if( find(abs(poles) < 200*(n+nz)*eps) )
-      warning("d2c: some poles very close to zero.  logm not performed");
-      Mtop = zeros(ma, na+nb);
-    elseif( find(abs(poles-1) < 200*(n+nz)*eps) )
-      warning("d2c: some poles very close to one.  May get bad results.");
-      logmat = real(logm(Amat)/T);
+    poles = eig (a);
+    if (find (abs (poles) < 200*(n+nz)*eps))
+      warning ("d2c: some poles very close to zero.  logm not performed");
+      Mtop = zeros (ma, na+nb);
+    elseif (find (abs (poles-1) < 200*(n+nz)*eps))
+      warning ("d2c: some poles very close to one.  May get bad results.");
+      logmat = real (logm (Amat) / T);
       Mtop = logmat(1:na,:);
     else
-      logmat = real(logm(Amat)/T);
+      logmat = real (logm (Amat) / T);
       Mtop = logmat(1:na,:);
     endif
 
     ## perform simplistic, stupid optimization approach.
     ## should re-write with a Davidson-Fletcher CG approach
-    mxthresh = norm(Mtop);
-    if(mxthresh == 0)
+    mxthresh = norm (Mtop);
+    if (mxthresh == 0)
       mxthresh = 1;
     endif
     eps1 = mxthresh;    #gradient descent step size
-    cnt = max(20,(n*nz)*4);     #max number of iterations
+    cnt = max (20, (n*nz)*4);     #max number of iterations
     newgrad=1;  #signal for new gradient
-    while( (eps1/mxthresh > tol) & cnt)
-      cnt = cnt-1;
+    while ((eps1/mxthresh > tol) && cnt)
+      cnt--;
       ## calculate the gradient of error with respect to Amat...
-      geps = norm(Mtop)*1e-8;
-      if(geps == 0)
+      geps = norm (Mtop) * 1e-8;
+      if (geps == 0)
         geps = 1e-8;
       endif
       DMtop = Mtop;
-      if(isempty(b))
+      if (isempty (b))
         Mall = Mtop;
         DMall = DMtop;
       else
@@ -173,10 +173,10 @@ function csys = d2c (sys, opt)
         DMall = [DMtop; zeros(nb,na+nb) ];
       endif
 
-      if(newgrad)
-        GrMall = zeros(size(Mall));
-        for ii=1:rows(Mtop)
-          for jj=1:columns(Mtop)
+      if (newgrad)
+        GrMall = zeros (size (Mall));
+        for ii = 1:rows(Mtop)
+          for jj = 1:columns(Mtop)
           DMall(ii,jj) = Mall(ii,jj) + geps;
             GrMall(ii,jj) = norm (Amat - expm (DMall*T), "fro") ...
                 - norm (Amat - expm (Mall*T), "fro");
@@ -190,36 +190,36 @@ function csys = d2c (sys, opt)
       ## got a gradient, now try to use it
       DMall = Mall-eps1*GrMall;
 
-      FMall = expm(Mall*T);
-      FDMall = expm(DMall*T);
-      FmallErr = norm(Amat - FMall);
-      FdmallErr = norm(Amat - FDMall);
-      if( FdmallErr < FmallErr)
+      FMall = expm (Mall*T);
+      FDMall = expm (DMall*T);
+      FmallErr = norm (Amat - FMall);
+      FdmallErr = norm (Amat - FDMall);
+      if (FdmallErr < FmallErr)
         Mtop = DMall(1:na,:);
-        eps1 = min(eps1*2,1e12);
+        eps1 = min (eps1*2, 1e12);
         newgrad = 1;
       else
         eps1 = eps1/2;
       endif
 
-      if(FmallErr == 0)
+      if (FmallErr == 0)
         eps1 = 0;
       endif
 
     endwhile
 
-    [aa,bb,cc,dd,tsam,nn,nz,stnam,innam,outnam,yd] = sys2ss(sys);
+    [aa, bb, cc, dd, tsam, nn, nz, stnam, innam, outnam, yd] = sys2ss (sys);
     aa = Mall(1:na,1:na);
-    if(!isempty(b))
+    if (! isempty (b))
       bb = Mall(1:na,(na+1):(na+nb));
     endif
-    csys = ss(aa,bb,cc,dd,0,na,0,stnam,innam,outnam);
+    csys = ss (aa, bb, cc, dd, 0, na, 0, stnam, innam, outnam);
 
     ## update names
-    nn = sysdimensions(sys);
+    nn = sysdimensions (sys);
     for ii = (nn+1):na
-      strval = sprintf("%s_c",sysgetsignals(csys,"st",ii,1));
-      csys = syssetsignals(csys,"st",strval,ii);
+      strval = sprintf ("%s_c", sysgetsignals (csys, "st", ii, 1));
+      csys = syssetsignals (csys, "st", strval, ii);
     endfor
   endif
 

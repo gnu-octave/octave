@@ -100,14 +100,15 @@
 ## Updated by John Ingram for system data structure August 1996
 
 function dsys = c2d (sys, opt, T)
+
   ## parse input arguments
-  if(nargin < 1 | nargin > 3)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
-  elseif (!isstruct(sys))
-    error("sys must be a system data structure");
+  elseif (! isstruct (sys))
+    error ("sys must be a system data structure");
   elseif (nargin == 1)
     opt = "ex";
-  elseif (nargin == 2 & !ischar(opt) )
+  elseif (nargin == 2 && ! ischar (opt))
     T = opt;
     opt = "ex";
   endif
@@ -117,39 +118,38 @@ function dsys = c2d (sys, opt, T)
   endif
 
   ## check if sampling period T was passed.
-  Ts = sysgettsam(sys);
-  if(!exist("T"))
+  Ts = sysgettsam (sys);
+  if (! exist ("T"))
     T = Ts;
-    if(T == 0)
-      error("sys is purely continuous; no sampling period T provided");
+    if (T == 0)
+      error ("sys is purely continuous; no sampling period T provided");
     endif
-  elseif (T != Ts & Ts > 0)
-    warning(["c2d: T=",num2str(T),", system tsam==",num2str(Ts), ...
-      ": using T=", num2str(min(T,Ts))]);
-    T = min(T,Ts);
+  elseif (T != Ts && Ts > 0)
+    warning ("c2d: T=%g, system tsam=%g: using T=", T, Ts, min (T, Ts));
+    T = min (T, Ts);
   endif
 
-  if (!is_sample(T))
-    error("sampling period T must be a positive, real scalar");
+  if (! is_sample (T))
+    error ("sampling period T must be a positive, real scalar");
   elseif (! (strcmp (opt, "ex")
 	     || strcmp (opt, "bi")
 	     || strcmp (opt, "matched")))
     error ("invalid option passed: %s", opt);
   endif
 
-  sys = sysupdate(sys,"ss");
-  [n,nz,m,p] = sysdimensions(sys);
-  if(n == 0)
-    dsys = syssetsignals(sys,"yd",ones(1:p));
-  elseif(strcmp(opt,"ex"));
-    [aa,bb,cc,dd] = sys2ss(sys);
+  sys = sysupdate (sys, "ss");
+  [n, nz, m, p] = sysdimensions (sys);
+  if (n == 0)
+    dsys = syssetsignals (sys, "yd", ones(1:p));
+  elseif (strcmp (opt, "ex"));
+    [aa, bb, cc, dd] = sys2ss (sys);
     crng= 1:n;
     drng = n+(1:nz);
 
     ## partition state equations into continuous, imaginary subsystems
     Ac = aa(crng,crng);
     Bc = bb(crng,:);
-    if(nz == 0)
+    if (nz == 0)
       Acd = Adc = Add = Bd = 0;
     else
       Acd = aa(crng,drng);
@@ -161,65 +161,65 @@ function dsys = c2d (sys, opt, T)
 
     ## convert state equations
     mat = [Ac, Bc; zeros(m+nz,n+nz+m)];
-    matexp = expm(mat * T);
+    matexp = expm (mat * T);
 
     ## replace Ac
     aa(crng,crng) = matexp(crng,crng);    ## discretized homegenous diff eqn
 
     ## replace Bc
-    bb(crng,:)    = matexp(crng,n+(1:m));
+    bb(crng,:) = matexp(crng,n+(1:m));
 
     ## replace Acd
-    if(nz)
+    if (nz)
       aa(crng,drng) = matexp(crng,n+m+(1:nz));
     end
 
-    stnames = sysgetsignals(sys,"st");   ## continuous states renamed below
-    innames = sysgetsignals(sys,"in");
-    outnames = sysgetsignals(sys,"out");
+    stnames = sysgetsignals (sys, "st");   ## continuous states renamed below
+    innames = sysgetsignals (sys, "in");
+    outnames = sysgetsignals (sys, "out");
     outlist = 1:p;
-    dsys = ss(aa,bb,cc,dd,T,0,n+nz,stnames,innames, ...
-        outnames,outlist);
+    dsys = ss (aa, bb, cc, dd, T, 0, n+nz, stnames, innames,
+	       outnames, outlist);
     ## rename states
-    for ii=1:n
-      strval = sprintf("%s_d",sysgetsignals(dsys,"st",ii,1));
-      dsys = syssetsignals(dsys,"st",strval,ii);
+    for ii = 1:n
+      strval = sprintf ("%s_d", sysgetsignals (dsys, "st", ii, 1));
+      dsys = syssetsignals (dsys, "st", strval, ii);
     endfor
 
-  elseif(strcmp(opt,"bi"))
-    if(is_digital(sys))
-      error("c2d: system is already digital")
+  elseif (strcmp (opt, "bi"))
+    if (is_digital (sys))
+      error ("c2d: system is already digital")
     else
       ## convert with bilinear transform
-      [a,b,c,d,tsam,n,nz,stname,inname,outname,yd] = sys2ss(sys);
-      IT = (2/T)*eye(size(a));
+      [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys);
+      IT = (2/T) * eye (size (a));
       A = (IT+a)/(IT-a);
       iab = (IT-a)\b;
-      tk=2/sqrt(T);
+      tk = 2 / sqrt (T);
       B = tk*iab;
       C = tk*(c/(IT-a));
       D = d + (c*iab);
-      stnamed = strappend(stname,"_d");
-      dsys = ss(A,B,C,D,T,0,rows(A),stnamed,inname,outname);
+      stnamed = strappend (stname, "_d");
+      dsys = ss (A, B, C, D, T, 0, rows (A), stnamed, inname, outname);
      endif
-   elseif(strcmp(opt,"matched"))
-     if(is_digital(sys))
-       error("c2d: system is already digital");
-     elseif((length(sys.inname) != 1) || (length(sys.outname) != 1))
-       error("c2d: system in not single input, single output");
+   elseif (strcmp (opt, "matched"))
+     if (is_digital (sys))
+       error ("c2d: system is already digital");
+     elseif (length (sys.inname) != 1 || length (sys.outname) != 1)
+       error ("c2d: system in not single input, single output");
      else
-       sys = sysupdate(sys,"zp");
-       p = exp(sys.pol*T);
-       z = exp(sys.zer*T);
-       infinite_zeros = max(size(sys.pol))-max(size(sys.zer))-1;
+       sys = sysupdate (sys, "zp");
+       p = exp (sys.pol*T);
+       z = exp (sys.zer*T);
+       infinite_zeros = max (size (sys.pol)) - max (size (sys.zer)) - 1;
        for i = 1:infinite_zeros
 	 z = [z ; -1];
        endfor
        ## Should the freaquency we adjust around always be 1?   
-       [cmag,cphase,cw] = bode(sys,1);
-       [dmag,dpahse,dw] = bode(zp(z,p,1,T),1);
-      dsys = zp(z,p,cmag/dmag,T);
-    endif
+       [cmag, cphase, cw] = bode (sys, 1);
+       [dmag, dpahse, dw] = bode (zp (z, p, 1, T), 1);
+       dsys = zp (z, p, cmag/dmag, T);
+     endif
   else
     error ("invalid option = %s", opt);
   endif

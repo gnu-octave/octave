@@ -61,86 +61,84 @@
 
 function [a, b, c, d] = zp2ss (zer, pol, k)
 
-    if(nargin != 3)
-      error("Incorrect number of input arguments");
+  if (nargin != 3)
+    print_usage ();
+  endif
+
+  if (! (isvector (zer) || isempty (zer)))
+    error ("zer(%d,%d) should be a vector", rows (zer), columns (zer));
+  elseif (! (isvector (pol) || isempty (pol)))
+    error ("pol(%d,%d) should be a vector", rows (pol), columns (pol));
+  elseif (! isscalar(k))
+    error ("k(%d,%d) should be a scalar", rows (k), columns (k));
+  elseif (k != real (k))
+    warning ("zp2ss: k is complex")
+  endif
+
+  zpsys = ss (zeros (0, 0), zeros (0, 1), zeros (1, 0), k);
+
+  ## Find the number of zeros and the number of poles
+  nzer = length (zer);
+  npol = length (pol);
+
+  if (nzer > npol)
+    error ("%d zeros, exceeds number of poles=%d", nzer, npol);
+  endif
+
+  ## Sort to place complex conjugate pairs together
+  zer = sortcom (zer);
+  pol = sortcom (pol);
+
+  ## construct the system as a series connection of poles and zeros
+  ## problem: poles and zeros may come in conjugate pairs, and not
+  ## matched up!
+
+  ## approach: remove poles/zeros from the list as they are included in
+  ## the ss system
+
+  while (length (pol))
+
+    ## search for complex poles, zeros
+    cpol = [];
+    czer = [];
+    if (! isempty (pol))
+      cpol = find (imag (pol) != 0);
+    endif
+    if (! isempty (zer))
+      czer = find (imag (zer) != 0);
     endif
 
-    if(! (isvector(zer) | isempty(zer)) )
-      error(["zer(",num2str(rows(zer)),",",num2str(columns(zer)), ...
-	  ") should be a vector"]);
-    elseif(! (isvector(pol) | isempty(pol) ) )
-      error(["pol(",num2str(rows(pol)),",",num2str(columns(pol)), ...
-	  ") should be a vector"]);
-    elseif(! isscalar(k))
-      error(["k(",num2str(rows(k)),",",num2str(columns(k)), ...
-	  ") should be a scalar"]);
-    elseif( k != real(k))
-      warning("zp2ss: k is complex")
+    if (isempty (cpol) && isempty (czer))
+      pcnt = 1;
+    else
+      pcnt = 2;
     endif
 
-    zpsys = ss (zeros (0, 0), zeros (0, 1), zeros (1, 0), k);
-
-    ## Find the number of zeros and the number of poles
-    nzer=length(zer);
-    npol =length(pol);
-
-    if(nzer > npol)
-      error([num2str(nzer)," zeros, exceeds number of poles=",num2str(npol)]);
-    endif
-
-    ## Sort to place complex conjugate pairs together
-    zer=sortcom(zer);
-    pol=sortcom(pol);
-
-    ## construct the system as a series connection of poles and zeros
-    ## problem: poles and zeros may come in conjugate pairs, and not
-    ## matched up!
-
-    ## approach: remove poles/zeros from the list as they are included in
-    ## the ss system
-
-    while(length(pol))
-
-      ## search for complex poles, zeros
-      cpol=[];    czer = [];
-      if(!isempty(pol))
-	cpol = find(imag(pol) != 0);
-      endif
-      if(!isempty(zer))
-	czer = find(imag(zer) != 0);
-      endif
-
-      if(isempty(cpol) & isempty(czer))
-	pcnt = 1;
-      else
-	pcnt = 2;
-      endif
-
-      num=1;      # assume no zeros left.
-      switch(pcnt)
-      case(1)
+    num = 1;      # assume no zeros left.
+    switch (pcnt)
+      case 1
 	## real pole/zero combination
-	if(length(zer))
+	if (length (zer))
 	  num = [1, -zer(1)];
 	  zer = zer(2:length(zer));
 	endif
 	den = [1, -pol(1)];
 	pol = pol(2:length(pol));
-      case(2)
+      case 2
 	## got a complex pole or zero, need two roots (if available)
-	if(length(zer) > 1)
+	if (length (zer) > 1)
 	  [num, zer] = __zp2ssg2__ (zer);       # get two zeros
-	elseif(length(zer) == 1)
+	elseif (length (zer) == 1)
 	  num = [1, -zer];                # use last zero (better be real!)
 	  zer = [];
 	endif
 	[den, pol] = __zp2ssg2__ (pol);         # get two poles
       otherwise
-	error(["pcnt = ",num2str(pcnt)])
+	error ("pcnt = %d", pcnt);
       endswitch
 
       ## pack tf into system form and put in series with earlier realization
-      zpsys1 = tf(num,den,0,"u","yy");
+      zpsys1 = tf (num, den, 0, "u", "yy");
 
       ## change names to avoid warning messages from sysgroup
       zpsys  = syssetsignals (zpsys, "in", "u1", 1);
@@ -150,11 +148,11 @@ function [a, b, c, d] = zp2ss (zer, pol, k)
       nn1    = sysdimensions (zpsys1);
       zpsys1 = syssetsignals (zpsys1, "st", __sysdefioname__ (nn1, "xx"));
 
-      zpsys = sysmult(zpsys,zpsys1);
+      zpsys = sysmult (zpsys, zpsys1);
 
     endwhile
 
-    [a,b,c,d] = sys2ss(zpsys);
+    [a, b, c, d] = sys2ss (zpsys);
 
 endfunction
 

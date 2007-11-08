@@ -46,30 +46,30 @@
 
 function sys = sysadd (varargin)
 
-  if(nargin < 1)
+  if (nargin < 1)
     print_usage ();
   endif
 
   ## collect all arguments
   arglist = {};
-  for kk=1:nargin
+  for kk = 1:nargin
     arglist{kk} = varargin{kk};
-    if(!isstruct(arglist{kk}))
-      error("sysadd: argument %d is not a data structure",kk);
+    if (! isstruct (arglist{kk}))
+      error ("sysadd: argument %d is not a data structure", kk);
     endif
   endfor
 
   ## check system dimensions
-  [n,nz,mg,pg,Gyd] = sysdimensions(arglist{1});
-  for kk=2:nargin
-    [n,nz,mh,ph,Hyd] = sysdimensions(arglist{kk});
-    if(mg != mh)
-      error("arg 1 has %d inputs; arg %d has vs %d inputs",mg,kk,mh);
-    elseif(pg != ph)
-      error("arg 1 has %d outputs; arg %d has vs %d outputs",pg,kk,ph);
-    elseif(norm(Gyd - Hyd))
-      warning("cannot add a discrete output to a continuous output");
-      error("Output type mismatch: arguments 1 and %d\n",kk);
+  [n, nz, mg, pg, Gyd] = sysdimensions (arglist{1});
+  for kk = 2:nargin
+    [n, nz, mh, ph, Hyd] = sysdimensions (arglist{kk});
+    if (mg != mh)
+      error ("arg 1 has %d inputs; arg %d has vs %d inputs", mg, kk, mh);
+    elseif (pg != ph)
+      error ("arg 1 has %d outputs; arg %d has vs %d outputs", pg, kk, ph);
+    elseif (norm (Gyd - Hyd))
+      warning ("cannot add a discrete output to a continuous output");
+      error ("Output type mismatch: arguments 1 and %d\n", kk);
     endif
   endfor
 
@@ -79,47 +79,53 @@ function sys = sysadd (varargin)
     Hsys = arglist{2};
 
     # check if adding scalar transfer functions with identical denoms
-    [Gn, Gnz, Gm, Gp] = sysdimensions(Gsys);
-    [Hn, Hnz, Hm, Hp] = sysdimensions(Hsys);
-    if ( Gm ==1 & Gp == 1 & Hm == 1 & Hp == 1 & Gn == Hn & Gnz == Hnz )
-      # dimensions are compatible, check if can add
-      [Gnum,Gden,GT,Gin,Gout] = sys2tf(Gsys);
-      [Hnum,Hden,HT,Hin,Hout] = sys2tf(Hsys);
-      if (length(Hden) == length(Gden) )
-        if( (Hden == Gden) & (HT == GT) )
-          sys = tf(Gnum+Hnum,Gden,GT,Gin,Gout);
-
-          return;   # return prematurely since the add is done.
+    [Gn, Gnz, Gm, Gp] = sysdimensions (Gsys);
+    [Hn, Hnz, Hm, Hp] = sysdimensions (Hsys);
+    if (Gm == 1 & Gp == 1 & Hm == 1 & Hp == 1 & Gn == Hn & Gnz == Hnz)
+      ## dimensions are compatible, check if can add
+      [Gnum, Gden, GT, Gin, Gout] = sys2tf (Gsys);
+      [Hnum, Hden, HT, Hin, Hout] = sys2tf (Hsys);
+      if (length (Hden) == length (Gden) )
+        if ((Hden == Gden) & (HT == GT))
+          sys = tf (Gnum+Hnum, Gden, GT, Gin, Gout);
+          return;
         endif
       endif
     endif
 
     ## make sure in ss form
-    Gsys = sysupdate(Gsys,"ss");
-    Hsys = sysupdate(Hsys,"ss");
-    Gin = sysgetsignals(Gsys,"in");
-    Gout = sysgetsignals(Gsys,"out");
-    Hin = sysgetsignals(Hsys,"in");
-    Hout = sysgetsignals(Hsys,"out");
+    Gsys = sysupdate (Gsys, "ss");
+    Hsys = sysupdate (Hsys, "ss");
+    Gin = sysgetsignals (Gsys, "in");
+    Gout = sysgetsignals (Gsys, "out");
+    Hin = sysgetsignals (Hsys, "in");
+    Hout = sysgetsignals (Hsys, "out");
 
     ## change signal names to avoid warning messages from sysgroup
-    Gsys = syssetsignals(Gsys,"in",__sysdefioname__(length(Gin),"Gin_u"));
-    Gsys = syssetsignals(Gsys,"out",__sysdefioname__(length(Gout),"Gout_u"));
-    Hsys = syssetsignals(Hsys,"in",__sysdefioname__(length(Hin),"Hin_u"));
-    Hsys = syssetsignals(Hsys,"out",__sysdefioname__(length(Hout),"Hout_u"));
+    Gsys = syssetsignals (Gsys, "in",
+			  __sysdefioname__ (length (Gin), "Gin_u"));
 
-    sys = sysgroup(Gsys,Hsys);
+    Gsys = syssetsignals (Gsys, "out",
+			  __sysdefioname__ (length (Gout), "Gout_u"));
 
-    eyin = eye(mg);
-    eyout = eye(pg);
+    Hsys = syssetsignals (Hsys, "in",
+			  __sysdefioname__ (length (Hin), "Hin_u"));
 
-    sys = sysscale(sys,[eyout, eyout],[eyin;eyin],Gout,Gin);
+    Hsys = syssetsignals (Hsys, "out",
+			  __sysdefioname__ (length (Hout), "Hout_u"));
+
+    sys = sysgroup (Gsys, Hsys);
+
+    eyin = eye (mg);
+    eyout = eye (pg);
+
+    sys = sysscale (sys, [eyout, eyout], [eyin; eyin], Gout, Gin);
 
   else
     ## multiple systems (or a single system); combine together one by one
     sys = arglist{1};
-    for kk=2:length(arglist)
-      sys = sysadd(sys,arglist{kk});
+    for kk = 2:length(arglist)
+      sys = sysadd (sys, arglist{kk});
     endfor
   endif
 

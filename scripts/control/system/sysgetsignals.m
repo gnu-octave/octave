@@ -148,50 +148,55 @@ function [stname, inname, outname, yd] = sysgetsignals (sys, sigid, signum, strf
 
   if (nargin < 1 || nargin > 4)
     print_usage ();
-  elseif( ! isstruct(sys) )
-    error("input argument must be a system data structure");
+  elseif (! isstruct (sys))
+    error ("input argument must be a system data structure");
   endif
-  if(nargin < 4)  strflg = 0; endif
-  if(nargin == 1)
-    sys = sysupdate(sys,"ss");          #make sure ss is up to date
-    stname = sysgetsignals(sys,"st");
-    inname = sysgetsignals(sys,"in");
-    outname = sysgetsignals(sys,"out");
-    yd = sysgetsignals(sys,"yd");
-  elseif(!(ischar(sigid) & min(size(sigid)) == 1))
-    error(sprintf("sigid(%dx%d) must be a string)",rows(sigid),columns(sigid)));
+  if (nargin < 4)
+    strflg = 0;
+  endif
+
+  if (nargin == 1)
+    sys = sysupdate (sys, "ss");          #make sure ss is up to date
+    stname = sysgetsignals (sys, "st");
+    inname = sysgetsignals (sys, "in");
+    outname = sysgetsignals (sys, "out");
+    yd = sysgetsignals (sys, "yd");
+  elseif (! (ischar (sigid) && min (size (sigid)) == 1))
+    error ("sigid(%dx%d) must be a string)", rows (sigid), columns (sigid));
   else
-    if(strcmp("st",sigid))         stname = sys.stname;
-    elseif(strcmp("in",sigid))     stname = sys.inname;
-    elseif(strcmp("out",sigid))    stname = sys.outname;
-    elseif(strcmp("yd",sigid))     stname = vec(sys.yd)';
+    if (strcmp ("st", sigid))
+      stname = sys.stname;
+    elseif (strcmp ("in", sigid))
+      stname = sys.inname;
+    elseif (strcmp ("out", sigid))
+      stname = sys.outname;
+    elseif (strcmp ("yd", sigid))
+      stname = vec(sys.yd)';
     else
-      error(sprintf("sigid=%s must be \"st\", \"in\", \"out\", or \"yd\"", ...
-        sigid));
+      error ("sigid=%s must be \"st\", \"in\", \"out\", or \"yd\"", sigid);
     endif
-    if(nargin >= 3)
-      if( is_signal_list(signum) | ischar(signum) )
-        signum = cellidx(stname,signum);
-      end
-      if(max(signum) > length(stname))
-        error(sprintf("sysgetsignals(sys,\"%s\",%d):only %d entries.\n", ...
-          sigid,signum, rows(stname)));
+    if (nargin >= 3)
+      if (is_signal_list (signum) || ischar (signum))
+        signum = cellidx (stname, signum);
+      endif
+      if (max (signum) > length (stname))
+        error ("sysgetsignals(sys,\"%s\",%d):only %d entries",
+               sigid, signum, rows (stname));
       else
-        if(!isscalar(strflg))
-          error("strflg must be a scalar");
+        if (! isscalar (strflg))
+          error ("strflg must be a scalar");
         endif
-        switch(strflg)
-        case(0),
-          stname = stname(signum);
-        case(1),
-          if(length(signum) > 1)
-            error("strflg=1, length(signum) = %d",length(signum));
+        switch (strflg)
+        case 0
+          stname = stname (signum);
+        case 1
+          if (length (signum) > 1)
+            error ("strflg=1, length(signum) = %d", length (signum));
           endif
           stname = stname{signum};
-        otherwise,
+        otherwise
           error ("invalid value of strflg = %e", strflg);
         endswitch
-
       endif
     endif
   endif

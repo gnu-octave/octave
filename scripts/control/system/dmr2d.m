@@ -78,120 +78,110 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   ## parse input arguments
   if (nargin != 4)
     print_usage ();
-
-  elseif (!isstruct(sys))
-    error("sys must be in system data structure form");
-
-  elseif(!is_digital(sys))
-    error("sys must be discrete-time; continuous time passed");
-  
+  elseif (! isstruct (sys))
+    error ("sys must be in system data structure form");
+  elseif (! is_digital (sys))
+    error ("sys must be discrete-time; continuous time passed");
   endif
 
-  if(is_signal_list(idx) | ischar(idx))
-    idx = sysidx(sys,"st",idx);
-
-  elseif (!(isvector(idx) | isempty(idx)))
-    error(["idx(",num2str(rows(idx)),"x",num2str(columns(idx)), ...
-      ") must be a vector"]);
-
-  elseif (any(idx <= 0))
-    idv = find(idx <= 0);
+  if (is_signal_list (idx) || ischar (idx))
+    idx = sysidx (sys, "st", idx);
+  elseif (! (isvector (idx) || isempty (idx)))
+    error ("idx(%dx%d) must be a vector", rows (idx), columns (idx));
+  elseif (any (idx <= 0))
+    idv = find (idx <= 0);
     ii = idv(1);
-    error(["idx(",num2str(ii),")=",num2str(idx(ii)), ...
-      "; entries of idx must be positive"]);
-
-  elseif(!(is_signal_list(sprefix) | isempty(sprefix)))
-    error("sprefix must be a signal list (see is_signal_list) or empty");
-
-  elseif(!is_sample(Ts2))
-    error(["Ts2=",num2str(Ts2),"; invalid sampling time"]);
-
+    error ("idx(%d)=%g; entries of idx must be positive", ii, idx(ii));
+  elseif (! (is_signal_list (sprefix) || isempty (sprefix)))
+    error ("sprefix must be a signal list (see is_signal_list) or empty");
+  elseif (! is_sample (Ts2))
+    error ("Ts2=%g; invalid sampling time", Ts2);
   endif
 
   ## optional argument: cuflg
-  if(nargin <= 4)
+  if (nargin <= 4)
     cuflg = 1;          # default: constant inputs over Ts2 sampling interv.
-  elseif( !isscalar(cuflg) )
-    error("cuflg must be a scalar")
-  elseif( cuflg != 0 | cuflg != 1)
-    error(["cuflg = ",num2str(cuflg),", should be 0 or 1"]);
+  elseif (! isscalar (cuflg))
+    error ("cuflg must be a scalar")
+  elseif (cuflg != 0 || cuflg != 1)
+    error ("cuflg = %g, should be 0 or 1", cuflg);
   endif
 
   ## extract  state space information
-  [da,db,dc,dd,Ts1,nc,nz,stname,inname,outname,yd] = sys2ss(sys);
+  [da, db, dc, dd, Ts1, nc, nz, stname, inname, outname, yd] = sys2ss (sys);
 
   ## compute number of steps
-  if(Ts1 > Ts2)
-    error(["Current sampling time=",num2str(Ts1)," > Ts2=",num2str(Ts2)]);
+  if (Ts1 > Ts2)
+    error ("Current sampling time=%g > Ts2=%g", Ts1, Ts2);
   endif
-  nstp = floor(Ts2/Ts1+0.5);
-  if(abs((Ts2 - Ts1*nstp)/Ts1) > 1e-12)
-    warning(["dmr2d: Ts1=",num2str(Ts1),", Ts2=",num2str(Ts2), ...
-      ", selecting nsteps=",num2str(nstp),"; mismatch"]);
+  nstp = floor (Ts2/Ts1+0.5);
+  if (abs ((Ts2 - Ts1*nstp)/Ts1) > 1e-12)
+    warning ("dmr2d: Ts1=%g, Ts2=%g, selecting nsteps=%d; mismatch",
+	     Ts1, Ts2, nstp);
   endif
 
-  if(isempty(sprefix) & isempty(idx))
-    warning("both sprefix and idx are empty; returning dsys=sys");
+  if (isempty (sprefix) && isempty (idx))
+    warning ("both sprefix and idx are empty; returning dsys=sys");
     fidx = [];
     dsys = sys;
     return
-  elseif(isempty(sprefix))
+  elseif (isempty (sprefix))
     fidx = idx;
   else
-    fidx = reshape(idx,1,length(idx));
+    fidx = reshape (idx, 1, length(idx));
     ## find states whose name begins with any strings in sprefix.
-    ns = length(sprefix);
-    for kk=1:ns
+    ns = length (sprefix);
+    for kk = 1:ns
       spk = sprefix{kk};  # get next prefix and length
-      spl = length(spk);
+      spl = length (spk);
 
       ## check each state name
-      for ii=1:nz
+      for ii = 1:nz
         sti = stname{ii};  # compare spk with this state name
-        if(length(sti) >= spl)
+        if (length (sti) >= spl)
           ## if the prefix matches and ii isn't already in the list, add ii
-          if(strcmp(sti(1:spl),spk) & !any(fidx == ii) )
-            fidx = sort([fidx,ii]);
+          if (strcmp (sti(1:spl), spk) && ! any (fidx == ii))
+            fidx = sort ([fidx, ii]);
           endif
         endif
       endfor
     endfor
   endif
 
-  if(nstp == 0)
-    warning("dmr2d: nstp = 0; setting tsam and returning");
-    dsys = syschtsam(sys,Ts2);
-    return
-  elseif(nstp < 0)
-    error(["nstp = ", num2str(nstp)," < 0; this shouldn't be!"]);
+  if (nstp == 0)
+    warning ("dmr2d: nstp = 0; setting tsam and returning");
+    dsys = syschtsam (sys, Ts2);
+    return;
+  elseif (nstp < 0)
+    error ("nstp = %d < 0; this shouldn't be!", nstp);
   endif
 
   ## permute system matrices
-  pv = sysreorder(nz,fidx);
+  pv = sysreorder (nz, fidx);
   pv = pv(nz:-1:1);          # reverse order to put fast modes in leading block
 
   ## construct inverse permutation
-  Inz = eye(nz);
+  Inz = eye (nz);
   pvi = (Inz(pv,:)'*[1:nz]')';
 
   ## permute A, B (stname permuted for debugging only)
   da = da(pv,pv);
   db = db(pv,:);
-  stname = stname(pv);
+  stname = stname (pv);
 
   ## partition A, B:
-  lfidx = length(fidx);
+  lfidx = length (fidx);
   bki = 1:lfidx;
   a11 = da(bki,bki);
   b1 = db(bki,:);
 
-  if(lfidx < nz)
+  if (lfidx < nz)
     lfidx1 = lfidx+1;
     bki2 = (lfidx1):nz;
     a12 = da(bki,bki2);
     b2 = db(bki2,:);
   else
-    warning("dmr2d: converting entire A,B matrices to new sampling rate");
+    warning ("dmr2d: converting entire A,B matrices to new sampling rate");
     lfidx1 = -1;
     bki2 = [];
   endif
@@ -201,56 +191,57 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   ## compute abar_{n-1}*a12 and appropriate b matrix stuff
   a12b = a12;      # running  total of abar_{n-1}*a12
   a12w = a12;      # current a11^n*a12  (start with n = 0)
-  if(cuflg)
+  if (cuflg)
     b1b = b1;
     b1w = b1;
   else
     ## cuflg == 0, need to keep track of intersample inputs too
-    nzdx = find(max(abs(b1)) != 0);  # FIXME: check tolerance relative to ||b1||
+    ## FIXME: check tolerance relative to ||b1||
+    nzdx = find (max (abs (b1)) != 0);
     b1w = b1(nzdx);
     innamenz = inname(nzdx);
     b1b = b1;                        # initial b1 must match columns in b2
   endif
 
   ## compute a11h = a11^nstp by squaring
-  a11h = eye(size(a11));
+  a11h = eye (size (a11));
   p2 = 1;
   a11p2 = a11;        #a11^p2
 
   nstpw = nstp;       # workspace for computing a11^nstp
-  while(nstpw > 0.5)
-    oddv = rem(nstpw,2);
-    if(oddv)
+  while (nstpw > 0.5)
+    oddv = rem (nstpw, 2);
+    if (oddv)
       a11h = a11h*a11p2;
     endif
     nstpw = (nstpw-oddv)/2;
-    if(nstpw > 0.5)
+    if (nstpw > 0.5)
       a11p2 = a11p2*a11p2;    # a11^(next power of 2)
     endif
   endwhile
 
   ## FIXME: this part should probably also use squaring, but
   ## that would require exponentially growing memory.  What do do?
-  for kk=2:nstp
+  for kk = 2:nstp
     ## update a12 block to sum(a12 + ... + a11^(kk-1)*a12)
     a12w = a11*a12w;
     a12b = a12b + a12w;
 
     ## similar for b1 block (checking for cuflg first!)
     b1w = a11*b1w;
-    if(cuflg)
+    if (cuflg)
       b1b = b1b + b1w;        # update b1 block just like we did a12
     else
       b1b = [b1b, b1w];       # append new inputs
-      newin = strappend(innamenz,["_d",num2str(kk-1)]);
-      inname = __sysconcat__(inname,newin);
+      newin = sprintf ("%s_d%d", innamenz, kk-1);
+      inname = __sysconcat__ (inname, newin);
     endif
   endfor
 
   ## reconstruct system and return
   da(bki,bki) = a11h;
   db(bki,1:columns(b1b)) = b1b;
-  if(!isempty(bki2))
+  if (! isempty (bki2))
     da(bki,bki2) = a12b;
   endif
 
@@ -259,6 +250,7 @@ function [dsys, fidx] = dmr2d (sys, idx, sprefix, Ts2, cuflg)
   stname = stname(pvi);
 
   ## construct new system and return
-  dsys = ss(da,db,dc,dd,Ts2,0,nz,stname,inname,outname,find(yd == 1));
+  dsys = ss (da, db, dc, dd, Ts2, 0, nz, stname, inname, outname,
+	     find (yd == 1));
 
 endfunction

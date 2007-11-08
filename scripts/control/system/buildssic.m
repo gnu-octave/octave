@@ -159,53 +159,53 @@
 
 function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8)
 
-  if((nargin < 5) || (nargin > 12))
+  if (nargin < 5 || nargin > 12)
     print_usage ();
   endif
   if (nargin >= 5)
-    if (!isstruct(s1))
-      error("---> s1 must be a structed system.");
+    if (! isstruct (s1))
+      error ("---> s1 must be a structed system.");
     endif
-    s1 = sysupdate(s1, "ss");
-    [n, nz, m, p] = sysdimensions(s1);
-    if (!n && !nz)
-      error("---> pure static system must not be the first in list.");
+    s1 = sysupdate (s1, "ss");
+    [n, nz, m, p] = sysdimensions (s1);
+    if (! n && ! nz)
+      error ("---> pure static system must not be the first in list.");
     endif
     if (n && nz)
-      error("---> cannot handle mixed continuous and discrete systems.");
+      error ("---> cannot handle mixed continuous and discrete systems.");
     endif
     D_SYS = (nz > 0);
-    [A,B,C,D,tsam] = sys2ss(s1);
+    [A, B, C, D, tsam] = sys2ss (s1);
     nt = n + nz;
   endif
   for ii = 6:nargin
-    eval(["mysys = s", num2str(ii-4), ";"]);
-    if (!isstruct(mysys))
-      error("---> Parameter must be a structed system.");
+    eval (["mysys = s", num2str(ii-4), ";"]);
+    if (! isstruct (mysys))
+      error ("---> Parameter must be a structed system.");
     endif
-    mysys = sysupdate(mysys, "ss");
-    [n1, nz1, m1, p1] = sysdimensions(mysys);
+    mysys = sysupdate (mysys, "ss");
+    [n1, nz1, m1, p1] = sysdimensions (mysys);
     if (n1 && nz1)
-      error("---> cannot handle mixed continuous and discrete systems.");
+      error ("---> cannot handle mixed continuous and discrete systems.");
     endif
     if (D_SYS)
       if (n1)
-        error("---> cannot handle mixed cont. and discr. systems.");
+        error ("---> cannot handle mixed cont. and discr. systems.");
       endif
-      if (tsam != sysgettsam(mysys))
-        error("---> sampling time of all systems must match.");
+      if (tsam != sysgettsam (mysys))
+        error ("---> sampling time of all systems must match.");
       endif
     endif
-    [as,bs,cs,ds] = sys2ss(mysys);
+    [as, bs, cs, ds] = sys2ss (mysys);
     nt1 = n1 + nz1;
-    if (!nt1)
+    if (! nt1)
       ## pure gain (pad B, C with zeros)
       B = [B, zeros(nt,m1)];
       C = [C; zeros(p1,nt)];
     else
       A = [A, zeros(nt,nt1); zeros(nt1,nt), as];
-      B = [B, zeros(nt,m1);  zeros(nt1,m),  bs];
-      C = [C, zeros(p,nt1);  zeros(p1,nt),  cs];
+      B = [B, zeros(nt,m1); zeros(nt1,m), bs];
+      C = [C, zeros(p,nt1); zeros(p1,nt), cs];
     endif
     D = [D, zeros(p,m1); zeros(p1,m), ds];
     n = n + n1;
@@ -216,51 +216,55 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   endfor
 
   ## check maximum dimensions
-  [nx, mx] = size(Clst);
+  [nx, mx] = size (Clst);
   if (nx > m)
-    error("---> more rows in Clst than total number of inputs.");
+    error ("---> more rows in Clst than total number of inputs.");
   endif
   if (mx > p+1)
-    error("---> more cols in Clst than total number of outputs.");
+    error ("---> more cols in Clst than total number of outputs.");
   endif
   ## empty vector Ulst is OK
-  lul = length(Ulst);
+  lul = length (Ulst);
   if (lul)
-    if (!isvector(Ulst))
-      error("---> Input u list Ulst must be a vector.");
+    if (! isvector (Ulst))
+      error ("---> Input u list Ulst must be a vector.");
     endif
     if (lul > m)
-      error("---> more values in Ulst than number of inputs.");
+      error ("---> more values in Ulst than number of inputs.");
     endif
   endif
-  if (!length(Olst))  Olst = [1:(p+lul)];  endif
-  if (!length(Ilst))  Ilst = [1:m];        endif
-  if (!isvector(Olst))
-    error("---> Output list Olst must be a vector.");
+  if (! length (Olst))
+    Olst = 1:(p+lul);
   endif
-  if (!isvector(Ilst))
-    error("---> Input list Ilst must be a vector.");
+  if (! length (Ilst))
+    Ilst = 1:m;
+  endif
+  if (! isvector(Olst))
+    error ("---> Output list Olst must be a vector.");
+  endif
+  if (! isvector (Ilst))
+    error ("---> Input list Ilst must be a vector.");
   endif
 
   ## build the feedback "K" from the interconnection data Clst
-  K = zeros(m, p);
-  inp_used = zeros(m,1);
+  K = zeros (m, p);
+  inp_used = zeros (m, 1);
   for ii = 1:nx
     xx = Clst(ii,:);
     iu = xx(1);
-    if ((iu < 1) || (iu > m))
-      error("---> invalid value in first col of Clst.");
+    if (iu < 1 || iu > m)
+      error ("---> invalid value in first col of Clst.");
     endif
     if (inp_used(iu))
-      error("---> Input specified more than once.");
+      error ("---> Input specified more than once.");
     endif
     inp_used(iu) = 1;
     for kk = 2:mx
       it = xx(kk);
-      if (abs(it) > p)
-        error("---> invalid row value in Clst.");
+      if (abs (it) > p)
+        error ("---> invalid row value in Clst.");
       elseif (it)
-        K(iu,abs(it)) = sign(it);
+        K(iu,abs(it)) = sign (it);
       endif
     endfor
   endfor
@@ -274,11 +278,11 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
   ##            -1
   ## R = (I-D*K)   must exist.
 
-  R = eye(p) - D*K;
-  if (rank(R) < p)
-    error("---> singularity in algebraic loop.");
+  R = eye (p) - D*K;
+  if (rank (R) < p)
+    error ("---> singularity in algebraic loop.");
   else
-    R = inv(R);
+    R = inv (R);
   endif
   A = A + B*K*R*C;
   B = B + B*K*R*D;
@@ -287,43 +291,43 @@ function sys = buildssic (Clst, Ulst, Olst, Ilst, s1, s2, s3, s4, s5, s6, s7, s8
 
   ## append old inputs u to the outputs (if lul > 0)
   kc = K*C;
-  kdi = eye(m) + K*D;
+  kdi = eye (m) + K*D;
   for ii = 1:lul
     it = Ulst(ii);
-    if ((it < 1) || (it > m))
-      error("---> invalid value in Ulst.");
+    if (it < 1 || it > m)
+      error ("---> invalid value in Ulst.");
     endif
     C = [C; kc(it,:)];
     D = [D; kdi(it,:)];
   endfor
 
   ## select and rearrange outputs
-  nn = length(A);
-  lol = length(Olst);
-  Cnew = zeros(lol,nn);
-  Dnew = zeros(lol,m);
+  nn = length (A);
+  lol = length (Olst);
+  Cnew = zeros (lol, nn);
+  Dnew = zeros (lol, m);
   for ii = 1:lol
     iu = Olst(ii);
-    if (!iu || (abs(iu) > p+lul))
-      error("---> invalid value in Olst.");
+    if (! iu || abs(iu) > p+lul)
+      error ("---> invalid value in Olst.");
     endif
     Cnew(ii,:) = sign(iu)*C(abs(iu),:);
     Dnew(ii,:) = sign(iu)*D(abs(iu),:);
   endfor
   C = Cnew;
   D = Dnew;
-  lil = length(Ilst);
-  Bnew = zeros(nn,lil);
-  Dnew = zeros(lol,lil);
+  lil = length (Ilst);
+  Bnew = zeros (nn, lil);
+  Dnew = zeros (lol, lil);
   for ii = 1:lil
     iu = Ilst(ii);
-    if (!iu || (abs(iu) > m))
-      error("---> invalid value in Ilst.");
+    if (! iu || abs(iu) > m)
+      error ("---> invalid value in Ilst.");
     endif
-    Bnew(:,ii) = sign(iu)*B(:,abs(iu));
-    Dnew(:,ii) = sign(iu)*D(:,abs(iu));
+    Bnew(:,ii) = sign (iu) * B(:,abs(iu));
+    Dnew(:,ii) = sign (iu) * D(:,abs(iu));
   endfor
 
-  sys = ss(A, Bnew, C, Dnew, tsam, n, nz);
+  sys = ss (A, Bnew, C, Dnew, tsam, n, nz);
 
 endfunction

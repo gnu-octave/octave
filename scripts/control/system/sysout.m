@@ -45,108 +45,112 @@
 
 function retsys = sysout (sys, opt)
 
-  if( (nargin < 1) || (nargin > 2) )
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
 
-  if(isempty(sys))
+  if (isempty (sys))
     retsys = sys;
-    warning("sysout: empty system")
+    error ("sysout: empty system")
     return;
   endif
 
-  if(! isstruct(sys))
-    disp("sysout: input must be a system structure")
+  if (! isstruct (sys))
+    error ("sysout: input must be a system structure")
   endif
 
   ## set up output type array
-  if( nargin == 1 )
-    opt = sysgettype(sys);
-  else
-    if( ! (strcmp(opt,"ss") + strcmp(opt,"tf") + ...
-      strcmp(opt,"zp") + strcmp(opt,"all") ) )
-      error("opt must be one of [], \"ss\", \"tf\", \"zp\", or \"all\"");
-    endif
+  if (nargin == 1)
+    opt = sysgettype (sys);
+  elseif (! (strcmp (opt, "ss") || strcmp (opt, "tf")
+	     || strcmp (opt, "zp") || strcmp (opt, "all")))
+    error ("opt must be one of [], \"ss\", \"tf\", \"zp\", or \"all\"");
   endif
 
   ## now check output for each form:
-  [nn,nz,mm,pp] = sysdimensions(sys);
-  if( mm > 0)
-    disp("Input(s)")
-    disp(__outlist__(sysgetsignals(sys,"in"),"      "));
+  [nn, nz, mm, pp] = sysdimensions(sys);
+  if (mm > 0)
+    disp ("Input(s)")
+    disp (__outlist__ (sysgetsignals (sys, "in"), "      "));
   else
-    disp("Input(s): none");
+    disp ("Input(s): none");
   endif
   if (pp > 0)
-    disp("Output(s):")
-    disp(__outlist__(sysgetsignals(sys,"out"), ...
-          "     ",sysgetsignals(sys,"yd")) );
+    disp ("Output(s):")
+    disp (__outlist__ (sysgetsignals (sys, "out"),
+		       "     ", sysgetsignals (sys, "yd")) );
   else
-    disp("Output(s): none");
+    disp ("Output(s): none");
   endif
-  if(sysgettsam(sys) > 0)
-    disp(["Sampling interval: ",num2str(sysgettsam(sys))]);
+  if (sysgettsam (sys) > 0)
+    disp ("Sampling interval: %g", sysgettsam (sys));
     str = "z";
   else
     str = "s";
   endif
 
   ## transfer function form
-  if( strcmp(opt,"tf") + strcmp(opt,"all") )
-    sys = sysupdate(sys,"tf");          #make sure tf is up to date
-    disp("transfer function form:")
-    [num,den] = sys2tf(sys);
-    tfout(num,den,str);
+  if (strcmp (opt, "tf") || strcmp (opt, "all"))
+    sys = sysupdate (sys, "tf");          #make sure tf is up to date
+    disp ("transfer function form:")
+    [num, den] = sys2tf (sys);
+    tfout (num, den, str);
   endif
 
-  if( strcmp(opt,"zp") + strcmp(opt,"all") )
-    sys = sysupdate(sys,"zp");          #make sure zp is up to date
+  if (strcmp(opt, "zp") || strcmp(opt, "all"))
+    sys = sysupdate (sys, "zp");          #make sure zp is up to date
     disp("zero-pole form:")
-    [zer,pol,kk] = sys2zp(sys);
-    zpout(zer, pol, kk,str)
+    [zer, pol, kk] = sys2zp (sys);
+    zpout (zer, pol, kk, str)
   endif
 
-  if( strcmp(opt,"ss") + strcmp(opt,"all") )
-    sys = sysupdate(sys,"ss");
-    disp("state-space form:");
-    disp([num2str(nn)," continuous states, ", num2str(nz)," discrete states"]);
-    if( nn+nz > 0)
-      disp("State(s):")
+  if (strcmp(opt, "ss") || strcmp(opt, "all"))
+    sys = sysupdate (sys, "ss");
+    disp ("state-space form:");
+    disp ("%d continuous states, %d discrete states", nn, nz);
+    if (nn+nz > 0)
+      disp ("State(s):")
       xi = (nn+1):(nn+nz);
-      xd = zeros(1,nn+nz);
-      if(!isempty(xi))
+      xd = zeros (1, nn+nz);
+      if (! isempty (xi))
         xd(xi) = 1;
       endif
-      disp(__outlist__(sysgetsignals(sys,"st"),"    ",xd));
+      disp (__outlist__ (sysgetsignals (sys, "st"), "    ", xd));
     else
-      disp("State(s): none");
+      disp ("State(s): none");
     endif
 
     ## display matrix values?
-    dmat = (max( [ (nn+nz), mm, pp ] ) <= 32);
+    dmat = (max ([nn+nz, mm, pp]) <= 32);
 
-    printf("A matrix: %d x %d\n",sysdimensions(sys,"st"),
-           sysdimensions(sys,"st"));
-    [aa,bb,cc,dd] = sys2ss(sys);
-    if(dmat)    disp(aa);       endif
+    printf ("A matrix: %d x %d\n", sysdimensions (sys, "st"),
+            sysdimensions (sys, "st"));
+    [aa, bb, cc, dd] = sys2ss (sys);
+    if (dmat)
+      disp (aa);
+    endif
 
-    printf("B matrix: %d x %d\n",sysdimensions(sys,"st"),
-           sysdimensions(sys,"in"));
-    if(dmat)     disp(bb);              endif
+    printf ("B matrix: %d x %d\n", sysdimensions (sys, "st"),
+            sysdimensions (sys, "in"));
+    if (dmat)
+      disp (bb);
+    endif
 
-    printf("C matrix: %d x %d\n",sysdimensions(sys,"out"),
-           sysdimensions(sys,"st"));
-    if(dmat) disp(cc);          endif
+    printf ("C matrix: %d x %d\n", sysdimensions (sys, "out"),
+            sysdimensions (sys, "st"));
+    if (dmat)
+      disp (cc);
+    endif
 
-    printf("D matrix: %d x %d\n",sysdimensions(sys,"out"),
-           sysdimensions(sys,"in"));
-    if(dmat)       disp(dd);         endif
+    printf("D matrix: %d x %d\n", sysdimensions (sys, "out"),
+           sysdimensions (sys, "in"));
+    if (dmat)
+      disp (dd);
+    endif
   endif
 
   if (nargout >= 1)
     retsys = sys;
   endif
-
-  ## restore global variable
 
 endfunction

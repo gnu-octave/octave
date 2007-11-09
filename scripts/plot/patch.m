@@ -44,7 +44,7 @@ function h = patch (varargin)
     oldh = gca ();
     unwind_protect
       axes (h);
-      [tmp, fail] = __patch__ (h, varargin{:});
+      [tmp, fail] = __patch__ (h, varargin{2:end});
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect

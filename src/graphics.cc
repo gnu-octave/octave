@@ -592,7 +592,7 @@ is_handle (double val)
 static bool
 is_handle (const octave_value& val)
 {
-  return val.is_real_type () && is_handle (val.double_value ());
+  return val.is_real_scalar () && is_handle (val.double_value ());
 }
 
 static bool

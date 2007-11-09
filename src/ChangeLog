@@ -1,3 +1,7 @@
+2007-11-09  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (is_handle): Handle must be a real scalar.
+
 2007-11-08  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__gnuplot_raw__.l (F__gnuplot_save_data__):

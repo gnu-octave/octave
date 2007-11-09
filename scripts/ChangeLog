@@ -1,3 +1,7 @@
+2007-11-09  David Bateman  <dbateman@free.fr>
+
+	* plot/patch.m: Correctly handle case of axis handle as first arg.
+
 2007-11-08  John W. Eaton  <jwe@octave.org>
 
 	* control/base/dcgain.m, control/base/dre.m,

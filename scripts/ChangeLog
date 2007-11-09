@@ -2,6 +2,10 @@
 
 	* plot/patch.m: Correctly handle case of axis handle as first arg.
 
+2007-11-09  Joseph P. Skudlarek  <Jskud@Jskud.com>
+
+	* sparse/spdiags.m: Tweak documentation entries to match other uses.
+
 2007-11-08  John W. Eaton  <jwe@octave.org>
 
 	* control/base/dcgain.m, control/base/dre.m,

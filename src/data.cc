@@ -1371,7 +1371,7 @@ but it uses less memory and avoids calling conj if @var{x} is real.\n\
 
 DEFUN (islogical, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Functio} {} islogical (@var{x})\n\
+@deftypefn {Built-in Function} {} islogical (@var{x})\n\
 Return true if @var{x} is a logical object.\n\
 @end deftypefn")
 {

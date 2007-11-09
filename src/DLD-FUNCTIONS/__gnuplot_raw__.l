@@ -689,11 +689,29 @@ save_in_tmp_file (const octave_value& val, int ndim = 2,
   return name;
 }
 
+#define WARN_OBSOLETE(nm) \
+  do \
+    { \
+      static warned = false; \
+ \
+      if (! warned) \
+        { \
+          warning (nm ## ": this function is obsolete and will be removed from a future version of Octave"); \
+ \
+          warned = true; \
+        } \
+    } \
+  while (0)
+
 DEFUN_DLD (__gnuplot_save_data__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __gnuplot_save_data__ (@var{data}, @var{ndim}, @var{parametric})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
+of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("__gnuplot_save_data__");
+
   octave_value retval;
 
   int nargin = args.length ();
@@ -1571,6 +1589,8 @@ DEFUN_DLD (gnuplot_command_plot, args, nargout,
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_plot");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_plot);
 }
 
@@ -1582,6 +1602,8 @@ DEFUN_DLD (gnuplot_command_replot, args, nargout,
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_replot");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_replot);
 }
 
@@ -1593,6 +1615,8 @@ DEFUN_DLD (gnuplot_command_splot, args, nargout,
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_splot");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_splot);
 }
 
@@ -1604,6 +1628,8 @@ DEFUN_DLD (gnuplot_command_using, args, nargout,
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_using");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_using);
 }
 
@@ -1614,6 +1640,8 @@ DEFUN_DLD (gnuplot_command_with, args, nargout,
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_with");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_with);
 }
 
@@ -1625,6 +1653,8 @@ DEFUN_DLD (gnuplot_command_axes, args, nargout,
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_axes");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_axes);
 }
 
@@ -1636,6 +1666,8 @@ DEFUN_DLD (gnuplot_command_title, args, nargout,
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_title");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_title);
 }
 
@@ -1648,6 +1680,8 @@ of Octave.}\n\
 \n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_end");
+
   return SET_INTERNAL_VARIABLE (gnuplot_command_end);
 }
 
@@ -1663,6 +1697,8 @@ variable is set when Octave starts.\n\
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("gnuplot_command_use_title_option");
+
   return SET_INTERNAL_VARIABLE (gnuplot_use_title_option);
 }
 
@@ -1676,6 +1712,8 @@ Clear the plot window and any titles or axis labels.\n\
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("__clear_plot_window__");
+
   gnuplot::clear ();
 
   return octave_value_list ();
@@ -1692,6 +1730,8 @@ this will close the plot window.\n\
 @seealso{close}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("closeplot");
+
   gnuplot::close ();
 
   return octave_value_list ();
@@ -1711,6 +1751,8 @@ want to clean up in the middle of a session.\n\
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("purge_tmp_files");
+
   gnuplot::cleanup_tmp_files ();
 
   return octave_value_list ();
@@ -1725,6 +1767,8 @@ Send @var{string} directly to gnuplot subprocess.\n\
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("__gnuplot_raw__");
+
   if (args.length () == 1 && args(0).is_string ())
     {
       std::string cmd = args(0).string_value ();
@@ -1746,6 +1790,8 @@ Send @var{val} to gnuplot subprocess as inline data.\n\
 of Octave.}\n\
 @end deftypefn")
 {
+  WARN_OBSOLETE ("__gnuplot_send_inline_data__");
+
   octave_value retval;
 
   int nargin = args.length ();
@@ -1784,6 +1830,8 @@ Set plotting options for gnuplot\n\
 of Octave.}\n\
 @end deffn")
 {
+  WARN_OBSOLETE ("__gnuplot_set__");
+
   string_vector argv = args.make_argv ("set");
 
   if (! error_state)
@@ -1801,6 +1849,8 @@ Show plotting options.\n\
 of Octave.}\n\
 @end deffn")
 {
+  WARN_OBSOLETE ("__gnuplot_show__");
+
   string_vector argv = args.make_argv ("show");
 
   if (! error_state)
@@ -1816,6 +1866,8 @@ Plot with gnuplot.\n\
 @strong{This function is obsolete and will be removed from a future version\n\
 of Octave.}")
 {
+  WARN_OBSOLETE ("__gnuplot_plot__");
+
   string_vector argv = args.make_argv ("plot");
 
   if (! error_state)
@@ -1831,6 +1883,8 @@ Plot with gnuplot.\n\
 @strong{This function is obsolete and will be removed from a future version\n\
 of Octave.}")
 {
+  WARN_OBSOLETE ("__gnuplot_splot__");
+
   string_vector argv = args.make_argv ("splot");
 
   if (! error_state)
@@ -1846,6 +1900,8 @@ Plot with gnuplot.\n\
 @strong{This function is obsolete and will be removed from a future version\n\
 of Octave.}")
 {
+  WARN_OBSOLETE ("__gnuplot_replot__");
+
   string_vector argv = args.make_argv ("replot");
 
   if (! error_state)

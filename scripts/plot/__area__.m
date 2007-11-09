@@ -19,15 +19,21 @@
 ## Undocumented internal function.
 
 function retval = __area__ (ax, x, y, bv, varargin)
+
   colors = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
-  x = [x(1,:) ; x ; x(end,:)];
-  y = cumsum ([[bv, ones(1, size (y, 2) - 1)] ; y ; ...
+
+  x = [x(1,:); x; x(end,:)];
+
+  y = cumsum ([[bv, ones(1, size (y, 2) - 1)]; y;
 	       [bv, ones(1, size (y, 2) - 1)]], 2);
 
-  retval = patch (ax, x(:, 1), y (:, 1), colors (1,:), varargin{:});
-  for i = 2 : size(y, 2)
-    retval = [retval; patch(ax, [x(:,i); flipud(x(:,i))], ...
-			    [y(:, i) ; flipud(y(:, i-1))], colors(i,:),
-			    varargin{:})];
+  retval = patch (ax, x(:,1), y(:,1), colors(1,:), varargin{:});
+
+  for i = 2:size(y,2)
+    tmp = patch (ax, [x(:,i); flipud(x(:,i))],
+		 [y(:,i) ; flipud(y(:, i-1))], colors(i,:), varargin{:});
+
+    retval = [retval; tmp];
   endfor
+
 endfunction

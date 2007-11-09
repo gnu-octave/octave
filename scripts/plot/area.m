@@ -38,7 +38,7 @@
 ## @seealso{plot, patch}
 ## @end deftypefn
 
-function [ h ] = area (varargin)
+function h = area (varargin)
 
   if (nargin > 0)
     idx = 1;
@@ -46,13 +46,13 @@ function [ h ] = area (varargin)
     x = y = [];
     bv = 0;
     args = {};
-    # check for axes parent
-    if (ishandle (varargin{idx}) &&
-	strcmp (get (varargin{idx}, "type"), "axes"))
+    ## Check for axes parent.
+    if (ishandle (varargin{idx})
+	&& strcmp (get (varargin{idx}, "type"), "axes"))
       ax = varargin{idx};
       idx++;
     endif
-    # check for (X) or (X,Y) arguments and possible base value
+    ## Check for (X) or (X,Y) arguments and possible base value.
     if (nargin >= idx && ismatrix (varargin{idx}))
       y = varargin{idx};
       idx++;
@@ -73,7 +73,7 @@ function [ h ] = area (varargin)
     else
       print_usage ();
     endif
-    # check for additional args
+    ## Check for additional args.
     if (nargin >= idx)
       args = {varargin{idx:end}};
     endif

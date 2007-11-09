@@ -710,14 +710,14 @@ DEFUN_DLD (__gnuplot_save_data__, args, ,
 of Octave.}\n\
 @end deftypefn")
 {
-  WARN_OBSOLETE ("__gnuplot_save_data__");
-
   octave_value retval;
 
   int nargin = args.length ();
 
   if (nargin > 0 && nargin < 4)
     {
+      WARN_OBSOLETE ("__gnuplot_save_data__");
+
       int ndim = 2;
       bool parametric = false;
 
@@ -1767,10 +1767,10 @@ Send @var{string} directly to gnuplot subprocess.\n\
 of Octave.}\n\
 @end deftypefn")
 {
-  WARN_OBSOLETE ("__gnuplot_raw__");
-
   if (args.length () == 1 && args(0).is_string ())
     {
+      WARN_OBSOLETE ("__gnuplot_raw__");
+
       std::string cmd = args(0).string_value ();
 
       gnuplot::send_raw (cmd);
@@ -1790,14 +1790,14 @@ Send @var{val} to gnuplot subprocess as inline data.\n\
 of Octave.}\n\
 @end deftypefn")
 {
-  WARN_OBSOLETE ("__gnuplot_send_inline_data__");
-
   octave_value retval;
 
   int nargin = args.length ();
 
   if (nargin > 0 && nargin < 4)
     {
+      WARN_OBSOLETE ("__gnuplot_send_inline_data__");
+
       int ndim = 2;
       bool parametric = false;
 

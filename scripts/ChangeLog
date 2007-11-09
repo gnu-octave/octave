@@ -1,6 +1,7 @@
 2007-11-09  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Correct test for have_data.
+	Correct logic in setting palette data.
 
 	* audio/wavread.m, control/base/__bodquist__.m,
 	control/base/dare.m, control/base/dlqr.m, control/hinf/h2norm.m,

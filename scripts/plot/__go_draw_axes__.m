@@ -688,6 +688,10 @@ function __go_draw_axes__ (h, plot_stream)
 				|| strncmp (obj.facecolor, "interp", 6));
             flat_interp_edge = (strncmp (obj.edgecolor, "flat", 4)
 				|| strncmp (obj.edgecolor, "interp", 6));
+
+	    facecolor_none_or_white = (strncmp (obj.facecolor, "none", 4)
+				       || (isnumeric (obj.facecolor)
+					   && all (obj.facecolor == 1)));
             palette_data = [];
 
 	    if (strncmp (obj.facecolor, "none", 4))
@@ -695,27 +699,18 @@ function __go_draw_axes__ (h, plot_stream)
 	    endif
 
             if (flat_interp_face
-		|| (flat_interp_edge
-		    && (strncmp (obj.facecolor, "none", 4)
-			|| (isnumeric (obj.facecolor)
-			    && all (obj.facecolor == 1)))))
+		|| (flat_interp_edge && facecolor_none_or_white))
               palette_data = [1:rows(surf_colormap); surf_colormap'];
-            endif
-
-            if (isnumeric (obj.facecolor))
+	    elseif (isnumeric (obj.facecolor))
               palette_data = [1:2; [obj.facecolor; obj.facecolor]'];
             endif
 
-
-	    if ((strncmp (obj.facecolor, "none", 4)
-		 || (isnumeric (obj.facecolor)
-		     && all (obj.facecolor == 1)))
-		&& isnumeric (obj.edgecolor))
+	    if (facecolor_none_or_white && isnumeric (obj.edgecolor))
               palette_data = [1:2; [obj.edgecolor; obj.edgecolor]'];
             endif
 
-	    if (strncmp (obj.facecolor, "none", 4)
-		|| (isnumeric (obj.facecolor) && all (obj.facecolor == 1)))
+	    if (facecolor_none_or_white)
+	      ## Do nothing.
             elseif (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
               fprintf (plot_stream, "set pm3d at s %s;\n", interp_str);
             else

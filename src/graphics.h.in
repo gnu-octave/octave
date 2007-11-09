@@ -1606,6 +1606,7 @@ public:
       octave_value markeredgecolor
       octave_value markerfacecolor
       octave_value markersize
+      octave_value keylabel
     END_PROPERTIES
 
     static std::string go_name;

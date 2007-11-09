@@ -59,11 +59,11 @@
 ##
 ## Some specific functions are directly available using @var{func}:
 ##
-## @table @code
+## @table @asis
 ## @item "show"
 ##   Show legends from the plot
 ## @item "hide"
-## @itemx off
+## @itemx "off"
 ##   Hide legends from the plot
 ## @item "boxon"
 ##   Draw a box around legends
@@ -158,7 +158,9 @@ function legend (varargin)
   if (nargs > 0)
     have_data = false;
     for i = 1:nkids
-      if (strcmp (get (kids(k), "type"), "line"))
+      if (strcmp (get (kids(k), "type"), "line")
+	  || strcmp (get (kids(k), "type"), "surface")
+	  || strcmp (get (kids(k), "type"), "patch"))
 	have_data = true;
 	break;
       endif
@@ -172,7 +174,10 @@ function legend (varargin)
   for i = 1:nargs
     arg = varargin{i};
     if (ischar (arg))
-      while (k <= nkids && ! strcmp (get (kids(k), "type"), "line"))
+      while (k <= nkids
+	     && ! (strcmp (get (kids(k), "type"), "line")
+		   || strcmp (get (kids(k), "type"), "surface")
+		   || strcmp (get (kids(k), "type"), "patch")))
 	k++;
       endwhile
       if (k <= nkids)

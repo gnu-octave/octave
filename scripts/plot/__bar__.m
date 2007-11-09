@@ -22,7 +22,8 @@
 
 function varargout = __bar__ (vertical, func, varargin)
 
-  width = 0.8;
+  ## Slightly smaller than 0.8 to avoid clipping issue in gnuplot 4.0
+  width = 0.8 - 10 * eps; 
   group = true;
 
   if (nargin < 3)
@@ -133,33 +134,42 @@ function varargout = __bar__ (vertical, func, varargin)
   yb(3:4:4*ylen,:) = y1;
   yb(4:4:4*ylen,:) = y0;
 
-  xb = reshape (xb, 4, numel (xb) /  4);
-  yb = reshape (yb, 4, numel (yb) /  4);
+  xb = reshape (xb, [4, numel(xb) / 4 / ycols, ycols]);
+  yb = reshape (yb, [4, numel(yb) / 4 / ycols, ycols]);
 
-  if (! have_line_spec)
-    colors = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
-    newargs = [{shiftdim(colors (mod (floor ([0 : (ycols * ylen - 1)] / ylen), 
-				      6) + 1, :), -1)}, newargs];
-  endif
-
+  color = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
   if (vertical)
-    if (nargout < 1)
+    if (nargout < 2)
       newplot ();
-      patch (xb, yb, newargs {:});
-    elseif (nargout < 2)
-      newplot ();
-      varargout{1} = patch (xb, yb, newargs {:});
+      tmp = [];
+      for i = 1 : ycols
+	if (! have_line_spec)
+	  tmp = [tmp; patch(xb(:,:,i), yb(:,:,i), color(i,:), newargs {:})];
+	else
+	  tmp = [tmp; patch(xb(:,:,i), yb(:,:,i), newargs {:})];
+	endif
+      endfor
+      if (nargout == 1)
+	varargout{1} = tmp;
+      endif
     else
       varargout{1} = xb;
       varargout{2} = yb;
     endif
   else
-    if (nargout < 1)
+    if (nargout < 2)
       newplot ();
-      patch (yb, xb, newargs{:});
-    elseif (nargout < 2)
-      newplot ();
-      varargout{1} = patch (yb, xb, newargs{:});
+      tmp = [];
+      for i = 1 : ycols
+	if (! have_line_spec)
+	  tmp = [tmp; patch(yb(:,:,i), xb(:,:,i), color(i,:), newargs {:})];
+	else
+	  tmp = [tmp; patch(yb(:,:,i), xb(:,:,i), newargs {:})];
+	endif
+      endfor
+      if (nargout == 1)
+	varargout{1} = tmp;
+      endif
     else
       varargout{1} = yb;
       varargout{2} = xb;

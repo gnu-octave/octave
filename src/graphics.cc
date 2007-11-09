@@ -2138,7 +2138,8 @@ patch::properties::properties (const graphics_handle& mh,
     marker ("none"),
     markeredgecolor ("auto"),
     markerfacecolor ("none"),
-    markersize (1)
+    markersize (1),
+    keylabel ("")
 { }
 
 void
@@ -2186,6 +2187,8 @@ patch::properties::set (const property_name& name,
     set_markerfacecolor (val);
   else if (name.compare ("markersize"))
     set_markersize (val);
+  else if (name.compare ("keylabel"))
+    set_keylabel (val);
   else
     {
       modified = false;
@@ -2220,6 +2223,7 @@ patch::properties::get (void) const
   m.assign ("markeredgecolor", markeredgecolor);
   m.assign ("markerface", markerfacecolor);
   m.assign ("markersize", markersize);
+  m.assign ("keylabel", keylabel);
 
   return m;
 }
@@ -2267,6 +2271,8 @@ patch::properties::get (const property_name& name) const
     retval = markerfacecolor;
   else if (name.compare ("markersize"))
     retval = markersize;
+  else if (name.compare ("keylabel"))
+    retval = keylabel;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -2293,7 +2299,7 @@ patch::properties::factory_defaults (void)
   m["markeredgecolor"] = "auto";
   m["markerfacecolor"] = "none";
   m["markersize"] = 1;
-
+  m["keylabel"] = "";
 
   return m;
 }

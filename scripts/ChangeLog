@@ -9,6 +9,12 @@
 
 2007-11-09  David Bateman  <dbateman@free.fr>
 
+	* plot/legend.m: Also allow labels for surface and patch types.
+	* plot/__bar__.m: Split into separate patch pbjects to allow
+	setting of the legend.
+	* plot/__go_draw_axes__.m: Set titlespec from keylabel for patch
+	objects as well.
+
 	* plot/area.m, plot/__area__.m: New functions
 	* plot/Makefile.in (SOURCES): Add them to the list of files.
 

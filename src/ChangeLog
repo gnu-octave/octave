@@ -1,5 +1,7 @@
 2007-11-09  David Bateman  <dbateman@free.fr>
 
+	* graphics.cc, graphics.h.in (class patch): Add the field "keylabel".
+
 	* data.cc (Fcputime) [__WIN32__]: Correct scaling of sys and usr times.
 
 	* graphics.cc (is_handle): Handle must be a real scalar.

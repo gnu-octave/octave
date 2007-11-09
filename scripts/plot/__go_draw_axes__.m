@@ -456,7 +456,12 @@ function __go_draw_axes__ (h, plot_stream)
 	     is_image_data(data_idx) = false;
 	     parametric(data_idx) = false;
 	     have_cdata(data_idx) = false;
-             titlespec{data_idx} = "title \"\"";
+	     if (i > 1 || isempty (obj.keylabel))
+	       titlespec{data_idx} = "title \"\"";
+	     else
+	       tmp = undo_string_escapes (obj.keylabel);
+	       titlespec{data_idx} = strcat ("title \"", tmp, "\"");
+	     endif
 	     usingclause{data_idx} = "";
              if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
                if (strncmp (obj.facecolor, "none", 4))

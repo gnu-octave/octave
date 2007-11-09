@@ -1730,7 +1730,9 @@ this will close the plot window.\n\
 @seealso{close}\n\
 @end deftypefn")
 {
-  WARN_OBSOLETE ("closeplot");
+  // Don't use WARN_OBSOLETE here because closeplot is called
+  // unconditionally from atexit and always printing the warning when
+  // Octave exits could cause confusion.
 
   gnuplot::close ();
 
@@ -1757,7 +1759,7 @@ of Octave.}\n\
 
   return octave_value_list ();
 }
-
+ 
 DEFUN_DLD (__gnuplot_raw__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} __gnuplot_raw__ (@var{string})\n\

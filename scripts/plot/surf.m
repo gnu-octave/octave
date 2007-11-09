@@ -38,8 +38,9 @@ function h = surf (varargin)
   ax = get (tmp, "parent");
 
   set (tmp, "facecolor", "flat");
-
-  set (ax, "view", [-37.5, 30]);
+  if (! ishold ())
+    set (ax, "view", [-37.5, 30]);
+  endif
 
   if (nargout > 0)
     h = tmp;

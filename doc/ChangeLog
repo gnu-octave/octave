@@ -1,3 +1,7 @@
+2007-11-09  David Bateman  <dbateman@free.fr>
+
+	* interpreter/plot.txi: Document the new area function.
+
 2007-11-07  David Bateman  <dbateman@free.fr>
 
 	* interpreter/plot.txi: Document new functions.

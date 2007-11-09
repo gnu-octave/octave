@@ -37,9 +37,11 @@ function h = surfc (varargin)
 
   set (tmp, "facecolor", "flat");
 
-  set (ax, "view", [-37.5, 30]);
+  if (! ishold ())
+    set (ax, "view", [-37.5, 30]);
+  endif
 
-  hold on;
+  hold ("on");
 
   [c, lev] = contourc (varargin{:});
 
@@ -47,8 +49,8 @@ function h = surfc (varargin)
   
   levx = linspace (min (lev), max (lev), size (cmap, 1));
 
-  drawnow();
-  ax = axis();
+  drawnow ();
+  ax = axis ();
   zmin = 2 * ax(5) - ax(6);
 
   ## decode contourc output format
@@ -71,4 +73,5 @@ function h = surfc (varargin)
   if (nargout > 0)
     h = tmp;
   endif
+
 endfunction

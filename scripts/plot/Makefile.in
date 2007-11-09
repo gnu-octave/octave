@@ -34,6 +34,7 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = \
+  __area__.m \
   __axes_limits__.m \
   __axis_label__.m \
   __bar__.m \
@@ -61,6 +62,7 @@ SOURCES = \
   __pltopt1__.m \
   __pltopt__.m \
   ancestor.m \
+  area.m \
   axes.m \
   axis.m \
   bar.m \

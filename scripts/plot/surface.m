@@ -84,9 +84,11 @@ function h = surface (x, y, z, c)
 
   ## Make a default surface object.
   tmp = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c);
-
-  set (ax, "view", [0, 90], "box", "off");
   set (tmp, "facecolor","flat");
+
+  if (! ishold ())
+    set (ax, "view", [0, 90], "box", "off", "xgrid", "on", "ygrid", "on", "zgrid", "on");
+  endif
 
   if (nargout > 0)
     h = tmp;

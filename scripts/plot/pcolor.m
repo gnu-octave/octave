@@ -45,13 +45,15 @@ function h = pcolor (x, y, c)
     print_usage ();
   endif
 
-  tmp = surface (X, Y, Z, c);
+  tmp = surface (x, y, z, c);
 
   ax = get (tmp, "parent");
 
   set (tmp, "facecolor", "flat");
-
-  set (ax, "view", [0, 90]);
+  
+  if (! ishold ())
+    set (ax, "view", [0, 90]);
+  endif
 
   if (nargout > 0)
     h = tmp;

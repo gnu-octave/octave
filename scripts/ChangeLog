@@ -1,4 +1,16 @@
+2007-11-09  John W. Eaton  <jwe@octave.org>
+
+	* plot/surfc.m, plot/meshc.m: Don't change view if hold is on.
+
+2007-11-09  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/mesh.m, plot/pcolor.m, plot/surf.m, plot/surface.m:
+	Don't change view if hold is on.
+
 2007-11-09  David Bateman  <dbateman@free.fr>
+
+	* plot/area.m, plot/__area__.m: New functions
+	* plot/Makefile.in (SOURCES): Add them to the list of files.
 
 	* plot/patch.m: Correctly handle case of axis handle as first arg.
 

@@ -38,9 +38,11 @@ function h = meshc (varargin)
   set (tmp, "facecolor", "none");
   set (tmp, "edgecolor", "flat");
 
-  set (ax, "view", [-37.5, 30]);
+  if (! ishold ())
+    set (ax, "view", [-37.5, 30]);
+  endif
 
-  hold on;
+  hold ("on");
 
   [c, lev] = contourc (varargin{:});
 

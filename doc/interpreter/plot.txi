@@ -182,6 +182,8 @@ produces the spiral plot shown in @ref{fig:polar}.
 
 @DOCSTRING(pcolor)
 
+@DOCSTRING(area)
+
 The axis function may be used to change the axis limits of an existing
 plot.
 
@@ -242,6 +244,8 @@ three-dimensional plots.
 @DOCSTRING(mesh)
 
 @DOCSTRING(meshc)
+
+@DOCSTRING(hidden)
 
 @DOCSTRING(surf)
 

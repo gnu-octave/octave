@@ -1,5 +1,7 @@
 2007-11-09  David Bateman  <dbateman@free.fr>
 
+	* data.cc (Fcputime) [__WIN32__]: Correct scaling of sys and usr times.
+
 	* graphics.cc (is_handle): Handle must be a real scalar.
 
 2007-11-09  Joseph P. Skudlarek  <Jskud@Jskud.com>

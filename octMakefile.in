@@ -75,7 +75,7 @@ all: $(SHELL_SCRIPTS) $(filter-out libcruft liboctave, $(SUBDIRS)) dist-info-fil
 	@echo ""
 	@echo "Octave successfully built.  Now choose from the following:"
 	@echo ""
-	@echo "   ./run-octave    - to run in place"
+	@echo "   ./run-octave    - to run in place to test before installing"
 	@echo "   make check      - to run the tests"
 	@echo "   make install    - to install"
 	@echo ""

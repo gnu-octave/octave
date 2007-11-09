@@ -692,7 +692,7 @@ save_in_tmp_file (const octave_value& val, int ndim = 2,
 #define WARN_OBSOLETE(nm) \
   do \
     { \
-      static warned = false; \
+      static bool warned = false; \
  \
       if (! warned) \
         { \

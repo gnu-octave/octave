@@ -66,7 +66,7 @@ function retval = is_stabilizable (a, b, tol, dflg)
       disc = dflg;
     else
       disc = 0;
-    end
+    endif
   endif
 
   if (! exist ("tol"))

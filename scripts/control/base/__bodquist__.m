@@ -81,7 +81,7 @@ function [f, w, rsys] = __bodquist__ (sys, w, outputs, inputs, rname)
     endif
     if (is_signal_list (outputs) || ischar (outputs))
       outputs = sysidx (sys, "out", outputs);
-    end
+    endif
     sys = sysprune (sys, outputs, inputs);
     [nn, nz, mm, pp] = sysdimensions (sys);
   endif

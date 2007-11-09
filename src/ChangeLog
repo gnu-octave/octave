@@ -1,3 +1,8 @@
+2007-11-09  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__gnuplot_raw__.l: Don't add atexit ("closeplot")
+	to PKG_ADD file.
+
 2007-11-09  David Bateman  <dbateman@free.fr>
 
 	* graphics.cc, graphics.h.in (class patch): Add the field "keylabel".
@@ -20,7 +25,7 @@
 	Fgnuplot_command_using, Fgnuplot_command_with,
 	Fgnuplot_command_axes, Fgnuplot_command_title,
 	Fgnuplot_command_end, Fgnuplot_use_title_option,
-	F__clear_plot_window__, Fpurge_tmp_files,
+	F__clear_plot_window__, Fcloseplot, Fpurge_tmp_files,
 	F__gnuplot_raw__, F__gnuplot_send_inline_data__, F__gnuplot_set__,
 	F__gnuplot_show__, F__gnuplot_plot__, F__gnuplot_splot__,
 	F__gnuplot_replot__): Use WARN_OBSOLETE.

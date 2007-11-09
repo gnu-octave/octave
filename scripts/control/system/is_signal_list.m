@@ -31,7 +31,7 @@ function flg = is_signal_list (mylist)
   flg = iscell (mylist);
   if (flg)
     flg = (rows (mylist) == 1 || columns (mylist) == 1);
-  end
+  endif
   if (flg)
     for ii = 1:length (mylist)
       if (! (ischar (mylist{ii}) && rows (mylist{ii}) == 1))

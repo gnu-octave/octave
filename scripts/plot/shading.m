@@ -31,7 +31,7 @@ function shading (ax, mode)
   if (nargin == 1)
     mode = ax;
     ax = gca ();
-  end
+  endif
 
   if (nargin != 1 && nargin != 2)
     print_usage ();

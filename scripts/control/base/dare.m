@@ -97,10 +97,10 @@ function x = dare (a, b, q, r, opt)
     ##Checking positive definiteness
     if (isdefinite (r) <= 0)
       error ("dare: r not positive definite");
-    end
+    endif
     if (isdefinite (q) < 0)
       error ("dare: q not positive semidefinite");
-    end
+    endif
 
     ## Check r dimensions.
     [n, m] = size (b);

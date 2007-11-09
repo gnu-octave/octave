@@ -139,7 +139,7 @@ function [k, p, e] = dlqr (a, b, q, r, s)
     warning ("dlqr: (a,q) not detectable");
   elseif (dflag == -1)
     error ("dlqr: (a,q) has non minimal modes near unit circle");
-  end
+  endif
 
   ## Compute the Riccati solution
   p = dare (ao, b, qo, r);

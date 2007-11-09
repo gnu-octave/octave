@@ -115,7 +115,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
       fclose (fid);
       error ("wavread: file contains no data chunk");
     endif
-  end
+  endwhile
 
   ## data chunk size
   ck_size = fread (fid, 1, "uint32", 0, BYTEORDER);
@@ -190,7 +190,8 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
     yi = reshape (yi, 3, rows(yi)/3)';
     yi(yi(:,3) >= 128, 3) -= 256;
     yi = yi * [1; 256; 65536];
-  end
+  endif
+
   if (format_tag == FORMAT_PCM)
     ## normalize samples
     switch (bits_per_sample)

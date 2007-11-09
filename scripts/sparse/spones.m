@@ -33,8 +33,10 @@ function s = spones (s)
   else
     [i, j, v] = find (s);
     [m, n] = size (s);
-  end
+  endif
+
   s = sparse (i, j, 1, m, n);
+
 endfunction
 
 %!assert(issparse(spones([1,2;3,0])))

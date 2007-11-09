@@ -99,7 +99,7 @@ function ret = fail (code, pattern, warning_pattern)
       err = lasterr;
       err([1:7, end]) = [];  # transform "error: ...\n", to "..."
       msg = sprintf ("expected warning <%s> but got error <%s>", pattern, err);
-    end
+    end_try_catch
       
   else
     ## perform the error test
@@ -115,7 +115,7 @@ function ret = fail (code, pattern, warning_pattern)
 	return;
       endif
       msg = sprintf ("expected error <%s>\nbut got <%s>", pattern, err);
-    end
+    end_try_catch
   endif
 
   ## if we get here, then code didn't fail or error didn't match

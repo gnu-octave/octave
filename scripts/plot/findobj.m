@@ -75,7 +75,7 @@ function h = findobj (varargin)
     else
       handles = 0;
       n1 = 1;
-    end
+    endif
     if (n1 <= nargin)
       if (ischar (varargin{n1}))
 	if (strcmpi (varargin{n1}, 'flat'))
@@ -208,7 +208,7 @@ function h = findobj (varargin)
 	      match = regexp (p.(pname{np}), pvalue{np});
               if isempty (match)
                 match = 0;
-              end
+              endif
             elseif (numel (p.(pname{np})) == numel (pvalue{np}))
 	      if (ischar (pvalue{np}))
 		match = strcmpi (pvalue{np}, p.(pname{np}));

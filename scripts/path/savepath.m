@@ -102,7 +102,7 @@ function varargout = savepath (savefile)
   [fid, msg] = fopen (savefile, "wt");
   if (fid < 0)
     error ("savepath: unable to open file for writing, %s, %s", savefile, msg);
-  end
+  endif
   for i = 1:length (pre)
     fprintf (fid, "%s\n", pre{i})
   endfor

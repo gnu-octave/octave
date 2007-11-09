@@ -67,7 +67,7 @@ function assert (cond, expected, tol)
   in = deblank (argn(1,:));
   for i = 2:rows (argn)
     in = strcat (in, ",", deblank (argn(i,:)));
-  end
+  endfor
   in = strcat ("(", in, ")");
 
   coda = "";
@@ -87,7 +87,7 @@ function assert (cond, expected, tol)
 	endfor
       catch
 	iserror = 1;
-      end
+      end_try_catch
     endif
 
   elseif (ischar (expected))
@@ -103,7 +103,7 @@ function assert (cond, expected, tol)
 	endfor
       catch
 	iserror = 1;
-      end
+      end_try_catch
     endif
 
   elseif (isstruct (expected))
@@ -130,7 +130,7 @@ function assert (cond, expected, tol)
 	endfor
       catch
 	iserror = 1;
-      end
+      end_try_catch
     endif
 
   elseif (ndims (cond) != ndims (expected)

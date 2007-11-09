@@ -1,5 +1,17 @@
 2007-11-09  John W. Eaton  <jwe@octave.org>
 
+	* audio/wavread.m, control/base/__bodquist__.m,
+	control/base/dare.m, control/base/dlqr.m, control/hinf/h2norm.m,
+	control/system/c2d.m, control/system/is_detectable.m,
+	control/system/is_signal_list.m, control/system/is_stabilizable.m,
+	control/system/tfout.m, general/isdefinite.m,
+	linear-algebra/krylov.m, miscellaneous/compare_versions.m,
+	optimization/glpk.m, path/savepath.m, plot/findobj.m,
+	plot/shading.m, polynomial/mpoles.m, polynomial/polyint.m,
+	signal/freqz.m, signal/hurst.m, sparse/spfun.m, sparse/spones.m,
+	sparse/spstats.m, testfun/assert.m, testfun/fail.m,
+	testfun/test.m: Use specific end keywords.
+
 	* plot/surfc.m, plot/meshc.m: Don't change view if hold is on.
 
 2007-11-09  Kai Habel  <kai.habel@gmx.de>

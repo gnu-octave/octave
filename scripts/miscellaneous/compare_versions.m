@@ -141,7 +141,7 @@ function out = compare_versions (v1, v2, operator)
     equal_op = true;
   else
     equal_op = false;
-  end
+  endif
   if any (ismember (operator, "~!"))
     not_op = true;
   else

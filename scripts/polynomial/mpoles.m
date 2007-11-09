@@ -95,7 +95,7 @@ function [multp, indx] = mpoles (p, tol, reorder)
       p0 = mean (abs (p(find (abs (p) > 0))));
       if (isempty (p0))
         p0 = 1;
-      end
+      endif
     else
       p0 = abs (p(n));
     endif

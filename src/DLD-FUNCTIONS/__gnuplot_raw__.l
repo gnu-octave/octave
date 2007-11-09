@@ -31,8 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 // PKG_ADD: mark_as_command ("__gnuplot_set__");
 // PKG_ADD: mark_as_command ("__gnuplot_show__");
 
-// PKG_ADD: atexit ("closeplot");
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -1730,9 +1728,7 @@ this will close the plot window.\n\
 @seealso{close}\n\
 @end deftypefn")
 {
-  // Don't use WARN_OBSOLETE here because closeplot is called
-  // unconditionally from atexit and always printing the warning when
-  // Octave exits could cause confusion.
+  WARN_OBSOLETE ("closeplot");
 
   gnuplot::close ();
 

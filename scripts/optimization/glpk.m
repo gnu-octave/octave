@@ -477,7 +477,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     endif
   else
     lb = zeros (nx, 1);
-  end
+  endif
 
   ## 5) Vector with the upper bound of each variable
 
@@ -490,7 +490,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     endif
   else
     ub = repmat (Inf, nx, 1);
-  end
+  endif
 
   ## 6) Sense of each constraint
 
@@ -507,7 +507,7 @@ function [xopt, fmin, status, extra] = glpk (c, a, b, lb, ub, ctype, vartype, se
     endif
   else
     ctype = repmat ("S", nc, 1);
-  end
+  endif
 
   ## 7) Vector with the type of variables
 

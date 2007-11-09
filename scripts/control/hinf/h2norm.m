@@ -53,7 +53,7 @@ function h2gain = h2norm (sys)
     print_usage ();
   elseif (! isstruct (sys))
     error ("Sys must be in system data structure");
-  end
+  endif
   dflg = is_digital (sys);
 
   if (! is_stable (sys))

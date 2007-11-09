@@ -50,7 +50,7 @@ function p = polyint (p, k)
   if (lp == 0)
     p = [];
     return;
-  end
+  endif
 
   if (rows (p) > 1)
     ## Convert to column vector

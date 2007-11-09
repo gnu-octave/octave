@@ -574,7 +574,7 @@ endfunction
 function s = bundle (varargin)
   for i = 1:nargin
     s.(deblank (argn(i,:))) = varargin{i};
-  end
+  endfor
 endfunction
 
 function body = __extract_test_code (nm)

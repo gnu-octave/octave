@@ -172,7 +172,7 @@ function dsys = c2d (sys, opt, T)
     ## replace Acd
     if (nz)
       aa(crng,drng) = matexp(crng,n+m+(1:nz));
-    end
+    endif
 
     stnames = sysgetsignals (sys, "st");   ## continuous states renamed below
     innames = sysgetsignals (sys, "in");

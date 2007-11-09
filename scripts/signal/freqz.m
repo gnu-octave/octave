@@ -147,7 +147,7 @@ function [h_r, f_r] = freqz (b, a, n, region, Fs)
     f_r = f;
   else             # plot and don't return values
     freqz_plot (f, h);
-  end
+  endif
 
 endfunction
 

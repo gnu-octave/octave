@@ -37,7 +37,7 @@ function H = hurst (x)
     error ("hurst: x must not be a scalar")
   elseif (isvector (x))
     x = reshape (x, length (x), 1);
-  end
+  endif
 
   [xr, xc] = size (x);
 

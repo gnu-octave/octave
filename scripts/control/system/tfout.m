@@ -54,6 +54,6 @@ function tfout (num, denom, x)
     disp (denomstring)
   else
     error ("tfout: empty transfer function")
-  end
+  endif
 
 endfunction

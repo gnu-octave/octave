@@ -696,7 +696,7 @@ save_in_tmp_file (const octave_value& val, int ndim = 2,
  \
       if (! warned) \
         { \
-          warning (nm ## ": this function is obsolete and will be removed from a future version of Octave"); \
+          warning ("%s: this function is obsolete and will be removed from a future version of Octave", nm); \
  \
           warned = true; \
         } \

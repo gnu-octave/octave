@@ -841,7 +841,7 @@ function __go_draw_axes__ (h, plot_stream)
       fputs (plot_stream, "unset hidden3d;\n");
     endif
 
-    have_data = (! (isempty (data) && any (cellfun (@isempty, data))));
+    have_data = (! (isempty (data) || any (cellfun (@isempty, data))));
 
     if (xautoscale && have_data)
       xlim = get_axis_limits (xmin, xmax, xminp, xlogscale);
@@ -983,7 +983,6 @@ function __go_draw_axes__ (h, plot_stream)
     endif
 
     if (have_data)
-
       if (nd == 2)
 	plot_cmd = "plot";
       else

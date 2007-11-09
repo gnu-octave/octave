@@ -201,6 +201,7 @@ function __go_draw_axes__ (h, plot_stream)
     data_idx = 0;
     data = cell ();
     is_image_data = [];
+    hidden_removal = true;
 
     xminp = yminp = zminp = cminp = Inf;
     xmax = ymax = zmax = cmax = -Inf;
@@ -341,7 +342,6 @@ function __go_draw_axes__ (h, plot_stream)
 	    data{data_idx} = [xdat, ydat, zdat]';
 	    usingclause{data_idx} = "using ($1):($2):($3)";
 	    fputs (plot_stream, "set parametric;\n");
-	    fputs (plot_stream, "set hidden3d;\n");
 	    fputs (plot_stream, "set style data lines;\n");
 	    fputs (plot_stream, "set surface;\n");
 	    fputs (plot_stream, "unset contour;\n");
@@ -675,7 +675,6 @@ function __go_draw_axes__ (h, plot_stream)
 	    withclause{data_idx} = "with line palette";
 
 	    fputs (plot_stream, "unset parametric;\n");
-	    fputs (plot_stream, "set hidden3d;\n");
 	    fputs (plot_stream, "set style data lines;\n");
 	    fputs (plot_stream, "set surface;\n");
 	    fputs (plot_stream, "unset contour;\n");
@@ -691,8 +690,15 @@ function __go_draw_axes__ (h, plot_stream)
 				|| strncmp (obj.edgecolor, "interp", 6));
             palette_data = [];
 
+	    if (strncmp (obj.facecolor, "none", 4))
+	      hidden_removal = false;
+	    endif
+
             if (flat_interp_face
-		|| (flat_interp_edge && strncmp (obj.facecolor, "none", 4)))
+		|| (flat_interp_edge
+		    && (strncmp (obj.facecolor, "none", 4)
+			|| (isnumeric (obj.facecolor)
+			    && all (obj.facecolor == 1)))))
               palette_data = [1:rows(surf_colormap); surf_colormap'];
             endif
 
@@ -700,12 +706,16 @@ function __go_draw_axes__ (h, plot_stream)
               palette_data = [1:2; [obj.facecolor; obj.facecolor]'];
             endif
 
-            if (strncmp (obj.facecolor, "none", 4)
+
+	    if ((strncmp (obj.facecolor, "none", 4)
+		 || (isnumeric (obj.facecolor)
+		     && all (obj.facecolor == 1)))
 		&& isnumeric (obj.edgecolor))
               palette_data = [1:2; [obj.edgecolor; obj.edgecolor]'];
             endif
 
-            if (strncmp (obj.facecolor, "none", 4))
+	    if (strncmp (obj.facecolor, "none", 4)
+		|| (isnumeric (obj.facecolor) && all (obj.facecolor == 1)))
             elseif (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
               fprintf (plot_stream, "set pm3d at s %s;\n", interp_str);
             else
@@ -824,6 +834,12 @@ function __go_draw_axes__ (h, plot_stream)
       endswitch
 
     endfor
+
+    if (hidden_removal)
+      fputs (plot_stream, "set hidden3d;\n");
+    else
+      fputs (plot_stream, "unset hidden3d;\n");
+    endif
 
     have_data = (! (isempty (data) && any (cellfun (@isempty, data))));
 

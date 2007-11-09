@@ -35,7 +35,7 @@ function h = meshc (varargin)
 
   ax = get (tmp, "parent");
 
-  set (tmp, "facecolor", "none");
+  set (tmp, "facecolor", "w");
   set (tmp, "edgecolor", "flat");
 
   if (! ishold ())

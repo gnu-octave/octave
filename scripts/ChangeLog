@@ -9,6 +9,13 @@
 
 2007-11-09  David Bateman  <dbateman@free.fr>
 
+	* plot/hidden.m: New function.
+	* plot/Makefile.in (SOURCES): Add it here.
+	* plot/meshc.m, plot/mesh.m: Set facecolor to White for hidden
+	line removal.
+	* plot/__go_draw_axes__.m: If facecolor is white flag hidden line
+	removal and if it is "none" don't do hidden line removal.
+
 	* plot/legend.m: Also allow labels for surface and patch types.
 	* plot/__bar__.m: Split into separate patch pbjects to allow
 	setting of the legend.

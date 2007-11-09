@@ -83,6 +83,7 @@ SOURCES = \
   gca.m \
   gcf.m \
   grid.m \
+  hidden.m \
   hist.m \
   hold.m \
   isfigure.m \

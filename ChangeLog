@@ -1,3 +1,7 @@
+2007-11-10  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Delete AC_SUBST_FILE(f77_rules_frag).
+
 2007-11-07  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Also check for pcre/pcre.h.

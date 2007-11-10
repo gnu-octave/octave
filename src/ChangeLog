@@ -1,3 +1,9 @@
+2007-11-10  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.17.
+	(OCTAVE_API_VERSION): Now api-v29.
+	(OCTAVE_RELEASE_DATE): Now 2007-11-10.
+
 2007-11-09  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__gnuplot_raw__.l: Don't add atexit ("closeplot")

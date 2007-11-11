@@ -107,7 +107,7 @@ function retsys = sysout (sys, opt)
   if (strcmp(opt, "ss") || strcmp(opt, "all"))
     sys = sysupdate (sys, "ss");
     disp ("state-space form:");
-    disp ("%d continuous states, %d discrete states", nn, nz);
+    printf ("%d continuous states, %d discrete states\n", nn, nz);
     if (nn+nz > 0)
       disp ("State(s):")
       xi = (nn+1):(nn+nz);

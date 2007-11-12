@@ -765,7 +765,18 @@ function __go_draw_axes__ (h, plot_stream)
 	        fwrite (plot_stream, palette_data, "float32");
               endif
 	    else
-	      fputs (plot_stream, "set palette defined (0 \"dark-blue\", 1 \"blue\", 2 \"cyan\", 3 \"yellow\", 4 \"red\" , 5 \"dark-red\");\n");
+	      fputs (plot_stream, "set palette defined (");
+	      for i = 1: columns(palette_data)
+		col = floor(palette_data(2:end,i).' * 255);
+	        if (i == 1)
+		  fputs (plot_stream, sprintf("%d \"#%02X%02X%02X\"", i - 1, 
+					      col(1), col(2), col(3)));
+		else
+		  fputs (plot_stream, sprintf(", %d \"#%02X%02X%02X\"", i - 1, 
+					      col(1), col(2), col(3)));
+		endif
+	      endfor
+	      fputs (plot_stream, ");\n");
 	    endif
 	    fputs (plot_stream, "unset colorbox;\n");
 	  endif

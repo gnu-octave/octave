@@ -83,7 +83,7 @@ function retsys = sysout (sys, opt)
     disp ("Output(s): none");
   endif
   if (sysgettsam (sys) > 0)
-    disp ("Sampling interval: %g", sysgettsam (sys));
+    printf ("Sampling interval: %g\n", sysgettsam (sys));
     str = "z";
   else
     str = "s";

@@ -108,6 +108,7 @@ SOURCES = \
   print.m \
   quiver.m \
   replot.m \
+  ribbon.m \
   semilogx.m \
   semilogxerr.m \
   semilogy.m \
@@ -115,6 +116,7 @@ SOURCES = \
   shading.m \
   shg.m \
   sombrero.m \
+  spinmap.m \
   stairs.m \
   stem.m \
   subplot.m \

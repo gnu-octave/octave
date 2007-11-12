@@ -59,16 +59,7 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset title;\n");
       else
-	if (isempty (t.fontname))
-	  f = "Helvetica";
-	else
-	  f = t.fontname;
-	endif
-	if (isempty (t.fontsize))
-	  s = 10;
-	else
-	  s = t.fontsize;
-	endif
+	[f, s] = get_fontname_and_size (t);
 	fprintf (plot_stream, "set title \"%s\" font \"%s,%d\";\n",
 		 undo_string_escapes (t.string), f, s);
       endif
@@ -80,16 +71,7 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset xlabel;\n");
       else
-	if (isempty (t.fontname))
-	  f = "Helvetica";
-	else
-	  f = t.fontname;
-	endif
-	if (isempty (t.fontsize))
-	  s = 10;
-	else
-	  s = t.fontsize;
-	endif
+	[f, s] = get_fontname_and_size (t);
 	fprintf (plot_stream, "set xlabel \"%s\" font \"%s,%d\"",
 		 undo_string_escapes (t.string), f, s);
 	if (have_newer_gnuplot)
@@ -107,16 +89,7 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset ylabel;\n");
       else
-	if (isempty (t.fontname))
-	  f = "Helvetica";
-	else
-	  f = t.fontname;
-	endif
-	if (isempty (t.fontsize))
-	  s = 10;
-	else
-	  s = t.fontsize;
-	endif
+	[f, s] = get_fontname_and_size (t);
 	fprintf (plot_stream, "set ylabel \"%s\" font \"%s,%d\"",
 		 undo_string_escapes (t.string), f, s);
 	if (have_newer_gnuplot)
@@ -852,16 +825,7 @@ function __go_draw_axes__ (h, plot_stream)
 	    endif
 	  endif
 
-	  if (isempty (obj.fontname))
-	    f = "Helvetica";
-	  else
-	    f = obj.fontname;
-	  endif
-	  if (isempty (obj.fontsize))
-	    s = 10;
-	  else
-	    s = obj.fontsize;
-	  endif
+	  [f, s] = get_fontname_and_size (obj);
 
 	  if (nd == 3)
 	    fprintf (plot_stream,
@@ -1411,5 +1375,18 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
   else
     fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
     fprintf (plot_stream, "set %stics;\n", ax);
+  endif
+endfunction
+
+function [f, s] = get_fontname_and_size (t)
+  if (isempty (t.fontname))
+    f = "Helvetica";
+  else
+    f = t.fontname;
+  endif
+  if (isempty (t.fontsize))
+    s = 10;
+  else
+    s = t.fontsize;
   endif
 endfunction

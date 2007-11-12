@@ -1,3 +1,13 @@
+2007-11-12  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/spinmap.m, plot/ribbon.m: New functions.
+	* plot/Makefile.in (SOURCES): Add them to the list.
+
+2007-11-12  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m (get_fontname_and_size): New subfunction.
+	Use it to avoid duplicated code.
+
 2007-11-12  David Bateman  <dbateman@free.fr>
 
 	* plot/title.m: Fix return value for nargout > 0.

@@ -30,46 +30,46 @@
 
 ## Author: Kai Habel <kai.habel at gmx.de>
 
-function h = ribbon (X, Y, W)
+function h = ribbon (x, y, width)
 
   newplot ();
 
   if (nargin == 1)
-    Y = X;
-    if (isvector (Y))
-      Y = Y(:);
+    y = x;
+    if (isvector (y))
+      y = y(:);
     endif
-    [nr, nc] = size (Y);
-    X = repmat ((1:nr)', 1, nc);
-    W = 0.75;
+    [nr, nc] = size (y);
+    x = repmat ((1:nr)', 1, nc);
+    width = 0.75;
   elseif (nargin == 2)
-    W = 0.75;
+    width = 0.75;
   elseif (nargin != 3)
     print_usage ();
   end
 
-  if (isvector (X) && isvector (Y))
-    if (length (X) != length (Y))
+  if (isvector (x) && isvector (y))
+    if (length (x) != length (y))
       error ("ribbon: in case of vectors, X and Y must have same length")
     else
-      [X, Y] = meshgrid (X, Y);
+      [x, y] = meshgrid (x, y);
     endif
   else
-    if (! all (size (X) == size (Y)))
+    if (! all (size (x) == size (y)))
       error ("ribbon: in case of matrices, X and Y must have same size")
     endif
   endif
 
-  [nr, nc] = size (Y);
+  [nr, nc] = size (y);
   tmp = zeros (1, nc);
 
   for c = nc:-1:1
-    ZZ = [Y(:,c), Y(:,c)];
-    y = X(:,c);
-    x = [c - W / 2, c + W / 2];
-    [XX, YY] = meshgrid (x, y);
-    CC = ones (size (ZZ)) * c;
-    tmp(c) = surface (XX, YY, ZZ, CC);
+    zz = [y(:,c), y(:,c)];
+    yy = x(:,c);
+    xx = [c - width / 2, c + width / 2];
+    [xx, yy] = meshgrid (xx, yy);
+    cc = ones (size (zz)) * c;
+    tmp(c) = surface (xx, yy, zz, cc);
   endfor
 
   ax = get (tmp(c), "parent");

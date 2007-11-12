@@ -1917,7 +1917,9 @@ text::properties::properties (const graphics_handle& mh,
     position (Matrix (1, 3, 0.0)),
     rotation (0),
     horizontalalignment ("left"),
-    color (Matrix (1, 3, 0.0))
+    color (Matrix (1, 3, 0.0)),
+    fontname ("Helvetica"),
+    fontsize (10)
 { }
 
 void
@@ -1946,6 +1948,10 @@ text::properties::set (const property_name& name, const octave_value& val)
     set_horizontalalignment (val);
   else if (name.compare ("color"))
     set_color (val);
+  else if (name.compare ("fontname"))
+    set_fontname (val);
+  else if (name.compare ("fontsize"))
+    set_fontsize (val);
   else
     {
       modified = false;
@@ -1971,6 +1977,8 @@ text::properties::get (void) const
   m.assign ("rotation", rotation);
   m.assign ("horizontalalignment", horizontalalignment);
   m.assign ("color", color);
+  m.assign ("fontname", fontname);
+  m.assign ("fontsize", fontsize);
 
   return m;
 }
@@ -2000,6 +2008,10 @@ text::properties::get (const property_name& name) const
     retval = horizontalalignment;
   else if (name.compare ("color"))
     retval = color;
+  else if (name.compare ("fontname"))
+    retval = fontname;
+  else if (name.compare ("fontsize"))
+    retval = fontsize;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -2017,6 +2029,8 @@ text::properties::factory_defaults (void)
   m["rotation"] = 0;
   m["horizontalalignment"] = "left";
   m["color"] = Matrix (1, 3, 1.0);
+  m["fontname"] = "Helvetica";
+  m["fontsize"] = 10;
 
   return m;
 }

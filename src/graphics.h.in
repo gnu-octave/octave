@@ -1410,6 +1410,8 @@ public:
       octave_value rotation
       octave_value horizontalalignment
       color_property color
+      octave_value fontname
+      octave_value fontsize
     END_PROPERTIES
 
     static std::string go_name;

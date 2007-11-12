@@ -1,5 +1,10 @@
 2007-11-12  David Bateman  <dbateman@free.fr>
 
+	* plot/title.m: Fix return value for nargout > 0.
+
+	* plot/__go_draw_axes.m: Allow the font and fontsize to be
+	specified for the title, xlabel, ylabel and text objects.
+
 	* plot/__go_draw_axes.m: Allow arbitrary colormaps with gnuplot
 	4.0 and surface plots.
 

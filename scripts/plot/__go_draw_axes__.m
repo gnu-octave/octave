@@ -59,8 +59,18 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset title;\n");
       else
-	fprintf (plot_stream, "set title \"%s\";\n",
-		 undo_string_escapes (t.string));
+	if (isempty (t.fontname))
+	  f = "Helvetica";
+	else
+	  f = t.fontname;
+	endif
+	if (isempty (t.fontsize))
+	  s = 10;
+	else
+	  s = t.fontsize;
+	endif
+	fprintf (plot_stream, "set title \"%s\" font \"%s,%d\";\n",
+		 undo_string_escapes (t.string), f, s);
       endif
     endif
 
@@ -70,8 +80,18 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset xlabel;\n");
       else
-	fprintf (plot_stream, "set xlabel \"%s\"",
-		 undo_string_escapes (t.string));
+	if (isempty (t.fontname))
+	  f = "Helvetica";
+	else
+	  f = t.fontname;
+	endif
+	if (isempty (t.fontsize))
+	  s = 10;
+	else
+	  s = t.fontsize;
+	endif
+	fprintf (plot_stream, "set xlabel \"%s\" font \"%s,%d\"",
+		 undo_string_escapes (t.string), f, s);
 	if (have_newer_gnuplot)
 	  ## Rotation of xlabel not yet support by gnuplot as of 4.2, but
 	  ## there is no message about it.
@@ -87,8 +107,18 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset ylabel;\n");
       else
-	fprintf (plot_stream, "set ylabel \"%s\"",
-		 undo_string_escapes (t.string));
+	if (isempty (t.fontname))
+	  f = "Helvetica";
+	else
+	  f = t.fontname;
+	endif
+	if (isempty (t.fontsize))
+	  s = 10;
+	else
+	  s = t.fontsize;
+	endif
+	fprintf (plot_stream, "set ylabel \"%s\" font \"%s,%d\"",
+		 undo_string_escapes (t.string), f, s);
 	if (have_newer_gnuplot)
 	  fprintf (plot_stream, " rotate by %f;\n", angle);
 	endif
@@ -822,16 +852,27 @@ function __go_draw_axes__ (h, plot_stream)
 	    endif
 	  endif
 
+	  if (isempty (obj.fontname))
+	    f = "Helvetica";
+	  else
+	    f = obj.fontname;
+	  endif
+	  if (isempty (obj.fontsize))
+	    s = 10;
+	  else
+	    s = obj.fontsize;
+	  endif
+
 	  if (nd == 3)
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s;\n",
-		     undo_string_escapes (label), units,
-		     lpos(1), lpos(2), lpos(3), halign, angle, colorspec);
+		     "set label \"%s\" at %s %.15g,%.15g,%.15g font \"%s,%d\" %s rotate by %f %s;\n",
+		     undo_string_escapes (label), units, lpos(1),
+		     lpos(2), lpos(3), f, s, halign, angle, colorspec);
 	  else
-	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s;\n",
-		     undo_string_escapes (label), units,
-		     lpos(1), lpos(2), halign, angle, colorspec);
+ 	    fprintf (plot_stream,
+ 		     "set label \"%s\" at %s %.15g,%.15g font \"%s,%d\" %s rotate by %f %s;\n",
+ 		     undo_string_escapes (label), units,
+ 		     lpos(1), lpos(2), f, s, halign, angle, colorspec);
 	  endif
 
 	otherwise

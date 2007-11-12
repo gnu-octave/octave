@@ -24,7 +24,7 @@
 
 ## Author: jwe
 
-function retval = title (varargin)
+function h = title (varargin)
 
   if (rem (nargin, 2) == 1)
     if (nargout > 0)

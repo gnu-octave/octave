@@ -114,7 +114,8 @@ function [h, fail] = __patch__ (p, varargin)
     else
       vert = [x(:), y(:)];
     endif
-    faces = reshape (1:numel(x), size(x,2), size(x,1));
+    faces = reshape (1:numel(x), rows (x), columns (x));
+    faces = faces';
   elseif (have_faces)
     nr = size (faces, 2);
     nc = size (faces, 1);

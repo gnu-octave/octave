@@ -1,3 +1,8 @@
+2007-11-12  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/__patch__.m: Fix computation of faces when patch is defined
+	with X/Y/Z data.
+
 2007-11-09  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Correct test for have_data.

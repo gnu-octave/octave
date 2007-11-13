@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.592 $)
+AC_REVISION($Revision: 1.593 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -423,40 +423,40 @@ fi
 AC_SUBST(TEXINFO_QHULL)
 
 ### Check for pcre/regex library.
-AC_SUBST(REGEX_LIBS)
-WITH_PCRE_CONFIG=no
-AC_CHECK_HEADERS([pcre/pcre.h pcre.h], WITH_PCRE=yes, WITH_PCRE=no)
-if test $WITH_PCRE = no ; then
-  AC_CHECK_PROG(WITH_PCRE_CONFIG, pcre-config, yes, no)
-  if test $WITH_PCRE_CONFIG = yes ; then
-    WITH_PCRE=yes
-  fi
-fi
-AC_CACHE_CHECK([whether pcre.h has the macros we need],
-	       [ac_cv_pcre_h_macros_present],
-               [AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
-#include <pcre.h>
+WITH_PCRE=no
+REGEX_LIBS=
+AC_CHECK_LIB(pcre, pcre_compile, [
+  m4_foreach_w([hdr], [pcre/pcre.h pcre.h],
+    [AH_TEMPLATE(AS_TR_CPP([HAVE_]m4_defn([hdr])),
+	   [Define to 1 if you have the <]m4_defn([hdr])[>
+	    header file, and it defines PCRE_INFO_NAMECOUNT,
+	    PCRE_INFO_NAMEENTRYSIZE, and PCRE_INFO_NAMETABLE.])])
+  for hdr in pcre/pcre.h pcre.h; do
+    AC_MSG_CHECKING([whether $hdr defines the macros we need])
+    AC_EGREP_CPP([PCRE_HAS_MACROS_WE_NEED], [
+#include <$hdr>
 #if defined (PCRE_INFO_NAMECOUNT) \
   && defined (PCRE_INFO_NAMEENTRYSIZE) \
   && defined (PCRE_INFO_NAMETABLE)
 PCRE_HAS_MACROS_WE_NEED
-#endif], ac_cv_pcre_h_macros_present=yes, ac_cv_pcre_h_macros_present=no)])
-WITH_PCRE="$ac_cv_pcre_h_macros_present"
-if test $WITH_PCRE = yes ; then
-  AC_CHECK_LIB(pcre, pcre_compile, WITH_PCRE=yes, WITH_PCRE=no)
-  if test $WITH_PCRE = yes ; then
-    AC_DEFINE(HAVE_PCRE, 1, [Define if PCRE is available.])
-    if test $WITH_PCRE_CONFIG = yes ; then
-      REGEX_LIBS=`pcre-config --cflags --libs`
-    else
-      REGEX_LIBS="-lpcre"
-    fi
-  fi
-fi
+#endif], [
+dnl We check the header after the egrep to avoid defining HAVE_X_H macros
+dnl for headers that we can't use.
+      AC_MSG_RESULT([yes])
+      AC_CHECK_HEADER($hdr, [AC_DEFINE_UNQUOTED(AS_TR_CPP(HAVE_$hdr), 1)])
+      AC_DEFINE(HAVE_PCRE, 1, [Define if PCRE is available.])
+      WITH_PCRE=yes
+      REGEX_LIBS=-lpcre
+      break
+    ], [AC_MSG_RESULT([no])])
+  done
+])
+
 if test $WITH_PCRE = no; then
   warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
   AC_MSG_WARN($warn_pcre)
 fi
+
 AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
   AC_CHECK_LIB(regex, regexec, WITH_REGEX=yes, WITH_REGEX=no)])
 if test $WITH_REGEX = yes ; then
@@ -470,6 +470,7 @@ if test $WITH_REGEX = no; then
   warn_regex="regular expression functions not found.  The regular expression matching functions will be disabled."
   AC_MSG_WARN($warn_regex)
 fi
+AC_SUBST(REGEX_LIBS)
 
 ### Check for ZLIB library.
 

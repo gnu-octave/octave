@@ -1,3 +1,8 @@
+2007-11-13  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Only define HAVE_PCRE_H if <pcre.h> has the
+	definitions we need.  Likewise for <pcre/pcre.h>.
+
 2007-11-10  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Delete AC_SUBST_FILE(f77_rules_frag).

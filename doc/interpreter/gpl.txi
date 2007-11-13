@@ -1,7 +1,8 @@
-@cindex warranty
-@cindex copyright
 @node Copying
 @appendix GNU GENERAL PUBLIC LICENSE
+@cindex warranty
+@cindex copyright
+
 @center Version 3, 29 June 2007
 
 @display

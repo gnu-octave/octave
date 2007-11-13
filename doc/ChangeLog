@@ -1,3 +1,7 @@
+2007-11-12  Joseph P. Skudlarek  <Jskud@Jskud.com>
+
+	* interpreter/gpl.txi: Move index commands after sectioning commands.
+
 2007-11-09  David Bateman  <dbateman@free.fr>
 
 	* interpreter/plot.txi: Document the new hidden and area functions.

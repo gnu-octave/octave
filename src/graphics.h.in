@@ -44,6 +44,7 @@ radio_values
 {
 public:
   radio_values (const std::string& opt_string = std::string ());
+
   radio_values (const radio_values& a)
     : default_val (a.default_val), possible_vals (a.possible_vals) { }
 
@@ -349,6 +350,108 @@ public:
 
 private:
   Matrix cmap;
+};
+
+class 
+string_property
+{
+public:
+  string_property (const octave_value& c = octave_value (std::string ()),
+		   const radio_values& v = radio_values ())
+    : radio_val (v)
+  { 
+    if (c.is_defined ())
+      {
+	std::string newval = c.string_value ();
+
+	std::transform (newval.begin (), newval.end (),
+			newval.begin (), tolower);
+
+	if (! error_state)
+	  {
+	    if (radio_val.validate (newval))
+	      current_val = newval;
+	  }
+      }
+    else
+      current_val = v.default_value ();
+  }
+
+  string_property (const radio_values& v)
+    : current_val (v.default_value()), radio_val (v)
+  { }
+
+  string_property (const radio_values& v, const std::string& initial_value)
+    : radio_val (v)
+  { 
+    current_val = initial_value;
+    std::transform (current_val.begin (), current_val.end (), 
+		    current_val.begin (), tolower);
+  }
+
+  operator octave_value (void) const { return current_val; }
+
+  string_property& operator = (const string_property& a)
+  {
+    if (&a != this)
+      {
+	current_val = a.current_val;
+	radio_val = a.radio_val;
+      }
+
+    return *this;
+  }
+
+  string_property& operator = (const std::string& s)
+  {
+    std::string newval = s;
+
+    std::transform (newval.begin (), newval.end (), 
+		    newval.begin (), tolower);    
+
+    if (! newval.empty ())
+      {
+	if (radio_val.contains (newval))
+	  current_val = newval;
+	else
+	  error ("invalid string specification");	  
+      }
+    else
+      error ("invalid string specification");	  
+
+    return *this;
+  }
+
+  string_property& operator = (const octave_value& val)
+  {
+    if (val.is_string ())
+      {
+	std::string newval = val.string_value ();
+
+	std::transform (newval.begin (), newval.end (), 
+			newval.begin (), tolower);
+
+	if (! newval.empty ())
+	  {
+	    if (radio_val.contains (newval))
+	      current_val = newval;
+	    else
+	      error ("invalid string specification");	  
+	  }
+	else
+	  error ("invalid string specification");	  
+      }
+    else
+      error ("invalid string specification");	  
+
+    return *this;
+  }
+
+  const std::string& current_value (void) const { return current_val; }
+
+private:
+  std::string current_val;
+  radio_values radio_val;
 };
 
 // ---------------------------------------------------------------------
@@ -1412,6 +1515,8 @@ public:
       color_property color
       octave_value fontname
       octave_value fontsize
+      string_property fontangle a
+      string_property fontweight a
     END_PROPERTIES
 
     static std::string go_name;

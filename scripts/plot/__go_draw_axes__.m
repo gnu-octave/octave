@@ -1380,9 +1380,22 @@ endfunction
 
 function [f, s] = get_fontname_and_size (t)
   if (isempty (t.fontname))
-    f = "Helvetica";
+    f = "helvetica";
   else
-    f = t.fontname;
+    f = tolower (t.fontname);
+  endif
+  if (! isempty (t.fontweight) && strcmp (tolower (t.fontweight), "bold"))
+    if (! isempty(t.fontangle)
+	&& (strcmp (tolower (t.fontangle), "italic")
+	    || strcmp (tolower (t.fontangle), "oblique")))
+      f = strcat (f, "-bolditalic");
+    else
+      f = strcat (f, "-bold");
+    endif
+  elseif (! isempty(t.fontangle)
+	  && (strcmp (tolower (t.fontangle), "italic")
+	      || strcmp (tolower (t.fontangle), "oblique")))
+    f = strcat (f, "-italic");
   endif
   if (isempty (t.fontsize))
     s = 10;

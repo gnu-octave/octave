@@ -1919,7 +1919,9 @@ text::properties::properties (const graphics_handle& mh,
     horizontalalignment ("left"),
     color (Matrix (1, 3, 0.0)),
     fontname ("Helvetica"),
-    fontsize (10)
+    fontsize (10),
+    fontangle (radio_values ("{normal}|italic|oblique")),
+    fontweight (radio_values ("{normal}|bold|demi|light"))
 { }
 
 void
@@ -1952,6 +1954,10 @@ text::properties::set (const property_name& name, const octave_value& val)
     set_fontname (val);
   else if (name.compare ("fontsize"))
     set_fontsize (val);
+  else if (name.compare ("fontangle"))
+    set_fontangle (val);
+  else if (name.compare ("fontweight"))
+    set_fontweight (val);
   else
     {
       modified = false;
@@ -1979,6 +1985,8 @@ text::properties::get (void) const
   m.assign ("color", color);
   m.assign ("fontname", fontname);
   m.assign ("fontsize", fontsize);
+  m.assign ("fontangle", fontangle);
+  m.assign ("fontweight", fontweight);
 
   return m;
 }
@@ -2012,6 +2020,10 @@ text::properties::get (const property_name& name) const
     retval = fontname;
   else if (name.compare ("fontsize"))
     retval = fontsize;
+  else if (name.compare ("fontangle"))
+    retval = fontangle;
+  else if (name.compare ("fontweight"))
+    retval = fontweight;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -2031,6 +2043,10 @@ text::properties::factory_defaults (void)
   m["color"] = Matrix (1, 3, 1.0);
   m["fontname"] = "Helvetica";
   m["fontsize"] = 10;
+  m["fontangle"] = 
+      string_property ("normal", radio_values ("{normal}|italic|oblique"));
+  m["fontweight"] = 
+    string_property ("normal", radio_values ("{normal}|bold|demi|light"));
 
   return m;
 }

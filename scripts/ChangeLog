@@ -1,3 +1,8 @@
+2007-11-13  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m (get_fontname_and_size):
+	Handle fontweight and fontangle properties.
+
 2007-11-12  Kai Habel  <kai.habel@gmx.de>
 
 	* plot/spinmap.m, plot/ribbon.m: New functions.

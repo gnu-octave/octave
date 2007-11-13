@@ -1,3 +1,9 @@
+2007-11-12  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in, graphics.cc (class text): Add the fontangle and
+	fontweight properties. Add string_property class to handle the
+	string radio values.
+
 2007-11-12  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.17+.

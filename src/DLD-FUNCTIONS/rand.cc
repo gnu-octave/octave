@@ -346,7 +346,7 @@ Twister with a period of 2^19937-1 (See M. Matsumoto and T. Nishimura,\n\
 ``Mersenne Twister: A 623-dimensionally\n\
 equidistributed uniform pseudorandom number generator'', ACM Trans. on\n\
 Modeling and Computer Simulation Vol. 8, No. 1, January pp.3-30 1998,\n\
-@url{http://www.math.keio.ac.jp/~matumoto/emt.html}).\n\
+@url{http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html}).\n\
 Do @strong{not} use for cryptography without securely hashing\n\
 several returned values together, otherwise the generator state\n\
 can be learned after reading 624 consecutive values.\n\

@@ -350,23 +350,28 @@ if test $status -eq 0; then
 
 # Now try to mail it.
 
-    ( /bin/mail $BUGADDR < $TEMP.x ) > /dev/null 2>&1
-    status=$?
-    if test $status -ne 0; then
-      ( Mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
-      status=$?
-      if test $status -ne 0; then
-	( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
-	status=$?
-	if test $status -ne 0; then
-	  ( mailx -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
-	  status=$?
-	fi
-      fi
-    fi
+    # indicate that we have not yet sent email successfully
+    status=11
 
     if test $status -ne 0; then
-      echo "unable to send mail..."
+      ( mailx -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
+      status=$?
+      if test $status -ne 0; then
+        ( Mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
+        status=$?
+        if test $status -ne 0; then
+          ( /usr/ucb/mail -s "$SUBJECT" $BUGADDR < $TEMP.x ) > /dev/null 2>&1
+          status=$?
+          # make /bin/mail our last resort -- it ignores the subject line
+          if test $status -ne 0; then
+            ( /bin/mail $BUGADDR < $TEMP.x ) > /dev/null 2>&1
+            status=$?
+            if test $status -ne 0; then
+              echo "unable to send mail..."
+            fi
+          fi
+        fi
+      fi
     fi
   fi
 fi

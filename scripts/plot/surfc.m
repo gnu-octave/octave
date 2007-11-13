@@ -41,35 +41,17 @@ function h = surfc (varargin)
     set (ax, "view", [-37.5, 30]);
   endif
 
-  hold ("on");
+  if (nargin == 1)
+    z = varargin {1};
+  else
+    z = varargin {3};
+  endif
+  zmin = 2 * (min(z(:)) - max(z(:)));
 
-  [c, lev] = contourc (varargin{:});
+  [c, tmp2] = __contour__ (ax, zmin, varargin{:});
 
-  cmap = get (gcf(), "colormap");
-  
-  levx = linspace (min (lev), max (lev), size (cmap, 1));
+  tmp = [tmp; tmp2];
 
-  drawnow ();
-  ax = axis ();
-  zmin = 2 * ax(5) - ax(6);
-
-  ## decode contourc output format
-  i1 = 1;
-  while (i1 < length (c))
-
-    clev = c(1,i1);
-    clen = c(2,i1);
-
-    ccr = interp1 (levx, cmap(:,1), clev);
-    ccg = interp1 (levx, cmap(:,2), clev);
-    ccb = interp1 (levx, cmap(:,3), clev);
-
-    ii = i1+1:i1+clen;
-    line (c(1,ii), c(2,ii), zmin*ones(size(ii)), "color", [ccr, ccg, ccb]);
-
-    i1 += c(2,i1)+1;
-  endwhile
-  
   if (nargout > 0)
     h = tmp;
   endif

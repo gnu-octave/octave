@@ -434,17 +434,18 @@ function __go_draw_axes__ (h, plot_stream)
 	  endif
 
        case "patch"
-	 if (! isempty (obj.zdata))
-           warning ("gnuplot (as of v4.2) supports only 2D patches, ignoring z values")
-	 endif
-	 nd = 2;
          cmap = parent_figure_obj.colormap;
          clim = axis_obj.clim;
 	 [nr, nc] = size (obj.xdata);
 
-	 for i = 1 : nc
+	 for i = 1:nc
 	   xcol = obj.xdata(:,i);
 	   ycol = obj.ydata(:,i);
+	   if (! isempty (obj.zdata))
+	     zcol = obj.zdata(:,i);
+	   else
+	     zcol = [];
+	   endif
 
 	   if (xautoscale)
              [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xcol);
@@ -452,26 +453,115 @@ function __go_draw_axes__ (h, plot_stream)
 	   if (yautoscale)
 	     [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ycol);
 	   endif
+	   if (! isempty (obj.zdata) && ! strncmp(obj.edgecolor, "none", 4))
+	     if (zautoscale)
+	       [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, zcol);
+	     endif
+	   endif
 
 	   if (! isnan (xcol) && ! isnan (ycol))
 	     ## Is the patch closed or not
-	     data_idx++;
-	     is_image_data(data_idx) = false;
-	     parametric(data_idx) = false;
-	     have_cdata(data_idx) = false;
-	     if (i > 1 || isempty (obj.keylabel))
-	       titlespec{data_idx} = "title \"\"";
-	     else
-	       tmp = undo_string_escapes (obj.keylabel);
-	       titlespec{data_idx} = strcat ("title \"", tmp, "\"");
-	     endif
-	     usingclause{data_idx} = "";
-             if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
-               if (strncmp (obj.facecolor, "none", 4))
-		 color = [1, 1, 1];
+	     if (! strncmp (obj.facecolor, "none", 4)) 
+	       if (! isempty (zcol))
+		 error ("gnuplot (as of v4.2) only supports 2D filled patches");
+	       else
+		 nd = 2;
+	       endif
 
-               elseif (strncmp (obj.facecolor, "flat", 4)
-		       || strncmp (obj.facecolor, "interp", 6))
+	       data_idx++;
+	       is_image_data(data_idx) = false;
+	       parametric(data_idx) = false;
+	       have_cdata(data_idx) = false;
+	       if (i > 1 || isempty (obj.keylabel))
+		 titlespec{data_idx} = "title \"\"";
+	       else
+		 tmp = undo_string_escapes (obj.keylabel);
+		 titlespec{data_idx} = strcat ("title \"", tmp, "\"");
+	       endif
+	       usingclause{data_idx} = "";
+               if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
+		 if (strncmp (obj.facecolor, "flat", 4)
+		     || strncmp (obj.facecolor, "interp", 6))
+		   if (ndims (obj.cdata) == 2
+		       && ((nr > 3 && size (obj.cdata, 2) == nc)
+			   || (size (obj.cdata, 1) > 1
+			       && size (obj.cdata, 2) == nc)))
+		     ccol = obj.cdata (:, i);
+		   elseif (ndims (obj.cdata) == 3)
+		     ccol = permute (obj.cdata (:, i, :), [1, 3, 2]);
+		   else
+		     ccol = obj.cdata;
+		   endif
+		   if (strncmp (obj.facecolor, "flat", 4))
+		     if (numel(ccol) == 3)
+		       color = ccol;
+		     else
+		       r = 1 + round ((size (cmap, 1) - 1)
+				      * (ccol - clim(1))/(clim(2) - clim(1)));
+		       r = max (1, min (r, size (cmap, 1)));
+		       color = cmap(r, :);
+		     endif
+		   elseif (strncmp (obj.facecolor, "interp", 6))
+		     warning ("\"interp\" not supported, using 1st entry of cdata")
+		     r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
+		     r = max (1, min (r, size (cmap, 1)));
+		     color = cmap(r,:);
+		   endif
+		 else
+		   color = obj.facecolor;
+		 endif
+               else
+		 color = [0, 1, 0];
+               endif
+
+	       if (have_newer_gnuplot)
+		 withclause{data_idx} ...
+		     = sprintf ("with filledcurve lc rgb \"#%02x%02x%02x\"",
+				round (255*color));
+	       else
+		 if (isequal (color, [0,0,0]))
+		   typ = -1;
+		 elseif (isequal (color, [1,0,0]))
+		   typ = 1;
+		 elseif (isequal (color, [0,1,0]))
+		   typ = 2;
+		 elseif (isequal (color, [0,0,1]))
+		   typ = 3;
+		 elseif (isequal (color, [1,0,1]))
+		   typ = 4;
+		 elseif (isequal (color, [0,1,1]))
+		   typ = 5;
+		 elseif (isequal (color, [1,1,1]))
+		   typ = -1;
+		 elseif (isequal (color, [1,1,0]))
+		   typ = 7;
+		 else
+		   typ = -1;
+		 endif
+		 withclause{data_idx} = sprintf ("with filledcurve lt %d", typ);
+	       endif
+	       data{data_idx} = [xcol, ycol]';
+	       usingclause{data_idx} = "using ($1):($2)";
+	     endif
+	   endif
+
+           ## patch outline
+	   if (! strncmp (obj.edgecolor, "none", 4))
+	     if (! isempty (zcol))
+	       nd = 3;
+	     else
+	       nd = 2;
+	     endif
+
+	     data_idx++;
+             is_image_data(data_idx) = false;
+             parametric(data_idx) = false;
+	     have_cdata(data_idx) = false;
+             titlespec{data_idx} = "title \"\"";
+	     usingclause{data_idx} = "";
+             if (isfield (obj, "edgecolor") && isfield (obj, "cdata"))
+	       if (strncmp (obj.edgecolor, "flat", 4)
+		   || strncmp (obj.edgecolor, "interp", 6))
 		 if (ndims (obj.cdata) == 2
 		     && ((nr > 3 && size (obj.cdata, 2) == nc)
 			 || (size (obj.cdata, 1) > 1
@@ -482,8 +572,8 @@ function __go_draw_axes__ (h, plot_stream)
 		 else
 		   ccol = obj.cdata;
 		 endif
-		 if (strncmp (obj.facecolor, "flat", 4))
-		   if (numel(ccol) == 3)
+		 if (strncmp (obj.edgecolor, "flat", 4))
+		   if (numel (ccol) == 3)
 		     color = ccol;
 		   else
 		     r = 1 + round ((size (cmap, 1) - 1)
@@ -491,23 +581,22 @@ function __go_draw_axes__ (h, plot_stream)
 		     r = max (1, min (r, size (cmap, 1)));
 		     color = cmap(r, :);
 		   endif
-		 elseif (strncmp (obj.facecolor, "interp", 6))
+		 elseif (strncmp (obj.edgecolor, "interp", 6))
 		   warning ("\"interp\" not supported, using 1st entry of cdata")
 		   r = 1 + round ((size (cmap, 1) - 1) * ccol(1));
 		   r = max (1, min (r, size (cmap, 1)));
 		   color = cmap(r,:);
 		 endif
-	       else
-		 color = obj.facecolor;
 	       endif
+             elseif (isfield (obj, "edgecolor") && isnumeric (obj.edgecolor))
+	       color = obj.edgecolor;
              else
-	       color = [0, 1, 0];
+               color = [0, 0, 0];
              endif
-
 	     if (have_newer_gnuplot)
 	       withclause{data_idx} ...
-		 = sprintf ("with filledcurve lc rgb \"#%02x%02x%02x\"",
-			    round (255*color));
+		   = sprintf ("with lines lc rgb \"#%02x%02x%02x\"",
+			      round (255*color));
 	     else
 	       if (isequal (color, [0,0,0]))
 		 typ = -1;
@@ -528,67 +617,26 @@ function __go_draw_axes__ (h, plot_stream)
 	       else
 		 typ = -1;
 	       endif
-	       withclause{data_idx} = sprintf ("with filledcurve lt %d", typ);
+	       withclause{data_idx} = sprintf ("with lines lt %d", typ);
 	     endif
-	     data{data_idx} = [xcol, ycol]';
-	     usingclause{data_idx} = "using ($1):($2)";
-	   endif
 
-           ## patch outline
-	   data_idx++;
-           is_image_data(data_idx) = false;
-           parametric(data_idx) = false;
-	   have_cdata(data_idx) = false;
-           titlespec{data_idx} = "title \"\"";
-	   usingclause{data_idx} = "";
-           if (isfield (obj, "edgecolor"))
-             if (strncmp (obj.edgecolor, "none", 4))
-               color = [1, 1, 1];
-             elseif (strncmp (obj.edgecolor, "flat", 4))
-               warning ("\"flat\" for edgecolor not supported");
-               color = [0, 0, 0];
-             elseif (strncmp (obj.edgecolor, "interp", 6))
-               warning ("\"interp\" for edgecolor not supported");
-               color = [0, 0, 0];
-             else
-	       color = obj.edgecolor;
-             endif
-           else
-             color = [0, 0, 0];
-           endif
-	   if (have_newer_gnuplot)
-	     withclause{data_idx} ...
-	       = sprintf ("with lines lc rgb \"#%02x%02x%02x\"",
-			  round (255*color));
-	   else
-	     if (isequal (color, [0,0,0]))
-	       typ = -1;
-	     elseif (isequal (color, [1,0,0]))
-	       typ = 1;
-	     elseif (isequal (color, [0,1,0]))
-	       typ = 2;
-	     elseif (isequal (color, [0,0,1]))
-	       typ = 3;
-	     elseif (isequal (color, [1,0,1]))
-	       typ = 4;
-	     elseif (isequal (color, [0,1,1]))
-	       typ = 5;
-	     elseif (isequal (color, [1,1,1]))
-	       typ = -1;
-	     elseif (isequal (color, [1,1,0]))
-	       typ = 7;
+	     if (! isempty (zcol))
+	       if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
+		 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
+				   [zcol; zcol(1)]]';
+	       else
+		 data{data_idx} = [xcol, ycol, zcol]';
+	       endif
+	       usingclause{data_idx} = "using ($1):($2):($3)";
 	     else
-	       typ = -1;
+	       if (! isnan (xcol) && ! isnan (ycol))
+		 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
+	       else
+		 data{data_idx} = [xcol, ycol]';
+	       endif
+	       usingclause{data_idx} = "using ($1):($2)";
 	     endif
-	     withclause{data_idx} = sprintf ("with lines lt %d", typ);
 	   endif
-
-	   if (!isnan (xcol) && ! isnan (ycol))
-	     data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)]]';
-	   else
-	     data{data_idx} = [xcol, ycol]';
-	   endif
-	   usingclause{data_idx} = "using ($1):($2)";
 	 endfor
 
 	case "surface"
@@ -599,7 +647,8 @@ function __go_draw_axes__ (h, plot_stream)
 	    is_image_data(data_idx) = false;
 	    parametric(data_idx) = false;
 	    have_cdata(data_idx) = true;
-	    [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
+	    [style, typ, with] = do_linestyle_command (obj, data_idx,
+						       plot_stream);
 	    if (isempty (obj.keylabel))
 	      titlespec{data_idx} = "title \"\"";
 	    else
@@ -672,7 +721,7 @@ function __go_draw_axes__ (h, plot_stream)
 	        zz(:,kk+3) = cdat(:,k);
 	        k++;
 	      endfor
-	      data{data_idx} = zz;
+	      data{data_idx} = zz.';
 	    endif
 	    usingclause{data_idx} = "using ($1):($2):($3):($4)";
 	    withclause{data_idx} = "with line palette";
@@ -1294,15 +1343,15 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
     if (parametric)
       fprintf (plot_stream, "%.15g %.15g %.15g\n", data);
     else
-      nc = columns (data);
+      nr = rows (data);
       if (cdata)
-	for j = 1:4:nc
-	  fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data(:,j:j+3)');
+	for j = 1:4:nr
+	  fprintf (plot_stream, "%.15g %.15g %.15g %.15g\n", data(j:j+3,:));
 	  fputs (plot_stream, "\n");
 	endfor
       else
-	for j = 1:3:nc
-	  fprintf (plot_stream, "%.15g %.15g %.15g\n", data(:,j:j+2)');
+	for j = 1:3:nr
+	  fprintf (plot_stream, "%.15g %.15g %.15g\n", data(j:j+2,:));
 	  fputs (plot_stream, "\n");
 	endfor
       endif

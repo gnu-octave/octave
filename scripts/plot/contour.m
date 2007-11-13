@@ -22,6 +22,8 @@
 ## @deftypefnx {Function File} {@var{c} =} contour (@var{z}, @var{vn})
 ## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
 ## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {Function File} {@var{c} =} contour (@var{h}, @dots{})
+## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour (@dots{})
 ## Plot level curves (contour lines) of the matrix @var{z}, using the
 ## contour matrix @var{c} computed by @code{contourc} from the same
 ## arguments; see the latter for their interpretation.  The set of
@@ -36,42 +38,38 @@
 ##
 ## @end group
 ## @end example
-## @seealso{contourc, line, plot}
+##
+## The optional input and output argument @var{h} allows an axis handle to 
+## be passed to @code{contour} and the handles to the contour objects to be
+## returned.
+## @seealso{contourc, patch, plot}
 ## @end deftypefn
 
 ## Author: shaia
 
-function retval = contour (varargin)
+function [c, h] = contour (varargin)
 
-  [c, lev] = contourc (varargin{:});
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin{1};
+    if (! strcmp (get (h, "type"), "axes"))
+      error ("contour: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      newplot ();
+      [ctmp, htmp] = __contour__ (h, varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    newplot ();
+    [ctmp, htmp] = __contour__ (gca (), NaN, varargin{:});
+  endif
 
-  cmap = get (gcf(), "colormap");
-  
-  levx = linspace (min (lev), max (lev), size (cmap, 1));
-
-  newplot ();
-
-  ## Decode contourc output format.
-  i1 = 1;
-  while (i1 < length (c))
-
-    clev = c(1,i1);
-    clen = c(2,i1);
-
-    ccr = interp1 (levx, cmap(:,1), clev);
-    ccg = interp1 (levx, cmap(:,2), clev);
-    ccb = interp1 (levx, cmap(:,3), clev);
-
-    ii = i1+1:i1+clen;
-    line (c(1,ii), c(2,ii), "color", [ccr, ccg, ccb]);
-
-    i1 += c(2,i1)+1;
-  endwhile
-  
   if (nargout > 0)
-    retval = c;
+    c = ctmp;
+    h = htmp
   endif
 
 endfunction
-
-

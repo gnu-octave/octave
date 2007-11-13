@@ -1,4 +1,19 @@
-2007-11-13  David Bateman  <dbateman@free.fr>
+2007-11-12  David Bateman  <dbateman@free.fr>
+
+	* plot/contour.m: Allow handles to be passed and returned. Split
+	the countour function itself into __contour__.m to be shared with
+	surfc and meshc.
+	* plot/__contour__.m: New file
+	* plot/Makefile.in (SOURCES): Add it to the sources.
+	* plot/__go_draw_axes.m: For patch objects don't attempt to patch
+	the face or edge if the facecolor or edge color are marked as
+	"none". Allow the edgecolor to be determined by the cdata in the
+	same manner as the facecolor. Fail if facecolor is not "none" and
+	a 3-D plot is desired, rather than ignoring zdata. Make the
+	storage of 3D/4D data consistent between line, surface and patch 
+	objects.
+	* plot/meshc.m: Use new __contour__.m to plot the contours.
+	* plot/surfc.m: Use new __contour__.m to plot the contours.
 
 	* plot/__go_draw_axes__.m (get_fontname_and_size):
 	Handle fontweight and fontangle properties.

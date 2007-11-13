@@ -38,6 +38,7 @@ SOURCES = \
   __axes_limits__.m \
   __axis_label__.m \
   __bar__.m \
+  __contour__.m \
   __default_plot_options__.m \
   __errcomm__.m \
   __errplot__.m \

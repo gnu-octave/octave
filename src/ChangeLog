@@ -1,3 +1,15 @@
+2007-11-14  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mex::mark, mex::unmark): Now public.
+	(mex::persistent): Delete.
+	(mexMakeArrayPersistent): Call maybe_unmark_array instead of
+	mex::persistent.
+	(mexMakeMemoryPersistent): Call maybe_unmark instead of
+	mex::persistent.
+	(maybe_unmark (void *)): New function.
+	(mxSetDimensions, mxSetPr, mxSetPi, mxSetData, mxSetImagData,
+	mxSetIr, mxSetJc): Use it.  From David Bateman.
+
 2007-11-13  Joseph P. Skudlarek  <Jskud@Jskud.com>
 
 	* DLD-FUNCTIONS/rand.cc (Frand): Update URL reference in doc string.

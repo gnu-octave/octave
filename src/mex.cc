@@ -2177,8 +2177,30 @@ public:
       }
   }
 
-  // Mark a pointer so that it will not be freed on exit.
-  void persistent (void *ptr) { unmark (ptr); }
+  // Mark a pointer to be freed on exit.
+  void mark (void *ptr)
+  {
+#ifdef DEBUG
+    if (memlist.find (ptr) != memlist.end ())
+      warning ("%s: double registration ignored", function_name ());
+#endif
+
+    memlist.insert (ptr);
+  }
+
+  // Unmark a pointer to be freed on exit, either because it was
+  // made persistent, or because it was already freed.
+  void unmark (void *ptr)
+  {
+    std::set<void *>::iterator p = memlist.find (ptr);
+
+    if (p != memlist.end ())
+      memlist.erase (p);
+#ifdef DEBUG
+    else
+      warning ("%s: value not marked", function_name ());
+#endif
+  }
 
   mxArray *mark_array (mxArray *ptr)
   {
@@ -2222,9 +2244,6 @@ public:
     return inlist;
   }
 
-  // Remove PTR from the list of arrays to be free on exit.
-  void persistent (mxArray *ptr) { unmark_array (ptr); }
-
   octave_mex_function *current_mex_function (void) const
   {
     return curr_mex_fcn;
@@ -2251,31 +2270,6 @@ private:
 
   // The name of the currently executing function.
   mutable char *fname;
-
-  // Mark a pointer to be freed on exit.
-  void mark (void *ptr)
-  {
-#ifdef DEBUG
-    if (memlist.find (ptr) != memlist.end ())
-      warning ("%s: double registration ignored", function_name ());
-#endif
-
-    memlist.insert (ptr);
-  }
-
-  // Unmark a pointer to be freed on exit, either because it was
-  // made persistent, or because it was already freed.
-  void unmark (void *ptr)
-  {
-    std::set<void *>::iterator p = memlist.find (ptr);
-
-    if (p != memlist.end ())
-      memlist.erase (p);
-#ifdef DEBUG
-    else
-      warning ("%s: value not marked", function_name ());
-#endif
-  }
 
   // List of memory resources we allocated.
   static std::set<void *> global_memlist;
@@ -2329,6 +2323,15 @@ maybe_unmark_array (mxArray *ptr)
 {
   if (mex_context)
     mex_context->unmark_array (ptr);
+
+  return ptr;
+}
+
+static inline void *
+maybe_unmark (void *ptr)
+{
+  if (mex_context)
+    mex_context->unmark (ptr);
 
   return ptr;
 }
@@ -2722,7 +2725,7 @@ mxSetN (mxArray *ptr, mwSize n)
 void
 mxSetDimensions (mxArray *ptr, mwSize *dims, mwSize ndims)
 {
-  ptr->set_dimensions (dims, ndims);
+  ptr->set_dimensions (static_cast<mwSize *> (maybe_unmark (dims)), ndims);
 }
   
 // Data extractors.
@@ -2772,25 +2775,25 @@ mxGetImagData (const mxArray *ptr)
 void
 mxSetPr (mxArray *ptr, double *pr)
 {
-  ptr->set_data (pr);
+  ptr->set_data (maybe_unmark (pr));
 }
 
 void
 mxSetPi (mxArray *ptr, double *pi)
 {
-  ptr->set_imag_data (pi);
+  ptr->set_imag_data (maybe_unmark (pi));
 }
 
 void
 mxSetData (mxArray *ptr, void *pr)
 {
-  ptr->set_data (pr);
+  ptr->set_data (maybe_unmark (pr));
 }
 
 void
 mxSetImagData (mxArray *ptr, void *pi)
 {
-  ptr->set_imag_data (pi);
+  ptr->set_imag_data (maybe_unmark (pi));
 }
 
 // Classes.
@@ -2847,13 +2850,13 @@ mxGetNzmax (const mxArray *ptr)
 void
 mxSetIr (mxArray *ptr, mwIndex *ir)
 {
-  ptr->set_ir (ir);
+  ptr->set_ir (static_cast <mwIndex *> (maybe_unmark (ir)));
 }
 
 void
 mxSetJc (mxArray *ptr, mwIndex *jc)
 {
-  ptr->set_jc (jc);
+  ptr->set_jc (static_cast<mwIndex *> (maybe_unmark (jc)));
 }
 
 void
@@ -3267,15 +3270,13 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
 void
 mexMakeArrayPersistent (mxArray *ptr)
 {
-  if (mex_context)
-    mex_context->persistent (ptr);
+  maybe_unmark_array (ptr);
 }
 
 void
 mexMakeMemoryPersistent (void *ptr)
 {
-  if (mex_context)
-    mex_context->persistent (ptr);
+  maybe_unmark (ptr);
 }
 
 int

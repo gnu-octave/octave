@@ -1,5 +1,7 @@
 2007-11-14  John W. Eaton  <jwe@octave.org>
 
+	* oct-inttypes.h (opeator T (void) const): New conversion operator.
+
 	* lo-specfun.cc (zbesi): When alpha is negative, don't limit
 	correction to half-integer values.  From Eric Chassande-Mottin
 	<echassandemottin@gmail.com>.

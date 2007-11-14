@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.594 $)
+AC_REVISION($Revision: 1.595 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -449,13 +449,11 @@ if test $WITH_PCRE = yes; then
   else
     REGEX_LIBS=-lpcre
   fi
-fi
-if test $WITH_PCRE = no; then
+else
   warn_pcre="PCRE library not found.  This will result in some loss of functionality for the regular expression matching functions."
   AC_MSG_WARN($warn_pcre)
 fi
 
-## not sure why we need to check for regex like this if pcre is defined, but it was like this when I got here ...
 AC_CHECK_FUNCS(regexec, WITH_REGEX=yes , [
   AC_CHECK_LIB(regex, regexec, WITH_REGEX=yes, WITH_REGEX=no)])
 if test $WITH_REGEX = yes ; then

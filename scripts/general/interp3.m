@@ -70,20 +70,21 @@ function vi = interp3 (varargin)
     print_usage ();
   endif
 
-  if (ischar (varargin {end}))
-    method = varargin {end};
+  if (ischar (varargin{end}))
+    method = varargin{end};
     nargs = nargs - 1;
-  elseif (ischar (varargin {end - 1}))
-    if (! isnumeric (varargin {end}) || ! isscalar (varargin {end}))
+  elseif (ischar (varargin{end-1}))
+    if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("extrapal is expected to be a numeric scalar");
     endif
-    extrapval = varargin {end};
-    method = varargin {end - 1};
+    extrapval = varargin{end};
+    method = varargin{end-1};
     nargs = nargs - 2;
   endif
 
-  if (nargs < 3 || (nargs == 4 && ! isvector (varargin {1}) && 
-      nargs == (ndims (varargin {1}) + 1)))
+  if (nargs < 3 || (nargs == 4 && ! isvector (varargin{1})
+		    && nargs == (ndims (varargin{1}) + 1)))
+    v = varargin{1};
     if (ndims (v) != 3)
       error ("expect 3-dimensional array of values");
     endif
@@ -99,8 +100,8 @@ function vi = interp3 (varargin)
     endif
     v = permute (v, [2, 1, 3]);
     vi = ipermute (interpn (v, x{:}, method, extrapval), [2, 1, 3]);
-  elseif (nargs == 7 && nargs == (2 * ndims (varargin {ceil (nargs / 2)})) + 1)
-    v = varargin {4};
+  elseif (nargs == 7 && nargs == (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
+    v = varargin{4};
     if (ndims (v) != 3)
       error ("expect 3-dimensional array of values");
     endif
@@ -125,7 +126,7 @@ function vi = interp3 (varargin)
       y{1} = permute (y{1}, [2, 1, 3]);
     endif
     v = permute (v, [2, 1, 3]);
-    vi = ipermute (interpn (x{:}, v, y{:}, method, extrapval), [2,1,3]);
+    vi = ipermute (interpn (x{:}, v, y{:}, method, extrapval), [2, 1, 3]);
   else
     error ("wrong number or incorrectly formatted input arguments");
   endif

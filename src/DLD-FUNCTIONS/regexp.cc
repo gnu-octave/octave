@@ -40,9 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 #include "parse.h"
 
-#if defined (HAVE_PCRE_PCRE_H)
-#include <pcre/pcre.h>
-#elif defined (HAVE_PCRE_H)
+#if defined (HAVE_PCRE)
 #include <pcre.h>
 #elif defined (HAVE_REGEX)
 #if defined (__MINGW32__)

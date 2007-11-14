@@ -17,36 +17,60 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Mapping Function} {} besseli (@var{alpha}, @var{x})
-## @deftypefnx {Mapping Function} {} besselj (@var{alpha}, @var{x})
-## @deftypefnx {Mapping Function} {} besselk (@var{alpha}, @var{x})
-## @deftypefnx {Mapping Function} {} bessely (@var{alpha}, @var{x})
-## Compute Bessel functions of the following types:
-##
+## @deftypefn {Loadable Function} {[@var{j}, @var{ierr}] =} besselj (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {Loadable Function} {[@var{y}, @var{ierr}] =} bessely (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {Loadable Function} {[@var{i}, @var{ierr}] =} besseli (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {Loadable Function} {[@var{k}, @var{ierr}] =} besselk (@var{alpha}, @var{x}, @var{opt})
+## @deftypefnx {Loadable Function} {[@var{h}, @var{ierr}] =} besselh (@var{alpha}, @var{k}, @var{x}, @var{opt})
+## Compute Bessel or Hankel functions of various kinds:
+## 
 ## @table @code
 ## @item besselj
 ## Bessel functions of the first kind.
-##
 ## @item bessely
 ## Bessel functions of the second kind.
-##
 ## @item besseli
 ## Modified Bessel functions of the first kind.
-##
 ## @item besselk
 ## Modified Bessel functions of the second kind.
+## @item besselh
+## Compute Hankel functions of the first (@var{k} = 1) or second (@var{k}
+##  = 2) kind.
 ## @end table
-##
-## The second argument, @var{x}, must be a real matrix, vector, or scalar.
-##
-## The first argument, @var{alpha}, must be greater than or equal to zero.
-## If @var{alpha} is a range, it must have an increment equal to one.
-##
+## 
+## If the argument @var{opt} is supplied, the result is scaled by the
+## @code{exp (-I*@var{x})} for @var{k} = 1 or @code{exp (I*@var{x})} for
+##  @var{k} = 2.
+## 
 ## If @var{alpha} is a scalar, the result is the same size as @var{x}.
-##
-## If @var{alpha} is a range, @var{x} must be a vector or scalar, and the
-## result is a matrix with @code{length(@var{x})} rows and
-## @code{length(@var{alpha})} columns.
+## If @var{x} is a scalar, the result is the same size as @var{alpha}.
+## If @var{alpha} is a row vector and @var{x} is a column vector, the
+## result is a matrix with @code{length (@var{x})} rows and
+## @code{length (@var{alpha})} columns.  Otherwise, @var{alpha} and
+## @var{x} must conform and the result will be the same size.
+## 
+## The value of @var{alpha} must be real. The value of @var{x} may be
+## complex.
+## 
+## If requested, @var{ierr} contains the following status information
+## and is the same size as the result.
+## 
+## @enumerate 0
+## @item
+## Normal return.
+## @item
+## Input error, return @code{NaN}.
+## @item
+## Overflow, return @code{Inf}.
+## @item
+## Loss of significance by argument reduction results in less than
+## half of machine accuracy.
+## @item
+## Complete loss of significance by argument reduction, return @code{NaN}.
+## @item
+## Error---no computation, algorithm termination condition not met,
+## return @code{NaN}.
+## @end enumerate
 ## @end deftypefn
 
 function bessel ()

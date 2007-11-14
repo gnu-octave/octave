@@ -1,3 +1,8 @@
+2007-11-14  John W. Eaton  <jwe@octave.org>
+
+	* specfun/bessel.m: Update doc string from
+	src/DLD-FUNCTIONS/besselj.cc.
+
 2007-11-12  David Bateman  <dbateman@free.fr>
 
 	* plot/contour.m: Allow handles to be passed and returned. Split

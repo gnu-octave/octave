@@ -1,0 +1,77 @@
+## Copyright (C) 2007 David BAteman
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {@var{c} =} contour3 (@var{z})
+## @deftypefnx {Function File} {@var{c} =} contour3 (@var{z}, @var{vn})
+## @deftypefnx {Function File} {@var{c} =} contour3 (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {@var{c} =} contour3 (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {Function File} {@var{c} =} contour3 (@var{h}, @dots{})
+## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour3 (@dots{})
+## Plot level curves (contour lines) of the matrix @var{z}, using the
+## contour matrix @var{c} computed by @code{contourc} from the same
+## arguments; see the latter for their interpretation.  The contours are
+## ploted at the Z level corresponding to their contour. The set of
+## contour levels, @var{c}, is only returned if requested.  For example:
+##
+## @example
+## @group
+## contour3 (peaks (19));
+## hold on
+## surface (peaks (19), 'FaceColor', 'none', 'EdgeColor', 'black')
+## colormap hot
+## @end group
+## @end example
+##
+## The optional input and output argument @var{h} allows an axis handle to 
+## be passed to @code{contour} and the handles to the contour objects to be
+## returned.
+## @seealso{contourc, patch, plot}
+## @end deftypefn
+
+function [c, h] = contour3 (varargin)
+
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    ax = varargin{1};
+    if (! strcmp (get (ax, "type"), "axes"))
+      error ("contour: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (ax);
+      newplot ();
+      [ctmp, htmp] = __contour__ (ax, varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    newplot ();
+    ax = gca ();
+    [ctmp, htmp] = __contour__ (ax, "level", varargin{:});
+  endif
+
+  if (! ishold ())
+    set (ax, "view", [-37.5, 30]);
+  endif
+
+  if (nargout > 0)
+    c = ctmp;
+    h = htmp
+  endif
+
+endfunction

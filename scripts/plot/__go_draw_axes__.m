@@ -204,7 +204,7 @@ function __go_draw_axes__ (h, plot_stream)
     data_idx = 0;
     data = cell ();
     is_image_data = [];
-    hidden_removal = true;
+    hidden_removal = NaN;
 
     xminp = yminp = zminp = cminp = Inf;
     xmax = ymax = zmax = cmax = -Inf;
@@ -461,7 +461,12 @@ function __go_draw_axes__ (h, plot_stream)
 
 	   if (! isnan (xcol) && ! isnan (ycol))
 	     ## Is the patch closed or not
-	     if (! strncmp (obj.facecolor, "none", 4)) 
+	     if (strncmp (obj.facecolor, "none", 4)) 
+	       if (isnan (hidden_removal))
+		 hidden_removal = false;
+	       endif
+	     else
+	       hidden_removal = true;
 	       if (! isempty (zcol))
 		 error ("gnuplot (as of v4.2) only supports 2D filled patches");
 	       else
@@ -747,7 +752,11 @@ function __go_draw_axes__ (h, plot_stream)
             palette_data = [];
 
 	    if (strncmp (obj.facecolor, "none", 4))
-	      hidden_removal = false;
+	      if (isnan (hidden_removal))
+		hidden_removal = false;
+	      endif
+	    else
+	      hidden_removal = true;
 	    endif
 
             if (flat_interp_face
@@ -895,7 +904,7 @@ function __go_draw_axes__ (h, plot_stream)
 
     endfor
 
-    if (hidden_removal)
+    if (isnan(hidden_removal) || hidden_removal)
       fputs (plot_stream, "set hidden3d;\n");
     else
       fputs (plot_stream, "unset hidden3d;\n");

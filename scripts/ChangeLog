@@ -1,3 +1,18 @@
+2007-11-14  David Bateman  <dbateman@free.fr>
+
+	* plot/__contour__.m: Treat unclosed contours by adding NaN to
+	flag to patch that it is not closed. Allow z to take string
+	arguments and use it to flag that the contours are placed at the
+	z level of the contour itself.
+	* plot/__go_draw_axes__.m: Treat hidden line removal in patch
+	objects as well. Let hidden removal take precedence in case of a
+	conflict.
+	* plot/surface.m: Allow surface to treat handles being passed or
+	returned. Any additional arguments arr used to set the surface
+	handle.
+	* plot/contour3.m: New function
+	* plot/Makefile.in (SOURCES): Add it to the sources.
+
 2007-11-14  John W. Eaton  <jwe@octave.org>
 
 	* specfun/bessel.m: Update doc string from

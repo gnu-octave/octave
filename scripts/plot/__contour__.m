@@ -23,6 +23,21 @@ function [c, h] = __contour__ (varargin)
   ax = varargin {1};
   z = varargin {2};
 
+  if (ischar (z))
+    if (strcmp (z, "none"))
+      z = NaN;
+    elseif (strcmp (z, "base"))
+      if (nargin == 1)
+	z = varargin {1};
+      else
+	z = varargin {3};
+      endif
+      z = 2 * (min(z(:)) - max(z(:)));
+    elseif (!strcmp (z, "level"))
+      error ("unrecognized z argument");
+    endif
+  endif
+
   clim = get (ax, "clim");
 
   [c, lev] = contourc (varargin{3:end});
@@ -36,15 +51,23 @@ function [c, h] = __contour__ (varargin)
     clev = c(1,i1);
     clen = c(2,i1);
 
-    ii = i1+1:i1+clen;
+    if (all (c(:,i1+1) == c(:,i1+clen)))
+      p = c(:, i1+1:i1+clen-1);
+    else
+      p = [c(:, i1+1:i1+clen), NaN(2, 1)];
+    endif
+
     lev = (clev - minlev) * (clim(2) - clim(1)) / (maxlev - minlev) + clim(1);
 
     if (isnan (z))
-      h = [h; patch(ax, c(1,ii), c(2,ii), "facecolor", "none", 
+      h = [h; patch(ax, p(1,:), p(2,:), "facecolor", "none", 
 		    "edgecolor", "flat", "cdata", lev)];
-    else
-      h = [h; patch(ax, c(1,ii), c(2,ii), z*ones(size(ii)), "facecolor",
+    elseif (!ischar(z))
+      h = [h; patch(ax, p(1,:), p(2,:), z * ones (1, columns (p)), "facecolor",
 		    "none", "edgecolor", "flat", "cdata", lev)];
+    else
+      h = [h; patch(ax, p(1,:), p(2,:), clev * ones (1, columns (p)),
+		    "facecolor", "none", "edgecolor", "flat", "cdata", lev)];
     endif
     i1 += clen+1;
   endwhile

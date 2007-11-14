@@ -72,6 +72,7 @@ SOURCES = \
   clf.m \
   close.m \
   closereq.m \
+  contour3.m \
   contour.m \
   contourc.m \
   contourf.m \

@@ -1,3 +1,11 @@
+2007-11-14  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (base_properties::tag): New property.
+	(base_properties::get_tag, base_properties::set_tag): New functions.
+	(root_figure::set, root_figure::get, figure::set, figure::get,
+	axes::set, axes::get, line::set, line::get, text::set, text::get,
+	patch::set, patch::get, surface::set, surface::get): Handle tag.
+	
 2007-11-14  Joseph P. Skudlarek  <Jskud@Jskud.com>
 
 	* DLD-FUNCTIONS/regexp.cc: Undo previous change.

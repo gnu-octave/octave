@@ -705,6 +705,17 @@ base_properties::remove_child (const graphics_handle& h)
 }
 
 void
+base_properties::set_tag (const octave_value& val)
+{
+  std::string tmp = val.string_value ();
+
+  if (! error_state)
+    tag = tmp;
+  else
+    error ("set: expecting tag to be a character string");
+}
+
+void
 base_properties::set_parent (const octave_value& val)
 {
   double tmp = val.double_value ();
@@ -776,7 +787,9 @@ void
 root_figure::properties::set (const property_name& name,
 			      const octave_value& val)
 {
-  if (name.compare ("currentfigure"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("currentfigure"))
     set_currentfigure (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
@@ -790,6 +803,7 @@ octave_value root_figure::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("currentfigure", currentfigure.as_octave_value ());
   m.assign ("children", children);
@@ -803,7 +817,9 @@ root_figure::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = type;
+  else if (name.compare ("tag"))
     retval = type;
   else if (name.compare ("currentfigure"))
     retval = currentfigure.as_octave_value ();
@@ -867,7 +883,9 @@ figure::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
-  if (name.compare ("children"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("children"))
     children = maybe_set_children (children, val);
   else if (name.compare ("__modified__"))
     {
@@ -903,6 +921,7 @@ figure::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
@@ -923,7 +942,9 @@ figure::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = tag;
+  else if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
     retval = parent.as_octave_value ();
@@ -1175,7 +1196,9 @@ axes::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
-  if (name.compare ("parent"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("parent"))
     set_parent (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
@@ -1418,6 +1441,7 @@ axes::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
@@ -1481,7 +1505,9 @@ axes::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = tag;
+  else if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
     retval = parent.value ();
@@ -1755,7 +1781,9 @@ line::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
-  if (name.compare ("parent"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("parent"))
     set_parent (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
@@ -1809,6 +1837,7 @@ line::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
@@ -1837,7 +1866,9 @@ line::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = tag;
+  else if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
     retval = parent.as_octave_value ();
@@ -1929,7 +1960,9 @@ text::properties::set (const property_name& name, const octave_value& val)
 {
   bool modified = true;
 
-  if (name.compare ("parent"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("parent"))
     set_parent (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
@@ -1973,6 +2006,7 @@ text::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
@@ -1996,7 +2030,9 @@ text::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = tag;
+  else if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
     retval = parent.as_octave_value ();
@@ -2069,7 +2105,9 @@ image::properties::set (const property_name& name,
 {
   bool modified = true;
 
-  if (name.compare ("parent"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("parent"))
     set_parent (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
@@ -2099,6 +2137,7 @@ image::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
@@ -2115,7 +2154,9 @@ image::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = tag;
+  else if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
     retval = parent.as_octave_value ();
@@ -2178,7 +2219,9 @@ patch::properties::set (const property_name& name,
 {
   bool modified = true;
 
-  if (name.compare ("parent"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("parent"))
     set_parent (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
@@ -2234,6 +2277,7 @@ patch::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
@@ -2263,7 +2307,9 @@ patch::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = tag;
+  else if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
     retval = parent.as_octave_value ();
@@ -2363,7 +2409,9 @@ surface::properties::set (const property_name& name,
 {
   bool modified = true;
 
-  if (name.compare ("parent"))
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("parent"))
     set_parent (val);
   else if (name.compare ("children"))
     children = maybe_set_children (children, val);
@@ -2415,6 +2463,7 @@ surface::properties::get (void) const
 {
   Octave_map m;
 
+  m.assign ("tag", tag);
   m.assign ("type", type);
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
@@ -2442,7 +2491,9 @@ surface::properties::get (const property_name& name) const
 {
   octave_value retval;
 
-  if (name.compare ("type"))
+  if (name.compare ("tag"))
+    retval = tag;
+  else if (name.compare ("type"))
     retval = type;
   else if (name.compare ("parent"))
     retval = parent.as_octave_value ();

@@ -1,3 +1,9 @@
+2007-11-14  John W. Eaton  <jwe@octave.org>
+
+	* lo-specfun.cc (zbesi): When alpha is negative, don't limit
+	correction to half-integer values.  From Eric Chassande-Mottin
+	<echassandemottin@gmail.com>.
+
 2007-11-07  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* dMatrix.cc, CMatrix.cc: Help MSVC compiler to resolve

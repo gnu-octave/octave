@@ -649,11 +649,11 @@ class base_graphics_object;
 class base_properties
 {
 public:
-  base_properties (const std::string& t = "unknown",
+  base_properties (const std::string& ty = "unknown",
 		   const graphics_handle& mh = graphics_handle (),
 		   const graphics_handle& p = graphics_handle ())
-    : type (t), __modified__ (true), __myhandle__ (mh), parent (p),
-      children () { }
+    : tag (), type (ty), __modified__ (true), __myhandle__ (mh),
+      parent (p), children () { }
 
   virtual ~base_properties (void) { }
 
@@ -670,6 +670,8 @@ public:
 
   virtual void set (const property_name&, const octave_value&) { }
 
+  std::string get_tag (void) const { return tag; }
+
   graphics_handle get_parent (void) const { return parent; }
 
   void remove_child (const graphics_handle& h);
@@ -681,6 +683,8 @@ public:
     children(n) = h.value ();
   }
 
+  void set_tag (const octave_value& val);
+
   void set_parent (const octave_value& val);
 
   void reparent (const graphics_handle& new_parent) { parent = new_parent; }
@@ -688,6 +692,7 @@ public:
   virtual void delete_children (void);
 
 protected:
+  std::string tag;
   std::string type;
   bool __modified__;
   graphics_handle __myhandle__;

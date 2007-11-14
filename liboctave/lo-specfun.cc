@@ -411,9 +411,8 @@ zbesi (const Complex& z, double alpha, int kode, octave_idx_type& ierr)
 
       if (ierr == 0 || ierr == 3)
 	{
-	  if (! is_integer_value (alpha - 0.5))
-	    tmp += (2.0 / M_PI) * sin (M_PI * alpha)
-	      * zbesk (z, alpha, kode, ierr);
+	  tmp += (2.0 / M_PI) * sin (M_PI * alpha)
+	    * zbesk (z, alpha, kode, ierr);
 
 	  retval = bessel_return_value (tmp, ierr);
 	}

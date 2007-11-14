@@ -1,3 +1,7 @@
+2007-11-14  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Don't create Makefrag.bsd.
+
 2007-11-14  Joseph P. Skudlarek  <Jskud@Jskud.com>
 
 	* configure.in: Rework pcre.h tests to work with autoconf 2.59,

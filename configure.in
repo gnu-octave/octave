@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.595 $)
+AC_REVISION($Revision: 1.596 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1587,32 +1587,6 @@ case "$canonical_host_type" in
     AC_DEFINE(RUSAGE_TIMES_ONLY, 1, [Define if your struct rusage only has time information.])
   ;;
 esac
-
-bsd_gcc_kluge_targets_frag=/dev/null
-case "$canonical_host_type" in
-  *-*-386bsd* | *-*-openbsd* | *-*-netbsd* | *-*-freebsd*)
-    bsd_gcc_kluge_targets_frag=Makefrag.bsd
-    cat << \EOF > $bsd_gcc_kluge_targets_frag
-
-lex.o: lex.cc 
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
-
-pt-plot.o: pt-plot.cc
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
-
-symtab.o: symtab.cc
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
-
-toplev.o: toplev.cc
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
-
-unwind-prot.o: unwind-prot.cc 
-	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS_NO_PT_FLAGS) $<
-
-EOF
-  ;;
-esac
-AC_SUBST_FILE(bsd_gcc_kluge_targets_frag)
 
 ### Checks for other programs used for building, testing, installing,
 ### and running Octave.

@@ -408,8 +408,6 @@ $(DEF_FILES): stamp-prereq stamp-liboctave-prereq mkdefs defun-int.h defun-dld.h
 
 $(MAKEDEPS): stamp-prereq stamp-liboctave-prereq defaults.h oct-gperf.h oct-conf.h
 
-@bsd_gcc_kluge_targets_frag@
-
 check: all
 .PHONY: check
 

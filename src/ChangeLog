@@ -1,4 +1,12 @@
+2007-11-14  David Bateman  <dbateman@free.fr>
+
+	* mex.cc (mxArray_sparse::mxArray_sparse (const mxArray_sparse&)):
+	Also ensure that pr and pi are correctly copied.
+
 2007-11-14  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (@bsd_gcc_kluge_targets_frag@): Delete line for
+	Makefrag.bsd substitution.
 
 	* graphics.h.in (base_properties::tag): New property.
 	(base_properties::get_tag, base_properties::set_tag): New functions.

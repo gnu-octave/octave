@@ -1594,6 +1594,8 @@ private:
 
   mxArray_sparse (const mxArray_sparse& val)
     : mxArray_matlab (val), nzmax (val.nzmax),
+      pr (malloc (nzmax * get_element_size ())),
+      pi (val.pi ? malloc (nzmax * get_element_size ()) : 0),
       ir (static_cast<mwIndex *> (malloc (nzmax * sizeof (mwIndex)))),
       jc (static_cast<mwIndex *> (malloc (nzmax * sizeof (mwIndex))))
   {

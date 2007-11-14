@@ -1,3 +1,8 @@
+2007-11-14  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/patch.m: Handle arg may also be hggroup object.
+	Use ancestor to find parent axes object.
+
 2007-11-14  David Bateman  <dbateman@free.fr>
 
 	* plot/__contour__.m: Treat unclosed contours by adding NaN to

@@ -282,6 +282,8 @@ protected:
 // happens, we delete this representation, so the conversion can only
 // happen once per call to a MEX file.
 
+static inline void *maybe_mark_foreign (void *ptr);
+
 class mxArray_octave_value : public mxArray_base
 {
 public:
@@ -467,7 +469,7 @@ public:
 
     if (is_char ()
 	|| (is_numeric () && is_real_type () && ! is_range ()))
-      retval = val.mex_get_data ();
+      retval = maybe_mark_foreign (val.mex_get_data ());
     else
       request_mutation ();
 
@@ -494,12 +496,12 @@ public:
 
   mwIndex *get_ir (void) const
   {
-    return val.mex_get_ir ();
+    return static_cast<mwIndex *> (maybe_mark_foreign (val.mex_get_ir ()));
   }
 
   mwIndex *get_jc (void) const
   {
-    return val.mex_get_jc ();
+    return static_cast<mwIndex *> (maybe_mark_foreign (val.mex_get_jc ()));
   }
 
   mwSize get_nzmax (void) const { return val.nzmax (); }
@@ -2175,7 +2177,14 @@ public:
 	    xfree (ptr);
 	  }
 	else
-	  warning ("mxFree: skipping memory not allocated by mxMalloc, mxCalloc, or mxRealloc");
+	  {
+	    p = foreign_memlist.find (ptr);
+
+	    if (p != foreign_memlist.end ())
+	      foreign_memlist.erase (p);
+	    else
+	      warning ("mxFree: skipping memory not allocated by mxMalloc, mxCalloc, or mxRealloc");
+	  }
       }
   }
 
@@ -2216,6 +2225,31 @@ public:
 
     if (p != arraylist.end ())
       arraylist.erase (p);
+  }
+
+  // Mark a pointer as one we allocated.
+  void mark_foreign (void *ptr)
+  {
+#ifdef DEBUG
+    if (foreign_memlist.find (ptr) != foreign_memlist.end ())
+      warning ("%s: double registration ignored", function_name ());
+#endif
+
+    foreign_memlist.insert (ptr);
+  }
+
+  // Unmark a pointer as one we allocated.
+  void unmark_foreign (void *ptr)
+  {
+    std::set<void *>::iterator p = foreign_memlist.find (ptr);
+
+    if (p != foreign_memlist.end ())
+      foreign_memlist.erase (p);
+#ifdef DEBUG
+    else
+      warning ("%s: value not marked", function_name ());
+#endif
+
   }
 
   // Make a new array value and initialize from an octave value; it will be
@@ -2268,7 +2302,12 @@ private:
   // List of memory resources that need to be freed upon exit.
   std::set<void *> memlist;
 
+  // List of mxArray objects that need to be freed upon exit.
   std::set<mxArray *> arraylist;
+
+  // List of memory resources we know about, but that were allocated
+  // elsewhere.
+  std::set<void *> foreign_memlist;
 
   // The name of the currently executing function.
   mutable char *fname;
@@ -2318,6 +2357,15 @@ void *
 mxArray::calloc (size_t n, size_t t)
 {
   return mex_context ? mex_context->calloc_unmarked (n, t) : ::calloc (n, t);
+}
+
+static inline void *
+maybe_mark_foreign (void *ptr)
+{
+  if (mex_context)
+    mex_context->mark_foreign (ptr);
+
+  return ptr;
 }
 
 static inline mxArray *

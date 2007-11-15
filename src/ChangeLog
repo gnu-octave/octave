@@ -1,3 +1,13 @@
+2007-11-14  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (mex::foreign_memlist): New data member.
+	(mex::mark_foreign, mex::unmark_foreign): New functions.
+	(mex::free): Don't warn about pointers found in foreign_memlist.
+	(maybe_mark_foreign): New function.
+	(mxArray_octave_value::get_data, mxArray_octave_value::get_ir,
+	mxArray_octave_value::get_jc):
+	Call maybe_mark_foreign on returned pointer.
+
 2007-11-14  David Bateman  <dbateman@free.fr>
 
 	* mex.cc (mxArray_sparse::mxArray_sparse (const mxArray_sparse&)):

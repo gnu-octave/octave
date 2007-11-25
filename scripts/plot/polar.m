@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} polar (@var{theta}, @var{rho}, @var{fmt})
-## Make a two-dimensional plot given polar the coordinates @var{theta} and
+## Make a two-dimensional plot given the polar coordinates @var{theta} and
 ## @var{rho}.
 ##
 ## The optional third argument specifies the line type.

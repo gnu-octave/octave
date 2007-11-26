@@ -16,7 +16,6 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} cylinder
 ## @deftypefnx {Function File} {} cylinder (@var{r})
@@ -31,19 +30,20 @@
 ## are assumed.
 ##
 ## Called with no return arguments, @code{cylinder} calls directly
-## @code{surf (@var{x}, @var{y}, @var{z})}. If an axes handle @var{ax} is passed
-## as the first argument, the surface is plotted to this set of axes.
+## @code{surf (@var{x}, @var{y}, @var{z})}. If an axes handle @var{ax}
+## is passed as the first argument, the surface is plotted to this set
+## of axes.
 ##
 ## Examples:
 ## @example
-## disp("plotting a cone")
-## [X, Y, Z] = cylinder(10:-1:0,50);
-## surf(X,Y,Z);
+## disp ("plotting a cone")
+## [x, y, z] = cylinder (10:-1:0,50);
+## surf (x, y, z);
 ## @end example
 ## @seealso{sphere}
 ## @end deftypefn
 
-function [xx,yy,zz] = cylinder (varargin)
+function [xx, yy, zz] = cylinder (varargin)
 
   nargs = nargin;
   args = varargin;
@@ -56,12 +56,12 @@ function [xx,yy,zz] = cylinder (varargin)
     nargs--;
     args(1) = [];
   else
-    ax = gca();
+    ax = gca ();
   endif
 
   if (nargs == 0)
     n = 20;
-    r = [1 1];
+    r = [1, 1];
   elseif (nargs == 1)
     n = 20;
     r = args{1};
@@ -69,19 +69,19 @@ function [xx,yy,zz] = cylinder (varargin)
     r = args{1};
     n = args{2};
   else
-    print_usage();
+    print_usage ();
   endif
 
-  if (length(r) < 2)
-    error("cylinder: length(r) must be larger than 2.")
+  if (length (r) < 2)
+    error ("cylinder: length(r) must be larger than 2")
   endif
 
-  phi = linspace(0, 2*pi, n+1);
+  phi = linspace (0, 2*pi, n+1);
   idx = 1:length(r);
   [phi, idx] = meshgrid(phi, idx);
   z = (idx - 1) / (length(r) - 1);
   r = r(idx);
-  [x, y] = pol2cart(phi, r);
+  [x, y] = pol2cart (phi, r);
 
   if (nargout > 0)
     xx = x;

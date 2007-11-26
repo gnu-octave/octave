@@ -1,3 +1,29 @@
+2007-11-26  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/minmax.cc (MINMAX_DOUBLE_BODY): New version of
+	MINMAX_BODY macro without the initialization.
+	(MINMAX_INT_BODY): Macro for min/max for the integer types
+	(MINMAX_BODY): New macro that calls the appropriate instantiation
+	of the other two macros.
+
+	* graphics.cc (class axes): Add __colorbar__ property.
+	* graphics.h.in (class axes): ditto.
+
+	* data.cc (Fnorm): Document the "inf" string argument for matrice
+	and vectors and the "fro" argument for vectors.
+
+	* graphics.h.in (class figure): Add __enhanced__ property to cache
+	whether the terminal supports enhanced mode. Add interpreter
+	property to all text classes, to determine the renderer for the
+	text.
+	* graphics.cc (class figure): ditto.
+
+2007-11-26  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.cc (string_properties): delete class 
+	(property_name): rename class to caseless_str. 
+	(radio_values::possible_vals): change type to caseless_str.
+
 2007-11-26  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* builtins.h (install_builtins): Tag with OCTINTERP_API.

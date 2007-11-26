@@ -29,7 +29,6 @@
 ## Without any arguments, @code{axis} turns autoscaling on.  
 ##
 ## With one output argument, @code{x=axis} returns the current axes 
-## (this is not yet implemented for automatic axes).
 ##
 ## The vector argument specifying limits is optional, and additional
 ## string arguments may be used to specify various axis properties.  For
@@ -109,17 +108,47 @@
 ## Restore y-axis, so higher values are nearer the top. 
 ## @end table
 ## 
+## If an axes handle is passed as the first argument, then operate on
+## this axes rather than the current axes.
 ## @end deftypefn
 
 ## Author: jwe
 
 ## PKG_ADD: mark_as_command axis
 
-function curr_axis = axis (ax, varargin)
+function varargout = axis (varargin)
 
-  ca = gca ();
+  if (nargin > 0 && isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin{1};
+    if (! strcmp (get (h, "type"), "axes"))
+      error ("axis: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      varargout = cell (max (nargin == 1, nargout), 1);
+      if (isempty (varargout))
+	__axis__ (h, varargin{2:end});
+      else
+        [varargout{:}] = __axis__ (h, varargin{2:end});
+      endif
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    varargout = cell (max (nargin == 0, nargout), 1);
+    if (isempty (varargout))
+      __axis__ (gca (), varargin{:});
+    else
+      [varargout{:}] = __axis__ (gca (), varargin{:});
+    endif
+  endif
 
-  if (nargin == 0)
+endfunction
+
+function curr_axis = __axis__ (ca, ax, varargin)
+
+  if (nargin == 1)
     if (nargout == 0)
       set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
     else
@@ -254,8 +283,8 @@ function curr_axis = axis (ax, varargin)
     error ("axis: expecting no args, or a vector with 2, 4, or 6 elements");
   endif
 
-  if (nargin > 1)
-    axis (varargin{:});
+  if (nargin > 2)
+    __axis__ (ca, varargin{:});
   endif
 
 endfunction

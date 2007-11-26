@@ -48,6 +48,8 @@ SND_BOOL_OPS (octave_int8, int8NDArray, octave_int8 (0))
 NDND_CMP_OPS (int8NDArray, , int8NDArray, )
 NDND_BOOL_OPS (int8NDArray, int8NDArray, octave_int8 (0))
 
+MINMAX_FCNS (int8)
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

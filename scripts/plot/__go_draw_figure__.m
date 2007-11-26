@@ -20,9 +20,9 @@
 
 ## Author: jwe
 
-function __go_draw_figure__ (f, plot_stream)
+function __go_draw_figure__ (f, plot_stream, enhanced)
 
-  if (nargin == 2)
+  if (nargin == 3)
     if (strcmp (f.type, "figure"))
 
       ## Set figure properties here?
@@ -52,8 +52,7 @@ function __go_draw_figure__ (f, plot_stream)
 	  obj = get (kids(i));
 	  switch (obj.type)
 	    case "axes"
-	      __go_draw_axes__ (kids(i), plot_stream);
-
+	      __go_draw_axes__(kids (i), plot_stream, enhanced);
 	    otherwise
 	      error ("__go_draw_figure__: unknown object class, %s",
 		     obj.type);

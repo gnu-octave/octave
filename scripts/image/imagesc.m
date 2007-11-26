@@ -21,92 +21,100 @@
 ## @deftypefn {Function File} {} imagesc (@var{A})
 ## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{A})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{limits})
-## @deftypefnx {Function File} { @var{B} = } imagesc (@dots{})
+## @deftypefnx {Function File} {} imagesc (@var{h}, @dots{})
+## @deftypefnx {Function File} { @var{h} = } imagesc (@dots{})
 ## Display a scaled version of the matrix @var{A} as a color image.  The
-## matrix is scaled so that its entries are indices into the current
-## colormap.  The scaled matrix is returned.  If @var{limits} = [@var{lo}, @var{hi}] are
-## given, then that range maps into the full range of the colormap rather 
-## than the minimum and maximum values of @var{A}.
+## colormap is scaled so that the entries of the matrix occupy the entire
+## colormap.  If @var{limits} = [@var{lo}, @var{hi}] are given, then that
+## range is set to the 'clim' of the current axes.
 ##
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}, either as pairs giving the minimum and maximum
 ## values for the respective axes, or as values for each row and column
 ## of the matrix @var{A}.
-## @seealso{image, imshow}
+##
+## @seealso{image, imshow, clim, caxis}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function ret = imagesc (x, y, A, limits, DEPRECATEDZOOM)
+function retval = imagesc (varargin)
+
+  if (nargin < 1)
+    print_usage ();
+  elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin {1};
+    if (! strcmp (get (h, "type"), "axes"))
+      error ("imagesc: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      tmp = __imagesc__ (h, varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    tmp = __imagesc__ (gca (), varargin{:});
+  endif
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
+
+endfunction
+
+function ret = __imagesc__ (ax, x, y, A, limits, DEPRECATEDZOOM)
 
   ## Deprecated zoom.  Remove this hunk of code if old zoom argument
   ## is outmoded.
-  if ((nargin == 2 && isscalar (y))
-      || (nargin == 3 && (isscalar (y) || isscalar (A)))
-      || (nargin == 4 && isscalar (limits))
-      || nargin == 5)
+  if ((nargin == 3 && isscalar (y))
+      || (nargin == 4 && (isscalar (y) || isscalar (A)))
+      || (nargin == 5 && isscalar (limits))
+      || nargin == 6)
     warning ("image: zoom argument ignored -- use GUI features");
   endif
-  if (nargin == 5)
+  if (nargin == 6)
     if (isscalar (limits))
       limits = DEPRECATEDZOOM;
     endif
+    nargin = 5;
+  endif
+  if (nargin == 5 && isscalar (limits))
     nargin = 4;
   endif
-  if (nargin == 4 && isscalar (limits))
-    nargin = 3;
-  endif
-  if (nargin == 3 && (isscalar (y) || isscalar (A)))
+  if (nargin == 4 && (isscalar (y) || isscalar (A)))
     if (isscalar (y))
       y = A;
     endif
+    nargin = 3;
+  endif
+  if (nargin == 3 && isscalar (y))
     nargin = 2;
   endif
-  if (nargin == 2 && isscalar (y))
-    nargin = 1;
-  endif
 
-  if (nargin < 1 || nargin > 4)
+  if (nargin < 2 || nargin > 5)
     print_usage ();
-  elseif (nargin == 1)
+  elseif (nargin == 2)
     A = x;
     x = y = limits = [];
-  elseif (nargin == 2)
+  elseif (nargin == 3)
     A = x;
     limits = y;
     x = y = [];
-  elseif (nargin == 3 && !isscalar (x) && !isscalar (y) && !isscalar (A))
+  elseif (nargin == 4 && !isscalar (x) && !isscalar (y) && !isscalar (A))
     limits = [];
   endif
 
+  ret = image (ax, x, y, A);
+
   ## use given limits or guess them from the matrix
   if (length (limits) == 2 && limits(2) >= limits(1))
-     minval = limits(1);
-     maxval = limits(2);
-     A(A < minval) = minval;
-     A(A > maxval) = maxval;
-  elseif (length (limits) == 0)
-     maxval = max (A(:));
-     minval = min (A(:));
-  else
+     set (ax, "clim", limits);
+  elseif (!isempty (limits))
      error ("expected data limits to be [lo, hi]");
-  endif
-
-  ## scale the limits to the range of the colormap
-  if (maxval == minval)
-    B = ones (size (A));
-  else
-    ## Rescale values to between 1 and length (colormap) inclusive.
-    B = round ((A - minval) / (maxval - minval) * (rows (colormap) - 1)) + 1;
-  endif
-
-  ## display or return the image
-  if (nargout == 0)
-    image (x, y, B);
-  else
-    ret = B;
   endif
 
 endfunction

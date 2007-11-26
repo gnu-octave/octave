@@ -1159,6 +1159,95 @@ operator * (const DM& dm, const M& m) \
 
 #endif
 
+#define SND_MINMAX_FCN(FCN, OP, T) \
+T ## NDArray \
+FCN (octave_ ## T d, const T ## NDArray& m) \
+{ \
+  dim_vector dv = m.dims (); \
+  octave_idx_type nel = dv.numel (); \
+\
+  if (nel == 0)	\
+    return T ## NDArray (dv); \
+\
+  T ## NDArray result (dv); \
+\
+  for (octave_idx_type i = 0; i < nel; i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = d OP m (i) ? d : m(i); \
+    } \
+\
+  return result; \
+}
+
+#define NDS_MINMAX_FCN(FCN, OP, T) \
+T ## NDArray \
+FCN (const T ## NDArray& m, octave_ ## T d) \
+{ \
+  dim_vector dv = m.dims (); \
+  octave_idx_type nel = dv.numel (); \
+\
+  if (nel == 0)	\
+    return T ## NDArray (dv); \
+\
+  T ## NDArray result (dv); \
+\
+  for (octave_idx_type i = 0; i < nel; i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = m (i) OP d ? m(i) : d; \
+    } \
+\
+  return result; \
+}
+
+#define NDND_MINMAX_FCN(FCN, OP, T) \
+T ## NDArray \
+FCN (const T ## NDArray& a, const T ## NDArray& b) \
+{ \
+  dim_vector dv = a.dims (); \
+  octave_idx_type nel = dv.numel (); \
+\
+  if (dv != b.dims ()) \
+    { \
+      (*current_liboctave_error_handler) \
+	("two-arg min expecting args of same size"); \
+      return T ## NDArray (); \
+    } \
+\
+  if (nel == 0)	\
+    return T ## NDArray (dv); \
+\
+  T ## NDArray result (dv); \
+\
+  for (octave_idx_type i = 0; i < nel; i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = a(i) OP b(i) ? a(i) : b(i); \
+    } \
+\
+  return result; \
+}
+
+#define MINMAX_FCNS(T) \
+  SND_MINMAX_FCN (min, <, T) \
+  NDS_MINMAX_FCN (min, <, T) \
+  NDND_MINMAX_FCN (min, <, T) \
+  SND_MINMAX_FCN (max, >, T) \
+  NDS_MINMAX_FCN (max, >, T) \
+  NDND_MINMAX_FCN (max, >, T)
+
+#define MINMAX_DECLS(T) \
+  extern OCTAVE_API T ## NDArray min (octave_ ## T d, const T ## NDArray& m); \
+  extern OCTAVE_API T ## NDArray min (const T ## NDArray& m, octave_ ## T d); \
+  extern OCTAVE_API T ## NDArray min (const T ## NDArray& a,  \
+				       const T ## NDArray& b); \
+  extern OCTAVE_API T ## NDArray max (octave_ ## T d, const T ## NDArray& m); \
+  extern OCTAVE_API T ## NDArray max (const T ## NDArray& m, octave_ ## T d); \
+  extern OCTAVE_API T ## NDArray max (const T ## NDArray& a, \
+				       const T ## NDArray& b);
+
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -1,3 +1,95 @@
+2007-11-26  David Bateman  <dbateman@free.fr>
+
+	* plot/quiver3.m, plot/surfnorm.m, plot/__quiver__.m: New functions.
+	* plot/Makefile.in (SOURCES): Add them to the sources.
+	* plot/quiver.m: Modify to use __quiver__.m.
+
+	* plot/hist.m: Avoid saturation when the x values are in an
+	inetger type.
+
+2007-11-26  Jason Riedy  <ejr@cs.berkeley.edu>
+
+	* linear-algebra/condest.m, linear-algebra/onenormest.m: New
+	functions.
+	* linear-algebra/Makefile.in (SOURCES): Add them to the sources.
+
+2007-11-26  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Prevent the cbrange from being of zero
+	extent.
+
+	* plot/colorbar.m: New function.
+	* plot/Makefile.in (SOURCES): Add it to the sources.
+	* plot/__go_draw_axes__.m: Calculate the colorbar position,
+	precalculate the clim, set pm3d except for mesh.
+	* plot/__contour__.m: Don't scale the contours to clim, but rather
+	save the real values so that colorbar corresponds to the contour
+	levels.
+
+	* plot/stem.m: Set marker color the same as the line color. Draw 
+	a single discontinous line object for the stems.
+
+	* plot/sphere.m: New function ported from JHandles.
+	* plot/Makefile.in (SOURCES): Add it to the sources.
+
+	* plot/__go_draw_axes__.m: Pass the have_newer_gnuplot arg to
+	__maybe_munge_text__. Use it to reforce fontname for gnuplot 4.0
+	to get enhanced mode to work correctly for the X11 terminal.
+
+	* plot/imagesc.m, plot/image.m: Scale colormap to image and not
+	the reverse. Allow an axes handle to be passed and/or returned.
+	* plot/__go_draw_axes__.m: Autoscale colormap for images.
+
+	* plot/__go_draw_axes__.m: Add depthorder flag to "set pm3d" to
+	sort surface patches by their depth and not the order they are
+	rendered in.
+
+	* plot/__patch__.m: Set clim correctly.
+	* plot__go_draw_axes__.m: Allow patch objects to have markers, and 
+	the marker color is determined by the cmap.
+	* plot/scatter.m: New function to 2D scatter plots.
+	* plot/scatter3.m: New function to 3D scatter plots.
+	* plot/__scatter__.m: Support function for scatter plots
+	* Makefile.in (SOURCES): Ad dnew functions here.
+
+	* plot/drawnow.m (open_gnuplot_stream, init_gnuplot_stream):
+	Return whether the terminal supports enhanced text or not.
+	(drawnow:enhanced_term): New sub-function to determine if terminal
+	supports enhanced mode.
+	* plot/__go_draw_figure__.m: Accept enhanced flag and pass to
+	__go_draw_axes__.
+	* plot/__go_draw_axes__.m: Accept enhanced flag and munge text if
+	needed to support the enhanced mode.
+	* plot/print.m: Remove "enhanced" option as this is now treated in
+	drawnow.m.
+
+
+	* plot/caxis.m: New function to control the color axis limits.
+	* plot/Makefile.in (SOURCES): Include it.
+	* plot/axis.m: Allow the first argument to be an axes handle.
+	* plot/__go_draw_axes__.m: Move the setting of the caxis, also
+	autoscale caxis for patches. If any(isinf(clim)) don't set the
+	caxis limits.
+
+	* image/gmap40.m: New gnuplot 4.0 specific colormap fucntion.
+	* image/Makefile.in (SOURCES): Include it.
+	* plot/__bar__.h: Allow axis handles to be passed. Set the color
+	of the bars for the colormap. 
+	* plot/bar.m, plot/barh.m: Document that axis handles can be
+	passed.
+	* plot/__contour.m: Avoid possible divide by zero error.
+	* plot/contour.m: Missing semicolon.
+	* plot/surface.m: Don't attempt to set additional arguments if
+	there are none.
+	* plot/Makefile.in (SOURCES): Include __bars__.m
+	
+2007-11-19  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* plot/__bar__.m: put bar creation code into separate function
+	to allow easy hook up from other graphic backends
+
+	* plot/__bars__.m: new function containing bar creation code
+
 2007-11-26  Alexander Barth  <barth.alexander@gmail.com>
 
 	* general/accumarray.m: Correct dimension check.

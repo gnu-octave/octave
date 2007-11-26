@@ -45,12 +45,12 @@ function drawnow (term, file, debug_file)
 	plot_stream = [];
 	fid = [];
 	unwind_protect
-	  plot_stream = open_gnuplot_stream ([], term, file);
-	  __go_draw_figure__ (f, plot_stream);
+	  [plot_stream, enhanced] = open_gnuplot_stream ([], term, file);
+	  __go_draw_figure__ (f, plot_stream, enhanced);	
 	  if (nargin == 3)
 	    fid = fopen (debug_file, "wb");
-	    init_plot_stream (fid, [], term, file);
-	    __go_draw_figure__ (f, fid);
+	    enhanced = init_plot_stream (fid, [], term, file);
+	    __go_draw_figure__ (f, fid, enhanced);
 	  endif
 	unwind_protect_cleanup
 	  if (! isempty (plot_stream))
@@ -72,12 +72,16 @@ function drawnow (term, file, debug_file)
 	    figure_is_visible = strcmp (f.visible, "on");
 	    if (figure_is_visible)
 	      if (isempty (plot_stream))
-		plot_stream = open_gnuplot_stream (h);
+		[plot_stream, enhanced] = open_gnuplot_stream (h);
+		set (h, "__enhanced__", enhanced);
+	      else
+		enhanced = f.__enhanced__;
 	      endif
-	      __go_draw_figure__ (f, plot_stream);
+	      __go_draw_figure__ (f, plot_stream, enhanced);
 	    elseif (! isempty (plot_stream))
 	      pclose (plot_stream);
 	      set (h, "__plot_stream__", []);
+	      set (h, "__enhanced__", false);
 	    endif
 	    set (h, "__modified__", false);
 	  endif
@@ -96,7 +100,7 @@ function drawnow (term, file, debug_file)
 
 endfunction
 
-function plot_stream = open_gnuplot_stream (h, varargin)
+function [plot_stream, enhanced] = open_gnuplot_stream (h, varargin)
 
   ## If drawnow is cleared, it is possible to register __go_close_all__
   ## more than once, but that is not fatal.
@@ -114,7 +118,7 @@ function plot_stream = open_gnuplot_stream (h, varargin)
       set (h, "__plot_stream__", plot_stream);
     endif
 
-    init_plot_stream (plot_stream, h, varargin{:})
+    enhanced = init_plot_stream (plot_stream, h, varargin{:});
 
     if (isempty (__go_close_all_registered__))
       atexit ("__go_close_all__");
@@ -125,11 +129,16 @@ function plot_stream = open_gnuplot_stream (h, varargin)
 
 endfunction
 
-function init_plot_stream (plot_stream, h, term, file)
+function enhanced = init_plot_stream (plot_stream, h, term, file)
 
   if (nargin == 4)
+    enhanced = enhanced_term (term);
     if (! isempty (term))
-      fprintf (plot_stream, "set terminal %s;\n", term);
+      if (enhanced)
+	fprintf (plot_stream, "set terminal %s enhanced;\n", term);
+      else
+	fprintf (plot_stream, "set terminal %s;\n", term);
+      endif
     endif
     if (! isempty (file))
       fprintf (plot_stream, "set output \"%s\";\n", file);
@@ -153,24 +162,62 @@ function init_plot_stream (plot_stream, h, term, file)
       endif
     endif
 
+    enhanced = enhanced_term (term);
+    if (enhanced)
+      enh_str = "enhanced";
+    else
+      enh_str = "";
+    endif
+
     ## If no 'h' (why not?) then open the terminal as Figure 0.
     if (isempty (h))
       h = 0;
     endif
 
     if (strcmp (term, "x11"))
-      fprintf (plot_stream, "set terminal x11 title \"Figure %d\"\n", h);
+      fprintf (plot_stream, "set terminal x11 %s title \"Figure %d\"\n",
+	       enh_str, h);
     elseif (strcmp (term, "aqua"))
       ## Aqua doesn't understand the 'title' option despite what the
       ## gnuplot 4.2 documentation says.
-      fprintf (plot_stream, "set terminal aqua %d\n", h);
+      fprintf (plot_stream, "set terminal aqua %d %s\n", h, enh_str);
     elseif (strcmp (term, "wxt"))
-      fprintf (plot_stream, "set terminal wxt title \"Figure %d\"\n", h);
+      fprintf (plot_stream, "set terminal wxt %s title \"Figure %d\"\n", 
+	       enh_str, h);
+
+    elseif (enhanced)
+      fprintf (plot_stream "set terminal %s %s\n", term, enh_str);
     endif
     ## gnuplot will pick up the GNUTERM environment variable itself
     ## so no need to set the terminal type if not also setting the
-    ## figure title.
+    ## figure title or enhanced mode.
 
   endif
 
+endfunction
+
+function have_enhanced = enhanced_term (term)
+  persistent enhanced_terminals;
+
+  if (isempty (enhanced_terminals))
+    ## Don't include pstex, pslatex or epslatex here as the TeX commands
+    ## should not be interpreted in that case.
+    if (compare_versions (__gnuplot_version__ (), "4.0", ">"))
+      enhanced_terminals = {"aqua", "dumb", "png", "jpeg", "gif", "pm", ...
+	                    "windows", "wxt", "svg", "postscript", "x11"};
+    else 
+      enhanced_terminals = {"x11", "postscript"};
+    endif
+  endif
+
+  term = tolower (term);
+
+  have_enhanced = false;
+  for i = 1 : length (enhanced_terminals)
+    t = enhanced_terminals{i};
+    if (strncmp (term, t, min (length (term), length(t))))
+      have_enhanced = true;
+      break;
+    endif
+  endfor
 endfunction

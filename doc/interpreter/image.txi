@@ -152,6 +152,15 @@ between 0 and 1.
 
 @DOCSTRING(winter)
 
+An additional colormap is @code{gmap40}. This code map contains only
+colors with integer values of the red, green and blue components. This
+workaround a limitation on gnuplot 4.0, that does not allow the color of
+line or patch objects to be set, and so @code{gmap40} is useful for
+gnuplot 4.0 users, and in particular in conjunction with the @var{bar},
+@var{barh} or @var{contour} functions.
+
+@DOCSTRING(gmap40)
+
 @node Plotting on top of Images
 @section Plotting on top of Images
 

@@ -38,15 +38,11 @@ function [c, h] = __contour__ (varargin)
     endif
   endif
 
-  clim = get (ax, "clim");
-
   [c, lev] = contourc (varargin{3:end});
 
   ## Decode contourc output format.
   i1 = 1;
   h = [];
-  maxlev = max (lev);
-  minlev = min (lev);
   while (i1 < length (c))
     clev = c(1,i1);
     clen = c(2,i1);
@@ -57,17 +53,15 @@ function [c, h] = __contour__ (varargin)
       p = [c(:, i1+1:i1+clen), NaN(2, 1)];
     endif
 
-    lev = (clev - minlev) * (clim(2) - clim(1)) / (maxlev - minlev) + clim(1);
-
     if (isnan (z))
       h = [h; patch(ax, p(1,:), p(2,:), "facecolor", "none", 
-		    "edgecolor", "flat", "cdata", lev)];
+		    "edgecolor", "flat", "cdata", clev)];
     elseif (!ischar(z))
       h = [h; patch(ax, p(1,:), p(2,:), z * ones (1, columns (p)), "facecolor",
-		    "none", "edgecolor", "flat", "cdata", lev)];
+		    "none", "edgecolor", "flat", "cdata", clev)];
     else
       h = [h; patch(ax, p(1,:), p(2,:), clev * ones (1, columns (p)),
-		    "facecolor", "none", "edgecolor", "flat", "cdata", lev)];
+		    "facecolor", "none", "edgecolor", "flat", "cdata", clev)];
     endif
     i1 += clen+1;
   endwhile

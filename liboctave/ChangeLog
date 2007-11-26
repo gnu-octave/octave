@@ -1,3 +1,28 @@
+2007-11-26  David Bateman  <dbateman@free.fr>
+
+	* intNDArray.cc (template <class T> intNDArray<T>
+	intNDArray<T>::max (int) const, template <class T> intNDArray<T>
+	intNDArray<T>::max (ArrayN<octave_idx_type>&, int) const,
+	template <class T> intNDArray<T> intNDArray<T>::min (int) const, 
+	template <class T> intNDArray<T> intNDArray<T>::min 
+	(ArrayN<octave_idx_type>&, int) const): New methods for integer
+	classes.
+	* intNDArray.h (class intNDArray): Add min/max methods
+	* mx-op-defs.h (MIXMAX_DECLS, MINMAX_FCNS, SND_MINMAX_FCN,
+	NDS_MINMAX_FCN, NDND_MINMAX_FCN): New macro for instantiation of
+	min/max functions.
+	* int8NDArray.h, int16NDArray.h, int32NDArray.h, int64NDArray.h, 
+	uint8NDArray.h, uint16NDArray.h, uint32NDArray.h, uint64NDArray.h
+	(MINMAX_DECLS(T)): Declare the min/max functions for integer
+	types.
+	* int8NDArray.cc, int16NDArray.cc, int32NDArray.cc, int64NDArray.cc, 
+	uint8NDArray.cc, uint16NDArray.cc, uint32NDArray.cc, uint64NDArray.cc
+	(MINMAX_FCNS(T)): Instantiate the min/max functions for integer
+	types.
+
+	* Arrayc.cc (Array<T>::index (idx_vector&, idx_vector&, int,
+	const T& rfv) const): If ndims != 2 call ND version of index.
+
 2007-11-14  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (opeator T (void) const): New conversion operator.

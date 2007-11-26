@@ -219,7 +219,7 @@ color_property::operator = (const octave_value& val)
 
 
 void
-property_list::set (const property_name& name, const octave_value& val)
+property_list::set (const caseless_str& name, const octave_value& val)
 {
   size_t offset = 0;
 
@@ -227,7 +227,7 @@ property_list::set (const property_name& name, const octave_value& val)
 
   if (len > 4)
     {
-      property_name pfx = name.substr (0, 4);
+      caseless_str pfx = name.substr (0, 4);
 
       if (pfx.compare ("axes") || pfx.compare ("line")
 	  || pfx.compare ("text"))
@@ -266,7 +266,7 @@ property_list::set (const property_name& name, const octave_value& val)
 	  bool remove = false;
 	  if (val.is_string ())
 	    {
-	      property_name tval = val.string_value ();
+	      caseless_str tval = val.string_value ();
 
 	      remove = tval.compare ("remove");
 	    }
@@ -290,7 +290,7 @@ property_list::set (const property_name& name, const octave_value& val)
 }
 
 octave_value
-property_list::lookup (const property_name& name) const
+property_list::lookup (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -300,7 +300,7 @@ property_list::lookup (const property_name& name) const
 
   if (len > 4)
     {
-      property_name pfx = name.substr (0, 4);
+      caseless_str pfx = name.substr (0, 4);
 
       if (pfx.compare ("axes") || pfx.compare ("line")
 	  || pfx.compare ("text"))
@@ -398,7 +398,7 @@ graphics_object::set (const octave_value_list& args)
     {
       for (int i = 0; i < nargin; i += 2)
 	{
-	  property_name name = args(i).string_value ();
+	  caseless_str name = args(i).string_value ();
 
 	  if (! error_state)
 	    {
@@ -406,7 +406,7 @@ graphics_object::set (const octave_value_list& args)
 
 	      if (val.is_string ())
 		{
-		  property_name tval = val.string_value ();
+		  caseless_str tval = val.string_value ();
 
 		  if (tval.compare ("default"))
 		    val = get_default (name);
@@ -485,7 +485,7 @@ gh_manager::do_free (const graphics_handle& h)
 gh_manager *gh_manager::instance = 0;
 
 static void
-xset (const graphics_handle& h, const property_name& name,
+xset (const graphics_handle& h, const caseless_str& name,
       const octave_value& val)
 {
   graphics_object obj = gh_manager::get_object (h);
@@ -504,7 +504,7 @@ xset (const graphics_handle& h, const octave_value_list& args)
 
 
 static octave_value
-xget (const graphics_handle& h, const property_name& name)
+xget (const graphics_handle& h, const caseless_str& name)
 {
   graphics_object obj = gh_manager::get_object (h);
   return obj.get (name);
@@ -784,7 +784,7 @@ root_figure::properties::set_currentfigure (const graphics_handle& val)
 }
 
 void
-root_figure::properties::set (const property_name& name,
+root_figure::properties::set (const caseless_str& name,
 			      const octave_value& val)
 {
   if (name.compare ("tag"))
@@ -813,7 +813,7 @@ octave_value root_figure::properties::get (void) const
 }
 
 octave_value 
-root_figure::properties::get (const property_name& name) const
+root_figure::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -844,6 +844,7 @@ figure::properties::properties (const graphics_handle& mh,
 				const graphics_handle& p)
   : base_properties (go_name, mh, p),
     __plot_stream__ (Matrix ()),
+    __enhanced__ (false),
     nextplot ("replace"),
     closerequestfcn (make_fcn_handle ("closereq")),
     currentaxes (octave_NaN),
@@ -879,7 +880,7 @@ figure::properties::set_visible (const octave_value& val)
 }
 
 void
-figure::properties::set (const property_name& name, const octave_value& val)
+figure::properties::set (const caseless_str& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -894,6 +895,8 @@ figure::properties::set (const property_name& name, const octave_value& val)
     }
   else if (name.compare ("__plot_stream__"))
     set___plot_stream__ (val);
+  else if (name.compare ("__enhanced__"))
+    set___enhanced__ (val);
   else if (name.compare ("nextplot"))
     set_nextplot (val);
   else if (name.compare ("closerequestfcn"))
@@ -927,6 +930,7 @@ figure::properties::get (void) const
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
   m.assign ("__plot_stream__", __plot_stream__);
+  m.assign ("__enhanced__", __enhanced__);
   m.assign ("nextplot", nextplot);
   m.assign ("closerequestfcn", closerequestfcn);
   m.assign ("currentaxes", currentaxes.as_octave_value ());
@@ -938,7 +942,7 @@ figure::properties::get (void) const
 }
 
 octave_value
-figure::properties::get (const property_name& name) const
+figure::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -954,6 +958,8 @@ figure::properties::get (const property_name& name) const
     retval = __modified__;
   else if (name.compare ("__plot_stream__"))
     retval = __plot_stream__;
+  else if (name.compare ("__enhanced__"))
+    retval = __enhanced__;
   else if (name.compare ("nextplot"))
     retval = nextplot;
   else if (name.compare ("closerequestfcn"))
@@ -1008,7 +1014,7 @@ figure::properties::factory_defaults (void)
 }
 
 octave_value
-figure::get_default (const property_name& name) const
+figure::get_default (const caseless_str& name) const
 {
   octave_value retval = default_properties.lookup (name);
 
@@ -1106,7 +1112,8 @@ axes::properties::properties (const graphics_handle& mh,
     view (),
     visible ("on"),
     nextplot ("replace"),
-    outerposition ()
+    outerposition (),
+    __colorbar__ (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"))
 {
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;
@@ -1192,7 +1199,7 @@ axes::properties::set_zlabel (const octave_value& val)
 }
 
 void
-axes::properties::set (const property_name& name, const octave_value& val)
+axes::properties::set (const caseless_str& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -1307,6 +1314,8 @@ axes::properties::set (const property_name& name, const octave_value& val)
     set_nextplot (val);
   else if (name.compare ("outerposition"))
     set_outerposition (val);
+  else if (name.compare ("__colorbar__"))
+    set___colorbar__ (val);
   else
     {
       modified = false;
@@ -1392,6 +1401,8 @@ axes::properties::set_defaults (base_graphics_object& obj,
       touterposition(3) = 1;
       outerposition = touterposition;
     }
+
+  __colorbar__  = radio_property (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"));
 
   delete_children ();
 
@@ -1496,12 +1507,13 @@ axes::properties::get (void) const
   m.assign ("visible", visible);
   m.assign ("nextplot", nextplot);
   m.assign ("outerposition", outerposition);
+  m.assign ("__colorbar__", __colorbar__);
 
   return m;
 }
 
 octave_value
-axes::properties::get (const property_name& name) const
+axes::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -1615,6 +1627,8 @@ axes::properties::get (const property_name& name) const
     retval = nextplot;
   else if (name.compare ("outerposition"))
     retval = outerposition;
+  else if (name.compare ("__colorbar__"))
+    retval = __colorbar__;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -1721,12 +1735,13 @@ axes::properties::factory_defaults (void)
   touterposition(3) = 1;
 
   m["outerposition"] = touterposition;
+  m["__colorbar__"] = radio_property (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"));
 
   return m;
 }
 
 octave_value
-axes::get_default (const property_name& name) const
+axes::get_default (const caseless_str& name) const
 {
   octave_value retval = default_properties.lookup (name);
 
@@ -1773,11 +1788,12 @@ line::properties::properties (const graphics_handle& mh,
     markeredgecolor ("auto"),
     markerfacecolor ("none"),
     markersize (1),
-    keylabel ("")
+    keylabel (""),
+    interpreter (radio_values ("{tex}|none|latex"))
 { }
 
 void
-line::properties::set (const property_name& name, const octave_value& val)
+line::properties::set (const caseless_str& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -1822,6 +1838,8 @@ line::properties::set (const property_name& name, const octave_value& val)
     set_markersize (val);
   else if (name.compare ("keylabel"))
     set_keylabel (val);
+  else if (name.compare ("interpreter"))
+    set_interpreter (val);
   else
     {
       modified = false;
@@ -1857,12 +1875,13 @@ line::properties::get (void) const
   m.assign ("markerfacecolor", markerfacecolor);
   m.assign ("markersize", markersize);
   m.assign ("keylabel", keylabel);
+  m.assign ("interpreter", interpreter);
 
   return m;
 }
 
 octave_value
-line::properties::get (const property_name& name) const
+line::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -1906,6 +1925,8 @@ line::properties::get (const property_name& name) const
     retval = markersize;
   else if (name.compare ("keylabel"))
     retval = keylabel;
+  else if (name.compare ("interpreter"))
+    retval = interpreter;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -1932,6 +1953,8 @@ line::properties::factory_defaults (void)
   m["markerfacecolor"] = "none";
   m["markersize"] = 1;
   m["keylabel"] = "";
+  m["interpreter"] = 
+    radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }
@@ -1952,11 +1975,12 @@ text::properties::properties (const graphics_handle& mh,
     fontname ("Helvetica"),
     fontsize (10),
     fontangle (radio_values ("{normal}|italic|oblique")),
-    fontweight (radio_values ("{normal}|bold|demi|light"))
+    fontweight (radio_values ("{normal}|bold|demi|light")),
+    interpreter (radio_values ("{tex}|none|latex"))
 { }
 
 void
-text::properties::set (const property_name& name, const octave_value& val)
+text::properties::set (const caseless_str& name, const octave_value& val)
 {
   bool modified = true;
 
@@ -1991,6 +2015,8 @@ text::properties::set (const property_name& name, const octave_value& val)
     set_fontangle (val);
   else if (name.compare ("fontweight"))
     set_fontweight (val);
+  else if (name.compare ("interpreter"))
+    set_interpreter (val);
   else
     {
       modified = false;
@@ -2021,12 +2047,13 @@ text::properties::get (void) const
   m.assign ("fontsize", fontsize);
   m.assign ("fontangle", fontangle);
   m.assign ("fontweight", fontweight);
+  m.assign ("interpreter", interpreter);
 
   return m;
 }
 
 octave_value
-text::properties::get (const property_name& name) const
+text::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -2060,6 +2087,8 @@ text::properties::get (const property_name& name) const
     retval = fontangle;
   else if (name.compare ("fontweight"))
     retval = fontweight;
+  else if (name.compare ("interpreter"))
+    retval = interpreter;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -2080,9 +2109,11 @@ text::properties::factory_defaults (void)
   m["fontname"] = "Helvetica";
   m["fontsize"] = 10;
   m["fontangle"] = 
-      string_property ("normal", radio_values ("{normal}|italic|oblique"));
+      radio_property (radio_values ("{normal}|italic|oblique"));
   m["fontweight"] = 
-    string_property ("normal", radio_values ("{normal}|bold|demi|light"));
+    radio_property (radio_values ("{normal}|bold|demi|light"));
+  m["interpreter"] = 
+    radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }
@@ -2100,7 +2131,7 @@ image::properties::properties (const graphics_handle& mh,
 { }
 
 void
-image::properties::set (const property_name& name,
+image::properties::set (const caseless_str& name,
 			const octave_value& val)
 {
   bool modified = true;
@@ -2150,7 +2181,7 @@ image::properties::get (void) const
 }
 
 octave_value
-image::properties::get (const property_name& name) const
+image::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -2210,11 +2241,12 @@ patch::properties::properties (const graphics_handle& mh,
     markeredgecolor ("auto"),
     markerfacecolor ("none"),
     markersize (1),
-    keylabel ("")
+    keylabel (""),
+    interpreter (radio_values ("{tex}|none|latex"))
 { }
 
 void
-patch::properties::set (const property_name& name,
+patch::properties::set (const caseless_str& name,
 			const octave_value& val)
 {
   bool modified = true;
@@ -2262,6 +2294,8 @@ patch::properties::set (const property_name& name,
     set_markersize (val);
   else if (name.compare ("keylabel"))
     set_keylabel (val);
+  else if (name.compare ("interpreter"))
+    set_interpreter (val);
   else
     {
       modified = false;
@@ -2298,12 +2332,13 @@ patch::properties::get (void) const
   m.assign ("markerface", markerfacecolor);
   m.assign ("markersize", markersize);
   m.assign ("keylabel", keylabel);
+  m.assign ("interpreter", interpreter);
 
   return m;
 }
 
 octave_value
-patch::properties::get (const property_name& name) const
+patch::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -2349,6 +2384,8 @@ patch::properties::get (const property_name& name) const
     retval = markersize;
   else if (name.compare ("keylabel"))
     retval = keylabel;
+  else if (name.compare ("interpreter"))
+    retval = interpreter;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -2376,6 +2413,8 @@ patch::properties::factory_defaults (void)
   m["markerfacecolor"] = "none";
   m["markersize"] = 1;
   m["keylabel"] = "";
+  m["interpreter"] = 
+    radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }
@@ -2400,11 +2439,12 @@ surface::properties::properties (const graphics_handle& mh,
     markeredgecolor ("auto"),
     markerfacecolor ("none"),
     markersize (1),
-    keylabel ("")
+    keylabel (""),
+    interpreter (radio_values ("{tex}|none|latex"))
 { }
 
 void
-surface::properties::set (const property_name& name,
+surface::properties::set (const caseless_str& name,
 			  const octave_value& val)
 {
   bool modified = true;
@@ -2448,6 +2488,8 @@ surface::properties::set (const property_name& name,
     set_markersize (val);
   else if (name.compare ("keylabel"))
     set_keylabel (val);
+  else if (name.compare ("interpreter"))
+    set_interpreter (val);
   else
     {
       modified = false;
@@ -2482,12 +2524,13 @@ surface::properties::get (void) const
   m.assign ("markerface", markerfacecolor);
   m.assign ("markersize", markersize);
   m.assign ("keylabel", keylabel);
+  m.assign ("interpreter", interpreter);
 
   return m;
 }
 
 octave_value
-surface::properties::get (const property_name& name) const
+surface::properties::get (const caseless_str& name) const
 {
   octave_value retval;
 
@@ -2529,6 +2572,8 @@ surface::properties::get (const property_name& name) const
     retval = markersize;
   else if (name.compare ("keylabel"))
     retval = keylabel;
+  else if (name.compare ("interpreter"))
+    retval = interpreter;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -2554,6 +2599,8 @@ surface::properties::factory_defaults (void)
   m["markerfacecolor"] = "none";
   m["markersize"] = 1;
   m["keylabel"] = "";
+  m["interpreter"] = 
+    radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }
@@ -2563,7 +2610,7 @@ std::string surface::properties::go_name ("surface");
 // ---------------------------------------------------------------------
 
 octave_value
-base_graphics_object::get_default (const property_name& name) const
+base_graphics_object::get_default (const caseless_str& name) const
 {
   graphics_handle parent = get_parent ();
   graphics_object parent_obj = gh_manager::get_object (parent);
@@ -2572,7 +2619,7 @@ base_graphics_object::get_default (const property_name& name) const
 }
 
 octave_value
-base_graphics_object::get_factory_default (const property_name& name) const
+base_graphics_object::get_factory_default (const caseless_str& name) const
 {
   graphics_object parent_obj = gh_manager::get_object (0);
 
@@ -2765,7 +2812,7 @@ values or lists respectively.\n\
                     vlist(n) = obj.get ();
                   else
                     {
-                      property_name property = args(1).string_value ();
+                      caseless_str property = args(1).string_value ();
 
                       if (! error_state)
                         vlist(n) = obj.get (property);
@@ -3075,7 +3122,7 @@ get_property_from_handle (double handle, const std::string &property,
 
   if (obj)
     {
-      property_name p = std::string (property);
+      caseless_str p = std::string (property);
       retval = obj.get (p);
     }
   else
@@ -3093,7 +3140,7 @@ set_property_in_handle (double handle, const std::string &property,
 
   if (obj)
     {
-      property_name p = std::string (property);
+      caseless_str p = std::string (property);
       obj.set (p, arg);
       if (!error_state)
 	ret = true;

@@ -38,6 +38,7 @@ SOURCES = \
   __axes_limits__.m \
   __axis_label__.m \
   __bar__.m \
+  __bars__.m \
   __contour__.m \
   __default_plot_options__.m \
   __errcomm__.m \
@@ -62,6 +63,8 @@ SOURCES = \
   __plt_get_axis_arg__.m \
   __pltopt1__.m \
   __pltopt__.m \
+  __quiver__.m \
+  __scatter__.m \
   ancestor.m \
   area.m \
   axes.m \
@@ -69,9 +72,11 @@ SOURCES = \
   bar.m \
   barh.m \
   box.m \
+  caxis.m \
   clf.m \
   close.m \
   closereq.m \
+  colorbar.m \
   contour3.m \
   contour.m \
   contourc.m \
@@ -110,8 +115,11 @@ SOURCES = \
   polar.m \
   print.m \
   quiver.m \
+  quiver3.m \
   replot.m \
   ribbon.m \
+  scatter.m \
+  scatter3.m \
   semilogx.m \
   semilogxerr.m \
   semilogy.m \
@@ -120,6 +128,7 @@ SOURCES = \
   shg.m \
   slice.m \
   sombrero.m \
+  sphere.m \
   spinmap.m \
   stairs.m \
   stem.m \
@@ -127,6 +136,7 @@ SOURCES = \
   surf.m \
   surface.m \
   surfc.m \
+  surfnorm.m \
   text.m \
   title.m \
   view.m \

@@ -40,65 +40,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov-cx-mat.h"
 
-#define MINMAX_BODY(FCN) \
- \
-  octave_value_list retval;  \
- \
-  int nargin = args.length (); \
- \
-  if (nargin < 1 || nargin > 3 || nargout > 2) \
-    { \
-      print_usage (); \
-      return retval; \
-    } \
- \
-  octave_value arg1; \
-  octave_value arg2; \
-  octave_value arg3; \
- \
-  switch (nargin) \
-    { \
-    case 3: \
-      arg3 = args(2); \
- \
-    case 2: \
-      arg2 = args(1); \
- \
-    case 1: \
-      arg1 = args(0); \
-      break; \
- \
-    default: \
-      panic_impossible (); \
-      break; \
-    } \
- \
-  int dim; \
-  dim_vector dv = arg1.dims (); \
-  if (error_state) \
-    { \
-      gripe_wrong_type_arg (#FCN, arg1);  \
-      return retval; \
-    } \
- \
-  if (nargin == 3) \
-    { \
-      dim = arg3.nint_value () - 1;  \
-      if (dim < 0 || dim >= dv.length ()) \
-        { \
-	  error ("%s: invalid dimension", #FCN); \
-	  return retval; \
-	} \
-    } \
-  else \
-    { \
-      dim = 0; \
-      while ((dim < dv.length ()) && (dv (dim) <= 1)) \
-	dim++; \
-      if (dim == dv.length ()) \
-	dim = 0; \
-    } \
- \
+#define MINMAX_DOUBLE_BODY(FCN) \
+{ \
   bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
  \
   if (single_arg && (nargout == 1 || nargout == 0)) \
@@ -271,8 +214,185 @@ along with Octave; see the file COPYING.  If not, see
 	    } \
 	} \
     } \
+}
+
+#define MINMAX_INT_BODY(FCN, TYP) \
+ { \
+  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
  \
-  return retval
+  if (single_arg && (nargout == 1 || nargout == 0)) \
+    { \
+      TYP ## NDArray m = arg1. TYP ## _array_value (); \
+ \
+      if (! error_state) \
+	{ \
+	  TYP ## NDArray n = m. FCN (dim); \
+	  retval(0) = n; \
+	} \
+    } \
+  else if (single_arg && nargout == 2) \
+    { \
+      ArrayN<octave_idx_type> index; \
+ \
+      TYP ## NDArray m = arg1. TYP ## _array_value (); \
+ \
+      if (! error_state) \
+        { \
+	  TYP ## NDArray n = m. FCN (index, dim);	\
+	  retval(0) = n; \
+	} \
+ \
+      octave_idx_type len = index.numel (); \
+ \
+      if (len > 0) \
+	{ \
+	  double nan_val = lo_ieee_nan_value (); \
+ \
+	  NDArray idx (index.dims ()); \
+ \
+	  for (octave_idx_type i = 0; i < len; i++) \
+	    { \
+	      OCTAVE_QUIT; \
+	      int tmp = index.elem (i) + 1; \
+	      idx.elem (i) = (tmp <= 0) \
+		? nan_val : static_cast<double> (tmp); \
+	    } \
+ \
+	  retval(1) = idx; \
+	} \
+      else \
+	retval(1) = NDArray (); \
+    } \
+  else \
+    { \
+      int arg1_is_scalar = arg1.is_scalar_type (); \
+      int arg2_is_scalar = arg2.is_scalar_type (); \
+ \
+      if (arg1_is_scalar) \
+	{ \
+	  octave_ ## TYP d1 = arg1. TYP ## _scalar_value (); \
+	  TYP ## NDArray m2 = arg2. TYP ## _array_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      TYP ## NDArray result = FCN (d1, m2); \
+	      if (! error_state) \
+		retval(0) = result; \
+	    } \
+	} \
+      else if (arg2_is_scalar) \
+	{ \
+	  TYP ## NDArray m1 = arg1. TYP ## _array_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      octave_ ## TYP d2 = arg2. TYP ## _scalar_value (); \
+	      TYP ## NDArray result = FCN (m1, d2); \
+	      if (! error_state) \
+		retval(0) = result; \
+	    } \
+	} \
+      else \
+	{ \
+	  TYP ## NDArray m1 = arg1. TYP ## _array_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      TYP ## NDArray m2 = arg2. TYP ## _array_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  TYP ## NDArray result = FCN (m1, m2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	} \
+    } \
+}
+
+#define MINMAX_BODY(FCN) \
+ \
+  octave_value_list retval;  \
+ \
+  int nargin = args.length (); \
+ \
+  if (nargin < 1 || nargin > 3 || nargout > 2) \
+    { \
+      print_usage (); \
+      return retval; \
+    } \
+ \
+  octave_value arg1; \
+  octave_value arg2; \
+  octave_value arg3; \
+ \
+  switch (nargin) \
+    { \
+    case 3: \
+      arg3 = args(2); \
+ \
+    case 2: \
+      arg2 = args(1); \
+ \
+    case 1: \
+      arg1 = args(0); \
+      break; \
+ \
+    default: \
+      panic_impossible (); \
+      break; \
+    } \
+ \
+  int dim; \
+  dim_vector dv = arg1.dims (); \
+  if (error_state) \
+    { \
+      gripe_wrong_type_arg (#FCN, arg1);  \
+      return retval; \
+    } \
+ \
+  if (nargin == 3) \
+    { \
+      dim = arg3.nint_value () - 1;  \
+      if (dim < 0 || dim >= dv.length ()) \
+        { \
+	  error ("%s: invalid dimension", #FCN); \
+	  return retval; \
+	} \
+    } \
+  else \
+    { \
+      dim = 0; \
+      while ((dim < dv.length ()) && (dv (dim) <= 1)) \
+	dim++; \
+      if (dim == dv.length ()) \
+	dim = 0; \
+    } \
+ \
+  if (arg1.is_integer_type ()) \
+    { \
+      if (arg1.is_uint8_type ()) \
+        MINMAX_INT_BODY (FCN, uint8) \
+      else if (arg1.is_uint16_type ()) \
+        MINMAX_INT_BODY (FCN, uint16) \
+      else if (arg1.is_uint32_type ()) \
+        MINMAX_INT_BODY (FCN, uint32) \
+      else if (arg1.is_uint64_type ()) \
+        MINMAX_INT_BODY (FCN, uint64) \
+      else if (arg1.is_int8_type ()) \
+        MINMAX_INT_BODY (FCN, int8) \
+      else if (arg1.is_int16_type ()) \
+        MINMAX_INT_BODY (FCN, int16) \
+      else if (arg1.is_int32_type ()) \
+        MINMAX_INT_BODY (FCN, int32) \
+      else if (arg1.is_int64_type ()) \
+        MINMAX_INT_BODY (FCN, int64) \
+    } \
+  else \
+    MINMAX_DOUBLE_BODY (FCN) \
+ \
+ return retval;
 
 DEFUN_DLD (min, args, nargout,
   "-*- texinfo -*-\n\

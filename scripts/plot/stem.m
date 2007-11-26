@@ -107,11 +107,12 @@ function h = stem (varargin)
   endif
 
   newplot ();
-
-  z = zeros (1, numel (x));
+  nx = numel (x);
   xt = x(:)';
+  xt = [xt; xt; NaN(1, nx)](:);
   yt = y(:)';
-  h_stems = plot ([xt; xt], [z; yt], "color", lc, "linestyle", ls,
+  yt = [zeros(1, nx); yt; NaN(1, nx)](:);
+  h_stems = plot (xt, yt, "color", lc, "linestyle", ls,
 		  x, y, "color", mc, "marker", ms, "linestyle", "",
 		  "markerfacecolor", fc);
 
@@ -262,10 +263,8 @@ function [lc, ls, mc, ms] = stem_line_spec (str)
   ## Parse the line specifier string.
   cur_props = __pltopt__ ("stem", str, false);
   for i = 1:length(cur_props)
-    if (isfield (cur_props(i), "markeredgecolor"))
-      mc = cur_props(i).markeredgecolor;
-    elseif (isfield (cur_props(i), "color") && ! isempty (cur_props(i).color)); # means line color
-      lc = cur_props(i).color;
+    if (isfield (cur_props(i), "color") && ! isempty (cur_props(i).color)); # means line color
+      mc = lc = cur_props(i).color;
     elseif (isfield (cur_props(i), "linestyle"))
       ls = cur_props(i).linestyle;
     elseif (isfield (cur_props(i), "marker") && ! strcmp (cur_props(i).marker, "none"))

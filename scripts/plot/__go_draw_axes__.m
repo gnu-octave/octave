@@ -20,9 +20,9 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream)
+function __go_draw_axes__ (h, plot_stream, enhanced)
 
-  if (nargin == 2)
+  if (nargin == 3)
 
     axis_obj = get (h);
 
@@ -32,18 +32,22 @@ function __go_draw_axes__ (h, plot_stream)
       = compare_versions (__gnuplot_version__ (), "4.0", ">");
 
     ## Set axis properties here?
-
+    pos = [0,0,1,1];
     if (! isempty (axis_obj.outerposition))
       pos = axis_obj.outerposition;
-      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
-      fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
     endif
 
     if (! isempty (axis_obj.position))
       pos = axis_obj.position;
-      fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
-      fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
     endif
+
+    if (! strcmp (axis_obj.__colorbar__, "none"))
+      [pos, cbox_orient, cbox_size, cbox_origin, cbox_mirror] = ...
+	  gnuplot_postion_colorbox (pos, axis_obj.__colorbar__);
+    endif
+
+    fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
+    fprintf (plot_stream, "set size %.15g, %.15g;\n", pos(3), pos(4));
 
     if (strcmpi (axis_obj.dataaspectratiomode, "manual"))
       r = axis_obj.dataaspectratio;
@@ -52,6 +56,7 @@ function __go_draw_axes__ (h, plot_stream)
       fputs (plot_stream, "set size noratio;\n");
     endif
 
+    fputs (plot_stream, "set pm3d;\n");
     fputs (plot_stream, "unset label;\n");
 
     if (! isempty (axis_obj.title))
@@ -59,9 +64,10 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset title;\n");
       else
-	[f, s] = get_fontname_and_size (t);
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", 
+					   have_newer_gnuplot);
 	fprintf (plot_stream, "set title \"%s\" font \"%s,%d\";\n",
-		 undo_string_escapes (t.string), f, s);
+		 undo_string_escapes (tt), f, s);
       endif
     endif
 
@@ -71,9 +77,10 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset xlabel;\n");
       else
-	[f, s] = get_fontname_and_size (t);
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
+					   have_newer_gnuplot);
 	fprintf (plot_stream, "set xlabel \"%s\" font \"%s,%d\"",
-		 undo_string_escapes (t.string), f, s);
+		 undo_string_escapes (tt), f, s);
 	if (have_newer_gnuplot)
 	  ## Rotation of xlabel not yet support by gnuplot as of 4.2, but
 	  ## there is no message about it.
@@ -89,9 +96,10 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset ylabel;\n");
       else
-	[f, s] = get_fontname_and_size (t);
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
+					   have_newer_gnuplot);
 	fprintf (plot_stream, "set ylabel \"%s\" font \"%s,%d\"",
-		 undo_string_escapes (t.string), f, s);
+		 undo_string_escapes (tt), f, s);
 	if (have_newer_gnuplot)
 	  fprintf (plot_stream, " rotate by %f;\n", angle);
 	endif
@@ -105,8 +113,10 @@ function __go_draw_axes__ (h, plot_stream)
       if (isempty (t.string))
 	fputs (plot_stream, "unset zlabel;\n");
       else
-	fprintf (plot_stream, "set zlabel \"%s\"",
-		 undo_string_escapes (t.string));
+	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
+					   have_newer_gnuplot);
+	fprintf (plot_stream, "set zlabel \"%s\" font \"%s,%d\"",
+		 undo_string_escapes (tt), f, s);
 	if (have_newer_gnuplot)
 	  ## Rotation of zlabel not yet support by gnuplot as of 4.2, but
 	  ## there is no message about it.
@@ -210,6 +220,27 @@ function __go_draw_axes__ (h, plot_stream)
     xmax = ymax = zmax = cmax = -Inf;
     xmin = ymin = zmin = cmin = Inf;
 
+    ## This has to be done here as some of the code below depends on the
+    ## final clim
+    if (cautoscale)
+      for i = 1:length (kids)
+	obj = get (kids(i));
+	if (isfield (obj, "cdata"))
+	  [cmin, cmax, cminp] = get_data_limits (cmin, cmax, cminp, 
+						 obj.cdata(:));
+	endif
+      endfor
+      if (cmin == cmax)
+	cmax = cmin + 1;
+      endif      
+      clim = [cmin, cmax];
+    else
+      clim = axis_obj.clim;
+      if (clim(1) == clim(2))
+	clim = [clim(1), clim(1) + 1];
+      endif
+    endif
+
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
     use_gnuplot_for_images = (ischar (view_fcn)
 			      && strcmp (view_fcn, "gnuplot_internal"));
@@ -232,7 +263,6 @@ function __go_draw_axes__ (h, plot_stream)
 	  endif
 
 	  img_data = obj.cdata;
-	  img_colormap = parent_figure_obj.colormap;
 	  img_xdata = obj.xdata;
 	  img_ydata = obj.ydata;
 
@@ -281,15 +311,6 @@ function __go_draw_axes__ (h, plot_stream)
 	      data{data_idx} = img_data(:);
 	      format = "1";
 	      imagetype = "image";
-
-	      palette_size = rows (img_colormap);
-	      fprintf (plot_stream,
-		       "set palette positive color model RGB maxcolors %i;\n",
-		       palette_size);
-	      fprintf (plot_stream,
-		       "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
-		       palette_size);
-	      fwrite (plot_stream, [1:palette_size; img_colormap'], "float32");
 	    endif
 
 	    titlespec{data_idx} = "title \"\"";
@@ -315,7 +336,7 @@ function __go_draw_axes__ (h, plot_stream)
 	  if (isempty (obj.keylabel))
 	    titlespec{data_idx} = "title \"\"";
 	  else
-	    tmp = undo_string_escapes (obj.keylabel);
+	    tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
 	    titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	  endif
 	  [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
@@ -435,8 +456,13 @@ function __go_draw_axes__ (h, plot_stream)
 
        case "patch"
          cmap = parent_figure_obj.colormap;
-         clim = axis_obj.clim;
 	 [nr, nc] = size (obj.xdata);
+
+	 if (! isempty (obj.cdata))
+	   cdat = obj.cdata;
+	 else
+	   cdat = [];
+	 endif
 
 	 for i = 1:nc
 	   xcol = obj.xdata(:,i);
@@ -480,29 +506,40 @@ function __go_draw_axes__ (h, plot_stream)
 	       if (i > 1 || isempty (obj.keylabel))
 		 titlespec{data_idx} = "title \"\"";
 	       else
-		 tmp = undo_string_escapes (obj.keylabel);
+		 tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
 		 titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	       endif
 	       usingclause{data_idx} = "";
-               if (isfield (obj, "facecolor") && isfield (obj, "cdata"))
-		 if (strncmp (obj.facecolor, "flat", 4)
-		     || strncmp (obj.facecolor, "interp", 6))
+               if (isfield (obj, "facecolor"))
+		 if ((strncmp (obj.facecolor, "flat", 4)
+		     || strncmp (obj.facecolor, "interp", 6)) &&
+		     isfield (obj, "cdata"))
 		   if (ndims (obj.cdata) == 2
-		       && ((nr > 3 && size (obj.cdata, 2) == nc)
-			   || (size (obj.cdata, 1) > 1
-			       && size (obj.cdata, 2) == nc)))
-		     ccol = obj.cdata (:, i);
+		       && (size (obj.cdata, 2) == nc
+			   && (size (obj.cdata, 1) == 1
+			       || size (obj.cdata, 1) == 3)))
+		     ccol = cdat (:, i);
+		   elseif (ndims (obj.cdata) == 2
+		       && (size (obj.cdata, 1) == nc
+			   && (size (obj.cdata, 2) == 1
+			       || size (obj.cdata, 2) == 3)))
+		     ccol = cdat (i, :);
 		   elseif (ndims (obj.cdata) == 3)
-		     ccol = permute (obj.cdata (:, i, :), [1, 3, 2]);
+		     ccol = permute (cdat (:, i, :), [1, 3, 2]);
 		   else
-		     ccol = obj.cdata;
+		     ccol = cdat;
 		   endif
 		   if (strncmp (obj.facecolor, "flat", 4))
 		     if (numel(ccol) == 3)
 		       color = ccol;
 		     else
-		       r = 1 + round ((size (cmap, 1) - 1)
-				      * (ccol - clim(1))/(clim(2) - clim(1)));
+		       if (cautoscale)
+			 r = 1 + round ((size (cmap, 1) - 1)
+					* (ccol - cmin)/(cmax - cmin));
+		       else
+			 r = 1 + round ((size (cmap, 1) - 1)
+					* (ccol - clim(1))/(clim(2) - clim(1)));
+		       endif
 		       r = max (1, min (r, size (cmap, 1)));
 		       color = cmap(r, :);
 		     endif
@@ -512,8 +549,10 @@ function __go_draw_axes__ (h, plot_stream)
 		     r = max (1, min (r, size (cmap, 1)));
 		     color = cmap(r,:);
 		   endif
-		 else
+		 elseif (isnumeric (obj.facecolor))
 		   color = obj.facecolor;
+		 else
+		   color = [0, 1, 0];
 		 endif
                else
 		 color = [0, 1, 0];
@@ -564,25 +603,41 @@ function __go_draw_axes__ (h, plot_stream)
 	     have_cdata(data_idx) = false;
              titlespec{data_idx} = "title \"\"";
 	     usingclause{data_idx} = "";
-             if (isfield (obj, "edgecolor") && isfield (obj, "cdata"))
-	       if (strncmp (obj.edgecolor, "flat", 4)
-		   || strncmp (obj.edgecolor, "interp", 6))
+
+	     if (isfield (obj, "markersize"))
+	       mdat = obj.markersize;
+	     endif
+
+             if (isfield (obj, "edgecolor"))
+	       if ((strncmp (obj.edgecolor, "flat", 4)
+		    || strncmp (obj.edgecolor, "interp", 6)) &&
+		   isfield (obj, "cdata"))
 		 if (ndims (obj.cdata) == 2
-		     && ((nr > 3 && size (obj.cdata, 2) == nc)
-			 || (size (obj.cdata, 1) > 1
-			     && size (obj.cdata, 2) == nc)))
-		   ccol = obj.cdata (:, i);
+		     && (size (obj.cdata, 2) == nc
+			 && (size (obj.cdata, 1) == 1
+			     || size (obj.cdata, 1) == 3)))
+		   ccol = cdat (:, i);
+		 elseif (ndims (obj.cdata) == 2
+			 && (size (obj.cdata, 1) == nc
+			     && (size (obj.cdata, 2) == 1
+				 || size (obj.cdata, 2) == 3)))
+		   ccol = cdat (i, :);
 		 elseif (ndims (obj.cdata) == 3)
-		   ccol = permute (obj.cdata (:, i, :), [1, 3, 2]);
+		   ccol = permute (cdat (:, i, :), [1, 3, 2]);
 		 else
-		   ccol = obj.cdata;
+		   ccol = cdat;
 		 endif
 		 if (strncmp (obj.edgecolor, "flat", 4))
-		   if (numel (ccol) == 3)
+		   if (numel(ccol) == 3)
 		     color = ccol;
 		   else
-		     r = 1 + round ((size (cmap, 1) - 1)
-				    * (ccol - clim(1))/(clim(2) - clim(1)));
+		     if (cautoscale)
+		       r = 1 + round ((size (cmap, 1) - 1)
+				      * (ccol - cmin)/(cmax - cmin));
+		     else
+		       r = 1 + round ((size (cmap, 1) - 1)
+				      * (ccol - clim(1))/(clim(2) - clim(1)));
+		     endif
 		     r = max (1, min (r, size (cmap, 1)));
 		     color = cmap(r, :);
 		   endif
@@ -592,16 +647,105 @@ function __go_draw_axes__ (h, plot_stream)
 		   r = max (1, min (r, size (cmap, 1)));
 		   color = cmap(r,:);
 		 endif
+	       elseif (isnumeric (obj.edgecolor))
+		 color = obj.edgecolor;
+	       else
+		 color = [0, 0, 0];
 	       endif
-             elseif (isfield (obj, "edgecolor") && isnumeric (obj.edgecolor))
-	       color = obj.edgecolor;
              else
-               color = [0, 0, 0];
+	       color = [0, 0, 0];
              endif
+
+	     if (isfield (obj, "linestyle"))
+	       switch (obj.linestyle)
+		 case "-"
+		   lt = "1";
+		 case "--"
+		   lt = "2";
+		 case ":"
+		   lt = "3";
+		 case "-."
+		   lt = "6";
+		 case "none"
+		   lt = "";
+		 otherwise
+		   lt = "";
+	       endswitch
+	     else
+	       lt = "";
+	     endif
+
+	     if (isfield (obj, "marker"))
+	       if (isfield (obj, "marker"))
+		 switch (obj.marker)
+		   case "+"
+		     pt = "pt 1";
+		   case "o"
+		     pt = "pt 6";
+		   case "*"
+		     pt = "pt 3";
+		   case "."
+		     pt = "pt 0";
+		   case "x"
+		     pt = "pt 2";
+		   case {"square", "s"}
+		     pt = "pt 5";
+		   case {"diamond", "d"}
+		     pt = "pt 13";
+		   case "^"
+		     pt = "pt 9";
+		   case "v"
+		     pt = "pt 11";
+		   case ">"
+		     pt = "pt 8";
+		   case "<"
+		     pt = "pt 10";
+		   case {"pentagram", "p"}
+		     pt = "pt 4";
+		   case {"hexagram", "h"}
+		     pt = "pt 12";
+		   case "none"
+		     pt = "";
+		   otherwise
+		     pt = "";
+		 endswitch
+	       endif
+	     else
+	       pt = "";
+	     endif
+
+	     style = "lines";
+	     if (isempty (lt))
+	       if (! isempty (pt))
+		 style = "points";
+	       endif
+	     elseif (! isempty (pt))
+	       style = "linespoints";
+	     endif
+
+	     if (isfield (obj, "markersize"))
+	       if (length (mdat) == nc)
+		 m = mdat(i);
+	       else
+		 m = mdat;
+	       endif
+	       if (! strcmpi (style, "lines"))
+		 if (have_newer_gnuplot)
+		   ps = sprintf("pointsize %f", m);
+		 else
+		   ps = sprintf("ps %f", m);
+		 endif
+	       else
+		 ps = "";
+	       endif
+	     else
+	       ps = "";
+	     endif
+
 	     if (have_newer_gnuplot)
 	       withclause{data_idx} ...
-		   = sprintf ("with lines lc rgb \"#%02x%02x%02x\"",
-			      round (255*color));
+		   = sprintf ("with %s %s %s lc rgb \"#%02x%02x%02x\"",
+			      style, pt, ps, round (255*color));
 	     else
 	       if (isequal (color, [0,0,0]))
 		 typ = -1;
@@ -622,7 +766,8 @@ function __go_draw_axes__ (h, plot_stream)
 	       else
 		 typ = -1;
 	       endif
-	       withclause{data_idx} = sprintf ("with lines lt %d", typ);
+	       withclause{data_idx} = sprintf ("with %s %s %s lt %d", 
+					       style, pt, ps, typ);
 	     endif
 
 	     if (! isempty (zcol))
@@ -657,7 +802,7 @@ function __go_draw_axes__ (h, plot_stream)
 	    if (isempty (obj.keylabel))
 	      titlespec{data_idx} = "title \"\"";
 	    else
-	      tmp = undo_string_escapes (obj.keylabel);
+	      tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
 	      titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	    endif
 	    usingclause{data_idx} = "";
@@ -685,10 +830,6 @@ function __go_draw_axes__ (h, plot_stream)
 	    if (zautoscale)
 	      tz = zdat(:);
 	      [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, tz);
-	    endif
-	    if (cautoscale)
-	      tc = cdat(:);
-	      [cmin, cmax, cminp] = get_data_limits (cmin, cmax, cminp, tc);
 	    endif
 
   	    err = false;
@@ -729,18 +870,15 @@ function __go_draw_axes__ (h, plot_stream)
 	      data{data_idx} = zz.';
 	    endif
 	    usingclause{data_idx} = "using ($1):($2):($3):($4)";
-	    withclause{data_idx} = "with line palette";
 
 	    fputs (plot_stream, "unset parametric;\n");
 	    fputs (plot_stream, "set style data lines;\n");
 	    fputs (plot_stream, "set surface;\n");
 	    fputs (plot_stream, "unset contour;\n");
-	    fprintf (plot_stream, "set cbrange [%g:%g];\n", cmin, cmax);
 
 	    ## Interpolation does not work for flat surfaces (e.g. pcolor)
             ## and color mapping --> currently set empty.
             interp_str = "";
-            surf_colormap = parent_figure_obj.colormap;
             flat_interp_face = (strncmp (obj.facecolor, "flat", 4)
 				|| strncmp (obj.facecolor, "interp", 6));
             flat_interp_edge = (strncmp (obj.edgecolor, "flat", 4)
@@ -749,8 +887,6 @@ function __go_draw_axes__ (h, plot_stream)
 	    facecolor_none_or_white = (strncmp (obj.facecolor, "none", 4)
 				       || (isnumeric (obj.facecolor)
 					   && all (obj.facecolor == 1)));
-            palette_data = [];
-
 	    if (strncmp (obj.facecolor, "none", 4))
 	      if (isnan (hidden_removal))
 		hidden_removal = false;
@@ -761,28 +897,32 @@ function __go_draw_axes__ (h, plot_stream)
 
             if (flat_interp_face
 		|| (flat_interp_edge && facecolor_none_or_white))
-              palette_data = [1:rows(surf_colormap); surf_colormap'];
-	    elseif (isnumeric (obj.facecolor))
-              palette_data = [1:2; [obj.facecolor; obj.facecolor]'];
+	      withclause{data_idx} = "with line palette";
             endif
 
-	    if (facecolor_none_or_white && isnumeric (obj.edgecolor))
-              palette_data = [1:2; [obj.edgecolor; obj.edgecolor]'];
-            endif
+	    if (have_newer_gnuplot)
+	      dord = "depthorder";
+	    else
+	      dord = "";
+	    endif
 
 	    if (facecolor_none_or_white)
-	      ## Do nothing.
+	      ## Ensure faces aren't drawn
+	      fprintf (plot_stream, "unset pm3d;\n");
             elseif (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
-              fprintf (plot_stream, "set pm3d at s %s;\n", interp_str);
+              fprintf (plot_stream, "set pm3d at s %s %s;\n", 
+		       interp_str, dord);
             else
               if (strncmp (obj.edgecolor, "none", 4))
-                fprintf (plot_stream, "set pm3d at s %s;\n", interp_str);
+                fprintf (plot_stream, "set pm3d at s %s ;\n", 
+			 interp_str, dord);
               else
                 edgecol = obj.edgecolor;
                 if (ischar (obj.edgecolor))
                   edgecol = [0,0,0];
                 endif
-                fprintf (plot_stream, "set pm3d at s hidden3d %d %s;\n", data_idx, interp_str);
+                fprintf (plot_stream, "set pm3d at s hidden3d %d %s %s;\n", 
+			 data_idx, interp_str, dord);
 
 		if (have_newer_gnuplot)
                   fprintf (plot_stream,
@@ -814,37 +954,12 @@ function __go_draw_axes__ (h, plot_stream)
 		endif
               endif
             endif
-
-	    if (have_newer_gnuplot)
-              if (length(palette_data) > 0)
-                fprintf (plot_stream,
-	                 "set palette positive color model RGB maxcolors %i;\n",
-	                 columns(palette_data));
-	        fprintf (plot_stream,
-	                 "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
-	                 columns(palette_data));
-	        fwrite (plot_stream, palette_data, "float32");
-              endif
-	    else
-	      fputs (plot_stream, "set palette defined (");
-	      for i = 1: columns(palette_data)
-		col = floor(palette_data(2:end,i).' * 255);
-	        if (i == 1)
-		  fputs (plot_stream, sprintf("%d \"#%02X%02X%02X\"", i - 1, 
-					      col(1), col(2), col(3)));
-		else
-		  fputs (plot_stream, sprintf(", %d \"#%02X%02X%02X\"", i - 1, 
-					      col(1), col(2), col(3)));
-		endif
-	      endfor
-	      fputs (plot_stream, ");\n");
-	    endif
-	    fputs (plot_stream, "unset colorbox;\n");
 	  endif
 
 	case "text"
+	  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string",
+						have_newer_gnuplot);
 	  lpos = obj.position;
-	  label = obj.string;
 	  halign = obj.horizontalalignment;
 	  angle = obj.rotation;
           units = obj.units;
@@ -882,8 +997,6 @@ function __go_draw_axes__ (h, plot_stream)
 	      colorspec = sprintf ("textcolor lt %d", typ);
 	    endif
 	  endif
-
-	  [f, s] = get_fontname_and_size (obj);
 
 	  if (nd == 3)
 	    fprintf (plot_stream,
@@ -962,6 +1075,13 @@ function __go_draw_axes__ (h, plot_stream)
 	zdir = "noreverse";
       endif
       fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
+    endif
+
+    if (cautoscale && have_data)
+      set (h, "clim", clim, "climmode", "auto");
+    endif
+    if (! any (isinf (clim)))
+      fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
     endif
 
     if (strcmpi (axis_obj.box, "on"))
@@ -1049,6 +1169,43 @@ function __go_draw_axes__ (h, plot_stream)
       for i = 1:ximg_data_idx
 	view_fcn (xlim, ylim, ximg_data{i}, view_zoom, view_cmd);
       endfor
+    endif
+
+    cmap = parent_figure_obj.colormap;    
+    cmap_sz = rows(cmap);
+    if (length(cmap) > 0)
+      if (have_newer_gnuplot)
+        fprintf (plot_stream,
+		 "set palette positive color model RGB maxcolors %i;\n",
+	         cmap_sz);
+	fprintf (plot_stream,
+	         "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
+	         cmap_sz);
+	fwrite (plot_stream, [1:cmap_sz; cmap.'], "float32");
+      else
+	fputs (plot_stream, "set palette defined (");
+	for i = 1: cmap_sz
+	  col = floor(cmap(i, :) * 255);
+          if (i == 1)
+	    fputs (plot_stream, sprintf("%d \"#%02X%02X%02X\"", i - 1, 
+					col(1), col(2), col(3)));
+	  else
+	    fputs (plot_stream, sprintf(", %d \"#%02X%02X%02X\"", i - 1, 
+					col(1), col(2), col(3)));
+	  endif
+	endfor
+	fputs (plot_stream, ");\n");
+      endif
+    endif
+	    
+    if (strcmp (axis_obj.__colorbar__, "none"))
+      fputs (plot_stream, "unset colorbox;\n");
+    else
+      ## FIXME If cbox_mirror is true we want to invert the tic labels
+      ## but gnuplot doesn't allow that
+      fputs (plot_stream, 
+	     sprintf ("set colorbox %s user origin %f,%f size %f,%f;\n",
+		      cbox_orient, cbox_origin, cbox_size));
     endif
 
     if (have_data)
@@ -1436,28 +1593,426 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
   endif
 endfunction
 
-function [f, s] = get_fontname_and_size (t)
+function [f, s, fnt, it, bld] = get_fontname_and_size (t)
   if (isempty (t.fontname))
-    f = "helvetica";
+    fnt = "helvetica";
   else
-    f = tolower (t.fontname);
+    fnt = tolower (t.fontname);
   endif
+  f = fnt;
+  it = false;
+  bld = false;
   if (! isempty (t.fontweight) && strcmp (tolower (t.fontweight), "bold"))
     if (! isempty(t.fontangle)
 	&& (strcmp (tolower (t.fontangle), "italic")
 	    || strcmp (tolower (t.fontangle), "oblique")))
       f = strcat (f, "-bolditalic");
+      it = true;
+      bld = true;
     else
       f = strcat (f, "-bold");
+      bld = true;
     endif
   elseif (! isempty(t.fontangle)
 	  && (strcmp (tolower (t.fontangle), "italic")
 	      || strcmp (tolower (t.fontangle), "oblique")))
     f = strcat (f, "-italic");
+    it = true;
   endif
   if (isempty (t.fontsize))
     s = 10;
   else
     s = t.fontsize;
   endif
+endfunction
+
+function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld, 
+					     have_newer_gnuplot)
+  persistent warned_latex = false;
+
+  if (strcmp (fld, "string"))
+    [f, s, fnt, it, bld] = get_fontname_and_size (obj);
+  else
+    f = "Helvectica";
+    s = 10;
+    fnt = f;
+    it = false;
+    bld = false;
+  endif
+
+  str = getfield (obj, fld);
+  if (enhanced)
+    if (strcmp (obj.interpreter, "tex"))
+      str = __tex2enhanced__ (str, fnt, it, bld);
+      if (! have_newer_gnuplot)
+	## Set the font to work around gnuplot 4.0 X11 enhanced terminal bug
+	str = strcat ('{/', f, ' ', str, ' }'); 
+      endif
+    elseif (strcmp (obj.interpreter, "latex"))
+      if (! warned_latex)
+	warning ("latex text objects not supported");
+	warned_latex = true;
+      endif
+    endif
+  endif
+endfunction
+
+function str = __tex2enhanced__ (str, fnt, it, bld)
+  persistent sym = __setup_sym_table__ ();
+  persistent flds = fieldnames (sym);
+
+  [s, e, m] = regexp(str,'\\([a-zA-Z]+|0)','start','end','matches');
+
+  for i = length (s) : -1 : 1
+    ## special case for "\0"  and replace with "{/Symbol \306}'
+    if (strncmp (m{i}, '\0', 2))
+      str = strcat (str(1:s(i) - 1), '{\Symbol \306}', str(s(i) + 2:end));
+    else
+      f = m{i}(2:end);
+      if (isfield (sym, f))
+	g = getfield(sym, f);
+	## FIXME The symbol font doesn't seem to support bold or italic
+	##if (bld)
+	##  if (it)
+	##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
+	##  else
+	##    g = regexprep (g, '/Symbol', '/Symbol-bold');
+	##  endif
+	##elseif (it)
+	##  g = regexprep (g, '/Symbol', '/Symbol-italic');
+	##endif
+        str = strcat (str(1:s(i) - 1), g, str(e(i) + 1:end));
+      elseif (strncmp (f, "rm", 2))
+	bld = false;
+	it = false;
+        str = strcat (str(1:s(i) - 1), '/', fnt, ' ', str(s(i) + 3:end));
+      elseif (strncmp (f, "it", 2) || strncmp (f, "sl", 2))
+	it = true;
+	if (bld)
+          str = strcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ', 
+			str(s(i) + 3:end));
+        else
+          str = strcat (str(1:s(i) - 1), '/', fnt, '-italic ', 
+			str(s(i) + 3:end));
+        endif
+      elseif (strncmp (f, "bf", 2))
+	bld = true;
+	if (it)
+          str = strcat (str(1:s(i) - 1), '/', fnt, '-bolditalic ', 
+			str(2(i) + 3:end));
+        else
+          str = strcat (str(1:s(i) - 1), '/', fnt, '-bold ', 
+			str(s(i) + 3:end));
+        endif
+      elseif (strcmp (f, "color"))
+	## FIXME Ignore \color but remove trailing {} block as well
+	d = strfind(str(e(i) + 1:end),'}');
+        if (isempty (d))
+	  warning ('syntax error in \color argument');
+	else
+	  str = strcat (str(1:s(i) - 1), str(e(i) + d + 1:end));
+        endif
+      elseif(strcmp (f, "fontname"))
+	b1 = strfind(str(e(i) + 1:end),'{');
+	b2 = strfind(str(e(i) + 1:end),'}');
+        if (isempty(b1) || isempty(b2))
+	  warning ('syntax error in \fontname argument');
+	else
+          str = strcat (str(1:s(i) - 1), '/', 
+			str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
+			str(e(i) + b2(1) + 1:end));
+        endif
+      elseif(strcmp (f, "fontsize"))
+	b1 = strfind(str(e(i) + 1:end),'{');
+	b2 = strfind(str(e(i) + 1:end),'}');
+        if (isempty(b1) || isempty(b2))
+	  warning ('syntax error in \fontname argument');
+	else
+          str = strcat (str(1:s(i) - 1), '/=', 
+			str(e(i)+b1(1) + 1:e(i)+b2(1)-1), '{}',
+			str(e(i) + b2(1) + 1:end));
+        endif
+      else
+	## Last desperate attempt to treat the symbol. Look for things
+	## like \pix, that should be translated to the symbol Pi and x
+	for j = 1 : length (flds)
+	  if (strncmp (flds{j}, f, length (flds{j})))
+	    g = getfield(sym, flds{j});
+	    ## FIXME The symbol font doesn't seem to support bold or italic
+	    ##if (bld)
+	    ##  if (it)
+	    ##    g = regexprep (g, '/Symbol', '/Symbol-bolditalic');
+	    ##  else
+	    ##    g = regexprep (g, '/Symbol', '/Symbol-bold');
+	    ##  endif
+	    ##elseif (it)
+	    ##  g = regexprep (g, '/Symbol', '/Symbol-italic');
+	    ##endif
+            str = strcat (str(1:s(i) - 1), g, 
+	    		  str(s(i) + length (flds{j}) + 1:end));
+	    break;
+	  endif
+	endfor
+      endif
+    endif
+  endfor
+
+  ## Prepend @ to things  things like _0^x or _{-100}^{100} for alignment
+  ## But need to put the shorter of the two arguments first. Carful of 
+  ## nested {} and unprinted characters when defining shortest.. Don't 
+  ## have to worry about things like ^\theta as they are already converted to
+  ## ^{/Symbol q}.
+
+  ## FIXME.. This is a mess... Is it worth it just for a "@" character?
+
+  [s, m] = regexp(str,'[_\^]','start','matches');
+  i = 1;
+  p = 0;
+  while (i < length (s))
+    if (i < length(s))
+      if (str(s(i) + p + 1) == "{")
+	s1 = strfind(str(s(i) + p + 2:end),'{');
+	si = 1;
+	l1 = strfind(str(s(i) + p + 1:end),'}');
+        li = 1;
+	while (li <= length (l1) && si <= length (s1))
+          if (l1(li) < s1(si))
+	    if (li == si)
+	      break;
+	    endif
+	    li++;
+	  else
+	    si++;
+	  endif
+	endwhile
+	l1 = l1 (min (length(l1), si));
+        if (s(i) + l1 + 1 == s(i+1))
+	  if (str(s(i + 1) + p + 1) == "{")
+	    s2 = strfind(str(s(i + 1) + p + 2:end),'{');
+	    si = 1;
+	    l2 = strfind(str(s(i + 1) + p + 1:end),'}');
+            li = 1;
+	    while (li <= length (l2) && si <= length (s2))
+              if (l2(li) < s2(si))
+		if (li == si)
+		  break;
+		endif
+		li++;
+	      else
+		si++;
+	      endif
+	    endwhile
+	    l2 = l2 (min (length(l2), si));
+	    if (length_string (str(s(i)+p+2:s(i)+p+l1-1)) <=
+		length_string(str(s(i+1)+p+2:s(i+1)+p+l2-1)))
+	      ## shortest already first!
+	      str = strcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
+	    else
+	      ## Have to swap sub/super-script to get shortest first
+	      str = strcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+l2),
+			    str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+l2+1:end));
+	    endif
+	  else
+	    ## Have to swap sub/super-script to get shortest first
+	    str = strcat (str(1:s(i)+p-1), "@", str(s(i+1)+p:s(i+1)+p+1),
+			  str(s(i)+p:s(i)+p+l1), str(s(i+1)+p+2:end));
+	  endif
+          i += 2;
+	  p ++;
+	else
+	  i++;
+	endif
+      else
+	if (s(i+1) == s(i) + 2)
+	  ## shortest already first!
+	  str = strcat (str(1:s(i)+p-1), "@", str(s(i)+p:end));
+	  p ++;
+          i += 2;
+	else
+	  i ++;
+	endif
+      endif
+    else
+      i ++;
+    endif
+  endwhile
+
+endfunction
+
+function l = length_string (s)
+  l = length (s) - length (strfind(s,'{')) - length (strfind(s,'}'));
+  m = regexp (s, '/([\w\-]+|[\w\-]+=\d+)', 'matches');
+  if (!isempty (m))
+    l = l - sum (cellfun (@length, m));
+  endif
+endfunction
+
+function sym = __setup_sym_table__ ()
+  ## Setup the translation table for TeX to gnuplot enhanced mode.
+  sym.forall = '{/Symbol \042}';
+  sym.exists = '{/Symbol \044}';
+  sym.ni = '{/Symbol \047}';
+  sym.cong = '{/Symbol \100}';
+  sym.Delta = '{/Symbol D}';
+  sym.Phi = '{/Symbol F}';
+  sym.Gamma = '/Symbol G}';
+  sym.vartheta = '{\Symbol J}';
+  sym.Lambda = '{/Symbol L}';
+  sym.Pi = '{/Symbol P}';
+  sym.Theta = '{/Symbol Q}';
+  sym.Sigma = '{/Symbol S}';
+  sym.varsigma = '{/Symbol V}';
+  sym.Omega = '{/Symbol O}';
+  sym.Xi = '{/Symbol X}';
+  sym.Psi = '{/Symbol Y}';
+  sym.perp = '{/Symbol \136}';
+  sym.alpha = '{/Symbol a}';
+  sym.beta = '{/Symbol b}';
+  sym.chi = '{/Symbol c}';
+  sym.delta = '{/Symbol d}';
+  sym.epsilon = '{/Symbol e}';
+  sym.phi = '{/Symbol f}';
+  sym.gamma = '/Symbol g}';
+  sym.eta = '{/Symbol h}';
+  sym.iota = '{/Symbol i}';
+  sym.kappa = '{/Symbol k}';
+  sym.lambda = '{/Symbol l}';
+  sym.mu = '{/Symbol m}';
+  sym.nu = '{/Symbol n}';
+  sym.o =  '{/Symbol o}';
+  sym.pi = '{/Symbol p}';
+  sym.theta = '{/Symbol q}';
+  sym.rho = '{/Symbol r}';
+  sym.sigma = '{/Symbol s}';
+  sym.tau = '{/Symbol t}';
+  sym.upsilon = '{/Symbol u}';
+  sym.varpi = '{/Symbol v}';
+  sym.omega = '{/Symbol w}';
+  sym.xi = '{/Symbol x}';
+  sym.psi = '{/Symbol y}';
+  sym.zeta = '{/Symbol z}';
+  sym.sim = '{/Symbol \176}';
+  sym.Upsilon = '{/Symbol \241}';
+  sym.prime = '{/Symbol \242}';
+  sym.leq = '{/Symbol \243}';
+  sym.infty = '{/Symbol \245}';
+  sym.clubsuit = '{/Symbol \247}';
+  sym.diamondsuit = '{/Symbol \250}';
+  sym.heartsuit = '{/Symbol \251}';
+  sym.spadesuit = '{/Symbol \252}';
+  sym.leftrightarrow = '{/Symbol \253}';
+  sym.leftarrow = '{/Symbol \254}';
+  sym.uparrow = '{/Symbol \255}';
+  sym.rightarrow = '{/Symbol \256}';
+  sym.downarrow = '{/Symbol \257}';
+  sym.circ = '{/Symbol \260}';
+  sym.pm = '{/Symbol \261}';
+  sym.geq = '{/Symbol \263}';
+  sym.times = '{/Symbol \264}';
+  sym.propto = '{/Symbol \265}';
+  sym.partial = '{/Symbol \266}';
+  sym.bullet = '{/Symbol \267}';
+  sym.div = '{/Symbol \270}';
+  sym.neq = '{/Symbol \271}';
+  sym.equiv = '{/Symbol \272}';
+  sym.approx = '{/Symbol \273}';
+  sym.ldots = '{/Symbol \274}';
+  sym.mid = '{/Symbol \275}';
+  sym.aleph = '{/Symbol \300}';
+  sym.Im = '{/Symbol \301}';
+  sym.Re = '{/Symbol \302}';
+  sym.wp = '{/Symbol \303}';
+  sym.otimes = '{/Symbol \304}';
+  sym.oplus = '{/Symbol \305}';
+  sym.oslash = '{/Symbol \306}';
+  sym.cap = '{/Symbol \307}';
+  sym.cup = '{/Symbol \310}';
+  sym.supset = '{/Symbol \311}';
+  sym.supseteq = '{/Symbol \312}';
+  sym.subset = '{/Symbol \314}';
+  sym.subseteq = '{/Symbol \315}';
+  sym.in = '{/Symbol \316}';
+  sym.langle = '{/Symbol \320}';
+  sym.rangle = '{/Symbol \320}';
+  sym.nabla = '{/Symbol \321}';
+  sym.surd = '{/Symbol \326}';
+  sym.cdot = '{/Symbol \327}';
+  sym.neg = '{/Symbol \330}';
+  sym.wedge = '{/Symbol \331}';
+  sym.vee = '{/Symbol \332}';
+  sym.copyright = '{/Symbol \343}';
+  sym.rfloor = '{/Symbol \353}';
+  sym.lceil  = '{/Symbol \351}';
+  sym.lfloor = '{/Symbol \373}';
+  sym.rceil  = '{/Symbol \371}';
+  sym.int = '{/Symbol \362}';
+endfunction
+
+function [pos, orient, sz, origin, mirr] = gnuplot_postion_colorbox (pos, cbox)
+  ## This is an emprically derived function that 
+
+  if (strncmp (cbox, "north", 5) || strncmp (cbox, "south", 5))
+    scl = pos([2,4]);
+  else
+    scl = pos([1,3]);
+  endif
+
+  if (length(cbox) > 7 && strncmp (cbox(end-6:end), "outside", 7))
+    scl(2) -= 0.2 * scl(2);
+    if (strncmp (cbox, "west", 4) || strncmp (cbox, "south", 5))
+      scl(1) += 0.2 * scl(2);
+    endif
+  endif
+
+  switch (cbox)
+    case "northoutside"
+      sz = pos(3:4) - 0.08;
+      origin = [0.05, 0.06] + [0.00, 0.88] .* sz + pos(1:2);
+      mirr = true;
+      orient = "horizontal";
+    case "north"
+      sz = pos(3:4) - 0.16;
+      origin = [0.09, 0.09] + [0.00, 0.94] .* sz + pos(1:2);
+      mirr = false;
+      orient = "horizontal";
+    case "southoutside"
+      sz = pos(3:4) - 0.08;
+      origin = [0.05, 0.06] + [0.00, 0.00] .* sz + pos(1:2);
+      mirr = false;
+      orient = "horizontal";
+    case "south"
+      sz = pos(3:4) - 0.16;
+      origin = [0.08, 0.09] + [0.03, 0.05] .* sz + pos(1:2);
+      mirr = true;
+      orient = "horizontal";
+    case "eastoutside"
+      sz = pos(3:4) - 0.08;
+      origin = [0.00, 0.06] + [0.94, 0.00] .* sz + pos(1:2);
+      mirr = false;
+      orient = "vertical";
+    case "east"
+      sz = pos(3:4) - 0.16;
+      origin = [0.09, 0.10] + [0.91, 0.01] .* sz + pos(1:2);
+      mirr = true;
+      orient = "vertical";
+    case "westoutside"
+      sz = pos(3:4) - 0.08;
+      origin = [0.00, 0.06] + [0.06, 0.00] .* sz + pos(1:2);
+      mirr = true;
+      orient = "vertical";
+    case "west"
+      sz = pos(3:4) - 0.16;
+      origin = [0.06, 0.09] + [0.04, 0.03] .* sz + pos(1:2);
+      mirr = false;
+      orient = "vertical";
+  endswitch
+
+  if (strncmp (cbox, "north", 5) || strncmp (cbox, "south", 5))
+    sz = sz .* [1, 0.07];
+    pos([2,4]) = scl;
+  else
+    sz = sz .* [0.07, 1];
+    pos([1,3]) = scl;
+  endif
+
 endfunction

@@ -22,15 +22,36 @@
 
 function varargout = __bar__ (vertical, func, varargin)
 
+  varargout = cell (nargout, 1);
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin{1};
+    if (! strcmp (get (h, "type"), "axes"))
+      error ("%s: expecting first argument to be an axes object", func);
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      [varargout{:}] = __bar2__ (h, vertical, func, varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    [varargout{:}] = __bar2__ (gca(), vertical, func, varargin{:});
+  endif
+
+endfunction
+
+function varargout = __bar2__ (h, vertical, func, varargin)
+
   ## Slightly smaller than 0.8 to avoid clipping issue in gnuplot 4.0
   width = 0.8 - 10 * eps; 
   group = true;
 
-  if (nargin < 3)
+  if (nargin < 4)
     print_usage ();
   endif
 
-  if (nargin > 3 && isnumeric (varargin{2}))
+  if (nargin > 4 && isnumeric (varargin{2}))
     x = varargin{1};
     if (isvector (x))
       x = x(:);
@@ -63,7 +84,7 @@ function varargout = __bar__ (vertical, func, varargin)
       
   newargs = {};
   have_line_spec = false;
-  while (idx <= nargin -2)
+  while (idx <= nargin - 3)
     if (isstr (varargin{idx}) && strcmp (varargin{idx}, "grouped"))
       group = true;
       idx++;
@@ -83,7 +104,7 @@ function varargout = __bar__ (vertical, func, varargin)
       endif
       if (isscalar(varargin{idx}))
 	width = varargin{idx++};
-      elseif (idx == nargin - 2)
+      elseif (idx == nargin - 3)
 	newargs = [newargs,varargin(idx++)];
       else
 	newargs = [newargs,varargin(idx:idx+1)];
@@ -107,9 +128,8 @@ function varargout = __bar__ (vertical, func, varargin)
     width = width / ycols;
   endif
 
-  cutoff = (x(1:end-1) + x(2:end)) / 2;
-  delta_p = [(cutoff - x(1:end-1)); (x(end) - cutoff(end))]  * width;
-  delta_m = [(cutoff(1) - x(1)); (x(2:end) - cutoff)] * width;
+  cutoff = min (diff (double(x))) / 2;
+  delta_p = delta_m = repmat (cutoff * width, size (x));
   x1 = (x - delta_m)(:)';
   x2 = (x + delta_p)(:)';
   xb = repmat ([x1; x1; x2; x2](:), 1, ycols);
@@ -137,43 +157,19 @@ function varargout = __bar__ (vertical, func, varargin)
   xb = reshape (xb, [4, numel(xb) / 4 / ycols, ycols]);
   yb = reshape (yb, [4, numel(yb) / 4 / ycols, ycols]);
 
-  color = [1, 0, 0; 0, 1, 0; 0, 0, 1; 1, 1, 0; 1, 0, 1; 0, 1, 1];
-  if (vertical)
-    if (nargout < 2)
-      newplot ();
-      tmp = [];
-      for i = 1 : ycols
-	if (! have_line_spec)
-	  tmp = [tmp; patch(xb(:,:,i), yb(:,:,i), color(i,:), newargs {:})];
-	else
-	  tmp = [tmp; patch(xb(:,:,i), yb(:,:,i), newargs {:})];
-	endif
-      endfor
-      if (nargout == 1)
-	varargout{1} = tmp;
-      endif
-    else
-      varargout{1} = xb;
-      varargout{2} = yb;
+  if (nargout < 2)
+    newplot ();
+    tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_line_spec, newargs {:});
+    if (nargout == 1)
+      varargout{1} = tmp;
     endif
   else
-    if (nargout < 2)
-      newplot ();
-      tmp = [];
-      for i = 1 : ycols
-	if (! have_line_spec)
-	  tmp = [tmp; patch(yb(:,:,i), xb(:,:,i), color(i,:), newargs {:})];
-	else
-	  tmp = [tmp; patch(yb(:,:,i), xb(:,:,i), newargs {:})];
-	endif
-      endfor
-      if (nargout == 1)
-	varargout{1} = tmp;
-      endif
+    if (vertical)
+      varargout{1} = xb;
+      varargout{2} = yb;
     else
       varargout{1} = yb;
       varargout{2} = xb;
     endif
   endif
-
 endfunction

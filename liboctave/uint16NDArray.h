@@ -40,6 +40,8 @@ NDND_BOOL_OP_DECLS (uint16NDArray, uint16NDArray, OCTAVE_API)
 
 MARRAY_FORWARD_DEFS (MArrayN, uint16NDArray, octave_uint16)
 
+MINMAX_DECLS (uint16)
+
 #endif
 
 /*

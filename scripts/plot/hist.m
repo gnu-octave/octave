@@ -91,6 +91,10 @@ function [nn, xx] = hist (y, varargin)
     endif
   endif
 
+  ## Avoid issues with integer types for x and y
+  x = double (x);
+  y = double (y);
+
   cutoff = (x(1:end-1,:) + x(2:end,:)) / 2;
   n = rows (x);
   if (n < 30 && columns (x) == 1)

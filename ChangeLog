@@ -1,3 +1,13 @@
+2007-11-26  David Bateman  <dbateman@free.fr>
+
+	* PROJECTS: condest now implemented.
+
+	* NEWS: Document the TeX interpreter mode and its limitations with
+	gnuplot 4.0.
+
+	* NEWS: Document the use of "colormap gmap40" to workaround some
+	gnuplot 4.0 colormap issues.
+
 2007-11-14  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Don't create Makefrag.bsd.

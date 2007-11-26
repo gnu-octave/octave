@@ -39,6 +39,49 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov.h"
 
+class caseless_str : public std::string
+{
+public:
+  typedef std::string::iterator iterator;
+  typedef std::string::const_iterator const_iterator;
+
+  caseless_str (void) : std::string () { }
+  caseless_str (const std::string& s) : std::string (s) { }
+  caseless_str (const char *s) : std::string (s) { }
+
+  caseless_str (const caseless_str& name) : std::string (name) { }
+
+  caseless_str& operator = (const caseless_str& pname)
+  {
+    std::string::operator = (pname);
+    return *this;
+  }
+
+  operator std::string (void) const { return *this; }
+
+  // Case-insensitive comparison.
+  bool compare (const std::string& s, size_t limit = NPOS) const
+  {
+    const_iterator p1 = begin ();
+    const_iterator p2 = s.begin ();
+
+    size_t k = 0;
+
+    while (p1 != end () && p2 != s.end () && k++ < limit)
+      {
+	if (std::tolower (*p1) != std::tolower (*p2))
+	  return false;
+
+	*p1++;
+	*p2++;
+      }
+
+    return (limit == NPOS) ? size () == s.size () : k == limit;
+  }
+};
+
+// ---------------------------------------------------------------------
+
 class
 radio_values
 {
@@ -61,8 +104,6 @@ public:
 
   std::string default_value (void) const { return default_val; }
 
-  std::set<std::string> possible_values (void) const { return possible_vals; }
-
   bool validate (const std::string& val)
   {
     bool retval = true;
@@ -84,7 +125,7 @@ public:
 private:
   // Might also want to cache
   std::string default_val;
-  std::set<std::string> possible_vals;
+  std::set<caseless_str> possible_vals;
 };
 
 class
@@ -115,9 +156,29 @@ public:
   {
     if (vals.validate (newval))
       current_val = newval;
+    else
+      error ("invalid value");
 
     return *this;
   }
+
+  radio_property& operator = (const octave_value& newval) 
+  {
+    if (newval.is_string ())
+      {
+	std::string s = newval.string_value ();
+	if (vals.validate (s))
+	  current_val = s;
+	else
+	  error ("invalid value");
+      }
+    else	
+      error ("invalid value");
+
+    return *this;
+  }
+
+  operator octave_value (void) const { return current_val; }
 
   const std::string& current_value (void) const { return current_val; }
 
@@ -352,152 +413,6 @@ private:
   Matrix cmap;
 };
 
-class 
-string_property
-{
-public:
-  string_property (const octave_value& c = octave_value (std::string ()),
-		   const radio_values& v = radio_values ())
-    : radio_val (v)
-  { 
-    if (c.is_defined ())
-      {
-	std::string newval = c.string_value ();
-
-	std::transform (newval.begin (), newval.end (),
-			newval.begin (), tolower);
-
-	if (! error_state)
-	  {
-	    if (radio_val.validate (newval))
-	      current_val = newval;
-	  }
-      }
-    else
-      current_val = v.default_value ();
-  }
-
-  string_property (const radio_values& v)
-    : current_val (v.default_value()), radio_val (v)
-  { }
-
-  string_property (const radio_values& v, const std::string& initial_value)
-    : radio_val (v)
-  { 
-    current_val = initial_value;
-    std::transform (current_val.begin (), current_val.end (), 
-		    current_val.begin (), tolower);
-  }
-
-  operator octave_value (void) const { return current_val; }
-
-  string_property& operator = (const string_property& a)
-  {
-    if (&a != this)
-      {
-	current_val = a.current_val;
-	radio_val = a.radio_val;
-      }
-
-    return *this;
-  }
-
-  string_property& operator = (const std::string& s)
-  {
-    std::string newval = s;
-
-    std::transform (newval.begin (), newval.end (), 
-		    newval.begin (), tolower);    
-
-    if (! newval.empty ())
-      {
-	if (radio_val.contains (newval))
-	  current_val = newval;
-	else
-	  error ("invalid string specification");	  
-      }
-    else
-      error ("invalid string specification");	  
-
-    return *this;
-  }
-
-  string_property& operator = (const octave_value& val)
-  {
-    if (val.is_string ())
-      {
-	std::string newval = val.string_value ();
-
-	std::transform (newval.begin (), newval.end (), 
-			newval.begin (), tolower);
-
-	if (! newval.empty ())
-	  {
-	    if (radio_val.contains (newval))
-	      current_val = newval;
-	    else
-	      error ("invalid string specification");	  
-	  }
-	else
-	  error ("invalid string specification");	  
-      }
-    else
-      error ("invalid string specification");	  
-
-    return *this;
-  }
-
-  const std::string& current_value (void) const { return current_val; }
-
-private:
-  std::string current_val;
-  radio_values radio_val;
-};
-
-// ---------------------------------------------------------------------
-
-class property_name : public std::string
-{
-public:
-  typedef std::string::iterator iterator;
-  typedef std::string::const_iterator const_iterator;
-
-  property_name (void) : std::string () { }
-  property_name (const std::string& s) : std::string (s) { }
-  property_name (const char *s) : std::string (s) { }
-
-  property_name (const property_name& name) : std::string (name) { }
-
-  property_name& operator = (const property_name& pname)
-  {
-    std::string::operator = (pname);
-    return *this;
-  }
-
-  operator std::string (void) const { return *this; }
-
-  // Case-insensitive comparison.
-  bool compare (const std::string& s, size_t limit = NPOS) const
-  {
-    const_iterator p1 = begin ();
-    const_iterator p2 = s.begin ();
-
-    size_t k = 0;
-
-    while (p1 != end () && p2 != s.end () && k++ < limit)
-      {
-	if (std::tolower (*p1) != std::tolower (*p2))
-	  return false;
-
-	*p1++;
-	*p2++;
-      }
-
-    return (limit == NPOS) ? size () == s.size () : k == limit;
-  }
-};
-
-// ---------------------------------------------------------------------
 
 class property_list
 {
@@ -516,9 +431,9 @@ public:
 
   ~property_list (void) { }
 
-  void set (const property_name& name, const octave_value& val);
+  void set (const caseless_str& name, const octave_value& val);
 
-  octave_value lookup (const property_name& name) const;
+  octave_value lookup (const caseless_str& name) const;
 
   plist_map_iterator begin (void) { return plist_map.begin (); }
   plist_map_const_iterator begin (void) const { return plist_map.begin (); }
@@ -668,7 +583,7 @@ public:
 
   void set_from_list (base_graphics_object& obj, property_list& defaults);
 
-  virtual void set (const property_name&, const octave_value&) { }
+  virtual void set (const caseless_str&, const octave_value&) { }
 
   std::string get_tag (void) const { return tag; }
 
@@ -726,7 +641,7 @@ public:
     error ("base_graphics_object::set_from_list: invalid graphics object");
   }
 
-  virtual void set (const property_name&, const octave_value&)
+  virtual void set (const caseless_str&, const octave_value&)
   {
     error ("base_graphics_object::set: invalid graphics object");
   }
@@ -742,15 +657,15 @@ public:
     return octave_value ();
   }
 
-  virtual octave_value get (const property_name&) const
+  virtual octave_value get (const caseless_str&) const
   {
     error ("base_graphics_object::get: invalid graphics object");
     return octave_value ();
   }
 
-  virtual octave_value get_default (const property_name&) const;
+  virtual octave_value get_default (const caseless_str&) const;
 
-  virtual octave_value get_factory_default (const property_name&) const;
+  virtual octave_value get_factory_default (const caseless_str&) const;
 
   virtual octave_value get_defaults (void) const
   {
@@ -857,7 +772,7 @@ public:
     rep->set_from_list (plist);
   }
 
-  void set (const property_name& name, const octave_value& val)
+  void set (const caseless_str& name, const octave_value& val)
   {
     rep->set (name, val);
   }
@@ -874,7 +789,7 @@ public:
     return rep->get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     return name.compare ("default")
       ? get_defaults ()
@@ -882,12 +797,12 @@ public:
 	 ? get_factory_defaults () : rep->get (name));
   }
 
-  octave_value get_default (const property_name& name) const
+  octave_value get_default (const caseless_str& name) const
   {
     return rep->get_default (name);
   }
 
-  octave_value get_factory_default (const property_name& name) const
+  octave_value get_factory_default (const caseless_str& name) const
   {
     return rep->get_factory_default (name);
   }
@@ -937,11 +852,11 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     std::string graphics_object_name (void) const { return go_name; }
 
@@ -984,7 +899,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& value)
+  void set (const caseless_str& name, const octave_value& value)
   {
     if (name.compare ("default", 7))
       // strip "default", pass rest to function that will
@@ -1000,7 +915,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     octave_value retval;
 
@@ -1014,7 +929,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const property_name& name) const
+  octave_value get_default (const caseless_str& name) const
   {
     octave_value retval = default_properties.lookup (name);
 
@@ -1024,7 +939,7 @@ public:
     return retval;
   }
 
-  octave_value get_factory_default (const property_name& name) const
+  octave_value get_factory_default (const caseless_str& name) const
   {
     octave_value retval = factory_properties.lookup (name);
 
@@ -1081,11 +996,11 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     void close (void);
 
@@ -1098,6 +1013,7 @@ public:
 
     BEGIN_PROPERTIES
       octave_value __plot_stream__
+      octave_value __enhanced__
       octave_value nextplot
       octave_value closerequestfcn
       graphics_handle currentaxes S
@@ -1148,7 +1064,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& value)
+  void set (const caseless_str& name, const octave_value& value)
   {
     if (name.compare ("default", 7))
       // strip "default", pass rest to function that will
@@ -1164,7 +1080,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     octave_value retval;
 
@@ -1176,7 +1092,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const property_name& name) const;
+  octave_value get_default (const caseless_str& name) const;
 
   octave_value get_defaults (void) const
   {
@@ -1213,13 +1129,13 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     void set_defaults (base_graphics_object& obj, const std::string& mode);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     void remove_child (const graphics_handle& h);
 
@@ -1283,7 +1199,8 @@ public:
       octave_value visible
       octave_value nextplot
       octave_value outerposition
-    END_PROPERTIES
+      radio_property __colorbar__ a
+   END_PROPERTIES
 
     static std::string go_name;
   };
@@ -1323,7 +1240,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& value)
+  void set (const caseless_str& name, const octave_value& value)
   {
     if (name.compare ("default", 7))
       // strip "default", pass rest to function that will
@@ -1344,7 +1261,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     octave_value retval;
 
@@ -1357,7 +1274,7 @@ public:
     return retval;
   }
 
-  octave_value get_default (const property_name& name) const;
+  octave_value get_default (const caseless_str& name) const;
 
   octave_value get_defaults (void) const
   {
@@ -1394,11 +1311,11 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     std::string graphics_object_name (void) const { return go_name; }
 
@@ -1423,6 +1340,7 @@ public:
       octave_value markerfacecolor
       octave_value markersize
       octave_value keylabel
+      radio_property interpreter a
     END_PROPERTIES
 
     static std::string go_name;
@@ -1456,7 +1374,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& val)
+  void set (const caseless_str& name, const octave_value& val)
   {
     xproperties.set (name, val);
   }
@@ -1466,7 +1384,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     return xproperties.get (name);
   }
@@ -1498,11 +1416,11 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     std::string graphics_object_name (void) const { return go_name; }
 
@@ -1520,8 +1438,9 @@ public:
       color_property color
       octave_value fontname
       octave_value fontsize
-      string_property fontangle a
-      string_property fontweight a
+      radio_property fontangle a
+      radio_property fontweight a
+      radio_property interpreter a
     END_PROPERTIES
 
     static std::string go_name;
@@ -1555,7 +1474,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& val)
+  void set (const caseless_str& name, const octave_value& val)
   {
     xproperties.set (name, val);
   }
@@ -1565,7 +1484,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     return xproperties.get (name);
   }
@@ -1597,11 +1516,11 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     std::string graphics_object_name (void) const { return go_name; }
 
@@ -1647,7 +1566,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& val)
+  void set (const caseless_str& name, const octave_value& val)
   {
     xproperties.set (name, val);
   }
@@ -1657,7 +1576,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     return xproperties.get (name);
   }
@@ -1689,11 +1608,11 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     std::string graphics_object_name (void) const { return go_name; }
 
@@ -1719,6 +1638,7 @@ public:
       octave_value markerfacecolor
       octave_value markersize
       octave_value keylabel
+      radio_property interpreter a
     END_PROPERTIES
 
     static std::string go_name;
@@ -1752,7 +1672,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& val)
+  void set (const caseless_str& name, const octave_value& val)
   {
     xproperties.set (name, val);
   }
@@ -1762,7 +1682,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     return xproperties.get (name);
   }
@@ -1794,11 +1714,11 @@ public:
 
     ~properties (void) { }
 
-    void set (const property_name& name, const octave_value& val);
+    void set (const caseless_str& name, const octave_value& val);
 
     octave_value get (void) const;
 
-    octave_value get (const property_name& name) const;
+    octave_value get (const caseless_str& name) const;
 
     std::string graphics_object_name (void) const { return go_name; }
 
@@ -1822,6 +1742,7 @@ public:
       octave_value markerfacecolor
       octave_value markersize
       octave_value keylabel
+      radio_property interpreter a
     END_PROPERTIES
 
     static std::string go_name;
@@ -1855,7 +1776,7 @@ public:
     xproperties.set_from_list (*this, plist);
   }
 
-  void set (const property_name& name, const octave_value& val)
+  void set (const caseless_str& name, const octave_value& val)
   {
     xproperties.set (name, val);
   }
@@ -1865,7 +1786,7 @@ public:
     return xproperties.get ();
   }
 
-  octave_value get (const property_name& name) const
+  octave_value get (const caseless_str& name) const
   {
     return xproperties.get (name);
   }

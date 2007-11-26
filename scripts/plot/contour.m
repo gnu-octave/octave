@@ -69,7 +69,7 @@ function [c, h] = contour (varargin)
 
   if (nargout > 0)
     c = ctmp;
-    h = htmp
+    h = htmp;
   endif
 
 endfunction

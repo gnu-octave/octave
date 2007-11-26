@@ -73,6 +73,11 @@ public:
   boolNDArray all (int dim = -1) const;
   boolNDArray any (int dim = -1) const;
 
+  intNDArray max (int dim = 0) const;
+  intNDArray max (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  intNDArray min (int dim = 0) const;
+  intNDArray min (ArrayN<octave_idx_type>& index, int dim = 0) const;
+  
   intNDArray sum (int dim) const;
 
   intNDArray squeeze (void) const

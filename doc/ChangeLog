@@ -1,3 +1,15 @@
+2007-11-26  David Bateman  <dbateman@free.fr>
+
+	* interpreter/sparse.txi: Document condest.
+	* interpreter/plot.txi: Document the new text properties and the
+	TeX interpreter mode of text objects.
+	* interpreter/plotimages.m: Add an example for the TeX
+	interpreter.
+	* interpreter/Makefile.in (PLOTIMAGES): Add the TeX example
+
+	* interpreter/plot.txi: Document caxis.
+	* interpreter/image.txi: Document gmap40.
+
 2007-11-12  Joseph P. Skudlarek  <Jskud@Jskud.com>
 
 	* interpreter/gpl.txi: Move index commands after sectioning commands.

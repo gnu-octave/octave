@@ -123,7 +123,9 @@ function h = surface (varargin)
   ## Make a default surface object.
   tmp = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c);
   set (tmp, "facecolor","flat");
-  set (tmp, varargin {firststring:end});
+  if (firststring <= nargin)
+    set (tmp, varargin {firststring:end});
+  endif
 
   if (! ishold ())
     set (ax, "view", [0, 90], "box", "off", "xgrid", "on", "ygrid", "on", "zgrid", "on");

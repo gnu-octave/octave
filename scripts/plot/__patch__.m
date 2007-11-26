@@ -127,11 +127,11 @@ function [h, fail] = __patch__ (p, varargin)
         idx(t1,i) = idx(t2,i);
       endif
     endfor
-    x = vert(:,1)(idx);
-    y = vert(:,2)(idx);
+    x = reshape (vert(:,1)(idx), size (idx));
+    y = reshape (vert(:,2)(idx), size (idx));
     if (size(vert,2) > 2)
       have_z = true;
-      z = vert(:,3)(idx);
+      z = reshape (vert(:,3)(idx), size (idx));
     endif
   else
     error ("patch: not supported");
@@ -159,6 +159,7 @@ function [h, fail] = __patch__ (p, varargin)
 	clim = get(ax, "clim");
 	if (c(1) < clim(1))
           set (ax, "clim", [c(1), clim(2)])
+	  clim(1) = c(1);
 	endif
 	if (c(1) > clim(2))
           set (ax, "clim", [clim(1), c(1)])

@@ -257,7 +257,6 @@ function print (varargin)
       else
 	options = strcat (orientation, " ");
       endif
-      options = strcat (options, "enhanced ");
       termn = "postscript";
     endif
     

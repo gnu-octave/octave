@@ -61,7 +61,7 @@ GEOMETRYIMAGES_EPS = $(addsuffix .eps, $(GEOMETRYIMAGES))
 GEOMETRYIMAGES_PDF = $(addsuffix .pdf, $(GEOMETRYIMAGES))
 GEOMETRYIMAGES_PNG = $(addsuffix .png, $(GEOMETRYIMAGES))
 
-PLOTIMAGES = plot hist errorbar polar mesh plot3
+PLOTIMAGES = plot hist errorbar polar mesh plot3 extended
 PLOTIMAGES_EPS = $(addsuffix .eps, $(PLOTIMAGES))
 PLOTIMAGES_PDF = $(addsuffix .pdf, $(PLOTIMAGES))
 PLOTIMAGES_PNG = $(addsuffix .png, $(PLOTIMAGES))

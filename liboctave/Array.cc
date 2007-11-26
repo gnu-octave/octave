@@ -2315,7 +2315,13 @@ Array<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok,
 {
   Array<T> retval;
 
-  assert (ndims () == 2);
+  if (ndims () != 2)
+    {
+      Array<idx_vector> ra_idx (2);
+      ra_idx(0) = idx_i;
+      ra_idx(1) = idx_j;
+      return index (ra_idx, resize_ok, rfv);
+    }
 
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();

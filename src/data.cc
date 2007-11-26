@@ -2775,7 +2775,7 @@ If @var{a} is a matrix:\n\
 @item @var{p} = @code{2}\n\
 Largest singular value of @var{a}.\n\
 \n\
-@item @var{p} = @code{Inf}\n\
+@item @var{p} = @code{Inf} or @code{\"inf\"}\n\
 @cindex infinity norm\n\
 Infinity norm, the largest row sum of the absolute values of @var{a}.\n\
 \n\
@@ -2787,11 +2787,14 @@ Frobenius norm of @var{a}, @code{sqrt (sum (diag (@var{a}' * @var{a})))}.\n\
 If @var{a} is a vector or a scalar:\n\
 \n\
 @table @asis\n\
-@item @var{p} = @code{Inf}\n\
+@item @var{p} = @code{Inf} or @code{\"inf\"}\n\
 @code{max (abs (@var{a}))}.\n\
 \n\
 @item @var{p} = @code{-Inf}\n\
 @code{min (abs (@var{a}))}.\n\
+\n\
+@item @var{p} = @code{\"fro\"}\n\
+Frobenius norm of @var{a}, @code{sqrt (sumsq (abs (a)))}.\n\
 \n\
 @item other\n\
 p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\

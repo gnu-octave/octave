@@ -21,8 +21,8 @@
 ## @deftypefn {Function File} {} image (@var{img})
 ## @deftypefnx {Function File} {} image (@var{x}, @var{y}, @var{img})
 ## Display a matrix as a color image.  The elements of @var{x} are indices
-## into the current colormap and should have values between 1 and the
-## length of the colormap.
+## into the current colormap, and the colormap will be scaled so that the
+## extremes of @var{x} are mapped to the extremes of teh colormap.
 ##
 ## It first tries to use @code{gnuplot}, then @code{display} from 
 ## @code{ImageMagick}, then @code{xv}, and then @code{xloadimage}.
@@ -39,35 +39,57 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function h = image (x, y, img)
+function retval = image (varargin)
+
+  if (nargin < 2)
+    print_usage ();
+  elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin {1};
+    if (! strcmp (get (h, "type"), "axes"))
+      error ("image: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      tmp = __image__ (h, varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    tmp = __image__ (gca (), varargin{:});
+  endif
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
+
+endfunction
+
+function h = __image__ (ax, x, y, img)
 
   ## Deprecated zoom.  Remove this hunk of code if old zoom argument
   ## is outmoded.
-  if ((nargin == 2 && isscalar (y)) || nargin == 4)
+  if ((nargin == 3 && isscalar (y)) || nargin == 5)
     warning ("image: zoom argument ignored -- use GUI features");
   endif
-  if (nargin == 4)
-    nargin = 3;
+  if (nargin == 5)
+    nargin = 4;
   endif
-  if (nargin == 2 && isscalar (y))
-    nargin = 1;
+  if (nargin == 3 && isscalar (y))
+    nargin = 2;
   endif
 
-  if (nargin == 0)
+  if (nargin == 1)
     ## Load Bobbie Jo Richardson (Born 3/16/94)
     img = loadimage ("default.img");
     x = y = [];
-  elseif (nargin == 1)
+  elseif (nargin == 2)
     img = x;
     x = y = [];
-  elseif (nargin == 2 || nargin > 3)
+  elseif (nargin == 3 || nargin > 4)
     print_usage ();
   endif
 
-  tmp = __img__ (x, y, img);
-
-  if (nargout > 0)
-    h = tmp;
-  endif
+  h = __img__ (x, y, img);
 
 endfunction

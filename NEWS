@@ -20,6 +20,12 @@ Summary of important user-visible changes for version 3.0:
       and 1 for the R, G and B values. Invalid values are all mapped
       to the same color.
 
+      This also affects patch objects used in the bar, countour, meshc
+      and surfc functions, where the bars and contours will be
+      monochrome. A workaround for this is to type "colormap gmap40"
+      that loads a colormap that in many cases will be adequate for
+      simple bar and contour plots.
+
     + You can control the width of lines using (for example):
 
 	line (x, y, "linewidth", 4, "color", [1, 0, 0.5]);
@@ -33,6 +39,12 @@ Summary of important user-visible changes for version 3.0:
       contour plots are now 2-d plots instead of special 3-d plots, and
       this allows you to plot additional 2-d data on top of a contour
       plot.
+
+    + With the gnuplot "extended" terminals the TeX interpreter is
+    emulated. However, this means that the TeX interpreter is only
+    supported on the postscript terminals with gnuplot 4.0. Under
+    gnuplot 4.2 the terminals aqua, dumb, png, jpeg, gif, pm, windows,
+    wxt, svg and x11 are supported as well.
 
     + The following plot commands are now considered obsolete and will
       be removed from a future version of Octave:

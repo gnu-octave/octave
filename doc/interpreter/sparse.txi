@@ -490,9 +490,9 @@ used.
 @item Linear algebra:
   @dfn{matrix_type}, @dfn{spchol}, @dfn{cpcholinv}, 
   @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv}, @dfn{spkron},
-  @dfn{splchol}, @dfn{splu}, @dfn{spqr}, @dfn{normest}, 
+  @dfn{splchol}, @dfn{splu}, @dfn{spqr}, @dfn{normest}, @dfn{condest},
   @dfn{sprank}
-@c @dfn{condest}, @dfn{spaugment}
+@c @dfn{spaugment}
 @c @dfn{eigs}, @dfn{svds} but these are in octave-forge for now
 
 @item Iterative techniques:
@@ -827,6 +827,8 @@ will lead to unpredictable results, and so @code{matrix_type} should be
 used with care.
 
 @DOCSTRING(normest)
+
+@DOCSTRING(condest)
 
 @DOCSTRING(spchol)
 

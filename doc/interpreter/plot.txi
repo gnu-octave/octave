@@ -189,6 +189,11 @@ plot.
 
 @DOCSTRING(axis)
 
+Similarly the axis limits of the colormap can be changed with the caxis
+function.
+
+@DOCSTRING(caxis)
+
 @node Three-Dimensional Plotting
 @subsection Three-Dimensional Plotting
 
@@ -806,7 +811,189 @@ May be @code{"left"}, @code{"center"}, or @code{"right"}.
 
 @item color
 The color of the text.  @xref{Colors}.
+
+@item fontname
+The font used for the text.
+
+@item fontsize
+The size of the font, in points to use.
+
+@item fontangle
+Flag whether the font is italic or normal. Valid values are 'normal',
+'italic' and 'oblique'.
+
+@item fontweight
+Flag whether the font is bold, etc. Valid values are 'normal', 'bold',
+'demi' or 'light'.
+
+@item interpreter
+Determines how the text is rendered. Valid values are 'none', 'tex' or
+'latex'.
 @end table
+
+All text objects, including titles, labels, legends, and text, include
+the property 'interpreter', this property determines the manner in which
+special control sequences in the text are rendered. If the interpreter
+is set to 'none', then no rendering occurs. At this point the 'latex'
+option is not implemented and so the 'latex' interpreter also does not
+interpret the text.
+
+The 'tex' option implements a subset of @sc{TeX} functionality in the
+rendering of the text. This allows the insertion of special characters
+such as Greek or mathematical symbols within the text. The special
+characters are also inserted with a code starting with the back-slash
+(\) character, as in the table @ref{tab:extended}. 
+
+In addition, the formating of the text can be changed within the string
+with the codes 
+
+@multitable @columnfractions .2 .2 .6 .2
+@item @tab \bf @tab Bold font @tab
+@item @tab \it @tab Italic font @tab
+@item @tab \sl @tab Oblique Font @tab
+@item @tab \rm @tab Normal font @tab
+@end multitable
+
+These are be used in conjunction with the @{ and @} characters to limit
+the change in the font to part of the string. For example
+
+@example
+xlabel ('@{\bf H@} = a @{\bf V@}')
+@end example
+
+where the character 'a' will not appear in a bold font. Note that to
+avoid having Octave interpret the backslash characters in the strings,
+the strings should be in single quotes.
+
+It is also possible to change the fontname and size within the text 
+
+@multitable @columnfractions .1 .4 .6 .1
+@item @tab \fontname@{@var{fontname}@} @tab Specify the font to use @tab
+@item @tab \fontsize@{@var{size}@} @tab Specify the size of the font to
+use @tab
+@end multitable
+
+Finally, the superscript and subscripting can be controlled with the '^'
+and '_' characters. If the '^' or '_' is followed by a @{ character,
+then all of the block surrounded by the @{ @} pair is super- or
+sub-scripted. Without the @{ @} pair, only the character immediately
+following the '^' or '_' is super- or sub-scripted.
+
+@float Table,tab:extended
+@iftex
+@tex
+\vskip 6pt
+{\hbox to \hsize {\hfill\vbox{\offinterlineskip \tabskip=0pt 
+\halign{
+\vrule height2.0ex depth1.ex width 0.6pt #\tabskip=0.3em &
+# \hfil & \vrule # & # \hfil & # \vrule &
+# \hfil & \vrule # & # \hfil & # \vrule &
+# \hfil & \vrule # & # \hfil & # \vrule 
+width 0.6pt \tabskip=0pt\cr
+\noalign{\hrule height 0.6pt}
+& Code && Sym && Code && Sym && Code && Sym &\cr
+\noalign{\hrule}
+& $\backslash$forall && $\forall$ && $\backslash$exists && $\exists$ && $\backslash$ni && $\ni$ &\cr
+& $\backslash$cong && $\cong$ && $\backslash$Delta && $\Delta$ && $\backslash$Phi && $\Phi$ &\cr
+& $\backslash$Gamma && $\Gamma$ && $\backslash$vartheta && $\vartheta$ && $\backslash$Lambda && $\Lambda$ &\cr
+& $\backslash$Pi && $\Pi$ && $\backslash$Theta && $\Theta$ && $\backslash$Sigma && $\Sigma$ &\cr
+& $\backslash$varsigma && $\varsigma$ && $\backslash$Omega && $\Omega$ && $\backslash$Xi && $\Xi$ &\cr
+& $\backslash$Psi && $\Psi$ && $\backslash$perp && $\perp$ && $\backslash$alpha && $\alpha$ &\cr
+& $\backslash$beta && $\beta$ && $\backslash$chi && $\chi$ && $\backslash$delta && $\delta$ &\cr
+& $\backslash$epsilon && $\epsilon$ && $\backslash$phi && $\phi$ && $\backslash$gamma && $\gamma$ &\cr
+& $\backslash$eta && $\eta$ && $\backslash$iota && $\iota$ && $\backslash$kappa && $\kappa$ &\cr
+& $\backslash$lambda && $\lambda$ && $\backslash$mu && $\mu$ && $\backslash$nu && $\nu$ &\cr
+& $\backslash$o && $\o$ && $\backslash$pi && $\pi$ && $\backslash$theta && $\theta$ &\cr
+& $\backslash$rho && $\rho$ && $\backslash$sigma && $\sigma$ && $\backslash$tau && $\tau$ &\cr
+& $\backslash$upsilon && $\upsilon$ && $\backslash$varpi && $\varpi$ && $\backslash$omega && $\omega$ &\cr
+& $\backslash$xi && $\xi$ && $\backslash$psi && $\psi$ && $\backslash$zeta && $\zeta$ &\cr
+& $\backslash$sim && $\sim$ && $\backslash$Upsilon && $\Upsilon$ && $\backslash$prime && $\prime$ &\cr
+& $\backslash$leq && $\leq$ && $\backslash$infty && $\infty$ && $\backslash$clubsuit && $\clubsuit$ &\cr
+& $\backslash$diamondsuit && $\diamondsuit$ && $\backslash$heartsuit && $\heartsuit$ && $\backslash$spadesuit && $\spadesuit$ &\cr
+& $\backslash$leftrightarrow && $\leftrightarrow$ && $\backslash$leftarrow && $\leftarrow$ && $\backslash$uparrow && $\uparrow$ &\cr
+& $\backslash$rightarrow && $\rightarrow$ && $\backslash$downarrow && $\downarrow$ && $\backslash$circ && $\circ$ &\cr
+& $\backslash$pm && $\pm$ && $\backslash$geq && $\geq$ && $\backslash$times && $\times$ &\cr
+& $\backslash$propto && $\propto$ && $\backslash$partial && $\partial$ && $\backslash$bullet && $\bullet$ &\cr
+& $\backslash$div && $\div$ && $\backslash$neq && $\neq$ && $\backslash$equiv && $\equiv$ &\cr
+& $\backslash$approx && $\approx$ && $\backslash$ldots && $\ldots$ && $\backslash$mid && $\mid$ &\cr
+& $\backslash$aleph && $\aleph$ && $\backslash$Im && $\Im$ && $\backslash$Re && $\Re$ &\cr
+& $\backslash$wp && $\wp$ && $\backslash$otimes && $\otimes$ && $\backslash$oplus && $\oplus$ &\cr
+& $\backslash$oslash && $\oslash$ && $\backslash$cap && $\cap$ && $\backslash$cup && $\cup$ &\cr
+& $\backslash$supset && $\supset$ && $\backslash$supseteq && $\supseteq$ && $\backslash$subset && $\subset$ &\cr
+& $\backslash$subseteq && $\subseteq$ && $\backslash$in && $\in$ && $\backslash$langle && $\langle$ &\cr
+& $\backslash$rangle && $\rangle$ && $\backslash$nabla && $\nabla$ && $\backslash$surd && $\surd$ &\cr
+& $\backslash$cdot && $\cdot$ && $\backslash$neg && $\neg$ && $\backslash$wedge && $\wedge$ &\cr
+& $\backslash$vee && $\vee$ && $\backslash$copyright && $\copyright$ && $\backslash$rfloor && $\rfloor$ &\cr
+& $\backslash$lceil && $\lceil$ && $\backslash$lfloor && $\lfloor$ && $\backslash$rceil && $\rceil$ &\cr
+& $\backslash$int && $\int$ && && && && &\cr
+\noalign{\hrule height 0.6pt}
+}}\hfill}}
+@end tex
+@end iftex
+@ifnottex
+@multitable @columnfractions .125 .25 .25 .25 .125
+@item @tab  \forall  @tab  \exists  @tab  \ni  @tab
+@item @tab  \cong  @tab  \Delta  @tab  \Phi  @tab
+@item @tab  \Gamma  @tab  \vartheta  @tab  \Lambda  @tab
+@item @tab  \Pi  @tab  \Theta  @tab  \Sigma  @tab
+@item @tab  \varsigma  @tab  \Omega  @tab  \Xi  @tab
+@item @tab  \Psi  @tab  \perp  @tab  \alpha  @tab
+@item @tab  \beta  @tab  \chi  @tab  \delta  @tab  
+@item @tab  \epsilon  @tab  \phi  @tab  \gamma  @tab
+@item @tab  \eta  @tab  \iota  @tab  \kappa  @tab
+@item @tab  \lambda  @tab  \mu  @tab  \nu  @tab
+@item @tab  \o  @tab  \pi  @tab  \theta  @tab
+@item @tab  \rho  @tab  \sigma  @tab  \tau  @tab
+@item @tab  \upsilon  @tab  \varpi  @tab  \omega  @tab
+@item @tab  \xi  @tab  \psi  @tab  \zeta  @tab
+@item @tab  \sim  @tab  \Upsilon  @tab  \prime  @tab
+@item @tab  \leq  @tab  \infty  @tab  \clubsuit  @tab
+@item @tab  \diamondsuit  @tab  \heartsuit  @tab  \spadesuit  @tab
+@item @tab  \leftrightarrow  @tab  \leftarrow  @tab  \uparrow  @tab
+@item @tab  \rightarrow  @tab  \downarrow  @tab  \circ  @tab
+@item @tab  \pm  @tab  \geq  @tab  \times  @tab
+@item @tab  \propto  @tab  \partial  @tab  \bullet  @tab
+@item @tab  \div  @tab  \neq  @tab  \equiv  @tab
+@item @tab  \approx  @tab  \ldots  @tab  \mid  @tab
+@item @tab  \aleph  @tab  \Im  @tab  \Re  @tab
+@item @tab  \wp  @tab  \otimes  @tab  \oplus  @tab
+@item @tab  \oslash  @tab  \cap  @tab  \cup  @tab  
+@item @tab  \supset  @tab  \supseteq  @tab  \subset  @tab
+@item @tab  \subseteq  @tab  \in  @tab  \langle  @tab
+@item @tab  \rangle  @tab  \nabla  @tab  \surd  @tab
+@item @tab  \cdot  @tab  \neg  @tab  \wedge  @tab
+@item @tab  \vee  @tab  \copyright  @tab  \rfloor  @tab
+@item @tab  \lceil  @tab  \lfloor  @tab  \rceil  @tab
+@item @tab  \int  @tab  @tab  @tab
+@end multitable
+@end ifnottex
+@caption{Available special characters in @sc{TeX} mode}
+@end float
+
+A complete example showing the capabilities of the extended text is
+
+@example
+@group
+x = 0:0.01:3;
+plot(x,erf(x));
+hold on;
+plot(x,x,"r");
+axis([0, 3, 0, 1]);
+text(0.65, 0.6175, strcat('\leftarrow x = @{2/\surd\pi',
+' @{\fontsize@{16@}\int_@{\fontsize@{8@}0@}^@{\fontsize@{8@}x@}@}',
+' e^@{-t^2@} dt@} = 0.6175'))
+@end group
+@end example
+
+@ifnotinfo
+@noindent
+The result of which can be seen in @ref{fig:extendedtext}
+
+@float Figure,fig:extendedtext
+@image{extended,8cm}
+@caption{Example of inclusion of text with the @sc{TeX} interpreter}
+@end float
+@end ifnotinfo
 
 @node Image Properties
 @subsubsection Image Properties

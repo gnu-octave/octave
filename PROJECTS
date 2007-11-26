@@ -109,7 +109,6 @@ Sparse Matrices:
       - colmmd      Superseded by colamd
       - treelayout
       - cholinc
-      - condest
       - bicg        Can this be taken from octave-forge?
       - bicgstab
       - cgs

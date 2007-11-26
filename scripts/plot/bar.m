@@ -23,6 +23,7 @@
 ## @deftypefnx {Function File} {} bar (@var{x}, @var{y}, @var{w})
 ## @deftypefnx {Function File} {} bar (@var{x}, @var{y}, @var{w}, @var{style})
 ## @deftypefnx {Function File} {@var{h} =} bar (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} bar (@var{h}, @dots{})
 ## Produce a bar graph from two vectors of x-y data.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
@@ -37,6 +38,7 @@
 ## or @code{"stacked"}.
 ##
 ## The optional return value @var{h} provides a handle to the patch object.
+## Whereas the option input handle @var{h} allows an axis handle to be passed.
 ## Properties of the patch graphics object can be changed using 
 ## @var{prop}, @var{val} pairs.
 ##

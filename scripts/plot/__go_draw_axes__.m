@@ -1666,7 +1666,7 @@ function str = __tex2enhanced__ (str, fnt, it, bld)
   for i = length (s) : -1 : 1
     ## special case for "\0"  and replace with "{/Symbol \306}'
     if (strncmp (m{i}, '\0', 2))
-      str = strcat (str(1:s(i) - 1), '{\Symbol \306}', str(s(i) + 2:end));
+      str = strcat (str(1:s(i) - 1), '{/Symbol \306}', str(s(i) + 2:end));
     else
       f = m{i}(2:end);
       if (isfield (sym, f))
@@ -1856,7 +1856,7 @@ function sym = __setup_sym_table__ ()
   sym.Delta = '{/Symbol D}';
   sym.Phi = '{/Symbol F}';
   sym.Gamma = '/Symbol G}';
-  sym.vartheta = '{\Symbol J}';
+  sym.vartheta = '{/Symbol J}';
   sym.Lambda = '{/Symbol L}';
   sym.Pi = '{/Symbol P}';
   sym.Theta = '{/Symbol Q}';

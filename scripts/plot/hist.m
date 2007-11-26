@@ -76,7 +76,7 @@ function [nn, xx] = hist (y, varargin)
         error ("hist: number of bins must be positive");
       endif
       x = [0.5:n]'/n;
-      x = x * (max_val - min_val) + ones(size(x)) * min_val;
+      x = x * (max_val - min_val) + ones (size (x)) * min_val;
     elseif (isreal (x))
       if (isvector (x))
 	x = x(:);
@@ -119,7 +119,7 @@ function [nn, xx] = hist (y, varargin)
 
   freq = diff (chist);
 
-  if (nargin > 2 && !ischar (varargin{iarg}))
+  if (nargin > 2 && ! ischar (varargin{iarg}))
     ## Normalise the histogram.
     norm = varargin{iarg++};
     freq = freq / rows (y) * norm;

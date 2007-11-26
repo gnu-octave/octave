@@ -52,7 +52,7 @@ function __go_draw_figure__ (f, plot_stream, enhanced)
 	  obj = get (kids(i));
 	  switch (obj.type)
 	    case "axes"
-	      __go_draw_axes__(kids (i), plot_stream, enhanced);
+	      __go_draw_axes__ (kids (i), plot_stream, enhanced);
 	    otherwise
 	      error ("__go_draw_figure__: unknown object class, %s",
 		     obj.type);

@@ -94,7 +94,7 @@ function [Nx, Ny, Nz] = __surfnorm__ (h, varargin)
   endif
 
   if (nargout == 0)
-    newplot();
+    newplot ();
     surf (x, y, z, varargin{ioff:end});
     hold on;
   endif

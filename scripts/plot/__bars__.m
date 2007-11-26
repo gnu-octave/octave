@@ -27,10 +27,10 @@ function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spe
 
   if (vertical)
     tmp = [];
-    for i = 1 : ycols
+    for i = 1:ycols
       if (! have_color_spec)
 	if (ycols == 1)
-	  lev = clim (1);
+	  lev = clim(1);
 	else
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif
@@ -42,10 +42,10 @@ function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spe
     endfor
   else
     tmp = [];
-    for i = 1 : ycols
+    for i = 1:ycols
       if (! have_color_spec)
 	if (ycols == 1)
-	  lev = clim (1)
+	  lev = clim(1)
 	else
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif

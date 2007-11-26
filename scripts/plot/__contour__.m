@@ -32,8 +32,8 @@ function [c, h] = __contour__ (varargin)
       else
 	z = varargin {3};
       endif
-      z = 2 * (min(z(:)) - max(z(:)));
-    elseif (!strcmp (z, "level"))
+      z = 2 * (min (z(:)) - max (z(:)));
+    elseif (! strcmp (z, "level"))
       error ("unrecognized z argument");
     endif
   endif

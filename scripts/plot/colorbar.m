@@ -54,8 +54,8 @@ function colorbar (varargin)
   if (nargin > 0 && strcmpi(varargin{1}, "peer"))
     if (nargin > 1)
       ax = varargin{2};
-      if (!isscalar (ax) || !ishandle (ax) || 
-	  strcmp (get (ax, "type"), "axes"))
+      if (!isscalar (ax) || ! ishandle (ax)
+	  || strcmp (get (ax, "type"), "axes"))
 	error ("colorbar: expecting an axes handle following 'peer'");
       endif
     else
@@ -74,10 +74,10 @@ function colorbar (varargin)
       arg = tolower (arg);
       if (strcmp (arg, "off") || strcmp (arg, "none"))
 	pos = "none";
-      elseif (strcmp (arg, "north") || strcmp (arg, "south") ||
-	      strcmp (arg, "east") || strcmp (arg, "west") ||
-	      strcmp (arg, "northoutside") || strcmp (arg, "southoutside") ||
-	      strcmp (arg, "eastoutside") || strcmp (arg, "westoutside"))
+      elseif (strcmp (arg, "north") || strcmp (arg, "south")
+	      || strcmp (arg, "east") || strcmp (arg, "west")
+	      || strcmp (arg, "northoutside") || strcmp (arg, "southoutside")
+	      || strcmp (arg, "eastoutside") || strcmp (arg, "westoutside"))
 	pos = arg;
       else
 	error ("colorbar: unrecognized position argument");
@@ -88,6 +88,7 @@ function colorbar (varargin)
   endfor
 
   set (ax, "__colorbar__", pos);
+
 endfunction
 
 

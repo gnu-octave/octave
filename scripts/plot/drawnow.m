@@ -215,7 +215,7 @@ function have_enhanced = enhanced_term (term)
   have_enhanced = false;
   for i = 1 : length (enhanced_terminals)
     t = enhanced_terminals{i};
-    if (strncmp (term, t, min (length (term), length(t))))
+    if (strncmp (term, t, min (length (term), length (t))))
       have_enhanced = true;
       break;
     endif

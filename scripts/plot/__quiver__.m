@@ -19,15 +19,16 @@
 ## Undocumented internal function
 
 function hlist = __quiver__ (varargin)
-  h = varargin {1};
-  is3d = varargin {2};
+
+  h = varargin{1};
+  is3d = varargin{2};
 
   s = 1;
   arrowsize = 0.33;
 
   firstnonnumeric = Inf;
   for i = 3:nargin
-    if (! isnumeric (varargin {i}))
+    if (! isnumeric (varargin{i}))
       firstnonnumeric = i;
       break;
     endif
@@ -43,8 +44,8 @@ function hlist = __quiver__ (varargin)
     else
       [x, y] = meshgrid (1:size(u,1), 1:size(u,2));
     endif
-    if (nargin >= ioff && isnumeric (varargin{ioff}) && 
-	isscalar (varargin{ioff}))
+    if (nargin >= ioff && isnumeric (varargin{ioff})
+	&& isscalar (varargin{ioff}))
       s = varargin{ioff++};
     endif
   else
@@ -57,17 +58,17 @@ function hlist = __quiver__ (varargin)
     v = varargin{ioff++}; 
     if (is3d)
       w = varargin{ioff++};
-      if (isvector(x) && isvector(y) && isvector(z) && 
-	  (!isvector (u) || !isvector (v) || !isvector(w)))
+      if (isvector (x) && isvector (y) && isvector (z)
+	  && (! isvector (u) || ! isvector (v) || ! isvector(w)))
 	[x, y, z] = meshgrid (x, y, z);
       endif
     else
-      if (isvector(x) && isvector(y) && (!isvector (u) || !isvector (v)))
+      if (isvector (x) && isvector (y) && (! isvector (u) || ! isvector (v)))
 	[x, y] = meshgrid (x, y);
       endif
     endif
-    if (nargin >= ioff && isnumeric (varargin{ioff}) && 
-	isscalar (varargin{ioff}))
+    if (nargin >= ioff && isnumeric (varargin{ioff})
+	&& isscalar (varargin{ioff}))
       s = varargin{ioff++};
     endif
   endif
@@ -75,7 +76,7 @@ function hlist = __quiver__ (varargin)
   have_filled = false;
   have_line_spec = false;
   while (ioff <= nargin)
-    arg = varargin {ioff++};
+    arg = varargin{ioff++};
     if (ischar (arg) && strncmp (tolower (arg), "filled", 6))
       have_filled = true;
     elseif ((isstr (arg) || iscell (arg))
@@ -194,8 +195,9 @@ function hlist = __quiver__ (varargin)
 		 [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:));
     endif
 
-    if (! have_line_spec || (isfield (linespec, "marker") && 
-			     strncmp (linespec.marker, "none", 4)))
+    if (! have_line_spec
+	|| (isfield (linespec, "marker")
+	    && strncmp (linespec.marker, "none", 4)))
       if (is3d)
 	h3 = plot3 (x, y, z, "linestyle", "none", "marker", "none");
       else
@@ -211,7 +213,7 @@ function hlist = __quiver__ (varargin)
     endif
     if (have_filled)
       ## FIXME gnuplot doesn't respect the markerfacecolor field
-      set(h3, "markerfacecolor", get (h1, "color")); 
+      set (h3, "markerfacecolor", get (h1, "color")); 
     endif
   unwind_protect_cleanup
     set (h, "nextplot", hstate);

@@ -19,29 +19,31 @@
 ## Undocumented internal function.
 
 function h = __scatter__ (varargin)
-  h = varargin {1};
-  nd = varargin {2};
-  fcn = varargin {3};
-  x = varargin {4}(:);
-  y = varargin {5}(:);
+
+  h = varargin{1};
+  nd = varargin{2};
+  fcn = varargin{3};
+  x = varargin{4}(:);
+  y = varargin{5}(:);
   istart = 6;
+
   if (nd == 3)
-    z = varargin {6}(:);
+    z = varargin{6}(:);
     istart = 7;
   else
-    z = zeros (length(x), 0);
+    z = zeros (length (x), 0);
   endif
 
   firstnonnumeric = Inf;
   for i = istart:nargin
-    if (! isnumeric (varargin {i}))
+    if (! isnumeric (varargin{i}))
       firstnonnumeric = i;
       break;
     endif
   endfor
 
   if (firstnonnumeric > istart)
-    s = varargin {istart};
+    s = varargin{istart};
     if (isempty (s))
       s = 8;
     endif
@@ -57,11 +59,11 @@ function h = __scatter__ (varargin)
   endif
 
   if (istart < nargin && firstnonnumeric > istart + 1)
-    c = varargin {istart + 1};
+    c = varargin{istart + 1};
     if (isvector (c))
       c = c(:);
     endif
-  elseif (firstnonnumeric == istart + 1 && ischar (varargin {istart + 1}))
+  elseif (firstnonnumeric == istart + 1 && ischar (varargin{istart + 1}))
     c = varargin{istart + 1};
     firstnonnumeric++;
   else
@@ -74,7 +76,7 @@ function h = __scatter__ (varargin)
   marker = "o";
   iarg = firstnonnumeric;
   while (iarg <= nargin)
-    arg = varargin {iarg++};
+    arg = varargin{iarg++};
     if (ischar (arg) && strncmp (tolower (arg), "filled", 6))
       filled = true;
     elseif ((isstr (arg) || iscell (arg)) && ! have_marker)
@@ -97,18 +99,18 @@ function h = __scatter__ (varargin)
   endwhile
 
   if (ischar (c))
-    h = patch('faces', [1:length(x)].', 'vertices', [x, y, z], 'facecolor',
-	      'none', 'edgecolor', c, 'marker', marker, 
-	      'markersize', s, 'linestyle', 'none');
+    h = patch("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
+	      "none", "edgecolor", c, "marker", marker, 
+	      "markersize", s, "linestyle", "none");
     if (filled)
-      set(h, 'markerfacecolor', c); 
+      set(h, "markerfacecolor", c); 
     endif
   else
-    h = patch('faces', [1:length(x)].', 'vertices', [x, y, z], 'facecolor',
-	      'none', 'edgecolor', 'flat', 'cdata', c, 'marker', marker, 
-	      'markersize', s, 'linestyle', 'none');
+    h = patch("faces", [1:length(x)].', "vertices", [x, y, z], "facecolor",
+	      "none", "edgecolor", "flat", "cdata", c, "marker", marker, 
+	      "markersize", s, "linestyle", "none");
     if (filled)
-      set(h, 'markerfacecolor', 'flat'); 
+      set(h, "markerfacecolor", "flat"); 
     endif
     ax = get (h, "parent");
     clim = get (ax, "clim");

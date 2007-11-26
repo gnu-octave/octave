@@ -128,7 +128,8 @@ function h = surface (varargin)
   endif
 
   if (! ishold ())
-    set (ax, "view", [0, 90], "box", "off", "xgrid", "on", "ygrid", "on", "zgrid", "on");
+    set (ax, "view", [0, 90], "box", "off", "xgrid", "on",
+	 "ygrid", "on", "zgrid", "on");
   endif
 
   if (nargout > 0)

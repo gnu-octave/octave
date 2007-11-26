@@ -36,7 +36,7 @@ function varargout = __bar__ (vertical, func, varargin)
       axes (oldh);
     end_unwind_protect
   else
-    [varargout{:}] = __bar2__ (gca(), vertical, func, varargin{:});
+    [varargout{:}] = __bar2__ (gca (), vertical, func, varargin{:});
   endif
 
 endfunction
@@ -159,7 +159,8 @@ function varargout = __bar2__ (h, vertical, func, varargin)
 
   if (nargout < 2)
     newplot ();
-    tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_line_spec, newargs {:});
+    tmp = __bars__ (h, vertical, x, y, xb, yb, width, group,
+		    have_line_spec, newargs {:});
     if (nargout == 1)
       varargout{1} = tmp;
     endif
@@ -172,4 +173,5 @@ function varargout = __bar2__ (h, vertical, func, varargin)
       varargout{2} = xb;
     endif
   endif
+
 endfunction

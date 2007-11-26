@@ -18,12 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} imagesc (@var{A})
-## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{A})
+## @deftypefn {Function File} {} imagesc (@var{a})
+## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{a})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{limits})
 ## @deftypefnx {Function File} {} imagesc (@var{h}, @dots{})
 ## @deftypefnx {Function File} { @var{h} = } imagesc (@dots{})
-## Display a scaled version of the matrix @var{A} as a color image.  The
+## Display a scaled version of the matrix @var{a} as a color image.  The
 ## colormap is scaled so that the entries of the matrix occupy the entire
 ## colormap.  If @var{limits} = [@var{lo}, @var{hi}] are given, then that
 ## range is set to the 'clim' of the current axes.
@@ -31,7 +31,7 @@
 ## The axis values corresponding to the matrix elements are specified in
 ## @var{x} and @var{y}, either as pairs giving the minimum and maximum
 ## values for the respective axes, or as values for each row and column
-## of the matrix @var{A}.
+## of the matrix @var{a}.
 ##
 ## @seealso{image, imshow, clim, caxis}
 ## @end deftypefn
@@ -104,7 +104,7 @@ function ret = __imagesc__ (ax, x, y, A, limits, DEPRECATEDZOOM)
     A = x;
     limits = y;
     x = y = [];
-  elseif (nargin == 4 && !isscalar (x) && !isscalar (y) && !isscalar (A))
+  elseif (nargin == 4 && ! isscalar (x) && ! isscalar (y) && ! isscalar (A))
     limits = [];
   endif
 
@@ -112,9 +112,9 @@ function ret = __imagesc__ (ax, x, y, A, limits, DEPRECATEDZOOM)
 
   ## use given limits or guess them from the matrix
   if (length (limits) == 2 && limits(2) >= limits(1))
-     set (ax, "clim", limits);
-  elseif (!isempty (limits))
-     error ("expected data limits to be [lo, hi]");
+    set (ax, "clim", limits);
+  elseif (! isempty (limits))
+    error ("expected data limits to be [lo, hi]");
   endif
 
 endfunction

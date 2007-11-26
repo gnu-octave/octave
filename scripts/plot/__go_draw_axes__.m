@@ -32,7 +32,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       = compare_versions (__gnuplot_version__ (), "4.0", ">");
 
     ## Set axis properties here?
-    pos = [0,0,1,1];
+    pos = [0, 0, 1, 1];
     if (! isempty (axis_obj.outerposition))
       pos = axis_obj.outerposition;
     endif

@@ -29,7 +29,7 @@
 ## @seealso{peaks}
 ## @end deftypefn
 
-function [xx,yy,zz] = sphere (h, n)
+function [xx, yy, zz] = sphere (h, n)
 
   have_h = false;
   if (nargin > 1 && isscalar (h) && ishandle (h))
@@ -40,21 +40,19 @@ function [xx,yy,zz] = sphere (h, n)
       n = 20;
     endif
     have_h = true;
+  elseif (nargin == 1)
+    n = h;
   else
-    if (nargin == 1)
-      n = h;
-    else
-      n = 20;
-    endif
+    n = 20;
   endif
 
   theta = linspace (0, 2*pi, n+1);
   phi = linspace (-pi/2, pi/2, n+1);
   [theta,phi] = meshgrid (theta, phi);
 
-  x = cos(phi).*cos(theta);
-  y = cos(phi).*sin(theta);
-  z = sin(phi);
+  x = cos (phi) .* cos (theta);
+  y = cos (phi) .* sin (theta);
+  z = sin (phi);
 
   if (nargout > 0)
     xx = x;

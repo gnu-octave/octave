@@ -25,7 +25,9 @@
 ## Author: Kai Habel
 
 function [h, fail] = __patch__ (p, varargin)
+
   fail = false;
+
   if (nargin < 3)
     fail = true;
     return;
@@ -50,8 +52,9 @@ function [h, fail] = __patch__ (p, varargin)
       have_z = true;
       iarg++;
     endif
-  elseif (ischar (varargin{1}) && (strcmp (tolower (varargin{1}), "faces") || 
-				strcmp (tolower (varargin{1}), "vertices")))
+  elseif (ischar (varargin{1})
+	  && (strcmp (tolower (varargin{1}), "faces")
+	      || trcmp (tolower (varargin{1}), "vertices")))
     if (! isnumeric (varargin{2}))
       fail = true;
       return;
@@ -88,7 +91,8 @@ function [h, fail] = __patch__ (p, varargin)
 	c = permute (c, [1, 3, 2]);
       endif
     elseif (ischar (varargin{iarg}) && rem (nargin - iarg, 2) != 0)
-      ## Assume that any additional argument over an even number is color string
+      ## Assume that any additional argument over an even number is
+      ## color string.
       c = tolower (varargin{iarg});
       have_c = true;
       iarg++;
@@ -145,7 +149,7 @@ function [h, fail] = __patch__ (p, varargin)
     if (ischar (c))
       cargs{1} = "facecolor";
       cargs{2} = c;
-    elseif (isvector(c) && numel(c) == nc)
+    elseif (isvector (c) && numel (c) == nc)
       if (isnan (c))
 	cargs{1} = "facecolor";
 	cargs{2} = [1, 1, 1];
@@ -156,7 +160,7 @@ function [h, fail] = __patch__ (p, varargin)
 	cargs{2} = "flat";
 	cargs{3} = "cdata";
 	cargs{4} = c;
-	clim = get(ax, "clim");
+	clim = get (ax, "clim");
 	if (c(1) < clim(1))
           set (ax, "clim", [c(1), clim(2)])
 	  clim(1) = c(1);
@@ -167,7 +171,7 @@ function [h, fail] = __patch__ (p, varargin)
       else
 	error ("patch: color value not valid");
       endif
-    elseif (size(c, ndims(c)) == 3)
+    elseif (size (c, ndims (c)) == 3)
       cargs{1} = "facecolor";
       cargs{2} = "flat";
       cargs{3} = "cdata";
@@ -192,7 +196,7 @@ function [h, fail] = __patch__ (p, varargin)
     cargs{2} = [0, 1, 0];
   endif
 
-  set (h, "xdata", x, "ydata", y, "faces", faces, "vertices", vert, ...
+  set (h, "xdata", x, "ydata", y, "faces", faces, "vertices", vert,
        cargs{:}, varargin{iarg:end});
   if (have_z)
     set (h, "zdata", z);

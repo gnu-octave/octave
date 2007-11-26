@@ -23,7 +23,7 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_builtins_h)
 #define octave_builtins_h 1
 
-extern void install_builtins (void);
+extern OCTINTERP_API void install_builtins (void);
 
 #endif
 

@@ -378,4 +378,15 @@ endfunction
 %!   && abs (kr - k) < 1e-12
 %!   && abs (er - e(n)) < 1e-12));
 
-
+%!test
+%! b = [1];
+%! a = [1, 10, 25];
+%! [r, p, k, e] = residue(b, a);
+%! r1 = [0; 1];
+%! p1 = [-5; -5];
+%! assert (abs (r - r1) < 1e-7 && abs (p - p1) < 1e-7
+%!   && isempty (k)
+%!   && e == [1; 2]);
+%! [br, ar] = residue (r, p, k);
+%! assert ((abs (br - b) < 1e-12
+%!   && abs (ar - a) < 1e-12));

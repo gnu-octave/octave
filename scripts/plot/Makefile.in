@@ -76,6 +76,7 @@ SOURCES = \
   contour.m \
   contourc.m \
   contourf.m \
+  cylinder.m \
   drawnow.m \
   errorbar.m \
   figure.m \

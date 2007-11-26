@@ -1,3 +1,8 @@
+2007-11-26  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/cylinder.m: New function.
+	* plot/Makefile.in (SOURCES): Add it to the list.
+
 2007-11-14  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/patch.m: Handle arg may also be hggroup object.

@@ -39,6 +39,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 
     if (! isempty (axis_obj.position))
       pos = axis_obj.position;
+      fprintf (plot_stream, "set tmargin 3;\n");
+      fprintf (plot_stream, "set bmargin 3;\n");
+      fprintf (plot_stream, "set lmargin 10;\n");
+      fprintf (plot_stream, "set rmargin 10;\n");
     endif
 
     if (! strcmp (axis_obj.__colorbar__, "none"))
@@ -74,49 +78,74 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     if (! isempty (axis_obj.xlabel))
       t = get (axis_obj.xlabel);
       angle = t.rotation;
+      colorspec = get_text_colorspec (axis_obj.xcolor);
       if (isempty (t.string))
-	fputs (plot_stream, "unset xlabel;\n");
+	fprintf (plot_stream, "unset xlabel;\n");
+	fprintf (plot_stream, "unset x2label;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
 					   have_newer_gnuplot);
-	fprintf (plot_stream, "set xlabel \"%s\" font \"%s,%d\"",
-		 undo_string_escapes (tt), f, s);
+	if (strcmpi (axis_obj.xaxislocation, "top"))
+	  fprintf (plot_stream, "set x2label \"%s\" %s font \"%s,%d\"",
+		   undo_string_escapes (tt), colorspec, f, s);
+	else
+	  fprintf (plot_stream, "set xlabel \"%s\" %s font \"%s,%d\"",
+		   undo_string_escapes (tt), colorspec, f, s);
+	endif
 	if (have_newer_gnuplot)
 	  ## Rotation of xlabel not yet support by gnuplot as of 4.2, but
 	  ## there is no message about it.
 	  fprintf (plot_stream, " rotate by %f", angle);
 	endif
 	fputs (plot_stream, ";\n");
+	if (strcmpi (axis_obj.xaxislocation, "top"))
+	  fprintf (plot_stream, "unset xlabel;\n");
+	else
+	  fprintf (plot_stream, "unset x2label;\n");
+	endif
       endif
     endif
 
     if (! isempty (axis_obj.ylabel))
       t = get (axis_obj.ylabel);
       angle = t.rotation;
+      colorspec = get_text_colorspec (axis_obj.ycolor);
       if (isempty (t.string))
-	fputs (plot_stream, "unset ylabel;\n");
+	fprintf (plot_stream, "unset ylabel;\n");
+	fprintf (plot_stream, "unset y2label;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
 					   have_newer_gnuplot);
-	fprintf (plot_stream, "set ylabel \"%s\" font \"%s,%d\"",
-		 undo_string_escapes (tt), f, s);
+	if (strcmpi (axis_obj.yaxislocation, "right"))
+	  fprintf (plot_stream, "set y2label \"%s\" %s font \"%s,%d\"",
+		   undo_string_escapes (tt), colorspec, f, s);
+	else
+	  fprintf (plot_stream, "set ylabel \"%s\" %s font \"%s,%d\"",
+		   undo_string_escapes (tt), colorspec, f, s);
+	endif
 	if (have_newer_gnuplot)
 	  fprintf (plot_stream, " rotate by %f;\n", angle);
 	endif
 	fputs (plot_stream, ";\n");
+	if (strcmpi (axis_obj.yaxislocation, "right"))
+	  fprintf (plot_stream, "unset ylabel;\n");
+	else
+	  fprintf (plot_stream, "unset y2label;\n");
+	endif
       endif
     endif
 
     if (! isempty (axis_obj.zlabel))
       t = get (axis_obj.zlabel);
       angle = t.rotation;
+      colorspec = get_text_colorspec (axis_obj.zcolor);
       if (isempty (t.string))
 	fputs (plot_stream, "unset zlabel;\n");
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
 					   have_newer_gnuplot);
-	fprintf (plot_stream, "set zlabel \"%s\" font \"%s,%d\"",
-		 undo_string_escapes (tt), f, s);
+	fprintf (plot_stream, "set zlabel \"%s\" %s font \"%s,%d\"",
+		 undo_string_escapes (tt), colorspec, f, s);
 	if (have_newer_gnuplot)
 	  ## Rotation of zlabel not yet support by gnuplot as of 4.2, but
 	  ## there is no message about it.
@@ -971,31 +1000,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
           endif
 	  
 	  if (isnumeric (color))
-	    if (have_newer_gnuplot)
-	      colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
-		       round (255*color));
-	    else
-	      if (isequal (color, [0,0,0]))
-		typ = -1;
-	      elseif (isequal (color, [1,0,0]))
-		typ = 1;
-	      elseif (isequal (color, [0,1,0]))
-		typ = 2;
-	      elseif (isequal (color, [0,0,1]))
-		typ = 3;
-	      elseif (isequal (color, [1,0,1]))
-		typ = 4;
-	      elseif (isequal (color, [0,1,1]))
-		typ = 5;
-	      elseif (isequal (color, [1,1,1]))
-		typ = -1;
-	      elseif (isequal (color, [1,1,0]))
-		typ = 7;
-	      else
-		typ = -1;
-	      endif
-	      colorspec = sprintf ("textcolor lt %d", typ);
-	    endif
+	    colorspec = get_text_colorspec (color);
 	  endif
 
 	  if (nd == 3)
@@ -1530,31 +1535,32 @@ endfunction
 function do_tics (obj, plot_stream)
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       "x2", plot_stream);
+	       obj.xcolor, "x2", plot_stream);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       "x", plot_stream);
+	       obj.xcolor, "x", plot_stream);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       "x", plot_stream);
+	       obj.xcolor, "x", plot_stream);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       "x2", plot_stream);
+	       obj.xcolor, "x2", plot_stream);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       "y2", plot_stream);
+	       obj.ycolor, "y2", plot_stream);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       "y", plot_stream);
+	       obj.ycolor, "y", plot_stream);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       "y", plot_stream);
+	       obj.ycolor, "y", plot_stream);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       "y2", plot_stream);
+	       obj.ycolor, "y2", plot_stream);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zticklabelmode, obj.zticklabel,
-	     "z", plot_stream);
+	     obj.zcolor, "z", plot_stream);
 endfunction
 
-function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
+function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream)
+  colorspec = get_text_colorspec (color);
   if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\n", ax);
@@ -1567,7 +1573,7 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
 	ntics = numel (tics);
 	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
-	fprintf (plot_stream, "set %stics (", ax);
+	fprintf (plot_stream, "set %stics %s (", ax, colorspec);
 	for i = 1:ntics
 	  fprintf (plot_stream, " \"%s\" %g", labels(k++), tics(i))
 	  if (i < ntics)
@@ -1589,7 +1595,38 @@ function do_tics_1 (ticmode, tics, labelmode, labels, ax, plot_stream)
     endif
   else
     fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
-    fprintf (plot_stream, "set %stics;\n", ax);
+    fprintf (plot_stream, "set %stics %s;\n", ax, colorspec);
+  endif
+endfunction
+
+function colorspec = get_text_colorspec (color)
+  persistent have_newer_gnuplot ...
+      = compare_versions (__gnuplot_version__ (), "4.0", ">");
+
+  if (have_newer_gnuplot)
+    colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
+			 round (255*color));
+  else
+    if (isequal (color, [0,0,0]))
+      typ = -1;
+    elseif (isequal (color, [1,0,0]))
+      typ = 1;
+    elseif (isequal (color, [0,1,0]))
+      typ = 2;
+    elseif (isequal (color, [0,0,1]))
+      typ = 3;
+    elseif (isequal (color, [1,0,1]))
+      typ = 4;
+    elseif (isequal (color, [0,1,1]))
+      typ = 5;
+    elseif (isequal (color, [1,1,1]))
+      typ = -1;
+    elseif (isequal (color, [1,1,0]))
+      typ = 7;
+    else
+      typ = -1;
+    endif
+    colorspec = sprintf ("textcolor lt %d", typ);
   endif
 endfunction
 

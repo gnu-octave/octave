@@ -1,5 +1,8 @@
 2007-11-26  David Bateman  <dbateman@free.fr>
 
+	* graphics.cc (class axes): Add the {x|y|z}color color property.
+	* graphics.h.in (class axes): ditto.
+
 	* ov-base.cc (Vsparse_auto_mutate, Fsparse_auto_mutate): New
 	internal variable and built-in function to set it.
 	* ov-base.h (extern bool Vsparse_auto_mutate): Export internal

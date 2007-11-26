@@ -1101,6 +1101,9 @@ axes::properties::properties (const graphics_handle& mh,
     xticklabelmode ("auto"),
     yticklabelmode ("auto"),
     zticklabelmode ("auto"),
+    xcolor (),
+    ycolor (),
+    zcolor (),
     xscale ("linear"),
     yscale ("linear"),
     zscale ("linear"),
@@ -1290,6 +1293,12 @@ axes::properties::set (const caseless_str& name, const octave_value& val)
     set_yticklabelmode (val);
   else if (name.compare ("zticklabelmode"))
     set_zticklabelmode (val);
+  else if (name.compare ("xcolor"))
+    set_xcolor (val);
+  else if (name.compare ("ycolor"))
+    set_ycolor (val);
+  else if (name.compare ("zcolor"))
+    set_zcolor (val);
   else if (name.compare ("xscale"))
     set_xscale (val);
   else if (name.compare ("yscale"))
@@ -1375,6 +1384,9 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
+  xcolor = color_property ("black");
+  ycolor = color_property ("black");
+  zcolor = color_property ("black");
   xscale = "linear";
   yscale = "linear";
   zscale = "linear";
@@ -1495,6 +1507,9 @@ axes::properties::get (void) const
   m.assign ("xticklabelmode", xticklabelmode);
   m.assign ("yticklabelmode", yticklabelmode);
   m.assign ("zticklabelmode", zticklabelmode);
+  m.assign ("xcolor", xcolor);
+  m.assign ("ycolor", ycolor);
+  m.assign ("zcolor", zcolor);
   m.assign ("xscale", xscale);
   m.assign ("yscale", yscale);
   m.assign ("zscale", zscale);
@@ -1603,6 +1618,12 @@ axes::properties::get (const caseless_str& name) const
     retval = yticklabelmode;
   else if (name.compare ("zticklabelmode"))
     retval = zticklabelmode;
+  else if (name.compare ("xcolor"))
+    retval = xcolor;
+  else if (name.compare ("ycolor"))
+    retval = ycolor;
+  else if (name.compare ("zcolor"))
+    retval = zcolor;
   else if (name.compare ("xscale"))
     retval = xscale;
   else if (name.compare ("yscale"))
@@ -1713,6 +1734,9 @@ axes::properties::factory_defaults (void)
   m["xticklabelmode"] = "auto";
   m["yticklabelmode"] = "auto";
   m["zticklabelmode"] = "auto";
+  m["xcolor"] = color_property ("black");
+  m["ycolor"] = color_property ("black");
+  m["zcolor"] = color_property ("black");
   m["xscale"] = "linear";
   m["yscale"] = "linear";
   m["zscale"] = "linear";

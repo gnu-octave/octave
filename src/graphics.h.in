@@ -1187,6 +1187,9 @@ public:
       octave_value xticklabelmode
       octave_value yticklabelmode
       octave_value zticklabelmode
+      color_property xcolor
+      color_property ycolor
+      color_property zcolor
       octave_value xscale
       octave_value yscale
       octave_value zscale

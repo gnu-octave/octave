@@ -112,6 +112,7 @@ SOURCES = \
   pie.m \
   plot.m \
   plot3.m \
+  plotyy.m \
   polar.m \
   print.m \
   quiver.m \

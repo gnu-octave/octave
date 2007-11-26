@@ -1,5 +1,13 @@
 2007-11-26  David Bateman  <dbateman@free.fr>
 
+	* plot/plotyy.m: New function
+	* plot/Makefile.in (SOURCES): Add it here.
+	* plot/__go_draw_axes__.m: Force axis margins for plotyy. Set text
+	color for {x|y|z}label and {x|y|z}tics. Also force the label of 
+	{x|y}label to respect the axis position.
+	* plot/xlabel.m, plot/ylabel.m, plot/zlabel.m: Accept an axis
+	handle as the first argument.
+	
 	* pkg/pkg.m (pkg:install): When loading the installed packages
 	index into installed_pkgs_lst and not descriptions..
 

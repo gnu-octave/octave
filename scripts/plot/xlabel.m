@@ -21,7 +21,9 @@
 ## @deftypefn {Function File} {} xlabel (@var{string})
 ## @deftypefnx {Function File} {} ylabel (@var{string})
 ## @deftypefnx {Function File} {} zlabel (@var{string})
-## Specify x, y, and z axis labels for the current figure.
+## @deftypefnx {Function File} {} xlabel (@var{h}, @var{string})
+## Specify x, y, and z axis labels for the current figure. If @var{h} is
+## specified then label the axis defined by @var{h}.
 ## @seealso{plot, semilogx, semilogy, loglog, polar, mesh, contour,
 ## bar, stairs,  ylabel, title}
 ## @end deftypefn
@@ -30,14 +32,30 @@
 
 function h = xlabel (varargin)
 
-  if (rem (nargin, 2) == 1)
-    if (nargout > 0)
-      h = __axis_label__ ("xlabel", varargin{:});
-    else
-      __axis_label__ ("xlabel", varargin{:});
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    ax = varargin {1};
+    if (! strcmp (get (ax, "type"), "axes"))
+      error ("xlabel: expecting first argument to be an axes object");
     endif
+    if (rem (nargin, 2) == 1)
+      print_usage ();
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (ax);
+      tmp = __axis_label__ ("xlabel", varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
   else
-    print_usage ();
+    if (rem (nargin, 2) != 1)
+      print_usage ();
+    endif
+    tmp = __axis_label__ ("xlabel", varargin{1:end});
+  endif
+
+  if (nargout > 0)
+    h = tmp;
   endif
 
 endfunction

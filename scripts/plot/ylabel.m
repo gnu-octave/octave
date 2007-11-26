@@ -19,6 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ylabel (@var{string})
+## @deftypefnx {Function File} {} ylabel (@var{h}, @var{string})
 ## See xlabel.
 ## @end deftypefn
 
@@ -26,14 +27,30 @@
 
 function h = ylabel (varargin)
 
-  if (rem (nargin, 2) == 1)
-    if (nargout > 0)
-      h = __axis_label__ ("ylabel", varargin{:});
-    else
-      __axis_label__ ("ylabel", varargin{:});
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    ax = varargin {1};
+    if (! strcmp (get (ax, "type"), "axes"))
+      error ("ylabel: expecting first argument to be an axes object");
     endif
+    if (rem (nargin, 2) == 1)
+      print_usage ();
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (ax);
+      tmp = __axis_label__ ("ylabel", varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
   else
-    print_usage ();
+    if (rem (nargin, 2) != 1)
+      print_usage ();
+    endif
+    tmp = __axis_label__ ("ylabel", varargin{1:end});
+  endif
+
+  if (nargout > 0)
+    h = tmp;
   endif
 
 endfunction

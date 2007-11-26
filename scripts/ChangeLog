@@ -1,3 +1,7 @@
+2007-11-26  Alexander Barth  <barth.alexander@gmail.com>
+
+	* general/accumarray.m: Correct dimension check.
+
 2007-11-26  John W. Eaton  <jwe@octave.org>
 
 	* polynomial/residue.m: Prepad along second dimension.

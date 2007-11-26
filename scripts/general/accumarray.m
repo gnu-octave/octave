@@ -20,8 +20,8 @@
 ## @deftypefn {Function File} {} accumarray (@var{subs}, @var{vals}, @var{sz}, @var{fun}, @var{fillval}, @var{issparse})
 ## @deftypefnx {Function File} {} accumarray (@var{csubs}, @var{vals}, @dots{})
 ##
-## Creates an array by accumulating the elements of a vector into the
-## positions of defined by their subscripts. The subscripts are defined by
+## Create an array by accumulating the elements of a vector into the
+## positions defined by their subscripts. The subscripts are defined by
 ## the rows of the matrix @var{subs} and the values by @var{vals}. Each row
 ## of @var{subs} corresponds to one of the values in @var{vals}.
 ##
@@ -46,7 +46,7 @@
 ##
 ## @example
 ## @group
-## accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2],101:105)
+## accumarray ([1,1,1;2,1,2;2,3,2;2,1,2;2,3,2], 101:105)
 ## @result{} ans(:,:,1) = [101, 0, 0; 0, 0, 0]
 ##    ans(:,:,2) = [0, 0, 0; 206, 0, 208]
 ## @end group
@@ -59,7 +59,7 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
     print_usage ();
   endif
 
-  if (iscell(subs))
+  if (iscell (subs))
     subs = cell2mat (cellfun (@(x) x(:), subs, 'UniformOutput', false));
   endif
   ndims = size (subs, 2);
@@ -69,10 +69,9 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
     if (isscalar(sz))
       sz = [sz, 1];
     endif
-  else
-    if (length (sz) != ndims)
-      error ("accumarray: inconsistent dimensions");
-    endif
+  elseif (length (sz) != ndims
+	  && (ndims != 1 || length (sz) != 2 || sz(2) != 1))
+    error ("accumarray: inconsistent dimensions");
   endif
   
   if (nargin < 4 || isempty (fun))
@@ -86,10 +85,9 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
   if (nargin < 6 || isempty (isspar))
     isspar = false;
   endif
-  if (isspar)
-    if (ndims > 2)
-      error ("Can not have more than 2 dimensions in a sparse matrix");
-    endif
+
+  if (isspar && ndims > 2)
+    error ("accumarray: sparse matrices limited to 2 dimensions");
   endif
 
   [subs, idx] = sortrows (subs);
@@ -98,7 +96,7 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
   else
     val = val(idx);
   endif
-  cidx = find([true; (sum (abs (diff (subs)), 2) != 0)]);
+  cidx = find ([true; (sum (abs (diff (subs)), 2) != 0)]);
   idx = cell (1, ndims);
   for i = 1:ndims
     idx{i} = subs (cidx, i);
@@ -109,14 +107,14 @@ function A = accumarray (subs, val, sz, fun, fillval, isspar)
   else
     if (iscell (x))
       ## Why did matlab choose to reverse the order of the elements
-      x = cellfun (@(x) flipud(x(:)), x, 'UniformOutput', false);
+      x = cellfun (@(x) flipud (x(:)), x, 'UniformOutput', false);
       A = cell (sz);
     elseif (fillval == 0)
-      A = zeros (sz, class(x));
+      A = zeros (sz, class (x));
     else 
       A = fillval .* ones (sz);
     endif
-    A (sub2ind (sz, idx{:})) = x;
+    A(sub2ind (sz, idx{:})) = x;
   endif
 endfunction
 

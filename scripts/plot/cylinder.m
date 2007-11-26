@@ -47,16 +47,15 @@ function [xx, yy, zz] = cylinder (varargin)
 
   nargs = nargin;
   args = varargin;
+  ax = [];
 
-  if (nargs > 1 && isscalar (varargin{1}) && ishandle (varargin{1}))
-    if (! strcmp (get (varargin{1}, "type"), "axes"))
+  if (nargs > 0 && isscalar (args{1}) && ishandle (args{1}))
+    if (! strcmp (get (args{1}, "type"), "axes"))
       error ("cylinder: expecting first argument to be an axes object");
     endif
-    ax = h;
+    ax = args{1};
     nargs--;
     args(1) = [];
-  else
-    ax = gca ();
   endif
 
   if (nargs == 0)
@@ -88,7 +87,9 @@ function [xx, yy, zz] = cylinder (varargin)
     yy = y;
     zz = z;
   else
-    axes(ax);
+    if (! isempty (ax))
+      axes (ax);
+    endif
     surf (x, y, z);
   endif
 

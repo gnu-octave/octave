@@ -118,6 +118,7 @@ SOURCES = \
   semilogyerr.m \
   shading.m \
   shg.m \
+  slice.m \
   sombrero.m \
   spinmap.m \
   stairs.m \

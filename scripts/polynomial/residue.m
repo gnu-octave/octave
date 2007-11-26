@@ -311,7 +311,7 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
     endfor
     pn = deconv (pden, pm);
     pn = r(n) * pn;
-    pnum = pnum + prepad (pn, N+1, 0);
+    pnum = pnum + prepad (pn, N+1, 0, 2);
   endfor
 
   ## Add the direct term.

@@ -757,12 +757,18 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
   endfor
 
   ## Add the newly installed packages to the path, so the user
-  ## can begin usings them. Only load them if they are marked autoload
+  ## can begin using them. Only load them if they are marked autoload
   if (length (descriptions) > 0)
     idx = [];
     for i = 1:length (descriptions)
       if (isautoload (descriptions(i)))
-	idx (end + 1) = i;
+	nm = descriptions{i}.name;
+	for j = 1:length (installed_pkgs_lst)
+	  if (strcmp (nm, installed_pkgs_lst{j}.name))
+	    idx (end + 1) = j;
+	    break;
+	  endif
+	endfor
       endif
     endfor
     load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,

@@ -1,5 +1,8 @@
 2007-11-26  David Bateman  <dbateman@free.fr>
 
+	* pkg/pkg.m (pkg:install): When loading the installed packages
+	index into installed_pkgs_lst and not descriptions..
+
 	* plot/quiver3.m, plot/surfnorm.m, plot/__quiver__.m: New functions.
 	* plot/Makefile.in (SOURCES): Add them to the sources.
 	* plot/quiver.m: Modify to use __quiver__.m.

@@ -44,8 +44,8 @@
 ## @group
 ## x = 0:0.1:2*pi; 
 ## y1 = sin (x);
-## y2 = exp(x - 1);
-## ax = plotyy(x, y1, x - 1, y2, @@plot, @@semilogy);
+## y2 = exp (x - 1);
+## ax = plotyy (x, y1, x - 1, y2, @@plot, @@semilogy);
 ## xlabel ("X");
 ## ylabel (ax(1), "Axis 1");
 ## ylabel (ax(2), "Axis 2");
@@ -61,7 +61,7 @@ function [Ax, H1, H2] = plotyy (varargin)
       error ("plotyy: expecting first argument to be an axes object");
     endif
     if (nargin < 5)
-      print_usage();
+      print_usage ();
     endif
     oldh = gca ();
     unwind_protect
@@ -73,7 +73,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     end_unwind_protect
   else
     if (nargin < 4)
-      print_usage();
+      print_usage ();
     endif
     newplot ();
     [ax, h1, h2] = __plotyy__ (gca (), varargin{:});
@@ -84,6 +84,7 @@ function [Ax, H1, H2] = plotyy (varargin)
     H1 = h1;
     H2 = h2;
   endif
+
 endfunction
 
 function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)

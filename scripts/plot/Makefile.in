@@ -111,6 +111,7 @@ SOURCES = \
   peaks.m \
   pie.m \
   plot.m \
+  plotyy.m \
   plot3.m \
   plotyy.m \
   polar.m \

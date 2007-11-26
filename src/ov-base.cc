@@ -65,6 +65,10 @@ static bool Vprint_answer_id_name = true;
 // semicolon has been appended to each statement).
 static bool Vsilent_functions = false;
 
+// TRUE means to perform automatic sparse to real mutation if there
+// is memory to be saved
+bool Vsparse_auto_mutate = false;
+
 octave_value
 octave_base_value::squeeze (void) const
 {
@@ -1129,6 +1133,30 @@ within a function body that are not terminated with a semicolon.\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (silent_functions);
+}
+
+DEFUN (sparse_auto_mutate, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {@var{val} =} sparse_auto_mutate ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} sparse_auto_mutate (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave will\n\
+automatically mutate sparse matrices to real matrices to save memory.\n\
+For example,\n\
+\n\
+@example\n\
+s = speye(3);\n\
+sparse_auto_mutate (false)\n\
+s (:, 1) = 1;\n\
+typeinfo (s)\n\
+@result{} sparse matrix\n\
+sparse_auto_mutate (true)\n\
+s (1, :) = 1;\n\
+typeinfo (s)\n\
+@result{} matrix\n\
+@end example\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (sparse_auto_mutate);
 }
 
 /*

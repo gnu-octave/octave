@@ -1,5 +1,17 @@
 2007-11-26  David Bateman  <dbateman@free.fr>
 
+	* ov-base.cc (Vsparse_auto_mutate, Fsparse_auto_mutate): New
+	internal variable and built-in function to set it.
+	* ov-base.h (extern bool Vsparse_auto_mutate): Export internal
+	variable to other functions.
+	* ov-re-sparse.cc (octave_sparse_matrix::try_narrowing_conversion
+	(void)), ov-cx-sparse.cc 
+	(octave_sparse_complex_matrix::try_narrowing_conversion (void)), 
+	ov-bool-sparse.cc
+	(octave_sparse_bool_matrix::try_narrowing_conversion (void)):
+	Use Vsparse_auto_mutate flag to determine whether to convert
+	sparse matrices to full matrices if that saves space.
+
 	* DLD-FUNCTIONS/minmax.cc (MINMAX_DOUBLE_BODY): New version of
 	MINMAX_BODY macro without the initialization.
 	(MINMAX_INT_BODY): Macro for min/max for the integer types

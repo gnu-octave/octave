@@ -69,20 +69,23 @@ octave_sparse_bool_matrix::try_narrowing_conversion (void)
 {
   octave_base_value *retval = 0;
 
-  // Don't use numel, since it can overflow for very large matrices
-  // Note that for the second test, this means it becomes approximative
-  // since it involves a cast to double to avoid issues of overflow
-  if (matrix.rows () == 1 && matrix.cols () == 1)
+  if (Vsparse_auto_mutate)
     {
-      // Const copy of the matrix, so the right version of () operator used
-      const SparseBoolMatrix tmp (matrix);
+      // Don't use numel, since it can overflow for very large matrices
+      // Note that for the second test, this means it becomes approximative
+      // since it involves a cast to double to avoid issues of overflow
+      if (matrix.rows () == 1 && matrix.cols () == 1)
+	{
+	  // Const copy of the matrix, so the right version of () operator used
+	  const SparseBoolMatrix tmp (matrix);
 
-      retval = new octave_bool (tmp (0));
+	  retval = new octave_bool (tmp (0));
+	}
+      else if (matrix.cols () > 0 && matrix.rows () > 0 && 
+	       double (matrix.byte_size ()) > double (matrix.rows ()) *
+	       double (matrix.cols ()) * sizeof (bool))
+	retval = new octave_bool_matrix (matrix.matrix_value ());
     }
-  else if (matrix.cols () > 0 && matrix.rows () > 0 && 
-	   double (matrix.byte_size ()) > double (matrix.rows ()) *
-	   double (matrix.cols ()) * sizeof (bool))
-    retval = new octave_bool_matrix (matrix.matrix_value ());
 
   return retval;
 }

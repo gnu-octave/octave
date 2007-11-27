@@ -73,7 +73,7 @@ function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
     error ("A(%d x %d) must be square", rows (A), columns (A));
   endif
 
-  [m, kb] = size(V);
+  [m, kb] = size (V);
   if (m != na)
     error("A(%d x %d), V(%d x %d): argument dimensions do not match",
 	  na, na, m, kb)

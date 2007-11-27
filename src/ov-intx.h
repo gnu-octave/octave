@@ -365,7 +365,6 @@ public:
 
   double scalar_value (bool = false) const { return scalar.double_value (); }
 
-
   Matrix
   matrix_value (bool = false) const
     {

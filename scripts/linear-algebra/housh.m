@@ -19,15 +19,37 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{housv}, @var{beta}, @var{zer}] =} housh (@var{x}, @var{j}, @var{z})
-## Computes householder reflection vector housv to reflect x to be
-## jth column of identity, i.e., (I - beta*housv*housv')x =e(j)
-## inputs
-##   x: vector
-##   j: index into vector
-##   z: threshold for zero  (usually should be the number 0)
-## outputs: (see Golub and Van Loan)
-##   beta: If beta = 0, then no reflection need be applied (zer set to 0)
-##   housv: householder vector
+## Compute Householder reflection vector @var{housv} to reflect @var{x}
+## to be the jth column of identity, i.e.,
+##
+## @example
+## @group
+## (I - beta*housv*housv')x =  norm(x)*e(j) if x(1) < 0,
+## (I - beta*housv*housv')x = -norm(x)*e(j) if x(1) >= 0
+## @end group
+## @end example
+##
+## @noindent
+## Inputs
+##
+## @table @var
+## @item x
+## vector
+## @item j
+## index into vector
+## @item z
+## threshold for zero  (usually should be the number 0)
+## @end table
+##
+## @noindent
+## Outputs (see Golub and Van Loan):
+##
+## @table @var
+## @item beta
+## If beta = 0, then no reflection need be applied (zer set to 0)
+## @item housv
+## householder vector
+## @end table
 ## @end deftypefn
 
 ## Author: A. S. Hodel

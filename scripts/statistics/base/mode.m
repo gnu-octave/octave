@@ -105,6 +105,6 @@ endfunction
 %! a = sprandn (32, 32, 0.05);
 %! [m, f, c] = mode (a);
 %! [m2, f2, c2] = mode (full (a));
-%! assert (m, m2);
-%! assert (f, f2);
-%! assert (c, c2);
+%! assert (m, sparse (m2, 1));
+%! assert (f, sparse (f2, 1));
+%! assert (c, cellfun (@(x) sparse (1, 1), c2, 'UniformOutput', false));

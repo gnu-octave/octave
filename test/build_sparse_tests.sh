@@ -215,7 +215,7 @@ gen_specific_tests() {
 %!test
 %! wdbz = warning ("query", "Octave:divide-by-zero");
 %! warning ("off", "Octave:divide-by-zero");
-%! assert(sparse(eye(3))/0,sparse(eye(3)/0,1));
+%! assert(full(sparse(eye(3))/0),eye(3)/0);
 %! warning (wdbz.state, "Octave:divide-by-zero");
 
 EOF
@@ -547,14 +547,14 @@ gen_unaryop_tests() {
 %!assert(spcumprod(as,2),sparse(cumprod(af,2),true))
 
 %!assert(spmin(as),sparse(min(af),true))
-%!assert(spmin(as(:)),min(af(:)))
+%!assert(full(spmin(as(:))),min(af(:)))
 %!assert(spmin(as,[],1),sparse(min(af,[],1),true))
 %!assert(spmin(as,[],2),sparse(min(af,[],2),true))
 %!assert(spmin(as,[],1),sparse(min(af,[],1),true))
 %!assert(spmin(as,0),sparse(min(af,0),true))
 %!assert(spmin(as,bs),sparse(min(af,bf),true))
 %!assert(spmax(as),sparse(max(af),true))
-%!assert(spmax(as(:)),max(af(:)))
+%!assert(full(spmax(as(:))),max(af(:)))
 %!assert(spmax(as,[],1),sparse(max(af,[],1),true))
 %!assert(spmax(as,[],2),sparse(max(af,[],2),true))
 %!assert(spmax(as,[],1),sparse(max(af,[],1),true))
@@ -832,10 +832,10 @@ gen_select_tests() {
 %! assert(ts,sparse(tf,true));
 
 %% Test 'end' keyword
-%!assert(as(end),af(end))
-%!assert(as(1,end), af(1,end))
-%!assert(as(end,1), af(end,1))
-%!assert(as(end,end), af(end,end))
+%!assert(full(as(end)), af(end))
+%!assert(full(as(1,end)), af(1,end))
+%!assert(full(as(end,1)), af(end,1))
+%!assert(full(as(end,end)), af(end,end))
 %!assert(as(2:end,2:end), sparse(af(2:end,2:end),true))
 %!assert(as(1:end-1,1:end-1), sparse(af(1:end-1,1:end-1),true))
 EOF

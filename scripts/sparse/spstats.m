@@ -59,6 +59,6 @@ endfunction
 
 %!test
 %! [n,m,v] = spstats([1 2 1 2 3 4],[2 2 1 1 1 1]);
-%! assert(n,[4,2]);
-%! assert(m,[10/4,3/2],10*eps);
-%! assert(v,[5/3,1/2],10*eps);
+%! assert(n,sparse([4,2],1));
+%! assert(m,sparse([10/4,3/2],1),10*eps);
+%! assert(v,sparse([5/3,1/2],1),10*eps);

@@ -1,5 +1,9 @@
 2007-11-26  David Bateman  <dbateman@free.fr>
 
+	* sparse/spstats.m, statistics/base/mode.m: More care with sparse
+	return values.
+
+
 	* plot/plotyy.m: New function
 	* plot/Makefile.in (SOURCES): Add it here.
 	* plot/__go_draw_axes__.m: Force axis margins for plotyy. Set text

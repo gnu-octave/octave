@@ -1634,35 +1634,54 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (nc == 0 && (nr == 0 || (nr == 1 && dim == -1))) \
     { \
-      retval = RET_TYPE (static_cast<octave_idx_type> (1), \
-                         static_cast<octave_idx_type> (1), \
-                         static_cast<octave_idx_type> (1)); \
-      retval.cidx(0) = 0; \
-      retval.cidx(1) = 1; \
-      retval.ridx(0) = 0; \
-      retval.data(0) = MT_RESULT; \
+      if (MT_RESULT) \
+        { \
+          retval = RET_TYPE (static_cast<octave_idx_type> (1), \
+                             static_cast<octave_idx_type> (1), \
+                             static_cast<octave_idx_type> (1)); \
+          retval.cidx(0) = 0; \
+          retval.cidx(1) = 1; \
+          retval.ridx(0) = 0; \
+          retval.data(0) = MT_RESULT; \
+        } \
+      else \
+          retval = RET_TYPE (static_cast<octave_idx_type> (1), \
+                             static_cast<octave_idx_type> (1), \
+                             static_cast<octave_idx_type> (0)); \
     } \
   else if (nr == 0 && (dim == 0 || dim == -1)) \
     { \
-      retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nc); \
-      retval.cidx (0) = 0; \
-      for (octave_idx_type i = 0; i < nc ; i++) \
+      if (MT_RESULT) \
         { \
-          retval.ridx (i) = 0; \
-          retval.cidx (i+1) = i; \
-	  retval.data (i) = MT_RESULT; \
-	} \
+          retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, nc); \
+          retval.cidx (0) = 0; \
+          for (octave_idx_type i = 0; i < nc ; i++) \
+            { \
+              retval.ridx (i) = 0; \
+              retval.cidx (i+1) = i; \
+	      retval.data (i) = MT_RESULT; \
+	    } \
+        } \
+      else \
+        retval = RET_TYPE (static_cast<octave_idx_type> (1), nc, \
+			   static_cast<octave_idx_type> (0)); \
     } \
   else if (nc == 0 && dim == 1) \
     { \
-      retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nr); \
-      retval.cidx(0) = 0; \
-      retval.cidx(1) = nr; \
-      for (octave_idx_type i = 0; i < nr; i++) \
-	{ \
-	  retval.ridx(i) = i; \
-	  retval.data(i) = MT_RESULT; \
-	} \
+      if (MT_RESULT) \
+        { \
+          retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), nr); \
+          retval.cidx(0) = 0; \
+          retval.cidx(1) = nr; \
+          for (octave_idx_type i = 0; i < nr; i++) \
+	    { \
+	      retval.ridx(i) = i; \
+	      retval.data(i) = MT_RESULT; \
+	    } \
+        } \
+      else \
+        retval = RET_TYPE (nr, static_cast<octave_idx_type> (1), \
+			   static_cast<octave_idx_type> (0)); \
     } \
   else \
     retval.resize (nr > 0, nc > 0); \

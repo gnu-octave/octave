@@ -1,3 +1,7 @@
+2007-11-26  David Bateman  <dbateman@free.fr>
+
+	* build_sparse_tests.sh: More care with sparse return values.
+
 2007-10-30  Kim Hansen  <kimhanse@gmail.com>
 
 	* build_sparse_tests.sh: Fix typo.

@@ -99,7 +99,7 @@ public:
 	  gripe_implicit_conversion ("Octave:array-as-scalar",
 				     type_name (), "real scalar");
 
-	  retval = double (matrix(0));
+	  retval = matrix(0).double_value ();
 	}
       else
 	gripe_invalid_conversion (type_name (), "real scalar");
@@ -123,7 +123,7 @@ public:
 	  double *vec = retval.fortran_vec ();
 	  octave_idx_type nel = matrix.numel ();
 	  for (octave_idx_type i = 0; i < nel; i++)
-	    vec[i] = double (matrix(i));
+	    vec[i] = matrix(i).double_value ();
 	}
       return retval;
     }
@@ -141,7 +141,7 @@ public:
 	  Complex *vec = retval.fortran_vec ();
 	  octave_idx_type nel = matrix.numel ();
 	  for (octave_idx_type i = 0; i < nel; i++)
-	    vec[i] = Complex (double (matrix(i)));
+	    vec[i] = Complex (matrix(i).double_value ());
 	}
       return retval;
     }
@@ -153,7 +153,7 @@ public:
       double *vec = retval.fortran_vec ();
       octave_idx_type nel = matrix.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
-        vec[i] = double (matrix(i));
+        vec[i] = matrix(i).double_value ();
       return retval;
     }
 
@@ -164,7 +164,7 @@ public:
       Complex *vec = retval.fortran_vec ();
       octave_idx_type nel = matrix.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
-        vec[i] = Complex (double (matrix(i)));
+        vec[i] = Complex (matrix(i).double_value ());
       return retval;
     }
 
@@ -180,7 +180,7 @@ public:
 
     bool *vec = retval.fortran_vec ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = static_cast<bool> (matrix(i));
+      vec[i] = matrix(i).bool_value ();
 
     return retval;
   }
@@ -194,7 +194,7 @@ public:
   
     char *vec = retval.fortran_vec ();
     for (octave_idx_type i = 0; i < nel; i++)
-      vec[i] = static_cast<char> (matrix(i));
+      vec[i] = matrix(i).char_value ();
 
     return retval;
   }
@@ -361,16 +361,16 @@ public:
 	}
     }
 
-  double double_value (bool = false) const { return double (scalar); }
+  double double_value (bool = false) const { return scalar.double_value (); }
 
-  double scalar_value (bool = false) const { return double (scalar); }
+  double scalar_value (bool = false) const { return scalar.double_value (); }
 
 
   Matrix
   matrix_value (bool = false) const
     {
       Matrix retval (1, 1);
-      retval(0,0) = double (scalar);
+      retval(0,0) = scalar.double_value ();
       return retval;
     }
 
@@ -378,7 +378,7 @@ public:
   complex_matrix_value (bool = false) const
     {
       ComplexMatrix retval (1, 1);
-      retval(0,0) = Complex (double (scalar));
+      retval(0,0) = Complex (scalar.double_value ());
       return retval;
     }
 
@@ -387,7 +387,7 @@ public:
   array_value (bool = false) const
     { 
       NDArray retval (dim_vector (1, 1)); 
-      retval(0) = double (scalar);
+      retval(0) = scalar.double_value ();
       return retval;
     }
 
@@ -395,7 +395,7 @@ public:
   complex_array_value (bool = false) const
     { 
       ComplexNDArray retval (dim_vector (1, 1));
-      retval(0) = Complex (double (scalar));
+      retval(0) = Complex (scalar.double_value ());
       return retval;
     }
 
@@ -407,7 +407,7 @@ public:
     if (warn && scalar != 0.0 && scalar != 1.0)
       gripe_logical_conversion ();
 
-    retval(0) = static_cast<bool> (scalar);
+    retval(0) = scalar.bool_value ();
 
     return retval;
   }
@@ -416,7 +416,7 @@ public:
   char_array_value (bool = false) const
   {
     charNDArray retval (dim_vector (1, 1));
-    retval(0) = static_cast<char> (scalar);
+    retval(0) = scalar.char_value ();
     return retval;
   }
 

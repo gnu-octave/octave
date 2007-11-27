@@ -1,3 +1,11 @@
+2007-11-26  John W. Eaton  <jwe@octave.org>
+
+	* idx-vector.h (idx_vector::idx_vector_rep (const intNDArray<U>&)):
+	Eliminate unnecessary second arg from call to tree_to_mat_idx.
+
+	* oct-inttypes.h (operator bool, operator char): Delete.
+	(bool_value, char_value, double_value, float_value): New functions.
+
 2007-11-26  David Bateman  <dbateman@free.fr>
 
 	* intNDArray.cc (template <class T> intNDArray<T>

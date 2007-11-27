@@ -1,3 +1,41 @@
+2007-11-26  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (do_write): Call float_value and double_value on
+	octave_int<T> objects instead of relying on conversion operators.
+
+	* ls-mat5.cc (read_mat5_binary_element, OCTAVE_MAT5_INTEGER_READ): 
+	Call double_value on octave_int<T> objects
+	instead of relying on conversion operator.
+	(read_mat5_binary_file_header): 
+	Call char_value on octave_int<T> objects
+	instead of relying on conversion operator.
+	(read_mat5_binary_element): 
+	Call bool_value on octave_int<T> objects
+	instead of relying on conversion operator.
+
+	* ov-intx.h (OCTAVE_VALUE_INT_MATRIX_T::double_value, 
+	OCTAVE_VALUE_INT_MATRIX_T::scalar_value,
+	OCTAVE_VALUE_INT_MATRIX_T::matrix_value,
+	OCTAVE_VALUE_INT_MATRIX_T::complex_matrix_value,
+	OCTAVE_VALUE_INT_MATRIX_T::array_value,
+	OCTAVE_VALUE_INT_MATRIX_T::complex_array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::double_value, 
+	OCTAVE_VALUE_INT_SCALAR_T::scalar_value,
+	OCTAVE_VALUE_INT_SCALAR_T::matrix_value,
+	OCTAVE_VALUE_INT_SCALAR_T::complex_matrix_value,
+	OCTAVE_VALUE_INT_SCALAR_T::array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::complex_array_value,
+	Call double_value on octave_int<T> objects
+	instead of relying on conversion operator.
+	(OCTAVE_VALUE_INT_MATRIX_T::bool_array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::bool_array_value):
+	Call bool_value on octave_int<T> objects
+	instead of relying on conversion operator.
+	(OCTAVE_VALUE_INT_MATRIX_T::char_array_value,
+	OCTAVE_VALUE_INT_SCALAR_T::char_array_value):
+	Call char_value on octave_int<T> objects
+	instead of relying on conversion operator.
+
 2007-11-26  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_BASE_REDUCTION_OP): Check that the fill

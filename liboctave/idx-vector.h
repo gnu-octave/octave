@@ -74,13 +74,8 @@ private:
 	{
 	  data = new octave_idx_type [len];
 
-	  bool conversion_error = false;
-
 	  for (octave_idx_type i = 0; i < len; i++)
-	    data[i] = tree_to_mat_idx (inda.elem (i), conversion_error);
-
-	  if (conversion_error)
-	    return;
+	    data[i] = tree_to_mat_idx (inda.elem (i));
 	}
 
       init_state ();

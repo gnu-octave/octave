@@ -250,15 +250,21 @@ public:
       OCTAVE_INT_FIT_TO_RANGE (- static_cast<double> (ival), T) : 0;
   }
 
+  bool bool_value (void) const { return static_cast<bool> (value ()); }
+
+  char char_value (void) const { return static_cast<char> (value ()); }
+
+  double double_value (void) const { return static_cast<double> (value ()); }
+
+  float float_value (void) const { return static_cast<float> (value ()); }
+
   operator T (void) const { return value (); }
 
-  operator bool (void) const { return static_cast<bool> (value ()); }
+  // char and bool operators intentionally omitted.
 
-  operator char (void) const { return static_cast<char> (value ()); }
+  operator double (void) const { return double_value (); }
 
-  operator double (void) const { return static_cast<double> (value ()); }
-
-  operator float (void) const { return static_cast<float> (value ()); }
+  operator float (void) const { return float_value (); }
 
   octave_int<T>& operator += (const octave_int<T>& x)
   {

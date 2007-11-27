@@ -334,7 +334,7 @@ template void read_mat5_integer_data (std::istream& is, int *m,
 	    ComplexNDArray ctmp (dims); \
   \
 	    for (int i = 0; i < n; i++) \
-	      ctmp(i) = Complex (double (re(i)), im(i)); \
+	      ctmp(i) = Complex (re(i).double_value (), im(i)); \
   \
             tc = ctmp;  \
 	  } \
@@ -863,7 +863,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	  {
 	    Octave_map m2 = m1.contents("workspace")(0).map_value();
 	    uint32NDArray MCOS = m2.contents("MCOS")(0).uint32_array_value();
-	    octave_idx_type off = static_cast<octave_idx_type>(double (MCOS (4)));
+	    octave_idx_type off = static_cast<octave_idx_type>(MCOS(4).double_value ());
 	    m2 = subsys_ov.map_value();
 	    m2 = m2.contents("MCOS")(0).map_value();
 	    tc2 = m2.contents("MCOS")(0).cell_value()(1 + off).cell_value()(1);
@@ -1140,7 +1140,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    boolNDArray out (dims);
 	    
 	    for (int i = 0; i < nel; i++)
-	      out (i) = static_cast<bool> (double (in (i)));
+	      out (i) = in(i).bool_value ();
 
 	    tc = out;
 	  }
@@ -1377,7 +1377,7 @@ read_mat5_binary_file_header (std::istream& is, bool& swap, bool quiet,
 	  // FIXME -- find a way to avoid casting away const here
 	  char *ctmp = const_cast<char *> (outbuf.c_str ());
 	  for (octave_idx_type j = 8; j < ilen; j++)
-	    ctmp [j - 8] = itmp (j);
+	    ctmp[j-8] = itmp(j).char_value ();
 
 	  std::istringstream fh_ws (outbuf);
 

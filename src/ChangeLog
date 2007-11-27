@@ -1,5 +1,10 @@
 2007-11-27  John W. Eaton  <jwe@octave.org>
 
+	* pt-bp.cc (tree_breakpoint::visit_decl_command): Also check line
+	number of cmd.
+	* pt-decl.cc (tree_global_command::eval, tree_static_command::eval):
+	Insert MAYBE_DO_BREAKPOINT here.
+
 	* error.cc (Fwarning): If setting state "all" to "error", leave
 	Octave:matlab-incompatible warning state unchanged.
 

@@ -186,6 +186,9 @@ tree_breakpoint::visit_decl_command (tree_decl_command& cmd)
   if (found)
     return;
 
+  if (cmd.line () >= line)
+    take_action (cmd);
+
   tree_decl_init_list *init_list = cmd.initializer_list ();
 
   if (init_list)

@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-cmd.h"
 #include "ov.h"
 #include "oct-lvalue.h"
+#include "pt-bp.h"
 #include "pt-decl.h"
 #include "pt-exp.h"
 #include "pt-id.h"
@@ -165,6 +166,8 @@ tree_global_command::do_init (tree_decl_elt& elt)
 void
 tree_global_command::eval (void)
 {
+  MAYBE_DO_BREAKPOINT;
+
   if (init_list)
     {
       init_list->eval (do_init);
@@ -216,6 +219,8 @@ tree_static_command::do_init (tree_decl_elt& elt)
 void
 tree_static_command::eval (void)
 {
+  MAYBE_DO_BREAKPOINT;
+
   // Static variables only need to be marked and initialized once.
 
   if (init_list && ! initialized)

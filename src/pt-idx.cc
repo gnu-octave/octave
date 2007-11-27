@@ -513,7 +513,9 @@ tree_index_expression::lvalue (void)
 
 				retval.numel (nel);
 			      }
-			    else if (first_retval_object.is_defined ())
+			    else if (first_retval_object.is_defined ()
+				     && ! (first_retval_object.is_real_matrix ()
+					   && first_retval_object.is_zero_by_zero ()))
 			      {
 				octave_value_list tmp_list
 				  = first_retval_object.subsref (ttype, idx, 1);
@@ -530,7 +532,9 @@ tree_index_expression::lvalue (void)
 			  }
 			else
 			  {
-			    if (first_retval_object.is_defined ())
+			    if (first_retval_object.is_defined ()
+				&& ! (first_retval_object.is_real_matrix ()
+				      && first_retval_object.is_zero_by_zero ()))
 			      retval.numel (first_retval_object.numel ());
 			    else
 			      retval.numel (1);
@@ -542,7 +546,9 @@ tree_index_expression::lvalue (void)
 
 			if (! have_new_struct_field)
 			  {
-			    if (i > 0 && first_retval_object.is_defined ())
+			    if (i > 0 && first_retval_object.is_defined ()
+				&& ! (first_retval_object.is_real_matrix ()
+				      && first_retval_object.is_zero_by_zero ()))
 			      {
 				std::string ttype = type.substr (0, i);
 

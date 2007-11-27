@@ -1,3 +1,8 @@
+2007-11-27  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.cc (tree_index_expression::lvalue): Treat object == []
+	the same as undefined.
+
 2007-11-26  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (DO_DOUBLE_CONV): Always use long.

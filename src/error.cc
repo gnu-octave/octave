@@ -620,7 +620,12 @@ warning_enabled (const std::string& id)
 	retval = all_state;
     }
   else if (all_state == 2)
-    retval = 2;
+    {
+      if (id_state == 0)
+	retval= id_state;
+      else
+	retval = all_state;
+    }
 
   return retval;
 }
@@ -1088,6 +1093,8 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 		  if (arg1 == "error"
 		      && warning_options.contains ("identifier"))
 		    {
+		      octave_idx_type n = 1;
+
 		      Cell tid = warning_options.contents ("identifier");
 		      Cell tst = warning_options.contents ("state");
 
@@ -1095,17 +1102,21 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 			{
 			  octave_value vid = tid(i);
 
-			  if (vid.is_string ()
-			      && (vid.string_value ()
-				  == "Octave:matlab-incompatible"))
+			  if (vid.is_string ())
 			    {
-			      id.resize (dim_vector (1, 2));
-			      st.resize (dim_vector (1, 2));
+			      std::string key = vid.string_value ();
 
-			      id(1) = tid(i);
-			      st(1) = tst(i);
+			      if (key == "Octave:matlab-incompatible"
+				  || key == "Octave:single-quote-string")
+				{
+				  id.resize (dim_vector (1, n+1));
+				  st.resize (dim_vector (1, n+1));
 
-			      break;
+				  id(n) = tid(i);
+				  st(n) = tst(i);
+
+				  n++;
+				}
 			    }
 			}
 		    }

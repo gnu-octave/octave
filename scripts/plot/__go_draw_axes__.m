@@ -37,12 +37,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       pos = axis_obj.outerposition;
     endif
 
+    ymirror = true;
     if (! isempty (axis_obj.position))
       pos = axis_obj.position;
       fprintf (plot_stream, "set tmargin 3;\n");
       fprintf (plot_stream, "set bmargin 3;\n");
       fprintf (plot_stream, "set lmargin 10;\n");
       fprintf (plot_stream, "set rmargin 10;\n");
+      ymirror = false;
     endif
 
     if (! strcmp (axis_obj.__colorbar__, "none"))
@@ -209,7 +211,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       fputs (plot_stream, "set grid nomztics;\n");
     endif
 
-    do_tics (axis_obj, plot_stream);
+    do_tics (axis_obj, plot_stream, ymirror);
 
     xlogscale = strcmpi (axis_obj.xscale, "log");
     if (xlogscale)
@@ -1532,34 +1534,34 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 
 endfunction
 
-function do_tics (obj, plot_stream)
+function do_tics (obj, plot_stream, ymirror)
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream);
+	       obj.xcolor, "x2", plot_stream, true);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x", plot_stream);
+	       obj.xcolor, "x", plot_stream, true);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x", plot_stream);
+	       obj.xcolor, "x", plot_stream, true);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream);
+	       obj.xcolor, "x2", plot_stream, true);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream);
+	       obj.ycolor, "y2", plot_stream, ymirror);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y", plot_stream);
+	       obj.ycolor, "y", plot_stream, ymirror);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y", plot_stream);
+	       obj.ycolor, "y", plot_stream, ymirror);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream);
+	       obj.ycolor, "y2", plot_stream, ymirror);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zticklabelmode, obj.zticklabel,
-	     obj.zcolor, "z", plot_stream);
+	     obj.zcolor, "z", plot_stream, true);
 endfunction
 
-function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream)
+function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream, mirror)
   colorspec = get_text_colorspec (color);
   if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
@@ -1573,7 +1575,11 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream)
 	ntics = numel (tics);
 	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
-	fprintf (plot_stream, "set %stics %s (", ax, colorspec);
+	if (mirror)
+	  fprintf (plot_stream, "set %stics %s (", ax, colorspec);
+	else
+	  fprintf (plot_stream, "set %stics nomirror %s (", ax, colorspec);
+	endif
 	for i = 1:ntics
 	  fprintf (plot_stream, " \"%s\" %g", labels(k++), tics(i))
 	  if (i < ntics)
@@ -1589,13 +1595,21 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream)
       endif
     else
       fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
-      fprintf (plot_stream, "set %stics (", ax);
+      if (mirror)
+	fprintf (plot_stream, "set %stics (", ax);
+      else
+	fprintf (plot_stream, "set %stics nomirror (", ax);
+      endif
       fprintf (plot_stream, " %g,", tics(1:end-1));
       fprintf (plot_stream, " %g);\n", tics(end));
     endif
   else
     fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
-    fprintf (plot_stream, "set %stics %s;\n", ax, colorspec);
+    if (mirror)
+      fprintf (plot_stream, "set %stics %s;\n", ax, colorspec);
+    else
+      fprintf (plot_stream, "set %stics nomirror %s;\n", ax, colorspec);
+    endif
   endif
 endfunction
 

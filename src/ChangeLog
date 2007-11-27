@@ -6,7 +6,10 @@
 	Insert MAYBE_DO_BREAKPOINT here.
 
 	* error.cc (Fwarning): If setting state "all" to "error", leave
-	Octave:matlab-incompatible warning state unchanged.
+	Octave:matlab-incompatible and Octave:single-quote-string warning
+	states unchanged.
+	(warning_enabled): Allow individual warning states to override
+	"warning error all".
 
 	* octave.cc (execute_eval_option_code, execute_command_line_file):
 	Handle interrupts.

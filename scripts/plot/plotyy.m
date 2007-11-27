@@ -102,18 +102,19 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   xlim = [min([x1(:); x2(:)]), max([x1(:); x2(:)])];
 
   h1 = feval (fun1, x1, y1);
-  set (ax(1), "ycolor", get (h1, "color"));
+  set (ax(1), "ycolor", get (h1(1), "color"));
   set (ax(1), "position", get (ax(1), "outerposition"));
   set (ax(1), "xlim", xlim);
 
   cf = gcf ();
   set (cf, "nextplot", "add");
-  ax(2) = axes ("position", get (ax(1), "position"));
+  ax(2) = axes ();
   colors = get (ax(1), "colororder");
   set (ax(2), "colororder", [colors(2:end,:); colors(1,:)]);
 
   h2 = feval (fun2, x2, y2);
-  set (ax(2), "ycolor", get (h2, "color"));
-  set (ax(2), "xlim", xlim);
   set (ax(2), "yaxislocation", "right");
+  set (ax(2), "ycolor", get (h2(1), "color"));
+  set (ax(2), "position", get (ax(1), "outerposition"));
+  set (ax(2), "xlim", xlim);
 endfunction

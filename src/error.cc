@@ -1074,8 +1074,44 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 		{
 		  Octave_map tmp;
 
-		  tmp.assign ("identifier", arg2);
-		  tmp.assign ("state", arg1);
+		  Cell id (1, 1);
+		  Cell st (1, 1);
+
+		  id(0) = arg2;
+		  st(0) = arg1;
+
+		  // Since internal Octave functions are not
+		  // compatible, turning all warnings into errors
+		  // should leave the state of
+		  // Octave:matlab-incompatible alone.
+
+		  if (arg1 == "error"
+		      && warning_options.contains ("identifier"))
+		    {
+		      Cell tid = warning_options.contents ("identifier");
+		      Cell tst = warning_options.contents ("state");
+
+		      for (octave_idx_type i = 0; i < tid.numel (); i++)
+			{
+			  octave_value vid = tid(i);
+
+			  if (vid.is_string ()
+			      && (vid.string_value ()
+				  == "Octave:matlab-incompatible"))
+			    {
+			      id.resize (dim_vector (1, 2));
+			      st.resize (dim_vector (1, 2));
+
+			      id(1) = tid(i);
+			      st(1) = tst(i);
+
+			      break;
+			    }
+			}
+		    }
+
+		  tmp.assign ("identifier", id);
+		  tmp.assign ("state", st);
 
 		  warning_options = tmp;
 

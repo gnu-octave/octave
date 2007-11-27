@@ -175,7 +175,7 @@ octave_call_stack::unwind_pop_script (void *)
   delete f;
 }
 
-static void
+void
 recover_from_exception (void)
 {
   can_interrupt = true;

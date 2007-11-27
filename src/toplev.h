@@ -39,6 +39,8 @@ class charMatrix;
 extern void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
+extern void recover_from_exception (void);
+
 extern int main_loop (void);
 
 extern void

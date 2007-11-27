@@ -1,5 +1,13 @@
 2007-11-27  John W. Eaton  <jwe@octave.org>
 
+	* error.cc (Fwarning): If setting state "all" to "error", leave
+	Octave:matlab-incompatible warning state unchanged.
+
+	* octave.cc (execute_eval_option_code, execute_command_line_file):
+	Handle interrupts.
+	* toplev.cc (recover_from_exception): Now extern.
+	* toplev.h (recover_from_exception): Provide decl.
+
 	* pt-idx.cc (tree_index_expression::lvalue): Treat object == []
 	the same as undefined.
 

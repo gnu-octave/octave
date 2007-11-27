@@ -366,6 +366,18 @@ execute_eval_option_code (const std::string& code)
 {
   unwind_protect::begin_frame ("execute_eval_option_code");
 
+  octave_save_signal_mask ();
+
+  can_interrupt = true;
+
+  octave_signal_hook = octave_signal_handler;
+  octave_interrupt_hook = unwind_protect::run_all;
+  octave_bad_alloc_hook = unwind_protect::run_all;
+
+  octave_catch_interrupts ();
+
+  octave_initialized = true;
+
   unwind_protect_bool (interactive);
 
   interactive = false;
@@ -375,6 +387,11 @@ execute_eval_option_code (const std::string& code)
   try
     {
       eval_string (code, false, parse_status, 0);
+    }
+  catch (octave_interrupt_exception)
+    {
+      recover_from_exception ();
+      octave_stdout << "\n";
     }
   catch (std::bad_alloc)
     {
@@ -391,6 +408,18 @@ static void
 execute_command_line_file (const std::string& fname)
 {
   unwind_protect::begin_frame ("execute_command_line_file");
+
+  octave_save_signal_mask ();
+
+  can_interrupt = true;
+
+  octave_signal_hook = octave_signal_handler;
+  octave_interrupt_hook = unwind_protect::run_all;
+  octave_bad_alloc_hook = unwind_protect::run_all;
+
+  octave_catch_interrupts ();
+
+  octave_initialized = true;
 
   unwind_protect_bool (interactive);
   unwind_protect_bool (reading_script_file);
@@ -421,6 +450,11 @@ execute_command_line_file (const std::string& fname)
   try
     {
       parse_and_execute (fname, false, "octave");
+    }
+  catch (octave_interrupt_exception)
+    {
+      recover_from_exception ();
+      octave_stdout << "\n";
     }
   catch (std::bad_alloc)
     {

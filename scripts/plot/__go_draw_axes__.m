@@ -939,18 +939,18 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	      ## Ensure faces aren't drawn
 	      fprintf (plot_stream, "unset pm3d;\n");
             elseif (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
-              fprintf (plot_stream, "set pm3d at s %s %s;\n", 
+              fprintf (plot_stream, "set pm3d at s %s %s corners2color c3;\n", 
 		       interp_str, dord);
             else
               if (strncmp (obj.edgecolor, "none", 4))
-                fprintf (plot_stream, "set pm3d at s %s ;\n", 
+                fprintf (plot_stream, "set pm3d at s %s corners2color c3;\n", 
 			 interp_str, dord);
               else
                 edgecol = obj.edgecolor;
                 if (ischar (obj.edgecolor))
                   edgecol = [0,0,0];
                 endif
-                fprintf (plot_stream, "set pm3d at s hidden3d %d %s %s;\n", 
+                fprintf (plot_stream, "set pm3d at s hidden3d %d %s %s corners2color c3;\n", 
 			 data_idx, interp_str, dord);
 
 		if (have_newer_gnuplot)

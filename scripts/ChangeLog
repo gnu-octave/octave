@@ -1,3 +1,8 @@
+2007-11-27  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/__go_draw_axes__.m: Set quadrilateral color according to
+	z-value of vertex 'c3'.
+
 2007-11-27  John W. Eaton  <jwe@octave.org>
 
 	* image/image.m: Allow nargin == 0 case to work again.

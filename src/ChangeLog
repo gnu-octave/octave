@@ -1,5 +1,7 @@
 2007-11-26  John W. Eaton  <jwe@octave.org>
 
+	* oct-stream.cc (DO_DOUBLE_CONV): Always use long.
+
 	* oct-stream.cc (do_write): Call float_value and double_value on
 	octave_int<T> objects instead of relying on conversion operators.
 

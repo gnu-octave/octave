@@ -2491,39 +2491,22 @@ do_printf_conv (std::ostream&, const char*, int, int, int, const char*,
 #define DO_DOUBLE_CONV(TQUAL) \
   do \
     { \
-      if (elt->modifier == 'l') \
+      if (val > std::numeric_limits<TQUAL long>::max () \
+	  || val < std::numeric_limits<TQUAL long>::min ()) \
 	{ \
-	  if (val > std::numeric_limits<TQUAL long>::max () \
-	      || val < std::numeric_limits<TQUAL long>::min ()) \
-	    { \
-	      std::string tfmt = fmt; \
+	  std::string tfmt = fmt; \
  \
-	      tfmt.replace (tfmt.rfind (elt->type), 1, ".f"); \
-	      tfmt.replace (tfmt.rfind (elt->modifier), 1, ""); \
+	  tfmt.replace (tfmt.rfind (elt->type), 1, ".f"); \
  \
-	      retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, \
-					val, who); \
-	    } \
-	  else \
-	    retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, \
-				      static_cast<TQUAL long> (val), who); \
+	  if (elt->modifier == 'l') \
+	    tfmt.replace (tfmt.rfind (elt->modifier), 1, ""); \
+ \
+	  retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, \
+				    val, who); \
 	} \
       else \
-	{ \
-	  if (val > std::numeric_limits<TQUAL int>::max () \
-	      || val < std::numeric_limits<TQUAL int>::min ()) \
-	    { \
-	      std::string tfmt = fmt; \
- \
-	      tfmt.replace (tfmt.rfind (elt->type), 1, ".f"); \
- \
-	      retval += do_printf_conv (os, tfmt.c_str (), nsa, sa_1, sa_2, \
-					val, who); \
-	    } \
-	  else \
-	    retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, \
-				      static_cast<TQUAL int> (val), who); \
-	} \
+	retval += do_printf_conv (os, fmt, nsa, sa_1, sa_2, \
+				  static_cast<TQUAL long> (val), who); \
     } \
   while (0)
 
@@ -2635,7 +2618,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			  switch (type)
 			    {
 			    case 'd': case 'i': case 'c':
-			      DO_DOUBLE_CONV ( );
+			      DO_DOUBLE_CONV ();
 			      break;
 
 			    case 'o': case 'x': case 'X': case 'u':

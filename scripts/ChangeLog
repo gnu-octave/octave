@@ -1,3 +1,7 @@
+2007-11-27  John W. Eaton  <jwe@octave.org>
+
+	* image/image.m: Allow nargin == 0 case to work again.
+
 2007-11-27  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_figure__.m: Force a multiplot mode with a

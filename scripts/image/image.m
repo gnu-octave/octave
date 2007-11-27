@@ -41,7 +41,9 @@
 
 function retval = image (varargin)
 
-  if (nargin < 2)
+  if (nargin == 0)
+    __image__ (gca ());
+  elseif (nargin == 1)
     print_usage ();
   elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
     h = varargin {1};

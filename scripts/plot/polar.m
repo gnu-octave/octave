@@ -30,34 +30,39 @@
 
 function retval = polar (varargin)
 
-  newplot ();
+  [h, varargin] = __plt_get_axis_arg__ ("loglogerr", varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    newplot ();
 
-  ## [h, varargin] = __plt_get_axis_arg__ ("semilogx", varargin{:});
-  h = gca ();
+    nargs = numel (varargin);
 
-  nargs = numel (varargin);
-
-  if (nargs == 3)
-    if (! ischar (varargin{3}))
-      error ("polar: third argument must be a string");
-    endif
-    tmp = __plr2__ (h, varargin{:});
-  elseif (nargin == 2)
-    if (ischar (varargin{2}))
-      tmp = __plr1__ (h, varargin{:});
-    else
+    if (nargs == 3)
+      if (! ischar (varargin{3}))
+	error ("polar: third argument must be a string");
+      endif
+      tmp = __plr2__ (h, varargin{:});
+    elseif (nargin == 2)
+      if (ischar (varargin{2}))
+	tmp = __plr1__ (h, varargin{:});
+      else
+	fmt = "";
+	tmp = __plr2__ (h, varargin{:}, fmt);
+      endif
+    elseif (nargin == 1)
       fmt = "";
-      tmp = __plr2__ (h, varargin{:}, fmt);
+      tmp = __plr1__ (h, varargin{:}, fmt);
+    else
+      print_usage ();
     endif
-  elseif (nargin == 1)
-    fmt = "";
-    tmp = __plr1__ (h, varargin{:}, fmt);
-  else
-    print_usage ();
-  endif
 
-  if (nargout > 0)
-    retval = tmp;
-  endif
+    if (nargout > 0)
+      retval = tmp;
+    endif
+
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
 endfunction

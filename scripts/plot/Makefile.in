@@ -103,6 +103,7 @@ SOURCES = \
   mesh.m \
   meshc.m \
   meshgrid.m \
+  meshz.m \
   ndgrid.m \
   newplot.m \
   orient.m \

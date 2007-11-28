@@ -41,19 +41,45 @@
 
 function h = surface (varargin)
 
-  ax = gca ();
+  if (isscalar (varargin{1}) && ishandle (varargin{1}))
+    h = varargin {1};
+    if (! strcmp (get (h, "type"), "axes"))
+      error ("surface: expecting first argument to be an axes object");
+    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      [tmp, bad_usage] = __surface__ (h, varargin{2:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
+  else
+    [tmp, bad_usage] = __surface__ (gca (), varargin{:});
+  endif
 
-  firststring = nargin + 1;
-  for i = 1 : nargin
-    if (ischar (varargin {i}))
-      firststring = i;
+  if (bad_usage)
+    print_usage ();
+  endif
+
+  if (nargout > 0)
+    h = tmp;
+  endif
+endfunction
+
+function [h, bad_usage] = __surface__ (ax, varargin)
+
+  bad_usage = false;
+  h = 0;
+  firststring = nargin;
+  for i = 2 : nargin
+    if (ischar (varargin {i - 1}))
+      firststring = i - 1;
       break;
     endif
   endfor
 
-
   if (firststring > 5)
-    print_usage ();
+    bad_usage = true;
   elseif (firststring == 5)
     x = varargin{1};
     y = varargin{2};
@@ -117,23 +143,21 @@ function h = surface (varargin)
       error ("surface: argument must be a matrix");
     endif
   else
-    print_usage ();
+    bad_usage = true;
   endif
 
-  ## Make a default surface object.
-  tmp = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c);
-  set (tmp, "facecolor","flat");
-  if (firststring <= nargin)
-    set (tmp, varargin {firststring:end});
-  endif
+  if (! bad_usage)
+    ## Make a default surface object.
+    h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c);
+    set (h, "facecolor","flat");
+    if (firststring < nargin)
+      set (h, varargin {firststring:end});
+     endif
 
-  if (! ishold ())
-    set (ax, "view", [0, 90], "box", "off", "xgrid", "on",
-	 "ygrid", "on", "zgrid", "on");
-  endif
-
-  if (nargout > 0)
-    h = tmp;
-  endif
+     if (! ishold ())
+       set (ax, "view", [0, 90], "box", "off", "xgrid", "on",
+	    "ygrid", "on", "zgrid", "on");
+     endif
+   endif
 
 endfunction

@@ -29,17 +29,22 @@
 
 function retval = semilogx (varargin)
 
-  newplot ();
+  [h, varargin] = __plt_get_axis_arg__ ("semilogx", varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    newplot ();
 
-  ## [h, varargin] = __plt_get_axis_arg__ ("semilogx", varargin{:});
-  h = gca ();
+    set (h, "xscale", "log");
 
-  set (h, "xscale", "log");
+    tmp = __plt__ ("semilogx", h, varargin{:});
 
-  tmp = __plt__ ("semilogx", h, varargin{:});
+    if (nargout > 0)
+      retval = tmp;
+    endif
 
-  if (nargout > 0)
-    retval = tmp;
-  endif
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
 endfunction

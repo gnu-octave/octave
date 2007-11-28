@@ -110,11 +110,14 @@
 
 function errorbar (varargin)
 
-  newplot ();
-
-  ## [h, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
-  h = gca ();
-
-  __errcomm__ ("errorbar", h, varargin{:});
+  [h, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    newplot ();
+    __errcomm__ ("errorbar", h, varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
 endfunction

@@ -40,17 +40,22 @@
 
 function retval = loglogerr (varargin)
 
-  newplot ();
+  [h, varargin] = __plt_get_axis_arg__ ("loglogerr", varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    newplot ();
 
-  ## [h, varargin] = __plt_get_axis_arg__ ("loglog", varargin{:});
-  h = gca ();
+    set (h, "xscale", "log", "yscale", "log");
 
-  set (h, "xscale", "log", "yscale", "log");
+    tmp = __errcomm__ ("loglogerr", h, varargin{:});
 
-  tmp = __errcomm__ ("loglogerr", h, varargin{:});
+    if (nargout > 0)
+      retval = tmp;
+    endif
 
-  if (nargout > 0)
-    retval = tmp;
-  endif
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
 endfunction

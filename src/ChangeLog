@@ -1,5 +1,8 @@
 2007-11-28  John W. Eaton  <jwe@octave.org>
 
+	* mkbuiltins: Emit #include "builtins.h" for the builtins.cc file.
+	From Christoph Mayer <Christoph.Mayer@dlr.de>.
+
 	* TEMPLATE-INST/Array-tc.cc (resize_fill_value<octave_value>):
 	Delete.
 

@@ -43,6 +43,7 @@ cat << \EOF
 #include "defun.h"
 #include "oct-obj.h"
 #include "variables.h"
+#include "builtins.h"
 
 #if defined (quad)
 #undef quad

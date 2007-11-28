@@ -1,4 +1,15 @@
+2007-11-28  John W. Eaton  <jwe@octave.org>
+
+	* TEMPLATE-INST/Array-tc.cc (resize_fill_value<octave_value>):
+	Delete.
+
+	* Cell.cc (Cell::Cell (const dim_vector&, const string_vector&, bool)):
+	Initialize undefined values to resize_fill_value ().
+
 2007-11-27  John W. Eaton  <jwe@octave.org>
+
+	* TEMPLATE-INST/Array-tc.cc (resize_fill_value<octave_value>):
+	Tag inline.  From Moritz Borgmann <octave@moriborg.de>.
 
 	* pt-bp.cc (tree_breakpoint::visit_decl_command): Also check line
 	number of cmd.

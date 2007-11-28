@@ -40,14 +40,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-obj.h"
 
-template<> OCTINTERP_API
-octave_value
-resize_fill_value<octave_value> (const octave_value&)
-{
-  static octave_value retval = octave_value (Matrix ());
-  return retval;
-}
-
 template class OCTINTERP_API Array<octave_value>;
 
 INSTANTIATE_ARRAY_ASSIGN (octave_value, octave_value, OCTINTERP_API);

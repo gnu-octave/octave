@@ -57,8 +57,9 @@ Cell::Cell (const string_vector& sv, bool trim)
 
 // Set size to DV, filling with [].  Then fill with as many elements of
 // SV as possible.
+
 Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
-  : ArrayN<octave_value> (dv)
+  : ArrayN<octave_value> (dv, resize_fill_value ())
 {
   octave_idx_type n = sv.length ();
 

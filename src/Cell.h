@@ -50,7 +50,8 @@ public:
 	elem (i) = ovl (i);
     }
 
-  Cell (octave_idx_type n, octave_idx_type m, const octave_value& val = resize_fill_value ())
+  Cell (octave_idx_type n, octave_idx_type m,
+	const octave_value& val = resize_fill_value ())
     : ArrayN<octave_value> (dim_vector (n, m), val) { }
 
   Cell (const dim_vector& dv, const octave_value& val = resize_fill_value ())

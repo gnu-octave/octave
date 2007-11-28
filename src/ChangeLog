@@ -1,5 +1,9 @@
 2007-11-28  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (class data_property): New class.
+	(class line, class image, class patch, class surface): Use it
+	instead of octave_value for data properties.
+
 	* mkbuiltins: Emit #include "builtins.h" for the builtins.cc file.
 	From Christoph Mayer <Christoph.Mayer@dlr.de>.
 

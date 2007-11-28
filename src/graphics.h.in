@@ -82,8 +82,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-class
-radio_values
+class radio_values
 {
 public:
   radio_values (const std::string& opt_string = std::string ());
@@ -128,8 +127,7 @@ private:
   std::set<caseless_str> possible_vals;
 };
 
-class
-radio_property
+class radio_property
 {
 public:
   radio_property (const radio_values& v)
@@ -187,8 +185,7 @@ private:
   std::string current_val;
 };
 
-class
-color_values
+class color_values
 {
 public:
   color_values (double r = 0, double g = 0, double b = 1)
@@ -247,8 +244,7 @@ private:
 };
 
 
-class 
-color_property
+class color_property
 {
 public:
   color_property (const color_values& c = color_values (),
@@ -346,8 +342,7 @@ private:
   std::string current_val;
 };
 
-class 
-colormap_property
+class colormap_property
 {
 public:
   colormap_property (const Matrix& m = Matrix ())
@@ -413,6 +408,93 @@ private:
   Matrix cmap;
 };
 
+class data_property
+{
+public:
+  data_property (const Matrix& m = Matrix ())
+    : data (m), lo (min_val (m)), hi (max_val (m)) { }
+
+  data_property (const octave_value& val)
+  {
+    data = val.matrix_value ();
+
+    lo = min_val (data);
+    hi = max_val (data);
+  }
+
+  data_property& operator = (const data_property& a)
+  {
+    if (&a != this)
+      {
+	data = a.data;
+	lo = a.lo;
+	hi = a.hi;
+      }
+
+    return *this;
+  }
+
+  data_property& operator = (const octave_value& val) 
+  {
+    data = val.matrix_value ();
+
+    lo = min_val (data);
+    hi = max_val (data);
+
+    return *this;
+  }
+
+  operator octave_value (void) const { return data; }
+
+private:
+  Matrix data;
+  double lo;
+  double hi;
+
+  static double min_val (const Matrix& m)
+  {
+    double retval = octave_NaN;
+
+    octave_idx_type nel = m.numel ();
+
+    if (nel > 0)
+      {
+	retval = octave_Inf;
+
+	for (octave_idx_type i = 0; i < nel; i++)
+	  {
+	    double d = m(i);
+
+	    if (! isnan (d) && m(i) < retval)
+	      retval = d;
+	  }
+      }
+
+    return retval;
+  }
+
+  static double max_val (const Matrix& m)
+  {
+    double retval = octave_NaN;
+
+    octave_idx_type nel = m.numel ();
+
+    if (nel > 0)
+      {
+	retval = -octave_Inf;
+
+	for (octave_idx_type i = 0; i < nel; i++)
+	  {
+	    double d = m(i);
+
+	    if (! isnan (d) && m(i) > retval)
+	      retval = d;
+	  }
+      }
+
+    return retval;
+  }
+};
 
 class property_list
 {
@@ -1328,13 +1410,13 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      octave_value xdata
-      octave_value ydata
-      octave_value zdata
-      octave_value ldata
-      octave_value udata
-      octave_value xldata
-      octave_value xudata
+      data_property xdata
+      data_property ydata
+      data_property zdata
+      data_property ldata
+      data_property udata
+      data_property xldata
+      data_property xudata
       color_property color
       octave_value linestyle
       octave_value linewidth
@@ -1533,9 +1615,9 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      octave_value cdata
-      octave_value xdata
-      octave_value ydata
+      data_property xdata
+      data_property ydata
+      data_property cdata
     END_PROPERTIES
 
     static std::string go_name;
@@ -1625,10 +1707,10 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      octave_value cdata
-      octave_value xdata
-      octave_value ydata
-      octave_value zdata
+      data_property xdata
+      data_property ydata
+      data_property zdata
+      data_property cdata
       octave_value faces
       octave_value vertices
       color_property facecolor a
@@ -1731,10 +1813,10 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      octave_value xdata
-      octave_value ydata
-      octave_value zdata
-      octave_value cdata
+      data_property xdata
+      data_property ydata
+      data_property zdata
+      data_property cdata
       color_property facecolor a
       octave_value facealpha
       color_property edgecolor a

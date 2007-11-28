@@ -1856,24 +1856,24 @@ function unload_packages (files, handle_deps, local_list, global_list)
     dirs = {};
     desc = {};
     for i = 1:length (files)
-      idx = strcmp (pnames, files {i});
+      idx = strcmp (pnames, files{i});
       if (! any (idx))
 	error ("package %s is not installed", files{i});
       endif
-	dirs {end + 1} = pdirs {idx};
-        desc {end + 1} = installed_pkgs_lst {idx};
+	dirs{end+1} = pdirs{idx};
+        desc{end+1} = installed_pkgs_lst{idx};
       endfor
   endif
 
   ## Check for architecture dependent directories
   archdirs = {};
   for i = 1:length (dirs)
-    tmpdir = getarchdir (desc {i});
+    tmpdir = getarchdir (desc{i});
     if (exist (tmpdir, "dir"))
-      archdirs{end + 1} = dirs{i};
-      archdirs{end + 1} = tmpdir;
+      archdirs{end+1} = dirs{i};
+      archdirs{end+1} = tmpdir;
     else
-      archdirs{end+ 1} = dirs {i};
+      archdirs{end+1} = dirs{i};
     endif
   endfor
 
@@ -1997,7 +1997,7 @@ function newdesc = save_order (desc)
       for k = 1 : length (deps)
         for j = 1 : length (desc)
           if (strcmp (desc{j}.name, deps{k}.package))
-            tmpdesc {end + 1} = desc{j};
+            tmpdesc{end+1} = desc{j};
 	    break;
           endif
         endfor
@@ -2005,7 +2005,7 @@ function newdesc = save_order (desc)
       if (! isempty (tmpdesc))					     
         newdesc = {newdesc{:}, save_order(tmpdesc){:}, desc{i}};
       else
-        newdesc {end + 1} = desc{i};
+        newdesc{end+1} = desc{i};
       endif
     endif
   endfor
@@ -2028,11 +2028,11 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
   execpath = EXEC_PATH ();
   for i = idx;
     ndir = installed_pkgs_lst{i}.dir;
-    dirs {end + 1} = ndir;
+    dirs{end+1} = ndir;
     if (exist (fullfile (dirs{end}, "bin"), "dir"))
       execpath = strcat (fullfile(dirs{end}, "bin"), ":", execpath);
     endif
-    tmpdir = getarchdir (installed_pkgs_lst {i});
+    tmpdir = getarchdir (installed_pkgs_lst{i});
     if (exist (tmpdir, "dir"))
       dirs{end + 1} = tmpdir;
       if (exist (fullfile (dirs{end}, "bin"), "dir"))
@@ -2087,7 +2087,7 @@ function dep = is_architecture_dependent (nm)
 
   dep = false;
   for i = 1 : length (archdepsuffix)
-    ext = archdepsuffix {i};
+    ext = archdepsuffix{i};
     if (ext(end) == "*")
       isglob = true;
       ext(end) = [];
@@ -2096,7 +2096,7 @@ function dep = is_architecture_dependent (nm)
     endif
     pos = findstr (nm, ext);
     if (pos)
-      if (! isglob &&  (length(nm) - pos(end) != length(ext) - 1))
+      if (! isglob && (length(nm) - pos(end) != length(ext) - 1))
 	continue;
       endif
       dep = true;

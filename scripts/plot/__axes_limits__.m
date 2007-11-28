@@ -23,7 +23,7 @@ function retval = __axes_limits__ (fcn, varargin)
   fcnmode = sprintf("%smode", fcn);
 
   if (nargin > 1 && isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     off = 1;
     if (! strcmp (get (h, "type"), "axes"))
       error ("%s: expecting first argument to be an axes object", fcn);
@@ -36,7 +36,7 @@ function retval = __axes_limits__ (fcn, varargin)
   if (nargin == off + 1)
     retval = get (h, fcn);
   else
-    arg = varargin {off + 1};
+    arg = varargin{off + 1};
 
     if (ischar (arg))
       arg = tolower (arg);

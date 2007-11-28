@@ -30,7 +30,7 @@
 function retval = meshz (varargin)
 
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     if (! strcmp (get (h, "type"), "axes"))
       error ("meshz: expecting first argument to be an axes object");
     endif
@@ -55,7 +55,7 @@ function h = __meshz__ (varargin)
 
   ioff = nargin + 1;
   for i = 1 : nargin
-    if (ischar (varargin {i}))
+    if (ischar (varargin{i}))
       ioff = i;
       break;
     endif
@@ -67,14 +67,14 @@ function h = __meshz__ (varargin)
   endif
 
   if (ioff == 2)
-    z = varargin {1};
+    z = varargin{1};
     [m, n] = size (z);
     x = 1 : n;
     y = (1 : m).';
   else
-    x = varargin {1};
-    y = varargin {2};
-    z = varargin {3};
+    x = varargin{1};
+    y = varargin{2};
+    z = varargin{3};
   endif
 
 

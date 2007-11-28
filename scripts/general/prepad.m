@@ -83,10 +83,10 @@ function y = prepad (x, l, c, dim)
   if (d >= l)
     idx = cell ();
     for i = 1:nd
-      idx {i} = 1:sz(i);
+      idx{i} = 1:sz(i);
     endfor
-    idx {dim} = d-l+1:d;
-    y = x (idx {:});
+    idx{dim} = d-l+1:d;
+    y = x(idx{:});
   else
     sz (dim) = l - d;
     y = cat (dim, c * ones (sz), x);

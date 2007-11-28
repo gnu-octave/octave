@@ -48,7 +48,7 @@ function [h, fail] = __patch__ (p, varargin)
 
     if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
 	&& isequal (size (varargin{3}), size (x)))
-      z = varargin {3};
+      z = varargin{3};
       have_z = true;
       iarg++;
     endif

@@ -43,13 +43,13 @@ function retval = strvcat (varargin)
   nr = zeros (nargin, 1);
   nc = zeros (nargin, 1);
   K = 0; 
-  nd = ndims (varargin {1});
-  sz = size (varargin {1});
-  for k = 1 : nargin
+  nd = ndims (varargin{1});
+  sz = size (varargin{1});
+  for k = 1:nargin
     s = varargin{k};
     if (iscell (s))
       for k1 = 1:length(s)
-	K = K+1;
+	K++;
 	nr(K) = size (s{k1}, 1);
 	nc(K) = size (s{k1}, 2);
 	if (ndims (s{k1}) != nd)
@@ -61,7 +61,7 @@ function retval = strvcat (varargin)
 	endif
       endfor
     else
-      K = K + 1;
+      K++;
       nr(K) = size (s, 1);
       nc(K) = size (s, 2);
       if (ndims (s) != nd)
@@ -79,13 +79,13 @@ function retval = strvcat (varargin)
   retval = char (ones (sz) * toascii (" "));
 
   idx = cell(nd,1);
-  for k = 3 : nd;
-    idx {k} = sz {k};
+  for k = 3:nd
+    idx{k} = sz{k};
   endfor
 
   K = 0;
   row_offset = 0;
-  for k = 1 : nargin
+  for k = 1:nargin
     s = varargin{k};
     if (iscell (s))
       for k1 = 1:length(s)
@@ -96,9 +96,9 @@ function retval = strvcat (varargin)
 	row_offset = row_offset + size (s{k1}, 1);
       endfor
     else
-      K = K + 1;
+      K++;
       if (nc(K) > 0)
-    	retval ((row_offset + 1) : (row_offset + nr(K)), 1:nc(K)) = char(s);
+    	retval ((row_offset+1):(row_offset+nr(K)), 1:nc(K)) = char (s);
       endif
       row_offset = row_offset + nr(K);
     endif

@@ -52,7 +52,7 @@ function t = delaunayn (x, varargin)
     print_usage ();
   endif
 
-  t = __delaunayn__ (x, varargin {:});
+  t = __delaunayn__ (x, varargin{:});
 
   ## Try to remove the zero volume simplices. The volume of the i-th simplex is
   ## given by abs(det(x(t(i,1:end-1),:)-x(t(i,2:end),:)))/prod(1:n) 

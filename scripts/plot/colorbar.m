@@ -67,7 +67,7 @@ function colorbar (varargin)
 
   pos = "eastoutside";
   for i = 1 : length (varargin)
-    arg = varargin {i};
+    arg = varargin{i};
     if (length(arg) < 1)
       pos = "eastoutside";
     elseif (ischar (arg))

@@ -68,7 +68,7 @@ function varargout = structfun (fun, s, varargin);
   endif
 
   varargout = cell (max ([nargout, 1]), 1);
-  [varargout{:}] = cellfun (fun, struct2cell (s), varargin {:});
+  [varargout{:}] = cellfun (fun, struct2cell (s), varargin{:});
 
   if (iscell (varargout{1}))
     [varargout{:}] = cell2struct (varargout{1}, fieldnames(s), 1);

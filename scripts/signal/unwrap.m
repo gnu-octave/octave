@@ -46,7 +46,7 @@ function retval = unwrap (a, tol, dim)
   else
     ## Find the first non-singleton dimension
     dim  = 1;
-    while (dim < nd + 1 && sz (dim) == 1)
+    while (dim < nd + 1 && sz(dim) == 1)
       dim = dim + 1;
     endwhile
     if (dim > nd)
@@ -62,7 +62,7 @@ function retval = unwrap (a, tol, dim)
   tol = abs (tol);
   
   rng = 2*pi;
-  m = sz (dim);
+  m = sz(dim);
 
   ## Handle case where we are trying to unwrap a scalar, or only have
   ## one sample in the specified dimension.
@@ -75,10 +75,10 @@ function retval = unwrap (a, tol, dim)
   ## as large values, and the sign will show direction.
   idx = cell ();
   for i = 1:nd
-    idx {i} = 1:sz(i);
+    idx{i} = 1:sz(i);
   endfor
-  idx {dim} = [1,1:m-1];
-  d = a (idx {:}) - a;
+  idx{dim} = [1,1:m-1];
+  d = a(idx{:}) - a;
 
   ## Find only the peaks, and multiply them by the range so that there
   ## are kronecker deltas at each wrap point multiplied by the range

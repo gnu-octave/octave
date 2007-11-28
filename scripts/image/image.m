@@ -46,7 +46,7 @@ function retval = image (varargin)
   elseif (nargin == 1)
     print_usage ();
   elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     if (! strcmp (get (h, "type"), "axes"))
       error ("image: expecting first argument to be an axes object");
     endif

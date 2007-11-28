@@ -109,7 +109,7 @@ function h = findobj (varargin)
     regularexpression(np) = 0;
     property(np) = 0;
     logicaloperator{np} = 'and';
-    if (ischar (args {na}))
+    if (ischar (args{na}))
       if (strcmpi(args{na}, '-regexp'))
 	if (na + 2 <= numel (args))
 	  regularexpression(np) = 1;

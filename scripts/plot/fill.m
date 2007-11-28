@@ -30,7 +30,7 @@ function h = fill (varargin)
   htmp = [];
 
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     if (! strcmp (get (h, "type"), "axes"))
       error ("fill: expecting first argument to be an axes object");
     endif
@@ -82,25 +82,25 @@ function iargs = __find_patches__ (varargin)
   i = 1;
   while (i < nargin)
     iargs (end + 1) = i;
-    if (ischar (varargin {i}) && (strcmp (tolower (varargin{i}), "faces") || 
+    if (ischar (varargin{i}) && (strcmp (tolower (varargin{i}), "faces") || 
 				  strcmp (tolower (varargin{i}), "vertices")))
       i += 4;
-    elseif (isnumeric (varargin {i}))
+    elseif (isnumeric (varargin{i}))
       i += 2;
     endif
 
     if (i <= nargin)
       while (true);
-	if (ischar (varargin {i}) && 
+	if (ischar (varargin{i}) && 
 	    (strcmp (tolower (varargin{i}), "faces") || 
 	     strcmp (tolower (varargin{i}), "vertices")))
 	  break;
-	elseif (isnumeric (varargin {i}))
+	elseif (isnumeric (varargin{i}))
 	  ## Assume its the colorspec
 	  i++;
 	  break;
-	elseif (ischar (varargin {i}))
-	  colspec = tolower (varargin {i});
+	elseif (ischar (varargin{i}))
+	  colspec = tolower (varargin{i});
 	  collen = length (colspec);
 
 	  if (strncmp (colspec, "blue", collen) ||

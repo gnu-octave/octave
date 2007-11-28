@@ -85,7 +85,7 @@ function retval = run_count (x, n, dim)
     retval(idx{:}) = sum (tmp == k);
   endfor
   idx{1} = n;
-  retval (idx {:}) = sum (tmp >= n);
+  retval (idx{:}) = sum (tmp >= n);
 
   if (dim != 1)
     retval = ipermute (retval, perm);

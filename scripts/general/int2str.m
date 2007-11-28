@@ -37,7 +37,7 @@ function retval = int2str (x)
     if (nc > 1)
       idx = cell ();
       for i = 1:nd
-	idx {i} = 1:sz(i);
+	idx{i} = 1:sz(i);
       endfor
       idx(2) = 1;
       ifmt = get_fmt (x(idx{:}), 0);

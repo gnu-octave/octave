@@ -28,7 +28,7 @@
 function h = zlabel (varargin)
 
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    ax = varargin {1};
+    ax = varargin{1};
     if (! strcmp (get (ax, "type"), "axes"))
       error ("zlabel: expecting first argument to be an axes object");
     endif

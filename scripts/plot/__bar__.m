@@ -160,7 +160,7 @@ function varargout = __bar2__ (h, vertical, func, varargin)
   if (nargout < 2)
     newplot ();
     tmp = __bars__ (h, vertical, x, y, xb, yb, width, group,
-		    have_line_spec, newargs {:});
+		    have_line_spec, newargs{:});
     if (nargout == 1)
       varargout{1} = tmp;
     endif

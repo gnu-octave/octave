@@ -70,10 +70,10 @@ function y = postpad (x, l, c, dim)
   if (d >= l)
     idx = cell ();
     for i = 1:nd
-      idx {i} = 1:sz(i);
+      idx{i} = 1:sz(i);
     endfor
-    idx {dim} = 1:l;
-    y = x (idx {:});
+    idx{dim} = 1:l;
+    y = x(idx{:});
   else
     sz (dim) = l - d;
     y = cat (dim, x, c * ones (sz));

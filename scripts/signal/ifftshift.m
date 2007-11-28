@@ -39,7 +39,7 @@ function retval = ifftshift (V, dim)
   endif
 
   if (nargin == 2)
-    if (!isscalar (dim))
+    if (! isscalar (dim))
       error ("ifftshift: dimension must be an integer scalar");
     endif
     nd = ndims (V);
@@ -47,9 +47,9 @@ function retval = ifftshift (V, dim)
     sz2 = floor (sz(dim) / 2);
     idx = cell ();
     for i=1:nd
-      idx {i} = 1:sz(i);
+      idx{i} = 1:sz(i);
     endfor
-    idx {dim} = [sz2+1:sz(dim), 1:sz2];
+    idx{dim} = [sz2+1:sz(dim), 1:sz2];
     retval = V (idx{:});
   else
     if (isvector (V))

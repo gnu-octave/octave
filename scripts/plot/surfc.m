@@ -42,9 +42,9 @@ function h = surfc (varargin)
   endif
 
   if (nargin == 1)
-    z = varargin {1};
+    z = varargin{1};
   else
-    z = varargin {3};
+    z = varargin{3};
   endif
   zmin = 2 * (min(z(:)) - max(z(:)));
 

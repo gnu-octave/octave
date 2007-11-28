@@ -69,7 +69,7 @@ function [nn, xx] = hist (y, varargin)
     x = x * (max_val - min_val) + ones(size(x)) * min_val;
   else
     ## nargin is either 2 or 3
-    x = varargin {iarg++};
+    x = varargin{iarg++};
     if (isscalar (x))
       n = x;
       if (n <= 0)

@@ -35,9 +35,9 @@ function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spe
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif
 	tmp = [tmp; patch(xb(:,:,i), yb(:,:,i), "FaceColor", "flat", 
-			  "cdata", lev, varargin {:})];
+			  "cdata", lev, varargin{:})];
       else
-	tmp = [tmp; patch(xb(:,:,i), yb(:,:,i), varargin {:})];
+	tmp = [tmp; patch(xb(:,:,i), yb(:,:,i), varargin{:})];
       endif
     endfor
   else
@@ -50,9 +50,9 @@ function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spe
 	  lev = (i - 1) * (clim(2) - clim(1)) / (ycols - 1) - clim(1);
 	endif
 	tmp = [tmp; patch(yb(:,:,i), xb(:,:,i), "FaceColor", "flat", 
-			  "cdata", lev, varargin {:})];
+			  "cdata", lev, varargin{:})];
       else
-	tmp = [tmp; patch(yb(:,:,i), xb(:,:,i), varargin {:})];
+	tmp = [tmp; patch(yb(:,:,i), xb(:,:,i), varargin{:})];
       endif
     endfor
   endif

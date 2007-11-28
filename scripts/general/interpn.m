@@ -71,22 +71,22 @@ function vi = interpn (varargin)
     print_usage ();
   endif
 
-  if (ischar (varargin {end}))
-    method = varargin {end};
+  if (ischar (varargin{end}))
+    method = varargin{end};
     nargs = nargs - 1;
-  elseif (ischar (varargin {end - 1}))
-    if (! isnumeric (varargin {end}) || ! isscalar (varargin {end}))
+  elseif (ischar (varargin{end - 1}))
+    if (! isnumeric (varargin{end}) || ! isscalar (varargin{end}))
       error ("extrapal is expected to be a numeric scalar");
     endif
-    method = varargin {end - 1};
+    method = varargin{end - 1};
     nargs = nargs - 2;
   endif
 
   if (nargs < 3)
-    v = varargin {1};
+    v = varargin{1};
     m = 1;
     if (nargs == 2)
-      m = varargin {2};
+      m = varargin{2};
       if (! isnumeric (m) || ! isscalar (m) || floor (m) != m)
 	error ("m is expected to be a integer scalar");
       endif
@@ -99,8 +99,8 @@ function vi = interpn (varargin)
       x{i} = 1 : sz(i);
       y{i} = 1 : (1 / (2 ^ m)) : sz(i);
     endfor
-  elseif (! isvector (varargin {1}) && nargs == (ndims (varargin {1}) + 1))
-    v = varargin {1};
+  elseif (! isvector (varargin{1}) && nargs == (ndims (varargin{1}) + 1))
+    v = varargin{1};
     sz = size (v);
     nd = ndims (v);
     x = cell (1, nd);
@@ -109,9 +109,9 @@ function vi = interpn (varargin)
       x{i} = 1 : sz(i);
     endfor
   elseif (rem (nargs, 2) == 1 && nargs ==  
-	  (2 * ndims (varargin {ceil (nargs / 2)})) + 1)
+	  (2 * ndims (varargin{ceil (nargs / 2)})) + 1)
     nv = ceil (nargs / 2);
-    v = varargin {nv};
+    v = varargin{nv};
     sz = size (v);
     nd = ndims (v);
     x = varargin (1 : (nv - 1));
@@ -159,8 +159,7 @@ function vi = interpn (varargin)
     endfor
     idx = cell (1,nd);
     for i = 1 : nd
-      idx {i} = yidx{i} + (y{i} - x{i}(yidx{i}).' > ...
-			   x{i}(yidx{i} + 1).' - y{i});
+      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i}).' > x{i}(yidx{i} + 1).' - y{i});
     endfor
     vi = v (sub2ind (sz, idx{:}));
     idx = zeros (prod(yshape),1);

@@ -44,7 +44,7 @@ function retval = center (x, varargin)
 	dim=1; 
       endif;
     else
-      dim = varargin {1};
+      dim = varargin{1};
     endif
     sz = ones (1, ndims (x));
     sz (dim) = size (x, dim);

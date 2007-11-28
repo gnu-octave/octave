@@ -82,10 +82,10 @@ function retval = num2str (x, arg)
     perm(2:2:2*nc) = perm(2:2:2*nc) + nc;
     idx = cell ();
     for i = 1:nd
-      idx {i} = 1:sz(i);
+      idx{i} = 1:sz(i);
     endfor
     idx{2} = perm;
-    x = horzcat (real(x), imag(x));
+    x = horzcat (real (x), imag (x));
     x = x(idx{:});
 
     fmt = strcat (deblank (repmat (fmt, 1, nc)), "\n");

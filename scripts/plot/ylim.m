@@ -38,7 +38,7 @@
 ## @end deftypefn
 
 function retval = ylim (varargin)
-  ret = __axes_limits__ ("ylim", varargin {:});
+  ret = __axes_limits__ ("ylim", varargin{:});
 
   if (! isempty (ret))
     retval = ret;

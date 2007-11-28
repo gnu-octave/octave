@@ -38,7 +38,7 @@
 ## @end deftypefn
 
 function retval = xlim (varargin)
-  ret = __axes_limits__ ("xlim", varargin {:});
+  ret = __axes_limits__ ("xlim", varargin{:});
 
   if (! isempty (ret))
     retval = ret;

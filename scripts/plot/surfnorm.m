@@ -57,7 +57,7 @@ function varargout = surfnorm (varargin)
     varargout = cell (0, 0);
   endif
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     if (! strcmp (get (h, "type"), "axes"))
       error ("surfnorm: expecting first argument to be an axes object");
     endif

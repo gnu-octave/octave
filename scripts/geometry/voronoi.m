@@ -136,7 +136,7 @@ function [vvx, vvy] = voronoi (varargin)
   edges = zeros (2, k);
 
   for i = 1 : ll
-    fac = c {idx(i)};
+    fac = c{idx(i)};
     lf = length (fac);
     fac = [fac, fac(1)];
     fst = fac (1 : length(fac) - 1);

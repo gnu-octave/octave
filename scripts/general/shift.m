@@ -69,16 +69,16 @@ function y = shift (x, b, dim)
 
   idx = cell ();
   for i = 1:nd
-    idx {i} = 1:sz(i);
+    idx{i} = 1:sz(i);
   endfor
   if (b >= 0)
     b = rem (b, d);
-    idx {dim} = [d-b+1:d, 1:d-b];
+    idx{dim} = [d-b+1:d, 1:d-b];
   elseif (b < 0)
     b = rem (abs (b), d);
-    idx {dim} = [b+1:d, 1:b];
+    idx{dim} = [b+1:d, 1:b];
   endif
-  y = x (idx {:});
+  y = x(idx{:});
 
 
 endfunction

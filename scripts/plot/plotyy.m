@@ -56,7 +56,7 @@
 function [Ax, H1, H2] = plotyy (varargin)
 
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    ax = varargin {1};
+    ax = varargin{1};
     if (! strcmp (get (ax, "type"), "axes"))
       error ("plotyy: expecting first argument to be an axes object");
     endif

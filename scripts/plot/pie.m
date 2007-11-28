@@ -47,7 +47,7 @@ function retval = pie (varargin)
   if (nargin < 1)
     print_usage ();
   elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     if (! strcmp (get (h, "type"), "axes"))
       error ("pie: expecting first argument to be an axes object");
     endif
@@ -140,7 +140,7 @@ function hlist = __pie__ (varargin)
     endif
 
     hlist = [hlist; patch(xoff + [0, - sind(xn)], yoff + [0, cosd(xn)], i);
-    	     text(xt, yt, labels {i}, "horizontalalignment", align)];
+    	     text(xt, yt, labels{i}, "horizontalalignment", align)];
   endfor
 
   if (len == 1)

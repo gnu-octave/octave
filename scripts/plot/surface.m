@@ -42,7 +42,7 @@
 function h = surface (varargin)
 
   if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     if (! strcmp (get (h, "type"), "axes"))
       error ("surface: expecting first argument to be an axes object");
     endif
@@ -72,7 +72,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
   h = 0;
   firststring = nargin;
   for i = 2 : nargin
-    if (ischar (varargin {i - 1}))
+    if (ischar (varargin{i - 1}))
       firststring = i - 1;
       break;
     endif
@@ -123,8 +123,8 @@ function [h, bad_usage] = __surface__ (ax, varargin)
       error ("surface: x and y must be vectors and z must be a matrix");
     endif
   elseif (firststring == 3)    
-    z = varargin {1};
-    c = varargin {2};
+    z = varargin{1};
+    c = varargin{2};
     if (ismatrix (z))
       [nr, nc] = size (z);
       x = 1:nc;
@@ -133,7 +133,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
       error ("surface: argument must be a matrix");
     endif
   elseif (firststring == 2)    
-    z = varargin {1};
+    z = varargin{1};
     c = z;
     if (ismatrix (z))
       [nr, nc] = size (z);
@@ -151,7 +151,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
     h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c);
     set (h, "facecolor","flat");
     if (firststring < nargin)
-      set (h, varargin {firststring:end});
+      set (h, varargin{firststring:end});
      endif
 
      if (! ishold ())

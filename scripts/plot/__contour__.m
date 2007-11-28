@@ -20,17 +20,17 @@
 
 function [c, h] = __contour__ (varargin)
 
-  ax = varargin {1};
-  z = varargin {2};
+  ax = varargin{1};
+  z = varargin{2};
 
   if (ischar (z))
     if (strcmp (z, "none"))
       z = NaN;
     elseif (strcmp (z, "base"))
       if (nargin == 1)
-	z = varargin {1};
+	z = varargin{1};
       else
-	z = varargin {3};
+	z = varargin{3};
       endif
       z = 2 * (min (z(:)) - max (z(:)));
     elseif (! strcmp (z, "level"))

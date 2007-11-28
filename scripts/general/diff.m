@@ -98,13 +98,13 @@ function x = diff (x, k, dim)
       n = sz (dim);
       idx1 = cell ();
       for i = 1:nd
-	idx1 {i} = 1:sz(i);
+	idx1{i} = 1:sz(i);
       endfor
       idx2 = idx1;
       for i = 1 : k;
-	idx1 {dim} = 2 : (n - i + 1);	
-	idx2 {dim} = 1 : (n - i);	
-	x = x (idx1 {:}) - x (idx2 {:});
+	idx1{dim} = 2 : (n - i + 1);	
+	idx2{dim} = 1 : (n - i);	
+	x = x(idx1{:}) - x(idx2{:});
       endfor
     endif
   else
@@ -113,17 +113,17 @@ function x = diff (x, k, dim)
     else
       idx1 = cell ();
       for i = 1:nd
-	idx1 {i} = 1:sz(i);
+	idx1{i} = 1:sz(i);
       endfor
       idx2 = idx1;
       while (k)
 	n = sz (dim);
 	for i = 1 : min (k, n - 1)
-	  idx1 {dim} = 2 : (n - i + 1);	
-	  idx2 {dim} = 1 : (n - i);	
-	  x = x (idx1 {:}) - x (idx2 {:});
+	  idx1{dim} = 2 : (n - i + 1);	
+	  idx2{dim} = 1 : (n - i);	
+	  x = x(idx1{:}) - x(idx2{:});
 	endfor
-	idx1 {dim} = idx2 {dim} = 1;
+	idx1{dim} = idx2{dim} = 1;
 	k = k - min (k, n - 1);
 	dim = dim + 1;
       endwhile

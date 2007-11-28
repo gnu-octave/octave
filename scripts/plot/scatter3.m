@@ -58,7 +58,7 @@ function retval = scatter3 (varargin)
   if (nargin < 2)
     print_usage ();
   elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin {1};
+    h = varargin{1};
     if (! strcmp (get (h, "type"), "axes"))
       error ("scatter3: expecting first argument to be an axes object");
     endif

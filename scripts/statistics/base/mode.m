@@ -86,7 +86,7 @@ function [m, f, c] = mode (x, dim)
   c = cell (sz2);
   m = zeros (sz2);
   for i = 1 : prod (sz2)
-    c {i} = xs (t2 (:, i) == f(i), i);
+    c{i} = xs (t2 (:, i) == f(i), i);
     m (i) = c{i}(1);
   endfor
 endfunction

@@ -186,7 +186,7 @@ function enhanced = init_plot_stream (plot_stream, h, term, file)
 	       enh_str, h);
 
     elseif (enhanced)
-      fprintf (plot_stream "set terminal %s %s\n", term, enh_str);
+      fprintf (plot_stream, "set terminal %s %s\n", term, enh_str);
     endif
     ## gnuplot will pick up the GNUTERM environment variable itself
     ## so no need to set the terminal type if not also setting the

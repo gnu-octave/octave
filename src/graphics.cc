@@ -759,6 +759,17 @@ base_properties::override_defaults (base_graphics_object& obj)
 }
 
 void
+base_properties::update_axis_limits (const std::string& axis_type) const
+{
+  graphics_handle h = (type == "axes") ? __myhandle__ : parent;
+
+  graphics_object obj = gh_manager::get_object (h);
+
+  if (obj.isa ("axes"))
+    obj.update_axis_limits (axis_type);
+}
+
+void
 base_properties::delete_children (void)
 {
   octave_idx_type n = children.numel ();
@@ -1778,6 +1789,11 @@ axes::get_default (const caseless_str& name) const
     }
 
   return retval;
+}
+
+void
+axes::update_axis_limits (const std::string& /* axis_type */)
+{
 }
 
 std::string axes::properties::go_name ("axes");

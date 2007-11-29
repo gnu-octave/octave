@@ -1,8 +1,17 @@
 2007-11-28  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (base_properties::update_axis_limits,
+	axes::update_axis_limits): New functions.
 	* graphics.h.in (class data_property): New class.
+	(graphics_object::update_axis_limits): New function.
+	(base_graphics_object::update_axis_limits): New virtual function.
+	(base_properties::update_axis_limits, axes::update_axis_limits):
+	Provide decls.
 	(class line, class image, class patch, class surface): Use it
-	instead of octave_value for data properties.
+	instead of octave_value for data properties.  Tag data properties
+	with "l" modifier.
+	(class axes): Tag scale properties with "l" modifier.
+	* genprops.awk: Handle "l" modifier.
 
 	* mkbuiltins: Emit #include "builtins.h" for the builtins.cc file.
 	From Christoph Mayer <Christoph.Mayer@dlr.de>.

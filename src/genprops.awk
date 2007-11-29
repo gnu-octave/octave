@@ -94,6 +94,12 @@
 ##       constructor, which creates a new radio_property and so cannot
 ##       preserve the old list of possible values.
 ##
+##   l:  Add the line
+##
+##         update_axis_limits ("NAME");
+##
+##       to the type-specific set function.
+##
 ##   m:  Add the line
 ##
 ##         set_NAMEmode ("manual");
@@ -140,6 +146,8 @@ function emit_decls ()
 	  {
 	      printf ("\n  {\n    if (! error_state)\n      {\n        %s = val;\n",
 		      name[i]);
+	      if (limits[i])
+		  printf ("        update_axis_limits (\"%s\");\n", name[i]);
 	      if (mode[i])
 		  printf ("        set_%smode (\"manual\");\n", name[i]);
 	      printf ("        mark_modified ();\n      }\n  }\n\n");
@@ -205,6 +213,7 @@ BEGIN {
       type[idx] = $(field++);
       name[idx] = $(field++);
 
+      limits[idx] = 0;
       mode[idx] = 0;
       emit_get[idx] = "defn";
       emit_set[idx] = "defn";
@@ -216,6 +225,9 @@ BEGIN {
       if (NF == field)
         {
 	    quals = $field;
+
+	    if (index (quals, "l"))
+		limits[idx] = 1;
 
 	    if (index (quals, "m"))
 		mode[idx] = 1;

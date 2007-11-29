@@ -666,6 +666,11 @@ public:
 
   void reparent (const graphics_handle& new_parent) { parent = new_parent; }
 
+  // Update data limits for AXIS_TYPE (xdata, ydata, etc.) in the parent
+  // axes object.
+
+  void update_axis_limits (const std::string& axis_type) const;
+
   virtual void delete_children (void);
 
 protected:
@@ -774,6 +779,11 @@ public:
     return properties;
   }
 
+  virtual void update_axis_limits (const std::string& axis_type)
+  {
+    error ("base_graphics_object::update_axis_limits: invalid graphics object");
+  }
+
   virtual bool valid_object (void) const { return false; }
 
   virtual std::string type (void) const { return "unknown"; }
@@ -829,10 +839,7 @@ public:
     rep->override_defaults (obj);
   }
 
-  void set_from_list (property_list& plist)
-  {
-    rep->set_from_list (plist);
-  }
+  void set_from_list (property_list& plist) { rep->set_from_list (plist); }
 
   void set (const caseless_str& name, const octave_value& val)
   {
@@ -841,15 +848,9 @@ public:
 
   void set (const octave_value_list& args);
 
-  void set_defaults (const std::string& mode)
-  {
-    rep->set_defaults (mode);
-  }
+  void set_defaults (const std::string& mode) { rep->set_defaults (mode); }
 
-  octave_value get (void) const
-  {
-    return rep->get ();
-  }
+  octave_value get (void) const { return rep->get (); }
 
   octave_value get (const caseless_str& name) const
   {
@@ -878,17 +879,22 @@ public:
 
   graphics_handle get_parent (void) const { return rep->get_parent (); }
 
-  void remove_child (const graphics_handle& h) { return rep->remove_child (h); }
+  void remove_child (const graphics_handle& h) { rep->remove_child (h); }
 
-  void adopt (const graphics_handle& h) { return rep->adopt (h); }
+  void adopt (const graphics_handle& h) { rep->adopt (h); }
 
-  void reparent (const graphics_handle& h) { return rep->reparent (h); }
+  void reparent (const graphics_handle& h) { rep->reparent (h); }
 
   void defaults (void) const { rep->defaults (); }
 
   bool isa (const std::string& go_name) const { return rep->isa (go_name); }
 
   base_properties& get_properties (void) { return rep->get_properties (); }
+
+  void update_axis_limits (const std::string& axis_type)
+  {
+    rep->update_axis_limits (axis_type);
+  }
 
   bool valid_object (void) const { return rep->valid_object (); }
 
@@ -1252,9 +1258,9 @@ public:
       color_property xcolor
       color_property ycolor
       color_property zcolor
-      octave_value xscale
-      octave_value yscale
-      octave_value zscale
+      octave_value xscale l
+      octave_value yscale l
+      octave_value zscale l
       octave_value xdir
       octave_value ydir
       octave_value zdir
@@ -1358,6 +1364,8 @@ public:
 
   void defaults (void) const { gripe_not_implemented ("axes::defaults"); }
 
+  void update_axis_limits (const std::string& axis_type);
+
   bool valid_object (void) const { return true; }
 
 private:
@@ -1390,13 +1398,13 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      data_property xdata
-      data_property ydata
-      data_property zdata
-      data_property ldata
-      data_property udata
-      data_property xldata
-      data_property xudata
+      data_property xdata l
+      data_property ydata l
+      data_property zdata l
+      data_property ldata l
+      data_property udata l
+      data_property xldata l
+      data_property xudata l
       color_property color
       octave_value linestyle
       octave_value linewidth
@@ -1595,9 +1603,9 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      data_property xdata
-      data_property ydata
-      data_property cdata
+      data_property xdata l
+      data_property ydata l
+      data_property cdata l
     END_PROPERTIES
 
     static std::string go_name;
@@ -1687,10 +1695,10 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      data_property xdata
-      data_property ydata
-      data_property zdata
-      data_property cdata
+      data_property xdata l
+      data_property ydata l
+      data_property zdata l
+      data_property cdata l
       octave_value faces
       octave_value vertices
       color_property facecolor a
@@ -1793,10 +1801,10 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES
-      data_property xdata
-      data_property ydata
-      data_property zdata
-      data_property cdata
+      data_property xdata l
+      data_property ydata l
+      data_property zdata l
+      data_property cdata l
       color_property facecolor a
       octave_value facealpha
       color_property edgecolor a

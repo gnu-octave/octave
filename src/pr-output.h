@@ -108,15 +108,76 @@ octave_print_internal (std::ostream& os, const ArrayN<std::string>& sa,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-template <class T>
-extern void
-octave_print_internal (std::ostream& os, const intNDArray<T>& sa,
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_int8>& sa,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
-template <class T>
-extern void
-octave_print_internal (std::ostream& os, const octave_int<T>& sa,
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_uint8>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_int16>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_uint16>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_int32>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_uint32>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_int64>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const intNDArray<octave_uint64>& sa,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<int8_t>& sa,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<uint8_t>& sa,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<int16_t>& sa,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<uint16_t>& sa,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<int32_t>& sa,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<uint32_t>& sa,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<int64_t>& sa,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const octave_int<uint64_t>& sa,
 		       bool pr_as_read_syntax = false);
 
 extern OCTINTERP_API void

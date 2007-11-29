@@ -59,7 +59,8 @@
 
 function varargout = contourf (varargin)
 
-  [X, Y, Z, lvl, ax, patch_props] = parse_args (varargin);
+  [ax, varargin] = __plt_get_axis_arg__ ("contourf", varargin{:});
+  [X, Y, Z, lvl, patch_props] = parse_args (varargin);
   [nr, nc] = size (Z);
   [minx, maxx] = deal (min (X(:)), max (X(:)));
   [miny, maxy] = deal (min (Y(:)), max (Y(:)));
@@ -183,18 +184,10 @@ function varargout = contourf (varargin)
 
 endfunction
 
-function [X, Y, Z, lvl, ax, patch_props] = parse_args (arg)
+function [X, Y, Z, lvl, patch_props] = parse_args (arg)
 
   patch_props = {};
   nolvl = false;
-
-  if (isinteger (arg{1}) && ishandle (arg{1})
-      && strncmpi (get (arg{1}, "type"), "axis", 4))
-    ax = arg{1};
-    arg{1} = [];
-  else
-    ax = gca ();
-  endif
 
   for n = 1:numel (arg)
     if (ischar (arg{n}))

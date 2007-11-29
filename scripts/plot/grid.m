@@ -35,31 +35,18 @@
 
 ## PKG_ADD: mark_as_command grid
 
-function grid (x, y)
+function grid (varargin)
 
   persistent grid_on = false;
   persistent minor_on = false;
 
-  nargs = nargin;
-
-  if (nargs == 2)
-    if (ishandle (x))
-      ax = x;
-      x = y;
-      nargs--;
-      if (! strcmp (get (ax, "type"), "axes"))
-	error ("grid: expecting first argument to be an axes object");
-      endif
-    else
-      print_usage ();
-    endif
-  else
-    ax = gca ();
-  endif
-
-  if (nargs == 0)
+  [ax, varargin, nargs] = __plt_get_axis_arg__ ("grid", varargin{:});
+  if (nargs > 1)
+    print_usage ();
+  elseif (nargs == 0)
     grid_on = ! grid_on;
-  elseif (nargs == 1)
+  else
+    x = varargin{1};
     if (ischar (x))
       if (strcmp ("off", x))
 	grid_on = false;
@@ -76,8 +63,6 @@ function grid (x, y)
     else
       error ("grid: argument must be a string");
     endif
-  else
-    print_usage ();
   endif
 
   if (grid_on)

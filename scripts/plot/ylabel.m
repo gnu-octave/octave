@@ -25,32 +25,24 @@
 
 ## Author: jwe
 
-function h = ylabel (varargin)
+function retval = ylabel (varargin)
 
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    ax = varargin{1};
-    if (! strcmp (get (ax, "type"), "axes"))
-      error ("ylabel: expecting first argument to be an axes object");
-    endif
-    if (rem (nargin, 2) == 1)
-      print_usage ();
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (ax);
-      tmp = __axis_label__ ("ylabel", varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    if (rem (nargin, 2) != 1)
-      print_usage ();
-    endif
-    tmp = __axis_label__ ("ylabel", varargin{1:end});
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("ylabel", varargin{:});
+
+  if (rem (nargin, 2) != 1)
+    print_usage ();
   endif
 
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    tmp = __axis_label__ ("ylabel", varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
+
   if (nargout > 0)
-    h = tmp;
+    retval = h;
   endif
 
 endfunction

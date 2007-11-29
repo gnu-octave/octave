@@ -29,19 +29,14 @@
 ## @seealso{peaks}
 ## @end deftypefn
 
-function [xx, yy, zz] = sphere (h, n)
+function [xx, yy, zz] = sphere (varargin)
 
-  have_h = false;
-  if (nargin > 1 && isscalar (h) && ishandle (h))
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("sphere: expecting first argument to be an axes object");
-    endif
-    if (nargin == 1)
-      n = 20;
-    endif
-    have_h = true;
+  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "sphere", 
+						varargin{:});
+  if (nargin > 1)
+    print_usage ();
   elseif (nargin == 1)
-    n = h;
+    n = varargin{1};
   else
     n = 20;
   endif
@@ -59,17 +54,7 @@ function [xx, yy, zz] = sphere (h, n)
     yy = y;
     zz = z;
   else
-    if (have_h)
-      oldh = gca ();
-      unwind_protect
-	axes (h);
-	surf (x, y, z);
-      unwind_protect_cleanup
-	axes (oldh);
-      end_unwind_protect
-    else
-      surf (x, y, z);
-    endif
+    surf (h, x, y, z);
   endif
 
 endfunction

@@ -49,40 +49,16 @@
 ## @seealso{surf, quiver3}
 ## @end deftypefn
 
-function varargout = surfnorm (varargin)
+function [Nx, Ny, Nz] = surfnorm (varargin)
 
-  if (nargout > 0)
-    varargout = cell (nargout, 1);
-  else
-    varargout = cell (0, 0);
-  endif
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("surfnorm: expecting first argument to be an axes object");
-    endif
-    if (nargin != 2 && nargin != 4)
-      print_usage ();
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      [varargout{:}] = __surfnorm__ (h, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    if (nargin != 1 && nargin != 3)
-      print_usage ();
-    endif
-    [varargout{:}] = __surfnorm__ (gca (), varargin{:});
+  [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout != 0), "surfnorm", 
+						varargin{:});
+
+  if (nargin != 1 && nargin != 3)
+    print_usage ();
   endif
 
-endfunction
-
-function [Nx, Ny, Nz] = __surfnorm__ (h, varargin)
-
-  if (nargin == 2)
+  if (nargin == 1)
     z = varargin{1};
     [x, y] = meshgrid (1:size(z,1), 1:size(z,2));
     ioff = 2;
@@ -94,9 +70,6 @@ function [Nx, Ny, Nz] = __surfnorm__ (h, varargin)
   endif
 
   if (nargout == 0)
-    newplot ();
-    surf (x, y, z, varargin{ioff:end});
-    hold on;
   endif
 
   ## Make life easier, and avoid having to do the extrapolation later, do
@@ -136,10 +109,19 @@ function [Nx, Ny, Nz] = __surfnorm__ (h, varargin)
   nz = nz ./ len;
 
   if (nargout == 0)
-    plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
-	   [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
-	   [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:), 
-	   varargin{ioff:end});
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      newplot ();
+      surf (x, y, z, varargin{ioff:end});
+      hold on;
+      plot3 ([x(:)'; x(:).' + nx(:).' ; NaN(size(x(:).'))](:),
+	     [y(:)'; y(:).' + ny(:).' ; NaN(size(y(:).'))](:),
+	     [z(:)'; z(:).' + nz(:).' ; NaN(size(z(:).'))](:), 
+	     varargin{ioff:end});
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
   else
     Nx = nx;
     Ny = ny;

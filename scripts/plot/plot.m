@@ -178,23 +178,15 @@
 
 function retval = plot (varargin)
 
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("plot: expecting first argument to be an axes object");
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      newplot ();
-      tmp = __plt__ ("plot", h, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
+  [h, varargin] = __plt_get_axis_arg__ ("plot", varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
     newplot ();
-    tmp = __plt__ ("plot", gca (), varargin{:});
-  endif
+    tmp = __plt__ ("plot", h, varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
   if (nargout > 0)
     retval = tmp;

@@ -30,7 +30,7 @@
 
 function retval = polar (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("loglogerr", varargin{:});
+  [h, varargin] = __plt_get_axis_arg__ ("polar", varargin{:});
   oldh = gca ();
   unwind_protect
     axes (h);

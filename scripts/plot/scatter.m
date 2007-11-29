@@ -56,24 +56,19 @@
 
 function retval = scatter (varargin)
 
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("scatter", varargin{:});
+
   if (nargin < 2)
     print_usage ();
-  elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("scatter: expecting first argument to be an axes object");
-    endif
+  else
     oldh = gca ();
     unwind_protect
       axes (h);
       newplot ();
-      tmp = __scatter__ (h, 2, "scatter", varargin{2:end});
+      tmp = __scatter__ (h, 2, "scatter", varargin{:});
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect
-  else
-    newplot ();
-    tmp = __scatter__ (gca (), 2, "scatter", varargin{:});
   endif
 
   if (nargout > 0)

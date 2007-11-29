@@ -2396,10 +2396,68 @@ SPECIALIZE_UABS(int)
 SPECIALIZE_UABS(long)
 SPECIALIZE_UABS(long long)
 
+template void
+pr_int (std::ostream&, const octave_int8&, int);
+
+template void
+pr_int (std::ostream&, const octave_int16&, int);
+
+template void
+pr_int (std::ostream&, const octave_int32&, int);
+
+template void
+pr_int (std::ostream&, const octave_int64&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint8&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint16&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint32&, int);
+
+template void
+pr_int (std::ostream&, const octave_uint64&, int);
+
 template <class T>
 void
-octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
-		       bool pr_as_read_syntax, int extra_indent)
+octave_print_internal_template (std::ostream& os, const octave_int<T>& val,
+				bool)
+{
+  if (plus_format)
+    {
+      pr_plus_format (os, val);
+    }
+  else
+    {
+      if (free_format)
+	os << typename octave_print_conv<octave_int<T> >::print_conv_type (val);
+      else
+	pr_int (os, val);
+    }
+}
+
+#define PRINT_INT_SCALAR_INTERNAL(TYPE) \
+  OCTINTERP_API void \
+  octave_print_internal (std::ostream& os, const octave_int<TYPE>& val, bool dummy) \
+  { \
+    octave_print_internal_template (os, val, dummy); \
+  }
+
+PRINT_INT_SCALAR_INTERNAL (int8_t)
+PRINT_INT_SCALAR_INTERNAL (uint8_t)
+PRINT_INT_SCALAR_INTERNAL (int16_t)
+PRINT_INT_SCALAR_INTERNAL (uint16_t)
+PRINT_INT_SCALAR_INTERNAL (int32_t)
+PRINT_INT_SCALAR_INTERNAL (uint32_t)
+PRINT_INT_SCALAR_INTERNAL (int64_t)
+PRINT_INT_SCALAR_INTERNAL (uint64_t)
+
+template <class T>
+/* static */ inline void
+octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
+				bool pr_as_read_syntax, int extra_indent)
 {
   // FIXME -- this mostly duplicates the code in the
   // PRINT_ND_ARRAY macro.
@@ -2407,7 +2465,7 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
   if (nda.is_empty ())
     print_empty_nd_array (os, nda.dims (), pr_as_read_syntax);
   else if (nda.length () == 1)
-    octave_print_internal (os, nda (0), pr_as_read_syntax);
+    octave_print_internal_template (os, nda(0), pr_as_read_syntax);
   else if (plus_format && ! pr_as_read_syntax)
     {
       int ndims = nda.ndims ();
@@ -2618,106 +2676,22 @@ octave_print_internal (std::ostream& os, const intNDArray<T>& nda,
     }
 }
 
-// FIXME -- this is not the right spot for this...
+#define PRINT_INT_ARRAY_INTERNAL(TYPE) \
+  OCTINTERP_API void \
+  octave_print_internal (std::ostream& os, const intNDArray<TYPE>& nda, \
+			 bool pr_as_read_syntax, int extra_indent) \
+  { \
+    octave_print_internal_template (os, nda, pr_as_read_syntax, extra_indent); \
+  }
 
-template void
-pr_int (std::ostream&, const octave_int8&, int);
-
-template void
-pr_int (std::ostream&, const octave_int16&, int);
-
-template void
-pr_int (std::ostream&, const octave_int32&, int);
-
-template void
-pr_int (std::ostream&, const octave_int64&, int);
-
-template void
-pr_int (std::ostream&, const octave_uint8&, int);
-
-template void
-pr_int (std::ostream&, const octave_uint16&, int);
-
-template void
-pr_int (std::ostream&, const octave_uint32&, int);
-
-template void
-pr_int (std::ostream&, const octave_uint64&, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_int8>&,
-		       bool, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_int16>&,
-		       bool, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_int32>&,
-		       bool, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_int64>&,
-		       bool, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_uint8>&,
-		       bool, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_uint16>&,
-		       bool, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_uint32>&,
-		       bool, int);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const intNDArray<octave_uint64>&,
-		       bool, int);
-
-template <class T>
-void
-octave_print_internal (std::ostream& os, const octave_int<T>& val, bool)
-{
-  if (plus_format)
-    {
-      pr_plus_format (os, val);
-    }
-  else
-    {
-      if (free_format)
-	os << typename octave_print_conv<octave_int<T> >::print_conv_type (val);
-      else
-	pr_int (os, val);
-    }
-}
-
-// FIXME -- this is not the right spot for this...
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_int8&, bool);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_int16&, bool);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_int32&, bool);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_int64&, bool);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_uint8&, bool);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_uint16&, bool);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_uint32&, bool);
-
-template OCTINTERP_API void
-octave_print_internal (std::ostream&, const octave_uint64&, bool);
+PRINT_INT_ARRAY_INTERNAL (octave_int8)
+PRINT_INT_ARRAY_INTERNAL (octave_uint8)
+PRINT_INT_ARRAY_INTERNAL (octave_int16)
+PRINT_INT_ARRAY_INTERNAL (octave_uint16)
+PRINT_INT_ARRAY_INTERNAL (octave_int32)
+PRINT_INT_ARRAY_INTERNAL (octave_uint32)
+PRINT_INT_ARRAY_INTERNAL (octave_int64)
+PRINT_INT_ARRAY_INTERNAL (octave_uint64)
 
 extern void
 octave_print_internal (std::ostream&, const Cell&, bool, int, bool)

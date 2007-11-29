@@ -22,36 +22,17 @@
 
 function varargout = __bar__ (vertical, func, varargin)
 
-  varargout = cell (nargout, 1);
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("%s: expecting first argument to be an axes object", func);
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      [varargout{:}] = __bar2__ (h, vertical, func, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    [varargout{:}] = __bar2__ (gca (), vertical, func, varargin{:});
-  endif
-
-endfunction
-
-function varargout = __bar2__ (h, vertical, func, varargin)
+  [h, varargin] = __plt_get_axis_arg__ ((nargout > 1), func, varargin{:});
 
   ## Slightly smaller than 0.8 to avoid clipping issue in gnuplot 4.0
   width = 0.8 - 10 * eps; 
   group = true;
 
-  if (nargin < 4)
+  if (nargin < 3)
     print_usage ();
   endif
 
-  if (nargin > 4 && isnumeric (varargin{2}))
+  if (nargin > 3 && isnumeric (varargin{2}))
     x = varargin{1};
     if (isvector (x))
       x = x(:);
@@ -84,7 +65,7 @@ function varargout = __bar2__ (h, vertical, func, varargin)
       
   newargs = {};
   have_line_spec = false;
-  while (idx <= nargin - 3)
+  while (idx <= nargin - 2)
     if (isstr (varargin{idx}) && strcmp (varargin{idx}, "grouped"))
       group = true;
       idx++;
@@ -104,7 +85,7 @@ function varargout = __bar2__ (h, vertical, func, varargin)
       endif
       if (isscalar(varargin{idx}))
 	width = varargin{idx++};
-      elseif (idx == nargin - 3)
+      elseif (idx == nargin - 2)
 	newargs = [newargs,varargin(idx++)];
       else
 	newargs = [newargs,varargin(idx:idx+1)];
@@ -158,12 +139,19 @@ function varargout = __bar2__ (h, vertical, func, varargin)
   yb = reshape (yb, [4, numel(yb) / 4 / ycols, ycols]);
 
   if (nargout < 2)
-    newplot ();
-    tmp = __bars__ (h, vertical, x, y, xb, yb, width, group,
-		    have_line_spec, newargs{:});
-    if (nargout == 1)
-      varargout{1} = tmp;
-    endif
+    oldh = gca ();
+    unwind_protect
+      axes (h);
+      newplot ();
+
+      tmp = __bars__ (h, vertical, x, y, xb, yb, width, group,
+		      have_line_spec, newargs{:});
+      if (nargout == 1)
+	varargout{1} = tmp;
+      endif
+    unwind_protect_cleanup
+      axes (oldh);
+    end_unwind_protect
   else
     if (vertical)
       varargout{1} = xb;

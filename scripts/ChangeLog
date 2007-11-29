@@ -1,3 +1,16 @@
+2007-11-28  David Bateman  <dbateman@free.fr>
+
+	* __plt_get_axis_handle__.m: Also allow hggroup and return axes
+	ancestor. If leading argument is logical set variable nogca to see
+	if gca() should be called if there is no active handle found.
+	* __bar__.m, caxis.m, scatter.m, contourf.m, __axes_limits__.m,
+	fill.m,  surf.m, meshz.m, axis.m, pie.m, contour.m,
+	quiver.m, area.m, grid.m, cylinder.m, contour3.m, surface.m,
+	patch.m, scatter3.m, plot.m, sphere.m, quiver3.m, plotyy.m,
+	xlabel.m, ylabel.m, surfnorm.m, zlabel.m: Adapt to use
+	__plt__get_axis_arg__ to find axis handle.
+	* polar.m: Typo.
+
 2007-11-28  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m (get_data_limits): Delete unused arg TX.

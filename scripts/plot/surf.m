@@ -31,16 +31,21 @@
 
 function h = surf (varargin)
 
-  newplot ();
+  [h, varargin] = __plt_get_axis_arg__ ("surf", varargin{:});
 
-  tmp = surface (varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    newplot ();
+    tmp = surface (varargin{:});
 
-  ax = get (tmp, "parent");
-
-  set (tmp, "facecolor", "flat");
-  if (! ishold ())
-    set (ax, "view", [-37.5, 30]);
-  endif
+    set (tmp, "facecolor", "flat");
+    if (! ishold ())
+      set (h, "view", [-37.5, 30]);
+    endif
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
   if (nargout > 0)
     h = tmp;

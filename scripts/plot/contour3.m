@@ -46,27 +46,18 @@
 
 function [c, h] = contour3 (varargin)
 
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    ax = varargin{1};
-    if (! strcmp (get (ax, "type"), "axes"))
-      error ("contour: expecting first argument to be an axes object");
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (ax);
-      newplot ();
-      [ctmp, htmp] = __contour__ (ax, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("contour3", varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
     newplot ();
-    ax = gca ();
-    [ctmp, htmp] = __contour__ (ax, "level", varargin{:});
-  endif
+    [ctmp, htmp] = __contour__ (h, "level", varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
   if (! ishold ())
-    set (ax, "view", [-37.5, 30]);
+    set (h, "view", [-37.5, 30]);
   endif
 
   if (nargout > 0)

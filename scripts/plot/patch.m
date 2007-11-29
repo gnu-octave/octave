@@ -36,21 +36,17 @@
 
 function h = patch (varargin)
 
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes") && ! strcmp (get (h, "type"), "hggroup"))
-      error ("patch: expecting first argument to be an axes or hggroup object");
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (ancestor (h, "axes"));
-      [tmp, fail] = __patch__ (h, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    [tmp, fail] = __patch__ (gca (), varargin{:});
+  [h, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
+  oldh = gca ();
+  if (isnan(h))
+    h = oldh;
   endif
+  unwind_protect
+    axes (h);
+    [tmp, fail] = __patch__ (h, varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
   if (fail)
     print_usage ();

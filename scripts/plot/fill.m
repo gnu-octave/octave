@@ -27,37 +27,13 @@
 
 function h = fill (varargin)
 
+  [h, varargin] = __plt_get_axis_arg__ ("fill", varargin{:});
   htmp = [];
+  iargs = __find_patches__ (varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
 
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("fill: expecting first argument to be an axes object");
-    endif
-
-    iargs = __find_patches__ (varargin{:}) + 1;
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-
-      for i = 1 : length (iargs)
-	if (i == length (iargs))
-	  args = varargin (iargs(i):end);
-        else
-	  args = varargin (iargs(i):iargs(i+1)-1);
-	endif
-	newplot ();
-	[tmp, fail] = __patch__ (h, args{:});
-	if (fail)
-	  print_usage();
-	endif
-	htmp (end + 1) = tmp;
-      endfor
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    iargs = __find_patches__ (varargin{:});
     for i = 1 : length (iargs)
       if (i == length (iargs))
 	args = varargin (iargs(i):end);
@@ -65,16 +41,20 @@ function h = fill (varargin)
         args = varargin (iargs(i):iargs(i+1)-1);
       endif
       newplot ();
-      [tmp, fail] = __patch__ (gca (), args{:});
+      [tmp, fail] = __patch__ (h, args{:});
       if (fail)
 	print_usage();
       endif
       htmp (end + 1) = tmp;
     endfor
-  endif
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
+
   if (nargout > 0)
     h = htmp;
   endif
+
 endfunction
 
 function iargs = __find_patches__ (varargin)

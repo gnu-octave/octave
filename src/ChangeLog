@@ -1,3 +1,18 @@
+2007-11-29  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (octave_print_internal_template (std::ostream&,
+	const octave_int<T>&, bool)): Rename from octave_print_internal.
+	(PRINT_INT_SCALAR_INTERNAL): New macro.  Use it to define
+	non-template functions for printing scalar octave_int values.
+	(octave_print_internal_template (std::ostream&, const intNDArray<T>&,
+	bool, int)): Rename from octave_print_internal.
+	(PRINT_INT_ARRAY_INTERNAL): New macro.  Use it to define
+	non-template functions for printing scalar octave_int values.
+	* pr-output.h: Declare non-template functions for printing
+	octave_int scalar and array values.
+	Delete declarations of template funtions for printing octave_int
+	scalar and array values.
+
 2007-11-28  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (base_properties::update_axis_limits,

@@ -20,13 +20,21 @@
 
 ## Author: jwe
 
-function [h, varargin] = __plt_get_axis_arg__ (caller, varargin)
+function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
+
+  if (islogical (caller))
+    nogca = caller;
+    caller = varargin{1};
+    varargin(1) = [];
+  else
+    nogca = false;
+  endif
 
   if (nargin > 1 && length (varargin) > 0 && ishandle (varargin{1}))
     tmp = varargin{1};
     obj = get (tmp);
-    if (strcmp (obj.type, "axes"))
-      h = tmp;
+    if (strcmp (obj.type, "axes") || strcmp (obj.type, "hggroup"))
+      h = ancestor (tmp, "axes");
       varargin(1) = [];
       if (isempty (varargin))
 	varargin = {};
@@ -35,10 +43,19 @@ function [h, varargin] = __plt_get_axis_arg__ (caller, varargin)
       error ("%s: expecting first argument to be axes handle", caller);
     endif
   else
-    h = gca ();
+    f = get (0, "currentfigure");
+    if (! isempty (f))
+      h = get (f, 'currentaxes');
+    elseif (nogca)
+      h = NaN;
+    else
+      h = gca ();
+    endif
     if (nargin < 2)
       varargin = {};
     endif
   endif
+
+  narg = length (varargin);
 
 endfunction

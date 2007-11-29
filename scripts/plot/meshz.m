@@ -29,29 +29,7 @@
  
 function retval = meshz (varargin)
 
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("meshz: expecting first argument to be an axes object");
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      tmp = __meshz__ (varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    tmp = __meshz__ (varargin{:});
-  endif
-
-  if (nargout > 0)
-    retval = tmp;
-  endif
-
-endfunction
-
-function h = __meshz__ (varargin)
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("meshz", varargin{:});
 
   ioff = nargin + 1;
   for i = 1 : nargin
@@ -95,6 +73,16 @@ function h = __meshz__ (varargin)
        zref .* ones(size(z, 1), 1), z, zref .* ones(size(z, 1), 1); 
        zref.* ones(1, size(z, 2) + 2)];
 
-  h = mesh (x, y, z, varargin{ioff:end});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
+    tmp = mesh (x, y, z, varargin{ioff:end});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
+
+  if (nargout > 0)
+    retval = tmp;
+  endif
 
 endfunction

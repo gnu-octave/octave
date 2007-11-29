@@ -22,21 +22,12 @@ function retval = __axes_limits__ (fcn, varargin)
   retval = [];
   fcnmode = sprintf("%smode", fcn);
 
-  if (nargin > 1 && isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    off = 1;
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("%s: expecting first argument to be an axes object", fcn);
-    endif
-  else
-    off = 0;
-    h = gca ();
-  endif
+  [h, varargin, nargin] = __plt_get_axis_arg__ (fcn, varargin{:});
 
-  if (nargin == off + 1)
+  if (nargin == 0)
     retval = get (h, fcn);
   else
-    arg = varargin{off + 1};
+    arg = varargin{1};
 
     if (ischar (arg))
       arg = tolower (arg);

@@ -40,18 +40,13 @@
 
 function h = area (varargin)
 
+  [ax, varargin, nargin] = __plt_get_axis_arg__ ("area", varargin{:});
+
   if (nargin > 0)
     idx = 1;
-    ax = [];
     x = y = [];
     bv = 0;
     args = {};
-    ## Check for axes parent.
-    if (ishandle (varargin{idx})
-	&& strcmp (get (varargin{idx}, "type"), "axes"))
-      ax = varargin{idx};
-      idx++;
-    endif
     ## Check for (X) or (X,Y) arguments and possible base value.
     if (nargin >= idx && ismatrix (varargin{idx}))
       y = varargin{idx};
@@ -87,11 +82,13 @@ function h = area (varargin)
       x = repmat (x(:),  1, size (y, 2));
     endif
 
-    if (isempty (ax))
-      tmp = __area__ (gca (), x, y, bv, args{:});
-    else
+    oldax = gca ();
+    unwind_protect
+      axes (ax);
       tmp = __area__ (ax, x, y, bv, args{:});
-    endif
+    unwind_protect_cleanup
+      axes (oldax);
+    end_unwind_protect
 
     if (nargout > 0)
       h = tmp;

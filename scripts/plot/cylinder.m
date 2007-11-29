@@ -45,18 +45,8 @@
 
 function [xx, yy, zz] = cylinder (varargin)
 
-  nargs = nargin;
-  args = varargin;
-  ax = [];
-
-  if (nargs > 0 && isscalar (args{1}) && ishandle (args{1}))
-    if (! strcmp (get (args{1}, "type"), "axes"))
-      error ("cylinder: expecting first argument to be an axes object");
-    endif
-    ax = args{1};
-    nargs--;
-    args(1) = [];
-  endif
+  [ax, args, nargs] = __plt_get_axis_arg__ ((nargout > 0), "cylinder", 
+					    varargin{:});
 
   if (nargs == 0)
     n = 20;
@@ -87,10 +77,7 @@ function [xx, yy, zz] = cylinder (varargin)
     yy = y;
     zz = z;
   else
-    if (! isempty (ax))
-      axes (ax);
-    endif
-    surf (x, y, z);
+    surf (ax, x, y, z);
   endif
 
 endfunction

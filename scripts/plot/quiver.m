@@ -58,24 +58,19 @@
 
 function retval = quiver (varargin)
 
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("quiver", varargin{:});
+
   if (nargin < 2)
     print_usage ();
-  elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("quiver: expecting first argument to be an axes object");
-    endif
+  else
     oldh = gca ();
     unwind_protect
       axes (h);
       newplot ();
-      tmp = __quiver__ (h, 0, varargin{2:end});
+      tmp = __quiver__ (h, 0, varargin{:});
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect
-  else
-    newplot ();
-    tmp = __quiver__ (gca (), 0, varargin{:});
   endif
 
   if (nargout > 0)

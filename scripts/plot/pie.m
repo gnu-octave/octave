@@ -44,25 +44,21 @@
 
 function retval = pie (varargin)
 
+  [h, varargin] = __plt_get_axis_arg__ ("pie", varargin{:});
+
   if (nargin < 1)
     print_usage ();
-  elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("pie: expecting first argument to be an axes object");
-    endif
+  else
     oldh = gca ();
     unwind_protect
       axes (h);
       newplot ();
-      tmp = __pie__ (h, varargin{2:end});
+      tmp = __pie__ (h, varargin{:});
     unwind_protect_cleanup
       axes (oldh);
     end_unwind_protect
-  else
-    newplot ();
-    tmp = __pie__ (gca (), varargin{:});
   endif
+
 
   if (nargout > 0)
     retval = tmp;

@@ -39,31 +39,19 @@
 
 function varargout = caxis (varargin)
 
-  if (nargin > 0 && isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("caxis: expecting first argument to be an axes object");
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      varargout = cell (max (nargin == 1, nargout), 1);
-      if (isempty (varargout))
-	__caxis__ (h, varargin{2:end});
-      else
-        [varargout{:}] = __caxis__ (h, varargin{2:end});
-      endif
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
+  [h, varargin, nargin] = __plt_get_axis_arg__ ("caxis", varargin{:});
+  oldh = gca ();
+  unwind_protect
+    axes (h);
     varargout = cell (max (nargin == 0, nargout), 1);
     if (isempty (varargout))
-      __caxis__ (gca (), varargin{:});
+      __caxis__ (h, varargin{:});
     else
-      [varargout{:}] = __caxis__ (gca (), varargin{:});
+      [varargout{:}] = __caxis__ (h, varargin{:});
     endif
-  endif
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
 endfunction
 

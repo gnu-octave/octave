@@ -55,29 +55,19 @@
 
 function [Ax, H1, H2] = plotyy (varargin)
 
-  if (isscalar (varargin{1}) && ishandle (varargin{1}))
-    ax = varargin{1};
-    if (! strcmp (get (ax, "type"), "axes"))
-      error ("plotyy: expecting first argument to be an axes object");
-    endif
-    if (nargin < 5)
-      print_usage ();
-    endif
-    oldh = gca ();
-    unwind_protect
-      axes (ax);
-      newplot ();
-      [ax, h1, h2] = __plotyy__ (ax, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    if (nargin < 4)
-      print_usage ();
-    endif
-    newplot ();
-    [ax, h1, h2] = __plotyy__ (gca (), varargin{:});
+  [ax, varargin] = __plt_get_axis_arg__ ("plotyy", varargin{:});
+
+  if (nargin < 4)
+    print_usage ();
   endif
+  oldh = gca ();
+  unwind_protect
+    axes (ax);
+    newplot ();
+    [ax, h1, h2] = __plotyy__ (ax, varargin{:});
+  unwind_protect_cleanup
+    axes (oldh);
+  end_unwind_protect
 
   if (nargout > 0)
     Ax = ax;

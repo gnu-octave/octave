@@ -412,14 +412,19 @@ class data_property
 {
 public:
   data_property (const Matrix& m = Matrix ())
-    : data (m), lo (min_val (m)), hi (max_val (m)) { }
+    : data (m), min_val (octave_Inf), max_val (-octave_Inf),
+      min_pos (octave_Inf)
+  {
+    get_data_limits ();
+  }
 
   data_property (const octave_value& val)
+    : data (), min_val (octave_Inf), max_val (-octave_Inf),
+      min_pos (octave_Inf)
   {
     data = val.matrix_value ();
 
-    lo = min_val (data);
-    hi = max_val (data);
+    get_data_limits ();
   }
 
   data_property& operator = (const data_property& a)
@@ -427,19 +432,10 @@ public:
     if (&a != this)
       {
 	data = a.data;
-	lo = a.lo;
-	hi = a.hi;
+	min_val = a.min_val;
+	max_val = a.max_val;
+	min_pos = a.min_pos;
       }
-
-    return *this;
-  }
-
-  data_property& operator = (const octave_value& val) 
-  {
-    data = val.matrix_value ();
-
-    lo = min_val (data);
-    hi = max_val (data);
 
     return *this;
   }
@@ -448,51 +444,35 @@ public:
 
 private:
   Matrix data;
-  double lo;
-  double hi;
+  double min_val;
+  double max_val;
+  double min_pos;
 
-  static double min_val (const Matrix& m)
+  void get_data_limits (void)
   {
-    double retval = octave_NaN;
-
-    octave_idx_type nel = m.numel ();
+    octave_idx_type nel = data.numel ();
 
     if (nel > 0)
       {
-	retval = octave_Inf;
+	const double *d = data.data ();
 
 	for (octave_idx_type i = 0; i < nel; i++)
 	  {
-	    double d = m(i);
+	    double val = d[i];
 
-	    if (! isnan (d) && m(i) < retval)
-	      retval = d;
+	    if (! (xisinf (val) || xisnan (val)))
+	      {
+		if (val < min_val)
+		  min_val = val;
+
+		if (val > max_val)
+		  max_val = val;
+
+		if (val > 0 && val < min_pos)
+		  min_pos = val;
+	      }
 	  }
       }
-
-    return retval;
-  }
-
-  static double max_val (const Matrix& m)
-  {
-    double retval = octave_NaN;
-
-    octave_idx_type nel = m.numel ();
-
-    if (nel > 0)
-      {
-	retval = -octave_Inf;
-
-	for (octave_idx_type i = 0; i < nel; i++)
-	  {
-	    double d = m(i);
-
-	    if (! isnan (d) && m(i) > retval)
-	      retval = d;
-	  }
-      }
-
-    return retval;
   }
 };
 

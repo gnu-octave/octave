@@ -252,13 +252,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     xmin = ymin = zmin = cmin = Inf;
 
     ## This has to be done here as some of the code below depends on the
-    ## final clim
+    ## final clim.
     if (cautoscale)
       for i = 1:length (kids)
 	obj = get (kids(i));
 	if (isfield (obj, "cdata"))
-	  [cmin, cmax, cminp] = get_data_limits (cmin, cmax, cminp, 
-						 obj.cdata(:));
+	  cdat = obj.cdata(:);
+	  [cmin, cmax, cminp] = get_data_limits (cmin, cmax, cminp, cdat);
 	endif
       endfor
       if (cmin == cmax)
@@ -424,15 +424,31 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	      xudat = xudat(:);
 	    endif
 	    if (yerr)
-	      ylo = ydat-ldat;
-	      yhi = ydat+udat;
+	      if (isempty (ldat))
+		ylo = ydat;
+	      else
+		ylo = ydat-ldat;
+	      endif
+	      if (isempty (udat))
+		yhi = ydat;
+	      else
+		yhi = ydat+udat;
+	      endif
 	      if (yautoscale)
 		ty = [ydat; ylo; yhi];
 		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ty);
 	      endif
 	      if (xerr)
-		xlo = xdat-xldat;
-		xhi = xdat+xudat;
+		if (isempty (xldat))
+		  xlo = xdat;
+		else
+		  xlo = xdat-xldat;
+		endif
+		if (isempty (xudat))
+		  xhi = xdat;
+		else
+		  xhi = xdat+xudat;
+		endif
 		if (xautoscale)
 		  tx = [xdat; xlo; xhi];
 		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
@@ -441,25 +457,30 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 		usingclause{data_idx} = "using ($1):($2):($3):($4):($5):($6)";
 		withclause{data_idx} = "with xyerrorbars";
 	      else
-		## Obtain the limits based on the exact x values.
 		if (xautoscale)
-		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax,
-							 xminp, xdat);
+		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
 		endif
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4)";
 		withclause{data_idx} = "with yerrorbars";
 	      endif
 	    elseif (xerr)
-	      xlo = xdat-xldat;
-	      xhi = xdat+xudat;
+	      if (isempty (xldat))
+		xlo = xdat;
+	      else
+		xlo = xdat-xldat;
+	      endif
+	      if (isempty (xudat))
+		xhi = xdat;
+	      else
+		xhi = xdat+xudat;
+	      endif
 	      if (xautoscale)
 		tx = [xdat; xlo; xhi];
 		[xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
 	      endif
 	      if (yautoscale)
-		[ymin, ymax, yminp] = get_data_limits (ymin, ymax,
-						       yminp, ydat, ty);
+		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
 	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
 	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
@@ -1255,21 +1276,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 
 endfunction
 
-function [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat, tx)
-  if (! (isempty (xdat) || (nargin > 4 && isempty (tx))))
+function [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat)
+  if (! isempty (xdat))
     xdat = xdat(! isinf (xdat));
     xmin = min (xmin, min (xdat));
     xmax = max (xmax, max (xdat));
-    if (nargin == 5)
-      tx = tx(! isinf (xdat) & tx > 0);
-      if (! isempty (tx))
-	xminp = min (xminp, min (tx));
-      endif
-    else
-      tmp = min (xdat(xdat > 0));
-      if (! isempty (tmp))
-	xminp = min (xminp, tmp);
-      endif
+    tmp = min (xdat(xdat > 0));
+    if (! isempty (tmp))
+      xminp = min (xminp, tmp);
     endif
   endif
 endfunction

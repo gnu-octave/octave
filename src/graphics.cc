@@ -1977,8 +1977,7 @@ line::properties::factory_defaults (void)
   m["markerfacecolor"] = "none";
   m["markersize"] = 1;
   m["keylabel"] = "";
-  m["interpreter"] = 
-    radio_property (radio_values ("{tex}|none|latex"));
+  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }
@@ -2132,12 +2131,9 @@ text::properties::factory_defaults (void)
   m["color"] = Matrix (1, 3, 1.0);
   m["fontname"] = "Helvetica";
   m["fontsize"] = 10;
-  m["fontangle"] = 
-      radio_property (radio_values ("{normal}|italic|oblique"));
-  m["fontweight"] = 
-    radio_property (radio_values ("{normal}|bold|demi|light"));
-  m["interpreter"] = 
-    radio_property (radio_values ("{tex}|none|latex"));
+  m["fontangle"] = radio_property (radio_values ("{normal}|italic|oblique"));
+  m["fontweight"] = radio_property (radio_values ("{normal}|bold|demi|light"));
+  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }
@@ -2149,9 +2145,9 @@ std::string text::properties::go_name ("text");
 image::properties::properties (const graphics_handle& mh,
 			       const graphics_handle& p)
   : base_properties (go_name, mh, p),
-    cdata (Matrix ()),
     xdata (Matrix ()),
-    ydata (Matrix ())
+    ydata (Matrix ()),
+    cdata (Matrix ())
 { }
 
 void
@@ -2171,12 +2167,12 @@ image::properties::set (const caseless_str& name,
       __modified__ = val.bool_value ();
       modified = false;
     }
-  else if (name.compare ("cdata"))
-    set_cdata (val);
   else if (name.compare ("xdata"))
     set_xdata (val);
   else if (name.compare ("ydata"))
     set_ydata (val);
+  else if (name.compare ("cdata"))
+    set_cdata (val);
   else
     {
       modified = false;
@@ -2197,9 +2193,9 @@ image::properties::get (void) const
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
-  m.assign ("cdata", cdata);
   m.assign ("xdata", xdata);
   m.assign ("ydata", ydata);
+  m.assign ("cdata", cdata);
 
   return m;
 }
@@ -2219,12 +2215,12 @@ image::properties::get (const caseless_str& name) const
     retval = children;
   else if (name.compare ("__modified__"))
     retval = __modified__;
-  else if (name.compare ("cdata"))
-    retval = cdata;
   else if (name.compare ("xdata"))
     retval = xdata;
   else if (name.compare ("ydata"))
     retval = ydata;
+  else if (name.compare ("cdata"))
+    retval = cdata;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -2236,9 +2232,9 @@ image::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
-  m["cdata"] = Matrix ();
   m["xdata"] = Matrix ();
   m["ydata"] = Matrix ();
+  m["cdata"] = Matrix ();
 
   return m;
 }
@@ -2250,10 +2246,10 @@ std::string image::properties::go_name ("image");
 patch::properties::properties (const graphics_handle& mh,
 			       const graphics_handle& p)
   : base_properties (go_name, mh, p),
-    cdata (Matrix ()),
     xdata (Matrix ()),
     ydata (Matrix ()),
     zdata (Matrix ()),
+    cdata (Matrix ()),
     faces (Matrix ()),
     vertices (Matrix ()),
     facecolor (radio_values ("{flat}|none|interp")),
@@ -2286,14 +2282,14 @@ patch::properties::set (const caseless_str& name,
       __modified__ = val.bool_value ();
       modified = false;
     }
-  else if (name.compare ("cdata"))
-    set_cdata (val);
   else if (name.compare ("xdata"))
     set_xdata (val);
   else if (name.compare ("ydata"))
     set_ydata (val);
   else if (name.compare ("zdata"))
     set_zdata (val);
+  else if (name.compare ("cdata"))
+    set_cdata (val);
   else if (name.compare ("faces"))
     set_faces (val);
   else if (name.compare ("vertices"))
@@ -2340,10 +2336,10 @@ patch::properties::get (void) const
   m.assign ("parent", parent.as_octave_value ());
   m.assign ("children", children);
   m.assign ("__modified__", __modified__);
-  m.assign ("cdata", cdata);
   m.assign ("xdata", xdata);
   m.assign ("ydata", ydata);
   m.assign ("zdata", zdata);
+  m.assign ("cdata", cdata);
   m.assign ("faces", faces);
   m.assign ("vertices", vertices);
   m.assign ("facecolor", facecolor);
@@ -2376,14 +2372,14 @@ patch::properties::get (const caseless_str& name) const
     retval = children;
   else if (name.compare ("__modified__"))
     retval = __modified__;
-  else if (name.compare ("cdata"))
-    retval = cdata;
   else if (name.compare ("xdata"))
     retval = xdata;
   else if (name.compare ("ydata"))
     retval = ydata;
   else if (name.compare ("zdata"))
     retval = zdata;
+  else if (name.compare ("cdata"))
+    retval = cdata;
   else if (name.compare ("faces"))
     retval = faces;
   else if (name.compare ("vertices"))
@@ -2421,10 +2417,10 @@ patch::properties::factory_defaults (void)
 {
   property_list::pval_map_type m;
 
-  m["cdata"] = Matrix ();
   m["xdata"] = Matrix ();
   m["ydata"] = Matrix ();
   m["zdata"] = Matrix ();
+  m["cdata"] = Matrix ();
   m["faces"] = Matrix ();
   m["vertices"] = Matrix ();
   m["facecolor"] = color_property ();
@@ -2437,8 +2433,7 @@ patch::properties::factory_defaults (void)
   m["markerfacecolor"] = "none";
   m["markersize"] = 1;
   m["keylabel"] = "";
-  m["interpreter"] = 
-    radio_property (radio_values ("{tex}|none|latex"));
+  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }
@@ -2623,8 +2618,7 @@ surface::properties::factory_defaults (void)
   m["markerfacecolor"] = "none";
   m["markersize"] = 1;
   m["keylabel"] = "";
-  m["interpreter"] = 
-    radio_property (radio_values ("{tex}|none|latex"));
+  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
 
   return m;
 }

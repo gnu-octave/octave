@@ -29,7 +29,7 @@
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function h = surf (varargin)
+function retval = surf (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("surf", varargin{:});
 
@@ -48,7 +48,7 @@ function h = surf (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    h = tmp;
+    retval = tmp;
   endif
 
 endfunction

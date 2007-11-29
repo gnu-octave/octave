@@ -179,6 +179,7 @@
 function retval = plot (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("plot", varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);

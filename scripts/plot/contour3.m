@@ -46,18 +46,19 @@
 
 function [c, h] = contour3 (varargin)
 
-  [h, varargin, nargin] = __plt_get_axis_arg__ ("contour3", varargin{:});
+  [xh, varargin, nargin] = __plt_get_axis_arg__ ("contour3", varargin{:});
+
   oldh = gca ();
   unwind_protect
-    axes (h);
+    axes (xh);
     newplot ();
-    [ctmp, htmp] = __contour__ (h, "level", varargin{:});
+    [ctmp, htmp] = __contour__ (xh, "level", varargin{:});
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect
 
   if (! ishold ())
-    set (h, "view", [-37.5, 30]);
+    set (xh, "view", [-37.5, 30]);
   endif
 
   if (nargout > 0)

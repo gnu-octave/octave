@@ -41,6 +41,7 @@
 function retval = semilogxerr (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("semilogxerr", varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);
@@ -53,7 +54,6 @@ function retval = semilogxerr (varargin)
     if (nargout > 0)
       retval = tmp;
     endif
-
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect

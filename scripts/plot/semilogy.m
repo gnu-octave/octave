@@ -30,6 +30,7 @@
 function retval = semilogy (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("semilogy", varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);

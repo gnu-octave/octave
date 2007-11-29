@@ -60,8 +60,11 @@
 function varargout = contourf (varargin)
 
   [ax, varargin] = __plt_get_axis_arg__ ("contourf", varargin{:});
+
   [X, Y, Z, lvl, patch_props] = parse_args (varargin);
+
   [nr, nc] = size (Z);
+
   [minx, maxx] = deal (min (X(:)), max (X(:)));
   [miny, maxy] = deal (min (Y(:)), max (Y(:)));
 

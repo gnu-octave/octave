@@ -60,6 +60,7 @@ function [Ax, H1, H2] = plotyy (varargin)
   if (nargin < 4)
     print_usage ();
   endif
+
   oldh = gca ();
   unwind_protect
     axes (ax);

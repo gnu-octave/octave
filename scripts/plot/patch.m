@@ -34,13 +34,12 @@
 
 ## Author: jwe
 
-function h = patch (varargin)
+function retval = patch (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("patch", varargin{:});
+
   oldh = gca ();
-  if (isnan(h))
-    h = oldh;
-  endif
+
   unwind_protect
     axes (h);
     [tmp, fail] = __patch__ (h, varargin{:});
@@ -53,7 +52,7 @@ function h = patch (varargin)
   endif
 
   if (nargout > 0)
-    h = tmp;
+    retval = tmp;
   endif
 
 endfunction

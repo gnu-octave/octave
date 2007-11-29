@@ -19,8 +19,10 @@
 ## Undocumented internal function.
 
 function retval = __axes_limits__ (fcn, varargin)
+
   retval = [];
-  fcnmode = sprintf("%smode", fcn);
+
+  fcnmode = sprintf ("%smode", fcn);
 
   [h, varargin, nargin] = __plt_get_axis_arg__ (fcn, varargin{:});
 
@@ -45,4 +47,5 @@ function retval = __axes_limits__ (fcn, varargin)
       endif
     endif
   endif
+
 endfunction

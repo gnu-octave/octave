@@ -39,7 +39,7 @@
 
 ## Author: jwe
 
-function h = surface (varargin)
+function retval = surface (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("surface", varargin{:});
 
@@ -56,8 +56,9 @@ function h = surface (varargin)
   endif
 
   if (nargout > 0)
-    h = tmp;
+    retval = tmp;
   endif
+
 endfunction
 
 function [h, bad_usage] = __surface__ (ax, varargin)

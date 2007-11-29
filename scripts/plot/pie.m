@@ -59,7 +59,6 @@ function retval = pie (varargin)
     end_unwind_protect
   endif
 
-
   if (nargout > 0)
     retval = tmp;
   endif

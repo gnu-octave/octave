@@ -49,12 +49,13 @@
 
 function [c, h] = contour (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});
+  [xh, varargin] = __plt_get_axis_arg__ ("contour", varargin{:});
+
   oldh = gca ();
   unwind_protect
-    axes (h);
+    axes (xh);
     newplot ();
-    [ctmp, htmp] = __contour__ (h, NaN, varargin{:});
+    [ctmp, htmp] = __contour__ (xh, NaN, varargin{:});
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect

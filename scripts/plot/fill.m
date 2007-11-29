@@ -25,11 +25,13 @@
 ## Create one or more filled patch objects, returning a patch object for each.
 ## @end deftypefn
 
-function h = fill (varargin)
+function retval = fill (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("fill", varargin{:});
+
   htmp = [];
   iargs = __find_patches__ (varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);
@@ -52,7 +54,7 @@ function h = fill (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    h = htmp;
+    retval = htmp;
   endif
 
 endfunction

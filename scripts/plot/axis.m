@@ -119,6 +119,7 @@
 function varargout = axis (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ("axis", varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);

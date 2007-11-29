@@ -44,12 +44,17 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     endif
   else
     f = get (0, "currentfigure");
-    if (! isempty (f))
-      h = get (f, 'currentaxes');
-    elseif (nogca)
-      h = NaN;
+    if (isempty (f))
+      h = [];
     else
-      h = gca ();
+      h = get (f, 'currentaxes');
+    endif
+    if (isempty (h))
+      if (nogca)
+	h = NaN;
+      else
+	h = gca ();
+      endif
     endif
     if (nargin < 2)
       varargin = {};

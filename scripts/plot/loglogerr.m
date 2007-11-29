@@ -41,6 +41,7 @@
 function retval = loglogerr (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("loglogerr", varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);
@@ -53,7 +54,6 @@ function retval = loglogerr (varargin)
     if (nargout > 0)
       retval = tmp;
     endif
-
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect

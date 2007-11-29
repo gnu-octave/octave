@@ -32,7 +32,7 @@ function retval = meshz (varargin)
   [h, varargin, nargin] = __plt_get_axis_arg__ ("meshz", varargin{:});
 
   ioff = nargin + 1;
-  for i = 1 : nargin
+  for i = 1:nargin
     if (ischar (varargin{i}))
       ioff = i;
       break;
@@ -47,8 +47,8 @@ function retval = meshz (varargin)
   if (ioff == 2)
     z = varargin{1};
     [m, n] = size (z);
-    x = 1 : n;
-    y = (1 : m).';
+    x = 1:n;
+    y = (1:m).';
   else
     x = varargin{1};
     y = varargin{2};

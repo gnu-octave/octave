@@ -40,6 +40,7 @@
 function varargout = caxis (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ("caxis", varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);

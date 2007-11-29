@@ -111,6 +111,7 @@
 function errorbar (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
+
   oldh = gca ();
   unwind_protect
     axes (h);

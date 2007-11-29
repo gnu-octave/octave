@@ -127,6 +127,7 @@ function [Nx, Ny, Nz] = surfnorm (varargin)
     Ny = ny;
     Nz = nz;
   endif
+
 endfunction
 
 %!demo

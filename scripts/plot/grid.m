@@ -41,6 +41,7 @@ function grid (varargin)
   persistent minor_on = false;
 
   [ax, varargin, nargs] = __plt_get_axis_arg__ ("grid", varargin{:});
+
   if (nargs > 1)
     print_usage ();
   elseif (nargs == 0)

@@ -1,3 +1,15 @@
+2007-11-29  John W. Eaton  <jwe@octave.org>
+
+	* plot/contour.m, plot/contour3.m, plot/fill.m, plot/patch.m,
+	plot/surf.m, plot/surface.m: Don't return handle value unless
+	requested.
+
+	* plot/patch.m: Omit isnan check on handle returned from
+	__plt_get_axis_arg__.
+
+	* plot/__plt_get_axis_arg__.m: Don't fail if current figure exists
+	but has no axes.
+
 2007-11-28  David Bateman  <dbateman@free.fr>
 
 	* __plt_get_axis_handle__.m: Also allow hggroup and return axes

@@ -54,17 +54,17 @@
 
 function [X_out, Y_out, Z_out] = peaks (x, y)
 
-  if nargin == 0
-    x = y = linspace(-3,3,49);
-  elseif nargin == 1
+  if (nargin == 0)
+    x = y = linspace (-3, 3, 49);
+  elseif (nargin == 1)
     if length(x) > 1
       y = x;
     else
-      x = y = linspace(-3,3,x);
+      x = y = linspace (-3, 3, x);
     endif
   endif
 
-  if (isvector(x) && isvector(y))
+  if (isvector (x) && isvector (y))
     [X, Y] = meshgrid (x, y);
   else
     X = x;
@@ -75,9 +75,9 @@ function [X_out, Y_out, Z_out] = peaks (x, y)
       - 10 * (X / 5 - X .^ 3 - Y .^ 5) .* exp(- X .^ 2 - Y .^ 2) \
       - 1 / 3 * exp(- (X + 1) .^ 2 - Y .^ 2);
 
-  if nargout == 0
+  if (nargout == 0)
     mesh (x, y, Z);
-  elseif nargout == 1
+  elseif (nargout == 1)
     X_out = Z;
   else
     X_out = X;

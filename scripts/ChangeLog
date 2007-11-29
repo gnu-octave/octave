@@ -1,5 +1,12 @@
 2007-11-29  David Bateman  <dbateman@free.fr>
 
+	* plot/pareto.m: New file.
+	* plot/Makefile.in (SOURCES): Add it to the sources.
+	* plot/__go_draw_axes__.m (do_tics1): Replace "%" with "%%" in tic
+	marks to avoid gnuplot error about formating. More colorspec to
+	after the tics.
+	* plot/plotyy.m: More generic check for appropriate axis color.
+
 	* plot/__stem__.m: New file based on old stem.m expanded to treat
 	2- and 3-D.
 	* plot/stem3.m: New function.

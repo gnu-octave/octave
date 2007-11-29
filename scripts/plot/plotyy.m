@@ -93,7 +93,8 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
   xlim = [min([x1(:); x2(:)]), max([x1(:); x2(:)])];
 
   h1 = feval (fun1, x1, y1);
-  set (ax(1), "ycolor", get (h1(1), "color"));
+
+  set (ax(1), "ycolor", getcolor (h1(1)));
   set (ax(1), "position", get (ax(1), "outerposition"));
   set (ax(1), "xlim", xlim);
 
@@ -105,7 +106,20 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   h2 = feval (fun2, x2, y2);
   set (ax(2), "yaxislocation", "right");
-  set (ax(2), "ycolor", get (h2(1), "color"));
+  set (ax(2), "ycolor", getcolor (h2(1)));
   set (ax(2), "position", get (ax(1), "outerposition"));
   set (ax(2), "xlim", xlim);
+endfunction
+
+function color = getcolor (ax)
+  obj = get (ax);
+  if (isfield (obj, "color"))
+    color = obj.color;
+  elseif (isfield (obj, "facecolor") && ! ischar (obj.facecolor))
+    color = obj.facecolor;
+  elseif (isfield (obj, "edgecolor") && !  ischar (obj.edgecolor))
+    color = obj.edgecolor;
+  else
+    color = [0, 0, 0];
+  endif
 endfunction

@@ -1590,12 +1590,13 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream, mi
 	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	if (mirror)
-	  fprintf (plot_stream, "set %stics %s (", ax, colorspec);
+	  fprintf (plot_stream, "set %stics (", ax);
 	else
-	  fprintf (plot_stream, "set %stics nomirror %s (", ax, colorspec);
+	  fprintf (plot_stream, "set %stics nomirror (", ax);
 	endif
 	for i = 1:ntics
-	  fprintf (plot_stream, " \"%s\" %g", labels(k++), tics(i))
+	  fprintf (plot_stream, " \"%s\" %g", 
+		   regexprep (labels(k++), "%", "%%"), tics(i))
 	  if (i < ntics)
 	    fputs (plot_stream, ", ");
 	  endif
@@ -1603,7 +1604,7 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream, mi
 	    k = 1;
 	  endif
 	endfor
-	fputs (plot_stream, ");\n");
+	fprintf (plot_stream, ") %s;\n", colorspec);
       else
 	error ("unsupported type of ticklabel");
       endif

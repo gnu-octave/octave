@@ -108,6 +108,7 @@ SOURCES = \
   ndgrid.m \
   newplot.m \
   orient.m \
+  pareto.m \
   patch.m \
   pcolor.m \
   peaks.m \

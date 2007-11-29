@@ -37,6 +37,10 @@
 
 function h = stem3 (varargin)
 
+  if (nargin < 3 || nargin > 4)
+    print_usage ();
+  endif
+
   tmp = __stem__ (true, varargin{:});
 
   if (nargout > 0)

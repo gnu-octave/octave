@@ -23,11 +23,13 @@
 
 function h = __stem__ (have_z, varargin)
 
-  [ax, varargin, nargin] = __plt_get_axis_arg__ ("stem", varargin{:});
-
-  if (nargin < 1 || nargin > 4)
-    print_usage ();
+  if (have_z)
+    caller = "stem3";
+  else
+    caller = "stem";
   endif
+
+  [ax, varargin, nargin] = __plt_get_axis_arg__ (caller, varargin{:});
 
   [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin{:});
 
@@ -81,6 +83,12 @@ endfunction
 
 function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
 
+  if (have_z)
+    caller = "stem3";
+  else
+    caller = "stem";
+  endif
+
   ## set specifiers to default values
   [lc, ls, mc, ms] = set_default_values ();
   dofill = 0;
@@ -92,14 +100,14 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
   if (nargin == 2)
     if (have_z)
       z = varargin{1};
-      x = 1 : rows (z);
-      y = 1 : columns (z);
+      x = 1:rows (z);
+      y = 1:columns (z);
     else
       y = varargin{1};
       if (isvector (y))
-	x = 1:length(y);
+	x = 1:length (y);
       elseif (ismatrix (y))
-	x = 1:rows(y);
+	x = 1:rows (y);
       else 
 	error ("stem: Y must be a matrix");
       endif # in each case, x & y will be defined
@@ -115,18 +123,18 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
 	dofill = 1;
       else
 	## parse the linespec
-	[lc, ls, mc, ms] = stem_line_spec (varargin{2});
+	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{2});
       endif
       if (have_z)
 	z = varargin{1};
-	x = 1 : rows (z);
-	y = 1 : columns (z);
+	x = 1:rows (z);
+	y = 1:columns (z);
       else
 	y = varargin{1};
 	if (isvector (y))
-	  x = 1:length(y);
+	  x = 1:length (y);
 	elseif (ismatrix (y))
-	  x = 1:rows(y);
+	  x = 1:rows (y);
 	else
 	  error ("stem: Y must be a matrix");
 	endif # in each case, x & y will be defined
@@ -156,19 +164,19 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
 	fill_2 = 1; # be sure, no second "fill" is in the arguments
       else
 	## must be a linespec
-	[lc, ls, mc, ms] = stem_line_spec (varargin{2});
+	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{2});
 	linespec_2 = 1;
       endif
       if (have_z)
 	z = varargin{1};
-	x = 1 : rows (z);
-	y = 1 : columns (z);
+	x = 1:rows (z);
+	y = 1:columns (z);
       else
 	y = varargin{1};
 	if (isvector (y))
-	  x = 1:length(y);
+	  x = 1:length (y);
 	elseif (ismatrix (y))
-	  x = 1:size(y,1);
+	  x = 1:rows (y);
 	else
 	  error ("stem: Y must be a matrix");
 	endif # in each case, x & y will be defined
@@ -191,21 +199,21 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
       endif
     endif # if ischar(varargin{2})
     if (! have_z)
-      ## varargin{3} must be char...
-      ## check for "fill" ..
-      if (strcmp ("fill", varargin{3}) & fill_2)
-	error ("stem:check_stem_arg: duplicate fill argument");
-      elseif (strcmp("fill", varargin{3}) & linespec_2)
+      ## varargin{3} must be char
+      ## check for "fill"
+      if (strcmp ("fill", varargin{3}) && fill_2)
+	error ("stem: duplicate fill argument");
+      elseif (strcmp("fill", varargin{3}) && linespec_2)
 	## must be "fill"
 	dofill = 1;
 	fill_2 = 1;
-      elseif (strcmp ("fill", varargin{3}) & ! linespec_2)
+      elseif (strcmp ("fill", varargin{3}) && ! linespec_2)
 	## must be "fill"
 	dofill = 1;
 	fill_2 = 1;
       elseif (! linespec_2)
 	## must be linespec
-	[lc, ls, mc, ms] = stem_line_spec (varargin{3});
+	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{3});
 	linespec_2 = 1;
       endif
     endif
@@ -221,7 +229,7 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
       x = varargin{1};
       y = varargin{2};
       if (! (ismatrix (x) && ismatrix (y)))
-	error ("X and Y must be matrices");
+	error ("stem: X and Y must be matrices");
       endif
     endif
 
@@ -231,21 +239,21 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
 	fill_2 = 1; # be sure, no second "fill" is in the arguments
       else
 	## must be a linespec
-	[lc, ls, mc, ms] = stem_line_spec (varargin{3});
+	[lc, ls, mc, ms] = stem_line_spec (caller, varargin{3});
 	linespec_2 = 1;
       endif
     endif
 
     ## check for "fill" ..
-    if (strcmp ("fill", varargin{4}) & fill_2)
-      error ("stem:check_stem_arg: duplicate fill argument");
-    elseif (strcmp ("fill", varargin{4}) & linespec_2)
+    if (strcmp ("fill", varargin{4}) && fill_2)
+      error ("%s: duplicate fill argument", caller);
+    elseif (strcmp ("fill", varargin{4}) && linespec_2)
       ## must be "fill"
       dofill = 1;
       fill_2 = 1;
-    elseif (! strcmp ("fill", varargin{4}) & ! linespec_2)
+    elseif (! strcmp ("fill", varargin{4}) && ! linespec_2)
       ## must be linespec
-      [lc, ls, mc, ms] = stem_line_spec (varargin{4});
+      [lc, ls, mc, ms] = stem_line_spec (caller, varargin{4});
       linespec_2 = 1;
     endif
   elseif (nargin == 6 && have_z)
@@ -261,33 +269,32 @@ function [x, y, z, dofill, lc, ls, mc, ms] = check_stem_arg (have_z, varargin)
       fill_2 = 1; # be sure, no second "fill" is in the arguments
     else
       ## must be a linespec
-      [lc, ls, mc, ms] = stem_line_spec (varargin{4});
+      [lc, ls, mc, ms] = stem_line_spec (caller, varargin{4});
       linespec_2 = 1;
     endif
 
     ## check for "fill" ..
-    if (strcmp ("fill", varargin{5}) & fill_2)
-      error ("stem3:check_stem_arg: duplicate fill argument");
-    elseif (strcmp ("fill", varargin{5}) & linespec_2)
+    if (strcmp ("fill", varargin{5}) && fill_2)
+      error ("stem3: duplicate fill argument");
+    elseif (strcmp ("fill", varargin{5}) && linespec_2)
       ## must be "fill"
       dofill = 1;
       fill_2 = 1;
-    elseif (! strcmp ("fill", varargin{5}) & ! linespec_2)
+    elseif (! strcmp ("fill", varargin{5}) && ! linespec_2)
       ## must be linespec
-      [lc, ls, mc, ms] = stem_line_spec (varargin{5});
+      [lc, ls, mc, ms] = stem_line_spec (caller, varargin{5});
       linespec_2 = 1;
     endif
-  elseif (have_z)
-    error ("stem3: incorrect number of arguments");
   else
-    error ("stem: incorrect number of arguments");
+    error ("%s: incorrect number of arguments", caller);
   endif
 
 endfunction
 
-function [lc, ls, mc, ms] = stem_line_spec (str)
+function [lc, ls, mc, ms] = stem_line_spec (caller, str)
   if (! ischar (str))
-    error ("stem:stem_line_spec: wrong argument type, must be \"fill\" or a string of specifiers");
+    error ("%s: expecting argument to be \"fill\" or a string of specifiers",
+	   caller);
   endif
   [lc, ls, mc, ms] = set_default_values ();
   ## Parse the line specifier string.

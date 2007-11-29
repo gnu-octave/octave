@@ -94,6 +94,10 @@
 
 function h = stem (varargin)
 
+  if (nargin < 1 || nargin > 3)
+    print_usage ();
+  endif
+
   tmp = __stem__ (false, varargin{:});
 
   if (nargout > 0)

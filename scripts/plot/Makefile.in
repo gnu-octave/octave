@@ -65,6 +65,7 @@ SOURCES = \
   __pltopt__.m \
   __quiver__.m \
   __scatter__.m \
+  __stem__.m \
   ancestor.m \
   area.m \
   axes.m \
@@ -135,6 +136,7 @@ SOURCES = \
   spinmap.m \
   stairs.m \
   stem.m \
+  stem3.m \
   subplot.m \
   surf.m \
   surface.m \

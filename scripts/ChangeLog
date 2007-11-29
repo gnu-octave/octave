@@ -1,3 +1,11 @@
+2007-11-29  David Bateman  <dbateman@free.fr>
+
+	* plot/__stem__.m: New file based on old stem.m expanded to treat
+	2- and 3-D.
+	* plot/stem3.m: New function.
+	* plot/Makefile.in (SOURCES): Add them to the sources.
+	* plot/stem.m: Adapt to use __stem__.
+
 2007-11-29  John W. Eaton  <jwe@octave.org>
 
 	* plot/contour.m, plot/contour3.m, plot/fill.m, plot/patch.m,

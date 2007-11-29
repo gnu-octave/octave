@@ -79,10 +79,10 @@ function h = pareto (varargin)
   [x, idx] = sort (x, "descend");
   y = y (idx);
   cdf = cumsum (x);
-  maxcdf = cdf(end);
-  cdf = cdf ./ cdf (end);
+  maxcdf = max(cdf);
+  cdf = cdf ./ maxcdf;
   [dummy, idx95] = min (abs (cdf - .95));
-  idx95 - idx95(1);
+  idx95 = idx95(1);
 
   [ax, hbar, hline] = plotyy (ax, 1 : idx95, x (1 : idx95), 
 			      1 : length(cdf), 100 .* cdf, 

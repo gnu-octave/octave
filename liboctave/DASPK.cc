@@ -26,13 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
 
 #include <sstream>
 
 #include "DASPK.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-math.h"
 #include "quit.h"
 
 typedef octave_idx_type (*daspk_fcn_ptr) (const double&, const double*,

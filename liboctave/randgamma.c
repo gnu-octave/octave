@@ -81,10 +81,10 @@ Dirichlet(a1,...,ak) for ai > 0
 #include <config.h>
 #endif
 
-#include <math.h>
 #include <stdio.h>
 
 #include "lo-ieee.h"
+#include "lo-math.h"
 #include "randmtzig.h"
 #include "randgamma.h"
 

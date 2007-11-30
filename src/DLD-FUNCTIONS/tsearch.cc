@@ -24,12 +24,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 #include <fstream>
-#include <cmath>
 #include <string>
 
 #include "oct.h"
 #include "parse.h"
 #include "lo-ieee.h"
+#include "lo-math.h"
 
 inline double max(double a, double b, double c)
 {

@@ -26,13 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
 
 #include <sstream>
 
 #include "LSODE.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "lo-math.h"
 #include "quit.h"
 
 typedef octave_idx_type (*lsode_fcn_ptr) (const octave_idx_type&, const double&, double*,

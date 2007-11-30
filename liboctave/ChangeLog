@@ -1,3 +1,19 @@
+2007-11-30  John W. Eaton  <jwe@octave.org>
+
+	* lo-math.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+	* liboctave/Array2.h, liboctave/ArrayN.h, liboctave/CmplxDET.cc,
+	liboctave/DASPK.cc, liboctave/DASPK.h, liboctave/DASRT.cc,
+	liboctave/DASRT.h, liboctave/DASSL.cc, liboctave/DASSL.h,
+	liboctave/LSODE.cc, liboctave/LSODE.h, liboctave/NLEqn.h,
+	liboctave/Quad.h, liboctave/Range.cc, liboctave/dbleDET.cc,
+	liboctave/lo-cieee.c, liboctave/lo-ieee.cc,
+	liboctave/lo-mappers.cc, liboctave/oct-time.cc,
+	liboctave/oct-time.h, liboctave/randgamma.c,
+	liboctave/randmtzig.c, liboctave/randpoisson.c: Include lo-math.h
+	instead of cmath or math.h.
+	* lo-mappers.h: Don't include sunmath.h here.
+
 2007-11-26  John W. Eaton  <jwe@octave.org>
 
 	* idx-vector.h (idx_vector::idx_vector_rep (const intNDArray<U>&)):

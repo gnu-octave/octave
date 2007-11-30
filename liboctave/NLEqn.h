@@ -25,9 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_NLEqn_h 1
 
 #include <cfloat>
-#include <cmath>
 
 #include "NLEqn-opts.h"
+#include "lo-math.h"
 
 class
 OCTAVE_API

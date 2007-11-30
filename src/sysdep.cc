@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
 #include <cstddef>
 #include <cstdio>
 #include <cstdlib>
@@ -73,6 +72,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "lo-mappers.h"
+#include "lo-math.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "quit.h"

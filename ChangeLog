@@ -1,3 +1,7 @@
+2007-11-30  Moritz Borgmann  <octave@moriborg.de>
+
+	* configure.in: Also check for sunmath.h.
+
 2007-11-26  David Bateman  <dbateman@free.fr>
 
 	* PROJECTS: condest now implemented.

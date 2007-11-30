@@ -147,7 +147,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <math.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -155,6 +154,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <sys/time.h>
 #endif
 
+#include "lo-math.h"
 #include "randmtzig.h"
    
 /* FIXME may want to suppress X86 if sizeof(long)>4 */

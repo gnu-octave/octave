@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <climits>
-#include <cmath>
 #include <ctime>
 
 #ifdef HAVE_UNISTD_H
@@ -42,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "lo-error.h"
+#include "lo-math.h"
 #include "lo-utils.h"
 #include "oct-time.h"
 

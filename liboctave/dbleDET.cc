@@ -26,10 +26,10 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
 
 #include "dbleDET.h"
 #include "lo-mappers.h"
+#include "lo-math.h"
 
 bool
 DET::value_will_overflow (void) const

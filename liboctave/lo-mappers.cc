@@ -26,15 +26,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
-
-#if defined (HAVE_SUNMATH_H)
-#include <sunmath.h>
-#endif
 
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "lo-math.h"
 #include "lo-specfun.h"
 #include "lo-utils.h"
 #include "oct-cmplx.h"

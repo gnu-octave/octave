@@ -26,7 +26,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
 
 #if defined (HAVE_FLOATINGPOINT_H)
 #include <floatingpoint.h>
@@ -48,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-math.h"
 #include "mach-info.h"
 
 void

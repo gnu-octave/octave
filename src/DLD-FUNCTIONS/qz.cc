@@ -32,7 +32,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "config.h"
 
 #include <cfloat>
-#include <cmath>
 
 #include <iostream>
 #include <iomanip>
@@ -40,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CmplxQRP.h"
 #include "dbleQR.h"
 #include "f77-fcn.h"
+#include "lo-math.h"
 #include "quit.h"
 
 #include "defun-dld.h"

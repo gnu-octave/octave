@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (EXCEPTION_IN_MATH)
 
-#include <math.h>
+#include "lo-math.h"
 
 int
 matherr (struct exception *x)

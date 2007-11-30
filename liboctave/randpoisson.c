@@ -35,12 +35,12 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <math.h>
 #include <stdio.h>
 
 #include "f77-fcn.h"
-#include "lo-ieee.h"
 #include "lo-error.h"
+#include "lo-ieee.h"
+#include "lo-math.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
 
@@ -72,8 +72,6 @@ xlgamma (double x)
 }
 
 /* ---- pprsc.c from Stadloeber's winrand --- */
-
-#include <math.h>
 
 /* flogfak(k) = ln(k!) */
 static double 

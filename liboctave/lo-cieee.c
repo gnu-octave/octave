@@ -25,7 +25,6 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <float.h>
-#include <math.h>
 
 #if defined (HAVE_FLOATINGPOINT_H)
 #include <floatingpoint.h>
@@ -46,6 +45,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "lo-ieee.h"
+#include "lo-math.h"
 
 #if ! defined (HAVE_ISNAN) && defined (HAVE__ISNAN)
 #define isnan _isnan

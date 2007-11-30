@@ -36,11 +36,11 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
 
 #include <string>
 
 #include "lo-ieee.h"
+#include "lo-math.h"
 #include "str-vec.h"
 #include "quit.h"
 

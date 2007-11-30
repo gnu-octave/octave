@@ -22,13 +22,14 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <iostream>
 #include <fstream>
-#include <cmath>
 #include <string>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
+#include "lo-math.h"
+//FIXME -- Octave sources should use individual include files, not oct.h.
 #include "oct.h"
 
 DEFUN_DLD (__dsearchn__, args, ,

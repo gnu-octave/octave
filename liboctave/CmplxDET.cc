@@ -27,10 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 #include <cfloat>
-#include <cmath>
 
 #include "CmplxDET.h"
 #include "lo-mappers.h"
+#include "lo-math.h"
 #include "oct-cmplx.h"
 
 bool

@@ -29,12 +29,12 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cassert>
 #include <climits>
-#include <cmath>
 #include <cstdlib>
 
 #include "Array.h"
 #include "Array2.h"
 #include "lo-error.h"
+#include "lo-math.h"
 
 class idx_vector;
 

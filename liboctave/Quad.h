@@ -25,9 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_Quad_h 1
 
 #include <cfloat>
-#include <cmath>
 
 #include "dColVector.h"
+#include "lo-math.h"
 
 #if !defined (octave_Quad_typedefs)
 #define octave_Quad_typedefs 1

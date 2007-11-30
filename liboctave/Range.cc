@@ -26,13 +26,13 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cfloat>
-#include <cmath>
 
 #include <iostream>
 #include <limits>
 
 #include "Range.h"
 #include "lo-mappers.h"
+#include "lo-math.h"
 #include "lo-utils.h"
 
 bool

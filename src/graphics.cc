@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
+#include <cfloat>
 
 #include <algorithm>
 #include <list>
@@ -40,6 +41,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
 #include "parse.h"
+#include "unwind-prot.h"
 
 static void
 gripe_set_invalid (const std::string& pname)
@@ -1087,10 +1089,10 @@ axes::properties::properties (const graphics_handle& mh,
     ylim (),
     zlim (),
     clim (),
-    xlimmode ("auto"),
-    ylimmode ("auto"),
-    zlimmode ("auto"),
-    climmode ("auto"),
+    xlimmode (radio_values ("{auto}|manual")),
+    ylimmode (radio_values ("{auto}|manual")),
+    zlimmode (radio_values ("{auto}|manual")),
+    climmode (radio_values ("{auto}|manual")),
     xlabel (octave_NaN),
     ylabel (octave_NaN),
     zlabel (octave_NaN),
@@ -1115,9 +1117,9 @@ axes::properties::properties (const graphics_handle& mh,
     xcolor (),
     ycolor (),
     zcolor (),
-    xscale ("linear"),
-    yscale ("linear"),
-    zscale ("linear"),
+    xscale (radio_values ("{linear}|log")),
+    yscale (radio_values ("{linear}|log")),
+    zscale (radio_values ("{linear}|log")),
     xdir ("normal"),
     ydir ("normal"),
     zdir ("normal"),
@@ -1370,10 +1372,10 @@ axes::properties::set_defaults (base_graphics_object& obj,
   cl(1) = 1;
   clim = cl;
   
-  xlimmode = "auto";
-  ylimmode = "auto";
-  zlimmode = "auto";
-  climmode = "auto";
+  xlimmode = radio_property (radio_values ("{auto}|manual"));
+  ylimmode = radio_property (radio_values ("{auto}|manual"));
+  zlimmode = radio_property (radio_values ("{auto}|manual"));
+  climmode = radio_property (radio_values ("{auto}|manual"));
   xlabel = octave_NaN;
   ylabel = octave_NaN;
   zlabel = octave_NaN;
@@ -1398,9 +1400,9 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xcolor = color_property ("black");
   ycolor = color_property ("black");
   zcolor = color_property ("black");
-  xscale = "linear";
-  yscale = "linear";
-  zscale = "linear";
+  xscale = radio_property (radio_values ("{linear}|log"));
+  yscale = radio_property (radio_values ("{linear}|log"));
+  zscale = radio_property (radio_values ("{linear}|log"));
   xdir = "normal";
   ydir = "normal";
   zdir = "normal";
@@ -1720,10 +1722,10 @@ axes::properties::factory_defaults (void)
   
   m["clim"] = cl;
 
-  m["xlimmode"] = "auto";
-  m["ylimmode"] = "auto";
-  m["zlimmode"] = "auto";
-  m["climmode"] = "auto";
+  m["xlimmode"] = radio_property (radio_values ("{auto}|manual"));
+  m["ylimmode"] = radio_property (radio_values ("{auto}|manual"));
+  m["zlimmode"] = radio_property (radio_values ("{auto}|manual"));
+  m["climmode"] = radio_property (radio_values ("{auto}|manual"));
   m["xlabel"] = octave_NaN;
   m["ylabel"] = octave_NaN;
   m["zlabel"] = octave_NaN;
@@ -1748,9 +1750,9 @@ axes::properties::factory_defaults (void)
   m["xcolor"] = color_property ("black");
   m["ycolor"] = color_property ("black");
   m["zcolor"] = color_property ("black");
-  m["xscale"] = "linear";
-  m["yscale"] = "linear";
-  m["zscale"] = "linear";
+  m["xscale"] = radio_property (radio_values ("{linear}|log"));
+  m["yscale"] = radio_property (radio_values ("{linear}|log"));
+  m["zscale"] = radio_property (radio_values ("{linear}|log"));
   m["xdir"] = "normal";
   m["ydir"] = "normal";
   m["zdir"] = "normal";
@@ -1791,9 +1793,281 @@ axes::get_default (const caseless_str& name) const
   return retval;
 }
 
-void
-axes::update_axis_limits (const std::string& /* axis_type */)
+static void
+check_limit_val (double& min_val, double& max_val, double& min_pos, double val)
 {
+  if (! (xisinf (val) || xisnan (val)))
+    {
+      if (val < min_val)
+	min_val = val;
+
+      if (val > max_val)
+	max_val = val;
+
+      if (val > 0 && val < min_pos)
+	min_pos = val;
+    }
+}
+
+static void
+check_limit_vals (double& min_val, double& max_val, double& min_pos,
+		  const data_property& data)
+{
+  check_limit_val (min_val, max_val, min_pos, data.min_val ());
+  check_limit_val (max_val, max_val, min_pos, data.max_val ());
+  check_limit_val (min_pos, max_val, min_pos, data.min_pos ());
+}
+
+// Attempt to make "nice" limits from the actual max and min of the
+// data.  For log plots, we will also use the smallest strictly positive
+// value.
+
+static Matrix
+get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
+{
+  Matrix retval;
+
+  double min_val = xmin;
+  double max_val = xmax;
+
+  if (! (xisinf (min_val) || xisinf (max_val)))
+    {
+      if (logscale)
+	{
+	  if (xisinf (min_pos))
+	    {
+	      // warning ("axis: logscale with no positive values to plot");
+	      return retval;
+	    }
+
+	  if (min_val <= 0)
+	    {
+	      warning ("axis: omitting nonpositive data in log plot");
+	      min_val = min_pos;
+	    }
+	  // FIXME -- maybe this test should also be relative?
+	  if (std::abs (min_val - max_val) < sqrt (DBL_EPSILON))
+	    {
+	      min_val *= 0.9;
+	      max_val *= 1.1;
+	    }
+	  min_val = pow (10, floor (log10 (min_val)));
+	  max_val = pow (10, ceil (log10 (max_val)));
+	}
+      else
+	{
+	  if (min_val == 0 && max_val == 0)
+	    {
+	      min_val = -1;
+	      max_val = 1;
+	    }
+	  // FIXME -- maybe this test should also be relative?
+	  else if (std::abs (min_val - max_val) < sqrt (DBL_EPSILON))
+	    {
+	      min_val -= 0.1 * std::abs (min_val);
+	      max_val += 0.1 * std::abs (max_val);
+	    }
+	  // FIXME -- to do a better job, we should consider the tic spacing.
+	  double scale = pow (10, floor (log10 (max_val - min_val) - 1));
+	  min_val = scale * floor (min_val / scale);
+	  max_val = scale * ceil (max_val / scale);
+	}
+    }
+
+  retval.resize (1, 2);
+
+  retval(0) = min_val;
+  retval(1) = max_val;
+
+  return retval;
+}
+
+static bool updating_axis_limits = false;
+
+void
+axes::update_axis_limits (const std::string& axis_type)
+{
+  if (updating_axis_limits)
+    return;
+
+  Matrix kids = xproperties.get_children ();
+
+  octave_idx_type n = kids.numel ();
+
+  double min_val = octave_Inf;
+  double max_val = -octave_Inf;
+  double min_pos = octave_Inf;
+
+  radio_property tmp;
+
+  char update_type = 0;
+
+  Matrix limits;
+
+  if (axis_type == "xdata" || axis_type == "xscale"
+      || axis_type == "xldata" || axis_type == "xudata"
+      || axis_type == "xlimmode")
+    {
+      tmp = xproperties.get_xlimmode ();
+
+      if (tmp.current_value () == "auto")
+	{
+	  for (octave_idx_type i = 0; i < n; i++)
+	    {
+	      graphics_object obj = gh_manager::get_object (kids(i));
+
+	      if (obj.isa ("line") || obj.isa ("image")
+		  || obj.isa ("patch") || obj.isa ("surface"))
+		{
+		  data_property xdata = obj.get_xdata ();
+
+		  check_limit_vals (min_val, max_val, min_pos, xdata);
+
+		  if (obj.isa ("line"))
+		    {
+		      data_property xldata = obj.get_xldata ();
+		      data_property xudata = obj.get_xudata ();
+
+		      check_limit_vals (min_val, max_val, min_pos, xldata);
+		      check_limit_vals (min_val, max_val, min_pos, xudata);
+		    }
+		}
+	    }
+
+	  tmp = xproperties.get_xscale ();
+
+	  limits = get_axis_limits (min_val, max_val, min_pos,
+				    tmp.current_value () == "log");
+
+	  update_type = 'x';
+	}
+    }
+  else if (axis_type == "ydata" || axis_type == "yscale"
+	   || axis_type == "ldata" || axis_type == "udata"
+	   || axis_type == "ylimmode")
+    {
+      tmp = xproperties.get_ylimmode ();
+
+      if (tmp.current_value () == "auto")
+	{
+	    for (octave_idx_type i = 0; i < n; i++)
+	    {
+	      graphics_object obj = gh_manager::get_object (kids(i));
+
+	      if (obj.isa ("line") || obj.isa ("image")
+		|| obj.isa ("patch") || obj.isa ("surface"))
+		{
+		  data_property ydata = obj.get_ydata ();
+
+		  check_limit_vals (min_val, max_val, min_pos, ydata);
+
+		  if (obj.isa ("line"))
+		    {
+		      data_property ldata = obj.get_ldata ();
+		      data_property udata = obj.get_udata ();
+
+		      check_limit_vals (min_val, max_val, min_pos, ldata);
+		      check_limit_vals (min_val, max_val, min_pos, udata);
+		    }
+		}
+	    }
+
+	  tmp = xproperties.get_yscale ();
+
+	  limits = get_axis_limits (min_val, max_val, min_pos,
+				    tmp.current_value () == "log");
+
+	  update_type = 'y';
+	}
+    }
+  else if (axis_type == "zdata" || axis_type == "zscale"
+	   || axis_type == "zlimmode")
+    {
+      tmp = xproperties.get_zlimmode ();
+
+      if (tmp.current_value () == "auto")
+	{
+	  for (octave_idx_type i = 0; i < n; i++)
+	    {
+	      graphics_object obj = gh_manager::get_object (kids(i));
+
+	      if (obj.isa ("line") || obj.isa ("patch") || obj.isa ("surface"))
+		{
+		  data_property zdata = obj.get_zdata ();
+
+		  check_limit_vals (min_val, max_val, min_pos, zdata);
+		}
+	    }
+
+	  tmp = xproperties.get_zscale ();
+
+	  limits = get_axis_limits (min_val, max_val, min_pos,
+				    tmp.current_value () == "log");
+
+	  update_type = 'z';
+	}
+    }
+  else if (axis_type == "cdata" || axis_type == "climmode")
+    {
+      tmp = xproperties.get_climmode ();
+
+      if (tmp.current_value () == "auto")
+	{
+	  for (octave_idx_type i = 0; i < n; i++)
+	    {
+	      graphics_object obj = gh_manager::get_object (kids(i));
+
+	      if (obj.isa ("image") || obj.isa ("patch") || obj.isa ("surface"))
+		{
+		  data_property cdata = obj.get_cdata ();
+
+		  check_limit_vals (min_val, max_val, min_pos, cdata);
+		}
+	    }
+
+	  if (min_val == max_val)
+	    max_val = min_val + 1;
+
+	  limits.resize (1, 2);
+
+	  limits(0) = min_val;
+	  limits(1) = max_val;
+
+	  update_type = 'c';
+	}
+
+    }
+
+  unwind_protect_bool (updating_axis_limits);
+  updating_axis_limits = true;
+
+  switch (update_type)
+    {
+    case 'x':
+      xproperties.set_xlim (limits);
+      xproperties.set_xlimmode ("auto");
+      break;
+
+    case 'y':
+      xproperties.set_ylim (limits);
+      xproperties.set_ylimmode ("auto");
+      break;
+
+    case 'z':
+      xproperties.set_zlim (limits);
+      xproperties.set_zlimmode ("auto");
+      break;
+
+    case 'c':
+      xproperties.set_clim (limits);
+      xproperties.set_climmode ("auto");
+      break;
+
+    default:
+      break;
+    }
+
+  unwind_protect::run ();
 }
 
 std::string axes::properties::go_name ("axes");

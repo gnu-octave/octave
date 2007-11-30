@@ -130,11 +130,8 @@ private:
 class radio_property
 {
 public:
-  radio_property (const radio_values& v)
+  radio_property (const radio_values& v = radio_values ())
     : vals (v), current_val (v.default_value ()) { }
-
-  radio_property (const radio_values& v, const std::string& initial_value)
-    : vals (v), current_val (initial_value) { }
 
   radio_property (const radio_property& a)
     : vals (a.vals), current_val (a.current_val) { }
@@ -412,15 +409,13 @@ class data_property
 {
 public:
   data_property (const Matrix& m = Matrix ())
-    : data (m), min_val (octave_Inf), max_val (-octave_Inf),
-      min_pos (octave_Inf)
+    : data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
   {
     get_data_limits ();
   }
 
   data_property (const octave_value& val)
-    : data (), min_val (octave_Inf), max_val (-octave_Inf),
-      min_pos (octave_Inf)
+    : data (), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
   {
     data = val.matrix_value ();
 
@@ -432,9 +427,9 @@ public:
     if (&a != this)
       {
 	data = a.data;
-	min_val = a.min_val;
-	max_val = a.max_val;
-	min_pos = a.min_pos;
+	xmin = a.xmin;
+	xmax = a.xmax;
+	xminp = a.xminp;
       }
 
     return *this;
@@ -442,11 +437,15 @@ public:
 
   operator octave_value (void) const { return data; }
 
+  double min_val (void) const { return xmin; }
+  double max_val (void) const { return xmax; }
+  double min_pos (void) const { return xminp; }
+
 private:
   Matrix data;
-  double min_val;
-  double max_val;
-  double min_pos;
+  double xmin;
+  double xmax;
+  double xminp;
 
   void get_data_limits (void)
   {
@@ -462,14 +461,14 @@ private:
 
 	    if (! (xisinf (val) || xisnan (val)))
 	      {
-		if (val < min_val)
-		  min_val = val;
+		if (val < xmin)
+		  xmin = val;
 
-		if (val > max_val)
-		  max_val = val;
+		if (val > xmax)
+		  xmax = val;
 
-		if (val > 0 && val < min_pos)
-		  min_pos = val;
+		if (val > 0 && val < xminp)
+		  xminp = val;
 	      }
 	  }
       }
@@ -673,6 +672,60 @@ public:
 
   virtual void delete_children (void);
 
+  Matrix get_children (void) const { return children; }
+
+  // FIXME -- these functions should be generated automatically by the
+  // genprops.awk script.
+  //
+  // EMIT_BASE_PROPERTIES_GET_FUNCTIONS
+  virtual data_property get_xdata (void) const
+  {
+    error ("get: invalid property \"xdata\"");
+    return data_property ();
+  }
+
+  virtual data_property get_ydata (void) const
+  {
+    error ("get: invalid property \"ydata\"");
+    return data_property ();
+  }
+
+  virtual data_property get_zdata (void) const
+  {
+    error ("get: invalid property \"zdata\"");
+    return data_property ();
+  }
+
+  virtual data_property get_ldata (void) const
+  {
+    error ("get: invalid property \"ldata\"");
+    return data_property ();
+  }
+
+  virtual data_property get_udata (void) const
+  {
+    error ("get: invalid property \"udata\"");
+    return data_property ();
+  }
+
+  virtual data_property get_xldata (void) const
+  {
+    error ("get: invalid property \"xldata\"");
+    return data_property ();
+  }
+
+  virtual data_property get_xudata (void) const
+  {
+    error ("get: invalid property \"xudata\"");
+    return data_property ();
+  }
+
+  virtual data_property get_cdata (void) const
+  {
+    error ("get: invalid property \"cdata\"");
+    return data_property ();
+  }
+
 protected:
   std::string tag;
   std::string type;
@@ -779,7 +832,14 @@ public:
     return properties;
   }
 
-  virtual void update_axis_limits (const std::string& axis_type)
+  virtual const base_properties& get_properties (void) const
+  {
+    static base_properties properties;
+    error ("base_graphics_object::get_properties: invalid graphics object");
+    return properties;
+  }
+
+  virtual void update_axis_limits (const std::string&)
   {
     error ("base_graphics_object::update_axis_limits: invalid graphics object");
   }
@@ -891,6 +951,11 @@ public:
 
   base_properties& get_properties (void) { return rep->get_properties (); }
 
+  const base_properties& get_properties (void) const
+  {
+    return rep->get_properties ();
+  }
+
   void update_axis_limits (const std::string& axis_type)
   {
     rep->update_axis_limits (axis_type);
@@ -899,6 +964,58 @@ public:
   bool valid_object (void) const { return rep->valid_object (); }
 
   operator bool (void) const { return rep->valid_object (); }
+
+  // FIXME -- these functions should be generated automatically by the
+  // genprops.awk script.
+  //
+  // EMIT_GRAPHICS_OBJECT_GET_FUNCTIONS
+  data_property get_xdata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_xdata ();
+  }
+
+  data_property get_ydata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_ydata ();
+  }
+
+  data_property get_zdata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_zdata ();
+  }
+
+  data_property get_ldata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_ldata ();
+  }
+
+  data_property get_udata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_udata ();
+  }
+
+  data_property get_xldata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_xldata ();
+  }
+
+  data_property get_xudata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_xudata ();
+  }
+
+  data_property get_cdata (void) const
+  {
+    const base_properties& props = get_properties ();
+    return props.get_cdata ();
+  }
 
 private:
   base_graphics_object *rep;
@@ -1036,6 +1153,8 @@ public:
   void reparent (const graphics_handle& np) { xproperties.reparent (np); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
 
   void defaults (void) const
   {
@@ -1177,6 +1296,8 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  const base_properties& get_properties (void) const { return xproperties; }
+
   void defaults (void) const { gripe_not_implemented ("figure::defaults"); }
 
   bool valid_object (void) const { return true; }
@@ -1230,10 +1351,10 @@ public:
       octave_value ylim m
       octave_value zlim m
       octave_value clim m
-      octave_value xlimmode
-      octave_value ylimmode
-      octave_value zlimmode
-      octave_value climmode
+      radio_property xlimmode al
+      radio_property ylimmode al
+      radio_property zlimmode al
+      radio_property climmode al
       mutable graphics_handle xlabel GSO
       mutable graphics_handle ylabel GSO
       mutable graphics_handle zlabel GSO
@@ -1258,9 +1379,9 @@ public:
       color_property xcolor
       color_property ycolor
       color_property zcolor
-      octave_value xscale l
-      octave_value yscale l
-      octave_value zscale l
+      radio_property xscale al
+      radio_property yscale al
+      radio_property zscale al
       octave_value xdir
       octave_value ydir
       octave_value zdir
@@ -1361,6 +1482,8 @@ public:
   void reparent (const graphics_handle& np) { xproperties.reparent (np); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
 
   void defaults (void) const { gripe_not_implemented ("axes::defaults"); }
 
@@ -1472,6 +1595,8 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  const base_properties& get_properties (void) const { return xproperties; }
+
   void defaults (void) const { gripe_not_implemented ("line::defaults"); }
 
   bool valid_object (void) const { return true; }
@@ -1572,6 +1697,8 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  const base_properties& get_properties (void) const { return xproperties; }
+
   void defaults (void) const { gripe_not_implemented ("text::defaults"); }
 
   bool valid_object (void) const { return true; }
@@ -1663,6 +1790,8 @@ public:
   void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
 
   void defaults (void) const { gripe_not_implemented ("image::defaults"); }
 
@@ -1770,6 +1899,8 @@ public:
 
   base_properties& get_properties (void) { return xproperties; }
 
+  const base_properties& get_properties (void) const { return xproperties; }
+
   void defaults (void) const { gripe_not_implemented ("patch::defaults"); }
 
   bool valid_object (void) const { return true; }
@@ -1873,6 +2004,8 @@ public:
   void reparent (const graphics_handle& h) { xproperties.reparent (h); }
 
   base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
 
   void defaults (void) const { gripe_not_implemented ("surface::defaults"); }
 

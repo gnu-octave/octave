@@ -247,29 +247,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     is_image_data = [];
     hidden_removal = NaN;
 
-    xminp = yminp = zminp = cminp = Inf;
-    xmax = ymax = zmax = cmax = -Inf;
-    xmin = ymin = zmin = cmin = Inf;
+    xlim = axis_obj.xlim
+    ylim = axis_obj.ylim
+    zlim = axis_obj.zlim
+    clim = axis_obj.clim
 
-    ## This has to be done here as some of the code below depends on the
-    ## final clim.
-    if (cautoscale)
-      for i = 1:length (kids)
-	obj = get (kids(i));
-	if (isfield (obj, "cdata"))
-	  cdat = obj.cdata(:);
-	  [cmin, cmax, cminp] = get_data_limits (cmin, cmax, cminp, cdat);
-	endif
-      endfor
-      if (cmin == cmax)
-	cmax = cmin + 1;
-      endif      
-      clim = [cmin, cmax];
-    else
-      clim = axis_obj.clim;
-      if (clim(1) == clim(2))
-	clim = [clim(1), clim(1) + 1];
-      endif
+    if (! cautoscale && clim(1) == clim(2))
+      clim(2)++;
     endif
 
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
@@ -317,22 +301,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	    endif
 	    x_origin = min (img_xdata);
 	    y_origin = min (img_ydata);
-
-	    if (nd == 2)
-	      if (xautoscale)
-		xmin = min (xmin, min (img_xdata) - dx/2);
-		xmax = max (xmax, max (img_xdata) + dx/2);
-		xminp = min (xminp, min (img_xdata((img_xdata - dx/2)>0)) - dx/2);
-	      endif
-	      if (yautoscale)
-		ymin = min (ymin, min (img_ydata) - dy/2);
-		ymax = max (ymax, max (img_ydata) + dy/2);
-		yminp = min (yminp, min (img_ydata((img_ydata - dy/2)>0)) - dy/2);
-	      endif
-	    else
-	      ## Can have images in 3D, but the image routines don't seem
-	      ## to have a means of arbitrary projection.
-	    endif
 
 	    if (ndims (img_data) == 3)
 	      data{data_idx} = permute (img_data, [3, 1, 2])(:);
@@ -385,15 +353,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	    ydat = obj.ydata(:);
 	    zdat = obj.zdata(:);
 
-	    if (xautoscale)
-	      [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
-	    endif
-	    if (yautoscale)
-	      [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
-	    endif
-	    if (zautoscale)
-	      [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, zdat);
-	    endif
 	    data{data_idx} = [xdat, ydat, zdat]';
 	    usingclause{data_idx} = "using ($1):($2):($3)";
 	    fputs (plot_stream, "set parametric;\n");
@@ -449,49 +408,19 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 		else
 		  xhi = xdat+xudat;
 		endif
-		if (xautoscale)
-		  tx = [xdat; xlo; xhi];
-		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
-		endif
 		data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4):($5):($6)";
 		withclause{data_idx} = "with xyerrorbars";
 	      else
-		if (xautoscale)
-		  [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
-		endif
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4)";
 		withclause{data_idx} = "with yerrorbars";
 	      endif
 	    elseif (xerr)
-	      if (isempty (xldat))
-		xlo = xdat;
-	      else
-		xlo = xdat-xldat;
-	      endif
-	      if (isempty (xudat))
-		xhi = xdat;
-	      else
-		xhi = xdat+xudat;
-	      endif
-	      if (xautoscale)
-		tx = [xdat; xlo; xhi];
-		[xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
-	      endif
-	      if (yautoscale)
-		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
-	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
 	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
 	      withclause{data_idx} = "with xerrorbars";
 	    else
-	      if (xautoscale)
-		[xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat);
-	      endif
-	      if (yautoscale)
-		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ydat);
-	      endif
 	      data{data_idx} = [xdat, ydat]';
 	      usingclause{data_idx} = sprintf ("using ($1):($2) axes %s%s",
 					      xaxisloc_using, yaxisloc_using);
@@ -523,18 +452,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	     zcol = obj.zdata(:,i);
 	   else
 	     zcol = [];
-	   endif
-
-	   if (xautoscale)
-             [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xcol);
-	   endif
-	   if (yautoscale)
-	     [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ycol);
-	   endif
-	   if (! isempty (obj.zdata) && ! strncmp(obj.edgecolor, "none", 4))
-	     if (zautoscale)
-	       [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, zcol);
-	     endif
 	   endif
 
 	   if (! isnan (xcol) && ! isnan (ycol))
@@ -871,19 +788,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	    zdat = obj.zdata;
 	    cdat = obj.cdata;
 
-	    if (xautoscale)
-	      tx = xdat(:);
-	      [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, tx);
-	    endif
-	    if (yautoscale)
-	      ty = ydat(:);
-	      [ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ty);
-	    endif
-	    if (zautoscale)
-	      tz = zdat(:);
-	      [zmin, zmax, zminp] = get_data_limits (zmin, zmax, zminp, tz);
-	    endif
-
   	    err = false;
             if (! size_equal(zdat, cdat))
               err = true;
@@ -1053,14 +957,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 
     have_data = (! (isempty (data) || any (cellfun (@isempty, data))));
 
-    if (xautoscale && have_data)
-      xlim = get_axis_limits (xmin, xmax, xminp, xlogscale);
-      if (isempty (xlim))
-	return;
-      endif
-      set (h, "xlim", xlim, "xlimmode", "auto");
-    else
-      xlim = axis_obj.xlim;
+    if (isempty (xlim))
+      return;
     endif
     if (strcmpi (axis_obj.xdir, "reverse"))
       xdir = "reverse";
@@ -1070,14 +968,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     fprintf (plot_stream, "set %srange [%.15e:%.15e] %s;\n",
 	     xaxisloc, xlim, xdir);
 
-    if (yautoscale && have_data)
-      ylim = get_axis_limits (ymin, ymax, yminp, ylogscale);
-      if (isempty (ylim))
-	return;
-      endif
-      set (h, "ylim", ylim, "ylimmode", "auto");
-    else
-      ylim = axis_obj.ylim;
+    if (isempty (ylim))
+      return;
     endif
     if (strcmpi (axis_obj.ydir, "reverse"))
       ydir = "reverse";
@@ -1088,14 +980,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	     yaxisloc, ylim, ydir);
 
     if (nd == 3)
-      if (zautoscale && have_data)
-	zlim = get_axis_limits (zmin, zmax, zminp, zlogscale);
-	if (isempty (zlim))
-	  return;
-	endif
-	set (h, "zlim", zlim, "zlimmode", "auto");
-      else
-	zlim = axis_obj.zlim;
+      if (isempty (zlim))
+	return;
       endif
       if (strcmpi (axis_obj.zdir, "reverse"))
 	zdir = "reverse";
@@ -1105,9 +991,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       fprintf (plot_stream, "set zrange [%.15e:%.15e] %s;\n", zlim, zdir);
     endif
 
-    if (cautoscale && have_data)
-      set (h, "clim", clim, "climmode", "auto");
-    endif
     if (! any (isinf (clim)))
       fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
     endif
@@ -1273,62 +1156,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
   else
     print_usage ();
   endif
-
-endfunction
-
-function [xmin, xmax, xminp] = get_data_limits (xmin, xmax, xminp, xdat)
-  if (! isempty (xdat))
-    xdat = xdat(! isinf (xdat));
-    xmin = min (xmin, min (xdat));
-    xmax = max (xmax, max (xdat));
-    tmp = min (xdat(xdat > 0));
-    if (! isempty (tmp))
-      xminp = min (xminp, tmp);
-    endif
-  endif
-endfunction
-
-## Attempt to make "nice" limits from the actual max and min of the
-## data.  For log plots, we will also use the smallest strictly positive
-## value.
-
-function lim = get_axis_limits (min_val, max_val, min_pos, logscale)
-
-  if (! (isinf (min_val) || isinf (max_val)))
-    if (logscale)
-      if (isinf (min_pos))
-	lim = [];
-	warning ("axis: logscale with no positive values to plot");
-	return;
-      endif
-      if (min_val <= 0)
-	warning ("axis: omitting nonpositive data in log plot");
-	min_val = min_pos;
-      endif
-      ## FIXME -- maybe this test should also be relative?
-      if (abs (min_val - max_val) < sqrt (eps))
-	min_val *= 0.9;
-	max_val *= 1.1;
-      endif
-      min_val = 10 ^ floor (log10 (min_val));
-      max_val = 10 ^ ceil (log10 (max_val));
-    else
-      if (min_val == 0 && max_val == 0)
-	min_val = -1;
-	max_val = 1;
-      ## FIXME -- maybe this test should also be relative?
-      elseif (abs (min_val - max_val) < sqrt (eps))
-	min_val -= 0.1 * abs (min_val);
-	max_val += 0.1 * abs (max_val);
-      endif
-      ## FIXME -- to do a better job, we should consider the tic spacing.
-      scale = 10 ^ floor (log10 (max_val - min_val) - 1);
-      min_val = scale * floor (min_val / scale);
-      max_val = scale * ceil (max_val / scale);
-    endif
-  endif
-
-  lim = [min_val, max_val];
 
 endfunction
 

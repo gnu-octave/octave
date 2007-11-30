@@ -1,3 +1,36 @@
+2007-11-30  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (updating_axis_limits): New static variable.
+	(check_limit_val, check_limit_vals, get_axis_limits): New functions.
+	(axes::update_axis_limits): Make it work.
+	* graphics.h.in (base_properties::get_children): New function.
+	(base_properties::get_xdata, base_properties::get_ydata,
+	base_properties::get_zdata, base_properties::get_ldata,
+	base_properties::get_udata, base_properties::get_xldata,
+	base_properties::get_xudata, base_properties::get_cdata,
+	base_properties::get_properties (void) const):
+	New virtual functions.
+	(graphics_object::get_xdata, graphics_object::get_ydata,
+	graphics_object::get_zdata, graphics_object::get_ldata,
+	graphics_object::get_udata, graphics_object::get_xldata,
+	graphics_object::get_xudata, graphics_object::get_cdata,
+	graphics_object::get_properties (void) const,
+	root_figure::get_properties (void) const,
+	figure::get_properties (void) const,
+	axes::get_properties (void) const,
+	line::get_properties (void) const,
+	text::get_properties (void) const,
+	image::get_properties (void) const,
+	patch::get_properties (void) const,
+	surface::get_properties (void) const)): New functions.
+	(radio_property::radio_property (const radio_values&)):
+	Provide	default value for argument. 
+	(radio_property::radio_property (const radio_values&, const
+	std::string&)): Delete.
+	(axes::xlimmode, axes::ylimmode, axes::zlimmode, axes::climmode,
+	axes::xscale, axes::yscale, axes::zscale): Declare as
+	radio_property instead of octave_value values.  Adjust all uses.
+
 2007-11-29  John W. Eaton  <jwe@octave.org>
 
 	* pr-output.cc (octave_print_internal_template (std::ostream&,

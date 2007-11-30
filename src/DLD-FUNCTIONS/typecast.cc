@@ -30,7 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct.h"
 
 template <class LT, class RT>
-static void
+/* static */ void
 typecast (const Array<RT>& x, Array<LT>& y)
 {
   octave_idx_type n = x.length ();
@@ -38,7 +38,7 @@ typecast (const Array<RT>& x, Array<LT>& y)
   size_t ms = sizeof (LT);
 
   if (n * ns % ms != 0)
-      error ("typecast: incorrect number of input values to make output value");
+    error ("typecast: incorrect number of input values to make output value");
   else
     {
       octave_idx_type m = n * ns / ms;
@@ -50,8 +50,8 @@ typecast (const Array<RT>& x, Array<LT>& y)
 	    break;
 	  }
       y.resize (dv);
-      const unsigned char *xp = reinterpret_cast<const unsigned char *>
-	(x.fortran_vec ());
+      const unsigned char *xp
+	= reinterpret_cast<const unsigned char *> (x.fortran_vec ());
       unsigned char *yp = reinterpret_cast<unsigned char *>(y.fortran_vec ());
       for (octave_idx_type i = 0; 
 	   i < n * static_cast<octave_idx_type>(ns); i++)
@@ -157,11 +157,11 @@ typecast (@var{x}, 'uint8')\n\
 
 	  if (type == "single")
 	    error ("typecast: type 'single' is not supported");
-	  else if (type != "uint8" && type != "uint16" &&
-	      type != "uint32" && type != "uint64" &&
-	      type != "int8" && type != "int16" &&
-	      type != "int32" && type != "int64" &&
-	      type != "single" && type != "double")
+	  else if (type != "uint8" && type != "uint16"
+		   && type != "uint32" && type != "uint64"
+		   && type != "int8" && type != "int16"
+		   && type != "int32" && type != "int64"
+		   && type != "single" && type != "double")
 	    error ("typecast: unrecognized or invalid type");
 	  else if (args(0).is_sparse_type () || args(0).is_complex_type ())
 	    error ("typecast: sparse and complex types are invalid");

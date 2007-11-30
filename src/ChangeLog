@@ -6,6 +6,8 @@
 	* OPERATORS/op-sbm-sbm.cc (DEFDBLCONVFN): Delete useless macro
 	invocation.
 
+	* DLD-FUNCTIONS/typecast.cc (typecast): No longer static.
+
 2007-11-30  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (updating_axis_limits): New static variable.

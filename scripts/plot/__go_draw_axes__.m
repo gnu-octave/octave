@@ -247,10 +247,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     is_image_data = [];
     hidden_removal = NaN;
 
-    xlim = axis_obj.xlim
-    ylim = axis_obj.ylim
-    zlim = axis_obj.zlim
-    clim = axis_obj.clim
+    xlim = axis_obj.xlim;
+    ylim = axis_obj.ylim;
+    zlim = axis_obj.zlim;
+    clim = axis_obj.clim;
 
     if (! cautoscale && clim(1) == clim(2))
       clim(2)++;

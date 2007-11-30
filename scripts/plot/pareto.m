@@ -68,7 +68,7 @@ function h = pareto (varargin)
       if (ischar (y))
 	y = cellstr (y);
       else
-	y = num2cell (y);
+	y = cellfun (@(x) num2str (x), num2cell (y), "UniformOutput", false);
       endif
     endif
   else
@@ -81,8 +81,8 @@ function h = pareto (varargin)
   cdf = cumsum (x);
   maxcdf = max(cdf);
   cdf = cdf ./ maxcdf;
-  [dummy, idx95] = min (abs (cdf - .95));
-  idx95 = idx95(1);
+  cdf95 = cdf - 0.95;
+  idx95 = find(sign(cdf95(1:end-1)) != sign(cdf95(2:end)))(1);
 
   [ax, hbar, hline] = plotyy (ax, 1 : idx95, x (1 : idx95), 
 			      1 : length(cdf), 100 .* cdf, 

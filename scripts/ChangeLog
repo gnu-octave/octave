@@ -3,6 +3,13 @@
 	* plot/__go_draw_axes__.m: Don't compute data or axis limits.
 	(get_data_limits, get_axis_limits): Delete.
 
+2007-11-30  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m (do_tics_1): regexprep the cell array of
+	tick labels rather than one by one on the labels themselves.
+	* plot/pareto.m: Bug in numerical labels fixed. Bug in search for
+	95% crossing fixed.
+
 2007-11-29  David Bateman  <dbateman@free.fr>
 
 	* plot/pareto.m: New file.

@@ -82,8 +82,6 @@ CONVDECL (bool_matrix_to_double_matrix)
   return new octave_sparse_matrix (SparseMatrix (v.sparse_bool_matrix_value ()));
 }
 
-DEFDBLCONVFN (OCTAVE_EMPTY_CPP_ARG, sparse_bool_matrix, bool_array)
-
 void
 install_sbm_sbm_ops (void)
 {

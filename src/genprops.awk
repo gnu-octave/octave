@@ -109,7 +109,7 @@
 ## The 'o' and 'O' qualifiers are only useful when the the property type
 ## is something other than octave_value.
 
-function emit_decls ()
+function emit_declarations ()
 {
   if (idx > 0)
       print "private:\n";
@@ -126,7 +126,7 @@ function emit_decls ()
       {
 	  printf ("  %s get_%s (void) const", type[i], name[i]);
 
-	  if (emit_get[i] == "defn")
+	  if (emit_get[i] == "definition")
 	      printf (" { return %s; }\n", name[i]);
 	  else
 	      printf (";\n");
@@ -142,7 +142,7 @@ function emit_decls ()
       {
 	  printf ("  void set_%s (const %s& val)", name[i], type[i]);
 
-	  if (emit_set[i] == "defn")
+	  if (emit_set[i] == "definition")
 	  {
 	      printf ("\n  {\n    if (! error_state)\n      {\n        %s = val;\n",
 		      name[i]);
@@ -160,9 +160,9 @@ function emit_decls ()
       {
 	  printf ("  void set_%s (const octave_value& val)", name[i]);
 
-	  if (emit_ov_set[i] == "defn")
+	  if (emit_ov_set[i] == "definition")
 	      printf (" { set_%s (%s (val)); }\n\n", name[i], type[i]);
-          else if (emit_ov_set[i] == "asign")
+          else if (emit_ov_set[i] == "assignment")
           {
               printf ("\n  {\n    %s tmp (%s);\n    tmp = val;\n    set_%s (tmp);\n  };\n\n",
 		      type[i], name[i], name[i], name[i]);
@@ -187,7 +187,7 @@ BEGIN {
 }
 
 /END_PROPERTIES/ {
-    emit_decls();
+    emit_declarations();
     gather = 0;
     next;
 }
@@ -215,12 +215,12 @@ BEGIN {
 
       limits[idx] = 0;
       mode[idx] = 0;
-      emit_get[idx] = "defn";
-      emit_set[idx] = "defn";
+      emit_get[idx] = "definition";
+      emit_set[idx] = "definition";
       if (type[idx] == "octave_value")
 	  emit_ov_set[idx] = "";
       else
-	  emit_ov_set[idx] = "defn";
+	  emit_ov_set[idx] = "definition";
 
       if (NF == field)
         {
@@ -240,7 +240,7 @@ BEGIN {
 	    ## There is a custom extern definition for the get function,
 	    ## but we still emit the declaration.
 	    if (index (quals, "G"))
-		emit_get[idx] = "decl";
+		emit_get[idx] = "declaration";
 
 	    ## There is a custom inline definition for the set function,
 	    ## so we don't emit anything.
@@ -250,11 +250,11 @@ BEGIN {
 	    ## There is a custom extern definition for the set function,
 	    ## but we still emit the declaration.
 	    if (index (quals, "S"))
-		emit_set[idx] = "decl";
+		emit_set[idx] = "declaration";
 
             ## emmit an asignment set function
             if (index (quals, "a"))
-                emit_ov_set[idx] = "asign";
+                emit_ov_set[idx] = "assignment";
 
 	    if (type[idx] != "octave_value")
 	    {
@@ -272,7 +272,7 @@ BEGIN {
 		## octave_value version of the set function, but we
 		## still emit the declaration.
 		if (index (quals, "O"))
-		    emit_ov_set[idx] = "decl";
+		    emit_ov_set[idx] = "declaration";
 	    }
         }
 

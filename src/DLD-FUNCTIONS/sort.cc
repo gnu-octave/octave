@@ -802,30 +802,30 @@ template <>
 bool
 ascending_compare (Complex a, Complex b)
 {
-  return (xisnan (b) || (xabs (a) < xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) < arg (b))));
+  return (xisnan (b) || (xabs (a) < xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
 }
 
 bool
-operator < (const Complex a, const Complex b)
+operator < (const Complex& a, const Complex& b)
 {
-  return (xisnan (b) || (xabs (a) < xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) < arg (b))));
+  return (xisnan (b) || (xabs (a) < xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
 }
 
 template <>
 bool
 descending_compare (Complex a, Complex b)
 {
-  return (xisnan (a) || (xabs (a) > xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) > arg (b))));
+  return (xisnan (a) || (xabs (a) > xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
 
 bool
-operator > (const Complex a, const Complex b)
+operator > (const Complex& a, const Complex& b)
 {
-  return (xisnan (a) || (xabs (a) > xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) > arg (b))));
+  return (xisnan (a) || (xabs (a) > xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
 
 template <>

@@ -1,14 +1,14 @@
 2007-11-30  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/sort.cc (operator < (const Complex&, const Complex&),
+	operator > (const Complex&, const Complex&)):
+	Pass args by const reference, not value.
+
 	* src/data.cc, src/matherr.c, src/pr-output.cc, src/sysdep.cc,
 	src/DLD-FUNCTIONS/__dsearchn__.cc, src/DLD-FUNCTIONS/minmax.cc,
 	src/DLD-FUNCTIONS/qz.cc, src/DLD-FUNCTIONS/sort.cc,
 	src/DLD-FUNCTIONS/tsearch.cc: Include lo-math.h instead of cmath
 	or math.h.
-
-	* DLD-FUNCTIONS/sort.cc (ascending_compare, descending_compare,
-	operator < (const Complex&, const Complex&)):
-	Pass args by const reference, not value.
 
 2007-11-30  Moritz Borgmann  <octave@moriborg.de>
 

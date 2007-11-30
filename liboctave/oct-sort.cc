@@ -90,12 +90,12 @@ The Python license is
 #include "quit.h"
 #include "oct-sort.h"
 
-#define IFLT(a,b)  if (compare == NULL ? ((a) < (b)) : compare ((a), (b)))
+#define IFLT(a,b)  if (compare ? compare ((a), (b)) : ((a) < (b)))
 
 template <class T>
-octave_sort<T>::octave_sort (void) : compare (NULL) 
+octave_sort<T>::octave_sort (void) : compare (0)
 { 
-  merge_init (); 
+  merge_init ();
   merge_getmem (1024);
 }
 
@@ -109,7 +109,7 @@ octave_sort<T>::octave_sort (bool (*comp) (T, T)) : compare (comp)
 /* Reverse a slice of a list in place, from lo up to (exclusive) hi. */
 template <class T>
 void
-octave_sort<T>::reverse_slice(T *lo, T *hi)
+octave_sort<T>::reverse_slice (T *lo, T *hi)
 {
   --hi;
   while (lo < hi) 
@@ -187,7 +187,7 @@ Returns -1 in case of error.
 */
 template <class T>
 int
-octave_sort<T>::count_run(T *lo, T *hi, int *descending)
+octave_sort<T>::count_run (T *lo, T *hi, int *descending)
 {
   int n;
 
@@ -244,7 +244,7 @@ Returns -1 on error.  See listsort.txt for info on the method.
 */
 template <class T>
 int
-octave_sort<T>::gallop_left(T key, T *a, int n, int hint)
+octave_sort<T>::gallop_left (T key, T *a, int n, int hint)
 {
   int ofs;
   int lastofs;
@@ -316,6 +316,7 @@ octave_sort<T>::gallop_left(T key, T *a, int n, int hint)
       else
 	ofs = m;	/* key <= a[m] */
     }
+
   return ofs;
 }
 
@@ -335,7 +336,7 @@ written as one routine with yet another "left or right?" flag.
 */
 template <class T>
 int
-octave_sort<T>::gallop_right(T key, T *a, int n, int hint)
+octave_sort<T>::gallop_right (T key, T *a, int n, int hint)
 {
   int ofs;
   int lastofs;
@@ -407,15 +408,16 @@ octave_sort<T>::gallop_right(T key, T *a, int n, int hint)
       else
 	lastofs = m+1;	/* a[m] <= key */
     }
+
   return ofs;
 }
 
 /* Conceptually a MergeState's constructor. */
 template <class T>
 void
-octave_sort<T>::merge_init(void)
+octave_sort<T>::merge_init (void)
 {
-  ms.a = NULL;
+  ms.a = 0;
   ms.alloced = 0;
   ms.n = 0;
   ms.min_gallop = MIN_GALLOP;
@@ -427,16 +429,16 @@ octave_sort<T>::merge_init(void)
  */
 template <class T>
 void
-octave_sort<T>::merge_freemem(void)
+octave_sort<T>::merge_freemem (void)
 {
   if (ms.a)
     free (ms.a);
   ms.alloced = 0;
-  ms.a = NULL;
+  ms.a = 0;
 }
 
 static inline int
-roundupsize(int n)
+roundupsize (int n)
 {
   unsigned int nbits = 3;
   unsigned int n2 = static_cast<unsigned int> (n) >> 8;
@@ -463,10 +465,12 @@ roundupsize(int n)
    * even with this scheme, although it requires much longer lists to
    * provoke them than it used to).
    */
-  while (n2) {
-    n2 >>= 3;
-    nbits += 3;
-  }
+  while (n2)
+    {
+      n2 >>= 3;
+      nbits += 3;
+    }
+
   return ((n >> nbits) + 1) << nbits;
 }
 
@@ -475,27 +479,28 @@ roundupsize(int n)
  */
 template <class T>
 int
-octave_sort<T>::merge_getmem(int need)
+octave_sort<T>::merge_getmem (int need)
 {
   if (need <= ms.alloced)
     return 0;
 
-  need = roundupsize(need); 
+  need = roundupsize (need); 
   /* Don't realloc!  That can cost cycles to copy the old data, but
    * we don't care what's in the block.
    */
-  merge_freemem( );
+  merge_freemem ();
   ms.a = static_cast <T *> (malloc (need * sizeof (T)));
-  if (ms.a) {
-    ms.alloced = need;
-    return 0;
-  }
-  merge_freemem( );	/* reset to sane state */
+  if (ms.a)
+    {
+      ms.alloced = need;
+      return 0;
+    }
+  merge_freemem ();	/* reset to sane state */
+
   return -1;
 }
 
-#define MERGE_GETMEM(NEED) ((NEED) <= ms.alloced ? 0 :	\
-				merge_getmem(NEED))
+#define MERGE_GETMEM(NEED) ((NEED) <= ms.alloced ? 0 : merge_getmem (NEED))
 
 /* Merge the na elements starting at pa with the nb elements starting at pb
  * in a stable way, in-place.  na and nb must be > 0, and pa + na == pb.
@@ -505,16 +510,16 @@ octave_sort<T>::merge_getmem(int need)
  */
 template <class T>
 int
-octave_sort<T>::merge_lo(T *pa, int na, T *pb, int nb)
+octave_sort<T>::merge_lo (T *pa, int na, T *pb, int nb)
 {
   int k;
   T *dest;
   int result = -1;	/* guilty until proved innocent */
   int min_gallop = ms.min_gallop;
 
-  if (MERGE_GETMEM(na) < 0)
+  if (MERGE_GETMEM (na) < 0)
     return -1;
-  memcpy(ms.a, pa, na * sizeof(T));
+  memcpy (ms.a, pa, na * sizeof (T));
   dest = pa;
   pa = ms.a;
 
@@ -525,103 +530,112 @@ octave_sort<T>::merge_lo(T *pa, int na, T *pb, int nb)
   if (na == 1)
     goto CopyB;
 
-  for (;;) {
-    int acount = 0;	/* # of times A won in a row */
-    int bcount = 0;	/* # of times B won in a row */
+  for (;;)
+    {
+      int acount = 0;	/* # of times A won in a row */
+      int bcount = 0;	/* # of times B won in a row */
 
-    /* Do the straightforward thing until (if ever) one run
-     * appears to win consistently.
-     */
-    for (;;) {
-
-      IFLT (*pb, *pa)
+      /* Do the straightforward thing until (if ever) one run
+       * appears to win consistently.
+       */
+      for (;;)
 	{
+
+	  IFLT (*pb, *pa)
+	    {
+	      *dest++ = *pb++;
+	      ++bcount;
+	      acount = 0;
+	      --nb;
+	      if (nb == 0)
+		goto Succeed;
+	      if (bcount >= min_gallop)
+		break;
+	    }
+	  else
+	    {
+	      *dest++ = *pa++;
+	      ++acount;
+	      bcount = 0;
+	      --na;
+	      if (na == 1)
+		goto CopyB;
+	      if (acount >= min_gallop)
+		break;
+	    }
+	}
+
+      /* One run is winning so consistently that galloping may
+       * be a huge win.  So try that, and continue galloping until
+       * (if ever) neither run appears to be winning consistently
+       * anymore.
+       */
+      ++min_gallop;
+      do
+	{
+	  min_gallop -= min_gallop > 1;
+	  ms.min_gallop = min_gallop;
+	  k = gallop_right (*pb, pa, na, 0);
+	  acount = k;
+	  if (k)
+	    {
+	      if (k < 0)
+		goto Fail;
+	      memcpy (dest, pa, k * sizeof (T));
+	      dest += k;
+	      pa += k;
+	      na -= k;
+	      if (na == 1)
+		goto CopyB;
+	      /* na==0 is impossible now if the comparison
+	       * function is consistent, but we can't assume
+	       * that it is.
+	       */
+	      if (na == 0)
+		goto Succeed;
+	    }
 	  *dest++ = *pb++;
-	  ++bcount;
-	  acount = 0;
 	  --nb;
 	  if (nb == 0)
 	    goto Succeed;
-	  if (bcount >= min_gallop)
-	    break;
-	}
-      else 
-	{
+
+	  k = gallop_left (*pa, pb, nb, 0);
+	  bcount = k;
+	  if (k)
+	    {
+	      if (k < 0)
+		goto Fail;
+	      memmove (dest, pb, k * sizeof (T));
+	      dest += k;
+	      pb += k;
+	      nb -= k;
+	      if (nb == 0)
+		goto Succeed;
+	    }
 	  *dest++ = *pa++;
-	  ++acount;
-	  bcount = 0;
 	  --na;
 	  if (na == 1)
 	    goto CopyB;
-	  if (acount >= min_gallop)
-	    break;
 	}
+      while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
+
+      ++min_gallop;	/* penalize it for leaving galloping mode */
+      ms.min_gallop = min_gallop;
     }
 
-    /* One run is winning so consistently that galloping may
-     * be a huge win.  So try that, and continue galloping until
-     * (if ever) neither run appears to be winning consistently
-     * anymore.
-     */
-    ++min_gallop;
-    do 
-      {
-	min_gallop -= min_gallop > 1;
-	ms.min_gallop = min_gallop;
-	k = gallop_right(*pb, pa, na, 0);
-	acount = k;
-	if (k) 
-	  {
-	    if (k < 0)
-	      goto Fail;
-	    memcpy(dest, pa, k * sizeof(T));
-	    dest += k;
-	    pa += k;
-	    na -= k;
-	    if (na == 1)
-	      goto CopyB;
-	    /* na==0 is impossible now if the comparison
-	     * function is consistent, but we can't assume
-	     * that it is.
-	     */
-	    if (na == 0)
-	      goto Succeed;
-	  }
-	*dest++ = *pb++;
-	--nb;
-	if (nb == 0)
-	  goto Succeed;
-
-	k = gallop_left(*pa, pb, nb, 0);
-	bcount = k;
-	if (k) {
-	  if (k < 0)
-	    goto Fail;
-	  memmove(dest, pb, k * sizeof(T));
-	  dest += k;
-	  pb += k;
-	  nb -= k;
-	  if (nb == 0)
-	    goto Succeed;
-	}
-	*dest++ = *pa++;
-	--na;
-	if (na == 1)
-	  goto CopyB;
-      } while (acount >= MIN_GALLOP || bcount >= MIN_GALLOP);
-    ++min_gallop;	/* penalize it for leaving galloping mode */
-    ms.min_gallop = min_gallop;
-  }
  Succeed:
   result = 0;
+
  Fail:
   if (na)
-    memcpy(dest, pa, na * sizeof(T));
+    memcpy (dest, pa, na * sizeof (T));
   return result;
+
  CopyB:
   /* The last element of pa belongs at the end of the merge. */
-  memmove(dest, pb, nb * sizeof(T));
+  memmove (dest, pb, nb * sizeof (T));
   dest[nb] = *pa;
+
   return 0;
 }
 
@@ -633,7 +647,7 @@ octave_sort<T>::merge_lo(T *pa, int na, T *pb, int nb)
  */
 template <class T>
 int
-octave_sort<T>::merge_hi(T *pa, int na, T *pb, int nb)
+octave_sort<T>::merge_hi (T *pa, int na, T *pb, int nb)
 {
   int k;
   T *dest;
@@ -642,10 +656,10 @@ octave_sort<T>::merge_hi(T *pa, int na, T *pb, int nb)
   T *baseb;
   int min_gallop = ms.min_gallop;
 
-  if (MERGE_GETMEM(nb) < 0)
+  if (MERGE_GETMEM (nb) < 0)
     return -1;
   dest = pb + nb - 1;
-  memcpy(ms.a, pb, nb * sizeof(T));
+  memcpy (ms.a, pb, nb * sizeof (T));
   basea = pa;
   baseb = ms.a;
   pb = ms.a + nb - 1;
@@ -702,7 +716,7 @@ octave_sort<T>::merge_hi(T *pa, int na, T *pb, int nb)
 	{
 	  min_gallop -= min_gallop > 1;
 	  ms.min_gallop = min_gallop;
-	  k = gallop_right(*pb, basea, na, na-1);
+	  k = gallop_right (*pb, basea, na, na-1);
 	  if (k < 0)
 	    goto Fail;
 	  k = na - k;
@@ -711,7 +725,7 @@ octave_sort<T>::merge_hi(T *pa, int na, T *pb, int nb)
 	    {
 	      dest -= k;
 	      pa -= k;
-	      memmove(dest+1, pa+1, k * sizeof(T ));
+	      memmove (dest+1, pa+1, k * sizeof (T));
 	      na -= k;
 	      if (na == 0)
 		goto Succeed;
@@ -721,7 +735,7 @@ octave_sort<T>::merge_hi(T *pa, int na, T *pb, int nb)
 	  if (nb == 1)
 	    goto CopyA;
 
-	  k = gallop_left(*pa, baseb, nb, nb-1);
+	  k = gallop_left (*pa, baseb, nb, nb-1);
 	  if (k < 0)
 	    goto Fail;
 	  k = nb - k;
@@ -730,7 +744,7 @@ octave_sort<T>::merge_hi(T *pa, int na, T *pb, int nb)
 	    {
 	      dest -= k;
 	      pb -= k;
-	      memcpy(dest+1, pb+1, k * sizeof(T));
+	      memcpy (dest+1, pb+1, k * sizeof (T));
 	      nb -= k;
 	      if (nb == 1)
 		goto CopyA;
@@ -749,18 +763,22 @@ octave_sort<T>::merge_hi(T *pa, int na, T *pb, int nb)
       ++min_gallop;	/* penalize it for leaving galloping mode */
       ms.min_gallop = min_gallop;
     }
+
 Succeed:
   result = 0;
+
 Fail:
   if (nb)
-    memcpy(dest-(nb-1), baseb, nb * sizeof(T));
+    memcpy (dest-(nb-1), baseb, nb * sizeof (T));
   return result;
+
 CopyA:
   /* The first element of pb belongs at the front of the merge. */
   dest -= na;
   pa -= na;
-  memmove(dest+1, pa+1, na * sizeof(T));
+  memmove (dest+1, pa+1, na * sizeof (T));
   *dest = *pb;
+
   return 0;
 }
 
@@ -769,7 +787,7 @@ CopyA:
  */
 template <class T>
 int
-octave_sort<T>::merge_at(int i)
+octave_sort<T>::merge_at (int i)
 {
   T *pa, *pb;
   int na, nb;
@@ -792,7 +810,7 @@ octave_sort<T>::merge_at(int i)
   /* Where does b start in a?  Elements in a before that can be
    * ignored (already in place).
    */
-  k = gallop_right(*pb, pa, na, 0);
+  k = gallop_right (*pb, pa, na, 0);
   if (k < 0)
     return -1;
   pa += k;
@@ -803,7 +821,7 @@ octave_sort<T>::merge_at(int i)
   /* Where does a end in b?  Elements in b after that can be
    * ignored (already in place).
    */
-  nb = gallop_left(pa[na-1], pb, nb, nb-1);
+  nb = gallop_left (pa[na-1], pb, nb, nb-1);
   if (nb <= 0)
     return nb;
 
@@ -811,9 +829,9 @@ octave_sort<T>::merge_at(int i)
    * min(na, nb) elements.
    */
   if (na <= nb)
-    return merge_lo(pa, na, pb, nb);
+    return merge_lo (pa, na, pb, nb);
   else
-    return merge_hi(pa, na, pb, nb);
+    return merge_hi (pa, na, pb, nb);
 }
 
 /* Examine the stack of runs waiting to be merged, merging adjacent runs
@@ -828,7 +846,7 @@ octave_sort<T>::merge_at(int i)
  */
 template <class T>
 int
-octave_sort<T>::merge_collapse(void)
+octave_sort<T>::merge_collapse (void)
 {
   struct s_slice *p = ms.pending;
 
@@ -839,17 +857,18 @@ octave_sort<T>::merge_collapse(void)
 	{
 	  if (p[n-1].len < p[n+1].len)
 	    --n;
-	  if (merge_at(n) < 0)
+	  if (merge_at (n) < 0)
 	    return -1;
 	}
       else if (p[n].len <= p[n+1].len) 
 	{
-	  if (merge_at(n) < 0)
+	  if (merge_at (n) < 0)
 	    return -1;
 	}
       else
 	break;
     }
+
   return 0;
 }
 
@@ -860,7 +879,7 @@ octave_sort<T>::merge_collapse(void)
  */
 template <class T>
 int
-octave_sort<T>::merge_force_collapse(void)
+octave_sort<T>::merge_force_collapse (void)
 {
   struct s_slice *p = ms.pending;
 
@@ -869,9 +888,10 @@ octave_sort<T>::merge_force_collapse(void)
       int n = ms.n - 2;
       if (n > 0 && p[n-1].len < p[n+1].len)
 	--n;
-      if (merge_at(n) < 0)
+      if (merge_at (n) < 0)
 	return -1;
     }
+
   return 0;
 }
 
@@ -887,14 +907,16 @@ octave_sort<T>::merge_force_collapse(void)
  */
 template <class T>
 int
-octave_sort<T>::merge_compute_minrun(int n)
+octave_sort<T>::merge_compute_minrun (int n)
 {
   int r = 0;	/* becomes 1 if any 1 bits are shifted off */
 
-  while (n >= 64) {
-    r |= n & 1;
-    n >>= 1;
-  }
+  while (n >= 64)
+    {
+      r |= n & 1;
+      n >>= 1;
+    }
+
   return n + r;
 }
 
@@ -915,38 +937,39 @@ octave_sort<T>::sort (T *v, int elements)
       /* March over the array once, left to right, finding natural runs,
        * and extending short natural runs to minrun elements.
        */
-      int minrun = merge_compute_minrun(nremaining);
+      int minrun = merge_compute_minrun (nremaining);
       do 
 	{
 	  int descending;
 	  int n;
 
 	  /* Identify next run. */
-	  n = count_run(lo, hi, &descending);
+	  n = count_run (lo, hi, &descending);
 	  if (n < 0)
 	    goto fail;
 	  if (descending)
-	    reverse_slice(lo, lo + n);
+	    reverse_slice (lo, lo + n);
 	  /* If short, extend to min(minrun, nremaining). */
 	  if (n < minrun) 
 	    {
 	      const int force = nremaining <= minrun ? nremaining : minrun;
-	      binarysort(lo, lo + force, lo + n);
+	      binarysort (lo, lo + force, lo + n);
 	      n = force;
 	    }
 	  /* Push run onto pending-runs stack, and maybe merge. */
-	  assert(ms.n < MAX_MERGE_PENDING);
+	  assert (ms.n < MAX_MERGE_PENDING);
 	  ms.pending[ms.n].base = lo;
 	  ms.pending[ms.n].len = n;
 	  ++ms.n;
-	  if (merge_collapse( ) < 0)
+	  if (merge_collapse () < 0)
 	    goto fail;
 	  /* Advance to find next run. */
 	  lo += n;
 	  nremaining -= n;
-	} while (nremaining);
+	}
+      while (nremaining);
 
-      merge_force_collapse( );
+      merge_force_collapse ();
     }
 
 fail:

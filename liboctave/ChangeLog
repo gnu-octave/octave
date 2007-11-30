@@ -1,5 +1,7 @@
 2007-11-30  John W. Eaton  <jwe@octave.org>
 
+	* oct-sort.cc, oct-sort.h: Style fixes.
+
 	* lo-math.h: New file.
 	* Makefile.in (INCLUDES): Add it to the list.
 	* liboctave/Array2.h, liboctave/ArrayN.h, liboctave/CmplxDET.cc,

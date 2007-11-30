@@ -82,20 +82,18 @@ The Python license is
 #if !defined (octave_sort_h)
 #define octave_sort_h 1
 
-/* The maximum number of entries in a MergeState's pending-runs stack.
- * This is enough to sort arrays of size up to about
- *     32 * phi ** MAX_MERGE_PENDING
- * where phi ~= 1.618.  85 is ridiculously large enough, good for an array
- * with 2**64 elements.
- */
+// The maximum number of entries in a MergeState's pending-runs stack.
+// This is enough to sort arrays of size up to about
+//     32 * phi ** MAX_MERGE_PENDING
+// where phi ~= 1.618.  85 is ridiculously large enough, good for an array
+// with 2**64 elements.
 #define MAX_MERGE_PENDING 85
 
-/* When we get into galloping mode, we stay there until both runs win less
- * often than MIN_GALLOP consecutive times.  See listsort.txt for more info.
- */
+// When we get into galloping mode, we stay there until both runs win less
+// often than MIN_GALLOP consecutive times.  See listsort.txt for more info.
 #define MIN_GALLOP 7
 
-/* Avoid malloc for small temp arrays. */
+// Avoid malloc for small temp arrays.
 #define MERGESTATE_TEMP_SIZE 1024
 
 template <class T>
@@ -116,13 +114,13 @@ public:
 
 private:
 
-  /* One MergeState exists on the stack per invocation of mergesort.  It's just
-   * a convenient way to pass state around among the helper functions.
-   *
-   * DGB: This isn't needed with mergesort in a class, but it doesn't slow
-   *      things up, and it is likely to make my life easier for any potential
-   *      backporting of changes in the Python code.
-   */
+  // One MergeState exists on the stack per invocation of mergesort.
+  // It's just a convenient way to pass state around among the helper
+  // functions.
+  //
+  // DGB: This isn't needed with mergesort in a class, but it doesn't
+  // slow things up, and it is likely to make my life easier for any
+  // potential backporting of changes in the Python code.
   
   struct s_slice 
   {
@@ -130,34 +128,32 @@ private:
     int len;
   };
   
-  typedef struct s_MergeState 
+  struct MergeState 
   {
-    /* This controls when we get *into* galloping mode.  It's initialized
-     * to MIN_GALLOP.  merge_lo and merge_hi tend to nudge it higher for
-     * random data, and lower for highly structured data.
-     */
+    // This controls when we get *into* galloping mode.  It's
+    // initialized to MIN_GALLOP.  merge_lo and merge_hi tend to nudge
+    // it higher for random data, and lower for highly structured
+    // data.
     int min_gallop;
 
-    /* 'a' is temp storage to help with merges.  It contains room for
-     * alloced entries.
-     */
-    T *a;	/* may point to temparray below */
+    // 'a' is temp storage to help with merges.  It contains room for
+    // alloced entries.
+    T *a;               // may point to temparray below
     int alloced;
     
-    /* A stack of n pending runs yet to be merged.  Run #i starts at
-     * address base[i] and extends for len[i] elements.  It's always
-     * true (so long as the indices are in bounds) that
-     *
-     *     pending[i].base + pending[i].len == pending[i+1].base
-     *
-     * so we could cut the storage for this, but it's a minor amount,
-     * and keeping all the info explicit simplifies the code.
-     */
+    // A stack of n pending runs yet to be merged.  Run #i starts at
+    // address base[i] and extends for len[i] elements.  It's always
+    // true (so long as the indices are in bounds) that
+    //
+    //   pending[i].base + pending[i].len == pending[i+1].base
+    //
+    // so we could cut the storage for this, but it's a minor amount,
+    // and keeping all the info explicit simplifies the code.
     int n;
     struct s_slice pending[MAX_MERGE_PENDING];
-  } MergeState;
+  };
 
-  bool (*compare)(T, T);
+  bool (*compare) (T, T);
   
   MergeState ms;
   
@@ -165,29 +161,29 @@ private:
   
   void binarysort (T *lo, T *hi, T *start);
     
-  int count_run(T *lo, T *hi, int *descending);
+  int count_run (T *lo, T *hi, int *descending);
 
-  int gallop_left(T key, T *a, int n, int hint);
+  int gallop_left (T key, T *a, int n, int hint);
 
-  int gallop_right(T key, T *a, int n, int hint);
+  int gallop_right (T key, T *a, int n, int hint);
 
-  void merge_init(void);
+  void merge_init (void);
 
-  void merge_freemem(void);
+  void merge_freemem (void);
 
-  int merge_getmem(int need);
+  int merge_getmem (int need);
 
-  int merge_lo(T *pa, int na, T *pb, int nb);
+  int merge_lo (T *pa, int na, T *pb, int nb);
 
-  int merge_hi(T *pa, int na, T *pb, int nb);
+  int merge_hi (T *pa, int na, T *pb, int nb);
 
-  int merge_at(int i);
+  int merge_at (int i);
 
-  int merge_collapse(void);
+  int merge_collapse (void);
 
-  int merge_force_collapse(void);
+  int merge_force_collapse (void);
 
-  int merge_compute_minrun(int n);
+  int merge_compute_minrun (int n);
 };
 
 #endif

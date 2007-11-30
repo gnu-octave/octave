@@ -502,13 +502,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 		     if (numel(ccol) == 3)
 		       color = ccol;
 		     else
-		       if (cautoscale)
-			 r = 1 + round ((size (cmap, 1) - 1)
-					* (ccol - cmin)/(cmax - cmin));
-		       else
-			 r = 1 + round ((size (cmap, 1) - 1)
-					* (ccol - clim(1))/(clim(2) - clim(1)));
-		       endif
+		       r = 1 + round ((size (cmap, 1) - 1)
+				      * (ccol - clim(1))/(clim(2) - clim(1)));
 		       r = max (1, min (r, size (cmap, 1)));
 		       color = cmap(r, :);
 		     endif
@@ -600,13 +595,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 		   if (numel(ccol) == 3)
 		     color = ccol;
 		   else
-		     if (cautoscale)
-		       r = 1 + round ((size (cmap, 1) - 1)
-				      * (ccol - cmin)/(cmax - cmin));
-		     else
-		       r = 1 + round ((size (cmap, 1) - 1)
-				      * (ccol - clim(1))/(clim(2) - clim(1)));
-		     endif
+		     r = 1 + round ((size (cmap, 1) - 1)
+				    * (ccol - clim(1))/(clim(2) - clim(1)));
 		     r = max (1, min (r, size (cmap, 1)));
 		     color = cmap(r, :);
 		   endif

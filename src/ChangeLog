@@ -1,3 +1,9 @@
+2007-11-30  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/sort.cc (ascending_compare, descending_compare,
+	operator < (const Complex&, const Complex&)):
+	Pass args by const reference, not value.
+
 2007-11-30  Moritz Borgmann  <octave@moriborg.de>
 
 	* ls-mat5.h (mat5_data_type): Delete trailing comma in enum decl.

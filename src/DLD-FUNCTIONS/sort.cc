@@ -67,21 +67,21 @@ descending_compare (T a, T b)
 
 template <class T>
 bool 
-ascending_compare (vec_index<T> *a, vec_index<T> *b)
+ascending_compare (const vec_index<T> *a, const vec_index<T> *b)
 {
   return (a->vec < b->vec);
 }
 
 template <class T>
 bool 
-descending_compare (vec_index<T> *a, vec_index<T> *b)
+descending_compare (const vec_index<T> *a, const vec_index<T> *b)
 {
   return (a->vec > b->vec);
 }
 
 template <class T>
 static octave_value
-mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
+mx_sort (ArrayN<T>& m, int dim, sortmode mode = UNDEFINED)
 {
   octave_value retval;
 
@@ -143,7 +143,7 @@ mx_sort (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 
 template <class T>
 static octave_value_list
-mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
+mx_sort_indexed (ArrayN<T>& m, int dim, sortmode mode = UNDEFINED)
 {
   octave_value_list retval;
 
@@ -237,7 +237,7 @@ mx_sort_indexed (ArrayN<T> &m, int dim, sortmode mode = UNDEFINED)
 
 template <class T>
 static octave_value
-mx_sort_sparse (Sparse<T> &m, int dim, sortmode mode = UNDEFINED)
+mx_sort_sparse (Sparse<T>& m, int dim, sortmode mode = UNDEFINED)
 {
   octave_value retval;
 
@@ -302,7 +302,7 @@ mx_sort_sparse (Sparse<T> &m, int dim, sortmode mode = UNDEFINED)
 
 template <class T>
 static octave_value_list
-mx_sort_sparse_indexed (Sparse<T> &m, int dim, sortmode mode = UNDEFINED)
+mx_sort_sparse_indexed (Sparse<T>& m, int dim, sortmode mode = UNDEFINED)
 {
   octave_value_list retval;
 
@@ -442,32 +442,28 @@ IFloatFlip (uint64_t f)
 
 template <>
 bool
-ascending_compare (uint64_t a, 
-		   uint64_t b)
+ascending_compare (uint64_t a, uint64_t b)
 {
   return (a < b);
 }
 
 template <>
 bool
-ascending_compare (vec_index<uint64_t> *a, 
-		   vec_index<uint64_t> *b)
+ascending_compare (const vec_index<uint64_t> *a, const vec_index<uint64_t> *b)
 {
   return (a->vec < b->vec);
 }
 
 template <>
 bool
-descending_compare (uint64_t a, 
-		    uint64_t b)
+descending_compare (uint64_t a, uint64_t b)
 {
   return (a > b);
 }
 
 template <>
 bool
-descending_compare (vec_index<uint64_t> *a, 
-		    vec_index<uint64_t> *b)
+descending_compare (const vec_index<uint64_t> *a, const vec_index<uint64_t> *b)
 {
   return (a->vec > b->vec);
 }
@@ -478,7 +474,7 @@ template class octave_sort<vec_index<uint64_t> *>;
 
 template <>
 octave_value
-mx_sort (ArrayN<double> &m, int dim, sortmode mode)
+mx_sort (ArrayN<double>& m, int dim, sortmode mode)
 {
   octave_value retval;
 
@@ -620,7 +616,7 @@ mx_sort (ArrayN<double> &m, int dim, sortmode mode)
 // Should other overloaded functions have their static keywords removed?
 template <>
 octave_value_list
-mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode)
+mx_sort_indexed (ArrayN<double>& m, int dim, sortmode mode)
 {
   octave_value_list retval;
 
@@ -776,19 +772,19 @@ template class octave_sort<vec_index<double> *>;
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static octave_value_list
-mx_sort (ArrayN<double> &m, int dim, sortmode mode);
+mx_sort (ArrayN<double>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<double> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<double>& m, int dim, sortmode mode);
 #endif
 #endif
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static octave_value_list
-mx_sort_sparse (Sparse<double> &m, int dim, sortmode mode);
+mx_sort_sparse (Sparse<double>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_sparse_indexed (Sparse<double> &m, int dim, sortmode mode);
+mx_sort_sparse_indexed (Sparse<double>& m, int dim, sortmode mode);
 #endif
 
 // std::abs(Inf) returns NaN!!
@@ -800,37 +796,37 @@ xabs (const Complex& x)
 
 template <>
 bool
-ascending_compare (Complex a, Complex b)
+ascending_compare (const Complex& a, const Complex& b)
 {
-  return (xisnan (b) || (xabs (a) < xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) < arg (b))));
+  return (xisnan (b) || (xabs (a) < xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
 }
 
-bool
-operator < (const Complex a, const Complex b)
+static inline bool
+operator < (const Complex& a, const Complex& b)
 {
-  return (xisnan (b) || (xabs (a) < xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) < arg (b))));
-}
-
-template <>
-bool
-descending_compare (Complex a, Complex b)
-{
-  return (xisnan (a) || (xabs (a) > xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) > arg (b))));
-}
-
-bool
-operator > (const Complex a, const Complex b)
-{
-  return (xisnan (a) || (xabs (a) > xabs (b)) || ((xabs (a) == xabs (b))
-	      && (arg (a) > arg (b))));
+  return (xisnan (b) || (xabs (a) < xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) < arg (b))));
 }
 
 template <>
 bool
-ascending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
+descending_compare (const Complex& a, const Complex& b)
+{
+  return (xisnan (a) || (xabs (a) > xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
+}
+
+bool
+operator > (const Complex& a, const Complex& b)
+{
+  return (xisnan (a) || (xabs (a) > xabs (b))
+	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
+}
+
+template <>
+bool
+ascending_compare (const vec_index<Complex> *a, const vec_index<Complex> *b)
 {
   return (xisnan (b->vec)
 	  || (xabs (a->vec) < xabs (b->vec))
@@ -840,7 +836,7 @@ ascending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
 
 template <>
 bool
-descending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
+descending_compare (const vec_index<Complex> *a, const vec_index<Complex> *b)
 {
   return (xisnan (a->vec)
 	  || (xabs (a->vec) > xabs (b->vec))
@@ -854,16 +850,16 @@ template class octave_sort<vec_index<Complex> *>;
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static octave_value_list
-mx_sort (ArrayN<Complex> &m, int dim, sortmode mode);
+mx_sort (ArrayN<Complex>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<Complex> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<Complex>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_sparse (Sparse<Complex> &m, int dim, sortmode mode);
+mx_sort_sparse (Sparse<Complex>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_sparse_indexed (Sparse<Complex> &m, int dim, sortmode mode);
+mx_sort_sparse_indexed (Sparse<Complex>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<char>;
@@ -884,10 +880,10 @@ bool
 descending_compare (vec_index<char> *a, vec_index<char> *b);
 
 static octave_value_list
-mx_sort (ArrayN<char> &m, int dim, sortmode mode);
+mx_sort (ArrayN<char>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<char> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<char>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_int8>;
@@ -908,10 +904,10 @@ bool
 descending_compare (vec_index<octave_int8> *a, vec_index<octave_int8> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_int8> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_int8>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_int8> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_int8>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_uint8>;
@@ -932,10 +928,10 @@ bool
 descending_compare (vec_index<octave_uint8> *a, vec_index<octave_uint8> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_uint8> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_uint8>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_uint8> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_uint8>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_int16>;
@@ -956,10 +952,10 @@ bool
 descending_compare (vec_index<octave_int16> *a, vec_index<octave_int16> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_int16> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_int16>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_int16> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_int16>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_uint16>;
@@ -980,10 +976,10 @@ bool
 descending_compare (vec_index<octave_uint16> *a, vec_index<octave_uint16> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_uint16> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_uint16>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_uint16> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_uint16>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_int32>;
@@ -1004,10 +1000,10 @@ bool
 descending_compare (vec_index<octave_int32> *a, vec_index<octave_int32> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_int32> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_int32>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_int32> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_int32>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_uint32>;
@@ -1028,10 +1024,10 @@ bool
 descending_compare (vec_index<octave_uint32> *a, vec_index<octave_uint32> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_uint32> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_uint32>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_uint32> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_uint32>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_int64>;
@@ -1052,10 +1048,10 @@ bool
 descending_compare (vec_index<octave_int64> *a, vec_index<octave_int64> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_int64> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_int64>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_int64> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_int64>& m, int dim, sortmode mode);
 #endif
 
 template class octave_sort<octave_uint64>;
@@ -1076,10 +1072,10 @@ bool
 descending_compare (vec_index<octave_uint64> *a, vec_index<octave_uint64> *b);
 
 static octave_value_list
-mx_sort (ArrayN<octave_uint64> &m, int dim, sortmode mode);
+mx_sort (ArrayN<octave_uint64>& m, int dim, sortmode mode);
 
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_uint64> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_uint64>& m, int dim, sortmode mode);
 #endif
 
 template <>
@@ -1101,7 +1097,7 @@ template class octave_sort<vec_index<octave_value> *>;
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 static octave_value_list
-mx_sort_indexed (ArrayN<octave_value> &m, int dim, sortmode mode);
+mx_sort_indexed (ArrayN<octave_value>& m, int dim, sortmode mode);
 #endif
 
 DEFUN_DLD (sort, args, nargout,

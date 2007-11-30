@@ -42,7 +42,7 @@ enum mat5_data_type
     miCOMPRESSED,		// Compressed data
     miUTF8,			// Unicode UTF-8 Encoded Character Data
     miUTF16,			// Unicode UTF-16 Encoded Character Data
-    miUTF32,			// Unicode UTF-32 Encoded Character Data
+    miUTF32			// Unicode UTF-32 Encoded Character Data
   };
 
 extern int

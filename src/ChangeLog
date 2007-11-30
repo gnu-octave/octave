@@ -1,3 +1,10 @@
+2007-11-30  Moritz Borgmann  <octave@moriborg.de>
+
+	* ls-mat5.h (mat5_data_type): Delete trailing comma in enum decl.
+	* oct-stream.cc (octave_base_stream::do_printf): Use
+	OCTAVE_EMPTY_CPP_ARG to avoid annoying Sun compiler warning.
+	* OPERATORS/op-sbm-sbm.cc (DEFDBLCONVFN): Likewise.
+
 2007-11-30  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (updating_axis_limits): New static variable.

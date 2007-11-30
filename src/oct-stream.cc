@@ -2618,7 +2618,7 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 			  switch (type)
 			    {
 			    case 'd': case 'i': case 'c':
-			      DO_DOUBLE_CONV ();
+			      DO_DOUBLE_CONV (OCTAVE_EMPTY_CPP_ARG);
 			      break;
 
 			    case 'o': case 'x': case 'X': case 'u':

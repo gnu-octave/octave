@@ -42,7 +42,7 @@ function h = __scatter__ (varargin)
     endif
   endfor
 
-  if (firstnonnumeric > istart)
+  if (istart < nargin && firstnonnumeric > istart)
     s = varargin{istart};
     if (isempty (s))
       s = 8;

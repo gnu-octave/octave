@@ -393,10 +393,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	      else
 		yhi = ydat+udat;
 	      endif
-	      if (yautoscale)
-		ty = [ydat; ylo; yhi];
-		[ymin, ymax, yminp] = get_data_limits (ymin, ymax, yminp, ty);
-	      endif
 	      if (xerr)
 		if (isempty (xldat))
 		  xlo = xdat;
@@ -417,6 +413,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 		withclause{data_idx} = "with yerrorbars";
 	      endif
 	    elseif (xerr)
+	      if (isempty (xldat))
+		xlo = xdat;
+	      else
+		xlo = xdat-xldat;
+	      endif
+	      if (isempty (xudat))
+		xhi = xdat;
+	      else
+		xhi = xdat+xudat;
+	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
 	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
 	      withclause{data_idx} = "with xerrorbars";

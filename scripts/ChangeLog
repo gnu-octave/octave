@@ -1,3 +1,8 @@
+2007-12-02  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Remove unnecessary call to
+	get_data_limits.
+
 2007-11-30  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Don't compute data or axis limits.

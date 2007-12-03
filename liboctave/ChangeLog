@@ -1,3 +1,9 @@
+2007-12-03  Moritz Borgmann  <octave@moriborg.de>
+
+	* Array-util.cc (permute_vector_compare): Move here from Array.cc.
+	* Array-util.h (permute_vector, permute_vector_compare): Provide decls.
+	* Array.cc (permute_vector, permute_vector_compare): Delete.
+
 2007-12-03  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (template <class LT, class RT> int assign

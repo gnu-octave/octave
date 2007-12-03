@@ -401,21 +401,7 @@ Array<T>::reshape (const dim_vector& new_dims) const
   return retval;
 }
 
-struct
-permute_vector
-{
-  octave_idx_type pidx;
-  octave_idx_type iidx;
-};
 
-static int
-permute_vector_compare (const void *a, const void *b)
-{
-  const permute_vector *pva = static_cast<const permute_vector *> (a);
-  const permute_vector *pvb = static_cast<const permute_vector *> (b);
-
-  return pva->pidx > pvb->pidx;
-}
 
 template <class T>
 Array<T>

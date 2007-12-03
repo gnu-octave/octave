@@ -78,6 +78,15 @@ extern OCTAVE_API dim_vector short_freeze (Array<idx_vector>& ra_idx,
 				const dim_vector& dimensions,
 				int resize_ok);
 
+struct
+permute_vector
+{
+  octave_idx_type pidx;
+  octave_idx_type iidx;
+};
+
+extern int permute_vector_compare (const void *a, const void *b);
+
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_len, int op2_len);
 
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_nr, int op1_nc,

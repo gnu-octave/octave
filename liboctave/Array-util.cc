@@ -451,6 +451,16 @@ short_freeze (Array<idx_vector>& ra_idx, const dim_vector& dimensions,
   return retval;
 }
 
+int
+permute_vector_compare (const void *a, const void *b)
+{
+  const permute_vector *pva = static_cast<const permute_vector *> (a);
+  const permute_vector *pvb = static_cast<const permute_vector *> (b);
+
+  return pva->pidx > pvb->pidx;
+}
+
+
 void
 gripe_nonconformant (const char *op, int op1_len, int op2_len)
 {

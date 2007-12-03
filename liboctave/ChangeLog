@@ -1,3 +1,9 @@
+2007-12-03  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (template <class LT, class RT> int assign
+	(Sparse<LT>&,  const Sparse<RT>&)): Only set return matrix size to
+	rhs values if both no. rows and columns are zero.
+
 2007-11-30  John W. Eaton  <jwe@octave.org>
 
 	* oct-sort.cc, oct-sort.h: Style fixes.

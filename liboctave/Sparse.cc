@@ -2471,11 +2471,14 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
       int idx_i_is_colon = idx_i.is_colon ();
       int idx_j_is_colon = idx_j.is_colon ();
 
-      if (idx_i_is_colon)
-	n = lhs_nr > 0 ? lhs_nr : rhs_nr;
+      if (lhs_nr == 0 && lhs_nc == 0)
+	{
+	  if (idx_i_is_colon)
+	    n = rhs_nr;
 
-      if (idx_j_is_colon)
-	m = lhs_nc > 0 ? lhs_nc : rhs_nc;
+	  if (idx_j_is_colon)
+	    m = rhs_nc;
+	}
 
       if (idx_i && idx_j)
 	{

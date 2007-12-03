@@ -1,3 +1,8 @@
+2007-12-03  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: If available, include <sys/types.h> in test for
+	sigset_t and sig_atomic_t.
+
 2007-11-30  Moritz Borgmann  <octave@moriborg.de>
 
 	* configure.in: Also check for sunmath.h.

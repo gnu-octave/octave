@@ -1,3 +1,7 @@
+2007-12-03  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/regexp.cc: Also include sys/types.h for regexp.
+
 2007-11-30  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/sort.cc (operator < (const Complex&, const Complex&),

@@ -196,7 +196,7 @@ endfunction
 %!  A = hilb (N);
 %!  cA = condest (A);
 %!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, 2^-12);
+%!  assert (cA, cA_test, 2^-8);
 
 %!test
 %!  N = 6;
@@ -204,7 +204,7 @@ endfunction
 %!  solve = @(x) A\x; solve_t = @(x) A'\x;
 %!  cA = condest (A, solve, solve_t);
 %!  cA_test = norm (inv (A), 1) * norm (A, 1);
-%!  assert (cA, cA_test, 2^-12);
+%!  assert (cA, cA_test, 2^-8);
 
 %!test
 %!  N = 6;

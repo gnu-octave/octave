@@ -1,3 +1,7 @@
+2007-12-03  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* linear-algebra/condest.m: Loosen tolerance in test.
+
 2007-12-02  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Remove unnecessary call to

@@ -927,95 +927,81 @@ The pattern is taken literally.\n\
 %! ## Matlab gives [1,0] here but that seems wrong.
 %! assert (size(t), [1,1])
 
-%!test
+%!testif HAVE_PCRE
 %! ## This test is expected to fail if PCRE is not installed
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
-%!   assert (s,1)
-%!   assert (e,10)
-%!   assert (size(te), [1,1])
-%!   assert (te{1}, [1 5; 7, 10])
-%!   assert (m{1},'short test')
-%!   assert (size(t),[1,1])
-%!   assert (t{1}{1},'short')
-%!   assert (t{1}{2},'test')
-%!   assert (size(nm), [1,1])
-%!   assert (!isempty(fieldnames(nm)))
-%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
-%!   assert (nm.word1,'short')
-%!   assert (nm.word2,'test')
-%! endif
+%! [s, e, te, m, t, nm] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)');
+%! assert (s,1)
+%! assert (e,10)
+%! assert (size(te), [1,1])
+%! assert (te{1}, [1 5; 7, 10])
+%! assert (m{1},'short test')
+%! assert (size(t),[1,1])
+%! assert (t{1}{1},'short')
+%! assert (t{1}{2},'test')
+%! assert (size(nm), [1,1])
+%! assert (!isempty(fieldnames(nm)))
+%! assert (sort(fieldnames(nm)),{'word1';'word2'})
+%! assert (nm.word1,'short')
+%! assert (nm.word2,'test')
 
-%!test
+%!testif HAVE_PCRE
 %! ## This test is expected to fail if PCRE is not installed
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%!   assert (s,1)
-%!   assert (e,10)
-%!   assert (size(te), [1,1])
-%!   assert (te{1}, [1 5; 7, 10])
-%!   assert (m{1},'short test')
-%!   assert (size(t),[1,1])
-%!   assert (t{1}{1},'short')
-%!   assert (t{1}{2},'test')
-%!   assert (size(nm), [1,1])
-%!   assert (!isempty(fieldnames(nm)))
-%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
-%!   assert (nm.word1,'short')
-%!   assert (nm.word2,'test')
-%! endif
+%! [nm, m, te, e, s, t] = regexp('short test string','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%! assert (s,1)
+%! assert (e,10)
+%! assert (size(te), [1,1])
+%! assert (te{1}, [1 5; 7, 10])
+%! assert (m{1},'short test')
+%! assert (size(t),[1,1])
+%! assert (t{1}{1},'short')
+%! assert (t{1}{2},'test')
+%! assert (size(nm), [1,1])
+%! assert (!isempty(fieldnames(nm)))
+%! assert (sort(fieldnames(nm)),{'word1';'word2'})
+%! assert (nm.word1,'short')
+%! assert (nm.word2,'test')
 
-%!test
+%!testif HAVE_PCRE
 %! ## This test is expected to fail if PCRE is not installed
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   [t, nm] = regexp("John Davis\nRogers, James",'(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)','tokens','names');
-%!   assert (size(t), [1,2]);
-%!   assert (t{1}{1},'John');
-%!   assert (t{1}{2},'Davis');
-%!   assert (t{2}{1},'Rogers');
-%!   assert (t{2}{2},'James');
-%!   assert (size(nm), [1,1]);
-%!   assert (nm.first{1},'John');
-%!   assert (nm.first{2},'James');
-%!   assert (nm.last{1},'Davis');
-%!   assert (nm.last{2},'Rogers');
-%! endif
+%! [t, nm] = regexp("John Davis\nRogers, James",'(?<first>\w+)\s+(?<last>\w+)|(?<last>\w+),\s+(?<first>\w+)','tokens','names');
+%! assert (size(t), [1,2]);
+%! assert (t{1}{1},'John');
+%! assert (t{1}{2},'Davis');
+%! assert (t{2}{1},'Rogers');
+%! assert (t{2}{2},'James');
+%! assert (size(nm), [1,1]);
+%! assert (nm.first{1},'John');
+%! assert (nm.first{2},'James');
+%! assert (nm.last{1},'Davis');
+%! assert (nm.last{2},'Rogers');
 
 %!assert(regexp("abc\nabc",'.'),[1:7])
 %!assert(regexp("abc\nabc",'.','dotall'),[1:7])
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert(regexp("abc\nabc",'(?s).'),[1:7])
-%!   assert(regexp("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
-%!   assert(regexp("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
-%! endif
+%!testif HAVE_PCRE
+%! assert(regexp("abc\nabc",'(?s).'),[1:7])
+%! assert(regexp("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
+%! assert(regexp("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
 
 %!assert(regexp("caseCaSe",'case'),1)
 %!assert(regexp("caseCaSe",'case',"matchcase"),1)
 %!assert(regexp("caseCaSe",'case',"ignorecase"),[1,5])
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert(regexp("caseCaSe",'(?-i)case'),1)
-%!   assert(regexp("caseCaSe",'(?i)case'),[1,5])
-%! endif
+%!testif HAVE_PCRE
+%! assert(regexp("caseCaSe",'(?-i)case'),1)
+%! assert(regexp("caseCaSe",'(?i)case'),[1,5])
 
 %!assert (regexp("abc\nabc",'c$'),7)
 %!assert (regexp("abc\nabc",'c$',"stringanchors"),7)
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert (regexp("abc\nabc",'(?-m)c$'),7)
-%!   assert (regexp("abc\nabc",'c$',"lineanchors"),[3,7])
-%!   assert (regexp("abc\nabc",'(?m)c$'),[3,7])
-%! endif
+%!testif HAVE_PCRE
+%! assert (regexp("abc\nabc",'(?-m)c$'),7)
+%! assert (regexp("abc\nabc",'c$',"lineanchors"),[3,7])
+%! assert (regexp("abc\nabc",'(?m)c$'),[3,7])
 
 %!assert (regexp("this word",'s w'),4)
 %!assert (regexp("this word",'s w','literalspacing'),4)
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert (regexp("this word",'(?-x)s w','literalspacing'),4)
-%!   assert (regexp("this word",'s w','freespacing'),zeros(1,0))
-%!   assert (regexp("this word",'(?x)s w'),zeros(1,0))
-%! endif
+%!testif HAVE_PCRE
+%! assert (regexp("this word",'(?-x)s w','literalspacing'),4)
+%! assert (regexp("this word",'s w','freespacing'),zeros(1,0))
+%! assert (regexp("this word",'(?x)s w'),zeros(1,0))
 
 %!error regexp('string', 'tri', 'BadArg');
 %!error regexp('string');
@@ -1117,79 +1103,67 @@ if there are none. See @code{regexp} for more details\n\
 %! ## Matlab gives [1,0] here but that seems wrong.
 %! assert (size(t), [1,1])
 
-%!test
+%!testif HAVE_PCRE
 %! ## This test is expected to fail if PCRE is not installed
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
-%!   assert (s,1)
-%!   assert (e,10)
-%!   assert (size(te), [1,1])
-%!   assert (te{1}, [1 5; 7, 10])
-%!   assert (m{1},'ShoRt Test')
-%!   assert (size(t),[1,1])
-%!   assert (t{1}{1},'ShoRt')
-%!   assert (t{1}{2},'Test')
-%!   assert (size(nm), [1,1])
-%!   assert (!isempty(fieldnames(nm)))
-%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
-%!   assert (nm.word1,'ShoRt')
-%!   assert (nm.word2,'Test')
-%! endif
+%! [s, e, te, m, t, nm] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)');
+%! assert (s,1)
+%! assert (e,10)
+%! assert (size(te), [1,1])
+%! assert (te{1}, [1 5; 7, 10])
+%! assert (m{1},'ShoRt Test')
+%! assert (size(t),[1,1])
+%! assert (t{1}{1},'ShoRt')
+%! assert (t{1}{2},'Test')
+%! assert (size(nm), [1,1])
+%! assert (!isempty(fieldnames(nm)))
+%! assert (sort(fieldnames(nm)),{'word1';'word2'})
+%! assert (nm.word1,'ShoRt')
+%! assert (nm.word2,'Test')
 
-%!test
+%!testif HAVE_PCRE
 %! ## This test is expected to fail if PCRE is not installed
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
-%!   assert (s,1)
-%!   assert (e,10)
-%!   assert (size(te), [1,1])
-%!   assert (te{1}, [1 5; 7, 10])
-%!   assert (m{1},'ShoRt Test')
-%!   assert (size(t),[1,1])
-%!   assert (t{1}{1},'ShoRt')
-%!   assert (t{1}{2},'Test')
-%!   assert (size(nm), [1,1])
-%!   assert (!isempty(fieldnames(nm)))
-%!   assert (sort(fieldnames(nm)),{'word1';'word2'})
-%!   assert (nm.word1,'ShoRt')
-%!   assert (nm.word2,'Test')
-%! endif
+%! [nm, m, te, e, s, t] = regexpi('ShoRt Test String','(?<word1>\w*t)\s*(?<word2>\w*t)', 'names', 'match', 'tokenExtents', 'end', 'start', 'tokens');
+%! assert (s,1)
+%! assert (e,10)
+%! assert (size(te), [1,1])
+%! assert (te{1}, [1 5; 7, 10])
+%! assert (m{1},'ShoRt Test')
+%! assert (size(t),[1,1])
+%! assert (t{1}{1},'ShoRt')
+%! assert (t{1}{2},'Test')
+%! assert (size(nm), [1,1])
+%! assert (!isempty(fieldnames(nm)))
+%! assert (sort(fieldnames(nm)),{'word1';'word2'})
+%! assert (nm.word1,'ShoRt')
+%! assert (nm.word2,'Test')
 
 %!assert(regexpi("abc\nabc",'.'),[1:7])
 %!assert(regexpi("abc\nabc",'.','dotall'),[1:7])
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert(regexpi("abc\nabc",'(?s).'),[1:7])
-%!   assert(regexpi("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
-%!   assert(regexpi("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
-%! endif
+%!testif HAVE_PCRE
+%! assert(regexpi("abc\nabc",'(?s).'),[1:7])
+%! assert(regexpi("abc\nabc",'.','dotexceptnewline'),[1,2,3,5,6,7])
+%! assert(regexpi("abc\nabc",'(?-s).'),[1,2,3,5,6,7])
 
 %!assert(regexpi("caseCaSe",'case'),[1,5])
 %!assert(regexpi("caseCaSe",'case',"matchcase"),1)
 %!assert(regexpi("caseCaSe",'case',"ignorecase"),[1,5])
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert(regexpi("caseCaSe",'(?-i)case'),1)
-%!   assert(regexpi("caseCaSe",'(?i)case'),[1,5])
-%! endif
+%!testif HAVE_PCRE
+%! assert(regexpi("caseCaSe",'(?-i)case'),1)
+%! assert(regexpi("caseCaSe",'(?i)case'),[1,5])
 
 %!assert (regexpi("abc\nabc",'c$'),7)
 %!assert (regexpi("abc\nabc",'c$',"stringanchors"),7)
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert (regexpi("abc\nabc",'(?-m)c$'),7)
-%!   assert (regexpi("abc\nabc",'c$',"lineanchors"),[3,7])
-%!   assert (regexpi("abc\nabc",'(?m)c$'),[3,7])
-%! endif
+%!testif HAVE_PCRE
+%! assert (regexpi("abc\nabc",'(?-m)c$'),7)
+%! assert (regexpi("abc\nabc",'c$',"lineanchors"),[3,7])
+%! assert (regexpi("abc\nabc",'(?m)c$'),[3,7])
 
 %!assert (regexpi("this word",'s w'),4)
 %!assert (regexpi("this word",'s w','literalspacing'),4)
-%!test
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   assert (regexpi("this word",'(?-x)s w','literalspacing'),4)
-%!   assert (regexpi("this word",'s w','freespacing'),zeros(1,0))
-%!   assert (regexpi("this word",'(?x)s w'),zeros(1,0))
-%! endif
+%!testif HAVE_PCRE
+%! assert (regexpi("this word",'(?-x)s w','literalspacing'),4)
+%! assert (regexpi("this word",'s w','freespacing'),zeros(1,0))
+%! assert (regexpi("this word",'(?x)s w'),zeros(1,0))
 
 %!error regexpi('string', 'tri', 'BadArg');
 %!error regexpi('string');
@@ -1532,13 +1506,11 @@ Alternatively, use (?x) or (?-x) in the pattern.\n\
 %! t = regexprep(xml,'<[!?][^>]*>','','tokenize');
 %! assert(t,' <tag v="hello">some stuff</tag>')
 
-%!test  # Capture replacement
-%! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_PCRE")))
-%!   data = "Bob Smith\nDavid Hollerith\nSam Jenkins";
-%!   result = "Smith, Bob\nHollerith, David\nJenkins, Sam";
-%!   t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2, $1');
-%!   assert(t,result)
-%! end
+%!testif HAVE_PCRE # Capture replacement
+%! data = "Bob Smith\nDavid Hollerith\nSam Jenkins";
+%! result = "Smith, Bob\nHollerith, David\nJenkins, Sam";
+%! t = regexprep(data,'(?m)^(\w+)\s+(\w+)$','$2, $1');
+%! assert(t,result)
 
 # Return the original if no match
 %!assert(regexprep('hello','world','earth'),'hello')

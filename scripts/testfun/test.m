@@ -75,14 +75,16 @@
 
 ## PKG_ADD: mark_as_command test
 
-function [__ret1, __ret2, __ret3] = test (__name, __flag, __fid)
+function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   ## information from test will be introduced by "key" 
   persistent __signal_fail =  "!!!!! ";
   persistent __signal_empty = "????? ";
   persistent __signal_block = "  ***** ";
   persistent __signal_file =  ">>>>> ";
+  persistent __signal_skip = "----- ";
 
   __xfail = 0;
+  __xskip = 0;
 
   if (nargin < 2 || isempty (__flag))
     __flag = "quiet";
@@ -415,6 +417,20 @@ function [__ret1, __ret2, __ret3] = test (__name, __flag, __fid)
       endif
       __code = ""; # code already processed
       
+    ## TESTIF
+    elseif (strcmp (__type, "testif"))
+      [__e, __feat] = regexp (__code, '^\s*([^\s]+)', 'end', 'tokens');
+      if (isempty (findstr (octave_config_info ("DEFS"), __feat{1}{1})))
+        __xskip++;
+	__success = 0;
+	__istest = 0;
+	__code = ""; # skip the code
+	__msg = sprintf ("%sskipped test\n", __signal_skip);
+      else
+        __istest = 1;
+	__code = __code(__e + 1 : end);
+      endif
+
     ## TEST
     elseif (strcmp (__type, "test") || strcmp (__type, "xtest"))
       __istest = 1;
@@ -495,6 +511,9 @@ function [__ret1, __ret2, __ret3] = test (__name, __flag, __fid)
     else
       printf ("PASSES %d out of %d tests\n", __successes, __tests);
     endif
+    if (__xskip)
+      printf ("Skipped %d tests due to missing features\n", __xskip);
+    endif
   elseif (__grabdemo)
     __ret1 = __demo_code;
     __ret2 = __demo_idx;
@@ -504,6 +523,7 @@ function [__ret1, __ret2, __ret3] = test (__name, __flag, __fid)
     __ret1 = __successes;
     __ret2 = __tests;
     __ret3 = __xfail;
+    __ret4 = __xskip;
   endif
 endfunction
 
@@ -593,6 +613,14 @@ function body = __extract_test_code (nm)
     fclose (fid);
   endif
 endfunction
+
+## Test for test for missing features
+%!testif OCTAVE_SOURCE
+%! ## This test should be run
+%! assert (true);
+%!testif HAVE_FOOBAR
+%! ## missing feature. Fail if this test is run
+%! error("Failed missing feature test");
 
 ### Test for a known failure
 %!xtest error("This test is known to fail")

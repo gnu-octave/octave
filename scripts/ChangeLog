@@ -1,3 +1,10 @@
+2007-12-03  David Bateman  <dbateman@free.fr>
+
+	* plot/plotyy.m: Use activepositionproperty property of axes
+	object. Set second axis color to "none".
+	* plot/__go_draw_axes__.m: Respect the activepositionproperty
+	property of the axis objects.
+
 2007-12-03  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* linear-algebra/condest.m: Loosen tolerance in test.

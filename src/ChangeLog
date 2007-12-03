@@ -1,3 +1,9 @@
+2007-12-02  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (class axes): Add color and activepositionproperty
+	properties to axis objects.
+	* graphics.h.in (class axes): ditto.
+
 2007-12-03  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/regexp.cc: Also include sys/types.h for regexp.

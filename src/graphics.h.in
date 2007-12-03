@@ -1376,6 +1376,7 @@ public:
       octave_value xticklabelmode
       octave_value yticklabelmode
       octave_value zticklabelmode
+      color_property color a
       color_property xcolor
       color_property ycolor
       color_property zcolor
@@ -1391,6 +1392,7 @@ public:
       octave_value visible
       octave_value nextplot
       octave_value outerposition
+      radio_property activepositionproperty a
       radio_property __colorbar__ a
    END_PROPERTIES
 

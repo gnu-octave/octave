@@ -33,18 +33,20 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 
     ## Set axis properties here?
     pos = [0, 0, 1, 1];
-    if (! isempty (axis_obj.outerposition))
-      pos = axis_obj.outerposition;
-    endif
-
-    ymirror = true;
-    if (! isempty (axis_obj.position))
-      pos = axis_obj.position;
-      fprintf (plot_stream, "set tmargin 3;\n");
-      fprintf (plot_stream, "set bmargin 3;\n");
-      fprintf (plot_stream, "set lmargin 10;\n");
-      fprintf (plot_stream, "set rmargin 10;\n");
+    if (strcmp (axis_obj.activepositionproperty, "outerposition"))
+      ymirror = true;
+      if (! isempty (axis_obj.outerposition))
+	pos = axis_obj.outerposition;
+      endif
+    else
       ymirror = false;
+      if (! isempty (axis_obj.position))
+	pos = axis_obj.position;
+	fprintf (plot_stream, "set tmargin 0;\n");
+	fprintf (plot_stream, "set bmargin 0;\n");
+	fprintf (plot_stream, "set lmargin 0;\n");
+	fprintf (plot_stream, "set rmargin 0;\n");
+      endif
     endif
 
     if (! strcmp (axis_obj.__colorbar__, "none"))

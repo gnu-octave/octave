@@ -1114,6 +1114,7 @@ axes::properties::properties (const graphics_handle& mh,
     xticklabelmode ("auto"),
     yticklabelmode ("auto"),
     zticklabelmode ("auto"),
+    color (color_values(0, 0, 0), radio_values ("flat|none|interp")),
     xcolor (),
     ycolor (),
     zcolor (),
@@ -1129,6 +1130,7 @@ axes::properties::properties (const graphics_handle& mh,
     visible ("on"),
     nextplot ("replace"),
     outerposition (),
+    activepositionproperty (radio_values ("{outerposition}|position")),
     __colorbar__ (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"))
 {
   Matrix tlim (1, 2, 0.0);
@@ -1306,6 +1308,8 @@ axes::properties::set (const caseless_str& name, const octave_value& val)
     set_yticklabelmode (val);
   else if (name.compare ("zticklabelmode"))
     set_zticklabelmode (val);
+  else if (name.compare ("color"))
+    set_color (val);
   else if (name.compare ("xcolor"))
     set_xcolor (val);
   else if (name.compare ("ycolor"))
@@ -1336,6 +1340,8 @@ axes::properties::set (const caseless_str& name, const octave_value& val)
     set_nextplot (val);
   else if (name.compare ("outerposition"))
     set_outerposition (val);
+  else if (name.compare ("activepositionproperty"))
+    set_activepositionproperty (val);
   else if (name.compare ("__colorbar__"))
     set___colorbar__ (val);
   else
@@ -1397,6 +1403,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
+  color = color_property (color_values (0, 0, 0), radio_values("flat|none|interp"));
   xcolor = color_property ("black");
   ycolor = color_property ("black");
   zcolor = color_property ("black");
@@ -1427,6 +1434,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
       outerposition = touterposition;
     }
 
+  activepositionproperty = radio_property (radio_values ("{outerposition}|position"));
   __colorbar__  = radio_property (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"));
 
   delete_children ();
@@ -1520,6 +1528,7 @@ axes::properties::get (void) const
   m.assign ("xticklabelmode", xticklabelmode);
   m.assign ("yticklabelmode", yticklabelmode);
   m.assign ("zticklabelmode", zticklabelmode);
+  m.assign ("color", color);
   m.assign ("xcolor", xcolor);
   m.assign ("ycolor", ycolor);
   m.assign ("zcolor", zcolor);
@@ -1535,6 +1544,7 @@ axes::properties::get (void) const
   m.assign ("visible", visible);
   m.assign ("nextplot", nextplot);
   m.assign ("outerposition", outerposition);
+  m.assign ("activepositionproperty", activepositionproperty);
   m.assign ("__colorbar__", __colorbar__);
 
   return m;
@@ -1631,6 +1641,8 @@ axes::properties::get (const caseless_str& name) const
     retval = yticklabelmode;
   else if (name.compare ("zticklabelmode"))
     retval = zticklabelmode;
+  else if (name.compare ("color"))
+    retval = color;
   else if (name.compare ("xcolor"))
     retval = xcolor;
   else if (name.compare ("ycolor"))
@@ -1661,6 +1673,8 @@ axes::properties::get (const caseless_str& name) const
     retval = nextplot;
   else if (name.compare ("outerposition"))
     retval = outerposition;
+  else if (name.compare ("activepositionproperty"))
+    retval = activepositionproperty;
   else if (name.compare ("__colorbar__"))
     retval = __colorbar__;
   else
@@ -1747,6 +1761,7 @@ axes::properties::factory_defaults (void)
   m["xticklabelmode"] = "auto";
   m["yticklabelmode"] = "auto";
   m["zticklabelmode"] = "auto";
+  m["color"] = color_property (color_values (0, 0, 0), radio_values("flat|none|interp"));
   m["xcolor"] = color_property ("black");
   m["ycolor"] = color_property ("black");
   m["zcolor"] = color_property ("black");
@@ -1772,6 +1787,7 @@ axes::properties::factory_defaults (void)
   touterposition(3) = 1;
 
   m["outerposition"] = touterposition;
+  m["activepositionproperty"] =  radio_property (radio_values ("{outerposition}|position"));
   m["__colorbar__"] = radio_property (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"));
 
   return m;

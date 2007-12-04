@@ -148,13 +148,13 @@ as\n\
 The deactivated tests below can't be tested till rectangular back-subs is
 implemented for sparse matrices.
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = sprandn(n,n,d)+speye(n,n);
 %! r = spqr(a);
 %! assert(r'*r,a'*a,1e-10)
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = sprandn(n,n,d)+speye(n,n);
 %! q = symamd(a);
@@ -162,13 +162,13 @@ implemented for sparse matrices.
 %! r = spqr(a);
 %! assert(r'*r,a'*a,1e-10)
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = sprandn(n,n,d)+speye(n,n);
 %! [c,r] = spqr(a,ones(n,1));
 %! assert (r\c,full(a)\ones(n,1),10e-10)
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = sprandn(n,n,d)+speye(n,n);
 %! b = randn(n,2);
@@ -176,20 +176,20 @@ implemented for sparse matrices.
 %! assert (r\c,full(a)\b,10e-10)
 
 %% Test under-determined systems!!
-%!#test
+%!#testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = sprandn(n,n+1,d)+speye(n,n+1);
 %! b = randn(n,2);
 %! [c,r] = spqr(a,b);
 %! assert (r\c,full(a)\b,10e-10)
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = 1i*sprandn(n,n,d)+speye(n,n);
 %! r = spqr(a);
 %! assert(r'*r,a'*a,1e-10)
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = 1i*sprandn(n,n,d)+speye(n,n);
 %! q = symamd(a);
@@ -197,13 +197,13 @@ implemented for sparse matrices.
 %! r = spqr(a);
 %! assert(r'*r,a'*a,1e-10)
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = 1i*sprandn(n,n,d)+speye(n,n);
 %! [c,r] = spqr(a,ones(n,1));
 %! assert (r\c,full(a)\ones(n,1),10e-10)
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = 1i*sprandn(n,n,d)+speye(n,n);
 %! b = randn(n,2);
@@ -211,7 +211,7 @@ implemented for sparse matrices.
 %! assert (r\c,full(a)\b,10e-10)
 
 %% Test under-determined systems!!
-%!#test
+%!#testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;
 %! a = 1i*sprandn(n,n+1,d)+speye(n,n+1);
 %! b = randn(n,2);
@@ -352,12 +352,12 @@ triangular form of a sparse matrix. ACM Trans. Math. Software,\n\
 
 /* 
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n=20;
 %! a=speye(n,n);a=a(randperm(n),:);
 %! assert(a(dmperm(a),:),speye(n))
 
-%!test
+%!testif HAVE_CXSPARSE
 %! n=20;
 %! d=0.2;
 %! a=tril(sprandn(n,n,d),-1)+speye(n,n);
@@ -402,8 +402,10 @@ rank (@var{s})}.\n\
 /* 
 
 %!error(sprank(1,2));
-%!assert(sprank(speye(20)), 20)
-%!assert(sprank([1,0,2,0;2,0,4,0]),2)
+%!testif HAVE_CXSPARSE
+%! assert(sprank(speye(20)), 20)
+%!testif HAVE_CXSPARSE
+%! assert(sprank([1,0,2,0;2,0,4,0]),2)
 
 */
 /*

@@ -480,7 +480,8 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       fputs (__fid, __msg);
       fflush (__fid);
       ## show the variable context
-      if (! strcmp (__type, "error") && ! all (__shared == " "))
+      if (! strcmp (__type, "error") && ! strcmp (__type, "testif") &&
+	  ! all (__shared == " "))
 	fputs (__fid, "shared variables ");
 	eval (sprintf ("fdisp(__fid,bundle(%s));", __shared)); 
 	fflush (__fid);
@@ -618,9 +619,11 @@ endfunction
 %!testif OCTAVE_SOURCE
 %! ## This test should be run
 %! assert (true);
-%!testif HAVE_FOOBAR
-%! ## missing feature. Fail if this test is run
-%! error("Failed missing feature test");
+
+### Disable this test to avoid spurious skipped test for "make check"
+% !testif HAVE_FOOBAR
+% ! ## missing feature. Fail if this test is run
+% ! error("Failed missing feature test");
 
 ### Test for a known failure
 %!xtest error("This test is known to fail")

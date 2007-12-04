@@ -1,3 +1,9 @@
+2007-12-03  David Bateman  <dbateman@free.fr>
+
+	* fntests.m: Also count the skipped tests.
+	* build_sparse_tests.sh: As appropriate make tests conditional on
+	HAVE_UMFPACK, HAVE_CHOLMOD and HAVE_CXSPARSE.
+
 2007-11-26  David Bateman  <dbateman@free.fr>
 
 	* build_sparse_tests.sh: More care with sparse return values.

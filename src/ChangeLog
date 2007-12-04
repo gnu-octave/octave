@@ -1,5 +1,8 @@
 2007-12-03  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/luinc.cc: Make tests conditional on HAVE_UMFPACK.
+	* DLD-FUNCTIONS/spqr.cc: Make tests conditional on HAVE_CXSPARSE.
+
 	* DLD-FUNCTIONS/regexp.cc: Use "%!testif" blocks for conditional
 	tests on PCRE.
 

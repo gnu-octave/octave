@@ -76,11 +76,11 @@ function y = hastests (f)
        || findstr (str, "%!error") || findstr (str, "%!warning"));
 endfunction
 
-function [dp, dn, dxf] = run_test_dir (fid, d);
+function [dp, dn, dxf, dsk] = run_test_dir (fid, d);
   global files_with_tests;
   global files_with_no_tests;
   lst = dir (d);
-  dp = dn = dxf = 0;
+  dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
     nm = lst(i).name;
     if (length (nm) > 5 && strcmp (nm(1:5), "test_")
@@ -89,7 +89,7 @@ function [dp, dn, dxf] = run_test_dir (fid, d);
       ffnm = fullfile (d, nm);
       if (hastests (ffnm))
 	print_test_file_name (nm);
-	[p, n, xf] = test (nm(1:(end-2)), "quiet", fid);
+	[p, n, xf, sk] = test (nm(1:(end-2)), "quiet", fid);
 	print_pass_fail (n, p);
 	files_with_tests(end+1) = ffnm;
       else
@@ -98,25 +98,27 @@ function [dp, dn, dxf] = run_test_dir (fid, d);
       dp += p;
       dn += n;
       dxf += xf;
+      dsk += sk;
     endif
   endfor
 endfunction
 
-function [dp, dn, dxf] = run_test_script (fid, d);
+function [dp, dn, dxf, dsk] = run_test_script (fid, d);
   global files_with_tests;
   global files_with_no_tests;
   global topsrcdir;
   global topbuilddir;
   lst = dir (d);
-  dp = dn = dxf = 0;
+  dp = dn = dxf = dsk = 0;
   for i = 1:length (lst)
     nm = lst(i).name;
     if (lst(i).isdir && ! strcmp (nm, ".") && ! strcmp (nm, "..")
 	&& ! strcmp (nm, "CVS"))
-      [p, n, xf] = run_test_script (fid, [d, "/", nm]);
+      [p, n, xf, sk] = run_test_script (fid, [d, "/", nm]);
       dp += p;
       dn += n;
       dxf += xf;
+      dsk += sk;
     endif
   endfor
   for i = 1:length (lst)
@@ -130,11 +132,12 @@ function [dp, dn, dxf] = run_test_script (fid, d);
 	tmp = strrep (f, [topsrcdir, "/"], "");
 	tmp = strrep (tmp, [topbuilddir, "/"], "../");
 	print_test_file_name (tmp);
-	[p, n, xf] = test (f, "quiet", fid);
+	[p, n, xf, sk] = test (f, "quiet", fid);
 	print_pass_fail (n, p);
 	dp += p;
 	dn += n;
 	dxf += xf;
+	dsk += sk;
 	files_with_tests(end+1) = f;
       else
 	files_with_no_tests(end+1) = f;
@@ -171,20 +174,22 @@ try
     error ("could not open fntests.log for writing");
   endif
   test ("", "explain", fid);
-  dp = dn = dxf = 0;
+  dp = dn = dxf = dsk = 0;
   printf ("\nIntegrated test scripts:\n\n");
   for i = 1:length (fundirs)
-    [p, n, xf] = run_test_script (fid, fundirs{i});
+    [p, n, xf, sk] = run_test_script (fid, fundirs{i});
     dp += p;
     dn += n;
     dxf += xf;
+    dsk += sk;
   endfor
   printf ("\nFixed test scripts:\n\n");
   for i = 1:length (testdirs)
-    [p, n, xf] = run_test_dir (fid, testdirs{i});
+    [p, n, xf, sk] = run_test_dir (fid, testdirs{i});
     dp += p;
     dn += n;
     dxf += xf;
+    dsk += sk;
   endfor
   printf ("\nSummary:\n\n  PASS %6d\n", dp);
   nfail = dn - dp;
@@ -195,6 +200,13 @@ try
     printf ("\nExpected failures are known bugs. Please help improve\n");
     printf ("Octave by contributing fixes for them.\n");
   endif
+  if (dsk > 0)
+    printf ("\nThere were %d skipped tests (see fntest.log for details).\n", dsk);
+    printf ("Skipped tests are features that are disabled in this version\n");
+    printf ("of Octave as the needed libraries were not present when Octave\n");
+    printf ("was built\n");
+  endif
+
   n_files_with_no_tests = length (files_with_no_tests);
   n_files = n_files_with_no_tests + length (files_with_tests);
   printf ("\n%d (of %d) files have no tests.  Please help improve Octave by\n",

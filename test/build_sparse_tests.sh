@@ -179,7 +179,8 @@ cat >>$TESTS <<EOF
 %% Note that the last four do not fail, but rather give a warning
 %% of a singular matrix, which is consistent with the full matrix
 %% behaviour. They are therefore disabled.. 
-%!assert(spinv(sparse([1,1;1,1+i])),sparse([1-1i,1i;1i,-1i]),10*eps);
+%!testif HAVE_UMFPACK
+%! assert(spinv(sparse([1,1;1,1+i])),sparse([1-1i,1i;1i,-1i]),10*eps);
 % !error spinv( sparse( [1,1;1,1]   ) );
 % !error spinv( sparse( [0,0;0,1]   ) );
 % !error spinv( sparse( [0,0;0,1+i] ) );
@@ -629,22 +630,23 @@ gen_square_tests() {
     gen_square_divop_tests
 
     cat >>$TESTS <<EOF
-%!assert(spdet(bs+speye(size(bs))),det(bf+eye(size(bf))),100*eps*abs(det(bf+eye(size(bf)))))
+%!testif HAVE_UMFPACK
+%! assert(spdet(bs+speye(size(bs))),det(bf+eye(size(bf))),100*eps*abs(det(bf+eye(size(bf)))))
 
-%!test 
+%!testif HAVE_UMFPACK 
 %! [l,u]=splu(sparse([1,1;1,1]));
 %! assert(l*u,[1,1;1,1],10*eps);
 
-%!test
+%!testif HAVE_UMFPACK
 %! [l,u]=splu(sparse([1,1;1,1+i]));
 %! assert(l,sparse([1,2,2],[1,1,2],1),10*eps);
 %! assert(u,sparse([1,1,2],[1,2,2],[1,1,1i]),10*eps);
 
-%!test ;# permuted LU
+%!testif HAVE_UMFPACK ;# permuted LU
 %! [L,U] = splu(bs);
 %! assert(L*U,bs,1e-10);
 
-%!test ;# simple LU + row permutations
+%!testif HAVE_UMFPACK ;# simple LU + row permutations
 %! [L,U,P] = splu(bs);
 %! assert(P'*L*U,bs,1e-10);
 %! # triangularity
@@ -653,7 +655,7 @@ gen_square_tests() {
 %! [i,j,v]=spfind(U);
 %! assert(j-i>=0);
 
-%!test ;# simple LU + row/col permutations
+%!testif HAVE_UMFPACK ;# simple LU + row/col permutations
 %! [L,U,P,Q] = splu(bs);
 %! assert(P'*L*U*Q',bs,1e-10);
 %! # triangularity
@@ -662,7 +664,7 @@ gen_square_tests() {
 %! [i,j,v]=spfind(U);
 %! assert(j-i>=0);
 
-%!test ;# LU with fixed column permutation
+%!testif HAVE_UMFPACK ;# LU with fixed column permutation
 %! [L,U,P] = splu(bs,colamd(bs));
 %! assert(P'*L*U,bs,1e-10);
 %! # triangularity
@@ -671,7 +673,7 @@ gen_square_tests() {
 %! [i,j,v]=spfind(U(:,colamd(bs)));
 %! assert(j-i>=0);
 
-%!test ;# LU with initial column permutation
+%!testif HAVE_UMFPACK ;# LU with initial column permutation
 %! [L,U,P,Q] = splu(bs,colamd(bs));
 %! assert(P'*L*U*Q',bs,1e-10);
 %! # triangularity
@@ -680,7 +682,7 @@ gen_square_tests() {
 %! [i,j,v]=spfind(U);
 %! assert(j-i>=0);
 
-%!test ;# inverse
+%!testif HAVE_UMFPACK ;# inverse
 %! assert(spinv(bs)*bs,sparse(eye(rows(bs))),1e-10);
 
 %!assert(bf\as',bf\af',100*eps);
@@ -693,11 +695,14 @@ EOF
 # Cholesky tests
 gen_cholesky_tests() {
     cat >>$TESTS <<EOF
-%!assert(spchol(bs)'*spchol(bs),bs,1e-10);
-%!assert(splchol(bs)*splchol(bs)',bs,1e-10);
-%!assert(splchol(bs),spchol(bs)',1e-10);
+%!testif HAVE_CHOLMOD
+%! assert(spchol(bs)'*spchol(bs),bs,1e-10);
+%!testif HAVE_CHOLMOD 
+%! assert(splchol(bs)*splchol(bs)',bs,1e-10);
+%!testif HAVE_CHOLMOD
+%! assert(splchol(bs),spchol(bs)',1e-10);
 
-%!test ;# Return Partial Cholesky factorization
+%!testif HAVE_CHOLMOD ;# Return Partial Cholesky factorization
 %! [RS,PS] = spchol(bs);
 %! assert(RS'*RS,bs,1e-10);
 %! assert(PS,0);
@@ -705,7 +710,7 @@ gen_cholesky_tests() {
 %! assert(LS*LS',bs,1e-10);
 %! assert(PS,0);
 
-%!test ;# Permuted Cholesky factorization
+%!testif HAVE_CHOLMOD ;# Permuted Cholesky factorization
 %! [RS,PS,QS] = spchol(bs);
 %! assert(RS'*RS,QS*bs*QS',1e-10);
 %! assert(PS,0);
@@ -914,18 +919,26 @@ cat >>$TESTS <<EOF
 %!assert(pds\xs,sparse(pdf\xf,1),1e-10);
 %!assert(ls\xf,lf\xf,1e-10);
 %!assert(sparse(ls\xs),sparse(lf\xf),1e-10);
-%!assert(pls\xf,plf\xf,1e-10);
-%!assert(sparse(pls\xs),sparse(plf\xf),1e-10);
+%!testif HAVE_UMFPACK
+%! assert(pls\xf,plf\xf,1e-10);
+%!testif HAVE_UMFPACK
+%! assert(sparse(pls\xs),sparse(plf\xf),1e-10);
 %!assert(us\xf,uf\xf,1e-10);
 %!assert(sparse(us\xs),sparse(uf\xf),1e-10);
-%!assert(pus\xf,puf\xf,1e-10);
-%!assert(sparse(pus\xs),sparse(puf\xf),1e-10);
+%!testif HAVE_UMFPACK
+%! assert(pus\xf,puf\xf,1e-10);
+%!testif HAVE_UMFPACK
+%! assert(sparse(pus\xs),sparse(puf\xf),1e-10);
 %!assert(bs\xf,bf\xf,1e-10);
 %!assert(sparse(bs\xs),sparse(bf\xf),1e-10);
-%!assert(cs\xf,cf\xf,1e-10);
-%!assert(sparse(cs\xs),sparse(cf\xf),1e-10);
-%!assert(bcs\xf,bcf\xf,1e-10);
-%!assert(sparse(bcs\xs),sparse(bcf\xf),1e-10);
+%!testif HAVE_UMFPACK
+%! assert(cs\xf,cf\xf,1e-10);
+%!testif HAVE_UMFPACK
+%! assert(sparse(cs\xs),sparse(cf\xf),1e-10);
+%!testif HAVE_UMFPACK
+%! assert(bcs\xf,bcf\xf,1e-10);
+%!testif HAVE_UMFPACk
+%! assert(sparse(bcs\xs),sparse(bcf\xf),1e-10);
 %!assert(ts\xf,tf\xf,1e-10);
 %!assert(sparse(ts\xs),sparse(tf\xf),1e-10);
 %!assert(tcs\xf,tcf\xf,1e-10);
@@ -945,7 +958,7 @@ cat >>$TESTS <<EOF
 %! assert (sparse(a * x), b, feps);
 %! b = sprandn(sz(1),sz(2),0.2)+1i*sprandn(sz(1),sz(2),0.2); x = a \b; 
 %! assert (sparse(a * x), b, feps);
-%!test
+%!testif HAVE_CXSPARSE
 %! a = alpha*sprandn(10,11,0.2)+speye(10,11); f(a,[10,2],1e-10);
 %! ## Test this by forcing matrix_type, as can't get a certain 
 %! ## result for over-determined systems.
@@ -980,28 +993,32 @@ cat >>$TESTS <<EOF
 %!assert(pds\xs,sparse(pdf\xs,true),100*eps)
 %!test
 %! us = alpha*[[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]];
-%!assert(us*(us\xf),xf,100*eps)
-%!assert(us*(us\xs),xs,100*eps)
+%!testif HAVE_UMFPACK
+%! assert(us*(us\xf),xf,100*eps)
+%!testif HAVE_UMFPACK
+%! assert(us*(us\xs),xs,100*eps)
 %!test
 %! pus = us(:,[2,1,3:12]);
-%!assert(pus*(pus\xf),xf,100*eps)
-%!assert(pus*(pus\xs),xs,100*eps)
+%!testif HAVE_UMFPACK
+%! assert(pus*(pus\xf),xf,100*eps)
+%!testif HAVE_UMFPACK
+%! assert(pus*(pus\xs),xs,100*eps)
 %!test
 %! us = alpha*[speye(11,9),[1;sparse(8,1);1;0]];
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (us, xf);
 %! assert(us\xf,r\c,100*eps)
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (us, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(us\xs,r\c,100*eps)
 %!test
 %! pus = us(:,[1:8,10,9]);
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (pus, xf);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xf,r\c,100*eps)
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (pus, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xs,r\c,100*eps)
@@ -1019,20 +1036,20 @@ cat >>$TESTS <<EOF
 %! ls = alpha*[speye(10,10),sparse(10,1);[1;1],sparse(2,9),[1;1]];
 %! xf = beta * ones(12,2);
 %! xs = speye(12,12);
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (ls, xf);
 %! assert(ls\xf,r\c,100*eps)
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (ls, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(ls\xs,r\c,100*eps)
-%!test
+%!testif HAVE_CXSPARSE
 %! pls = ls(:,[1:8,10,9]);
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (pls, xf);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xf,r\c,100*eps)
-%!test
+%!testif HAVE_CXSPARSE
 %! [c,r] = spqr (pls, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xs,r\c,100*eps)

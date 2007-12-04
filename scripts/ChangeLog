@@ -1,5 +1,9 @@
 2007-12-03  David Bateman  <dbateman@free.fr>
 
+	* testfun/test.m: Disable "testif" test block to avoid spurious
+	skipped test for "make check". Avoid printing variables for
+	skipped tests.
+
 	* testfun/test.m: Add "testif" type to allow for conditional tests.
 
 	* plot/plotyy.m: Use activepositionproperty property of axes

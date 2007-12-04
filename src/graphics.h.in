@@ -650,6 +650,12 @@ public:
 
   graphics_handle get_parent (void) const { return parent; }
 
+  std::string get_type (void) const { return type; }
+
+  bool is_modified (void) const { return __modified__; }
+ 
+  graphics_handle get___myhandle__ (void) const { return __myhandle__; }
+ 
   void remove_child (const graphics_handle& h);
 
   void adopt (const graphics_handle& h)

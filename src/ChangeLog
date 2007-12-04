@@ -3,6 +3,12 @@
 	* load-save.cc (Fsave, Fload): Doc fixes.
 	From Marco Caliari <caliari@sci.univr.it>.
 
+2007-12-04  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in (base_properties::get_type
+        base_properties::get___modified__,
+	base_properties::get___myhandle__): New functions.
+
 2007-12-04  Christoph Mayer  <Christoph.Mayer@dlr.de>.
 
 	* toplev.h (clean_up_and_exit, recover_from_exception,

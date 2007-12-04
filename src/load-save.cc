@@ -660,7 +660,7 @@ DEFCMD (load, args, nargout,
 @deffn {Command} load options file v1 v2 @dots{}\n\
 Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
 @var{file}.  As with @code{save}, you may specify a list of variables\n\
-and @code{load} will only extract\n\ those variables with names that\n\
+and @code{load} will only extract those variables with names that\n\
 match.  For example, to restore the variables saved in the file\n\
 @file{data}, use the command\n\
 \n\

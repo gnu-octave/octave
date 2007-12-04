@@ -937,7 +937,7 @@ cat >>$TESTS <<EOF
 %! assert(sparse(cs\xs),sparse(cf\xf),1e-10);
 %!testif HAVE_UMFPACK
 %! assert(bcs\xf,bcf\xf,1e-10);
-%!testif HAVE_UMFPACk
+%!testif HAVE_UMFPACK
 %! assert(sparse(bcs\xs),sparse(bcf\xf),1e-10);
 %!assert(ts\xf,tf\xf,1e-10);
 %!assert(sparse(ts\xs),sparse(tf\xf),1e-10);

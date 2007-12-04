@@ -1,3 +1,9 @@
+2007-12-04  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/Makefile.in (IMAGES_TXT): Include $(INTERPIMAGES_TXT)
+	$(GEOMETRYIMAGES_TXT) and $(PLOTIMAGES_TXT) in the list.
+	(INTERPIMAGES_TXT, GEOMETRYIMAGES_TXT, PLOTIMAGES_TXT): New variables.
+
 2007-11-26  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Document condest.

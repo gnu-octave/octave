@@ -60,16 +60,19 @@ GEOMETRYIMAGES = voronoi triplot griddata convhull delaunay inpolygon
 GEOMETRYIMAGES_EPS = $(addsuffix .eps, $(GEOMETRYIMAGES))
 GEOMETRYIMAGES_PDF = $(addsuffix .pdf, $(GEOMETRYIMAGES))
 GEOMETRYIMAGES_PNG = $(addsuffix .png, $(GEOMETRYIMAGES))
+GEOMETRYIMAGES_TXT = $(addsuffix .txt, $(GEOMETRYIMAGES))
 
 PLOTIMAGES = plot hist errorbar polar mesh plot3 extended
 PLOTIMAGES_EPS = $(addsuffix .eps, $(PLOTIMAGES))
 PLOTIMAGES_PDF = $(addsuffix .pdf, $(PLOTIMAGES))
 PLOTIMAGES_PNG = $(addsuffix .png, $(PLOTIMAGES))
+PLOTIMAGES_TXT = $(addsuffix .txt, $(PLOTIMAGES))
 
 INTERPIMAGES = interpft interpn interpderiv1 interpderiv2
 INTERPIMAGES_EPS = $(addsuffix .eps, $(INTERPIMAGES))
 INTERPIMAGES_PDF = $(addsuffix .pdf, $(INTERPIMAGES))
 INTERPIMAGES_PNG = $(addsuffix .png, $(INTERPIMAGES))
+INTERPIMAGES_TXT = $(addsuffix .txt, $(INTERPIMAGES))
 
 SPARSEIMAGES_1 = gplot grid spmatrix spchol spcholperm
 SPARSEIMAGES_EPS = $(addsuffix .eps, $(SPARSEIMAGES_1))
@@ -83,7 +86,8 @@ IMAGES_PDF = $(SPARSEIMAGES_PDF) $(INTERPIMAGES_PDF) \
 	$(GEOMETRYIMAGES_PDF) $(PLOTIMAGES_PDF)
 IMAGES_PNG = $(SPARSEIMAGES_PNG) $(INTERPIMAGES_PNG) \
 	$(GEOMETRYIMAGES_PNG) $(PLOTIMAGES_PNG)
-IMAGES_TXT = $(SPARSEIMAGES_TXT)
+IMAGES_TXT = $(SPARSEIMAGES_TXT) $(INTERPIMAGES_TXT) \
+	$(GEOMETRYIMAGES_TXT) $(PLOTIMAGES_TXT)
 
 HTML_IMAGES_PNG = $(addprefix HTML/, $(IMAGES_PNG))
 

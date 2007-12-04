@@ -29,7 +29,14 @@
 ## Using Householder reflections to guard against loss of orthogonality.
 ##
 ## If @var{v} is a vector, then @var{h} contains the Hessenberg matrix
-## such that @code{a*u == u*h}.  Otherwise, @var{h} is meaningless.
+## such that @code{a*u == u*h+rk*ek'}, in which @code{rk =
+## a*u(:,k)-u*h(:,k)}, and @code{ek'} is the vector
+## @code{[0, 0, @dots{}, 1]} of length @code{k}.  Otherwise, @var{h} is
+## meaningless.
+##
+## If @var{v} is a vector and @var{k} is greater than
+## @code{length(A)-1}, then @var{h} contains the Hessenberg matrix such
+## that @code{a*u == u*h}.
 ##
 ## The value of @var{nu} is the dimension of the span of the krylov
 ## subspace (based on @var{eps1}).

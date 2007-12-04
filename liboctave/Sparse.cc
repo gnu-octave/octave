@@ -2162,7 +2162,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 	  if (nr > 1)
 	    {
-	      Sparse<LT> tmp (max_idx, 1, new_nzmx);
+	      Sparse<LT> tmp ((max_idx > nr ? max_idx : nr), 1, new_nzmx);
 	      tmp.cidx(0) = 0;
 	      tmp.cidx(1) = new_nzmx;
 
@@ -2206,7 +2206,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	    }
 	  else
 	    {
-	      Sparse<LT> tmp (1, max_idx, new_nzmx);
+	      Sparse<LT> tmp (1, (max_idx > nc ? max_idx : nc), new_nzmx);
 
 	      octave_idx_type i = 0;
 	      octave_idx_type ii = 0;
@@ -2281,7 +2281,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 	  if (nr > 1)
 	    {
-	      Sparse<LT> tmp (max_idx, 1, new_nzmx);
+	      Sparse<LT> tmp ((max_idx > nr ? max_idx : nr), 1, new_nzmx);
 	      tmp.cidx(0) = 0;
 	      tmp.cidx(1) = new_nzmx;
 
@@ -2324,7 +2324,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	    }
 	  else
 	    {
-	      Sparse<LT> tmp (1, max_idx, new_nzmx);
+	      Sparse<LT> tmp (1, (max_idx > nc ? max_idx : nc), new_nzmx);
 
 	      octave_idx_type i = 0;
 	      octave_idx_type ii = 0;
@@ -2490,9 +2490,6 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	    {
 	      if (rhs_nr == 1 && rhs_nc == 1 && n >= 0 && m >= 0)
 		{
-		  // No need to do anything if either of the indices
-		  // are empty.
-
 		  if (n > 0 && m > 0)
 		    {
 		      idx_i.sort (true);
@@ -2596,6 +2593,31 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			}
 		      
 		      lhs = stmp;
+		    }
+		  else
+		    {
+		      // No need to do anything if either of the indices
+		      // are empty.
+		      if (n > 0)
+			{
+			  octave_idx_type max_row_idx = idx_i_is_colon ? 
+			    rhs_nr : idx_i.max () + 1;
+			  octave_idx_type new_nr = max_row_idx > lhs_nr ? 
+			    max_row_idx : lhs_nr;
+			  octave_idx_type new_nc = lhs_nc;
+
+			  lhs = Sparse<LT> (new_nr, new_nc);
+			}
+		      else if (m > 0)
+			{
+			  octave_idx_type max_col_idx = idx_j_is_colon ? 
+			    rhs_nc : idx_j.max () + 1;
+			  octave_idx_type new_nr = lhs_nr;
+			  octave_idx_type new_nc = max_col_idx > lhs_nc ? 
+			    max_col_idx : lhs_nc;
+
+			  lhs = Sparse<LT> (new_nr, new_nc);
+			}
 		    }
 		}
 	      else if (n == rhs_nr && m == rhs_nc)

@@ -1,3 +1,16 @@
+2007-12-04  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (assign (Sparse<LT>&,  const Sparse<RT>&)):
+	Resize matrix as well if one dimension of lhs is zero and the rhs
+	index exceeds the lhs index.
+	* Sparse.cc (assign1 (Sparse<LT>&,  const Sparse<RT>&)):
+	Don't resize to a smaller matrix for empty matrices with a max rhs
+	index smaller than the non zero lhs index.
+
+2007-12-04  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Array-util.h: Tag permute_vector_compare with OCTAVE_API.
+
 2007-12-03  Moritz Borgmann  <octave@moriborg.de>
 
 	* Array-util.cc (permute_vector_compare): Move here from Array.cc.

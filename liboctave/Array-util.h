@@ -85,7 +85,7 @@ permute_vector
   octave_idx_type iidx;
 };
 
-extern int permute_vector_compare (const void *a, const void *b);
+extern int OCTAVE_API permute_vector_compare (const void *a, const void *b);
 
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_len, int op2_len);
 

@@ -76,3 +76,8 @@ function retval = scatter (varargin)
   endif
 
 endfunction
+
+%!demo
+%! x = randn (100, 1);
+%! y = randn (100, 1);
+%! scatter (x, y, [], sqrt(x.^2 + y.^2));

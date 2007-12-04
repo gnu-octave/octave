@@ -105,3 +105,32 @@ function h = stem (varargin)
   endif
 
 endfunction
+
+%!demo
+%! x = 1:10;
+%! stem (x);
+
+%!demo
+%! x = 1:10;
+%! y = ones (1, length (x))*2.*x;
+%! stem (x, y);
+
+%!demo
+%! x = 1:10;
+%! y = ones (size (x))*2.*x;
+%! h = stem (x, y, "b");
+
+%!demo
+%! x = 1:10;
+%! y = ones (size (x))*2.*x;
+%! h = stem (x, y, "-.k");
+
+%!demo
+%! x = 1:10;
+%! y = ones (size (x))*2.*x;
+%! h = stem (x, y, "-.k.");
+
+%!demo
+%! x = 1:10;
+%! y = ones (size (x))*2.*x;
+%! h = stem (x, y, "fill");

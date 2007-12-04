@@ -254,3 +254,7 @@ function [X, Y, Z, lvl, patch_props] = parse_args (arg)
   endif
 
 endfunction
+
+%!demo
+%! [x, y, z] = peaks (50);
+%! contourf (x, y, z, -7:9)

@@ -115,3 +115,14 @@ function [xs, ys] = stairs (x, y)
   endif
 
 endfunction
+
+%!demo
+%! x = 1:10;
+%! y = rand (1, 10);
+## stairs (x, y);
+
+%!demo
+%! x = 1:10;
+%! y = rand (1, 10);
+%! [xs, ys] = stairs (x, y);
+%! plot (xs, ys);

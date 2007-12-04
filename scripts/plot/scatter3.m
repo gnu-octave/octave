@@ -79,3 +79,7 @@ function retval = scatter3 (varargin)
   endif
 
 endfunction
+
+%!demo
+%! [x, y, z] = peaks (20);
+%! scatter3 (x(:), y(:), z(:), [], z(:));

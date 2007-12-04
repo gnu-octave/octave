@@ -1,3 +1,10 @@
+2007-12-03  John W. Eaton  <jwe@octave.org>
+
+	* contour.m, contour3.m, contourc.m, contourf.m, cylinder.m,
+	fplot.m, plot3.m, plotyy.m, quiver3.m, scatter.m, scatter3.m,
+	slice.m, sombrero.m, stairs.m, stem.m, stem3.m:
+	Generate demos from examples.
+
 2007-12-03  David Bateman  <dbateman@free.fr>
 
 	* testfun/test.m: Disable "testif" test block to avoid spurious

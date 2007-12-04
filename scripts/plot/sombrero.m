@@ -60,3 +60,6 @@ function [x, y, z] = sombrero (n)
   endif
 
 endfunction
+
+%!demo
+%! sombrero ();

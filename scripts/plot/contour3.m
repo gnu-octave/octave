@@ -67,3 +67,10 @@ function [c, h] = contour3 (varargin)
   endif
 
 endfunction
+
+%!demo
+%! contour3 (peaks (19));
+%! hold on
+%! surface (peaks (19), 'FaceColor', 'none', 'EdgeColor', 'black')
+%! colormap hot
+%! hold off

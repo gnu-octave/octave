@@ -81,3 +81,8 @@ function [xx, yy, zz] = cylinder (varargin)
   endif
 
 endfunction
+
+%!demo
+%! disp ("plotting a cone")
+%! [x, y, z] = cylinder (10:-1:0,50);
+%! surf (x, y, z);

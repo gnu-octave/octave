@@ -90,3 +90,10 @@ endfunction
 %! hold on; 
 %! mesh(x,y,z); 
 %! hold off;
+
+%!demo
+%! [x, y, z] = peaks (25);
+%! surf (x, y, z);
+%! hold on;
+%! [u, v, w] = surfnorm (x, y, z / 10);
+%! quiver3 (x, y, z, u, v, w);

@@ -113,3 +113,9 @@ function [c, lev] = contourc (varargin)
   endif
 
 endfunction
+
+%!demo
+%! x = 0:2;
+%! y = x;
+%! z = x' * y;
+%! contourc (x, y, z, 2:3)

@@ -116,3 +116,9 @@ function fplot (fn, limits, n, linespec)
     legend (nams{:});
   endif
 endfunction
+
+%!demo
+%! fplot ("cos", [0, 2*pi])
+
+%!demo
+%! fplot ("[cos(x), sin(x)]", [0, 2*pi])

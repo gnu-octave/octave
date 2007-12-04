@@ -35,7 +35,6 @@
 ## y = x;
 ## z = x' * y;
 ## contour (x, y, z, 2:3)
-##
 ## @end group
 ## @end example
 ##
@@ -66,3 +65,7 @@ function [c, h] = contour (varargin)
   endif
 
 endfunction
+
+%!demo
+%! [x, y, z] = peaks ();
+%! contour (x, y, z);

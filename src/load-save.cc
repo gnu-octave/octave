@@ -658,10 +658,11 @@ not linked with the HDF5 library."
 DEFCMD (load, args, nargout,
   "-*- texinfo -*-\n\
 @deffn {Command} load options file v1 v2 @dots{}\n\
-Load the named variables from the file @var{file}.  As with @code{save},\n\
-you may specify a list of variables and @code{load} will only extract\n\
-those variables with names that match.  For example, to restore the\n\
-variables saved in the file @file{data}, use the command\n\
+Load the named variables @var{v1}, @var{v2}, @dots{}, from the file\n\
+@var{file}.  As with @code{save}, you may specify a list of variables\n\
+and @code{load} will only extract\n\ those variables with names that\n\
+match.  For example, to restore the variables saved in the file\n\
+@file{data}, use the command\n\
 \n\
 @example\n\
 load data\n\
@@ -670,7 +671,7 @@ load data\n\
 If load is invoked using the functional form\n\
 \n\
 @example\n\
-load (\"-text\", \"file.txt\", \"a\")\n\
+load (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
 @end example\n\
 \n\
 @noindent\n\
@@ -1477,7 +1478,7 @@ the zlib library."
 DEFCMD (save, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} save options file @var{v1} @var{v2} @dots{}\n\
-Save the named variables @var{v1}, @var{v2}, @dots{} in the file\n\
+Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
 @var{file}.  The special filename @samp{-} can be used to write the\n\
 output to your terminal.  If no variable names are listed, Octave saves\n\
 all the variables in the current scope.  Valid options for the\n\
@@ -1488,12 +1489,12 @@ modify the output format override the format specified by\n\
 If save is invoked using the functional form\n\
 \n\
 @example\n\
-save (\"-text\", \"file.txt\", \"a\")\n\
+save (\"-option1\", @dots{}, \"file\", \"v1\", @dots{})\n\
 @end example\n\
 \n\
 @noindent\n\
 then the @var{options}, @var{file}, and variable name arguments\n\
-(@var{vname1}, @dots{}) must be specified as character strings.\n\
+(@var{v1}, @dots{}) must be specified as character strings.\n\
 \n\
 @table @code\n\
 @item -ascii\n\

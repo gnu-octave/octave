@@ -3,6 +3,11 @@
 	* linear-algebra/krylov.m: Doc fixes.
 	From Marco Caliari <caliari@sci.univr.it>.
 
+2007-12-04  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/shading.m: Use __plt_get_axis_arg__ for optional axes argument.
+	Add "## PKG_ADD: mark_as_command axis" line.
+
 2007-12-03  John W. Eaton  <jwe@octave.org>
 
 	* contour.m, contour3.m, contourc.m, contourf.m, cylinder.m,

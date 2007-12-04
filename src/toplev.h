@@ -36,21 +36,21 @@ class octave_user_script;
 class tree_statement_list;
 class charMatrix;
 
-extern void
+extern OCTINTERP_API void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;
 
-extern void recover_from_exception (void);
+extern OCTINTERP_API void recover_from_exception (void);
 
 extern int main_loop (void);
 
-extern void
+extern OCTINTERP_API void
 do_octave_atexit (void);
 
 // Current command to execute.
-extern tree_statement_list *global_command;
+extern OCTINTERP_API tree_statement_list *global_command;
 
 // Pointer to parent function that is currently being evaluated.
-extern octave_function *curr_parent_function;
+extern OCTINTERP_API octave_function *curr_parent_function;
 
 // TRUE means we are ready to interpret commands, but not everything
 // is ready for interactive use.

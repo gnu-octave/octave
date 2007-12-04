@@ -1,3 +1,10 @@
+2007-12-03  Moritz Borgmann  <octave@moriborg.de>
+
+	* Makeconf.in, aclocal.m4, configure.in: Check for find program,
+	preferably gfind (on non-GNU systems).  Need a sane find for
+	run-octave script.
+	* run-octave.in: Use FIND and AWK as determined by configure.
+
 2007-12-03  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: If available, include <sys/types.h> in test for

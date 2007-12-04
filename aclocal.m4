@@ -817,8 +817,18 @@ if test $octave_cv_mkdir_takes_one_arg = yes ; then
   AC_DEFINE(MKDIR_TAKES_ONE_ARG, 1, [Define if host mkdir takes a single argument.])
 fi
 ])
-# OCTAVE_PROG_SED
-# --------------
+dnl
+dnl Find find.
+dnl
+# Prefer GNU find if found.
+AN_MAKEVAR([FIND],  [OCTAVE_PROG_FIND])
+AN_PROGRAM([gfind], [OCTAVE_PROG_FIND])
+AN_PROGRAM([find],  [OCTAVE_PROG_FIND])
+AC_DEFUN([OCTAVE_PROG_FIND],
+[AC_CHECK_PROGS(FIND, gfind find, )])
+dnl
+dnl Find sed.
+dnl
 # Check for a fully-functional sed program, that truncates
 # as few characters as possible and that supports "\(X\|Y\)"
 # style regular expression alternation.  Prefer GNU sed if found.

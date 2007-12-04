@@ -480,8 +480,8 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       fputs (__fid, __msg);
       fflush (__fid);
       ## show the variable context
-      if (! strcmp (__type, "error") && ! strcmp (__type, "testif") &&
-	  ! all (__shared == " "))
+      if (! strcmp (__type, "error") && ! strcmp (__type, "testif")
+	  && ! all (__shared == " "))
 	fputs (__fid, "shared variables ");
 	eval (sprintf ("fdisp(__fid,bundle(%s));", __shared)); 
 	fflush (__fid);

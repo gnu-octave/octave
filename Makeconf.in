@@ -29,6 +29,9 @@ export AWK
 SED = @SED@
 export SED
 
+FIND = @FIND@
+export FIND
+
 PERL = @PERL@
 PYTHON = @PYTHON@
 
@@ -586,6 +589,8 @@ endef
 define do-subst-script-vals
 echo "making $@ from $<"
 $(SED) < $< \
+  -e "s|%AWK%|${AWK}|g" \
+  -e "s|%FIND%|${FIND}|g" \
   -e "s|%library_path_var%|${library_path_var}|g" \
   -e "s|%liboctinterp%|${LIBPRE}octinterp.${SHLEXT}|g" \
   -e "s|%liboctave%|${LIBPRE}octave.${SHLEXT}|g" \

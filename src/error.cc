@@ -963,6 +963,7 @@ location of the error. Typically @var{err} is returned from\n\
 DEFUN (error, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} error (@var{template}, @dots{})\n\
+@deftypefnx {Built-in Function} {} error (@var{id}, @var{template}, @dots{})\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
 functions (@pxref{Formatted Output}) and print the resulting message\n\
@@ -1016,18 +1017,43 @@ error: nargin != 1\n\
 @end example\n\
 @end deftypefn")
 {
-  // FIXME -- need to extract and pass message id to
-  // handle_message.
+  octave_value retval;
 
-  octave_value_list retval;
-  handle_message (error_with_id, "", "unspecified error", args);
+  int nargin = args.length ();
+
+  octave_value_list nargs = args;
+
+  std::string id;
+
+  if (nargin > 1)
+    {
+      std::string arg1 = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  if (arg1.find ('%') == NPOS)
+	    {
+	      id = arg1;
+
+	      nargs.resize (nargin-1);
+
+	      for (int i = 1; i < nargin; i++)
+		nargs(i-1) = args(i);
+	    }
+	}
+      else
+	return retval;
+    }
+
+  handle_message (error_with_id, id.c_str (), "unspecified error", nargs);
+
   return retval;
 }
 
 DEFCMD (warning, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} warning (@var{template}, @dots{})\n\
-@deftypefnx {Built-in Function} {} warning (@var{id}, @var{template})\n\
+@deftypefnx {Built-in Function} {} warning (@var{id}, @var{template}, @dots{})\n\
 Format the optional arguments under the control of the template string\n\
 @var{template} using the same rules as the @code{printf} family of\n\
 functions (@pxref{Formatted Output}) and print the resulting message\n\
@@ -1342,8 +1368,6 @@ warning named by @var{id} is handled as if it were an error instead.\n\
 	  else
 	    return retval;
 	}
-
-      // handle_message.
 
       std::string prev_msg = Vlast_warning_message;
 

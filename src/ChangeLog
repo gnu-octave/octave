@@ -1,5 +1,7 @@
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
+	* error.cc (Ferror): Handle error id.
+
 	* load-save.cc (Fsave, Fload): Doc fixes.
 	From Marco Caliari <caliari@sci.univr.it>.
 

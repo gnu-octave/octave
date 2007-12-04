@@ -27,21 +27,22 @@
 
 ## Author: Kai Habel <kai.habel@gmx.de>
 
-function shading (ax, mode)
+## PKG_ADD: mark_as_command shading
 
-  if (nargin == 1)
-    mode = ax;
-    ax = gca ();
-  endif
+function shading (varargin)
+
+  [ax, varargin] = __plt_get_axis_arg__ ("shading", varargin{:});
 
   if (nargin != 1 && nargin != 2)
     print_usage ();
   endif
 
+  mode = varargin{1};
+
   h1 = findobj (ax, "type", "patch");
   h2 = findobj (ax, "type", "surface");
 
-  obj = [h1, h2];
+  obj = [h1(:); h2(:)];
 
   for n = 1:numel(obj)
     h = obj(n); 

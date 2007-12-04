@@ -1,3 +1,8 @@
+2007-12-04  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (assign (Sparse<LT>&,  const Sparse<RT>&)):
+	Do nothing if one index is empty.
+
 2007-12-04  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (assign (Sparse<LT>&,  const Sparse<RT>&)):

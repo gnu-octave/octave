@@ -105,10 +105,6 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTAVE_CONF_DEFS %OCTAVE_CONF_DEFS%
 #endif
 
-#ifndef OCTAVE_CONF_DLFCN_INCFLAGS
-#define OCTAVE_CONF_DLFCN_INCFLAGS %OCTAVE_CONF_DLFCN_INCFLAGS%
-#endif
-
 #ifndef OCTAVE_CONF_DL_LD
 #define OCTAVE_CONF_DL_LD %OCTAVE_CONF_DL_LD%
 #endif
@@ -195,10 +191,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #ifndef OCTAVE_CONF_LIBCRUFT
 #define OCTAVE_CONF_LIBCRUFT %OCTAVE_CONF_LIBCRUFT%
-#endif
-
-#ifndef OCTAVE_CONF_LIBDLFCN
-#define OCTAVE_CONF_LIBDLFCN %OCTAVE_CONF_LIBDLFCN%
 #endif
 
 #ifndef OCTAVE_CONF_LIBEXT

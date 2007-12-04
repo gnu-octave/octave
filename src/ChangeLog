@@ -1,5 +1,12 @@
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (LIBDLFCN): Delete all uses.
+
+	* toplev.cc (octave_config_info): Remove LIBDLFCN and
+	DLFCN_INCFLAGS from the list.
+	* oct-conf.h.in (OCTAVE_CONF_DLFCN_INCFLAGS, OCTAVE_CONF_LIBDLFCN):
+	Delete. 
+
 	* error.cc (Ferror): Handle error id.
 
 	* load-save.cc (Fsave, Fload): Doc fixes.

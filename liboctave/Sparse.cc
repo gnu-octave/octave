@@ -2596,8 +2596,26 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		    }
 		  else
 		    {
-		      // No need to do anything if either of the indices
-		      // are empty.
+#if 0
+		      // FIXME -- the following code will make this
+		      // function behave the same as the full matrix
+		      // case for things like
+		      //
+		      // x = sparse (ones (2));
+		      // x([],3) = 2;
+		      //
+		      // x =
+		      //
+		      // Compressed Column Sparse (rows = 2, cols = 3, nnz = 4)
+		      //
+		      // (1, 1) ->  1
+		      // (2, 1) ->  1
+		      // (1, 2) ->  1
+		      // (2, 2) ->  1
+		      //
+		      // However, Matlab doesn't resize in this case
+		      // even though it does in the full matrix case.
+
 		      if (n > 0)
 			{
 			  octave_idx_type max_row_idx = idx_i_is_colon ? 
@@ -2606,7 +2624,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			    max_row_idx : lhs_nr;
 			  octave_idx_type new_nc = lhs_nc;
 
-			  lhs = Sparse<LT> (new_nr, new_nc);
+			  lhs.resize (new_nr, new_nc);
 			}
 		      else if (m > 0)
 			{
@@ -2616,8 +2634,9 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 			  octave_idx_type new_nc = max_col_idx > lhs_nc ? 
 			    max_col_idx : lhs_nc;
 
-			  lhs = Sparse<LT> (new_nr, new_nc);
+			  lhs.resize  (new_nr, new_nc);
 			}
+#endif
 		    }
 		}
 	      else if (n == rhs_nr && m == rhs_nc)

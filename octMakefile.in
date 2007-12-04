@@ -50,7 +50,7 @@ DISTFILES = $(CONF_DISTFILES) \
 	mkoctfile.in run-octave.in ChangeLog ChangeLog.[0-9]
 
 # Subdirectories in which to run `make all'.
-SUBDIRS = @DLFCN_DIR@ libcruft liboctave src scripts doc examples
+SUBDIRS = libcruft liboctave src scripts doc examples
 
 # Subdirectories in which to run `make all'.
 INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
@@ -59,7 +59,7 @@ INSTALL_SUBDIRS = libcruft liboctave src scripts doc examples
 CONF_DISTSUBDIRS = src
 
 # Subdirectories in which to run `make dist'.
-DISTSUBDIRS = $(sort $(SUBDIRS) dlfcn test emacs)
+DISTSUBDIRS = $(sort $(SUBDIRS) test emacs)
 
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS)

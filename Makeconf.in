@@ -118,8 +118,6 @@ F77_APPEND_EXTRA_UNDERSCORE=@F77_TOLOWER@
 
 # cc and associated flags.
 
-DLFCN_INCFLAGS = @DLFCN_INCFLAGS@
-
 # Clean up INCFLAGS a bit if we are not compiling in a separate
 # directory.
 ifeq ($(srcdir),.)
@@ -144,7 +142,7 @@ else
     -I$(top_srcdir)/src \
     -I$(top_srcdir)/libcruft/misc
 endif
-INCFLAGS = $(TMP_IF_1) $(TMP_IF_2) $(DLFCN_INCFLAGS)
+INCFLAGS = $(TMP_IF_1) $(TMP_IF_2)
 
 LIBFLAGS = -L$(TOPDIR)
 
@@ -208,7 +206,6 @@ RLD_FLAG = @RLD_FLAG@
 
 FLIBS = @FLIBS@
 
-LIBDLFCN = @LIBDLFCN@
 LIBGLOB = @LIBGLOB@
 LIBOCTINTERP = @LIBOCTINTERP@
 LIBOCTAVE = @LIBOCTAVE@
@@ -468,7 +465,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_DEFAULT_PAGER%|\"${DEFAULT_PAGER}\"|" \
   -e "s|%OCTAVE_CONF_DEPEND_FLAGS%|\"${DEPEND_FLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DEPEND_EXTRA_SED_PATTERN%|\"${DEPEND_EXTRA_SED_PATTERN}\"|" \
-  -e "s|%OCTAVE_CONF_DLFCN_INCFLAGS%|\"${DLFCN_INCFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_DL_LD%|\"${DL_LD}\"|" \
   -e "s|%OCTAVE_CONF_DL_LDFLAGS%|\"${DL_LDFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_EXEEXT%|\"${EXEEXT}\"|" \
@@ -492,7 +488,6 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LFLAGS%|\"${LFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_LIBCRUFT%|\"${LIBCRUFT}\"|" \
   -e "s|%OCTAVE_CONF_LIBDIR%|\"${libdir}\"|" \
-  -e "s|%OCTAVE_CONF_LIBDLFCN%|\"${LIBDLFCN}\"|" \
   -e "s|%OCTAVE_CONF_LIBEXT%|\"${LIBEXT}\"|" \
   -e "s|%OCTAVE_CONF_LIBFLAGS%|\"${LIBFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_LIBGLOB%|\"${LIBGLOB}\"|" \

@@ -1,3 +1,12 @@
+2007-12-04  John W. Eaton  <jwe@octave.org>
+
+	* octave-bug.in (LIBDLFCN): Delete variable and all uses.
+	* Makeconf.in (LIBDLFCN, DLFCN_INCFLAGS): Likewise.
+	* configure.in (DLFCN_DIR, LIBDLFCN, DLFCN_INCFLAGS): Likewise.
+	Don't generate dlfcn/Makefile.
+	* octMakefile.in (DISTSUBDIRS): Delete dlfcn from the list.
+	(SUBDIRS): Don't substitute DLFCN_DIR here.
+
 2007-12-03  Moritz Borgmann  <octave@moriborg.de>
 
 	* Makeconf.in, aclocal.m4, configure.in: Check for find program,

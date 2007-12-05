@@ -37,9 +37,6 @@ function sparseimages (nm, typ)
   endif
 endfunction
 
-## Use this function before plotting commands and after every call to
-## print since print() resets output to stdout (unfortunately, gnpulot
-## can't pop output as it can the terminal type).
 function bury_output ()
   f = figure (1);
   set (f, "visible", "off");
@@ -60,6 +57,7 @@ function txtimages(nm,n,typ)
       sparse(ceil([1:n]/2),1:n,1,n,n);
   if (strcmp (nm, "gplot") || strcmp (nm, "grid"))
     fid = fopen (sprintf ("%s.txt", nm), "wt");
+    fputs (fid, "\n");
     fputs (fid, "+---------------------------------+\n");
     fputs (fid, "| Image unavailable in text mode. |\n");
     fputs (fid, "+---------------------------------+\n");
@@ -113,6 +111,7 @@ endfunction
 
 function printsparse(a,nm)
   fid = fopen (nm,"wt");
+  fputs (fid, "\n");
   for i = 1:size(a,1)
     if (rem(i,5) == 0)
       fprintf (fid,"         %2d - ", i);
@@ -236,6 +235,7 @@ endfunction
 function sombreroimage (nm, typ)
   if (strcmp (typ, "txt"))
     fid = fopen (sprintf ("%s.txt", nm), "wt");
+    fputs (fid, "\n");
     fputs (fid, "+---------------------------------------+\n");
     fputs (fid, "| Image unavailable because of a        |\n");
     fputs (fid, "| missing sparse matrix implementation. |\n");

@@ -18,7 +18,9 @@
 
 function plotimages (nm, typ)
   bury_output ();
-  if (strcmp (nm, "plot"))
+  if (strcmp(typ , "txt"))
+    image_as_txt(nm);
+  elseif (strcmp (nm, "plot"))
     x = -10:0.1:10;
     plot (x, sin (x));
     print (strcat (nm, ".", typ), strcat ("-d", typ))    
@@ -63,10 +65,17 @@ function plotimages (nm, typ)
   bury_output ();
 endfunction
 
-## Use this function before plotting commands and after every call to
-## print since print() resets output to stdout (unfortunately, gnpulot
-## can't pop output as it can the terminal type).
 function bury_output ()
   f = figure (1);
   set (f, "visible", "off");
+endfunction
+
+## generate something for the texinfo @image command to process
+function image_as_txt(nm)
+  fid = fopen (sprintf ("%s.txt", nm), "wt");
+  fputs (fid, "\n");
+  fputs (fid, "+---------------------------------+\n");
+  fputs (fid, "| Image unavailable in text mode. |\n");
+  fputs (fid, "+---------------------------------+\n");
+  fclose (fid);
 endfunction

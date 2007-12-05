@@ -1635,6 +1635,7 @@ DEFUN_DLD (gnuplot_command_with, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{val} =} gnuplot_command_with ()\n\
 @deftypefnx {Loadable Function} {@var{old_val} =} gnuplot_command_with (@var{new_val})\n\
+@strong{This function is obsolete and will be removed from a future version\n\
 of Octave.}\n\
 @end deftypefn")
 {

@@ -245,11 +245,9 @@ $(HTML_IMAGES_PNG): HTML/%.png : %.png
 	fi
 	cp $(filter-out html-dir, $<) HTML
 
-## Sleep for a second after plotting to allow gnuplot to finish
-## writing its output before Octave exits.
 define run-octave
   $(TOPDIR)/run-octave -f -q -H -p $(srcdir) \
-    --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))'); sleep (1);"
+    --eval "$(notdir $(basename $<)) ('$(notdir $(basename $@))', '$(patsubst .%,%, $(suffix $@))');"
 endef
 
 $(GEOMETRYIMAGES_EPS) $(GEOMETRYIMAGES_PNG) $(GEOMETRYIMAGES_TXT): geometryimages.m

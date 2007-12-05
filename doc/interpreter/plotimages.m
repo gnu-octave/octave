@@ -18,6 +18,9 @@
 
 function plotimages (nm, typ)
   bury_output ();
+  if (strcmp (typ, "png"))
+    set (0, "defaulttextfontname", "*");
+  endif
   if (strcmp(typ , "txt"))
     image_as_txt(nm);
   elseif (strcmp (nm, "plot"))

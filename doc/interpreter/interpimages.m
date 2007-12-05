@@ -18,6 +18,9 @@
 
 function interpimages (nm, typ)
   bury_output ();
+  if (strcmp (typ, "png"))
+    set (0, "defaulttextfontname", "*");
+  endif
   if (strcmp (nm, "interpft"))
     t = 0 : 0.3 : pi; dt = t(2)-t(1);
     n = length (t); k = 100;

@@ -17,6 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 function sparseimages (nm, typ)
+  if (strcmp (typ, "png"))
+    set (0, "defaulttextfontname", "*");
+  endif
   if (! isempty (findstr (octave_config_info ("DEFS"), "HAVE_COLAMD"))
       && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_CHOLMOD"))
       && ! isempty (findstr (octave_config_info ("DEFS"), "HAVE_UMFPACK")))

@@ -94,7 +94,7 @@ default_history_file (void)
 	{
 	  file = home_dir;
 	  if (! file_ops::is_dir_sep (file[file.length()-1]))
-	    file.push_back (file_ops::dir_sep_char);
+	    file += file_ops::dir_sep_char;
 	  file.append (".octave_hist");
 	}
       else

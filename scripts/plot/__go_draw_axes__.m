@@ -74,8 +74,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string", 
 					   have_newer_gnuplot);
-	fprintf (plot_stream, "set title \"%s\" font \"%s,%d\";\n",
-		 undo_string_escapes (tt), f, s);
+	if (strcmp (f, "*"))
+	  fontspec = "";
+	else
+	  fontspec = sprintf ("font \"%s,%d\"", f, s);
+	endif
+	fprintf (plot_stream, "set title \"%s\" %s;\n",
+		 undo_string_escapes (tt), fontspec);
       endif
     endif
 
@@ -89,12 +94,17 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
 					   have_newer_gnuplot);
-	if (strcmpi (axis_obj.xaxislocation, "top"))
-	  fprintf (plot_stream, "set x2label \"%s\" %s font \"%s,%d\"",
-		   undo_string_escapes (tt), colorspec, f, s);
+	if (strcmp (f, "*"))
+	  fontspec = "";
 	else
-	  fprintf (plot_stream, "set xlabel \"%s\" %s font \"%s,%d\"",
-		   undo_string_escapes (tt), colorspec, f, s);
+	  fontspec = sprintf ("font \"%s,%d\"", f, s);
+	endif
+	if (strcmpi (axis_obj.xaxislocation, "top"))
+	  fprintf (plot_stream, "set x2label \"%s\" %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec);
+	else
+	  fprintf (plot_stream, "set xlabel \"%s\" %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec);
 	endif
 	if (have_newer_gnuplot)
 	  ## Rotation of xlabel not yet support by gnuplot as of 4.2, but
@@ -120,12 +130,17 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
 					   have_newer_gnuplot);
-	if (strcmpi (axis_obj.yaxislocation, "right"))
-	  fprintf (plot_stream, "set y2label \"%s\" %s font \"%s,%d\"",
-		   undo_string_escapes (tt), colorspec, f, s);
+	if (strcmp (f, "*"))
+	  fontspec = "";
 	else
-	  fprintf (plot_stream, "set ylabel \"%s\" %s font \"%s,%d\"",
-		   undo_string_escapes (tt), colorspec, f, s);
+	  fontspec = sprintf ("font \"%s,%d\"", f, s);
+	endif
+	if (strcmpi (axis_obj.yaxislocation, "right"))
+	  fprintf (plot_stream, "set y2label \"%s\" %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec);
+	else
+	  fprintf (plot_stream, "set ylabel \"%s\" %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec);
 	endif
 	if (have_newer_gnuplot)
 	  fprintf (plot_stream, " rotate by %f;\n", angle);
@@ -148,8 +163,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       else
 	[tt, f, s] = __maybe_munge_text__ (enhanced, t, "string",
 					   have_newer_gnuplot);
-	fprintf (plot_stream, "set zlabel \"%s\" %s font \"%s,%d\"",
-		 undo_string_escapes (tt), colorspec, f, s);
+	if (strcmp (f, "*"))
+	  fontspec = "";
+	else
+	  fontspec = sprintf ("font \"%s,%d\"", f, s);
+	endif
+	fprintf (plot_stream, "set zlabel \"%s\" %s %s",
+		 undo_string_escapes (tt), colorspec, fontspec);
 	if (have_newer_gnuplot)
 	  ## Rotation of zlabel not yet support by gnuplot as of 4.2, but
 	  ## there is no message about it.
@@ -913,6 +933,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	case "text"
 	  [label, f, s] = __maybe_munge_text__ (enhanced, obj, "string",
 						have_newer_gnuplot);
+	  if (strcmp (f, "*"))
+	    fontspec = "";
+	  else
+	    fontspec = sprintf ("font \"%s,%d\"", f, s);
+	  endif
 	  lpos = obj.position;
 	  halign = obj.horizontalalignment;
 	  angle = obj.rotation;
@@ -930,14 +955,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 
 	  if (nd == 3)
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %.15g,%.15g,%.15g font \"%s,%d\" %s rotate by %f %s;\n",
+		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s %s rotate by %f %s;\n",
 		     undo_string_escapes (label), units, lpos(1),
-		     lpos(2), lpos(3), f, s, halign, angle, colorspec);
+		     lpos(2), lpos(3), fontspec, halign, angle, colorspec);
 	  else
  	    fprintf (plot_stream,
- 		     "set label \"%s\" at %s %.15g,%.15g font \"%s,%d\" %s rotate by %f %s;\n",
+ 		     "set label \"%s\" at %s %.15g,%.15g %s %s rotate by %f %s;\n",
  		     undo_string_escapes (label), units,
- 		     lpos(1), lpos(2), f, s, halign, angle, colorspec);
+ 		     lpos(1), lpos(2), fontspec, halign, angle, colorspec);
 	  endif
 
 	otherwise

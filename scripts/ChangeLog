@@ -1,5 +1,8 @@
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_axes__.m: Omit "font \"NAME,SIZE\"" in gnuplot
+	text and label commands if font is "*".
+
 	* linear-algebra/krylov.m: Doc fixes.
 	From Marco Caliari <caliari@sci.univr.it>.
 

@@ -1,5 +1,16 @@
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
+	* interpreter/sparseimages.m, interpreter/plotimages.m,
+	interpreter/interpimages.m, interpreter/geometryimages.m:
+	Set default text font to "*" for png images.
+
+	* interpreter/Makefile.in (run-octave): Don't sleep.
+
+2007-12-04  Joseph P. Skudlarek  <Jskud@Jskud.com>
+
+	* interpreter/plotimages.m: Generate text plots.
+	* interpreter/sparseimages.m: Add initial blank line to text plots.
+
 	* interpreter/Makefile.in (IMAGES_TXT): Include $(INTERPIMAGES_TXT)
 	$(GEOMETRYIMAGES_TXT) and $(PLOTIMAGES_TXT) in the list.
 	(INTERPIMAGES_TXT, GEOMETRYIMAGES_TXT, PLOTIMAGES_TXT): New variables.

@@ -1,3 +1,10 @@
+2007-12-05  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/geometryimages.m (image_as_txt): New function.
+	Use it to generate "figures" for Info format.
+	* interpreter/interpimages.m: Likewise.
+	* interpreter/sparseimages.m: Likewise.
+
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/sparseimages.m, interpreter/plotimages.m,

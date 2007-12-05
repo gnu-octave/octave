@@ -21,7 +21,9 @@ function interpimages (nm, typ)
   if (strcmp (typ, "png"))
     set (0, "defaulttextfontname", "*");
   endif
-  if (strcmp (nm, "interpft"))
+  if (strcmp (typ, "txt"))
+    image_as_txt (nm);
+  elseif (strcmp (nm, "interpft"))
     t = 0 : 0.3 : pi; dt = t(2)-t(1);
     n = length (t); k = 100;
     ti = t(1) + [0 : k-1]*dt*n/k;
@@ -73,4 +75,14 @@ endfunction
 function bury_output ()
   f = figure (1);
   set (f, "visible", "off");
+endfunction
+
+## generate something for the texinfo @image command to process
+function image_as_txt(nm)
+  fid = fopen (sprintf ("%s.txt", nm), "wt");
+  fputs (fid, "\n");
+  fputs (fid, "+---------------------------------+\n");
+  fputs (fid, "| Image unavailable in text mode. |\n");
+  fputs (fid, "+---------------------------------+\n");
+  fclose (fid);
 endfunction

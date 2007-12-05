@@ -26,6 +26,8 @@ function geometryimages (nm, typ)
 	  || strcmp (nm, "convhull") || strcmp (nm, "delaunay")
 	  || strcmp (nm, "triplot")))
     sombreroimage (nm, typ);
+  elseif (strcmp (typ, "txt"))
+    image_as_txt (nm);
   elseif (strcmp (nm, "voronoi"))
     rand("state",9);
     x = rand(10,1);
@@ -193,4 +195,14 @@ function sombreroimage (nm, typ)
       bury_output ();
     end_unwind_protect
   endif
+endfunction
+
+## generate something for the texinfo @image command to process
+function image_as_txt(nm)
+  fid = fopen (sprintf ("%s.txt", nm), "wt");
+  fputs (fid, "\n");
+  fputs (fid, "+---------------------------------+\n");
+  fputs (fid, "| Image unavailable in text mode. |\n");
+  fputs (fid, "+---------------------------------+\n");
+  fclose (fid);
 endfunction

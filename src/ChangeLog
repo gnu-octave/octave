@@ -1,3 +1,9 @@
+2007-12-05  John W. Eaton  <jwe@octave.org>
+
+	* version.h (OCTAVE_VERSION): Now 2.9.18.
+	(OCTAVE_API_VERSION): Now api-v30.
+	(OCTAVE_RELEASE_DATE): Now 2007-12-05.
+
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (INCLUDES): Add builtins.h to the list.

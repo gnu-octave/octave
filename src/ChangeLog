@@ -1,5 +1,7 @@
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (INCLUDES): Add builtins.h to the list.
+
 	* src/oct-hist.cc (default_history_file): Use += instead of
 	push_back to append character to std::string object.
 

@@ -42,8 +42,8 @@
 ## Remove any existing colorbar from the plot.
 ## @end table
 ##
-## If the argument 'peer' is given, then the following argument is treated a
-## the axes handle on which to add the colorbar.
+## If the argument 'peer' is given, then the following argument is treated
+## as the axes handle on which to add the colorbar.
 ## @end deftypefn
 
 

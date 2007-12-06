@@ -1,3 +1,8 @@
+2007-12-06  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (*-*-darwin*): Only set CPICFLAG, CXXPICFLAG, and
+	FPICFLAG to "" on powerpc systems.
+
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
 	* octave-bug.in (LIBDLFCN): Delete variable and all uses.

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.600 $)
+AC_REVISION($Revision: 1.601 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -989,9 +989,13 @@ case "$canonical_host_type" in
     DL_LDFLAGS='-bundle -bundle_loader $(TOPDIR)/src/octave $(LDFLAGS)'
     MKOCTFILE_DL_LDFLAGS='-bundle -bundle_loader $$BINDIR/octave-$$OCTAVE_VERSION$$EXEEXT'
     SH_LDFLAGS='-dynamiclib -single_module $(LDFLAGS)'
-    CXXPICFLAG=
-    CPICFLAG=
-    FPICFLAG=
+    case "$canonical_host_type" in
+      powerpc-*)
+        CXXPICFLAG=
+        CPICFLAG=
+        FPICFLAG=
+      ;;
+    esac
     SHLEXT=dylib 
     SHLLIB='$(SHLEXT)'
     SHLEXT_VER='$(version).$(SHLEXT)'

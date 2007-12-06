@@ -2473,15 +2473,28 @@ Matrix::expm (void) const
   // npp, dpp: pade' approx polynomial matrices.
   
   Matrix npp (nc, nc, 0.0);
+  double *pnpp = npp.fortran_vec ();
   Matrix dpp = npp;
+  double *pdpp = dpp.fortran_vec ();
   
   // Now powers a^8 ... a^1.
   
   octave_idx_type minus_one_j = -1;
   for (octave_idx_type j = 7; j >= 0; j--)
     {
-      npp = m * npp + padec[j] * m;
-      dpp = m * dpp + (minus_one_j * padec[j]) * m;
+      for (octave_idx_type i = 0; i < nc; i++)
+	{
+	  octave_idx_type k = i * nc + i;
+	  pnpp[k] += padec[j];
+	  pdpp[k] += minus_one_j * padec[j];
+	}      
+
+      npp = m * npp;
+      pnpp = npp.fortran_vec ();
+
+      dpp = m * dpp;
+      pdpp = dpp.fortran_vec ();
+
       minus_one_j *= -1;
     }
   

@@ -18,21 +18,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} issymmetric (@var{x}, @var{tol})
-## If @var{x} is symmetric within the tolerance specified by @var{tol},
+## @deftypefn {Function File} {} ishermitian (@var{x}, @var{tol})
+## If @var{x} is Hermitian within the tolerance specified by @var{tol},
 ## then return the dimension of @var{x}.  Otherwise, return 0.  If
 ## @var{tol} is omitted, use a tolerance equal to the machine precision.
 ## Matrix @var{x} is considered symmetric if
-## @code{norm (@var{x} - @var{x}.', inf) / norm (@var{x}, inf) < @var{tol}}.
-## @seealso{size, rows, columns, length, ishermitian, ismatrix, isscalar,
-## issquare, isvector}
+## @code{norm (@var{x} - @var{x}', inf) / norm (@var{x}, inf) < @var{tol}}.
+## @seealso{size, rows, columns, length, ismatrix, isscalar,
+## issquare, issymmetric, isvector}
 ## @end deftypefn
 
 ## Author: A. S. Hodel <scotte@eng.auburn.edu>
 ## Created: August 1993
 ## Adapted-By: jwe
 
-function retval = issymmetric (x, tol)
+function retval = ishermitian (x, tol)
 
   if (nargin == 1 || nargin == 2)
     retval = issquare (x);
@@ -41,7 +41,7 @@ function retval = issymmetric (x, tol)
         tol = eps;
       endif
       norm_x = norm (x, inf);
-      if (norm_x != 0 && norm (x - x.', inf) / norm_x > tol)
+      if (norm_x != 0 && norm (x - x', inf) / norm_x > tol)
         retval = 0;
       endif
     endif
@@ -51,18 +51,6 @@ function retval = issymmetric (x, tol)
 
 endfunction
 
-%!assert(issymmetric (1));
-%!assert(!(issymmetric ([1, 2])));
-%!assert(!(issymmetric ([])));
-%!assert(issymmetric ([1, 2; 2, 1]) == 2);
-%!assert(!(issymmetric ("test")));
-%!assert(issymmetric ([1, 2.1; 2, 1.1], 0.2) == 2);
-%!assert(!issymmetric ([1, 2i; -2i, 1]));
-%!assert(!(issymmetric ("t")));
-%!assert(!(issymmetric (["te"; "et"])));
-%!error issymmetric ([1, 2; 2, 1], 0, 0);
-%!error issymmetric ();
-
-%!test
-%! s.a = 1;
-%! assert(!(issymmetric (s)));
+%!assert(ishermitian ([1, 2i; -2i, 1]) == 2);
+%!assert(!ishermitian ([1, 2i; 2i, 1]));
+%!assert(ishermitian ([1, 2.1i; -2i, 1.1], 0.2) == 2);

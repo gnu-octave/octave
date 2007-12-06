@@ -1,3 +1,9 @@
+2007-12-06  John W. Eaton  <jwe@octave.org>
+
+	* CMatrix.cc (ComplexMatrix::expm): Update pointers to internal
+	data for npp and dpp after assignments.
+	* dMatrix.cc (Matrix::expm): Use same method as ComplexMatrix::expm.
+
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
 	* Sparse.cc (assign (Sparse<LT>&,  const Sparse<RT>&)):

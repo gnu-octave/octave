@@ -2865,11 +2865,16 @@ ComplexMatrix::expm (void) const
       for (octave_idx_type i = 0; i < nc; i++)
 	{
 	  octave_idx_type k = i * nc + i;
-	  pnpp [k] = pnpp [k] + padec [j];
-	  pdpp [k] = pdpp [k] + minus_one_j * padec [j];
+	  pnpp[k] += padec[j];
+	  pdpp[k] += minus_one_j * padec[j];
 	}      
+
       npp = m * npp;
+      pnpp = npp.fortran_vec ();
+
       dpp = m * dpp;
+      pdpp = dpp.fortran_vec ();
+
       minus_one_j *= -1;
     }
 

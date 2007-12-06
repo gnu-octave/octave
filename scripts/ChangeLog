@@ -1,3 +1,15 @@
+2007-12-06  John W. Eaton  <jwe@octave.org>
+
+	* general/issymmetric.m: Move tests here from test/test_number.m
+
+2007-12-06  Jason Riedy  <ejr@cs.berkeley.edu>
+
+	* general/issymmetric.m: To keep its argument sparse and the
+	function quick, use the infinity norm rather than the 2-norm.
+	Also measure the symmetric part rather than the Hermitian part.
+	* general/ishermitian.m: New file.  Measure the Hermitian part.
+	* general/Makefile.in: Add ishermitian.m to SOURCES.
+
 2007-12-04  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Omit "font \"NAME,SIZE\"" in gnuplot

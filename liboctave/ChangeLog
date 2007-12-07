@@ -1,3 +1,23 @@
+2007-12-07  David Bateman  <dbateman@free.fr>
+
+	* Sparse-op-defs.h (SPARSE_SMS_CMP_OP, SPARSE_SMS_BOOL_OP,
+	SPARSE_SSM_CMP_OP, SPARSE_SSM_BOOL_OP, SPARSE_SMSM_CMP_OP, 
+	SPARSE_SMSM_BOOL_OP, SPARSE_BASE_REDUCTION_OP): Use sparse
+	indexing where possible rather than the elem method.
+	(SPARSE_REDUCTION_OP_ROW_EXPR, SPARSE_REDUCTION_OP_COL_EXPR,
+	SPARSE_ANY_ALL_OP_ROW_CODE, SPARSE_ANY_ALL_OP_COL_CODE):
+	Replace for new version of SPARSE_BASE_REDUCTION_OP.
+	(SPARSE_ALL_OP): Specialize the initial value, and only treat dim
+	= 0 directly.
+	* CSparse.cc (SparseComplexMatrix SparseComplexMatrix::sumsq (int)
+	const): Replace ROW_EXPR and COL_EXPR functions for new version of
+	SPARSE_BASE_REDUCTION_OP.
+	(SparseComplexMatrix SparseComplexMatrix::prod (int) const):
+	Specialize the initial value, and only treat dim = 0 directly.
+	* dSparse.cc (SparseMatrix SparseMatrix::sumsq (int) const):
+	ditto.
+	(SparseMatrix SparseMatrix::prod (int) const): ditto.
+
 2007-12-06  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc (ComplexMatrix::expm): Update pointers to internal

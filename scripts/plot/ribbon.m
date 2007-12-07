@@ -84,3 +84,8 @@ function h = ribbon (x, y, width)
   endif
 
 endfunction
+
+%!demo
+%! [x, y, z] = sombrero ();
+%! [x, y] = meshgrid (x, y);
+%! ribbon (y, z);

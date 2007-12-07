@@ -372,10 +372,12 @@ function print (varargin)
 
   endif
 
+  mono = use_color < 0;
+
   if (debug)
-    drawnow (new_terminal, name, debug_file);
+    drawnow (new_terminal, name, mono, debug_file);
   else
-    drawnow (new_terminal, name);
+    drawnow (new_terminal, name, mono);
   endif
 
   if (! isempty (convertname))

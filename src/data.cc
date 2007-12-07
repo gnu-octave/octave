@@ -2877,6 +2877,17 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
   else
     print_usage ();
 
+  // Should not return a sparse type
+  if (retval(0).is_sparse_type ())
+    {
+      if (retval(0).type_name () == "sparse matrix") 
+	retval(0) = retval(0).matrix_value ();
+      else if (retval(0).type_name () == "sparse complex matrix")
+	retval(0) = retval(0).complex_matrix_value ();
+      else if (retval(0).type_name () == "sparse bool matrix")
+	retval(0) = retval(0).bool_matrix_value ();
+    }
+
   return retval;
 }
 

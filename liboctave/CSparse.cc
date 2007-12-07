@@ -7637,7 +7637,13 @@ SparseComplexMatrix::cumsum (int dim) const
 SparseComplexMatrix
 SparseComplexMatrix::prod (int dim) const
 {
-  SPARSE_REDUCTION_OP (SparseComplexMatrix, Complex, *=, 1.0, 1.0);
+  if ((rows() == 1 && dim == -1) || dim == 1)
+    return transpose (). prod (0). transpose();
+  else
+    {
+      SPARSE_REDUCTION_OP (SparseComplexMatrix, Complex, *=, 
+			   (cidx(j+1) - cidx(j) < nc ? 0.0 : 1.0), 1.0);
+    }
 }
 
 SparseComplexMatrix
@@ -7650,11 +7656,11 @@ SparseComplexMatrix
 SparseComplexMatrix::sumsq (int dim) const
 {
 #define ROW_EXPR \
-  Complex d = elem (i, j); \
-  tmp [i] += d * conj (d)
+  Complex d = data (i); \
+  tmp [ridx(i)] += d * conj (d)
 
 #define COL_EXPR \
-  Complex d = elem (i, j); \
+  Complex d = data (i); \
   tmp [j] += d * conj (d)
 
   SPARSE_BASE_REDUCTION_OP (SparseComplexMatrix, Complex, ROW_EXPR, 

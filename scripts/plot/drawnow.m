@@ -27,7 +27,7 @@
 
 ## Author: jwe
 
-function drawnow (term, file, debug_file)
+function drawnow (term, file, mono, debug_file)
 
   persistent drawnow_executing = 0;
 
@@ -38,7 +38,11 @@ function drawnow (term, file, debug_file)
       return;
     endif
 
-    if (nargin == 2 || nargin == 3)
+    if (nargin < 3)
+      mono = false;
+    endif
+
+    if (nargin >= 2 && nargin <= 4)
       h = get (0, "currentfigure");
       if (h)
 	f = get (h);
@@ -46,11 +50,11 @@ function drawnow (term, file, debug_file)
 	fid = [];
 	unwind_protect
 	  [plot_stream, enhanced] = open_gnuplot_stream ([], term, file);
-	  __go_draw_figure__ (f, plot_stream, enhanced);	
-	  if (nargin == 3)
+	  __go_draw_figure__ (f, plot_stream, enhanced, mono);
+	  if (nargin == 4)
 	    fid = fopen (debug_file, "wb");
 	    enhanced = init_plot_stream (fid, [], term, file);
-	    __go_draw_figure__ (f, fid, enhanced);
+	    __go_draw_figure__ (f, fid, enhanced, mono);
 	  endif
 	unwind_protect_cleanup
 	  if (! isempty (plot_stream))
@@ -77,7 +81,7 @@ function drawnow (term, file, debug_file)
 	      else
 		enhanced = f.__enhanced__;
 	      endif
-	      __go_draw_figure__ (f, plot_stream, enhanced);
+	      __go_draw_figure__ (f, plot_stream, enhanced, mono);
 	    elseif (! isempty (plot_stream))
 	      pclose (plot_stream);
 	      set (h, "__plot_stream__", []);

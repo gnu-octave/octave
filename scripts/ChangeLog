@@ -1,4 +1,14 @@
+2007-12-07  David Bateman  <dbateman@free.fr>
+
+	* plot/surf.m: Don't set facecolor property.
+
 2007-12-06  John W. Eaton  <jwe@octave.org>
+
+	* plot/print.m: Pass mono to drawnow.
+	* plot/drawnow.m: New arg, mono.  Pass it to __go_draw_figure__.
+	* plot/__go_draw_figure__.m: New arg, mono.  Pass it to __go_draw_axes.
+	* plot/__go_draw_axes__.m: New arg, mono.  If mono is true,
+	disable color specifications.
 
 	* general/issymmetric.m: Move tests here from test/test_number.m
 

@@ -7710,7 +7710,13 @@ SparseMatrix::cumsum (int dim) const
 SparseMatrix
 SparseMatrix::prod (int dim) const
 {
-  SPARSE_REDUCTION_OP (SparseMatrix, double, *=, 1.0, 1.0);
+  if ((rows() == 1 && dim == -1) || dim == 1)
+    return transpose (). prod (0). transpose();
+  else
+    {
+      SPARSE_REDUCTION_OP (SparseMatrix, double, *=, 
+			   (cidx(j+1) - cidx(j) < nc ? 0.0 : 1.0), 1.0);
+    }
 }
 
 SparseMatrix
@@ -7723,11 +7729,11 @@ SparseMatrix
 SparseMatrix::sumsq (int dim) const
 {
 #define ROW_EXPR \
-  double d = elem (i, j); \
-  tmp[i] += d * d
+  double d = data (i); \
+  tmp[ridx(i)] += d * d
 
 #define COL_EXPR \
-  double d = elem (i, j); \
+  double d = data (i); \
   tmp[j] += d * d
 
   SPARSE_BASE_REDUCTION_OP (SparseMatrix, double, ROW_EXPR, COL_EXPR, 

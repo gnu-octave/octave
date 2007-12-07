@@ -20,9 +20,9 @@
 
 ## Author: jwe
 
-function __go_draw_axes__ (h, plot_stream, enhanced)
+function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
-  if (nargin == 3)
+  if (nargin == 4)
 
     axis_obj = get (h);
 
@@ -87,7 +87,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     if (! isempty (axis_obj.xlabel))
       t = get (axis_obj.xlabel);
       angle = t.rotation;
-      colorspec = get_text_colorspec (axis_obj.xcolor);
+      colorspec = get_text_colorspec (axis_obj.xcolor, mono);
       if (isempty (t.string))
 	fprintf (plot_stream, "unset xlabel;\n");
 	fprintf (plot_stream, "unset x2label;\n");
@@ -123,7 +123,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     if (! isempty (axis_obj.ylabel))
       t = get (axis_obj.ylabel);
       angle = t.rotation;
-      colorspec = get_text_colorspec (axis_obj.ycolor);
+      colorspec = get_text_colorspec (axis_obj.ycolor, mono);
       if (isempty (t.string))
 	fprintf (plot_stream, "unset ylabel;\n");
 	fprintf (plot_stream, "unset y2label;\n");
@@ -157,7 +157,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
     if (! isempty (axis_obj.zlabel))
       t = get (axis_obj.zlabel);
       angle = t.rotation;
-      colorspec = get_text_colorspec (axis_obj.zcolor);
+      colorspec = get_text_colorspec (axis_obj.zcolor, mono);
       if (isempty (t.string))
 	fputs (plot_stream, "unset zlabel;\n");
       else
@@ -233,7 +233,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
       fputs (plot_stream, "set grid nomztics;\n");
     endif
 
-    do_tics (axis_obj, plot_stream, ymirror);
+    do_tics (axis_obj, plot_stream, ymirror, mono);
 
     xlogscale = strcmpi (axis_obj.xscale, "log");
     if (xlogscale)
@@ -360,7 +360,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	    tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
 	    titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	  endif
-	  [style, typ, with] = do_linestyle_command (obj, data_idx, plot_stream);
+	  [style, typ, with] = do_linestyle_command (obj, data_idx,
+						     mono, plot_stream);
 	  usingclause{data_idx} = "";
 	  if (have_newer_gnuplot || isnan (typ))
 	    withclause{data_idx} = sprintf ("with %s linestyle %d",
@@ -551,9 +552,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
                endif
 
 	       if (have_newer_gnuplot)
-		 withclause{data_idx} ...
-		     = sprintf ("with filledcurve lc rgb \"#%02x%02x%02x\"",
-				round (255*color));
+		 if (mono)
+		   colorspec = "";
+		 else
+		   colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+					round (255*color));
+		 endif
+		 withclause{data_idx} = sprintf ("with filledcurve %s",
+						 colorspec);
 	       else
 		 if (isequal (color, [0,0,0]))
 		   typ = -1;
@@ -730,9 +736,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	     endif
 
 	     if (have_newer_gnuplot)
-	       withclause{data_idx} ...
-		   = sprintf ("with %s %s %s lc rgb \"#%02x%02x%02x\"",
-			      style, pt, ps, round (255*color));
+	       if (mono)
+		 colorspec = "";
+	       else
+		 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
+				      round (255*color));
+	       endif
+	       withclause{data_idx} = sprintf ("with %s %s %s %s",
+					       style, pt, ps, colorspec);
 	     else
 	       if (isequal (color, [0,0,0]))
 		 typ = -1;
@@ -785,7 +796,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 	    parametric(data_idx) = false;
 	    have_cdata(data_idx) = true;
 	    [style, typ, with] = do_linestyle_command (obj, data_idx,
-						       plot_stream);
+						       mono, plot_stream);
 	    if (isempty (obj.keylabel))
 	      titlespec{data_idx} = "title \"\"";
 	    else
@@ -899,9 +910,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 			 data_idx, interp_str, dord);
 
 		if (have_newer_gnuplot)
+		  if (mono)
+		    colorspec = "";
+		  else
+		    colorspec = sprintf ("linecolor rgb \"#%02x%02x%02x\"",
+					 round (255*edgecol));
+		  endif
                   fprintf (plot_stream,
-                           "set style line %d linecolor rgb \"#%02x%02x%02x\" lw %f;\n",
-                           data_idx, round (255*edgecol), obj.linewidth);
+                           "set style line %d %s lw %f;\n",
+                           data_idx, colorspec, obj.linewidth);
 		else
 		  if (isequal (edgecol, [0,0,0]))
 		    typ = -1;
@@ -950,7 +967,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
           endif
 	  
 	  if (isnumeric (color))
-	    colorspec = get_text_colorspec (color);
+	    colorspec = get_text_colorspec (color, mono);
 	  endif
 
 	  if (nd == 3)
@@ -1182,7 +1199,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced)
 
 endfunction
 
-function [style, typ, with] = do_linestyle_command (obj, idx, plot_stream)
+function [style, typ, with] = do_linestyle_command (obj, idx, mono, plot_stream)
 
   persistent have_newer_gnuplot ...
     = compare_versions (__gnuplot_version__ (), "4.0", ">");
@@ -1200,8 +1217,10 @@ function [style, typ, with] = do_linestyle_command (obj, idx, plot_stream)
     color = obj.color;
     if (isnumeric (color))
       if (have_newer_gnuplot)
-	fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
-		 round (255*color));
+	if (! mono)
+	  fprintf (plot_stream, " linecolor rgb \"#%02x%02x%02x\"",
+		   round (255*color));
+	endif
       else
 	if (isequal (color, [0,0,0]))
 	  typ = -1;
@@ -1398,35 +1417,36 @@ function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)
 
 endfunction
 
-function do_tics (obj, plot_stream, ymirror)
+function do_tics (obj, plot_stream, ymirror, mono)
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream, true);
+	       obj.xcolor, "x2", plot_stream, true, mono);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x", plot_stream, true);
+	       obj.xcolor, "x", plot_stream, true, mono);
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x", plot_stream, true);
+	       obj.xcolor, "x", plot_stream, true, mono);
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream, true);
+	       obj.xcolor, "x2", plot_stream, true, mono);
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream, ymirror);
+	       obj.ycolor, "y2", plot_stream, ymirror, mono);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y", plot_stream, ymirror);
+	       obj.ycolor, "y", plot_stream, ymirror, mono);
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y", plot_stream, ymirror);
+	       obj.ycolor, "y", plot_stream, ymirror, mono);
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream, ymirror);
+	       obj.ycolor, "y2", plot_stream, ymirror, mono);
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zticklabelmode, obj.zticklabel,
-	     obj.zcolor, "z", plot_stream, true);
+	     obj.zcolor, "z", plot_stream, true, mono);
 endfunction
 
-function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream, mirror)
-  colorspec = get_text_colorspec (color);
+function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
+		    plot_stream, mirror, mono)
+  colorspec = get_text_colorspec (color, mono);
   if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
       fprintf (plot_stream, "unset %stics;\n", ax);
@@ -1478,13 +1498,17 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax, plot_stream, mi
   endif
 endfunction
 
-function colorspec = get_text_colorspec (color)
+function colorspec = get_text_colorspec (color, mono)
   persistent have_newer_gnuplot ...
       = compare_versions (__gnuplot_version__ (), "4.0", ">");
 
   if (have_newer_gnuplot)
-    colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
-			 round (255*color));
+    if (mono)
+      colorspec = "";
+    else
+      colorspec = sprintf ("textcolor rgb \"#%02x%02x%02x\"",
+			   round (255*color));
+    endif
   else
     if (isequal (color, [0,0,0]))
       typ = -1;

@@ -1,5 +1,8 @@
 2007-12-07  David Bateman  <dbateman@free.fr>
 
+	* data.cc (Fnorm): Don't return a scalar stored as a sparse
+	matrix. Convert it to a scalar.
+
 	* graphics.cc (check_limit_val): Delete.
 	(check_limit_vals): Simplify and no longer use check_limit_val.
 

@@ -39,7 +39,6 @@ function retval = surf (varargin)
     newplot ();
     tmp = surface (varargin{:});
 
-    set (tmp, "facecolor", "flat");
     if (! ishold ())
       set (h, "view", [-37.5, 30]);
     endif

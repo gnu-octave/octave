@@ -1810,28 +1810,18 @@ axes::get_default (const caseless_str& name) const
 }
 
 static void
-check_limit_val (double& min_val, double& max_val, double& min_pos, double val)
-{
-  if (! (xisinf (val) || xisnan (val)))
-    {
-      if (val < min_val)
-	min_val = val;
-
-      if (val > max_val)
-	max_val = val;
-
-      if (val > 0 && val < min_pos)
-	min_pos = val;
-    }
-}
-
-static void
 check_limit_vals (double& min_val, double& max_val, double& min_pos,
 		  const data_property& data)
 {
-  check_limit_val (min_val, max_val, min_pos, data.min_val ());
-  check_limit_val (max_val, max_val, min_pos, data.max_val ());
-  check_limit_val (min_pos, max_val, min_pos, data.min_pos ());
+  double val = data.min_val ();
+  if (! (xisinf (val) || xisnan (val)) && val < min_val)
+    min_val = val;
+  val = data.max_val ();
+  if (! (xisinf (val) || xisnan (val)) && val > max_val)
+    max_val = val;
+  val = data.min_pos ();
+  if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
+    min_pos = val;
 }
 
 // Attempt to make "nice" limits from the actual max and min of the

@@ -1,3 +1,9 @@
+2007-12-10  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve):
+	For compatibility, return [x, fval, info] instead of [x, info, msg].
+ 	Move tests here from test/test_nonlin.m.
+
 2007-12-10  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in (data_property::data): Declare as NDArray instead

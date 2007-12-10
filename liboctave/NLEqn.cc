@@ -178,6 +178,8 @@ NLEqn::solve (octave_idx_type& info)
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in hybrj1");
+      else
+	fval = ColumnVector (fvec);
     }
   else
     {
@@ -195,6 +197,8 @@ NLEqn::solve (octave_idx_type& info)
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) ("unrecoverable error in hybrd1");
+      else
+	fval = ColumnVector (fvec);
     }
 
   return retval;

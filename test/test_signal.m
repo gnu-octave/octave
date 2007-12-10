@@ -18,44 +18,6 @@
 
 %% Automatically generated from DejaGNU files
 
-%% test/octave.test/signal/detrend-1.m
-%% detrend-1.m
-%%
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
-%!test
-%! N=32;
-%! x = (0:1:N-1)/N + 2;
-%! y = detrend(x);
-%! assert(all (all (abs (y) < 10*eps)));
-
-%% test/octave.test/signal/detrend-2.m
-%% detrend-2.m
-%%
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
-%!test
-%! N=32;
-%! t = (0:1:N-1)/N;
-%! x = t .* t + 2;
-%! y = detrend(x,2);
-%! assert(all (all (abs (y) < 30*eps)));
-
-%% test/octave.test/signal/detrend-3.m
-%% detrend-3.m
-%%
-%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
-%%         Comalco Research and Technology
-%%         02 May 2000
-%!test
-%! N=32;
-%! t = (0:1:N-1)/N;
-%! x = [t;4*t-3]';
-%! y = detrend(x);
-%! assert(all (all (abs (y) < 20*eps)));
-
 %% test/octave.test/signal/fft-1.m
 %% fft-1.m
 %%

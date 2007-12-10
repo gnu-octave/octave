@@ -1,5 +1,11 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* NLEqn.h (NLEqn::fval): New data member.  Adjust constructors
+	and assignment operator.
+	(NLEqn::function_value): New function.
+	* NLEqn.cc (NLEqn::solve): If solution is successful, compute
+	function value.
+
 	* file-ops.cc (file_ops::concat): New function.
 	* file-ops.h: Provide decl.
 

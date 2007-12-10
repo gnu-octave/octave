@@ -1,3 +1,7 @@
+2007-12-10  John W. Eaton  <jwe@octave.org>
+
+	* test_nonlin.m: Delete.
+
 2007-12-03  David Bateman  <dbateman@free.fr>
 
 	* fntests.m: Also count the skipped tests.

@@ -1,5 +1,8 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* signal/detrend.m: Move tests here from test/test_signal.m.
+	Loosen tolerance on first test from 10*eps to 20*eps.
+
 	* finance/rate.m: Don't request info from fsolve.
 
 2007-12-10  Michael Goffioul <michael.goffioul@gmail.com>

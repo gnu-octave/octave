@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <cfloat>
 
 #include "NLEqn-opts.h"
+#include "lo-ieee.h"
 #include "lo-math.h"
 
 class
@@ -36,13 +37,15 @@ NLEqn : public NLFunc, public NLEqn_options
 public:
 
   NLEqn (void)
-    : NLFunc (), NLEqn_options (), x (), solution_status (0) { }
+    : NLFunc (), NLEqn_options (), x (), fval (),
+      solution_status (0) { }
 
   NLEqn (const ColumnVector& xx, const NLFunc f) 
-    : NLFunc (f), NLEqn_options (), x (xx), solution_status (0) { }
+    : NLFunc (f), NLEqn_options (), x (xx), fval (x.numel (), octave_NaN),
+      solution_status (0) { }
 
   NLEqn (const NLEqn& a)
-    : NLFunc (a.fun, a.jac), NLEqn_options (), x (a.x),
+    : NLFunc (a.fun, a.jac), NLEqn_options (), x (a.x), fval (a.fval),
       solution_status (a.solution_status) { }
 
   NLEqn& operator = (const NLEqn& a)
@@ -53,6 +56,7 @@ public:
 	  NLEqn_options::operator = (a);
 
 	  x = a.x;
+	  fval = a.fval;
 	  solution_status = a.solution_status;
 	}
       return *this;
@@ -91,11 +95,14 @@ public:
 
   bool solution_ok (void) const { return solution_status == 1; }
 
+  ColumnVector function_value (void) const { return fval; }
+
   std::string error_message (void) const;
 
 private:
 
   ColumnVector x;
+  ColumnVector fval;
   octave_idx_type solution_status;
 
   void error (const char* msg);

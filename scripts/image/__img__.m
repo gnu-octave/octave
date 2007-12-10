@@ -32,7 +32,7 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function h = __img__ (x, y, img)
+function h = __img__ (x, y, img, varargin)
 
   newplot ();
 
@@ -53,7 +53,8 @@ function h = __img__ (x, y, img)
 
   ca = gca ();
 
-  tmp = __go_image__ (ca, "cdata", img, "xdata", xlim, "ydata", ylim);
+  tmp = __go_image__ (ca, "cdata", img, "xdata", xlim, "ydata", ylim, 
+		      varargin {:});
 
   set (ca, "view", [0, 90]);
 

@@ -141,9 +141,6 @@ function [h, fail] = __patch__ (p, varargin)
     error ("patch: not supported");
   endif
 
-  h = __go_patch__ (p);
-  ax = get (h, "parent");
-
   cargs = {};
   if (have_c)
     if (ischar (c))
@@ -160,14 +157,6 @@ function [h, fail] = __patch__ (p, varargin)
 	cargs{2} = "flat";
 	cargs{3} = "cdata";
 	cargs{4} = c;
-	clim = get (ax, "clim");
-	if (c(1) < clim(1))
-          set (ax, "clim", [c(1), clim(2)])
-	  clim(1) = c(1);
-	endif
-	if (c(1) > clim(2))
-          set (ax, "clim", [clim(1), c(1)])
-	endif
       else
 	error ("patch: color value not valid");
       endif
@@ -178,17 +167,11 @@ function [h, fail] = __patch__ (p, varargin)
       cargs{4} = c;
     else
       ## Color Vectors
-
       if (rows (c2) != rows (x) || rows (c2) != length (y))
 	error ("patch: size of x, y, and c must be equal")
       else
 	cargs{1} = "facecolor";
 	cargs{2} = "interp";
-	if (abs(max(c2(:)) - min(c2(:))) < eps)
-          set (ax, "clim", [c2(1)-1, c2(1)+1])
-	else
-          set (ax, "clim", [min(c2(:)), max(c2(:))]);
-	endif
       endif
     endif
   else
@@ -196,8 +179,8 @@ function [h, fail] = __patch__ (p, varargin)
     cargs{2} = [0, 1, 0];
   endif
 
-  set (h, "xdata", x, "ydata", y, "faces", faces, "vertices", vert,
-       cargs{:}, varargin{iarg:end});
+  h = __go_patch__ (p, "xdata", x, "ydata", y, "faces", faces, 
+		    "vertices", vert, cargs{:}, varargin{iarg:end});
   if (have_z)
     set (h, "zdata", z);
   endif

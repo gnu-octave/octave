@@ -408,7 +408,13 @@ private:
 class data_property
 {
 public:
-  data_property (const Matrix& m = Matrix ())
+  data_property (const NDArray& m = NDArray ())
+    : data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
+  {
+    get_data_limits ();
+  }
+
+  data_property (const Matrix& m)
     : data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
   {
     get_data_limits ();
@@ -417,7 +423,7 @@ public:
   data_property (const octave_value& val)
     : data (), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
   {
-    data = val.matrix_value ();
+    data = val.array_value ();
 
     get_data_limits ();
   }
@@ -442,7 +448,7 @@ public:
   double min_pos (void) const { return xminp; }
 
 private:
-  Matrix data;
+  NDArray data;
   double xmin;
   double xmax;
   double xminp;

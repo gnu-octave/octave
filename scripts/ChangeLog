@@ -1,3 +1,10 @@
+2007-12-10  David Bateman  <dbateman@free.fr>
+
+	* image/image.m: Rewritten to allow trailing properties to be
+	passed to underlying image object.
+	* image/__img__.m: Pass additional arguments to __go_image__.
+	* plot/__patch__.m: Don't set clim, rely on autoscaling.
+
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: If we have a grid, send "set grid

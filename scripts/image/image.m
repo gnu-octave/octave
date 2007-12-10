@@ -41,57 +41,41 @@
 
 function retval = image (varargin)
 
-  if (nargin == 0)
-    __image__ (gca ());
-  elseif (nargin == 1)
-    print_usage ();
-  elseif (isscalar (varargin{1}) && ishandle (varargin{1}))
-    h = varargin{1};
-    if (! strcmp (get (h, "type"), "axes"))
-      error ("image: expecting first argument to be an axes object");
+  [ax, varargin, nargin] = __plt_get_axis_arg__ ("image", varargin{:});
+
+  firstnonnumeric = Inf;
+  for i = 1 : nargin
+    if (! isnumeric (varargin{i}))
+      firstnonnumeric = i;
+      break;
     endif
-    oldh = gca ();
-    unwind_protect
-      axes (h);
-      tmp = __image__ (h, varargin{2:end});
-    unwind_protect_cleanup
-      axes (oldh);
-    end_unwind_protect
-  else
-    tmp = __image__ (gca (), varargin{:});
-  endif
+  endfor
 
-  if (nargout > 0)
-    retval = tmp;
-  endif
-
-endfunction
-
-function h = __image__ (ax, x, y, img)
-
-  ## Deprecated zoom.  Remove this hunk of code if old zoom argument
-  ## is outmoded.
-  if ((nargin == 3 && isscalar (y)) || nargin == 5)
-    warning ("image: zoom argument ignored -- use GUI features");
-  endif
-  if (nargin == 5)
-    nargin = 4;
-  endif
-  if (nargin == 3 && isscalar (y))
-    nargin = 2;
-  endif
-
-  if (nargin == 1)
-    ## Load Bobbie Jo Richardson (Born 3/16/94)
+  if (nargin == 0 || firstnonnumeric == 1)
     img = loadimage ("default.img");
     x = y = [];
-  elseif (nargin == 2)
-    img = x;
+  elseif (nargin == 1 || firstnonnumeric == 2)
+    img = varargin{1};
     x = y = [];
-  elseif (nargin == 3 || nargin > 4)
+  elseif (nargin == 2 || firstnonnumeric == 3)
     print_usage ();
+  else
+    x = varargin{1};
+    y = varargin{2};
+    img = varargin{3};
+    firstnonnumeric = 4;
   endif
 
-  h = __img__ (x, y, img);
+  oldax = gca ();
+  unwind_protect
+    axes (ax);
+    h = __img__ (x, y, img, varargin {firstnonnumeric:end});
+  unwind_protect_cleanup
+    axes (oldax);
+  end_unwind_protect
+
+  if (nargout > 0)
+    retval = h;
+  endif
 
 endfunction

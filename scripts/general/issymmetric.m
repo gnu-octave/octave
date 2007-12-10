@@ -41,7 +41,7 @@ function retval = issymmetric (x, tol)
         tol = eps;
       endif
       norm_x = norm (x, inf);
-      if (norm_x != 0 && norm (x - x.', inf) / norm_x > tol)
+      if (norm_x != 0 && norm (x - x', inf) / norm_x > tol)
         retval = 0;
       endif
     endif
@@ -57,7 +57,7 @@ endfunction
 %!assert(issymmetric ([1, 2; 2, 1]) == 2);
 %!assert(!(issymmetric ("test")));
 %!assert(issymmetric ([1, 2.1; 2, 1.1], 0.2) == 2);
-%!assert(!issymmetric ([1, 2i; -2i, 1]));
+%!assert(issymmetric ([1, 2i; -2i, 1]));
 %!assert(!(issymmetric ("t")));
 %!assert(!(issymmetric (["te"; "et"])));
 %!error issymmetric ([1, 2; 2, 1], 0, 0);

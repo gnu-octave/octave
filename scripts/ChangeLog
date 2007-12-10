@@ -1,5 +1,9 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* general/issymmetric.m: Use ' instead of .' for compatibility
+	with previous versions of Octave.
+	* general/ishermitian.m: Delete.
+
 	* plot/fplot.m: In N is not specified, increase initial number of
 	points from 3 and 5 to 5 and 8.
 

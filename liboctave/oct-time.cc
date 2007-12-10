@@ -304,7 +304,8 @@ octave_base_tm::init (void *p)
   tm_isdst = t->tm_isdst;
 
 #if defined (HAVE_STRUCT_TM_TM_ZONE)
-  tm_zone = t->tm_zone;
+  if (t->tm_zone)
+    tm_zone = t->tm_zone;
 #elif defined (HAVE_TZNAME)
   if (t->tm_isdst == 0 || t->tm_isdst == 1)
     tm_zone = tzname[t->tm_isdst];

@@ -811,7 +811,7 @@ tree_matrix::rvalue (void)
 #endif
       else if (result_type == "char")
 	{
-	  char type = all_sq_strings_p ? '\'' : '"';
+	  char type = all_dq_strings_p ? '"' : '\'';
 
 	  maybe_warn_string_concat (all_dq_strings_p, all_sq_strings_p);
 

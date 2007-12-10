@@ -1,3 +1,8 @@
+2007-12-07  John W. Eaton  <jwe@octave.org>
+
+	* oct-time.cc (octave_base_tm::init): Only assign t->tm_zone if it
+	is not 0.
+
 2007-12-07  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_SMS_CMP_OP, SPARSE_SMS_BOOL_OP,

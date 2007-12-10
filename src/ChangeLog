@@ -1,3 +1,8 @@
+2007-12-10  John W. Eaton  <jwe@octave.org>
+
+	* pt-mat.cc (tree_matrix::rvalue): Produce sq_string if any
+	strings are sq_string objects.
+
 2007-12-07  David Bateman  <dbateman@free.fr>
 
 	* data.cc (Fnorm): Don't return a scalar stored as a sparse

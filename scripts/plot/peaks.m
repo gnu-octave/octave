@@ -46,7 +46,7 @@
 ## If @var{n} is a vector, then it represents the @var{x} and @var{y} values
 ## of the grid on which to calculate the above function. The @var{x} and 
 ## @var{y} values can be specified separately.
-## @seealso{mesh}
+## @seealso{surf, mesh, meshgrid}
 ## @end deftypefn
 
 ## Expression for the peaks function was taken from the following paper:
@@ -76,7 +76,7 @@ function [X_out, Y_out, Z_out] = peaks (x, y)
       - 1 / 3 * exp(- (X + 1) .^ 2 - Y .^ 2);
 
   if (nargout == 0)
-    mesh (x, y, Z);
+    surf (x, y, Z);
   elseif (nargout == 1)
     X_out = Z;
   else

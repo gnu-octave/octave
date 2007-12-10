@@ -1,5 +1,7 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* plot/sombrero.m, plot/peaks.m: Use surf instead of mesh.
+
 	* general/issymmetric.m: Use ' instead of .' for compatibility
 	with previous versions of Octave.
 	* general/ishermitian.m: Delete.

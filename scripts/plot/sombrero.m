@@ -27,7 +27,7 @@
 ## @example
 ## z = sin (sqrt (x^2 + y^2)) / (sqrt (x^2 + y^2))
 ## @end example
-## @seealso{mesh, meshgrid}
+## @seealso{surf, meshgrid, mesh}
 ## @end deftypefn
 
 ## Author: jwe
@@ -45,7 +45,7 @@ function [x, y, z] = sombrero (n)
       r = sqrt (xx .^ 2 + yy .^ 2) + eps;
       tz = sin (r) ./ r;
       if (nargout == 0)
-        mesh (tx, ty, tz);
+        surf (tx, ty, tz);
 	box ("off");
       else
 	x = tx;

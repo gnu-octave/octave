@@ -524,8 +524,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       usingclause{data_idx} = "";
                if (isfield (obj, "facecolor"))
 		 if ((strncmp (obj.facecolor, "flat", 4)
-		     || strncmp (obj.facecolor, "interp", 6)) &&
-		     isfield (obj, "cdata"))
+		     || strncmp (obj.facecolor, "interp", 6))
+		     && isfield (obj, "cdata"))
 		   if (ndims (obj.cdata) == 2
 		       && (size (obj.cdata, 2) == nc
 			   && (size (obj.cdata, 1) == 1
@@ -622,8 +622,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
              if (isfield (obj, "edgecolor"))
 	       if ((strncmp (obj.edgecolor, "flat", 4)
-		    || strncmp (obj.edgecolor, "interp", 6)) &&
-		   isfield (obj, "cdata"))
+		    || strncmp (obj.edgecolor, "interp", 6))
+		   && isfield (obj, "cdata"))
 		 if (ndims (obj.cdata) == 2
 		     && (size (obj.cdata, 2) == nc
 			 && (size (obj.cdata, 1) == 1

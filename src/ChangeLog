@@ -1,5 +1,11 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* OPERATORS/op-cm-s.cc: Define function for el_mul with
+	DEFNDBINOP_OP, not DEFBINOP_OP.
+
+	* OPERATORS/op-s-cm.cc: Define functions for el_and and el_or
+	operators with DEFNDBINOP_FN.
+
 	* oct-hist.cc (default_history_file): Use file_ops::concat.
 	* load-path.cc (dir_info::initialize, dir_info::get_file_list,
 	load_path::do_find_fcn, load_path::do_find_file, genpath,

@@ -80,7 +80,7 @@ DEFNDBINOP_FN (ge, complex_matrix, scalar, complex_array, scalar, mx_el_ge)
 DEFNDBINOP_FN (gt, complex_matrix, scalar, complex_array, scalar, mx_el_gt)
 DEFNDBINOP_FN (ne, complex_matrix, scalar, complex_array, scalar, mx_el_ne)
 
-DEFBINOP_OP (el_mul, complex_matrix, scalar, *)
+DEFNDBINOP_OP (el_mul, complex_matrix, scalar, complex_array, scalar, *)
 
 DEFBINOP (el_div, complex_matrix, scalar)
 {

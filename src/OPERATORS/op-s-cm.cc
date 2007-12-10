@@ -98,19 +98,8 @@ DEFBINOP (el_ldiv, scalar, complex_matrix)
   return octave_value (v2.complex_array_value () / d);
 }
 
-DEFBINOP (el_and, scalar, complex_matrix)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return mx_el_and (v1.double_value (), v2.complex_array_value ());
-}
-
-DEFBINOP (el_or, scalar, complex_matrix)
-{
-  CAST_BINOP_ARGS (const octave_scalar&, const octave_complex_matrix&);
-
-  return mx_el_or (v1.double_value (), v2.complex_array_value ());
-}
+DEFNDBINOP_FN (el_and, scalar, complex_matrix, scalar, complex_array, mx_el_and)
+DEFNDBINOP_FN (el_or,  scalar, complex_matrix, scalar, complex_array, mx_el_or)
 
 DEFNDCATOP_FN (s_cm, scalar, complex_matrix, array, complex_array, concat)
 

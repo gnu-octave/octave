@@ -45,6 +45,7 @@ function __go_draw_figure__ (f, plot_stream, enhanced, mono)
 	endfor
 
 	fputs (plot_stream, "\nreset;\n");
+	fputs (plot_stream, "set autoscale fix;\n");
 
 	multiplot_mode = axes_count > 1;
 

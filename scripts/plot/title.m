@@ -22,6 +22,8 @@
 ## Create a title object and return a handle to it.
 ## @end deftypefn
 
+## PKG_ADD: mark_as_command title
+
 ## Author: jwe
 
 function h = title (varargin)

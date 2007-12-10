@@ -1,3 +1,11 @@
+2007-12-10  David Bateman  <dbateman@free.fr>
+
+	* __go_draw_axes__.m: Issue "set view map" for pcolor, and "set
+	border front" from images.
+	* __go_draw_figure__.m: Issue "set autoscale fix" for gnuplot.
+	* pcolor.m: Set axis "box" property.
+	* title.m, xlabel.m, ylabel.m, xlabel.m: Mark as commands.
+
 2007-12-07  David Bateman  <dbateman@free.fr>
 
 	* plot/surf.m: Don't set facecolor property.

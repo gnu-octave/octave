@@ -23,6 +23,8 @@
 ## See xlabel.
 ## @end deftypefn
 
+## PKG_ADD: mark_as_command zlabel
+
 ## Author: jwe
 
 function retval = zlabel (varargin)

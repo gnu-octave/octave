@@ -268,6 +268,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     data = cell ();
     is_image_data = [];
     hidden_removal = NaN;
+    view_map = false;
 
     xlim = axis_obj.xlim;
     ylim = axis_obj.ylim;
@@ -305,6 +306,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	  if (use_gnuplot_for_images)
 
+	    fputs (plot_stream, "set border front;\n");
 	    data_idx++;
 	    is_image_data(data_idx) = true;
 	    parametric(data_idx) = false;
@@ -789,6 +791,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	case "surface"
 	  nd = 3;
+	  view_map = true;
           if (! (strncmp (obj.edgecolor, "none", 4)
 		 && strncmp (obj.facecolor, "none", 4)))
 	    data_idx++;
@@ -1170,7 +1173,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  rot_z += 360;
 	endwhile
  	fputs (plot_stream, "set ticslevel 0;\n");
-	fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
+	if (view_map && rot_x == 0 && rot_z == 0)
+	  fputs (plot_stream, "set view map;\n");
+	else
+	  fprintf (plot_stream, "set view %.15g, %.15g;\n", rot_x, rot_z);
+	endif
       endif
       fprintf (plot_stream, "%s \"-\" %s %s %s \\\n", plot_cmd,
 	       usingclause{1}, titlespec{1}, withclause{1});
@@ -1189,6 +1196,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       endfor
     else
       fputs (plot_stream, "plot \"-\";\nInf Inf\ne\n");
+    endif
+
+    ## Needed to allow mouse rotation with pcolor
+    if (view_map)
+      fputs (plot_stream, "unset view;\n");
     endif
 
     fflush (plot_stream);

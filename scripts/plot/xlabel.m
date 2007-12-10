@@ -28,6 +28,8 @@
 ## bar, stairs,  ylabel, title}
 ## @end deftypefn
 
+## PKG_ADD: mark_as_command xlabel
+
 ## Author: jwe
 
 function retval = xlabel (varargin)

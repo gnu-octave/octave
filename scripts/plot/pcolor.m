@@ -50,6 +50,7 @@ function h = pcolor (x, y, c)
   ax = get (tmp, "parent");
 
   set (tmp, "facecolor", "flat");
+  set (ax, "box", "on");
   
   if (! ishold ())
     set (ax, "view", [0, 90]);

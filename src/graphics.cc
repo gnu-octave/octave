@@ -863,7 +863,8 @@ figure::properties::properties (const graphics_handle& mh,
     currentaxes (octave_NaN),
     colormap (),
     visible ("on"),
-    paperorientation ("portrait")
+    paperorientation ("portrait"),
+    color ( color_values (1, 1, 1))
 { }
 
 void
@@ -922,6 +923,8 @@ figure::properties::set (const caseless_str& name, const octave_value& val)
     set_visible (val);
   else if (name.compare ("paperorientation"))
     set_paperorientation (val);
+  else if (name.compare ("color"))
+    set_color (val);
   else
     {
       modified = false;
@@ -950,6 +953,7 @@ figure::properties::get (void) const
   m.assign ("colormap", colormap);
   m.assign ("visible", visible);
   m.assign ("paperorientation", paperorientation);
+  m.assign ("color", color);
 
   return m;
 }
@@ -985,6 +989,8 @@ figure::properties::get (const caseless_str& name) const
     retval = visible;
   else if (name.compare ("paperorientation"))
     retval = paperorientation;
+  else if (name.compare ("color"))
+    retval = color;
   else
     warning ("get: invalid property `%s'", name.c_str ());
 
@@ -1022,7 +1028,7 @@ figure::properties::factory_defaults (void)
   m["colormap"] = colormap_property ();
   m["visible"] = "on";
   m["paperorientation"] = "portrait";
-
+  m["color"] = color_property (color_values (1, 1, 1));
   return m;
 }
 

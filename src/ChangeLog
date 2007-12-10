@@ -4,13 +4,6 @@
 	For compatibility, return [x, fval, info] instead of [x, info, msg].
  	Move tests here from test/test_nonlin.m.
 
-2007-12-10  David Bateman  <dbateman@free.fr>
-
-	* graphics.h.in (data_property::data): Declare as NDArray instead
-	of Matrix.  Change all uses.
-
-2007-12-10  John W. Eaton  <jwe@octave.org>
-
 	* OPERATORS/op-cm-s.cc: Define function for el_mul with
 	DEFNDBINOP_OP, not DEFBINOP_OP.
 
@@ -28,6 +21,16 @@
 
 	* pt-mat.cc (tree_matrix::rvalue): Produce sq_string if any
 	strings are sq_string objects.
+
+2007-12-10  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in (data_property::data): Declare as NDArray instead
+	of Matrix.  Change all uses.
+
+2007-12-10  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in (class figure) Add the color property.
+	* graphics.cc (class figure) Ditto.
 
 2007-12-07  David Bateman  <dbateman@free.fr>
 

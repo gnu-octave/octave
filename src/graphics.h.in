@@ -1219,6 +1219,7 @@ public:
       colormap_property colormap
       octave_value visible S
       octave_value paperorientation
+      color_property color
     END_PROPERTIES
 
     static std::string go_name;

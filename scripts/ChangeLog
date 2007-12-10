@@ -1,3 +1,8 @@
+2007-12-10  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* plot/__line__.m: Pass initial property/value pairs to __go_line__.
+	* plot/surface.m: Pass initial property/value pairs to __go_surface__.
+
 2007-12-10  David Bateman  <dbateman@free.fr>
 
 	* image/image.m: Rewritten to allow trailing properties to be

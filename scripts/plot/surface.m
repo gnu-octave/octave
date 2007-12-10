@@ -143,16 +143,17 @@ function [h, bad_usage] = __surface__ (ax, varargin)
 
   if (! bad_usage)
     ## Make a default surface object.
-    h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c);
-    set (h, "facecolor","flat");
+    other_args = {};
     if (firststring < nargin)
-      set (h, varargin{firststring:end});
-     endif
+      other_args = varargin(firststring:end);
+    endif
+    h = __go_surface__ (ax, "xdata", x, "ydata", y, "zdata", z, "cdata", c,
+			"facecolor","flat", other_args{:});
 
-     if (! ishold ())
-       set (ax, "view", [0, 90], "box", "off", "xgrid", "on",
-	    "ygrid", "on", "zgrid", "on");
-     endif
-   endif
+    if (! ishold ())
+      set (ax, "view", [0, 90], "box", "off", "xgrid", "on",
+	   "ygrid", "on", "zgrid", "on");
+    endif
+  endif
 
 endfunction

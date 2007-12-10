@@ -47,17 +47,19 @@ function h = __line__ (p, varargin)
     print_usage ("line");
   endif
 
-  h = __go_line__ (p);
-
+  data_args = {};
   if (num_data_args > 1)
-    set (h, "xdata", varargin{1}, "ydata", varargin{2});
+    data_args(1:4) = { "xdata", varargin{1}, "ydata", varargin{2} };
     if (num_data_args == 3)
-      set (h, "zdata", varargin{3});
+      data_args(5:6) = { "zdata", varargin{3} };
     endif
   endif
 
+  other_args = {};
   if (nvargs > num_data_args)
-    set (h, varargin{num_data_args+1:end});
+    other_args = varargin(num_data_args+1:end);
   endif
+
+  h = __go_line__ (p, data_args{:}, other_args{:});
 
 endfunction

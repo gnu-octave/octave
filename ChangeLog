@@ -1,3 +1,8 @@
+2007-12-10  John W. Eaton  <jwe@octave.org>
+
+	* acx_blas.m4: Use -lsunperf, not -xlic_lib=sunperf.
+	From Jim Langston <Jim.Langston@Sun.COM>.
+
 2007-12-06  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (*-*-darwin*): Only set CPICFLAG, CXXPICFLAG, and

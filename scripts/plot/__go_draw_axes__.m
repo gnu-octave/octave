@@ -194,25 +194,31 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       yaxisloc_using = "y1";
     endif
 
+    have_grid = false;
+
     if (strcmpi (axis_obj.xgrid, "on"))
+      have_grid = true;
       fprintf (plot_stream, "set grid %stics;\n", xaxisloc);
     else
       fprintf (plot_stream, "set grid no%stics;\n", xaxisloc);
     endif
 
     if (strcmpi (axis_obj.ygrid, "on"))
+      have_grid = true;
       fprintf (plot_stream, "set grid %stics;\n", yaxisloc);
     else
       fprintf (plot_stream, "set grid no%stics;\n", yaxisloc);
     endif
 
     if (strcmpi (axis_obj.zgrid, "on"))
+      have_grid = true;
       fputs (plot_stream, "set grid ztics;\n");
     else
       fputs (plot_stream, "set grid noztics;\n");
     endif
 
     if (strcmpi (axis_obj.xminorgrid, "on"))
+      have_grid = true;
       fprintf (plot_stream, "set m%stics 5;\n", xaxisloc);
       fprintf (plot_stream, "set grid m%stics;\n", xaxisloc);
     else
@@ -220,6 +226,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     endif
 
     if (strcmpi (axis_obj.yminorgrid, "on"))
+      have_grid = true;
       fprintf (plot_stream, "set m%stics 5;\n", yaxisloc);
       fprintf (plot_stream, "set grid m%stics;\n", yaxisloc);
     else
@@ -227,10 +234,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     endif
 
     if (strcmpi (axis_obj.zminorgrid, "on"))
+      have_grid = true;
       fputs (plot_stream, "set mztics 5;\n");
       fputs (plot_stream, "set grid mztics;\n");
     else
       fputs (plot_stream, "set grid nomztics;\n");
+    endif
+
+    if (have_grid)
+      fputs (plot_stream, "set grid front;\n");
     endif
 
     do_tics (axis_obj, plot_stream, ymirror, mono);

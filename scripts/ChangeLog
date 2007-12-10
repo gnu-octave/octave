@@ -1,5 +1,8 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* plot/fplot.m: In N is not specified, increase initial number of
+	points from 3 and 5 to 5 and 8.
+
 	* signal/detrend.m: Move tests here from test/test_signal.m.
 	Loosen tolerance on first test from 10*eps to 20*eps.
 

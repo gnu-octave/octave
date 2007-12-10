@@ -73,10 +73,10 @@ function fplot (fn, limits, n, linespec)
 
   if (floor(n) != n)
     tol = n;
-    x0 = linspace (limits(1), limits(2), 3)';
+    x0 = linspace (limits(1), limits(2), 5)';
     y0 = feval (fn, x0);
     err0 = Inf;
-    n = 5;
+    n = 8;
     x = linspace (limits(1), limits(2), n)';
     y = feval (fn, x);
 

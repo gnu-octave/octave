@@ -1982,7 +1982,10 @@ to find related functions that are not part of Octave.\n\
 
 		      std::string file_name = load_path::find_fcn (name);
 		      
-		      std::string dir = dirs[i] + file_ops::dir_sep_str;
+		      std::string dir = dirs[i];
+
+		      if (! file_ops::is_dir_sep (dir[dir.length()-1]))
+			dir += file_ops::dir_sep_str;
 
 		      if (file_name == dir + name + ".oct"
 			  || file_name == dir + name + ".m")

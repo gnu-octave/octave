@@ -240,7 +240,7 @@ message identifier.\n\
 	  return retval;
 	}
       else
-	dirname = parent + file_ops::dir_sep_char + dir;
+	dirname = file_ops::concat (parent, dir);
     }
   else if (nargin == 1)
     {

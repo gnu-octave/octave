@@ -857,6 +857,16 @@ file_ops::is_dir_sep (char c)
   return dir_sep_chars.find (c) != NPOS;
 }
 
+std::string
+file_ops::concat (const std::string& dir, const std::string& file)
+{
+  return dir.empty ()
+    ? file
+    : (is_dir_sep (dir[dir.length()-1])
+       ? dir + file
+       : dir + file_ops::dir_sep_char + file);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

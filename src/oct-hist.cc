@@ -87,19 +87,8 @@ default_history_file (void)
     file = env_file;
 
   if (file.empty ())
-    {
-      std::string home_dir = octave_env::get_home_directory ();
-
-      if (! home_dir.empty ())
-	{
-	  file = home_dir;
-	  if (! file_ops::is_dir_sep (file[file.length()-1]))
-	    file += file_ops::dir_sep_char;
-	  file.append (".octave_hist");
-	}
-      else
-	file = ".octave_hist";
-    }
+    file = file_ops::concat (octave_env::get_home_directory (),
+			     ".octave_hist");
 
   return file;
 }

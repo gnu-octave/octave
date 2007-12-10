@@ -1,5 +1,14 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* oct-hist.cc (default_history_file): Use file_ops::concat.
+	* load-path.cc (dir_info::initialize, dir_info::get_file_list,
+	load_path::do_find_fcn, load_path::do_find_file, genpath,
+	execute_pkg_add_or_del, load_path::do_find_first_of,
+	load_path::do_find_all_first_of): Likewise.
+
+	* help.cc (Flookfor): Avoid doubling directory separator.
+	* dirfns.cc (Fmkdir): Likewise.
+
 	* pt-mat.cc (tree_matrix::rvalue): Produce sq_string if any
 	strings are sq_string objects.
 

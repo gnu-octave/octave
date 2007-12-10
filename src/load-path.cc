@@ -87,7 +87,7 @@ load_path::dir_info::initialize (void)
 	{
 	  if (has_private_subdir)
 	    {
-	      std::string pdn = dir_name + file_ops::dir_sep_str + "private";
+	      std::string pdn = file_ops::concat (dir_name, "private");
 
 	      get_private_function_map (pdn);
 	    }
@@ -123,7 +123,7 @@ load_path::dir_info::get_file_list (const std::string& d)
 	{
 	  std::string fname = flist[i];
 
-	  std::string full_name = d + file_ops::dir_sep_str + fname;
+	  std::string full_name = file_ops::concat (d, fname);
 
 	  file_stat fs (full_name);
 
@@ -641,7 +641,7 @@ load_path::do_find_fcn (const std::string& fcn, int type) const
 
 	  int t = fi.types;
 
-	  retval = fi.dir_name + file_ops::dir_sep_str + fcn;
+	  retval = file_ops::concat (fi.dir_name, fcn);
 
 	  if (type == load_path::OCT_FILE)
 	    {
@@ -758,7 +758,7 @@ load_path::do_find_file (const std::string& file) const
 	       p != dir_info_list.end ();
 	       p++)
 	    {
-	      std::string tfile = p->dir_name + file_ops::dir_sep_str + file;
+	      std::string tfile = file_ops::concat (p->dir_name, file);
 
 	      file_stat fs (tfile);
 
@@ -780,7 +780,7 @@ load_path::do_find_file (const std::string& file) const
 	  for (octave_idx_type i = 0; i < len; i++)
 	    {
 	      if (all_files[i] == file)
-		return p->dir_name + file_ops::dir_sep_str + file;
+		return file_ops::concat (p->dir_name, file);
 	    }
 	}
     }
@@ -842,7 +842,7 @@ load_path::do_find_first_of (const string_vector& flist) const
  done:
 
   if (! dir_name.empty ())
-    retval = dir_name + file_ops::dir_sep_str + file_name;
+    retval = file_ops::concat (dir_name, file_name);
 
   return retval;
 }
@@ -889,7 +889,7 @@ load_path::do_find_all_first_of (const string_vector& flist) const
 	    {
 	      if (all_files[i] == rel_flist[j])
 		retlist.push_back
-		  (p->dir_name + file_ops::dir_sep_str + rel_flist[j]);
+		  (file_ops::concat (p->dir_name, rel_flist[j]));
 	    }
 	}
     }
@@ -1197,7 +1197,7 @@ genpath (const std::string& dirname, const string_vector& skip)
 
 	      if (! skip_p)
 		{
-		  std::string nm = dirname + file_ops::dir_sep_str + elt;
+		  std::string nm = file_ops::concat (dirname, elt);
 
 		  file_stat fs (nm);
 
@@ -1224,7 +1224,7 @@ execute_pkg_add_or_del (const std::string& dir,
 
   input_from_startup_file = true;
 
-  std::string file = dir + file_ops::dir_sep_str + script_file;
+  std::string file = file_ops::concat (dir, script_file);
 
   file_stat fs (file);
 

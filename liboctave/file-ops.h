@@ -86,6 +86,8 @@ file_ops
 
   static bool is_dir_sep (char);
 
+  static std::string concat (const std::string&, const std::string&);
+
   static char dir_sep_char;
   static std::string dir_sep_str;
   static std::string dir_sep_chars;

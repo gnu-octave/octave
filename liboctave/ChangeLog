@@ -1,3 +1,8 @@
+2007-12-10  John W. Eaton  <jwe@octave.org>
+
+	* file-ops.cc (file_ops::concat): New function.
+	* file-ops.h: Provide decl.
+
 2007-12-07  John W. Eaton  <jwe@octave.org>
 
 	* oct-time.cc (octave_base_tm::init): Only assign t->tm_zone if it

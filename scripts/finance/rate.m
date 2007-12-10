@@ -68,7 +68,7 @@ function r = rate (n, p, v, l, m)
     error ("rate: l must be a scalar");
   endif
 
-  [r, info] = fsolve (sprintf ("pv (x, %g, %g, %g, \"%s\") - %g",
-			       n, p, l, m, v), 0);
+  r = fsolve (sprintf ("pv (x, %g, %g, %g, \"%s\") - %g",
+		       n, p, l, m, v), 0);
 
 endfunction

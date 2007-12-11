@@ -151,8 +151,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
 			other_args{:});
 
     if (! ishold ())
-      set (ax, "view", [0, 90], "box", "off", "xgrid", "on",
-	   "ygrid", "on", "zgrid", "on");
+      set (ax, "view", [0, 90], "box", "off");
     endif
   endif
 

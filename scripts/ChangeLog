@@ -1,5 +1,8 @@
 2007-12-11  John W. Eaton  <jwe@octave.org>
 
+	* plot/surf.m: Set xgrid, ygrid, and zgrid on here.
+	* plot/surface.m: Not here.
+
 	* plot/__go_draw_axes__.m: Always use "set grid front".  Send a
 	subsequent "unset grid" if there is no grid.
 

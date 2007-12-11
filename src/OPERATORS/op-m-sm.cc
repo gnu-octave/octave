@@ -129,6 +129,8 @@ DEFCONV (sparse_matrix_conv, matrix, sparse_matrix)
   return new octave_sparse_matrix (SparseMatrix (v.matrix_value ()));
 }
 
+DEFNDASSIGNOP_FN (assign, matrix, sparse_matrix, array, assign)
+
 void
 install_m_sm_ops (void)
 {
@@ -153,8 +155,8 @@ install_m_sm_ops (void)
 
   INSTALL_CATOP (octave_matrix, octave_sparse_matrix, m_sm);
 
-  INSTALL_ASSIGNCONV (octave_matrix, octave_sparse_matrix, 
-		      octave_sparse_matrix);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_sparse_matrix, assign)
+  INSTALL_ASSIGNCONV (octave_matrix, octave_sparse_matrix, octave_matrix)
 
   INSTALL_WIDENOP (octave_matrix, octave_sparse_matrix, 
 		   sparse_matrix_conv);

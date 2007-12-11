@@ -167,7 +167,8 @@ install_cs_sm_ops (void)
 
   INSTALL_CATOP (octave_complex, octave_sparse_matrix, cs_sm);
 
-  INSTALL_ASSIGNCONV (octave_complex, octave_sparse_matrix, octave_sparse_matrix);
+  INSTALL_ASSIGNCONV (octave_complex, octave_sparse_matrix, 
+		      octave_complex_matrix);
 
   INSTALL_WIDENOP (octave_complex, octave_sparse_matrix, sparse_matrix_conv);
 }

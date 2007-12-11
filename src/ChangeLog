@@ -1,5 +1,12 @@
 2007-12-11  David Bateman  <dbateman@free.fr>
 
+	* OPERATORS/op-bm-sbm.cc, OPERATORS/op-b-sbm.cc, 
+	OPERATORS/op-cm-scm.cc, OPERATORS/op-cm-sm.cc, 
+	OPERATORS/op-cs-scm.cc, OPERATORS/op-cs-sm.cc, 
+	OPERATORS/op-m-scm.cc, OPERATORS/op-m-sm.cc, 
+	OPERATORS/op-s-scm.cc, OPERATORS/op-s-sm.cc: Privilege 
+	conversion to dense matrices for compatibility.
+
 	* DLD-FUNCTIONS/sparse.cc (FSparse): Remove the mutate flag, as
 	default bahavior is now to keep matrix sparse always.
 	

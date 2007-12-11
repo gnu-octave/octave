@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-typeinfo.h"
 #include "ov-bool.h"
+#include "ov-bool-mat.h"
 #include "ov-scalar.h"
 #include "ops.h"
 
@@ -86,7 +87,8 @@ install_b_sbm_ops (void)
   INSTALL_CATOP (octave_bool, octave_sparse_matrix, b_sm);
   INSTALL_CATOP (octave_scalar, octave_sparse_bool_matrix, s_sbm);
 
-  INSTALL_ASSIGNCONV (octave_bool, octave_sparse_bool_matrix, octave_sparse_bool_matrix);
+  INSTALL_ASSIGNCONV (octave_bool, octave_sparse_bool_matrix, 
+		      octave_bool_matrix);
 
   INSTALL_WIDENOP (octave_bool, octave_sparse_bool_matrix, sparse_bool_matrix_conv);
 }

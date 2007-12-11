@@ -140,6 +140,9 @@ DEFCONV (sparse_complex_matrix_conv, complex_matrix,
     (SparseComplexMatrix (v.complex_matrix_value ()));
 }
 
+DEFNDASSIGNOP_FN (assign, complex_matrix, sparse_complex_matrix, 
+		  complex_array, assign)
+
 void
 install_cm_scm_ops (void)
 {
@@ -183,8 +186,10 @@ install_cm_scm_ops (void)
   INSTALL_CATOP (octave_complex_matrix, 
 		 octave_sparse_complex_matrix, cm_scm);
 
+  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, 
+		    octave_sparse_complex_matrix, assign)
   INSTALL_ASSIGNCONV (octave_complex_matrix, octave_sparse_complex_matrix, 
-		      octave_sparse_complex_matrix);
+		      octave_complex_matrix);
 
   INSTALL_WIDENOP (octave_complex_matrix, octave_sparse_complex_matrix, 
 		   sparse_complex_matrix_conv);

@@ -128,6 +128,8 @@ DEFCATOP (cm_sm, complex_matrix, sparse_matrix)
   return octave_value (tmp. concat (v2.sparse_matrix_value (), ra_idx));
 }
 
+DEFNDASSIGNOP_FN (assign, complex_matrix, sparse_matrix, complex_array, assign)
+
 void
 install_cm_sm_ops (void)
 {
@@ -157,6 +159,11 @@ install_cm_sm_ops (void)
 		 el_or);
 
   INSTALL_CATOP (octave_complex_matrix, octave_sparse_matrix, cm_sm);
+
+  INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_sparse_matrix, 
+		    assign);
+  INSTALL_ASSIGNCONV (octave_complex_matrix, octave_sparse_matrix, 
+		      octave_complex_matrix)
 
 }
 

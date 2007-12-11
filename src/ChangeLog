@@ -1,3 +1,12 @@
+2007-12-11  David Bateman  <dbateman@free.fr>
+
+	* graphics.cc (axes::properties::properties):
+	Initialize xcolor, ycolor, and zcolor to (0, 0, 0).
+
+	* graphics.h.in (gh_manager::next_handle): Now double.
+	* graphics.cc (gh_manager::get_handle, gh_manager::gh_manager):
+	Set fractional part of next_handle to a random value.
+
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.cc (octave_cell::all_strings): Handle empty elements.

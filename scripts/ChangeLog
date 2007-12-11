@@ -1,3 +1,8 @@
+2007-12-11  David Bateman  <dbateman@free.fr>
+
+	* plot/__plt_get_axis_arg__.m: Ignore integer valued handles as
+	object handles are all now non integer.
+
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
 	* plot/sombrero.m, plot/peaks.m: Use surf instead of mesh.

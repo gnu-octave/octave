@@ -2140,7 +2140,7 @@ private:
   std::set<graphics_handle> handle_free_list;
 
   // The next handle available if handle_free_list is empty.
-  graphics_handle next_handle;
+  double next_handle;
 
   // The allocated figure handles.  Top of the stack is most recently
   // created.

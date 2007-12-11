@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cctype>
 #include <cfloat>
+#include <cstdlib>
 
 #include <algorithm>
 #include <list>
@@ -454,7 +455,13 @@ gh_manager::get_handle (const std::string& go_name)
 	  handle_free_list.erase (p);
 	}
       else
-	retval = next_handle--;
+	{
+	  static double maxrand = RAND_MAX + 2.0;
+
+	  retval = graphics_handle (next_handle);
+
+	  next_handle = trunc (next_handle) - 1.0 - (rand () + 1.0) / maxrand;
+	}
     }
 
   return retval;
@@ -1080,7 +1087,7 @@ default_colororder (void)
 }
 
 axes::properties::properties (const graphics_handle& mh,
-					const graphics_handle& p)
+			      const graphics_handle& p)
   : base_properties (go_name, mh, p),
     position (Matrix ()),
     title (octave_NaN),
@@ -1120,10 +1127,10 @@ axes::properties::properties (const graphics_handle& mh,
     xticklabelmode ("auto"),
     yticklabelmode ("auto"),
     zticklabelmode ("auto"),
-    color (color_values(0, 0, 0), radio_values ("flat|none|interp")),
-    xcolor (),
-    ycolor (),
-    zcolor (),
+    color (color_values (0, 0, 0), radio_values ("flat|none|interp")),
+    xcolor (color_values (0, 0, 0)),
+    ycolor (color_values (0, 0, 0)),
+    zcolor (color_values (0, 0, 0)),
     xscale (radio_values ("{linear}|log")),
     yscale (radio_values ("{linear}|log")),
     zscale (radio_values ("{linear}|log")),
@@ -2556,7 +2563,7 @@ patch::properties::properties (const graphics_handle& mh,
     vertices (Matrix ()),
     facecolor (radio_values ("{flat}|none|interp")),
     facealpha (1.0),
-    edgecolor (color_values(0, 0, 0), radio_values ("flat|none|interp")),
+    edgecolor (color_values (0, 0, 0), radio_values ("flat|none|interp")),
     linestyle ("-"),
     linewidth (0.5),
     marker ("none"),
@@ -2753,7 +2760,7 @@ surface::properties::properties (const graphics_handle& mh,
     cdata (Matrix ()),
     facecolor (radio_values ("{flat}|none|interp")),
     facealpha (1.0),
-    edgecolor (color_values(0, 0, 0), radio_values ("flat|none|interp")),
+    edgecolor (color_values (0, 0, 0), radio_values ("flat|none|interp")),
     linestyle ("-"),
     linewidth (0.5),
     marker ("none"),
@@ -2946,8 +2953,11 @@ base_graphics_object::get_factory_default (const caseless_str& name) const
   return parent_obj.get_factory_default (type () + name);
 }
 
+// We use a random value for the handle to avoid issues with plots and
+// scalar values for the first argument.
 gh_manager::gh_manager (void)
-  : handle_map (), handle_free_list (), next_handle (-1)
+  : handle_map (), handle_free_list (),
+    next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0))
 {
   handle_map[0] = graphics_object (new root_figure ());
 }

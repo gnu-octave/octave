@@ -30,7 +30,10 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     nogca = false;
   endif
 
-  if (nargin > 1 && length (varargin) > 0 && ishandle (varargin{1}))
+  ## Figure handles are integers, but object handles are non integer,
+  ## therefore ignore integer scalars.
+  if (nargin > 1 && length (varargin) > 0 && ishandle (varargin{1})
+      && floor(varargin{1}) != varargin{1})
     tmp = varargin{1};
     obj = get (tmp);
     if (strcmp (obj.type, "axes") || strcmp (obj.type, "hggroup"))
@@ -47,7 +50,7 @@ function [h, varargin, narg] = __plt_get_axis_arg__ (caller, varargin)
     if (isempty (f))
       h = [];
     else
-      h = get (f, 'currentaxes');
+      h = get (f, "currentaxes");
     endif
     if (isempty (h))
       if (nogca)

@@ -51,11 +51,15 @@ function retval = __plt2__ (h, x1, x2, options, properties)
   if (isscalar (x1))
     if (isscalar (x2))
       retval = __plt2ss__ (h, x1, x2, options, properties);
+    elseif (isvector (x2))
+      retval = __plt2sv__ (h, x1, x2, options, properties);
     else
       error ("__plt2__: invalid data for plotting");
     endif
   elseif (isvector (x1))
-    if (isvector (x2))
+    if (isscalar (x2))
+      retval = __plt2vs__ (h, x1, x2, options, properties);
+    elseif (isvector (x2))
       retval = __plt2vv__ (h, x1, x2, options, properties);
     elseif (ismatrix (x2))
       retval = __plt2vm__ (h, x1, x2, options, properties);

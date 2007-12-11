@@ -47,14 +47,14 @@ function [h, fail] = __patch__ (p, varargin)
     iarg += 2;
 
     if (nargin > 3 && ndims (varargin{3}) == 2 && ndims (x) == 2
-	&& isequal (size (varargin{3}), size (x)))
+	&& size_equal(x, varargin{3}) && !ischar(varargin{3}))
       z = varargin{3};
       have_z = true;
       iarg++;
     endif
   elseif (ischar (varargin{1})
 	  && (strcmp (tolower (varargin{1}), "faces")
-	      || trcmp (tolower (varargin{1}), "vertices")))
+	      || strcmp (tolower (varargin{1}), "vertices")))
     if (! isnumeric (varargin{2}))
       fail = true;
       return;
@@ -181,7 +181,6 @@ function [h, fail] = __patch__ (p, varargin)
 
   h = __go_patch__ (p, "xdata", x, "ydata", y, "faces", faces, 
 		    "vertices", vert, cargs{:}, varargin{iarg:end});
-
   if (have_z)
     set (h, "zdata", z);
   endif

@@ -8,6 +8,9 @@
 
 2007-12-11  Kai Habel  <kai.habel@gmx.de>
 
+	* plot/__patch__.m: Fix typo. Improve argument checking, so that a
+	color string is not taken as z value.
+
 	* plot/slice.m: Remove unused variable, set xgrid, ygrid, and
 	zgrid to "on" and box to "off" for used axes.
 

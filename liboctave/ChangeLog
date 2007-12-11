@@ -1,3 +1,9 @@
+2007-12-11  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (Sparse<T>::index (idx_vector&, int) const):
+	If indexing scalar with empty matrix, return empty array with same
+	size as index.
+
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
 	* NLEqn.h (NLEqn::fval): New data member.  Adjust constructors

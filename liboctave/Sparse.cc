@@ -1517,7 +1517,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 	if (idx_arg.one_zero_only ())
 	  retval = Sparse<T> (dim_vector (0, 0));
 	else
-	  retval = Sparse<T> (dim_vector (0, 1));
+	  retval = Sparse<T> (idx_orig_dims);
       else if (nz < 1)
 	if (n >= idx_orig_dims.numel ())
 	  retval = Sparse<T> (idx_orig_dims);

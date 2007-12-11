@@ -167,7 +167,7 @@ function retval = plot3 (varargin)
 	endif
       endif
 
-      if (! size_equal (x, y) || ! size_equal (x, z))
+      if (! size_equal (x, y, z))
 	error ("plot3: x, y, and z must have the same shape");
       endif
 
@@ -211,7 +211,7 @@ function retval = plot3 (varargin)
 	endif
       endif
 
-      if (! size_equal (x, y) || ! size_equal (x, z))
+      if (! size_equal (x, y, z))
 	error ("plot3: x, y, and z must have the same shape");
       endif
 
@@ -275,7 +275,7 @@ function retval = plot3 (varargin)
       endif
     endif
 
-    if (! size_equal (x, y) || ! size_equal (x, z))
+    if (! size_equal (x, y, z))
       error ("plot3: x, y, and z must have the same shape");
     endif
 

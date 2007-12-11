@@ -92,7 +92,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
         error ("surface: rows (z) must be the same as length (y) and columns (z) must be the same as length (x)");
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
-      if (! (size_equal (x, y) && size_equal (x, z)))
+      if (! size_equal (x, y, z))
         error ("surface: x, y, and z must have same dimensions");
       endif
     else
@@ -111,7 +111,7 @@ function [h, bad_usage] = __surface__ (ax, varargin)
         error ("surface: rows (z) must be the same as length (y) and columns (z) must be the same as length (x)");
       endif
     elseif (ismatrix (x) && ismatrix (y) && ismatrix (z))
-      if (! (size_equal (x, y) && size_equal (x, z)))
+      if (! size_equal (x, y, z))
         error ("surface: x, y, and z must have same dimensions");
       endif
     else

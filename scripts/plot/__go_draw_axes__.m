@@ -844,7 +844,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
                 err = true;
 	      endif
 	    elseif (ismatrix (xdat) && ismatrix (ydat) && ismatrix (zdat))
-	      if (! (size_equal (xdat, ydat) && size_equal (xdat, zdat)))
+	      if (! size_equal (xdat, ydat, zdat))
                 err = true;
 	      endif
 	    else

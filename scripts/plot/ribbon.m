@@ -55,7 +55,7 @@ function h = ribbon (x, y, width)
       [x, y] = meshgrid (x, y);
     endif
   else
-    if (! all (size (x) == size (y)))
+    if (! size_equal(x, y))
       error ("ribbon: in case of matrices, X and Y must have same size")
     endif
   endif

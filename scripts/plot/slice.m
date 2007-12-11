@@ -72,7 +72,6 @@
 function h = slice (varargin)
 
   method = "linear";
-  extrapval = NA;
   nargs = nargin;
 
   if (ischar (varargin{end}))
@@ -100,7 +99,7 @@ function h = slice (varargin)
     z = varargin{3};
     if (all ([isvector(x), isvector(y), isvector(z)]))
       [x, y, z] = meshgrid (x, y, z);
-    elseif (ndims (x) == 3 && size_equal (x, y) && size_equal (x, z))
+    elseif (ndims (x) == 3 && size_equal (x, y, z))
       ## Do nothing.
     else
       error ("slice: X, Y, Z size mismatch")
@@ -114,7 +113,7 @@ function h = slice (varargin)
 
   if (any ([isvector(sx), isvector(sy), isvector(sz)]))
     have_sval = true;
-  elseif (ndims(sx) == 2 && size_equal (sx, sy) && size_equal (sx, sz))
+  elseif (ndims(sx) == 2 && size_equal (sx, sy, sz))
     have_sval = false;
   else
     error ("slice: dimensional mismatch for (XI, YI, ZI) or (SX, SY, SZ)");
@@ -160,11 +159,12 @@ function h = slice (varargin)
     endif
   else
     vi = interp3 (x, y, z, v, sx, sy, sz);
-    tmp(sidx++) = surface (sx, sy, sz, vi);
+    tmp = surface (sx, sy, sz, vi);
   endif
 
   if (! ishold ())
-    set (ax, "view", [-37.5, 30.0]);
+    set (ax, "view", [-37.5, 30.0], "box", "off", "xgrid", "on",
+	 "ygrid", "on", "zgrid", "on");
   endif
 
   if (nargout > 0)

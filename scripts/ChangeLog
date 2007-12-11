@@ -3,6 +3,14 @@
 	* plot/__plt2vs__.m, plot/__plt2sv__.m: New functions.
 	* plot/__plt2__.m: Handle scalar-vector and vector-scalar cases.
 
+2007-12-11  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/slice.m: Remove unused variable, set xgrid, ygrid, and
+	zgrid to "on" and box to "off" for used axes.
+
+	* plot/__go_draw_axes__.m, plot/plot3.m, plot/ribbon.m,
+	plot/slice.m: Use size_equal(var1,var2,...) when possible.
+
 2007-12-11  David Bateman  <dbateman@free.fr>
 
 	* miscelleaneous/fullfile.m: Ignore empty arguments.

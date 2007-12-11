@@ -1,5 +1,8 @@
 2007-12-11  John W. Eaton  <jwe@octave.org>
 
+	* plot/surface.m: Don't set facecolor property in call to
+	__go_surface__.
+
 	* plot/__plt2vs__.m, plot/__plt2sv__.m: New functions.
 	* plot/__plt2__.m: Handle scalar-vector and vector-scalar cases.
 

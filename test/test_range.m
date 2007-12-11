@@ -35,8 +35,8 @@
 
 %!assert([ r ; z                  ], expect)
 %!assert([ r ; logical(z)         ], expect)
-%!assert([ r ; sparse(z)          ], sparse (expect, true))
-%!assert([ r ; sparse(logical(z)) ], sparse (expect, true))
+%!assert([ r ; sparse(z)          ], sparse (expect))
+%!assert([ r ; sparse(logical(z)) ], sparse (expect))
 
 %!assert([ r ; int8(z)            ], int8(expect))
 %!assert([ r ; int16(z)           ], int16(expect))
@@ -58,8 +58,8 @@
 
 %!assert([ r ; z                  ], expect)
 %!assert([ r ; logical(z)         ], expect)
-%!assert([ r ; sparse(z)          ], sparse (expect, true))
-%!assert([ r ; sparse(logical(z)) ], sparse (expect, true))
+%!assert([ r ; sparse(z)          ], sparse (expect))
+%!assert([ r ; sparse(logical(z)) ], sparse (expect))
 
 %!assert([ r ; int8(z)            ], int8(expect))
 %!assert([ r ; int16(z)           ], int16(expect))

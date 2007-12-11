@@ -106,13 +106,11 @@ to have a common size.\n\
 @end deftypefn")
 {
    octave_value retval;
-   bool mutate = false;
 
    // WARNING: This function should always use constructions like
    //   retval = new octave_sparse_matrix (sm);
    // To avoid calling the maybe_mutate function. This is the only
-   // function that should not call maybe_mutate, or at least only
-   // in very particular cases.
+   // function that should not call maybe_mutate
 
    int nargin= args.length();
    if (nargin < 1 || (nargin == 4 && !args(3).is_string ()) || nargin > 6) 
@@ -134,11 +132,7 @@ to have a common size.\n\
        use_bool = args(0).is_bool_type ();
      }
 
-   if (nargin == 2 && ! args(0).is_scalar_type() && args(1).is_scalar_type())
-       mutate = (args(1).double_value() != 0.);
-
-   if (nargin == 1 || (nargin == 2 && ! args(0).is_scalar_type() && 
-		       args(1).is_scalar_type()))
+   if (nargin == 1)
      {
        octave_value arg = args (0);
 
@@ -354,10 +348,6 @@ to have a common size.\n\
 	     }
 	 }
      }
-
-   // Only called in very particular cases, not the default case
-   if (mutate)
-     retval.maybe_mutate ();
 
    return retval;
 }

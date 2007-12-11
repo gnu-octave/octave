@@ -84,7 +84,11 @@ function [m, f, c] = mode (x, dim)
   endif
 
   c = cell (sz2);
-  m = zeros (sz2);
+  if (issparse (x))
+    m = sparse (sz2(1), sz2(2));
+  else
+    m = zeros (sz2);
+  endif
   for i = 1 : prod (sz2)
     c{i} = xs (t2 (:, i) == f(i), i);
     m (i) = c{i}(1);
@@ -105,6 +109,6 @@ endfunction
 %! a = sprandn (32, 32, 0.05);
 %! [m, f, c] = mode (a);
 %! [m2, f2, c2] = mode (full (a));
-%! assert (m, sparse (m2, 1));
-%! assert (f, sparse (f2, 1));
-%! assert (c, cellfun (@(x) sparse (1, 1), c2, 'UniformOutput', false));
+%! assert (m, sparse (m2));
+%! assert (f, sparse (f2));
+%! assert (c, cellfun (@(x) sparse (0), c2, 'UniformOutput', false));

@@ -1,5 +1,8 @@
 2007-12-11  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/sparse.cc (FSparse): Remove the mutate flag, as
+	default bahavior is now to keep matrix sparse always.
+	
 	* graphics.cc (axes::properties::properties):
 	Initialize xcolor, ycolor, and zcolor to (0, 0, 0).
 

@@ -273,27 +273,27 @@ EOF
 gen_ordering_tests() {
     cat >>$TESTS <<EOF
 %% real values can be ordered (uses as,af)
-%!assert(as<=bf,sparse(af<=bf,true))
-%!assert(bf<=as,sparse(bf<=af,true))
+%!assert(as<=bf,sparse(af<=bf))
+%!assert(bf<=as,sparse(bf<=af))
 
-%!assert(as>=bf,sparse(af>=bf,true))
-%!assert(bf>=as,sparse(bf>=af,true))
+%!assert(as>=bf,sparse(af>=bf))
+%!assert(bf>=as,sparse(bf>=af))
 
-%!assert(as<bf,sparse(af<bf,true))
-%!assert(bf<as,sparse(bf<af,true))
+%!assert(as<bf,sparse(af<bf))
+%!assert(bf<as,sparse(bf<af))
 
-%!assert(as>bf,sparse(af>bf,true))
-%!assert(bf>as,sparse(bf>af,true))
+%!assert(as>bf,sparse(af>bf))
+%!assert(bf>as,sparse(bf>af))
 
 EOF
 }
 
 gen_sparsesparse_ordering_tests() {
     cat >>$TESTS <<EOF
-%!assert(as<=bs,sparse(af<=bf,true))
-%!assert(as>=bs,sparse(af>=bf,true))
-%!assert(as<bs,sparse(af<bf,true))
-%!assert(as>bs,sparse(af>bf,true))
+%!assert(as<=bs,sparse(af<=bf))
+%!assert(as>=bs,sparse(af>=bf))
+%!assert(as<bs,sparse(af<bf))
+%!assert(as>bs,sparse(af>bf))
 EOF
 }
 
@@ -301,11 +301,11 @@ EOF
 gen_elementop_tests() {
     cat >>$TESTS <<EOF
 %% Elementwise binary tests (uses as,af,bs,bf,scalar)
-%!assert(as==bs,sparse(af==bf,true))
-%!assert(bf==as,sparse(bf==af,true))
+%!assert(as==bs,sparse(af==bf))
+%!assert(bf==as,sparse(bf==af))
 
-%!assert(as!=bf,sparse(af!=bf,true))
-%!assert(bf!=as,sparse(bf!=af,true))
+%!assert(as!=bf,sparse(af!=bf))
+%!assert(bf!=as,sparse(bf!=af))
 
 %!assert(as+bf,af+bf)
 %!assert(bf+as,bf+af)
@@ -313,34 +313,34 @@ gen_elementop_tests() {
 %!assert(as-bf,af-bf)
 %!assert(bf-as,bf-af)
 
-%!assert(as.*bf,sparse(af.*bf,true))
-%!assert(bf.*as,sparse(bf.*af,true))
+%!assert(as.*bf,sparse(af.*bf))
+%!assert(bf.*as,sparse(bf.*af))
 
-%!assert(as./bf,sparse(af./bf,true),100*eps)
-%!assert(bf.\as,sparse(bf.\af,true),100*eps)
+%!assert(as./bf,sparse(af./bf),100*eps)
+%!assert(bf.\as,sparse(bf.\af),100*eps)
 
 %!test
 %! sv = as.^bf;
 %! fv = af.^bf;
 %! idx = find(af~=0);
-%! assert(sv(:)(idx),sparse(fv(:)(idx),true),100*eps)
+%! assert(sv(:)(idx),sparse(fv(:)(idx)),100*eps)
 
 EOF
 }
 
 gen_sparsesparse_elementop_tests() {
     cat >>$TESTS <<EOF
-%!assert(as==bs,sparse(af==bf,true))
-%!assert(as!=bs,sparse(af!=bf,true))
-%!assert(as+bs,sparse(af+bf,true))
-%!assert(as-bs,sparse(af-bf,true))
-%!assert(as.*bs,sparse(af.*bf,true))
-%!xtest assert(as./bs,sparse(af./bf,true),100*eps);
+%!assert(as==bs,sparse(af==bf))
+%!assert(as!=bs,sparse(af!=bf))
+%!assert(as+bs,sparse(af+bf))
+%!assert(as-bs,sparse(af-bf))
+%!assert(as.*bs,sparse(af.*bf))
+%!xtest assert(as./bs,sparse(af./bf),100*eps);
 %!test
 %! sv = as.^bs;
 %! fv = af.^bf;
 %! idx = find(af~=0);
-%! assert(sv(:)(idx),sparse(fv(:)(idx),true),100*eps)
+%! assert(sv(:)(idx),sparse(fv(:)(idx)),100*eps)
 
 EOF
 }
@@ -351,10 +351,10 @@ gen_divop_tests() {
 %% Matrix-matrix operators (uses af,as,bs,bf)
 %!assert(as/bf,af/bf,100*eps)
 %!assert(af/bs,af/bf,100*eps)
-%!assert(as/bs,sparse(af/bf,true),100*eps)
+%!assert(as/bs,sparse(af/bf),100*eps)
 %!assert(bs\af',bf\af',100*eps)
 %!assert(bf\as',bf\af',100*eps)
-%!assert(bs\as',sparse(bf\af',true),100*eps)
+%!assert(bs\as',sparse(bf\af'),100*eps)
 
 EOF
 }
@@ -365,10 +365,10 @@ gen_square_divop_tests() {
 %% Matrix-matrix operators (uses af,as,bs,bf)
 %!assert(as/bf,af/bf,100*eps)
 %!assert(af/bs,af/bf,100*eps)
-%!assert(as/bs,sparse(af/bf,true),100*eps)
+%!assert(as/bs,sparse(af/bf),100*eps)
 %!assert(bs\af',bf\af',100*eps)
 %!assert(bf\as',bf\af',100*eps)
-%!assert(bs\as',sparse(bf\af',true),100*eps)
+%!assert(bs\as',sparse(bf\af'),100*eps)
 
 EOF
 }
@@ -379,7 +379,7 @@ gen_matrixop_tests() {
 %% Matrix-matrix operators (uses af,as,bs,bf)
 %!assert(as*bf',af*bf')
 %!assert(af*bs',af*bf')
-%!assert(as*bs',sparse(af*bf',true))
+%!assert(as*bs',sparse(af*bf'))
 
 EOF
 }
@@ -388,18 +388,18 @@ EOF
 gen_matrixdiag_tests() {
     cat >>$TESTS <<EOF
 %% Matrix diagonal tests (uses af,as,bf,bs)
-%!assert(spdiag(as),sparse(diag(af),true))
-%!assert(spdiag(bs),sparse(diag(bf),true))
-%!assert(spdiag(as,1),sparse(diag(af,1),true))
-%!assert(spdiag(bs,1),sparse(diag(bf,1),true))
-%!assert(spdiag(as,-1),sparse(diag(af,-1),true))
-%!assert(spdiag(bs,-1),sparse(diag(bf,-1),true))
-%!assert(spdiag(as(:)),sparse(diag(af(:)),true))
-%!assert(spdiag(as(:),1),sparse(diag(af(:),1),true))
-%!assert(spdiag(as(:),-1),sparse(diag(af(:),-1),true))
-%!assert(spdiag(as(:)'),sparse(diag(af(:)'),true))
-%!assert(spdiag(as(:)',1),sparse(diag(af(:)',1),true))
-%!assert(spdiag(as(:)',-1),sparse(diag(af(:)',-1),true))
+%!assert(spdiag(as),sparse(diag(af)))
+%!assert(spdiag(bs),sparse(diag(bf)))
+%!assert(spdiag(as,1),sparse(diag(af,1)))
+%!assert(spdiag(bs,1),sparse(diag(bf,1)))
+%!assert(spdiag(as,-1),sparse(diag(af,-1)))
+%!assert(spdiag(bs,-1),sparse(diag(bf,-1)))
+%!assert(spdiag(as(:)),sparse(diag(af(:))))
+%!assert(spdiag(as(:),1),sparse(diag(af(:),1)))
+%!assert(spdiag(as(:),-1),sparse(diag(af(:),-1)))
+%!assert(spdiag(as(:)'),sparse(diag(af(:)')))
+%!assert(spdiag(as(:)',1),sparse(diag(af(:)',1)))
+%!assert(spdiag(as(:)',-1),sparse(diag(af(:)',-1)))
 %!assert(spdiags(as,[0,1]),[diag(af,0),diag(af,1)])
 %!test [tb,tc]=spdiags(as); 
 %! assert(spdiags(tb,tc,sparse(zeros(size(as)))),as)
@@ -412,19 +412,19 @@ EOF
 gen_matrixreshape_tests() {
     cat >>$TESTS <<EOF
 %% Matrix diagonal tests (uses af,as,bf,bs)
-%!assert(reshape(as,1,prod(size(as))),sparse(reshape(af,1,prod(size(af))),true))
-%!assert(reshape(as,prod(size(as)),1),sparse(reshape(af,prod(size(af)),1),true))
-%!assert(reshape(as,fliplr(size(as))),sparse(reshape(af,fliplr(size(af))),true))
-%!assert(reshape(bs,1,prod(size(as))),sparse(reshape(bf,1,prod(size(af))),true))
-%!assert(reshape(bs,prod(size(as)),1),sparse(reshape(bf,prod(size(af)),1),true))
-%!assert(reshape(bs,fliplr(size(as))),sparse(reshape(bf,fliplr(size(af))),true))
+%!assert(reshape(as,1,prod(size(as))),sparse(reshape(af,1,prod(size(af)))))
+%!assert(reshape(as,prod(size(as)),1),sparse(reshape(af,prod(size(af)),1)))
+%!assert(reshape(as,fliplr(size(as))),sparse(reshape(af,fliplr(size(af)))))
+%!assert(reshape(bs,1,prod(size(as))),sparse(reshape(bf,1,prod(size(af)))))
+%!assert(reshape(bs,prod(size(as)),1),sparse(reshape(bf,prod(size(af)),1)))
+%!assert(reshape(bs,fliplr(size(as))),sparse(reshape(bf,fliplr(size(af)))))
 
 EOF
 }
 
 # test mapper matrix operations: uses as,af
 print_mapper_test() {
-echo "%!assert($1(as),sparse($1(af),1))" >>$TESTS
+echo "%!assert($1(as),sparse($1(af)))" >>$TESTS
 }
 
 print_real_mapper_test() {
@@ -434,7 +434,7 @@ print_real_mapper_test() {
 %! warning ("off", "Octave:num-to-str");
 %! if isreal(af)
 %!   if ($2)
-%!     assert($1(as),sparse($1(af),1))
+%!     assert($1(as),sparse($1(af)))
 %!   else
 %!     assert($1(as),$1(af))
 %!   endif
@@ -531,36 +531,36 @@ gen_unaryop_tests() {
 %!assert(!issparse(af))
 %!assert(!(issparse(af)&&iscomplex(af)))
 %!assert(!(issparse(af)&&isreal(af)))
-%!assert(spsum(as),sparse(sum(af),true))
-%!assert(spsum(as,1),sparse(sum(af,1),true))
-%!assert(spsum(as,2),sparse(sum(af,2),true))
-%!assert(spcumsum(as),sparse(cumsum(af),true))
-%!assert(spcumsum(as,1),sparse(cumsum(af,1),true))
-%!assert(spcumsum(as,2),sparse(cumsum(af,2),true))
-%!assert(spsumsq(as),sparse(sumsq(af),true))
-%!assert(spsumsq(as,1),sparse(sumsq(af,1),true))
-%!assert(spsumsq(as,2),sparse(sumsq(af,2),true))
-%!assert(spprod(as),sparse(prod(af),true))
-%!assert(spprod(as,1),sparse(prod(af,1),true))
-%!assert(spprod(as,2),sparse(prod(af,2),true))
-%!assert(spcumprod(as),sparse(cumprod(af),true))
-%!assert(spcumprod(as,1),sparse(cumprod(af,1),true))
-%!assert(spcumprod(as,2),sparse(cumprod(af,2),true))
+%!assert(spsum(as),sparse(sum(af)))
+%!assert(spsum(as,1),sparse(sum(af,1)))
+%!assert(spsum(as,2),sparse(sum(af,2)))
+%!assert(spcumsum(as),sparse(cumsum(af)))
+%!assert(spcumsum(as,1),sparse(cumsum(af,1)))
+%!assert(spcumsum(as,2),sparse(cumsum(af,2)))
+%!assert(spsumsq(as),sparse(sumsq(af)))
+%!assert(spsumsq(as,1),sparse(sumsq(af,1)))
+%!assert(spsumsq(as,2),sparse(sumsq(af,2)))
+%!assert(spprod(as),sparse(prod(af)))
+%!assert(spprod(as,1),sparse(prod(af,1)))
+%!assert(spprod(as,2),sparse(prod(af,2)))
+%!assert(spcumprod(as),sparse(cumprod(af)))
+%!assert(spcumprod(as,1),sparse(cumprod(af,1)))
+%!assert(spcumprod(as,2),sparse(cumprod(af,2)))
 
-%!assert(spmin(as),sparse(min(af),true))
+%!assert(spmin(as),sparse(min(af)))
 %!assert(full(spmin(as(:))),min(af(:)))
-%!assert(spmin(as,[],1),sparse(min(af,[],1),true))
-%!assert(spmin(as,[],2),sparse(min(af,[],2),true))
-%!assert(spmin(as,[],1),sparse(min(af,[],1),true))
-%!assert(spmin(as,0),sparse(min(af,0),true))
-%!assert(spmin(as,bs),sparse(min(af,bf),true))
-%!assert(spmax(as),sparse(max(af),true))
+%!assert(spmin(as,[],1),sparse(min(af,[],1)))
+%!assert(spmin(as,[],2),sparse(min(af,[],2)))
+%!assert(spmin(as,[],1),sparse(min(af,[],1)))
+%!assert(spmin(as,0),sparse(min(af,0)))
+%!assert(spmin(as,bs),sparse(min(af,bf)))
+%!assert(spmax(as),sparse(max(af)))
 %!assert(full(spmax(as(:))),max(af(:)))
-%!assert(spmax(as,[],1),sparse(max(af,[],1),true))
-%!assert(spmax(as,[],2),sparse(max(af,[],2),true))
-%!assert(spmax(as,[],1),sparse(max(af,[],1),true))
-%!assert(spmax(as,0),sparse(max(af,0),true))
-%!assert(spmax(as,bs),sparse(max(af,bf),true))
+%!assert(spmax(as,[],1),sparse(max(af,[],1)))
+%!assert(spmax(as,[],2),sparse(max(af,[],2)))
+%!assert(spmax(as,[],1),sparse(max(af,[],1)))
+%!assert(spmax(as,0),sparse(max(af,0)))
+%!assert(spmax(as,bs),sparse(max(af,bf)))
 
 %!assert(as==as)
 %!assert(as==af)
@@ -573,11 +573,11 @@ gen_unaryop_tests() {
 %!assert(issparse(as.'))
 %!assert(issparse(as'))
 %!assert(issparse(-as))
-%!assert(~as,sparse(~af,true))
-%!assert(as.', sparse(af.',true));
-%!assert(as',  sparse(af',true));
-%!assert(-as, sparse(-af,true));
-%!assert(~as, sparse(~af,true));
+%!assert(~as,sparse(~af))
+%!assert(as.', sparse(af.'));
+%!assert(as',  sparse(af'));
+%!assert(-as, sparse(-af));
+%!assert(~as, sparse(~af));
 %!error [i,j]=size(af);as(i-1,j+1);
 %!error [i,j]=size(af);as(i+1,j-1);
 %!test
@@ -796,53 +796,53 @@ gen_select_tests() {
 
 %% Point tests
 %!test idx=ridx(:)+rows(as)*(cidx(:)-1);
-%!assert(sparse(as(idx),true),sparse(af(idx),true));
-%!assert(as(idx),sparse(af(idx),true));
-%!assert(as(idx'),sparse(af(idx'),true));
-%!assert(as(flipud(idx(:))),sparse(af(flipud(idx(:))),true))
-%!assert(as([idx,idx]),sparse(af([idx,idx]),true));
+%!assert(sparse(as(idx)),sparse(af(idx)));
+%!assert(as(idx),sparse(af(idx)));
+%!assert(as(idx'),sparse(af(idx')));
+%!assert(as(flipud(idx(:))),sparse(af(flipud(idx(:)))))
+%!assert(as([idx,idx]),sparse(af([idx,idx])));
 %!error(as(reshape([idx;idx],[1,length(idx),2])));
 
 %% Slice tests
-%!assert(as(ridx,cidx), sparse(af(ridx,cidx),true))
-%!assert(as(ridx,:), sparse(af(ridx,:),true))
-%!assert(as(:,cidx), sparse(af(:,cidx),true))
-%!assert(as(:,:), sparse(af(:,:),true))
-%!assert(as((size(as,1):-1:1),:),sparse(af((size(af,1):-1:1),:),true))
-%!assert(as(:,(size(as,2):-1:1)),sparse(af(:,(size(af,2):-1:1)),true))
+%!assert(as(ridx,cidx), sparse(af(ridx,cidx)))
+%!assert(as(ridx,:), sparse(af(ridx,:)))
+%!assert(as(:,cidx), sparse(af(:,cidx)))
+%!assert(as(:,:), sparse(af(:,:)))
+%!assert(as((size(as,1):-1:1),:),sparse(af((size(af,1):-1:1),:)))
+%!assert(as(:,(size(as,2):-1:1)),sparse(af(:,(size(af,2):-1:1))))
 
 %% Assignment test
 %!test
 %! ts=as;ts(:,:)=ts(fliplr(1:size(as,1)),:);
 %! tf=af;tf(:,:)=tf(fliplr(1:size(af,1)),:);
-%! assert(ts,sparse(tf,true));
+%! assert(ts,sparse(tf));
 %!test
 %! ts=as;ts(fliplr(1:size(as,1)),:)=ts;
 %! tf=af;tf(fliplr(1:size(af,1)),:)=tf;
-%! assert(ts,sparse(tf,true));
+%! assert(ts,sparse(tf));
 %!test
 %! ts=as;ts(:,fliplr(1:size(as,2)))=ts;
 %! tf=af;tf(:,fliplr(1:size(af,2)))=tf;
-%! assert(ts,sparse(tf,true));
+%! assert(ts,sparse(tf));
 %!test
 %! ts(fliplr(1:size(as,1)))=as(:,1);tf(fliplr(1:size(af,1)))=af(:,1);
-%! assert(ts,sparse(tf,true));
+%! assert(ts,sparse(tf));
 
 %% Deletion tests
 %!test
 %! ts=as;ts(1,:)=[];tf=af;tf(1,:)=[];
-%! assert(ts,sparse(tf,true));
+%! assert(ts,sparse(tf));
 %!test
 %! ts=as;ts(:,1)=[];tf=af;tf(:,1)=[];
-%! assert(ts,sparse(tf,true));
+%! assert(ts,sparse(tf));
 
 %% Test 'end' keyword
 %!assert(full(as(end)), af(end))
 %!assert(full(as(1,end)), af(1,end))
 %!assert(full(as(end,1)), af(end,1))
 %!assert(full(as(end,end)), af(end,end))
-%!assert(as(2:end,2:end), sparse(af(2:end,2:end),true))
-%!assert(as(1:end-1,1:end-1), sparse(af(1:end-1,1:end-1),true))
+%!assert(as(2:end,2:end), sparse(af(2:end,2:end)))
+%!assert(as(1:end-1,1:end-1), sparse(af(1:end-1,1:end-1)))
 EOF
 }
 
@@ -914,9 +914,9 @@ cat >>$TESTS <<EOF
 %! tcf = tf + tf'; tcs = sparse(tcf);
 %! xf = diag(1:n) + fliplr(diag(1:n)).*beta; xs = sparse(xf);
 %!assert(ds\xf,df\xf,1e-10);
-%!assert(ds\xs,sparse(df\xf,1),1e-10);
+%!assert(ds\xs,sparse(df\xf),1e-10);
 %!assert(pds\xf,pdf\xf,1e-10);
-%!assert(pds\xs,sparse(pdf\xf,1),1e-10);
+%!assert(pds\xs,sparse(pdf\xf),1e-10);
 %!assert(ls\xf,lf\xf,1e-10);
 %!assert(sparse(ls\xs),sparse(lf\xf),1e-10);
 %!testif HAVE_UMFPACK
@@ -973,24 +973,24 @@ cat >>$TESTS <<EOF
 %! xf = beta * ones(10,2);
 %! xs = speye(10,10);
 %!assert(ds\xf,df\xf,100*eps)
-%!assert(ds\xs,sparse(df\xs,true),100*eps)
+%!assert(ds\xs,sparse(df\xs),100*eps)
 %!test
 %! pds = ds([2,1,3:10],:);
 %! pdf = full(pds);
 %!assert(pds\xf,pdf\xf,100*eps)
-%!assert(pds\xs,sparse(pdf\xs,true),100*eps)
+%!assert(pds\xs,sparse(pdf\xs),100*eps)
 %!test
 %! ds = alpha * spdiags([1:11]',0,11,10);
 %! df = full(ds);
 %! xf = beta * ones(11,2);
 %! xs = speye(11,11);
 %!assert(ds\xf,df\xf,100*eps)
-%!assert(ds\xs,sparse(df\xs,true),100*eps)
+%!assert(ds\xs,sparse(df\xs),100*eps)
 %!test
 %! pds = ds([2,1,3:11],:);
 %! pdf = full(pds);
 %!assert(pds\xf,pdf\xf,100*eps)
-%!assert(pds\xs,sparse(pdf\xs,true),100*eps)
+%!assert(pds\xs,sparse(pdf\xs),100*eps)
 %!test
 %! us = alpha*[[speye(10,10);sparse(1,10)],[[1,1];sparse(9,2);[1,1]]];
 %!testif HAVE_UMFPACK

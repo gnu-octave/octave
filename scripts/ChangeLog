@@ -1,5 +1,7 @@
 2007-12-11  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_axes__.m: Include "front" in "set label" options.
+
 	* plot/surface.m: Don't set facecolor property in call to
 	__go_surface__.
 

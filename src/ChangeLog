@@ -1,5 +1,8 @@
 2007-12-11  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (make_graphics_object):
+	If successful, call __request_drawnow__.
+
 	* input.cc (Vgud_mode): New static variable.
 	(F__gud_mode__): New function.
 	(get_user_input): If debug and Vgud_mode, print location info in

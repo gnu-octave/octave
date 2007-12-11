@@ -987,14 +987,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	  if (nd == 3)
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s %s rotate by %f %s;\n",
+		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s front %s;\n",
 		     undo_string_escapes (label), units, lpos(1),
-		     lpos(2), lpos(3), fontspec, halign, angle, colorspec);
+		     lpos(2), lpos(3), halign, angle, fontspec, colorspec);
 	  else
  	    fprintf (plot_stream,
- 		     "set label \"%s\" at %s %.15g,%.15g %s %s rotate by %f %s;\n",
+ 		     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s front %s;\n",
  		     undo_string_escapes (label), units,
- 		     lpos(1), lpos(2), fontspec, halign, angle, colorspec);
+ 		     lpos(1), lpos(2), halign, angle, fontspec, colorspec);
 	  endif
 
 	otherwise

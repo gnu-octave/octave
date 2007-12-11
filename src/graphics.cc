@@ -3203,6 +3203,9 @@ make_graphics_object (const std::string& go_name,
 	      xset (h, args.splice (0, 1));
 
 	      retval = h.value ();
+
+	      if (! error_state)
+		feval ("__request_drawnow__");
 	    }
 	  else
 	    error ("__go%s__: unable to create graphics handle",

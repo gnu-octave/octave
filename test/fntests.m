@@ -195,8 +195,15 @@ try
   nfail = dn - dp;
   printf ("  FAIL %6d\n", nfail);
   if (dxf > 0)
-    printf ("\nThere were %d expected failures (see fntests.log for details).\n",
-	    dxf);
+    if (dxf > 1)
+      t1 = "were"
+      t2 = "failures"
+    else
+      t1 = "was";
+      t2 = "failure";
+    endif
+    printf ("\nThere %s %d expected %s (see fntests.log for details).\n",
+	    t1, dxf, t2);
     printf ("\nExpected failures are known bugs. Please help improve\n");
     printf ("Octave by contributing fixes for them.\n");
   endif

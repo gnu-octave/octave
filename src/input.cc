@@ -144,6 +144,9 @@ bool octave_completion_matches_called = false;
 // the next user prompt.
 static bool Vdrawnow_requested = false;
 
+// TRUE if we are running in the Emacs GUD mode.
+static bool Vgud_mode = false;
+
 static void
 do_input_echo (const std::string& input_string)
 {
@@ -617,16 +620,25 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
   if (! nm.empty ())
     {
-      buf << "stopped in " << nm;
+      if (Vgud_mode)
+	{
+	  static char ctrl_z = 'Z' & 0x1f;
 
-      if (line > 0)
-	buf << " at line " << line;
+	  buf << ctrl_z << ctrl_z << nm << ":" << line;
+	}
+      else
+	{
+	  buf << "stopped in " << nm;
+
+	  if (line > 0)
+	    buf << " at line " << line;
+	}
     }
 
   std::string msg = buf.str ();
 
   if (! msg.empty ())
-    message ("keyboard", msg.c_str ());
+    message (Vgud_mode ? 0 : "keyboard", msg.c_str ());
 
   std::string prompt = "debug> ";
 
@@ -1290,6 +1302,26 @@ Undocumented internal function.\n\
     Vdrawnow_requested = true;
   else if (nargin == 1)
     Vdrawnow_requested = args(0).bool_value ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (__gud_mode__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __gud_mode__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    retval = Vgud_mode;
+  else if (nargin == 1)
+    Vgud_mode = args(0).bool_value ();
   else
     print_usage ();
 

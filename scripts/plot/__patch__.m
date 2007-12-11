@@ -181,6 +181,7 @@ function [h, fail] = __patch__ (p, varargin)
 
   h = __go_patch__ (p, "xdata", x, "ydata", y, "faces", faces, 
 		    "vertices", vert, cargs{:}, varargin{iarg:end});
+
   if (have_z)
     set (h, "zdata", z);
   endif

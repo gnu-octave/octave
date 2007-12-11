@@ -1,3 +1,10 @@
+2007-12-11  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (Vgud_mode): New static variable.
+	(F__gud_mode__): New function.
+	(get_user_input): If debug and Vgud_mode, print location info in
+	format for Emacs GUD mode.
+
 2007-12-11  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-bm-sbm.cc, OPERATORS/op-b-sbm.cc, 

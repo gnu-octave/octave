@@ -1,5 +1,7 @@
 2007-12-11  David Bateman  <dbateman@free.fr>
 
+	* miscelleaneous/fullfile.m: Ignore empty arguments.
+
 	* sparse/spstats.m: Drop argument to Fsparse to force mutation.
 	* statistics/base/mode.m: Ditto.
 

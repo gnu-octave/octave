@@ -25,25 +25,42 @@
 function filename = fullfile (varargin)
 
   if (nargin > 0)
-    filename = varargin{1};
-    if (length (filename) < 1)
-      filename = ".";
-    endif
-    if (strcmp (filename(end), filesep))
-      filename(end) = "";
-    endif
-    for i = 2:nargin
+    filename = "";
+    for first = 1:nargin
+      tmp = varargin{first};
+      if (! isempty (tmp))
+	filename = tmp;
+	break;
+      endif
+    endfor
+    for i = first+1:nargin
       tmp = varargin{i};
-      if (strcmp (tmp(1), filesep))
-	tmp(1) = "";
+      if (! isempty (tmp))
+	if (strcmp (tmp(1), filesep))
+	  tmp(1) = "";
+	endif
+	if (i < nargin && strcmp (tmp(end), filesep))
+	  tmp(end) = "";
+        endif
+        filename = strcat (filename, filesep, tmp);
       endif
-      if (i < nargin && strcmp (tmp(end), filesep))
-	tmp(end) = "";
-      endif
-      filename = strcat (filename, filesep, tmp);
     endfor
   else
     print_usage ();
   endif
 
 endfunction
+
+%!assert (fullfile (""), "")
+%!assert (fullfile (filesep ()), filesep ())
+%!assert (fullfile ("", filesep ()), filesep ())
+%!assert (fullfile (filesep (), ""), filesep ())
+%!assert (fullfile ("", filesep ()), filesep ())
+%!assert (fullfile ("foo"), "foo")
+%!assert (fullfile ("", "foo"), "foo")
+%!assert (fullfile ("foo", ""), "foo")
+%!assert (fullfile ("", "foo", ""), "foo")
+%!assert (fullfile ("foo", "bar"), strcat ("foo", filesep (), "bar"))
+%!assert (fullfile ("foo", "", "bar"), strcat ("foo", filesep (), "bar"))
+%!assert (fullfile ("foo", "", "bar", ""), strcat ("foo", filesep (), "bar"))
+%!assert (fullfile ("", "foo", "", "bar", ""), strcat ("foo", filesep (), "bar"))

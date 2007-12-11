@@ -241,8 +241,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       fputs (plot_stream, "set grid nomztics;\n");
     endif
 
-    if (have_grid)
-      fputs (plot_stream, "set grid front;\n");
+    ## Unless we force the grid to the front, tics may appear below
+    ## plotted objects.
+    fputs (plot_stream, "set grid front;\n");
+    if (! have_grid)
+      fputs (plot_stream, "unset grid;\n");
     endif
 
     do_tics (axis_obj, plot_stream, ymirror, mono);

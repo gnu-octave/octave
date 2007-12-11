@@ -342,46 +342,44 @@ octave_cell::all_strings (bool pad) const
 {
   string_vector retval;
 
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = columns ();
+  octave_idx_type nel = numel ();
 
   int n_elts = 0;
 
   octave_idx_type max_len = 0;
 
-  for (octave_idx_type j = 0; j < nc; j++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
-      for (octave_idx_type i = 0; i < nr; i++)
-	{
-	  string_vector s = matrix(i,j).all_strings ();
+      string_vector s = matrix(i).all_strings ();
 
-	  if (error_state)
-	    return retval;
+      if (error_state)
+	return retval;
 
-	  n_elts += s.length ();
+      octave_idx_type s_len = s.length ();
 
-	  octave_idx_type s_max_len = s.max_length ();
+      n_elts += s_len ? s_len : 1;
 
-	  if (s_max_len > max_len)
-	    max_len = s_max_len;
-	}
+      octave_idx_type s_max_len = s.max_length ();
+
+      if (s_max_len > max_len)
+	max_len = s_max_len;
     }
 
   retval.resize (n_elts);
 
   octave_idx_type k = 0;
 
-  for (octave_idx_type j = 0; j < nc; j++)
+  for (octave_idx_type i = 0; i < nel; i++)
     {
-      for (octave_idx_type i = 0; i < nr; i++)
+      string_vector s = matrix(i).all_strings ();
+
+      octave_idx_type s_len = s.length ();
+
+      if (s_len)
 	{
-	  string_vector s = matrix(i,j).all_strings ();
-
-	  int n = s.length ();
-
-	  for (octave_idx_type ii = 0; ii < n; ii++)
+	  for (octave_idx_type j = 0; j < s_len; j++)
 	    {
-	      std::string t = s[ii];
+	      std::string t = s[j];
 	      int t_len = t.length ();
 
 	      if (pad && max_len > t_len)
@@ -390,6 +388,10 @@ octave_cell::all_strings (bool pad) const
 	      retval[k++] = t;
 	    }
 	}
+      else if (pad)
+	retval[k++] = std::string (max_len, ' ');
+      else
+	retval[k++] = std::string ();
     }
 
   return retval;

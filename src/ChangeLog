@@ -1,5 +1,8 @@
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
+	* ov-cell.cc (octave_cell::all_strings): Handle empty elements.
+	Handle N-d cell arrays.
+
 	* DLD-FUNCTIONS/fsolve.cc (Ffsolve):
 	For compatibility, return [x, fval, info] instead of [x, info, msg].
  	Move tests here from test/test_nonlin.m.

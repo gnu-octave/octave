@@ -1098,6 +1098,7 @@ axes::properties::properties (const graphics_handle& mh,
     colororder (default_colororder ()),
     dataaspectratio (Matrix (1, 3, 1.0)),
     dataaspectratiomode ("auto"),
+    layer (radio_values ("{bottom}|top")),
     xlim (),
     ylim (),
     zlim (),
@@ -1263,6 +1264,8 @@ axes::properties::set (const caseless_str& name, const octave_value& val)
     set_dataaspectratio (val);
   else if (name.compare ("dataaspectratiomode"))
     set_dataaspectratiomode (val);
+  else if (name.compare ("layer"))
+    set_layer (val);
   else if (name.compare ("xlim"))
     set_xlim (val);
   else if (name.compare ("ylim"))
@@ -1380,6 +1383,7 @@ axes::properties::set_defaults (base_graphics_object& obj,
   colororder = default_colororder ();
   dataaspectratio = Matrix (1, 3, 1.0);
   dataaspectratiomode = "auto";
+  layer = radio_property (radio_values ("{bottom}|top"));
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;
@@ -1512,6 +1516,7 @@ axes::properties::get (void) const
   m.assign ("colororder", colororder);
   m.assign ("dataaspectratio", dataaspectratio);
   m.assign ("dataaspectratiomode", dataaspectratiomode);
+  m.assign ("layer", layer);
   m.assign ("xlim", xlim);
   m.assign ("ylim", ylim);
   m.assign ("zlim", zlim);
@@ -1596,6 +1601,8 @@ axes::properties::get (const caseless_str& name) const
     retval = dataaspectratio;
   else if (name.compare ("dataaspectratiomode"))
     retval = dataaspectratiomode;
+  else if (name.compare ("layer"))
+    retval = layer;
   else if (name.compare ("xlim"))
     retval = xlim;
   else if (name.compare ("ylim"))
@@ -1736,6 +1743,7 @@ axes::properties::factory_defaults (void)
   m["colororder"] = default_colororder ();
   m["dataaspectratio"] = Matrix (1, 3, 1.0);
   m["dataaspectratiomode"] = "auto";
+  m["layer"] = radio_property (radio_values ("{bottom}|top"));
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;

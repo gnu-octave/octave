@@ -1360,6 +1360,7 @@ public:
       octave_value colororder
       octave_value dataaspectratio m
       octave_value dataaspectratiomode
+      radio_property layer a
       octave_value xlim m
       octave_value ylim m
       octave_value zlim m

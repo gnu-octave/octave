@@ -1,3 +1,7 @@
+2007-12-12  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Handle the axes layer property.
+
 2007-12-12  David Bateman  <dbateman@free.fr>
 
 	* plot/ellipsoid.m: Port from octave-forge, editing for style.

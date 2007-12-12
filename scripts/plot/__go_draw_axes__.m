@@ -241,9 +241,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       fputs (plot_stream, "set grid nomztics;\n");
     endif
 
-    ## Unless we force the grid to the front, tics may appear below
-    ## plotted objects.
-    fputs (plot_stream, "set grid front;\n");
+    ## The grid front/back/layerdefault option also controls the
+    ## appearance of tics, so it is used even if the grid is absent.
+    if (strcmpi (axis_obj.layer, "top"))
+      fputs (plot_stream, "set grid front;\n");
+    else
+      fputs (plot_stream, "set grid layerdefault;\n");
+    endif
     if (! have_grid)
       fputs (plot_stream, "unset grid;\n");
     endif

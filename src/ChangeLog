@@ -1,5 +1,8 @@
 2007-12-12  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (class axes) Add the layer property.
+	* graphics.cc (class axes) Ditto.
+
 	* graphics.cc (gh_manager::get_handle): Use ceil instead of trunc.
 
 2007-12-11  John W. Eaton  <jwe@octave.org>

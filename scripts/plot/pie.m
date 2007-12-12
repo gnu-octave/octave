@@ -77,26 +77,31 @@ function hlist = __pie__ (varargin)
 
   len = length (x);
 
+  have_explode = false;
+  have_labels = false;
+
   while (iarg <= nargin)
     arg = varargin{iarg++};
     if (iscell (arg))
       labels = arg;
+      have_labels = true;
       if (! size_equal (x, labels))
 	error ("pie: mismatch in number of labels and data");
       endif
     elseif (isnumeric (arg))
       explode = arg;
+      have_explode = true;
       if (! size_equal (x, explode))
 	error ("pie: mismatch in number of elements in explode and data");
       endif
     endif
   endwhile
 
-  if (! exist ("explode", "var"))
+  if (! have_explode)
     explode = zeros (size (x));
   endif
 
-  if (! exist ("labels", "var"))
+  if (! have_labels)
     xp = round (100 * x ./ sum (x)); 
     for i = 1:len
       labels{i} = sprintf ("%d%%", xp(i));

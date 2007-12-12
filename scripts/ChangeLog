@@ -1,5 +1,9 @@
 2007-12-12  John W. Eaton  <jwe@octave.org>
 
+	* image/loadimage.m: Avoid calling eval.  Avoid calling exist.
+
+	* plot/pie.m: Avoid calling "exist".
+
 	* linear-algebra/condest.m: Use nargin instead of size(varargin,2).	
 	Condense argument processing logic.  Allow 6 arguments.
 	Use issquare.  Avoid calling "exist".

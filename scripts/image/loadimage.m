@@ -44,18 +44,18 @@ function [img_retval, map_retval] = loadimage (filename)
 
   ## The file is assumed to have variables img and map, or X and map.
 
-  eval (sprintf ("load %s", file));
+  vars = load (file);
 
-  if (exist ("img"))
-    img_retval = img;
-  elseif (exist ("X"))
-    img_retval = X;
+  if (isfield (vars, "img"))
+    img_retval = vars.img;
+  elseif (isfield (vars, "X"))
+    img_retval = vars.X;
   else
     error ("loadimage: invalid image file found");
   endif
 
-  if (exist ("map"))
-    map_retval = map;
+  if (isfield (vars, "map"))
+    map_retval = vars.map;
   else
     error ("loadimage: invalid image file found");
   endif

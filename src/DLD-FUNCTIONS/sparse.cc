@@ -66,10 +66,6 @@ DEFUN_DLD (sparse, args, ,
 Create a sparse matrix from the full matrix @var{a}.\n\
 is forced back to a full matrix is resulting matrix is sparse\n\
 \n\
-@deftypefnx {Loadable Function} {@var{s} =} sparse (@var{a}, 1)\n\
-Create a sparse matrix and convert it back to a full matrix.\n\
-is forced back to a full matrix is resulting matrix is sparse\n\
-\n\
 @deftypefnx {Loadable Function} {@var{s} =} sparse (@var{i}, @var{j}, @var{sv}, @var{m}, @var{n}, @var{nzmax})\n\
 Create a sparse matrix given integer index vectors @var{i} and @var{j},\n\
 a 1-by-@code{nnz} vector of real of complex values @var{sv}, overall\n\
@@ -184,19 +180,24 @@ to have a common size.\n\
        octave_idx_type m = 1, n = 1;
        if (nargin == 2) 
 	 {
-	   m = args(0).int_value();
-	   n = args(1).int_value();
-	   if (error_state) return retval;
+	   if (args(0).numel () == 1 && args(1).numel () == 1)
+	     {
+	       m = args(0).int_value();
+	       n = args(1).int_value();
+	       if (error_state) return retval;
 
-	   if (use_complex) 
-	     retval = new octave_sparse_complex_matrix 
-	       (SparseComplexMatrix (m, n));
-	   else if (use_bool) 
-	     retval = new octave_sparse_bool_matrix 
-	       (SparseBoolMatrix (m, n));
+	       if (use_complex) 
+		 retval = new octave_sparse_complex_matrix 
+		   (SparseComplexMatrix (m, n));
+	       else if (use_bool) 
+		 retval = new octave_sparse_bool_matrix 
+		   (SparseBoolMatrix (m, n));
+	       else
+		 retval = new octave_sparse_matrix 
+		   (SparseMatrix (m, n));
+	     }
 	   else
-	     retval = new octave_sparse_matrix 
-	       (SparseMatrix (m, n));
+	     error ("sparse: expecting scalar values");
 	 }
        else 
 	 {

@@ -111,57 +111,69 @@ function [est, v] = condest (varargin)
 
   default_t = 5;
 
+  have_A = false;
+  have_t = false;
+  have_solve = false;
+
   if (ismatrix (varargin{1}))
     A = varargin{1};
     n = issquare (A);
     if (! n)
       error ("condest: matrix must be square.");
     endif
+    have_A = true;
 
-    if (nargin > 1 && isscalar (varargin{2}))
-      t = varargin{2};
-    elseif (nargin > 2)
-      solve = varargin{2};
-      solve_t = varargin{3};
-      if (nargin > 3)
-	t = varargin{4};
+    if (nargin > 1)
+      if (isscalar (varargin{2}))
+	t = varargin{2};
+	have_t = true;
+      elseif (nargin > 2)
+	solve = varargin{2};
+	solve_t = varargin{3};
+	have_solve = true;
+	if (nargin > 3)
+	  t = varargin{4};
+	  have_t = true;
+	endif
+      else
+	error ("condest: must supply both solve and solve_t.");
       endif
-    else
-      error ("condest: must supply both solve and solve_t.");
     endif
   elseif (nargin > 4)
     apply = varargin{1};
     apply_t = varargin{2};
     solve = varargin{3};
     solve_t = varargin{4};
+    have_solve = true;
     n = varargin{5};
     if (! isscalar (n))
       error ("condest: dimension argument of implicit form must be scalar.");
     endif
     if (nargin > 5)
       t = varargin{6};
+      have_t = true;
     endif
   else
     error ("condest: implicit form of condest requires at least 5 arguments.");
   endif
 
-  if (! exist ("t", "var"))
+  if (! have_t)
     t = min (n, default_t);
   endif
 
-  if (! exist ("solve", "var"))
+  if (! have_solve)
     if (issparse (A))
       [L, U, P, Pc] = splu (A);
-      solve = @(x) Pc' * (U\ (L\ (P*x)));
-      solve_t = @(x) P'*(L'\ (U'\ (Pc*x)));
+      solve = @(x) Pc' * (U \ (L \ (P * x)));
+      solve_t = @(x) P' * (L' \ (U' \ (Pc * x)));
     else
       [L, U, P] = lu (A);
-      solve = @(x) U\ (L\ (P*x));
-      solve_t = @(x) P' * (L'\ (U'\x));
+      solve = @(x) U \ (L \ (P*x));
+      solve_t = @(x) P' * (L' \ (U' \ x));
     endif
   endif
 
-  if (exist ("A", "var"))
+  if (have_A)
     Anorm = norm (A, 1);
   else
     Anorm = onenormest (apply, apply_t, n, t);

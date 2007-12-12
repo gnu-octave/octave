@@ -105,7 +105,7 @@
 
 function [est, v] = condest (varargin)
 
-  if size (varargin, 2) < 1 || size (varargin, 2) > 5,
+  if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
 
@@ -118,23 +118,23 @@ function [est, v] = condest (varargin)
     endif
     A = varargin{1};
 
-    if (size (varargin, 2) > 1)
+    if (nargin > 1)
       if (isscalar (varargin{2}))
 	t = varargin{2};
       else
-	if (size (varargin, 2) < 3)
+	if (nargin < 3)
 	  error ("condest: must supply both solve and solve_t.");
 	else
 	  solve = varargin{2};
 	  solve_t = varargin{3};
-	  if size (varargin, 2) > 3,
+	  if (nargin > 3)
 	    t = varargin{4};
 	  endif
 	endif
       endif
     endif
   else
-    if (size (varargin, 2) < 5)
+    if (nargin < 5)
       error ("condest: implicit form of condest requires at least 5 arguments.");
     endif
     apply = varargin{1};
@@ -145,7 +145,7 @@ function [est, v] = condest (varargin)
     if (! isscalar (n))
       error ("condest: dimension argument of implicit form must be scalar.");
     endif
-    if (size (varargin, 2) > 5)
+    if (nargin > 5)
       t = varargin{6};
     endif
   endif

@@ -84,6 +84,7 @@ SOURCES = \
   contourf.m \
   cylinder.m \
   drawnow.m \
+  ellipsoid.m \
   errorbar.m \
   figure.m \
   fill.m \

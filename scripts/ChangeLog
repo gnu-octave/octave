@@ -1,3 +1,8 @@
+2007-12-12  David Bateman  <dbateman@free.fr>
+
+	* plot/ellipsoid.m: Port from octave-forge, editing for style.
+	* plot/Makefile.in (SOURCES): Add to the sources.
+
 2007-12-11  John W. Eaton  <jwe@octave.org>
 
 	* plot/surf.m: Set xgrid, ygrid, and zgrid on here.

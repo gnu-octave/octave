@@ -118,25 +118,18 @@ function [est, v] = condest (varargin)
       error ("condest: matrix must be square.");
     endif
 
-    if (nargin > 1)
-      if (isscalar (varargin{2}))
-	t = varargin{2};
-      else
-	if (nargin < 3)
-	  error ("condest: must supply both solve and solve_t.");
-	else
-	  solve = varargin{2};
-	  solve_t = varargin{3};
-	  if (nargin > 3)
-	    t = varargin{4};
-	  endif
-	endif
+    if (nargin > 1 && isscalar (varargin{2}))
+      t = varargin{2};
+    elseif (nargin > 2)
+      solve = varargin{2};
+      solve_t = varargin{3};
+      if (nargin > 3)
+	t = varargin{4};
       endif
+    else
+      error ("condest: must supply both solve and solve_t.");
     endif
-  else
-    if (nargin < 5)
-      error ("condest: implicit form of condest requires at least 5 arguments.");
-    endif
+  elseif (nargin > 4)
     apply = varargin{1};
     apply_t = varargin{2};
     solve = varargin{3};
@@ -148,6 +141,8 @@ function [est, v] = condest (varargin)
     if (nargin > 5)
       t = varargin{6};
     endif
+  else
+    error ("condest: implicit form of condest requires at least 5 arguments.");
   endif
 
   if (! exist ("t", "var"))

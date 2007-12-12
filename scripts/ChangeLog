@@ -1,7 +1,8 @@
 2007-12-12  John W. Eaton  <jwe@octave.org>
 
 	* linear-algebra/condest.m: Use nargin instead of size(varargin,2).	
-	Allow 6 arguments.  Use issquare.
+	Condense argument processing logic. Allow 6 arguments.
+	Use issquare.
 
 	* plot/__go_draw_axes__.m: Handle the axes layer property.
 

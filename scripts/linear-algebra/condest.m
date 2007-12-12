@@ -112,11 +112,11 @@ function [est, v] = condest (varargin)
   default_t = 5;
 
   if (ismatrix (varargin{1}))
-    n = size (varargin{1}, 1);
-    if (n != size (varargin{1}, 2))
+    A = varargin{1};
+    n = issquare (A);
+    if (! n)
       error ("condest: matrix must be square.");
     endif
-    A = varargin{1};
 
     if (nargin > 1)
       if (isscalar (varargin{2}))

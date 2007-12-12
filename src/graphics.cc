@@ -460,7 +460,7 @@ gh_manager::get_handle (const std::string& go_name)
 
 	  retval = graphics_handle (next_handle);
 
-	  next_handle = trunc (next_handle) - 1.0 - (rand () + 1.0) / maxrand;
+	  next_handle = ceil (next_handle) - 1.0 - (rand () + 1.0) / maxrand;
 	}
     }
 

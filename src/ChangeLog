@@ -1,3 +1,7 @@
+2007-12-12  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (gh_manager::get_handle): Use ceil instead of trunc.
+
 2007-12-11  John W. Eaton  <jwe@octave.org>
 
 	* version.h (OCTAVE_VERSION): Now 2.9.19+.

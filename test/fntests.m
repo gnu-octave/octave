@@ -196,8 +196,8 @@ try
   printf ("  FAIL %6d\n", nfail);
   if (dxf > 0)
     if (dxf > 1)
-      t1 = "were"
-      t2 = "failures"
+      t1 = "were";
+      t2 = "failures";
     else
       t1 = "was";
       t2 = "failure";

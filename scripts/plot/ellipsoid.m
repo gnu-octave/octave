@@ -1,30 +1,35 @@
-## Copyright (C) 2007   Sylvain Pelissier   <sylvain.pelissier@gmail.com>
+## Copyright (C) 2007 Sylvain Pelissier
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This file is part of Octave.
 ##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
 ##
 ## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {[@var{x}, @var{y}, @var{z}] =} ellipsoid (@var{xc},@var{yc}, @var{zc}, @var{xr}, @var{yr}, @var{zr}, @var{n})
 ## @deftypefnx {Function File} {} ellipsoid (@var{h}, @dots{})
-## Generates three matrices in @code{meshgrid} format, of an ellipsoid.
-## Called with no return arguments, @code{ellipsoid} calls directly 
-## @code{surf (@var{x}, @var{y}, @var{z})}. If an axes handle is passed
-## as the first argument, the the surface is plotted to this set of axes.
+## Generate three matrices in @code{meshgrid} format that define an
+## ellipsoid.   Called with no return arguments, @code{ellipsoid} calls
+## directly @code{surf (@var{x}, @var{y}, @var{z})}.  If an axes handle
+## is passed as the first argument, the the surface is plotted to this
+## set of axes.
 ## @seealso{sphere}
 ## @end deftypefn
 
-function [xx, yy, zz] = ellipsoid(varargin)
+## Author: Sylvain Pelissier <sylvain.pelissier@gmail.com>
+
+function [xx, yy, zz] = ellipsoid (varargin)
 
   [h, varargin, nargin] = __plt_get_axis_arg__ ((nargout > 0), "ellipsoid", 
 						varargin{:});

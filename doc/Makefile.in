@@ -42,7 +42,7 @@ DISTSUBDIRS = $(SUBDIRS)
 all: conf.texi $(SUBDIRS)
 .PHONY: all
 
-conf.texi: conf.texi.in $(TOPDIR)/Makeconf
+conf.texi: conf.texi.in $(TOPDIR)/Makeconf $(top_srcdir)/src/version.h
 	@$(do-subst-texinfo-vals)
 
 ../BUGS ../INSTALL.OCTAVE:

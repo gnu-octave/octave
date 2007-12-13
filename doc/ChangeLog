@@ -1,3 +1,7 @@
+2007-12-13  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (conf.texi): Also depend on $(top_srcdir)/src/version.h.
+
 2007-12-05  John W. Eaton  <jwe@octave.org>
 
 	* interpreter/geometryimages.m (image_as_txt): New function.

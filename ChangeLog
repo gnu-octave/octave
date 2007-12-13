@@ -1,3 +1,8 @@
+2007-12-13  John W. Eaton  <jwe@octave.org>
+
+	* octMakefile.in (octave-bug, octave-config, mkoctfile):
+	Also depend on $(top_srcdir)/src/version.h.
+
 2007-12-10  John W. Eaton  <jwe@octave.org>
 
 	* acx_blas.m4: Use -lsunperf, not -xlic_lib=sunperf.

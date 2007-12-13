@@ -89,15 +89,15 @@ $(SUBDIRS):
 	$(MAKE) -C $@ all
 .PHONY: $(SUBDIRS)
 
-octave-bug: octave-bug.in Makeconf octMakefile
+octave-bug: octave-bug.in Makeconf octMakefile $(top_srcdir)/src/version.h
 	@$(do-subst-config-vals)
 	chmod a+rx $@
 
-octave-config: octave-config.in Makeconf octMakefile
+octave-config: octave-config.in Makeconf octMakefile $(top_srcdir)/src/version.h
 	@$(do-subst-default-vals)
 	chmod a+rx $@
 
-mkoctfile: mkoctfile.in Makeconf octMakefile
+mkoctfile: mkoctfile.in Makeconf octMakefile $(top_srcdir)/src/version.h
 	@$(do-subst-config-vals)
 	chmod a+rx $@
 

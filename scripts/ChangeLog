@@ -1,3 +1,9 @@
+2007-12-13  John W. Eaton  <jwe@octave.org>
+
+	* image/imshow.m: Turn axis visibility off.
+	Don't scale true color images.
+	* image/image.m: Set axis layer property to "top".
+
 2007-12-12  John W. Eaton  <jwe@octave.org>
 
 	* image/loadimage.m: Avoid calling eval.  Avoid calling exist.

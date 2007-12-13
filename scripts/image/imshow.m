@@ -149,7 +149,7 @@ function h = imshow (im, varargin)
   endif
 
   ## Scale the image to the interval [0, 1] according to display_range.
-  if (! indexed || islogical (im))
+  if (! (true_color || indexed || islogical (im)))
     low = display_range(1);
     high = display_range(2);
     im = (im-low)/(high-low);
@@ -158,10 +158,11 @@ function h = imshow (im, varargin)
   endif
 
   if (true_color)
-    tmp = __img__ ([] , [], im);
+    tmp = __img__ ([], [], im);
   else
     tmp = image (round ((rows (colormap ()) - 1) * im));
   endif
+  set (gca (), "visible", "off");
 
   if (nargout > 0)
     h = tmp;

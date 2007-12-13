@@ -70,6 +70,7 @@ function retval = image (varargin)
   unwind_protect
     axes (ax);
     h = __img__ (x, y, img, varargin {firstnonnumeric:end});
+    set (ax, "layer", "top");
   unwind_protect_cleanup
     axes (oldax);
   end_unwind_protect

@@ -131,7 +131,7 @@ endfunction
 %! x = 0:0.1:2*pi; 
 %! y1 = sin (x);
 %! y2 = exp (x - 1);
-%! ax = plotyy (x, y1, x - 1, y2, @@plot, @@semilogy);
+%! ax = plotyy (x, y1, x - 1, y2, @plot, @semilogy);
 %! xlabel ("X");
 %! ylabel (ax(1), "Axis 1");
 %! ylabel (ax(2), "Axis 2");

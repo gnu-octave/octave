@@ -2705,7 +2705,7 @@ patch::properties::get (const caseless_str& name) const
     retval = facecolor;
   else if (name.compare ("facealpha"))
     retval = facealpha;
-  else if (name.compare ("egdecolor"))
+  else if (name.compare ("edgecolor"))
     retval = edgecolor;
   else if (name.compare ("linestyle"))
     retval = linestyle;

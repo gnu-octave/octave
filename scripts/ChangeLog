@@ -1,5 +1,10 @@
 2007-12-14  David Bateman  <dbateman@free.fr>
 
+	* plot/contour3.m, plot/__contour__.m: Handle linespec.
+	* plot/contour.m: Doc fix.
+	* plot/__go_draw_axes__.m (case "patch"): Include "lt" in lt string.
+	Include linetype in withclause.
+
 	* plot/__go_draw_axes__.m (__calc_dimensions__): New function.
 	Use it to determine dimensions.  Consolidate all 3-d settings.
 

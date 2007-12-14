@@ -666,13 +666,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	     if (isfield (obj, "linestyle"))
 	       switch (obj.linestyle)
 		 case "-"
-		   lt = "1";
+		   lt = "lt 1";
 		 case "--"
-		   lt = "2";
+		   lt = "lt 2";
 		 case ":"
-		   lt = "3";
+		   lt = "lt 3";
 		 case "-."
-		   lt = "6";
+		   lt = "lt 6";
 		 case "none"
 		   lt = "";
 		 otherwise
@@ -756,8 +756,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
 				      round (255*color));
 	       endif
-	       withclause{data_idx} = sprintf ("with %s %s %s %s",
-					       style, pt, ps, colorspec);
+	       withclause{data_idx} = sprintf ("with %s %s %s %s %s",
+					       style, pt, lt, ps, colorspec);
 	     else
 	       if (isequal (color, [0,0,0]))
 		 typ = -1;

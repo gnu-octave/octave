@@ -18,11 +18,12 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{c} =} contour (@var{z})
-## @deftypefnx {Function File} {@var{c} =} contour (@var{z}, @var{vn})
-## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{c} =} contour (@var{x}, @var{y}, @var{z}, @var{vn})
-## @deftypefnx {Function File} {@var{c} =} contour (@var{h}, @dots{})
+## @deftypefn {Function File} {} contour (@var{z})
+## @deftypefnx {Function File} {} contour (@var{z}, @var{vn})
+## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z})
+## @deftypefnx {Function File} {} contour (@var{x}, @var{y}, @var{z}, @var{vn})
+## @deftypefnx {Function File} {} contour (@dots{}, @var{style})
+## @deftypefnx {Function File} {} contour (@var{h}, @dots{})
 ## @deftypefnx {Function File} {[@var{c}, @var{h}] =} contour (@dots{})
 ## Plot level curves (contour lines) of the matrix @var{z}, using the
 ## contour matrix @var{c} computed by @code{contourc} from the same
@@ -37,6 +38,10 @@
 ## contour (x, y, z, 2:3)
 ## @end group
 ## @end example
+##
+## The style to use for the plot can be defined with a line style @var{style}
+## in a similar manner to the line styles used with the @code{plot} command.
+## Any markers defined by @var{style} are ignored.
 ##
 ## The optional input and output argument @var{h} allows an axis handle to 
 ## be passed to @code{contour} and the handles to the contour objects to be

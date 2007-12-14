@@ -23,11 +23,28 @@ function [c, h] = __contour__ (varargin)
   ax = varargin{1};
   z = varargin{2};
 
+  linespec.linestyle = "-";
+  linespec.color = "flat";
+  for i = 3 : nargin
+    arg = varargin {i};
+    if ((ischar (arg) || iscell (arg)))
+      [linespec, valid] = __pltopt__ ("quiver", arg, false);
+      if (isempty (linespec.color))
+	linespec.color = "flat";
+      endif
+      if (valid)
+	have_line_spec = true;
+	varargin(i) = [];
+	break;
+      endif
+    endif
+  endfor
+
   if (ischar (z))
     if (strcmp (z, "none"))
       z = NaN;
     elseif (strcmp (z, "base"))
-      if (nargin == 1)
+      if (nargin < 3)
 	z = varargin{1};
       else
 	z = varargin{3};
@@ -55,13 +72,16 @@ function [c, h] = __contour__ (varargin)
 
     if (isnan (z))
       h = [h; patch(ax, p(1,:), p(2,:), "facecolor", "none", 
-		    "edgecolor", "flat", "cdata", clev)];
+		    "edgecolor", linespec.color, "linestyle", 
+		    linespec.linestyle, "cdata", clev)];
     elseif (!ischar(z))
       h = [h; patch(ax, p(1,:), p(2,:), z * ones (1, columns (p)), "facecolor",
-		    "none", "edgecolor", "flat", "cdata", clev)];
+		    "none", "edgecolor", linespec.color, 
+		    "linestyle", linespec.linestyle, "cdata", clev)];
     else
       h = [h; patch(ax, p(1,:), p(2,:), clev * ones (1, columns (p)),
-		    "facecolor", "none", "edgecolor", "flat", "cdata", clev)];
+		    "facecolor", "none", "edgecolor", linespec.color, 
+		    "linestyle", linespec.linestyle, "cdata", clev)];
     endif
     i1 += clen+1;
   endwhile

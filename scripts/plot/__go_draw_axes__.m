@@ -282,7 +282,15 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     kids = axis_obj.children;
 
-    nd = 0;
+    nd = __calc_dimensions__ (axis_obj);
+
+    if (nd == 3)
+      fputs (plot_stream, "set parametric;\n");
+      fputs (plot_stream, "set style data lines;\n");
+      fputs (plot_stream, "set surface;\n");
+      fputs (plot_stream, "unset contour;\n");
+    endif
+
     data_idx = 0;
     data = cell ();
     is_image_data = [];
@@ -311,14 +319,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
       switch (obj.type)
 	case "image"
-	  ## FIXME - Is there a better way to determine if the plot
-	  ## command should be "plot" or "splot"?????  Could have images
-	  ## projected into 3D so there is really no reason to limit
-	  ## this.
-	  if (nd == 0)
-	    nd = 2;
-	  endif
-
 	  img_data = obj.cdata;
 	  img_xdata = obj.xdata;
 	  img_ydata = obj.ydata;
@@ -391,20 +391,18 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	    withclause{data_idx} = sprintf ("with %s linetype %d",
 					    style, typ);
 	  endif
-	  if (! isempty (obj.zdata))
-	    nd = 3;
+	  if (nd == 3)
 	    xdat = obj.xdata(:);
 	    ydat = obj.ydata(:);
-	    zdat = obj.zdata(:);
-
+	    if (! isempty (obj.zdata))
+	      zdat = obj.zdata(:);
+	    else
+	      zdat = zeros (size (xdat));
+	    endif
 	    data{data_idx} = [xdat, ydat, zdat]';
 	    usingclause{data_idx} = "using ($1):($2):($3)";
-	    fputs (plot_stream, "set parametric;\n");
-	    fputs (plot_stream, "set style data lines;\n");
-	    fputs (plot_stream, "set surface;\n");
-	    fputs (plot_stream, "unset contour;\n");
+	    ## fputs (plot_stream, "set parametric;\n");
 	  else
-	    nd = 2;
 	    xdat = obj.xdata(:);
 	    ydat = obj.ydata(:);
 	    ldat = obj.ldata;
@@ -498,10 +496,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	 for i = 1:nc
 	   xcol = obj.xdata(:,i);
 	   ycol = obj.ydata(:,i);
-	   if (! isempty (obj.zdata))
-	     zcol = obj.zdata(:,i);
-	   else
-	     zcol = [];
+	   if (nd == 3)
+	     if (! isempty (obj.zdata))
+	       zcol = obj.zdata(:,i);
+	     else
+	       zcol = zeros (size (xcol));
+	     endif
 	   endif
 
 	   if (! isnan (xcol) && ! isnan (ycol))
@@ -512,10 +512,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       endif
 	     else
 	       hidden_removal = true;
-	       if (! isempty (zcol))
+	       if (nd == 3)
 		 error ("gnuplot (as of v4.2) only supports 2D filled patches");
-	       else
-		 nd = 2;
 	       endif
 
 	       data_idx++;
@@ -610,11 +608,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
            ## patch outline
 	   if (! strncmp (obj.edgecolor, "none", 4))
-	     if (! isempty (zcol))
-	       nd = 3;
-	     else
-	       nd = 2;
-	     endif
 
 	     data_idx++;
              is_image_data(data_idx) = false;
@@ -789,7 +782,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 					       style, pt, ps, typ);
 	     endif
 
-	     if (! isempty (zcol))
+	     if (nd == 3)
 	       if (! isnan (xcol) && ! isnan (ycol) && ! isnan (zcol))
 		 data{data_idx} = [[xcol; xcol(1)], [ycol; ycol(1)], ...
 				   [zcol; zcol(1)]]';
@@ -809,7 +802,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	 endfor
 
 	case "surface"
-	  nd = 3;
 	  view_map = true;
           if (! (strncmp (obj.edgecolor, "none", 4)
 		 && strncmp (obj.facecolor, "none", 4)))
@@ -877,11 +869,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	      data{data_idx} = zz.';
 	    endif
 	    usingclause{data_idx} = "using ($1):($2):($3):($4)";
-
-	    fputs (plot_stream, "unset parametric;\n");
-	    fputs (plot_stream, "set style data lines;\n");
-	    fputs (plot_stream, "set surface;\n");
-	    fputs (plot_stream, "unset contour;\n");
+	    ## fputs (plot_stream, "unset parametric;\n");
 
 	    ## Interpolation does not work for flat surfaces (e.g. pcolor)
             ## and color mapping --> currently set empty.
@@ -1391,6 +1379,24 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono, plot_stream)
 
   fputs (plot_stream, ";\n");
 
+endfunction
+
+function nd = __calc_dimensions__ (obj)
+  kids = obj.children;
+  nd = 2;
+  for i = 1:length (kids)
+    obj = get (kids(i));
+    switch (obj.type)
+      case {"image", "text"}
+	## ignore as they 
+      case {"line", "patch"}
+	if (! isempty (obj.zdata))
+	  nd = 3;
+	endif
+      case "surface"
+	nd = 3;
+    endswitch
+  endfor
 endfunction
 
 function __gnuplot_write_data__ (plot_stream, data, nd, parametric, cdata)

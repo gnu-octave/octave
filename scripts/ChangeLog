@@ -1,3 +1,8 @@
+2007-12-14  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m (__calc_dimensions__): New function.
+	Use it to determine dimensions.  Consolidate all 3-d settings.
+
 2007-12-13  John W. Eaton  <jwe@octave.org>
 
 	* image/imshow.m: Turn axis visibility off.

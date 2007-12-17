@@ -1,3 +1,9 @@
+2007-12-17  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m: Use "set pm3d explicit" so that
+	contours can overlay pcolor plots. Priveldge no hidden line
+	removal when there are multiple objects in the plot.
+
 2007-12-14  David Bateman  <dbateman@free.fr>
 
 	* plot/contour3.m, plot/__contour__.m: Handle linespec.

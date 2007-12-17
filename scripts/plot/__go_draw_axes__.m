@@ -64,7 +64,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       fputs (plot_stream, "set size noratio;\n");
     endif
 
-    fputs (plot_stream, "set pm3d;\n");
+    fputs (plot_stream, "set pm3d explicit;\n");
     fputs (plot_stream, "unset label;\n");
 
     if (! isempty (axis_obj.title))
@@ -507,11 +507,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	   if (! isnan (xcol) && ! isnan (ycol))
 	     ## Is the patch closed or not
 	     if (strncmp (obj.facecolor, "none", 4)) 
-	       if (isnan (hidden_removal))
-		 hidden_removal = false;
-	       endif
+	       hidden_removal = false;
 	     else
-	       hidden_removal = true;
+	       if (isnan (hidden_removal))
+		 hidden_removal = true;
+	       endif
 	       if (nd == 3)
 		 error ("gnuplot (as of v4.2) only supports 2D filled patches");
 	       endif
@@ -819,11 +819,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	    endif
 	    usingclause{data_idx} = "";
 	    if (have_newer_gnuplot || isnan (typ))
-	      withclause{data_idx} = sprintf ("with %s linestyle %d",
-		           		      style, data_idx);
+	      withclause{data_idx} = sprintf ("with pm3d linestyle %d",
+		           		      data_idx);
 	    else
-	      withclause{data_idx} = sprintf ("with %s linetype %d %s",
-		 			      style, typ, with);
+	      withclause{data_idx} = sprintf ("with pm3d linetype %d %s",
+		 			      typ, with);
 	    endif
 
 	    xdat = obj.xdata;
@@ -883,15 +883,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 				       || (isnumeric (obj.facecolor)
 					   && all (obj.facecolor == 1)));
 	    if (strncmp (obj.facecolor, "none", 4))
-	      if (isnan (hidden_removal))
-		hidden_removal = false;
-	      endif
+	      hidden_removal = false;
 	    else
-	      hidden_removal = true;
+	      if (isnan (hidden_removal))
+		hidden_removal = true;
+	      endif
 	    endif
-
-            if (flat_interp_face
-		|| (flat_interp_edge && facecolor_none_or_white))
+	    
+            if (flat_interp_edge && facecolor_none_or_white)
 	      withclause{data_idx} = "with line palette";
             endif
 
@@ -901,22 +900,19 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	      dord = "";
 	    endif
 
-	    if (facecolor_none_or_white)
-	      ## Ensure faces aren't drawn
-	      fprintf (plot_stream, "unset pm3d;\n");
-            elseif (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
-              fprintf (plot_stream, "set pm3d at s %s %s corners2color c3;\n", 
+	    if (flat_interp_face && strncmp (obj.edgecolor, "flat", 4))
+              fprintf (plot_stream, "set pm3d explicit at s %s %s corners2color c3;\n", 
 		       interp_str, dord);
-            else
+            elseif (!facecolor_none_or_white)
               if (strncmp (obj.edgecolor, "none", 4))
-                fprintf (plot_stream, "set pm3d at s %s corners2color c3;\n", 
+                fprintf (plot_stream, "set pm3d explicit at s %s corners2color c3;\n", 
 			 interp_str, dord);
               else
                 edgecol = obj.edgecolor;
                 if (ischar (obj.edgecolor))
                   edgecol = [0,0,0];
                 endif
-                fprintf (plot_stream, "set pm3d at s hidden3d %d %s %s corners2color c3;\n", 
+                fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n", 
 			 data_idx, interp_str, dord);
 
 		if (have_newer_gnuplot)

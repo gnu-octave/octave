@@ -1697,7 +1697,7 @@ along with Octave; see the file COPYING.  If not, see
 #define SPARSE_ANY_ALL_OP_ROW_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \
     { \
-      tmp[i] = TEST_TRUE_VAL; \
+      tmp[ridx(i)] = TEST_TRUE_VAL; \
       break; \
     }
 

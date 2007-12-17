@@ -51,8 +51,8 @@ function run (s)
       error ("run: the path %s doesn't exist", d);
     endif
   else
-    if (exist (script, "file"))
-      evalin ("caller", [script, ";"], "rethrow (lasterror ())");
+    if (exist (f, "file"))
+      evalin ("caller", [f, ";"], "rethrow (lasterror ())");
     else
       error ("run: %s not found", s);
     endif

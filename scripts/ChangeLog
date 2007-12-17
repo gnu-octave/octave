@@ -1,3 +1,8 @@
+2007-12-17  Ben Abbott  <bpabbott@mac.com>
+
+         * miscellaneous/run.m: Replace script with f when looking for
+	 file to run.
+
 2007-12-17  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m: Use "set pm3d explicit" so that

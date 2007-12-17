@@ -1,3 +1,8 @@
+2007-12-17  Peter A. Gustafson  <petegus@umich.edu>
+
+	* plot/__go_draw_axes__.m:  Fix mirrored tics and borders for
+	set (gca (), "[xy]axislocation", "{right|top}", "box", "off").
+
 2007-12-17  Ben Abbott  <bpabbott@mac.com>
 
          * miscellaneous/run.m: Replace script with f when looking for

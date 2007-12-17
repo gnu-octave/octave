@@ -1051,8 +1051,25 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       if (nd == 3)
 	fputs (plot_stream, "set border 895;\n");
       else
-	fputs (plot_stream, "set border 3;\n");
-	fputs (plot_stream, "set xtics nomirror; set ytics nomirror;\n");
+	if (strcmpi (axis_obj.yaxislocation, "right"))
+	  fputs (plot_stream, "unset ytics; set y2tics nomirror\n");
+	  if (strcmpi (axis_obj.xaxislocation, "top"))
+	    fputs (plot_stream, "unset xtics; set x2tics nomirror\n");
+	    fputs (plot_stream, "set border 12;\n");
+	  else
+	    fputs (plot_stream, "unset x2tics; set xtics nomirror\n");
+	    fputs (plot_stream, "set border 9;\n");
+	  endif
+	else
+	  fputs (plot_stream, "unset y2tics; set ytics nomirror\n");
+	  if (strcmpi (axis_obj.xaxislocation, "top"))
+	    fputs (plot_stream, "unset xtics; set x2tics nomirror\n");
+	    fputs (plot_stream, "set border 6;\n");
+	  else
+	    fputs (plot_stream, "unset x2tics; set xtics nomirror\n");
+	    fputs (plot_stream, "set border 3;\n");
+	  endif
+	endif
       endif
     endif
 

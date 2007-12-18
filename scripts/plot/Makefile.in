@@ -78,6 +78,7 @@ SOURCES = \
   close.m \
   closereq.m \
   colorbar.m \
+  compass.m \
   contour3.m \
   contour.m \
   contourc.m \
@@ -86,6 +87,7 @@ SOURCES = \
   drawnow.m \
   ellipsoid.m \
   errorbar.m \
+  feather.m \
   figure.m \
   fill.m \
   findobj.m \
@@ -124,6 +126,7 @@ SOURCES = \
   quiver3.m \
   replot.m \
   ribbon.m \
+  rose.m \
   scatter.m \
   scatter3.m \
   semilogx.m \

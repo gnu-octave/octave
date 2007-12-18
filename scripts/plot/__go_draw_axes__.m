@@ -185,6 +185,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     else
       xaxisloc = "x";
       xaxisloc_using = "x1";
+      if (strcmpi (axis_obj.xaxislocation, "zero"))
+	fputs (plot_stream, "set xzeroaxis;\n");
+      endif
     endif
     if (strcmpi (axis_obj.yaxislocation, "right"))
       yaxisloc = "y2";
@@ -192,6 +195,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     else
       yaxisloc = "y";
       yaxisloc_using = "y1";
+      if (strcmpi (axis_obj.yaxislocation, "zero"))
+	fputs (plot_stream, "set yzeroaxis;\n");
+      endif
     endif
 
     have_grid = false;
@@ -1470,32 +1476,42 @@ endfunction
 function do_tics (obj, plot_stream, ymirror, mono)
   if (strcmpi (obj.xaxislocation, "top"))
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream, true, mono);
+	       obj.xcolor, "x2", plot_stream, true, mono, "border");
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x", plot_stream, true, mono);
+	       obj.xcolor, "x", plot_stream, true, mono, "border");
+  elseif (strcmpi (obj.xaxislocation, "zero"))
+    do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
+	       obj.xcolor, "x", plot_stream, true, mono, "axis");
+    do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
+	       obj.xcolor, "x2", plot_stream, true, mono, "axis");
   else
     do_tics_1 (obj.xtickmode, obj.xtick, obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x", plot_stream, true, mono);
+	       obj.xcolor, "x", plot_stream, true, mono, "border");
     do_tics_1 ("manual", [], obj.xticklabelmode, obj.xticklabel,
-	       obj.xcolor, "x2", plot_stream, true, mono);
+	       obj.xcolor, "x2", plot_stream, true, mono, "border");
   endif
   if (strcmpi (obj.yaxislocation, "right"))
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream, ymirror, mono);
+	       obj.ycolor, "y2", plot_stream, ymirror, mono, "border");
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y", plot_stream, ymirror, mono);
+	       obj.ycolor, "y", plot_stream, ymirror, mono, "border");
+  elseif (strcmpi (obj.xaxislocation, "zero"))
+    do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
+	       obj.ycolor, "y", plot_stream, ymirror, mono, "axis");
+    do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
+	       obj.ycolor, "y2", plot_stream, ymirror, mono, "axis");
   else
     do_tics_1 (obj.ytickmode, obj.ytick, obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y", plot_stream, ymirror, mono);
+	       obj.ycolor, "y", plot_stream, ymirror, mono, "border");
     do_tics_1 ("manual", [], obj.yticklabelmode, obj.yticklabel,
-	       obj.ycolor, "y2", plot_stream, ymirror, mono);
+	       obj.ycolor, "y2", plot_stream, ymirror, mono, "border");
   endif
   do_tics_1 (obj.ztickmode, obj.ztick, obj.zticklabelmode, obj.zticklabel,
-	     obj.zcolor, "z", plot_stream, true, mono);
+	     obj.zcolor, "z", plot_stream, true, mono, "border");
 endfunction
 
 function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
-		    plot_stream, mirror, mono)
+		    plot_stream, mirror, mono, axispos)
   colorspec = get_text_colorspec (color, mono);
   if (strcmpi (ticmode, "manual"))
     if (isempty (tics))
@@ -1510,9 +1526,9 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
 	nlabels = numel (labels);
 	fprintf (plot_stream, "set format %s \"%%s\";\n", ax);
 	if (mirror)
-	  fprintf (plot_stream, "set %stics (", ax);
+	  fprintf (plot_stream, "set %stics %s (", ax, axispos);
 	else
-	  fprintf (plot_stream, "set %stics nomirror (", ax);
+	  fprintf (plot_stream, "set %stics %s nomirror (", ax, axispos);
 	endif
 	labels = regexprep(labels, "%", "%%");
 	for i = 1:ntics
@@ -1531,9 +1547,9 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
     else
       fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
       if (mirror)
-	fprintf (plot_stream, "set %stics (", ax);
+	fprintf (plot_stream, "set %stics %s (", ax, axispos );
       else
-	fprintf (plot_stream, "set %stics nomirror (", ax);
+	fprintf (plot_stream, "set %stics %s nomirror (", ax, axispos);
       endif
       fprintf (plot_stream, " %g,", tics(1:end-1));
       fprintf (plot_stream, " %g);\n", tics(end));
@@ -1541,9 +1557,10 @@ function do_tics_1 (ticmode, tics, labelmode, labels, color, ax,
   else
     fprintf (plot_stream, "set format %s \"%%g\";\n", ax);
     if (mirror)
-      fprintf (plot_stream, "set %stics %s;\n", ax, colorspec);
+      fprintf (plot_stream, "set %stics %s %s;\n", ax, axispos, colorspec);
     else
-      fprintf (plot_stream, "set %stics nomirror %s;\n", ax, colorspec);
+      fprintf (plot_stream, "set %stics %s nomirror %s;\n", ax, 
+	       axispos, colorspec);
     endif
   endif
 endfunction

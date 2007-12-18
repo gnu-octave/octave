@@ -1,3 +1,8 @@
+2007-12-17  John W. Eaton  <jwe@octave.org>
+
+	* Array.cc (Array<T>::indexN): Correctly handle scalar indexed by
+	N-d array.
+
 2007-12-17  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_ANY_ALL_OP_ROW_CODE): Use ridx for row

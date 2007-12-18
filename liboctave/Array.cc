@@ -2246,7 +2246,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	{
 	  dim_vector result_dims;
 
-	  if (vec_equiv)
+	  if (vec_equiv && ! orig_len == 1)
 	    {
 	      result_dims = dv;
 

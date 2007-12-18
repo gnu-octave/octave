@@ -150,9 +150,11 @@ function h = imshow (im, varargin)
 
   ## Scale the image to the interval [0, 1] according to display_range.
   if (! (true_color || indexed || islogical (im)))
-    low = display_range(1);
-    high = display_range(2);
-    im = (im-low)/(high-low);
+    class (im)
+im
+    low = display_range(1)
+    high = display_range(2)
+    im = (im-low)/(high-low)
     im(im < 0) = 0;
     im(im > 1) = 1;
   endif

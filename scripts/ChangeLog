@@ -1,3 +1,16 @@
+2007-12-17  David Bateman  <dbateman@free.fr>
+
+	* plot/rose.m, plot/feather.m, plot/compass.m: New functions
+	* plot/Makefiles (SOURCES): Add them to the sources
+	* plot/polar.m: Set the x and y limits to the maximum polar
+	radius. Set the axes to be square.
+	* plot/__go_draw_axes__.m: Allow {x|y}axislocation to be "zero"
+	and print axis at zero if this is used.
+
+	* plot/__go_draw_axes__.m: Use "set pm3d explicit" so that
+	contours can overlay pcolor plots. Priveldge no hidden line
+	removal when there are multiple objects in the plot.
+
 2007-12-17  Peter A. Gustafson  <petegus@umich.edu>
 
 	* plot/__go_draw_axes__.m:  Fix mirrored tics and borders for
@@ -7,12 +20,6 @@
 
          * miscellaneous/run.m: Replace script with f when looking for
 	 file to run.
-
-2007-12-17  David Bateman  <dbateman@free.fr>
-
-	* plot/__go_draw_axes__.m: Use "set pm3d explicit" so that
-	contours can overlay pcolor plots. Priveldge no hidden line
-	removal when there are multiple objects in the plot.
 
 2007-12-14  David Bateman  <dbateman@free.fr>
 

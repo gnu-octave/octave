@@ -30,33 +30,47 @@
 
 function retval = polar (varargin)
 
-  [h, varargin] = __plt_get_axis_arg__ ("polar", varargin{:});
+  [h, varargin, nargs] = __plt_get_axis_arg__ ("polar", varargin{:});
 
   oldh = gca ();
   unwind_protect
     axes (h);
     newplot ();
 
-    nargs = numel (varargin);
-
     if (nargs == 3)
       if (! ischar (varargin{3}))
 	error ("polar: third argument must be a string");
       endif
       tmp = __plr2__ (h, varargin{:});
-    elseif (nargin == 2)
+      maxr = max (varargin {2} (:));
+    elseif (nargs == 2)
       if (ischar (varargin{2}))
 	tmp = __plr1__ (h, varargin{:});
+	if (iscomplex(varargin{1}))
+	  maxr = max (imag(varargin{1})(:));
+	else
+	  maxr = max (varargin{1}(:));
+	endif
       else
 	fmt = "";
 	tmp = __plr2__ (h, varargin{:}, fmt);
+	maxr = max (varargin {2} (:));
       endif
-    elseif (nargin == 1)
+    elseif (nargs == 1)
       fmt = "";
       tmp = __plr1__ (h, varargin{:}, fmt);
+      if (iscomplex(varargin{1}))
+	maxr = max (imag(varargin{1})(:));
+      else
+	maxr = max (varargin{1}(:));
+      endif
     else
       print_usage ();
     endif
+
+    set (h, "xlim", [-maxr, maxr], "ylim", [-maxr, maxr],
+	 "xaxislocation", "zero", "yaxislocation", "zero",
+	 "dataaspectratio", [1, 1, 1]); 
 
     if (nargout > 0)
       retval = tmp;

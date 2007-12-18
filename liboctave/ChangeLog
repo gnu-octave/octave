@@ -1,3 +1,12 @@
+2007-12-18  David Bateman  <dbateman@free.fr>
+
+	* Sparse.cc (template <class T> Sparse<T> Sparse<T>::index 
+	(idx_vector&, int) const): Fix case indexing of non zero scalar 
+	stored as a sparse matrix.
+	(template <class T> Sparse<T> Sparse<T>::index (idx_vector&, 
+	idx_vector&, int) const): For the non permutated indexing case,
+	fix link list calculation and use.
+
 2007-12-17  John W. Eaton  <jwe@octave.org>
 
 	* Array.cc (Array<T>::indexN): Correctly handle scalar indexed by

@@ -1537,7 +1537,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 	  for (octave_idx_type i = 0; i < n; i++)
 	    {
 	      if (i % new_nr == 0)
-		retval.xcidx(i % new_nr) = ic;
+		retval.xcidx(i / new_nr) = ic;
 
 	      octave_idx_type ii = idx_arg.elem (i);
 	      if (ii == 0)
@@ -1946,10 +1946,9 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 			start_nodes[ii] = i;
 		      else
 			{
-			  struct idx_node inode = nodes[node];
-			  while (inode.next)
-			    inode = *inode.next;
-			  inode.next = nodes + i;
+			  while (nodes[node].next)
+			    node = nodes[node].next->i;
+			  nodes[node].next = nodes + i;
 			}
 		    }
 
@@ -1974,8 +1973,8 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 			      
 				  while (true)
 				    {
-				      if (inode.i >= 0 && 
-					  idx_i.elem (inode.i) < nc)
+				      if (idx_i.elem (inode.i) >= 0 && 
+					  idx_i.elem (inode.i) < nr)
 					new_nzmx ++;
 				      if (inode.next == 0)
 					break;
@@ -2011,8 +2010,8 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 			      
 				  while (true)
 				    {
-				      if (inode.i >= 0 && 
-					  idx_i.elem (inode.i) < nc)
+				      if (idx_i.elem (inode.i) >= 0 && 
+					  idx_i.elem (inode.i) < nr)
 					{
 					  X [inode.i] = data (i);
 					  retval.xridx (kk++) = inode.i;

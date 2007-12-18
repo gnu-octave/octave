@@ -811,6 +811,13 @@ gen_select_tests() {
 %!assert(as((size(as,1):-1:1),:),sparse(af((size(af,1):-1:1),:)))
 %!assert(as(:,(size(as,2):-1:1)),sparse(af(:,(size(af,2):-1:1))))
 
+%% Indexing tests
+%!assert(full(as([1,1],:)), af([1,1],:))
+%!assert(full(as(:,[1,1])), af(:,[1,1]))
+%!test
+%! [i,j,v] = find (as);
+%! assert (as(i(1),j(1))([1,1]), sparse([v(1),v(1)]))
+
 %% Assignment test
 %!test
 %! ts=as;ts(:,:)=ts(fliplr(1:size(as,1)),:);

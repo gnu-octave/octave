@@ -68,7 +68,7 @@ DEFBINOP (pow, sparse_complex_matrix, complex)
 {
   CAST_BINOP_ARGS (const octave_sparse_complex_matrix&, 
 		   const octave_complex&);
-  return xpow (v1.complex_matrix_value (), v2.scalar_value ());
+  return xpow (v1.complex_matrix_value (), v2.complex_value ());
 }
 
 DEFBINOP (ldiv, sparse_complex_matrix, complex)

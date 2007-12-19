@@ -1,3 +1,8 @@
+2007-12-19  Thomas Kasper  <ThomasKasper@gmx.net>
+
+	* OPERATORS/op-scm-cs.cc (DEFBINOP (pow)): Extract complex value
+	from second arg.
+
 2007-12-12  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/sparse.cc (Fsparse): Check for scalar arguments

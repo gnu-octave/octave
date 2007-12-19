@@ -790,6 +790,13 @@ EOF
 # =======================================================
 # sparse selection tests
 
+gen_scalar_select_tests () {
+    cat >>$TESTS <<EOF
+%!assert (sparse(42)([1,1]),sparse([42,42]))
+%!assert (sparse(42*1i)([1,1]),sparse([42,42].*1i))
+EOF
+}
+
 gen_select_tests() {
     cat >>$TESTS <<EOF
 %!test as=sparse(af);
@@ -1226,6 +1233,7 @@ else
 %! cidx = ceil(n*rand(1,ceil(rand*n))
 EOF
 fi
+gen_scalar_select_tests
 gen_select_tests
 echo '%!test af=real(af);' >> $TESTS
 gen_select_tests

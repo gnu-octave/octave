@@ -1973,8 +1973,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 			      
 				  while (true)
 				    {
-				      if (idx_i.elem (inode.i) >= 0 && 
-					  idx_i.elem (inode.i) < nr)
+				      if (idx_i.elem (inode.i) < nr)
 					new_nzmx ++;
 				      if (inode.next == 0)
 					break;
@@ -2010,8 +2009,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 			      
 				  while (true)
 				    {
-				      if (idx_i.elem (inode.i) >= 0 && 
-					  idx_i.elem (inode.i) < nr)
+				      if (idx_i.elem (inode.i) < nr)
 					{
 					  X [inode.i] = data (i);
 					  retval.xridx (kk++) = inode.i;

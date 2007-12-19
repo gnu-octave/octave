@@ -27,6 +27,7 @@ function varargout = __bar__ (vertical, func, varargin)
   ## Slightly smaller than 0.8 to avoid clipping issue in gnuplot 4.0
   width = 0.8 - 10 * eps; 
   group = true;
+  bv = 0;
 
   if (nargin < 3)
     print_usage ();
@@ -87,6 +88,10 @@ function varargout = __bar__ (vertical, func, varargin)
 	width = varargin{idx++};
       elseif (idx == nargin - 2)
 	newargs = [newargs,varargin(idx++)];
+      elseif (isstr (varargin{idx}) && strcmp (tolower (varargin{idx}), "basevalue") &&
+          isscalar (varargin{idx+1}))
+        bv = varargin{idx+1};
+        idx += 2;
       else
 	newargs = [newargs,varargin(idx:idx+1)];
 	idx += 2;
@@ -122,11 +127,11 @@ function varargout = __bar__ (vertical, func, varargin)
     xb(2:4:4*ylen,:) += offset;
     xb(3:4:4*ylen,:) += offset;
     xb(4:4:4*ylen,:) += offset;
-    y0 = zeros (size (y));
+    y0 = zeros (size (y)) + bv;
     y1 = y;
   else
     y1 = cumsum(y,2);
-    y0 = [zeros(ylen,1), y1(:,1:end-1)];
+    y0 = [zeros(ylen,1)+bv, y1(:,1:end-1)];
   endif
 
   yb = zeros (4*ylen, ycols);
@@ -145,7 +150,7 @@ function varargout = __bar__ (vertical, func, varargin)
       newplot ();
 
       tmp = __bars__ (h, vertical, x, y, xb, yb, width, group,
-		      have_line_spec, newargs{:});
+		      have_line_spec, bv, newargs{:});
       if (nargout == 1)
 	varargout{1} = tmp;
       endif

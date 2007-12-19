@@ -20,7 +20,10 @@
 
 ## Author: jwe
 
-function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spec, varargin)
+function tmp = __bars__ (h, vertical, x, y, xb, yb, width, group, have_color_spec, base_value, varargin)
+
+  ## Note, base_value is used by the Jhandles backend, which replaces
+  ## this function with its own version.
 
   ycols = columns (y);
   clim = get (h, "clim");

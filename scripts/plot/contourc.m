@@ -55,20 +55,22 @@
 ## @seealso{contour}
 ## @end deftypefn
 
-## Author: shaia
+## Author: Shai Ayal <shaiay@users.sourceforge.net>
 
 function [c, lev] = contourc (varargin)
 
   if (nargin == 1)
     vn = 10;
     z = varargin{1};
-    x = 1:size(z,2);
-    y = 1:size(z,1);
+    [nr, nc] = size (z);
+    x = 1:nc;
+    y = 1:nr;
   elseif (nargin == 2)
     vn = varargin{2};
     z = varargin{1};
-    x = 1:size(z,2);
-    y = 1:size(z,1);
+    [nr, nc] = size (z);
+    x = 1:nc;
+    y = 1:nr;
   elseif (nargin == 3)
     vn = 10;
     x = varargin{1};
@@ -89,25 +91,42 @@ function [c, lev] = contourc (varargin)
     vv = unique (sort (vn));
   endif
 
-  ## Vectorize the x,y vectors, assuming they are output from meshgrid.
-  if (! isvector (x))
-    x = x(1,:);
-  endif
+  if (isvector (x) && isvector (y))
+    c = __contourc__ (x(:)', y(:)', z, vv);
+  else
+    ## Indexes x,y for the purpose of __contourc__.    
+    ii = 1:size (z,2);
+    jj = 1:size (z,1);
+  
+    ## Now call __contourc__ for the real work...
+    c = __contourc__ (ii, jj, z, vv);
+  
+    ## Map the contour lines from index space (i,j) back 
+    ## to the original grid (x,y)
+    i = 1;
 
-  if (! isvector (y))
-    y = y(:,1);
-  endif
+    while (i < size (c,2))
+      clen = c(2, i);      
+      ind = i + [1 : clen];
 
-  ## Make everyone the right dimensions.
-  if (size (x, 2) == 1)
-    x = x';
-  endif
-  if (size (y, 2) == 1)
-    y = y';
-  endif
+      ci = c(1, ind);
+      cj = c(2,ind);
 
-  ## Now call __contourc__ for the real work...
-  c = __contourc__ (x, y, z, vv);
+      ## due to rounding errors some elements of ci and cj
+      ## can fall out of the range of ii and jj and interp2 would
+      ## return NA for those values. 
+      ## The permitted range is enforced here: 
+        
+      ci = max (ci, 1); ci = min (ci, size (z, 2));
+      cj = max (cj, 1); cj = min (cj, size (z, 1));
+        
+      c(1, ind) = interp2 (ii, jj, x, ci, cj);
+      c(2, ind) = interp2 (ii, jj, y, ci, cj);
+      
+      i = i + clen + 1;
+    endwhile
+  endif
+    
   if (nargout == 2)
     lev = vv;
   endif

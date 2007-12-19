@@ -49,7 +49,7 @@
 ## @seealso{contourc, patch, plot}
 ## @end deftypefn
 
-## Author: shaia
+## Author: Shai Ayal <shaiay@users.sourceforge.net>
 
 function [c, h] = contour (varargin)
 
@@ -74,3 +74,9 @@ endfunction
 %!demo
 %! [x, y, z] = peaks ();
 %! contour (x, y, z);
+
+%!demo
+%! [th, r] = meshgrid (linspace (0, 2*pi, 64), 0:.05:0.9);
+%! [X, Y] = pol2cart (th, r);
+%! f = ((X + i*Y).^4 - 1).^(1/4);
+%! contour(X, Y, abs(f), 16)

@@ -1,3 +1,8 @@
+2007-12-19  Alexander Barth  <barth.alexander@gmail.com>
+	    Peter A. Gustafson  <petegus@umich.edu>
+
+	* scripts/contourc.m: Allow usage of irregular spaced x, y data.
+
 2007-12-19  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/edit.m: New function.

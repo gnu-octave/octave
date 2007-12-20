@@ -2083,7 +2083,7 @@ function idx = load_package_dirs (lidx, idx, handle_deps, installed_pkgs_lst)
 endfunction
 
 function dep = is_architecture_dependent (nm)
-  persistent archdepsuffix = {".oct",".mex",".a",".so",".so.*",".dll","dylib"};
+  persistent archdepsuffix = {".oct",".mex",".a",".lib",".so",".so.*",".dll","dylib"};
 
   dep = false;
   for i = 1 : length (archdepsuffix)

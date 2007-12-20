@@ -413,7 +413,7 @@ function ret = default_user (long_form)
   ent = getpwuid (getuid);
   if (! isstruct (ent))
     ret = getenv ("USER");
-    if (isempty ())
+    if (isempty (ret))
       ret = getenv ("USERNAME");
     endif
   elseif (long_form)

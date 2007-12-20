@@ -535,9 +535,12 @@ speye(3) + 0
   0  0  1
 @end example
 
-returns a full matrix as can be seen. Additionally all sparse functions
-test the amount of memory occupied by the sparse matrix to see if the 
-amount of storage used is larger than the amount used by the full 
+returns a full matrix as can be seen. 
+
+
+Additionally, if @code{sparse_auto_mutate} is true, all sparse functions
+test the amount of memory occupied by the sparse matrix to see if the
+amount of storage used is larger than the amount used by the full
 equivalent. Therefore @code{speye (2) * 1} will return a full matrix as
 the memory used is smaller for the full version than the sparse version.
 
@@ -563,6 +566,11 @@ should return a sparse matrix. To ensure this actually happens, the
 @dfn{sparse} function, and other functions based on it like @dfn{speye}, 
 always returns a sparse matrix, even if the memory used will be larger 
 than its full representation.
+
+@DOCSTRING(sparse_auto_mutate)
+
+Note that the @code{sparse_auto_mutate} option is incompatible with
+@sc{Matlab}, and so it is off by default.
 
 @node MathConsiderations, , ReturnType, Operators and Functions
 @subsubsection Mathematical Considerations

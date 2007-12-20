@@ -58,7 +58,7 @@ function h = imshow (im, varargin)
     print_usage ();
   endif
 
-  display_range = [];
+  display_range = NA;
   true_color = false;
   indexed = false;
 
@@ -116,7 +116,7 @@ function h = imshow (im, varargin)
   endwhile
 
   ## Set default display range.
-  if (true_color || isempty (display_range))
+  if (isempty (display_range))
     display_range = [min(im(:)), max(im(:))];
   else
     t = class (im);
@@ -124,7 +124,10 @@ function h = imshow (im, varargin)
       case {"double", "single", "logical"}
 	display_range = [0, 1];
       case {"int8", "int16", "int32", "uint8", "uint16", "uint32"}
-	display_range = [intmin(t), intmax(t)];
+	## For compatibility, uint8 data should not be handled as
+	## double.  Doing so is a quick fix to allow the images to be
+	## displayed correctly.
+	display_range = double ([intmin(t), intmax(t)]);
       otherwise
 	error ("imshow: invalid data type for image");
     endswitch
@@ -144,17 +147,15 @@ function h = imshow (im, varargin)
   endif
 
   ## This is for compatibility.
-  if (ismember (class (im), {"int8", "int16", "uint32", "int32", "single"}))
+  if (! indexed || islogical (im))
     im = double (im);
   endif
 
   ## Scale the image to the interval [0, 1] according to display_range.
   if (! (true_color || indexed || islogical (im)))
-    class (im)
-im
-    low = display_range(1)
-    high = display_range(2)
-    im = (im-low)/(high-low)
+    low = display_range(1);
+    high = display_range(2);
+    im = (im-low)/(high-low);
     im(im < 0) = 0;
     im(im > 1) = 1;
   endif

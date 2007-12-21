@@ -1,7 +1,3 @@
-2007-12-21  John W. Eaton  <jwe@octave.org>
-
-	* general/bitcmp.m: Use round instead of ceil.
-
 2007-12-21  Soren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Accept empty value for display_range.

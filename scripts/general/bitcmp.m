@@ -46,7 +46,7 @@ function x = bitcmp (a, n)
 
   if (isa (a, "double"))
     bmax = bitmax;
-    amax = round (log2 (bmax));
+    amax = ceil (log2 (bmax));
   else
     if (isa (a, "uint8"))
       amax = 8;

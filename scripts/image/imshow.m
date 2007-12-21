@@ -92,7 +92,7 @@ function h = imshow (im, varargin)
   while (narg <= numel (varargin))
     arg = varargin{narg++};
     if (isnumeric (arg))
-      if (numel (arg) == 2)
+      if (numel (arg) == 2 || isempty (arg))
 	display_range = arg;
       elseif (columns (arg) == 3)
 	indexed = true;

@@ -76,7 +76,7 @@ endfunction
 %! contour (x, y, z);
 
 %!demo
-%! [th, r] = meshgrid (linspace (0, 2*pi, 64), 0:.05:0.9);
-%! [X, Y] = pol2cart (th, r);
-%! f = ((X + i*Y).^4 - 1).^(1/4);
-%! contour(X, Y, abs(f), 16)
+%! [theta, r] = meshgrid (linspace (0, 2*pi, 64), linspace(0,1,64));
+%! [X, Y] = pol2cart (theta, r);
+%! Z = sin(2*theta).*(1-r);
+%! contour(X, Y, abs(Z), 10)

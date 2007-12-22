@@ -1,3 +1,7 @@
+2007-12-21  John W. Eaton  <jwe@octave.org>
+
+	Version 3.0.0 released.
+
 2007-12-18  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (template <class T> Sparse<T> Sparse<T>::index 

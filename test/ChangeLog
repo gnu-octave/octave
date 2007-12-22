@@ -1,3 +1,7 @@
+2007-12-21  John W. Eaton  <jwe@octave.org>
+
+	Version 3.0.0 released.
+
 2007-12-18  David Bateman  <dbateman@free.fr>
 
 	* build_sparse_tests.sh: Add tests for indexing like a([1,1],:),

@@ -1,3 +1,11 @@
+2007-12-21  John W. Eaton  <jwe@octave.org>
+
+	Version 3.0.0 released.
+
+	* version.h (OCTAVE_VERSION): Now 3.0.0.
+	(OCTAVE_API_VERSION): Now api-v32.
+	(OCTAVE_RELEASE_DATE): Now 2007-12-21.
+
 2007-12-19  Thomas Kasper  <ThomasKasper@gmx.net>
 
 	* OPERATORS/op-scm-cs.cc (DEFBINOP (pow)): Extract complex value

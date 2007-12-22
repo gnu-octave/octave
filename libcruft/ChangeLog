@@ -1,3 +1,7 @@
+2007-12-21  John W. Eaton  <jwe@octave.org>
+
+	Version 3.0.0 released.
+
 2007-11-01  John W. Eaton  <jwe@octave.org>
 
 	* lapack-xtra/xzlange.f: Include complete implementation of ZLANGE

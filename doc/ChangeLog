@@ -1,3 +1,7 @@
+2007-12-21  John W. Eaton  <jwe@octave.org>
+
+	Version 3.0.0 released.
+
 2007-12-13  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (conf.texi): Also depend on $(top_srcdir)/src/version.h.

@@ -1,3 +1,7 @@
+2007-12-21  John W. Eaton  <jwe@octave.org>
+
+	Version 3.0.0 released.
+
 2007-12-21  Soren Hauberg  <hauberg@gmail.com>
 
 	* image/imshow.m: Accept empty value for display_range.

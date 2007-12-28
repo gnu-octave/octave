@@ -43,6 +43,7 @@ SOURCES = \
   __default_plot_options__.m \
   __errcomm__.m \
   __errplot__.m \
+  __ezplot__.m \
   __go_close_all__.m \
   __go_draw_axes__.m \
   __go_draw_figure__.m \
@@ -87,6 +88,14 @@ SOURCES = \
   drawnow.m \
   ellipsoid.m \
   errorbar.m \
+  ezcontourf.m \
+  ezcontour.m \
+  ezmeshc.m \
+  ezmesh.m \
+  ezplot3.m \\
+  ezpolar.m \
+  ezsurfc.m \
+  ezsurf.m \
   feather.m \
   figure.m \
   fill.m \

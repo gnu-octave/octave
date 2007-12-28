@@ -1,3 +1,14 @@
+2007-12-28  David Bateman  <dbateman@free.fr>
+
+	* ezcontourf.m, ezcontour.m, ezmeshc.m, ezmesh.m, ezplot3.m,
+	__ezplot__.m, ezpolar.m, ezsurfc.m, ezsurf.m: New functions.
+	* Makefile.in (SOURCES): Add to the sources.
+
+2007-12-28  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/pcolor.m: Swap 1st and 2nd argument in call to meshgrid.
+	Remove unnecessary call of size function.
+
 2007-12-21  John W. Eaton  <jwe@octave.org>
 
 	Version 3.0.0 released.

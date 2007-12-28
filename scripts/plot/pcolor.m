@@ -36,9 +36,9 @@ function h = pcolor (x, y, c)
 
   if (nargin == 1)
     c = x;
-    z = zeros (size (c));
-    [nr, nc] = size (c);
-    [x, y] = meshgrid (1:nr, 1:nc);
+    [nr, nc] = size(c);
+    z = zeros (nr, nc);
+    [x, y] = meshgrid (1:nc, 1:nr);
   elseif (nargin == 3)
     z = zeros (size (c));
   else

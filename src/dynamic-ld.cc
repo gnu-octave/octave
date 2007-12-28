@@ -35,6 +35,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "defun.h"
 #include "dynamic-ld.h"
+#include "ov-fcn.h"
+#include "ov-dld-fcn.h"
+#include "ov-mex-fcn.h"
 #include "parse.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -295,12 +298,7 @@ void do_clear_function (const std::string& fcn_name)
 {
   warning_with_id ("Octave:reload-forces-clear", "  %s", fcn_name.c_str ());
 
-  curr_sym_tab->clear (fcn_name);
-
-  if (curr_sym_tab != top_level_sym_tab)
-    top_level_sym_tab->clear (fcn_name);
-
-  fbi_sym_tab->clear (fcn_name);
+  symbol_table::clear_user_function (fcn_name);
 }
 
 static void
@@ -314,12 +312,12 @@ clear (octave_shlib& oct_file)
   octave_shlib_list::remove (oct_file, do_clear_function);
 }
 
-bool
+octave_function *
 octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 				    const std::string& file_name,
 				    bool relative)
 {
-  bool retval = false;
+  octave_function *retval = 0;
 
   octave_shlib oct_file;
 
@@ -330,7 +328,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
   doing_load = true;
 
   void *function
-    = octave_shlib_list::search (fcn_name, oct_file, mangle_name);
+    = octave_shlib_list::search (fcn_name, oct_file, xmangle_name);
 
   if (! error_state)
     {
@@ -377,7 +375,7 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 
 		      octave_shlib_list::append (oct_file);
 
-		      function = oct_file.search (fcn_name, mangle_name);
+		      function = oct_file.search (fcn_name, xmangle_name);
 		    }
 		  else
 		    ::error ("%s is not a valid shared library",
@@ -389,8 +387,8 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 
   if (function)
     {
-      octave_dld_fcn_installer f
-	= FCN_PTR_CAST (octave_dld_fcn_installer, function);
+      octave_dld_fcn_getter f
+	= FCN_PTR_CAST (octave_dld_fcn_getter, function);
 
       retval = f (oct_file, relative);
 
@@ -404,12 +402,12 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
   return retval;
 }
 
-bool
+octave_function *
 octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 				    const std::string& file_name,
 				    bool relative)
 {
-  bool retval = false;
+  octave_function *retval = 0;
 
   octave_shlib mex_file;
 
@@ -467,11 +465,7 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
     }
 
   if (function)
-    {
-      install_mex_function (function, have_fmex, fcn_name, mex_file, relative);
-
-      retval = true;
-    }
+    retval = new octave_mex_function (function, have_fmex, mex_file, fcn_name);
   else
     ::error ("failed to install .mex file function `%s'", fcn_name.c_str ());
   
@@ -499,22 +493,22 @@ octave_dynamic_loader::do_remove (const std::string& fcn_name, octave_shlib& shl
   return retval;
 }
 
-bool
+octave_function *
 octave_dynamic_loader::load_oct (const std::string& fcn_name,
-				 const std::string& file_name,
-				 bool relative)
+				  const std::string& file_name,
+				  bool relative)
 {
   return (instance_ok ())
-    ? instance->do_load_oct (fcn_name, file_name, relative) : false;
+    ? instance->do_load_oct (fcn_name, file_name, relative) : 0;
 }
 
-bool
+octave_function *
 octave_dynamic_loader::load_mex (const std::string& fcn_name,
-				 const std::string& file_name,
-				 bool relative)
+				  const std::string& file_name,
+				  bool relative)
 {
   return (instance_ok ())
-    ? instance->do_load_mex (fcn_name, file_name, relative) : false;
+    ? instance->do_load_mex (fcn_name, file_name, relative) : 0;
 }
 
 bool
@@ -530,6 +524,20 @@ octave_dynamic_loader::mangle_name (const std::string& name)
   std::string retval ("_FS");
 #else
   std::string retval ("FS");
+#endif
+  retval.append (name);
+  retval.append ("_");
+  retval.append (STRINGIFY (CXX_ABI));
+  return retval;
+}
+
+std::string
+octave_dynamic_loader::xmangle_name (const std::string& name)
+{
+#if defined (CXX_PREPENDS_UNDERSCORE)
+  std::string retval ("_G");
+#else
+  std::string retval ("G");
 #endif
   retval.append (name);
   retval.append ("_");

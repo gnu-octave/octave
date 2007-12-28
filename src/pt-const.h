@@ -29,14 +29,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-alloc.h"
 
-#include "pt-bp.h"
-#include "pt-exp.h"
-
 class octave_value_list;
-
 class tree_walker;
 
 #include "ov.h"
+#include "pt-bp.h"
+#include "pt-exp.h"
+#include "symtab.h"
 
 class
 tree_constant : public tree_expression
@@ -83,7 +82,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

@@ -2,7 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2003,
               2004, 2005, 2006, 2007 John W. Eaton
-
+  
 This file is part of Octave.
 
 Octave is free software; you can redistribute it and/or modify it
@@ -24,474 +24,19 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_symtab_h)
 #define octave_symtab_h 1
 
-#include <cassert>
-
-#include <string>
+#include <deque>
+#include <list>
+#include <map>
+#include <set>
 #include <stack>
-#include <sstream>
+#include <string>
 
-#include "oct-alloc.h"
-#include "str-vec.h"
+#include "glob-match.h"
 
+class tree_argument_list;
+
+#include "oct-obj.h"
 #include "ov.h"
-
-class octave_lvalue;
-
-class string_vector;
-
-class symbol_record;
-class symbol_table;
-
-struct
-whos_parameter
-{
-  char command;
-  char modifier;
-  int parameter_length;
-  int first_parameter_length;
-  int dimensions;
-  int balance;
-  std::string text;
-  std::string line;
-};
-
-// Individual records in a symbol table.
-
-class
-OCTINTERP_API
-symbol_record
-{
-public:
-
-  // If you add or delete an entry here, you'll also need to change
-  // the width parameter in the declaration for symbol_type below...
-
-  enum TYPE
-    {
-      UNKNOWN = 0,
-      USER_FUNCTION = 1,
-      USER_VARIABLE = 2,
-      DLD_FUNCTION = 4,
-      BUILTIN_FUNCTION = 8,
-      COMMAND = 16,
-      RAWCOMMAND = 32,
-      MAPPER_FUNCTION = 64,
-      MEX_FUNCTION = 128
-    };
-
-private:
-
-  // Variables or functions.
-
-  class symbol_def
-  {
-  public:
-
-    symbol_def (const octave_value& val = octave_value (),
-		unsigned int sym_type = 0)
-      : symbol_type (sym_type), read_only (0), help_string (),
-	definition (val), count (1) { }
-
-    ~symbol_def (void) { }
-
-    bool is_variable (void) const
-      { return (symbol_type & symbol_record::USER_VARIABLE); }
-
-    // It's not necessary to check for COMMAND and MAPPER_FUNCTION
-    // here.  Those tags are just used as additional qualifiers for
-    // the other types of functions.
-
-    bool is_function (void) const
-      {
-	return (symbol_type & symbol_record::USER_FUNCTION
-		|| symbol_type & symbol_record::DLD_FUNCTION
-		|| symbol_type & symbol_record::MEX_FUNCTION
-		|| symbol_type & symbol_record::BUILTIN_FUNCTION);
-      }
-
-    bool is_user_variable (void) const
-      { return (symbol_type & symbol_record::USER_VARIABLE); }
-
-    // Don't use |= here to avoid error with AIX compiler.
-    void mark_as_command (void)
-      { symbol_type = symbol_type | symbol_record::COMMAND; }
-
-    void unmark_command (void)
-      { symbol_type &= ~symbol_record::COMMAND; }
-
-    bool is_command (void) const
-      { return (symbol_type & symbol_record::COMMAND); }
-
-    void mark_as_rawcommand (void)
-      { symbol_type |= (symbol_record::COMMAND
-			| symbol_record::RAWCOMMAND); }
-
-    void unmark_rawcommand (void)
-      { symbol_type &= ~symbol_record::RAWCOMMAND; }
-
-    bool is_rawcommand (void) const
-      { return (symbol_type & symbol_record::RAWCOMMAND); }      
-
-    bool is_mapper_function (void) const
-      { return (symbol_type & symbol_record::MAPPER_FUNCTION); }
-
-    bool is_user_function (void) const
-      { return (symbol_type & symbol_record::USER_FUNCTION); }
-
-    bool is_builtin_function (void) const
-      { return (symbol_type & symbol_record::BUILTIN_FUNCTION); }
-
-    bool is_dld_function (void) const
-      { return (symbol_type & symbol_record::DLD_FUNCTION); }
-
-    bool is_mex_function (void) const
-      { return (symbol_type & symbol_record::MEX_FUNCTION); }
-
-    // FIXME
-    bool is_map_element (const std::string& /* elts */) const
-      { return false; }
-
-    bool is_defined (void) const
-      { return definition.is_defined (); }
-
-    bool is_read_only (void) const
-      { return read_only; }
-
-    bool is_matrix_type (void) const 
-      { return definition.is_matrix_type (); }
-
-    bool is_sparse_type (void) const
-      { return definition.is_sparse_type (); }
-
-    bool is_complex_type (void) const
-      { return definition.is_complex_type (); }
-
-    std::string class_name (void) const
-      { return definition.class_name (); }
-
-    Matrix size (void) const
-      { return definition.size (); }
-
-    size_t byte_size (void) const
-      { return definition.byte_size (); };
-
-    octave_idx_type numel (void) const
-      { return definition.numel (); };
-
-    octave_idx_type capacity (void) const
-      { return definition.capacity (); };
-
-    dim_vector dims (void) const 
-      { return definition.dims (); }
-
-    octave_idx_type rows (void) const { return definition.rows (); }
-    octave_idx_type columns (void) const { return definition.columns (); }
-
-    std::string type_name (void) const { return definition.type_name (); }
-
-    std::string type_as_string (void) const;
-
-    void type (std::ostream& os, const std::string& name, bool pr_type_info,
-	       bool quiet, bool pr_orig_txt);
-
-    std::string which (const std::string& name);
-
-    void which (std::ostream& os, const std::string& name);
-
-    void define (const octave_value& val, unsigned int sym_type)
-      {
-	definition = val;
-	symbol_type = sym_type;
-      }
-
-    void protect (void) { read_only = 1; }
-
-    void unprotect (void) { read_only = 0; }
-
-    octave_value& def (void) { return definition; }
-
-    std::string help (void) const { return help_string; }
-
-    void document (const std::string& h);
-
-    unsigned int type (void) { return symbol_type; }
-
-    void *operator new (size_t size)
-      { return allocator.alloc (size); }
-
-    void operator delete (void *p, size_t size)
-      { allocator.free (p, size); }
-
-    static octave_allocator allocator;
-
-    // The type of this symbol (see the enum above).
-    unsigned int symbol_type : 9;
-
-    // Nonzero means this variable cannot be given a new value.
-    unsigned int read_only : 1;
-
-    // The doc string associated with this variable.
-    std::string help_string;
-
-    // The value of this definition.  See ov.h and related files.
-    octave_value definition;
-
-    // Reference count.
-    int count;
-
-    void print_info (std::ostream& os,
-		     const std::string& prefix = std::string ()) const;
-
-    // No copying!
-
-    symbol_def (const symbol_def& sd);
-
-    symbol_def& operator = (const symbol_def& sd);
-  };
-
-public:
-
-  typedef int (*change_function) (void);
-
-  symbol_record (void)
-    : formal_param (false), automatic_variable (false),
-      linked_to_global (false), tagged_static (false),
-      can_hide_function (true), visible (true), eternal (false),
-      nm (), chg_fcn (0), definition (new symbol_def ()), next_elem (0) { }
-
-  // FIXME -- kluge alert!  We obviously need a better way of
-  // handling allow_shadow!
-
-  symbol_record (const std::string& n, symbol_record *nxt)
-    : formal_param (false), automatic_variable (false),
-      linked_to_global (false), tagged_static (false),
-      can_hide_function (n != "__end__"), visible (true),
-      eternal (false), nm (n), chg_fcn (0),
-      definition (new symbol_def ()), next_elem (nxt) { }
-
-  ~symbol_record (void)
-    {
-      if (--definition->count <= 0)
-	delete definition;
-    }
-
-  std::string name (void) const { return nm; }
-
-  std::string help (void) const { return definition->help (); }
-
-  octave_value& def (void) { return definition->def (); }
-
-  void rename (const std::string& new_name);
-
-  bool is_function (void) const
-    { return definition->is_function (); }
-
-  void mark_as_command (void)
-    { definition->mark_as_command (); }
-
-  void unmark_command (void)
-    { definition->unmark_command (); }
-
-  bool is_command (void) const
-    { return definition->is_command (); }
-
-  void mark_as_rawcommand (void)
-    { definition->mark_as_rawcommand (); }
-
-  void unmark_rawcommand (void)
-    { definition->unmark_rawcommand (); }
-
-  bool is_rawcommand (void) const
-    { return definition->is_rawcommand (); }    
-
-  bool is_mapper_function (void) const
-    { return definition->is_mapper_function (); }
-
-  bool is_user_function (void) const
-    { return definition->is_user_function (); }
-
-  bool is_builtin_function (void) const
-    { return definition->is_builtin_function (); }
-
-  bool is_dld_function (void) const
-    { return definition->is_dld_function (); }
-
-  bool is_mex_function (void) const
-    { return definition->is_mex_function (); }
-
-  bool is_variable (void) const
-    { return definition->is_variable (); }
-
-  bool is_user_variable (void) const
-    { return definition->is_user_variable (); }
-
-  bool is_map_element (const std::string& elts) const
-    { return definition->is_map_element (elts); }
-
-  unsigned int type (void) const { return definition->type (); }
-
-  bool is_defined (void) const { return definition->is_defined (); }
-
-  bool is_read_only (void) const { return definition->is_read_only (); }
-
-  bool is_eternal (void) const { return eternal; }
-
-  void protect (void) { definition->protect (); }
-
-  void unprotect (void) { definition->unprotect (); }
-
-  void make_eternal (void) { eternal = 1; }
-
-  void hide (void) { visible = false; }
-  void show (void) { visible = true; }
-  bool is_visible (void) const { return visible; }
-
-  void set_change_function (change_function f) { chg_fcn = f; }
-
-  void define (const octave_value& v, unsigned int sym_type = USER_VARIABLE);
-
-  bool define (octave_function *f, unsigned int sym_type);
-
-  void document (const std::string& h) { definition->document (h); }
-
-  void clear (void);
-
-  void alias (symbol_record *s, bool mark_to_clear = false);
-
-  void mark_as_formal_parameter (void);
-  bool is_formal_parameter (void) const { return formal_param; }
-
-  void mark_as_automatic_variable (void);
-  bool is_automatic_variable (void) const { return automatic_variable; }
-
-  void mark_as_linked_to_global (void);
-  bool is_linked_to_global (void) const { return linked_to_global; }
-
-  void mark_as_static (void);
-  bool is_static (void) const { return tagged_static; }
-  void unmark_static (void) { tagged_static = false; }
-
-  bool is_matrix_type (void) const 
-    { return definition->is_matrix_type (); }
-
-  bool is_sparse_type (void) const
-    { return definition->is_sparse_type (); }
-
-  bool is_complex_type (void) const
-    { return definition->is_complex_type (); }
-
-  std::string class_name (void) const
-    { return definition->class_name (); }
-
-  Matrix size (void) const
-    { return definition->size (); }
-
-  size_t byte_size (void) const
-    { return definition->byte_size (); };
-
-  octave_idx_type numel (void) const
-    { return definition->numel (); };
-
-  octave_idx_type capacity (void) const
-    { return definition->capacity (); };
-
-  dim_vector dims (void) const { return definition->dims (); }
-
-  int dimensions_string_req_first_space (int print_dims) const;
-
-  int dimensions_string_req_total_space (int print_dims) const;
-
-  std::string make_dimensions_string (int print_dims) const;
-
-  octave_idx_type rows (void) const { return definition->rows (); }
-  octave_idx_type columns (void) const { return definition->columns (); }
-
-  std::string type_name (void) const { return definition->type_name (); }
-
-  std::string type_as_string (void) const
-    { return definition->type_as_string (); }
-
-  void type (std::ostream& os, bool pr_type_info, bool quiet, bool pr_orig_txt)
-    { definition->type (os, name (), pr_type_info, quiet, pr_orig_txt); }
-
-  std::string which (void) { return definition->which (name ()); }
-
-  void which (std::ostream& os) { definition->which (os, name ()); }
-
-  octave_value& variable_value (void);
-  octave_lvalue variable_reference (void);
-
-  symbol_record *next (void) const { return next_elem; }
-
-  void chain (symbol_record *s) { next_elem = s; }
-
-  void push_context (void);
-
-  void pop_context (void);
-
-  void print_symbol_info_line (std::ostream& os,
-			       std::list<whos_parameter>& params) const;
-
-  void print_info (std::ostream& os,
-		   const std::string& prefix = std::string ()) const;
-
-private:
-
-  unsigned int formal_param : 1;
-  unsigned int automatic_variable : 1;
-  unsigned int linked_to_global : 1;
-  unsigned int tagged_static : 1;
-  unsigned int can_hide_function : 1;
-  unsigned int visible : 1;
-  unsigned int eternal : 1;
-
-  std::string nm;
-  change_function chg_fcn;
-  symbol_def *definition;
-  symbol_record *next_elem;
-
-  // This should maybe be one stack with a structure containing all the
-  // items we need to save for recursive calls...
-  std::stack <symbol_def *> context;
-  std::stack <unsigned int> global_link_context;
-
-  std::stack <symbol_record *> aliases_to_clear;
-
-  void push_alias_to_clear (symbol_record *s)
-    { aliases_to_clear.push (s); }
-
-  bool read_only_error (const char *action);
-
-  void maybe_delete_def (void)
-    {
-      if (--definition->count <= 0)
-        delete definition;
-    }
-
-  // No copying!
-
-  symbol_record (const symbol_record& s);
-
-  symbol_record& operator = (const symbol_record& s);
-};
-
-// A symbol table.
-
-#define SYMTAB_LOCAL_SCOPE 1
-#define SYMTAB_GLOBAL_SCOPE 2
-
-#define SYMTAB_ALL_SCOPES (SYMTAB_LOCAL_SCOPE | SYMTAB_GLOBAL_SCOPE)
-
-#define SYMTAB_ALL_TYPES (symbol_record::USER_FUNCTION \
-			  | symbol_record::USER_VARIABLE \
-			  | symbol_record::DLD_FUNCTION \
-			  | symbol_record::BUILTIN_FUNCTION \
-			  | symbol_record::COMMAND \
-  			  | symbol_record::RAWCOMMAND \
-			  | symbol_record::MAPPER_FUNCTION \
-			  | symbol_record::MEX_FUNCTION)
-
-#define SYMTAB_VARIABLES (symbol_record::USER_VARIABLE)
 
 class
 OCTINTERP_API
@@ -499,135 +44,1737 @@ symbol_table
 {
 public:
 
-  symbol_table (unsigned int tab_size = 64,
-		const std::string& nm = std::string ())
-    : table_size (tab_size), table (new symbol_record [table_size]),
-      table_name (nm)
-    {
-      assert ((tab_size % 2) == 0);
+  typedef int scope_id;
 
-      if (table_name.empty ())
+  class
+  symbol_record
+  {
+  public:
+
+    // generic variable
+    static const unsigned int local = 1;
+
+    // varargin, argn, .nargin., .nargout.
+    // (FIXME -- is this really used now?)
+    static const unsigned int automatic = 2;
+
+    // formal parameter
+    static const unsigned int formal = 4;
+
+    // not listed or cleared (.nargin., .nargout.)
+    static const unsigned int hidden = 8;
+
+    // inherited from parent scope; not cleared at function exit
+    static const unsigned int inherited = 16;
+
+    // global (redirects to global scope)
+    static const unsigned int global = 32;
+
+    // not cleared at function exit
+    static const unsigned int persistent = 64;
+
+  private:
+
+    class
+    symbol_record_rep
+    {
+    public:
+
+      symbol_record_rep (const std::string& nm, const octave_value& v,
+			 unsigned int sc)
+	: name (nm), value_stack (), storage_class (sc), count (1)
+      {
+	value_stack.push (v);
+      }
+
+      octave_value& varref (void) { return value_stack.top (); }
+
+      octave_value varval (void) const { return value_stack.top (); }
+
+      void push_context (void) { value_stack.push (octave_value ()); }
+
+      void pop_context (void) { value_stack.pop (); }
+
+      void clear (void)
+      {
+	if (! (is_hidden () || is_inherited ()))
+	  {
+	    if (is_global ())
+	      unmark_global ();
+
+	    if (is_persistent ())
+	      {
+		symbol_table::persistent_varref (name) = varval ();
+		unmark_persistent ();
+	      }
+
+	    varref () = octave_value ();
+	  }
+      }
+
+      bool is_defined (void) const { return varval ().is_defined (); }
+
+      bool is_variable (void) const
+      {
+	return (storage_class != local || is_defined ());
+      }
+
+      bool is_local (void) const { return storage_class & local; }
+      bool is_automatic (void) const { return storage_class & automatic; }
+      bool is_formal (void) const { return storage_class & formal; }
+      bool is_hidden (void) const { return storage_class & hidden; }
+      bool is_inherited (void) const { return storage_class & inherited; }
+      bool is_global (void) const { return storage_class & global; }
+      bool is_persistent (void) const { return storage_class & persistent; }
+
+      void mark_local (void) { storage_class |= local; }
+      void mark_automatic (void) { storage_class |= automatic; }
+      void mark_formal (void) { storage_class |= formal; }
+      void mark_hidden (void) { storage_class |= hidden; }
+      void mark_inherited (void) { storage_class |= inherited; }
+      void mark_global (void)
+      {
+	if (is_persistent ())
+	  error ("can't make persistent variable %s global", name.c_str ());
+	else
+	  storage_class |= global;
+      }
+      void mark_persistent (void)
+      {
+	if (is_global ())
+	  error ("can't make global variable %s persistent", name.c_str ());
+	else
+	  storage_class |= persistent;
+      }
+
+      void unmark_local (void) { storage_class &= ~local; }
+      void unmark_automatic (void) { storage_class &= ~automatic; }
+      void unmark_formal (void) { storage_class &= ~formal; }
+      void unmark_hidden (void) { storage_class &= ~hidden; }
+      void unmark_inherited (void) { storage_class &= ~inherited; }
+      void unmark_global (void) { storage_class &= ~global; }
+      void unmark_persistent (void) { storage_class &= ~persistent; }
+
+      void init_persistent (void)
+      {
+	if (! is_defined ())
+	  {
+	    mark_persistent ();
+
+	    varref () = symbol_table::persistent_varval (name);
+	  }
+	// FIXME -- this causes trouble with recursive calls.
+	// else
+	//   error ("unable to declare existing variable persistent");
+      }
+
+      void erase_persistent (void)
+      {
+	unmark_persistent ();
+	symbol_table::erase_persistent (name);
+      }
+
+      symbol_record_rep *dup (void)
+      {
+	return new symbol_record_rep (name, varval (), storage_class);
+      }
+
+      std::string name;
+
+      std::stack<octave_value> value_stack;
+
+      unsigned int storage_class;
+
+      size_t count;
+
+    private:
+
+      // No copying!
+
+      symbol_record_rep (const symbol_record_rep& ov);
+
+      symbol_record_rep& operator = (const symbol_record_rep&);
+    };
+
+  public:
+
+    symbol_record (const std::string& nm = std::string (),
+		   const octave_value& v = octave_value (),
+		   unsigned int sc = local)
+      : rep (new symbol_record_rep (nm, v, sc)) { }
+
+    symbol_record (const symbol_record& sr)
+      : rep (sr.rep)
+    { 
+      rep->count++;
+    }
+
+    symbol_record& operator = (const symbol_record& sr)
+    {
+      if (this != &sr)
 	{
-	  std::ostringstream buf;
-	  buf << symtab_count++;
-	  table_name = buf.str ();
+	  rep = sr.rep;
+	  rep->count++;
 	}
+
+      return *this;
     }
 
-  ~symbol_table (void);
-
-  symbol_record *lookup (const std::string& nm, bool insert = false,
-			 bool warn = false);
-
-  void rename (const std::string& old_name, const std::string& new_name);
-
-  void clear (void);
-
-  void clear_variables (void);
-  void clear_functions (void);
-  void clear_mex_functions (void);
-  void clear_globals (void);
-
-  bool clear (const std::string& nm);
-
-  bool clear_variable (const std::string& nm);
-  bool clear_function (const std::string& nm);
-  bool clear_global (const std::string& nm);
-
-  bool clear_variable_pattern (const std::string& pat);
-  bool clear_function_pattern (const std::string& pat);
-  bool clear_global_pattern (const std::string& pat);
-
-  int size (void) const;
-
-  Array<symbol_record *>
-  subsymbol_list (const string_vector& pats = string_vector (),
-		  unsigned int type = SYMTAB_ALL_TYPES,
-		  unsigned int scope = SYMTAB_ALL_SCOPES) const;
-
-  Array<symbol_record *>
-  symbol_list (const string_vector& pats = string_vector (),
-	       unsigned int type = SYMTAB_ALL_TYPES,
-	       unsigned int scope = SYMTAB_ALL_SCOPES) const;
-
-
-  string_vector
-  name_list (const string_vector& pats = string_vector (),
-	     bool sort = false, unsigned int type = SYMTAB_ALL_TYPES,
-	     unsigned int scope = SYMTAB_ALL_SCOPES) const;
-
-  string_vector
-  user_function_name_list (void) const
+    ~symbol_record (void)
     {
-      return name_list
-	(string_vector (), false,
-	 symbol_record::USER_FUNCTION|symbol_record::DLD_FUNCTION|symbol_record::MEX_FUNCTION,
-	 SYMTAB_ALL_SCOPES);
+      if (--rep->count == 0)
+	delete rep;
     }
 
-  string_vector
-  global_variable_name_list (void) const
+    symbol_record dup (void) const { return symbol_record (rep->dup ()); }
+
+    std::string name (void) const { return rep->name; }
+
+    octave_value
+    find (tree_argument_list *args, const string_vector& arg_names,
+	  octave_value_list& evaluated_args, bool& args_evaluated) const;
+
+    octave_value& varref (void)
     {
-      return name_list
-	(string_vector (), false, SYMTAB_VARIABLES, SYMTAB_GLOBAL_SCOPE);
+      return is_global ()
+	? symbol_table::varref (name (), symbol_table::global_scope ())
+	: rep->varref ();
     }
 
-  string_vector
-  variable_name_list (void) const
+    octave_value varval (void) const
     {
-      return name_list
-	(string_vector (), false, SYMTAB_VARIABLES, SYMTAB_LOCAL_SCOPE);
+      return is_global ()
+	? symbol_table::varval (name (), symbol_table::global_scope ())
+	: rep->varval ();
     }
 
-  int maybe_list (const char *header, const string_vector& argv,
-		  std::ostream& os, bool show_verbose,
-		  unsigned type, unsigned scope);
-  
-  Array<symbol_record *> glob (const std::string& pat = std::string ("*"),
-			       unsigned int type = SYMTAB_ALL_TYPES,
-			       unsigned int scope = SYMTAB_ALL_SCOPES) const;
+    void push_context (void)
+    {
+      if (! (is_persistent () || is_global ()))
+	rep->push_context ();
+    }
 
-  void push_context (void);
+    void pop_context (void)
+    {
+      if (! (is_persistent () || is_global ()))
+	rep->pop_context ();
+    }
 
-  void pop_context (void);
+    void clear (void) { rep->clear (); }
 
-  // Create a new symbol table with the same entries.  Only the symbol
-  // names and some attributes are copied, not values.
-  symbol_table *dup (void);
+    bool is_defined (void) const { return rep->is_defined (); }
+    bool is_variable (void) const { return rep->is_variable (); }
 
-  // Inherit some values from the parent_sym_tab.
-  void inherit (symbol_table *parent_sym_tab);
+    bool is_local (void) const { return rep->is_local (); }
+    bool is_automatic (void) const { return rep->is_automatic (); }
+    bool is_formal (void) const { return rep->is_formal (); }
+    bool is_global (void) const { return rep->is_global (); }
+    bool is_hidden (void) const { return rep->is_hidden (); }
+    bool is_inherited (void) const { return rep->is_inherited (); }
+    bool is_persistent (void) const { return rep->is_persistent (); }
 
-  void print_info (std::ostream& os) const;
+    void mark_local (void) { rep->mark_local (); }
+    void mark_automatic (void) { rep->mark_automatic (); }
+    void mark_formal (void) { rep->mark_formal (); }
+    void mark_hidden (void) { rep->mark_hidden (); }
+    void mark_inherited (void) { rep->mark_inherited (); }
+    void mark_global (void) { rep->mark_global (); }
+    void mark_persistent (void) { rep->mark_persistent (); }
+
+    void unmark_local (void) { rep->unmark_local (); }
+    void unmark_automatic (void) { rep->unmark_automatic (); }
+    void unmark_formal (void) { rep->unmark_formal (); }
+    void unmark_hidden (void) { rep->unmark_hidden (); }
+    void unmark_inherited (void) { rep->unmark_inherited (); }
+    void unmark_global (void) { rep->unmark_global (); }
+    void unmark_persistent (void) { rep->unmark_persistent (); }
+
+    void init_persistent (void) { rep->init_persistent (); }
+
+    void erase_persistent (void) { rep->erase_persistent (); }
+
+    unsigned int xstorage_class (void) const { return rep->storage_class; }
+
+  private:
+
+    symbol_record_rep *rep;
+
+    symbol_record (symbol_record_rep *new_rep) : rep (new_rep) { }
+  };
+
+  class
+  fcn_info
+  {
+  public:
+
+    typedef std::map<std::string, std::string> dispatch_map_type;
+
+    typedef std::map<scope_id, octave_value>::const_iterator const_scope_val_iterator;
+    typedef std::map<scope_id, octave_value>::iterator scope_val_iterator;
+
+    typedef std::map<std::string, octave_value>::const_iterator const_str_val_iterator;
+    typedef std::map<std::string, octave_value>::iterator str_val_iterator;
+
+    typedef dispatch_map_type::const_iterator const_dispatch_map_iterator;
+    typedef dispatch_map_type::iterator dispatch_map_iterator;
+
+  private:
+
+    class
+    fcn_info_rep
+    {
+    public:
+
+      fcn_info_rep (const std::string& nm)
+	: name (nm), subfunctions (), private_functions (),
+	  class_constructors (), class_methods (), cmdline_function (),
+	  autoload_function (), function_on_path (), built_in_function (),
+	  count (1) { }
+
+      octave_value load_private_function (const std::string& dir_name);
+
+      octave_value load_class_constructor (void);
+
+      octave_value load_class_method (const std::string& dispatch_type);
+
+      octave_value
+      find (tree_argument_list *args, const string_vector& arg_names,
+	    octave_value_list& evaluated_args, bool& args_evaluated,
+	    scope_id scope);
+
+      octave_value find_method (const std::string& dispatch_type);
+
+      octave_value find_autoload (void);
+
+      octave_value find_user_function (void);
+
+      bool is_user_function_defined (void) const
+      {
+	return function_on_path.is_defined ();
+      }
+
+      octave_value find_function (scope_id scope)
+      {
+	octave_value_list args;
+
+	return find_function (args, scope);
+      }
+
+      octave_value find_function (const octave_value_list& args,
+				  scope_id scope)
+      {
+	string_vector arg_names;
+	octave_value_list evaluated_args = args;
+	bool args_evaluated;
+
+	return find (0, arg_names, evaluated_args, args_evaluated, scope);
+      }
+
+      void install_cmdline_function (const octave_value& f)
+      {
+	cmdline_function = f;
+      }
+
+      void install_subfunction (const octave_value& f, scope_id scope)
+      {
+	subfunctions[scope] = f;
+      }
+
+      void install_user_function (const octave_value& f)
+      {
+	function_on_path = f;
+      }
+
+      void install_built_in_function (const octave_value& f)
+      {
+	built_in_function = f;
+      }
+
+      void clear (void)
+      {
+	subfunctions.clear ();
+	private_functions.clear ();
+	class_constructors.clear ();
+	class_methods.clear ();
+	cmdline_function = octave_value ();
+	autoload_function = octave_value ();
+	function_on_path = octave_value ();
+      }
+
+      // FIXME -- should this also clear the cmdline and other "user
+      // defined" functions?
+      void clear_user_function (void)
+      {
+	function_on_path = octave_value ();
+      }
+
+      void clear_mex_function (void)
+      {
+	if (function_on_path.is_mex_function ())
+	  function_on_path = octave_value ();
+      }
+
+      void add_dispatch (const std::string& type, const std::string& fname)
+      {
+	dispatch_map[type] = fname;
+      }
+
+      void clear_dispatch (const std::string& type)
+      {
+	dispatch_map_iterator p = dispatch_map.find (type);
+
+	if (p != dispatch_map.end ())
+	  dispatch_map.erase (p);
+      }
+
+      void print_dispatch (std::ostream& os) const;
+
+      std::string help_for_dispatch (void) const;
+
+      dispatch_map_type get_dispatch (void) const { return dispatch_map; }
+
+      std::string name;
+
+      // Scope id to function object.
+      std::map<scope_id, octave_value> subfunctions;
+
+      // Directory name to function object.
+      std::map<std::string, octave_value> private_functions;
+
+      // Class name to function object.
+      std::map<std::string, octave_value> class_constructors;
+
+      // Dispatch type to function object.
+      std::map<std::string, octave_value> class_methods;
+
+      // Legacy dispatch map (dispatch type name to function name).
+      dispatch_map_type dispatch_map;
+
+      octave_value cmdline_function;
+
+      octave_value autoload_function;
+
+      octave_value function_on_path;
+
+      octave_value built_in_function;
+
+      size_t count;
+
+    private:
+
+      // No copying!
+
+      fcn_info_rep (const fcn_info_rep&);
+
+      fcn_info_rep& operator = (const fcn_info_rep&);
+    };
+
+  public:
+
+    fcn_info (const std::string& nm = std::string ())
+      : rep (new fcn_info_rep (nm)) { }
+
+    fcn_info (const fcn_info& ov) : rep (ov.rep)
+    { 
+      rep->count++;
+    }
+
+    fcn_info& operator = (const fcn_info& ov)
+    {
+      if (this != &ov)
+	{
+	  rep = ov.rep;
+	  rep->count++;
+	}
+
+      return *this;
+    }
+
+    ~fcn_info (void)
+    {
+      if (--rep->count == 0)
+	delete rep;
+    }
+
+    octave_value
+    find (tree_argument_list *args, const string_vector& arg_names,
+	  octave_value_list& evaluated_args, bool& args_evaluated,
+	  scope_id scope);
+
+    octave_value find_method (const std::string& dispatch_type) const
+    {
+      return rep->find_method (dispatch_type);
+    }
+
+    octave_value find_built_in_function (void) const
+    {
+      return rep->built_in_function;
+    }
+
+    octave_value find_autoload (void)
+    {
+      return rep->find_autoload ();
+    }
+
+    octave_value find_user_function (void)
+    {
+      return rep->find_user_function ();
+    }
+
+    bool is_user_function_defined (void) const
+    {
+      return rep->is_user_function_defined ();
+    }
+
+    octave_value find_function (scope_id scope)
+    {
+      return rep->find_function (scope);
+    }
+
+    octave_value find_function (const octave_value_list& args,
+				scope_id scope)
+    {
+      return rep->find_function (args, scope);
+    }
+
+    void install_cmdline_function (const octave_value& f)
+    {
+      rep->install_cmdline_function (f);
+    }
+
+    void install_subfunction (const octave_value& f, scope_id scope)
+    {
+      rep->install_subfunction (f, scope);
+    }
+
+    void install_user_function (const octave_value& f)
+    {
+      rep->install_user_function (f);
+    }
+
+    void install_built_in_function (const octave_value& f)
+    {
+      rep->install_built_in_function (f);
+    }
+
+    void clear (void) { rep->clear (); }
+    
+    void clear_user_function (void) { rep->clear_user_function (); }
+    
+    void clear_mex_function (void) { rep->clear_mex_function (); }
+    
+    void add_dispatch (const std::string& type, const std::string& fname)
+    {
+      rep->add_dispatch (type, fname);
+    }
+
+    void clear_dispatch (const std::string& type)
+    {
+      rep->clear_dispatch (type);
+    }
+
+    void print_dispatch (std::ostream& os) const
+    {
+      rep->print_dispatch (os);
+    }
+
+    std::string help_for_dispatch (void) const { return rep->help_for_dispatch (); }
+
+    dispatch_map_type get_dispatch (void) const
+    {
+      return rep->get_dispatch ();
+    }
+
+  private:
+
+    fcn_info_rep *rep;
+  };
+
+  static scope_id global_scope (void) { return xglobal_scope; }
+  static scope_id top_scope (void) { return xtop_scope; }
+
+  static scope_id current_scope (void) { return xcurrent_scope; }
+  static scope_id current_caller_scope (void) { return xcurrent_caller_scope; }
+
+  // We use parent_scope to handle parsing subfunctions.
+  static scope_id parent_scope (void) { return xparent_scope; }
+
+  static scope_id alloc_scope (void)
+  {
+    scope_id retval;
+
+    scope_ids_free_list_iterator p = scope_ids_free_list.begin ();
+
+    if (p != scope_ids_free_list.end ())
+      {
+	retval = *p;
+	scope_ids_free_list.erase (p);
+      }
+    else
+      retval = next_available_scope++;
+
+    scope_ids_in_use.insert (retval);
+
+    return retval;
+  }
+
+  static void set_scope (scope_id scope)
+  {
+    if (scope == xglobal_scope)
+      error ("can't set scope to global");
+    else if (scope != xcurrent_scope)
+      {
+	all_instances_iterator p = all_instances.find (scope);
+
+	if (p == all_instances.end ())
+	  {
+	    instance = new symbol_table ();
+
+	    all_instances[scope] = instance;
+	  }
+	else
+	  instance = p->second;
+
+	xcurrent_scope = scope;
+      }
+  }
+
+  static void push_scope (scope_id scope)
+  {
+    if (scope_stack.empty ())
+      scope_stack.push_front (xtop_scope);
+
+    xcurrent_caller_scope = xcurrent_scope;
+
+    set_scope (scope);
+
+    scope_stack.push_front (scope);
+  }
+
+  static void pop_scope (void)
+  {
+    scope_stack.pop_front ();
+
+    set_scope (scope_stack[0]);
+
+    xcurrent_caller_scope = scope_stack[1];
+  }
+
+  static void pop_scope (void *) { pop_scope (); }
+
+  static void reset_scope (void)
+  {
+    scope_stack.clear ();
+
+    scope_stack.push_front (xtop_scope);
+
+    set_scope (xtop_scope);
+
+    xcurrent_caller_scope = -1;
+  }
+
+  static void set_parent_scope (scope_id scope)
+  {
+    xparent_scope = scope;
+  }
+
+  static void reset_parent_scope (void)
+  {
+    set_parent_scope (-1);
+  }
+
+  static void erase_scope (scope_id scope = xcurrent_scope)
+  {
+    all_instances_iterator p = all_instances.find (scope);
+
+    if (p != all_instances.end ())
+      all_instances.erase (p);
+
+    // free_scope (scope);
+  }
+
+  static scope_id dup_scope (scope_id scope = xcurrent_scope)
+  {
+    scope_id retval = -1;
+
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      {
+	scope_id new_scope = alloc_scope ();
+
+	symbol_table *new_symbol_table = new symbol_table ();
+
+	if (new_symbol_table)
+	  {
+	    all_instances[new_scope] = new_symbol_table;
+
+	    inst->do_dup_scope (*new_symbol_table);
+
+	    retval = new_scope;
+	  }
+      }
+
+    return retval;
+  }
+
+#if 0
+  static void print_scope (const std::string& tag, scope_id scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      {
+	std::cerr << "printing " << tag << ", scope: " << scope
+		  << ", inst: " << inst << std::endl;
+
+	inst->do_print_scope (std::cerr);
+      }
+  }
+
+  void do_print_scope (std::ostream& os) const
+  {
+    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	symbol_record sr = p->second;
+
+	octave_value val = sr.varval ();
+
+	if (val.is_defined ())
+	  sr.varval ().print_with_name (os, sr.name ());
+	else
+	  os << sr.name () << " is not defined" << std::endl;
+      }
+  }
+#endif
+
+  static symbol_record find_symbol (const std::string& name,
+				    scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_find_symbol (name) : symbol_record ();
+  }
+
+  static void inherit (scope_id scope, scope_id donor_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_inherit (donor_scope);
+  }
+
+  static bool at_top_level (void) { return xcurrent_scope == xtop_scope; }
+
+  // Find a value corresponding to the given name in the table.
+  static octave_value
+  find (const std::string& name, tree_argument_list *args,
+	const string_vector& arg_names,
+	octave_value_list& evaluated_args, bool& args_evaluated,
+	scope_id scope = xcurrent_scope, bool skip_variables = false);
+
+  // Insert a new name in the table.
+  static symbol_record&
+  insert (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    static symbol_record foobar;
+
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_insert (name) : foobar;
+  }
+
+  static octave_value&
+  varref (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    static octave_value foobar;
+
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_varref (name) : foobar;
+  }
+
+  static octave_value
+  varval (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_varval (name) : octave_value ();
+  }
+
+  static octave_value&
+  persistent_varref (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    static octave_value foobar;
+
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_persistent_varref (name) : foobar;
+  }
+
+  static octave_value
+  persistent_varval (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_persistent_varval (name) : octave_value ();
+  }
+
+  static void
+  erase_persistent (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_erase_persistent (name);
+  }
+
+  static bool
+  is_variable (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_is_variable (name) : false;
+  }
+
+  static bool
+  is_built_in_function_name (const std::string& name)
+  {
+    octave_value val = find_built_in_function (name);
+
+    return val.is_defined ();
+  }
+
+  static octave_value
+  find_method (const std::string& name, const std::string& dispatch_type)
+  {
+    const_fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      return p->second.find_method (dispatch_type);
+    else
+      {
+	fcn_info finfo (name);
+
+	octave_value fcn = finfo.find_method (dispatch_type);
+
+	if (fcn.is_defined ())
+	  fcn_table[name] = finfo;
+
+	return fcn;
+      }
+  }
+
+  static octave_value
+  find_built_in_function (const std::string& name)
+  {
+    const_fcn_table_iterator p = fcn_table.find (name);
+
+    return (p != fcn_table.end ())
+      ? p->second.find_built_in_function () : octave_value ();
+  }
+
+  static octave_value
+  find_autoload (const std::string& name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    return (p != fcn_table.end ())
+      ? p->second.find_autoload () : octave_value ();
+  }
+
+  static octave_value
+  find_function (const std::string& name, tree_argument_list *args,
+		 const string_vector& arg_names,
+		 octave_value_list& evaluated_args, bool& args_evaluated,
+		 scope_id scope = xcurrent_scope);
+
+  static octave_value
+  find_user_function (const std::string& name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    return (p != fcn_table.end ())
+      ? p->second.find_user_function () : octave_value ();
+  }
+
+  static octave_value
+  find_function (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    octave_value_list evaluated_args;
+
+    return find_function (name, evaluated_args, scope);
+  }
+
+  static octave_value
+  find_function (const std::string& name, const octave_value_list& args,
+		 scope_id scope = xcurrent_scope)
+  {
+    string_vector arg_names;
+    octave_value_list evaluated_args = args;
+    bool args_evaluated = ! args.empty ();
+
+    return find_function (name, 0, arg_names, evaluated_args,
+			  args_evaluated, scope);
+  }
+
+  static void install_cmdline_function (const std::string& name,
+					const octave_value& fcn)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.install_cmdline_function (fcn);
+      }
+    else
+      {
+	fcn_info finfo (name);
+
+	finfo.install_cmdline_function (fcn);
+
+	fcn_table[name] = finfo;
+      }
+  }
+
+  static void install_subfunction (const std::string& name,
+				   const octave_value& fcn,
+				   scope_id scope = xparent_scope)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.install_subfunction (fcn, scope);
+      }
+    else
+      {
+	fcn_info finfo (name);
+
+	finfo.install_subfunction (fcn, scope);
+
+	fcn_table[name] = finfo;
+      }
+  }
+
+  static void install_user_function (const std::string& name,
+				     const octave_value& fcn)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.install_user_function (fcn);
+      }
+    else
+      {
+	fcn_info finfo (name);
+
+	finfo.install_user_function (fcn);
+
+	fcn_table[name] = finfo;
+      }
+  }
+
+  static void install_built_in_function (const std::string& name,
+					 const octave_value& fcn)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.install_built_in_function (fcn);
+      }
+    else
+      {
+	fcn_info finfo (name);
+
+	finfo.install_built_in_function (fcn);
+
+	fcn_table[name] = finfo;
+      }
+  }
+
+  static void clear (const std::string& name, scope_id scope = xcurrent_scope)
+  {
+    clear_variable (name, scope);
+  }
+
+  static void clear_all (void)
+  {
+    clear_variables ();
+
+    clear_functions ();
+  }
+
+  static void clear_variables (scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_clear_variables ();
+  }
+
+  // For unwind_protect.
+  static void clear_variables (void *) { clear_variables (); }
+
+  static void clear_functions (void)
+  {
+    for (fcn_table_iterator p = fcn_table.begin (); p != fcn_table.end (); p++)
+      p->second.clear ();
+  }
+
+  static void clear_function (const std::string& name)
+  {
+    clear_user_function (name);
+  }
+
+  static void clear_global (const std::string& name,
+			    scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_clear_global (name);
+  }
+
+  static void clear_variable (const std::string& name,
+			      scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_clear_variable (name);
+  }
+
+  static void clear_symbol (const std::string& name)
+  {
+    // FIXME -- are we supposed to do both here?
+
+    clear_variable (name);
+    clear_function (name);
+  }
+
+  static void clear_function_pattern (const std::string& pat)
+  {
+    glob_match pattern (pat);
+
+    for (fcn_table_iterator p = fcn_table.begin (); p != fcn_table.end (); p++)
+      {
+	if (pattern.match (p->first))
+	  p->second.clear_user_function ();
+      }
+  }
+
+  static void clear_global_pattern (const std::string& pat,
+				    scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_clear_global_pattern (pat);
+  }
+
+  static void clear_variable_pattern (const std::string& pat,
+				      scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_clear_variable_pattern (pat);
+  }
+
+  static void clear_symbol_pattern (const std::string& pat)
+  {
+    // FIXME -- are we supposed to do both here?
+
+    clear_variable_pattern (pat);
+    clear_function_pattern (pat);
+  }
+
+  static void clear_user_function (const std::string& name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.clear_user_function ();
+      }
+    // FIXME -- is this necessary, or even useful?
+    // else
+    //   error ("clear: no such function `%s'", name.c_str ());
+  }
+
+  static void clear_mex_functions (void)
+  {
+    for (fcn_table_iterator p = fcn_table.begin (); p != fcn_table.end (); p++)
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.clear_mex_function ();
+      }
+  }
+
+  static void alias_built_in_function (const std::string& alias,
+				       const std::string& name)
+  {
+    octave_value fcn = find_built_in_function (name);
+
+    if (fcn.is_defined ())
+      {
+	fcn_info finfo (alias);
+
+	finfo.install_built_in_function (fcn);
+
+	fcn_table[alias] = finfo;
+      }
+    else
+      panic ("alias: `%s' is undefined", name.c_str ());
+  }
+
+  static void add_dispatch (const std::string& name, const std::string& type,
+			    const std::string& fname)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.add_dispatch (type, fname);
+      }
+    else
+      {
+	fcn_info finfo (name);
+
+	finfo.add_dispatch (type, fname);
+
+	fcn_table[name] = finfo;
+      }
+  }
+
+  static void clear_dispatch (const std::string& name, const std::string& type)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.clear_dispatch (type);
+      }
+  }
+
+  static void print_dispatch (std::ostream& os, const std::string& name)
+  {
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	finfo.print_dispatch (os);
+      }
+  }
+
+  static fcn_info::dispatch_map_type get_dispatch (const std::string& name)
+  {
+    fcn_info::dispatch_map_type retval;
+
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	retval = finfo.get_dispatch ();
+      }
+
+    return retval;
+  }
+
+  static std::string help_for_dispatch (const std::string& name)
+  {
+    std::string retval;
+
+    fcn_table_iterator p = fcn_table.find (name);
+
+    if (p != fcn_table.end ())
+      {
+	fcn_info& finfo = p->second;
+
+	retval = finfo.help_for_dispatch ();
+      }
+
+    return retval;
+  }
+
+  static void push_context (scope_id scope = xcurrent_scope)
+  {
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("invalid call to xymtab::push_context");
+    else
+      {
+	symbol_table *inst = get_instance (scope);
+
+	if (inst)
+	  inst->do_push_context ();
+      }
+  }
+
+  static void pop_context (scope_id scope = xcurrent_scope)
+  {
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("invalid call to xymtab::push_context");
+    else
+      {
+	symbol_table *inst = get_instance (scope);
+
+	if (inst)
+	  inst->do_pop_context ();
+      }
+  }
+
+  // For unwind_protect.
+  static void pop_context (void *) { pop_context (); }
+
+  static void mark_hidden (const std::string& name,
+			   scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_mark_hidden (name);
+  }
+
+  static void mark_global (const std::string& name,
+			   scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    if (inst)
+      inst->do_mark_global (name);
+  }
+
+  static std::list<symbol_record>
+  all_variables (scope_id scope = xcurrent_scope, bool defined_only = true)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst
+      ? inst->do_all_variables (defined_only) : std::list<symbol_record> ();
+  }
+
+  static std::list<symbol_record>
+  glob (const std::string& pattern, scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_glob (pattern) : std::list<symbol_record> ();
+  }
+
+  static std::list<symbol_record>
+  glob_variables (const std::string& pattern, scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_glob (pattern, true) : std::list<symbol_record> ();
+  }
+
+  static std::list<symbol_record>
+  glob_variables (const string_vector& patterns,
+		  scope_id scope = xcurrent_scope)
+  {
+    std::list<symbol_record> retval;
+
+    size_t len = patterns.length ();
+
+    for (size_t i = 0; i < len; i++)
+      {
+	std::list<symbol_record> tmp = glob_variables (patterns[i], scope);
+
+	retval.insert (retval.begin (), tmp.begin (), tmp.end ());
+      }
+
+    return retval;
+  }
+
+  static std::list<std::string> user_function_names (void)
+  {
+    std::list<std::string> retval;
+
+    for (fcn_table_iterator p = fcn_table.begin ();
+	 p != fcn_table.end (); p++)
+      {
+	if (p->second.is_user_function_defined ())
+	  retval.push_back (p->first);
+      }
+
+    if (! retval.empty ())
+      retval.sort ();
+
+    return retval;
+  }
+
+  static std::list<std::string>
+  variable_names (scope_id scope = xcurrent_scope)
+  {
+    symbol_table *inst = get_instance (scope);
+
+    return inst ? inst->do_variable_names () : std::list<std::string> ();
+  }
+
+  static std::list<std::string> built_in_function_names (void)
+  {
+    std::list<std::string> retval;
+
+    for (const_fcn_table_iterator p = fcn_table.begin ();
+	 p != fcn_table.end (); p++)
+      {
+	octave_value fcn = p->second.find_built_in_function ();
+
+	if (fcn.is_defined ())
+	  retval.push_back (p->first);
+      }
+
+    if (! retval.empty ())
+      retval.sort ();
+
+    return retval;
+  }
+
+  static bool is_local_variable (const std::string& name,
+				 scope_id scope = xcurrent_scope)
+  {
+    if (scope == xglobal_scope)
+      return false;
+    else
+      {
+	symbol_table *inst = get_instance (scope);
+
+	return inst ? inst->do_is_local_variable (name) : false;
+      }
+  }
+
+  static bool is_global (const std::string& name,
+			 scope_id scope = xcurrent_scope)
+  {
+    if (scope == xglobal_scope)
+      return true;
+    else
+      {
+	symbol_table *inst = get_instance (scope);
+
+	return inst ? inst->do_is_global (name) : false;
+      }
+  }
 
 private:
 
-  unsigned int table_size;
+  typedef std::map<std::string, symbol_record>::const_iterator const_table_iterator;
+  typedef std::map<std::string, symbol_record>::iterator table_iterator;
 
-  symbol_record *table;
+  typedef std::map<std::string, octave_value>::const_iterator const_persistent_table_iterator;
+  typedef std::map<std::string, octave_value>::iterator persistent_table_iterator;
 
-  std::string table_name;
+  typedef std::map<scope_id, symbol_table*>::const_iterator all_instances_const_iterator;
+  typedef std::map<scope_id, symbol_table*>::iterator all_instances_iterator;
 
-  static unsigned long int symtab_count;
+  typedef std::map<std::string, fcn_info>::const_iterator const_fcn_table_iterator;
+  typedef std::map<std::string, fcn_info>::iterator fcn_table_iterator;
+
+  typedef std::set<scope_id>::const_iterator scope_ids_free_list_const_iterator;
+  typedef std::set<scope_id>::iterator scope_ids_free_list_iterator;
+
+  typedef std::set<scope_id>::const_iterator scope_ids_in_use_const_iterator;
+  typedef std::set<scope_id>::iterator scope_ids_in_use_iterator;
+
+  // Map from symbol names to symbol info.
+  std::map<std::string, symbol_record> table;
+
+  // Map from names of persistent variables to values.
+  std::map<std::string, octave_value> persistent_table;
+
+  // Pointer to symbol table for current scope (variables only).
+  static symbol_table *instance;
+
+  // Map from scope id to symbol table instances.
+  static std::map<scope_id, symbol_table*> all_instances;
+
+  // Map from function names to function info (subfunctions, private
+  // functions, class constructors, class methods, etc.)
+  static std::map<std::string, fcn_info> fcn_table;
+
+  static const scope_id xglobal_scope;
+  static const scope_id xtop_scope;
+
+  static scope_id xcurrent_scope;
+  static scope_id xcurrent_caller_scope;
+
+  // We use parent_scope to handle parsing subfunctions.
+  static scope_id xparent_scope;
+
+  static std::deque<scope_id> scope_stack;
+
+  // The next available scope ID.
+  static scope_id next_available_scope;
+
+  // The set of scope IDs that are currently allocated.
+  static std::set<scope_id> scope_ids_in_use;
+
+  // The set of scope IDs that are currently available.
+  static std::set<scope_id> scope_ids_free_list;
+
+  symbol_table (void) : table () { }
+
+  ~symbol_table (void) { }
+
+  static void free_scope (scope_id scope)
+  {
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("can't free global or top-level scopes!");
+    else
+      {
+	scope_ids_in_use_iterator p = scope_ids_in_use.find (scope);
+
+	if (p != scope_ids_in_use.end ())
+	  {
+	    scope_ids_in_use.erase (p);
+	    scope_ids_free_list.insert (*p);
+	  }
+	else
+	  error ("scope id = %ld not found!", scope);
+      }
+  }
+
+  static symbol_table *get_instance (scope_id scope)
+  {
+    symbol_table *retval = 0;
+
+    if (scope == xcurrent_scope)
+      {
+	if (! instance)
+	  {
+	    instance = new symbol_table ();
+
+	    all_instances[scope] = instance;
+	  }
+
+	if (! instance)
+	  error ("unable to create symbol_table object!");
+
+	retval = instance;
+      }
+    else
+      {
+	all_instances_iterator p = all_instances.find (scope);
+
+	if (p == all_instances.end ())
+	  {
+	    retval = new symbol_table ();
+
+	    all_instances[scope] = retval;
+	  }
+	else
+	  retval = p->second;
+      }
+
+    return retval;
+  }
+
+  void insert_symbol_record (const symbol_record& sr)
+  {
+    table[sr.name ()] = sr;
+  }
 
   void
-  print_descriptor (std::ostream& os, 
-		    std::list<whos_parameter> params) const;
+  do_dup_scope (symbol_table& new_symbol_table) const
+  {
+    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+      new_symbol_table.insert_symbol_record (p->second.dup ());
+  }
 
-  std::list<whos_parameter>
-  parse_whos_line_format (Array<symbol_record *>& symbols) const;
+  symbol_record do_find_symbol (const std::string& name)
+  {
+    table_iterator p = table.find (name);
 
-  unsigned int hash (const std::string& s);
+    if (p == table.end ())
+      return do_insert (name);
+    else
+      return p->second;
+  }
 
-  // No copying!
+  void do_inherit (scope_id donor_scope)
+  {
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	symbol_record& sr = p->second;
 
-  symbol_table (const symbol_table&);
+	std::string nm = sr.name ();
 
-  symbol_table& operator = (const symbol_table&);
+	if (! (sr.is_automatic () || sr.is_formal () || nm == "__retval__"))
+	  {
+	    octave_value val = symbol_table::varval (nm, donor_scope);
+
+	    if (val.is_defined ())
+	      {
+		sr.varref () = val;
+
+		sr.mark_inherited ();
+	      }
+	  }
+      }
+  }
+
+  octave_value
+  do_find (const std::string& name, tree_argument_list *args,
+	   const string_vector& arg_names,
+	   octave_value_list& evaluated_args, bool& args_evaluated,
+	   scope_id scope, bool skip_variables);
+
+  symbol_record& do_insert (const std::string& name)
+  {
+    table_iterator p = table.find (name);
+
+    return p == table.end ()
+      ? (table[name] = symbol_record (name)) : p->second;
+  }
+
+  octave_value& do_varref (const std::string& name)
+  {
+    table_iterator p = table.find (name);
+
+    if (p == table.end ())
+      {
+	symbol_record& sr = do_insert (name);
+
+	return sr.varref ();
+      }
+    else
+      return p->second.varref ();
+  }
+
+  octave_value do_varval (const std::string& name) const
+  {
+    const_table_iterator p = table.find (name);
+
+    return (p != table.end ()) ? p->second.varval () : octave_value ();
+  }
+
+  octave_value& do_persistent_varref (const std::string& name)
+  {
+    persistent_table_iterator p = persistent_table.find (name);
+
+    return (p == persistent_table.end ())
+      ? persistent_table[name] : p->second;
+  }
+
+  octave_value do_persistent_varval (const std::string& name)
+  {
+    const_persistent_table_iterator p = persistent_table.find (name);
+
+    return (p != persistent_table.end ()) ? p->second : octave_value ();
+  }
+
+  void do_erase_persistent (const std::string& name)
+  {
+    persistent_table_iterator p = persistent_table.find (name);
+
+    if (p != persistent_table.end ())
+      persistent_table.erase (p);
+  }
+
+  bool do_is_variable (const std::string& name) const
+  {
+    bool retval = false;
+
+    const_table_iterator p = table.find (name);
+
+    if (p != table.end ())
+      {
+	const symbol_record& sr = p->second;
+
+	retval = sr.is_variable ();
+      }
+
+    return retval;
+  }
+
+  void do_push_context (void)
+  {
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      p->second.push_context ();
+  }
+
+  void do_pop_context (void)
+  {
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      p->second.pop_context ();
+  }
+
+  void do_clear_variables (void)
+  {
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      p->second.clear ();
+  }
+
+  void do_clear_global (const std::string& name)
+  {
+    table_iterator p = table.find (name);
+
+    if (p != table.end ())
+      {
+	symbol_record& sr = p->second;
+
+	if (sr.is_global ())
+	  {
+	    symbol_table::clear_variable (p->first, xglobal_scope);
+
+	    sr.unmark_global ();
+	  }
+      }
+  }
+
+  void do_clear_variable (const std::string& name)
+  {
+    table_iterator p = table.find (name);
+
+    if (p != table.end ())
+      p->second.clear ();
+  }
+
+  void do_clear_global_pattern (const std::string& pat)
+  {
+    glob_match pattern (pat);
+
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	symbol_record& sr = p->second;
+
+	if (sr.is_global ())
+	  {
+	    if (pattern.match (sr.name ()))
+	      {
+		symbol_table::clear_variable (p->first, xglobal_scope);
+
+		sr.unmark_global ();
+	      }
+	  }
+      }
+  }
+
+  void do_clear_variable_pattern (const std::string& pat)
+  {
+    glob_match pattern (pat);
+
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	symbol_record& sr = p->second;
+
+	if (sr.is_defined () || sr.is_global ())
+	  {
+	    if (pattern.match (sr.name ()))
+	      sr.clear ();
+	  }
+      }
+  }
+
+  void do_mark_hidden (const std::string& name)
+  {
+    table_iterator p = table.find (name);
+
+    if (p != table.end ())
+      p->second.mark_hidden ();
+  }
+
+  void do_mark_global (const std::string& name)
+  {
+    table_iterator p = table.find (name);
+
+    if (p != table.end ())
+      p->second.mark_global ();
+  }
+
+  std::list<symbol_record> do_all_variables (bool defined_only) const
+  {
+    std::list<symbol_record> retval;
+
+    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	const symbol_record& sr = p->second;
+
+	if (defined_only && ! sr.is_defined ())
+	  continue;
+
+	retval.push_back (sr);
+      }
+
+    return retval;
+  }
+
+  std::list<symbol_record> do_glob (const std::string& pattern,
+				    bool vars_only = false) const
+  {
+    std::list<symbol_record> retval;
+
+    glob_match pat (pattern);
+
+    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	if (pat.match (p->first))
+	  {
+	    const symbol_record& sr = p->second;
+
+	    if (vars_only && ! sr.is_variable ())
+	      continue;
+
+	    retval.push_back (sr);
+	  }
+      }
+
+    return retval;
+  }
+
+  std::list<std::string> do_variable_names (void)
+  {
+    std::list<std::string> retval;
+
+    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+      retval.push_back (p->first);
+
+    retval.sort ();
+
+    return retval;
+  }
+
+  bool do_is_local_variable (const std::string& name) const
+  {
+    const_table_iterator p = table.find (name);
+
+    return (p != table.end ()
+	    && ! p->second.is_global ()
+	    && p->second.is_defined ());
+  }
+
+  bool do_is_global (const std::string& name) const
+  {
+    const_table_iterator p = table.find (name);
+
+    return p != table.end () && p->second.is_global ();
+  }
 };
 
-// Defines layout for the whos/who -long command.
-extern std::string Vwhos_line_format;
+extern bool out_of_date_check (octave_value& function);
 
 #endif
 

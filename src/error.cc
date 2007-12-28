@@ -643,7 +643,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
     }
   else if (warn_opt == 1)
     {
-      if (curr_sym_tab != top_level_sym_tab
+      if (symbol_table::at_top_level ()
 	  && Vbacktrace_on_warning
 	  && ! warning_state
 	  && ! discard_warning_messages)

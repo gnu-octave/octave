@@ -75,9 +75,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// Temporary symbol table pointer used to cope with bogus function syntax.
-symbol_table *tmp_local_sym_tab = 0;
-
 // The current input line number.
 int input_line_number = 0;
 
@@ -109,11 +106,15 @@ bool evaluating_function_body = false;
 int end_tokens_expected = 0;
 
 // Keep track of symbol table information when parsing functions.
-std::stack<symbol_table*> symtab_context;
+std::stack<symbol_table::scope_id> symtab_context;
 
 // Name of parent function when parsing function files that might
 // contain nested functions.
 std::string parent_function_name;
+
+// Name of the current class when we are parsing class methods or
+// constructors.
+std::string current_class_name;
 
 // TRUE means we are in the process of autoloading a function.
 static bool autoloading = false;
@@ -121,6 +122,10 @@ static bool autoloading = false;
 // TRUE means the current function file was found in a relative path
 // element.
 static bool fcn_file_from_relative_lookup = false;
+
+// If nonzero, this is a pointer to the function we just finished
+// parsing.
+static octave_function *curr_fcn_ptr = 0;
 
 // List of autoloads (function -> file mapping).
 static std::map<std::string, std::string> autoload_map;
@@ -263,12 +268,7 @@ static octave_user_function *
 frob_function (const std::string& fname, octave_user_function *fcn);
 
 // Finish defining a function.
-static octave_user_function *
-finish_function (tree_identifier *id, octave_user_function *fcn,
-		 octave_comment_list *lc);
-
-// Finish defining a function a different way.
-static octave_user_function *
+static void
 finish_function (tree_parameter_list *ret_list,
 		 octave_user_function *fcn, octave_comment_list *lc);
 
@@ -316,7 +316,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
       yyerrok; \
       if (! symtab_context.empty ()) \
         { \
-	  curr_sym_tab = symtab_context.top (); \
+	  symbol_table::set_scope (symtab_context.top ()); \
 	  symtab_context.pop (); \
         } \
       if (interactive || forced_interactive) \
@@ -415,7 +415,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_expression_type> primary_expr postfix_expr prefix_expr binary_expr
 %type <tree_expression_type> simple_expr colon_expr assign_expr expression
 %type <tree_identifier_type> identifier fcn_name
-%type <octave_user_function_type> function1 function2 function3
+%type <octave_user_function_type> function1 function2
 %type <tree_index_expression_type> word_list_cmd
 %type <tree_colon_expression_type> colon_expr1
 %type <tree_argument_list_type> arg_list word_list assign_lhs
@@ -435,7 +435,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement
 %type <tree_statement_list_type> simple_list simple_list1 list list1
-%type <tree_statement_list_type> opt_list input1 function4
+%type <tree_statement_list_type> opt_list input1
 
 // Precedence and associativity.
 %left ';' ',' '\n'
@@ -554,8 +554,8 @@ statement	: expression
 
 identifier	: NAME
 		  {
-		    $$ = new tree_identifier
-		      ($1->sym_rec (), $1->line (), $1->column ());
+		    symbol_table::symbol_record *sr = $1->sym_rec ();
+		    $$ = new tree_identifier (*sr, $1->line (), $1->column ());
 		  }
 		;
 
@@ -1098,16 +1098,14 @@ except_command	: UNWIND stash_comment opt_sep opt_list CLEANUP
 // Some `subroutines' for function definitions
 // ===========================================
 
-save_symtab	: // empty
-		  { symtab_context.push (curr_sym_tab); }
-		;
-		   
-function_symtab	: // empty
-		  { curr_sym_tab = fbi_sym_tab; }
-		;
+push_fcn_symtab	: // empty
+		  {
+		    symtab_context.push (symbol_table::current_scope ());
+		    symbol_table::set_scope (symbol_table::alloc_scope ());
 
-local_symtab	: // empty
-		  { curr_sym_tab = tmp_local_sym_tab; }
+		    if (! lexer_flags.parsing_nested_function)
+		      symbol_table::set_parent_scope (symbol_table::current_scope ());
+		  }
 		;
 
 // ===========================
@@ -1120,12 +1118,8 @@ param_list_beg	: '('
 
 		    if (lexer_flags.looking_at_function_handle)
 		      {
-		        symtab_context.push (curr_sym_tab);
-
-			tmp_local_sym_tab = new symbol_table ();
-
-			curr_sym_tab = tmp_local_sym_tab;
-
+		        symtab_context.push (symbol_table::current_scope ());
+			symbol_table::set_scope (symbol_table::alloc_scope ());
 			lexer_flags.looking_at_function_handle--;
 		      }
 		  }
@@ -1182,15 +1176,12 @@ param_list2	: decl2
 // List of function return value names
 // ===================================
 
-return_list_beg	: '[' local_symtab
-		;
-
-return_list	: return_list_beg return_list_end
+return_list	: '[' ']'
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    $$ = new tree_parameter_list ();
 		  }
-		| return_list_beg VARARGOUT return_list_end
+		| '[' VARARGOUT ']'
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    tree_parameter_list *tmp = new tree_parameter_list ();
@@ -1204,12 +1195,17 @@ return_list	: return_list_beg return_list_end
 		    tmp->mark_varargs_only ();
 		    $$ = tmp;
 		  }
-		| return_list_beg return_list1 return_list_end
+		| return_list1
+		  {
+		    lexer_flags.looking_at_return_list = false;
+		    $$ = $1;
+		  }
+		| '[' return_list1 ']'
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    $$ = $2;
 		  }
-		| return_list_beg return_list1 ',' VARARGOUT return_list_end
+		| '[' return_list1 ',' VARARGOUT ']'
 		  {
 		    lexer_flags.looking_at_return_list = false;
 		    $2->mark_varargs ();
@@ -1226,42 +1222,29 @@ return_list1	: identifier
 		  }
 		;
 
-return_list_end	: function_symtab ']'
-		;
-
 // ===================
 // Function definition
 // ===================
 
-function_beg	: save_symtab FCN function_symtab stash_comment
-		  { $$ = $4; }
+function_beg	: push_fcn_symtab FCN stash_comment
+		  { $$ = $3; }
 		;
 
-function	: function_beg function2
+function	: function_beg function1
 		  {
 		    $2->stash_leading_comment ($1);
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
-		| function_beg identifier function1
+		| function_beg return_list '=' function1
 		  {
-		    finish_function ($2, $3, $1);
-		    recover_from_parsing_function ();
-		    $$ = 0;
-		  }
-		| function_beg return_list function1
-		  {
-		    finish_function ($2, $3, $1);
+		    finish_function ($2, $4, $1);
 		    recover_from_parsing_function ();
 		    $$ = 0;
 		  }
 		;
 
-function1	: function_symtab '=' function2
-		  { $$ = $3; }
-		;
-
-fcn_name	: identifier local_symtab
+fcn_name	: identifier
 		  {
 		    std::string id_name = $1->name ();
 
@@ -1276,7 +1259,7 @@ fcn_name	: identifier local_symtab
 		  }
 		;
 
-function2	: fcn_name function3
+function1	: fcn_name function2
 		  {
 		    std::string fname = $1->name ();
 
@@ -1287,14 +1270,10 @@ function2	: fcn_name function3
 		  }
 		;
 
-function3	: param_list function4
-		  { $$ = start_function ($1, $2); }
-		| function4
-		  { $$ = start_function (0, $1); }
-		;
-
-function4	: opt_sep opt_list function_end
-		  { $$ = $2; }
+function2	: param_list opt_sep opt_list function_end
+		  { $$ = start_function ($1, $3); }
+		| opt_sep opt_list function_end
+		  { $$ = start_function (0, $2); }
 		;
 
 function_end	: END
@@ -1772,24 +1751,45 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   tree_parameter_list *ret_list = 0;
 
-  symbol_table *fcn_sym_tab = curr_sym_tab;
+  symbol_table::scope_id fcn_scope = symbol_table::current_scope ();
 
   if (symtab_context.empty ())
     panic_impossible ();
 
-  curr_sym_tab = symtab_context.top ();
+  symbol_table::set_scope (symtab_context.top ());
 
   symtab_context.pop ();
 
   if (stmt && stmt->is_expression ())
-    stmt->set_print_flag (false);
+    {
+      symbol_table::symbol_record& sr = symbol_table::insert ("__retval__");
+
+      tree_expression *e = stmt->expression ();
+
+      tree_identifier *id = new tree_identifier (sr);
+
+      tree_simple_assignment *asn = new tree_simple_assignment (id, e);
+
+      stmt->set_expression (asn);
+
+      stmt->set_print_flag (false);
+
+      // FIXME -- would like to delete old_stmt here or
+      // replace expression inside it with the new expression we just
+      // created so we don't have to create a new statement at all.
+
+      id = new tree_identifier (sr);
+      tree_decl_elt *elt = new tree_decl_elt (id);
+
+      ret_list = new tree_parameter_list (elt);
+    }
 
   tree_statement_list *body = new tree_statement_list (stmt);
 
   body->mark_as_function_body ();
 
   tree_anon_fcn_handle *retval
-    = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_sym_tab, l, c);
+    = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
 
   return retval;
 }
@@ -2423,7 +2423,9 @@ start_function (tree_parameter_list *param_list, tree_statement_list *body)
   // We'll fill in the return list later.
 
   octave_user_function *fcn
-    = new octave_user_function (param_list, 0, body, curr_sym_tab);
+    = new octave_user_function (symbol_table::current_scope (),
+				param_list, 0, body);
+				
 
   if (fcn)
     {
@@ -2449,15 +2451,30 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
   if (reading_fcn_file || autoloading)
     {
-      if (! (lexer_flags.parsing_nested_function || autoloading)
-          && curr_fcn_file_name != id_name)
+      if (! (autoloading
+	     || lexer_flags.parsing_nested_function
+	     || lexer_flags.parsing_class_method))
 	{
-	  warning_with_id
-	    ("Octave:function-name-clash",
-	     "function name `%s' does not agree with function file name `%s'",
-	     id_name.c_str (), curr_fcn_file_full_name.c_str ());
+	  // FIXME -- should curr_fcn_file_name already be
+	  // preprocessed when we get here?  It seems to only be a
+	  // problem with relative file names.
 
-	  id_name = curr_fcn_file_name;
+	  std::string nm = curr_fcn_file_name;
+
+	  size_t pos = nm.find_last_of (file_ops::dir_sep_chars);
+
+	  if (pos != NPOS)
+	    nm = curr_fcn_file_name.substr (pos+1);
+
+	  if (nm != id_name)
+	    {
+	      warning_with_id
+		("Octave:function-name-clash",
+		 "function name `%s' does not agree with function file name `%s'",
+		 id_name.c_str (), curr_fcn_file_full_name.c_str ());
+
+	      id_name = nm;
+	    }
 	}
 
       octave_time now;
@@ -2471,6 +2488,16 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
       if (lexer_flags.parsing_nested_function)
         fcn->stash_parent_fcn_name (parent_function_name);
+
+      if (lexer_flags.parsing_class_method)
+	{
+	  if (current_class_name == id_name)
+	    fcn->mark_as_class_constructor ();
+	  else
+	    fcn->mark_as_class_method ();
+
+	  fcn->stash_dispatch_class (current_class_name);
+	}
 
       std::string nm = fcn->fcn_file_name ();
 
@@ -2490,105 +2517,47 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 
   fcn->stash_function_name (id_name);
 
-  // Enter the new function in fbi_sym_tab.  If there is already a
-  // variable of the same name in the current symbol table, we won't
-  // find the new function when we try to call it, so we need to clear
-  // the old symbol from the current symbol table.  Note that this
-  // means that for things like
-  //
-  //   function f () eval ("function g () 1, end"); end
-  //   g = 13;
-  //   f ();
-  //   g
-  //
-  // G will still refer to the variable G (with value 13) rather
-  // than the function G, until the variable G is cleared.
-
-  curr_sym_tab->clear (id_name);
-
-  if (! lexer_flags.parsing_nested_function
-      && symtab_context.top () == top_level_sym_tab)
-    {
-      symbol_record *sr = top_level_sym_tab->lookup (id_name);
-
-      // Only clear the existing name if it is already defined as a
-      // function.  If there is already a variable defined with the
-      // same name as a the current function, it will continue to
-      // shadow this name until the variable is cleared.  This means
-      // that for something like the following at the command line,
-      //
-      //   f = 13;
-      //   function f () 7, end
-      //   f
-      //
-      // F will still refer to the variable F (with value 13) rather
-      // than the function F, until the variable F is cleared.
-
-      if (sr && sr->is_function ())
-	top_level_sym_tab->clear (id_name);
-    }
-
-  symbol_record *sr = fbi_sym_tab->lookup (id_name, true);
-
-  if (sr)
-    {
-      fcn->stash_symtab_ptr (sr);
-
-      if (lexer_flags.parsing_nested_function)
-        {
-          fcn->mark_as_nested_function ();
-	  sr->hide ();
-	}
-    }
-  else
-    panic_impossible ();
-
-  sr->define (fcn, symbol_record::USER_FUNCTION);
-
   if (! help_buf.empty ())
     {
-      sr->document (help_buf.top ());
+      fcn->document (help_buf.top ());
+
       help_buf.pop ();
     }
 
-  // Also insert the full name in the symbol table.  This way, we can
-  // properly cope with changes to LOADPATH.
-
-  if (reading_fcn_file)
+  if (lexer_flags.parsing_nested_function)
     {
-      symbol_record *full_sr
-        = fbi_sym_tab->lookup (curr_fcn_file_full_name, true);
+      std::string nm = fcn->name ();
 
-      full_sr->alias (sr, true);
-      full_sr->hide ();
+      fcn->mark_as_nested_function ();
+
+      symbol_table::install_subfunction (nm, octave_value (fcn));
+
+      if (lexer_flags.parsing_nested_function < 0)
+	{
+	  lexer_flags.parsing_nested_function = 0;
+	  symbol_table::reset_parent_scope ();
+	}
     }
+  else if (! reading_fcn_file)
+    {
+      std::string nm = fcn->name ();
 
-  if (lexer_flags.parsing_nested_function < 0)
-    lexer_flags.parsing_nested_function = 0;
+      symbol_table::install_cmdline_function (nm, octave_value (fcn));
+
+      // Make sure that any variable with the same name as the new
+      // function is cleared.
+
+      symbol_table::varref (nm) = octave_value ();
+    }
+  else
+    curr_fcn_ptr = fcn;
 
   return fcn;
 }
 
 // Finish defining a function.
 
-static octave_user_function *
-finish_function (tree_identifier *id, octave_user_function *fcn,
-		 octave_comment_list *lc)
-{
-  tree_decl_elt *tmp = new tree_decl_elt (id);
-
-  tree_parameter_list *tpl = new tree_parameter_list (tmp);
-
-  tpl->mark_as_formal_parameters ();
-
-  fcn->stash_leading_comment (lc);
-
-  return fcn->define_ret_list (tpl);
-}
-
-// Finish defining a function a different way.
-
-static octave_user_function *
+static void
 finish_function (tree_parameter_list *ret_list,
 		 octave_user_function *fcn, octave_comment_list *lc)
 {
@@ -2596,7 +2565,7 @@ finish_function (tree_parameter_list *ret_list,
 
   fcn->stash_leading_comment (lc);
 
-  return fcn->define_ret_list (ret_list);
+  fcn->define_ret_list (ret_list);
 }
 
 static void
@@ -2605,7 +2574,7 @@ recover_from_parsing_function (void)
   if (symtab_context.empty ())
     panic_impossible ();
 
-  curr_sym_tab = symtab_context.top ();
+  symbol_table::set_scope (symtab_context.top ());
   symtab_context.pop ();
 
   lexer_flags.defining_func = false;
@@ -2847,8 +2816,6 @@ parse_and_execute (FILE *f)
   line_editing = false;
   get_input_from_eval_string = false;
   parser_end_of_input = false;
-
-  unwind_protect_ptr (curr_sym_tab);
 
   int retval;
   do
@@ -3205,6 +3172,23 @@ is_function_file (FILE *ffile)
   return status;
 }
 
+static int
+is_function_file (const std::string& fname)
+{
+  int retval = 0;
+
+  FILE *fid = fopen (fname.c_str (), "r");
+
+  if (fid)
+    {
+      retval = is_function_file (fid);
+
+      fclose (fid);
+    }
+
+  return retval;
+}
+
 static void
 restore_command_history (void *)
 {
@@ -3217,13 +3201,15 @@ restore_input_stream (void *f)
   command_editor::set_input_stream (static_cast<FILE *> (f));
 }
 
-static bool
-parse_fcn_file (const std::string& ff, bool exec_script,
-		bool force_script = false)
+typedef octave_function * octave_function_ptr;
+
+static octave_function *
+parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
+		bool exec_script, bool force_script = false)
 {
   unwind_protect::begin_frame ("parse_fcn_file");
 
-  int script_file_executed = false;
+  octave_function *fcn_ptr = 0;
 
   // Open function file and parse.
 
@@ -3241,6 +3227,7 @@ parse_fcn_file (const std::string& ff, bool exec_script,
   unwind_protect_bool (reading_fcn_file);
   unwind_protect_bool (line_editing);
   unwind_protect_str (parent_function_name);
+  unwind_protect_str (current_class_name);
 
   input_line_number = 0;
   current_input_column = 1;
@@ -3248,6 +3235,7 @@ parse_fcn_file (const std::string& ff, bool exec_script,
   reading_fcn_file = true;
   line_editing = false;
   parent_function_name = "";
+  current_class_name = dispatch_type;
 
   FILE *ffile = get_input_from_file (ff, 0);
 
@@ -3287,7 +3275,8 @@ parse_fcn_file (const std::string& ff, bool exec_script,
 
 	  switch_to_buffer (new_buf);
 
-	  unwind_protect_ptr (curr_sym_tab);
+	  unwind_protect_ptr (curr_fcn_ptr);
+	  curr_fcn_ptr = 0;
 
 	  reset_parser ();
 
@@ -3301,14 +3290,14 @@ parse_fcn_file (const std::string& ff, bool exec_script,
 	  // FIXME -- this should not be necessary.
 	  gobble_leading_white_space (ffile, false, true, false, false);
 
+	  lexer_flags.parsing_class_method = ! dispatch_type.empty ();
+
 	  int status = yyparse ();
 
+	  fcn_ptr = curr_fcn_ptr;
+
 	  if (status != 0)
-	    {
-	      error ("parse error while reading function file %s",
-		     ff.c_str ());
-	      fbi_sym_tab->clear (curr_fcn_file_name);
-	    }
+	    error ("parse error while reading function file %s", ff.c_str ());
 	}
       else if (exec_script)
 	{
@@ -3334,8 +3323,6 @@ parse_fcn_file (const std::string& ff, bool exec_script,
 	  unwind_protect::add (octave_call_stack::unwind_pop_script, 0);
 
 	  parse_and_execute (ffile);
-
-	  script_file_executed = true;
 	}
     }
   else
@@ -3343,7 +3330,7 @@ parse_fcn_file (const std::string& ff, bool exec_script,
 
   unwind_protect::run_frame ("parse_fcn_file");
 
-  return script_file_executed;
+  return fcn_ptr;
 }
 
 std::string
@@ -3387,14 +3374,16 @@ reverse_lookup_autoload (const std::string& nm)
   return names;
 }
 
-bool
-load_fcn_from_file (const std::string& nm_arg, bool exec_script)
+octave_function *
+load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
+		    const std::string& dispatch_type,
+		    const std::string& fcn_name, bool autoload)
 {
+  octave_function *retval = 0;
+
   unwind_protect::begin_frame ("load_fcn_from_file");
 
-  bool script_file_executed = false;
-
-  std::string nm = nm_arg;
+  std::string nm = file_name;
 
   size_t nm_len = nm.length ();
 
@@ -3404,30 +3393,24 @@ load_fcn_from_file (const std::string& nm_arg, bool exec_script)
 
   fcn_file_from_relative_lookup = false;
 
-  if (octave_env::absolute_pathname (nm)
-      && ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
-	  || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
-	  || (nm_len > 2 && nm.substr (nm_len-2) == ".m")))
-    {
-      file = nm;
+  file = nm;
 
+  if ((nm_len > 4 && nm.substr (nm_len-4) == ".oct")
+      || (nm_len > 4 && nm.substr (nm_len-4) == ".mex")
+      || (nm_len > 2 && nm.substr (nm_len-2) == ".m"))
+    {
       nm = octave_env::base_pathname (file);
       nm = nm.substr (0, nm.find_last_of ('.'));
     }
-  else
+
+  if (autoload)
     {
-      file = lookup_autoload (nm);
+      unwind_protect_bool (autoloading);
+      autoloading = true;
+    }
 
-      if (! file.empty ())
-	{
-	  unwind_protect_bool (autoloading);
-
-	  autoloading = true;
-	  exec_script = true;
-	}
-      else
-        file = load_path::find_fcn (nm);
-
+  if (! file.empty ())
+    {
       fcn_file_from_relative_lookup = ! octave_env::absolute_pathname (file);
 
       file = octave_env::make_absolute (file, octave_env::getcwd ());
@@ -3437,47 +3420,37 @@ load_fcn_from_file (const std::string& nm_arg, bool exec_script)
 
   if (len > 4 && file.substr (len-4, len-1) == ".oct")
     {
-      if (octave_dynamic_loader::load_oct (nm, file, fcn_file_from_relative_lookup))
-        force_link_to_function (nm);
+      if (autoload && ! fcn_name.empty ())
+	nm = fcn_name;
+
+      retval = octave_dynamic_loader::load_oct (nm, file, fcn_file_from_relative_lookup);
     }
   else if (len > 4 && file.substr (len-4, len-1) == ".mex")
-    {
-      if (octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup))
-        force_link_to_function (nm);
-    }
+    retval = octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup);
   else if (len > 2)
     {
-      // These are needed by yyparse.
-
-      unwind_protect_str (curr_fcn_file_name);
-      unwind_protect_str (curr_fcn_file_full_name);
-
-      curr_fcn_file_name = nm;
-      curr_fcn_file_full_name = file;
-
-      script_file_executed = parse_fcn_file (file, exec_script, autoloading);
-
-      if (! error_state)
+      if (is_function_file (file))
 	{
-	  if (autoloading)
-	    {
-	      script_file_executed = false;
-	      force_link_to_function (nm);
-	    }
-	  else if (! script_file_executed)
-	    force_link_to_function (nm);
+	  // These are needed by yyparse.
+
+	  unwind_protect_str (curr_fcn_file_name);
+	  unwind_protect_str (curr_fcn_file_full_name);
+
+	  curr_fcn_file_name = nm;
+	  curr_fcn_file_full_name = file;
+
+	  retval = parse_fcn_file (file, dispatch_type, false, autoloading);
 	}
+      else
+	retval = new octave_user_script (file, fcn_name);
     }
+
+  if (retval)
+    retval->stash_dir_name (dir_name);
 
   unwind_protect::run_frame ("load_fcn_from_file");
 
-  return script_file_executed;
-}
-
-bool
-load_fcn_from_file (symbol_record *sym_rec, bool exec_script)
-{
-  return load_fcn_from_file (sym_rec->name (), exec_script);
+  return retval;
 }
 
 DEFCMD (autoload, args, ,
@@ -3598,19 +3571,20 @@ source_file (const std::string& file_name, const std::string& context)
 
   if (! context.empty ())
     {
-      unwind_protect_ptr (curr_sym_tab);
-
       if (context == "caller")
-	curr_sym_tab = curr_caller_sym_tab;
+	symbol_table::push_scope (symbol_table::current_caller_scope ());
       else if (context == "base")
-	curr_sym_tab = top_level_sym_tab;
+	symbol_table::push_scope (symbol_table::top_scope ());
       else
 	error ("source: context must be \"caller\" or \"base\"");
+
+      if (! error_state)
+	unwind_protect::add (symbol_table::pop_scope);
     }      
 
   if (! error_state)
     {
-      parse_fcn_file (file_full_name, true, true);
+      parse_fcn_file (file_full_name, "", true, true);
 
       if (error_state)
 	error ("source: error sourcing file `%s'",
@@ -3736,10 +3710,12 @@ feval (const std::string& name, const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
-  octave_function *fcn = is_valid_function (name, "feval", 1);
+  octave_value fcn = symbol_table::find_function (name, args);
 
-  if (fcn)
-    retval = fcn->do_multi_index_op (nargout, args);
+  if (fcn.is_defined ())
+    retval = fcn.do_multi_index_op (nargout, args);
+  else
+    error ("feval: function `%s' not found", name.c_str ());
 
   return retval;
 }
@@ -3896,8 +3872,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   switch_to_buffer (new_buf);
 
-  unwind_protect_ptr (curr_sym_tab);
-
   do
     {
       reset_parser ();
@@ -4048,14 +4022,20 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 
       if (! error_state)
         {
-	  unwind_protect::begin_frame ("Fassignin");
-
-	  unwind_protect_ptr (curr_sym_tab);
+	  symbol_table::scope_id scope = -1;
 
 	  if (context == "caller")
-	    curr_sym_tab = curr_caller_sym_tab;
+	    {
+	      if (symbol_table::current_scope () == symbol_table::current_caller_scope ())
+		{
+		  error ("assignin: assignment in caller not implemented yet for direct recursion");
+		  return retval;
+		}
+	      else
+		scope = symbol_table::current_caller_scope ();
+	    }
 	  else if (context == "base")
-	    curr_sym_tab = top_level_sym_tab;
+	    scope = symbol_table::top_scope ();
 	  else
 	    error ("assignin: context must be \"caller\" or \"base\"");
 
@@ -4066,27 +4046,13 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 	      if (! error_state)
 		{
 		  if (valid_identifier (nm))
-		    {
-		      symbol_record *sr = curr_sym_tab->lookup (nm, true);
-
-		      if (sr)
-			{
-			  tree_identifier *id = new tree_identifier (sr);
-			  tree_constant *rhs = new tree_constant (args(2));
-		      
-			  tree_simple_assignment tsa (id, rhs);
-
-			  tsa.rvalue ();
-			}
-		    }
+		    symbol_table::varref (nm, scope) = args(2);
 		  else
 		    error ("assignin: invalid variable name");
 		}
 	      else
 		error ("assignin: expecting variable name as second argument");
 	    }
-
-	  unwind_protect::run_frame ("Fassignin");
 	}
       else
         error ("assignin: expecting string as first argument");
@@ -4117,17 +4083,25 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
         {
 	  unwind_protect::begin_frame ("Fevalin");
 
-	  unwind_protect_ptr (curr_sym_tab);
-
 	  if (context == "caller")
-	    curr_sym_tab = curr_caller_sym_tab;
+	    {
+	      if (symbol_table::current_scope () == symbol_table::current_caller_scope ())
+		{
+		  error ("evalin: evaluation in caller not implemented yet for direct recursion");
+		  return retval;
+		}
+	      else
+		symbol_table::push_scope (symbol_table::current_caller_scope ());
+	    }
 	  else if (context == "base")
-	    curr_sym_tab = top_level_sym_tab;
+	    symbol_table::push_scope (symbol_table::top_scope ());
 	  else
 	    error ("evalin: context must be \"caller\" or \"base\"");
 
 	  if (! error_state)
 	    {
+	      unwind_protect::add (symbol_table::pop_scope);
+
 	      if (nargin > 2)
 	        {
 		  unwind_protect_int (buffer_error_messages);

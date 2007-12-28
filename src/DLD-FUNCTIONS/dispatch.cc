@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <map>
 #include <string>
 
+#include "Cell.h"
+#include "oct-map.h"
 #include "defun-dld.h"
 #include "ov.h"
 #include "ov-fcn.h"
@@ -36,257 +38,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "symtab.h"
 #include "variables.h"
-
-// FIXME should be using a map from type_id->name, rather
-// than type_name->name
-
-template class std::map<std::string,std::string>;
-
-typedef std::map<std::string,std::string> Table;
-
-class
-octave_dispatch : public octave_function
-{
-public:
-
-  // FIXME need to handle doc strings of dispatched functions, for
-  // example, by appending "for <f>(<type>,...) see <name>" for each
-  // time dispatch(f,type,name) is called.
-  octave_dispatch (const std::string &nm)
-    : octave_function (nm, "Overloaded function"), tab (), base (nm),
-      has_alias (false)
-  { }
-
-  // FIXME if we get deleted, we should restore the original
-  // symbol_record from base before dying.
-  ~octave_dispatch (void) { }
-
-  bool is_builtin_function (void) const { return true; }
-
-  octave_function *function_value (bool) { return this; }
-
-  octave_value do_index_op (const octave_value_list&, bool = false)
-  {
-    error ("dispatch: do_index_op");
-    return octave_value ();
-  }
-
-  octave_value subsref (const std::string&,
-			const std::list<octave_value_list>&)
-  {
-    error ("dispatch: subsref (str, list)");
-    panic_impossible ();
-    return octave_value ();
-  }
-
-  octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout);
-
-  octave_value_list do_multi_index_op (int, const octave_value_list&);
-
-  void add (const std::string t, const std::string n);
-
-  void clear (const std::string t);
-
-  void print (std::ostream& os, bool pr_as_read=false) const;
-
-private:
-
-  Table tab;
-  std::string base;
-  bool has_alias;
-
-  octave_dispatch (void) 
-    : octave_function (), tab (), base (), has_alias (false) { }
-
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
-
-  DECLARE_OCTAVE_ALLOCATOR
-};
-
-DEFINE_OCTAVE_ALLOCATOR (octave_dispatch);
-
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_dispatch,
-				     "overloaded function", "function");
-
-void 
-octave_dispatch::add (const std::string t, const std::string n)
-{ 
-  if (tab.count (t) > 0 && tab[t] != n)
-    warning ("replacing %s(%s,...)->%s with %s",
-	     base.c_str (), t.c_str (), tab[t].c_str (), n.c_str ());
-
-  tab[t] = n;
-
-  if (t == "any")
-    has_alias = true;
-}
-
-void
-octave_dispatch::clear (const std::string t)
-{
-  tab.erase (t); 
-
-  if (t == "any")
-    has_alias = false;
-}
-
-octave_value_list
-octave_dispatch::subsref (const std::string& type,
-			  const std::list<octave_value_list>& idx,
-			  int nargout)
-{
-  octave_value_list retval;
-
-  switch (type[0])
-    {
-    case '(':
-      retval = do_multi_index_op (nargout, idx.front ());
-      break;
-
-    case '{':
-    case '.':
-      {
-	const std::string nm = type_name ();
-	error ("%s cannot be indexed with %c", nm.c_str (), type[0]);
-      }
-      break;
-
-    default:
-      panic_impossible ();
-    }
-
-  if (idx.size () > 1)
-    retval = retval(0).next_subsref (type, idx);
-
-  return retval;
-}
-
-static octave_function*
-builtin (const std::string& base)
-{
-  octave_function *fcn = 0;
-
-  // Check if we are overriding a builtin function.  This is the
-  // case if builtin is protected.
-  symbol_record *builtin = fbi_sym_tab->lookup ("builtin:" + base, 0);
-
-  if (! builtin)
-    error ("builtin record has gone missing");
-
-  if (error_state)
-    return fcn;
-
-  if (builtin->is_read_only ())
-    {
-      // builtin is read only, so checking for updates is pointless
-      if (builtin->is_function ())
-        fcn = builtin->def().function_value ();
-      else
-	error ("builtin %s is not a function", base.c_str ());
-    }
-  else
-    {
-      // Check that builtin is up to date.
- 
-      // Don't try to fight octave's function name handling
-      // mechanism.  Instead, move dispatch record out of the way,
-      // and restore the builtin to its original name.
-      symbol_record *dispatch = fbi_sym_tab->lookup (base, 0);
-      if (! dispatch)
-	error ("dispatch record has gone missing");
-
-      dispatch->unprotect ();
-
-      fbi_sym_tab->rename (base, "dispatch:" + base);
-
-      fbi_sym_tab->rename ("builtin:" + base, base);
-
-      // check for updates to builtin function; ignore errors that
-      // appear (they interfere with renaming), and remove the updated
-      // name from the current symbol table.  FIXME check that
-      // updating a function updates it in all contexts --- it may be
-      // that it is updated only in the current symbol table, and not
-      // the caller.  I believe this won't be a problem because the
-      // caller will go through the same logic and end up with the
-      // newer version.
-      fcn = is_valid_function (base, "dispatch", 1);
-      int cache_error = error_state;
-      error_state = 0;
-      curr_sym_tab->clear_function (base);
-
-      // Move the builtin function out of the way and restore the
-      // dispatch fuction.
-      // FIXME what if builtin wants to protect itself?
-      symbol_record *found = fbi_sym_tab->lookup (base, 0);
-      bool readonly = found->is_read_only ();
-      found->unprotect ();
-      fbi_sym_tab->rename (base, "builtin:" + base);
-      fbi_sym_tab->rename ("dispatch:" + base, base);
-      if (readonly)
-	found->protect ();
-      dispatch->protect ();
-
-      // remember if there were any errors.
-      error_state = cache_error;
-    }
-
-  return fcn;
-}
-
-static bool
-any_arg_is_magic_colon (const octave_value_list& args)
-{
-  int nargin = args.length ();
-
-  for (int i = 0; i < nargin; i++)
-    if (args(i).is_magic_colon ())
-      return true;
-
-  return false;
-}
-
-octave_value_list
-octave_dispatch::do_multi_index_op (int nargout, const octave_value_list& args)
-{
-  octave_value_list retval;
-
-  if (error_state) return retval;
-
-  if (any_arg_is_magic_colon (args))
-    {
-      ::error ("invalid use of colon in function argument list");
-      return retval;
-    }
-
-  // If more than one argument, check if argument template matches any
-  // overloaded functions.  Also provide a catch-all '*' type to provide
-  // single level pseudo rename and replace functionality.
-  if (args.length () > 0 && tab.count (args(0).type_name ()) > 0)
-    retval = feval (tab[args(0).type_name()], args, nargout);
-  else if (has_alias)
-    retval = feval (tab["any"], args, nargout);
-  else
-    {
-      octave_function *fcn = builtin (base);
-      if (! error_state && fcn)
-        retval = fcn->do_multi_index_op (nargout, args);
-    }
-
-  return retval;
-}
-
-void 
-octave_dispatch::print (std::ostream& os, bool) const
-{
-  os << "Overloaded function " << base << std::endl;
-
-  for (Table::const_iterator it = tab.begin (); it != tab.end (); it++)
-    os << base << "(" << it->first << ",...)->" 
-       << it->second << "(" << it->first << ",...)"
-       << std::endl;
-}
 
 DEFUN_DLD (builtin, args, nargout,
   "-*- texinfo -*-\n\
@@ -304,25 +55,18 @@ some other function for the given type signature.\n\
     {
       const std::string name (args(0).string_value ());
  
-      if (error_state)
-	return retval;
-
-      symbol_record *sr = lookup_by_name (name, 0);
-
-      if (sr && sr->is_function ())
+      if (! error_state)
 	{
-	  if (sr->def().type_id () == octave_dispatch::static_type_id ())
-	    {
-	      octave_function *fcn = builtin (name);
+	  octave_value fcn = symbol_table::find_function (name);
 
-	      if (!error_state && fcn)
-		retval = fcn->do_multi_index_op (nargout, args.splice (0, 1));
-	    }
+	  if (fcn.is_defined ())
+	    retval = feval (fcn.function_value (), args.splice (0, 1),
+			    nargout);
 	  else
-	    retval = feval (name, args.splice (0, 1), nargout);
+	    error ("builtin: lookup for symbol `%s' failed", name.c_str ());
 	}
       else
-	error ("builtin: lookup for symbol `%s' failed", name.c_str ());
+	error ("builtin: expecting function name as first argument");
     }
   else
     print_usage ();
@@ -330,102 +74,7 @@ some other function for the given type signature.\n\
   return retval;
 }
 
-static void
-dispatch_record (const std::string &f, const std::string &n, 
-		 const std::string &t)
-{
-  // find the base function in the symbol table, loading it if it
-  // is not already there; if it is already a dispatch, then bonus
-
-  symbol_record *sr = fbi_sym_tab->lookup (f, true);
-
-  if (sr->def().type_id () != octave_dispatch::static_type_id ())
-    {
-      // Preserve mark_as_command status
-      bool iscommand = sr->is_command ();
-
-      // Not an overloaded name, so if only display or clear then we are done
-      if (t.empty ())
-	return;
-
-      // sr is the base symbol; rename it to keep it safe.  When we need
-      // it we will rename it back again.
-      if (sr->is_read_only ()) 
-        {
-          sr->unprotect ();
-          fbi_sym_tab->rename (f, "builtin:" + f);
-  	  sr = fbi_sym_tab->lookup (f, true);
-          sr->protect ();
-	}
-      else 
-        fbi_sym_tab->rename (f, "builtin:" + f);
-
-      // It would be good to hide the builtin:XXX name, but since the
-      // new XXX name in the symbol table is set to BUILTIN_FUNCTION,
-      // things don't work quite the way we would like.
-      // sr->hide ();
-
-      // Problem:  when a function is first called a new record
-      // is created for it in the current symbol table, so calling
-      // dispatch on a function that has already been called, we
-      // should also clear it from all existing symbol tables.
-      // This is too much work, so we will only do it for the
-      // top level symbol table.  We can't use the clear_function() 
-      // method, because it won't clear builtin functions.  Instead 
-      // we check if the symbol is a function and clear it then.  This
-      // won't properly clear shadowed functions, or functions in
-      // other namespaces (such as the current, if called from a
-      // function).
-      symbol_record *local = top_level_sym_tab->lookup (f, false);
-      if (local && local->is_function ())
-	local->clear ();
-
-      // Build a new dispatch object based on the function definition
-      octave_dispatch *dispatch = new octave_dispatch (f);
-  
-      // Create a symbol record for the dispatch object.
-      sr = fbi_sym_tab->lookup (f, true);
-      sr->unprotect ();
-      sr->define (octave_value (dispatch), symbol_record::BUILTIN_FUNCTION); 
-      // std::cout << "iscommand('"<<f<<"')=" << iscommand << std::endl;
-      if (iscommand)
-	sr->mark_as_command();
-      sr->document ("\n\n@noindent\nOverloaded function:\n");
-      sr->make_eternal (); // FIXME why??
-      sr->mark_as_static ();
-      sr->protect ();
-    }
-
-  // clear/replace/extend the map with the new type-function pair
-  const octave_dispatch& rep
-    = dynamic_cast<const octave_dispatch&> (sr->def().get_rep ());
-
-  if (t.empty ())
-    // FIXME should return the list if nargout > 1
-    rep.print (octave_stdout);
-  else if (n.empty ())
-    {
-      // FIXME should we eliminate the dispatch function if
-      // there are no more elements?
-      // FIXME should clear the " $t:\w+" from the help string.
-      // FIXME -- seems bad to cast away const here...
-      octave_dispatch& xrep = const_cast<octave_dispatch&> (rep);
-
-      xrep.clear (t);
-    }
-  else
-    {
-      // FIXME -- seems bad to cast away const here...
-      octave_dispatch& xrep = const_cast<octave_dispatch&> (rep);
-
-      xrep.add (t, n);
-
-      if (! sr->help().empty ())
-	sr->document (sr->help() + "\n" + n + " (" + t + ", ...)\n");
-    }
-}
-
-DEFUN_DLD (dispatch, args, ,
+DEFUN_DLD (dispatch, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} dispatch (@var{f}, @var{r}, @var{type})\n\
 \n\
@@ -443,40 +92,89 @@ for @var{f}.\n\
 @end deftypefn")
 {
   octave_value retval;
+
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 3)
+  std::string f, r, t;
+
+  if (nargin > 0 && nargin < 4)
     {
-      print_usage ();
-      return retval;
+      if (nargin > 0)
+	{
+	  f = args(0).string_value ();
+
+	  if (error_state)
+	    {
+	      error ("dispatch: expecting first argument to be function name");
+	      return retval;
+	    }
+	}
+
+      if (nargin > 1)
+	{
+	  r = args(1).string_value ();
+
+	  if (error_state)
+	    {
+	      error ("dispatch: expecting second argument to be function name");
+	      return retval;
+	    }
+	}
+
+      if (nargin > 2)
+	{
+	  t = args(2).string_value ();
+
+	  if (error_state)
+	    {
+	      error ("dispatch: expecting third argument to be type name");
+	      return retval;
+	    }
+	}
+
+      if (nargin == 1)
+	{
+	  if (nargout > 0)
+	    {
+	      symbol_table::fcn_info::dispatch_map_type dm
+		= symbol_table::get_dispatch (f);
+
+	      size_t len = dm.size ();
+
+	      Cell type_field (len, 1);
+	      Cell name_field (len, 1);
+
+	      symbol_table::fcn_info::dispatch_map_type::const_iterator p
+		= dm.begin ();
+
+	      for (size_t i = 0; i < len; i++)
+		{
+		  type_field(i) = p->first;
+		  name_field(i) = p->second;
+
+		  p++;
+		}
+
+	      Octave_map m;
+
+	      m.assign ("type", type_field);
+	      m.assign ("name", name_field);
+
+	      retval = m;
+	    }
+	  else
+	    symbol_table::print_dispatch (octave_stdout, f);
+	}
+      else if (nargin == 2)
+	{
+	  t = r;
+	  symbol_table::clear_dispatch (f, t);
+	}
+      else
+	symbol_table::add_dispatch (f, t, r);
     }
-
-  std::string f, t, n;
-  if (nargin > 0)
-    f = args(0).string_value ();
-
-  if (nargin == 2)
-    t = args(1).string_value ();
-  else if (nargin > 2)
-    {
-      n = args(1).string_value ();
-      t = args(2).string_value ();
-    }
-
-  if (error_state)
-    return retval;
-  
-  static bool register_type = true;
-
-  // register dispatch function type if you have not already done so
-  if (register_type)
-    {
-      octave_dispatch::register_type ();
-      register_type = false;
-      fbi_sym_tab->lookup("dispatch")->mark_as_static ();
-    }
-
-  dispatch_record (f, n, t);
+  else
+    print_usage ();
 
   return retval;
 }

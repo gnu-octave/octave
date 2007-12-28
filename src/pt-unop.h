@@ -33,6 +33,7 @@ class octave_value_list;
 class octave_lvalue;
 
 #include "pt-exp.h"
+#include "symtab.h"
 
 // Unary expressions.
 
@@ -103,7 +104,7 @@ public:
 
   void eval_error (void);
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -141,7 +142,7 @@ public:
 
   void eval_error (void);
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

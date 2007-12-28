@@ -40,7 +40,7 @@ extern OCTINTERP_API void print_usage (const std::string&) GCC_ATTR_DEPRECATED;
 extern OCTINTERP_API void check_version (const std::string& version, const std::string& fcn);
 
 extern OCTINTERP_API void
-install_builtin_mapper (octave_mapper *mf);
+install_builtin_mapper (octave_mapper *mf, const std::string& name);
 
 extern OCTINTERP_API void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
@@ -74,6 +74,8 @@ alias_builtin (const std::string& alias, const std::string& name);
 
 typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
 
+typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool relative);
+
 #define DEFINE_FUN_INSTALLER_FUN(name, doc) \
   DEFINE_FUN_INSTALLER_FUN2(name, doc, CXX_ABI)
 
@@ -81,15 +83,15 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
   DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi)
 
 #define DEFINE_FUN_INSTALLER_FUN3(name, doc, cxx_abi) \
-  DEFINE_FUNX_INSTALLER_FUN3(#name, F ## name, FS ## name, doc, cxx_abi)
+  DEFINE_FUNX_INSTALLER_FUN3(#name, F ## name, FS ## name, G ## name, doc, cxx_abi)
 
-#define DEFINE_FUNX_INSTALLER_FUN(name, fname, fsname, doc) \
-  DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, doc, CXX_ABI)
+#define DEFINE_FUNX_INSTALLER_FUN(name, fname, fsname, gname, doc) \
+  DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, gname, doc, CXX_ABI)
 
-#define DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, doc, cxx_abi) \
-  DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, doc, cxx_abi)
+#define DEFINE_FUNX_INSTALLER_FUN2(name, fname, fsname, gname, doc, cxx_abi) \
+  DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, gname, doc, cxx_abi)
 
-#define DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, doc, cxx_abi) \
+#define DEFINE_FUNX_INSTALLER_FUN3(name, fname, fsname, gname, doc, cxx_abi) \
   extern "C" \
   OCTAVE_EXPORT \
   bool \
@@ -103,6 +105,28 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
       retval = false; \
     else \
       install_dld_function (fname, name, shl, doc, false, relative); \
+ \
+    return retval; \
+  } \
+ \
+  extern "C" \
+  OCTAVE_EXPORT \
+  octave_function * \
+  gname ## _ ## cxx_abi (const octave_shlib& shl, bool relative) \
+  { \
+    octave_function *retval = 0; \
+ \
+    check_version (OCTAVE_API_VERSION, name); \
+ \
+    if (! error_state) \
+      { \
+	octave_dld_function *fcn = new octave_dld_function (fname, shl, name, doc); \
+ \
+        if (relative) \
+          fcn->mark_relative (); \
+ \
+        retval = fcn; \
+      } \
  \
     return retval; \
   }
@@ -193,8 +217,9 @@ typedef bool (*octave_dld_fcn_installer) (const octave_shlib&, bool relative);
 			      ch_map_flag, can_ret_cmplx_for_real, doc) \
   install_builtin_mapper \
     (new octave_mapper \
-     (ch_map, d_b_map, c_b_map, d_d_map, d_c_map, c_c_map, \
-      lo, hi, ch_map_flag, can_ret_cmplx_for_real, #name, doc))
+       (ch_map, d_b_map, c_b_map, d_d_map, d_c_map, c_c_map, \
+        lo, hi, ch_map_flag, can_ret_cmplx_for_real, #name, doc), \
+     #name)
 
 #endif /* ! MAKE_BUILTINS */
 

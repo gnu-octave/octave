@@ -36,6 +36,7 @@ class octave_lvalue;
 
 #include "ov.h"
 #include "pt-exp.h"
+#include "symtab.h"
 
 // Simple assignment expressions.
 
@@ -72,7 +73,7 @@ public:
 
   tree_expression *right_hand_side (void) { return rhs; }
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -142,7 +143,7 @@ public:
 
   tree_expression *right_hand_side (void) { return rhs; }
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
   

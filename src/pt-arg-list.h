@@ -78,7 +78,7 @@ public:
 
   string_vector get_arg_names (void) const;
 
-  tree_argument_list *dup (symbol_table *sym_tab);
+  tree_argument_list *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

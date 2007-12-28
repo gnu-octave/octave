@@ -130,8 +130,10 @@ public:
   };
 
   static std::string unary_op_as_string (unary_op);
+  static std::string unary_op_fcn_name (unary_op);
 
   static std::string binary_op_as_string (binary_op);
+  static std::string binary_op_fcn_name (binary_op);
 
   static std::string assign_op_as_string (assign_op);
 
@@ -225,11 +227,13 @@ public:
   octave_value (double base, double limit, double inc);
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
+  octave_value (const Octave_map& m, const std::string& id);
   octave_value (const streamoff_array& off);
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
 
   octave_value (octave_base_value *new_rep);
+  octave_value (octave_base_value *new_rep, int xcount);
 
   // Copy constructor.
 
@@ -442,6 +446,9 @@ public:
   bool is_map (void) const
     { return rep->is_map (); }
 
+  bool is_object (void) const
+    { return rep->is_object (); }
+
   bool is_streamoff (void) const
     { return rep->is_streamoff (); }
 
@@ -549,6 +556,12 @@ public:
 
   bool is_function (void) const
     { return rep->is_function (); }
+
+  bool is_user_script (void) const
+    { return rep->is_user_script (); }
+
+  bool is_user_function (void) const
+    { return rep->is_user_function (); }
 
   bool is_builtin_function (void) const
     { return rep->is_builtin_function (); }

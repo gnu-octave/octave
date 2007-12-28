@@ -33,6 +33,7 @@ class octave_value_list;
 class octave_lvalue;
 
 #include "pt-exp.h"
+#include "symtab.h"
 
 // Colon expressions.
 
@@ -91,7 +92,7 @@ public:
   int line (void) const;
   int column (void) const;
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

@@ -37,11 +37,11 @@ load_path
 {
 protected:
 
-  load_path (void) : dir_info_list (), fcn_map () { }
+  load_path (void) : dir_info_list (), fcn_map (), method_map () { }
 
 public:
 
-  typedef void (*hook_function_ptr) (const std::string& dir);
+  typedef void (*hook_fcn_ptr) (const std::string& dir);
 
   ~load_path (void) { }
 
@@ -86,28 +86,68 @@ public:
       instance->do_update ();
   }
 
-  static std::string find_fcn (const std::string& fcn)
+  static std::string find_method (const std::string& class_name,
+				  const std::string& meth,
+				  std::string& dir_name)
   {
     return instance_ok ()
-      ? instance->do_find_fcn (fcn) : std::string ();
+      ? instance->do_find_method (class_name, meth, dir_name) : std::string ();
+  }
+
+  static std::string find_method (const std::string& class_name,
+				  const std::string& meth)
+  {
+    std::string dir_name;
+    return find_method (class_name, meth, dir_name);
+  }
+
+  static std::list<std::string> methods (const std::string& class_name)
+  {
+    return instance_ok ()
+      ? instance->do_methods (class_name) : std::list<std::string> ();
+  }
+
+  static std::string find_fcn (const std::string& fcn, std::string& dir_name)
+  {
+    return instance_ok ()
+      ? instance->do_find_fcn (fcn, dir_name) : std::string ();
+  }
+
+  static std::string find_fcn (const std::string& fcn)
+  {
+    std::string dir_name;
+    return find_fcn (fcn, dir_name);
+  }
+
+  static std::string find_private_fcn (const std::string& dir,
+				       const std::string& fcn)
+  {
+    return instance_ok ()
+      ? instance->do_find_private_fcn (dir, fcn) : std::string ();
   }
 
   static std::string find_fcn_file (const std::string& fcn)
   {
+    std::string dir_name;
+
     return instance_ok () ?
-      instance->do_find_fcn (fcn, M_FILE) : std::string ();
+      instance->do_find_fcn (fcn, dir_name, M_FILE) : std::string ();
   }
 
   static std::string find_oct_file (const std::string& fcn)
   {
+    std::string dir_name;
+
     return instance_ok () ?
-      instance->do_find_fcn (fcn, OCT_FILE) : std::string ();
+      instance->do_find_fcn (fcn, dir_name, OCT_FILE) : std::string ();
   }
 
   static std::string find_mex_file (const std::string& fcn)
   {
+    std::string dir_name;
+
     return instance_ok () ?
-      instance->do_find_fcn (fcn, MEX_FILE) : std::string ();
+      instance->do_find_fcn (fcn, dir_name, MEX_FILE) : std::string ();
   }
 
   static std::string find_file (const std::string& file)
@@ -160,9 +200,9 @@ public:
       instance->do_display (os);
   }
 
-  static void set_add_hook (hook_function_ptr f) { add_hook = f; }
+  static void set_add_hook (hook_fcn_ptr f) { add_hook = f; }
 
-  static void set_remove_hook (hook_function_ptr f) { remove_hook = f; }
+  static void set_remove_hook (hook_fcn_ptr f) { remove_hook = f; }
 
   static void set_command_line_path (const std::string& p)
   {
@@ -187,13 +227,26 @@ private:
   {
   public:
 
+    // <FCN_NAME, TYPE>
+    typedef std::map<std::string, int> fcn_file_map_type;
+
+    typedef fcn_file_map_type::const_iterator const_fcn_file_map_iterator;
+    typedef fcn_file_map_type::iterator fcn_file_map_iterator;
+
+    // <CLASS_NAME, <FCN_NAME, TYPE>>
+    typedef std::map<std::string, fcn_file_map_type> method_file_map_type;
+
+    typedef method_file_map_type::const_iterator const_method_file_map_iterator;
+    typedef method_file_map_type::iterator method_file_map_iterator;
+
     dir_info (const std::string& d) : dir_name (d) { initialize (); }
 
     dir_info (const dir_info& di)
       : dir_name (di.dir_name), is_relative (di.is_relative),
 	dir_mtime (di.dir_mtime), all_files (di.all_files),
 	fcn_files (di.fcn_files),
-	private_function_map (di.private_function_map) { }
+	private_file_map (di.private_file_map),
+	method_file_map (di.method_file_map) { }
 
     ~dir_info (void) { }
 
@@ -206,7 +259,8 @@ private:
 	  dir_mtime = di.dir_mtime;
 	  all_files = di.all_files;
 	  fcn_files = di.fcn_files;
-	  private_function_map = di.private_function_map;
+	  private_file_map = di.private_file_map;
+	  method_file_map = di.method_file_map;
 	}
 
       return *this;
@@ -219,15 +273,21 @@ private:
     octave_time dir_mtime;
     string_vector all_files;
     string_vector fcn_files;
-    std::map<std::string, int> private_function_map;
+    fcn_file_map_type private_file_map;
+    method_file_map_type method_file_map;
 
   private:
 
     void initialize (void);
 
-    bool get_file_list (const std::string& d);
+    void get_file_list (const std::string& d);
 
-    void get_private_function_map (const std::string& d);
+    void get_private_file_map (const std::string& d);
+
+    void get_method_file_map (const std::string& d,
+			      const std::string& class_name);
+
+    friend fcn_file_map_type get_fcn_files (const std::string& d);
   };
 
   class file_info
@@ -263,21 +323,53 @@ private:
   // in each directory.
   //
   // Second, a map from file names (the union of all "public" files for all
-  // directories, but without filename exteinsions) to a list of
+  // directories, but without filename extensions) to a list of
   // corresponding information (directory name and file types).  This
   // way, we can quickly find shadowed file names and look up all
   // overloaded functions (in the "@" directories used to implement
   // classes).
 
-  mutable std::list<dir_info> dir_info_list;
+  typedef std::list<dir_info> dir_info_list_type;
 
-  mutable std::map<std::string, std::list<file_info> > fcn_map;
+  typedef dir_info_list_type::const_iterator const_dir_info_list_iterator;
+  typedef dir_info_list_type::iterator dir_info_list_iterator;
+
+  typedef std::list<file_info> file_info_list_type;
+
+  typedef file_info_list_type::const_iterator const_file_info_list_iterator;
+  typedef file_info_list_type::iterator file_info_list_iterator;
+
+  // <FCN_NAME, FILE_INFO_LIST>
+  typedef std::map<std::string, file_info_list_type> fcn_map_type;
+
+  typedef fcn_map_type::const_iterator const_fcn_map_iterator;
+  typedef fcn_map_type::iterator fcn_map_iterator;
+
+  // <DIR_NAME, <FCN_NAME, TYPE>>
+  typedef std::map<std::string, dir_info::fcn_file_map_type> private_fcn_map_type;
+
+  typedef private_fcn_map_type::const_iterator const_private_fcn_map_iterator;
+  typedef private_fcn_map_type::iterator private_fcn_map_iterator;
+
+  // <CLASS_NAME, <FCN_NAME, FILE_INFO_LIST>>
+  typedef std::map<std::string, fcn_map_type> method_map_type;
+
+  typedef method_map_type::const_iterator const_method_map_iterator;
+  typedef method_map_type::iterator method_map_iterator;
+
+  mutable dir_info_list_type dir_info_list;
+
+  mutable fcn_map_type fcn_map;
+
+  mutable private_fcn_map_type private_fcn_map;
+
+  mutable method_map_type method_map;
 
   static load_path *instance;
 
-  static hook_function_ptr add_hook;
+  static hook_fcn_ptr add_hook;
 
-  static hook_function_ptr remove_hook;
+  static hook_fcn_ptr remove_hook;
 
   static std::string command_line_path;
 
@@ -285,19 +377,15 @@ private:
 
   static bool instance_ok (void);
 
-  typedef std::list<dir_info>::const_iterator const_dir_info_list_iterator;
-  typedef std::list<dir_info>::iterator dir_info_list_iterator;
-
-  typedef std::map<std::string, std::list<file_info> >::const_iterator const_fcn_map_iterator;
-  typedef std::map<std::string, std::list<file_info> >::iterator fcn_map_iterator;
-
-  typedef std::list<file_info>::const_iterator const_file_info_list_iterator;
-  typedef std::list<file_info>::iterator file_info_list_iterator;
-
   const_dir_info_list_iterator find_dir_info (const std::string& dir) const;
   dir_info_list_iterator find_dir_info (const std::string& dir);
 
   bool contains (const std::string& dir) const;
+
+  void move_fcn_map (const std::string& dir,
+		     const string_vector& fcn_files, bool at_end);
+
+  void move_method_map (const std::string& dir, bool at_end);
 
   void move (std::list<dir_info>::iterator i, bool at_end);
 
@@ -313,12 +401,34 @@ private:
 
   void do_add (const std::string& dir, bool at_end, bool warn);
 
+  void remove_fcn_map (const std::string& dir, const string_vector& fcn_files);
+
+  void remove_private_fcn_map (const std::string& dir);
+
+  void remove_method_map (const std::string& dir);
+
   bool do_remove (const std::string& dir);
 
   void do_update (void) const;
 
+  static bool
+  check_file_type (std::string& fname, int type, int possible_types,
+		   const std::string& fcn, const char *who);
+
   std::string do_find_fcn (const std::string& fcn,
+			   std::string& dir_name,
 			   int type = M_FILE | OCT_FILE | MEX_FILE) const;
+
+  std::string do_find_private_fcn (const std::string& dir,
+				   const std::string& fcn,
+				   int type = M_FILE | OCT_FILE | MEX_FILE) const;
+
+  std::string do_find_method (const std::string& class_name,
+			      const std::string& meth,
+			      std::string& dir_name,
+			      int type = M_FILE | OCT_FILE | MEX_FILE) const;
+
+  std::list<std::string> do_methods (const std::string& class_name) const;
 
   std::string do_find_file (const std::string& file) const;
 
@@ -336,11 +446,24 @@ private:
 
   std::string do_path (void) const;
 
+  friend void print_types (std::ostream& os, int types);
+
+  friend string_vector get_file_list (const dir_info::fcn_file_map_type& lst);
+
+  friend void
+  print_fcn_list (std::ostream& os, const dir_info::fcn_file_map_type& lst);
+
   void do_display (std::ostream& os) const;
 
   std::string do_system_path (void) const { return sys_path; }
 
   void add_to_fcn_map (const dir_info& di, bool at_end) const;
+
+  void add_to_private_fcn_map (const dir_info& di) const;
+
+  void add_to_method_map (const dir_info& di, bool at_end) const;
+
+  friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
 };
 
 extern std::string

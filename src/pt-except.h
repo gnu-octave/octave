@@ -30,6 +30,7 @@ class tree_walker;
 
 #include "comment-list.h"
 #include "pt-cmd.h"
+#include "symtab.h"
 
 // Simple exception handling.
 
@@ -64,7 +65,7 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  tree_command *dup (symbol_table *sym_tab);
+  tree_command *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -126,7 +127,7 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  tree_command *dup (symbol_table *sym_tab);
+  tree_command *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

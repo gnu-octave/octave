@@ -132,149 +132,22 @@ gripe_file_open (const std::string& fcn, const std::string& file)
     error ("%s: unable to open file `%s'", fcn.c_str (), file.c_str ());
 }
 
-// FIXME -- shouldn't this be implemented in terms of other
-// functions that are already available?
-
-// Install a variable with name NAME and the value specified TC in the
-// symbol table.  If FORCE is TRUE, replace any existing definition
-// for NAME.  If GLOBAL is TRUE, make the variable global.
-//
-// Assumes TC is defined.
+// Install a variable with name NAME and the value VAL in the
+// symbol table.  If GLOBAL is TRUE, make the variable global.
 
 static void
-install_loaded_variable (int force, const std::string& name,
+install_loaded_variable (const std::string& name,
 			 const octave_value& val,
-			 int global, const std::string& doc)
+			 bool global, const std::string& /*doc*/)
 {
-  // Is there already a symbol by this name?  If so, what is it?
-
-  symbol_record *lsr = curr_sym_tab->lookup (name);
-
-  bool is_undefined = true;
-  bool is_variable = false;
-  bool is_function = false;
-  bool is_global = false;
-
-  if (lsr)
-    {
-      is_undefined = ! lsr->is_defined ();
-      is_variable = lsr->is_variable ();
-      is_function = lsr->is_function ();
-      is_global = lsr->is_linked_to_global ();
-    }
-
-  symbol_record *sr = 0;
-
   if (global)
     {
-      if (is_global || is_undefined)
-	{
-	  if (force || is_undefined)
-	    {
-	      lsr = curr_sym_tab->lookup (name, true);
-	      link_to_global_variable (lsr);
-	      sr = lsr;
-	    }
-	  else
-	    {
-	      warning ("load: global variable name `%s' exists",
-		       name.c_str ());
-	      warning ("use `load -force' to overwrite");
-	    }
-	}
-      else if (is_function)
-	{
-	  if (force)
-	    {
-	      lsr = curr_sym_tab->lookup (name, true);
-	      link_to_global_variable (lsr);
-	      sr = lsr;
-	    }
-	  else
-	    {
-	      warning ("load: `%s' is currently a function in this scope",
-		       name.c_str ());
-	      warning ("`load -force' will load variable and hide function");
-	    }
-	}
-      else if (is_variable)
-	{
-	  if (force)
-	    {
-	      lsr = curr_sym_tab->lookup (name, true);
-	      link_to_global_variable (lsr);
-	      sr = lsr;
-	    }
-	  else
-	    {
-	      warning ("load: local variable name `%s' exists",
-		       name.c_str ());
-	      warning ("use `load -force' to overwrite");
-	    }
-	}
-      else
-	error ("load: unable to load data for unknown symbol type");
+      symbol_table::clear (name);
+      symbol_table::mark_global (name);
+      symbol_table::varref (name, symbol_table::global_scope ()) = val;
     }
   else
-    {
-      if (is_global)
-	{
-	  if (force || is_undefined)
-	    {
-	      lsr = curr_sym_tab->lookup (name, true);
-	      link_to_global_variable (lsr);
-	      sr = lsr;
-	    }
-	  else
-	    {
-	      warning ("load: global variable name `%s' exists",
-		       name.c_str ());
-	      warning ("use `load -force' to overwrite");
-	    }
-	}
-      else if (is_function)
-	{
-	  if (force)
-	    {
-	      lsr = curr_sym_tab->lookup (name, true);
-	      link_to_global_variable (lsr);
-	      sr = lsr;
-	    }
-	  else
-	    {
-	      warning ("load: `%s' is currently a function in this scope",
-		       name.c_str ());
-	      warning ("`load -force' will load variable and hide function");
-	    }
-	}
-      else if (is_variable || is_undefined)
-	{
-	  if (force || is_undefined)
-	    {
-	      lsr = curr_sym_tab->lookup (name, true);
-	      sr = lsr;
-	    }
-	  else
-	    {
-	      warning ("load: local variable name `%s' exists",
-		       name.c_str ());
-	      warning ("use `load -force' to overwrite");
-	    }
-	}
-      else
-	error ("load: unable to load data for unknown symbol type");
-    }
-
-  if (sr)
-    {
-      sr->define (val);
-      sr->document (doc);
-      return;
-    }
-  else
-    error ("load: unable to load variable `%s'", name.c_str ());
-
-  return;
+    symbol_table::varref (name) = val;
 }
 
 // Return TRUE if NAME matches one of the given globbing PATTERNS.
@@ -451,7 +324,7 @@ get_file_format (const std::string& fname, const std::string& orig_fname,
 }
 
 octave_value
-do_load (std::istream& stream, const std::string& orig_fname, bool force,
+do_load (std::istream& stream, const std::string& orig_fname,
 	 load_save_format format, oct_mach_info::float_format flt_fmt,
 	 bool list_only, bool swap, bool verbose,
 	 const string_vector& argv, int argv_idx, int argc, int nargout)
@@ -552,7 +425,7 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 			    retstruct.assign (name, tc);
 			}
 		      else
-			install_loaded_variable (force, name, tc, global, doc);
+			install_loaded_variable (name, tc, global, doc);
 		    }
 		}
 
@@ -766,7 +639,6 @@ Force Octave to assume the file is in Octave's text format.\n\
 
   load_save_format format = LS_UNKNOWN;
 
-  bool force = true;
   bool list_only = false;
   bool verbose = false;
 
@@ -857,7 +729,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 	  // that we can get additional input?  I'm afraid that we
 	  // can't fix this using std::cin only.
 
-	  retval = do_load (std::cin, orig_fname, force, format, flt_fmt,
+	  retval = do_load (std::cin, orig_fname, format, flt_fmt,
 			    list_only, swap, verbose, argv, i, argc,
 			    nargout);
 	}
@@ -887,7 +759,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 
 	  if (hdf5_file.file_id >= 0)
 	    {
-	      retval = do_load (hdf5_file, orig_fname, force, format,
+	      retval = do_load (hdf5_file, orig_fname, format,
 				flt_fmt, list_only, swap, verbose,
 				argv, i, argc, nargout);
 
@@ -940,7 +812,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 			}
 		    }
 
-		  retval = do_load (file, orig_fname, force, format,
+		  retval = do_load (file, orig_fname, format,
 				    flt_fmt, list_only, swap, verbose,
 				argv, i, argc, nargout);
 
@@ -974,7 +846,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 			}
 		    }
 
-		  retval = do_load (file, orig_fname, force, format,
+		  retval = do_load (file, orig_fname, format,
 				    flt_fmt, list_only, swap, verbose,
 				    argv, i, argc, nargout);
 
@@ -1033,7 +905,7 @@ glob_pattern_p (const std::string& pattern)
 static void
 do_save (std::ostream& os, const octave_value& tc,
 	 const std::string& name, const std::string& help,
-	 int global, load_save_format fmt, bool save_as_floats)
+	 bool global, load_save_format fmt, bool save_as_floats)
 {
   switch (fmt)
     {
@@ -1078,46 +950,42 @@ do_save (std::ostream& os, const octave_value& tc,
 // Save the info from SR on stream OS in the format specified by FMT.
 
 void
-do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
-	 bool save_as_floats)
+do_save (std::ostream& os, const symbol_table::symbol_record& sr,
+	 load_save_format fmt, bool save_as_floats)
 {
-  if (! sr->is_variable ())
+  octave_value val = sr.varval ();
+
+  if (val.is_defined ())
     {
-      error ("save: can only save variables, not functions");
-      return;
-    }
+      std::string name = sr.name ();
+      std::string help;
+      bool global = sr.is_global ();
 
-  octave_value tc = sr->def ();
-
-  if (tc.is_defined ())
-    {
-      std::string name = sr->name ();
-      std::string help = sr->help ();
-
-      int global = sr->is_linked_to_global ();
-
-      do_save (os, tc, name, help, global, fmt, save_as_floats);
+      do_save (os, val, name, help, global, fmt, save_as_floats);
     }
 }
 
 // Save variables with names matching PATTERN on stream OS in the
 // format specified by FMT.
 
-static int
+static size_t
 save_vars (std::ostream& os, const std::string& pattern,
 	   load_save_format fmt, bool save_as_floats)
 {
-  Array<symbol_record *> vars = curr_sym_tab->glob
-    (pattern, symbol_record::USER_VARIABLE, SYMTAB_ALL_SCOPES);
+  std::list<symbol_table::symbol_record> vars = symbol_table::glob (pattern);
 
-  int saved = vars.length ();
+  size_t saved = 0;
 
-  for (int i = 0; i < saved; i++)
+  typedef std::list<symbol_table::symbol_record>::const_iterator const_vars_iterator;
+
+  for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
     {
-      do_save (os, vars(i), fmt, save_as_floats);
+      do_save (os, *p, fmt, save_as_floats);
 
       if (error_state)
 	break;
+
+      saved++;
     }
 
   return saved;
@@ -1333,43 +1201,35 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 {
   write_header (os, fmt);
 
-  Array<symbol_record *> vars = curr_sym_tab->glob
-    ("*", symbol_record::USER_VARIABLE, SYMTAB_ALL_SCOPES);
-
-  int num_to_save = vars.length ();
+  std::list<symbol_table::symbol_record> vars = symbol_table::all_variables ();
 
   double save_mem_size = 0;
 
-  for (int i = 0; i < num_to_save; i++)
+  typedef std::list<symbol_table::symbol_record>::const_iterator const_vars_iterator;
+
+  for (const_vars_iterator p = vars.begin (); p != vars.end (); p++)
     {
-      symbol_record *sr = vars(i);
+      octave_value val = p->varval ();
 
-      if (sr->is_variable ())
+      if (val.is_defined ())
 	{
-	  octave_value tc = sr->def ();
+	  std::string name = p->name ();
+	  std::string help;
+	  bool global = p->is_global ();
 
-	  if (tc.is_defined ())
+	  double val_size = val.byte_size () / 1024;
+
+	  // FIXME -- maybe we should try to throw out the largest first...
+
+	  if (Voctave_core_file_limit < 0
+	      || save_mem_size + val_size < Voctave_core_file_limit)
 	    {
-	      double tc_size = tc.byte_size () / 1024;
+	      save_mem_size += val_size;
 
-	      // FIXME -- maybe we should try to throw out the
-	      // largest first...
+	      do_save (os, val, name, help, global, fmt, save_as_floats);
 
-	      if (Voctave_core_file_limit < 0
-		  || save_mem_size + tc_size < Voctave_core_file_limit)
-		{
-		  save_mem_size += tc_size;
-
-		  std::string name = sr->name ();
-		  std::string help = sr->help ();
-
-		  int global = sr->is_linked_to_global ();
-
-		  do_save (os, tc, name, help, global, fmt, save_as_floats);
-
-		  if (error_state)
-		    break;
-		}
+	      if (error_state)
+		break;
 	    }
 	}
     }

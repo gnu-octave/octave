@@ -951,7 +951,7 @@ done:
 }
 
 tree_expression *
-tree_matrix::dup (symbol_table *sym_tab)
+tree_matrix::dup (symbol_table::scope_id scope)
 {
   tree_matrix *new_matrix = new tree_matrix (0, line (), column ());
 
@@ -959,7 +959,7 @@ tree_matrix::dup (symbol_table *sym_tab)
     {
       tree_argument_list *elt = *p;
 
-      new_matrix->append (elt ? elt->dup (sym_tab) : 0);
+      new_matrix->append (elt ? elt->dup (scope) : 0);
     }
 
   new_matrix->copy_base (*this);

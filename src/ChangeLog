@@ -1,3 +1,418 @@
+2007-12-28  John W. Eaton  <jwe@octave.org>
+
+	Merge changes from object branch:
+
+	2007-12-12  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::dir_info::get_file_list,
+	load_path::move_method_map, load_path::remove_method_map,
+	load_path::do_find_fcn, load_path::do_find_private_fcn,
+	load_path::do_find_method, load_path::do_find_file,
+	load_path::do_find_first_of, load_path::do_find_all_first_of,
+	load_path::do_display, load_path::add_to_method_map, genpath,
+	execute_pkg_add_or_del): Use file_ops::concat.
+
+	2007-08-24  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (Fmislocked): return value for nargin == 0 case.
+
+	2007-07-27  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.cc (tree_index_expression::rvalue):
+	Pass substring of type to subsref when doing partial evaluation.
+	(tree_index_expression::lvalue): Likewise.
+
+	2007-06-29  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (is_built_in_class, set_class_relationship,
+	Fsuperiorto, Finferiorto): New functions.
+	(octave_class::in_class_method): New function.
+	(octave_class::subsref, octave_class:subsasgn): Use it.
+
+	2007-06-28  John W. Eaton  <jwe@octave.org>
+
+	* src/ov-class.cc (sanitize): New function.
+	(make_idx_args): Use it.
+
+	2007-06-28  John W. Eaton  <jwe@octave.org>
+
+	* src/ov-class.cc (octave_class::subsasgn): Expect and use only
+	one return value from feval of subsasgn method.
+
+	* ov.cc (octave_value::assign): Don't convert to struct if
+	indexing a class object with ".".
+
+	* pt-idx.cc (tree_index_expression::make_arg_struct):
+	Use Cell instead of octave_value_list for subscripts.
+
+	* ov-class.cc (make_idx_args): For "." index, subs field is
+	string, not cell.
+
+	2007-06-27  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-handle.cc (octave_fcn_handle::save_ascii,
+	octave_fcn_handle::load_ascii, octave_fcn_handle::save_binary,
+	octave_fcn_handle::load_binary, octave_fcn_handle::save_hdf5,
+	octave_fcn_handle::load_hdf5): Adapt to new symbol table objects.
+
+	* symtab.h (symbol_table::all_variables,
+	symbol_table::do_all_variables): New arg, defined_only.
+
+	2007-06-26  John W. Eaton  <jwe@octave.org>
+
+	* ls-mat5.cc (read_mat5_binary_element): Adapt to new symbol table
+	objects.
+
+	* variables.cc (Vwhos_line_format): New static variable.
+	(Fwhos_line_format): New function.
+	(symbol_record_name_compare): Delete function.
+	(symbol_record_name_compare, whos_parameter): New structs.
+	(print_descriptor, dimensions_string_req_first_space,
+	dimensions_string_req_total_space, make_dimensions_string,
+	parse_whos_line_format, print_symbol_info_line): New static
+	functions, adapted from old symbol table class.
+	(do_who): Adapt to new symbol table objects.
+
+	* symtab.h (symbol_table::glob_variables): New functions.
+	(symbol_table::do_glob): New argument, vars_only.  Change all uses.
+
+	2007-06-22  John W. Eaton  <jwe@octave.org>
+
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::help_for_dispatch):
+	New function.
+	* symtab.h: Provide decl.
+	(symbol_table::fcn_info::help_for_dispatch,
+	symbol_table::help_for_dispatch): New functions.
+
+	* help.cc (help_from_symbol_table): Call
+	symbol_table::help_for_dispatch instead of
+	extract_help_from_dispatch.
+
+	* help.cc (extract_help_from_dispatch): Delete.
+	* help.h: Delete decl.
+
+	2007-06-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/dispatch.cc (class octave_dispatch): Delete class.
+	(builtin, any_arg_is_magic_colon, dispatch_record): Delete functions.
+	(Fbuiltin, Fdispatch): Adapt to new symbol table objects.
+
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::print_dispatch):
+	New function.
+	* symtab.h: Provide decl.
+	(symbol_table::fcn_info::print_dispatch, symbol_table::print_dispatch):
+	New functions.
+
+	* symtab.h (symbol_table::fcn_info::fcn_info_rep::clear_dispatch,
+	symbol_table::fcn_info::clear_dispatch, symbol_table::clear_dispatch):
+	New functions.
+
+	* symtab.h (symbol_table::fcn_info::fcn_info_rep::get_dispatch,
+	symbol_table::fcn_info::get_dispatch, symbol_table::get_dispatch):
+	New functions.
+
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find):
+	Use leftmost class argument as dispatch type, or first argument if
+	there are no class arguments.
+
+	2007-06-20  John W. Eaton  <jwe@octave.org>
+
+	* ov-base.cc (Vprint_answer_id_name, Fprint_answer_id_name): Delete.
+	(octave_base_value::print_with_name): Always print name.
+
+	* ov-base.cc (Vsilent_functions): No longer static.
+	* ov-base.h: Provide decl.
+
+	* ov-class.cc (Fmethods): Define as command.
+
+	* ov-class.cc (octave_class::print): Simply call print_raw.
+
+	* ov-class.cc (octave_class::print_with_name): New function.
+	* ov-class.h: Provide decl.
+
+	2007-06-19  John W. Eaton  <jwe@octave.org>
+
+	* ov.cc (octave_value::do_unary_op, octave_value::do_binary_op):
+	Handle class methods.
+
+	* ov.cc (octave_value::unary_op_fcn_name,
+	octave_value::binary_op_fcn_name): New functions.
+	* ov.h: Provide decls.
+
+	* ov-typeinfo.cc (octave_value_typeinfo::register_unary_class_op,
+	octave_value_typeinfo::register_binary_class_op,
+	octave_value_typeinfo::do_register_unary_class_op,
+	octave_value_typeinfo::do_register_binary_class_op,
+	octave_value_typeinfo::do_lookup_unary_class_op,
+	octave_value_typeinfo::do_lookup_binary_class_op): New functions.
+	* ov-typeinfo.h: Provide decls.
+	
+	* ov-typeinfo.h (octave_value_typeinfo::unary_class_op_fcn,
+	octave_value_typeinfo::binary_class_op_fcn): New typedefs.
+	(octave_value_typeinfo::unary_class_ops,
+	octave_value_typeinfo::binary_class_ops): New data members.
+	(octave_value_typeinfo::octave_value_typeinfo): Initialize them.
+	(octave_value_typeinfo::lookup_unary_class_op,
+	octave_value_typeinfo::lookup_binary_class_op): New functions.
+
+	* OPERATORS/op-class.cc: New file.
+	* Makefile.in (OP_XSRC): Add it to the list.
+
+	* ov.cc (install_types): Call octave_class::register_type here.
+
+	* ov-class.h (octave_class): Implement by containing a map object
+	instead of deriving from octave_struct.
+	* ov-class.cc (octave_class::subsref, octave_class::subsasgn):
+	Don't use octave_class implementation as default action.
+
+	* ov.h, ov.cc (octave_value::octave_value (const Octave_map&, const
+	std::string&)): New constructor.
+
+	2007-06-18  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (octave_class::subsref, octave_class::subsasgn):
+	Handle dispatch to user-defined methods.
+
+	* parse.y (load_fcn_from_file): New arg, dispatch_type.
+	Change all uses.
+
+	* ov-fcn.h (octave_function::is_class_constructor,
+	octave_function::is_class_method, octave_function::dispatch_class):
+	New virtual functions.
+
+	* ov-usr-fcn.h (octave_user_function::dispatch_class,
+	octave_usr_function::stash_dispatch_class): New functions.
+	(octave_usr_fucntion::xdispatch_class): New data member.
+	* parse.y (frob_function): Call stash_dispatch_class here.
+
+	* ov-struct.cc (Ffieldnames): Also handle objects.
+
+	* ov-class.cc (Fmethods): New function.
+	* load-path.cc (load_path::do_methods): New function.
+	* load-path.h (load_path::methods): New function.
+
+	* ov.h (octave_value::is_object): New function.
+	* ov-base.h (octave_base_value::is_object): New virtual function.
+	* ov-class.h (octave_class::is_object): New function.
+	* ov-class.cc (Fisobject): New function.
+
+	2007-06-15  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (octave_class::print): Call display method if found.
+
+	* symtab.h (symbol_table::fcn_info::find_method): New function.
+	(symbol_table::find_method): New function.
+	(symbol_table::fcn_info::fcn_info_rep::find_method): Provide decl.
+	* symtab.cc (symbol_table::fcn_info::fcn_info_rep::find_method):
+	New function.
+	(symbol_table::fcn_info::fcn_info_rep::find): Use it.
+
+	2007-06-14  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h (symbol_table::clear_mex_functions): Make it work.
+	(symbol_table::fcn_info::fcn_info_rep::clear_mex_function,
+	symbol_table::fcn_info::clear_mex_function): New functions.
+
+	2007-06-08  John W. Eaton  <jwe@octave.org>
+
+	* defun.cc (Falias): Delete.
+
+	* variables.cc (load_fcn_try_ctor): New function.
+	(lookup): call load_fcn_try_ctor instead of load_fcn_from_file.
+
+	* variables.cc, variables.h (at_top_level, lookup_by_name, lookup,
+	initialize_symbol_tables, fcn_out_of_date, symbol_out_of_date,
+	lookup_function, lookup_user_function, link_to_global_variable,
+	link_to_builtin_or_function, force_link_to_function, Fdocument,
+	is_local_variable, do_clear_all, do_clear_functions,
+	do_clear_globals, do_clear_variables, do_clear_function,
+	do_clear_global, do_clear_variable, do_clear_symbol,
+	do_clear_function_pattern, do_clear_global_pattern,
+	do_clear_variable_pattern, do_clear_symbol_pattern,
+	clear_function, clear_variable, clear_symbol):
+	Delete (some functionality moved to the new symtab.cc and some is
+	no longer needed).
+	(Fignore_function_time_stamp): Move to symtab.cc.
+
+	* lex.l (lookup_identifier): Delete.
+
+	* parse.y (is_function_file): New function.
+	(load_fcn_from_file): Return pointer to octave_function, not bool.
+
+	* ov-usr-fcn.h, ov-usr-fcn.cc (octave_user_function::argn_sr,
+	octave_user_function::nargin_sr, octave_user_function::nargout_sr,
+	octave_user_function::varargin_sr): Delete data members.
+	(octave_user_function::install_automatic_vars): Delete.
+	(octave_user_script::do_multi_index_op): New function.
+
+	* ov-fcn.h (octave_function::locked, octave_function::my_dir_name):
+	New data members.
+	(octave_function::dir_name, octave_function::stash_dir_name,
+	octave_function::lock, octave_function::unlock,
+	octave_function::islocked): New functions.
+
+	* of-fcn-handle.h, ov-fcn-handle.cc (octave_fcn_handle::subsref):
+	Call out_of_date_check here to simplify time stamp checking.
+	(octave_fcn_handle::reload_warning): Delete.
+
+	* ov.h (octave_value::is_user_script, octave_value::is_user_function):
+	New functions.
+	* ov-base.h (octave_base_value::is_user_script,
+	octave_base_value::is_user_function): New pure virtual functions.
+	* ov-fcn.h (octave_function::is_user_script,
+	octave_function::is_user_function): Delete.
+
+	* load-save.cc (install_loaded_variable): Greatly simplify.
+
+	* load-path.h, load-path.cc: Change private_fcn_file to private_file.
+	(load_path::private_fcn_map): New data member.
+	(load_path::do_add, load_path::do_remove, load_path::do_update):
+	Also manage private_file_map here.
+	(load_path::add_to_private_fcn_map): New function.
+	(load_path::remove_private_fcn_map): New function.
+	(load_path::do_find_private_fcn): Make it work.
+	(get_file_list): New function.
+	(load_path::do_display): Use it.  Display private map.
+	(load_path::find_method, load_path::find_fcn): Handle directory name.
+
+	* token.cc, token.h, toplev.cc, debug.cc, defun.cc, defun-dld.h,
+	defun-int.h, error.cc, help.cc, load-save.h, load-save.cc, mex.cc,
+	octave.cc, ov-fcn-handle.cc, ov-usr-fcn.cc, parse.h, parse.y,
+	lex.l, variables.cc: Adapt to new symbol table objects (my
+	apologies for the lack of detail).
+
+	* unwind-prot.h (unwind_protect::add): Set default value for ptr arg.
+
+	* pt-stmt.cc (tree_statement::eval): Rework method for deciding
+	whether to assign value to ans.
+
+	* pt-idx.cc (tree_index_expression::rvalue):
+	Looking up symbol may evaluaate first args now.
+
+	* pt-id.h, pt-id.cc (tree_identifier::document,
+	tree_identifier::is_defined, tree_identifier::define,
+	tree_identifier::is_function, tree_identifier::lookup,
+	tree_identifier::link_to_global): Delete.
+	(tree_identifier::do_lookup): Simplify.
+	(tree_identifier::rvalue): Looking up symbol can't execute script now.
+
+	* pt-misc.cc (tree_parameter_list::initialize_undefined,
+	tree_parameter_list::is_defined): Call is_variable for elt, not
+	is_defined.
+
+	* pt-fcn-handle.h (tree_anon_fcn_handle::fcn): Now pointer to
+	octave_user_function, not value.  Change all uses.
+
+	* pt-decl.h (tree_decl_command::initialized): Delete data member.
+	(tree_decl_elt::is_variable): New function.
+	* pt-decl.cc: Fix all uses of tree_decl_command::initialized.
+
+	* ls-hdf5.cc, ls-mat-ascii.cc, ls-mat4.cc, ls-mat5.cc,
+	ls-oct-ascii.cc, ls-oct-binary.cc, input.cc: Don't include symtab.h.
+
+	* dynamic-ld.h, dynamic-ld.cc (octave_dynamic_loader::load_oct,
+	octave_dynamic_loader::load_mex, octave_dynamic_loader::do_load_oct,
+	octave_dynamic_loader::do_load_mex): Adapt to new symbol table
+	objects.  Return pointer octave_function instead of bool.
+
+	* DLD-FUNCTIONS/dispatch.cc (Fbuiltin): Disable for now.
+	Disable code that works with old symbol tables.
+	(Fbuiltin): Simply call symbol_table::add_dispatch.
+
+	* pt-arg-list.cc, pt-arg-list.h, pt-assign.cc, pt-assign.h,
+	pt-binop.cc, pt-binop.h, pt-bp.h, pt-cell.cc, pt-cell.h,
+	pt-cmd.cc, pt-cmd.h, pt-colon.cc, pt-colon.h, pt-const.cc,
+	pt-const.h, pt-decl.cc, pt-decl.h, pt-except.cc, pt-except.h,
+	pt-exp.h, pt-fcn-handle.cc, pt-fcn-handle.h, pt-id.cc, pt-id.h,
+	pt-idx.cc, pt-idx.h, pt-jump.cc, pt-jump.h, pt-loop.cc, pt-loop.h,
+	pt-mat.cc, pt-mat.h, pt-misc.cc, pt-misc.h, pt-select.cc,
+	pt-select.h, pt-stmt.cc, pt-stmt.h, pt-unop.cc, pt-unop.h:
+	Adapt dup functions to use scope instead of symbol_table objects.
+
+	* TEMPLATE-INST/Array-sym.cc: Delete.
+	* Makefile.in (TI_XSRC): Remove it from the list.
+
+	* symtab.h, symtab.cc: Replace with new versions.
+
+	2007-05-16  John W. Eaton  <jwe@octave.org>
+
+	* oct-lvalue.cc, oct-lvalue.h (octave_lvalue::chg_fcn): Delete.
+	Fix all uses.
+
+	2007-05-15  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_find_private_function): New function.
+	* load-path.h (load_path::do_find_private_function): Provide decl.
+        (load_path::find_private_function): New function.
+
+	2007-05-08  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.cc (tree_index_expression::rvalue): Handle dispatch here.
+
+	* pt-id.cc (tree_identifier::is_variable, tree_identifier::lookup):
+	New functions.
+	* pt-id.cc: Provide decls.
+
+	* parse.y (current_class_name): New global variable.
+	* parse.h: Provide decl.
+
+	* parse.y (load_fcn_from_file, parse_fcn_file):
+	New arg, dispatch_type.
+	(parse_fcn_file): Protect current_class_name and set it to
+	dispatch_type before parsing function.
+	(load_fcn_from_file): If dispatch_type is not empty, call
+	load_path::find_method instead of load_path::find_fcn.
+	* parse.h: Fix decls for extern functions.
+
+	* lex.h (lexical_feedback::parsing_class_method): New data member.
+	* lex.l (lexical_feedback::init): Initialize it.
+	(lookup_identifier): Check it and set sym_name accordingly.
+
+	* ov-usr-fcn.h (octave_user_function::mark_as_class_constructor,
+	octave_user_function::is_class_constructor,
+	octave_user_function::mark_as_class_method,
+	octave_user_function::is_class_method): New functions.
+	(octave_user_function::class_constructor,
+	octave_user_function::class_method): New data members.
+	* ov-usr-fcn.cc (octave_user_function::octave_user_function):
+	Initialize them.
+
+	* load-path.h, load-path.cc: Use typedefs to simplify template decls.
+	Use fcn consistently instead of function.
+	
+	2007-05-03  John W. Eaton  <jwe@octave.org>
+
+	* ov-class.cc (Fclass): Move here.
+	* ov-typeinfo.cc: From here.
+
+	* input.cc (octave_gets): Call load_path::update if user input
+	contains something other than one of the characters " \t\n\r".
+
+	* ov-class.cc, ov-class.h: New files.
+	* Makefile.in: Add them to the appropriate lists.
+
+	* load-path.cc (genpath): Skip directories beginning with "@".
+	(load_path::dir_info::get_file_list):  Don't return anything.
+	Call get_private_function_map here.
+	(load_path::dir_info::initialize): Not here.
+	(load_path::dir_info_::get_method_file_map): New function.
+	(load_path::method_map): New data member.
+	(load_path::do_clear): Also clear method_map.
+	(load_path::do_add): Also call add_to_method_map.
+	(load_path::do_update): Also clear method_map and call
+	(load_path::do_find_method): New function.
+	(load_path::do_add_to_method_map): New function.
+	(load_path::move_fcn_map, load_path::move_method_map): New functions.
+	(load_path::move): Use them.
+	(load_path::remove_fcn_map, load_path::remove_method_map):
+	New functions.
+	(load_path::remove): Use them.
+	* load-path.h: Provide/fix decls.
+	(load_path::find_method): New static function.
+
+	* Makefile.in (%.df : %.cc): Use mv instead of
+	$(simple-move-if-change-rule).
+
 2007-12-21  John W. Eaton  <jwe@octave.org>
 
 	Version 3.0.0 released.

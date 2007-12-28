@@ -59,8 +59,8 @@ do_load (std::istream& stream, const std::string& orig_fname, bool force,
 	 const string_vector& argv, int argv_idx, int argc, int nargout);
 
 extern void
-do_save (std::ostream& os, symbol_record *sr, load_save_format fmt,
-	 bool save_as_floats);
+do_save (std::ostream& os, const symbol_table::symbol_record& sr,
+	 load_save_format fmt, bool save_as_floats);
 
 extern void
 write_header (std::ostream& os, load_save_format format);

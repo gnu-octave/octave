@@ -34,6 +34,7 @@ class tree_walker;
 
 #include "base-list.h"
 #include "pt-exp.h"
+#include "symtab.h"
 
 // General matrices.  This allows us to construct matrices from
 // other matrices, variables, and functions.
@@ -63,7 +64,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

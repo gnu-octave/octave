@@ -37,6 +37,7 @@ class tree_walker;
 
 #include "base-list.h"
 #include "pt-decl.h"
+#include "symtab.h"
 
 // Parameter lists.  Used to hold the list of input and output
 // parameters in a function definition.  Elements are identifiers
@@ -76,7 +77,7 @@ public:
 
   octave_value_list convert_to_const_vector (const Cell& varargout);
 
-  tree_parameter_list *dup (symbol_table *sym_tab);
+  tree_parameter_list *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -105,7 +106,7 @@ public:
 
   ~tree_return_list (void);
 
-  tree_return_list *dup (symbol_table *sym_tab);
+  tree_return_list *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

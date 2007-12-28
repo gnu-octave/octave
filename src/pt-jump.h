@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 class tree_walker;
 
 #include "pt-cmd.h"
+#include "symtab.h"
 
 // Break.
 
@@ -41,7 +42,7 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table *);
+  tree_command *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -70,7 +71,7 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table *);
+  tree_command *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -99,7 +100,7 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table *);
+  tree_command *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

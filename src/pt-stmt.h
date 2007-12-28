@@ -33,6 +33,7 @@ class tree_walker;
 
 #include "base-list.h"
 #include "comment-list.h"
+#include "symtab.h"
 
 // A statement is either a command to execute or an expression to
 // evaluate.
@@ -82,7 +83,7 @@ public:
 
   void set_expression (tree_expression *e) { expr = e; }
 
-  tree_statement *dup (symbol_table *sym_tab);
+  tree_statement *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -141,7 +142,7 @@ public:
 
   octave_value_list list_breakpoints (void);
 
-  tree_statement_list *dup (symbol_table *sym_tab);
+  tree_statement_list *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

@@ -38,13 +38,8 @@ class tree;
 class tree_matrix;
 class tree_identifier;
 class octave_function;
-class symbol_record;
-class symbol_table;
 
 #include "oct-obj.h"
-
-// Temporary symbol table pointer used to cope with bogus function syntax.
-extern symbol_table *tmp_local_sym_tab;
 
 // Nonzero means print parser debugging info (-d).
 extern int octave_debug;
@@ -73,11 +68,15 @@ extern bool input_from_startup_file;
 extern bool evaluating_function_body;
 
 // Keep track of symbol table information when parsing functions.
-extern std::stack<symbol_table*> symtab_context;
+extern std::stack<symbol_table::scope_id> symtab_context;
 
 // Name of parent function when parsing function files that might
 // contain nested functions.
 extern std::string parent_function_name;
+
+// Name of the current class when we are parsing class methods or
+// constructors.
+extern std::string current_class_name;
 
 // Keep a count of how many END tokens we expect.
 extern int end_tokens_expected;
@@ -102,11 +101,12 @@ extern OCTINTERP_API string_vector autoloaded_functions (void);
 
 extern OCTINTERP_API string_vector reverse_lookup_autoload (const std::string& nm);
 
-extern OCTINTERP_API bool
-load_fcn_from_file (const std::string& nm, bool exec_script);
-
-extern OCTINTERP_API bool
-load_fcn_from_file (symbol_record *sym_rec, bool exec_script);
+extern OCTINTERP_API octave_function *
+load_fcn_from_file (const std::string& file_name,
+		    const std::string& dir_name = std::string (),
+		    const std::string& dispatch_type = std::string (),
+		    const std::string& fcn_name = std::string (),
+		    bool autoload = false);
 
 extern OCTINTERP_API void
 source_file (const std::string& file_name,

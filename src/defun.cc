@@ -129,18 +129,9 @@ check_version (const std::string& version, const std::string& fcn)
 // Install variables and functions in the symbol tables.
 
 void
-install_builtin_mapper (octave_mapper *mf)
+install_builtin_mapper (octave_mapper *mf, const std::string& name)
 {
-  symbol_record *sym_rec = fbi_sym_tab->lookup (mf->name (), true);
-
-  unsigned int t
-    = symbol_record::BUILTIN_FUNCTION | symbol_record::MAPPER_FUNCTION;
-
-  sym_rec->unprotect ();
-  sym_rec->define (mf, t);
-  sym_rec->document (mf->doc_string ());
-  sym_rec->make_eternal ();
-  sym_rec->protect ();
+  symbol_table::install_built_in_function (name, octave_value (mf));
 }
 
 void
@@ -148,18 +139,12 @@ install_builtin_function (octave_builtin::fcn f, const std::string& name,
 			  const std::string& doc, bool is_text_fcn,
 			  bool /* can_hide_function -- not yet implemented */)
 {
-  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
+  octave_value fcn (new octave_builtin (f, name, doc));
 
-  unsigned int t = symbol_record::BUILTIN_FUNCTION;
+  symbol_table::install_built_in_function (name, fcn);
 
   if (is_text_fcn)
-    t |= symbol_record::COMMAND;
-
-  sym_rec->unprotect ();
-  sym_rec->define (new octave_builtin (f, name, doc), t);
-  sym_rec->document (doc);
-  sym_rec->make_eternal ();
-  sym_rec->protect ();
+    mark_as_command (name);
 }
 
 void
@@ -168,30 +153,17 @@ install_dld_function (octave_dld_function::fcn f, const std::string& name,
 		      const std::string& doc, bool is_text_fcn,
 		      bool relative)
 {
-  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
-
-  unsigned int t = symbol_record::DLD_FUNCTION;
-
-  if (is_text_fcn)
-    t |= symbol_record::COMMAND;
-
-  sym_rec->unprotect ();
-
-  octave_dld_function *df = new octave_dld_function (f, shl, name, doc);
+  octave_dld_function *fcn = new octave_dld_function (f, shl, name, doc);
 
   if (relative)
-    df->mark_relative ();
+    fcn->mark_relative ();
 
-  sym_rec->define (df, t);
-  sym_rec->document (doc);
+  octave_value fval (fcn);
 
-  // Also insert the full name in the symbol table.  This way, we can
-  // properly cope with changes to LOAD_PATH.
+  symbol_table::install_built_in_function (name, fval);
 
-  symbol_record *full_sr = fbi_sym_tab->lookup (shl.file_name (), true);
-
-  full_sr->alias (sym_rec, true);
-  full_sr->hide ();
+  if (is_text_fcn)
+    mark_as_command (name);
 }
 
 void
@@ -199,88 +171,24 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 		      const octave_shlib& shl, bool is_text_fcn,
 		      bool relative)
 {
-  symbol_record *sym_rec = fbi_sym_tab->lookup (name, true);
-
-  unsigned int t = symbol_record::MEX_FUNCTION;
-
-  if (is_text_fcn)
-    t |= symbol_record::COMMAND;
-
-  sym_rec->unprotect ();
-
-  octave_mex_function *mf = new octave_mex_function (fptr, fmex, shl, name);
+  octave_mex_function *fcn = new octave_mex_function (fptr, fmex, shl, name);
 
   if (relative)
-    mf->mark_relative ();
+    fcn->mark_relative ();
 
-  sym_rec->define (mf, t);
+  octave_value fval (fcn);
 
-  // Also insert the full name in the symbol table.  This way, we can
-  // properly cope with changes to LOAD_PATH.
+  symbol_table::install_built_in_function (name, fval);
 
-  symbol_record *full_sr = fbi_sym_tab->lookup (shl.file_name (), true);
-
-  full_sr->alias (sym_rec, true);
-  full_sr->hide ();
+  if (is_text_fcn)
+    mark_as_command (name);
 }
 
 void
 alias_builtin (const std::string& alias, const std::string& name)
 {
-  symbol_record *sr_name = fbi_sym_tab->lookup (name);
-
-  if (! sr_name)
-    panic ("can't alias to undefined name!");
-
-  symbol_record *sr_alias = fbi_sym_tab->lookup (alias, true);
-
-  if (sr_alias)
-    sr_alias->alias (sr_name);
-  else
-    panic ("can't find symbol record for builtin function `%s'",
-	   alias.c_str ());
+  symbol_table::alias_built_in_function (alias, name);
 }
-
-#if 0
-// This is insufficient to really make it possible to define an alias
-// for function.  There are a number of subtle problems related to
-// automatically reloading functions.
-DEFUN (alias, args, ,
-  "alias (alias, name)")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 2)
-    {
-      string alias = args(0).string_value ();
-      string name = args(1).string_value ();
-
-      if (! error_state)
-	{
-	  symbol_record *sr_name = lookup_by_name (name, false);
-
-	  if (sr_name && sr_name->is_function ())
-	    {
-	      symbol_record *sr_alias = fbi_sym_tab->lookup (alias, true);
-
-	      if (sr_alias)
-		sr_alias->alias (sr_name);
-	      else
-		error ("alias: unable to insert `%s' in symbol table",
-		       alias.c_str ());
-	    }
-	  else
-	    error ("alias: function `%s' does not exist", name.c_str ());
-	}
-    }
-  else
-    print_usage ();
-
-  return retval;
-}
-#endif
 
 /*
 ;;; Local Variables: ***

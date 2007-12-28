@@ -1,3 +1,12 @@
+2007-12-28  John W. Eaton  <jwe@octave.org>
+
+	Merge changes from object branch:
+
+	2007-06-20  John W. Eaton  <jwe@octave.org>
+
+	* interpreter/var.txi, interpreter/io.txi:
+	Eliminate print_answer_id_name.
+
 2007-12-21  John W. Eaton  <jwe@octave.org>
 
 	Version 3.0.0 released.

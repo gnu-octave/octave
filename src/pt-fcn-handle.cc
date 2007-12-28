@@ -71,7 +71,7 @@ tree_fcn_handle::rvalue (int nargout)
 }
 
 tree_expression *
-tree_fcn_handle::dup (symbol_table *)
+tree_fcn_handle::dup (symbol_table::scope_id)
 {
   tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
 
@@ -91,28 +91,21 @@ tree_anon_fcn_handle::rvalue (void)
 {
   MAYBE_DO_BREAKPOINT;
 
-  tree_parameter_list *param_list = fcn.parameter_list ();
-  tree_parameter_list *ret_list = fcn.return_list ();
-  tree_statement_list *cmd_list = fcn.body ();
-  symbol_table *sym_tab = fcn.sym_tab ();
+  tree_parameter_list *param_list = parameter_list ();
+  tree_parameter_list *ret_list = return_list ();
+  tree_statement_list *cmd_list = body ();
+  symbol_table::scope_id this_scope = scope ();
 
-  symbol_table *new_sym_tab = sym_tab ? sym_tab->dup () : 0;
+  symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
 
-  if (new_sym_tab)
-    new_sym_tab->inherit (curr_sym_tab);
-
-  tree_parameter_list *new_param_list
-    = param_list ? param_list->dup (new_sym_tab) : 0;
-
-  tree_statement_list *new_cmd_list
-    = cmd_list ? cmd_list->dup (new_sym_tab) : 0;
-
-  tree_parameter_list *new_ret_list
-    = ret_list ? ret_list->dup (new_sym_tab) : 0;
+  if (new_scope > 0)
+    symbol_table::inherit (new_scope, symbol_table::current_scope ());
 
   octave_user_function *uf
-    = new octave_user_function (new_param_list, new_ret_list,
-				new_cmd_list, new_sym_tab);
+    = new octave_user_function (new_scope,
+				param_list ? param_list->dup (new_scope) : 0,
+				ret_list ? ret_list->dup (new_scope) : 0,
+				cmd_list ? cmd_list->dup (new_scope) : 0);
 
   octave_function *curr_fcn = octave_call_stack::current ();
 
@@ -142,23 +135,23 @@ tree_anon_fcn_handle::rvalue (int nargout)
 }
 
 tree_expression *
-tree_anon_fcn_handle::dup (symbol_table *st)
+tree_anon_fcn_handle::dup (symbol_table::scope_id parent_scope)
 {
-  tree_parameter_list *param_list = fcn.parameter_list ();
-  tree_parameter_list *ret_list = fcn.return_list ();
-  tree_statement_list *cmd_list = fcn.body ();
-  symbol_table *sym_tab = fcn.sym_tab ();
+  tree_parameter_list *param_list = parameter_list ();
+  tree_parameter_list *ret_list = return_list ();
+  tree_statement_list *cmd_list = body ();
+  symbol_table::scope_id this_scope = scope ();
 
-  symbol_table *new_sym_tab = sym_tab ? sym_tab->dup () : 0;
+  symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
 
-  if (new_sym_tab)
-    new_sym_tab->inherit (st);
+  if (new_scope > 0)
+    symbol_table::inherit (new_scope, parent_scope);
 
   tree_anon_fcn_handle *new_afh
-    = new tree_anon_fcn_handle (param_list ? param_list->dup (new_sym_tab) : 0,
-				ret_list ? ret_list->dup (new_sym_tab) : 0,
-				cmd_list ? cmd_list->dup (new_sym_tab) : 0,
-				new_sym_tab, line (), column ());
+    = new tree_anon_fcn_handle (param_list ? param_list->dup (new_scope) : 0,
+				ret_list ? ret_list->dup (new_scope) : 0,
+				cmd_list ? cmd_list->dup (new_scope) : 0,
+				new_scope, line (), column ());
 
   new_afh->copy_base (*this);
 

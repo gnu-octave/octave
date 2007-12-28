@@ -28,9 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 
 class octave_value;
 class octave_lvalue;
-class symbol_table;
 
 #include "pt.h"
+#include "symtab.h"
 
 // A base class for expressions.
 
@@ -47,7 +47,7 @@ public:
 
   virtual bool has_magic_end (void) const = 0;
 
-  virtual tree_expression *dup (symbol_table *) = 0;
+  virtual tree_expression *dup (symbol_table::scope_id) = 0;
 
   virtual bool is_constant (void) const { return false; }
 

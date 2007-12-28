@@ -70,23 +70,9 @@ get_user_function (const std::string& fname = std::string ())
     dbg_fcn = octave_call_stack::caller_user_function ();
   else
     {
-      symbol_record *ptr = curr_sym_tab->lookup (fname);
+      octave_value fcn = symbol_table::find_user_function (fname);
 
-      if (ptr && ptr->is_user_function ())
-	{
-	  octave_value tmp = ptr->def ();
-	  dbg_fcn = dynamic_cast<octave_user_function *> (tmp.function_value ());
-	}
-      else
-	{
-	  ptr = lookup_by_name (fname, false);
-
-	  if (ptr && ptr->is_user_function ())
-	    {
-	      octave_value tmp = ptr->def ();
-	      dbg_fcn = dynamic_cast<octave_user_function *> (tmp.function_value ());
-	    }
-	}
+      dbg_fcn = fcn.user_function_value ();
     }
 
   return dbg_fcn;

@@ -2,7 +2,7 @@
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
               2002, 2003, 2004, 2005, 2006, 2007 John W. Eaton
-
+  
 This file is part of Octave.
 
 Octave is free software; you can redistribute it and/or modify it
@@ -25,1066 +25,167 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
-#include <cassert>
-#include <cctype>
-#include <climits>
-#include <cstdio>
-
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-
-#include "glob-match.h"
-#include "str-vec.h"
+#include "oct-env.h"
+#include "oct-time.h"
+#include "file-ops.h"
+#include "file-stat.h"
 
 #include "defun.h"
-#include "error.h"
-#include "oct-lvalue.h"
-#include "ov.h"
-#include "pt-pr-code.h"
+#include "dirfns.h"
+#include "input.h"
+#include "load-path.h"
 #include "symtab.h"
-#include "utils.h"
-#include "variables.h"
-#include "ov-usr-fcn.h"
-#include "toplev.h"
-
-#include "gripes.h"
-#include "lo-mappers.h"
-
+#include "ov-fcn.h"
+#include "pager.h"
 #include "parse.h"
+#include "pt-arg-list.h"
+#include "toplev.h"
+#include "unwind-prot.h"
+#include "utils.h"
 
-unsigned long int symbol_table::symtab_count = 0;
+symbol_table *symbol_table::instance = 0;
 
-// Should variables be allowed to hide functions of the same name?  A
-// positive value means yes.  A negative value means yes, but print a
-// warning message.  Zero means it should be considered an error.
-static int Vvariables_can_hide_functions = 1;
+std::map<symbol_table::scope_id, symbol_table*> symbol_table::all_instances;
 
-// Nonzero means we print debugging info about symbol table lookups.
-static bool Vdebug_symtab_lookups = false;
+std::map<std::string, symbol_table::fcn_info> symbol_table::fcn_table;
 
-// Defines layout for the whos/who -long command
-std::string Vwhos_line_format
-  = "  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lc:-1;\n";
+const symbol_table::scope_id symbol_table::xglobal_scope = 0;
+const symbol_table::scope_id symbol_table::xtop_scope = 1;
 
-octave_allocator
-symbol_record::symbol_def::allocator (sizeof (symbol_record::symbol_def));
+symbol_table::scope_id symbol_table::xcurrent_scope = 1;
+symbol_table::scope_id symbol_table::xcurrent_caller_scope = -1;
 
-#define SYMBOL_DEF symbol_record::symbol_def
+symbol_table::scope_id symbol_table::xparent_scope = -1;
 
-std::string
-SYMBOL_DEF::type_as_string (void) const
+std::deque<symbol_table::scope_id> symbol_table::scope_stack;
+
+symbol_table::scope_id symbol_table::next_available_scope = 2;
+std::set<symbol_table::scope_id> symbol_table::scope_ids_in_use;
+std::set<symbol_table::scope_id> symbol_table::scope_ids_free_list;
+
+// Should Octave always check to see if function files have changed
+// since they were last compiled?
+static int Vignore_function_time_stamp = 1;
+
+octave_value
+symbol_table::symbol_record::find (tree_argument_list *args,
+				   const string_vector& arg_names,
+				   octave_value_list& evaluated_args,
+				   bool& args_evaluated) const
 {
-  std::string retval = "<unknown type>";
+  octave_value retval;
 
-  if (is_user_variable ())
-    retval = "user-defined variable";
-  else if (is_command ())
-    retval = "built-in command";
-  else if (is_mapper_function ())
-    retval = "built-in mapper function";
-  else if (is_user_function ())
-    retval = "user-defined function";
-  else if (is_builtin_function ())
-    retval = "built-in function";
-  else if (is_dld_function ())
-    retval = "dynamically-linked function";
-  else if (is_mex_function ())
-    retval = "dynamically-linked mex function";
-
-  return retval;
-}
-
-void
-SYMBOL_DEF::type (std::ostream& os, const std::string& name, bool pr_type_info,
-		  bool quiet, bool pr_orig_txt)
-{
-  if (is_user_function ())
-    {
-      octave_function *defn = definition.function_value ();
-
-      std::string fn = defn ? defn->fcn_file_name () : std::string ();
-
-      if (pr_orig_txt && ! fn.empty ())
-	{
-	  std::ifstream fs (fn.c_str (), std::ios::in);
-
-	  if (fs)
-	    {
-	      if (pr_type_info && ! quiet)
-		os << name << " is the " << type_as_string ()
-		   << " defined from: " << fn << "\n\n";
-
-	      char ch;
-
-	      while (fs.get (ch))
-		os << ch;
-	    }
-	  else
-	    os << "unable to open `" << fn << "' for reading!\n";
-	}
-      else
-	{
-	  if (pr_type_info && ! quiet)
-	    os << name << " is a " << type_as_string () << ":\n\n";
-
-	  tree_print_code tpc (os, "", pr_orig_txt);
-
-	  defn->accept (tpc);
-	}
-    }
-  else if (is_user_variable ())
-    {
-      if (pr_type_info && ! quiet)
-	os << name << " is a " << type_as_string () << "\n";
-
-      definition.print_raw (os, true);
-
-      if (pr_type_info)
-	os << "\n";
-    }
+  if (is_global ())
+    return symbol_table::varref (name (), symbol_table::xglobal_scope);
   else
-    os << name << " is a " << type_as_string () << "\n";
-}
-
-std::string
-SYMBOL_DEF::which (const std::string& name)
-{
-  std::string retval;
-
-  if (is_user_function () || is_dld_function () || is_mex_function ())
     {
-      octave_function *defn = definition.function_value ();
+      octave_value val = varval ();
 
-      if (defn)
-	retval = defn->fcn_file_name ();
-    }
-  else
-    retval = name + " is a " + type_as_string ();
-
-  return retval;
-}
-
-void
-SYMBOL_DEF::which (std::ostream& os, const std::string& name)
-{
-  os << name;
-
-  if (is_user_function () || is_dld_function () || is_mex_function ())
-    {
-      octave_function *defn = definition.function_value ();
-
-      std::string fn = defn ? defn->fcn_file_name () : std::string ();
-
-      if (! fn.empty ())
-	{
-	  os << " is the " << type_as_string () << " from the file\n"
-	     << fn << "\n";
-
-	  return;
-	}
+      if (val.is_defined ())
+	return val;
     }
 
-  os << " is a " << type_as_string () << "\n";
+  return symbol_table::find_function (name (), args, arg_names,
+				      evaluated_args, args_evaluated);
 }
 
-void
-SYMBOL_DEF::document (const std::string& h)
-{
-  help_string = h;
+// Check the load path to see if file that defined this is still
+// visible.  If the file is no longer visible, then erase the
+// definition and move on.  If the file is visible, then we also
+// need to check to see whether the file has changed since the the
+// function was loaded/parsed.  However, this check should only
+// happen once per prompt (for files found from relative path
+// elements, we also check if the working directory has changed
+// since the last time the function was loaded/parsed).
+//
+// FIXME -- perhaps this should be done for all loaded functions when
+// the prompt is printed or the directory has changed, and then we
+// would not check for it when finding symbol definitions.
 
-  if (is_function ())
-    {
-      octave_function *defn = definition.function_value ();
-
-      if (defn)
-	defn->document (h);
-    }
-}
-
-
-void
-SYMBOL_DEF::print_info (std::ostream& os, const std::string& prefix) const
-{
-  os << prefix << "symbol_def::count: " << count << "\n";
-
-  definition.print_info (os, prefix + "  ");
-}
-
-// Individual records in a symbol table.
-
-void
-symbol_record::rename (const std::string& new_name)
-{
-  if (! read_only_error ("rename"))
-    nm = new_name;
-}
-
-void
-symbol_record::define (const octave_value& v, unsigned int sym_type)
-{
-  if (! (is_variable () && read_only_error ("redefine")))
-    definition->define (v, sym_type);
-}
-
-bool
-symbol_record::define (octave_function *f, unsigned int sym_type)
+static inline bool
+out_of_date_check_internal (octave_value& function)
 {
   bool retval = false;
 
-  if (! read_only_error ("redefine"))
+  octave_function *fcn = function.function_value (true);
+
+  if (fcn)
     {
-      maybe_delete_def ();
+      // FIXME -- we need to handle nested functions properly here.
 
-      octave_value tmp (f);
-
-      definition = new symbol_def (tmp, sym_type);
-
-      retval = true;
-    }
-
-  return retval;
-}
-
-void
-symbol_record::clear (void)
-{
-  if (is_defined ())
-    {
-      if (! (tagged_static || is_eternal ()))
+      if (! fcn->is_nested_function ())
 	{
-	  while (! aliases_to_clear.empty ())
+	  std::string ff = fcn->fcn_file_name ();
+
+	  if (! ff.empty ())
 	    {
-	      symbol_record *sr = aliases_to_clear.top ();
-	      aliases_to_clear.pop ();
-	      sr->clear ();
-	    }
+	      octave_time tc = fcn->time_checked ();
 
-	  maybe_delete_def ();
+	      bool relative = fcn->is_relative ();
 
-	  definition = new symbol_def ();
-	}
-
-      if (linked_to_global)
-	linked_to_global = 0;
-    }
-}
-
-void
-symbol_record::alias (symbol_record *s, bool mark_to_clear)
-{
-  chg_fcn = s->chg_fcn;
-
-  maybe_delete_def ();
-
-  if (mark_to_clear)
-    s->push_alias_to_clear (this);
-
-  definition = s->definition;
-
-  definition->count++;
-}
-
-void
-symbol_record::mark_as_formal_parameter (void)
-{
-  if (is_linked_to_global ())
-    error ("can't mark global variable `%s' as function parameter",
-	   nm.c_str ());
-  else if (is_static ())
-    error ("can't mark static variable `%s' as function parameter",
-	   nm.c_str ());
-  else
-    formal_param = 1;
-}
-
-void
-symbol_record::mark_as_automatic_variable (void)
-{
-  if (is_linked_to_global ())
-    error ("can't mark global variable `%s' as automatic variable",
-	   nm.c_str ());
-  else if (is_static ())
-    error ("can't mark static variable `%s' as automatic variable",
-	   nm.c_str ());
-  else
-    automatic_variable = 1;
-}
-
-void
-symbol_record::mark_as_linked_to_global (void)
-{
-  if (is_formal_parameter ())
-    error ("can't make function parameter `%s' global", nm.c_str ());
-  else if (is_static ())
-    error ("can't make static variable `%s' global", nm.c_str ());
-  else
-    linked_to_global = 1;
-}
-
-void
-symbol_record::mark_as_static (void)
-{
-  if (is_linked_to_global ())
-    error ("can't make global variable `%s' static", nm.c_str ());
-  else if (is_formal_parameter ())
-    error ("can't make formal parameter `%s' static", nm.c_str ());
-  else
-    tagged_static = 1;
-}
-
-octave_value&
-symbol_record::variable_value (void)
-{
-  static octave_value foo;
-
-  return is_variable () ? def () : foo;
-}
-
-octave_lvalue
-symbol_record::variable_reference (void)
-{
-  if ((Vvariables_can_hide_functions <= 0 || ! can_hide_function)
-      && (is_function ()
-	  || (! is_defined () && is_valid_function (nm))))
-    {
-      if (Vvariables_can_hide_functions < 0 && can_hide_function)
-	warning ("variable `%s' hides function", nm.c_str ());
-      else
-	{
-	  error ("variable `%s' hides function", nm.c_str ());
-	  return octave_lvalue ();
-	}
-    }
-
-  if (is_function ())
-    clear ();
-
-  if (! is_defined ())
-    {
-      octave_value tmp;
-      define (tmp);
-    }
-
-  return octave_lvalue (&(def ()), chg_fcn);
-}
-
-void
-symbol_record::push_context (void)
-{
-  if (! is_static ())
-    {
-      context.push (definition);
-
-      definition = new symbol_def ();
-
-      global_link_context.push (static_cast<unsigned int> (linked_to_global));
-
-      linked_to_global = 0;
-    }
-}
-
-void
-symbol_record::pop_context (void)
-{
-  // It is possible for context to be empty if new symbols have been
-  // inserted in the symbol table during recursive calls.  This can
-  // happen as a result of calls to eval() and feval().
-
-  if (! context.empty ())
-    {
-      maybe_delete_def ();
-
-      definition = context.top ();
-      context.pop ();
-
-      linked_to_global = global_link_context.top ();
-      global_link_context.pop ();
-    }
-}
-
-// Calculate how much space needs to be reserved for the first part of
-// the dimensions string.  For example,
-//
-//   mat is a 12x3 matrix
-//            ^^  => 2 columns
-
-int
-symbol_record::dimensions_string_req_first_space (int print_dims) const
-{
-  int first_param_space = 0;
-
-  // Calculating dimensions.
-
-  std::string dim_str = "";
-  std::stringstream ss;
-  dim_vector dimensions = dims ();
-  long dim = dimensions.length ();
-
-  first_param_space = (first_param_space >= 1 ? first_param_space : 1);
-
-  // Preparing dimension string.
-
-  if ((dim <= print_dims || print_dims < 0) && print_dims != 0)
-    {
-      // Dimensions string must be printed like this: 2x3x4x2.
-
-      if (dim == 0 || dim == 1)
-	first_param_space = 1; // First parameter is 1.
-      else
-        {
-	  ss << dimensions (0);
-	 
-	  dim_str = ss.str ();
-	  first_param_space = dim_str.length ();
-	}
-    }
-  else
-    {
-      // Printing dimension string as: a-D.
-
-      ss << dim;
-
-      dim_str = ss.str ();
-      first_param_space = dim_str.length ();
-    }
-
-  return first_param_space;
-}
-
-// Calculate how much space needs to be reserved for the
-// dimensions string.  For example,
-//
-//   mat is a 12x3 matrix
-//            ^^^^ => 4 columns
-//
-// FIXME -- why not just use the dim_vector::str () method?
-
-int
-symbol_record::dimensions_string_req_total_space (int print_dims) const
-{
-  std::string dim_str = "";
-  std::stringstream ss;
-
-  ss << make_dimensions_string (print_dims);
-  dim_str = ss.str ();
-
-  return dim_str.length ();
-}
-
-// Make the dimensions-string.  For example: mat is a 2x3 matrix.
-//                                                    ^^^
-//
-// FIXME -- why not just use the dim_vector::str () method?
-
-std::string
-symbol_record::make_dimensions_string (int print_dims) const
-{
-  // Calculating dimensions.
-
-  std::string dim_str = "";
-  std::stringstream ss;
-  dim_vector dimensions = dims ();
-  long dim = dimensions.length ();
-
-  // Preparing dimension string.
-
-  if ((dim <= print_dims || print_dims < 0) && print_dims != 0)
-    {
-      // Only printing the dimension string as: axbxc...
-
-      if (dim == 0)
-	ss << "1x1";
-      else
-        {
-	  for (int i = 0; i < dim; i++)
-	    {
-	      if (i == 0)
+	      if (tc < Vlast_prompt_time
+		  || (relative && tc < Vlast_chdir_time))
 		{
-		  if (dim == 1)
-		    {
-		      // Looks like this is not going to happen in
-		      // Octave, but ...
+		  octave_time ottp = fcn->time_parsed ();
+		  time_t tp = ottp.unix_time ();
 
-		      ss << "1x" << dimensions (i);
-		    }
+		  std::string nm = fcn->name ();
+
+		  int nm_len = nm.length ();
+
+		  std::string file;
+		  std::string dir_name;
+
+		  if (octave_env::absolute_pathname (nm)
+		      && ((nm_len > 4 && (nm.substr (nm_len-4) == ".oct"
+					  || nm.substr (nm_len-4) == ".mex"))
+			  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
+		    file = nm;
 		  else
-		    ss << dimensions (i);
-		}
-	      else if (i < dim && dim != 1)
-		ss << "x" << dimensions (i);
-	    }
-	}
-    }
-  else
-    {
-      // Printing dimension string as: a-D.
+		    // FIXME -- this lookup is not right since it doesn't
+		    // account for dispatch type.
+		    file = octave_env::make_absolute (load_path::find_fcn (nm, dir_name),
+						      octave_env::getcwd ());
 
-      ss << dim << "-D";
-    }
-
-  dim_str = ss.str ();
-
-  return dim_str;
-}
-
-// Print a line of information on a given symbol.
-
-void
-symbol_record::print_symbol_info_line (std::ostream& os,
-				       std::list<whos_parameter>& params) const
-{
-  std::list<whos_parameter>::iterator i = params.begin ();
-  while (i != params.end ())
-    {
-      whos_parameter param = * i;
-
-      if (param.command != '\0')
-        {
-	  // Do the actual printing.
-
-	  switch (param.modifier)
-	    {
-	    case 'l':
-	      os << std::setiosflags (std::ios::left)
-		 << std::setw (param.parameter_length);
-	      break;
-
-	    case 'r':
-	      os << std::setiosflags (std::ios::right)
-		 << std::setw (param.parameter_length);
-	      break;
-
-	    case 'c':
-	      if (param.command == 's')
-	        {
-		  int front = param.first_parameter_length
-		    - dimensions_string_req_first_space (param.dimensions);
-		  int back = param.parameter_length
-		    - dimensions_string_req_total_space (param.dimensions)
-		    - front;
-		  front = (front > 0) ? front : 0;
-		  back = (back > 0) ? back : 0;
-
-		  os << std::setiosflags (std::ios::left)
-		     << std::setw (front)
-		     << ""
-		     << std::resetiosflags (std::ios::left)
-		     << make_dimensions_string (param.dimensions)
-		     << std::setiosflags (std::ios::left)
-		     << std::setw (back)
-		     << ""
-		     << std::resetiosflags (std::ios::left);
-		}
-	      else
-	        {
-		  os << std::setiosflags (std::ios::left)
-		     << std::setw (param.parameter_length);
-		}
-	      break;
-
-	    default:
-	      error ("whos_line_format: modifier `%c' unknown",
-		     param.modifier);
-
-	      os << std::setiosflags (std::ios::right)
-		 << std::setw (param.parameter_length);
-	    }
-
-	  switch (param.command)
-	    {
-	    case 'b':
-	      os << byte_size ();
-	      break;
-
-	    case 'c':
-	      os << class_name ();
-	      break;
-
-	    case 'e':
-	      os << capacity ();
-	      break;
-
-	    case 'n':
-	      os << name ();
-	      break;
-
-	    case 'p':
-	      {
-		std::stringstream ss;
-		std::string str;
-
-		ss << (is_read_only () ? "r-" : "rw")
-		   << (is_static () || is_eternal () ? "-" : "d");
-		str = ss.str ();
-
-		os << str;
-	      }
-	      break;
-
-	    case 's':
-	      if (param.modifier != 'c')
-		os << make_dimensions_string (param.dimensions);
-	      break;
-
-	    case 't':
-	      os << type_name ();
-	      break;
-	    
-	    default:
-	      error ("whos_line_format: command `%c' unknown", param.command);
-	    }
-
-	  os << std::resetiosflags (std::ios::left)
-	     << std::resetiosflags (std::ios::right);
-	  i++;
-	}
-      else
-	{
-	  os << param.text;
-	  i++;
-	}
-    }
-}
-
-void
-symbol_record::print_info (std::ostream& os, const std::string& prefix) const
-{
-  os << prefix << "formal param:      " << formal_param << "\n"
-     << prefix << "linked to global:  " << linked_to_global << "\n"
-     << prefix << "tagged static:     " << tagged_static << "\n"
-     << prefix << "can hide function: " << can_hide_function << "\n"
-     << prefix << "visible:           " << visible << "\n";
-
-  if (definition)
-    definition->print_info (os, prefix);
-  else
-    os << prefix << "symbol " << name () << " is undefined\n";
-}
-
-bool
-symbol_record::read_only_error (const char *action)
-{
-  if (is_read_only ())
-    {
-      if (is_variable ())
-	::error ("can't %s read-only constant `%s'", action, nm.c_str ());
-      else if (is_function ())
-	::error ("can't %s read-only function `%s'", action, nm.c_str ());
-      else
-	::error ("can't %s read-only symbol `%s'", action, nm.c_str ());
-
-      return true;
-    }
-  else
-    return false;
-}
-
-// A symbol table.
-
-symbol_table::~symbol_table (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  symbol_record *tmp = ptr;
-
-	  ptr = ptr->next ();
-
-	  delete tmp;
-	}
-    }
-
-  delete [] table;
-}
-
-symbol_record *
-symbol_table::lookup (const std::string& nm, bool insert, bool warn)
-{
-  if (Vdebug_symtab_lookups)
-    {
-      std::cerr << (table_name.empty () ? std::string ("???") : table_name)
-		<< " symtab::lookup ["
-		<< (insert ? "I" : "-")
-		<< (warn ? "W" : "-")
-		<< "] \"" << nm << "\"\n";
-    }
-
-  unsigned int index = hash (nm);
-
-  symbol_record *ptr = table[index].next ();
-
-  while (ptr)
-    {
-      if (ptr->name () == nm)
-	return ptr;
-
-      ptr = ptr->next ();
-    }
-
-  if (insert)
-    {
-      symbol_record *sr = new symbol_record (nm, table[index].next ());
-
-      table[index].chain (sr);
-
-      return sr;
-    }
-  else if (warn)
-    warning ("lookup: symbol `%s' not found", nm.c_str ());
-
-  return 0;
-}
-
-void
-symbol_table::rename (const std::string& old_name, const std::string& new_name)
-{
-  if (Vdebug_symtab_lookups)
-    {
-      std::cerr << (table_name.empty () ? std::string ("???") : table_name)
-		<< " symtab::rename "
-		<< "\"" << old_name << "\""
-		<< " to "
-		<< "\"" << new_name << "\"\n";
-    }
-
-  unsigned int index = hash (old_name);
-
-  symbol_record *prev = &table[index];
-  symbol_record *ptr = prev->next ();
-
-  while (ptr)
-    {
-      if (ptr->name () == old_name)
-	{
-	  ptr->rename (new_name);
-
-	  if (! error_state)
-	    {
-	      prev->chain (ptr->next ());
-
-	      index = hash (new_name);
-	      ptr->chain (table[index].next ());
-	      table[index].chain (ptr);
-
-	      return;
-	    }
-
-	  break;
-	}
-
-      prev = ptr;
-      ptr = ptr->next ();
-    }
-
-  error ("unable to rename `%s' to `%s'", old_name.c_str (),
-	 new_name.c_str ());
-}
-
-// FIXME -- it would be nice to eliminate a lot of the
-// following duplicate code.
-
-void
-symbol_table::clear (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  if (ptr->is_user_function())
-	    {
-	      octave_user_function *fcn = ptr->def ().user_function_value ();
-	      std::string parent = (fcn ? fcn->parent_fcn_name () :
-				    std::string ());
-
-	      if (! parent.empty ())
-		{
-		  if (curr_parent_function &&
-		      parent == curr_parent_function->name ())
+		  if (file.empty ())
 		    {
-		      ptr = ptr->next ();
-		      continue;
-		    }			  
+		      // Can't see this function from current
+		      // directory, so we should clear it.
 
-		  symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
-
-		  if (parent_sr && (parent_sr->is_static () ||
-				    parent_sr->is_eternal ()))
-		  {
-		    ptr = ptr->next ();
-		    continue;
-		  }
-		}
-	    }
-
-	  ptr->clear ();
-
-	  ptr = ptr->next ();
-	}
-    }
-}
-
-void
-symbol_table::clear_variables (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  if (ptr->is_user_variable ())
-	    ptr->clear ();
-
-	  ptr = ptr->next ();
-	}
-    }
-}
-
-// Really only clear functions that can be reloaded.
-
-void
-symbol_table::clear_functions (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  if (ptr->is_user_function ()
-	      || ptr->is_dld_function ()
-	      || ptr->is_mex_function ())
-	    {
-
-	      if (ptr->is_user_function())
-		{
-		  octave_user_function *fcn = 
-		    ptr->def ().user_function_value ();
-		  std::string parent = (fcn ? fcn->parent_fcn_name () :
-					std::string ());
-
-		  if (! parent.empty ())
+		      function = octave_value ();
+		    }
+		  else if (same_file (file, ff))
 		    {
-		      if (curr_parent_function &&
-			  parent == curr_parent_function->name ())
-			{
-			  ptr = ptr->next ();
-			  continue;
-			}			  
+		      fcn->mark_fcn_file_up_to_date (octave_time ());
 
-		      symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
-
-		      if (parent_sr && (parent_sr->is_static () ||
-					parent_sr->is_eternal ()))
+		      if (! (Vignore_function_time_stamp == 2
+			     || (Vignore_function_time_stamp
+				 && fcn->is_system_fcn_file ())))
 			{
-			  ptr = ptr->next ();
-			  continue;
+			  file_stat fs (ff);
+
+			  if (fs)
+			    {
+			      if (fs.is_newer (tp))
+				{
+				  fcn = load_fcn_from_file (ff, dir_name);
+
+				  if (fcn)
+				    {
+				      retval = true;
+
+				      function = octave_value (fcn);
+				    }
+				  else
+				    function = octave_value ();
+				}				
+			    }
+			  else
+			    function = octave_value ();
 			}
 		    }
 		}
-
-	      ptr->clear ();
 	    }
-
-	  ptr = ptr->next ();
-	}
-    }
-}
-
-void
-symbol_table::clear_mex_functions (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  if (ptr->is_mex_function ())
-	    ptr->clear ();
-
-	  ptr = ptr->next ();
-	}
-    }
-}
-
-void
-symbol_table::clear_globals (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  if (ptr->is_user_variable () && ptr->is_linked_to_global ())
-	    ptr->clear ();
-
-	  ptr = ptr->next ();
-	}
-    }
-}
-
-bool
-symbol_table::clear (const std::string& nm)
-{
-  unsigned int index = hash (nm);
-
-  symbol_record *ptr = table[index].next ();
-
-  while (ptr)
-    {
-      if (ptr->name () == nm)
-	{
-	  if (ptr->is_user_function())
-	    {
-	      octave_user_function *fcn = 
-		ptr->def ().user_function_value ();
-	      std::string parent = (fcn ? fcn->parent_fcn_name () :
-				    std::string ());
-
-	      if (! parent.empty ())
-		{
-		  if (curr_parent_function &&
-		      parent == curr_parent_function->name ())
-		    return true;
-
-		  symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
-		  
-		  if (parent_sr && (parent_sr->is_static () ||
-				    parent_sr->is_eternal ()))
-		    return true;
-		}
-	    }
-
-	  ptr->clear ();
-
-	  return true;
-	}
-      ptr = ptr->next ();
-    }
-
-  return false;
-}
-
-bool
-symbol_table::clear_variable (const std::string& nm)
-{
-  unsigned int index = hash (nm);
-
-  symbol_record *ptr = table[index].next ();
-
-  while (ptr)
-    {
-      if (ptr->name () == nm && ptr->is_user_variable ())
-	{
-	  ptr->clear ();
-	  return true;
-	}
-      ptr = ptr->next ();
-    }
-
-  return false;
-}
-
-bool
-symbol_table::clear_global (const std::string& nm)
-{
-  unsigned int index = hash (nm);
-
-  symbol_record *ptr = table[index].next ();
-
-  while (ptr)
-    {
-      if (ptr->name () == nm
-	  && ptr->is_user_variable ()
-	  && ptr->is_linked_to_global ())
-	{
-	  ptr->clear ();
-	  return true;
-	}
-      ptr = ptr->next ();
-    }
-
-  return false;
-}
-
-// Really only clear functions that can be reloaded.
-
-bool
-symbol_table::clear_function (const std::string& nm)
-{
-  unsigned int index = hash (nm);
-
-  symbol_record *ptr = table[index].next ();
-
-  while (ptr)
-    {
-      if (ptr->name () == nm
-	  && (ptr->is_user_function ()
-	      || ptr->is_dld_function ()
-	      || ptr->is_mex_function ()))
-	{
-	  if (ptr->is_user_function())
-	    {
-	      octave_user_function *fcn = 
-		ptr->def ().user_function_value ();
-	      std::string parent = (fcn ? fcn->parent_fcn_name () :
-				    std::string ());
-
-	      if (! parent.empty ())
-		{
-		  if (curr_parent_function &&
-		      parent == curr_parent_function->name ())
-		    return true;
-
-		  symbol_record *parent_sr = fbi_sym_tab->lookup (parent);
-		  
-		  if (parent_sr && (parent_sr->is_static () ||
-				    parent_sr->is_eternal ()))
-		    return true;
-		}
-	    }
-
-	  ptr->clear ();
-	  return true;
-	}
-      ptr = ptr->next ();
-    }
-
-  return false;
-}
-
-bool
-symbol_table::clear_variable_pattern (const std::string& pat)
-{
-  bool retval = false;
-
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  if (ptr->is_user_variable ())
-	    {
-	      glob_match pattern (pat);
-
-	      if (pattern.match (ptr->name ()))
-		{
-		  ptr->clear ();
-
-		  retval = true;
-		}
-	    }
-
-	  ptr = ptr->next ();
 	}
     }
 
@@ -1092,915 +193,609 @@ symbol_table::clear_variable_pattern (const std::string& pat)
 }
 
 bool
-symbol_table::clear_global_pattern (const std::string& pat)
+out_of_date_check (octave_value& function)
 {
-  bool retval = false;
+  return out_of_date_check_internal (function);
+}
 
-  for (unsigned int i = 0; i < table_size; i++)
+octave_value
+symbol_table::fcn_info::fcn_info_rep::load_private_function
+  (const std::string& dir_name)
+{
+  octave_value retval;
+
+  std::string file_name = load_path::find_private_fcn (dir_name, name);
+
+  if (! file_name.empty ())
     {
-      symbol_record *ptr = table[i].next ();
+      octave_function *fcn = load_fcn_from_file (file_name);
 
-      while (ptr)
+      if (fcn)
 	{
-	  if (ptr->is_user_variable () && ptr->is_linked_to_global ())
-	    {
-	      glob_match pattern (pat);
+	  retval = octave_value (fcn);
 
-	      if (pattern.match (ptr->name ()))
-		{
-		  ptr->clear ();
-
-		  retval = true;
-		}
-	    }
-
-	  ptr = ptr->next ();
+	  private_functions[dir_name] = retval;
 	}
     }
 
   return retval;
 }
 
-// Really only clear functions that can be reloaded.
-
-bool
-symbol_table::clear_function_pattern (const std::string& pat)
+octave_value
+symbol_table::fcn_info::fcn_info_rep::load_class_constructor (void)
 {
-  bool retval = false;
+  octave_value retval;
 
-  for (unsigned int i = 0; i < table_size; i++)
+  std::string dir_name;
+
+  std::string file_name = load_path::find_method (name, name, dir_name);
+
+  if (! file_name.empty ())
     {
-      symbol_record *ptr = table[i].next ();
+      octave_function *fcn = load_fcn_from_file (file_name, dir_name, name);
 
-      while (ptr)
+      if (fcn)
 	{
-	  if (ptr->is_user_function ()
-	      || ptr->is_dld_function ()
-	      || ptr->is_mex_function ())
-	    {
-	      glob_match pattern (pat);
+	  retval = octave_value (fcn);
 
-	      if (pattern.match (ptr->name ()))
-		{
-		  ptr->clear ();
-
-		  retval = true;
-		}
-	    }
-
-	  ptr = ptr->next ();
+	  class_constructors[name] = retval;
 	}
     }
 
   return retval;
 }
 
-int
-symbol_table::size (void) const
+octave_value
+symbol_table::fcn_info::fcn_info_rep::load_class_method
+  (const std::string& dispatch_type)
 {
-  int count = 0;
+  octave_value retval;
 
-  for (unsigned int i = 0; i < table_size; i++)
+  std::string dir_name;
+
+  std::string file_name = load_path::find_method (dispatch_type, name, dir_name);
+
+  if (! file_name.empty ())
     {
-      symbol_record *ptr = table[i].next ();
+      octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+						 dispatch_type);
 
-      while (ptr)
+      if (fcn)
 	{
-	  count++;
-	  ptr = ptr->next ();
+	  retval = octave_value (fcn);
+
+	  class_methods[dispatch_type] = retval;
 	}
     }
 
-  return count;
-}
-
-static bool
-matches_patterns (const std::string& name, const string_vector& pats)
-{
-  int npats = pats.length ();
-
-  if (npats == 0)
-    return true;
-
-  glob_match pattern (pats);
-
-  return pattern.match (name);
-}
-
-Array<symbol_record *>
-symbol_table::subsymbol_list (const string_vector& pats,
-			      unsigned int type, unsigned int scope) const
-{
-  int count = 0;
-
-  int n = size ();
-
-  Array<symbol_record *> subsymbols (dim_vector (n, 1));
-  int pats_length = pats.length ();
-
-  if (n == 0)
-    return subsymbols;
-
-  // Look for separators like .({
-  for (int j = 0; j < pats_length; j++)
-    {
-      std::string var_name = pats (j);
-
-      size_t pos = var_name.find_first_of (".({");
-
-      if ((pos != NPOS) && (pos > 0))
-        {
-	  std::string first_name = var_name.substr(0,pos);
-
-	  for (unsigned int i = 0; i < table_size; i++)
-	    {
-	      symbol_record *ptr = table[i].next ();
-
-	      while (ptr)
-	        {
-		  assert (count < n);
-
-		  unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
-
-		  unsigned int my_type = ptr->type ();
-
-		  std::string my_name = ptr->name ();
-
-		  if ((type & my_type) && (scope & my_scope) && (first_name == my_name))
-		    {
-		      symbol_record *sym_ptr = new symbol_record ();
-		      octave_value value;
-		      int parse_status;
-	 
-		      value = eval_string (var_name, true, parse_status);
-	 
-		      sym_ptr->define (value);
-		      sym_ptr->rename (var_name);
-		      subsymbols(count++) = sym_ptr;
-		    }
-
-		  ptr = ptr->next ();
-		}
-	    }
-	}
-    }
-
-  subsymbols.resize (dim_vector (count, 1));
-
-  return subsymbols;
-}
-
-Array<symbol_record *>
-symbol_table::symbol_list (const string_vector& pats,
-			   unsigned int type, unsigned int scope) const
-{
-  int count = 0;
-
-  int n = size ();
-
-  Array<symbol_record *> symbols (dim_vector (n, 1));
-
-  if (n == 0)
-    return symbols;
-
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  if (ptr->is_visible ())
-	    {
-	      assert (count < n);
-
-	      unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
-
-	      unsigned int my_type = ptr->type ();
-
-	      std::string my_name = ptr->name ();
-
-	      if ((type & my_type) && (scope & my_scope) && (matches_patterns (my_name, pats)))
-		symbols(count++) = ptr;
-	    }
-
-	  ptr = ptr->next ();
-	}
-    }
-
-  symbols.resize (dim_vector (count, 1));
-
-  return symbols;
-}
-
-string_vector
-symbol_table::name_list (const string_vector& pats, bool sort,
-			 unsigned int type, unsigned int scope) const
-{
-  Array<symbol_record *> symbols = symbol_list (pats, type, scope);
-
-  string_vector names;
-
-  int n = symbols.length ();
-
-  if (n > 0)
-    {
-      names.resize (n);
-
-      for (int i = 0; i < n; i++)
-	names[i] = symbols(i)->name ();
-    }
-
-  if (sort)
-    names.qsort ();
-
-  return names;
-}
-
-static int
-maybe_list_cmp_fcn (const void *a_arg, const void *b_arg)
-{
-  const symbol_record *a = *(static_cast<symbol_record *const*> (a_arg));
-  const symbol_record *b = *(static_cast<symbol_record *const*> (b_arg));
-
-  std::string a_nm = a->name ();
-  std::string b_nm = b->name ();
-
-  return a_nm.compare (b_nm);
+  return retval;
 }
 
 void
-symbol_table::print_descriptor (std::ostream& os,
-				std::list<whos_parameter> params) const
+symbol_table::fcn_info::fcn_info_rep::print_dispatch (std::ostream& os) const
 {
-  // This method prints a line of information on a given symbol
-  std::list<whos_parameter>::iterator i = params.begin ();
-  std::ostringstream param_buf;
-
-  while (i != params.end ())
+  if (dispatch_map.empty ())
+    os << "dispatch: " << name << " is not overloaded" << std::endl;
+  else
     {
-      whos_parameter param = * i;
+      os << "Overloaded function " << name << ":\n\n";
 
-      if (param.command != '\0')
-        {
-	  // Do the actual printing
-	  switch (param.modifier)
-	    {
-	    case 'l':
-	      os << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-	      param_buf << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-	      break;
+      for (const_dispatch_map_iterator p = dispatch_map.begin ();
+	   p != dispatch_map.end (); p++)
+	os << "  " << name << " (" << p->first << ", ...) -> " 
+	   << p->second << " (" << p->first << ", ...)\n";
 
-	    case 'r':
-	      os << std::setiosflags (std::ios::right) << std::setw (param.parameter_length);
-	      param_buf << std::setiosflags (std::ios::right) << std::setw (param.parameter_length);
-	      break;
-
-	    case 'c':
-	      if (param.command != 's')
-	        {
-		  os << std::setiosflags (std::ios::left)
-		     << std::setw (param.parameter_length);
-		  param_buf << std::setiosflags (std::ios::left)
-			    << std::setw (param.parameter_length);
-		}
-	      break;
-
-	    default:
-	      os << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-	      param_buf << std::setiosflags (std::ios::left) << std::setw (param.parameter_length);
-	    }
-
-	  if (param.command == 's' && param.modifier == 'c')
-	    {
-	      int a, b;
-	     
-	      if (param.modifier == 'c')
-	        {
-		  a = param.first_parameter_length - param.balance;
-		  a = (a < 0 ? 0 : a);
-		  b = param.parameter_length - a - param.text . length ();
-		  b = (b < 0 ? 0 : b);
-		  os << std::setiosflags (std::ios::left) << std::setw (a)
-		     << "" << std::resetiosflags (std::ios::left) << param.text
-		     << std::setiosflags (std::ios::left)
-		     << std::setw (b) << ""
-		     << std::resetiosflags (std::ios::left);
-		  param_buf << std::setiosflags (std::ios::left) << std::setw (a)
-		     << "" << std::resetiosflags (std::ios::left) << param.line
-		     << std::setiosflags (std::ios::left)
-		     << std::setw (b) << ""
-		     << std::resetiosflags (std::ios::left);
-		}
-	    }
-	  else
-	    {
-	      os << param.text;
-	      param_buf << param.line;
-	    }
-	  os << std::resetiosflags (std::ios::left)
-	     << std::resetiosflags (std::ios::right);
-	  param_buf << std::resetiosflags (std::ios::left)
-		    << std::resetiosflags (std::ios::right);
-	  i++;
-	}
-      else
-	{
-	  os << param.text;
-	  param_buf << param.line;
-	  i++;
-	}
+      os << std::endl;
     }
-
-  os << param_buf.str ();
 }
 
-std::list<whos_parameter>
-symbol_table::parse_whos_line_format (Array<symbol_record *>& symbols) const
+std::string
+symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
 {
-  // This method parses the string whos_line_format, and returns
-  // a parameter list, containing all information needed to print
-  // the given attributtes of the symbols
-  int idx;
-  size_t format_len = Vwhos_line_format.length ();
-  char garbage;
-  std::list<whos_parameter> params;
+  std::string retval;
 
-  size_t bytes1;
-  int elements1;
-
-  int len = symbols.length ();
-
-  std::string param_string = "bcenpst";
-  Array<int> param_length (dim_vector (param_string.length (), 1));
-  Array<std::string> param_names (dim_vector (param_string.length (), 1));
-  size_t pos_b, pos_c, pos_e, pos_n, pos_p, pos_s, pos_t;
-
-  pos_b = param_string.find ('b'); // Bytes
-  pos_c = param_string.find ('c'); // Class
-  pos_e = param_string.find ('e'); // Elements
-  pos_n = param_string.find ('n'); // Name
-  pos_p = param_string.find ('p'); // Protected
-  pos_s = param_string.find ('s'); // Size
-  pos_t = param_string.find ('t'); // Type
-
-  param_names(pos_b) = "Bytes";
-  param_names(pos_c) = "Class";
-  param_names(pos_e) = "Elements";
-  param_names(pos_n) = "Name";
-  param_names(pos_p) = "Prot";
-  param_names(pos_s) = "Size";
-  param_names(pos_t) = "Type";
-
-  for (size_t i = 0; i < param_string.length (); i++)
-    param_length(i) = param_names(i) . length ();
-
-  // Calculating necessary spacing for name column,
-  // bytes column, elements column and class column
-  for (int i = 0; i < static_cast<int> (len); i++)
+  if (! dispatch_map.empty ())
     {
-      std::stringstream ss1, ss2;
-      std::string str;
+      retval = "Overloaded function:\n\n";
 
-      str = symbols(i)->name ();
-      param_length(pos_n) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_n)))
-			     ? str.length () : param_length(pos_n));
-
-      str = symbols(i)->type_name ();
-      param_length(pos_t) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_t)))
-			     ? str.length () : param_length(pos_t));
-
-      elements1 = symbols(i)->capacity ();
-      ss1 << elements1;
-      str = ss1.str ();
-      param_length(pos_e) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_e)))
-			     ? str.length () : param_length(pos_e));
-
-      bytes1 = symbols(i)->byte_size ();
-      ss2 << bytes1;
-      str = ss2.str ();
-      param_length(pos_b) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_b)))
-			     ? str.length () : param_length (pos_b));
+      for (const_dispatch_map_iterator p = dispatch_map.begin ();
+	   p != dispatch_map.end (); p++)
+	retval += "  " + p->second + " (" + p->first + ", ...)\n\n";
     }
 
-  idx = 0;
-  while (static_cast<size_t> (idx) < format_len)
+  return retval;
+}
+
+// Find the definition of NAME according to the following precedence
+// list:
+//
+//   variable
+//   subfunction
+//   private function
+//   class constructor
+//   class method
+//   legacy dispatch
+//   command-line function
+//   autoload function
+//   function on the path
+//   built-in function
+
+// Notes:
+//
+// FIXME -- we need to evaluate the argument list to determine the
+// dispatch type.  The method used here works (pass in the args, pass
+// out the evaluated args and a flag saying whether the evaluation was
+// needed), but it seems a bit inelegant.  We do need to save the
+// evaluated args in some way to avoid evaluating them multiple times.
+//  Maybe evaluated args could be attached to the tree_argument_list
+// object?  Then the argument list could be evaluated outside of this
+// function and we could elimnate the arg_names, evaluated_args, and
+// args_evaluated arguments.  We would still want to avoid computing
+// the dispatch type unless it is needed, so the args should be passed
+// rather than the dispatch type.  But the arguments will need to be
+// evaluated no matter what, so evaluating them beforehand should be
+// OK.  If the evaluated arguments are attached to args, then we would
+// need to determine the appropriate place(s) to clear them (for
+// example, before returning from tree_index_expression::rvalue).
+
+octave_value
+symbol_table::fcn_info::fcn_info_rep::find
+  (tree_argument_list *args, const string_vector& arg_names,
+   octave_value_list& evaluated_args, bool& args_evaluated,
+   scope_id scope)
+{
+  static bool deja_vu = false;
+
+  // Subfunction.  I think it only makes sense to check for
+  // subfunctions if we are currently executing a function defined
+  // from a .m file.
+
+  scope_val_iterator r = subfunctions.find (scope);
+
+  if (r != subfunctions.end ())
     {
-      whos_parameter param;
-      param.command = '\0';
+      // FIXME -- out-of-date check here.
 
-      if (Vwhos_line_format[idx] == '%')
-        {
-	  bool error_encountered = false;
-	  param.modifier = 'r';
-	  param.parameter_length = 0;
-	  param.dimensions = 8;
+      return r->second;
+    }
+  else if (curr_parent_function)
+    {
+      scope_id pscope = curr_parent_function->scope ();
 
-	  int a = 0, b = -1, c = 8, balance = 1;
-	  unsigned int items;
-	  size_t pos;
-	  std::string cmd;
+      r = subfunctions.find (pscope);
 
-	  // Parse one command from whos_line_format
-	  cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
-	  pos = cmd.find (';');
-	  if (pos != NPOS)
-	    cmd = cmd.substr (0, pos+1);
-	  else
-	    error ("parameter without ; in whos_line_format");
+      if (r != subfunctions.end ())
+	{
+	  // FIXME -- out-of-date check here.
 
-	  idx += cmd.length ();
+	  return r->second;
+	}
+    }
 
-	  // FIXME -- use iostream functions instead of sscanf!
+  // Private function.
 
-	  if (cmd.find_first_of ("crl") != 1)
-	    items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d:%d;",
-			    &garbage, &param.command, &a, &b, &c, &balance);
-	  else
-	    items = sscanf (cmd.c_str (), "%c%c%c:%d:%d:%d:%d;",
-			    &garbage, &param.modifier, &param.command,
-			    &a, &b, &c, &balance) - 1;
-	 
-	  if (items < 2)
+  octave_function *curr_fcn = octave_call_stack::current ();
+
+  if (curr_fcn)
+    {
+      std::string dir_name = curr_fcn->dir_name ();
+
+      if (! dir_name.empty ())
+	{
+	  str_val_iterator q = private_functions.find (dir_name);
+
+	  if (q == private_functions.end ())
 	    {
-	      error ("whos_line_format: parameter structure without command in whos_line_format");
-	      error_encountered = true;
-	    }
+	      octave_value val = load_private_function (dir_name);
 
-	  // Insert data into parameter
-	  param.first_parameter_length = 0;
-	  pos = param_string.find (param.command);
-	  if (pos != NPOS)
-	    {
-	      param.parameter_length = param_length(pos);
-	      param.text = param_names(pos);
-	      param.line.assign (param_names(pos).length (), '=');
-
-	      param.parameter_length = (a > param.parameter_length
-					? a : param.parameter_length);
-	      if (param.command == 's' && param.modifier == 'c' && b > 0)
-		param.first_parameter_length = b;
+	      if (val.is_defined ())
+		return val;
 	    }
 	  else
 	    {
-	      error ("whos_line_format: '%c' is not a command",
-		     param.command);
-	      error_encountered = true;
-	    }
+	      octave_value& fval = q->second;
 
-	  if (param.command == 's')
-	    {
-	      // Have to calculate space needed for printing matrix dimensions
-	      // Space needed for Size column is hard to determine in prior,
-	      // because it depends on dimensions to be shown. That is why it is
-	      // recalculated for each Size-command
-	      int j, first, rest = 0, total;
-	      param.dimensions = c;
-	      first = param.first_parameter_length;
-	      total = param.parameter_length;
-	     
-	      for (j = 0; j < len; j++)
-		{
-		  int first1 = symbols(j)->dimensions_string_req_first_space (param.dimensions);
-		  int total1 = symbols(j)->dimensions_string_req_total_space (param.dimensions);
-		  int rest1 = total1 - first1;
-		  rest = (rest1 > rest ? rest1 : rest);
-		  first = (first1 > first ? first1 : first);
-		  total = (total1 > total ? total1 : total);
-		}
+	      if (fval.is_defined ())
+		out_of_date_check_internal (fval);
 
-	      if (param.modifier == 'c')
-	        {
-		  if (first < balance)
-		    first += balance - first;
-		  if (rest + balance < param.parameter_length)
-		    rest += param.parameter_length - rest - balance;
-
-		  param.parameter_length = first + rest;
-		  param.first_parameter_length = first;
-		  param.balance = balance;
-		}
+	      if (fval.is_defined ())
+		return fval;
 	      else
-	        {
-		  param.parameter_length = total;
-		  param.first_parameter_length = 0;
+		{
+		  octave_value val = load_private_function (dir_name);
+
+		  if (val.is_defined ())
+		    return val;
 		}
 	    }
-	  else if (param.modifier == 'c')
-	    {
-	      error ("whos_line_format: modifier 'c' not available for command '%c'",
-		     param.command);
-	      error_encountered = true;
-	    }
-
-	  // What happens if whos_line_format contains negative numbers
-	  // at param_length positions?
-	  param.balance = (b < 0 ? 0 : param.balance);
-	  param.first_parameter_length = (b < 0 ? 0 :
-					  param.first_parameter_length);
-	  param.parameter_length = (a < 0
-				    ? 0
-				    : (param.parameter_length
-				       < param_length(pos_s)
-				       ? param_length(pos_s)
-				       : param.parameter_length));
-
-	  // Parameter will not be pushed into parameter list if ...
-	  if (! error_encountered)
-	    params.push_back (param);
-	}
-      else
-        {
-	  // Text string, to be printed as it is ...
-	  std::string text;
-	  size_t pos;
-	  text = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
-	  pos = text.find ('%');
-	  if (pos != NPOS)
-	    text = text.substr (0, pos);
-
-	  // Push parameter into list ...
-	  idx += text.length ();
-	  param.text=text;
-	  param.line.assign (text.length(), ' ');
-	  params.push_back (param);
 	}
     }
 
-  return params;
-}
+  // Class constructors.  The class name and function name are the same.
 
-int
-symbol_table::maybe_list (const char *header, const string_vector& argv,
-			  std::ostream& os, bool show_verbose,
-			  unsigned type, unsigned scope)
-{
-  // This method prints information for sets of symbols, but only one
-  // set at a time (like, for instance: all variables, or all
-  // built-in-functions).
+  str_val_iterator q = class_constructors.find (name);
 
-  // This method invokes print_symbol_info_line to print info on every
-  // symbol.
-
-  int status = 0;
-
-  if (show_verbose)
+  if (q == class_constructors.end ())
     {
-      // FIXME Should separate argv to lists with and without dots.
-      Array<symbol_record *> xsymbols = symbol_list (argv, type, scope);
-      Array<symbol_record *> xsubsymbols = subsymbol_list (argv, type, scope);
+      octave_value val = load_class_constructor ();
 
-      int sym_len = xsymbols.length (), subsym_len = xsubsymbols.length (),
-	len = sym_len + subsym_len;
- 
-      Array<symbol_record *> symbols (dim_vector (len, 1));
-
-      if (len > 0)
-	{
-	  size_t bytes = 0;
-	  size_t elements = 0;
-
-	  int i;
-
-	  std::list<whos_parameter> params;
-
-	  // Joining symbolic tables.
-	  for (i = 0; i < sym_len; i++)
-	    symbols(i) = xsymbols(i);
-
-	  for (i = 0; i < subsym_len; i++)
-	    symbols(i+sym_len) = xsubsymbols(i);
-
-	  os << "\n" << header << "\n\n";
-
-	  symbols.qsort (maybe_list_cmp_fcn);
-
-	  params = parse_whos_line_format (symbols);
-
-	  print_descriptor (os, params);
-
-	  os << "\n";
-
-	  for (int j = 0; j < len; j++)
-	    {
-	      symbols(j)->print_symbol_info_line (os, params);
-	      elements += symbols(j)->capacity ();
-	      bytes += symbols(j)->byte_size ();
-	    }
-
-	  os << "\nTotal is "
-	     << elements << (elements == 1 ? " element" : " elements")
-	     << " using "
-	     << bytes << (bytes == 1 ? " byte" : " bytes")
-	     << "\n";
-
-	  status = 1;
-	}
+      if (val.is_defined ())
+	return val;
     }
   else
     {
-      string_vector symbols = name_list (argv, 1, type, scope);
+      octave_value& fval = q->second;
 
-      if (! symbols.empty ())
+      if (fval.is_defined ())
+	out_of_date_check_internal (fval);
+
+      if (fval.is_defined ())
+	return fval;
+      else
 	{
-	  os << "\n" << header << "\n\n";
+	  octave_value val = load_class_constructor ();
 
-	  symbols.list_in_columns (os);
-
-	  status = 1;
+	  if (val.is_defined ())
+	    return val;
 	}
     }
 
-  return status;
-}
+  // Class methods.
 
-Array<symbol_record *>
-symbol_table::glob (const std::string& pat, unsigned int type,
-		    unsigned int scope) const
-{
-  int count = 0;
-
-  int n = size ();
-
-  Array<symbol_record *> symbols (dim_vector (n, 1));
-
-  if (n == 0)
-    return symbols;
-
-  for (unsigned int i = 0; i < table_size; i++)
+  if (args_evaluated || (args && args->length () > 0))
     {
-      symbol_record *ptr = table[i].next ();
+      if (! args_evaluated)
+	evaluated_args = args->convert_to_const_vector ();
 
-      while (ptr)
+      if (! error_state)
 	{
-	  assert (count < n);
+	  int n = evaluated_args.length ();
 
-	  unsigned int my_scope = ptr->is_linked_to_global () + 1; // Tricky...
+	  if (n > 0 && ! args_evaluated)
+	    evaluated_args.stash_name_tags (arg_names);
 
-	  unsigned int my_type = ptr->type ();
+	  args_evaluated = true;
 
-	  glob_match pattern (pat);
+	  // FIXME -- need to handle precedence.
 
-	  if ((type & my_type) && (scope & my_scope)
-	      && pattern.match (ptr->name ()))
+	  std::string dispatch_type = evaluated_args(0).class_name ();
+
+	  for (int i = 1; i < n; i++)
 	    {
-	      symbols(count++) = ptr;
-	    }
+	      octave_value arg = evaluated_args(i);
 
-	  ptr = ptr->next ();
-	}
-    }
-
-  symbols.resize (dim_vector (count, 1));
-
-  return symbols;
-}
-
-void
-symbol_table::push_context (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  ptr->push_context ();
-	  ptr = ptr->next ();
-	}
-    }
-}
-
-void
-symbol_table::pop_context (void)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  ptr->pop_context ();
-	  ptr = ptr->next ();
-	}
-    }
-}
-
-// Create a new symbol table with the same entries.  Only the symbol
-// names and some attributes are copied, not values.
-
-symbol_table *
-symbol_table::dup (void)
-{
-  symbol_table *new_sym_tab = new symbol_table (table_size);
-
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  std::string nm = ptr->name ();
-
-	  symbol_record *sr = new_sym_tab->lookup (nm, true);
-
-	  if (sr)
-	    {
-	      if (ptr->is_formal_parameter ())
-		sr->mark_as_formal_parameter ();
-
-	      if (ptr->is_automatic_variable ())
-		sr->mark_as_automatic_variable ();
-
-	      if (ptr->is_static ())
-		sr->mark_as_static ();
-	    }
-
-	  ptr = ptr->next ();
-	}
-    }
-
-  return new_sym_tab;
-}
-
-void
-symbol_table::inherit (symbol_table *parent_sym_tab)
-{
-  for (unsigned int i = 0; i < table_size; i++)
-    {
-      symbol_record *ptr = table[i].next ();
-
-      while (ptr)
-	{
-	  std::string nm = ptr->name ();
-
-	  if (! (nm == "__retval__"
-		 || ptr->is_automatic_variable ()
-		 || ptr->is_formal_parameter ()))
-	    {
-	      symbol_record *sr = parent_sym_tab->lookup (nm);
-
-	      if (sr)
+	      if (arg.is_object ())
 		{
-		  ptr->define (sr->variable_value ());
-
-		  ptr->mark_as_static ();
+		  dispatch_type = arg.class_name ();
+		  break;
 		}
 	    }
 
-	  ptr = ptr->next ();
+	  octave_value fcn = find_method (dispatch_type);
+
+	  if (fcn.is_defined ())
+	    return fcn;
+	}
+      else
+	return octave_value ();
+    }
+
+  // Legacy dispatch.  We just check args_evaluated here because the
+  // actual evaluation will have happened already when searching for
+  // class methods.
+
+  if (args_evaluated && ! dispatch_map.empty ())
+    {
+      std::string dispatch_type = evaluated_args(0).type_name ();
+
+      std::string fname;
+
+      dispatch_map_iterator p = dispatch_map.find (dispatch_type);
+
+      if (p == dispatch_map.end ())
+	p = dispatch_map.find ("any");
+
+      if (p != dispatch_map.end ())
+	{
+	  fname = p->second;
+
+	  octave_value fcn
+	    = symbol_table::find_function (fname, evaluated_args, scope);
+
+	  if (fcn.is_defined ())
+	    return fcn;
 	}
     }
+
+  // Command-line function.
+
+  if (cmdline_function.is_defined ())
+    return cmdline_function;
+
+  // Autoload?
+
+  octave_value fcn = find_autoload ();
+
+  if (fcn.is_defined ())
+    return fcn;
+
+  // Function on the path.
+
+  fcn = find_user_function ();
+
+  if (fcn.is_defined ())
+    return fcn;
+
+  // Built-in function.
+
+  if (built_in_function.is_defined ())
+    return built_in_function;
+
+  // At this point, we failed to find anything.  It is possible that
+  // the user created a file on the fly since the last prompt or
+  // chdir, so try updating the load path and searching again.
+
+  octave_value retval;
+
+  if (! deja_vu)
+    {
+      load_path::update ();
+
+      deja_vu = true;
+
+      retval = find (args, arg_names, evaluated_args, args_evaluated, scope);
+    }
+
+  deja_vu = false;
+
+  return retval;
 }
 
-void
-symbol_table::print_info (std::ostream& os) const
+octave_value
+symbol_table::fcn_info::fcn_info_rep::find_method (const std::string& dispatch_type)
 {
-  int count = 0;
-  int empty_chains = 0;
-  int max_chain_length = 0;
-  int min_chain_length = INT_MAX;
+  octave_value retval;
 
-  for (unsigned int i = 0; i < table_size; i++)
+  str_val_iterator q = class_methods.find (dispatch_type);
+
+  if (q == class_methods.end ())
     {
-      int num_this_chain = 0;
+      octave_value val = load_class_method (dispatch_type);
 
-      symbol_record *ptr = table[i].next ();
+      if (val.is_defined ())
+	return val;
+    }
+  else
+    {
+      octave_value& fval = q->second;
 
-      if (ptr)
-	os << "chain number " << i << ":\n";
+      if (fval.is_defined ())
+	out_of_date_check_internal (fval);
+
+      if (fval.is_defined ())
+	return fval;
       else
 	{
-	  empty_chains++;
-	  min_chain_length = 0;
+	  octave_value val = load_class_method (dispatch_type);
+
+	  if (val.is_defined ())
+	    return val;
 	}
-
-      while (ptr)
-	{
-	  num_this_chain++;
-
-	  os << "  " << ptr->name () << "\n";
-
-	  ptr->print_info (os, "    ");
-
-	  ptr = ptr->next ();
-	}
-
-      count += num_this_chain;
-
-      if (num_this_chain > max_chain_length)
-	max_chain_length = num_this_chain;
-
-      if (num_this_chain < min_chain_length)
-	min_chain_length = num_this_chain;
-
-      if (num_this_chain > 0)
-	os << "\n";
     }
 
-  os << "max chain length: " << max_chain_length << "\n";
-  os << "min chain length: " << min_chain_length << "\n";
-  os << "empty chains:     " << empty_chains << "\n";
-  os << "total chains:     " << table_size << "\n";
-  os << "total symbols:    " << count << "\n";
+  return retval;
 }
 
-// Chris Torek's fave hash function.
-
-unsigned int
-symbol_table::hash (const std::string& str)
+octave_value
+symbol_table::fcn_info::fcn_info_rep::find_autoload (void)
 {
-  unsigned int h = 0;
+  octave_value retval;
 
-  for (unsigned int i = 0; i < str.length (); i++)
-    h = h * 33 + str[i];
+  // Autoloaded function.
 
-  return h & (table_size - 1);
+  if (autoload_function.is_defined ())
+    out_of_date_check_internal (autoload_function);
+
+  if (! autoload_function.is_defined ())
+    {
+      std::string file_name = lookup_autoload (name);
+
+      if (! file_name.empty ())
+	{
+	  size_t pos = file_name.find_last_of (file_ops::dir_sep_chars);
+
+	  std::string dir_name = file_name.substr (0, pos);
+
+	  octave_function *fcn = load_fcn_from_file (file_name, dir_name,
+						     "", name, true);
+
+	  if (fcn)
+	    autoload_function = octave_value (fcn);
+	}
+    }
+
+  return autoload_function;
 }
 
-DEFUN (debug_symtab_lookups, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} debug_symtab_lookups ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} debug_symtab_lookups (@var{new_val})\n\
-Query or set the internal variable that controls whether debugging\n\
-information is printed when searching for symbols in the symbol tables.\n\
-@end deftypefn")
+octave_value
+symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
 {
-  return SET_INTERNAL_VARIABLE (debug_symtab_lookups);
+  // Function on the path.
+
+  if (function_on_path.is_defined ())
+    out_of_date_check_internal (function_on_path);
+
+  if (! function_on_path.is_defined ())
+    {
+      std::string dir_name;
+
+      std::string file_name = load_path::find_fcn (name, dir_name);
+
+      if (! file_name.empty ())
+	{
+	  octave_function *fcn = load_fcn_from_file (file_name, dir_name);
+
+	  if (fcn)
+	    function_on_path = octave_value (fcn);
+	}
+    }
+
+  return function_on_path;
 }
 
-DEFUN (whos_line_format, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} whos_line_format ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} whos_line_format (@var{new_val})\n\
-Query or set the format string used by the @code{whos}.\n\
-\n\
-The following escape sequences may be used in the format:\n\
-@table @code\n\
-@item %b\n\
-Prints number of bytes occupied by variables.\n\
-@item %c\n\
-Prints class names of variables.\n\
-@item %e\n\
-Prints elements held by variables.\n\
-@item %n\n\
-Prints variable names.\n\
-@item %p\n\
-Prints protection attributes of variables.\n\
-@item %s\n\
-Prints dimensions of variables.\n\
-@item %t\n\
-Prints type names of variables.\n\
-@end table\n\
-\n\
-Every command may also have a modifier:\n\
-@table @code\n\
-@item l\n\
-Left alignment.\n\
-@item r\n\
-Right alignment (this is the default).\n\
-@item c\n\
-Centered (may only be applied to command %s).\n\
-@end table\n\
-\n\
-A command is composed like this:\n\
-\n\
-@example\n\
-%[modifier]<command>[:size_of_parameter[:center-specific[\n\
-       :print_dims[:balance]]]];\n\
-@end example\n\
-\n\
-Command and modifier is already explained. Size_of_parameter\n\
-tells how many columns the parameter will need for printing.\n\
-print_dims tells how many dimensions to print. If number of\n\
-dimensions exceeds print_dims, dimensions will be printed like\n\
-x-D.\n\
-center-specific and print_dims may only be applied to command\n\
-%s. A negative value for print_dims will cause Octave to print all\n\
-dimensions whatsoever.\n\
-balance specifies the offset for printing of the dimensions string.\n\
-\n\
-The default format is \"  %p:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lc:-1;\\n\".\n\
-@end deftypefn")
+octave_value
+symbol_table::fcn_info::find (tree_argument_list *args,
+			      const string_vector& arg_names,
+			      octave_value_list& evaluated_args,
+			      bool& args_evaluated, scope_id scope)
 {
-  return SET_INTERNAL_VARIABLE (whos_line_format);
+  return rep->find (args, arg_names, evaluated_args, args_evaluated, scope);
 }
 
-DEFUN (variables_can_hide_functions, args, nargout,
+octave_value
+symbol_table::find (const std::string& name, tree_argument_list *args,
+		    const string_vector& arg_names,
+		    octave_value_list& evaluated_args, bool& args_evaluated,
+		    symbol_table::scope_id scope, bool skip_variables)
+{
+  symbol_table *inst = get_instance (scope);
+
+  return inst
+    ? inst->do_find (name, args, arg_names, evaluated_args,
+		       args_evaluated, scope, skip_variables)
+    : octave_value ();
+}
+
+octave_value
+symbol_table::find_function (const std::string& name, tree_argument_list *args,
+			     const string_vector& arg_names,
+			     octave_value_list& evaluated_args,
+			     bool& args_evaluated, scope_id scope)
+{
+  return find (name, args, arg_names, evaluated_args, args_evaluated,
+	       scope, true);
+}
+
+octave_value
+symbol_table::do_find (const std::string& name, tree_argument_list *args,
+		       const string_vector& arg_names,
+		       octave_value_list& evaluated_args,
+		       bool& args_evaluated, scope_id scope,
+		       bool skip_variables)
+{
+  octave_value retval;
+
+  // Variable.
+
+  if (! skip_variables)
+    {
+      table_iterator p = table.find (name);
+
+      if (p != table.end ())
+	{
+	  symbol_record& sr = p->second;
+
+	  // FIXME -- should we be using something other than varref here?
+
+	  if (sr.is_global ())
+	    return symbol_table::varref (name, xglobal_scope);
+	  else
+	    {
+	      octave_value& val = sr.varref ();
+
+	      if (val.is_defined ())
+		return val;
+	    }
+	}
+    }
+
+  fcn_table_iterator p = fcn_table.find (name);
+
+  if (p != fcn_table.end ())
+    {
+      evaluated_args = octave_value_list ();
+      args_evaluated = false;
+
+      return p->second.find (args, arg_names, evaluated_args, args_evaluated,
+			     scope);
+    }
+  else
+    {
+      fcn_info finfo (name);
+
+      octave_value fcn = finfo.find (args, arg_names, evaluated_args,
+				     args_evaluated, scope);
+
+      if (fcn.is_defined ())
+	fcn_table[name] = finfo;
+
+      return fcn;
+    }
+
+  return retval;
+}
+
+DEFUN (ignore_function_time_stamp, args, nargout,
     "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} variables_can_hide_functions ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} variables_can_hide_functions (@var{new_val})\n\
-Query or set the internal variable that controls whether assignments\n\
-to variables may hide previously defined functions of the same name.\n\
-If set to a nonzero value allows hiding, zero causes Octave to\n\
-generate an error, and a negative value cause Octave to print a\n\
-warning, but allow the operation.\n\
+@deftypefn {Built-in Function} {@var{val} =} ignore_function_time_stamp ()\n\
+@deftypefnx {Built-in Function} {@var{old_val} =} ignore_function_time_stamp (@var{new_val})\n\
+Query or set the internal variable that controls whether Octave checks\n\
+the time stamp on files each time it looks up functions defined in\n\
+function files.  If the internal variable is set to @code{\"system\"},\n\
+Octave will not automatically recompile function files in subdirectories of\n\
+@file{@var{octave-home}/lib/@var{version}} if they have changed since\n\
+they were last compiled, but will recompile other function files in the\n\
+search path if they change.  If set to @code{\"all\"}, Octave will not\n\
+recompile any function files unless their definitions are removed with\n\
+@code{clear}.  If set to \"none\", Octave will always check time stamps\n\
+on files to determine whether functions defined in function files\n\
+need to recompiled.\n\
 @end deftypefn")
 {
-  return SET_INTERNAL_VARIABLE (variables_can_hide_functions);
+  octave_value retval;
+
+  if (nargout > 0)
+    {
+      switch (Vignore_function_time_stamp)
+	{
+	case 1:
+	  retval = "system";
+	  break;
+
+	case 2:
+	  retval = "all";
+	  break;
+
+	default:
+	  retval = "none";
+	  break;
+	}
+    }
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      std::string sval = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  if (sval == "all")
+	    Vignore_function_time_stamp = 2;
+	  else if (sval == "system")
+	    Vignore_function_time_stamp = 1;
+	  else if (sval == "none")
+	    Vignore_function_time_stamp = 0;
+	  else
+	    error ("ignore_function_time_stamp: expecting argument to be \"all\", \"system\", or \"none\"");
+	}
+      else
+	error ("ignore_function_time_stamp: expecting argument to be character string");
+    }
+  else if (nargin > 1)
+    print_usage ();
+
+  return retval;
 }
 
 /*

@@ -55,6 +55,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-str-mat.h"
 #include "ov-range.h"
 #include "ov-struct.h"
+#include "ov-class.h"
 #include "ov-streamoff.h"
 #include "ov-list.h"
 #include "ov-cs-list.h"
@@ -73,6 +74,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "parse.h"
 #include "pr-output.h"
+#include "symtab.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -121,6 +123,40 @@ octave_value::unary_op_as_string (unary_op op)
 
     default:
       retval = "<unknown>";
+    }
+
+  return retval;
+}
+
+std::string
+octave_value::unary_op_fcn_name (unary_op op)
+{
+  std::string retval;
+
+  switch (op)
+    {
+    case op_not:
+      retval = "not";
+      break;
+
+    case op_uplus:
+      retval = "uplus";
+      break;
+
+    case op_uminus:
+      retval = "uminus";
+      break;
+
+    case op_transpose:
+      retval = "transpose";
+      break;
+
+    case op_hermitian:
+      retval = "ctranspose";
+      break;
+
+    default:
+      break;
     }
 
   return retval;
@@ -219,6 +255,92 @@ octave_value::binary_op_as_string (binary_op op)
 
     default:
       retval = "<unknown>";
+    }
+
+  return retval;
+}
+
+std::string
+octave_value::binary_op_fcn_name (binary_op op)
+{
+  std::string retval;
+
+  switch (op)
+    {
+    case op_add:
+      retval = "plus";
+      break;
+
+    case op_sub:
+      retval = "minus";
+      break;
+
+    case op_mul:
+      retval = "mtimes";
+      break;
+
+    case op_div:
+      retval = "mrdivide";
+      break;
+
+    case op_pow:
+      retval = "mpower";
+      break;
+
+    case op_ldiv:
+      retval = "mldivide";
+      break;
+
+    case op_lt:
+      retval = "lt";
+      break;
+
+    case op_le:
+      retval = "le";
+      break;
+
+    case op_eq:
+      retval = "eq";
+      break;
+
+    case op_ge:
+      retval = "ge";
+      break;
+
+    case op_gt:
+      retval = "gt";
+      break;
+
+    case op_ne:
+      retval = "ne";
+      break;
+
+    case op_el_mul:
+      retval = "times";
+      break;
+
+    case op_el_div:
+      retval = "rdivide";
+      break;
+
+    case op_el_pow:
+      retval = "power";
+      break;
+
+    case op_el_ldiv:
+      retval = "ldivide";
+      break;
+
+    case op_el_and:
+      retval = "and";
+      break;
+
+    case op_el_or:
+      retval = "or";
+      break;
+
+    default:
+      break;
     }
 
   return retval;
@@ -719,6 +841,11 @@ octave_value::octave_value (const Octave_map& m)
 {
 }
 
+octave_value::octave_value (const Octave_map& m, const std::string& id)
+  : rep (new octave_class (m, id))
+{
+}
+
 octave_value::octave_value (const streamoff_array& off)
   : rep (new octave_streamoff (off))
 {
@@ -739,6 +866,12 @@ octave_value::octave_value (octave_value::magic_colon)
 octave_value::octave_value (octave_base_value *new_rep)
   : rep (new_rep)
 {
+}
+
+octave_value::octave_value (octave_base_value *new_rep, int xcount)
+  : rep (new_rep)
+{
+  rep->count = xcount;
 }
 
 octave_base_value *
@@ -886,7 +1019,7 @@ octave_value::assign (assign_op op, const std::string& type,
 
   if (! error_state)
     {
-      if (type[0] == '.' && ! is_map ())
+      if (type[0] == '.' && ! (is_map () || is_object ()))
 	{
 	  octave_value tmp = Octave_map ();
 	  retval = tmp.subsasgn (type, idx, t_rhs);
@@ -1369,68 +1502,86 @@ do_binary_op (octave_value::binary_op op,
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();
 
-  octave_value_typeinfo::binary_op_fcn f
-    = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+  if (t1 == octave_class::static_type_id ()
+      || t2 == octave_class::static_type_id ())
+    {
+      octave_value_typeinfo::binary_class_op_fcn f
+	= octave_value_typeinfo::lookup_binary_class_op (op);
 
-  if (f)
-    retval = f (*v1.rep, *v2.rep);
+      if (f)
+	retval = f (v1, v2);
+      else
+	gripe_binary_op (octave_value::binary_op_as_string (op),
+			 v1.class_name (), v2.class_name ());
+    }
   else
     {
-      octave_value tv1;
-      octave_base_value::type_conv_fcn cf1 = v1.numeric_conversion_function ();
+      // FIXME -- we need to handle overloading operators for built-in
+      // classes (double, char, int8, etc.)
 
-      if (cf1)
+      octave_value_typeinfo::binary_op_fcn f
+	= octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+
+      if (f)
+	retval = f (*v1.rep, *v2.rep);
+      else
 	{
-	  octave_base_value *tmp = cf1 (*v1.rep);
+	  octave_value tv1;
+	  octave_base_value::type_conv_fcn cf1 = v1.numeric_conversion_function ();
 
-	  if (tmp)
+	  if (cf1)
 	    {
-	      tv1 = octave_value (tmp);
-	      t1 = tv1.type_id ();
+	      octave_base_value *tmp = cf1 (*v1.rep);
+
+	      if (tmp)
+		{
+		  tv1 = octave_value (tmp);
+		  t1 = tv1.type_id ();
+		}
+	      else
+		{
+		  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+		  return retval;
+		}
 	    }
 	  else
+	    tv1 = v1;
+
+	  octave_value tv2;
+	  octave_base_value::type_conv_fcn cf2 = v2.numeric_conversion_function ();
+
+	  if (cf2)
 	    {
-	      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
-	      return retval;
-	    }
-	}
-      else
-	tv1 = v1;
+	      octave_base_value *tmp = cf2 (*v2.rep);
 
-      octave_value tv2;
-      octave_base_value::type_conv_fcn cf2 = v2.numeric_conversion_function ();
-
-      if (cf2)
-	{
-	  octave_base_value *tmp = cf2 (*v2.rep);
-
-	  if (tmp)
-	    {
-	      tv2 = octave_value (tmp);
-	      t2 = tv2.type_id ();
+	      if (tmp)
+		{
+		  tv2 = octave_value (tmp);
+		  t2 = tv2.type_id ();
+		}
+	      else
+		{
+		  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+		  return retval;
+		}
 	    }
 	  else
+	    tv2 = v2;
+
+	  if (cf1 || cf2)
 	    {
-	      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
-	      return retval;
+	      f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+
+	      if (f)
+		retval = f (*tv1.rep, *tv2.rep);
+	      else
+		gripe_binary_op (octave_value::binary_op_as_string (op),
+				 v1.type_name (), v2.type_name ());
 	    }
-	}
-      else
-	tv2 = v2;
-
-      if (cf1 || cf2)
-	{
-	  f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
-
-	  if (f)
-	    retval = f (*tv1.rep, *tv2.rep);
 	  else
 	    gripe_binary_op (octave_value::binary_op_as_string (op),
 			     v1.type_name (), v2.type_name ());
 	}
-      else
-	gripe_binary_op (octave_value::binary_op_as_string (op),
-			 v1.type_name (), v2.type_name ());
     }
 
   return retval;
@@ -1560,39 +1711,57 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 
   int t = v.type_id ();
 
-  octave_value_typeinfo::unary_op_fcn f
-    = octave_value_typeinfo::lookup_unary_op (op, t);
-
-  if (f)
-    retval = f (*v.rep);
-  else
+  if (t == octave_class::static_type_id ())
     {
-      octave_value tv;
-      octave_base_value::type_conv_fcn cf = v.numeric_conversion_function ();
+      octave_value_typeinfo::unary_class_op_fcn f
+	= octave_value_typeinfo::lookup_unary_class_op (op);
 
-      if (cf)
-	{
-	  octave_base_value *tmp = cf (*v.rep);
-
-	  if (tmp)
-	    {
-	      tv = octave_value (tmp);
-	      t = tv.type_id ();
-
-	      f = octave_value_typeinfo::lookup_unary_op (op, t);
-
-	      if (f)
-		retval = f (*tv.rep);
-	      else
-		gripe_unary_op (octave_value::unary_op_as_string (op),
-				v.type_name ());
-	    }
-	  else
-	    gripe_unary_op_conv (octave_value::unary_op_as_string (op));
-	}
+      if (f)
+	retval = f (v);
       else
 	gripe_unary_op (octave_value::unary_op_as_string (op),
-			v.type_name ());
+			v.class_name ());
+    }
+  else
+    {
+      // FIXME -- we need to handle overloading operators for built-in
+      // classes (double, char, int8, etc.)
+
+      octave_value_typeinfo::unary_op_fcn f
+	= octave_value_typeinfo::lookup_unary_op (op, t);
+
+      if (f)
+	retval = f (*v.rep);
+      else
+	{
+	  octave_value tv;
+	  octave_base_value::type_conv_fcn cf
+	    = v.numeric_conversion_function ();
+
+	  if (cf)
+	    {
+	      octave_base_value *tmp = cf (*v.rep);
+
+	      if (tmp)
+		{
+		  tv = octave_value (tmp);
+		  t = tv.type_id ();
+
+		  f = octave_value_typeinfo::lookup_unary_op (op, t);
+
+		  if (f)
+		    retval = f (*tv.rep);
+		  else
+		    gripe_unary_op (octave_value::unary_op_as_string (op),
+				    v.type_name ());
+		}
+	      else
+		gripe_unary_op_conv (octave_value::unary_op_as_string (op));
+	    }
+	  else
+	    gripe_unary_op (octave_value::unary_op_as_string (op),
+			    v.type_name ());
+	}
     }
 
   return retval;
@@ -1882,6 +2051,7 @@ install_types (void)
   octave_sparse_matrix::register_type ();
   octave_sparse_complex_matrix::register_type ();
   octave_struct::register_type ();
+  octave_class::register_type ();
   octave_list::register_type ();
   octave_cs_list::register_type ();
   octave_magic_colon::register_type ();

@@ -61,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "pathsearch.h"
 #include "procstream.h"
+#include "pt-pr-code.h"
 #include "sighandlers.h"
 #include "symtab.h"
 #include "syswait.h"
@@ -563,18 +564,20 @@ make_name_list (void)
   string_vector key = names (keyword_help ());
   int key_len = key.length ();
 
-  string_vector fbi = fbi_sym_tab->name_list ();
-  int fbi_len = fbi.length ();
+  string_vector bif = symbol_table::built_in_function_names ();
+  int bif_len = bif.length ();
 
-  string_vector glb = global_sym_tab->name_list ();
+  string_vector glb
+    = symbol_table::variable_names (symbol_table::global_scope ());
   int glb_len = glb.length ();
 
-  string_vector top = top_level_sym_tab->name_list ();
+  string_vector top
+    = symbol_table::variable_names (symbol_table::top_scope ());
   int top_len = top.length ();
 
   string_vector lcl;
-  if (top_level_sym_tab != curr_sym_tab)
-    lcl = curr_sym_tab->name_list ();
+  if (! symbol_table::at_top_level ())
+    lcl = symbol_table::variable_names ();
   int lcl_len = lcl.length ();
 
   string_vector ffl = load_path::fcn_names ();
@@ -583,7 +586,8 @@ make_name_list (void)
   string_vector afl = autoloaded_functions ();
   int afl_len = afl.length ();
 
-  int total_len = key_len + fbi_len + glb_len + top_len + lcl_len + ffl_len + afl_len;
+  int total_len = key_len + bif_len + glb_len + top_len + lcl_len
+    + ffl_len + afl_len;
 
   string_vector list (total_len);
 
@@ -594,8 +598,8 @@ make_name_list (void)
   for (i = 0; i < key_len; i++)
     list[j++] = key[i];
 
-  for (i = 0; i < fbi_len; i++)
-    list[j++] = fbi[i];
+  for (i = 0; i < bif_len; i++)
+    list[j++] = bif[i];
 
   for (i = 0; i < glb_len; i++)
     list[j++] = glb[i];
@@ -649,27 +653,18 @@ display_names_from_help_list (std::ostream& os, help_list *list,
 }
 
 static void
-display_symtab_names (std::ostream& os, const string_vector& names,
+display_symtab_names (std::ostream& os, const std::list<std::string>& names,
 		      const std::string& desc)
 {
   if (! names.empty ())
     {
       os << "\n*** " << desc << ":\n\n";
-      names.list_in_columns (os);
+
+      string_vector sv (names);
+
+      sv.list_in_columns (os);
     }
 }
-
-#ifdef LIST_SYMBOLS
-#undef LIST_SYMBOLS
-#endif
-#define LIST_SYMBOLS(type, msg) \
-  do \
-    { \
-      string_vector names \
-	= fbi_sym_tab->name_list (string_vector (), true, type); \
-      display_symtab_names (octave_stdout, names, msg); \
-    } \
-  while (0)
 
 static void
 simple_help (void)
@@ -684,18 +679,11 @@ simple_help (void)
   display_names_from_help_list (octave_stdout, keyword_help (),
 				"reserved words");
 
-  // FIXME -- is this distinction needed?
+  display_symtab_names (octave_stdout,
+			symbol_table::built_in_function_names (),
+			"built-in functions");
 
-  LIST_SYMBOLS (symbol_record::COMMAND, "commands");
-
-  LIST_SYMBOLS (symbol_record::MAPPER_FUNCTION, "mapper functions");
-
-  LIST_SYMBOLS (symbol_record::BUILTIN_FUNCTION, "general functions");
-
-  // Also need to list variables and currently compiled functions from
-  // the symbol table, if there are any.
-
-  // Also need to search octave_path for script files.
+  // FIXME -- list functions defined on command line?
 
   load_path::display (octave_stdout);
 
@@ -944,80 +932,34 @@ help_from_list (std::ostream& os, const help_list *list,
   return retval;
 }
 
-std::string
-extract_help_from_dispatch (const std::string& nm)
-{
-  std::string retval;
-
-  symbol_record *builtin = fbi_sym_tab->lookup ("builtin:" + nm, 0);
-
-  if (builtin)
-    {
-      // Check that builtin is up to date.
- 
-      // Don't try to fight octave's function name handling
-      // mechanism.  Instead, move dispatch record out of the way,
-      // and restore the builtin to its original name.
-      symbol_record *dispatch = fbi_sym_tab->lookup (nm, 0);
-
-      if (dispatch)
-	{
-	  dispatch->unprotect ();
-
-	  fbi_sym_tab->rename (nm, "dispatch:" + nm);
-	  fbi_sym_tab->rename ("builtin:" + nm, nm);
-
-	  // Check for updates to builtin function; ignore errors
-	  // that appear (they interfere with renaming), and remove
-	  // the updated name from the current symbol table.  FIXME --
-	  // check that updating a function updates it in all
-	  // contexts.  It may be that it is updated only in the 
-	  // current symbol table, and not the caller.  I believe this
-	  // won't be a problem because the caller will go through the
-	  // same logic and end up with the newer version.
-
-	  octave_function *f = is_valid_function (nm);
-
-	  if (f)
-	    retval = builtin->help ();
-
-	  curr_sym_tab->clear_function (nm);
-
-	  // Move the builtin function out of the way and restore the
-	  // dispatch fuction.  FIXME what if builtin wants to
-	  // protect itself?
-
-	  fbi_sym_tab->rename (nm, "builtin:" + nm);
-	  fbi_sym_tab->rename ("dispatch:" + nm, nm);
-
-	  dispatch->protect ();
-	}
-      else
-	error ("failed to find dispatch record for `builtin:%s'", nm.c_str ());
-    }
-
-  return retval;
-}
-
 static bool
 raw_help_from_symbol_table (const std::string& nm, std::string& h, 
 			    std::string& w, bool& symbol_found)
 {
   bool retval = false;
 
-  symbol_record *sym_rec = lookup_by_name (nm, 0);
+  octave_value val = symbol_table::find_function (nm);
 
-  if (sym_rec && sym_rec->is_defined ())
+  if (val.is_defined ())
     {
-      symbol_found = true;
+      octave_function *fcn = val.function_value ();
 
-      h = sym_rec->help ();
-
-      if (h.length () > 0)
+      if (fcn)
 	{
-	  w = sym_rec->which ();
+	  symbol_found = true;
 
-	  retval = true;
+	  h = fcn->doc_string ();
+
+	  if (! h.empty ())
+	    {
+	      retval = true;
+
+	      w = fcn->fcn_file_name ();
+
+	      if (w.empty ())
+		w = fcn->is_user_function ()
+		  ? "command-line function" : "built-in function";
+	    }
 	}
     }
 
@@ -1037,7 +979,7 @@ help_from_symbol_table (std::ostream& os, const std::string& nm,
     {
       if (h.length () > 0)
 	{
-	  h = extract_help_from_dispatch (nm) + h;
+	  h += "\n\n@noindent\n" + symbol_table::help_for_dispatch (nm);
 
 	  display_help_text (os, h);
 
@@ -1193,36 +1135,82 @@ for those, you must type @kbd{help comma} or @kbd{help semicolon}.\n\
 }
 
 static void
+display_file (std::ostream& os, const std::string& name,
+	      const std::string& fname, const std::string& type,
+	      bool pr_type_info, bool quiet)
+{
+  std::ifstream fs (fname.c_str (), std::ios::in);
+
+  if (fs)
+    {
+      if (pr_type_info && ! quiet)
+	os << name << " is the " << type
+		   << " defined from: " << fname << "\n\n";
+
+      char ch;
+
+      while (fs.get (ch))
+	os << ch;
+    }
+  else
+    os << "unable to open `" << fname << "' for reading!\n";
+}
+
+static void
 do_type (std::ostream& os, const std::string& name, bool pr_type_info,
 	 bool quiet, bool pr_orig_txt)
 {
-  symbol_record *sym_rec = lookup_by_name (name, 0);
+  // FIXME -- should we bother with variables here (earlier versions
+  // of Octave displayed them)?
 
-  if (sym_rec && sym_rec->is_defined ())
-    sym_rec->type (os, pr_type_info, quiet, pr_orig_txt);
+  octave_value val = symbol_table::varval (name);
+
+  if (val.is_defined ())
+    {
+      if (pr_type_info && ! quiet)
+	os << name << " is a variable\n";
+
+      val.print_raw (os, pr_orig_txt);
+
+      if (pr_type_info)
+	os << "\n";
+    }
   else
     {
-      std::string ff = fcn_file_in_path (name);
+      val = symbol_table::find_function (name);
 
-      if (! ff.empty ())
+      if (val.is_defined ())
 	{
-	  std::ifstream fs (ff.c_str (), std::ios::in);
+	  octave_function *fcn = val.function_value ();
 
-	  if (fs)
+	  std::string fn = fcn ? fcn->fcn_file_name () : std::string ();
+
+	  if (pr_orig_txt && ! fn.empty ())
+	    display_file (os, name, fn, "function", pr_type_info, quiet);
+	  else
 	    {
 	      if (pr_type_info && ! quiet)
-		os << name << " is the script file: " << ff << "\n\n";
+		{
+		  std::string type
+		    = fcn->is_user_function () ? "command-line" : "built-in";
 
-	      char ch;
+		  os << name << " is a " << type << " function:\n\n";
+		}
 
-	      while (fs.get (ch))
-		os << ch;
+	      tree_print_code tpc (os, "", pr_orig_txt);
+
+	      fcn->accept (tpc);
 	    }
-	  else
-	    os << "unable to open `" << ff << "' for reading!\n";
 	}
       else
-	error ("type: `%s' undefined", name.c_str ());
+	{
+	  std::string fn = fcn_file_in_path (name);
+
+	  if (! fn.empty ())
+	    display_file (os, name, fn, "script", pr_type_info, quiet);
+	  else
+	    error ("type: `%s' undefined", name.c_str ());
+	}
     }
 }
 
@@ -1298,35 +1286,64 @@ the @code{-q} option suppresses this behaviour.\n\
 std::string
 do_which (const std::string& name)
 {
-  std::string retval;
+  octave_value val = symbol_table::find_function (name);
 
-  symbol_record *sym_rec = lookup_by_name (name, 0);
+  if (val.is_defined ())
+    {
+      octave_function *fcn = val.function_value ();
 
-  if (sym_rec && sym_rec->is_defined ())
-    retval = sym_rec->which ();
-  else
-    retval = fcn_file_in_path (name);
+      if (fcn)
+	{
+	  std::string fn = fcn->fcn_file_name ();
 
-  return retval;
+	  return fn.empty ()
+	    ? (fcn->is_user_function ()
+	       ? "command-line function" : "built-in function")
+	    : fn;
+	}
+    }
+
+  return fcn_file_in_path (name);
 }
 
 static void
 do_which (std::ostream& os, const std::string& name)
 {
-  symbol_record *sym_rec = lookup_by_name (name, 0);
+  std::string desc;
 
-  if (sym_rec && sym_rec->is_defined ())
-    sym_rec->which (os);
-  else
+  octave_value val = symbol_table::find_function (name);
+
+  if (val.is_defined ())
     {
-      std::string path = fcn_file_in_path (name);
+      octave_function *fcn = val.function_value ();
 
-      if (! path.empty ())
-	os << "which: `" << name << "' is the script file\n"
-	   << path << "\n";
-      else
-	os << "which: `" << name << "' is undefined\n";
+      if (fcn)
+	{
+	  desc = fcn->fcn_file_name ();
+
+	  if (desc.empty ())
+	    {
+	      if (fcn->is_user_function ())
+		desc = "is a command-line function";
+	      else
+		desc = "is a built-in function";
+	    }
+	  else
+	    desc = "is the function from the file " + desc;
+	}
     }
+
+  if (desc.empty ())
+    {
+      std::string fn = fcn_file_in_path (name);
+
+      if (! fn.empty ())
+	desc = "is the script file " + fn;
+      else
+	desc = "is undefined";
+    }
+
+  os << "which: `" << name << "' " << desc << std::endl;
 }
 
 DEFCMD (which, args, nargout,
@@ -1764,6 +1781,7 @@ to find related functions that are not part of Octave.\n\
 @end deffn")
 {
   octave_value_list retval;
+
   int nargin = args.length ();
   bool first_sentence_only = true;
 
@@ -1897,9 +1915,11 @@ to find related functions that are not part of Octave.\n\
 	  ptr++;
 	}
 
+      string_vector names;
+
+#ifdef OLD_SYMTAB
       // Check the symbol record table
-      string_vector names
-	= fbi_sym_tab->name_list (string_vector (), true);
+      names = fbi_sym_tab->name_list (string_vector (), true);
 
       for (octave_idx_type i = 0; i < names.length (); i++)
 	{
@@ -1947,6 +1967,7 @@ to find related functions that are not part of Octave.\n\
 		}
 	    }
 	}
+#endif
 
       string_vector dirs = load_path::dirs ();
 
@@ -1973,6 +1994,7 @@ to find related functions that are not part of Octave.\n\
 		  else
 		    continue;
 
+#ifdef OLD_SYMTAB
 		  // Check if already in symbol table
 		  symbol_record *sr = fbi_sym_tab->lookup (name);
 
@@ -2037,6 +2059,7 @@ to find related functions that are not part of Octave.\n\
 			    }
 			}
 		    }
+#endif
 
 		  // Check if this function has autoloaded functions attached to it
 		  std::string file_name = load_path::find_fcn (name);
@@ -2049,6 +2072,7 @@ to find related functions that are not part of Octave.\n\
 			{
 			  std::string aname = autoload_fcns (k);
 
+#ifdef OLD_SYMTAB
 			  // Check if already in symbol table
 			  sr = fbi_sym_tab->lookup (aname);
 
@@ -2094,6 +2118,7 @@ to find related functions that are not part of Octave.\n\
 				    }
 				}
 			    }
+#endif
 			}
 		    }
 		}

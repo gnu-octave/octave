@@ -40,9 +40,14 @@ octave_value_typeinfo
 {
 public:
 
+  typedef octave_value (*unary_class_op_fcn) (const octave_value&);
+
   typedef octave_value (*unary_op_fcn) (const octave_base_value&);
 
   typedef void (*non_const_unary_op_fcn) (octave_base_value&);
+
+  typedef octave_value (*binary_class_op_fcn)
+    (const octave_value&, const octave_value&);
 
   typedef octave_value (*binary_op_fcn)
     (const octave_base_value&, const octave_base_value&);
@@ -61,10 +66,16 @@ public:
   static int register_type (const std::string&, const std::string&,
 			    const octave_value&);
 
+  static bool register_unary_class_op (octave_value::unary_op,
+				       unary_class_op_fcn);
+
   static bool register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 
   static bool register_non_const_unary_op (octave_value::unary_op, int,
 					   non_const_unary_op_fcn);
+
+  static bool register_binary_class_op (octave_value::binary_op,
+					binary_class_op_fcn);
 
   static bool register_binary_op (octave_value::binary_op, int, int,
 				  binary_op_fcn);
@@ -91,6 +102,12 @@ public:
     return instance->do_lookup_type (nm);
   }
 
+  static unary_class_op_fcn
+  lookup_unary_class_op (octave_value::unary_op op)
+  {
+    return instance->do_lookup_unary_class_op (op);
+  }
+
   static unary_op_fcn
   lookup_unary_op (octave_value::unary_op op, int t)
   {
@@ -101,6 +118,12 @@ public:
   lookup_non_const_unary_op (octave_value::unary_op op, int t)
   {
     return instance->do_lookup_non_const_unary_op (op, t);
+  }
+
+  static binary_class_op_fcn
+  lookup_binary_class_op (octave_value::binary_op op)
+  {
+    return instance->do_lookup_binary_class_op (op);
   }
 
   static binary_op_fcn
@@ -155,8 +178,10 @@ protected:
   octave_value_typeinfo (void)
     : num_types (0), types (init_tab_sz, std::string ()),
       vals (init_tab_sz),
+      unary_class_ops (octave_value::num_unary_ops, 0),
       unary_ops (octave_value::num_unary_ops, init_tab_sz, 0),
       non_const_unary_ops (octave_value::num_unary_ops, init_tab_sz, 0),
+      binary_class_ops (octave_value::num_binary_ops, 0),
       binary_ops (octave_value::num_binary_ops, init_tab_sz, init_tab_sz, 0),
       cat_ops (init_tab_sz, init_tab_sz, 0),
       assign_ops (octave_value::num_assign_ops, init_tab_sz, init_tab_sz, 0),
@@ -177,9 +202,13 @@ private:
 
   Array<octave_value> vals;
 
+  Array<unary_class_op_fcn> unary_class_ops;
+
   Array2<unary_op_fcn> unary_ops;
 
   Array2<non_const_unary_op_fcn> non_const_unary_ops;
+
+  Array<binary_class_op_fcn> binary_class_ops;
 
   Array3<binary_op_fcn> binary_ops;
 
@@ -198,10 +227,15 @@ private:
   int do_register_type (const std::string&, const std::string&,
 			const octave_value&);
 
+  bool do_register_unary_class_op (octave_value::unary_op, unary_class_op_fcn);
+
   bool do_register_unary_op (octave_value::unary_op, int, unary_op_fcn);
 
   bool do_register_non_const_unary_op (octave_value::unary_op, int,
 				       non_const_unary_op_fcn);
+
+  bool do_register_binary_class_op (octave_value::binary_op,
+				    binary_class_op_fcn);
 
   bool do_register_binary_op (octave_value::binary_op, int, int,
 			      binary_op_fcn);
@@ -222,10 +256,14 @@ private:
 
   octave_value do_lookup_type (const std::string& nm);
 
+  unary_class_op_fcn do_lookup_unary_class_op (octave_value::unary_op);
+
   unary_op_fcn do_lookup_unary_op (octave_value::unary_op, int);
 
   non_const_unary_op_fcn do_lookup_non_const_unary_op
     (octave_value::unary_op, int);
+
+  binary_class_op_fcn do_lookup_binary_class_op (octave_value::binary_op);
 
   binary_op_fcn do_lookup_binary_op (octave_value::binary_op, int, int);
 

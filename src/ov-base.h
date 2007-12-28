@@ -222,6 +222,8 @@ public:
 
   virtual bool is_map (void) const { return false; }
 
+  virtual bool is_object (void) const { return false; }
+
   virtual bool is_streamoff (void) const { return false; }
 
   virtual bool is_cs_list (void) const { return false; }
@@ -287,6 +289,10 @@ public:
   virtual bool is_inline_function (void) const { return false; }
 
   virtual bool is_function (void) const { return false; }
+
+  virtual bool is_user_script (void) const { return false; }
+
+  virtual bool is_user_function (void) const { return false; }
 
   virtual bool is_builtin_function (void) const { return false; }
 
@@ -486,6 +492,10 @@ private:
 
   DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA
 };
+
+// If TRUE, turn off printing of results in functions (as if a
+// semicolon has been appended to each statement).
+extern bool Vsilent_functions;
 
 // TRUE means to perform automatic sparse to real mutation if there
 // is memory to be saved

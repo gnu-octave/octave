@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pager.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
+#include "pt-id.h"
 #include "pt-idx.h"
 #include "pt-walk.h"
 #include "utils.h"
@@ -219,9 +220,8 @@ tree_index_expression::make_arg_struct (void) const
 {
   int n = args.size ();
 
-  // FIXME -- why not just make these Cell objects?
-  octave_value_list subs_list (n, octave_value ());
-  octave_value_list type_list (n, octave_value ());
+  Cell type_field (n, 1);
+  Cell subs_field (n, 1);
 
   std::list<tree_argument_list *>::const_iterator p_args = args.begin ();
   std::list<string_vector>::const_iterator p_arg_nm = arg_nm.begin ();
@@ -234,16 +234,16 @@ tree_index_expression::make_arg_struct (void) const
       switch (type[i])
 	{
 	case '(':
-	  subs_list(i) = make_subs_cell (*p_args, *p_arg_nm);
+	  subs_field(i) = make_subs_cell (*p_args, *p_arg_nm);
 	  break;
 
 	case '{':
-	  subs_list(i) = make_subs_cell (*p_args, *p_arg_nm);
+	  subs_field(i) = make_subs_cell (*p_args, *p_arg_nm);
 	  break;
 
 	case '.':
 	  {
-	    subs_list(i) = get_struct_index (p_arg_nm, p_dyn_field);
+	    subs_field(i) = get_struct_index (p_arg_nm, p_dyn_field);
 
 	    if (error_state)
 	      eval_error ();
@@ -262,8 +262,8 @@ tree_index_expression::make_arg_struct (void) const
       p_dyn_field++;
     }
 
-  m.assign ("subs", Cell (subs_list));
-  m.assign ("type", Cell (type_list));
+  m.assign ("type", type_field);
+  m.assign ("subs", subs_field);
 
   return m;
 }
@@ -276,11 +276,38 @@ tree_index_expression::rvalue (int nargout)
   if (error_state)
     return retval;
 
-  octave_value first_expr_val = expr->rvalue ();
-  octave_value tmp = first_expr_val;
+  octave_value first_expr_val;
+
+  octave_value_list first_args;
+
+  bool have_args = false;
+
+  if (expr->is_identifier () && type[0] == '(')
+    {
+      tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
+
+      if (! (id->is_variable () || args.empty ()))
+	{
+	  tree_argument_list *al = *(args.begin ());
+
+	  size_t n = al ? al->length () : 0;
+
+	  if (n > 0)
+	    {
+	      string_vector anm = *(arg_nm.begin ());
+
+	      first_expr_val = id->do_lookup  (al, anm, first_args, have_args);
+	    }
+	}
+    }
 
   if (! error_state)
     {
+      if (first_expr_val.is_undefined ())
+	first_expr_val = expr->rvalue ();
+
+      octave_value tmp = first_expr_val;
+
       std::list<octave_value_list> idx;
 
       int n = args.size ();
@@ -304,11 +331,11 @@ tree_index_expression::rvalue (int nargout)
 		  // and we are looking at the argument list that
 		  // contains the second (or third, etc.) "end" token,
 		  // so we must evaluate everything up to the point of
-		  // that argument list so we pass the appropiate
+		  // that argument list so we can pass the appropriate
 		  // value to the built-in __end__ function.
 
 		  octave_value_list tmp_list
-		    = first_expr_val.subsref (type, idx, nargout);
+		    = first_expr_val.subsref (type.substr (0, i), idx, nargout);
 
 		  tmp = tmp_list(0);
 
@@ -320,7 +347,13 @@ tree_index_expression::rvalue (int nargout)
 	  switch (type[i])
 	    {
 	    case '(':
-	      idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
+	      if (have_args)
+		{
+		  idx.push_back (first_args);
+		  have_args = false;
+		}
+	      else
+		idx.push_back (make_value_list (*p_args, *p_arg_nm, &tmp));
 	      break;
 
 	    case '{':
@@ -415,11 +448,11 @@ tree_index_expression::lvalue (void)
 		  // and we are looking at the argument list that
 		  // contains the second (or third, etc.) "end" token,
 		  // so we must evaluate everything up to the point of
-		  // that argument list so we pass the appropiate
+		  // that argument list so we pass the appropriate
 		  // value to the built-in __end__ function.
 
 		  octave_value_list tmp_list
-		    = first_retval_object.subsref (type, idx, 1);
+		    = first_retval_object.subsref (type.substr (0, i), idx, 1);
 
 		  tmp = tmp_list(0);
 
@@ -656,12 +689,12 @@ tree_index_expression::eval_error (void) const
 }
 
 tree_index_expression *
-tree_index_expression::dup (symbol_table *sym_tab)
+tree_index_expression::dup (symbol_table::scope_id scope)
 {
   tree_index_expression *new_idx_expr
     = new tree_index_expression (line (), column ());
 
-  new_idx_expr->expr = expr ? expr->dup (sym_tab) : 0;
+  new_idx_expr->expr = expr ? expr->dup (scope) : 0;
 
   std::list<tree_argument_list *> new_args;
 
@@ -671,7 +704,7 @@ tree_index_expression::dup (symbol_table *sym_tab)
     {
       tree_argument_list *elt = *p;
 
-      new_args.push_back (elt ? elt->dup (sym_tab) : 0);
+      new_args.push_back (elt ? elt->dup (scope) : 0);
     }
 
   new_idx_expr->args = new_args;
@@ -688,7 +721,7 @@ tree_index_expression::dup (symbol_table *sym_tab)
     {
       tree_expression *elt = *p;
 
-      new_dyn_field.push_back (elt ? elt->dup (sym_tab) : 0);
+      new_dyn_field.push_back (elt ? elt->dup (scope) : 0);
     }
 
   new_idx_expr->dyn_field = new_dyn_field;

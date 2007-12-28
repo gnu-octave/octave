@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-shlib.h"
 
+class octave_function;
+
 class
 octave_dynamic_loader
 {
@@ -39,13 +41,15 @@ public:
 
   virtual ~octave_dynamic_loader (void) { }
 
-  static bool load_oct (const std::string& fcn_name,
-			const std::string& file_name = std::string (),
-			bool relative = false);
+  static octave_function *
+  load_oct (const std::string& fcn_name,
+	     const std::string& file_name = std::string (),
+	     bool relative = false);
 
-  static bool load_mex (const std::string& fcn_name,
-			const std::string& file_name = std::string (),
-			bool relative = false);
+  static octave_function *
+  load_mex (const std::string& fcn_name,
+	     const std::string& file_name = std::string (),
+	     bool relative = false);
 
   static bool remove (const std::string& fcn_name, octave_shlib& shl);
 
@@ -61,13 +65,15 @@ private:
 
   static bool instance_ok (void);
 
-  bool do_load_oct (const std::string& fcn_name,
-		    const std::string& file_name = std::string (),
-		    bool relative = false);
+  octave_function *
+  do_load_oct (const std::string& fcn_name,
+		const std::string& file_name = std::string (),
+		bool relative = false);
 
-  bool do_load_mex (const std::string& fcn_name,
-		    const std::string& file_name = std::string (),
-		    bool relative = false);
+  octave_function *
+  do_load_mex (const std::string& fcn_name,
+		const std::string& file_name = std::string (),
+		bool relative = false);
 
   bool do_remove (const std::string& fcn_name, octave_shlib& shl);
 
@@ -76,6 +82,8 @@ private:
 protected:
 
   static std::string mangle_name (const std::string& name);
+
+  static std::string xmangle_name (const std::string& name);
 };
 
 #endif

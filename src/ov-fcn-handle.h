@@ -118,8 +118,6 @@ private:
   // implemented.
   mutable bool warn_reload;
 
-  void reload_warning (const std::string& fcn_type) const;
-
 protected:
 
   // The function we are handling.

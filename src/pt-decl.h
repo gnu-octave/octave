@@ -35,6 +35,7 @@ class tree_walker;
 #include "oct-lvalue.h"
 #include "pt-cmd.h"
 #include "pt-id.h"
+#include "symtab.h"
 
 // List of expressions that make up a declaration statement.
 
@@ -53,6 +54,8 @@ public:
   bool eval (void);
 
   bool is_defined (void) { return id ? id->is_defined () : false; }
+
+  bool is_variable (void) { return id ? id->is_variable () : false; }
 
   void mark_as_formal_parameter (void)
   {
@@ -75,7 +78,7 @@ public:
 
   tree_expression *expression (void) { return expr; }
 
-  tree_decl_elt *dup (symbol_table *sym_tab);
+  tree_decl_elt *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -115,7 +118,7 @@ public:
 
   void eval (tree_decl_elt::eval_fcn);
 
-  tree_decl_init_list *dup (symbol_table *sym_tab);
+  tree_decl_init_list *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -136,11 +139,11 @@ tree_decl_command : public tree_command
 public:
 
   tree_decl_command (const std::string& n, int l = -1, int c = -1)
-    : tree_command (l, c), cmd_name (n), initialized (false), init_list (0) { }
+    : tree_command (l, c), cmd_name (n), init_list (0) { }
 
   tree_decl_command (const std::string& n, tree_decl_init_list *t,
 		     int l = -1, int c = -1)
-    : tree_command (l, c), cmd_name (n), initialized (false), init_list (t) { }
+    : tree_command (l, c), cmd_name (n), init_list (t) { }
 
   ~tree_decl_command (void);
 
@@ -154,9 +157,6 @@ protected:
 
   // The name of this command -- global, static, etc.
   std::string cmd_name;
-
-  // TRUE if this command has been evaluated.
-  bool initialized;
 
   // The list of variables or initializers in this declaration command.
   tree_decl_init_list *init_list;
@@ -187,7 +187,7 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table *sym_tab);
+  tree_command *dup (symbol_table::scope_id scope);
 
 private:
 
@@ -217,7 +217,7 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table *sym_tab);
+  tree_command *dup (symbol_table::scope_id scope);
 
 private:
 

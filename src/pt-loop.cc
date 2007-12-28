@@ -126,10 +126,10 @@ tree_while_command::eval_error (void)
 }
 
 tree_command *
-tree_while_command::dup (symbol_table *sym_tab)
+tree_while_command::dup (symbol_table::scope_id scope)
 {
-  return new tree_while_command (expr ? expr->dup (sym_tab) : 0,
-				 list ? list->dup (sym_tab) : 0,
+  return new tree_while_command (expr ? expr->dup (scope) : 0,
+				 list ? list->dup (scope) : 0,
 				 lead_comm ? lead_comm->dup () : 0,
 				 trail_comm ? trail_comm->dup (): 0,
 				 line (), column ());
@@ -189,10 +189,10 @@ tree_do_until_command::eval_error (void)
 }
 
 tree_command *
-tree_do_until_command::dup (symbol_table *sym_tab)
+tree_do_until_command::dup (symbol_table::scope_id scope)
 {
-  return new tree_do_until_command (expr ? expr->dup (sym_tab) : 0,
-				    list ? list->dup (sym_tab) : 0,
+  return new tree_do_until_command (expr ? expr->dup (scope) : 0,
+				    list ? list->dup (scope) : 0,
 				    lead_comm ? lead_comm->dup () : 0,
 				    trail_comm ? trail_comm->dup (): 0,
 				    line (), column ());
@@ -487,11 +487,11 @@ tree_simple_for_command::eval_error (void)
 }
 
 tree_command *
-tree_simple_for_command::dup (symbol_table *sym_tab)
+tree_simple_for_command::dup (symbol_table::scope_id scope)
 {
-  return new tree_simple_for_command (lhs ? lhs->dup (sym_tab) : 0,
-				      expr ? expr->dup (sym_tab) : 0,
-				      list ? list->dup (sym_tab) : 0,
+  return new tree_simple_for_command (lhs ? lhs->dup (scope) : 0,
+				      expr ? expr->dup (scope) : 0,
+				      list ? list->dup (scope) : 0,
 				      lead_comm ? lead_comm->dup () : 0,
 				      trail_comm ? trail_comm->dup () : 0,
 				      line (), column ());
@@ -608,11 +608,11 @@ tree_complex_for_command::eval_error (void)
 }
 
 tree_command *
-tree_complex_for_command::dup (symbol_table *sym_tab)
+tree_complex_for_command::dup (symbol_table::scope_id scope)
 {
-  return new tree_complex_for_command (lhs ? lhs->dup (sym_tab) : 0,
-				      expr ? expr->dup (sym_tab) : 0,
-				      list ? list->dup (sym_tab) : 0,
+  return new tree_complex_for_command (lhs ? lhs->dup (scope) : 0,
+				      expr ? expr->dup (scope) : 0,
+				      list ? list->dup (scope) : 0,
 				      lead_comm ? lead_comm->dup () : 0,
 				      trail_comm ? trail_comm->dup () : 0,
 				      line (), column ());

@@ -279,11 +279,11 @@ tree_simple_assignment::oper (void) const
 }
 
 tree_expression *
-tree_simple_assignment::dup (symbol_table *sym_tab)
+tree_simple_assignment::dup (symbol_table::scope_id scope)
 {
   tree_simple_assignment *new_sa
-    = new tree_simple_assignment (lhs ? lhs->dup (sym_tab) : 0,
-				  rhs ? rhs->dup (sym_tab) : 0,
+    = new tree_simple_assignment (lhs ? lhs->dup (scope) : 0,
+				  rhs ? rhs->dup (scope) : 0,
 				  preserve, etype);
 
   new_sa->copy_base (*this);
@@ -507,11 +507,11 @@ tree_multi_assignment::oper (void) const
 }
 
 tree_expression *
-tree_multi_assignment::dup (symbol_table *sym_tab)
+tree_multi_assignment::dup (symbol_table::scope_id scope)
 {
   tree_multi_assignment *new_ma
-    = new tree_multi_assignment (lhs ? lhs->dup (sym_tab) : 0,
-				 rhs ? rhs->dup (sym_tab) : 0,
+    = new tree_multi_assignment (lhs ? lhs->dup (scope) : 0,
+				 rhs ? rhs->dup (scope) : 0,
 				 preserve, etype);
 
   new_ma->copy_base (*this);

@@ -3242,31 +3242,26 @@ mexGetVariable (const char *space, const char *name)
 {
   mxArray *retval = 0;
 
-  // FIXME -- this should be in variable.cc, but the correct
-  // functionality is not exported.  Particularly, get_global_value()
-  // generates an error if the symbol is undefined.
+  // FIXME -- should this be in variables.cc?
 
-  symbol_record *sr = 0;
+  symbol_table::scope_id scope = -1;
 
   if (! strcmp (space, "global"))
-    sr = global_sym_tab->lookup (name);
+    scope = symbol_table::global_scope ();
   else if (! strcmp (space, "caller"))
-    sr = curr_sym_tab->lookup (name);
+    scope = symbol_table::current_caller_scope ();
   else if (! strcmp (space, "base"))
-    sr = top_level_sym_tab->lookup (name);
+    scope = symbol_table::top_scope ();
   else
     mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
 
-  if (sr)
+  octave_value val = symbol_table::varval (name, scope);
+
+  if (val.is_defined ())
     {
-      octave_value sr_def = sr->def ();
+      retval = mex_context->make_value (val);
 
-      if (sr_def.is_defined ())
-	{
-	  retval = mex_context->make_value (sr_def);
-
-	  retval->set_name (name);
-	}
+      retval->set_name (name);
     }
 
   return retval;
@@ -3297,21 +3292,20 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
     set_global_value (name, mxArray::as_octave_value (ptr));
   else
     {
-      // FIXME -- this belongs in variables.cc.
+      // FIXME -- should this be in variables.cc?
 
-      symbol_record *sr = 0;
+      symbol_table::scope_id scope = -1;
 
-      if (! strcmp (space, "caller"))
-	sr = curr_sym_tab->lookup (name, true);
+      if (! strcmp (space, "global"))
+	scope = symbol_table::global_scope ();
+      else if (! strcmp (space, "caller"))
+	scope = symbol_table::current_caller_scope ();
       else if (! strcmp (space, "base"))
-	sr = top_level_sym_tab->lookup (name, true);
+	scope = symbol_table::top_scope ();
       else
 	mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
 
-      if (sr)
-	sr->define (mxArray::as_octave_value (ptr));
-      else
-	panic_impossible ();
+      symbol_table::varref (name, scope) = mxArray::as_octave_value (ptr);
     }
 
   return 0;
@@ -3390,7 +3384,7 @@ mexLock (void)
       else
 	mex_lock_count[fname]++;
 
-      mlock (fname);
+      mlock ();
     }
 }
 

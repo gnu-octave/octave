@@ -37,7 +37,7 @@ octave_lvalue::assign (octave_value::assign_op op, const octave_value& rhs)
 		    ? val->assign (op, rhs)
 		    : val->assign (op, type, idx, rhs));
 
-  if (! (error_state || (chg_fcn && chg_fcn () < 0)))
+  if (! error_state)
     *val = tmp;
 }
 
@@ -62,7 +62,7 @@ octave_lvalue::do_unary_op (octave_value::unary_op op)
 		    ? val->do_non_const_unary_op (op)
 		    : val->do_non_const_unary_op (op, type, idx));
 
-  if (! (error_state || (chg_fcn && chg_fcn () < 0)))
+  if (! error_state)
     *val = tmp;
 }
 

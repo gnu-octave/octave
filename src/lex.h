@@ -119,6 +119,9 @@ public:
   //  -1 ==> Yes, but it is the last one because we have seen EOF.
   int parsing_nested_function;
 
+  // TRUE means we are parsing a class method.
+  bool parsing_class_method;
+
   // Return transpose or start a string?
   bool quote_is_transpose;
 

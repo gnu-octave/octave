@@ -31,7 +31,6 @@ class octave_value_list;
 
 #include "oct-obj.h"
 #include "pt-idx.h"
-#include "symtab.h"
 
 // FIXME -- eliminate the following kluge?
 
@@ -43,13 +42,12 @@ octave_lvalue
 {
 public:
 
-  octave_lvalue (octave_value *v = &dummy_val,
-		 symbol_record::change_function f = 0)
-    : val (v), type (), idx (), chg_fcn (f), nel (1), index_set (false) { }
+  octave_lvalue (octave_value *v = &dummy_val)
+    : val (v), type (), idx (), nel (1), index_set (false) { }
 
   octave_lvalue (const octave_lvalue& vr)
-    : val (vr.val), type (vr.type), idx (vr.idx), chg_fcn (vr.chg_fcn),
-      nel (vr.nel), index_set (vr.index_set) { }
+    : val (vr.val), type (vr.type), idx (vr.idx), nel (vr.nel),
+      index_set (vr.index_set) { }
 
   octave_lvalue& operator = (const octave_lvalue& vr)
     {
@@ -58,7 +56,6 @@ public:
 	  val = vr.val;
 	  type = vr.type;
 	  idx = vr.idx;
-	  chg_fcn = vr.chg_fcn;
 	  nel = vr.nel;
 	  index_set = vr.index_set;
 	}
@@ -99,8 +96,6 @@ private:
   std::string type;
 
   std::list<octave_value_list> idx;
-
-  symbol_record::change_function chg_fcn;
 
   octave_idx_type nel;
 

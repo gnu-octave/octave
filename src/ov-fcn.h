@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov-base.h"
 #include "ov-typeinfo.h"
+#include "symtab.h"
 
 class tree_walker;
 
@@ -65,6 +66,8 @@ public:
 
   virtual void mark_fcn_file_up_to_date (const octave_time&) { }
 
+  virtual symbol_table::scope_id scope (void) { return -1; }
+
   virtual octave_time time_parsed (void) const
     { return octave_time (static_cast<time_t> (0)); }
 
@@ -73,13 +76,25 @@ public:
 
   virtual bool is_nested_function (void) const { return false; }
 
-  virtual bool is_user_script (void) const { return false; }
+  virtual bool is_class_constructor (void) const { return false; }
 
-  virtual bool is_user_function (void) const { return false; }
+  virtual bool is_class_method (void) const { return false; }
+
+  virtual std::string dispatch_class (void) const { return std::string (); }
 
   virtual bool takes_varargs (void) const { return false; }
 
   virtual bool takes_var_return (void) const { return false; }
+
+  std::string dir_name (void) const { return my_dir_name; }
+
+  void stash_dir_name (const std::string& dir) { my_dir_name = dir; }
+
+  void lock (void) { locked = true; }
+
+  void unlock (void) { locked = false; }
+
+  bool islocked (void) { return locked; }
 
   void mark_relative (void) { relative = true; }
 
@@ -104,8 +119,15 @@ protected:
   // TRUE if this function was found from a relative path element.
   bool relative;
 
+  // TRUE if this function is tagged so that it can't be cleared.
+  bool locked;
+
   // The name of this function.
   std::string my_name;
+
+  // The name of the directory in the path where we found this
+  // function.  May be relative.
+  std::string my_dir_name;
 
   // The help text for this function.
   std::string doc;

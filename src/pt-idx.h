@@ -38,6 +38,7 @@ class octave_lvalue;
 #include "str-vec.h"
 
 #include "pt-exp.h"
+#include "symtab.h"
 
 // Index expressions.
 
@@ -89,7 +90,7 @@ public:
 
   void eval_error (void) const;
 
-  tree_index_expression *dup (symbol_table *sym_tab);
+  tree_index_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 

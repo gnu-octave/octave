@@ -115,26 +115,19 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 
 	  bool do_bind_ans = false;
 
-	  bool script_file_executed = false;
-
 	  if (expr->is_identifier ())
 	    {
 	      tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
 
-	      id->do_lookup (script_file_executed, true);
-
-	      do_bind_ans = id->is_function ();
+	      do_bind_ans = (! id->is_variable ());
 	    }
 	  else
 	    do_bind_ans = (! expr->is_assignment_expression ());
 
-	  if (! script_file_executed)
-	    {
-	      retval = expr->rvalue (nargout);
+	  retval = expr->rvalue (nargout);
 
-	      if (do_bind_ans && ! (error_state || retval.empty ()))
-		bind_ans (retval(0), pf);
-	    }
+	  if (do_bind_ans && ! (error_state || retval.empty ()))
+	    bind_ans (retval(0), pf);
 	}
 
       unwind_protect::run ();
@@ -144,13 +137,13 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 }
 
 tree_statement *
-tree_statement::dup (symbol_table *sym_tab)
+tree_statement::dup (symbol_table::scope_id scope)
 {
   tree_statement *new_stmt = new tree_statement ();
 
-  new_stmt->cmd = cmd ? cmd->dup (sym_tab) : 0;
+  new_stmt->cmd = cmd ? cmd->dup (scope) : 0;
 
-  new_stmt->expr = expr ? expr->dup (sym_tab) : 0;
+  new_stmt->expr = expr ? expr->dup (scope) : 0;
 
   new_stmt->comm = comm ? comm->dup () : 0;
 
@@ -268,7 +261,7 @@ tree_statement_list::list_breakpoints (void)
 }
 
 tree_statement_list *
-tree_statement_list::dup (symbol_table *sym_tab)
+tree_statement_list::dup (symbol_table::scope_id scope)
 {
   tree_statement_list *new_list = new tree_statement_list ();
 
@@ -278,7 +271,7 @@ tree_statement_list::dup (symbol_table *sym_tab)
     {
       tree_statement *elt = *p;
 
-      new_list->append (elt ? elt->dup (sym_tab) : 0);
+      new_list->append (elt ? elt->dup (scope) : 0);
     }
 
   return new_list;

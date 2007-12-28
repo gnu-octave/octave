@@ -254,7 +254,7 @@ tree_argument_list::get_arg_names (void) const
 }
 
 tree_argument_list *
-tree_argument_list::dup (symbol_table *sym_tab)
+tree_argument_list::dup (symbol_table::scope_id scope)
 {
   tree_argument_list *new_list = new tree_argument_list ();
 
@@ -265,7 +265,7 @@ tree_argument_list::dup (symbol_table *sym_tab)
     {
       tree_expression *elt = *p;
 
-      new_list->append (elt ? elt->dup (sym_tab) : 0);
+      new_list->append (elt ? elt->dup (scope) : 0);
     }
 
   return new_list;

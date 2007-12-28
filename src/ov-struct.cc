@@ -772,10 +772,14 @@ argument that is not a structure.\n\
 
   if (nargin == 1)
     {
-      if (args(0).is_map ())
+      octave_value arg = args(0);
+
+      if (arg.is_map () || arg.is_object ())
 	{
-	  Octave_map m = args(0).map_value ();
+	  Octave_map m = arg.map_value ();
+
 	  string_vector keys = m.keys ();
+
 	  if (keys.length () == 0)
 	    retval = Cell (0, 1);
 	  else

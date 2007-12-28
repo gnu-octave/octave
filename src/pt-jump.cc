@@ -49,7 +49,7 @@ tree_break_command::eval (void)
 }
 
 tree_command *
-tree_break_command::dup (symbol_table *)
+tree_break_command::dup (symbol_table::scope_id)
 {
   return new tree_break_command (line (), column ());
 }
@@ -75,7 +75,7 @@ tree_continue_command::eval (void)
 }
 
 tree_command *
-tree_continue_command::dup (symbol_table *)
+tree_continue_command::dup (symbol_table::scope_id)
 {
   return new tree_continue_command (line (), column ());
 }
@@ -101,7 +101,7 @@ tree_return_command::eval (void)
 }
 
 tree_command *
-tree_return_command::dup (symbol_table *)
+tree_return_command::dup (symbol_table::scope_id)
 {
   return new tree_return_command (line (), column ());
 }

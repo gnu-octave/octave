@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
+#include "symtab.h"
 
 class string_vector;
 
@@ -41,8 +42,6 @@ class tree_parameter_list;
 class tree_statement_list;
 class tree_va_return_list;
 class tree_walker;
-class symbol_table;
-class symbol_record;
 
 // Scripts.
 
@@ -54,7 +53,7 @@ public:
   octave_user_script (void) { }
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-		      const std::string& ds)
+		      const std::string& ds = std::string ())
     : octave_function (nm, ds), file_name (fnm) { }
 
   ~octave_user_script (void) { }
@@ -68,9 +67,12 @@ public:
 
   std::string fcn_file_name (void) const { return file_name; }
 
+  octave_value_list
+  do_multi_index_op (int nargout, const octave_value_list& args);
+
 private:
 
-  // The name of the file we parsed
+  // The name of the file to parse.
   std::string file_name;
 
   // No copying!
@@ -91,10 +93,10 @@ octave_user_function : public octave_function
 {
 public:
 
-  octave_user_function (tree_parameter_list *pl = 0,
+  octave_user_function (symbol_table::scope_id sid = -1,
+			tree_parameter_list *pl = 0,
 			tree_parameter_list *rl = 0,
-			tree_statement_list *cl = 0,
-			symbol_table *st = 0);
+			tree_statement_list *cl = 0);
 
   ~octave_user_function (void);
 
@@ -122,11 +124,11 @@ public:
       mark_fcn_file_up_to_date (t);
     }
 
-  void stash_symtab_ptr (symbol_record *sr) { symtab_entry = sr; }
-
   std::string fcn_file_name (void) const { return file_name; }
 
   std::string parent_fcn_name (void) const { return parent_name; }
+
+  symbol_table::scope_id scope (void) { return local_scope; }
 
   octave_time time_parsed (void) const { return t_parsed; }
 
@@ -153,6 +155,18 @@ public:
   void mark_as_inline_function (void) { inline_function = true; }
 
   bool is_inline_function (void) const { return inline_function; }
+
+  void mark_as_class_constructor (void) { class_constructor = true; }
+
+  bool is_class_constructor (void) const { return class_constructor; }
+
+  void mark_as_class_method (void) { class_method = true; }
+
+  bool is_class_method (void) const { return class_method; }
+
+  void stash_dispatch_class (const std::string& nm) { xdispatch_class = nm; }
+
+  std::string dispatch_class (void) const { return xdispatch_class; }
 
   void save_args_passed (const octave_value_list& args)
     {
@@ -195,15 +209,15 @@ public:
 
   tree_statement_list *body (void) { return cmd_list; }
 
-  symbol_table *sym_tab (void) { return local_sym_tab; }
-
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
   void accept (tree_walker& tw);
 
+#if 0
   void print_symtab_info (std::ostream& os) const;
+#endif
 
 private:
 
@@ -216,9 +230,6 @@ private:
 
   // The list of commands that make up the body of this function.
   tree_statement_list *cmd_list;
-
-  // The local symbol table for this function.
-  symbol_table *local_sym_tab;
 
   // The comments preceding the FUNCTION token.
   octave_comment_list *lead_comm;
@@ -256,6 +267,16 @@ private:
   // TRUE means this is an inline function.
   bool inline_function;
 
+  // TRUE means this function is the constructor for class object.
+  bool class_constructor;
+
+  // TRUE means this function is a method for a class.
+  bool class_method;
+
+  // If this object is a class method or constructor, this is the name
+  // of the class to which the method belongs.
+  std::string xdispatch_class;
+
   // The values that were passed as arguments.
   octave_value_list args_passed;
 
@@ -265,26 +286,25 @@ private:
   // The number of arguments passed in.
   int num_args_passed;
 
-  // The symbol record for this function.
-  symbol_record *symtab_entry;
+  symbol_table::scope_id local_scope;
 
+#if 0
   // The symbol record for argn in the local symbol table.
-  symbol_record *argn_sr;
+  octave_value& argn_varref;
 
   // The symbol record for nargin in the local symbol table.
-  symbol_record *nargin_sr;
+  octave_value& nargin_varref;
 
   // The symbol record for nargout in the local symbol table.
-  symbol_record *nargout_sr;
+  octave_value& nargout_varref;
 
   // The symbol record for varargin in the local symbol table.
-  symbol_record *varargin_sr;
+  octave_value& varargin_varref;
+#endif
 
   void print_code_function_header (void);
 
   void print_code_function_trailer (void);
-
-  void install_automatic_vars (void);
 
   void bind_automatic_vars (const string_vector& arg_names, int nargin,
 			    int nargout, const octave_value_list& va_args);

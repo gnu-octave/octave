@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <string>
 
-class symbol_record;
+class symbol_table::symbol_record;
 
 class
 token
@@ -68,7 +68,7 @@ public:
 	 int l = -1, int c = -1);
   token (end_tok_type t, int l = -1, int c = -1);
   token (plot_tok_type t, int l = -1, int c = -1);
-  token (symbol_record *s, int l = -1, int c = -1);
+  token (symbol_table::symbol_record *s, int l = -1, int c = -1);
 
   ~token (void);
 
@@ -79,7 +79,7 @@ public:
   double number (void);
   end_tok_type ettype (void);
   plot_tok_type pttype (void);
-  symbol_record *sym_rec (void);
+  symbol_table::symbol_record *sym_rec (void);
 
   std::string text_rep (void);
 
@@ -100,7 +100,7 @@ private:
       double num;
       end_tok_type et;
       plot_tok_type pt;
-      symbol_record *sr;
+      symbol_table::symbol_record *sr;
     };
   std::string orig_text;
 };

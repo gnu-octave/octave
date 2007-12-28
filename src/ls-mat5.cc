@@ -61,7 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-inline.h"
 #include "pager.h"
 #include "pt-exp.h"
-#include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -775,21 +774,18 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 		    if (fs.exists ())
 		      {
-			symbol_record *sr = fbi_sym_tab->lookup (str, true);
+			size_t xpos = str.find_last_of (file_ops::dir_sep_chars);
+
+			std::string dir_name = str.substr (0, xpos);
+
+			octave_function *fcn
+			  = load_fcn_from_file (str, dir_name, "", fname);
 		    
-			if (sr)
+			if (fcn)
 			  {
-			    load_fcn_from_file (sr, false);
+			    octave_value tmp (fcn);
 
-			    tc = octave_value (new octave_fcn_handle 
-					       (sr->def (), fname));
-
-			    // The next two lines are needed to force the 
-			    // definition of the function back to the one 
-			    // that is on the user path.
-			    sr = fbi_sym_tab->lookup (fname, true);
-
-			    load_fcn_from_file (sr, false);
+			    tc = octave_value (new octave_fcn_handle (tmp, fname));
 			  }
 		      }
 		    else
@@ -806,21 +802,18 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 			str = octave_env::make_absolute 
 			  (p.find_first_of (names), octave_env::getcwd ());
 
-			symbol_record *sr = fbi_sym_tab->lookup (str, true);
+			size_t xpos = str.find_last_of (file_ops::dir_sep_chars);
 
-			if (sr)
+			std::string dir_name = str.substr (0, xpos);
+
+			octave_function *fcn
+			  = load_fcn_from_file (str, dir_name, "", fname);
+
+			if (fcn)
 			  {
-			    load_fcn_from_file (sr, false);
+			    octave_value tmp (fcn);
 
-			    tc = octave_value (new octave_fcn_handle 
-					       (sr->def (), fname));
-
-			    // The next two lines are needed to force the 
-			    // definition of the function back to the one 
-			    // that is on the user path.
-			    sr = fbi_sym_tab->lookup (fname, true);
-
-			    load_fcn_from_file (sr, false);
+			    tc = octave_value (new octave_fcn_handle (tmp, fname));
 			  }
 			else
 			  {
@@ -832,18 +825,18 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 		  }
 		else
 		  {
-		    symbol_record *sr = fbi_sym_tab->lookup (fpath, true);
+		    size_t xpos = fpath.find_last_of (file_ops::dir_sep_chars);
 
-		    if (sr)
+		    std::string dir_name = fpath.substr (0, xpos);
+
+		    octave_function *fcn
+		      = load_fcn_from_file (fpath, dir_name, "", fname);
+
+		    if (fcn)
 		      {
-			load_fcn_from_file (sr, false);
+			octave_value tmp (fcn);
 
-			tc = octave_value (new octave_fcn_handle (sr->def (), 
-								  fname));
-
-			sr = fbi_sym_tab->lookup (fname, true);
-
-			load_fcn_from_file (sr, false);
+			tc = octave_value (new octave_fcn_handle (tmp, fname));
 		      }
 		    else
 		      {
@@ -868,37 +861,28 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	    m2 = m2.contents("MCOS")(0).map_value();
 	    tc2 = m2.contents("MCOS")(0).cell_value()(1 + off).cell_value()(1);
 	    m2 = tc2.map_value();
-	    symbol_table *local_sym_tab = 0;
+
+	    symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
+
 	    if (m2.nfields() > 0)
 	      {
 		octave_value tmp;
-
-		local_sym_tab = new symbol_table (((m2.nfields() + 1) & ~1), 
-						  "LOCAL");
-	      
+      
 		for (Octave_map::iterator p0 = m2.begin() ; 
 		     p0 != m2.end(); p0++)
 		  {
 		    std::string key = m2.key(p0);
 		    octave_value val = m2.contents(p0)(0);
 
-		    symbol_record *sr = local_sym_tab->lookup (key, true);
-
-		    if (sr)
-		      sr->define (val);
-		    else
-		      {
-			error ("load: failed to load anonymous function handle");
-			goto skip_ahead;
-		      }
+		    symbol_table::varref (key, local_scope) = val;
                   }
 	      }
 	    
 	    unwind_protect::begin_frame ("anon_mat5_load");
-	    unwind_protect_ptr (curr_sym_tab);
+	    
+	    symbol_table::push_scope (local_scope);
 
-	    if (local_sym_tab)
-	      curr_sym_tab = local_sym_tab;
+	    unwind_protect::add (symbol_table::pop_scope);
 
 	    int parse_status;
 	    octave_value anon_fcn_handle = 
@@ -924,8 +908,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
 	    unwind_protect::run_frame ("anon_mat5_load");
 
-	    if (local_sym_tab)
-	      delete local_sym_tab;	    
+	    symbol_table::erase_scope (local_scope);
 	  }
 	else
 	  {

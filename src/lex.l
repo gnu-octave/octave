@@ -242,7 +242,6 @@ static void do_comma_insert_check (void);
 static int is_keyword_token (const std::string& s);
 static void prep_for_function (void);
 static void prep_for_nested_function (void);
-static symbol_record *lookup_identifier (const std::string& s);
 static std::string grab_help_text (void);
 static bool match_any (char c, const char *s);
 static bool next_token_is_sep_op (void);
@@ -844,6 +843,8 @@ reset_parser (void)
   while (! symtab_context.empty ())
     symtab_context.pop ();
 
+  symbol_table::reset_parent_scope ();
+
   // We do want a prompt by default.
   promptflag = 1;
 
@@ -958,10 +959,6 @@ static void
 prep_for_function (void)
 {
   end_tokens_expected++;
-
-  // Prepare for local symbols.
-
-  tmp_local_sym_tab = new symbol_table ();
 
   promptflag--;
 
@@ -1174,39 +1171,19 @@ is_keyword_token (const std::string& s)
   return 0;
 }
 
-// Try to find an identifier.  All binding to global or builtin
-// variables occurs when expressions are evaluated.
-
-static symbol_record *
-lookup_identifier (const std::string& name)
-{
-  std::string sym_name = name;
-
-  if (curr_sym_tab == fbi_sym_tab
-      && lexer_flags.parsing_nested_function)
-    sym_name = parent_function_name + ":" + sym_name;
-
-  return curr_sym_tab->lookup (sym_name, true);
-}
-
 static bool
 is_variable (const std::string& name)
 {
-  symbol_record *sr = curr_sym_tab->lookup (name);
-
-  return sr && sr->is_variable ();
+  return symbol_table::is_variable (name);
 }
 
 static void
 force_local_variable (const std::string& name)
 {
-  if (! is_variable (name))
-    curr_sym_tab->clear (name);
+  octave_value& val = symbol_table::varref (name);
 
-  symbol_record *sr = curr_sym_tab->lookup (name, true);
-
-  if (sr)
-    sr->define (octave_value ());
+  if (! val.is_defined ())
+    val = Matrix ();
 }
 
 // Grab the help text from an function file.
@@ -2307,19 +2284,6 @@ handle_identifier (void)
 
   yyunput (c1, yytext);
 
-  // Make sure we put the return values of a function in the symbol
-  // table that is local to the function.
-
-  // If we are defining a function and we have not seen the function
-  // name yet and the next token is `=', then this identifier must be
-  // the only return value for the function and it belongs in the
-  // local symbol table.
-
-  if (next_tok_is_eq
-      && lexer_flags.defining_func
-      && ! lexer_flags.parsed_function_name)
-    curr_sym_tab = tmp_local_sym_tab;
-
   // Kluge alert.
   //
   // If we are looking at a text style function, set up to gobble its
@@ -2357,9 +2321,13 @@ handle_identifier (void)
   if (tok == "end")
     tok = "__end__";    
 
-  yylval.tok_val = new token (lookup_identifier (tok),
-			      input_line_number,
-			      current_input_column);
+  yylval.tok_val = new token (&(symbol_table::insert (tok)),
+			      input_line_number, current_input_column);
+
+  // FIXME -- this forces a link for tok in the chain of variables for
+  // the current scope.  Probably this step should be done
+  // differently, maybe in symbol_table::insert?
+  symbol_table::varref (tok);
 
   token_stack.push (yylval.tok_val);
 
@@ -2399,6 +2367,7 @@ lexical_feedback::init (void)
   defining_func = false;
   parsed_function_name = false;
   parsing_nested_function = 0;
+  parsing_class_method = false;
 
   // Not initiallly looking at a function handle.
   looking_at_function_handle = 0;

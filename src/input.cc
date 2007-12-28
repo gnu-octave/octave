@@ -66,7 +66,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-const.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
-#include "symtab.h"
 #include "sysdep.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -265,7 +264,7 @@ octave_gets (void)
 
       // There is no need to update the load_path cache if there is no
       // user input.
-      if (! retval.empty ())
+      if (! retval.empty () && retval.find_first_not_of (" \t\n\r") != NPOS)
 	load_path::update ();
     }
   else

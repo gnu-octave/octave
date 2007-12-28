@@ -51,6 +51,31 @@ along with Octave; see the file COPYING.  If not, see
 // Maximum nesting level for functions called recursively.
 static int Vmax_recursion_depth = 256;
 
+// Scripts.
+
+octave_value_list
+octave_user_script::do_multi_index_op (int nargout,
+				       const octave_value_list& args)
+{
+  octave_value_list retval;
+
+  if (! error_state)
+    {
+      if (args.length () == 0)
+	{
+	  // FIXME -- I think we need a way to protect against
+	  // recursion, but we can't use the same method as we use for
+	  // functions.
+
+	  source_file (file_name);
+	}
+      else
+	error ("invalid call to script");
+    }
+
+  return retval;
+}
+
 // User defined functions.
 
 DEFINE_OCTAVE_ALLOCATOR (octave_user_function);
@@ -69,17 +94,17 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
 // extrinsic/intrinsic state?).
 
 octave_user_function::octave_user_function
-  (tree_parameter_list *pl, tree_parameter_list *rl,
-   tree_statement_list *cl, symbol_table *st)
+  (symbol_table::scope_id sid, tree_parameter_list *pl,
+   tree_parameter_list *rl, tree_statement_list *cl)
   : octave_function (std::string (), std::string ()),
     param_list (pl), ret_list (rl), cmd_list (cl),
-    local_sym_tab (st), lead_comm (), trail_comm (), file_name (),
+    lead_comm (), trail_comm (), file_name (),
     parent_name (), t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     system_fcn_file (false), call_depth (0), num_named_args (0),
-    nested_function (false), inline_function (false), args_passed (),
-    num_args_passed (0), symtab_entry (0), argn_sr (0),
-    nargin_sr (0), nargout_sr (0), varargin_sr (0)
+    nested_function (false), inline_function (false),
+    class_constructor (false), class_method (false), xdispatch_class (),
+    args_passed (), num_args_passed (0), local_scope (sid)
 {
   if (param_list)
     num_named_args = param_list->length ();
@@ -89,10 +114,11 @@ octave_user_function::~octave_user_function (void)
 {
   delete param_list;
   delete ret_list;
-  delete local_sym_tab;
   delete cmd_list;
   delete lead_comm;
   delete trail_comm;
+
+  symbol_table::erase_scope (local_scope);
 }
 
 octave_user_function *
@@ -163,22 +189,6 @@ octave_user_function::octave_all_va_args (void)
   return retval;
 }
 
-// For unwind protect.
-
-static void
-pop_symbol_table_context (void *table)
-{
-  symbol_table *tmp = static_cast<symbol_table *> (table);
-  tmp->pop_context ();
-}
-
-static void
-clear_symbol_table (void *table)
-{
-  symbol_table *tmp = static_cast<symbol_table *> (table);
-  tmp->clear ();
-}
-
 static void
 clear_param_list (void *lst)
 {
@@ -195,13 +205,6 @@ restore_args_passed (void *fcn)
 
   if (tmp)
     tmp->restore_args_passed ();
-}
-
-static void
-unprotect_function (void *sr_arg)
-{
-  symbol_record *sr = static_cast<symbol_record *> (sr_arg);
-  sr->unprotect ();
 }
 
 octave_value_list
@@ -269,32 +272,23 @@ octave_user_function::do_multi_index_op (int nargout,
       return retval;
     }
 
-  if (symtab_entry && ! symtab_entry->is_read_only ())
-    {
-      symtab_entry->protect ();
-      unwind_protect::add (unprotect_function, symtab_entry);
-    }
-
-  if (call_depth > 1)
-    {
-      local_sym_tab->push_context ();
-      unwind_protect::add (pop_symbol_table_context, local_sym_tab);
-    }
-
-  install_automatic_vars ();
-
-  // Force symbols to be undefined again when this function exits.
-
-  unwind_protect::add (clear_symbol_table, local_sym_tab);
-
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  unwind_protect_ptr (curr_caller_sym_tab);
-  curr_caller_sym_tab = curr_sym_tab;
+  symbol_table::push_scope (local_scope);
+  unwind_protect::add (symbol_table::pop_scope);
 
-  unwind_protect_ptr (curr_sym_tab);
-  curr_sym_tab = local_sym_tab;
+  if (call_depth > 1)
+    {
+      symbol_table::push_context ();
+
+      unwind_protect::add (symbol_table::pop_context);
+    }
+  else
+    {
+      // Force symbols to be undefined again when this function exits.
+      unwind_protect::add (symbol_table::clear_variables);
+    }
 
   unwind_protect_ptr (curr_caller_statement);
   curr_caller_statement = curr_statement;
@@ -390,13 +384,11 @@ octave_user_function::do_multi_index_op (int nargout,
 
 	if (ret_list->takes_varargs ())
 	  {
-	    symbol_record *sr = local_sym_tab->lookup ("varargout");
+	    octave_value varargout_varval = symbol_table::varval ("varargout");
 
-	    if (sr && sr->is_variable ())
+	    if (varargout_varval.is_defined ())
 	      {
-		octave_value v = sr->def ();
-
-		varargout = v.cell_value ();
+		varargout = varargout_varval.cell_value ();
 
 		if (error_state)
 		  error ("expecting varargout to be a cell array object");
@@ -443,14 +435,13 @@ octave_user_function::accept (tree_walker& tw)
   tw.visit_octave_user_function (*this);
 }
 
+#if 0
 void
 octave_user_function::print_symtab_info (std::ostream& os) const
 {
-  if (local_sym_tab)
-    local_sym_tab->print_info (os);
-  else
-    warning ("%s: no symbol table info!", my_name.c_str ());
+  symbol_table::print_info (os, local_scope);
 }
+#endif
 
 void
 octave_user_function::print_code_function_header (void)
@@ -469,29 +460,18 @@ octave_user_function::print_code_function_trailer (void)
 }
 
 void
-octave_user_function::install_automatic_vars (void)
-{
-  if (local_sym_tab)
-    {
-      argn_sr = local_sym_tab->lookup ("argn", true);
-      nargin_sr = local_sym_tab->lookup ("__nargin__", true);
-      nargout_sr = local_sym_tab->lookup ("__nargout__", true);
-
-      if (takes_varargs ())
-	varargin_sr = local_sym_tab->lookup ("varargin", true);
-    }
-}
-
-void
 octave_user_function::bind_automatic_vars
   (const string_vector& arg_names, int nargin, int nargout,
    const octave_value_list& va_args)
 {
   if (! arg_names.empty ())
-    argn_sr->define (arg_names);
+    symbol_table::varref ("argn") = arg_names;
 
-  nargin_sr->define (nargin);
-  nargout_sr->define (nargout);
+  symbol_table::varref (".nargin.") = nargin;
+  symbol_table::varref (".nargout.") = nargout;
+
+  symbol_table::mark_hidden (".nargin.");
+  symbol_table::mark_hidden (".nargout.");
 
   if (takes_varargs ())
     {
@@ -502,7 +482,7 @@ octave_user_function::bind_automatic_vars
       for (int i = 0; i < n; i++)
 	varargin(0,i) = va_args(i);
 
-      varargin_sr->define (varargin);
+      symbol_table::varref ("varargin") = varargin;
     }
 }
 
@@ -528,7 +508,7 @@ function accepts a variable number of arguments.\n\
 
       if (! error_state)
 	{
-	  octave_value fcn_val = lookup_user_function (fname);
+	  octave_value fcn_val = symbol_table::find_user_function (fname);
 
 	  octave_user_function *fcn = fcn_val.user_function_value (true);
 
@@ -551,9 +531,10 @@ function accepts a variable number of arguments.\n\
     }
   else if (nargin == 0)
     {
-      symbol_record *sr = curr_sym_tab->lookup ("__nargin__");
+      retval = symbol_table::varval (".nargin.");
 
-      retval = sr ? sr->def () : 0;
+      if (retval.is_undefined ())
+	retval = 0;
     }
   else
     print_usage ();
@@ -601,7 +582,7 @@ At the top level, @code{nargout} is undefined.\n\
 
       if (! error_state)
 	{
-	  octave_value fcn_val = lookup_user_function (fname);
+	  octave_value fcn_val = symbol_table::find_user_function (fname);
 
 	  octave_user_function *fcn = fcn_val.user_function_value (true);
 
@@ -624,11 +605,12 @@ At the top level, @code{nargout} is undefined.\n\
     }
   else if (nargin == 0)
     {
-      if (! at_top_level ())
+      if (! symbol_table::at_top_level ())
 	{
-	  symbol_record *sr = curr_sym_tab->lookup ("__nargout__");
+	  retval = symbol_table::varval (".nargout.");
 
-	  retval = sr ? sr->def () : 0;
+	  if (retval.is_undefined ())
+	    retval = 0;
 	}
       else
 	error ("nargout: invalid call at top level");

@@ -142,10 +142,12 @@ public:
 
   mxArray *as_mxArray (void) const;
 
-private:
+protected:
 
   // The associative array used to manage the structure data.
   Octave_map map;
+
+private:
 
   DECLARE_OCTAVE_ALLOCATOR
 

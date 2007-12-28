@@ -50,7 +50,7 @@ along with Octave; see the file COPYING.  If not, see
 // quoted string, and the internal name of the function must be passed
 // too (the convention is to use a prefix of "F", so "foo" becomes "Ffoo").
 
-#define DEFUNX_DLD(name, fname, fsname, args_name, nargout_name, doc) \
+#define DEFUNX_DLD(name, fname, fsname, gname, args_name, nargout_name, doc) \
   DEFUNX_DLD_INTERNAL (name, fname, args_name, nargout_name, false, doc)
 
 #else
@@ -60,9 +60,9 @@ along with Octave; see the file COPYING.  If not, see
   DEFINE_FUN_INSTALLER_FUN (name, doc) \
   DECLARE_FUN (name, args_name, nargout_name)
 
-#define DEFUNX_DLD(name, fname, fsname, args_name, nargout_name, doc) \
+#define DEFUNX_DLD(name, fname, fsname, gname, args_name, nargout_name, doc) \
   DECLARE_FUNX (fname, args_name, nargout_name); \
-  DEFINE_FUNX_INSTALLER_FUN (name, fname, fsname, doc) \
+  DEFINE_FUNX_INSTALLER_FUN (name, fname, fsname, gname, doc) \
   DECLARE_FUNX (fname, args_name, nargout_name)
 
 #endif

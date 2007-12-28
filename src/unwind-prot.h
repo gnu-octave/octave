@@ -81,7 +81,7 @@ unwind_protect
 {
 public:
 
-  static void add (unwind_elem::cleanup_func fptr, void *ptr);
+  static void add (unwind_elem::cleanup_func fptr, void *ptr = 0);
 
   static void run (void);
 

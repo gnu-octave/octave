@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <vector>
 
+#include "file-ops.h"
+
 #include "defun.h"
 #include "error.h"
 #include "gripes.h"
@@ -63,18 +65,6 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 				     "function handle",
 				     "function_handle");
 
-void
-octave_fcn_handle::reload_warning (const std::string& fcn_type) const
-{
-  if (warn_reload)
-    {
-      warn_reload = false;
-
-      warning ("reloading %s functions referenced by function handles is not implemented",
-	       fcn_type.c_str ());
-    }
-}
-
 octave_value_list
 octave_fcn_handle::subsref (const std::string& type,
 			    const std::list<octave_value_list>& idx,
@@ -86,46 +76,21 @@ octave_fcn_handle::subsref (const std::string& type,
     {
     case '(':
       {
-	octave_function *f = function_value ();
+	out_of_date_check (fcn);
 
-	if (f && f->time_checked () < Vlast_prompt_time)
+	if (fcn.is_defined ())
 	  {
-	    std::string ff_nm = f->fcn_file_name ();
+	    octave_function *f = function_value ();
 
-	    octave_time ottp = f->time_parsed ();
-	    time_t tp = ottp.unix_time ();
-
-	    if (ff_nm.empty ())
-	      {
-		// FIXME -- need to handle inline and
-		// command-line functions here.
-	      }
+	    if (f)
+	      retval = f->subsref (type, idx, nargout);
 	    else
-	      {
-		if (fcn_out_of_date (f, ff_nm, tp))
-		  {
-		    // FIXME -- there is currently no way to
-		    // parse a .m file or reload a .oct file that
-		    // leaves the fbi symbol table untouched.  We need
-		    // a function that will parse the file and return
-		    // a pointer to the new function definition
-		    // without altering the symbol table.
-
-		    if (f->is_nested_function ())
-		      reload_warning ("nested");
-		    else
-		      reload_warning ("functions");
-		  }
-	      }
+	      error ("invalid function handle");
 	  }
-
-	if (f)
-	  retval = f->subsref (type, idx, nargout);
 	else
 	  error ("invalid function handle");
       }
       break;
-
 
     case '{':
     case '.':
@@ -167,21 +132,18 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 
       if (fs.exists ())
 	{
-	  symbol_record *sr = fbi_sym_tab->lookup (str, true);
-		    
-	  if (sr)
+	  size_t xpos = str.find_last_of (file_ops::dir_sep_chars);
+
+	  std::string dir_name = str.substr (0, xpos);
+
+	  octave_function *xfcn
+	    = load_fcn_from_file (str, dir_name, "", nm);
+
+	  if (xfcn)
 	    {
-	      load_fcn_from_file (sr, false);
+	      octave_value tmp (xfcn);
 
-	      fcn = octave_value (new octave_fcn_handle (sr->def (), nm));
-
-	      // The next two lines are needed to force the 
-	      // definition of the function back to the one 
-	      // that is on the user path.
-	      sr = fbi_sym_tab->lookup (nm, true);
-
-	      load_fcn_from_file (sr, false);
-
+	      fcn = octave_value (new octave_fcn_handle (tmp, nm));
 	    }
 	  else
 	    {
@@ -202,20 +164,17 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 	  str = octave_env::make_absolute 
 	    (p.find_first_of (names), octave_env::getcwd ());
 
-	  symbol_record *sr = fbi_sym_tab->lookup (str, true);
+	  size_t xpos = str.find_last_of (file_ops::dir_sep_chars);
 
-	  if (sr)
+	  std::string dir_name = str.substr (0, xpos);
+
+	  octave_function *xfcn = load_fcn_from_file (str, dir_name, "", nm);
+
+	  if (xfcn)
 	    {
-	      load_fcn_from_file (sr, false);
+	      octave_value tmp (xfcn);
 
-	      fcn = octave_value (new octave_fcn_handle (sr->def (), nm));
-
-	      // The next two lines are needed to force the 
-	      // definition of the function back to the one 
-	      // that is on the user path.
-	      sr = fbi_sym_tab->lookup (nm, true);
-
-	      load_fcn_from_file (sr, false);
+	      fcn = octave_value (new octave_fcn_handle (tmp, nm));
 	    }
 	  else
 	    {
@@ -228,17 +187,17 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
     {
       if (fpath.length () > 0)
 	{
-	  symbol_record *sr = fbi_sym_tab->lookup (fpath, true);
+	  size_t xpos = fpath.find_last_of (file_ops::dir_sep_chars);
 
-	  if (sr)
+	  std::string dir_name = fpath.substr (0, xpos);
+
+	  octave_function *xfcn = load_fcn_from_file (fpath, dir_name, "", nm);
+
+	  if (xfcn)
 	    {
-	      load_fcn_from_file (sr, false);
+	      octave_value tmp (xfcn);
 
-	      fcn = octave_value (new octave_fcn_handle (sr->def (), nm));
-
-	      sr = fbi_sym_tab->lookup (nm, true);
-
-	      load_fcn_from_file (sr, false);
+	      fcn = octave_value (new octave_fcn_handle (tmp, nm));
 	    }
 	  else
 	    {
@@ -248,7 +207,8 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 	}
       else
 	{
-	  fcn = lookup_function (nm);
+	  fcn = symbol_table::find_function (nm);
+
 	  if (! fcn.is_function ())
 	    {
 	      error ("function handle points to non-existent function");
@@ -270,30 +230,24 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       print_raw (os, true);
       os << "\n";
 
-      if (fcn.is_undefined())
+      if (fcn.is_undefined ())
 	return false;
 
       octave_user_function *f = fcn.user_function_value ();
 
-      Array<symbol_record *> vars = f->sym_tab()->symbol_list();
-      octave_idx_type varlen = vars.length();
+      std::list<symbol_table::symbol_record> vars
+	= symbol_table::all_variables (f->scope ());
 
-      // Exclude undefined values like __retval__
-      for (octave_idx_type i = 0; i < vars.length(); i++)
-	{
-	  if (! vars(i)->is_defined ())
-	    varlen--;
-	}
+      size_t varlen = vars.size ();
 
       if (varlen > 0)
 	{
 	  os << "# length: " << varlen << "\n";
 
-	  for (octave_idx_type i = 0; i < vars.length(); i++)
+	  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+	       p != vars.end (); p++)
 	    {
-	      if (vars(i)->is_defined () &&
-		  ! save_ascii_data (os, vars(i)->def(), vars(i)->name(), 
-				     false, 0))
+	      if (! save_ascii_data (os, p->varval (), p->name (), false, 0))
 		return os;
 	    }
 	}
@@ -357,18 +311,13 @@ octave_fcn_handle::load_ascii (std::istream& is)
 	}
 
       pos = is.tellg ();
-      symbol_table *local_sym_tab = 0;
+
+      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
 
       if (extract_keyword (is, "length", len, true) && len >= 0)
 	{
 	  if (len > 0)
 	    {
-	      octave_idx_type nlen = len;
-	      if (nlen % 2)
-		nlen++;
-	      
-	      local_sym_tab = new symbol_table (((nlen + 1) & ~1) , "LOCAL");
-	      
 	      for (octave_idx_type i = 0; i < len; i++)
 		{
 		  octave_value t2;
@@ -383,16 +332,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 		      break;
 		    }
 
-		  symbol_record *sr = local_sym_tab->lookup (name, true);
-
-		  if (sr)
-		    sr->define (t2);
-		  else
-		    {
-		      error ("load: failed to load anonymous function handle");
-		      success = false;
-		      break;
-		    }
+		  symbol_table::varref (name, local_scope) = t2;
 		}
 	    }
 	}
@@ -405,10 +345,10 @@ octave_fcn_handle::load_ascii (std::istream& is)
       if (is && success)
 	{
 	  unwind_protect::begin_frame ("anon_ascii_load");
-	  unwind_protect_ptr (curr_sym_tab);
 
-	  if (local_sym_tab)
-	    curr_sym_tab = local_sym_tab;
+	  symbol_table::push_scope (local_scope);
+
+	  unwind_protect::add (symbol_table::pop_scope);
 
 	  int parse_status;
 	  octave_value anon_fcn_handle = 
@@ -431,8 +371,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
       else
 	success = false;
 
-      if (local_sym_tab)
-	delete local_sym_tab;
+      symbol_table::erase_scope (local_scope);
     }
   else
     success = set_fcn (octaveroot, fpath);
@@ -473,20 +412,15 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
     {
       std::ostringstream nmbuf;
 
-      if (fcn.is_undefined())
+      if (fcn.is_undefined ())
 	return false;
 
       octave_user_function *f = fcn.user_function_value ();
 
-      Array<symbol_record *> vars = f->sym_tab()->symbol_list();
-      octave_idx_type varlen = vars.length();
+      std::list<symbol_table::symbol_record> vars
+	= symbol_table::all_variables (f->scope ());
 
-      // Exclude undefined values like __retval__
-      for (octave_idx_type i = 0; i < vars.length(); i++)
-	{
-	  if (! vars(i)->is_defined ())
-	    varlen--;
-	}
+      size_t varlen = vars.size ();
 
       if (varlen > 0)
 	nmbuf << nm << " " << varlen;
@@ -507,10 +441,10 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 
       if (varlen > 0)
 	{
-	  for (octave_idx_type i = 0; i < vars.length(); i++)
+	  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+	       p != vars.end (); p++)
 	    {
-	      if (vars(i)->is_defined () &&
-		  ! save_binary_data (os, vars(i)->def(), vars(i)->name(), 
+	      if (! save_binary_data (os, p->varval (), p->name (),
 				      "", 0, save_as_floats))
 		return os;
 	    }
@@ -528,6 +462,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       os.write (reinterpret_cast<char *> (&tmp), 4);
       os.write (buf_str.c_str (), buf_str.length ());
     }
+
   return true;
 }
 
@@ -536,6 +471,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 				oct_mach_info::float_format fmt)
 {
   bool success = true;
+
   int32_t tmp;
   if (! is.read (reinterpret_cast<char *> (&tmp), 4))
     return false;
@@ -568,15 +504,10 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
       OCTAVE_LOCAL_BUFFER (char, ctmp2, tmp+1);
       is.read (ctmp2, tmp);
 
-      symbol_table *local_sym_tab = 0;
+      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
+	      
       if (len > 0)
 	{
-	  octave_idx_type nlen = len;
-	  if (nlen % 2)
-	    nlen++;
-	      
-	  local_sym_tab = new symbol_table (nlen, "LOCAL");
-	      
 	  for (octave_idx_type i = 0; i < len; i++)
 	    {
 	      octave_value t2;
@@ -593,29 +524,17 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 		  break;
 		}
 
-	      symbol_record *sr = local_sym_tab->lookup (name, true);
-
-	      if (sr)
-		{
-		  sr->define (t2);
-		  sr->document (doc);
-		}
-	      else
-		{
-		  error ("load: failed to load anonymous function handle");
-		  success = false;
-		  break;
-		}
+	      symbol_table::varref (name, local_scope) = t2;
 	    }
 	}
 
       if (is && success)
 	{
 	  unwind_protect::begin_frame ("anon_binary_load");
-	  unwind_protect_ptr (curr_sym_tab);
 
-	  if (local_sym_tab)
-	    curr_sym_tab = local_sym_tab;
+	  symbol_table::push_scope (local_scope);
+
+	  unwind_protect::add (symbol_table::pop_scope);
 
 	  int parse_status;
 	  octave_value anon_fcn_handle = 
@@ -635,8 +554,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 	  unwind_protect::run_frame ("anon_binary_load");
 	}
 
-      if (local_sym_tab)
-	delete local_sym_tab;
+      symbol_table::erase_scope (local_scope);
     }
   else
     {
@@ -689,12 +607,14 @@ bool
 octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 			      bool save_as_floats)
 {
+  bool retval = true;
+
   hid_t group_hid = -1;
   group_hid = H5Gcreate (loc_id, name, 0);
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0)
+    return false;
 
   hid_t space_hid = -1, data_hid = -1, type_hid = -1;;
-  bool retval = true;
 
   // attach the type of the variable
   type_hid = H5Tcopy (H5T_C_S1);
@@ -756,15 +676,11 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       H5Dclose (data_hid);
 
       octave_user_function *f = fcn.user_function_value ();
-      Array<symbol_record *> vars = f->sym_tab()->symbol_list();
-      octave_idx_type varlen = vars.length();
 
-      // Exclude undefined values like __retval__
-      for (octave_idx_type i = 0; i < vars.length(); i++)
-	{
-	  if (! vars(i)->is_defined ())
-	    varlen--;
-	}
+      std::list<symbol_table::symbol_record> vars
+	= symbol_table::all_variables (f->scope ());
+
+      size_t varlen = vars.size ();
 
       if (varlen > 0)
 	{
@@ -798,10 +714,10 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
 	      return false;
 	    }
 
-	  for (octave_idx_type i = 0; i < vars.length(); i++)
+	  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+	       p != vars.end (); p++)
 	    {
-	      if (vars(i)->is_defined () &&
-		  ! add_hdf5_data (data_hid, vars(i)->def(), vars(i)->name(), 
+	      if (! add_hdf5_data (data_hid, p->varval (), p->name (),
 				   "", false, save_as_floats))
 		break;
 	    }
@@ -883,13 +799,15 @@ bool
 octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 			      bool have_h5giterate_bug)
 {
+  bool success = true;
+
   hid_t group_hid, data_hid, space_hid, type_hid, type_class_hid, st_id;
   hsize_t rank;
   int slen;
-  bool success = true;
 
   group_hid = H5Gopen (loc_id, name);
-  if (group_hid < 0 ) return false;
+  if (group_hid < 0)
+    return false;
 
   data_hid = H5Dopen (group_hid, "nm");
 
@@ -1017,7 +935,6 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       H5Tclose (st_id);
       H5Dclose (data_hid);
 
-      symbol_table *local_sym_tab = 0;
       octave_idx_type len = 0;
 
       // we have to pull some shenanigans here to make sure
@@ -1045,14 +962,10 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       // restore error reporting:
       H5Eset_auto (err_func, err_func_data);
 
+      symbol_table::scope_id local_scope = symbol_table::alloc_scope ();
+
       if (len > 0 && success)
 	{
-	  octave_idx_type nlen = len;
-	  if (nlen % 2)
-	    nlen++;
-	      
-	  local_sym_tab = new symbol_table (nlen, "LOCAL");
-	      
 #ifdef HAVE_H5GGET_NUM_OBJS
 	  hsize_t num_obj = 0;
 	  data_hid = H5Gopen (group_hid, "symbol table"); 
@@ -1083,16 +996,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 		  if (have_h5giterate_bug)
 		    current_item++;  // H5Giterate returns last index processed
 
-		  symbol_record *sr = local_sym_tab->lookup (dsub.name, true);
-
-		  if (sr)
-		    sr->define (dsub.tc);
-		  else
-		    {
-		      error ("load: failed to load anonymous function handle");
-		      success = false;
-		      break;
-		    }
+		  symbol_table::varref (dsub.name, local_scope) = dsub.tc;
 		}
 	    }
 	}
@@ -1100,10 +1004,10 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
       if (success)
 	{
 	  unwind_protect::begin_frame ("anon_hdf5_load");
-	  unwind_protect_ptr (curr_sym_tab);
 
-	  if (local_sym_tab)
-	    curr_sym_tab = local_sym_tab;
+	  symbol_table::push_scope (local_scope);
+
+	  unwind_protect::add (symbol_table::pop_scope);
 
 	  int parse_status;
 	  octave_value anon_fcn_handle = 
@@ -1123,8 +1027,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 	  unwind_protect::run_frame ("anon_hdf5_load");
 	}
 
-      if (local_sym_tab)
-	delete local_sym_tab;
+      symbol_table::erase_scope (local_scope);
     }
   else
     {
@@ -1318,21 +1221,9 @@ make_fcn_handle (const std::string& nm)
 {
   octave_value retval;
 
-  octave_function *fcn = octave_call_stack::current ();
+  octave_value f = symbol_table::find_function (nm);
 
-  std::string parent_name = fcn ? fcn->name () : std::string ();
-
-  if (! parent_name.empty ())
-    {
-      size_t pos = parent_name.find (':');
-
-      if (pos != NPOS)
-	parent_name = parent_name.substr (0, pos);
-    }
-
-  octave_value f = lookup_function (nm, parent_name);
-
-  if (f.is_function ())
+  if (f.is_defined ())
     retval = octave_value (new octave_fcn_handle (f, nm));
   else
     error ("error creating function handle \"@%s\"", nm.c_str ());
@@ -1396,25 +1287,19 @@ Return a struct containing information about the function handle\n\
 		      m.assign ("file", "");
 
 		      octave_user_function *fu = fh->user_function_value ();
-		      Array <symbol_record *> vars = 
-			fu->sym_tab ()->symbol_list ();
-		      octave_idx_type varlen = vars.length ();
 
-		      // Exclude undefined values like __retval__
-		      for (int i = 0; i < vars.length (); i++)
-			{
-			  if (! vars (i)->is_defined ())
-			    varlen--;
-			}
+		      std::list<symbol_table::symbol_record> vars
+			= symbol_table::all_variables (fu->scope ());
+
+		      size_t varlen = vars.size ();
 
 		      if (varlen > 0)
 			{
 			  Octave_map ws;
-			  for (octave_idx_type i = 0; i < vars.length (); i++)
+			  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+			       p != vars.end (); p++)
 			    {
-			      if (vars (i)->is_defined ())
-				ws.assign (vars (i)->name (), 
-					   vars (i)->def ());
+			      ws.assign (p->name (), p->varval ());
 			    }
 
 			  m.assign ("workspace", ws);

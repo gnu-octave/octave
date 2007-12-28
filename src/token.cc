@@ -73,7 +73,7 @@ token::token (plot_tok_type t, int l, int c)
   pt = t;
 }
 
-token::token (symbol_record *s, int l, int c)
+token::token (symbol_table::symbol_record *s, int l, int c)
 {
   line_num = l;
   column_num = c;
@@ -115,7 +115,7 @@ token::pttype (void)
   return pt;
 }
 
-symbol_record *
+symbol_table::symbol_record *
 token::sym_rec (void)
 {
   assert (type_tag == sym_rec_token);

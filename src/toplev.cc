@@ -209,7 +209,7 @@ main_loop (void)
     {
       try
 	{
-	  curr_sym_tab = top_level_sym_tab;
+	  symbol_table::reset_scope ();
 
 	  reset_error_handler ();
 

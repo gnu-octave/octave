@@ -189,15 +189,13 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
-  symbol_record *nargin_sr = top_level_sym_tab->lookup ("__nargin__", true);
+  symbol_table::varref (".nargin.", symbol_table::top_scope ()) = argc - 1;
 
-  nargin_sr->mark_as_static ();
-
-  nargin_sr->define (argc-1);
+  symbol_table::mark_hidden (".nargin.", symbol_table::top_scope ());
 
   if (argc > 1)
     {
-      octave_argv.resize (argc-1);
+      octave_argv.resize (argc - 1);
 
       // Skip program name in argv.
       int i = argc;
@@ -598,8 +596,6 @@ octave_main (int argc, char **argv, int embedded)
     install_signal_handlers ();
 
   initialize_file_io ();
-
-  initialize_symbol_tables ();
 
   install_types ();
 

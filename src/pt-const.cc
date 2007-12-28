@@ -71,7 +71,7 @@ tree_constant::rvalue (int nargout)
 }
 
 tree_expression *
-tree_constant::dup (symbol_table *)
+tree_constant::dup (symbol_table::scope_id)
 {
   tree_constant *new_tc
     = new tree_constant (val, orig_text, line (), column ());

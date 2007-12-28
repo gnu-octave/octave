@@ -58,12 +58,9 @@ along with Octave; see the file COPYING.  If not, see
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
 				     "<unknown type>", "unknown");
 
-// If TRUE, print the name along with the value.
-static bool Vprint_answer_id_name = true;
-
 // If TRUE, turn off printing of results in functions (as if a
 // semicolon has been appended to each statement).
-static bool Vsilent_functions = false;
+bool Vsilent_functions = false;
 
 // TRUE means to perform automatic sparse to real mutation if there
 // is memory to be saved
@@ -347,10 +344,7 @@ octave_base_value::print_with_name (std::ostream& output_buf,
 {
   if (! (evaluating_function_body && Vsilent_functions))
     {
-      bool pad_after = false;
-
-      if (Vprint_answer_id_name)
-	pad_after = print_name_tag (output_buf, name);
+      bool pad_after = print_name_tag (output_buf, name);
 
       print (output_buf);
 
@@ -1109,17 +1103,6 @@ install_base_type_conversions (void)
   INSTALL_WIDENOP (octave_base_value, octave_complex_matrix, complex_matrix_conv);
   INSTALL_WIDENOP (octave_base_value, octave_char_matrix_str, string_conv);
   INSTALL_WIDENOP (octave_base_value, octave_cell, cell_conv);
-}
-
-DEFUN (print_answer_id_name, args, nargout,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} print_answer_id_name ()\n\
-@deftypefnx {Built-in Function} {@var{old_val} =} print_answer_id_name (@var{new_val})\n\
-Query or set the internal variable that controls whether variable\n\
-names are printed along with results produced by evaluating an expression.\n\
-@end deftypefn")
-{
-  return SET_INTERNAL_VARIABLE (print_answer_id_name);
 }
 
 DEFUN (silent_functions, args, nargout,

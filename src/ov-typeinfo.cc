@@ -93,6 +93,14 @@ octave_value_typeinfo::register_type (const std::string& t_name,
 }
 
 bool
+octave_value_typeinfo::register_unary_class_op (octave_value::unary_op op,
+					        octave_value_typeinfo::unary_class_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_unary_class_op (op, f) : false;
+}
+
+bool
 octave_value_typeinfo::register_unary_op (octave_value::unary_op op,
 					   int t, octave_value_typeinfo::unary_op_fcn f)
 {
@@ -107,6 +115,14 @@ octave_value_typeinfo::register_non_const_unary_op (octave_value::unary_op op,
 {
   return (instance_ok ())
     ? instance->do_register_non_const_unary_op (op, t, f) : false;
+}
+
+bool
+octave_value_typeinfo::register_binary_class_op (octave_value::binary_op op,
+						 octave_value_typeinfo::binary_class_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_binary_class_op (op, f) : false;
 }
 
 bool
@@ -225,6 +241,23 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
 }
 
 bool
+octave_value_typeinfo::do_register_unary_class_op (octave_value::unary_op op,
+					           octave_value_typeinfo::unary_class_op_fcn f)
+{
+  if (lookup_unary_class_op (op))
+    {
+      std::string op_name = octave_value::unary_op_as_string (op);
+
+      warning ("duplicate unary operator `%s' for class dispatch",
+	       op_name.c_str ());
+    }
+
+  unary_class_ops.checkelem (static_cast<int> (op)) = f;
+
+  return false;
+}
+
+bool
 octave_value_typeinfo::do_register_unary_op (octave_value::unary_op op,
 					     int t, octave_value_typeinfo::unary_op_fcn f)
 {
@@ -256,6 +289,23 @@ octave_value_typeinfo::do_register_non_const_unary_op
     }
 
   non_const_unary_ops.checkelem (static_cast<int> (op), t) = f;
+
+  return false;
+}
+
+bool
+octave_value_typeinfo::do_register_binary_class_op (octave_value::binary_op op,
+						    octave_value_typeinfo::binary_class_op_fcn f)
+{
+  if (lookup_binary_class_op (op))
+    {
+      std::string op_name = octave_value::binary_op_as_string (op);
+
+      warning ("duplicate binary operator `%s' for class dispatch",
+	       op_name.c_str ());
+    }
+
+  binary_class_ops.checkelem (static_cast<int> (op)) = f;
 
   return false;
 }
@@ -407,6 +457,12 @@ octave_value_typeinfo::do_lookup_type (const std::string& nm)
   return retval;
 }
 
+octave_value_typeinfo::unary_class_op_fcn
+octave_value_typeinfo::do_lookup_unary_class_op (octave_value::unary_op op)
+{
+  return unary_class_ops.checkelem (static_cast<int> (op));
+}
+
 octave_value_typeinfo::unary_op_fcn
 octave_value_typeinfo::do_lookup_unary_op (octave_value::unary_op op, int t)
 {
@@ -418,6 +474,12 @@ octave_value_typeinfo::do_lookup_non_const_unary_op
   (octave_value::unary_op op, int t)
 {
   return non_const_unary_ops.checkelem (static_cast<int> (op), t);
+}
+
+octave_value_typeinfo::binary_class_op_fcn
+octave_value_typeinfo::do_lookup_binary_class_op (octave_value::binary_op op)
+{
+  return binary_class_ops.checkelem (static_cast<int> (op));
 }
 
 octave_value_typeinfo::binary_op_fcn
@@ -493,25 +555,6 @@ currently installed data types.\n\
     retval = octave_value_typeinfo::installed_type_names ();
   else if (nargin == 1)
     retval = args(0).type_name ();
-  else
-    print_usage ();
-
-  return retval;
-}
-
-DEFUN (class, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} class (@var{expr})\n\
-\n\
-Return the class of the expression @var{expr}, as a string.\n\
-@end deftypefn")
-{
-  octave_value retval;
-
-  int nargin = args.length ();
-
-  if (nargin == 1)
-    retval = args(0).class_name ();
   else
     print_usage ();
 

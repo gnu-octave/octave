@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-exp.h"
 #include "pt-misc.h"
 #include "pt-stmt.h"
+#include "symtab.h"
 
 class octave_value_list;
 
@@ -37,6 +38,7 @@ class tree_walker;
 
 #include "ov.h"
 #include "ov-usr-fcn.h"
+#include "symtab.h"
 
 class
 tree_fcn_handle : public tree_expression
@@ -67,7 +69,7 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
@@ -89,14 +91,15 @@ tree_anon_fcn_handle : public tree_expression
 public:
 
   tree_anon_fcn_handle (int l = -1, int c = -1)
-    : tree_expression (l, c), fcn () { }
+    : tree_expression (l, c), fcn (0) { }
 
   tree_anon_fcn_handle (tree_parameter_list *pl, tree_parameter_list *rl,
-			tree_statement_list *cl, symbol_table *st,
+			tree_statement_list *cl, symbol_table::scope_id sid,
 			int l = -1, int c = -1)
-    : tree_expression (l, c), fcn (pl, rl, cl, st) { }
+    : tree_expression (l, c),
+      fcn (new octave_user_function (sid, pl, rl, cl)) { }
 
-  ~tree_anon_fcn_handle (void) { }
+  ~tree_anon_fcn_handle (void) { delete fcn; }
 
   bool has_magic_end (void) const { return false; }
 
@@ -106,18 +109,28 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  tree_parameter_list *parameter_list (void) { return fcn.parameter_list (); }
+  tree_parameter_list *parameter_list (void)
+  {
+    return fcn ? fcn->parameter_list () : 0;
+  }
 
-  tree_statement_list *body (void) { return fcn.body (); }
+  tree_parameter_list *return_list (void)
+  {
+    return fcn ? fcn->return_list () : 0;
+  }
 
-  tree_expression *dup (symbol_table *sym_tab);
+  tree_statement_list *body (void) { return fcn ? fcn->body () : 0; }
+
+  symbol_table::scope_id scope (void) { return fcn ? fcn->scope () : -1; }
+
+  tree_expression *dup (symbol_table::scope_id scope);
 
   void accept (tree_walker& tw);
 
 private:
 
   // The function.
-  octave_user_function fcn;
+  octave_user_function *fcn;
 
   // No copying!
 

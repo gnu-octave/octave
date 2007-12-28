@@ -100,7 +100,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-streamoff.h ov-str-mat.h ov-bool-mat.h ov-bool.h \
 	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
 	ov-mapper.h ov-mex-fcn.h ov-usr-fcn.h ov-fcn-handle.h \
-	ov-fcn-inline.h ov-typeinfo.h ov-type-conv.h \
+	ov-fcn-inline.h ov-class.h ov-typeinfo.h ov-type-conv.h \
 	$(OV_INTTYPE_INC)
 
 OV_SPARSE_INCLUDES := \
@@ -129,7 +129,7 @@ INCLUDES := Cell.h base-list.h builtins.h c-file-ptr-stream.h \
 	$(PT_INCLUDES) \
 	$(OV_SPARSE_INCLUDES)
 
-TI_XSRC := Array-os.cc Array-sym.cc Array-tc.cc
+TI_XSRC := Array-os.cc Array-tc.cc
 
 TI_SRC := $(addprefix TEMPLATE-INST/, $(TI_XSRC))
 
@@ -144,8 +144,8 @@ SPARSE_OP_XSRC := op-bm-sbm.cc op-b-sbm.cc op-cm-scm.cc op-cm-sm.cc \
 	op-sm-cs.cc op-sm-m.cc op-sm-s.cc op-sm-scm.cc op-sm-sm.cc \
 	op-s-scm.cc op-s-sm.cc
 
-OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc \
-	op-cell.cc op-chm.cc op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
+OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
+	op-chm.cc op-class.cc op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
 	op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
 	op-cs-s.cc op-list.cc op-m-cm.cc \
 	op-m-cs.cc op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc \
@@ -172,7 +172,7 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov-colon.cc ov-bool-mat.cc ov-bool.cc ov-cell.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc ov-mapper.cc \
 	ov-mex-fcn.cc ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc \
-	ov-typeinfo.cc \
+	ov-class.cc ov-typeinfo.cc \
 	$(OV_INTTYPE_SRC) \
 	$(OV_SPARSE_SRC)
 
@@ -193,7 +193,7 @@ DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	octave.cc zfstream.cc oct-strstrm.cc oct-lvalue.cc pager.cc \
 	parse.y pr-output.cc procstream.cc sighandlers.cc \
 	siglist.c sparse-xdiv.cc sparse-xpow.cc strfns.cc \
-	symtab.cc syscalls.cc sysdep.cc token.cc toplev.cc \
+	syscalls.cc symtab.cc sysdep.cc token.cc toplev.cc \
 	unwind-prot.cc utils.cc variables.cc xdiv.cc xpow.cc \
 	$(OV_SRC) \
 	$(PT_SRC)

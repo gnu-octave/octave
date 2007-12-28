@@ -92,7 +92,7 @@ SOURCES = \
   ezcontour.m \
   ezmeshc.m \
   ezmesh.m \
-  ezplot3.m \\
+  ezplot3.m \
   ezpolar.m \
   ezsurfc.m \
   ezsurf.m \

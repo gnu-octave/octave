@@ -192,9 +192,9 @@ function ret = edit (file, state)
     path = file_in_loadpath (file);
   else
     ## Otherwise try file.cc, and if that fails, default to file.m.
-    path = file_in_loadpath (fullfile (file, ".cc"));
+    path = file_in_loadpath (strcat (file, ".cc"));
     if (isempty (path))
-      file = fullfile (file, ".m");
+      file = strcat (file, ".m");
       path = file_in_loadpath (file);
     endif
   endif

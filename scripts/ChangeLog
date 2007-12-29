@@ -1,3 +1,8 @@
+2007-12-28  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/edit.m: Use strcat instead of fullfile to add file
+	extensions.
+
 2007-12-28  David Bateman  <dbateman@free.fr>
 
 	* ezcontourf.m, ezcontour.m, ezmeshc.m, ezmesh.m, ezplot3.m,

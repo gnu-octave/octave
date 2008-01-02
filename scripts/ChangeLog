@@ -1,3 +1,7 @@
+2008-01-02  John W. Eaton  <jwe@octave.org>
+
+	* plot/print.m: Correctly handle pbm terminal.
+
 2007-12-28  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/edit.m: Use strcat instead of fullfile to add file

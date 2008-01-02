@@ -1,4 +1,4 @@
-## Copyright (C) 1999, 2005, 2006, 2007 Daniel Heiserer
+## Copyright (C) 1999, 2005, 2006, 2007, 2008 Daniel Heiserer
 ## Copyright (C) 2001 Laurent Mazet
 ##
 ## This file is part of Octave.
@@ -356,7 +356,7 @@ function print (varargin)
     else
       options = strcat (" size ", size);
     endif
-    new_terminal = strcat ("png", options);
+    new_terminal = strcat (dev, options);
 
   elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
     ## AutoCad DXF, METAFONT, HPGL

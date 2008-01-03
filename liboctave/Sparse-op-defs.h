@@ -396,7 +396,7 @@ along with Octave; see the file COPYING.  If not, see
     if (m1_nr == 1 && m1_nc == 1) \
       { \
         if (m1.elem(0,0) == 0.) \
-          r = R (m2); \
+          r = OP R (m2); \
         else \
           { \
 	    r = R (m2_nr, m2_nc, m1.data(0) OP 0.); \

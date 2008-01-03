@@ -1,3 +1,9 @@
+2008-01-03  David Bateman  <dbateman@free.fr>
+
+	* MSparse.cc (SPARSE_A2A2_OP): If first arg is scalar zero, then
+	need unary operator on remaining argument
+	* Sparse-op-defs.h (SPARSE_SMSM_BIN_OP_1): ditto.
+
 2007-12-21  John W. Eaton  <jwe@octave.org>
 
 	Version 3.0.0 released.

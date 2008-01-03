@@ -292,7 +292,7 @@ SPARSE_SA2_OP_2 (/)
     if (a_nr == 1 && a_nc == 1) \
       { \
         if (a.elem(0,0) == 0.) \
-          r = MSparse<T> (b); \
+          r =  OP MSparse<T> (b); \
         else \
           { \
 	    r = MSparse<T> (b_nr, b_nc, a.data(0) OP 0.); \

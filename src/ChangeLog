@@ -1,3 +1,13 @@
+2008-01-04  John Swensen  <jpswensen@comcast.net>
+
+	* debug.cc (bp_table::do_remove_all_breakpoints_in_file):
+	Avoid calling erase on invalid bp_map iterators.
+	(bp_table::do_remove_breakpoint): Only try to delete breakpoints
+	if some exist.  Avoid calling erase on invalid bp_map iterators.
+	(parse_dbfunction_params): Return early if ARGS is empty.
+	New arg, WHO.  Change all uses.
+	Accept but do nothing with struct args.
+
 2008-01-04  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* variables.cc (Fclear): Doc fix.

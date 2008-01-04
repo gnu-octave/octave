@@ -1,6 +1,7 @@
 /*
 
-Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006, 2007 Ben Sapp
+Copyright (C) 2007, 2008  John Swensen
+Copyright (C) 2001, 2002, 2003, 2004, 2005, 2006 Ben Sapp
 
 This file is part of Octave.
 
@@ -79,45 +80,50 @@ get_user_function (const std::string& fname = std::string ())
 }
 
 static void
-parse_dbfunction_params (const octave_value_list& args, 
-			 std::string& symbol_name, 
-			 bp_table::intmap& lines)
+parse_dbfunction_params (const char *who, const octave_value_list& args, 
+			 std::string& symbol_name, bp_table::intmap& lines)
 {
-  octave_idx_type len = 0;
   int nargin = args.length ();
   int idx = 0;
   int list_idx = 0;
   symbol_name = std::string ();
+  lines = bp_table::intmap ();
+
+  if (args.length () == 0)
+    return;
 
   // If we are already in a debugging function.
   if (octave_call_stack::caller_user_function ())
-    idx = 0;
-  else
     {
-      symbol_name = args (0).string_value ();
+      idx = 0;
+      symbol_name = get_user_function ()->name ();
+    }
+  else if (args(0).is_map ())
+    {
+      // Problem because parse_dbfunction_params() can only pass out a
+      // single function
+    }
+  else if (args(0).is_string())
+    {
+      symbol_name = args(0).string_value ();
       if (error_state)
 	return;
       idx = 1;
     }
+  else
+    error ("%s: invalid parameter specified", who);
 
   for (int i = idx; i < nargin; i++ )
     {
-      if (args (i).is_string ())
-	len++;
-      else
-	len += args (i).numel ();
-    }
-
-  lines = bp_table::intmap ();
-  for (int i = idx; i < nargin; i++ )
-    {
-      if (args (i).is_string ())
+      if (args(i).is_string ())
 	{
 	  int line = atoi (args(i).string_value().c_str ());
 	  if (error_state)
 	    break;
 	  lines[list_idx++] = line;
 	}
+      else if (args(i).is_map ())
+	octave_stdout << who << ": accepting a struct" << std::endl;
       else
 	{
 	  const NDArray arg = args(i).array_value ();
@@ -194,18 +200,22 @@ bp_table::do_remove_breakpoint (const std::string& fname,
       if (dbg_fcn)
 	{
 	  tree_statement_list *cmds = dbg_fcn->body ();
-	  for (int i = 0; i < len; i++)
-	    {
-	      const_intmap_iterator p = line.find (i);
-
-	      if (p != line.end ())
-		cmds->delete_breakpoint (p->second);
-	    }
-
 	  octave_value_list results = cmds->list_breakpoints ();
+	  if (results.length () > 0)
+	    {
+	      for (int i = 0; i < len; i++)
+		{
+		  const_intmap_iterator p = line.find (i);
+		  
+		  if (p != line.end ())
+		    cmds->delete_breakpoint (p->second);
+		}
+	      results = cmds->list_breakpoints ();
 
-	  if (results.length () == 0)
-	    bp_map.erase (bp_map.find (fname));
+	      breakpoint_map_iterator it = bp_map.find (fname);
+	      if (results.length () == 0 && it != bp_map.end ())
+		bp_map.erase (it);
+	    }
 
 	  retval = results.length ();
 	}
@@ -235,8 +245,10 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname)
 	  cmds->delete_breakpoint (lineno);
 	  retval[i] = lineno;
 	}
-
-      bp_map.erase (bp_map.find (fname));
+      
+      breakpoint_map_iterator it = bp_map.find (fname);
+      if (it != bp_map.end ())
+	bp_map.erase (it);
     }
   else
     error ("remove_all_breakpoint_in_file: "
@@ -344,7 +356,7 @@ The rline returned is the real line that the breakpoint was set at.\n\
   std::string symbol_name;
   bp_table::intmap lines;
 
-  parse_dbfunction_params (args, symbol_name, lines);
+  parse_dbfunction_params ("dbstop", args, symbol_name, lines);
 
   if (! error_state)
     retval = bp_table::add_breakpoint (symbol_name, lines);
@@ -373,7 +385,7 @@ a breakpoint. If you get the wrong line nothing will happen.\n\
   std::string symbol_name = "";
   bp_table::intmap lines;
 
-  parse_dbfunction_params (args, symbol_name, lines);
+  parse_dbfunction_params ("dbclear", args, symbol_name, lines);
       
   if (! error_state)
     bp_table::remove_breakpoint (symbol_name, lines);

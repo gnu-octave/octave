@@ -1,3 +1,7 @@
+2008-01-04  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* variables.cc (Fclear): Doc fix.
+
 2008-01-04  John W. Eaton  <jwe@octave.org>
 
 	* symtab.h (symbol_table:pop_scope): Avoid accessing beyond end of

@@ -2230,7 +2230,7 @@ do_matlab_compatible_clear (const string_vector& argv, int argc, int idx)
 
 DEFCMD (clear, args, ,
   "-*- texinfo -*-\n\
-@deffn {Command} clear [-x] pattern @dots{}\n\
+@deffn {Command} clear [options] pattern @dots{}\n\
 Delete the names matching the given patterns from the symbol table.  The\n\
 pattern may contain the following special characters:\n\
 \n\
@@ -2268,7 +2268,24 @@ will clear the variable definition and restore the definition of\n\
 @code{foo} as a function.  Executing @kbd{clear foo} a second time will\n\
 clear the function definition.\n\
 \n\
-With -x, clear the variables that don't match the patterns.\n\
+The following options are available in both long and short form\n\
+@table @code\n\
+@item -all, -a\n\
+Clears all local and global user-defined variables and all functions\n\
+from the symbol table.\n\
+\n\
+@item -exclusive, -x\n\
+Clears the variables that don't match the following pattern.\n\
+\n\
+@item -functions, -f\n\
+Clears the function names and the built-in symbols names.\n\
+@item -global, -g\n\
+Clears the global symbol names.\n\
+@item -variables, -v\n\
+Clears the local variable names.\n\
+@end table\n\
+With the execption of @code{exclusive}, all long options can be used \n\
+without the dash as well.\n\
 @end deffn")
 {
   octave_value_list retval;

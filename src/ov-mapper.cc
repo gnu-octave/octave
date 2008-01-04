@@ -159,7 +159,8 @@ any_element_greater_than (const SparseMatrix& a, double val)
 	    for (octave_idx_type i = M.cidx(j); i < M.cidx (j+1); i++) \
 	      { \
 		OCTAVE_QUIT; \
-	        result.elem (M.ridx (i), j) = CONV (F (M.data(i))); \
+		/* Use data instead of elem for better performance.  */ \
+		result.data (M.ridx (i) + j * nr) = CONV (F (M.data(i))); \
 		\
 		if (error_state) \
 		  return retval; \

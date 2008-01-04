@@ -1,3 +1,7 @@
+2008-01-04  Soren Hauberg   <hauberg@gmail.com>
+
+	* set/create_set.m, set/union.m: Accept "rows" argument.
+
 2008-01-02  John W. Eaton  <jwe@octave.org>
 
 	* plot/print.m: Correctly handle pbm terminal.

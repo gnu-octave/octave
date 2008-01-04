@@ -1,4 +1,4 @@
-## Copyright (C) 1994, 1996, 1997, 1999, 2000, 2004, 2005, 2006, 2007
+## Copyright (C) 1994, 1996, 1997, 1999, 2000, 2004, 2005, 2006, 2007, 2008
 ##               John W. Eaton
 ##
 ## This file is part of Octave.
@@ -19,37 +19,44 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} create_set (@var{x})
+## @deftypefnx{Function File} {} create_set (@var{x}, "rows")
 ## Return a row vector containing the unique values in @var{x}, sorted in
 ## ascending order.  For example,
 ##
 ## @example
 ## @group
-## create_set ([ 1, 2; 3, 4; 4, 2 ])
+## create_set ([ 1, 2; 3, 4; 4, 2; 1, 2 ])
 ##      @result{} [ 1, 2, 3, 4 ]
 ## @end group
 ## @end example
-## @seealso{union, intersection, complement}
+##
+## If the optional second input argument is the string "rows" each row of
+## the matrix @var{x} will be considered an element of set.  For example,
+## @example
+## @group
+## create_set ([ 1, 2; 3, 4; 4, 2; 1, 2 ], "rows")
+##      @result{}  1   2
+##     3   4
+##     4   2
+## @end group
+## @end example
+## @seealso{union, intersection, complement, unique}
 ## @end deftypefn
 
 ## Author: jwe
 
-function y = create_set(x)
+function y = create_set (x, rows_opt)
 
-  if (nargin != 1)
+  if (nargin < 1 || nargin > 2)
     print_usage ();
   endif
-
-  if (isempty(x))
-    y = [];
+  
+  if (nargin == 1)
+    y = unique (x).';
+  elseif (strcmpi (rows_opt, "rows"))
+    y = unique (x, "rows");
   else
-    nel = numel (x);
-    y = sort (reshape (x, 1, nel));
-    els = find (y(1:nel-1) != y(2:nel));
-    if (isempty (els));
-      y = y(1);
-    else
-      y = y([1, els+1]);
-    endif
+    error ("create_set: expecting \"rows\" as second argument");
   endif
 
 endfunction

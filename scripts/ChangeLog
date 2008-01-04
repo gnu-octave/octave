@@ -1,3 +1,7 @@
+2008-01-04  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* strings/strtrim.m: Doc fix.
+
 2008-01-04  Muthiah Annamalai  <muthuspost@gmail.com>
 
 	* general/sub2ind.m, general/ind2sub.m: Doc fix.

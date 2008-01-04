@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1999, 2000, 2002, 2003,
-              2004, 2005, 2006, 2007 John W. Eaton
+              2004, 2005, 2006, 2007, 2008 John W. Eaton
   
 This file is part of Octave.
 
@@ -657,7 +657,7 @@ public:
 
     set_scope (scope_stack[0]);
 
-    xcurrent_caller_scope = scope_stack[1];
+    xcurrent_caller_scope = scope_stack.size () > 1 ? scope_stack[1] : -1;
   }
 
   static void pop_scope (void *) { pop_scope (); }

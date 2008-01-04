@@ -1,4 +1,4 @@
-## Copyright (C) 1996, 2007 Kurt Hornik
+## Copyright (C) 1996, 2007, 2008 Kurt Hornik
 ##
 ## This file is part of Octave.
 ##
@@ -16,11 +16,13 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-## -*- texinfo -*- @deftypefn {Function File} {} deblank (@var{s})
+## -*- texinfo -*-
+## @deftypefn {Function File} {} deblank (@var{s})
 ## Remove leading and trailing blanks and nulls from @var{s}.  If
 ## @var{s} is a matrix, @var{deblank} trims each row to the length of
 ## longest string.  If @var{s} is a cell array, operate recursively on
-## each element of the cell array. @end deftypefn
+## each element of the cell array. 
+## @end deftypefn
 
 ## Author: John Swensen <jpswensen@jhu.edu>
 

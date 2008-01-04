@@ -1,4 +1,4 @@
-## Copyright (C) 2001, 2003, 2004, 2005, 2006, 2007 Paul Kienzle
+## Copyright (C) 2001, 2003, 2004, 2005, 2006, 2007, 2008 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -21,8 +21,8 @@
 ## Convert a linear index into subscripts.
 ##
 ## The following example shows how to convert the linear index @code{8}
-## in a 3-by-3 matrix into a subscript.
-##
+## in a 3-by-3 matrix into a subscript.  The matrix is linearly indexed
+## moving from one column to next, filling up all rows in each column.
 ## @example
 ## [r, c] = ind2sub ([3, 3], 8)
 ## @result{} r =  2

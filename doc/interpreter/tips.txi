@@ -150,7 +150,7 @@ command automatically inserts such a @samp{#} in the right place, or
 aligns such a comment if it is already present.
 
 @item ##
-Comments that start with two semicolons, @samp{##}, should be aligned to
+Comments that start with a double sharp-sign, @samp{##}, should be aligned to
 the same level of indentation as the code.  Such comments usually
 describe the purpose of the following lines or the state of the program
 at that point.

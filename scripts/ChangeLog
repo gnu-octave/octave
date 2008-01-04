@@ -1,3 +1,7 @@
+2008-01-04  Muthiah Annamalai  <muthuspost@gmail.com>
+
+	* general/sub2ind.m, general/ind2sub.m: Doc fix.
+
 2008-01-04  Soren Hauberg   <hauberg@gmail.com>
 
 	* set/create_set.m, set/union.m: Accept "rows" argument.

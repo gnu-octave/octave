@@ -1694,12 +1694,13 @@ along with Octave; see the file COPYING.  If not, see
 			SPARSE_REDUCTION_OP_COL_EXPR (OP), \
 			INIT_VAL, MT_RESULT)
 
+
+// Don't break from this loop if the test succeeds because
+// we are looping over the rows and not the columns in the inner
+// loop.
 #define SPARSE_ANY_ALL_OP_ROW_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \
-    { \
-      tmp[ridx(i)] = TEST_TRUE_VAL; \
-      break; \
-    }
+    tmp[ridx(i)] = TEST_TRUE_VAL; \
 
 #define SPARSE_ANY_ALL_OP_COL_CODE(TEST_OP, TEST_TRUE_VAL) \
   if (data (i) TEST_OP 0.0) \

@@ -120,7 +120,7 @@ typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool re
  \
     if (! error_state) \
       { \
-	octave_dld_function *fcn = new octave_dld_function (fname, shl, name, doc); \
+	octave_dld_function *fcn = octave_dld_function::create (fname, shl, name, doc); \
  \
         if (relative) \
           fcn->mark_relative (); \

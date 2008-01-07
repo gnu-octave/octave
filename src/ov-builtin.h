@@ -35,6 +35,7 @@ class octave_value_list;
 // Builtin functions.
 
 class
+OCTINTERP_API
 octave_builtin : public octave_function
 {
 public:

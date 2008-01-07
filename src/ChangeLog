@@ -1,3 +1,13 @@
+2008-01-07  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* ov-builtin.h (octave_builtin): Tag with OCTINTERP_API.
+	* ov-dld-fcn.h (octave_dld_function): Likewise.
+
+	* ov-dld-fcn.cc (octave_dld_function::create): New function.
+	* ov-dld-fcn.h: Provide decl.
+	* defun.h (DEFINE_FUNX_INSTALLER_FUN3): Call it instead of
+	creating a new octave_dld_function object directly.
+
 2008-01-04  John Swensen  <jpswensen@comcast.net>
 
 	* debug.cc (bp_table::do_remove_all_breakpoints_in_file):

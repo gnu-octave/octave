@@ -72,6 +72,24 @@ octave_dld_function::time_parsed (void) const
   return sh_lib.time_loaded ();
 }
 
+// Note: this wrapper around the octave_dld_function constructor is
+//       necessary to work around a MSVC limitation handling in
+//       virtual destructors that prevents unloading a dynamic module
+//       before *all* objects (of class using a virtual dtor) have
+//       been fully deleted; indeed, MSVC attaches auto-generated code
+//       (scalar deleting destructor) to objects created in a dynamic
+//       module, and this code will be executed in the dynamic module
+//       context at object deletion; unloading the dynamic module
+//       before objects have been deleted will make the "delete" code
+//       of objects to point to an invalid code segment.
+
+octave_dld_function*
+octave_dld_function::create (octave_builtin::fcn ff, const octave_shlib& shl,
+			     const std::string& nm, const std::string& ds)
+{
+  return new octave_dld_function (ff, shl, nm, ds);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

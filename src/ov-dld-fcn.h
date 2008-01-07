@@ -40,6 +40,7 @@ class octave_value_list;
 // Dynamically-linked functions.
 
 class
+OCTINTERP_API
 octave_dld_function : public octave_builtin
 {
 public:
@@ -65,6 +66,11 @@ public:
   bool is_builtin_function (void) const { return false; }
 
   bool is_dld_function (void) const { return true; }
+  
+  static octave_dld_function* create (octave_builtin::fcn ff,
+      const octave_shlib& shl,
+      const std::string& nm = std::string (),
+      const std::string& ds = std::string ());
 
 private:
 

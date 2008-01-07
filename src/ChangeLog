@@ -1,5 +1,12 @@
 2008-01-07  John W. Eaton  <jwe@octave.org>
 
+	* src/pt-except.cc (tree_try_catch_command::eval):
+	Set Vdebug_on_error and Vdebug_on_warning to false while executing
+	try block.
+
+	* error.cc (Vdebug_on_error, Vdebug_on_warning): No longer static.
+	* error.h: Provide decls.
+
 	* gripes.cc (gripe_wrong_type_arg (const std::string&, const
 	octave_value&, bool)): New function.
 	* gripes.h: Provide decl.

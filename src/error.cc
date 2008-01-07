@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
-              2002, 2003, 2004, 2005, 2006, 2007 John W. Eaton
+              2002, 2003, 2004, 2005, 2006, 2007, 2008 John W. Eaton
 
 This file is part of Octave.
 
@@ -53,11 +53,11 @@ static bool Vbeep_on_error = false;
 // TRUE means that Octave will try to enter the debugger when an error
 // is encountered.  This will also inhibit printing of the normal
 // traceback message (you will only see the top-level error message).
-static bool Vdebug_on_error = false;
+bool Vdebug_on_error = false;
 
 // TRUE means that Octave will try to enter the debugger when a warning
 // is encountered.
-static bool Vdebug_on_warning = false;
+bool Vdebug_on_warning = false;
 
 // TRUE means that Octave will try to display a stack trace when a
 // warning is encountered.

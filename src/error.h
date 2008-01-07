@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 2000, 2001, 2002, 2003,
-              2004, 2005, 2006, 2007 John W. Eaton
+              2004, 2005, 2006, 2007, 2008 John W. Eaton
 
 This file is part of Octave.
 
@@ -87,6 +87,15 @@ extern OCTINTERP_API void defun_usage_message (const std::string& msg);
 
 extern OCTINTERP_API void disable_warning (const std::string& id);
 extern OCTINTERP_API void initialize_default_warning_state (void);
+
+// TRUE means that Octave will try to enter the debugger when an error
+// is encountered.  This will also inhibit printing of the normal
+// traceback message (you will only see the top-level error message).
+extern OCTINTERP_API bool Vdebug_on_error;
+
+// TRUE means that Octave will try to enter the debugger when a warning
+// is encountered.
+extern OCTINTERP_API bool Vdebug_on_warning;
 
 // Current error state.
 extern OCTINTERP_API int error_state;

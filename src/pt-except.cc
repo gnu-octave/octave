@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1996, 1997, 1998, 2000, 2001, 2002, 2003, 2004, 2005,
-              2006, 2007 John W. Eaton
+              2006, 2007, 2008 John W. Eaton
 
 This file is part of Octave.
 
@@ -96,7 +96,12 @@ tree_try_catch_command::eval (void)
   MAYBE_DO_BREAKPOINT;
 
   unwind_protect_int (buffer_error_messages);
+  unwind_protect_bool (Vdebug_on_error);
+  unwind_protect_bool (Vdebug_on_warning);
+
   buffer_error_messages++;
+  Vdebug_on_error = false;
+  Vdebug_on_warning = false;
 
   unwind_protect::add (do_catch_code, catch_code);
 
@@ -118,7 +123,10 @@ tree_try_catch_command::eval (void)
       // For clearing the do_catch_code cleanup function.
       unwind_protect::discard ();
 
-      // For restoring buffer_error_messages.
+      // For restoring Vdebug_on_warning, Vdebug_on_error, and
+      // buffer_error_messages.
+      unwind_protect::run ();
+      unwind_protect::run ();
       unwind_protect::run ();
 
       // Also clear the frame marker.

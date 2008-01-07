@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001,
-              2002, 2003, 2004, 2005, 2006, 2007 John W. Eaton
+              2002, 2003, 2004, 2005, 2006, 2007, 2008 John W. Eaton
 
 This file is part of Octave.
 
@@ -1760,29 +1760,7 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   symtab_context.pop ();
 
-  if (stmt && stmt->is_expression ())
-    {
-      symbol_table::symbol_record& sr = symbol_table::insert ("__retval__");
-
-      tree_expression *e = stmt->expression ();
-
-      tree_identifier *id = new tree_identifier (sr);
-
-      tree_simple_assignment *asn = new tree_simple_assignment (id, e);
-
-      stmt->set_expression (asn);
-
-      stmt->set_print_flag (false);
-
-      // FIXME -- would like to delete old_stmt here or
-      // replace expression inside it with the new expression we just
-      // created so we don't have to create a new statement at all.
-
-      id = new tree_identifier (sr);
-      tree_decl_elt *elt = new tree_decl_elt (id);
-
-      ret_list = new tree_parameter_list (elt);
-    }
+  stmt->set_print_flag (false);
 
   tree_statement_list *body = new tree_statement_list (stmt);
 

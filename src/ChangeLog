@@ -1,3 +1,8 @@
+2008-01-07  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (make_anon_fcn_handle): Don't attempt to convert
+	expression to assignment to __retval__.
+
 2008-01-07  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* ov-builtin.h (octave_builtin): Tag with OCTINTERP_API.

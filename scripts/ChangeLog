@@ -1,3 +1,8 @@
+2008-01-07  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/copyfile.m, miscellaneous/movefile.m:
+	Error if glob call fails to match any files.
+
 2008-01-04  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* strings/strtrim.m: Doc fix.

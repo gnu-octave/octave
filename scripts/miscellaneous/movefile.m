@@ -1,4 +1,4 @@
-## Copyright (C) 2005, 2006, 2007 John W. Eaton
+## Copyright (C) 2005, 2006, 2007, 2008 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -75,6 +75,9 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     
     ## Protect the file name(s).
     f1 = glob (f1);
+    if (isempty (f1))
+      error ("movefile: no files to move");
+    endif
     p1 = sprintf ("\"%s\" ", f1{:});
     p2 = tilde_expand (f2);
 

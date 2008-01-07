@@ -1,5 +1,14 @@
 2008-01-07  John W. Eaton  <jwe@octave.org>
 
+	* gripes.cc (gripe_wrong_type_arg (const std::string&, const
+	octave_value&, bool)): New function.
+	* gripes.h: Provide decl.
+
+	* oct-stream.cc (printf_value_cache::printf_value_cache):
+	Reject structs, cells, objects, and lists.
+	(octave_base_stream::do_printf): Quit early if printf_value_cache
+	constructor fails.
+
 	* parse.y (make_anon_fcn_handle): Don't attempt to convert
 	expression to assignment to __retval__.
 

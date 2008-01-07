@@ -47,6 +47,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "quit.h"
 
 #include "error.h"
+#include "gripes.h"
 #include "input.h"
 #include "oct-stdstrm.h"
 #include "oct-stream.h"
@@ -2276,10 +2277,23 @@ public:
 
   enum state { ok, conversion_error };
 
-  printf_value_cache (const octave_value_list& args)
+  printf_value_cache (const octave_value_list& args, const std::string& who)
     : values (args), val_idx (0), elt_idx (0),
       n_vals (values.length ()), n_elts (0), data (0),
-      curr_state (ok) { }
+      curr_state (ok)
+  {
+    for (octave_idx_type i = 0; i < values.length (); i++)
+      {
+	octave_value val = values(i);
+
+	if (val.is_map () || val.is_cell () || val.is_object ()
+	    || val.is_list ())
+	  {
+	    gripe_wrong_type_arg (who, val);
+	    break;
+	  }
+      }
+  }
 
   ~printf_value_cache (void) { }
 
@@ -2527,7 +2541,10 @@ octave_base_stream::do_printf (printf_format_list& fmt_list,
 
       const printf_format_elt *elt = fmt_list.first ();
 
-      printf_value_cache val_cache (args);
+      printf_value_cache val_cache (args, who);
+
+      if (error_state)
+	return retval;
 
       for (;;)
 	{

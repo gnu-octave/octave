@@ -43,6 +43,10 @@ function drawnow (term, file, mono, debug_file)
     endif
 
     if (nargin >= 2 && nargin <= 4)
+      [dnm, fnm, ext] = fileparts (file);
+      if (! (isempty (dnm) || isdir (dnm)))
+	error ("drawnow: nonexistent directory `%s'", dnm);
+      endif
       h = get (0, "currentfigure");
       if (h)
 	f = get (h);

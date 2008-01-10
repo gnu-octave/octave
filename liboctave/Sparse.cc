@@ -3141,6 +3141,135 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
   return retval;
 }
 
+/*
+ * Tests
+ *
+
+%!function x = set_slice(x, dim, slice)
+%!  switch dim
+%!    case 11
+%!      x(slice) = 2;
+%!    case 21
+%!      x(slice, :) = 2;
+%!    case 22
+%!      x(:, slice) = 2;
+%!    otherwise
+%!      error("invalid dim, '%d'", dim);
+%!  endswitch
+%! endfunction
+
+%!function test_sparse_slice(size, dim, slice)
+%!  x = ones(size);
+%!  s = set_slice(sparse(x), dim, slice);
+%!  f = set_slice(x, dim, slice);
+%!  assert(full(s), f);
+%! endfunction
+
+#### 1d indexing
+
+## size = [2 0]
+%!test test_sparse_slice([2 0], 11, []);
+%!assert(set_slice(sparse(ones([2 0])), 11, 1), sparse([2 0]'));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 11, 2), sparse([0 2]'));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 11, 3), sparse([0 0 2]'));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 11, 4), sparse([0 0 0 2]'));  # sparse different from full
+
+## size = [0 2]
+%!test test_sparse_slice([0 2], 11, []);
+%!assert(set_slice(sparse(ones([0 2])), 11, 1), sparse(1,2));  # sparse different from full
+%!test test_sparse_slice([0 2], 11, 2);
+%!test test_sparse_slice([0 2], 11, 3);
+%!test test_sparse_slice([0 2], 11, 4);
+
+## size = [2 1]
+%!test test_sparse_slice([2 1], 11, []);
+%!test test_sparse_slice([2 1], 11, 1);
+%!test test_sparse_slice([2 1], 11, 2);
+%!test test_sparse_slice([2 1], 11, 3);
+%!test test_sparse_slice([2 1], 11, 4);
+
+## size = [1 2]
+%!test test_sparse_slice([1 2], 11, []);
+%!test test_sparse_slice([1 2], 11, 1);
+%!test test_sparse_slice([1 2], 11, 2);
+%!test test_sparse_slice([1 2], 11, 3);
+%!test test_sparse_slice([1 2], 11, 4);
+
+## size = [2 2]
+%!test test_sparse_slice([2 2], 11, []);
+%!test test_sparse_slice([2 2], 11, 1);
+%!test test_sparse_slice([2 2], 11, 2);
+%!test test_sparse_slice([2 2], 11, 3);
+%!test test_sparse_slice([2 2], 11, 4);
+# These 2 errors are the same as in the full case
+%!error <invalid matrix index = 5> set_slice(sparse(ones([2 2])), 11, 5);
+%!error <invalid matrix index = 6> set_slice(sparse(ones([2 2])), 11, 6);
+
+
+#### 2d indexing
+
+## size = [2 0]
+%!test test_sparse_slice([2 0], 21, []);
+%!test test_sparse_slice([2 0], 21, 1);
+%!test test_sparse_slice([2 0], 21, 2);
+%!assert(set_slice(sparse(ones([2 0])), 21, 3), sparse(2,0));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 21, 4), sparse(2,0));  # sparse different from full
+%!test test_sparse_slice([2 0], 22, []);
+%!test test_sparse_slice([2 0], 22, 1);
+%!test test_sparse_slice([2 0], 22, 2);
+%!assert(set_slice(sparse(ones([2 0])), 22, 3), sparse([0 0 2;0 0 2]));  # sparse different from full
+%!assert(set_slice(sparse(ones([2 0])), 22, 4), sparse([0 0 0 2;0 0 0 2]));  # sparse different from full
+
+## size = [0 2]
+%!test test_sparse_slice([0 2], 21, []);
+%!test test_sparse_slice([0 2], 21, 1);
+%!test test_sparse_slice([0 2], 21, 2);
+%!assert(set_slice(sparse(ones([0 2])), 21, 3), sparse([0 0;0 0;2 2]));  # sparse different from full
+%!assert(set_slice(sparse(ones([0 2])), 21, 4), sparse([0 0;0 0;0 0;2 2]));  # sparse different from full
+%!test test_sparse_slice([0 2], 22, []);
+%!test test_sparse_slice([0 2], 22, 1);
+%!test test_sparse_slice([0 2], 22, 2);
+%!assert(set_slice(sparse(ones([0 2])), 22, 3), sparse(0,2));  # sparse different from full
+%!assert(set_slice(sparse(ones([0 2])), 22, 4), sparse(0,2));  # sparse different from full
+
+## size = [2 1]
+%!test test_sparse_slice([2 1], 21, []);
+%!test test_sparse_slice([2 1], 21, 1);
+%!test test_sparse_slice([2 1], 21, 2);
+%!test test_sparse_slice([2 1], 21, 3);
+%!test test_sparse_slice([2 1], 21, 4);
+%!test test_sparse_slice([2 1], 22, []);
+%!test test_sparse_slice([2 1], 22, 1);
+%!test test_sparse_slice([2 1], 22, 2);
+%!test test_sparse_slice([2 1], 22, 3);
+%!test test_sparse_slice([2 1], 22, 4);
+
+## size = [1 2]
+%!test test_sparse_slice([1 2], 21, []);
+%!test test_sparse_slice([1 2], 21, 1);
+%!test test_sparse_slice([1 2], 21, 2);
+%!test test_sparse_slice([1 2], 21, 3);
+%!test test_sparse_slice([1 2], 21, 4);
+%!test test_sparse_slice([1 2], 22, []);
+%!test test_sparse_slice([1 2], 22, 1);
+%!test test_sparse_slice([1 2], 22, 2);
+%!test test_sparse_slice([1 2], 22, 3);
+%!test test_sparse_slice([1 2], 22, 4);
+
+## size = [2 2]
+%!test test_sparse_slice([2 2], 21, []);
+%!test test_sparse_slice([2 2], 21, 1);
+%!test test_sparse_slice([2 2], 21, 2);
+%!test test_sparse_slice([2 2], 21, 3);
+%!test test_sparse_slice([2 2], 21, 4);
+%!test test_sparse_slice([2 2], 22, []);
+%!test test_sparse_slice([2 2], 22, 1);
+%!test test_sparse_slice([2 2], 22, 2);
+%!test test_sparse_slice([2 2], 22, 3);
+%!test test_sparse_slice([2 2], 22, 4);
+
+*/
+
 template <class T>
 void
 Sparse<T>::print_info (std::ostream& os, const std::string& prefix) const

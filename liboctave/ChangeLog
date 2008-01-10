@@ -1,3 +1,7 @@
+2008-01-10  Kim Hansen  <kimhanse@gmail.com>
+
+	* Sparse.cc: New tests for slicing of sparse matrices.
+
 2008-01-07  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (SPARSE_ANY_ALL_OP_ROW_CODE): Don't break from

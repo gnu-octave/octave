@@ -1,3 +1,9 @@
+2008-01-10  John W. Eaton  <jwe@octave.org>
+
+	* mex.cc (calc_single_subscript_internal): New static function.
+	(mxArray_octave_value::calc_single_subscript): Use it.
+	(mxArray_matlab::calc_single_subscript): Use it.
+
 2008-01-07  John W. Eaton  <jwe@octave.org>
 
 	* src/pt-except.cc (tree_try_catch_command::eval):

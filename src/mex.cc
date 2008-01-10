@@ -271,6 +271,38 @@ protected:
   }
 };
 
+static mwIndex
+calc_single_subscript_internal (mwSize ndims, const mwSize *dims,
+				mwSize nsubs, const mwIndex *subs)
+{
+  mwIndex retval = 0;
+
+  switch (nsubs)
+    {
+    case 0:
+      break;
+
+    case 1:
+      retval = subs[0];
+      break;
+
+    default:
+      {
+	// Both nsubs and ndims should be at least 2 here.
+
+	mwSize n = nsubs <= ndims ? nsubs : ndims;
+
+	retval = subs[--n];
+
+	while (--n >= 0)
+	  retval = dims[n] * retval + subs[n];
+      }
+      break;
+    }
+
+  return retval;
+}
+
 // The object that handles values pass to MEX files from Octave.  Some
 // methods in this class may set mutate_flag to TRUE to tell the
 // mxArray class to convert to the Matlab-style representation and
@@ -605,17 +637,10 @@ public:
 
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
   {
-    mwIndex retval = 0;
-
     // Force ndims, dims to be cached.
     get_dimensions ();
 
-    mwIndex n = nsubs <= ndims ? nsubs : ndims;
-
-    while (--n > 0)
-      retval = retval * dims[n] + subs[n];
-
-    return retval;
+    return calc_single_subscript_internal (ndims, dims, nsubs, subs);
   }
 
   size_t get_element_size (void) const
@@ -996,14 +1021,7 @@ public:
 
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
   {
-    mwIndex retval = 0;
-
-    mwSize n = nsubs <= ndims ? nsubs : ndims;
-
-    while (--n > 0)
-      retval = retval * dims[n] + subs[n];
-
-    return retval;
+    return calc_single_subscript_internal (ndims, dims, nsubs, subs);
   }
 
   size_t get_element_size (void) const

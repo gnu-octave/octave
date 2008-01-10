@@ -1,3 +1,8 @@
+2008-01-10  John W. Eaton  <jwe@octave.org>
+
+	* plot/gnuplot_binary.m: New file.
+	* plot/Makefile.in (SOURCES): Add it to the list.
+
 2008-01-09  John W. Eaton  <jwe@octave.org>
 
 	* plot/drawnow.m: Fail if filename includes a directory part that

@@ -71,7 +71,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc chol.cc \
 	spchol.cc spdet.cc spfind.cc spkron.cc splu.cc spparms.cc spqr.cc \
 	sqrtm.cc svd.cc syl.cc symrcm.cc time.cc tsearch.cc typecast.cc \
 	urlwrite.cc __contourc__.cc __delaunayn__.cc __dsearchn__.cc \
-	__gnuplot_raw__.l __glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc \
+	__glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc \
 	__qp__.cc __voronoi__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
@@ -271,7 +271,6 @@ OCT_LINK_DEPS = \
    $(FFTW_LIBS) $(LIBS) $(FLIBS)
 
 BUILT_DISTFILES = DOCSTRINGS oct-gperf.h parse.cc lex.cc y.tab.h \
-	__gnuplot_raw__.cc \
 	$(OPT_HANDLERS) $(BUILT_EXTRAS)
 
 DISTFILES = Makefile.in ChangeLog genprops.awk mkdefs mkops mkgendoc \
@@ -285,7 +284,7 @@ all: octave$(EXEEXT) $(OCT_FILES) PKG_ADD DOCSTRINGS
 
 objects: $(OBJECTS)
 
-lex.o parse.o __gnuplot_raw__.o pic/lex.o pic/parse.o pic/__gnuplot_raw__.o: \
+lex.o parse.o pic/lex.o pic/parse.o: \
 	ALL_CXXFLAGS := $(filter-out -Wold-style-cast, $(ALL_CXXFLAGS))
 
 $(DLD_PICOBJ): \
@@ -329,7 +328,7 @@ $(LIBPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
-stamp-prereq: defaults.h graphics.h oct-conf.h oct-gperf.h parse.cc lex.cc __gnuplot_raw__.cc $(OPT_HANDLERS)
+stamp-prereq: defaults.h graphics.h oct-conf.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
 	touch stamp-prereq
 
 octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
@@ -531,7 +530,7 @@ distclean: clean
 
 maintainer-clean: distclean
 	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
-	rm -f oct-gperf.h __gnuplot_raw__.cc $(OPT_HANDLERS)
+	rm -f oct-gperf.h $(OPT_HANDLERS)
 .PHONY: maintainer-clean
 
 dist: parse.cc lex.cc oct-gperf.h
@@ -575,10 +574,6 @@ parse.cc : parse.y
 	fi
 
 lex.cc : lex.l
-	$(LEX) $(LFLAGS) $< > $(@F)-t
-	@$(builddir-move-if-change-rule)
-
-__gnuplot_raw__.cc : DLD-FUNCTIONS/__gnuplot_raw__.l
 	$(LEX) $(LFLAGS) $< > $(@F)-t
 	@$(builddir-move-if-change-rule)
 

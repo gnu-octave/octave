@@ -103,6 +103,7 @@ SOURCES = \
   fplot.m \
   gca.m \
   gcf.m \
+  gnuplot_binary.m \
   grid.m \
   hidden.m \
   hist.m \

@@ -1,5 +1,13 @@
 2008-01-10  John W. Eaton  <jwe@octave.org>
 
+	* DLD_FUNCTIONS/__gnuplot_raw__.l: Delete.
+	* Makefile.in (DLD_XSRC): Remove it from the list.
+	(BUILT_DISTFILES): Remove __gnuplot_raw__.cc from the list.
+	(stamp-prereq): Don't depend on __gnuplot_raw__.cc.
+	(maintainer-clean): Don't remove __gnuplot_raw__.cc.
+	(__gnuplot_raw__.cc): Delete target.
+	(__gnuplot_raw__.o, pic/__gnuplot_raw__.o): Delete targets.
+
 	* mex.cc (calc_single_subscript_internal): New static function.
 	(mxArray_octave_value::calc_single_subscript): Use it.
 	(mxArray_matlab::calc_single_subscript): Use it.

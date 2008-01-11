@@ -1,3 +1,8 @@
+2008-01-10  Ben Abbott  <bpabbott@mac.com>
+
+	* polynomial/mpoles.m: Avoid cases where poles could be assigned
+	to more than one multiplicity group.
+
 2008-01-10  John W. Eaton  <jwe@octave.org>
 
 	* plot/gnuplot_binary.m: New file.

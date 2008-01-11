@@ -100,6 +100,10 @@ function [multp, indx] = mpoles (p, tol, reorder)
       p0 = abs (p(n));
     endif
     k = find (dp < tol * p0);
+    ## Poles can only be members of one multiplicity group.
+    if (numel (indx))
+      k = k(! ismember (k, indx));
+    endif
     m = 1:numel (k);
     multp(k) = m;
     indx = [indx; k];

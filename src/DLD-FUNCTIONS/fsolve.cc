@@ -65,11 +65,10 @@ hybrd_info_to_fsolve_info (octave_idx_type info)
   switch (info)
     {
     case -1:
-      info = -2;
       break;
 
     case 0:
-      info = -1;
+      info = -2;
       break;
 
     case 1:
@@ -227,6 +226,24 @@ DEFUN_DLD (fsolve, args, nargout,
 Given @var{fcn}, the name of a function of the form @code{f (@var{x})}\n\
 and an initial starting point @var{x0}, @code{fsolve} solves the set of\n\
 equations such that @code{f(@var{x}) == 0}.\n\
+\n\
+On return, @var{fval} contains the value of the function @var{fcn}\n\
+evaluated at @var{x}, and @var{info} may be one of the following values:\n\
+\n\
+@table @asis\n\
+\n\
+@item -2\n\
+Invalid input parameters.\n\
+@item -1\n\
+Error in user-supplied function.\n\
+@item 1\n\
+Relative error between two consecutive iterates is at most the\n\
+specified tolerance (see @code{fsolve_options}).\n\
+@item 3\n\
+Algorithm failed to converge.\n\
+@item 4\n\
+Limit on number of function calls reached.\n\
+@end table\n\
 \n\
 If @var{fcn} is a two-element string array, or a two element cell array\n\
 containing either the function name or inline or function handle. The\n\

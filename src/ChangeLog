@@ -1,5 +1,8 @@
 2008-01-10  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Doc fix.
+	(hybrd_info_to_fsolve_info): Swap return values for -1 and -2 inputs.
+
 	* DLD_FUNCTIONS/__gnuplot_raw__.l: Delete.
 	* Makefile.in (DLD_XSRC): Remove it from the list.
 	(BUILT_DISTFILES): Remove __gnuplot_raw__.cc from the list.

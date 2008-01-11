@@ -79,7 +79,7 @@ roots of the system of equations.  For example, given the function
 @code{f} defined above,
 
 @example
-[x, info] = fsolve (@@f, [1; 2])
+[x, fval, info] = fsolve (@@f, [1; 2])
 @end example
 
 @noindent
@@ -90,6 +90,11 @@ x =
 
   0.57983
   2.54621
+
+fval =
+
+  -5.7184e-10
+   5.5460e-10
 
 info = 1
 @end example
@@ -141,7 +146,7 @@ endfunction
 Using this Jacobian is done with the following code
 
 @example
-[x, info] = fsolve (@{@@f, @@jacobian@}, [1; 2]);
+[x, fval, info] = fsolve (@{@@f, @@jacobian@}, [1; 2]);
 @end example
 
 @noindent

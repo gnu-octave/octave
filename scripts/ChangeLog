@@ -1,3 +1,18 @@
+2008-01-12  John W. Eaton  <jwe@octave.org>
+
+	* plot/gnuplot_binary.in: New file.
+	* plot/gnuplot_binary.m: Delete.
+	* plot/Makefile.in (SOURCES): Remove gnuplot_binary.m from the list.
+	(SOURCES_IN, GEN_M): New macros.
+	(DISTFILES): Include $(SOURCES_IN) in the list.
+	(FCN_FILES): Include $(GEN_M) in the list.
+	(all): Depend on $(GEN_M).
+	($(GEN_M): %.m : $(TOPDIR)/Makeconf): New pattern rule.
+
+2008-01-11  John W. Eaton  <jwe@octave.org>
+
+	* optimization/sqp.m: New test from example in doc string.
+
 2008-01-10  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/mpoles.m: Avoid cases where poles could be assigned

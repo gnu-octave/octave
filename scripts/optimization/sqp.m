@@ -712,3 +712,29 @@ function res = cigrad_ub_lb (x)
   endif
 
 ### endfunction
+
+%! function r = g (x)
+%!
+%!   r = [ sumsq(x)-10;
+%!         x(2)*x(3)-5*x(4)*x(5);
+%!         x(1)^3+x(2)^3+1 ];
+%! endfunction
+%!
+%! function obj = phi (x)
+%!   obj = exp(prod(x)) - 0.5*(x(1)^3+x(2)^3+1)^2;
+%! endfunction
+%!
+%!test
+%! x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
+%!
+%! [x, obj, info, iter, nf, lambda] = sqp (x0, @phi, @g, [])
+%!
+%! x_opt = [-1.717143501952599;
+%!           1.595709610928535;
+%!           1.827245880097156;
+%!          -0.763643103133572;
+%!          -0.763643068453300];
+%!
+%! obj_opt = 0.0539498477702739
+%!
+%! assert (all (abs (x-x_opt) < sqrt (eps)) && abs (obj-obj_opt) < sqrt (eps));

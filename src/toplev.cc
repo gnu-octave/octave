@@ -819,6 +819,7 @@ specified option.\n\
       { false, "FLIBS", OCTAVE_CONF_FLIBS },
       { false, "FPICFLAG", OCTAVE_CONF_FPICFLAG },
       { false, "GLPK_LIBS", OCTAVE_CONF_GLPK_LIBS },
+      { false, "GNUPLOT", OCTAVE_CONF_GNUPLOT },
       { false, "INCFLAGS", OCTAVE_CONF_INCFLAGS },
       { false, "LDFLAGS", OCTAVE_CONF_LDFLAGS },
       { false, "LD_CXX", OCTAVE_CONF_LD_CXX },

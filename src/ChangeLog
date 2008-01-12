@@ -1,3 +1,13 @@
+2008-01-12  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (octave_config_info): Add GNUPLOT to the struct.
+	* oct-conf.h.in (OCTAVE_CONF_GNUPLOT): New macro.
+
+2008-01-11  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__qp__.cc (qp): Undo part of change from
+	2007-09-04 (compute Y at each iteration).
+
 2008-01-10  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fsolve.cc (Ffsolve): Doc fix.

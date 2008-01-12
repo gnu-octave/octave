@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2000, 2001, 2004, 2005, 2006, 2007 Gabriele Pannocchia
+Copyright (C) 2000, 2001, 2004, 2005, 2006, 2007, 2008 Gabriele Pannocchia
 
 This file is part of Octave.
 
@@ -226,6 +226,9 @@ qp (const Matrix& H, const ColumnVector& q,
 	  // FIXME -- still remain to handle the case of
 	  // non-full rank active set matrix.
 
+	  // Computing the Y matrix (orthogonal to Z)
+	  Y = Aact.pseudo_inverse ();
+
 	  // Reduced Hessian
 	  Matrix Zt = Z.transpose ();
 	  Matrix rH = Zt * H * Z;
@@ -313,7 +316,6 @@ qp (const Matrix& H, const ColumnVector& q,
 	      // Computing the multipliers only for the inequality
 	      // constraints that are active.  We do NOT compute
 	      // multipliers for the equality constraints.
- 	      Y = Aact.pseudo_inverse ();
 	      Matrix Yt = Y.transpose ();
 	      Yt = Yt.extract_n (n_eq, 0, n_act-n_eq, n);
 	      lambda_tmp = Yt * (g + H * p);

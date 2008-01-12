@@ -1,3 +1,12 @@
+2008-01-12  John W. Eaton  <jwe@octave.org>
+
+	* aclocal.m4: Call AC_SUBST instead of AC_DEFINE_UNQOTED for
+	GNUPLOT_BINARY.
+	* aclocal.m4, configure.in: Use GNUPLOT instead of GNUPLOT_BINARY
+	as variable name.
+	* Makeconf.in (GNUPLOT): Substitute.
+	(do-subst-config-vals): Substitute GNUPLOT.
+
 2007-12-21  John W. Eaton  <jwe@octave.org>
 
 	Version 3.0.0 released.

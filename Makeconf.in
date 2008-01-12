@@ -35,6 +35,8 @@ export FIND
 PERL = @PERL@
 PYTHON = @PYTHON@
 
+GNUPLOT = @GNUPLOT@
+
 DESKTOP_FILE_INSTALL = @DESKTOP_FILE_INSTALL@
 
 # A shell command to extract the version number from version.h.
@@ -478,6 +480,7 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_FLIBS%|\"${FLIBS}\"|" \
   -e "s|%OCTAVE_CONF_FPICFLAG%|\"${FPICFLAG}\"|" \
   -e "s|%OCTAVE_CONF_GLPK_LIBS%|\"${GLPK_LIBS}\"|" \
+  -e "s|%OCTAVE_CONF_GNUPLOT%|\"${GNUPLOT}\"|" \
   -e "s|%OCTAVE_CONF_INCFLAGS%|\"${INCFLAGS}\"|" \
   -e "s|%OCTAVE_CONF_INCLUDEDIR%|\"${includedir}\"|" \
   -e "s|%OCTAVE_CONF_LD_CXX%|\"${LD_CXX}\"|" \

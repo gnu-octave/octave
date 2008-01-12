@@ -27,7 +27,7 @@
 
 function retval = gnuplot_binary (new_val)
 
-  persistent gp_binary = "gnuplot";
+  persistent gp_binary = %OCTAVE_CONF_GNUPLOT%;
 
   if (nargout > 0 || nargin == 0)
     retval = gp_binary;

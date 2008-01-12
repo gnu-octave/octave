@@ -502,13 +502,14 @@ case "$canonical_host_type" in
   ;;
 esac
 if test "$cross_compiling" = yes; then
-  AC_MSG_RESULT(assuming $GNUPLOT_BINARY exists on $canonical_host_type host)
+  GNUPLOT="$gp_default"
+  AC_MSG_RESULT(assuming $GNUPLOT exists on $canonical_host_type host)
 else
-  AC_CHECK_PROGS(GNUPLOT_BINARY, $gp_names)
-  if test -z "$GNUPLOT_BINARY"; then
+  AC_CHECK_PROGS(GNUPLOT, $gp_names)
+  if test -z "$GNUPLOT"; then
     warn_gnuplot=yes
 
-    GNUPLOT_BINARY="$gp_default"
+    GNUPLOT="$gp_default"
 
     ## If you change this text, be sure to also copy it to the set of
     ## warnings at the end of the script
@@ -524,10 +525,10 @@ else
     AC_MSG_WARN([])
     AC_MSG_WARN([at the Octave prompt.])
     AC_MSG_WARN([])
-    AC_MSG_WARN([Setting default value to $GNUPLOT_BINARY])
+    AC_MSG_WARN([Setting default value to $GNUPLOT])
   fi
 fi
-AC_DEFINE_UNQUOTED(GNUPLOT_BINARY, "$GNUPLOT_BINARY", [Name of gnuplot program.])
+AC_SUBST(GNUPLOT)
 ])
 dnl
 dnl Is gperf installed?

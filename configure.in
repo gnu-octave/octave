@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.601 $)
+AC_REVISION($Revision: 1.602 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -1875,7 +1875,7 @@ Octave is now configured for $canonical_host_type
   QHULL libraries:	$QHULL_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
-  gnuplot:              $GNUPLOT_BINARY
+  gnuplot:              $GNUPLOT
 
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Build static libraries:             $STATIC_LIBS

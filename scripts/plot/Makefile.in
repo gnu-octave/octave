@@ -103,7 +103,6 @@ SOURCES = \
   fplot.m \
   gca.m \
   gcf.m \
-  gnuplot_binary.m \
   grid.m \
   hidden.m \
   hist.m \
@@ -167,12 +166,16 @@ SOURCES = \
   zlabel.m \
   zlim.m
 
-DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
+SOURCES_IN = gnuplot_binary.in
 
-FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
+GEN_M = $(SOURCES_IN:.in=.m)
+
+DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES) $(SOURCES_IN))
+
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES)) $(GEN_M)
 FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
-all: PKG_ADD
+all: $(GEN_M) PKG_ADD
 .PHONY: all
 
 install install-strip:
@@ -210,3 +213,6 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/plot
 .PHONY: dist
+
+$(GEN_M): %.m : %.in $(TOPDIR)/Makeconf
+	@$(do-subst-config-vals)

@@ -214,7 +214,7 @@ public:
 
   void set_hidden (bool flag) { hidden = flag; }
 
-  virtual void set (const octave_value& val)
+  virtual void set (const octave_value&)
     { error ("set: invalid property \"%s\"", name.c_str ()); }
 
   virtual octave_value get (void) const
@@ -322,19 +322,19 @@ private:
 class radio_property : public base_property
 {
 public:
-  radio_property (const std::string& name, const graphics_handle& h,
+  radio_property (const std::string& nm, const graphics_handle& h,
                   const radio_values& v = radio_values ())
-    : base_property (name, h),
+    : base_property (nm, h),
       vals (v), current_val (v.default_value ()) { }
 
-  radio_property (const std::string& name, const graphics_handle& h,
+  radio_property (const std::string& nm, const graphics_handle& h,
                   const std::string& v)
-    : base_property (name, h),
+    : base_property (nm, h),
       vals (v), current_val (vals.default_value ()) { }
 
-  radio_property (const std::string& name, const graphics_handle& h,
+  radio_property (const std::string& nm, const graphics_handle& h,
                   const radio_values& v, const std::string& def)
-    : base_property (name, h),
+    : base_property (nm, h),
       vals (v), current_val (def) { }
 
   radio_property (const radio_property& p)
@@ -439,31 +439,31 @@ public:
       current_val (v.default_value ())
   { }
 
-  color_property (const std::string& name, const graphics_handle& h,
+  color_property (const std::string& nm, const graphics_handle& h,
                   const color_values& c = color_values (),
                   const radio_values& v = radio_values ())
-    : base_property (name, h),
+    : base_property (nm, h),
       current_type (color_t), color_val (c), radio_val (v),
       current_val (v.default_value ())
   { }
 
-  color_property (const std::string& name, const graphics_handle& h,
+  color_property (const std::string& nm, const graphics_handle& h,
                   const radio_values& v)
-    : base_property (name, h),
+    : base_property (nm, h),
       current_type (radio_t), color_val (color_values ()), radio_val (v),
       current_val (v.default_value ())
   { }
 
-  color_property (const std::string& name, const graphics_handle& h,
+  color_property (const std::string& nm, const graphics_handle& h,
                   const std::string& v)
-    : base_property (name, h),
+    : base_property (nm, h),
       current_type (radio_t), color_val (color_values ()), radio_val (v),
       current_val (radio_val.default_value ())
   { }
   
-  color_property (const std::string& name, const graphics_handle& h,
+  color_property (const std::string& nm, const graphics_handle& h,
                   const color_property& v)
-    : base_property (name, h),
+    : base_property (nm, h),
       current_type (v.current_type), color_val (v.color_val),
       radio_val (v.radio_val), current_val (v.current_val)
   { }
@@ -526,9 +526,9 @@ private:
 class double_property : public base_property
 {
 public:
-  double_property (const std::string& name, const graphics_handle& h,
+  double_property (const std::string& nm, const graphics_handle& h,
                    double d = 0)
-    : base_property (name, h),
+    : base_property (nm, h),
       current_val (d) { }
 
   double_property (const double_property& p)
@@ -562,9 +562,9 @@ private:
 class array_property : public base_property
 {
 public:
-  array_property (const std::string& name, const graphics_handle& h,
+  array_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m)
-    : base_property (), data (m) { }
+    : base_property (nm, h), data (m) { }
 
   octave_value get (void) const { return data; }
 
@@ -606,17 +606,17 @@ public:
   data_property (void)
     : base_property ("", graphics_handle ()) { }
 
-  data_property (const std::string& name, const graphics_handle& h,
+  data_property (const std::string& nm, const graphics_handle& h,
                  const NDArray& m = NDArray ())
-    : base_property (name, h),
+    : base_property (nm, h),
       data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
   {
     get_data_limits ();
   }
 
-  data_property (const std::string& name, const graphics_handle& h,
+  data_property (const std::string& nm, const graphics_handle& h,
                  const Matrix& m)
-    : base_property (name, h),
+    : base_property (nm, h),
       data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
   {
     get_data_limits ();
@@ -688,14 +688,14 @@ private:
 class bool_property : public radio_property
 {
 public:
-  bool_property (const std::string& name, const graphics_handle& h,
+  bool_property (const std::string& nm, const graphics_handle& h,
                  bool val)
-    : radio_property (name, h, radio_values (val ? "{on}|off" : "on|{off}"))
+    : radio_property (nm, h, radio_values (val ? "{on}|off" : "on|{off}"))
     { }
 
-  bool_property (const std::string& name, const graphics_handle& h,
+  bool_property (const std::string& nm, const graphics_handle& h,
                  const char* val)
-    : radio_property (name, h, radio_values ("on|off"), val)
+    : radio_property (nm, h, radio_values ("on|off"), val)
     { }
 
   bool_property (const bool_property& p)
@@ -723,9 +723,9 @@ public:
 class handle_property : public base_property
 {
 public:
-  handle_property (const std::string& name, const graphics_handle& h,
+  handle_property (const std::string& nm, const graphics_handle& h,
                    const graphics_handle& val = graphics_handle ())
-    : base_property (name, h),
+    : base_property (nm, h),
       current_val (val) { }
 
   handle_property (const handle_property& p)
@@ -758,9 +758,9 @@ private:
 class any_property : public base_property
 {
 public:
-  any_property (const std::string& name, const graphics_handle& h,
+  any_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m = Matrix ())
-    : base_property (), data (m) { }
+    : base_property (nm, h), data (m) { }
 
   octave_value get (void) const { return data; }
 
@@ -781,9 +781,9 @@ private:
 class callback_property : public base_property
 {
 public:
-  callback_property (const std::string& name, const graphics_handle& h,
+  callback_property (const std::string& nm, const graphics_handle& h,
                      const octave_value& m)
-    : base_property (), callback (m) { }
+    : base_property (nm, h), callback (m) { }
 
   octave_value get (void) const { return callback; }
 

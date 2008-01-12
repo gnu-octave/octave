@@ -267,7 +267,7 @@ color_property::set (const octave_value& val)
 bool
 array_property::validate (const octave_value& v)
 {
-  bool ok = false;
+  bool xok = false;
 
   // FIXME: should we always support []?
   if (v.is_empty () && v.is_double_type ())
@@ -277,41 +277,41 @@ array_property::validate (const octave_value& v)
   if (type_constraints.size () > 0)
     {
       for (std::list<std::string>::const_iterator it = type_constraints.begin ();
-           ! ok && it != type_constraints.end (); ++it)
+           ! xok && it != type_constraints.end (); ++it)
         if ((*it) == v.type_name ())
-          ok = true;
+          xok = true;
     }
   else
-    ok = v.is_double_type ();
+    xok = v.is_double_type ();
 
-  if (ok)
+  if (xok)
     {
       dim_vector vdims = v.dims ();
       int vlen = vdims.length ();
 
-      ok = false;
+      xok = false;
 
       // check value size
       if (size_constraints.size () > 0)
         for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
-             ! ok && it != size_constraints.end (); ++it)
+             ! xok && it != size_constraints.end (); ++it)
           {
             dim_vector itdims = (*it);
 
             if (itdims.length () == vlen)
               {
-                ok = true;
+                xok = true;
 
-                for (int i = 0; ok && i < vlen; i++)
+                for (int i = 0; xok && i < vlen; i++)
                   if (itdims(i) >= 0 && itdims(i) != vdims(i))
-                    ok = false;
+                    xok = false;
               }
           }
       else
         return true;
     }
 
-  return ok;
+  return xok;
 }
 
 void
@@ -335,7 +335,7 @@ handle_property::set (const octave_value& v)
 }
 
 bool
-callback_property::validate (const octave_value& v) const
+callback_property::validate (const octave_value&) const
 {
   // FIXME: implement this
   return true;
@@ -1180,10 +1180,10 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
-  color = octave_value (color_values (0, 0, 0));
-  xcolor = octave_value (color_values ("black"));
-  ycolor = octave_value (color_values ("black"));
-  zcolor = octave_value (color_values ("black"));
+  color = color_values (0, 0, 0);
+  xcolor = color_values ("black");
+  ycolor = color_values ("black");
+  zcolor = color_values ("black");
   xscale = "linear";
   yscale = "linear";
   zscale = "linear";

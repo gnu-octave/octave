@@ -203,7 +203,7 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile PKG_ADD
+	rm -f Makefile PKG_ADD $(GEN_M)
 .PHONY: distclean
 
 maintainer-clean: distclean

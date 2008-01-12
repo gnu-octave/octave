@@ -8,6 +8,7 @@
 	(FCN_FILES): Include $(GEN_M) in the list.
 	(all): Depend on $(GEN_M).
 	($(GEN_M): %.m : $(TOPDIR)/Makeconf): New pattern rule.
+	(distclean): Also remove $(GEN_M).
 
 2008-01-11  John W. Eaton  <jwe@octave.org>
 

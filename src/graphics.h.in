@@ -82,450 +82,6 @@ public:
 
 // ---------------------------------------------------------------------
 
-class radio_values
-{
-public:
-  radio_values (const std::string& opt_string = std::string ());
-
-  radio_values (const radio_values& a)
-    : default_val (a.default_val), possible_vals (a.possible_vals) { }
-
-  radio_values& operator = (const radio_values& a)
-  {
-    if (&a != this)
-      {
-	default_val = a.default_val;
-	possible_vals = a.possible_vals;
-      }
-
-    return *this;
-  }
-
-  std::string default_value (void) const { return default_val; }
-
-  bool validate (const std::string& val)
-  {
-    bool retval = true;
-
-    if (! contains (val))
-      {
-	error ("invalid value = %s", val.c_str ());
-	retval = false;
-      }
-
-    return retval;
-  }
-  
-  bool contains (const std::string& val)
-  {
-    return (possible_vals.find (val) != possible_vals.end ());
-  }
-
-private:
-  // Might also want to cache
-  std::string default_val;
-  std::set<caseless_str> possible_vals;
-};
-
-class radio_property
-{
-public:
-  radio_property (const radio_values& v = radio_values ())
-    : vals (v), current_val (v.default_value ()) { }
-
-  radio_property (const radio_property& a)
-    : vals (a.vals), current_val (a.current_val) { }
-
-  radio_property& operator = (const radio_property& a)
-  {
-    if (&a != this)
-      {
-	vals = a.vals;
-	current_val = a.current_val;
-      }
-
-    return *this;
-  }
-
-  radio_property& operator = (const std::string& newval)
-  {
-    if (vals.validate (newval))
-      current_val = newval;
-    else
-      error ("invalid value");
-
-    return *this;
-  }
-
-  radio_property& operator = (const octave_value& newval) 
-  {
-    if (newval.is_string ())
-      {
-	std::string s = newval.string_value ();
-	if (vals.validate (s))
-	  current_val = s;
-	else
-	  error ("invalid value");
-      }
-    else	
-      error ("invalid value");
-
-    return *this;
-  }
-
-  operator octave_value (void) const { return current_val; }
-
-  const std::string& current_value (void) const { return current_val; }
-
-private:
-  radio_values vals;
-  std::string current_val;
-};
-
-class color_values
-{
-public:
-  color_values (double r = 0, double g = 0, double b = 1)
-  {
-    xrgb[0] = r;
-    xrgb[1] = g;
-    xrgb[2] = b;
-
-    validate ();
-  }
-
-  color_values (std::string str)
-  {
-    if (! str2rgb (str))
-      error ("invalid color specification");
-  }
-
-  color_values (const color_values& c)
-  {
-    xrgb[0] = c.xrgb[0];
-    xrgb[1] = c.xrgb[1];
-    xrgb[2] = c.xrgb[2];
-  }
-
-  color_values& operator = (const color_values& c)
-  {
-    if (&c != this)
-      {
-	xrgb[0] = c.xrgb[0];
-	xrgb[1] = c.xrgb[1];
-	xrgb[2] = c.xrgb[2];
-
-      }
-
-    return *this;
-  }
-
-  const double* rgb (void) const { return xrgb; }
-
-  void validate (void) const
-  {
-    for (int i = 0; i < 3; i++)
-      {
-	if (xrgb[i] < 0 ||  xrgb[i] > 1)
-	  {
-	    error ("invalid RGB color specification");
-	    break;
-	  }
-      }
-  }
-
-private:
-  double xrgb[3];
-
-  bool str2rgb (std::string str);
-};
-
-
-class color_property
-{
-public:
-  color_property (const color_values& c = color_values (),
-		  const radio_values& v = radio_values ())
-    : current_type (color_t), color_val (c), radio_val (v),
-      current_val (v.default_value ())
-  { }
-
-  color_property (const radio_values& v)
-    : current_type (radio_t), color_val (color_values ()), radio_val (v),
-      current_val (v.default_value ())
-  { }
-
-  color_property (const radio_values& v, const std::string& initial_value)
-    : current_type (radio_t), color_val (color_values ()), radio_val (v),
-      current_val (initial_value)
-  { }
-
-  color_property (const octave_value& val);
-
-  operator octave_value (void) const
-  {
-    if (current_type == color_t)
-      {
-	Matrix retval (1, 3);
-	const double *xrgb = color_val.rgb ();
-
-	for (int i = 0; i < 3 ; i++)
-	  retval(i) = xrgb[i];
-
-	return retval;
-      }
-
-    return current_val;
-  }
-
-  color_property& operator = (const color_property& a)
-  {
-    if (&a != this)
-      {
-	current_type = a.current_type;
-	color_val = a.color_val;
-	radio_val = a.radio_val;
-	current_val = a.current_val;
-      }
-
-    return *this;
-  }
-
-  color_property& operator = (const std::string& newval)
-  {
-    if (radio_val.validate (newval))
-      {
-	current_val = newval;
-	current_type = radio_t;
-      }
-
-    return *this;
-  }
-
-  color_property& operator = (const color_values& newval)
-  {
-    color_val = newval;
-    current_type = color_t;
-
-    return *this;
-  }
-
-  color_property& operator = (const octave_value& newval);
-
-  bool is_rgb (void) const { return (current_type == color_t); }
-
-  bool is_radio (void) const { return (current_type == radio_t); }
-
-  const double* rgb (void) const
-  {
-    if (current_type != color_t)
-      error ("color has no rgb value");
-
-    return color_val.rgb ();
-  }
-
-  const std::string& current_value (void) const
-  {
-    if (current_type != radio_t)
-      error ("color has no radio value");
-
-    return current_val;
-  }
-
-private:
-  enum current_enum { color_t, radio_t } current_type;
-  color_values color_val;
-  radio_values radio_val;
-  std::string current_val;
-};
-
-class colormap_property
-{
-public:
-  colormap_property (const Matrix& m = Matrix ())
-    : cmap (m)
-  {
-    if (cmap.is_empty ())
-      {
-	cmap = Matrix (64, 3, 0.0);
-
-	for (octave_idx_type i = 0; i < 64; i++)
-	  {
-	    // This is the jet colormap.  It would be nice to be able
-	    // to feval the jet function but since there is a static
-	    // property object that includes a colormap_property
-	    // object, we need to initialize this before main is even
-	    // called, so calling an interpreted function is not
-	    // possible.
-
-	    double x = i / 63.0;
-
-	    if (x >= 3.0/8.0 && x < 5.0/8.0)
-	      cmap(i,0) = 4.0 * x - 3.0/2.0;
-	    else if (x >= 5.0/8.0 && x < 7.0/8.0)
-	      cmap(i,0) = 1.0;
-	    else if (x >= 7.0/8.0)
-	      cmap(i,0) = -4.0 * x + 9.0/2.0;
-
-	    if (x >= 1.0/8.0 && x < 3.0/8.0)
-	      cmap(i,1) = 4.0 * x - 1.0/2.0;
-	    else if (x >= 3.0/8.0 && x < 5.0/8.0)
-	      cmap(i,1) = 1.0;
-	    else if (x >= 5.0/8.0 && x < 7.0/8.0)
-	      cmap(i,1) = -4.0 * x + 7.0/2.0;
-
-	    if (x < 1.0/8.0)
-	      cmap(i,2) = 4.0 * x + 1.0/2.0;
-	    else if (x >= 1.0/8.0 && x < 3.0/8.0)
-	      cmap(i,2) = 1.0;
-	    else if (x >= 3.0/8.0 && x < 5.0/8.0)
-	      cmap(i,2) = -4.0 * x + 5.0/2.0;
-	  }
-      }
-
-    validate ();
-  }
-
-  colormap_property (const octave_value& val)
-  {
-    cmap = val.matrix_value ();
-
-    validate ();
-  }
-
-  void validate (void) const
-  {
-    if (error_state || cmap.columns () != 3)
-      error ("invalid colormap specification");
-  }
-
-  operator octave_value (void) const { return cmap; }
-
-private:
-  Matrix cmap;
-};
-
-class data_property
-{
-public:
-  data_property (const NDArray& m = NDArray ())
-    : data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
-  {
-    get_data_limits ();
-  }
-
-  data_property (const Matrix& m)
-    : data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
-  {
-    get_data_limits ();
-  }
-
-  data_property (const octave_value& val)
-    : data (), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
-  {
-    data = val.array_value ();
-
-    get_data_limits ();
-  }
-
-  data_property& operator = (const data_property& a)
-  {
-    if (&a != this)
-      {
-	data = a.data;
-	xmin = a.xmin;
-	xmax = a.xmax;
-	xminp = a.xminp;
-      }
-
-    return *this;
-  }
-
-  operator octave_value (void) const { return data; }
-
-  double min_val (void) const { return xmin; }
-  double max_val (void) const { return xmax; }
-  double min_pos (void) const { return xminp; }
-
-private:
-  NDArray data;
-  double xmin;
-  double xmax;
-  double xminp;
-
-  void get_data_limits (void)
-  {
-    octave_idx_type nel = data.numel ();
-
-    if (nel > 0)
-      {
-	const double *d = data.data ();
-
-	for (octave_idx_type i = 0; i < nel; i++)
-	  {
-	    double val = d[i];
-
-	    if (! (xisinf (val) || xisnan (val)))
-	      {
-		if (val < xmin)
-		  xmin = val;
-
-		if (val > xmax)
-		  xmax = val;
-
-		if (val > 0 && val < xminp)
-		  xminp = val;
-	      }
-	  }
-      }
-  }
-};
-
-class property_list
-{
-public:
-  typedef std::map<std::string, octave_value> pval_map_type;
-  typedef std::map<std::string, pval_map_type> plist_map_type;
-  
-  typedef pval_map_type::iterator pval_map_iterator;
-  typedef pval_map_type::const_iterator pval_map_const_iterator;
-
-  typedef plist_map_type::iterator plist_map_iterator;
-  typedef plist_map_type::const_iterator plist_map_const_iterator;
-
-  property_list (const plist_map_type& m = plist_map_type ())
-    : plist_map (m) { }
-
-  ~property_list (void) { }
-
-  void set (const caseless_str& name, const octave_value& val);
-
-  octave_value lookup (const caseless_str& name) const;
-
-  plist_map_iterator begin (void) { return plist_map.begin (); }
-  plist_map_const_iterator begin (void) const { return plist_map.begin (); }
-
-  plist_map_iterator end (void) { return plist_map.end (); }
-  plist_map_const_iterator end (void) const { return plist_map.end (); }
-
-  plist_map_iterator find (const std::string& go_name)
-  {
-    return plist_map.find (go_name);
-  }
-
-  plist_map_const_iterator find (const std::string& go_name) const
-  {
-    return plist_map.find (go_name);
-  }
-
-  Octave_map as_struct (const std::string& prefix_arg) const;
-
-private:
-  plist_map_type plist_map;
-};
-
-// ---------------------------------------------------------------------
-
 class graphics_handle
 {
 public:
@@ -626,16 +182,790 @@ operator > (const graphics_handle& a, const graphics_handle& b)
 
 // ---------------------------------------------------------------------
 
+class property;
+
+class base_property
+{
+public:
+  friend class property;
+
+public:
+  base_property (void) : count (0) { }
+
+  base_property (const std::string& s, const graphics_handle& h)
+    : count (0), name (s), parent (h), hidden (false) { }
+
+  base_property (const base_property& p)
+    : count (0), name (p.name), parent (p.parent), hidden (p.hidden) { }
+
+  virtual ~base_property (void) { }
+
+  bool ok (void) const { return parent.ok (); }
+
+  std::string get_name (void) const { return name; }
+
+  void set_name (const std::string& s) { name = s; }
+
+  graphics_handle get_parent (void) const { return parent; }
+
+  void set_parent (const graphics_handle &h) { parent = h; }
+
+  bool is_hidden (void) const { return hidden; }
+
+  void set_hidden (bool flag) { hidden = flag; }
+
+  virtual void set (const octave_value& val)
+    { error ("set: invalid property \"%s\"", name.c_str ()); }
+
+  virtual octave_value get (void) const
+    {
+      error ("get: invalid property \"%s\"", name.c_str ());
+      return octave_value ();
+    }
+
+  base_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  int count;
+  std::string name;
+  graphics_handle parent;
+  bool hidden;
+};
+
+// ---------------------------------------------------------------------
+
+class string_property : public base_property
+{
+public:
+  string_property (const std::string& s, const graphics_handle& h,
+                   const std::string& val = "")
+    : base_property (s, h), str (val) { }
+
+  string_property (const string_property& p)
+    : base_property (p), str (p.str) { }
+
+  void set (const octave_value& val)
+    {
+      if (val.is_string ())
+        str = val.string_value ();
+      else
+        error ("set: invalid string property value for \"%s\"",
+               get_name ().c_str ());
+    }
+
+  octave_value get (void) const
+    { return octave_value (str); }
+
+  std::string string_value (void) const { return str; }
+
+  string_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  std::string str;
+};
+
+// ---------------------------------------------------------------------
+
+class radio_values
+{
+public:
+  OCTINTERP_API radio_values (const std::string& opt_string = std::string ());
+
+  radio_values (const radio_values& a)
+    : default_val (a.default_val), possible_vals (a.possible_vals) { }
+
+  radio_values& operator = (const radio_values& a)
+  {
+    if (&a != this)
+      {
+	default_val = a.default_val;
+	possible_vals = a.possible_vals;
+      }
+
+    return *this;
+  }
+
+  std::string default_value (void) const { return default_val; }
+
+  bool validate (const std::string& val)
+  {
+    bool retval = true;
+
+    if (! contains (val))
+      {
+	error ("invalid value = %s", val.c_str ());
+	retval = false;
+      }
+
+    return retval;
+  }
+  
+  bool contains (const std::string& val)
+  {
+    return (possible_vals.find (val) != possible_vals.end ());
+  }
+
+private:
+  // Might also want to cache
+  std::string default_val;
+  std::set<caseless_str> possible_vals;
+};
+
+class radio_property : public base_property
+{
+public:
+  radio_property (const std::string& name, const graphics_handle& h,
+                  const radio_values& v = radio_values ())
+    : base_property (name, h),
+      vals (v), current_val (v.default_value ()) { }
+
+  radio_property (const std::string& name, const graphics_handle& h,
+                  const std::string& v)
+    : base_property (name, h),
+      vals (v), current_val (vals.default_value ()) { }
+
+  radio_property (const std::string& name, const graphics_handle& h,
+                  const radio_values& v, const std::string& def)
+    : base_property (name, h),
+      vals (v), current_val (def) { }
+
+  radio_property (const radio_property& p)
+    : base_property (p), vals (p.vals), current_val (p.current_val) { }
+
+  void set (const octave_value& newval) 
+  {
+    if (newval.is_string ())
+      {
+        std::string s = newval.string_value ();
+        if (vals.validate (s))
+          current_val = s;
+        else
+          error ("set: invalid value for radio property \"%s\" (value = %s)",
+              get_name ().c_str (), s.c_str ());
+      }
+    else	
+      error ("set: invalid value for radio property \"%s\"",
+          get_name ().c_str ());
+  }
+
+  octave_value get (void) const { return octave_value (current_val); }
+
+  const std::string& current_value (void) const { return current_val; }
+
+  bool is (const caseless_str& v) const
+    { return v.compare (current_val); }
+
+  radio_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  radio_values vals;
+  std::string current_val;
+};
+
+// ---------------------------------------------------------------------
+
+class color_values
+{
+public:
+  color_values (double r = 0, double g = 0, double b = 1)
+    : xrgb (1, 3)
+  {
+    xrgb(0) = r;
+    xrgb(1) = g;
+    xrgb(2) = b;
+
+    validate ();
+  }
+
+  color_values (std::string str)
+    : xrgb (1, 3)
+  {
+    if (! str2rgb (str))
+      error ("invalid color specification: %s", str.c_str ());
+  }
+
+  color_values (const color_values& c)
+    : xrgb (c.xrgb)
+  { }
+
+  color_values& operator = (const color_values& c)
+  {
+    if (&c != this)
+      xrgb = c.xrgb;
+
+    return *this;
+  }
+
+  Matrix rgb (void) const { return xrgb; }
+
+  operator octave_value (void) const { return xrgb; }
+
+  void validate (void) const
+  {
+    for (int i = 0; i < 3; i++)
+      {
+	if (xrgb(i) < 0 ||  xrgb(i) > 1)
+	  {
+	    error ("invalid RGB color specification");
+	    break;
+	  }
+      }
+  }
+
+private:
+  Matrix xrgb;
+
+  OCTINTERP_API bool str2rgb (std::string str);
+};
+
+class color_property : public base_property
+{
+public:
+  color_property (const color_values& c, const radio_values& v)
+    : base_property ("", graphics_handle ()),
+      current_type (color_t), color_val (c), radio_val (v),
+      current_val (v.default_value ())
+  { }
+
+  color_property (const std::string& name, const graphics_handle& h,
+                  const color_values& c = color_values (),
+                  const radio_values& v = radio_values ())
+    : base_property (name, h),
+      current_type (color_t), color_val (c), radio_val (v),
+      current_val (v.default_value ())
+  { }
+
+  color_property (const std::string& name, const graphics_handle& h,
+                  const radio_values& v)
+    : base_property (name, h),
+      current_type (radio_t), color_val (color_values ()), radio_val (v),
+      current_val (v.default_value ())
+  { }
+
+  color_property (const std::string& name, const graphics_handle& h,
+                  const std::string& v)
+    : base_property (name, h),
+      current_type (radio_t), color_val (color_values ()), radio_val (v),
+      current_val (radio_val.default_value ())
+  { }
+  
+  color_property (const std::string& name, const graphics_handle& h,
+                  const color_property& v)
+    : base_property (name, h),
+      current_type (v.current_type), color_val (v.color_val),
+      radio_val (v.radio_val), current_val (v.current_val)
+  { }
+
+  color_property (const color_property& p)
+    : base_property (p), current_type (p.current_type),
+      color_val (p.color_val), radio_val (p.radio_val),
+      current_val (p.current_val) { }
+
+  octave_value get (void) const
+  {
+    if (current_type == color_t)
+      return color_val.rgb ();
+
+    return current_val;
+  }
+
+  OCTINTERP_API void set (const octave_value& newval);
+
+  bool is_rgb (void) const { return (current_type == color_t); }
+
+  bool is_radio (void) const { return (current_type == radio_t); }
+
+  bool is (const std::string& v) const
+    { return (is_radio () && current_val == v); }
+
+  Matrix rgb (void) const
+  {
+    if (current_type != color_t)
+      error ("color has no rgb value");
+
+    return color_val.rgb ();
+  }
+
+  const std::string& current_value (void) const
+  {
+    if (current_type != radio_t)
+      error ("color has no radio value");
+
+    return current_val;
+  }
+
+  color_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+  operator octave_value (void) const { return get (); }
+
+private:
+  enum current_enum { color_t, radio_t } current_type;
+  color_values color_val;
+  radio_values radio_val;
+  std::string current_val;
+};
+
+// ---------------------------------------------------------------------
+
+class double_property : public base_property
+{
+public:
+  double_property (const std::string& name, const graphics_handle& h,
+                   double d = 0)
+    : base_property (name, h),
+      current_val (d) { }
+
+  double_property (const double_property& p)
+    : base_property (p), current_val (p.current_val) { }
+
+  void set (const octave_value& v)
+    {
+      if (v.is_scalar_type () && v.is_real_type ())
+        current_val = v.double_value ();
+      else
+        error ("set: invalid value for double property \"%s\"",
+               get_name ().c_str ());
+    }
+
+  octave_value get (void) const { return octave_value (current_val); }
+
+  double double_value (void) const { return current_val; }
+
+  double_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  double current_val;
+};
+
+// ---------------------------------------------------------------------
+
+class array_property : public base_property
+{
+public:
+  array_property (const std::string& name, const graphics_handle& h,
+                  const octave_value& m)
+    : base_property (), data (m) { }
+
+  octave_value get (void) const { return data; }
+
+  void set (const octave_value& v)
+    {
+      if (validate (v))
+        data = v;
+      else
+        error ("invalid value for array property \"%s\"",
+               get_name ().c_str ());
+    }
+
+  void add_constraint (const std::string& type)
+    { type_constraints.push_back (type); }
+
+  void add_constraint (dim_vector dims)
+    { size_constraints.push_back (dims); }
+
+  array_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  OCTINTERP_API bool validate (const octave_value& v);
+
+private:
+  octave_value data;
+  std::list<std::string> type_constraints;
+  std::list<dim_vector> size_constraints;
+};
+
+// ---------------------------------------------------------------------
+
+class data_property : public base_property
+{
+public:
+  data_property (void)
+    : base_property ("", graphics_handle ()) { }
+
+  data_property (const std::string& name, const graphics_handle& h,
+                 const NDArray& m = NDArray ())
+    : base_property (name, h),
+      data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
+  {
+    get_data_limits ();
+  }
+
+  data_property (const std::string& name, const graphics_handle& h,
+                 const Matrix& m)
+    : base_property (name, h),
+      data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
+  {
+    get_data_limits ();
+  }
+
+  data_property (const data_property& p)
+    : base_property (p), data (p.data),
+      xmin (p.xmin), xmax (p.xmax), xminp (p.xminp) { }
+
+  void set (const octave_value& val)
+  {
+    data = val.array_value ();
+
+    get_data_limits ();
+  }
+
+  octave_value get (void) const { return data; }
+
+  NDArray array_value (void) const { return data; }
+
+  Matrix matrix_value (void) const { return data.matrix_value (); }
+
+  double min_val (void) const { return xmin; }
+  double max_val (void) const { return xmax; }
+  double min_pos (void) const { return xminp; }
+
+  data_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  NDArray data;
+  double xmin;
+  double xmax;
+  double xminp;
+
+  void get_data_limits (void)
+  {
+    octave_idx_type nel = data.numel ();
+
+    if (nel > 0)
+      {
+	const double *d = data.data ();
+
+	for (octave_idx_type i = 0; i < nel; i++)
+	  {
+	    double val = d[i];
+
+	    if (! (xisinf (val) || xisnan (val)))
+	      {
+		if (val < xmin)
+		  xmin = val;
+
+		if (val > xmax)
+		  xmax = val;
+
+		if (val > 0 && val < xminp)
+		  xminp = val;
+	      }
+	  }
+      }
+  }
+};
+
+// ---------------------------------------------------------------------
+
+class bool_property : public radio_property
+{
+public:
+  bool_property (const std::string& name, const graphics_handle& h,
+                 bool val)
+    : radio_property (name, h, radio_values (val ? "{on}|off" : "on|{off}"))
+    { }
+
+  bool_property (const std::string& name, const graphics_handle& h,
+                 const char* val)
+    : radio_property (name, h, radio_values ("on|off"), val)
+    { }
+
+  bool_property (const bool_property& p)
+    : radio_property (p) { }
+
+  void set (const octave_value& val)
+    {
+      if (val.is_bool_scalar ())
+        radio_property::set (val.bool_value () ? "on" : "off");
+      else
+        radio_property::set (val);
+    }
+
+  bool is_on (void) const { return is ("on"); }
+  
+  bool_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+};
+
+// ---------------------------------------------------------------------
+
+class handle_property : public base_property
+{
+public:
+  handle_property (const std::string& name, const graphics_handle& h,
+                   const graphics_handle& val = graphics_handle ())
+    : base_property (name, h),
+      current_val (val) { }
+
+  handle_property (const handle_property& p)
+    : base_property (p), current_val (p.current_val) { }
+
+  OCTINTERP_API void set (const octave_value& v);
+
+  octave_value get (void) const { return current_val.as_octave_value (); }
+
+  graphics_handle handle_value (void) const { return current_val; }
+
+  handle_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+  handle_property& operator = (const graphics_handle& h)
+    {
+      set (octave_value (h.value ()));
+      return *this;
+    }
+
+private:
+  graphics_handle current_val;
+};
+
+// ---------------------------------------------------------------------
+
+class any_property : public base_property
+{
+public:
+  any_property (const std::string& name, const graphics_handle& h,
+                  const octave_value& m = Matrix ())
+    : base_property (), data (m) { }
+
+  octave_value get (void) const { return data; }
+
+  void set (const octave_value& v) { data = v; }
+
+  any_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  octave_value data;
+};
+
+// ---------------------------------------------------------------------
+
+class callback_property : public base_property
+{
+public:
+  callback_property (const std::string& name, const graphics_handle& h,
+                     const octave_value& m)
+    : base_property (), callback (m) { }
+
+  octave_value get (void) const { return callback; }
+
+  void set (const octave_value& v)
+    {
+      if (validate (v))
+        callback = v;
+      else
+        error ("invalid value for callback property \"%s\"",
+               get_name ().c_str ());
+    }
+
+  OCTINTERP_API void execute (void);
+
+  callback_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  OCTINTERP_API bool validate (const octave_value& v) const;
+
+private:
+  octave_value callback;
+};
+
+// ---------------------------------------------------------------------
+
+class property
+{
+public:
+  property (void) : rep (new base_property ("", graphics_handle ()))
+    { rep->count++; }
+
+  property (base_property *bp, bool persist = false) : rep (bp)
+    { rep->count++; if (persist) rep->count++; }
+
+  property (const property& p)
+    {
+      rep = p.rep;
+      rep->count++;
+    }
+
+  ~property (void)
+    {
+      if (--rep->count <= 0)
+        delete rep;
+    }
+
+  bool ok (void) const
+    { return rep->ok (); }
+
+  std::string get_name (void) const
+    { return rep->get_name (); }
+
+  void set_name (const std::string& name)
+    { rep->set_name (name); }
+
+  graphics_handle get_parent (void) const
+    { return rep->get_parent (); }
+
+  void set_parent (const graphics_handle& h)
+    { rep->set_parent (h); }
+
+  bool is_hidden (void) const
+    { return rep->is_hidden (); }
+
+  void set_hidden (bool flag)
+    { rep->set_hidden (flag); }
+
+  octave_value get (void) const
+    { return rep->get (); }
+
+  void set (const octave_value& val)
+    { rep->set (val); }
+
+  property& operator = (const octave_value& val)
+    {
+      *rep = val;
+      return *this;
+    }
+
+  property& operator = (const property& p)
+    {
+      if (rep && --rep->count <= 0)
+        delete rep;
+      
+      rep = p.rep;
+      rep->count++;
+
+      return *this;
+    }
+
+  /*
+  const string_property& as_string_property (void) const
+    { return *(dynamic_cast<string_property*> (rep)); }
+
+  const radio_property& as_radio_property (void) const
+    { return *(dynamic_cast<radio_property*> (rep)); }
+
+  const color_property& as_color_property (void) const
+    { return *(dynamic_cast<color_property*> (rep)); }
+
+  const double_property& as_double_property (void) const
+    { return *(dynamic_cast<double_property*> (rep)); }
+
+  const data_property& as_data_property (void) const
+    { return *(dynamic_cast<data_property*> (rep)); }
+  
+  const bool_property& as_bool_property (void) const
+    { return *(dynamic_cast<bool_property*> (rep)); }
+  
+  const handle_property& as_handle_property (void) const
+    { return *(dynamic_cast<handle_property*> (rep)); }
+    */
+
+private:
+  base_property *rep;
+};
+
+// ---------------------------------------------------------------------
+
+class property_list
+{
+public:
+  typedef std::map<std::string, octave_value> pval_map_type;
+  typedef std::map<std::string, pval_map_type> plist_map_type;
+  
+  typedef pval_map_type::iterator pval_map_iterator;
+  typedef pval_map_type::const_iterator pval_map_const_iterator;
+
+  typedef plist_map_type::iterator plist_map_iterator;
+  typedef plist_map_type::const_iterator plist_map_const_iterator;
+
+  property_list (const plist_map_type& m = plist_map_type ())
+    : plist_map (m) { }
+
+  ~property_list (void) { }
+
+  void set (const caseless_str& name, const octave_value& val);
+
+  octave_value lookup (const caseless_str& name) const;
+
+  plist_map_iterator begin (void) { return plist_map.begin (); }
+  plist_map_const_iterator begin (void) const { return plist_map.begin (); }
+
+  plist_map_iterator end (void) { return plist_map.end (); }
+  plist_map_const_iterator end (void) const { return plist_map.end (); }
+
+  plist_map_iterator find (const std::string& go_name)
+  {
+    return plist_map.find (go_name);
+  }
+
+  plist_map_const_iterator find (const std::string& go_name) const
+  {
+    return plist_map.find (go_name);
+  }
+
+  Octave_map as_struct (const std::string& prefix_arg) const;
+
+private:
+  plist_map_type plist_map;
+};
+
+// ---------------------------------------------------------------------
+
 class base_graphics_object;
 
 class base_properties
 {
 public:
   base_properties (const std::string& ty = "unknown",
-		   const graphics_handle& mh = graphics_handle (),
-		   const graphics_handle& p = graphics_handle ())
-    : tag (), type (ty), __modified__ (true), __myhandle__ (mh),
-      parent (p), children () { }
+                   const graphics_handle& mh = graphics_handle (),
+                   const graphics_handle& p = graphics_handle ())
+    : tag ("tag", mh),
+      type ("type", mh, ty),
+      __modified__ ("__modified__", mh, true),
+      __myhandle__ (mh),
+      parent ("parent", mh, p), children ()
+    { }
 
   virtual ~base_properties (void) { }
 
@@ -650,15 +980,28 @@ public:
 
   void set_from_list (base_graphics_object& obj, property_list& defaults);
 
-  virtual void set (const caseless_str&, const octave_value&) { }
+  void insert_property (const std::string& name, property p)
+    {
+      p.set_name (name);
+      p.set_parent (__myhandle__);
+      all_props[name] = p;
+    }
 
-  std::string get_tag (void) const { return tag; }
+  virtual void set (const caseless_str&, const octave_value&);
 
-  graphics_handle get_parent (void) const { return parent; }
+  virtual octave_value get (const caseless_str&) const;
 
-  std::string get_type (void) const { return type; }
+  virtual octave_value get (void) const;
 
-  bool is_modified (void) const { return __modified__; }
+  property get_property (const caseless_str&) const;
+
+  std::string get_tag (void) const { return tag.string_value (); }
+
+  graphics_handle get_parent (void) const { return parent.handle_value (); }
+
+  std::string get_type (void) const { return type.string_value (); }
+
+  bool is_modified (void) const { return __modified__.is_on (); }
  
   graphics_handle get___myhandle__ (void) const { return __myhandle__; }
  
@@ -671,7 +1014,7 @@ public:
     children(n) = h.value ();
   }
 
-  void set_tag (const octave_value& val);
+  void set_tag (const octave_value& val) { tag = val; }
 
   void set_parent (const octave_value& val);
 
@@ -690,61 +1033,71 @@ public:
   // genprops.awk script.
   //
   // EMIT_BASE_PROPERTIES_GET_FUNCTIONS
-  virtual data_property get_xdata (void) const
+  virtual data_property get_xdata_property (void) const
   {
     error ("get: invalid property \"xdata\"");
     return data_property ();
   }
 
-  virtual data_property get_ydata (void) const
+  virtual data_property get_ydata_property (void) const
   {
     error ("get: invalid property \"ydata\"");
     return data_property ();
   }
 
-  virtual data_property get_zdata (void) const
+  virtual data_property get_zdata_property (void) const
   {
     error ("get: invalid property \"zdata\"");
     return data_property ();
   }
 
-  virtual data_property get_ldata (void) const
+  virtual data_property get_ldata_property (void) const
   {
     error ("get: invalid property \"ldata\"");
     return data_property ();
   }
 
-  virtual data_property get_udata (void) const
+  virtual data_property get_udata_property (void) const
   {
     error ("get: invalid property \"udata\"");
     return data_property ();
   }
 
-  virtual data_property get_xldata (void) const
+  virtual data_property get_xldata_property (void) const
   {
     error ("get: invalid property \"xldata\"");
     return data_property ();
   }
 
-  virtual data_property get_xudata (void) const
+  virtual data_property get_xudata_property (void) const
   {
     error ("get: invalid property \"xudata\"");
     return data_property ();
   }
 
-  virtual data_property get_cdata (void) const
+  virtual data_property get_cdata_property (void) const
   {
     error ("get: invalid property \"cdata\"");
     return data_property ();
   }
 
 protected:
-  std::string tag;
-  std::string type;
-  bool __modified__;
+  string_property tag;
+  string_property type;
+  bool_property __modified__;
   graphics_handle __myhandle__;
-  graphics_handle parent;
+  handle_property parent;
+  // FIXME: use a property class for children
   Matrix children;
+
+protected:
+  std::map<caseless_str, property> all_props;
+
+protected:
+  void insert_static_property (const std::string& name, base_property& p)
+    { insert_property (name, property (&p, true)); }
+  
+  virtual void init (void) { }
 };
 
 class base_graphics_object
@@ -981,52 +1334,52 @@ public:
   // genprops.awk script.
   //
   // EMIT_GRAPHICS_OBJECT_GET_FUNCTIONS
-  data_property get_xdata (void) const
+  data_property get_xdata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_xdata ();
+    return props.get_xdata_property ();
   }
 
-  data_property get_ydata (void) const
+  data_property get_ydata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_ydata ();
+    return props.get_ydata_property ();
   }
 
-  data_property get_zdata (void) const
+  data_property get_zdata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_zdata ();
+    return props.get_zdata_property ();
   }
 
-  data_property get_ldata (void) const
+  data_property get_ldata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_ldata ();
+    return props.get_ldata_property ();
   }
 
-  data_property get_udata (void) const
+  data_property get_udata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_udata ();
+    return props.get_udata_property ();
   }
 
-  data_property get_xldata (void) const
+  data_property get_xldata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_xldata ();
+    return props.get_xldata_property ();
   }
 
-  data_property get_xudata (void) const
+  data_property get_xudata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_xudata ();
+    return props.get_xudata_property ();
   }
 
-  data_property get_cdata (void) const
+  data_property get_cdata_property (void) const
   {
     const base_properties& props = get_properties ();
-    return props.get_cdata ();
+    return props.get_cdata_property ();
   }
 
 private:
@@ -1041,31 +1394,13 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (void)
-      : base_properties ("root figure", 0, graphics_handle ()),
-	currentfigure (),
-	visible ("on")
-    { }
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
-
-    std::string graphics_object_name (void) const { return go_name; }
-
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      graphics_handle currentfigure S
-      octave_value visible
+    BEGIN_PROPERTIES(root_figure)
+      handle_property currentfigure S , graphics_handle ()
+      bool_property visible , "on"
     END_PROPERTIES
-
-    static std::string go_name;
   };
 
 private:
@@ -1073,7 +1408,7 @@ private:
 
 public:
 
-  root_figure (void) : xproperties (), default_properties () { }
+  root_figure (void) : xproperties (0, graphics_handle ()), default_properties () { }
 
   ~root_figure (void) { xproperties.delete_children (); }
 
@@ -1191,38 +1526,29 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (const graphics_handle& mh, const graphics_handle& p);
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
-
     void close (void);
-
-    std::string graphics_object_name (void) const { return go_name; }
-
-    static property_list::pval_map_type factory_defaults (void);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      octave_value __plot_stream__
-      octave_value __enhanced__
-      octave_value nextplot
-      octave_value closerequestfcn
-      graphics_handle currentaxes S
-      colormap_property colormap
-      octave_value visible S
-      octave_value paperorientation
-      color_property color
+    BEGIN_PROPERTIES(figure)
+      any_property __plot_stream__ , Matrix ()
+      bool_property __enhanced__ , "on"
+      radio_property nextplot , "add|replace_children|{replace}"
+      callback_property closerequestfcn , "closereq"
+      handle_property currentaxes S , graphics_handle ()
+      array_property colormap , jet_colormap ()
+      bool_property visible S , "on"
+      radio_property paperorientation , "{portrait}|landscape"
+      color_property color , color_values (1, 1, 1)
     END_PROPERTIES
+    
+  protected:
+    void init (void)
+      {
+        colormap.add_constraint (dim_vector (-1, 3));
+      }
 
-    static std::string go_name;
   };
 
 private:
@@ -1327,90 +1653,95 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (const graphics_handle& mh, const graphics_handle& p);
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
     void set_defaults (base_graphics_object& obj, const std::string& mode);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
 
     void remove_child (const graphics_handle& h);
 
     void delete_children (void);
 
-    std::string graphics_object_name (void) const { return go_name; }
-
-    static property_list::pval_map_type factory_defaults (void);
-
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      octave_value position
-      mutable graphics_handle title GSO
-      octave_value box
-      octave_value key
-      octave_value keybox
-      octave_value keypos
-      octave_value colororder
-      octave_value dataaspectratio m
-      octave_value dataaspectratiomode
-      radio_property layer a
-      octave_value xlim m
-      octave_value ylim m
-      octave_value zlim m
-      octave_value clim m
-      radio_property xlimmode al
-      radio_property ylimmode al
-      radio_property zlimmode al
-      radio_property climmode al
-      mutable graphics_handle xlabel GSO
-      mutable graphics_handle ylabel GSO
-      mutable graphics_handle zlabel GSO
-      octave_value xgrid
-      octave_value ygrid
-      octave_value zgrid
-      octave_value xminorgrid
-      octave_value yminorgrid
-      octave_value zminorgrid
-      octave_value xtick m
-      octave_value ytick m
-      octave_value ztick m
-      octave_value xtickmode
-      octave_value ytickmode
-      octave_value ztickmode
-      octave_value xticklabel m
-      octave_value yticklabel m
-      octave_value zticklabel m
-      octave_value xticklabelmode
-      octave_value yticklabelmode
-      octave_value zticklabelmode
-      color_property color a
-      color_property xcolor
-      color_property ycolor
-      color_property zcolor
-      radio_property xscale al
-      radio_property yscale al
-      radio_property zscale al
-      octave_value xdir
-      octave_value ydir
-      octave_value zdir
-      octave_value xaxislocation
-      octave_value yaxislocation
-      octave_value view
-      octave_value visible
-      octave_value nextplot
-      octave_value outerposition
-      radio_property activepositionproperty a
-      radio_property __colorbar__ a
+    BEGIN_PROPERTIES(axes)
+      array_property position , Matrix ()
+      mutable handle_property title GSO , graphics_handle ()
+      bool_property box , "on"
+      bool_property key , "off"
+      bool_property keybox , "off"
+      double_property keypos , 1
+      array_property colororder , default_colororder ()
+      array_property dataaspectratio m , Matrix (1, 3, 1.0)
+      radio_property dataaspectratiomode , "{auto}|manual"
+      radio_property layer a , "{bottom}|top"
+      array_property xlim m , default_lim ()
+      array_property ylim m , default_lim ()
+      array_property zlim m , default_lim ()
+      array_property clim m , default_lim ()
+      radio_property xlimmode al , "{auto}|manual"
+      radio_property ylimmode al , "{auto}|manual"
+      radio_property zlimmode al , "{auto}|manual"
+      radio_property climmode al , "{auto}|manual"
+      mutable handle_property xlabel GSO , graphics_handle ()
+      mutable handle_property ylabel GSO , graphics_handle ()
+      mutable handle_property zlabel GSO , graphics_handle ()
+      bool_property xgrid , "off"
+      bool_property ygrid , "off"
+      bool_property zgrid , "off"
+      bool_property xminorgrid , "off"
+      bool_property yminorgrid , "off"
+      bool_property zminorgrid , "off"
+      array_property xtick m , Matrix ()
+      array_property ytick m , Matrix ()
+      array_property ztick m , Matrix ()
+      radio_property xtickmode , "{auto}|manual"
+      radio_property ytickmode , "{auto}|manual"
+      radio_property ztickmode , "{auto}|manual"
+      any_property xticklabel m , ""
+      any_property yticklabel m , ""
+      any_property zticklabel m , ""
+      radio_property xticklabelmode , "{auto}|manual"
+      radio_property yticklabelmode , "{auto}|manual"
+      radio_property zticklabelmode , "{auto}|manual"
+      color_property color a , color_property (color_values (1, 1, 1), radio_values ("none"))
+      color_property xcolor , color_values (0, 0, 0)
+      color_property ycolor , color_values (0, 0, 0)
+      color_property zcolor , color_values (0, 0, 0)
+      radio_property xscale al , "{linear}|log"
+      radio_property yscale al , "{linear}|log"
+      radio_property zscale al , "{linear}|log"
+      radio_property xdir , "{normal}|reverse"
+      radio_property ydir , "{normal}|reverse"
+      radio_property zdir , "{normal}|reverse"
+      radio_property yaxislocation , "{left}|right"
+      radio_property xaxislocation , "{bottom}|top"
+      array_property view , Matrix ()
+      bool_property visible , "on"
+      radio_property nextplot , "add|replace_children|{replace}"
+      array_property outerposition , Matrix ()
+      radio_property activepositionproperty a , "{outerposition}|position"
+      radio_property __colorbar__ a , "{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"
    END_PROPERTIES
 
-    static std::string go_name;
+  protected:
+    void init (void)
+      {
+        position.add_constraint (dim_vector (1, 4));
+		position.add_constraint (dim_vector (0, 0));
+        outerposition.add_constraint (dim_vector (1, 4));
+        colororder.add_constraint (dim_vector (-1, 3));
+        dataaspectratio.add_constraint (dim_vector (1, 3));
+        xlim.add_constraint (dim_vector (1, 2));
+        ylim.add_constraint (dim_vector (1, 2));
+        zlim.add_constraint (dim_vector (1, 2));
+        clim.add_constraint (dim_vector (1, 2));
+        xtick.add_constraint (dim_vector (1, -1));
+        ytick.add_constraint (dim_vector (1, -1));
+        ztick.add_constraint (dim_vector (1, -1));
+        Matrix vw (1, 2, 0);
+        vw(1) = 90;
+        view = vw;
+        view.add_constraint (dim_vector (1, 2));
+      }
   };
 
 private:
@@ -1519,43 +1850,27 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (const graphics_handle& mh, const graphics_handle& p);
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
-
-    std::string graphics_object_name (void) const { return go_name; }
-
-    static property_list::pval_map_type factory_defaults (void);
-
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      data_property xdata l
-      data_property ydata l
-      data_property zdata l
-      data_property ldata l
-      data_property udata l
-      data_property xldata l
-      data_property xudata l
-      color_property color
-      octave_value linestyle
-      octave_value linewidth
-      octave_value marker
-      octave_value markeredgecolor
-      octave_value markerfacecolor
-      octave_value markersize
-      octave_value keylabel
-      radio_property interpreter a
+    BEGIN_PROPERTIES(line)
+      data_property xdata l , default_data ()
+      data_property ydata l , default_data ()
+      data_property zdata l , Matrix ()
+      data_property ldata l , Matrix ()
+      data_property udata l , Matrix ()
+      data_property xldata l , Matrix ()
+      data_property xudata l , Matrix ()
+      color_property color , color_values (0, 0, 0)
+      radio_property linestyle , "{-}|--|:|-.|none"
+      double_property linewidth , 0.5
+      radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h"
+      color_property markeredgecolor , "{auto}|none"
+      color_property markerfacecolor , "auto|{none}"
+      double_property markersize , 6
+      string_property keylabel , ""
+      radio_property interpreter a , "{tex}|none|latex"
     END_PROPERTIES
-
-    static std::string go_name;
   };
 
 private:
@@ -1626,38 +1941,28 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (const graphics_handle& mh, const graphics_handle& p);
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
-
-    std::string graphics_object_name (void) const { return go_name; }
-
-    static property_list::pval_map_type factory_defaults (void);
-
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      octave_value string
-      octave_value units
-      octave_value position
-      octave_value rotation
-      octave_value horizontalalignment
-      color_property color
-      octave_value fontname
-      octave_value fontsize
-      radio_property fontangle a
-      radio_property fontweight a
-      radio_property interpreter a
+    BEGIN_PROPERTIES(text)
+      string_property string , ""
+      radio_property units , "{data}|pixels|normalized|inches|centimeters|points"
+      array_property position , Matrix (1, 3, 0.0)
+      double_property rotation , 0
+      radio_property horizontalalignment , "{left}|center|right"
+      color_property color , color_values (0, 0, 0)
+      string_property fontname , "Helvetica"
+      double_property fontsize , 10
+      radio_property fontangle a , "{normal}|italic|oblique"
+      radio_property fontweight a , "light|{normal}|demi|bold"
+      radio_property interpreter a , "{tex}|none|latex"
     END_PROPERTIES
 
-    static std::string go_name;
+  protected:
+    void init (void)
+      {
+        position.add_constraint (dim_vector (1, 3));
+      }
   };
 
 private:
@@ -1728,30 +2033,19 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (const graphics_handle& mh, const graphics_handle& p);
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
-
-    std::string graphics_object_name (void) const { return go_name; }
-
-    static property_list::pval_map_type factory_defaults (void);
-
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      data_property xdata l
-      data_property ydata l
-      data_property cdata l
+    BEGIN_PROPERTIES(image)
+      data_property xdata l , Matrix ()
+      data_property ydata l , Matrix ()
+      data_property cdata l , Matrix ()
     END_PROPERTIES
 
-    static std::string go_name;
+  protected:
+    void init (void)
+      {
+      }
   };
 
 private:
@@ -1822,44 +2116,35 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (const graphics_handle& mh, const graphics_handle& p);
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
-
-    std::string graphics_object_name (void) const { return go_name; }
-
-    static property_list::pval_map_type factory_defaults (void);
-
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      data_property xdata l
-      data_property ydata l
-      data_property zdata l
-      data_property cdata l
-      octave_value faces
-      octave_value vertices
-      color_property facecolor a
-      octave_value facealpha
-      color_property edgecolor a
-      octave_value linestyle
-      octave_value linewidth
-      octave_value marker
-      octave_value markeredgecolor
-      octave_value markerfacecolor
-      octave_value markersize
-      octave_value keylabel
-      radio_property interpreter a
+    BEGIN_PROPERTIES(patch)
+      data_property xdata l , Matrix ()
+      data_property ydata l , Matrix ()
+      data_property zdata l , Matrix ()
+      data_property cdata l , Matrix ()
+      array_property faces , Matrix ()
+      array_property vertices , Matrix ()
+      color_property facecolor a , "{flat}|none|interp"
+      double_property facealpha , 1.0
+      color_property edgecolor a , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
+      radio_property linestyle , "{-}|--|:|-.|none"
+      double_property linewidth , 0.5
+      radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h"
+      color_property markeredgecolor , "{auto}|none"
+      color_property markerfacecolor , "auto|{none}"
+      double_property markersize , 6
+      string_property keylabel , ""
+      radio_property interpreter a , "{tex}|none|latex"
     END_PROPERTIES
 
-    static std::string go_name;
+  protected:
+    void init (void)
+      {
+        vertices.add_constraint (dim_vector (-1, 2));
+        vertices.add_constraint (dim_vector (-1, 3));
+      }
   };
 
 private:
@@ -1930,42 +2215,31 @@ public:
   class properties : public base_properties
   {
   public:
-    properties (const graphics_handle& mh, const graphics_handle& p);
-
-    ~properties (void) { }
-
-    void set (const caseless_str& name, const octave_value& val);
-
-    octave_value get (void) const;
-
-    octave_value get (const caseless_str& name) const;
-
-    std::string graphics_object_name (void) const { return go_name; }
-
-    static property_list::pval_map_type factory_defaults (void);
-
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
-    BEGIN_PROPERTIES
-      data_property xdata l
-      data_property ydata l
-      data_property zdata l
-      data_property cdata l
-      color_property facecolor a
-      octave_value facealpha
-      color_property edgecolor a
-      octave_value linestyle
-      octave_value linewidth
-      octave_value marker
-      octave_value markeredgecolor
-      octave_value markerfacecolor
-      octave_value markersize
-      octave_value keylabel
-      radio_property interpreter a
+    BEGIN_PROPERTIES(surface)
+      data_property xdata l , Matrix ()
+      data_property ydata l , Matrix ()
+      data_property zdata l , Matrix ()
+      data_property cdata l , Matrix ()
+      color_property facecolor a , "{flat}|none|interp"
+      double_property facealpha , 1.0
+      color_property edgecolor a , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
+      radio_property linestyle , "{-}|--|:|-.|none"
+      double_property linewidth , 0.5
+      radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h"
+      color_property markeredgecolor , "{auto}|none"
+      color_property markerfacecolor , "auto|{none}"
+      double_property markersize , 6
+      string_property keylabel , ""
+      radio_property interpreter a , "{tex}|none|latex"
     END_PROPERTIES
 
-    static std::string go_name;
+  protected:
+    void init (void)
+      {
+      }
   };
 
 private:
@@ -2153,7 +2427,7 @@ private:
 
   graphics_handle do_lookup (double val)
   {
-    iterator p = handle_map.find (val);
+    iterator p = (xisnan (val) ? handle_map.end () : handle_map.find (val));
 
     return (p != handle_map.end ()) ? p->first : graphics_handle ();
   }

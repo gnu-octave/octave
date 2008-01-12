@@ -1,3 +1,11 @@
+2008-01-12  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* Makefile.in (distclean): Delete graphics-props.cc.
+
+	* genprops.awk: Handle new graphics property classes.
+
+	* graphics.h.in, graphics.cc: Adapt for new specific property types.
+
 2008-01-12  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (octave_config_info): Add GNUPLOT to the struct.

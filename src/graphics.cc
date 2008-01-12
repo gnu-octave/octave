@@ -50,6 +50,93 @@ gripe_set_invalid (const std::string& pname)
   error ("set: invalid value for %s property", pname.c_str ());
 }
 
+static Matrix
+jet_colormap (void)
+{
+  Matrix cmap (64, 3, 0.0);
+
+  for (octave_idx_type i = 0; i < 64; i++)
+    {
+      // This is the jet colormap.  It would be nice to be able
+      // to feval the jet function but since there is a static
+      // property object that includes a colormap_property
+      // object, we need to initialize this before main is even
+      // called, so calling an interpreted function is not
+      // possible.
+
+      double x = i / 63.0;
+
+      if (x >= 3.0/8.0 && x < 5.0/8.0)
+        cmap(i,0) = 4.0 * x - 3.0/2.0;
+      else if (x >= 5.0/8.0 && x < 7.0/8.0)
+        cmap(i,0) = 1.0;
+      else if (x >= 7.0/8.0)
+        cmap(i,0) = -4.0 * x + 9.0/2.0;
+
+      if (x >= 1.0/8.0 && x < 3.0/8.0)
+        cmap(i,1) = 4.0 * x - 1.0/2.0;
+      else if (x >= 3.0/8.0 && x < 5.0/8.0)
+        cmap(i,1) = 1.0;
+      else if (x >= 5.0/8.0 && x < 7.0/8.0)
+        cmap(i,1) = -4.0 * x + 7.0/2.0;
+
+      if (x < 1.0/8.0)
+        cmap(i,2) = 4.0 * x + 1.0/2.0;
+      else if (x >= 1.0/8.0 && x < 3.0/8.0)
+        cmap(i,2) = 1.0;
+      else if (x >= 3.0/8.0 && x < 5.0/8.0)
+        cmap(i,2) = -4.0 * x + 5.0/2.0;
+    }
+
+  return cmap;
+}
+
+static Matrix
+default_colororder (void)
+{
+  Matrix retval (7, 3, 0.0);
+
+  retval(0,2) = 1.0;
+
+  retval(1,1) = 0.5;
+
+  retval(2,0) = 1.0;
+
+  retval(3,1) = 0.75;
+  retval(3,2) = 0.75;
+
+  retval(4,0) = 0.75;
+  retval(4,2) = 0.75;
+
+  retval(5,0) = 0.75;
+  retval(5,1) = 0.75;
+
+  retval(6,0) = 0.25;
+  retval(6,1) = 0.25;
+  retval(6,2) = 0.25;
+
+  return retval;
+}
+
+static Matrix
+default_lim (void)
+{
+  Matrix m (1, 2, 0);
+  m(1) = 1;
+  return m;
+}
+
+static Matrix
+default_data (void)
+{
+  Matrix retval (1, 2);
+
+  retval(0) = 0;
+  retval(1) = 1;
+
+  return retval;
+}
+
 // ---------------------------------------------------------------------
 
 radio_values::radio_values (const std::string& opt_string)
@@ -118,59 +205,14 @@ color_values::str2rgb (std::string str)
   if (retval)
     {
       for (int i = 0; i < 3; i++)
-	xrgb[i] = tmp_rgb[i];
+	xrgb(i) = tmp_rgb[i];
     }
 
   return retval;
 }
 
-color_property::color_property (const octave_value& val)
-  : radio_val (), current_val ()
-{
-  // FIXME -- need some error checking here.
-
-  if (val.is_string ())
-    {
-      std::string s = val.string_value ();
-
-      if (! s.empty ())
-	{
-	  color_values col (s);
-	  if (! error_state)
-	    {
-	      color_val = col;
-	      current_type = color_t;
-	    }
-	}
-      else
-	error ("invalid color specification");	  
-    }
-  else if (val.is_real_matrix ())
-    {
-      Matrix m = val.matrix_value ();
-
-      if (m.numel () == 3)
-	{
-	  color_values col (m (0), m (1), m(2));
-	  if (! error_state)
-	    {
-	      color_val = col;
-	      current_type = color_t;
-	    }
-	}
-      else
-	error ("invalid color specification");
-    }
-  else 
-    error ("invalid color specification");
-}
-
-// We also provide this assignment operator so that assignment from an
-// octave_value object can happen without wiping out list of possible
-// radio_values set in color_property constructor.
-
-color_property&
-color_property::operator = (const octave_value& val)
+void
+color_property::set (const octave_value& val)
 {
   if (val.is_string ())
     {
@@ -192,11 +234,13 @@ color_property::operator = (const octave_value& val)
 		  current_type = color_t;
 		}
 	      else
-		error ("invalid color specification");	  
+		error ("invalid value for color property \"%s\" (value = %s)",
+               get_name ().c_str (), s.c_str ());
 	    }	
 	}
       else
-	error ("invalid color specification");	  
+	error ("invalid value for color property \"%s\"",
+           get_name ().c_str ());
     }
   else if (val.is_real_matrix ())
     {
@@ -212,14 +256,98 @@ color_property::operator = (const octave_value& val)
 	    }
 	}
       else
-	error ("invalid color specification");
+	error ("invalid value for color property \"%s\"",
+           get_name ().c_str ());
     }
   else 
-    error ("invalid color specification");
-
-  return *this;
+    error ("invalid value for color property \"%s\"",
+           get_name ().c_str ());
 }
 
+bool
+array_property::validate (const octave_value& v)
+{
+  bool ok = false;
+
+  // FIXME: should we always support []?
+  if (v.is_empty () && v.is_double_type ())
+    return true;
+
+  // check value type
+  if (type_constraints.size () > 0)
+    {
+      for (std::list<std::string>::const_iterator it = type_constraints.begin ();
+           ! ok && it != type_constraints.end (); ++it)
+        if ((*it) == v.type_name ())
+          ok = true;
+    }
+  else
+    ok = v.is_double_type ();
+
+  if (ok)
+    {
+      dim_vector vdims = v.dims ();
+      int vlen = vdims.length ();
+
+      ok = false;
+
+      // check value size
+      if (size_constraints.size () > 0)
+        for (std::list<dim_vector>::const_iterator it = size_constraints.begin ();
+             ! ok && it != size_constraints.end (); ++it)
+          {
+            dim_vector itdims = (*it);
+
+            if (itdims.length () == vlen)
+              {
+                ok = true;
+
+                for (int i = 0; ok && i < vlen; i++)
+                  if (itdims(i) >= 0 && itdims(i) != vdims(i))
+                    ok = false;
+              }
+          }
+      else
+        return true;
+    }
+
+  return ok;
+}
+
+void
+handle_property::set (const octave_value& v)
+{
+  double dv = v.double_value ();
+
+  if (! error_state)
+    {
+      graphics_handle gh = gh_manager::lookup (dv);
+
+      if (xisnan (gh.value ()) || gh.ok ())
+        current_val = gh;
+      else
+        error ("set: invalid graphics handle (= %g) for property \"%s\"",
+            dv, get_name ().c_str ());
+    }
+  else
+    error ("set: invalid graphics handle for property \"%s\"",
+        get_name ().c_str ());
+}
+
+bool
+callback_property::validate (const octave_value& v) const
+{
+  // FIXME: implement this
+  return true;
+}
+
+void
+callback_property::execute (void)
+{
+  // FIXME: define correct signature and implement this
+}
+
+// ---------------------------------------------------------------------
 
 void
 property_list::set (const caseless_str& name, const octave_value& val)
@@ -686,6 +814,88 @@ base_properties::set_from_list (base_graphics_object& obj,
     }
 }
 
+octave_value
+base_properties::get (const caseless_str& name) const
+{
+  octave_value retval;
+
+  if (name.compare ("tag"))
+    retval = get_tag ();
+  else if (name.compare ("type"))
+    retval = get_type ();
+  else if (name.compare ("__modified__"))
+    retval = is_modified ();
+  else if (name.compare ("parent"))
+    retval = get_parent ().as_octave_value ();
+  else if (name.compare ("children"))
+    retval = children;
+  else
+  {
+    std::map<caseless_str, property>::const_iterator it = all_props.find (name);
+
+    if (it != all_props.end ())
+      retval = it->second.get ();
+    else
+      error ("get: unknown property \"%s\"", name.c_str ());
+  }
+
+  return retval;
+}
+
+octave_value
+base_properties::get (void) const
+{
+  Octave_map m;
+
+  for (std::map<caseless_str, property>::const_iterator it = all_props.begin ();
+       it != all_props.end (); ++it)
+    m.assign (it->second.get_name (), it->second.get ());
+
+  m.assign ("tag", get_tag ());
+  m.assign ("type", get_type ());
+  m.assign ("__modified__", is_modified ());
+  m.assign ("parent", get_parent ().as_octave_value ());
+  m.assign ("children", children);
+
+  return m;
+}
+
+void
+base_properties::set (const caseless_str& name, const octave_value& val)
+{
+  if (name.compare ("tag"))
+    set_tag (val);
+  else if (name.compare ("__modified__"))
+    __modified__ = val;
+  else if (name.compare ("parent"))
+    set_parent (val);
+  else if (name.compare ("children"))
+    maybe_set_children (children, val);
+  else
+  {
+    std::map<caseless_str, property>::iterator it = all_props.find (name);
+
+    if (it != all_props.end ())
+      it->second.set (val);
+    else
+      error ("set: unknown property \"%s\"", name.c_str ());
+  }
+
+  if (! error_state && ! name.compare ("__modified__"))
+    mark_modified ();
+}
+
+property
+base_properties::get_property (const caseless_str& name) const
+{
+  std::map<caseless_str, property>::const_iterator it = all_props.find (name);
+
+  if (it == all_props.end ())
+    return property ();
+  else
+    return it->second;
+}
+
 void
 base_properties::remove_child (const graphics_handle& h)
 {
@@ -714,17 +924,6 @@ base_properties::remove_child (const graphics_handle& h)
 }
 
 void
-base_properties::set_tag (const octave_value& val)
-{
-  std::string tmp = val.string_value ();
-
-  if (! error_state)
-    tag = tmp;
-  else
-    error ("set: expecting tag to be a character string");
-}
-
-void
 base_properties::set_parent (const octave_value& val)
 {
   double tmp = val.double_value ();
@@ -737,13 +936,13 @@ base_properties::set_parent (const octave_value& val)
 
       if (new_parent.ok ())
 	{
-	  graphics_object parent_obj = gh_manager::get_object (parent);
+	  graphics_object parent_obj = gh_manager::get_object (get_parent ());
 
 	  parent_obj.remove_child (__myhandle__);
 
-	  parent = new_parent;
+	  parent = new_parent.as_octave_value ();
 
-	  ::adopt (parent, __myhandle__);
+	  ::adopt (parent.handle_value (), __myhandle__);
 	}
       else
 	error ("set: invalid graphics handle (= %g) for parent", tmp);
@@ -755,22 +954,22 @@ base_properties::set_parent (const octave_value& val)
 void
 base_properties::mark_modified (void)
 {
-  __modified__ = true;
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  __modified__ = "on";
+  graphics_object parent_obj = gh_manager::get_object (get_parent ());
   parent_obj.mark_modified ();
 }
 
 void
 base_properties::override_defaults (base_graphics_object& obj)
 {
-  graphics_object parent_obj = gh_manager::get_object (parent);
+  graphics_object parent_obj = gh_manager::get_object (get_parent ());
   parent_obj.override_defaults (obj);
 }
 
 void
 base_properties::update_axis_limits (const std::string& axis_type) const
 {
-  graphics_handle h = (type == "axes") ? __myhandle__ : parent;
+  graphics_handle h = (get_type () == "axes") ? __myhandle__ : get_parent ();
 
   graphics_object obj = gh_manager::get_object (h);
 
@@ -787,9 +986,17 @@ base_properties::delete_children (void)
     gh_manager::free (children(i));
 }
 
+// ---------------------------------------------------------------------
+
+#include "graphics-props.cc"
+
+// ---------------------------------------------------------------------
+
 void
-root_figure::properties::set_currentfigure (const graphics_handle& val)
+root_figure::properties::set_currentfigure (const octave_value& v)
 {
+  graphics_handle val (v.double_value ());
+
   if (error_state)
     return;
 
@@ -797,86 +1004,22 @@ root_figure::properties::set_currentfigure (const graphics_handle& val)
     {
       currentfigure = val;
 
-      gh_manager::push_figure (currentfigure);
+      gh_manager::push_figure (val);
     }
   else
     gripe_set_invalid ("currentfigure");
 }
 
-void
-root_figure::properties::set (const caseless_str& name,
-			      const octave_value& val)
-{
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("currentfigure"))
-    set_currentfigure (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("visible"))
-    set_visible (val);
-  else
-    warning ("set: invalid property `%s'", name.c_str ());
-}
-
-octave_value root_figure::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("currentfigure", currentfigure.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("visible", visible);
-
-  return m;
-}
-
-octave_value 
-root_figure::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = type;
-  else if (name.compare ("tag"))
-    retval = type;
-  else if (name.compare ("currentfigure"))
-    retval = currentfigure.as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("visible"))
-    retval = visible;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
-}
-
 property_list
 root_figure::factory_properties = root_figure::init_factory_properties ();
 
-std::string root_figure::properties::go_name ("root figure");
-
 // ---------------------------------------------------------------------
 
-figure::properties::properties (const graphics_handle& mh,
-				const graphics_handle& p)
-  : base_properties (go_name, mh, p),
-    __plot_stream__ (Matrix ()),
-    __enhanced__ (false),
-    nextplot ("replace"),
-    closerequestfcn (make_fcn_handle ("closereq")),
-    currentaxes (octave_NaN),
-    colormap (),
-    visible ("on"),
-    paperorientation ("portrait"),
-    color ( color_values (1, 1, 1))
-{ }
-
 void
-figure::properties::set_currentaxes (const graphics_handle& val)
+figure::properties::set_currentaxes (const octave_value& v)
 {
+  graphics_handle val (v.double_value ());
+
   if (error_state)
     return;
 
@@ -901,117 +1044,13 @@ figure::properties::set_visible (const octave_value& val)
 }
 
 void
-figure::properties::set (const caseless_str& name, const octave_value& val)
-{
-  bool modified = true;
-
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("__modified__"))
-    {
-      __modified__ = val.bool_value ();
-      modified = false;
-    }
-  else if (name.compare ("__plot_stream__"))
-    set___plot_stream__ (val);
-  else if (name.compare ("__enhanced__"))
-    set___enhanced__ (val);
-  else if (name.compare ("nextplot"))
-    set_nextplot (val);
-  else if (name.compare ("closerequestfcn"))
-    set_closerequestfcn (val);
-  else if (name.compare ("currentaxes"))
-    set_currentaxes (val);
-  else if (name.compare ("colormap"))
-    set_colormap (val);
-  else if (name.compare ("visible"))
-    set_visible (val);
-  else if (name.compare ("paperorientation"))
-    set_paperorientation (val);
-  else if (name.compare ("color"))
-    set_color (val);
-  else
-    {
-      modified = false;
-      warning ("set: invalid property `%s'", name.c_str ());
-    }
-
-  if (modified)
-    mark_modified ();
-}
-
-octave_value
-figure::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("parent", parent.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("__modified__", __modified__);
-  m.assign ("__plot_stream__", __plot_stream__);
-  m.assign ("__enhanced__", __enhanced__);
-  m.assign ("nextplot", nextplot);
-  m.assign ("closerequestfcn", closerequestfcn);
-  m.assign ("currentaxes", currentaxes.as_octave_value ());
-  m.assign ("colormap", colormap);
-  m.assign ("visible", visible);
-  m.assign ("paperorientation", paperorientation);
-  m.assign ("color", color);
-
-  return m;
-}
-
-octave_value
-figure::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = tag;
-  else if (name.compare ("type"))
-    retval = type;
-  else if (name.compare ("parent"))
-    retval = parent.as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("__modified__"))
-    retval = __modified__;
-  else if (name.compare ("__plot_stream__"))
-    retval = __plot_stream__;
-  else if (name.compare ("__enhanced__"))
-    retval = __enhanced__;
-  else if (name.compare ("nextplot"))
-    retval = nextplot;
-  else if (name.compare ("closerequestfcn"))
-    retval = closerequestfcn;
-  else if (name.compare ("currentaxes"))
-    retval = currentaxes.as_octave_value ();
-  else if (name.compare ("colormap"))
-    retval = colormap;
-  else if (name.compare ("visible"))
-    retval = visible;
-  else if (name.compare ("paperorientation"))
-    retval = paperorientation;
-  else if (name.compare ("color"))
-    retval = color;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
-}
-
-void
 figure::properties::close (void)
 {
-  if (! __plot_stream__.is_empty ())
+  if (! get___plot_stream__ ().is_empty ())
     {
       octave_value_list args;
       args(1) = "\nquit;\n";
-      args(0) = __plot_stream__;
+      args(0) = get___plot_stream__ ();
       feval ("fputs", args);
       args.resize (1);
       feval ("fflush", args);
@@ -1023,20 +1062,6 @@ figure::properties::close (void)
   graphics_handle cf = gh_manager::current_figure ();
 
   xset (0, "currentfigure", cf.value ());
-}
-
-property_list::pval_map_type
-figure::properties::factory_defaults (void)
-{
-  property_list::pval_map_type m;
-
-  m["nextplot"] = "replace";
-  // m["closerequestfcn"] = make_fcn_handle ("closereq");
-  m["colormap"] = colormap_property ();
-  m["visible"] = "on";
-  m["paperorientation"] = "portrait";
-  m["color"] = color_property (color_values (1, 1, 1));
-  return m;
 }
 
 octave_value
@@ -1055,319 +1080,54 @@ figure::get_default (const caseless_str& name) const
   return retval;
 }
 
-std::string figure::properties::go_name ("figure");
-
 // ---------------------------------------------------------------------
 
-static Matrix
-default_colororder (void)
-{
-  Matrix retval (7, 3, 0.0);
-
-  retval(0,2) = 1.0;
-
-  retval(1,1) = 0.5;
-
-  retval(2,0) = 1.0;
-
-  retval(3,1) = 0.75;
-  retval(3,2) = 0.75;
-
-  retval(4,0) = 0.75;
-  retval(4,2) = 0.75;
-
-  retval(5,0) = 0.75;
-  retval(5,1) = 0.75;
-
-  retval(6,0) = 0.25;
-  retval(6,1) = 0.25;
-  retval(6,2) = 0.25;
-
-  return retval;
-}
-
-axes::properties::properties (const graphics_handle& mh,
-			      const graphics_handle& p)
-  : base_properties (go_name, mh, p),
-    position (Matrix ()),
-    title (octave_NaN),
-    box ("on"),
-    key ("off"),
-    keybox ("off"),
-    keypos (1),
-    colororder (default_colororder ()),
-    dataaspectratio (Matrix (1, 3, 1.0)),
-    dataaspectratiomode ("auto"),
-    layer (radio_values ("{bottom}|top")),
-    xlim (),
-    ylim (),
-    zlim (),
-    clim (),
-    xlimmode (radio_values ("{auto}|manual")),
-    ylimmode (radio_values ("{auto}|manual")),
-    zlimmode (radio_values ("{auto}|manual")),
-    climmode (radio_values ("{auto}|manual")),
-    xlabel (octave_NaN),
-    ylabel (octave_NaN),
-    zlabel (octave_NaN),
-    xgrid ("off"),
-    ygrid ("off"),
-    zgrid ("off"),
-    xminorgrid ("off"),
-    yminorgrid ("off"),
-    zminorgrid ("off"),
-    xtick (Matrix ()),
-    ytick (Matrix ()),
-    ztick (Matrix ()),
-    xtickmode ("auto"),
-    ytickmode ("auto"),
-    ztickmode ("auto"),
-    xticklabel (""),
-    yticklabel (""),
-    zticklabel (""),
-    xticklabelmode ("auto"),
-    yticklabelmode ("auto"),
-    zticklabelmode ("auto"),
-    color (color_values (0, 0, 0), radio_values ("flat|none|interp")),
-    xcolor (color_values (0, 0, 0)),
-    ycolor (color_values (0, 0, 0)),
-    zcolor (color_values (0, 0, 0)),
-    xscale (radio_values ("{linear}|log")),
-    yscale (radio_values ("{linear}|log")),
-    zscale (radio_values ("{linear}|log")),
-    xdir ("normal"),
-    ydir ("normal"),
-    zdir ("normal"),
-    xaxislocation ("bottom"),
-    yaxislocation ("left"),
-    view (),
-    visible ("on"),
-    nextplot ("replace"),
-    outerposition (),
-    activepositionproperty (radio_values ("{outerposition}|position")),
-    __colorbar__ (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"))
-{
-  Matrix tlim (1, 2, 0.0);
-  tlim(1) = 1;
-  xlim = tlim;
-  ylim = tlim;
-  zlim = tlim;
-  Matrix cl (1, 2, 0);
-  cl(1) = 1;
-  clim = cl;
-
-  Matrix tview (1, 2, 0.0);
-  tview(1) = 90;
-  view = tview;
-
-  Matrix touterposition (1, 4, 0.0);
-  touterposition(2) = 1;
-  touterposition(3) = 1;
-  outerposition = touterposition;
-}
-
 void
-axes::properties::set_title (const graphics_handle& val)
+axes::properties::set_title (const octave_value& v)
 {
+  graphics_handle val = ::reparent (v, "set", "title", __myhandle__, false);
+
   if (! error_state)
     {
-      gh_manager::free (title);
+      gh_manager::free (title.handle_value ());
       title = val;
     }
 }
 
 void
-axes::properties::set_title (const octave_value& val)
+axes::properties::set_xlabel (const octave_value& v)
 {
-  set_title (::reparent (val, "set", "title", __myhandle__, false));
-}
+  graphics_handle val = ::reparent (v, "set", "xlabel", __myhandle__, false);
 
-void
-axes::properties::set_xlabel (const graphics_handle& val)
-{
   if (! error_state)
     {
-      gh_manager::free (xlabel);
+      gh_manager::free (xlabel.handle_value ());
       xlabel = val;
     }
 }
 
 void
-axes::properties::set_xlabel (const octave_value& val)
+axes::properties::set_ylabel (const octave_value& v)
 {
-  set_xlabel (::reparent (val, "set", "xlabel", __myhandle__, false));
-}
+  graphics_handle val = ::reparent (v, "set", "ylabel", __myhandle__, false);
 
-void
-axes::properties::set_ylabel (const graphics_handle& val)
-{
   if (! error_state)
     {
-      gh_manager::free (ylabel);
+      gh_manager::free (ylabel.handle_value ());
       ylabel = val;
     }
 }
 
 void
-axes::properties::set_ylabel (const octave_value& val)
+axes::properties::set_zlabel (const octave_value& v)
 {
-  set_ylabel (::reparent (val, "set", "ylabel", __myhandle__, false));
-}
+  graphics_handle val = ::reparent (v, "set", "zlabel", __myhandle__, false);
 
-void
-axes::properties::set_zlabel (const graphics_handle& val)
-{
   if (! error_state)
     {
-      gh_manager::free (zlabel);
+      gh_manager::free (zlabel.handle_value ());
       zlabel = val;
     }
-}
-
-void
-axes::properties::set_zlabel (const octave_value& val)
-{
-  set_zlabel (::reparent (val, "set", "zlabel", __myhandle__, false));
-}
-
-void
-axes::properties::set (const caseless_str& name, const octave_value& val)
-{
-  bool modified = true;
-
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("parent"))
-    set_parent (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("__modified__"))
-    {
-      __modified__ = val.bool_value ();
-      modified = false;
-    }
-  else if (name.compare ("position"))
-    set_position (val);
-  else if (name.compare ("title"))
-    set_title (val);
-  else if (name.compare ("box"))
-    set_box (val);
-  else if (name.compare ("key"))
-    set_key (val);
-  else if (name.compare ("keybox"))
-    set_keybox (val);
-  else if (name.compare ("keypos"))
-    set_keypos (val);
-  else if (name.compare ("colororder"))
-    set_colororder (val);
-  else if (name.compare ("dataaspectratio"))
-    set_dataaspectratio (val);
-  else if (name.compare ("dataaspectratiomode"))
-    set_dataaspectratiomode (val);
-  else if (name.compare ("layer"))
-    set_layer (val);
-  else if (name.compare ("xlim"))
-    set_xlim (val);
-  else if (name.compare ("ylim"))
-    set_ylim (val);
-  else if (name.compare ("zlim"))
-    set_zlim (val);
-  else if (name.compare ("clim"))
-    set_clim (val);
-  else if (name.compare ("xlimmode"))
-    set_xlimmode (val);
-  else if (name.compare ("ylimmode"))
-    set_ylimmode (val);
-  else if (name.compare ("zlimmode"))
-    set_zlimmode (val);
-  else if (name.compare ("climmode"))
-    set_climmode (val);
-  else if (name.compare ("xlabel"))
-    set_xlabel (val);
-  else if (name.compare ("ylabel"))
-    set_ylabel (val);
-  else if (name.compare ("zlabel"))
-    set_zlabel (val);
-  else if (name.compare ("xgrid"))
-    set_xgrid (val);
-  else if (name.compare ("ygrid"))
-    set_ygrid (val);
-  else if (name.compare ("zgrid"))
-    set_zgrid (val);
-  else if (name.compare ("xminorgrid"))
-    set_xminorgrid (val);
-  else if (name.compare ("yminorgrid"))
-    set_yminorgrid (val);
-  else if (name.compare ("zminorgrid"))
-    set_zminorgrid (val);
-  else if (name.compare ("xtick"))
-    set_xtick (val);
-  else if (name.compare ("ytick"))
-    set_ytick (val);
-  else if (name.compare ("ztick"))
-    set_ztick (val);
-  else if (name.compare ("xtickmode"))
-    set_xtickmode (val);
-  else if (name.compare ("ytickmode"))
-    set_ytickmode (val);
-  else if (name.compare ("ztickmode"))
-    set_ztickmode (val);
-  else if (name.compare ("xticklabel"))
-    set_xticklabel (val);
-  else if (name.compare ("yticklabel"))
-    set_yticklabel (val);
-  else if (name.compare ("zticklabel"))
-    set_zticklabel (val);
-  else if (name.compare ("xticklabelmode"))
-    set_xticklabelmode (val);
-  else if (name.compare ("yticklabelmode"))
-    set_yticklabelmode (val);
-  else if (name.compare ("zticklabelmode"))
-    set_zticklabelmode (val);
-  else if (name.compare ("color"))
-    set_color (val);
-  else if (name.compare ("xcolor"))
-    set_xcolor (val);
-  else if (name.compare ("ycolor"))
-    set_ycolor (val);
-  else if (name.compare ("zcolor"))
-    set_zcolor (val);
-  else if (name.compare ("xscale"))
-    set_xscale (val);
-  else if (name.compare ("yscale"))
-    set_yscale (val);
-  else if (name.compare ("zscale"))
-    set_zscale (val);
-  else if (name.compare ("xdir"))
-    set_xdir (val);
-  else if (name.compare ("ydir"))
-    set_ydir (val);
-  else if (name.compare ("zdir"))
-    set_zdir (val);
-  else if (name.compare ("xaxislocation"))
-    set_xaxislocation (val);
-  else if (name.compare ("yaxislocation"))
-    set_yaxislocation (val);
-  else if (name.compare ("view"))
-    set_view (val);
-  else if (name.compare ("visible"))
-    set_visible (val);
-  else if (name.compare ("nextplot"))
-    set_nextplot (val);
-  else if (name.compare ("outerposition"))
-    set_outerposition (val);
-  else if (name.compare ("activepositionproperty"))
-    set_activepositionproperty (val);
-  else if (name.compare ("__colorbar__"))
-    set___colorbar__ (val);
-  else
-    {
-      modified = false;
-      warning ("set: invalid property `%s'", name.c_str ());
-    }
-
-  if (modified)
-    mark_modified ();
 }
 
 void
@@ -1375,15 +1135,15 @@ axes::properties::set_defaults (base_graphics_object& obj,
 				const std::string& mode)
 {
   position = Matrix ();
-  title = octave_NaN;
+  title = graphics_handle ();
   box = "on";
   key = "off";
   keybox = "off";
-  keypos = 1;
+  keypos = 1.0;
   colororder = default_colororder ();
   dataaspectratio = Matrix (1, 3, 1.0);
   dataaspectratiomode = "auto";
-  layer = radio_property (radio_values ("{bottom}|top"));
+  layer = "bottom";
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;
@@ -1395,13 +1155,13 @@ axes::properties::set_defaults (base_graphics_object& obj,
   cl(1) = 1;
   clim = cl;
   
-  xlimmode = radio_property (radio_values ("{auto}|manual"));
-  ylimmode = radio_property (radio_values ("{auto}|manual"));
-  zlimmode = radio_property (radio_values ("{auto}|manual"));
-  climmode = radio_property (radio_values ("{auto}|manual"));
-  xlabel = octave_NaN;
-  ylabel = octave_NaN;
-  zlabel = octave_NaN;
+  xlimmode = "auto";
+  ylimmode = "auto";
+  zlimmode = "auto";
+  climmode = "auto";
+  xlabel = graphics_handle ();
+  ylabel = graphics_handle ();
+  zlabel = graphics_handle ();
   xgrid = "off";
   ygrid = "off";
   zgrid = "off";
@@ -1420,18 +1180,18 @@ axes::properties::set_defaults (base_graphics_object& obj,
   xticklabelmode = "auto";
   yticklabelmode = "auto";
   zticklabelmode = "auto";
-  color = color_property (color_values (0, 0, 0), radio_values("flat|none|interp"));
-  xcolor = color_property ("black");
-  ycolor = color_property ("black");
-  zcolor = color_property ("black");
-  xscale = radio_property (radio_values ("{linear}|log"));
-  yscale = radio_property (radio_values ("{linear}|log"));
-  zscale = radio_property (radio_values ("{linear}|log"));
+  color = octave_value (color_values (0, 0, 0));
+  xcolor = octave_value (color_values ("black"));
+  ycolor = octave_value (color_values ("black"));
+  zcolor = octave_value (color_values ("black"));
+  xscale = "linear";
+  yscale = "linear";
+  zscale = "linear";
   xdir = "normal";
   ydir = "normal";
   zdir = "normal";
-  xaxislocation = "left";
-  yaxislocation = "bottom";
+  yaxislocation = "left";
+  xaxislocation = "bottom";
 
   Matrix tview (1, 2, 0.0);
   tview(1) = 90;
@@ -1451,8 +1211,8 @@ axes::properties::set_defaults (base_graphics_object& obj,
       outerposition = touterposition;
     }
 
-  activepositionproperty = radio_property (radio_values ("{outerposition}|position"));
-  __colorbar__  = radio_property (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"));
+  activepositionproperty = "outerposition";
+  __colorbar__  = "none";
 
   delete_children ();
 
@@ -1464,255 +1224,49 @@ axes::properties::set_defaults (base_graphics_object& obj,
 graphics_handle
 axes::properties::get_title (void) const
 {
-  if (! title.ok ())
+  if (! title.handle_value ().ok ())
     title = gh_manager::make_graphics_handle ("text", __myhandle__);
 
-  return title;
+  return title.handle_value ();
 }
 
 graphics_handle
 axes::properties::get_xlabel (void) const
 {
-  if (! xlabel.ok ())
+  if (! xlabel.handle_value ().ok ())
     xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
 
-  return xlabel;
+  return xlabel.handle_value ();
 }
 
 graphics_handle
 axes::properties::get_ylabel (void) const
 {
-  if (! ylabel.ok ())
+  if (! ylabel.handle_value ().ok ())
     ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
 
-  return ylabel;
+  return ylabel.handle_value ();
 }
 
 graphics_handle
 axes::properties::get_zlabel (void) const
 {
-  if (! zlabel.ok ())
+  if (! zlabel.handle_value ().ok ())
     zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
 
-  return zlabel;
-}
-
-octave_value
-axes::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("parent", parent.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("__modified__", __modified__);
-  m.assign ("position", position);
-  m.assign ("title", get_title().as_octave_value ());
-  m.assign ("box", box);
-  m.assign ("key", key);
-  m.assign ("keybox", keybox);
-  m.assign ("keypos", keypos);
-  m.assign ("colororder", colororder);
-  m.assign ("dataaspectratio", dataaspectratio);
-  m.assign ("dataaspectratiomode", dataaspectratiomode);
-  m.assign ("layer", layer);
-  m.assign ("xlim", xlim);
-  m.assign ("ylim", ylim);
-  m.assign ("zlim", zlim);
-  m.assign ("clim", clim);
-  m.assign ("xlimmode", xlimmode);
-  m.assign ("ylimmode", ylimmode);
-  m.assign ("zlimmode", zlimmode);
-  m.assign ("climmode", climmode);
-  m.assign ("xlabel", get_xlabel().as_octave_value ());
-  m.assign ("ylabel", get_ylabel().as_octave_value ());
-  m.assign ("zlabel", get_zlabel().as_octave_value ());
-  m.assign ("xgrid", xgrid);
-  m.assign ("ygrid", ygrid);
-  m.assign ("zgrid", zgrid);
-  m.assign ("xminorgrid", xminorgrid);
-  m.assign ("yminorgrid", yminorgrid);
-  m.assign ("zminorgrid", zminorgrid);
-  m.assign ("xtick", xtick);
-  m.assign ("ytick", ytick);
-  m.assign ("ztick", ztick);
-  m.assign ("xtickmode", xtickmode);
-  m.assign ("ytickmode", ytickmode);
-  m.assign ("ztickmode", ztickmode);
-  m.assign ("xticklabel", xticklabel);
-  m.assign ("yticklabel", yticklabel);
-  m.assign ("zticklabel", zticklabel);
-  m.assign ("xticklabelmode", xticklabelmode);
-  m.assign ("yticklabelmode", yticklabelmode);
-  m.assign ("zticklabelmode", zticklabelmode);
-  m.assign ("color", color);
-  m.assign ("xcolor", xcolor);
-  m.assign ("ycolor", ycolor);
-  m.assign ("zcolor", zcolor);
-  m.assign ("xscale", xscale);
-  m.assign ("yscale", yscale);
-  m.assign ("zscale", zscale);
-  m.assign ("xdir", xdir);
-  m.assign ("ydir", ydir);
-  m.assign ("zdir", zdir);
-  m.assign ("xaxislocation", xaxislocation);
-  m.assign ("yaxislocation", yaxislocation);
-  m.assign ("view", view);
-  m.assign ("visible", visible);
-  m.assign ("nextplot", nextplot);
-  m.assign ("outerposition", outerposition);
-  m.assign ("activepositionproperty", activepositionproperty);
-  m.assign ("__colorbar__", __colorbar__);
-
-  return m;
-}
-
-octave_value
-axes::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = tag;
-  else if (name.compare ("type"))
-    retval = type;
-  else if (name.compare ("parent"))
-    retval = parent.value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("__modified__"))
-    retval = __modified__;
-  else if (name.compare ("position"))
-    retval = position;
-  else if (name.compare ("title"))
-    retval = get_title().as_octave_value ();
-  else if (name.compare ("box"))
-    retval = box;
-  else if (name.compare ("key"))
-    retval = key;
-  else if (name.compare ("keybox"))
-    retval = keybox;
-  else if (name.compare ("keypos"))
-    retval = keypos;
-  else if (name.compare ("colororder"))
-    retval = colororder;
-  else if (name.compare ("dataaspectratio"))
-    retval = dataaspectratio;
-  else if (name.compare ("dataaspectratiomode"))
-    retval = dataaspectratiomode;
-  else if (name.compare ("layer"))
-    retval = layer;
-  else if (name.compare ("xlim"))
-    retval = xlim;
-  else if (name.compare ("ylim"))
-    retval = ylim;
-  else if (name.compare ("zlim"))
-    retval = zlim;
-  else if (name.compare ("clim"))
-    retval = clim;
-  else if (name.compare ("xlimmode"))
-    retval = xlimmode;
-  else if (name.compare ("ylimmode"))
-    retval = ylimmode;
-  else if (name.compare ("zlimmode"))
-    retval = zlimmode;
-  else if (name.compare ("climmode"))
-    retval = climmode;
-  else if (name.compare ("xlabel"))
-    retval = get_xlabel().as_octave_value ();
-  else if (name.compare ("ylabel"))
-    retval = get_ylabel().as_octave_value ();
-  else if (name.compare ("zlabel"))
-    retval = get_zlabel().as_octave_value ();
-  else if (name.compare ("xgrid"))
-    retval = xgrid;
-  else if (name.compare ("ygrid"))
-    retval = ygrid;
-  else if (name.compare ("zgrid"))
-    retval = zgrid;
-  else if (name.compare ("xminorgrid"))
-    retval = xminorgrid;
-  else if (name.compare ("yminorgrid"))
-    retval = yminorgrid;
-  else if (name.compare ("zminorgrid"))
-    retval = zminorgrid;
-  else if (name.compare ("xtick"))
-    retval = xtick;
-  else if (name.compare ("ytick"))
-    retval = ytick;
-  else if (name.compare ("ztick"))
-    retval = ztick;
-  else if (name.compare ("xtickmode"))
-    retval = xtickmode;
-  else if (name.compare ("ytickmode"))
-    retval = ytickmode;
-  else if (name.compare ("ztickmode"))
-    retval = ztickmode;
-  else if (name.compare ("xticklabel"))
-    retval = xticklabel;
-  else if (name.compare ("yticklabel"))
-    retval = yticklabel;
-  else if (name.compare ("zticklabel"))
-    retval = zticklabel;
-  else if (name.compare ("xticklabelmode"))
-    retval = xticklabelmode;
-  else if (name.compare ("yticklabelmode"))
-    retval = yticklabelmode;
-  else if (name.compare ("zticklabelmode"))
-    retval = zticklabelmode;
-  else if (name.compare ("color"))
-    retval = color;
-  else if (name.compare ("xcolor"))
-    retval = xcolor;
-  else if (name.compare ("ycolor"))
-    retval = ycolor;
-  else if (name.compare ("zcolor"))
-    retval = zcolor;
-  else if (name.compare ("xscale"))
-    retval = xscale;
-  else if (name.compare ("yscale"))
-    retval = yscale;
-  else if (name.compare ("zscale"))
-    retval = zscale;
-  else if (name.compare ("xdir"))
-    retval = xdir;
-  else if (name.compare ("ydir"))
-    retval = ydir;
-  else if (name.compare ("zdir"))
-    retval = zdir;
-  else if (name.compare ("xaxislocation"))
-    retval = xaxislocation;
-  else if (name.compare ("yaxislocation"))
-    retval = yaxislocation;
-  else if (name.compare ("view"))
-    retval = view;
-  else if (name.compare ("visible"))
-    retval = visible;
-  else if (name.compare ("nextplot"))
-    retval = nextplot;
-  else if (name.compare ("outerposition"))
-    retval = outerposition;
-  else if (name.compare ("activepositionproperty"))
-    retval = activepositionproperty;
-  else if (name.compare ("__colorbar__"))
-    retval = __colorbar__;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
+  return zlabel.handle_value ();
 }
 
 void
 axes::properties::remove_child (const graphics_handle& h)
 {
-  if (title.ok () && h == title)
+  if (title.handle_value ().ok () && h == title.handle_value ())
     title = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (xlabel.ok () && h == xlabel)
+  else if (xlabel.handle_value ().ok () && h == xlabel.handle_value ())
     xlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (ylabel.ok () && h == ylabel)
+  else if (ylabel.handle_value ().ok () && h == ylabel.handle_value ())
     ylabel = gh_manager::make_graphics_handle ("text", __myhandle__);
-  else if (zlabel.ok () && h == zlabel)
+  else if (zlabel.handle_value ().ok () && h == zlabel.handle_value ())
     zlabel = gh_manager::make_graphics_handle ("text", __myhandle__);
   else
     base_properties::remove_child (h);
@@ -1723,95 +1277,10 @@ axes::properties::delete_children (void)
 {
   base_properties::delete_children ();
 
-  gh_manager::free (title);
-  gh_manager::free (xlabel);
-  gh_manager::free (ylabel);
-  gh_manager::free (zlabel);
-}
-
-property_list::pval_map_type
-axes::properties::factory_defaults (void)
-{
-  property_list::pval_map_type m;
-
-  m["position"] = Matrix ();
-  m["title"] = octave_NaN;
-  m["box"] = "on";
-  m["key"] = "off";
-  m["keybox"] = "off";
-  m["keypos"] = 1;
-  m["colororder"] = default_colororder ();
-  m["dataaspectratio"] = Matrix (1, 3, 1.0);
-  m["dataaspectratiomode"] = "auto";
-  m["layer"] = radio_property (radio_values ("{bottom}|top"));
-
-  Matrix tlim (1, 2, 0.0);
-  tlim(1) = 1;
-
-  m["xlim"] = tlim;
-  m["ylim"] = tlim;
-  m["zlim"] = tlim;
-  
-  Matrix cl(1, 2, 0);
-  cl(1) = 1;
-  
-  m["clim"] = cl;
-
-  m["xlimmode"] = radio_property (radio_values ("{auto}|manual"));
-  m["ylimmode"] = radio_property (radio_values ("{auto}|manual"));
-  m["zlimmode"] = radio_property (radio_values ("{auto}|manual"));
-  m["climmode"] = radio_property (radio_values ("{auto}|manual"));
-  m["xlabel"] = octave_NaN;
-  m["ylabel"] = octave_NaN;
-  m["zlabel"] = octave_NaN;
-  m["xgrid"] = "off";
-  m["ygrid"] = "off";
-  m["zgrid"] = "off";
-  m["xminorgrid"] = "off";
-  m["yminorgrid"] = "off";
-  m["zminorgrid"] = "off";
-  m["xtick"] = Matrix ();
-  m["ytick"] = Matrix ();
-  m["ztick"] = Matrix ();
-  m["xtickmode"] = "auto";
-  m["ytickmode"] = "auto";
-  m["ztickmode"] = "auto";
-  m["xticklabel"] = "";
-  m["yticklabel"] = "";
-  m["zticklabel"] = "";
-  m["xticklabelmode"] = "auto";
-  m["yticklabelmode"] = "auto";
-  m["zticklabelmode"] = "auto";
-  m["color"] = color_property (color_values (0, 0, 0), radio_values("flat|none|interp"));
-  m["xcolor"] = color_property ("black");
-  m["ycolor"] = color_property ("black");
-  m["zcolor"] = color_property ("black");
-  m["xscale"] = radio_property (radio_values ("{linear}|log"));
-  m["yscale"] = radio_property (radio_values ("{linear}|log"));
-  m["zscale"] = radio_property (radio_values ("{linear}|log"));
-  m["xdir"] = "normal";
-  m["ydir"] = "normal";
-  m["zdir"] = "normal";
-  m["xaxislocation"] = "bottom";
-  m["yaxislocation"] = "left";
-
-  Matrix tview (1, 2, 0.0);
-  tview(1) = 90;
-
-  m["view"] = tview;
-
-  m["visible"] = "on";
-  m["nextplot"] = "replace";
-
-  Matrix touterposition (1, 4, 0.0);
-  touterposition(2) = 1;
-  touterposition(3) = 1;
-
-  m["outerposition"] = touterposition;
-  m["activepositionproperty"] =  radio_property (radio_values ("{outerposition}|position"));
-  m["__colorbar__"] = radio_property (radio_values ("{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"));
-
-  return m;
+  gh_manager::free (title.handle_value ());
+  gh_manager::free (xlabel.handle_value ());
+  gh_manager::free (ylabel.handle_value ());
+  gh_manager::free (zlabel.handle_value ());
 }
 
 octave_value
@@ -1925,8 +1394,6 @@ axes::update_axis_limits (const std::string& axis_type)
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
 
-  radio_property tmp;
-
   char update_type = 0;
 
   Matrix limits;
@@ -1935,9 +1402,7 @@ axes::update_axis_limits (const std::string& axis_type)
       || axis_type == "xldata" || axis_type == "xudata"
       || axis_type == "xlimmode")
     {
-      tmp = xproperties.get_xlimmode ();
-
-      if (tmp.current_value () == "auto")
+      if (xproperties.xlimmode_is ("auto"))
 	{
 	  for (octave_idx_type i = 0; i < n; i++)
 	    {
@@ -1946,14 +1411,14 @@ axes::update_axis_limits (const std::string& axis_type)
 	      if (obj.isa ("line") || obj.isa ("image")
 		  || obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property xdata = obj.get_xdata ();
+		  data_property xdata = obj.get_xdata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, xdata);
 
 		  if (obj.isa ("line"))
 		    {
-		      data_property xldata = obj.get_xldata ();
-		      data_property xudata = obj.get_xudata ();
+		      data_property xldata = obj.get_xldata_property ();
+		      data_property xudata = obj.get_xudata_property ();
 
 		      check_limit_vals (min_val, max_val, min_pos, xldata);
 		      check_limit_vals (min_val, max_val, min_pos, xudata);
@@ -1961,10 +1426,8 @@ axes::update_axis_limits (const std::string& axis_type)
 		}
 	    }
 
-	  tmp = xproperties.get_xscale ();
-
 	  limits = get_axis_limits (min_val, max_val, min_pos,
-				    tmp.current_value () == "log");
+				    xproperties.xscale_is ("log"));
 
 	  update_type = 'x';
 	}
@@ -1973,9 +1436,7 @@ axes::update_axis_limits (const std::string& axis_type)
 	   || axis_type == "ldata" || axis_type == "udata"
 	   || axis_type == "ylimmode")
     {
-      tmp = xproperties.get_ylimmode ();
-
-      if (tmp.current_value () == "auto")
+      if (xproperties.ylimmode_is ("auto"))
 	{
 	    for (octave_idx_type i = 0; i < n; i++)
 	    {
@@ -1984,14 +1445,14 @@ axes::update_axis_limits (const std::string& axis_type)
 	      if (obj.isa ("line") || obj.isa ("image")
 		|| obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property ydata = obj.get_ydata ();
+		  data_property ydata = obj.get_ydata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, ydata);
 
 		  if (obj.isa ("line"))
 		    {
-		      data_property ldata = obj.get_ldata ();
-		      data_property udata = obj.get_udata ();
+		      data_property ldata = obj.get_ldata_property ();
+		      data_property udata = obj.get_udata_property ();
 
 		      check_limit_vals (min_val, max_val, min_pos, ldata);
 		      check_limit_vals (min_val, max_val, min_pos, udata);
@@ -1999,10 +1460,8 @@ axes::update_axis_limits (const std::string& axis_type)
 		}
 	    }
 
-	  tmp = xproperties.get_yscale ();
-
 	  limits = get_axis_limits (min_val, max_val, min_pos,
-				    tmp.current_value () == "log");
+				    xproperties.yscale_is ("log"));
 
 	  update_type = 'y';
 	}
@@ -2010,9 +1469,7 @@ axes::update_axis_limits (const std::string& axis_type)
   else if (axis_type == "zdata" || axis_type == "zscale"
 	   || axis_type == "zlimmode")
     {
-      tmp = xproperties.get_zlimmode ();
-
-      if (tmp.current_value () == "auto")
+      if (xproperties.zlimmode_is ("auto"))
 	{
 	  for (octave_idx_type i = 0; i < n; i++)
 	    {
@@ -2020,25 +1477,21 @@ axes::update_axis_limits (const std::string& axis_type)
 
 	      if (obj.isa ("line") || obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property zdata = obj.get_zdata ();
+		  data_property zdata = obj.get_zdata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, zdata);
 		}
 	    }
 
-	  tmp = xproperties.get_zscale ();
-
 	  limits = get_axis_limits (min_val, max_val, min_pos,
-				    tmp.current_value () == "log");
+				    xproperties.zscale_is ("log"));
 
 	  update_type = 'z';
 	}
     }
   else if (axis_type == "cdata" || axis_type == "climmode")
     {
-      tmp = xproperties.get_climmode ();
-
-      if (tmp.current_value () == "auto")
+      if (xproperties.climmode_is ("auto"))
 	{
 	  for (octave_idx_type i = 0; i < n; i++)
 	    {
@@ -2046,7 +1499,7 @@ axes::update_axis_limits (const std::string& axis_type)
 
 	      if (obj.isa ("image") || obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property cdata = obj.get_cdata ();
+		  data_property cdata = obj.get_cdata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, cdata);
 		}
@@ -2097,850 +1550,25 @@ axes::update_axis_limits (const std::string& axis_type)
   unwind_protect::run ();
 }
 
-std::string axes::properties::go_name ("axes");
+// ---------------------------------------------------------------------
+
+// Note: "line" code is entirely auto-generated
 
 // ---------------------------------------------------------------------
 
-static Matrix
-default_data (void)
-{
-  Matrix retval (1, 2);
-
-  retval(0) = 0;
-  retval(1) = 1;
-
-  return retval;
-}
-
-line::properties::properties (const graphics_handle& mh,
-			      const graphics_handle& p)
-  : base_properties (go_name, mh, p),
-    xdata (default_data ()),
-    ydata (default_data ()),
-    zdata (Matrix ()),
-    ldata (Matrix ()),
-    udata (Matrix ()),
-    xldata (Matrix ()),
-    xudata (Matrix ()),
-    color (),
-    linestyle ("-"),
-    linewidth (0.5),
-    marker ("none"),
-    markeredgecolor ("auto"),
-    markerfacecolor ("none"),
-    markersize (1),
-    keylabel (""),
-    interpreter (radio_values ("{tex}|none|latex"))
-{ }
-
-void
-line::properties::set (const caseless_str& name, const octave_value& val)
-{
-  bool modified = true;
-
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("parent"))
-    set_parent (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("__modified__"))
-    {
-      __modified__ = val.bool_value ();
-      modified = false;
-    }
-  else if (name.compare ("xdata"))
-    set_xdata (val);
-  else if (name.compare ("ydata"))
-    set_ydata (val);
-  else if (name.compare ("zdata"))
-    set_zdata (val);
-  else if (name.compare ("ldata"))
-    set_ldata (val);
-  else if (name.compare ("udata"))
-    set_udata (val);
-  else if (name.compare ("xldata"))
-    set_xldata (val);
-  else if (name.compare ("xudata"))
-    set_xudata (val);
-  else if (name.compare ("color"))
-    set_color (val);
-  else if (name.compare ("linestyle"))
-    set_linestyle (val);
-  else if (name.compare ("linewidth"))
-    set_linewidth (val);
-  else if (name.compare ("marker"))
-    set_marker (val);
-  else if (name.compare ("markeredgecolor"))
-    set_markeredgecolor (val);
-  else if (name.compare ("markerfacecolor"))
-    set_markerfacecolor (val);
-  else if (name.compare ("markersize"))
-    set_markersize (val);
-  else if (name.compare ("keylabel"))
-    set_keylabel (val);
-  else if (name.compare ("interpreter"))
-    set_interpreter (val);
-  else
-    {
-      modified = false;
-      warning ("set: invalid property `%s'", name.c_str ());
-    }
-
-  if (modified)
-    mark_modified ();
-}
-
-octave_value
-line::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("parent", parent.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("__modified__", __modified__);
-  m.assign ("xdata", xdata);
-  m.assign ("ydata", ydata);
-  m.assign ("zdata", zdata);
-  m.assign ("ldata", ldata);
-  m.assign ("udata", udata);
-  m.assign ("xldata", xldata);
-  m.assign ("xudata", xudata);
-  m.assign ("color", color);
-  m.assign ("linestyle", linestyle);
-  m.assign ("linewidth", linewidth);
-  m.assign ("marker", marker);
-  m.assign ("markeredgecolor", markeredgecolor);
-  m.assign ("markerfacecolor", markerfacecolor);
-  m.assign ("markersize", markersize);
-  m.assign ("keylabel", keylabel);
-  m.assign ("interpreter", interpreter);
-
-  return m;
-}
-
-octave_value
-line::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = tag;
-  else if (name.compare ("type"))
-    retval = type;
-  else if (name.compare ("parent"))
-    retval = parent.as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("__modified__"))
-    retval = __modified__;
-  else if (name.compare ("xdata"))
-    retval = xdata;
-  else if (name.compare ("ydata"))
-    retval = ydata;
-  else if (name.compare ("zdata"))
-    retval = zdata;
-  else if (name.compare ("ldata"))
-    retval = ldata;
-  else if (name.compare ("udata"))
-    retval = udata;
-  else if (name.compare ("xldata"))
-    retval = xldata;
-  else if (name.compare ("xudata"))
-    retval = xudata;
-  else if (name.compare ("color"))
-    retval = color;
-  else if (name.compare ("linestyle"))
-    retval = linestyle;
-  else if (name.compare ("linewidth"))
-    retval = linewidth;
-  else if (name.compare ("marker"))
-    retval = marker;
-  else if (name.compare ("markeredgecolor"))
-    retval = markeredgecolor;
-  else if (name.compare ("markerfacecolor"))
-    retval = markerfacecolor;
-  else if (name.compare ("markersize"))
-    retval = markersize;
-  else if (name.compare ("keylabel"))
-    retval = keylabel;
-  else if (name.compare ("interpreter"))
-    retval = interpreter;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
-}
-
-property_list::pval_map_type
-line::properties::factory_defaults (void)
-{
-  property_list::pval_map_type m;
-
-  m["xdata"] = default_data ();
-  m["ydata"] = default_data ();
-  m["zdata"] = Matrix ();
-  m["ldata"] = Matrix ();
-  m["udata"] = Matrix ();
-  m["xldata"] = Matrix ();
-  m["xudata"] = Matrix ();
-  m["color"] = color_property ();
-  m["linestyle"] = "-";
-  m["linewidth"] = 0.5;
-  m["marker"] = "none";
-  m["markeredgecolor"] = "auto";
-  m["markerfacecolor"] = "none";
-  m["markersize"] = 1;
-  m["keylabel"] = "";
-  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
-
-  return m;
-}
-
-std::string line::properties::go_name ("line");
+// Note: "text" code is entirely auto-generated
 
 // ---------------------------------------------------------------------
 
-text::properties::properties (const graphics_handle& mh,
-			      const graphics_handle& p)
-  : base_properties (go_name, mh, p),
-    string (""),
-    units ("data"),
-    position (Matrix (1, 3, 0.0)),
-    rotation (0),
-    horizontalalignment ("left"),
-    color (Matrix (1, 3, 0.0)),
-    fontname ("Helvetica"),
-    fontsize (10),
-    fontangle (radio_values ("{normal}|italic|oblique")),
-    fontweight (radio_values ("{normal}|bold|demi|light")),
-    interpreter (radio_values ("{tex}|none|latex"))
-{ }
-
-void
-text::properties::set (const caseless_str& name, const octave_value& val)
-{
-  bool modified = true;
-
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("parent"))
-    set_parent (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("__modified__"))
-    {
-      __modified__ = val.bool_value ();
-      modified = false;
-    }
-  else if (name.compare ("string"))
-    set_string (val);
-  else if (name.compare ("units"))
-    set_units (val);
-  else if (name.compare ("position"))
-    set_position (val);
-  else if (name.compare ("rotation"))
-    set_rotation (val);
-  else if (name.compare ("horizontalalignment"))
-    set_horizontalalignment (val);
-  else if (name.compare ("color"))
-    set_color (val);
-  else if (name.compare ("fontname"))
-    set_fontname (val);
-  else if (name.compare ("fontsize"))
-    set_fontsize (val);
-  else if (name.compare ("fontangle"))
-    set_fontangle (val);
-  else if (name.compare ("fontweight"))
-    set_fontweight (val);
-  else if (name.compare ("interpreter"))
-    set_interpreter (val);
-  else
-    {
-      modified = false;
-      warning ("set: invalid property `%s'", name.c_str ());
-    }
-
-  if (modified)
-    mark_modified ();
-}
-
-octave_value
-text::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("parent", parent.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("__modified__", __modified__);
-  m.assign ("string", string);
-  m.assign ("units", units);
-  m.assign ("position", position);
-  m.assign ("rotation", rotation);
-  m.assign ("horizontalalignment", horizontalalignment);
-  m.assign ("color", color);
-  m.assign ("fontname", fontname);
-  m.assign ("fontsize", fontsize);
-  m.assign ("fontangle", fontangle);
-  m.assign ("fontweight", fontweight);
-  m.assign ("interpreter", interpreter);
-
-  return m;
-}
-
-octave_value
-text::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = tag;
-  else if (name.compare ("type"))
-    retval = type;
-  else if (name.compare ("parent"))
-    retval = parent.as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("__modified__"))
-    retval = __modified__;
-  else if (name.compare ("string"))
-    retval = string;
-  else if (name.compare ("units"))
-    retval = units;
-  else if (name.compare ("position"))
-    retval = position;
-  else if (name.compare ("rotation"))
-    retval = rotation;
-  else if (name.compare ("horizontalalignment"))
-    retval = horizontalalignment;
-  else if (name.compare ("color"))
-    retval = color;
-  else if (name.compare ("fontname"))
-    retval = fontname;
-  else if (name.compare ("fontsize"))
-    retval = fontsize;
-  else if (name.compare ("fontangle"))
-    retval = fontangle;
-  else if (name.compare ("fontweight"))
-    retval = fontweight;
-  else if (name.compare ("interpreter"))
-    retval = interpreter;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
-}
-
-property_list::pval_map_type
-text::properties::factory_defaults (void)
-{
-  property_list::pval_map_type m;
-
-  m["string"] = "";
-  m["units"] = "data";
-  m["position"] = Matrix (1, 3, 0.0);
-  m["rotation"] = 0;
-  m["horizontalalignment"] = "left";
-  m["color"] = Matrix (1, 3, 1.0);
-  m["fontname"] = "Helvetica";
-  m["fontsize"] = 10;
-  m["fontangle"] = radio_property (radio_values ("{normal}|italic|oblique"));
-  m["fontweight"] = radio_property (radio_values ("{normal}|bold|demi|light"));
-  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
-
-  return m;
-}
-
-std::string text::properties::go_name ("text");
+// Note: "image" code is entirely auto-generated
 
 // ---------------------------------------------------------------------
 
-image::properties::properties (const graphics_handle& mh,
-			       const graphics_handle& p)
-  : base_properties (go_name, mh, p),
-    xdata (Matrix ()),
-    ydata (Matrix ()),
-    cdata (Matrix ())
-{ }
-
-void
-image::properties::set (const caseless_str& name,
-			const octave_value& val)
-{
-  bool modified = true;
-
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("parent"))
-    set_parent (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("__modified__"))
-    {
-      __modified__ = val.bool_value ();
-      modified = false;
-    }
-  else if (name.compare ("xdata"))
-    set_xdata (val);
-  else if (name.compare ("ydata"))
-    set_ydata (val);
-  else if (name.compare ("cdata"))
-    set_cdata (val);
-  else
-    {
-      modified = false;
-      warning ("set: invalid property `%s'", name.c_str ());
-    }
-
-  if (modified)
-    mark_modified ();
-}
-
-octave_value
-image::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("parent", parent.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("__modified__", __modified__);
-  m.assign ("xdata", xdata);
-  m.assign ("ydata", ydata);
-  m.assign ("cdata", cdata);
-
-  return m;
-}
-
-octave_value
-image::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = tag;
-  else if (name.compare ("type"))
-    retval = type;
-  else if (name.compare ("parent"))
-    retval = parent.as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("__modified__"))
-    retval = __modified__;
-  else if (name.compare ("xdata"))
-    retval = xdata;
-  else if (name.compare ("ydata"))
-    retval = ydata;
-  else if (name.compare ("cdata"))
-    retval = cdata;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
-}
-
-property_list::pval_map_type
-image::properties::factory_defaults (void)
-{
-  property_list::pval_map_type m;
-
-  m["xdata"] = Matrix ();
-  m["ydata"] = Matrix ();
-  m["cdata"] = Matrix ();
-
-  return m;
-}
-
-std::string image::properties::go_name ("image");
+// Note: "patch" code is entirely auto-generated
 
 // ---------------------------------------------------------------------
 
-patch::properties::properties (const graphics_handle& mh,
-			       const graphics_handle& p)
-  : base_properties (go_name, mh, p),
-    xdata (Matrix ()),
-    ydata (Matrix ()),
-    zdata (Matrix ()),
-    cdata (Matrix ()),
-    faces (Matrix ()),
-    vertices (Matrix ()),
-    facecolor (radio_values ("{flat}|none|interp")),
-    facealpha (1.0),
-    edgecolor (color_values (0, 0, 0), radio_values ("flat|none|interp")),
-    linestyle ("-"),
-    linewidth (0.5),
-    marker ("none"),
-    markeredgecolor ("auto"),
-    markerfacecolor ("none"),
-    markersize (1),
-    keylabel (""),
-    interpreter (radio_values ("{tex}|none|latex"))
-{ }
-
-void
-patch::properties::set (const caseless_str& name,
-			const octave_value& val)
-{
-  bool modified = true;
-
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("parent"))
-    set_parent (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("__modified__"))
-    {
-      __modified__ = val.bool_value ();
-      modified = false;
-    }
-  else if (name.compare ("xdata"))
-    set_xdata (val);
-  else if (name.compare ("ydata"))
-    set_ydata (val);
-  else if (name.compare ("zdata"))
-    set_zdata (val);
-  else if (name.compare ("cdata"))
-    set_cdata (val);
-  else if (name.compare ("faces"))
-    set_faces (val);
-  else if (name.compare ("vertices"))
-    set_vertices (val);
-  else if (name.compare ("facecolor"))
-    set_facecolor (val);
-  else if (name.compare ("facealpha"))
-    set_facealpha (val);
-  else if (name.compare ("edgecolor"))
-    set_edgecolor (val);
-  else if (name.compare ("linestyle"))
-    set_linestyle (val);
-  else if (name.compare ("linewidth"))
-    set_linewidth (val);
-  else if (name.compare ("marker"))
-    set_marker (val);
-  else if (name.compare ("markeredgecolor"))
-    set_markeredgecolor (val);
-  else if (name.compare ("markerfacecolor"))
-    set_markerfacecolor (val);
-  else if (name.compare ("markersize"))
-    set_markersize (val);
-  else if (name.compare ("keylabel"))
-    set_keylabel (val);
-  else if (name.compare ("interpreter"))
-    set_interpreter (val);
-  else
-    {
-      modified = false;
-      warning ("set: invalid property `%s'", name.c_str ());
-    }
-
-  if (modified)
-    mark_modified ();
-}
-
-octave_value
-patch::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("parent", parent.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("__modified__", __modified__);
-  m.assign ("xdata", xdata);
-  m.assign ("ydata", ydata);
-  m.assign ("zdata", zdata);
-  m.assign ("cdata", cdata);
-  m.assign ("faces", faces);
-  m.assign ("vertices", vertices);
-  m.assign ("facecolor", facecolor);
-  m.assign ("facealpha", facealpha);
-  m.assign ("edgecolor", edgecolor);
-  m.assign ("linestyle", linestyle);
-  m.assign ("linewidth", linewidth);
-  m.assign ("marker", marker);
-  m.assign ("markeredgecolor", markeredgecolor);
-  m.assign ("markerface", markerfacecolor);
-  m.assign ("markersize", markersize);
-  m.assign ("keylabel", keylabel);
-  m.assign ("interpreter", interpreter);
-
-  return m;
-}
-
-octave_value
-patch::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = tag;
-  else if (name.compare ("type"))
-    retval = type;
-  else if (name.compare ("parent"))
-    retval = parent.as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("__modified__"))
-    retval = __modified__;
-  else if (name.compare ("xdata"))
-    retval = xdata;
-  else if (name.compare ("ydata"))
-    retval = ydata;
-  else if (name.compare ("zdata"))
-    retval = zdata;
-  else if (name.compare ("cdata"))
-    retval = cdata;
-  else if (name.compare ("faces"))
-    retval = faces;
-  else if (name.compare ("vertices"))
-    retval = vertices;
-  else if (name.compare ("facecolor"))
-    retval = facecolor;
-  else if (name.compare ("facealpha"))
-    retval = facealpha;
-  else if (name.compare ("edgecolor"))
-    retval = edgecolor;
-  else if (name.compare ("linestyle"))
-    retval = linestyle;
-  else if (name.compare ("linewidth"))
-    retval = linewidth;
-  else if (name.compare ("marker"))
-    retval = marker;
-  else if (name.compare ("markeredgecolor"))
-    retval = markeredgecolor;
-  else if (name.compare ("markerfacecolor"))
-    retval = markerfacecolor;
-  else if (name.compare ("markersize"))
-    retval = markersize;
-  else if (name.compare ("keylabel"))
-    retval = keylabel;
-  else if (name.compare ("interpreter"))
-    retval = interpreter;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
-}
-
-property_list::pval_map_type
-patch::properties::factory_defaults (void)
-{
-  property_list::pval_map_type m;
-
-  m["xdata"] = Matrix ();
-  m["ydata"] = Matrix ();
-  m["zdata"] = Matrix ();
-  m["cdata"] = Matrix ();
-  m["faces"] = Matrix ();
-  m["vertices"] = Matrix ();
-  m["facecolor"] = color_property ();
-  m["facealpha"] = 1.0;
-  m["edgecolor"] = color_property ("black");
-  m["linestyle"] = "-";
-  m["linewidth"] = 0.5;
-  m["marker"] = "none";
-  m["markeredgecolor"] = "auto";
-  m["markerfacecolor"] = "none";
-  m["markersize"] = 1;
-  m["keylabel"] = "";
-  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
-
-  return m;
-}
-
-std::string patch::properties::go_name ("patch");
-
-// ---------------------------------------------------------------------
-
-surface::properties::properties (const graphics_handle& mh,
-				 const graphics_handle& p)
-  : base_properties (go_name, mh, p),
-    xdata (Matrix ()),
-    ydata (Matrix ()),
-    zdata (Matrix ()),
-    cdata (Matrix ()),
-    facecolor (radio_values ("{flat}|none|interp")),
-    facealpha (1.0),
-    edgecolor (color_values (0, 0, 0), radio_values ("flat|none|interp")),
-    linestyle ("-"),
-    linewidth (0.5),
-    marker ("none"),
-    markeredgecolor ("auto"),
-    markerfacecolor ("none"),
-    markersize (1),
-    keylabel (""),
-    interpreter (radio_values ("{tex}|none|latex"))
-{ }
-
-void
-surface::properties::set (const caseless_str& name,
-			  const octave_value& val)
-{
-  bool modified = true;
-
-  if (name.compare ("tag"))
-    set_tag (val);
-  else if (name.compare ("parent"))
-    set_parent (val);
-  else if (name.compare ("children"))
-    children = maybe_set_children (children, val);
-  else if (name.compare ("__modified__"))
-    {
-      __modified__ = val.bool_value ();
-      modified = false;
-    }
-  else if (name.compare ("xdata"))
-    set_xdata (val);
-  else if (name.compare ("ydata"))
-    set_ydata (val);
-  else if (name.compare ("zdata"))
-    set_zdata (val);
-  else if (name.compare ("cdata"))
-    set_cdata (val);
-  else if (name.compare ("facecolor"))
-    set_facecolor (val);
-  else if (name.compare ("facealpha"))
-    set_facealpha (val);
-  else if (name.compare ("edgecolor"))
-    set_edgecolor (val);
-  else if (name.compare ("linestyle"))
-    set_linestyle (val);
-  else if (name.compare ("linewidth"))
-    set_linewidth (val);
-  else if (name.compare ("marker"))
-    set_marker (val);
-  else if (name.compare ("markeredgecolor"))
-    set_markeredgecolor (val);
-  else if (name.compare ("markerfacecolor"))
-    set_markerfacecolor (val);
-  else if (name.compare ("markersize"))
-    set_markersize (val);
-  else if (name.compare ("keylabel"))
-    set_keylabel (val);
-  else if (name.compare ("interpreter"))
-    set_interpreter (val);
-  else
-    {
-      modified = false;
-      warning ("set: invalid property `%s'", name.c_str ());
-    }
-
-  if (modified)
-    mark_modified ();
-}
-
-octave_value
-surface::properties::get (void) const
-{
-  Octave_map m;
-
-  m.assign ("tag", tag);
-  m.assign ("type", type);
-  m.assign ("parent", parent.as_octave_value ());
-  m.assign ("children", children);
-  m.assign ("__modified__", __modified__);
-  m.assign ("xdata", xdata);
-  m.assign ("ydata", ydata);
-  m.assign ("zdata", zdata);
-  m.assign ("cdata", cdata);
-  m.assign ("facecolor", facecolor);
-  m.assign ("facealpha", facealpha);
-  m.assign ("edgecolor", edgecolor);
-  m.assign ("linestyle", linestyle);
-  m.assign ("linewidth", linewidth);
-  m.assign ("marker", marker);
-  m.assign ("markeredgecolor", markeredgecolor);
-  m.assign ("markerface", markerfacecolor);
-  m.assign ("markersize", markersize);
-  m.assign ("keylabel", keylabel);
-  m.assign ("interpreter", interpreter);
-
-  return m;
-}
-
-octave_value
-surface::properties::get (const caseless_str& name) const
-{
-  octave_value retval;
-
-  if (name.compare ("tag"))
-    retval = tag;
-  else if (name.compare ("type"))
-    retval = type;
-  else if (name.compare ("parent"))
-    retval = parent.as_octave_value ();
-  else if (name.compare ("children"))
-    retval = children;
-  else if (name.compare ("__modified__"))
-    retval = __modified__;
-  else if (name.compare ("xdata"))
-    retval = xdata;
-  else if (name.compare ("ydata"))
-    retval = ydata;
-  else if (name.compare ("zdata"))
-    retval = zdata;
-  else if (name.compare ("cdata"))
-    retval = cdata;
-  else if (name.compare ("facecolor"))
-    retval = facecolor;
-  else if (name.compare ("facealpha"))
-    retval = facealpha;
-  else if (name.compare ("edgecolor"))
-    retval = edgecolor;
-  else if (name.compare ("linestyle"))
-    retval = linestyle;
-  else if (name.compare ("linewidth"))
-    retval = linewidth;
-  else if (name.compare ("marker"))
-    retval = marker;
-  else if (name.compare ("markeredgecolor"))
-    retval = markeredgecolor;
-  else if (name.compare ("markerfacecolor"))
-    retval = markerfacecolor;
-  else if (name.compare ("markersize"))
-    retval = markersize;
-  else if (name.compare ("keylabel"))
-    retval = keylabel;
-  else if (name.compare ("interpreter"))
-    retval = interpreter;
-  else
-    warning ("get: invalid property `%s'", name.c_str ());
-
-  return retval;
-}
-
-property_list::pval_map_type
-surface::properties::factory_defaults (void)
-{
-  property_list::pval_map_type m;
-
-  m["xdata"] = Matrix ();
-  m["ydata"] = Matrix ();
-  m["zdata"] = Matrix ();
-  m["cdata"] = Matrix ();
-  m["facecolor"] = color_property ();
-  m["facealpha"] = 1.0;
-  m["edgecolor"] = color_property ("black");
-  m["linestyle"] = "-";
-  m["linewidth"] = 0.5;
-  m["marker"] = "none";
-  m["markeredgecolor"] = "auto";
-  m["markerfacecolor"] = "none";
-  m["markersize"] = 1;
-  m["keylabel"] = "";
-  m["interpreter"] = radio_property (radio_values ("{tex}|none|latex"));
-
-  return m;
-}
-
-std::string surface::properties::go_name ("surface");
+// Note: "surface" code is entirely auto-generated
 
 // ---------------------------------------------------------------------
 

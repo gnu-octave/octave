@@ -525,7 +525,7 @@ mostlyclean: clean
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations oct-errno.cc
 	rm -f stamp-prereq stamp-liboctave-prereq
-	rm -f doc-files gendoc.cc graphics.h mxarray.h DOCSTRINGS
+	rm -f doc-files gendoc.cc graphics.h graphics-props.cc mxarray.h DOCSTRINGS
 .PHONY: distclean
 
 maintainer-clean: distclean

@@ -1,3 +1,9 @@
+2008-01-13  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* grahpics.h.in: Sprinkle with OCTINTERP_API as needed.
+	(axes::properties::xaxislocation): Allow value of zero.
+	(axes::properties::yaxislocation): Likewise.
+
 2008-01-12  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* Makefile.in (distclean): Delete graphics-props.cc.

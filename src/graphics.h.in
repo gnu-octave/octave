@@ -954,7 +954,7 @@ private:
 
 class base_graphics_object;
 
-class base_properties
+class OCTINTERP_API base_properties
 {
 public:
   base_properties (const std::string& ty = "unknown",
@@ -1100,7 +1100,7 @@ protected:
   virtual void init (void) { }
 };
 
-class base_graphics_object
+class OCTINTERP_API base_graphics_object
 {
 public:
   friend class graphics_object;
@@ -1223,7 +1223,7 @@ protected:
   int count;
 };
 
-class graphics_object
+class OCTINTERP_API graphics_object
 {
 public:
   graphics_object (void) : rep (new base_graphics_object ()) { }
@@ -1388,7 +1388,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class root_figure : public base_graphics_object
+class OCTINTERP_API root_figure : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -1520,7 +1520,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class figure : public base_graphics_object
+class OCTINTERP_API figure : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -1647,7 +1647,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class axes : public base_graphics_object
+class OCTINTERP_API axes : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -1712,8 +1712,8 @@ public:
       radio_property xdir , "{normal}|reverse"
       radio_property ydir , "{normal}|reverse"
       radio_property zdir , "{normal}|reverse"
-      radio_property yaxislocation , "{left}|right"
-      radio_property xaxislocation , "{bottom}|top"
+      radio_property yaxislocation , "{left}|right|zero"
+      radio_property xaxislocation , "{bottom}|top|zero"
       array_property view , Matrix ()
       bool_property visible , "on"
       radio_property nextplot , "add|replace_children|{replace}"
@@ -1844,7 +1844,7 @@ private:
 
 // ---------------------------------------------------------------------
 
-class line : public base_graphics_object
+class OCTINTERP_API line : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -1935,7 +1935,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-class text : public base_graphics_object
+class OCTINTERP_API text : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -2027,7 +2027,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-class image : public base_graphics_object
+class OCTINTERP_API image : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -2110,7 +2110,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-class patch : public base_graphics_object
+class OCTINTERP_API patch : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -2209,7 +2209,7 @@ public:
 
 // ---------------------------------------------------------------------
 
-class surface : public base_graphics_object
+class OCTINTERP_API surface : public base_graphics_object
 {
 public:
   class properties : public base_properties
@@ -2311,7 +2311,7 @@ set_property_in_handle (double handle, const std::string &property,
 
 // ---------------------------------------------------------------------
 
-class gh_manager
+class OCTINTERP_API gh_manager
 {
 protected:
 
@@ -2482,10 +2482,10 @@ private:
 
 
 // This function is NOT equivalent to the scripting language function gcf.
-graphics_handle gcf (void);
+OCTINTERP_API graphics_handle gcf (void);
 
 // This function is NOT equivalent to the scripting language function gca.
-graphics_handle gca (void);
+OCTINTERP_API graphics_handle gca (void);
 
 #endif
 

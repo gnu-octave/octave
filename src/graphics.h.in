@@ -964,7 +964,21 @@ public:
       type ("type", mh, ty),
       __modified__ ("__modified__", mh, true),
       __myhandle__ (mh),
-      parent ("parent", mh, p), children ()
+      parent ("parent", mh, p), 
+      children (),
+      busyaction ("parent", mh, "{queue}|cancel"),
+      buttondownfcn ("buttondownfcn", mh, octave_value ()),
+      clipping ("clipping", mh, true),
+      createfcn ("createfcn" , mh, octave_value ()),
+      deletefcn ("deletefcn", mh, octave_value ()),
+      handlevisibility ("handlevisibility", mh, "{on}|callback|off"),
+      hittest ("hittest", mh, true),
+      interruptible ("interruptible", mh, true),
+      selected ("selected", mh, false),
+      selectionhighlight ("selectionhighlight", mh, true),
+      uicontextmenu ("uicontextmenu", mh, graphics_handle ()),
+      userdata ("userdata", mh, octave_value ()),
+      visible ("visible", mh, true)
     { }
 
   virtual ~base_properties (void) { }
@@ -1004,7 +1018,33 @@ public:
   bool is_modified (void) const { return __modified__.is_on (); }
  
   graphics_handle get___myhandle__ (void) const { return __myhandle__; }
- 
+  
+  std::string get_busyaction (void) const { return busyaction.current_value (); }
+
+  octave_value get_buttondownfcn (void) const { return buttondownfcn.get (); }
+
+  std::string get_clipping (void) const { return clipping.current_value (); }
+
+  octave_value get_createfcn (void) const { return createfcn.get (); }
+
+  octave_value get_deletefcn (void) const { return deletefcn.get (); }
+
+  std::string get_handlevisibility (void) const { return handlevisibility.current_value (); }
+
+  std::string get_hittest (void) const { return hittest.current_value (); }
+
+  std::string get_interruptible (void) const { return interruptible.current_value (); }
+
+  std::string get_selected (void) const { return selected.current_value (); }
+
+  std::string get_selectionhighlight (void) const { return selectionhighlight.current_value (); }
+  
+  octave_value get_uicontextmenu (void) const { return uicontextmenu.get (); }
+
+  octave_value get_userdata (void) const { return userdata.get (); }
+  
+  std::string get_visible (void) const { return visible.current_value (); }
+
   void remove_child (const graphics_handle& h);
 
   void adopt (const graphics_handle& h)
@@ -1017,6 +1057,125 @@ public:
   void set_tag (const octave_value& val) { tag = val; }
 
   void set_parent (const octave_value& val);
+
+  void set_busyaction (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        busyaction = val;
+        mark_modified ();
+      }
+  }
+
+  void set_buttondownfcn (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        buttondownfcn = val;
+        mark_modified ();
+      }
+  }
+
+  void set_clipping (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        clipping = val;
+        mark_modified ();
+      }
+  }
+
+  void set_createfcn (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        createfcn = val;
+        mark_modified ();
+      }
+  }
+
+  void set_deletefcn (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        deletefcn = val;
+        mark_modified ();
+      }
+  }
+
+  void set_handlevisibility (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        handlevisibility = val;
+        mark_modified ();
+      }
+  }
+
+  void set_hittest (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        hittest = val;
+        mark_modified ();
+      }
+  }
+
+  void set_interruptible (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        interruptible = val;
+        mark_modified ();
+      }
+  }
+
+  void set_selected (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        selected = val;
+        mark_modified ();
+      }
+  }
+
+  void set_selectionhighlight (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        selectionhighlight = val;
+        mark_modified ();
+      }
+  }
+
+  void set_uicontextmenu (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        uicontextmenu = val;
+        mark_modified ();
+      }
+  }
+
+  void set_userdata (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        userdata = val;
+        mark_modified ();
+      }
+  }
+
+  virtual void set_visible (const octave_value& val)
+  {
+    if (! error_state)
+      {
+        visible = val;
+        mark_modified ();
+      }
+  }
+
+
 
   void reparent (const graphics_handle& new_parent) { parent = new_parent; }
 
@@ -1089,6 +1248,19 @@ protected:
   handle_property parent;
   // FIXME: use a property class for children
   Matrix children;
+  radio_property busyaction;
+  callback_property buttondownfcn;
+  bool_property clipping;
+  callback_property createfcn;
+  callback_property deletefcn;
+  radio_property handlevisibility;
+  bool_property hittest;
+  bool_property interruptible;
+  bool_property selected;
+  bool_property selectionhighlight;
+  handle_property uicontextmenu;
+  any_property userdata;
+  bool_property visible;
 
 protected:
   std::map<caseless_str, property> all_props;
@@ -1399,7 +1571,6 @@ public:
 
     BEGIN_PROPERTIES(root_figure)
       handle_property currentfigure S , graphics_handle ()
-      bool_property visible , "on"
     END_PROPERTIES
   };
 
@@ -1527,6 +1698,7 @@ public:
   {
   public:
     void close (void);
+    void set_visible (const octave_value& val);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -1538,7 +1710,6 @@ public:
       callback_property closerequestfcn , "closereq"
       handle_property currentaxes S , graphics_handle ()
       array_property colormap , jet_colormap ()
-      bool_property visible S , "on"
       radio_property paperorientation , "{portrait}|landscape"
       color_property color , color_values (1, 1, 1)
     END_PROPERTIES
@@ -1715,7 +1886,6 @@ public:
       radio_property yaxislocation , "{left}|right|zero"
       radio_property xaxislocation , "{bottom}|top|zero"
       array_property view , Matrix ()
-      bool_property visible , "on"
       radio_property nextplot , "add|replace_children|{replace}"
       array_property outerposition , Matrix ()
       radio_property activepositionproperty a , "{outerposition}|position"
@@ -1852,6 +2022,9 @@ public:
   public:
     // See the genprops.awk script for an explanation of the
     // properties declarations.
+
+    // properties which are not in matlab:
+    // ldata, udata, xldata, xudata, keylabel, interpreter
 
     BEGIN_PROPERTIES(line)
       data_property xdata l , default_data ()

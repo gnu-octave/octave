@@ -829,6 +829,32 @@ base_properties::get (const caseless_str& name) const
     retval = get_parent ().as_octave_value ();
   else if (name.compare ("children"))
     retval = children;
+  else if (name.compare ("busyaction"))
+    retval = get_busyaction ();
+  else if (name.compare ("buttondownfcn"))
+    retval = get_buttondownfcn ();
+  else if (name.compare ("clipping"))
+    retval = get_clipping ();
+  else if (name.compare ("createfcn"))
+    retval = get_createfcn ();
+  else if (name.compare ("deletefcn"))
+    retval = get_deletefcn ();
+  else if (name.compare ("handlevisibility"))
+    retval = get_handlevisibility ();
+  else if (name.compare ("hittest"))
+    retval = get_hittest ();
+  else if (name.compare ("interruptible"))
+    retval = get_interruptible ();
+  else if (name.compare ("selected"))
+    retval = get_selected ();
+  else if (name.compare ("selectionhighlight"))
+    retval = get_selectionhighlight ();
+  else if (name.compare ("uicontextmenu"))
+    retval = get_uicontextmenu ();
+  else if (name.compare ("userdata"))
+    retval = get_userdata ();
+  else if (name.compare ("visible"))
+    retval = get_visible ();
   else
   {
     std::map<caseless_str, property>::const_iterator it = all_props.find (name);
@@ -856,6 +882,19 @@ base_properties::get (void) const
   m.assign ("__modified__", is_modified ());
   m.assign ("parent", get_parent ().as_octave_value ());
   m.assign ("children", children);
+  m.assign ("busyaction", get_busyaction ());
+  m.assign ("buttondownfcn", get_buttondownfcn ());
+  m.assign ("clipping", get_clipping ());
+  m.assign ("createfcn", get_createfcn ());
+  m.assign ("deletefcn", get_deletefcn ());
+  m.assign ("handlevisibility", get_handlevisibility ());
+  m.assign ("hittest", get_hittest ());
+  m.assign ("interruptible", get_interruptible ());
+  m.assign ("selected", get_selected ());
+  m.assign ("selectionhighlight", get_selectionhighlight ());
+  m.assign ("uicontextmenu", get_uicontextmenu ());
+  m.assign ("userdata", get_userdata ());
+  m.assign ("visible", get_visible ());
 
   return m;
 }
@@ -871,6 +910,32 @@ base_properties::set (const caseless_str& name, const octave_value& val)
     set_parent (val);
   else if (name.compare ("children"))
     maybe_set_children (children, val);
+  else if (name.compare ("busyaction"))
+    set_busyaction (val);
+  else if (name.compare ("buttondownfcn"))
+    set_buttondownfcn (val);
+  else if (name.compare ("clipping"))
+    set_clipping (val);
+  else if (name.compare ("createfcn"))
+    set_createfcn (val);
+  else if (name.compare ("deletefcn"))
+    set_deletefcn (val);
+  else if (name.compare ("handlevisibility"))
+    set_handlevisibility (val);
+  else if (name.compare ("hittest"))
+    set_hittest (val);
+  else if (name.compare ("interruptible"))
+    set_interruptible (val);
+  else if (name.compare ("selected"))
+    set_selected (val);
+  else if (name.compare ("selectionhighlight"))
+    set_selectionhighlight (val);
+  else if (name.compare ("uicontextmenu"))
+    set_uicontextmenu (val);
+  else if (name.compare ("userdata"))
+    set_userdata (val);
+  else if (name.compare ("visible"))
+    set_visible (val);
   else
   {
     std::map<caseless_str, property>::iterator it = all_props.find (name);

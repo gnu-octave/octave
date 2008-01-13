@@ -1,3 +1,11 @@
+2007-12-13  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in, graphics.cc (class base_properties): New
+	properties: busyaction, buttondownfcn, clipping, createfcn,
+	deletefcn, handlevisibility, hittest, interruptible, selected,
+	selectionhighlight, uicontextmenu, userdata, visible.
+	(class figure): Delete visible property.
+
 2008-01-13  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* grahpics.h.in: Sprinkle with OCTINTERP_API as needed.

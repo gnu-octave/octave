@@ -1,3 +1,17 @@
+2008-01-14  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* genprops.awk (emit_get_callback): Pass user data to execute method.
+	* graphics.cc (execute_callback): New static function.
+	(callback_property::validate): Make it work.
+	(callback_property::execute): Make it work.
+	(gh_manager::do_free): Execute delete function here.
+	* graphics.h.in (callback_property::execute): Fix decl.
+	(base_properties::buttondownfcn, base_properties::createfcn,
+	base_properties::deletefcn, base_properties::userdata): Default
+	value is empty Matrix, not undefined octave_value object.
+	(base_properties::execute_createfcn): New function.
+	(base_properties::execute_deletefcn): New function.
+
 2007-12-13  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h.in, graphics.cc (class base_properties): New

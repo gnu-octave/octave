@@ -796,7 +796,7 @@ public:
                get_name ().c_str ());
     }
 
-  OCTINTERP_API void execute (void);
+  OCTINTERP_API void execute (const octave_value& data = octave_value ()) const;
 
   callback_property& operator = (const octave_value& val)
     {
@@ -967,17 +967,17 @@ public:
       parent ("parent", mh, p), 
       children (),
       busyaction ("parent", mh, "{queue}|cancel"),
-      buttondownfcn ("buttondownfcn", mh, octave_value ()),
+      buttondownfcn ("buttondownfcn", mh, Matrix ()),
       clipping ("clipping", mh, true),
-      createfcn ("createfcn" , mh, octave_value ()),
-      deletefcn ("deletefcn", mh, octave_value ()),
+      createfcn ("createfcn" , mh, Matrix ()),
+      deletefcn ("deletefcn", mh, Matrix ()),
       handlevisibility ("handlevisibility", mh, "{on}|callback|off"),
       hittest ("hittest", mh, true),
       interruptible ("interruptible", mh, true),
       selected ("selected", mh, false),
       selectionhighlight ("selectionhighlight", mh, true),
       uicontextmenu ("uicontextmenu", mh, graphics_handle ()),
-      userdata ("userdata", mh, octave_value ()),
+      userdata ("userdata", mh, Matrix ()),
       visible ("visible", mh, true)
     { }
 
@@ -1025,7 +1025,13 @@ public:
 
   std::string get_clipping (void) const { return clipping.current_value (); }
 
+  void execute_createfcn (const octave_value& data = octave_value ()) const
+    { createfcn.execute (data); }
+
   octave_value get_createfcn (void) const { return createfcn.get (); }
+
+  void execute_deletefcn (const octave_value& data = octave_value ()) const
+    { deletefcn.execute (data); }
 
   octave_value get_deletefcn (void) const { return deletefcn.get (); }
 
@@ -1719,7 +1725,6 @@ public:
       {
         colormap.add_constraint (dim_vector (-1, 3));
       }
-
   };
 
 private:

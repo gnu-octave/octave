@@ -137,6 +137,61 @@ default_data (void)
   return retval;
 }
 
+// NOTE: "cb" is passed by value, because "function_value" method
+//       is non-const; passing "cb" by const-reference is not
+//       possible
+
+static void
+execute_callback (octave_value cb, const graphics_handle& h,
+                  const octave_value& data)
+{
+  octave_value_list args;
+  octave_function *fcn = 0;
+
+  args(0) = h.as_octave_value ();
+  args(1) = data;
+
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
+  if (cb.is_function_handle ())
+    fcn = cb.function_value ();
+  else if (cb.is_string ())
+    {
+      std::string s = cb.string_value ();
+      octave_value f = symbol_table::find_function (s);
+      int status;
+
+      if (f.is_defined ())
+        fcn = f.function_value ();
+      else
+        {
+          eval_string (s, false, status);
+          return;
+        }
+    }
+  else if (cb.is_cell () && cb.length () > 0
+           && (cb.rows () == 1 || cb.columns () == 1)
+           && cb.cell_value ()(0).is_function_handle ())
+    {
+      Cell c = cb.cell_value ();
+
+      fcn = c(0).function_value ();
+      if (! error_state)
+        {
+          for (int i = 0; i < c.length () ; i++)
+            args(2+i) = c(i);
+        }
+    }
+  else
+    error ("trying to execute non-executable object (class = %s)",
+           cb.class_name ());
+
+  if (! error_state)
+    feval (fcn, args);
+  
+  END_INTERRUPT_WITH_EXCEPTIONS;
+}
+
 // ---------------------------------------------------------------------
 
 radio_values::radio_values (const std::string& opt_string)
@@ -335,16 +390,34 @@ handle_property::set (const octave_value& v)
 }
 
 bool
-callback_property::validate (const octave_value&) const
+callback_property::validate (const octave_value& v) const
 {
-  // FIXME: implement this
-  return true;
+  // case 1: function handle
+  // case 2: cell array with first element being a function handle
+  // case 3: string corresponding to known function name
+  // case 4: evaluatable string
+  // case 5: empty matrix
+
+  if (v.is_function_handle ())
+    return true;
+  else if (v.is_string ())
+    // complete validation will be done at execution-time
+    return true;
+  else if (v.is_cell () && v.length () > 0
+           && (v.rows() == 1 || v.columns () == 1)
+           && v.cell_value ()(0).is_function_handle ())
+    return true;
+  else if (v.is_empty ())
+    return true;
+
+  return false;
 }
 
 void
-callback_property::execute (void)
+callback_property::execute (const octave_value& data) const
 {
-  // FIXME: define correct signature and implement this
+  if (callback.is_defined () && ! callback.is_empty ())
+    execute_callback (callback, get_parent (), data);
 }
 
 // ---------------------------------------------------------------------
@@ -606,6 +679,8 @@ gh_manager::do_free (const graphics_handle& h)
 
 	  if (p != handle_map.end ())
 	    {
+              p->second.get_properties ().execute_deletefcn ();
+
 	      handle_map.erase (p);
 
 	      if (h.value () < 0)
@@ -2065,9 +2140,13 @@ Undocumented internal function.\n\
 
 	      graphics_object parent_obj = gh_manager::get_object (parent_h);
 
-	      parent_obj.remove_child (h);
+              // NOTE: free the handle before removing it from its parent's
+              //       children, such that the object's state is correct when
+              //       the deletefcn callback is executed
 
 	      gh_manager::free (h);
+
+	      parent_obj.remove_child (h);
 	    }
 	  else
 	    error ("delete: invalid graphics object (= %g)", val);

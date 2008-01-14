@@ -176,10 +176,10 @@ function emit_get_color (i)
 
 function emit_get_callback (i)
 {
-  printf ("  void execute_%s (void)", name[i]);
+  printf ("  void execute_%s (const octave_value& data = octave_value ()) const", name[i]);
   
   if (emit_get[i] == "definition")
-    printf (" { %s.execute (); }\n", name[i]);
+    printf (" { %s.execute (data); }\n", name[i]);
   else
     printf (";\n");
 

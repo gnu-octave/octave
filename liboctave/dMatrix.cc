@@ -2111,11 +2111,11 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
 #if defined (HAVE_LOG2)
-      double tmp = log2 (dminmn) / dsmlsizp1 + 1;
+      double tmp = log2 (dminmn / dsmlsizp1);
 #else
-      double tmp = log (dminmn) / dsmlsizp1 / log (2.0) + 1;
+      double tmp = log (dminmn / dsmlsizp1) / log (2.0);
 #endif
-      octave_idx_type nlvl = static_cast<int> (tmp);
+      octave_idx_type nlvl = static_cast<int> (tmp) + 1;
       if (nlvl < 0)
 	nlvl = 0;
 

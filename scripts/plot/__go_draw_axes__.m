@@ -1602,17 +1602,17 @@ endfunction
 
 function [f, s, fnt, it, bld] = get_fontname_and_size (t)
   if (isempty (t.fontname))
-    fnt = "helvetica";
+    fnt = "Helvetica";
   else
-    fnt = tolower (t.fontname);
+    fnt = t.fontname;
   endif
   f = fnt;
   it = false;
   bld = false;
-  if (! isempty (t.fontweight) && strcmp (tolower (t.fontweight), "bold"))
+  if (! isempty (t.fontweight) && strcmpi (t.fontweight, "bold"))
     if (! isempty(t.fontangle)
-	&& (strcmp (tolower (t.fontangle), "italic")
-	    || strcmp (tolower (t.fontangle), "oblique")))
+	&& (strcmpi (t.fontangle, "italic")
+	    || strcmpi (t.fontangle, "oblique")))
       f = strcat (f, "-bolditalic");
       it = true;
       bld = true;
@@ -1621,8 +1621,8 @@ function [f, s, fnt, it, bld] = get_fontname_and_size (t)
       bld = true;
     endif
   elseif (! isempty(t.fontangle)
-	  && (strcmp (tolower (t.fontangle), "italic")
-	      || strcmp (tolower (t.fontangle), "oblique")))
+	  && (strcmpi (t.fontangle, "italic")
+	      || strcmpi (t.fontangle, "oblique")))
     f = strcat (f, "-italic");
     it = true;
   endif
@@ -1640,7 +1640,7 @@ function [str, f, s] = __maybe_munge_text__ (enhanced, obj, fld,
   if (strcmp (fld, "string"))
     [f, s, fnt, it, bld] = get_fontname_and_size (obj);
   else
-    f = "Helvectica";
+    f = "Helvetica";
     s = 10;
     fnt = f;
     it = false;

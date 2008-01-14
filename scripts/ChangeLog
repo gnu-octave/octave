@@ -1,5 +1,10 @@
 2008-01-14  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_axes__.m (get_fontname_and_size): Use strcmpi
+	instead of calling tolower on first arg.  Default font name is
+	Helvetica, not helvetica.  Don't downcase user-specified font name.
+	(__maybe_munge_text__): Fix typo.
+
 	* optimization/sqp.m: Fix function definitions in test code.
 
 2008-01-12  John W. Eaton  <jwe@octave.org>

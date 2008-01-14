@@ -183,8 +183,11 @@ execute_callback (octave_value cb, const graphics_handle& h,
         }
     }
   else
-    error ("trying to execute non-executable object (class = %s)",
-           cb.class_name ());
+    {
+      std::string nm = cb.class_name ();
+      error ("trying to execute non-executable object (class = %s)",
+	     nm.c_str ());
+    }
 
   if (! error_state)
     feval (fcn, args);

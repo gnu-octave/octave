@@ -2547,10 +2547,10 @@ public:
 
   static graphics_handle
   make_graphics_handle (const std::string& go_name,
-			const graphics_handle& parent)
+			const graphics_handle& parent, bool do_createfcn = true)
   {
     return instance_ok ()
-      ? instance->do_make_graphics_handle (go_name, parent)
+      ? instance->do_make_graphics_handle (go_name, parent, do_createfcn)
       : graphics_handle ();
   }
 
@@ -2633,7 +2633,7 @@ private:
   }
 
   graphics_handle do_make_graphics_handle (const std::string& go_name,
-					   const graphics_handle& p);
+					   const graphics_handle& p, bool do_createfcn);
 
   graphics_handle do_make_figure_handle (double val);
 

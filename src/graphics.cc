@@ -815,6 +815,13 @@ is_figure (double val)
   return obj && obj.isa ("figure");
 }
 
+static void
+xcreatefcn (const graphics_handle& h)
+{
+  graphics_object obj = gh_manager::get_object (h);
+  obj.get_properties ().execute_createfcn  ();
+}
+
 // ---------------------------------------------------------------------
 
 static int
@@ -1740,7 +1747,7 @@ gh_manager::gh_manager (void)
 
 graphics_handle
 gh_manager::do_make_graphics_handle (const std::string& go_name,
-				     const graphics_handle& p)
+				     const graphics_handle& p, bool do_createfcn)
 {
   graphics_handle h = get_handle (go_name);
 
@@ -1761,7 +1768,11 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
   else if (go_name == "surface")
     go = new surface (h, p);
   if (go)
-    handle_map[h] = graphics_object (go);
+    {
+      handle_map[h] = graphics_object (go);
+      if (do_createfcn)
+        go->get_properties ().execute_createfcn ();
+    }
   else
     error ("gh_manager::do_make_graphics_handle: invalid object type `%s'",
 	   go_name.c_str ());
@@ -1970,13 +1981,14 @@ make_graphics_object (const std::string& go_name,
       if (parent.ok ())
 	{
 	  graphics_handle h
-	    = gh_manager::make_graphics_handle (go_name, parent);
+	    = gh_manager::make_graphics_handle (go_name, parent, false);
 
 	  if (! error_state)
 	    {
 	      adopt (parent, h);
 
 	      xset (h, args.splice (0, 1));
+	      xcreatefcn (h);
 
 	      retval = h.value ();
 
@@ -2023,7 +2035,7 @@ Undocumented internal function.\n\
 	      graphics_handle h = octave_NaN;
 
 	      if (xisnan (val))
-		h = gh_manager::make_graphics_handle ("figure", 0);
+		h = gh_manager::make_graphics_handle ("figure", 0, false);
 	      else if (val > 0 && D_NINT (val) == val)
 		h = gh_manager::make_figure_handle (val);
 	      else
@@ -2034,6 +2046,7 @@ Undocumented internal function.\n\
 		  adopt (0, h);
 
 		  xset (h, args.splice (0, 1));
+		  xcreatefcn (h);
 
 		  retval = h.value ();
 		}

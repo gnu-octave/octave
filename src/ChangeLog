@@ -7,7 +7,16 @@
 	specularstrength, specularexponent, specularcolorreflectance,
 	erasemode.
 
-2008-01-14  Michael Goffioul <michael.goffioul@gmail.com>
+2008-01-14  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (gh_manager::do_make_graphics_handle,
+	gh_manager::make_graphics_handle): New boolean parameter
+	do_createfcn.
+	* graphics.cc (xcreatefcn): New static function.
+	(gh_manager::do_make_graphics_handle): New boolean parameter
+	do_createfcn.  Execute createfcn callback accordingly.
+	(make_graphics_object, F__go_figure__): Use do_createfcn
+	parameter and call xcreatefcn
 
 	* genprops.awk (emit_get_callback): Pass user data to execute method.
 	* graphics.cc (execute_callback): New static function.
@@ -29,13 +38,13 @@
 	selectionhighlight, uicontextmenu, userdata, visible.
 	(class figure): Delete visible property.
 
-2008-01-13  Michael Goffioul <michael.goffioul@gmail.com>
+2008-01-13  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* grahpics.h.in: Sprinkle with OCTINTERP_API as needed.
 	(axes::properties::xaxislocation): Allow value of zero.
 	(axes::properties::yaxislocation): Likewise.
 
-2008-01-12  Michael Goffioul <michael.goffioul@gmail.com>
+2008-01-12  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Makefile.in (distclean): Delete graphics-props.cc.
 
@@ -91,7 +100,7 @@
 	* parse.y (make_anon_fcn_handle): Don't attempt to convert
 	expression to assignment to __retval__.
 
-2008-01-07  Michael Goffioul <michael.goffioul@gmail.com>
+2008-01-07  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* ov-builtin.h (octave_builtin): Tag with OCTINTERP_API.
 	* ov-dld-fcn.h (octave_dld_function): Likewise.
@@ -904,7 +913,7 @@
 	(property_name): rename class to caseless_str. 
 	(radio_values::possible_vals): change type to caseless_str.
 
-2007-11-26  Michael Goffioul <michael.goffioul@gmail.com>
+2007-11-26  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* builtins.h (install_builtins): Tag with OCTINTERP_API.
 	* toplev.h (octave_interpreter_ready, octave_initialized): Likewise.
@@ -1040,7 +1049,7 @@
 	scalar_to_bool_matrix): New type conversion functions.
 	(install_bm_bm_ops): Install new type conversions functions.
 
-2007-11-06  Michael Goffioul <michael.goffioul@gmail.com>
+2007-11-06  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* toplev.cc (Fsystem) [__WIN32__ && ! __CYGWIN__]:
 	Quote the complete command.
@@ -1115,7 +1124,7 @@
 	* file-io.cc (fopen_mode_to_ios_mode): Handle 'W' as 'w' and 'R'
 	as 'r', but warn about them.
 
-2007-10-29  Thomas Treichl <Thomas.Treichl@gmx.net>
+2007-10-29  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* data.cc: Include sytime.h, sys/types.h, and sys/resource.h.
 
@@ -1124,7 +1133,7 @@
 	* graphics.cc (figure::properties::set_currentaxes): 
 	Allow currentfigure to be NaN.
 
-2007-10-25  Michael Goffioul <michael.goffioul@gmail.com>
+2007-10-25  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* DLD-FUNCTIONS/__contourc__.cc: Use unsigned int instead of uint.
 	(drawcn): Use 1 << k instead of pow (2, k).
@@ -1403,7 +1412,7 @@
 
 	* ov-fcn-inline.cc (Finline): Use DEFUNX instead of DEFUN.
 
-2007-10-08  Michael Goffioul <michael.goffioul@gmail.com>
+2007-10-08  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* sighandlers.h (can_interrupt): Tag with OCTINERP_API.
 	* sysdep.h (raw_mode, octave_popen, octave_pclose,
@@ -1471,7 +1480,7 @@
         characters with the high bit set (value >127) by '?' and warn
         that we've done so.
 
-2007-10-04  Michael Goffioul <michael.goffioul@gmail.com>
+2007-10-04  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* sysdep.cc (w32_set_octave_home): Base OCTAVE_HOME location on
 	octinterp, not the main exe.
@@ -1481,7 +1490,7 @@
 	* data.cc (Fnorm): New function.
 	(F__vnorm__): Delete.
 
-2007-10-03  Michael Goffioul <michael.goffioul@gmail.com>
+2007-10-03  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* DLD-FUNCTIONS/typecast.cc: Include <algorithm>.
 
@@ -1504,7 +1513,7 @@
 	* graphics.h.in	(color_property::color_property
 	(const octave_value& val)): Undo change from 2007-09-26
 
-2007-10-01  Michael Goffioul <michael.goffioul@gmail.com>
+2007-10-01  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* octave.cc (octave_main): Add "--line-editing" option to force
 	readline line editing.
@@ -1662,7 +1671,7 @@
         * data.cc (do_cat): ditto.
         * pt-mat.cc (tree_matrix::rvalue): ditto.
 
-2007-09-05  Michael Goffioul <michael.goffioul@gmail.com>
+2007-09-05  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* oct-stream.cc (octave_base_stream::do_printf): Ignore precision
 	portion of format string if printing Inf, NaN, or NA values.
@@ -1693,7 +1702,7 @@
 	checking for blocking constraint.  Don't resize lambda_tmp.  Only
 	compute Y = Aact.pseudo_inverse () if it is needed.
 
-2007-08-31  Michael Goffioul <michael.goffioul@gmail.com>
+2007-08-31  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* ls-mat-ascii.cc (get_lines_and_columns): Check beg variable for
 	NPOS to avoid segmentation fault. 

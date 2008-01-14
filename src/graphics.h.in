@@ -2298,15 +2298,30 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES(patch)
-      data_property xdata l , Matrix ()
+            data_property xdata l , Matrix ()
       data_property ydata l , Matrix ()
       data_property zdata l , Matrix ()
       data_property cdata l , Matrix ()
+      radio_property cdatamapping a , "{scaled}|direct"
       array_property faces , Matrix ()
+      data_property facevertexalphadata , Matrix ()
+      data_property facevertexcdata , Matrix ()
       array_property vertices , Matrix ()
+      array_property vertexnormals , Matrix ()
+      radio_property normalmode a , "{auto}|manual"
       color_property facecolor a , "{flat}|none|interp"
       double_property facealpha , 1.0
+      radio_property facelighting a , "{flat}|none|gouraud|phong"
       color_property edgecolor a , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
+      double_property edgealpha , 1.0
+      radio_property edgelighting a , "{none}|flat|gouraud|phong"
+      radio_property backfacelighting a , "{reverselit}|unlit|lit"
+      double_property ambientstrength , 0.3
+      double_property diffusestrength , 0.6
+      double_property specularstrength , 0.6
+      double_property specularexponent , 10.0
+      double_property specularcolorreflectance , 1.0
+      radio_property erasemode a , "{normal}|background|xor|none"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h"

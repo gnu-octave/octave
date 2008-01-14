@@ -1,6 +1,6 @@
 2008-01-14  Kai Habel  <kai.habel@gmx.de>
 
-	* graphics.h.in (class patch::properties): New properties,
+	* graphics.h.in (class patch::properties): New properties:
 	cdatamapping, facevertexalphadata, facevertexcdata, vertexnormals,
 	normalmode, facelighting, edgealpha, edgelighting,
 	backfacelighting, ambientstrength, diffusestrength,

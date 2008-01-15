@@ -19,7 +19,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rgb2ntsc (@var{rgb})
-## Image format conversion.
+## Transform a colormap or image from RGB to NTSC.
+## @seealso{ntsc2rgb}
 ## @end deftypefn
 
 ## Author: Tony Richardson <arichard@stark.cc.oh.us>
@@ -32,10 +33,36 @@ function yiq = rgb2ntsc (rgb)
     print_usage ();
   endif
 
+  ## If we have an image convert it into a color map.
+  if (ismatrix (rgb) && ndims (rgb) == 3)
+    is_image = true;
+    Sz = size (rgb);
+    rgb = [rgb(:,:,1)(:), rgb(:,:,2)(:), rgb(:,:,3)(:)];
+    ## Convert to a double image.
+    if (isinteger (rgb))
+      C = class (rgb);
+      low = double (intmin (C));
+      high = double (intmax (C));
+      rgb = (double (rgb) - low) / (high - low);
+    endif
+  else
+    is_image = false;
+  endif
+
+  if (! ismatrix (rgb) || columns (rgb) != 3)
+    error ("rgb2ntsc: argument must be a matrix of size Nx3 or NxMx3");
+  endif
+  
+  ## Convert data
   trans = [ 0.299,  0.596,  0.211;
             0.587, -0.274, -0.523;
             0.114, -0.322,  0.312 ];
 
   yiq = rgb * trans;
+
+  ## If input was an image, convert it back into one.
+  if (is_image)
+    yiq = reshape (yiq, Sz);
+  endif
 
 endfunction

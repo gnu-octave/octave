@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{rgb_map} =} hsv2rgb (@var{hsv_map})
-## Transform a colormap from the hsv space to the rgb space. 
+## Transform a colormap or image from the hsv space to the rgb space. 
 ## @seealso{rgb2hsv}
 ## @end deftypefn
 
@@ -35,6 +35,22 @@ function rgb_map = hsv2rgb (hsv_map)
 
   if (nargin != 1)
     print_usage ();
+  endif
+
+  ## If we have an image convert it into a color map.
+  if (ismatrix (hsv_map) && ndims (hsv_map) == 3)
+    is_image = true;
+    Sz = size (hsv_map);
+    hsv_map = [hsv_map(:,:,1)(:), hsv_map(:,:,2)(:), hsv_map(:,:,3)(:)];
+    ## Convert to a double image.
+    if (isinteger (hsv_map))
+      C = class (hsv_map);
+      low = double (intmin (C));
+      high = double (intmax (C));
+      hsv_map = (double (hsv_map) - low) / (high - low);
+    endif
+  else
+    is_image = false;
   endif
 
   if (! ismatrix (hsv_map) || columns (hsv_map) != 3)
@@ -63,5 +79,10 @@ function rgb_map = hsv2rgb (hsv_map)
   rgb_map = rgb_map +  f .* (6 * (hue < 1/6) .* hue
 			     + (hue >= 1/6 & hue < 1/2)
 			     + (hue >= 1/2 & hue < 2/3) .* (4 - 6 * hue));
+
+  ## If input was an image, convert it back into one.
+  if (is_image)
+    rgb_map = reshape (rgb_map, Sz);
+  endif
 
 endfunction

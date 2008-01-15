@@ -33,7 +33,7 @@ function __go_draw_figure__ (f, plot_stream, enhanced, mono)
       if (nkids > 0)
 	axes_count = 0;
 	for i = 1:nkids
-	  obj = get (kids(i));
+	  obj = __get__ (kids(i));
 	  switch (obj.type)
 	    case "axes"
 	      axes_count++;

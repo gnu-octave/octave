@@ -1,3 +1,27 @@
+2008-01-15  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* genprops.awk: Handle 'h' modifier for hidden properties.
+	Replace "get(void)" method with "get(bool all = false)" to allow
+	access to hidden properties.
+
+	* graphics.h.in (base_properties::get, base_graphics_object::get,
+	graphics_object::get, root_figure::get, figure::get, axes::get,
+	line::get, text::get, patch::get, surface::get, image::get):
+	New arg, ALL, to access hidden properties.
+	(gh_manager::do_get_object): Do not look for invalid handles.
+	(figure::properties::__plot_stream__,
+	figure::properties::__enhanced__, axes::properties::__colorbar__):
+	Make properties hidden.
+	(axes::properties, line::properties, text::properties,
+	patch::properties, surface::properties): Remove obsolete 'a'
+	property modifier.
+	* graphics.cc (base_properties::get): New arg ALL, to access
+	hidden properties.
+	(base_properties::mark_modified): Call mark_modified only on valid
+	parent object.
+	(__get__): New internal function returning all properties,
+	including the hidden ones.
+
 2008-01-15  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (properties::set_currentfigure,

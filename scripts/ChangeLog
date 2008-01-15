@@ -1,3 +1,14 @@
+2008-01-15  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/drawnow.m, plot/__go_draw_figure__.m, plot/__go_draw_axes__.m: 
+	Call __get__ instead of get.
+
+2008-01-15  Ben Abbott  <bpabbott@mac.com>
+
+	* linear-algebra/__norm__.m: Avoid divide by zero error for
+	Frobenius norm if matrix is all zeros.  Use transpose instead of
+	hermitian operator.
+
 2008-01-14  Bill Denney  <bill@denney.ws>
 
 	* plot/axis.m: Correctly handle "tight" and "image" options.

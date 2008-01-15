@@ -954,17 +954,19 @@ base_properties::get (const caseless_str& name) const
 }
 
 octave_value
-base_properties::get (void) const
+base_properties::get (bool all) const
 {
   Octave_map m;
 
   for (std::map<caseless_str, property>::const_iterator it = all_props.begin ();
        it != all_props.end (); ++it)
-    m.assign (it->second.get_name (), it->second.get ());
+    if (all || ! it->second.is_hidden ())
+      m.assign (it->second.get_name (), it->second.get ());
 
   m.assign ("tag", get_tag ());
   m.assign ("type", get_type ());
-  m.assign ("__modified__", is_modified ());
+  if (all)
+    m.assign ("__modified__", is_modified ());
   m.assign ("parent", get_parent ().as_octave_value ());
   m.assign ("children", children);
   m.assign ("busyaction", get_busyaction ());
@@ -1107,7 +1109,8 @@ base_properties::mark_modified (void)
 {
   __modified__ = "on";
   graphics_object parent_obj = gh_manager::get_object (get_parent ());
-  parent_obj.mark_modified ();
+  if (parent_obj)
+    parent_obj.mark_modified ();
 }
 
 void
@@ -1965,6 +1968,61 @@ values or lists respectively.\n\
 	retval = Cell (vlist);
       else if (len == 1)
 	retval = vlist(0);
+    }
+
+  return retval;
+}
+
+DEFUN (__get__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __get__ (@var{h})\n\
+Return all properties from the graphics handle @var{h}.\n\
+If @var{h} is a vector, return a cell array including the property\n\
+values or lists respectively.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  octave_value_list vlist;
+
+  int nargin = args.length ();
+
+  if (nargin == 1)
+    {
+      ColumnVector hcv (args(0).vector_value ());
+
+      if (! error_state)
+        {
+          octave_idx_type len = hcv.length ();
+
+          vlist.resize (len);
+
+          for (octave_idx_type n = 0; n < len; n++)
+            {
+              graphics_object obj = gh_manager::get_object (hcv(n));
+
+              if (obj)
+                vlist(n) = obj.get (true);
+              else
+                {
+                  error ("get: invalid handle (= %g)", hcv(n));
+                  break;
+                }
+            }
+        }
+      else
+        error ("get: expecting graphics handle as first argument");
+    }
+  else
+    print_usage ();
+
+  if (! error_state)
+    {
+      octave_idx_type len = vlist.length ();
+
+      if (len > 1)
+        retval = Cell (vlist);
+      else if (len == 1)
+        retval = vlist(0);
     }
 
   return retval;

@@ -24,7 +24,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
   if (nargin == 4)
 
-    axis_obj = get (h);
+    axis_obj = __get__ (h);
 
     parent_figure_obj = get (axis_obj.parent);
 

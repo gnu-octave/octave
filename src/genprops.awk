@@ -51,7 +51,7 @@
 ##   }
 ##
 ## If present, the QUALIFIERS string may include any of the characters
-## g, G, m, s, S, o, O, which have the following meanings:
+## g, G, m, s, S, o, O, h, which have the following meanings:
 ##
 ##   g:  There is a custom inline definition for the get function,
 ##       so we don't emit one.
@@ -105,6 +105,8 @@
 ##         set_NAMEmode ("manual");
 ##
 ##       to the type-specific set function.
+##
+##   h:  Make the property hidden
 ##
 ## The 'o' and 'O' qualifiers are only useful when the the property type
 ## is something other than octave_value.
@@ -204,7 +206,7 @@ function emit_common_declarations ()
   printf ("  properties (const graphics_handle& mh, const graphics_handle& p);\n\n");
   printf ("  ~properties (void) { }\n\n");
   printf ("  void set (const caseless_str& name, const octave_value& val);\n\n");
-  printf ("  octave_value get (void) const;\n\n");
+  printf ("  octave_value get (bool all = false) const;\n\n");
   printf ("  octave_value get (const caseless_str& name) const;\n\n");
   printf ("  std::string graphics_object_name (void) const { return go_name; }\n\n");
   printf ("  static property_list::pval_map_type factory_defaults (void);\n\n");
@@ -322,12 +324,16 @@ function emit_source ()
       printf ("\n") >> filename;
     }
 
-    printf ("{\n  init ();\n") >> filename;
+    printf ("{\n") >> filename;
 
-##    for (i = 1; i <= idx; i++)
-##      printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]) >> filename;
+    for (i = 1; i <= idx; i++)
+    {
+##    printf ("  insert_static_property (\"%s\", %s);\n", name[i], name[i]) >> filename;
+      if (hidden[i])
+        printf ("  %s.set_hidden (true);\n", name[i]) >> filename;
+    }
 
-    printf ("}\n\n") >> filename;
+    printf ("  init ();\n}\n\n") >> filename;
 
     ## set method
 
@@ -344,13 +350,17 @@ function emit_source ()
 
     ## get "all" method
 
-    printf ("octave_value\n%s::properties::get (void) const\n{\n", class_name) >> filename;
-    printf ("  Octave_map m = base_properties::get ().map_value ();\n\n") >> filename;
+    printf ("octave_value\n%s::properties::get (bool all) const\n{\n", class_name) >> filename;
+    printf ("  Octave_map m = base_properties::get (all).map_value ();\n\n") >> filename;
 
     for (i = 1; i <= idx; i++)
     {
-      printf ("  m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
-              (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
+      if (hidden[i])
+        printf ("  if (all)\n    m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
+                (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
+      else
+        printf ("  m.assign (\"%s\", get_%s ()%s);\n", name[i], name[i],
+                (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
     }
 
     printf ("\n  return m;\n}\n\n") >> filename;
@@ -449,6 +459,7 @@ BEGIN {
 
     limits[idx] = 0;
     mode[idx] = 0;
+	hidden[idx] = 0;
     emit_get[idx] = "definition";
     emit_set[idx] = "definition";
     default[idx] = "";
@@ -488,6 +499,10 @@ BEGIN {
         ## but we still emit the declaration.
         if (index (quals, "S"))
           emit_set[idx] = "declaration";
+        
+		## The property is hidden
+        if (index (quals, "h"))
+          hidden[idx] = 1;
 
 ##        ## emmit an asignment set function
 ##        if (index (quals, "a"))

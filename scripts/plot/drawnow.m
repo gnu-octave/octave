@@ -49,7 +49,7 @@ function drawnow (term, file, mono, debug_file)
       endif
       h = get (0, "currentfigure");
       if (h)
-	f = get (h);
+	f = __get__ (h);
 	plot_stream = [];
 	fid = [];
 	unwind_protect
@@ -74,7 +74,7 @@ function drawnow (term, file, mono, debug_file)
     elseif (nargin == 0)
       for h = __go_figure_handles__ ()
 	if (! (isnan (h) || h == 0))
-	  f = get (h);
+	  f = __get__ (h);
 	  if (f.__modified__)
 	    plot_stream = f.__plot_stream__;
 	    figure_is_visible = strcmp (f.visible, "on");

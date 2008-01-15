@@ -44,7 +44,11 @@ function retval = __norm__ (x, p)
     if (ischar (p))
       if (strcmp (p, "fro"))
         inf_norm = norm (x, "inf");
-	retval = inf_norm .* sqrt (sum (abs (x ./ inf_norm) .^ 2));
+        if (inf_norm)
+          retval = inf_norm .* sqrt (sum (abs (x ./ inf_norm) .^ 2));
+        else
+          retval = inf_norm;
+        endif
       elseif (strcmp (p, "inf"))
         retval = max (abs (x));
       else
@@ -56,7 +60,7 @@ function retval = __norm__ (x, p)
       elseif (p == -Inf)
         retval = min (abs (x));
       elseif (p == 1)
-	retval = sum (abs (x));
+        retval = sum (abs (x));
       elseif (p == 2)
         if (iscomplex (x))
           x = abs (x);
@@ -70,9 +74,13 @@ function retval = __norm__ (x, p)
     if (ischar (p))
       if (strcmp (p, "fro"))
         inf_norm = norm (x, "inf");
-	retval = inf_norm .* sqrt (sum (sum (abs (x ./ inf_norm) .^ 2)));
+        if (inf_norm)
+          retval = inf_norm .* sqrt (sum (sum (abs (x ./ inf_norm) .^ 2)));
+        else
+          retval = inf_norm;
+        endif
       elseif (strcmp (p, "inf"))
-        retval = max (sum (abs (x')));
+        retval = max (sum (abs (x.')));
       else
         error ("norm: unrecognized vector norm");
       endif
@@ -83,11 +91,33 @@ function retval = __norm__ (x, p)
         s = svd (x);
         retval = s (1);
       elseif (p == Inf)
-        retval = max (sum (abs (x')));
+        retval = max (sum (abs (x.')));
       else
-	error ("norm: unrecognized matrix norm");
+        error ("norm: unrecognized matrix norm");
       endif
     endif
   endif
 
 endfunction
+
+%!test
+%! x = __norm__ (zeros (5), "fro");
+%! assert (x, 0);
+%! x = __norm__ (ones (5), "fro");
+%! assert (x, 5);
+%! x = __norm__ (zeros (5,1), "fro");
+%! assert (x, 0);
+%! x = __norm__ (2*ones (5,3), "fro");
+%! assert (x, sqrt (60));
+
+%!test
+%! x = __norm__ (zeros (5), "inf");
+%! assert (x, 0);
+%! x = __norm__ (ones (5), "inf");
+%! assert (x, 5);
+%! x = __norm__ (2*ones (5,1), "inf");
+%! assert (x, 0);
+%! x = __norm__ (2*ones (5,3), "inf");
+%! assert (x, 6);
+
+

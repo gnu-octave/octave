@@ -1005,7 +1005,7 @@ public:
 
   virtual octave_value get (const caseless_str&) const;
 
-  virtual octave_value get (void) const;
+  virtual octave_value get (bool all = false) const;
 
   property get_property (const caseless_str&) const;
 
@@ -1314,7 +1314,7 @@ public:
     error ("base_graphics_object::set_defaults: invalid graphics object");
   }
 
-  virtual octave_value get (void) const
+  virtual octave_value get (bool all = false) const
   {
     error ("base_graphics_object::get: invalid graphics object");
     return octave_value ();
@@ -1453,7 +1453,7 @@ public:
 
   void set_defaults (const std::string& mode) { rep->set_defaults (mode); }
 
-  octave_value get (void) const { return rep->get (); }
+  octave_value get (bool all = false) const { return rep->get (all); }
 
   octave_value get (const caseless_str& name) const
   {
@@ -1619,9 +1619,9 @@ public:
       xproperties.set (name, value);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -1710,8 +1710,8 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES(figure)
-      any_property __plot_stream__ , Matrix ()
-      bool_property __enhanced__ , "on"
+      any_property __plot_stream__ h , Matrix ()
+      bool_property __enhanced__ h , "on"
       radio_property nextplot , "add|replace_children|{replace}"
       callback_property closerequestfcn , "closereq"
       handle_property currentaxes S , graphics_handle ()
@@ -1777,9 +1777,9 @@ public:
       xproperties.set (name, value);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -1848,7 +1848,7 @@ public:
       array_property colororder , default_colororder ()
       array_property dataaspectratio m , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode , "{auto}|manual"
-      radio_property layer a , "{bottom}|top"
+      radio_property layer , "{bottom}|top"
       array_property xlim m , default_lim ()
       array_property ylim m , default_lim ()
       array_property zlim m , default_lim ()
@@ -1878,7 +1878,7 @@ public:
       radio_property xticklabelmode , "{auto}|manual"
       radio_property yticklabelmode , "{auto}|manual"
       radio_property zticklabelmode , "{auto}|manual"
-      color_property color a , color_property (color_values (1, 1, 1), radio_values ("none"))
+      color_property color , color_property (color_values (1, 1, 1), radio_values ("none"))
       color_property xcolor , color_values (0, 0, 0)
       color_property ycolor , color_values (0, 0, 0)
       color_property zcolor , color_values (0, 0, 0)
@@ -1893,8 +1893,8 @@ public:
       array_property view , Matrix ()
       radio_property nextplot , "add|replace_children|{replace}"
       array_property outerposition , Matrix ()
-      radio_property activepositionproperty a , "{outerposition}|position"
-      radio_property __colorbar__ a , "{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"
+      radio_property activepositionproperty , "{outerposition}|position"
+      radio_property __colorbar__ h , "{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"
    END_PROPERTIES
 
   protected:
@@ -1970,9 +1970,9 @@ public:
     xproperties.set_defaults (*this, mode);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -2047,7 +2047,7 @@ public:
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
       string_property keylabel , ""
-      radio_property interpreter a , "{tex}|none|latex"
+      radio_property interpreter , "{tex}|none|latex"
       string_property displayname , ""
       radio_property erase_mode , "{normal}|none|xor|background"
     END_PROPERTIES
@@ -2086,9 +2086,9 @@ public:
     xproperties.set (name, val);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -2133,9 +2133,9 @@ public:
       color_property color , color_values (0, 0, 0)
       string_property fontname , "Helvetica"
       double_property fontsize , 10
-      radio_property fontangle a , "{normal}|italic|oblique"
-      radio_property fontweight a , "light|{normal}|demi|bold"
-      radio_property interpreter a , "{tex}|none|latex"
+      radio_property fontangle , "{normal}|italic|oblique"
+      radio_property fontweight , "light|{normal}|demi|bold"
+      radio_property interpreter , "{tex}|none|latex"
       color_property backgroundcolor , "{none}"
       string_property displayname , ""
       color_property edgecolor , "{none}"
@@ -2188,9 +2188,9 @@ public:
     xproperties.set (name, val);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -2271,9 +2271,9 @@ public:
     xproperties.set (name, val);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -2314,26 +2314,26 @@ public:
       data_property ydata l , Matrix ()
       data_property zdata l , Matrix ()
       data_property cdata l , Matrix ()
-      radio_property cdatamapping a , "{scaled}|direct"
+      radio_property cdatamapping , "{scaled}|direct"
       array_property faces , Matrix ()
       data_property facevertexalphadata , Matrix ()
       data_property facevertexcdata , Matrix ()
       array_property vertices , Matrix ()
       array_property vertexnormals , Matrix ()
-      radio_property normalmode a , "{auto}|manual"
-      color_property facecolor a , "{flat}|none|interp"
+      radio_property normalmode , "{auto}|manual"
+      color_property facecolor , "{flat}|none|interp"
       double_property facealpha , 1.0
-      radio_property facelighting a , "{flat}|none|gouraud|phong"
-      color_property edgecolor a , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
+      radio_property facelighting , "{flat}|none|gouraud|phong"
+      color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
       double_property edgealpha , 1.0
-      radio_property edgelighting a , "{none}|flat|gouraud|phong"
-      radio_property backfacelighting a , "{reverselit}|unlit|lit"
+      radio_property edgelighting , "{none}|flat|gouraud|phong"
+      radio_property backfacelighting , "{reverselit}|unlit|lit"
       double_property ambientstrength , 0.3
       double_property diffusestrength , 0.6
       double_property specularstrength , 0.6
       double_property specularexponent , 10.0
       double_property specularcolorreflectance , 1.0
-      radio_property erasemode a , "{normal}|background|xor|none"
+      radio_property erasemode , "{normal}|background|xor|none"
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h"
@@ -2341,7 +2341,7 @@ public:
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
       string_property keylabel , ""
-      radio_property interpreter a , "{tex}|none|latex"
+      radio_property interpreter , "{tex}|none|latex"
     END_PROPERTIES
 
   protected:
@@ -2385,9 +2385,9 @@ public:
     xproperties.set (name, val);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -2428,9 +2428,9 @@ public:
       data_property ydata l , Matrix ()
       data_property zdata l , Matrix ()
       data_property cdata l , Matrix ()
-      color_property facecolor a , "{flat}|none|interp"
+      color_property facecolor , "{flat}|none|interp"
       double_property facealpha , 1.0
-      color_property edgecolor a , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
+      color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
       radio_property marker , "{none}|s|o|x|+|.|*|<|>|v|^|d|p|h"
@@ -2438,7 +2438,7 @@ public:
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
       string_property keylabel , ""
-      radio_property interpreter a , "{tex}|none|latex"
+      radio_property interpreter , "{tex}|none|latex"
     END_PROPERTIES
 
   protected:
@@ -2480,9 +2480,9 @@ public:
     xproperties.set (name, val);
   }
 
-  octave_value get (void) const
+  octave_value get (bool all = false) const
   {
-    return xproperties.get ();
+    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -2639,7 +2639,7 @@ private:
 
   graphics_object do_get_object (const graphics_handle& h)
   {
-    iterator p = handle_map.find (h);
+    iterator p = (h.ok () ? handle_map.find (h) : handle_map.end ());
 
     return (p != handle_map.end ()) ? p->second : graphics_object ();
   }

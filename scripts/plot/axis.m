@@ -160,8 +160,7 @@ function curr_axis = __axis__ (ca, ax, varargin)
       ## aspect ratio
     elseif (strcmp (ax, "image"))
       set (ca, "dataaspectratio", [1, 1, 1]);
-      ## FIXME should be the same as "tight"
-      set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
+      __do_tight_option__ (ca);
     elseif (strcmp (ax, "equal") || strcmp (ax, "square"))
       set (ca, "dataaspectratio", [1, 1, 1]);
     elseif (strcmp (ax, "normal"))
@@ -186,10 +185,8 @@ function curr_axis = __axis__ (ca, ax, varargin)
       ## fixes the axis limits, like axis(axis) should;
       set (ca, "xlimmode", "manual", "ylimmode", "manual", "zlimmode", "manual");
     elseif (strcmp (ax, "tight"))
-      ## FIXME if tight, plot must set ranges to limits of the
-      ## all the data on the current plot, even if from a previous call.
-      ## Instead, just let gnuplot do as it likes.
-      set (ca, "xlimmode", "auto", "ylimmode", "auto", "zlimmode", "auto");
+      ## sets the axis limits to the min and max of all data.
+      __do_tight_option__ (ca);
 
       ## tic marks
     elseif (strcmp (ax, "on") || strcmp (ax, "tic"))
@@ -272,11 +269,41 @@ function curr_axis = __axis__ (ca, ax, varargin)
     error ("axis: expecting no args, or a vector with 2, 4, or 6 elements");
   endif
 
-  if (nargin > 2)
+  if (! isempty (varargin))
     __axis__ (ca, varargin{:});
   endif
 
 endfunction
+
+function lims = __get_tight_lims__ (ca, ax)
+
+  ## Get the limits for axis ("tight").
+  ## AX should be one of "x", "y", or "z".
+  kids = findobj (ca, "-property", [ax, "data"]);
+  if (isempty (kids))
+    ## Return the current limits.
+    lims = get (ca, [ax, "lim"]);
+  else
+    data = get (kids, [ax, "data"]);
+    if (iscell (data))
+      lims(1) = min (cellfun (@min, data));
+      lims(2) = min (cellfun (@max, data));
+    else
+      lims = [min(data), max(data)];
+    end
+  end
+
+endfunction
+
+function __do_tight_option__ (ca)
+
+  set (ca,
+       "xlim", __get_tight_lims__ (ca, "x"),
+       "ylim", __get_tight_lims__ (ca, "y"),
+       "zlim", __get_tight_lims__ (ca, "z"));
+
+endfunction
+
 
 %!demo
 %! t=0:0.01:2*pi; x=sin(t);

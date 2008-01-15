@@ -1,3 +1,7 @@
+2008-01-14  Bill Denney  <bill@denney.ws>
+
+	* plot/axis.m: Correctly handle "tight" and "image" options.
+
 2008-01-14  Soren Hauberg  <hauberg@gmail.com>
 
 	* image/hsv2rgb.m, image/ntsc2rgb.m, image/rgb2hsv.m,

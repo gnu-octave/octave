@@ -2029,7 +2029,7 @@ public:
     // properties declarations.
 
     // properties which are not in matlab:
-    // ldata, udata, xldata, xudata, keylabel
+    // ldata, udata, xldata, xudata, keylabel, interpreter
 
     BEGIN_PROPERTIES(line)
       data_property xdata l , default_data ()
@@ -2047,6 +2047,7 @@ public:
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
       string_property keylabel , ""
+      radio_property interpreter , "{tex}|none|latex"
       string_property displayname , ""
       radio_property erasemode , "{normal}|none|xor|background"
     END_PROPERTIES
@@ -2340,6 +2341,7 @@ public:
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
       string_property keylabel , ""
+      radio_property interpreter , "{tex}|none|latex"
     END_PROPERTIES
 
   protected:
@@ -2436,6 +2438,7 @@ public:
       color_property markerfacecolor , "auto|{none}"
       double_property markersize , 6
       string_property keylabel , ""
+      radio_property interpreter , "{tex}|none|latex"
     END_PROPERTIES
 
   protected:

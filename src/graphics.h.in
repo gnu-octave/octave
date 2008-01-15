@@ -2048,6 +2048,8 @@ public:
       double_property markersize , 6
       string_property keylabel , ""
       radio_property interpreter a , "{tex}|none|latex"
+      string_property displayname , ""
+      radio_property erase_mode , "{normal}|none|xor|background"
     END_PROPERTIES
   };
 
@@ -2134,6 +2136,16 @@ public:
       radio_property fontangle a , "{normal}|italic|oblique"
       radio_property fontweight a , "light|{normal}|demi|bold"
       radio_property interpreter a , "{tex}|none|latex"
+      color_property backgroundcolor , "{none}"
+      string_property displayname , ""
+      color_property edgecolor , "{none}"
+      radio_property erase_mode , "{normal}|none|xor|background"
+      bool_property editing , "off"
+      radio_property fontunits , "inches|centimeters|normalized|{points}|pixel"
+      radio_property linestyle , "{-}|--|:|-.|none"
+      double_property linewidth , 0.5
+      double_property margin , 1
+      radio_property verticalalignment , "top|cap|{middle}|baseline|bottom"
     END_PROPERTIES
 
   protected:

@@ -1,3 +1,11 @@
+2008-01-15  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in (class line::properties): New properties:
+	displayname, erasemode.
+	(class text::properties) New properties: backgroundcolor,
+	displayname, edgecolor, erase_mode, editing, fontunits, linestyle,
+	linewidth, margin, verticalalignment.
+
 2008-01-14  John W. Eaton  <jwe@octave.org>
 
 	* load-path.cc (load_path::do_initialize): Start with sys_path empty.

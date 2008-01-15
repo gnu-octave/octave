@@ -1,3 +1,10 @@
+2008-01-15  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (class line::properties, class patch::properties,
+	class surface::properties): Delete interpreter property.
+	(class line::properties, class text::properties): Rename
+	erase_mode property to erasemode.
+
 2008-01-15  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* genprops.awk: Handle 'h' modifier for hidden properties.

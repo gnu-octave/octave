@@ -1,5 +1,5 @@
 ## Copyright (C) 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2002,
-##               2004, 2005, 2006, 2007 John W. Eaton
+##               2004, 2005, 2006, 2007, 2008 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -58,13 +58,15 @@ function retval = vander (c)
 
   if (isvector (c))
     n = length (c);
-    retval = zeros (n, n);
-    j = 1:n;
-    for i = 1:n
-      retval(i,:) = c(i) .^ (n - j);
-    endfor
+    retval = (c(:) * ones (1, n)) .^ (ones (n, 1) * (n-1:-1:0));
   else
     error ("vander: argument must be a vector");
   endif
 
 endfunction
+
+%!test
+%! c = [0,1,2,3];
+%! expect = [0,0,0,1; 1,1,1,1; 8,4,2,1; 27,9,3,1];
+%! result = vander(c);
+%! assert(expect, result);

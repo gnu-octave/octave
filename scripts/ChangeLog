@@ -1,5 +1,7 @@
 2008-01-15  Thomas Weber  <thomas.weber.mail@gmail.com>
 
+	* special-matrix/vander.m: Vectorize.  New test.
+
 	* elfun/acot.m, elfun/acoth.m, elfun/acsc.m, elfun/acsch.m,
 	elfun/asec.m, elfun/asech.m, elfun/cot.m, elfun/coth.m,
 	elfun/csc.m,elfun/csch.m, elfun/lcm.m, elfun/sec.m, elfun/sech.m,

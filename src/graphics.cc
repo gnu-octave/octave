@@ -1070,6 +1070,7 @@ base_properties::remove_child (const graphics_handle& h)
 	    new_kids(j++) = children(i);
 	}
       children = new_kids;
+      mark_modified ();
     }
 }
 
@@ -1145,7 +1146,7 @@ base_properties::delete_children (void)
 void
 root_figure::properties::set_currentfigure (const octave_value& v)
 {
-  graphics_handle val (v.double_value ());
+  graphics_handle val (v);
 
   if (error_state)
     return;
@@ -1168,7 +1169,7 @@ root_figure::factory_properties = root_figure::init_factory_properties ();
 void
 figure::properties::set_currentaxes (const octave_value& v)
 {
-  graphics_handle val (v.double_value ());
+  graphics_handle val (v);
 
   if (error_state)
     return;

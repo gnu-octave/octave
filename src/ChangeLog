@@ -1,3 +1,11 @@
+2008-01-15  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (properties::set_currentfigure,
+	properties::set_currentaxes): Don't convert arg to double
+	before passing to graphics_handle constructor.
+	(base_properties::remove_child): Call mark_modified if list of
+	children changes.
+
 2008-01-15  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h.in (class line::properties): New properties:

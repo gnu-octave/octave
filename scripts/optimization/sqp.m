@@ -724,7 +724,7 @@ function res = cigrad_ub_lb (x)
 %!test
 %! x0 = [-1.8; 1.7; 1.9; -0.8; -0.8];
 %!
-%! [x, obj, info, iter, nf, lambda] = sqp (x0, @phi, @g, [])
+%! [x, obj, info, iter, nf, lambda] = sqp (x0, @phi, @g, []);
 %!
 %! x_opt = [-1.717143501952599;
 %!           1.595709610928535;

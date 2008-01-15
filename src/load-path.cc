@@ -408,13 +408,18 @@ maybe_add_path_elts (std::string& path, const std::string& dir)
   std::string tpath = genpath (dir);
 
   if (! tpath.empty ())
-    path += dir_path::path_sep_str + tpath;
+    {
+      if (path.empty ())
+	path = tpath;
+      else
+	path += dir_path::path_sep_str + tpath;
+    }
 }
 
 void
 load_path::do_initialize (bool set_initial_path)
 {
-  sys_path = dir_path::path_sep_str;
+  sys_path = "";
 
   if (set_initial_path)
     {
@@ -438,7 +443,7 @@ load_path::do_initialize (bool set_initial_path)
   if (! tpath.empty ())
     xpath += dir_path::path_sep_str + tpath;
 
-  if (sys_path != dir_path::path_sep_str)
+  if (! sys_path.empty ())
     xpath += sys_path;
 
   do_set (xpath, false);

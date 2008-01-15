@@ -1,3 +1,14 @@
+2008-01-14  John W. Eaton  <jwe@octave.org>
+
+	* load-path.cc (load_path::do_initialize): Start with sys_path empty.
+	(maybe_add_path_elts): Omit path_sep_str if path is empty.
+
+	* symtab.h (symbol_table::do_pop_context): Remove symbol_records
+	which have no more context.
+	(symbol_table::symbol_record::pop_context,
+	(symbol_table::symbol_record::symbol_record_rep::pop_context):
+	Return size of value_stack, or 1 if variable is persistent or global.
+
 2008-01-14  Kai Habel  <kai.habel@gmx.de>
 
 	* graphics.h.in (class patch::properties): New properties:

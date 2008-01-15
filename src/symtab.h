@@ -93,7 +93,11 @@ public:
 
       void push_context (void) { value_stack.push (octave_value ()); }
 
-      void pop_context (void) { value_stack.pop (); }
+      size_t pop_context (void)
+      {
+	value_stack.pop ();
+	return value_stack.size ();
+      }
 
       void clear (void)
       {
@@ -254,10 +258,23 @@ public:
 	rep->push_context ();
     }
 
-    void pop_context (void)
+    // If pop_context returns 0, we are out of values and this element
+    // of the symbol table should be deleted.  This can happen for
+    // functions like
+    //
+    //   function foo (n)
+    //     if (n > 0)
+    //       foo (n-1);
+    //     else
+    //       eval ("x = 1");
+    //     endif
+    //   endfunction
+    //
+    // Here, X should only exist in the final stack frame.
+
+    size_t pop_context (void)
     {
-      if (! (is_persistent () || is_global ()))
-	rep->pop_context ();
+      return (is_persistent () || is_global ()) ? 1 : rep->pop_context ();
     }
 
     void clear (void) { rep->clear (); }
@@ -1618,8 +1635,13 @@ private:
 
   void do_pop_context (void)
   {
-    for (table_iterator p = table.begin (); p != table.end (); p++)
-      p->second.pop_context ();
+    for (table_iterator p = table.begin (); p != table.end (); )
+      {
+	if (p->second.pop_context () == 0)
+	  table.erase (p++);
+	else
+	  p++;
+      }
   }
 
   void do_clear_variables (void)

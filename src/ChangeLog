@@ -8,6 +8,21 @@
 
 2008-01-15  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* graphics.h.in (base_properties::remove_child,
+	base_properties::adopt, base_properties::update_axis_limits):
+	Make virtual.
+	(base_graphics_object::mark_modified,
+	base_graphics_object::override-defaults,
+	base_graphics_object::set_from_list, base_graphics_object::set,
+	base_graphics_object::get, base_graphics_object::get_parent,
+	base_graphics_object::remove_child, base_graphics_object::adopt,
+	base_graphics_object::reparent, base_graphics_object::defaults,
+	base_graphics_object::type): Add default implementation.
+	(class root_figure, class figure, class axes, class line,
+	class text, class image, class patch, class surface):
+	Remove overloaded virtual methods whose implementation is
+	identical to the default one.
+
 	* genprops.awk: Handle 'h' modifier for hidden properties.
 	Replace "get(void)" method with "get(bool all = false)" to allow
 	access to hidden properties.

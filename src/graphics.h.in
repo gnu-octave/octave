@@ -1051,9 +1051,9 @@ public:
   
   std::string get_visible (void) const { return visible.current_value (); }
 
-  void remove_child (const graphics_handle& h);
+  virtual void remove_child (const graphics_handle& h);
 
-  void adopt (const graphics_handle& h)
+  virtual void adopt (const graphics_handle& h)
   {
     octave_idx_type n = children.numel ();
     children.resize (1, n+1);
@@ -1188,7 +1188,7 @@ public:
   // Update data limits for AXIS_TYPE (xdata, ydata, etc.) in the parent
   // axes object.
 
-  void update_axis_limits (const std::string& axis_type) const;
+  virtual void update_axis_limits (const std::string& axis_type) const;
 
   virtual void delete_children (void);
 
@@ -1291,22 +1291,34 @@ public:
 
   virtual void mark_modified (void)
   {
-    error ("base_graphics_object::mark_modified: invalid graphics object");
+    if (valid_object ())
+      get_properties ().mark_modified ();
+    else
+      error ("base_graphics_object::mark_modified: invalid graphics object");
   }
 
-  virtual void override_defaults (base_graphics_object&)
+  virtual void override_defaults (base_graphics_object& obj)
   {
-    error ("base_graphics_object::override_defaults: invalid graphics object");
+    if (valid_object ())
+      get_properties ().override_defaults (obj);
+    else
+      error ("base_graphics_object::override_defaults: invalid graphics object");
   }
 
-  virtual void set_from_list (property_list&)
+  virtual void set_from_list (property_list& plist)
   {
-    error ("base_graphics_object::set_from_list: invalid graphics object");
+    if (valid_object ())
+      get_properties ().set_from_list (*this, plist);
+    else
+      error ("base_graphics_object::set_from_list: invalid graphics object");
   }
 
-  virtual void set (const caseless_str&, const octave_value&)
+  virtual void set (const caseless_str& pname, const octave_value& pval)
   {
-    error ("base_graphics_object::set: invalid graphics object");
+    if (valid_object ())
+      get_properties ().set (pname, pval);
+    else
+      error ("base_graphics_object::set: invalid graphics object");
   }
 
   virtual void set_defaults (const std::string&)
@@ -1316,14 +1328,24 @@ public:
 
   virtual octave_value get (bool all = false) const
   {
-    error ("base_graphics_object::get: invalid graphics object");
-    return octave_value ();
+    if (valid_object ())
+      return get_properties ().get (all);
+    else
+      {
+        error ("base_graphics_object::get: invalid graphics object");
+        return octave_value ();
+      }
   }
 
-  virtual octave_value get (const caseless_str&) const
+  virtual octave_value get (const caseless_str& pname) const
   {
-    error ("base_graphics_object::get: invalid graphics object");
-    return octave_value ();
+    if (valid_object ())
+      return get_properties ().get (pname);
+    else
+      {
+        error ("base_graphics_object::get: invalid graphics object");
+        return octave_value ();
+      }
   }
 
   virtual octave_value get_default (const caseless_str&) const;
@@ -1344,28 +1366,48 @@ public:
 
   virtual graphics_handle get_parent (void) const
   {
-    error ("base_graphics_object::get_parent: invalid graphics object");
-    return graphics_handle ();
+    if (valid_object ())
+      return get_properties ().get_parent ();
+    else
+      {
+        error ("base_graphics_object::get_parent: invalid graphics object");
+        return graphics_handle ();
+      }
   }
 
-  virtual void remove_child (const graphics_handle&)
+  virtual void remove_child (const graphics_handle& h)
   {
-    error ("base_graphics_object::remove_child: invalid graphics object");
+    if (valid_object ())
+      get_properties ().remove_child (h);
+    else
+      error ("base_graphics_object::remove_child: invalid graphics object");
   }
 
-  virtual void adopt (const graphics_handle&)
+  virtual void adopt (const graphics_handle& h)
   {
-    error ("base_graphics_object::adopt: invalid graphics object");
+    if (valid_object ())
+      get_properties ().adopt (h);
+    else
+      error ("base_graphics_object::adopt: invalid graphics object");
   }
 
-  virtual void reparent (const graphics_handle&)
+  virtual void reparent (const graphics_handle& np)
   {
-    error ("base_graphics_object::reparent: invalid graphics object");
+    if (valid_object ())
+      get_properties ().reparent (np);
+    else
+      error ("base_graphics_object::reparent: invalid graphics object");
   }
 
   virtual void defaults (void) const
   {
-    error ("base_graphics_object::default: invalid graphics object");
+    if (valid_object ())
+      {
+        std::string msg = (type () + "::defaults");
+        gripe_not_implemented (msg.c_str ());
+      }
+    else
+      error ("base_graphics_object::default: invalid graphics object");
   }
 
   virtual base_properties& get_properties (void)
@@ -1389,7 +1431,11 @@ public:
 
   virtual bool valid_object (void) const { return false; }
 
-  virtual std::string type (void) const { return "unknown"; }
+  virtual std::string type (void) const
+  {
+    return (valid_object () ? get_properties ().graphics_object_name ()
+        : "unknown");
+  }
 
   bool isa (const std::string& go_name) const
   {
@@ -1589,8 +1635,6 @@ public:
 
   ~root_figure (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
   void mark_modified (void) { }
 
   void override_defaults (base_graphics_object& obj)
@@ -1603,11 +1647,6 @@ public:
     obj.set_from_list (default_properties);
   }
 
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
-  }
-
   void set (const caseless_str& name, const octave_value& value)
   {
     if (name.compare ("default", 7))
@@ -1617,11 +1656,6 @@ public:
       default_properties.set (name.substr (7), value);
     else
       xproperties.set (name, value);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -1668,22 +1702,9 @@ public:
     return factory_properties.as_struct ("factory");
   }
 
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& np) { xproperties.reparent (np); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const
-  {
-    gripe_not_implemented ("root_figure::defaults");
-  }
 
   bool valid_object (void) const { return true; }
 
@@ -1739,13 +1760,9 @@ public:
 
   ~figure (void)
   {
-    xproperties.delete_children ();
+    xproperties.delete_children (); 
     xproperties.close ();
   }
-
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
-  void mark_modified (void) { xproperties.mark_modified (); }
 
   void override_defaults (base_graphics_object& obj)
   {
@@ -1761,11 +1778,6 @@ public:
     obj.set_from_list (default_properties);
   }
 
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
-  }
-
   void set (const caseless_str& name, const octave_value& value)
   {
     if (name.compare ("default", 7))
@@ -1775,11 +1787,6 @@ public:
       default_properties.set (name.substr (7), value);
     else
       xproperties.set (name, value);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -1801,19 +1808,9 @@ public:
     return default_properties.as_struct ("default");
   }
 
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& np) { xproperties.reparent (np); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const { gripe_not_implemented ("figure::defaults"); }
 
   bool valid_object (void) const { return true; }
 
@@ -1931,10 +1928,6 @@ public:
 
   ~axes (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
-  void mark_modified (void) { xproperties.mark_modified (); }
-
   void override_defaults (base_graphics_object& obj)
   {
     // Allow parent (figure) to override first (properties knows how
@@ -1947,11 +1940,6 @@ public:
     // here, we just call its set function and let it decide which
     // properties from the list to use.
     obj.set_from_list (default_properties);
-  }
-
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
   }
 
   void set (const caseless_str& name, const octave_value& value)
@@ -1968,11 +1956,6 @@ public:
   void set_defaults (const std::string& mode)
   {
     xproperties.set_defaults (*this, mode);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
   }
 
   octave_value get (const caseless_str& name) const
@@ -1995,19 +1978,9 @@ public:
     return default_properties.as_struct ("default");
   }
 
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& np) { xproperties.reparent (np); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const { gripe_not_implemented ("axes::defaults"); }
 
   void update_axis_limits (const std::string& axis_type);
 
@@ -2065,50 +2038,9 @@ public:
 
   ~line (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
-  void mark_modified (void) { xproperties.mark_modified (); }
-
-  void override_defaults (base_graphics_object& obj)
-  {
-    // Allow parent (figure) to override first (properties knows how
-    // to find the parent object).
-    xproperties.override_defaults (obj);
-  }
-
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
-  }
-
-  void set (const caseless_str& name, const octave_value& val)
-  {
-    xproperties.set (name, val);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
-  }
-
-  octave_value get (const caseless_str& name) const
-  {
-    return xproperties.get (name);
-  }
-
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const { gripe_not_implemented ("line::defaults"); }
 
   bool valid_object (void) const { return true; }
 };
@@ -2167,50 +2099,9 @@ public:
 
   ~text (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
-  void mark_modified (void) { xproperties.mark_modified (); }
-
-  void override_defaults (base_graphics_object& obj)
-  {
-    // Allow parent (figure) to override first (properties knows how
-    // to find the parent object).
-    xproperties.override_defaults (obj);
-  }
-
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
-  }
-
-  void set (const caseless_str& name, const octave_value& val)
-  {
-    xproperties.set (name, val);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
-  }
-
-  octave_value get (const caseless_str& name) const
-  {
-    return xproperties.get (name);
-  }
-
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const { gripe_not_implemented ("text::defaults"); }
 
   bool valid_object (void) const { return true; }
 };
@@ -2250,50 +2141,9 @@ public:
 
   ~image (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
-  void mark_modified (void) { xproperties.mark_modified (); }
-
-  void override_defaults (base_graphics_object& obj)
-  {
-    // Allow parent (figure) to override first (properties knows how
-    // to find the parent object).
-    xproperties.override_defaults (obj);
-  }
-
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
-  }
-
-  void set (const caseless_str& name, const octave_value& val)
-  {
-    xproperties.set (name, val);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
-  }
-
-  octave_value get (const caseless_str& name) const
-  {
-    return xproperties.get (name);
-  }
-
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const { gripe_not_implemented ("image::defaults"); }
 
   bool valid_object (void) const { return true; }
 };
@@ -2364,50 +2214,9 @@ public:
 
   ~patch (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
-  void mark_modified (void) { xproperties.mark_modified (); }
-
-  void override_defaults (base_graphics_object& obj)
-  {
-    // Allow parent (figure) to override first (properties knows how
-    // to find the parent object).
-    xproperties.override_defaults (obj);
-  }
-
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
-  }
-
-  void set (const caseless_str& name, const octave_value& val)
-  {
-    xproperties.set (name, val);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
-  }
-
-  octave_value get (const caseless_str& name) const
-  {
-    return xproperties.get (name);
-  }
-
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const { gripe_not_implemented ("patch::defaults"); }
 
   bool valid_object (void) const { return true; }
 };
@@ -2459,50 +2268,9 @@ public:
 
   ~surface (void) { xproperties.delete_children (); }
 
-  std::string type (void) const { return xproperties.graphics_object_name (); }
-
-  void mark_modified (void) { xproperties.mark_modified (); }
-
-  void override_defaults (base_graphics_object& obj)
-  {
-    // Allow parent (figure) to override first (properties knows how
-    // to find the parent object).
-    xproperties.override_defaults (obj);
-  }
-
-  void set_from_list (property_list& plist)
-  {
-    xproperties.set_from_list (*this, plist);
-  }
-
-  void set (const caseless_str& name, const octave_value& val)
-  {
-    xproperties.set (name, val);
-  }
-
-  octave_value get (bool all = false) const
-  {
-    return xproperties.get (all);
-  }
-
-  octave_value get (const caseless_str& name) const
-  {
-    return xproperties.get (name);
-  }
-
-  graphics_handle get_parent (void) const { return xproperties.get_parent (); }
-
-  void remove_child (const graphics_handle& h) { xproperties.remove_child (h); }
-
-  void adopt (const graphics_handle& h) { xproperties.adopt (h); }
-
-  void reparent (const graphics_handle& h) { xproperties.reparent (h); }
-
   base_properties& get_properties (void) { return xproperties; }
 
   const base_properties& get_properties (void) const { return xproperties; }
-
-  void defaults (void) const { gripe_not_implemented ("surface::defaults"); }
 
   bool valid_object (void) const { return true; }
 };

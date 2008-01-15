@@ -1,3 +1,8 @@
+2008-01-15  John W. Eaton  <jwe@octave.org>
+
+	* test_audio.m, test_control.m, test_image.m, test_optim.m,
+	test_plot.m, test_unix.m: Delete files with no tests.
+
 2007-12-21  John W. Eaton  <jwe@octave.org>
 
 	Version 3.0.0 released.

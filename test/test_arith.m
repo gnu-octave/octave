@@ -18,20 +18,6 @@
 
 %% Automatically generated from DejaGNU files
 
-%% test/octave.test/arith/beta-1.m
-%!test
-%! a=[1, 1.5, 2, 3];
-%! b=[4, 3, 2, 1];
-%! v1=beta(a,b);
-%! v2=beta(b,a);
-%! v3=gamma(a).*gamma(b)./gamma(a+b);
-%! assert(all(abs(v1-v2)<sqrt(eps)) && all(abs(v2-v3)<sqrt(eps)));
-
-%% test/octave.test/arith/beta-2.m
-%!error beta();
-
-%% test/octave.test/arith/beta-3.m
-%!error beta(1);
 
 %% test/octave.test/arith/betainc-1.m
 %!test
@@ -149,17 +135,6 @@
 %! s.a = 1;
 %! fail("gcd (s)");
 
-%% test/octave.test/arith/lcm-1.m
-%!assert(lcm (3, 5, 7, 15) == lcm ([3, 5, 7, 15]) && lcm ([3, 5, 7,15]) == 105);
-
-%% test/octave.test/arith/lcm-2.m
-%!error lcm ();
-
-%% test/octave.test/arith/lcm-3.m
-%!test
-%! s.a = 1;
-%! fail("lcm (s)");
-
 %% test/octave.test/arith/max-1.m
 %!assert (max ([1, 4, 2, 3]) == 4);
 %!assert (max ([1; -10; 5; -2]) == 5);
@@ -185,42 +160,6 @@
 
 %% test/octave.test/arith/min-4.m
 %!error <Invalid call to min.*> min (1, 2, 3, 4);
-
-%% test/octave.test/arith/pow2-1.m
-%!test
-%! x = [3, 0, -3];
-%! v = [8, 1, .125];
-%! assert(all (abs (pow2 (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/pow2-2.m
-%!test
-%! x = [3, 0, -3, 4, 0, -4, 5, 0, -5];
-%! y = [-2, -2, -2, 1, 1, 1, 3, 3, 3];
-%! z = x .* (2 .^ y);
-%! assert(all (abs (pow2 (x,y) - z) < sqrt (eps))
-%! );
-
-%% test/octave.test/arith/pow2-3.m
-%!error pow2();
-
-%% test/octave.test/arith/rem-1.m
-%!assert(all (all (rem ([1, 2, 3; -1, -2, -3], 2) == [1, 0, 1; -1, 0, -1])));
-
-%% test/octave.test/arith/rem-2.m
-%!assert(all (all (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3))
-%! == [1, 0, 1; -1, 0, -1])));
-
-%% test/octave.test/arith/rem-3.m
-%!error rem ();
-
-%% test/octave.test/arith/rem-4.m
-%!error rem (1, 2, 3);
-
-%% test/octave.test/arith/rem-5.m
-%!error rem ([1, 2], [3, 4, 5]);
-
-%% test/octave.test/arith/rem-6.m
-%!error rem (i, 1);
 
 %% test/octave.test/arith/round-1.m
 %!assert((round (1) == 1 && round (1.1) == 1 && round (5.5) == 6
@@ -274,19 +213,6 @@
 
 %% test/octave.test/arith/abs-4.m
 %!error abs (1, 2);
-
-%% test/octave.test/arith/xor-1.m
-%!assert((xor ([1, 1, 0, 0], [0, 1, 0, 1]) == [1, 0, 0, 1]
-%! && xor ([i, i, 0, 0], [1, 0, 1, 0]) == [0, 1, 1, 0]));
-
-%% test/octave.test/arith/xor-2.m
-%!assert(all (all (xor (eye (2), fliplr (eye (2))) == ones (2))));
-
-%% test/octave.test/arith/xor-3.m
-%!error xor ();
-
-%% test/octave.test/arith/xor-4.m
-%!error xor (1, 2, 3);
 
 %% test/octave.test/arith/arg-1.m
 %!assert(arg (1) == 0 && arg (i) == pi/2 && arg (-1) == pi && arg (-i) == -pi/2);
@@ -354,15 +280,6 @@
 %% test/octave.test/arith/log10-3.m
 %!error log10 (1, 2);
 
-%% test/octave.test/arith/log2-1.m
-%!assert(all (abs (log2 ([1/4, 1/2, 1, 2, 4]) - [-2, -1, 0, 1, 2]) < sqrt (eps)));
-
-%% test/octave.test/arith/log2-2.m
-%!error log2 ();
-
-%% test/octave.test/arith/log2-3.m
-%!error log2 (1, 2);
-
 %% test/octave.test/arith/sin-1.m
 %!test
 %! rt2 = sqrt (2);
@@ -405,64 +322,6 @@
 %% test/octave.test/arith/tan-3.m
 %!error tan (1, 2);
 
-%% test/octave.test/arith/sec-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! x = [0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi];
-%! v = [1, 2*rt3/3, rt2, 2, -2, -rt2, -2*rt3/3, -1];
-%! assert(all (abs (sec (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/sec-2.m
-%!error sec ();
-
-%% test/octave.test/arith/sec-3.m
-%!error sec (1, 2);
-
-%% test/octave.test/arith/csc-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! x = [pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6];
-%! v = [2, rt2, 2*rt3/3, 1, 2*rt3/3, rt2, 2];
-%! assert(all (abs (csc (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/csc-2.m
-%!error csc ();
-
-%% test/octave.test/arith/csc-3.m
-%!error csc (1, 2);
-
-%% test/octave.test/arith/cot-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! x = [pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6];
-%! v = [rt3, 1, rt3/3, 0, -rt3/3, -1, -rt3];
-%! assert(all (abs (cot (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/cot-2.m
-%!error cot ();
-
-%% test/octave.test/arith/cot-3.m
-%!error cot (1, 2);
-
-%% test/octave.test/arith/asin-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! v = [0, pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6, 0];
-%! x = [0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0];
-%! assert(all (abs (asin (x) - v) < sqrt (eps))
-%! 
-%! );
-
-%% test/octave.test/arith/asin-2.m
-%!error asin ();
-
-%% test/octave.test/arith/asin-3.m
-%!error asin (1, 2);
-
 %% test/octave.test/arith/acos-1.m
 %!test
 %! rt2 = sqrt (2);
@@ -494,53 +353,6 @@
 
 %% test/octave.test/arith/atan-3.m
 %!error atan (1, 2);
-
-%% test/octave.test/arith/asec-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! v = [0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi];
-%! x = [1, 2*rt3/3, rt2, 2, -2, -rt2, -2*rt3/3, -1];
-%! assert(all (abs (asec (x) - v) < sqrt (eps))
-%! 
-%! );
-
-%% test/octave.test/arith/asec-2.m
-%!error asec ();
-
-%% test/octave.test/arith/asec-3.m
-%!error asec (1, 2);
-
-%% test/octave.test/arith/acsc-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! v = [pi/6, pi/4, pi/3, pi/2, pi/3, pi/4, pi/6];
-%! x = [2, rt2, 2*rt3/3, 1, 2*rt3/3, rt2, 2];
-%! assert(all (abs (acsc (x) - v) < sqrt (eps))
-%! );
-
-%% test/octave.test/arith/acsc-2.m
-%!error acsc ();
-
-%% test/octave.test/arith/acsc-3.m
-%!error acsc (1, 2);
-
-%% test/octave.test/arith/acot-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! x = [rt3, 1, rt3/3, 0, -rt3/3, -1, -rt3];
-%! v = [pi/6, pi/4, pi/3, pi/2, -pi/3, -pi/4, -pi/6];
-%! assert(all (abs (acot (x) - v) < sqrt (eps))
-%! 
-%! );
-
-%% test/octave.test/arith/acot-2.m
-%!error acot ();
-
-%% test/octave.test/arith/acot-3.m
-%!error acot (1, 2);
 
 %% test/octave.test/arith/sinh-1.m
 %!test
@@ -577,42 +389,6 @@
 
 %% test/octave.test/arith/tanh-3.m
 %!error tanh (1, 2);
-
-%% test/octave.test/arith/sech-1.m
-%!test
-%! x = [0, pi*i];
-%! v = [1, -1];
-%! assert(all (abs (sech (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/sech-2.m
-%!error sech ();
-
-%% test/octave.test/arith/sech-3.m
-%!error sech (1, 2);
-
-%% test/octave.test/arith/csch-1.m
-%!test
-%! x = [pi/2*i, 3*pi/2*i];
-%! v = [-i, i];
-%! assert(all (abs (csch (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/csch-2.m
-%!error csch ();
-
-%% test/octave.test/arith/csch-3.m
-%!error csch (1, 2);
-
-%% test/octave.test/arith/coth-1.m
-%!test
-%! x = [pi/2*i, 3*pi/2*i];
-%! v = [0, 0];
-%! assert(all (abs (coth (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/coth-2.m
-%!error coth ();
-
-%% test/octave.test/arith/coth-3.m
-%!error coth (1, 2);
 
 %% test/octave.test/arith/asinh-1.m
 %!test
@@ -652,46 +428,6 @@
 
 %% test/octave.test/arith/atanh-3.m
 %!error atanh (1, 2);
-
-%% test/octave.test/arith/asech-1.m
-%!test
-%! v = [0, pi*i];
-%! x = [1, -1];
-%! assert(all (abs (asech (x) - v) < sqrt (eps))
-%! );
-
-%% test/octave.test/arith/asech-2.m
-%!error asech ();
-
-%% test/octave.test/arith/asech-3.m
-%!error asech (1, 2);
-
-%% test/octave.test/arith/acsch-1.m
-%!test
-%! v = [pi/2*i, -pi/2*i];
-%! x = [-i, i];
-%! assert(all (abs (acsch (x) - v) < sqrt (eps))
-%! );
-
-%% test/octave.test/arith/acsch-2.m
-%!error acsch ();
-
-%% test/octave.test/arith/acsch-3.m
-%!error acsch (1, 2);
-
-%% test/octave.test/arith/acoth-1.m
-%!test
-%! rt2 = sqrt (2);
-%! rt3 = sqrt (3);
-%! v = -i*[pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6];
-%! x = i*[rt3, 1, rt3/3, -rt3/3, -1, -rt3];
-%! assert(all (abs (acoth (x) - v) < sqrt (eps)));
-
-%% test/octave.test/arith/acoth-2.m
-%!error acoth ();
-
-%% test/octave.test/arith/acoth-3.m
-%!error acoth (1, 2);
 
 %% test/octave.test/arith/atan2-1.m
 %!test
@@ -812,12 +548,4 @@
 %!assert (all (sumsq ([1, 2; 3, 4], 1) == [10, 20]));
 %!assert (all (sumsq ([1, 2; 3, 4], 2) == [5; 25]));
 
-%% test/octave.test/arith/bincoeff-1.m
-%!assert(bincoeff (5, 2) == 10 && bincoeff (50, 6) == 15890700);
-
-%% test/octave.test/arith/bincoeff-2.m
-%!error bincoeff ();
-
-%% test/octave.test/arith/bincoeff-3.m
-%!error bincoeff (1, 2, 3);
 

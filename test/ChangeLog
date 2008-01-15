@@ -1,3 +1,7 @@
+2008-01-15  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* test_arith.m: Move tests to source files.
+
 2008-01-15  John W. Eaton  <jwe@octave.org>
 
 	* test_audio.m, test_control.m, test_image.m, test_optim.m,

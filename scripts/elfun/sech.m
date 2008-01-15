@@ -33,3 +33,13 @@ if (nargin != 1)
   w = 1 ./ cosh(z);
 
 endfunction
+
+%!test
+%! x = [0, pi*i];
+%! v = [1, -1];
+%! assert(all (abs (sech (x) - v) < sqrt (eps)));
+
+%!error sech ();
+
+%!error sech (1, 2);
+

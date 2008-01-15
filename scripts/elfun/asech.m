@@ -33,3 +33,14 @@ function w = asech (z)
   w = acosh (1 ./ z);
 
 endfunction
+
+%!test
+%! v = [0, pi*i];
+%! x = [1, -1];
+%! assert(all (abs (asech (x) - v) < sqrt (eps))
+%! );
+
+%!error asech ();
+
+%!error asech (1, 2);
+

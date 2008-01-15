@@ -93,3 +93,12 @@ function l = lcm (varargin)
   endif
 
 endfunction
+
+%!assert(lcm (3, 5, 7, 15) == lcm ([3, 5, 7, 15]) && lcm ([3, 5, 7,15]) == 105);
+
+%!error lcm ();
+
+%!test
+%! s.a = 1;
+%! fail("lcm (s)");
+

@@ -1,5 +1,8 @@
 2008-01-15  John W. Eaton  <jwe@octave.org>
 
+	* mappers.cc (install_mapper_functions): Move test for asin here
+	from test/test_arith.m.
+
 	* graphics.h.in (class line::properties, class text::properties):
 	Rename erase_mode property to erasemode.
 

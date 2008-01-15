@@ -33,3 +33,14 @@ function w = acsch (z)
   w = asinh (1 ./ z);
 
 endfunction
+
+%!test
+%! v = [pi/2*i, -pi/2*i];
+%! x = [-i, i];
+%! assert(all (abs (acsch (x) - v) < sqrt (eps))
+%! );
+
+%!error acsch ();
+
+%!error acsch (1, 2);
+

@@ -1,3 +1,12 @@
+2008-01-15  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* elfun/acot.m, elfun/acoth.m, elfun/acsc.m, elfun/acsch.m,
+	elfun/asec.m, elfun/asech.m, elfun/cot.m, elfun/coth.m,
+	elfun/csc.m,elfun/csch.m, elfun/lcm.m, elfun/sec.m, elfun/sech.m,
+	general/rem.m, miscellaneous/bincoeff.m, miscellaneous/xor.m,
+	specfun/beta.m, specfun/log2.m, specfun/pow2.m:
+	Move tests here from test/test_arith.m.
+
 2008-01-15  John W. Eaton  <jwe@octave.org>
 
 	* linear-algebra/__norm__.m: Use sum(abs(x),2), not sum(abs(x.')).

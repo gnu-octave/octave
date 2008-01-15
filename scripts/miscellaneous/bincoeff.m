@@ -102,3 +102,10 @@ endfunction
 %!assert(bincoeff(4,2), 6)
 %!assert(bincoeff(2,4), 0)
 %!assert(bincoeff(0.4,2), -.12, 8*eps)
+
+%!assert(bincoeff (5, 2) == 10 && bincoeff (50, 6) == 15890700);
+
+%!error bincoeff ();
+
+%!error bincoeff (1, 2, 3);
+

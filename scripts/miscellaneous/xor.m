@@ -42,3 +42,13 @@ function z = xor (x, y)
   endif
 
 endfunction
+
+%!assert((xor ([1, 1, 0, 0], [0, 1, 0, 1]) == [1, 0, 0, 1]
+%! && xor ([i, i, 0, 0], [1, 0, 1, 0]) == [0, 1, 1, 0]));
+
+%!assert(all (all (xor (eye (2), fliplr (eye (2))) == ones (2))));
+
+%!error xor ();
+
+%!error xor (1, 2, 3);
+

@@ -59,3 +59,9 @@ function [f, e] = log2 (x)
 
 endfunction
 
+%!assert(all (abs (log2 ([1/4, 1/2, 1, 2, 4]) - [-2, -1, 0, 1, 2]) < sqrt (eps)));
+
+%!error log2 ();
+
+%!error log2 (1, 2);
+

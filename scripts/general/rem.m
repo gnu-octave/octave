@@ -53,3 +53,17 @@ function r = rem (x, y)
   endif
 
 endfunction
+
+%!assert(all (all (rem ([1, 2, 3; -1, -2, -3], 2) == [1, 0, 1; -1, 0, -1])));
+
+%!assert(all (all (rem ([1, 2, 3; -1, -2, -3], 2 * ones (2, 3))
+%! == [1, 0, 1; -1, 0, -1])));
+
+%!error rem ();
+
+%!error rem (1, 2, 3);
+
+%!error rem ([1, 2], [3, 4, 5]);
+
+%!error rem (i, 1);
+

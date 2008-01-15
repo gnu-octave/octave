@@ -80,7 +80,7 @@ function retval = __norm__ (x, p)
           retval = inf_norm;
         endif
       elseif (strcmp (p, "inf"))
-        retval = max (sum (abs (x.')));
+        retval = max (sum (abs (x), 2));
       else
         error ("norm: unrecognized vector norm");
       endif
@@ -91,7 +91,7 @@ function retval = __norm__ (x, p)
         s = svd (x);
         retval = s (1);
       elseif (p == Inf)
-        retval = max (sum (abs (x.')));
+        retval = max (sum (abs (x), 2));
       else
         error ("norm: unrecognized matrix norm");
       endif
@@ -101,23 +101,25 @@ function retval = __norm__ (x, p)
 endfunction
 
 %!test
-%! x = __norm__ (zeros (5), "fro");
-%! assert (x, 0);
-%! x = __norm__ (ones (5), "fro");
-%! assert (x, 5);
-%! x = __norm__ (zeros (5,1), "fro");
-%! assert (x, 0);
-%! x = __norm__ (2*ones (5,3), "fro");
-%! assert (x, sqrt (60));
+%! assert (__norm__ (magic (3)), 15, -2*eps);
+%! assert (__norm__ (magic (3) * i), 15, -2*eps);
 
 %!test
-%! x = __norm__ (zeros (5), "inf");
-%! assert (x, 0);
-%! x = __norm__ (ones (5), "inf");
-%! assert (x, 5);
-%! x = __norm__ (2*ones (5,1), "inf");
-%! assert (x, 0);
-%! x = __norm__ (2*ones (5,3), "inf");
-%! assert (x, 6);
+%! assert (__norm__ (zeros (5), "fro"), 0);
+%! assert (__norm__ (ones (5), "fro"), 5);
+%! assert (__norm__ (zeros (5,1), "fro"), 0);
+%! assert (__norm__ (2*ones (5,3), "fro"), sqrt (60));
+
+%!test
+%! assert (__norm__ (zeros (5), "inf"), 0);
+%! assert (__norm__ (ones (5), "inf"), 5);
+%! assert (__norm__ (2*ones (5,1), "inf"), 2);
+%! assert (__norm__ (2*ones (5,3), "inf"), 6);
+
+%!test
+%! assert (__norm__ (zeros (5), 1), 0);
+%! assert (__norm__ (ones (5), 1), 5);
+%! assert (__norm__ (2*ones (1,5), 1), 10);
+%! assert (__norm__ (2*ones (3,5), 1), 6);
 
 

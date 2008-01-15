@@ -1,3 +1,7 @@
+2008-01-15  John W. Eaton  <jwe@octave.org>
+
+	* linear-algebra/__norm__.m: Use sum(abs(x),2), not sum(abs(x.')).
+
 2008-01-15  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/drawnow.m, plot/__go_draw_figure__.m, plot/__go_draw_axes__.m: 

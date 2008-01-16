@@ -33,12 +33,12 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = main-rcfile local-rcfile inputrc
+SOURCES = __finish__.m main-rcfile local-rcfile inputrc
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 
-FCN_FILES =
-FCN_FILES_NO_DIR =
+FCN_FILES = $(addprefix $(srcdir)/, $(SOURCES))
+FCN_FILES_NO_DIR = $(notdir $(FCN_FILES))
 
 all: PKG_ADD
 .PHONY: all
@@ -62,16 +62,16 @@ install install-strip:
 	  $(INSTALL_DATA) $(srcdir)/local-rcfile \
 	    $(DESTDIR)$(localfcnfiledir)/$(script_sub_dir)/octaverc; \
 	fi
-#	for f in $(FCN_FILES_NO_DIR); do \
-#	  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
-#	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
-#	done
+	for f in $(FCN_FILES_NO_DIR); do \
+	  rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
+	done
 .PHONY: install install-strip
 
 uninstall:
-#	for f in $(FCN_FILES_NO_DIR); \
-#	  do rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
-#	done
+	for f in $(FCN_FILES_NO_DIR); \
+	  do rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/$$f; \
+	done
 .PHONY: uninstall
 
 clean:

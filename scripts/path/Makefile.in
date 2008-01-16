@@ -32,7 +32,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = savepath.m
+SOURCES = __extractpath__.m matlabroot.m pathdef.m savepath.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

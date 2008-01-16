@@ -1,3 +1,14 @@
+2008-01-16  John W. Eaton  <jwe@octave.org>
+
+	* startup/__finish__.m: New file.
+	* startup/Makefile.in (SOURCES): Add it to the list.
+	(install install-strip, uninstall): Handle function files.
+
+2008-01-16  Ben Abbott  <bpabbott@mac.com>
+
+	* path/__extractpath__.m, path/matlabroot.m, path/pathdef.m: New files.
+	* path/Makefile.in (SOURCES): Add them to the list.
+
 2008-01-15  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* special-matrix/vander.m: Vectorize.  New test.

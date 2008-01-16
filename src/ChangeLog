@@ -1,3 +1,9 @@
+2008-01-16  John W. Eaton  <jwe@octave.org>
+
+	* pt-assign.cc (tree_simple_assignment::rvalue,
+	tree_multi_assignment::rvalue): Handle assignment of
+	comma-separated lists.
+
 2008-01-15  John W. Eaton  <jwe@octave.org>
 
 	* mappers.cc (install_mapper_functions): Move test for asin here

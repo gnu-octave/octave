@@ -1,5 +1,8 @@
 2008-01-16  John W. Eaton  <jwe@octave.org>
 
+	* plot/__go_draw_axes__.m (__do_enhanced_option__): New subfunction.
+	Use it to disable enhanced mode for individual labels and titles.
+
 	* startup/__finish__.m: New file.
 	* startup/Makefile.in (SOURCES): Add it to the list.
 	(install install-strip, uninstall): Handle function files.

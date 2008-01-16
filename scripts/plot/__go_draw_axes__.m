@@ -79,8 +79,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	else
 	  fontspec = sprintf ("font \"%s,%d\"", f, s);
 	endif
-	fprintf (plot_stream, "set title \"%s\" %s;\n",
-		 undo_string_escapes (tt), fontspec);
+	fprintf (plot_stream, "set title \"%s\" %s %s;\n",
+		 undo_string_escapes (tt), fontspec,
+		 __do_enhanced_option__ (enhanced, t));
       endif
     endif
 
@@ -100,11 +101,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  fontspec = sprintf ("font \"%s,%d\"", f, s);
 	endif
 	if (strcmpi (axis_obj.xaxislocation, "top"))
-	  fprintf (plot_stream, "set x2label \"%s\" %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec);
+	  fprintf (plot_stream, "set x2label \"%s\" %s %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec,
+		   __do_enhanced_option__ (enhanced, t));
 	else
-	  fprintf (plot_stream, "set xlabel \"%s\" %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec);
+	  fprintf (plot_stream, "set xlabel \"%s\" %s %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec,
+		   __do_enhanced_option__ (enhanced, t));
 	endif
 	if (have_newer_gnuplot)
 	  ## Rotation of xlabel not yet support by gnuplot as of 4.2, but
@@ -136,11 +139,13 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	  fontspec = sprintf ("font \"%s,%d\"", f, s);
 	endif
 	if (strcmpi (axis_obj.yaxislocation, "right"))
-	  fprintf (plot_stream, "set y2label \"%s\" %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec);
+	  fprintf (plot_stream, "set y2label \"%s\" %s %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec,
+		   __do_enhanced_option__ (enhanced, t));
 	else
-	  fprintf (plot_stream, "set ylabel \"%s\" %s %s",
-		   undo_string_escapes (tt), colorspec, fontspec);
+	  fprintf (plot_stream, "set ylabel \"%s\" %s %s %s",
+		   undo_string_escapes (tt), colorspec, fontspec,
+		   __do_enhanced_option__ (enhanced, t));
 	endif
 	if (have_newer_gnuplot)
 	  fprintf (plot_stream, " rotate by %f;\n", angle);
@@ -168,8 +173,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	else
 	  fontspec = sprintf ("font \"%s,%d\"", f, s);
 	endif
-	fprintf (plot_stream, "set zlabel \"%s\" %s %s",
-		 undo_string_escapes (tt), colorspec, fontspec);
+	fprintf (plot_stream, "set zlabel \"%s\" %s %s %s",
+		 undo_string_escapes (tt), colorspec, fontspec,
+		 __do_enhanced_option__ (enhanced, t));
 	if (have_newer_gnuplot)
 	  ## Rotation of zlabel not yet support by gnuplot as of 4.2, but
 	  ## there is no message about it.
@@ -984,14 +990,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	  if (nd == 3)
 	    fprintf (plot_stream,
-		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s front %s;\n",
+		     "set label \"%s\" at %s %.15g,%.15g,%.15g %s rotate by %f %s %s front %s;\n",
 		     undo_string_escapes (label), units, lpos(1),
-		     lpos(2), lpos(3), halign, angle, fontspec, colorspec);
+		     lpos(2), lpos(3), halign, angle, fontspec,
+		     __do_enhanced_option__ (enhanced, obj), colorspec);
 	  else
  	    fprintf (plot_stream,
- 		     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s front %s;\n",
+ 		     "set label \"%s\" at %s %.15g,%.15g %s rotate by %f %s %s front %s;\n",
  		     undo_string_escapes (label), units,
- 		     lpos(1), lpos(2), halign, angle, fontspec, colorspec);
+ 		     lpos(1), lpos(2), halign, angle, fontspec,
+		     __do_enhanced_option__ (enhanced, obj), colorspec);
 	  endif
 
 	otherwise
@@ -2022,4 +2030,15 @@ function [pos, orient, sz, origin, mirr] = gnuplot_postion_colorbox (pos, cbox)
     pos([1,3]) = scl;
   endif
 
+endfunction
+
+function retval = __do_enhanced_option__ (enhanced, obj)
+  retval = "";
+  if (enhanced)
+    if (strcmpi (obj.interpreter, "none"))
+      retval = "noenhanced";
+    else
+      retval = "enhanced";
+    endif
+  endif
 endfunction

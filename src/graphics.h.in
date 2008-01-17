@@ -659,6 +659,9 @@ private:
   {
     octave_idx_type nel = data.numel ();
 
+    xmin = xminp = octave_Inf;
+    xmax = -octave_Inf;
+
     if (nel > 0)
       {
 	const double *d = data.data ();

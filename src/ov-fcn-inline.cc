@@ -744,6 +744,13 @@ If the second argument is an integer @var{n}, the arguments are\n\
   return retval;
 }
 
+/*
+%!shared fn
+%! fn = inline ("x.^2 + 1","x");
+%!assert (feval (fn, 6), 37)
+%!assert (fn (6), 37)
+*/
+
 DEFUN (formula, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} formula (@var{fun})\n\

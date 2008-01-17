@@ -36,7 +36,7 @@ function varargout = savepath (savefile)
   endstring   = "## End savepath auto-created section";
 
   if (nargin == 0)
-    savefile = tilde_expand ("~/.octaverc");
+    savefile = ["~", filesep, ".octaverc"];
   endif
 
   ## parse the file if it exists to see if we should replace a section
@@ -118,6 +118,8 @@ function varargout = savepath (savefile)
   closeread = fclose (fid);
   if (closeread < 0)
     error ("savepath: could not close savefile after writing, %s", savefile);
+  elseif (nargin == 0)
+    warning ("savepath: current path saved to %s",savefile)
   endif
 
   retval = 0;

@@ -61,9 +61,9 @@ function specifiedpath = __extractpath__ (savefile)
         filelines{linenum} = result;
         ## find the first and last lines if they exist in the file
         if (strcmp (result, beginstring))
-          startline = linenum;
+          startline = linenum+1;
         elseif (strcmp (result, endstring))
-          endline = linenum;
+          endline = linenum-1;
         endif
       endif
     endwhile

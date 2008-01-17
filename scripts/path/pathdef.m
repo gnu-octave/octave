@@ -25,71 +25,68 @@
 ## @enumerate
 ## @item @file{~/.octaverc}
 ## @item @file{<octave-home>/.../<version>/m/startup/octaverc}
-## @item Octave's path prior to changes by any octaverc.
+## @item Octave"s path prior to changes by any octaverc.
 ## @end enumerate
 ## @seealso{path, addpath, rmpath, genpath, savepath, pathsep}
 ## @end deftypefn
 
 function val = pathdef ()
 
-  ## Save the path present when called. This will be used to restore
-  ## path when done.
-  presentpath = path;
-
-  ## Use Octave's orignal path as the default default.
-  val = __pathorig__;
+  ## Use Octave"s orignal path as the default default.
+  val = __pathorig__ ();
 
   ## Locate the site octaverc file (is there a better way?).
-  prestr = [OCTAVE_HOME, filesep];
-  poststr = [filesep, version, filesep, 'm', filesep', 'startup'];
-  ncolon = [0, strfind(presentpath,':'), numel(presentpath)+1];
-  site_octaverc = '';
-  for nc = 1:(numel(ncolon)-1)
-    pathdir = presentpath((ncolon(nc)+1):(ncolon(nc+1)-1));
-    npre = strfind (pathdir, prestr);
-    npost = strfind (pathdir, poststr);
-    if (npre == 1 &&
-        npost > numel (prestr) &&
-        npost == numel (pathdir) - numel (poststr)+1)
-      site_octaverc = [pathdir, filesep, 'octaverc'];
-      break;
-    endif
-  endfor
-  if isempty (site_octaverc) || ~exist (site_octaverc, 'file')
-    regexp_octaverc = [prestr, '*', poststr, filesep, 'octaverc'];
-    warning (['pathdef: could not locate `',regexp_octaverc,'''.'])
-  endif
+  pathdir = octave_config_info ("localstartupfiledir");
+  site_octaverc = [pathdir, filesep, "octaverc"];
 
   ## locate the user ~\.octaverc file.
-  user_octaverc = tilde_expand ("~/.octaverc");
+  user_octaverc = ["~", filesep, ".octaverc"];
+  user_octaverc = sprintf ("~%s.octaverc", filesep);
 
-  ## Extract the specified paths from the site and user octaverc's.
+  ## Extract the specified paths from the site and user octaverc"s.
   site_pathscript = __extractpath__ (site_octaverc);
-  if exist (user_octaverc, 'file')
+  if exist (user_octaverc, "file")
     user_pathscript = __extractpath__ (user_octaverc);
   else
-    user_pathscript = '';
+    user_pathscript = "";
   endif
 
   ## A path definition in the user octaverc has precedence over the site
   if numel (user_pathscript)
     try
-      eval (user_pathscript);
-      val = path;
+      if (numel (user_pathscript) == 1)
+        n = strfind (user_pathscript{1},"'");
+        if (numel(n) == 1)
+          n = strfind (user_pathscript{1},"""");
+        endif
+        val = user_pathscript{1}(n(1):n(end));
+      else
+        presentpath = path;
+        eval (user_pathscript);
+        val = path;
+        path (presentpath);
+      endif
     catch
-      warning (['Path defined in ',user_octaverc,' produced an error'])
+      warning ("pathdef: Path defined in `%s' produced an error.",user_octaverc)
     end_try_catch
   elseif numel (site_pathscript)
     try
-      eval (site_pathscript);
-      val = path;
+      if (numel (site_pathscript) == 1)
+        n = strfind (site_pathscript{1},"'");
+        if (numel(n) == 1)
+          n = strfind (site_pathscript{1},"""");
+        endif
+        val = site_pathscript{1}(n(1):n(end));
+      else
+        presentpath = path;
+        eval (site_pathscript);
+        val = path;
+        path (presentpath);
+      endif
     catch
-      warning (['Path defined in ',site_octaverc,' produced an error'])
+      warning ("pathdef: Path defined in `%s' produced an error.",site_octaverc)
     end_try_catch
   endif
-
-  ## Restore the path
-  path (presentpath);
 
 endfunction
 

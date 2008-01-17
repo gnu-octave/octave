@@ -18,3 +18,6 @@ endif
 ## will also skip automatic loading of packages.
 
 pkg ("load", "auto");
+
+atexit ('__finish__');
+

@@ -1679,12 +1679,27 @@ Reinitialize Octave's load path directory cache.\n\
   return retval;
 }
 
-DEFUN (pathdef, , ,
+DEFUN (restoredefaultpath, , ,
+    "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} restoredefaultpath (@dots{})\n\
+Restore Octave's path to it's initial state at startup.\n\
+\n\
+@seealso{path, addpath, rmpath, genpath, pathdef, savepath, pathsep}\n\
+@end deftypefn")
+{
+  load_path::initialize (true);
+
+  return octave_value (load_path::system_path ());
+}
+
+DEFUN (__pathorig__, , ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {@var{val} =} pathdef ()\n\
-Return the default list of directories in which to search for function\n\
-files.\n\
-@seealso{path, addpath, rmpath, genpath, savepath, pathsep}\n\
+@deftypefn {Built-in Function} {@var{val} =} __pathorig__ ()\n\
+Return Octave's original default list of directories in which to search\n\
+for function files. This corresponds to the path that exists prior to\n\
+running the system's @file{octaverc}, or the users' @file{~/.octaverc}\n\
+@seealso{path, addpath, rmpath, genpath, savepath, pathsep, \n\
+restoredefaultpath}\n\
 @end deftypefn")
 {
   return octave_value (load_path::system_path ());

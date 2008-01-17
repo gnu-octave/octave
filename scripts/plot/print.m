@@ -86,6 +86,8 @@
 ##     PBMplus
 ##   @item svg
 ##     Scalable vector graphics
+##   @item pdf
+##     Portable document format
 ##   @end table
 ##
 ##   Other devices are supported by "convert" from ImageMagick.  Type
@@ -219,7 +221,7 @@ function print (varargin)
   dev_list = {"aifm", "corel", "fig", "png", "pbm", "dxf", "mf", "svg", ...
 	      "hpgl", "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
 	      "epsc", "epsc2", "emf", "pstex", "pslatex", ...
-	      "epslatex", "epslatexstandalone"};
+	      "epslatex", "epslatexstandalone", "pdf"};
   convertname = "";
   [idx, errmsg] = cellidx (dev_list, dev);
   if (! idx)
@@ -369,6 +371,28 @@ function print (varargin)
       options = strcat (" size ", size);
     endif
     new_terminal = strcat ("svg", options);
+    
+  elseif (strcmp (dev, "pdf"))
+    ## Portable Document format
+    options = " ";
+    if (use_color >= 0)
+      options = "color";
+    else
+      options = "mono";
+    endif
+    if (force_solid > 0)
+       options = strcat (options, " solid");
+    elseif (force_solid < 0)
+      options = strcat (options, " dashed");
+    endif
+    if (! isempty (font))
+      options = strcat (options, "\"", font, "\" ");
+    endif
+    if (! isempty (fontsize))
+      options = strcat (options, " ", fontsize);
+    endif
+
+    new_terminal = strcat ("pdf ", options);
 
   endif
 

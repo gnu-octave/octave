@@ -212,7 +212,7 @@ function have_enhanced = enhanced_term (term)
     ## should not be interpreted in that case.
     if (compare_versions (__gnuplot_version__ (), "4.0", ">"))
       enhanced_terminals = {"aqua", "dumb", "png", "jpeg", "gif", "pm", ...
-	                    "windows", "wxt", "svg", "postscript", "x11"};
+	                    "windows", "wxt", "svg", "postscript", "x11", "pdf"};
     else 
       enhanced_terminals = {"x11", "postscript"};
     endif

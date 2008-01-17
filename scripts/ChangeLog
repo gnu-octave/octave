@@ -1,5 +1,12 @@
 2008-01-17  John W. Eaton  <jwe@octave.org>
 
+	* path/savepath.m: Print newline before initial comment line.
+	Double up single quote characters.
+	* path/__extractpath__.m: Return just the path as a string.
+	Undo single quote character doubling.
+
+	* path/pathdef.m: Avoid eval.  Simplify.
+
 	* path/pathdef.m: Use fullfile instead of concatenating with filesep.
 	* path/__extractpath__.m, path/savepath.m: Use unwind_protect to
 	avoid possible file descriptor leak.

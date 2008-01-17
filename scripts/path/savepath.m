@@ -113,9 +113,10 @@ function varargout = savepath (savefile)
     endfor
 
     ## Use single quotes for PATH argument to avoid string escape
-    ## processing.
-    fprintf (fid, "%s\n  path ('%s');\n%s\n",
-	     beginstring, path (), endstring);
+    ## processing.  Since we are using single quotes around the arg,
+    ## double any single quote characters found in the string.
+    fprintf (fid, "\n%s\n  path ('%s');\n%s\n",
+	     beginstring, strrep (path (), "'", "''"), endstring);
 
     for i = 1:length (post)
       fprintf (fid, "%s\n", post{i});

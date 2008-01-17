@@ -32,63 +32,30 @@
 
 function val = pathdef ()
 
-  ## Use Octave's orignal path as the default default.
-  val = __pathorig__ ();
-
   ## Locate the site octaverc file.
   pathdir = octave_config_info ("localstartupfiledir");
   site_octaverc = fullfile (pathdir, "octaverc");
 
-  ## locate the user ~\.octaverc file.
+  ## Locate the user ~\.octaverc file.
   user_octaverc = fullfile ("~", ".octaverc");
 
   ## Extract the specified paths from the site and user octaverc"s.
-  site_pathscript = __extractpath__ (site_octaverc);
+  site_path = __extractpath__ (site_octaverc);
   if (exist (user_octaverc, "file"))
-    user_pathscript = __extractpath__ (user_octaverc);
+    user_path = __extractpath__ (user_octaverc);
   else
-    user_pathscript = "";
+    user_path = "";
   endif
 
   ## A path definition in the user octaverc has precedence over the
   ## site.
 
-  ## FIXME -- use a subfunction here to avoid code duplication?
-
-  if (numel (user_pathscript))
-    try
-      if (numel (user_pathscript) == 1)
-        n = strfind (user_pathscript{1}, "'");
-        if (numel(n) == 1)
-          n = strfind (user_pathscript{1}, "\"");
-        endif
-        val = user_pathscript{1}(n(1):n(end));
-      else
-        presentpath = path;
-        eval (user_pathscript);
-        val = path;
-        path (presentpath);
-      endif
-    catch
-      warning ("pathdef: invalid path found in `%s'", user_octaverc);
-    end_try_catch
-  elseif (numel (site_pathscript))
-    try
-      if (numel (site_pathscript) == 1)
-        n = strfind (site_pathscript{1}, "'");
-        if (numel(n) == 1)
-          n = strfind (site_pathscript{1}, "\"");
-        endif
-        val = site_pathscript{1}(n(1):n(end));
-      else
-        presentpath = path;
-        eval (site_pathscript);
-        val = path;
-        path (presentpath);
-      endif
-    catch
-      warning ("pathdef: invalid path found in `%s'", site_octaverc);
-    end_try_catch
+  if (! isempty (user_path))
+    val = user_path;
+  elseif (! isempty (site_path))
+    val = site_path;
+  else
+    val = __pathorig__ ();
   endif
 
 endfunction

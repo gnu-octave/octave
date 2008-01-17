@@ -82,10 +82,13 @@ function specifiedpath = __extractpath__ (savefile)
   ## Extract the path specifiation.
   if (startline > endline || (startline > 0 && endline == 0))
     error ("savepath: unable to parse file, %s", savefile);
-  elseif startline > 0
-    specifiedpath = filelines(startline:endline);
+  elseif (startline > 0)
+    ## Undo doubling of single quote characters performed by savepath.
+    specifiedpath = strrep (regexprep (strcat (filelines(startline:endline){:}),
+				       " *path *\\('(.*)'\\); *", "$1"),
+			    "''", "'");
   else
-    specifiedpath = {};
+    specifiedpath = "";
   endif
 
 endfunction  

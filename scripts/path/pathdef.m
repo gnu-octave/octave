@@ -25,39 +25,42 @@
 ## @enumerate
 ## @item @file{~/.octaverc}
 ## @item @file{<octave-home>/.../<version>/m/startup/octaverc}
-## @item Octave"s path prior to changes by any octaverc.
+## @item Octave's path prior to changes by any octaverc.
 ## @end enumerate
 ## @seealso{path, addpath, rmpath, genpath, savepath, pathsep}
 ## @end deftypefn
 
 function val = pathdef ()
 
-  ## Use Octave"s orignal path as the default default.
+  ## Use Octave's orignal path as the default default.
   val = __pathorig__ ();
 
-  ## Locate the site octaverc file (is there a better way?).
+  ## Locate the site octaverc file.
   pathdir = octave_config_info ("localstartupfiledir");
-  site_octaverc = [pathdir, filesep, "octaverc"];
+  site_octaverc = fullfile (pathdir, "octaverc");
 
   ## locate the user ~\.octaverc file.
-  user_octaverc = ["~", filesep, ".octaverc"];
-  user_octaverc = sprintf ("~%s.octaverc", filesep);
+  user_octaverc = fullfile ("~", ".octaverc");
 
   ## Extract the specified paths from the site and user octaverc"s.
   site_pathscript = __extractpath__ (site_octaverc);
-  if exist (user_octaverc, "file")
+  if (exist (user_octaverc, "file"))
     user_pathscript = __extractpath__ (user_octaverc);
   else
     user_pathscript = "";
   endif
 
-  ## A path definition in the user octaverc has precedence over the site
-  if numel (user_pathscript)
+  ## A path definition in the user octaverc has precedence over the
+  ## site.
+
+  ## FIXME -- use a subfunction here to avoid code duplication?
+
+  if (numel (user_pathscript))
     try
       if (numel (user_pathscript) == 1)
-        n = strfind (user_pathscript{1},"'");
+        n = strfind (user_pathscript{1}, "'");
         if (numel(n) == 1)
-          n = strfind (user_pathscript{1},"""");
+          n = strfind (user_pathscript{1}, "\"");
         endif
         val = user_pathscript{1}(n(1):n(end));
       else
@@ -67,14 +70,14 @@ function val = pathdef ()
         path (presentpath);
       endif
     catch
-      warning ("pathdef: Path defined in `%s' produced an error.",user_octaverc)
+      warning ("pathdef: invalid path found in `%s'", user_octaverc);
     end_try_catch
-  elseif numel (site_pathscript)
+  elseif (numel (site_pathscript))
     try
       if (numel (site_pathscript) == 1)
-        n = strfind (site_pathscript{1},"'");
+        n = strfind (site_pathscript{1}, "'");
         if (numel(n) == 1)
-          n = strfind (site_pathscript{1},"""");
+          n = strfind (site_pathscript{1}, "\"");
         endif
         val = site_pathscript{1}(n(1):n(end));
       else
@@ -84,10 +87,8 @@ function val = pathdef ()
         path (presentpath);
       endif
     catch
-      warning ("pathdef: Path defined in `%s' produced an error.",site_octaverc)
+      warning ("pathdef: invalid path found in `%s'", site_octaverc);
     end_try_catch
   endif
 
 endfunction
-
-

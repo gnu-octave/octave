@@ -19,5 +19,4 @@ endif
 
 pkg ("load", "auto");
 
-atexit ('__finish__');
-
+atexit ("__finish__");

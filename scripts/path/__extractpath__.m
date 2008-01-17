@@ -30,7 +30,9 @@
 
 function specifiedpath = __extractpath__ (savefile)
 
-  ## The majority of this code was borrowed from savepath.m
+  ## The majority of this code was borrowed from savepath.m.
+  ## FIXME -- is there some way to share the common parts instead of
+  ## duplicating?
 
   beginstring = "## Begin savepath auto-created section, do not edit";
   endstring   = "## End savepath auto-created section";
@@ -39,8 +41,8 @@ function specifiedpath = __extractpath__ (savefile)
     savefile = tilde_expand ("~/.octaverc");
   endif
 
-  ## parse the file if it exists to see if we should replace a section
-  ## or create a section
+  ## Parse the file if it exists to see if we should replace a section
+  ## or create a section.
   startline = 0;
   endline = 0;
   filelines = {};
@@ -50,30 +52,34 @@ function specifiedpath = __extractpath__ (savefile)
     if (fid < 0)
       error ("__extractpath__: could not open savefile, %s: %s", savefile, msg);
     endif
-    linenum = 0;
-    while (linenum >= 0)
-      result = fgetl (fid);
-      if (isnumeric (result))
-        ## end at the end of file
-        linenum = -1;
-      else
-        linenum = linenum + 1;
-        filelines{linenum} = result;
-        ## find the first and last lines if they exist in the file
-        if (strcmp (result, beginstring))
-          startline = linenum+1;
-        elseif (strcmp (result, endstring))
-          endline = linenum-1;
-        endif
+    unwind_protect
+      linenum = 0;
+      while (linenum >= 0)
+	result = fgetl (fid);
+	if (isnumeric (result))
+	  ## End at the end of file.
+	  linenum = -1;
+	else
+	  linenum++;
+	  filelines{linenum} = result;
+	  ## Find the first and last lines if they exist in the file.
+	  if (strcmp (result, beginstring))
+	    startline = linenum + 1;
+	  elseif (strcmp (result, endstring))
+	    endline = linenum - 1;
+	  endif
+	endif
+      endwhile
+    unwind_protect_cleanup
+      closeread = fclose (fid);
+      if (closeread < 0)
+	error ("savepath: could not close savefile after reading, %s",
+	       savefile);
       endif
-    endwhile
-    closeread = fclose (fid);
-    if (closeread < 0)
-      error ("savepath: could not close savefile after reading, %s", savefile);
-    endif
+    end_unwind_protect
   endif
 
-  ## extract the path specifiation
+  ## Extract the path specifiation.
   if (startline > endline || (startline > 0 && endline == 0))
     error ("savepath: unable to parse file, %s", savefile);
   elseif startline > 0

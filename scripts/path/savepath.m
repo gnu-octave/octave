@@ -50,27 +50,31 @@ function varargout = savepath (savefile)
     if (fid < 0)
       error ("savepath: could not open savefile, %s: %s", savefile, msg);
     endif
-    linenum = 0;
-    while (linenum >= 0)
-      result = fgetl (fid);
-      if (isnumeric (result))
-        ## end at the end of file
-        linenum = -1;
-      else
-        linenum = linenum + 1;
-        filelines{linenum} = result;
-        ## find the first and last lines if they exist in the file
-        if (strcmp (result, beginstring))
-          startline = linenum;
-        elseif (strcmp (result, endstring))
-          endline = linenum;
-        endif
+    unwind_protect
+      linenum = 0;
+      while (linenum >= 0)
+	result = fgetl (fid);
+	if (isnumeric (result))
+	  ## end at the end of file
+	  linenum = -1;
+	else
+	  linenum = linenum + 1;
+	  filelines{linenum} = result;
+	  ## find the first and last lines if they exist in the file
+	  if (strcmp (result, beginstring))
+	    startline = linenum;
+	  elseif (strcmp (result, endstring))
+	    endline = linenum;
+	  endif
+	endif
+      endwhile
+    unwind_protect_cleanup
+      closeread = fclose (fid);
+      if (closeread < 0)
+	error ("savepath: could not close savefile after reading, %s",
+	       savefile);
       endif
-    endwhile
-    closeread = fclose (fid);
-    if (closeread < 0)
-      error ("savepath: could not close savefile after reading, %s", savefile);
-    endif
+    end_unwind_protect
   endif
 
   if (startline > endline || (startline > 0 && endline == 0))
@@ -103,24 +107,27 @@ function varargout = savepath (savefile)
   if (fid < 0)
     error ("savepath: unable to open file for writing, %s, %s", savefile, msg);
   endif
-  for i = 1:length (pre)
-    fprintf (fid, "%s\n", pre{i})
-  endfor
+  unwind_protect
+    for i = 1:length (pre)
+      fprintf (fid, "%s\n", pre{i})
+    endfor
 
-  ## Use single quotes for PATH argument to avoid string escape
-  ## processing.
-  fprintf (fid, "%s\n  path ('%s');\n%s\n",
-	   beginstring, path (), endstring);
+    ## Use single quotes for PATH argument to avoid string escape
+    ## processing.
+    fprintf (fid, "%s\n  path ('%s');\n%s\n",
+	     beginstring, path (), endstring);
 
-  for i = 1:length (post)
-    fprintf (fid, "%s\n", post{i});
-  endfor
-  closeread = fclose (fid);
-  if (closeread < 0)
-    error ("savepath: could not close savefile after writing, %s", savefile);
-  elseif (nargin == 0)
-    warning ("savepath: current path saved to %s",savefile)
-  endif
+    for i = 1:length (post)
+      fprintf (fid, "%s\n", post{i});
+    endfor
+  unwind_protect_cleanup
+    closeread = fclose (fid);
+    if (closeread < 0)
+      error ("savepath: could not close savefile after writing, %s", savefile);
+    elseif (nargin == 0)
+      warning ("savepath: current path saved to %s", savefile);
+    endif
+  end_unwind_protect
 
   retval = 0;
 

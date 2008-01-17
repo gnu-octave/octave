@@ -30,7 +30,7 @@
 
 function __finish__ ()
 
-  if exist ('finish','file')
+  if (exist ("finish", "file"))
     ## No arg list here since finish might be a script.
     finish;
   endif

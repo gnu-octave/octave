@@ -1,15 +1,27 @@
+2008-01-17  John W. Eaton  <jwe@octave.org>
+
+	* path/pathdef.m: Use fullfile instead of concatenating with filesep.
+	* path/__extractpath__.m, path/savepath.m: Use unwind_protect to
+	avoid possible file descriptor leak.
+
+2008-01-17  Ben Abbott  <bpabbott@mac.com>
+
+	* path/savepath.m: Warn if modified file is not explicitly specified.
+	* startup/main-rcfile: Call atexit ("__finish__").
+
 2008-01-16  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m (__do_enhanced_option__): New subfunction.
 	Use it to disable enhanced mode for individual labels and titles.
 
-	* startup/__finish__.m: New file.
-	* startup/Makefile.in (SOURCES): Add it to the list.
+	* startup/Makefile.in (SOURCES): Add __finish__.m to the list.
 	(install install-strip, uninstall): Handle function files.
 
 2008-01-16  Ben Abbott  <bpabbott@mac.com>
 
-	* path/__extractpath__.m, path/matlabroot.m, path/pathdef.m: New files.
+	* startup/__finish__.m: New file.
+	* path/__extractpath__.m, path/matlabroot.m,
+	path/pathdef.m: New files.
 	* path/Makefile.in (SOURCES): Add them to the list.
 
 2008-01-15  Thomas Weber  <thomas.weber.mail@gmail.com>

@@ -503,7 +503,7 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 
   endif
 
-### endfunction
+endfunction
 
 
 function [merit, obj] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, mu)
@@ -529,7 +529,7 @@ function [merit, obj] = phi_L1 (obj, obj_fun, ce_fun, ci_fun, x, mu)
     merit += t;
   endif
 
-### endfunction
+endfunction
 
 
 function [x_new, alpha, obj] = linesearch_L1 (x, p, obj_fun, obj_grd,
@@ -585,7 +585,7 @@ function [x_new, alpha, obj] = linesearch_L1 (x, p, obj_fun, obj_grd,
 
   x_new = x + alpha * p;
 
-### endfunction
+endfunction
 
 
 function report (iter, qp_iter, alpha, nfun, obj)
@@ -596,7 +596,7 @@ function report (iter, qp_iter, alpha, nfun, obj)
     printf ("%5d %4d %8.1g %5d %13.6e\n", iter, qp_iter, alpha, nfun, obj);
   endif
 
-### endfunction
+endfunction
 
 
 function grd = fdgrd (f, x)
@@ -616,7 +616,7 @@ function grd = fdgrd (f, x)
     grd = zeros (0, 1);
   endif
 
-### endfunction
+endfunction
 
 
 function jac = fdjac (f, x)
@@ -637,7 +637,7 @@ function jac = fdjac (f, x)
     jac = zeros  (0, nx);
   endif
 
-### endfunction
+endfunction
 
 
 function grd = fd_obj_grd (x)
@@ -646,21 +646,21 @@ function grd = fd_obj_grd (x)
 
   grd = fdgrd (__sqp_obj_fun__, x);
 
-### endfunction
+endfunction
 
 
 function res = empty_cf (x)
 
   res = zeros (0, 1);
 
-### endfunction
+endfunction
 
 
 function res = empty_jac (x)
 
   res = zeros (0, length (x));
 
-### endfunction
+endfunction
 
 
 function jac = fd_ce_jac (x)
@@ -669,7 +669,7 @@ function jac = fd_ce_jac (x)
 
   jac = fdjac (__sqp_ce_fun__, x);
 
-### endfunction
+endfunction
 
 
 function jac = fd_ci_jac (x)
@@ -678,7 +678,7 @@ function jac = fd_ci_jac (x)
   ## __sqp_cifcn__ = constraint function without gradients and lb or ub
   jac = fdjac (__sqp_cifcn__, x);
 
-### endfunction
+endfunction
 
 
 function res = cf_ub_lb (x)
@@ -692,7 +692,7 @@ function res = cf_ub_lb (x)
     res = [feval(__sqp_cifcn__,x); x-__sqp_lb__; __sqp_ub__-x];
   endif
 
-### endfunction
+endfunction
 
 
 function res = cigrad_ub_lb (x)
@@ -711,7 +711,7 @@ function res = cigrad_ub_lb (x)
     res = [feval(cigradfcn,x); eye(numel(x)); -eye(numel(x))];
   endif
 
-### endfunction
+endfunction
 
 %!function r = g (x)
 %!  r = [sumsq(x)-10;

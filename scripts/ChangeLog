@@ -1,3 +1,7 @@
+2008-01-18  John W. Eaton  <jwe@octave.org>
+
+	* optimization/sqp.m: End each function with endfunction.
+
 2008-01-18  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/residue.m: For each group of pole multiplicity, set

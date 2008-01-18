@@ -1,3 +1,15 @@
+2008-01-18  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.cc (solve_singularity_warning): New function.
+	(Matrix::expm): Pass pointer to solve_singularity_warning to
+	Matrix::solve method.  Exit early if Matrix::solve fails.
+	Limit sqpow value to avoid overflowing scale factor.
+	* CMatrix.cc (solve_singularity_warning): New function.
+	(ComplexMatrix::expm): Pass pointer to solve_singularity_warning to
+	ComplexMatrix::solve method.  Exit early if ComplexMatrix::solve fails.
+	Limit sqpow value to avoid overflowing scale factor.
+	From Marco Caliari <mcaliari@math.unipd.it>.
+
 2008-01-10  Kim Hansen  <kimhanse@gmail.com>
 
 	* Sparse.cc: New tests for slicing of sparse matrices.

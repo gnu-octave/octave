@@ -2378,6 +2378,14 @@ static double padec [] =
   1.9270852604185938e-9,
 };
 
+static void
+solve_singularity_warning (double rcond)
+{
+  (*current_liboctave_warning_handler) 
+    ("singular matrix encountered in expm calculation, rcond = %g",
+     rcond);
+}
+
 Matrix
 Matrix::expm (void) const
 {
@@ -2463,10 +2471,13 @@ Matrix::expm (void) const
   
   if (sqpow > 0)
     {
+      if (sqpow > 1023)
+	sqpow = 1023;
+
       double scale_factor = 1.0;
       for (octave_idx_type i = 0; i < sqpow; i++)
 	scale_factor *= 2.0;
-  
+
       m = m / scale_factor;
     }
   
@@ -2509,8 +2520,12 @@ Matrix::expm (void) const
   
   // Compute pade approximation = inverse (dpp) * npp.
 
-  retval = dpp.solve (npp, info);
-  
+  double rcond;
+  retval = dpp.solve (npp, info, rcond, solve_singularity_warning);
+
+  if (info < 0)
+    return retval;
+
   // Reverse preconditioning step 3: repeated squaring.
   
   while (sqpow)

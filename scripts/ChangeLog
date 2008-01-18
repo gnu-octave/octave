@@ -1,3 +1,8 @@
+2008-01-15  Rolf Fabian  <Rolf.Fabian@gmx.de>
+
+	* linear-algebra/__norm__.m: Only scale if inf norm is finite.
+	New tests.
+
 2008-01-18  John W. Eaton  <jwe@octave.org>
 
 	* optimization/sqp.m: End each function with endfunction.

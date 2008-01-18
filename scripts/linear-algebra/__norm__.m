@@ -44,7 +44,7 @@ function retval = __norm__ (x, p)
     if (ischar (p))
       if (strcmp (p, "fro"))
         inf_norm = norm (x, "inf");
-        if (inf_norm)
+        if (inf_norm && finite (inf_norm)) 
           retval = inf_norm .* sqrt (sum (abs (x ./ inf_norm) .^ 2));
         else
           retval = inf_norm;
@@ -74,7 +74,7 @@ function retval = __norm__ (x, p)
     if (ischar (p))
       if (strcmp (p, "fro"))
         inf_norm = norm (x, "inf");
-        if (inf_norm)
+        if (inf_norm && finite (inf_norm))
           retval = inf_norm .* sqrt (sum (sum (abs (x ./ inf_norm) .^ 2)));
         else
           retval = inf_norm;
@@ -121,5 +121,22 @@ endfunction
 %! assert (__norm__ (ones (5), 1), 5);
 %! assert (__norm__ (2*ones (1,5), 1), 10);
 %! assert (__norm__ (2*ones (3,5), 1), 6);
+
+
+%!test
+%! assert (__norm__ (1e304 * ones (5, 3), "fro"), 1e304 * sqrt (15));
+%! assert (__norm__ (1e-320 * ones (5, 3), "fro"), 1e-320 * sqrt (15));
+%! assert (x = __norm__ ([1, 2; 3, Inf], "fro"), Inf);
+%! assert (x = __norm__ ([1, 2, 3, Inf], "fro"), Inf);
+%! assert (x = __norm__ ([1, -Inf; 3, 4], "fro"), Inf);
+%! assert (x = __norm__ ([1, 2; 3, NaN], "fro"), NaN);
+
+%!test
+%! assert (__norm__ (1e304 * ones (5, 3), "inf"), 3e304);
+%! assert (__norm__ (1e-320 * ones (5, 3), "inf"), 3e-320);
+%! assert (x = __norm__ ([1, 2; 3, Inf], "inf"), Inf);
+%! assert (x = __norm__ ([1, 2, 3, Inf], "inf"), Inf);
+%! assert (x = __norm__ ([1, -Inf; 3, 4], "inf"), Inf);
+%! assert (x = __norm__ ([1, 2; 3, NaN], "inf"), 3);
 
 

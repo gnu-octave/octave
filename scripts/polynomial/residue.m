@@ -82,7 +82,7 @@
 ## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k})
 ## @deftypefnx {Function File} {[@var{b}, @var{a}] =} residue (@var{r}, @var{p}, @var{k}, @var{e})
 ## Compute the reconstituted quotient of polynomials,
-## @var{b}(s)/@var{a}(s), from the partial fraction expansion
+## @var{b}(s)/@var{a}(s), from the partial fraction expansion;
 ## represented by the residues, poles, and a direct polynomial specified
 ## by @var{r}, @var{p} and @var{k}, and the pole multiplicity @var{e}.
 ##
@@ -191,23 +191,20 @@ function [r, p, k, e] = residue (b, a, varargin)
   p = roots (a);
   lp = length (p);
 
-  ## Determine if the poles are (effectively) zero.
-
-  small = max (abs (p));
-  small = max ([small, 1] ) * 1e-8 * (1 + numel (p))^2;
-  p(abs (p) < small) = 0;
-
-  ## Determine if the poles are (effectively) real, or imaginary.
-
-  index = (abs (imag (p)) < small);
-  p(index) = real (p(index));
-  index = (abs (real (p)) < small);
-  p(index) = 1i * imag (p(index));
-
   ## Sort poles so that multiplicity loop will work.
 
   [e, indx] = mpoles (p, toler, 1);
   p = p (indx);
+
+  ## For each group of pole multiplicity, set the value of each
+  ## pole to the average of the group. This reduces the error in 
+  ## the resulting poles.
+
+  p_group = cumsum (e == 1);
+  for ng = 1:p_group(end)
+    m = find (p_group == ng);
+    p(m) = mean (p(m));
+  endfor
 
   ## Find the direct term if there is one.
 
@@ -218,6 +215,22 @@ function [r, p, k, e] = residue (b, a, varargin)
   else
     k = [];
   endif
+
+  ## Determine if the poles are (effectively) zero.
+
+  small = max (abs (p));
+  small = max ([small, 1]) * eps*1e4 * (1 + numel (p))^2;
+  p(abs (p) < small) = 0;
+
+  ## Determine if the poles are (effectively) real, or imaginary.
+
+  index = (abs (imag (p)) < small);
+  p(index) = real (p(index));
+  index = (abs (real (p)) < small);
+  p(index) = 1i * imag (p(index));
+
+  ## The remainder determines the residues.  The case of one pole
+  ## is trivial.
 
   if (lp == 1)
     r = polyval (b, p);
@@ -336,8 +349,8 @@ endfunction
 %! b = [1, 1, 1];
 %! a = [1, -5, 8, -4];
 %! [r, p, k, e] = residue (b, a);
-%! assert (abs (r - [-2; 7; 3]) < 1e-5
-%!   && abs (p - [2; 2; 1]) < 1e-7
+%! assert (abs (r - [-2; 7; 3]) < 1e-12
+%!   && abs (p - [2; 2; 1]) < 1e-12
 %!   && isempty (k)
 %!   && e == [1; 2; 1]);
 %! k = [1 0];
@@ -353,10 +366,10 @@ endfunction
 %!test
 %! b = [1, 0, 1];
 %! a = [1, 0, 18, 0, 81];
-%! [r, p, k, e] = residue(b, a);
+%! [r, p, k, e] = residue (b, a);
 %! r1 = [-5i; 12; +5i; 12]/54;
 %! p1 = [+3i; +3i; -3i; -3i];
-%! assert (abs (r - r1) < 1e-7 && abs (p - p1) < 1e-7
+%! assert (abs (r - r1) < 1e-12 && abs (p - p1) < 1e-12
 %!   && isempty (k)
 %!   && e == [1; 2; 1; 2]);
 %! [br, ar] = residue (r, p, k);
@@ -373,18 +386,18 @@ endfunction
 %!   && abs (a - [1, -5, 8, -4]) < 1e-12));
 %! [rr, pr, kr, er] = residue (b, a);
 %! [jnk, n] = mpoles(p);
-%! assert ((abs (rr - r(n)) < 1e-5
-%!   && abs (pr - p(n)) < 1e-7
+%! assert ((abs (rr - r(n)) < 1e-12
+%!   && abs (pr - p(n)) < 1e-12
 %!   && abs (kr - k) < 1e-12
 %!   && abs (er - e(n)) < 1e-12));
 
 %!test
 %! b = [1];
 %! a = [1, 10, 25];
-%! [r, p, k, e] = residue(b, a);
+%! [r, p, k, e] = residue (b, a);
 %! r1 = [0; 1];
 %! p1 = [-5; -5];
-%! assert (abs (r - r1) < 1e-7 && abs (p - p1) < 1e-7
+%! assert (abs (r - r1) < 1e-12 && abs (p - p1) < 1e-12
 %!   && isempty (k)
 %!   && e == [1; 2]);
 %! [br, ar] = residue (r, p, k);

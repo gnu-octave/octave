@@ -8,7 +8,7 @@
 	(ComplexMatrix::expm): Pass pointer to solve_singularity_warning to
 	ComplexMatrix::solve method.  Exit early if ComplexMatrix::solve fails.
 	Limit sqpow value to avoid overflowing scale factor.
-	From Marco Caliari <mcaliari@math.unipd.it>.
+	From Marco Caliari <marco.caliari@univr.it>.
 
 2008-01-10  Kim Hansen  <kimhanse@gmail.com>
 

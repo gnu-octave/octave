@@ -1,3 +1,7 @@
+2008-01-18  Juhani Saastamoinen  <juhani@cs.joensuu.fi>
+
+	* genprops.awk: Avoid using "default" as a variable name.
+
 2008-01-17  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.h.in (data_property::get_data_limits): Reset min/max values.

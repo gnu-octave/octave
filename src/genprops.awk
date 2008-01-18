@@ -318,7 +318,7 @@ function emit_source ()
 
     for (i = 1; i <= idx; i++)
     {
-      printf ("    %s (\"%s\", mh, %s)", name[i], name[i], default[i]) >> filename;
+      printf ("    %s (\"%s\", mh, %s)", name[i], name[i], defval[i]) >> filename;
       if (i < idx)
         printf (",") >> filename;
       printf ("\n") >> filename;
@@ -390,13 +390,13 @@ function emit_source ()
 
     for (i = 1; i <= idx; i++)
     {
-      defval = default[i];
+      dval = defval[i];
       if (type[i] == "radio_property" || type[i] == "color_property")
-        defval = gensub (/^.*\{(.*)\}.*$/, "\"\\1\"", "g", defval);
-      if (! defval)
-        defval = "octave_value ()";
+        dval = gensub (/^.*\{(.*)\}.*$/, "\"\\1\"", "g", dval);
+      if (! dval)
+        dval = "octave_value ()";
       if (name[i] !~ /__.*/)
-        printf ("  m[\"%s\"] = %s%s;\n", name[i], defval,
+        printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
                 (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
     }
 
@@ -462,7 +462,7 @@ BEGIN {
 	hidden[idx] = 0;
     emit_get[idx] = "definition";
     emit_set[idx] = "definition";
-    default[idx] = "";
+    defval[idx] = "";
 ##    if (type[idx] == "octave_value")
 ##      emit_ov_set[idx] = "";
 ##    else
@@ -533,7 +533,7 @@ BEGIN {
         field++;
 
         for (i = field; i <= NF; i++)
-          default[idx] = (default[idx] (i > field ? " " : "") $i);
+          defval[idx] = (defval[idx] (i > field ? " " : "") $i);
       }
     }
 

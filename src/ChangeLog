@@ -1,3 +1,17 @@
+2008-01-19  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in (class figure::properties): New properties:
+	alphamap, currentcharacter, currentobject, current_point,
+	dockcontrols, doublebuffer, filename, integerhandle,
+	inverthardcopy, keypressfcn, keyreleasefcn, menubar, mincolormap,
+	name, numbertitle, paperunits, paperposition, paperpositionmode,
+	papersize, papertype, pointer, pointershapecdata,
+	pointershapehotspot, position, renderer, renderermode, resize,
+	resizefcn, selectiontype, toolbar, units, windowbuttondownfcn,
+	windowbuttonmotionfcn, windowbuttonupfcn, windowbuttonwheelfcn,
+	windowstyle, wvisual, wvisualmode, xdisplay, xvisual, xvisualmode,
+	buttondownfcn.
+
 2008-01-19  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.h.in (base_properties::beingdeleted,

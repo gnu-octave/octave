@@ -1,3 +1,7 @@
+2008-01-19  John W. Eaton  <jwe@octave.org>
+
+	* genprops.awk (emit_source): Use "pname" for property name argument.
+
 2008-01-19  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h.in (class figure::properties): New properties:

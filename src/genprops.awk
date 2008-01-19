@@ -205,9 +205,9 @@ function emit_common_declarations ()
   printf ("public:\n");
   printf ("  properties (const graphics_handle& mh, const graphics_handle& p);\n\n");
   printf ("  ~properties (void) { }\n\n");
-  printf ("  void set (const caseless_str& name, const octave_value& val);\n\n");
+  printf ("  void set (const caseless_str& pname, const octave_value& val);\n\n");
   printf ("  octave_value get (bool all = false) const;\n\n");
-  printf ("  octave_value get (const caseless_str& name) const;\n\n");
+  printf ("  octave_value get (const caseless_str& pname) const;\n\n");
   printf ("  std::string graphics_object_name (void) const { return go_name; }\n\n");
   printf ("  static property_list::pval_map_type factory_defaults (void);\n\n");
   printf ("private:\n  static std::string go_name;\n\n");
@@ -337,17 +337,17 @@ function emit_source ()
 
     ## set method
 
-    printf ("void\n%s::properties::set (const caseless_str& name, const octave_value& val)\n{\n",
+    printf ("void\n%s::properties::set (const caseless_str& pname, const octave_value& val)\n{\n",
             class_name) >> filename;
 
     for (i = 1; i <= idx; i++)
     {
       if (! readonly[i])
-        printf ("  %sif (name.compare (\"%s\"))\n    set_%s (val);\n",
+        printf ("  %sif (pname.compare (\"%s\"))\n    set_%s (val);\n",
                 (i > 1 ? "else " : ""), name[i], name[i]) >> filename;
     }
 
-    printf ("  else\n    base_properties::set (name, val);\n}\n\n") >> filename;
+    printf ("  else\n    base_properties::set (pname, val);\n}\n\n") >> filename;
 
     ## get "all" method
 
@@ -368,19 +368,19 @@ function emit_source ()
     
     ## get "one" method
 
-    printf ("octave_value\n%s::properties::get (const caseless_str& name) const\n{\n",
+    printf ("octave_value\n%s::properties::get (const caseless_str& pname) const\n{\n",
             class_name) >> filename;
     printf ("  octave_value retval;\n\n") >> filename;
 
     for (i = 1; i<= idx; i++)
     {
-      printf ("  %sif (name.compare (\"%s\"))\n",
+      printf ("  %sif (pname.compare (\"%s\"))\n",
               (i > 1 ? "else " : ""), name[i]) >> filename;
       printf ("    retval = get_%s ()%s;\n", name[i],
               (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
     }
 
-    printf ("  else\n    retval = base_properties::get (name);\n\n") >> filename;
+    printf ("  else\n    retval = base_properties::get (pname);\n\n") >> filename;
     printf ("  return retval;\n}\n\n") >> filename;
 
     ## factory defaults method

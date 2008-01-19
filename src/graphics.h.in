@@ -968,7 +968,7 @@ public:
       buttondownfcn ("buttondownfcn", mh, Matrix ()),
       children (),
       clipping ("clipping", mh, true),
-      createfcn ("createfcn" , mh, Matrix ()),
+      createfcn ("createfcn", mh, Matrix ()),
       deletefcn ("deletefcn", mh, Matrix ()),
       handlevisibility ("handlevisibility", mh, "{on}|callback|off"),
       hittest ("hittest", mh, true),
@@ -1807,11 +1807,11 @@ public:
     void init (void)
       {
         colormap.add_constraint (dim_vector (-1, 3));
-	alphamap.add_constraint (dim_vector (-1 , 1));
-	paperposition.add_constraint (dim_vector (1 , 4));
-	pointershapecdata.add_constraint (dim_vector (16 , 16));
-	pointershapehotspot.add_constraint (dim_vector (1 , 2));
-	position.add_constraint (dim_vector (1 , 4));
+	alphamap.add_constraint (dim_vector (-1, 1));
+	paperposition.add_constraint (dim_vector (1, 4));
+	pointershapecdata.add_constraint (dim_vector (16, 16));
+	pointershapehotspot.add_constraint (dim_vector (1, 2));
+	position.add_constraint (dim_vector (1, 4));
       }
   };
 

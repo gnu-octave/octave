@@ -682,7 +682,8 @@ gh_manager::do_free (const graphics_handle& h)
 
 	  if (p != handle_map.end ())
 	    {
-              p->second.get_properties ().execute_deletefcn ();
+	      p->second.get_properties ().set_beingdeleted (true);
+	      p->second.get_properties ().execute_deletefcn ();
 
 	      handle_map.erase (p);
 
@@ -940,6 +941,8 @@ base_properties::get (const caseless_str& name) const
     retval = get_userdata ();
   else if (name.compare ("visible"))
     retval = get_visible ();
+  else if (name.compare ("beingdeleted"))
+    retval = get_beingdeleted ();
   else
   {
     std::map<caseless_str, property>::const_iterator it = all_props.find (name);
@@ -982,6 +985,7 @@ base_properties::get (bool all) const
   m.assign ("uicontextmenu", get_uicontextmenu ());
   m.assign ("userdata", get_userdata ());
   m.assign ("visible", get_visible ());
+  m.assign ("beingdeleted", get_beingdeleted ());
 
   return m;
 }

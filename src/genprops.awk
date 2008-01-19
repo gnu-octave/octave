@@ -342,8 +342,9 @@ function emit_source ()
 
     for (i = 1; i <= idx; i++)
     {
-      printf ("  %sif (name.compare (\"%s\"))\n    set_%s (val);\n",
-              (i > 1 ? "else " : ""), name[i], name[i]) >> filename;
+      if (! readonly[i])
+        printf ("  %sif (name.compare (\"%s\"))\n    set_%s (val);\n",
+                (i > 1 ? "else " : ""), name[i], name[i]) >> filename;
     }
 
     printf ("  else\n    base_properties::set (name, val);\n}\n\n") >> filename;
@@ -439,7 +440,7 @@ BEGIN {
 {
   if (gather)
   {
-    if (NF < 2)
+    if (NF < 2 || /^[ \t]*\/\//)
       next;
 
     idx++;
@@ -459,7 +460,8 @@ BEGIN {
 
     limits[idx] = 0;
     mode[idx] = 0;
-	hidden[idx] = 0;
+    hidden[idx] = 0;
+    readonly[idx] = 0;
     emit_get[idx] = "definition";
     emit_set[idx] = "definition";
     defval[idx] = "";
@@ -500,9 +502,13 @@ BEGIN {
         if (index (quals, "S"))
           emit_set[idx] = "declaration";
         
-		## The property is hidden
-        if (index (quals, "h"))
-          hidden[idx] = 1;
+	## The property is hidden
+	if (index (quals, "h"))
+	  hidden[idx] = 1;
+
+	## The property is read-only
+	if (index (quals, "r"))
+	  readonly[idx] = 1;
 
 ##        ## emmit an asignment set function
 ##        if (index (quals, "a"))

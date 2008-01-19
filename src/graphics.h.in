@@ -963,26 +963,26 @@ public:
   base_properties (const std::string& ty = "unknown",
                    const graphics_handle& mh = graphics_handle (),
                    const graphics_handle& p = graphics_handle ())
-    : tag ("tag", mh),
-      type ("type", mh, ty),
-      __modified__ ("__modified__", mh, true),
-      __myhandle__ (mh),
-      parent ("parent", mh, p), 
-      children (),
+    : beingdeleted ("beingdeleted", mh, false),
       busyaction ("parent", mh, "{queue}|cancel"),
       buttondownfcn ("buttondownfcn", mh, Matrix ()),
+      children (),
       clipping ("clipping", mh, true),
       createfcn ("createfcn" , mh, Matrix ()),
       deletefcn ("deletefcn", mh, Matrix ()),
       handlevisibility ("handlevisibility", mh, "{on}|callback|off"),
       hittest ("hittest", mh, true),
       interruptible ("interruptible", mh, true),
+      parent ("parent", mh, p), 
       selected ("selected", mh, false),
       selectionhighlight ("selectionhighlight", mh, true),
-      uicontextmenu ("uicontextmenu", mh, graphics_handle ()),
+      tag ("tag", mh),
+      type ("type", mh, ty),
       userdata ("userdata", mh, Matrix ()),
       visible ("visible", mh, true),
-	  beingdeleted ("beingdeleted", mh, false)
+      __modified__ ("__modified__", mh, true),
+      __myhandle__ (mh),
+      uicontextmenu ("uicontextmenu", mh, graphics_handle ())
     { }
 
   virtual ~base_properties (void) { }

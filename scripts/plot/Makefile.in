@@ -85,7 +85,7 @@ SOURCES = \
   contourc.m \
   contourf.m \
   cylinder.m \
-  drawnow.m \
+  gnuplot_drawnow.m \
   ellipsoid.m \
   errorbar.m \
   ezcontourf.m \

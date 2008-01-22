@@ -27,92 +27,49 @@
 
 ## Author: jwe
 
-function drawnow (term, file, mono, debug_file)
+function gnuplot_drawnow (h, term, file, mono, debug_file)
 
-  persistent drawnow_executing = 0;
+  if (nargin < 4)
+    mono = false;
+  endif
 
-  unwind_protect
-
-    ## If this is a recursive call, do nothing.
-    if (++drawnow_executing > 1)
-      return;
-    endif
-
-    if (nargin < 3)
-      mono = false;
-    endif
-
-    if (nargin >= 2 && nargin <= 4)
-      [dnm, fnm, ext] = fileparts (file);
-      if (! (isempty (dnm) || isdir (dnm)))
-	error ("drawnow: nonexistent directory `%s'", dnm);
+  if (nargin >= 3 && nargin <= 5)
+    f = __get__ (h);
+    plot_stream = [];
+    fid = [];
+    unwind_protect
+      [plot_stream, enhanced] = open_gnuplot_stream ([], term, file);
+      __go_draw_figure__ (f, plot_stream, enhanced, mono);
+      if (nargin == 5)
+        fid = fopen (debug_file, "wb");
+        enhanced = init_plot_stream (fid, [], term, file);
+        __go_draw_figure__ (f, fid, enhanced, mono);
       endif
-      h = get (0, "currentfigure");
-      if (h)
-	f = __get__ (h);
-	plot_stream = [];
-	fid = [];
-	unwind_protect
-	  [plot_stream, enhanced] = open_gnuplot_stream ([], term, file);
-	  __go_draw_figure__ (f, plot_stream, enhanced, mono);
-	  if (nargin == 4)
-	    fid = fopen (debug_file, "wb");
-	    enhanced = init_plot_stream (fid, [], term, file);
-	    __go_draw_figure__ (f, fid, enhanced, mono);
-	  endif
-	unwind_protect_cleanup
-	  if (! isempty (plot_stream))
-	    pclose (plot_stream);
-	  endif
-	  if (! isempty (fid))
-	    fclose (fid);
-	  endif
-	end_unwind_protect
-      else
-	error ("drawnow: nothing to draw");
+    unwind_protect_cleanup
+      if (! isempty (plot_stream))
+        pclose (plot_stream);
       endif
-    elseif (nargin == 0)
-      for h = __go_figure_handles__ ()
-	if (! (isnan (h) || h == 0))
-	  f = __get__ (h);
-	  if (f.__modified__)
-	    plot_stream = f.__plot_stream__;
-	    figure_is_visible = strcmp (f.visible, "on");
-	    if (figure_is_visible)
-	      if (isempty (plot_stream))
-		[plot_stream, enhanced] = open_gnuplot_stream (h);
-		set (h, "__enhanced__", enhanced);
-	      else
-		enhanced = f.__enhanced__;
-	      endif
-	      __go_draw_figure__ (f, plot_stream, enhanced, mono);
-	    elseif (! isempty (plot_stream))
-	      pclose (plot_stream);
-	      set (h, "__plot_stream__", []);
-	      set (h, "__enhanced__", false);
-	    endif
-	    set (h, "__modified__", false);
-	  endif
-	endif
-      endfor
+      if (! isempty (fid))
+        fclose (fid);
+      endif
+    end_unwind_protect
+  elseif (nargin == 1)
+    f = __get__ (h);
+    plot_stream = f.__plot_stream__;
+    if (isempty (plot_stream))
+      [plot_stream, enhanced] = open_gnuplot_stream (h);
+      set (h, "__enhanced__", enhanced);
     else
-      print_usage ();
+      enhanced = f.__enhanced__;
     endif
-
-  unwind_protect_cleanup
-
-    drawnow_executing--;
-    __request_drawnow__ (false);
-
-  end_unwind_protect
+    __go_draw_figure__ (f, plot_stream, enhanced, mono);
+  else
+    print_usage ();
+  endif
 
 endfunction
 
 function [plot_stream, enhanced] = open_gnuplot_stream (h, varargin)
-
-  ## If drawnow is cleared, it is possible to register __go_close_all__
-  ## more than once, but that is not fatal.
-  persistent __go_close_all_registered__;
 
   cmd = gnuplot_binary ();
 
@@ -127,11 +84,6 @@ function [plot_stream, enhanced] = open_gnuplot_stream (h, varargin)
     endif
 
     enhanced = init_plot_stream (plot_stream, h, varargin{:});
-
-    if (isempty (__go_close_all_registered__))
-      atexit ("__go_close_all__");
-      __go_close_all_registered__ = true;
-    endif
 
   endif
 

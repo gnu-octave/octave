@@ -1,3 +1,19 @@
+2008-01-22  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (base_properties::is_visible,
+	base_properties::set_modified): New accessors.
+	(class base_graphics_backend, class graphics_backend): New classes
+	for handling octave/backend interaction.
+	(figure::properties::close): Add "pop" argument controlling
+	whether the figure should be popped from the list of existing figures.
+	(class figure::properties): New backend field and accessors, holding
+	the graphics backend associated with the figure.
+	* graphics.cc (class gnuplot_backend): New class for the default
+	gnuplot backend.
+	(figure::properties::close): Add "pop" argument and transfer the
+	figure closing to the associated backend.
+	(Fdrawnow): New builtin function, converted from drawnow.m.
+
 2008-01-19  John W. Eaton  <jwe@octave.org>
 
 	* genprops.awk (emit_source): Use "pname" for property name argument.

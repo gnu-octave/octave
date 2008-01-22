@@ -1052,7 +1052,8 @@ public:
   octave_value get_uicontextmenu (void) const { return uicontextmenu.get (); }
 
   octave_value get_userdata (void) const { return userdata.get (); }
-  
+ 
+  bool is_visible (void) const { return visible.is_on (); }
   std::string get_visible (void) const { return visible.current_value (); }
 
   bool is_beingdeleted (void) const { return beingdeleted.is_on (); }
@@ -1070,6 +1071,8 @@ public:
   void set_tag (const octave_value& val) { tag = val; }
 
   void set_parent (const octave_value& val);
+
+  void set_modified (const octave_value& val) { __modified__ = val; }
 
   void set_busyaction (const octave_value& val)
   {
@@ -1632,6 +1635,121 @@ private:
 
 // ---------------------------------------------------------------------
 
+class graphics_backend;
+
+class base_graphics_backend
+{
+public:
+  friend class graphics_backend;
+
+public:
+  base_graphics_backend (const std::string& nm)
+      : name (nm), count (0) { }
+
+  virtual ~base_graphics_backend (void) { }
+
+  std::string get_name (void) const { return name; }
+
+  virtual bool is_valid (void) const { return false; }
+
+  virtual void close_figure (const octave_value&) const
+    { error ("close_figure: invalid graphics backend"); }
+
+  virtual void redraw_figure (const graphics_handle&) const
+    { error ("redraw_figure: invalid graphics backend"); }
+
+  virtual void print_figure (const graphics_handle&, const std::string&,
+			     const std::string&, bool,
+			     const std::string& = "") const
+    { error ("print_figure: invalid graphics backend"); }
+
+  virtual Matrix get_canvas_size (const graphics_handle&) const
+    {
+      error ("get_canvas_size: invalid graphics backend");
+      return Matrix (1, 2, 0.0);
+    }
+
+private:
+  std::string name;
+  int count;
+};
+
+class graphics_backend
+{
+public:
+  graphics_backend (void)
+      : rep (new base_graphics_backend ("unknown"))
+    {
+      rep->count++;
+    }
+
+  graphics_backend (base_graphics_backend* b)
+      : rep (b)
+    {
+      rep->count++;
+    }
+
+  graphics_backend (const graphics_backend& b)
+      : rep (b.rep)
+    {
+      rep->count++;
+    }
+
+  ~graphics_backend (void)
+    {
+      if (--rep->count == 0)
+	delete rep;
+    }
+
+  graphics_backend& operator = (const graphics_backend& b)
+    {
+      if (rep != b.rep)
+	{
+	  if (--rep->count == 0)
+	    delete rep;
+
+	  rep = b.rep;
+	  rep->count++;
+	}
+
+      return *this;
+    }
+
+  operator bool (void) const { return rep->is_valid (); }
+
+  std::string get_name (void) const { return rep->get_name (); }
+
+  void close_figure (const octave_value& pstream) const
+    { rep->close_figure (pstream); }
+
+  void redraw_figure (const graphics_handle& fh) const
+    { rep->redraw_figure (fh); }
+  
+  void print_figure (const graphics_handle& fh, const std::string& term,
+		     const std::string& file, bool mono,
+		     const std::string& debug_file = "") const
+    { rep->print_figure (fh, term, file, mono, debug_file); }
+
+  Matrix get_canvas_size (const graphics_handle& fh) const
+    { return rep->get_canvas_size (fh); }
+
+  OCTINTERP_API static graphics_backend default_backend (void);
+
+  static void register_backend (const graphics_backend& b)
+    { available_backends[b.get_name ()] = b; }
+
+  static void unregister_backend (const std::string& name)
+    { available_backends.erase (name); }
+
+private:
+  base_graphics_backend *rep;
+
+private:
+  static std::map<std::string, graphics_backend> available_backends;
+};
+
+// ---------------------------------------------------------------------
+
 class OCTINTERP_API root_figure : public base_graphics_object
 {
 public:
@@ -1744,8 +1862,19 @@ public:
   class properties : public base_properties
   {
   public:
-    void close (void);
+    void close (bool pop = true);
+
     void set_visible (const octave_value& val);
+
+    graphics_backend get_backend (void) const
+      {
+	if (! backend)
+	  backend = graphics_backend::default_backend ();
+
+	return backend;
+      }
+
+    void set_backend (const graphics_backend& b) { backend = b; }
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -1813,6 +1942,9 @@ public:
 	pointershapehotspot.add_constraint (dim_vector (1, 2));
 	position.add_constraint (dim_vector (1, 4));
       }
+
+  private:
+    mutable graphics_backend backend;
   };
 
 private:
@@ -1880,6 +2012,12 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
+
+  graphics_backend get_backend (void) const
+    { return xproperties.get_backend (); }
+
+  void set_backend (const graphics_backend& b)
+    { xproperties.set_backend (b); }
 
 private:
   property_list default_properties;

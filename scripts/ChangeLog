@@ -1,3 +1,10 @@
+2008-01-22  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/gnuplot_drawnow.m: New function corresponding to the
+	implementation of the gnuplot-based graphics backend (derived from
+	drawnow.m).
+	* plot/drawnow.m: Deleted (converted to C++).
+
 2008-01-15  Rolf Fabian  <Rolf.Fabian@gmx.de>
 
 	* linear-algebra/__norm__.m: Only scale if inf norm is finite.

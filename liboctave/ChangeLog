@@ -1,4 +1,4 @@
-2008-01-22  Michael Goffioul <michael.goffioul@gmail.com>
+2008-01-22  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* oct-time.cc (octave_base_tim::init): Validate pointer argument;
 	this fixes the "localtime(-1)" crash under Windows.

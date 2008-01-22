@@ -43,6 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-fcn-handle.h"
 #include "parse.h"
 #include "unwind-prot.h"
+#include "file-ops.h"
+#include "file-stat.h"
 
 static void
 gripe_set_invalid (const std::string& pname)
@@ -1146,6 +1148,69 @@ base_properties::delete_children (void)
 
 // ---------------------------------------------------------------------
 
+class gnuplot_backend : public base_graphics_backend
+{
+public:
+  gnuplot_backend (void)
+      : base_graphics_backend ("gnuplot") { }
+
+  ~gnuplot_backend (void) { }
+
+  bool is_valid (void) const { return true; }
+ 
+  void close_figure (const octave_value& pstream) const
+    {
+      if (! pstream.is_empty())
+	{
+	  octave_value_list args;
+	  args(1) = "\nquit;\n";
+	  args(0) = pstream;
+	  feval ("fputs", args);
+	  args.resize (1);
+	  feval ("fflush", args);
+	  feval ("pclose", args);
+	}
+    }
+
+  void redraw_figure (const graphics_handle& fh) const
+    {
+      octave_value_list args;
+      args(0) = fh.as_octave_value ();
+      feval ("gnuplot_drawnow", args);
+    }
+
+  void print_figure (const graphics_handle& fh, const std::string& term,
+		     const std::string& file, bool mono,
+		     const std::string& debug_file) const
+    {
+      octave_value_list args;
+      args.resize (4);
+      args(0) = fh.as_octave_value ();
+      args(1) = term;
+      args(2) = file;
+      args(3) = mono;
+      if (! debug_file.empty ())
+	args(4) = debug_file;
+      feval ("gnuplot_drawnow", args);
+    }
+
+  Matrix get_canvas_size (const graphics_handle& fh) const
+    { return Matrix (1, 2, 0.0); }
+};
+
+graphics_backend
+graphics_backend::default_backend (void)
+{
+  if (available_backends.size () == 0)
+    register_backend (new gnuplot_backend ());
+
+  return available_backends["gnuplot"];
+}
+
+std::map<std::string, graphics_backend> graphics_backend::available_backends;
+
+// ---------------------------------------------------------------------
+
 #include "graphics-props.cc"
 
 // ---------------------------------------------------------------------
@@ -1202,24 +1267,19 @@ figure::properties::set_visible (const octave_value& val)
 }
 
 void
-figure::properties::close (void)
+figure::properties::close (bool pop)
 {
-  if (! get___plot_stream__ ().is_empty ())
+  if (backend)
+    backend.close_figure (get___plot_stream__ ());
+
+  if (pop)
     {
-      octave_value_list args;
-      args(1) = "\nquit;\n";
-      args(0) = get___plot_stream__ ();
-      feval ("fputs", args);
-      args.resize (1);
-      feval ("fflush", args);
-      feval ("pclose", args);
+      gh_manager::pop_figure (__myhandle__);
+
+      graphics_handle cf = gh_manager::current_figure ();
+
+      xset (0, "currentfigure", cf.value ());
     }
-
-  gh_manager::pop_figure (__myhandle__);
-
-  graphics_handle cf = gh_manager::current_figure ();
-
-  xset (0, "currentfigure", cf.value ());
 }
 
 octave_value
@@ -2303,6 +2363,130 @@ Undocumented internal function.\n\
 @end deftypefn")
 {
   return octave_value (gh_manager::figure_handle_list ());
+}
+
+DEFUN (drawnow, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_drawnow__ ()\n\
+@deftypefnx {Built-in Function} {} __go_drawnow__ (@var{term}, @var{file}, @var{mono}, @var{debug_file})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  static int drawnow_executing = 0;
+  static bool __go_close_all_registered__ = false;
+
+  octave_value retval;
+
+  if (drawnow_executing >= 1)
+    return retval;
+
+  if (! __go_close_all_registered__)
+    {
+      // FIXME: is there a C++ way to do this?
+      int parse_status;
+      eval_string ("atexit (\"__go_close_all__\")", true, parse_status);
+      __go_close_all_registered__ = true;
+    }
+
+  ++drawnow_executing;
+
+  if (args.length () == 0)
+    {
+      Matrix hlist = gh_manager::figure_handle_list ();
+
+      for (int i = 0; ! error_state && i < hlist.length (); i++)
+	{
+	  graphics_handle h = gh_manager::lookup (hlist(i));
+
+	  if (h.ok () && h != 0)
+	    {
+	      graphics_object go = gh_manager::get_object (h);
+	      figure::properties& fprops = dynamic_cast <figure::properties&> (go.get_properties ());
+
+	      if (fprops.is_modified ())
+		{
+		  if (fprops.is_visible ())
+		    fprops.get_backend ().redraw_figure (h);
+		  else if (! fprops.get___plot_stream__ ().is_empty ())
+		    {
+		      fprops.close (false);
+		      fprops.set___plot_stream__ (Matrix ());
+		      fprops.set___enhanced__ (false);
+		    }
+		  fprops.set_modified (false);
+		}
+	    }
+	}
+    }
+  else if (args.length () >= 2 && args.length () <= 4)
+    {
+      std::string term, file, debug_file;
+      bool mono;
+
+      term = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  file = args(1).string_value ();
+
+	  if (! error_state)
+	    {
+	      int pos = file.find_last_of (file_ops::dir_sep_chars);
+
+	      if (pos != NPOS)
+		{
+		  file_stat fs (file.substr (0, pos));
+
+		  if (! (fs && fs.is_dir ()))
+		    error ("drawnow: nonexistent directory `%s'",
+			   file.substr (0, pos).c_str ());
+		}
+
+	      mono = (args.length () >= 3 ? args(2).bool_value () : false);
+
+	      if (! error_state)
+		{
+		  debug_file = (args.length () > 3 ? args(3).string_value ()
+				: "");
+
+		  if (! error_state)
+		    {
+		      graphics_handle h = gcf ();
+
+		      if (h.ok ())
+			{
+			  graphics_object go = gh_manager::get_object (h);
+			  figure::properties& fprops = dynamic_cast<figure::properties&> (go.get_properties ());
+
+			  fprops.get_backend ()
+			      .print_figure (h, term, file, mono, debug_file);
+			}
+		      else
+			error ("drawnow: nothing to draw");
+		    }
+		  else
+		    error ("drawnow: invalid debug_file, expected a string value");
+		}
+	      else
+		error ("drawnow: invalid colormode, expected a boolean value");
+	    }
+	  else
+	    error ("drawnow: invalid file, expected a string value");
+	}
+      else
+	error ("drawnow: invalid terminal, expected a string value");
+    }
+  else
+    print_usage ();
+
+  // FIXME: is there a C++ way to do this?
+  octave_value_list fargs;
+  fargs(0) = false;
+  feval ("__request_drawnow__", fargs);
+
+  --drawnow_executing;
+
+  return retval;
 }
 
 octave_value

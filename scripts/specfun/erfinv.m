@@ -1,5 +1,6 @@
 ## Copyright (C) 1995, 1996, 1997, 1999, 2000, 2002, 2004, 2005, 2006,
 ##               2007 Kurt Hornik
+## Copyright (C) 2008 Alois Schloegl
 ##
 ## This file is part of Octave.
 ##
@@ -44,31 +45,23 @@ function [y, iterations] = erfinv (x)
   x = reshape (x, nel, 1);
   y = zeros (nel, 1);
 
-  i = find ((x < -1) | (x > 1) | isnan(x));
-  if any (i)
-    y(i) = NaN * ones (length (i), 1);
-  endif
-
-  t = find (x == -1);
-  y (t) = (-Inf) * ones (size (t));
-
-  t = find (x == 1);
-  y (t) = Inf * ones (size (t));
+  ## x < 1 or x > 1 ==> NaN
+  y(abs (x) >= 1) = NaN;
+  y(x == -1) = -Inf;
+  y(x == +1) = +Inf;
 
   i = find ((x > -1) & (x < 1));
-  if any (i)
+  if (any (i))
     s = sqrt (pi) / 2;
-    z_old = ones (length (i), 1);
-    z_new = sqrt (-log (1 - abs (x(i)))) .* sign (x(i));
-    while (any (abs (erf (z_new) - x(i)) > tol * abs (x(i))))
-      z_old = z_new;
-      z_new = z_old - (erf (z_old) - x(i)) .* exp (z_old.^2) * s;
+    z = sqrt (-log (1 - abs (x(i)))) .* sign (x(i));
+    while (any (abs (erf (z) - x(i)) > tol * abs (x(i))))
+      z = z - (erf (z) - x(i)) .* exp (z.^2) * s;
       if (++iterations > maxit)
         warning ("erfinv: iteration limit exceeded");
         break;
       endif
     endwhile
-    y(i) = z_new;
+    y(i) = z;
   endif
 
   y = reshape (y, sz);

@@ -1,3 +1,7 @@
+2008-01-22  John W. Eaton  <jwe@octave.org>
+
+	* test_poly.m, test_set.m, test_stats.m: Delete files with no tests.
+
 2008-01-22  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* test_linalg.m, test_matrix.m, test_number.m, test_poly.m,

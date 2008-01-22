@@ -56,3 +56,14 @@ function p = polyreduce (p)
   endif
 
 endfunction
+
+%!assert(all (all (polyreduce ([0, 0, 1, 2, 3]) == [1, 2, 3])));
+
+%!assert(all (all (polyreduce ([1, 2, 3, 0, 0]) == [1, 2, 3, 0, 0])));
+
+%!assert(all (all (polyreduce ([1, 0, 3]) == [1, 0, 3])));
+
+%!assert(isempty (polyreduce ([])));
+
+%!error polyreduce ([1, 2; 3, 4]);
+

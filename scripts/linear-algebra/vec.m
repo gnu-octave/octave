@@ -39,3 +39,10 @@ function v = vec (x)
   v = x(:);
 
 endfunction
+
+%!assert(vec ([1, 2; 3, 4]) == [1; 3; 2; 4] && vec ([1, 3, 2, 4]) == [1; 3; 2; 4]);
+
+%!error vec ();
+
+%!error vec (1, 2);
+

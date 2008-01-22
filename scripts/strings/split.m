@@ -98,3 +98,12 @@ function m = split (s, t, n)
   endif
 
 endfunction
+
+%!assert(all (all (split ("Test string", "t") == ["Tes "; " s  "; "ring"])));
+
+%!error split ();
+
+%!assert(all (strcmp (split ("foo bar baz", " ", 2), ["foo"; "bar baz"])));
+
+%!error split ("foo", "bar", 3, 4);
+

@@ -164,14 +164,6 @@
 %% test/octave.test/string/ischar-11.m
 %!error <Invalid call to ischar.*> ischar ("test", 1);
 
-%% test/octave.test/string/blanks-1.m
-%!assert(strcmp (blanks (3), "   "));
-
-%% test/octave.test/string/blanks-2.m
-%!error blanks ();
-
-%% test/octave.test/string/blanks-3.m
-%!error blanks (1, 2);
 
 %% test/octave.test/string/char-1.m
 %!assert(strcmp (char ([65, 83, 67, 73, 73]), "ASCII"));
@@ -186,114 +178,6 @@
 %! && strcmp (x(2,:), "bar   ")
 %! && strcmp (x(3,:), "foobar")));
 
-%% test/octave.test/string/int2str-1.m
-%!assert(strcmp (int2str (-123), "-123") && strcmp (int2str (1.2), "1"));
-
-%% test/octave.test/string/int2str-2.m
-%!error int2str ();
-
-%% test/octave.test/string/int2str-3.m
-%!error int2str (1, 2);
-
-%% test/octave.test/string/num2str-1.m
-%!assert((strcmp (num2str (123), "123") && strcmp (num2str (1.23), "1.23")));
-
-%% test/octave.test/string/num2str-2.m
-%!error num2str ();
-
-%% test/octave.test/string/num2str-3.m
-%!error num2str (1, 2, 3);
-
-%% test/octave.test/string/strcat-1.m
-%!assert((strcmp (strcat ("foo", "bar"), "foobar")
-%! && strcmp (strcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])));
-
-%% test/octave.test/string/strcat-2.m
-%!error strcat ();
-
-%% test/octave.test/string/strcat-3.m
-%!error strcat (1, 2);
-
-%% test/octave.test/string/str2mat-1.m
-%!assert(strcmp (str2mat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
-
-%% test/octave.test/string/str2mat-2.m
-%!error str2mat ();
-
-%% test/octave.test/string/str2mat-3.m
-%!assert(all (str2mat (1, 2, 3) == setstr ([1; 2; 3])));
-
-%% test/octave.test/string/deblank-1.m
-%!assert(strcmp (deblank (" f o o  "), " f o o"));
-
-%% test/octave.test/string/deblank-2.m
-%!error deblank ();
-
-%% test/octave.test/string/deblank-3.m
-%!error deblank ("foo", "bar");
-
-%% test/octave.test/string/deblank-4.m
-%!error deblank (1);
-
-%% test/octave.test/string/findstr-1.m
-%!assert((findstr ("abababa", "a") == [1, 3, 5, 7]
-%! && findstr ("abababa", "aba") == [1, 3, 5]
-%! && findstr ("abababa", "aba", 0) == [1, 5]));
-
-%% test/octave.test/string/findstr-2.m
-%!error findstr ();
-
-%% test/octave.test/string/findstr-3.m
-%!error findstr ("foo", "bar", 3, 4);
-
-%% test/octave.test/string/index-1.m
-%!assert(index ("foobarbaz", "b") == 4 && index ("foobarbaz", "z") == 9);
-
-%% test/octave.test/string/index-2.m
-%!error index ();
-
-%% test/octave.test/string/index-3.m
-%!error index ("foo", "bar", 3);
-
-%% test/octave.test/string/rindex-1.m
-%!assert(rindex ("foobarbaz", "b") == 7 && rindex ("foobarbaz", "o") == 3);
-
-%% test/octave.test/string/rindex-2.m
-%!error rindex ();
-
-%% test/octave.test/string/rindex-3.m
-%!error rindex ("foo", "bar", 3);
-
-%% test/octave.test/string/split-1.m
-%!assert(all (all (split ("Test string", "t") == ["Tes "; " s  "; "ring"])));
-
-%% test/octave.test/string/split-2.m
-%!error split ();
-
-%% test/octave.test/string/split-3.m
-%!assert(all (strcmp (split ("foo bar baz", " ", 2), ["foo"; "bar baz"])));
-
-%% test/octave.test/string/split-4.m
-%!error split ("foo", "bar", 3, 4);
-
-%% test/octave.test/string/strrep-1.m
-%!assert(strcmp (strrep ("This is a test string", "is", "&%$"),
-%! "Th&%$ &%$ a test string"));
-
-%% test/octave.test/string/strrep-2.m
-%!error strrep ();
-
-%% test/octave.test/string/strrep-3.m
-%!error strrep ("foo", "bar", 3, 4);
-
-%% test/octave.test/string/substr-1.m
-%!assert(strcmp (substr ("This is a test string", 6, 9), "is a test"));
-
-%% test/octave.test/string/substr-2.m
-%!error substr ();
-
-%% test/octave.test/string/substr-3.m
-%!error substr ("foo", 2, 3, 4);
 
 %% test/octave.test/string/strcmp-1.m
 %!assert(strcmp ("foobar", "foobar") && strcmp ("fooba", "foobar") == 0);
@@ -304,57 +188,7 @@
 %% test/octave.test/string/strcmp-3.m
 %!error <Invalid call to strcmp.*> strcmp ("foo", "bar", 3);
 
-%% test/octave.test/string/bin2dec-1.m
-%!assert(bin2dec ("1110") == 14);
 
-%% test/octave.test/string/bin2dec-2.m
-%!error bin2dec ();
-
-%% test/octave.test/string/bin2dec-3.m
-%!error bin2dec ("str", 1);
-
-%% test/octave.test/string/dec2bin-1.m
-%!assert(strcmp (dec2bin (14), "1110"));
-
-%% test/octave.test/string/dec2bin-2.m
-%!error dec2bin ();
-
-%% test/octave.test/string/dec2bin-3.m
-%!assert(strcmp (dec2bin (14, 6), "001110")
-%! );
-
-%% test/octave.test/string/dec2bin-4.m
-%!error dec2bin (1, 2, 3);
-
-%% test/octave.test/string/dec2hex-1.m
-%!assert(strcmp (tolower (dec2hex (2748)), "abc"));
-
-%% test/octave.test/string/dec2hex-2.m
-%!error dec2hex ();
-
-%% test/octave.test/string/dec2hex-3.m
-%!assert(strcmp (tolower (dec2hex (2748, 5)), "00abc"));
-
-%% test/octave.test/string/dec2hex-4.m
-%!error dec2hex (1, 2, 3);
-
-%% test/octave.test/string/hex2dec-1.m
-%!assert(hex2dec ("12b") == 299 && hex2dec ("12B") == 299);
-
-%% test/octave.test/string/hex2dec-2.m
-%!error hex2dec ();
-
-%% test/octave.test/string/hex2dec-3.m
-%!error hex2dec ("str", 1);
-
-%% test/octave.test/string/str2num-1.m
-%!assert(str2num ("-1.3e2") == -130 && str2num ("[1, 2; 3, 4]") == [1, 2; 3, 4]);
-
-%% test/octave.test/string/str2num-2.m
-%!error str2num ();
-
-%% test/octave.test/string/str2num-3.m
-%!error str2num ("string", 1);
 
 %% test/octave.test/string/undo_string_escapes-1.m
 %!assert(strcmp (undo_string_escapes ("abc\a\b\n\r\t\v\f123"),

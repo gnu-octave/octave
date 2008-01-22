@@ -131,3 +131,18 @@ function x = diff (x, k, dim)
   endif
 
 endfunction
+
+%!assert((diff ([1, 2, 3, 4]) == [1, 1, 1]
+%! && diff ([1, 3, 7, 19], 2) == [2, 8]
+%! && diff ([1, 2; 5, 4; 8, 7; 9, 6; 3, 1]) == [4, 2; 3, 3; 1, -1; -6, -5]
+%! && diff ([1, 2; 5, 4; 8, 7; 9, 6; 3, 1], 3) == [-1, -5; -5, 0]
+%! && isempty (diff (1))));
+
+%!error diff ([1, 2; 3, 4], -1);
+
+%!error diff ("foo");
+
+%!error diff ();
+
+%!error diff (1, 2, 3, 4);
+

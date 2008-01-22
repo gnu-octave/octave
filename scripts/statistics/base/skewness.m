@@ -86,3 +86,8 @@ function retval = skewness (x, dim)
   retval(ind) = x(ind) ./ (c * s(ind) .^ 3);
   
 endfunction
+
+%!error skewness ();
+
+%!error skewness (1, 2, 3);
+

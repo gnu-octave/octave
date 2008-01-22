@@ -75,3 +75,12 @@ function y = poly (x)
   endif
 
 endfunction
+
+%!assert(all (all (poly ([1, 2, 3]) == [1, -6, 11, -6])));
+
+%!assert(all (all (abs (poly ([1, 2; 3, 4]) - [1, -5, -2]) < sqrt (eps))));
+
+%!error poly ([1, 2, 3; 4, 5, 6]);
+
+%!assert(poly ([]),1);
+

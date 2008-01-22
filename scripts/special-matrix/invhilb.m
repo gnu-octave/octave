@@ -107,3 +107,20 @@ function retval = invhilb (n)
   endif
 
 endfunction
+
+%!test
+%! result4 = [16, -120, 240, -140;
+%! -120, 1200, -2700, 1680;
+%! 240, -2700, 6480, -4200;
+%! -140, 1680, -4200, 2800];
+%! 
+%! assert((invhilb (1) == 1 && invhilb (2) == [4, -6; -6, 12]
+%! && invhilb (4) == result4
+%! && abs (invhilb (7) * hilb (7) - eye (7)) < sqrt (eps)));
+
+%!error invhilb ([1, 2]);
+
+%!error invhilb ();
+
+%!error invhilb (1, 2);
+

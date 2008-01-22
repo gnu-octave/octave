@@ -88,3 +88,11 @@ function t = strrep (s, x, y)
   endif
 
 endfunction
+
+%!assert(strcmp (strrep ("This is a test string", "is", "&%$"),
+%! "Th&%$ &%$ a test string"));
+
+%!error strrep ();
+
+%!error strrep ("foo", "bar", 3, 4);
+

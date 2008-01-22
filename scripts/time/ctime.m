@@ -43,3 +43,12 @@ function retval = ctime (t)
   endif
 
 endfunction
+
+%!test
+%! t = time ();
+%! assert(strcmp (asctime (localtime (t)), ctime (t)));
+
+%!error ctime ();
+
+%!error ctime (1, 2);
+

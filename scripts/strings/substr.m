@@ -69,3 +69,10 @@ function t = substr (s, offset, len)
   endif
 
 endfunction
+
+%!assert(strcmp (substr ("This is a test string", 6, 9), "is a test"));
+
+%!error substr ();
+
+%!error substr ("foo", 2, 3, 4);
+

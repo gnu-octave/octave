@@ -49,3 +49,12 @@ function retval = dec2hex (n, len)
   endif
 
 endfunction
+
+%!assert(strcmp (tolower (dec2hex (2748)), "abc"));
+
+%!error dec2hex ();
+
+%!assert(strcmp (tolower (dec2hex (2748, 5)), "00abc"));
+
+%!error dec2hex (1, 2, 3);
+

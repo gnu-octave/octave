@@ -89,5 +89,13 @@ function [q, r] = polyderiv (p, a)
     print_usage ();
   endif
 
-
 endfunction
+
+%!assert(all (all (polyderiv ([1, 2, 3]) == [2, 2])));
+
+%!assert(polyderiv (13) == 0);
+
+%!error polyderiv ([]);
+
+%!error polyderiv ([1, 2; 3, 4]);
+

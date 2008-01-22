@@ -66,3 +66,14 @@ function c = cov (x, y)
   endif
 
 endfunction
+
+%!test
+%! x = rand (10);
+%! cx1 = cov (x);
+%! cx2 = cov (x, x);
+%! assert(size (cx1) == [10, 10] && size (cx2) == [10, 10] && cx1 == cx2);
+
+%!error cov ();
+
+%!error cov (1, 2, 3);
+

@@ -148,3 +148,10 @@ function retval = num2str (x, arg)
   endif
 
 endfunction
+
+%!assert((strcmp (num2str (123), "123") && strcmp (num2str (1.23), "1.23")));
+
+%!error num2str ();
+
+%!error num2str (1, 2, 3);
+

@@ -21,16 +21,6 @@
 %% test/octave.test/system/time-1.m
 %!assert(time () > 0);
 
-%% test/octave.test/system/ctime-1.m
-%!test
-%! t = time ();
-%! assert(strcmp (asctime (localtime (t)), ctime (t)));
-
-%% test/octave.test/system/ctime-2.m
-%!error ctime ();
-
-%% test/octave.test/system/ctime-3.m
-%!error ctime (1, 2);
 
 %% test/octave.test/system/gmtime-1.m
 %!test
@@ -85,16 +75,6 @@
 %% test/octave.test/system/mktime-3.m
 %!error <Invalid call to mktime.*> mktime (1, 2, 3);
 
-%% test/octave.test/system/asctime-1.m
-%!test
-%! t = time ();
-%! assert(strcmp (asctime (localtime (t)), ctime (t)));
-
-%% test/octave.test/system/asctime-2.m
-%!error asctime ();
-
-%% test/octave.test/system/asctime-3.m
-%!error asctime (1, 2);
 
 %% test/octave.test/system/strftime-1.m
 %!assert((isstr (strftime ("%%%n%t%H%I%k%l", localtime (time ())))
@@ -109,32 +89,6 @@
 %% test/octave.test/system/strftime-3.m
 %!error <Invalid call to strftime.*> strftime ("foo", localtime (time ()), 1);
 
-%% test/octave.test/system/clock-1.m
-%!test
-%! t1 = clock;
-%! t2 = str2num (strftime ("[%Y, %m, %d, %H, %M, %S]", localtime (time ())));
-%! assert(etime (t1, t2) < 1);
-
-%% test/octave.test/system/date-1.m
-%!assert(strcmp (date (), strftime ("%d-%b-%Y", localtime (time ()))));
-
-%% test/octave.test/system/etime-1.m
-%!test
-%! t1 = [1993, 8, 20, 4, 56, 1];
-%! t2 = [1993, 8, 21, 4, 56, 1];
-%! t3 = [1993, 8, 20, 5, 56, 1];
-%! t4 = [1993, 8, 20, 4, 57, 1];
-%! t5 = [1993, 8, 20, 4, 56, 14];
-%! 
-%! assert((etime (t2, t1) == 86400 && etime (t3, t1) == 3600
-%! && etime (t4, t1) == 60 && etime (t5, t1) == 13));
-
-%% test/octave.test/system/etime-2.m
-%!error etime ();
-
-%% test/octave.test/system/etime-3.m
-%!error etime (1, 2, 3);
-
 %% test/octave.test/system/cputime-1.m
 %!test
 %! [t1, u1, s1] = cputime ();
@@ -144,13 +98,6 @@
 %! [t2, u2, s2] = cputime ();
 %! assert(t1 == u1 + s1 && t2 == u2 + s2 && t2 >= t1 && u2 >= u2 && s2 >= s2);
 
-%% test/octave.test/system/is_leap_year-1.m
-%!assert((is_leap_year (2000) == 1 && is_leap_year (1976) == 1
-%! && is_leap_year (1000) == 0 && is_leap_year (1800) == 0
-%! && is_leap_year (1600) == 1));
-
-%% test/octave.test/system/is_leap_year-2.m
-%!error is_leap_year (1, 2);
 
 %% test/octave.test/system/tic-toc-1.m
 %!test
@@ -480,9 +427,6 @@
 %% test/octave.test/system/pwd-1.m
 %!assert(isstr (pwd ()));
 
-%% test/octave.test/system/ls-1.m
-%!error ls (1);
-
 %% test/octave.test/system/getpwent-1.m
 %!test
 %! s = getpwent ();
@@ -592,21 +536,8 @@
 %% test/octave.test/system/endgrent-1.m
 %!error <Invalid call to endgrent.*> endgrent (1);
 
-%% test/octave.test/system/computer-1.m
-%!assert((isstr (computer ())
-%! && computer () == octave_config_info ("canonical_host_type")));
-
-%% test/octave.test/system/computer-2.m
-%!warning a =computer(2);
-
 %% test/octave.test/system/isieee-1.m
 %!assert(isieee () == 1 || isieee () == 0);
-
-%% test/octave.test/system/version-1.m
-%!assert(isstr (version ()) && strcmp (version (), OCTAVE_VERSION));
-
-%% test/octave.test/system/version-2.m
-%!warning version (1);
 
 %% test/octave.test/system/octave_config_info-1.m
 %!assert(isstruct (octave_config_info ()));

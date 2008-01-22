@@ -1,3 +1,47 @@
+2008-01-22  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* linear-algebra/cond.m, linear-algebra/trace.m:
+	Move tests here from test/test_linalg.m.
+	
+	* general/diff.m, general/fliplr.m, general/flipud.m,
+	general/logspace.m, general/rot90.m, general/shift.m, general/tril.m,
+	general/triu.m, linear-algebra/vec.m, linear-algebra/vech.m,
+	special-matrix/hankel.m, special-matrix/hilb.m,
+	special-matrix/invhilb.m, special-matrix/sylvester_matrix.m,
+	special-matrix/toeplitz.m, special-matrix/vander.m:
+	Move tests here from test/test_matrix.m.
+	
+	* general/isscalar.m, general/issquare.m, general/isvector.m:
+	Move tests here from test/test_number.m.
+	
+	* deprecated/polyinteg.m, polynomial/compan.m, polynomial/conv.m,
+	polynomial/deconv.m, polynomial/poly.m, polynomial/polyderiv.m,
+	polynomial/polyfit.m, polynomial/polyreduce.m, polynomial/polyval.m,
+	polynomial/polyvalm.m, polynomial/roots.m:
+	Move tests here from test/test_poly.m.
+
+	* signal/unwrap.m:
+	Move tests here from test/test_signal.m.
+
+	* statistics/base/corrcoef.m, statistics/base/cov.m,
+	statistics/base/kurtosis.m, statistics/base/mahalanobis.m,
+	statistics/base/mean.m, statistics/base/median.m,
+	statistics/base/skewness.m, statistics/base/std.m:
+	Move tests here from test/test_stats.m.
+
+	* general/int2str.m, general/num2str.m, strings/bin2dec.m,
+	strings/blanks.m, strings/deblank.m, strings/dec2bin.m,
+	strings/dec2hex.m, strings/findstr.m, strings/hex2dec.m,
+	strings/index.m, strings/rindex.m, strings/split.m, strings/str2mat.m,
+	strings/str2num.m, strings/strcat.m, strings/strrep.m,
+	strings/substr.m:
+	Move tests here from test/test_string.m.
+
+	* miscellaneous/computer.m, miscellaneous/ls.m,
+	miscellaneous/version.m, time/asctime.m, time/clock.m, time/ctime.m,
+	time/date.m, time/etime.m, time/is_leap_year.m:
+	Move tests here from test/test_system.m.
+
 2008-01-22  Schloegl Alois  <alois.schloegl@tugraz.at>
 
 	* specfun/erfinv.m: Replace z_old and z_new by a single variable z.

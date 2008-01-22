@@ -52,3 +52,12 @@ function y = flipud (x)
   y = x (nr:-1:1, :);
 
 endfunction
+
+%!assert((flipud ([1, 2; 3, 4]) == [3, 4; 1, 2]
+%! && flipud ([1, 2; 3, 4; 5, 6]) == [5, 6; 3, 4; 1, 2]
+%! && flipud ([1, 2, 3; 4, 5, 6]) == [4, 5, 6; 1, 2, 3]));
+
+%!error flipud ();
+
+%!error flipud (1, 2);
+

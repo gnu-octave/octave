@@ -62,3 +62,8 @@ function y = polyvalm (c, x)
   endif
 
 endfunction
+
+%!assert(isempty (polyvalm ([], [1, 2; 3, 4])));
+
+%!error polyvalm ([1, 1, 1], [1, 2; 3, 4; 5, 6]);
+

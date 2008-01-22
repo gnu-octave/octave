@@ -70,3 +70,14 @@ endfunction
 %! expect = [0,0,0,1; 1,1,1,1; 8,4,2,1; 27,9,3,1];
 %! result = vander(c);
 %! assert(expect, result);
+
+%!assert((vander (1) == 1 && vander ([1, 2, 3]) == vander ([1; 2; 3])
+%! && vander ([1, 2, 3]) == [1, 1, 1; 4, 2, 1; 9, 3, 1]
+%! && vander ([1, 2, 3]*i) == [-1, i, 1; -4, 2i, 1; -9, 3i, 1]));
+
+%!error vander ([1, 2; 3, 4]);
+
+%!error vander ();
+
+%!error vander (1, 2);
+

@@ -72,3 +72,9 @@ function [c, maxsize, endian] = computer ()
   endif
 
 endfunction
+
+%!assert((isstr (computer ())
+%! && computer () == octave_config_info ("canonical_host_type")));
+
+%!warning a =computer(2);
+

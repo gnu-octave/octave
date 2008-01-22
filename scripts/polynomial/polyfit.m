@@ -104,3 +104,22 @@ function [p, s, mu] = polyfit (x, y, n)
   p = p.';
 
 endfunction
+
+%!test
+%! x = [-2, -1, 0, 1, 2];
+%! assert(all (all (abs (polyfit (x, x.^2+x+1, 2) - [1, 1, 1]) < sqrt (eps))));
+
+%!test
+%! x = [-2, -1, 0, 1, 2];
+%! assert(all (all (abs (polyfit (x, x.^2+x+1, 3) - [0, 1, 1, 1]) < sqrt (eps))));
+
+%!error polyfit ([1, 2; 3, 4], [1, 2; 3, 4], 4);
+
+%!test
+%! x = [-2, -1, 0, 1, 2];
+%! fail("polyfit (x, x.^2+x+1)");
+
+%!test
+%! x = [-2, -1, 0, 1, 2];
+%! fail("polyfit (x, x.^2+x+1, [])");
+

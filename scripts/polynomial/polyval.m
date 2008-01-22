@@ -61,3 +61,16 @@ function y = polyval (c, x)
   endfor
 
 endfunction
+
+%!assert(polyval ([1, 1, 1], 2) == 7);
+
+%!assert(all (all (polyval ([1, 1, 1], [0; 1; 2]) == [1; 3; 7])));
+
+%!assert(isempty (polyval ([1, 1, 1], [])));
+
+%!assert(all (all (polyval ([1, 1, 1], [-1, 0; 1, 2]) == [1, 1; 3, 7])));
+
+%!error polyval ([1, 2; 3, 4], [-1, 0; 1, 2]);
+
+%!assert(isempty (polyval ([], [-1, 0; 1, 2])));
+

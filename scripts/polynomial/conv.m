@@ -73,3 +73,16 @@ function y = conv (a, b)
   endif
 
 endfunction
+
+%!assert(all (all (conv (ones (3, 1), ones (3, 1)) == [1, 2, 3, 2, 1])));
+
+%!assert(all (all (conv (ones (1, 3), ones (3, 1)) == [1, 2, 3, 2, 1])));
+
+%!assert(all (all (conv (3, [1, 2, 3]) == [3, 6, 9])));
+
+%!error conv ([1, 2; 3, 4], 3);
+
+%!assert(conv (2, 3),6);
+
+%!error conv (2, []);
+

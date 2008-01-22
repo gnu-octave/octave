@@ -91,3 +91,10 @@ function fmt = get_fmt (x, sep)
   endif
 
 endfunction
+
+%!assert(strcmp (int2str (-123), "-123") && strcmp (int2str (1.2), "1"));
+
+%!error int2str ();
+
+%!error int2str (1, 2);
+

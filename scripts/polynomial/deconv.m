@@ -65,3 +65,20 @@ function [b, r] = deconv (y, a)
   endif
 
 endfunction
+
+%!test
+%! [b, r] = deconv ([3, 6, 9, 9], [1, 2, 3]);
+%! assert(all (all (b == [3, 0])) && all (all (r == [0, 0, 0, 9])));
+
+%!test
+%! [b, r] = deconv ([3, 6], [1, 2, 3]);
+%! assert(b == 0 && all (all (r == [0, 3, 6])));
+
+%!test
+%! [b, r] = deconv ([3, 6], [1; 2; 3]);
+%! assert(b == 0 && all (all (r == [0, 3, 6])));
+
+%!error [b, r] = deconv ([3, 6], [1, 2; 3, 4]);;
+
+%!error <number of rows must match> [b, r] = deconv ([3; 6], [1, 2, 3]);
+

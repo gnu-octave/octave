@@ -131,3 +131,11 @@ endfunction
 %!assert(index("astringbstringcstring", "str", "last"), 16)
 %!assert(index("astringbstringcstring", "string", "last"), 16)
 %!assert(index("abc---", "abc+++", "last"), 0)
+
+
+%!assert(index ("foobarbaz", "b") == 4 && index ("foobarbaz", "z") == 9);
+
+%!error index ();
+
+%!error index ("foo", "bar", 3);
+

@@ -51,3 +51,14 @@ function retval = sylvester_matrix (k)
   endif
 
 endfunction
+
+%!assert((sylvester_matrix (1) == [1, 1; 1, -1]
+%! && (sylvester_matrix (2)
+%! == [1, 1, 1, 1; 1, -1, 1, -1; 1, 1, -1, -1; 1, -1, -1, 1])));
+
+%!error sylvester_matrix ([1, 2; 3, 4]);
+
+%!error sylvester_matrix ();
+
+%!error sylvester_matrix (1, 2);
+

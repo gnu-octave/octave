@@ -36,3 +36,30 @@ function retval = isvector (x)
   endif
 
 endfunction
+
+%!assert(isvector (1));
+
+%!assert(isvector ([1; 2; 3]));
+
+%!assert(!(isvector ([])));
+
+%!assert(!(isvector ([1, 2; 3, 4])));
+
+%!test
+%! warn_str_to_num = 0;
+%! assert((isvector ("t")));
+
+%!test
+%! warn_str_to_num = 0;
+%! assert((isvector ("test")));
+
+%!assert(!(isvector (["test"; "ing"])));
+
+%!test
+%! s.a = 1;
+%! assert((isvector (s)));
+
+%!error isvector ();
+
+%!error isvector ([1, 2], 2);
+

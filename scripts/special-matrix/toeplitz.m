@@ -108,3 +108,14 @@ function retval = toeplitz (c, r)
   endfor
 
 endfunction
+
+%!assert((toeplitz (1) == 1
+%! && toeplitz ([1, 2, 3], [1; -3; -5]) == [1, -3, -5; 2, 1, -3; 3, 2, 1]
+%! && toeplitz ([1, 2, 3], [1; -3i; -5i]) == [1, -3i, -5i; 2, 1, -3i; 3, 2, 1]));
+
+%!error toeplitz ([1, 2; 3, 4], 1);
+
+%!error toeplitz ();
+
+%!error toeplitz (1, 2, 3);
+

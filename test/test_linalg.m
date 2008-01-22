@@ -18,18 +18,6 @@
 
 %% Automatically generated from DejaGNU files
 
-%% test/octave.test/linalg/cond-1.m
-%!assert(abs (cond ([1, 2; 2, 1]) - 3) < sqrt (eps));
-
-%% test/octave.test/linalg/cond-2.m
-%!assert(cond ([1, 2, 3; 4, 5, 6; 7, 8, 9]) > 1.0e+16);
-
-%% test/octave.test/linalg/cond-3.m
-%!error cond ();
-
-%% test/octave.test/linalg/cond-4.m
-%!error cond (1, 2);
-
 %% test/octave.test/linalg/det-1.m
 %!assert(det ([1, 2; 3, 4]) == -2);
 
@@ -102,21 +90,6 @@
 
 %% test/octave.test/linalg/inv-4.m
 %!error inv ([1, 2; 3, 4; 5, 6]);
-
-%% test/octave.test/linalg/trace-1.m
-%!assert(trace ([1, 2; 3, 4]) == 5);
-
-%% test/octave.test/linalg/trace-2.m
-%!assert(trace ([1, 2; 3, 4; 5, 6]) == 5);
-
-%% test/octave.test/linalg/trace-3.m
-%!assert(trace ([1, 3, 5; 2, 4, 6]) == 5);
-
-%% test/octave.test/linalg/trace-4.m
-%!error trace ();
-
-%% test/octave.test/linalg/trace-5.m
-%!error trace (1, 2);
 
 %% test/octave.test/linalg/chol-1.m
 %!test

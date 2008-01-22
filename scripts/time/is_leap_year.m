@@ -47,3 +47,10 @@ function retval = is_leap_year (year)
             | rem (year, 400) == 0);
 
 endfunction
+
+%!assert((is_leap_year (2000) == 1 && is_leap_year (1976) == 1
+%! && is_leap_year (1000) == 0 && is_leap_year (1800) == 0
+%! && is_leap_year (1600) == 1));
+
+%!error is_leap_year (1, 2);
+

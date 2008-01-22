@@ -60,3 +60,12 @@ function y = create_set (x, rows_opt)
   endif
 
 endfunction
+
+%!assert(all (all (create_set ([1, 2; 3, 4; 2, 4]) == [1, 2, 3, 4])));
+
+%!assert(all (all (create_set ([1; 2; 3; 4; 2; 4]) == [1, 2, 3, 4])));
+
+%!assert(isempty (create_set ([])));
+
+%!error create_set (1, 2);
+

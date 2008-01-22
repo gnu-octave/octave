@@ -74,3 +74,10 @@ function retval = str2mat (varargin)
   endfor
 
 endfunction
+
+%!assert(strcmp (str2mat ("a", "bb", "ccc"), ["a  "; "bb "; "ccc"]));
+
+%!error str2mat ();
+
+%!assert(all (str2mat (1, 2, 3) == setstr ([1; 2; 3])));
+

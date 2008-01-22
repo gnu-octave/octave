@@ -49,3 +49,10 @@ function d = bin2dec (h)
   endif
 
 endfunction
+
+%!assert(bin2dec ("1110") == 14);
+
+%!error bin2dec ();
+
+%!error bin2dec ("str", 1);
+

@@ -39,3 +39,10 @@ function m = str2num (s)
   endif
 
 endfunction
+
+%!assert(str2num ("-1.3e2") == -130 && str2num ("[1, 2; 3, 4]") == [1, 2; 3, 4]);
+
+%!error str2num ();
+
+%!error str2num ("string", 1);
+

@@ -74,3 +74,14 @@ function y = union (a, b, varargin)
   endif
 
 endfunction
+
+%!assert(all (all (union ([1, 2, 4], [2, 3, 5]) == [1, 2, 3, 4, 5])));
+
+%!assert(all (all (union ([1; 2; 4], [2, 3, 5]) == [1, 2, 3, 4, 5])));
+
+%!assert(all (all (union ([1, 2, 3], [5; 7; 9]) == [1, 2, 3, 5, 7, 9])));
+
+%!error union (1);
+
+%!error union (1, 2, 3);
+

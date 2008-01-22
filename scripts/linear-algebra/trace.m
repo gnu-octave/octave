@@ -38,3 +38,14 @@ function y = trace (x)
   endif
 
 endfunction
+
+%!assert(trace ([1, 2; 3, 4]) == 5);
+
+%!assert(trace ([1, 2; 3, 4; 5, 6]) == 5);
+
+%!assert(trace ([1, 3, 5; 2, 4, 6]) == 5);
+
+%!error trace ();
+
+%!error trace (1, 2);
+

@@ -90,3 +90,13 @@ function retval = std (a, opt, dim)
   endif
 
 endfunction
+
+%!test
+%! x = ones (10, 2);
+%! y = [1, 3];
+%! assert(std (x) == [0, 0] && abs (std (y) - sqrt (2)) < sqrt (eps));
+
+%!error std ();
+
+%!error std (1, 2, 3, 4);
+

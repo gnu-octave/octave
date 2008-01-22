@@ -37,3 +37,6 @@ function retval = date ()
   retval = strftime ("%d-%b-%Y", localtime (time ()));
 
 endfunction
+
+%!assert(strcmp (date (), strftime ("%d-%b-%Y", localtime (time ()))));
+

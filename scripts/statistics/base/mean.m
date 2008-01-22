@@ -116,3 +116,14 @@ function y = mean (x, opt1, opt2)
   endif
 
 endfunction
+
+%!test
+%! x = -10:10;
+%! y = x';
+%! z = [y, y+10];
+%! assert(mean (x) == 0 && mean (y) == 0 && mean (z) == [0, 10]);
+
+%!error mean ();
+
+%!error mean (1, 2, 3);
+

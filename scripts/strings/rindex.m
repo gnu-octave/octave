@@ -47,3 +47,10 @@ function n = rindex (s, t)
   n = index (s, t, "last");
 
 endfunction
+
+%!assert(rindex ("foobarbaz", "b") == 7 && rindex ("foobarbaz", "o") == 3);
+
+%!error rindex ();
+
+%!error rindex ("foo", "bar", 3);
+

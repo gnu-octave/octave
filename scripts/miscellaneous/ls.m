@@ -78,3 +78,6 @@ function retval = ls (varargin)
   endif
 
 endfunction
+
+%!error ls (1);
+

@@ -66,3 +66,11 @@ function retval = hilb (n)
   endif
 
 endfunction
+
+%!assert((hilb (2) == [1, 1/2; 1/2, 1/3]
+%! && hilb (3) == [1, 1/2, 1/3; 1/2, 1/3, 1/4; 1/3, 1/4, 1/5]));
+
+%!error hilb ();
+
+%!error hilb (1, 2);
+

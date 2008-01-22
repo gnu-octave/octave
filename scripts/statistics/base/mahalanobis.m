@@ -55,3 +55,9 @@ function retval = mahalanobis (X, Y)
   retval = (Xm - Ym) * Winv * (Xm - Ym)';
 
 endfunction
+
+%!error mahalanobis ();
+
+%!error mahalanobis (1, 2, 3);
+
+

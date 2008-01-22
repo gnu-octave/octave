@@ -45,3 +45,10 @@ function d = hex2dec (h)
   endif
 
 endfunction
+
+%!assert(hex2dec ("12b") == 299 && hex2dec ("12B") == 299);
+
+%!error hex2dec ();
+
+%!error hex2dec ("str", 1);
+

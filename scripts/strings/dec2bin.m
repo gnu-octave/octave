@@ -49,3 +49,12 @@ function retval = dec2bin (n, len)
   endif
 
 endfunction
+
+%!assert(strcmp (dec2bin (14), "1110"));
+
+%!error dec2bin ();
+
+%!assert(strcmp (dec2bin (14, 6), "001110"));
+
+%!error dec2bin (1, 2, 3);
+

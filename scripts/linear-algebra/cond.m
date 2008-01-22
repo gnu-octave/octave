@@ -55,3 +55,12 @@ function retval = cond (a)
   endif
 
 endfunction
+
+%!assert(abs (cond ([1, 2; 2, 1]) - 3) < sqrt (eps));
+
+%!assert(cond ([1, 2, 3; 4, 5, 6; 7, 8, 9]) > 1.0e+16);
+
+%!error cond ();
+
+%!error cond (1, 2);
+

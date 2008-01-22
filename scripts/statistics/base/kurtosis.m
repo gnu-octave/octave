@@ -87,3 +87,13 @@ function retval = kurtosis (x, dim)
   retval(ind) = x(ind) ./ (c * s(ind) .^ 4) - 3;
 
 endfunction
+
+%!test
+%! x = [-1; 0; 0; 0; 1];
+%! y = [x, 2*x];
+%! assert(all (abs (kurtosis (y) - [-1.4, -1.4]) < sqrt (eps)));
+
+%!error kurtosis ();
+
+%!error kurtosis (1, 2, 3);
+

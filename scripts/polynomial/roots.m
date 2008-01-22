@@ -113,3 +113,10 @@ function r = roots (v)
   endif
 
 endfunction
+
+%!assert(all (all (abs (roots ([1, -6, 11, -6]) - [3; 2; 1]) < sqrt (eps))));
+
+%!assert(isempty (roots ([])));
+
+%!error roots ([1, 2; 3, 4]);
+

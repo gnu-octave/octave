@@ -1,3 +1,9 @@
+2008-01-22  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* test_linalg.m, test_matrix.m, test_number.m, test_poly.m,
+	test_signal.m, test_stats.m, test_string.m, test_system.m: 
+	Move tests to individual source files.
+
 2008-01-15  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* test_arith.m: Move tests to source files.

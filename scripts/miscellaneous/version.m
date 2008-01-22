@@ -33,3 +33,8 @@ function vs = version ()
   vs = OCTAVE_VERSION;
 
 endfunction
+
+%!assert(isstr (version ()) && strcmp (version (), OCTAVE_VERSION));
+
+%!warning version (1);
+

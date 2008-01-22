@@ -52,3 +52,12 @@ function s = deblank (s)
   endif
 
 endfunction
+
+%!assert(strcmp (deblank (" f o o  "), " f o o"));
+
+%!error deblank ();
+
+%!error deblank ("foo", "bar");
+
+%!error deblank (1);
+

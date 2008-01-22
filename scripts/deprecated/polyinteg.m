@@ -35,3 +35,12 @@ function y = polyinteg (p)
   y = polyint (p);
 
 endfunction
+
+%!assert(all (all (polyinteg ([2, 2]) == [1, 2, 0])));
+
+%!assert(isempty (polyinteg ([])));
+
+%!assert(all (all (polyinteg (3) == [3, 0])));
+
+%!error polyinteg ([1, 2; 3, 4]);
+

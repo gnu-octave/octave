@@ -28,3 +28,14 @@ function y = intersection (varargin)
   y = intersect (varargin{:});
 
 endfunction
+
+%!assert(all (all (intersection ([1, 2, 3], [2, 3, 5]) == [2, 3])));
+
+%!assert(all (all (intersection ([1; 2; 3], [2, 3, 5]) == [2, 3])));
+
+%!assert(isempty (intersection ([1, 2, 3], [4; 5; 6])));
+
+%!error intersection (1);
+
+%!error intersection (1, 2, 5);
+

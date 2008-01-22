@@ -63,3 +63,15 @@ function retval = corrcoef (x, y)
   endif
 
 endfunction
+
+%!test
+%! x = rand (10);
+%! cc1 = corrcoef (x);
+%! cc2 = corrcoef (x, x);
+%! assert((size (cc1) == [10, 10] && size (cc2) == [10, 10]
+%! && abs (cc1 - cc2) < sqrt (eps)));
+
+%!error corrcoef ();
+
+%!error corrcoef (1, 2, 3);
+

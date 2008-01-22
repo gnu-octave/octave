@@ -90,3 +90,21 @@ function y = rot90 (x, k)
   endif
 
 endfunction
+
+%!test
+%! x1 = [1, 2;
+%! 3, 4];
+%! x2 = [2, 4;
+%! 1, 3];
+%! x3 = [4, 3;
+%! 2, 1];
+%! x4 = [3, 1;
+%! 4, 2];
+%! 
+%! assert((rot90 (x1)== x2 && rot90 (x1, 2) == x3 && rot90 (x1, 3) == x4
+%! && rot90 (x1, 4) == x1 && rot90 (x1, 5) == x2 && rot90 (x1, -1) == x4));
+
+%!error rot90 ();
+
+%!error rot90 (1, 2, 3);
+

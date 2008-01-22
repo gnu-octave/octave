@@ -43,3 +43,32 @@ function retval = issquare (x)
   endif
 
 endfunction
+
+%!assert(issquare (1));
+
+%!assert(!(issquare ([1, 2])));
+
+%!assert(!(issquare ([])));
+
+%!assert(issquare ([1, 2; 3, 4]) == 2);
+
+%!test
+%! warn_str_to_num = 0;
+%! assert(!(issquare ("t")));
+
+%!assert(!(issquare ("test")));
+
+%!test
+%! warn_str_to_num = 0;
+%! assert(!(issquare (["test"; "ing"; "1"; "2"])));
+
+%!test
+%! s.a = 1;
+%! assert(!(issquare (s)));
+
+%!assert(!(issquare ([1, 2; 3, 4; 5, 6])));
+
+%!error issquare ();
+
+%!error issquare ([1, 2; 3, 4], 2);
+

@@ -79,3 +79,16 @@ function A = compan (c)
   endif
 
 endfunction
+
+%!assert(all (all (compan ([1, 2, 3]) == [-2, -3; 1, 0])));
+
+%!assert(all (all (compan ([1; 2; 3]) == [-2, -3; 1, 0])));
+
+%!assert(isempty (compan (4)));
+
+%!assert(all (all (compan ([3, 2, 1]) == [-2/3, -1/3; 1, 0])));
+
+%!error compan ([1,2;3,4]);
+
+%!error compan ([]);
+

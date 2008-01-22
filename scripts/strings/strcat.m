@@ -56,3 +56,11 @@ endfunction
 %!assert(strcat("ab ", "ab "), "ab ab ")
 ## 2d
 %!assert(strcat(["ab ";"cde"], ["ab ";"cde"]), ["ab ab ";"cdecde"])
+
+%!assert((strcmp (strcat ("foo", "bar"), "foobar")
+%! && strcmp (strcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])));
+
+%!error strcat ();
+
+%!error strcat (1, 2);
+

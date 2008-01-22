@@ -44,3 +44,10 @@ endfunction
 %!assert(blanks (0), "")
 %!assert(blanks (5), "     ")
 %!assert(blanks (10), "          ")
+
+%!assert(strcmp (blanks (3), "   "));
+
+%!error blanks ();
+
+%!error blanks (1, 2);
+

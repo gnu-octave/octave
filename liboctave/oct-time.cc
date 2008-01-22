@@ -291,6 +291,9 @@ octave_base_tm::strftime (const std::string& fmt) const
 void
 octave_base_tm::init (void *p)
 {
+  if (! p)
+    return;
+
   struct tm *t = static_cast<struct tm*> (p);
   
   tm_sec = t->tm_sec;

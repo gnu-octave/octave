@@ -84,6 +84,10 @@ extern std::string current_input_line;
 // TRUE after a call to completion_matches.
 extern bool octave_completion_matches_called;
 
+// TRUE if the plotting system has requested a call to drawnow at
+// the next user prompt.
+extern bool Vdrawnow_requested;
+
 extern std::string gnu_readline (const std::string& s, bool force_readline = false);
 
 extern void initialize_command_input (void);

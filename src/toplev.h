@@ -46,6 +46,12 @@ extern int main_loop (void);
 extern OCTINTERP_API void
 do_octave_atexit (void);
 
+extern OCTINTERP_API void
+octave_add_atexit_function (const std::string& fname);
+
+extern OCTINTERP_API bool
+octave_remove_atexit_function (const std::string& fname);
+
 // Current command to execute.
 extern OCTINTERP_API tree_statement_list *global_command;
 

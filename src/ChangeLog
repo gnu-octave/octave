@@ -1,3 +1,21 @@
+2008-01-22  John W. Eaton  <jwe@octave.org>
+
+	* graphics.cc (clear_drawnow_request): New function.
+	(Fdrawnow): Add it to the unwind_protect stack.
+
+	* input.cc (Vdrawnow_requested): No longer static.
+	* input.h: Provide decl.
+	* graphics.cc (Fdrawnow, Fset, make_graphics_object):
+	Use Vdrawnow_requested directly.
+
+	* toplev.cc (octave_add_atexit_function,
+	octave_remove_atexit_function): New functions.
+	(Fatexit): Use them.
+	* graphics.cc (Fdrawnow): Call octave_add_atexit_function instead
+	of using eval.
+	* toplev.h (octave_add_atexit_function,
+	octave_remove_atexit_function): Provide decls.
+
 2008-01-22  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.h.in (base_properties::is_visible,

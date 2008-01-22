@@ -663,6 +663,32 @@ do_octave_atexit (void)
     }
 }
 
+void
+octave_add_atexit_function (const std::string& fname)
+{
+  octave_atexit_functions.push_front (fname);
+}
+
+bool
+octave_remove_atexit_function (const std::string& fname)
+{
+  bool found = false;
+
+  for (std::list<std::string>::iterator p = octave_atexit_functions.begin ();
+       p != octave_atexit_functions.end (); p++)
+    {
+      if (*p == fname)
+	{
+	  octave_atexit_functions.erase (p);
+	  found = true;
+	  break;
+	}
+    }
+
+  return found;
+}
+
+
 DEFUN (atexit, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} atexit (@var{fcn})\n\
@@ -723,22 +749,10 @@ multiple times.\n\
           if (! error_state)
 	    {
 	      if (add_mode)
-		octave_atexit_functions.push_front (arg);
+		octave_add_atexit_function (arg);
 	      else
 		{
-		  bool found = false;
-		  std::list<std::string>::iterator it;
-
-		  for (std::list<std::string>::iterator p = octave_atexit_functions.begin ();
-		       p != octave_atexit_functions.end (); p++)
-		    {
-		      if (*p == arg)
-			{
-			  octave_atexit_functions.erase (p);
-			  found = true;
-			  break;
-			}
-		    }
+		  bool found = octave_remove_atexit_function (arg);
 
 		  if (nargout > 0)
 		    retval(0) = found;

@@ -141,7 +141,7 @@ bool octave_completion_matches_called = false;
 
 // TRUE if the plotting system has requested a call to drawnow at
 // the next user prompt.
-static bool Vdrawnow_requested = false;
+bool Vdrawnow_requested = false;
 
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;

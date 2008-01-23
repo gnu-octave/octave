@@ -86,7 +86,7 @@ extern bool octave_completion_matches_called;
 
 // TRUE if the plotting system has requested a call to drawnow at
 // the next user prompt.
-extern bool Vdrawnow_requested;
+extern OCTINTERP_API bool Vdrawnow_requested;
 
 extern std::string gnu_readline (const std::string& s, bool force_readline = false);
 

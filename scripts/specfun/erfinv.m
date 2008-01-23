@@ -45,7 +45,7 @@ function [y, iterations] = erfinv (x)
   x = reshape (x, nel, 1);
   y = zeros (nel, 1);
 
-  ## x < 1 or x > 1 ==> NaN
+  ## x < -1 or x > 1 ==> NaN
   y(abs (x) >= 1) = NaN;
   y(x == -1) = -Inf;
   y(x == +1) = +Inf;

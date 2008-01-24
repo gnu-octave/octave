@@ -1,3 +1,8 @@
+2008-01-18  Marco Caliari  <marco.caliari@univr.it>
+
+	* dMatrix.cc (Matrix::expm): Correctly perform reverse permutation.
+	* CMatrix.cc (ComplexMatrix::expm): Likewise.
+
 2008-01-22  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* oct-time.cc (octave_base_tim::init): Validate pointer argument;

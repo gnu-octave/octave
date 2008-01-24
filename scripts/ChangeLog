@@ -1,3 +1,7 @@
+2008-01-24  Schloegl Alois  <alois.schloegl@tugraz.at>
+
+	* linear-algebra/trace.m: Require 2-d args.  Handle vectors properly.
+
 2008-01-22  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* linear-algebra/cond.m, linear-algebra/trace.m:

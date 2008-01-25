@@ -1149,6 +1149,17 @@ base_properties::delete_children (void)
     gh_manager::free (children(i));
 }
 
+graphics_backend
+base_properties::get_backend (void) const
+{
+  graphics_object go = gh_manager::get_object (get_parent ());
+
+  if (go)
+    return go.get_backend ();
+  else
+    return graphics_backend ();
+}
+
 // ---------------------------------------------------------------------
 
 class gnuplot_backend : public base_graphics_backend
@@ -2466,9 +2477,7 @@ Undocumented internal function.\n\
 			    {
 			      graphics_object go = gh_manager::get_object (h);
 
-			      figure::properties& fprops = dynamic_cast<figure::properties&> (go.get_properties ());
-
-			      fprops.get_backend ()
+			      go.get_backend ()
 				.print_figure (h, term, file, mono, debug_file);
 			    }
 			  else

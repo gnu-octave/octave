@@ -1,3 +1,12 @@
+2008-01-25  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (base_properties::get_backend,
+	base_graphics_object::get_backend, graphics_backend::get_backend):
+	New methods for convenient access to the backend.
+	(figure::get_backend, figure::set_backend): Remove.
+	* graphics.cc (base_properties::get_backend): New method.
+	(Fdrawnow): Use graphics_object::get_backend to simplify code.
+
 2008-01-24  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
 
 	* mxarray.h.in: Include <cstring>.

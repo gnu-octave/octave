@@ -955,6 +955,121 @@ private:
 
 // ---------------------------------------------------------------------
 
+class graphics_backend;
+
+class base_graphics_backend
+{
+public:
+  friend class graphics_backend;
+
+public:
+  base_graphics_backend (const std::string& nm)
+      : name (nm), count (0) { }
+
+  virtual ~base_graphics_backend (void) { }
+
+  std::string get_name (void) const { return name; }
+
+  virtual bool is_valid (void) const { return false; }
+
+  virtual void close_figure (const octave_value&) const
+    { error ("close_figure: invalid graphics backend"); }
+
+  virtual void redraw_figure (const graphics_handle&) const
+    { error ("redraw_figure: invalid graphics backend"); }
+
+  virtual void print_figure (const graphics_handle&, const std::string&,
+			     const std::string&, bool,
+			     const std::string& = "") const
+    { error ("print_figure: invalid graphics backend"); }
+
+  virtual Matrix get_canvas_size (const graphics_handle&) const
+    {
+      error ("get_canvas_size: invalid graphics backend");
+      return Matrix (1, 2, 0.0);
+    }
+
+private:
+  std::string name;
+  int count;
+};
+
+class graphics_backend
+{
+public:
+  graphics_backend (void)
+      : rep (new base_graphics_backend ("unknown"))
+    {
+      rep->count++;
+    }
+
+  graphics_backend (base_graphics_backend* b)
+      : rep (b)
+    {
+      rep->count++;
+    }
+
+  graphics_backend (const graphics_backend& b)
+      : rep (b.rep)
+    {
+      rep->count++;
+    }
+
+  ~graphics_backend (void)
+    {
+      if (--rep->count == 0)
+	delete rep;
+    }
+
+  graphics_backend& operator = (const graphics_backend& b)
+    {
+      if (rep != b.rep)
+	{
+	  if (--rep->count == 0)
+	    delete rep;
+
+	  rep = b.rep;
+	  rep->count++;
+	}
+
+      return *this;
+    }
+
+  operator bool (void) const { return rep->is_valid (); }
+
+  std::string get_name (void) const { return rep->get_name (); }
+
+  void close_figure (const octave_value& pstream) const
+    { rep->close_figure (pstream); }
+
+  void redraw_figure (const graphics_handle& fh) const
+    { rep->redraw_figure (fh); }
+  
+  void print_figure (const graphics_handle& fh, const std::string& term,
+		     const std::string& file, bool mono,
+		     const std::string& debug_file = "") const
+    { rep->print_figure (fh, term, file, mono, debug_file); }
+
+  Matrix get_canvas_size (const graphics_handle& fh) const
+    { return rep->get_canvas_size (fh); }
+
+  OCTINTERP_API static graphics_backend default_backend (void);
+
+  static void register_backend (const graphics_backend& b)
+    { available_backends[b.get_name ()] = b; }
+
+  static void unregister_backend (const std::string& name)
+    { available_backends.erase (name); }
+
+private:
+  base_graphics_backend *rep;
+
+private:
+  static std::map<std::string, graphics_backend> available_backends;
+};
+
+// ---------------------------------------------------------------------
+
 class base_graphics_object;
 
 class OCTINTERP_API base_properties
@@ -1067,6 +1182,8 @@ public:
     children.resize (1, n+1);
     children(n) = h.value ();
   }
+
+  virtual graphics_backend get_backend (void) const;
 
   void set_tag (const octave_value& val) { tag = val; }
 
@@ -1465,6 +1582,17 @@ public:
     return type () == go_name;
   }
 
+  virtual graphics_backend get_backend (void) const
+  {
+    if (valid_object ())
+      return get_properties ().get_backend ();
+    else
+      {
+	error ("base_graphics_object::get_backend: invalid graphics object");
+	return graphics_backend ();
+      }
+  }
+
 protected:
   // A reference count.
   int count;
@@ -1629,123 +1757,10 @@ public:
     return props.get_cdata_property ();
   }
 
+  graphics_backend get_backend (void) const { return rep->get_backend (); }
+
 private:
   base_graphics_object *rep;
-};
-
-// ---------------------------------------------------------------------
-
-class graphics_backend;
-
-class base_graphics_backend
-{
-public:
-  friend class graphics_backend;
-
-public:
-  base_graphics_backend (const std::string& nm)
-      : name (nm), count (0) { }
-
-  virtual ~base_graphics_backend (void) { }
-
-  std::string get_name (void) const { return name; }
-
-  virtual bool is_valid (void) const { return false; }
-
-  virtual void close_figure (const octave_value&) const
-    { error ("close_figure: invalid graphics backend"); }
-
-  virtual void redraw_figure (const graphics_handle&) const
-    { error ("redraw_figure: invalid graphics backend"); }
-
-  virtual void print_figure (const graphics_handle&, const std::string&,
-			     const std::string&, bool,
-			     const std::string& = "") const
-    { error ("print_figure: invalid graphics backend"); }
-
-  virtual Matrix get_canvas_size (const graphics_handle&) const
-    {
-      error ("get_canvas_size: invalid graphics backend");
-      return Matrix (1, 2, 0.0);
-    }
-
-private:
-  std::string name;
-  int count;
-};
-
-class graphics_backend
-{
-public:
-  graphics_backend (void)
-      : rep (new base_graphics_backend ("unknown"))
-    {
-      rep->count++;
-    }
-
-  graphics_backend (base_graphics_backend* b)
-      : rep (b)
-    {
-      rep->count++;
-    }
-
-  graphics_backend (const graphics_backend& b)
-      : rep (b.rep)
-    {
-      rep->count++;
-    }
-
-  ~graphics_backend (void)
-    {
-      if (--rep->count == 0)
-	delete rep;
-    }
-
-  graphics_backend& operator = (const graphics_backend& b)
-    {
-      if (rep != b.rep)
-	{
-	  if (--rep->count == 0)
-	    delete rep;
-
-	  rep = b.rep;
-	  rep->count++;
-	}
-
-      return *this;
-    }
-
-  operator bool (void) const { return rep->is_valid (); }
-
-  std::string get_name (void) const { return rep->get_name (); }
-
-  void close_figure (const octave_value& pstream) const
-    { rep->close_figure (pstream); }
-
-  void redraw_figure (const graphics_handle& fh) const
-    { rep->redraw_figure (fh); }
-  
-  void print_figure (const graphics_handle& fh, const std::string& term,
-		     const std::string& file, bool mono,
-		     const std::string& debug_file = "") const
-    { rep->print_figure (fh, term, file, mono, debug_file); }
-
-  Matrix get_canvas_size (const graphics_handle& fh) const
-    { return rep->get_canvas_size (fh); }
-
-  OCTINTERP_API static graphics_backend default_backend (void);
-
-  static void register_backend (const graphics_backend& b)
-    { available_backends[b.get_name ()] = b; }
-
-  static void unregister_backend (const std::string& name)
-    { available_backends.erase (name); }
-
-private:
-  base_graphics_backend *rep;
-
-private:
-  static std::map<std::string, graphics_backend> available_backends;
 };
 
 // ---------------------------------------------------------------------
@@ -2012,12 +2027,6 @@ public:
   const base_properties& get_properties (void) const { return xproperties; }
 
   bool valid_object (void) const { return true; }
-
-  graphics_backend get_backend (void) const
-    { return xproperties.get_backend (); }
-
-  void set_backend (const graphics_backend& b)
-    { xproperties.set_backend (b); }
 
 private:
   property_list default_properties;

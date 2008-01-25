@@ -45,6 +45,9 @@ endfunction
 %!assert(trace ([1, 2; 3, 4]) == 5);
 %!assert(trace ([1, 2; 3, 4; 5, 6]) == 5);
 %!assert(trace ([1, 3, 5; 2, 4, 6]) == 5);
+%!assert(trace ([]), 0);
+%!assert(trace (randn(1,0)), 0);
+%!
 %!error trace ();
 %!error trace (1, 2);
-
+%!error <only valid on 2-D objects> trace(reshape(1:9,[1,3,3]));

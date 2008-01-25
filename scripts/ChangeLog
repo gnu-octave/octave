@@ -1,3 +1,11 @@
+2008-01-25  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* linear-algebra/trace.m: Test cases for non 2-d args.
+
+2008-01-25  James Packer  <james.packer@wadh.ox.ac.uk>
+
+	* geometry/griddata3.m: Call griddata, not gridata.
+
 2008-01-24  Schloegl Alois  <alois.schloegl@tugraz.at>
 
 	* linear-algebra/trace.m: Require 2-d args.  Handle vectors properly.

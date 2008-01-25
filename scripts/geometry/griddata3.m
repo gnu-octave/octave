@@ -51,7 +51,7 @@ function [yi] = griddata3 (x, y, z,v, xi, yi, zi, method, varargin)
     error ("griddata: xi, yi and zi must be vectors or matrices of same size");
   endif
 
-  vi = gridata ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});
+  vi = griddata ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});
   vi = reshape (vi, size (xi));
 endfunction
 

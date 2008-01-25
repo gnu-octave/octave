@@ -39,7 +39,7 @@ function yi = __splinen__ (x, y, xi, extrapval, f)
     yi = permute (spline (x{i}, yi, xi{i}), [length(x),1:length(x)-1]);
   endfor
 
-  [xi{:}] = ndgrid (xi{:});
+  [xi{:}] = ndgrid (cellfun (@(x) x(:), xi, "UniformOutput", false){:});
   idx = zeros (size(xi{1}));
   for i = 1 : length(x)
     idx |= xi{i} < min (x{i}(:)) | xi{i} > max (x{i}(:));

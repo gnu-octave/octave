@@ -158,17 +158,33 @@ function vi = interpn (varargin)
     vi(idx) = extrapval;
     vi = reshape (vi, yshape); 
   elseif (strcmp (method, "spline"))
-    szi = size (y{1});
-    for i = 1 : nd
-      y{i} = y{i}(:);
-    endfor
+    if (any (! cellfun (@isvector, y)))
+      for i = 2 : nd
+	if (! size_equal (y{1}, y{i}))
+	  error ("dimensional mismatch");
+	endif
+	idx (1 : nd) = {1};
+	idx (i) = ":";
+	y{i} = y{i}(idx{:});
+      endfor
+      idx (1 : nd) = {1};
+      idx (1) = ":";
+      y{1} = y{1}(idx{:});
+    endif
 
     vi = __splinen__ (x, v, y, extrapval, "interpn");
 
-    ## get all diagonal elements of vi
-    sc = sum ([1 cumprod(size (vi)(1:end-1))]);
-    vi = vi(sc * [0:size(vi,1)-1] + 1);
-    vi = reshape (vi,szi);    
+    if (size_equal (y{:}))
+      ly = length (y{1});
+      idx = cell (1, ly);
+      q = cell (1, nd);
+      for i = 1 : ly
+ 	q(:) = i;
+ 	idx {i} = q;
+      endfor
+      vi = vi (cellfun (@(x) sub2ind (size(vi), x{:}), idx));
+      vi = reshape (vi, sz);    
+    endif
   elseif (strcmp (method, "cubic")) 
     error ("cubic interpolation not yet implemented");
   else

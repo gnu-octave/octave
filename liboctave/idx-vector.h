@@ -48,9 +48,10 @@ private:
   public:
 
     idx_vector_rep (void)
-      : data (0), len (0), num_zeros (0), num_ones (0), max_val (0),
+      : data (0), len (0), num_zeros (0), num_ones (0),
+        range_base (0), range_step (0), max_val (0),
 	min_val (0), count (1), frozen_at_z_len (0), frozen_len (0),
-	colon (0), one_zero (0), initialized (0), frozen (0),
+	colon (0), range(0), one_zero (0), initialized (0), frozen (0),
 	colon_equiv_checked (0), colon_equiv (0), orig_dims () { }
 
     idx_vector_rep (const ColumnVector& v);
@@ -60,10 +61,10 @@ private:
     template <class U>
     idx_vector_rep (const intNDArray<U>& inda)
       : data (0), len (inda.length ()), num_zeros (0), num_ones (0),
-	max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-	frozen_len (0), colon (0), one_zero (0), initialized (0),
-	frozen (0), colon_equiv_checked (0), colon_equiv (0),
-	orig_dims (inda.dims ())
+	range_base (0), range_step (0), max_val (0), min_val (0),
+        count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
+        range(0), one_zero (0), initialized (0), frozen (0),
+        colon_equiv_checked (0), colon_equiv (0), orig_dims (inda.dims ())
     {
       if (len == 0)
 	{
@@ -94,10 +95,10 @@ private:
     template <class U>
     idx_vector_rep (const octave_int<U>& i)
       : data (0), len (1), num_zeros (0), num_ones (0),
-	max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-	frozen_len (0), colon (0), one_zero (0), initialized (0),
-	frozen (0), colon_equiv_checked (0), colon_equiv (0),
-	orig_dims (1, 1)
+	range_base (0), range_step (0), max_val (0), min_val (0),
+        count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
+        range(0), one_zero (0), initialized (0), frozen (0),
+        colon_equiv_checked (0), colon_equiv (0), orig_dims (1, 1)
     {
       data = new octave_idx_type [len];
 
@@ -119,7 +120,10 @@ private:
     octave_idx_type capacity (void) const { return len; }
     octave_idx_type length (octave_idx_type colon_len) const { return colon ? colon_len : len; }
 
-    octave_idx_type elem (octave_idx_type n) const { return colon ? n : data[n]; }
+    octave_idx_type elem (octave_idx_type n) const
+    {
+      return colon ? n : (range ? range_base + range_step*n : data[n]);
+    }
 
     octave_idx_type checkelem (octave_idx_type n) const;
     octave_idx_type operator () (octave_idx_type n) const { return checkelem (n); }
@@ -155,6 +159,8 @@ private:
     octave_idx_type len;
     octave_idx_type num_zeros;
     octave_idx_type num_ones;
+    octave_idx_type range_base;
+    octave_idx_type range_step;
     octave_idx_type max_val;
     octave_idx_type min_val;
 
@@ -164,6 +170,7 @@ private:
     octave_idx_type frozen_len;
 
     unsigned int colon : 1;
+    unsigned int range : 1;
     unsigned int one_zero : 1;
     unsigned int initialized : 1;
     unsigned int frozen : 1;

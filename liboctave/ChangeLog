@@ -1,3 +1,13 @@
+2008-01-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* idx-vector.h (idx_vector::idx_vector_rep::range_base,
+	idx_vector::idx_vector_rep::range_step,
+	idx_vector::idx_vector_rep::range_step): New data members.
+	(idx_vector::idx_vector_rep::idx_vector_rep): Initialize them.
+	* idx-vector.cc (IDX_VEC_REP::sort, IDX_VEC_REP::is_colon_equiv,
+	IDX_VEC_REP::init_state, IDX_VEC_REP::operator =,
+	IDX_VECTOR_REP::idx_vector_rep): Handle range.
+
 2008-01-18  Marco Caliari  <marco.caliari@univr.it>
 
 	* dMatrix.cc (Matrix::expm): Correctly perform reverse permutation.

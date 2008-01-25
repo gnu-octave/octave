@@ -42,17 +42,23 @@ along with Octave; see the file COPYING.  If not, see
 
 IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
   : data (0), len (a.len), num_zeros (a.num_zeros), num_ones (a.num_ones),
+    range_base (a.range_base), range_step (a.range_step),
     max_val (a.max_val), min_val (a.min_val),
     frozen_at_z_len (a.frozen_at_z_len), frozen_len (a.frozen_len),
-    colon (a.colon), one_zero (a.one_zero), initialized (a.initialized),
-    frozen (a.frozen), colon_equiv_checked (a.colon_equiv_checked),
+    colon (a.colon), range(a.range), one_zero (a.one_zero),
+    initialized (a.initialized), frozen (a.frozen),
+    colon_equiv_checked (a.colon_equiv_checked),
     colon_equiv (a.colon_equiv), orig_dims (a.orig_dims)
 {
   if (len > 0)
     {
-      data = new octave_idx_type [len];
-      for (octave_idx_type i = 0; i < len; i++)
-	data[i] = a.data[i];
+      if (! range)
+	{
+	  data = new octave_idx_type [len];
+
+	  for (octave_idx_type i = 0; i < len; i++)
+	    data[i] = a.data[i];
+	}
     }
 }
 
@@ -96,10 +102,11 @@ idx_is_inf_or_nan (double x)
 }
 
 IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
-  : data (0), len (v.length ()), num_zeros (0), num_ones (0), max_val (0),
-    min_val (0), count (1), frozen_at_z_len (0), frozen_len (0),
-    colon (0), one_zero (0), initialized (0), frozen (0),
-    colon_equiv_checked (0), colon_equiv (0), orig_dims (len, 1)
+  : data (0), len (v.length ()), num_zeros (0), num_ones (0),
+    range_base (0), range_step (0), max_val (0), min_val (0), count (1),
+    frozen_at_z_len (0), frozen_len (0), colon (0), range(0),
+    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    colon_equiv (0), orig_dims (len, 1)
 {
   if (len == 0)
     {
@@ -131,10 +138,10 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
 
 IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
   : data (0), len (nda.length ()), num_zeros (0), num_ones (0),
-    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (0), one_zero (0), initialized (0),
-    frozen (0), colon_equiv_checked (0), colon_equiv (0),
-    orig_dims (nda.dims ())
+    range_base (0), range_step (0), max_val (0), min_val (0), count (1),
+    frozen_at_z_len (0), frozen_len (0), colon (0), range(0),
+    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    colon_equiv (0), orig_dims (nda.dims ())
 {
   if (len == 0)
     {
@@ -167,10 +174,10 @@ IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
 
 IDX_VEC_REP::idx_vector_rep (const Range& r)
   : data (0), len (r.nelem ()), num_zeros (0), num_ones (0),
-    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (0), one_zero (0), initialized (0),
-    frozen (0), colon_equiv_checked (0), colon_equiv (0),
-    orig_dims (1, len)
+    range_base (0), range_step (0), max_val (0), min_val (0), 
+    count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
+    range(1), one_zero (0), initialized (0), frozen (0),
+    colon_equiv_checked (0), colon_equiv (0), orig_dims (1, len)
 {
   if (len < 0)
     {
@@ -183,39 +190,12 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
       return;
     }
 
-  data = new octave_idx_type [len];
-
-  // If all elements are ints, we can generate the indexes as integers 
-  // and save tons of tests.
-
   if (r.all_elements_are_ints ())
     {    
-      octave_idx_type b = static_cast<octave_idx_type> (r.base ());
-      octave_idx_type step = static_cast<octave_idx_type> (r.inc ());
+      range_base = static_cast<octave_idx_type> (r.base () - 1);
+      range_step = static_cast<octave_idx_type> (r.inc ());
 
-      data[0] = b - 1;
-      for (octave_idx_type i = 1; i < len; i++)
-	data[i] = data[i-1] + step;
-
-      // Don't use init_state(), as it can be vastly accelerated since 
-      // we don't have to search all values for max/min, etc.
-      if (step >= 0)
-	{
-	  min_val = data [0];
-	  max_val = data [len - 1];
-	}
-      else
-	{
-	  min_val = data [len - 1];
-	  max_val = data [0];
-	}
-
-      if ((b <= 0 && step > 0) || (b >= 0 && step < 0))
-	num_zeros = 1;
-      if ((b <= 1 && step > 0) || (b >= 1 && step < 0))
-	num_zeros = 0;
-
-      initialized = 1;
+      init_state ();
     }
   else
     (*current_liboctave_error_handler)
@@ -224,20 +204,19 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
 
 IDX_VEC_REP::idx_vector_rep (double d)
   : data (0), len (1), num_zeros (0), num_ones (0),
-    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (0), one_zero (0), initialized (0),
-    frozen (0), colon_equiv_checked (0), colon_equiv (0),
-    orig_dims (1, 1)
+    range_base (0), range_step (0), max_val (0), min_val (0), 
+    count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
+    range(1), one_zero (0), initialized (0), frozen (0),
+    colon_equiv_checked (0), colon_equiv (0), orig_dims (1, 1)
 {
   if (idx_is_inf_or_nan (d))
     return;
   else
     {
-      data = new octave_idx_type [len];
-
       bool conversion_error = false;
 
-      data[0] = tree_to_mat_idx (d, conversion_error);
+      range_base = tree_to_mat_idx (d, conversion_error);
+      range_step = 1;
 
       if (conversion_error)
 	return;
@@ -248,24 +227,21 @@ IDX_VEC_REP::idx_vector_rep (double d)
 
 IDX_VEC_REP::idx_vector_rep (octave_idx_type i)
   : data (0), len (1), num_zeros (0), num_ones (0),
+    range_base (tree_to_mat_idx (i)), range_step (1), 
     max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (0), one_zero (0), initialized (0),
-    frozen (0), colon_equiv_checked (0), colon_equiv (0),
-    orig_dims (1, 1)
+    frozen_len (0), colon (0), range(1), one_zero (0),
+    initialized (0), frozen (0), colon_equiv_checked (0),
+    colon_equiv (0), orig_dims (1, 1)
 {
-  data = new octave_idx_type [len];
-
-  data[0] = tree_to_mat_idx (i);
-
   init_state ();
 }
 
 IDX_VEC_REP::idx_vector_rep (char c)
-  : data (0), len (0), num_zeros (0), num_ones (0),
-    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (1), one_zero (0), initialized (0),
-    frozen (0), colon_equiv_checked (0), colon_equiv (0),
-    orig_dims (0, 0)
+  : data (0), len (0), num_zeros (0), num_ones (0), range_base (0),
+    range_step (0), max_val (0), min_val (0), count (1),
+    frozen_at_z_len (0), frozen_len (0), colon (1), range(0),
+    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    colon_equiv (0), orig_dims (0, 0)
 {
   assert (c == ':');
 
@@ -273,11 +249,11 @@ IDX_VEC_REP::idx_vector_rep (char c)
 }
 
 IDX_VEC_REP::idx_vector_rep (bool b)
-  : data (0), len (1), num_zeros (0), num_ones (0),
-    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (0), one_zero (1), initialized (0),
-    frozen (0), colon_equiv_checked (0), colon_equiv (0),
-    orig_dims (1, 1)
+  : data (0), len (1), num_zeros (0), num_ones (0), range_base (0),
+    range_step (0), max_val (0), min_val (0), count (1),
+    frozen_at_z_len (0), frozen_len (0), colon (0), range(0),
+    one_zero (1), initialized (0), frozen (0), colon_equiv_checked (0),
+    colon_equiv (0), orig_dims (1, 1)
 {
   data = new octave_idx_type [len];
 
@@ -288,10 +264,10 @@ IDX_VEC_REP::idx_vector_rep (bool b)
 
 IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
   : data (0), len (bnda.length ()), num_zeros (0), num_ones (0),
-    max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (0), one_zero (1), initialized (0),
-    frozen (0), colon_equiv_checked (0), colon_equiv (0),
-    orig_dims (bnda.dims ())
+    range_base (0), range_step (0), max_val (0), min_val (0),
+    count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
+    range(0), one_zero (1), initialized (0), frozen (0),
+    colon_equiv_checked (0), colon_equiv (0), orig_dims (bnda.dims ())
 {
   if (len == 0)
     {
@@ -317,9 +293,16 @@ IDX_VEC_REP::operator = (const IDX_VEC_REP& a)
     {
       delete [] data;
       len = a.len;
-      data = new octave_idx_type [len];
-      for (octave_idx_type i = 0; i < len; i++)
-	data[i] = a.data[i];
+
+      if (a.data)
+	{
+	  data = new octave_idx_type [len];
+
+	  for (octave_idx_type i = 0; i < len; i++)
+	    data[i] = a.data[i];
+	}
+      else
+	data = 0;
 
       num_zeros = a.num_zeros;
       num_ones = a.num_ones;
@@ -328,6 +311,9 @@ IDX_VEC_REP::operator = (const IDX_VEC_REP& a)
       frozen_at_z_len = a.frozen_at_z_len;
       frozen_len = a.frozen_len;
       colon = a.colon;
+      range = a.range;
+      range_base = a.range_base;
+      range_step = a.range_step;
       one_zero = a.one_zero;
       initialized = a.initialized;
       frozen = a.frozen;
@@ -349,6 +335,27 @@ IDX_VEC_REP::init_state (void)
     {
       min_val = 0;
       max_val = 0;
+    }
+  else if (range)
+    {
+      if (range_step >= 0)
+	{
+	  min_val = range_base;
+	  max_val = (len > 0) ? range_base + (len-1)*range_step : range_base;
+	}
+      else
+	{
+	  max_val = range_base;
+	  min_val = (len > 0) ? range_base + (len-1)*range_step : range_base;
+	}
+
+      if ((range_base <= 0 && range_step > 0)
+	  || (range_base >= 0 && range_step < 0))
+	num_zeros = 1;
+
+      if ((range_base <= 1 && range_step > 0)
+	  || (range_base >= 1 && range_step < 0))
+	num_zeros = 0;
     }
   else
     {
@@ -479,6 +486,13 @@ IDX_VEC_REP::is_colon_equiv (octave_idx_type n, int sort_uniq)
 	{
 	  colon_equiv = 1;
 	}
+      else if (range) 
+	{
+	  colon_equiv = (range_base == 0
+			 && len == n
+			 && (range_step == 1
+			     || (range_step == -1 && sort_uniq)));
+	}
       else if (static_cast<octave_idx_type> (len) > 1)
 	{
 	  if (one_zero)
@@ -526,7 +540,15 @@ IDX_VEC_REP::is_colon_equiv (octave_idx_type n, int sort_uniq)
 void
 IDX_VEC_REP::sort (bool uniq)
 {
-  if (len > 1)
+  if (range && len)
+    {
+      if (range_step < 0)
+	{
+	  range_base += (len-1)*(range_step);
+	  range_step = -range_step;
+	}
+    }
+  else if (len > 1)
     {
       sort_data (data, len);
 

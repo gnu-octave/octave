@@ -1,3 +1,7 @@
+2008-01-24  Pascal Dupuis  <Pascal.Dupuis@worldonline.be>
+
+	* mxarray.h.in: Include <cstring>.
+
 2008-01-22  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (clear_drawnow_request): New function.

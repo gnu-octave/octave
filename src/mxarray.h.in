@@ -90,6 +90,8 @@ typedef @OCTAVE_IDX_TYPE@ mwIndex;
 
 #if ! defined (MXARRAY_TYPEDEFS_ONLY)
 
+#include <cstring>
+
 class octave_value;
 
 #define DO_MUTABLE_METHOD(RET_T, METHOD_CALL) \

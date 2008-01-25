@@ -134,19 +134,8 @@ function vi = interpn (varargin)
     x{1} = x{1}(idx{:})(:);
   endif
 
-  if (strcmp (method, "linear") || strcmp (method, "nearest"))
-    if (all (cellfun (@isvector, y)))
-      [y{:}] = ndgrid (y{:});
-    endif
-  elseif (any (! cellfun (@isvector, y)))
-    for i = 1 : nd
-      idx (1 : nd) = {1};
-      idx (i) = ":";
-      y{i} = y{i}(idx{:})(:).';
-    endfor
-  endif
-
   method = tolower (method);
+
   if (strcmp (method, "linear"))
     vi = __lin_interpn__ (x{:}, v, y{:});
     vi (isna (vi)) = extrapval;
@@ -159,7 +148,7 @@ function vi = interpn (varargin)
     endfor
     idx = cell (1,nd);
     for i = 1 : nd
-      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i}).' > x{i}(yidx{i} + 1).' - y{i});
+      idx{i} = yidx{i} + (y{i} - x{i}(yidx{i}) > x{i}(yidx{i} + 1) - y{i});
     endfor
     vi = v (sub2ind (sz, idx{:}));
     idx = zeros (prod(yshape),1);
@@ -169,7 +158,17 @@ function vi = interpn (varargin)
     vi(idx) = extrapval;
     vi = reshape (vi, yshape); 
   elseif (strcmp (method, "spline"))
+    szi = size (y{1});
+    for i = 1 : nd
+      y{i} = y{i}(:);
+    endfor
+
     vi = __splinen__ (x, v, y, extrapval, "interpn");
+
+    ## get all diagonal elements of vi
+    sc = sum ([1 cumprod(size (vi)(1:end-1))]);
+    vi = vi(sc * [0:size(vi,1)-1] + 1);
+    vi = reshape (vi,szi);    
   elseif (strcmp (method, "cubic")) 
     error ("cubic interpolation not yet implemented");
   else
@@ -182,7 +181,7 @@ endfunction
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,4]; y=[10,11,12];
 %! xi=linspace(min(x),max(x),17);
-%! yi=linspace(min(y),max(y),26)';
+%! AI=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interpn(x,y,A.',xi,yi,"linear").');
 %! [x,y] = meshgrid(x,y); 
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
@@ -225,3 +224,13 @@ endfunction
 %! vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
 %! mesh (yi, zi, squeeze (vi(1,:,:)));
 
+
+%!test
+%! [x,y,z] = ndgrid(0:2);
+%! f = x+y+z;
+%! assert (interpn(x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5]), [1.5, 4.5])
+%! assert (interpn(x,y,z,f,[.51 1.51],[.51 1.51],[.51 1.51],'nearest'), [3, 6])
+%! assert (interpn(x,y,z,f,[.5 1.5],[.5 1.5],[.5 1.5],'spline'), [1.5, 4.5])
+%! assert (interpn(x,y,z,f,x,y,z), f)
+%! assert (interpn(x,y,z,f,x,y,z,'nearest'), f)
+%! assert (interpn(x,y,z,f,x,y,z,'spline'), f)

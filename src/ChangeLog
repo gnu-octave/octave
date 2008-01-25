@@ -1,3 +1,8 @@
+2008-01-25  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/rand.cc (Frandp): Relax relative error on randp
+	tests.
+
 2008-01-25  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.h.in (base_properties::get_backend,

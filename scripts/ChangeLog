@@ -1,3 +1,13 @@
+2008-01-25  Alexander Barth  <barth.alexander@gmail.com>
+
+	* general/interpn.m: Compatibility fix. Don't ndgrid vector
+	abscissa.
+	
+2008-01-25  David Bateman  <dbateman@free.fr>
+
+	* plot/__scatter__.m: Remove NaN values from data.
+	* plot/__patch__.m: Vectorize treatment of trailing NaN values.
+
 2008-01-25  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* linear-algebra/trace.m: Test cases for non 2-d args.

@@ -124,13 +124,13 @@ function [h, fail] = __patch__ (p, varargin)
     nr = size (faces, 2);
     nc = size (faces, 1);
     idx = faces .';
-    for i = 1: nc
-      t1 = isnan (idx (:,i));
-      if (any (t1))
-	t2 = find (t1(1:end-1) != t1(2:end))(1);
-        idx(t1,i) = idx(t2,i);
-      endif
-    endfor
+    t1 = isnan (idx);
+    if (any (t1))
+      t2 = find (t1 != t1([2:end,end],:));
+      idx (t1) = idx (t2 (cell2mat (cellfun (@(x) x(1)*ones(1,x(2)),
+		mat2cell ([1 : length(t2); sum(t1)], 2, ones(1,length(t2))), 
+					     "UniformOutput", false))));
+    endif
     x = reshape (vert(:,1)(idx), size (idx));
     y = reshape (vert(:,2)(idx), size (idx));
     if (size(vert,2) > 2)

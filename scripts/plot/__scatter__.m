@@ -29,8 +29,15 @@ function h = __scatter__ (varargin)
 
   if (nd == 3)
     z = varargin{6}(:);
+    idx = isnan(x) | isnan (y) | isnan (z);
+    x (idx) = [];
+    y (idx) = [];
+    z (idx) = [];
     istart = 7;
   else
+    idx = isnan(x) | isnan (y);
+    x (idx) = [];
+    y (idx) = [];
     z = zeros (length (x), 0);
   endif
 

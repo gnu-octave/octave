@@ -1040,12 +1040,6 @@ octave_base_stream::gets (octave_idx_type max_len, bool& err, const std::string&
   return do_gets (max_len, err, false, who);
 }
 
-#if defined (__GNUG__) && ! defined (CXX_ISO_COMPLIANT_LIBRARY)
-
-#define OCTAVE_SCAN(is, fmt, arg) is.scan ((fmt).text, arg)
-
-#else
-
 #define OCTAVE_SCAN(is, fmt, arg) octave_scan (is, fmt, arg)
 
 template <class T>
@@ -1340,8 +1334,6 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double* valptr)
   return is;
 }
 
-#endif
-
 template <class T>
 void
 do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
@@ -1548,45 +1540,37 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
  \
   do \
     { \
-      if (width) \
-	{ \
-	  char *tbuf = new char[width+1]; \
+      if (! width) \
+	width = INT_MAX;
+
+      std::ostringstream buf; \
  \
-	  OCTAVE_SCAN (is, *elt, tbuf); \
+      std::string char_class = elt->char_class; \
  \
-	  tbuf[width] = '\0'; \
-          tmp = tbuf; \
-          delete [] tbuf; \
+      int c = EOF; \
+ \
+      if (elt->type == '[') \
+        { \
+	  int chars_read = 0; \
+	  while (is && chars_read++ < width && (c = is.get ()) != EOF \
+	         && char_class.find (c) != NPOS) \
+	    buf << static_cast<char> (c); \
 	} \
       else \
 	{ \
-	  std::ostringstream buf; \
- \
-	  std::string char_class = elt->char_class; \
- \
-	  int c = EOF; \
- \
-	  if (elt->type == '[') \
-	    { \
-	      while (is && (c = is.get ()) != EOF \
-		     && char_class.find (c) != NPOS) \
-		buf << static_cast<char> (c);	     \
-	    } \
-	  else \
-	    { \
-	      while (is && (c = is.get ()) != EOF \
-		     && char_class.find (c) == NPOS) \
-		buf << static_cast<char> (c);		     \
-	    } \
- \
-	  if (c != EOF) \
-	    is.putback (c); \
- \
-	  tmp = buf.str (); \
- \
-	  if (tmp.empty ()) \
-	    is.setstate (std::ios::failbit); \
+	  int chars_read = 0; \
+	  while (is && chars_read++ < width && (c = is.get ()) != EOF \
+	         && char_class.find (c) == NPOS) \
+	    buf << static_cast<char> (c); \
 	} \
+ \
+      if (width == INT_MAX && c != EOF) \
+	is.putback (c); \
+ \
+      tmp = buf.str (); \
+ \
+      if (tmp.empty ()) \
+        is.setstate (std::ios::failbit); \
     } \
   while (0)
 

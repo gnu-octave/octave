@@ -1,3 +1,9 @@
+2008-01-28  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (BEGIN_CHAR_CLASS_CONVERSION): Handle width properly.
+	(OCTAVE_SCAN) [__GNUG__ && ! CXX_ISO_COMPLIANT_LIBRARY]:
+	Delete special case.
+
 2008-01-25  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/rand.cc (Frandp): Relax relative error on randp

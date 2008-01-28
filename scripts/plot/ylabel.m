@@ -44,7 +44,7 @@ function retval = ylabel (varargin)
   end_unwind_protect
 
   if (nargout > 0)
-    retval = h;
+    retval = tmp;
   endif
 
 endfunction

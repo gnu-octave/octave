@@ -306,14 +306,14 @@ IDX_VEC_REP::operator = (const IDX_VEC_REP& a)
 
       num_zeros = a.num_zeros;
       num_ones = a.num_ones;
+      range_base = a.range_base;
+      range_step = a.range_step;
       max_val = a.max_val;
       min_val = a.min_val;
       frozen_at_z_len = a.frozen_at_z_len;
       frozen_len = a.frozen_len;
       colon = a.colon;
       range = a.range;
-      range_base = a.range_base;
-      range_step = a.range_step;
       one_zero = a.one_zero;
       initialized = a.initialized;
       frozen = a.frozen;
@@ -570,8 +570,17 @@ IDX_VEC_REP::shorten (octave_idx_type n)
 std::ostream&
 IDX_VEC_REP::print (std::ostream& os) const
 {
-  for (octave_idx_type ii = 0; ii < len; ii++)
-    os << data[ii] << "\n";
+  if (colon)
+    os << "colon" << std::endl;
+  else if (range)
+    os << "range_base: " << range_base
+       << ", range_step: " << range_step << std::endl;
+  else
+    {
+      for (octave_idx_type ii = 0; ii < len; ii++)
+	os << data[ii] << "\n";
+    }
+
   return os;
 }
 

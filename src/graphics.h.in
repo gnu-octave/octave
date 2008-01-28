@@ -182,6 +182,129 @@ operator > (const graphics_handle& a, const graphics_handle& b)
 
 // ---------------------------------------------------------------------
 
+class base_scaler
+{
+public:
+  base_scaler (void) { }
+
+  virtual Matrix scale (const Matrix& m) const
+    {
+      error ("invalid axis scale");
+      return m;
+    }
+
+  virtual double scale (double d) const
+    {
+      error ("invalid axis scale");
+      return d;
+    }
+  
+  virtual double unscale (double d) const
+    {
+      error ("invalid axis scale");
+      return d;
+    }
+
+  virtual base_scaler* clone () const
+    { return new base_scaler (); }
+};
+
+class lin_scaler : public base_scaler
+{
+public:
+  lin_scaler (void) { }
+
+  Matrix scale (const Matrix& m) const { return m; }
+
+  double scale (double d) const { return d; }
+
+  double unscale (double d) const { return d; }
+
+  base_scaler* clone (void) const { return new lin_scaler (); }
+};
+
+class log_scaler : public base_scaler
+{
+public:
+  log_scaler (void) { }
+
+  Matrix scale (const Matrix& m) const
+    {
+      Matrix retval (m.rows (), m.cols ());
+      const double *d1 = m.fortran_vec ();
+      double *d2 = retval.fortran_vec ();
+
+      for (int i = 0; i < m.numel (); i++)
+	d2[i] = log10 (d1[i]);
+
+      return retval;
+    }
+
+  double scale (double d) const
+    { return log10 (d); }
+
+  double unscale (double d) const
+    { return pow (10.0, d); }
+
+  base_scaler* clone (void) const
+    { return new log_scaler (); }
+};
+
+class scaler
+{
+public:
+  scaler (void) : rep (new base_scaler ()) { }
+
+  scaler (const scaler& s) : rep (s.rep->clone()) { }
+
+  ~scaler (void) { delete rep; }
+
+  Matrix scale (const Matrix& m) const
+    { return rep->scale (m); }
+
+  double scale (double d) const
+    { return rep->scale (d); }
+
+  double unscale (double d) const
+    { return rep->unscale (d); }
+
+  scaler& operator = (const scaler& s)
+    {
+      if (rep)
+	{
+	  delete rep;
+	  rep = 0;
+	}
+
+      rep = s.rep->clone ();
+
+      return *this;
+    }
+
+  scaler& operator = (const std::string& s)
+    {
+      if (rep)
+	{
+	  delete rep;
+	  rep = 0;
+	}
+
+      if (s == "log")
+	rep = new log_scaler ();
+      else if (s == "linear")
+	rep = new lin_scaler ();
+      else
+	rep = new base_scaler ();
+
+      return *this;
+    }
+
+private:
+  base_scaler *rep;
+};
+
+// ---------------------------------------------------------------------
+
 class property;
 
 class base_property
@@ -989,6 +1112,12 @@ public:
       return Matrix (1, 2, 0.0);
     }
 
+  virtual double get_screen_resolution (void) const
+    {
+      error ("get_screen_resolution: invalid graphics backend");
+      return -1;
+    }
+
 private:
   std::string name;
   int count;
@@ -1052,6 +1181,9 @@ public:
 
   Matrix get_canvas_size (const graphics_handle& fh) const
     { return rep->get_canvas_size (fh); }
+
+  double get_screen_resolution (void) const
+    { return rep->get_screen_resolution (); }
 
   OCTINTERP_API static graphics_backend default_backend (void);
 
@@ -2046,11 +2178,31 @@ public:
 
     void delete_children (void);
 
+    const scaler& get_x_scaler (void) const { return sx; }
+    const scaler& get_y_scaler (void) const { return sy; }
+    const scaler& get_z_scaler (void) const { return sz; }
+
+    Matrix get_boundingbox (void) const;
+
+    void update_camera (void);
+    void update_aspectratios (void);
+    void update_transform (void)
+      {
+	update_aspectratios ();
+	update_camera ();
+      }
+
+  private:
+    scaler sx, sy, sz;
+    Matrix x_render, x_render_inv;
+    Matrix x_gl_mat1, x_gl_mat2;
+    Matrix x_zlim;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
     BEGIN_PROPERTIES(axes)
-      array_property position , Matrix ()
+      array_property position , default_axes_position ()
       mutable handle_property title GSO , graphics_handle ()
       bool_property box , "on"
       bool_property key , "off"
@@ -2099,17 +2251,17 @@ public:
       color_property xcolor , color_values (0, 0, 0)
       color_property ycolor , color_values (0, 0, 0)
       color_property zcolor , color_values (0, 0, 0)
-      radio_property xscale al , "{linear}|log"
-      radio_property yscale al , "{linear}|log"
-      radio_property zscale al , "{linear}|log"
-      radio_property xdir , "{normal}|reverse"
-      radio_property ydir , "{normal}|reverse"
-      radio_property zdir , "{normal}|reverse"
+      radio_property xscale alu , "{linear}|log"
+      radio_property yscale alu , "{linear}|log"
+      radio_property zscale alu , "{linear}|log"
+      radio_property xdir u , "{normal}|reverse"
+      radio_property ydir u , "{normal}|reverse"
+      radio_property zdir u , "{normal}|reverse"
       radio_property yaxislocation , "{left}|right|zero"
       radio_property xaxislocation , "{bottom}|top|zero"
-      array_property view , Matrix ()
+      array_property view u , Matrix ()
       radio_property nextplot , "add|replace_children|{replace}"
-      array_property outerposition , Matrix ()
+      array_property outerposition , default_axes_outerposition ()
       radio_property activepositionproperty , "{outerposition}|position"
       radio_property __colorbar__ h , "{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"
       color_property ambientlightcolor , color_values (1, 1, 1)
@@ -2179,7 +2331,23 @@ public:
 	currentpoint.add_constraint (dim_vector (2, 3));
 	ticklength.add_constraint (dim_vector (1, 2));
 	tightinset.add_constraint (dim_vector (1, 4));
+
+	x_zlim.resize (1, 2);
+	sx = "linear";
+	sy = "linear";
+	sz = "linear";
       }
+
+  private:
+    void update_xscale (void) { sx = get_xscale (); }
+    void update_yscale (void) { sy = get_yscale (); }
+    void update_zscale (void) { sz = get_zscale (); }
+
+    void update_view (void) { update_camera (); }
+
+    void update_xdir (void) { update_camera (); }
+    void update_ydir (void) { update_camera (); }
+    void update_zdir (void) { update_camera (); }
   };
 
 private:

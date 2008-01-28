@@ -142,6 +142,25 @@ default_data (void)
   return retval;
 }
 
+static Matrix
+default_axes_position (void)
+{
+  Matrix m (1, 4, 0.0);
+  m(0) = 0.13;
+  m(1) = 0.11;
+  m(2) = 0.775;
+  m(3) = 0.815;
+  return m;
+}
+
+static Matrix
+default_axes_outerposition (void)
+{
+  Matrix m (1, 4, 0.0);
+  m(2) = m(3) = 1.0;
+  return m;
+}
+
 // NOTE: "cb" is passed by value, because "function_value" method
 //       is non-const; passing "cb" by const-reference is not
 //       possible
@@ -198,6 +217,90 @@ execute_callback (octave_value cb, const graphics_handle& h,
     feval (fcn, args);
   
   END_INTERRUPT_WITH_EXCEPTIONS;
+}
+
+static Matrix
+convert_position (const Matrix& pos, const caseless_str& from_units,
+		  const caseless_str& to_units,
+		  const Matrix& parent_dim = Matrix (1, 2, 0.0),
+		  const graphics_backend& backend = graphics_backend ())
+{
+  Matrix retval (1, 4);
+  double res = 0;
+
+  if (from_units.compare ("pixels"))
+    retval = pos;
+  else if (from_units.compare ("normalized"))
+    {
+      retval(0) = pos(0) * parent_dim(0) + 1;
+      retval(1) = pos(1) * parent_dim(1) + 1;
+      retval(2) = pos(2) * parent_dim(0);
+      retval(3) = pos(3) * parent_dim(1);
+    }
+  else if (from_units.compare ("characters"))
+    {
+      // FIXME: implement this
+    }
+  else
+    {
+      res = backend.get_screen_resolution ();
+
+      double f = 0.0;
+
+      if (from_units.compare ("points"))
+	f = res / 72.0;
+      else if (from_units.compare ("inches"))
+	f = res;
+      else if (from_units.compare ("centimeters"))
+	f = res / 2.54;
+
+      if (f > 0)
+	{
+	  retval(0) = pos(0) * f + 1;
+	  retval(1) = pos(1) * f + 1;
+	  retval(2) = pos(2) * f;
+	  retval(3) = pos(3) * f;
+	}
+    }
+
+  if (! to_units.compare ("pixels"))
+    {
+      if (to_units.compare ("normalized"))
+	{
+	  retval(0) = (retval(0) - 1) / parent_dim(0);
+	  retval(1) = (retval(1) - 1) / parent_dim(1);
+	  retval(2) /= parent_dim(0);
+	  retval(3) /= parent_dim(1);
+	}
+      else if (to_units.compare ("characters"))
+	{
+	  // FIXME: implement this
+	}
+      else
+	{
+	  if (res <= 0)
+	    res = backend.get_screen_resolution ();
+
+	  double f = 0.0;
+
+	  if (to_units.compare ("points"))
+	    f = res / 72.0;
+	  else if (to_units.compare ("inches"))
+	    f = res;
+	  else if (to_units.compare ("centimeters"))
+	    f = res / 2.54;
+
+	  if (f > 0)
+	    {
+	      retval(0) = (retval(0) - 1) / f;
+	      retval(1) = (retval(1) - 1) / f;
+	      retval(2) /= f;
+	      retval(3) /= f;
+	    }
+	}
+    }
+
+  return retval;
 }
 
 // ---------------------------------------------------------------------
@@ -1208,7 +1311,13 @@ public:
     }
 
   Matrix get_canvas_size (const graphics_handle&) const
-    { return Matrix (1, 2, 0.0); }
+    {
+      Matrix sz (1, 2, 0.0);
+      return sz;
+    }
+
+  double get_screen_resolution (void) const
+    { return 72.0; }
 };
 
 graphics_backend
@@ -1365,7 +1474,7 @@ void
 axes::properties::set_defaults (base_graphics_object& obj,
 				const std::string& mode)
 {
-  position = Matrix ();
+  position = default_axes_position ();
   title = graphics_handle ();
   box = "on";
   key = "off";
@@ -1424,6 +1533,34 @@ axes::properties::set_defaults (base_graphics_object& obj,
   yaxislocation = "left";
   xaxislocation = "bottom";
 
+  // Note: camera properties will be set through update_transform
+  camerapositionmode = "auto";
+  cameratargetmode = "auto";
+  cameraupvectormode = "auto";
+  cameraviewanglemode = "auto";
+  plotboxaspectratio = Matrix (1, 3, 1.0);
+  drawmode = "normal";
+  fontangle = "normal";
+  fontname = "Helvetica";
+  fontsize = 12;
+  fontunits = "points";
+  fontweight = "normal";
+  gridlinestyle = "-";
+  linestyleorder = "-";
+  linewidth = 0.5;
+  minorgridlinestyle = "-";
+  // Note: plotboxaspectratio will be set through update_aspectratiors
+  plotboxaspectratiomode = "auto";
+  projection = "orthographic";
+  tickdir = "in";
+  tickdirmode = "auto";
+  ticklength = Matrix (1, 2, 0.1);
+  tightinset = Matrix (1, 4, 0.0);
+
+  sx = "linear";
+  sy = "linear";
+  sz = "linear";
+
   Matrix tview (1, 2, 0.0);
   tview(1) = 90;
   view = tview;
@@ -1448,6 +1585,8 @@ axes::properties::set_defaults (base_graphics_object& obj,
   delete_children ();
 
   children = Matrix ();
+
+  update_transform ();
 
   override_defaults (obj);
 }
@@ -1512,6 +1651,421 @@ axes::properties::delete_children (void)
   gh_manager::free (xlabel.handle_value ());
   gh_manager::free (ylabel.handle_value ());
   gh_manager::free (zlabel.handle_value ());
+}
+
+inline Matrix
+xform_matrix (void)
+{
+  Matrix m (4, 4, 0.0);
+  for (int i = 0; i < 4; i++)
+    m(i,i) = 1;
+  return m;
+}
+
+inline ColumnVector
+xform_vector (void)
+{
+  ColumnVector v (4, 0.0);
+  v(3) = 1;
+  return v;
+}
+
+inline ColumnVector
+xform_vector (double x, double y, double z)
+{
+  ColumnVector v (4, 1.0);
+  v(0) = x; v(1) = y; v(2) = z;
+  return v;
+}
+
+inline ColumnVector
+transform (const Matrix& m, double x, double y, double z)
+{
+  return (m * xform_vector (x, y, z));
+}
+
+inline Matrix
+xform_scale (double x, double y, double z)
+{
+  Matrix m (4, 4, 0.0);
+  m(0,0) = x; m(1,1) = y; m(2,2) = z; m(3,3) = 1;
+  return m;
+}
+
+inline Matrix
+xform_translate (double x, double y, double z)
+{
+  Matrix m = xform_matrix ();
+  m(0,3) = x; m(1,3) = y; m(2,3) = z; m(3,3) = 1;
+  return m;
+}
+
+inline void
+scale (Matrix& m, double x, double y, double z)
+{
+  m = m * xform_scale (x, y, z);
+}
+
+inline void
+translate (Matrix& m, double x, double y, double z)
+{
+  m = m * xform_translate (x, y, z);
+}
+
+inline void
+xform (ColumnVector& v, const Matrix& m)
+{
+  v = m*v;
+}
+
+inline void
+scale (ColumnVector& v, double x, double y, double z)
+{
+  v(0) *= x;
+  v(1) *= y;
+  v(2) *= z;
+}
+
+inline void
+translate (ColumnVector& v, double x, double y, double z)
+{
+  v(0) += x;
+  v(1) += y;
+  v(2) += z;
+}
+
+inline void
+normalize (ColumnVector& v)
+{
+  double fact = 1.0/sqrt(v(0)*v(0)+v(1)*v(1)+v(2)*v(2));
+  scale (v, fact, fact, fact);
+}
+
+inline double
+dot (const ColumnVector& v1, const ColumnVector& v2)
+{
+  return (v1(0)*v2(0)+v1(1)*v2(1)+v1(2)*v2(2));
+}
+
+inline double
+norm (const ColumnVector& v)
+{
+  return sqrt (dot (v, v));
+}
+
+inline ColumnVector
+cross (const ColumnVector& v1, const ColumnVector& v2)
+{
+  ColumnVector r = xform_vector ();
+  r(0) = v1(1)*v2(2)-v1(2)*v2(1);
+  r(1) = v1(2)*v2(0)-v1(0)*v2(2);
+  r(2) = v1(0)*v2(1)-v1(1)*v2(0);
+  return r;
+}
+
+inline Matrix
+unit_cube (void)
+{
+  static double data[32] = {
+      0,0,0,1,
+      1,0,0,1,
+      0,1,0,1,
+      0,0,1,1,
+      1,1,0,1,
+      1,0,1,1,
+      0,1,1,1,
+      1,1,1,1};
+  Matrix m (4, 8);
+  memcpy (m.fortran_vec (), data, sizeof(double)*32);
+  return m;
+}
+
+inline ColumnVector
+cam2xform (const Array<double>& m)
+{
+  ColumnVector retval (4, 1.0);
+  memcpy (retval.fortran_vec (), m.fortran_vec (), sizeof(double)*3);
+  return retval;
+}
+
+inline RowVector
+xform2cam (const ColumnVector& v)
+{
+  return v.extract_n (0, 3).transpose ();
+}
+
+void
+axes::properties::update_camera (void)
+{
+  double xd = (xdir_is ("normal") ? 1 : -1);
+  double yd = (ydir_is ("normal") ? 1 : -1);
+  double zd = (zdir_is ("normal") ? 1 : -1);
+
+  Matrix xlim = sx.scale (get_xlim ().matrix_value ());
+  Matrix ylim = sy.scale (get_ylim ().matrix_value ());
+  Matrix zlim = sz.scale (get_zlim ().matrix_value ());
+
+  double xo = xlim(xd > 0 ? 0 : 1);
+  double yo = ylim(yd > 0 ? 0 : 1);
+  double zo = zlim(zd > 0 ? 0 : 1);
+  
+  Matrix pb  = get_plotboxaspectratio ().matrix_value ();
+  
+  bool autocam = (camerapositionmode_is ("auto")
+		  && cameratargetmode_is ("auto")
+	    	  && cameraupvectormode_is ("auto")
+		  && cameraviewanglemode_is ("auto"));
+  bool dowarp = (autocam && dataaspectratiomode_is("auto")
+		 && plotboxaspectratiomode_is ("auto"));
+
+  ColumnVector c_eye (xform_vector ());
+  ColumnVector c_center (xform_vector ());
+  ColumnVector c_upv (xform_vector ());
+  
+  if (cameratargetmode_is ("auto"))
+    {
+      c_center(0) = (xlim(0)+xlim(1))/2;
+      c_center(1) = (ylim(0)+ylim(1))/2;
+      c_center(2) = (zlim(0)+zlim(1))/2;
+
+      cameratarget = xform2cam (c_center);
+    }
+  else
+    c_center = cam2xform (get_cameratarget ().matrix_value ());
+  
+  if (camerapositionmode_is ("auto"))
+    {
+      Matrix view = get_view ().matrix_value ();
+      double az = view(0), el = view(1);
+      double d = 5*sqrt(pb(0)*pb(0)+pb(1)*pb(1)+pb(2)*pb(2));
+
+      if (el == 90 || el == -90)
+	c_eye(2) = d*signum(el);
+      else
+	{
+	  az *= M_PI/180.0;
+	  el *= M_PI/180.0;
+	  c_eye(0) = d*cos(el)*sin(az);
+	  c_eye(1) = -d*cos(el)*cos(az);
+	  c_eye(2) = d*sin(el);
+	}
+      c_eye(0) = c_eye(0)*(xlim(1)-xlim(0))/(xd*pb(0))+c_center(0);
+      c_eye(1) = c_eye(1)*(ylim(1)-ylim(0))/(yd*pb(1))+c_center(1);
+      c_eye(2) = c_eye(2)*(zlim(1)-zlim(0))/(zd*pb(2))+c_center(2);
+
+      cameraposition = xform2cam (c_eye);
+    }
+  else
+    c_eye = cam2xform (get_cameraposition ().matrix_value ());
+
+  if (cameraupvectormode_is ("auto"))
+    {
+      Matrix view = get_view ().matrix_value ();
+      double az = view(0), el = view(1);
+
+      if (el == 90 || el == -90)
+	{
+	  c_upv(0) = -sin(az*M_PI/180.0)*(xlim(1)-xlim(0))/pb(0);
+	  c_upv(1) = cos(az*M_PI/180.0)*(ylim(1)-ylim(0))/pb(1);
+	}
+      else
+	c_upv(2) = 1;
+
+      cameraupvector = xform2cam (c_upv);
+    }
+  else
+    c_upv = cam2xform (get_cameraupvector ().matrix_value ());
+
+  Matrix x_view = xform_matrix ();
+  Matrix x_projection = xform_matrix ();
+  Matrix x_viewport = xform_matrix ();
+  Matrix x_normrender = xform_matrix ();
+  Matrix x_pre = xform_matrix ();
+  
+  x_render = xform_matrix ();
+  x_render_inv = xform_matrix ();
+
+  scale (x_pre, pb(0), pb(1), pb(2));
+  translate (x_pre, -0.5, -0.5, -0.5);
+  scale (x_pre, xd/(xlim(1)-xlim(0)), yd/(ylim(1)-ylim(0)),
+	 zd/(zlim(1)-zlim(0)));
+  translate (x_pre, -xo, -yo, -zo);
+
+  xform (c_eye, x_pre);
+  xform (c_center, x_pre);
+  scale (c_upv, pb(0)/(xlim(1)-xlim(0)), pb(1)/(ylim(1)-ylim(0)), 
+	 pb(2)/(zlim(1)-zlim(0)));
+  translate (c_center, -c_eye(0), -c_eye(1), -c_eye(2));
+
+  ColumnVector F (c_center), f (F), UP (c_upv);
+  normalize (f);
+  normalize (UP);
+
+  if (abs (dot (f, UP)) > 1e-15)
+    {
+      double fa = 1/sqrt(1-f(2)*f(2));
+      scale (UP, fa, fa, fa);
+    }
+
+  ColumnVector s = cross (f, UP);
+  ColumnVector u = cross (s, f);
+
+  scale (x_view, 1, 1, -1);
+  Matrix l = xform_matrix ();
+  l(0,0) = s(0); l(0,1) = s(1); l(0,2) = s(2);
+  l(1,0) = u(0); l(1,1) = u(1); l(1,2) = u(2);
+  l(2,0) = -f(0); l(2,1) = -f(1); l(2,2) = -f(2);
+  x_view = x_view * l;
+  translate (x_view, -c_eye(0), -c_eye(1), -c_eye(2));
+  scale (x_view, pb(0), pb(1), pb(2));
+  translate (x_view, -0.5, -0.5, -0.5);
+
+  Matrix x_cube = x_view * unit_cube ();
+  ColumnVector cmin = x_cube.row_min (), cmax = x_cube.row_max ();
+  double xM = cmax(0)-cmin(0);
+  double yM = cmax(1)-cmin(1);
+
+  Matrix bb = get_boundingbox ();
+  Matrix cs = get_backend ().get_canvas_size (__myhandle__);
+  double fh = cs(1);
+
+  double v_angle;
+
+  if (cameraviewanglemode_is ("auto"))
+    {
+      double af;
+
+      // FIXME: Was this really needed? When compared to Matlab, it
+      // does not seem to be required. Need investigation with concrete
+      // backend to see results visually.
+      if (false && dowarp)
+        af = 1.0 / (xM > yM ? xM : yM);
+      else
+        {
+          if ((bb(2)/bb(3)) > (xM/yM))
+            af = 1.0 / yM;
+          else
+            af = 1.0 / xM;
+        }
+      v_angle = 2 * (180.0 / M_PI) * atan (1 / (2 * af * norm (F)));
+
+      cameraviewangle = v_angle;
+    }
+  else
+    v_angle = get_cameraviewangle ();
+
+  double pf = 1 / (2 * tan ((v_angle / 2) * M_PI / 180.0) * norm (F));
+  scale (x_projection, pf, pf, 1);
+
+  if (dowarp)
+    {
+      xM *= pf;
+      yM *= pf;
+      translate (x_viewport, bb(0)+bb(2)/2, fh-(bb(1)+bb(3)/2)+1, 0);
+      scale (x_viewport, bb(2)/xM, -bb(3)/yM, 1);
+    }
+  else
+    {
+      double pix = 1;
+      if (autocam)
+	{
+	  if ((bb(2)/bb(3)) > (xM/yM))
+	    pix = bb(3);
+	  else
+	    pix = bb(2);
+	}
+      else
+	pix = (bb(2) < bb(3) ? bb(2) : bb(3));
+      translate (x_viewport, bb(0)+bb(2)/2, fh-(bb(1)+bb(3)/2)+1, 0);
+      scale (x_viewport, pix, -pix, 1);
+    }
+
+  x_normrender = x_viewport * x_projection * x_view;
+
+  x_cube = x_normrender * unit_cube ();
+  cmin = x_cube.row_min ();
+  cmax = x_cube.row_max ();
+  x_zlim.resize (1, 2);
+  x_zlim(0) = cmin(2);
+  x_zlim(1) = cmax(2);
+
+  x_render = x_normrender;
+  scale (x_render, xd/(xlim(1)-xlim(0)), yd/(ylim(1)-ylim(0)),
+	 zd/(zlim(1)-zlim(0)));
+  translate (x_render, -xo, -yo, -zo);
+
+  x_viewtransform = x_view;
+  x_projectiontransform = x_projection;
+  x_viewporttransform = x_viewport;
+  x_normrendertransform = x_normrender;
+  x_rendertransform = x_render;
+
+  x_render_inv = x_render.inverse ();
+
+  // Note: these matrices are a slight modified version of the regular
+  // matrices, more suited for OpenGL rendering (x_gl_mat1 => light
+  // => x_gl_mat2)
+  x_gl_mat1 = x_view;
+  scale (x_gl_mat1, xd/(xlim(1)-xlim(0)), yd/(ylim(1)-ylim(0)),
+	 zd/(zlim(1)-zlim(0)));
+  translate (x_gl_mat1, -xo, -yo, -zo);
+  x_gl_mat2 = x_viewport * x_projection;
+}
+
+void
+axes::properties::update_aspectratios (void)
+{
+  Matrix xlim = get_xlim ().matrix_value ();
+  Matrix ylim = get_ylim ().matrix_value ();
+  Matrix zlim = get_zlim ().matrix_value ();
+
+  double dx = (xlim(1)-xlim(0));
+  double dy = (ylim(1)-ylim(0));
+  double dz = (zlim(1)-zlim(0));
+
+  if (dataaspectratiomode_is ("auto"))
+    {
+      double dmin = xmin (xmin (dx, dy), dz);
+      Matrix da (1, 3, 0.0);
+
+      da(0) = dx/dmin;
+      da(1) = dy/dmin;
+      da(2) = dz/dmin;
+
+      dataaspectratio = da;
+    }
+
+  if (plotboxaspectratiomode_is ("auto"))
+    {
+      if (dataaspectratiomode_is ("auto"))
+	plotboxaspectratio = Matrix (1, 3, 1.0);
+      else
+	{
+	  Matrix da = get_dataaspectratio ().matrix_value ();
+	  Matrix pba (1, 3, 0.0);
+
+	  pba(0) = dx/da(0);
+	  pba(1) = dy/da(1);
+	  pba(2) = dz/da(2);
+	}
+    }
+  
+  // FIXME: if plotboxaspectratiomode is "manual", limits
+  // and/or dataaspectratio might be adapted
+}
+
+Matrix
+axes::properties::get_boundingbox (void) const
+{
+  graphics_backend b = get_backend ();
+  Matrix pos;
+  
+  pos = convert_position (get_position ().matrix_value (), get_units (),
+			  "pixels", b.get_canvas_size (__myhandle__), b);
+  pos(0)--;
+  pos(1)--;
+
+  return pos;
 }
 
 octave_value
@@ -1777,6 +2331,8 @@ axes::update_axis_limits (const std::string& axis_type)
     default:
       break;
     }
+
+  xproperties.update_transform ();
 
   unwind_protect::run ();
 }

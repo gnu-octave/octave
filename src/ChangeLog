@@ -1,3 +1,49 @@
+2008-01-28  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* genprops.awk: Add update ('u') modifier and document the
+	readonly ('r') modifier.
+	* graphics.h.in (class base_scaler, class lin_scaler, class
+	log_scaler, class scaler): New classes to make abstraction of the
+	axis scale.
+	(base_graphics_backend::get_screen_resolution,
+	graphics_backend::get_screen_resolution): New methods.
+	(axes::properties::sx, axes::properties::sy,
+	axes::properties::sz): New scaler fields.
+	(axes::properties::get_x_scaler, axes::properties::get_y_scaler,
+	axes::properties::get_z_scaler): New accessors.
+	(axes::properties::x_render, axes::properties::x_render_inv,
+	axes::properties::x_gl_mat1, axes::properties::x_gl_mat2,
+	axes::properties::x_zlim): New utility Matrix fields.
+	(axes::properties::get_boundingbox,
+	axes::properties::update_camera,
+	axes::properites::update_aspectratios,
+	axes::properties::update_transform,
+	axes::properties::update_xscale, axes::properties::update_yscale,
+	axes::properties::update_zscale, axes::properties::update_view,
+	axes::properties::update_xdir, axes::properties::update_ydir,
+	axes::properties::update_zdir): New updater methods.
+	(axes::properties::init): Initialize sx, sy, sz and x_zlim correctly.
+	(axes::properties::position): Use valid default position value.
+	(axes::properties::xscale, axes::properties::yscale,
+	axes::properties::zscale, axes::properties::xdir,
+	axes::properties::ydir, axes::properties::zdir,
+	axes::properties::view): Add updater ('u') property modifier.
+	* graphics.cc (default_axes_position, default_axes_outerposition):
+	New initializers.
+	(convert_position): New utility function to convert position
+	according to specified units.
+	(gnuplot_backend::get_screen_resolution): New method.
+	(axes::properties::set_defaults): Initilize recently added properties.
+	(xform_matrix, xform_vector, transform, xform_scale,
+	xform_translate, scale, translate, xform, normalize, dot, cross,
+	unit_cube, cam2xform, xform2cam): New inline transformation
+	utility functions.
+	(axes::properties::update_camera,
+	axes::properties::update_aspectratios,
+	axes::properties::get_boundingbox): New updater methods for
+	computing transformation matrices.
+	(axes::update_axis_limits): Update transformation data.
+
 2008-01-28  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (BEGIN_CHAR_CLASS_CONVERSION): Handle width properly.

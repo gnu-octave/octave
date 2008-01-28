@@ -1541,8 +1541,8 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double*,
   do \
     { \
       if (! width) \
-	width = INT_MAX;
-
+	width = INT_MAX; \
+ \
       std::ostringstream buf; \
  \
       std::string char_class = elt->char_class; \

@@ -108,6 +108,19 @@
 ##
 ##   h:  Make the property hidden
 ##
+##   r:  Make the property read-only. A read-only property is not
+##       settable from the global set (caseless_str, octave_value)
+##       method, but still has set_X accessor.
+##
+##   u:  The property has an updater method. This effectively add
+##       the line
+##
+##         update_NAME ();
+##
+##       to the type-specific set function. This line is added before
+##       any other update call (like those added by the 'l' or 'm'
+##       modifiers.
+##
 ## The 'o' and 'O' qualifiers are only useful when the the property type
 ## is something other than octave_value.
 
@@ -275,6 +288,8 @@ function emit_declarations ()
       {
         printf ("\n  {\n    if (! error_state)\n      {\n        %s = val;\n",
           name[i]);
+        if (updater[i])
+          printf ("        %s ();\n", updater[i]);
         if (limits[i])
           printf ("        update_axis_limits (\"%s\");\n", name[i]);
         if (mode[i])
@@ -465,6 +480,7 @@ BEGIN {
     emit_get[idx] = "definition";
     emit_set[idx] = "definition";
     defval[idx] = "";
+    updater[idx] = "";
 ##    if (type[idx] == "octave_value")
 ##      emit_ov_set[idx] = "";
 ##    else
@@ -509,6 +525,11 @@ BEGIN {
 	## The property is read-only
 	if (index (quals, "r"))
 	  readonly[idx] = 1;
+
+        ## There is an updater method that should be called
+        ## from the set method
+        if (index (quals, "u"))
+          updater[idx] = ("update_" name[idx]);
 
 ##        ## emmit an asignment set function
 ##        if (index (quals, "a"))

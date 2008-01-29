@@ -81,8 +81,6 @@
 
 function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
 
-  FLAG_OCTAVE = exist('OCTAVE_VERSION','builtin');
-
   ## digits, sign, exponent,NaN,Inf
   ## valid_char = '0123456789eE+-.nNaAiIfF';
 
@@ -114,7 +112,7 @@ function [num, status, strarray] = str2double (s, cdelim, rdelim, ddelim)
   endif
 
   if (nargin < 4)
-    ddelim = '.';
+    ddelim = ".";
   elseif (length (ddelim) != 1)
     error ("decimal delimiter must be exactly one character");
   endif

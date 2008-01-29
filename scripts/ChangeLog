@@ -1,4 +1,8 @@
-2008-01-28  Michael Goffioul <michael.goffioul@gmail.com>
+2008-01-29  John W. Eaton  <jwe@octave.org>
+
+	* strings/str2double.m: Delete unused variable FLAG_OCTAVE.
+
+2008-01-28  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/xlabel.m, plot/ylabel.m, plot/zlabel.m:
 	Return the label handle, not the current axis handle.

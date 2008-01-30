@@ -24,8 +24,16 @@
 function dirname = tempdir ()
 
   dirname = getenv ("TMPDIR");
-  if (length (dirname) == 0)
+  if (isempty (dirname))
     dirname = P_tmpdir;
+  endif
+
+  if (! strcmp (dirname(end), filesep))
+    strcat (dirname, filesep);
+  endif
+
+  if (! isdir (dirname))
+    warning ("tempdir: `%s' does not exist or is not a directory", dirname);
   endif
 
 endfunction

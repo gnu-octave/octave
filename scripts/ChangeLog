@@ -1,5 +1,9 @@
 2008-01-30  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/tempdir.m: Append filesep to name for
+	compatibility.  Warn if not a directory or directory does not
+	exist.
+
 	* strings/deblank.m: Improve compatibility.
 
 2008-01-29  John W. Eaton  <jwe@octave.org>

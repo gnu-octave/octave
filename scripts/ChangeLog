@@ -1,5 +1,8 @@
 2008-01-30  John W. Eaton  <jwe@octave.org>
 
+	* plot/Makefile.in (SOURCES): Include __plt2sv__.m and
+	__plt2vs__.m in the list.
+
 	* miscellaneous/tempdir.m: Append filesep to name for
 	compatibility.  Warn if not a directory or directory does not
 	exist.

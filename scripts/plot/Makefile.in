@@ -58,7 +58,9 @@ SOURCES = \
   __plt2mm__.m \
   __plt2mv__.m \
   __plt2ss__.m \
+  __plt2sv__.m \
   __plt2vm__.m \
+  __plt2vs__.m \
   __plt2vv__.m \
   __plt__.m \
   __plt_get_axis_arg__.m \

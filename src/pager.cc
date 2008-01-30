@@ -496,6 +496,7 @@ DEFCMD (more, args, ,
 @deffnx {Command} more off\n\
 Turn output pagination on or off.  Without an argument, @code{more}\n\
 toggles the current state.\n\
+The current state can be determined via @code{page_screen_output}.\n\
 @end deffn")
 {
   octave_value_list retval;

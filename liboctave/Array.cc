@@ -2447,6 +2447,189 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
   return retval;
 }
 
+template <class T>
+bool 
+ascending_compare (T a, T b)
+{
+  return (a < b);
+}
+
+template <class T>
+bool 
+descending_compare (T a, T b)
+{
+  return (a > b);
+}
+
+template <class T>
+bool 
+ascending_compare (vec_index<T> *a, vec_index<T> *b)
+{
+  return (a->vec < b->vec);
+}
+
+template <class T>
+bool 
+descending_compare (vec_index<T> *a, vec_index<T> *b)
+{
+  return (a->vec > b->vec);
+}
+
+template <class T>
+Array<T>
+Array<T>::sort (octave_idx_type dim, sortmode mode) const
+{
+  Array<T> m = *this;
+
+  dim_vector dv = m.dims ();
+
+  if (m.length () < 1)
+    return m;
+
+  octave_idx_type ns = dv(dim);
+  octave_idx_type iter = dv.numel () / ns;
+  octave_idx_type stride = 1;
+  for (int i = 0; i < dim; i++)
+    stride *= dv(i);
+
+  T *v = m.fortran_vec ();
+  octave_sort<T> lsort;
+  
+  if (mode == ASCENDING) 
+    lsort.set_compare (ascending_compare);
+  else if (mode == DESCENDING)
+    lsort.set_compare (descending_compare);
+
+  if (stride == 1)
+    {
+      for (octave_idx_type j = 0; j < iter; j++)
+	{
+	  lsort.sort (v, ns);
+	  v += ns;
+	}
+    }
+  else
+    {
+      // Don't use OCTAVE_LOCAL_BUFFER here as it doesn't work with bool
+      // on some compilers.
+      Array<T> vi (ns);
+      T *pvi = vi.fortran_vec ();
+
+      for (octave_idx_type j = 0; j < iter; j++) 
+	{
+	   octave_idx_type offset = j;
+	   octave_idx_type offset2 = 0;
+	  while (offset >= stride)
+	    {
+	      offset -= stride;
+	      offset2++;
+	    }
+	  offset += offset2 * stride * ns;
+	  
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    pvi[i] = v[i*stride + offset];
+
+	  lsort.sort (pvi, ns);
+	      
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    v[i*stride + offset] = pvi[i];
+	}
+    }
+
+  return m;
+}
+
+template <class T>
+Array<T>
+Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim, 
+		sortmode mode) const
+{
+  Array<T> m = *this;
+
+  dim_vector dv = m.dims ();
+
+  if (m.length () < 1)
+    {
+      sidx = Array<octave_idx_type> (dv);
+      return m;
+    }
+
+  octave_idx_type ns = dv(dim);
+  octave_idx_type iter = dv.numel () / ns;
+  octave_idx_type stride = 1;
+  for (int i = 0; i < dim; i++)
+    stride *= dv(i);
+
+  T *v = m.fortran_vec ();
+  octave_sort<vec_index<T> *> indexed_sort;
+
+  if (mode == ASCENDING) 
+    indexed_sort.set_compare (ascending_compare);
+  else if (mode == DESCENDING)
+    indexed_sort.set_compare (descending_compare);
+
+  OCTAVE_LOCAL_BUFFER (vec_index<T> *, vi, ns);
+  OCTAVE_LOCAL_BUFFER (vec_index<T>, vix, ns);
+
+  for (octave_idx_type i = 0; i < ns; i++)
+    vi[i] = &vix[i];
+
+  sidx = Array<octave_idx_type> (dv);
+      
+  if (stride == 1)
+    {
+      for (octave_idx_type j = 0; j < iter; j++)
+	{
+	   octave_idx_type offset = j * ns;
+
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    {
+	      vi[i]->vec = v[i];
+	      vi[i]->indx = i;
+	    }
+
+	  indexed_sort.sort (vi, ns);
+
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    {
+	      v[i] = vi[i]->vec;
+	      sidx(i + offset) = vi[i]->indx;
+	    }
+	  v += ns;
+	}
+    }
+  else
+    {
+      for (octave_idx_type j = 0; j < iter; j++)
+	{
+	  octave_idx_type offset = j;
+	  octave_idx_type offset2 = 0;
+	  while (offset >= stride)
+	    {
+	      offset -= stride;
+	      offset2++;
+	    }
+	  offset += offset2 * stride * ns;
+	      
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    {
+	      vi[i]->vec = v[i*stride + offset];
+	      vi[i]->indx = i;
+	    }
+
+	  indexed_sort.sort (vi, ns);
+	      
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    {
+	      v[i*stride+offset] = vi[i]->vec;
+	      sidx(i*stride+offset) = vi[i]->indx;
+	    }
+	}
+    }
+
+  return m;
+}
+
 // FIXME -- this is a mess.
 
 template <class LT, class RT>

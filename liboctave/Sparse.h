@@ -35,6 +35,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "dim-vector.h"
 #include "lo-utils.h"
 
+#include "oct-sort.h"
+
 class idx_vector;
 
 // Two dimensional sparse class.  Handles the reference counting for
@@ -515,6 +517,10 @@ public:
   octave_idx_type *mex_get_ir (void) const { return const_cast<octave_idx_type *> (ridx ()); }
 
   octave_idx_type *mex_get_jc (void) const { return const_cast<octave_idx_type *> (cidx ()); }
+
+  Sparse<T> sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const;
+  Sparse<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		 sortmode mode = UNDEFINED) const;
 };
 
 // NOTE: these functions should be friends of the Sparse<T> class and
@@ -539,6 +545,11 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs);
 #define INSTANTIATE_SPARSE_AND_ASSIGN(T, API) \
   INSTANTIATE_SPARSE (T, API); \
   INSTANTIATE_SPARSE_ASSIGN (T, T, API)
+
+#define INSTANTIATE_SPARSE_SORT(T) \
+  template class octave_sort<T>; \
+  template class vec_index<T>; \
+  template class octave_sort<vec_index<T> *>;
 
 #endif
 

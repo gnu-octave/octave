@@ -1,3 +1,34 @@
+2008-01-31  David Bateman  <dbateman@free.fr>
+
+	* ov.cc (octave_value::octave_value (const ArrayN<bool>&),
+	octave_value::octave_value (const Sparse<bool>&, const MatrixType &),
+	octave_value::octave_value (const ArrayN<std::streamoff>&)): New 
+	constructors.
+	* ov.h: (octave_value (const ArrayN<bool>&),
+	octave_value (const Sparse<bool>&, const MatrixType &),
+	octave_value (const ArrayN<std::streamoff>&)): Declare them.
+	(octave_value sort (octave_idx_type, sortmode) const, octave_value
+	sort (Array<octave_idx_type> &, octave_idx_type, sortmode) const):
+	octave_value sort method.
+	
+	
+	* ov-base.cc (sort): Base versions of teh octave_value sort methods.
+	* ov-base.h (sort): Declare the octave_value sort methods
+	* ov-base-scalar.h (sort): Simple sort methods for scalars.
+	* ov-base-mat.h, ov-base-sparse.h (sort): Sort methods calling
+	underlying array or sparse sort methods.
+	* ov-str-mat.h (sort): String specific sort methods.
+	
+	* TEMPLATE-INST/Array-tc.cc: Instantiate the array sort methods.
+	* ov-streamoff.h (sort): Sort versions returning and error.
+	* oct-stream.cc, ov-typeinfo.cc, Array-os.cc: Null instantiation
+	of array sort methods.
+	
+	* Makefile.in (DLD_XSRC): Remove sort.cc
+	* DLD-FUNCTIONS/sort.cc: Remove
+	* data.cc (Fdata): New function using octave_value sort methods
+	for the sorting. Add tests.
+
 2008-01-30  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* pager.cc (Fmore): Doc fix.

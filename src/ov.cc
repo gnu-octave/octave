@@ -588,6 +588,12 @@ octave_value::octave_value (const boolNDArray& bnda)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<bool>& bnda)
+  : rep (new octave_bool_matrix (bnda))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (char c, char type)
   : rep (type == '"'
 	 ? new octave_char_matrix_dq_str (c)
@@ -675,6 +681,12 @@ octave_value::octave_value (const Sparse<Complex>& m, const MatrixType &t)
 }
 
 octave_value::octave_value (const SparseBoolMatrix& bm, const MatrixType &t)
+  : rep (new octave_sparse_bool_matrix (bm, t))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const Sparse<bool>& bm, const MatrixType &t)
   : rep (new octave_sparse_bool_matrix (bm, t))
 {
   maybe_mutate ();
@@ -848,6 +860,11 @@ octave_value::octave_value (const Octave_map& m, const std::string& id)
 
 octave_value::octave_value (const streamoff_array& off)
   : rep (new octave_streamoff (off))
+{
+}
+
+octave_value::octave_value (const ArrayN<std::streamoff>& inda)
+  : rep (new octave_streamoff (inda))
 {
 }
 

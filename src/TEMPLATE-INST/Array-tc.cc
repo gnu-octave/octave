@@ -40,6 +40,40 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-obj.h"
 
+#define IFLT(a, b) if (compare ? compare ((a), (b)) : true)
+
+#include "oct-sort.cc"
+
+template <>
+bool
+ascending_compare (octave_value a, octave_value b)
+{
+  return (a.string_value () < b.string_value ());
+}
+
+template <>
+bool
+ascending_compare (vec_index<octave_value> *a, vec_index<octave_value> *b)
+{
+  return (a->vec.string_value () < b->vec.string_value ());
+}
+
+template <>
+bool
+descending_compare (octave_value a, octave_value b)
+{
+  return (a.string_value () > b.string_value ());
+}
+
+template <>
+bool
+descending_compare (vec_index<octave_value> *a, vec_index<octave_value> *b)
+{
+  return (a->vec.string_value () > b->vec.string_value ());
+}
+
+INSTANTIATE_ARRAY_SORT (octave_value);
+
 template class OCTINTERP_API Array<octave_value>;
 
 INSTANTIATE_ARRAY_ASSIGN (octave_value, octave_value, OCTINTERP_API);

@@ -126,6 +126,12 @@ public:
 
   std::string string_value (bool force = false) const;
 
+  octave_value sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+  { return octave_value (matrix.sort (dim, mode), true); }
+  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		     sortmode mode = UNDEFINED) const
+  { return octave_value (matrix.sort (sidx, dim, mode), true); }
+
   bool print_as_scalar (void) const { return (rows () <= 1); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
@@ -219,6 +225,13 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false)
     { return do_index_op_internal (idx, resize_ok, '\''); }
+
+
+  octave_value sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+  { return octave_value (matrix.sort (dim, mode), true, '\''); }
+  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		     sortmode mode = UNDEFINED) const
+  { return octave_value (matrix.sort (sidx, dim, mode), true, '\''); }
 
 private:
 

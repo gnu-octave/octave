@@ -369,9 +369,9 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<octave_idx_type>& r,
 	{
 	  OCTAVE_QUIT;
 	  octave_sort<octave_sparse_sort_idxl *> 
-	    sort (octave_sparse_sidxl_comp);
+	    lsort (octave_sparse_sidxl_comp);
 
-	  sort.sort (sidx, actual_nzmx);
+	  lsort.sort (sidx, actual_nzmx);
 	  OCTAVE_QUIT;
 
 	  // Now count the unique non-zero values
@@ -487,9 +487,9 @@ Sparse<T>::Sparse (const Array<T>& a, const Array<double>& r,
 	{
 	  OCTAVE_QUIT;
 	  octave_sort<octave_sparse_sort_idxl *> 
-	    sort (octave_sparse_sidxl_comp);
+	    lsort (octave_sparse_sidxl_comp);
 
-	  sort.sort (sidx, actual_nzmx);
+	  lsort.sort (sidx, actual_nzmx);
 	  OCTAVE_QUIT;
 
 	  // Now count the unique non-zero values
@@ -1855,7 +1855,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 
 	      OCTAVE_LOCAL_BUFFER (octave_idx_type, itmp, 
 				   (nr > nc ? nr : nc));
-	      octave_sort<octave_idx_type> sort;
+	      octave_sort<octave_idx_type> lsort;
 
 	      if (n > nr || m > nc)
 		permutation = false;
@@ -1871,7 +1871,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 		  // for idx_vector type.
 		  for (octave_idx_type i = 0; i < n; i++)
 		    itmp [i] = idx_i.elem (i);
-		  sort.sort (itmp, n);
+		  lsort.sort (itmp, n);
 		  for (octave_idx_type i = 1; i < n; i++)
 		    if (itmp[i-1] == itmp[i])
 		      {
@@ -1883,7 +1883,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 		{
 		  for (octave_idx_type i = 0; i < m; i++)
 		    itmp [i] = idx_j.elem (i);
-		  sort.sort (itmp, m);
+		  lsort.sort (itmp, m);
 		  for (octave_idx_type i = 1; i < m; i++)
 		    if (itmp[i-1] == itmp[i])
 		      {
@@ -1920,7 +1920,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 			      retval.xridx (kk++) = ii;
 			    }
 			}
-		      sort.sort (ri + retval.xcidx (j), kk - retval.xcidx (j));
+		      lsort.sort (ri + retval.xcidx (j), kk - retval.xcidx (j));
 		      for (octave_idx_type p = retval.xcidx (j); p < kk; p++)
 			retval.xdata (p) = X [retval.xridx (p)]; 
 		      retval.xcidx(j+1) = kk;
@@ -2022,7 +2022,7 @@ Sparse<T>::index (idx_vector& idx_i, idx_vector& idx_j, int resize_ok) const
 				    }
 				}
 			    }
-			  sort.sort (ri + retval.xcidx (j), 
+			  lsort.sort (ri + retval.xcidx (j), 
 				     kk - retval.xcidx (j));
 			  for (octave_idx_type p = retval.xcidx (j); 
 			       p < kk; p++)
@@ -2051,6 +2051,215 @@ Sparse<T>::index (Array<idx_vector>& ra_idx, int resize_ok) const
     }
 
   return index (ra_idx (0), ra_idx (1), resize_ok);
+}
+
+// Can't use versions of these in Array.cc due to duplication of the 
+// instantiations for Array<double and Sparse<double>, etc
+template <class T>
+bool 
+sparse_ascending_compare (T a, T b)
+{
+  return (a < b);
+}
+
+template <class T>
+bool 
+sparse_descending_compare (T a, T b)
+{
+  return (a > b);
+}
+
+template <class T>
+bool 
+sparse_ascending_compare (vec_index<T> *a, vec_index<T> *b)
+{
+  return (a->vec < b->vec);
+}
+
+template <class T>
+bool 
+sparse_descending_compare (vec_index<T> *a, vec_index<T> *b)
+{
+  return (a->vec > b->vec);
+}
+
+template <class T>
+Sparse<T>
+Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
+{
+  Sparse<T> m = *this;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (m.length () < 1)
+    return m;
+
+  if (dim > 0)
+    {
+      m = m.transpose ();
+      nr = m.rows ();
+      nc = m.columns ();
+    }
+
+  octave_sort<T> lsort;
+
+  if (mode == ASCENDING) 
+    lsort.set_compare (sparse_ascending_compare);
+  else if (mode == DESCENDING)
+    lsort.set_compare (sparse_descending_compare);
+
+  T *v = m.data ();
+  octave_idx_type *mcidx = m.cidx ();
+  octave_idx_type *mridx = m.ridx ();
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_idx_type ns = mcidx [j + 1] - mcidx [j];
+      lsort.sort (v, ns);
+
+      octave_idx_type i;
+      if (mode == ASCENDING) 
+	{
+	  for (i = 0; i < ns; i++)
+	    if (sparse_ascending_compare (static_cast<T> (0), v [i]))
+	      break;
+	}
+      else
+	{
+	  for (i = 0; i < ns; i++)
+	    if (sparse_descending_compare (static_cast<T> (0), v [i]))
+	      break;
+	}
+      for (octave_idx_type k = 0; k < i; k++)
+	mridx [k] = k;
+      for (octave_idx_type k = i; k < ns; k++)
+	mridx [k] = k - ns + nr; 
+
+      v += ns;
+      mridx += ns;
+    }
+
+  if (dim > 0)
+      m = m.transpose ();
+
+  return m;
+}
+
+template <class T>
+Sparse<T>
+Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim, 
+		 sortmode mode) const
+{
+  Sparse<T> m = *this;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (m.length () < 1)
+    {
+      sidx = Array<octave_idx_type> (dim_vector (nr, nc));
+      return m;
+    }
+
+  if (dim > 0)
+    {
+      m = m.transpose ();
+      nr = m.rows ();
+      nc = m.columns ();
+    }
+
+  octave_sort<vec_index<T> *> indexed_sort;
+
+  if (mode == ASCENDING) 
+    indexed_sort.set_compare (sparse_ascending_compare);
+  else if (mode == DESCENDING)
+    indexed_sort.set_compare (sparse_descending_compare);
+
+  T *v = m.data ();
+  octave_idx_type *mcidx = m.cidx ();
+  octave_idx_type *mridx = m.ridx ();
+
+  OCTAVE_LOCAL_BUFFER (vec_index<T> *, vi, nr);
+  OCTAVE_LOCAL_BUFFER (vec_index<T>, vix, nr);
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    vi[i] = &vix[i];
+
+  sidx = Array<octave_idx_type> (dim_vector (nr, nc));
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      octave_idx_type ns = mcidx [j + 1] - mcidx [j];
+      octave_idx_type offset = j * nr;
+
+      if (ns == 0)
+	{
+	  for (octave_idx_type k = 0; k < nr; k++)
+	    sidx (offset + k) = k;
+	}
+      else
+	{
+	  for (octave_idx_type i = 0; i < ns; i++)
+	    {
+	      vi[i]->vec = v[i];
+	      vi[i]->indx = mridx[i];
+	    }
+
+	  indexed_sort.sort (vi, ns);
+
+	  octave_idx_type i;
+	  if (mode == ASCENDING) 
+	    {
+	      for (i = 0; i < ns; i++)
+		if (sparse_ascending_compare (static_cast<T> (0), 
+					      vi [i] -> vec))
+		  break;
+	    }
+	  else
+	    {
+	      for (i = 0; i < ns; i++)
+		if (sparse_descending_compare (static_cast<T> (0), 
+					       vi [i] -> vec))
+		  break;
+	    }
+
+	  octave_idx_type ii = 0;
+	  octave_idx_type jj = i;
+	  for (octave_idx_type k = 0; k < nr; k++)
+	    {
+	      if (ii < ns && mridx[ii] == k)
+		ii++;
+	      else
+		sidx (offset + jj++) = k;
+	    }
+
+	  for (octave_idx_type k = 0; k < i; k++)
+	    {
+	      v [k] = vi [k] -> vec;
+	      sidx (k + offset) = vi [k] -> indx;
+	      mridx [k] = k;
+	    }
+
+	  for (octave_idx_type k = i; k < ns; k++)
+	    {
+	      v [k] = vi [k] -> vec;
+	      sidx (k - ns + nr + offset) = vi [k] -> indx;
+	      mridx [k] = k - ns + nr; 
+	    }
+
+	  v += ns;
+	  mridx += ns;
+	}
+    }
+
+  if (dim > 0)
+    {
+      m = m.transpose ();
+      sidx = sidx.transpose ();
+    }
+
+  return m;
 }
 
 // FIXME

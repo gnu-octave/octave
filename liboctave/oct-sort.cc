@@ -90,7 +90,9 @@ The Python license is
 #include "quit.h"
 #include "oct-sort.h"
 
+#ifndef IFLT
 #define IFLT(a,b)  if (compare ? compare ((a), (b)) : ((a) < (b)))
+#endif
 
 template <class T>
 octave_sort<T>::octave_sort (void) : compare (0)
@@ -186,10 +188,10 @@ elements to get out of order).
 Returns -1 in case of error.
 */
 template <class T>
-int
+octave_idx_type
 octave_sort<T>::count_run (T *lo, T *hi, int *descending)
 {
-  int n;
+  octave_idx_type n;
 
   *descending = 0;
   ++lo;
@@ -243,12 +245,12 @@ key, and the last n-k should follow key.
 Returns -1 on error.  See listsort.txt for info on the method.
 */
 template <class T>
-int
-octave_sort<T>::gallop_left (T key, T *a, int n, int hint)
+octave_idx_type
+octave_sort<T>::gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hint)
 {
-  int ofs;
-  int lastofs;
-  int k;
+  octave_idx_type ofs;
+  octave_idx_type lastofs;
+  octave_idx_type k;
 
   a += hint;
   lastofs = 0;
@@ -258,7 +260,7 @@ octave_sort<T>::gallop_left (T key, T *a, int n, int hint)
       /* a[hint] < key -- gallop right, until
        * a[hint + lastofs] < key <= a[hint + ofs]
        */
-      const int maxofs = n - hint;	/* &a[n-1] is highest */
+      const octave_idx_type maxofs = n - hint;	/* &a[n-1] is highest */
       while (ofs < maxofs) 
 	{
 	  IFLT (a[ofs], key)
@@ -282,7 +284,7 @@ octave_sort<T>::gallop_left (T key, T *a, int n, int hint)
       /* key <= a[hint] -- gallop left, until
        * a[hint - ofs] < key <= a[hint - lastofs]
        */
-      const int maxofs = hint + 1;	/* &a[0] is lowest */
+      const octave_idx_type maxofs = hint + 1;	/* &a[0] is lowest */
       while (ofs < maxofs) 
 	{
 	  IFLT (*(a-ofs), key)
@@ -309,7 +311,7 @@ octave_sort<T>::gallop_left (T key, T *a, int n, int hint)
   ++lastofs;
   while (lastofs < ofs) 
     {
-      int m = lastofs + ((ofs - lastofs) >> 1);
+      octave_idx_type m = lastofs + ((ofs - lastofs) >> 1);
 
       IFLT (a[m], key)
 	lastofs = m+1;	/* a[m] < key */
@@ -335,12 +337,12 @@ we're sticking to "<" comparisons that it's much harder to follow if
 written as one routine with yet another "left or right?" flag.
 */
 template <class T>
-int
-octave_sort<T>::gallop_right (T key, T *a, int n, int hint)
+octave_idx_type
+octave_sort<T>::gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hint)
 {
-  int ofs;
-  int lastofs;
-  int k;
+  octave_idx_type ofs;
+  octave_idx_type lastofs;
+  octave_idx_type k;
 
   a += hint;
   lastofs = 0;
@@ -350,7 +352,7 @@ octave_sort<T>::gallop_right (T key, T *a, int n, int hint)
       /* key < a[hint] -- gallop left, until
        * a[hint - ofs] <= key < a[hint - lastofs]
        */
-      const int maxofs = hint + 1;	/* &a[0] is lowest */
+      const octave_idx_type maxofs = hint + 1;	/* &a[0] is lowest */
       while (ofs < maxofs) 
 	{
 	  IFLT (key, *(a-ofs))
@@ -375,7 +377,7 @@ octave_sort<T>::gallop_right (T key, T *a, int n, int hint)
       /* a[hint] <= key -- gallop right, until
        * a[hint + lastofs] <= key < a[hint + ofs]
        */
-      const int maxofs = n - hint;	/* &a[n-1] is highest */
+      const octave_idx_type maxofs = n - hint;	/* &a[n-1] is highest */
       while (ofs < maxofs) 
 	{
 	  IFLT (key, a[ofs])
@@ -401,7 +403,7 @@ octave_sort<T>::gallop_right (T key, T *a, int n, int hint)
   ++lastofs;
   while (lastofs < ofs) 
     {
-      int m = lastofs + ((ofs - lastofs) >> 1);
+      octave_idx_type m = lastofs + ((ofs - lastofs) >> 1);
 
       IFLT (key, a[m])
 	ofs = m;	/* key < a[m] */
@@ -437,11 +439,11 @@ octave_sort<T>::merge_freemem (void)
   ms.a = 0;
 }
 
-static inline int
-roundupsize (int n)
+static inline octave_idx_type
+roundupsize (octave_idx_type n)
 {
   unsigned int nbits = 3;
-  unsigned int n2 = static_cast<unsigned int> (n) >> 8;
+  octave_idx_type n2 = static_cast<octave_idx_type> (n) >> 8;
 
   /* Round up:
    * If n <       256, to a multiple of        8.
@@ -479,7 +481,7 @@ roundupsize (int n)
  */
 template <class T>
 int
-octave_sort<T>::merge_getmem (int need)
+octave_sort<T>::merge_getmem (octave_idx_type need)
 {
   if (need <= ms.alloced)
     return 0;
@@ -510,12 +512,12 @@ octave_sort<T>::merge_getmem (int need)
  */
 template <class T>
 int
-octave_sort<T>::merge_lo (T *pa, int na, T *pb, int nb)
+octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 {
-  int k;
+  octave_idx_type k;
   T *dest;
   int result = -1;	/* guilty until proved innocent */
-  int min_gallop = ms.min_gallop;
+  octave_idx_type min_gallop = ms.min_gallop;
 
   if (MERGE_GETMEM (na) < 0)
     return -1;
@@ -532,8 +534,8 @@ octave_sort<T>::merge_lo (T *pa, int na, T *pb, int nb)
 
   for (;;)
     {
-      int acount = 0;	/* # of times A won in a row */
-      int bcount = 0;	/* # of times B won in a row */
+      octave_idx_type acount = 0;	/* # of times A won in a row */
+      octave_idx_type bcount = 0;	/* # of times B won in a row */
 
       /* Do the straightforward thing until (if ever) one run
        * appears to win consistently.
@@ -647,14 +649,14 @@ octave_sort<T>::merge_lo (T *pa, int na, T *pb, int nb)
  */
 template <class T>
 int
-octave_sort<T>::merge_hi (T *pa, int na, T *pb, int nb)
+octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 {
-  int k;
+  octave_idx_type k;
   T *dest;
   int result = -1;	/* guilty until proved innocent */
   T *basea;
   T *baseb;
-  int min_gallop = ms.min_gallop;
+  octave_idx_type min_gallop = ms.min_gallop;
 
   if (MERGE_GETMEM (nb) < 0)
     return -1;
@@ -674,8 +676,8 @@ octave_sort<T>::merge_hi (T *pa, int na, T *pb, int nb)
 
   for (;;) 
     {
-      int acount = 0;	/* # of times A won in a row */
-      int bcount = 0;	/* # of times B won in a row */
+      octave_idx_type acount = 0;	/* # of times A won in a row */
+      octave_idx_type bcount = 0;	/* # of times B won in a row */
 
       /* Do the straightforward thing until (if ever) one run
        * appears to win consistently.
@@ -787,11 +789,11 @@ CopyA:
  */
 template <class T>
 int
-octave_sort<T>::merge_at (int i)
+octave_sort<T>::merge_at (octave_idx_type i)
 {
   T *pa, *pb;
-  int na, nb;
-  int k;
+  octave_idx_type na, nb;
+  octave_idx_type k;
 
   pa = ms.pending[i].base;
   na = ms.pending[i].len;
@@ -852,7 +854,7 @@ octave_sort<T>::merge_collapse (void)
 
   while (ms.n > 1) 
     {
-      int n = ms.n - 2;
+      octave_idx_type n = ms.n - 2;
       if (n > 0 && p[n-1].len <= p[n].len + p[n+1].len) 
 	{
 	  if (p[n-1].len < p[n+1].len)
@@ -885,7 +887,7 @@ octave_sort<T>::merge_force_collapse (void)
 
   while (ms.n > 1) 
     {
-      int n = ms.n - 2;
+      octave_idx_type n = ms.n - 2;
       if (n > 0 && p[n-1].len < p[n+1].len)
 	--n;
       if (merge_at (n) < 0)
@@ -906,10 +908,10 @@ octave_sort<T>::merge_force_collapse (void)
  * See listsort.txt for more info.
  */
 template <class T>
-int
-octave_sort<T>::merge_compute_minrun (int n)
+octave_idx_type
+octave_sort<T>::merge_compute_minrun (octave_idx_type n)
 {
-  int r = 0;	/* becomes 1 if any 1 bits are shifted off */
+  octave_idx_type r = 0;	/* becomes 1 if any 1 bits are shifted off */
 
   while (n >= 64)
     {
@@ -922,7 +924,7 @@ octave_sort<T>::merge_compute_minrun (int n)
 
 template <class T>
 void
-octave_sort<T>::sort (T *v, int elements)
+octave_sort<T>::sort (T *v, octave_idx_type elements)
 {
   /* Re-initialize the Mergestate as this might be the second time called */
   ms.n = 0;
@@ -930,18 +932,18 @@ octave_sort<T>::sort (T *v, int elements)
 
   if (elements > 1)
     {
-      int nremaining = elements; 
+      octave_idx_type nremaining = elements; 
       T *lo = v;
       T *hi = v + elements;
 
       /* March over the array once, left to right, finding natural runs,
        * and extending short natural runs to minrun elements.
        */
-      int minrun = merge_compute_minrun (nremaining);
+      octave_idx_type minrun = merge_compute_minrun (nremaining);
       do 
 	{
 	  int descending;
-	  int n;
+	  octave_idx_type n;
 
 	  /* Identify next run. */
 	  n = count_run (lo, hi, &descending);
@@ -952,7 +954,7 @@ octave_sort<T>::sort (T *v, int elements)
 	  /* If short, extend to min(minrun, nremaining). */
 	  if (n < minrun) 
 	    {
-	      const int force = nremaining <= minrun ? nremaining : minrun;
+	      const octave_idx_type force = nremaining <= minrun ? nremaining : minrun;
 	      binarysort (lo, lo + force, lo + n);
 	      n = force;
 	    }

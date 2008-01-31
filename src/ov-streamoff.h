@@ -77,6 +77,18 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
+  octave_value sort (octave_idx_type, sortmode) const
+    { 
+      gripe_wrong_type_arg ("octave_base_value::sort ()", type_name ());
+      return octave_value();
+    }
+  octave_value sort (Array<octave_idx_type> &, octave_idx_type,
+		     sortmode) const
+    { 
+      gripe_wrong_type_arg ("octave_base_value::sort ()", type_name ());
+      return octave_value();
+    }
+
 private:
 
   DECLARE_OCTAVE_ALLOCATOR

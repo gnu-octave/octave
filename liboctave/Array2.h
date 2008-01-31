@@ -115,6 +115,19 @@ public:
       Array<T> tmp = Array<T>::index (i, j, resize_ok, rfv);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
+
+  Array2<T> sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+    {
+      Array<T> tmp = Array<T>::sort (dim, mode);
+      return Array2<T> (tmp, tmp.rows (), tmp.columns ());
+    }
+
+  Array2<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		 sortmode mode = UNDEFINED) const
+    {
+      Array<T> tmp = Array<T>::sort (sidx, dim, mode);
+      return Array2<T> (tmp, tmp.rows (), tmp.columns ());
+    }
 };
 
 #endif

@@ -1,3 +1,71 @@
+2008-01-31  David Bateman  <dbateman@free.fr>
+
+	* oct-sort.cc: conversion of int to octave_idx_type where needed
+	for 64-bit builds.
+	(IFLT): Allow IFLT macro to be overridden.
+	* oct-sort.h: conversion of int to octave_idx_type where needed
+	for 64-bit builds.
+	(enum sortmode): Type of sort to perform.
+	(vec_index): Simple class to aid in indexed sorts.
+	
+	* Array.h ( Array<T> sort (octave_idx_type, sortmode) const,
+	Array<T> sort (Array<octave_idx_type> &, octave_idx_type,
+	sortmode) const): Array sorting methods.
+	(INSTANTIATE_ARRAY_SORT, NO_INSTANTIATE_ARRAY_SORT): Macros to
+	instantiate the array sorting methods.
+	* Array.cc (ascending_compare, descending_compare): New template
+	functions for generic sort comparison.
+  	( Array<T> Array<T>::sort (octave_idx_type, sortmode) const,
+	Array<T> Array<T>::sort (Array<octave_idx_type> &, octave_idx_type,
+	sortmode) const): Array sorting functions based of octave_sort
+	class.
+	* Array-C.cc: Instantiate the complex array sort methods. 
+	(IFLT): New macro to override the one in the
+	octave_sort class to avoid need for Complex < and > operators.
+	(static double xabs (const Complex&)): Complex abs function
+	avoiding std::abs(Inf) returning NaN with some compilers.
+	(ascending_compare, descending compare): override template
+	functions for complex comparison.
+	* Array-d.cc: Instantiate the double array sort methods. 
+	(Array<double> Array<double>::sort (octave_idx_type, 
+	sortmode) const, Array<double> Array<double>::sort 
+	(Array<octave_idx_type> &, octave_idx_type, sortmode) const): 
+	Array sorting functions based of octave_sort using uint64 sorting
+	on IEE754 doubles, for speed and correct sorting of Inf and NaN.
+	(ascending_compare, descending compare): override template
+	functions for double and uint64 comparison.
+	* Array-b.cc, Array-ch.cc, Array-i.cc, Array-s.cc, Array-str.cc: 
+	Instantiate the array sort methods.
+	* Array-idx-vec.cc: Null instantiation of array sort methods.
+	* Array2.h, Array3.h, ArrayN.h (sort): 2, 3 and N-dimensional
+	versions of the sort methods based on Array<T>::sort.
+
+	* CSparse.cc, dSparse.cc: Remove inclusion of octa-sort.h.
+	* Sparse.h ( Sparse<T> sort (octave_idx_type, sortmode) const,
+	Sparse<T> sort (Array<octave_idx_type> &, octave_idx_type,
+	sortmode) const): Sparse sorting methods.
+	(INSTANTIATE_ARRAY_SORT): Macro to instantiate the sparse sorting 
+	methods.
+	* Sparse.cc: replace sort with lsort throughout to avoid shadowing
+	of new sort method.
+	(sparse_ascending_compare, sparse_descending_compare): New template
+	functions for generic sort comparison.
+  	( Sparse<T> Sparse<T>::sort (octave_idx_type, sortmode) const,
+	Sparse<T> Sparse<T>::sort (Sparse<octave_idx_type> &, octave_idx_type,
+	sortmode) const): Sparse sorting functions based of octave_sort
+	class.
+	* Sparse-C.cc: Instantiate the complex sparse sort methods. 
+	(IFLT): New macro to override the one in the
+	octave_sort class to avoid need for Complex < and > operators.
+	(static double xabs (const Complex&)): Complex abs function
+	avoiding std::abs(Inf) returning NaN with some compilers.
+	(sparse_ascending_compare, sparse_descending compare): override
+	template functions for complex comparison.
+	* Sparse-d.cc: Instantiate the cdouble sparse sort methods. 
+	(sparse_ascending_compare, sparse_descending compare): override
+	template functions for double comparison.
+	* Array-b.cc: Instantiate the sparse sort methods.
+
 2008-01-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* idx-vector.h (idx_vector::idx_vector_rep::range_base,

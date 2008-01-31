@@ -96,6 +96,9 @@ The Python license is
 // Avoid malloc for small temp arrays.
 #define MERGESTATE_TEMP_SIZE 1024
 
+// Enum for type of sort function
+enum sortmode { UNDEFINED, ASCENDING, DESCENDING };
+
 template <class T>
 class
 octave_sort
@@ -110,7 +113,7 @@ public:
 
   void set_compare (bool (*comp) (T, T)) { compare = comp; }
 
-  void sort (T *v, int elements);
+  void sort (T *v, octave_idx_type elements);
 
 private:
 
@@ -125,7 +128,7 @@ private:
   struct s_slice 
   {
     T *base;
-    int len;
+    octave_idx_type len;
   };
   
   struct MergeState 
@@ -134,12 +137,12 @@ private:
     // initialized to MIN_GALLOP.  merge_lo and merge_hi tend to nudge
     // it higher for random data, and lower for highly structured
     // data.
-    int min_gallop;
+    octave_idx_type min_gallop;
 
     // 'a' is temp storage to help with merges.  It contains room for
     // alloced entries.
     T *a;               // may point to temparray below
-    int alloced;
+    octave_idx_type alloced;
     
     // A stack of n pending runs yet to be merged.  Run #i starts at
     // address base[i] and extends for len[i] elements.  It's always
@@ -149,7 +152,7 @@ private:
     //
     // so we could cut the storage for this, but it's a minor amount,
     // and keeping all the info explicit simplifies the code.
-    int n;
+    octave_idx_type n;
     struct s_slice pending[MAX_MERGE_PENDING];
   };
 
@@ -161,31 +164,39 @@ private:
   
   void binarysort (T *lo, T *hi, T *start);
     
-  int count_run (T *lo, T *hi, int *descending);
+  octave_idx_type count_run (T *lo, T *hi, octave_idx_type *descending);
 
-  int gallop_left (T key, T *a, int n, int hint);
+  octave_idx_type gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hint);
 
-  int gallop_right (T key, T *a, int n, int hint);
+  octave_idx_type gallop_right (T key, T *a, octave_idx_type n, octave_idx_type hint);
 
   void merge_init (void);
 
   void merge_freemem (void);
 
-  int merge_getmem (int need);
+  int merge_getmem (octave_idx_type need);
 
-  int merge_lo (T *pa, int na, T *pb, int nb);
+  int merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb);
 
-  int merge_hi (T *pa, int na, T *pb, int nb);
+  int merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb);
 
-  int merge_at (int i);
+  int merge_at (octave_idx_type i);
 
   int merge_collapse (void);
 
   int merge_force_collapse (void);
 
-  int merge_compute_minrun (int n);
+  octave_idx_type merge_compute_minrun (octave_idx_type n);
 };
 
+template <class T>
+class
+vec_index
+{
+public:
+  T vec;
+  octave_idx_type indx;
+};
 #endif
 
 /*

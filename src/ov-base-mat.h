@@ -110,6 +110,12 @@ public:
   MatrixType matrix_type (const MatrixType& _typ) const
     { MatrixType ret = typ; typ = _typ; return ret; }
 
+  octave_value sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+    { return octave_value (matrix.sort (dim, mode)); }
+  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		     sortmode mode = UNDEFINED) const
+    { return octave_value (matrix.sort (sidx, dim, mode)); }
+
   bool is_matrix_type (void) const { return true; }
 
   bool is_numeric_type (void) const { return true; }

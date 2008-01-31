@@ -33,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "dim-vector.h"
 #include "lo-utils.h"
 
+#include "oct-sort.h"
+
 class idx_vector;
 
 // One dimensional array class.  Handles the reference counting for
@@ -543,6 +545,10 @@ public:
   // Unsafe.  This function exists to support the MEX interface.
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (data ()); }
+
+  Array<T> sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const;
+  Array<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		 sortmode mode = UNDEFINED) const;
 };
 
 // NOTE: these functions should be friends of the Array<T> class and
@@ -587,6 +593,25 @@ assign (Array<LT>& lhs, const Array<RT>& rhs)
 #define INSTANTIATE_ARRAY_AND_ASSIGN(T, API) \
   INSTANTIATE_ARRAY (T, API); \
   INSTANTIATE_ARRAY_ASSIGN (T, T, API)
+
+#define INSTANTIATE_ARRAY_SORT(T) \
+  template class octave_sort<T>; \
+  template class vec_index<T>; \
+  template class octave_sort<vec_index<T> *>;
+
+#define NO_INSTANTIATE_ARRAY_SORT(T) \
+  template class vec_index<T>; \
+  template <> bool ascending_compare (T, T) { return true; } \
+  template <> bool ascending_compare (vec_index<T> *, vec_index<T> *) \
+    { return true; } \
+  template <> bool descending_compare (T, T) { return true; } \
+  template <> bool descending_compare (vec_index<T> *, vec_index<T> *) \
+    { return true; } \
+  template <> Array<T> Array<T>::sort \
+    (octave_idx_type, sortmode) const { return *this; } \
+  template <> Array<T> Array<T>::sort (Array<octave_idx_type> &sidx, \
+    octave_idx_type, sortmode) const \
+    { sidx = Array<octave_idx_type> (); return *this; }
 
 #endif
 

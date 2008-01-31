@@ -28,8 +28,11 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array.cc"
+#include "oct-sort.cc"
 
 #include <string>
+
+INSTANTIATE_ARRAY_SORT (std::string);
 
 INSTANTIATE_ARRAY (std::string, OCTAVE_API);
 

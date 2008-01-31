@@ -3305,6 +3305,300 @@ CPU time used is nonzero.\n\
   return retval;
 }
 
+DEFUN (sort, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x})\n\
+@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim})\n\
+@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{mode})\n\
+@deftypefnx {Loadable Function} {[@var{s}, @var{i}] =} sort (@var{x}, @var{dim}, @var{mode})\n\
+Return a copy of @var{x} with the elements arranged in increasing\n\
+order.  For matrices, @code{sort} orders the elements in each column.\n\
+\n\
+For example,\n\
+\n\
+@example\n\
+@group\n\
+sort ([1, 2; 2, 3; 3, 1])\n\
+     @result{}  1  1\n\
+         2  2\n\
+         3  3\n\
+@end group\n\
+@end example\n\
+\n\
+The @code{sort} function may also be used to produce a matrix\n\
+containing the original row indices of the elements in the sorted\n\
+matrix.  For example,\n\
+\n\
+@example\n\
+@group\n\
+[s, i] = sort ([1, 2; 2, 3; 3, 1])\n\
+     @result{} s = 1  1\n\
+            2  2\n\
+            3  3\n\
+     @result{} i = 1  3\n\
+            2  1\n\
+            3  2\n\
+@end group\n\
+@end example\n\
+\n\
+If the optional argument @var{dim} is given, then the matrix is sorted\n\
+along the dimension defined by @var{dim}. The optional argument @code{mode}\n\
+defines the order in which the values will be sorted. Valid values of\n\
+@code{mode} are `ascend' or `descend'.\n\
+\n\
+For equal elements, the indices are such that the equal elements are listed\n\
+in the order that appeared in the original list.\n\
+\n\
+The @code{sort} function may also be used to sort strings and cell arrays\n\
+of strings, in which case the dictionary order of the strings is used.\n\
+\n\
+The algorithm used in @code{sort} is optimized for the sorting of partially\n\
+ordered lists.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int nargin = args.length ();
+  sortmode smode = ASCENDING;
+
+  if (nargin < 1 || nargin > 3)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  bool return_idx = nargout > 1;
+
+  octave_value arg = args(0);
+
+  int dim = 0;
+  if (nargin > 1)
+    {
+      if (args(1).is_string ())
+	{
+	  std::string mode = args(1).string_value();
+	  if (mode == "ascend")
+	    smode = ASCENDING;
+	  else if (mode == "descend")
+	    smode = DESCENDING;
+	  else
+	    {
+	      error ("sort: mode must be either \"ascend\" or \"descend\"");
+	      return retval;
+	    }
+	}
+      else
+	dim = args(1).nint_value () - 1;
+    }
+
+  if (nargin > 2)
+    {
+      if (args(1).is_string ())
+	{
+	  print_usage ();
+	  return retval;
+	}
+
+      if (! args(2).is_string ())
+	{
+	  error ("sort: mode must be a string");
+	  return retval;
+	}
+      std::string mode = args(2).string_value();
+      if (mode == "ascend")
+	smode = ASCENDING;
+      else if (mode == "descend")
+	smode = DESCENDING;
+      else
+	{
+	  error ("sort: mode must be either \"ascend\" or \"descend\"");
+	  return retval;
+	}
+    }
+
+  dim_vector dv = arg.dims ();
+  if (error_state)
+    {
+      gripe_wrong_type_arg ("sort", arg);
+      return retval;
+    }
+  if (nargin == 1 || args(1).is_string ())
+    {
+      // Find first non singleton dimension
+      for (int i = 0; i < dv.length (); i++)
+	if (dv(i) > 1)
+	  {
+	    dim = i;
+	    break;
+	  }
+    }
+  else
+    {
+      if (dim < 0 || dim > dv.length () - 1)
+	{
+	  error ("sort: dim must be a valid dimension");
+	  return retval;
+	}
+    }
+
+  if (return_idx)
+    {
+      Array<octave_idx_type> sidx;
+
+      retval (0) = arg.sort (sidx, dim, smode);
+
+      octave_idx_type *ps = sidx.fortran_vec ();
+      NDArray midx (sidx.dims ());
+      double *pm = midx.fortran_vec ();
+
+      for (octave_idx_type i = 0; i < sidx.numel (); i++)
+	pm [i] = static_cast<double> 
+	  (ps [i] + static_cast<octave_idx_type> (1));
+
+      retval (1) = midx;
+    }
+  else
+    retval(0) = arg.sort (dim, smode);
+
+  return retval;
+}
+
+/*
+
+%% Double
+%!assert (sort ([NaN, 1, -1, 2, Inf]), [-1, 1, 2, Inf, NaN])
+%!assert (sort ([NaN, 1, -1, 2, Inf], 1), [NaN, 1, -1, 2, Inf])
+%!assert (sort ([NaN, 1, -1, 2, Inf], 2), [-1, 1, 2, Inf, NaN])
+%!error (sort ([NaN, 1, -1, 2, Inf], 3))
+%!assert (sort ([NaN, 1, -1, 2, Inf], "ascend"), [-1, 1, 2, Inf, NaN])
+%!assert (sort ([NaN, 1, -1, 2, Inf], 2, "ascend"), [-1, 1, 2, Inf, NaN])
+%!assert (sort ([NaN, 1, -1, 2, Inf], "descend"), [NaN, Inf, 2, 1, -1])
+%!assert (sort ([NaN, 1, -1, 2, Inf], 2, "descend"), [NaN, Inf, 2, 1, -1])
+%!assert (sort ([3, 1, 7, 5; 8, 2, 6, 4]), [3, 1, 6, 4; 8, 2, 7, 5])
+%!assert (sort ([3, 1, 7, 5; 8, 2, 6, 4], 1), [3, 1, 6, 4; 8, 2, 7, 5])
+%!assert (sort ([3, 1, 7, 5; 8, 2, 6, 4], 2), [1, 3, 5, 7; 2, 4, 6, 8])
+%!assert (sort (1), 1)
+
+%!test
+%! [v, i] = sort ([NaN, 1, -1, Inf, 1]);
+%! assert (v, [-1, 1, 1, Inf, NaN])
+%! assert (i, [3, 2, 5, 4, 1])
+
+%% Complex
+%!assert (sort ([NaN, 1i, -1, 2, Inf]), [1i, -1, 2, Inf, NaN])
+%!assert (sort ([NaN, 1i, -1, 2, Inf], 1), [NaN, 1i, -1, 2, Inf])
+%!assert (sort ([NaN, 1i, -1, 2, Inf], 2), [1i, -1, 2, Inf, NaN])
+%!error (sort ([NaN, 1i, -1, 2, Inf], 3))
+%!assert (sort ([NaN, 1i, -1, 2, Inf], "ascend"), [1i, -1, 2, Inf, NaN])
+%!assert (sort ([NaN, 1i, -1, 2, Inf], 2, "ascend"), [1i, -1, 2, Inf, NaN])
+%!assert (sort ([NaN, 1i, -1, 2, Inf], "descend"), [NaN, Inf, 2, -1, 1i])
+%!assert (sort ([NaN, 1i, -1, 2, Inf], 2, "descend"), [NaN, Inf, 2, -1, 1i])
+%!assert (sort ([3, 1i, 7, 5; 8, 2, 6, 4]), [3, 1i, 6, 4; 8, 2, 7, 5])
+%!assert (sort ([3, 1i, 7, 5; 8, 2, 6, 4], 1), [3, 1i, 6, 4; 8, 2, 7, 5])
+%!assert (sort ([3, 1i, 7, 5; 8, 2, 6, 4], 2), [1i, 3, 5, 7; 2, 4, 6, 8])
+%!assert (sort (1i), 1i)
+
+%!test
+%! [v, i] = sort ([NaN, 1i, -1, Inf, 1, 1i]);
+%! assert (v, [1, 1i, 1i, -1, Inf, NaN])
+%! assert (i, [5, 2, 6, 3, 4, 1])
+
+%% Bool
+%!assert (sort ([true, false, true, false]), [false, false, true, true])
+%!assert (sort ([true, false, true, false], 1), [true, false, true, false])
+%!assert (sort ([true, false, true, false], 2), [false, false, true, true])
+%!error (sort ([true, false, true, false], 3))
+%!assert (sort ([true, false, true, false], "ascend"), [false, false, true, true])
+%!assert (sort ([true, false, true, false], 2, "ascend"), [false, false, true, true])
+%!assert (sort ([true, false, true, false], "descend"), [true, true, false, false])
+%!assert (sort ([true, false, true, false], 2, "descend"), [true, true, false, false])
+%!assert (sort (true), true)
+
+%!test
+%! [v, i] = sort ([true, false, true, false]);
+%! assert (v, [false, false, true, true])
+%! assert (i, [2, 4, 1, 3])
+
+%% Sparse Double
+%!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf])), sparse ([-1, 0, 0, 1, 2, Inf, NaN]))
+%!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), 1), sparse ([0, NaN, 1, 0, -1, 2, Inf]))
+%!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), 2), sparse ([-1, 0, 0, 1, 2, Inf, NaN]))
+%!error (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), 3))
+%!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), "ascend"), sparse ([-1, 0, 0, 1, 2, Inf, NaN]))
+%!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), 2, "ascend"), sparse ([-1, 0, 0, 1, 2, Inf, NaN]))
+%!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), "descend"), sparse ([NaN, Inf, 2, 1, 0, 0, -1]))
+%!assert (sort (sparse ([0, NaN, 1, 0, -1, 2, Inf]), 2, "descend"), sparse ([NaN, Inf, 2, 1, 0, 0, -1]))
+
+%!shared a
+%! a = randn (10, 10);
+%! a (a < 0) = 0;
+%!assert (sort (sparse (a)), sparse (sort (a)))
+%!assert (sort (sparse (a), 1), sparse (sort (a, 1)))
+%!assert (sort (sparse (a), 2), sparse (sort (a, 2)))
+%!test
+%! [v, i] = sort (a);
+%! [vs, is] = sort (sparse (a));
+%! assert (vs, sparse (v))
+%! assert (is, i)
+
+%% Sparse Complex
+%!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf])), sparse ([0, 0, 1i, -1, 2, Inf, NaN]))
+%!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), 1), sparse ([0, NaN, 1i, 0, -1, 2, Inf]))
+%!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), 2), sparse ([0, 0, 1i, -1, 2, Inf, NaN]))
+%!error (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), 3))
+%!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), "ascend"), sparse ([0, 0, 1i, -1, 2, Inf, NaN]))
+%!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), 2, "ascend"), sparse ([0, 0, 1i, -1, 2, Inf, NaN]))
+%!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), "descend"), sparse ([NaN, Inf, 2, -1, 1i, 0, 0]))
+%!assert (sort (sparse ([0, NaN, 1i, 0, -1, 2, Inf]), 2, "descend"), sparse ([NaN, Inf, 2, -1, 1i, 0, 0]))
+
+%!shared a
+%! a = randn (10, 10); 
+%! a (a < 0) = 0;
+%! a = 1i * a;
+%!assert (sort (sparse (a)), sparse (sort (a)))
+%!assert (sort (sparse (a), 1), sparse (sort (a, 1)))
+%!assert (sort (sparse (a), 2), sparse (sort (a, 2)))
+%!test
+%! [v, i] = sort (a);
+%! [vs, is] = sort (sparse (a));
+%! assert (vs, sparse (v))
+%! assert (is, i)
+
+%% Sparse Bool
+%!assert (sort (sparse ([true, false, true, false])), sparse ([false, false, true, true]))
+%!assert (sort (sparse([true, false, true, false]), 1), sparse ([true, false, true, false]))
+%!assert (sort (sparse ([true, false, true, false]), 2), sparse ([false, false, true, true]))
+%!error (sort (sparse ([true, false, true, false], 3)))
+%!assert (sort (sparse ([true, false, true, false]), "ascend"), sparse([false, false, true, true]))
+%!assert (sort (sparse ([true, false, true, false]), 2, "ascend"), sparse([false, false, true, true]))
+%!assert (sort (sparse ([true, false, true, false]), "descend"), sparse ([true, true, false, false]))
+%!assert (sort (sparse ([true, false, true, false]), 2, "descend"), sparse([true, true, false, false]))
+
+%!test
+%! [v, i] = sort (sparse([true, false, true, false]));
+%! assert (v, sparse([false, false, true, true]))
+%! assert (i, [2, 4, 1, 3])
+
+%% Cell string array
+%!shared a, b, c
+%! a = {"Alice", "Cecile", "Eric", "Barry", "David"};
+%! b = {"Alice", "Barry", "Cecile", "David", "Eric"};
+%! c = {"Eric", "David", "Cecile", "Barry", "Alice"};
+%!assert (sort (a), b);
+%!assert (sort (a, 1), a)
+%!assert (sort (a, 2), b)
+%!error (sort (a, 3))
+%!assert (sort (a, "ascend"), b)
+%!assert (sort (a, 2, "ascend"), b)
+%!assert (sort (a, "descend"), c)
+%!assert (sort (a, 2, "descend"), c)
+
+%!test
+%! [v, i] = sort (a);
+%! assert (i, [1, 4, 2, 5, 3])
+
+*/
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

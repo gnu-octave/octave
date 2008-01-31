@@ -3220,6 +3220,7 @@ INSTANTIATE_DO_READ (boolNDArray);
 typedef octave_value (*read_fptr) (octave_stream&, octave_idx_type, octave_idx_type, octave_idx_type, octave_idx_type, bool,
 				   oct_mach_info::float_format ffmt, octave_idx_type&);
 
+NO_INSTANTIATE_ARRAY_SORT (read_fptr);
 INSTANTIATE_ARRAY (read_fptr,);
 template class Array2<read_fptr>;
 

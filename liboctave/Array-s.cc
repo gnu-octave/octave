@@ -29,6 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array.cc"
+#include "oct-sort.cc"
+
+INSTANTIATE_ARRAY_SORT (short);
 
 INSTANTIATE_ARRAY_AND_ASSIGN (short, OCTAVE_API);
 

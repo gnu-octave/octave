@@ -93,6 +93,16 @@ public:
 
   octave_value any (int = 0) const { return (scalar != ST ()); }
 
+  octave_value sort (octave_idx_type, sortmode) const
+    { return octave_value (scalar); }
+  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type,
+		     sortmode) const
+    { 
+      sidx.resize (dim_vector (1, 1)); 
+      sidx(0) = 0; 
+      return octave_value (scalar); 
+    }
+
   MatrixType matrix_type (void) const { return typ; }
   MatrixType matrix_type (const MatrixType& _typ) const
     { MatrixType ret = typ; typ = _typ; return ret; }

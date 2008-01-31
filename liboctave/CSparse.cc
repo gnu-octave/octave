@@ -46,8 +46,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "SparseCmplxCHOL.h"
 #include "SparseCmplxQR.h"
 
-#include "oct-sort.h"
-
 // Define whether to use a basic QR solver or one that uses a Dulmange
 // Mendelsohn factorization to seperate the problem into under-determined,
 // well-determined and over-determined parts and solves them seperately

@@ -878,6 +878,23 @@ octave_base_value::as_mxArray (void) const
   return 0;
 }
 
+octave_value
+octave_base_value::sort (octave_idx_type, sortmode) const
+{
+  gripe_wrong_type_arg ("octave_base_value::sort ()", type_name ());
+
+  return octave_value();
+}
+
+octave_value
+octave_base_value::sort (Array<octave_idx_type> &, 
+			 octave_idx_type, sortmode) const
+{
+  gripe_wrong_type_arg ("octave_base_value::sort ()", type_name ());
+
+  return octave_value();
+}
+
 static void
 gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 {

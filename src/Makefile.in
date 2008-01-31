@@ -67,7 +67,7 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc chol.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc inv.cc kron.cc lsode.cc \
 	lu.cc luinc.cc matrix_type.cc md5sum.cc minmax.cc pinv.cc qr.cc \
-	quad.cc qz.cc rand.cc regexp.cc schur.cc sort.cc sparse.cc \
+	quad.cc qz.cc rand.cc regexp.cc schur.cc sparse.cc \
 	spchol.cc spdet.cc spfind.cc spkron.cc splu.cc spparms.cc spqr.cc \
 	sqrtm.cc svd.cc syl.cc symrcm.cc time.cc tsearch.cc typecast.cc \
 	urlwrite.cc __contourc__.cc __delaunayn__.cc __dsearchn__.cc \

@@ -44,6 +44,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-time.h"
 #include "str-vec.h"
 
+#include "oct-sort.h"
+
 class Cell;
 class streamoff_array;
 class Octave_map;
@@ -183,6 +185,7 @@ public:
   octave_value (bool b);
   octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType());
   octave_value (const boolNDArray& bnda);
+  octave_value (const ArrayN<bool>& bnda);
   octave_value (char c, char type = '"');
   octave_value (const char *s, char type = '"');
   octave_value (const std::string& s, char type = '"');
@@ -200,6 +203,7 @@ public:
   octave_value (const Sparse<Complex>& m, const MatrixType& t = MatrixType ());
   octave_value (const SparseBoolMatrix& bm, 
 		const MatrixType& t = MatrixType ());
+  octave_value (const Sparse<bool>& m, const MatrixType& t = MatrixType ());
   octave_value (const octave_int8& i);
   octave_value (const octave_int16& i);
   octave_value (const octave_int32& i);
@@ -229,6 +233,7 @@ public:
   octave_value (const Octave_map& m);
   octave_value (const Octave_map& m, const std::string& id);
   octave_value (const streamoff_array& off);
+  octave_value (const ArrayN<std::streamoff>& inda);
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
 
@@ -859,6 +864,12 @@ public:
   octave_idx_type *mex_get_jc (void) const { return rep->mex_get_jc (); }
 
   mxArray *as_mxArray (void) const { return rep->as_mxArray (); }
+
+  octave_value sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+    { return rep->sort (dim, mode); } 
+  octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
+		 sortmode mode = UNDEFINED) const
+    { return rep->sort (sidx, dim, mode); } 
 
 protected:
 

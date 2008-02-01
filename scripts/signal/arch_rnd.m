@@ -63,6 +63,7 @@ function y = arch_rnd (a, b, T)
     a  = [a, 0];
     la = la + 1;
   endif
+
   lb = length (b);
   b  = reshape (b, 1, lb);
   if (lb == 1)
@@ -79,18 +80,19 @@ function y = arch_rnd (a, b, T)
   e(1) = sqrt (h(1)) * randn;
   y(1) = b(1) + e(1);
 
-  for t= 2 : M;
+  for t = 2:M
     ta   = min ([t, la]);
-    h(t) = a(1) + a(2:ta) * e(t-1:t-ta+1).^2;
+    h(t) = a(1) + a(2:ta) * e(t-ta+1:t-1).^2;
     e(t) = sqrt (h(t)) * randn;
     tb   = min ([t, lb]);
-    y(t) = b(1) + b(2:tb) * y(t-1:t-tb+1) + e(t);
+    y(t) = b(1) + b(2:tb) * y(t-tb+1:t-1) + e(t);
   endfor
+
   if (T > M)
-    for t = M+1 : T;
-      h(t) = a(1) + a(2:la) * e(t-1:t-la+1).^2;
+    for t = M+1:T
+      h(t) = a(1) + a(2:la) * e(t-la+1:t-1).^2;
       e(t) = sqrt (h(t)) * randn;
-      y(t) = b(1) + b(2:lb) * y(t-1:t-tb+1) + e(t);
+      y(t) = b(1) + b(2:lb) * y(t-tb+1:t-1) + e(t);
     endfor
   endif
 

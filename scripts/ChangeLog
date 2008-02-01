@@ -1,3 +1,7 @@
+2008-02-01  Dave Goel  <deego3@gmail.com>
+
+	* signal/arch_rnd.m: Correctly index E and Y vectors.
+
 2008-02-01  Bill Denney  <bill@denney.ws>
 
 	* time/weekday.m: Allow vector inputs and speed up.

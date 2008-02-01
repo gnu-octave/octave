@@ -1274,6 +1274,7 @@ public:
 
   octave_value get_buttondownfcn (void) const { return buttondownfcn.get (); }
 
+  bool is_clipping (void) const { return clipping.is_on (); }
   std::string get_clipping (void) const { return clipping.current_value (); }
 
   void execute_createfcn (const octave_value& data = octave_value ()) const
@@ -2166,6 +2167,56 @@ private:
 
 // ---------------------------------------------------------------------
 
+class OCTINTERP_API graphics_xform
+{
+public:
+  graphics_xform (void)
+      : xform (xform_eye ()), xform_inv (xform_eye ())
+    {
+      sx = sy = sz = "linear";
+    }
+
+  graphics_xform (const Matrix& xm, const Matrix& xim,
+		  const scaler& x, const scaler& y, const scaler& z)
+      : xform (xm), xform_inv (xim), sx (x), sy (y), sz (z) { }
+
+  graphics_xform (const graphics_xform& g)
+      : xform (g.xform), xform_inv (g.xform_inv), sx (g.sx),
+        sy (g.sy), sz (g.sz) { }
+
+  ~graphics_xform (void) { }
+
+  graphics_xform& operator = (const graphics_xform& g)
+    {
+      xform = g.xform;
+      xform_inv = g.xform_inv;
+      sx = g.sx;
+      sy = g.sy;
+      sz = g.sz;
+
+      return *this;
+    }
+
+  static ColumnVector xform_vector (double x, double y, double z);
+
+  static Matrix xform_eye (void);
+
+  ColumnVector transform (double x, double y, double z,
+			  bool scale = true) const;
+  
+  ColumnVector untransform (double x, double y, double z,
+			    bool scale = true) const;
+
+  Matrix xscale (const Matrix& m) const { return sx.scale (m); }
+  Matrix yscale (const Matrix& m) const { return sy.scale (m); }
+  Matrix zscale (const Matrix& m) const { return sz.scale (m); }
+
+private:
+  Matrix xform;
+  Matrix xform_inv;
+  scaler sx, sy, sz;
+};
+
 class OCTINTERP_API axes : public base_graphics_object
 {
 public:
@@ -2191,6 +2242,15 @@ public:
 	update_aspectratios ();
 	update_camera ();
       }
+
+    graphics_xform get_transform (void) const
+      { return graphics_xform (x_render, x_render_inv, sx, sy, sz); }
+
+    Matrix get_transform_matrix (void) const { return x_render; }
+    Matrix get_inverse_transform_matrix (void) const { return x_render_inv; }
+    Matrix get_opengl_matrix_1 (void) const { return x_gl_mat1; }
+    Matrix get_opengl_matrix_2 (void) const { return x_gl_mat2; }
+    Matrix get_transform_zlim (void) const { return x_zlim; }
 
   private:
     scaler sx, sy, sz;

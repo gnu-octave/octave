@@ -2068,6 +2068,44 @@ axes::properties::get_boundingbox (void) const
   return pos;
 }
 
+ColumnVector
+graphics_xform::xform_vector (double x, double y, double z)
+{ return ::xform_vector (x, y, z); }
+
+Matrix
+graphics_xform::xform_eye (void)
+{ return ::xform_matrix (); }
+
+ColumnVector
+graphics_xform::transform (double x, double y, double z,
+			   bool use_scale) const
+{
+  if (use_scale)
+    {
+      x = sx.scale (x);
+      y = sy.scale (y);
+      z = sz.scale (z);
+    }
+
+  return ::transform (xform, x, y, z);
+}
+
+ColumnVector
+graphics_xform::untransform (double x, double y, double z,
+			     bool use_scale) const
+{
+  ColumnVector v = ::transform (xform_inv, x, y, z);
+
+  if (use_scale)
+    {
+      v(0) = sx.unscale (v(0));
+      v(1) = sy.unscale (v(1));
+      v(2) = sz.unscale (v(2));
+    }
+
+  return v;
+}
+
 octave_value
 axes::get_default (const caseless_str& name) const
 {

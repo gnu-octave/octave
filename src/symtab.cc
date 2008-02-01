@@ -798,6 +798,55 @@ need to recompiled.\n\
   return retval;
 }
 
+#if 0
+
+// FIXME -- should we have functions like this in Octave?
+
+DEFUN (set_variable, args, , "set_variable (NAME, VALUE)")
+{
+  octave_value retval;
+
+  if (args.length () == 2)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+	symbol_table::varref (name) = args(1);
+      else
+	error ("set_variable: expecting variable name as first argument");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (variable_value, args, , "VALUE = variable_value (NAME)")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  retval = symbol_table::varval (name);
+
+	  if (retval.is_undefined ())
+	    error ("variable_value: `%s' is not a variable in the current scope",
+		   name.c_str ());
+	}
+      else
+	error ("variable_value: expecting variable name as first argument");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+#endif
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

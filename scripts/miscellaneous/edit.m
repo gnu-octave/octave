@@ -263,8 +263,7 @@ function ret = edit (file, state)
 
   ## Fill in the revision string.
   now = localtime (time);
-  revs = strcat (strftime ("%Y-%m-%d", now), " ", FUNCTION.AUTHOR, " ",
-		 FUNCTION.EMAIL, "\n* Initial revision");
+  revs = strcat ("Created: ", strftime ("%Y-%m-%d", now));
 
   ## Fill in the copyright string.
   copyright = strcat (strftime ("Copyright (C) %Y ", now), FUNCTION.AUTHOR);
@@ -291,7 +290,7 @@ You should have received a copy of the GNU General Public License\n\
 along with this program; if not, write to the Free Software\n\
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\
 ");
-      tail = strcat (author, "\n\n", revs);
+      tail = strcat (author, "\n", revs);
 
     case "BSD"
       head = strcat (copyright, "\n\n", "\
@@ -317,18 +316,17 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY\n\
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF\n\
 SUCH DAMAGE.\
 ");
-      tail = strcat (author, "\n\n", revs);
+      tail = strcat (author, "\n", revs);
 
     case "PD"
       head = "";
-      tail = strcat (author, "\n\n",
-		     "This program is granted to the public domain\n\n",
-		     revs);
+      tail = strcat (author, "\n", revs, "\n\n",
+		     "This program is granted to the public domain.");
 
     otherwise
       head = "";
       tail = strcat (copyright, "\n\n", FUNCTION.LICENSE, "\n",
-		     author, "\n\n", revs);
+		     author, "\n", revs);
   endswitch
 
   ## Generate the function template.
@@ -401,11 +399,10 @@ function ret = default_home ()
 
 endfunction
 
-## default_user (form)
-## Returns the name associated with the current user ID.
+## Return the name associated with the current user ID.
 ##
-## If form==1 return the full name.  This will be the
-## default author.  If form==0 return the login name.
+## If LONG_FORM is 1, return the full name.  This will be the
+## default author.  Otherwise return the login name.
 ## login@host will be the default email address.
 
 function ret = default_user (long_form)
@@ -418,6 +415,10 @@ function ret = default_user (long_form)
     endif
   elseif (long_form)
     ret = ent.gecos;
+    pos = strfind (ret, ",");
+    if (! isempty (pos))
+      ret = ret(1:pos-1);
+    endif
   else
     ret = ent.name;
   endif

@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{e} =} eomday (@var{y}, @var{m})
 ## Return the last day of the month @var{m} for the year @var{y}.
-## @seealso{datenum, datevec, weekday}
+## @seealso{datenum, datevec, weekday, eomdate}
 ## @end deftypefn
 
 ## Author: pkienzle <pkienzle@users.sf.net>
@@ -33,7 +33,7 @@ function e = eomday (y, m)
   endif
 
   eom = [31, 28, 31, 30 ,31, 30, 31, 31, 30, 31, 30, 31];
-  e = eom(m);
+  e = reshape (eom(m), size (m));
   e += (m == 2) & (mod (y, 4) == 0 & (mod (y, 100) != 0 | mod (y, 400) == 0));
 
 endfunction
@@ -49,6 +49,7 @@ endfunction
 %!assert(eomday(1:3,1:3),[31,28,31])
 %!assert(eomday(1:2000,2)',datevec(datenum(1:2000,3,0))(:,3))
 %!assert([1900:1999](find(eomday(1900:1999,2*ones(1,100))==29)),[1904,1908,1912,1916,1920,1924,1928,1932,1936,1940,1944,1948,1952,1956,1960,1964,1968,1972,1976,1980,1984,1988,1992,1996])
+%!assert(eomday([2004;2005], [2;2]), [29;28])
 # demos
 %!demo
 %! y = 1900:1999;

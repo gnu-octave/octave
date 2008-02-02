@@ -1193,11 +1193,23 @@ public:
   static void unregister_backend (const std::string& name)
     { available_backends.erase (name); }
 
+  static graphics_backend find_backend (const std::string& name)
+  {
+    const_available_backends_iterator p = available_backends.find (name);
+
+    if (p != available_backends.end ())
+      return p->second;
+    else
+      return default_backend ();
+  }
+
 private:
   base_graphics_backend *rep;
 
-private:
   static std::map<std::string, graphics_backend> available_backends;
+
+  typedef std::map<std::string, graphics_backend>::iterator available_backends_iterator;
+  typedef std::map<std::string, graphics_backend>::const_iterator const_available_backends_iterator;
 };
 
 // ---------------------------------------------------------------------
@@ -2022,7 +2034,36 @@ public:
 	return backend;
       }
 
-    void set_backend (const graphics_backend& b) { backend = b; }
+    void set_backend (const graphics_backend& b) 
+    { 
+      close (false);
+      backend = b; 
+      __backend__ = b.get_name ();
+      mark_modified ();
+    }
+
+    void set___backend__ (const octave_value& val)
+    {
+      if (! error_state)
+	{
+	  if (val.is_string ())
+	    {
+	      std::string nm = val.string_value ();
+	      graphics_backend b = graphics_backend::find_backend (nm);
+	      if (b.get_name () != nm)
+		{
+		  error ("figure::__backend__ : illegal backend");
+		}
+	      else
+		{
+		  set_backend (b);
+		  mark_modified ();
+		}
+	    }
+	  else
+	    error ("__backend__ must be a string");
+	}
+    }
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -2078,6 +2119,7 @@ public:
       string_property xvisual , ""
       radio_property xvisualmode , "{auto}|manual"
       callback_property buttondownfcn , Matrix ()
+      string_property __backend__ s , "gnuplot"
     END_PROPERTIES
     
   protected:

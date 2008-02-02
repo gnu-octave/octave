@@ -1,3 +1,8 @@
+2008-02-02  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.h.in (graphics_backend::find_backend): New function.
+	(class figure): Add __backend__ property and set method.
+	
 2008-02-02  John W. Eaton  <jwe@octave.org>
 
 	* help.cc (do_type): Don't print dyamically loaded function files.

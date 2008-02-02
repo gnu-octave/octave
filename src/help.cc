@@ -1144,8 +1144,8 @@ display_file (std::ostream& os, const std::string& name,
   if (fs)
     {
       if (pr_type_info && ! quiet)
-	os << name << " is the " << type
-		   << " defined from: " << fname << "\n\n";
+	os << name << " is the " << type << " defined from the file\n"
+	   << fname << ":\n\n";
 
       char ch;
 
@@ -1183,23 +1183,38 @@ do_type (std::ostream& os, const std::string& name, bool pr_type_info,
 	{
 	  octave_function *fcn = val.function_value ();
 
-	  std::string fn = fcn ? fcn->fcn_file_name () : std::string ();
-
-	  if (pr_orig_txt && ! fn.empty ())
-	    display_file (os, name, fn, "function", pr_type_info, quiet);
-	  else
+	  if (fcn)
 	    {
-	      if (pr_type_info && ! quiet)
+	      std::string fn = fcn->fcn_file_name ();
+
+	      if (fcn->is_builtin_function ())
+		os << name << " is a built-in function" << std::endl;
+	      else if (fcn->is_dld_function () || fcn->is_mex_function ())
+		os << name
+		   << " is a dyanmically loaded function from the file\n"
+		   << fn << std::endl;
+	      else if (pr_orig_txt && ! fn.empty ())
+		display_file (os, name, fn, "function", pr_type_info, quiet);
+	      else
 		{
-		  std::string type
-		    = fcn->is_user_function () ? "command-line" : "built-in";
+		  if (pr_type_info && ! quiet)
+		    {
+		      os << name;
 
-		  os << name << " is a " << type << " function:\n\n";
+		      if (fcn->is_user_function ())
+			{
+			  if (fn.empty ())
+			    os << " is a command-line function:\n\n";
+			  else
+			    os << " is a function defined from the file\n"
+			       << fn << ":\n\n";
+			}
+		    }
+
+		  tree_print_code tpc (os, "", pr_orig_txt);
+
+		  fcn->accept (tpc);
 		}
-
-	      tree_print_code tpc (os, "", pr_orig_txt);
-
-	      fcn->accept (tpc);
 	    }
 	}
       else

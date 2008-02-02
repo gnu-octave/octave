@@ -1,3 +1,9 @@
+2008-02-02  John W. Eaton  <jwe@octave.org>
+
+	* help.cc (do_type): Don't print dyamically loaded function files.
+
+	* ov-fcn.h (octave_function::is_dynamically_loaded_function): Delete.
+
 2008-02-01  John W. Eaton  <jwe@octave.org>
 
 	* symtab.cc (Fset_variable, Fvariable_value):

@@ -1,4 +1,7 @@
-2008-02-02  Shai Ayal  <shaiay@users.sourceforge.net>
+2008-02-02  Shai Ayal  <shaiay@users.sourceforge.org>
+
+        * graphics.h.in (base_scaler::~base_scalar): New virtual destructor.
+        * graphics.cc (axes::properties::update_camera): Tag abs with std.
 
 	* graphics.h.in (graphics_backend::find_backend): New function.
 	(class figure): Add __backend__ property and set method.

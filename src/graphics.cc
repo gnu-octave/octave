@@ -1901,7 +1901,7 @@ axes::properties::update_camera (void)
   normalize (f);
   normalize (UP);
 
-  if (abs (dot (f, UP)) > 1e-15)
+  if (std::abs (dot (f, UP)) > 1e-15)
     {
       double fa = 1/sqrt(1-f(2)*f(2));
       scale (UP, fa, fa, fa);

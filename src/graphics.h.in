@@ -187,6 +187,8 @@ class base_scaler
 public:
   base_scaler (void) { }
 
+  virtual ~base_scalar (void) { }
+
   virtual Matrix scale (const Matrix& m) const
     {
       error ("invalid axis scale");

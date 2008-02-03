@@ -36,7 +36,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array-util.h"
-#include "Range.h"
 #include "idx-vector.h"
 #include "lo-error.h"
 

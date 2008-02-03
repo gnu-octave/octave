@@ -2629,6 +2629,25 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   return m;
 }
 
+#if defined (HAVE_IEEE754_DATA_FORMAT)
+
+template <>
+extern bool ascending_compare (double, double);
+template <>
+extern bool ascending_compare (vec_index<double>*, vec_index<double>*);
+template <>
+extern bool descending_compare (double, double);
+template <>
+extern bool descending_compare (vec_index<double>*, vec_index<double>*);
+
+template <>
+Array<double> Array<double>::sort (octave_idx_type dim, sortmode mode) const;
+template <>
+Array<double> Array<double>::sort (Array<octave_idx_type> &sidx,
+				   octave_idx_type dim, sortmode mode) const;
+
+#endif
+
 // FIXME -- this is a mess.
 
 template <class LT, class RT>

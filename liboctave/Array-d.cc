@@ -344,30 +344,30 @@ Array<double>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 
 template <>
 bool
-Array<double>::ascending_compare (double a, double b) const
+ascending_compare (double a, double b)
 {
   return (xisnan (b) || (a < b));
 }
 
 template <>
 bool
-Array<double>::ascending_compare (vec_index<double> *a, 
-				  vec_index<double> *b) const
+ascending_compare (vec_index<double> *a, 
+		   vec_index<double> *b)
 {
   return (xisnan (b->vec) || (a->vec < b->vec));
 }
 
 template <>
 bool
-Array<double>::descending_compare (double a, double b) const
+descending_compare (double a, double b)
 {
   return (xisnan (a) || (a > b));
 }
 
 template <>
 bool
-Array<double>::descending_compare (vec_index<double> *a, 
-				   vec_index<double> *b) const
+descending_compare (vec_index<double> *a, 
+		    vec_index<double> *b)
 {
   return (xisnan (b->vec) || (a->vec > b->vec));
 }

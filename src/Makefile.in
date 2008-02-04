@@ -328,10 +328,10 @@ $(LIBPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
-stamp-prereq: defaults.h graphics.h oct-conf.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
+stamp-prereq: defaults.h oct-conf.h
 	touch stamp-prereq
 
-octave$(EXEEXT): stamp-prereq $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
+octave$(EXEEXT): $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o $@ \
 	main.o $(DLD_STATIC_OBJ) \
@@ -364,21 +364,21 @@ builtins.cc: $(DEF_FILES) mkbuiltins
 	@echo DEF_FILES = $(DEF_FILES)
 	@echo $(DEF_FILES) > def-files
 	@$(srcdir)/mkbuiltins def-files > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 graphics.h: graphics.h.in genprops.awk
 	@echo making $@
 	@$(AWK) -f $(srcdir)/genprops.awk $< > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 PKG_ADD: $(DLD_DEF_FILES)
 	$(srcdir)/mk-pkg-add $(DLD_DEF_FILES) > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 DOCSTRINGS: gendoc$(BUILD_EXEEXT)
 	@echo making $@
 	@./gendoc > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 doc-files: $(DOC_FILES)
 	@echo making $@
@@ -389,7 +389,7 @@ doc-files: $(DOC_FILES)
 gendoc.cc: doc-files mkgendoc
 	@echo making $@
 	@$(srcdir)/mkgendoc doc-files > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 gendoc$(BUILD_EXEEXT): gendoc.cc
 	$(BUILD_CXX) $(BUILD_CXXFLAGS) -o $@ $^ $(BUILD_LDFLAGS)
@@ -397,15 +397,15 @@ gendoc$(BUILD_EXEEXT): gendoc.cc
 ops.cc: $(OP_SRC) mkops
 	@echo making $@ from $(OP_SRC)
 	@$(srcdir)/mkops $(OP_SRC) > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 stamp-liboctave-prereq:
 	$(MAKE) -C ../liboctave stamp-prereq
 	touch stamp-liboctave-prereq
 
-$(DEF_FILES): stamp-prereq stamp-liboctave-prereq mkdefs defun-int.h defun-dld.h defun.h defaults.h oct-conf.h
+$(DEF_FILES): stamp-prereq stamp-liboctave-prereq mkdefs
 
-$(MAKEDEPS): stamp-prereq stamp-liboctave-prereq defaults.h oct-gperf.h oct-conf.h
+$(MAKEDEPS): stamp-prereq stamp-liboctave-prereq graphics.h oct-gperf.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
 
 check: all
 .PHONY: check
@@ -560,7 +560,7 @@ conf-dist:
 $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
 	@$(PERL) $(top_srcdir)/mk-opts.pl --opt-handler-fcns $< > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 parse.cc : parse.y
 	@echo "expect 14 shift/reduce conflicts"
@@ -575,7 +575,7 @@ parse.cc : parse.y
 
 lex.cc : lex.l
 	$(LEX) $(LFLAGS) $< > $(@F)-t
-	@$(builddir-move-if-change-rule)
+	@mv $(@F)-t $@
 
 ## We want to force an update of defaults.h and oct-conf.h every
 ## time make is run because some values may come from the command
@@ -601,14 +601,14 @@ oct-errno.cc: oct-errno.cc.in ../Makeconf Makefile
 	else \
 	  $(SED) '/@SYSDEP_ERRNO_LIST@/D' $< > $@-t; \
 	fi
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 oct-gperf.h: octave.gperf
 	@echo "making $@ from $<"
 	@$(GPERF) -t -C -D -G -L C++ -Z octave_kw_hash $< | \
 	  $(SED) 's,lookup\[,gperf_lookup[,' > $@-t \
 	  || (rm -f $@-t; exit 1)
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 # How to make a .oct file from a .o file:
 

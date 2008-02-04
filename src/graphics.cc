@@ -2232,6 +2232,88 @@ get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
   return retval;
 }
 
+// magform(x) Returns (a, b), where x = a * 10^b, a >= 1., and b is
+// integral. Used by calc_ticks
+
+void 
+axes::properties::magform (double x, double& a, int &b)
+{
+  if (x == 0)
+    {
+      a = 0;
+      b = 0;
+    }
+  else
+    {
+      double l = std::log10 (std::abs (x));
+      double r = std::fmod (l, 1.);
+      a = std::pow (10.0, r);
+      b = static_cast<int> (l-r);
+      if (a < 1)
+	{
+	  a *= 10;
+	  b -= 1;
+	}
+
+      if (x < 0)
+	a = -a;
+    }
+}
+
+// A translation from Tom Holoryd's python code at
+// http://kurage.nimh.nih.gov/tomh/tics.py
+// FIXME -- add log ticks
+void 
+axes::properties::calc_ticks (const array_property& lims, array_property& ticks)
+{
+
+  int ticint = 5;
+
+  if (lims.get ().is_empty ())
+    return;
+
+  double lo = (lims.get ().matrix_value ()) (0);
+  double hi = (lims.get ().matrix_value ()) (1);
+
+  // Reference: Lewart, C. R., "Algorithms SCALE1, SCALE2, and
+  // SCALE3 for Determination of Scales on Computer Generated
+  // Plots", Communications of the ACM, 10 (1973), 639-640.
+  // Also cited as ACM Algorithm 463.
+
+  double a;
+  int b, x;
+  magform ( (hi-lo)/ticint, a, b);
+  if (a < 1.41) // sqrt(2)
+    x = 1;
+  else if (a < 3.16) // sqrt(10)
+    x = 2;
+  else if (a < 7.07) // sqrt(50)
+    x = 5;
+  else
+    x = 10;
+
+
+  double sep = x * std::pow (10., b);
+
+  // FIXME x can now be used to set minor ticks
+  if (x == 10)
+    x = 1;
+
+
+  // The following guarantees that if zero is in the range, it will be
+  // included as a tic.
+
+  int i1 = static_cast<int> (std::floor (lo / sep));
+  int i2 = static_cast<int> (std::ceil (hi / sep));
+
+  Matrix limits (1, i2-i1+1);
+  for (int i=0; i<i2-i1+1; i++)
+    limits (i) = sep*(i+i1);
+
+  ticks = limits;
+  
+}
+
 static bool updating_axis_limits = false;
 
 void
@@ -2380,16 +2462,19 @@ axes::update_axis_limits (const std::string& axis_type)
     case 'x':
       xproperties.set_xlim (limits);
       xproperties.set_xlimmode ("auto");
+      xproperties.update_xlim ();
       break;
 
     case 'y':
       xproperties.set_ylim (limits);
       xproperties.set_ylimmode ("auto");
+      xproperties.update_ylim ();
       break;
 
     case 'z':
       xproperties.set_zlim (limits);
       xproperties.set_zlimmode ("auto");
+      xproperties.update_zlim ();
       break;
 
     case 'c':

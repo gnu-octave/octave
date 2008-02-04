@@ -287,8 +287,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
 GNU General Public License for more details.\n\
 \n\
 You should have received a copy of the GNU General Public License\n\
-along with this program; if not, write to the Free Software\n\
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\
+along with Octave; see the file COPYING.  If not, see\n\
+<http://www.gnu.org/licenses/>.\
 ");
       tail = strcat (author, "\n", revs);
 

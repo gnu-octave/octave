@@ -1,3 +1,18 @@
+2008-02-04  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (base_graphics_backend::get_screen_size,
+	graphics_backend::get_screen_size): New methods.
+	(graphics_backend::available_backends): Export symbol.
+	(class figure::properties, class axes::properties): Export classes.
+	(figure::properties::get_boundingbox): New utility method.
+	(figure::properties::position): Use valid default position.
+	(axes::properties::gridlinestyle,
+	axes::properties::minorgridlinestyle):
+	Use dotted line style as default. 
+	* graphics.cc (default_figure_position): New static function.
+	(gnuplot_backend::get_screen_size): New method.
+	(figure::properties::get_boundingbox): New utility method.
+
 2008-02-02  Shai Ayal  <shaiay@users.sourceforge.org>
 
         * graphics.h.in (base_scaler::~base_scalar): New virtual destructor.

@@ -161,6 +161,17 @@ default_axes_outerposition (void)
   return m;
 }
 
+static Matrix
+default_figure_position (void)
+{
+  Matrix m (1, 4, 0.0);
+  m(0) = 300;
+  m(1) = 200;
+  m(2) = 560;
+  m(3) = 420;
+  return m;
+}
+
 // NOTE: "cb" is passed by value, because "function_value" method
 //       is non-const; passing "cb" by const-reference is not
 //       possible
@@ -1318,6 +1329,9 @@ public:
 
   double get_screen_resolution (void) const
     { return 72.0; }
+
+  Matrix get_screen_size (void) const
+    { return Matrix (1, 2, 0.0); }
 };
 
 graphics_backend
@@ -1402,6 +1416,23 @@ figure::properties::close (bool pop)
 
       xset (0, "currentfigure", cf.value ());
     }
+}
+
+Matrix
+figure::properties::get_boundingbox (void) const
+{
+  graphics_backend b = get_backend ();
+  // FIXME: screen size should be obtained from root object
+  Matrix screen_size = b.get_screen_size ();
+  Matrix pos;
+
+  pos = convert_position (get_position ().matrix_value (), get_units (),
+			  "pixels", screen_size, b);
+
+  pos(0)--;
+  pos(1)--;
+
+  return pos;
 }
 
 octave_value

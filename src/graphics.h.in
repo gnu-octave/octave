@@ -1119,6 +1119,12 @@ public:
       error ("get_screen_resolution: invalid graphics backend");
       return -1;
     }
+  
+  virtual Matrix get_screen_size (void) const
+    {
+      error ("get_screen_size: invalid graphics backend");
+      return Matrix (1, 2, 0.0);
+    }
 
 private:
   std::string name;
@@ -1187,6 +1193,9 @@ public:
   double get_screen_resolution (void) const
     { return rep->get_screen_resolution (); }
 
+  Matrix get_screen_size (void) const
+    { return rep->get_screen_size (); }
+
   OCTINTERP_API static graphics_backend default_backend (void);
 
   static void register_backend (const graphics_backend& b)
@@ -1208,7 +1217,7 @@ public:
 private:
   base_graphics_backend *rep;
 
-  static std::map<std::string, graphics_backend> available_backends;
+  static OCTINTERP_API std::map<std::string, graphics_backend> available_backends;
 
   typedef std::map<std::string, graphics_backend>::iterator available_backends_iterator;
   typedef std::map<std::string, graphics_backend>::const_iterator const_available_backends_iterator;
@@ -2021,7 +2030,7 @@ private:
 class OCTINTERP_API figure : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     void close (bool pop = true);
@@ -2067,6 +2076,8 @@ public:
 	}
     }
 
+    Matrix get_boundingbox (void) const;
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
@@ -2102,7 +2113,7 @@ public:
       radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 0)
       array_property pointershapehotspot , Matrix (1, 2, 0)
-      array_property position , Matrix (1, 4, 0)
+      array_property position , default_figure_position ()
       radio_property renderer , "{painters}|zbuffer|opengl|none"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
@@ -2264,7 +2275,7 @@ private:
 class OCTINTERP_API axes : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     void set_defaults (base_graphics_object& obj, const std::string& mode);
@@ -2384,11 +2395,11 @@ public:
       double_property fontsize , 12
       radio_property fontunits , "{points}|normalized|inches|centimeters|pixels"
       radio_property fontweight , "{normal}|light|demi|bold"
-      radio_property gridlinestyle , "{-}|--|:|-.|none"
+      radio_property gridlinestyle , "-|--|{:}|-.|none"
       // FIXME: should be kind of string array
       string_property linestyleorder , "-"
       double_property linewidth , 0.5
-      radio_property minorgridlinestyle , "{-}|--|:|-.|none"
+      radio_property minorgridlinestyle , "-|--|{:}|-.|none"
       array_property plotboxaspectratio m , Matrix (1, 3, 1.0)
       radio_property plotboxaspectratiomode , "{auto}|manual"
       radio_property projection , "{orthographic}|perpective"

@@ -1419,7 +1419,7 @@ figure::properties::close (bool pop)
 }
 
 Matrix
-figure::properties::get_boundingbox (void) const
+figure::properties::get_boundingbox (bool) const
 {
   graphics_backend b = get_backend ();
   // FIXME: screen size should be obtained from root object
@@ -1431,6 +1431,7 @@ figure::properties::get_boundingbox (void) const
 
   pos(0)--;
   pos(1)--;
+  pos(1) = screen_size(1) - pos(1) - pos(3);
 
   return pos;
 }
@@ -1956,9 +1957,7 @@ axes::properties::update_camera (void)
   double xM = cmax(0)-cmin(0);
   double yM = cmax(1)-cmin(1);
 
-  Matrix bb = get_boundingbox ();
-  Matrix cs = get_backend ().get_canvas_size (__myhandle__);
-  double fh = cs(1);
+  Matrix bb = get_boundingbox (true);
 
   double v_angle;
 
@@ -1992,7 +1991,7 @@ axes::properties::update_camera (void)
     {
       xM *= pf;
       yM *= pf;
-      translate (x_viewport, bb(0)+bb(2)/2, fh-(bb(1)+bb(3)/2)+1, 0);
+      translate (x_viewport, bb(0)+bb(2)/2, bb(1)+bb(3)/2, 0);
       scale (x_viewport, bb(2)/xM, -bb(3)/yM, 1);
     }
   else
@@ -2007,7 +2006,7 @@ axes::properties::update_camera (void)
 	}
       else
 	pix = (bb(2) < bb(3) ? bb(2) : bb(3));
-      translate (x_viewport, bb(0)+bb(2)/2, fh-(bb(1)+bb(3)/2)+1, 0);
+      translate (x_viewport, bb(0)+bb(2)/2, bb(1)+bb(3)/2, 0);
       scale (x_viewport, pix, -pix, 1);
     }
 
@@ -2085,16 +2084,23 @@ axes::properties::update_aspectratios (void)
   // and/or dataaspectratio might be adapted
 }
 
+// The INTERNAL flag defines whether position or outerposition is used.
+
 Matrix
-axes::properties::get_boundingbox (void) const
+axes::properties::get_boundingbox (bool internal) const
 {
-  graphics_backend b = get_backend ();
-  Matrix pos;
-  
-  pos = convert_position (get_position ().matrix_value (), get_units (),
-			  "pixels", b.get_canvas_size (__myhandle__), b);
+  graphics_object obj = gh_manager::get_object (get_parent ());
+  Matrix parent_bb = obj.get_properties ().get_boundingbox (true);
+  Matrix pos = (internal ?
+		  get_position ().matrix_value ()
+		  : get_outerposition ().matrix_value ());
+
+
+  pos = convert_position (pos, get_units (), "pixels",
+			  parent_bb.extract_n (0, 2, 1, 2), get_backend ());
   pos(0)--;
   pos(1)--;
+  pos(1) = parent_bb(3) - pos(1) - pos(3);
 
   return pos;
 }
@@ -2233,10 +2239,10 @@ get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
 }
 
 // magform(x) Returns (a, b), where x = a * 10^b, a >= 1., and b is
-// integral. Used by calc_ticks
+// integral.
 
 void 
-axes::properties::magform (double x, double& a, int &b)
+axes::properties::magform (double x, double& a, int& b)
 {
   if (x == 0)
     {
@@ -2263,10 +2269,10 @@ axes::properties::magform (double x, double& a, int &b)
 // A translation from Tom Holoryd's python code at
 // http://kurage.nimh.nih.gov/tomh/tics.py
 // FIXME -- add log ticks
+
 void 
 axes::properties::calc_ticks (const array_property& lims, array_property& ticks)
 {
-
   int ticint = 5;
 
   if (lims.get ().is_empty ())
@@ -2282,23 +2288,27 @@ axes::properties::calc_ticks (const array_property& lims, array_property& ticks)
 
   double a;
   int b, x;
-  magform ( (hi-lo)/ticint, a, b);
-  if (a < 1.41) // sqrt(2)
+
+  magform ((hi-lo)/ticint, a, b);
+
+  static const double sqrt_2 = sqrt (2.0);
+  static const double sqrt_10 = sqrt (10.0);
+  static const double sqrt_50 = sqrt (50.0);
+
+  if (a < sqrt_2)
     x = 1;
-  else if (a < 3.16) // sqrt(10)
+  else if (a < sqrt_10)
     x = 2;
-  else if (a < 7.07) // sqrt(50)
+  else if (a < sqrt_50)
     x = 5;
   else
     x = 10;
-
 
   double sep = x * std::pow (10., b);
 
   // FIXME x can now be used to set minor ticks
   if (x == 10)
     x = 1;
-
 
   // The following guarantees that if zero is in the range, it will be
   // included as a tic.
@@ -2307,11 +2317,10 @@ axes::properties::calc_ticks (const array_property& lims, array_property& ticks)
   int i2 = static_cast<int> (std::ceil (hi / sep));
 
   Matrix limits (1, i2-i1+1);
-  for (int i=0; i<i2-i1+1; i++)
+  for (int i = 0; i < i2-i1+1; i++)
     limits (i) = sep*(i+i1);
 
   ticks = limits;
-  
 }
 
 static bool updating_axis_limits = false;
@@ -3215,8 +3224,8 @@ Undocumented internal function.\n\
 }
 
 octave_value
-get_property_from_handle (double handle, const std::string &property,
-			  const std::string &func)
+get_property_from_handle (double handle, const std::string& property,
+			  const std::string& func)
 {
   graphics_object obj = gh_manager::get_object (handle);
   octave_value retval;
@@ -3233,8 +3242,8 @@ get_property_from_handle (double handle, const std::string &property,
 }
 
 bool
-set_property_in_handle (double handle, const std::string &property,
-			const octave_value &arg, const std::string &func)
+set_property_in_handle (double handle, const std::string& property,
+			const octave_value& arg, const std::string& func)
 {
   graphics_object obj = gh_manager::get_object (handle);
   int ret = false;

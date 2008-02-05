@@ -1341,6 +1341,9 @@ public:
 
   virtual graphics_backend get_backend (void) const;
 
+  virtual Matrix get_boundingbox (bool internal = false) const
+    { return Matrix (1, 4, 0.0); }
+
   void set_tag (const octave_value& val) { tag = val; }
 
   void set_parent (const octave_value& val);
@@ -2076,7 +2079,7 @@ public:
 	}
     }
 
-    Matrix get_boundingbox (void) const;
+    Matrix get_boundingbox (bool internal = false) const;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -2288,7 +2291,7 @@ public:
     const scaler& get_y_scaler (void) const { return sy; }
     const scaler& get_z_scaler (void) const { return sz; }
 
-    Matrix get_boundingbox (void) const;
+    Matrix get_boundingbox (bool internal = false) const;
 
     void update_camera (void);
     void update_aspectratios (void);

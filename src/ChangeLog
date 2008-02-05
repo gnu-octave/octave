@@ -1,3 +1,14 @@
+2008-02-05  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (base_properties::get_boundingbox): New method.
+	(figure::properties::get_boundingbox): Overload method.
+	(axes::properties::get_boundingbox): Likewise.
+	* graphics.cc (figure::properties::get_boundingbox): Return a
+	left-to-right/top-to-bottom bounding box rectangle.
+	(axes::properties::get_boundingbox): Likewise.
+	(axes::properties::update_camera): Remove backend access and
+	use the new axes bounding box.
+
 2008-02-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* graphics.h.in (axes::properties::update_xlim,

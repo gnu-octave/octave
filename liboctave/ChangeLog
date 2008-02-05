@@ -1,3 +1,8 @@
+2008-02-05  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in: Unconditionally include $(MAKEDEPS).
+	Mark $(MAKEDEPS) as .PHONY targets if omit_deps is true.
+
 2008-02-03  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* Array.cc (ascending_compare, descending_compare,

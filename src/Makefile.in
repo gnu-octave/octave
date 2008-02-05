@@ -405,7 +405,7 @@ stamp-liboctave-prereq:
 
 $(DEF_FILES): stamp-prereq stamp-liboctave-prereq mkdefs
 
-$(MAKEDEPS): stamp-prereq stamp-liboctave-prereq graphics.h oct-gperf.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
+$(MAKEDEPS): stamp-prereq stamp-liboctave-prereq graphics.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
 
 check: all
 .PHONY: check
@@ -645,6 +645,8 @@ endif
 check: all
 .PHONY: check
 
-ifndef omit_deps
--include $(MAKEDEPS)
+ifdef omit_deps
+.PHONY: $(MAKEDEPS)
 endif
+
+-include $(MAKEDEPS)

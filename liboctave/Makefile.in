@@ -270,6 +270,8 @@ $(LIBPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
 
+$(MAKEDEPS): stamp-prereq
+
 check: all
 .PHONY: check
 
@@ -372,12 +374,8 @@ mx-ops.h : $(srcdir)/mk-ops.awk mx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=mx make_inclusive_header=mx-ops.h $(srcdir)/mx-ops > $@-t
 	$(simple-move-if-change-rule)
 
-
-# If missing, GNU make attempts to create them in the reverse of the
-# order in which they are listed here.  We rely on that fact to ensure
-# that defaults.h is created before trying to create the .d files.
-# Hmm.  I wonder if we can count on that...
-
-ifndef omit_deps
--include $(MAKEDEPS) stamp-prereq
+ifdef omit_deps
+.PHONY: $(MAKEDEPS)
 endif
+
+-include $(MAKEDEPS)

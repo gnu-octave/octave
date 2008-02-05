@@ -1,3 +1,8 @@
+2008-02-05  John W. Eaton  <jwe@octave.org>
+
+	* misc/Makefile.in: Unconditionally include $(MAKEDEPS).
+	Mark $(MAKEDEPS) as .PHONY targets if omit_deps is true.
+
 2007-12-21  John W. Eaton  <jwe@octave.org>
 
 	Version 3.0.0 released.

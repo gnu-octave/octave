@@ -1,3 +1,8 @@
+2008-02-05  John W. Eaton  <jwe@octave.org>
+
+	* dlfcn/Makefile.in: Unconditionally include $(MAKEDEPS).
+	Mark $(MAKEDEPS) as .PHONY targets if omit_deps is true.
+
 2008-01-12  John W. Eaton  <jwe@octave.org>
 
 	* aclocal.m4: Call AC_SUBST instead of AC_DEFINE_UNQOTED for

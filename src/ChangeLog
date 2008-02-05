@@ -1,3 +1,8 @@
+2008-02-05  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in: Unconditionally include $(MAKEDEPS).
+	Mark $(MAKEDEPS) as .PHONY targets if omit_deps is true.
+
 2008-02-05  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.h.in (base_properties::get_boundingbox): New method.

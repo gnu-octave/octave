@@ -86,6 +86,8 @@ conf-dist:
 	ln $(addprefix $(srcdir)/, octave.cc Makefile.in) ../`cat ../.fname`/dlfcn
 .PHONY: conf-dist
 
-ifndef omit_deps
--include $(MAKEDEPS)
+ifdef omit_deps
+.PHONY: $(MAKEDEPS)
 endif
+
+-include $(MAKEDEPS)

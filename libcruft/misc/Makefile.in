@@ -69,6 +69,8 @@ machar.o: $(srcdir)/machar.c
 pic/machar.o: $(srcdir)/machar.c
 	$(XCC) -c $(CPPFLAGS) $(CPICFLAG) $(XALL_CFLAGS) -DDP $< -o $@
 
-ifndef omit_deps
--include $(MAKEDEPS)
+ifdef omit_deps
+.PHONY: $(MAKEDEPS)
 endif
+
+-include $(MAKEDEPS)

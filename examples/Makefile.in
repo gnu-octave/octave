@@ -84,7 +84,7 @@ octave.desktop: octave.desktop.in Makefile ../Makeconf
 	$(SED) < $< > $@-t \
 	  -e "s|%OCTAVE_IMAGEDIR%|${imagedir}|" \
 	  -e "s|%OCTAVE_PREFIX%|${prefix}|"
-	$(simple-move-if-change-rule)
+	mv $@-t $@
 
 install install-strip:
 	for f in $(SCRIPTS); do \

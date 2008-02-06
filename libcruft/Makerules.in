@@ -40,9 +40,9 @@ CRUFT_CXXBASE = $(basename $(notdir $(CRUFT_CXXSRC)))
 
 CRUFT_BASE = $(CRUFT_FBASE) $(CRUFT_CBASE) $(CRUFT_CXXBASE)
 
-CRUFT_FOBJ = $(addsuffix .o, $(CRUFT_FBASE) )
-CRUFT_COBJ = $(addsuffix .o, $(CRUFT_CBASE) )
-CRUFT_CXXOBJ = $(addsuffix .o, $(CRUFT_CXXBASE) )
+CRUFT_FOBJ = $(addsuffix .o, $(CRUFT_FBASE))
+CRUFT_COBJ = $(addsuffix .o, $(CRUFT_CBASE))
+CRUFT_CXXOBJ = $(addsuffix .o, $(CRUFT_CXXBASE))
 
 CRUFT_OBJ = $(CRUFT_FOBJ) $(CRUFT_COBJ) $(CRUFT_CXXOBJ)
 
@@ -113,7 +113,7 @@ $(CRUFT_DEFS): $(TOPDIR)/libcruft/mkf77def
 %.def : %.f
 	@echo "making $@ from $<"
 	@$(TOPDIR)/libcruft/mkf77def < $< > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 install:: all
 .PHONY: install

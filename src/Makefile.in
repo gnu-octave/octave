@@ -57,8 +57,10 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
   endif
 endif
 
-OPT_HANDLERS := DASPK-opts.cc DASRT-opts.cc DASSL-opts.cc \
-	LSODE-opts.cc NLEqn-opts.cc Quad-opts.cc
+OPT_BASE := $(addsuffix -opts, DASPK DASRT DASSL LSODE NLEqn Quad)
+OPT_HANDLERS := $(addsuffix .cc, $(OPT_BASE))
+OPT_IN := $(addprefix ../liboctave/, $(addsuffix .in, $(OPT_BASE)))
+OPT_INC := $(addprefix ../liboctave/, $(addsuffix .h, $(OPT_BASE)))
 
 DLD_XSRC := balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc chol.cc \
 	ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
@@ -328,9 +330,6 @@ $(LIBPRE)octinterp.$(SHLEXT): $(PICOBJ) $(PIC_XERBLA)
 	rm -f $@
 	$(SH_LD) $(SH_LDFLAGS) $(SONAME_FLAGS) -o $@ $^ $(OCTINTERP_LINK_DEPS)
 
-stamp-prereq: defaults.h oct-conf.h
-	touch stamp-prereq
-
 octave$(EXEEXT): $(LIBRARIES) main.o $(DLD_STATIC_OBJ)
 	$(LD_CXX) $(CPPFLAGS) $(ALL_CXXFLAGS) $(RDYNAMIC_FLAG) \
 	$(ALL_LDFLAGS) -o $@ \
@@ -399,13 +398,11 @@ ops.cc: $(OP_SRC) mkops
 	@$(srcdir)/mkops $(OP_SRC) > $@-t
 	@mv $@-t $@
 
-stamp-liboctave-prereq:
-	$(MAKE) -C ../liboctave stamp-prereq
-	touch stamp-liboctave-prereq
+PREREQ := defaults.h graphics.h oct-conf.h oct-errno.cc oct-gperf.h parse.cc lex.cc 
 
-$(DEF_FILES): stamp-prereq stamp-liboctave-prereq mkdefs
+$(DEF_FILES): $(OPT_INC) mkdefs 
 
-$(MAKEDEPS): stamp-prereq stamp-liboctave-prereq graphics.h oct-gperf.h parse.cc lex.cc $(OPT_HANDLERS)
+$(MAKEDEPS): $(OPT_INC) $(OPT_HANDLERS) $(PREREQ)
 
 check: all
 .PHONY: check
@@ -524,7 +521,7 @@ mostlyclean: clean
 
 distclean: clean
 	rm -f Makefile octave$(EXEEXT) .fname so_locations oct-errno.cc
-	rm -f stamp-prereq stamp-liboctave-prereq
+	rm -f stamp-liboctave-prereq
 	rm -f doc-files gendoc.cc graphics.h graphics-props.cc mxarray.h DOCSTRINGS
 .PHONY: distclean
 
@@ -566,7 +563,7 @@ parse.cc : parse.y
 	@echo "expect 14 shift/reduce conflicts"
 	$(YACC) $(YFLAGS) $<
 	@if [ -s y.tab.c ]; then \
-	  $(top_srcdir)/move-if-change y.tab.c $(@F); \
+	  mv y.tab.c $(@F); \
 	else \
 	  echo "y.tab.c is empty!" 1>&2; \
 	  rm -f y.tab.c; \
@@ -576,6 +573,10 @@ parse.cc : parse.y
 lex.cc : lex.l
 	$(LEX) $(LFLAGS) $< > $(@F)-t
 	@mv $(@F)-t $@
+
+
+$(OPT_INC) : %.h : %.in
+	$(MAKE) -C $(@D) $@
 
 ## We want to force an update of defaults.h and oct-conf.h every
 ## time make is run because some values may come from the command

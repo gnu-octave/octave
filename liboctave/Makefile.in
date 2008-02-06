@@ -66,10 +66,9 @@ VX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=vx list_h_files=1 $(s
 
 SPARSE_MX_OP_INC := $(shell $(AWK) -f $(srcdir)/sparse-mk-ops.awk prefix=smx list_h_files=1 $(srcdir)/sparse-mx-ops)
 
-OPTS_INC_DATA := DASPK-opts.in DASRT-opts.in DASSL-opts.in \
-	LSODE-opts.in NLEqn-opts.in Quad-opts.in
-
-OPTS_INC := $(OPTS_INC_DATA:.in=.h)
+OPT_BASE := $(addsuffix -opts, DASPK DASRT DASSL LSODE NLEqn Quad)
+OPT_IN := $(addsuffix .in, $(OPT_BASE))
+OPT_INC := $(addsuffix .h, $(OPT_BASE))
 
 INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	DAERTFunc.h DASPK.h DASRT.h DASSL.h FEGrid.h \
@@ -92,7 +91,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	$(MATRIX_INC)
 
 BUILT_INCLUDES := oct-types.h mx-ops.h \
-	$(OPTS_INC) \
+	$(OPT_INC) \
 	$(MX_OP_INC) \
 	$(VX_OP_INC) \
 	$(SPARSE_MX_OP_INC)
@@ -184,7 +183,7 @@ DISTFILES := $(addprefix $(srcdir)/, Makefile.in ChangeLog mk-ops.awk \
 	$(LIBOCT_READLINE_SOURCES) \
 	$(LIBOCT_PATHSEARCH_SOURCES) \
 	$(LIBOCTAVE_C_SOURCES) \
-	$(INCLUDES) $(EXTRAS) $(OPTS_INC_DATA)) \
+	$(INCLUDES) $(EXTRAS) $(OPT_IN)) \
 	$(BUILT_LIBOCTAVE_CXX_SOURCES) $(BUILT_INCLUDES)
 
 MAKEDEPS_1 := $(patsubst %.cc, %.d, $(SOURCES))
@@ -228,28 +227,21 @@ pic:
 	  mkdir pic; \
 	fi
 
-stamp-prereq: $(OPTS_INC) $(VX_OP_INC) $(VX_OP_SRC) \
+PREREQ := $(OPT_INC) $(VX_OP_INC) $(VX_OP_SRC) \
 	$(MX_OP_INC) $(MX_OP_SRC) mx-ops.h \
 	$(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC)
-	touch stamp-prereq
 
 ifeq ($(SHARED_LIBS), true)
   ifeq ($(STATIC_LIBS), true)
-    libraries: \
-	stamp-prereq \
-	$(LIBPRE)octave.$(LIBEXT) $(LIBPRE)octave.$(SHLEXT_VER)
+    libraries: $(LIBPRE)octave.$(LIBEXT) $(LIBPRE)octave.$(SHLEXT_VER)
   else
-    libraries: \
-	stamp-prereq \
-	$(LIBPRE)octave.$(SHLEXT_VER)
+    libraries: $(LIBPRE)octave.$(SHLEXT_VER)
   endif
 else
   ifeq ($(STATIC_LIBS), true)
-    libraries: \
-	stamp-prereq \
-	$(LIBPRE)octave.$(LIBEXT)
+    libraries: $(LIBPRE)octave.$(LIBEXT)
   else
-    libraries: stamp-prereq
+    libraries:
   endif
 endif
 .PHONY: libraries
@@ -270,7 +262,7 @@ $(LIBPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
 
-$(MAKEDEPS): stamp-prereq
+$(MAKEDEPS): $(PREREQ)
 
 check: all
 .PHONY: check
@@ -343,23 +335,21 @@ mostlyclean: clean
 .PHONY: mostlyclean
 
 distclean: clean
-	rm -f Makefile so_locations stamp-prereq oct-types.h $(OPTS_INC)
-	rm -f mx-ops.h $(MX_OP_INC) $(VX_OP_INC) $(MX_OP_SRC) $(VX_OP_SRC)
-	rm -f $(SPARSE_MX_OP_INC) $(SPARSE_MX_OP_SRC)
+	rm -f Makefile so_locations oct-types.h $(PREREQ)
 .PHONY: distclean
 
 maintainer-clean: distclean
 	rm -f tags TAGS
 .PHONY: maintainer-clean
 
-dist: stamp-prereq
+dist: $(PREREQ)
 	ln $(DISTFILES) ../`cat ../.fname`/liboctave
 .PHONY: dist
 
-$(OPTS_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
+$(OPT_INC) : %.h : %.in $(top_srcdir)/mk-opts.pl
 	@echo making $@ from $<
 	@perl $(top_srcdir)/mk-opts.pl --opt-class-header $< > $@-t
-	@$(simple-move-if-change-rule)
+	@mv $@-t $@
 
 $(VX_OP_INC) $(VX_OP_SRC) : $(srcdir)/mk-ops.awk vx-ops
 	$(AWK) -f $(srcdir)/mk-ops.awk prefix=vx $(srcdir)/vx-ops

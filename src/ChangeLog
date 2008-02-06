@@ -1,3 +1,14 @@
+2008-02-06  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (parse.cc : parse.y): Use mv instead of move-if-change.
+	(stamp-prereq, stamp-liboctave-prereq): Eliminate.
+	(clean): Don't remove stamp-prereq and stamp-liboctave-prereq.
+	(OPT_BASE, OPT_IN, OPT_INC): New macros.
+	(OPT_HANDLERS): Define in terms of OPT_BASE.
+	($(OPT_INC) : %.h : %.in): New pattern rule.
+	(PREREQ): New macro.
+	($(MAKEDEPS)): Simplify with $(PREREQ).
+
 2008-02-05  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in: Unconditionally include $(MAKEDEPS).

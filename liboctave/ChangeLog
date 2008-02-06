@@ -1,3 +1,16 @@
+2008-02-06  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in ($(OPTS_INC)): Use mv instead of move-if-change.
+	(stamp-prereq): Eliminate.
+	(clean): Don't remove stamp-prereq.
+	(libraries): Don't depend on stamp-prereq.
+	(PREREQ): New macro.
+	($(MAKEDEPS)): Depend on $(PREREQ), not stamp-prereq.
+	(distclean): Simplify with $(PREREQ).
+	(OPT_BASE): New macro.
+	(OPT_IN): Rename from OPTS_INC_DATA.  Define in terms of OPT_BASE.
+	(OPT_INC): Rename from OPTS_INC.  Define in terms of OPT_BASE.
+
 2008-02-05  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in: Unconditionally include $(MAKEDEPS).

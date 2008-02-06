@@ -1,3 +1,7 @@
+2008-02-06  John W. Eaton  <jwe@octave.org>
+
+	* Makerules.in (%.def : %.f): Use mv instead of move-if-change.
+
 2008-02-05  John W. Eaton  <jwe@octave.org>
 
 	* misc/Makefile.in: Unconditionally include $(MAKEDEPS).

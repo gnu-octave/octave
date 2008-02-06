@@ -1,3 +1,8 @@
+2008-02-06  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (octave.desktop):
+	Use mv instead of move-if-change.
+
 2008-02-05  John W. Eaton  <jwe@octave.org>
 
 	* dlfcn/Makefile.in: Unconditionally include $(MAKEDEPS).

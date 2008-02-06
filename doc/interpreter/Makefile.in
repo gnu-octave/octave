@@ -236,13 +236,23 @@ octave-smallbook.pdf: $(IMAGES_PDF) $(TEXINFO) $(EXAMPLE_FILES) octave-smallbook
 HTML/index.html: $(HTML_IMAGES_PNG) $(TEXINFO) $(EXAMPLE_FILES)
 	-$(MAKEINFO) --html --ifinfo --output=HTML -I.. -I$(srcdir) -I$(srcdir)/.. $(MAIN_TEXINFO)
 
-$(HTML_IMAGES_PNG): HTML/%.png : %.png
+stmp-html: HTML
+	@if [ -f stmp-html ]; then \
+	  true; \
+	else \
+	  echo "touch stmp-html"; \
+	  touch stmp-html; \
+	fi
+
+HTML:
 	@if [ -d HTML ]; then \
 	  true; \
 	else \
-	  echo "creating HTML directory"; \
+	  echo "mkdir HTML"; \
 	  mkdir HTML; \
 	fi
+
+$(HTML_IMAGES_PNG): HTML/%.png : %.png stmp-html
 	cp $(filter-out html-dir, $<) HTML
 
 define run-octave

@@ -29,7 +29,7 @@ EXTERN_CFLAGS="$CFLAGS"
 EXTERN_CXXFLAGS="$CXXFLAGS"
 
 AC_INIT
-AC_REVISION($Revision: 1.602 $)
+AC_REVISION($Revision: 1.603 $)
 AC_PREREQ(2.57)
 AC_CONFIG_SRCDIR([src/octave.cc])
 AC_CONFIG_HEADER(config.h)
@@ -252,6 +252,8 @@ else
     sparc-sun-solaris2* | i386-pc-solaris2*)
       DEPEND_FLAGS="-xM1"
       DEPEND_EXTRA_SED_PATTERN="-e '/\/opt\/SUNWspro/d'"
+    ;;
+    *-*-msdosmsvc)
     ;;
     *)
       INCLUDE_DEPS=false

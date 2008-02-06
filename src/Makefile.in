@@ -526,7 +526,7 @@ distclean: clean
 .PHONY: distclean
 
 maintainer-clean: distclean
-	rm -f tags TAGS y.tab.c y.tab.h y.output yy.lex.c lex.cc parse.cc
+	rm -f tags TAGS y.tab.h y.output yy.lex.c lex.cc parse.cc
 	rm -f oct-gperf.h $(OPT_HANDLERS)
 .PHONY: maintainer-clean
 
@@ -561,14 +561,7 @@ $(OPT_HANDLERS) : %.cc : $(top_srcdir)/liboctave/%.in $(top_srcdir)/mk-opts.pl
 
 parse.cc : parse.y
 	@echo "expect 14 shift/reduce conflicts"
-	$(YACC) $(YFLAGS) $<
-	@if [ -s y.tab.c ]; then \
-	  mv y.tab.c $(@F); \
-	else \
-	  echo "y.tab.c is empty!" 1>&2; \
-	  rm -f y.tab.c; \
-	  exit 1; \
-	fi
+	$(YACC) $(YFLAGS) -o $@ $<
 
 lex.cc : lex.l
 	$(LEX) $(LFLAGS) $< > $(@F)-t

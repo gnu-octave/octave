@@ -1,5 +1,8 @@
 2008-02-06  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (parse.cc): Use "-o $@" instead of renaming y.tab.c.
+	(maintainer-clean): Don't remove y.tab.c.
+
 	* Makefile.in (parse.cc : parse.y): Use mv instead of move-if-change.
 	(stamp-prereq, stamp-liboctave-prereq): Eliminate.
 	(clean): Don't remove stamp-prereq and stamp-liboctave-prereq.

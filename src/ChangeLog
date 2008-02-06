@@ -1,3 +1,7 @@
+2008-02-06  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in (parse.cc): Also use --defines option for bison.
+
 2008-02-06  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* graphics.cc (axes::properties::set_defaults): Set default axes

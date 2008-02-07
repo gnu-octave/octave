@@ -1,5 +1,13 @@
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (root_figure::properties::callbackobject):
+	New root property.
+	(root_figure::properties::cbo_stack): New field.
+	* graphics.cc (xset_gcbo, xreset_gcbo): New utility functions.
+	(execute_callback): Set callbackobject property in root object
+	before executing a callback.
+	(root_figure::properties::set_callbackobject): Implement accessor.
+
 	* graphics.h.in (class root_figure::properties,
 	class line::properties, class text::properties,
 	class image::properties, class patch::properties,

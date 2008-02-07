@@ -1994,7 +1994,11 @@ public:
 
     BEGIN_PROPERTIES(root_figure)
       handle_property currentfigure S , graphics_handle ()
+      handle_property callbackobject Sr , graphics_handle ()
     END_PROPERTIES
+
+  private:
+    std::list<graphics_handle> cbo_stack;
   };
 
 private:

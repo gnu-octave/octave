@@ -172,6 +172,22 @@ default_figure_position (void)
   return m;
 }
 
+static void
+xset_gcbo (const graphics_handle& h)
+{
+  graphics_object go = gh_manager::get_object (0);
+  root_figure::properties& props =
+      dynamic_cast<root_figure::properties&> (go.get_properties ());
+
+  props.set_callbackobject (h.as_octave_value ());
+}
+
+static void
+xreset_gcbo (void *)
+{
+  xset_gcbo (graphics_handle ());
+}
+
 // NOTE: "cb" is passed by value, because "function_value" method
 //       is non-const; passing "cb" by const-reference is not
 //       possible
@@ -186,6 +202,11 @@ execute_callback (octave_value cb, const graphics_handle& h,
   args(0) = h.as_octave_value ();
   args(1) = data;
 
+  unwind_protect::begin_frame ("execute_callback");
+  unwind_protect::add (xreset_gcbo);
+
+  xset_gcbo (h);
+
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
 
   if (cb.is_function_handle ())
@@ -199,10 +220,7 @@ execute_callback (octave_value cb, const graphics_handle& h,
       if (f.is_defined ())
         fcn = f.function_value ();
       else
-        {
-          eval_string (s, false, status);
-          return;
-        }
+	eval_string (s, false, status);
     }
   else if (cb.is_cell () && cb.length () > 0
            && (cb.rows () == 1 || cb.columns () == 1)
@@ -224,10 +242,12 @@ execute_callback (octave_value cb, const graphics_handle& h,
 	     nm.c_str ());
     }
 
-  if (! error_state)
+  if (fcn && ! error_state)
     feval (fcn, args);
   
   END_INTERRUPT_WITH_EXCEPTIONS;
+
+  unwind_protect::run_frame ("execute_callback");
 }
 
 static Matrix
@@ -1377,6 +1397,36 @@ root_figure::properties::set_currentfigure (const octave_value& v)
     }
   else
     gripe_set_invalid ("currentfigure");
+}
+
+void
+root_figure::properties::set_callbackobject (const octave_value& v)
+{
+  graphics_handle val (v);
+
+  if (error_state)
+    return;
+
+  if (xisnan (val.value ()))
+    {
+      if (! cbo_stack.empty ())
+	{
+	  val = cbo_stack.front ();
+
+	  cbo_stack.pop_front ();
+	}
+
+      callbackobject = val;
+    }
+  else if (is_handle (val))
+    {
+      if (get_callbackobject ().ok ())
+	cbo_stack.push_front (get_callbackobject ());
+
+      callbackobject = val;
+    }
+  else
+    gripe_set_invalid ("callbackobject");
 }
 
 property_list

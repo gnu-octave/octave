@@ -1587,10 +1587,10 @@ axes::properties::set_defaults (base_graphics_object& obj,
   fontsize = 12;
   fontunits = "points";
   fontweight = "normal";
-  gridlinestyle = "-";
+  gridlinestyle = ":";
   linestyleorder = "-";
   linewidth = 0.5;
-  minorgridlinestyle = "-";
+  minorgridlinestyle = ":";
   // Note: plotboxaspectratio will be set through update_aspectratiors
   plotboxaspectratiomode = "auto";
   projection = "orthographic";

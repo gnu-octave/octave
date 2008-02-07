@@ -1986,7 +1986,7 @@ private:
 class OCTINTERP_API root_figure : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     // See the genprops.awk script for an explanation of the
@@ -2631,7 +2631,7 @@ private:
 class OCTINTERP_API line : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     // See the genprops.awk script for an explanation of the
@@ -2686,7 +2686,7 @@ public:
 class OCTINTERP_API text : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     // See the genprops.awk script for an explanation of the
@@ -2747,7 +2747,7 @@ public:
 class OCTINTERP_API image : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     // See the genprops.awk script for an explanation of the
@@ -2790,7 +2790,7 @@ public:
 class OCTINTERP_API patch : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     // See the genprops.awk script for an explanation of the
@@ -2863,7 +2863,7 @@ public:
 class OCTINTERP_API surface : public base_graphics_object
 {
 public:
-  class properties : public base_properties
+  class OCTINTERP_API properties : public base_properties
   {
   public:
     // See the genprops.awk script for an explanation of the

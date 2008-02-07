@@ -1,5 +1,11 @@
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (class root_figure::properties,
+	class line::properties, class text::properties,
+	class image::properties, class patch::properties,
+	class surface::properties): Export classes with
+	OCTINTERP_API.
+
 	* graphics.cc (axes::properties::set_defaults): Use correct
 	default values for gridlinestyle and minorgridlinestyle.
 

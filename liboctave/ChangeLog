@@ -1,3 +1,7 @@
+2008-02-07  John W. Eaton  <jwe@octave.org>
+
+	* intNDArray.cc (intNDArray<T>::any (int)): Use != for comparison.
+
 2008-02-06  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in ($(OPTS_INC)): Use mv instead of move-if-change.

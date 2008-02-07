@@ -135,7 +135,7 @@ template <class T>
 boolNDArray
 intNDArray<T>::any (int dim) const
 {
-  MX_ND_ANY_ALL_REDUCTION (MX_ND_ALL_EVAL (this->elem (iter_idx) == T (0)), false);
+  MX_ND_ANY_ALL_REDUCTION (MX_ND_ANY_EVAL (this->elem (iter_idx) != T (0)), false);
 }
 
 template <class T>

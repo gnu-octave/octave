@@ -69,6 +69,51 @@ kron (const Array2<double>&, const Array2<double>&, Array2<double>&);
 template void
 kron (const Array2<Complex>&, const Array2<Complex>&, Array2<Complex>&);
 
+
+#if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
+extern void
+kron (const Sparse<double>&, const Sparse<double>&, Sparse<double>&);
+
+extern void
+kron (const Sparse<Complex>&, const Sparse<Complex>&, Sparse<Complex>&);
+#endif
+
+template <class T>
+void
+kron (const Sparse<T>& A, const Sparse<T>& B, Sparse<T>& C)
+{
+  octave_idx_type idx = 0;
+  C = Sparse<T> (A.rows () * B.rows (), A.columns () * B.columns (), 
+		 A.nzmax () * B.nzmax ());
+
+  C.cidx (0) = 0;
+
+  for (octave_idx_type Aj = 0; Aj < A.columns (); Aj++)
+    for (octave_idx_type Bj = 0; Bj < B.columns (); Bj++)
+      {
+	for (octave_idx_type Ai = A.cidx (Aj); Ai < A.cidx (Aj+1); Ai++)
+	  {
+	    octave_idx_type Ci = A.ridx(Ai) * B.rows ();
+	    const T v = A.data (Ai);
+
+	    for (octave_idx_type Bi = B.cidx (Bj); Bi < B.cidx (Bj+1); Bi++)
+	      {
+		OCTAVE_QUIT;
+		C.data (idx) = v * B.data (Bi);
+		C.ridx (idx++) = Ci + B.ridx (Bi);
+	      }
+	  }
+	C.cidx (Aj * B.columns () + Bj + 1) = idx;
+      }
+}
+
+template void
+kron (const Sparse<double>&, const Sparse<double>&, Sparse<double>&);
+
+template void
+kron (const Sparse<Complex>&, const Sparse<Complex>&, Sparse<Complex>&);
+
+
 DEFUN_DLD (kron, args,  nargout, "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} kron (@var{a}, @var{b})\n\
 Form the kronecker product of two matrices, defined block by block as\n\
@@ -97,28 +142,58 @@ kron (1:4, ones (3, 1))\n\
     {
       print_usage ();
     }
-  else if (args(0).is_complex_type () || args(1).is_complex_type ())
+  else if (args(0).is_sparse_type () || args(1).is_sparse_type ())
     {
-      ComplexMatrix a (args(0).complex_matrix_value());
-      ComplexMatrix b (args(1).complex_matrix_value());
-
-      if (! error_state)
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
 	{
-	  ComplexMatrix c;
-	  kron (a, b, c);
-	  retval(0) = c;
+	  SparseComplexMatrix a (args(0).sparse_complex_matrix_value());
+	  SparseComplexMatrix b (args(1).sparse_complex_matrix_value());
+
+	  if (! error_state)
+	    {
+	      SparseComplexMatrix c;
+	      kron (a, b, c);
+	      retval(0) = c;
+	    }
+	}
+      else
+	{
+	  SparseMatrix a (args(0).sparse_matrix_value ());
+	  SparseMatrix b (args(1).sparse_matrix_value ());
+
+	  if (! error_state)
+	    {
+	      SparseMatrix c;
+	      kron (a, b, c);
+	      retval (0) = c;
+	    }
 	}
     }
-  else
+  else 
     {
-      Matrix a (args(0).matrix_value ());
-      Matrix b (args(1).matrix_value ());
-
-      if (! error_state)
+      if (args(0).is_complex_type () || args(1).is_complex_type ())
 	{
-	  Matrix c;
-	  kron (a, b, c);
-	  retval (0) = c;
+	  ComplexMatrix a (args(0).complex_matrix_value());
+	  ComplexMatrix b (args(1).complex_matrix_value());
+
+	  if (! error_state)
+	    {
+	      ComplexMatrix c;
+	      kron (a, b, c);
+	      retval(0) = c;
+	    }
+	}
+      else
+	{
+	  Matrix a (args(0).matrix_value ());
+	  Matrix b (args(1).matrix_value ());
+
+	  if (! error_state)
+	    {
+	      Matrix c;
+	      kron (a, b, c);
+	      retval (0) = c;
+	    }
 	}
     }
 

@@ -489,7 +489,7 @@ used.
 
 @item Linear algebra:
   @dfn{matrix_type}, @dfn{spchol}, @dfn{cpcholinv}, 
-  @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv}, @dfn{spkron},
+  @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv},
   @dfn{splchol}, @dfn{splu}, @dfn{spqr}, @dfn{normest}, @dfn{condest},
   @dfn{sprank}
 @c @dfn{spaugment}
@@ -847,8 +847,6 @@ used with care.
 @DOCSTRING(spdet)
 
 @DOCSTRING(spinv)
-
-@DOCSTRING(spkron)
 
 @DOCSTRING(splchol)
 

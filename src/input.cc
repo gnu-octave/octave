@@ -213,13 +213,11 @@ gnu_readline (const std::string& s, bool force_readline)
 }
 
 static inline std::string
-interactive_input (const std::string& s, bool debug = false,
-		   bool force_readline = false)
+interactive_input (const std::string& s, bool force_readline = false)
 {
   Vlast_prompt_time.stamp ();
 
-  if (! debug
-      && (Vdrawnow_requested && (interactive || forced_interactive)))
+  if (Vdrawnow_requested && (interactive || forced_interactive))
     {
       feval ("drawnow");
 
@@ -658,9 +656,9 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
   octave_diary << prompt;
 
-  std::string input_buf = interactive_input (prompt.c_str (), debug, true);
+  std::string input_buf = interactive_input (prompt.c_str (), true);
 
-  if (! input_buf.empty ())
+  if (! (error_state || input_buf.empty ()))
     {
       if (! input_from_startup_file)
 	command_history::add (input_buf);
@@ -740,7 +738,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
       // evaluating user input, extra error messages will not be
       // printed after we return.
 
-      error_state = 0;
+      reset_error_handler ();
 
       retval = octave_value_list ();
 
@@ -805,7 +803,7 @@ octave_yes_or_no (const std::string& prompt)
 
   while (1)
     {
-      std::string input_buf = interactive_input (prompt_string, false, true);
+      std::string input_buf = interactive_input (prompt_string, true);
 
       if (input_buf == "yes")
 	return true;

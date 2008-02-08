@@ -1,3 +1,9 @@
+2008-02-08  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (interactive_input): Eliminate debug arg.  Change All uses.
+	(get_user_input): Don't process input_buf if there is an error.
+	Call reset_error_handler instead of setting error_state to 0.
+
 2008-02-07  John W. Eaton  <jwe@octave.org>
 
 	* ov-range.h (octave_range::sort): New functions.

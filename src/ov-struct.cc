@@ -118,7 +118,7 @@ octave_struct::subsref (const std::string& type,
 
 	    if (! error_state)
 	      {
-		Cell t = tmp.index (idx.front ());
+		Cell t = tmp.index (idx.front (), true);
 
 		retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
 
@@ -129,7 +129,7 @@ octave_struct::subsref (const std::string& type,
 	      }
 	  }
 	else
-	  retval(0) = map.index (idx.front ());
+	  retval(0) = map.index (idx.front (), true);
       }
       break;
 

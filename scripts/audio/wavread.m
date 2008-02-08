@@ -151,7 +151,7 @@ function [y, samples_per_sec, bits_per_sample] = wavread (filename, param)
   
   ## parse arguments
   if (nargin == 1)
-    length = inf;
+    length = 8 * ck_size / bits_per_sample;
   else
     if (size (param, 2) == 1)
       ## number of samples is given

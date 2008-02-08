@@ -1,3 +1,7 @@
+2008-02-08  Julien Pommier  <pommier@pianoteq.com>
+
+	* audio/wavread.m: Limit data read to end of data chunk.
+
 2008-02-01  Dave Goel  <deego3@gmail.com>
 
 	* signal/arch_rnd.m: Correctly index E and Y vectors.

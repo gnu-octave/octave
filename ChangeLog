@@ -1,3 +1,7 @@
+2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* .hgignore: Also ignore build-.*, configure, and autom4te.cache.
+
 2008-05-22  Jaroslav Hajek <highegg@gmail.com>
 
 	* mk-opts.pl (emit_print_function, emit_set_function,

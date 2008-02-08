@@ -1,3 +1,8 @@
 (^|/)CVS($|/)
 (^|/)\.hg($|/)
 (^|/)\.hgtags($|/)
+
+^build-.*($|/)
+(^|/)configure$
+(^|/)autom4te.cache($|/)
+^config\.h\.in$

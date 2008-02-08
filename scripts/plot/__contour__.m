@@ -28,7 +28,7 @@ function [c, h] = __contour__ (varargin)
   for i = 3 : nargin
     arg = varargin {i};
     if ((ischar (arg) || iscell (arg)))
-      [linespec, valid] = __pltopt__ ("quiver", arg, false);
+      [linespec, valid] = __pltopt__ ("contour", arg, false);
       if (isempty (linespec.color))
 	linespec.color = "flat";
       endif
@@ -40,15 +40,24 @@ function [c, h] = __contour__ (varargin)
     endif
   endfor
 
+  opts = {};
+  i = 3;
+  while (i < length (varargin))
+    if (ischar (varargin {i}))
+      opts{end+1} = varargin{i};
+      varargin(i) = [];
+      opts{end+1} = varargin{i};
+      varargin(i) = [];
+    else
+      i++;
+    endif
+  endwhile
+
   if (ischar (z))
     if (strcmp (z, "none"))
       z = NaN;
     elseif (strcmp (z, "base"))
-      if (nargin < 3)
-	z = varargin{1};
-      else
-	z = varargin{3};
-      endif
+      z = varargin{3};
       z = 2 * (min (z(:)) - max (z(:)));
     elseif (! strcmp (z, "level"))
       error ("unrecognized z argument");
@@ -73,15 +82,15 @@ function [c, h] = __contour__ (varargin)
     if (isnan (z))
       h = [h; patch(ax, p(1,:), p(2,:), "facecolor", "none", 
 		    "edgecolor", linespec.color, "linestyle", 
-		    linespec.linestyle, "cdata", clev)];
+		    linespec.linestyle, "cdata", clev, opts{:})];
     elseif (!ischar(z))
       h = [h; patch(ax, p(1,:), p(2,:), z * ones (1, columns (p)), "facecolor",
 		    "none", "edgecolor", linespec.color, 
-		    "linestyle", linespec.linestyle, "cdata", clev)];
+		    "linestyle", linespec.linestyle, "cdata", clev, opts{:})];
     else
       h = [h; patch(ax, p(1,:), p(2,:), clev * ones (1, columns (p)),
 		    "facecolor", "none", "edgecolor", linespec.color, 
-		    "linestyle", linespec.linestyle, "cdata", clev)];
+		    "linestyle", linespec.linestyle, "cdata", clev, opts{:})];
     endif
     i1 += clen+1;
   endwhile

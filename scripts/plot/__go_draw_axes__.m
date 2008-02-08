@@ -694,6 +694,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       lt = "";
 	     endif
 
+	     if (isfield (obj, "linewidth"))
+	       if (have_newer_gnuplot)
+		 lw = sprintf("linewidth %f", obj.linewidth);
+	       else
+		 lw = sprintf("lw %f", obj.linewidth);
+	       endif
+	     else
+	       lw  = "";
+	     endif
+
 	     if (isfield (obj, "marker"))
 	       if (isfield (obj, "marker"))
 		 switch (obj.marker)
@@ -768,8 +778,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		 colorspec = sprintf ("lc rgb \"#%02x%02x%02x\"",
 				      round (255*color));
 	       endif
-	       withclause{data_idx} = sprintf ("with %s %s %s %s %s",
-					       style, pt, lt, ps, colorspec);
+	       withclause{data_idx} = sprintf ("with %s %s %s %s %s %s",
+					       style, lw, pt, lt, ps, 
+					       colorspec);
 	     else
 	       if (isequal (color, [0,0,0]))
 		 typ = -1;
@@ -790,8 +801,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	       else
 		 typ = -1;
 	       endif
-	       withclause{data_idx} = sprintf ("with %s %s %s lt %d", 
-					       style, pt, ps, typ);
+	       withclause{data_idx} = sprintf ("with %s %s %s %s lt %d", 
+					       style, lw, pt, ps, typ);
 	     endif
 
 	     if (nd == 3)

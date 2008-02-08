@@ -2,6 +2,12 @@
 
 	* audio/wavread.m: Limit data read to end of data chunk.
 
+2008-02-08  David Bateman  <dbateman@free.fr?
+
+	* plot/__contour__.m: Respect the graphic handle options that are
+	passed.
+	* plot/__go_draw_axes__.m: Respect the linewidth for patch objects.
+
 2008-02-01  Dave Goel  <deego3@gmail.com>
 
 	* signal/arch_rnd.m: Correctly index E and Y vectors.

@@ -107,6 +107,8 @@ Array<double>::sort (octave_idx_type dim, sortmode mode) const
     lsort.set_compare (ascending_compare);
   else if (mode == DESCENDING)
     lsort.set_compare (descending_compare);
+  else
+    abort ();
 
   if (stride == 1)
     {
@@ -133,7 +135,7 @@ Array<double>::sort (octave_idx_type dim, sortmode mode) const
 
 	  if (lo_ieee_signbit (octave_NaN))
 	    {
-	      if (mode == UNDEFINED || mode == ASCENDING)
+	      if (mode == ASCENDING)
 		{
 		  octave_idx_type i = 0;
 		  double *vtmp = reinterpret_cast<double *> (p);
@@ -194,7 +196,7 @@ Array<double>::sort (octave_idx_type dim, sortmode mode) const
 
 	  if (lo_ieee_signbit (octave_NaN))
 	    {
-	      if (mode == UNDEFINED || mode == ASCENDING)
+	      if (mode == ASCENDING)
 		{
 		   octave_idx_type i = 0;
 		  while (xisnan (v[i++*stride + offset]) && i < ns);
@@ -250,6 +252,8 @@ Array<double>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
     indexed_sort.set_compare (ascending_compare);
   else if (mode == DESCENDING)
     indexed_sort.set_compare (descending_compare);
+  else
+    abort ();
 
   OCTAVE_LOCAL_BUFFER (vec_index<uint64_t> *, vi, ns);
   OCTAVE_LOCAL_BUFFER (vec_index<uint64_t>, vix, ns);
@@ -296,7 +300,7 @@ Array<double>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 
       if (lo_ieee_signbit (octave_NaN))
 	{
-	  if (mode == UNDEFINED || mode == ASCENDING)
+	  if (mode == ASCENDING)
 	    {
 	      octave_idx_type i = 0;
 	      while (xisnan (v[i++*stride+offset]) && i < ns);

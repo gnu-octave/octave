@@ -2108,6 +2108,8 @@ Sparse<T>::sort (octave_idx_type dim, sortmode mode) const
     lsort.set_compare (sparse_ascending_compare);
   else if (mode == DESCENDING)
     lsort.set_compare (sparse_descending_compare);
+  else
+    abort ();
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();
@@ -2175,6 +2177,8 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
     indexed_sort.set_compare (sparse_ascending_compare);
   else if (mode == DESCENDING)
     indexed_sort.set_compare (sparse_descending_compare);
+  else
+    abort ();
 
   T *v = m.data ();
   octave_idx_type *mcidx = m.cidx ();

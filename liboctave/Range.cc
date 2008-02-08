@@ -185,19 +185,12 @@ Range::sort (octave_idx_type dim, sortmode mode) const
 
   if (dim == 1)
     {
-      switch (mode)
-	{
-	case ASCENDING:
-	  retval.sort_internal (true);
-	  break;
-
-	case DESCENDING:
-	  retval.sort_internal (false);
-	  break;
-
-	default:
-	  (*current_liboctave_error_handler) ("Range::sort: invalid sort mode");
-	}
+      if (mode == ASCENDING)
+	retval.sort_internal (true);
+      else if (mode == DESCENDING)
+	retval.sort_internal (false);
+      else
+	abort ();
     }
   else if (dim != 0)
     (*current_liboctave_error_handler) ("Range::sort: invalid dimension");
@@ -213,19 +206,12 @@ Range::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
 
   if (dim == 1)
     {
-      switch (mode)
-	{
-	case ASCENDING:
+      if (mode == ASCENDING)
 	  retval.sort_internal (sidx, true);
-	  break;
-
-	case DESCENDING:
-	  retval.sort_internal (sidx, false);
-	  break;
-
-	default:
-	  (*current_liboctave_error_handler) ("Range::sort: invalid sort mode");
-	}
+      else if (mode == DESCENDING)
+	retval.sort_internal (sidx, false);
+      else
+	abort ();
     }
   else if (dim != 0)
     (*current_liboctave_error_handler) ("Range::sort: invalid dimension");

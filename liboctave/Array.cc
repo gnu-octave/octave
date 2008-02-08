@@ -2498,6 +2498,8 @@ Array<T>::sort (octave_idx_type dim, sortmode mode) const
     lsort.set_compare (ascending_compare);
   else if (mode == DESCENDING)
     lsort.set_compare (descending_compare);
+  else
+    abort ();
 
   if (stride == 1)
     {
@@ -2566,6 +2568,8 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
     indexed_sort.set_compare (ascending_compare);
   else if (mode == DESCENDING)
     indexed_sort.set_compare (descending_compare);
+  else
+    abort ();
 
   OCTAVE_LOCAL_BUFFER (vec_index<T> *, vi, ns);
   OCTAVE_LOCAL_BUFFER (vec_index<T>, vix, ns);

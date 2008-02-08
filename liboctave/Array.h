@@ -546,9 +546,9 @@ public:
   // You should not use it anywhere else.
   void *mex_get_data (void) const { return const_cast<T *> (data ()); }
 
-  Array<T> sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const;
+  Array<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   Array<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = UNDEFINED) const;
+		 sortmode mode = ASCENDING) const;
 };
 
 // NOTE: these functions should be friends of the Array<T> class and

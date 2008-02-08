@@ -136,14 +136,14 @@ public:
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
-  ArrayN<T> sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+  ArrayN<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     {
       Array<T> tmp = Array<T>::sort (dim, mode);
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
   ArrayN<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = UNDEFINED) const
+		 sortmode mode = ASCENDING) const
     {
       Array<T> tmp = Array<T>::sort (sidx, dim, mode);
       return ArrayN<T> (tmp, tmp.dims ());

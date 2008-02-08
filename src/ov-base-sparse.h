@@ -116,10 +116,10 @@ octave_base_sparse : public octave_base_value
   octave_value all (int dim = 0) const { return matrix.all (dim); }
   octave_value any (int dim = 0) const { return matrix.any (dim); }
 
-  octave_value sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+  octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     { return octave_value (matrix.sort (dim, mode)); }
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		     sortmode mode = UNDEFINED) const
+		     sortmode mode = ASCENDING) const
     { return octave_value (matrix.sort (sidx, dim, mode)); }
 
   MatrixType matrix_type (void) const { return typ; }

@@ -76,14 +76,14 @@ public:
   void resize (octave_idx_type r, octave_idx_type c, octave_idx_type p, const T& val)
     { this->resize_and_fill (r, c, p, val); }
 
-  Array3<T> sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const
+  Array3<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     {
       Array<T> tmp = Array<T>::sort (dim, mode);
       return Array3<T> (tmp, tmp.rows (), tmp.columns (), tmp.pages ());
     }
 
   Array3<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = UNDEFINED) const
+		 sortmode mode = ASCENDING) const
     {
       Array<T> tmp = Array<T>::sort (sidx, dim, mode);
       return Array3<T> (tmp, tmp.rows (), tmp.columns (), tmp.pages ());

@@ -518,9 +518,9 @@ public:
 
   octave_idx_type *mex_get_jc (void) const { return const_cast<octave_idx_type *> (cidx ()); }
 
-  Sparse<T> sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const;
+  Sparse<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   Sparse<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
-		 sortmode mode = UNDEFINED) const;
+		 sortmode mode = ASCENDING) const;
 };
 
 // NOTE: these functions should be friends of the Sparse<T> class and

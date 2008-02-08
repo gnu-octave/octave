@@ -1,3 +1,8 @@
+2008-02-08  John W. Eaton  <jwe@octave.org>
+
+	* oct-sort.h (enum sortmode): Eliminate UNDEFINED.  Change all
+	uses of UNDEFINED to ASCENDING.
+
 2008-02-07  John W. Eaton  <jwe@octave.org>
 
 	* Range.cc (Range::sort_internal): Rename from sort.  New arg,

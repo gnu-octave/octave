@@ -97,7 +97,7 @@ The Python license is
 #define MERGESTATE_TEMP_SIZE 1024
 
 // Enum for type of sort function
-enum sortmode { UNDEFINED, ASCENDING, DESCENDING };
+enum sortmode { ASCENDING, DESCENDING };
 
 template <class T>
 class

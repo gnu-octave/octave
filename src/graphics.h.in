@@ -985,6 +985,11 @@ public:
 
   OCTINTERP_API void execute (const octave_value& data = octave_value ()) const;
 
+  OCTINTERP_API static
+      void execute (const octave_value& cb, const graphics_handle& h,
+		    const octave_value& data = octave_value ());
+
+
   callback_property& operator = (const octave_value& val)
     {
       set (val);

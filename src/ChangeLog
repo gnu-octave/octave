@@ -8,6 +8,14 @@
 	before executing a callback.
 	(root_figure::properties::set_callbackobject): Implement accessor.
 
+	* graphics.h.in (root_figure::properties::callbackobject):
+	New root property.
+	(root_figure::properties::cbo_stack): New field.
+	* graphics.cc (xset_gcbo, xreset_gcbo): New utility functions.
+	(execute_callback): Set callbackobject property in root object
+	before executing a callback.
+	(root_figure::properties::set_callbackobject): Implement accessor.
+
 	* graphics.h.in (class root_figure::properties,
 	class line::properties, class text::properties,
 	class image::properties, class patch::properties,
@@ -1857,6 +1865,14 @@
 	* input.cc (interactive_input): Eliminate debug arg.  Change All uses.
 	(get_user_input): Don't process input_buf if there is an error.
 	Call reset_error_handler instead of setting error_state to 0.
+
+2008-02-08  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* graphics.h.in (callback_property::execute): New static
+	helper method (useful to execute callbacks by name).
+	* graphics.cc (callback_property::execute): Likewise.
+	(execute_callback): Avoid undefined argument when executing
+	callback. Do not use arguments when the callback is a string.
 
 2008-02-07  John W. Eaton  <jwe@octave.org>
 

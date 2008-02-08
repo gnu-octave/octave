@@ -200,7 +200,10 @@ execute_callback (octave_value cb, const graphics_handle& h,
   octave_function *fcn = 0;
 
   args(0) = h.as_octave_value ();
-  args(1) = data;
+  if (data.is_defined ())
+    args(1) = data;
+  else
+    args(1) = Matrix ();
 
   unwind_protect::begin_frame ("execute_callback");
   unwind_protect::add (xreset_gcbo);
@@ -213,14 +216,10 @@ execute_callback (octave_value cb, const graphics_handle& h,
     fcn = cb.function_value ();
   else if (cb.is_string ())
     {
-      std::string s = cb.string_value ();
-      octave_value f = symbol_table::find_function (s);
       int status;
+      std::string s = cb.string_value ();
 
-      if (f.is_defined ())
-        fcn = f.function_value ();
-      else
-	eval_string (s, false, status);
+      eval_string (s, false, status);
     }
   else if (cb.is_cell () && cb.length () > 0
            && (cb.rows () == 1 || cb.columns () == 1)
@@ -560,6 +559,14 @@ callback_property::execute (const octave_value& data) const
 {
   if (callback.is_defined () && ! callback.is_empty ())
     execute_callback (callback, get_parent (), data);
+}
+
+void
+callback_property::execute (const octave_value& cb, const graphics_handle& h,
+			    const octave_value& data)
+{
+  if (cb.is_defined () && ! cb.is_empty ())
+    execute_callback (cb, h, data);
 }
 
 // ---------------------------------------------------------------------

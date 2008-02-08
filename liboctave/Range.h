@@ -25,7 +25,9 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_Range_h 1
 
 #include <iostream>
+
 #include "dMatrix.h"
+#include "oct-sort.h"
 
 class
 OCTAVE_API
@@ -60,7 +62,13 @@ Range
   double min (void) const;
   double max (void) const;
 
-  void sort (void);
+  void sort_internal (bool ascending = true);
+  void sort_internal (Array<octave_idx_type>& sidx, bool ascending = true);
+
+  Range sort (octave_idx_type dim = 0, sortmode mode = UNDEFINED) const;
+
+  Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
+	      sortmode mode = UNDEFINED) const;
 
   void set_base (double b)
   {

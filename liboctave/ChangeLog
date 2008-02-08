@@ -1,5 +1,13 @@
 2008-02-07  John W. Eaton  <jwe@octave.org>
 
+	* Range.cc (Range::sort_internal): Rename from sort.  New arg,
+	ASCENDING, with default value of true.
+	(Range::sort_internal (Array<octave_idx_type>&, bool)): New function.
+	(Range::sort (octave_idx_type, sortmode) const): New function.
+	(Range::sort (Array<octave_idx_type>&, octave_idx_type, sortmode)
+	const): New function.
+	* Range.h: Fix/provide decls.
+
 	* intNDArray.cc (intNDArray<T>::any (int)): Use != for comparison.
 
 2008-02-06  John W. Eaton  <jwe@octave.org>

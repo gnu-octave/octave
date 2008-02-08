@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <limits>
 
 #include "Range.h"
+#include "lo-error.h"
 #include "lo-mappers.h"
 #include "lo-math.h"
 #include "lo-utils.h"
@@ -119,9 +120,9 @@ Range::max (void) const
 }
 
 void
-Range::sort (void)
+Range::sort_internal (bool ascending)
 {
-  if (rng_base > rng_limit && rng_inc < 0.0)
+  if (ascending && rng_base > rng_limit && rng_inc < 0.0)
     {
       double tmp = rng_base;
       rng_base = min ();
@@ -129,6 +130,107 @@ Range::sort (void)
       rng_inc = -rng_inc;
       clear_cache ();
     }
+  else if (rng_base < rng_limit && rng_inc > 0.0)
+    {
+      double tmp = rng_limit;
+      rng_limit = min ();
+      rng_base = tmp;
+      rng_inc = -rng_inc;
+      clear_cache ();
+    }
+}
+
+void
+Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
+{
+  octave_idx_type nel = nelem ();
+
+  sidx.resize (dim_vector (1, nel));
+
+  octave_idx_type *psidx = sidx.fortran_vec ();
+
+  bool reverse = false;
+
+  if (ascending && rng_base > rng_limit && rng_inc < 0.0)
+    {
+      double tmp = rng_base;
+      rng_base = min ();
+      rng_limit = tmp;
+      rng_inc = -rng_inc;
+      clear_cache ();
+      reverse = true;
+    }
+  else if (! ascending && rng_base < rng_limit && rng_inc > 0.0)
+    {
+      double tmp = rng_limit;
+      rng_limit = min ();
+      rng_base = tmp;
+      rng_inc = -rng_inc;
+      clear_cache ();
+      reverse = true;
+    }
+
+  octave_idx_type tmp = reverse ? nel - 1 : 0;
+  octave_idx_type inc = reverse ? -1 : 1;
+
+  for (octave_idx_type i = 0; i < nel; i++, tmp += inc)
+    psidx[i] = tmp;
+
+}
+
+Range
+Range::sort (octave_idx_type dim, sortmode mode) const
+{
+  Range retval = *this;
+
+  if (dim == 1)
+    {
+      switch (mode)
+	{
+	case ASCENDING:
+	  retval.sort_internal (true);
+	  break;
+
+	case DESCENDING:
+	  retval.sort_internal (false);
+	  break;
+
+	default:
+	  (*current_liboctave_error_handler) ("Range::sort: invalid sort mode");
+	}
+    }
+  else if (dim != 0)
+    (*current_liboctave_error_handler) ("Range::sort: invalid dimension");
+
+  return retval;
+}
+
+Range
+Range::sort (Array<octave_idx_type>& sidx, octave_idx_type dim,
+	     sortmode mode) const
+{
+  Range retval = *this;
+
+  if (dim == 1)
+    {
+      switch (mode)
+	{
+	case ASCENDING:
+	  retval.sort_internal (sidx, true);
+	  break;
+
+	case DESCENDING:
+	  retval.sort_internal (sidx, false);
+	  break;
+
+	default:
+	  (*current_liboctave_error_handler) ("Range::sort: invalid sort mode");
+	}
+    }
+  else if (dim != 0)
+    (*current_liboctave_error_handler) ("Range::sort: invalid dimension");
+
+  return retval;
 }
 
 std::ostream&

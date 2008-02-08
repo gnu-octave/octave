@@ -1,3 +1,7 @@
+2008-02-07  John W. Eaton  <jwe@octave.org>
+
+	* ov-range.h (octave_range::sort): New functions.
+
 2008-02-07  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in (DLD_XSRC): Delete spkron.cc.

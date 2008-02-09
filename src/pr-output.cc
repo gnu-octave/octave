@@ -1088,7 +1088,7 @@ set_format (const ComplexMatrix& cm)
 }
 
 static void
-set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
+set_range_format (int x_max, int x_min, int all_ints, int& fw)
 {
   static float_format fmt;
 
@@ -1104,7 +1104,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
   else if (bank_format)
     {
       int digits = x_max > x_min ? x_max : x_min;
-      fw = sign + digits < 0 ? 4 : digits + 3;
+      fw = digits < 0 ? 5 : digits + 4;
       rd = 2;
     }
   else if (hex_format)
@@ -1120,13 +1120,13 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
   else if (all_ints)
     {
       int digits = x_max > x_min ? x_max : x_min;
-      fw = sign + digits;
+      fw = digits + 1;
       rd = fw;
     }
   else if (Vfixed_point_format && ! print_g)
     {
       rd = prec;
-      fw = rd + 2 + sign;
+      fw = rd + 3;
     }
   else
     {
@@ -1161,7 +1161,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
       ld = ld_max > ld_min ? ld_max : ld_min;
       rd = rd_max > rd_min ? rd_max : rd_min;
 
-      fw = sign + 1 + ld + 1 + rd;
+      fw = ld + rd + 3;
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
@@ -1177,7 +1177,7 @@ set_range_format (bool sign, int x_max, int x_min, int all_ints, int& fw)
 	  if (x_max > 100 || x_min > 100)
 	    exp_field++;
 
-	  fw = sign + 2 + prec + exp_field;
+	  fw = 3 + prec + exp_field;
 
 	  fmt = float_format (fw, prec - 1, std::ios::scientific);
 	}
@@ -1212,8 +1212,6 @@ set_format (const Range& r, int& fw, double& scale)
       r_min = tmp;
     }
 
-  bool sign = (r_min < 0.0);
-
   bool all_ints = r.all_elements_are_ints ();
 
   double max_abs = r_max < 0.0 ? -r_max : r_max;
@@ -1227,7 +1225,7 @@ set_format (const Range& r, int& fw, double& scale)
 
   scale = (x_max == 0 || all_ints) ? 1.0 : std::pow (10.0, x_max - 1);
 
-  set_range_format (sign, x_max, x_min, all_ints, fw);
+  set_range_format (x_max, x_min, all_ints, fw);
 }
 
 static inline void

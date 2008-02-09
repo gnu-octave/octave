@@ -1,3 +1,8 @@
+2008-02-09  John W. Eaton  <jwe@octave.org>
+
+	* pr-output.cc (set_range_format): Eliminate sign arg.
+	Change all callers.
+
 2008-02-08  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_struct::subsref): Allow Cell::index to resize.

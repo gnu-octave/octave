@@ -1,3 +1,7 @@
+2008-02-11  John W. Eaton  <jwe@octave.org>
+
+	* Makefile.in ($(MAKEDEPS)): Skip dependencies if omit_deps is defined.
+
 2008-02-08  John W. Eaton  <jwe@octave.org>
 
 	* oct-sort.h (enum sortmode): Eliminate UNDEFINED.  Change all

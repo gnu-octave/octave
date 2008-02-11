@@ -402,7 +402,9 @@ PREREQ := defaults.h graphics.h oct-conf.h oct-errno.cc oct-gperf.h parse.cc lex
 
 $(DEF_FILES): $(OPT_INC) mkdefs 
 
+ifndef omit_deps
 $(MAKEDEPS): $(OPT_INC) $(OPT_HANDLERS) $(PREREQ)
+endif
 
 check: all
 .PHONY: check

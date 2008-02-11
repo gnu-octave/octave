@@ -262,7 +262,9 @@ $(LIBPRE)octave.$(SHLEXT): $(LIBOCTAVE_PICOBJ)
 
 $(LIBOCTAVE_PICOBJ): stmp-pic
 
+ifndef omit_deps
 $(MAKEDEPS): $(PREREQ)
+endif
 
 check: all
 .PHONY: check

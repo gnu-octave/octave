@@ -1053,4 +1053,52 @@ else
   ifelse([$2], , , [$2])
 fi
 ])
-
+dnl
+dnl Check for OpenGL. If found, define OPENGL_LIBS
+dnl
+AC_DEFUN([OCTAVE_OPENGL], [
+OPENGL_LIBS=
+case $canonical_host_type in
+  *-*-msdosmsvc)
+    AC_CHECK_HEADERS(windows.h)
+    ;;
+esac
+have_opengl_incs=no
+AC_CHECK_HEADERS(GL/gl.h, [
+  AC_CHECK_HEADERS(GL/glu.h, [
+    have_opengl_incs=yes], [], [
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif])], [], [
+#ifdef HAVE_WINDOWS_H
+# include <windows.h>
+#endif])
+if test "$have_opengl_incs" = "yes"; then
+  case $canonical_host_type in
+    *-*-msdosmsvc)
+      save_LIBS="$LIBS"
+      LIBS="$LIBS -lopengl32"
+      AC_MSG_CHECKING([for glEnable in -lopengl32])
+      AC_TRY_LINK([
+#if HAVE_WINDOWS_H
+# include <windows.h>
+#endif
+#include <GL/gl.h>], [
+glEnable(GL_SMOOTH);], OPENGL_LIBS="-lopengl32 -lglu32")
+      LIBS="$save_LIBS"
+      if test "x$OPENGL_LIBS" != "x"; then
+        AC_MSG_RESULT(yes)
+      else
+        AC_MSG_RESULT(no)
+      fi
+      ;;
+    *)
+      save_LDFLAGS="$LDFLAGS"
+      LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"
+      AC_CHECK_LIB(GL, glEnable, OPENGL_LIBS="-L/usr/X11R6/lib -lGL -lGLU")
+      LDFLAGS="$save_LDFLAGS"
+      ;;
+  esac
+fi
+AC_SUBST(OPENGL_LIBS)
+])

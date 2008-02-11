@@ -1,3 +1,8 @@
+2008-06-04  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* misc/oct-dlldefs.h (OCTGRAPHICS_API): New macro for import/export
+	in graphics related libraries.
+
 2008-06-02  David Bateman  <dbateman@free.fr>
 
 	* libcruft/xsgmainc.f: Replace DLGAMS with ALGAMS.

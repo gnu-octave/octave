@@ -1,0 +1,5 @@
+2008-06-04  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Makefile.in Makerules.in: Initial import
+	* opengl/Makefile.in: Likewise.
+	* opengl/gl-render.h opengl/gl-render.cc: Likewise.

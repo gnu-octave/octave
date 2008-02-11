@@ -990,6 +990,7 @@ TEMPLATE_ARFLAGS="$ARFLAGS"
 CRUFT_DLL_DEFS=
 OCTAVE_DLL_DEFS=
 OCTINTERP_DLL_DEFS=
+OCTGRAPHICS_DLL_DEFS=
 library_path_var=LD_LIBRARY_PATH
 case "$canonical_host_type" in
   *-*-386bsd* | *-*-netbsd*)
@@ -1063,6 +1064,7 @@ case "$canonical_host_type" in
     CRUFT_DLL_DEFS="-DCRUFT_DLL"
     OCTAVE_DLL_DEFS="-DOCTAVE_DLL"
     OCTINTERP_DLL_DEFS="-DOCTINTERP_DLL"
+    OCTGRAPHICS_DLL_DEFS="-DOCTGRAPHICS_DLL"
   ;;
   *-*-linux* | *-*-gnu*)
     MKOCTFILE_DL_LDFLAGS="-shared -Wl,-Bsymbolic"
@@ -1166,6 +1168,7 @@ AC_MSG_NOTICE([defining TEMPLATE_ARFLAGS to be $TEMPLATE_ARFLAGS])
 AC_MSG_NOTICE([defining CRUFT_DLL_DEFS to be $CRUFT_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTAVE_DLL_DEFS to be $OCTAVE_DLL_DEFS])
 AC_MSG_NOTICE([defining OCTINTERP_DLL_DEFS to be $OCTINTERP_DLL_DEFS])
+AC_MSG_NOTICE([defining OCTGRAPHICS_DLL_DEFS to be $OCTGRAPHICS_DLL_DEFS])
 AC_MSG_NOTICE([defining library_path_var to be $library_path_var])
 AC_SUBST(FPICFLAG)
 AC_SUBST(CPICFLAG)
@@ -1191,6 +1194,7 @@ AC_SUBST(TEMPLATE_ARFLAGS)
 AC_SUBST(CRUFT_DLL_DEFS)
 AC_SUBST(OCTAVE_DLL_DEFS)
 AC_SUBST(OCTINTERP_DLL_DEFS)
+AC_SUBST(OCTGRAPHICS_DLL_DEFS)
 AC_SUBST(library_path_var)
 
 ### special checks for odd OS specific things.
@@ -1609,6 +1613,15 @@ case "$canonical_host_type" in
   ;;
 esac
 
+## Graphics related stuffs
+
+GRAPHICS_OPENGL=
+OCTAVE_OPENGL
+if test "x$OPENGL_LIBS" != "x"; then
+  GRAPHICS_OPENGL="opengl"
+fi
+AC_SUBST(GRAPHICS_OPENGL)
+
 ### Checks for other programs used for building, testing, installing,
 ### and running Octave.
 
@@ -1863,7 +1876,9 @@ AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
   libcruft/qrupdate/Makefile
   libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile
   libcruft/slatec-err/Makefile libcruft/villad/Makefile
-  libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])
+  libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile
+  src/graphics/Makefile src/graphics/Makerules
+  src/graphics/opengl/Makefile])
 AC_OUTPUT
 
 AC_CONFIG_COMMANDS([default-1],[[chmod +x install-octave]],[[]])

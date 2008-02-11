@@ -53,6 +53,13 @@ along with Octave; see the file COPYING.  If not, see
 #define OCTINTERP_API OCTAVE_IMPORT
 #endif
 
+/* API macro for src/graphics */
+#ifdef OCTGRAPHICS_DLL
+#define OCTGRAPHICS_API OCTAVE_EXPORT
+#else
+#define OCTGRAPHICS_API OCTAVE_IMPORT
+#endif
+
 #endif
 
 /*

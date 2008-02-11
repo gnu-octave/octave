@@ -1,5 +1,14 @@
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* aclocal.m4 (OCTAVE_OPENGL): New function to detect OpenGL
+	headers and libraries.
+	* configure.in (OCTAVE_OPENGL): Use it.
+	(OCTGRAPHICS_DLL_DEFS): New define to build
+	graphics-related DLL.
+	(AC_CONFIG_FILES): Generate additional files for graphics
+	related libraries.
+	* Makeconf.in (OPENGL_LIBS): New variable.
+
 	* .hgignore: Also ignore build-.*, configure, and autom4te.cache.
 
 2008-05-22  Jaroslav Hajek <highegg@gmail.com>

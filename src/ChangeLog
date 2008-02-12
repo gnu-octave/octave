@@ -1,3 +1,8 @@
+2008-02-12  David Bateman  <dbateman@free.fr>
+
+	* graphics.h.in: Implement the cdatamapping property in patch and
+	image objects.
+
 2008-02-12  John W. Eaton  <jwe@octave.org>
 
 	* pt-loop.cc (tree_simple_for_command::eval): Compute range

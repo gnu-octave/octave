@@ -54,7 +54,7 @@ function h = __img__ (x, y, img, varargin)
   ca = gca ();
 
   tmp = __go_image__ (ca, "cdata", img, "xdata", xlim, "ydata", ylim, 
-		      varargin {:});
+		      "cdatamapping", "direct", varargin {:});
 
   set (ca, "view", [0, 90]);
 

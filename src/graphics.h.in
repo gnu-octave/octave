@@ -2698,6 +2698,7 @@ public:
       data_property xdata l , Matrix ()
       data_property ydata l , Matrix ()
       data_property cdata l , Matrix ()
+      radio_property cdatamapping a , "{scaled}|direct"
     END_PROPERTIES
 
   protected:
@@ -2814,6 +2815,7 @@ public:
       data_property ydata l , Matrix ()
       data_property zdata l , Matrix ()
       data_property cdata l , Matrix ()
+      radio_property cdatamapping a , "{scaled}|direct"
       color_property facecolor , "{flat}|none|interp"
       double_property facealpha , 1.0
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))

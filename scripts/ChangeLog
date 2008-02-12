@@ -1,8 +1,15 @@
+2008-02-12  David Bateman  <dbateman@free.fr>
+
+ 	* plot/__go_draw_axes__.m: Use the cdatamapping property to set
+	the cbrange.
+	* plot/__img__.m: Set cdatamapping to "direct".
+	* plot/imagesc.m: Set cdatamapping to "scaled".
+
 2008-02-08  Julien Pommier  <pommier@pianoteq.com>
 
 	* audio/wavread.m: Limit data read to end of data chunk.
 
-2008-02-08  David Bateman  <dbateman@free.fr?
+2008-02-08  David Bateman  <dbateman@free.fr>
 
 	* plot/__contour__.m: Respect the graphic handle options that are
 	passed.

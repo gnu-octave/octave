@@ -171,9 +171,9 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
     }
 
   octave_idx_type tmp = reverse ? nel - 1 : 0;
-  octave_idx_type inc = reverse ? -1 : 1;
+  octave_idx_type stp = reverse ? -1 : 1;
 
-  for (octave_idx_type i = 0; i < nel; i++, tmp += inc)
+  for (octave_idx_type i = 0; i < nel; i++, tmp += stp)
     psidx[i] = tmp;
 
 }

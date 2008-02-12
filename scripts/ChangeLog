@@ -1,5 +1,8 @@
 2008-02-12  David Bateman  <dbateman@free.fr>
 
+	* plot/__go_draw_axes__.m: Set pm3d implict to fix colorbars on
+	contour plots.
+
  	* plot/__go_draw_axes__.m: Use the cdatamapping property to set
 	the cbrange.
 	* plot/__img__.m: Set cdatamapping to "direct".

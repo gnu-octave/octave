@@ -64,7 +64,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       fputs (plot_stream, "set size noratio;\n");
     endif
 
-    fputs (plot_stream, "set pm3d explicit;\n");
+    fputs (plot_stream, "set pm3d implicit;\n");
     fputs (plot_stream, "unset label;\n");
 
     if (! isempty (axis_obj.title))
@@ -1192,6 +1192,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	         "set palette file \"-\" binary record=%d using 1:2:3:4;\n",
 	         cmap_sz);
 	fwrite (plot_stream, [1:cmap_sz; cmap.'], "float32");
+	fwrite (plot_stream, "\n");
       else
 	fputs (plot_stream, "set palette defined (");
 	for i = 1: cmap_sz

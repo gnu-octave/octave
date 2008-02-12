@@ -1,3 +1,8 @@
+2008-02-12  John W. Eaton  <jwe@octave.org>
+
+	* pt-loop.cc (tree_simple_for_command::eval): Compute range
+	element with multiplication.
+
 2008-02-11  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in ($(MAKEDEPS)): Skip dependencies if omit_deps is defined.

@@ -357,13 +357,21 @@ tree_simple_for_command::eval (void)
 	double b = rng.base ();
 	double increment = rng.inc ();
 	bool quit = false;
-	double tmp_val = b;
 
-	for (octave_idx_type i = 0; i < steps; i++, tmp_val += increment)
+	for (octave_idx_type i = 0; i < steps; i++)
 	  {
 	    MAYBE_DO_BREAKPOINT;
 
-	    octave_value val (tmp_val);
+	    // Use multiplication here rather than declaring a
+	    // temporary variable outside the loop and using
+	    //
+	    //   tmp_val += increment
+	    //
+	    // to avoid problems with limited precision.  Also, this
+	    // is consistent with the way Range::matrix_value is
+	    // implemented.
+
+	    octave_value val (b + i * increment);
 
 	    do_for_loop_once (ult, val, quit);
 

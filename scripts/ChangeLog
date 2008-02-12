@@ -2,6 +2,7 @@
 
 	* plot/__go_draw_axes__.m: Set pm3d implict to fix colorbars on
 	contour plots.
+	* miscellaneous/cast.m: Also treat the logical type.
 
  	* plot/__go_draw_axes__.m: Use the cdatamapping property to set
 	the cbrange.

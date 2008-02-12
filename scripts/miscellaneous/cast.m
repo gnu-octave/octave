@@ -30,7 +30,7 @@ function retval = cast (val, typ)
     if (ischar (typ))
       if (any (strcmp (typ, {"int8"; "uint8"; "int16"; "uint16";
 			     "int32"; "uint32"; "int64"; "uint64";
-			     "double"; "single"})))
+			     "double"; "single"; "logical"})))
 	retval = feval (typ, val);
       else
 	error ("cast: type name `%s' is not a built-in type", typ);

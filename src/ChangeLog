@@ -1,5 +1,14 @@
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* genprops.awk: Add 'U' modifier to support extern updaters.
+	* graphics.h.in (base_graphics_backend::gripe_invalid): New method
+	to simplify error reporting.
+	(class base_graphics_backend): Use it.
+	(base_graphics_backend::set_figure_position): New backend method.
+	(graphics_backend::set_figure_position): Likewise.
+	(figure::properties::position): Mark property with updater.
+	(figure::properties::update_position): New updater.
+
 	* graphics.h.in (root_figure::properties::callbackobject):
 	New root property.
 	(root_figure::properties::cbo_stack): New field.

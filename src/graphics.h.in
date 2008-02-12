@@ -1162,37 +1162,47 @@ public:
   virtual bool is_valid (void) const { return false; }
 
   virtual void close_figure (const octave_value&) const
-    { error ("close_figure: invalid graphics backend"); }
+    { gripe_invalid ("close_figure"); }
 
   virtual void redraw_figure (const graphics_handle&) const
-    { error ("redraw_figure: invalid graphics backend"); }
+    { gripe_invalid ("redraw_figure"); }
 
   virtual void print_figure (const graphics_handle&, const std::string&,
 			     const std::string&, bool,
 			     const std::string& = "") const
-    { error ("print_figure: invalid graphics backend"); }
+    { gripe_invalid ("print_figure"); }
 
   virtual Matrix get_canvas_size (const graphics_handle&) const
     {
-      error ("get_canvas_size: invalid graphics backend");
+      gripe_invalid ("get_canvas_size");
       return Matrix (1, 2, 0.0);
     }
 
   virtual double get_screen_resolution (void) const
     {
-      error ("get_screen_resolution: invalid graphics backend");
-      return -1;
+      gripe_invalid ("get_screen_resolution");
+      return 72.0;
     }
   
   virtual Matrix get_screen_size (void) const
     {
-      error ("get_screen_size: invalid graphics backend");
+      gripe_invalid ("get_screen_size");
       return Matrix (1, 2, 0.0);
     }
+
+  virtual void set_figure_position (const graphics_handle&, const Matrix&) const
+    { gripe_invalid ("set_figure_position"); }
 
 private:
   std::string name;
   int count;
+
+private:
+  void gripe_invalid (const std::string& fname) const
+    {
+      if (! is_valid ())
+	error ("%s: invalid graphics backend", fname.c_str ());
+    }
 };
 
 class graphics_backend
@@ -1259,6 +1269,9 @@ public:
 
   Matrix get_screen_size (void) const
     { return rep->get_screen_size (); }
+
+  void set_figure_position (const graphics_handle& h, const Matrix& pos) const
+    { rep->set_figure_position (h, pos); }
 
   OCTINTERP_API static graphics_backend default_backend (void);
 
@@ -2149,6 +2162,9 @@ public:
 
     Matrix get_boundingbox (bool internal = false) const;
 
+    void update_position (void)
+      { backend.set_figure_position (__myhandle__, get_boundingbox ()); }
+
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 
@@ -2184,7 +2200,7 @@ public:
       radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 0)
       array_property pointershapehotspot , Matrix (1, 2, 0)
-      array_property position , default_figure_position ()
+      array_property position u , default_figure_position ()
       radio_property renderer , "{painters}|zbuffer|opengl|none"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"

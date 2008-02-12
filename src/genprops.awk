@@ -291,7 +291,7 @@ function emit_declarations ()
         printf ("\n  {\n    if (! error_state)\n      {\n        %s = val;\n",
           name[i]);
         if (updater[i])
-          printf ("        %s ();\n", updater[i]);
+          printf ("        update_%s ();\n", name[i]);
         if (limits[i])
           printf ("        update_axis_limits (\"%s\");\n", name[i]);
         if (mode[i])
@@ -300,6 +300,11 @@ function emit_declarations ()
       }
       else
         printf (";\n\n");
+    }
+
+    if (updater[i] == "extern")
+    {
+      printf ("  void update_%s (void);\n\n", name[i]);
     }
 
 ##    if (emit_ov_set[i])
@@ -528,10 +533,15 @@ BEGIN {
 	if (index (quals, "r"))
 	  readonly[idx] = 1;
 
-        ## There is an updater method that should be called
+        ## There is an inline updater method that should be called
         ## from the set method
         if (index (quals, "u"))
-          updater[idx] = ("update_" name[idx]);
+          updater[idx] = "inline";
+        
+	## There is an extern updater method that should be called
+        ## from the set method
+        if (index (quals, "U"))
+          updater[idx] = "extern";
 
 ##        ## emmit an asignment set function
 ##        if (index (quals, "a"))

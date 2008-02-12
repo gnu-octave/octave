@@ -60,8 +60,6 @@ sparse_descending_compare (vec_index<double> *a, vec_index<double> *b)
   return (xisnan (b->vec) || (a->vec > b->vec));
 }
 
-INSTANTIATE_SPARSE_SORT (double);
-
 INSTANTIATE_SPARSE_AND_ASSIGN (double, OCTAVE_API);
 
 #if 0

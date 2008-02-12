@@ -1,5 +1,13 @@
 2008-02-12  John W. Eaton  <jwe@octave.org>
 
+	* sparse-sort.cc: Don't explicitly instantiate
+	class octave_sort<octave_idx_vector_sort *>,
+	class octave_sort<octave_idx_type>, or
+	class octave_sort<octave_sparse_sort_idxl *>.
+
+	* Sparse.h (INSTANTIATE_SPARSE_SORT): Delete macro.
+	* Sparse-C.cc, Sparse-b.cc, Sparse-d.cc: Don't use it.
+
 	* Range.cc (Range::sort_internal): Avoid shadow warning from gcc.
 
 2008-02-11  John W. Eaton  <jwe@octave.org>

@@ -91,8 +91,6 @@ sparse_descending_compare (vec_index<Complex> *a, vec_index<Complex> *b)
 	      && (arg (a->vec) > arg (b->vec))));
 }
 
-INSTANTIATE_SPARSE_SORT (Complex);
-
 INSTANTIATE_SPARSE_AND_ASSIGN (Complex, OCTAVE_API);
 
 INSTANTIATE_SPARSE_ASSIGN (Complex, double, OCTAVE_API);

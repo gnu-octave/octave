@@ -31,8 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "Sparse.cc"
 #include "oct-sort.cc"
 
-INSTANTIATE_SPARSE_SORT (bool);
-
 INSTANTIATE_SPARSE_AND_ASSIGN (bool, OCTAVE_API);
 
 #if 0

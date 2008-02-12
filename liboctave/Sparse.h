@@ -546,11 +546,6 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs);
   INSTANTIATE_SPARSE (T, API); \
   INSTANTIATE_SPARSE_ASSIGN (T, T, API)
 
-#define INSTANTIATE_SPARSE_SORT(T) \
-  template class octave_sort<T>; \
-  template class vec_index<T>; \
-  template class octave_sort<vec_index<T> *>;
-
 #endif
 
 /*

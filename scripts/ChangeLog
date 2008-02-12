@@ -1,3 +1,8 @@
+2008-02-12  Kostas Poulios  <poulios.konstantinos@googlemail.com>
+
+	* plot/__quiver__.m: make arrow head be in z-plane of the arrow
+	body. Allow the linespec to specify the arrow color.
+
 2008-02-12  David Bateman  <dbateman@free.fr>
 
 	* miscellaneous/cast.m: Also treat the logical type.

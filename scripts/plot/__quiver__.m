@@ -133,11 +133,13 @@ function hlist = __quiver__ (varargin)
 	h1 = plot3 ([x.'; xend.'; NaN(1, length (x))](:),
 		    [y.'; yend.'; NaN(1, length (y))](:),
 		    [z.'; zend.'; NaN(1, length (z))](:),
-		    "linestyle", linespec.linestyle);
+		    "linestyle", linespec.linestyle, 
+		    "color", linespec.color);
       else
 	h1 = plot ([x.'; xend.'; NaN(1, length (x))](:),
 		   [y.'; yend.'; NaN(1, length (y))](:),
-		   "linestyle", linespec.linestyle);
+		   "linestyle", linespec.linestyle, 
+		    "color", linespec.color);
       endif
     else
       if (is3d)
@@ -158,7 +160,7 @@ function hlist = __quiver__ (varargin)
     yarrw1 = ytmp - (x - xend) * arrowsize / 3;
     yarrw2 = ytmp + (x - xend) * arrowsize / 3;
     if (is3d)
-      zarrw1 = zarrw2 = zend - w(:) * arrowsize / 3;
+      zarrw1 = zarrw2 = zend - w(:) * arrowsize;
     endif
 
     if (have_line_spec)
@@ -179,11 +181,13 @@ function hlist = __quiver__ (varargin)
 	  h2 = plot3 ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
 		      [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
 		      [zarrw1.'; zend.'; zarrw2.'; NaN(1, length (z))](:),
-		      "linestyle", linespec.linestyle);
+		      "linestyle", linespec.linestyle,
+		      "color", linespec.color);
 	else
 	  h2 = plot ([xarrw1.'; xend.'; xarrw2.'; NaN(1, length (x))](:),
 		     [yarrw1.'; yend.'; yarrw2.'; NaN(1, length (y))](:),
-		     "linestyle", linespec.linestyle);
+		     "linestyle", linespec.linestyle,
+		      "color", linespec.color);
 	endif
       endif
     elseif (is3d)

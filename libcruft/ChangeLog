@@ -1,6 +1,7 @@
 2008-02-12  John W. Eaton  <jwe@octave.org>
 
 	* lapack-xtra/xilaenv.f: New wrapper for Fortran function ilaenv.
+	* lapack-xtra/Makefile.in (FSRC): Add it to the list.
 
 2008-02-06  John W. Eaton  <jwe@octave.org>
 

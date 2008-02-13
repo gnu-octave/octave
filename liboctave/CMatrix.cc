@@ -67,9 +67,9 @@ extern "C"
   F77_FUNC (xilaenv, XILAENV) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
 			       F77_CONST_CHAR_ARG_DECL,
 			       const octave_idx_type&, const octave_idx_type&,
-			       const octave_idx_type&, const octave_idx_type&
-			       F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL,
-			       octave_idx_type&);
+			       const octave_idx_type&, const octave_idx_type&,
+			       octave_idx_type&
+			       F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
 
   F77_RET_T
   F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
@@ -2503,9 +2503,9 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       octave_idx_type smlsiz;
       F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("ZGELSD", 6),
 				   F77_CONST_CHAR_ARG2 (" ", 1),
-				   0, 0, 0, 0
+				   0, 0, 0, 0, smlsiz
 				   F77_CHAR_ARG_LEN (6)
-				   F77_CHAR_ARG_LEN (1), smlsiz);
+				   F77_CHAR_ARG_LEN (1));
 
       // We compute the size of rwork and iwork because ZGELSD in
       // older versions of LAPACK does not return them on a query

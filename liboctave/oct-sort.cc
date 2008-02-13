@@ -85,6 +85,7 @@ The Python license is
 
 #include <cassert>
 #include <cstdlib>
+#include <cstring>
 
 #include "lo-mappers.h"
 #include "quit.h"
@@ -521,7 +522,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 
   if (MERGE_GETMEM (na) < 0)
     return -1;
-  memcpy (ms.a, pa, na * sizeof (T));
+  std::memcpy (ms.a, pa, na * sizeof (T));
   dest = pa;
   pa = ms.a;
 
@@ -583,7 +584,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      if (k < 0)
 		goto Fail;
-	      memcpy (dest, pa, k * sizeof (T));
+	      std::memcpy (dest, pa, k * sizeof (T));
 	      dest += k;
 	      pa += k;
 	      na -= k;
@@ -607,7 +608,7 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      if (k < 0)
 		goto Fail;
-	      memmove (dest, pb, k * sizeof (T));
+	      std::memmove (dest, pb, k * sizeof (T));
 	      dest += k;
 	      pb += k;
 	      nb -= k;
@@ -630,12 +631,12 @@ octave_sort<T>::merge_lo (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 
  Fail:
   if (na)
-    memcpy (dest, pa, na * sizeof (T));
+    std::memcpy (dest, pa, na * sizeof (T));
   return result;
 
  CopyB:
   /* The last element of pa belongs at the end of the merge. */
-  memmove (dest, pb, nb * sizeof (T));
+  std::memmove (dest, pb, nb * sizeof (T));
   dest[nb] = *pa;
 
   return 0;
@@ -661,7 +662,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
   if (MERGE_GETMEM (nb) < 0)
     return -1;
   dest = pb + nb - 1;
-  memcpy (ms.a, pb, nb * sizeof (T));
+  std::memcpy (ms.a, pb, nb * sizeof (T));
   basea = pa;
   baseb = ms.a;
   pb = ms.a + nb - 1;
@@ -727,7 +728,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      dest -= k;
 	      pa -= k;
-	      memmove (dest+1, pa+1, k * sizeof (T));
+	      std::memmove (dest+1, pa+1, k * sizeof (T));
 	      na -= k;
 	      if (na == 0)
 		goto Succeed;
@@ -746,7 +747,7 @@ octave_sort<T>::merge_hi (T *pa, octave_idx_type na, T *pb, octave_idx_type nb)
 	    {
 	      dest -= k;
 	      pb -= k;
-	      memcpy (dest+1, pb+1, k * sizeof (T));
+	      std::memcpy (dest+1, pb+1, k * sizeof (T));
 	      nb -= k;
 	      if (nb == 1)
 		goto CopyA;
@@ -771,14 +772,14 @@ Succeed:
 
 Fail:
   if (nb)
-    memcpy (dest-(nb-1), baseb, nb * sizeof (T));
+    std::memcpy (dest-(nb-1), baseb, nb * sizeof (T));
   return result;
 
 CopyA:
   /* The first element of pb belongs at the front of the merge. */
   dest -= na;
   pa -= na;
-  memmove (dest+1, pa+1, na * sizeof (T));
+  std::memmove (dest+1, pa+1, na * sizeof (T));
   *dest = *pb;
 
   return 0;

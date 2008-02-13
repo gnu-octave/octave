@@ -5,6 +5,11 @@
 
 2008-02-12  Jason Riedy  <ejr@cs.berkeley.edu>
   
+	* Array.cc (ascending_compare, descending_compare): Remove
+	non-standard extern in the instantiations.
+
+	* oct-sort.cc: Include <cstring> and sprinkle with std:: as needed.
+
 	* dMatrix.cc (ILAENV): Declare LAPACK Fortran function.
 	(Matrix::lssolve): Use ILAENV to query smlsiz.  And add an ugly
 	workaround for DGELSD's broken lwork query.  The formula is from

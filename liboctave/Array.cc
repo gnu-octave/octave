@@ -2636,13 +2636,13 @@ Array<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
 #if defined (HAVE_IEEE754_DATA_FORMAT)
 
 template <>
-extern bool ascending_compare (double, double);
+bool ascending_compare (double, double);
 template <>
-extern bool ascending_compare (vec_index<double>*, vec_index<double>*);
+bool ascending_compare (vec_index<double>*, vec_index<double>*);
 template <>
-extern bool descending_compare (double, double);
+bool descending_compare (double, double);
 template <>
-extern bool descending_compare (vec_index<double>*, vec_index<double>*);
+bool descending_compare (vec_index<double>*, vec_index<double>*);
 
 template <>
 Array<double> Array<double>::sort (octave_idx_type dim, sortmode mode) const;

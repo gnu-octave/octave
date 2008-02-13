@@ -60,11 +60,12 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   octave_idx_type
-  F77_FUNC (ilaenv, ILAENV) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type&, const octave_idx_type&,
-			     const octave_idx_type&, const octave_idx_type&
-			     F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
+  F77_FUNC (xilaenv, XILAENV) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
+			       F77_CONST_CHAR_ARG_DECL,
+			       const octave_idx_type&, const octave_idx_type&,
+			       const octave_idx_type&, const octave_idx_type&
+			       F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL,
+			       octave_idx_type&);
 
   F77_RET_T
   F77_FUNC (dgebal, DGEBAL) (F77_CONST_CHAR_ARG_DECL,
@@ -2110,12 +2111,12 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 
       Array<double> work (1);
 
-      const octave_idx_type smlsiz
-	= F77_FUNC (ilaenv, ILAENV) (9, F77_CONST_CHAR_ARG2 ("DGELSD", 6),
-				     F77_CONST_CHAR_ARG2 (" ", 1),
-				     0, 0, 0, 0
-				     F77_CHAR_ARG_LEN (6)
-				     F77_CHAR_ARG_LEN (1));
+      octave_idx_type smlsiz;
+      F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("DGELSD", 6),
+				   F77_CONST_CHAR_ARG2 (" ", 1),
+				   0, 0, 0, 0
+				   F77_CHAR_ARG_LEN (6)
+				   F77_CHAR_ARG_LEN (1), smlsiz);
 
       // We compute the size of iwork because DGELSD in older versions
       // of LAPACK does not return it on a query call.

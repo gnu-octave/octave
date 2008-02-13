@@ -1,3 +1,8 @@
+2008-02-12  John W. Eaton  <jwe@octave.org>
+
+	* CMatrix.cc: Declare xilaenv instead of ilaenv.
+	(ComplexMatrix::lssolve): Call xilaenv instead of ilaenv.
+
 2008-02-12  Jason Riedy  <ejr@cs.berkeley.edu>
   
 	* dMatrix.cc (ILAENV): Declare LAPACK Fortran function.

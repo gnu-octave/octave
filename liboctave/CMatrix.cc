@@ -63,6 +63,13 @@ along with Octave; see the file COPYING.  If not, see
 
 extern "C"
 {
+  octave_idx_type
+  F77_FUNC (ilaenv, ILAENV) (const octave_idx_type&, F77_CONST_CHAR_ARG_DECL,
+			     F77_CONST_CHAR_ARG_DECL,
+			     const octave_idx_type&, const octave_idx_type&,
+			     const octave_idx_type&, const octave_idx_type&
+			     F77_CHAR_ARG_LEN_DECL F77_CHAR_ARG_LEN_DECL);
+
   F77_RET_T
   F77_FUNC (zgebal, ZGEBAL) (F77_CONST_CHAR_ARG_DECL,
 			     const octave_idx_type&, Complex*, const octave_idx_type&, octave_idx_type&,
@@ -2492,8 +2499,12 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 
       Array<Complex> work (1);
 
-      // FIXME: Can SMLSIZ be other than 25?
-      octave_idx_type smlsiz = 25;
+      const octave_idx_type smlsiz
+	= F77_FUNC (ilaenv, ILAENV) (9, F77_CONST_CHAR_ARG2 ("ZGELSD", 6),
+				     F77_CONST_CHAR_ARG2 (" ", 1),
+				     0, 0, 0, 0
+				     F77_CHAR_ARG_LEN (6)
+				     F77_CHAR_ARG_LEN (1));
 
       // We compute the size of rwork and iwork because ZGELSD in
       // older versions of LAPACK does not return them on a query
@@ -2525,6 +2536,29 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
 				 ps, rcond, rank, work.fortran_vec (),
 				 lwork, prwork, piwork, info));
+
+      // The workspace query is broken in at least LAPACK 3.0.0
+      // through 3.1.1 when n > m.  The obtuse formula below
+      // should provide sufficient workspace for DGELSD to operate
+      // efficiently.
+      if (n > m)
+	{
+	  octave_idx_type addend = m;
+
+	  if (2*m-4 > addend)
+	    addend = 2*m-4;
+
+	  if (nrhs > addend)
+	    addend = nrhs;
+
+	  if (n-3*m > addend)
+	    addend = n-3*m;
+
+	  const octave_idx_type lworkaround = 4*m + m*m + addend;
+
+	  if (std::real (work(0)) < lworkaround)
+	    work(0) = lworkaround;
+	}
 
       if (f77_exception_encountered)
 	(*current_liboctave_error_handler) 

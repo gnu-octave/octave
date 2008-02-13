@@ -1,3 +1,14 @@
+2008-02-12  Jason Riedy  <ejr@cs.berkeley.edu>
+  
+	* dMatrix.cc (ILAENV): Declare LAPACK Fortran function.
+	(Matrix::lssolve): Use ILAENV to query smlsiz.  And add an ugly
+	workaround for DGELSD's broken lwork query.  The formula is from
+	LAPACK's dgelsd.f source and allocates enough workspace to use an
+	efficient algorithm in the short-and-fat case (n > m).
+	* CMatrix.cc (ILAENV): Declare LAPACK Fortran function.
+	(ComplexMatrix::lssolve): Use ILAENV to query smlsiz.  And add an
+	ugly workaround for DGELSD's broken lwork query, as with double.
+
 2008-02-12  John W. Eaton  <jwe@octave.org>
 
 	* sparse-sort.cc: Don't explicitly instantiate

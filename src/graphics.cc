@@ -1301,6 +1301,20 @@ base_properties::get_backend (void) const
     return graphics_backend ();
 }
 
+void
+base_properties::update_boundingbox (void)
+{
+  Matrix kids = get_children ();
+
+  for (int i = 0; i < kids.numel (); i++)
+    {
+      graphics_object go = gh_manager::get_object (kids(i));
+
+      if (go.valid_object ())
+	go.get_properties ().update_boundingbox ();
+    }
+}
+
 // ---------------------------------------------------------------------
 
 class gnuplot_backend : public base_graphics_backend
@@ -1501,6 +1515,49 @@ figure::properties::get_boundingbox (bool) const
   pos(1) = screen_size(1) - pos(1) - pos(3);
 
   return pos;
+}
+
+void
+figure::properties::set_boundingbox (const Matrix& bb)
+{
+  graphics_backend b = get_backend ();
+  // FIXME: screen size should be obtained from root object
+  Matrix screen_size = b.get_screen_size ();
+  Matrix pos = bb;
+
+  pos(1) = screen_size(1) - pos(1) - pos(3);
+  pos(1)++;
+  pos(0)++;
+  pos = convert_position (pos, "pixels", get_units (), screen_size, b);
+
+  set_position (pos);
+}
+
+void
+figure::properties::set_position (const octave_value& v)
+{
+  if (! error_state)
+    {
+      Matrix old_bb, new_bb;
+
+      old_bb = get_boundingbox ();
+      position = v;
+      new_bb = get_boundingbox ();
+
+      if (old_bb != new_bb)
+	{
+	  // FIXME: maybe this should be converted into a more generic
+	  //        call like "update_gui (this)"
+	  get_backend ().set_figure_position (__myhandle__, new_bb);
+	  if (old_bb(2) != new_bb(2) || old_bb(3) != new_bb(3))
+	    {
+	      execute_resizefcn ();
+	      update_boundingbox ();
+	    }
+	}
+
+      mark_modified ();
+    }
 }
 
 octave_value

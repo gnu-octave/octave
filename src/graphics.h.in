@@ -1421,6 +1421,8 @@ public:
   virtual Matrix get_boundingbox (bool /*internal*/ = false) const
     { return Matrix (1, 4, 0.0); }
 
+  virtual void update_boundingbox (void);
+
   void set_tag (const octave_value& val) { tag = val; }
 
   void set_parent (const octave_value& val);
@@ -2162,8 +2164,7 @@ public:
 
     Matrix get_boundingbox (bool internal = false) const;
 
-    void update_position (void)
-      { backend.set_figure_position (__myhandle__, get_boundingbox ()); }
+    void set_boundingbox (const Matrix& bb);
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -2200,7 +2201,7 @@ public:
       radio_property pointer , "crosshair|fullcrosshair|{arrow}|ibeam|watch|topl|topr|botl|botr|left|top|right|bottom|circle|cross|fleur|custom|hand"
       array_property pointershapecdata , Matrix (16, 16, 0)
       array_property pointershapehotspot , Matrix (1, 2, 0)
-      array_property position u , default_figure_position ()
+      array_property position S , default_figure_position ()
       radio_property renderer , "{painters}|zbuffer|opengl|none"
       radio_property renderermode , "{auto}|manual"
       bool_property resize , "on"
@@ -2376,6 +2377,15 @@ public:
     const scaler& get_z_scaler (void) const { return sz; }
 
     Matrix get_boundingbox (bool internal = false) const;
+
+    void update_boundingbox (void)
+      {
+	if (units_is ("normalized"))
+	  {
+	    update_transform ();
+	    base_properties::update_boundingbox ();
+	  }
+      }
 
     void update_camera (void);
     void update_aspectratios (void);

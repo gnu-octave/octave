@@ -203,7 +203,20 @@ function retval = datestr (date, f, p)
   if (iscell (date) || columns (date) != 6)
     v = datevec (date, p);
   else
-    v = date;
+    v = [];
+    if columns (date) == 6
+      ## make sure that the input really is a datevec
+      maxdatevec = [inf 12 31 23 59 60];
+      for i = 1:numel (maxdatevec)
+        if any (date(:,i) > maxdatevec(i))
+          v = datevec (date, p);
+          break;
+        endif
+      endfor
+    endif
+    if isempty (v)
+      v = date;
+    endif
   endif
 
   for i = 1:(rows (v))
@@ -328,6 +341,9 @@ endfunction
 %!assert(datestr(testtime,29),"20051218");
 %!assert(datestr(testtime,30),"20051218T023317");
 %!assert(datestr(testtime,31),"2005-12-18 02:33:17");
+## avoid the bug where someone happens to give a vector of datenums that
+## happens to be 6 wide
+%!assert(datestr(733452.933:733457.933), ["14-Feb-2008 22:23:31";"15-Feb-2008 22:23:31";"16-Feb-2008 22:23:31";"17-Feb-2008 22:23:31";"18-Feb-2008 22:23:31";"19-Feb-2008 22:23:31"])
 # demos
 %!demo
 %! datestr (now ())

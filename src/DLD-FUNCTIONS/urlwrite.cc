@@ -167,7 +167,7 @@ urlget (const std::string& url, const std::string& method,
 
   res = CURLE_ABORTED_BY_CALLBACK;
   urlget_cleanup (curl);
-  octave_throw_interrupt_exception ();
+  octave_rethrow_exception ();
 
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2;
 

@@ -182,7 +182,7 @@ recover_from_exception (void)
   octave_interrupt_immediately = 0;
   octave_interrupt_state = 0;
   octave_signal_caught = 0;
-  octave_allocation_error = 0;
+  octave_exception_state = octave_no_exception;
   octave_restore_signal_mask ();
   octave_catch_interrupts ();
 }

@@ -74,10 +74,22 @@ CRUFT_API extern void octave_restore_signal_mask (void);
 
 #ifdef __cplusplus
 class
+octave_execution_exception
+{
+};
+
+class
 octave_interrupt_exception
 {
 };
 #endif
+
+enum octave_exception
+{
+  octave_no_exception = 0,
+  octave_exec_exception = 1,
+  octave_alloc_exception = 2
+};
 
 CRUFT_API extern sig_atomic_t octave_interrupt_immediately;
 
@@ -88,7 +100,7 @@ CRUFT_API extern sig_atomic_t octave_interrupt_immediately;
 */
 CRUFT_API extern sig_atomic_t octave_interrupt_state;
 
-CRUFT_API extern sig_atomic_t octave_allocation_error;
+CRUFT_API extern sig_atomic_t octave_exception_state;
 
 CRUFT_API extern sig_atomic_t octave_signal_caught;
 
@@ -96,7 +108,11 @@ CRUFT_API extern void octave_handle_signal (void);
 
 CRUFT_API extern void octave_throw_interrupt_exception (void) GCC_ATTR_NORETURN;
 
+CRUFT_API extern void octave_throw_execution_exception (void) GCC_ATTR_NORETURN;
+
 CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
+
+CRUFT_API extern void octave_rethrow_exception (void) GCC_ATTR_NORETURN;
 
 #define OCTAVE_QUIT \
   do \
@@ -119,7 +135,7 @@ CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 
      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1;
      ... custom code here, normally ending in a call to
-         octave_throw_interrupt_exception ...
+         octave_rethrow_exception ...
      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2;
 
    so that you can perform extra clean up operations before throwing
@@ -127,7 +143,7 @@ CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE \
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1; \
-  octave_throw_interrupt_exception (); \
+  octave_rethrow_exception (); \
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
 
 #define BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_1 \
@@ -170,10 +186,16 @@ CRUFT_API extern void octave_throw_bad_alloc (void) GCC_ATTR_NORETURN;
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
       octave_jump_to_enclosing_context (); \
     } \
+  catch (octave_execution_exception) \
+    { \
+      octave_interrupt_immediately = saved_octave_interrupt_immediately; \
+      octave_exception_state = octave_exec_exception; \
+      octave_jump_to_enclosing_context (); \
+    } \
   catch (std::bad_alloc) \
     { \
       octave_interrupt_immediately = saved_octave_interrupt_immediately; \
-      octave_allocation_error = 1; \
+      octave_exception_state = octave_alloc_exception; \
       octave_jump_to_enclosing_context (); \
     } \
  \

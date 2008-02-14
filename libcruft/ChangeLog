@@ -1,3 +1,18 @@
+2008-02-14  John W. Eaton  <jwe@octave.org>
+
+	* misc/f77-fcn.h (F77_XFCN): Call octave_rethrow_exception here
+	instead of checking octave_allocation_error.
+	* misc/quit.cc (octave_execution_exception): New function.
+	(octave_rethrow_exception): New function.
+	(octave_handle_signal): Call octave_rethrow_exception instead of
+	octave_throw_interrupt_exception.
+	* misc/quit.h (octave_execution_error): New variable.
+	(END_INTERRUPT_WITH_EXCEPTIONS): Catch octave_execution_exception.
+	(octave_execution_exception): New class.
+	(octave_exception): New enum.
+	(octave_exception_state): Rename from octave_allocation_error.
+	Change all uses.
+
 2008-02-12  John W. Eaton  <jwe@octave.org>
 
 	* lapack-xtra/xilaenv.f: New wrapper for Fortran function ilaenv.

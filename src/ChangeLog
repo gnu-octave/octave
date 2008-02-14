@@ -1,3 +1,19 @@
+2008-02-14  John W. Eaton  <jwe@octave.org>
+
+	* sighandlers.cc (user_abort): If interrupting immediately, set
+	octave_interrupt_state if it is not already set.
+
+	* pt-stmt.cc (tree_statement::eval): Catch execution exceptions.
+
+	* octave.cc (lo_error_handler): New static function.
+	(initialize_error_handlers): Set liboctave_error_handler to
+	lo_error_handler, not error.
+
+	* DLD-FUNCTIONS/urlwrite.cc (urlget): Call octave_rethrow_exception
+	instead of octave_throw_interrupt_exception.
+	* utils.cc (BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_FOR_VSNPRINTF): 
+	Likewise.
+
 2008-02-12  David Bateman  <dbateman@free.fr>
 
 	* graphics.h.in: Implement the cdatamapping property in patch and

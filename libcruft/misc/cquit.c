@@ -255,7 +255,7 @@ sig_atomic_t octave_interrupt_immediately = 0;
 
 sig_atomic_t octave_interrupt_state = 0;
 
-sig_atomic_t octave_allocation_error = 0;
+sig_atomic_t octave_exception_state = 0;
 
 sig_atomic_t octave_signal_caught = 0;
 

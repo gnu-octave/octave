@@ -966,7 +966,7 @@ octave_vformat (std::ostream& os, const char *fmt, va_list args)
   delete [] buf; \
   buf = 0; \
   size = initial_size; \
-  octave_throw_interrupt_exception (); \
+  octave_rethrow_exception (); \
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE_2
 
 #if defined __GNUC__ && defined __va_copy

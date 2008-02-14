@@ -98,36 +98,44 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 
       maybe_echo_code (in_function_body);
 
-      if (cmd)
-	cmd->eval ();
-      else
+      try
 	{
-	  expr->set_print_flag (pf);
-
-	  // FIXME -- maybe all of this should be packaged in
-	  // one virtual function that returns a flag saying whether
-	  // or not the expression will take care of binding ans and
-	  // printing the result.
-
-	  // FIXME -- it seems that we should just have to
-	  // call expr->rvalue () and that should take care of
-	  // everything, binding ans as necessary?
-
-	  bool do_bind_ans = false;
-
-	  if (expr->is_identifier ())
-	    {
-	      tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
-
-	      do_bind_ans = (! id->is_variable ());
-	    }
+	  if (cmd)
+	    cmd->eval ();
 	  else
-	    do_bind_ans = (! expr->is_assignment_expression ());
+	    {
+	      expr->set_print_flag (pf);
 
-	  retval = expr->rvalue (nargout);
+	      // FIXME -- maybe all of this should be packaged in
+	      // one virtual function that returns a flag saying whether
+	      // or not the expression will take care of binding ans and
+	      // printing the result.
 
-	  if (do_bind_ans && ! (error_state || retval.empty ()))
-	    bind_ans (retval(0), pf);
+	      // FIXME -- it seems that we should just have to
+	      // call expr->rvalue () and that should take care of
+	      // everything, binding ans as necessary?
+
+	      bool do_bind_ans = false;
+
+	      if (expr->is_identifier ())
+		{
+		  tree_identifier *id = dynamic_cast<tree_identifier *> (expr);
+
+		  do_bind_ans = (! id->is_variable ());
+		}
+	      else
+		do_bind_ans = (! expr->is_assignment_expression ());
+
+	      retval = expr->rvalue (nargout);
+
+	      if (do_bind_ans && ! (error_state || retval.empty ()))
+		bind_ans (retval(0), pf);
+	    }
+	}
+      catch (octave_execution_exception)
+	{
+	  octave_exception_state = octave_no_exception;
+	  error ("caught execution error in library function");
 	}
 
       unwind_protect::run ();

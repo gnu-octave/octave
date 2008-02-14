@@ -357,7 +357,7 @@ sigwinch_handler (int /* sig */)
 // for SIGINT only.
 
 static
-void user_abort(const char *sig_name, int sig_number)
+void user_abort (const char *sig_name, int sig_number)
 {
   if (! octave_initialized)
     exit (1);
@@ -378,7 +378,12 @@ void user_abort(const char *sig_name, int sig_number)
 	}
 
       if (octave_interrupt_immediately)
-	octave_jump_to_enclosing_context ();
+	{
+	  if (octave_interrupt_state == 0)
+	    octave_interrupt_state = 1;
+
+	  octave_jump_to_enclosing_context ();
+	}
       else
 	{
 	  // If we are already cleaning up from a previous interrupt,

@@ -62,10 +62,8 @@ extern "C" {
           octave_restore_current_context (saved_context); \
 	  if (f77_exception_encountered) \
 	    F77_XFCN_ERROR (f, F); \
-          else if (octave_allocation_error) \
-            octave_throw_bad_alloc (); \
           else \
-            octave_throw_interrupt_exception (); \
+	    octave_rethrow_exception (); \
 	} \
       else \
         { \

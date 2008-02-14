@@ -2241,12 +2241,75 @@ check_limit_vals (double& min_val, double& max_val, double& min_pos,
     min_pos = val;
 }
 
+// magform(x) Returns (a, b), where x = a * 10^b, a >= 1., and b is
+// integral.
+
+static void magform (double x, double& a, int& b)
+{
+  if (x == 0)
+    {
+      a = 0;
+      b = 0;
+    }
+  else
+    {
+      double l = std::log10 (std::abs (x));
+      double r = std::fmod (l, 1.);
+      a = std::pow (10.0, r);
+      b = static_cast<int> (l-r);
+      if (a < 1)
+	{
+	  a *= 10;
+	  b -= 1;
+	}
+
+      if (x < 0)
+	a = -a;
+    }
+}
+
+// A translation from Tom Holoryd's python code at
+// http://kurage.nimh.nih.gov/tomh/tics.py
+// FIXME -- add log ticks
+
+double
+axes::properties::calc_tick_sep (double lo, double hi)
+{
+  int ticint = 5;
+
+  // Reference: Lewart, C. R., "Algorithms SCALE1, SCALE2, and
+  // SCALE3 for Determination of Scales on Computer Generated
+  // Plots", Communications of the ACM, 10 (1973), 639-640.
+  // Also cited as ACM Algorithm 463.
+
+  double a;
+  int b, x;
+
+  magform ((hi-lo)/ticint, a, b);
+
+  static const double sqrt_2 = sqrt (2.0);
+  static const double sqrt_10 = sqrt (10.0);
+  static const double sqrt_50 = sqrt (50.0);
+
+  if (a < sqrt_2)
+    x = 1;
+  else if (a < sqrt_10)
+    x = 2;
+  else if (a < sqrt_50)
+    x = 5;
+  else
+    x = 10;
+
+  return x * std::pow (10., b);
+
+}
+
 // Attempt to make "nice" limits from the actual max and min of the
 // data.  For log plots, we will also use the smallest strictly positive
 // value.
 
-static Matrix
-get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
+Matrix
+axes::properties::get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
 {
   Matrix retval;
 
@@ -2290,10 +2353,10 @@ get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
 	      min_val -= 0.1 * std::abs (min_val);
 	      max_val += 0.1 * std::abs (max_val);
 	    }
-	  // FIXME -- to do a better job, we should consider the tic spacing.
-	  double scale = pow (10, floor (log10 (max_val - min_val) - 1));
-	  min_val = scale * floor (min_val / scale);
-	  max_val = scale * ceil (max_val / scale);
+
+	  double tick_sep = calc_tick_sep (min_val , max_val);
+	  min_val = tick_sep * std::floor (min_val / tick_sep);
+	  max_val = tick_sep * ceil (max_val / tick_sep);
 	}
     }
 
@@ -2305,89 +2368,44 @@ get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
   return retval;
 }
 
-// magform(x) Returns (a, b), where x = a * 10^b, a >= 1., and b is
-// integral.
-
 void 
-axes::properties::magform (double x, double& a, int& b)
+axes::properties::calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto)
 {
-  if (x == 0)
-    {
-      a = 0;
-      b = 0;
-    }
-  else
-    {
-      double l = std::log10 (std::abs (x));
-      double r = std::fmod (l, 1.);
-      a = std::pow (10.0, r);
-      b = static_cast<int> (l-r);
-      if (a < 1)
-	{
-	  a *= 10;
-	  b -= 1;
-	}
 
-      if (x < 0)
-	a = -a;
-    }
-}
-
-// A translation from Tom Holoryd's python code at
-// http://kurage.nimh.nih.gov/tomh/tics.py
-// FIXME -- add log ticks
-
-void 
-axes::properties::calc_ticks (const array_property& lims, array_property& ticks)
-{
-  int ticint = 5;
+  // FIXME -- add log ticks and lims
 
   if (lims.get ().is_empty ())
     return;
 
   double lo = (lims.get ().matrix_value ()) (0);
   double hi = (lims.get ().matrix_value ()) (1);
+  
+  double tick_sep = calc_tick_sep (lo , hi);
 
-  // Reference: Lewart, C. R., "Algorithms SCALE1, SCALE2, and
-  // SCALE3 for Determination of Scales on Computer Generated
-  // Plots", Communications of the ACM, 10 (1973), 639-640.
-  // Also cited as ACM Algorithm 463.
+  int i1 = static_cast<int> (std::floor (lo / tick_sep));
+  int i2 = static_cast<int> (std::ceil (hi / tick_sep));
 
-  double a;
-  int b, x;
+  if (limmode_is_auto)
+    {
+      // adjust limits to include min and max tics
+      Matrix tmp_lims (1,2);
+      tmp_lims(0) = tick_sep * i1;
+      tmp_lims(1) = tick_sep * i2;
 
-  magform ((hi-lo)/ticint, a, b);
-
-  static const double sqrt_2 = sqrt (2.0);
-  static const double sqrt_10 = sqrt (10.0);
-  static const double sqrt_50 = sqrt (50.0);
-
-  if (a < sqrt_2)
-    x = 1;
-  else if (a < sqrt_10)
-    x = 2;
-  else if (a < sqrt_50)
-    x = 5;
+      lims = tmp_lims;
+    }
   else
-    x = 10;
+    {
+      // adjust min and max tics if they are out of limits
+      i1 = static_cast<int> (std::ceil (lo / tick_sep));
+      i2 = static_cast<int> (std::floor (hi / tick_sep));
+    }
+      
+  Matrix tmp_ticks (1, i2-i1+1);
+  for (int i = 0; i <= i2-i1; i++)
+    tmp_ticks (i) = tick_sep * (i+i1);
 
-  double sep = x * std::pow (10., b);
-
-  // FIXME x can now be used to set minor ticks
-  if (x == 10)
-    x = 1;
-
-  // The following guarantees that if zero is in the range, it will be
-  // included as a tic.
-
-  int i1 = static_cast<int> (std::floor (lo / sep));
-  int i2 = static_cast<int> (std::ceil (hi / sep));
-
-  Matrix limits (1, i2-i1+1);
-  for (int i = 0; i < i2-i1+1; i++)
-    limits (i) = sep*(i+i1);
-
-  ticks = limits;
+  ticks = tmp_ticks;
 }
 
 static bool updating_axis_limits = false;
@@ -2438,8 +2456,8 @@ axes::update_axis_limits (const std::string& axis_type)
 		}
 	    }
 
-	  limits = get_axis_limits (min_val, max_val, min_pos,
-				    xproperties.xscale_is ("log"));
+	  limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+						xproperties.xscale_is ("log"));
 
 	  update_type = 'x';
 	}
@@ -2472,8 +2490,8 @@ axes::update_axis_limits (const std::string& axis_type)
 		}
 	    }
 
-	  limits = get_axis_limits (min_val, max_val, min_pos,
-				    xproperties.yscale_is ("log"));
+	  limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+						xproperties.yscale_is ("log"));
 
 	  update_type = 'y';
 	}
@@ -2495,8 +2513,8 @@ axes::update_axis_limits (const std::string& axis_type)
 		}
 	    }
 
-	  limits = get_axis_limits (min_val, max_val, min_pos,
-				    xproperties.zscale_is ("log"));
+	  limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
+						xproperties.zscale_is ("log"));
 
 	  update_type = 'z';
 	}

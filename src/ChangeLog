@@ -1,3 +1,18 @@
+2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* graphics.cc (axes::properties::calc_ticks_and_lims): Refactor.
+	Adjust axes limits & tics together so that the result is consistent.
+	(axes::properties::calc_tick_sep): Ditto.
+	(axes::properties::get_axis_limits): Ditto.  Now a member of
+	axes::properties
+	(magform): Now file-scope static function instead of
+	axes::properties member function.
+
+	* graphics.h.in (axes::properties::update_xlim): call the new
+	axes::properties::calc_ticks_and_lims method
+	(axes::properties::update_ylim): ditto
+	(axes::properties::update_zlim): ditto
+
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* genprops.awk: Add 'U' modifier to support extern updaters.

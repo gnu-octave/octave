@@ -2551,29 +2551,28 @@ public:
     void update_ydir (void) { update_camera (); }
     void update_zdir (void) { update_camera (); }
 
-    void magform (double x, double& a, int &b);
-
-    void calc_ticks (const array_property& lims, array_property& ticks);
+    double calc_tick_sep (double minval, double maxval);
+    void calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto);
 
   public:
+    Matrix get_axis_limits (double xmin, double xmax, double min_pos, bool logscale);
     void update_xlim (void)
     {
       if (xtickmode.is ("auto"))
-	calc_ticks (xlim, xtick);
+	calc_ticks_and_lims (xlim, xtick, xlimmode.is ("auto"));
     }
 
     void update_ylim (void)
     {
       if (ytickmode.is ("auto"))
-	calc_ticks (ylim, ytick);
+	calc_ticks_and_lims (ylim, ytick, ylimmode.is ("auto"));
     }
 
     void update_zlim (void)
     {
       if (ztickmode.is ("auto"))
-	calc_ticks (zlim, ztick);
+	calc_ticks_and_lims (zlim, ztick, zlimmode.is ("auto"));
     }
-    
     
   };
 

@@ -15,6 +15,49 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.cc (xget_ancestor): Pass graphics_object argument by value
+	instead of by reference.
+
+	* graphics.h.in (surface::properties::xdata,
+	surface::properties::ydata, surface::properties::zdata,
+	surface::properties::normalmode, surface::properties::vertexnormals):
+	Add 'u' modifier.
+	(surface::properties::update_normals): New method to compute normals
+	automatically.
+	(surface::properties::update_xdata, surface::properties::update_ydata,
+	surface::properties::update_zdata,
+	surface::properties::update_normalmode,
+	surface::properties::update_vertexnormals): New updaters to update
+	normals automatically.
+	* graphics.cc (surface::properties::update_normals): Likewise.
+	(cross_product): New inlined utility function for cross product
+	computation adn accumulation.
+
+	* graphics.h.in (class base_scaler, class lin_scaler, class
+	log_scaler, class scaler): Add scale method for NDArray.
+	(log_scaler::do_scale): Factorize scaling code.
+
+	* graphics.h.in (figure::properties::update_position): Re-remove.
+	(figure::properties::facecolor): Re-add 'texturemap' value.
+	(surface::properties::get_color_data): New method to compute actual
+	surface color data from cdata.
+	* graphics.cc (surface::properties::get_color_data): Likewise.
+	(xget_ancestor): New utility function to retrieve an ancestor of a
+	given type.
+	(convert_cdata): New utility function to convert cdata property into
+	actual color data.
+
+	* graphics.h.in (surface::properties::facecolor): Add "texturemap"
+	as possible value.
+	(class surface::properties): New properties alphadata,
+	alphadatmapping, ambientstrength, backfacelighting, diffusestrength,
+	edgealpha, edgelighting, erasemode, facelighting, meshstyle,
+	normalmode, specularcolorreflectance, specularexponent,
+	specularstrength, vertexnormals.
+	(surface::properties::init): Add constraints for alphadata,
+	vertexnormals and cdata (the latter are commented until cdata
+	has changed type).
+
 	* graphics.h.in (base_properties::update_boundingbox): New method
 	to handle object resize.
 	(figure::properties::set_boundingbox): New method to set figure

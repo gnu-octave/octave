@@ -1,3 +1,23 @@
+2008-02-17  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_renderer::draw(surface)): Set material
+	color when rendering surface facets.
+
+	* opengl/gl-render.cc (opengl_renderer::draw(surface)): Add rendering
+	of mesh and markers.
+
+2008-02-16  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_renderer::draw(figure)): Initialize the
+	OpenGL context correctly.
+	(opengl_renderer::draw(surface)): Add missing glEnd call.
+
+2008-02-14  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h opengl/gl-render.cc: Add rendering
+	interface for surface objects (actual implement still
+	missing).
+
 2008-06-04  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Makefile.in Makerules.in: Initial import

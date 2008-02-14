@@ -58,6 +58,7 @@ protected:
   virtual void draw (const figure::properties& props);
   virtual void draw (const axes::properties& props);
   virtual void draw (const line::properties& props);
+  virtual void draw (const surface::properties& props);
 
   virtual void set_color (const Matrix& c);
   virtual void set_polygon_offset (bool on, double offset = 0.0);

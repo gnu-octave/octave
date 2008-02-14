@@ -30,12 +30,15 @@ along with Octave; see the file COPYING.  If not, see
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#define LIGHT_MODE GL_FRONT_AND_BACK
+
 enum {
   AXE_ANY_DIR   = 0,
   AXE_DEPTH_DIR = 1,
   AXE_HORZ_DIR  = 2,
   AXE_VERT_DIR  = 3
 };
+
 void
 opengl_renderer::draw (const graphics_object& go)
 {
@@ -50,6 +53,8 @@ opengl_renderer::draw (const graphics_object& go)
     draw (dynamic_cast<const axes::properties&> (props));
   else if (go.isa ("line"))
     draw (dynamic_cast<const line::properties&> (props));
+  else if (go.isa ("surface"))
+    draw (dynamic_cast<const surface::properties&> (props));
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
 	     props.graphics_object_name ().c_str ());
@@ -60,6 +65,15 @@ opengl_renderer::draw (const figure::properties& props)
 {
   backend = props.get_backend ();
 
+  // Initialize OpenGL context
+
+  glEnable (GL_DEPTH_TEST);
+  glDepthFunc (GL_LEQUAL);
+  glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable (GL_NORMALIZE);
+
+  // Clear background
+
   Matrix c = props.get_color_rgb ();
 
   if (c.length() >= 3)
@@ -67,6 +81,8 @@ opengl_renderer::draw (const figure::properties& props)
       glClearColor (c(0), c(1), c(2), 1);
       glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
+
+  // Draw children
 
   draw (props.get_children ());
 }
@@ -1184,6 +1200,508 @@ opengl_renderer::draw (const line::properties& props)
     }
 
   set_clipping (props.is_clipping ());
+}
+
+void
+opengl_renderer::draw (const surface::properties& props)
+{
+  Matrix x = xform.xscale (props.get_xdata ().matrix_value ());
+  Matrix y = xform.yscale (props.get_ydata ().matrix_value ());
+  Matrix z = xform.zscale (props.get_zdata ().matrix_value ());
+
+  int zr = z.rows (), zc = z.columns ();
+
+  NDArray c;
+  NDArray n = props.get_vertexnormals ().array_value ();
+
+  // FIXME: handle transparency
+  Matrix a;
+
+  if (props.facelighting_is ("phong") || props.edgelighting_is ("phong"))
+    warning ("opengl_renderer::draw: phong light model not supported");
+
+  int fc_mode = (props.facecolor_is_rgb () ? 0 :
+		 (props.facecolor_is ("flat") ? 1 :
+		  (props.facecolor_is ("interp") ? 2 :
+		   (props.facecolor_is ("texturemap") ? 3 : -1))));
+  int fl_mode = (props.facelighting_is ("none") ? 0 :
+		 (props.facelighting_is ("flat") ? 1 : 2));
+  // FIXME: use facealpha as double-radio property
+  int fa_mode = 0;
+  int ec_mode = (props.edgecolor_is_rgb () ? 0 :
+		 (props.edgecolor_is ("flat") ? 1 :
+		  (props.edgecolor_is ("interp") ? 2 : -1)));
+  int el_mode = (props.edgelighting_is ("none") ? 0 :
+		 (props.edgelighting_is ("flat") ? 1 : 2));
+  // FIXME: use edgealpha as double-radio property
+  int ea_mode = 0;
+
+  Matrix fcolor = (fc_mode == 3 ? Matrix (1, 3, 1.0) : props.get_facecolor_rgb ());
+  Matrix ecolor = props.get_edgecolor_rgb ();
+
+  float as = props.get_ambientstrength ();
+  float ds = props.get_diffusestrength ();
+  float ss = props.get_specularstrength ();
+  float se = props.get_specularexponent ();
+  float cb[4] = { 0, 0, 0, 1 };
+
+  int i1, i2, j1, j2;
+  bool x_mat = (x.rows () == z.rows ());
+  bool y_mat = (y.columns () == z.columns ());
+
+  i1 = i2 = j1 = j2 = 0;
+
+  boolMatrix clip (z.dims ());
+
+  for (int i = 0; i < zr; i++)
+    {
+      if (x_mat)
+	i1 = i;
+
+      for (int j = 0; j < zr; j++)
+	{
+	  if (y_mat)
+	    j1 = j;
+
+	  clip(i,j) = is_nan_or_inf (x(i1,j), y(i,j1), z(i,j));
+	}
+    }
+
+  if ((fc_mode > 0 && fc_mode < 3) || ec_mode > 0)
+    c = props.get_color_data ().array_value ();
+
+  if (fa_mode > 0 || ea_mode > 0)
+    {
+      // FIXME: implement alphadata conversion
+      //a = props.get_alpha_data ();
+    }
+
+  if (fl_mode > 0 || el_mode > 0)
+    {
+      float buf[4] = { ss, ss, ss, 1 };
+
+      glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
+      glMaterialf (LIGHT_MODE, GL_SHININESS, se);
+    }
+
+  if (fc_mode == 3)
+    {
+      // FIXME: transfer texture to OpenGL
+    }
+
+  if (! props.facecolor_is ("none"))
+    {
+      // FIXME: adapt to double-radio property type
+      if (props.get_facealpha () == 1)
+	{
+	  if (fc_mode == 0 || fc_mode == 3)
+	    {
+	      glColor3dv (fcolor.data ());
+	      if (fl_mode > 0)
+		{
+		  for (int i = 0; i < 3; i++)
+		    cb[i] = (as * fcolor(i));
+		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+		  for (int i = 0; i < 3; i++)
+		    cb[i] *= (ds / as);
+		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+		}
+	    }
+
+	  if (fl_mode > 0)
+	    glEnable (GL_LIGHTING);
+	  glShadeModel ((fc_mode == 2 || fl_mode == 2) ? GL_SMOOTH : GL_FLAT);
+	  set_polygon_offset (true, 1);
+	  if (fc_mode == 3)
+	    glEnable (GL_TEXTURE_2D);
+
+	  for (int i = 1; i < zc; i++)
+	    {
+	      if (y_mat)
+		{
+		  i1 = i-1;
+		  i2 = i;
+		}
+
+	      for (int j = 1; j < zr; j++)
+		{
+		  if (clip(j-1, i-1) || clip (j, i-1)
+		      || clip (j-1, i) || clip (j, i))
+		    continue;
+
+		  if (x_mat)
+		    {
+		      j1 = j-1;
+		      j2 = j;
+		    }
+
+		  glBegin (GL_QUADS);
+
+		  // Vertex 1
+		  if (fc_mode == 3)
+		    /* FIXME: set texture coordinates */;
+		  else if (fc_mode > 0)
+		    {
+		      // FIXME: is there a smarter way to do this?
+		      for (int k = 0; k < 3; k++)
+			cb[k] = c(j-1, i-1, k);
+		      glColor3fv (cb);
+
+		      if (fl_mode > 0)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= as;
+			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+			  
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= (ds / as);
+			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			}
+		    }
+		  if (fl_mode > 0)
+		    glNormal3d (n(j-1,i-1,0), n(j-1,i-1,1), n(j-1,i-1,2));
+		  glVertex3d (x(j1,i-1), y(j-1,i1), z(j-1,i-1));
+
+		  // Vertex 2
+		  if (fc_mode == 3)
+		    /* FIXME: set texture coordinates */;
+		  else if (fc_mode == 2)
+		    {
+		      for (int k = 0; k < 3; k++)
+			cb[k] = c(j-1, i, k);
+		      glColor3fv (cb);
+
+		      if (fl_mode > 0)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= as;
+			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+			  
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= (ds / as);
+			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			}
+		    }
+		  if (fl_mode == 2)
+		    glNormal3d (n(j-1,i,0), n(j-1,i,1), n(j-1,i,2));
+		  glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
+		  
+		  // Vertex 3
+		  if (fc_mode == 3)
+		    /* FIXME: set texture coordinates */;
+		  else if (fc_mode == 2)
+		    {
+		      for (int k = 0; k < 3; k++)
+			cb[k] = c(j, i, k);
+		      glColor3fv (cb);
+
+		      if (fl_mode > 0)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= as;
+			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+			  
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= (ds / as);
+			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			}
+		    }
+		  if (fl_mode == 2)
+		    glNormal3d (n(j,i,0), n(j,i,1), n(j,i,2));
+		  glVertex3d (x(j2,i), y(j,i2), z(j,i));
+		  
+		  // Vertex 4
+		  if (fc_mode == 3)
+		    /* FIXME: set texture coordinates */;
+		  else if (fc_mode == 2)
+		    {
+		      for (int k = 0; k < 3; k++)
+			cb[k] = c(j, i-1, k);
+		      glColor3fv (cb);
+
+		      if (fl_mode > 0)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= as;
+			  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+			  
+			  for (int k = 0; k < 3; k++)
+			    cb[k] *= (ds / as);
+			  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			}
+		    }
+		  if (fl_mode == 2)
+		    glNormal3d (n(j,i-1,0), n(j,i-1,1), n(j,i-1,2));
+		  glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
+
+		  glEnd ();
+		}
+	    }
+
+	  set_polygon_offset (false);
+	  if (fc_mode == 3)
+	    glDisable (GL_TEXTURE_2D);
+
+	  if (fl_mode > 0)
+	    glDisable (GL_LIGHTING);
+	}
+      else
+	{
+	  // FIXME: implement transparency
+	}
+    }
+
+  if (! props.edgecolor_is ("none"))
+    {
+      // FIXME: adapt to double-radio property
+      if (props.get_edgealpha () == 1)
+	{
+	  if (ec_mode == 0)
+	    {
+	      glColor3dv (ecolor.data ());
+	      if (fl_mode > 0)
+		{
+		  for (int i = 0; i < 3; i++)
+		    cb[i] = (as * ecolor(i));
+		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+		  for (int i = 0; i < 3; i++)
+		    cb[i] *= (ds / as);
+		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+		}
+	    }
+
+	  if (el_mode > 0)
+	    glEnable (GL_LIGHTING);
+	  glShadeModel ((ec_mode == 2 || el_mode == 2) ? GL_SMOOTH : GL_FLAT);
+
+	  set_linestyle (props.get_linestyle (), false);
+	  set_linewidth (props.get_linewidth ());
+
+	  // Mesh along Y-axis
+
+	  if (props.meshstyle_is ("both") || props.meshstyle_is ("column"))
+	    {
+	      for (int i = 0; i < zc; i++)
+		{
+		  if (y_mat)
+		    {
+		      i1 = i-1;
+		      i2 = i;
+		    }
+
+		  for (int j = 1; j < zr; j++)
+		    {
+		      if (clip(j-1,i) || clip(j,i))
+			continue;
+
+		      if (x_mat)
+			{
+			  j1 = j-1;
+			  j2 = j;
+			}
+
+		      glBegin (GL_LINES);
+
+		      // Vertex 1
+		      if (ec_mode > 0)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] = c(j-1, i, k);
+			  glColor3fv (cb);
+
+			  if (fl_mode > 0)
+			    {
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= as;
+			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= (ds / as);
+			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			    }
+			}
+		      if (el_mode > 0)
+			glNormal3d (n(j-1,i,0), n(j-1,i,1), n(j-1,i,2));
+		      glVertex3d (x(j1,i), y(j-1,i2), z(j-1,i));
+
+		      // Vertex 2
+		      if (ec_mode == 2)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] = c(j, i, k);
+			  glColor3fv (cb);
+
+			  if (fl_mode > 0)
+			    {
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= as;
+			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= (ds / as);
+			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			    }
+			}
+		      if (el_mode == 2)
+			glNormal3d (n(j,i,0), n(j,i,1), n(j,i,2));
+		      glVertex3d (x(j2,i), y(j,i2), z(j,i));
+
+		      glEnd ();
+		    }
+		}
+	    }
+
+	  // Mesh along X-axis
+
+	  if (props.meshstyle_is ("both") || props.meshstyle_is ("row"))
+	    {
+	      for (int j = 0; j < zr; j++)
+		{
+		  if (x_mat)
+		    {
+		      j1 = j-1;
+		      j2 = j;
+		    }
+
+		  for (int i = 1; i < zc; i++)
+		    {
+		      if (clip(j,i-1) || clip(j,i))
+			continue;
+
+		      if (y_mat)
+			{
+			  i1 = i-1;
+			  i2 = i;
+			}
+
+		      glBegin (GL_LINES);
+
+		      // Vertex 1
+		      if (ec_mode > 0)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] = c(j, i-1, k);
+			  glColor3fv (cb);
+
+			  if (fl_mode > 0)
+			    {
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= as;
+			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= (ds / as);
+			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			    }
+			}
+		      if (el_mode > 0)
+			glNormal3d (n(j,i-1,0), n(j,i-1,1), n(j,i-1,2));
+		      glVertex3d (x(j2,i-1), y(j,i1), z(j,i-1));
+		      
+		      // Vertex 2
+		      if (ec_mode == 2)
+			{
+			  for (int k = 0; k < 3; k++)
+			    cb[k] = c(j, i, k);
+			  glColor3fv (cb);
+
+			  if (fl_mode > 0)
+			    {
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= as;
+			      glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+			      for (int k = 0; k < 3; k++)
+				cb[k] *= (ds / as);
+			      glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+			    }
+			}
+		      if (el_mode == 2)
+			glNormal3d (n(j,i,0), n(j,i,1), n(j,i,2));
+		      glVertex3d (x(j2,i), y(j,i2), z(j,i));
+		      
+		      glEnd ();
+		    }
+		}
+	    }
+
+	  set_linestyle ("-");
+	  set_linewidth (0.5);
+
+	  if (el_mode > 0)
+	    glDisable (GL_LIGHTING);
+	}
+      else
+	{
+	  // FIXME: implement transparency
+	}
+    }
+
+  if (! props.marker_is ("none") &&
+      ! (props.markeredgecolor_is ("none")
+	 && props.markerfacecolor_is ("none")))
+    {
+      // FIXME: check how transparency should be handled in markers
+      // FIXME: check what to do with marker facecolor set to auto
+      //        and facecolor set to none.
+
+      bool do_edge = ! props.markeredgecolor_is ("none");
+      bool do_face = ! props.markerfacecolor_is ("none");
+
+      Matrix mecolor = props.get_markeredgecolor_rgb ();
+      Matrix mfcolor = props.get_markerfacecolor_rgb ();
+      Matrix cc (1, 3, 0.0);
+
+      if (mecolor.numel () == 0 && props.markeredgecolor_is ("auto"))
+	{
+	  mecolor = props.get_edgecolor_rgb ();
+	  do_edge = ! props.edgecolor_is ("none");
+	}
+
+      if (mfcolor.numel () == 0 && props.markerfacecolor_is ("auto"))
+	{
+	  mfcolor = props.get_facecolor_rgb ();
+	  do_face = ! props.facecolor_is ("none");
+	}
+
+      if ((mecolor.numel () == 0 || mfcolor.numel () == 0)
+	  && c.numel () == 0)
+	c = props.get_color_data ().array_value ();
+
+      init_marker (props.get_marker (), props.get_markersize (),
+		   props.get_linewidth ());
+
+      for (int i = 0; i < zc; i++)
+	{
+	  if (y_mat)
+	    i1 = i;
+	  
+	  for (int j = 0; j < zr; j++)
+	    {
+	      if (clip(j,i))
+		continue;
+
+	      if (x_mat)
+		j1 = j;
+
+	      if ((do_edge && mecolor.numel () == 0)
+		  || (do_face && mfcolor.numel () == 0))
+		{
+		  for (int k = 0; k < 3; k++)
+		    cc(k) = c(j,i,k);
+		}
+
+	      Matrix lc = (do_edge ? (mecolor.numel () == 0 ? cc : mecolor) : Matrix ());
+	      Matrix fc = (do_face ? (mfcolor.numel () == 0 ? cc : mfcolor) : Matrix ());
+
+	      draw_marker (x(j1,i), y(j,i1), z(j,i), lc, fc);
+	    }
+	}
+
+      end_marker ();
+    }
 }
 
 void

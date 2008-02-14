@@ -333,6 +333,101 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
   return retval;
 }
 
+static graphics_object
+xget_ancestor (graphics_object go, const std::string& type)
+{
+  do
+    {
+      if (go.valid_object ())
+	{
+	  if (go.isa (type))
+	    return go;
+	  else
+	    go = gh_manager::get_object (go.get_parent ());
+	}
+      else
+	return graphics_object ();
+    } while (true);
+}
+
+static octave_value
+convert_cdata (const base_properties& props, const octave_value& cdata,
+	       bool is_scaled, int cdim)
+{
+  dim_vector dv (cdata.dims ());
+
+  if (dv.length () == cdim && dv(cdim-1) == 3)
+    return cdata;
+
+  Matrix cmap (1, 3, 0.0);
+  Matrix clim (1, 2, 0.0);
+
+  graphics_object go = gh_manager::get_object (props.get___myhandle__ ());
+  graphics_object fig = xget_ancestor (go, "figure");
+
+  if (fig.valid_object ())
+    {
+      Matrix _cmap = fig.get (caseless_str ("colormap")).matrix_value ();
+
+      if (! error_state)
+	cmap = _cmap;
+    }
+
+  if (is_scaled)
+    {
+      graphics_object ax = xget_ancestor (go, "axes");
+
+      if (ax.valid_object ())
+	{
+	  Matrix _clim = ax.get (caseless_str ("clim")).matrix_value ();
+
+	  if (! error_state)
+	    clim = _clim;
+	}
+    }
+
+  dv.resize (cdim);
+  dv(cdim-1) = 3;
+
+  NDArray a (dv);
+
+  int lda = static_cast<int> (a.numel () / 3);
+  int nc = cmap.rows ();
+
+  double *av = a.fortran_vec ();
+  const double *cmapv = cmap.data ();
+  const double *cv = 0;
+  const octave_uint8 *icv = 0;
+
+  if (cdata.is_integer_type ())
+    icv = cdata.uint8_array_value ().data ();
+  else
+    cv = cdata.array_value ().data ();
+
+  for (int i = 0; i < lda; i++)
+    {
+      double x = (cv ? cv[i] : double (icv[i]));
+
+      if (is_scaled)
+	x = xround ((nc - 1) * (x - clim(0)) / (clim(1) - clim(0)));
+      else
+	x = xround (x - 1);
+
+      if (x < 0)
+	x = 0;
+      else if (x >= nc)
+	x = (nc - 1);
+
+      int idx = static_cast<int> (x);
+
+      av[i]       = cmapv[idx];
+      av[i+lda]   = cmapv[idx+nc];
+      av[i+2*lda] = cmapv[idx+2*nc];
+    }
+
+  return octave_value (a);
+}
+
 // ---------------------------------------------------------------------
 
 radio_values::radio_values (const std::string& opt_string)
@@ -2660,7 +2755,90 @@ axes::update_axis_limits (const std::string& axis_type)
 
 // ---------------------------------------------------------------------
 
-// Note: "surface" code is entirely auto-generated
+octave_value
+surface::properties::get_color_data (void) const
+{
+  return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
+}
+
+inline void
+cross_product (double x1, double y1, double z1,
+	       double x2, double y2, double z2,
+	       double& x, double& y, double& z)
+{
+  x += (y1 * z2 - z1 * y2);
+  y += (z1 * x2 - x1 * z2);
+  z += (x1 * y2 - y1 * x2);
+}
+
+void
+surface::properties::update_normals (void)
+{
+  if (normalmode_is ("auto"))
+    {
+      Matrix x = get_xdata ().matrix_value ();
+      Matrix y = get_ydata ().matrix_value ();
+      Matrix z = get_zdata ().matrix_value ();
+
+      int p = z.columns (), q = z.rows ();
+      int i1, i2, i3;
+      int j1, j2, j3;
+
+      bool x_mat = (x.rows () == q);
+      bool y_mat = (y.columns () == p);
+
+      NDArray n (dim_vector (q, p, 3), 0.0);
+
+      i1 = i2 = i3 = 0;
+      j1 = j2 = j3 = 0;
+
+      // FIXME: normal computation at boundaries
+      for (int i = 1; i < (p-1); i++)
+	{
+	  if (y_mat)
+	    {
+	      i1 = i-1;
+	      i2 = i;
+	      i3 = i+1;
+	    }
+
+	  for (int j = 1; j < (q-1); j++)
+	    {
+	      if (x_mat)
+		{
+		  j1 = j-1;
+		  j2 = j;
+		  j3 = j+1;
+		}
+
+	      double& nx = n(j, i, 0);
+	      double& ny = n(j, i, 1);
+	      double& nz = n(j, i, 2);
+
+	      cross_product (x(j3,i)-x(j2,i), y(j+1,i2)-y(j,i2), z(j+1,i)-z(j,i),
+			     x(j2,i+1)-x(j2,i), y(j,i3)-y(j,i2), z(j,i+1)-z(i,j),
+			     nx, ny, nz);
+	      cross_product (x(j2,i-1)-x(j2,i), y(j,i1)-y(j,i2), z(j,i-1)-z(j,i),
+			     x(j3,i)-x(j2,i), y(j+1,i2)-y(j,i2), z(j+1,i)-z(i,j),
+			     nx, ny, nz);
+	      cross_product (x(j1,i)-x(j2,i), y(j-1,i2)-y(j,i2), z(j-1,i)-z(j,i),
+			     x(j2,i-1)-x(j2,i), y(j,i1)-y(j,i2), z(j,i-1)-z(i,j),
+			     nx, ny, nz);
+	      cross_product (x(j2,i+1)-x(j2,i), y(j,i3)-y(j,i2), z(j,i+1)-z(j,i),
+			     x(j1,i)-x(j2,i), y(j-1,i2)-y(j,i2), z(j-1,i)-z(i,j),
+			     nx, ny, nz);
+
+	      double d = - sqrt (nx*nx + ny*ny + nz*nz);
+
+	      nx /= d;
+	      ny /= d;
+	      nz /= d;
+	    }
+	}
+
+      vertexnormals = n;
+    }
+}
 
 // ---------------------------------------------------------------------
 

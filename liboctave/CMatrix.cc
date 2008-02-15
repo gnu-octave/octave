@@ -2425,6 +2425,13 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 				   F77_CHAR_ARG_LEN (6)
 				   F77_CHAR_ARG_LEN (1));
 
+      octave_idx_type mnthr;
+      F77_FUNC (xilaenv, XILAENV) (6, F77_CONST_CHAR_ARG2 ("ZGELSD", 6),
+				   F77_CONST_CHAR_ARG2 (" ", 1),
+				   m, n, nrhs, -1, mnthr
+				   F77_CHAR_ARG_LEN (6)
+				   F77_CHAR_ARG_LEN (1));
+
       // We compute the size of rwork and iwork because ZGELSD in
       // older versions of LAPACK does not return them on a query
       // call.
@@ -2457,10 +2464,10 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 				 lwork, prwork, piwork, info));
 
       // The workspace query is broken in at least LAPACK 3.0.0
-      // through 3.1.1 when n > m.  The obtuse formula below
-      // should provide sufficient workspace for DGELSD to operate
+      // through 3.1.1 when n > mnthr.  The obtuse formula below
+      // should provide sufficient workspace for ZGELSD to operate
       // efficiently.
-      if (n > m)
+      if (n > mnthr)
 	{
 	  octave_idx_type addend = m;
 

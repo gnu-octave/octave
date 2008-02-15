@@ -1,3 +1,9 @@
+2008-02-15  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.cc (Matrix::lssolve): Check n > mnthr, not n > m when
+	deciding whether to calculate workspace size, with mnthr from ILAENV.
+	* CMatrix.cc (ComplexMatrix::lssolve): Likewise.
+
 2008-02-14  John W. Eaton  <jwe@octave.org>
 
 	* CColVector.cc, CMatrix.cc, CRowVector.cc, CSparse.cc,

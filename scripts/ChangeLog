@@ -1,3 +1,8 @@
+2008-02-15  Timo Lindfors  <timo.lindfors@iki.fi>
+
+	* statistics/tests/kruskal_wallis_test.m: Handle ties.
+	* general/runlength.m: New function from Paul Kienzle.
+
 2008-02-15  Rolf Fabian  <r.fabian@jacobs-university.de>
 
 	* linear-algebra/cond.m: New optional second argument to

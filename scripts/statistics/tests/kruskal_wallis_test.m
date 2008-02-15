@@ -29,6 +29,18 @@
 ## approximately chi-square with @var{df} = @var{k} - 1 degrees of
 ## freedom.
 ##
+## If the data contains ties (some value appears more than once)
+## @var{k} is divided by
+## 
+## 1 - @var{sumTies} / ( @var{n}^3 - @var{n} )
+##
+## where @var{sumTies} is the sum of @var{t}^2 - @var{t} over each group
+## of ties where @var{t} is the number of ties in the group and @var{n}
+## is the total number of values in the input data. For more info on
+## this adjustment see "Use of Ranks in One-Criterion Variance Analysis"
+## in Journal of the American Statistical Association, Vol. 47,
+## No. 260 (Dec 1952) by William H. Kruskal and W. Allen Wallis.
+##
 ## The p-value (1 minus the CDF of this distribution at @var{k}) is
 ## returned in @var{pval}.
 ##
@@ -67,9 +79,14 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
     j = j + n(i);
   endfor
 
-  n    = length (p);
-  k    = 12 * k / (n * (n + 1)) - 3 * (n + 1);
-  df   = m - 1;
+  n = length (p);
+  k = 12 * k / (n * (n + 1)) - 3 * (n + 1);
+
+  ## Adjust the result to takes ties into account.
+  sum_ties = sum (polyval ([1, 0, -1, 0], runlength (sort (p))));
+  k = k / (1 - sum_ties / (n^3 - n));
+
+  df = m - 1;
   pval = 1 - chisquare_cdf (k, df);
 
   if (nargout == 0)
@@ -78,4 +95,5 @@ function [pval, k, df] = kruskal_wallis_test (varargin)
 
 endfunction
 
-
+## Test with ties
+%!assert (abs(kruskal_wallis_test([86 86], [74]) - 0.157299207050285) < 0.0000000000001)

@@ -76,43 +76,34 @@ ComplexCHOL::init (const ComplexMatrix& a, bool calc_cond)
   F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 ("U", 1), n, h, n, info
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zpotrf");
+  xrcond = 0.0;
+  if (info != 0)
+    info = -1;
+  else if (calc_cond) 
+    {
+      octave_idx_type zpocon_info = 0;
+
+      // Now calculate the condition number for non-singular matrix.
+      Array<Complex> z (2*n);
+      Complex *pz = z.fortran_vec ();
+      Array<double> rz (n);
+      double *prz = rz.fortran_vec ();
+      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
+				 n, anorm, xrcond, pz, prz, zpocon_info
+				 F77_CHAR_ARG_LEN (1)));
+
+      if (zpocon_info != 0) 
+	info = -1;
+    }
   else
     {
-      xrcond = 0.0;
-      if (info != 0)
-	info = -1;
-      else if (calc_cond) 
-	{
-	  octave_idx_type zpocon_info = 0;
+      // If someone thinks of a more graceful way of doing this (or
+      // faster for that matter :-)), please let me know!
 
-	  // Now calculate the condition number for non-singular matrix.
-	  Array<Complex> z (2*n);
-	  Complex *pz = z.fortran_vec ();
-	  Array<double> rz (n);
-	  double *prz = rz.fortran_vec ();
-	  F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-				     n, anorm, xrcond, pz, prz, zpocon_info
-				     F77_CHAR_ARG_LEN (1)));
-
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zpocon");
-
-	  if (zpocon_info != 0) 
-	    info = -1;
-	}
-      else
-	{
-	  // If someone thinks of a more graceful way of doing this (or
-	  // faster for that matter :-)), please let me know!
-
-	  if (n > 1)
-	    for (octave_idx_type j = 0; j < a_nc; j++)
-	      for (octave_idx_type i = j+1; i < a_nr; i++)
-		chol_mat.xelem (i, j) = 0.0;
-	}
+      if (n > 1)
+	for (octave_idx_type j = 0; j < a_nc; j++)
+	  for (octave_idx_type i = j+1; i < a_nr; i++)
+	    chol_mat.xelem (i, j) = 0.0;
     }
 
   return info;
@@ -137,20 +128,15 @@ chol2inv_internal (const ComplexMatrix& r)
 				 tmp.fortran_vec (), n, info
 				 F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zpotri");
-      else
-	{
-	  // If someone thinks of a more graceful way of doing this (or
-	  // faster for that matter :-)), please let me know!
+      // If someone thinks of a more graceful way of doing this (or
+      // faster for that matter :-)), please let me know!
 
-	  if (n > 1)
-	    for (octave_idx_type j = 0; j < r_nc; j++)
-	      for (octave_idx_type i = j+1; i < r_nr; i++)
-		tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
+      if (n > 1)
+	for (octave_idx_type j = 0; j < r_nc; j++)
+	  for (octave_idx_type i = j+1; i < r_nr; i++)
+	    tmp.xelem (i, j) = std::conj (tmp.xelem (j, i));
 
-	  retval = tmp;
-	}
+      retval = tmp;
     }
   else
     (*current_liboctave_error_handler) ("chol2inv requires square matrix");

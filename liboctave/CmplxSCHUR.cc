@@ -132,9 +132,6 @@ ComplexSCHUR::init (const ComplexMatrix& a, const std::string& ord,
 			     F77_CHAR_ARG_LEN (1)
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zgeesx");
-
   return info;
 }
 

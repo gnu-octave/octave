@@ -61,10 +61,7 @@ ComplexLU::ComplexLU (const ComplexMatrix& a)
 
   F77_XFCN (zgetrf, ZGETRF, (a_nr, a_nc, tmp_data, a_nr, pipvt, info));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
-  else
-    ipvt -= static_cast<octave_idx_type> (1);
+  ipvt -= static_cast<octave_idx_type> (1);
 }
 
 /*

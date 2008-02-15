@@ -275,40 +275,32 @@ LSODE::do_integrate (double tout)
 			     pabs_tol, itask, istate, iopt, prwork, lrw,
 			     piwork, liw, lsode_j, method_flag));
 
-  if (f77_exception_encountered)
+  switch (istate)
     {
-      integration_error = true;
-      (*current_liboctave_error_handler) ("unrecoverable error in lsode");
-    }
-  else
-    {
-      switch (istate)
-	{
-	case 1:  // prior to initial integration step.
-	case 2:  // lsode was successful.
-	  retval = x;
-	  t = tout;
-	  break;
-	  
-	case -1:  // excess work done on this call (perhaps wrong mf).
-	case -2:  // excess accuracy requested (tolerances too small).
-	case -3:  // illegal input detected (see printed message).
-	case -4:  // repeated error test failures (check all inputs).
-	case -5:  // repeated convergence failures (perhaps bad jacobian
-	          // supplied or wrong choice of mf or tolerances).
-	case -6:  // error weight became zero during problem. (solution
-	          // component i vanished, and atol or atol(i) = 0.)
-	case -13: // return requested in user-supplied function.
-	  integration_error = true;
-	  break;
+    case 1:  // prior to initial integration step.
+    case 2:  // lsode was successful.
+      retval = x;
+      t = tout;
+      break;
 
-	default:
-	  integration_error = true;
-	  (*current_liboctave_error_handler)
-	    ("unrecognized value of istate (= %d) returned from lsode",
-	     istate);
-	  break;
-	}
+    case -1:  // excess work done on this call (perhaps wrong mf).
+    case -2:  // excess accuracy requested (tolerances too small).
+    case -3:  // illegal input detected (see printed message).
+    case -4:  // repeated error test failures (check all inputs).
+    case -5:  // repeated convergence failures (perhaps bad jacobian
+	      // supplied or wrong choice of mf or tolerances).
+    case -6:  // error weight became zero during problem. (solution
+	      // component i vanished, and atol or atol(i) = 0.)
+    case -13: // return requested in user-supplied function.
+      integration_error = true;
+      break;
+
+    default:
+      integration_error = true;
+      (*current_liboctave_error_handler)
+	("unrecognized value of istate (= %d) returned from lsode",
+	 istate);
+      break;
     }
 
   return retval;

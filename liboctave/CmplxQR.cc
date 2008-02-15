@@ -85,56 +85,45 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
 
   F77_XFCN (zgeqrf, ZGEQRF, (m, n, tmp_data, m, ptau, pwork, lwork, info));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zgeqrf");
+  if (qr_type == QR::raw)
+    {
+      for (octave_idx_type j = 0; j < min_mn; j++)
+	{
+	  octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
+	  for (octave_idx_type i = limit + 1; i < m; i++)
+	    A_fact.elem (i, j) *= tau.elem (j);
+	}
+
+      r = A_fact;
+
+      if (m > n)
+	r.resize (m, n);
+    }
   else
     {
-      if (qr_type == QR::raw)
-	{
-	  for (octave_idx_type j = 0; j < min_mn; j++)
-	    {
-	      octave_idx_type limit = j < min_mn - 1 ? j : min_mn - 1;
-	      for (octave_idx_type i = limit + 1; i < m; i++)
-		A_fact.elem (i, j) *= tau.elem (j);
-	    }
+      octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
 
-	  r = A_fact;
-
-	  if (m > n)
-	    r.resize (m, n);
-	}
+      if (qr_type == QR::economy && m > n)
+	r.resize (n, n, 0.0);
       else
+	r.resize (m, n, 0.0);
+
+      for (octave_idx_type j = 0; j < n; j++)
 	{
-	  octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
-
-	  if (qr_type == QR::economy && m > n)
-	    r.resize (n, n, 0.0);
-	  else
-	    r.resize (m, n, 0.0);
-
-	  for (octave_idx_type j = 0; j < n; j++)
-	    {
-	      octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
-	      for (octave_idx_type i = 0; i <= limit; i++)
-		r.elem (i, j) = A_fact.elem (i, j);
-	    }
-
-	  lwork = 32 * n2;
-	  work.resize (lwork);
-	  Complex *pwork2 = work.fortran_vec ();
-
-	  F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
-				     pwork2, lwork, info));
-
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler)
-	      ("unrecoverable error in zungqr");
-	  else
-	    {
-	      q = A_fact;
-	      q.resize (m, n2);
-	    }
+	  octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
+	  for (octave_idx_type i = 0; i <= limit; i++)
+	    r.elem (i, j) = A_fact.elem (i, j);
 	}
+
+      lwork = 32 * n2;
+      work.resize (lwork);
+      Complex *pwork2 = work.fortran_vec ();
+
+      F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
+				 pwork2, lwork, info));
+
+      q = A_fact;
+      q.resize (m, n2);
     }
 }
 

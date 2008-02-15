@@ -149,29 +149,19 @@ ComplexSVD::init (const ComplexMatrix& a, SVD::type svd_type)
 			     F77_CHAR_ARG_LEN (1)
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
-  else
-    {
-      lwork = static_cast<octave_idx_type> (work(0).real ());
-      work.resize (lwork);
+  lwork = static_cast<octave_idx_type> (work(0).real ());
+  work.resize (lwork);
 
-      F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
-				 F77_CONST_CHAR_ARG2 (&jobv, 1),
-				 m, n, tmp_data, m, s_vec, u, m, vt,
-				 nrow_vt, work.fortran_vec (), lwork,
-				 rwork.fortran_vec (), info
-				 F77_CHAR_ARG_LEN (1)
-				 F77_CHAR_ARG_LEN (1)));
+  F77_XFCN (zgesvd, ZGESVD, (F77_CONST_CHAR_ARG2 (&jobu, 1),
+			     F77_CONST_CHAR_ARG2 (&jobv, 1),
+			     m, n, tmp_data, m, s_vec, u, m, vt,
+			     nrow_vt, work.fortran_vec (), lwork,
+			     rwork.fortran_vec (), info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgesvd");
-      else
-	{
-	  if (! (jobv == 'N' || jobv == 'O'))
-	    right_sm = right_sm.hermitian ();
-	}
-    }
+  if (! (jobv == 'N' || jobv == 'O'))
+    right_sm = right_sm.hermitian ();
 
   return info;
 }

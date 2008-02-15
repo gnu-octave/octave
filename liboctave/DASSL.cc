@@ -287,58 +287,50 @@ DASSL::do_integrate (double tout)
 			     prel_tol, pabs_tol, istate, prwork, lrw,
 			     piwork, liw, dummy, idummy, ddassl_j));
 
-  if (f77_exception_encountered)
+  switch (istate)
     {
+    case 1: // A step was successfully taken in intermediate-output
+	    // mode. The code has not yet reached TOUT.
+    case 2: // The integration to TSTOP was successfully completed
+	    // (T=TSTOP) by stepping exactly to TSTOP.
+    case 3: // The integration to TOUT was successfully completed
+	    // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
+	    // interpolation.  YPRIME(*) is obtained by interpolation.
+      retval = x;
+      t = tout;
+      break;
+
+    case -1: // A large amount of work has been expended.  (~500 steps).
+    case -2: // The error tolerances are too stringent.
+    case -3: // The local error test cannot be satisfied because you
+	     // specified a zero component in ATOL and the
+	     // corresponding computed solution component is zero.
+	     // Thus, a pure relative error test is impossible for
+	     // this component.
+    case -6: // DDASSL had repeated error test failures on the last
+	     // attempted step.
+    case -7: // The corrector could not converge.
+    case -8: // The matrix of partial derivatives is singular.
+    case -9: // The corrector could not converge.  There were repeated
+	     // error test failures in this step.
+    case -10: // The corrector could not converge because IRES was
+	      // equal to minus one.
+    case -11: // IRES equal to -2 was encountered and control is being
+	      // returned to the calling program.
+    case -12: // DDASSL failed to compute the initial YPRIME.
+    case -33: // The code has encountered trouble from which it cannot
+	      // recover. A message is printed explaining the trouble
+	      // and control is returned to the calling program. For
+	      // example, this occurs when invalid input is detected.
       integration_error = true;
-      (*current_liboctave_error_handler) ("unrecoverable error in dassl");
-    }
-  else
-    {
-      switch (istate)
-	{
-	case 1: // A step was successfully taken in intermediate-output
-	        // mode. The code has not yet reached TOUT.
-	case 2: // The integration to TSTOP was successfully completed
-	        // (T=TSTOP) by stepping exactly to TSTOP.
-	case 3: // The integration to TOUT was successfully completed
-	        // (T=TOUT) by stepping past TOUT.  Y(*) is obtained by
-	        // interpolation.  YPRIME(*) is obtained by interpolation.
-	  retval = x;
-	  t = tout;
-	  break;
+      break;
 
-	case -1: // A large amount of work has been expended.  (~500 steps).
-	case -2: // The error tolerances are too stringent.
-	case -3: // The local error test cannot be satisfied because you
-	         // specified a zero component in ATOL and the
-		 // corresponding computed solution component is zero.
-		 // Thus, a pure relative error test is impossible for
-		 // this component.
-	case -6: // DDASSL had repeated error test failures on the last
-		 // attempted step.
-	case -7: // The corrector could not converge.
-	case -8: // The matrix of partial derivatives is singular.
-	case -9: // The corrector could not converge.  There were repeated
-		 // error test failures in this step.
-	case -10: // The corrector could not converge because IRES was
-		  // equal to minus one.
-	case -11: // IRES equal to -2 was encountered and control is being
-		  // returned to the calling program.
-	case -12: // DDASSL failed to compute the initial YPRIME.
-	case -33: // The code has encountered trouble from which it cannot
-		  // recover. A message is printed explaining the trouble
-		  // and control is returned to the calling program. For
-		  // example, this occurs when invalid input is detected.
-	  integration_error = true;
-	  break;
-
-	default:
-	  integration_error = true;
-	  (*current_liboctave_error_handler)
-	    ("unrecognized value of istate (= %d) returned from ddassl",
-	     istate);
-	  break;
-	}
+    default:
+      integration_error = true;
+      (*current_liboctave_error_handler)
+	("unrecognized value of istate (= %d) returned from ddassl",
+	 istate);
+      break;
     }
 
   return retval;

@@ -1,3 +1,14 @@
+2008-02-14  John W. Eaton  <jwe@octave.org>
+
+	* CColVector.cc, CMatrix.cc, CRowVector.cc, CSparse.cc,
+	CmplxAEPBAL.cc, CmplxCHOL.cc, CmplxHESS.cc, CmplxLU.cc,
+	CmplxQR.cc, CmplxQRP.cc, CmplxSCHUR.cc, CmplxSVD.cc, DASPK.cc,
+	DASRT.cc, DASSL.cc, EIG.cc, LSODE.cc, NLEqn.cc, Quad.cc,
+	dColVector.cc, dMatrix.cc, dRowVector.cc, dSparse.cc,
+	dbleAEPBAL.cc, dbleCHOL.cc, dbleHESS.cc, dbleLU.cc, dbleQR.cc,
+	dbleQRP.cc, dbleSCHUR.cc, dbleSVD.cc:
+	Don't check f77_exception_encountered.
+
 2008-02-12  John W. Eaton  <jwe@octave.org>
 
 	* CMatrix.cc: Declare xilaenv instead of ilaenv.

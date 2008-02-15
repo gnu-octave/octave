@@ -137,9 +137,6 @@ SCHUR::init (const Matrix& a, const std::string& ord, bool calc_unitary)
 			     F77_CHAR_ARG_LEN (1)
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dgeesx");
-
   return info;
 }
 

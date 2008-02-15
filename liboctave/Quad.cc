@@ -112,9 +112,6 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abs
 			   abserr, neval, ier, leniw, lenw, last,
 			   piwork, pwork));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dqagp");
-
   return result;
 }
 
@@ -160,9 +157,6 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& a
   F77_XFCN (dqagi, DQAGI, (user_function, bound, inf, abs_tol, rel_tol,
 			   result, abserr, neval, ier, leniw, lenw,
 			   last, piwork, pwork));
-
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dqagi");
 
   return result;
 }

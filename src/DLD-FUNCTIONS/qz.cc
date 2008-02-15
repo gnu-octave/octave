@@ -475,12 +475,6 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 		 nn, ilo, ihi, lscale.fortran_vec (),
 		 rscale.fortran_vec (), work.fortran_vec (), info
 		 F77_CHAR_ARG_LEN (1)));
-
-      if (f77_exception_encountered)
-	{
-	  error ("unrecoverable error in qz (bal)");
-	  return retval;
-	}
     }
 
   // Since we just want the balancing matrices, we can use dggbal
@@ -501,12 +495,6 @@ Order of output arguments was selected for compatibility with MATLAB\n\
       if (compq == 'V')
 	std::cout << "qz: balancing done; QQ=" << std::endl << QQ << std::endl;
 #endif
-
-    if (f77_exception_encountered)
-      {
-	error ("unrecoverable error in qz (bal-L)");
-	return retval;
-      }
   }
 
   // then right
@@ -524,12 +512,6 @@ Order of output arguments was selected for compatibility with MATLAB\n\
       if (compz == 'V')
 	std::cout << "qz: balancing done; ZZ=" << std::endl << ZZ << std::endl;
 #endif
-
-      if (f77_exception_encountered)
-	{
-	  error ("unrecoverable error in qz (bal-R)");
-	  return retval;
-	}
     }
 
   static char qz_job;
@@ -603,12 +585,6 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered)
-	{
-	  error ("unrecoverable error in qz (dgghrd)");
-	  return retval;
-	}
-
       // check if just computing generalized eigenvalues or if we're
       // actually computing the decomposition
 
@@ -624,12 +600,6 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
-
-      if (f77_exception_encountered)
-	{
-	  error ("unrecoverable error in qz (dhgeqz)");
-	  return retval;
-	}
     }
 
   // order the QZ decomposition?
@@ -903,12 +873,6 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 		     m, work.fortran_vec (), info
 		     F77_CHAR_ARG_LEN (1)
 		     F77_CHAR_ARG_LEN (1)));
-
-	  if (f77_exception_encountered)
-	    {
-	      error ("unrecoverable error in qz (dtgevc)");
-	      return retval;
-	    }
 
 	  // now construct the complex form of VV, WW
 	  int jj = 0;

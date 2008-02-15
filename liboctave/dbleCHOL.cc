@@ -76,43 +76,34 @@ CHOL::init (const Matrix& a, bool calc_cond)
 			     n, h, n, info
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dpotrf");
+  xrcond = 0.0;
+  if (info != 0)
+    info = -1;
+  else if (calc_cond) 
+    {
+      octave_idx_type dpocon_info = 0;
+
+      // Now calculate the condition number for non-singular matrix.
+      Array<double> z (3*n);
+      double *pz = z.fortran_vec ();
+      Array<octave_idx_type> iz (n);
+      octave_idx_type *piz = iz.fortran_vec ();
+      F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
+				 n, anorm, xrcond, pz, piz, dpocon_info
+				 F77_CHAR_ARG_LEN (1)));
+
+      if (dpocon_info != 0) 
+	info = -1;
+    }
   else
     {
-      xrcond = 0.0;
-      if (info != 0)
-	info = -1;
-      else if (calc_cond) 
-	{
-	  octave_idx_type dpocon_info = 0;
+      // If someone thinks of a more graceful way of doing this (or
+      // faster for that matter :-)), please let me know!
 
-	  // Now calculate the condition number for non-singular matrix.
-	  Array<double> z (3*n);
-	  double *pz = z.fortran_vec ();
-	  Array<octave_idx_type> iz (n);
-	  octave_idx_type *piz = iz.fortran_vec ();
-	  F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 ("U", 1), n, h,
-				     n, anorm, xrcond, pz, piz, dpocon_info
-				     F77_CHAR_ARG_LEN (1)));
-
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in dpocon");
-
-	  if (dpocon_info != 0) 
-	    info = -1;
-	}
-      else
-	{
-	  // If someone thinks of a more graceful way of doing this (or
-	  // faster for that matter :-)), please let me know!
-
-	  if (n > 1)
-	    for (octave_idx_type j = 0; j < a_nc; j++)
-	      for (octave_idx_type i = j+1; i < a_nr; i++)
-		chol_mat.xelem (i, j) = 0.0;
-	}
+      if (n > 1)
+	for (octave_idx_type j = 0; j < a_nc; j++)
+	  for (octave_idx_type i = j+1; i < a_nr; i++)
+	    chol_mat.xelem (i, j) = 0.0;
     }
 
   return info;
@@ -140,21 +131,15 @@ chol2inv_internal (const Matrix& r)
 				     v, n, info
 				     F77_CHAR_ARG_LEN (1)));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in dpotri");
-	  else
-	    {
-	      // If someone thinks of a more graceful way of doing this (or
-	      // faster for that matter :-)), please let me know!
+	  // If someone thinks of a more graceful way of doing this (or
+	  // faster for that matter :-)), please let me know!
 
-	      if (n > 1)
-		for (octave_idx_type j = 0; j < r_nc; j++)
-		  for (octave_idx_type i = j+1; i < r_nr; i++)
-		    tmp.xelem (i, j) = tmp.xelem (j, i);
+	  if (n > 1)
+	    for (octave_idx_type j = 0; j < r_nc; j++)
+	      for (octave_idx_type i = j+1; i < r_nr; i++)
+		tmp.xelem (i, j) = tmp.xelem (j, i);
 
-	      retval = tmp;
-	    }
+	  retval = tmp;
 	}
     }
   else

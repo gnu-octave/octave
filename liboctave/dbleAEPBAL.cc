@@ -74,28 +74,20 @@ AEPBALANCE::init (const Matrix& a, const std::string& balance_job)
 			     n, p_balanced_mat, n, ilo, ihi, pscale, info
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dgebal");
-  else
-    {
-      balancing_mat = Matrix (n, n, 0.0);
-      for (octave_idx_type i = 0; i < n; i++)
-	balancing_mat.elem (i ,i) = 1.0;
+  balancing_mat = Matrix (n, n, 0.0);
+  for (octave_idx_type i = 0; i < n; i++)
+    balancing_mat.elem (i ,i) = 1.0;
 
-      double *p_balancing_mat = balancing_mat.fortran_vec ();
+  double *p_balancing_mat = balancing_mat.fortran_vec ();
 
-      char side = 'R';
+  char side = 'R';
 
-      F77_XFCN (dgebak, DGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-				 F77_CONST_CHAR_ARG2 (&side, 1),
-				 n, ilo, ihi, pscale, n,
-				 p_balancing_mat, n, info
-				 F77_CHAR_ARG_LEN (1)
-				 F77_CHAR_ARG_LEN (1)));
-
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgebak");
-    }
+  F77_XFCN (dgebak, DGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     F77_CONST_CHAR_ARG2 (&side, 1),
+			     n, ilo, ihi, pscale, n,
+			     p_balancing_mat, n, info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
   return info;
 }

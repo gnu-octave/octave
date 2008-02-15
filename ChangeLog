@@ -1,3 +1,7 @@
+2008-02-14  John W. Eaton  <jwe@octave.org>
+
+	* examples/fortdemo.cc: Don't check f77_exception_encountered.
+
 2008-02-06  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (octave.desktop):

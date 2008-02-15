@@ -50,13 +50,8 @@ DEFUN_DLD (fortdemo , args , , "Fortran Demo.")
           F77_XFCN (fortsub, FORTSUB, (na, av, ctmp 
                     F77_CHAR_ARG_LEN (128)));
 
-          if (f77_exception_encountered)
-            error ("fortdemo: error in fortran");
-          else
-            {
-              retval(1) = std::string (ctmp);
-              retval(0) = a;
-            }
+	  retval(1) = std::string (ctmp);
+	  retval(0) = a;
         }
     }
   return retval;

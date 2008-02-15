@@ -253,12 +253,6 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 		     nn, ilo, ihi, lscale.fortran_vec (),
 		     rscale.fortran_vec (), work.fortran_vec (), info
 		     F77_CHAR_ARG_LEN (1)));
-
-	  if (f77_exception_encountered)
-	    {
-	      error ("unrecoverable error in balance GEP");
-	      return retval;
-	    }
 	}
       else
 	{
@@ -270,12 +264,6 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 		     nn, ilo, ihi, lscale.fortran_vec (),
 		     rscale.fortran_vec (), work.fortran_vec (), info
 		     F77_CHAR_ARG_LEN  (1)));
-      
-	  if (f77_exception_encountered)
-	    {
-	      error ("unrecoverable error in balance GEP");
-	      return retval;
-	    }
 	}
       
       // Since we just want the balancing matrices, we can use dggbal
@@ -300,12 +288,6 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
       
-      if (f77_exception_encountered)
-	{
-	  error ("unrecoverable error in balance GEP(L)");
-	  return retval;
-	}
-      
       // then right
       F77_XFCN (dggbak, DGGBAK,
 		(F77_CONST_CHAR_ARG2 (&job, 1),
@@ -314,12 +296,6 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 		 nn, Pr.fortran_vec (), nn, info
 		 F77_CHAR_ARG_LEN (1)
 		 F77_CHAR_ARG_LEN (1)));
-
-      if (f77_exception_encountered)
-	{
-	  error ("unrecoverable error in balance GEP(R)");
-	  return retval;
-	}
 
       switch (nargout)
 	{

@@ -94,51 +94,41 @@ ComplexQRP::init (const ComplexMatrix& a, QR::type qr_type)
   F77_XFCN (zgeqpf, ZGEQPF, (m, n, tmp_data, m, pjpvt, ptau, pwork,
 			     prwork, info));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zgeqpf");
+  // Form Permutation matrix (if economy is requested, return the
+  // indices only!)
+
+  if (qr_type == QR::economy)
+    {
+      p.resize (1, n, 0.0);
+      for (octave_idx_type j = 0; j < n; j++)
+	p.elem (0, j) = jpvt.elem (j);
+    }
   else
     {
-      // Form Permutation matrix (if economy is requested, return the
-      // indices only!)
-
-      if (qr_type == QR::economy)
-	{
-	  p.resize (1, n, 0.0);
-	  for (octave_idx_type j = 0; j < n; j++)
-	    p.elem (0, j) = jpvt.elem (j);
-	}
-      else
-	{
-	  p.resize (n, n, 0.0);
-	  for (octave_idx_type j = 0; j < n; j++)
-	    p.elem (jpvt.elem (j) - 1, j) = 1.0;
-	}
-
-      octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
-
-      if (qr_type == QR::economy && m > n)
-	r.resize (n, n, 0.0);
-      else
-	r.resize (m, n, 0.0);
-
+      p.resize (n, n, 0.0);
       for (octave_idx_type j = 0; j < n; j++)
-	{
-	  octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
-	  for (octave_idx_type i = 0; i <= limit; i++)
-	    r.elem (i, j) = A_fact.elem (i, j);
-	}
-
-      F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
-				 pwork, lwork, info));
-
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zungqr");
-      else
-	{
-	  q = A_fact;
-	  q.resize (m, n2);
-	}
+	p.elem (jpvt.elem (j) - 1, j) = 1.0;
     }
+
+  octave_idx_type n2 = (qr_type == QR::economy) ? min_mn : m;
+
+  if (qr_type == QR::economy && m > n)
+    r.resize (n, n, 0.0);
+  else
+    r.resize (m, n, 0.0);
+
+  for (octave_idx_type j = 0; j < n; j++)
+    {
+      octave_idx_type limit = j < min_mn-1 ? j : min_mn-1;
+      for (octave_idx_type i = 0; i <= limit; i++)
+	r.elem (i, j) = A_fact.elem (i, j);
+    }
+
+  F77_XFCN (zungqr, ZUNGQR, (m, n2, min_mn, tmp_data, m, ptau,
+			     pwork, lwork, info));
+
+  q = A_fact;
+  q.resize (m, n2);
 }
 
 /*

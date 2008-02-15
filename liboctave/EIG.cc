@@ -116,7 +116,7 @@ EIG::init (const Matrix& a, bool calc_ev)
 			   F77_CHAR_ARG_LEN (1)
 			   F77_CHAR_ARG_LEN (1)));
 
-  if (! f77_exception_encountered && info == 0)
+  if (info == 0)
     {
       lwork = static_cast<octave_idx_type> (dummy_work);
       Array<double> work (lwork);
@@ -129,7 +129,7 @@ EIG::init (const Matrix& a, bool calc_ev)
 			       F77_CHAR_ARG_LEN (1)
 			       F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered || info < 0)
+      if (info < 0)
 	{
 	  (*current_liboctave_error_handler) ("unrecoverable error in dgeev");
 	  return info;
@@ -208,7 +208,7 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
 			   F77_CHAR_ARG_LEN (1)
 			   F77_CHAR_ARG_LEN (1)));
 
-  if (! f77_exception_encountered && info == 0)
+  if (info == 0)
     {
       lwork = static_cast<octave_idx_type> (dummy_work);
       Array<double> work (lwork);
@@ -220,7 +220,7 @@ EIG::symmetric_init (const Matrix& a, bool calc_ev)
 			       F77_CHAR_ARG_LEN (1)
 			       F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered || info < 0)
+      if (info < 0)
 	{
 	  (*current_liboctave_error_handler) ("unrecoverable error in dsyev");
 	  return info;
@@ -291,7 +291,7 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
 			   F77_CHAR_ARG_LEN (1)
 			   F77_CHAR_ARG_LEN (1)));
 
-  if (! f77_exception_encountered && info == 0)
+  if (info == 0)
     {
       lwork = static_cast<octave_idx_type> (dummy_work.real ());
       Array<Complex> work (lwork);
@@ -304,7 +304,7 @@ EIG::init (const ComplexMatrix& a, bool calc_ev)
 			       F77_CHAR_ARG_LEN (1)
 			       F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered || info < 0)
+      if (info < 0)
 	{
 	  (*current_liboctave_error_handler) ("unrecoverable error in zgeev");
 	  return info;
@@ -358,7 +358,7 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
 			   F77_CHAR_ARG_LEN (1)
 			   F77_CHAR_ARG_LEN (1)));
 
-  if (! f77_exception_encountered && info == 0)
+  if (info == 0)
     {
       lwork = static_cast<octave_idx_type> (dummy_work.real ());
       Array<Complex> work (lwork);
@@ -370,7 +370,7 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_ev)
 			       F77_CHAR_ARG_LEN (1)
 			       F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered || info < 0)
+      if (info < 0)
 	{
 	  (*current_liboctave_error_handler) ("unrecoverable error in zheev");
 	  return info;

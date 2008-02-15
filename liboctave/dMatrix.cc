@@ -711,38 +711,29 @@ Matrix::tinverse (MatrixType &mattype, octave_idx_type& info, double& rcond,
 				 F77_CHAR_ARG_LEN (1)
 				 F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dtrtri");
-      else
+      // Throw-away extra info LAPACK gives so as to not change output.
+      rcond = 0.0;
+      if (info != 0) 
+	info = -1;
+      else if (calc_cond) 
 	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
-	  if (info != 0) 
+	  octave_idx_type dtrcon_info = 0;
+	  char job = '1';
+
+	  OCTAVE_LOCAL_BUFFER (double, work, 3 * nr);
+	  OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, nr);
+
+	  F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+				     F77_CONST_CHAR_ARG2 (&uplo, 1),
+				     F77_CONST_CHAR_ARG2 (&udiag, 1),
+				     nr, tmp_data, nr, rcond, 
+				     work, iwork, dtrcon_info 
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (dtrcon_info != 0) 
 	    info = -1;
-	  else if (calc_cond) 
-	    {
-	      octave_idx_type dtrcon_info = 0;
-	      char job = '1';
-
-	      OCTAVE_LOCAL_BUFFER (double, work, 3 * nr);
-	      OCTAVE_LOCAL_BUFFER (octave_idx_type, iwork, nr);
-
-	      F77_XFCN (dtrcon, DTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					 F77_CONST_CHAR_ARG2 (&uplo, 1),
-					 F77_CONST_CHAR_ARG2 (&udiag, 1),
-					 nr, tmp_data, nr, rcond, 
-					 work, iwork, dtrcon_info 
-					 F77_CHAR_ARG_LEN (1)
-					 F77_CHAR_ARG_LEN (1)
-					 F77_CHAR_ARG_LEN (1)));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler) 
-		  ("unrecoverable error in dtrcon");
-
-	      if (dtrcon_info != 0) 
-		info = -1;
-	    }
 	}
 
       if (info == -1 && ! force)
@@ -779,13 +770,6 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcond,
       F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt, 
 				 z.fortran_vec (), lwork, info));
 
-      if (f77_exception_encountered) 
-	{
-	  (*current_liboctave_error_handler)
-	    ("unrecoverable error in dgetri");
-	  return retval;
-	}
-
       lwork = static_cast<octave_idx_type> (z(0));
       lwork = (lwork < 2 *nc ? 2*nc : lwork);
       z.resize (lwork);
@@ -800,51 +784,38 @@ Matrix::finverse (MatrixType &mattype, octave_idx_type& info, double& rcond,
 
       F77_XFCN (dgetrf, DGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
+      // Throw-away extra info LAPACK gives so as to not change output.
+      rcond = 0.0;
+      if (info != 0) 
+	info = -1;
+      else if (calc_cond) 
+	{
+	  octave_idx_type dgecon_info = 0;
+
+	  // Now calculate the condition number for non-singular matrix.
+	  char job = '1';
+	  Array<octave_idx_type> iz (nc);
+	  octave_idx_type *piz = iz.fortran_vec ();
+	  F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+				     nc, tmp_data, nr, anorm, 
+				     rcond, pz, piz, dgecon_info
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (dgecon_info != 0) 
+	    info = -1;
+	}
+
+      if (info == -1 && ! force)
+	retval = *this; // Restore matrix contents.
       else
 	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
-	  if (info != 0) 
+	  octave_idx_type dgetri_info = 0;
+
+	  F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
+				     pz, lwork, dgetri_info));
+
+	  if (dgetri_info != 0) 
 	    info = -1;
-	  else if (calc_cond) 
-	    {
-	      octave_idx_type dgecon_info = 0;
-
-	      // Now calculate the condition number for non-singular matrix.
-	      char job = '1';
-	      Array<octave_idx_type> iz (nc);
-	      octave_idx_type *piz = iz.fortran_vec ();
-	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					 nc, tmp_data, nr, anorm, 
-					 rcond, pz, piz, dgecon_info
-					 F77_CHAR_ARG_LEN (1)));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler) 
-		  ("unrecoverable error in dgecon");
-
-	      if (dgecon_info != 0) 
-		info = -1;
-	    }
-
-	  if (info == -1 && ! force)
-	    retval = *this; // Restore matrix contents.
-	  else
-	    {
-	      octave_idx_type dgetri_info = 0;
-
-	      F77_XFCN (dgetri, DGETRI, (nc, tmp_data, nr, pipvt,
-					 pz, lwork, dgetri_info));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in dgetri");
-
-	      if (dgetri_info != 0) 
-		info = -1;
-	    }
 	}
 
       if (info != 0)
@@ -1284,12 +1255,30 @@ Matrix::determinant (octave_idx_type& info, double& rcond, int calc_cond) const
 
       F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in dgetrf");
-      else
+      // Throw-away extra info LAPACK gives so as to not change output.
+      rcond = 0.0;
+      if (info != 0) 
 	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
+	  info = -1;
+	  retval = DET ();
+	} 
+      else 
+	{
+	  if (calc_cond) 
+	    {
+	      // Now calc the condition number for non-singular matrix.
+	      char job = '1';
+	      Array<double> z (4 * nc);
+	      double *pz = z.fortran_vec ();
+	      Array<octave_idx_type> iz (nc);
+	      octave_idx_type *piz = iz.fortran_vec ();
+
+	      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm, 
+					 rcond, pz, piz, info
+					 F77_CHAR_ARG_LEN (1)));
+	    }
+
 	  if (info != 0) 
 	    {
 	      info = -1;
@@ -1297,60 +1286,33 @@ Matrix::determinant (octave_idx_type& info, double& rcond, int calc_cond) const
 	    } 
 	  else 
 	    {
-	      if (calc_cond) 
+	      double c = 1.0;
+	      int e = 0;
+
+	      for (octave_idx_type i = 0; i < nc; i++) 
 		{
-		  // Now calc the condition number for non-singular matrix.
-		  char job = '1';
-		  Array<double> z (4 * nc);
-		  double *pz = z.fortran_vec ();
-		  Array<octave_idx_type> iz (nc);
-		  octave_idx_type *piz = iz.fortran_vec ();
+		  if (ipvt(i) != (i+1))
+		    c = -c;
 
-		  F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					     nc, tmp_data, nr, anorm, 
-					     rcond, pz, piz, info
-					     F77_CHAR_ARG_LEN (1)));
+		  c *= atmp(i,i);
 
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in dgecon");
-		}
+		  if (c == 0.0)
+		    break;
 
-	      if (info != 0) 
-		{
-		  info = -1;
-		  retval = DET ();
-		} 
-	      else 
-		{
-		  double c = 1.0;
-		  int e = 0;
-
-		  for (octave_idx_type i = 0; i < nc; i++) 
+		  while (fabs (c) < 0.5)
 		    {
-		      if (ipvt(i) != (i+1))
-			c = -c;
-
-		      c *= atmp(i,i);
-
-		      if (c == 0.0)
-			break;
-
-		      while (fabs (c) < 0.5)
-			{
-			  c *= 2.0;
-			  e--;
-			}
-
-		      while (fabs (c) >= 2.0)
-			{
-			  c /= 2.0;
-			  e++;
-			}
+		      c *= 2.0;
+		      e--;
 		    }
 
-		  retval = DET (c, e);
+		  while (fabs (c) >= 2.0)
+		    {
+		      c /= 2.0;
+		      e++;
+		    }
 		}
+
+	      retval = DET (c, e);
 	    }
 	}
     }
@@ -1413,10 +1375,6 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
 
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in dtrcon");
-
 		  if (info != 0) 
 		    info = -2;
 
@@ -1452,10 +1410,6 @@ Matrix::utsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
-
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in dtrtrs");
 		}
 	    }
 	}
@@ -1521,10 +1475,6 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
 
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in dtrcon");
-
 		  if (info != 0) 
 		    info = -2;
 
@@ -1560,10 +1510,6 @@ Matrix::ltsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
-
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in dtrtrs");
 		}
 	    }
 	}
@@ -1608,78 +1554,64 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 				     tmp_data, nr, info
 				     F77_CHAR_ARG_LEN (1)));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in dpotrf");
-	  else
+	  // Throw-away extra info LAPACK gives so as to not change output.
+	  rcond = 0.0;
+	  if (info != 0) 
 	    {
-	      // Throw-away extra info LAPACK gives so as to not change output.
-	      rcond = 0.0;
-	      if (info != 0) 
-		{
-		  info = -2;
+	      info = -2;
 
+	      mattype.mark_as_unsymmetric ();
+	      typ = MatrixType::Full;
+	    }
+	  else 
+	    {
+	      if (calc_cond)
+		{
+		  Array<double> z (3 * nc);
+		  double *pz = z.fortran_vec ();
+		  Array<octave_idx_type> iz (nc);
+		  octave_idx_type *piz = iz.fortran_vec ();
+
+		  F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, tmp_data, nr, anorm,
+					     rcond, pz, piz, info
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (info != 0) 
+		    info = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		    {
+		      info = -2;
+
+		      if (sing_handler)
+			sing_handler (rcond);
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+
+	      if (info == 0)
+		{
+		  retval = b;
+		  double *result = retval.fortran_vec ();
+
+		  octave_idx_type b_nc = b.cols ();
+
+		  F77_XFCN (dpotrs, DPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, b_nc, tmp_data, nr,
+					     result, b.rows(), info
+					     F77_CHAR_ARG_LEN (1)));
+		}
+	      else
+		{
 		  mattype.mark_as_unsymmetric ();
 		  typ = MatrixType::Full;
-		}
-	      else 
-		{
-		  if (calc_cond)
-		    {
-		      Array<double> z (3 * nc);
-		      double *pz = z.fortran_vec ();
-		      Array<octave_idx_type> iz (nc);
-		      octave_idx_type *piz = iz.fortran_vec ();
-
-		      F77_XFCN (dpocon, DPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nr, tmp_data, nr, anorm,
-						 rcond, pz, piz, info
-						 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-			(*current_liboctave_error_handler) 
-			  ("unrecoverable error in dpocon");
-	      
-		      if (info != 0) 
-			info = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-			{
-			  info = -2;
-
-			  if (sing_handler)
-			    sing_handler (rcond);
-			  else
-			    (*current_liboctave_error_handler)
-			      ("matrix singular to machine precision, rcond = %g",
-			       rcond);
-			}
-		    }
-
-		  if (info == 0)
-		    {
-		      retval = b;
-		      double *result = retval.fortran_vec ();
-
-		      octave_idx_type b_nc = b.cols ();
-
-		      F77_XFCN (dpotrs, DPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nr, b_nc, tmp_data, nr,
-						 result, b.rows(), info
-						 F77_CHAR_ARG_LEN (1)));
-		
-		      if (f77_exception_encountered)
-			(*current_liboctave_error_handler)
-			  ("unrecoverable error in dpotrs");
-		    }
-		  else
-		    {
-		      mattype.mark_as_unsymmetric ();
-		      typ = MatrixType::Full;
-		    }		    
-		}
+		}		    
 	    }
 	}
 
@@ -1702,79 +1634,65 @@ Matrix::fsolve (MatrixType &mattype, const Matrix& b, octave_idx_type& info,
 
 	  F77_XFCN (dgetrf, DGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in dgetrf");
-	  else
+	  // Throw-away extra info LAPACK gives so as to not change output.
+	  rcond = 0.0;
+	  if (info != 0) 
 	    {
-	      // Throw-away extra info LAPACK gives so as to not change output.
-	      rcond = 0.0;
-	      if (info != 0) 
+	      info = -2;
+
+	      if (sing_handler)
+		sing_handler (rcond);
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
+
+	      mattype.mark_as_rectangular ();
+	    }
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  info = -2;
+		  // Now calculate the condition number for 
+		  // non-singular matrix.
+		  char job = '1';
+		  F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nc, tmp_data, nr, anorm, 
+					     rcond, pz, piz, info
+					     F77_CHAR_ARG_LEN (1)));
 
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
+		  if (info != 0) 
+		    info = -2;
 
-		  mattype.mark_as_rectangular ();
-		}
-	      else 
-		{
-		  if (calc_cond)
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      // Now calculate the condition number for 
-		      // non-singular matrix.
-		      char job = '1';
-		      F77_XFCN (dgecon, DGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nc, tmp_data, nr, anorm, 
-						 rcond, pz, piz, info
-						 F77_CHAR_ARG_LEN (1)));
-	      
-		      if (f77_exception_encountered)
-			(*current_liboctave_error_handler) 
-			  ("unrecoverable error in dgecon");
-	      
-		      if (info != 0) 
-			info = -2;
+		      info = -2;
 
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-			{
-			  info = -2;
-
-			  if (sing_handler)
-			    sing_handler (rcond);
-			  else
-			    (*current_liboctave_error_handler)
-			      ("matrix singular to machine precision, rcond = %g",
-			       rcond);
-			}
-		    }
-
-		  if (info == 0)
-		    {
-		      retval = b;
-		      double *result = retval.fortran_vec ();
-
-		      octave_idx_type b_nc = b.cols ();
-
-		      char job = 'N';
-		      F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nr, b_nc, tmp_data, nr,
-						 pipvt, result, b.rows(), info
-						 F77_CHAR_ARG_LEN (1)));
-		
-		      if (f77_exception_encountered)
+		      if (sing_handler)
+			sing_handler (rcond);
+		      else
 			(*current_liboctave_error_handler)
-			  ("unrecoverable error in dgetrs");
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
 		    }
-		  else
-		    mattype.mark_as_rectangular ();
 		}
+
+	      if (info == 0)
+		{
+		  retval = b;
+		  double *result = retval.fortran_vec ();
+
+		  octave_idx_type b_nc = b.cols ();
+
+		  char job = 'N';
+		  F77_XFCN (dgetrs, DGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, b_nc, tmp_data, nr,
+					     pipvt, result, b.rows(), info
+					     F77_CHAR_ARG_LEN (1)));
+		}
+	      else
+		mattype.mark_as_rectangular ();
 	    }
 	}
       else if (typ != MatrixType::Hermitian)
@@ -2170,35 +2088,23 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 	    work(0) = lworkaround;
 	}
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) 
-	  ("unrecoverable error in dgelsd");
+      lwork = static_cast<octave_idx_type> (work(0));
+      work.resize (lwork);
+
+      F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				 maxmn, ps, rcond, rank,
+				 work.fortran_vec (), lwork, 
+				 piwork, info));
+
+      if (rank < minmn)
+	(*current_liboctave_warning_handler) 
+	  ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
+      if (s.elem (0) == 0.0)
+	rcond = 0.0;
       else
-	{
-	  lwork = static_cast<octave_idx_type> (work(0));
-	  work.resize (lwork);
+	rcond = s.elem (minmn - 1) / s.elem (0);
 
-	  F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
-				     maxmn, ps, rcond, rank,
-				     work.fortran_vec (), lwork, 
-				     piwork, info));
-
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in dgelsd");
-	  else 
-	    {
-	      if (rank < minmn)
-		(*current_liboctave_warning_handler) 
-		  ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
-	      if (s.elem (0) == 0.0)
-		rcond = 0.0;
-	      else
-		rcond = s.elem (minmn - 1) / s.elem (0);
-
-	      retval.resize (n, nrhs);
-	    }
-	}
+      retval.resize (n, nrhs);
     }
 
   return retval;
@@ -2335,35 +2241,26 @@ Matrix::lssolve (const ColumnVector& b, octave_idx_type& info,
 				 ps, rcond, rank, work.fortran_vec (),
 				 lwork, piwork, info));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) 
-	  ("unrecoverable error in dgelsd");
-      else
+      lwork = static_cast<octave_idx_type> (work(0));
+      work.resize (lwork);
+
+      F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				 maxmn, ps, rcond, rank,
+				 work.fortran_vec (), lwork, 
+				 piwork, info));
+
+      if (rank < minmn)
 	{
-	  lwork = static_cast<octave_idx_type> (work(0));
-	  work.resize (lwork);
-
-	  F77_XFCN (dgelsd, DGELSD, (m, n, nrhs, tmp_data, m, pretval,
-				     maxmn, ps, rcond, rank,
-				     work.fortran_vec (), lwork, 
-				     piwork, info));
-
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in dgelsd");
-	  else if (rank < minmn)
-	    {
-	      if (rank < minmn)
-		(*current_liboctave_warning_handler) 
-		  ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
-	      if (s.elem (0) == 0.0)
-		rcond = 0.0;
-	      else
-		rcond = s.elem (minmn - 1) / s.elem (0);
-	    }
-
-	  retval.resize (n, nrhs);
+	  if (rank < minmn)
+	    (*current_liboctave_warning_handler) 
+	      ("dgelsd: rank deficient %dx%d matrix, rank = %d", m, n, rank);
+	  if (s.elem (0) == 0.0)
+	    rcond = 0.0;
+	  else
+	    rcond = s.elem (minmn - 1) / s.elem (0);
 	}
+
+      retval.resize (n, nrhs);
     }
 
   return retval;
@@ -2479,12 +2376,6 @@ Matrix::expm (void) const
 			     dscale.fortran_vec (), info
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in dgebal");
-      return retval;
-    }
-
   // Preconditioning step 3: scaling.
   
   ColumnVector work(nc);
@@ -2495,12 +2386,6 @@ Matrix::expm (void) const
 			       work.fortran_vec (), inf_norm
 			       F77_CHAR_ARG_LEN (1)));
   
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in dlange");
-      return retval;
-    }
-
   octave_idx_type sqpow = static_cast<octave_idx_type> (inf_norm > 0.0
 		     ? (1.0 + log (inf_norm) / log (2.0))
 		     : 0.0);
@@ -2723,10 +2608,6 @@ operator * (const ColumnVector& v, const RowVector& a)
 			       a.data (), 1, 0.0, c, len
 			       F77_CHAR_ARG_LEN (1)
 			       F77_CHAR_ARG_LEN (1)));
-
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler)
-	  ("unrecoverable error in dgemm");
     }
 
   return retval;
@@ -3327,14 +3208,9 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 			     F77_CHAR_ARG_LEN (1)));
 
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in dtrsyl");
-  else
-    {
-      // FIXME -- check info?
+  // FIXME -- check info?
   
-      retval = -ua*cx*ub.transpose ();
-    }
+  retval = -ua*cx*ub.transpose ();
 
   return retval;
 }
@@ -3393,10 +3269,6 @@ operator * (const Matrix& m, const Matrix& a)
 					   nr, nc, 1.0,  m.data (), ld,
 					   a.data (), 1, 0.0, c, 1
 					   F77_CHAR_ARG_LEN (1)));
-
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler)
-		      ("unrecoverable error in dgemv");
 		}
             }
 	  else
@@ -3407,10 +3279,6 @@ operator * (const Matrix& m, const Matrix& a)
 				       ld, a.data (), lda, 0.0, c, nr
 				       F77_CHAR_ARG_LEN (1)
 				       F77_CHAR_ARG_LEN (1)));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in dgemm");
 	    }
 	}
     }

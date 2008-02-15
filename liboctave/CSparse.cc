@@ -3749,10 +3749,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
 	  F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result, 
 				   b.rows(), err));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zptsv");
-	  else if (err != 0)
+	  if (err != 0)
 	    {
 	      err = 0;
 	      mattype.mark_as_unsymmetric ();
@@ -3809,10 +3806,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const Matrix& b,
 	  F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result, 
 				   b.rows(), err));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgtsv");
-	  else if (err != 0)
+	  if (err != 0)
 	    {
 	      rcond = 0.;
 	      err = -2;
@@ -3910,84 +3904,71 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const SparseMatrix& b,
 
 	  F77_XFCN (zgttrf, ZGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgttrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      err = -2;
+	      rcond = 0.0;
+
+	      if (sing_handler)
 		{
-		  err = -2;
-		  rcond = 0.0;
-
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
-
-		} 
-	      else 
-		{
-		  char job = 'N';
-		  volatile octave_idx_type x_nz = b.nnz ();
-		  octave_idx_type b_nc = b.cols ();
-		  retval = SparseComplexMatrix (nr, b_nc, x_nz);
-		  retval.xcidx(0) = 0;
-		  volatile octave_idx_type ii = 0;
-		  rcond = 1.0;
-
-		  OCTAVE_LOCAL_BUFFER (Complex, work, nr);
-
-		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		    {
-		      for (octave_idx_type i = 0; i < nr; i++)
-			work[i] = 0.;
-		      for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
-			work[b.ridx(i)] = b.data(i);
-
-		      F77_XFCN (zgttrs, ZGTTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, 1, DL, D, DU, DU2, pipvt, 
-				 work, b.rows (), err
-				 F77_CHAR_ARG_LEN (1)));
-		    
-		      if (f77_exception_encountered)
-			{
-			  (*current_liboctave_error_handler)
-			    ("unrecoverable error in zgttrs");
-			  break;
-			}
-
-		      // Count non-zeros in work vector and adjust 
-		      // space in retval if needed
-		      octave_idx_type new_nnz = 0;
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (work[i] != 0.)
-			  new_nnz++;
-
-		      if (ii + new_nnz > x_nz)
-			{
-			  // Resize the sparse matrix
-			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			  retval.change_capacity (sz);
-			  x_nz = sz;
-			}
-
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (work[i] != 0.)
-			  {
-			    retval.xridx(ii) = i;
-			    retval.xdata(ii++) = work[i];
-			  }
-		      retval.xcidx(j+1) = ii;
-		    }
-
-		  retval.maybe_compress ();
+		  sing_handler (rcond);
+		  mattype.mark_as_rectangular ();
 		}
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
+
+	    } 
+	  else 
+	    {
+	      char job = 'N';
+	      volatile octave_idx_type x_nz = b.nnz ();
+	      octave_idx_type b_nc = b.cols ();
+	      retval = SparseComplexMatrix (nr, b_nc, x_nz);
+	      retval.xcidx(0) = 0;
+	      volatile octave_idx_type ii = 0;
+	      rcond = 1.0;
+
+	      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
+
+	      for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		{
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    work[i] = 0.;
+		  for (octave_idx_type i = b.cidx(j); i < b.cidx(j+1); i++)
+		    work[b.ridx(i)] = b.data(i);
+
+		  F77_XFCN (zgttrs, ZGTTRS, 
+			    (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nr, 1, DL, D, DU, DU2, pipvt, 
+			     work, b.rows (), err
+			     F77_CHAR_ARG_LEN (1)));
+
+		  // Count non-zeros in work vector and adjust 
+		  // space in retval if needed
+		  octave_idx_type new_nnz = 0;
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    if (work[i] != 0.)
+		      new_nnz++;
+
+		  if (ii + new_nnz > x_nz)
+		    {
+		      // Resize the sparse matrix
+		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+		      retval.change_capacity (sz);
+		      x_nz = sz;
+		    }
+
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    if (work[i] != 0.)
+		      {
+			retval.xridx(ii) = i;
+			retval.xdata(ii++) = work[i];
+		      }
+		  retval.xcidx(j+1) = ii;
+		}
+
+	      retval.maybe_compress ();
 	    }
 	}
       else if (typ != MatrixType::Tridiagonal_Hermitian)
@@ -4069,13 +4050,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
 	  F77_XFCN (zptsv, ZPTSV, (nr, b_nc, D, DL, result, 
 				   b_nr, err));
 
-	  if (f77_exception_encountered)
-	    {
-	      (*current_liboctave_error_handler) 
-		("unrecoverable error in zptsv");
-	      err = -1;
-	    }
-	  else if (err != 0)
+	  if (err != 0)
 	    {
 	      err = 0;
 	      mattype.mark_as_unsymmetric ();
@@ -4133,13 +4108,7 @@ SparseComplexMatrix::trisolve (MatrixType &mattype, const ComplexMatrix& b,
 	  F77_XFCN (zgtsv, ZGTSV, (nr, b_nc, DL, D, DU, result, 
 				   b_nr, err));
 
-	  if (f77_exception_encountered)
-	    {
-	      (*current_liboctave_error_handler) 
-		("unrecoverable error in zgtsv");
-	      err = -1;
-	    }
-	  else if (err != 0)
+	  if (err != 0)
 	    {
 	      rcond = 0.;
 	      err = -2;
@@ -4235,95 +4204,82 @@ SparseComplexMatrix::trisolve (MatrixType &mattype,
 
 	  F77_XFCN (zgttrf, ZGTTRF, (nr, DL, D, DU, DU2, pipvt, err));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgttrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      rcond = 0.0;
+	      err = -2;
+
+	      if (sing_handler)
 		{
-		  rcond = 0.0;
-		  err = -2;
-
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
-		} 
-	      else 
-		{	
-		  rcond = 1.;
-		  char job = 'N';
-		  octave_idx_type b_nr = b.rows ();
-		  octave_idx_type b_nc = b.cols ();
-		  OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
-
-		  // Take a first guess that the number of non-zero terms
-		  // will be as many as in b
-		  volatile octave_idx_type x_nz = b.nnz ();
-		  volatile octave_idx_type ii = 0;
-		  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
-
-		  retval.xcidx(0) = 0;
-		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
-		    {
-
-		      for (octave_idx_type i = 0; i < b_nr; i++)
-			Bx[i] = b (i,j);
-
-		      F77_XFCN (zgttrs, ZGTTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, 1, DL, D, DU, DU2, pipvt, 
-				 Bx, b_nr, err
-				 F77_CHAR_ARG_LEN (1)));
-		    
-		      if (f77_exception_encountered)
-			{
-			  (*current_liboctave_error_handler)
-			    ("unrecoverable error in zgttrs");
-			  break;
-			}
-
-		      if (err != 0)
-			{
-			  (*current_liboctave_error_handler)
-			    ("SparseComplexMatrix::solve solve failed");
-
-			  err = -1;
-			  break;
-			}
-
-		      // Count non-zeros in work vector and adjust 
-		      // space in retval if needed
-		      octave_idx_type new_nnz = 0;
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (Bx[i] != 0.)
-			  new_nnz++;
-		      
-		      if (ii + new_nnz > x_nz)
-			{
-			  // Resize the sparse matrix
-			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			  retval.change_capacity (sz);
-			  x_nz = sz;
-			}
-			  
-		      for (octave_idx_type i = 0; i < nr; i++)
-			if (Bx[i] != 0.)
-			  {
-			    retval.xridx(ii) = i;
-			    retval.xdata(ii++) = Bx[i];
-			  }
-
-		      retval.xcidx(j+1) = ii;
-		    }
-
-		  retval.maybe_compress ();
+		  sing_handler (rcond);
+		  mattype.mark_as_rectangular ();
 		}
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
+	    } 
+	  else 
+	    {	
+	      rcond = 1.;
+	      char job = 'N';
+	      octave_idx_type b_nr = b.rows ();
+	      octave_idx_type b_nc = b.cols ();
+	      OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
+
+	      // Take a first guess that the number of non-zero terms
+	      // will be as many as in b
+	      volatile octave_idx_type x_nz = b.nnz ();
+	      volatile octave_idx_type ii = 0;
+	      retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
+
+	      retval.xcidx(0) = 0;
+	      for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		{
+
+		  for (octave_idx_type i = 0; i < b_nr; i++)
+		    Bx[i] = b (i,j);
+
+		  F77_XFCN (zgttrs, ZGTTRS, 
+			    (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nr, 1, DL, D, DU, DU2, pipvt, 
+			     Bx, b_nr, err
+			     F77_CHAR_ARG_LEN (1)));
+
+		  if (err != 0)
+		    {
+		      (*current_liboctave_error_handler)
+			("SparseComplexMatrix::solve solve failed");
+
+		      err = -1;
+		      break;
+		    }
+
+		  // Count non-zeros in work vector and adjust 
+		  // space in retval if needed
+		  octave_idx_type new_nnz = 0;
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    if (Bx[i] != 0.)
+		      new_nnz++;
+
+		  if (ii + new_nnz > x_nz)
+		    {
+		      // Resize the sparse matrix
+		      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+		      retval.change_capacity (sz);
+		      x_nz = sz;
+		    }
+
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    if (Bx[i] != 0.)
+		      {
+			retval.xridx(ii) = i;
+			retval.xdata(ii++) = Bx[i];
+		      }
+
+		  retval.xcidx(j+1) = ii;
+		}
+
+	      retval.maybe_compress ();
 	    }
 	}
       else if (typ != MatrixType::Tridiagonal_Hermitian)
@@ -4390,85 +4346,71 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 				     nr, n_lower, tmp_data, ldm, err
 				     F77_CHAR_ARG_LEN (1)));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zpbtrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      rcond = 0.0;
+	      // Matrix is not positive definite!! Fall through to
+	      // unsymmetric banded solver.
+	      mattype.mark_as_unsymmetric ();
+	      typ = MatrixType::Banded;
+	      err = 0;
+	    } 
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  rcond = 0.0;
-		  // Matrix is not positive definite!! Fall through to
-		  // unsymmetric banded solver.
-		  mattype.mark_as_unsymmetric ();
-		  typ = MatrixType::Banded;
-		  err = 0;
-		} 
-	      else 
-		{
-		  if (calc_cond)
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
+
+		  F77_XFCN (zpbcon, ZPBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nr, n_lower, tmp_data, ldm,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		  if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zpbcon, ZPBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nr, n_lower, tmp_data, ldm,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		      	(*current_liboctave_error_handler) 
-		      	  ("unrecoverable error in zpbcon");
-
-		      if (err != 0) 
-		      	err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
-		    }
-		  else
-		    rcond = 1.0;
-
-		  if (err == 0)
-		    {
-		      retval = ComplexMatrix (b);
-		      Complex *result = retval.fortran_vec ();
-
-		      octave_idx_type b_nc = b.cols ();
-
-		      F77_XFCN (zpbtrs, ZPBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, b_nc, tmp_data,
-				 ldm, result, b.rows(), err
-				 F77_CHAR_ARG_LEN (1)));
-		    
-		      if (f77_exception_encountered)
-			(*current_liboctave_error_handler)
-			  ("unrecoverable error in zpbtrs");
-
-		      if (err != 0)
+		      if (sing_handler)
 			{
-			  (*current_liboctave_error_handler) 
-			    ("SparseMatrix::solve solve failed");
-			  err = -1;
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
 			}
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+	      else
+		rcond = 1.0;
+
+	      if (err == 0)
+		{
+		  retval = ComplexMatrix (b);
+		  Complex *result = retval.fortran_vec ();
+
+		  octave_idx_type b_nc = b.cols ();
+
+		  F77_XFCN (zpbtrs, ZPBTRS, 
+			    (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nr, n_lower, b_nc, tmp_data,
+			     ldm, result, b.rows(), err
+			     F77_CHAR_ARG_LEN (1)));
+
+		  if (err != 0)
+		    {
+		      (*current_liboctave_error_handler) 
+			("SparseMatrix::solve solve failed");
+		      err = -1;
 		    }
 		}
 	    }
@@ -4517,88 +4459,74 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nc, n_lower, n_upper, tmp_data, 
 				     ldm, pipvt, err));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgbtrf");
-	  else
+	  // Throw-away extra info LAPACK gives so as to not 
+	  // change output.
+	  if (err != 0) 
 	    {
-	      // Throw-away extra info LAPACK gives so as to not 
-	      // change output.
-	      if (err != 0) 
+	      rcond = 0.0;
+	      err = -2;
+
+	      if (sing_handler)
 		{
-		  rcond = 0.0;
-		  err = -2;
-
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
-		} 
-	      else 
+		  sing_handler (rcond);
+		  mattype.mark_as_rectangular ();
+		}
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
+	    } 
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  if (calc_cond)
+		  char job = '1';
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
+
+		  F77_XFCN (zgbcon, ZGBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		   if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      char job = '1';
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zgbcon, ZGBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		        (*current_liboctave_error_handler) 
-		          ("unrecoverable error in zgbcon");
-
-		       if (err != 0) 
-		        err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
-		    }
-		  else
-		    rcond = 1.;
-
-		  if (err == 0)
-		    {
-		      retval = ComplexMatrix (b);
-		      Complex *result = retval.fortran_vec ();
-
-		      octave_idx_type b_nc = b.cols ();
-
-		      char job = 'N';
-		      F77_XFCN (zgbtrs, ZGBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, n_upper, b_nc, tmp_data,
-				 ldm, pipvt, result, b.rows(), err
-				 F77_CHAR_ARG_LEN (1)));
-		    
-		      if (f77_exception_encountered)
+		      if (sing_handler)
+			{
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
+			}
+		      else
 			(*current_liboctave_error_handler)
-			  ("unrecoverable error in zgbtrs");
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
 		    }
+		}
+	      else
+		rcond = 1.;
+
+	      if (err == 0)
+		{
+		  retval = ComplexMatrix (b);
+		  Complex *result = retval.fortran_vec ();
+
+		  octave_idx_type b_nc = b.cols ();
+
+		  char job = 'N';
+		  F77_XFCN (zgbtrs, ZGBTRS, 
+			    (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nr, n_lower, n_upper, b_nc, tmp_data,
+			     ldm, pipvt, result, b.rows(), err
+			     F77_CHAR_ARG_LEN (1)));
 		}
 	    }
 	}
@@ -4667,123 +4595,105 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 				     nr, n_lower, tmp_data, ldm, err
 				     F77_CHAR_ARG_LEN (1)));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zpbtrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      rcond = 0.0;
+	      mattype.mark_as_unsymmetric ();
+	      typ = MatrixType::Banded;
+	      err = 0;
+	    } 
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  rcond = 0.0;
-		  mattype.mark_as_unsymmetric ();
-		  typ = MatrixType::Banded;
-		  err = 0;
-		} 
-	      else 
-		{
-		  if (calc_cond)
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
+
+		  F77_XFCN (zpbcon, ZPBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nr, n_lower, tmp_data, ldm,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		  if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zpbcon, ZPBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nr, n_lower, tmp_data, ldm,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		      	(*current_liboctave_error_handler) 
-		      	  ("unrecoverable error in zpbcon");
-
-		      if (err != 0) 
-		      	err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
-		    }
-		  else
-		    rcond = 1.0;
-
-		  if (err == 0)
-		    {
-		      octave_idx_type b_nr = b.rows ();
-		      octave_idx_type b_nc = b.cols ();
-		      OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
-
-		      // Take a first guess that the number of non-zero terms
-		      // will be as many as in b
-		      volatile octave_idx_type x_nz = b.nnz ();
-		      volatile octave_idx_type ii = 0;
-		      retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
-
-		      retval.xcidx(0) = 0;
-		      for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		      if (sing_handler)
 			{
-			  for (octave_idx_type i = 0; i < b_nr; i++)
-			    Bx[i] = b.elem (i, j);
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
+			}
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+	      else
+		rcond = 1.0;
 
-			  F77_XFCN (zpbtrs, ZPBTRS, 
-				    (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, 1, tmp_data,
-				     ldm, Bx, b_nr, err
-				     F77_CHAR_ARG_LEN (1)));
-		    
-			  if (f77_exception_encountered)
-			    {
-			      (*current_liboctave_error_handler)
-				("unrecoverable error in dpbtrs");
-			      err = -1;
-			      break;
-			    }
+	      if (err == 0)
+		{
+		  octave_idx_type b_nr = b.rows ();
+		  octave_idx_type b_nc = b.cols ();
+		  OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
-			  if (err != 0)
-			    {
-			      (*current_liboctave_error_handler) 
-				("SparseComplexMatrix::solve solve failed");
-			      err = -1;
-			      break;
-			    }
+		  // Take a first guess that the number of non-zero terms
+		  // will be as many as in b
+		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type ii = 0;
+		  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
-			  for (octave_idx_type i = 0; i < b_nr; i++)
-			    {
-			      Complex tmp = Bx[i];
-			      if (tmp != 0.0)
-				{
-				  if (ii == x_nz)
-				    {
-				      // Resize the sparse matrix
-				      octave_idx_type sz = x_nz * 
-					(b_nc - j) / b_nc;
-				      sz = (sz > 10 ? sz : 10) + x_nz;
-				      retval.change_capacity (sz);
-				      x_nz = sz;
-				    }
-				  retval.xdata(ii) = tmp;
-				  retval.xridx(ii++) = i;
-				}
-			    }
-			  retval.xcidx(j+1) = ii;
+		  retval.xcidx(0) = 0;
+		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		    {
+		      for (octave_idx_type i = 0; i < b_nr; i++)
+			Bx[i] = b.elem (i, j);
+
+		      F77_XFCN (zpbtrs, ZPBTRS, 
+				(F77_CONST_CHAR_ARG2 (&job, 1),
+				 nr, n_lower, 1, tmp_data,
+				 ldm, Bx, b_nr, err
+				 F77_CHAR_ARG_LEN (1)));
+
+		      if (err != 0)
+			{
+			  (*current_liboctave_error_handler) 
+			    ("SparseComplexMatrix::solve solve failed");
+			  err = -1;
+			  break;
 			}
 
-		      retval.maybe_compress ();
+		      for (octave_idx_type i = 0; i < b_nr; i++)
+			{
+			  Complex tmp = Bx[i];
+			  if (tmp != 0.0)
+			    {
+			      if (ii == x_nz)
+				{
+				  // Resize the sparse matrix
+				  octave_idx_type sz = x_nz * 
+				    (b_nc - j) / b_nc;
+				  sz = (sz > 10 ? sz : 10) + x_nz;
+				  retval.change_capacity (sz);
+				  x_nz = sz;
+				}
+			      retval.xdata(ii) = tmp;
+			      retval.xridx(ii++) = i;
+			    }
+			}
+		      retval.xcidx(j+1) = ii;
 		    }
+
+		  retval.maybe_compress ();
 		}
 	    }
 	}
@@ -4831,127 +4741,110 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
 				     ldm, pipvt, err));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgbtrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      rcond = 0.0;
+	      err = -2;
+
+	      if (sing_handler)
 		{
-		  rcond = 0.0;
-		  err = -2;
+		sing_handler (rcond);
+		mattype.mark_as_rectangular ();
+		}
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
 
-		  if (sing_handler)
-		    {
-		    sing_handler (rcond);
-		    mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
-
-		} 
-	      else 
+	    } 
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  if (calc_cond)
+		  char job = '1';
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
+
+		  F77_XFCN (zgbcon, ZGBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		   if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      char job = '1';
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zgbcon, ZGBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		        (*current_liboctave_error_handler) 
-		          ("unrecoverable error in zgbcon");
-
-		       if (err != 0) 
-		        err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
-		    }
-		  else
-		    rcond = 1.;
-
-		  if (err == 0)
-		    {
-		      char job = 'N';
-		      volatile octave_idx_type x_nz = b.nnz ();
-		      octave_idx_type b_nc = b.cols ();
-		      retval = SparseComplexMatrix (nr, b_nc, x_nz);
-		      retval.xcidx(0) = 0;
-		      volatile octave_idx_type ii = 0;
-
-		      OCTAVE_LOCAL_BUFFER (Complex, work, nr);
-
-		      for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		      if (sing_handler)
 			{
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    work[i] = 0.;
-			  for (octave_idx_type i = b.cidx(j); 
-			       i < b.cidx(j+1); i++)
-			    work[b.ridx(i)] = b.data(i);
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
+			}
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+	      else
+		rcond = 1.;
 
-			  F77_XFCN (zgbtrs, ZGBTRS, 
-				    (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, n_upper, 1, tmp_data,
-				     ldm, pipvt, work, b.rows (), err
-				     F77_CHAR_ARG_LEN (1)));
-		    
-			  if (f77_exception_encountered)
-			    {
-			      (*current_liboctave_error_handler)
-				("unrecoverable error in zgbtrs");
-			      break;
-			    }
+	      if (err == 0)
+		{
+		  char job = 'N';
+		  volatile octave_idx_type x_nz = b.nnz ();
+		  octave_idx_type b_nc = b.cols ();
+		  retval = SparseComplexMatrix (nr, b_nc, x_nz);
+		  retval.xcidx(0) = 0;
+		  volatile octave_idx_type ii = 0;
 
-			  // Count non-zeros in work vector and adjust 
-			  // space in retval if needed
-			  octave_idx_type new_nnz = 0;
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    if (work[i] != 0.)
-			      new_nnz++;
+		  OCTAVE_LOCAL_BUFFER (Complex, work, nr);
 
-			  if (ii + new_nnz > x_nz)
-			    {
-			      // Resize the sparse matrix
-			      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			      retval.change_capacity (sz);
-			      x_nz = sz;
-			    }
+		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		    {
+		      for (octave_idx_type i = 0; i < nr; i++)
+			work[i] = 0.;
+		      for (octave_idx_type i = b.cidx(j); 
+			   i < b.cidx(j+1); i++)
+			work[b.ridx(i)] = b.data(i);
 
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    if (work[i] != 0.)
-			      {
-				retval.xridx(ii) = i;
-				retval.xdata(ii++) = work[i];
-			      }
-			  retval.xcidx(j+1) = ii;
+		      F77_XFCN (zgbtrs, ZGBTRS, 
+				(F77_CONST_CHAR_ARG2 (&job, 1),
+				 nr, n_lower, n_upper, 1, tmp_data,
+				 ldm, pipvt, work, b.rows (), err
+				 F77_CHAR_ARG_LEN (1)));
+
+		      // Count non-zeros in work vector and adjust 
+		      // space in retval if needed
+		      octave_idx_type new_nnz = 0;
+		      for (octave_idx_type i = 0; i < nr; i++)
+			if (work[i] != 0.)
+			  new_nnz++;
+
+		      if (ii + new_nnz > x_nz)
+			{
+			  // Resize the sparse matrix
+			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+			  retval.change_capacity (sz);
+			  x_nz = sz;
 			}
 
-		      retval.maybe_compress ();
+		      for (octave_idx_type i = 0; i < nr; i++)
+			if (work[i] != 0.)
+			  {
+			    retval.xridx(ii) = i;
+			    retval.xdata(ii++) = work[i];
+			  }
+		      retval.xcidx(j+1) = ii;
 		    }
+
+		  retval.maybe_compress ();
 		}
 	    }
 	}
@@ -5020,88 +4913,71 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 				     nr, n_lower, tmp_data, ldm, err
 				     F77_CHAR_ARG_LEN (1)));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zpbtrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      // Matrix is not positive definite!! Fall through to
+	      // unsymmetric banded solver.
+	      rcond = 0.0;
+	      mattype.mark_as_unsymmetric ();
+	      typ = MatrixType::Banded;
+	      err = 0;
+	    } 
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  // Matrix is not positive definite!! Fall through to
-		  // unsymmetric banded solver.
-		  rcond = 0.0;
-		  mattype.mark_as_unsymmetric ();
-		  typ = MatrixType::Banded;
-		  err = 0;
-		} 
-	      else 
-		{
-		  if (calc_cond)
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
+
+		  F77_XFCN (zpbcon, ZPBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nr, n_lower, tmp_data, ldm,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		  if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zpbcon, ZPBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nr, n_lower, tmp_data, ldm,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		      	(*current_liboctave_error_handler) 
-		      	  ("unrecoverable error in zpbcon");
-
-		      if (err != 0) 
-		      	err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
+		      if (sing_handler)
+			{
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
+			}
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
 		    }
-		  else
-		    rcond = 1.0;
+		}
+	      else
+		rcond = 1.0;
 
-		  if (err == 0)
+	      if (err == 0)
+		{
+		  octave_idx_type b_nr = b.rows ();
+		  octave_idx_type b_nc = b.cols ();
+		  retval = ComplexMatrix (b);
+		  Complex *result = retval.fortran_vec ();
+
+		  F77_XFCN (zpbtrs, ZPBTRS, 
+			    (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nr, n_lower, b_nc, tmp_data,
+			     ldm, result, b_nr, err
+			     F77_CHAR_ARG_LEN (1)));
+
+		  if (err != 0)
 		    {
-		      octave_idx_type b_nr = b.rows ();
-		      octave_idx_type b_nc = b.cols ();
-		      retval = ComplexMatrix (b);
-		      Complex *result = retval.fortran_vec ();
-
-		      F77_XFCN (zpbtrs, ZPBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, b_nc, tmp_data,
-				 ldm, result, b_nr, err
-				 F77_CHAR_ARG_LEN (1)));
-		    
-		      if (f77_exception_encountered)
-			{
-			  (*current_liboctave_error_handler)
-			    ("unrecoverable error in zpbtrs");
-			  err = -1;
-			}
-
-		      if (err != 0)
-			{
-			  (*current_liboctave_error_handler) 
-			    ("SparseComplexMatrix::solve solve failed");
-			  err = -1;
-			}
+		      (*current_liboctave_error_handler) 
+			("SparseComplexMatrix::solve solve failed");
+		      err = -1;
 		    }
 		}
 	    }
@@ -5150,87 +5026,71 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
 				     ldm, pipvt, err));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgbtrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      err = -2;
+	      rcond = 0.0;
+
+	      if (sing_handler)
 		{
-		  err = -2;
-		  rcond = 0.0;
-
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
-		} 
-	      else 
+		  sing_handler (rcond);
+		  mattype.mark_as_rectangular ();
+		}
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
+	    } 
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  if (calc_cond)
+		  char job = '1';
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
+
+		  F77_XFCN (zgbcon, ZGBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		   if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      char job = '1';
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zgbcon, ZGBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		        (*current_liboctave_error_handler) 
-		          ("unrecoverable error in zgbcon");
-
-		       if (err != 0) 
-		        err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
-		    }
-		  else
-		    rcond = 1.;
-
-		  if (err == 0)
-		    {
-		      char job = 'N';
-		      octave_idx_type b_nc = b.cols ();
-		      retval = ComplexMatrix (b);
-		      Complex *result = retval.fortran_vec ();
-
-		      F77_XFCN (zgbtrs, ZGBTRS, 
-				(F77_CONST_CHAR_ARG2 (&job, 1),
-				 nr, n_lower, n_upper, b_nc, tmp_data,
-				 ldm, pipvt, result, b.rows (), err
-				 F77_CHAR_ARG_LEN (1)));
-		    
-		      if (f77_exception_encountered)
+		      if (sing_handler)
 			{
-			  (*current_liboctave_error_handler)
-			    ("unrecoverable error in dgbtrs");
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
 			}
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
 		    }
+		}
+	      else
+		rcond = 1.;
+
+	      if (err == 0)
+		{
+		  char job = 'N';
+		  octave_idx_type b_nc = b.cols ();
+		  retval = ComplexMatrix (b);
+		  Complex *result = retval.fortran_vec ();
+
+		  F77_XFCN (zgbtrs, ZGBTRS, 
+			    (F77_CONST_CHAR_ARG2 (&job, 1),
+			     nr, n_lower, n_upper, b_nc, tmp_data,
+			     ldm, pipvt, result, b.rows (), err
+			     F77_CHAR_ARG_LEN (1)));
 		}
 	    }
 	}
@@ -5299,131 +5159,113 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 				     nr, n_lower, tmp_data, ldm, err
 				     F77_CHAR_ARG_LEN (1)));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zpbtrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      // Matrix is not positive definite!! Fall through to
+	      // unsymmetric banded solver.
+	      mattype.mark_as_unsymmetric ();
+	      typ = MatrixType::Banded;
+
+	      rcond = 0.0;
+	      err = 0;
+	    } 
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  // Matrix is not positive definite!! Fall through to
-		  // unsymmetric banded solver.
-		  mattype.mark_as_unsymmetric ();
-		  typ = MatrixType::Banded;
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
 
-		  rcond = 0.0;
-		  err = 0;
-		} 
-	      else 
-		{
-		  if (calc_cond)
+		  F77_XFCN (zpbcon, ZPBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nr, n_lower, tmp_data, ldm,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		  if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zpbcon, ZPBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nr, n_lower, tmp_data, ldm,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		      	(*current_liboctave_error_handler) 
-		      	  ("unrecoverable error in zpbcon");
-
-		      if (err != 0) 
-		      	err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
-		    }
-		  else
-		    rcond = 1.0;
-
-		  if (err == 0)
-		    {
-		      octave_idx_type b_nr = b.rows ();
-		      octave_idx_type b_nc = b.cols ();
-		      OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
-
-		      // Take a first guess that the number of non-zero terms
-		      // will be as many as in b
-		      volatile octave_idx_type x_nz = b.nnz ();
-		      volatile octave_idx_type ii = 0;
-		      retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
-
-		      retval.xcidx(0) = 0;
-		      for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		      if (sing_handler)
 			{
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
+			}
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+	      else
+		rcond = 1.0;
 
-			  for (octave_idx_type i = 0; i < b_nr; i++)
-			    Bx[i] = b (i,j);
+	      if (err == 0)
+		{
+		  octave_idx_type b_nr = b.rows ();
+		  octave_idx_type b_nc = b.cols ();
+		  OCTAVE_LOCAL_BUFFER (Complex, Bx, b_nr);
 
-			  F77_XFCN (zpbtrs, ZPBTRS, 
-				    (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, 1, tmp_data,
-				     ldm, Bx, b_nr, err
-				     F77_CHAR_ARG_LEN (1)));
-		    
-			  if (f77_exception_encountered)
-			    {
-			      (*current_liboctave_error_handler)
-				("unrecoverable error in zpbtrs");
-			      err = -1;
-			      break;
-			    }
+		  // Take a first guess that the number of non-zero terms
+		  // will be as many as in b
+		  volatile octave_idx_type x_nz = b.nnz ();
+		  volatile octave_idx_type ii = 0;
+		  retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
-			  if (err != 0)
-			    {
-			      (*current_liboctave_error_handler) 
-				("SparseMatrix::solve solve failed");
-			      err = -1;
-			      break;
-			    }
+		  retval.xcidx(0) = 0;
+		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		    {
 
-			  // Count non-zeros in work vector and adjust 
-			  // space in retval if needed
-			  octave_idx_type new_nnz = 0;
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    if (Bx[i] != 0.)
-			      new_nnz++;
-			  
-			  if (ii + new_nnz > x_nz)
-			    {
-			      // Resize the sparse matrix
-			      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			      retval.change_capacity (sz);
-			      x_nz = sz;
-			    }
-			  
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    if (Bx[i] != 0.)
-			      {
-				retval.xridx(ii) = i;
-				retval.xdata(ii++) = Bx[i];
-			      }
+		      for (octave_idx_type i = 0; i < b_nr; i++)
+			Bx[i] = b (i,j);
 
-			  retval.xcidx(j+1) = ii;
+		      F77_XFCN (zpbtrs, ZPBTRS, 
+				(F77_CONST_CHAR_ARG2 (&job, 1),
+				 nr, n_lower, 1, tmp_data,
+				 ldm, Bx, b_nr, err
+				 F77_CHAR_ARG_LEN (1)));
+
+		      if (err != 0)
+			{
+			  (*current_liboctave_error_handler) 
+			    ("SparseMatrix::solve solve failed");
+			  err = -1;
+			  break;
 			}
 
-		      retval.maybe_compress ();
+		      // Count non-zeros in work vector and adjust 
+		      // space in retval if needed
+		      octave_idx_type new_nnz = 0;
+		      for (octave_idx_type i = 0; i < nr; i++)
+			if (Bx[i] != 0.)
+			  new_nnz++;
+
+		      if (ii + new_nnz > x_nz)
+			{
+			  // Resize the sparse matrix
+			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+			  retval.change_capacity (sz);
+			  x_nz = sz;
+			}
+
+		      for (octave_idx_type i = 0; i < nr; i++)
+			if (Bx[i] != 0.)
+			  {
+			    retval.xridx(ii) = i;
+			    retval.xdata(ii++) = Bx[i];
+			  }
+
+		      retval.xcidx(j+1) = ii;
 		    }
+
+		  retval.maybe_compress ();
 		}
 	    }
 	}
@@ -5471,128 +5313,111 @@ SparseComplexMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  F77_XFCN (zgbtrf, ZGBTRF, (nr, nr, n_lower, n_upper, tmp_data, 
 				     ldm, pipvt, err));
 	    
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in xgbtrf");
-	  else
+	  if (err != 0) 
 	    {
-	      if (err != 0) 
+	      err = -2;
+	      rcond = 0.0;
+
+	      if (sing_handler)
 		{
-		  err = -2;
-		  rcond = 0.0;
-
-		  if (sing_handler)
-		    {
-		      sing_handler (rcond);
-		      mattype.mark_as_rectangular ();
-		    }
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
-
+		  sing_handler (rcond);
+		  mattype.mark_as_rectangular ();
 		}
-	      else 
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
+
+	    }
+	  else 
+	    {
+	      if (calc_cond)
 		{
-		  if (calc_cond)
+		  char job = '1';
+		  Array<Complex> z (2 * nr);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> iz (nr);
+		  double *piz = iz.fortran_vec ();
+
+		  F77_XFCN (zgbcon, ZGBCON, 
+		    (F77_CONST_CHAR_ARG2 (&job, 1),
+		     nc, n_lower, n_upper, tmp_data, ldm, pipvt,
+		     anorm, rcond, pz, piz, err
+		     F77_CHAR_ARG_LEN (1)));
+
+		   if (err != 0) 
+		    err = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      char job = '1';
-		      Array<Complex> z (2 * nr);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> iz (nr);
-		      double *piz = iz.fortran_vec ();
+		      err = -2;
 
-		      F77_XFCN (zgbcon, ZGBCON, 
-		      	(F77_CONST_CHAR_ARG2 (&job, 1),
-		      	 nc, n_lower, n_upper, tmp_data, ldm, pipvt,
-		      	 anorm, rcond, pz, piz, err
-		      	 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-		        (*current_liboctave_error_handler) 
-		          ("unrecoverable error in zgbcon");
-
-		       if (err != 0) 
-		        err = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-		        {
-		          err = -2;
-
-		          if (sing_handler)
-			    {
-			      sing_handler (rcond);
-			      mattype.mark_as_rectangular ();
-			    }
-		          else
-		            (*current_liboctave_error_handler)
-		              ("matrix singular to machine precision, rcond = %g",
-		               rcond);
-		        }
-		    }
-		  else
-		    rcond = 1.;
-
-		  if (err == 0)
-		    {
-		      char job = 'N';
-		      volatile octave_idx_type x_nz = b.nnz ();
-		      octave_idx_type b_nc = b.cols ();
-		      retval = SparseComplexMatrix (nr, b_nc, x_nz);
-		      retval.xcidx(0) = 0;
-		      volatile octave_idx_type ii = 0;
-
-		      OCTAVE_LOCAL_BUFFER (Complex, Bx, nr);
-
-		      for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		      if (sing_handler)
 			{
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    Bx[i] = 0.;
+			  sing_handler (rcond);
+			  mattype.mark_as_rectangular ();
+			}
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+	      else
+		rcond = 1.;
 
-			  for (octave_idx_type i = b.cidx(j); 
-			       i < b.cidx(j+1); i++)
-			    Bx[b.ridx(i)] = b.data(i);
+	      if (err == 0)
+		{
+		  char job = 'N';
+		  volatile octave_idx_type x_nz = b.nnz ();
+		  octave_idx_type b_nc = b.cols ();
+		  retval = SparseComplexMatrix (nr, b_nc, x_nz);
+		  retval.xcidx(0) = 0;
+		  volatile octave_idx_type ii = 0;
 
-			  F77_XFCN (zgbtrs, ZGBTRS, 
-				    (F77_CONST_CHAR_ARG2 (&job, 1),
-				     nr, n_lower, n_upper, 1, tmp_data,
-				     ldm, pipvt, Bx, b.rows (), err
-				     F77_CHAR_ARG_LEN (1)));
-		    
-			  if (f77_exception_encountered)
-			    {
-			      (*current_liboctave_error_handler)
-				("unrecoverable error in dgbtrs");
-			      break;
-			    }
+		  OCTAVE_LOCAL_BUFFER (Complex, Bx, nr);
 
-			  // Count non-zeros in work vector and adjust 
-			  // space in retval if needed
-			  octave_idx_type new_nnz = 0;
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    if (Bx[i] != 0.)
-			      new_nnz++;
+		  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+		    {
+		      for (octave_idx_type i = 0; i < nr; i++)
+			Bx[i] = 0.;
 
-			  if (ii + new_nnz > x_nz)
-			    {
-			      // Resize the sparse matrix
-			      octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
-			      retval.change_capacity (sz);
-			      x_nz = sz;
-			    }
+		      for (octave_idx_type i = b.cidx(j); 
+			   i < b.cidx(j+1); i++)
+			Bx[b.ridx(i)] = b.data(i);
 
-			  for (octave_idx_type i = 0; i < nr; i++)
-			    if (Bx[i] != 0.)
-			      {
-				retval.xridx(ii) = i;
-				retval.xdata(ii++) = Bx[i]; 
-			      }
-			  retval.xcidx(j+1) = ii;
+		      F77_XFCN (zgbtrs, ZGBTRS, 
+				(F77_CONST_CHAR_ARG2 (&job, 1),
+				 nr, n_lower, n_upper, 1, tmp_data,
+				 ldm, pipvt, Bx, b.rows (), err
+				 F77_CHAR_ARG_LEN (1)));
+
+		      // Count non-zeros in work vector and adjust 
+		      // space in retval if needed
+		      octave_idx_type new_nnz = 0;
+		      for (octave_idx_type i = 0; i < nr; i++)
+			if (Bx[i] != 0.)
+			  new_nnz++;
+
+		      if (ii + new_nnz > x_nz)
+			{
+			  // Resize the sparse matrix
+			  octave_idx_type sz = new_nnz * (b_nc - j) + x_nz;
+			  retval.change_capacity (sz);
+			  x_nz = sz;
 			}
 
-		      retval.maybe_compress ();
+		      for (octave_idx_type i = 0; i < nr; i++)
+			if (Bx[i] != 0.)
+			  {
+			    retval.xridx(ii) = i;
+			    retval.xdata(ii++) = Bx[i]; 
+			  }
+		      retval.xcidx(j+1) = ii;
 		    }
+
+		  retval.maybe_compress ();
 		}
 	    }
 	}

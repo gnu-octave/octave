@@ -1,5 +1,8 @@
 2008-02-14  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/qz.cc:
+	Don't check f77_exception_encountered.
+
 	* sighandlers.cc (user_abort): If interrupting immediately, set
 	octave_interrupt_state if it is not already set.
 

@@ -1043,38 +1043,29 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 				 F77_CHAR_ARG_LEN (1)
 				 F77_CHAR_ARG_LEN (1)));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in ztrtri");
-      else
+      // Throw-away extra info LAPACK gives so as to not change output.
+      rcond = 0.0;
+      if (info != 0) 
+	info = -1;
+      else if (calc_cond) 
 	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
-	  if (info != 0) 
+	  octave_idx_type ztrcon_info = 0;
+	  char job = '1';
+
+	  OCTAVE_LOCAL_BUFFER (Complex, cwork, 2*nr);
+	  OCTAVE_LOCAL_BUFFER (double, rwork, nr);
+
+	  F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+				     F77_CONST_CHAR_ARG2 (&uplo, 1),
+				     F77_CONST_CHAR_ARG2 (&udiag, 1),
+				     nr, tmp_data, nr, rcond, 
+				     cwork, rwork, ztrcon_info 
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (ztrcon_info != 0) 
 	    info = -1;
-	  else if (calc_cond) 
-	    {
-	      octave_idx_type ztrcon_info = 0;
-	      char job = '1';
-
-	      OCTAVE_LOCAL_BUFFER (Complex, cwork, 2*nr);
-	      OCTAVE_LOCAL_BUFFER (double, rwork, nr);
-
-	      F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					 F77_CONST_CHAR_ARG2 (&uplo, 1),
-					 F77_CONST_CHAR_ARG2 (&udiag, 1),
-					 nr, tmp_data, nr, rcond, 
-					 cwork, rwork, ztrcon_info 
-					 F77_CHAR_ARG_LEN (1)
-					 F77_CHAR_ARG_LEN (1)
-					 F77_CHAR_ARG_LEN (1)));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler) 
-		  ("unrecoverable error in ztrcon");
-
-	      if (ztrcon_info != 0) 
-		info = -1;
-	    }
 	}
 
       if (info == -1 && ! force)
@@ -1111,13 +1102,6 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt, 
 				 z.fortran_vec (), lwork, info));
 
-      if (f77_exception_encountered) 
-	{
-	  (*current_liboctave_error_handler)
-	    ("unrecoverable error in zgetri");
-	  return retval;
-	}
-
       lwork = static_cast<octave_idx_type> (std::real(z(0)));
       lwork = (lwork <  2 *nc ? 2*nc : lwork);
       z.resize (lwork);
@@ -1132,50 +1116,37 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
       F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
+      // Throw-away extra info LAPACK gives so as to not change output.
+      rcond = 0.0;
+      if (info != 0) 
+	info = -1;
+      else if (calc_cond) 
+	{
+	  // Now calculate the condition number for non-singular matrix.
+	  octave_idx_type zgecon_info = 0;
+	  char job = '1';
+	  Array<double> rz (2 * nc);
+	  double *prz = rz.fortran_vec ();
+	  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+				     nc, tmp_data, nr, anorm, 
+				     rcond, pz, prz, zgecon_info
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (zgecon_info != 0) 
+	    info = -1;
+	}
+
+      if (info == -1 && ! force)
+	retval = *this;  // Restore contents.
       else
 	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
-	  if (info != 0) 
+	  octave_idx_type zgetri_info = 0;
+
+	  F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
+				     pz, lwork, zgetri_info));
+
+	  if (zgetri_info != 0) 
 	    info = -1;
-	  else if (calc_cond) 
-	    {
-	      // Now calculate the condition number for non-singular matrix.
-	      octave_idx_type zgecon_info = 0;
-	      char job = '1';
-	      Array<double> rz (2 * nc);
-	      double *prz = rz.fortran_vec ();
-	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					 nc, tmp_data, nr, anorm, 
-					 rcond, pz, prz, zgecon_info
-					 F77_CHAR_ARG_LEN (1)));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler) 
-		  ("unrecoverable error in zgecon");
-
-	      if (zgecon_info != 0) 
-		info = -1;
-	    }
-
-	  if (info == -1 && ! force)
-	    retval = *this;  // Restore contents.
-	  else
-	    {
-	      octave_idx_type zgetri_info = 0;
-
-	      F77_XFCN (zgetri, ZGETRI, (nc, tmp_data, nr, pipvt,
-					 pz, lwork, zgetri_info));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in zgetri");
-
-	      if (zgetri_info != 0) 
-		info = -1;
-	    }
 	}
 
       if (info != 0)
@@ -1621,12 +1592,30 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
 
       F77_XFCN (zgetrf, ZGETRF, (nr, nc, tmp_data, nr, pipvt, info));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgetrf");
-      else
+      // Throw-away extra info LAPACK gives so as to not change output.
+      rcond = 0.0;
+      if (info != 0) 
 	{
-	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
+	  info = -1;
+	  retval = ComplexDET ();
+	} 
+      else 
+	{
+	  if (calc_cond) 
+	    {
+	      // Now calc the condition number for non-singular matrix.
+	      char job = '1';
+	      Array<Complex> z (2*nr);
+	      Complex *pz = z.fortran_vec ();
+	      Array<double> rz (2*nr);
+	      double *prz = rz.fortran_vec ();
+
+	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					 nc, tmp_data, nr, anorm, 
+					 rcond, pz, prz, info
+					 F77_CHAR_ARG_LEN (1)));
+	    }
+
 	  if (info != 0) 
 	    {
 	      info = -1;
@@ -1634,60 +1623,33 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
 	    } 
 	  else 
 	    {
-	      if (calc_cond) 
-		{
-		  // Now calc the condition number for non-singular matrix.
-		  char job = '1';
-		  Array<Complex> z (2*nr);
-		  Complex *pz = z.fortran_vec ();
-		  Array<double> rz (2*nr);
-		  double *prz = rz.fortran_vec ();
-		  
-		  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-					     nc, tmp_data, nr, anorm, 
-					     rcond, pz, prz, info
-					     F77_CHAR_ARG_LEN (1)));
+	      Complex c = 1.0;
+	      int e = 0;
 
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in zgecon");
-		}
-
-	      if (info != 0) 
+	      for (octave_idx_type i = 0; i < nc; i++) 
 		{
-		  info = -1;
-		  retval = ComplexDET ();
-		} 
-	      else 
-		{
-		  Complex c = 1.0;
-		  int e = 0;
+		  if (ipvt(i) != (i+1))
+		    c = -c;
 
-		  for (octave_idx_type i = 0; i < nc; i++) 
+		  c *= atmp(i,i);
+
+		  if (c == 0.0)
+		    break;
+
+		  while (std::abs(c) < 0.5)
 		    {
-		      if (ipvt(i) != (i+1))
-			c = -c;
-
-		      c *= atmp(i,i);
-
-		      if (c == 0.0)
-			break;
-
-		      while (std::abs(c) < 0.5)
-			{
-			  c *= 2.0;
-			  e--;
-			}
-
-		      while (std::abs(c) >= 2.0)
-			{
-			  c /= 2.0;
-			  e++;
-			}
+		      c *= 2.0;
+		      e--;
 		    }
 
-		  retval = ComplexDET (c, e);
+		  while (std::abs(c) >= 2.0)
+		    {
+		      c /= 2.0;
+		      e++;
+		    }
 		}
+
+	      retval = ComplexDET (c, e);
 	    }
 	}
     }
@@ -1751,10 +1713,6 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
 
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in ztrcon");
-
 		  if (info != 0) 
 		    info = -2;
 
@@ -1790,10 +1748,6 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
-
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in dtrtrs");
 		}
 	    }
 	}
@@ -1860,10 +1814,6 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
 
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in ztrcon");
-
 		  if (info != 0) 
 		    info = -2;
 
@@ -1899,10 +1849,6 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)));
-
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler) 
-		      ("unrecoverable error in dtrtrs");
 		}
 	    }
 	}
@@ -1949,77 +1895,63 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 				     tmp_data, nr, info
 				     F77_CHAR_ARG_LEN (1)));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zpotrf");
-	  else
+	  // Throw-away extra info LAPACK gives so as to not change output.
+	  rcond = 0.0;
+	  if (info != 0) 
 	    {
-	      // Throw-away extra info LAPACK gives so as to not change output.
-	      rcond = 0.0;
-	      if (info != 0) 
-		{
-		  info = -2;
+	      info = -2;
 
+	      mattype.mark_as_unsymmetric ();
+	      typ = MatrixType::Full;
+	    }
+	  else 
+	    {
+	      if (calc_cond)
+		{
+		  Array<Complex> z (2 * nc);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> rz (nc);
+		  double *prz = rz.fortran_vec ();
+
+		  F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, tmp_data, nr, anorm,
+					     rcond, pz, prz, info
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (info != 0) 
+		    info = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		    {
+		      info = -2;
+
+		      if (sing_handler)
+			sing_handler (rcond);
+		      else
+			(*current_liboctave_error_handler)
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
+		    }
+		}
+
+	      if (info == 0)
+		{
+		  retval = b;
+		  Complex *result = retval.fortran_vec ();
+
+		  octave_idx_type b_nc = b.cols ();
+
+		  F77_XFCN (zpotrs, ZPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, b_nc, tmp_data, nr,
+					     result, b.rows(), info
+					     F77_CHAR_ARG_LEN (1)));
+		}
+	      else
+		{
 		  mattype.mark_as_unsymmetric ();
 		  typ = MatrixType::Full;
-		}
-	      else 
-		{
-		  if (calc_cond)
-		    {
-		      Array<Complex> z (2 * nc);
-		      Complex *pz = z.fortran_vec ();
-		      Array<double> rz (nc);
-		      double *prz = rz.fortran_vec ();
-
-		      F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nr, tmp_data, nr, anorm,
-						 rcond, pz, prz, info
-						 F77_CHAR_ARG_LEN (1)));
-
-		      if (f77_exception_encountered)
-			(*current_liboctave_error_handler) 
-			  ("unrecoverable error in zpocon");
-	      
-		      if (info != 0) 
-			info = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-			{
-			  info = -2;
-
-			  if (sing_handler)
-			    sing_handler (rcond);
-			  else
-			    (*current_liboctave_error_handler)
-			      ("matrix singular to machine precision, rcond = %g",
-			       rcond);
-			}
-		    }
-
-		  if (info == 0)
-		    {
-		      retval = b;
-		      Complex *result = retval.fortran_vec ();
-
-		      octave_idx_type b_nc = b.cols ();
-
-		      F77_XFCN (zpotrs, ZPOTRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nr, b_nc, tmp_data, nr,
-						 result, b.rows(), info
-						 F77_CHAR_ARG_LEN (1)));
-		
-		      if (f77_exception_encountered)
-			(*current_liboctave_error_handler)
-			  ("unrecoverable error in zpotrs");
-		    }
-		  else
-		    {
-		      mattype.mark_as_unsymmetric ();
-		      typ = MatrixType::Full;
-		    }
 		}
 	    }
 	}
@@ -2045,79 +1977,65 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 	  F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgetrf");
-	  else
+	  // Throw-away extra info LAPACK gives so as to not change output.
+	  rcond = 0.0;
+	  if (info != 0) 
+	    { 
+	      info = -2;
+
+	      if (sing_handler)
+		sing_handler (rcond);
+	      else
+		(*current_liboctave_error_handler)
+		  ("matrix singular to machine precision");
+
+	      mattype.mark_as_rectangular ();
+	    } 
+	  else 
 	    {
-	      // Throw-away extra info LAPACK gives so as to not change output.
-	      rcond = 0.0;
-	      if (info != 0) 
-		{ 
-		  info = -2;
-
-		  if (sing_handler)
-		    sing_handler (rcond);
-		  else
-		    (*current_liboctave_error_handler)
-		      ("matrix singular to machine precision");
-
-		  mattype.mark_as_rectangular ();
-		} 
-	      else 
+	      if (calc_cond)
 		{
-		  if (calc_cond)
+		  // Now calculate the condition number for 
+		  // non-singular matrix.
+		  char job = '1';
+		  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nc, tmp_data, nr, anorm, 
+					     rcond, pz, prz, info
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (info != 0) 
+		    info = -2;
+
+		  volatile double rcond_plus_one = rcond + 1.0;
+
+		  if (rcond_plus_one == 1.0 || xisnan (rcond))
 		    {
-		      // Now calculate the condition number for 
-		      // non-singular matrix.
-		      char job = '1';
-		      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nc, tmp_data, nr, anorm, 
-						 rcond, pz, prz, info
-						 F77_CHAR_ARG_LEN (1)));
+		      info = -2;
 
-		      if (f77_exception_encountered)
-			(*current_liboctave_error_handler) 
-			  ("unrecoverable error in zgecon");
-
-		      if (info != 0) 
-			info = -2;
-
-		      volatile double rcond_plus_one = rcond + 1.0;
-
-		      if (rcond_plus_one == 1.0 || xisnan (rcond))
-			{
-			  info = -2;
-
-			  if (sing_handler)
-			    sing_handler (rcond);
-			  else
-			    (*current_liboctave_error_handler)
-			      ("matrix singular to machine precision, rcond = %g",
-			       rcond);
-			}
-		    }
-
-		  if (info == 0)
-		    {
-		      retval = b;
-		      Complex *result = retval.fortran_vec ();
-
-		      octave_idx_type b_nc = b.cols ();
-
-		      char job = 'N';
-		      F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
-						 nr, b_nc, tmp_data, nr,
-						 pipvt, result, b.rows(), info
-						 F77_CHAR_ARG_LEN (1))); 
-
-		      if (f77_exception_encountered)
+		      if (sing_handler)
+			sing_handler (rcond);
+		      else
 			(*current_liboctave_error_handler)
-			  ("unrecoverable error in zgetrs");
+			  ("matrix singular to machine precision, rcond = %g",
+			   rcond);
 		    }
-		  else
-		    mattype.mark_as_rectangular ();		    
 		}
+
+	      if (info == 0)
+		{
+		  retval = b;
+		  Complex *result = retval.fortran_vec ();
+
+		  octave_idx_type b_nc = b.cols ();
+
+		  char job = 'N';
+		  F77_XFCN (zgetrs, ZGETRS, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, b_nc, tmp_data, nr,
+					     pipvt, result, b.rows(), info
+					     F77_CHAR_ARG_LEN (1))); 
+		}
+	      else
+		mattype.mark_as_rectangular ();		    
 	    }
 	}
     }
@@ -2561,37 +2479,25 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 	    work(0) = lworkaround;
 	}
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) 
-	  ("unrecoverable error in zgelsd");
+      lwork = static_cast<octave_idx_type> (std::real (work(0)));
+      work.resize (lwork);
+
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				 maxmn, ps, rcond, rank,
+				 work.fortran_vec (), lwork, 
+				 prwork, piwork, info));
+
+      if (rank < minmn)
+	(*current_liboctave_warning_handler) 
+	  ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
+	   m, n, rank, rcond);
+
+      if (s.elem (0) == 0.0)
+	rcond = 0.0;
       else
-	{
-	  lwork = static_cast<octave_idx_type> (std::real (work(0)));
-	  work.resize (lwork);
+	rcond = s.elem (minmn - 1) / s.elem (0);
 
-	  F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
-				     maxmn, ps, rcond, rank,
-				     work.fortran_vec (), lwork, 
-				     prwork, piwork, info));
-
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgelsd");
-	  else
-	    {
-	      if (rank < minmn)
-		(*current_liboctave_warning_handler) 
-		  ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-		   m, n, rank, rcond);
-
-	      if (s.elem (0) == 0.0)
-		rcond = 0.0;
-	      else
-		rcond = s.elem (minmn - 1) / s.elem (0);
-
-	      retval.resize (n, nrhs);
-	    }
-	}
+      retval.resize (n, nrhs);
     }
 
   return retval;
@@ -2733,38 +2639,29 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 				 ps, rcond, rank, work.fortran_vec (),
 				 lwork, prwork, piwork, info));
 
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) 
-	  ("unrecoverable error in zgelsd");
-      else
+      lwork = static_cast<octave_idx_type> (std::real (work(0)));
+      work.resize (lwork);
+      rwork.resize (static_cast<octave_idx_type> (rwork(0)));
+      iwork.resize (iwork(0));
+
+      F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
+				 maxmn, ps, rcond, rank,
+				 work.fortran_vec (), lwork, 
+				 prwork, piwork, info));
+
+      if (rank < minmn)
 	{
-	  lwork = static_cast<octave_idx_type> (std::real (work(0)));
-	  work.resize (lwork);
-	  rwork.resize (static_cast<octave_idx_type> (rwork(0)));
-	  iwork.resize (iwork(0));
+	  if (rank < minmn)
+	    (*current_liboctave_warning_handler) 
+	      ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
+	       m, n, rank, rcond);
 
-	  F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
-				     maxmn, ps, rcond, rank,
-				     work.fortran_vec (), lwork, 
-				     prwork, piwork, info));
+	  if (s.elem (0) == 0.0)
+	    rcond = 0.0;
+	  else
+	    rcond = s.elem (minmn - 1) / s.elem (0);
 
-	  if (f77_exception_encountered)
-	    (*current_liboctave_error_handler) 
-	      ("unrecoverable error in zgelsd");
-	  else if (rank < minmn)
-	    {
-	      if (rank < minmn)
-		(*current_liboctave_warning_handler) 
-		  ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-		   m, n, rank, rcond);
-
-	      if (s.elem (0) == 0.0)
-		rcond = 0.0;
-	      else
-		rcond = s.elem (minmn - 1) / s.elem (0);
-
-	      retval.resize (n, nrhs);
-	    }
+	  retval.resize (n, nrhs);
 	}
     }
 
@@ -2841,24 +2738,12 @@ ComplexMatrix::expm (void) const
 			     dpermute.fortran_vec (), info
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
-      return retval;
-    }
-
   // then scale
   job = 'S';
   F77_XFCN (zgebal, ZGEBAL, (F77_CONST_CHAR_ARG2 (&job, 1),
 			     nc, mp, nc, ilos, ihis,
 			     dscale.fortran_vec (), info
 			     F77_CHAR_ARG_LEN (1)));
-
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
-      return retval;
-    }
 
   // Preconditioning step 3: scaling.
 
@@ -2869,12 +2754,6 @@ ComplexMatrix::expm (void) const
 			       nc, nc, m.fortran_vec (), nc,
 			       work.fortran_vec (), inf_norm
 			       F77_CHAR_ARG_LEN (1)));
-
-  if (f77_exception_encountered)
-    {
-      (*current_liboctave_error_handler) ("unrecoverable error in zlange");
-      return retval;
-    }
 
   int sqpow = (inf_norm > 0.0
 	       ? static_cast<int> (1.0 + log (inf_norm) / log (2.0)) : 0);
@@ -3051,10 +2930,6 @@ operator * (const ComplexColumnVector& v, const ComplexRowVector& a)
 			       a.data (), 1, 0.0, c, len
 			       F77_CHAR_ARG_LEN (1)
 			       F77_CHAR_ARG_LEN (1)));
-
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler)
-	  ("unrecoverable error in zgemm");
     }
 
   return retval;
@@ -3939,14 +3814,9 @@ Sylvester (const ComplexMatrix& a, const ComplexMatrix& b,
 			     F77_CHAR_ARG_LEN (1)
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in ztrsyl");
-  else
-    {
-      // FIXME -- check info?
+  // FIXME -- check info?
 
-      retval = -ua * cx * ub.hermitian ();
-    }
+  retval = -ua * cx * ub.hermitian ();
 
   return retval;
 }
@@ -4016,10 +3886,6 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 					   nr, nc, 1.0,  m.data (), ld,
 					   a.data (), 1, 0.0, c, 1
 					   F77_CHAR_ARG_LEN (1)));
-
-		  if (f77_exception_encountered)
-		    (*current_liboctave_error_handler)
-		      ("unrecoverable error in zgemv");
 		}
 	    }
 	  else
@@ -4030,10 +3896,6 @@ operator * (const ComplexMatrix& m, const ComplexMatrix& a)
 				       ld, a.data (), lda, 0.0, c, nr
 				       F77_CHAR_ARG_LEN (1)
 				       F77_CHAR_ARG_LEN (1)));
-
-	      if (f77_exception_encountered)
-		(*current_liboctave_error_handler)
-		  ("unrecoverable error in zgemm");
 	    }
 	}
     }

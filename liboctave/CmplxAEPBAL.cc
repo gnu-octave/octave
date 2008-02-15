@@ -77,28 +77,20 @@ ComplexAEPBALANCE::init (const ComplexMatrix& a,
 			     pscale, info
 			     F77_CHAR_ARG_LEN (1)));
 
-  if (f77_exception_encountered)
-    (*current_liboctave_error_handler) ("unrecoverable error in zgebal");
-  else
-    {
-      balancing_mat = ComplexMatrix (n, n, 0.0);
-      for (octave_idx_type i = 0; i < n; i++)
-	balancing_mat.elem (i, i) = 1.0;
+  balancing_mat = ComplexMatrix (n, n, 0.0);
+  for (octave_idx_type i = 0; i < n; i++)
+    balancing_mat.elem (i, i) = 1.0;
 
-      Complex *p_balancing_mat = balancing_mat.fortran_vec ();
+  Complex *p_balancing_mat = balancing_mat.fortran_vec ();
 
-      char side = 'R';
+  char side = 'R';
 
-      F77_XFCN (zgebak, ZGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
-				 F77_CONST_CHAR_ARG2 (&side, 1),
-				 n, ilo, ihi, pscale, n,
-				 p_balancing_mat, n, info
-				 F77_CHAR_ARG_LEN (1)
-				 F77_CHAR_ARG_LEN (1)));
-
-      if (f77_exception_encountered)
-	(*current_liboctave_error_handler) ("unrecoverable error in zgebak");
-    }
+  F77_XFCN (zgebak, ZGEBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
+			     F77_CONST_CHAR_ARG2 (&side, 1),
+			     n, ilo, ihi, pscale, n,
+			     p_balancing_mat, n, info
+			     F77_CHAR_ARG_LEN (1)
+			     F77_CHAR_ARG_LEN (1)));
 
   return info;
 }

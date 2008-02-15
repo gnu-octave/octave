@@ -1,3 +1,8 @@
+2008-02-15  Rolf Fabian  <r.fabian@jacobs-university.de>
+
+	* linear-algebra/cond.m: New optional second argument to
+	specify 1-norm, inf-norm, or frobenius-norm. 
+
 2008-02-12  Kostas Poulios  <poulios.konstantinos@googlemail.com>
 
 	* plot/__quiver__.m: make arrow head be in z-plane of the arrow

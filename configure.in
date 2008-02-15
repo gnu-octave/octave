@@ -972,11 +972,9 @@ case "$canonical_host_type" in
     SH_LDFLAGS=-Bshareable
   ;;
   *-*-openbsd*)
-    SH_LD='$(CXX)'
     SH_LDFLAGS='-shared -fPIC'
   ;;
   *-*-freebsd*)
-    SH_LD='$(CC)'
     SH_LDFLAGS="-shared -Wl,-x"
     RLD_FLAG='-Wl,-rpath -Wl,$(octlibdir)'
   ;;

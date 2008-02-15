@@ -454,7 +454,7 @@ on @url{http://www.octave.org/archive.html}.
 
 You will also find some user advice and code spread over the web.  Good
 starting points are the Octave Wiki @url{http://wiki.octave.org} and
-Octave-Forge @url{htt://octave.sourceforge.net}
+Octave-Forge @url{http://octave.sourceforge.net}
 
 @node Bug reports
 @section I think I have found a bug in Octave.

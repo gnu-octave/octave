@@ -1,3 +1,7 @@
+2008-02-15  John W. Eaton  <jwe@octave.org>
+
+	* configure.in (*-*-freebsd*, *-*-openbsd*): Don't set SH_LD.
+
 2008-02-14  John W. Eaton  <jwe@octave.org>
 
 	* examples/fortdemo.cc: Don't check f77_exception_encountered.

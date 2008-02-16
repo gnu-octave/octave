@@ -143,7 +143,15 @@ octave_mex_function::do_multi_index_op (int nargout,
 
       unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
-      retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+      try
+	{
+	  retval = call_mex (have_fmex, mex_fcn_ptr, args, nargout, this);
+	}
+      catch (octave_execution_exception)
+	{
+	  octave_exception_state = octave_no_exception;
+	  error ("caught execution error in library function");
+	}
 
       unwind_protect::run_frame ("mex_func_eval");
     }

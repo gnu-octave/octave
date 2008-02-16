@@ -1526,7 +1526,17 @@ do_binary_op (octave_value::binary_op op,
 	= octave_value_typeinfo::lookup_binary_class_op (op);
 
       if (f)
-	retval = f (v1, v2);
+	{
+	  try
+	    {
+	      retval = f (v1, v2);
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      octave_exception_state = octave_no_exception;
+	      error ("caught execution error in library function");
+	    }
+	}	    
       else
 	gripe_binary_op (octave_value::binary_op_as_string (op),
 			 v1.class_name (), v2.class_name ());
@@ -1540,7 +1550,17 @@ do_binary_op (octave_value::binary_op op,
 	= octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
       if (f)
-	retval = f (*v1.rep, *v2.rep);
+	{
+	  try
+	    {
+	      retval = f (*v1.rep, *v2.rep);
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      octave_exception_state = octave_no_exception;
+	      error ("caught execution error in library function");
+	    }
+	}
       else
 	{
 	  octave_value tv1;
@@ -1590,7 +1610,17 @@ do_binary_op (octave_value::binary_op op,
 	      f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
 
 	      if (f)
-		retval = f (*tv1.rep, *tv2.rep);
+		{
+		  try
+		    {
+		      retval = f (*tv1.rep, *tv2.rep);
+		    }
+		  catch (octave_execution_exception)
+		    {
+		      octave_exception_state = octave_no_exception;
+		      error ("caught execution error in library function");
+		    }
+		}
 	      else
 		gripe_binary_op (octave_value::binary_op_as_string (op),
 				 v1.type_name (), v2.type_name ());
@@ -1637,7 +1667,17 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
     = octave_value_typeinfo::lookup_cat_op (t1, t2);
 
   if (f)
-    retval = f (*v1.rep, *v2.rep, ra_idx);
+    {
+      try
+	{
+	  retval = f (*v1.rep, *v2.rep, ra_idx);
+	}
+      catch (octave_execution_exception)
+	{
+	  octave_exception_state = octave_no_exception;
+	  error ("caught execution error in library function");
+	}
+    }
   else
     {
       octave_value tv1;
@@ -1687,7 +1727,17 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 	  f = octave_value_typeinfo::lookup_cat_op (t1, t2);
 
 	  if (f)
-	    retval = f (*tv1.rep, *tv2.rep, ra_idx);
+	    {
+	      try
+		{
+		  retval = f (*tv1.rep, *tv2.rep, ra_idx);
+		}
+	      catch (octave_execution_exception)
+		{
+		  octave_exception_state = octave_no_exception;
+		  error ("caught execution error in library function");
+		}
+	    }
 	  else
 	    gripe_cat_op (v1.type_name (), v2.type_name ());
 	}
@@ -1734,7 +1784,17 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 	= octave_value_typeinfo::lookup_unary_class_op (op);
 
       if (f)
-	retval = f (v);
+	{
+	  try
+	    {
+	      retval = f (v);
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      octave_exception_state = octave_no_exception;
+	      error ("caught execution error in library function");
+	    }
+	}
       else
 	gripe_unary_op (octave_value::unary_op_as_string (op),
 			v.class_name ());
@@ -1748,7 +1808,17 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 	= octave_value_typeinfo::lookup_unary_op (op, t);
 
       if (f)
-	retval = f (*v.rep);
+	{
+	  try
+	    {
+	      retval = f (*v.rep);
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      octave_exception_state = octave_no_exception;
+	      error ("caught execution error in library function");
+	    }
+	}
       else
 	{
 	  octave_value tv;
@@ -1767,7 +1837,17 @@ do_unary_op (octave_value::unary_op op, const octave_value& v)
 		  f = octave_value_typeinfo::lookup_unary_op (op, t);
 
 		  if (f)
-		    retval = f (*tv.rep);
+		    {
+		      try
+			{
+			  retval = f (*tv.rep);
+			}
+		      catch (octave_execution_exception)
+			{
+			  octave_exception_state = octave_no_exception;
+			  error ("caught execution error in library function");
+			}
+		    }
 		  else
 		    gripe_unary_op (octave_value::unary_op_as_string (op),
 				    v.type_name ());
@@ -1806,7 +1886,15 @@ octave_value::do_non_const_unary_op (unary_op op)
     {
       make_unique ();
 
-      f (*rep);
+      try
+	{
+	  f (*rep);
+	}
+      catch (octave_execution_exception)
+	{
+	  octave_exception_state = octave_no_exception;
+	  error ("caught execution error in library function");
+	}
     }
   else
     {
@@ -1827,7 +1915,15 @@ octave_value::do_non_const_unary_op (unary_op op)
 
 	      if (f)
 		{
-		  f (*rep);
+		  try
+		    {
+		      f (*rep);
+		    }
+		  catch (octave_execution_exception)
+		    {
+		      octave_exception_state = octave_no_exception;
+		      error ("caught execution error in library function");
+		    }
 
 		  if (old_rep && --old_rep->count == 0)
 		    delete old_rep;

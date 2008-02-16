@@ -101,7 +101,15 @@ octave_builtin::do_multi_index_op (int nargout, const octave_value_list& args)
 
       unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
-      retval = (*f) (args, nargout);
+      try
+	{
+	  retval = (*f) (args, nargout);
+	}
+      catch (octave_execution_exception)
+	{
+	  octave_exception_state = octave_no_exception;
+	  error ("caught execution error in library function");
+	}
 
       unwind_protect::run_frame ("builtin_func_eval");
     }

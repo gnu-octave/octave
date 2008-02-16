@@ -1,3 +1,11 @@
+2008-02-15  John W. Eaton  <jwe@octave.org>
+
+	* ov-builtin.cc (octave_builtin::do_multi_index_op):
+	Catch possible octave_execution_exception.
+	* ov-mex-fcn.cc (octave_mex_function::do_multi_index_op): Likewise.
+	* ov.cc (do_binary_op, do_cat_op, do_unary_op,
+	octave_value::do_non_const_unary_op): Likewise.
+
 2008-02-14  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/balance.cc, DLD-FUNCTIONS/qz.cc:

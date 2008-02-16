@@ -2067,10 +2067,10 @@ Matrix::lssolve (const Matrix& b, octave_idx_type& info,
 				 lwork, piwork, info));
 
       // The workspace query is broken in at least LAPACK 3.0.0
-      // through 3.1.1 when n > mnthr.  The obtuse formula below
+      // through 3.1.1 when n >= mnthr.  The obtuse formula below
       // should provide sufficient workspace for DGELSD to operate
       // efficiently.
-      if (n > mnthr)
+      if (n >= mnthr)
 	{
 	  const octave_idx_type wlalsd
 	    = 9*m + 2*m*smlsiz + 8*m*nlvl + m*nrhs + (smlsiz+1)*(smlsiz+1);

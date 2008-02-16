@@ -2464,10 +2464,10 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 				 lwork, prwork, piwork, info));
 
       // The workspace query is broken in at least LAPACK 3.0.0
-      // through 3.1.1 when n > mnthr.  The obtuse formula below
+      // through 3.1.1 when n >= mnthr.  The obtuse formula below
       // should provide sufficient workspace for ZGELSD to operate
       // efficiently.
-      if (n > mnthr)
+      if (n >= mnthr)
 	{
 	  octave_idx_type addend = m;
 

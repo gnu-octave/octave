@@ -1,0 +1,70 @@
+# Makefile for octave's src/graphics/opengl directory
+#
+# Copyright (C) 1998, 2007 John W. Eaton
+#
+# This file is part of Octave.
+# 
+# Octave is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 3 of the License, or (at
+# your option) any later version.
+# 
+# Octave is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Octave; see the file COPYING.  If not, see
+# <http://www.gnu.org/licenses/>.
+
+TOPDIR = ../../..
+include $(TOPDIR)/Makeconf
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+GRAPHICS_LIBS = @GRAPHICS_LIBS@
+
+FLTK_EXTRA_LIBS = $(OPENGL_LIBS) $(GRAPHICS_LIBS)
+FLTK_EXTRA_CXXFLAGS = $(GRAPHICS_CFLAGS) -I../opengl
+
+FLTK_NAME = fltk_backend
+
+FLTK_SRC := fltk_backend.cc
+FLTK_OBJ := $(patsubst %.cc, %.o, $(FLTK_SRC))
+
+%.o : %.cc
+	$(CXX) -c $(CPPFLAGS) $(ALL_CXXFLAGS) $(FLTK_EXTRA_CXXFLAGS) $< -o $@
+
+# Some stupid egreps don't like empty elements in alternation patterns,
+# so we have to repeat ourselves because some stupid egreps don't like
+# empty elements in alternation patterns.
+
+DEFUN_PATTERN = "^[ \t]*DEF(CONSTFUN|CMD|UN|UN_DLD|UNX_DLD|UN_TEXT|UN_MAPPER)[ \t]*\\("
+
+DLD_DEF_FILES := $(patsubst %.cc, %.df, $(FLTK_SRC))
+
+OCTAVE_LFLAGS = -L$(TOPDIR)/liboctave -L$(TOPDIR)/libcruft \
+  -L$(TOPDIR)/src $(RLD_FLAG)
+
+ifeq ($(ENABLE_DYNAMIC_LINKING), true)
+  OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) \
+    $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+    $(LIBPLPLOT) $(LIBGLOB)
+else
+  OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(QHULL_LIBS) \
+    $(GLPK_LIBS) $(REGEX_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+    $(LIBPLPLOT) $(LIBGLOB)
+endif
+
+OCT_LINK_DEPS = \
+  -L../../../libcruft $(LIBCRUFT) -L../../../liboctave $(LIBOCTAVE) \
+  -L../../ $(LIBOCTINTERP) -L../opengl -loctgraphics_gl $(CHOLMOD_LIBS) $(UMFPACK_LIBS) $(AMD_LIBS) \
+   $(CAMD_LIBS) $(COLAMD_LIBS) $(CCOLAMD_LIBS) $(CXSPARSE_LIBS) $(BLAS_LIBS) \
+   $(FFTW_LIBS) $(LIBS) $(FLIBS) $(FLTK_EXTRA_LIBS) $(GRAPHICS_LIBS)
+
+
+fltk_backend.oct : fltk_backend.o
+	$(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) 
+

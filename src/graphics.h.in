@@ -1191,7 +1191,7 @@ public:
 
   virtual bool is_valid (void) const { return false; }
 
-  virtual void close_figure (const octave_value&) const
+  virtual void close_figure (const octave_value& pstream) const
     { gripe_invalid ("close_figure"); }
 
   virtual void redraw_figure (const graphics_handle&) const

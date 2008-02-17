@@ -1,4 +1,14 @@
+2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* configure.in: Remove check for Fl/glu.h header.
+
+	* aclocal.m4 (AC_CHECK_FT2): New macro to check for freetype2.
+
+	* configure.in: Check for FLTK and corresponding compiler flags.
+
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* configure.in: Double-quote warn_graphics variable.
 
 	* aclocal.m4 (OCTAVE_OPENGL): New function to detect OpenGL
 	headers and libraries.

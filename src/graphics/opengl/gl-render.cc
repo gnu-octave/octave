@@ -27,9 +27,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <lo-mappers.h>
 #include "gl-render.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
 // Win32 API requires the CALLBACK attributes for

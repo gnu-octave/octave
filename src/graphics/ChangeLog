@@ -1,3 +1,20 @@
+2008-02-21  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* opengl/gl-render.cc: remove OpenGL includes
+	* opengl/gl-render.h: add OpenGL includes
+	* fltk_backend/fltk_backend.cc: remove OpenGL includes
+	(__fltk_redraw__): put figure handle into the figure's
+	__plot_stream__ property for later
+	(fltk_backend::close_figure): use argument as figure handle to
+	close
+
+2008-02-20  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/Makefile.in: initial import
+
+	* fltk_backend/fltk_backend.cc: initial import
+	
+
 2008-02-20  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* opengl/gl-render.h (opengl_renderer::draw(patch)): New method to

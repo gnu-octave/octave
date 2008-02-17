@@ -15,6 +15,9 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (axes::axes): Be sure to initialize transformation
+	data correctly.
+
 	* graphics.cc (xget_ancestor): Pass graphics_object argument by value
 	instead of by reference.
 

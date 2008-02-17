@@ -2616,6 +2616,7 @@ public:
     : base_graphics_object (), xproperties (mh, p), default_properties ()
   {
     xproperties.override_defaults (*this);
+    xproperties.update_transform ();
   }
 
   ~axes (void) { xproperties.delete_children (); }

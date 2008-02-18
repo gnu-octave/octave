@@ -202,76 +202,81 @@ and @var{x}.  The result is in range -pi to pi.\n\
 
   if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
-      octave_value arg_y = args(0);
-      octave_value arg_x = args(1);
-
-      octave_idx_type y_nr = arg_y.rows ();
-      octave_idx_type y_nc = arg_y.columns ();
-
-      octave_idx_type x_nr = arg_x.rows ();
-      octave_idx_type x_nc = arg_x.columns ();
-
-      int arg_y_empty = empty_arg ("atan2", y_nr, y_nc);
-      int arg_x_empty = empty_arg ("atan2", x_nr, x_nc);
-
-      if (arg_y_empty > 0 && arg_x_empty > 0)
-	return octave_value (Matrix ());
-      else if (arg_y_empty || arg_x_empty)
-	return retval;
-
-      octave_idx_type y_is_scalar = (y_nr == 1 && y_nc == 1);
-      octave_idx_type x_is_scalar = (x_nr == 1 && x_nc == 1);
-
-      if (y_is_scalar && x_is_scalar)
-	{
-	  double y = arg_y.double_value ();
-
-	  if (! error_state)
-	    {
-	      double x = arg_x.double_value ();
-
-	      if (! error_state)
-		retval = atan2 (y, x);
-	    }
-	}
-      else if (y_is_scalar)
-	{
-	  double y = arg_y.double_value ();
-
-	  if (! error_state)
-	    {
-	      Matrix x = arg_x.matrix_value ();
-
-	      if (! error_state)
-		retval = map_d_m (atan2, y, x);
-	    }
-	}
-      else if (x_is_scalar)
-	{
-	  Matrix y = arg_y.matrix_value ();
-
-	  if (! error_state)
-	    {
-	      double x = arg_x.double_value ();
-
-	      if (! error_state)
-		retval = map_m_d (atan2, y, x);
-	    }
-	}
-      else if (y_nr == x_nr && y_nc == x_nc)
-	{
-	  Matrix y = arg_y.matrix_value ();
-
-	  if (! error_state)
-	    {
-	      Matrix x = arg_x.matrix_value ();
-
-	      if (! error_state)
-		retval = map_m_m (atan2, y, x);
-	    }
-	}
+      if (args(0).is_integer_type () || args(0).is_integer_type ())
+	error ("atan2: not defined for integer types");
       else
-	error ("atan2: nonconformant matrices");
+	{
+	  octave_value arg_y = args(0);
+	  octave_value arg_x = args(1);
+
+	  octave_idx_type y_nr = arg_y.rows ();
+	  octave_idx_type y_nc = arg_y.columns ();
+
+	  octave_idx_type x_nr = arg_x.rows ();
+	  octave_idx_type x_nc = arg_x.columns ();
+
+	  int arg_y_empty = empty_arg ("atan2", y_nr, y_nc);
+	  int arg_x_empty = empty_arg ("atan2", x_nr, x_nc);
+
+	  if (arg_y_empty > 0 && arg_x_empty > 0)
+	    return octave_value (Matrix ());
+	  else if (arg_y_empty || arg_x_empty)
+	    return retval;
+
+	  octave_idx_type y_is_scalar = (y_nr == 1 && y_nc == 1);
+	  octave_idx_type x_is_scalar = (x_nr == 1 && x_nc == 1);
+
+	  if (y_is_scalar && x_is_scalar)
+	    {
+	      double y = arg_y.double_value ();
+
+	      if (! error_state)
+		{
+		  double x = arg_x.double_value ();
+
+		  if (! error_state)
+		    retval = atan2 (y, x);
+		}
+	    }
+	  else if (y_is_scalar)
+	    {
+	      double y = arg_y.double_value ();
+
+	      if (! error_state)
+		{
+		  Matrix x = arg_x.matrix_value ();
+
+		  if (! error_state)
+		    retval = map_d_m (atan2, y, x);
+		}
+	    }
+	  else if (x_is_scalar)
+	    {
+	      Matrix y = arg_y.matrix_value ();
+
+	      if (! error_state)
+		{
+		  double x = arg_x.double_value ();
+
+		  if (! error_state)
+		    retval = map_m_d (atan2, y, x);
+		}
+	    }
+	  else if (y_nr == x_nr && y_nc == x_nc)
+	    {
+	      Matrix y = arg_y.matrix_value ();
+
+	      if (! error_state)
+		{
+		  Matrix x = arg_x.matrix_value ();
+
+		  if (! error_state)
+		    retval = map_m_m (atan2, y, x);
+		}
+	    }
+	  else
+	    error ("atan2: nonconformant matrices");
+	}
     }
   else
     print_usage ();

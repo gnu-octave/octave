@@ -3,6 +3,10 @@
 	* time/datestr.m: Avoid confusion for datenum vectors that are 6
 	elements wide.
 
+2008-02-18  David Bateman  <dbateman@free.fr>
+
+	* general/rem.m, general/mod.m: Treat integer types correctly.
+
 2008-02-15  Timo Lindfors  <timo.lindfors@iki.fi>
 
 	* statistics/tests/kruskal_wallis_test.m: Handle ties.

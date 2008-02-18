@@ -18,14 +18,15 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} mod (@var{x}, @var{y})
-## Compute modulo function, using
+## Compute modulo function. Conceptually this is given by
 ##
 ## @example
 ## x - y .* floor (x ./ y)
 ## @end example
 ##
-## Note that this handles negative numbers correctly:
-## @code{mod (-1, 3)} is 2, not -1 as @code{rem (-1, 3)} returns.
+## and is written in a manner that the correct modulus is returned for
+##integer types. This function handles negative values correctly. That
+##is @code{mod (-1, 3)} is 2, not -1 as @code{rem (-1, 3)} returns.
 ## Also, @code{mod (@var{x}, 0)} returns @var{x}.
 ##
 ## An error message is printed if the dimensions of the arguments do not
@@ -47,27 +48,42 @@ function r = mod (x, y)
     error ("mod: argument sizes must agree");
   endif
 
-  ## Matlab allows complex arguments, but as far as I can tell, that's a
-  ## bunch of hooey.
-
   if (isreal (x) && isreal (y))
     nz = y != 0.0;
     if (all (nz(:)))
       ## No elements of y are zero.
-      r = x - y .* floor (x ./ y);
+      if (isinteger(x) || isinteger(y))
+	if (isinteger (x))
+	  typ = class (x);
+	else
+	  typ = class (y);
+	endif
+	r = x - y .* cast (floor (double(x) ./ double(y)), typ);
+      else
+	r = x - y .* floor (x ./ y);
+      endif
     elseif (isscalar (y))
       ## y must be zero.
       r = x;
     else
       ## Some elements of y are zero.
       if (isscalar (x))
-	r = x * ones (size (y));
+	r = x * ones (size(y), class(y));
       else
 	r = x;
 	x = x(nz);
       endif
       y = y(nz);
-      r(nz) = x - y .* floor (x ./ y);
+      if (isinteger(x) || isinteger(y))
+	if (isinteger (x))
+	  typ = class (x);
+	else
+	  typ = class (y);
+	endif
+	r(nz) = x - y .* floor (double(x) ./ double(y));
+      else
+	r(nz) = x - y .* floor (x ./ y);
+      endif
     endif
   else
     error ("mod: complex arguments are not allowed");
@@ -101,3 +117,14 @@ endfunction
 %!assert (mod(-5,[3,0; 3,1]), [1, -5; 1, 0]);
 %!assert (mod(-5,[3,2; 3,1]), [1, 1; 1, 0]);
 
+## integer types
+%!assert (mod(uint8(5),uint8(4)),uint8(1))
+%!assert (mod(uint8([1:5]),uint8(4)),uint8([1,2,3,0,1]))
+%!assert (mod(uint8([1:5]),uint8(0)),uint8([1:5]))
+%!error (mod(uint8(5),int8(4)))
+
+## mixed integer/real types
+%!assert (mod(uint8(5),4),uint8(1))
+%!assert (mod(5,uint8(4)),uint8(1))
+%!assert (mod(uint8([1:5]),4),uint8([1,2,3,0,1]))
+%!error (mod([1:5],uint8(4)))

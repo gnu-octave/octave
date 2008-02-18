@@ -1,3 +1,8 @@
+2008-01-18  Ben Abbott  <bpabbott@mac.com>
+
+	* interpreter/intro.txi: Replaced reference to deprecated
+	function struct_elements with filenames.
+
 2008-02-08  Rafael Laboissiere  <rafael@debian.org>
 
 	* interpreter/octave.1: Dropped unknow LO macro

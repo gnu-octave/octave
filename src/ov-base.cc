@@ -895,6 +895,18 @@ octave_base_value::sort (Array<octave_idx_type> &,
   return octave_value();
 }
 
+void
+octave_base_value::lock (void)
+{
+  gripe_wrong_type_arg ("octave_base_value::lock ()", type_name ());
+}
+
+void
+octave_base_value::unlock (void)
+{
+  gripe_wrong_type_arg ("octave_base_value::unlock ()", type_name ());
+}
+
 static void
 gripe_indexed_assignment (const std::string& tn1, const std::string& tn2)
 {

@@ -462,6 +462,12 @@ public:
 			     octave_idx_type dim = 0,
 			     sortmode mode = ASCENDING) const;
 
+  virtual void lock (void);
+
+  virtual void unlock (void);
+
+  virtual bool islocked (void) const { return false; }
+
 protected:
 
   // This should only be called for derived types.

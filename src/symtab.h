@@ -407,28 +407,56 @@ public:
 	built_in_function = f;
       }
 
-      void clear (void)
+      template <class T>
+      void
+      clear_unlocked (std::map<T, octave_value>& map)
       {
-	subfunctions.clear ();
-	private_functions.clear ();
-	class_constructors.clear ();
-	class_methods.clear ();
-	cmdline_function = octave_value ();
-	autoload_function = octave_value ();
-	function_on_path = octave_value ();
+	typename std::map<T, octave_value>::iterator p = map.begin ();
+
+	while (p != map.end ())
+	  {
+	    if (p->second.islocked ())
+	      p++;
+	    else
+	      map.erase (p++);
+	  }
+      }
+
+      void clear_cmdline_function (void)
+      {
+	if (! cmdline_function.islocked ())
+	  cmdline_function = octave_value ();
+      }
+
+      void clear_autoload_function (void)
+      {
+	if (! autoload_function.islocked ())
+	  autoload_function = octave_value ();
       }
 
       // FIXME -- should this also clear the cmdline and other "user
       // defined" functions?
       void clear_user_function (void)
       {
-	function_on_path = octave_value ();
+	if (! function_on_path.islocked ())
+	  function_on_path = octave_value ();
       }
 
       void clear_mex_function (void)
       {
 	if (function_on_path.is_mex_function ())
-	  function_on_path = octave_value ();
+	  clear_user_function ();
+      }
+
+      void clear (void)
+      {
+	clear_unlocked (subfunctions);
+	clear_unlocked (private_functions);
+	clear_unlocked (class_constructors);
+	clear_unlocked (class_methods);
+	clear_cmdline_function ();
+	clear_autoload_function ();
+	clear_user_function ();
       }
 
       void add_dispatch (const std::string& type, const std::string& fname)

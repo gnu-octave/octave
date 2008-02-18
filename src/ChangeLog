@@ -1,3 +1,25 @@
+2008-02-18  John W. Eaton  <jwe@octave.org>
+
+	* symtab.h
+	(symbol_table::fcn_info::fcn_info_rep::clear_unlocked_functions):
+	symbol_table::fcn_info::fcn_info_rep::clear_cmdline_function,
+	symbol_table::fcn_info::fcn_info_rep::clear_autoload_function):
+	New functions.
+	(symbol_table::fcn_info::fcn_info_rep::clear_user_function):
+	Don't clear locked functions.
+	(symbol_table::fcn_info::fcn_info_rep::clear_mex_function):
+	Call clear_user_function instead of setting function_on_path directly.
+	(symbol_table::fcn_info::fcn_info_rep::clear):
+	Use new functions to do the real work.
+
+	* ov.h (octave_value::lock, octave_value::unlock,
+	octave_value::islocked): New functions.
+	* ov-base.cc (octave_base_value::lock, octave_base_value::unlock):
+	New functions.
+	* ov-base.h Provide decls.
+	(octave_base_value::islocked): New function.
+	* ov-fcn.h (octave_function::islocked): Now const.
+
 2008-02-15  John W. Eaton  <jwe@octave.org>
 
 	* ov-builtin.cc (octave_builtin::do_multi_index_op):

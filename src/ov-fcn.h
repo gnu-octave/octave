@@ -92,7 +92,7 @@ public:
 
   void unlock (void) { locked = false; }
 
-  bool islocked (void) { return locked; }
+  bool islocked (void) const { return locked; }
 
   void mark_relative (void) { relative = true; }
 

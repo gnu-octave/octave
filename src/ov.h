@@ -871,6 +871,12 @@ public:
 		 sortmode mode = ASCENDING) const
     { return rep->sort (sidx, dim, mode); } 
 
+  void lock (void) { rep->lock (); }
+
+  void unlock (void) { rep->unlock (); }
+
+  bool islocked (void) const { return rep->islocked (); }
+
 protected:
 
   // The real representation.

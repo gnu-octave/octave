@@ -1,3 +1,20 @@
+2008-02-19  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_texture::texture_rep::tex_coord,
+	opengl_texture::tex_coord): New wrapper around glTexCoord2d.
+	(opengl_renderer::draw(surface)): Use it for texturemap
+	implementation.
+	(opengl_renderer::draw(surface)): Fix indexing bug when creating clip
+	matrix.
+	(opengl_texture::operator=): Add assignment operator.
+	(opengl_texture::create): New static opengl_texture creator.
+	(opengl_texture::is_valid): New accessor.
+
+2008-02-18  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (class opengl_texture): New class to wrap
+	texture operations in OpenGL.
+
 2008-02-17  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* opengl/gl-render.cc (opengl_renderer::draw(surface)): Set material

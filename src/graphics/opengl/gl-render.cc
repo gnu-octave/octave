@@ -39,6 +39,172 @@ enum {
   AXE_VERT_DIR  = 3
 };
 
+class opengl_texture
+{
+protected:
+  class texture_rep
+  {
+  public:
+    texture_rep (void) : valid (false), count (1) { }
+
+    texture_rep (GLuint _id, int _w, int _h, int _tw, int _th)
+	: id (_id), w (_w), h (_h), tw (_tw), th (_th),
+	  tx (double(w)/tw), ty (double(h)/th), valid (true),
+	  count (1) { }
+
+    ~texture_rep (void)
+      {
+	if (valid)
+	  glDeleteTextures (1, &id);
+      }
+
+    void bind (int mode) const
+      { if (valid) glBindTexture (mode, id); }
+
+    void tex_coord (double q, double r) const
+      { if (valid) glTexCoord2d (q*tx, r*ty); }
+
+    GLuint id;
+    int w, h;
+    int tw, th;
+    double tx, ty;
+    bool valid;
+    int count;
+  };
+
+  texture_rep *rep;
+
+private:
+  opengl_texture (texture_rep *_rep) : rep (_rep) { }
+
+public:
+  opengl_texture (void) : rep (new texture_rep ()) { }
+
+  opengl_texture (const opengl_texture& tx)
+      : rep (tx.rep)
+    {
+      rep->count++;
+    }
+
+  ~opengl_texture (void)
+    {
+      if (--rep->count == 0)
+	delete rep;
+    }
+
+  opengl_texture& operator = (const opengl_texture& tx)
+    {
+      if (--rep->count == 0)
+	delete rep;
+
+      rep = tx.rep;
+      rep->count++;
+
+      return *this;
+    }
+
+  static opengl_texture create (const octave_value& data);
+
+  void bind (int mode = GL_TEXTURE_2D) const
+    { rep->bind (mode); }
+
+  void tex_coord (double q, double r) const
+    { rep->tex_coord (q, r); }
+  
+  bool is_valid (void) const
+    { return rep->valid; }
+};
+
+static int
+next_power_of_2 (int n)
+{
+  int m = 1;
+
+  while (m < n && m < INT_MAX)
+    m <<= 1;
+
+  return m;
+}
+
+opengl_texture
+opengl_texture::create (const octave_value& data)
+{
+  opengl_texture retval;
+
+  dim_vector dv (data.dims ());
+
+  // Expect RGB data
+  if (dv.length () == 3 && dv(2) == 3)
+    {
+      int h = dv(0), w = dv(1), tw, th;
+      GLuint id;
+      bool ok = true;
+
+      tw = next_power_of_2 (w);
+      th = next_power_of_2 (w);
+
+      glGenTextures (1, &id);
+      glBindTexture (GL_TEXTURE_2D, id);
+
+      if (data.is_double_type ())
+	{
+	  NDArray _a = data.array_value ();
+
+	  OCTAVE_LOCAL_BUFFER (float, a, (4*tw*th));
+
+	  for (int i = 0; i < h; i++)
+	    for (int j = 0, idx = i*tw*4; j < w; j++, idx += 4)
+	      {
+		a[idx]   = _a(i,j,0);
+		a[idx+1] = _a(i,j,1);
+		a[idx+2] = _a(i,j,2);
+		a[idx+3] = 1.0;
+	      }
+
+	  glTexImage2D (GL_TEXTURE_2D, 0, 4, tw, th, 0,
+			GL_RGBA, GL_FLOAT, a);
+	}
+      else if (data.is_uint8_type ())
+	{
+	  uint8NDArray _a = data.uint8_array_value ();
+
+	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (4*tw*th));
+
+	  for (int i = 0; i < h; i++)
+	    for (int j = 0, idx = i*tw*4; j < w; j++, idx += 4)
+	      {
+		a[idx]   = _a(i,j,0);
+		a[idx+1] = _a(i,j,1);
+		a[idx+2] = _a(i,j,2);
+		a[idx+3] = octave_uint8 (0xFF);
+	      }
+
+	  glTexImage2D (GL_TEXTURE_2D, 0, 4, tw, th, 0,
+			GL_RGBA, GL_UNSIGNED_BYTE, a);
+	}
+      else
+	{
+	  ok = false;
+	  warning ("opengl_texture::create: invalid texture data type (expected double or uint8)");
+	}
+
+      if (ok)
+	{
+	  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	  glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	  if (glGetError () != GL_NO_ERROR)
+	    warning ("opengl_texture::create: OpenGL error while generating texture data");
+	  else
+	    retval = opengl_texture (new texture_rep (id, w, h, tw, th));
+	}
+    }
+  else
+    warning ("opengl_texture::create: invalid texture data size");
+
+  return retval;
+}
+
 void
 opengl_renderer::draw (const graphics_object& go)
 {
@@ -1245,20 +1411,22 @@ opengl_renderer::draw (const surface::properties& props)
   float se = props.get_specularexponent ();
   float cb[4] = { 0, 0, 0, 1 };
 
+  opengl_texture tex;
+
   int i1, i2, j1, j2;
   bool x_mat = (x.rows () == z.rows ());
   bool y_mat = (y.columns () == z.columns ());
 
   i1 = i2 = j1 = j2 = 0;
 
-  boolMatrix clip (z.dims ());
+  boolMatrix clip (z.dims (), false);
 
   for (int i = 0; i < zr; i++)
     {
       if (x_mat)
 	i1 = i;
 
-      for (int j = 0; j < zr; j++)
+      for (int j = 0; j < zc; j++)
 	{
 	  if (y_mat)
 	    j1 = j;
@@ -1284,10 +1452,10 @@ opengl_renderer::draw (const surface::properties& props)
       glMaterialf (LIGHT_MODE, GL_SHININESS, se);
     }
 
+  // FIXME: good candidate for caching, transfering pixel
+  // data to OpenGL is time consuming.
   if (fc_mode == 3)
-    {
-      // FIXME: transfer texture to OpenGL
-    }
+    tex = opengl_texture::create (props.get_color_data ());
 
   if (! props.facecolor_is ("none"))
     {
@@ -1340,7 +1508,7 @@ opengl_renderer::draw (const surface::properties& props)
 
 		  // Vertex 1
 		  if (fc_mode == 3)
-		    /* FIXME: set texture coordinates */;
+		    tex.tex_coord (double (i-1) / (zc-1), double (j-1) / (zr-1));
 		  else if (fc_mode > 0)
 		    {
 		      // FIXME: is there a smarter way to do this?
@@ -1365,7 +1533,7 @@ opengl_renderer::draw (const surface::properties& props)
 
 		  // Vertex 2
 		  if (fc_mode == 3)
-		    /* FIXME: set texture coordinates */;
+		    tex.tex_coord (double (i) / (zc-1), double (j-1) / (zr-1));
 		  else if (fc_mode == 2)
 		    {
 		      for (int k = 0; k < 3; k++)
@@ -1389,7 +1557,7 @@ opengl_renderer::draw (const surface::properties& props)
 		  
 		  // Vertex 3
 		  if (fc_mode == 3)
-		    /* FIXME: set texture coordinates */;
+		    tex.tex_coord (double (i) / (zc-1), double (j) / (zr-1));
 		  else if (fc_mode == 2)
 		    {
 		      for (int k = 0; k < 3; k++)
@@ -1413,7 +1581,7 @@ opengl_renderer::draw (const surface::properties& props)
 		  
 		  // Vertex 4
 		  if (fc_mode == 3)
-		    /* FIXME: set texture coordinates */;
+		    tex.tex_coord (double (i-1) / (zc-1), double (j) / (zr-1));
 		  else if (fc_mode == 2)
 		    {
 		      for (int k = 0; k < 3; k++)

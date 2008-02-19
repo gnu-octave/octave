@@ -204,17 +204,17 @@ function retval = datestr (date, f, p)
     v = datevec (date, p);
   else
     v = [];
-    if columns (date) == 6
-      ## make sure that the input really is a datevec
-      maxdatevec = [inf 12 31 23 59 60];
+    if (columns (date) == 6)
+      ## Make sure that the input really is a datevec.
+      maxdatevec = [Inf, 12, 31, 23, 59, 60];
       for i = 1:numel (maxdatevec)
-        if any (date(:,i) > maxdatevec(i))
+        if (any (date(:,i) > maxdatevec(i)))
           v = datevec (date, p);
           break;
         endif
       endfor
     endif
-    if isempty (v)
+    if (isempty (v))
       v = date;
     endif
   endif

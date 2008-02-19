@@ -1,3 +1,7 @@
+2008-02-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/qr.cc: Doc fix.
+
 2008-02-18  John W. Eaton  <jwe@octave.org>
 
 	* symtab.h

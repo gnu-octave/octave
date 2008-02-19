@@ -146,6 +146,10 @@ p =\n\
 The permuted @code{qr} factorization @code{[q, r, p] = qr (a)}\n\
 factorization allows the construction of an orthogonal basis of\n\
 @code{span (a)}.\n\
+\n\
+If given a second argument, @code{qr} returns an economy-sized\n\
+QR factorization, omitting zero rows of @var{R} and\n\
+the corresponding columns of @var{Q}.\n\
 @end deftypefn")
 {
   octave_value_list retval;

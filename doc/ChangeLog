@@ -1,3 +1,7 @@
+2008-02-19  Carlo de Falco  <kingcrimson@tiscali.it>
+
+	* interpreter/package.txi: Improve INDEX file documentation.
+
 2008-01-18  Ben Abbott  <bpabbott@mac.com>
 
 	* interpreter/intro.txi: Replaced reference to deprecated

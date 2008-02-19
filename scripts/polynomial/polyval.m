@@ -18,15 +18,20 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} polyval (@var{c}, @var{x})
-## Evaluate a polynomial.
-##
-## @code{polyval (@var{c}, @var{x})} will evaluate the polynomial at the
-## specified value of @var{x}.
-##
-## If @var{x} is a vector or matrix, the polynomial is evaluated at each of
+## @deftypefn {Function File} {@var{y}=} polyval (@var{p}, @var{x})
+## @deftypefnx {Function File} {@var{y}=} polyval (@var{p}, @var{x}, [], @var{mu})
+## Evaluate the polynomial at of the specified values for @var{x}. When @var{mu}
+## is present evaluate the polynomial for (@var{x}-@var{mu}(1))/@var{mu}(2).
+## If @var{x} is a vector or matrix, the polynomial is evaluated for each of
 ## the elements of @var{x}.
-## @seealso{polyvalm, poly, roots, conv, deconv, residue, filter,
+## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{S})
+## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{S}, @var{mu})
+## In addition to evaluating the polynomial, the second output 
+## represents the prediction interval, @var{y} +/- @var{dy}, which
+## contains at least 50% of the future predictions. To calculate the
+## prediction interval, the structured variable @var{s}, originating
+## form `polyfit', must be present.
+## @seealso{polyfit, polyvalm, poly, roots, conv, deconv, residue, filter,
 ## polyderiv, polyinteg}
 ## @end deftypefn
 
@@ -34,14 +39,22 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
-function y = polyval (c, x)
+function [y, dy] = polyval (p, x, s, mu)
 
-  if (nargin != 2)
+  if (nargin < 2 || nargin > 4 || (nargout == 2 && nargin < 3))
     print_usage ();
   endif
 
-  if (! (isvector (c) || isempty (c)))
+  if (nargin < 3)
+    s = [];
+  endif
+
+  if (! (isvector (p) || isempty (p)))
     error ("polyval: first argument must be a vector");
+  endif
+
+  if (nargin < 4)
+    mu = [0, 1];
   endif
 
   if (isempty (x))
@@ -49,28 +62,70 @@ function y = polyval (c, x)
     return;
   endif
 
-  if (length (c) == 0)
-    y = c;
+  if (length (p) == 0)
+    y = p;
     return;
   endif
 
-  n = length (c);
-  y = c (1) * ones (rows (x), columns (x));
-  for index = 2:n
-    y = c (index) + x .* y;
-  endfor
+  n = length (p) - 1;
+  k = numel (x);
+  x = (x - mu(1)) / mu(2);
+  A = (x(:) * ones (1, n+1)) .^ (ones (k, 1) * (n:-1:0));
+  y(:) = A * p(:);
+  y = reshape (y, size (x));
+
+  if (nargout == 2)
+    ## The line below is *not* the result of a conceptual grasp of statistics.
+    ## Instead, after reading the links below and comparing to the output of Matlab's polyval.m,
+    ## http://www.mathworks.com/access/helpdesk/help/toolbox/stats/index.html?/access/helpdesk/help/toolbox/stats/finv.html
+    ## http://www.mathworks.com/access/helpdesk/help/toolbox/curvefit/index.html?/access/helpdesk/help/toolbox/curvefit/bq_5ka6-1_1.html
+    ## Note: the F-Distribution is generally considered to be single-sided.
+    ## http://www.itl.nist.gov/div898/handbook/eda/section3/eda3673.htm
+    ##   t = finv (1-alpha, s.df, s.df);
+    ##   dy = t * sqrt (1 + sumsq (A/s.R, 2)) * s.normr / sqrt (s.df)
+    ## If my inference is correct, then t must equal 1 for polyval.
+    ## This is because finv (0.5, n, n) = 1.0 for any n.
+    dy = sqrt (1 + sumsq (A/s.R, 2)) * s.normr / sqrt (s.df);
+    dy = reshape (dy, size (x));
+  endif
 
 endfunction
 
-%!assert(polyval ([1, 1, 1], 2) == 7);
+%!test
+%! fail("polyval([1,0;0,1],0:10)");
 
-%!assert(all (all (polyval ([1, 1, 1], [0; 1; 2]) == [1; 3; 7])));
+%!test
+%! r = 0:10:50;
+%! p = poly (r);
+%! p = p / max(abs(p));
+%! x = linspace(0,50,11);
+%! y = polyval(p,x) + 0.25*sin(100*x);
+%! [pf, s] = polyfit (x, y, numel(r));
+%! [y1, delta] = polyval (pf, x, s);
+%! expected = [0.37235, 0.35854, 0.32231, 0.32448, 0.31328, ...
+%!    0.32036, 0.31328, 0.32448, 0.32231, 0.35854, 0.37235];
+%! assert (delta, expected, 0.00001)
 
-%!assert(isempty (polyval ([1, 1, 1], [])));
+%!test
+%! x = 10 + (-2:2);
+%! y = [0, 0, 1, 0, 2];
+%! p = polyfit (x, y, numel (x) - 1);
+%! [pn, s, mu] = polyfit (x, y, numel (x) - 1);
+%! y1 = polyval (p, x);
+%! yn = polyval (pn, x, [], mu);
+%! assert (y1, y, sqrt(eps))
+%! assert (yn, y, sqrt(eps))
 
-%!assert(all (all (polyval ([1, 1, 1], [-1, 0; 1, 2]) == [1, 1; 3, 7])));
-
-%!error polyval ([1, 2; 3, 4], [-1, 0; 1, 2]);
-
-%!assert(isempty (polyval ([], [-1, 0; 1, 2])));
+%!test
+%! p = [0, 1, 0];
+%! x = 1:10;
+%! assert (x, polyval(p,x), eps)
+%! x = x(:);
+%! assert (x, polyval(p,x), eps)
+%! x = reshape(x, [2, 5]);
+%! assert (x, polyval(p,x), eps)
+%! x = reshape(x, [5, 2]);
+%! assert (x, polyval(p,x), eps)
+%! x = reshape(x, [1, 1, 5, 2]);
+%! assert (x, polyval(p,x), eps)
 

@@ -1,3 +1,7 @@
+2008-02-18  David Bateman  <dbateman@free.fr>
+
+	* data.cc (Fatan2): Reject arguments that are integer types.
+
 2008-02-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/qr.cc: Doc fix.

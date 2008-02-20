@@ -1,3 +1,14 @@
+2008-02-20  David Bateman  <dbateman@free.fr>
+
+	* SparseComplexQR.cc (ComplexMatrix
+	SparseComplexQR::SparseComplexQR_rep::Q 
+	(void) const): New method.
+	* SparseComplexQR.h (ComplexMatrix
+	SparseComplexQR::SparseComplexQR_rep::Q 
+	(void) const): Declare it.
+	* SparseQR.cc (Matrix SparseQR::SparseQR_rep::Q	(void) const): ditto.
+	* SparseQR.h (Matrix SparseQR::SparseQR_rep::Q	(void) const): ditto.
+
 2008-02-20  John W. Eaton  <jwe@octave.org>
 
 	* boolNDArray.h (boolNDArray (const Array2<bool>&)): Delete.

@@ -2,6 +2,13 @@
 
 	* strings/strcat.m: Detect cellstr args.
 
+2008-02-20  David Bateman  <dbateman@free.fr>
+
+	* sparse/colperm.m, sparse/nonzero.m, sparse/spdiags.m,
+	sparse/spfun.m, sparse/spones.m, sparse/sprand.m,
+	sparse/sprandn.m, sparse/sprandsym.m, sparse/spy.m: Use generic
+	version of find rather than spfind.
+
 2008-02-19  Ben Abbott  <bpabbott@mac.com>
 
 	* miscellaneous/edit.m: New option EDITINPLACE.  Prefer file list

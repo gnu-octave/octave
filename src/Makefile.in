@@ -64,13 +64,13 @@ OPT_INC := $(addprefix ../liboctave/, $(addsuffix .h, $(OPT_BASE)))
 
 DLD_XSRC := balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc chol.cc \
 	ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
-	dasrt.cc dassl.cc det.cc dispatch.cc eig.cc expm.cc \
+	dasrt.cc dassl.cc det.cc dispatch.cc dmperm.cc eig.cc expm.cc \
 	fft.cc fft2.cc fftn.cc fftw.cc filter.cc find.cc fsolve.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc inv.cc kron.cc lsode.cc \
 	lu.cc luinc.cc matrix_type.cc md5sum.cc minmax.cc pinv.cc qr.cc \
 	quad.cc qz.cc rand.cc regexp.cc schur.cc sparse.cc \
-	spchol.cc spdet.cc spfind.cc splu.cc spparms.cc spqr.cc \
+	spchol.cc splu.cc spparms.cc \
 	sqrtm.cc svd.cc syl.cc symrcm.cc time.cc tsearch.cc typecast.cc \
 	urlwrite.cc __contourc__.cc __delaunayn__.cc __dsearchn__.cc \
 	__glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc \

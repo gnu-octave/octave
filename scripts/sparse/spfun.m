@@ -30,12 +30,8 @@ function t = spfun (f, s)
     print_usage ();
   endif
 
-  if (issparse (s))
-    [i,j,v,m,n] = spfind (s);
-  else
-    [i, j, v] = find (s);
-    [m, n] = size (s);
-  endif
+  [i, j, v] = find (s);
+  [m, n] = size (s);
 
   if (isa (f, "function_handle") || isa (f, "inline function"))
     t = sparse (i, j, f(v), m, n);

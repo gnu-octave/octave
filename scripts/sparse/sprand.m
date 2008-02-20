@@ -47,7 +47,8 @@
 
 function S = sprand (m, n, d)
   if (nargin == 1)
-    [i, j, v, nr, nc] = spfind (m);
+    [i, j, v] = find (m);
+    [nr, nc] = size (m);
     S = sparse (i, j, rand (size (v)), nr, nc);
   elseif (nargin == 3)
     mn = n*m;

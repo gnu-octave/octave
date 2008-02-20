@@ -28,12 +28,8 @@ function s = spones (s)
     print_usage ();
   endif
 
-  if (issparse (s))
-    [i, j, v, m, n] = spfind (s);
-  else
-    [i, j, v] = find (s);
-    [m, n] = size (s);
-  endif
+  [i, j, v] = find (s);
+  [m, n] = size (s);
 
   s = sparse (i, j, 1, m, n);
 

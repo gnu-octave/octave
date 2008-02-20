@@ -63,6 +63,8 @@ protected:
 
     ComplexMatrix C (const ComplexMatrix &b) const;
 
+    ComplexMatrix Q (void) const;
+
     int count;
 
     octave_idx_type nrows;
@@ -115,6 +117,8 @@ public:
     { return rep->R(econ); }
 
   ComplexMatrix C (const ComplexMatrix &b) const { return rep->C(b); }
+
+  ComplexMatrix Q (void) const { return rep->Q(); }
 
   friend ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
 				octave_idx_type &info);

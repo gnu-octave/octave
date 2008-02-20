@@ -28,6 +28,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "CmplxQRP.h"
 #include "dbleQR.h"
 #include "dbleQRP.h"
+#include "SparseQR.h"
+#include "SparseCmplxQR.h"
+
 
 #include "defun-dld.h"
 #include "error.h"
@@ -55,6 +58,7 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (qr, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{q}, @var{r}, @var{p}] =} qr (@var{a}, '0')\n\
 @cindex QR factorization\n\
 Compute the QR factorization of @var{a}, using standard @sc{Lapack}\n\
 subroutines.  For example, given the matrix @code{a = [1, 2; 3, 4]},\n\
@@ -114,10 +118,14 @@ $QR = A$ where $Q$ is an orthogonal matrix and $R$ is upper triangular.\n\
 upper triangular.\n\
 @end ifinfo\n\
 \n\
-The permuted QR factorization @code{[@var{q}, @var{r}, @var{p}] =\n\
-qr (@var{a})} forms the QR factorization such that the diagonal\n\
-entries of @code{r} are decreasing in magnitude order.  For example,\n\
-given the matrix @code{a = [1, 2; 3, 4]},\n\
+If given a second argument of '0', @code{qr} returns an economy-sized\n\
+QR factorization, omitting zero rows of @var{R} and the corresponding\n\
+columns of @var{Q}.\n\
+\n\
+If the matrix @var{a} is full, the permuted QR factorization\n\
+@code{[@var{q}, @var{r}, @var{p}] = qr (@var{a})} forms the QR factorization\n\
+such that the diagonal entries of @code{r} are decreasing in magnitude\n\
+order.  For example,given the matrix @code{a = [1, 2; 3, 4]},\n\
 \n\
 @example\n\
 [q, r, p] = qr(a)\n\
@@ -147,16 +155,31 @@ The permuted @code{qr} factorization @code{[q, r, p] = qr (a)}\n\
 factorization allows the construction of an orthogonal basis of\n\
 @code{span (a)}.\n\
 \n\
-If given a second argument, @code{qr} returns an economy-sized\n\
-QR factorization, omitting zero rows of @var{R} and\n\
-the corresponding columns of @var{Q}.\n\
+If the matrix @var{a} is sparse, then compute the sparse QR factorization\n\
+of @var{a}, using @sc{CSparse}. As the matrix @var{Q} is in general a full\n\
+matrix, this function returns the @var{Q}-less factorization @var{r} of\n\
+@var{a}, such that @code{@var{r} = chol (@var{a}' * @var{a})}.\n\
+\n\
+If the final argument is the scalar @code{0} and the number of rows is\n\
+larger than the number of columns, then an economy factorization is\n\
+returned. That is @var{r} will have only @code{size (@var{a},1)} rows.\n\
+\n\
+If an additional matrix @var{b} is supplied, then @code{qr} returns\n\
+@var{c}, where @code{@var{c} = @var{q}' * @var{b}}. This allows the\n\
+least squares approximation of @code{@var{a} \\ @var{b}} to be calculated\n\
+as\n\
+\n\
+@example\n\
+[@var{c},@var{r}] = spqr (@var{a},@var{b})\n\
+@var{x} = @var{r} \\ @var{c}\n\
+@end example\n\
 @end deftypefn")
 {
   octave_value_list retval;
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > 2 || nargout > 3)
+  if (nargin < 1 || nargin > (args(0).is_sparse_type() ? 3 : 2) || nargout > 3)
     {
       print_usage ();
       return retval;
@@ -171,86 +194,241 @@ the corresponding columns of @var{Q}.\n\
   else if (arg_is_empty > 0)
     return octave_value_list (3, Matrix ());
 
-  QR::type type = (nargout == 0 || nargout == 1) ? QR::raw
-    : (nargin == 2 ? QR::economy : QR::std);
-
-  if (arg.is_real_type ())
+  if (arg.is_sparse_type ())
     {
-      Matrix m = arg.matrix_value ();
+      bool economy = false;
+      bool is_cmplx = false;
+      int have_b = 0;
 
-      if (! error_state)
+      if (arg.is_complex_type ())
+	is_cmplx = true;
+      if (nargin > 1)
 	{
-	  switch (nargout)
+	  have_b = 1;
+	  if (args(nargin-1).is_scalar_type ())
 	    {
-	    case 0:
-	    case 1:
-	      {
-		QR fact (m, type);
-		retval(0) = fact.R ();
-	      }
-	      break;
-
-	    case 2:
-	      {
-		QR fact (m, type);
-		retval(1) = fact.R ();
-		retval(0) = fact.Q ();
-	      }
-	      break;
-
-	    default:
-	      {
-		QRP fact (m, type);
-		retval(2) = fact.P ();
-		retval(1) = fact.R ();
-		retval(0) = fact.Q ();
-	      }
-	      break;
+	      int val = args(nargin-1).int_value ();
+	      if (val == 0)
+		{
+		  economy = true;
+		  have_b = (nargin > 2 ? 2 : 0);
+		}
 	    }
+	  if (have_b > 0 && args(have_b).is_complex_type ())
+	    is_cmplx = true;
 	}
-    }
-  else if (arg.is_complex_type ())
-    {
-      ComplexMatrix m = arg.complex_matrix_value ();
-
-      if (! error_state)
+	
+      if (!error_state)
 	{
-	  switch (nargout)
+	  if (have_b && nargout < 2)
+	    error ("qr: incorrect number of output arguments");
+	  else if (is_cmplx)
 	    {
-	    case 0:
-	    case 1:
-	      {
-		ComplexQR fact (m, type);
-		retval(0) = fact.R ();
-	      }
-	      break;
-
-	    case 2:
-	      {
-		ComplexQR fact (m, type);
-		retval(1) = fact.R ();
-		retval(0) = fact.Q ();
-	      }
-	      break;
-
-	    default:
-	      {
-		ComplexQRP fact (m, type);
-		retval(2) = fact.P ();
-		retval(1) = fact.R ();
-		retval(0) = fact.Q ();
-	      }
-	      break;
+	      SparseComplexQR q (arg.sparse_complex_matrix_value ());
+	      if (!error_state)
+		{
+		  if (have_b > 0)
+		    {
+		      retval(1) = q.R (economy);
+		      retval(0) = q.C (args(have_b).complex_matrix_value ());
+		      if (arg.rows() < arg.columns())
+			warning ("qr: non minimum norm solution for under-determined problem");
+		    }
+		  else if (nargout > 1)
+		    {
+		      retval(1) = q.R (economy);
+		      retval(0) = q.Q ();
+		    }
+		  else
+		    retval(0) = q.R (economy);
+		}
+	    }
+	  else
+	    {
+	      SparseQR q (arg.sparse_matrix_value ());
+	      if (!error_state)
+		{
+		  if (have_b > 0)
+		    {
+		      retval(1) = q.R (economy);
+		      retval(0) = q.C (args(have_b).matrix_value ());
+		      if (args(0).rows() < args(0).columns())
+			warning ("qr: non minimum norm solution for under-determined problem");
+		    }
+		  else if (nargout > 1)
+		    {
+		      retval(1) = q.R (economy);
+		      retval(0) = q.Q ();
+		    }
+		  else
+		    retval(0) = q.R (economy);
+		}
 	    }
 	}
     }
   else
     {
-      gripe_wrong_type_arg ("qr", arg);
+      QR::type type = (nargout == 0 || nargout == 1) ? QR::raw
+	: (nargin == 2 ? QR::economy : QR::std);
+
+      if (arg.is_real_type ())
+	{
+	  Matrix m = arg.matrix_value ();
+
+	  if (! error_state)
+	    {
+	      switch (nargout)
+		{
+		case 0:
+		case 1:
+		  {
+		    QR fact (m, type);
+		    retval(0) = fact.R ();
+		  }
+		  break;
+
+		case 2:
+		  {
+		    QR fact (m, type);
+		    retval(1) = fact.R ();
+		    retval(0) = fact.Q ();
+		  }
+		  break;
+
+		default:
+		  {
+		    QRP fact (m, type);
+		    retval(2) = fact.P ();
+		    retval(1) = fact.R ();
+		    retval(0) = fact.Q ();
+		  }
+		  break;
+		}
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix m = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    {
+	      switch (nargout)
+		{
+		case 0:
+		case 1:
+		  {
+		    ComplexQR fact (m, type);
+		    retval(0) = fact.R ();
+		  }
+		  break;
+
+		case 2:
+		  {
+		    ComplexQR fact (m, type);
+		    retval(1) = fact.R ();
+		    retval(0) = fact.Q ();
+		  }
+		  break;
+
+		default:
+		  {
+		    ComplexQRP fact (m, type);
+		    retval(2) = fact.P ();
+		    retval(1) = fact.R ();
+		    retval(0) = fact.Q ();
+		  }
+		  break;
+		}
+	    }
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("qr", arg);
+	}
     }
 
   return retval;
 }
+
+/*
+
+The deactivated tests below can't be tested till rectangular back-subs is
+implemented for sparse matrices.
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = sprandn(n,n,d)+speye(n,n);
+%! r = qr(a);
+%! assert(r'*r,a'*a,1e-10)
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = sprandn(n,n,d)+speye(n,n);
+%! q = symamd(a);
+%! a = a(q,q);
+%! r = qr(a);
+%! assert(r'*r,a'*a,1e-10)
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = sprandn(n,n,d)+speye(n,n);
+%! [c,r] = qr(a,ones(n,1));
+%! assert (r\c,full(a)\ones(n,1),10e-10)
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = sprandn(n,n,d)+speye(n,n);
+%! b = randn(n,2);
+%! [c,r] = qr(a,b);
+%! assert (r\c,full(a)\b,10e-10)
+
+%% Test under-determined systems!!
+%!#testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = sprandn(n,n+1,d)+speye(n,n+1);
+%! b = randn(n,2);
+%! [c,r] = qr(a,b);
+%! assert (r\c,full(a)\b,10e-10)
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = 1i*sprandn(n,n,d)+speye(n,n);
+%! r = qr(a);
+%! assert(r'*r,a'*a,1e-10)
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = 1i*sprandn(n,n,d)+speye(n,n);
+%! q = symamd(a);
+%! a = a(q,q);
+%! r = qr(a);
+%! assert(r'*r,a'*a,1e-10)
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = 1i*sprandn(n,n,d)+speye(n,n);
+%! [c,r] = qr(a,ones(n,1));
+%! assert (r\c,full(a)\ones(n,1),10e-10)
+
+%!testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = 1i*sprandn(n,n,d)+speye(n,n);
+%! b = randn(n,2);
+%! [c,r] = qr(a,b);
+%! assert (r\c,full(a)\b,10e-10)
+
+%% Test under-determined systems!!
+%!#testif HAVE_CXSPARSE
+%! n = 20; d= 0.2;
+%! a = 1i*sprandn(n,n+1,d)+speye(n,n+1);
+%! b = randn(n,2);
+%! [c,r] = qr(a,b);
+%! assert (r\c,full(a)\b,10e-10)
+
+%!error qr(sprandn(10,10,0.2),ones(10,1));
+
+*/
+
 
 /*
 ;;; Local Variables: ***

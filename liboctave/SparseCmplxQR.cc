@@ -39,10 +39,12 @@ typedef double _Complex cs_complex_t;
   cs_complex_t *buf = reinterpret_cast<cs_complex_t *> (buf ## tmp);
 
 #define OCTAVE_C99_ZERO (0. + 0.iF)
+#define OCTAVE_C99_ONE (1. + 0.iF)
 #else
 #define OCTAVE_C99_COMPLEX(buf, n) \
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, (n));
 #define OCTAVE_C99_ZERO cs_complex_t(0., 0.);
+#define OCTAVE_C99_ONE cs_complex_t(1., 0.);
 #endif
 
 SparseComplexQR::SparseComplexQR_rep::SparseComplexQR_rep 
@@ -226,6 +228,57 @@ SparseComplexQR::SparseComplexQR_rep::C (const ComplexMatrix &b) const
 	}
     }
   return ret;
+#else
+  return ComplexMatrix ();
+#endif
+}
+
+ComplexMatrix
+SparseComplexQR::SparseComplexQR_rep::Q (void) const
+{
+#ifdef HAVE_CXSPARSE
+  octave_idx_type nc = N->L->n;
+  octave_idx_type nr = nrows;
+  ComplexMatrix ret(nr, nr);
+  Complex *vec = ret.fortran_vec();
+  if (nr < 0 || nc < 0)
+    (*current_liboctave_error_handler) ("matrix dimension mismatch");
+  else if (nr == 0 || nc == 0)
+    ret = ComplexMatrix (nc, nr, Complex (0.0, 0.0));
+  else
+    {
+      OCTAVE_C99_COMPLEX (bvec, nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+	bvec[i] = OCTAVE_C99_ZERO;
+      OCTAVE_LOCAL_BUFFER (Complex, buf, S->m2);
+      for (volatile octave_idx_type j = 0, idx = 0; j < nr; j++, idx+=nr)
+	{
+	  OCTAVE_QUIT;
+	  bvec[j] = OCTAVE_C99_ONE;
+	  volatile octave_idx_type nm = (nr < nc ? nr : nc);
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+#if defined(CS_VER) && (CS_VER >= 2)
+	  CXSPARSE_ZNAME (_ipvec) 
+	    (S->pinv, bvec, reinterpret_cast<cs_complex_t *>(buf), nr);
+#else
+	  CXSPARSE_ZNAME (_ipvec) 
+	    (nr, S->Pinv, bvec, reinterpret_cast<cs_complex_t *>(buf));
+#endif
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	  for (volatile octave_idx_type i = 0; i < nm; i++)
+	    {
+	      OCTAVE_QUIT;
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      CXSPARSE_ZNAME (_happly) 
+		(N->L, i, N->B[i], reinterpret_cast<cs_complex_t *>(buf));
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	    }
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    vec[i+idx] = buf[i];
+	  bvec[j] = OCTAVE_C99_ZERO;
+	}
+    }
+  return ret.hermitian ();
 #else
   return ComplexMatrix ();
 #endif

@@ -37,8 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 DEFUN_DLD (det, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{d}, @var{rcond}] = } det (@var{a})\n\
-Compute the determinant of @var{a} using @sc{Lapack}.  Return an estimate\n\
-of the reciprocal condition number if requested.\n\
+Compute the determinant of @var{a} using @sc{Lapack} for full and UMFPACK\n\
+for sparse matrices.  Return an estimate of the reciprocal condition number\n\
+if requested.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -53,8 +54,8 @@ of the reciprocal condition number if requested.\n\
 
   octave_value arg = args(0);
     
-  int nr = arg.rows ();
-  int nc = arg.columns ();
+  octave_idx_type nr = arg.rows ();
+  octave_idx_type nc = arg.columns ();
 
   if (nr == 0 && nc == 0)
     {
@@ -76,39 +77,67 @@ of the reciprocal condition number if requested.\n\
 
   if (arg.is_real_type ())
     {
-      Matrix m = arg.matrix_value ();
-
-      if (! error_state)
+      octave_idx_type info;
+      double rcond = 0.0;
+      // Always compute rcond, so we can detect numerically
+      // singular matrices.
+      if (arg.is_sparse_type ())
 	{
-	  // Always compute rcond, so we can detect numerically
-	  // singular matrices.
-
-	  octave_idx_type info;
-	  double rcond = 0.0;
-	  DET det = m.determinant (info, rcond);
-	  retval(1) = rcond;
-	  volatile double xrcond = rcond;
-	  xrcond += 1.0;
-	  retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+	  SparseMatrix m = arg.sparse_matrix_value ();
+	  if (! error_state)
+	    {
+	      DET det = m.determinant (info, rcond);
+	      retval(1) = rcond;
+	      volatile double xrcond = rcond;
+	      xrcond += 1.0;
+	      retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+	    }
+	}
+      else
+	{
+	  Matrix m = arg.matrix_value ();
+	  if (! error_state)
+	    {
+	      DET det = m.determinant (info, rcond);
+	      retval(1) = rcond;
+	      volatile double xrcond = rcond;
+	      xrcond += 1.0;
+	      retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+	    }
 	}
     }
   else if (arg.is_complex_type ())
     {
-      ComplexMatrix m = arg.complex_matrix_value ();
-
-      if (! error_state)
+      octave_idx_type info;
+      double rcond = 0.0;
+      // Always compute rcond, so we can detect numerically
+      // singular matrices.
+      if (arg.is_sparse_type ())
 	{
-	  // Always compute rcond, so we can detect numerically
-	  // singular matrices.
+	  SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+	  if (! error_state)
+	    {
+	      ComplexDET det = m.determinant (info, rcond);
+	      retval(1) = rcond;
+	      volatile double xrcond = rcond;
+	      xrcond += 1.0;
+	      retval(0) = ((info == -1 || xrcond == 1.0) 
+			   ? Complex (0.0) : det.value ());
+	    }
+	}
+      else
+	{
+	  ComplexMatrix m = arg.complex_matrix_value ();
+	  if (! error_state)
+	    {
+	      ComplexDET det = m.determinant (info, rcond);
+	      retval(1) = rcond;
+	      volatile double xrcond = rcond;
+	      xrcond += 1.0;
+	      retval(0) = ((info == -1 || xrcond == 1.0) 
+			   ? Complex (0.0) : det.value ());
 
-	  octave_idx_type info;
-	  double rcond = 0.0;
-	  ComplexDET det = m.determinant (info, rcond);
-	  retval(1) = rcond;
-	  volatile double xrcond = rcond;
-	  xrcond += 1.0;
-	  retval(0) = ((info == -1 || xrcond == 1.0)
-		       ? Complex (0.0) : det.value ());
+	    }
 	}
     }
   else

@@ -189,6 +189,227 @@ map_m_m (d_dd_fcn f, const Matrix& x, const Matrix& y)
   return retval;
 }
 
+static SparseMatrix
+map_d_s (d_dd_fcn f, double x, const SparseMatrix& y)
+{
+  octave_idx_type nr = y.rows ();
+  octave_idx_type nc = y.columns ();
+  SparseMatrix retval;
+  double f_zero = f (x, 0.);
+
+  if (f_zero != 0)
+    {
+      retval = SparseMatrix (nr, nc, f_zero);
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = y.cidx (j); i < y.cidx (j+1); i++)
+	  {
+	    OCTAVE_QUIT;
+	    retval.data (y.ridx(i) + j * nr) = f (x, y.data (i));
+	  } 
+
+      retval.maybe_compress (true);
+    }
+  else
+    {
+      octave_idx_type nz = y.nnz ();
+      retval = SparseMatrix (nr, nc, nz);
+      octave_idx_type ii = 0;
+      retval.cidx (ii) = 0;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	{
+	  for (octave_idx_type i = y.cidx (j); i < y.cidx (j+1); i++)
+	    {
+	      OCTAVE_QUIT;
+	      double val = f (x, y.data (i));
+
+	      if (val != 0.0)
+		{
+		  retval.data (ii) = val;
+		  retval.ridx (ii++) = y.ridx (i);
+		}
+	    } 
+	  retval.cidx (j + 1) = ii;
+	}
+
+      retval.maybe_compress (false);
+    }
+
+  return retval;
+}
+
+static SparseMatrix
+map_s_d (d_dd_fcn f, const SparseMatrix& x, double y)
+{
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.columns ();
+  SparseMatrix retval;
+  double f_zero = f (0., y);
+
+  if (f_zero != 0)
+    {
+      retval = SparseMatrix (nr, nc, f_zero);
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = x.cidx (j); i < x.cidx (j+1); i++)
+	  {
+	    OCTAVE_QUIT;
+	    retval.data (x.ridx(i) + j * nr) = f (x.data (i), y);
+	  } 
+
+      retval.maybe_compress (true);
+    }
+  else
+    {
+      octave_idx_type nz = x.nnz ();
+      retval = SparseMatrix (nr, nc, nz);
+      octave_idx_type ii = 0;
+      retval.cidx (ii) = 0;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	{
+	  for (octave_idx_type i = x.cidx (j); i < x.cidx (j+1); i++)
+	    {
+	      OCTAVE_QUIT;
+	      double val = f (x.data (i), y);
+
+	      if (val != 0.0)
+		{
+		  retval.data (ii) = val;
+		  retval.ridx (ii++) = x.ridx (i);
+		}
+	    } 
+	  retval.cidx (j + 1) = ii;
+	}
+
+      retval.maybe_compress (false);
+    }
+
+  return retval;
+}
+
+static SparseMatrix
+map_s_s (d_dd_fcn f, const SparseMatrix& x, const SparseMatrix& y)
+{
+  octave_idx_type nr = x.rows ();
+  octave_idx_type nc = x.columns ();
+
+  octave_idx_type y_nr = y.rows ();
+  octave_idx_type y_nc = y.columns ();
+
+  assert (nr == y_nr && nc == y_nc);
+
+  SparseMatrix retval;
+  double f_zero = f (0., 0.);
+
+  if (f_zero != 0)
+    {
+      retval = SparseMatrix (nr, nc, f_zero);
+      octave_idx_type k1 = 0, k2 = 0;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	{
+	  while (k1 < x.cidx(j+1) && k2 < y.cidx(j+1))
+	    {
+	      OCTAVE_QUIT;
+	      if (k1 >= x.cidx(j+1))
+		{
+		  retval.data (y.ridx(k2) + j * nr) = f (0.0, y.data (k2));
+		  k2++;
+		}
+	      else if (k2 >= y.cidx(j+1))
+		{
+		  retval.data (x.ridx(k1) + j * nr) = f (x.data (k1), 0.0);
+		  k1++;
+		}
+	      else
+		{
+		  octave_idx_type rx = x.ridx(k1);
+		  octave_idx_type ry = y.ridx(k2);
+
+		  if (rx < ry)
+		    {
+		      retval.data (rx + j * nr) = f (x.data (k1), 0.0);
+		      k1++;
+		    }
+		  else if (rx > ry)
+		    {
+		      retval.data (ry + j * nr) = f (0.0, y.data (k2));
+		      k2++;
+		    }
+		  else
+		    {
+		      retval.data (ry + j * nr) = f (x.data (k1), y.data (k2));
+		      k1++;
+		      k2++;
+		    }
+		}
+	    }
+	}
+
+      retval.maybe_compress (true);
+    }
+  else
+    {
+      octave_idx_type nz = y.nnz ();
+      retval = SparseMatrix (nr, nc, nz);
+      octave_idx_type ii = 0;
+      retval.cidx (ii) = 0;
+      octave_idx_type k1 = 0, k2 = 0;
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	{
+	  while (k1 < x.cidx(j+1) && k2 < y.cidx(j+1))
+	    {
+	      OCTAVE_QUIT;
+	      double val;
+	      octave_idx_type r;
+	      if (k1 >= x.cidx(j+1))
+		{
+		  r = y.ridx (k2);
+		  val = f (0.0, y.data (k2++));
+		}
+	      else if (k2 >= y.cidx(j+1))
+		{
+		  r = x.ridx (k1);
+		  val = f (x.data (k1++), 0.0);
+		}
+	      else
+		{
+		  octave_idx_type rx = x.ridx(k1);
+		  octave_idx_type ry = y.ridx(k2);
+
+		  if (rx < ry)
+		    {
+		      r = x.ridx (k1);
+		      val = f (x.data (k1++), 0.0);
+		    }
+		  else if (rx > ry)
+		    {
+		      r = y.ridx (k2);
+		      val = f (0.0, y.data (k2++));
+		    }
+		  else
+		    {
+		      r = y.ridx (k2);
+		      val = f (x.data (k1++), y.data (k2++));
+		    }
+		}
+	      if (val != 0.0)
+		{
+		  retval.data (ii) = val;
+		  retval.ridx (ii++) = r;
+		}
+	    }
+	}
+
+      retval.maybe_compress (false);
+    }
+
+  return retval;
+}
+
 DEFUN (atan2, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan2 (@var{y}, @var{x})\n\
@@ -244,34 +465,74 @@ and @var{x}.  The result is in range -pi to pi.\n\
 
 	      if (! error_state)
 		{
-		  Matrix x = arg_x.matrix_value ();
+		  if (arg_x.is_sparse_type ())
+		    {
+		      SparseMatrix x = arg_x.sparse_matrix_value ();
 
-		  if (! error_state)
-		    retval = map_d_m (atan2, y, x);
+		      if (! error_state)
+			retval = map_d_s (atan2, y, x);
+		    }
+		  else
+		    {
+		      Matrix x = arg_x.matrix_value ();
+
+		      if (! error_state)
+			retval = map_d_m (atan2, y, x);
+		    }
 		}
 	    }
 	  else if (x_is_scalar)
 	    {
-	      Matrix y = arg_y.matrix_value ();
-
-	      if (! error_state)
+	      if (arg_y.is_sparse_type ())
 		{
-		  double x = arg_x.double_value ();
+		  SparseMatrix y = arg_y.sparse_matrix_value ();
 
 		  if (! error_state)
-		    retval = map_m_d (atan2, y, x);
+		    {
+		      double x = arg_x.double_value ();
+
+		      if (! error_state)
+			retval = map_s_d (atan2, y, x);
+		    }
+		}
+	      else
+		{
+		  Matrix y = arg_y.matrix_value ();
+
+		  if (! error_state)
+		    {
+		      double x = arg_x.double_value ();
+
+		      if (! error_state)
+			retval = map_m_d (atan2, y, x);
+		    }
 		}
 	    }
 	  else if (y_nr == x_nr && y_nc == x_nc)
 	    {
-	      Matrix y = arg_y.matrix_value ();
-
-	      if (! error_state)
+	      if (arg_y.is_sparse_type () || arg_x.is_sparse_type ())
 		{
-		  Matrix x = arg_x.matrix_value ();
+		  SparseMatrix y = arg_y.sparse_matrix_value ();
 
 		  if (! error_state)
-		    retval = map_m_m (atan2, y, x);
+		    {
+		      SparseMatrix x = arg_x.sparse_matrix_value ();
+
+		      if (! error_state)
+			retval = map_s_s (atan2, y, x);
+		    }
+		}
+	      else
+		{
+		  Matrix y = arg_y.matrix_value ();
+
+		  if (! error_state)
+		    {
+		      Matrix x = arg_x.matrix_value ();
+
+		      if (! error_state)
+			retval = map_m_m (atan2, y, x);
+		    }
 		}
 	    }
 	  else
@@ -289,7 +550,7 @@ DEFUN (fmod, args, ,
 @deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})\n\
 Compute the floating point remainder of dividing @var{x} by @var{y}\n\
 using the C library function @code{fmod}.  The result has the same\n\
-sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
+sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 @end deftypefn")
 {
   octave_value retval;
@@ -336,34 +597,74 @@ sign as @var{x}.  If @var{y} is zero, the result implementation-defined.\n\
 
 	  if (! error_state)
 	    {
-	      Matrix x = arg_x.matrix_value ();
+	      if (arg_x.is_sparse_type ())
+		{
+		  SparseMatrix x = arg_x.sparse_matrix_value ();
 
-	      if (! error_state)
-		retval = map_m_d (fmod, x, y);
+		  if (! error_state)
+		    retval = map_s_d (fmod, x, y);
+		}
+	      else
+		{
+		  Matrix x = arg_x.matrix_value ();
+
+		  if (! error_state)
+		    retval = map_m_d (fmod, x, y);
+		}
 	    }
 	}
       else if (x_is_scalar)
 	{
-	  Matrix y = arg_y.matrix_value ();
-
-	  if (! error_state)
+	  if (arg_y.is_sparse_type ())
 	    {
-	      double x = arg_x.double_value ();
+	      SparseMatrix y = arg_y.sparse_matrix_value ();
 
 	      if (! error_state)
-		retval = map_d_m (fmod, x, y);
+		{
+		  double x = arg_x.double_value ();
+
+		  if (! error_state)
+		    retval = map_d_s (fmod, x, y);
+		}
+	    }
+	  else
+	    {
+	      Matrix y = arg_y.matrix_value ();
+
+	      if (! error_state)
+		{
+		  double x = arg_x.double_value ();
+
+		  if (! error_state)
+		    retval = map_d_m (fmod, x, y);
+		}
 	    }
 	}
       else if (y_nr == x_nr && y_nc == x_nc)
 	{
-	  Matrix y = arg_y.matrix_value ();
-
-	  if (! error_state)
+	  if (arg_y.is_sparse_type () || arg_x.is_sparse_type ())
 	    {
-	      Matrix x = arg_x.matrix_value ();
+	      SparseMatrix y = arg_y.sparse_matrix_value ();
 
 	      if (! error_state)
-		retval = map_m_m (fmod, x, y);
+		{
+		  SparseMatrix x = arg_x.sparse_matrix_value ();
+
+		  if (! error_state)
+		    retval = map_s_s (fmod, x, y);
+		}
+	    }
+	  else
+	    {
+	      Matrix y = arg_y.matrix_value ();
+
+	      if (! error_state)
+		{
+		  Matrix x = arg_x.matrix_value ();
+
+		  if (! error_state)
+		    retval = map_m_m (fmod, x, y);
+		}
 	    }
 	}
       else

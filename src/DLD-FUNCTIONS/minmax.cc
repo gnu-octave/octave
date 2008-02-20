@@ -38,6 +38,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 
 #include "ov-cx-mat.h"
+#include "ov-re-sparse.h"
+#include "ov-cx-sparse.h"
 
 #define MINMAX_DOUBLE_BODY(FCN) \
 { \
@@ -310,6 +312,155 @@ along with Octave; see the file COPYING.  If not, see
     } \
 }
 
+#define MINMAX_SPARSE_BODY(FCN) \
+{ \
+  bool single_arg = (nargin == 1) || arg2.is_empty();	\
+ \
+  if (single_arg && (nargout == 1 || nargout == 0)) \
+    { \
+      if (arg1.type_id () == octave_sparse_matrix::static_type_id ()) \
+	retval(0) = arg1.sparse_matrix_value () .FCN (dim); \
+      else if (arg1.type_id () == \
+	       octave_sparse_complex_matrix::static_type_id ()) \
+	retval(0) = arg1.sparse_complex_matrix_value () .FCN (dim); \
+      else \
+	gripe_wrong_type_arg (#FCN, arg1); \
+    } \
+  else if (single_arg && nargout == 2) \
+    { \
+      Array2<octave_idx_type> index; \
+ \
+      if (arg1.type_id () == octave_sparse_matrix::static_type_id ()) \
+	retval(0) = arg1.sparse_matrix_value () .FCN (index, dim); \
+      else if (arg1.type_id () == \
+	       octave_sparse_complex_matrix::static_type_id ()) \
+	retval(0) = arg1.sparse_complex_matrix_value () .FCN (index, dim); \
+      else \
+	gripe_wrong_type_arg (#FCN, arg1); \
+ \
+      octave_idx_type len = index.numel (); \
+ \
+      if (len > 0) \
+	{ \
+	  double nan_val = lo_ieee_nan_value (); \
+ \
+	  NDArray idx (index.dims ()); \
+ \
+	  for (octave_idx_type i = 0; i < len; i++) \
+	    { \
+	      OCTAVE_QUIT; \
+	      octave_idx_type tmp = index.elem (i) + 1; \
+	      idx.elem (i) = (tmp <= 0) \
+		? nan_val : static_cast<double> (tmp); \
+	    } \
+ \
+	  retval(1) = idx; \
+	} \
+      else \
+	retval(1) = NDArray (); \
+    } \
+  else \
+    { \
+      int arg1_is_scalar = arg1.is_scalar_type (); \
+      int arg2_is_scalar = arg2.is_scalar_type (); \
+ \
+      int arg1_is_complex = arg1.is_complex_type (); \
+      int arg2_is_complex = arg2.is_complex_type (); \
+ \
+      if (arg1_is_scalar) \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      Complex c1 = arg1.complex_value (); \
+	      \
+	      SparseComplexMatrix m2 = arg2.sparse_complex_matrix_value (); \
+	      \
+	      if (! error_state) \
+		{ \
+		  SparseComplexMatrix result = FCN (c1, m2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	  else \
+	    { \
+	      double d1 = arg1.double_value (); \
+	      SparseMatrix m2 = arg2.sparse_matrix_value (); \
+	      \
+	      if (! error_state) \
+		{ \
+		  SparseMatrix result = FCN (d1, m2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	} \
+      else if (arg2_is_scalar) \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      SparseComplexMatrix m1 = arg1.sparse_complex_matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  Complex c2 = arg2.complex_value (); \
+		  SparseComplexMatrix result = FCN (m1, c2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	  else \
+	    { \
+	      SparseMatrix m1 = arg1.sparse_matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  double d2 = arg2.double_value (); \
+		  SparseMatrix result = FCN (m1, d2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	} \
+      else \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      SparseComplexMatrix m1 = arg1.sparse_complex_matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  SparseComplexMatrix m2 = arg2.sparse_complex_matrix_value (); \
+ \
+		  if (! error_state) \
+		    { \
+		      SparseComplexMatrix result = FCN (m1, m2); \
+		      if (! error_state) \
+			retval(0) = result; \
+		    } \
+		} \
+	    } \
+	  else \
+	    { \
+	      SparseMatrix m1 = arg1.sparse_matrix_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  SparseMatrix m2 = arg2.sparse_matrix_value (); \
+ \
+		  if (! error_state) \
+		    { \
+		      SparseMatrix result = FCN (m1, m2); \
+		      if (! error_state) \
+			retval(0) = result; \
+		    } \
+		} \
+	    } \
+	} \
+    } \
+}
+
+
 #define MINMAX_BODY(FCN) \
  \
   octave_value_list retval;  \
@@ -388,6 +539,8 @@ along with Octave; see the file COPYING.  If not, see
       else if (arg1.is_int64_type ()) \
         MINMAX_INT_BODY (FCN, int64) \
     } \
+  else if (arg1.is_sparse_type ()) \
+    MINMAX_SPARSE_BODY (FCN) \
   else \
     MINMAX_DOUBLE_BODY (FCN) \
  \

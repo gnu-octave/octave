@@ -50,12 +50,8 @@ function spy (S, varargin)
     endif
   endfor
 
-  if (issparse (S))
-    [i, j, s, m, n] = spfind (S);
-  else
-    [i, j, s] = find (S);
-    [m, n] = size (S);
-  endif
+  [i, j, s] = find (S);
+  [m, n] = size (S);
 
   if (isnan (markersize))
     plot (j, i, LineSpec);

@@ -1,3 +1,8 @@
+2008-02-20  David Bateman  <dbateman@free.fr>
+ 
+ 	* interpreter/sparse.txi: Remove references to spmin, spmax,
+ 	spatan2, spfind, spqr and spdet.
+ 	
 2008-02-19  Carlo de Falco  <kingcrimson@tiscali.it>
 
 	* interpreter/package.txi: Improve INDEX file documentation.

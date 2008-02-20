@@ -56,7 +56,9 @@ function [A, c] = spdiags (v, c, m, n)
 
   if (nargin == 1 || nargin == 2)
     ## extract nonzero diagonals of v into A,c
-    [i, j, v, nr, nc] = spfind (v);
+    [i, j, v] = find (v);
+    [nr, nc] = size (v);
+
     if (nargin == 1)
       ## c contains the active diagonals
       c = unique (j-i);

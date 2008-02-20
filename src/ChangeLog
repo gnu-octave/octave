@@ -4,6 +4,21 @@
 
 2008-02-20  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/det.cc, DLD-FUNCTIONS/find.cc,
+	* DLD-FUNCTIONS/minmax.cc, DLD-FUNCTIONS/qr.cc:
+	Treat sparse matrices.
+	
+	* DLD-FUNCTIONS/sparse.cc (Fspmin, Fspmax, Fatan2): Remove functions.
+
+	* DLD-FUNCTIONS/dmperm.cc: Rename from spqr.cc.
+	(Fspqr): Delete function.
+
+	* DLD-FUNCTIONS/spqr.cc, DLD-FUNCTIONS/spdet.cc,
+	DLD-FUNCTIONS/spfind.cc: Remove.
+
+	* Makefile.in (DLD_XSRC): Add dmperm.cc to the list.
+	Delete det.cc, find.cc, minmax.cc, and qr.cc from the list.
+
 	* Makefile.in (OV_SRC): Remove ov-mapper.cc.
 	(OV_INCLUDES): Remove ov-mapper.h.
 	(DEFUN_PATTERN): No longer accept DEFUN_MAPPER as valid.

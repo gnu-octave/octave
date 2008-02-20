@@ -547,26 +547,26 @@ gen_unaryop_tests() {
 %!assert(spcumprod(as,1),sparse(cumprod(af,1)))
 %!assert(spcumprod(as,2),sparse(cumprod(af,2)))
 
-%!assert(spmin(as),sparse(min(af)))
-%!assert(full(spmin(as(:))),min(af(:)))
-%!assert(spmin(as,[],1),sparse(min(af,[],1)))
-%!assert(spmin(as,[],2),sparse(min(af,[],2)))
-%!assert(spmin(as,[],1),sparse(min(af,[],1)))
-%!assert(spmin(as,0),sparse(min(af,0)))
-%!assert(spmin(as,bs),sparse(min(af,bf)))
-%!assert(spmax(as),sparse(max(af)))
-%!assert(full(spmax(as(:))),max(af(:)))
-%!assert(spmax(as,[],1),sparse(max(af,[],1)))
-%!assert(spmax(as,[],2),sparse(max(af,[],2)))
-%!assert(spmax(as,[],1),sparse(max(af,[],1)))
-%!assert(spmax(as,0),sparse(max(af,0)))
-%!assert(spmax(as,bs),sparse(max(af,bf)))
+%!assert(min(as),sparse(min(af)))
+%!assert(full(min(as(:))),min(af(:)))
+%!assert(min(as,[],1),sparse(min(af,[],1)))
+%!assert(min(as,[],2),sparse(min(af,[],2)))
+%!assert(min(as,[],1),sparse(min(af,[],1)))
+%!assert(min(as,0),sparse(min(af,0)))
+%!assert(min(as,bs),sparse(min(af,bf)))
+%!assert(max(as),sparse(max(af)))
+%!assert(full(max(as(:))),max(af(:)))
+%!assert(max(as,[],1),sparse(max(af,[],1)))
+%!assert(max(as,[],2),sparse(max(af,[],2)))
+%!assert(max(as,[],1),sparse(max(af,[],1)))
+%!assert(max(as,0),sparse(max(af,0)))
+%!assert(max(as,bs),sparse(max(af,bf)))
 
 %!assert(as==as)
 %!assert(as==af)
 %!assert(af==as)
 %!test
-%! [ii,jj,vv,nr,nc] = spfind(as);
+%! [ii,jj,vv,nr,nc] = find(as);
 %! assert(af,full(sparse(ii,jj,vv,nr,nc)));
 %!assert(nnz(as),sum(af(:)!=0))
 %!assert(nnz(as),nnz(af))
@@ -581,21 +581,21 @@ gen_unaryop_tests() {
 %!error [i,j]=size(af);as(i-1,j+1);
 %!error [i,j]=size(af);as(i+1,j-1);
 %!test
-%! [Is,Js,Vs] = spfind(as);
+%! [Is,Js,Vs] = find(as);
 %! [If,Jf,Vf] = find(af);
 %! assert(Is,If);
 %! assert(Js,Jf);
 %! assert(Vs,Vf);
 %!error as(0,1);
 %!error as(1,0);
-%!assert(spfind(as),find(af))
+%!assert(find(as),find(af))
 %!test
-%! [i,j,v] = spfind(as);
+%! [i,j,v] = find(as);
 %! [m,n] = size(as);
 %! x = sparse(i,j,v,m,n);
 %! assert(x,as);
 %!test
-%! [i,j,v,m,n] = spfind(as);
+%! [i,j,v,m,n] = find(as);
 %! x = sparse(i,j,v,m,n);
 %! assert(x,as);
 %!assert(issparse(horzcat(as,as)));
@@ -631,7 +631,7 @@ gen_square_tests() {
 
     cat >>$TESTS <<EOF
 %!testif HAVE_UMFPACK
-%! assert(spdet(bs+speye(size(bs))),det(bf+eye(size(bf))),100*eps*abs(det(bf+eye(size(bf)))))
+%! assert(det(bs+speye(size(bs))),det(bf+eye(size(bf))),100*eps*abs(det(bf+eye(size(bf)))))
 
 %!testif HAVE_UMFPACK 
 %! [l,u]=splu(sparse([1,1;1,1]));
@@ -650,36 +650,36 @@ gen_square_tests() {
 %! [L,U,P] = splu(bs);
 %! assert(P'*L*U,bs,1e-10);
 %! # triangularity
-%! [i,j,v]=spfind(L);
+%! [i,j,v]=find(L);
 %! assert(i-j>=0);
-%! [i,j,v]=spfind(U);
+%! [i,j,v]=find(U);
 %! assert(j-i>=0);
 
 %!testif HAVE_UMFPACK ;# simple LU + row/col permutations
 %! [L,U,P,Q] = splu(bs);
 %! assert(P'*L*U*Q',bs,1e-10);
 %! # triangularity
-%! [i,j,v]=spfind(L);
+%! [i,j,v]=find(L);
 %! assert(i-j>=0);
-%! [i,j,v]=spfind(U);
+%! [i,j,v]=find(U);
 %! assert(j-i>=0);
 
 %!testif HAVE_UMFPACK ;# LU with fixed column permutation
 %! [L,U,P] = splu(bs,colamd(bs));
 %! assert(P'*L*U,bs,1e-10);
 %! # triangularity
-%! [i,j,v]=spfind(L);
+%! [i,j,v]=find(L);
 %! assert(i-j>=0);
-%! [i,j,v]=spfind(U(:,colamd(bs)));
+%! [i,j,v]=find(U(:,colamd(bs)));
 %! assert(j-i>=0);
 
 %!testif HAVE_UMFPACK ;# LU with initial column permutation
 %! [L,U,P,Q] = splu(bs,colamd(bs));
 %! assert(P'*L*U*Q',bs,1e-10);
 %! # triangularity
-%! [i,j,v]=spfind(L);
+%! [i,j,v]=find(L);
 %! assert(i-j>=0);
-%! [i,j,v]=spfind(U);
+%! [i,j,v]=find(U);
 %! assert(j-i>=0);
 
 %!testif HAVE_UMFPACK ;# inverse
@@ -1020,20 +1020,20 @@ cat >>$TESTS <<EOF
 %!test
 %! us = alpha*[speye(11,9),[1;sparse(8,1);1;0]];
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (us, xf);
+%! [c,r] = qr (us, xf);
 %! assert(us\xf,r\c,100*eps)
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (us, xs);
+%! [c,r] = qr (us, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(us\xs,r\c,100*eps)
 %!test
 %! pus = us(:,[1:8,10,9]);
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (pus, xf);
+%! [c,r] = qr (pus, xf);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xf,r\c,100*eps)
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (pus, xs);
+%! [c,r] = qr (pus, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pus\xs,r\c,100*eps)
 %!test
@@ -1051,20 +1051,20 @@ cat >>$TESTS <<EOF
 %! xf = beta * ones(12,2);
 %! xs = speye(12,12);
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (ls, xf);
+%! [c,r] = qr (ls, xf);
 %! assert(ls\xf,r\c,100*eps)
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (ls, xs);
+%! [c,r] = qr (ls, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(ls\xs,r\c,100*eps)
 %!testif HAVE_CXSPARSE
 %! pls = ls(:,[1:8,10,9]);
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (pls, xf);
+%! [c,r] = qr (pls, xf);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xf,r\c,100*eps)
 %!testif HAVE_CXSPARSE
-%! [c,r] = spqr (pls, xs);
+%! [c,r] = qr (pls, xs);
 %! r = matrix_type(r,"Singular"); ## Force Matrix Type
 %! assert(pls\xs,r\c,100*eps)
 

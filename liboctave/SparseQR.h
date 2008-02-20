@@ -63,6 +63,8 @@ protected:
 
     Matrix C (const Matrix &b) const;
 
+    Matrix Q (void) const;
+
     int count;
 
     octave_idx_type nrows;
@@ -113,6 +115,8 @@ public:
   SparseMatrix R (const bool econ = false) const { return rep->R(econ); }
 
   Matrix C (const Matrix &b) const { return rep->C(b); }
+
+  Matrix Q (void) const { return rep->Q(); }
 
   friend Matrix qrsolve (const SparseMatrix &a, const Matrix &b, 
 			 octave_idx_type &info);

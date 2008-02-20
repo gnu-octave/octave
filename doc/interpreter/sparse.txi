@@ -213,8 +213,6 @@ s = spdiag (sparse(randn(1,n)), -1);
 creates a sparse (@var{n}+1)-by-(@var{n}+1) sparse matrix with a single
 diagonal defined.
 
-@DOCSTRING(spatan2)
-
 @DOCSTRING(spcumprod)
 
 @DOCSTRING(spcumsum)
@@ -309,8 +307,6 @@ number of memory allocations.
 @DOCSTRING(sparse)
 
 @DOCSTRING(spconvert)
-
-@DOCSTRING(spfind)
 
 The above problem can be avoided in oct-files. However, the construction
 of a sparse matrix from an oct-file is more complex than can be
@@ -472,7 +468,7 @@ used.
   @dfn{sprandn}, @dfn{sprandsym}
 
 @item Sparse matrix conversion:
-  @dfn{full}, @dfn{sparse}, @dfn{spconvert}, @dfn{spfind}
+  @dfn{full}, @dfn{sparse}, @dfn{spconvert}
 
 @item Manipulate sparse matrices
   @dfn{issparse}, @dfn{nnz}, @dfn{nonzeros}, @dfn{nzmax},
@@ -489,8 +485,8 @@ used.
 
 @item Linear algebra:
   @dfn{matrix_type}, @dfn{spchol}, @dfn{cpcholinv}, 
-  @dfn{spchol2inv}, @dfn{spdet}, @dfn{spinv},
-  @dfn{splchol}, @dfn{splu}, @dfn{spqr}, @dfn{normest}, @dfn{condest},
+  @dfn{spchol2inv}, @dfn{spinv},
+  @dfn{splchol}, @dfn{splu}, @dfn{normest}, @dfn{condest},
   @dfn{sprank}
 @c @dfn{spaugment}
 @c @dfn{eigs}, @dfn{svds} but these are in octave-forge for now
@@ -503,8 +499,7 @@ used.
 @item Miscellaneous:
   @dfn{spparms}, @dfn{symbfact}, @dfn{spstats}, 
   @dfn{spprod}, @dfn{spcumsum}, @dfn{spsum},
-  @dfn{spsumsq}, @dfn{spmin}, @dfn{spmax}, @dfn{spatan2}, 
-  @dfn{spdiag}
+  @dfn{spsumsq}, @dfn{spdiag}
 @end table
 
 In addition all of the standard Octave mapper functions (ie. basic
@@ -844,8 +839,6 @@ used with care.
 
 @DOCSTRING(spchol2inv)
 
-@DOCSTRING(spdet)
-
 @DOCSTRING(spinv)
 
 @DOCSTRING(splchol)
@@ -853,8 +846,6 @@ used with care.
 @DOCSTRING(splu)
 
 @DOCSTRING(spparms)
-
-@DOCSTRING(spqr)
 
 @DOCSTRING(sprank)
 

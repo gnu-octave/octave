@@ -27,11 +27,7 @@ function t = nonzeros (s)
     print_usage ();
   endif
 
-  if (issparse (s))
-    [i, j, t] = spfind (s);
-  else
-    [i, j, t] = find (s);
-  endif
+  [i, j, t] = find (s);
 endfunction
 
 %!assert(nonzeros([1,2;3,0]),[1;3;2])

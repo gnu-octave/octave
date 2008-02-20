@@ -215,6 +215,57 @@ SparseQR::SparseQR_rep::C (const Matrix &b) const
 }
 
 Matrix
+SparseQR::SparseQR_rep::Q (void) const
+{
+#ifdef HAVE_CXSPARSE
+  octave_idx_type nc = N->L->n;
+  octave_idx_type nr = nrows;
+  Matrix ret (nr, nr);
+  double *vec = ret.fortran_vec();
+  if (nr < 0 || nc < 0)
+    (*current_liboctave_error_handler) ("matrix dimension mismatch");
+  else if (nr == 0 || nc == 0)
+    ret = Matrix (nc, nr, 0.0);
+  else
+    {
+      OCTAVE_LOCAL_BUFFER (double, bvec, nr + 1);
+      for (octave_idx_type i = 0; i < nr; i++)
+	bvec[i] = 0.;
+      OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
+      for (volatile octave_idx_type j = 0, idx = 0; j < nr; j++, idx+=nr)
+	{
+	  OCTAVE_QUIT;
+	  bvec[j] = 1.0;
+	  for (octave_idx_type i = nr; i < S->m2; i++)
+	    buf[i] = 0.;
+	  volatile octave_idx_type nm = (nr < nc ? nr : nc);
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+#if defined(CS_VER) && (CS_VER >= 2)
+	  CXSPARSE_DNAME (_ipvec) (S->pinv, bvec, buf, nr);
+#else
+	  CXSPARSE_DNAME (_ipvec) (nr, S->Pinv, bvec, buf);
+#endif
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+	  for (volatile octave_idx_type i = 0; i < nm; i++)
+	    {
+	      OCTAVE_QUIT;
+	      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	      CXSPARSE_DNAME (_happly) (N->L, i, N->B[i], buf);
+	      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	    }
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    vec[i+idx] = buf[i];
+	  bvec[j] = 0.0;
+	}
+    }
+  return ret.transpose ();
+#else
+  return Matrix ();
+#endif
+}
+
+Matrix
 qrsolve(const SparseMatrix&a, const Matrix &b, octave_idx_type& info)
 {
   info = -1;

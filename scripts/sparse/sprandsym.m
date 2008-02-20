@@ -35,7 +35,8 @@
 
 function S = sprandsym (n, d)
   if (nargin == 1)
-    [i, j, v, nr, nc] = spfind (tril (n));
+    [i, j, v] = find (tril (n));
+    [nr, nc] = size (n);
     S = sparse (i, j, randn (size (v)), nr, nc);
     S = S + tril (S, -1)';
   elseif (nargin == 2)

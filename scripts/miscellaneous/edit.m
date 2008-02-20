@@ -31,6 +31,10 @@
 ## that file is modifiable, then it will be edited in place.  If it 
 ## is a system function, then it will first be copied to the directory
 ## @code{HOME} (see further down) and then edited.  
+## If no file is found, then the m-file 
+## variant, ending with ".m", will be considered. If still no file
+## is found, then variants with a leading "@@" and then with both a
+## leading "@@" and trailing ".m" will be considered.
 ##
 ## @item
 ## If @var{name} is the name of a function defined in the interpreter but 
@@ -59,6 +63,9 @@
 ## the value of the control field @var{field} will be @var{value}.
 ## If an output argument is requested and the first argument is @code{get}
 ## then @code{edit} will return the value of the control field @var{field}.
+## If the control field does not exist, edit will return a structure 
+## containing all fields and values. Thus, @code{edit get all} returns
+## a complete control structure.
 ## The following control fields are used:
 ##
 ## @table @samp
@@ -108,13 +115,17 @@
 ## Your own default copyright and license.
 ## @end table
 ## 
+## Unless you specify @samp{pd}, edit will prepend the copyright statement 
+## with "Copyright (C) yyyy Function Author".
+## 
 ## @item mode
 ## This value determines whether the editor should be started in async mode
 ## or sync mode. Set it to "async" to start the editor in async mode. The
 ## default is "sync" (see also "system").
-## 
-## Unless you specify @samp{pd}, edit will prepend the copyright statement 
-## with "Copyright (C) yyyy Function Author".
+##
+## @item editinplace
+## Determines whether files should be edited in place, without regard to 
+## whether they are modifiable or not. The default is @code{false}.
 ## @end table
 ## @end deftypefn
 
@@ -134,7 +145,8 @@ function ret = edit (file, state)
   				"AUTHOR", default_user(1),
   				"EMAIL",  [],
   				"LICENSE",  "GPL",
-				"MODE", "sync");
+  				"MODE", "sync",
+  				"EDITINPLACE", false);
 
   mlock; # make sure the state variables survive "clear functions"
 
@@ -159,8 +171,23 @@ function ret = edit (file, state)
       else
     	error('expected "edit MODE sync|async"');
       endif
+    case "EDITINPLACE"
+      if (ischar (state))
+        if (strcmpi (state, "true"))
+          state = true;
+        elseif (strcmpi (state, "false"))
+          state = false;
+        else
+          state = eval (state);
+        endif
+      endif
+      FUNCTION.EDITINPLACE = state;
     case "GET"
-      ret = FUNCTION.(toupper (state));
+      if (isfield (FUNCTION, toupper(state)))
+        ret = FUNCTION.(toupper (state));
+      else
+        ret = FUNCTION;
+      endif
     otherwise
       error ("expected \"edit EDITOR|HOME|AUTHOR|EMAIL|LICENSE|MODE val\"");
     endswitch
@@ -185,55 +212,99 @@ function ret = edit (file, state)
       error ("unable to edit a built-in or compiled function");
   endswitch
 
-  ## Find file in path.
+  ## Checks for whether the file is
+  ## absolute or relative should be handled inside file_in_loadpath.
+  ## That way, it will be possible to look up files correctly given
+  ## partial path information.  For example, you should be able to
+  ## edit a particular overloaded function by doing any one of
+  ##
+  ##   edit classname/foo
+  ##   edit classname/foo.m
+  ##   edit @classname/foo
+  ##   edit @classname/foo.m
+  ##
+  ## This functionality is needed for other functions as well (at least
+  ## help and type; there may be more).  So the place to fix that is in
+  ## file_in_loadpath, possibly with some help from the load_path class.
+  
+  ## The code below includes a portion that serves as a place-holder for
+  ## the changes suggested above.
+
+  ## Create list of explicit and implicit file names.
+  filelist = {file};
+  ## If file has no extension, add file.m and file.cc to the list.
   idx = rindex (file, ".");
-  if (idx != 0)
-    ## If file has an extension, use it.
-    path = file_in_loadpath (file);
-  else
-    ## Otherwise try file.cc, and if that fails, default to file.m.
-    path = file_in_loadpath (strcat (file, ".cc"));
-    if (isempty (path))
-      file = strcat (file, ".m");
-      path = file_in_loadpath (file);
+  if (idx == 0)
+    ## Create the list of files to look for
+    filelist = {file};
+    if (isempty (regexp (file, "\\.m$")))
+      ## No ".m" at the end of the file, add to the list.
+      filelist{end+1} = cat (2, file, ".m");
+    endif
+    if (isempty (regexp (file, "\\.cc$")))
+      ## No ".cc" at the end of the file, add to the list.
+      filelist{end+1} = cat (2, file, ".cc");
     endif
   endif
 
-  ## If the file exists and is modifiable in place then edit it,
-  ## otherwise copy it and then edit it.
-  if (! isempty (path))
-    fid = fopen (path, "r+t");
-    if (fid < 0)
-      from = path;
-      path = strcat (FUNCTION.HOME, from (rindex (from, filesep):end))
-      [status, msg] = copyfile (from, path, 1);
-      if (status == 0)
-        error (msg);
-      endif
+  ## If the file includes a path, it may be an overloaded function.
+  if (! strcmp (file, "@") && index (file, filesep))
+    ## No "@" at the beginning of the file, add to the list.
+    numfiles = numel(filelist);
+    for n = 1:numfiles
+      filelist{n+numfiles} = cat (2, "@", filelist{n});
+    endfor
+  endif
+
+  ## Search the entire path for the 1st instance of a file in the list.
+  fileandpath = "";
+  for n = 1:numel(filelist)
+    filetoedit = file_in_path (path, filelist{n});
+    if (! isempty (filetoedit))
+      ## The path is explicitly included.
+      fileandpath = filetoedit;
+      break;
+    endif
+  endfor
+
+  if (! isempty (fileandpath))
+    ## If the file exists, then edit it.
+    if (FUNCTION.EDITINPLACE)
+      ## Edit in place even if it is protected.
+      system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
+              [], FUNCTION.MODE);
+      return;
     else
-      fclose(fid);
+      ## If the file is modifiable in place then edit it, otherwise make
+      ## a copy in HOME and then edit it.
+      fid = fopen (fileandpath, "r+t");
+      if (fid < 0)
+        from = fileandpath;
+        fileandpath = strcat (FUNCTION.HOME, from (rindex (from, filesep):end));
+        [status, msg] = copyfile (from, fileandpath, 1);
+        if (status == 0)
+          error (msg);
+        endif
+      else
+        fclose (fid);
+      endif
+      system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
+              [], FUNCTION.MODE);
+      return;
     endif
-    system (sprintf (FUNCTION.EDITOR, strcat ("\"", path, "\"")),
-	    [], FUNCTION.MODE);
-    return;
   endif
 
-  ## If editing something other than a m-file or an oct-file, just
-  ## edit it.
-  idx = rindex (file, filesep);
-  if (idx != 0)
-    path = file;
-  else
-    path = fullfile (FUNCTION.HOME, file);
-  endif
+  ## If editing a new file that is neither a m-file or an oct-file,
+  ## just edit it.
+  fileandpath = file;
   idx = rindex (file, ".");
   name = file(1:idx-1);
   ext = file(idx+1:end);
   switch (ext)
-    case { "cc", "m" }
+    case {"cc", "m"}
       0;
     otherwise
-      system (sprintf (FUNCTION.EDITOR, strcat ("\"", path, "\"")),
+      system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
 	      [], FUNCTION.MODE);
       return;
   endswitch
@@ -372,15 +443,15 @@ SUCH DAMAGE.\
   endswitch
 
   ## Write the initial file (if there is anything to write)
-  fid = fopen (path, "wt");
+  fid = fopen (fileandpath, "wt");
   if (fid < 0)
-    error ("edit: could not create %s", path);
+    error ("edit: could not create %s", fileandpath);
   endif
   fputs (fid, text);
   fclose (fid);
 
   ## Finally we are ready to edit it!
-  system (sprintf (FUNCTION.EDITOR, strcat ("\"", path, "\"")),
+  system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
 	  [], FUNCTION.MODE);
 
 endfunction
@@ -424,3 +495,38 @@ function ret = default_user (long_form)
   endif
 
 endfunction
+
+%!test
+%! s.editor = edit get editor;
+%! s.home = edit get home;
+%! s.author = edit get author;
+%! s.email = edit get email;
+%! s.license = edit get license;
+%! s.editinplace = edit get editinplace;
+%! s.mode = edit get mode;
+%! edit editor none
+%! edit home none
+%! edit author none
+%! edit email none
+%! edit license none
+%! edit ("editinplace", !s.editinplace)
+%! if (s.mode(1) == "a")
+%!   edit mode sync
+%! else
+%!   edit mode async
+%! endif
+%! edit ("editor", s.editor);
+%! edit ("home", s.home);
+%! edit ("author", s.author);
+%! edit ("email", s.email);
+%! edit ("license", s.license);
+%! edit ("editinplace", s.editinplace);
+%! edit ("mode", s.mode);
+%! assert (edit ("get", "editor"), s.editor);
+%! assert (edit ("get", "home"), s.home);
+%! assert (edit ("get", "author"), s.author);
+%! assert (edit ("get", "email"), s.email);
+%! assert (edit ("get", "license"), s.license);
+%! assert (edit ("get", "editinplace"), s.editinplace);
+%! assert (edit ("get", "mode"), s.mode);
+

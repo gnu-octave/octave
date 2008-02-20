@@ -1,5 +1,8 @@
 2008-02-19  Ben Abbott  <bpabbott@mac.com>
 
+	* miscellaneous/edit.m: New option EDITINPLACE.  Prefer file list
+	rather than path list.  Return option structure with "get all".
+
 	* polynomial/polyfit.m: Use QR decomposition.  Handle
 	normalization option.
 	* polynomial/polyval.m: Normalize dependent variable.  Optionally

@@ -1,3 +1,8 @@
+2008-02-19  Ben Abbott  <bpabbott@mac.com>
+
+	* miscellaneous/ver.m: Include package version information in
+	output.  Improve consistency with Matlab.
+
 2008-02-19  John W. Eaton  <jwe@octave.org>
 
 	* pkg/pkg.m: Style fixes.

@@ -19,37 +19,108 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} ver ()
 ## Display a header containing the current Octave version
-## number, license string and operating system.
+## number, license string and operating system, followed by 
+## the installed package names, versions, and installation
+## directories.
+## @deftypefnx {Function File} {v =} ver ()
+## Return a vector of structures, respecting Octave and each installed package.
+## The structure includes the following fields.
+##
+## @table @code
+##   @item Name
+##   Package name.
+##   @item Version
+##   Version of the package.
+##   @item Revision
+##   Revision of the package.
+##   @item Date
+##   Date respecting the version/revision.
+## @end table
+## @deftypefnx {Function File} {v =} ver (@code{"Octave"})
+## Return version information for Octave only..
+## @deftypefnx {Function File} {v =} ver (@var{pkg})
+## Return version information for the specified package @var{pkg}.
 ## @seealso{license, version}
 ## @end deftypefn
 
 ## Author: William Poetra Yoga Hadisoeseno <williampoetra@gmail.com>
 
-function ver ()
+function varargout = ver (pack)
 
-  if (nargin > 0)
+  if (nargin == 0)
+    pack = "";
+  endif
+
+  if (nargin > 1)
     print_usage ();
   endif
 
-  octave_license = license ();
+  ## Start with the version info for Octave
+  ret = struct ("Name", "Octave", "Version", version,
+                "Release", [], "Date", []);
 
-  [unm, status] = uname ();
+  ## Add the installed packages
+  lst = pkg ("list");
+  for i = 1:length (lst)
+    ret(end+1) = struct ("Name", lst{i}.name, "Version", lst{i}.version,
+                         "Release", [], "Date", lst{i}.date);
+  endfor
 
-  if (status < 0)
-    os_string = "unknown";
+  if (nargout == 0)
+    octave_license = license ();
+
+    [unm, status] = uname ();
+
+    if (status < 0)
+      os_string = "unknown";
+    else
+      os_string = sprintf ("%s %s %s %s", unm.sysname, unm.release,
+                           unm.version, unm.machine);
+    endif
+
+    hbar(1:70) = "-";
+    ver_line1 = "GNU Octave Version ";
+    ver_line2 = "GNU Octave License: ";
+    ver_line3 = "Operating System: ";
+
+    ver_desc = sprintf ("%s\n%s%s\n%s%s\n%s%s\n%s\n", hbar, ver_line1, version,
+                        ver_line2, octave_license, ver_line3, os_string, hbar);
+
+    puts (ver_desc);
+
+    pkg ("list");
   else
-    os_string = sprintf ("%s %s %s %s", unm.sysname, unm.release,
-			 unm.version, unm.machine);
+    if (! isempty (pack))
+      n = [];
+      for r = 1:numel(ret)
+        if (strcmpi (ret(r).Name, pack))
+          n = r;
+          break;
+        endif
+      endfor
+      ret = ret(n);
+    endif
+    varargout{1} = ret;
   endif
 
-  hbar(1:70) = "-";
-  ver_line1 = "GNU Octave Version ";
-  ver_line2 = "GNU Octave License: ";
-  ver_line3 = "Operating System: ";
-
-  ver_desc = sprintf ("%s\n%s%s\n%s%s\n%s%s\n%s\n", hbar, ver_line1, version,
-                      ver_line2, octave_license, ver_line3, os_string, hbar);
-
-  puts (ver_desc);
-
 endfunction
+
+%!test
+%! result = ver;
+%! assert (result(1).Name, "Octave")
+%! assert (result(1).Version, version)
+%! result = ver ("octave");
+%! assert (result(1).Name, "Octave")
+%! assert (result(1).Version, version)
+
+%!test
+%! lst = pkg ("list");
+%! for n=1:numel(lst)
+%!   expected = lst{n}.name;
+%!   result = ver (expected);
+%!   assert (result.Name, expected);
+%!   assert (isfield (result, "Version"), true);
+%!   assert (isfield (result, "Release"), true);
+%!   assert (isfield (result, "Date"), true);
+%! endfor
+

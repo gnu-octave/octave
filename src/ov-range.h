@@ -262,6 +262,50 @@ public:
 
   mxArray *as_mxArray (void) const;
 
+  // Mapper functions are converted to double for treatment
+#define RANGE_MAPPER(MAP) \
+  octave_value MAP (void) const \
+    { \
+      octave_matrix m (array_value ()); \
+      return m.MAP (); \
+    }
+
+  RANGE_MAPPER (abs)
+  RANGE_MAPPER (acos)
+  RANGE_MAPPER (acosh)
+  RANGE_MAPPER (angle)
+  RANGE_MAPPER (arg)
+  RANGE_MAPPER (asin)
+  RANGE_MAPPER (asinh)
+  RANGE_MAPPER (atan)
+  RANGE_MAPPER (atanh)
+  RANGE_MAPPER (ceil)
+  RANGE_MAPPER (conj)
+  RANGE_MAPPER (cos)
+  RANGE_MAPPER (cosh)
+  RANGE_MAPPER (erf)
+  RANGE_MAPPER (erfc)
+  RANGE_MAPPER (exp)
+  RANGE_MAPPER (finite)
+  RANGE_MAPPER (fix)
+  RANGE_MAPPER (floor)
+  RANGE_MAPPER (gamma)
+  RANGE_MAPPER (imag)
+  RANGE_MAPPER (isinf)
+  RANGE_MAPPER (isna)
+  RANGE_MAPPER (isnan)
+  RANGE_MAPPER (lgamma)
+  RANGE_MAPPER (log)
+  RANGE_MAPPER (log10)
+  RANGE_MAPPER (real)
+  RANGE_MAPPER (round)
+  RANGE_MAPPER (signum)
+  RANGE_MAPPER (sin)
+  RANGE_MAPPER (sinh)
+  RANGE_MAPPER (sqrt)
+  RANGE_MAPPER (tan)
+  RANGE_MAPPER (tanh)
+
 private:
 
   Range range;

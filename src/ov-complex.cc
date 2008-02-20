@@ -28,6 +28,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "lo-ieee.h"
+#include "lo-specfun.h"
+#include "lo-mappers.h"
 
 #include "oct-obj.h"
 #include "oct-stream.h"
@@ -59,7 +61,7 @@ octave_complex::try_narrowing_conversion (void)
   double im = std::imag (scalar);
 
   if (im == 0.0 && ! lo_ieee_signbit (im))
-    retval = new octave_scalar (real (scalar));
+    retval = new octave_scalar (std::real (scalar));
 
   return retval;
 }
@@ -325,11 +327,68 @@ octave_complex::as_mxArray (void) const
   double *pr = static_cast<double *> (retval->get_data ());
   double *pi = static_cast<double *> (retval->get_imag_data ());
 
-  pr[0] = real (scalar);
-  pi[0] = imag (scalar);
+  pr[0] = std::real (scalar);
+  pi[0] = std::imag (scalar);
 
   return retval;
 }
+
+static double
+xabs (const Complex& x)
+{
+  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+}
+
+static double
+ximag (const Complex& x)
+{
+  return x.imag ();
+}
+
+static double
+xreal (const Complex& x)
+{
+  return x.real ();
+}
+
+#define COMPLEX_MAPPER(MAP, FCN)	\
+  octave_value \
+  octave_complex::MAP (void) const \
+  { \
+    return octave_value (FCN (scalar)); \
+  }
+
+COMPLEX_MAPPER (abs, xabs)
+COMPLEX_MAPPER (acos, ::acos)
+COMPLEX_MAPPER (acosh, ::acosh)
+COMPLEX_MAPPER (angle, std::arg)
+COMPLEX_MAPPER (arg, std::arg)
+COMPLEX_MAPPER (asin, ::asin)
+COMPLEX_MAPPER (asinh, ::asinh)
+COMPLEX_MAPPER (atan, ::atan)
+COMPLEX_MAPPER (atanh, ::atanh)
+COMPLEX_MAPPER (ceil, ::ceil)
+COMPLEX_MAPPER (conj, std::conj)
+COMPLEX_MAPPER (cos, std::cos)
+COMPLEX_MAPPER (cosh, std::cosh)
+COMPLEX_MAPPER (exp, std::exp)
+COMPLEX_MAPPER (fix, ::fix)
+COMPLEX_MAPPER (floor, ::floor)
+COMPLEX_MAPPER (imag, ximag)
+COMPLEX_MAPPER (log, std::log)
+COMPLEX_MAPPER (log10, std::log10)
+COMPLEX_MAPPER (real, xreal)
+COMPLEX_MAPPER (round, xround)
+COMPLEX_MAPPER (signum, ::signum)
+COMPLEX_MAPPER (sin, std::sin)
+COMPLEX_MAPPER (sinh, std::sinh)
+COMPLEX_MAPPER (sqrt, std::sqrt)
+COMPLEX_MAPPER (tan, std::tan)
+COMPLEX_MAPPER (tanh, std::tanh)
+COMPLEX_MAPPER (finite, xfinite)
+COMPLEX_MAPPER (isinf, xisinf)
+COMPLEX_MAPPER (isna, octave_is_NA)
+COMPLEX_MAPPER (isnan, xisnan)
 
 /*
 ;;; Local Variables: ***

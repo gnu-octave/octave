@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
+#include "lo-specfun.h"
+#include "lo-mappers.h"
+
 #include "ov-base.h"
 #include "ov-scalar.h"
 #include "gripes.h"
@@ -153,6 +156,20 @@ octave_sparse_matrix::bool_array_value (bool warn) const
   return boolNDArray (m);
 }
 
+charNDArray
+octave_sparse_matrix::char_array_value (bool) const
+{
+  charNDArray retval (dims (), 0);
+  octave_idx_type nc = matrix.cols ();
+  octave_idx_type nr = matrix.rows ();
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
+      retval(matrix.ridx(i) + nr * j) = static_cast<char>(matrix.data (i));
+
+  return retval;
+}
+  
 ComplexMatrix
 octave_sparse_matrix::complex_matrix_value (bool) const
 {
@@ -818,6 +835,108 @@ octave_sparse_matrix::as_mxArray (void) const
 
   return retval;
 }
+
+static bool
+any_element_less_than (const SparseMatrix& a, double val)
+{
+  octave_idx_type len = a.nnz ();
+
+  if (val > 0. && len != a.numel ())
+    return true;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (a.data(i) < val)
+	return true;
+    }
+
+  return false;
+}
+
+static bool
+any_element_greater_than (const SparseMatrix& a, double val)
+{
+  octave_idx_type len = a.nnz ();
+
+  if (val < 0. && len != a.numel ())
+    return true;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (a.data(i) > val)
+	return true;
+    }
+
+  return false;
+}
+
+#define SPARSE_MAPPER(MAP, AMAP, FCN) \
+  octave_value \
+  octave_sparse_matrix::MAP (void) const \
+  { \
+    static AMAP dmap = FCN; \
+    return matrix.map (dmap); \
+  }
+
+#define CD_SPARSE_MAPPER(MAP, RFCN, CFCN, L1, L2) \
+  octave_value \
+  octave_sparse_matrix::MAP (void) const \
+  { \
+    static NDArray::dmapper dmap = RFCN; \
+    static NDArray::cmapper cmap = CFCN; \
+ \
+    return (any_element_less_than (matrix, L1) \
+            ? octave_value (matrix.map (cmap)) \
+            : (any_element_greater_than (matrix, L2) \
+               ? octave_value (matrix.map (cmap)) \
+	       : octave_value (matrix.map (dmap)))); \
+  }
+
+static double
+xconj (double x)
+{
+  return x;
+}
+
+SPARSE_MAPPER (erf, SparseMatrix::dmapper, ::erf)
+SPARSE_MAPPER (erfc, SparseMatrix::dmapper, ::erfc)
+SPARSE_MAPPER (gamma, SparseMatrix::dmapper, xgamma)
+SPARSE_MAPPER (lgamma, SparseMatrix::dmapper, xlgamma)
+SPARSE_MAPPER (abs, SparseMatrix::dmapper, ::fabs)
+SPARSE_MAPPER (acos, SparseMatrix::dmapper, ::acos)
+CD_SPARSE_MAPPER (acosh, ::acosh, ::acosh, 1.0, octave_Inf)
+SPARSE_MAPPER (angle, SparseMatrix::dmapper, ::arg)
+SPARSE_MAPPER (arg, SparseMatrix::dmapper, ::arg)
+CD_SPARSE_MAPPER (asin, ::asin, ::asin, -1.0, 1.0)
+SPARSE_MAPPER (asinh, SparseMatrix::dmapper, ::asinh)
+SPARSE_MAPPER (atan, SparseMatrix::dmapper, ::atan)
+CD_SPARSE_MAPPER (atanh, ::atanh, ::atanh, -1.0, 1.0)
+SPARSE_MAPPER (ceil, SparseMatrix::dmapper, ::ceil)
+SPARSE_MAPPER (conj, SparseMatrix::dmapper, xconj)
+SPARSE_MAPPER (cos, SparseMatrix::dmapper, ::cos)
+SPARSE_MAPPER (cosh, SparseMatrix::dmapper, ::cosh)
+SPARSE_MAPPER (exp, SparseMatrix::dmapper, ::exp)
+SPARSE_MAPPER (fix, SparseMatrix::dmapper, ::fix)
+SPARSE_MAPPER (floor, SparseMatrix::dmapper, ::floor)
+SPARSE_MAPPER (imag, SparseMatrix::dmapper, ::imag)
+CD_SPARSE_MAPPER (log, ::log, std::log, 0.0, octave_Inf)
+CD_SPARSE_MAPPER (log10, ::log10, std::log10, 0.0, octave_Inf)
+SPARSE_MAPPER (real, SparseMatrix::dmapper, ::real)
+SPARSE_MAPPER (round, SparseMatrix::dmapper, xround)
+SPARSE_MAPPER (signum, SparseMatrix::dmapper, ::signum)
+SPARSE_MAPPER (sin, SparseMatrix::dmapper, ::sin)
+SPARSE_MAPPER (sinh, SparseMatrix::dmapper, ::sinh)
+CD_SPARSE_MAPPER (sqrt, ::sqrt, std::sqrt, 0.0, octave_Inf)
+SPARSE_MAPPER (tan, SparseMatrix::dmapper, ::tan)
+SPARSE_MAPPER (tanh, SparseMatrix::dmapper, ::tanh)
+SPARSE_MAPPER (finite, SparseMatrix::bmapper, xfinite)
+SPARSE_MAPPER (isinf, SparseMatrix::bmapper, xisinf)
+SPARSE_MAPPER (isna, SparseMatrix::bmapper, octave_is_NA)
+SPARSE_MAPPER (isnan, SparseMatrix::bmapper, xisnan)
 
 /*
 ;;; Local Variables: ***

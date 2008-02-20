@@ -70,54 +70,6 @@ along with Octave; see the file COPYING.  If not, see
 #define DEFCONSTFUN(name, args_name, nargout_name, doc) \
   DEFCONSTFUN_INTERNAL (name, args_name, nargout_name, true, doc)
 
-// Define a mapper function.
-//
-//   name is the name of the function, unquoqted.
-//
-//   ch_map is a pointer to a function that should be called for
-//     integer arguments that are expected to create integer results.
-//     (It's a kluge to handle character mappers like isalpha.)
-//
-//   d_b_map is a pointer to a function that should be called for real
-//     arguments that are expected to create bool results.
-//
-//   c_b_map is a pointer to a function that should be called for
-//     complex arguments that are expected to create bool results.
-//
-//   d_d_map is a pointer to a function that should be called for real
-//     arguments that are expected to create real results.
-//
-//   c_d_map is a pointer to a function that should be called for
-//     complex arguments that are expected to create real results.
-//
-//   c_c_map is a pointer to a function that should be called for
-//     complex arguments that are expected to create complex results.
-//
-//   lo is the lower bound of the range for which real arguments
-//     return real results (e.g., lo == 0 for sqrt).
-//
-//   hi is the upper bound of the range for which real arguments
-//     return real results (e.g., hi == Inf for sqrt).
-//
-//   ch_map_flag has the following meanings for the ch_map function:
-//
-//     0  =>  this function returns a matrix of ones and zeros
-//     1  =>  this function returns a numeric matrix (any values)
-//     2  =>  this function returns a std::string array
-//
-//   can_ret_cmplx_for_real is a flag that says whether this function
-//     can create a complex number given a real-valued  argument
-//     (e.g., sqrt (-1)).
-//
-//   doc is the simple help text for the function.
-
-#define DEFUN_MAPPER(name, ch_map, d_b_map, c_b_map, d_d_map, \
-		     c_d_map, c_c_map, lo, hi, ch_map_flag, \
-		     can_ret_cmplx_for_real, doc) \
-  DEFUN_MAPPER_INTERNAL (name, ch_map, d_b_map, c_b_map, d_d_map, \
-			 c_d_map, c_c_map, lo, hi, ch_map_flag, \
-			 can_ret_cmplx_for_real, doc)
-
 // Make alias another name for the existing function name.  This macro
 // must be used in the same file where name is defined, after the
 // definition for name.

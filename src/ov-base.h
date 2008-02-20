@@ -468,6 +468,57 @@ public:
 
   virtual bool islocked (void) const { return false; }
 
+  virtual octave_value abs (void) const;
+  virtual octave_value acos (void) const;
+  virtual octave_value acosh (void) const;
+  virtual octave_value angle (void) const;
+  virtual octave_value arg (void) const;
+  virtual octave_value asin (void) const;
+  virtual octave_value asinh (void) const;
+  virtual octave_value atan (void) const;
+  virtual octave_value atanh (void) const;
+  virtual octave_value ceil (void) const;
+  virtual octave_value conj (void) const;
+  virtual octave_value cos (void) const;
+  virtual octave_value cosh (void) const;
+  virtual octave_value erf (void) const;
+  virtual octave_value erfc (void) const;
+  virtual octave_value exp (void) const;
+  virtual octave_value finite (void) const;
+  virtual octave_value fix (void) const;
+  virtual octave_value floor (void) const;
+  virtual octave_value gamma (void) const;
+  virtual octave_value imag (void) const;
+  virtual octave_value isinf (void) const;
+  virtual octave_value isna (void) const;
+  virtual octave_value isnan (void) const;
+  virtual octave_value lgamma (void) const;
+  virtual octave_value log (void) const;
+  virtual octave_value log10 (void) const;
+  virtual octave_value real (void) const;
+  virtual octave_value round (void) const;
+  virtual octave_value signum (void) const;
+  virtual octave_value sin (void) const;
+  virtual octave_value sinh (void) const;
+  virtual octave_value sqrt (void) const;
+  virtual octave_value tan (void) const;
+  virtual octave_value tanh (void) const;
+  virtual octave_value isalnum (void) const;
+  virtual octave_value isalpha (void) const;
+  virtual octave_value isascii (void) const;
+  virtual octave_value iscntrl (void) const;
+  virtual octave_value isdigit (void) const;
+  virtual octave_value isgraph (void) const;
+  virtual octave_value islower (void) const;
+  virtual octave_value isprint (void) const;
+  virtual octave_value ispunct (void) const;
+  virtual octave_value isspace (void) const;
+  virtual octave_value isupper (void) const;
+  virtual octave_value isxdigit (void) const;
+  virtual octave_value toascii (void) const;
+  virtual octave_value tolower (void) const;
+  virtual octave_value toupper (void) const;
+
 protected:
 
   // This should only be called for derived types.

@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-base-scalar.h"
+#include "ov-scalar.h"
 #include "ov-typeinfo.h"
 
 class Octave_map;
@@ -190,6 +191,52 @@ public:
     }
 
   mxArray *as_mxArray (void) const;
+
+  // Mapper functions are converted to double for treatment
+#define BOOL_MAPPER(MAP) \
+  octave_value MAP (void) const \
+    { \
+      octave_scalar s (static_cast<double> (scalar)); \
+      return s.MAP (); \
+    }
+
+  BOOL_MAPPER (abs)
+  BOOL_MAPPER (acos)
+  BOOL_MAPPER (acosh)
+  BOOL_MAPPER (angle)
+  BOOL_MAPPER (arg)
+  BOOL_MAPPER (asin)
+  BOOL_MAPPER (asinh)
+  BOOL_MAPPER (atan)
+  BOOL_MAPPER (atanh)
+  BOOL_MAPPER (ceil)
+  BOOL_MAPPER (conj)
+  BOOL_MAPPER (cos)
+  BOOL_MAPPER (cosh)
+  BOOL_MAPPER (erf)
+  BOOL_MAPPER (erfc)
+  BOOL_MAPPER (exp)
+  BOOL_MAPPER (finite)
+  BOOL_MAPPER (fix)
+  BOOL_MAPPER (floor)
+  BOOL_MAPPER (gamma)
+  BOOL_MAPPER (imag)
+  BOOL_MAPPER (isinf)
+  BOOL_MAPPER (isna)
+  BOOL_MAPPER (isnan)
+  BOOL_MAPPER (lgamma)
+  BOOL_MAPPER (log)
+  BOOL_MAPPER (log10)
+  BOOL_MAPPER (real)
+  BOOL_MAPPER (round)
+  BOOL_MAPPER (signum)
+  BOOL_MAPPER (sin)
+  BOOL_MAPPER (sinh)
+  BOOL_MAPPER (sqrt)
+  BOOL_MAPPER (tan)
+  BOOL_MAPPER (tanh)
+
+#undef BOOL_MAPPER
 
 private:
 

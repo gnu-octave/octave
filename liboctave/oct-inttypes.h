@@ -316,6 +316,24 @@ public:
     return *this;
   }
 
+  octave_int<T> abs (void) const 
+  { 
+    T val = value (); 
+    if (val < static_cast <T> (0))
+      val = - val;
+    return val;
+  }
+
+  octave_int<T> signum (void) const 
+  { 
+    T val = value (); 
+    if (val < static_cast <T> (0))
+      val = - static_cast <T> (1);
+    else if (val > static_cast <T> (0))
+      val = static_cast <T> (1);
+    return val;
+  }
+
   octave_int<T> min (void) const { return std::numeric_limits<T>::min (); }
   octave_int<T> max (void) const { return std::numeric_limits<T>::max (); }
 

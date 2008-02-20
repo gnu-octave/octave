@@ -30,6 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <vector>
 
+#include "lo-specfun.h"
+#include "lo-mappers.h"
+
 #include "ov-base.h"
 #include "ov-scalar.h"
 #include "ov-complex.h"
@@ -69,7 +72,7 @@ octave_sparse_complex_matrix::try_narrowing_conversion (void)
 
 	  Complex c = tmp (0, 0);
 
-	  if (imag (c) == 0.0)
+	  if (std::imag (c) == 0.0)
 	    retval = new octave_scalar (std::real (c));
 	  else
 	    retval = new octave_complex (c);
@@ -193,6 +196,29 @@ ComplexNDArray
 octave_sparse_complex_matrix::complex_array_value (bool) const
 {
   return ComplexNDArray (matrix.matrix_value ());
+}
+
+charNDArray
+octave_sparse_complex_matrix::char_array_value (bool frc_str_conv) const
+{
+  charNDArray retval;
+
+  if (! frc_str_conv)
+    gripe_implicit_conversion ("Octave:num-to-str",
+			       "sparse complex matrix", "string");
+  else
+    {
+      retval = charNDArray (dims (), 0);
+      octave_idx_type nc = matrix.cols ();
+      octave_idx_type nr = matrix.rows ();
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
+	  retval(matrix.ridx(i) + nr * j) = 
+	    static_cast<char>(std::real (matrix.data (i)));
+    }
+
+  return retval;
 }
 
 SparseMatrix
@@ -784,8 +810,8 @@ octave_sparse_complex_matrix::as_mxArray (void) const
   for (mwIndex i = 0; i < nz; i++)
     {
       Complex val = matrix.data(i);
-      pr[i] = real (val);
-      pi[i] = imag (val);
+      pr[i] = std::real (val);
+      pi[i] = std::imag (val);
       ir[i] = matrix.ridx(i);
     }
 
@@ -794,6 +820,64 @@ octave_sparse_complex_matrix::as_mxArray (void) const
 
   return retval;
 }
+
+static double
+xabs (const Complex& x)
+{
+  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+}
+
+static double
+ximag (const Complex& x)
+{
+  return x.imag ();
+}
+
+static double
+xreal (const Complex& x)
+{
+  return x.real ();
+}
+
+#define SPARSE_MAPPER(MAP, AMAP, FCN) \
+  octave_value \
+  octave_sparse_complex_matrix::MAP (void) const \
+  { \
+    static AMAP cmap = FCN; \
+    return matrix.map (cmap); \
+  }
+
+SPARSE_MAPPER (abs, SparseComplexMatrix::dmapper, xabs)
+SPARSE_MAPPER (acos, SparseComplexMatrix::cmapper, ::acos)
+SPARSE_MAPPER (acosh, SparseComplexMatrix::cmapper, ::acosh)
+SPARSE_MAPPER (angle, SparseComplexMatrix::dmapper, std::arg)
+SPARSE_MAPPER (arg, SparseComplexMatrix::dmapper, std::arg)
+SPARSE_MAPPER (asin, SparseComplexMatrix::cmapper, ::asin)
+SPARSE_MAPPER (asinh, SparseComplexMatrix::cmapper, ::asinh)
+SPARSE_MAPPER (atan, SparseComplexMatrix::cmapper, ::atan)
+SPARSE_MAPPER (atanh, SparseComplexMatrix::cmapper, ::atanh)
+SPARSE_MAPPER (ceil, SparseComplexMatrix::cmapper, ::ceil)
+SPARSE_MAPPER (conj, SparseComplexMatrix::cmapper, std::conj)
+SPARSE_MAPPER (cos, SparseComplexMatrix::cmapper, std::cos)
+SPARSE_MAPPER (cosh, SparseComplexMatrix::cmapper, std::cosh)
+SPARSE_MAPPER (exp, SparseComplexMatrix::cmapper, std::exp)
+SPARSE_MAPPER (fix, SparseComplexMatrix::cmapper, ::fix)
+SPARSE_MAPPER (floor, SparseComplexMatrix::cmapper, ::floor)
+SPARSE_MAPPER (imag, SparseComplexMatrix::dmapper, ximag)
+SPARSE_MAPPER (log, SparseComplexMatrix::cmapper, std::log)
+SPARSE_MAPPER (log10, SparseComplexMatrix::cmapper, std::log10)
+SPARSE_MAPPER (real, SparseComplexMatrix::dmapper, xreal)
+SPARSE_MAPPER (round, SparseComplexMatrix::cmapper, xround)
+SPARSE_MAPPER (signum, SparseComplexMatrix::cmapper, ::signum)
+SPARSE_MAPPER (sin, SparseComplexMatrix::cmapper, std::sin)
+SPARSE_MAPPER (sinh, SparseComplexMatrix::cmapper, std::sinh)
+SPARSE_MAPPER (sqrt, SparseComplexMatrix::cmapper, std::sqrt)
+SPARSE_MAPPER (tan, SparseComplexMatrix::cmapper, std::tan)
+SPARSE_MAPPER (tanh, SparseComplexMatrix::cmapper, std::tanh)
+SPARSE_MAPPER (finite, SparseComplexMatrix::bmapper, xfinite)
+SPARSE_MAPPER (isinf, SparseComplexMatrix::bmapper, xisinf)
+SPARSE_MAPPER (isna, SparseComplexMatrix::bmapper, octave_is_NA)
+SPARSE_MAPPER (isnan, SparseComplexMatrix::bmapper, xisnan)
 
 /*
 ;;; Local Variables: ***

@@ -124,6 +124,14 @@ public:
 
   static double resize_fill_value (void) { return 0; }
 
+  typedef double (*dmapper) (double);
+  typedef Complex (*cmapper) (const Complex&);
+  typedef bool (*bmapper) (double);
+
+  NDArray map (dmapper fcn) const;
+  ComplexNDArray map (cmapper fcn) const;
+  boolNDArray map (bmapper fcn) const;
+
 private:
 
   NDArray (double *d, const dim_vector& dv) : MArrayN<double> (d, dv) { }

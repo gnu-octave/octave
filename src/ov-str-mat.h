@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 #include "oct-stream.h"
 #include "ov.h"
+#include "ov-re-mat.h"
 #include "ov-ch-mat.h"
 #include "ov-typeinfo.h"
 
@@ -127,10 +128,11 @@ public:
   std::string string_value (bool force = false) const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-  { return octave_value (matrix.sort (dim, mode), true); }
+    { return octave_value (matrix.sort (dim, mode), true); }
+
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		     sortmode mode = ASCENDING) const
-  { return octave_value (matrix.sort (sidx, dim, mode), true); }
+    { return octave_value (matrix.sort (sidx, dim, mode), true); }
 
   bool print_as_scalar (void) const { return (rows () <= 1); }
 
@@ -155,6 +157,56 @@ public:
 	     oct_data_conv::data_type output_type, int skip,
 	     oct_mach_info::float_format flt_fmt) const
     { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
+
+  octave_value isalnum (void) const;
+  octave_value isalpha (void) const;
+  octave_value isascii (void) const;
+  octave_value iscntrl (void) const;
+  octave_value isdigit (void) const;
+  octave_value isgraph (void) const;
+  octave_value islower (void) const;
+  octave_value isprint (void) const;
+  octave_value ispunct (void) const;
+  octave_value isspace (void) const;
+  octave_value isupper (void) const;
+  octave_value isxdigit (void) const;
+  octave_value toascii (void) const;
+  octave_value tolower (void) const;
+  octave_value toupper (void) const;
+
+#define MAT_MAPPER(MAP) \
+  octave_value MAP (void) const \
+    { \
+      octave_matrix m (array_value (true)); \
+      return m.MAP (); \
+    }
+
+  MAT_MAPPER (abs)
+  MAT_MAPPER (angle)
+  MAT_MAPPER (arg)
+  MAT_MAPPER (ceil)
+  MAT_MAPPER (conj)
+  MAT_MAPPER (fix)
+  MAT_MAPPER (floor)
+  MAT_MAPPER (imag)
+  MAT_MAPPER (real)
+  MAT_MAPPER (round)
+  MAT_MAPPER (signum)
+
+#undef MAT_MAPPER
+
+#define BOOL_MAT_MAPPER(MAP, VAL)	\
+  octave_value MAP (void) const \
+    { \
+      return boolNDArray (matrix.dims (), VAL); \
+    }
+
+  BOOL_MAT_MAPPER (finite, true)
+  BOOL_MAT_MAPPER (isinf, false)
+  BOOL_MAT_MAPPER (isna, false)
+  BOOL_MAT_MAPPER (isnan, false)
+
+#undef BOOL_MAT_MAPPER
 
 protected:
 
@@ -228,10 +280,11 @@ public:
 
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
-  { return octave_value (matrix.sort (dim, mode), true, '\''); }
+    { return octave_value (matrix.sort (dim, mode), true, '\''); }
+
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		     sortmode mode = ASCENDING) const
-  { return octave_value (matrix.sort (sidx, dim, mode), true, '\''); }
+    { return octave_value (matrix.sort (sidx, dim, mode), true, '\''); }
 
 private:
 

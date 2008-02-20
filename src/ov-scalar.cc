@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "data-conv.h"
 #include "mach-info.h"
+#include "lo-specfun.h"
+#include "lo-mappers.h"
 
 #include "defun.h"
 #include "gripes.h"
@@ -282,6 +284,64 @@ octave_scalar::as_mxArray (void) const
 
   return retval;
 }
+
+#define SCALAR_MAPPER(MAP, FCN) \
+  octave_value \
+  octave_scalar::MAP (void) const \
+  { \
+    return octave_value (FCN (scalar)); \
+  }
+
+#define CD_SCALAR_MAPPER(MAP, RFCN, CFCN, L1, L2) \
+  octave_value \
+  octave_scalar::MAP (void) const \
+  { \
+    return (scalar < L1 || scalar > L2 \
+            ? octave_value (CFCN (Complex (scalar))) \
+	    : octave_value (RFCN (scalar))); \
+  }
+
+static double
+xconj (double x)
+{
+  return x;
+}
+
+SCALAR_MAPPER (erf, ::erf)
+SCALAR_MAPPER (erfc, ::erfc)
+SCALAR_MAPPER (gamma, xgamma)
+SCALAR_MAPPER (lgamma, xlgamma)
+SCALAR_MAPPER (abs, ::fabs)
+SCALAR_MAPPER (acos, ::acos)
+CD_SCALAR_MAPPER (acosh, ::acosh, ::acosh, 1.0, octave_Inf)
+SCALAR_MAPPER (angle, ::arg)
+SCALAR_MAPPER (arg, ::arg)
+CD_SCALAR_MAPPER (asin, ::asin, ::asin, -1.0, 1.0)
+SCALAR_MAPPER (asinh, ::asinh)
+SCALAR_MAPPER (atan, ::atan)
+CD_SCALAR_MAPPER (atanh, ::atanh, ::atanh, -1.0, 1.0)
+SCALAR_MAPPER (ceil, ::ceil)
+SCALAR_MAPPER (conj, xconj)
+SCALAR_MAPPER (cos, ::cos)
+SCALAR_MAPPER (cosh, ::cosh)
+SCALAR_MAPPER (exp, ::exp)
+SCALAR_MAPPER (fix, ::fix)
+SCALAR_MAPPER (floor, ::floor)
+SCALAR_MAPPER (imag, ::imag)
+CD_SCALAR_MAPPER (log, ::log, std::log, 0.0, octave_Inf)
+CD_SCALAR_MAPPER (log10, ::log10, std::log10, 0.0, octave_Inf)
+SCALAR_MAPPER (real, ::real)
+SCALAR_MAPPER (round, ::round)
+SCALAR_MAPPER (signum, ::signum)
+SCALAR_MAPPER (sin, ::sin)
+SCALAR_MAPPER (sinh, ::sinh)
+CD_SCALAR_MAPPER (sqrt, ::sqrt, std::sqrt, 0.0, octave_Inf)
+SCALAR_MAPPER (tan, ::tan)
+SCALAR_MAPPER (tanh, ::tanh)
+SCALAR_MAPPER (finite, xfinite)
+SCALAR_MAPPER (isinf, xisinf)
+SCALAR_MAPPER (isna, octave_is_NA)
+SCALAR_MAPPER (isnan, xisnan)
 
 /*
 ;;; Local Variables: ***

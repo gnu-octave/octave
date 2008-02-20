@@ -47,8 +47,6 @@ public:
 
   boolNDArray (const boolMatrix& a) : ArrayN<bool> (a) { }
 
-  boolNDArray (const Array2<bool>& a) : ArrayN<bool> (a) { }
-
   boolNDArray (const ArrayN<bool>& a) : ArrayN<bool> (a) { }
 
   boolNDArray& operator = (const boolNDArray& a)

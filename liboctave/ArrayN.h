@@ -148,6 +148,12 @@ public:
       Array<T> tmp = Array<T>::sort (sidx, dim, mode);
       return ArrayN<T> (tmp, tmp.dims ());
     }
+
+  template <class U, class F>
+  ArrayN<U> map (F fcn) const
+  {
+    return Array<T>::template map<U> (fcn);
+  }
 };
 
 template <class T>

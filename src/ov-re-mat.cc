@@ -33,6 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "data-conv.h"
 #include "lo-ieee.h"
 #include "lo-utils.h"
+#include "lo-specfun.h"
+#include "lo-mappers.h"
 #include "mach-info.h"
 #include "mx-base.h"
 #include "quit.h"
@@ -647,6 +649,104 @@ octave_matrix::as_mxArray (void) const
 
   return retval;
 }
+
+static bool
+any_element_less_than (const NDArray& a, double val)
+{
+  octave_idx_type len = a.length ();
+  const double *m = a.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (m[i] < val)
+	return true;
+    }
+
+  return false;
+}
+
+static bool
+any_element_greater_than (const NDArray& a, double val)
+{
+  octave_idx_type len = a.length ();
+  const double *m = a.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (m[i] > val)
+	return true;
+    }
+
+  return false;
+}
+
+#define ARRAY_MAPPER(MAP, AMAP, FCN) \
+  octave_value \
+  octave_matrix::MAP (void) const \
+  { \
+    static AMAP dmap = FCN; \
+    return matrix.map (dmap); \
+  }
+
+#define CD_ARRAY_MAPPER(MAP, RFCN, CFCN, L1, L2) \
+  octave_value \
+  octave_matrix::MAP (void) const \
+  { \
+    static NDArray::dmapper dmap = RFCN; \
+    static NDArray::cmapper cmap = CFCN; \
+ \
+    return (any_element_less_than (matrix, L1) \
+            ? octave_value (matrix.map (cmap)) \
+	    : (any_element_greater_than (matrix, L2) \
+	       ? octave_value (matrix.map (cmap)) \
+	       : octave_value (matrix.map (dmap)))); \
+  }
+
+static double
+xconj (double x)
+{
+  return x;
+}
+
+ARRAY_MAPPER (erf, NDArray::dmapper, ::erf)
+ARRAY_MAPPER (erfc, NDArray::dmapper, ::erfc)
+ARRAY_MAPPER (gamma, NDArray::dmapper, xgamma)
+ARRAY_MAPPER (lgamma, NDArray::dmapper, xlgamma)
+ARRAY_MAPPER (abs, NDArray::dmapper, ::fabs)
+ARRAY_MAPPER (acos, NDArray::dmapper, ::acos)
+CD_ARRAY_MAPPER (acosh, ::acosh, ::acosh, 1.0, octave_Inf)
+ARRAY_MAPPER (angle, NDArray::dmapper, ::arg)
+ARRAY_MAPPER (arg, NDArray::dmapper, ::arg)
+CD_ARRAY_MAPPER (asin, ::asin, ::asin, -1.0, 1.0)
+ARRAY_MAPPER (asinh, NDArray::dmapper,::asinh)
+ARRAY_MAPPER (atan, NDArray::dmapper, ::atan)
+CD_ARRAY_MAPPER (atanh, ::atanh, ::atanh, -1.0, 1.0)
+ARRAY_MAPPER (ceil, NDArray::dmapper, ::ceil)
+ARRAY_MAPPER (conj, NDArray::dmapper, xconj)
+ARRAY_MAPPER (cos, NDArray::dmapper, ::cos)
+ARRAY_MAPPER (cosh, NDArray::dmapper, ::cosh)
+ARRAY_MAPPER (exp, NDArray::dmapper, ::exp)
+ARRAY_MAPPER (fix, NDArray::dmapper, ::fix)
+ARRAY_MAPPER (floor, NDArray::dmapper, ::floor)
+ARRAY_MAPPER (imag, NDArray::dmapper, ::imag)
+CD_ARRAY_MAPPER (log, ::log, std::log, 0.0, octave_Inf)
+CD_ARRAY_MAPPER (log10, ::log10, std::log10, 0.0, octave_Inf)
+ARRAY_MAPPER (real, NDArray::dmapper, ::real)
+ARRAY_MAPPER (round, NDArray::dmapper, xround)
+ARRAY_MAPPER (signum, NDArray::dmapper, ::signum)
+ARRAY_MAPPER (sin, NDArray::dmapper, ::sin)
+ARRAY_MAPPER (sinh, NDArray::dmapper, ::sinh)
+CD_ARRAY_MAPPER (sqrt, ::sqrt, std::sqrt, 0.0, octave_Inf)
+ARRAY_MAPPER (tan, NDArray::dmapper, ::tan)
+ARRAY_MAPPER (tanh, NDArray::dmapper, ::tanh)
+ARRAY_MAPPER (finite, NDArray::bmapper, xfinite)
+ARRAY_MAPPER (isinf, NDArray::bmapper, xisinf)
+ARRAY_MAPPER (isna, NDArray::bmapper, octave_is_NA)
+ARRAY_MAPPER (isnan, NDArray::bmapper, xisnan)
 
 DEFUN (double, args, ,
   "-*- texinfo -*-\n\

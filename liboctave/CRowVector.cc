@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "f77-fcn.h"
+#include "functor.h"
 #include "lo-error.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
@@ -366,39 +367,16 @@ operator * (const RowVector& v, const ComplexMatrix& a)
 
 // other operations
 
-ComplexRowVector
-ComplexRowVector::map (c_c_Mapper f) const
-{
-  ComplexRowVector b (*this);
-  return b.apply (f);
-}
-
 RowVector
-ComplexRowVector::map (d_c_Mapper f) const
+ComplexRowVector::map (dmapper fcn) const
 {
-  const Complex *d = data ();
-
-  octave_idx_type len = length ();
-
-  RowVector retval (len);
-
-  double *r = retval.fortran_vec ();
-
-  for (octave_idx_type i = 0; i < len; i++)
-    r[i] = f (d[i]);
-
-  return retval;
+  return MArray<Complex>::map<double> (func_ptr (fcn));
 }
 
-ComplexRowVector&
-ComplexRowVector::apply (c_c_Mapper f)
+ComplexRowVector
+ComplexRowVector::map (cmapper fcn) const
 {
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    d[i] = f (d[i]);
-
-  return *this;
+  return MArray<Complex>::map<Complex> (func_ptr (fcn));
 }
 
 Complex

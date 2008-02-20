@@ -1,3 +1,136 @@
+2008-02-20  John W. Eaton  <jwe@octave.org>
+
+	* ov-bool-mat.h (octave_bool_matrix (const Array2<bool>&)): Delete.
+
+2008-02-20  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (OV_SRC): Remove ov-mapper.cc.
+	(OV_INCLUDES): Remove ov-mapper.h.
+	(DEFUN_PATTERN): No longer accept DEFUN_MAPPER as valid.
+	* ov-mapper.cc, ov-mapepr.h: Delete, remove all includes of
+	ov-mapper.h from all files.
+
+	* op-b-sbm.cc, op-bm-sbm.cc, op-smb-b.cc, op-sbm-bm.cc: Include 
+	ov-bool-sparse.h.
+
+	* defun-int.h (DEFUN_MAPPER_INTERNAL, install_builtin_mapper):
+	Remove.
+	* defun.cc (install_builtin_mapper): Ditto.
+	* defun.h (DEFUN_MAPPER): Remove.
+
+	* mappers.cc: Rewrite all mapper function using DEFUN and newly
+	introduced octave_value mapper functions.
+	(dummyp, xabs, xisalnum, xisascii, xiscntrl, xisdigit,
+	xisgraph, xislower, xisprint, xispunct, xisspace, xisupper,
+	xtoascii, xtolower, xtoupper, xconj, ximag, xreal): Remove
+	static wrapper functions.
+
+	* mkbuiltins (XDEFUN_MAPPER_INTERNAL, install_builtin_functions): 
+	Remove.
+	* mkgendoc (XDEFUN_MAPPER_INTERNAL): Remove.
+
+	* ov.cc (octave_mapper::register_type): Remove.
+	
+	* ov.h (abs, acos, acosh, angle, arg, asin, asinh, atan, atanh,
+	ceil, conj, cos, cosh, erf, erfc, exp, finite, fix, floor, gamma,
+	imag, isinf, isna, isnan, lgamma, log, log10, real, round, signum,
+	sin, sinh, sqrt, tan, tanh, isalnum, isalpha, isascii, iscntrl,
+	isdigit, isgraph, islower, isprint, ispunct, isspace, isupper,
+	isxdigit, toascii, tolower, toupper):
+	New octave_value mapper	functions.
+
+	* ov-base.h (abs, acos, acosh, angle, arg, asin, asinh, atan,
+	atanh, ceil, conj, cos, cosh, erf, erfc, exp, finite, fix, floor,
+	gamma, imag, isinf, isna, isnan, lgamma, log, log10, real, round,
+	signum, sin, sinh, sqrt, tan, tanh, isalnum, isalpha, isascii,
+	iscntrl, isdigit, isgraph, slower, isprint, ispunct, isspace,
+	isupper, isxdigit, toascii, tolower, toupper):
+	New virtual mapper functions.
+	* ov-base.cc (abs, acos, acosh, angle, arg, asin, asinh, atan,
+	atanh, ceil, conj, cos, cosh, erf, erfc, exp, finite, fix, floor,
+	gamma, imag, isinf, isna, isnan, lgamma, log, log10, real, round,
+	signum, sin, sinh, sqrt, tan, tanh, isalnum, isalpha, isascii,
+	iscntrl, isdigit, isgraph, slower, isprint, ispunct, isspace,
+	isupper, isxdigit, toascii, tolower, toupper):
+	Base versions of mapper functions.
+
+	* ov-bool-mat.h (abs, acos, acosh, angle, arg, asin, asinh, atan,
+	atanh, ceil, conj, cos, cosh, erf, erfc, exp, finite, fix, floor,
+	gamma, imag, isinf, isna, isnan, lgamma, log, log10, real, round,
+	signum, sin, sinh, sqrt, tan, tanh):
+	Mapper function recast boolen matrix as double.
+	* ov-bool.h (abs, acos, acosh, angle, arg, asin, asinh, atan,
+	atanh, ceil, conj, cos, cosh, erf, erfc, exp, finite, fix, floor,
+	gamma, imag, isinf, isna, isnan, lgamma, log, log10, real, round,
+	signum, sin, sinh, sqrt, tan, tanh): Ditto.
+	* ov-bool-sparse.h (abs, acos, acosh, angle, arg, asin, asinh,
+	atan, atanh, ceil, conj, cos, cosh, erf, erfc, exp, finite, fix,
+	floor, gamma, imag, isinf, isna, isnan, lgamma, log, log10, real,
+	round, signum, sin, sinh, sqrt, tan, tanh): Ditto.
+	(char_array_value): New method to convert to charNDArray.
+	* ov-bool-sparse.cc (char_array_value): New method to convert to
+	charNDArray.
+	* ov-complex.cc (char_array_value): ditto.
+	(xabs, ximag, xreal): Static wrapper functions.
+	(abs, acos, acosh, angle, arg, asin, asinh, atan, atanh, ceil,
+	conj, cos, cosh, exp, finite, fix, floor, imag, isinf, isna,
+	isnan, log, log10, real, round, signum, sin, sinh, sqrt, tan,
+	tanh): New mapper methods.
+	* ov-complex.h: Provide decls.
+
+	* ov-cx-mat.cc (char_array_value): New method to convert to
+	charNDArray.
+	(xabs, ximag, xreal): Static wrapper functions.
+	(abs, acos, acosh, angle, arg, asin, asinh, atan, atanh, ceil,
+	conj, cos, cosh, exp, finite, fix, floor, imag, isinf, isna,
+	isnan, log, log10, real, round, signum, sin, sinh, sqrt, tan,
+	tanh): New mapper methods.
+	* ov-cx-mat.h: Provide decls.
+	
+	* ov-cx-sparse.cc (char_array_value): New method to convert to
+	charNDArray.
+	(xabs, ximag, xreal): Static wrapper functions.
+	(abs, acos, acosh, angle, arg, asin, asinh, atan, atanh, ceil,
+	conj, cos, cosh, exp, finite, fix, floor, imag, isinf, isna,
+	isnan, log, log10, real, round, signum, sin, sinh, sqrt, tan,
+	tanh): New mapper methods.
+	* ov-cx-sparse.h: Provide decls.
+
+	* ov-intx.h (abs, signum, imag, ceil, conj, fix, floor, real,
+	round, finite, isinf, isna, isnan): Define for both matrix and
+	scalar classes.
+	
+	* ov-range.h (abs, acos, acosh, angle, arg, asin, asinh, atan,
+	atanh, ceil, conj, cos, cosh, erf, erfc, exp, finite, fix, floor,
+	gamma, imag, isinf, isna, isnan, lgamma, log, log10, real, round,
+	signum, sin, sinh, sqrt, tan, tanh): New mapper functions.
+
+	* ov-re-mat.cc (any_element_less_than): Static function to check if
+	any elemet was less than a value,
+	(any_element_greater_than): Ditto with greater than.
+	(abs, acos, acosh, angle, arg, asin, asinh, atan, atanh, ceil,
+	conj, cos, cosh, erf, erfc, exp, finite, fix, floor, gamma, imag,
+	isinf, isna, isnan, lgamma, log, log10, real, round, signum, sin,
+	sinh, sqrt, tan, tanh): New mapper functions.
+	* ov-re-mat.h: Provide decls.
+	
+	* ov-scalar.cc (any_element_less_than): Static function to check if
+	any elemet was less than a value,
+	(any_element_greater_than): ditto with greater than.
+	(abs acos acosh angle arg asin asinh atan atanh 
+	ceil conj cos cosh erf erfc exp finite fix floor gamma imag 
+	isinf isna isnan lgamma log log10 real round signum sin sinh 
+	sqrt tan tanh): New mapper functions.
+	* ov-scalar.h: Provide decls.
+
+	* ov-str-mat.cc (xisalnum, xisascii, xiscntrl, xisdigit,
+	xisgraph, xislower, xisprint, xispunct, xisspace, xisupper,
+	xtoascii, xtolower, xtoupper): New static wrapper functions.
+	(isalnum, isalpha, isascii, iscntrl, isdigit, isgraph, islower,
+	isprint, ispunct, isspace, isupper, isxdigit, toascii, tolower,
+	toupper): New mapper methods.
+	* ov-str-mat.h: Provide decls.
+
 2008-02-18  David Bateman  <dbateman@free.fr>
 
 	* data.cc (Fatan2): Reject arguments that are integer types.

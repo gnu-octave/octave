@@ -96,10 +96,11 @@ public:
 
   // other operations
 
-  ComplexRowVector map (c_c_Mapper f) const;
-  RowVector map (d_c_Mapper f) const;
+  typedef double (*dmapper) (const Complex&);
+  typedef Complex (*cmapper) (const Complex&);
 
-  ComplexRowVector& apply (c_c_Mapper f);
+  RowVector map (dmapper fcn) const;
+  ComplexRowVector map (cmapper fcn) const;
 
   Complex min (void) const;
   Complex max (void) const;

@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "dNDArray.h"
+#include "functor.h"
 #include "mx-base.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
@@ -958,6 +959,24 @@ NDArray::compute_index (Array<octave_idx_type>& ra_idx,
 			const dim_vector& dimensions)
 {
   return ::compute_index (ra_idx, dimensions);
+}
+
+NDArray
+NDArray::map (dmapper fcn) const
+{
+  return MArrayN<double>::map<double> (func_ptr (fcn));
+}
+
+ComplexNDArray
+NDArray::map (cmapper fcn) const
+{
+  return MArrayN<double>::map<Complex> (func_ptr (fcn));
+}
+
+boolNDArray
+NDArray::map (bmapper fcn) const
+{
+  return MArrayN<double>::map<bool> (func_ptr (fcn));
 }
 
 // This contains no information on the array structure !!!

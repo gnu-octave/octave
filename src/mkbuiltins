@@ -86,10 +86,6 @@ cat << \EOF
 
 #define XDEFCONST_INTERNAL(name, defn, doc)
 
-#define XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
-			       d_c_map, c_c_map, lo, hi, \
-			       ch_map_flag, can_ret_cmplx_for_real, doc)
-
 EOF
 
 for file in $DEF_FILES; do
@@ -104,8 +100,8 @@ done
 
 cat << \EOF
 
-static void
-install_builtin_functions (void)
+void
+install_builtins (void)
 {
 EOF
 
@@ -117,14 +113,6 @@ done
 cat << \EOF
 }
 
-extern void install_mapper_functions (void);
-
-void
-install_builtins (void)
-{
-  install_mapper_functions ();
-  install_builtin_functions ();
-}
 EOF
 
 exit 0

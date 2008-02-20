@@ -222,6 +222,40 @@ operator >> (std::istream& is, intNDArray<T>& a)
   return is;
 }
 
+// FIXME -- should abs and signum just be mapper functions?
+
+template <class T>
+intNDArray<T>
+intNDArray<T>::abs (void) const
+{
+  octave_idx_type nel = this->nelem ();
+  intNDArray<T> ret (*this);
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      T val = this->elem (i);
+      ret.xelem (i) = val.abs ();
+    }
+
+  return ret;
+}
+
+template <class T>
+intNDArray<T>
+intNDArray<T>::signum (void) const
+{
+  octave_idx_type nel = this->nelem ();
+  intNDArray<T> ret (*this);
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      T val = this->elem (i);
+      ret.xelem (i) = val.signum ();
+    }
+
+  return ret;
+}
+
 template <class T>
 intNDArray<T>
 intNDArray<T>::sum (int dim) const

@@ -68,11 +68,6 @@ cat << \EOF
 #define XDEFCONST_INTERNAL(name, defn, doc) \
   print_doc_string (#name, doc);
 
-#define XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
-			       d_c_map, c_c_map, lo, hi, \
-			       ch_map_flag, can_ret_cmplx_for_real, doc) \
-  print_doc_string (#name, doc);
-
 static void
 print_doc_string (const std::string& name, const std::string& doc)
 {

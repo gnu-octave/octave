@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ops.h"
 
 #include "ov-re-sparse.h"
+#include "ov-bool-sparse.h"
 
 // sparse bool matrix by bool ops.
 

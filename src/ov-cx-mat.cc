@@ -30,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "data-conv.h"
 #include "lo-ieee.h"
+#include "lo-specfun.h"
+#include "lo-mappers.h"
 #include "mx-base.h"
 #include "mach-info.h"
 
@@ -179,6 +181,26 @@ octave_complex_matrix::complex_matrix_value (bool) const
 {
   return matrix.matrix_value ();
 }
+
+charNDArray
+octave_complex_matrix::char_array_value (bool frc_str_conv) const
+{
+  charNDArray retval;
+
+  if (! frc_str_conv)
+    gripe_implicit_conversion ("Octave:num-to-str",
+			       "complex matrix", "string");
+  else
+    {
+      retval = charNDArray (dims ());
+      octave_idx_type nel = numel ();
+  
+      for (octave_idx_type i = 0; i < nel; i++)
+	retval.elem (i) = static_cast<char>(std::real (matrix.elem (i)));
+    }
+
+  return retval;
+}  
 
 SparseMatrix
 octave_complex_matrix::sparse_matrix_value (bool force_conversion) const
@@ -623,12 +645,70 @@ octave_complex_matrix::as_mxArray (void) const
 
   for (mwIndex i = 0; i < nel; i++)
     {
-      pr[i] = real (p[i]);
-      pi[i] = imag (p[i]);
+      pr[i] = std::real (p[i]);
+      pi[i] = std::imag (p[i]);
     }
 
   return retval;
 }
+
+static double
+xabs (const Complex& x)
+{
+  return (xisinf (x.real ()) || xisinf (x.imag ())) ? octave_Inf : abs (x);
+}
+
+static double
+ximag (const Complex& x)
+{
+  return x.imag ();
+}
+
+static double
+xreal (const Complex& x)
+{
+  return x.real ();
+}
+
+#define ARRAY_MAPPER(MAP, AMAP, FCN) \
+  octave_value \
+  octave_complex_matrix::MAP (void) const \
+  { \
+    static AMAP cmap = FCN; \
+    return matrix.map (cmap); \
+  }
+
+ARRAY_MAPPER (abs, ComplexNDArray::dmapper, xabs)
+ARRAY_MAPPER (acos, ComplexNDArray::cmapper, ::acos)
+ARRAY_MAPPER (acosh, ComplexNDArray::cmapper, ::acosh)
+ARRAY_MAPPER (angle, ComplexNDArray::dmapper, std::arg)
+ARRAY_MAPPER (arg, ComplexNDArray::dmapper, std::arg)
+ARRAY_MAPPER (asin, ComplexNDArray::cmapper, ::asin)
+ARRAY_MAPPER (asinh, ComplexNDArray::cmapper, ::asinh)
+ARRAY_MAPPER (atan, ComplexNDArray::cmapper, ::atan)
+ARRAY_MAPPER (atanh, ComplexNDArray::cmapper, ::atanh)
+ARRAY_MAPPER (ceil, ComplexNDArray::cmapper, ::ceil)
+ARRAY_MAPPER (conj, ComplexNDArray::cmapper, std::conj)
+ARRAY_MAPPER (cos, ComplexNDArray::cmapper, std::cos)
+ARRAY_MAPPER (cosh, ComplexNDArray::cmapper, std::cosh)
+ARRAY_MAPPER (exp, ComplexNDArray::cmapper, std::exp)
+ARRAY_MAPPER (fix, ComplexNDArray::cmapper, ::fix)
+ARRAY_MAPPER (floor, ComplexNDArray::cmapper, ::floor)
+ARRAY_MAPPER (imag, ComplexNDArray::dmapper, ximag)
+ARRAY_MAPPER (log, ComplexNDArray::cmapper, std::log)
+ARRAY_MAPPER (log10, ComplexNDArray::cmapper, std::log10)
+ARRAY_MAPPER (real, ComplexNDArray::dmapper, xreal)
+ARRAY_MAPPER (round, ComplexNDArray::cmapper, xround)
+ARRAY_MAPPER (signum, ComplexNDArray::cmapper, ::signum)
+ARRAY_MAPPER (sin, ComplexNDArray::cmapper, std::sin)
+ARRAY_MAPPER (sinh, ComplexNDArray::cmapper, std::sinh)
+ARRAY_MAPPER (sqrt, ComplexNDArray::cmapper, std::sqrt)
+ARRAY_MAPPER (tan, ComplexNDArray::cmapper, std::tan)
+ARRAY_MAPPER (tanh, ComplexNDArray::cmapper, std::tanh)
+ARRAY_MAPPER (finite, ComplexNDArray::bmapper, xfinite)
+ARRAY_MAPPER (isinf, ComplexNDArray::bmapper, xisinf)
+ARRAY_MAPPER (isna, ComplexNDArray::bmapper, octave_is_NA)
+ARRAY_MAPPER (isnan, ComplexNDArray::bmapper, xisnan)
 
 /*
 ;;; Local Variables: ***

@@ -97,6 +97,12 @@ public:
     { return ArrayN<T>::ipermute (vec); }
 
   MArrayN squeeze (void) const { return ArrayN<T>::squeeze (); }
+
+  template <class U, class F>
+  MArrayN<U> map (F fcn) const
+  {
+    return ArrayN<T>::template map<U> (fcn);
+  }
 };
 
 #endif

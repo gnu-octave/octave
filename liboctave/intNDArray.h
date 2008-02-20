@@ -80,6 +80,9 @@ public:
   
   intNDArray sum (int dim) const;
 
+  intNDArray abs (void) const;
+  intNDArray signum (void) const;
+
   intNDArray squeeze (void) const
     { return intNDArray<T> (MArrayN<T>::squeeze ()); }
 

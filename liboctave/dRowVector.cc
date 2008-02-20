@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array-util.h"
 #include "f77-fcn.h"
+#include "functor.h"
 #include "lo-error.h"
 #include "mx-base.h"
 #include "mx-inlines.cc"
@@ -232,21 +233,15 @@ operator * (const RowVector& v, const Matrix& a)
 // other operations
 
 RowVector
-RowVector::map (d_d_Mapper f) const
+RowVector::map (dmapper fcn) const
 {
-  RowVector b (*this);
-  return b.apply (f);
+  return MArray<double>::map<double> (func_ptr (fcn));
 }
 
-RowVector&
-RowVector::apply (d_d_Mapper f)
+ComplexRowVector
+RowVector::map (cmapper fcn) const
 {
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    d[i] = f (d[i]);
-
-  return *this;
+  return MArray<double>::map<Complex> (func_ptr (fcn));
 }
 
 double

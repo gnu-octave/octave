@@ -89,6 +89,11 @@ public:
 
   static char resize_fill_value (void) { return '\0'; }
 
+  typedef int (*mapper) (int);
+  boolNDArray bmap (mapper fcn) const;
+  NDArray dmap (mapper fcn) const;
+  charNDArray smap (mapper fcn) const;
+
 private:
 
   charNDArray (char *d, dim_vector& dv) : MArrayN<char> (d, dv) { }

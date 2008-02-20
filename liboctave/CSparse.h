@@ -402,12 +402,6 @@ public:
 
   SparseComplexMatrix ipermute (const Array<octave_idx_type>& vec) const;
 
-  SparseComplexMatrix map (c_c_Mapper f) const;
-  SparseMatrix map (d_c_Mapper f) const;
-  SparseBoolMatrix map (b_c_Mapper f) const;
-
-  SparseComplexMatrix& apply (c_c_Mapper f);
-
   bool any_element_is_inf_or_nan (void) const;
   bool all_elements_are_real (void) const;
   bool all_integers (double& max_val, double& min_val) const;
@@ -432,6 +426,13 @@ public:
 				    const SparseComplexMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, 
 				    SparseComplexMatrix& a);
+
+  typedef double (*dmapper) (const Complex&);
+  typedef Complex (*cmapper) (const Complex&);
+  typedef bool (*bmapper) (const Complex&);
+  SparseMatrix map (dmapper fcn) const;
+  SparseComplexMatrix map (cmapper fcn) const;
+  SparseBoolMatrix map (bmapper fcn) const;
 };
 
 extern OCTAVE_API SparseComplexMatrix operator * (const SparseMatrix&,        

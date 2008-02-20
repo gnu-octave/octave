@@ -75,6 +75,13 @@ public:
   Array2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
     : Array<T> (a, dim_vector (r, c)) { }
 
+  template <class U>
+  Array2 (const Array<U>& a) : Array<T> (a) { }
+
+  template <class U>
+  Array2 (const Array<U>& a, const dim_vector& dv)
+    : Array<T> (a, dv) { }
+
   ~Array2 (void) { }
 
   Array2<T>& operator = (const Array2<T>& a)
@@ -128,6 +135,12 @@ public:
       Array<T> tmp = Array<T>::sort (sidx, dim, mode);
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
+
+  template <class U, class F>
+  Array2<U> map (F fcn) const
+  {
+    return Array<T>::template map<U> (fcn);
+  }
 };
 
 #endif

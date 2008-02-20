@@ -59,6 +59,12 @@ public:
 
   MArray2 (const Array2<T>& a) : Array2<T> (a) { }
 
+  template <class U>
+  MArray2 (const Array2<U>& a) : Array2<T> (a) { }
+
+  template <class U>
+  MArray2 (const MArray2<U>& a) : Array2<T> (a) { }
+
   ~MArray2 (void) { }
 
   MArray2<T>& operator = (const MArray2<T>& a)
@@ -74,6 +80,12 @@ public:
   }
 
   MArray2<T> transpose (void) const { return Array2<T>::transpose (); }
+
+  template <class U, class F>
+  MArray2<U> map (F fcn) const
+  {
+    return Array2<T>::template map<U> (fcn);
+  }
 
   // Currently, the OPS functions don't need to be friends, but that
   // may change.

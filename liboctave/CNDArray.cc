@@ -33,6 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CNDArray.h"
 #include "mx-base.h"
 #include "f77-fcn.h"
+#include "functor.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 
@@ -984,6 +985,23 @@ ComplexNDArray::compute_index (Array<octave_idx_type>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
+NDArray
+ComplexNDArray::map (dmapper fcn) const
+{
+  return MArrayN<Complex>::map<double> (func_ptr (fcn));
+}
+
+ComplexNDArray
+ComplexNDArray::map (cmapper fcn) const
+{
+  return MArrayN<Complex>::map<Complex> (func_ptr (fcn));
+}
+
+boolNDArray
+ComplexNDArray::map (bmapper fcn) const
+{
+  return MArrayN<Complex>::map<bool> (func_ptr (fcn));
+}
 
 // This contains no information on the array structure !!!
 std::ostream&

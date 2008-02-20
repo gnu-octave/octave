@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CmplxSVD.h"
 #include "CmplxCHOL.h"
 #include "f77-fcn.h"
+#include "functor.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -3097,52 +3098,22 @@ ComplexMatrix::operator ! (void) const
 
 // other operations
 
-ComplexMatrix
-ComplexMatrix::map (c_c_Mapper f) const
+Matrix
+ComplexMatrix::map (dmapper fcn) const
 {
-  ComplexMatrix b (*this);
-  return b.apply (f);
+  return MArray2<Complex>::map<double> (func_ptr (fcn));
 }
 
-Matrix
-ComplexMatrix::map (d_c_Mapper f) const
+ComplexMatrix
+ComplexMatrix::map (cmapper fcn) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  Matrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = f (elem(i,j));
-
-  return retval;
+  return MArray2<Complex>::map<Complex> (func_ptr (fcn));
 }
 
 boolMatrix
-ComplexMatrix::map (b_c_Mapper f) const
+ComplexMatrix::map (bmapper fcn) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  boolMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = f (elem(i,j));
-
-  return retval;
-}
-
-ComplexMatrix&
-ComplexMatrix::apply (c_c_Mapper f)
-{
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    d[i] = f (d[i]);
-
-  return *this;
+  return MArray2<Complex>::map<bool> (func_ptr (fcn));
 }
 
 bool

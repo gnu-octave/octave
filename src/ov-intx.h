@@ -37,6 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-typeinfo.h"
 #include "gripes.h"
 
+#include "ov-re-mat.h"
+#include "ov-scalar.h"
+
 class
 OCTINTERP_API
 OCTAVE_VALUE_INT_MATRIX_T
@@ -225,6 +228,42 @@ public:
 
     return retval;
   }
+
+#define MAT_MAPPER(FCN) \
+  octave_value FCN (void) const { return matrix.FCN (); }
+
+  MAT_MAPPER (abs)
+  MAT_MAPPER (signum)
+
+#undef MAT_MAPPER
+
+  octave_value imag (void) const
+  {
+    return OCTAVE_INT_NDARRAY_T (matrix.dims (),
+				 static_cast<OCTAVE_INT_T>(0));
+  }
+
+#define NO_OP_MAPPER(FCN) \
+  octave_value FCN (void) const { return octave_value (matrix); }
+
+  NO_OP_MAPPER (ceil)
+  NO_OP_MAPPER (conj)
+  NO_OP_MAPPER (fix)
+  NO_OP_MAPPER (floor)
+  NO_OP_MAPPER (real)
+  NO_OP_MAPPER (round)
+
+#undef NO_OP_MAPPER
+
+#define BOOL_MAPPER(FCN, VAL) \
+  octave_value FCN (void) const { return boolNDArray (matrix.dims (), VAL); }
+
+  BOOL_MAPPER (finite, true)
+  BOOL_MAPPER (isinf, false)
+  BOOL_MAPPER (isna, false)
+  BOOL_MAPPER (isnan, false)
+
+#undef BOOL_MAPPER
 
 private:
 
@@ -447,6 +486,37 @@ public:
 
     return retval;
   }
+
+#define SCALAR_MAPPER(FCN) \
+  octave_value FCN (void) const { return scalar.FCN (); }
+
+  SCALAR_MAPPER (abs)
+  SCALAR_MAPPER (signum)
+
+#undef SCALAR_MAPPER
+
+  octave_value imag (void) const { return static_cast<OCTAVE_INT_T>(0); }
+
+#define NO_OP_MAPPER(FCN) \
+  octave_value FCN (void) const { return octave_value (scalar); }
+
+  NO_OP_MAPPER (ceil)
+  NO_OP_MAPPER (conj)
+  NO_OP_MAPPER (fix)
+  NO_OP_MAPPER (floor)
+  NO_OP_MAPPER (real)
+  NO_OP_MAPPER (round)
+
+#undef NO_OP_MAPPER
+
+#define BOOL_MAPPER(FCN, VAL) octave_value FCN (void) const { return VAL; }
+
+  BOOL_MAPPER (finite, true)
+  BOOL_MAPPER (isinf, false)
+  BOOL_MAPPER (isna, false)
+  BOOL_MAPPER (isnan, false)
+
+#undef BOOL_MAPPER
 
 private:
 

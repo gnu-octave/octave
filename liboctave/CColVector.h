@@ -114,10 +114,11 @@ public:
 
   // other operations
 
-  ComplexColumnVector map (c_c_Mapper f) const;
-  ColumnVector map (d_c_Mapper f) const;
+  typedef double (*dmapper) (const Complex&);
+  typedef Complex (*cmapper) (const Complex&);
 
-  ComplexColumnVector& apply (c_c_Mapper f);
+  ColumnVector map (dmapper fcn) const;
+  ComplexColumnVector map (cmapper fcn) const;
 
   Complex min (void) const;
   Complex max (void) const;

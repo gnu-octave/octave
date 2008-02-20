@@ -79,9 +79,11 @@ public:
 
   // other operations
 
-  RowVector map (d_d_Mapper f) const;
+  typedef double (*dmapper) (double);
+  typedef Complex (*cmapper) (const Complex&);
 
-  RowVector& apply (d_d_Mapper f);
+  RowVector map (dmapper fcn) const;
+  ComplexRowVector map (cmapper fcn) const;
 
   double min (void) const;
   double max (void) const;

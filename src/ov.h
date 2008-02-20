@@ -877,6 +877,62 @@ public:
 
   bool islocked (void) const { return rep->islocked (); }
 
+#define MAPPER_FORWARD(F) \
+  octave_value F (void) const { return rep->F (); }
+
+  MAPPER_FORWARD (abs)
+  MAPPER_FORWARD (acos)
+  MAPPER_FORWARD (acosh)
+  MAPPER_FORWARD (angle)
+  MAPPER_FORWARD (arg)
+  MAPPER_FORWARD (asin)
+  MAPPER_FORWARD (asinh)
+  MAPPER_FORWARD (atan)
+  MAPPER_FORWARD (atanh)
+  MAPPER_FORWARD (ceil)
+  MAPPER_FORWARD (conj)
+  MAPPER_FORWARD (cos)
+  MAPPER_FORWARD (cosh)
+  MAPPER_FORWARD (erf)
+  MAPPER_FORWARD (erfc)
+  MAPPER_FORWARD (exp)
+  MAPPER_FORWARD (finite)
+  MAPPER_FORWARD (fix)
+  MAPPER_FORWARD (floor)
+  MAPPER_FORWARD (gamma)
+  MAPPER_FORWARD (imag)
+  MAPPER_FORWARD (isinf)
+  MAPPER_FORWARD (isna)
+  MAPPER_FORWARD (isnan)
+  MAPPER_FORWARD (lgamma)
+  MAPPER_FORWARD (log)
+  MAPPER_FORWARD (log10)
+  MAPPER_FORWARD (real)
+  MAPPER_FORWARD (round)
+  MAPPER_FORWARD (signum)
+  MAPPER_FORWARD (sin)
+  MAPPER_FORWARD (sinh)
+  MAPPER_FORWARD (sqrt)
+  MAPPER_FORWARD (tan)
+  MAPPER_FORWARD (tanh)
+  MAPPER_FORWARD (isalnum)
+  MAPPER_FORWARD (isalpha)
+  MAPPER_FORWARD (isascii)
+  MAPPER_FORWARD (iscntrl)
+  MAPPER_FORWARD (isdigit)
+  MAPPER_FORWARD (isgraph)
+  MAPPER_FORWARD (islower)
+  MAPPER_FORWARD (isprint)
+  MAPPER_FORWARD (ispunct)
+  MAPPER_FORWARD (isspace)
+  MAPPER_FORWARD (isupper)
+  MAPPER_FORWARD (isxdigit)
+  MAPPER_FORWARD (toascii)
+  MAPPER_FORWARD (tolower)
+  MAPPER_FORWARD (toupper)
+
+#undef MAPPER_FORWARD
+
 protected:
 
   // The real representation.

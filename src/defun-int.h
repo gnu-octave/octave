@@ -28,7 +28,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "ov-builtin.h"
 #include "ov-dld-fcn.h"
-#include "ov-mapper.h"
 #include "symtab.h"
 #include "version.h"
 
@@ -38,9 +37,6 @@ extern OCTINTERP_API void print_usage (void);
 extern OCTINTERP_API void print_usage (const std::string&) GCC_ATTR_DEPRECATED;
 
 extern OCTINTERP_API void check_version (const std::string& version, const std::string& fcn);
-
-extern OCTINTERP_API void
-install_builtin_mapper (octave_mapper *mf, const std::string& name);
 
 extern OCTINTERP_API void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,
@@ -179,15 +175,6 @@ typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool re
     XDEFALIAS_INTERNAL(alias, name) \
   END_INSTALL_BUILTIN
 
-#define DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
-			      d_c_map, c_c_map, lo, hi, \
-			      ch_map_flag, can_ret_cmplx_for_real, doc) \
-  BEGIN_INSTALL_BUILTIN \
-    XDEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
-		           d_c_map, c_c_map, lo, hi, \
-			   ch_map_flag, can_ret_cmplx_for_real, doc) \
-  END_INSTALL_BUILTIN
-
 #else /* ! MAKE_BUILTINS */
 
 // Generate the first line of the function definition.  This ensures
@@ -206,20 +193,6 @@ typedef octave_function * (*octave_dld_fcn_getter) (const octave_shlib&, bool re
 // No definition is required for an alias.
 
 #define DEFALIAS_INTERNAL(alias, name)
-
-// How mapper functions are actually installed.
-
-// FIXME -- Really want to avoid the following casts, since
-// (as always with casts) it may mask some real errors...
-
-#define DEFUN_MAPPER_INTERNAL(name, ch_map, d_b_map, c_b_map, d_d_map, \
-			      d_c_map, c_c_map, lo, hi, \
-			      ch_map_flag, can_ret_cmplx_for_real, doc) \
-  install_builtin_mapper \
-    (new octave_mapper \
-       (ch_map, d_b_map, c_b_map, d_d_map, d_c_map, c_c_map, \
-        lo, hi, ch_map_flag, can_ret_cmplx_for_real, #name, doc), \
-     #name)
 
 #endif /* ! MAKE_BUILTINS */
 

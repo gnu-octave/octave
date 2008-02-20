@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dbleSVD.h"
 #include "dbleCHOL.h"
 #include "f77-fcn.h"
+#include "functor.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
@@ -2623,36 +2624,21 @@ operator * (const ColumnVector& v, const RowVector& a)
 // other operations.
 
 Matrix
-Matrix::map (d_d_Mapper f) const
+Matrix::map (dmapper fcn) const
 {
-  Matrix b (*this);
-  return b.apply (f);
+  return MArray2<double>::map<double> (func_ptr (fcn));
+}
+
+ComplexMatrix
+Matrix::map (cmapper fcn) const
+{
+  return MArray2<double>::map<Complex> (func_ptr (fcn));
 }
 
 boolMatrix
-Matrix::map (b_d_Mapper f) const
+Matrix::map (bmapper fcn) const
 {
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-
-  boolMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      retval(i,j) = f (elem(i,j));
-
-  return retval;
-}
-
-Matrix&
-Matrix::apply (d_d_Mapper f)
-{
-  double *d = fortran_vec (); // Ensures only one reference to my privates!
-
-  for (octave_idx_type i = 0; i < length (); i++)
-    d[i] = f (d[i]);
-
-  return *this;
+  return MArray2<double>::map<bool> (func_ptr (fcn));
 }
 
 bool

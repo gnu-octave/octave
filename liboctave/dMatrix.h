@@ -266,10 +266,13 @@ public:
 
   // other operations
 
-  Matrix map (d_d_Mapper f) const;
-  boolMatrix map (b_d_Mapper f) const;
+  typedef double (*dmapper) (double);
+  typedef Complex (*cmapper) (const Complex&);
+  typedef bool (*bmapper) (double);
 
-  Matrix& apply (d_d_Mapper f);
+  Matrix map (dmapper fcn) const;
+  ComplexMatrix map (cmapper fcn) const;
+  boolMatrix map (bmapper fcn) const;
 
   bool any_element_is_negative (bool = false) const;
   bool any_element_is_inf_or_nan (void) const;

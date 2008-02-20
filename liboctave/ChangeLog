@@ -1,3 +1,59 @@
+2008-02-20  John W. Eaton  <jwe@octave.org>
+
+	* boolNDArray.h (boolNDArray (const Array2<bool>&)): Delete.
+
+	* Marray2.h (MArray2 (const Array2<U>&),
+	MArray2 (const MArray2<U>&)): New templated constructors.
+
+	* Array2.h (Array2 (const Array<U>&),
+	Array2 (const Array<U>&, const dim_vector&)):
+	New templated constructors.
+
+	* CColVector.cc (ComplexColumnVector::map): Forward to MArray::map.
+	* dColVector.cc (ColumnVector::map): ditto.
+	* CRowVector.cc (ComplexRowVector::map): ditto.
+	* dRowVector.cc (RowVector::map): ditto.
+	* CMatrix.cc (ComplexMatrix::map): Forward to MArray2::map.
+	* dMatrix.cc (Matrix::map): ditto.
+
+	* dNDArray.cc (NDArray::map): New functions.
+	* dNDArray.h: Provide decls.
+
+	* CNDArray.cc (ComplexNDArray::map): New functions.
+	* CNDArray.h: Provide decls.
+
+	* MArray2.h (MArray2<T>::map): New function.
+	* Array2.h (Array2<T>::map): New function.
+	* MArrayN.h (MArrayN<T>::map): New function.
+	* ArrayN.h (ArrayN<T>::map): New function.
+	* Array.h (Array<T>::map): New function.
+
+	* functor.h: New file.
+	* Makefile.in (INCLUDES): Add it to the list.
+
+2008-02-20  David Bateman  <dbateman@free.fr>
+
+	* CColVector.h, CColVector.cc (ComplexColumnVector::apply): Remove.
+	* dColVector.h, dColVector.cc (ColumnVector::apply): ditto.
+	* CRowVector.h, CRowVector.cc (ComplexRowVector::apply): ditto.
+	* dRowVector.h, dRowVector.cc (RowVector::apply): ditto.
+	* CMatrix.h, CMatrix.cc (ComplexMatrix::apply): ditto.
+	* dMatrix.h, dMatrix.cc (Matrix::apply): ditto.
+
+	* CSparse.cc (apply): Remove.
+	(map): Replace old mapper code with code taken from ov-mapepr.cc
+	* CSparse.h (map): Reeclare them.
+	(dmapper, cmapper, bmapper): typedefs for mapper functions.
+	* dSparse.cc (apply): Remove.
+	(map): Replace old mapper code with code taken from ov-mapepr.cc
+	* dSparse.h (map): Reeclare them.
+	(dmapper, cmapper, bmapper): typedefs for mapper functions.
+
+	* intNDArray.cc (abs, signum): Two new mapper functions.
+	* intNDArray.h (abs, signum): Declare them.
+	* oct-inttypes.h (abs, signum): Mapper functions on scalar integer
+	base type.
+
 2008-02-15  John W. Eaton  <jwe@octave.org>
 
 	* dMatrix.cc (Matrix::lssolve): Check n > mnthr, not n > m when

@@ -31,7 +31,6 @@ class tree_identifier;
 class octave_value;
 class octave_value_list;
 class octave_builtin;
-class octave_mapper;
 class string_vector;
 
 #include <climits>

@@ -112,6 +112,8 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const;
 
+  charNDArray char_array_value (bool = false) const;
+
   boolMatrix bool_matrix_value (bool = false) const;
 
   boolNDArray bool_array_value (bool = false) const;
@@ -137,6 +139,52 @@ public:
 #endif
 
   mxArray *as_mxArray (void) const;
+
+  // Mapper functions are converted to double for treatment
+#define BOOL_SPARSE_MAPPER(MAP) \
+  octave_value MAP (void) const \
+    { \
+      octave_sparse_matrix m (sparse_matrix_value ()); \
+      return m.MAP (); \
+    }
+
+  BOOL_SPARSE_MAPPER (abs)
+  BOOL_SPARSE_MAPPER (acos)
+  BOOL_SPARSE_MAPPER (acosh)
+  BOOL_SPARSE_MAPPER (angle)
+  BOOL_SPARSE_MAPPER (arg)
+  BOOL_SPARSE_MAPPER (asin)
+  BOOL_SPARSE_MAPPER (asinh)
+  BOOL_SPARSE_MAPPER (atan)
+  BOOL_SPARSE_MAPPER (atanh)
+  BOOL_SPARSE_MAPPER (ceil)
+  BOOL_SPARSE_MAPPER (conj)
+  BOOL_SPARSE_MAPPER (cos)
+  BOOL_SPARSE_MAPPER (cosh)
+  BOOL_SPARSE_MAPPER (erf)
+  BOOL_SPARSE_MAPPER (erfc)
+  BOOL_SPARSE_MAPPER (exp)
+  BOOL_SPARSE_MAPPER (finite)
+  BOOL_SPARSE_MAPPER (fix)
+  BOOL_SPARSE_MAPPER (floor)
+  BOOL_SPARSE_MAPPER (gamma)
+  BOOL_SPARSE_MAPPER (imag)
+  BOOL_SPARSE_MAPPER (isinf)
+  BOOL_SPARSE_MAPPER (isna)
+  BOOL_SPARSE_MAPPER (isnan)
+  BOOL_SPARSE_MAPPER (lgamma)
+  BOOL_SPARSE_MAPPER (log)
+  BOOL_SPARSE_MAPPER (log10)
+  BOOL_SPARSE_MAPPER (real)
+  BOOL_SPARSE_MAPPER (round)
+  BOOL_SPARSE_MAPPER (signum)
+  BOOL_SPARSE_MAPPER (sin)
+  BOOL_SPARSE_MAPPER (sinh)
+  BOOL_SPARSE_MAPPER (sqrt)
+  BOOL_SPARSE_MAPPER (tan)
+  BOOL_SPARSE_MAPPER (tanh)
+
+#undef BOOL_SPARSE_MAPPER
 
 protected:
 

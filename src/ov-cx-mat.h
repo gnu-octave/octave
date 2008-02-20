@@ -113,6 +113,8 @@ public:
 
   ComplexNDArray complex_array_value (bool = false) const { return matrix; }
 
+  charNDArray char_array_value (bool frc_str_conv = false) const;
+  
   SparseMatrix sparse_matrix_value (bool = false) const;
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
@@ -148,6 +150,38 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   mxArray *as_mxArray (void) const;
+
+  octave_value abs (void) const;
+  octave_value acos (void) const;
+  octave_value acosh (void) const;
+  octave_value angle (void) const;
+  octave_value arg (void) const;
+  octave_value asin (void) const;
+  octave_value asinh (void) const;
+  octave_value atan (void) const;
+  octave_value atanh (void) const;
+  octave_value ceil (void) const;
+  octave_value conj (void) const;
+  octave_value cos (void) const;
+  octave_value cosh (void) const;
+  octave_value exp (void) const;
+  octave_value fix (void) const;
+  octave_value floor (void) const;
+  octave_value imag (void) const;
+  octave_value log (void) const;
+  octave_value log10 (void) const;
+  octave_value real (void) const;
+  octave_value round (void) const;
+  octave_value signum (void) const;
+  octave_value sin (void) const;
+  octave_value sinh (void) const;
+  octave_value sqrt (void) const;
+  octave_value tan (void) const;
+  octave_value tanh (void) const;
+  octave_value finite (void) const;
+  octave_value isinf (void) const;
+  octave_value isna (void) const;
+  octave_value isnan (void) const;
 
 private:
 

@@ -116,6 +116,14 @@ public:
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (double& max_val, double& min_val) const;
 
+  typedef double (*dmapper) (const Complex&);
+  typedef Complex (*cmapper) (const Complex&);
+  typedef bool (*bmapper) (const Complex&);
+
+  NDArray map (dmapper fcn) const;
+  ComplexNDArray map (cmapper fcn) const;
+  boolNDArray map (bmapper fcn) const;
+
 private:
 
   ComplexNDArray (Complex *d, const dim_vector& dv)

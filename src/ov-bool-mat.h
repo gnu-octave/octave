@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "ov-base.h"
 #include "ov-base-mat.h"
+#include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 
 #include "MatrixType.h"
@@ -63,9 +64,6 @@ public:
 
   octave_bool_matrix (const boolMatrix& bm, const MatrixType& t)
     : octave_base_matrix<boolNDArray> (bm, t) { }
-
-  octave_bool_matrix (const Array2<bool>& a)
-    : octave_base_matrix<boolNDArray> (a) { }
 
   octave_bool_matrix (const octave_bool_matrix& bm)
     : octave_base_matrix<boolNDArray> (bm) { }
@@ -185,6 +183,52 @@ public:
     { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
   mxArray *as_mxArray (void) const;
+
+  // Mapper functions are converted to double for treatment
+#define BOOL_MAT_MAPPER(MAP) \
+  octave_value MAP (void) const \
+    { \
+      octave_matrix m (array_value ()); \
+      return m.MAP (); \
+    }
+
+  BOOL_MAT_MAPPER (abs)
+  BOOL_MAT_MAPPER (acos)
+  BOOL_MAT_MAPPER (acosh)
+  BOOL_MAT_MAPPER (angle)
+  BOOL_MAT_MAPPER (arg)
+  BOOL_MAT_MAPPER (asin)
+  BOOL_MAT_MAPPER (asinh)
+  BOOL_MAT_MAPPER (atan)
+  BOOL_MAT_MAPPER (atanh)
+  BOOL_MAT_MAPPER (ceil)
+  BOOL_MAT_MAPPER (conj)
+  BOOL_MAT_MAPPER (cos)
+  BOOL_MAT_MAPPER (cosh)
+  BOOL_MAT_MAPPER (erf)
+  BOOL_MAT_MAPPER (erfc)
+  BOOL_MAT_MAPPER (exp)
+  BOOL_MAT_MAPPER (finite)
+  BOOL_MAT_MAPPER (fix)
+  BOOL_MAT_MAPPER (floor)
+  BOOL_MAT_MAPPER (gamma)
+  BOOL_MAT_MAPPER (imag)
+  BOOL_MAT_MAPPER (isinf)
+  BOOL_MAT_MAPPER (isna)
+  BOOL_MAT_MAPPER (isnan)
+  BOOL_MAT_MAPPER (lgamma)
+  BOOL_MAT_MAPPER (log)
+  BOOL_MAT_MAPPER (log10)
+  BOOL_MAT_MAPPER (real)
+  BOOL_MAT_MAPPER (round)
+  BOOL_MAT_MAPPER (signum)
+  BOOL_MAT_MAPPER (sin)
+  BOOL_MAT_MAPPER (sinh)
+  BOOL_MAT_MAPPER (sqrt)
+  BOOL_MAT_MAPPER (tan)
+  BOOL_MAT_MAPPER (tanh)
+
+#undef BOOL_MAT_MAPPER
 
 protected:
 

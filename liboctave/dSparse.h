@@ -370,10 +370,6 @@ public:
 			     solve_singularity_handler sing_handler) const;
 
   // other operations
-  SparseMatrix map (d_d_Mapper f) const;
-  SparseBoolMatrix map (b_d_Mapper f) const;
-
-  SparseMatrix& apply (d_d_Mapper f);
 
   bool any_element_is_negative (bool = false) const;
   bool any_element_is_inf_or_nan (void) const;
@@ -416,6 +412,13 @@ public:
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const SparseMatrix& a);
   friend OCTAVE_API std::istream& operator >> (std::istream& is, SparseMatrix& a);
+
+  typedef double (*dmapper) (double);
+  typedef Complex (*cmapper) (const Complex&);
+  typedef bool (*bmapper) (double);
+  SparseMatrix map (dmapper fcn) const;
+  SparseComplexMatrix map (cmapper fcn) const;
+  SparseBoolMatrix map (bmapper fcn) const;
 };
 
 // Publish externally used friend functions.

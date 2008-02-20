@@ -32,8 +32,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dim-vector.h"
 #include "lo-utils.h"
-
 #include "oct-sort.h"
+#include "quit.h"
 
 class idx_vector;
 
@@ -549,6 +549,27 @@ public:
   Array<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   Array<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		 sortmode mode = ASCENDING) const;
+
+  template <class U, class F>
+  Array<U>
+  map (F fcn) const
+  {
+    octave_idx_type len = length ();
+
+    const T *m = data ();
+
+    Array<U> result (dims ());
+    U *p = result.fortran_vec ();
+
+    for (octave_idx_type i = 0; i < len; i++)
+      {
+	OCTAVE_QUIT;
+
+	p[i] = fcn (m[i]);
+      }
+
+    return result;
+  }
 };
 
 // NOTE: these functions should be friends of the Array<T> class and

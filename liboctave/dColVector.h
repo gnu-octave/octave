@@ -83,9 +83,11 @@ public:
 
   // other operations
 
-  ColumnVector map (d_d_Mapper f) const;
+  typedef double (*dmapper) (double);
+  typedef Complex (*cmapper) (const Complex&);
 
-  ColumnVector& apply (d_d_Mapper f);
+  ColumnVector map (dmapper fcn) const;
+  ComplexColumnVector map (cmapper fcn) const;
 
   double min (void) const;
   double max (void) const;

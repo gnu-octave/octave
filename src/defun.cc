@@ -37,7 +37,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-builtin.h"
 #include "ov-dld-fcn.h"
 #include "ov-fcn.h"
-#include "ov-mapper.h"
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "oct-obj.h"
@@ -127,12 +126,6 @@ check_version (const std::string& version, const std::string& fcn)
 }
 
 // Install variables and functions in the symbol tables.
-
-void
-install_builtin_mapper (octave_mapper *mf, const std::string& name)
-{
-  symbol_table::install_built_in_function (name, octave_value (mf));
-}
 
 void
 install_builtin_function (octave_builtin::fcn f, const std::string& name,

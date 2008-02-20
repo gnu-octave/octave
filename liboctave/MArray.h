@@ -82,6 +82,12 @@ public:
 
   double norm (double p) const;
 
+  template <class U, class F>
+  MArray<U> map (F fcn) const
+  {
+    return Array<T>::template map<U> (fcn);
+  }
+
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 

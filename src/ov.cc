@@ -61,7 +61,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cs-list.h"
 #include "ov-colon.h"
 #include "ov-builtin.h"
-#include "ov-mapper.h"
 #include "ov-dld-fcn.h"
 #include "ov-usr-fcn.h"
 #include "ov-fcn-handle.h"
@@ -2169,7 +2168,6 @@ install_types (void)
   octave_cs_list::register_type ();
   octave_magic_colon::register_type ();
   octave_builtin::register_type ();
-  octave_mapper::register_type ();
   octave_user_function::register_type ();
   octave_dld_function::register_type ();
   octave_fcn_handle::register_type ();

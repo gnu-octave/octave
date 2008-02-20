@@ -1,3 +1,7 @@
+2008-02-20  John W. Eaton  <jwe@octave.org>
+
+	* strings/strcat.m: Detect cellstr args.
+
 2008-02-19  Ben Abbott  <bpabbott@mac.com>
 
 	* miscellaneous/edit.m: New option EDITINPLACE.  Prefer file list

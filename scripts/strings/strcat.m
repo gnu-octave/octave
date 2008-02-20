@@ -35,20 +35,36 @@
 
 function st = strcat (varargin)
 
-  if (nargin < 1)
+  if (nargin > 0)
+
+    if (iscellstr (varargin))
+      ## All arguments are character strings.
+      unwind_protect
+	tmp = warning ("query", "Octave:empty-list-elements");
+	warning ("off", "Octave:empty-list-elements");
+	st = [varargin{:}];
+      unwind_protect_cleanup
+	warning (tmp.state, "Octave:empty-list-elements");
+      end_unwind_protect
+    else
+      for i = 1:nargin
+	tmp = varargin{i};
+	if (! (iscellstr (tmp) || ischar (tmp)))
+	  error ("strcat: all arguments must be strings or cell arrays of strings");
+	endif
+      endfor
+      st = strcat_cell (varargin);
+    endif
+  else
     print_usage ();
-  elseif (! iscellstr (varargin))
-    error ("strcat: all arguments must be strings");
   endif
 
-  unwind_protect
-    tmp = warning ("query", "Octave:empty-list-elements");
-    warning ("off", "Octave:empty-list-elements");
-    st = [varargin{:}];
-  unwind_protect_cleanup
-    warning (tmp.state, "Octave:empty-list-elements");
-  end_unwind_protect
+endfunction
 
+function st = strcat_cell (varargin)
+  ## All args must be same size or scalars.
+  ## See the xtest below for expected behavior.
+  error ("strcat: concatenating cell arrays of strings not implemented");
 endfunction
 
 ## test the dimensionality
@@ -59,6 +75,9 @@ endfunction
 
 %!assert((strcmp (strcat ("foo", "bar"), "foobar")
 %! && strcmp (strcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])));
+
+%!xtest
+%! assert(all (strcmp (strcat ("a", {"bc", "de"}, "f"), {"abcf", "adef"})))
 
 %!error strcat ();
 

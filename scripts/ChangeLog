@@ -1,3 +1,7 @@
+2008-02-19  John W. Eaton  <jwe@octave.org>
+
+	* pkg/pkg.m: Style fixes.
+
 2008-02-19 Carlo de Falco <carlo.defalco@gmail.com>
 
 	* pkg/pkg.m: Handle 'describe' command.

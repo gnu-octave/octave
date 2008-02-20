@@ -202,7 +202,7 @@ function [local_packages, global_packages] = pkg (varargin)
   persistent user_prefix = false;
   persistent prefix = -1;
   persistent archprefix = -1;
-  persistent local_list = tilde_expand (fullfile("~", ".octave_packages"));
+  persistent local_list = tilde_expand (fullfile ("~", ".octave_packages"));
   persistent global_list = fullfile (OCTAVE_HOME (), "share", "octave",
 				     "octave_packages");
   mlock ();
@@ -212,7 +212,8 @@ function [local_packages, global_packages] = pkg (varargin)
   if (prefix == -1)
     if (global_install)
       prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
-      archprefix = fullfile (octave_config_info ("libexecdir"), "octave", "packages");
+      archprefix = fullfile (octave_config_info ("libexecdir"),
+			     "octave", "packages");
     else
       prefix = fullfile ("~", "octave");
       archprefix = prefix;
@@ -221,8 +222,9 @@ function [local_packages, global_packages] = pkg (varargin)
     archprefix = tilde_expand (archprefix);
   endif
 
-  available_actions = {"list", "install", "uninstall", "load", "unload", "prefix", ...
-		       "local_list", "global_list", "rebuild", "build","describe"};
+  available_actions = {"list", "install", "uninstall", "load", ...
+		       "unload", "prefix", "local_list", ...
+		       "global_list", "rebuild", "build","describe"}; 
   ## Handle input
   if (length (varargin) == 0 || ! iscellstr (varargin))
     print_usage ();
@@ -340,7 +342,7 @@ function [local_packages, global_packages] = pkg (varargin)
 	  local_list = absolute_pathname (files{1});
 	catch
 	  ## Force file to be created
-	  fclose (fopen (files{1}, 'wt'));
+	  fclose (fopen (files{1}, "wt"));
 	  local_list = absolute_pathname (files{1});
 	end_try_catch
       else
@@ -357,7 +359,7 @@ function [local_packages, global_packages] = pkg (varargin)
 	  global_list = absolute_pathname (files{1});
 	catch
 	  ## Force file to be created
-	  fclose (fopen (files{1}, 'wt'));
+	  fclose (fopen (files{1}, "wt"));
 	  global_list = absolute_pathname (files{1});
 	end_try_catch
       else
@@ -396,20 +398,20 @@ function [local_packages, global_packages] = pkg (varargin)
       ## XXX FIXME: the name of the output variables is inconsistent
       ##            with their content
       switch (nargout)
-	  case 0
-	    describe (files, verbose, local_list, global_list);
-	  case 1
-	    pkg_desc_list = describe (files, verbose, local_list, ...
-				 global_list);
-	    local_packages = pkg_desc_list;
-	  case 2
-	    [pkg_desc_list, flag] = describe (files, verbose, local_list, ...
-					 global_list);
-	    local_packages  = pkg_desc_list;
-	    global_packages = flag;
-	  otherwise
-	    error ("you can request at most two outputs when calling 'pkg describe'");
-	endswitch
+	case 0
+	  describe (files, verbose, local_list, global_list);
+	case 1
+	  pkg_desc_list = describe (files, verbose, local_list, ...
+				    global_list);
+	  local_packages = pkg_desc_list;
+	case 2
+	  [pkg_desc_list, flag] = describe (files, verbose, local_list, ...
+					    global_list);
+	  local_packages  = pkg_desc_list;
+	  global_packages = flag;
+	otherwise
+	  error ("you can request at most two outputs when calling 'pkg describe'");
+      endswitch
 		
     otherwise
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
@@ -899,7 +901,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
     ## If an 'on_uninstall.m' exist, call it!
     if (exist (fullfile (desc.dir, "packinfo", "on_uninstall.m"), "file"))
       wd = pwd ();
-      cd (fullfile(desc.dir, "packinfo"));
+      cd (fullfile (desc.dir, "packinfo"));
       on_uninstall (desc);
       cd (wd);
     endif
@@ -951,18 +953,18 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
 
   ## Get the list of installed packages
   installed_pkgs_lst = installed_packages(local_list, global_list);
-  num_packages       = length (installed_pkgs_lst);
+  num_packages = length (installed_pkgs_lst);
   
 
-  describe_all       = false;
-  if (any (strcmp ('all', pkgnames)))
-    describe_all         = true;
+  describe_all = false;
+  if (any (strcmp ("all", pkgnames)))
+    describe_all = true;
     flag{1:num_packages} = "Not Loaded";
-    num_pkgnames         = num_packages;
+    num_pkgnames = num_packages;
   else
-    num_pkgnames         = length (pkgnames);
+    num_pkgnames = length (pkgnames);
     flag{1:num_pkgnames} = "Not installed";
-  end
+  endif
 
   for i = 1:num_packages
     curr_name= installed_pkgs_lst{i}.name;
@@ -970,32 +972,30 @@ function [pkg_desc_list, flag] = describe (pkgnames, verbose,
       name_pos = i;
     else
       name_pos = find(strcmp (curr_name, pkgnames));
-    end
-    if (!isempty(name_pos))
+    endif
+
+    if (! isempty (name_pos))
       if (installed_pkgs_lst{i}.loaded)
 	flag{name_pos} = "Loaded";
       else
 	flag{name_pos} = "Not loaded";
       endif
 
-      pkg_desc_list{name_pos}.name = ...
-	  installed_pkgs_lst{i}.name;
-      pkg_desc_list{name_pos}.description = ...
-	  installed_pkgs_lst{i}.description;
-      pkg_desc_list{name_pos}.provides = ...
-	  parse_pkg_idx(installed_pkgs_lst{i}.dir);
+      pkg_desc_list{name_pos}.name = installed_pkgs_lst{i}.name;
+      pkg_desc_list{name_pos}.description = installed_pkgs_lst{i}.description;
+      pkg_desc_list{name_pos}.provides = parse_pkg_idx (installed_pkgs_lst{i}.dir);
 
     endif
   endfor
 
-  non_inst = find(strcmp(flag,"Not installed"));
-  if (!isempty(non_inst) && (nargout<2))
-    non_inst_str = sprintf(" %s ",pkgnames{non_inst});
-    error("some packages are not installed: %s",non_inst_str);
+  non_inst = find (strcmp (flag, "Not installed"));
+  if (! isempty (non_inst) && nargout < 2)
+    non_inst_str = sprintf (" %s ", pkgnames{non_inst});
+    error ("some packages are not installed: %s", non_inst_str);
   endif
 
   if (nargout == 0)
-    for i=1:num_pkgnames
+    for i = 1:num_pkgnames
       print_package_description (pkg_desc_list{i}.name, 
 				 pkg_desc_list{i}.provides,  
 				 pkg_desc_list{i}.description,
@@ -1010,55 +1010,53 @@ endfunction
 ##########################################################
 
 ## This function reads an INDEX file
-function [pkg_idx_struct] = parse_pkg_idx(packdir)
+function [pkg_idx_struct] = parse_pkg_idx (packdir)
 
-  fINDEX = fullfile (packdir, "packinfo", "INDEX");
+  index_file = fullfile (packdir, "packinfo", "INDEX");
 
-  if (!exist(fINDEX, "file")  )
-    error("could not find any INDEX file in directory %s, \
-\ntry 'pkg rebuild all' to generate missing INDEX files", packdir);
+  if (! exist (index_file, "file"))
+    error ("could not find any INDEX file in directory %s, try 'pkg rebuild all' to generate missing INDEX files", packdir);
   endif    
 
     
-  [fid, msg] = fopen(fINDEX,"r");
+  [fid, msg] = fopen (index_file, "r");
   if (fid == -1)
-    error("the INDEX file %s could not be read: %s", 
-	  fINDEX, msg);
+    error ("the INDEX file %s could not be read: %s", 
+	   index_file, msg);
   endif
-  
+
   cat_num = 1;
   pkg_idx_struct{1}.category = "Uncategorized";
   pkg_idx_struct{1}.functions = {};
 
- 
-  line = fgetl(fid);
-  while ((isempty(strfind(line,">>"))) && (! feof (fid)))
-    line = fgetl(fid);
+  line = fgetl (fid);
+  while (isempty (strfind (line, ">>")) && ! feof (fid))
+    line = fgetl (fid);
   endwhile
 
-  while ((! feof (fid) ) || (line != -1))
-    if (!any(!isspace(line)) || (line(1) == "#") || any(line=="="))
+  while (! feof (fid) || line != -1)
+    if (! any (! isspace (line)) || line(1) == "#" || any (line == "="))
       ## Comments,  blank lines or comments about unimplemented 
       ## functions: do nothing
       ## XXX: probably comments and pointers to external functions
       ## could be treated better when printing to screen?
-    elseif (!isempty(strfind(line,">>")))
+    elseif (! isempty (strfind (line, ">>")))
       ## Skip package name and description as they are in
       ## DESCRIPTION already
-    elseif (!isspace(line(1)))
+    elseif (! isspace (line(1)))
       ## Category
-      if ( !isempty(pkg_idx_struct{cat_num}.functions))
-	pkg_idx_struct{++cat_num}.functions  = {};
+      if (! isempty (pkg_idx_struct{cat_num}.functions))
+	pkg_idx_struct{++cat_num}.functions = {};
       endif
-      pkg_idx_struct{cat_num}.category = deblank(line);
+      pkg_idx_struct{cat_num}.category = deblank (line);
     else
       ## Function names
-      while (any(!isspace(line)))
-	[fun_name, line] = strtok(line);
-	pkg_idx_struct{cat_num}.functions{end+1}  = deblank(fun_name);
+      while (any (! isspace (line)))
+	[fun_name, line] = strtok (line);
+	pkg_idx_struct{cat_num}.functions{end+1} = deblank (fun_name);
       endwhile
     endif
-    line = fgetl(fid);
+    line = fgetl (fid);
   endwhile
   fclose (fid);
 endfunction
@@ -1066,16 +1064,16 @@ endfunction
 function print_package_description (pkg_name, pkg_idx_struct, 
 				    pkg_desc, status, verbose)
 
-  printf("---\nPackage name:\n\t%s\n", pkg_name);
-  printf("Short description:\n\t%s\n", pkg_desc);
-  printf("Status:\n\t%s\n", status);
+  printf ("---\nPackage name:\n\t%s\n", pkg_name);
+  printf ("Short description:\n\t%s\n", pkg_desc);
+  printf ("Status:\n\t%s\n", status);
   if (verbose)
-    printf("---\nProvides:\n");    
-    for i=1:length(pkg_idx_struct)
-      if (!isempty(pkg_idx_struct{i}.functions))
-	printf("%s\n", pkg_idx_struct{i}.category);
-	for j=1:length(pkg_idx_struct{i}.functions)
-	  printf("\t%s\n", pkg_idx_struct{i}.functions{j});
+    printf ("---\nProvides:\n");    
+    for i = 1:length(pkg_idx_struct)
+      if (! isempty (pkg_idx_struct{i}.functions))
+	printf ("%s\n", pkg_idx_struct{i}.category);
+	for j = 1:length(pkg_idx_struct{i}.functions)
+	  printf ("\t%s\n", pkg_idx_struct{i}.functions{j});
 	endfor
       endif
     endfor
@@ -1085,7 +1083,7 @@ endfunction
 
 
 function pth = absolute_pathname (pth)
-  [status, msg, msgid] = fileattrib(pth);
+  [status, msg, msgid] = fileattrib (pth);
   if (status != 1)
     error ("could not find the file or path %s", pth);
   else
@@ -1278,12 +1276,12 @@ function configure_make (desc, packdir, verbose)
 	filenames = sprintf (fullfile (src, "%s "), m.name);
       endif
       if (length (oct) > 0)
-	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
-						    oct.name));
+	filenames = strcat (filenames, " ",
+			    sprintf (fullfile (src, "%s "), oct.name));
       endif
       if (length (mex) > 0)
-	filenames = strcat (filenames, " ", sprintf(fullfile(src, "%s "), ...
-						    mex.name));
+	filenames = strcat (filenames, " ",
+			    sprintf (fullfile (src, "%s "), mex.name));
       endif
       filenames = split_by (filenames, " ");
     endif
@@ -1372,16 +1370,16 @@ function create_pkgadddel (desc, packdir, nm, global_install)
 
   if (archfid >= 0 && instfid >= 0)
     ## Search all dot-m files for PKG commands
-    lst = dir (fullfile(packdir, "inst", "*.m"));
+    lst = dir (fullfile (packdir, "inst", "*.m"));
     for i = 1:length (lst)
-      nam = fullfile(packdir, "inst", lst(i).name);
+      nam = fullfile (packdir, "inst", lst(i).name);
       fwrite (instfid, extract_pkg (nam, ['^[#%][#%]* *' nm ': *(.*)$']));
     endfor
 
     ## Search all C++ source files for PKG commands
-    lst = dir (fullfile(packdir, "src", "*.cc"));
+    lst = dir (fullfile (packdir, "src", "*.cc"));
     for i = 1:length (lst)
-      nam = fullfile(packdir, "src", lst(i).name);
+      nam = fullfile (packdir, "src", lst(i).name);
       fwrite (archfid, extract_pkg (nam, ['^//* *' nm ': *(.*)$']));
       fwrite (archfid, extract_pkg (nam, ['^/\** *' nm ': *(.*) *\*/$']));
     endfor
@@ -1515,9 +1513,9 @@ function copy_files (desc, packdir, global_install)
   endif
 
   ## If the file ChangeLog exists, copy it
-  fChangeLog = fullfile(packdir, "ChangeLog");
-  if (exist (fChangeLog, "file"))
-    [status, output] = copyfile (fChangeLog, packinfo);
+  changelog_file = fullfile (packdir, "ChangeLog");
+  if (exist (changelog_file, "file"))
+    [status, output] = copyfile (changelog_file, packinfo);
     if (status != 1)
       rm_rf (desc.dir);
       rm_rf (octfiledir);
@@ -1526,9 +1524,9 @@ function copy_files (desc, packdir, global_install)
   endif
 
   ## Is there an INDEX file to copy or should we generate one?
-  fINDEX = fullfile (packdir, "INDEX");
-  if (exist(fINDEX, "file"))
-    [status, output] = copyfile (fINDEX, packinfo);
+  index_file = fullfile (packdir, "INDEX");
+  if (exist(index_file, "file"))
+    [status, output] = copyfile (index_file, packinfo);
     if (status != 1)
       rm_rf (desc.dir);
       rm_rf (octfiledir);
@@ -1536,7 +1534,7 @@ function copy_files (desc, packdir, global_install)
     endif
   else
     try
-      write_INDEX (desc, fullfile (packdir, "inst"),
+      write_index (desc, fullfile (packdir, "inst"),
 		   fullfile (packinfo, "INDEX"), global_install);
     catch
       rm_rf (desc.dir);
@@ -1546,7 +1544,7 @@ function copy_files (desc, packdir, global_install)
   endif
 
   ## Is there an 'on_uninstall.m' to install?
-  fon_uninstall = fullfile(packdir, "on_uninstall.m");
+  fon_uninstall = fullfile (packdir, "on_uninstall.m");
   if (exist (fon_uninstall, "file"))
     [status, output] = copyfile (fon_uninstall, packinfo);
     if (status != 1)
@@ -1587,8 +1585,7 @@ function finish_installation (desc, packdir, global_install)
   endif
 endfunction
 
-## This function makes sure the package contains the
-## essential files.
+## Make sure the package contains the essential files.
 function verify_directory (dir)
   needed_files = {"COPYING", "DESCRIPTION"};
   for f = needed_files
@@ -1598,7 +1595,7 @@ function verify_directory (dir)
   endfor
 endfunction
 
-## This function parses the DESCRIPTION file
+## Parse the DESCRIPTION file
 function desc = get_description (filename)
   [fid, msg] = fopen (filename, "r");
   if (fid == -1)
@@ -1624,7 +1621,7 @@ function desc = get_description (filename)
       else
 	colon = colon(1);
 	keyword = tolower (strip (line(1:colon-1)));
-	value   = strip (line (colon+1:end));
+	value = strip (line (colon+1:end));
 	if (length (value) == 0)
 	    fclose (fid);
 	    error ("the keyword %s has an empty value", desc.keywords{end});
@@ -1653,7 +1650,7 @@ function desc = get_description (filename)
   desc.name = tolower (desc.name);
 endfunction
 
-## Makes sure the version string v is a valid x.y.z version string
+## Make sure the version string v is a valid x.y.z version string
 ## Examples: "0.1" => "0.1.0", "monkey" => error(...)
 function out = fix_version (v)
   dots = find (v == ".");
@@ -1667,7 +1664,7 @@ function out = fix_version (v)
   elseif (length (dots) == 2)
     major = str2num (v(1:dots(1)-1));
     minor = str2num (v(dots(1)+1:dots(2)-1));
-    rev   = str2num (v(dots(2)+1:end));
+    rev = str2num (v(dots(2)+1:end));
     if (length (major) != 0 && length (minor) != 0 && length (rev) != 0)
       out = sprintf ("%d.%d.%d", major, minor, rev);
       return;
@@ -1676,7 +1673,7 @@ function out = fix_version (v)
   error ("bad version string: %s", v);
 endfunction
 
-## Makes sure the depends field is of the right format.
+## Make sure the depends field is of the right format.
 ## This function returns a cell of structures with the following fields:
 ##   package, version, operator
 function deps_cell = fix_depends (depends)
@@ -1724,7 +1721,7 @@ function deps_cell = fix_depends (depends)
   endfor
 endfunction
 
-## Strips the text of spaces from the right
+## Strip the text of spaces from the right
 ## Example: "  hello world  " => "  hello world" (XXX: is this the same as deblank?)
 function text = rstrip (text)
   chars = find (! isspace (text));
@@ -1736,7 +1733,7 @@ function text = rstrip (text)
   endif
 endfunction
 
-## Strips the text of spaces from the left and the right
+## Strip the text of spaces from the left and the right
 ## Example: "  hello world  " => "hello world"
 function text = strip (text)
   chars = find (! isspace (text));
@@ -1747,7 +1744,7 @@ function text = strip (text)
   endif
 endfunction
 
-## Splits the text into a cell array of strings by sep
+## Split the text into a cell array of strings by sep
 ## Example: "A, B" => {"A", "B"} (with sep = ",")
 function out = split_by (text, sep)
   text_matrix = split (text, sep);
@@ -1758,11 +1755,11 @@ function out = split_by (text, sep)
   endfor
 endfunction
 
-## Creates an INDEX file for a package that doesn't provide one.
+## Create an INDEX file for a package that doesn't provide one.
 ##   'desc'  describes the package.
-##   'dir'   is the 'inst' direcotry in temporary directory.
-##   'INDEX' is the name (including path) of resulting INDEX file.
-function write_INDEX (desc, dir, INDEX, global_install)
+##   'dir'   is the 'inst' directory in temporary directory.
+##   'index_file' is the name (including path) of resulting INDEX file.
+function write_index (desc, dir, index_file, global_install)
   ## Get names of functions in dir
   [files, err, msg] = readdir (dir);
   if (err)
@@ -1800,9 +1797,9 @@ function write_INDEX (desc, dir, INDEX, global_install)
   endif
 
   ## Write INDEX
-  fid = fopen (INDEX, "w");
+  fid = fopen (index_file, "w");
   if (fid == -1)
-    error ("couldn't open %s for writing.", INDEX);
+    error ("couldn't open %s for writing.", index_file);
   endif
   fprintf (fid, "%s >> %s\n", desc.name, desc.title);
   fprintf (fid, "%s\n", categories{1});
@@ -2210,13 +2207,13 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
     ndir = installed_pkgs_lst{i}.dir;
     dirs{end+1} = ndir;
     if (exist (fullfile (dirs{end}, "bin"), "dir"))
-      execpath = strcat (fullfile(dirs{end}, "bin"), ":", execpath);
+      execpath = strcat (fullfile (dirs{end}, "bin"), ":", execpath);
     endif
     tmpdir = getarchdir (installed_pkgs_lst{i});
     if (exist (tmpdir, "dir"))
       dirs{end + 1} = tmpdir;
       if (exist (fullfile (dirs{end}, "bin"), "dir"))
-        execpath = strcat (fullfile(dirs{end}, "bin"), ":", execpath);
+        execpath = strcat (fullfile (dirs{end}, "bin"), ":", execpath);
       endif
     endif
   endfor
@@ -2284,5 +2281,3 @@ function dep = is_architecture_dependent (nm)
     endif
   endfor
 endfunction
-
-

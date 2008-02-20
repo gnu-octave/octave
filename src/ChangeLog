@@ -15,6 +15,12 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (base_scaler::is_linear, lin_scaler::is_linear,
+	scaler::is_linear): New method to detect linear scales.
+	(graphics_xform::scale(Matrix)): New method to scale 2D/3D coordinates
+	directly.
+	(patch::properties::facelighting): Set default value to "none".
+
 	* graphics.h.in (axes::axes): Be sure to initialize transformation
 	data correctly.
 

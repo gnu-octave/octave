@@ -215,6 +215,9 @@ public:
 
   virtual base_scaler* clone () const
     { return new base_scaler (); }
+
+  virtual bool is_linear (void) const
+    { return false; }
 };
 
 class lin_scaler : public base_scaler
@@ -231,6 +234,8 @@ public:
   double unscale (double d) const { return d; }
 
   base_scaler* clone (void) const { return new lin_scaler (); }
+
+  bool is_linear (void) const { return true; }
 };
 
 class log_scaler : public base_scaler
@@ -291,6 +296,9 @@ public:
 
   double unscale (double d) const
     { return rep->unscale (d); }
+
+  bool is_linear (void) const
+    { return rep->is_linear (); }
 
   scaler& operator = (const scaler& s)
     {
@@ -2376,6 +2384,29 @@ public:
   Matrix yscale (const Matrix& m) const { return sy.scale (m); }
   Matrix zscale (const Matrix& m) const { return sz.scale (m); }
 
+  Matrix scale (const Matrix& m) const
+    {
+      bool has_z = (m.columns () > 2);
+
+      if (sx.is_linear () && sy.is_linear ()
+	  && (! has_z || sz.is_linear ()))
+	return m;
+
+      Matrix retval (m.dims ());
+
+      int r = m.rows ();
+
+      for (int i = 0; i < r; i++)
+	{
+	  retval(i,0) = sx.scale (m(i,0));
+	  retval(i,1) = sy.scale (m(i,1));
+	  if (has_z)
+	    retval(i,2) = sz.scale (m(i,2));
+	}
+
+      return retval;
+    }
+
 private:
   Matrix xform;
   Matrix xform_inv;
@@ -2867,7 +2898,7 @@ public:
       radio_property normalmode , "{auto}|manual"
       color_property facecolor , "{flat}|none|interp"
       double_property facealpha , 1.0
-      radio_property facelighting , "{flat}|none|gouraud|phong"
+      radio_property facelighting , "flat|{none}|gouraud|phong"
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
       double_property edgealpha , 1.0
       radio_property edgelighting , "{none}|flat|gouraud|phong"

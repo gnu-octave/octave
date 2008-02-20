@@ -1,3 +1,8 @@
+2008-02-19 Carlo de Falco <carlo.defalco@gmail.com>
+
+	* pkg/pkg.m: Handle 'describe' command.
+	(parse_pkg_idx, print_package_description): New subfunctions.
+	
 2008-02-19  Bill Denney  <bill@denney.ws>
 
 	* time/datestr.m: Avoid confusion for datenum vectors that are 6

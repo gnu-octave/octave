@@ -101,6 +101,29 @@
 ## @noindent
 ## splits the list of installed packages into those who are installed by
 ## the current user, and those installed by the system administrator.
+## @item describe
+## Show a short description of the named installed packages, with the option
+## '-verbose' also list functions provided by the package, e.g.:
+## @example
+##  pkg describe -verbose all
+## @end example
+## @noindent
+## will describe all installed packages and the functions they provide.
+## If one output is requested a cell of structure containing the
+## description and list of functions of each package is returned as
+## output rather than printed on screen:
+## @example
+##  desc = pkg ("describe", "secs1d", "image")
+## @end example
+## @noindent
+## If any of the requested packages is not installed, pkg returns an
+## error, unless a second output is requested:
+## @example
+##  [ desc, flag] = pkg ("describe", "secs1d", "image")
+## @end example
+## @noindent
+## @var{flag} will take one of the values "Not installed", "Loaded" or
+## "Not loaded" for each of the named packages.
 ## @item prefix
 ## Set the installation prefix directory. For example,
 ## @example
@@ -198,6 +221,8 @@ function [local_packages, global_packages] = pkg (varargin)
     archprefix = tilde_expand (archprefix);
   endif
 
+  available_actions = {"list", "install", "uninstall", "load", "unload", "prefix", ...
+		       "local_list", "global_list", "rebuild", "build","describe"};
   ## Handle input
   if (length (varargin) == 0 || ! iscellstr (varargin))
     print_usage ();
@@ -227,8 +252,7 @@ function [local_packages, global_packages] = pkg (varargin)
 	if (! user_prefix)
 	  prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
 	endif
-      case {"list", "install", "uninstall", "load", "unload", "prefix", ...
-	    "local_list", "global_list", "rebuild", "build"}
+      case available_actions
 	if (strcmp (action, "none"))
 	  action = varargin{i};
 	else
@@ -365,6 +389,28 @@ function [local_packages, global_packages] = pkg (varargin)
       endif
       build (files, deps, auto, verbose);
 
+    case "describe"
+      if (length (files) == 0)
+	error ("you must specify at least one package or 'all' when calling 'pkg describe'");
+      endif
+      ## XXX FIXME: the name of the output variables is inconsistent
+      ##            with their content
+      switch (nargout)
+	  case 0
+	    describe (files, verbose, local_list, global_list);
+	  case 1
+	    pkg_desc_list = describe (files, verbose, local_list, ...
+				 global_list);
+	    local_packages = pkg_desc_list;
+	  case 2
+	    [pkg_desc_list, flag] = describe (files, verbose, local_list, ...
+					 global_list);
+	    local_packages  = pkg_desc_list;
+	    global_packages = flag;
+	  otherwise
+	    error ("you can request at most two outputs when calling 'pkg describe'");
+	endswitch
+		
     otherwise
       error ("you must specify a valid action for 'pkg'. See 'help pkg' for details");
   endswitch
@@ -900,9 +946,143 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
 
 endfunction
 
+function [pkg_desc_list, flag] = describe (pkgnames, verbose, 
+					   local_list, global_list)
+
+  ## Get the list of installed packages
+  installed_pkgs_lst = installed_packages(local_list, global_list);
+  num_packages       = length (installed_pkgs_lst);
+  
+
+  describe_all       = false;
+  if (any (strcmp ('all', pkgnames)))
+    describe_all         = true;
+    flag{1:num_packages} = "Not Loaded";
+    num_pkgnames         = num_packages;
+  else
+    num_pkgnames         = length (pkgnames);
+    flag{1:num_pkgnames} = "Not installed";
+  end
+
+  for i = 1:num_packages
+    curr_name= installed_pkgs_lst{i}.name;
+    if (describe_all)
+      name_pos = i;
+    else
+      name_pos = find(strcmp (curr_name, pkgnames));
+    end
+    if (!isempty(name_pos))
+      if (installed_pkgs_lst{i}.loaded)
+	flag{name_pos} = "Loaded";
+      else
+	flag{name_pos} = "Not loaded";
+      endif
+
+      pkg_desc_list{name_pos}.name = ...
+	  installed_pkgs_lst{i}.name;
+      pkg_desc_list{name_pos}.description = ...
+	  installed_pkgs_lst{i}.description;
+      pkg_desc_list{name_pos}.provides = ...
+	  parse_pkg_idx(installed_pkgs_lst{i}.dir);
+
+    endif
+  endfor
+
+  non_inst = find(strcmp(flag,"Not installed"));
+  if (!isempty(non_inst) && (nargout<2))
+    non_inst_str = sprintf(" %s ",pkgnames{non_inst});
+    error("some packages are not installed: %s",non_inst_str);
+  endif
+
+  if (nargout == 0)
+    for i=1:num_pkgnames
+      print_package_description (pkg_desc_list{i}.name, 
+				 pkg_desc_list{i}.provides,  
+				 pkg_desc_list{i}.description,
+				 flag{i}, verbose);
+    endfor
+  endif
+
+endfunction
+
 ##########################################################
 ##        A U X I L I A R Y    F U N C T I O N S        ##
 ##########################################################
+
+## This function reads an INDEX file
+function [pkg_idx_struct] = parse_pkg_idx(packdir)
+
+  fINDEX = fullfile (packdir, "packinfo", "INDEX");
+
+  if (!exist(fINDEX, "file")  )
+    error("could not find any INDEX file in directory %s, \
+\ntry 'pkg rebuild all' to generate missing INDEX files", packdir);
+  endif    
+
+    
+  [fid, msg] = fopen(fINDEX,"r");
+  if (fid == -1)
+    error("the INDEX file %s could not be read: %s", 
+	  fINDEX, msg);
+  endif
+  
+  cat_num = 1;
+  pkg_idx_struct{1}.category = "Uncategorized";
+  pkg_idx_struct{1}.functions = {};
+
+ 
+  line = fgetl(fid);
+  while ((isempty(strfind(line,">>"))) && (! feof (fid)))
+    line = fgetl(fid);
+  endwhile
+
+  while ((! feof (fid) ) || (line != -1))
+    if (!any(!isspace(line)) || (line(1) == "#") || any(line=="="))
+      ## Comments,  blank lines or comments about unimplemented 
+      ## functions: do nothing
+      ## XXX: probably comments and pointers to external functions
+      ## could be treated better when printing to screen?
+    elseif (!isempty(strfind(line,">>")))
+      ## Skip package name and description as they are in
+      ## DESCRIPTION already
+    elseif (!isspace(line(1)))
+      ## Category
+      if ( !isempty(pkg_idx_struct{cat_num}.functions))
+	pkg_idx_struct{++cat_num}.functions  = {};
+      endif
+      pkg_idx_struct{cat_num}.category = deblank(line);
+    else
+      ## Function names
+      while (any(!isspace(line)))
+	[fun_name, line] = strtok(line);
+	pkg_idx_struct{cat_num}.functions{end+1}  = deblank(fun_name);
+      endwhile
+    endif
+    line = fgetl(fid);
+  endwhile
+  fclose (fid);
+endfunction
+
+function print_package_description (pkg_name, pkg_idx_struct, 
+				    pkg_desc, status, verbose)
+
+  printf("---\nPackage name:\n\t%s\n", pkg_name);
+  printf("Short description:\n\t%s\n", pkg_desc);
+  printf("Status:\n\t%s\n", status);
+  if (verbose)
+    printf("---\nProvides:\n");    
+    for i=1:length(pkg_idx_struct)
+      if (!isempty(pkg_idx_struct{i}.functions))
+	printf("%s\n", pkg_idx_struct{i}.category);
+	for j=1:length(pkg_idx_struct{i}.functions)
+	  printf("\t%s\n", pkg_idx_struct{i}.functions{j});
+	endfor
+      endif
+    endfor
+  endif
+
+endfunction
+
 
 function pth = absolute_pathname (pth)
   [status, msg, msgid] = fileattrib(pth);
@@ -1580,7 +1760,7 @@ endfunction
 
 ## Creates an INDEX file for a package that doesn't provide one.
 ##   'desc'  describes the package.
-##   'dir'   is the 'inst' direcotyr in temporary directory.
+##   'dir'   is the 'inst' direcotry in temporary directory.
 ##   'INDEX' is the name (including path) of resulting INDEX file.
 function write_INDEX (desc, dir, INDEX, global_install)
   ## Get names of functions in dir
@@ -2104,3 +2284,5 @@ function dep = is_architecture_dependent (nm)
     endif
   endfor
 endfunction
+
+

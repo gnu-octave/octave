@@ -130,61 +130,62 @@ any (eye (2, 4), 2)\n\
 
 typedef double (*d_dd_fcn) (double, double);
 
-static Matrix
-map_d_m (d_dd_fcn f, double x, const Matrix& y)
+static NDArray
+map_d_m (d_dd_fcn f, double x, const NDArray& y)
 {
-  octave_idx_type nr = y.rows ();
-  octave_idx_type nc = y.columns ();
+  NDArray retval (y.dims ());
+  double *r_data = retval.fortran_vec ();
 
-  Matrix retval (nr, nc);
+  const double *y_data = y.data ();
 
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-	OCTAVE_QUIT;
-	retval (i, j) = f (x, y (i, j));
-      }
+  octave_idx_type nel = y.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      r_data[i] = f (x, y_data[i]);
+    }
 
   return retval;
 }
 
-static Matrix
-map_m_d (d_dd_fcn f, const Matrix& x, double y)
+static NDArray
+map_m_d (d_dd_fcn f, const NDArray& x, double y)
 {
-  octave_idx_type nr = x.rows ();
-  octave_idx_type nc = x.columns ();
+  NDArray retval (x.dims ());
+  double *r_data = retval.fortran_vec ();
 
-  Matrix retval (nr, nc);
+  const double *x_data = x.data ();
 
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-	OCTAVE_QUIT;
-	retval (i, j) = f (x (i, j), y);
-      }
+  octave_idx_type nel = x.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      r_data[i] = f (x_data[i], y);
+    }
 
   return retval;
 }
 
-static Matrix
-map_m_m (d_dd_fcn f, const Matrix& x, const Matrix& y)
+static NDArray
+map_m_m (d_dd_fcn f, const NDArray& x, const NDArray& y)
 {
-  octave_idx_type x_nr = x.rows ();
-  octave_idx_type x_nc = x.columns ();
+  assert (x.dims () == y.dims ());
 
-  octave_idx_type y_nr = y.rows ();
-  octave_idx_type y_nc = y.columns ();
+  NDArray retval (x.dims ());
+  double *r_data = retval.fortran_vec ();
 
-  assert (x_nr == y_nr && x_nc == y_nc);
+  const double *x_data = x.data ();
+  const double *y_data = y.data ();
 
-  Matrix retval (x_nr, x_nc);
+  octave_idx_type nel = x.numel ();
 
-  for (octave_idx_type j = 0; j < x_nc; j++)
-    for (octave_idx_type i = 0; i < x_nr; i++)
-      {
-	OCTAVE_QUIT;
-	retval (i, j) = f (x (i, j), y (i, j));
-      }
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      r_data[i] = f (x_data[i], y_data[i]);
+    }
 
   return retval;
 }
@@ -423,29 +424,18 @@ and @var{x}.  The result is in range -pi to pi.\n\
 
   if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
-      if (args(0).is_integer_type () || args(0).is_integer_type ())
+      if (args(0).is_integer_type () || args(1).is_integer_type ())
 	error ("atan2: not defined for integer types");
       else
 	{
 	  octave_value arg_y = args(0);
 	  octave_value arg_x = args(1);
 
-	  octave_idx_type y_nr = arg_y.rows ();
-	  octave_idx_type y_nc = arg_y.columns ();
+	  dim_vector y_dims = arg_y.dims ();
+	  dim_vector x_dims = arg_x.dims ();
 
-	  octave_idx_type x_nr = arg_x.rows ();
-	  octave_idx_type x_nc = arg_x.columns ();
-
-	  int arg_y_empty = empty_arg ("atan2", y_nr, y_nc);
-	  int arg_x_empty = empty_arg ("atan2", x_nr, x_nc);
-
-	  if (arg_y_empty > 0 && arg_x_empty > 0)
-	    return octave_value (Matrix ());
-	  else if (arg_y_empty || arg_x_empty)
-	    return retval;
-
-	  octave_idx_type y_is_scalar = (y_nr == 1 && y_nc == 1);
-	  octave_idx_type x_is_scalar = (x_nr == 1 && x_nc == 1);
+	  bool y_is_scalar = y_dims.all_ones ();
+	  bool x_is_scalar = x_dims.all_ones ();
 
 	  if (y_is_scalar && x_is_scalar)
 	    {
@@ -474,7 +464,7 @@ and @var{x}.  The result is in range -pi to pi.\n\
 		    }
 		  else
 		    {
-		      Matrix x = arg_x.matrix_value ();
+		      NDArray x = arg_x.array_value ();
 
 		      if (! error_state)
 			retval = map_d_m (atan2, y, x);
@@ -497,7 +487,7 @@ and @var{x}.  The result is in range -pi to pi.\n\
 		}
 	      else
 		{
-		  Matrix y = arg_y.matrix_value ();
+		  NDArray y = arg_y.array_value ();
 
 		  if (! error_state)
 		    {
@@ -508,7 +498,7 @@ and @var{x}.  The result is in range -pi to pi.\n\
 		    }
 		}
 	    }
-	  else if (y_nr == x_nr && y_nc == x_nc)
+	  else if (y_dims == x_dims)
 	    {
 	      if (arg_y.is_sparse_type () || arg_x.is_sparse_type ())
 		{
@@ -524,11 +514,11 @@ and @var{x}.  The result is in range -pi to pi.\n\
 		}
 	      else
 		{
-		  Matrix y = arg_y.matrix_value ();
+		  NDArray y = arg_y.array_value ();
 
 		  if (! error_state)
 		    {
-		      Matrix x = arg_x.matrix_value ();
+		      NDArray x = arg_x.array_value ();
 
 		      if (! error_state)
 			retval = map_m_m (atan2, y, x);
@@ -545,6 +535,14 @@ and @var{x}.  The result is in range -pi to pi.\n\
   return retval;
 }
 
+/*
+%! assert (size (atan2 (zeros (0, 2), zeros (0, 2))), [0, 2])
+%! assert (size (atan2 (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%! assert (size (atan2 (rand (2, 3, 4), 1), [2, 3, 4])
+%! assert (size (atan2 (1, rand (2, 3, 4)), [2, 3, 4])
+%! assert (size (atan2 (1, 2), [1, 1])
+*/
+
 DEFUN (fmod, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})\n\
@@ -559,25 +557,14 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 
   if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
     {
-      octave_value arg_x = args(0);
-      octave_value arg_y = args(1);
+      octave_value arg_y = args(0);
+      octave_value arg_x = args(1);
 
-      octave_idx_type y_nr = arg_y.rows ();
-      octave_idx_type y_nc = arg_y.columns ();
+      dim_vector y_dims = arg_y.dims ();
+      dim_vector x_dims = arg_x.dims ();
 
-      octave_idx_type x_nr = arg_x.rows ();
-      octave_idx_type x_nc = arg_x.columns ();
-
-      int arg_y_empty = empty_arg ("fmod", y_nr, y_nc);
-      int arg_x_empty = empty_arg ("fmod", x_nr, x_nc);
-
-      if (arg_y_empty > 0 && arg_x_empty > 0)
-	return octave_value (Matrix ());
-      else if (arg_y_empty || arg_x_empty)
-	return retval;
-
-      octave_idx_type y_is_scalar = (y_nr == 1 && y_nc == 1);
-      octave_idx_type x_is_scalar = (x_nr == 1 && x_nc == 1);
+      bool y_is_scalar = y_dims.all_ones ();
+      bool x_is_scalar = x_dims.all_ones ();
 
       if (y_is_scalar && x_is_scalar)
 	{
@@ -606,7 +593,7 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 		}
 	      else
 		{
-		  Matrix x = arg_x.matrix_value ();
+		  NDArray x = arg_x.array_value ();
 
 		  if (! error_state)
 		    retval = map_m_d (fmod, x, y);
@@ -629,7 +616,7 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 	    }
 	  else
 	    {
-	      Matrix y = arg_y.matrix_value ();
+	      NDArray y = arg_y.array_value ();
 
 	      if (! error_state)
 		{
@@ -640,7 +627,7 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 		}
 	    }
 	}
-      else if (y_nr == x_nr && y_nc == x_nc)
+      else if (y_dims == x_dims)
 	{
 	  if (arg_y.is_sparse_type () || arg_x.is_sparse_type ())
 	    {
@@ -656,11 +643,11 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 	    }
 	  else
 	    {
-	      Matrix y = arg_y.matrix_value ();
+	      NDArray y = arg_y.array_value ();
 
 	      if (! error_state)
 		{
-		  Matrix x = arg_x.matrix_value ();
+		  NDArray x = arg_x.array_value ();
 
 		  if (! error_state)
 		    retval = map_m_m (fmod, x, y);
@@ -675,6 +662,14 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 
   return retval;
 }
+
+/*
+%! assert (size (fmod (zeros (0, 2), zeros (0, 2))), [0, 2])
+%! assert (size (fmod (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%! assert (size (fmod (rand (2, 3, 4), 1), [2, 3, 4])
+%! assert (size (fmod (1, rand (2, 3, 4)), [2, 3, 4])
+%! assert (size (fmod (1, 2), [1, 1])
+*/
 
 #define NATIVE_REDUCTION_1(FCN, TYPE, DIM) \
   (arg.is_ ## TYPE ## _type ()) \

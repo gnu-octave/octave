@@ -1,5 +1,8 @@
 2008-02-20  John W. Eaton  <jwe@octave.org>
 
+	* data.cc (map_d_m, map_m_d, map_m_m, Fatan2, Ffmod):
+	Handle N-d arrays.
+
 	* ov-bool-mat.h (octave_bool_matrix (const Array2<bool>&)): Delete.
 
 2008-02-20  David Bateman  <dbateman@free.fr>

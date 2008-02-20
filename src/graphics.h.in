@@ -1321,6 +1321,19 @@ public:
       return default_backend ();
   }
 
+  static Cell available_backends_list (void)
+  {
+    Cell m (1 , available_backends.size ());
+    const_available_backends_iterator p;
+    int i;
+    
+    for (i = 0,p = available_backends.begin (); p !=  available_backends.end (); p++,i++)
+      m(i) = p->first;
+
+    return m;
+  }
+	
+
 private:
   base_graphics_backend *rep;
 

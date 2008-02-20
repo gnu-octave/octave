@@ -3422,6 +3422,15 @@ Undocumented internal function.\n\
   return octave_value (gh_manager::figure_handle_list ());
 }
 
+DEFUN (available_backends, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} available_backends ()\n\
+Returns resgistered graphics backends.\n\
+@end deftypefn")
+{
+  return octave_value (graphics_backend::available_backends_list ());
+}
+
 static void
 clear_drawnow_request (void *)
 {

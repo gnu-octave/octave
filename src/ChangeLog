@@ -1,5 +1,9 @@
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
+ 	* graphics.cc (Favailable_backends): New function.
+  	* graphics.h.in (base_graphics_backend::available_backends_list):
+	New function.
+
 	* graphics.cc (axes::properties::calc_ticks_and_lims): Refactor.
 	Adjust axes limits & tics together so that the result is consistent.
 	(axes::properties::calc_tick_sep): Ditto.

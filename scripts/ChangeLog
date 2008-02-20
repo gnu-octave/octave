@@ -1,5 +1,10 @@
 2008-02-19  Ben Abbott  <bpabbott@mac.com>
 
+	* polynomial/polyfit.m: Use QR decomposition.  Handle
+	normalization option.
+	* polynomial/polyval.m: Normalize dependent variable.  Optionally
+	generate 50% prediction intervals.
+
 	* miscellaneous/ver.m: Include package version information in
 	output.  Improve consistency with Matlab.
 

@@ -24,8 +24,8 @@
 ## is present evaluate the polynomial for (@var{x}-@var{mu}(1))/@var{mu}(2).
 ## If @var{x} is a vector or matrix, the polynomial is evaluated for each of
 ## the elements of @var{x}.
-## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{S})
-## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{S}, @var{mu})
+## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s})
+## @deftypefnx {Function File} {[@var{y}, @var{dy}] =} polyval (@var{p}, @var{x}, @var{s}, @var{mu})
 ## In addition to evaluating the polynomial, the second output 
 ## represents the prediction interval, @var{y} +/- @var{dy}, which
 ## contains at least 50% of the future predictions. To calculate the
@@ -75,10 +75,6 @@ function [y, dy] = polyval (p, x, s, mu)
   y = reshape (y, size (x));
 
   if (nargout == 2)
-    ## The line below is *not* the result of a conceptual grasp of statistics.
-    ## Instead, after reading the links below and comparing to the output of Matlab's polyval.m,
-    ## http://www.mathworks.com/access/helpdesk/help/toolbox/stats/index.html?/access/helpdesk/help/toolbox/stats/finv.html
-    ## http://www.mathworks.com/access/helpdesk/help/toolbox/curvefit/index.html?/access/helpdesk/help/toolbox/curvefit/bq_5ka6-1_1.html
     ## Note: the F-Distribution is generally considered to be single-sided.
     ## http://www.itl.nist.gov/div898/handbook/eda/section3/eda3673.htm
     ##   t = finv (1-alpha, s.df, s.df);

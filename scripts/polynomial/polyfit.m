@@ -24,20 +24,19 @@
 ##
 ## The polynomial coefficients are returned in a row vector.
 ##
-## The second output is a structured variable, @var{s},
-## containing the following fields:
+## The second output is a structure containing the following fields:
 ##
 ## @table @samp
 ## @item R
-##  Triangular factor R from the QR decomposition.
+## Triangular factor R from the QR decomposition.
 ## @item X
-##  The Vandermonde matrix used to compute the polynomial coefficients.
+## The Vandermonde matrix used to compute the polynomial coefficients.
 ## @item df
-##  The degrees of freedom.
+## The degrees of freedom.
 ## @item normr
-##  The norm of the residuals.
+## The norm of the residuals.
 ## @item yf
-##  The values of the polynomial for each value of @var{x}.
+## The values of the polynomial for each value of @var{x}.
 ## @end table
 ##
 ## The second output may be used by @code{polyval} to calculate the 

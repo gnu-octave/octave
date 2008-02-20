@@ -59,6 +59,7 @@ protected:
   virtual void draw (const axes::properties& props);
   virtual void draw (const line::properties& props);
   virtual void draw (const surface::properties& props);
+  virtual void draw (const patch::properties& props);
 
   virtual void set_color (const Matrix& c);
   virtual void set_polygon_offset (bool on, double offset = 0.0);
@@ -114,6 +115,9 @@ private:
   unsigned int marker_id, filled_marker_id;
   /* camera information for primitive sorting */
   ColumnVector camera_pos, camera_dir;
+
+private:
+  class patch_tesselator;
 };
 
 #endif

@@ -2881,6 +2881,8 @@ public:
   class OCTINTERP_API properties : public base_properties
   {
   public:
+    octave_value get_color_data (void) const;
+    
     // See the genprops.awk script for an explanation of the
     // properties declarations.
 

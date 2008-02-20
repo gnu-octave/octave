@@ -2751,7 +2751,12 @@ axes::update_axis_limits (const std::string& axis_type)
 
 // ---------------------------------------------------------------------
 
-// Note: "patch" code is entirely auto-generated
+octave_value
+patch::properties::get_color_data (void) const
+{
+  return convert_cdata (*this, get_facevertexcdata (),
+			cdatamapping_is ("scaled"), 2);
+}
 
 // ---------------------------------------------------------------------
 

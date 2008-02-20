@@ -15,6 +15,10 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (patch::properties::get_color_data): New utility
+	function to retrieve actual color data.
+	* graphics.cc (patch::properties::get_color_data): Likewise.
+
 	* graphics.h.in (base_scaler::is_linear, lin_scaler::is_linear,
 	scaler::is_linear): New method to detect linear scales.
 	(graphics_xform::scale(Matrix)): New method to scale 2D/3D coordinates

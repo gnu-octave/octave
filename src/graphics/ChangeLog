@@ -1,3 +1,30 @@
+2008-02-20  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h (opengl_renderer::draw(patch)): New method to
+	render patch objects.
+	(class opengl_renderer::patch_tesselator): Forward declaration.
+	* opengl/gl-render.cc (opengl_texture::create): Use RGB data format
+	instead of RGBA.
+	(class opengl_tesselator): New classes to abstract GLU tessellation
+	process.
+	(class opengl_renderer::patch_tesselator): New class to render opaque
+	patch objects.
+	(class vertex_data): New class to hold vertex data during tessellation
+	of patch objects.
+	(opengl_renderer::draw(patch)): New method to render patch objects (no
+	transparency, no border, no marker yet).
+	(opengl_renderer::draw(graphics_object)): Dispatch to it.
+
+	* opengl/gl-render.cc (opengl_renderer::draw(patch)): Use patch color
+	data and support face/vertex single color specification.
+
+	* opengl/gl-render.cc (opengl_tesselator::begin_polygon): Set
+	tessellation property also for non-filled polygons.
+	(opengl_renderer::patch_tesselator::vertex): Protect against empty
+	color matrices.
+	(opengl_renderer::draw(patch)): Render patch border (no transparency
+	yet).
+
 2008-02-19  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* opengl/gl-render.cc (opengl_texture::texture_rep::tex_coord,

@@ -32,6 +32,13 @@ along with Octave; see the file COPYING.  If not, see
 
 #define LIGHT_MODE GL_FRONT_AND_BACK
 
+// Win32 API requires the CALLBACK attributes for
+// GLU callback functions. Define it to empty on
+// other platforms.
+#ifndef CALLBACK
+#define CALLBACK
+#endif
+
 enum {
   AXE_ANY_DIR   = 0,
   AXE_DEPTH_DIR = 1,
@@ -39,7 +46,8 @@ enum {
   AXE_VERT_DIR  = 3
 };
 
-class opengl_texture
+class
+opengl_texture
 {
 protected:
   class texture_rep
@@ -150,37 +158,35 @@ opengl_texture::create (const octave_value& data)
 	{
 	  NDArray _a = data.array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (float, a, (4*tw*th));
+	  OCTAVE_LOCAL_BUFFER (float, a, (3*tw*th));
 
 	  for (int i = 0; i < h; i++)
-	    for (int j = 0, idx = i*tw*4; j < w; j++, idx += 4)
+	    for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
 	      {
 		a[idx]   = _a(i,j,0);
 		a[idx+1] = _a(i,j,1);
 		a[idx+2] = _a(i,j,2);
-		a[idx+3] = 1.0;
 	      }
 
-	  glTexImage2D (GL_TEXTURE_2D, 0, 4, tw, th, 0,
-			GL_RGBA, GL_FLOAT, a);
+	  glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
+			GL_RGB, GL_FLOAT, a);
 	}
       else if (data.is_uint8_type ())
 	{
 	  uint8NDArray _a = data.uint8_array_value ();
 
-	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (4*tw*th));
+	  OCTAVE_LOCAL_BUFFER (octave_uint8, a, (3*tw*th));
 
 	  for (int i = 0; i < h; i++)
-	    for (int j = 0, idx = i*tw*4; j < w; j++, idx += 4)
+	    for (int j = 0, idx = i*tw*3; j < w; j++, idx += 3)
 	      {
 		a[idx]   = _a(i,j,0);
 		a[idx+1] = _a(i,j,1);
 		a[idx+2] = _a(i,j,2);
-		a[idx+3] = octave_uint8 (0xFF);
 	      }
 
-	  glTexImage2D (GL_TEXTURE_2D, 0, 4, tw, th, 0,
-			GL_RGBA, GL_UNSIGNED_BYTE, a);
+	  glTexImage2D (GL_TEXTURE_2D, 0, 3, tw, th, 0,
+			GL_RGB, GL_UNSIGNED_BYTE, a);
 	}
       else
 	{
@@ -205,6 +211,297 @@ opengl_texture::create (const octave_value& data)
   return retval;
 }
 
+class
+opengl_tesselator
+{
+public:
+  typedef void (CALLBACK *fcn) (void);
+
+public:
+
+  opengl_tesselator (void) : glu_tess (0) { init (); }
+
+  virtual ~opengl_tesselator (void)
+    { if (glu_tess) gluDeleteTess (glu_tess); }
+
+  void begin_polygon (bool filled = true)
+    {
+      gluTessProperty (glu_tess, GLU_TESS_BOUNDARY_ONLY,
+		       (filled ? GL_FALSE : GL_TRUE));
+      fill = filled;
+      gluTessBeginPolygon (glu_tess, this);
+    }
+
+  void end_polygon (void) const
+    { gluTessEndPolygon (glu_tess); }
+
+  void begin_contour (void) const
+    { gluTessBeginContour (glu_tess); }
+
+  void end_contour (void) const
+    { gluTessEndContour (glu_tess); }
+
+  void add_vertex (double *loc, void *data) const
+    { gluTessVertex (glu_tess, loc, data); }
+
+protected:
+  virtual void begin (GLenum type) { }
+
+  virtual void end (void) { }
+
+  virtual void vertex (void *data) { }
+
+  virtual void combine (GLdouble c[3], void *data[4],
+			GLfloat w[4], void **out_data) { }
+
+  virtual void edge_flag (GLboolean flag) { }
+
+  virtual void error (GLenum err)
+    { ::error ("OpenGL tesselation error (%d)", err); }
+
+  virtual void init (void)
+    {
+      glu_tess = gluNewTess ();
+
+      gluTessCallback (glu_tess, GLU_TESS_BEGIN_DATA,
+		       reinterpret_cast<fcn> (tess_begin));
+      gluTessCallback (glu_tess, GLU_TESS_END_DATA,
+		       reinterpret_cast<fcn> (tess_end));
+      gluTessCallback (glu_tess, GLU_TESS_VERTEX_DATA,
+		       reinterpret_cast<fcn> (tess_vertex));
+      gluTessCallback (glu_tess, GLU_TESS_COMBINE_DATA,
+		       reinterpret_cast<fcn> (tess_combine));
+      gluTessCallback (glu_tess, GLU_TESS_EDGE_FLAG_DATA,
+		       reinterpret_cast<fcn> (tess_edge_flag));
+      gluTessCallback (glu_tess, GLU_TESS_ERROR_DATA,
+		       reinterpret_cast<fcn> (tess_error));
+    }
+
+  bool is_filled (void) const { return fill; }
+
+private:
+  static void CALLBACK tess_begin (GLenum type, void *t)
+    { reinterpret_cast<opengl_tesselator *> (t)->begin (type); }
+  
+  static void CALLBACK tess_end (void *t)
+    { reinterpret_cast<opengl_tesselator *> (t)->end (); }
+  
+  static void CALLBACK tess_vertex (void *v, void *t)
+    { reinterpret_cast<opengl_tesselator *> (t)->vertex (v); }
+  
+  static void CALLBACK tess_combine (GLdouble c[3], void *v[4], GLfloat w[4],
+				     void **out,  void *t)
+    { reinterpret_cast<opengl_tesselator *> (t)->combine (c, v, w, out); }
+  
+  static void CALLBACK tess_edge_flag (GLboolean flag, void *t)
+    { reinterpret_cast<opengl_tesselator *> (t)->edge_flag (flag); }
+  
+  static void CALLBACK tess_error (GLenum err, void *t)
+    { reinterpret_cast<opengl_tesselator *> (t)->error (err); }
+
+private:
+  GLUtesselator *glu_tess;
+  bool fill;
+};
+
+class
+vertex_data
+{
+public:
+  class vertex_data_rep
+  {
+  public:
+    Matrix coords;
+    Matrix color;
+    Matrix normal;
+    double alpha;
+    float ambient;
+    float diffuse;
+    float specular;
+    float specular_exp;
+
+    // reference counter
+    int count;
+
+    vertex_data_rep (void) { }
+
+    vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
+		     double a, float as, float ds, float ss, float se)
+	: coords (c), color (col), normal (n), alpha (a),
+	  ambient (as), diffuse (ds), specular (ss), specular_exp (se),
+	  count (1) { }
+  };
+
+private:
+  vertex_data_rep *rep;
+
+  vertex_data_rep *nil_rep (void) const
+    {
+      static vertex_data_rep *nr = new vertex_data_rep ();
+
+      return nr;
+    }
+
+public:
+  vertex_data (void) : rep (nil_rep ()) { }
+
+  vertex_data (const vertex_data& v) : rep (v.rep)
+    { rep->count++; }
+
+  vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
+	       double a, float as, float ds, float ss, float se)
+      : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se))
+    {
+      rep->count++;
+    }
+
+  vertex_data (vertex_data_rep *new_rep)
+      : rep (new_rep) { }
+
+  ~vertex_data (void)
+    {
+      if (--rep->count == 0)
+	delete rep;
+    }
+
+  vertex_data& operator = (const vertex_data& v)
+    {
+      if (--rep->count == 0)
+	delete rep;
+
+      rep = v.rep;
+      rep->count++;
+
+      return *this;
+    }
+
+  vertex_data_rep *get_rep (void) const { return rep; }
+};
+
+#include <Array.cc>
+
+class
+opengl_renderer::patch_tesselator : public opengl_tesselator
+{
+public:
+  patch_tesselator (opengl_renderer *r, int cmode, int lmode, int idx = 0)
+      : opengl_tesselator (), renderer (r),
+        color_mode (cmode), light_mode (lmode), index (idx),
+        first (true) { }
+
+protected:
+  void begin (GLenum type)
+    {
+      //printf("patch_tesselator::begin (%d)\n", type);
+      first = true;
+
+      if (color_mode == 2 || light_mode == 2)
+	glShadeModel (GL_SMOOTH);
+      else
+	glShadeModel (GL_FLAT);
+
+      if (is_filled ())
+	renderer->set_polygon_offset (true, 1+index);
+
+      glBegin (type);
+    }
+
+  void end (void)
+    {
+      //printf("patch_tesselator::end\n");
+      glEnd ();
+      renderer->set_polygon_offset (false);
+    }
+
+  void vertex (void *data)
+    {
+      vertex_data::vertex_data_rep *v
+	  = reinterpret_cast<vertex_data::vertex_data_rep *> (data);
+      //printf("patch_tesselator::vertex (%g, %g, %g)\n", v->coords(0), v->coords(1), v->coords(2));
+
+      // FIXME: why did I need to keep the first vertex of the face
+      // in JHandles? I think it's related to the fact that the 
+      // tessellation process might re-order the vertices, such that
+      // the first one you get here might not be the first one of the face;
+      // but I can't figure out the actual reason.
+      if (color_mode > 0 && (first || color_mode == 2))
+	{
+	  Matrix col = v->color;
+
+	  if (col.numel () == 3)
+	    {
+	      glColor3dv (col.data ());
+	      if (light_mode > 0)
+		{
+		  float buf[4] = { 0, 0, 0, 1 };
+
+		  for (int k = 0; k < 3; k++)
+		    buf[k] = (v->ambient * col(k));
+		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+
+		  for (int k = 0; k < 3; k++)
+		    buf[k] = (v->diffuse * col(k));
+		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, buf);
+		}
+	    }
+	}
+
+      if (light_mode > 0 && (first || light_mode == 2))
+	glNormal3dv (v->normal.data ());
+
+      glVertex3dv (v->coords.data ());
+
+      first = false;
+    }
+
+  void combine (GLdouble xyz[3], void *data[4], GLfloat w[4],
+		void **out_data)
+    {
+      vertex_data::vertex_data_rep *v0, *v1, *v2, *v3;
+      //printf("patch_tesselator::combine\n");
+
+      v0 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[0]);
+      v1 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[1]);
+      v2 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[2]);
+      v3 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[3]);
+
+      Matrix vv (1, 3, 0.0);
+      Matrix cc;
+      Matrix nn (1, 3, 0.0);
+      double aa;
+
+      vv(0) = xyz[0];
+      vv(1) = xyz[1];
+      vv(2) = xyz[2];
+      if (v0->color.numel () > 0 && v1->color.numel () > 0 &&
+	  v2->color.numel () > 0 && v3->color.numel () > 0)
+	{
+	  cc.resize (1, 3, 0.0);
+	  cc(0) = w[0]*v0->color(0)+w[1]*v1->color(0)+w[2]*v2->color(0)+w[3]*v3->color(0);
+	  cc(1) = w[0]*v0->color(1)+w[1]*v1->color(1)+w[2]*v2->color(1)+w[3]*v3->color(1);
+	  cc(2) = w[0]*v0->color(2)+w[1]*v1->color(2)+w[2]*v2->color(2)+w[3]*v3->color(2);
+	}
+      nn(0) = w[0]*v0->normal(0)+w[1]*v1->normal(0)+w[2]*v2->normal(0)+w[3]*v3->normal(0);
+      nn(1) = w[0]*v0->normal(1)+w[1]*v1->normal(1)+w[2]*v2->normal(1)+w[3]*v3->normal(1);
+      nn(2) = w[0]*v0->normal(2)+w[1]*v1->normal(2)+w[2]*v2->normal(2)+w[3]*v3->normal(2);
+      aa = w[0]*v0->alpha+w[1]*v1->alpha+w[2]*v2->alpha+w[3]*v3->alpha;
+
+      vertex_data v (vv, cc, nn, aa, v0->ambient, v0->diffuse,
+		     v0->specular, v0->specular_exp);
+      tmp_vdata.push_back (v);
+
+      *out_data = v.get_rep ();
+    }
+
+private:
+  opengl_renderer *renderer;
+  int color_mode;	// 0: uni,  1: flat, 2: interp
+  int light_mode;	// 0: none, 1: flat, 2: gouraud
+  int index;
+  bool first;
+  std::list<vertex_data> tmp_vdata;
+};
+
 void
 opengl_renderer::draw (const graphics_object& go)
 {
@@ -221,6 +518,8 @@ opengl_renderer::draw (const graphics_object& go)
     draw (dynamic_cast<const line::properties&> (props));
   else if (go.isa ("surface"))
     draw (dynamic_cast<const surface::properties&> (props));
+  else if (go.isa ("patch"))
+    draw (dynamic_cast<const patch::properties&> (props));
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
 	     props.graphics_object_name ().c_str ());
@@ -1869,6 +2168,273 @@ opengl_renderer::draw (const surface::properties& props)
 	}
 
       end_marker ();
+    }
+}
+
+// FIXME: global optimization (rendering, data structures...), there
+// is probably a smarter/faster/less-memory-consuming way to do this.
+void
+opengl_renderer::draw (const patch::properties &props)
+{
+  Matrix f = props.get_faces ().matrix_value ();
+  Matrix v = xform.scale (props.get_vertices ().matrix_value ());
+  Matrix c;
+  Matrix n = props.get_vertexnormals ().matrix_value ();
+  Matrix a;
+
+  int nv = v.rows (), vmax = v.columns ();
+  int nf = f.rows (), fcmax = f.columns ();
+
+  bool has_z = (v.columns () > 2);
+  bool has_facecolor = false;
+  bool has_facealpha = false;
+
+  int fc_mode = (props.facecolor_is_rgb () ? 0 :
+		 (props.facecolor_is("flat") ? 1 : 2));
+  int fl_mode = (props.facelighting_is ("none") ? 0 :
+		 (props.facelighting_is ("flat") ? 1 : 2));
+  // FIXME: use facealpha as to double-radio property
+  int fa_mode = 0;
+  int ec_mode = (props.edgecolor_is_rgb () ? 0 :
+		 (props.edgecolor_is("flat") ? 1 : 2));
+  int el_mode = (props.edgelighting_is ("none") ? 0 :
+		 (props.edgelighting_is ("flat") ? 1 : 2));
+  // FIXME: use edgealpha as to double-radio property
+  int ea_mode = 0;
+
+  Matrix fcolor = props.get_facecolor_rgb ();
+  Matrix ecolor = props.get_edgecolor_rgb ();
+  
+  float as = props.get_ambientstrength ();
+  float ds = props.get_diffusestrength ();
+  float ss = props.get_specularstrength ();
+  float se = props.get_specularexponent ();
+
+  boolMatrix clip (1, nv, false);
+
+  if (has_z)
+    for (int i = 0; i < nv; i++)
+      clip(i) = is_nan_or_inf (v(i,0), v(i,1), v(i,2));
+  else
+    for (int i = 0; i < nv; i++)
+      clip(i) = is_nan_or_inf (v(i,0), v(i,1), 0);
+
+  boolMatrix clip_f (1, nf, false);
+  Array<int> count_f (nf, 0);
+
+  for (int i = 0; i < nf; i++)
+    {
+      bool fclip = false;
+      int count = 0;
+
+      for (int j = 0; j < fcmax && ! xisnan (f(i,j)); j++, count++)
+	fclip = (fclip || clip(int (f(i,j) - 1)));
+
+      clip_f(i) = fclip;
+      count_f(i) = count;
+    }
+
+  if (fc_mode > 0 || ec_mode > 0)
+    {
+      c = props.get_color_data ().matrix_value ();
+
+      if (c.rows () == 1)
+	{
+	  // Single color specifications, we can simplify a little bit
+	  
+	  if (fc_mode > 0)
+	    {
+	      fcolor = c;
+	      fc_mode = 0;
+	    }
+
+	  if (ec_mode > 0)
+	    {
+	      ecolor = c;
+	      ec_mode = 0;
+	    }
+
+	  c = Matrix ();
+	}
+      else
+	has_facecolor = ((c.numel () > 0) && (c.rows () == f.rows ()));
+    }
+
+  if (fa_mode > 0 || ea_mode > 0)
+    {
+      // FIXME: retrieve alpha data from patch object
+      //a = props.get_alpha_data ();
+      has_facealpha = ((a.numel () > 0) && (a.rows () == f.rows ()));
+    }
+
+  Array2<vertex_data> vdata (f.dims ());
+
+  for (int i = 0; i < nf; i++)
+    for (int j = 0; j < count_f(i); j++)
+      {
+	int idx = int (f(i,j) - 1);
+
+	Matrix vv (1, 3, 0.0);
+	Matrix cc;
+	Matrix nn(1, 3, 0.0);
+	double aa = 1.0;
+
+	vv(0) = v(idx,0); vv(1) = v(idx,1);
+	if (has_z)
+	  vv(2) = v(idx,2);
+	// FIXME: uncomment when patch object has normal computation
+	//nn(0) = n(idx,0); nn(1) = n(idx,1); nn(2) = n(idx,2);
+	if (c.numel () > 0)
+	  {
+	    cc.resize (1, 3);
+	    if (has_facecolor)
+	      cc(0) = c(i,0), cc(1) = c(i,1), cc(2) = c(i,2);
+	    else
+	      cc(0) = c(idx,0), cc(1) = c(idx,1), cc(2) = c(idx,2);
+	  }
+	if (a.numel () > 0)
+	  {
+	    if (has_facealpha)
+	      aa = a(i);
+	    else
+	      aa = a(idx);
+	  }
+
+	vdata(i,j) =
+	    vertex_data (vv, cc, nn, aa, as, ds, ss, se);
+      }
+
+  if (fl_mode > 0 || el_mode > 0)
+    {
+      float buf[4] = { ss, ss, ss, 1 };
+
+      glMaterialfv (LIGHT_MODE, GL_SPECULAR, buf);
+      glMaterialf (LIGHT_MODE, GL_SHININESS, se);
+    }
+
+  if (! props.facecolor_is ("none"))
+    {
+      // FIXME: adapt to double-radio property
+      if (props.get_facealpha () == 1)
+	{
+	  if (fc_mode == 0)
+	    {
+	      glColor3dv (fcolor.data ());
+	      if (fl_mode > 0)
+		{
+		  float cb[4] = { 0, 0, 0, 1 };
+
+		  for (int i = 0; i < 3; i++)
+		    cb[i] = (as * fcolor(i));
+		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+		  for (int i = 0; i < 3; i++)
+		    cb[i] *= (ds / as);
+		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+		}
+	    }
+
+	  if (fl_mode > 0)
+	    glEnable (GL_LIGHTING);
+
+	  // FIXME: use __index__ property from patch object
+	  patch_tesselator tess (this, fc_mode, fl_mode, 0);
+
+	  for (int i = 0; i < nf; i++)
+	    {
+	      if (clip_f(i))
+		continue;
+
+	      tess.begin_polygon (true);
+	      tess.begin_contour ();
+
+	      for (int j = 0; j < count_f(i); j++)
+		{
+		  vertex_data::vertex_data_rep *vv = vdata(i,j).get_rep ();
+	
+		  tess.add_vertex (vv->coords.fortran_vec (), vv);
+		}
+
+	      tess.end_contour ();
+	      tess.end_polygon ();
+	    }
+
+	  if (fl_mode > 0)
+	    glDisable (GL_LIGHTING);
+	}
+      else
+	{
+	  // FIXME: implement transparency
+	}
+    }
+
+  if (! props.edgecolor_is ("none"))
+    {
+      // FIXME: adapt to double-radio property
+      if (props.get_edgealpha () == 1)
+	{
+	  if (ec_mode == 0)
+	    {
+	      glColor3dv (ecolor.data ());
+	      if (el_mode > 0)
+		{
+		  float cb[4] = { 0, 0, 0, 1 };
+
+		  for (int i = 0; i < 3; i++)
+		    cb[i] = (as * ecolor(i));
+		  glMaterialfv (LIGHT_MODE, GL_AMBIENT, cb);
+
+		  for (int i = 0; i < 3; i++)
+		    cb[i] *= (ds / as);
+		  glMaterialfv (LIGHT_MODE, GL_DIFFUSE, cb);
+		}
+	    }
+
+	  if (el_mode > 0)
+	    glEnable (GL_LIGHTING);
+
+	  set_linestyle (props.get_linestyle (), false);
+	  set_linewidth (props.get_linewidth ());
+
+	  // FIXME: use __index__ property from patch object; should we
+	  // offset patch contour as well?
+	  patch_tesselator tess (this, ec_mode, el_mode);
+
+	  for (int i = 0; i < nf; i++)
+	    {
+	      if (clip_f(i))
+		continue;
+
+	      tess.begin_polygon (false);
+	      tess.begin_contour ();
+
+	      for (int j = 0; j < count_f(i); j++)
+		{
+		  vertex_data::vertex_data_rep *vv = vdata(i,j).get_rep ();
+	
+		  tess.add_vertex (vv->coords.fortran_vec (), vv);
+		}
+
+	      tess.end_contour ();
+	      tess.end_polygon ();
+	    }
+
+	  set_linestyle ("-");
+	  set_linewidth (0.5);
+
+	  if (el_mode > 0)
+	    glDisable (GL_LIGHTING);
+	}
+      else
+	{
+	  // FIXME: implement transparency
+	}
+    }
+
+  if (! props.marker_is ("none") &&
+      ! (props.markeredgecolor_is ("none") && props.markerfacecolor_is ("none")))
+    {
+      // FIXME: implement this
     }
 }
 

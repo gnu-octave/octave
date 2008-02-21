@@ -428,6 +428,32 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   return octave_value (a);
 }
 
+template<class T>
+static void
+get_array_limits (const Array<T>& m, double& emin, double& emax,
+		  double& eminp)
+{
+  const T *data = m.data ();
+  int n = m.numel ();
+
+  for (int i = 0; i < n; i++)
+    {
+      double e = double (data[i]);
+
+      if (! (xisinf (e) || xisnan (e)))
+	{
+	  if (e < emin)
+	    emin = e;
+
+	  if (e > emax)
+	    emax = e;
+
+	  if (e >= 0 && e < eminp)
+	    eminp = e;
+	}
+    }
+}
+
 // ---------------------------------------------------------------------
 
 radio_values::radio_values (const std::string& opt_string)
@@ -569,7 +595,7 @@ array_property::validate (const octave_value& v)
     {
       for (std::list<std::string>::const_iterator it = type_constraints.begin ();
            ! xok && it != type_constraints.end (); ++it)
-        if ((*it) == v.type_name ())
+        if ((*it) == v.class_name ())
           xok = true;
     }
   else
@@ -603,6 +629,38 @@ array_property::validate (const octave_value& v)
     }
 
   return xok;
+}
+
+void
+array_property::get_data_limits (void)
+{
+  xmin = xminp = octave_Inf;
+  xmax = -octave_Inf;
+
+  if (! data.is_empty ())
+    {
+      if (data.is_integer_type ())
+	{
+	  if (data.is_int8_type ())
+	    get_array_limits (data.int8_array_value (), xmin, xmax, xminp);
+	  else if (data.is_uint8_type ())
+	    get_array_limits (data.uint8_array_value (), xmin, xmax, xminp);
+	  else if (data.is_int16_type ())
+	    get_array_limits (data.int16_array_value (), xmin, xmax, xminp);
+	  else if (data.is_uint16_type ())
+	    get_array_limits (data.uint16_array_value (), xmin, xmax, xminp);
+	  else if (data.is_int32_type ())
+	    get_array_limits (data.int32_array_value (), xmin, xmax, xminp);
+	  else if (data.is_uint32_type ())
+	    get_array_limits (data.uint32_array_value (), xmin, xmax, xminp);
+	  else if (data.is_int64_type ())
+	    get_array_limits (data.int64_array_value (), xmin, xmax, xminp);
+	  else if (data.is_uint64_type ())
+	    get_array_limits (data.uint64_array_value (), xmin, xmax, xminp);
+	}
+      else
+	get_array_limits (data.array_value (), xmin, xmax, xminp);
+    }
 }
 
 void
@@ -2378,9 +2436,27 @@ axes::get_default (const caseless_str& name) const
   return retval;
 }
 
+// FIXME: Remove in case all data_property are converted into
+// array_property
 static void
 check_limit_vals (double& min_val, double& max_val, double& min_pos,
 		  const data_property& data)
+{
+  double val = data.min_val ();
+  if (! (xisinf (val) || xisnan (val)) && val < min_val)
+    min_val = val;
+  val = data.max_val ();
+  if (! (xisinf (val) || xisnan (val)) && val > max_val)
+    max_val = val;
+  val = data.min_pos ();
+  if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
+    min_pos = val;
+}
+
+// FIXME: Maybe this should go into array_property class?
+static void
+check_limit_vals (double& min_val, double& max_val, double& min_pos,
+		  const array_property& data)
 {
   double val = data.min_val ();
   if (! (xisinf (val) || xisnan (val)) && val < min_val)
@@ -2681,7 +2757,7 @@ axes::update_axis_limits (const std::string& axis_type)
 
 	      if (obj.isa ("image") || obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property cdata = obj.get_cdata_property ();
+		  array_property cdata = obj.get_cdata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, cdata);
 		}

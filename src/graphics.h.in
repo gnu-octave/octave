@@ -717,16 +717,29 @@ private:
 class array_property : public base_property
 {
 public:
+  array_property (void)
+      : base_property ("", graphics_handle ()), data (Matrix ())
+    {
+      get_data_limits ();
+    }
+
   array_property (const std::string& nm, const graphics_handle& h,
                   const octave_value& m)
-    : base_property (nm, h), data (m) { }
+      : base_property (nm, h), data (m)
+    {
+      get_data_limits ();
+    }
 
   octave_value get (void) const { return data; }
 
   void set (const octave_value& v)
     {
       if (validate (v))
-        data = v;
+	{
+	  data = v;
+
+	  get_data_limits ();
+	}
       else
         error ("invalid value for array property \"%s\"",
                get_name ().c_str ());
@@ -738,6 +751,10 @@ public:
   void add_constraint (const dim_vector& dims)
     { size_constraints.push_back (dims); }
 
+  double min_val (void) const { return xmin; }
+  double max_val (void) const { return xmax; }
+  double min_pos (void) const { return xminp; }
+
   array_property& operator = (const octave_value& val)
     {
       set (val);
@@ -747,8 +764,13 @@ public:
 private:
   OCTINTERP_API bool validate (const octave_value& v);
 
+  OCTINTERP_API void get_data_limits (void);
+
 protected:
   octave_value data;
+  double xmin;
+  double xmax;
+  double xminp;
   std::list<std::string> type_constraints;
   std::list<dim_vector> size_constraints;
 };
@@ -1657,10 +1679,10 @@ public:
     return data_property ();
   }
 
-  virtual data_property get_cdata_property (void) const
+  virtual array_property get_cdata_property (void) const
   {
     error ("get: invalid property \"cdata\"");
-    return data_property ();
+    return array_property ();
   }
 
 protected:
@@ -2032,7 +2054,7 @@ public:
     return props.get_xudata_property ();
   }
 
-  data_property get_cdata_property (void) const
+  array_property get_cdata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_cdata_property ();
@@ -2857,13 +2879,17 @@ public:
     BEGIN_PROPERTIES(image)
       data_property xdata l , Matrix ()
       data_property ydata l , Matrix ()
-      data_property cdata l , Matrix ()
+      array_property cdata l , Matrix ()
       radio_property cdatamapping a , "{scaled}|direct"
     END_PROPERTIES
 
   protected:
     void init (void)
       {
+	cdata.add_constraint ("double");
+	cdata.add_constraint ("uint8");
+	cdata.add_constraint (dim_vector (-1, -1));
+	cdata.add_constraint (dim_vector (-1, -1, 3));
       }
   };
 
@@ -2903,11 +2929,11 @@ public:
       data_property xdata l , Matrix ()
       data_property ydata l , Matrix ()
       data_property zdata l , Matrix ()
-      data_property cdata l , Matrix ()
+      array_property cdata l , Matrix ()
       radio_property cdatamapping , "{scaled}|direct"
       array_property faces , Matrix ()
       data_property facevertexalphadata , Matrix ()
-      data_property facevertexcdata , Matrix ()
+      array_property facevertexcdata , Matrix ()
       array_property vertices , Matrix ()
       array_property vertexnormals , Matrix ()
       radio_property normalmode , "{auto}|manual"
@@ -2939,6 +2965,10 @@ public:
       {
         vertices.add_constraint (dim_vector (-1, 2));
         vertices.add_constraint (dim_vector (-1, 3));
+	cdata.add_constraint (dim_vector (-1, -1));
+	cdata.add_constraint (dim_vector (-1, -1, 3));
+	facevertexcdata.add_constraint (dim_vector (-1, 1));
+	facevertexcdata.add_constraint (dim_vector (-1, 3));
       }
   };
 
@@ -2978,8 +3008,7 @@ public:
       data_property xdata lu , Matrix ()
       data_property ydata lu , Matrix ()
       data_property zdata lu , Matrix ()
-      // FIXME: cdata can be of type "double" or "uint8"
-      data_property cdata l , Matrix ()
+      array_property cdata l , Matrix ()
       radio_property cdatamapping a , "{scaled}|direct"
       color_property facecolor , "{flat}|none|interp|texturemap"
       // FIXME: should be a double-radio property
@@ -3018,11 +3047,10 @@ public:
 	alphadata.add_constraint ("uint8");
 	alphadata.add_constraint (dim_vector (-1, -1));
 	vertexnormals.add_constraint (dim_vector (-1, -1, 3));
-	// FIXME: uncomment this when cdata has the right type
-	//cdata.add_constraint ("double");
-	//cdata.add_constraint ("double");
-	//cdata.add_constraint (dim_vector (-1, -1));
-	//cdata.add_constraint (dim_vector (-1, -1, 3));
+	cdata.add_constraint ("double");
+	cdata.add_constraint ("uint8");
+	cdata.add_constraint (dim_vector (-1, -1));
+	cdata.add_constraint (dim_vector (-1, -1, 3));
       }
 
   private:

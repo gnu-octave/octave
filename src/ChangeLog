@@ -19,6 +19,32 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (array_property::array_property(void)): New default
+	constructor.
+	(array_property::xmin, array_property:xmax, array_property::xminp,
+	array_property::min_val, array_property::max_val,
+	array_property::min_pos): New fields and accessors to hold min/max
+	values of the array data.
+	(array_property::get_data_limits): New method to compute min/max
+	values of the array data.
+	(base_properties::get_cdata_property,
+	graphics_object::get_cdata_property): Return array_property.
+	(image::properties::cdata, surface::properties::cdata,
+	patch::properties::cdata, patch::properties::facevertexcdata): Turn
+	into array_property type.
+	(image::properties::init, surface::properties::init,
+	patch::properties::init): Add constraint initialization for cdata and
+	facevertexcdata (patch only).
+	* genprops.awk (emit_get_array): New function to emit accessor for
+	array_property.
+	(emit_declarations): Use it.
+	* graphics.cc (get_array_limits): New template function to compute
+	min/max values of an Array<T> object.
+	(array_property::get_data_limits): New method to compute min/max
+	values of the array data, using get_array_limits.
+	(check_limit_vals): Overridden function with array_property.
+	(axes::update_axis_limits): Turn cdata property into array_property.
+
 	* graphics.h.in (patch::properties::get_color_data): New utility
 	function to retrieve actual color data.
 	* graphics.cc (patch::properties::get_color_data): Likewise.

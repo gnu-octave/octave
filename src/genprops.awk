@@ -211,6 +211,16 @@ function emit_get_data (i)
           name[i], name[i]);
 }
 
+## array_property
+
+function emit_get_array (i)
+{
+  emit_get_accessor(i, "octave_value", "get");
+
+  printf ("  array_property get_%s_property (void) const { return %s; }\n",
+          name[i], name[i]);
+}
+
 ## common section
 
 function emit_common_declarations ()
@@ -244,9 +254,7 @@ function emit_declarations ()
   {
     if (emit_get[i])
     {
-      if (type[i] == "array_property" \
-	  || type[i] == "row_vector_property" \
-	  || type[i] == "any_property")
+      if (type[i] == "any_property")
         emit_get_accessor(i, "octave_value", "get");
       else if (type[i] == "handle_property")
         emit_get_accessor(i, "graphics_handle", "handle_value");
@@ -256,6 +264,9 @@ function emit_declarations ()
         emit_get_accessor(i, "double", "double_value");
       else if (type[i] == "data_property")
         emit_get_data(i);
+      else if (type[i] == "array_property" \
+	       || type[i] == "row_vector_property")
+        emit_get_array(i);
       else if (type[i] == "bool_property")
         emit_get_bool(i);
       else if (type[i] == "radio_property")

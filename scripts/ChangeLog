@@ -1,5 +1,8 @@
 2008-02-21  John W. Eaton  <jwe@octave.org>
 
+	* image/imshow.m: Call axis ("image").
+	From Michael G. Ross <mgross@MIT.EDU>.
+
 	* plot/errorbar.m: If nargout > 0, return vector of handles to
 	line objects.
 	* plot/__go_draw_axes__.m: Improve handling of line style for

@@ -166,6 +166,7 @@ function h = imshow (im, varargin)
     tmp = image (round ((rows (colormap ()) - 1) * im));
   endif
   set (gca (), "visible", "off");
+  axis ("image");
 
   if (nargout > 0)
     h = tmp;

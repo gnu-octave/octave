@@ -1,3 +1,8 @@
+2008-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_renderer::patch_tesselator::combine):
+	Protect against NULL vertex data.
+
 2008-02-21  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* opengl/gl-render.cc: remove OpenGL includes

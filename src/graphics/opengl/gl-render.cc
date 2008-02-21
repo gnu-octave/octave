@@ -454,40 +454,51 @@ protected:
   void combine (GLdouble xyz[3], void *data[4], GLfloat w[4],
 		void **out_data)
     {
-      vertex_data::vertex_data_rep *v0, *v1, *v2, *v3;
       //printf("patch_tesselator::combine\n");
 
-      v0 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[0]);
-      v1 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[1]);
-      v2 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[2]);
-      v3 = reinterpret_cast<vertex_data::vertex_data_rep *> (data[3]);
+      vertex_data::vertex_data_rep *v[4];
+      int vmax = 4;
+
+      for (int i = 0; i < 4; i++)
+	{
+	  v[i] = reinterpret_cast<vertex_data::vertex_data_rep *> (data[i]);
+
+	  if (vmax == 4 && ! v[i])
+	    vmax = i;
+	}
 
       Matrix vv (1, 3, 0.0);
       Matrix cc;
       Matrix nn (1, 3, 0.0);
-      double aa;
+      double aa = 0.0;
 
       vv(0) = xyz[0];
       vv(1) = xyz[1];
       vv(2) = xyz[2];
-      if (v0->color.numel () > 0 && v1->color.numel () > 0 &&
-	  v2->color.numel () > 0 && v3->color.numel () > 0)
+
+      if (v[0]->color.numel ())
 	{
 	  cc.resize (1, 3, 0.0);
-	  cc(0) = w[0]*v0->color(0)+w[1]*v1->color(0)+w[2]*v2->color(0)+w[3]*v3->color(0);
-	  cc(1) = w[0]*v0->color(1)+w[1]*v1->color(1)+w[2]*v2->color(1)+w[3]*v3->color(1);
-	  cc(2) = w[0]*v0->color(2)+w[1]*v1->color(2)+w[2]*v2->color(2)+w[3]*v3->color(2);
+	  for (int ic = 0; ic < 3; ic++)
+	    for (int iv = 0; iv < vmax; iv++)
+	      cc(ic) += (w[iv] * v[iv]->color(ic));
 	}
-      nn(0) = w[0]*v0->normal(0)+w[1]*v1->normal(0)+w[2]*v2->normal(0)+w[3]*v3->normal(0);
-      nn(1) = w[0]*v0->normal(1)+w[1]*v1->normal(1)+w[2]*v2->normal(1)+w[3]*v3->normal(1);
-      nn(2) = w[0]*v0->normal(2)+w[1]*v1->normal(2)+w[2]*v2->normal(2)+w[3]*v3->normal(2);
-      aa = w[0]*v0->alpha+w[1]*v1->alpha+w[2]*v2->alpha+w[3]*v3->alpha;
 
-      vertex_data v (vv, cc, nn, aa, v0->ambient, v0->diffuse,
-		     v0->specular, v0->specular_exp);
-      tmp_vdata.push_back (v);
+      if (v[0]->normal.numel () > 0)
+	{
+	  for (int in = 0; in < 3; in++)
+	    for (int iv = 0; iv < vmax; iv++)
+	      nn(in) += (w[iv] * v[iv]->normal(in));
+	}
 
-      *out_data = v.get_rep ();
+      for (int iv = 0; iv < vmax; iv++)
+	aa += (w[iv] * v[iv]->alpha);
+
+      vertex_data new_v (vv, cc, nn, aa, v[0]->ambient, v[0]->diffuse,
+			 v[0]->specular, v[0]->specular_exp);
+      tmp_vdata.push_back (new_v);
+
+      *out_data = new_v.get_rep ();
     }
 
 private:

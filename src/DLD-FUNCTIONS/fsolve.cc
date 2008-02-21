@@ -139,6 +139,8 @@ fsolve_user_function (const ColumnVector& x)
 
 	  if (error_state || retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
+	  else if (retval.length () != x.length ())
+	    error ("fsolve: unable to solve non-square systems");
 	}
       else
 	gripe_user_supplied_eval ("fsolve");
@@ -188,6 +190,9 @@ fsolve_user_jacobian (const ColumnVector& x)
 
 	  if (error_state || retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
+	  else if (! (retval.rows () == x.length ()
+		      && retval.columns () == x.length ()))
+	    error ("fsolve: invalid Jacobian matrix dimensions");
 	}
       else
 	gripe_user_supplied_eval ("fsolve");

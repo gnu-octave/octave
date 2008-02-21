@@ -1,3 +1,9 @@
+2008-02-21  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_jacobian):
+	Check dimensions of user-supplied Jacobian matrix.
+	(fsolve_user_function): Check for non-square systems.
+
 2008-02-20  John W. Eaton  <jwe@octave.org>
 
 	* data.cc (map_d_m, map_m_d, map_m_m, Fatan2, Ffmod):

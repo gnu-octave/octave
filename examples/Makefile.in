@@ -95,7 +95,7 @@ install install-strip:
 	  rm -f $(DESTDIR)$(imagedir)/$$f; \
 	  $(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(imagedir)/$$f; \
 	done
-	if test -n "$(DESKTOP_FILE_INSTALL)"; then \
+	-if test -n "$(DESKTOP_FILE_INSTALL)"; then \
 	  $(DESKTOP_FILE_INSTALL) --dir=$(DESTDIR)$(datadir)/applications \
 	    --vendor www.octave.org octave.desktop; \
 	fi

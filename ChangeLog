@@ -1,3 +1,8 @@
+2008-02-21  John W. Eaton  <jwe@octave.org>
+
+	* examples/Makefile.in (install install-strip): Ignore errors
+	installing octave.desktop file.
+
 2008-02-15  John W. Eaton  <jwe@octave.org>
 
 	* configure.in (*-*-freebsd*, *-*-openbsd*): Don't set SH_LD.

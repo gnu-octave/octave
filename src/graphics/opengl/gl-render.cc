@@ -2442,7 +2442,47 @@ opengl_renderer::draw (const patch::properties &props)
   if (! props.marker_is ("none") &&
       ! (props.markeredgecolor_is ("none") && props.markerfacecolor_is ("none")))
     {
-      // FIXME: implement this
+      bool do_edge = ! props.markeredgecolor_is ("none");
+      bool do_face = ! props.markerfacecolor_is ("none");
+
+      Matrix mecolor = props.get_markeredgecolor_rgb ();
+      Matrix mfcolor = props.get_markerfacecolor_rgb ();
+      Matrix cc (1, 3, 0.0);
+
+      if (mecolor.numel () == 0 && props.markeredgecolor_is ("auto"))
+	{
+	  mecolor = props.get_edgecolor_rgb ();
+	  do_edge = ! props.edgecolor_is ("none");
+	}
+
+      if (mfcolor.numel () == 0 && props.markerfacecolor_is ("auto"))
+	{
+	  mfcolor = props.get_facecolor_rgb ();
+	  do_face = ! props.facecolor_is ("none");
+	}
+
+      init_marker (props.get_marker (), props.get_markersize (),
+		   props.get_linewidth ());
+
+      for (int i = 0; i < nf; i++)
+	for (int j = 0; j < count_f(i); j++)
+	  {
+	    int idx = int (f(i,j) - 1);
+
+	    if (clip(idx))
+	      continue;
+
+	    Matrix lc = (do_edge ? (mecolor.numel () == 0 ?
+				    vdata(i,j).get_rep ()->color : mecolor)
+			 : Matrix ());
+	    Matrix fc = (do_face ? (mfcolor.numel () == 0 ?
+				    vdata(i,j).get_rep ()->color : mfcolor)
+			 : Matrix ());
+
+	    draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);
+	  }
+
+      end_marker ();
     }
 }
 

@@ -3,6 +3,9 @@
 	* opengl/gl-render.cc (opengl_renderer::patch_tesselator::combine):
 	Protect against NULL vertex data.
 
+	* opengl/gl-render.cc (opengl_renderer::draw(patch)): Add marker
+	rendering of patch objects.
+
 2008-02-21  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* opengl/gl-render.cc: remove OpenGL includes

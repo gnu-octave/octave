@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2006, 2007 Kai Habel
+## Copyright (C) 2008 Marco Caliari
 ##
 ## This file is part of Octave.
 ##
@@ -17,33 +18,38 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{L} =} legendre (@var{n}, @var{X})
+## @deftypefn {Function File} {@var{l} =} legendre (@var{n}, @var{x})
+## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, "unnorm")
+## Compute the Legendre function of degree @var{n} and order @var{m}
+## where all values for @var{m} = 0 @dots{} @var{n} are returned.
+## @var{n} must be a non-negative scalar integer in the range greater
+## than or equal to 0.  The return value has one dimension more than @var{x}.
 ##
-## Legendre Function of degree n and order m
-## where all values for m = 0..@var{n} are returned.
-## @var{n} must be a scalar in the range [0..255].
-## The return value has one dimension more than @var{x}.
+## The Legendre Function of degree @var{n} and order @var{m}:
 ##
 ## @example
-## The Legendre Function of degree n and order m
-##
 ## @group
 ##  m        m       2  m/2   d^m
 ## P(x) = (-1) * (1-x  )    * ----  P (x)
 ##  n                         dx^m   n
 ## @end group
+## @end example
 ##
-## with:
-## Legendre polynomial of degree n
+## @noindent
+## with Legendre polynomial of degree @var{n}:
 ##
+## @example
 ## @group
 ##           1     d^n   2    n
-## P (x) = ------ [----(x - 1)  ] 
+## P (x) = ------ [----(x - 1)  ]
 ##  n      2^n n!  dx^n
 ## @end group
+## @end example
 ##
-## legendre(3,[-1.0 -0.9 -0.8]) returns the matrix
+## @noindent
+## @code{legendre (3, [-1.0, -0.9, -0.8])} returns the matrix:
 ##
+## @example
 ## @group
 ##  x  |   -1.0   |   -0.9   |  -0.8
 ## ------------------------------------
@@ -53,80 +59,152 @@
 ## m=3 |  0.00000 | -1.24229 | -3.24000 
 ## @end group
 ## @end example
+##
+## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, "sch")
+## Compute the Schmidt semi-normalized associated Legendre function.
+## The Schmidt semi-normalized associated Legendre function is related
+## to the unnormalized Legendre functions by the following:
+##
+## For Legendre functions of degree n and order 0:
+##
+## @example
+## @group
+##   0       0
+## SP (x) = P (x)
+##   n       n
+## @end group
+## @end example
+##
+## For Legendre functions of degree n and order m:
+##
+## @example
+## @group
+##   m       m          m    2(n-m)! 0.5
+## SP (x) = P (x) * (-1)  * [-------]
+##   n       n               (n+m)!
+## @end group
+## @end example
+##
+## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, "norm")
+## Compute the fully normalized associated Legendre function.
+## The fully normalized associated Legendre function is related
+## to the unnormalized Legendre functions by the following:
+##
+## For Legendre functions of degree @var{n} and order @var{m}
+##
+## @example
+## @group
+##   m       m          m    (n+0.5)(n-m)! 0.5
+## NP (x) = P (x) * (-1)  * [-------------]
+##   n       n                   (n+m)!    
+## @end group
+## @end example
 ## @end deftypefn
 
-## FIXME Add Schmidt semi-normalized and fully normalized legendre functions
+## Author: Marco Caliari <marco.caliari@univr.it>
 
-## Author:	Kai Habel <kai.habel@gmx.de>
+function retval = legendre (n, x, normalization)
 
-function L = legendre (n, x)
-
-  warning ("legendre is unstable for higher orders");
-
-  if (nargin != 2)
+  if (nargin < 2 || nargin > 3)
     print_usage ();
   endif
 
-    if (! isscalar (n) || n < 0 || n > 255 || n != fix (n))
-      error ("n must be a integer between 0 and 255]");
-    endif
+  if (nargin == 3)
+    normalization = lower (normalization);
+  else
+    normalization = "unnorm";
+  endif
 
-    if (! isvector (x) || any (x < -1 || x > 1))
-      error ("x must be vector in range -1 <= x <= 1");
-    endif
+  if (! isscalar (n) || n < 0 || n != fix (n))
+    error ("legendre: n must be a non-negative scalar integer");
+  endif
 
-    if (n == 0)
-      L = ones (size (x));
-    elseif (n == 1)
-      L = [x; -sqrt(1 - x .^ 2)];
+  if (! isvector (x) || any (x < -1 || x > 1))
+    error ("legendre: x must be vector in range -1 <= x <= 1");
+  endif
+
+  switch (normalization)
+    case "norm"
+      scale = sqrt (n+0.5);
+    case "sch"
+      scale = sqrt (2);
+    case "unnorm"
+      scale = 1;
+    otherwise
+      error ("legendre: expecting normalization option to be \"norm\", \"sch\", or \"unnorm\"");
+  endswitch
+
+  ## Based on the recurrence relation below
+  ##            m                 m              m
+  ## (n-m+1) * P (x) = (2*n+1)*x*P (x)  - (n+1)*P (x)
+  ##            n+1               n              n-1
+  ## http://en.wikipedia.org/wiki/Associated_Legendre_function
+
+  for m = 1:n
+    lpm1 = scale;
+    lpm2 = (2*m-1) .* x .* scale;      
+    lpm3 = lpm2;
+    for k = m+1:n
+      lpm3 = ((2*k-1) .* x .* lpm2 - (k+m-2) .* lpm1)/(k-m+1);
+      lpm1 = lpm2;
+      lpm2 = lpm3;
+    endfor
+    retval(m,:) = lpm3;
+    if (strcmp (normalization, "unnorm"))
+      scale = -scale * (2*m-1);
     else
-      i = 0:n;
-      a = (-1) .^ i .* bincoeff (n, i);
-      p = [a; zeros(size (a))];
-      p = p(:);
-      p(length (p)) = [];
-      #p contains the polynom (x^2-1)^n
-
-      #now create a vector with 1/(2.^n*n!)*(d/dx).^n
-      d = [((n + rem(n, 2)):-1:(rem (n, 2) + 1)); 2 * ones(fix (n / 2), n)];
-      d = cumsum (d);
-      d = fliplr (prod (d'));
-      d = [d; zeros(1, length (d))];
-      d = d(1:n + 1) ./ (2 ^ n *prod (1:n));
-
-      Lp = d' .* p(1:length (d));
-      #Lp contains the Legendre Polynom of degree n
-
-      # now create a polynom matrix with d/dx^m for m=0..n
-      d2 = flipud (triu (ones (n)));
-      d2 = cumsum (d2);
-      d2 = fliplr (cumprod (flipud (d2)));
-      d3 = fliplr (triu (ones (n + 1)));
-      d3(2:n + 1, 1:n) = d2;
-
-      # multiply for each m (d/dx)^m with Lp(n,x)
-      # and evaluate at x
-      Y = zeros(n + 1, length (x));
-      [dr, dc] = size (d3);
-      for m = 0:dr - 1
-        Y(m + 1, :) = polyval (d3(m + 1, 1:(dc - m)) .* Lp(1:(dc - m))', x)(:)';
-      endfor
-
-      # calculate (-1)^m*(1-x^2)^(m/2)	for m=0..n at x
-      # and multiply with (d/dx)^m(Pnx)
-      l = length (x);
-      X = kron ((1 - x(:) .^ 2)', ones (n + 1, 1));
-      M = kron ((0:n)', ones (1, l));
-      L = X .^ (M / 2) .* (-1) .^ M .* Y;
+      ## normalization == "sch" or normalization == "norm"
+      scale = scale / sqrt ((n-m+1)*(n+m))*(2*m-1);
     endif
+    scale = scale .* sqrt(1-x.^2);
+  endfor
+
+  retval(n+1,:) = scale;
+
+  if (strcmp (normalization, "sch"))
+    retval(1,:) = retval(1,:) / sqrt (2);
+  endif
+
 endfunction
 
 %!test
-%! result=legendre(3,[-1.0 -0.9 -0.8]);
+%! result = legendre (3, [-1.0 -0.9 -0.8]);
 %! expected = [
 %!    -1.00000  -0.47250  -0.08000
 %!     0.00000  -1.99420  -1.98000
 %!     0.00000  -2.56500  -4.32000
 %!     0.00000  -1.24229  -3.24000
 %! ];
-%! assert(result,expected,1e-5);
+%! assert (result, expected, 1e-5);
+
+%!test
+%! result = legendre (3, [-1.0 -0.9 -0.8], "sch");
+%! expected = [
+%!    -1.00000  -0.47250  -0.08000
+%!     0.00000   0.81413   0.80833
+%!    -0.00000  -0.33114  -0.55771
+%!     0.00000   0.06547   0.17076
+%! ];
+%! assert (result, expected, 1e-5);
+
+%!test
+%! result = legendre (3, [-1.0 -0.9 -0.8], "norm");
+%! expected = [
+%!    -1.87083  -0.88397  -0.14967
+%!     0.00000   1.07699   1.06932
+%!    -0.00000  -0.43806  -0.73778
+%!     0.00000   0.08661   0.22590
+%! ];
+%! assert (result, expected, 1e-5);
+
+%!test
+%! result = legendre (151, 0);
+%! ## Don't compare to "-Inf" since it would fail on 64 bit systems.
+%! assert (result(end) < -1.7976e308 && all (isfinite (result(1:end-1))));
+
+%!test
+%! result = legendre (150, 0);
+%! ## This agrees with Matlab's result.
+%! assert (result(end), 3.7532741115719e+306, 0.0000000000001e+306)
+
+

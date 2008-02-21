@@ -1,3 +1,8 @@
+2008-02-20  Marco Caliari <marco.caliari@univr.it>
+
+	* specfun/legendre.m: Accept normalization options ("sch", "norm"),
+	and improve stability for higher orders.
+
 2008-02-20  John W. Eaton  <jwe@octave.org>
 
 	* strings/strcat.m: Detect cellstr args.

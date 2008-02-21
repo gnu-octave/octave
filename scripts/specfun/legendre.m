@@ -20,10 +20,11 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{l} =} legendre (@var{n}, @var{x})
 ## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
-## Compute the Legendre function of degree @var{n} and order @var{m}.
-## The optional argument my be one of @code{"unnorm"}, @code{"sch"}, or
-## @code{"norm"}.  The default is @code{"unnorm"}.
-## The value of @var{n} must be a non-negative scalar integer.  
+## Compute the Legendre function of degree @var{n} and order 
+## @var{m} = 0 ... N.  The optional argument, @var{normalization}, 
+## may be one of @code{"unnorm"}, @code{"sch"}, or @code{"norm"}.
+## The default is @code{"unnorm"}. The value of @var{n} must be a 
+## non-negative scalar integer.  
 ##
 ## If the optional argument @var{normalization} is missing or is
 ## @code{"unnorm"}, compute the Legendre function of degree @var{n} and

@@ -19,11 +19,16 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {@var{l} =} legendre (@var{n}, @var{x})
-## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, "unnorm")
-## Compute the Legendre function of degree @var{n} and order @var{m}
-## where all values for @var{m} = 0 @dots{} @var{n} are returned.
-## @var{n} must be a non-negative scalar integer in the range greater
-## than or equal to 0.  The return value has one dimension more than @var{x}.
+## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, @var{normalization})
+## Compute the Legendre function of degree @var{n} and order @var{m}.
+## The optional argument my be one of @code{"unnorm"}, @code{"sch"}, or
+## @code{"norm"}.  The default is @code{"unnorm"}.
+## The value of @var{n} must be a non-negative scalar integer.  
+##
+## If the optional argument @var{normalization} is missing or is
+## @code{"unnorm"}, compute the Legendre function of degree @var{n} and
+## order @var{m} and return all values for @var{m} = 0 @dots{} @var{n}.
+## The return value has one dimension more than @var{x}.
 ##
 ## The Legendre Function of degree @var{n} and order @var{m}:
 ##
@@ -60,8 +65,8 @@
 ## @end group
 ## @end example
 ##
-## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, "sch")
-## Compute the Schmidt semi-normalized associated Legendre function.
+## If the optional argument @code{normalization} is @code{"sch"}, 
+## compute the Schmidt semi-normalized associated Legendre function.
 ## The Schmidt semi-normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
 ##
@@ -85,8 +90,8 @@
 ## @end group
 ## @end example
 ##
-## @deftypefnx {Function File} {@var{l} =} legendre (@var{n}, @var{x}, "norm")
-## Compute the fully normalized associated Legendre function.
+## If the optional argument @var{normalization} is @code{"norm"}, 
+## compute the fully normalized associated Legendre function.
 ## The fully normalized associated Legendre function is related
 ## to the unnormalized Legendre functions by the following:
 ##

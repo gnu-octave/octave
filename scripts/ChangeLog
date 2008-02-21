@@ -1,3 +1,10 @@
+2008-02-21  John W. Eaton  <jwe@octave.org>
+
+	* plot/errorbar.m: If nargout > 0, return vector of handles to
+	line objects.
+	* plot/__go_draw_axes__.m: Improve handling of line style for
+	errorbar plots.
+
 2008-02-20  Marco Caliari <marco.caliari@univr.it>
 
 	* specfun/legendre.m: Accept normalization options ("sch", "norm"),

@@ -108,7 +108,7 @@
 ## Author: Teemu Ikonen <tpikonen@pcu.helsinki.fi>
 ## Keywords: errorbar, plotting
 
-function errorbar (varargin)
+function retval = errorbar (varargin)
 
   [h, varargin] = __plt_get_axis_arg__ ("errorbar", varargin{:});
 
@@ -116,7 +116,12 @@ function errorbar (varargin)
   unwind_protect
     axes (h);
     newplot ();
-    __errcomm__ ("errorbar", h, varargin{:});
+
+    tmp = __errcomm__ ("errorbar", h, varargin{:});
+
+    if (nargout > 0)
+      retval = tmp;
+    endif
   unwind_protect_cleanup
     axes (oldh);
   end_unwind_protect

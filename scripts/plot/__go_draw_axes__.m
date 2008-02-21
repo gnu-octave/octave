@@ -397,16 +397,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	    tmp = undo_string_escapes (__maybe_munge_text__ (enhanced, obj, "keylabel", have_newer_gnuplot));
 	    titlespec{data_idx} = strcat ("title \"", tmp, "\"");
 	  endif
-	  [style, typ, with] = do_linestyle_command (obj, data_idx,
-						     mono, plot_stream);
 	  usingclause{data_idx} = "";
-	  if (have_newer_gnuplot || isnan (typ))
-	    withclause{data_idx} = sprintf ("with %s linestyle %d",
-					    style, data_idx);
-	  else
-	    withclause{data_idx} = sprintf ("with %s linetype %d",
-					    style, typ);
-	  endif
+	  errbars = "";
 	  if (nd == 3)
 	    xdat = obj.xdata(:);
 	    ydat = obj.ydata(:);
@@ -464,11 +456,11 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		endif
 		data{data_idx} = [xdat, ydat, xlo, xhi, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4):($5):($6)";
-		withclause{data_idx} = "with xyerrorbars";
+		errbars = "xyerrorbars";
 	      else
 		data{data_idx} = [xdat, ydat, ylo, yhi]';
 		usingclause{data_idx} = "using ($1):($2):($3):($4)";
-		withclause{data_idx} = "with yerrorbars";
+		errbars = "yerrorbars";
 	      endif
 	    elseif (xerr)
 	      if (isempty (xldat))
@@ -483,13 +475,25 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	      endif
 	      data{data_idx} = [xdat, ydat, xlo, xhi]';
 	      usingclause{data_idx} = "using ($1):($2):($3):($4)";
-	      withclause{data_idx} = "with xerrorbars";
+	      errbars = "xerrorbars";
 	    else
 	      data{data_idx} = [xdat, ydat]';
 	      usingclause{data_idx} = sprintf ("using ($1):($2) axes %s%s",
 					      xaxisloc_using, yaxisloc_using);
 	    endif
 	  endif
+
+	  [style, typ, with] = do_linestyle_command (obj, data_idx, mono,
+						     plot_stream, errbars);
+
+	  if (have_newer_gnuplot || isnan (typ))
+	    withclause{data_idx} = sprintf ("with %s linestyle %d",
+					    style, data_idx);
+	  else
+	    withclause{data_idx} = sprintf ("with %s linetype %d",
+					    style, typ);
+	  endif
+
 	  if (! (have_newer_gnuplot || isempty (with)))
 	    if (isempty (withclause{data_idx}))
 	      withclause{data_idx} = sprintf ("with %s", with);
@@ -1268,7 +1272,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 endfunction
 
-function [style, typ, with] = do_linestyle_command (obj, idx, mono, plot_stream)
+function [style, typ, with] = do_linestyle_command (obj, idx, mono,
+						    plot_stream, errbars)
 
   persistent have_newer_gnuplot ...
     = compare_versions (__gnuplot_version__ (), "4.0", ">");
@@ -1403,23 +1408,28 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono, plot_stream)
     pt = "";
   endif
 
-  style = "lines";
-  if (isempty (lt))
-    if (! isempty (pt))
-      style = "points";
-    endif
-  elseif (! isempty (pt))
-    style = "linespoints";
-  endif
-
-  if (isfield (obj, "markersize"))
-    if (have_newer_gnuplot)
-      fprintf (plot_stream, " pointsize %f", obj.markersize);
-    else
-      if (! strcmpi (style, "lines"))
-	with = sprintf ("%s ps %f", with, obj.markersize);
+  if (isempty (errbars))
+    style = "lines";
+    if (isempty (lt))
+      if (! isempty (pt))
+	style = "points";
       endif
+    elseif (! isempty (pt))
+      style = "linespoints";
     endif
+
+    if (isfield (obj, "markersize"))
+      if (have_newer_gnuplot)
+	fprintf (plot_stream, " pointsize %f", obj.markersize);
+      else
+	if (! strcmpi (style, "lines"))
+	  with = sprintf ("%s ps %f", with, obj.markersize);
+	endif
+      endif
+      found_style = true;
+    endif
+  else
+    style = errbars;
     found_style = true;
   endif
 

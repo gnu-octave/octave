@@ -21,7 +21,7 @@
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{a}, @var{c})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{a})
 ## @deftypefnx {Function File} {@var{b} =} spdiags (@var{v}, @var{c}, @var{m}, @var{n})
-## A generalization of the function @code{spdiag}. Called with a single
+## A generalization of the function @code{diag}. Called with a single
 ## input argument, the non-zero diagonals @var{c} of @var{A} are extracted.
 ## With two arguments the diagonals to extract are given by the vector 
 ## @var{c}.
@@ -56,8 +56,8 @@ function [A, c] = spdiags (v, c, m, n)
 
   if (nargin == 1 || nargin == 2)
     ## extract nonzero diagonals of v into A,c
-    [i, j, v] = find (v);
     [nr, nc] = size (v);
+    [i, j, v] = find (v);
 
     if (nargin == 1)
       ## c contains the active diagonals

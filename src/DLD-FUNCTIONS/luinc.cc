@@ -90,6 +90,9 @@ range are ignored.\n\
 \n\
 All other fields in @var{opts} are ignored. The outputs from @dfn{luinc}\n\
 are the same as for @dfn{lu}.\n\
+\n\
+Given the string argument 'vector', @dfn{luinc} returns the values of @var{p}\n\
+@var{q} as vector values.\n\
 @seealso{sparse, lu, cholinc}\n\
 @end deftypefn")
 {
@@ -98,15 +101,16 @@ are the same as for @dfn{lu}.\n\
 
   if (nargin == 0)
     print_usage ();
-  else if (nargin != 2)
+  else if (nargin < 2 || nargin > 3)
     error ("luinc: incorrect number of arguments");
   else
     {
       bool zero_level = false;
       bool milu = false;
       bool udiag = false;
-      bool thresh = -1;
+      Matrix thresh;
       double droptol = -1.;
+      bool vecout;
 
       if (args(1).is_string ())
 	{
@@ -137,10 +141,33 @@ are the same as for @dfn{lu}.\n\
 	    }
 
 	  if (map.contains ("thresh"))
-	    thresh = map.contents ("thresh")(0).double_value ();
+	    {
+	      thresh = map.contents ("thresh")(0).matrix_value ();
+
+	      if (thresh.nelem () == 1)
+		{
+		  thresh.resize(1,2);
+		  thresh(1) = thresh(0);
+		}
+	      else if (thresh.nelem () != 2)
+		error ("chol: expecting 2 element vector for thresh");
+	    }
 	}
       else
 	droptol = args(1).double_value ();
+
+      if (nargin == 3)
+	{
+	  std::string tmp = args(2).string_value ();
+
+	  if (! error_state )
+	    {
+	      if (tmp.compare ("vector") == 0)
+		vecout = true;
+	      else
+		error ("luinc: unrecognized string argument");
+	    }
+	}
 
       // FIXME Add code for zero-level factorization
       if (zero_level)
@@ -166,7 +193,7 @@ are the same as for @dfn{lu}.\n\
 		    case 1:
 		    case 2:
 		      {
-			SparseLU fact (sm, Qinit, thresh, true, droptol,
+			SparseLU fact (sm, Qinit, thresh, false, true, droptol,
 				       milu, udiag);
 
 			if (! error_state)
@@ -184,12 +211,15 @@ are the same as for @dfn{lu}.\n\
 
 		    case 3:
 		      {
-			SparseLU fact (sm, Qinit, thresh, true, droptol,
+			SparseLU fact (sm, Qinit, thresh, false, true, droptol,
 				       milu, udiag);
 
 			if (! error_state)
 			  {
-			    retval(2) = fact.Pr ();
+			    if (vecout)
+			      retval(2) = fact.Pr_vec ();
+			    else
+			      retval(2) = fact.Pr ();
 			    retval(1) = octave_value (fact.U (),
 						      MatrixType (MatrixType::Upper));
 			    retval(0) = octave_value (fact.L (),
@@ -201,13 +231,21 @@ are the same as for @dfn{lu}.\n\
 		    case 4:
 		    default:
 		      {
-			SparseLU fact (sm, Qinit, thresh, false, droptol,
+			SparseLU fact (sm, Qinit, thresh, false, false, droptol,
 				       milu, udiag);
 
 			if (! error_state)
 			  {
-			    retval(3) = fact.Pc ();
-			    retval(2) = fact.Pr ();
+			    if (vecout)
+			      {
+				retval(3) = fact.Pc_vec ();
+				retval(2) = fact.Pr_vec ();
+			      }
+			    else
+			      {
+				retval(3) = fact.Pc ();
+				retval(2) = fact.Pr ();
+			      }
 			    retval(1) = octave_value (fact.U (),
 						      MatrixType (MatrixType::Upper));
 			    retval(0) = octave_value (fact.L (),
@@ -237,7 +275,7 @@ are the same as for @dfn{lu}.\n\
 		    case 1:
 		    case 2:
 		      {
-			SparseComplexLU fact (sm, Qinit, thresh, true, 
+			SparseComplexLU fact (sm, Qinit, thresh, false, true, 
 					      droptol, milu, udiag);
 
 
@@ -256,12 +294,15 @@ are the same as for @dfn{lu}.\n\
 
 		    case 3:
 		      {
-			SparseComplexLU fact (sm, Qinit, thresh, true,
+			SparseComplexLU fact (sm, Qinit, thresh, false, true,
 					      droptol, milu, udiag);
 
 			if (! error_state)
 			  {
-			    retval(2) = fact.Pr ();
+			    if (vecout)
+			      retval(2) = fact.Pr_vec ();
+			    else
+			      retval(2) = fact.Pr ();
 			    retval(1) = octave_value (fact.U (),
 						      MatrixType (MatrixType::Upper));
 			    retval(0) = octave_value (fact.L (),
@@ -273,13 +314,21 @@ are the same as for @dfn{lu}.\n\
 		    case 4:
 		    default:
 		      {
-			SparseComplexLU fact (sm, Qinit, thresh, false,
+			SparseComplexLU fact (sm, Qinit, thresh, false, false,
 					      droptol, milu, udiag);
 
 			if (! error_state)
 			  {
-			    retval(3) = fact.Pc ();
-			    retval(2) = fact.Pr ();
+			    if (vecout)
+			      {
+				retval(3) = fact.Pc_vec ();
+				retval(2) = fact.Pr_vec ();
+			      }
+			    else
+			      {
+				retval(3) = fact.Pc ();
+				retval(2) = fact.Pr ();
+			      }
 			    retval(1) = octave_value (fact.U (),
 						      MatrixType (MatrixType::Upper));
 			    retval(0) = octave_value (fact.L (),

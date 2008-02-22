@@ -88,6 +88,8 @@ public:
   SparseBoolMatrix concat (const SparseBoolMatrix& rb, 
 			   const Array<octave_idx_type>& ra_idx);
 
+  SparseBoolMatrix diag (octave_idx_type k = 0) const;
+
   boolMatrix matrix_value (void) const;
 
   SparseBoolMatrix squeeze (void) const;

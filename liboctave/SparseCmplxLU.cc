@@ -42,7 +42,7 @@ template class sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, doubl
 #include "oct-sparse.h"
 
 SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a, 
-				  double piv_thres)
+				  const Matrix& piv_thres, bool scale)
 {
 #ifdef HAVE_UMFPACK
   octave_idx_type nr = a.rows ();
@@ -56,20 +56,24 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
   double tmp = octave_sparse_params::get_key ("spumoni");
   if (!xisnan (tmp))
     Control (UMFPACK_PRL) = tmp;
-  if (piv_thres >= 0.)
+  if (piv_thres.nelem() != 2)
     {
-      piv_thres = (piv_thres > 1. ? 1. : piv_thres);
-      Control (UMFPACK_SYM_PIVOT_TOLERANCE) = piv_thres;
-      Control (UMFPACK_PIVOT_TOLERANCE) = piv_thres;
+      tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
+      if (!xisnan (tmp))
+	Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+      tmp = (piv_thres (1) > 1. ? 1. : piv_thres (1));
+      if (!xisnan (tmp))
+	Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
     }
   else
     {
       tmp = octave_sparse_params::get_key ("piv_tol");
       if (!xisnan (tmp))
-	{
+	Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+
+      tmp = octave_sparse_params::get_key ("sym_tol");
+      if (!xisnan (tmp))
 	  Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
-      Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
-	}
     }
 
   // Set whether we are allowed to modify Q or not
@@ -78,7 +82,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
     Control (UMFPACK_FIXQ) = tmp;
 
   // Turn-off UMFPACK scaling for LU 
-  Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
+  if (scale)
+    Control (UMFPACK_SCALE) = UMFPACK_SCALE_SUM;
+  else
+    Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
 
   UMFPACK_ZNAME (report_control) (control);
 
@@ -173,6 +180,15 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 	      octave_idx_type *Uj = Ufact.ridx ();
 	      Complex *Ux = Ufact.data ();
 	      
+	      Rfact = SparseMatrix (nr, nr, nr);
+	      for (octave_idx_type i = 0; i < nr; i++)
+		{
+		  Rfact.xridx (i) = i;
+		  Rfact.xcidx (i) = i;
+		}
+	      Rfact.xcidx (nr) = nr;
+	      double *Rx = Rfact.data ();
+
 	      P.resize (nr);
 	      octave_idx_type *p = P.fortran_vec ();
 
@@ -185,11 +201,11 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 						    NULL, Up, Uj,
 						    reinterpret_cast <double *> (Ux),
 						    NULL, p, q, NULL, NULL,
-						    &do_recip, NULL, Numeric);
+						    &do_recip, Rx, Numeric);
 
 	      UMFPACK_ZNAME (free_numeric) (&Numeric) ;
 
-	      if (status < 0 || do_recip)
+	      if (status < 0)
 		{
 		  (*current_liboctave_error_handler) 
 		    ("SparseComplexLU::SparseComplexLU extracting LU factors failed");
@@ -199,6 +215,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 	      else
 		{
 		  Lfact = Lfact.transpose ();
+
+		  if (do_recip)
+		    for (octave_idx_type i = 0; i < nr; i++)
+		      Rx[i] = 1.0 / Rx[i];
 
 		  UMFPACK_ZNAME (report_matrix) (nr, n_inner,
 					    Lfact.cidx (), Lfact.ridx (), 
@@ -224,8 +244,9 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 
 SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a, 
 				  const ColumnVector& Qinit, 
-				  double piv_thres, bool FixedQ,
-				  double droptol, bool milu, bool udiag)
+				  const Matrix& piv_thres, bool scale,
+				  bool FixedQ, double droptol, 
+				  bool milu, bool udiag)
 {
 #ifdef HAVE_UMFPACK
   if (milu)
@@ -244,20 +265,24 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
       double tmp = octave_sparse_params::get_key ("spumoni");
       if (!xisnan (tmp))
 	Control (UMFPACK_PRL) = tmp;
-      if (piv_thres >= 0.)
+      if (piv_thres.nelem() != 2)
 	{
-	  piv_thres = (piv_thres > 1. ? 1. : piv_thres);
-	  Control (UMFPACK_SYM_PIVOT_TOLERANCE) = piv_thres;
-	  Control (UMFPACK_PIVOT_TOLERANCE) = piv_thres;
+	  tmp = (piv_thres (0) > 1. ? 1. : piv_thres (0));
+	  if (!xisnan (tmp))
+	    Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+	  tmp = (piv_thres (1) > 1. ? 1. : piv_thres (1));
+	  if (!xisnan (tmp))
+	    Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
 	}
       else
 	{
 	  tmp = octave_sparse_params::get_key ("piv_tol");
 	  if (!xisnan (tmp))
-	    {
-	      Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
-	      Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
-	    }
+	    Control (UMFPACK_PIVOT_TOLERANCE) = tmp;
+
+	  tmp = octave_sparse_params::get_key ("sym_tol");
+	  if (!xisnan (tmp))
+	    Control (UMFPACK_SYM_PIVOT_TOLERANCE) = tmp;
 	}
 
       if (droptol >= 0.)
@@ -274,7 +299,10 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 	}
 
       // Turn-off UMFPACK scaling for LU 
-      Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
+      if (scale)
+	Control (UMFPACK_SCALE) = UMFPACK_SCALE_SUM;
+      else
+	Control (UMFPACK_SCALE) = UMFPACK_SCALE_NONE;
 
       UMFPACK_ZNAME (report_control) (control);
 
@@ -379,6 +407,15 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 		  octave_idx_type *Uj = Ufact.ridx ();
 		  Complex *Ux = Ufact.data ();
 	      
+		  Rfact = SparseMatrix (nr, nr, nr);
+		  for (octave_idx_type i = 0; i < nr; i++)
+		    {
+		      Rfact.xridx (i) = i;
+		      Rfact.xcidx (i) = i;
+		    }
+		  Rfact.xcidx (nr) = nr;
+		  double *Rx = Rfact.data ();
+
 		  P.resize (nr);
 		  octave_idx_type *p = P.fortran_vec ();
 
@@ -392,21 +429,24 @@ SparseComplexLU::SparseComplexLU (const SparseComplexMatrix& a,
 					    NULL, Up, Uj,
 					    reinterpret_cast<double *> (Ux), 
 					    NULL, p, q, NULL, NULL, 
-					    &do_recip, NULL, Numeric) ;
+					    &do_recip, Rx, Numeric) ;
 
 		  UMFPACK_ZNAME (free_numeric) (&Numeric) ;
 
-		  if (status < 0 || do_recip)
+		  if (status < 0)
 		    {
 		      (*current_liboctave_error_handler) 
 			("SparseComplexLU::SparseComplexLU extracting LU factors failed");
 
-		      UMFPACK_ZNAME (report_status) (control, 
-								     status);
+		      UMFPACK_ZNAME (report_status) (control, status);
 		    }
 		  else
 		    {
 		      Lfact = Lfact.transpose ();
+
+		      if (do_recip)
+			for (octave_idx_type i = 0; i < nr; i++)
+			  Rx[i] = 1.0 / Rx[i];
 
 		      UMFPACK_ZNAME (report_matrix) (nr, n_inner, 
 						Lfact.cidx (), 

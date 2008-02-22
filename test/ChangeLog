@@ -1,3 +1,10 @@
+2008-02-22  David Bateman  <dbateman@free.fr>
+
+	* build_sparse_tests.sh: Replaced removed sparse functions like
+	spdiag with their generic names. Fix lu tests for modified
+	syntax. Test vector and scaling or LU and chol functions. 
+	* test_linalg.m: Change error message of failing chol/lu test.
+
 2008-02-19  David Bateman  <dbateman@free.fr>
 
 	* build_sparse_tests.sh: Replaced removed spars functions like

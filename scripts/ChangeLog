@@ -1,3 +1,8 @@
+2008-02-22  David Bateman  <dbateman@free.fr>
+
+	* sparse/pcg.m, sparse/spdiags, spstats.m: Remove references to
+	spdiag.
+	
 2008-02-22  John W. Eaton  <jwe@octave.org>
 
 	* miscellaneous/fullfile.m: Improve handling of empty args and

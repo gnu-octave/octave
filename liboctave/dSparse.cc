@@ -1116,7 +1116,7 @@ SparseMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
 	    Qinit(i) = i;
 
 	  MatrixType tmp_typ (MatrixType::Upper);
-	  SparseLU fact (*this, Qinit, -1.0, false);
+	  SparseLU fact (*this, Qinit, Matrix(), false, false);
 	  rcond = fact.rcond();
 	  double rcond2;
 	  SparseMatrix InvL = fact.L().transpose().tinverse(tmp_typ, 

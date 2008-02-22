@@ -28,9 +28,45 @@ along with Octave; see the file COPYING.  If not, see
 #include "sparse-base-lu.h"
 
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+lu_type
+sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Y (void) const
+{
+  octave_idx_type nr = Lfact.rows ();
+  octave_idx_type nc = Ufact.rows ();
+  octave_idx_type rcmin = (nr > nc ? nr : nc);
+
+  lu_type Yout (nr, nc, Lfact.nnz() + Ufact.nnz());
+  octave_idx_type ii = 0;
+  Yout.xcidx(0) = 0;
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    {
+      for (octave_idx_type i = Ufact.cidx (j); i < Ufact.cidx(j + 1); i++)
+	{
+	  Yout.xridx (ii) = Ufact.ridx(i);
+	  Yout.xdata (ii++) = Ufact.data(i);
+	}
+      if (j < rcmin)
+	{
+	  // Note the +1 skips the 1.0 on the diagonal 
+	  for (octave_idx_type i = Lfact.cidx (j) + 1; 
+	       i < Lfact.cidx(j +1); i++)
+	    {
+	      Yout.xridx (ii) = Lfact.ridx(i);
+	      Yout.xdata (ii++) = Lfact.data(i);
+	    }
+	}
+      Yout.xcidx(j + 1) = ii;
+    }
+
+  return Yout;
+}
+
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 p_type
 sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr (void) const
 {
+
   octave_idx_type nr = Lfact.rows ();
 
   p_type Pout (nr, nr, nr);
@@ -42,6 +78,21 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr (void) const
       Pout.data (i) = 1;
     }
   Pout.cidx (nr) = nr;
+
+  return Pout;
+}
+
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+ColumnVector
+sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pr_vec (void) const
+{
+
+  octave_idx_type nr = Lfact.rows ();
+
+  ColumnVector Pout (nr);
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    Pout.xelem (i) = static_cast<double> (P(i) + 1);
 
   return Pout;
 }
@@ -61,6 +112,21 @@ sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc (void) const
       Pout.data (i) = 1;
     }
   Pout.cidx (nc) = nc;
+
+  return Pout;
+}
+
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+ColumnVector
+sparse_base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: Pc_vec (void) const
+{
+
+  octave_idx_type nr = Lfact.rows ();
+
+  ColumnVector Pout (nr);
+
+  for (octave_idx_type i = 0; i < nr; i++)
+    Pout.xelem (i) = static_cast<double> (Q(i) + 1);
 
   return Pout;
 }

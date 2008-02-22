@@ -1,3 +1,31 @@
+2008-02-21  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/chol.c (Fchol, Fcholinv, Fchol2iinv): Treat 
+	sparse matrices. Add the "lower" and "vector" flags.
+	* DLD-FUNCTIONS/inv.c (Finv): Treat sparse matrices.
+	* DLD-FUNCTION/sparse.cc (static bool is_sparse (const
+	octave_value&)): Remove and use arg.is_sparse_type () instead.
+	(Fspcumprod, Fspcumsum, Fspprod, spsum, spsumsq, spdiag): Remove.
+	* DLD-FUNCTIONS/splu.cc: Remove.
+	* DLD-FUNCTIONS/lu.cc: Treat sparse matrices, Add "vector" flag.
+	* DLD-FUNCTIONS/spchol.cc: Move to symbfact.cc
+	* DLD-FUNCTIONS/symbfact.cc: Remove cholesky functions Fspchol,
+	Fspcholinv, Fspchol2inv.
+	* DLD-FUNCTIONS/luinc.cc: Modify for new sparse LU
+	constructors. Ass the 'vector' flag.
+	* DLD-FUNCTIONS/spparms.cc: Add the sum_tol flag.
+
+	* Makifile.in (DLD_XSRC): Remove spchol.cc, splu.cc and add 
+	symbfact.cc
+	* data.cc (NATIVE_REDUCTION): Treat sparse matrices
+	(DATA_REDUCTION): Ditto.
+	(template <class T> static octave_value make_spdiag (const T&, 
+	octave_idx_type)): New template function for sparse diag
+	function. Instantiate it.
+	(static octave_value make_diag (const octave_value&, 
+	octave_idx_type): Use make_spdiag for sparse matrice.
+	(Fatan2): Compatibility fixes for mixed full/sparse matrices.
+	
 2008-02-21  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_jacobian):

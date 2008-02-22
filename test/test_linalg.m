@@ -106,7 +106,7 @@
 %!error <Invalid call to chol.*> chol ();
 
 %% test/octave.test/linalg/chol-5.m
-%!error <Invalid call to chol.*> chol (1, 2);
+%!error <unexpected second or third input.*> chol (1, 2);
 
 %% test/octave.test/linalg/hess-1.m
 %!test
@@ -124,7 +124,7 @@
 %!error hess ([1, 2; 3, 4; 5, 6]);
 
 %% test/octave.test/linalg/lu-1.m
-%!assert(all (all (lu ([1, 2; 3, 4]) - [1/3, 1; 1, 0] < eps)));
+%!assert(all (all (lu ([1, 2; 3, 4]) - [3, 4; 1/3, 2/3] < eps)));
 
 %% test/octave.test/linalg/lu-2.m
 %!test
@@ -139,11 +139,17 @@
 %! && abs (u - [3, 4; 0, 2/3]) < sqrt (eps)
 %! && abs (p - [0, 1; 1, 0]) < sqrt (eps)));
 
+%!test
+%! [l, u, p] = lu ([1, 2; 3, 4],'vector');
+%! assert((abs (l - [1, 0; 1/3, 1]) < sqrt (eps)
+%! && abs (u - [3, 4; 0, 2/3]) < sqrt (eps)
+%! && abs (p - [2;1]) < sqrt (eps)));
+
 %% test/octave.test/linalg/lu-4.m
 %!error <Invalid call to lu.*> lu ();
 
 %% test/octave.test/linalg/lu-5.m
-%!error <Invalid call to lu.*> lu ([1, 2; 3, 4], 2);
+%!error lu ([1, 2; 3, 4], 2);
 
 %% test/octave.test/linalg/lu-6.m
 %!test

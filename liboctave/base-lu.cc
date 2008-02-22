@@ -98,6 +98,37 @@ base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: P (void) const
   return p;
 }
 
+template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
+ColumnVector
+base_lu <lu_type, lu_elt_type, p_type, p_elt_type> :: P_vec (void) const
+{
+  octave_idx_type a_nr = a_fact.rows ();
+
+  Array<octave_idx_type> pvt (a_nr);
+
+  for (octave_idx_type i = 0; i < a_nr; i++)
+    pvt.xelem (i) = i;
+
+  for (octave_idx_type i = 0; i < ipvt.length(); i++)
+    {
+      octave_idx_type k = ipvt.xelem (i);
+
+      if (k != i)
+	{
+	  octave_idx_type tmp = pvt.xelem (k);
+	  pvt.xelem (k) = pvt.xelem (i);
+	  pvt.xelem (i) = tmp;
+	}
+    }
+
+  ColumnVector p (a_nr);
+
+  for (octave_idx_type i = 0; i < a_nr; i++)
+    p.xelem (i) = static_cast<double> (pvt.xelem (i) + 1);
+
+  return p;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

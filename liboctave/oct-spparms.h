@@ -33,7 +33,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dColVector.h"
 #include "dNDArray.h"
 
-#define OCTAVE_SPARSE_CONTROLS_SIZE 12
+#define OCTAVE_SPARSE_CONTROLS_SIZE 13
 
 class
 OCTAVE_API

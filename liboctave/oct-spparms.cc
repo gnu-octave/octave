@@ -111,35 +111,37 @@ octave_sparse_params::print_info (std::ostream& os, const std::string& prefix)
 void
 octave_sparse_params::do_defaults (void)
 {
-  params(0) = 0;    // spumoni
-  params(1) = 1;    // ths_rel
-  params(2) = 1;    // ths_abs
-  params(3) = 0;    // exact_d
-  params(4) = 3;    // supernd
-  params(5) = 3;    // rreduce
-  params(6) = 0.5;  // wh_frac
-  params(7) = 1;    // autommd
-  params(8) = 1;    // autoamd
-  params(9) = 0.1;  // piv_tol
-  params(10) = 0.5; // bandden
-  params(11) = 1;   // umfpack
+  params(0) = 0;      // spumoni
+  params(1) = 1;      // ths_rel
+  params(2) = 1;      // ths_abs
+  params(3) = 0;      // exact_d
+  params(4) = 3;      // supernd
+  params(5) = 3;      // rreduce
+  params(6) = 0.5;    // wh_frac
+  params(7) = 1;      // autommd
+  params(8) = 1;      // autoamd
+  params(9) = 0.1;    // piv_tol
+  params(10) = 0.5;   // bandden
+  params(11) = 1;     // umfpack
+  params(12) = 0.001; // sym_tol
 }
 
 void
 octave_sparse_params::do_tight (void)
 {
-  params(0) = 0;    // spumoni
-  params(1) = 1;    // ths_rel
-  params(2) = 0;    // ths_abs
-  params(3) = 1;    // exact_d
-  params(4) = 1;    // supernd
-  params(5) = 1;    // rreduce
-  params(6) = 0.5;  // wh_frac
-  params(7) = 1;    // autommd
-  params(8) = 1;    // autoamd
-  params(9) = 0.1;  // piv_tol
-  params(10) = 0.5; // bandden
-  params(11) = 1;   // umfpack
+  params(0) = 0;      // spumoni
+  params(1) = 1;      // ths_rel
+  params(2) = 0;      // ths_abs
+  params(3) = 1;      // exact_d
+  params(4) = 1;      // supernd
+  params(5) = 1;      // rreduce
+  params(6) = 0.5;    // wh_frac
+  params(7) = 1;      // autommd
+  params(8) = 1;      // autoamd
+  params(9) = 0.1;    // piv_tol
+  params(10) = 0.5;   // bandden
+  params(11) = 1;     // umfpack
+  params(12) = 0.001; // sym_tol
 }
   
 void
@@ -157,6 +159,7 @@ octave_sparse_params::init_keys (void)
   keys(9) = "piv_tol";
   keys(10) = "bandden";
   keys(11) = "umfpack";
+  keys(12) = "sym_tol";
 }
 
 double

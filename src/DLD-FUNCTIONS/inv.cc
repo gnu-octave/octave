@@ -38,6 +38,12 @@ DEFUN_DLD (inv, args, nargout,
 Compute the inverse of the square matrix @var{a}.  Return an estimate\n\
 of the reciprocal condition number if requested, otherwise warn of an\n\
 ill-conditioned matrix if the reciprocal condition number is small.\n\
+\n\
+If called with a sparse matrix, then in general @var{x} will be a full\n\
+matrix, and so if possible forming the inverse of a sparse matrix should\n\
+be avoided. It is significantly more accurate and faster to do\n\
+@code{@var{y} = @var{a} \\ @var{b}}, rather than\n\
+@code{@var{y} = inv (@var{a}) * @var{b}}.\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -68,63 +74,73 @@ ill-conditioned matrix if the reciprocal condition number is small.\n\
       return retval;
     }
 
+  octave_value result;
+  octave_idx_type info;
+  double rcond = 0.0;
   if (arg.is_real_type ())
     {
-      Matrix m = arg.matrix_value ();
-
-      if (! error_state)
+      if (arg.is_sparse_type ())
 	{
-	  MatrixType mattyp = args(0).matrix_type ();
-
-	  octave_idx_type info;
-	  double rcond = 0.0;
-
-	  Matrix result = m.inverse (mattyp, info, rcond, 1);
-
-	  args(0).matrix_type (mattyp);
-
-	  if (nargout > 1)
-	    retval(1) = rcond;
-
-	  retval(0) = result;
-
-	  volatile double xrcond = rcond;
-	  xrcond += 1.0;
-	  if (nargout < 2 && (info == -1 || xrcond == 1.0))
-	    warning ("inverse: matrix singular to machine precision,\
- rcond = %g", rcond);
+	  SparseMatrix m = arg.sparse_matrix_value ();
+	  if (! error_state)
+	    {
+	      MatrixType mattyp = args(0).matrix_type ();
+	      result = m.inverse (mattyp, info, rcond, 1);
+	      args(0).matrix_type (mattyp);
+	    }
+	}
+      else
+	{
+	  Matrix m = arg.matrix_value ();
+	  if (! error_state)
+	    {
+	      MatrixType mattyp = args(0).matrix_type ();
+	      result = m.inverse (mattyp, info, rcond, 1);
+	      args(0).matrix_type (mattyp);
+	    }
 	}
     }
   else if (arg.is_complex_type ())
     {
-      ComplexMatrix m = arg.complex_matrix_value ();
-
-      if (! error_state)
+      if (arg.is_sparse_type ())
 	{
-	  MatrixType mattyp = args(0).matrix_type ();
-
-	  octave_idx_type info;
-	  double rcond = 0.0;
-
-	  ComplexMatrix result = m.inverse (mattyp, info, rcond, 1);
-
-	  args(0).matrix_type (mattyp);
-
-	  if (nargout > 1)
-	    retval(1) = rcond;
-
-	  retval(0) = result;
-
-	  volatile double xrcond = rcond;
-	  xrcond += 1.0;
-	  if (nargout < 2 && (info == -1 || xrcond == 1.0))
-	    warning ("inverse: matrix singular to machine precision,\
- rcond = %g", rcond);
+	  SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+	  if (! error_state)
+	    {
+	      MatrixType mattyp = args(0).matrix_type ();
+	      result = m.inverse (mattyp, info, rcond, 1);
+	      args(0).matrix_type (mattyp);
+	    }
 	}
+      else
+	{
+	  ComplexMatrix m = arg.complex_matrix_value ();
+	  if (! error_state)
+	    {
+	      MatrixType mattyp = args(0).matrix_type ();
+	      result = m.inverse (mattyp, info, rcond, 1);
+	      args(0).matrix_type (mattyp);
+	    }
+	}
+
+
     }
   else
+    gripe_wrong_type_arg ("inv", arg);
+
+
+  if (! error_state)
     {
-      gripe_wrong_type_arg ("inv", arg);
+      if (nargout > 1)
+	retval(1) = rcond;
+
+      retval(0) = result;
+
+      volatile double xrcond = rcond;
+      xrcond += 1.0;
+      if (nargout < 2 && (info == -1 || xrcond == 1.0))
+	warning ("inverse: matrix singular to machine precision, rcond = %g", 
+		 rcond);
     }
 
   return retval;

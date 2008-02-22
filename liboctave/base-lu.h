@@ -24,6 +24,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_base_lu_h 1
 
 #include "MArray.h"
+#include "dColVector.h"
 
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 class
@@ -51,7 +52,11 @@ public:
 
   lu_type U (void) const;
 
+  lu_type Y (void) const { return a_fact; }
+
   p_type P (void) const;
+
+  ColumnVector P_vec (void) const;
 
 protected:
 

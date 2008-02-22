@@ -38,10 +38,13 @@ public:
   SparseComplexLU (void) 
     : sparse_base_lu <SparseComplexMatrix, Complex, SparseMatrix, double> () { }
 
-  SparseComplexLU (const SparseComplexMatrix& a, double piv_thres = -1);
+  SparseComplexLU (const SparseComplexMatrix& a, 
+		   const Matrix& piv_thres = Matrix (),
+		   bool scale = false);
 
   SparseComplexLU (const SparseComplexMatrix& a, const ColumnVector& Qinit,
-		   double piv_thres = -1, bool FixedQ = false,
+		   const Matrix& piv_thres = Matrix (), 
+		   bool scale = false, bool FixedQ = false,
 		   double droptol = -1., bool milu = false,
 		   bool udiag = false);
 

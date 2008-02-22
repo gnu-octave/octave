@@ -70,8 +70,8 @@ DLD_XSRC := balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc chol.cc \
 	givens.cc hess.cc inv.cc kron.cc lsode.cc \
 	lu.cc luinc.cc matrix_type.cc md5sum.cc minmax.cc pinv.cc qr.cc \
 	quad.cc qz.cc rand.cc regexp.cc schur.cc sparse.cc \
-	spchol.cc splu.cc spparms.cc \
-	sqrtm.cc svd.cc syl.cc symrcm.cc time.cc tsearch.cc typecast.cc \
+	spparms.cc sqrtm.cc svd.cc syl.cc symrcm.cc symbfact.cc \
+	time.cc tsearch.cc typecast.cc \
 	urlwrite.cc __contourc__.cc __delaunayn__.cc __dsearchn__.cc \
 	__glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc \
 	__qp__.cc __voronoi__.cc

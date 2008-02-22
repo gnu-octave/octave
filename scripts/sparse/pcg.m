@@ -123,7 +123,7 @@
 ## @example
 ## @group
 ## 	N = 10; 
-## 	A = spdiag ([1:N]);
+## 	A = diag (sparse([1:N]));
 ## 	b = rand (N, 1);
 ##      [L, U, P, Q] = luinc (A,1.e-3);
 ## @end group

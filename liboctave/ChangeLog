@@ -1,3 +1,39 @@
+2008-02-22  David Bateman  <dbateman@free.fr>
+
+	* boolSparse.cc (SparseBoolMatrix SparseBoolMatrix::diag 
+	(octave_idx_type) const): New method.
+	* boolSparse.h (SparseBoolMatrix SparseBoolMatrix::diag 
+	(octave_idx_type) const): Declare it.
+
+	* base-lu.h (lu_type Y (void) const): New method to return
+	factorization of xGETRF directly.
+	* sparse-base-lu.cc (template <class lu_type, class lu_elt_type,
+	class p_type, class p_elt_type> lu_type sparse_base_lu <lu_type, 
+	lu_elt_type, p_type, p_elt_type> :: Y (void) const): New method
+	to simulate the retirn of xGETRF.
+	* sparse-base-lu.h (template <class lu_type, class lu_elt_type,
+	class p_type, class p_elt_type> lu_type sparse_base_lu <lu_type, 
+	lu_elt_type, p_type, p_elt_type> :: Y (void) const): Declare it
+	(SparseMatrix R (void) const): Method to return scaling factors.
+	* SparsedbleLU.cc: Allow two element pivot thresholding and
+	scaling.
+	* SparseCmplxLU.cc: ditto.
+	* SparsedbleLU.h: Modify constructors to allow passing of two
+	element pivoting thresholds and flag for scaling
+	* SparseCmplxLU.h: ditto.
+
+	* base-lu.cc (ColumnVector P_vec (void) const): New method to
+	return permutations as a vector.
+	* base-lu.h (ColumnVector P_vec (void) const): Declare it.
+	* sparse-base-lu.cc (ColumnVector Pr_vec (void) const): New method
+	return row permutations as a vector.
+	(ColumnVector Pc_vec (void) const): New method return column 
+	permutations as a vector.
+	* sparse-base-lu.h (ColumnVector Pr_vec (void) const): Declare it.
+	(ColumnVector Pc_vec (void) const): Declare it.
+
+	* oct-spparms.cc: Add sym_tol field.
+	
 2008-02-20  David Bateman  <dbateman@free.fr>
 
 	* SparseComplexQR.cc (ComplexMatrix

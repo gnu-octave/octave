@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_sparse_base_lu_h 1
 
 #include "MArray.h"
+#include "dSparse.h"
 
 template <class lu_type, class lu_elt_type, class p_type, class p_elt_type>
 class
@@ -57,9 +58,17 @@ public:
 
   lu_type U (void) const { return Ufact; }
 
+  SparseMatrix R (void) const { return Rfact; }
+
+  lu_type Y (void) const;
+
   p_type Pc (void) const;
 
   p_type Pr (void) const;
+
+  ColumnVector Pc_vec (void) const;
+
+  ColumnVector Pr_vec (void) const;
 
   const octave_idx_type * row_perm (void) const { return P.fortran_vec (); }
 
@@ -71,6 +80,7 @@ protected:
 
   lu_type Lfact;
   lu_type Ufact;
+  SparseMatrix Rfact;
 
   double cond;
 

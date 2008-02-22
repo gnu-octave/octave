@@ -180,11 +180,11 @@ cat >>$TESTS <<EOF
 %% of a singular matrix, which is consistent with the full matrix
 %% behaviour. They are therefore disabled.. 
 %!testif HAVE_UMFPACK
-%! assert(spinv(sparse([1,1;1,1+i])),sparse([1-1i,1i;1i,-1i]),10*eps);
-% !error spinv( sparse( [1,1;1,1]   ) );
-% !error spinv( sparse( [0,0;0,1]   ) );
-% !error spinv( sparse( [0,0;0,1+i] ) );
-% !error spinv( sparse( [0,0;0,0]   ) );
+%! assert(inv(sparse([1,1;1,1+i])),sparse([1-1i,1i;1i,-1i]),10*eps);
+% !error inv( sparse( [1,1;1,1]   ) );
+% !error inv( sparse( [0,0;0,1]   ) );
+% !error inv( sparse( [0,0;0,1+i] ) );
+% !error inv( sparse( [0,0;0,0]   ) );
 
 %% error handling in constructor
 %!error sparse(1,[2,3],[1,2,3]);
@@ -388,18 +388,18 @@ EOF
 gen_matrixdiag_tests() {
     cat >>$TESTS <<EOF
 %% Matrix diagonal tests (uses af,as,bf,bs)
-%!assert(spdiag(as),sparse(diag(af)))
-%!assert(spdiag(bs),sparse(diag(bf)))
-%!assert(spdiag(as,1),sparse(diag(af,1)))
-%!assert(spdiag(bs,1),sparse(diag(bf,1)))
-%!assert(spdiag(as,-1),sparse(diag(af,-1)))
-%!assert(spdiag(bs,-1),sparse(diag(bf,-1)))
-%!assert(spdiag(as(:)),sparse(diag(af(:))))
-%!assert(spdiag(as(:),1),sparse(diag(af(:),1)))
-%!assert(spdiag(as(:),-1),sparse(diag(af(:),-1)))
-%!assert(spdiag(as(:)'),sparse(diag(af(:)')))
-%!assert(spdiag(as(:)',1),sparse(diag(af(:)',1)))
-%!assert(spdiag(as(:)',-1),sparse(diag(af(:)',-1)))
+%!assert(diag(as),sparse(diag(af)))
+%!assert(diag(bs),sparse(diag(bf)))
+%!assert(diag(as,1),sparse(diag(af,1)))
+%!assert(diag(bs,1),sparse(diag(bf,1)))
+%!assert(diag(as,-1),sparse(diag(af,-1)))
+%!assert(diag(bs,-1),sparse(diag(bf,-1)))
+%!assert(diag(as(:)),sparse(diag(af(:))))
+%!assert(diag(as(:),1),sparse(diag(af(:),1)))
+%!assert(diag(as(:),-1),sparse(diag(af(:),-1)))
+%!assert(diag(as(:)'),sparse(diag(af(:)')))
+%!assert(diag(as(:)',1),sparse(diag(af(:)',1)))
+%!assert(diag(as(:)',-1),sparse(diag(af(:)',-1)))
 %!assert(spdiags(as,[0,1]),[diag(af,0),diag(af,1)])
 %!test [tb,tc]=spdiags(as); 
 %! assert(spdiags(tb,tc,sparse(zeros(size(as)))),as)
@@ -531,21 +531,21 @@ gen_unaryop_tests() {
 %!assert(!issparse(af))
 %!assert(!(issparse(af)&&iscomplex(af)))
 %!assert(!(issparse(af)&&isreal(af)))
-%!assert(spsum(as),sparse(sum(af)))
-%!assert(spsum(as,1),sparse(sum(af,1)))
-%!assert(spsum(as,2),sparse(sum(af,2)))
-%!assert(spcumsum(as),sparse(cumsum(af)))
-%!assert(spcumsum(as,1),sparse(cumsum(af,1)))
-%!assert(spcumsum(as,2),sparse(cumsum(af,2)))
-%!assert(spsumsq(as),sparse(sumsq(af)))
-%!assert(spsumsq(as,1),sparse(sumsq(af,1)))
-%!assert(spsumsq(as,2),sparse(sumsq(af,2)))
-%!assert(spprod(as),sparse(prod(af)))
-%!assert(spprod(as,1),sparse(prod(af,1)))
-%!assert(spprod(as,2),sparse(prod(af,2)))
-%!assert(spcumprod(as),sparse(cumprod(af)))
-%!assert(spcumprod(as,1),sparse(cumprod(af,1)))
-%!assert(spcumprod(as,2),sparse(cumprod(af,2)))
+%!assert(sum(as),sparse(sum(af)))
+%!assert(sum(as,1),sparse(sum(af,1)))
+%!assert(sum(as,2),sparse(sum(af,2)))
+%!assert(cumsum(as),sparse(cumsum(af)))
+%!assert(cumsum(as,1),sparse(cumsum(af,1)))
+%!assert(cumsum(as,2),sparse(cumsum(af,2)))
+%!assert(sumsq(as),sparse(sumsq(af)))
+%!assert(sumsq(as,1),sparse(sumsq(af,1)))
+%!assert(sumsq(as,2),sparse(sumsq(af,2)))
+%!assert(prod(as),sparse(prod(af)))
+%!assert(prod(as,1),sparse(prod(af,1)))
+%!assert(prod(as,2),sparse(prod(af,2)))
+%!assert(cumprod(as),sparse(cumprod(af)))
+%!assert(cumprod(as,1),sparse(cumprod(af,1)))
+%!assert(cumprod(as,2),sparse(cumprod(af,2)))
 
 %!assert(min(as),sparse(min(af)))
 %!assert(full(min(as(:))),min(af(:)))
@@ -634,20 +634,20 @@ gen_square_tests() {
 %! assert(det(bs+speye(size(bs))),det(bf+eye(size(bf))),100*eps*abs(det(bf+eye(size(bf)))))
 
 %!testif HAVE_UMFPACK 
-%! [l,u]=splu(sparse([1,1;1,1]));
+%! [l,u]=lu(sparse([1,1;1,1]));
 %! assert(l*u,[1,1;1,1],10*eps);
 
 %!testif HAVE_UMFPACK
-%! [l,u]=splu(sparse([1,1;1,1+i]));
+%! [l,u]=lu(sparse([1,1;1,1+i]));
 %! assert(l,sparse([1,2,2],[1,1,2],1),10*eps);
 %! assert(u,sparse([1,1,2],[1,2,2],[1,1,1i]),10*eps);
 
 %!testif HAVE_UMFPACK ;# permuted LU
-%! [L,U] = splu(bs);
+%! [L,U] = lu(bs);
 %! assert(L*U,bs,1e-10);
 
 %!testif HAVE_UMFPACK ;# simple LU + row permutations
-%! [L,U,P] = splu(bs);
+%! [L,U,P] = lu(bs);
 %! assert(P'*L*U,bs,1e-10);
 %! # triangularity
 %! [i,j,v]=find(L);
@@ -656,7 +656,7 @@ gen_square_tests() {
 %! assert(j-i>=0);
 
 %!testif HAVE_UMFPACK ;# simple LU + row/col permutations
-%! [L,U,P,Q] = splu(bs);
+%! [L,U,P,Q] = lu(bs);
 %! assert(P'*L*U*Q',bs,1e-10);
 %! # triangularity
 %! [i,j,v]=find(L);
@@ -664,18 +664,18 @@ gen_square_tests() {
 %! [i,j,v]=find(U);
 %! assert(j-i>=0);
 
-%!testif HAVE_UMFPACK ;# LU with fixed column permutation
-%! [L,U,P] = splu(bs,colamd(bs));
-%! assert(P'*L*U,bs,1e-10);
+%!testif HAVE_UMFPACK ;# LU with vector permutations
+%! [L,U,P] = lu(bs,'vector');
+%! assert(L(P,:)*U,bs,1e-10);
 %! # triangularity
 %! [i,j,v]=find(L);
 %! assert(i-j>=0);
-%! [i,j,v]=find(U(:,colamd(bs)));
+%! [i,j,v]=find(U);
 %! assert(j-i>=0);
 
-%!testif HAVE_UMFPACK ;# LU with initial column permutation
-%! [L,U,P,Q] = splu(bs,colamd(bs));
-%! assert(P'*L*U*Q',bs,1e-10);
+%!testif HAVE_UMFPACK ;# LU with scaling
+%! [L,U,P,Q,R] = lu(bs);
+%! assert(R*P'*L*U*Q',bs,1e-10);
 %! # triangularity
 %! [i,j,v]=find(L);
 %! assert(i-j>=0);
@@ -683,7 +683,7 @@ gen_square_tests() {
 %! assert(j-i>=0);
 
 %!testif HAVE_UMFPACK ;# inverse
-%! assert(spinv(bs)*bs,sparse(eye(rows(bs))),1e-10);
+%! assert(inv(bs)*bs,sparse(eye(rows(bs))),1e-10);
 
 %!assert(bf\as',bf\af',100*eps);
 %!assert(bs\af',bf\af',100*eps);
@@ -696,25 +696,25 @@ EOF
 gen_cholesky_tests() {
     cat >>$TESTS <<EOF
 %!testif HAVE_CHOLMOD
-%! assert(spchol(bs)'*spchol(bs),bs,1e-10);
+%! assert(chol(bs)'*chol(bs),bs,1e-10);
 %!testif HAVE_CHOLMOD 
-%! assert(splchol(bs)*splchol(bs)',bs,1e-10);
+%! assert(chol(bs,'lower')*chol(bs,'lower')',bs,1e-10);
 %!testif HAVE_CHOLMOD
-%! assert(splchol(bs),spchol(bs)',1e-10);
+%! assert(chol(bs,'lower'),chol(bs)',1e-10);
 
 %!testif HAVE_CHOLMOD ;# Return Partial Cholesky factorization
-%! [RS,PS] = spchol(bs);
+%! [RS,PS] = chol(bs);
 %! assert(RS'*RS,bs,1e-10);
 %! assert(PS,0);
-%! [LS,PS] = splchol(bs);
+%! [LS,PS] = chol(bs,'lower');
 %! assert(LS*LS',bs,1e-10);
 %! assert(PS,0);
 
 %!testif HAVE_CHOLMOD ;# Permuted Cholesky factorization
-%! [RS,PS,QS] = spchol(bs);
+%! [RS,PS,QS] = chol(bs);
 %! assert(RS'*RS,QS*bs*QS',1e-10);
 %! assert(PS,0);
-%! [LS,PS,QS] = splchol(bs);
+%! [LS,PS,QS] = chol(bs,'lower');
 %! assert(LS*LS',QS*bs*QS',1e-10);
 %! assert(PS,0);
 

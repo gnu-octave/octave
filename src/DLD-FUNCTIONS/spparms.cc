@@ -72,8 +72,11 @@ Flag whether the LU and the '\\' and '/' operators will automatically\n\
 use the sparsity preserving amd functions (default 1)\n\
 @item piv_tol\n\
 The pivot tolerance of the UMFPACK solvers (default 0.1)\n\
+@item sym_tol\n\
+The pivot tolerance of the UMFPACK symmetric solvers (default 0.001)\n\
 @item bandden\n\
-?? (default 0.5)\n\
+The density of non-zero elements in a banded matrix before it is treated\n\
+by the LAPACK banded solvers (default 0.5)\n\
 @item umfpack\n\
 Flag whether the UMFPACK or mmd solvers are used for the LU, '\\' and\n\
 '/' operations (default 1)\n\

@@ -1,1 +1,0 @@
-unlink ("foo", 1)

@@ -1,7 +1,0 @@
-## The following functions need to have tests written for them:
-
-# lin2mu
-# mu2lin
-# loadaudio
-# saveaudio
-# setaudio

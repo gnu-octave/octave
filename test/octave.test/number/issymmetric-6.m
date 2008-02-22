@@ -1,1 +1,0 @@
-issymmetric ("test")

@@ -1,2 +1,0 @@
-b = NaN;
-isinf (b)

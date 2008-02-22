@@ -1,1 +1,0 @@
-isstr (pwd ())

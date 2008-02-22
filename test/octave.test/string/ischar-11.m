@@ -1,1 +1,0 @@
-ischar ("test", 1)

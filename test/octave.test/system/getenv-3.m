@@ -1,1 +1,0 @@
-getenv ("foo", 1)

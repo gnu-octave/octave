@@ -1,1 +1,0 @@
-getpwent (1)

@@ -1,1 +1,0 @@
-ftell ("foo")

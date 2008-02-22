@@ -1,1 +1,0 @@
-isempty (create_set ([]))

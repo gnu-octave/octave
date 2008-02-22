@@ -1,2 +1,0 @@
-c = rand ();
-isnan (c)

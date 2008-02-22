@@ -1,1 +1,0 @@
-readdir ("foo", 1)

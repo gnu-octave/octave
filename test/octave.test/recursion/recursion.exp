@@ -1,7 +1,0 @@
-set test recursion-1
-set prog_output "^ans = 120"
-do_test recursion-1.m
-
-set test recursion-2
-set prog_output "^ans = 120"
-do_test recursion-2.m

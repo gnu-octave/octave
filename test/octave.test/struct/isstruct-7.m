@@ -1,1 +1,0 @@
-isstruct (["test"; "ing"])

@@ -1,1 +1,0 @@
-strcmp (blanks (3), "   ")

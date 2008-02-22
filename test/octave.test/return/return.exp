@@ -1,7 +1,0 @@
-set test return-1
-set prog_output "^ans = 1"
-do_test return-1.m
-
-set test return-2
-set prog_output ""
-do_test return-2.m

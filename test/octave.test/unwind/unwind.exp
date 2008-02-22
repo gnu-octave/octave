@@ -1,7 +1,0 @@
-set test unwind-1
-set prog_output "g = 0\n.*g = 1\n.*g = -1"
-do_test unwind-1.m
-
-set test unwind-2
-set prog_output "g = 0\n.*g = -1"
-do_test  unwind-2.m

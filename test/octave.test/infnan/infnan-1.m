@@ -1,2 +1,0 @@
-a = Inf;
-finite (a)

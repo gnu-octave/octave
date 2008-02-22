@@ -1,4 +1,4 @@
-2008-02-21  David Bateman  <dbateman@free.fr>
+2008-02-22  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/chol.c (Fchol, Fcholinv, Fchol2iinv): Treat 
 	sparse matrices. Add the "lower" and "vector" flags.

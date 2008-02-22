@@ -237,7 +237,9 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
     ncols = floor (sqrt (NOUT));
     nrows = ceil (NOUT / ncols);
     for i = 1:NOUT
-      subplot (nrows, ncols, i);
+      if (nrows > 1 || ncols > 1)
+	subplot (nrows, ncols, i);
+      endif
       if (DIGITAL)
 	[ts, ys] = stairs (t, y(i,:));
 	ts = ts(1:2*n-2)';

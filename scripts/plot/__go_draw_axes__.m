@@ -1273,7 +1273,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 endfunction
 
 function [style, typ, with] = do_linestyle_command (obj, idx, mono,
-						    plot_stream, errbars)
+						    plot_stream, errbars = "")
 
   persistent have_newer_gnuplot ...
     = compare_versions (__gnuplot_version__ (), "4.0", ">");

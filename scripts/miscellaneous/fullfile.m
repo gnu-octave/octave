@@ -25,42 +25,56 @@
 function filename = fullfile (varargin)
 
   if (nargin > 0)
-    filename = "";
-    for first = 1:nargin
-      tmp = varargin{first};
-      if (! isempty (tmp))
-	filename = tmp;
-	break;
+    ## Discard all empty arguments
+    varargin(cellfun (@isempty, varargin)) = [];
+    nargs = numel (varargin);
+    if (nargs > 1)
+      filename = varargin{1};
+      if (strcmp (filename(end), filesep))
+	filename(end) = "";
       endif
-    endfor
-    for i = first+1:nargin
-      tmp = varargin{i};
-      if (! isempty (tmp))
-	if (strcmp (tmp(1), filesep))
-	  tmp(1) = "";
-	endif
-	if (i < nargin && strcmp (tmp(end), filesep))
+      for i = 2:nargs
+	tmp = varargin{i};
+	if (i < nargs && strcmp (tmp(end), filesep))
 	  tmp(end) = "";
-        endif
-        filename = strcat (filename, filesep, tmp);
-      endif
-    endfor
+	elseif (i == nargs && strcmp (tmp, filesep))
+	  tmp = "";
+	endif
+	filename = strcat (filename, filesep, tmp);
+      endfor
+    elseif (nargs == 1)
+      filename = varargin{1};
+    else
+      filename = "";
+    endif
   else
     print_usage ();
   endif
 
 endfunction
 
+%!shared fs, fsx, xfs, fsxfs, xfsy
+%! fs = filesep ();
+%! fsx = strcat (fs, "x");
+%! xfs = strcat ("x", fs);
+%! fsxfs = strcat (fs, "x", fs);
+%! xfsy = strcat ("x", fs, "y");
 %!assert (fullfile (""), "")
-%!assert (fullfile (filesep ()), filesep ())
-%!assert (fullfile ("", filesep ()), filesep ())
-%!assert (fullfile (filesep (), ""), filesep ())
-%!assert (fullfile ("", filesep ()), filesep ())
-%!assert (fullfile ("foo"), "foo")
-%!assert (fullfile ("", "foo"), "foo")
-%!assert (fullfile ("foo", ""), "foo")
-%!assert (fullfile ("", "foo", ""), "foo")
-%!assert (fullfile ("foo", "bar"), strcat ("foo", filesep (), "bar"))
-%!assert (fullfile ("foo", "", "bar"), strcat ("foo", filesep (), "bar"))
-%!assert (fullfile ("foo", "", "bar", ""), strcat ("foo", filesep (), "bar"))
-%!assert (fullfile ("", "foo", "", "bar", ""), strcat ("foo", filesep (), "bar"))
+%!assert (fullfile (fs), fs)
+%!assert (fullfile ("", fs), fs)
+%!assert (fullfile (fs, ""), fs)
+%!assert (fullfile ("", fs), fs)
+%!assert (fullfile ("x"), "x")
+%!assert (fullfile ("", "x"), "x")
+%!assert (fullfile ("x", ""), "x")
+%!assert (fullfile ("", "x", ""), "x")
+%!assert (fullfile ("x", "y"), xfsy)
+%!assert (fullfile ("x", "", "y"), xfsy)
+%!assert (fullfile ("x", "", "y", ""), xfsy)
+%!assert (fullfile ("", "x", "", "y", ""), xfsy)
+%!assert (fullfile (fs), fs)
+%!assert (fullfile (fs, fs), fs)
+%!assert (fullfile (fs, "x"), fsx)
+%!assert (fullfile (fs, xfs), fsxfs)
+%!assert (fullfile (fsx, fs), fsxfs)
+%!assert (fullfile (fs, "x", fs), fsxfs)

@@ -1,5 +1,8 @@
 2008-02-22  John W. Eaton  <jwe@octave.org>
 
+	* miscellaneous/fullfile.m: Improve handling of empty args and
+	args ending with filesep.
+
 	* control/base/__stepimp__.m: Don't use subplot for just one plot.
 
 2008-02-21  John W. Eaton  <jwe@octave.org>

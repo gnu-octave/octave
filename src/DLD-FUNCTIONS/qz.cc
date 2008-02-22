@@ -619,7 +619,7 @@ Order of output arguments was selected for compatibility with MATLAB\n\
 
 	  // declared static to avoid vfork/long jump compiler complaints
 	  static sort_function sort_test;
-	  sort_test = NULL;
+	  sort_test = 0;
 
 	  switch (ord_job[0])
 	    {
@@ -848,7 +848,7 @@ Order of output arguments was selected for compatibility with MATLAB\n\
     {
       char side = (nargout == 5 ? 'R' : 'B');	// which side to compute?
       char howmny = 'B';  // compute all of them and backtransform
-      octave_idx_type *select = NULL; // dummy pointer; select is not used.
+      octave_idx_type *select = 0; // dummy pointer; select is not used.
       octave_idx_type m;
 
       if (complex_case)

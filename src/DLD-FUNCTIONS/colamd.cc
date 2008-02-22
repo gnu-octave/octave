@@ -718,7 +718,7 @@ permutations on the tree.\n\
 	      error ("etree: matrix is marked as symmetric, but not square");
 	      return retval;
 	    }
-	  symetree (ridx, cidx, etree, NULL, n_col);
+	  symetree (ridx, cidx, etree, 0, n_col);
 	}
       else
 	{

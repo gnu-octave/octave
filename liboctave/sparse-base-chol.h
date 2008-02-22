@@ -40,7 +40,7 @@ protected:
   class sparse_base_chol_rep
   {
   public:
-    sparse_base_chol_rep (void) : count (1), Lsparse (NULL), 
+    sparse_base_chol_rep (void) : count (1), Lsparse (0), 
 				  is_pd (false), minor_p (0) { }
 
     sparse_base_chol_rep (const chol_type& a, 

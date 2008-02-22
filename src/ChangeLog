@@ -1,3 +1,11 @@
+2008-02-22  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/colamd.cc,
+	DLD-FUNCTIONS/convhulln.cc, DLD-FUNCTIONS/dmperm.cc,
+	DLD-FUNCTIONS/qz.cc, DLD-FUNCTIONS/regexp.cc,
+	DLD-FUNCTIONS/symbfact.cc, zfstream.h, zfstream.cc:
+	Use 0 instead of NULL.
+
 2008-02-22  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/chol.c (Fchol, Fcholinv, Fchol2iinv): Treat 

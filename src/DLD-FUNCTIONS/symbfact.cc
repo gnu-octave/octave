@@ -109,7 +109,7 @@ factorization as determined by @var{typ}.\n\
   if (spu == 0.)
     {
       cm->print = -1;
-      cm->print_function = NULL;
+      cm->print_function = 0;
     }
   else
     {
@@ -126,7 +126,7 @@ factorization as determined by @var{typ}.\n\
   cholmod_sparse *A = &Astore;
   A->packed = true;
   A->sorted = true;
-  A->nz = NULL;
+  A->nz = 0;
 #ifdef IDX_TYPE_LONG
   A->itype = CHOLMOD_LONG;
 #else
@@ -222,13 +222,13 @@ factorization as determined by @var{typ}.\n\
 	  goto symbfact_error;
 	}
 
-      if (CHOLMOD_NAME(postorder) (Parent, n, NULL, Post, cm) != n)
+      if (CHOLMOD_NAME(postorder) (Parent, n, 0, Post, cm) != n)
 	{
 	  error("postorder failed");
 	  goto symbfact_error;
 	}
 
-      CHOLMOD_NAME(rowcolcounts) (Alo, NULL, 0, Parent, Post, NULL,
+      CHOLMOD_NAME(rowcolcounts) (Alo, 0, 0, Parent, Post, 0,
 				  ColCount, First, Level, cm);
 
       if (cm->status < CHOLMOD_OK)
@@ -244,12 +244,12 @@ factorization as determined by @var{typ}.\n\
 	  if (A->stype == 1)
 	    {
 	      A1 = A;
-	      A2 = NULL;
+	      A2 = 0;
 	    }
 	  else if (A->stype == -1)
 	    {
 	      A1 = F;
-	      A2 = NULL;
+	      A2 = 0;
 	    }
 	  else if (coletree)
 	    {

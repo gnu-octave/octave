@@ -97,7 +97,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
   void *Symbolic;
   Matrix Info (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, NULL,
+  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, 0,
 				     &Symbolic, control, info);
 
   if (status < 0)
@@ -190,7 +190,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const Matrix& piv_thres, bool scale)
 
 	      octave_idx_type do_recip;
 	      status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj, Ltx,
-					       Up, Uj, Ux, p, q, NULL,
+					       Up, Uj, Ux, p, q, 0,
 					       &do_recip, Rx, 
 					       Numeric) ;
 
@@ -407,7 +407,7 @@ SparseLU::SparseLU (const SparseMatrix& a, const ColumnVector& Qinit,
 		  octave_idx_type do_recip;
 		  status = UMFPACK_DNAME (get_numeric) (Ltp, Ltj,
 						   Ltx, Up, Uj, Ux, p, q, 
-						   NULL, &do_recip, 
+						   0, &do_recip, 
 						   Rx, Numeric) ;
 
 		  UMFPACK_DNAME (free_numeric) (&Numeric) ;

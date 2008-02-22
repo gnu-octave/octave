@@ -192,7 +192,7 @@ octave_group::octave_group (void *p, std::string& msg)
       gr_gid = gr->gr_gid;
 
       // FIXME -- maybe there should be a string_vector
-      // constructor that takes a NULL terminated list of C
+      // constructor that takes a NUL terminated list of C
       // strings.
 
       const char * const *tmp = gr->gr_mem;

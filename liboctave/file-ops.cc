@@ -467,7 +467,7 @@ extern int errno;
 
   while (true)
     {
-      int status = GetFullPathName (name.c_str (), n, &win_path[0], NULL);
+      int status = GetFullPathName (name.c_str (), n, &win_path[0], 0);
 
       if (status == 0)
         break;

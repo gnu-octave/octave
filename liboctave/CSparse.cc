@@ -1123,14 +1123,14 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 
       UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai, 
 				     reinterpret_cast<const double *> (Ax), 
-				     NULL, 1, control);
+				     0, 1, control);
 
       void *Symbolic;
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
       int status = UMFPACK_ZNAME (qsymbolic) 
-	(nr, nc, Ap, Ai, reinterpret_cast<const double *> (Ax), NULL, 
-	 NULL, &Symbolic, control, info);
+	(nr, nc, Ap, Ai, reinterpret_cast<const double *> (Ax), 0, 
+	 0, &Symbolic, control, info);
 
       if (status < 0)
 	{
@@ -1150,7 +1150,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 	  status
 	    = UMFPACK_ZNAME (numeric) (Ap, Ai,
 				       reinterpret_cast<const double *> (Ax),
-				       NULL, Symbolic, &Numeric, control, info) ;
+				       0, Symbolic, &Numeric, control, info) ;
 	  UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
 
 	  rcond = Info (UMFPACK_RCOND);
@@ -1173,7 +1173,7 @@ SparseComplexMatrix::determinant (octave_idx_type& err, double& rcond, int) cons
 	      double d_exponent;
 
 	      status = UMFPACK_ZNAME (get_determinant) 
-		(reinterpret_cast<double *> (&d[0]), NULL, &d_exponent,
+		(reinterpret_cast<double *> (&d[0]), 0, &d_exponent,
 		 Numeric, info);
 	      d[1] = d_exponent;
 
@@ -5469,14 +5469,14 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
 
   UMFPACK_ZNAME (report_matrix) (nr, nc, Ap, Ai,
 				 reinterpret_cast<const double *> (Ax),
-				 NULL, 1, control);
+				 0, 1, control);
 
   void *Symbolic;
   Info = Matrix (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
   int status = UMFPACK_ZNAME (qsymbolic) (nr, nc, Ap, Ai, 
 				     reinterpret_cast<const double *> (Ax), 
-				     NULL, NULL, &Symbolic, control, info);
+				     0, 0, &Symbolic, control, info);
 
   if (status < 0)
     {
@@ -5494,7 +5494,7 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double &rcond,
       UMFPACK_ZNAME (report_symbolic) (Symbolic, control);
 
       status = UMFPACK_ZNAME (numeric) (Ap, Ai,
-				   reinterpret_cast<const double *> (Ax), NULL, 
+				   reinterpret_cast<const double *> (Ax), 0, 
 				   Symbolic, &Numeric, control, info) ;
       UMFPACK_ZNAME (free_symbolic) (&Symbolic) ;
 
@@ -5581,7 +5581,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -5606,7 +5606,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -5736,9 +5736,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
 					     Ai,
 					     reinterpret_cast<const double *> (Ax), 
-					     NULL,
+					     0,
 					     reinterpret_cast<double *> (&Xx[iidx]), 
-					     NULL,
+					     0,
 					     &Bx[iidx], Bz, Numeric, 
 					     control, info);
 #else
@@ -5748,11 +5748,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
 					     Ai,
 					     reinterpret_cast<const double *> (Ax), 
-					     NULL,
+					     0,
 					     reinterpret_cast<double *> (&Xx[iidx]), 
-					     NULL,
+					     0,
 					     reinterpret_cast<const double *> (Bz),
-					     NULL, Numeric, 
+					     0, Numeric, 
 					     control, info);
 #endif
 
@@ -5824,7 +5824,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -5849,7 +5849,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -5873,7 +5873,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  B->nzmax = b.nnz();
 	  B->packed = true;
 	  B->sorted = true;
-	  B->nz = NULL;
+	  B->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  B->itype = CHOLMOD_LONG;
 #else
@@ -6007,9 +6007,9 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
 					     Ai,
 					     reinterpret_cast<const double *> (Ax),
-					     NULL,
+					     0,
 					     reinterpret_cast<double *> (Xx),
-					     NULL, 
+					     0, 
 					     Bx, Bz, Numeric, control, 
 					     info);
 #else
@@ -6018,11 +6018,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 
 		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai, 
 					     reinterpret_cast<const double *> (Ax),
-					     NULL,
+					     0,
 					     reinterpret_cast<double *> (Xx),
-					     NULL,
+					     0,
 					     reinterpret_cast<double *> (Bz),
-					     NULL,
+					     0,
 					     Numeric, control, 
 					     info);
 #endif
@@ -6115,7 +6115,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -6140,7 +6140,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -6263,11 +6263,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  status = 
 		    UMFPACK_ZNAME (solve) (UMFPACK_A, Ap, Ai, 
 				      reinterpret_cast<const double *> (Ax), 
-				      NULL,
+				      0,
 				      reinterpret_cast<double *> (&Xx[iidx]), 
-				      NULL,
+				      0,
 				      reinterpret_cast<const double *> (&Bx[iidx]), 
-				      NULL, Numeric, control, info);
+				      0, Numeric, control, info);
 		  
 		  if (status < 0)
 		    {
@@ -6337,7 +6337,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -6362,7 +6362,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -6386,7 +6386,7 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  B->nzmax = b.nnz();
 	  B->packed = true;
 	  B->sorted = true;
-	  B->nz = NULL;
+	  B->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  B->itype = CHOLMOD_LONG;
 #else
@@ -6511,11 +6511,11 @@ SparseComplexMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 		  status = UMFPACK_ZNAME (solve) (UMFPACK_A, Ap,
 					     Ai,
 					     reinterpret_cast<const double *> (Ax),
-					     NULL,
+					     0,
 					     reinterpret_cast<double *> (Xx),
-					     NULL,
+					     0,
 					     reinterpret_cast<double *> (Bx),
-					     NULL, Numeric, control, info);
+					     0, Numeric, control, info);
 		  
 		  if (status < 0)
 		    {

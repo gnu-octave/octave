@@ -47,8 +47,8 @@ along with Octave; see the file COPYING.  If not, see
 
 // Default constructor
 gzfilebuf::gzfilebuf()
-: file(NULL), io_mode(std::ios_base::openmode(0)), own_fd(false),
-  buffer(NULL), buffer_size(BIGBUFSIZE), own_buffer(true)
+: file(0), io_mode(std::ios_base::openmode(0)), own_fd(false),
+  buffer(0), buffer_size(BIGBUFSIZE), own_buffer(true)
 {
   // No buffers to start with
   this->disable_buffer();
@@ -81,19 +81,19 @@ gzfilebuf::open(const char *name,
 {
   // Fail if file already open
   if (this->is_open())
-    return NULL;
+    return 0;
   // Don't support simultaneous read/write access (yet)
   if ((mode & std::ios_base::in) && (mode & std::ios_base::out))
-    return NULL;
+    return 0;
 
   // Build mode string for gzopen and check it [27.8.1.3.2]
   char char_mode[6] = "\0\0\0\0\0";
   if (!this->open_mode(mode, char_mode))
-    return NULL;
+    return 0;
 
   // Attempt to open file
-  if ((file = gzopen(name, char_mode)) == NULL)
-    return NULL;
+  if ((file = gzopen(name, char_mode)) == 0)
+    return 0;
 
   // On success, allocate internal buffer and set flags
   this->enable_buffer();
@@ -109,19 +109,19 @@ gzfilebuf::attach(int fd,
 {
   // Fail if file already open
   if (this->is_open())
-    return NULL;
+    return 0;
   // Don't support simultaneous read/write access (yet)
   if ((mode & std::ios_base::in) && (mode & std::ios_base::out))
-    return NULL;
+    return 0;
 
   // Build mode string for gzdopen and check it [27.8.1.3.2]
   char char_mode[6] = "\0\0\0\0\0";
   if (!this->open_mode(mode, char_mode))
-    return NULL;
+    return 0;
 
   // Attempt to attach to file
-  if ((file = gzdopen(fd, char_mode)) == NULL)
-    return NULL;
+  if ((file = gzdopen(fd, char_mode)) == 0)
+    return 0;
 
   // On success, allocate internal buffer and set flags
   this->enable_buffer();
@@ -136,16 +136,16 @@ gzfilebuf::close()
 {
   // Fail immediately if no file is open
   if (!this->is_open())
-    return NULL;
+    return 0;
   // Assume success
   gzfilebuf* retval = this;
   // Attempt to sync and close gzipped file
   if (this->sync() == -1)
-    retval = NULL;
+    retval = 0;
   if (gzclose(file) < 0)
-    retval = NULL;
+    retval = 0;
   // File is now gone anyway (postcondition [27.8.1.3.8])
-  file = NULL;
+  file = 0;
   own_fd = false;
   // Destroy internal buffer if it exists
   this->disable_buffer();
@@ -351,7 +351,7 @@ gzfilebuf::setbuf(char_type* p,
 {
   // First make sure stuff is sync'ed, for safety
   if (this->sync() == -1)
-    return NULL;
+    return 0;
   // If buffering is turned off on purpose via setbuf(0,0), still allocate one...
   // "Unbuffered" only really refers to put [27.8.1.4.10], while get needs at
   // least a buffer of size 1 (very inefficient though, therefore make it bigger?)
@@ -360,7 +360,7 @@ gzfilebuf::setbuf(char_type* p,
   {
     // Replace existing buffer (if any) with small internal buffer
     this->disable_buffer();
-    buffer = NULL;
+    buffer = 0;
     buffer_size = 0;
     own_buffer = true;
     this->enable_buffer();
@@ -436,7 +436,7 @@ gzfilebuf::disable_buffer()
     if (!this->pbase())
       buffer_size = 0;
     delete[] buffer;
-    buffer = NULL;
+    buffer = 0;
     this->setg(0, 0, 0);
     this->setp(0, 0);
   }
@@ -510,13 +510,13 @@ gzfilebuf::seekpos(pos_type sp, std::ios_base::openmode)
 
 // Default constructor initializes stream buffer
 gzifstream::gzifstream()
-: std::istream(NULL), sb()
+: std::istream(0), sb()
 { this->init(&sb); }
 
 // Initialize stream buffer and open file
 gzifstream::gzifstream(const char* name,
                        std::ios_base::openmode mode)
-: std::istream(NULL), sb()
+: std::istream(0), sb()
 {
   this->init(&sb);
   this->open(name, mode);
@@ -525,7 +525,7 @@ gzifstream::gzifstream(const char* name,
 // Initialize stream buffer and attach to file
 gzifstream::gzifstream(int fd,
                        std::ios_base::openmode mode)
-: std::istream(NULL), sb()
+: std::istream(0), sb()
 {
   this->init(&sb);
   this->attach(fd, mode);
@@ -565,13 +565,13 @@ gzifstream::close()
 
 // Default constructor initializes stream buffer
 gzofstream::gzofstream()
-: std::ostream(NULL), sb()
+: std::ostream(0), sb()
 { this->init(&sb); }
 
 // Initialize stream buffer and open file
 gzofstream::gzofstream(const char* name,
                        std::ios_base::openmode mode)
-: std::ostream(NULL), sb()
+: std::ostream(0), sb()
 {
   this->init(&sb);
   this->open(name, mode);
@@ -580,7 +580,7 @@ gzofstream::gzofstream(const char* name,
 // Initialize stream buffer and attach to file
 gzofstream::gzofstream(int fd,
                        std::ios_base::openmode mode)
-: std::ostream(NULL), sb()
+: std::ostream(0), sb()
 {
   this->init(&sb);
   this->attach(fd, mode);

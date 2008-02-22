@@ -121,7 +121,7 @@ are \"s Qci Tcv\".\n\n\
   // QJ guarantees that the output will be triangles
   snprintf (flags, 250, "qhull QJ %s", options.c_str ());
 
-  if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, NULL, stderr)) 
+  if (! qh_new_qhull (dim, n, pt_array, ismalloc, flags, 0, stderr)) 
     {
       // If you want some debugging information replace the NULL
       // pointer with stdout

@@ -464,7 +464,7 @@ octave_w32_shlib::open (const std::string& f)
 
       handle = LoadLibrary (file.c_str ());
 
-      if (handle != NULL)
+      if (handle)
 	stamp_time ();
       else
 	{

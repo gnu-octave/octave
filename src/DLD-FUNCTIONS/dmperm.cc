@@ -64,7 +64,7 @@ dmperm_internal (bool rank, const octave_value arg, int nargout)
   CXSPARSE_NAME () csm;
   csm.m = nr;
   csm.n = nc;
-  csm.x = NULL;
+  csm.x = 0;
   csm.nz = -1;
 
   if (arg.is_real_type ())

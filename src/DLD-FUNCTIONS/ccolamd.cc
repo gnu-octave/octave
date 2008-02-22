@@ -286,7 +286,7 @@ colamd, symamd, and other related orderings.\n\
       else
 	{
 	  // Order the columns (destroys A)
-	  if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, NULL))
+	  if (! CCOLAMD_NAME () (n_row, n_col, Alen, A, p, knobs, stats, 0))
 	    {
 	      CCOLAMD_NAME (_report) (stats) ;
 	      error ("ccolamd: internal error!");
@@ -521,7 +521,7 @@ colamd, symamd, and other related orderings.\n\
       else
 	{
 	  if (!CSYMAMD_NAME () (n_col, ridx, cidx, perm, knobs, stats, 
-				&calloc, &free, NULL, -1))
+				&calloc, &free, 0, -1))
 	    {
 	      CSYMAMD_NAME (_report) (stats) ;
 	      error ("symamd: internal error!") ;

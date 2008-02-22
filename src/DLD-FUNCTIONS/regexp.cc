@@ -259,9 +259,9 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 			 (dotexceptnewline ? 0 : PCRE_DOTALL) |
 			 (lineanchors ? PCRE_MULTILINE : 0) |
 			 (freespacing ? PCRE_EXTENDED : 0),
-			 &err, &erroffset, NULL);
+			 &err, &erroffset, 0);
     
-      if (re == NULL) {
+      if (re == 0) {
 	error("%s: %s at position %d of expression", nm.c_str(), 
 	      err, erroffset);
 	return 0;
@@ -273,10 +273,10 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
       char *nametable;
       int idx = 0;
 
-      pcre_fullinfo(re, NULL, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
-      pcre_fullinfo(re, NULL, PCRE_INFO_NAMECOUNT, &namecount);
-      pcre_fullinfo(re, NULL, PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
-      pcre_fullinfo(re, NULL, PCRE_INFO_NAMETABLE, &nametable);
+      pcre_fullinfo(re, 0, PCRE_INFO_CAPTURECOUNT,  &subpatterns);
+      pcre_fullinfo(re, 0, PCRE_INFO_NAMECOUNT, &namecount);
+      pcre_fullinfo(re, 0, PCRE_INFO_NAMEENTRYSIZE, &nameentrysize);
+      pcre_fullinfo(re, 0, PCRE_INFO_NAMETABLE, &nametable);
 
       OCTAVE_LOCAL_BUFFER(int, ovector, (subpatterns+1)*3);
       OCTAVE_LOCAL_BUFFER(int, nidx, namecount);
@@ -293,7 +293,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 	{
 	  OCTAVE_QUIT;
 
-	  int matches = pcre_exec(re, NULL, buffer.c_str(), 
+	  int matches = pcre_exec(re, 0, buffer.c_str(), 
 				  buffer.length(), idx, 
 				  (idx ? PCRE_NOTBOL : 0),
 				  ovector, (subpatterns+1)*3);
@@ -375,7 +375,7 @@ octregexp_list (const octave_value_list &args, const std::string &nm,
 		      (case_insensitive ? REG_ICASE : 0));
       if (err)
 	{
-	  int len = regerror(err, &compiled, NULL, 0);
+	  int len = regerror(err, &compiled, 0, 0);
 	  OCTAVE_LOCAL_BUFFER (char, errmsg, len);
 	  regerror(err, &compiled, errmsg, len);
 	  error("%s: %s in pattern (%s)", nm.c_str(), errmsg, 

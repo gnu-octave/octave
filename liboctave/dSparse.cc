@@ -1201,7 +1201,7 @@ SparseMatrix::determinant (octave_idx_type& err, double& rcond, int) const
       Matrix Info (1, UMFPACK_INFO);
       double *info = Info.fortran_vec ();
       int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, 
-					 Ax, NULL, &Symbolic, control, info);
+					 Ax, 0, &Symbolic, control, info);
 
       if (status < 0)
 	{
@@ -5652,7 +5652,7 @@ SparseMatrix::factorize (octave_idx_type& err, double &rcond, Matrix &Control,
   void *Symbolic;
   Info = Matrix (1, UMFPACK_INFO);
   double *info = Info.fortran_vec ();
-  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, NULL,
+  int status = UMFPACK_DNAME (qsymbolic) (nr, nc, Ap, Ai, Ax, 0,
 				     &Symbolic, control, info);
 
   if (status < 0)
@@ -5758,7 +5758,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -5783,7 +5783,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const Matrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -5974,7 +5974,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -5999,7 +5999,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -6023,7 +6023,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseMatrix& b,
 	  B->nzmax = b.nnz();
 	  B->packed = true;
 	  B->sorted = true;
-	  B->nz = NULL;
+	  B->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  B->itype = CHOLMOD_LONG;
 #else
@@ -6236,7 +6236,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -6261,7 +6261,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -6470,7 +6470,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  if (spu == 0.)
 	    {
 	      cm->print = -1;
-	      cm->print_function = NULL;
+	      cm->print_function = 0;
 	    }
 	  else
 	    {
@@ -6495,7 +6495,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  A->nzmax = nnz();
 	  A->packed = true;
 	  A->sorted = true;
-	  A->nz = NULL;
+	  A->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  A->itype = CHOLMOD_LONG;
 #else
@@ -6519,7 +6519,7 @@ SparseMatrix::fsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 	  B->nzmax = b.nnz();
 	  B->packed = true;
 	  B->sorted = true;
-	  B->nz = NULL;
+	  B->nz = 0;
 #ifdef IDX_TYPE_LONG
 	  B->itype = CHOLMOD_LONG;
 #else

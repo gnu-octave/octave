@@ -1,3 +1,9 @@
+2008-02-22  John W. Eaton  <jwe@octave.org>
+
+	* CSparse.cc, SparseCmplxLU.cc, SparsedbleLU.cc, dSparse.cc,
+	file-ops.cc, oct-group.cc, oct-shlib.cc, sparse-base-chol.h,
+	sparse-dmsolve.cc: Use 0 instead of NULL.
+
 2008-02-22  David Bateman  <dbateman@free.fr>
 
 	* boolSparse.cc (SparseBoolMatrix SparseBoolMatrix::diag 

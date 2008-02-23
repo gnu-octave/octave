@@ -25,10 +25,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <sstream>
 #include <iostream>
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "gl-render.h"
+
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Output.H>
-#include <FL/Fl_Button.H>
+ #include <FL/Fl_Button.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/fl_ask.H>
 #include <FL/fl_draw.H>
@@ -36,13 +42,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct.h"
 #include "parse.h"
 #include "graphics.h"
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
-#include "gl-render.h"
-
 
 const char* help_text = "\
 Keyboard Shortcuts\n\
@@ -191,7 +190,7 @@ public:
 
   double number () { return _number;};
   
-  void mark_modified () { canvas->damage (FL_DAMAGE_ALL); }
+  void mark_modified () { damage (FL_DAMAGE_ALL); }
 
 private:
   // figure number
@@ -298,6 +297,15 @@ private:
     args(1) = "position";
     args(2) = pos;
     feval("set",args);
+  }
+
+  void draw (void)
+  {
+    figure::properties& fp = get_figure_props ();
+    Matrix pos = fp.get_position ().matrix_value ();
+    Fl_Window::resize (pos(0), pos(1) , pos(2), pos(3));
+
+    return Fl_Window::draw ();
   }
  
   int handle (int event) {
@@ -491,7 +499,7 @@ public:
   }
 };
 
-bool backend_registered = false;
+static bool backend_registered = false;
 // call this to init the fltk backend
 DEFUN_DLD (__init_fltk__, args, nargout,"")
 {
@@ -510,14 +518,34 @@ DEFUN_DLD (__remove_fltk__, args, nargout,"")
   backend_registered = false;
 
 
-  // give FLTK no more than 0.01 sec to do it's stuff
-  Fl::wait(1e-2);	
+  // give FLTK 10 seconds to wrap it up
+  Fl::wait(10);	
   octave_value retval;
   return retval;	
 }
 
+// give FLTK no more than 0.01 sec to do it's stuff
+static double fltk_maxtime = 1e-2;
+
+// call this to delete the fltk backend
+DEFUN_DLD (__fltk_maxtime__, args, nargout,"")
+{
+  octave_value retval=fltk_maxtime;  
+
+  if (args.length () == 1 ) 
+    {
+      if (args(0).is_real_scalar ())
+      fltk_maxtime = args(0).double_value ();
+    else
+      error("argument must be a real scalar");
+    }
+
+  return retval;
+}
+
 // call this from the idle_callback to refresh windows
-DEFUN_DLD (__fltk_redraw__, args, nargout,"internal function for the fltk backend")
+DEFUN_DLD (__fltk_redraw__, args, nargout,\
+	   "internal function for the fltk backend")
 {
   octave_value retval;
 
@@ -560,8 +588,7 @@ DEFUN_DLD (__fltk_redraw__, args, nargout,"internal function for the fltk backen
         }
     }
 
-  // give FLTK no more than 0.01 sec to do it's stuff
-  Fl::wait(1e-2);	
+  Fl::wait(fltk_maxtime);	
 
   return retval;	
 }
@@ -570,9 +597,11 @@ DEFUN_DLD (__fltk_redraw__, args, nargout,"internal function for the fltk backen
 autoload("__init_fltk__",[pwd(),"/fltk_backend.oct"])
 autoload("__remove_fltk__",[pwd(),"/fltk_backend.oct"])
 autoload("__fltk_redraw__",[pwd(),"/fltk_backend.oct"])
+autoload("__fltk_maxtime__",[pwd(),"/fltk_backend.oct"])
 input_event_hook ("__fltk_redraw__");
 __init_fltk__ ();
 set(gcf(),"__backend__","fltk")
+plot(randn(1e3,1));
 
 
 */

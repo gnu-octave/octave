@@ -68,3 +68,4 @@ OCT_LINK_DEPS = \
 fltk_backend.oct : fltk_backend.o
 	$(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) 
 
+all : fltk_backend.oct

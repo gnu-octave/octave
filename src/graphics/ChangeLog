@@ -1,3 +1,12 @@
+2008-02-23  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (plot_window::mark_modifed): mark
+	the whole window as damaged (otherwise changing figure.postion
+	does not have immediate effect)
+	(plot_window::draw): New function, checks for window size 
+	(__fltk_maxtime__): New DEFUN to allow tweaking of fltk timeout
+	(__fltk_redraw__): Use fltk_maxtime as timeout
+
 2008-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* opengl/gl-render.cc (opengl_renderer::patch_tesselator::combine):

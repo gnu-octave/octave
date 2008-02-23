@@ -190,7 +190,11 @@ public:
 
   double number () { return _number;};
   
-  void mark_modified () { damage (FL_DAMAGE_ALL); }
+  void mark_modified () 
+  { 
+    damage (FL_DAMAGE_ALL); 
+    canvas->damage (FL_DAMAGE_ALL); 
+  }
 
 private:
   // figure number
@@ -247,39 +251,60 @@ private:
     
     double x,y;
 
-    pixel2pos (px, py, x, y);
-
-    figure::properties pp = get_figure_props ();
-    Matrix children = (get_figure_props ()).get_children ();
+    figure::properties fp = get_figure_props ();
+    Matrix children =  fp.get_children ();
     for (octave_idx_type n = 0; n < children.numel (); n++) 
       {
 	graphics_object ax = gh_manager::get_object (children (n));
-	if (ax) 
+	if (ax && ax.isa ("axes")) 
 	  {
-	    if (ax.isa ("axes")) 
-	      {
-		axes::properties& props = 
-		  dynamic_cast<axes::properties&> (ax.get_properties ());
-		Matrix pos =  props.get_position (). matrix_value ();
-		  
-		if (x >= pos(0) && x <= pos(0) + pos(2) 
-		    &&
-		    y >= pos(1) && y <= pos(1) + pos(3) )
-		  return props.get___myhandle__ ();
-	      }
+	    axes::properties& ap = 
+	      dynamic_cast<axes::properties&> (ax.get_properties ());
+	    Matrix pixpos = 
+	      convert_position (ap.get_position (). matrix_value (),
+				ap.get_units (),
+				"pixels" , 
+				fp.get_position ().matrix_value (),
+				fp.get_backend ());
+	    std::cout << "\npixpos="<<pixpos<<"(px,py)=("<<px<<","<<py<<")\n";
+	    if (px >= pixpos(0) && px <= pixpos(0) + pixpos(2) 
+		&&
+		py >= pixpos(1) && py <= pixpos(1) + pixpos(3) )
+	      return ap.get___myhandle__ ();
 	  }
       }
     return graphics_handle ();
   }
 
   void pixel2status (int px, int py) {
-    double x,y;
-    std::stringstream cbuf;
+//     std::stringstream cbuf;
+//     figure::properties fp = get_figure_props ();
+//     graphics_object obj = gh_manager::get_object (fp.get_currentaxes ());
+//     if (obj && obj.isa ("axes"))
+//       {
+// 	axes::properties& ap = 
+// 	  dynamic_cast<axes::properties&> (obj.get_properties ());
 
-    pixel2pos (px, py, x, y);
-    cbuf << "[" << x << ", " << y <<"]";
-    status->value (cbuf.str ().c_str ());
-    status->redraw ();
+// 	Matrix pos(1,2,0);
+// 	pos(0) = px;
+// 	pos(1) = py;
+
+// 	Matrix axpos = 
+// 	  convert_position (pos,
+// 			    "pixels",
+// 			    ap.get_units () , 
+// 			    fp.get_position ().matrix_value (),
+//                          fp.get_backend ());
+
+// 	cbuf << "[" << axpos(0) << ", " << axpos(1) << "]";
+//       }
+//     else
+//       {
+// 	cbuf << "[-, -]";
+//       }
+
+//     status->value (cbuf.str ().c_str ());
+//     status->redraw ();
   }    
 
   void resize (int _x,int _y,int _w,int _h) 
@@ -355,8 +380,9 @@ private:
 	    // one click -- select axes
 	    else if ( Fl::event_clicks () == 0)
 	      {
+		std::cout << "ca="<< h0.value ()<<"\n";
 		if (h0.ok ())
-		  get_figure_props ().set_currentaxes (h0. value());
+		  get_figure_props ().set_currentaxes (h0.value());
 		return 1;
 	      }
 	  }

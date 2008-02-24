@@ -53,6 +53,12 @@ function [f, e] = log2 (x)
     f = abs (x) + (x == 0);
     e = (floor (log (f) / log (2)) + 1) .* (x != 0);
     f = sign (x) .* f ./ (2 .^ e);
+    ## Workaround to cases of f == 1 (due to precision issues).
+    idx = abs (f) >= 1;
+    if (any (idx))
+      f(idx) /= 2;
+      e(idx)++;
+    endif
   else
     error ("log2 takes at most 2 output arguments");
   endif

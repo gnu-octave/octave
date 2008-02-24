@@ -1,3 +1,8 @@
+2008-02-24  John W. Eaton  <jwe@octave.org>
+
+	* specfun/log2.m: Ensure returned value of F strictly less than 1.
+	From Dave Hawthorne <davehawthorne@ieee.org>.
+
 2008-02-22  Ben Abbott  <bpabbott@mac.com>
 
 	* specfun/legendre.m: Doc fix.

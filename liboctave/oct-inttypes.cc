@@ -286,6 +286,7 @@ INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, uint64_t);
 // type and compare).
 
 #define OCTAVE_US_TYPE1_CMP_OP(OP, LTZ_VAL, UT, ST) \
+  template <> \
   bool \
   operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs) \
   { \
@@ -302,6 +303,7 @@ INSTANTIATE_OCTAVE_INT_CMP_OPS (uint64_t, uint64_t);
   OCTAVE_US_TYPE1_CMP_OP (!=, true, UT, ST)
 
 #define OCTAVE_SU_TYPE1_CMP_OP(OP, LTZ_VAL, ST, UT) \
+  template <> \
   bool \
   operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs) \
   { \
@@ -335,6 +337,7 @@ OCTAVE_TYPE1_CMP_OPS (uint64_t, int64_t)
 // compare if the signed value is positive).
 
 #define OCTAVE_US_TYPE2_CMP_OP(OP, LTZ_VAL, UT, ST) \
+  template <> \
   bool \
   operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs) \
   { \
@@ -351,6 +354,7 @@ OCTAVE_TYPE1_CMP_OPS (uint64_t, int64_t)
   OCTAVE_US_TYPE2_CMP_OP (!=, true, ST, UT)
 
 #define OCTAVE_SU_TYPE2_CMP_OP(OP, LTZ_VAL, ST, UT) \
+  template <> \
   bool \
   operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs) \
   { \

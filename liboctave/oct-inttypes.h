@@ -199,6 +199,61 @@ OCTAVE_S_US_FTR_FCNS (long long)
                            OCTAVE_INT_MIN_VAL2 (T1, T2), \
                            OCTAVE_INT_MAX_VAL2 (T1, T2))
 
+// By using these classes/functions we avoid warnings from GCC about
+// comparisons always being false due to limited range of data type.
+
+// FIXME -- it would be nice to nest the helper class inside the
+// octave_int class, but I don't see the magic for that at the moment.
+
+template <class T> class octave_int;
+
+template <class T, bool is_signed>
+class octave_int_helper
+{
+public:
+  static octave_int<T> abs (const T& x);
+
+  static octave_int<T> signum (const T& x);
+
+  template <class T2> static void rshift_eq (T& ival, const T2& x);
+};
+
+template <class T>
+class octave_int_helper<T, false>
+{
+public:
+  static octave_int<T>
+  abs (const T& x) { return x; }
+
+  static octave_int<T>
+  signum (const T& x) { return x > 0 ? 1 : 0; }
+
+  template <class T2>
+  static void
+  rshift_eq (T& ival, const T2& x) { ival = ival >> x; }
+};
+
+template <class T>
+class octave_int_helper<T, true>
+{
+public:
+  static octave_int<T>
+  abs (const T& x) { return x < 0 ? -x : x; }
+
+  static octave_int<T>
+  signum (const T& x) { return x < 0 ? -1 : (x > 0 ? 1 : 0); }
+
+  template <class T2>
+  static void
+  rshift_eq (T& ival, const T2& x)
+  {
+    if (ival < 0)
+      ival = - (((-ival) >> x) & std::numeric_limits<T>::max());
+    else
+      ival = ival >> x;
+  }
+};
+
 template <class T>
 class
 octave_int
@@ -306,32 +361,26 @@ public:
     return *this;
   }
 
+  // Use helper functions in the operator >>=, abs, and signum
+  // functions to avoid "comparison of unsigned expression < 0 is
+  // always false" warnings from GCC when instantiating these funtions
+  // for unsigned types.
+
   template <class T2>
   octave_int<T>& operator >>= (const T2& x)
   {
-    if (ival < 0)
-      ival = - (((-ival) >> x) & std::numeric_limits<T>::max());
-    else
-      ival = ival >> x;
+    octave_int_helper<T, std::numeric_limits<T>::is_signed>::rshift_eq (ival, x);
     return *this;
   }
 
-  octave_int<T> abs (void) const 
-  { 
-    T val = value (); 
-    if (val < static_cast <T> (0))
-      val = - val;
-    return val;
+  octave_int<T> abs (void) const
+  {
+    return octave_int_helper<T, std::numeric_limits<T>::is_signed>::abs (value ());
   }
 
   octave_int<T> signum (void) const 
   { 
-    T val = value (); 
-    if (val < static_cast <T> (0))
-      val = - static_cast <T> (1);
-    else if (val > static_cast <T> (0))
-      val = static_cast <T> (1);
-    return val;
+    return octave_int_helper<T, std::numeric_limits<T>::is_signed>::signum (value ());
   }
 
   octave_int<T> min (void) const { return std::numeric_limits<T>::min (); }
@@ -585,7 +634,9 @@ OCTAVE_INT_CMP_OP (!=)
 // type and compare).
 
 #define OCTAVE_US_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
-  bool OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
+  template <> \
+  bool \
+  OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
 
 #define OCTAVE_US_TYPE1_CMP_OP_DECLS(UT, ST) \
   OCTAVE_US_TYPE1_CMP_OP_DECL (<, false, UT, ST) \
@@ -596,7 +647,9 @@ OCTAVE_INT_CMP_OP (!=)
   OCTAVE_US_TYPE1_CMP_OP_DECL (!=, true, UT, ST)
 
 #define OCTAVE_SU_TYPE1_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
-  bool OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
+  template <> \
+  bool \
+  OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
 
 #define OCTAVE_SU_TYPE1_CMP_OP_DECLS(ST, UT) \
   OCTAVE_SU_TYPE1_CMP_OP_DECL (<, true, ST, UT) \
@@ -624,7 +677,9 @@ OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int64_t)
 // compare if the signed value is positive).
 
 #define OCTAVE_US_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, UT, ST) \
-  bool OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
+  template <> \
+  bool \
+  OCTAVE_API operator OP (const octave_int<UT>& lhs, const octave_int<ST>& rhs);
 
 #define OCTAVE_US_TYPE2_CMP_OP_DECLS(ST, UT) \
   OCTAVE_US_TYPE2_CMP_OP_DECL (<, false, ST, UT) \
@@ -635,7 +690,9 @@ OCTAVE_TYPE1_CMP_OP_DECLS (uint64_t, int64_t)
   OCTAVE_US_TYPE2_CMP_OP_DECL (!=, true, ST, UT)
 
 #define OCTAVE_SU_TYPE2_CMP_OP_DECL(OP, LTZ_VAL, ST, UT) \
-  bool OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
+  template <> \
+  bool \
+  OCTAVE_API operator OP (const octave_int<ST>& lhs, const octave_int<UT>& rhs);
 
 #define OCTAVE_SU_TYPE2_CMP_OP_DECLS(ST, UT) \
   OCTAVE_SU_TYPE2_CMP_OP_DECL (<, true, ST, UT) \

@@ -1,3 +1,15 @@
+2008-02-24  John W. Eaton  <jwe@octave.org>
+
+	* oct-inttypes.h (octave_int_helper): New class.  Provide
+	specializations for signed and unsigned types.
+	(octave_int<T>::operator >>=, octave_int<T>::abs,
+	octave_int<T>::signum): Use static functions from
+	octave_int_helper class.
+
+	* oct-inttypes.h, oct-inttypes.cc (OCTAVE_US_TYPE1_CMP_OP,
+	OCTAVE_US_TYPE2_CMP_OP): Tag function declarations and definitions
+	with "template <>".
+
 2008-02-22  John W. Eaton  <jwe@octave.org>
 
 	* CSparse.cc, SparseCmplxLU.cc, SparsedbleLU.cc, dSparse.cc,

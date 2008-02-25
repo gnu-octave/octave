@@ -1,3 +1,10 @@
+2008-02-24  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (OpenGL_fltk::Draw): removed double
+	buffer switch
+	(OpenGL_fltk::setup_viewport): removed call to glOrtho --
+	gl-render takes care of all the transformations
+
 2008-02-23  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* fltk_backend/fltk_backend.cc (plot_window::mark_modifed): mark

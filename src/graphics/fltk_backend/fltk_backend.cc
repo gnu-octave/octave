@@ -43,6 +43,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "parse.h"
 #include "graphics.h"
 
+#define FLTK_BACKEND_NAME "fltk"
+
 const char* help_text = "\
 Keyboard Shortcuts\n\
 a - autoscale\n\
@@ -73,7 +75,6 @@ private:
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport (0, 0, _w, _h);
-    //    glOrtho (0.0, 1, 0.0, 1, -1.0, 1.0);
   }    
 
   void draw () {
@@ -82,15 +83,7 @@ private:
       setup_viewport (w (), h ());
     }
 
-#ifndef MESA
-    glDrawBuffer (GL_FRONT_AND_BACK);
-#endif // !MESA
-
     renderer.draw (gh_manager::lookup (number));
-
-#ifndef MESA
-      glDrawBuffer (GL_BACK);
-#endif // !MESA
   };
 
   void resize (int _x,int _y,int _w,int _h) {
@@ -121,17 +114,16 @@ private:
 
 class plot_window : public Fl_Window {
 public:
-  plot_window (int _x, int _y, int _w, int _h, double num) :
+  plot_window (int _x, int _y, int _w, int _h, figure::properties& _fp) :
     Fl_Window (_x, _y, _w, _h, "octave"), 
-    _number (num),
-    err_props (graphics_handle (), graphics_handle ())
+    fp (_fp)
   {
     callback (window_close, static_cast<void*> (this));
 
     begin();
     {
       canvas = new 
-	OpenGL_fltk (0, 0, _w , _h - status_h, num);
+	OpenGL_fltk (0, 0, _w , _h - status_h, number ());
 
       autoscale = new
 	Fl_Button (0, 
@@ -188,7 +180,8 @@ public:
     delete status;
   };
 
-  double number () { return _number;};
+  // FIXME -- this could change
+  double number () { return fp.get___myhandle__ ().value ();};
   
   void mark_modified () 
   { 
@@ -197,9 +190,8 @@ public:
   }
 
 private:
-  // figure number
-  double _number;
-  figure::properties err_props;
+  // figure properties
+  figure::properties& fp;
 
   // status area height
   static const int status_h = 20;
@@ -228,30 +220,14 @@ private:
   Fl_Output*     status;
 
 
-  figure::properties& get_figure_props () {
-    graphics_object obj = gh_manager::get_object (_number);
-  
-    if (obj && obj.isa ("figure"))
-      {
-	figure::properties& fprops = 
-	  dynamic_cast<figure::properties&> (obj.get_properties ());
-	return fprops;
-      }
-
-    error("OpenGL_fltk:: Internal error -- Not associated with figure!");
-    return err_props;
-  };
-
   void pixel2pos (int px, int py, double& x, double& y) const {
     x = static_cast<double> (px) / w ();
     y = 1. - static_cast<double> (py) / (h () - status_h);
   }    
 
   graphics_handle pixel2axes (int px, int py) {
-    
     double x,y;
 
-    figure::properties fp = get_figure_props ();
     Matrix children =  fp.get_children ();
     for (octave_idx_type n = 0; n < children.numel (); n++) 
       {
@@ -317,16 +293,11 @@ private:
     pos(2) = _w;
     pos(3) = _h;
 
-    octave_value_list args;    
-    args(0) = number ();
-    args(1) = "position";
-    args(2) = pos;
-    feval("set",args);
+    fp.set_position (pos);
   }
 
   void draw (void)
   {
-    figure::properties& fp = get_figure_props ();
     Matrix pos = fp.get_position ().matrix_value ();
     Fl_Window::resize (pos(0), pos(1) , pos(2), pos(3));
 
@@ -382,7 +353,7 @@ private:
 	      {
 		std::cout << "ca="<< h0.value ()<<"\n";
 		if (h0.ok ())
-		  get_figure_props ().set_currentaxes (h0.value());
+		  fp.set_currentaxes (h0.value());
 		return 1;
 	      }
 	  }
@@ -413,40 +384,47 @@ public:
     windows.clear ();
   }
 
-  void new_window (double num) {
-    if (windows.find (num) != windows.end ())
-      return;
-
+  void new_window (figure::properties& fp) {
     int x,y,w,h;
 
-    default_size(x,y,w,h);
-
-    windows[num] = new plot_window (x, y, w, h, num);
+    int idx = figprops2idx (fp);
+    if (idx >= 0 && windows.find (idx) == windows.end ())
+      {
+	default_size(x,y,w,h);
+	idx2figprops (curr_index , fp);
+	windows[curr_index++] = new plot_window (x, y, w, h, fp);
+      }
   };
 
-  void delete_window (double num) {
+  void delete_window (int idx) {
     wm_iterator win;
-    if ( (win=windows.find (num)) != windows.end ())
+    if ( (win=windows.find (idx)) != windows.end ())
       {
 	delete (*win).second;
 	windows.erase (win);
       }
   };
 
-  void mark_modified (double num) {
+  void delete_window (std::string idx_str)
+  { delete_window (str2idx (idx_str)); }
+
+  void mark_modified (int idx) {
     wm_iterator win;
-    if ( (win=windows.find (num)) != windows.end ())
+    if ( (win=windows.find (idx)) != windows.end ())
       {
 	(*win).second->mark_modified ();
       }
   };
 
-  Matrix get_size (double num)
+  void mark_modified (const graphics_handle& gh) 
+  { mark_modified (hnd2idx(gh)); }
+
+  Matrix get_size (int idx)
   {
     Matrix sz (1, 2, 0.0);
 
     wm_iterator win;
-    if ( (win=windows.find (num)) != windows.end ())
+    if ( (win=windows.find (idx)) != windows.end ())
       {
 	sz(0) = (*win).second->w ();
 	sz(1) = (*win).second->h ();
@@ -455,17 +433,21 @@ public:
     return sz;
   }
 
+  Matrix get_size (const graphics_handle& gh) 
+  { return get_size (hnd2idx (gh)); }
+
 private:
   figure_manager () {};
   figure_manager (const figure_manager& ) {};
   figure_manager& operator = (const figure_manager&) {return *this;};
   // singelton -- hide all of the above
 
-
-  typedef std::map<double, plot_window*> window_map;
+  static int curr_index;
+  typedef std::map<int, plot_window*> window_map;
   typedef window_map::iterator wm_iterator;;
-
   window_map windows;
+
+  static std::string fltk_idx_header;
 
   void default_size (int& x, int& y, int& w, int& h) {
     x = 10;
@@ -474,9 +456,61 @@ private:
     h = 300;
   }
 
+  int str2idx (const caseless_str clstr)
+  {
+    int ind;
+    if (clstr.find (fltk_idx_header,0) == 0)
+      {
+	std::istringstream istr (clstr.substr (fltk_idx_header.size ()));
+	if (istr >> ind )
+	  return ind;
+      }
+    error ("fltk_backend: could not recodnise fltk index");
+    return -1;
+  }
+
+  void idx2figprops (int idx, figure::properties& fp)
+  {
+    std::ostringstream ind_str;
+    ind_str << fltk_idx_header << idx;
+    std::cout << ind_str.str () << "\n";
+    fp.set___plot_stream__ (ind_str.str ());
+  }
+
+  int figprops2idx (const figure::properties& fp)
+  {
+    if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+      {
+	octave_value ps = fp.get___plot_stream__ ();
+	if (ps.is_string ())
+	  return str2idx (ps.string_value ());
+	else
+	  return 0;
+      }
+    error ("fltk_backend:: figure is not fltk");
+    return -1;
+  }
+
+  int hnd2idx (const graphics_handle& fh)
+  { return hnd2idx (fh.value ()); }
+
+  int hnd2idx (const double h)
+  {
+    graphics_object fobj = gh_manager::get_object (h);
+    if (fobj &&  fobj.isa ("figure")) 
+      {
+	figure::properties& fp = 
+	  dynamic_cast<figure::properties&> (fobj.get_properties ());
+	return figprops2idx (fp);
+      }
+    error ("fltk_backend:: not a figure");
+    return -1;
+  }
+
 };
 
-#define FLTK_BACKEND_NAME "fltk"
+std::string figure_manager::fltk_idx_header="fltk index=";
+int figure_manager::curr_index = 1;
 
 class fltk_backend : public base_graphics_backend
 {
@@ -488,15 +522,15 @@ public:
 
   bool is_valid (void) const { return true; }
  
-  void close_figure (const octave_value& fh) const
+  void close_figure (const octave_value& ov) const
     {
-      if (fh.is_real_scalar ())
-	  figure_manager::Instance ().delete_window (fh.double_value ());
+      if (ov.is_string ())
+	figure_manager::Instance ().delete_window (ov.string_value ());
     }
 
   void redraw_figure (const graphics_handle& fh) const
     {
-      figure_manager::Instance ().mark_modified (fh.value ());
+      figure_manager::Instance ().mark_modified (fh);
     }
 
   void print_figure (const graphics_handle& fh, const std::string& term,
@@ -507,7 +541,7 @@ public:
 
   Matrix get_canvas_size (const graphics_handle& fh) const
     {
-      return figure_manager::Instance ().get_size (fh.value ());
+      return figure_manager::Instance ().get_size (fh);
     }
 
   double get_screen_resolution (void) const
@@ -588,29 +622,14 @@ DEFUN_DLD (__fltk_redraw__, args, nargout,\
       for (octave_idx_type n = 0; n < children.numel (); n++) 
         {
           graphics_object fobj = gh_manager::get_object (children (n));
-          if (fobj &&  fobj.isa ("figure")) 
-	    {
-	      figure::properties& fp = 
-		dynamic_cast<figure::properties&> (fobj.get_properties ());
-	      if (fp.get___backend__ () == FLTK_BACKEND_NAME)
-		{
-		  figure_manager::Instance ().new_window (children (n));
-
-		  // put figure handle in __plot_stream__ so we know
-		  // which window to close. Only do this if necesarry
-		  // since it modifies the figure and causes a redraw
-		  octave_value ps = fp.get___plot_stream__ ();
-		  if (ps.is_real_scalar ())
-		    if (ps.double_value () == fp.get___myhandle__ ().value ())
-		      continue;
-
-		  octave_value_list oargs;   
-		  oargs(0) = fp.get___myhandle__ ().value ();
-		  oargs(1) = "__plot_stream__";
-		  oargs(2) = fp.get___myhandle__ ().value ();
-		  feval ("set" , oargs);
-		}
-	    }
+          if (fobj)
+	    if (fobj.isa ("figure")) 
+	      {
+		figure::properties& fp = 
+		  dynamic_cast<figure::properties&> (fobj.get_properties ());
+		if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+		  figure_manager::Instance ().new_window (fp);
+	      }
         }
     }
 

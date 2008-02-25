@@ -1,3 +1,8 @@
+2008-02-25  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* ov-scalar.cc (octave_scalar::round): Use xround instead of ::round
+	in mapper implementation.
+
 2008-02-25  John W. Eaton  <jwe@octave.org>
 
 	* ov-base.cc (UNDEFINED_MAPPER, STRING_MAPPER): New macros.  Use

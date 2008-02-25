@@ -1,5 +1,17 @@
 2008-02-25  John W. Eaton  <jwe@octave.org>
 
+	* ov-base.cc (UNDEFINED_MAPPER, STRING_MAPPER): New macros.  Use
+	them to define mapper functions.
+
+	* mappers.cc (Fisalnum, Fisalpha, Fisascii, Fiscntrl, Fisdigit,
+	Fisgraph, Fislower, Fisprint, Fispunct, Fisspace, Fisupper,
+	Fisxdigit, Ftoascii, Ftolower, Ftoupper):
+	Use DEFUNX to define ctype mapper functions.
+	Use new function names.
+
+	* ov-base.h, ov-base.cc, ov-str-mat.h, ov-str-mat.cc:
+	Prepend x to ctype mapper function names.
+
 	* graphics.h.in (row_vector_property::row_vector_property):
 	Set default constraints here.
 	(row_vector_property::add_constraint): New function.

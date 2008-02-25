@@ -895,401 +895,75 @@ octave_base_value::sort (Array<octave_idx_type> &,
   return octave_value();
 }
 
-octave_value
-octave_base_value::abs (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::abs ()", type_name ());
-  return octave_value ();
-}
+#define UNDEFINED_MAPPER(F) \
+  octave_value \
+  octave_base_value::F (void) const \
+  { \
+    gripe_wrong_type_arg ("octave_base_value::" #F " ()", type_name ()); \
+    return octave_value (); \
+  }
 
-octave_value
-octave_base_value::acos (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::acos ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::acosh (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::acosh ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::angle (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::angle ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::arg (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::arg ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::asin (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::asin ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::asinh (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::asinh ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::atan (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::atan ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::atanh (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::atanh ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::ceil (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::ceil ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::conj (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::conj ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::cos (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::cos ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::cosh (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::cosh ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::erf (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::erf ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::erfc (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::erfc ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::exp (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::exp ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::finite (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::finite ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::fix (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::fix ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::floor (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::floor ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::gamma (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::gamma ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::imag (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::imag ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::isinf (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::isinf ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::isna (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::isna ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::isnan (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::isnan ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::lgamma (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::lgamma ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::log (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::log ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::log10 (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::log10 ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::real (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::real ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::round (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::round ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::signum (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::signum ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::sin (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::sin ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::sinh (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::sinh ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::sqrt (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::sqrt ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::tan (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::tan ()", type_name ());
-  return octave_value ();
-}
-
-octave_value
-octave_base_value::tanh (void) const
-{
-  gripe_wrong_type_arg ("octave_base_value::tanh ()", type_name ());
-  return octave_value ();
-}
+UNDEFINED_MAPPER (abs)
+UNDEFINED_MAPPER (acos)
+UNDEFINED_MAPPER (acosh)
+UNDEFINED_MAPPER (angle)
+UNDEFINED_MAPPER (arg)
+UNDEFINED_MAPPER (asin)
+UNDEFINED_MAPPER (asinh)
+UNDEFINED_MAPPER (atan)
+UNDEFINED_MAPPER (atanh)
+UNDEFINED_MAPPER (ceil)
+UNDEFINED_MAPPER (conj)
+UNDEFINED_MAPPER (cos)
+UNDEFINED_MAPPER (cosh)
+UNDEFINED_MAPPER (erf)
+UNDEFINED_MAPPER (erfc)
+UNDEFINED_MAPPER (exp)
+UNDEFINED_MAPPER (finite)
+UNDEFINED_MAPPER (fix)
+UNDEFINED_MAPPER (floor)
+UNDEFINED_MAPPER (gamma)
+UNDEFINED_MAPPER (imag)
+UNDEFINED_MAPPER (isinf)
+UNDEFINED_MAPPER (isna)
+UNDEFINED_MAPPER (isnan)
+UNDEFINED_MAPPER (lgamma)
+UNDEFINED_MAPPER (log)
+UNDEFINED_MAPPER (log10)
+UNDEFINED_MAPPER (real)
+UNDEFINED_MAPPER (round)
+UNDEFINED_MAPPER (signum)
+UNDEFINED_MAPPER (sin)
+UNDEFINED_MAPPER (sinh)
+UNDEFINED_MAPPER (sqrt)
+UNDEFINED_MAPPER (tan)
+UNDEFINED_MAPPER (tanh)
 
 // String mapper functions, convert to a string
-octave_value
-octave_base_value::isalnum (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isalnum ();
-  else
-    return octave_value ();
-}
 
-octave_value
-octave_base_value::isalpha (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isalpha ();
-  else
-    return octave_value ();
-}
+#define STRING_MAPPER(F) \
+  octave_value \
+  octave_base_value::F (void) const \
+  { \
+    octave_value tmp = octave_value (char_array_value (true), true); \
+    return error_state ? octave_value () : octave_value (tmp.F ()); \
+  }
 
-octave_value
-octave_base_value::isascii (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isascii ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::iscntrl (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.iscntrl ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::isdigit (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isdigit ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::isgraph (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isgraph ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::islower (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.islower ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::isprint (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isprint ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::ispunct (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.ispunct ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::isspace (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isspace ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::isupper (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isupper ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::isxdigit (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.isxdigit ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::toascii (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.toascii ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::tolower (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.tolower ();
-  else
-    return octave_value ();
-}
-
-octave_value
-octave_base_value::toupper (void) const
-{
-  octave_value tmp = octave_value (char_array_value (true), true);
-  if (! error_state)
-    return tmp.toupper ();
-  else
-    return octave_value ();
-}
+STRING_MAPPER (xisalnum)
+STRING_MAPPER (xisalpha)
+STRING_MAPPER (xisascii)
+STRING_MAPPER (xiscntrl)
+STRING_MAPPER (xisdigit)
+STRING_MAPPER (xisgraph)
+STRING_MAPPER (xislower)
+STRING_MAPPER (xisprint)
+STRING_MAPPER (xispunct)
+STRING_MAPPER (xisspace)
+STRING_MAPPER (xisupper)
+STRING_MAPPER (xisxdigit)
+STRING_MAPPER (xtoascii)
+STRING_MAPPER (xtolower)
+STRING_MAPPER (xtoupper)
 
 void
 octave_base_value::lock (void)

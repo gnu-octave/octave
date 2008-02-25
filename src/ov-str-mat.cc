@@ -25,6 +25,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <cctype>
+
 #include <iostream>
 #include <vector>
 
@@ -772,44 +774,45 @@ octave_char_matrix_str::load_hdf5 (hid_t loc_id, const char *name,
 
 #endif
 
-#define MACRO_WRAPPER(FCN) \
-  static int x ## FCN (int c) { return FCN (c); }
+#define MACRO_WRAPPER(FCN, CTYPE_FCN) \
+  static int x ## FCN (int c) { return CTYPE_FCN (c); }
 
-#define STRING_MAPPER(MAP, AMAP, FCN) \
-  MACRO_WRAPPER (FCN) \
+#define STRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
+  MACRO_WRAPPER (FCN, CTYPE_FCN) \
+ \
   octave_value \
-  octave_char_matrix_str::MAP (void) const \
+  octave_char_matrix_str::FCN (void) const \
   { \
     static charNDArray::mapper smap = x ## FCN; \
     return matrix.AMAP (smap);  \
   }
 
-#define TOSTRING_MAPPER(MAP, AMAP, FCN) \
-  MACRO_WRAPPER (FCN) \
+#define TOSTRING_MAPPER(FCN, AMAP, CTYPE_FCN) \
+  MACRO_WRAPPER (FCN, CTYPE_FCN) \
  \
   octave_value \
-  octave_char_matrix_str::MAP (void) const \
+  octave_char_matrix_str::FCN (void) const \
   { \
     static charNDArray::mapper smap = x ## FCN; \
-    return (is_sq_string () ? octave_value (matrix.AMAP (smap), true, '\'') : \
-	    octave_value (matrix.AMAP (smap), true)); \
+    return octave_value (matrix.AMAP (smap), true, \
+			 is_sq_string () ? '\'' : '"'); \
   }
 
-STRING_MAPPER (isalnum, bmap, isalnum)
-STRING_MAPPER (isalpha, bmap, isalpha)
-STRING_MAPPER (isascii, bmap, isascii)
-STRING_MAPPER (iscntrl, bmap, iscntrl)
-STRING_MAPPER (isdigit, bmap, isdigit)
-STRING_MAPPER (isgraph, bmap, isgraph)
-STRING_MAPPER (islower, bmap, islower)
-STRING_MAPPER (isprint, bmap, isprint)
-STRING_MAPPER (ispunct, bmap, ispunct)
-STRING_MAPPER (isspace, bmap, isspace)
-STRING_MAPPER (isupper, bmap, isupper)
-STRING_MAPPER (isxdigit, bmap, isxdigit)
-STRING_MAPPER (toascii, dmap, toascii)
-TOSTRING_MAPPER (tolower, smap, tolower)
-TOSTRING_MAPPER (toupper, smap, toupper)
+STRING_MAPPER (xisalnum, bmap, isalnum)
+STRING_MAPPER (xisalpha, bmap, isalpha)
+STRING_MAPPER (xisascii, bmap, isascii)
+STRING_MAPPER (xiscntrl, bmap, iscntrl)
+STRING_MAPPER (xisdigit, bmap, isdigit)
+STRING_MAPPER (xisgraph, bmap, isgraph)
+STRING_MAPPER (xislower, bmap, islower)
+STRING_MAPPER (xisprint, bmap, isprint)
+STRING_MAPPER (xispunct, bmap, ispunct)
+STRING_MAPPER (xisspace, bmap, isspace)
+STRING_MAPPER (xisupper, bmap, isupper)
+STRING_MAPPER (xisxdigit, bmap, isxdigit)
+STRING_MAPPER (xtoascii, dmap, toascii)
+TOSTRING_MAPPER (xtolower, smap, tolower)
+TOSTRING_MAPPER (xtoupper, smap, toupper)
 
 /*
 ;;; Local Variables: ***

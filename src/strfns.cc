@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cctype>
+
 #include <sstream>
 
 #include "dMatrix.h"

@@ -158,21 +158,21 @@ public:
 	     oct_mach_info::float_format flt_fmt) const
     { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
 
-  octave_value isalnum (void) const;
-  octave_value isalpha (void) const;
-  octave_value isascii (void) const;
-  octave_value iscntrl (void) const;
-  octave_value isdigit (void) const;
-  octave_value isgraph (void) const;
-  octave_value islower (void) const;
-  octave_value isprint (void) const;
-  octave_value ispunct (void) const;
-  octave_value isspace (void) const;
-  octave_value isupper (void) const;
-  octave_value isxdigit (void) const;
-  octave_value toascii (void) const;
-  octave_value tolower (void) const;
-  octave_value toupper (void) const;
+  octave_value xisalnum (void) const;
+  octave_value xisalpha (void) const;
+  octave_value xisascii (void) const;
+  octave_value xiscntrl (void) const;
+  octave_value xisdigit (void) const;
+  octave_value xisgraph (void) const;
+  octave_value xislower (void) const;
+  octave_value xisprint (void) const;
+  octave_value xispunct (void) const;
+  octave_value xisspace (void) const;
+  octave_value xisupper (void) const;
+  octave_value xisxdigit (void) const;
+  octave_value xtoascii (void) const;
+  octave_value xtolower (void) const;
+  octave_value xtoupper (void) const;
 
 #define MAT_MAPPER(MAP) \
   octave_value MAP (void) const \

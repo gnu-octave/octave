@@ -915,21 +915,25 @@ public:
   MAPPER_FORWARD (sqrt)
   MAPPER_FORWARD (tan)
   MAPPER_FORWARD (tanh)
-  MAPPER_FORWARD (isalnum)
-  MAPPER_FORWARD (isalpha)
-  MAPPER_FORWARD (isascii)
-  MAPPER_FORWARD (iscntrl)
-  MAPPER_FORWARD (isdigit)
-  MAPPER_FORWARD (isgraph)
-  MAPPER_FORWARD (islower)
-  MAPPER_FORWARD (isprint)
-  MAPPER_FORWARD (ispunct)
-  MAPPER_FORWARD (isspace)
-  MAPPER_FORWARD (isupper)
-  MAPPER_FORWARD (isxdigit)
-  MAPPER_FORWARD (toascii)
-  MAPPER_FORWARD (tolower)
-  MAPPER_FORWARD (toupper)
+
+  // These functions are prefixed with X to avoid potential macro
+  // conflicts.
+
+  MAPPER_FORWARD (xisalnum)
+  MAPPER_FORWARD (xisalpha)
+  MAPPER_FORWARD (xisascii)
+  MAPPER_FORWARD (xiscntrl)
+  MAPPER_FORWARD (xisdigit)
+  MAPPER_FORWARD (xisgraph)
+  MAPPER_FORWARD (xislower)
+  MAPPER_FORWARD (xisprint)
+  MAPPER_FORWARD (xispunct)
+  MAPPER_FORWARD (xisspace)
+  MAPPER_FORWARD (xisupper)
+  MAPPER_FORWARD (xisxdigit)
+  MAPPER_FORWARD (xtoascii)
+  MAPPER_FORWARD (xtolower)
+  MAPPER_FORWARD (xtoupper)
 
 #undef MAPPER_FORWARD
 

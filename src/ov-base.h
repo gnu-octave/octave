@@ -503,21 +503,25 @@ public:
   virtual octave_value sqrt (void) const;
   virtual octave_value tan (void) const;
   virtual octave_value tanh (void) const;
-  virtual octave_value isalnum (void) const;
-  virtual octave_value isalpha (void) const;
-  virtual octave_value isascii (void) const;
-  virtual octave_value iscntrl (void) const;
-  virtual octave_value isdigit (void) const;
-  virtual octave_value isgraph (void) const;
-  virtual octave_value islower (void) const;
-  virtual octave_value isprint (void) const;
-  virtual octave_value ispunct (void) const;
-  virtual octave_value isspace (void) const;
-  virtual octave_value isupper (void) const;
-  virtual octave_value isxdigit (void) const;
-  virtual octave_value toascii (void) const;
-  virtual octave_value tolower (void) const;
-  virtual octave_value toupper (void) const;
+
+  // These functions are prefixed with X to avoid potential macro
+  // conflicts.
+
+  virtual octave_value xisalnum (void) const;
+  virtual octave_value xisalpha (void) const;
+  virtual octave_value xisascii (void) const;
+  virtual octave_value xiscntrl (void) const;
+  virtual octave_value xisdigit (void) const;
+  virtual octave_value xisgraph (void) const;
+  virtual octave_value xislower (void) const;
+  virtual octave_value xisprint (void) const;
+  virtual octave_value xispunct (void) const;
+  virtual octave_value xisspace (void) const;
+  virtual octave_value xisupper (void) const;
+  virtual octave_value xisxdigit (void) const;
+  virtual octave_value xtoascii (void) const;
+  virtual octave_value xtolower (void) const;
+  virtual octave_value xtoupper (void) const;
 
 protected:
 

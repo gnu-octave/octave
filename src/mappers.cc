@@ -468,7 +468,7 @@ Return the imaginary part of @var{z} as a real number.\n\
   return retval;
 }
 
-DEFUN (isalnum, args, ,
+DEFUNX ("isalnum", Fisalnum, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalnum (@var{s})\n\
 Return 1 for characters that are letters or digits (@code{isalpha\n\
@@ -477,14 +477,14 @@ Return 1 for characters that are letters or digits (@code{isalpha\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isalnum ();
+    retval = args(0).xisalnum ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (isalpha, args, ,
+DEFUNX ("isalpha", Fisalpha, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isalpha (@var{s})\n\
 @deftypefnx {Mapping Function} {} isletter (@var{s})\n\
@@ -494,18 +494,14 @@ or @code{islower (@var{s})} is true).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isalpha ();
+    retval = args(0).xisalpha ();
   else
     print_usage ();
 
   return retval;
 }
 
-#ifdef isascii
-#undef isascii
-#endif
-
-DEFUN (isascii, args, ,
+DEFUNX ("isascii", Fisascii, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isascii (@var{s})\n\
 Return 1 for characters that are ASCII (in the range 0 to 127 decimal).\n\
@@ -513,14 +509,14 @@ Return 1 for characters that are ASCII (in the range 0 to 127 decimal).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isascii ();
+    retval = args(0).xisascii ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (iscntrl, args, ,
+DEFUNX ("iscntrl", Fiscntrl, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} iscntrl (@var{s})\n\
 Return 1 for control characters.\n\
@@ -528,14 +524,14 @@ Return 1 for control characters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).iscntrl ();
+    retval = args(0).xiscntrl ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (isdigit, args, ,
+DEFUNX ("isdigit", Fisdigit, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isdigit (@var{s})\n\
 Return 1 for characters that are decimal digits.\n\
@@ -543,7 +539,7 @@ Return 1 for characters that are decimal digits.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isdigit ();
+    retval = args(0).xisdigit ();
   else
     print_usage ();
 
@@ -573,7 +569,7 @@ isinf ([13, Inf, NA, NaN])\n\
   return retval;
 }
 
-DEFUN (isgraph, args, ,
+DEFUNX ("isgraph", Fisgraph, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isgraph (@var{s})\n\
 Return 1 for printable characters (but not the space character).\n\
@@ -581,14 +577,14 @@ Return 1 for printable characters (but not the space character).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isgraph ();
+    retval = args(0).xisgraph ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (islower, args, ,
+DEFUNX ("islower", Fislower, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} islower (@var{s})\n\
 Return 1 for characters that are lower case letters.\n\
@@ -596,7 +592,7 @@ Return 1 for characters that are lower case letters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).islower ();
+    retval = args(0).xislower ();
   else
     print_usage ();
 
@@ -649,7 +645,7 @@ isnan ([13, Inf, NA, NaN])\n\
   return retval;
 }
 
-DEFUN (isprint, args, ,
+DEFUNX ("isprint", Fisprint, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isprint (@var{s})\n\
 Return 1 for printable characters (including the space character).\n\
@@ -657,14 +653,14 @@ Return 1 for printable characters (including the space character).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isprint ();
+    retval = args(0).xisprint ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (ispunct, args, ,
+DEFUNX ("ispunct", Fispunct, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ispunct (@var{s})\n\
 Return 1 for punctuation characters.\n\
@@ -672,14 +668,14 @@ Return 1 for punctuation characters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).ispunct ();
+    retval = args(0).xispunct ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (isspace, args, ,
+DEFUNX ("isspace", Fisspace, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isspace (@var{s})\n\
 Return 1 for whitespace characters (space, formfeed, newline,\n\
@@ -688,14 +684,14 @@ carriage return, tab, and vertical tab).\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isspace ();
+    retval = args(0).xisspace ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (isupper, args, ,
+DEFUNX ("isupper", Fisupper, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isupper (@var{s})\n\
 Return 1 for upper case letters.\n\
@@ -703,14 +699,14 @@ Return 1 for upper case letters.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isupper ();
+    retval = args(0).xisupper ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (isxdigit, args, ,
+DEFUNX ("isxdigit", Fisxdigit, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isxdigit (@var{s})\n\
 Return 1 for characters that are hexadecimal digits.\n\
@@ -718,7 +714,7 @@ Return 1 for characters that are hexadecimal digits.\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).isxdigit ();
+    retval = args(0).xisxdigit ();
   else
     print_usage ();
 
@@ -918,11 +914,7 @@ Compute hyperbolic tangent of each element of @var{x}.\n\
   return retval;
 }
 
-#ifdef toascii
-#undef toascii
-#endif
-
-DEFUN (toascii, args, ,
+DEFUNX ("toascii", Ftoascii, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} toascii (@var{s})\n\
 Return ASCII representation of @var{s} in a matrix.  For example,\n\
@@ -938,14 +930,14 @@ toascii (\"ASCII\")\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).toascii ();
+    retval = args(0).xtoascii ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (tolower, args, ,
+DEFUNX ("tolower", Ftolower, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tolower (@var{s})\n\
 Return a copy of the string @var{s}, with each upper-case character\n\
@@ -960,14 +952,14 @@ tolower (\"MiXeD cAsE 123\")\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).tolower ();
+    retval = args(0).xtolower ();
   else
     print_usage ();
 
   return retval;
 }
 
-DEFUN (toupper, args, ,
+DEFUNX ("toupper", Ftoupper, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} toupper (@var{s})\n\
 Return a copy of the string @var{s}, with each  lower-case character\n\
@@ -984,7 +976,7 @@ toupper (\"MiXeD cAsE 123\")\n\
 {
   octave_value retval;
   if (args.length () == 1)
-    retval = args(0).toupper ();
+    retval = args(0).xtoupper ();
   else
     print_usage ();
 

@@ -1,3 +1,12 @@
+2008-02-25  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in, graphics.cc (class row_vector_property): New class.	
+	(axes::properties): xlim, ylim, zlim, clim, alim, xtick, ytick,
+	ztick properties are now row_vector_property objects instead of
+	array_property objects.
+	* genprops.awk: Special case row_vector_property in the same way
+	as array_property.
+
 2008-02-22  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/ccolamd.cc, DLD-FUNCTIONS/colamd.cc,

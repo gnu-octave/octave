@@ -717,10 +717,46 @@ public:
 private:
   OCTINTERP_API bool validate (const octave_value& v);
 
-private:
+protected:
   octave_value data;
   std::list<std::string> type_constraints;
   std::list<dim_vector> size_constraints;
+};
+
+class row_vector_property : public array_property
+{
+public:
+  row_vector_property (const std::string& nm, const graphics_handle& h,
+		       const octave_value& m)
+    : array_property (nm, h, m) { }
+
+  void set (const octave_value& v)
+    {
+      array_property::set (v);
+
+      if (! error_state)
+	{
+	  dim_vector dv = data.dims ();
+
+	  if (dv(0) > 1 && dv(1) == 1)
+	    {
+	      int tmp = dv(0);
+	      dv(0) = dv(1);
+	      dv(1) = tmp;
+
+	      data = data.reshape (dv);
+	    }
+	}
+    }
+
+  row_vector_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+private:
+  OCTINTERP_API bool validate (const octave_value& v);
 };
 
 // ---------------------------------------------------------------------
@@ -2330,11 +2366,11 @@ public:
       array_property dataaspectratio m , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode , "{auto}|manual"
       radio_property layer , "{bottom}|top"
-      array_property xlim mu , default_lim ()
-      array_property ylim mu , default_lim ()
-      array_property zlim mu , default_lim ()
-      array_property clim m , default_lim ()
-      array_property alim m , default_lim ()
+      row_vector_property xlim mu , default_lim ()
+      row_vector_property ylim mu , default_lim ()
+      row_vector_property zlim mu , default_lim ()
+      row_vector_property clim m , default_lim ()
+      row_vector_property alim m , default_lim ()
       radio_property xlimmode al , "{auto}|manual"
       radio_property ylimmode al , "{auto}|manual"
       radio_property zlimmode al , "{auto}|manual"
@@ -2349,9 +2385,9 @@ public:
       bool_property xminorgrid , "off"
       bool_property yminorgrid , "off"
       bool_property zminorgrid , "off"
-      array_property xtick m , Matrix ()
-      array_property ytick m , Matrix ()
-      array_property ztick m , Matrix ()
+      row_vector_property xtick m , Matrix ()
+      row_vector_property ytick m , Matrix ()
+      row_vector_property ztick m , Matrix ()
       radio_property xtickmode , "{auto}|manual"
       radio_property ytickmode , "{auto}|manual"
       radio_property ztickmode , "{auto}|manual"
@@ -2429,11 +2465,6 @@ public:
         colororder.add_constraint (dim_vector (-1, 3));
         dataaspectratio.add_constraint (dim_vector (1, 3));
         plotboxaspectratio.add_constraint (dim_vector (1, 3));
-        xlim.add_constraint (dim_vector (1, 2));
-        ylim.add_constraint (dim_vector (1, 2));
-        zlim.add_constraint (dim_vector (1, 2));
-        clim.add_constraint (dim_vector (1, 2));
-	alim.add_constraint (dim_vector (1, 2));
         xtick.add_constraint (dim_vector (1, -1));
         ytick.add_constraint (dim_vector (1, -1));
         ztick.add_constraint (dim_vector (1, -1));

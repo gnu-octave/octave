@@ -244,7 +244,9 @@ function emit_declarations ()
   {
     if (emit_get[i])
     {
-      if (type[i] == "array_property" || type[i] == "any_property")
+      if (type[i] == "array_property" \
+	  || type[i] == "row_vector_property" \
+	  || type[i] == "any_property")
         emit_get_accessor(i, "octave_value", "get");
       else if (type[i] == "handle_property")
         emit_get_accessor(i, "graphics_handle", "handle_value");

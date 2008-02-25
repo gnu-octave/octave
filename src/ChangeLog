@@ -1,5 +1,8 @@
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
+	* graphics.cc (axes::properties::calc_ticks_and_lims): Make sure
+	that lo <= hi.
+
 	* graphics.h.in (axes::pixel2coord, axes::coord2pixel): New functions.
 
 	* graphics.cc (convert_position): No longer static.

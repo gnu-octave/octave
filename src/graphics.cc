@@ -2607,6 +2607,13 @@ axes::properties::calc_ticks_and_lims (array_property& lims, array_property& tic
 
   double lo = (lims.get ().matrix_value ()) (0);
   double hi = (lims.get ().matrix_value ()) (1);
+  // FIXME should this be checked for somewhere else? (i.e. set{x,y,z}lim)
+  if (hi < lo) 
+    {
+      double tmp = hi;
+      hi = lo;
+      lo = tmp;
+    }
   
   double tick_sep = calc_tick_sep (lo , hi);
 

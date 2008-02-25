@@ -1,5 +1,14 @@
 2008-02-25  John W. Eaton  <jwe@octave.org>
 
+	* graphics.h.in (row_vector_property::row_vector_property):
+	Set default constraints here.
+	(row_vector_property::add_constraint): New function.
+	(row_vector_property::validate): Delete decl.
+	(axes::properties::init): Use single-arg add_constraint function
+	for xlim, ylim, zlim, clim, and alim properties.
+
+	* graphics.cc (row_vector_property::validate): Delete.
+
 	* graphics.cc (axes::properties::update_camera,
 	axes::properties::update_aspectratios):
 	Avoid shadow warnings from GCC.

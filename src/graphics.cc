@@ -491,36 +491,6 @@ array_property::validate (const octave_value& v)
   return xok;
 }
 
-bool
-row_vector_property::validate (const octave_value& v)
-{
-  bool xok = false;
-
-  // FIXME: should we always support []?
-  if (v.is_empty () && v.is_double_type ())
-    return true;
-
-  // check value type
-  if (type_constraints.size () > 0)
-    {
-      for (std::list<std::string>::const_iterator it = type_constraints.begin ();
-           ! xok && it != type_constraints.end (); ++it)
-        if ((*it) == v.type_name ())
-          xok = true;
-    }
-  else
-    xok = v.is_double_type ();
-
-  if (xok)
-    {
-      dim_vector vdims = v.dims ();
-
-      xok = vdims.length () != 2 || (vdims(0) != 1 && vdims(1) != 1);
-    }
-
-  return xok;
-}
-
 void
 handle_property::set (const octave_value& v)
 {

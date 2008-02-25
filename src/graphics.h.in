@@ -728,32 +728,55 @@ class row_vector_property : public array_property
 public:
   row_vector_property (const std::string& nm, const graphics_handle& h,
 		       const octave_value& m)
-    : array_property (nm, h, m) { }
+    : array_property (nm, h, m)
+  {
+    add_constraint (dim_vector (-1, 1));
+    add_constraint (dim_vector (1, -1));
+  }
 
   void set (const octave_value& v)
-    {
-      array_property::set (v);
+  {
+    array_property::set (v);
 
-      if (! error_state)
-	{
-	  dim_vector dv = data.dims ();
+    if (! error_state)
+      {
+	dim_vector dv = data.dims ();
 
-	  if (dv(0) > 1 && dv(1) == 1)
-	    {
-	      int tmp = dv(0);
-	      dv(0) = dv(1);
-	      dv(1) = tmp;
+	if (dv(0) > 1 && dv(1) == 1)
+	  {
+	    int tmp = dv(0);
+	    dv(0) = dv(1);
+	    dv(1) = tmp;
 
-	      data = data.reshape (dv);
-	    }
-	}
-    }
+	    data = data.reshape (dv);
+	  }
+      }
+  }
+
+  void add_constraint (const std::string& type)
+  {
+    array_property::add_constraint (type);
+  }
+
+  void add_constraint (const dim_vector& dims)
+  {
+    array_property::add_constraint (dims);
+  }
+
+  void add_constraint (octave_idx_type len)
+  {
+    size_constraints.remove (dim_vector (1, -1));
+    size_constraints.remove (dim_vector (-1, 1));
+
+    add_constraint (dim_vector (1, len));
+    add_constraint (dim_vector (len, 1));
+  }
 
   row_vector_property& operator = (const octave_value& val)
-    {
-      set (val);
-      return *this;
-    }
+  {
+    set (val);
+    return *this;
+  }
 
 private:
   OCTINTERP_API bool validate (const octave_value& v);
@@ -2465,6 +2488,11 @@ public:
         colororder.add_constraint (dim_vector (-1, 3));
         dataaspectratio.add_constraint (dim_vector (1, 3));
         plotboxaspectratio.add_constraint (dim_vector (1, 3));
+	xlim.add_constraint (2);
+	ylim.add_constraint (2);
+	zlim.add_constraint (2);
+	clim.add_constraint (2);
+	alim.add_constraint (2);
         xtick.add_constraint (dim_vector (1, -1));
         ytick.add_constraint (dim_vector (1, -1));
         ztick.add_constraint (dim_vector (1, -1));

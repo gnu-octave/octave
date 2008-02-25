@@ -1,12 +1,19 @@
 2008-02-25  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (axes::properties::update_camera,
+	axes::properties::update_aspectratios):
+	Avoid shadow warnings from GCC.
+
+	* graphics.h.in (base_properties::get_bounding_box):
+	Avoid unused argument warning from GCC.
+
+	* graphics.h.in (array_property::add_constraint): Arg is now const
+	reference, not value.
+
 	* graphics.h.in, graphics.cc (class row_vector_property): New class.	
 	(axes::properties): xlim, ylim, zlim, clim, alim, xtick, ytick,
 	ztick properties are now row_vector_property objects instead of
 	array_property objects.
-
-	* graphics.h.in (array_property::add_constraint): Arg is now const
-	reference, not value.
 
 	* genprops.awk: Special case row_vector_property in the same way
 	as array_property.

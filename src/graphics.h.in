@@ -1377,7 +1377,7 @@ public:
 
   virtual graphics_backend get_backend (void) const;
 
-  virtual Matrix get_boundingbox (bool internal = false) const
+  virtual Matrix get_boundingbox (bool /*internal*/ = false) const
     { return Matrix (1, 4, 0.0); }
 
   void set_tag (const octave_value& val) { tag = val; }

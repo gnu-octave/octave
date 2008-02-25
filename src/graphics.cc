@@ -1863,13 +1863,13 @@ axes::properties::update_camera (void)
   double yd = (ydir_is ("normal") ? 1 : -1);
   double zd = (zdir_is ("normal") ? 1 : -1);
 
-  Matrix xlim = sx.scale (get_xlim ().matrix_value ());
-  Matrix ylim = sy.scale (get_ylim ().matrix_value ());
-  Matrix zlim = sz.scale (get_zlim ().matrix_value ());
+  Matrix xlimits = sx.scale (get_xlim ().matrix_value ());
+  Matrix ylimits = sy.scale (get_ylim ().matrix_value ());
+  Matrix zlimits = sz.scale (get_zlim ().matrix_value ());
 
-  double xo = xlim(xd > 0 ? 0 : 1);
-  double yo = ylim(yd > 0 ? 0 : 1);
-  double zo = zlim(zd > 0 ? 0 : 1);
+  double xo = xlimits(xd > 0 ? 0 : 1);
+  double yo = ylimits(yd > 0 ? 0 : 1);
+  double zo = zlimits(zd > 0 ? 0 : 1);
   
   Matrix pb  = get_plotboxaspectratio ().matrix_value ();
   
@@ -1886,9 +1886,9 @@ axes::properties::update_camera (void)
   
   if (cameratargetmode_is ("auto"))
     {
-      c_center(0) = (xlim(0)+xlim(1))/2;
-      c_center(1) = (ylim(0)+ylim(1))/2;
-      c_center(2) = (zlim(0)+zlim(1))/2;
+      c_center(0) = (xlimits(0)+xlimits(1))/2;
+      c_center(1) = (ylimits(0)+ylimits(1))/2;
+      c_center(2) = (zlimits(0)+zlimits(1))/2;
 
       cameratarget = xform2cam (c_center);
     }
@@ -1897,8 +1897,8 @@ axes::properties::update_camera (void)
   
   if (camerapositionmode_is ("auto"))
     {
-      Matrix view = get_view ().matrix_value ();
-      double az = view(0), el = view(1);
+      Matrix tview = get_view ().matrix_value ();
+      double az = tview(0), el = tview(1);
       double d = 5*sqrt(pb(0)*pb(0)+pb(1)*pb(1)+pb(2)*pb(2));
 
       if (el == 90 || el == -90)
@@ -1911,9 +1911,9 @@ axes::properties::update_camera (void)
 	  c_eye(1) = -d*cos(el)*cos(az);
 	  c_eye(2) = d*sin(el);
 	}
-      c_eye(0) = c_eye(0)*(xlim(1)-xlim(0))/(xd*pb(0))+c_center(0);
-      c_eye(1) = c_eye(1)*(ylim(1)-ylim(0))/(yd*pb(1))+c_center(1);
-      c_eye(2) = c_eye(2)*(zlim(1)-zlim(0))/(zd*pb(2))+c_center(2);
+      c_eye(0) = c_eye(0)*(xlimits(1)-xlimits(0))/(xd*pb(0))+c_center(0);
+      c_eye(1) = c_eye(1)*(ylimits(1)-ylimits(0))/(yd*pb(1))+c_center(1);
+      c_eye(2) = c_eye(2)*(zlimits(1)-zlimits(0))/(zd*pb(2))+c_center(2);
 
       cameraposition = xform2cam (c_eye);
     }
@@ -1922,13 +1922,13 @@ axes::properties::update_camera (void)
 
   if (cameraupvectormode_is ("auto"))
     {
-      Matrix view = get_view ().matrix_value ();
-      double az = view(0), el = view(1);
+      Matrix tview = get_view ().matrix_value ();
+      double az = tview(0), el = tview(1);
 
       if (el == 90 || el == -90)
 	{
-	  c_upv(0) = -sin(az*M_PI/180.0)*(xlim(1)-xlim(0))/pb(0);
-	  c_upv(1) = cos(az*M_PI/180.0)*(ylim(1)-ylim(0))/pb(1);
+	  c_upv(0) = -sin(az*M_PI/180.0)*(xlimits(1)-xlimits(0))/pb(0);
+	  c_upv(1) = cos(az*M_PI/180.0)*(ylimits(1)-ylimits(0))/pb(1);
 	}
       else
 	c_upv(2) = 1;
@@ -1949,14 +1949,14 @@ axes::properties::update_camera (void)
 
   scale (x_pre, pb(0), pb(1), pb(2));
   translate (x_pre, -0.5, -0.5, -0.5);
-  scale (x_pre, xd/(xlim(1)-xlim(0)), yd/(ylim(1)-ylim(0)),
-	 zd/(zlim(1)-zlim(0)));
+  scale (x_pre, xd/(xlimits(1)-xlimits(0)), yd/(ylimits(1)-ylimits(0)),
+	 zd/(zlimits(1)-zlimits(0)));
   translate (x_pre, -xo, -yo, -zo);
 
   xform (c_eye, x_pre);
   xform (c_center, x_pre);
-  scale (c_upv, pb(0)/(xlim(1)-xlim(0)), pb(1)/(ylim(1)-ylim(0)), 
-	 pb(2)/(zlim(1)-zlim(0)));
+  scale (c_upv, pb(0)/(xlimits(1)-xlimits(0)), pb(1)/(ylimits(1)-ylimits(0)), 
+	 pb(2)/(zlimits(1)-zlimits(0)));
   translate (c_center, -c_eye(0), -c_eye(1), -c_eye(2));
 
   ColumnVector F (c_center), f (F), UP (c_upv);
@@ -2050,8 +2050,8 @@ axes::properties::update_camera (void)
   x_zlim(1) = cmax(2);
 
   x_render = x_normrender;
-  scale (x_render, xd/(xlim(1)-xlim(0)), yd/(ylim(1)-ylim(0)),
-	 zd/(zlim(1)-zlim(0)));
+  scale (x_render, xd/(xlimits(1)-xlimits(0)), yd/(ylimits(1)-ylimits(0)),
+	 zd/(zlimits(1)-zlimits(0)));
   translate (x_render, -xo, -yo, -zo);
 
   x_viewtransform = x_view;
@@ -2066,8 +2066,8 @@ axes::properties::update_camera (void)
   // matrices, more suited for OpenGL rendering (x_gl_mat1 => light
   // => x_gl_mat2)
   x_gl_mat1 = x_view;
-  scale (x_gl_mat1, xd/(xlim(1)-xlim(0)), yd/(ylim(1)-ylim(0)),
-	 zd/(zlim(1)-zlim(0)));
+  scale (x_gl_mat1, xd/(xlimits(1)-xlimits(0)), yd/(ylimits(1)-ylimits(0)),
+	 zd/(zlimits(1)-zlimits(0)));
   translate (x_gl_mat1, -xo, -yo, -zo);
   x_gl_mat2 = x_viewport * x_projection;
 }
@@ -2075,13 +2075,13 @@ axes::properties::update_camera (void)
 void
 axes::properties::update_aspectratios (void)
 {
-  Matrix xlim = get_xlim ().matrix_value ();
-  Matrix ylim = get_ylim ().matrix_value ();
-  Matrix zlim = get_zlim ().matrix_value ();
+  Matrix xlimits = get_xlim ().matrix_value ();
+  Matrix ylimits = get_ylim ().matrix_value ();
+  Matrix zlimits = get_zlim ().matrix_value ();
 
-  double dx = (xlim(1)-xlim(0));
-  double dy = (ylim(1)-ylim(0));
-  double dz = (zlim(1)-zlim(0));
+  double dx = (xlimits(1)-xlimits(0));
+  double dy = (ylimits(1)-ylimits(0));
+  double dz = (zlimits(1)-zlimits(0));
 
   if (dataaspectratiomode_is ("auto"))
     {

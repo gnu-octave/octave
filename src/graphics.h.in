@@ -2492,6 +2492,13 @@ public:
     Matrix get_opengl_matrix_2 (void) const { return x_gl_mat2; }
     Matrix get_transform_zlim (void) const { return x_zlim; }
 
+    ColumnVector pixel2coord (double px, double py) const
+    { return get_transform ().untransform (px, py, 0); }
+
+    ColumnVector coord2pixel (double x, double y, double z) const
+    { return get_transform ().transform (x, y, z); }
+
+
   private:
     scaler sx, sy, sz;
     Matrix x_render, x_render_inv;

@@ -1,3 +1,15 @@
+2008-02-25  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (class plot_window): Many changes
+	to use figure::properties instead of figure handle to reference
+	the figure
+	(class figure_manager): ditto
+	(__fltk_redraw__): moved most of functionality into the
+	figure_manager class
+	(plot_window::pixel2pos): Modified to use axes::pixel2coord
+	(plot_window::pixel2staus): Modified to use pixel2pos
+	(plot_window::handle): Added zoom with mouse 
+
 2008-02-24  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* fltk_backend/fltk_backend.cc (OpenGL_fltk::Draw): removed double

@@ -219,10 +219,16 @@ private:
   Fl_Button*	 help;
   Fl_Output*     status;
 
-
   void pixel2pos (int px, int py, double& x, double& y) const {
-    x = static_cast<double> (px) / w ();
-    y = 1. - static_cast<double> (py) / (h () - status_h);
+    graphics_object ax = gh_manager::get_object (fp.get_currentaxes ());
+    if (ax && ax.isa ("axes")) 
+      {
+	axes::properties& ap = 
+	  dynamic_cast<axes::properties&> (ax.get_properties ());
+	ColumnVector pp = ap.pixel2coord (px, py);
+	x = pp(0);
+	y = pp(1);
+      }
   }    
 
   graphics_handle pixel2axes (int px, int py) {
@@ -236,51 +242,31 @@ private:
 	  {
 	    axes::properties& ap = 
 	      dynamic_cast<axes::properties&> (ax.get_properties ());
-	    Matrix pixpos = 
-	      convert_position (ap.get_position (). matrix_value (),
-				ap.get_units (),
-				"pixels" , 
-				fp.get_position ().matrix_value (),
-				fp.get_backend ());
-	    std::cout << "\npixpos="<<pixpos<<"(px,py)=("<<px<<","<<py<<")\n";
-	    if (px >= pixpos(0) && px <= pixpos(0) + pixpos(2) 
-		&&
-		py >= pixpos(1) && py <= pixpos(1) + pixpos(3) )
-	      return ap.get___myhandle__ ();
+
+// 	    std::cout << "\npixpos="<<pixpos<<"(px,py)=("<<px<<","<<py<<")\n";
+// 	    if (px >= pixpos(0) && px <= pixpos(2)
+// 		&&
+// 		py >= pixpos(1) && py <= pixpos(3))
+// 	      return ap.get___myhandle__ ();
 	  }
       }
     return graphics_handle ();
   }
 
-  void pixel2status (int px, int py) {
-//     std::stringstream cbuf;
-//     figure::properties fp = get_figure_props ();
-//     graphics_object obj = gh_manager::get_object (fp.get_currentaxes ());
-//     if (obj && obj.isa ("axes"))
-//       {
-// 	axes::properties& ap = 
-// 	  dynamic_cast<axes::properties&> (obj.get_properties ());
+  void pixel2status (int px0, int py0, int px1 = -1, int py1 = -1) {
+    double x0,y0,x1,y1;
+    std::stringstream cbuf;
 
-// 	Matrix pos(1,2,0);
-// 	pos(0) = px;
-// 	pos(1) = py;
+    pixel2pos (px0, py0, x0, y0);
+    cbuf << "[" << x0 << ", " << y0 << "]";
+    if (px1 >= 0)
+      {
+	pixel2pos (px1, py1, x1, y1);
+	cbuf << " -> ["<< x1 << ", " << y1 << "]";
+      }
 
-// 	Matrix axpos = 
-// 	  convert_position (pos,
-// 			    "pixels",
-// 			    ap.get_units () , 
-// 			    fp.get_position ().matrix_value (),
-//                          fp.get_backend ());
-
-// 	cbuf << "[" << axpos(0) << ", " << axpos(1) << "]";
-//       }
-//     else
-//       {
-// 	cbuf << "[-, -]";
-//       }
-
-//     status->value (cbuf.str ().c_str ());
-//     status->redraw ();
+    status->value (cbuf.str ().c_str ());
+    status->redraw ();
   }    
 
   void resize (int _x,int _y,int _w,int _h) 
@@ -305,7 +291,7 @@ private:
   }
  
   int handle (int event) {
-    static double x0,y0;
+    static int px0,py0;
     static graphics_handle h0 = graphics_handle ();
     static bool in_drag = false;
 
@@ -325,14 +311,15 @@ private:
       case FL_PUSH:
 	if (Fl::event_button () == 1)
 	  {
-	    pixel2pos (Fl::event_x (), Fl::event_y (), x0, y0);
+	    px0 = Fl::event_x ();
+	    py0 = Fl::event_y ();
 	    h0 = pixel2axes (Fl::event_x (), Fl::event_y ());
 	    return 1;
 	  }
 	break;
 
       case FL_DRAG:
-	pixel2status (Fl::event_x (), Fl::event_y ());
+	pixel2status (px0, py0, Fl::event_x (), Fl::event_y ());
 	if (Fl::event_button () == 1)
 	  {
 	    in_drag = true;
@@ -346,6 +333,40 @@ private:
 	    // end of drag -- zoom
 	    if (in_drag)
 	      {
+		double x0,y0,x1,y1;
+		graphics_object ax = 
+		  gh_manager::get_object (fp.get_currentaxes ());
+		if (ax && ax.isa ("axes")) 
+		  {
+		    axes::properties& ap = 
+		      dynamic_cast<axes::properties&> (ax.get_properties ());
+		    pixel2pos (px0, py0, x0, y0);
+		    pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
+		    Matrix pp (1,2,0);
+		    if (x0 < x1)
+		      {
+			pp(0) = x0;
+			pp(1) = x1;
+		      }
+		    else
+		      {
+			pp(0) = x1;
+			pp(1) = x0;
+		      }
+		    ap.set_xlim (pp);
+		    if (y0 < y1)
+		      {
+			pp(0) = y0;
+			pp(1) = y1;
+		      }
+		    else
+		      {
+			pp(0) = y1;
+			pp(1) = y0;
+		      }
+		    ap.set_ylim (pp);
+		    mark_modified ();
+		  }
 		in_drag = false;
 	      }
 	    // one click -- select axes
@@ -569,6 +590,7 @@ DEFUN_DLD (__init_fltk__, args, nargout,"")
   octave_value retval;
   return retval;	
 }
+
 
 // call this to delete the fltk backend
 DEFUN_DLD (__remove_fltk__, args, nargout,"")

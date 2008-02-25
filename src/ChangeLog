@@ -4,6 +4,10 @@
 	(axes::properties): xlim, ylim, zlim, clim, alim, xtick, ytick,
 	ztick properties are now row_vector_property objects instead of
 	array_property objects.
+
+	* graphics.h.in (array_property::add_constraint): Arg is now const
+	reference, not value.
+
 	* genprops.awk: Special case row_vector_property in the same way
 	as array_property.
 

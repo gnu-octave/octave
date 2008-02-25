@@ -705,7 +705,7 @@ public:
   void add_constraint (const std::string& type)
     { type_constraints.push_back (type); }
 
-  void add_constraint (dim_vector dims)
+  void add_constraint (const dim_vector& dims)
     { size_constraints.push_back (dims); }
 
   array_property& operator = (const octave_value& val)

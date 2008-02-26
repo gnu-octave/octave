@@ -203,7 +203,7 @@ oct_init_by_int (uint32_t s)
 /* init_key is the array for initializing keys */
 /* key_length is its length */
 void 
-oct_init_by_array (uint32_t init_key[], int key_length)
+oct_init_by_array (uint32_t *init_key, int key_length)
 {
   int i, j, k;
   oct_init_by_int (19650218UL);
@@ -281,17 +281,17 @@ oct_init_by_entropy (void)
 }
 
 void 
-oct_set_state (uint32_t save[])
+oct_set_state (uint32_t *save)
 {
   int i;
-  for (i=0; i < MT_N; i++) 
+  for (i = 0; i < MT_N; i++) 
     state[i] = save[i];
   left = save[MT_N];
   next = state + (MT_N - left + 1);
 }
 
 void 
-oct_get_state (uint32_t save[])
+oct_get_state (uint32_t *save)
 {
   int i;
   for (i = 0; i < MT_N; i++) 

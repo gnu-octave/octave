@@ -23,6 +23,8 @@ along with Octave; see the file COPYING.  If not, see
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <map>
 #include <vector>
 
 #include "f77-fcn.h"
@@ -52,6 +54,8 @@ static int current_distribution = uniform_dist;
 static bool old_initialized = false;
 static bool new_initialized = false;
 static bool use_old_generators = false;
+
+std::map<int, ColumnVector> rand_states;
 
 extern "C"
 {
@@ -126,6 +130,46 @@ do_old_initialization (void)
   old_initialized = true;
 }
 
+static ColumnVector
+get_internal_state (void)
+{
+  ColumnVector s (MT_N + 1);
+
+  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
+
+  oct_get_state (tmp);
+
+  for (octave_idx_type i = 0; i <= MT_N; i++)
+    s.elem (i) = static_cast<double> (tmp [i]);
+
+  return s;
+}
+
+static inline void
+save_state (void)
+{
+  rand_states[current_distribution] = get_internal_state ();;
+}
+
+static void
+initialize_rand_states (void)
+{
+  if (! new_initialized)
+    {
+      oct_init_by_entropy ();
+
+      ColumnVector s = get_internal_state ();
+
+      rand_states[uniform_dist] = s;
+      rand_states[normal_dist] = s;
+      rand_states[expon_dist] = s;
+      rand_states[poisson_dist] = s;
+      rand_states[gamma_dist] = s;
+
+      new_initialized = true;
+    }
+}
+
 static inline void
 maybe_initialize (void)
 {
@@ -137,10 +181,56 @@ maybe_initialize (void)
   else
     {
       if (! new_initialized)
-	{
-	  oct_init_by_entropy ();
-	  new_initialized = true;
-	}
+	initialize_rand_states ();
+    }
+}
+
+static int
+get_dist_id (const std::string& d)
+{
+  int retval;
+
+  if (d == "uniform" || d == "rand")
+    retval = uniform_dist;
+  else if (d == "normal" || d == "randn")
+    retval = normal_dist;
+  else if (d == "exponential" || d == "rande")
+    retval = expon_dist;
+  else if (d == "poisson" || d == "randp")
+    retval = poisson_dist;
+  else if (d == "gamma" || d == "rangd")
+    retval = gamma_dist;
+  else
+    (*current_liboctave_error_handler) ("rand: invalid distribution");
+
+  return retval;
+}
+
+static void
+set_internal_state (const ColumnVector& s)
+{
+  octave_idx_type len = s.length ();
+  octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
+
+  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    tmp[i] = static_cast<uint32_t> (s.elem(i));
+
+  if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
+    oct_set_state (tmp);
+  else
+    oct_init_by_array (tmp, len);
+}
+
+static inline void
+switch_to_generator (int dist)
+{
+  if (dist != current_distribution)
+    {
+      current_distribution = dist;
+
+      set_internal_state (rand_states[dist]);
     }
 }
 
@@ -172,6 +262,7 @@ void
 octave_rand::seed (double s)
 {
   use_old_generators = true;
+
   maybe_initialize ();
 
   int i0, i1;
@@ -197,77 +288,104 @@ octave_rand::seed (double s)
 }
 
 ColumnVector
-octave_rand::state (void)
+octave_rand::state (const std::string& d)
 {
-  ColumnVector s (MT_N + 1);
   if (! new_initialized)
-    {
-      oct_init_by_entropy ();
-      new_initialized = true;
-    }
+    initialize_rand_states ();
 
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
-  oct_get_state (tmp);
-  for (octave_idx_type i = 0; i <= MT_N; i++)
-    s.elem (i) = static_cast<double>(tmp [i]);
-  return s;
+  return rand_states[d.empty () ? current_distribution : get_dist_id (d)];
 }
 
 void
-octave_rand::state (const ColumnVector &s)
+octave_rand::state (const ColumnVector& s, const std::string& d)
 {
   use_old_generators = false;
+
   maybe_initialize ();
 
-  octave_idx_type len = s.length();
-  octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
-  for (octave_idx_type i = 0; i < n; i++)
-    tmp[i] = static_cast<uint32_t> (s.elem(i));
+  int old_dist = current_distribution;
 
-  if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
-    oct_set_state (tmp);
-  else
-    oct_init_by_array (tmp, len);
+  int new_dist = d.empty () ? current_distribution : get_dist_id (d);
+
+  ColumnVector saved_state;
+
+  if (old_dist != new_dist)
+    saved_state = get_internal_state ();
+
+  set_internal_state (s);
+
+  rand_states[new_dist] = get_internal_state ();
+
+  if (old_dist != new_dist)
+    rand_states[old_dist] = saved_state;
 }
 
 std::string
 octave_rand::distribution (void)
 {
+  std::string retval;
+
   maybe_initialize ();
 
-  if (current_distribution == uniform_dist)
-    return "uniform";
-  else if (current_distribution == normal_dist)
-    return "normal";
-  else if (current_distribution == expon_dist)
-    return "exponential";
-  else if (current_distribution == poisson_dist)
-    return "poisson";
-  else if (current_distribution == gamma_dist)
-    return "gamma";
-  else
+  switch (current_distribution)
     {
-      abort ();
-      return "";
+    case uniform_dist:
+      retval = "uniform";
+      break;
+
+    case normal_dist:
+      retval = "normal";
+      break;
+
+    case expon_dist:
+      retval = "exponential";
+      break;
+
+    case poisson_dist:
+      retval = "poisson";
+      break;
+
+    case gamma_dist:
+      retval = "gamma";
+      break;
+
+    default:
+      (*current_liboctave_error_handler) ("rand: invalid distribution");
+      break;
     }
+
+  return retval;
 }
 
 void
 octave_rand::distribution (const std::string& d)
 {
-  if (d == "uniform")
-    octave_rand::uniform_distribution ();
-  else if (d == "normal")
-    octave_rand::normal_distribution ();
-  else if (d == "exponential")
-    octave_rand::exponential_distribution ();
-  else if (d == "poisson")
-    octave_rand::poisson_distribution ();
-  else if (d == "gamma")
-    octave_rand::gamma_distribution ();
-  else
-    (*current_liboctave_error_handler) ("rand: invalid distribution");
+  switch (get_dist_id (d))
+    {
+    case uniform_dist:
+      octave_rand::uniform_distribution ();
+      break;
+
+    case normal_dist:
+      octave_rand::normal_distribution ();
+      break;
+
+    case expon_dist:
+      octave_rand::exponential_distribution ();
+      break;
+
+    case poisson_dist:
+      octave_rand::poisson_distribution ();
+      break;
+
+    case gamma_dist:
+      octave_rand::gamma_distribution ();
+      break;
+
+    default:
+      (*current_liboctave_error_handler) ("rand: invalid distribution");
+      break;
+    }
 }
 
 void
@@ -275,7 +393,7 @@ octave_rand::uniform_distribution (void)
 {
   maybe_initialize ();
 
-  current_distribution = uniform_dist;
+  switch_to_generator (uniform_dist);
 
   F77_FUNC (setcgn, SETCGN) (uniform_dist);
 }
@@ -285,7 +403,7 @@ octave_rand::normal_distribution (void)
 {
   maybe_initialize ();
 
-  current_distribution = normal_dist;
+  switch_to_generator (normal_dist);
 
   F77_FUNC (setcgn, SETCGN) (normal_dist);
 }
@@ -295,7 +413,7 @@ octave_rand::exponential_distribution (void)
 {
   maybe_initialize ();
 
-  current_distribution = expon_dist;
+  switch_to_generator (expon_dist);
 
   F77_FUNC (setcgn, SETCGN) (expon_dist);
 }
@@ -305,7 +423,7 @@ octave_rand::poisson_distribution (void)
 {
   maybe_initialize ();
 
-  current_distribution = poisson_dist;
+  switch_to_generator (poisson_dist);
 
   F77_FUNC (setcgn, SETCGN) (poisson_dist);
 }
@@ -315,7 +433,7 @@ octave_rand::gamma_distribution (void)
 {
   maybe_initialize ();
 
-  current_distribution = gamma_dist;
+  switch_to_generator (gamma_dist);
 
   F77_FUNC (setcgn, SETCGN) (gamma_dist);
 }
@@ -363,7 +481,7 @@ octave_rand::scalar (double a)
 	  break;
 
 	default:
-	  abort ();
+	  (*current_liboctave_error_handler) ("rand: invalid distribution");
 	  break;
 	}
     }
@@ -372,29 +490,31 @@ octave_rand::scalar (double a)
       switch (current_distribution)
 	{
 	case uniform_dist:
-	  retval = oct_randu();
+	  retval = oct_randu ();
 	  break;
 
 	case normal_dist:
-	  retval = oct_randn();
+	  retval = oct_randn ();
 	  break;
 
 	case expon_dist:
-	  retval = oct_rande();
+	  retval = oct_rande ();
 	  break;
 
 	case poisson_dist:
-	  retval = oct_randp(a);
+	  retval = oct_randp (a);
 	  break;
 
 	case gamma_dist:
-	  retval = oct_randg(a);
+	  retval = oct_randg (a);
 	  break;
 
 	default:
-	  abort ();
+	  (*current_liboctave_error_handler) ("rand: invalid distribution");
 	  break;
 	}
+
+      save_state ();
     }
 
   return retval;
@@ -494,9 +614,11 @@ fill_rand (octave_idx_type len, double *v, double a)
       break;
 
     default:
-      abort ();
+      (*current_liboctave_error_handler) ("rand: invalid distribution");
       break;
     }
+
+  save_state ();
 
   return;
 }

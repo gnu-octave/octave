@@ -1,5 +1,24 @@
 2008-02-26  John W. Eaton  <jwe@octave.org>
 
+	* oct-rand.cc (rand_states): New static variable.
+	(initialize_rand_states, get_dist_id, get_internal_state,
+	set_internal_state, switch_to_generator, save_state): New functions.
+	(octave_rand::state): New arg to specify distribution.
+	Save state in rand_states instead of setting internal state.
+	Return named state.  Use set_internal_state to generate proper
+	state vector from user supplied state.  Save and restore current
+	state if specified and current distributions are different.
+	(octave_rand::distribution (void)): Use switch rather than if/else.
+	(octave_rand::distribution (const std::string&)): Likewise.
+	(octave_rand::uniform_distribution,
+	octave_rand::normal_distribution,
+	octave_rand::exponential_distribution,
+	octave_rand::poisson_distribution,
+	octave_rand::gamma_distribution): Call switch_to_generator.
+	(octave_rand::state, maybe_initialize): For new_generators, just
+	call initialize_rand_states if not already initialized.
+	(octave_rand::scalar, fill_rand): Save state after generating value.
+
 	* dMatrix.cc (Matrix::lssolve): Avoid another dgelsd lwork query bug.
 	* CMatrix.cc (ComplexMatrix::lssolve): Likewise, for zgelsd
 

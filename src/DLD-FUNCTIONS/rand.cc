@@ -113,7 +113,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 	      }
 	    else if (s_arg == "state" || s_arg == "twister")
 	      {
-		retval = octave_rand::state ();
+		retval = octave_rand::state (fcn);
 	      }
 	    else if (s_arg == "uniform")
 	      {
@@ -250,7 +250,7 @@ do_rand (const octave_value_list& args, int nargin, const char *fcn,
 		  ColumnVector (args(idx+1).vector_value(false, true));
 
 		if (! error_state)
-		  octave_rand::state (s);
+		  octave_rand::state (s, fcn);
 	      }
 	    else
 	      error ("%s: unrecognized string argument", fcn);

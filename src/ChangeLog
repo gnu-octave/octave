@@ -1,5 +1,8 @@
 2008-02-26  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/rand.cc (do_rand): Pass name of calling function
+	to octave_rand::state.
+
 	* variables.cc (bind_ans): Handle cs-lists recursively.
 
 	* ov-cs-list.h, ov-cs-list.cc (octave_cs_list::print,

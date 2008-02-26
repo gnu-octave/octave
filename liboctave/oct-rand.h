@@ -40,16 +40,17 @@ octave_rand
   static void seed (double s);
 
   // Return the current state.
-  static ColumnVector state (void);
+  static ColumnVector state (const std::string& d = std::string ());
 
   // Set the current state/
-  static void state (const ColumnVector &s);
+  static void state (const ColumnVector &s,
+		     const std::string& d = std::string ());
   
   // Return the current distribution.
   static std::string distribution (void);
 
   // Set the current distribution.  May be either "uniform" (the
-  // default) or "normal".
+  // default), "normal", "exponential", "poisson", or "gamma".
   static void distribution (const std::string& d);
 
   static void uniform_distribution (void);

@@ -224,6 +224,20 @@ Cell::insert (const Cell& a, const Array<octave_idx_type>& ra_idx)
   return *this;
 }
 
+Cell
+Cell::map (ctype_mapper fcn) const
+{
+  Cell retval (dims ());
+  octave_value *r = retval.fortran_vec ();
+
+  const octave_value *p = data ();
+
+  for (octave_idx_type i = 0; i < numel (); i++)
+    r[i] = ((p++)->*fcn) ();
+
+  return retval;
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

@@ -1,3 +1,16 @@
+2008-02-25  John W. Eaton  <jwe@octave.org>
+
+	* Cell.cc (Cell::map): New function.
+	* Cell.h (Cell::map): Declare.
+	(xisalnum, xisalpha, xisascii, xiscntrl, xisdigit,
+	xisgraph, xislower, xisprint, xispunct, xisspace, xisupper,
+	xisxdigit, xtoascii, xtolower, xtoupper): New mapper functions.
+	(ctype_mapper): New private typedef.
+
+	* ov-cell.h (xisalnum, xisalpha, xisascii, xiscntrl, xisdigit,
+	xisgraph, xislower, xisprint, xispunct, xisspace, xisupper,
+	xisxdigit, xtoascii, xtolower, xtoupper): New mapper functions.
+
 2008-02-25  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* ov-scalar.cc (octave_scalar::round): Use xround instead of ::round

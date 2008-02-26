@@ -114,6 +114,28 @@ public:
   bool is_true (void) const { return false; }
 
   static octave_value resize_fill_value (void) { return Matrix (); }
+
+  Cell xisalnum (void) const { return map (&octave_value::xisalnum); }
+  Cell xisalpha (void) const { return map (&octave_value::xisalpha); }
+  Cell xisascii (void) const { return map (&octave_value::xisascii); }
+  Cell xiscntrl (void) const { return map (&octave_value::xiscntrl); }
+  Cell xisdigit (void) const { return map (&octave_value::xisdigit); }
+  Cell xisgraph (void) const { return map (&octave_value::xisgraph); }
+  Cell xislower (void) const { return map (&octave_value::xislower); }
+  Cell xisprint (void) const { return map (&octave_value::xisprint); }
+  Cell xispunct (void) const { return map (&octave_value::xispunct); }
+  Cell xisspace (void) const { return map (&octave_value::xisspace); }
+  Cell xisupper (void) const { return map (&octave_value::xisupper); }
+  Cell xisxdigit (void) const { return map (&octave_value::xisxdigit); }
+  Cell xtoascii (void) const { return map (&octave_value::xtoascii); }
+  Cell xtolower (void) const { return map (&octave_value::xtolower); }
+  Cell xtoupper (void) const { return map (&octave_value::xtoupper); }
+
+private:
+
+  typedef octave_value (octave_value::*ctype_mapper) (void) const;
+
+  Cell map (ctype_mapper) const;
 };
 
 #endif

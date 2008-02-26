@@ -1,3 +1,7 @@
+2008-02-25  John W. Eaton  <jwe@octave.org>
+
+	* strings/isstrprop.m: New file.
+
 2008-02-25  Ryan Hinton  <rwh4s@virginia.edu>
 
 	* miscellaneous/unpack.m: Use "-f -" args for tar.

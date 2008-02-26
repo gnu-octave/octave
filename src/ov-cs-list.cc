@@ -49,50 +49,6 @@ octave_cs_list::octave_cs_list (const Cell& c)
     lst(i) = c(i);
 }
 
-void
-octave_cs_list::print (std::ostream& os, bool) const
-{
-  print_raw (os);
-}
-
-void
-octave_cs_list::print_raw (std::ostream& os, bool) const
-{
-  unwind_protect::begin_frame ("octave_cs_list_print");
-
-  octave_idx_type n = lst.length ();
-
-  if (n > 0)
-    {
-      indent (os);
-      os << "(,";
-      newline (os);
-
-      increment_indent_level ();
-
-      for (octave_idx_type i = 0; i < n; i++)
-	{
-	  std::ostringstream buf;
-	  buf << "[" << i+1 << "]";
-
-	  octave_value val = lst(i);
-
-	  val.print_with_name (os, buf.str ());
-	}
-
-      decrement_indent_level ();
-
-      indent (os);
-      os << ",)";
-    }
-  else
-    os << "(,,)";
-
-  newline (os);
-
-  unwind_protect::run_frame ("octave_cs_list_print");
-}
-
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

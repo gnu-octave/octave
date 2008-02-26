@@ -1886,10 +1886,20 @@ bind_ans (const octave_value& val, bool print)
 
   if (val.is_defined ())
     {
-      symbol_table::varref (ans) = val;
+      if (val.is_cs_list ())
+	{
+	  octave_value_list lst = val.list_value ();
 
-      if (print)
-	val.print_with_name (octave_stdout, ans);
+	  for (octave_idx_type i = 0; i < lst.length (); i++)
+	    bind_ans (lst(i), print);
+	}
+      else
+	{
+	  symbol_table::varref (ans) = val;
+
+	  if (print)
+	    val.print_with_name (octave_stdout, ans);
+	}
     }
 }
 

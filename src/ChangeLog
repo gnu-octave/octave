@@ -1,3 +1,10 @@
+2008-02-26  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (bind_ans): Handle cs-lists recursively.
+
+	* ov-cs-list.h, ov-cs-list.cc (octave_cs_list::print,
+	octave_cs_list::print_raw): Delete.
+
 2008-02-25  John W. Eaton  <jwe@octave.org>
 
 	* Cell.cc (Cell::map): New function.

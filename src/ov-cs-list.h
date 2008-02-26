@@ -73,10 +73,6 @@ public:
 
   octave_value_list list_value (void) const { return lst; }
 
-  void print (std::ostream& os, bool) const;
-
-  void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
-
 private:
 
   // The list of Octave values.

@@ -187,6 +187,29 @@ function emit_get_color (i)
   emit_get_accessor(i, "octave_value", "get");
 }
 
+## double_radio_property
+
+function emit_get_double_radio (i)
+{
+  printf ("  bool %s_is_double (void) const { return %s.is_double (); }\n", name[i], name[i]);
+
+  printf ("  bool %s_is (const std::string& v) const", name[i]);
+  
+  if (emit_get[i] == "definition")
+    printf (" { return %s.is (v); }\n", name[i]);
+  else
+    printf (";\n");
+  
+  printf ("  double get_%s_double (void) const", name[i]);
+  
+  if (emit_get[i] == "definition")
+    printf (" { return (%s.is_double () ? %s.double_value () : 0); }\n", name[i], name[i]);
+  else
+    printf (";\n");
+
+  emit_get_accessor(i, "octave_value", "get");
+}
+
 ## callback_property
 
 function emit_get_callback (i)
@@ -262,6 +285,8 @@ function emit_declarations ()
         emit_get_accessor(i, "std::string", "string_value");
       else if (type[i] == "double_property")
         emit_get_accessor(i, "double", "double_value");
+      else if (type[i] == "double_radio_property")
+        emit_get_double_radio(i);
       else if (type[i] == "data_property")
         emit_get_data(i);
       else if (type[i] == "array_property" \

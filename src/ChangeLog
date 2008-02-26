@@ -27,6 +27,17 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (class double_radio_property): New property class for
+	holding face/edge alpha values.
+	(patch::properties::facealpha, patch::properties::edgealpha,
+	surface::properties::facealpha, surface::properties::edgealpha): Use
+	double_radio_property class.
+	* graphics.cc (double_radio_property::set): Implement new property
+	class.
+	* genprops.awk (emit_get_double_radio): New function to emit code for
+	double_radio_property.
+	(emit_declarations): Use it.
+
 	* graphics.h.in (array_property::array_property(void)): New default
 	constructor.
 	(array_property::xmin, array_property:xmax, array_property::xminp,

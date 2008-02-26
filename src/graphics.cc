@@ -581,6 +581,32 @@ color_property::set (const octave_value& val)
            get_name ().c_str ());
 }
 
+void
+double_radio_property::set (const octave_value& val)
+{
+  if (val.is_string ())
+    {
+      std::string s = val.string_value ();
+
+      if (! s.empty () && radio_val.contains (s))
+	{
+	  current_val = s;
+	  current_type = radio_t;
+	}
+      else
+	error ("invalid value for double_radio property \"%s\"",
+	       get_name ().c_str ());
+    }
+  else if (val.is_scalar_type () && val.is_real_type ())
+    {
+      dval = val.double_value ();
+      current_type = double_t;
+    }
+  else 
+    error ("invalid value for double_radio property \"%s\"",
+	   get_name ().c_str ());
+}
+
 bool
 array_property::validate (const octave_value& v)
 {

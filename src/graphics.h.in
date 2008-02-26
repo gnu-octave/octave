@@ -714,6 +714,79 @@ private:
 
 // ---------------------------------------------------------------------
 
+class double_radio_property : public base_property
+{
+public:
+  double_radio_property (double d, const radio_values& v)
+      : base_property ("", graphics_handle ()),
+        current_type (double_t), dval (d), radio_val (v),
+	current_val (v.default_value ())
+  { }
+
+  double_radio_property (const std::string& nm, const graphics_handle& h,
+			 const std::string& v)
+      : base_property (nm, h),
+        current_type (radio_t), dval (0), radio_val (v),
+	current_val (radio_val.default_value ())
+  { }
+
+  double_radio_property (const std::string& nm, const graphics_handle& h,
+			 const double_radio_property& v)
+      : base_property (nm, h),
+        current_type (v.current_type), dval (v.dval),
+	radio_val (v.radio_val), current_val (v.current_val)
+  { }
+
+  octave_value get (void) const
+  {
+    if (current_type == double_t)
+      return dval;
+
+    return current_val;
+  }
+
+  OCTINTERP_API void set (const octave_value& v);
+
+  bool is_double (void) const { return (current_type == double_t); }
+
+  bool is_radio (void) const { return (current_type == radio_t); }
+
+  bool is (const std::string& v) const
+    { return (is_radio () && current_val == v); }
+
+  double double_value (void) const
+  {
+    if (current_type != double_t)
+      error ("%s: property has no double", get_name ().c_str ());
+
+    return dval;
+  }
+
+  const std::string& current_value (void) const
+  {
+    if (current_type != radio_t)
+      error ("%s: property has no radio value");
+
+    return current_val;
+  }
+
+  double_radio_property& operator = (const octave_value& val)
+    {
+      set (val);
+      return *this;
+    }
+
+  operator octave_value (void) const { return get (); }
+
+private:
+  enum current_enum { double_t, radio_t } current_type;
+  double dval;
+  radio_values radio_val;
+  std::string current_val;
+};
+
+// ---------------------------------------------------------------------
+
 class array_property : public base_property
 {
 public:
@@ -2945,10 +3018,10 @@ public:
       array_property vertexnormals , Matrix ()
       radio_property normalmode , "{auto}|manual"
       color_property facecolor , "{flat}|none|interp"
-      double_property facealpha , 1.0
+      double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       radio_property facelighting , "flat|{none}|gouraud|phong"
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
-      double_property edgealpha , 1.0
+      double_radio_property edgeealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       radio_property edgelighting , "{none}|flat|gouraud|phong"
       radio_property backfacelighting , "{reverselit}|unlit|lit"
       double_property ambientstrength , 0.3
@@ -3018,8 +3091,7 @@ public:
       array_property cdata l , Matrix ()
       radio_property cdatamapping a , "{scaled}|direct"
       color_property facecolor , "{flat}|none|interp|texturemap"
-      // FIXME: should be a double-radio property
-      double_property facealpha , 1.0
+      double_radio_property faceealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -3034,8 +3106,7 @@ public:
       double_property ambientstrength , 0.3
       radio_property backfacelighting , "unlit|lit|{reverselit}"
       double_property diffusestrength , 0.6
-      // FIXME: should be a double-radio property
-      double_property edgealpha , 1.0
+      double_radio_property edgeealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       radio_property edgelighting , "{none}|flat|gouraud|phong"
       radio_property erasemode , "{normal}|none|xor|background"
       radio_property facelighting , "{none}|flat|gouraud|phong"

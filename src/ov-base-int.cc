@@ -55,6 +55,67 @@ along with Octave; see the file COPYING.  If not, see
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
+// We have all the machinery below (octave_base_int_helper and
+// octave_base_int_helper_traits) to avoid a few warnings from GCC
+// about comparisons always false due to limited range of data types.
+// Ugh.  The cure may be worse than the disease.
+
+template <class T, bool is_signed = true, bool can_be_too_big = true>
+struct octave_base_int_helper
+{
+  static bool
+  char_value_out_of_range (T val) { return val < 0 || val > UCHAR_MAX; }
+};
+
+template <class T>
+struct octave_base_int_helper<T, false, false>
+{
+  static bool char_value_out_of_range (T) { return true; }
+};
+
+template <class T>
+struct octave_base_int_helper<T, false, true>
+{
+  static bool char_value_out_of_range (T val) { return val > UCHAR_MAX; }
+};
+
+template <class T>
+struct octave_base_int_helper<T, true, false>
+{
+  static bool char_value_out_of_range (T val) { return val < 0; }
+};
+
+// For all types other than char, signed char, and unsigned char, we
+// assume that the upper limit for the range of allowable values is
+// larger than the range for unsigned char.  If that's not true, we
+// are still OK, but will see the warnings again for any other types
+// that do not meet this assumption.
+
+template <class T>
+struct octave_base_int_helper_traits
+{
+  static const bool can_be_larger_than_uchar_max = true;
+};
+
+template <>
+struct octave_base_int_helper_traits<char>
+{
+  static const bool can_be_larger_than_uchar_max = false;
+};
+
+template <>
+struct octave_base_int_helper_traits<signed char>
+{
+  static const bool can_be_larger_than_uchar_max = false;
+};
+
+template <>
+struct octave_base_int_helper_traits<unsigned char>
+{
+  static const bool can_be_larger_than_uchar_max = false;
+};
+
+
 template <class T>
 octave_base_value *
 octave_base_int_matrix<T>::try_narrowing_conversion (void)
@@ -85,10 +146,16 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 
       typename T::elt_type tmp = this->matrix(i);
 
-      typename T::elt_type::val_type ival = tmp.value ();
+      typedef typename T::elt_type::val_type val_type;
 
-      
-      if (ival < 0 || ival > UCHAR_MAX)
+      val_type ival = tmp.value ();
+
+      static const bool is_signed = std::numeric_limits<val_type>::is_signed;
+      static const bool can_be_larger_than_uchar_max
+	= octave_base_int_helper_traits<val_type>::can_be_larger_than_uchar_max;
+
+      if (octave_base_int_helper<val_type, is_signed,
+	  can_be_larger_than_uchar_max>::char_value_out_of_range (ival))
 	{
 	  // FIXME -- is there something better we could do?
 
@@ -378,9 +445,16 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
 
   T tmp = this->scalar;
 
-  typename T::val_type ival = tmp.value ();
+  typedef typename T::val_type val_type;
 
-  if (ival < 0 || ival > UCHAR_MAX)
+  val_type ival = tmp.value ();
+
+  static const bool is_signed = std::numeric_limits<val_type>::is_signed;
+  static const bool can_be_larger_than_uchar_max
+    = octave_base_int_helper_traits<val_type>::can_be_larger_than_uchar_max;
+
+  if (octave_base_int_helper<val_type, is_signed,
+      can_be_larger_than_uchar_max>::char_value_out_of_range (ival))
     {
       // FIXME -- is there something better we could do?
 

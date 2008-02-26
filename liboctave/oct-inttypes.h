@@ -199,8 +199,9 @@ OCTAVE_S_US_FTR_FCNS (long long)
                            OCTAVE_INT_MIN_VAL2 (T1, T2), \
                            OCTAVE_INT_MAX_VAL2 (T1, T2))
 
-// By using these classes/functions we avoid warnings from GCC about
-// comparisons always being false due to limited range of data type.
+// We have all the machinery below (octave_int_helper) to avoid a few
+// warnings from GCC about comparisons always false due to limited
+// range of data types.  Ugh.  The cure may be worse than the disease.
 
 // FIXME -- it would be nice to nest the helper class inside the
 // octave_int class, but I don't see the magic for that at the moment.

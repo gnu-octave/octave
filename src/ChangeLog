@@ -1,5 +1,10 @@
 2008-02-26  John W. Eaton  <jwe@octave.org>
 
+	* ov-base-int.cc (octave_base_int_helper,
+	octave_base_int_helper_traits): New templates and specializations.
+	(octave_base_int_matrix<T>::convert_to_str_internal,
+	octave_base_int_matrix<T>::convert_to_str_internal): Use them.
+
 	* DLD-FUNCTIONS/rand.cc (do_rand): Pass name of calling function
 	to octave_rand::state.
 

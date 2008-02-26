@@ -19,15 +19,18 @@
 # <http://www.gnu.org/licenses/>.
 
 TOPDIR = ../../..
-include $(TOPDIR)/Makeconf
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
 VPATH = @srcdir@
+
 GRAPHICS_LIBS = @GRAPHICS_LIBS@
+GRAPHICS_CFLAGS = @GRAPHICS_CFLAGS@
+
+include $(TOPDIR)/Makeconf
 
 FLTK_EXTRA_LIBS = $(OPENGL_LIBS) $(GRAPHICS_LIBS)
-FLTK_EXTRA_CXXFLAGS = $(GRAPHICS_CFLAGS) -I../opengl
+FLTK_EXTRA_CXXFLAGS = $(GRAPHICS_CFLAGS) -I$(srcdir)/../opengl
 
 FLTK_NAME = fltk_backend
 

@@ -1,3 +1,15 @@
+2008-02-26  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h: Make sure windows.h is included before OpenGL
+	headers.
+	* fltk_backend/Makefile.in (FLTK_EXTRA_CXXFLAGS): Use $(srcdir) for
+	includesion of OpenGL renderer headers.
+	(Makeconf): Move inclusion of Makeconf later on, to avoid freezing
+	MinGW make.
+
+	* fltk_backend/Makefile.in (GRAPHICS_CFLAGS): New substituted
+	variable.
+
 2008-02-25  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* fltk_backend/fltk_backend.cc (class plot_window): Many changes

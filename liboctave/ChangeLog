@@ -1,3 +1,8 @@
+2008-02-26  John W. Eaton  <jwe@octave.org>
+
+	* dMatrix.cc (Matrix::lssolve): Avoid another dgelsd lwork query bug.
+	* CMatrix.cc (ComplexMatrix::lssolve): Likewise, for zgelsd
+
 2008-02-24  John W. Eaton  <jwe@octave.org>
 
 	* oct-inttypes.h (octave_int_helper): New class.  Provide

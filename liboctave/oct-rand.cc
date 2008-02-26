@@ -39,13 +39,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "randgamma.h"
 #include "mach-info.h"
 
-// Possible distributions of random numbers.  This was handled with an
-// enum, but unwind_protecting that doesn't work so well.
-#define uniform_dist 1
-#define normal_dist 2
-#define expon_dist 3
-#define poisson_dist 4
-#define gamma_dist 5
+static const int unknown_dist = 0;
+static const int uniform_dist = 1;
+static const int normal_dist = 2;
+static const int expon_dist = 3;
+static const int poisson_dist = 4;
+static const int gamma_dist = 5;
 
 // Current distribution of random numbers.
 static int current_distribution = uniform_dist;
@@ -188,7 +187,7 @@ maybe_initialize (void)
 static int
 get_dist_id (const std::string& d)
 {
-  int retval;
+  int retval = unknown_dist;
 
   if (d == "uniform" || d == "rand")
     retval = uniform_dist;

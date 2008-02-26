@@ -1,5 +1,10 @@
 2008-02-26  John W. Eaton  <jwe@octave.org>
 
+	* oct-rand.cc (unknown_dist): New dist type.
+	(uniform_dist, normal_dist, expon_dist, poisson_dist, gamma_dist):
+	Use static const int instead of #define.
+	(get_dist_id): Default retval is unknown_dist.
+
 	* oct-rand.cc (rand_states): New static variable.
 	(initialize_rand_states, get_dist_id, get_internal_state,
 	set_internal_state, switch_to_generator, save_state): New functions.

@@ -27,6 +27,14 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (root_figure::get_default): Use factory defaults when
+	no explicit default value exists.
+	(figure::properties::set___backend__): Reset __plot_stream__ to empty
+	value.
+	* graphics.cc (gh_manager::gh_manager): Call
+	graphics_backend::default_backend to make sure the default backend is
+	initialized.
+
 	* graphics.h.in (patch::properties::edgealpha,
 	surface::properties::facealpha, surface::properties::edgealpha): Fix
 	typos in property names.

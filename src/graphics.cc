@@ -2980,6 +2980,9 @@ gh_manager::gh_manager (void)
     next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0))
 {
   handle_map[0] = graphics_object (new root_figure ());
+
+  // Make sure the default backend is registered.
+  graphics_backend::default_backend ();
 }
 
 graphics_handle

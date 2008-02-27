@@ -2210,7 +2210,13 @@ public:
     octave_value retval = default_properties.lookup (name);
 
     if (retval.is_undefined ())
-      error ("get: invalid default property `%s'", name.c_str ());
+      {
+	// no default property found, use factory default
+	retval = factory_properties.lookup (name);
+
+	if (retval.is_undefined ())
+	  error ("get: invalid default property `%s'", name.c_str ());
+      }
 
     return retval;
   }
@@ -2274,6 +2280,7 @@ public:
       close (false);
       backend = b; 
       __backend__ = b.get_name ();
+      __plot_stream__ = Matrix ();
       mark_modified ();
     }
 

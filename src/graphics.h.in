@@ -803,6 +803,13 @@ public:
       get_data_limits ();
     }
 
+  // This copy constructor is only intended to be used
+  // internally to access min/max values; no need to
+  // copy constraints.
+  array_property (const array_property& p)
+    : base_property (p), data (p.data),
+      xmin (p.xmin), xmax (p.xmax), xminp (p.xminp) { }
+
   octave_value get (void) const { return data; }
 
   void set (const octave_value& v)
@@ -905,94 +912,6 @@ public:
 
 private:
   OCTINTERP_API bool validate (const octave_value& v);
-};
-
-// ---------------------------------------------------------------------
-
-class data_property : public base_property
-{
-public:
-  data_property (void)
-    : base_property ("", graphics_handle ()) { }
-
-  data_property (const std::string& nm, const graphics_handle& h,
-                 const NDArray& m = NDArray ())
-    : base_property (nm, h),
-      data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
-  {
-    get_data_limits ();
-  }
-
-  data_property (const std::string& nm, const graphics_handle& h,
-                 const Matrix& m)
-    : base_property (nm, h),
-      data (m), xmin (octave_Inf), xmax (-octave_Inf), xminp (octave_Inf)
-  {
-    get_data_limits ();
-  }
-
-  data_property (const data_property& p)
-    : base_property (p), data (p.data),
-      xmin (p.xmin), xmax (p.xmax), xminp (p.xminp) { }
-
-  void set (const octave_value& val)
-  {
-    data = val.array_value ();
-
-    get_data_limits ();
-  }
-
-  octave_value get (void) const { return data; }
-
-  NDArray array_value (void) const { return data; }
-
-  Matrix matrix_value (void) const { return data.matrix_value (); }
-
-  double min_val (void) const { return xmin; }
-  double max_val (void) const { return xmax; }
-  double min_pos (void) const { return xminp; }
-
-  data_property& operator = (const octave_value& val)
-    {
-      set (val);
-      return *this;
-    }
-
-private:
-  NDArray data;
-  double xmin;
-  double xmax;
-  double xminp;
-
-  void get_data_limits (void)
-  {
-    octave_idx_type nel = data.numel ();
-
-    xmin = xminp = octave_Inf;
-    xmax = -octave_Inf;
-
-    if (nel > 0)
-      {
-	const double *d = data.data ();
-
-	for (octave_idx_type i = 0; i < nel; i++)
-	  {
-	    double val = d[i];
-
-	    if (! (xisinf (val) || xisnan (val)))
-	      {
-		if (val < xmin)
-		  xmin = val;
-
-		if (val > xmax)
-		  xmax = val;
-
-		if (val > 0 && val < xminp)
-		  xminp = val;
-	      }
-	  }
-      }
-  }
 };
 
 // ---------------------------------------------------------------------
@@ -1208,9 +1127,6 @@ public:
   const double_property& as_double_property (void) const
     { return *(dynamic_cast<double_property*> (rep)); }
 
-  const data_property& as_data_property (void) const
-    { return *(dynamic_cast<data_property*> (rep)); }
-  
   const bool_property& as_bool_property (void) const
     { return *(dynamic_cast<bool_property*> (rep)); }
   
@@ -1710,46 +1626,46 @@ public:
   // genprops.awk script.
   //
   // EMIT_BASE_PROPERTIES_GET_FUNCTIONS
-  virtual data_property get_xdata_property (void) const
+  virtual array_property get_xdata_property (void) const
   {
     error ("get: invalid property \"xdata\"");
-    return data_property ();
+    return array_property ();
   }
 
-  virtual data_property get_ydata_property (void) const
+  virtual array_property get_ydata_property (void) const
   {
     error ("get: invalid property \"ydata\"");
-    return data_property ();
+    return array_property ();
   }
 
-  virtual data_property get_zdata_property (void) const
+  virtual array_property get_zdata_property (void) const
   {
     error ("get: invalid property \"zdata\"");
-    return data_property ();
+    return array_property ();
   }
 
-  virtual data_property get_ldata_property (void) const
+  virtual array_property get_ldata_property (void) const
   {
     error ("get: invalid property \"ldata\"");
-    return data_property ();
+    return array_property ();
   }
 
-  virtual data_property get_udata_property (void) const
+  virtual array_property get_udata_property (void) const
   {
     error ("get: invalid property \"udata\"");
-    return data_property ();
+    return array_property ();
   }
 
-  virtual data_property get_xldata_property (void) const
+  virtual array_property get_xldata_property (void) const
   {
     error ("get: invalid property \"xldata\"");
-    return data_property ();
+    return array_property ();
   }
 
-  virtual data_property get_xudata_property (void) const
+  virtual array_property get_xudata_property (void) const
   {
     error ("get: invalid property \"xudata\"");
-    return data_property ();
+    return array_property ();
   }
 
   virtual array_property get_cdata_property (void) const
@@ -2085,43 +2001,43 @@ public:
   // genprops.awk script.
   //
   // EMIT_GRAPHICS_OBJECT_GET_FUNCTIONS
-  data_property get_xdata_property (void) const
+  array_property get_xdata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_xdata_property ();
   }
 
-  data_property get_ydata_property (void) const
+  array_property get_ydata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_ydata_property ();
   }
 
-  data_property get_zdata_property (void) const
+  array_property get_zdata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_zdata_property ();
   }
 
-  data_property get_ldata_property (void) const
+  array_property get_ldata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_ldata_property ();
   }
 
-  data_property get_udata_property (void) const
+  array_property get_udata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_udata_property ();
   }
 
-  data_property get_xldata_property (void) const
+  array_property get_xldata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_xldata_property ();
   }
 
-  data_property get_xudata_property (void) const
+  array_property get_xudata_property (void) const
   {
     const base_properties& props = get_properties ();
     return props.get_xudata_property ();
@@ -2851,13 +2767,13 @@ public:
     // ldata, udata, xldata, xudata, keylabel, interpreter
 
     BEGIN_PROPERTIES(line)
-      data_property xdata l , default_data ()
-      data_property ydata l , default_data ()
-      data_property zdata l , Matrix ()
-      data_property ldata l , Matrix ()
-      data_property udata l , Matrix ()
-      data_property xldata l , Matrix ()
-      data_property xudata l , Matrix ()
+      row_vector_property xdata l , default_data ()
+      row_vector_property ydata l , default_data ()
+      row_vector_property zdata l , Matrix ()
+      row_vector_property ldata l , Matrix ()
+      row_vector_property udata l , Matrix ()
+      row_vector_property xldata l , Matrix ()
+      row_vector_property xudata l , Matrix ()
       color_property color , color_values (0, 0, 0)
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -2964,8 +2880,8 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES(image)
-      data_property xdata l , Matrix ()
-      data_property ydata l , Matrix ()
+      row_vector_property xdata l , Matrix ()
+      row_vector_property ydata l , Matrix ()
       array_property cdata l , Matrix ()
       radio_property cdatamapping a , "{scaled}|direct"
     END_PROPERTIES
@@ -2973,6 +2889,8 @@ public:
   protected:
     void init (void)
       {
+	xdata.add_constraint (2);
+	ydata.add_constraint (2);
 	cdata.add_constraint ("double");
 	cdata.add_constraint ("uint8");
 	cdata.add_constraint (dim_vector (-1, -1));
@@ -3013,13 +2931,13 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES(patch)
-      data_property xdata l , Matrix ()
-      data_property ydata l , Matrix ()
-      data_property zdata l , Matrix ()
+      array_property xdata l , Matrix ()
+      array_property ydata l , Matrix ()
+      array_property zdata l , Matrix ()
       array_property cdata l , Matrix ()
       radio_property cdatamapping , "{scaled}|direct"
       array_property faces , Matrix ()
-      data_property facevertexalphadata , Matrix ()
+      array_property facevertexalphadata , Matrix ()
       array_property facevertexcdata , Matrix ()
       array_property vertices , Matrix ()
       array_property vertexnormals , Matrix ()
@@ -3050,12 +2968,16 @@ public:
   protected:
     void init (void)
       {
+	xdata.add_constraint (dim_vector (-1, -1));
+	ydata.add_constraint (dim_vector (-1, -1));
+	zdata.add_constraint (dim_vector (-1, -1));
         vertices.add_constraint (dim_vector (-1, 2));
         vertices.add_constraint (dim_vector (-1, 3));
 	cdata.add_constraint (dim_vector (-1, -1));
 	cdata.add_constraint (dim_vector (-1, -1, 3));
 	facevertexcdata.add_constraint (dim_vector (-1, 1));
 	facevertexcdata.add_constraint (dim_vector (-1, 3));
+	facevertexalphadata.add_constraint (dim_vector (-1, 1));
       }
   };
 
@@ -3092,9 +3014,9 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES(surface)
-      data_property xdata lu , Matrix ()
-      data_property ydata lu , Matrix ()
-      data_property zdata lu , Matrix ()
+      array_property xdata lu , Matrix ()
+      array_property ydata lu , Matrix ()
+      array_property zdata lu , Matrix ()
       array_property cdata l , Matrix ()
       radio_property cdatamapping a , "{scaled}|direct"
       color_property facecolor , "{flat}|none|interp|texturemap"
@@ -3128,6 +3050,9 @@ public:
   protected:
     void init (void)
       {
+	xdata.add_constraint (dim_vector (-1, -1));
+	ydata.add_constraint (dim_vector (-1, -1));
+	zdata.add_constraint (dim_vector (-1, -1));
 	alphadata.add_constraint ("double");
 	alphadata.add_constraint ("uint8");
 	alphadata.add_constraint (dim_vector (-1, -1));

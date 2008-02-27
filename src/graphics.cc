@@ -2462,23 +2462,6 @@ axes::get_default (const caseless_str& name) const
   return retval;
 }
 
-// FIXME: Remove in case all data_property are converted into
-// array_property
-static void
-check_limit_vals (double& min_val, double& max_val, double& min_pos,
-		  const data_property& data)
-{
-  double val = data.min_val ();
-  if (! (xisinf (val) || xisnan (val)) && val < min_val)
-    min_val = val;
-  val = data.max_val ();
-  if (! (xisinf (val) || xisnan (val)) && val > max_val)
-    max_val = val;
-  val = data.min_pos ();
-  if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
-    min_pos = val;
-}
-
 // FIXME: Maybe this should go into array_property class?
 static void
 check_limit_vals (double& min_val, double& max_val, double& min_pos,
@@ -2702,14 +2685,14 @@ axes::update_axis_limits (const std::string& axis_type)
 	      if (obj.isa ("line") || obj.isa ("image")
 		  || obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property xdata = obj.get_xdata_property ();
+		  array_property xdata = obj.get_xdata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, xdata);
 
 		  if (obj.isa ("line"))
 		    {
-		      data_property xldata = obj.get_xldata_property ();
-		      data_property xudata = obj.get_xudata_property ();
+		      array_property xldata = obj.get_xldata_property ();
+		      array_property xudata = obj.get_xudata_property ();
 
 		      check_limit_vals (min_val, max_val, min_pos, xldata);
 		      check_limit_vals (min_val, max_val, min_pos, xudata);
@@ -2736,14 +2719,14 @@ axes::update_axis_limits (const std::string& axis_type)
 	      if (obj.isa ("line") || obj.isa ("image")
 		|| obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property ydata = obj.get_ydata_property ();
+		  array_property ydata = obj.get_ydata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, ydata);
 
 		  if (obj.isa ("line"))
 		    {
-		      data_property ldata = obj.get_ldata_property ();
-		      data_property udata = obj.get_udata_property ();
+		      array_property ldata = obj.get_ldata_property ();
+		      array_property udata = obj.get_udata_property ();
 
 		      check_limit_vals (min_val, max_val, min_pos, ldata);
 		      check_limit_vals (min_val, max_val, min_pos, udata);
@@ -2768,7 +2751,7 @@ axes::update_axis_limits (const std::string& axis_type)
 
 	      if (obj.isa ("line") || obj.isa ("patch") || obj.isa ("surface"))
 		{
-		  data_property zdata = obj.get_zdata_property ();
+		  array_property zdata = obj.get_zdata_property ();
 
 		  check_limit_vals (min_val, max_val, min_pos, zdata);
 		}

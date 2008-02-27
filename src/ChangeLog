@@ -27,6 +27,33 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* genprops.awk (emit_get_data): Remove.
+	(emit_declarations): Treat row_vector_property as array_property and
+	remove data_property references.
+	* graphics.h.in (array_property::array_property(array_property)): Add
+	copy constructor.
+	(class data_property): Remove (replaced by array_property).
+	(class base_graphics_backend, class graphics_backend): Replace
+	data_property references with array_property.
+	(line::properties::xdata, line::properties::ydata,
+	line::properties::zdata, line::properties::ldata,
+	line::properties::udata, line::properties::xldata,
+	line::properties::xudata): Turn into row_vector_property.
+	(image::properties::xdata, image::properties::ydata): Likewise.
+	(image::properties::init): Add length constraints for xdata and ydata.
+	(patch::properties::xdata, patch::properties::ydata,
+	patch::properties::zdata, patch::properties::facevertexalphadata):
+	Turn into array_property.
+	(surface::properties::xdata, surface::properties::ydata,
+	surface::properties::zdata): Likewise.
+	(patch::properties::init): Add size constraints for xdata, ydata,
+	zdata and facevertexalphadata.
+	(surface::properties::init): Add size constraints for xdata, ydata and
+	zdata.
+	* graphics.cc (check_limit_vals): Remove override with data_property.
+	(axes::update_axis_limits): Replace data_property references with
+	array_property.
+
 	* graphics.h.in (root_figure::get_default): Use factory defaults when
 	no explicit default value exists.
 	(figure::properties::set___backend__): Reset __plot_stream__ to empty

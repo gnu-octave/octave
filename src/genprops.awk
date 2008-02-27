@@ -224,16 +224,6 @@ function emit_get_callback (i)
   emit_get_accessor(i, "octave_value", "get");
 }
 
-## data_property
-
-function emit_get_data (i)
-{
-  emit_get_accessor(i, "NDArray", "array_value");
-
-  printf ("  data_property get_%s_property (void) const { return %s; }\n",
-          name[i], name[i]);
-}
-
 ## array_property
 
 function emit_get_array (i)
@@ -287,8 +277,6 @@ function emit_declarations ()
         emit_get_accessor(i, "double", "double_value");
       else if (type[i] == "double_radio_property")
         emit_get_double_radio(i);
-      else if (type[i] == "data_property")
-        emit_get_data(i);
       else if (type[i] == "array_property" \
 	       || type[i] == "row_vector_property")
         emit_get_array(i);

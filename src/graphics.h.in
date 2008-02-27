@@ -3021,7 +3021,7 @@ public:
       double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       radio_property facelighting , "flat|{none}|gouraud|phong"
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
-      double_radio_property edgeealpha , double_radio_property (1.0, radio_values ("flat|interp"))
+      double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       radio_property edgelighting , "{none}|flat|gouraud|phong"
       radio_property backfacelighting , "{reverselit}|unlit|lit"
       double_property ambientstrength , 0.3
@@ -3091,7 +3091,7 @@ public:
       array_property cdata l , Matrix ()
       radio_property cdatamapping a , "{scaled}|direct"
       color_property facecolor , "{flat}|none|interp|texturemap"
-      double_radio_property faceealpha , double_radio_property (1.0, radio_values ("flat|interp"))
+      double_radio_property facealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       color_property edgecolor , color_property (color_values (0, 0, 0), radio_values ("flat|none|interp"))
       radio_property linestyle , "{-}|--|:|-.|none"
       double_property linewidth , 0.5
@@ -3106,7 +3106,7 @@ public:
       double_property ambientstrength , 0.3
       radio_property backfacelighting , "unlit|lit|{reverselit}"
       double_property diffusestrength , 0.6
-      double_radio_property edgeealpha , double_radio_property (1.0, radio_values ("flat|interp"))
+      double_radio_property edgealpha , double_radio_property (1.0, radio_values ("flat|interp"))
       radio_property edgelighting , "{none}|flat|gouraud|phong"
       radio_property erasemode , "{normal}|none|xor|background"
       radio_property facelighting , "{none}|flat|gouraud|phong"

@@ -27,6 +27,10 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (patch::properties::edgealpha,
+	surface::properties::facealpha, surface::properties::edgealpha): Fix
+	typos in property names.
+
 	* graphics.h.in (class double_radio_property): New property class for
 	holding face/edge alpha values.
 	(patch::properties::facealpha, patch::properties::edgealpha,

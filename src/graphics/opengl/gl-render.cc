@@ -1699,15 +1699,15 @@ opengl_renderer::draw (const surface::properties& props)
 		   (props.facecolor_is ("texturemap") ? 3 : -1))));
   int fl_mode = (props.facelighting_is ("none") ? 0 :
 		 (props.facelighting_is ("flat") ? 1 : 2));
-  // FIXME: use facealpha as double-radio property
-  int fa_mode = 0;
+  int fa_mode = (props.facealpha_is_double () ? 0 :
+		 (props.facealpha_is ("flat") ? 1 : 2));
   int ec_mode = (props.edgecolor_is_rgb () ? 0 :
 		 (props.edgecolor_is ("flat") ? 1 :
 		  (props.edgecolor_is ("interp") ? 2 : -1)));
   int el_mode = (props.edgelighting_is ("none") ? 0 :
 		 (props.edgelighting_is ("flat") ? 1 : 2));
-  // FIXME: use edgealpha as double-radio property
-  int ea_mode = 0;
+  int ea_mode = (props.edgealpha_is_double () ? 0 :
+		 (props.edgealpha_is ("flat") ? 1 : 2));
 
   Matrix fcolor = (fc_mode == 3 ? Matrix (1, 3, 1.0) : props.get_facecolor_rgb ());
   Matrix ecolor = props.get_edgecolor_rgb ();
@@ -1766,8 +1766,7 @@ opengl_renderer::draw (const surface::properties& props)
 
   if (! props.facecolor_is ("none"))
     {
-      // FIXME: adapt to double-radio property type
-      if (props.get_facealpha () == 1)
+      if (props.get_facealpha_double () == 1)
 	{
 	  if (fc_mode == 0 || fc_mode == 3)
 	    {
@@ -1929,8 +1928,7 @@ opengl_renderer::draw (const surface::properties& props)
 
   if (! props.edgecolor_is ("none"))
     {
-      // FIXME: adapt to double-radio property
-      if (props.get_edgealpha () == 1)
+      if (props.get_edgealpha_double () == 1)
 	{
 	  if (ec_mode == 0)
 	    {
@@ -2201,14 +2199,14 @@ opengl_renderer::draw (const patch::properties &props)
 		 (props.facecolor_is("flat") ? 1 : 2));
   int fl_mode = (props.facelighting_is ("none") ? 0 :
 		 (props.facelighting_is ("flat") ? 1 : 2));
-  // FIXME: use facealpha as to double-radio property
-  int fa_mode = 0;
+  int fa_mode = (props.facealpha_is_double () ? 0 :
+		 (props.facealpha_is ("flat") ? 1 : 2));
   int ec_mode = (props.edgecolor_is_rgb () ? 0 :
 		 (props.edgecolor_is("flat") ? 1 : 2));
   int el_mode = (props.edgelighting_is ("none") ? 0 :
 		 (props.edgelighting_is ("flat") ? 1 : 2));
-  // FIXME: use edgealpha as to double-radio property
-  int ea_mode = 0;
+  int ea_mode = (props.edgealpha_is_double () ? 0 :
+		 (props.edgealpha_is ("flat") ? 1 : 2));
 
   Matrix fcolor = props.get_facecolor_rgb ();
   Matrix ecolor = props.get_edgecolor_rgb ();
@@ -2323,7 +2321,7 @@ opengl_renderer::draw (const patch::properties &props)
   if (! props.facecolor_is ("none"))
     {
       // FIXME: adapt to double-radio property
-      if (props.get_facealpha () == 1)
+      if (props.get_facealpha_double () == 1)
 	{
 	  if (fc_mode == 0)
 	    {
@@ -2379,7 +2377,7 @@ opengl_renderer::draw (const patch::properties &props)
   if (! props.edgecolor_is ("none"))
     {
       // FIXME: adapt to double-radio property
-      if (props.get_edgealpha () == 1)
+      if (props.get_edgealpha_double () == 1)
 	{
 	  if (ec_mode == 0)
 	    {

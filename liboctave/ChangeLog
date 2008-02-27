@@ -1,5 +1,9 @@
 2008-02-26  John W. Eaton  <jwe@octave.org>
 
+	* oct-rand.cc (get_dist_id): Fix typo.
+	(get_dist_id, octave_rand::distribution, octave_rand::scalar,
+	fill_rand): Improve error messages.
+
 	* oct-rand.cc (unknown_dist): New dist type.
 	(uniform_dist, normal_dist, expon_dist, poisson_dist, gamma_dist):
 	Use static const int instead of #define.

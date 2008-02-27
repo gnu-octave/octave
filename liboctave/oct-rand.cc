@@ -197,10 +197,11 @@ get_dist_id (const std::string& d)
     retval = expon_dist;
   else if (d == "poisson" || d == "randp")
     retval = poisson_dist;
-  else if (d == "gamma" || d == "rangd")
+  else if (d == "gamma" || d == "randg")
     retval = gamma_dist;
   else
-    (*current_liboctave_error_handler) ("rand: invalid distribution");
+    (*current_liboctave_error_handler)
+      ("rand: invalid distribution `%s'", d.c_str ());
 
   return retval;
 }
@@ -349,7 +350,8 @@ octave_rand::distribution (void)
       break;
 
     default:
-      (*current_liboctave_error_handler) ("rand: invalid distribution");
+      (*current_liboctave_error_handler)
+	("rand: invalid distribution ID = %d", current_distribution);
       break;
     }
 
@@ -359,7 +361,9 @@ octave_rand::distribution (void)
 void
 octave_rand::distribution (const std::string& d)
 {
-  switch (get_dist_id (d))
+  int id = get_dist_id (d);
+
+  switch (id)
     {
     case uniform_dist:
       octave_rand::uniform_distribution ();
@@ -382,7 +386,8 @@ octave_rand::distribution (const std::string& d)
       break;
 
     default:
-      (*current_liboctave_error_handler) ("rand: invalid distribution");
+      (*current_liboctave_error_handler)
+	("rand: invalid distribution ID = %d", id);
       break;
     }
 }
@@ -480,7 +485,8 @@ octave_rand::scalar (double a)
 	  break;
 
 	default:
-	  (*current_liboctave_error_handler) ("rand: invalid distribution");
+	  (*current_liboctave_error_handler) 
+	    ("rand: invalid distribution ID = %d", current_distribution);
 	  break;
 	}
     }
@@ -509,7 +515,8 @@ octave_rand::scalar (double a)
 	  break;
 
 	default:
-	  (*current_liboctave_error_handler) ("rand: invalid distribution");
+	  (*current_liboctave_error_handler)
+	    ("rand: invalid distribution ID = %d", current_distribution);
 	  break;
 	}
 
@@ -613,7 +620,8 @@ fill_rand (octave_idx_type len, double *v, double a)
       break;
 
     default:
-      (*current_liboctave_error_handler) ("rand: invalid distribution");
+      (*current_liboctave_error_handler)
+	("rand: invalid distribution ID = %d", current_distribution);
       break;
     }
 

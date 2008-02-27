@@ -923,9 +923,48 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		hidden_removal = true;
 	      endif
 	    endif
-	    
+	
             if (flat_interp_edge && facecolor_none_or_white)
 	      withclause{data_idx} = "with line palette";
+	      fputs (plot_stream, "unset pm3d\n");
+	    elseif (facecolor_none_or_white)
+	      edgecol = obj.edgecolor;
+	      if (have_newer_gnuplot)
+		if (mono)
+		  colorspec = "";
+		else
+		  colorspec = sprintf ("linecolor rgb \"#%02x%02x%02x\"",
+				 round (255*edgecol));
+		endif
+                fprintf (plot_stream,
+                         "set style line %d %s lw %f;\n",
+                         data_idx, colorspec, obj.linewidth);
+              else
+		if (isequal (edgecol, [0,0,0]))
+		  typ = -1;
+		elseif (isequal (edgecol, [1,0,0]))
+		  typ = 1;
+		elseif (isequal (edgecol, [0,1,0]))
+		  typ = 2;
+		elseif (isequal (edgecol, [0,0,1]))
+		  typ = 3;
+		elseif (isequal (edgecol, [1,0,1]))
+		  typ = 4;
+		elseif (isequal (edgecol, [0,1,1]))
+		  typ = 5;
+		elseif (isequal (edgecol, [1,1,1]))
+		  typ = -1;
+		elseif (isequal (edgecol, [1,1,0]))
+		  typ = 7;
+		else
+		  typ = -1;
+		endif
+                fprintf (plot_stream,
+                         "set style line %d lt %d lw %f;\n",
+                         data_idx, typ, obj.linewidth);
+	      endif
+	      withclause{data_idx} = sprintf("with line linestyle %d", data_idx);
+	      fputs (plot_stream, "unset pm3d\n")
             endif
 
 	    if (have_newer_gnuplot)

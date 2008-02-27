@@ -1,3 +1,7 @@
+2008-02-27  John W. Eaton  <jwe@octave.org>
+
+	* oct-rand.cc (class octave_rand): Make it a proper singleton class.
+
 2008-02-26  John W. Eaton  <jwe@octave.org>
 
 	* oct-rand.cc (get_dist_id): Fix typo.

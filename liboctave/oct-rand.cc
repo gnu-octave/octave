@@ -39,23 +39,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "randgamma.h"
 #include "mach-info.h"
 
-static const int unknown_dist = 0;
-static const int uniform_dist = 1;
-static const int normal_dist = 2;
-static const int expon_dist = 3;
-static const int poisson_dist = 4;
-static const int gamma_dist = 5;
-
-// Current distribution of random numbers.
-static int current_distribution = uniform_dist;
-
-// Has the seed/state been set yet?
-static bool old_initialized = false;
-static bool new_initialized = false;
-static bool use_old_generators = false;
-
-std::map<int, ColumnVector> rand_states;
-
 extern "C"
 {
   F77_RET_T
@@ -86,160 +69,39 @@ extern "C"
   F77_FUNC (setcgn, SETCGN) (const octave_idx_type&);
 }
 
-static octave_idx_type
-force_to_fit_range (octave_idx_type i, octave_idx_type lo, octave_idx_type hi)
+octave_rand *octave_rand::instance = 0;
+
+octave_rand::octave_rand (void)
+  : current_distribution (uniform_dist), use_old_generators (false),
+    rand_states ()
 {
-  assert (hi > lo && lo >= 0 && hi > lo);
+  initialize_ranlib_generators ();
 
-  i = i > 0 ? i : -i;
-
-  if (i < lo)
-    i = lo;
-  else if (i > hi)
-    i = i % hi;
-
-  return i;
+  initialize_mersenne_twister ();
 }
 
-// Make the random number generator give us a different sequence every
-// time we start octave unless we specifically set the seed.  The
-// technique used below will cycle monthly, but it it does seem to
-// work ok to give fairly different seeds each time Octave starts.
-
-static void
-do_old_initialization (void)
+bool
+octave_rand::instance_ok (void)
 {
-  octave_localtime tm;
-  int stored_distribution = current_distribution;
-  F77_FUNC (setcgn, SETCGN) (uniform_dist);
+  bool retval = true;
 
-  int hour = tm.hour() + 1;
-  int minute = tm.min() + 1;
-  int second = tm.sec() + 1;
+  if (! instance)
+    instance = new octave_rand ();
 
-  octave_idx_type s0 = tm.mday() * hour * minute * second;
-  octave_idx_type s1 = hour * minute * second;
-
-  s0 = force_to_fit_range (s0, 1, 2147483563);
-  s1 = force_to_fit_range (s1, 1, 2147483399);
-
-  F77_FUNC (setall, SETALL) (s0, s1);
-  F77_FUNC (setcgn, SETCGN) (stored_distribution);
-
-  old_initialized = true;
-}
-
-static ColumnVector
-get_internal_state (void)
-{
-  ColumnVector s (MT_N + 1);
-
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
-
-  oct_get_state (tmp);
-
-  for (octave_idx_type i = 0; i <= MT_N; i++)
-    s.elem (i) = static_cast<double> (tmp [i]);
-
-  return s;
-}
-
-static inline void
-save_state (void)
-{
-  rand_states[current_distribution] = get_internal_state ();;
-}
-
-static void
-initialize_rand_states (void)
-{
-  if (! new_initialized)
+  if (! instance)
     {
-      oct_init_by_entropy ();
+      (*current_liboctave_error_handler)
+	("unable to create octave_rand object!");
 
-      ColumnVector s = get_internal_state ();
-
-      rand_states[uniform_dist] = s;
-      rand_states[normal_dist] = s;
-      rand_states[expon_dist] = s;
-      rand_states[poisson_dist] = s;
-      rand_states[gamma_dist] = s;
-
-      new_initialized = true;
+      retval = false;
     }
-}
-
-static inline void
-maybe_initialize (void)
-{
-  if (use_old_generators)
-    {
-      if (! old_initialized)
-	do_old_initialization ();
-    }
-  else
-    {
-      if (! new_initialized)
-	initialize_rand_states ();
-    }
-}
-
-static int
-get_dist_id (const std::string& d)
-{
-  int retval = unknown_dist;
-
-  if (d == "uniform" || d == "rand")
-    retval = uniform_dist;
-  else if (d == "normal" || d == "randn")
-    retval = normal_dist;
-  else if (d == "exponential" || d == "rande")
-    retval = expon_dist;
-  else if (d == "poisson" || d == "randp")
-    retval = poisson_dist;
-  else if (d == "gamma" || d == "randg")
-    retval = gamma_dist;
-  else
-    (*current_liboctave_error_handler)
-      ("rand: invalid distribution `%s'", d.c_str ());
 
   return retval;
 }
 
-static void
-set_internal_state (const ColumnVector& s)
-{
-  octave_idx_type len = s.length ();
-  octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
-
-  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
-
-  for (octave_idx_type i = 0; i < n; i++)
-    tmp[i] = static_cast<uint32_t> (s.elem(i));
-
-  if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
-    oct_set_state (tmp);
-  else
-    oct_init_by_array (tmp, len);
-}
-
-static inline void
-switch_to_generator (int dist)
-{
-  if (dist != current_distribution)
-    {
-      current_distribution = dist;
-
-      set_internal_state (rand_states[dist]);
-    }
-}
-
 double
-octave_rand::seed (void)
+octave_rand::do_seed (void)
 {
-  if (! old_initialized)
-    do_old_initialization ();
-
   union d2i { double d; octave_idx_type i[2]; };
   union d2i u;
     
@@ -258,12 +120,25 @@ octave_rand::seed (void)
   return u.d;
 }
 
+static octave_idx_type
+force_to_fit_range (octave_idx_type i, octave_idx_type lo, octave_idx_type hi)
+{
+  assert (hi > lo && lo >= 0 && hi > lo);
+
+  i = i > 0 ? i : -i;
+
+  if (i < lo)
+    i = lo;
+  else if (i > hi)
+    i = i % hi;
+
+  return i;
+}
+
 void
-octave_rand::seed (double s)
+octave_rand::do_seed (double s)
 {
   use_old_generators = true;
-
-  maybe_initialize ();
 
   int i0, i1;
   union d2i { double d; octave_idx_type i[2]; };
@@ -288,20 +163,15 @@ octave_rand::seed (double s)
 }
 
 ColumnVector
-octave_rand::state (const std::string& d)
+octave_rand::do_state (const std::string& d)
 {
-  if (! new_initialized)
-    initialize_rand_states ();
-
   return rand_states[d.empty () ? current_distribution : get_dist_id (d)];
 }
 
 void
-octave_rand::state (const ColumnVector& s, const std::string& d)
+octave_rand::do_state (const ColumnVector& s, const std::string& d)
 {
   use_old_generators = false;
-
-  maybe_initialize ();
 
   int old_dist = current_distribution;
 
@@ -321,11 +191,9 @@ octave_rand::state (const ColumnVector& s, const std::string& d)
 }
 
 std::string
-octave_rand::distribution (void)
+octave_rand::do_distribution (void)
 {
   std::string retval;
-
-  maybe_initialize ();
 
   switch (current_distribution)
     {
@@ -359,7 +227,7 @@ octave_rand::distribution (void)
 }
 
 void
-octave_rand::distribution (const std::string& d)
+octave_rand::do_distribution (const std::string& d)
 {
   int id = get_dist_id (d);
 
@@ -393,50 +261,40 @@ octave_rand::distribution (const std::string& d)
 }
 
 void
-octave_rand::uniform_distribution (void)
+octave_rand::do_uniform_distribution (void)
 {
-  maybe_initialize ();
-
   switch_to_generator (uniform_dist);
 
   F77_FUNC (setcgn, SETCGN) (uniform_dist);
 }
 
 void
-octave_rand::normal_distribution (void)
+octave_rand::do_normal_distribution (void)
 {
-  maybe_initialize ();
-
   switch_to_generator (normal_dist);
 
   F77_FUNC (setcgn, SETCGN) (normal_dist);
 }
 
 void
-octave_rand::exponential_distribution (void)
+octave_rand::do_exponential_distribution (void)
 {
-  maybe_initialize ();
-
   switch_to_generator (expon_dist);
 
   F77_FUNC (setcgn, SETCGN) (expon_dist);
 }
 
 void
-octave_rand::poisson_distribution (void)
+octave_rand::do_poisson_distribution (void)
 {
-  maybe_initialize ();
-
   switch_to_generator (poisson_dist);
 
   F77_FUNC (setcgn, SETCGN) (poisson_dist);
 }
 
 void
-octave_rand::gamma_distribution (void)
+octave_rand::do_gamma_distribution (void)
 {
-  maybe_initialize ();
-
   switch_to_generator (gamma_dist);
 
   F77_FUNC (setcgn, SETCGN) (gamma_dist);
@@ -444,10 +302,8 @@ octave_rand::gamma_distribution (void)
 
 
 double
-octave_rand::scalar (double a)
+octave_rand::do_scalar (double a)
 {
-  maybe_initialize ();
-
   double retval = 0.0;
 
   if (use_old_generators)
@@ -526,6 +382,167 @@ octave_rand::scalar (double a)
   return retval;
 }
 
+Matrix
+octave_rand::do_matrix (octave_idx_type n, octave_idx_type m, double a)
+{
+  Matrix retval;
+
+  if (n >= 0 && m >= 0)
+    {
+      retval.resize (n, m);
+
+      if (n > 0 && m > 0)
+	fill (retval.capacity(), retval.fortran_vec(), a);
+    }
+  else
+    (*current_liboctave_error_handler) ("rand: invalid negative argument");
+
+  return retval;
+}
+
+NDArray
+octave_rand::do_nd_array (const dim_vector& dims, double a)
+{
+  NDArray retval;
+
+  if (! dims.all_zero ())
+    {
+      retval.resize (dims);
+
+      fill (retval.capacity(), retval.fortran_vec(), a);
+    }
+
+  return retval;
+}
+
+Array<double>
+octave_rand::do_vector (octave_idx_type n, double a)
+{
+  Array<double> retval;
+
+  if (n > 0)
+    {
+      retval.resize (n);
+
+      fill (retval.capacity (), retval.fortran_vec (), a);
+    }
+  else if (n < 0)
+    (*current_liboctave_error_handler) ("rand: invalid negative argument");
+
+  return retval;
+}
+
+// Make the random number generator give us a different sequence every
+// time we start octave unless we specifically set the seed.  The
+// technique used below will cycle monthly, but it it does seem to
+// work ok to give fairly different seeds each time Octave starts.
+
+void
+octave_rand::initialize_ranlib_generators (void)
+{
+  octave_localtime tm;
+  int stored_distribution = current_distribution;
+  F77_FUNC (setcgn, SETCGN) (uniform_dist);
+
+  int hour = tm.hour() + 1;
+  int minute = tm.min() + 1;
+  int second = tm.sec() + 1;
+
+  octave_idx_type s0 = tm.mday() * hour * minute * second;
+  octave_idx_type s1 = hour * minute * second;
+
+  s0 = force_to_fit_range (s0, 1, 2147483563);
+  s1 = force_to_fit_range (s1, 1, 2147483399);
+
+  F77_FUNC (setall, SETALL) (s0, s1);
+  F77_FUNC (setcgn, SETCGN) (stored_distribution);
+}
+
+void
+octave_rand::initialize_mersenne_twister (void)
+{
+  oct_init_by_entropy ();
+
+  ColumnVector s = get_internal_state ();
+
+  rand_states[uniform_dist] = s;
+  rand_states[normal_dist] = s;
+  rand_states[expon_dist] = s;
+  rand_states[poisson_dist] = s;
+  rand_states[gamma_dist] = s;
+}
+
+ColumnVector
+octave_rand::get_internal_state (void)
+{
+  ColumnVector s (MT_N + 1);
+
+  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
+
+  oct_get_state (tmp);
+
+  for (octave_idx_type i = 0; i <= MT_N; i++)
+    s.elem (i) = static_cast<double> (tmp [i]);
+
+  return s;
+}
+
+void
+octave_rand::save_state (void)
+{
+  rand_states[current_distribution] = get_internal_state ();;
+}
+
+int
+octave_rand::get_dist_id (const std::string& d)
+{
+  int retval = unknown_dist;
+
+  if (d == "uniform" || d == "rand")
+    retval = uniform_dist;
+  else if (d == "normal" || d == "randn")
+    retval = normal_dist;
+  else if (d == "exponential" || d == "rande")
+    retval = expon_dist;
+  else if (d == "poisson" || d == "randp")
+    retval = poisson_dist;
+  else if (d == "gamma" || d == "randg")
+    retval = gamma_dist;
+  else
+    (*current_liboctave_error_handler)
+      ("rand: invalid distribution `%s'", d.c_str ());
+
+  return retval;
+}
+
+void
+octave_rand::set_internal_state (const ColumnVector& s)
+{
+  octave_idx_type len = s.length ();
+  octave_idx_type n = len < MT_N + 1 ? len : MT_N + 1;
+
+  OCTAVE_LOCAL_BUFFER (uint32_t, tmp, MT_N + 1);
+
+  for (octave_idx_type i = 0; i < n; i++)
+    tmp[i] = static_cast<uint32_t> (s.elem(i));
+
+  if (len == MT_N + 1 && tmp[MT_N] <= MT_N && tmp[MT_N] > 0)
+    oct_set_state (tmp);
+  else
+    oct_init_by_array (tmp, len);
+}
+
+void
+octave_rand::switch_to_generator (int dist)
+{
+  if (dist != current_distribution)
+    {
+      current_distribution = dist;
+
+      set_internal_state (rand_states[dist]);
+    }
+}
+
 #define MAKE_RAND(len) \
   do \
     { \
@@ -539,11 +556,9 @@ octave_rand::scalar (double a)
     } \
   while (0)
 
-static void
-fill_rand (octave_idx_type len, double *v, double a)
+void
+octave_rand::fill (octave_idx_type len, double *v, double a)
 {
-  maybe_initialize ();
-
   if (len < 1)
     return;
 
@@ -628,58 +643,6 @@ fill_rand (octave_idx_type len, double *v, double a)
   save_state ();
 
   return;
-}
-
-Matrix
-octave_rand::matrix (octave_idx_type n, octave_idx_type m, double a)
-{
-  Matrix retval;
-
-  if (n >= 0 && m >= 0)
-    {
-      retval.resize (n, m);
-
-      if (n > 0 && m > 0)
-	fill_rand (retval.capacity(), retval.fortran_vec(), a);
-    }
-  else
-    (*current_liboctave_error_handler) ("rand: invalid negative argument");
-
-  return retval;
-}
-
-NDArray
-octave_rand::nd_array (const dim_vector& dims, double a)
-{
-  NDArray retval;
-
-  if (! dims.all_zero ())
-    {
-      retval.resize (dims);
-
-      fill_rand (retval.capacity(), retval.fortran_vec(), a);
-    }
-
-  return retval;
-}
-
-Array<double>
-octave_rand::vector (octave_idx_type n, double a)
-{
-  maybe_initialize ();
-
-  Array<double> retval;
-
-  if (n > 0)
-    {
-      retval.resize (n);
-
-      fill_rand (retval.capacity(), retval.fortran_vec(), a);
-    }
-  else if (n < 0)
-    (*current_liboctave_error_handler) ("rand: invalid negative argument");
-
-  return retval;
 }
 
 /*

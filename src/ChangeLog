@@ -1,3 +1,7 @@
+2008-02-27  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (do_read): Stop reading if seek fails.
+
 2008-02-26  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-int.cc (octave_base_int_helper,

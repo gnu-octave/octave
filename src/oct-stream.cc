@@ -3139,13 +3139,15 @@ do_read (octave_stream& strm, octave_idx_type nr, octave_idx_type nc, octave_idx
 		  elts_read++;
 		}
 
+	      int seek_status = 0;
+
 	      if (skip != 0 && elts_read == block_size)
 		{
-		  strm.seek (skip, SEEK_CUR);
+		  seek_status = strm.seek (skip, SEEK_CUR);
 		  elts_read = 0;
 		}
 
-	      if (is.eof ())
+	      if (is.eof () || seek_status < 0)
 		{
 		  if (nr > 0)
 		    {

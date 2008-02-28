@@ -1,3 +1,9 @@
+2008-02-25  Ben Abbott <bpabbott@mac.com>
+
+	* interpreter/geometryimages.m, interpreter/interpimages.m,
+	interpreter/plotimages.m, interpreter/sparseimages.m:
+	Use cstrcat instead of strcat.
+
 2008-02-22  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Remove refernces to spdiag, spcumprod,

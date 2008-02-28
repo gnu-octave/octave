@@ -1,3 +1,23 @@
+2008-02-25  Ben Abbott <bpabbott@mac.com>
+
+	* control/system/zpout.m, finance/irr.m, general/int2str.m,
+	general/num2str.m, miscellaneous/bug_report.m,
+	miscellaneous/copyfile.m, miscellaneous/dir.m,
+	miscellaneous/edit.m, miscellaneous/fullfile.m,
+	miscellaneous/mkoctfile.m, miscellaneous/movefile.m,
+	miscellaneous/tempdir.m, miscellaneous/unpack.m,
+	path/__extractpath__.m, pkg/pkg.m, plot/__ezplot__.m,
+	plot/__go_draw_axes__.m, plot/legend.m, plot/print.m,
+	signal/spectral_adf.m, signal/spectral_xdf.m,
+	statistics/tests/z_test.m, statistics/tests/z_test_2.m,
+	strings/Makefile.in, strings/strcat.m, strings/strvcat.m,
+	testfun/assert.m, testfun/demo.m, testfun/speed.m,
+	testfun/test.m: Use cstrcat instead of strcat.
+
+	* strings/strcat.m: New compatible version.
+
+	* strings/cstrcat.m: Rename from strings/strcat.m.
+
 2008-02-25  John W. Eaton  <jwe@octave.org>
 
 	* strings/isstrprop.m: New file.
@@ -419,7 +439,7 @@
 2007-12-19  Alexander Barth  <barth.alexander@gmail.com>
 	    Peter A. Gustafson  <petegus@umich.edu>
 
-	* scripts/contourc.m: Allow usage of irregular spaced x, y data.
+	* plot/contourc.m: Allow usage of irregular spaced x, y data.
 
 2007-12-19  John W. Eaton  <jwe@octave.org>
 

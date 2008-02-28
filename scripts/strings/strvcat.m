@@ -22,7 +22,7 @@
 ## @var{s_1}, @dots{}, @var{s_n} as
 ## its rows.  Each string is padded with blanks in order to form a valid
 ## matrix.  Unlike @var{str2mat}, empty strings are ignored.
-## @seealso{strcat, str2mat}
+## @seealso{cstrcat, str2mat}
 ## @end deftypefn
 
 ## Author: Kurt Hornik <Kurt.Hornik@ci.tuwien.ac.at>

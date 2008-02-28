@@ -51,7 +51,7 @@ function gplotimages (nm, typ)
 	      [1,1,2,2,3,3,4,4,5,5,6,6], 1, 6, 6);
   xy = [0,4,8,6,4,2;5,0,5,7,5,7]';
   gplot (A, xy)
-  print (strcat (nm, ".", typ), strcat ("-d", typ))
+  print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   bury_output ();
 endfunction
 
@@ -66,16 +66,16 @@ function txtimages(nm,n,typ)
     fputs (fid, "+---------------------------------+\n");
     fclose (fid);
   elseif (strcmp (nm, "spmatrix"))
-    printsparse(a,strcat("spmatrix.",typ));
+    printsparse(a,cstrcat("spmatrix.",typ));
   else
     if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
 	!isempty(findstr(octave_config_info ("DEFS"),"HAVE_CHOLMOD")))
       if (strcmp (nm, "spchol"))
 	r1 = chol(a);
-	printsparse(r1,strcat("spchol.",typ));
+	printsparse(r1,cstrcat("spchol.",typ));
       elseif (strcmp (nm, "spcholperm"))
 	[r2,p2,q2]=chol(a);
-	printsparse(r2,strcat("spcholperm.",typ));
+	printsparse(r2,cstrcat("spcholperm.",typ));
       endif
       ## printf("Text NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
     endif
@@ -89,7 +89,7 @@ function otherimages(nm,n,typ)
   if (strcmp (nm, "spmatrix"))
     spy(a);
     axis("ij")
-    print(strcat("spmatrix.",typ),strcat("-d",typ))
+    print(cstrcat("spmatrix.",typ),cstrcat("-d",typ))
     bury_output ();
   else
     if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_COLAMD")) &&
@@ -98,13 +98,13 @@ function otherimages(nm,n,typ)
 	r1 = chol(a);
 	spy(r1);
 	axis("ij")
-	print(strcat("spchol.",typ),strcat("-d",typ))
+	print(cstrcat("spchol.",typ),cstrcat("-d",typ))
 	bury_output ();
       elseif (strcmp (nm, "spcholperm"))
 	[r2,p2,q2]=chol(a);
 	spy(r2);
 	axis("ij")
-	print(strcat("spcholperm.",typ),strcat("-d",typ))
+	print(cstrcat("spcholperm.",typ),cstrcat("-d",typ))
 	bury_output ();
       endif
       ## printf("Image NNZ: Matrix %d, Chol %d, PermChol %d\n",nnz(a),nnz(r1),nnz(r2));
@@ -227,7 +227,7 @@ function femimages (nm,typ)
 
     plot3 (xelems, yelems, velems);
     view (10, 10);
-    print(strcat(nm,".",typ),strcat("-d",typ))
+    print(cstrcat(nm,".",typ),cstrcat("-d",typ))
     bury_output ();
   endif
 endfunction
@@ -257,7 +257,7 @@ function sombreroimage (nm, typ)
       mesh (x, y, z);
       title ("Sorry, graphics not available because octave was\\ncompiled without the sparse matrix implementation.");
     unwind_protect_cleanup
-      print (strcat (nm, ".", typ), strcat ("-d", typ));
+      print (cstrcat (nm, ".", typ), cstrcat ("-d", typ));
       bury_output ();
     end_unwind_protect
   endif

@@ -84,7 +84,7 @@ function specifiedpath = __extractpath__ (savefile)
     error ("savepath: unable to parse file, %s", savefile);
   elseif (startline > 0)
     ## Undo doubling of single quote characters performed by savepath.
-    specifiedpath = strrep (regexprep (strcat (filelines(startline:endline){:}),
+    specifiedpath = strrep (regexprep (cstrcat (filelines(startline:endline){:}),
 				       " *path *\\('(.*)'\\); *", "$1"),
 			    "''", "'");
   else

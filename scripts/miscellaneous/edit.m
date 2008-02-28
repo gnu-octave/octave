@@ -140,7 +140,7 @@ function ret = edit (file, state)
 
   ## Pick up globals or default them.
 
-  persistent FUNCTION = struct ("EDITOR", strcat (EDITOR (), " %s"),
+  persistent FUNCTION = struct ("EDITOR", cstrcat (EDITOR (), " %s"),
   				"HOME", fullfile (default_home, "octave"),
   				"AUTHOR", default_user(1),
   				"EMAIL",  [],
@@ -197,7 +197,7 @@ function ret = edit (file, state)
   ## Start the editor without a file if no file is given.
   if (nargin < 1)
     if (exist (FUNCTION.HOME, "dir") == 7 && (isunix () || ! ispc ()))
-      system (strcat ("cd \"", FUNCTION.HOME, "\" ; ",
+      system (cstrcat ("cd \"", FUNCTION.HOME, "\" ; ",
 		      sprintf (FUNCTION.EDITOR, "")),
 	      [], FUNCTION.MODE);
     else
@@ -271,7 +271,7 @@ function ret = edit (file, state)
     ## If the file exists, then edit it.
     if (FUNCTION.EDITINPLACE)
       ## Edit in place even if it is protected.
-      system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
+      system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
               [], FUNCTION.MODE);
       return;
     else
@@ -280,7 +280,7 @@ function ret = edit (file, state)
       fid = fopen (fileandpath, "r+t");
       if (fid < 0)
         from = fileandpath;
-        fileandpath = strcat (FUNCTION.HOME, from (rindex (from, filesep):end));
+        fileandpath = cstrcat (FUNCTION.HOME, from (rindex (from, filesep):end));
         [status, msg] = copyfile (from, fileandpath, 1);
         if (status == 0)
           error (msg);
@@ -288,7 +288,7 @@ function ret = edit (file, state)
       else
         fclose (fid);
       endif
-      system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
+      system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
               [], FUNCTION.MODE);
       return;
     endif
@@ -304,7 +304,7 @@ function ret = edit (file, state)
     case {"cc", "m"}
       0;
     otherwise
-      system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
+      system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
 	      [], FUNCTION.MODE);
       return;
   endswitch
@@ -328,25 +328,25 @@ function ret = edit (file, state)
     if (isempty (host))
       FUNCTION.EMAIL = " ";
     else
-      FUNCTION.EMAIL = strcat ("<", default_user(0), "@", host, ">");
+      FUNCTION.EMAIL = cstrcat ("<", default_user(0), "@", host, ">");
     endif
   endif
 
   ## Fill in the revision string.
   now = localtime (time);
-  revs = strcat ("Created: ", strftime ("%Y-%m-%d", now));
+  revs = cstrcat ("Created: ", strftime ("%Y-%m-%d", now));
 
   ## Fill in the copyright string.
-  copyright = strcat (strftime ("Copyright (C) %Y ", now), FUNCTION.AUTHOR);
+  copyright = cstrcat (strftime ("Copyright (C) %Y ", now), FUNCTION.AUTHOR);
 
   ## Fill in the author tag field.
-  author = strcat ("Author: ", FUNCTION.AUTHOR, " ", FUNCTION.EMAIL);
+  author = cstrcat ("Author: ", FUNCTION.AUTHOR, " ", FUNCTION.EMAIL);
 
   ## Fill in the header.
   uclicense = toupper (FUNCTION.LICENSE);
   switch (uclicense)
     case "GPL"
-      head = strcat (copyright, "\n\n", "\
+      head = cstrcat (copyright, "\n\n", "\
 This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 2 of the License, or\n\
@@ -361,10 +361,10 @@ You should have received a copy of the GNU General Public License\n\
 along with Octave; see the file COPYING.  If not, see\n\
 <http://www.gnu.org/licenses/>.\
 ");
-      tail = strcat (author, "\n", revs);
+      tail = cstrcat (author, "\n", revs);
 
     case "BSD"
-      head = strcat (copyright, "\n\n", "\
+      head = cstrcat (copyright, "\n\n", "\
 This program is free software; redistribution and use in source and\n\
 binary forms, with or without modification, are permitted provided that\n\
 the following conditions are met:\n\
@@ -387,16 +387,16 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY\n\
 OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF\n\
 SUCH DAMAGE.\
 ");
-      tail = strcat (author, "\n", revs);
+      tail = cstrcat (author, "\n", revs);
 
     case "PD"
       head = "";
-      tail = strcat (author, "\n", revs, "\n\n",
+      tail = cstrcat (author, "\n", revs, "\n\n",
 		     "This program is granted to the public domain.");
 
     otherwise
       head = "";
-      tail = strcat (copyright, "\n\n", FUNCTION.LICENSE, "\n",
+      tail = cstrcat (copyright, "\n\n", FUNCTION.LICENSE, "\n",
 		     author, "\n", revs);
   endswitch
 
@@ -405,41 +405,41 @@ SUCH DAMAGE.\
   switch (ext)
     case {"cc", "C", "cpp"}
       if (isempty (head))
-	comment = strcat ("/*\n", tail, "\n\n*/\n\n");
+	comment = cstrcat ("/*\n", tail, "\n\n*/\n\n");
       else
-	comment = strcat ("/*\n", head, "\n\n", tail, "\n\n*/\n\n");
+	comment = cstrcat ("/*\n", head, "\n\n", tail, "\n\n*/\n\n");
       endif
       ## If we are shadowing an m-file, paste the code for the m-file.
       if (any (exists == [2, 103]))
-	code = strcat ("\\ ", strrep (type (name), "\n", "\n// "));
+	code = cstrcat ("\\ ", strrep (type (name), "\n", "\n// "));
       else
 	code = " ";
       endif
-      body = strcat ("#include <octave/oct.h>\n\n",
+      body = cstrcat ("#include <octave/oct.h>\n\n",
                      "DEFUN_DLD(", name, ",args,nargout,\"\\\n",
 		     name, "\\n\\\n\")\n{\n",
 		     "  octave_value_list retval;\n",
 		     "  int nargin = args.length();\n\n",
 		     code, "\n  return retval;\n}\n");
 
-      text = strcat (comment, body);
+      text = cstrcat (comment, body);
     case "m"
       ## If we are editing a function defined on the fly, paste the
       ## code.
       if (any (exists == [2, 103]))
 	body = type (name);
       else
-	body = strcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
+	body = cstrcat ("function [ ret ] = ", name, " ()\n\nendfunction\n");
       endif
       if (isempty (head))
-	comment = strcat ("## ", name, "\n\n",
+	comment = cstrcat ("## ", name, "\n\n",
 			  "## ", strrep (tail, "\n", "\n## "), "\n\n");
       else
-	comment = strcat ("## ", strrep(head,"\n","\n## "), "\n\n", ...
+	comment = cstrcat ("## ", strrep(head,"\n","\n## "), "\n\n", ...
 			  "## ", name, "\n\n", ...
 			  "## ", strrep (tail, "\n", "\n## "), "\n\n");
       endif
-      text = strcat (comment, body);
+      text = cstrcat (comment, body);
   endswitch
 
   ## Write the initial file (if there is anything to write)
@@ -451,7 +451,7 @@ SUCH DAMAGE.\
   fclose (fid);
 
   ## Finally we are ready to edit it!
-  system (sprintf (FUNCTION.EDITOR, strcat ("\"", fileandpath, "\"")),
+  system (sprintf (FUNCTION.EDITOR, cstrcat ("\"", fileandpath, "\"")),
 	  [], FUNCTION.MODE);
 
 endfunction

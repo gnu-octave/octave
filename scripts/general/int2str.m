@@ -43,9 +43,9 @@ function retval = int2str (x)
       ifmt = get_fmt (x(idx{:}), 0);
       idx(2) = 2:sz(2);
       rfmt = get_fmt (x(idx{:}), 2);
-      fmt = strcat (ifmt, repmat (rfmt, 1, nc-1), "\n")
+      fmt = cstrcat (ifmt, repmat (rfmt, 1, nc-1), "\n")
     else
-      fmt = strcat (get_fmt (x, 0), "\n");
+      fmt = cstrcat (get_fmt (x, 0), "\n");
     endif
     tmp = sprintf (fmt, permute (x, [2, 1, 3 : nd]));
     tmp(end) = "";

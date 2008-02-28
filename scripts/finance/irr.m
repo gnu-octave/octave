@@ -40,7 +40,7 @@ function r = irr (p, i)
   if (! (isvector (p)))
     error ("irr: p must be a vector");
   else
-    p_string = strcat ("[", sprintf ("%.15f, ", p), "]");
+    p_string = cstrcat ("[", sprintf ("%.15f, ", p), "]");
   endif
 
   if (! isscalar (i))

@@ -36,24 +36,51 @@
 function st = strcat (varargin)
 
   if (nargin > 0)
-
-    if (iscellstr (varargin))
-      ## All arguments are character strings.
-      unwind_protect
-	tmp = warning ("query", "Octave:empty-list-elements");
-	warning ("off", "Octave:empty-list-elements");
-	st = [varargin{:}];
-      unwind_protect_cleanup
-	warning (tmp.state, "Octave:empty-list-elements");
-      end_unwind_protect
-    else
-      for i = 1:nargin
-	tmp = varargin{i};
-	if (! (iscellstr (tmp) || ischar (tmp)))
-	  error ("strcat: all arguments must be strings or cell arrays of strings");
-	endif
+    if (nargin == 1)
+      st = varargin{1};
+    elseif (nargin > 1)
+      ## Convert to cells of strings
+      numstrs(nargin) = 0;
+      dims{nargin} = [];
+      allchar = true;
+      for nv = 1:nargin
+        if (ischar (varargin{nv}))
+          varargin{nv} = cellstr (varargin{nv});
+        elseif (iscell (varargin{nv}))
+          allchar = false;
+        else
+          error ("strcat: inputs must be strings or cells of strings.")
+        endif
+        dims{nv} = size (varargin{nv});
+        numstrs(nv) = numel (varargin{nv});
       endfor
-      st = strcat_cell (varargin);
+
+      ## Set all cells to a common size
+      n = find (numstrs == max (numstrs), 1);
+      maxstrs = numstrs (n);
+      dim = dims{n};
+      for nv = find (numstrs == 1)
+        str = varargin{nv}{1};
+        varargin{nv} = cell (dim);
+        varargin{nv}{:} = str;
+      endfor
+
+      ## Concatenate the strings
+      st = varargin{1};
+      for ns = 1:maxstrs
+        for nv = 2:nargin
+          if (size_equal (st, varargin{nv}))
+            st{ns} = [st{ns}, varargin{nv}{ns}];
+          else
+            error ("strcat: arguments must be the same size, or be scalars.");
+          endif
+        endfor
+      endfor
+
+      if (allchar)
+        ## If all inputs were strings, return strings.
+        st = char (st);
+      endif
     endif
   else
     print_usage ();
@@ -61,23 +88,28 @@ function st = strcat (varargin)
 
 endfunction
 
-function st = strcat_cell (varargin)
-  ## All args must be same size or scalars.
-  ## See the xtest below for expected behavior.
-  error ("strcat: concatenating cell arrays of strings not implemented");
-endfunction
-
 ## test the dimensionality
 ## 1d
-%!assert(strcat("ab ", "ab "), "ab ab ")
+%!assert(strcat("ab ", "ab "), "abab")
+%!assert(strcat({"ab "}, "ab "), {"ab ab"})
+%!assert(strcat("ab ", {"ab "}), {"abab "})
+%!assert(strcat({"ab "}, {"ab "}), {"ab ab "})
 ## 2d
-%!assert(strcat(["ab ";"cde"], ["ab ";"cde"]), ["ab ab ";"cdecde"])
+%!assert(strcat(["ab ";"cde"], ["ab ";"cde"]), ["abab  ";"cdecde"])
 
-%!assert((strcmp (strcat ("foo", "bar"), "foobar")
-%! && strcmp (strcat (["a"; "bb"], ["foo"; "bar"]), ["a foo"; "bbbar"])));
+## test for deblanking implied trailing spaces of character input
+%!assert((strcmp (strcat ("foo", "bar"), "foobar") &&
+%!        strcmp (strcat (["a"; "bb"], ["foo"; "bar"]), ["afoo "; "bbbar"])));
 
-%!xtest
-%! assert(all (strcmp (strcat ("a", {"bc", "de"}, "f"), {"abcf", "adef"})))
+## test for mixing character and cell inputs
+%!assert(all (strcmp (strcat ("a", {"bc", "de"}, "f"), {"abcf", "adef"})))
+
+## test for scalar strings with vector strings
+%!assert(all (strcmp (strcat (["a"; "b"], "c"), ["ac"; "bc"])))
+
+## test with cells with strings of differing lengths
+%!assert(all (strcmp (strcat ({"a", "bb"}, "ccc"), {"accc", "bbccc"})))
+%!assert(all (strcmp (strcat ("a", {"bb", "ccc"}), {"abb", "accc"})))
 
 %!error strcat ();
 

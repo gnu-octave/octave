@@ -32,7 +32,7 @@ function interpimages (nm, typ)
     plot (ti, yp, 'g', ti, interp1(t, y, ti, 'spline'), 'b', ...
 	  ti, interpft (y, k), 'c', t, y, 'r+');
     legend ('sin(4t+0.3)cos(3t-0.1','spline','interpft','data');
-    print (strcat (nm, ".", typ), strcat ("-d", typ))
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   elseif (strcmp (nm, "interpn"))
     x = y = z = -1:1;
     f = @(x,y,z) x.^2 - y - z.^2;
@@ -42,7 +42,7 @@ function interpimages (nm, typ)
     [xxi, yyi, zzi] = ndgrid (xi, yi, zi);
     vi = interpn(x, y, z, v, xxi, yyi, zzi, 'spline');
     mesh (zi, yi, squeeze (vi(1,:,:)));
-    print (strcat (nm, ".", typ), strcat ("-d", typ))
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   elseif (strcmp (nm, "interpderiv1"))
     t = -2:2;
     dt = 1;
@@ -53,7 +53,7 @@ function interpimages (nm, typ)
     yp = interp1(t,y,ti,'pchip');
     plot (ti, ys,'r-', ti, yp,'g-');
     legend('spline','pchip', 4);
-    print (strcat (nm, ".", typ), strcat ("-d", typ))
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   elseif (strcmp (nm, "interpderiv2"))
     t = -2:2;
     dt = 1;
@@ -64,7 +64,7 @@ function interpimages (nm, typ)
     ddyp = diff(diff(interp1(t,y,ti,'pchip'))./dti)./dti;
     plot (ti(2:end-1),ddys,'r*', ti(2:end-1),ddyp,'g+');
     legend('spline','pchip');
-    print (strcat (nm, ".", typ), strcat ("-d", typ))
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   endif
   bury_output ();  
 endfunction

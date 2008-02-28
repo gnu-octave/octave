@@ -48,7 +48,7 @@ function retval = spectral_adf (c, win, b)
   if (nargin == 1)
     w = triangle_lw (cr, b);
   else
-    win = str2func (strcat (win, "_lw"));
+    win = str2func (cstrcat (win, "_lw"));
     w = feval (win, cr, b);
   endif
 

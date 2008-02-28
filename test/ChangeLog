@@ -1,3 +1,8 @@
+2008-02-25  Ben Abbott <bpabbott@mac.com>
+
+	* test_eval-catch.m, test_io.m, test_try.m: Use cstrcat instead of
+	strcat.
+
 2008-02-22  David Bateman  <dbateman@free.fr>
 
 	* build_sparse_tests.sh: Replaced removed sparse functions like

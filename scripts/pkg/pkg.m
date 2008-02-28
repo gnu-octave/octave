@@ -431,7 +431,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
     wd = pwd ();
     unwind_protect
       cd (prefix);
-      dirlist = glob (cellfun(@(x) strcat(x, '-*'), files, 'UniformOutput', 0));
+      dirlist = glob (cellfun(@(x) cstrcat(x, '-*'), files, 'UniformOutput', 0));
     unwind_protect_cleanup
       cd (wd);
     end_unwind_protect
@@ -445,7 +445,7 @@ function descriptions = rebuild (prefix, archprefix, list, files, auto, verbose)
     if (exist (descfile, "file"))
       desc = get_description (descfile);
       desc.dir = fullfile (prefix, dirlist{k});
-      desc.archprefix = fullfile (archprefix, strcat (desc.name, "-",
+      desc.archprefix = fullfile (archprefix, cstrcat (desc.name, "-",
 				  desc.version));
       if (auto != 0)
 	if (exist (fullfile (desc.dir, "packinfo", ".autoload"), "file"))
@@ -621,10 +621,10 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 	  endif
 
 	  ## Set default installation directory
-	  desc.dir = fullfile (prefix, strcat (desc.name, "-", desc.version));
+	  desc.dir = fullfile (prefix, cstrcat (desc.name, "-", desc.version));
 
 	  ## Set default architectire dependent installation directory
-	  desc.archprefix = fullfile (archprefix, strcat (desc.name, "-",
+	  desc.archprefix = fullfile (archprefix, cstrcat (desc.name, "-",
 							  desc.version));
 
 	  ## Save desc
@@ -675,7 +675,7 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 	ok = false;
 	for i = 1:length (bad_deps)
 	  dep = bad_deps{i};
-	  error_text = strcat (error_text, " ", desc.name, " needs ",
+	  error_text = cstrcat (error_text, " ", desc.name, " needs ",
 			       dep.package, " ", dep.operator, " ",
 			       dep.version, "\n");
 	endfor
@@ -883,7 +883,7 @@ function uninstall (pkgnames, handle_deps, verbose, local_list,
       if (! isempty (bad_deps))
 	for i = 1:length (bad_deps)
 	  dep = bad_deps{i};
-	  error_text = strcat (error_text, " ", desc.name, " needs ",
+	  error_text = cstrcat (error_text, " ", desc.name, " needs ",
 			       dep.package, " ", dep.operator, " ",
 			       dep.version, "\n");
 	endfor
@@ -1113,7 +1113,7 @@ function repackage (builddir, buildlist)
       if (exist (fullfile (pack.name, "inst", "bin"), "dir"))
 	movefile (fullfile (pack.name, "inst", "bin"), pack.name);
       endif
-      archdir = fullfile (pack.archprefix, strcat (pack.name, "-",
+      archdir = fullfile (pack.archprefix, cstrcat (pack.name, "-",
 			  pack.version), getarch ());
       if (exist (archdir, "dir"))
 	if (exist (fullfile (pack.name, "inst", "PKG_ADD"), "file"))
@@ -1140,7 +1140,7 @@ function repackage (builddir, buildlist)
 		    fullfile (pack.name, "PKG_DEL")); 
 	endif	
       endif	
-      tfile = strcat (pack.name, "-", pack.version, ".tar");
+      tfile = cstrcat (pack.name, "-", pack.version, ".tar");
       tar (tfile, pack.name);
       try 
 	gzip (tfile);
@@ -1205,18 +1205,18 @@ function configure_make (desc, packdir, verbose)
     if (exist (fullfile (src, "configure"), "file"))
       flags = "";
       if (isempty (getenv ("CC")))
-        flags = strcat (flags, " CC=\"", octave_config_info ("CC"), "\"");
+        flags = cstrcat (flags, " CC=\"", octave_config_info ("CC"), "\"");
       endif
       if (isempty (getenv ("CXX")))
-        flags = strcat (flags, " CXX=\"", octave_config_info ("CXX"), "\"");
+        flags = cstrcat (flags, " CXX=\"", octave_config_info ("CXX"), "\"");
       endif
       if (isempty (getenv ("AR")))
-        flags = strcat (flags, " AR=\"", octave_config_info ("AR"), "\"");
+        flags = cstrcat (flags, " AR=\"", octave_config_info ("AR"), "\"");
       endif
       if (isempty (getenv ("RANLIB")))
-        flags = strcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
+        flags = cstrcat (flags, " RANLIB=\"", octave_config_info ("RANLIB"), "\"");
       endif
-      [status, output] = shell (strcat ("cd ", src, "; ./configure --prefix=\"",
+      [status, output] = shell (cstrcat ("cd ", src, "; ./configure --prefix=\"",
                                         desc.dir, "\"", flags));
       if (status != 0)
 	rm_rf (desc.dir);
@@ -1229,7 +1229,7 @@ function configure_make (desc, packdir, verbose)
 
     ## make
     if (exist (fullfile (src, "Makefile"), "file"))
-      [status, output] = shell (strcat ("export INSTALLDIR=\"", desc.dir,
+      [status, output] = shell (cstrcat ("export INSTALLDIR=\"", desc.dir,
 					 "\"; make -C ", src));
       if (status != 0)
 	rm_rf (desc.dir);
@@ -1276,11 +1276,11 @@ function configure_make (desc, packdir, verbose)
 	filenames = sprintf (fullfile (src, "%s "), m.name);
       endif
       if (length (oct) > 0)
-	filenames = strcat (filenames, " ",
+	filenames = cstrcat (filenames, " ",
 			    sprintf (fullfile (src, "%s "), oct.name));
       endif
       if (length (mex) > 0)
-	filenames = strcat (filenames, " ",
+	filenames = cstrcat (filenames, " ",
 			    sprintf (fullfile (src, "%s "), mex.name));
       endif
       filenames = split_by (filenames, " ");
@@ -1340,12 +1340,12 @@ function pkg = extract_pkg (nm, pat)
       if (ln > 0)
 	t = regexp (ln, pat, "tokens");
 	if (! isempty (t))
-          pkg = strcat (pkg, "\n", t{1}{1});
+          pkg = cstrcat (pkg, "\n", t{1}{1});
 	endif
       endif
     endwhile
     if (! isempty (pkg))
-      pkg = strcat (pkg, "\n");
+      pkg = cstrcat (pkg, "\n");
     endif
     fclose (fid);
   endif
@@ -1358,7 +1358,7 @@ function create_pkgadddel (desc, packdir, nm, global_install)
   ## architecture dependent directory so that the autoload/mfilename 
   ## commands work as expected. The only part that doesn't is the
   ## part in the main directory.
-  archdir = fullfile (getarchprefix (desc), strcat (desc.name, "-",
+  archdir = fullfile (getarchprefix (desc), cstrcat (desc.name, "-",
 		      desc.version), getarch ());
   if (exist (getarchdir (desc, global_install), "dir"))
     archpkg = fullfile (getarchdir (desc, global_install), nm);
@@ -1611,7 +1611,7 @@ function desc = get_description (filename)
     elseif (isspace(line(1)))
       ## Continuation lines
       if (exist ("keyword", "var") && isfield (desc, keyword))
-	desc.(keyword) = strcat (desc.(keyword), " ", rstrip(line));
+	desc.(keyword) = cstrcat (desc.(keyword), " ", rstrip(line));
       endif
     else
       ## Keyword/value pair
@@ -1956,10 +1956,10 @@ function [out1, out2] = installed_packages (local_list, global_list)
       first_char = length (cur_dir) - max_dir_length + 4;
       first_filesep = strfind (cur_dir(first_char:end), filesep());
       if (! isempty (first_filesep))
-        cur_dir = strcat ("...", 
+        cur_dir = cstrcat ("...", 
 			  cur_dir((first_char + first_filesep(1) - 1):end));
       else
-        cur_dir = strcat ("...", cur_dir(first_char:end));
+        cur_dir = cstrcat ("...", cur_dir(first_char:end));
       endif
     endif
     if (installed_pkgs_lst{idx(i)}.loaded)
@@ -2114,7 +2114,7 @@ function emp = dirempty (nm, ign)
 endfunction
 
 function arch = getarch ()
-  persistent _arch = strcat (octave_config_info("canonical_host_type"), ...
+  persistent _arch = cstrcat (octave_config_info("canonical_host_type"), ...
 			     "-", octave_config_info("api_version"));
   arch = _arch;
 endfunction
@@ -2122,7 +2122,7 @@ endfunction
 function archprefix = getarchprefix (desc, global_install)
   if ((nargin == 2 && global_install) || (nargin < 2 && issuperuser ()))
     archprefix = fullfile (octave_config_info ("libexecdir"), "octave", 
-			   "packages", strcat(desc.name, "-", desc.version));
+			   "packages", cstrcat(desc.name, "-", desc.version));
   else
     archprefix = desc.dir;
   endif
@@ -2153,7 +2153,7 @@ function [status, output] = shell (cmd)
       endif
     endif
     if (have_sh)
-      [status, output] = system (strcat ("sh.exe -c \"", cmd, "\""));
+      [status, output] = system (cstrcat ("sh.exe -c \"", cmd, "\""));
     else
       error ("Can not find the command shell")
     endif
@@ -2207,13 +2207,13 @@ function load_packages_and_dependencies (idx, handle_deps, installed_pkgs_lst,
     ndir = installed_pkgs_lst{i}.dir;
     dirs{end+1} = ndir;
     if (exist (fullfile (dirs{end}, "bin"), "dir"))
-      execpath = strcat (fullfile (dirs{end}, "bin"), ":", execpath);
+      execpath = cstrcat (fullfile (dirs{end}, "bin"), ":", execpath);
     endif
     tmpdir = getarchdir (installed_pkgs_lst{i});
     if (exist (tmpdir, "dir"))
       dirs{end + 1} = tmpdir;
       if (exist (fullfile (dirs{end}, "bin"), "dir"))
-        execpath = strcat (fullfile (dirs{end}, "bin"), ":", execpath);
+        execpath = cstrcat (fullfile (dirs{end}, "bin"), ":", execpath);
       endif
     endif
   endfor

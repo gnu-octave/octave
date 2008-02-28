@@ -49,7 +49,7 @@
 %% test/octave.test/eval-catch/eval-catch-7.m
 %!function ms = mangle (s)
 %!  ## Wrap angle brackets around S.
-%!  ms = strcat ("<", s, ">");
+%!  ms = cstrcat ("<", s, ">");
 %!test
 %! eval ("clear a; a; str='';", "str = mangle (lasterr);");
 %! assert(mangle(lasterr)(1:21),"<error: `a' undefined");
@@ -71,6 +71,6 @@
 
 %% test/octave.test/eval-catch/eval-catch-10.m
 %!test
-%! eval ("eval (\"clear a; a; str='';\",\"error (strcat (\\\"rethrow: \\\", lasterr));str='';\");",
+%! eval ("eval (\"clear a; a; str='';\",\"error (cstrcat (\\\"rethrow: \\\", lasterr));str='';\");",
 %! "str=lasterr;");
 %! assert(str(1:36),"error: rethrow: error: `a' undefined");

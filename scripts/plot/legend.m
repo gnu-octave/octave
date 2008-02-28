@@ -210,7 +210,7 @@ endfunction
 %! labels = {};
 %! for i = 1:5
 %!     plot(1:100, i + rand(100,1)); hold on;
-%!     labels = {labels{:}, strcat("Signal ", num2str(i))};
+%!     labels = {labels{:}, cstrcat("Signal ", num2str(i))};
 %! endfor; hold off;
 %! title("Signals with random offset and uniform noise")
 %! xlabel("Sample Nr [k]"); ylabel("Amplitude [V]");

@@ -20,7 +20,7 @@
 
 function [h, needusage] = __ezplot__ (pfunc, varargin)
 
-  func = strcat ("ez", pfunc);
+  func = cstrcat ("ez", pfunc);
   if (strncmp (pfunc, "contour", 7))
     iscontour = true;
   else
@@ -254,7 +254,7 @@ function [h, needusage] = __ezplot__ (pfunc, varargin)
 		      '\./', '/'), '[\.]*\*', '');
     fstrz = regexprep (regexprep (regexprep (fstrz,'\.\^\s*','^'), 
 		      '\./', '/'), '[\.]*\*', '');
-    fstr = strcat ("[",fstrx,",",fstry,",",fstrz,"]");
+    fstr = cstrcat ("[",fstrx,",",fstry,",",fstrz,"]");
   else
     if (isplot3)
       needusage = true;

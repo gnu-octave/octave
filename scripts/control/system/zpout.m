@@ -58,7 +58,7 @@ function zpout (zer, pol, k, x)
       if (nzr > 1)
 	numstring = sprintf ("%s %s^%d", numstring, x, nzr);
       else
-	numstring = strcat (numstring, x);
+	numstring = cstrcat (numstring, x);
       endif
     endif
     zer = sortcom (-zer);

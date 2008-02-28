@@ -42,7 +42,7 @@ function retval = num2str (x, arg)
   elseif (iscomplex (x))
     if (nargin == 2)
       if (ischar (arg))
-	fmt = strcat (arg, "%-+", arg(2:end), "i");
+	fmt = cstrcat (arg, "%-+", arg(2:end), "i");
       else
 	if (isnumeric (x) && round (x) == x && abs (x) < (10 .^ arg))
 	  fmt = sprintf ("%%%dd%%-+%ddi  ", arg, arg);
@@ -88,7 +88,7 @@ function retval = num2str (x, arg)
     x = horzcat (real (x), imag (x));
     x = x(idx{:});
 
-    fmt = strcat (deblank (repmat (fmt, 1, nc)), "\n");
+    fmt = cstrcat (deblank (repmat (fmt, 1, nc)), "\n");
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
 
     ## Put the "i"'s where they are supposed to be.
@@ -140,7 +140,7 @@ function retval = num2str (x, arg)
 	fmt = "%11.5g";
       endif
     endif
-    fmt = strcat (deblank (repmat (fmt, 1, columns (x))), "\n");
+    fmt = cstrcat (deblank (repmat (fmt, 1, columns (x))), "\n");
     nd = ndims (x);
     tmp = sprintf (fmt, permute (x, [2, 1, 3:nd]));
     tmp(length (tmp)) = "";

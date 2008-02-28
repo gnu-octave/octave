@@ -79,7 +79,7 @@ function [pval, z] = z_test (x, m, v, alt)
   endif
 
   if (nargout == 0)
-    s = strcat ("Z-test of mean(x) == %g against mean(x) %s %g,\n",
+    s = cstrcat ("Z-test of mean(x) == %g against mean(x) %s %g,\n",
                 "with known var(x) == %g:\n",
                 "  pval = %g\n");
     printf (s, m, alt, m, v, pval);

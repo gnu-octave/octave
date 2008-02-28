@@ -79,7 +79,7 @@ function [pval, z] = z_test_2 (x, y, v_x, v_y, alt)
   endif
 
   if (nargout == 0)
-    s = strcat ("Two-sample Z-test of mean(x) == mean(y) against ",
+    s = cstrcat ("Two-sample Z-test of mean(x) == mean(y) against ",
                 "mean(x) %s mean(y),\n",
                 "with known var(x) == %g and var(y) == %g:\n",
                 "  pval = %g\n");

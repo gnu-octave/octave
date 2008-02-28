@@ -187,9 +187,9 @@ function print (varargin)
   doprint = isempty (name);
   if (doprint)
     if (isempty (devopt))
-      printname = strcat (tmpnam, ".ps");
+      printname = cstrcat (tmpnam, ".ps");
     else
-      printname = strcat (tmpnam, ".", devopt);
+      printname = cstrcat (tmpnam, ".", devopt);
     endif
     name = printname;
   endif
@@ -209,7 +209,7 @@ function print (varargin)
     dev = "epslatex";
     ## gnuplot 4.0 wants ".eps" in the output name    
     if (compare_versions (__gnuplot_version__, "4.2", "<"))
-      name = strcat (name(1:dot), "eps");
+      name = cstrcat (name(1:dot), "eps");
     endif
   elseif (strcmp (dev, "ill"))
     dev = "aifm";
@@ -226,12 +226,12 @@ function print (varargin)
   [idx, errmsg] = cellidx (dev_list, dev);
   if (! idx)
     if (! isempty (devopt))
-      convertname = strcat (devopt, ":", name);
+      convertname = cstrcat (devopt, ":", name);
     else
       convertname = name;
     endif
     dev = "epsc";
-    name = strcat (tmpnam, ".eps");
+    name = cstrcat (tmpnam, ".eps");
   endif
 
   if (strcmp (dev, "ps") || strcmp (dev, "ps2") ...
@@ -257,33 +257,33 @@ function print (varargin)
       if (dev(1) == "e")
 	options = "eps ";
       else
-	options = strcat (orientation, " ");
+	options = cstrcat (orientation, " ");
       endif
       termn = "postscript";
     endif
     
     if (any (dev == "c") || use_color > 0)
       if (force_solid < 0)
-	options = strcat (options, "color dashed ");
+	options = cstrcat (options, "color dashed ");
       else
-	options = strcat (options, "color solid ");
+	options = cstrcat (options, "color solid ");
       endif
     else
       if (force_solid > 0)
-	options = strcat (options, "mono solid ");
+	options = cstrcat (options, "mono solid ");
       else
-	options = strcat (options, "mono dashed ");
+	options = cstrcat (options, "mono dashed ");
       endif
     endif
 
     if (! isempty (font))
-      options = strcat (options, "\"", font, "\" ");
+      options = cstrcat (options, "\"", font, "\" ");
     endif
     if (! isempty (fontsize))
-      options = strcat (options, " ", fontsize);
+      options = cstrcat (options, " ", fontsize);
     endif
     
-    new_terminal = strcat (termn, " ", options);
+    new_terminal = cstrcat (termn, " ", options);
     
   elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
     ## Adobe Illustrator, CorelDraw
@@ -293,13 +293,13 @@ function print (varargin)
       options = " mono";
     endif
     if (! isempty (font))
-      options = strcat (options, " \"", font, "\"");
+      options = cstrcat (options, " \"", font, "\"");
     endif
     if (! isempty (fontsize))
-      options = strcat (options, " ", fontsize);
+      options = cstrcat (options, " ", fontsize);
     endif
 
-    new_terminal = strcat (dev, " ", options);
+    new_terminal = cstrcat (dev, " ", options);
 
   elseif (strcmp (dev, "fig"))
     ## XFig
@@ -309,12 +309,12 @@ function print (varargin)
     else
       options = " mono";
     endif
-    options = strcat (options, " ", special_flag);
+    options = cstrcat (options, " ", special_flag);
     if (! isempty (fontsize))
-      options = strcat (options, " fontsize ", fontsize);
+      options = cstrcat (options, " fontsize ", fontsize);
     endif
 
-    new_terminal = strcat ("fig ", options);
+    new_terminal = cstrcat ("fig ", options);
 
 
   elseif (strcmp (dev, "emf"))
@@ -326,16 +326,16 @@ function print (varargin)
       options = " mono";
     endif
     if (force_solid >= 0)
-      options = strcat (options, " solid");
+      options = cstrcat (options, " solid");
     endif
     if (! isempty (font))
-      options = strcat (options, " \"", font, "\"");
+      options = cstrcat (options, " \"", font, "\"");
     endif
     if (! isempty (fontsize))
-      options = strcat (options, " ", fontsize);
+      options = cstrcat (options, " ", fontsize);
     endif
 
-    new_terminal = strcat ("emf ", options);
+    new_terminal = cstrcat ("emf ", options);
 
   elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
     ## Portable network graphics, PBMplus
@@ -356,9 +356,9 @@ function print (varargin)
     if (isempty (size))
       options = " large";
     else
-      options = strcat (" size ", size);
+      options = cstrcat (" size ", size);
     endif
-    new_terminal = strcat (dev, options);
+    new_terminal = cstrcat (dev, options);
 
   elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
     ## AutoCad DXF, METAFONT, HPGL
@@ -368,9 +368,9 @@ function print (varargin)
     ## SVG
     options = "";
     if (! isempty (size))
-      options = strcat (" size ", size);
+      options = cstrcat (" size ", size);
     endif
-    new_terminal = strcat ("svg", options);
+    new_terminal = cstrcat ("svg", options);
     
   elseif (strcmp (dev, "pdf"))
     ## Portable Document format
@@ -381,18 +381,18 @@ function print (varargin)
       options = "mono";
     endif
     if (force_solid > 0)
-       options = strcat (options, " solid");
+       options = cstrcat (options, " solid");
     elseif (force_solid < 0)
-      options = strcat (options, " dashed");
+      options = cstrcat (options, " dashed");
     endif
     if (! isempty (font))
-      options = strcat (options, "\"", font, "\" ");
+      options = cstrcat (options, "\"", font, "\" ");
     endif
     if (! isempty (fontsize))
-      options = strcat (options, " ", fontsize);
+      options = cstrcat (options, " ", fontsize);
     endif
 
-    new_terminal = strcat ("pdf ", options);
+    new_terminal = cstrcat ("pdf ", options);
 
   endif
 

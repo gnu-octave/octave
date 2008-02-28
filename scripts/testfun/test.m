@@ -157,10 +157,10 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
   ## locate the file to test
   __file = file_in_loadpath (__name, "all");
   if (isempty (__file))
-    __file = file_in_loadpath (strcat (__name, ".m"), "all");
+    __file = file_in_loadpath (cstrcat (__name, ".m"), "all");
   endif
   if (isempty (__file))
-    __file = file_in_loadpath (strcat (__name, ".cc"), "all");
+    __file = file_in_loadpath (cstrcat (__name, ".cc"), "all");
   endif
   if (iscell (__file))
       ## If repeats, return first in path.
@@ -220,7 +220,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 
   ## ready to start tests ... if in batch mode, tell us what is happening
   if (__verbose)
-    disp (strcat ( __signal_file, __file));
+    disp (cstrcat ( __signal_file, __file));
   endif
 
   ## assume all tests will pass
@@ -270,7 +270,7 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
 	  __demo_code = __code;
 	  __demo_idx = [1, length(__demo_code)+1];
 	else
-	  __demo_code = strcat(__demo_code, __code);
+	  __demo_code = cstrcat(__demo_code, __code);
 	  __demo_idx = [__demo_idx, length(__demo_code)+1];
 	endif
 
@@ -313,9 +313,9 @@ function [__ret1, __ret2, __ret3, __ret4] = test (__name, __flag, __fid)
       try
 	__vars = deblank (__vars);
 	if (! isempty (__vars))
-	  eval (strcat (strrep (__vars, ",", "=[];"), "=[];"));
+	  eval (cstrcat (strrep (__vars, ",", "=[];"), "=[];"));
 	  __shared = __vars;
-	  __shared_r = strcat ("[ ", __vars, "] = ");
+	  __shared_r = cstrcat ("[ ", __vars, "] = ");
       	else
 	  __shared = " ";
 	  __shared_r = " ";
@@ -574,7 +574,7 @@ endfunction
 
 ## strip '.*prefix:' from '.*prefix: msg\n' and strip trailing blanks
 function msg = trimerr (msg, prefix)
-  idx = index (msg, strcat (prefix, ":"));
+  idx = index (msg, cstrcat (prefix, ":"));
   if (idx > 0)
     msg(1:idx+length(prefix)) = [];
   endif
@@ -607,7 +607,7 @@ function body = __extract_test_code (nm)
       if (length (ln) >= 2 && strcmp (ln(1:2), "%!"))
         body = [body, "\n"];
         if (length(ln) > 2)
-          body = strcat (body, ln(3:end));
+          body = cstrcat (body, ln(3:end));
         endif
       endif
     endwhile

@@ -59,7 +59,7 @@ function [status, msg, msgid] = movefile (f1, f2, force)
     endif
 
     if (nargin == 3 && strcmp (force, "f"))
-      cmd = strcat (cmd, " ", cmd_force_flag);
+      cmd = cstrcat (cmd, " ", cmd_force_flag);
     endif
 
     ## If f1 isn't a cellstr convert it to one.

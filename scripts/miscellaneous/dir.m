@@ -113,7 +113,7 @@ function retval = dir (file)
 	    endif
 	  endif
 	  [dummy, fn, ext] = fileparts (fn);
-	  fn = strcat (fn, ext);
+	  fn = cstrcat (fn, ext);
 	  info(i,1).name = fn;
 	  lt = localtime (st.mtime);
 	  info(i,1).date = strftime ("%d-%b-%Y %T", lt);

@@ -80,7 +80,7 @@
 %% test/octave.test/try/try-7.m
 %!function ms = mangle (s)
 %!  ## Wrap angle brackets around S.
-%!  ms = strcat ("<", s, ">");
+%!  ms = cstrcat ("<", s, ">");
 %!test
 %! try
 %!   clear a
@@ -133,7 +133,7 @@
 %!     a;
 %!     error("Shoudn't get here");
 %!   catch
-%!     error(strcat("rethrow: ",lasterr));
+%!     error(cstrcat("rethrow: ",lasterr));
 %!   end_try_catch
 %! catch
 %!   assert(strcmp(lasterr()(1:36), "error: rethrow: error: `a' undefined"))

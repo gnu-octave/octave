@@ -66,9 +66,9 @@ function assert (cond, expected, tol)
 
   in = deblank (argn(1,:));
   for i = 2:rows (argn)
-    in = strcat (in, ",", deblank (argn(i,:)));
+    in = cstrcat (in, ",", deblank (argn(i,:)));
   endfor
-  in = strcat ("(", in, ")");
+  in = cstrcat ("(", in, ")");
 
   coda = "";
   iserror = 0;
@@ -140,7 +140,7 @@ function assert (cond, expected, tol)
 
   elseif (tol == 0 && ! strcmp (typeinfo (cond), typeinfo (expected)))
     iserror = 1;
-    coda = strcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
+    coda = cstrcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
 
   else # numeric
     A = cond(:);
@@ -198,9 +198,9 @@ function assert (cond, expected, tol)
   if (! isempty (idx))
     str2 = str2 (idx(1):idx(end));
   endif
-  msg = strcat ("assert ", in, " expected\n", str, "\nbut got\n", str2);
+  msg = cstrcat ("assert ", in, " expected\n", str, "\nbut got\n", str2);
   if (! isempty (coda))
-    msg = strcat (msg, "\n", coda);
+    msg = cstrcat (msg, "\n", coda);
   endif
   error ("%s", msg);
   ## disp (msg);

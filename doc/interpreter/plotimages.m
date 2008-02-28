@@ -26,42 +26,42 @@ function plotimages (nm, typ)
   elseif (strcmp (nm, "plot"))
     x = -10:0.1:10;
     plot (x, sin (x));
-    print (strcat (nm, ".", typ), strcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "hist"))
     hist (randn (10000, 1), 30);
-    print (strcat (nm, ".", typ), strcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "errorbar"))
     x = 0:0.1:10;
     y = sin (x);
     yp =  0.1 .* randn (size (x));
     ym = -0.1 .* randn (size (x));
     errorbar (x, sin (x), ym, yp);
-    print (strcat (nm, ".", typ), strcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "polar"))
     polar (0:0.1:10*pi, 0:0.1:10*pi);
-    print (strcat (nm, ".", typ), strcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "mesh"))
     tx = ty = linspace (-8, 8, 41)';
     [xx, yy] = meshgrid (tx, ty);
     r = sqrt (xx .^ 2 + yy .^ 2) + eps;
     tz = sin (r) ./ r;
     mesh (tx, ty, tz);
-    print (strcat (nm, ".", typ), strcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "plot3"))
     t = 0:0.1:10*pi;
     r = linspace (0, 1, numel (t));
     z = linspace (0, 1, numel (t));
     plot3 (r.*sin(t), r.*cos(t), z);
-    print (strcat (nm, ".", typ), strcat ("-d", typ))    
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))    
   elseif (strcmp (nm, "extended"))
     x = 0:0.01:3;
     plot(x,erf(x));
     hold on;
     plot(x,x,"r");
     axis([0, 3, 0, 1]);
-    text(0.65, 0.6175, strcat('\leftarrow x = {2/\surd\pi {\fontsize{16}',
+    text(0.65, 0.6175, cstrcat('\leftarrow x = {2/\surd\pi {\fontsize{16}',
       '\int_{\fontsize{8}0}^{\fontsize{8}x}} e^{-t^2} dt} = 0.6175'))
-    print (strcat (nm, ".", typ), strcat ("-d", typ))
+    print (cstrcat (nm, ".", typ), cstrcat ("-d", typ))
   else
     error ("unrecognized plot requested");
   endif

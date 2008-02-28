@@ -187,38 +187,38 @@ function [__order, __test_n, __tnew, __torig] ...
 
   __torig = __tnew = zeros (size (__test_n));
 
-  disp (strcat ("testing ", __f1, "\ninit: ", __init));
+  disp (cstrcat ("testing ", __f1, "\ninit: ", __init));
 
   ## make sure the functions are freshly loaded by evaluating them at
   ## test_n(1); first have to initialize the args though.
   n = 1;
   k = 0;
-  eval (strcat (__init, ";"));
+  eval (cstrcat (__init, ";"));
   if (! isempty (__f2))
-    eval (strcat (__f2, ";"));
+    eval (cstrcat (__f2, ";"));
   endif
-  eval (strcat (__f1, ";"));
+  eval (cstrcat (__f1, ";"));
 
   ## run the tests
   for k = 1:length (__test_n)
     n = __test_n(k);
-    eval (strcat (__init, ";"));
+    eval (cstrcat (__init, ";"));
     
     printf ("n%i=%i  ",k, n);
     fflush (stdout);
-    eval (strcat ("__t=time();", __f1, "; __v1=ans; __t = time()-__t;"));
+    eval (cstrcat ("__t=time();", __f1, "; __v1=ans; __t = time()-__t;"));
     if (__t < 0.25)
-      eval (strcat ("__t2=time();", __f1, "; __t2 = time()-__t2;"));
-      eval (strcat ("__t3=time();", __f1, "; __t3 = time()-__t3;"));
+      eval (cstrcat ("__t2=time();", __f1, "; __t2 = time()-__t2;"));
+      eval (cstrcat ("__t3=time();", __f1, "; __t3 = time()-__t3;"));
       __t = min ([__t, __t2, __t3]);
     endif
     __tnew(k) = __t;
 
     if (! isempty (__f2))
-      eval (strcat ("__t=time();", __f2, "; __v2=ans; __t = time()-__t;"));
+      eval (cstrcat ("__t=time();", __f2, "; __v2=ans; __t = time()-__t;"));
       if (__t < 0.25)
-      	eval (strcat ("__t2=time();", __f2, "; __t2 = time()-__t2;"));
-      	eval (strcat ("__t3=time();", __f2, "; __t3 = time()-__t3;"));
+      	eval (cstrcat ("__t2=time();", __f2, "; __t2 = time()-__t2;"));
+      	eval (cstrcat ("__t3=time();", __f2, "; __t3 = time()-__t3;"));
       endif
       __torig(k) = __t;
       if (! isinf(__tol))
@@ -257,10 +257,10 @@ function [__order, __test_n, __tnew, __torig] ...
   if (doplot && ! isempty (__f2))
     subplot (1, 2, 1);
     semilogx (__test_n, __torig./__tnew, 
-	      strcat ("-*r;", strrep (__f1, ";", "."), "/",
+	      cstrcat ("-*r;", strrep (__f1, ";", "."), "/",
 		      strrep (__f2, ";", "."), ";"),
 	       __test_n, __tnew./__torig,
-	      strcat ("-*g;", strrep (__f2, ";", "."), "/",
+	      cstrcat ("-*g;", strrep (__f2, ";", "."), "/",
 		      strrep (__f1, ";", "."), ";"));
     xlabel ("test length");
     title (__f1);
@@ -268,13 +268,13 @@ function [__order, __test_n, __tnew, __torig] ...
 
     subplot (1, 2, 2);
     loglog (__test_n, __tnew*1000,
-	    strcat ("*-g;", strrep (__f1, ";", "."), ";" ), 
+	    cstrcat ("*-g;", strrep (__f1, ";", "."), ";" ), 
 	    __test_n, __torig*1000,
-	    strcat ("*-r;", strrep (__f2,";","."), ";"));
+	    cstrcat ("*-r;", strrep (__f2,";","."), ";"));
   
     xlabel ("test length");
     ylabel ("best execution time (ms)");
-    title (strcat ("init: ", __init));
+    title (cstrcat ("init: ", __init));
 
     ratio = mean (__torig ./ __tnew);
     printf ("\n\nMean runtime ratio = %.3g for '%s' vs '%s'\n",
@@ -285,7 +285,7 @@ function [__order, __test_n, __tnew, __torig] ...
     loglog (__test_n, __tnew*1000, "*-g;execution time;");
     xlabel ("test length");
     ylabel ("best execution time (ms)");
-    title (strcat (__f1, "  init: ", __init));
+    title (cstrcat (__f1, "  init: ", __init));
 
   endif
 

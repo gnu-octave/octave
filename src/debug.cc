@@ -71,9 +71,10 @@ get_user_function (const std::string& fname = std::string ())
     dbg_fcn = octave_call_stack::caller_user_function ();
   else
     {
-      octave_value fcn = symbol_table::find_user_function (fname);
+      octave_value fcn = symbol_table::find_function (fname);
 
-      dbg_fcn = fcn.user_function_value ();
+      if (fcn.is_defined ())
+	dbg_fcn = fcn.user_function_value ();
     }
 
   return dbg_fcn;

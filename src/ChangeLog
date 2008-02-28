@@ -1,3 +1,8 @@
+2008-02-27  John P. Swensen  <jpswensen@gmail.com>
+
+	* debug.cc (get_user_function): Call symtab::find_function instead
+	of symtab::find_user_function.
+
 2008-02-27  John W. Eaton  <jwe@octave.org>
 
 	* oct-stream.cc (do_read): Stop reading if seek fails.

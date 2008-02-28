@@ -603,25 +603,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		 withclause{data_idx} = sprintf ("with filledcurve %s",
 						 colorspec);
 	       else
-		 if (isequal (color, [0,0,0]))
-		   typ = -1;
-		 elseif (isequal (color, [1,0,0]))
-		   typ = 1;
-		 elseif (isequal (color, [0,1,0]))
-		   typ = 2;
-		 elseif (isequal (color, [0,0,1]))
-		   typ = 3;
-		 elseif (isequal (color, [1,0,1]))
-		   typ = 4;
-		 elseif (isequal (color, [0,1,1]))
-		   typ = 5;
-		 elseif (isequal (color, [1,1,1]))
-		   typ = -1;
-		 elseif (isequal (color, [1,1,0]))
-		   typ = 7;
-		 else
-		   typ = -1;
-		 endif
+		 typ = get_old_gnuplot_color (color);
 		 withclause{data_idx} = sprintf ("with filledcurve lt %d", typ);
 	       endif
 	       data{data_idx} = [xcol, ycol]';
@@ -793,25 +775,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 					       style, lw, pt, lt, ps, 
 					       colorspec);
 	     else
-	       if (isequal (color, [0,0,0]))
-		 typ = -1;
-	       elseif (isequal (color, [1,0,0]))
-		 typ = 1;
-	       elseif (isequal (color, [0,1,0]))
-		 typ = 2;
-	       elseif (isequal (color, [0,0,1]))
-		 typ = 3;
-	       elseif (isequal (color, [1,0,1]))
-		 typ = 4;
-	       elseif (isequal (color, [0,1,1]))
-		 typ = 5;
-	       elseif (isequal (color, [1,1,1]))
-		 typ = -1;
-	       elseif (isequal (color, [1,1,0]))
-		 typ = 7;
-	       else
-		 typ = -1;
-	       endif
+	       typ = get_old_gnuplot_color (color);
 	       withclause{data_idx} = sprintf ("with %s %s %s %s lt %d", 
 					       style, lw, pt, ps, typ);
 	     endif
@@ -940,25 +904,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
                          "set style line %d %s lw %f;\n",
                          data_idx, colorspec, obj.linewidth);
               else
-		if (isequal (edgecol, [0,0,0]))
-		  typ = -1;
-		elseif (isequal (edgecol, [1,0,0]))
-		  typ = 1;
-		elseif (isequal (edgecol, [0,1,0]))
-		  typ = 2;
-		elseif (isequal (edgecol, [0,0,1]))
-		  typ = 3;
-		elseif (isequal (edgecol, [1,0,1]))
-		  typ = 4;
-		elseif (isequal (edgecol, [0,1,1]))
-		  typ = 5;
-		elseif (isequal (edgecol, [1,1,1]))
-		  typ = -1;
-		elseif (isequal (edgecol, [1,1,0]))
-		  typ = 7;
-		else
-		  typ = -1;
-		endif
+		typ = get_old_gnuplot_color (edgecol);
                 fprintf (plot_stream,
                          "set style line %d lt %d lw %f;\n",
                          data_idx, typ, obj.linewidth);
@@ -983,7 +929,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
               else
                 edgecol = obj.edgecolor;
                 if (ischar (obj.edgecolor))
-                  edgecol = [0,0,0];
+                  edgecol = [0, 0, 0];
                 endif
                 fprintf (plot_stream, "set pm3d explicit at s hidden3d %d %s %s corners2color c3;\n", 
 			 data_idx, interp_str, dord);
@@ -999,25 +945,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
                            "set style line %d %s lw %f;\n",
                            data_idx, colorspec, obj.linewidth);
 		else
-		  if (isequal (edgecol, [0,0,0]))
-		    typ = -1;
-		  elseif (isequal (edgecol, [1,0,0]))
-		    typ = 1;
-		  elseif (isequal (edgecol, [0,1,0]))
-		    typ = 2;
-		  elseif (isequal (edgecol, [0,0,1]))
-		    typ = 3;
-		  elseif (isequal (edgecol, [1,0,1]))
-		    typ = 4;
-		  elseif (isequal (edgecol, [0,1,1]))
-		    typ = 5;
-		  elseif (isequal (edgecol, [1,1,1]))
-		    typ = -1;
-		  elseif (isequal (edgecol, [1,1,0]))
-		    typ = 7;
-		  else
-		    typ = -1;
-		  endif
+		  typ = get_old_gnuplot_color (edgecol);
                   fprintf (plot_stream,
                            "set style line %d lt %d lw %f;\n",
                            data_idx, typ, obj.linewidth);
@@ -1335,25 +1263,7 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
 		   round (255*color));
 	endif
       else
-	if (isequal (color, [0,0,0]))
-	  typ = -1;
-	elseif (isequal (color, [1,0,0]))
-	  typ = 1;
-	elseif (isequal (color, [0,1,0]))
-	  typ = 2;
-	elseif (isequal (color, [0,0,1]))
-	  typ = 3;
-	elseif (isequal (color, [1,0,1]))
-	  typ = 4;
-	elseif (isequal (color, [0,1,1]))
-	  typ = 5;
-	elseif (isequal (color, [1,1,1]))
-	  typ = 6;
-	elseif (isequal (color, [1,1,0]))
-	  typ = 7;
-	else
-	  typ = 2;
-	endif
+	typ = get_old_gnuplot_color (color);
       endif
     endif
     found_style = true;
@@ -1657,25 +1567,7 @@ function colorspec = get_text_colorspec (color, mono)
 			   round (255*color));
     endif
   else
-    if (isequal (color, [0,0,0]))
-      typ = -1;
-    elseif (isequal (color, [1,0,0]))
-      typ = 1;
-    elseif (isequal (color, [0,1,0]))
-      typ = 2;
-    elseif (isequal (color, [0,0,1]))
-      typ = 3;
-    elseif (isequal (color, [1,0,1]))
-      typ = 4;
-    elseif (isequal (color, [0,1,1]))
-      typ = 5;
-    elseif (isequal (color, [1,1,1]))
-      typ = -1;
-    elseif (isequal (color, [1,1,0]))
-      typ = 7;
-    else
-      typ = -1;
-    endif
+    typ = get_old_gnuplot_color (color);
     colorspec = sprintf ("textcolor lt %d", typ);
   endif
 endfunction
@@ -2112,5 +2004,27 @@ function retval = __do_enhanced_option__ (enhanced, obj)
     else
       retval = "enhanced";
     endif
+  endif
+endfunction
+
+function typ = get_old_gnuplot_color (color)
+  if (isequal (color, [0, 0, 0]))
+    typ = -1;
+  elseif (isequal (color, [1, 0, 0]))
+    typ = 1;
+  elseif (isequal (color, [0, 1, 0]))
+    typ = 2;
+  elseif (isequal (color, [0, 0, 1]))
+    typ = 3;
+  elseif (isequal (color, [1, 0, 1]))
+    typ = 4;
+  elseif (isequal (color, [0, 1, 1]))
+    typ = 5;
+  elseif (isequal (color, [1, 1, 1]))
+    typ = -1;
+  elseif (isequal (color, [1, 1, 0]))
+    typ = 7;
+  else
+    typ = -1;
   endif
 endfunction

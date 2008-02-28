@@ -1,3 +1,13 @@
+2008-02-28  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m (get_old_gnuplot_color): New subfunction.
+	Use it to replace repeated if/elseif blocks.
+
+2008-02-28  Kai Habel  <kai.habel@gmx.de>
+
+	* plot/__go_draw_axes__.m: If facecolor property of a surface is
+	"none", don't use pm3d mode and set linestyle correctly. 
+
 2008-02-25  Ben Abbott <bpabbott@mac.com>
 
 	* control/system/zpout.m, finance/irr.m, general/int2str.m,

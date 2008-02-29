@@ -347,13 +347,13 @@ public:
   friend class property;
 
 public:
-  base_property (void) : count (0) { }
+  base_property (void) : count (1) { }
 
   base_property (const std::string& s, const graphics_handle& h)
-    : count (0), name (s), parent (h), hidden (false) { }
+    : count (1), name (s), parent (h), hidden (false) { }
 
   base_property (const base_property& p)
-    : count (0), name (p.name), parent (p.parent), hidden (p.hidden) { }
+    : count (1), name (p.name), parent (p.parent), hidden (p.hidden) { }
 
   virtual ~base_property (void) { }
 
@@ -1089,10 +1089,10 @@ class property
 {
 public:
   property (void) : rep (new base_property ("", graphics_handle ()))
-    { rep->count++; }
+    { }
 
   property (base_property *bp, bool persist = false) : rep (bp)
-    { rep->count++; if (persist) rep->count++; }
+    { if (persist) rep->count++; }
 
   property (const property& p)
     {

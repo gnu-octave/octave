@@ -27,6 +27,36 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (base_properties::get_property): Make virtual and
+	remove const modifier.
+	* graphics.cc (base_properties::get_property): Can return built-in
+	properties. Generate an error if the property does not exist.
+	(base_properties::add_listener): Use get_property.
+	(Fadd_listener): Add documentation.
+	* genprops.awk (emit_common_declarations, emit_source): Emit code for
+	overloaded get_property method.
+
+	* genprops.awk (emit_declarations): Run listeners in the property
+	setter methods.
+	* graphics.h.in (enum listener_mode): New enum type for listeners.
+	(base_property::set): Make non-virtual and handle listeners execution.
+	(base_property::listeners): New field holding a map of listeners.
+	(base_property::add_listener, base_property::run_listeners,
+	base_property::do_set): New methods to handle listeners.
+	(property::add_listener, property::run_listeners): Likewise.
+	(base_properties::add_listener): Likewise.
+	(base_graphics_object::add_property_listener,
+	graphics_object::add_property_listener): Likewise.
+	(all property classes): Rename set to do_set and make it protected.
+	* graphics.cc (base_property::run_listeners): New method to execute
+	listeners.
+	(color_property::set, double_radio_property::set,
+	handle_property::set): Rename to do_set.
+	(base_properties::add_listener): New method to handle listener
+	additio. Only handle dynamic properties.
+	(Fadd_listener): New octave interface to add property listeners to
+	graphics object.
+
 	* genprops.awk (emit_get_data): Remove.
 	(emit_declarations): Treat row_vector_property as array_property and
 	remove data_property references.

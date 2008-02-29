@@ -456,6 +456,20 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
 
 // ---------------------------------------------------------------------
 
+void
+base_property::run_listeners (listener_mode mode)
+{
+  const octave_value_list& l = listeners[mode];
+
+  for (int i = 0; i < l.length (); i++)
+    {
+      execute_callback (l(i), parent, octave_value ());
+
+      if (error_state)
+	break;
+    }
+}
+
 radio_values::radio_values (const std::string& opt_string)
 {
   size_t beg = 0;
@@ -529,7 +543,7 @@ color_values::str2rgb (std::string str)
 }
 
 void
-color_property::set (const octave_value& val)
+color_property::do_set (const octave_value& val)
 {
   if (val.is_string ())
     {
@@ -582,7 +596,7 @@ color_property::set (const octave_value& val)
 }
 
 void
-double_radio_property::set (const octave_value& val)
+double_radio_property::do_set (const octave_value& val)
 {
   if (val.is_string ())
     {
@@ -690,7 +704,7 @@ array_property::get_data_limits (void)
 }
 
 void
-handle_property::set (const octave_value& v)
+handle_property::do_set (const octave_value& v)
 {
   double dv = v.double_value ();
 
@@ -1367,14 +1381,54 @@ base_properties::set (const caseless_str& name, const octave_value& val)
 }
 
 property
-base_properties::get_property (const caseless_str& name) const
+base_properties::get_property (const caseless_str& name)
 {
-  std::map<caseless_str, property>::const_iterator it = all_props.find (name);
-
-  if (it == all_props.end ())
-    return property ();
+  if (name.compare ("beingdeleted"))
+    return property (&beingdeleted, true);
+  else if (name.compare ("busyaction"))
+    return property (&busyaction, true);
+  else if (name.compare ("buttondownfcn"))
+    return property (&buttondownfcn, true);
+  else if (name.compare ("clipping"))
+    return property (&clipping, true);
+  else if (name.compare ("createfcn"))
+    return property (&createfcn, true);
+  else if (name.compare ("deletefcn"))
+    return property (&deletefcn, true);
+  else if (name.compare ("handlevisibility"))
+    return property (&handlevisibility, true);
+  else if (name.compare ("hittest"))
+    return property (&hittest, true);
+  else if (name.compare ("interruptible"))
+    return property (&interruptible, true);
+  else if (name.compare ("parent"))
+    return property (&parent, true);
+  else if (name.compare ("selected"))
+    return property (&selected, true);
+  else if (name.compare ("selectionhighlight"))
+    return property (&selectionhighlight, true);
+  else if (name.compare ("tag"))
+    return property (&tag, true);
+  else if (name.compare ("type"))
+    return property (&userdata, true);
+  else if (name.compare ("userdata"))
+    return property (&visible, true);
+  else if (name.compare ("visible"))
+    return property (&visible, true);
+  else if (name.compare ("__modified__"))
+    return property (&__modified__, true);
   else
-    return it->second;
+    {
+      std::map<caseless_str, property>::const_iterator it = all_props.find (name);
+
+      if (it == all_props.end ())
+	{
+	  error ("get_property: unknown property \"%s\"", name.c_str ());
+	  return property ();
+	}
+      else
+	return it->second;
+    }
 }
 
 void
@@ -1492,6 +1546,16 @@ base_properties::update_boundingbox (void)
       if (go.valid_object ())
 	go.get_properties ().update_boundingbox ();
     }
+}
+
+void
+base_properties::add_listener (const caseless_str& nm, const octave_value& v,
+			       listener_mode mode)
+{
+  property p = get_property (nm);
+
+  if (! error_state && p.ok ())
+    p.add_listener (v, mode);
 }
 
 // ---------------------------------------------------------------------
@@ -3648,6 +3712,71 @@ Undocumented internal function.\n\
     }
 
   unwind_protect::run_frame ("Fdrawnow");
+
+  return retval;
+}
+
+DEFUN (add_listener, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} add_listener (@var{h}, @var{prop}, @var{fcn})\n\
+Register @var{fcn} as listener for the property @var{prop} of the graphics\n\
+object @var{h}. Property listeners are executed (in order of registration)\n\
+when the property is set. The new value is already available when the\n\
+listeners are executed.\n\
+\n\
+@var{prop} must be a string naming a valid property in @var{h}.\n\
+\n\
+@var{fcn} can be a function handle, a string or a cell array whose first\n\
+element is a function handle. If @var{fcn} is a function handle, the\n\
+corresponding function should accept at least 2 arguments, that will be\n\
+set to the object handle and the empty matrix respectively. If @var{fcn}\n\
+is a string, it must be any valid octave expression. If @var{fcn} is a cell\n\
+array, the first element must be a function handle with the same signature\n\
+as described above. The next elements of the cell array are passed\n\
+as additional arguments to the function.\n\
+\n\
+@example\n\
+function my_listener (h, dummy, p1)\n\
+  fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
+endfunction\n\
+\n\
+add_listener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
+@end example\n\
+\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 3)
+    {
+      double h = args(0).double_value ();
+
+      if (! error_state)
+	{
+	  std::string pname = args(1).string_value ();
+
+	  if (! error_state)
+	    {
+	      graphics_handle gh = gh_manager::lookup (h);
+
+	      if (gh.ok ())
+		{
+		  graphics_object go = gh_manager::get_object (gh);
+
+		  go.add_property_listener (pname, args(2), POSTSET);
+		}
+	      else
+		error ("add_listener: invalid graphics object (= %g)",
+		       h);
+	    }
+	  else
+	    error ("add_listener: invalid property name, expected a string value");
+	}
+      else
+	error ("add_listener: invalid handle");
+    }
+  else
+    print_usage ();
 
   return retval;
 }

@@ -244,6 +244,7 @@ function emit_common_declarations ()
   printf ("  void set (const caseless_str& pname, const octave_value& val);\n\n");
   printf ("  octave_value get (bool all = false) const;\n\n");
   printf ("  octave_value get (const caseless_str& pname) const;\n\n");
+  printf ("  property get_property (const caseless_str& pname);\n\n");
   printf ("  std::string graphics_object_name (void) const { return go_name; }\n\n");
   printf ("  static property_list::pval_map_type factory_defaults (void);\n\n");
   printf ("private:\n  static std::string go_name;\n\n");
@@ -312,14 +313,21 @@ function emit_declarations ()
 
       if (emit_set[i] == "definition")
       {
-        printf ("\n  {\n    if (! error_state)\n      {\n        %s = val;\n",
-          name[i]);
+	if (updaters[i] || limits[i] || mode[i])
+	  has_builtin_listeners = 1;
+	else
+	  has_builtin_listeners = 0;
+
+        printf ("\n  {\n    if (! error_state)\n      {\n        %s.set (val, %s);\n",
+          name[i], (has_builtin_listeners ? "false" : "true"));
         if (updater[i])
           printf ("        update_%s ();\n", name[i]);
         if (limits[i])
           printf ("        update_axis_limits (\"%s\");\n", name[i]);
         if (mode[i])
           printf ("        set_%smode (\"manual\");\n", name[i]);
+	if (has_builtin_listeners)
+	  printf ("        %s.run_listeners (POSTSET);\n", name[i]);
         printf ("        mark_modified ();\n      }\n  }\n\n");
       }
       else
@@ -428,6 +436,22 @@ function emit_source ()
 
     printf ("  else\n    retval = base_properties::get (pname);\n\n") >> filename;
     printf ("  return retval;\n}\n\n") >> filename;
+
+    ## get_property method
+
+    printf ("property\n%s::properties::get_property (const caseless_str& pname)\n{\n",
+            class_name) >> filename;
+
+    for (i = 1; i<= idx; i++)
+    {
+      printf ("  %sif (pname.compare (\"%s\"))\n",
+              (i > 1 ? "else " : ""), name[i]) >> filename;
+      printf ("    return property (&%s, true);\n", name[i]) >> filename;
+    }
+
+    printf ("  else\n    return base_properties::get_property (pname);\n") >> filename;
+    printf ("}\n\n") >> filename;
+
 
     ## factory defaults method
 

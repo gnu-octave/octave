@@ -73,6 +73,8 @@ xisint (double x)
 octave_value
 xpow (double a, double b)
 {
+  double retval;
+
   if (a < 0.0 && static_cast<int> (b) != b)
     {
       Complex atmp (a);
@@ -80,7 +82,9 @@ xpow (double a, double b)
       return std::pow (atmp, b);
     }
   else
-    return std::pow (a, b);
+    retval = std::pow (a, b);
+
+  return retval;
 }
 
 // -*- 2 -*-

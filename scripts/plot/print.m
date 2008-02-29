@@ -82,6 +82,11 @@
 ##     Metafont
 ##   @item png
 ##     Portable network graphics
+##   @item jpg
+##   @itemx jpeg
+##     JPEG image
+##   @item gif
+##     GIF image
 ##   @item pbm
 ##     PBMplus
 ##   @item svg
@@ -218,10 +223,11 @@ function print (varargin)
   endif
 
   ## check if we have to use convert
-  dev_list = {"aifm", "corel", "fig", "png", "pbm", "dxf", "mf", "svg", ...
-	      "hpgl", "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
-	      "epsc", "epsc2", "emf", "pstex", "pslatex", ...
-	      "epslatex", "epslatexstandalone", "pdf"};
+  dev_list = {"aifm", "corel", "fig", "png", "jpg", "jpeg", ...
+	      "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
+	      "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
+	      "epsc", "epsc2", "emf", "pdf", "pslatex", ...
+	      "epslatex", "epslatexstandalone", "pstex"};
   convertname = "";
   [idx, errmsg] = cellidx (dev_list, dev);
   if (! idx)
@@ -337,7 +343,12 @@ function print (varargin)
 
     new_terminal = cstrcat ("emf ", options);
 
-  elseif (strcmp (dev, "png") || strcmp (dev, "pbm"))
+  elseif (strcmp (dev, "png") || strcmp (dev, "gif")
+	  || strcmp (dev, "jpg") || strcmp (dev, "jpeg")
+	  || strcmp (dev, "pbm"))
+    if (strcmp (dev, "jpg"))
+      dev = "jpeg";
+    endif
     ## Portable network graphics, PBMplus
 
     ## FIXME -- New PNG interface takes color as "xRRGGBB"

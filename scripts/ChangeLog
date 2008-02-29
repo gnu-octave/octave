@@ -1,3 +1,7 @@
+2008-02-29  John W. Eaton  <jwe@octave.org>
+
+	* plot/print.m: Handle gif and jpg devices.
+
 2008-02-28  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m (get_old_gnuplot_color): New subfunction.

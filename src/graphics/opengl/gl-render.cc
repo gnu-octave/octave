@@ -2652,40 +2652,107 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
   unsigned int ID = glGenLists (1);
   double sz = size * backend.get_screen_resolution () / 72.0;
 
+  // constants for the * marker
+  const double sqrt2d4 = 0.35355339059327;
+  double tt = sz*sqrt2d4;
+
   glNewList (ID, GL_COMPILE);
 
   switch (marker[0])
     {
-      case 's':
-        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-        glVertex2d (-sz/2, -sz/2);
-        glVertex2d (-sz/2,  sz/2);
-        glVertex2d ( sz/2,  sz/2);
-        glVertex2d ( sz/2, -sz/2);
-        glEnd();
-        break;
-      case 'o':
-        {
-          double ang_step = M_PI / 5;
+    case '+':
+      glBegin (GL_LINES);
+      glVertex2f (-sz/2 ,0     );
+      glVertex2f (sz/2  ,0     );
+      glVertex2f (0     ,-sz/2 );
+      glVertex2f (0     ,sz/2  );
+      glEnd ();
+      break;
+    case 'x':
+      glBegin(GL_LINES);
+      glVertex2f (-sz/2 ,-sz/2);
+      glVertex2f (sz/2  ,sz/2 );
+      glVertex2f (-sz/2 ,sz/2 );
+      glVertex2f (sz/2 ,-sz/2 );
+      glEnd ();
+      break;
+    case '*':
+      glBegin (GL_LINES);
+      glVertex2f (-sz/2 ,0     );
+      glVertex2f (sz/2  ,0     );
+      glVertex2f (0     ,-sz/2 );
+      glVertex2f (0     ,sz/2  );
+      glVertex2f (-tt   ,-tt   );
+      glVertex2f (+tt   ,+tt   );
+      glVertex2f (-tt   ,+tt   );
+      glVertex2f (+tt   ,-tt   );
+      glEnd ();
+      break;
+    case '.':
+      glBegin (GL_POLYGON);
+      glVertex2f (-sz/10, -sz/10);
+      glVertex2f (-sz/10, sz/10 );
+      glVertex2f (sz/10 , sz/10 );
+      glVertex2f (sz/10 , -sz/10);
+      glEnd ();
+      break;
+    case 's':
+      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glVertex2d (-sz/2, -sz/2);
+      glVertex2d (-sz/2,  sz/2);
+      glVertex2d ( sz/2,  sz/2);
+      glVertex2d ( sz/2, -sz/2);
+      glEnd();
+      break;
+    case 'o':
+      {
+	double ang_step = M_PI / 5;
 
-          glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-          for (double ang = 0; ang < (2*M_PI); ang += ang_step)
-            glVertex2d (sz*cos(ang)/2, sz*sin(ang)/2);
-          glEnd ();
-        }
-        break;
-      case 'd':
-        glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
-        glVertex2d (    0, -sz/2);
-        glVertex2d ( sz/2,     0);
-        glVertex2d (    0,  sz/2);
-        glVertex2d (-sz/2,     0);
-        glEnd();
-        break;
-      default:
-	warning ("opengl_renderer: unsupported marker `%s'",
-		 marker.c_str ());
-	break;
+	glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+	for (double ang = 0; ang < (2*M_PI); ang += ang_step)
+	  glVertex2d (sz*cos(ang)/2, sz*sin(ang)/2);
+	glEnd ();
+      }
+      break;
+    case 'd':
+      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glVertex2d (    0, -sz/2);
+      glVertex2d ( sz/2,     0);
+      glVertex2d (    0,  sz/2);
+      glVertex2d (-sz/2,     0);
+      glEnd();
+      break;
+    case '^':
+      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glVertex2f (0     ,  sz/2);
+      glVertex2f (sz/2  , -sz/2);
+      glVertex2f (-sz/2 , -sz/2);
+      glEnd ();
+      break;
+    case 'v':
+      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glVertex2f (0     ,-sz/2);
+      glVertex2f (-sz/2 ,sz/2 );
+      glVertex2f (sz/2  ,sz/2 );
+      glEnd ();
+      break;
+    case '>':
+      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glVertex2f (sz/2  ,0    );
+      glVertex2f (-sz/2 ,sz/2 );
+      glVertex2f (-sz/2 ,-sz/2);
+      glEnd ();
+      break;
+    case '<':
+      glBegin ((filled ? GL_POLYGON : GL_LINE_LOOP));
+      glVertex2f (-sz/2 ,0    );
+      glVertex2f (sz/2  ,-sz/2);
+      glVertex2f (sz/2  ,sz/2 );
+      glEnd ();
+    default:
+      warning ("opengl_renderer: unsupported marker `%s'",
+	       marker.c_str ());
+      break;
     }
 
   glEndList ();

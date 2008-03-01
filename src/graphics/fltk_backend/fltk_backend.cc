@@ -34,10 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Output.H>
- #include <FL/Fl_Button.H>
+#include <FL/Fl_Button.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/fl_ask.H>
 #include <FL/fl_draw.H>
+#include <FL/gl.h>
 
 #include "oct.h"
 #include "parse.h"
@@ -60,16 +61,25 @@ class OpenGL_fltk : public Fl_Gl_Window {
 public:
   OpenGL_fltk (int x, int y, int w, int h, double num) :
     Fl_Gl_Window (x, y, w, h, 0),
-    number (num)
+    number (num),
+    in_zoom (false)
   {
     // ask for double buffering and a depth buffer
     mode(FL_DEPTH | FL_DOUBLE );
   };
   ~OpenGL_fltk () {};
 
+  void zoom (bool z) {in_zoom = z;}
+  bool zoom () {return in_zoom;}
+  void set_zoom_box (Matrix zb) {zoom_box = zb;}
+
 private:
   double number;
   opengl_renderer renderer;
+  bool in_zoom;
+
+  // (x1,y1,x2,y2)
+  Matrix zoom_box;
 
   void setup_viewport (int _w, int _h) {
     glMatrixMode(GL_PROJECTION);
@@ -91,6 +101,41 @@ private:
     setup_viewport (_w, _h);
     redraw ();
   };
+
+  void draw_overlay(void)
+  {
+    if(!in_zoom) return;
+ 
+    if(!valid()) {
+      valid(1);
+      setup_viewport (w (), h ());
+    }
+
+    glPushMatrix ();
+
+    glMatrixMode (GL_MODELVIEW);
+    glLoadIdentity ();
+
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
+    gluOrtho2D (0.0, w (), 0.0, h ());
+
+    glPushAttrib (GL_DEPTH_BUFFER_BIT | GL_CURRENT_BIT);
+    glDisable (GL_DEPTH_TEST);
+
+    glLineWidth (1);
+    glBegin (GL_LINE_STRIP);
+    gl_color(0);
+    glVertex2d ( zoom_box(0), h () - zoom_box(1) );
+    glVertex2d ( zoom_box(0), h () - zoom_box(3) );
+    glVertex2d ( zoom_box(2), h () - zoom_box(3) );
+    glVertex2d ( zoom_box(2), h () - zoom_box(1) );
+    glVertex2d ( zoom_box(0), h () - zoom_box(1) );
+    glEnd ();
+
+    glPopAttrib ();
+    glPopMatrix ();
+  }
 
   int handle (int event)
   {
@@ -210,7 +255,7 @@ private:
   };
 
   void button_press (Fl_Widget* widg) {
-    if (widg == autoscale) std::cout << "AS " << number () << " pressed\n";
+    if (widg == autoscale) axis_auto ();
     if (widg == help) fl_message (help_text);
   }
 
@@ -218,6 +263,14 @@ private:
   Fl_Button*	 autoscale;
   Fl_Button*	 help;
   Fl_Output*     status;
+
+  void axis_auto () 
+  {
+    octave_value_list args;    
+    args(0) = "auto";
+    feval("axis",args);
+    mark_modified ();
+  }
 
   void pixel2pos (int px, int py, double& x, double& y) const {
     graphics_object ax = gh_manager::get_object (fp.get_currentaxes ());
@@ -293,7 +346,6 @@ private:
   int handle (int event) {
     static int px0,py0;
     static graphics_handle h0 = graphics_handle ();
-    static bool in_drag = false;
 
     int retval = Fl_Window::handle (event);
 
@@ -322,7 +374,14 @@ private:
 	pixel2status (px0, py0, Fl::event_x (), Fl::event_y ());
 	if (Fl::event_button () == 1)
 	  {
-	    in_drag = true;
+	    canvas->zoom (true);
+	    Matrix zoom_box (1,4,0);
+	    zoom_box (0) = px0;
+	    zoom_box (1) = py0;
+	    zoom_box (2) =  Fl::event_x ();
+	    zoom_box (3) =  Fl::event_y ();
+	    canvas->set_zoom_box (zoom_box);
+	    canvas->redraw_overlay ();
 	    return 1;
 	  }
 	break;
@@ -331,8 +390,9 @@ private:
 	if (Fl::event_button () == 1)
 	  {
 	    // end of drag -- zoom
-	    if (in_drag)
+	    if (canvas->zoom ())
 	      {
+		canvas->zoom (false);
 		double x0,y0,x1,y1;
 		graphics_object ax = 
 		  gh_manager::get_object (fp.get_currentaxes ());
@@ -367,7 +427,6 @@ private:
 		    ap.set_ylim (pp);
 		    mark_modified ();
 		  }
-		in_drag = false;
 	      }
 	    // one click -- select axes
 	    else if ( Fl::event_clicks () == 0)
@@ -377,6 +436,10 @@ private:
 		  fp.set_currentaxes (h0.value());
 		return 1;
 	      }
+	  }
+	else if (Fl::event_button () == 3)
+	  {
+	    axis_auto ();
 	  }
 	break;
       }
@@ -486,7 +549,7 @@ private:
 	if (istr >> ind )
 	  return ind;
       }
-    error ("fltk_backend: could not recodnise fltk index");
+    error ("fltk_backend: could not recognize fltk index");
     return -1;
   }
 
@@ -494,7 +557,6 @@ private:
   {
     std::ostringstream ind_str;
     ind_str << fltk_idx_header << idx;
-    std::cout << ind_str.str () << "\n";
     fp.set___plot_stream__ (ind_str.str ());
   }
 

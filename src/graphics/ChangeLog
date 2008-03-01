@@ -1,5 +1,12 @@
 2008-03-01  Shai Ayal  <shaiay@users.sourceforge.net>
 
+	* fltk_backend/fltk_backend.cc (OpenGL_fltk::draw_overlay,
+	OpenGL_fltk::zoom, OpenGL_fltk::set_zoom_box): Added to support
+	zoom box
+	(plot_window::handle): Added zoom box code, B-3 now does autoscale
+	(plot_window::axis_auto): New utility function to call axis("auto")
+	(plot_window::button_press): "A" button now does autoscale
+
 	* opengl/gl-render.cc (make_marker_list): Add the "+x*.^v><"
 	markers
 

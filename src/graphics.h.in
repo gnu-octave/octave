@@ -2711,6 +2711,25 @@ public:
 
     double calc_tick_sep (double minval, double maxval);
     void calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto);
+    void fix_limits (array_property& lims)
+    {
+      if (lims.get ().is_empty ()) 
+	return;
+
+      Matrix l = lims.get ().matrix_value ();
+      if (l(0) > l(1))
+	{
+	  l(0) = 0;
+	  l(1) = 1;
+	  lims = l;
+	}
+      else if (l(0) == l(1))
+	{
+	  l(0) -= 0.5;
+	  l(1) += 0.5;
+	  lims = l;
+	}
+    }      
 
   public:
     Matrix get_axis_limits (double xmin, double xmax, double min_pos, bool logscale);
@@ -2718,18 +2737,23 @@ public:
     {
       if (xtickmode.is ("auto"))
 	calc_ticks_and_lims (xlim, xtick, xlimmode.is ("auto"));
+      fix_limits (xlim);
     }
 
     void update_ylim (void)
     {
       if (ytickmode.is ("auto"))
 	calc_ticks_and_lims (ylim, ytick, ylimmode.is ("auto"));
+
+      fix_limits (ylim);
     }
 
     void update_zlim (void)
     {
       if (ztickmode.is ("auto"))
 	calc_ticks_and_lims (zlim, ztick, zlimmode.is ("auto"));
+
+      fix_limits (zlim);
     }
     
   };

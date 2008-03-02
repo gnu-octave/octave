@@ -466,9 +466,8 @@ function emit_source ()
         dval = gensub (/^.*\{(.*)\}.*$/, "\"\\1\"", "g", dval);
       if (! dval)
         dval = "octave_value ()";
-      if (name[i] !~ /__.*/)
-        printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
-                (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
+      printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
+		 (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
     }
 
     printf ("\n  return m;\n}\n\n") >> filename;

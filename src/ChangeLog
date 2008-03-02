@@ -27,6 +27,8 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* genprops.awk (emit_source): Use all properties in factory defaults.
+
 	* graphics.h.in (base_property::base_property): Set internal counter
 	to 1 by default.
 	(property::property): Adapt constructors to default counter value in

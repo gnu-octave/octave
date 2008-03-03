@@ -1,9 +1,9 @@
-2008-01-25  Jaroslav Hajek  <highegg@gmail.com>
+2008-03-03  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dMatrix.cc (Matrix::lssolve): Also avoid dgelsd lwork query bug
 	in lssolve method that accepts column vector argument.  Correct
 	calculation of nlvl.
-	* CMatrix.cc (ComplexMatrix::lssolve): Likewise, for zgelsd
+	* CMatrix.cc (ComplexMatrix::lssolve): Likewise, for zgelsd.
 
 2008-02-27  John W. Eaton  <jwe@octave.org>
 

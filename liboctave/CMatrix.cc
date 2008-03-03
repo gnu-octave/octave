@@ -2439,11 +2439,11 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
 #if defined (HAVE_LOG2)
-      double tmp = log2 (dminmn) / dsmlsizp1 + 1;
+      double tmp = log2 (dminmn / dsmlsizp1);
 #else
-      double tmp = log (dminmn) / dsmlsizp1 / log (2.0) + 1;
+      double tmp = log (dminmn / dsmlsizp1) / log (2.0);
 #endif
-      octave_idx_type nlvl = static_cast<int> (tmp);
+      octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
 	nlvl = 0;
 
@@ -2620,8 +2620,12 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 
       Array<Complex> work (1);
 
-      // FIXME: Can SMLSIZ be other than 25?
-      octave_idx_type smlsiz = 25;
+      octave_idx_type smlsiz;
+      F77_FUNC (xilaenv, XILAENV) (9, F77_CONST_CHAR_ARG2 ("ZGELSD", 6),
+				   F77_CONST_CHAR_ARG2 (" ", 1),
+				   0, 0, 0, 0, smlsiz
+				   F77_CHAR_ARG_LEN (6)
+				   F77_CHAR_ARG_LEN (1));
 
       // We compute the size of rwork and iwork because ZGELSD in
       // older versions of LAPACK does not return them on a query
@@ -2629,11 +2633,11 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       double dminmn = static_cast<double> (minmn);
       double dsmlsizp1 = static_cast<double> (smlsiz+1);
 #if defined (HAVE_LOG2)
-      double tmp = log2 (dminmn) / dsmlsizp1 + 1;
+      double tmp = log2 (dminmn / dsmlsizp1);
 #else
-      double tmp = log (dminmn) / dsmlsizp1 / log (2.0) + 1;
+      double tmp = log (dminmn / dsmlsizp1) / log (2.0);
 #endif
-      octave_idx_type nlvl = static_cast<int> (tmp);
+      octave_idx_type nlvl = static_cast<octave_idx_type> (tmp) + 1;
       if (nlvl < 0)
 	nlvl = 0;
 

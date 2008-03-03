@@ -1,3 +1,10 @@
+2008-01-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* dMatrix.cc (Matrix::lssolve): Also avoid dgelsd lwork query bug
+	in lssolve method that accepts column vector argument.  Correct
+	calculation of nlvl.
+	* CMatrix.cc (ComplexMatrix::lssolve): Likewise, for zgelsd
+
 2008-02-27  John W. Eaton  <jwe@octave.org>
 
 	* oct-rand.cc (class octave_rand): Make it a proper singleton class.

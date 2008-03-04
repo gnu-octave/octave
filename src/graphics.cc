@@ -2893,6 +2893,53 @@ axes::update_axis_limits (const std::string& axis_type)
   unwind_protect::run ();
 }
 
+void
+axes::properties::zoom (const Matrix& xl, const Matrix& yl)
+{
+  zoom_stack.push_front (xlimmode.get ());
+  zoom_stack.push_front (xlim.get ());
+  zoom_stack.push_front (ylimmode.get ());
+  zoom_stack.push_front (ylim.get ());
+
+  xlim = xl;
+  xlimmode = "manual";
+  ylim = yl;
+  ylimmode = "manual";
+
+  update_transform ();
+  update_xlim (false);
+  update_ylim (false);
+}
+
+void
+axes::properties::unzoom (void)
+{
+  if (zoom_stack.size () >= 4)
+    {
+      ylim = zoom_stack.front ();
+      zoom_stack.pop_front ();
+      ylimmode = zoom_stack.front ();
+      zoom_stack.pop_front ();
+      xlim = zoom_stack.front ();
+      zoom_stack.pop_front ();
+      xlimmode = zoom_stack.front ();
+      zoom_stack.pop_front ();
+
+      update_transform ();
+      update_xlim (false);
+      update_ylim (false);
+    }
+}
+
+void
+axes::properties::clear_zoom_stack (void)
+{
+  while (zoom_stack.size () > 4)
+    zoom_stack.pop_front ();
+
+  unzoom ();
+}
+
 // ---------------------------------------------------------------------
 
 // Note: "line" code is entirely auto-generated

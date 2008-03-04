@@ -2546,17 +2546,21 @@ public:
     Matrix get_transform_zlim (void) const { return x_zlim; }
 
     ColumnVector pixel2coord (double px, double py) const
-    { return get_transform ().untransform (px, py, 0); }
+    { return get_transform ().untransform (px, py, (x_zlim(0)+x_zlim(1))/2); }
 
     ColumnVector coord2pixel (double x, double y, double z) const
     { return get_transform ().transform (x, y, z); }
 
+    void zoom (const Matrix& xl, const Matrix& yl);
+    void unzoom (void);
+    void clear_zoom_stack (void);
 
   private:
     scaler sx, sy, sz;
     Matrix x_render, x_render_inv;
     Matrix x_gl_mat1, x_gl_mat2;
     Matrix x_zlim;
+    std::list<octave_value> zoom_stack;
 
     // See the genprops.awk script for an explanation of the
     // properties declarations.
@@ -2733,19 +2737,27 @@ public:
 
   public:
     Matrix get_axis_limits (double xmin, double xmax, double min_pos, bool logscale);
-    void update_xlim (void)
+    
+    void update_xlim (bool do_clr_zoom = true)
     {
       if (xtickmode.is ("auto"))
 	calc_ticks_and_lims (xlim, xtick, xlimmode.is ("auto"));
+
       fix_limits (xlim);
+
+      if (do_clr_zoom)
+	zoom_stack.clear ();
     }
 
-    void update_ylim (void)
+    void update_ylim (bool do_clr_zoom = true)
     {
       if (ytickmode.is ("auto"))
 	calc_ticks_and_lims (ylim, ytick, ylimmode.is ("auto"));
 
       fix_limits (ylim);
+
+      if (do_clr_zoom)
+	zoom_stack.clear ();
     }
 
     void update_zlim (void)
@@ -2754,6 +2766,8 @@ public:
 	calc_ticks_and_lims (zlim, ztick, zlimmode.is ("auto"));
 
       fix_limits (zlim);
+
+      zoom_stack.clear ();
     }
     
   };

@@ -1,3 +1,7 @@
+2008-03-04  Bill Denney  <bill@denney.ws>
+
+	* geometry/rectint.m: New function.
+
 2008-03-04  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* pkg/pkg.m (pkg:configure_make): Make it work with recent changes in

@@ -1,3 +1,8 @@
+2008-03-04  Jaroslav Hajek  <highegg@gmail.com>
+
+	* Array-C.cc, Sparse-C.cc: Include oct-sort.cc after definitions
+	of < and > operators.
+
 2008-03-03  David Bateman  <dbateman@free.fr>
 
 	* Sparse.cc (assign1, assign1): Take care of repeated index

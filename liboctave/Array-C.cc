@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "Array.h"
 #include "Array.cc"
-#include "oct-sort.cc"
 
 static double
 xabs (const Complex& x)
@@ -52,6 +51,10 @@ operator > (const Complex& a, const Complex& b)
   return (xisnan (a) || (xabs (a) > xabs (b))
 	  || ((xabs (a) == xabs (b)) && (arg (a) > arg (b))));
 }
+
+// This file must be included after the < and > operators are
+// defined to avoid errors with the Intel C++ compiler.
+#include "oct-sort.cc"
 
 template <>
 bool

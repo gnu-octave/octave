@@ -1,3 +1,8 @@
+2008-03-04  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* pkg/pkg.m (pkg:configure_make): Make it work with recent changes in
+	isspace handling with cell arrays of strings.
+
 2008-03-04  Ben Abbott <bpabbott@mac.com>
 
 	* polynomial/polyfit.m: Modified tests to respect a relative tolerance.

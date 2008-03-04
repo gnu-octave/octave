@@ -1296,11 +1296,11 @@ function configure_make (desc, packdir, verbose)
     archindependent = filenames (!idx);
 
     ## Copy the files
-    if (! all (isspace (filenames)))
+    if (! all (isspace ([filenames{:}])))
 	if (! exist (instdir, "dir")) 
 	  mkdir (instdir);
 	endif
-	if (! all (isspace (archindependent)))
+	if (! all (isspace ([archindependent{:}])))
 	  if (verbose)
 	    printf ("copyfile");
 	    printf (" %s", archindependent{:});
@@ -1312,7 +1312,7 @@ function configure_make (desc, packdir, verbose)
 	    error ("Couldn't copy files from 'src' to 'inst': %s", output);
 	  endif
         endif
-	if (! all (isspace (archdependent)))
+	if (! all (isspace ([archdependent{:}])))
 	  if (verbose)
 	    printf ("copyfile");
 	    printf (" %s", archdependent{:});

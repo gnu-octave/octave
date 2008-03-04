@@ -19,10 +19,14 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} print (@var{filename}, @var{options})
+## @deftypefnx {Function File} {} print (@var{h}, @var{filename}, @var{options})
 ## Print a graph, or save it to a file
 ##
 ## @var{filename} defines the file name of the output file. If no
 ## filename is specified, output is sent to the printer.
+##
+## @var{h} specifies the figure handle. If no handle is specified
+## the handle for the current figure is used.
 ##
 ## @var{options}:
 ## @table @code
@@ -139,296 +143,303 @@ function print (varargin)
   debug_file = "octave-print-commands.log";
   special_flag = "textnormal";
 
-  ## Ensure the last figure is on the screen for single line commands like
-  ##   plot(...); print(...);
-  drawnow ();
+  old_fig = get (0, "currentfigure");
+  unwind_protect
+    ## Ensure the last figure is on the screen for single line commands like
+    ##   plot(...); print(...);
+    drawnow ();
 
-  for i = 1:nargin
-    arg = varargin{i};
-    if (ischar (arg))
-      if (strcmp (arg, "-color"))
+    for i = 1:nargin
+      arg = varargin{i};
+      if (ischar (arg))
+        if (strcmp (arg, "-color"))
 	use_color = 1;
-      elseif (strcmp (arg, "-mono"))
-	use_color = -1;
-      elseif (strcmp (arg, "-solid"))
-        force_solid = 1;
-      elseif (strcmp (arg, "-dashed"))
-        force_solid = -1;
-      elseif (strcmp (arg, "-portrait"))
-	orientation = "portrait";
-      elseif (strcmp (arg, "-landscape"))
-	orientation = "landscape";
-      elseif (strcmp (arg, "-textspecial"))
-	special_flag = "textspecial";
-      elseif (strncmp (arg, "-debug", 6))
-	debug = true;
-	if (length (arg) > 7)
-	  debug_file = arg(8:end);
-	endif
-      elseif (length (arg) > 2 && arg(1:2) == "-d")
-	devopt = arg(3:end);
-      elseif (length (arg) > 2 && arg(1:2) == "-P")
-	printer = arg;
-      elseif (length (arg) > 2 && arg(1:2) == "-F")
-	idx = rindex(arg, ":");
-	if (idx)
-	  font = arg(3:idx-1);
-	  fontsize = arg(idx+1:length(arg));
-	else
-	  font = arg(3:length(arg));
-	endif
-      elseif (length (arg) > 2 && arg(1:2) == "-S")
-	size = arg(3:length(arg));
-      elseif (length (arg) >= 1 && arg(1) == "-")
-	error ("print: unknown option `%s'", arg);
-      elseif (length (arg) > 0)
-	name = arg;
+        elseif (strcmp (arg, "-mono"))
+	  use_color = -1;
+        elseif (strcmp (arg, "-solid"))
+          force_solid = 1;
+        elseif (strcmp (arg, "-dashed"))
+          force_solid = -1;
+        elseif (strcmp (arg, "-portrait"))
+	  orientation = "portrait";
+        elseif (strcmp (arg, "-landscape"))
+	  orientation = "landscape";
+        elseif (strcmp (arg, "-textspecial"))
+	  special_flag = "textspecial";
+        elseif (strncmp (arg, "-debug", 6))
+	  debug = true;
+	  if (length (arg) > 7)
+	    debug_file = arg(8:end);
+	  endif
+        elseif (length (arg) > 2 && arg(1:2) == "-d")
+	  devopt = arg(3:end);
+        elseif (length (arg) > 2 && arg(1:2) == "-P")
+	  printer = arg;
+        elseif (length (arg) > 2 && arg(1:2) == "-F")
+	  idx = rindex (arg, ":");
+	  if (idx)
+	    font = arg(3:idx-1);
+	    fontsize = arg(idx+1:length(arg));
+	  else
+	    font = arg(3:length(arg));
+	  endif
+        elseif (length (arg) > 2 && arg(1:2) == "-S")
+	  size = arg(3:length(arg));
+        elseif (length (arg) >= 1 && arg(1) == "-")
+	  error ("print: unknown option `%s'", arg);
+        endif
+      elseif (ishandle (arg))
+        figure (arg);
+      else
+        error ("print: expecting inputs to be character string options or a figure handle");
+      endif
+    endfor
+
+    doprint = isempty (name);
+    if (doprint)
+      if (isempty (devopt))
+        printname = cstrcat (tmpnam, ".ps");
+      else
+        printname = cstrcat (tmpnam, ".", devopt);
+      endif
+      name = printname;
+    endif
+
+    if (isempty (devopt))
+      dot = rindex (name, ".");
+      if (dot == 0)
+        error ("print: no format specified");
+      else
+        dev = tolower (name(dot+1:end));
       endif
     else
-      error ("print: expects string options");
+      dev = devopt;
     endif
-  endfor
 
-  doprint = isempty (name);
-  if (doprint)
-    if (isempty (devopt))
-      printname = cstrcat (tmpnam, ".ps");
-    else
-      printname = cstrcat (tmpnam, ".", devopt);
+    if (strcmp (dev, "tex"))
+      dev = "epslatex";
+      ## gnuplot 4.0 wants ".eps" in the output name    
+      if (compare_versions (__gnuplot_version__, "4.2", "<"))
+        name = cstrcat (name(1:dot), "eps");
+      endif
+    elseif (strcmp (dev, "ill"))
+      dev = "aifm";
+    elseif (strcmp (dev, "cdr"))
+      dev = "corel";
     endif
-    name = printname;
-  endif
 
-  if (isempty (devopt))
-    dot = rindex (name, ".");
-    if (dot == 0)
-      error ("print: no format specified");
-    else
-      dev = tolower (name(dot+1:end));
-    endif
-  else
-    dev = devopt;
-  endif
-
-  if (strcmp (dev, "tex"))
-    dev = "epslatex";
-    ## gnuplot 4.0 wants ".eps" in the output name    
-    if (compare_versions (__gnuplot_version__, "4.2", "<"))
-      name = cstrcat (name(1:dot), "eps");
-    endif
-  elseif (strcmp (dev, "ill"))
-    dev = "aifm";
-  elseif (strcmp (dev, "cdr"))
-    dev = "corel";
-  endif
-
-  ## check if we have to use convert
-  dev_list = {"aifm", "corel", "fig", "png", "jpg", "jpeg", ...
+    ## check if we have to use convert
+    dev_list = {"aifm", "corel", "fig", "png", "jpg", "jpeg", ...
 	      "gif", "pbm", "dxf", "mf", "svg", "hpgl", ...
 	      "ps", "ps2", "psc", "psc2", "eps", "eps2", ...
 	      "epsc", "epsc2", "emf", "pdf", "pslatex", ...
 	      "epslatex", "epslatexstandalone", "pstex"};
-  convertname = "";
-  [idx, errmsg] = cellidx (dev_list, dev);
-  if (! idx)
-    if (! isempty (devopt))
-      convertname = cstrcat (devopt, ":", name);
-    else
-      convertname = name;
+    convertname = "";
+    [idx, errmsg] = cellidx (dev_list, dev);
+    if (! idx)
+      if (! isempty (devopt))
+        convertname = cstrcat (devopt, ":", name);
+      else
+        convertname = name;
+      endif
+      dev = "epsc";
+      name = cstrcat (tmpnam, ".eps");
     endif
-    dev = "epsc";
-    name = cstrcat (tmpnam, ".eps");
-  endif
 
-  if (strcmp (dev, "ps") || strcmp (dev, "ps2") ...
-      || strcmp (dev, "psc")  || strcmp (dev, "psc2")
-      || strcmp (dev, "epsc") || strcmp (dev, "epsc2")
-      || strcmp (dev, "eps")  || strcmp (dev, "eps2")
-      || strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
-      || strcmp (dev, "epslatex") || strcmp (dev, "epslatexstandalone"))
+    if (strcmp (dev, "ps") || strcmp (dev, "ps2")
+        || strcmp (dev, "psc")  || strcmp (dev, "psc2")
+        || strcmp (dev, "epsc") || strcmp (dev, "epsc2")
+        || strcmp (dev, "eps")  || strcmp (dev, "eps2")
+        || strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
+        || strcmp (dev, "epslatex") || strcmp (dev, "epslatexstandalone"))
 
-    ## Various postscript options
-    if (strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
+      ## Various postscript options
+      if (strcmp (dev, "pstex")|| strcmp (dev, "pslatex")
 	|| strcmp (dev, "epslatex"))
-      termn = dev;
-      options = "";
-    elseif (strcmp (dev, "epslatexstandalone"))
-      if (compare_versions (__gnuplot_version__, "4.2", ">="))
+        termn = dev;
+        options = "";
+      elseif (strcmp (dev, "epslatexstandalone"))
+        if (compare_versions (__gnuplot_version__, "4.2", ">="))
 	termn = "epslatex";
 	options = "standalone ";
-      else
+        else
 	error ("print: epslatexstandalone needs gnuplot 4.2 or higher");
-      endif
-    else
-      if (dev(1) == "e")
+        endif
+      else
+        if (dev(1) == "e")
 	options = "eps ";
-      else
+        else
 	options = cstrcat (orientation, " ");
+        endif
+        termn = "postscript";
       endif
-      termn = "postscript";
-    endif
-    
-    if (any (dev == "c") || use_color > 0)
-      if (force_solid < 0)
-	options = cstrcat (options, "color dashed ");
+      
+      if (any (dev == "c") || use_color > 0)
+        if (force_solid < 0)
+	  options = cstrcat (options, "color dashed ");
+        else
+	  options = cstrcat (options, "color solid ");
+        endif
       else
-	options = cstrcat (options, "color solid ");
+        if (force_solid > 0)
+	  options = cstrcat (options, "mono solid ");
+        else
+	  options = cstrcat (options, "mono dashed ");
+        endif
       endif
-    else
-      if (force_solid > 0)
-	options = cstrcat (options, "mono solid ");
+
+      if (! isempty (font))
+        options = cstrcat (options, "\"", font, "\" ");
+      endif
+      if (! isempty (fontsize))
+        options = cstrcat (options, " ", fontsize);
+      endif
+      
+      new_terminal = cstrcat (termn, " ", options);
+      
+    elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
+      ## Adobe Illustrator, CorelDraw
+      if (use_color >= 0)
+        options = " color";
       else
-	options = cstrcat (options, "mono dashed ");
+        options = " mono";
       endif
-    endif
+      if (! isempty (font))
+        options = cstrcat (options, " \"", font, "\"");
+      endif
+      if (! isempty (fontsize))
+        options = cstrcat (options, " ", fontsize);
+      endif
 
-    if (! isempty (font))
-      options = cstrcat (options, "\"", font, "\" ");
-    endif
-    if (! isempty (fontsize))
-      options = cstrcat (options, " ", fontsize);
-    endif
-    
-    new_terminal = cstrcat (termn, " ", options);
-    
-  elseif (strcmp (dev, "aifm") || strcmp (dev, "corel"))
-    ## Adobe Illustrator, CorelDraw
-    if (use_color >= 0)
-      options = " color";
-    else
-      options = " mono";
-    endif
-    if (! isempty (font))
-      options = cstrcat (options, " \"", font, "\"");
-    endif
-    if (! isempty (fontsize))
-      options = cstrcat (options, " ", fontsize);
-    endif
+      new_terminal = cstrcat (dev, " ", options);
 
-    new_terminal = cstrcat (dev, " ", options);
+    elseif (strcmp (dev, "fig"))
+      ## XFig
+      options = orientation;
+      if (use_color >= 0)
+        options = " color";
+      else
+        options = " mono";
+      endif
+      options = cstrcat (options, " ", special_flag);
+      if (! isempty (fontsize))
+        options = cstrcat (options, " fontsize ", fontsize);
+      endif
 
-  elseif (strcmp (dev, "fig"))
-    ## XFig
-    options = orientation;
-    if (use_color >= 0)
-      options = " color";
-    else
-      options = " mono";
-    endif
-    options = cstrcat (options, " ", special_flag);
-    if (! isempty (fontsize))
-      options = cstrcat (options, " fontsize ", fontsize);
-    endif
+      new_terminal = cstrcat ("fig ", options);
 
-    new_terminal = cstrcat ("fig ", options);
+    elseif (strcmp (dev, "emf"))
+      ## Enhanced Metafile format
+      options = " ";
+      if (use_color >= 0)
+        options = " color";
+      else
+        options = " mono";
+      endif
+      if (force_solid >= 0)
+        options = cstrcat (options, " solid");
+      endif
+      if (! isempty (font))
+        options = cstrcat (options, " \"", font, "\"");
+      endif
+      if (! isempty (fontsize))
+        options = cstrcat (options, " ", fontsize);
+      endif
 
+      new_terminal = cstrcat ("emf ", options);
 
-  elseif (strcmp (dev, "emf"))
-    ## Enhanced Metafile format
-    options = " ";
-    if (use_color >= 0)
-      options = " color";
-    else
-      options = " mono";
-    endif
-    if (force_solid >= 0)
-      options = cstrcat (options, " solid");
-    endif
-    if (! isempty (font))
-      options = cstrcat (options, " \"", font, "\"");
-    endif
-    if (! isempty (fontsize))
-      options = cstrcat (options, " ", fontsize);
-    endif
-
-    new_terminal = cstrcat ("emf ", options);
-
-  elseif (strcmp (dev, "png") || strcmp (dev, "gif")
+    elseif (strcmp (dev, "png") || strcmp (dev, "gif")
 	  || strcmp (dev, "jpg") || strcmp (dev, "jpeg")
 	  || strcmp (dev, "pbm"))
-    if (strcmp (dev, "jpg"))
-      dev = "jpeg";
-    endif
-    ## Portable network graphics, PBMplus
+      if (strcmp (dev, "jpg"))
+        dev = "jpeg";
+      endif
+      ## Portable network graphics, PBMplus
 
-    ## FIXME -- New PNG interface takes color as "xRRGGBB"
-    ## where x is the literal character 'x' and 'RRGGBB' are the red,
-    ## green and blue components in hex.  For now we just ignore it
-    ## and use default.  The png terminal now is so rich with options,
-    ## that one perhaps has to write a separate printpng.m function.
+      ## FIXME -- New PNG interface takes color as "xRRGGBB"
+      ## where x is the literal character 'x' and 'RRGGBB' are the red,
+      ## green and blue components in hex.  For now we just ignore it
+      ## and use default.  The png terminal now is so rich with options,
+      ## that one perhaps has to write a separate printpng.m function.
+      ## DAS
+
+      ## if (use_color >= 0)
+      ##	eval (sprintf ("__gnuplot_set__ term %s color medium", dev));
+      ##else
+      ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
+      ##endif
+
+      if (isempty (size))
+        options = " large";
+      else
+        options = cstrcat (" size ", size);
+      endif
+      new_terminal = cstrcat (dev, options);
+
+    elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
+      ## AutoCad DXF, METAFONT, HPGL
+      new_terminal = dev;
+
+    elseif (strcmp (dev, "svg"))
+      ## SVG
+      options = "";
+      if (! isempty (size))
+        options = cstrcat (" size ", size);
+      endif
+      new_terminal = cstrcat ("svg", options);
+      
+    elseif (strcmp (dev, "pdf"))
+      ## Portable Document format
+      options = " ";
+      if (use_color >= 0)
+        options = "color";
+      else
+        options = "mono";
+      endif
+      if (force_solid > 0)
+         options = cstrcat (options, " solid");
+      elseif (force_solid < 0)
+        options = cstrcat (options, " dashed");
+      endif
+      if (! isempty (font))
+        options = cstrcat (options, "\"", font, "\" ");
+      endif
+      if (! isempty (fontsize))
+        options = cstrcat (options, " ", fontsize);
+      endif
+
+      new_terminal = cstrcat ("pdf ", options);
+
+    endif
+
+    mono = use_color < 0;
+
+    if (debug)
+      drawnow (new_terminal, name, mono, debug_file);
+    else
+      drawnow (new_terminal, name, mono);
+    endif
+
+    if (! isempty (convertname))
+      command = sprintf ("convert '%s' '%s'", name, convertname);
+      [errcode, output] = system (command);
+      unlink (name);
+      if (errcode)
+        error ("print: could not convert");
+      endif
+    endif
+
+    ## FIXME -- This looks like a dirty, Unix-specific hack.
     ## DAS
-
-    ## if (use_color >= 0)
-    ##	eval (sprintf ("__gnuplot_set__ term %s color medium", dev));
-    ##else
-    ##eval (sprintf ("__gnuplot_set__ term %s mono medium", dev));
-    ##endif
-
-    if (isempty (size))
-      options = " large";
-    else
-      options = cstrcat (" size ", size);
-    endif
-    new_terminal = cstrcat (dev, options);
-
-  elseif (strcmp (dev, "dxf") || strcmp (dev, "mf") || strcmp (dev, "hpgl"))
-    ## AutoCad DXF, METAFONT, HPGL
-    new_terminal = dev;
-
-  elseif (strcmp (dev, "svg"))
-    ## SVG
-    options = "";
-    if (! isempty (size))
-      options = cstrcat (" size ", size);
-    endif
-    new_terminal = cstrcat ("svg", options);
-    
-  elseif (strcmp (dev, "pdf"))
-    ## Portable Document format
-    options = " ";
-    if (use_color >= 0)
-      options = "color";
-    else
-      options = "mono";
-    endif
-    if (force_solid > 0)
-       options = cstrcat (options, " solid");
-    elseif (force_solid < 0)
-      options = cstrcat (options, " dashed");
-    endif
-    if (! isempty (font))
-      options = cstrcat (options, "\"", font, "\" ");
-    endif
-    if (! isempty (fontsize))
-      options = cstrcat (options, " ", fontsize);
+    if (doprint)
+      system (sprintf ("lpr %s '%s'", printer, printname));
+      unlink (printname);
     endif
 
-    new_terminal = cstrcat ("pdf ", options);
-
-  endif
-
-  mono = use_color < 0;
-
-  if (debug)
-    drawnow (new_terminal, name, mono, debug_file);
-  else
-    drawnow (new_terminal, name, mono);
-  endif
-
-  if (! isempty (convertname))
-    command = sprintf ("convert '%s' '%s'", name, convertname);
-    [errcode, output] = system (command);
-    unlink (name);
-    if (errcode)
-      error ("print: could not convert");
+  unwind_protect_cleanup
+    if (ishandle (old_fig))
+      figure (old_fig)
     endif
-  endif
-
-  ## FIXME -- This looks like a dirty, Unix-specific hack.
-  ## DAS
-  if (doprint)
-    system (sprintf ("lpr %s '%s'", printer, printname));
-    unlink (printname);
-  endif
+  end_unwind_protect
 
 endfunction

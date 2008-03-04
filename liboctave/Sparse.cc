@@ -2364,6 +2364,8 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	      OCTAVE_QUIT;
 
 	      octave_idx_type ii = lhs_idx.elem (i);
+	      if (i < n - 1 && lhs_idx.elem (i + 1) == ii)
+		continue;
 	      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
 		new_nzmx--;
 	      if (rhs.elem(rhs_idx[i]) != RT ())
@@ -2388,6 +2390,12 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 	      while (j < n || i < nz)
 		{
+		  if (j < n - 1 && lhs_idx.elem (j + 1) == jj)
+		    {
+		      j++;
+		      jj = lhs_idx.elem (j);
+		      continue;
+		    }
 		  if (j == n || (i < nz && ii < jj))
 		    {
 		      tmp.xdata (kk) = c_lhs.data (i);
@@ -2431,6 +2439,12 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 	      while (j < n || i < nz)
 		{
+		  if (j < n - 1 && lhs_idx.elem (j + 1) == jj)
+		    {
+		      j++;
+		      jj = lhs_idx.elem (j);
+		      continue;
+		    }
 		  if (j == n || (i < nz && ii < jj))
 		    {
 		      while (ic <= ii)
@@ -2476,6 +2490,7 @@ assign1 (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	  RT scalar = rhs.elem (0);
 	  bool scalar_non_zero = (scalar != RT ());
 	  lhs_idx.sort (true);
+	  n = lhs_idx.length (n);
 
 	  // First count the number of non-zero elements
 	  if (scalar != RT ())
@@ -2703,7 +2718,9 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		  if (n > 0 && m > 0)
 		    {
 		      idx_i.sort (true);
+		      n = idx_i.length (n);
 		      idx_j.sort (true);
+		      m = idx_j.length (m);
 
 		      octave_idx_type max_row_idx = idx_i_is_colon ? rhs_nr : 
 			idx_i.max () + 1;
@@ -2966,6 +2983,14 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 				{
 				  if (iii < n && ii <= pp)
 				    {
+				      if (iii < n - 1 && 
+					  idx_i.elem (iii + 1) == ii)
+					{
+					  iii++;
+					  ii = idx_i.elem(iii);
+					  continue;
+					}
+
 				      RT rtmp = rhs.elem (rhs_idx_i[iii], 
 							  rhs_idx_j[jji]);
 				      if (rtmp != RT ())
@@ -3174,6 +3199,8 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		      OCTAVE_QUIT;
 		      
 		      octave_idx_type ii = idx_i.elem (i);
+		      if (i < len - 1 && idx_i.elem (i + 1) == ii)
+			continue;
 		      if (ii < lhs_len && c_lhs.elem(ii) != LT ())
 			new_nzmx--;
 		      if (rhs.elem(rhs_idx[i]) != RT ())
@@ -3202,6 +3229,15 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 
 		  while (j < len || i < lhs_nz)
 		    {
+		      if (j < len - 1 && idx_i.elem (j + 1) == jj)
+			{
+			  j++;
+			  jj = idx_i.elem (j);
+			  jr = jj % lhs_nr;
+			  jc = (jj - jr) / lhs_nr;
+			  continue;
+			}
+
 		      if (j == len || (i < lhs_nz && ii < jj))
 			{
 			  while (kc <= ic)
@@ -3252,6 +3288,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 		  RT scalar = rhs.elem (0, 0);
 		  octave_idx_type new_nzmx = lhs_nz;
 		  idx_i.sort (true);
+		  len = idx_i.length (len);
 
 		  // First count the number of non-zero elements
 		  if (scalar != RT ())
@@ -3358,7 +3395,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
  * Tests
  *
 
-%!function x = set_slice(x, dim, slice)
+%!function x = set_slice(x, dim, slice, arg)
 %!  switch dim
 %!    case 11
 %!      x(slice) = 2;
@@ -3371,10 +3408,28 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!  endswitch
 %! endfunction
 
+%!function x = set_slice2(x, dim, slice)
+%!  switch dim
+%!    case 11
+%!      x(slice) = 2 * ones (size(slice));
+%!    case 21
+%!      x(slice, :) = 2 * ones (length(slice), columns (x));
+%!    case 22
+%!      x(:, slice) = 2 * ones (rows (x), length(slice));
+%!    otherwise
+%!      error("invalid dim, '%d'", dim);
+%!  endswitch
+%! endfunction
+
 %!function test_sparse_slice(size, dim, slice)
 %!  x = ones(size);
 %!  s = set_slice(sparse(x), dim, slice);
 %!  f = set_slice(x, dim, slice);
+%!  assert (nnz(s), nnz(f));
+%!  assert(full(s), f);
+%!  s = set_slice2(sparse(x), dim, slice);
+%!  f = set_slice2(x, dim, slice);
+%!  assert (nnz(s), nnz(f));
 %!  assert(full(s), f);
 %! endfunction
 
@@ -3393,6 +3448,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([0 2], 11, 2);
 %!test test_sparse_slice([0 2], 11, 3);
 %!test test_sparse_slice([0 2], 11, 4);
+%!test test_sparse_slice([0 2], 11, [4, 4]);
 
 ## size = [2 1]
 %!test test_sparse_slice([2 1], 11, []);
@@ -3400,6 +3456,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([2 1], 11, 2);
 %!test test_sparse_slice([2 1], 11, 3);
 %!test test_sparse_slice([2 1], 11, 4);
+%!test test_sparse_slice([2 1], 11, [4, 4]);
 
 ## size = [1 2]
 %!test test_sparse_slice([1 2], 11, []);
@@ -3407,6 +3464,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([1 2], 11, 2);
 %!test test_sparse_slice([1 2], 11, 3);
 %!test test_sparse_slice([1 2], 11, 4);
+%!test test_sparse_slice([1 2], 11, [4, 4]);
 
 ## size = [2 2]
 %!test test_sparse_slice([2 2], 11, []);
@@ -3414,6 +3472,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([2 2], 11, 2);
 %!test test_sparse_slice([2 2], 11, 3);
 %!test test_sparse_slice([2 2], 11, 4);
+%!test test_sparse_slice([2 2], 11, [4, 4]);
 # These 2 errors are the same as in the full case
 %!error <invalid matrix index = 5> set_slice(sparse(ones([2 2])), 11, 5);
 %!error <invalid matrix index = 6> set_slice(sparse(ones([2 2])), 11, 6);
@@ -3425,11 +3484,13 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([2 0], 21, []);
 %!test test_sparse_slice([2 0], 21, 1);
 %!test test_sparse_slice([2 0], 21, 2);
+%!test test_sparse_slice([2 0], 21, [2,2]);
 %!assert(set_slice(sparse(ones([2 0])), 21, 3), sparse(2,0));  # sparse different from full
 %!assert(set_slice(sparse(ones([2 0])), 21, 4), sparse(2,0));  # sparse different from full
 %!test test_sparse_slice([2 0], 22, []);
 %!test test_sparse_slice([2 0], 22, 1);
 %!test test_sparse_slice([2 0], 22, 2);
+%!test test_sparse_slice([2 0], 22, [2,2]);
 %!assert(set_slice(sparse(ones([2 0])), 22, 3), sparse([0 0 2;0 0 2]));  # sparse different from full
 %!assert(set_slice(sparse(ones([2 0])), 22, 4), sparse([0 0 0 2;0 0 0 2]));  # sparse different from full
 
@@ -3437,11 +3498,13 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([0 2], 21, []);
 %!test test_sparse_slice([0 2], 21, 1);
 %!test test_sparse_slice([0 2], 21, 2);
+%!test test_sparse_slice([0 2], 21, [2,2]);
 %!assert(set_slice(sparse(ones([0 2])), 21, 3), sparse([0 0;0 0;2 2]));  # sparse different from full
 %!assert(set_slice(sparse(ones([0 2])), 21, 4), sparse([0 0;0 0;0 0;2 2]));  # sparse different from full
 %!test test_sparse_slice([0 2], 22, []);
 %!test test_sparse_slice([0 2], 22, 1);
 %!test test_sparse_slice([0 2], 22, 2);
+%!test test_sparse_slice([0 2], 22, [2,2]);
 %!assert(set_slice(sparse(ones([0 2])), 22, 3), sparse(0,2));  # sparse different from full
 %!assert(set_slice(sparse(ones([0 2])), 22, 4), sparse(0,2));  # sparse different from full
 
@@ -3449,11 +3512,13 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([2 1], 21, []);
 %!test test_sparse_slice([2 1], 21, 1);
 %!test test_sparse_slice([2 1], 21, 2);
+%!test test_sparse_slice([2 1], 21, [2,2]);
 %!test test_sparse_slice([2 1], 21, 3);
 %!test test_sparse_slice([2 1], 21, 4);
 %!test test_sparse_slice([2 1], 22, []);
 %!test test_sparse_slice([2 1], 22, 1);
 %!test test_sparse_slice([2 1], 22, 2);
+%!test test_sparse_slice([2 1], 22, [2,2]);
 %!test test_sparse_slice([2 1], 22, 3);
 %!test test_sparse_slice([2 1], 22, 4);
 
@@ -3461,11 +3526,13 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([1 2], 21, []);
 %!test test_sparse_slice([1 2], 21, 1);
 %!test test_sparse_slice([1 2], 21, 2);
+%!test test_sparse_slice([1 2], 21, [2,2]);
 %!test test_sparse_slice([1 2], 21, 3);
 %!test test_sparse_slice([1 2], 21, 4);
 %!test test_sparse_slice([1 2], 22, []);
 %!test test_sparse_slice([1 2], 22, 1);
 %!test test_sparse_slice([1 2], 22, 2);
+%!test test_sparse_slice([1 2], 22, [2,2]);
 %!test test_sparse_slice([1 2], 22, 3);
 %!test test_sparse_slice([1 2], 22, 4);
 
@@ -3473,11 +3540,13 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 %!test test_sparse_slice([2 2], 21, []);
 %!test test_sparse_slice([2 2], 21, 1);
 %!test test_sparse_slice([2 2], 21, 2);
+%!test test_sparse_slice([2 2], 21, [2,2]);
 %!test test_sparse_slice([2 2], 21, 3);
 %!test test_sparse_slice([2 2], 21, 4);
 %!test test_sparse_slice([2 2], 22, []);
 %!test test_sparse_slice([2 2], 22, 1);
 %!test test_sparse_slice([2 2], 22, 2);
+%!test test_sparse_slice([2 2], 22, [2,2]);
 %!test test_sparse_slice([2 2], 22, 3);
 %!test test_sparse_slice([2 2], 22, 4);
 

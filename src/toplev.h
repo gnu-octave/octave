@@ -26,7 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include <cstdio>
 
-#include <list>
+#include <deque>
 #include <string>
 
 class octave_value;
@@ -74,7 +74,7 @@ protected:
 
 public:
 
-  typedef std::list<octave_function *>::iterator iterator ;
+  typedef std::deque<octave_function *>::iterator iterator ;
 
   static bool instance_ok (void)
   {
@@ -99,25 +99,32 @@ public:
   // Caller function, may be built-in.
   static octave_function *caller (void)
   {
-    return instance_ok () ? instance->do_caller (): 0;
+    return element (1);
   }
 
+  // Function at location N on the call stack (N == 0 is current), may
+  // be built-in.
+  static octave_function *element (size_t n)
+  {
+    return instance_ok () ? instance->do_element (n) : 0;
+  }
+  
   // First script on the stack.
   static octave_user_script *caller_script (void)
   {
-    return instance_ok () ? instance->do_caller_user_script (): 0;
+    return instance_ok () ? instance->do_caller_user_script () : 0;
   }
 
   // First user-defined function on the stack.
   static octave_user_function *caller_user_function (void)
   {
-    return instance_ok () ? instance->do_caller_user_function (): 0;
+    return instance_ok () ? instance->do_caller_user_function () : 0;
   }
 
   // First user-defined function on the stack.
   static octave_function *caller_user_script_or_function (void)
   {
-    return instance_ok () ? instance->do_caller_user_script_or_function (): 0;
+    return instance_ok () ? instance->do_caller_user_script_or_function () : 0;
   }
 
   static void push (octave_function *f)
@@ -150,15 +157,15 @@ public:
     if (instance_ok ())
       instance->do_clear ();
   }
-  
+
 private:
 
   // The current call stack.
-  std::list<octave_function *> cs;
+  std::deque<octave_function *> cs;
 
   static octave_call_stack *instance;
 
-  octave_function *do_caller (void);
+  octave_function *do_element (size_t n) { return cs.size () > n ? cs[n] : 0; }
 
   octave_user_script *do_caller_user_script (void);
 

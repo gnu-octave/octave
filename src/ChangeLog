@@ -1,3 +1,24 @@
+2008-03-04  Ryan Rusaw  <rrusaw@gmail.com>
+
+	* toplev.h (octave_call_stack::element): New static function.
+	(octave_call_stack::cs): Now std::deque instead of std::list.
+
+	* pt-stmt.cc (curr_statement, curr_caller_statement): Delete.
+	* pt-stmt.h: Delete decls.
+
+	* pt-stmt.h, pt-stmt.cc (tree_statement_stack): New class.
+
+	* pt-stmt.cc (tree_statement::eval): Use tree_statement_stack
+	instead of curr_statement variable.
+
+	* ov-usr-func.cc (octave_user_function::do_multi_index_op):
+	Don't set curr_caller_statement.
+
+	* error.cc (verror, pr_where): Call tree_statement_stack::current_line
+	and tree_statement_stack::current_column instead of 
+	instead of curr_statement->line and curr_statement->column.
+	* input.cc (get_user_input): Likewise.
+
 2008-02-27  John P. Swensen  <jpswensen@gmail.com>
 
 	* debug.cc (get_user_function): Call symtab::find_function instead

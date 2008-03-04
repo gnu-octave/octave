@@ -290,9 +290,6 @@ octave_user_function::do_multi_index_op (int nargout,
       unwind_protect::add (symbol_table::clear_variables);
     }
 
-  unwind_protect_ptr (curr_caller_statement);
-  curr_caller_statement = curr_statement;
-
   octave_call_stack::push (this);
 
   unwind_protect::add (octave_call_stack::unwind_pop, 0);

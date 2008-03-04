@@ -232,7 +232,7 @@ verror (bool save_last_error, std::ostream& os,
       Vlast_error_name = std::string ();
       Vlast_error_file = std::string ();
 
-      if (curr_statement)
+      if (tree_statement_stack::current ())
 	{
 	  octave_function *fcn
 	    = octave_call_stack::caller_user_script_or_function ();
@@ -241,8 +241,8 @@ verror (bool save_last_error, std::ostream& os,
 	    {
 	      Vlast_error_file = fcn->fcn_file_name ();
 	      Vlast_error_name = fcn->name();
-	      Vlast_error_line = curr_statement->line ();
-	      Vlast_error_column = curr_statement->column ();
+	      Vlast_error_line = tree_statement_stack::current_line ();
+	      Vlast_error_column = tree_statement_stack::current_column ();
 	    }
 	}
     }
@@ -422,7 +422,7 @@ pr_where_1 (const char *fmt, ...)
 static void
 pr_where (const char *name, bool print_code = true)
 {
-  if (curr_statement)
+  if (tree_statement_stack::current ())
     {
       std::string nm;
 
@@ -439,11 +439,8 @@ pr_where (const char *name, bool print_code = true)
 	  if (nm.empty ())
 	    nm = fcn->name ();
 
-	  if (curr_statement)
-	    {
-	      l = curr_statement->line ();
-	      c = curr_statement->column ();
-	    }
+	  l = tree_statement_stack::current_line ();
+	  c = tree_statement_stack::current_column ();
 	}
 
       if (nm.empty ())
@@ -474,7 +471,10 @@ pr_where (const char *name, bool print_code = true)
 
 	  tree_print_code tpc (output_buf, ">>> ");
 
-	  curr_statement->accept (tpc);
+	  tree_statement *curr_stmt = tree_statement_stack::current ();
+
+	  if (curr_stmt)
+	    curr_stmt->accept (tpc);
 
 	  output_buf << std::endl;
 

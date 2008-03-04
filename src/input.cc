@@ -608,8 +608,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	  if (nm.empty ())
 	    nm = caller->name ();
 
-	  if (curr_statement)
-	    line = curr_statement->line ();
+	  line = tree_statement_stack::current_line ();
 	}
     }
 
@@ -701,7 +700,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	    {
 	      tree::break_next = true;
 
-	      tree::last_line = curr_statement->line ();
+	      tree::last_line = tree_statement_stack::current_line ();
 
 	      tree::break_function = octave_call_stack::current ();
 

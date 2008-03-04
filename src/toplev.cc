@@ -95,20 +95,6 @@ octave_function *curr_parent_function = 0;
 
 octave_call_stack *octave_call_stack::instance = 0;
 
-octave_function *
-octave_call_stack::do_caller (void)
-{
-  octave_function *retval = 0;
-
-  if (cs.size () > 1)
-    {
-      iterator p = cs.begin ();
-      retval = *++p;
-    }
-
-  return retval;
-}
-
 octave_user_script *
 octave_call_stack::do_caller_user_script (void)
 {

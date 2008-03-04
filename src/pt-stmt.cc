@@ -45,12 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 #include "variables.h"
 
-// Pointer to the current statement being executed.
-tree_statement *curr_statement = 0;
-
-// Pointer to the current statement being executed in the calling function.
-tree_statement *curr_caller_statement = 0;
-
 // A list of commands to be executed.
 
 tree_statement::~tree_statement (void)
@@ -93,8 +87,8 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 
   if (cmd || expr)
     {
-      unwind_protect_ptr (curr_statement);
-      curr_statement = this;
+      unwind_protect::add (tree_statement_stack::unwind_pop, 0);
+      tree_statement_stack::push (this);
 
       maybe_echo_code (in_function_body);
 
@@ -290,6 +284,8 @@ tree_statement_list::accept (tree_walker& tw)
 {
   tw.visit_statement_list (*this);
 }
+
+tree_statement_stack *tree_statement_stack::instance = 0;
 
 /*
 ;;; Local Variables: ***

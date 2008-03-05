@@ -1,5 +1,12 @@
 2008-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dbleCHOL.cc (CHOL::set, CHOL::update, CHOL::downdate):
+	New functions.
+	* dbleCHOL.h: Provide decls.
+	* CmplxCHOL.cc (ComplexCHOL::set, ComplexCHOL::update,
+	ComplexCHOL::downdate): New functions.
+	* CmplxCHOL.h: Provide decls.
+
 	* dbleQR.cc (QR::update, QR::insert_col, QR::delete_col,
 	QR::insert_row, QR::delete_row): New methods.
 	(QR::QR (const Matrix&, const MAtrix&)): New constructor.

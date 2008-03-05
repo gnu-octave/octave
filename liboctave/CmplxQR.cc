@@ -275,10 +275,6 @@ ComplexQR::delete_row (octave_idx_type j)
 void
 ComplexQR::economize (void)
 {
-  idx_vector c (':'), i (Range (1, r.columns ()));
-  q = ComplexMatrix (q.index (c, i));
-  r = ComplexMatrix (r.index (i, c));
-#if 0
   octave_idx_type r_nc = r.columns ();
 
   if (r.rows () > r_nc)
@@ -286,7 +282,6 @@ ComplexQR::economize (void)
       q.resize (q.rows (), r_nc);
       r.resize (r_nc, r_nc);
     }
-#endif
 }
 
 /*

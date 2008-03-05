@@ -31,8 +31,10 @@ FSRC = dqr1up.f zqr1up.f \
        dqrdec.f zqrdec.f \
        dqrinr.f zqrinr.f \
        dqrder.f zqrder.f \
+       dch1up.f zch1up.f \
+       dch1dn.f zch1dn.f \
        dqrqhv.f zqrqhv.f \
-       dqhqr.f	zqhqr.f 
+       dqhqr.f zqhqr.f 
 
 include $(TOPDIR)/Makeconf
 

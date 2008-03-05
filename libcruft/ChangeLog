@@ -1,4 +1,8 @@
-2008-02-24  Jaroslav Hajek <highegg@gmail.com>
+2008-03-04 Jaroslav Hajek <highegg@gmail.com>
+
+	* qrupdate/dch1dn.f, qrupdate/dch1up.f, 
+	qrupdate/zch1dn.f, qrupdate/zch1up.f: New files.
+	* qrupdate/Makefile.in (FSRC): Add them to the list.
 
 	* qrupdate/Makefile.in, qrupdate/dqhqr.f, qrupdate/dqr1up.f,
 	qrupdate/dqrdec.f, qrupdate/dqrder.f, qrupdate/dqrinc.f,

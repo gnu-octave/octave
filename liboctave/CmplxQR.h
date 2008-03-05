@@ -21,6 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// updating/downdating by Jaroslav Hajek 2008
+
 #if !defined (octave_ComplexQR_h)
 #define octave_ComplexQR_h 1
 

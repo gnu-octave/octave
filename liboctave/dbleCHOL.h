@@ -21,6 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// updating/downdating by Jaroslav Hajek 2008
+
 #if !defined (octave_CHOL_h)
 #define octave_CHOL_h 1
 
@@ -59,6 +61,12 @@ public:
 
   // Compute the inverse of a matrix using the Cholesky factorization.
   Matrix inverse (void) const;
+
+  void set (const Matrix& R);
+
+  void update (const Matrix& u);
+
+  octave_idx_type downdate (const Matrix& u);
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const CHOL& a);
 

@@ -433,7 +433,7 @@ implemented for sparse matrices.
 
 DEFUN_DLD (qrupdate, args, ,
   "-*- texinfo -*-\n\
-@deftypefn{Loadable Function} {[@var{Q1}, @var{R1}]} = qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})\n\
+@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}]} = qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization\n\
@@ -554,7 +554,7 @@ Q*Q'*u*v' instead of u*v'.\n\
 
 DEFUN_DLD (qrinsert, args, ,
   "-*- texinfo -*-\n\
-@deftypefn{Loadable Function} {[@var{Q1}, @var{R1}]} = qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})\n\
+@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}]} = qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
@@ -729,7 +729,7 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
 
 DEFUN_DLD (qrdelete, args, ,
   "-*- texinfo -*-\n\
-@deftypefn{Loadable Function} {[@var{Q1}, @var{R1}]} = qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})\n\
+@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}]} = qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})\n\
 Given a QR@tie{}factorization of a real or complex matrix\n\
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\

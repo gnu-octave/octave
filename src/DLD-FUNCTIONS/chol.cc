@@ -21,6 +21,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// The cholupdate function was written by Jaroslav Hajek
+// <highegg@gmail.com>, Copyright (C) 2008  VZLU Prague, a.s., Czech
+// Republic.
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -440,6 +444,157 @@ using @code{inv}.\n\
 
   return retval;
 }
+
+DEFUN_DLD (cholupdate, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{R1}, @var{info}]} = cholupdate (@var{R}, @var{u}, @var{op})\n\
+Update or downdate a Cholesky factorization.  Given an upper triangular\n\
+matrix @var{R} and a column vector @var{u}, attempt to determine another\n\
+upper triangular matrix @var{R1} such that\n\
+@itemize @bullet\n\
+@item\n\
+@var{R1}'*@var{R1} = @var{R}'*@var{R} + @var{u}*@var{u}'\n\
+if @var{op} is \"+\"\n\
+@item\n\
+@var{R1}'*@var{R1} = @var{R}'*@var{R} - @var{u}*@var{u}'\n\
+if @var{op} is \"-\"\n\
+@end itemize\n\
+\n\
+If @var{op} is \"-\", @var{info} is set to\n\
+@itemize\n\
+@item 0 if the downdate was successful,\n\
+@item 1 if @var{R}'*@var{R} - @var{u}*@var{u}' is not positive definite,\n\
+@item 2 if @var{R} is singular.\n\
+@end itemize\n\
+\n\
+If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
+@seealso{chol, qrupdate}\n\
+@end deftypefn")
+{
+  int nargin = args.length ();
+
+  octave_value_list retval;
+
+  octave_value argR,argu,argop;
+
+  if ((nargin == 3 || nargin == 2)
+      && (argR = args(0), argR.is_matrix_type ())
+      && (argu = args(1), argu.is_matrix_type ())
+      && (nargin < 3 || (argop = args(2), argop.is_string ())))
+    {
+      octave_idx_type n = argR.rows ();
+
+      std::string op = (nargin < 3) ? "+" : argop.string_value();
+
+      bool down = false;
+
+      if (nargin < 3 || (op == "+") || (down = op == "-"))
+        if (argR.columns () == n 
+            && argu.rows () == n && argu.columns () == 1)
+          {
+            if (argR.is_real_matrix () && argu.is_real_matrix ())
+              {
+                // real case
+                Matrix R = argR.matrix_value ();
+                Matrix u = argu.matrix_value ();
+
+                CHOL fact;
+                fact.set (R);
+                int err = 0;
+
+                if (down)
+                  err = fact.downdate (u);
+                else
+                  fact.update (u);
+
+                if (nargout > 1)
+                  retval(1) = err;
+                else if (err)
+                  error ("cholupdate: downdate violates positiveness");
+
+                retval(0) = fact.chol_matrix ();
+              }
+            else
+              {
+                // complex case
+                ComplexMatrix R = argR.complex_matrix_value ();
+                ComplexMatrix u = argu.complex_matrix_value ();
+
+                ComplexCHOL fact;
+                fact.set (R);
+                int err = 0;
+
+                if (down)
+                  err = fact.downdate (u);
+                else
+                  fact.update (u);
+
+                if (nargout > 1)
+                  retval(1) = err;
+                else if (err)
+                  error ("cholupdate: downdate violates positiveness");
+
+                retval(0) = fact.chol_matrix ();
+              }
+          }
+        else
+          error ("cholupdate: dimension mismatch");
+      else
+        error ("cholupdate: op must be \"+\" or \"-\"");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!test
+%! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
+%!       -0.131721   0.738529   0.019851  -0.140295 ;
+%!        0.124120   0.019851   0.354879  -0.059472 ;
+%!       -0.061673  -0.140295  -0.059472   0.600939 ];
+%! 
+%! u = [  0.98950 ;
+%!        0.39844 ;
+%!        0.63484 ;
+%!        0.13351 ];
+%! 
+%! R = chol(A);
+%! 
+%! R1 = cholupdate(R,u);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - R'*R - u*u',Inf) < 1e1*eps)
+%! 
+%! R1 = cholupdate(R1,u,"-");
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1 - R,Inf) < 1e1*eps)
+%! 
+%!test
+%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
+%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
+%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
+%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
+%! 
+%! u = [ 0.54267 + 0.91519i ;
+%!       0.99647 + 0.43141i ;
+%!       0.83760 + 0.68977i ;
+%!       0.39160 + 0.90378i ];
+%! 
+%! R = chol(A);
+%! 
+%! R1 = cholupdate(R,u);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - R'*R - u*u',Inf) < 1e1*eps)
+%! 
+%! R1 = cholupdate(R1,u,"-");
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1 - R,Inf) < 1e1*eps)
+*/
 
 /*
 ;;; Local Variables: ***

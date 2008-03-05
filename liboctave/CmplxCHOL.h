@@ -21,6 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// updating/downdating by Jaroslav Hajek 2008
+
 #if !defined (octave_ComplexCHOL_h)
 #define octave_ComplexCHOL_h 1
 
@@ -62,6 +64,12 @@ public:
   double rcond (void) const { return xrcond; }
 
   ComplexMatrix inverse (void) const;
+
+  void set (const ComplexMatrix& R);
+
+  void update (const ComplexMatrix& u);
+
+  octave_idx_type downdate (const ComplexMatrix& u);
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
 

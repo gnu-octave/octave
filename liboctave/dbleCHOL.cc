@@ -21,9 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// updating/downdating by Jaroslav Hajek 2008
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <vector>
 
 #include "dRowVector.h"
 #include "dbleCHOL.h"
@@ -47,6 +51,12 @@ extern "C"
 			     double*, const octave_idx_type&, const double&,
 			     double&, double*, octave_idx_type*, 
 			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+  F77_RET_T
+  F77_FUNC (dch1up, DCH1UP) (const octave_idx_type&, double*, double*, double*);
+
+  F77_RET_T
+  F77_FUNC (dch1dn, DCH1DN) (const octave_idx_type&, double*, double*, double*, 
+                             int &);
 }
 
 octave_idx_type
@@ -153,6 +163,55 @@ Matrix
 CHOL::inverse (void) const
 {
   return chol2inv_internal (chol_mat);
+}
+
+void
+CHOL::set (const Matrix& R)
+{
+  if (R.is_square ()) 
+    chol_mat = R;
+  else
+    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+}
+
+void
+CHOL::update (const Matrix& u)
+{
+  int n = chol_mat.rows ();
+
+  if (u.length () == n)
+    {
+      Matrix tmp = u;
+
+      OCTAVE_LOCAL_BUFFER (double, w, n);
+
+      F77_XFCN (dch1up, DCH1UP, (n, chol_mat.fortran_vec (),
+				 tmp.fortran_vec (), w));
+    }
+  else
+    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+}
+
+octave_idx_type
+CHOL::downdate (const Matrix& u)
+{
+  octave_idx_type info = -1;
+
+  octave_idx_type n = chol_mat.rows ();
+
+  if (u.length () == n)
+    {
+      Matrix tmp = u;
+
+      OCTAVE_LOCAL_BUFFER (double, w, n);
+
+      F77_XFCN (dch1dn, DCH1DN, (n, chol_mat.fortran_vec (),
+				 tmp.fortran_vec (), w, info));
+    }
+  else
+    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+
+  return info;
 }
 
 Matrix

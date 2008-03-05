@@ -21,8 +21,6 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// updating/downdating by Jaroslav Hajek 2008
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -265,10 +263,6 @@ QR::delete_row (octave_idx_type j)
 void
 QR::economize (void)
 {
-  idx_vector c (':'), i (Range (1, r.columns ()));
-  q = Matrix (q.index (c, i));
-  r = Matrix (r.index (i, c));
-#if 0
   octave_idx_type r_nc = r.columns ();
 
   if (r.rows () > r_nc)
@@ -276,7 +270,6 @@ QR::economize (void)
       q.resize (q.rows (), r_nc);
       r.resize (r_nc, r_nc);
     }
-#endif
 }
 
 

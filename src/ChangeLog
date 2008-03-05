@@ -1,4 +1,6 @@
-2008-02-24  Jaroslav Hajek <highegg@gmail.com>
+2008-03-04  Jaroslav Hajek <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/chol.cc (Fcholupdate): New function.
 
 	* DLD-FUNCTIONS/qr.cc (Fqrupdate, Fqrinsert, Fqrdelete):
 	New functions.

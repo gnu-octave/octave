@@ -21,9 +21,13 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// updating/downdating by Jaroslav Hajek 2008
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <vector>
 
 #include "dMatrix.h"
 #include "dRowVector.h"
@@ -47,6 +51,12 @@ extern "C"
 			     Complex*, const octave_idx_type&, const double&,
 			     double&, Complex*, double*, 
 			     octave_idx_type& F77_CHAR_ARG_LEN_DECL);
+  F77_RET_T
+  F77_FUNC (zch1up, ZCH1UP) (const octave_idx_type&, Complex*, Complex*, double*);
+
+  F77_RET_T
+  F77_FUNC (zch1dn, ZCH1DN) (const octave_idx_type&, Complex*, Complex*, double*, 
+                             octave_idx_type&);
 }
 
 octave_idx_type
@@ -149,6 +159,55 @@ ComplexMatrix
 ComplexCHOL::inverse (void) const
 {
   return chol2inv_internal (chol_mat);
+}
+
+void
+ComplexCHOL::set (const ComplexMatrix& R)
+{
+  if (R.is_square ()) 
+    chol_mat = R;
+  else
+    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+}
+
+void
+ComplexCHOL::update (const ComplexMatrix& u)
+{
+  octave_idx_type n = chol_mat.rows ();
+
+  if (u.length () == n)
+    {
+      ComplexMatrix tmp = u;
+
+      OCTAVE_LOCAL_BUFFER (double, w, n);
+
+      F77_XFCN (zch1up, ZCH1UP, (n, chol_mat.fortran_vec (),
+				 tmp.fortran_vec (), w));
+    }
+  else
+    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+}
+
+octave_idx_type
+ComplexCHOL::downdate (const ComplexMatrix& u)
+{
+  octave_idx_type info = -1;
+
+  octave_idx_type n = chol_mat.rows ();
+
+  if (u.length () == n)
+    {
+      ComplexMatrix tmp = u;
+
+      OCTAVE_LOCAL_BUFFER (double, w, n);
+
+      F77_XFCN (zch1dn, ZCH1DN, (n, chol_mat.fortran_vec (),
+				 tmp.fortran_vec (), w, info));
+    }
+  else
+    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+
+  return info;
 }
 
 ComplexMatrix

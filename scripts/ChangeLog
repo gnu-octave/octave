@@ -4,7 +4,11 @@
 
 2008-03-04  Bill Denney  <bill@denney.ws>
 
+	* plot/allchild.m, plot/findall.m: New functions.
+	* plot/Makefile.in (SOURCES): Add them to the list.
+
 	* geometry/rectint.m: New function.
+	* geometry/Makefile.in (SOURCES): Add it to the list.
 
 2008-03-04  Michael Goffioul <michael.goffioul@gmail.com>
 

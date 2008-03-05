@@ -1834,6 +1834,7 @@ AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
   libcruft/lapack/Makefile libcruft/minpack/Makefile
   libcruft/misc/Makefile libcruft/odepack/Makefile
   libcruft/ordered-qz/Makefile libcruft/quadpack/Makefile
+  libcruft/qrupdate/Makefile
   libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile
   libcruft/slatec-err/Makefile libcruft/villad/Makefile
   libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])

@@ -27,7 +27,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 
 #include "CMatrix.h"
+#include "CColVector.h"
+#include "CRowVector.h"
 #include "dbleQR.h"
+
 
 class
 OCTAVE_API
@@ -38,6 +41,8 @@ public:
   ComplexQR (void) : q (), r () { }
 
   ComplexQR (const ComplexMatrix&, QR::type = QR::std);
+
+  ComplexQR (const ComplexMatrix& q, const ComplexMatrix& r);
 
   ComplexQR (const ComplexQR& a) : q (a.q), r (a.r) { }
 
@@ -58,6 +63,18 @@ public:
   ComplexMatrix Q (void) const { return q; }
 
   ComplexMatrix R (void) const { return r; }
+
+  void update (const ComplexMatrix& u, const ComplexMatrix& v);
+
+  void insert_col (const ComplexMatrix& u, octave_idx_type j);
+
+  void delete_col (octave_idx_type j);
+
+  void insert_row (const ComplexMatrix& u, octave_idx_type j);
+
+  void delete_row (octave_idx_type j);
+
+  void economize();
 
   friend std::ostream&  operator << (std::ostream&, const ComplexQR&);
 

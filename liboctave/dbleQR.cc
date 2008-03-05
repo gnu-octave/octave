@@ -21,6 +21,8 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// updating/downdating by Jaroslav Hajek 2008
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -28,6 +30,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "dbleQR.h"
 #include "f77-fcn.h"
 #include "lo-error.h"
+#include "Range.h"
+#include "idx-vector.h"
 
 extern "C"
 {
@@ -38,6 +42,30 @@ extern "C"
   F77_RET_T
   F77_FUNC (dorgqr, DORGQR) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, double*,
 			     const octave_idx_type&, double*, double*, const octave_idx_type&, octave_idx_type&);
+
+  // these come from qrupdate
+
+  F77_RET_T
+  F77_FUNC (dqr1up, DQR1UP) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
+                             double*, double*, const double*, const double*);
+
+  F77_RET_T
+  F77_FUNC (dqrinc, DQRINC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
+                             double*, const double*, double*, const octave_idx_type&, const double*);
+
+  F77_RET_T
+  F77_FUNC (dqrdec, DQRDEC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&, 
+                             double*, const double*, double*, const octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (dqrinr, DQRINR) (const octave_idx_type&, const octave_idx_type&, 
+                             const double*, double*, const double*, double*, 
+                             const octave_idx_type&, const double*);
+
+  F77_RET_T
+  F77_FUNC (dqrder, DQRDER) (const octave_idx_type&, const octave_idx_type&, 
+                             const double*, double*, const double*, double *, 
+                             const octave_idx_type&);
 }
 
 QR::QR (const Matrix& a, QR::type qr_type)
@@ -117,6 +145,140 @@ QR::init (const Matrix& a, QR::type qr_type)
       q.resize (m, n2);
     }
 }
+
+QR::QR (const Matrix& q, const Matrix& r)
+{
+  if (q.columns () != r.rows ()) 
+    {
+      (*current_liboctave_error_handler) ("QR dimensions mismatch");
+      return;
+    }
+
+  this->q = q;
+  this->r = r;
+}
+
+void
+QR::update (const Matrix& u, const Matrix& v)
+{
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = q.columns ();
+
+  if (u.length () == m && v.length () == n)
+    F77_XFCN (dqr1up, DQR1UP, (m, n, k, q.fortran_vec (), r.fortran_vec (), 
+			       u.data (), v.data ()));
+  else
+    (*current_liboctave_error_handler) ("QR update dimensions mismatch");
+}
+
+void
+QR::insert_col (const Matrix& u, octave_idx_type j)
+{
+  octave_idx_type m = q.rows ();
+  octave_idx_type n = r.columns ();
+  octave_idx_type k = q.columns ();
+
+  if (u.length () != m)
+    (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
+  else if (j < 1 || j > n+1) 
+    (*current_liboctave_error_handler) ("QR insert index out of range");
+  else
+    {
+      Matrix r1 (m, n+1);
+
+      F77_XFCN (dqrinc, DQRINC, (m, n, k, q.fortran_vec (), r.data (),
+				 r1.fortran_vec (), j, u.data ()));
+
+      r = r1;
+    }
+}
+
+void
+QR::delete_col (octave_idx_type j)
+{
+  octave_idx_type m = q.rows ();
+  octave_idx_type k = r.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (k < m && k < n) 
+    (*current_liboctave_error_handler) ("QR delete dimensions mismatch");
+  else if (j < 1 || j > n) 
+    (*current_liboctave_error_handler) ("QR delete index out of range");
+  else
+    {
+      Matrix r1 (k, n-1);
+
+      F77_XFCN (dqrdec, DQRDEC, (m, n, k, q.fortran_vec (), r.data (),
+				 r1.fortran_vec (), j));
+
+      r = r1;
+    }
+}
+
+void
+QR::insert_row (const Matrix& u, octave_idx_type j)
+{
+  octave_idx_type m = r.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (! q.is_square () || u.length () != n)
+    (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
+  else if (j < 1 || j > m+1) 
+    (*current_liboctave_error_handler) ("QR insert index out of range");
+  else
+    {
+      Matrix q1 (m+1, m+1);
+      Matrix r1 (m+1, n);
+
+      F77_XFCN (dqrinr, DQRINR, (m, n, q.data (), q1.fortran_vec (), 
+				 r.data (), r1.fortran_vec (), j, u.data ()));
+
+      q = q1;
+      r = r1;
+    }
+}
+
+void
+QR::delete_row (octave_idx_type j)
+{
+  octave_idx_type m = r.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (! q.is_square ())
+    (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
+  else if (j < 1 || j > n) 
+    (*current_liboctave_error_handler) ("QR delete index out of range");
+  else
+    {
+      Matrix q1 (m-1, m-1);
+      Matrix r1 (m-1, n);
+
+      F77_XFCN (dqrder, DQRDER, (m, n, q.data (), q1.fortran_vec (), 
+				 r.data (), r1.fortran_vec (), j ));
+
+      q = q1;
+      r = r1;
+    }
+}
+
+void
+QR::economize (void)
+{
+  idx_vector c (':'), i (Range (1, r.columns ()));
+  q = Matrix (q.index (c, i));
+  r = Matrix (r.index (i, c));
+#if 0
+  octave_idx_type r_nc = r.columns ();
+
+  if (r.rows () > r_nc)
+    {
+      q.resize (q.rows (), r_nc);
+      r.resize (r_nc, r_nc);
+    }
+#endif
+}
+
 
 /*
 ;;; Local Variables: ***

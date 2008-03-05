@@ -20,6 +20,10 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// The qrupdate, qrinsert, and qrdelete functions were written by
+// Jaroslav Hajek <highegg@gmail.com>, Copyright (C) 2008  VZLU
+// Prague, a.s., Czech Republic.
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -179,7 +183,7 @@ as\n\
 
   int nargin = args.length ();
 
-  if (nargin < 1 || nargin > (args(0).is_sparse_type() ? 3 : 2) || nargout > 3)
+  if (nargin < 1 || nargin > (args(0).is_sparse_type() ? 3 : 2))
     {
       print_usage ();
       return retval;
@@ -342,9 +346,7 @@ as\n\
 	    }
 	}
       else
-	{
-	  gripe_wrong_type_arg ("qr", arg);
-	}
+	gripe_wrong_type_arg ("qr", arg);
     }
 
   return retval;
@@ -429,6 +431,470 @@ implemented for sparse matrices.
 
 */
 
+DEFUN_DLD (qrupdate, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn{Loadable Function} {[@var{Q1}, @var{R1}]} = qrupdate (@var{Q}, @var{R}, @var{u}, @var{v})\n\
+Given a QR@tie{}factorization of a real or complex matrix\n\
+@w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
+@var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization\n\
+of @w{@var{A} + @var{u}*@var{v}'}, where @var{u} and @var{v} are\n\
+column vectors (rank-1 update).\n\
+\n\
+If the matrix @var{Q} is not square, the matrix @var{A} is updated by\n\
+Q*Q'*u*v' instead of u*v'.\n\
+@seealso{qr, qrinsert, qrdelete}\n\
+@end deftypefn")
+{
+  octave_idx_type nargin = args.length ();
+  octave_value_list retval;
+
+  octave_value argQ,argR,argu,argv;
+
+  if (nargin == 4
+      && (argQ = args(0),argQ.is_matrix_type ())
+      && (argR = args(1),argR.is_matrix_type ())
+      && (argu = args(2),argu.is_matrix_type ())
+      && (argv = args(3),argv.is_matrix_type ()))
+    {
+      octave_idx_type m = argQ.rows ();
+      octave_idx_type n = argR.columns ();
+      octave_idx_type k = argQ.columns ();
+
+      if (argR.rows () == k
+          && argu.rows () == m && argu.columns () == 1
+          && argv.rows () == n && argv.columns () == 1)
+        {
+          if (argQ.is_real_matrix () 
+	      && argR.is_real_matrix () 
+	      && argu.is_real_matrix () 
+	      && argv.is_real_matrix ())
+            {
+              // all real case
+              Matrix Q = argQ.matrix_value ();
+              Matrix R = argR.matrix_value ();
+              Matrix u = argu.matrix_value ();
+              Matrix v = argv.matrix_value ();
+
+              QR fact (Q, R);
+              fact.update (u, v);
+
+              retval(1) = fact.R ();
+              retval(0) = fact.Q ();
+            }
+          else
+            {
+              // complex case
+              ComplexMatrix Q = argQ.complex_matrix_value ();
+              ComplexMatrix R = argR.complex_matrix_value ();
+              ComplexMatrix u = argu.complex_matrix_value ();
+              ComplexMatrix v = argv.complex_matrix_value ();
+
+              ComplexQR fact (Q, R);
+              fact.update (u, v);
+              
+              retval(1) = fact.R ();
+              retval(0) = fact.Q ();
+            }
+        }
+      else
+	error ("qrupdate: dimensions mismatch");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+/*
+%!test
+%! A = [0.091364  0.613038  0.999083;
+%!      0.594638  0.425302  0.603537;
+%!      0.383594  0.291238  0.085574;
+%!      0.265712  0.268003  0.238409;
+%!      0.669966  0.743851  0.445057 ];
+%!
+%! u = [0.85082;  
+%!      0.76426;  
+%!      0.42883;  
+%!      0.53010;  
+%!      0.80683 ];
+%!
+%! v = [0.98810;
+%!      0.24295;
+%!      0.43167 ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrupdate(Q,R,u,v);
+%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - A - u*v'),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
+%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
+%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
+%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
+%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
+%!
+%! u = [0.20351 + 0.05401i;
+%!      0.13141 + 0.43708i;
+%!      0.29808 + 0.08789i;
+%!      0.69821 + 0.38844i;
+%!      0.74871 + 0.25821i ];
+%!
+%! v = [0.85839 + 0.29468i;
+%!      0.20820 + 0.93090i;
+%!      0.86184 + 0.34689i ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrupdate(Q,R,u,v);
+%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - A - u*v'),Inf) < norm(A)*1e1*eps)
+*/
+
+DEFUN_DLD (qrinsert, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn{Loadable Function} {[@var{Q1}, @var{R1}]} = qrinsert (@var{Q}, @var{R}, @var{j}, @var{x}, @var{orient})\n\
+Given a QR@tie{}factorization of a real or complex matrix\n\
+@w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
+@var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
+@w{[A(:,1:j-1) x A(:,j:n)]}, where @var{u} is a column vector to be\n\
+inserted into @var{A} (if @var{orient} is @code{\"col\"}), or the\n\
+QR@tie{}factorization of @w{[A(1:j-1,:);x;A(:,j:n)]}, where @var{x}\n\
+is a row vector to be inserted into @var{A} (if @var{orient} is\n\
+@code{\"row\"}).\n\
+\n\
+The default value of @var{orient} is @code{\"col\"}.\n\
+\n\
+If @var{orient} is @code{\"col\"} and the matrix @var{Q} is not square,\n\
+then what gets inserted is the projection of @var{u} onto the space\n\
+spanned by columns of @var{Q}, i.e. Q*Q'*u.\n\
+\n\
+If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
+@seealso{qr, qrupdate, qrdelete}\n\
+@end deftypefn")
+{
+  octave_idx_type nargin = args.length ();
+  octave_value_list retval;
+
+  octave_value argQ,argR,argj,argx,argor;
+
+  if ((nargin == 4 || nargin == 5)
+      && (argQ = args(0), argQ.is_matrix_type ())
+      && (argR = args(1), argR.is_matrix_type ())
+      && (argj = args(2), argj.is_scalar_type ())
+      && (argx = args(3), argx.is_matrix_type ())
+      && (nargin < 5 || (argor = args (4), argor.is_string ())))
+    {
+      octave_idx_type m = argQ.rows ();
+      octave_idx_type n = argR.columns ();
+      octave_idx_type k = argQ.columns();
+
+      bool row = false;
+
+      std::string orient = (nargin < 5) ? "col" : argor.string_value ();
+
+      if (nargin < 5 || (row = orient == "row") || (orient == "col"))
+        if (argR.rows () == k 
+            && (! row || m == k)
+            && argx.rows () == (row ? 1 : m)
+            && argx.columns () == (row ? n : 1))
+          {
+            int j = argj.int_value ();
+
+            if (j >= 1 && j <= (row ? n : m)+1)
+              {
+                if (argQ.is_real_matrix () 
+		    && argR.is_real_matrix () 
+		    && argx.is_real_matrix ())
+                  {
+                    // real case
+                    Matrix Q = argQ.matrix_value ();
+                    Matrix R = argR.matrix_value ();
+                    Matrix x = argx.matrix_value ();
+
+                    QR fact (Q, R);
+
+                    if (row) 
+                      fact.insert_row(x, j);
+                    else 
+                      fact.insert_col(x, j);
+
+                    retval(1) = fact.R ();
+                    retval(0) = fact.Q ();
+                  }
+                else
+                  {
+                    // complex case
+                    ComplexMatrix Q = argQ.complex_matrix_value ();
+                    ComplexMatrix R = argR.complex_matrix_value ();
+                    ComplexMatrix x = argx.complex_matrix_value ();
+
+                    ComplexQR fact (Q, R);
+
+                    if (row) 
+                      fact.insert_row (x, j);
+                    else 
+                      fact.insert_col (x, j);
+
+                    retval(1) = fact.R ();
+                    retval(0) = fact.Q ();
+                  }
+
+              }
+            else
+              error ("qrinsert: index j out of range");
+          }
+        else
+          error ("qrinsert: dimension mismatch");
+
+      else
+        error ("qrinsert: orient must be \"col\" or \"row\"");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!test
+%! A = [0.091364  0.613038  0.999083;
+%!      0.594638  0.425302  0.603537;
+%!      0.383594  0.291238  0.085574;
+%!      0.265712  0.268003  0.238409;
+%!      0.669966  0.743851  0.445057 ];
+%!
+%! x = [0.85082;  
+%!      0.76426;  
+%!      0.42883;  
+%!      0.53010;  
+%!      0.80683 ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrinsert(Q,R,3,x);
+%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(:,1:2) x A(:,3)]),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
+%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
+%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
+%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
+%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
+%!
+%! x = [0.20351 + 0.05401i;
+%!      0.13141 + 0.43708i;
+%!      0.29808 + 0.08789i;
+%!      0.69821 + 0.38844i;
+%!      0.74871 + 0.25821i ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrinsert(Q,R,3,x);
+%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(:,1:2) x A(:,3)]),Inf) < norm(A)*1e1*eps)
+%!
+%!test
+%! A = [0.091364  0.613038  0.999083;
+%!      0.594638  0.425302  0.603537;
+%!      0.383594  0.291238  0.085574;
+%!      0.265712  0.268003  0.238409;
+%!      0.669966  0.743851  0.445057 ];
+%!
+%! x = [0.85082  0.76426  0.42883 ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrinsert(Q,R,3,x,'row');
+%! assert(norm(vec(Q'*Q - eye(6)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(1:2,:);x;A(3:5,:)]),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
+%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
+%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
+%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
+%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
+%!
+%! x = [0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrinsert(Q,R,3,x,'row');
+%! assert(norm(vec(Q'*Q - eye(6)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(1:2,:);x;A(3:5,:)]),Inf) < norm(A)*1e1*eps)
+*/
+
+DEFUN_DLD (qrdelete, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn{Loadable Function} {[@var{Q1}, @var{R1}]} = qrdelete (@var{Q}, @var{R}, @var{j}, @var{orient})\n\
+Given a QR@tie{}factorization of a real or complex matrix\n\
+@w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
+@var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization of\n\
+@w{[A(:,1:j-1) A(:,j+1:n)]}, i.e. @var{A} with one column deleted\n\
+(if @var{orient} is \"col\"), or the QR@tie{}factorization of\n\
+@w{[A(1:j-1,:);A(:,j+1:n)]}, i.e. @var{A} with one row deleted (if\n\
+@var{orient} is \"row\").\n\
+\n\
+The default value of @var{orient} is \"col\".\n\
+\n\
+If @var{orient} is \"col\", the matrix @var{Q} is not required to\n\
+be square.\n\
+\n\
+For @sc{Matlab} compatibility, if @var{Q} is nonsquare on input, the\n\
+updated factorization is always stripped to the economical form, i.e.\n\
+@code{columns (Q) == rows (R) = columns (R)}.\n\
+\n\
+To get the less intelligent but more natural behaviour when @var{Q}\n\
+retains it shape and @var{R} loses one column, set @var{orient} to\n\
+\"col+\" instead.\n\
+\n\
+If @var{orient} is \"row\", @var{Q} must be square.\n\
+@seealso{qr, qrinsert, qrupdate}\n\
+@end deftypefn")
+{
+  int nargin = args.length ();
+  octave_value_list retval;
+
+  octave_value argQ,argR,argj,argor;
+
+  if ((nargin == 3 || nargin == 4)
+      && (argQ = args(0), argQ.is_matrix_type ())
+      && (argR = args(1), argR.is_matrix_type ())
+      && (argj = args(2), argj.is_scalar_type ())
+      && (nargin < 4 || (argor = args (3), argor.is_string ())))
+    {
+      octave_idx_type m = argQ.rows ();
+      octave_idx_type k = argQ.columns ();
+      octave_idx_type n = argR.columns ();
+
+      bool row = false;
+      bool colp = false;
+
+      std::string orient = (nargin < 4) ? "col" : argor.string_value ();
+
+      if (nargin < 4 || (row = orient == "row") 
+          || (orient == "col") || (colp = orient == "col+"))
+        if (argR.rows() == k)
+          {
+            int j = argj.scalar_value ();
+            if (j >= 1 && j <= (row ? n : m)+1)
+              {
+                if (argQ.is_real_matrix ()
+		    && argR.is_real_matrix ())
+                  {
+                    // real case
+                    Matrix Q = argQ.matrix_value ();
+                    Matrix R = argR.matrix_value ();
+
+                    QR fact (Q, R);
+
+                    if (row) 
+                      fact.delete_row (j);
+                    else 
+                      {
+                        fact.delete_col (j);
+
+                        if (! colp && k < m)
+                          fact.economize ();
+                      }
+
+                    retval(1) = fact.R ();
+                    retval(0) = fact.Q ();
+                  }
+                else
+                  {
+                    // complex case
+                    ComplexMatrix Q = argQ.complex_matrix_value ();
+                    ComplexMatrix R = argR.complex_matrix_value ();
+
+                    ComplexQR fact (Q, R);
+
+                    if (row) 
+                      fact.delete_row (j);
+                    else 
+                      {
+                        fact.delete_col (j);
+
+                        if (! colp && k < m)
+                          fact.economize ();
+                      }
+
+                    retval(1) = fact.R ();
+                    retval(0) = fact.Q ();
+                  }
+
+              }
+            else
+              error ("qrdelete: index j out of range");
+          }
+        else
+          error ("qrdelete: dimension mismatch");
+
+      else
+        error ("qrdelete: orient must be \"col\" or \"row\"");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+ 
+/*
+%!test
+%! A = [0.091364  0.613038  0.027504  0.999083;
+%!      0.594638  0.425302  0.562834  0.603537;
+%!      0.383594  0.291238  0.742073  0.085574;
+%!      0.265712  0.268003  0.783553  0.238409;
+%!      0.669966  0.743851  0.457255  0.445057 ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrdelete(Q,R,3);
+%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(:,1:2) A(:,4)]),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! A = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%!      0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
+%!      0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
+%!      0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
+%!      0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrdelete(Q,R,3);
+%! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(:,1:2) A(:,4)]),Inf) < norm(A)*1e1*eps)
+%!
+%!test
+%! A = [0.091364  0.613038  0.027504  0.999083;
+%!      0.594638  0.425302  0.562834  0.603537;
+%!      0.383594  0.291238  0.742073  0.085574;
+%!      0.265712  0.268003  0.783553  0.238409;
+%!      0.669966  0.743851  0.457255  0.445057 ];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrdelete(Q,R,3,'row');
+%! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(1:2,:);A(4:5,:)]),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! A = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%!      0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
+%!      0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
+%!      0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
+%!      0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrdelete(Q,R,3,'row');
+%! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [A(1:2,:);A(4:5,:)]),Inf) < norm(A)*1e1*eps)
+*/
 
 /*
 ;;; Local Variables: ***

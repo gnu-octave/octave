@@ -1,5 +1,18 @@
 2008-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
+	* dbleQR.cc (QR::update, QR::insert_col, QR::delete_col,
+	QR::insert_row, QR::delete_row): New methods.
+	(QR::QR (const Matrix&, const MAtrix&)): New constructor.
+	* dbleQR.h: Provide decls.
+	* CmplxQR.cc (ComplexQR::update, ComplexQR::insert_col,
+	ComplexQR::delete_col, ComplexQR::insert_row,
+	ComplexQR::delete_row): New methods.
+	(ComplexQR::ComplexQR (const ComplexMatrix&, const ComplexMAtrix&)):
+	New constructor.
+	* CmplxQR.h: Provide decls.
+
+2008-03-04  Jaroslav Hajek  <highegg@gmail.com>
+
 	* Array-C.cc, Sparse-C.cc: Include oct-sort.cc after definitions
 	of < and > operators.
 

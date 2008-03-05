@@ -21,12 +21,16 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// updating/downdating by Jaroslav Hajek 2008
+
 #if !defined (octave_QR_h)
 #define octave_QR_h 1
 
 #include <iostream>
 
 #include "dMatrix.h"
+#include "dColVector.h"
+#include "dRowVector.h"
 
 class
 OCTAVE_API
@@ -44,6 +48,8 @@ public:
   QR (void) : q (), r () { }
 
   QR (const Matrix&, QR::type = QR::std);
+
+  QR (const Matrix& q, const Matrix& r);
 
   QR (const QR& a) : q (a.q), r (a.r) { }
 
@@ -64,6 +70,18 @@ public:
   Matrix Q (void) const { return q; }
 
   Matrix R (void) const { return r; }
+
+  void update (const Matrix& u, const Matrix& v);
+
+  void insert_col (const Matrix& u, octave_idx_type j);
+
+  void delete_col (octave_idx_type j);
+
+  void insert_row (const Matrix& u, octave_idx_type j);
+
+  void delete_row (octave_idx_type j);
+
+  void economize (void);
 
   friend std::ostream&  operator << (std::ostream&, const QR&);
 

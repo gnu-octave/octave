@@ -628,9 +628,9 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
                     QR fact (Q, R);
 
                     if (row) 
-                      fact.insert_row (x, j);
+                      fact.insert_row (x, j-1);
                     else 
-                      fact.insert_col (x, j);
+                      fact.insert_col (x, j-1);
 
                     retval(1) = fact.R ();
                     retval(0) = fact.Q ();
@@ -645,9 +645,9 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
                     ComplexQR fact (Q, R);
 
                     if (row) 
-                      fact.insert_row (x, j);
+                      fact.insert_row (x, j-1);
                     else 
-                      fact.insert_col (x, j);
+                      fact.insert_col (x, j-1);
 
                     retval(1) = fact.R ();
                     retval(0) = fact.Q ();
@@ -809,10 +809,10 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
                     QR fact (Q, R);
 
                     if (row) 
-                      fact.delete_row (j);
+                      fact.delete_row (j-1);
                     else 
                       {
-                        fact.delete_col (j);
+                        fact.delete_col (j-1);
 
                         if (! colp && k < m)
                           fact.economize ();
@@ -830,10 +830,10 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
                     ComplexQR fact (Q, R);
 
                     if (row) 
-                      fact.delete_row (j);
+                      fact.delete_row (j-1);
                     else 
                       {
-                        fact.delete_col (j);
+                        fact.delete_col (j-1);
 
                         if (! colp && k < m)
                           fact.economize ();

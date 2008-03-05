@@ -7,6 +7,9 @@
 	code to meet Octave's coding guidelines.
 	* DLD-FUNCTIONS/qr.cc (Fqrdelete): Fix incorrect test. 
 
+	* DLD-FUNCTIONS/qr.cc (Fqrinsert, Fqrdelete): Modify to use
+	0-based indexing in liboctave's QR classes.
+
 2008-03-04  Jaroslav Hajek <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/chol.cc (Fcholupdate): New function.

@@ -179,14 +179,14 @@ QR::insert_col (const Matrix& u, octave_idx_type j)
 
   if (u.length () != m)
     (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
-  else if (j < 1 || j > n+1) 
+  else if (j < 0 || j > n) 
     (*current_liboctave_error_handler) ("QR insert index out of range");
   else
     {
       Matrix r1 (m, n+1);
 
       F77_XFCN (dqrinc, DQRINC, (m, n, k, q.fortran_vec (), r.data (),
-				 r1.fortran_vec (), j, u.data ()));
+				 r1.fortran_vec (), j+1, u.data ()));
 
       r = r1;
     }
@@ -201,14 +201,14 @@ QR::delete_col (octave_idx_type j)
 
   if (k < m && k < n) 
     (*current_liboctave_error_handler) ("QR delete dimensions mismatch");
-  else if (j < 1 || j > n) 
+  else if (j < 0 || j > n-1) 
     (*current_liboctave_error_handler) ("QR delete index out of range");
   else
     {
       Matrix r1 (k, n-1);
 
       F77_XFCN (dqrdec, DQRDEC, (m, n, k, q.fortran_vec (), r.data (),
-				 r1.fortran_vec (), j));
+				 r1.fortran_vec (), j+1));
 
       r = r1;
     }
@@ -222,7 +222,7 @@ QR::insert_row (const Matrix& u, octave_idx_type j)
 
   if (! q.is_square () || u.length () != n)
     (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
-  else if (j < 1 || j > m+1) 
+  else if (j < 0 || j > m) 
     (*current_liboctave_error_handler) ("QR insert index out of range");
   else
     {
@@ -230,7 +230,7 @@ QR::insert_row (const Matrix& u, octave_idx_type j)
       Matrix r1 (m+1, n);
 
       F77_XFCN (dqrinr, DQRINR, (m, n, q.data (), q1.fortran_vec (), 
-				 r.data (), r1.fortran_vec (), j, u.data ()));
+				 r.data (), r1.fortran_vec (), j+1, u.data ()));
 
       q = q1;
       r = r1;
@@ -245,7 +245,7 @@ QR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
-  else if (j < 1 || j > m) 
+  else if (j < 0 || j > m-1) 
     (*current_liboctave_error_handler) ("QR delete index out of range");
   else
     {
@@ -253,7 +253,7 @@ QR::delete_row (octave_idx_type j)
       Matrix r1 (m-1, n);
 
       F77_XFCN (dqrder, DQRDER, (m, n, q.data (), q1.fortran_vec (), 
-				 r.data (), r1.fortran_vec (), j ));
+				 r.data (), r1.fortran_vec (), j+1 ));
 
       q = q1;
       r = r1;

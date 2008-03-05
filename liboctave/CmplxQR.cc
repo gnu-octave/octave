@@ -155,7 +155,6 @@ ComplexQR::init (const ComplexMatrix& a, QR::type qr_type)
     }
 }
 
-
 ComplexQR::ComplexQR (const ComplexMatrix &q, const ComplexMatrix& r)
 {
   if (q.columns () != r.rows ()) 
@@ -175,11 +174,11 @@ ComplexQR::update (const ComplexMatrix& u, const ComplexMatrix& v)
   octave_idx_type n = r.columns ();
   octave_idx_type k = q.columns ();
 
-  if (u.length () != m || v.length () != n)
-    (*current_liboctave_error_handler) ("QR update dimensions mismatch");
-  else
+  if (u.length () == m && v.length () == n)
     F77_XFCN (zqr1up, ZQR1UP, (m, n, k, q.fortran_vec (), r.fortran_vec (), 
 			       u.data (), v.data ()));
+  else
+    (*current_liboctave_error_handler) ("QR update dimensions mismatch");
 }
 
 void
@@ -257,7 +256,7 @@ ComplexQR::delete_row (octave_idx_type j)
 
   if (! q.is_square ())
     (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
-  else if (j < 1 || j > n) 
+  else if (j < 1 || j > m) 
     (*current_liboctave_error_handler) ("QR delete index out of range");
   else
     {

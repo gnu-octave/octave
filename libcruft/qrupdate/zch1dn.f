@@ -41,6 +41,8 @@ c
       double complex crho,rr,ui,t
       integer i,j
 
+c quick return if possible
+      if (n <= 0) return
 c check for singularity of R
       do i = 1,n
         if (R(i,i) == 0d0) then

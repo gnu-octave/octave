@@ -1,3 +1,11 @@
+2008-03-05  Jaroslav Hajek <highegg@gmail.com>
+
+	* dbleCHOL.cc: Small doc and declaration fixes.
+	* CmplxHOL.cc: Small doc and declaration fixes.
+	* CmplxQR.cc (ComplexQR::ComplexQR): Adjust code to match dbleQR.cc.
+	* dbleQR.cc (QR::delete_row): Fix incorrect test.
+	* CmplxQR.cc (ComplexQR::delete_row): Fix incorrect test.
+
 2008-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dbleCHOL.cc (CHOL::set, CHOL::update, CHOL::downdate):

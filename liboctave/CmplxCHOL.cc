@@ -167,7 +167,7 @@ ComplexCHOL::set (const ComplexMatrix& R)
   if (R.is_square ()) 
     chol_mat = R;
   else
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+    (*current_liboctave_error_handler) ("CHOL requires square matrix");
 }
 
 void
@@ -205,7 +205,7 @@ ComplexCHOL::downdate (const ComplexMatrix& u)
 				 tmp.fortran_vec (), w, info));
     }
   else
-    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+    (*current_liboctave_error_handler) ("CHOL downdate dimension mismatch");
 
   return info;
 }

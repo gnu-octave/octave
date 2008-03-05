@@ -56,7 +56,7 @@ extern "C"
 
   F77_RET_T
   F77_FUNC (dch1dn, DCH1DN) (const octave_idx_type&, double*, double*, double*, 
-                             int &);
+                             octave_idx_type&);
 }
 
 octave_idx_type
@@ -171,13 +171,13 @@ CHOL::set (const Matrix& R)
   if (R.is_square ()) 
     chol_mat = R;
   else
-    (*current_liboctave_error_handler) ("chol2inv requires square matrix");
+    (*current_liboctave_error_handler) ("CHOL requires square matrix");
 }
 
 void
 CHOL::update (const Matrix& u)
 {
-  int n = chol_mat.rows ();
+  octave_idx_type n = chol_mat.rows ();
 
   if (u.length () == n)
     {
@@ -209,7 +209,7 @@ CHOL::downdate (const Matrix& u)
 				 tmp.fortran_vec (), w, info));
     }
   else
-    (*current_liboctave_error_handler) ("CHOL update dimension mismatch");
+    (*current_liboctave_error_handler) ("CHOL downdate dimension mismatch");
 
   return info;
 }

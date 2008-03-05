@@ -448,30 +448,36 @@ Q*Q'*u*v' instead of u*v'.\n\
   octave_idx_type nargin = args.length ();
   octave_value_list retval;
 
-  octave_value argQ,argR,argu,argv;
-
-  if (nargin == 4
-      && (argQ = args(0),argQ.is_matrix_type ())
-      && (argR = args(1),argR.is_matrix_type ())
-      && (argu = args(2),argu.is_matrix_type ())
-      && (argv = args(3),argv.is_matrix_type ()))
+  if (nargin != 4)
     {
-      octave_idx_type m = argQ.rows ();
-      octave_idx_type n = argR.columns ();
-      octave_idx_type k = argQ.columns ();
+      print_usage ();
+      return retval;
+    }
 
-      if (argR.rows () == k
+  octave_value argq = args(0);
+  octave_value argr = args(1);
+  octave_value argu = args(2);
+  octave_value argv = args(3);
+
+  if (argq.is_matrix_type () && argr.is_matrix_type () 
+      && argu.is_matrix_type () && argv.is_matrix_type ())
+    {
+      octave_idx_type m = argq.rows ();
+      octave_idx_type n = argr.columns ();
+      octave_idx_type k = argq.columns ();
+
+      if (argr.rows () == k
           && argu.rows () == m && argu.columns () == 1
           && argv.rows () == n && argv.columns () == 1)
         {
-          if (argQ.is_real_matrix () 
-	      && argR.is_real_matrix () 
+          if (argq.is_real_matrix () 
+	      && argr.is_real_matrix () 
 	      && argu.is_real_matrix () 
 	      && argv.is_real_matrix ())
             {
               // all real case
-              Matrix Q = argQ.matrix_value ();
-              Matrix R = argR.matrix_value ();
+              Matrix Q = argq.matrix_value ();
+              Matrix R = argr.matrix_value ();
               Matrix u = argu.matrix_value ();
               Matrix v = argv.matrix_value ();
 
@@ -484,8 +490,8 @@ Q*Q'*u*v' instead of u*v'.\n\
           else
             {
               // complex case
-              ComplexMatrix Q = argQ.complex_matrix_value ();
-              ComplexMatrix R = argR.complex_matrix_value ();
+              ComplexMatrix Q = argq.complex_matrix_value ();
+              ComplexMatrix R = argr.complex_matrix_value ();
               ComplexMatrix u = argu.complex_matrix_value ();
               ComplexMatrix v = argv.complex_matrix_value ();
 
@@ -577,48 +583,54 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
   octave_idx_type nargin = args.length ();
   octave_value_list retval;
 
-  octave_value argQ,argR,argj,argx,argor;
-
-  if ((nargin == 4 || nargin == 5)
-      && (argQ = args(0), argQ.is_matrix_type ())
-      && (argR = args(1), argR.is_matrix_type ())
-      && (argj = args(2), argj.is_scalar_type ())
-      && (argx = args(3), argx.is_matrix_type ())
-      && (nargin < 5 || (argor = args (4), argor.is_string ())))
+  if (nargin < 4 || nargin > 5)
     {
-      octave_idx_type m = argQ.rows ();
-      octave_idx_type n = argR.columns ();
-      octave_idx_type k = argQ.columns();
+      print_usage ();
+      return retval;
+    }
+  
+  octave_value argq = args(0);
+  octave_value argr = args(1);
+  octave_value argj = args(2);
+  octave_value argx = args(3);
+      
+  if (argq.is_matrix_type () && argr.is_matrix_type ()
+      && argj.is_scalar_type () && argx.is_matrix_type ()
+      && (nargin < 5 || args(4).is_string ()))
+    {
+      octave_idx_type m = argq.rows ();
+      octave_idx_type n = argr.columns ();
+      octave_idx_type k = argq.columns ();
 
-      bool row = false;
+      std::string orient = (nargin < 5) ? "col" : args(4).string_value ();
 
-      std::string orient = (nargin < 5) ? "col" : argor.string_value ();
+      bool row = orient == "row";
 
-      if (nargin < 5 || (row = orient == "row") || (orient == "col"))
-        if (argR.rows () == k 
+      if (row || orient == "col")
+        if (argr.rows () == k 
             && (! row || m == k)
             && argx.rows () == (row ? 1 : m)
             && argx.columns () == (row ? n : 1))
           {
-            int j = argj.int_value ();
+            octave_idx_type j = argj.int_value ();
 
             if (j >= 1 && j <= (row ? n : m)+1)
               {
-                if (argQ.is_real_matrix () 
-		    && argR.is_real_matrix () 
+                if (argq.is_real_matrix () 
+		    && argr.is_real_matrix () 
 		    && argx.is_real_matrix ())
                   {
                     // real case
-                    Matrix Q = argQ.matrix_value ();
-                    Matrix R = argR.matrix_value ();
+                    Matrix Q = argq.matrix_value ();
+                    Matrix R = argr.matrix_value ();
                     Matrix x = argx.matrix_value ();
 
                     QR fact (Q, R);
 
                     if (row) 
-                      fact.insert_row(x, j);
+                      fact.insert_row (x, j);
                     else 
-                      fact.insert_col(x, j);
+                      fact.insert_col (x, j);
 
                     retval(1) = fact.R ();
                     retval(0) = fact.Q ();
@@ -626,8 +638,8 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
                 else
                   {
                     // complex case
-                    ComplexMatrix Q = argQ.complex_matrix_value ();
-                    ComplexMatrix R = argR.complex_matrix_value ();
+                    ComplexMatrix Q = argq.complex_matrix_value ();
+                    ComplexMatrix R = argr.complex_matrix_value ();
                     ComplexMatrix x = argx.complex_matrix_value ();
 
                     ComplexQR fact (Q, R);
@@ -745,7 +757,7 @@ be square.\n\
 \n\
 For @sc{Matlab} compatibility, if @var{Q} is nonsquare on input, the\n\
 updated factorization is always stripped to the economical form, i.e.\n\
-@code{columns (Q) == rows (R) = columns (R)}.\n\
+@code{columns (Q) == rows (R) <= columns (R)}.\n\
 \n\
 To get the less intelligent but more natural behaviour when @var{Q}\n\
 retains it shape and @var{R} loses one column, set @var{orient} to\n\
@@ -755,39 +767,44 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
 @seealso{qr, qrinsert, qrupdate}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
+  octave_idx_type nargin = args.length ();
   octave_value_list retval;
 
-  octave_value argQ,argR,argj,argor;
-
-  if ((nargin == 3 || nargin == 4)
-      && (argQ = args(0), argQ.is_matrix_type ())
-      && (argR = args(1), argR.is_matrix_type ())
-      && (argj = args(2), argj.is_scalar_type ())
-      && (nargin < 4 || (argor = args (3), argor.is_string ())))
+  if (nargin < 3 || nargin > 4)
     {
-      octave_idx_type m = argQ.rows ();
-      octave_idx_type k = argQ.columns ();
-      octave_idx_type n = argR.columns ();
+      print_usage ();
+      return retval;
+    }
 
-      bool row = false;
-      bool colp = false;
+  octave_value argq = args(0);
+  octave_value argr = args(1);
+  octave_value argj = args(2);
 
-      std::string orient = (nargin < 4) ? "col" : argor.string_value ();
+  if (argq.is_matrix_type () && argr.is_matrix_type () && argj.is_scalar_type ()
+      && (nargin < 4 || args(3).is_string ()))
+    {
+      octave_idx_type m = argq.rows ();
+      octave_idx_type k = argq.columns ();
+      octave_idx_type n = argr.columns ();
 
-      if (nargin < 4 || (row = orient == "row") 
-          || (orient == "col") || (colp = orient == "col+"))
-        if (argR.rows() == k)
+      std::string orient = (nargin < 4) ? "col" : args(3).string_value ();
+
+      bool row = orient == "row";
+      bool colp = orient == "col+";
+
+      if (row || colp || orient == "col")
+        if (argr.rows () == k
+            && (! row || m == k))
           {
-            int j = argj.scalar_value ();
-            if (j >= 1 && j <= (row ? n : m)+1)
+            octave_idx_type j = argj.scalar_value ();
+            if (j >= 1 && j <= (row ? n : m))
               {
-                if (argQ.is_real_matrix ()
-		    && argR.is_real_matrix ())
+                if (argq.is_real_matrix ()
+		    && argr.is_real_matrix ())
                   {
                     // real case
-                    Matrix Q = argQ.matrix_value ();
-                    Matrix R = argR.matrix_value ();
+                    Matrix Q = argq.matrix_value ();
+                    Matrix R = argr.matrix_value ();
 
                     QR fact (Q, R);
 
@@ -807,8 +824,8 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
                 else
                   {
                     // complex case
-                    ComplexMatrix Q = argQ.complex_matrix_value ();
-                    ComplexMatrix R = argR.complex_matrix_value ();
+                    ComplexMatrix Q = argq.complex_matrix_value ();
+                    ComplexMatrix R = argr.complex_matrix_value ();
 
                     ComplexQR fact (Q, R);
 

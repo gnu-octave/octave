@@ -1,3 +1,7 @@
+2008-03-05  Jaroslav Hajek <highegg@gmail.com>
+
+	* qrupdate/dch1dn.f, qrupdate/zch1dn.f: add "quick return" checks.
+
 2008-03-04 Jaroslav Hajek <highegg@gmail.com>
 
 	* qrupdate/dch1dn.f, qrupdate/dch1up.f, 

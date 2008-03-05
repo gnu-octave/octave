@@ -471,31 +471,35 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 @seealso{chol, qrupdate}\n\
 @end deftypefn")
 {
-  int nargin = args.length ();
+  octave_idx_type nargin = args.length ();
 
   octave_value_list retval;
 
-  octave_value argR,argu,argop;
-
-  if ((nargin == 3 || nargin == 2)
-      && (argR = args(0), argR.is_matrix_type ())
-      && (argu = args(1), argu.is_matrix_type ())
-      && (nargin < 3 || (argop = args(2), argop.is_string ())))
+  if (nargin > 3 || nargin < 2)
     {
-      octave_idx_type n = argR.rows ();
+      print_usage ();
+      return retval;
+    }
 
-      std::string op = (nargin < 3) ? "+" : argop.string_value();
+  octave_value argr = args(0);
+  octave_value argu = args(1);
 
-      bool down = false;
+  if (argr.is_matrix_type () && argu.is_matrix_type ()
+      && (nargin < 3 || args(2).is_string ()))
+    {
+      octave_idx_type n = argr.rows ();
 
-      if (nargin < 3 || (op == "+") || (down = op == "-"))
-        if (argR.columns () == n 
-            && argu.rows () == n && argu.columns () == 1)
+      std::string op = (nargin < 3) ? "+" : args(2).string_value ();
+
+      bool down = op == "-";
+
+      if (down || op == "+")
+        if (argr.columns () == n && argu.rows () == n && argu.columns () == 1)
           {
-            if (argR.is_real_matrix () && argu.is_real_matrix ())
+            if (argr.is_real_matrix () && argu.is_real_matrix ())
               {
                 // real case
-                Matrix R = argR.matrix_value ();
+                Matrix R = argr.matrix_value ();
                 Matrix u = argu.matrix_value ();
 
                 CHOL fact;
@@ -517,7 +521,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
             else
               {
                 // complex case
-                ComplexMatrix R = argR.complex_matrix_value ();
+                ComplexMatrix R = argr.complex_matrix_value ();
                 ComplexMatrix u = argu.complex_matrix_value ();
 
                 ComplexCHOL fact;

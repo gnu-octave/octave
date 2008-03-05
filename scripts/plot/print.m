@@ -190,6 +190,8 @@ function print (varargin)
         endif
       elseif (ishandle (arg))
         figure (arg);
+      elseif (length (arg) > 0)
+	name = arg;
       else
         error ("print: expecting inputs to be character string options or a figure handle");
       endif

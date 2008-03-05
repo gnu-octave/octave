@@ -187,11 +187,11 @@ function print (varargin)
 	  size = arg(3:length(arg));
         elseif (length (arg) >= 1 && arg(1) == "-")
 	  error ("print: unknown option `%s'", arg);
+	elseif (length (arg) > 0)
+	  name = arg;
         endif
       elseif (ishandle (arg))
         figure (arg);
-      elseif (length (arg) > 0)
-	name = arg;
       else
         error ("print: expecting inputs to be character string options or a figure handle");
       endif

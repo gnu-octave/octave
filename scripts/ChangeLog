@@ -1,3 +1,12 @@
+2008-03-05  Ben Abbott  <bpabbott@mac.com>
+
+	* polynomial/roots.m: Catch Infs and/or NaNs.
+
+2008-03-05  Sebastien Loisel  <loisel@temple.edu>
+
+	* polynomial/roots.m: Apply a scaling factor to the removal of the
+	leading zeros.
+
 2008-03-04  John W. Eaton  <jwe@octave.org>
 
 	* plot/print.m: Fix oops in applying last change.
@@ -15,7 +24,7 @@
 	* pkg/pkg.m (pkg:configure_make): Make it work with recent changes in
 	isspace handling with cell arrays of strings.
 
-2008-03-04  Ben Abbott <bpabbott@mac.com>
+2008-03-04  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/polyfit.m: Modified tests to respect a relative tolerance.
 

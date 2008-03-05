@@ -83,16 +83,22 @@ function r = roots (v)
 
   if (nargin != 1 || min (size (v)) > 1)
     print_usage ();
+  elseif (any (isnan(v) | isinf(v)))
+    error ("roots: inputs must not contain Inf or NaN")
   endif
 
-  n = length (v);
-  v = reshape (v, 1, n);
+  n = numel (v);
+  v = v(:);
 
   ## If v = [ 0 ... 0 v(k+1) ... v(k+l) 0 ... 0 ], we can remove the
   ## leading k zeros and n - k - l roots of the polynomial are zero.
 
-  f = find (v);
-  m = max (size (f));
+  if (isempty (v))
+    f = v;
+  else
+    f = find (v ./ max (abs (v)));
+  endif
+  m = numel (f);
 
   if (m > 0 && n > 1)
     v = v(f(1):f(m));
@@ -114,9 +120,24 @@ function r = roots (v)
 
 endfunction
 
+%!test
+%! p = [poly([3 3 3 3]), 0 0 0 0];
+%! r = sort (roots (p));
+%! assert (r, [0; 0; 0; 0; 3; 3; 3; 3], 0.001)
+
 %!assert(all (all (abs (roots ([1, -6, 11, -6]) - [3; 2; 1]) < sqrt (eps))));
 
 %!assert(isempty (roots ([])));
 
 %!error roots ([1, 2; 3, 4]);
+ 
+%!assert(isempty (roots (1)));
 
+ %!error roots ([1, 2; 3, 4]);
+ 
+%!error roots ([1 Inf 1]);
+
+%!error roots ([1 NaN 1]);
+
+%!assert(roots ([1e-200, -1e200, 1]), 1e-200)
+%!assert(roots ([1e-200, -1e200 * 1i, 1]), -1e-200 * 1i)

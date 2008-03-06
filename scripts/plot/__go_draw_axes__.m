@@ -1084,6 +1084,8 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     if (strcmpi (axis_obj.visible, "off"))
       fputs (plot_stream, "unset border; unset tics\n");
+    else
+      fprintf (plot_stream, "set border lw %f;\n", axis_obj.linewidth);
     endif
 
     if (strcmpi (axis_obj.key, "on"))

@@ -1,5 +1,7 @@
 2008-03-06  John W. Eaton  <jwe@octave.org>
 
+	* plot/ChangeLog: Handle axes linewidth property.
+
 	* plot/__go_draw_axes__.m: Adjust markersize by a factor of 1/6.
 
 	* general/interpn.m: New test.

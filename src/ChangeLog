@@ -1,3 +1,10 @@
+2008-03-06  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Document that
+	the initial interpretation of a positive definite return from
+	matrix_type is that the matrix is "probably" positive definite and
+	not certainly so.
+
 2008-03-06  John W. Eaton  <jwe@octave.org>
 
 	* parse.y: Move tests here from test/test_eval.m.

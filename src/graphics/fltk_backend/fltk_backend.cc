@@ -178,8 +178,16 @@ public:
 		   "A");
       autoscale->callback (button_callback, static_cast<void*> (this));
 
-      help = new
+      togglegrid = new
 	Fl_Button (status_h, 
+		   _h - status_h, 
+		   status_h,
+		   status_h,
+		   "G");
+      togglegrid->callback (button_callback, static_cast<void*> (this));
+
+      help = new
+	Fl_Button (2*status_h, 
 		   _h - status_h, 
 		   status_h,
 		   status_h,
@@ -187,7 +195,7 @@ public:
       help->callback (button_callback, static_cast<void*> (this));
 
       status = new 
-	Fl_Output (2*status_h, 
+	Fl_Output (3*status_h, 
 		   _h - status_h, 
 		   _w > 2*status_h ? _w - status_h : 0, 
 		   status_h, "");
@@ -208,6 +216,7 @@ public:
 
     status->show ();
     autoscale->show ();
+    togglegrid->show ();
 
     resizable (canvas);
     size_range (4*status_h, 2*status_h);
@@ -256,11 +265,13 @@ private:
 
   void button_press (Fl_Widget* widg) {
     if (widg == autoscale) axis_auto ();
+    if (widg == togglegrid) toggle_grid ();
     if (widg == help) fl_message (help_text);
   }
 
   OpenGL_fltk*   canvas;
   Fl_Button*	 autoscale;
+  Fl_Button*	 togglegrid;
   Fl_Button*	 help;
   Fl_Output*     status;
 
@@ -269,6 +280,12 @@ private:
     octave_value_list args;    
     args(0) = "auto";
     feval("axis",args);
+    mark_modified ();
+  }
+
+  void toggle_grid () 
+  { 
+    feval ("grid"); 
     mark_modified ();
   }
 
@@ -355,7 +372,20 @@ private:
 
     switch (event)
       {
-      
+      case FL_KEYDOWN:
+	switch(Fl::event_key ()) 
+	  {
+	  case 'a':
+	  case 'A':
+	    axis_auto ();
+	    break;
+	  case 'g':
+	  case 'G':
+	    toggle_grid ();
+	    break;
+	  }
+	break;
+
       case FL_MOVE:
 	pixel2status (Fl::event_x (), Fl::event_y ());
 	break;

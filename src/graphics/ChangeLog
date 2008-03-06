@@ -1,3 +1,10 @@
+2008-03-06  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (plot_window::handle): Add handling
+	of the 'a' and 'g' keys
+	(plot_window: toggle_grid): New helper function
+	(plot_window): Add new togglegrid button
+
 2008-03-01  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* fltk_backend/fltk_backend.cc (OpenGL_fltk::draw_overlay,

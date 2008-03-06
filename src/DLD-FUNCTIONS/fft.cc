@@ -212,6 +212,90 @@ dimension of the matrix along which the inverse FFT is performed\n\
 }
 
 /*
+
+%% fft-1.m
+%%
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! N=64;
+%! n=4;
+%! t = 2*pi*(0:1:N-1)/N;
+%! s = cos(n*t);
+%! S = fft(s);
+%! 
+%! answer = 0*t;
+%! answer(n+1) = N/2;
+%! answer(N-n+1) = N/2;
+%! 
+%! assert(all( abs(S-answer) < 4*N*eps ));
+
+%% ifft-1.m
+%%
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! N=64;
+%! n=7;
+%! t = 2*pi*(0:1:N-1)/N;
+%! s = cos(n*t);
+%! 
+%! S = 0*t;
+%! S(n+1) = N/2;
+%! S(N-n+1) = N/2;
+%! 
+%! assert(all( abs(ifft(S)-s) < 4*N*eps ));
+
+%% fft2-1.m
+%%
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! M=16;
+%! N=8;
+%! 
+%! m=5;
+%! n=3;
+%! 
+%! x = 2*pi*(0:1:M-1)/M;
+%! y = 2*pi*(0:1:N-1)/N;
+%! sx = cos(m*x);
+%! sy = sin(n*y);
+%! s=kron(sx',sy);
+%! S = fft2(s);
+%! answer = kron(fft(sx)',fft(sy));
+%! assert(all( all( abs(S-answer) < 4*M*N*eps ) ));
+
+%% ifft2-1.m
+%%
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! M=12;
+%! N=7;
+%! 
+%! m=3;
+%! n=2;
+%! 
+%! x = 2*pi*(0:1:M-1)/M;
+%! y = 2*pi*(0:1:N-1)/N;
+%! 
+%! sx = cos(m*x);
+%! sy = cos(n*y);
+%! 
+%! S = kron(fft(sx)',fft(sy));
+%! answer=kron(sx',sy);
+%! s = ifft2(S);
+%! 
+%! assert(all( all( abs(s-answer) < 30*eps ) ));
+
+*/
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

@@ -96,6 +96,12 @@ value returned by @code{time} was 856163706.\n\
   return retval;
 }
 
+/*
+
+%!assert(time () > 0);
+
+*/
+
 DEFUN_DLD (gmtime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} gmtime (@var{t})\n\
@@ -137,6 +143,28 @@ gmtime (time ())\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! ts = gmtime (time ());
+%! assert((isstruct (ts)
+%! && struct_contains (ts, "usec")
+%! && struct_contains (ts, "year")
+%! && struct_contains (ts, "mon")
+%! && struct_contains (ts, "mday")
+%! && struct_contains (ts, "sec")
+%! && struct_contains (ts, "min")
+%! && struct_contains (ts, "wday")
+%! && struct_contains (ts, "hour")
+%! && struct_contains (ts, "isdst")
+%! && struct_contains (ts, "yday")));
+
+%!error <Invalid call to gmtime.*> gmtime ();
+
+%!error <Invalid call to gmtime.*> gmtime (1, 2);
+
+*/
 
 DEFUN_DLD (localtime, args, ,
   "-*- texinfo -*-\n\
@@ -180,6 +208,28 @@ localtime (time ())\n\
   return retval;
 }
 
+/*
+
+%!test
+%! ts = localtime (time ());
+%! assert((isstruct (ts)
+%! && struct_contains (ts, "usec")
+%! && struct_contains (ts, "year")
+%! && struct_contains (ts, "mon")
+%! && struct_contains (ts, "mday")
+%! && struct_contains (ts, "sec")
+%! && struct_contains (ts, "min")
+%! && struct_contains (ts, "wday")
+%! && struct_contains (ts, "hour")
+%! && struct_contains (ts, "isdst")
+%! && struct_contains (ts, "yday")));
+
+%!error <Invalid call to localtime.*> localtime ();
+
+%!error <Invalid call to localtime.*> localtime (1, 2);
+
+*/
+
 DEFUN_DLD (mktime, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} mktime (@var{tm_struct})\n\
@@ -218,6 +268,18 @@ mktime (localtime (time ()))\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! t = time ();
+%! assert(fix (mktime (localtime (t))) == fix (t));
+
+%!error <Invalid call to mktime.*> mktime ();
+
+%!error <Invalid call to mktime.*> mktime (1, 2, 3);
+
+*/
 
 DEFUN_DLD (strftime, args, ,
   "-*- texinfo -*-\n\
@@ -402,6 +464,20 @@ Year (1970-).\n\
 
   return retval;
 }
+
+/*
+
+%!assert((isstr (strftime ("%%%n%t%H%I%k%l", localtime (time ())))
+%! && isstr (strftime ("%M%p%r%R%s%S%T", localtime (time ())))
+%! && isstr (strftime ("%X%Z%z%a%A%b%B", localtime (time ())))
+%! && isstr (strftime ("%c%C%d%e%D%h%j", localtime (time ())))
+%! && isstr (strftime ("%m%U%w%W%x%y%Y", localtime (time ())))));
+
+%!error <Invalid call to strftime.*> strftime ();
+
+%!error <Invalid call to strftime.*> strftime ("foo", localtime (time ()), 1);
+
+*/
 
 DEFUN_DLD (strptime, args, ,
  "-*- texinfo -*-\n\

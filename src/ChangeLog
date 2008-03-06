@@ -1,3 +1,12 @@
+2008-03-06  John W. Eaton  <jwe@octave.org>
+
+	* parse.y: Move tests here from test/test_eval.m.
+	* DLD-FUNCTIONS/fft.cc: Move tests here from test/test_signal.m.
+	* DLD-FUNCTIONS/dassl.cc: Move tests here from test/test_diffeq.m.
+	* DLD-FUNCTIONS/lsode.cc: Move tests here from test/test_diffeq.m.
+	* DLD-FUNCTIONS/quad.cc: Move tests here from test/test_quad.m.
+	* DLD-FUNCTIONS/time.cc: Move tests here from test/test_system.m.
+
 2008-03-06  Alexander Barth  <barth.alexander@gmail.com>
 
 	* DLD-FUNCTIONS/__lin_interpn__.cc (lookup):

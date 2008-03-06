@@ -622,7 +622,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	     usingclause{data_idx} = "";
 
 	     if (isfield (obj, "markersize"))
-	       mdat = obj.markersize;
+	       mdat = obj.markersize / 6;
 	     endif
 
              if (isfield (obj, "edgecolor"))
@@ -747,9 +747,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	     if (isfield (obj, "markersize"))
 	       if (length (mdat) == nc)
-		 m = mdat(i);
+		 m = mdat(i) / 6;
 	       else
-		 m = mdat;
+		 m = mdat / 6;
 	       endif
 	       if (! strcmpi (style, "lines"))
 		 if (have_newer_gnuplot)
@@ -1369,10 +1369,10 @@ function [style, typ, with] = do_linestyle_command (obj, idx, mono,
 
     if (isfield (obj, "markersize"))
       if (have_newer_gnuplot)
-	fprintf (plot_stream, " pointsize %f", obj.markersize);
+	fprintf (plot_stream, " pointsize %f", obj.markersize / 6);
       else
 	if (! strcmpi (style, "lines"))
-	  with = sprintf ("%s ps %f", with, obj.markersize);
+	  with = sprintf ("%s ps %f", with, obj.markersize / 6);
 	endif
       endif
       found_style = true;

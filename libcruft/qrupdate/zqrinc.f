@@ -40,7 +40,7 @@ c
       integer m,n,k,j
       double complex Q(m,k),R(k,n),R1(k,n+1),x(m)
       double complex w
-      external xerbla,zcopy,zqrqhv
+      external xerbla,zcopy,zqrqhv,zgemv
       integer info,i,jj
 c quick return if possible      
       if (m <= 0) return
@@ -59,7 +59,8 @@ c copy leading portion of R
       if (j <= n) then
         call zcopy(k*(n+1-j),R(1,j),1,R1(1,j+1),1)
       end if
-      call zgemv('C',m,min(k,j-1),1d0,Q,m,x,1,0d0,R1(1,j),1)
+      call zgemv('C',m,min(k,j-1),dcmplx(1d0),Q,m,x,1,
+     +           dcmplx(0d0),R1(1,j),1)
       if (j < k) then
 c eliminate tail, updating Q(:,j:k) and R1(j:k,j+1:n+1)
         jj = min(j,n)+1

@@ -40,7 +40,7 @@ c
       integer m,n,k,j
       double precision Q(m,k),R(k,n),R1(k,n+1),x(m)
       double precision w
-      external xerbla,dcopy,dqrqhv
+      external xerbla,dcopy,dqrqhv,dgemv
       integer info,i,jj
 c quick return if possible      
       if (m <= 0) return

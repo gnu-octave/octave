@@ -97,9 +97,10 @@ function [nn, xx] = hist (y, varargin)
 
   cutoff = (x(1:end-1,:) + x(2:end,:)) / 2;
   n = rows (x);
+  y_nc = columns (y);
   if (n < 30 && columns (x) == 1)
     ## The following algorithm works fastest for n less than about 30.
-    chist = zeros (n+1, columns (y));
+    chist = zeros (n+1, y_nc);
     for i = 1:n-1
       chist(i+1,:) = sum (y <= cutoff(i));
     endfor
@@ -108,13 +109,12 @@ function [nn, xx] = hist (y, varargin)
     ## The following algorithm works fastest for n greater than about 30.
     ## Put cutoff elements between boundaries, integrate over all
     ## elements, keep totals at boundaries.
-    [s, idx] = sort ([y; cutoff]);
+    [s, idx] = sort ([y; repmat(cutoff, 1, y_nc)]);
     len = rows (y);
     chist = cumsum (idx <= len);
-    t1 = zeros (1, columns (y));
-    t2 = reshape (chist(idx > len), size (cutoff));
-    t3 = chist(end,:) - sum (isnan (y));
-    chist = [t1; t2; t3];
+    chist = [(zeros (1, y_nc));
+	     (reshape (chist(idx > len), rows (cutoff), y_nc));
+	     (chist(end,:) - sum (isnan (y)))];
   endif
 
   freq = diff (chist);
@@ -166,3 +166,5 @@ endfunction
 %!    assert( sum(hist([1:n], 29)), n);
 %!    assert( sum(hist([1:n], 30)), n);
 %!  endfor
+%!test
+%!  assert (size (hist(randn(750,240), 200)), [200,240]);

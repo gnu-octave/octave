@@ -1,3 +1,8 @@
+2008-03-06  Alexander Barth  <barth.alexander@gmail.com>
+
+	* DLD-FUNCTIONS/__lin_interpn__.cc (lookup):
+	Handle decreasing coordinate values.
+
 2008-03-05  Jaroslav Hajek <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/chol.cc (Fcholupdate): Adjust code to meet 

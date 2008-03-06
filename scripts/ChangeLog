@@ -1,3 +1,7 @@
+2008-03-06  John W. Eaton  <jwe@octave.org>
+
+	* general/interpn.m: New test.
+
 2008-03-05  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/roots.m: Catch Infs and/or NaNs.

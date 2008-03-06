@@ -250,3 +250,8 @@ endfunction
 %! assert (interpn(x,y,z,f,x,y,z), f)
 %! assert (interpn(x,y,z,f,x,y,z,'nearest'), f)
 %! assert (interpn(x,y,z,f,x,y,z,'spline'), f)
+
+%!test
+%! [x,y,z] = ndgrid(0:2);
+%! f = x.^2+y.^2+z.^2;
+%! assert (interpn(x,y,-z,f,1.5,1.5,-1.5), 7.5)

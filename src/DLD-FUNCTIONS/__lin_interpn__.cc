@@ -43,38 +43,77 @@ isvector (const NDArray& array)
 octave_idx_type
 lookup (const double *x, octave_idx_type n, double y)
 {
-  octave_idx_type j, j0, j1;
+  octave_idx_type j;
 
-  if (y > x[n-1] || y < x[0])
-    return -1;
+  if (x[0] < x[n-1])
+    {
+      // increasing x
+
+      if (y > x[n-1] || y < x[0])
+	return -1;
 
 #ifdef EXHAUSTIF
-  for (j = 0; j < n - 1; j++)
-    {
-      if (x[j] <= y && y <= x[j+1])
-	return j;
-    }
-#else
-  j0 = 0;
-  j1 = n - 1;
-
-  while (true)
-    {
-      j = (j0+j1)/2;
-
-      if (y <= x[j+1])
+      for (j = 0; j < n - 1; j++)
 	{
-	  if (x[j] <= y)
+	  if (x[j] <= y && y <= x[j+1])
 	    return j;
-
-	  j1 = j;
 	}
+#else
+      octave_idx_type j0 = 0;
+      octave_idx_type j1 = n - 1;
 
-      if (x[j] <= y)
-	j0 = j;
-    }
+      while (true)
+	{
+	  j = (j0+j1)/2;
 
+	  if (y <= x[j+1])
+	    {
+	      if (x[j] <= y)
+		return j;
+
+	      j1 = j;
+	    }
+
+	  if (x[j] <= y)
+	    j0 = j;
+	}
 #endif
+    }
+  else
+    {
+      // decreasing x
+      // previous code with x -> -x and y -> -y
+
+      if (y > x[0] || y < x[n-1])
+	return -1;
+
+#ifdef EXHAUSTIF
+      for (j = 0; j < n - 1; j++)
+	{
+	  if (x[j+1] <= y && y <= x[j])
+	    return j;
+	}
+#else
+      octave_idx_type j0 = 0;
+      octave_idx_type j1 = n - 1;
+
+      while (true)
+	{
+	  j = (j0+j1)/2;
+
+	  if (y >= x[j+1])
+	    {
+	      if (x[j] >= y)
+		return j;
+
+	      j1 = j;
+	    }
+
+	  if (x[j] >= y)
+	    j0 = j;
+	}
+#endif
+    }
 }
 
 // n-dimensional linear interpolation

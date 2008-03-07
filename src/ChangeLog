@@ -1,3 +1,8 @@
+2008-03-07  John W. Eaton  <jwe@octave.org>
+
+	* ov-struct.cc (octave_struct::print_raw): Don't print contents fo
+	struct arrays that have more than one element.
+
 2008-03-06  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/matrix_type.cc (Fmatrix_type): Document that

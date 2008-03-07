@@ -499,10 +499,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
   if (Vstruct_levels_to_print >= 0)
     {
-      bool print_keys_only = (Vstruct_levels_to_print == 0
-			      || map.numel () == 0);
-
-      Vstruct_levels_to_print--;
+      bool print_keys_only = Vstruct_levels_to_print-- == 0;
 
       indent (os);
       os << "{";
@@ -512,7 +509,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
       octave_idx_type n = map.numel ();
 
-      if (n == 0 || (n > 1 && print_keys_only))
+      if (n != 1 || print_keys_only)
 	{
 	  indent (os);
 	  dim_vector dv = dims ();
@@ -533,7 +530,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 
 	  octave_value tmp = (n == 1) ? val(0) : octave_value (val, true);
 
-	  if (print_keys_only)
+	  if (n != 1 || print_keys_only)
 	    {
 	      indent (os);
 	      os << key;
@@ -548,7 +545,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
 	    tmp.print_with_name (os, key);
 	}
 
-      if (n == 0 || (n > 1 && print_keys_only))
+      if (n != 1 || print_keys_only)
 	decrement_indent_level ();
 
       decrement_indent_level ();

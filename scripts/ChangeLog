@@ -1,5 +1,7 @@
 2008-03-07  John W. Eaton  <jwe@octave.org>
 
+	* plot/contourf.m: Set axes layer property to "top".
+
 	* plot/__go_draw_axes__.m: Handle tickdir property.
 
 2008-03-06  John W. Eaton  <jwe@octave.org>

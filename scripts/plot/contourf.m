@@ -180,6 +180,8 @@ function varargout = contourf (varargin)
     set (gca(), "clim", [min(lev), max(lev)]);
   endif
 
+  set (gca (), "layer", "top");
+
   if (nargout > 0)
     varargout{2} = h;
     varargout{1} = c;

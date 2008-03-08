@@ -1,3 +1,15 @@
+2008-03-08  John W. Eaton  <jwe@octave.org>
+
+	* Sparse.cc (Sparse<T>::index, assign): Likewise.
+	* Array.cc (Array<T>::index1, Array<T>::index2, Array<T>::indexN,
+	assign2): Eliminate use of idx_vector::is_one_zero method.
+	* idx-vector.cc, idx-vector.h
+	(idx_vector::maybe_convert_one_zero_to_idx,
+	IDX_VEC_REP::maybe_convert_one_zero_to_idx): Delete unused function.
+	(IDX_VEC_REP::one_zero): Delete data member.
+	(IDX_VEC_REP::is_colon_equiv): Delete one_zero check.
+	(idx_vector::is_one_zero, IDX_VEC_REP::is_one_zero): Delete function.
+
 2008-03-07  John W. Eaton  <jwe@octave.org>
 
 	* idx-vector.cc (IDX_VEC_REP::idx_vector_rep (bool),

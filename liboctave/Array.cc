@@ -2074,12 +2074,6 @@ Array<T>::index1 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	{
 	  retval.resize_no_fill (0);
 	}
-      else if (len == 1 && n > 1
-	       && idx_arg.one_zero_only ()
-	       && idx_arg.ones_count () == n)
-	{
-	  retval.resize_and_fill (n, elem (0));
-	}
       else
 	{
 	  retval.resize_no_fill (n);
@@ -2133,9 +2127,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
       octave_idx_type len = tmp.length ();
 
-      if (len == 0 && idx_arg.one_zero_only ())
-	retval = Array<T> (tmp, dim_vector (0, 0));
-      else if (len >= idx_orig_dims.numel ())
+      if (len >= idx_orig_dims.numel ())
 	retval = Array<T> (tmp, idx_orig_dims);
     }
   else if (nr == 1 || nc == 1)
@@ -2148,8 +2140,7 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 
       octave_idx_type len = tmp.length ();
 
-      if ((len != 0 && idx_arg.one_zero_only ())
-	  || idx_orig_rows == 1 || idx_orig_columns == 1)
+      if (idx_orig_rows == 1 || idx_orig_columns == 1)
 	{
 	  if (nr == 1)
 	    retval = Array<T> (tmp, dim_vector (1, len));
@@ -2161,11 +2152,8 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
     }
   else
     {
-      if (! (idx_arg.one_zero_only ()
-	     && idx_orig_rows == nr
-	     && idx_orig_columns == nc))
-	(*current_liboctave_warning_with_id_handler)
-	  ("Octave:fortran-indexing", "single index used for matrix");
+      (*current_liboctave_warning_with_id_handler)
+	("Octave:fortran-indexing", "single index used for matrix");
 
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
@@ -2176,12 +2164,6 @@ Array<T>::index2 (idx_vector& idx_arg, int resize_ok, const T& rfv) const
 	{
 	  octave_idx_type result_nr = idx_orig_rows;
 	  octave_idx_type result_nc = idx_orig_columns;
-
-	  if (idx_arg.one_zero_only ())
-	    {
-	      result_nr = idx_arg.ones_count ();
-	      result_nc = (result_nr > 0 ? 1 : 0);
-	    }
 
 	  retval.resize_no_fill (result_nr, result_nc);
 
@@ -2232,9 +2214,7 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
     {
       bool vec_equiv = vector_equivalent (dv);
 
-      if (! vec_equiv
-	  && ! (ra_idx.is_colon ()
-		|| (ra_idx.one_zero_only () && idx_orig_dims == dv)))
+      if (! (vec_equiv || ra_idx.is_colon ()))
 	(*current_liboctave_warning_with_id_handler)
 	  ("Octave:fortran-indexing", "single index used for N-d array");
 
@@ -2261,14 +2241,6 @@ Array<T>::indexN (idx_vector& ra_idx, int resize_ok, const T& rfv) const
 	    }
 	  else
 	    result_dims = idx_orig_dims;
-
-	  if (ra_idx.one_zero_only ())
-	    {
-	      result_dims.resize (2);
-	      octave_idx_type ntot = ra_idx.ones_count ();
-	      result_dims(0) = ntot;
-	      result_dims(1) = (ntot > 0 ? 1 : 0);
-	    }
 
 	  result_dims.chop_trailing_singletons ();
 
@@ -3067,10 +3039,7 @@ assign2 (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	}
       else
 	{
-	  if (! (idx_i.is_colon ()
-		 || (idx_i.one_zero_only ()
-		     && idx_i.orig_rows () == lhs_nr
-		     && idx_i.orig_columns () == lhs_nc)))
+	  if (! idx_i.is_colon ())
 	    (*current_liboctave_warning_with_id_handler)
 	      ("Octave:fortran-indexing", "single index used for matrix");
 
@@ -3182,9 +3151,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
       idx_vector iidx = idx(0);
       int iidx_is_colon = iidx.is_colon ();
 
-      if (! (iidx_is_colon
-	     || (iidx.one_zero_only ()
-		 && iidx.orig_dimensions () == lhs.dims ())))
+      if (! iidx_is_colon)
 	(*current_liboctave_warning_with_id_handler)
 	  ("Octave:fortran-indexing", "single index used for N-d array");
 

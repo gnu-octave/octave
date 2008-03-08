@@ -45,9 +45,8 @@ IDX_VEC_REP::idx_vector_rep (const IDX_VEC_REP& a)
     range_base (a.range_base), range_step (a.range_step),
     max_val (a.max_val), min_val (a.min_val),
     frozen_at_z_len (a.frozen_at_z_len), frozen_len (a.frozen_len),
-    colon (a.colon), range(a.range), one_zero (a.one_zero),
-    initialized (a.initialized), frozen (a.frozen),
-    colon_equiv_checked (a.colon_equiv_checked),
+    colon (a.colon), range(a.range), initialized (a.initialized),
+    frozen (a.frozen), colon_equiv_checked (a.colon_equiv_checked),
     colon_equiv (a.colon_equiv), orig_dims (a.orig_dims)
 {
   if (len > 0)
@@ -105,7 +104,7 @@ IDX_VEC_REP::idx_vector_rep (const ColumnVector& v)
   : data (0), len (v.length ()), num_zeros (0), num_ones (0),
     range_base (0), range_step (0), max_val (0), min_val (0), count (1),
     frozen_at_z_len (0), frozen_len (0), colon (0), range(0),
-    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    initialized (0), frozen (0), colon_equiv_checked (0),
     colon_equiv (0), orig_dims (len, 1)
 {
   if (len == 0)
@@ -140,7 +139,7 @@ IDX_VEC_REP::idx_vector_rep (const NDArray& nda)
   : data (0), len (nda.length ()), num_zeros (0), num_ones (0),
     range_base (0), range_step (0), max_val (0), min_val (0), count (1),
     frozen_at_z_len (0), frozen_len (0), colon (0), range(0),
-    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    initialized (0), frozen (0), colon_equiv_checked (0),
     colon_equiv (0), orig_dims (nda.dims ())
 {
   if (len == 0)
@@ -176,7 +175,7 @@ IDX_VEC_REP::idx_vector_rep (const Range& r)
   : data (0), len (r.nelem ()), num_zeros (0), num_ones (0),
     range_base (0), range_step (0), max_val (0), min_val (0), 
     count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
-    range(1), one_zero (0), initialized (0), frozen (0),
+    range(1), initialized (0), frozen (0),
     colon_equiv_checked (0), colon_equiv (0), orig_dims (1, len)
 {
   if (len < 0)
@@ -206,8 +205,8 @@ IDX_VEC_REP::idx_vector_rep (double d)
   : data (0), len (1), num_zeros (0), num_ones (0),
     range_base (0), range_step (0), max_val (0), min_val (0), 
     count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
-    range(1), one_zero (0), initialized (0), frozen (0),
-    colon_equiv_checked (0), colon_equiv (0), orig_dims (1, 1)
+    range(1), initialized (0), frozen (0), colon_equiv_checked (0),
+    colon_equiv (0), orig_dims (1, 1)
 {
   if (idx_is_inf_or_nan (d))
     return;
@@ -229,9 +228,8 @@ IDX_VEC_REP::idx_vector_rep (octave_idx_type i)
   : data (0), len (1), num_zeros (0), num_ones (0),
     range_base (tree_to_mat_idx (i)), range_step (1), 
     max_val (0), min_val (0), count (1), frozen_at_z_len (0),
-    frozen_len (0), colon (0), range(1), one_zero (0),
-    initialized (0), frozen (0), colon_equiv_checked (0),
-    colon_equiv (0), orig_dims (1, 1)
+    frozen_len (0), colon (0), range(1), initialized (0),
+    frozen (0), colon_equiv_checked (0), colon_equiv (0), orig_dims (1, 1)
 {
   init_state ();
 }
@@ -240,7 +238,7 @@ IDX_VEC_REP::idx_vector_rep (char c)
   : data (0), len (0), num_zeros (0), num_ones (0), range_base (0),
     range_step (0), max_val (0), min_val (0), count (1),
     frozen_at_z_len (0), frozen_len (0), colon (1), range(0),
-    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    initialized (0), frozen (0), colon_equiv_checked (0),
     colon_equiv (0), orig_dims (0, 0)
 {
   assert (c == ':');
@@ -252,7 +250,7 @@ IDX_VEC_REP::idx_vector_rep (bool b)
   : data (0), len (b ? 1 : 0), num_zeros (0), num_ones (0), range_base (0),
     range_step (0), max_val (0), min_val (0), count (1),
     frozen_at_z_len (0), frozen_len (0), colon (0), range(0),
-    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    initialized (0), frozen (0), colon_equiv_checked (0),
     colon_equiv (0), orig_dims (len, len)
 {
   if (len == 0)
@@ -269,7 +267,7 @@ IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
   : data (0), len (bnda.nnz ()), num_zeros (0), num_ones (0),
     range_base (0), range_step (0), max_val (0), min_val (0),
     count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
-    range(0), one_zero (0), initialized (0), frozen (0),
+    range(0), initialized (0), frozen (0),
     colon_equiv_checked (0), colon_equiv (0), orig_dims ()
 {
   if (len == 0)
@@ -324,7 +322,6 @@ IDX_VEC_REP::operator = (const IDX_VEC_REP& a)
       frozen_len = a.frozen_len;
       colon = a.colon;
       range = a.range;
-      one_zero = a.one_zero;
       initialized = a.initialized;
       frozen = a.frozen;
       colon_equiv_checked = a.colon_equiv_checked;
@@ -389,49 +386,6 @@ IDX_VEC_REP::init_state (void)
     }
 
   initialized = 1;
-}
-
-void
-IDX_VEC_REP::maybe_convert_one_zero_to_idx (octave_idx_type z_len)
-{
-  if (one_zero && (z_len == len || z_len == 0))
-    {
-      if (num_ones == 0)
-	{
-	  len = 0;
-	  max_val = 0;
-	  min_val = 0;
-	  delete [] data;
-	  data = 0;
-	}
-      else
-	{
-	  assert (num_ones + num_zeros == len);
-
-	  octave_idx_type *new_data = new octave_idx_type [num_ones];
-	  octave_idx_type k = 0;
-	  for (octave_idx_type i = 0; i < len; i++)
-	    if (data[i] == 0)
-	      new_data[k++] = i;
-
-	  delete [] data;
-	  len = num_ones;
-	  data = new_data;
-
-	  min_val = max_val = data[0];
-
-	  octave_idx_type i = 0;
-	  do
-	    {
-	      if (data[i] > max_val)
-		max_val = data[i];
-
-	      if (data[i] < min_val)
-		min_val = data[i];
-	    }
-	  while (++i < len);
-	}
-    }
 }
 
 octave_idx_type
@@ -505,11 +459,7 @@ IDX_VEC_REP::is_colon_equiv (octave_idx_type n, int sort_uniq)
 	}
       else if (static_cast<octave_idx_type> (len) > 1)
 	{
-	  if (one_zero)
-	    {
-	      colon_equiv = (len == n && ones_count () == n);
-	    }
-	  else if (sort_uniq)
+	  if (sort_uniq)
 	    {
 	      octave_idx_type *tmp_data = copy_data (data, len);
 

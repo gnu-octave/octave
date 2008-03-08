@@ -1514,9 +1514,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
       // you get!!
       octave_idx_type n = idx_arg.freeze (length (), "sparse vector", resize_ok);
       if (n == 0)
-	if (idx_arg.one_zero_only ())
-	  retval = Sparse<T> (dim_vector (0, 0));
-	else
+
 	  retval = Sparse<T> (idx_orig_dims);
       else if (nz < 1)
 	if (n >= idx_orig_dims.numel ())
@@ -1578,8 +1576,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 	else
 	  retval = Sparse<T> (dim_vector (0, 1));
       else if (nz < 1)
-	if ((n != 0 && idx_arg.one_zero_only ())
-	    || idx_orig_rows == 1 || idx_orig_columns == 1)
+	if (idx_orig_rows == 1 || idx_orig_columns == 1)
 	  retval = Sparse<T> ((nr == 1 ? 1 : n), (nr == 1 ? n : 1));
 	else
 	  retval = Sparse<T> (idx_orig_dims);
@@ -1613,8 +1610,7 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 		    }
 	      }
 
-	  if (idx_arg.one_zero_only () || idx_orig_rows == 1 || 
-	      idx_orig_columns == 1)
+	  if (idx_orig_rows == 1 || idx_orig_columns == 1)
 	    {
 	      if (nr == 1)
 		{
@@ -1723,11 +1719,8 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
     }
   else
     {
-      if (! (idx_arg.one_zero_only ()
-	     && idx_orig_rows == nr
-	     && idx_orig_columns == nc))
-	(*current_liboctave_warning_with_id_handler) 
-	  ("Octave:fortran-indexing", "single index used for sparse matrix");
+      (*current_liboctave_warning_with_id_handler) 
+	("Octave:fortran-indexing", "single index used for sparse matrix");
 
       // This code is only for indexing matrices.  The vector
       // cases are handled above.
@@ -1739,14 +1732,8 @@ Sparse<T>::index (idx_vector& idx_arg, int resize_ok) const
 	  octave_idx_type result_nr = idx_orig_rows;
 	  octave_idx_type result_nc = idx_orig_columns;
 
-	  if (idx_arg.one_zero_only ())
-	    {
-	      result_nr = idx_arg.ones_count ();
-	      result_nc = (result_nr > 0 ? 1 : 0);
-	    }
-
 	  if (nz < 1)
-	      retval = Sparse<T> (result_nr, result_nc);
+	    retval = Sparse<T> (result_nr, result_nc);
 	  else
 	    {
 	      // Count number of non-zero elements
@@ -3128,10 +3115,7 @@ assign (Sparse<LT>& lhs, const Sparse<RT>& rhs)
 	}
       else
 	{
-	  if (! (idx_i.is_colon ()
-		 || (idx_i.one_zero_only ()
-		     && idx_i.orig_rows () == lhs_nr
-		     && idx_i.orig_columns () == lhs_nc)))
+	  if (! idx_i.is_colon ())
 	    (*current_liboctave_warning_with_id_handler)
 	      ("Octave:fortran-indexing", "single index used for matrix");
 

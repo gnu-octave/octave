@@ -51,7 +51,7 @@ private:
       : data (0), len (0), num_zeros (0), num_ones (0),
         range_base (0), range_step (0), max_val (0),
 	min_val (0), count (1), frozen_at_z_len (0), frozen_len (0),
-	colon (0), range(0), one_zero (0), initialized (0), frozen (0),
+	colon (0), range(0), initialized (0), frozen (0),
 	colon_equiv_checked (0), colon_equiv (0), orig_dims () { }
 
     idx_vector_rep (const ColumnVector& v);
@@ -63,7 +63,7 @@ private:
       : data (0), len (inda.length ()), num_zeros (0), num_ones (0),
 	range_base (0), range_step (0), max_val (0), min_val (0),
         count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
-        range(0), one_zero (0), initialized (0), frozen (0),
+        range(0), initialized (0), frozen (0),
         colon_equiv_checked (0), colon_equiv (0), orig_dims (inda.dims ())
     {
       if (len == 0)
@@ -97,7 +97,7 @@ private:
       : data (0), len (1), num_zeros (0), num_ones (0),
 	range_base (0), range_step (0), max_val (0), min_val (0),
         count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
-        range(0), one_zero (0), initialized (0), frozen (0),
+        range(0), initialized (0), frozen (0),
         colon_equiv_checked (0), colon_equiv (0), orig_dims (1, 1)
     {
       data = new octave_idx_type [len];
@@ -131,7 +131,6 @@ private:
     octave_idx_type max (void) const { return max_val; }
     octave_idx_type min (void) const { return min_val; }
 
-    int one_zero_only (void) const { return one_zero; }
     octave_idx_type zeros_count (void) const { return num_zeros; }
     octave_idx_type ones_count (void) const { return num_ones; }
 
@@ -171,7 +170,6 @@ private:
 
     unsigned int colon : 1;
     unsigned int range : 1;
-    unsigned int one_zero : 1;
     unsigned int initialized : 1;
     unsigned int frozen : 1;
     unsigned int colon_equiv_checked : 1;
@@ -180,8 +178,6 @@ private:
     dim_vector orig_dims;
  
     void init_state (void);
-
-    void maybe_convert_one_zero_to_idx (octave_idx_type z_len);
 
     octave_idx_type tree_to_mat_idx (double x, bool& conversion_error);
 
@@ -250,7 +246,7 @@ public:
   octave_idx_type max (void) const { return rep->max (); }
   octave_idx_type min (void) const { return rep->min (); }
 
-  int one_zero_only (void) const { return rep->one_zero_only (); }
+  int one_zero_only (void) const { return 0; }
   octave_idx_type zeros_count (void) const { return rep->zeros_count (); }
   octave_idx_type ones_count (void) const { return rep->ones_count (); }
 
@@ -280,9 +276,6 @@ public:
 
   friend std::ostream& operator << (std::ostream& os, const idx_vector& a)
     { return a.print (os); }
-
-  void maybe_convert_one_zero_to_idx (octave_idx_type z_len)
-    { rep->maybe_convert_one_zero_to_idx (z_len); }
 
 private:
 

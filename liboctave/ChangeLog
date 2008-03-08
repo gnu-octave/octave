@@ -1,3 +1,11 @@
+2008-03-07  John W. Eaton  <jwe@octave.org>
+
+	* idx-vector.cc (IDX_VEC_REP::idx_vector_rep (bool),
+	IDX_VEC_REP::idx_vector_rep (const boolNDArray&)):
+	Simply perform the equivalent of "find" on the bool argument here,
+	set one_zero to 0 and orig_dims to size of resulting index vector.
+	(IDX_VEC_REP::freeze): Don't call maybe_convert_one_zero_to_idx here.
+
 2008-03-05  Jaroslav Hajek <highegg@gmail.com>
 
 	* dbleQR.cc (QR::insert_col, QR::insert_row, 

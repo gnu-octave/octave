@@ -46,8 +46,9 @@
 %!test
 %! wfi = warning ("query", "Octave:fortran-indexing");
 %! warning ("off", "Octave:fortran-indexing");
-%! a = 2;
-%! assert(all (a(logical ([1,1])) == [2,2]));
+%!shared a
+%!  a = 2;
+%!error <invalid vector index> a(logical ([1,1]));
 %! warning ("wfi.state", "Octave:fortran-indexing");
 
 %% test/octave.test/logical-wfi-f/v-1.m
@@ -79,7 +80,7 @@
 %! wfi = warning ("query", "Octave:fortran-indexing");
 %! warning ("off", "Octave:fortran-indexing");
 %! a = [9,8,7,6];
-%! assert(all (a(logical ([1,1])) == [9,9]));
+%! assert(all (a(logical ([1,1])) == [9,8]));
 %! warning ("wfi.state", "Octave:fortran-indexing");
 
 %% test/octave.test/logical-wfi-f/m-1.m
@@ -95,7 +96,7 @@
 %! wfi = warning ("query", "Octave:fortran-indexing");
 %! warning ("off", "Octave:fortran-indexing");
 %! a = [9,8;7,6];
-%! assert(all (a(logical ([1,1,1,1])) == [9;7;8;6]));
+%! assert(all (a(logical ([1,1,1,1])) == [9,7,8,6]));
 %! warning ("wfi.state", "Octave:fortran-indexing");
 
 %% test/octave.test/logical-wfi-f/m-3.m
@@ -103,7 +104,7 @@
 %! wfi = warning ("query", "Octave:fortran-indexing");
 %! warning ("off", "Octave:fortran-indexing");
 %! a = [9,8;7,6];
-%! assert(all (a(logical ([0,1,1,0])) == [7;8]));
+%! assert(all (a(logical ([0,1,1,0])) == [7,8]));
 %! warning ("wfi.state", "Octave:fortran-indexing");
 
 %% test/octave.test/logical-wfi-f/m-4.m

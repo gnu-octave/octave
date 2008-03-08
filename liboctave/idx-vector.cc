@@ -249,41 +249,51 @@ IDX_VEC_REP::idx_vector_rep (char c)
 }
 
 IDX_VEC_REP::idx_vector_rep (bool b)
-  : data (0), len (1), num_zeros (0), num_ones (0), range_base (0),
+  : data (0), len (b ? 1 : 0), num_zeros (0), num_ones (0), range_base (0),
     range_step (0), max_val (0), min_val (0), count (1),
     frozen_at_z_len (0), frozen_len (0), colon (0), range(0),
-    one_zero (1), initialized (0), frozen (0), colon_equiv_checked (0),
-    colon_equiv (0), orig_dims (1, 1)
+    one_zero (0), initialized (0), frozen (0), colon_equiv_checked (0),
+    colon_equiv (0), orig_dims (len, len)
 {
-  data = new octave_idx_type [len];
-
-  data[0] = tree_to_mat_idx (b);
-
-  init_state ();
+  if (len == 0)
+    initialized = 1;
+  else
+    {
+      data = new octave_idx_type [len];
+      data[0] = 0;
+      init_state ();
+    }
 }
 
 IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
-  : data (0), len (bnda.length ()), num_zeros (0), num_ones (0),
+  : data (0), len (bnda.nnz ()), num_zeros (0), num_ones (0),
     range_base (0), range_step (0), max_val (0), min_val (0),
     count (1), frozen_at_z_len (0), frozen_len (0), colon (0),
-    range(0), one_zero (1), initialized (0), frozen (0),
-    colon_equiv_checked (0), colon_equiv (0), orig_dims (bnda.dims ())
+    range(0), one_zero (0), initialized (0), frozen (0),
+    colon_equiv_checked (0), colon_equiv (0), orig_dims ()
 {
   if (len == 0)
     {
+      orig_dims = dim_vector (0, 0);
       initialized = 1;
-      return;
     }
   else
     {
-      octave_idx_type k = 0;
       data = new octave_idx_type [len];
 
-      for (octave_idx_type i = 0; i < len; i++)
-	data[k++] = tree_to_mat_idx (bnda.elem (i));
-    }
+      octave_idx_type ntot = bnda.length ();
 
-  init_state ();
+      for (octave_idx_type i = 0, k = 0; i < ntot; i++, k < len)
+	if (bnda.elem (i))
+	  data[k++] = i;
+
+      dim_vector dv = bnda.dims ();
+
+      orig_dims = ((dv.length () == 2 && dv(0) == 1)
+		   ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
+
+      init_state ();
+    }
 }
 
 IDX_VEC_REP&
@@ -600,8 +610,6 @@ IDX_VEC_REP::freeze (octave_idx_type z_len, const char *tag, bool resize_ok)
 	frozen_len = 0;
       else
 	{
-	  maybe_convert_one_zero_to_idx (z_len);
-
 	  max_val = max ();
 	  min_val = min ();
 

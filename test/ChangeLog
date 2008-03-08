@@ -1,3 +1,8 @@
+2008-03-07  John W. Eaton  <jwe@octave.org>
+
+	* test_logical-wfi-t.m, test_logical-wfi-f.m: Update tests for
+	logical indexing bug fix.
+
 2008-03-06  John W. Eaton  <jwe@octave.org>
 
 	* test_eval.m, test_diffeq.m, test_quad.m, test_signal.m:

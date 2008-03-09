@@ -2714,7 +2714,7 @@ public:
     void update_zdir (void) { update_camera (); }
 
     double calc_tick_sep (double minval, double maxval);
-    void calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto);
+    void calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto, bool is_logscale);
     void fix_limits (array_property& lims)
     {
       if (lims.get ().is_empty ()) 
@@ -2741,7 +2741,7 @@ public:
     void update_xlim (bool do_clr_zoom = true)
     {
       if (xtickmode.is ("auto"))
-	calc_ticks_and_lims (xlim, xtick, xlimmode.is ("auto"));
+	calc_ticks_and_lims (xlim, xtick, xlimmode.is ("auto"), xscale.is ("log"));
 
       fix_limits (xlim);
 
@@ -2752,7 +2752,7 @@ public:
     void update_ylim (bool do_clr_zoom = true)
     {
       if (ytickmode.is ("auto"))
-	calc_ticks_and_lims (ylim, ytick, ylimmode.is ("auto"));
+	calc_ticks_and_lims (ylim, ytick, ylimmode.is ("auto"), yscale.is ("log"));
 
       fix_limits (ylim);
 
@@ -2763,7 +2763,7 @@ public:
     void update_zlim (void)
     {
       if (ztickmode.is ("auto"))
-	calc_ticks_and_lims (zlim, ztick, zlimmode.is ("auto"));
+	calc_ticks_and_lims (zlim, ztick, zlimmode.is ("auto"), zscale.is ("log"));
 
       fix_limits (zlim);
 

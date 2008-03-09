@@ -1,5 +1,11 @@
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
+	* graphics.h.in (axes::properties::update_xlim,
+	axes::properties::update_ylim, axes::properties::update_zlim):
+	pass is_logscale flag to axes::properties::calc_ticks_and_lims
+	* graphics.cc (axes::properties::calc_ticks_and_lims): Added
+	support for log scale
+
 	* graphics.h.in (axes::properities::fix_limits) : New method.
 	(axes::properties::update_xlim, axes::properties::update_ylim,
 	axes::properties::update_zlim): Use fix_limits.

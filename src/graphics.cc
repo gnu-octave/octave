@@ -2670,7 +2670,7 @@ axes::properties::get_axis_limits (double xmin, double xmax, double min_pos, boo
 }
 
 void 
-axes::properties::calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto)
+axes::properties::calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto, bool is_logscale)
 {
 
   // FIXME -- add log ticks and lims
@@ -2687,7 +2687,14 @@ axes::properties::calc_ticks_and_lims (array_property& lims, array_property& tic
       hi = lo;
       lo = tmp;
     }
-  
+
+  if (is_logscale)
+    {
+      // FIXME we should check for negtives here
+      hi = std::log10 (hi);
+      lo = std::log10 (lo);
+    }
+
   double tick_sep = calc_tick_sep (lo , hi);
 
   int i1 = static_cast<int> (std::floor (lo / tick_sep));
@@ -2700,6 +2707,11 @@ axes::properties::calc_ticks_and_lims (array_property& lims, array_property& tic
       tmp_lims(0) = tick_sep * i1;
       tmp_lims(1) = tick_sep * i2;
 
+      if (is_logscale) 
+	{
+	  tmp_lims(0) = std::pow (10.,tmp_lims(0));
+	  tmp_lims(1) = std::pow (10.,tmp_lims(1));
+	}
       lims = tmp_lims;
     }
   else
@@ -2710,8 +2722,14 @@ axes::properties::calc_ticks_and_lims (array_property& lims, array_property& tic
     }
       
   Matrix tmp_ticks (1, i2-i1+1);
-  for (int i = 0; i <= i2-i1; i++)
-    tmp_ticks (i) = tick_sep * (i+i1);
+  for (int i = 0; i <= i2-i1; i++) 
+    {
+      tmp_ticks (i) = tick_sep * (i+i1);
+      if (is_logscale)
+	tmp_ticks (i) = std::pow (10., tmp_ticks (i));
+    }
+	
+  
 
   ticks = tmp_ticks;
 }

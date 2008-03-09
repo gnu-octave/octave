@@ -432,29 +432,29 @@ private:
 		      dynamic_cast<axes::properties&> (ax.get_properties ());
 		    pixel2pos (px0, py0, x0, y0);
 		    pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
-		    Matrix pp (1,2,0);
+		    Matrix xl (1,2,0);
+		    Matrix yl (1,2,0);
 		    if (x0 < x1)
 		      {
-			pp(0) = x0;
-			pp(1) = x1;
+			xl(0) = x0;
+			xl(1) = x1;
 		      }
 		    else
 		      {
-			pp(0) = x1;
-			pp(1) = x0;
+			xl(0) = x1;
+			xl(1) = x0;
 		      }
-		    ap.set_xlim (pp);
 		    if (y0 < y1)
 		      {
-			pp(0) = y0;
-			pp(1) = y1;
+			yl(0) = y0;
+			yl(1) = y1;
 		      }
 		    else
 		      {
-			pp(0) = y1;
-			pp(1) = y0;
+			yl(0) = y1;
+			yl(1) = y0;
 		      }
-		    ap.set_ylim (pp);
+		    ap.zoom (xl, yl);
 		    mark_modified ();
 		  }
 	      }
@@ -469,7 +469,15 @@ private:
 	  }
 	else if (Fl::event_button () == 3)
 	  {
-	    axis_auto ();
+	    graphics_object ax = 
+	      gh_manager::get_object (fp.get_currentaxes ());
+	    if (ax && ax.isa ("axes")) 
+	      {
+		axes::properties& ap = 
+		  dynamic_cast<axes::properties&> (ax.get_properties ());
+		ap.unzoom ();
+		mark_modified ();
+	      }
 	  }
 	break;
       }

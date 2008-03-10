@@ -9,7 +9,7 @@ C-----------------------------------------------------------------------
       INTEGER N, ITOL
       INTEGER I
       DOUBLE PRECISION RTOL, ATOL, YCUR, EWT
-      DIMENSION RTOL(1), ATOL(1), YCUR(N), EWT(N) 
+      DIMENSION RTOL(*), ATOL(*), YCUR(N), EWT(N) 
 C
       GO TO (10, 20, 30, 40), ITOL
  10   CONTINUE

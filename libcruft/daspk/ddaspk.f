@@ -55,7 +55,7 @@ C      CALL DDASPK (RES, NEQ, T, Y, YPRIME, TOUT, INFO, RTOL, ATOL,
 C     *   IDID, RWORK, LRW, IWORK, LIW, RPAR, IPAR, JAC, PSOL)
 C
 C  Quantities which may be altered by the code are:
-C     T, Y(*), YPRIME(*), INFO(1), RTOL, ATOL, IDID, RWORK(*), IWORK(*)
+C     T, Y(*), YPRIME(*), INFO(*), RTOL, ATOL, IDID, RWORK(*), IWORK(*)
 C
 C
 C *Arguments:

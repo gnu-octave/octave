@@ -1,6 +1,6 @@
       subroutine cfftb (n,c,wsave)
       implicit double precision (a-h,o-z)
-      dimension       c(1)       ,wsave(1)
+      dimension       c(*)       ,wsave(*)
       if (n .eq. 1) return
       iw1 = n+n+1
       iw2 = iw1+n+n

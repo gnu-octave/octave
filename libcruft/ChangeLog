@@ -1,3 +1,10 @@
+2008-03-10  John W. Eaton  <jwe@octave.org>
+
+	* blas/zdrot.f, odepack/dlsode.f, odepack/ewset.f,
+	odepack/intdy.f, fftpack/cffti.f, fftpack/cfftb.f,
+	fftpack/cfftf.f:
+	Use (*) instead of (1) for assumed-size dimensions.
+
 2008-03-06  Jaroslav Hajek <highegg@gmail.com>
 
 	* qrupdate/dqrinc.f: Declare DGEMV external.

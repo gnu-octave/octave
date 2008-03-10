@@ -75,7 +75,7 @@ typedef enum
   }
   mxClassID;
 
-typedef int mxLogical;
+typedef unsigned char mxLogical;
 
 /* typedef Uint16 mxChar; */
 typedef char mxChar;

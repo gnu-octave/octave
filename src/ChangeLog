@@ -1,3 +1,8 @@
+2008-03-10  John W. Eaton  <jwe@octave.org>
+
+	* mxarray.h.in (mxLogical): Use unsigned char instead of int.
+	From Antwerpen, G. (Gert) van <gert.vanantwerpen@tno.nl>.
+
 2008-03-07  John W. Eaton  <jwe@octave.org>
 
 	* ov-struct.cc (octave_struct::print_raw): Don't print contents fo

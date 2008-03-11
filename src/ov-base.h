@@ -242,6 +242,8 @@ public:
 
   virtual bool is_single_type (void) const { return false; }
 
+  virtual bool is_float_type (void) const { return false; }
+
   virtual bool is_int8_type (void) const { return false; }
 
   virtual bool is_int16_type (void) const { return false; }

@@ -1,5 +1,16 @@
 2008-03-10  John W. Eaton  <jwe@octave.org>
 
+	* data.cc (Fisfloat): New function.
+	* ov.h (octave_value::is_float_type): Ditto.
+	* ov-base.h (octave_base_value::is_float_type): Ditto.
+	* ov-complex.h (octave_complex): Ditto.
+	* ov-cx-mat.h (octave_complex_matrix): Ditto.
+	* ov-cx-sparse.h (octave_sparse_complex_matrix): Ditto.
+	* ov-range.h (octave_range): Ditto.
+	* ov-re-mat.h (octave_matrix): Ditto.
+	* ov-re-sparse.h (octave_sparse_matrix): Ditto.
+	* ov-scalar.h (octave_scalar): Ditto.
+
 	* mxarray.h.in (mxLogical): Use unsigned char instead of int.
 	From Antwerpen, G. (Gert) van <gert.vanantwerpen@tno.nl>.
 

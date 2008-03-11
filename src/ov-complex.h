@@ -91,6 +91,8 @@ public:
 
   bool is_double_type (void) const { return true; }
 
+  bool is_float_type (void) const { return true; }
+
   // FIXME ???
   bool valid_as_scalar_index (void) const { return false; }
   bool valid_as_zero_index (void) const { return false; }

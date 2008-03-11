@@ -1870,6 +1870,22 @@ Return true if @var{x} is a complex-valued numeric object.\n\
   return retval;
 }
 
+DEFUN (isfloat, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} isfloat (@var{x})\n\
+Return true if @var{x} is a floating-point numeric object.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () == 1)
+    retval = args(0).is_float_type ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
 // FIXME -- perhaps this should be implemented with an
 // octave_value member function?
 

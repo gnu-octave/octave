@@ -482,6 +482,9 @@ public:
   bool is_single_type (void) const
     { return rep->is_single_type (); }
 
+  bool is_float_type (void) const
+    { return rep->is_float_type (); }
+
   // Integer types.
 
   bool is_int8_type (void) const

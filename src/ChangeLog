@@ -1,3 +1,9 @@
+2008-03-11  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/eig.cc (Feig): Handle possible error from EIG.
+	* DLD-FUNCTIONS/qp.cc (qp, Fqp): Likewise.
+	* xpow.cc (xpow): Likewise.
+
 2008-03-10  John W. Eaton  <jwe@octave.org>
 
 	* mex.cc (mxCreateLogicalScalar): Argument is now mxLogical.

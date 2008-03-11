@@ -101,20 +101,26 @@ xpow (double a, const Matrix& b)
   else
     {
       EIG b_eig (b);
-      ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
 
-      for (octave_idx_type i = 0; i < nr; i++)
+      if (! error_state)
 	{
-	  Complex elt = lambda (i);
-	  if (std::imag (elt) == 0.0)
-	    lambda (i) = std::pow (a, std::real (elt));
-	  else
-	    lambda (i) = std::pow (a, elt);
-	}
-      ComplexDiagMatrix D (lambda);
+	  ComplexColumnVector lambda (b_eig.eigenvalues ());
+	  ComplexMatrix Q (b_eig.eigenvectors ());
 
-      retval = ComplexMatrix (Q * D * Q.inverse ());
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    {
+	      Complex elt = lambda(i);
+	      if (std::imag (elt) == 0.0)
+		lambda(i) = std::pow (a, std::real (elt));
+	      else
+		lambda(i) = std::pow (a, elt);
+	    }
+	  ComplexDiagMatrix D (lambda);
+
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	}
+      else
+	error ("xpow: matrix diagonalization failed");
     }
 
   return retval;
@@ -144,20 +150,26 @@ xpow (double a, const ComplexMatrix& b)
   else
     {
       EIG b_eig (b);
-      ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
 
-      for (octave_idx_type i = 0; i < nr; i++)
+      if (! error_state)
 	{
-	  Complex elt = lambda (i);
-	  if (std::imag (elt) == 0.0)
-	    lambda (i) = std::pow (a, std::real (elt));
-	  else
-	    lambda (i) = std::pow (a, elt);
-	}
-      ComplexDiagMatrix D (lambda);
+	  ComplexColumnVector lambda (b_eig.eigenvalues ());
+	  ComplexMatrix Q (b_eig.eigenvectors ());
 
-      retval = ComplexMatrix (Q * D * Q.inverse ());
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    {
+	      Complex elt = lambda(i);
+	      if (std::imag (elt) == 0.0)
+		lambda(i) = std::pow (a, std::real (elt));
+	      else
+		lambda(i) = std::pow (a, elt);
+	    }
+	  ComplexDiagMatrix D (lambda);
+
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	}
+      else
+	error ("xpow: matrix diagonalization failed");
     }
 
   return retval;
@@ -228,15 +240,21 @@ xpow (const Matrix& a, double b)
       else
 	{
 	  EIG a_eig (a);
-	  ComplexColumnVector lambda (a_eig.eigenvalues ());
-	  ComplexMatrix Q (a_eig.eigenvectors ());
 
-	  for (octave_idx_type i = 0; i < nr; i++)
-	    lambda (i) = std::pow (lambda (i), b);
+	  if (! error_state)
+	    {
+	      ComplexColumnVector lambda (a_eig.eigenvalues ());
+	      ComplexMatrix Q (a_eig.eigenvectors ());
 
-	  ComplexDiagMatrix D (lambda);
+	      for (octave_idx_type i = 0; i < nr; i++)
+		lambda(i) = std::pow (lambda(i), b);
 
-	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	      ComplexDiagMatrix D (lambda);
+
+	      retval = ComplexMatrix (Q * D * Q.inverse ());
+	    }
+	  else
+	    error ("xpow: matrix diagonalization failed");
 	}
     }
 
@@ -257,15 +275,21 @@ xpow (const Matrix& a, const Complex& b)
   else
     {
       EIG a_eig (a);
-      ComplexColumnVector lambda (a_eig.eigenvalues ());
-      ComplexMatrix Q (a_eig.eigenvectors ());
 
-      for (octave_idx_type i = 0; i < nr; i++)
-	lambda (i) = std::pow (lambda (i), b);
+      if (! error_state)
+	{
+	  ComplexColumnVector lambda (a_eig.eigenvalues ());
+	  ComplexMatrix Q (a_eig.eigenvectors ());
 
-      ComplexDiagMatrix D (lambda);
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    lambda(i) = std::pow (lambda(i), b);
 
-      retval = ComplexMatrix (Q * D * Q.inverse ());
+	  ComplexDiagMatrix D (lambda);
+
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	}
+      else
+	error ("xpow: matrix diagonalization failed");
     }
 
   return retval;
@@ -299,20 +323,26 @@ xpow (const Complex& a, const Matrix& b)
   else
     {
       EIG b_eig (b);
-      ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
 
-      for (octave_idx_type i = 0; i < nr; i++)
+      if (! error_state)
 	{
-	  Complex elt = lambda (i);
-	  if (std::imag (elt) == 0.0)
-	    lambda (i) = std::pow (a, std::real (elt));
-	  else
-	    lambda (i) = std::pow (a, elt);
-	}
-      ComplexDiagMatrix D (lambda);
+	  ComplexColumnVector lambda (b_eig.eigenvalues ());
+	  ComplexMatrix Q (b_eig.eigenvectors ());
 
-      retval = ComplexMatrix (Q * D * Q.inverse ());
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    {
+	      Complex elt = lambda(i);
+	      if (std::imag (elt) == 0.0)
+		lambda(i) = std::pow (a, std::real (elt));
+	      else
+		lambda(i) = std::pow (a, elt);
+	    }
+	  ComplexDiagMatrix D (lambda);
+
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	}
+      else
+	error ("xpow: matrix diagonalization failed");
     }
 
   return retval;
@@ -341,20 +371,26 @@ xpow (const Complex& a, const ComplexMatrix& b)
   else
     {
       EIG b_eig (b);
-      ComplexColumnVector lambda (b_eig.eigenvalues ());
-      ComplexMatrix Q (b_eig.eigenvectors ());
 
-      for (octave_idx_type i = 0; i < nr; i++)
+      if (! error_state)
 	{
-	  Complex elt = lambda (i);
-	  if (std::imag (elt) == 0.0)
-	    lambda (i) = std::pow (a, std::real (elt));
-	  else
-	    lambda (i) = std::pow (a, elt);
-	}
-      ComplexDiagMatrix D (lambda);
+	  ComplexColumnVector lambda (b_eig.eigenvalues ());
+	  ComplexMatrix Q (b_eig.eigenvectors ());
 
-      retval = ComplexMatrix (Q * D * Q.inverse ());
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    {
+	      Complex elt = lambda(i);
+	      if (std::imag (elt) == 0.0)
+		lambda(i) = std::pow (a, std::real (elt));
+	      else
+		lambda(i) = std::pow (a, elt);
+	    }
+	  ComplexDiagMatrix D (lambda);
+
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	}
+      else
+	error ("xpow: matrix diagonalization failed");
     }
 
   return retval;
@@ -425,15 +461,21 @@ xpow (const ComplexMatrix& a, double b)
       else
 	{
 	  EIG a_eig (a);
-	  ComplexColumnVector lambda (a_eig.eigenvalues ());
-	  ComplexMatrix Q (a_eig.eigenvectors ());
 
-	  for (octave_idx_type i = 0; i < nr; i++)
-	    lambda (i) = std::pow (lambda (i), b);
+	  if (! error_state)
+	    {
+	      ComplexColumnVector lambda (a_eig.eigenvalues ());
+	      ComplexMatrix Q (a_eig.eigenvectors ());
 
-	  ComplexDiagMatrix D (lambda);
+	      for (octave_idx_type i = 0; i < nr; i++)
+		lambda(i) = std::pow (lambda(i), b);
 
-	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	      ComplexDiagMatrix D (lambda);
+
+	      retval = ComplexMatrix (Q * D * Q.inverse ());
+	    }
+	  else
+	    error ("xpow: matrix diagonalization failed");
 	}
     }
 
@@ -454,15 +496,21 @@ xpow (const ComplexMatrix& a, const Complex& b)
   else
     {
       EIG a_eig (a);
-      ComplexColumnVector lambda (a_eig.eigenvalues ());
-      ComplexMatrix Q (a_eig.eigenvectors ());
 
-      for (octave_idx_type i = 0; i < nr; i++)
-	lambda (i) = std::pow (lambda (i), b);
+      if (! error_state)
+	{
+	  ComplexColumnVector lambda (a_eig.eigenvalues ());
+	  ComplexMatrix Q (a_eig.eigenvectors ());
 
-      ComplexDiagMatrix D (lambda);
+	  for (octave_idx_type i = 0; i < nr; i++)
+	    lambda(i) = std::pow (lambda(i), b);
 
-      retval = ComplexMatrix (Q * D * Q.inverse ());
+	  ComplexDiagMatrix D (lambda);
+
+	  retval = ComplexMatrix (Q * D * Q.inverse ());
+	}
+      else
+	error ("xpow: matrix diagonalization failed");
     }
 
   return retval;

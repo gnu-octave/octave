@@ -137,6 +137,13 @@ qp (const Matrix& H, const ColumnVector& q,
   // Computing the ???
 
   EIG eigH (H);
+
+  if (error_state)
+    {
+      error ("qp: failed to compute eigenvalues of H");
+      return -1;
+    }
+
   ColumnVector eigenvalH = real (eigH.eigenvalues ());
   Matrix eigenvecH = real (eigH.eigenvectors ());
   double minReal = eigenvalH.min ();
@@ -275,6 +282,13 @@ qp (const Matrix& H, const ColumnVector& q,
 	      // Searching for the most negative curvature.
 
 	      EIG eigrH (rH);
+
+	      if (error_state)
+		{
+		  error ("qp: failed to compute eigenvalues of rH");
+		  return -1;
+		}
+
 	      ColumnVector eigenvalrH = real (eigrH.eigenvalues ());
 	      Matrix eigenvecrH = real (eigrH.eigenvectors ());
 	      double mRrH = eigenvalrH.min ();
@@ -496,10 +510,15 @@ Undocumented internal function.\n\
 
 	  int info = qp (H, q, Aeq, beq, Ain, bin, maxit, x, lambda, iter);
 
-	  retval(3) = iter;
-	  retval(2) = info;
-	  retval(1) = lambda;
-	  retval(0) = x;
+	  if (! error_state)
+	    {
+	      retval(3) = iter;
+	      retval(2) = info;
+	      retval(1) = lambda;
+	      retval(0) = x;
+	    }
+	  else
+	    error ("qp: internal error");
 	}
       else
 	error ("__qp__: invalid arguments");

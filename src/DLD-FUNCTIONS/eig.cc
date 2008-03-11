@@ -101,18 +101,21 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
       return retval;
     }
 
-  if (nargout == 0 || nargout == 1)
+  if (! error_state)
     {
-      retval(0) = result.eigenvalues ();
-    }
-  else
-    {
-      // Blame it on Matlab.
+      if (nargout == 0 || nargout == 1)
+	{
+	  retval(0) = result.eigenvalues ();
+	}
+      else
+	{
+	  // Blame it on Matlab.
 
-      ComplexDiagMatrix d (result.eigenvalues ());
+	  ComplexDiagMatrix d (result.eigenvalues ());
 
-      retval(1) = d;
-      retval(0) = result.eigenvectors ();
+	  retval(1) = d;
+	  retval(0) = result.eigenvectors ();
+	}
     }
 
   return retval;

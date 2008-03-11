@@ -1,3 +1,7 @@
+2008-03-11  David Bateman  <dbateman@free.fr>
+
+	* run-octave.in: Fix typo.
+
 2008-02-21  John W. Eaton  <jwe@octave.org>
 
 	* examples/Makefile.in (install install-strip): Ignore errors

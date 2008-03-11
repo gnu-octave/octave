@@ -2544,7 +2544,7 @@ mxCreateLogicalMatrix (mwSize m, mwSize n)
 }
 
 mxArray *
-mxCreateLogicalScalar (int val)
+mxCreateLogicalScalar (mxLogical val)
 {
   return maybe_mark_array (new mxArray (mxLOGICAL_CLASS, val));
 }

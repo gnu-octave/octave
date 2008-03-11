@@ -1,5 +1,7 @@
 2008-03-10  John W. Eaton  <jwe@octave.org>
 
+	* mex.cc (mxCreateLogicalScalar): Argument is now mxLogical.
+
 	* data.cc (Fisfloat): New function.
 	* ov.h (octave_value::is_float_type): Ditto.
 	* ov-base.h (octave_base_value::is_float_type): Ditto.

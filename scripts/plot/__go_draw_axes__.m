@@ -33,7 +33,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     ## Set axis properties here?
     pos = [0, 0, 1, 1];
-    if (strcmp (axis_obj.activepositionproperty, "outerposition"))
+    if (strcmpi (axis_obj.activepositionproperty, "outerposition"))
       ymirror = true;
       if (! isempty (axis_obj.outerposition))
 	pos = axis_obj.outerposition;
@@ -49,9 +49,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       endif
     endif
 
-    if (! strcmp (axis_obj.__colorbar__, "none"))
+    if (! strcmpi (get (h, "__colorbar__"), "none"))
       [pos, cbox_orient, cbox_size, cbox_origin, cbox_mirror] = ...
-	  gnuplot_postion_colorbox (pos, axis_obj.__colorbar__);
+	  gnuplot_postion_colorbox (pos, get (h, "__colorbar__"));
     endif
 
     fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
@@ -321,7 +321,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     [view_cmd, view_fcn, view_zoom] = image_viewer ();
     use_gnuplot_for_images = (ischar (view_fcn)
-			      && strcmp (view_fcn, "gnuplot_internal"));
+			      && strcmpi (view_fcn, "gnuplot_internal"));
 
     ximg_data = {};
     ximg_data_idx = 0;
@@ -338,7 +338,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	  if (use_gnuplot_for_images)
 
-	    if (strcmp (obj.cdatamapping, "direct"))
+	    if (strcmpi (obj.cdatamapping, "direct"))
 	      cdatadirect = true;
 	    endif
 	    fputs (plot_stream, "set border front;\n");
@@ -509,7 +509,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	 if (! isempty (obj.cdata))
 	   cdat = obj.cdata;
-	   if (strcmp (obj.cdatamapping, "direct"))
+	   if (strcmpi (obj.cdatamapping, "direct"))
 	     cdatadirect = true;
 	   endif
 	 else
@@ -1185,7 +1185,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       endif
     endif
 	    
-    if (strcmp (axis_obj.__colorbar__, "none"))
+    if (strcmpi (get (h, "__colorbar__"), "none"))
       fputs (plot_stream, "unset colorbox;\n");
     else
       ## FIXME If cbox_mirror is true we want to invert the tic labels

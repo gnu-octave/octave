@@ -1,3 +1,8 @@
+2008-03-11  John W. Eaton  <jwe@octave.org>
+
+	* plot/__go_draw_axes__.m: Use get to access hidden properties.
+	Use strcmpi when comparing string properties.
+
 2008-03-11  Kai Habel  <kai.habel@gmx.de>
 
         * plot/__go_draw_axes__.m: Plot surfaces in front of axes.

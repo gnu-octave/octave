@@ -1,3 +1,8 @@
+2008-03-12  David Bateman  <dbateman@free.fr>
+
+	* geometry/griddata3.m: Use griddatan and not griddata
+	internally. Return vi and not yi. Add test code.
+
 2008-03-11  John W. Eaton  <jwe@octave.org>
 
 	* plot/__go_draw_axes__.m: Use get to access hidden properties.

@@ -30,7 +30,7 @@
 
 ## Author: David Bateman <dbateman@free.fr>
 
-function [yi] = griddata3 (x, y, z,v, xi, yi, zi, method, varargin)
+function vi = griddata3 (x, y, z, v, xi, yi, zi, method, varargin)
 	
   if (nargin < 7)
     print_usage ();
@@ -48,10 +48,33 @@ function [yi] = griddata3 (x, y, z,v, xi, yi, zi, method, varargin)
   endif
 
   if (any (size(xi) != size(yi)) || any (size(xi) != size(zi)))
-    error ("griddata: xi, yi and zi must be vectors or matrices of same size");
+    error ("griddata3: xi, yi and zi must be vectors or matrices of same size");
   endif
 
-  vi = griddata ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});
+  vi = griddatan ([x(:), y(:), z(:)], v(:), [xi(:), yi(:), zi(:)], varargin{:});
   vi = reshape (vi, size (xi));
 endfunction
 
+%!test
+%! rand('state', 0);
+%! x = 2 * rand(1000, 1) - 1;
+%! y = 2 * rand(1000, 1) - 1;
+%! z = 2 * rand(1000, 1) - 1;
+%! v = x.^2 + y.^2 + z.^2;
+%! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
+%! ##vi = reshape (griddatan([x(:), y(:), z(:)], v, [xi(:), yi(:), zi(:)], 'linear'), size (xi));
+%! vi = griddata3 (x, y, z, v, xi, yi, zi, 'linear');
+%! vv = vi - xi.^2 - yi.^2 - zi.^2;
+%! assert (max(abs(vv(:))), 0, 0.1)
+
+%!test
+%! rand('state', 0);
+%! x = 2 * rand(1000, 1) - 1;
+%! y = 2 * rand(1000, 1) - 1;
+%! z = 2 * rand(1000, 1) - 1;
+%! v = x.^2 + y.^2 + z.^2;
+%! [xi, yi, zi] = meshgrid (-0.8:0.2:0.8);
+%! ##vi = reshape (griddatan([x(:), y(:), z(:)], v, [xi(:), yi(:), zi(:)], 'linear'), size (xi));
+%! vi = griddata3 (x, y, z, v, xi, yi, zi, 'nearest');
+%! vv = vi - xi.^2 - yi.^2 - zi.^2;
+%! assert (max(abs(vv(:))), 0, 0.1)

@@ -1,3 +1,7 @@
+2008-03-12  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Fix separator detection.
+
 2008-03-11  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/eig.cc (Feig): Handle possible error from EIG.

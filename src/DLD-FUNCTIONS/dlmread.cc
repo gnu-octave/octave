@@ -273,9 +273,12 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 		    case ' ':
 		    case '\t':
 		      sepflag = true;
+		      sep = " \t";
+		      break;
 
 		    default:
 		      sep = ch;
+		      break;
 		    }
 		}
 	    }

@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dlmwrite (@var{file}, @var{a})
 ## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, @var{delim}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, 'attrib1', @var{value1}, 'attrib2', @var{value2}, @dots{})
-## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, '-append', @dots{})
+## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, "attrib1", @var{value1}, "attrib2", @var{value2}, @dots{})
+## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, "-append", @dots{})
 ##
 ## Write the matrix @var{a} to the text @var{file} using delimiters.
 ##
@@ -34,28 +34,28 @@
 ## @item c
 ## the number of delimiters to prepend to each line of data.
 ##
-## @item '-append'
+## @item "-append"
 ## append to the end of the @var{file}.
 ##
-## @item 'append', state
-## Either @samp{'on'} or @samp{'off'}.  See @samp{'-append'} above.
+## @item "append", state
+## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
 ##
-## @item 'delimiter', d
+## @item "delimiter", d
 ## See @var{delim} above.
 ##
-## @item 'newline', os
+## @item "newline", os
 ## The character(s) to use to separate each row.  Three special cases
-## exist for this option.  @samp{'unix'} is changed into "\n", @samp{'pc'} is
-## changed into "\r\n", and @samp{'mac'} is changed into "\r".  Other
-## values for this option are kept as is.
+## exist for this option.  @samp{"unix"} is changed into '\n',
+## @samp{"pc"} is changed into '\r\n', and @samp{"mac"} is changed
+## into '\r'.  Other values for this option are kept as is.
 ##
-## @item 'roffset', r
+## @item "roffset", r
 ## See @var{r} above.
 ##
-## @item 'coffset', c
+## @item "coffset", c
 ## See @var{c} above.
 ##
-## @item 'precision', p
+## @item "precision", p
 ## The precision to use when writing the file.  It can either be a
 ## format string (as used by fprintf) or a number of significant digits.
 ## @end table
@@ -65,11 +65,8 @@
 ## dlmwrite(@code{"file.csv"}, @var{A})
 ## @end example
 ##
-## Note the extra escaping of the backslashes necessary in using the
-## latex delimiter of "\\" with a unix style newline.
-##
 ## @example
-## dlmwrite(@code{"file.tex"}, @var{a}, 'delimiter', '&', 'newline', '\\\\\n')
+## dlmwrite (@code{"file.tex"}, @var{a}, "delimiter", "&", "newline", "\\n")
 ## @end example
 ##
 ## @seealso{dlmread, csvread, csvwrite}
@@ -87,7 +84,7 @@
 
 function dlmwrite (file, a, varargin)
 
-  if (nargin < 2 || ! ischar( file))
+  if (nargin < 2 || ! ischar (file))
     ptint_usage ();
   endif
 
@@ -157,8 +154,8 @@ function dlmwrite (file, a, varargin)
     error (msg);
   else
     if (r > 0)
-      fprintf (fid, "%s", repmat ([repmat(delim, 1, c + columns(a) - 1), ...
-				   newline], 1, r));
+      fprintf (fid, "%s",
+	       repmat ([repmat(delim, 1, c + columns(a)-1), newline], 1, r));
     endif
     if (iscomplex (a))
       cprecision = regexprep (precision, '^%([-\d.])','%+$1');
@@ -166,7 +163,7 @@ function dlmwrite (file, a, varargin)
 		  repmat([delim, precision, cprecision, "i"], 1, ...
 		  columns(a) - 1), newline ];
     else
-      template = [precision, repmat([delim, precision], 1, columns(a) - 1),...
+      template = [precision, repmat([delim, precision], 1, columns(a)-1),...
 		  newline];
     endif
     if (c > 0)

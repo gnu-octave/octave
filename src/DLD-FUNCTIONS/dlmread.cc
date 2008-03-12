@@ -20,16 +20,15 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-/*
-  Adapted from previous version of dlmread.occ as authored by Kai Habel,
-  but core code has been completely re-written.
-*/
-
-#include <fstream>
+// Adapted from previous version of dlmread.occ as authored by Kai
+// Habel, but core code has been completely re-written.
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <cctype>
+#include <fstream>
 
 #include "lo-ieee.h"
 
@@ -39,29 +38,21 @@ along with Octave; see the file COPYING.  If not, see
 #include "utils.h"
 
 static bool
-isletter (char c)
+read_cell_spec (std::istream& is, unsigned long& row, unsigned long& col)
 {
-  return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
-}
-
-static bool
-read_cell_spec(std::istream& is, unsigned long& row, unsigned long& col)
-{
-
   bool stat = false;
 
-  if (is.peek () == std::istream::traits_type::eof())
+  if (is.peek () == std::istream::traits_type::eof ())
     stat = true;
   else
     {
-      if (isletter (is.peek ()))
+      if (::isalpha (is.peek ()))
 	{
-
 	  col = 0;
-	  while (is && isletter (is.peek ()))
+	  while (is && ::isalpha (is.peek ()))
 	    {
 	      char ch = is.get ();
-	      col *= 26; 
+	      col *= 26;
 	      if (ch >= 'a')
 		col += ch - 'a';
 	      else
@@ -82,9 +73,9 @@ read_cell_spec(std::istream& is, unsigned long& row, unsigned long& col)
 }
 
 static bool
-parse_range_spec(const octave_value& range_spec,
-                 unsigned long& rlo, unsigned long& clo,
-                 unsigned long& rup, unsigned long& cup)
+parse_range_spec (const octave_value& range_spec,
+		  unsigned long& rlo, unsigned long& clo,
+		  unsigned long& rup, unsigned long& cup)
 {
   bool stat = true;
 
@@ -139,12 +130,12 @@ parse_range_spec(const octave_value& range_spec,
       if (stat && is && !is.eof ())
 	stat = read_cell_spec (is, rup, cup);
 
-      if (! is || !is.eof ())
+      if (!is || !is.eof ())
 	stat = false;
     }
   else if (range_spec.is_real_matrix () && range_spec.numel () == 4)
     {
-      ColumnVector range(range_spec.vector_value());
+      ColumnVector range(range_spec.vector_value ());
       // double --> unsigned int     
       rlo = static_cast<unsigned long> (range(0));
       clo = static_cast<unsigned long> (range(1));
@@ -158,10 +149,10 @@ parse_range_spec(const octave_value& range_spec,
 }
 
 DEFUN_DLD (dlmread, args, ,
-        "-*- texinfo -*-\n\
+  "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{data} =} dlmread (@var{file})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep})\n\
-@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{R0}, @var{C0})\n\
+@deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{r0}, @var{c0})\n\
 @deftypefnx {Loadable Function} {@var{data} =} dlmread (@var{file}, @var{sep}, @var{range})\n\
 Read the matrix @var{data} from a text file. If not defined the separator\n\
 between fields is determined from the file itself. Otherwise the\n\
@@ -177,89 +168,101 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 @end deftypefn")
 {
   octave_value_list retval;
-  int nargin = args.length();
-  bool sepflag = 0;
+
+  int nargin = args.length ();
+
   if (nargin < 1 || nargin > 4) 
     {
       print_usage ();
       return retval;
     }
 
-  if ( !args (0).is_string() ) 
+  if (!args(0).is_string ())
     {
       error ("dlmread: 1st argument must be a string");
       return retval;
     }
   
-  std::string fname (args(0).string_value());
-  std::ifstream file (fname.c_str());
+  std::string fname (args(0).string_value ());
+  if (error_state)
+    return retval;
+
+  std::ifstream file (fname.c_str ());
   if (!file)
     {
-      error("dlmread: could not open file");
+      error ("dlmread: unable to open file `%s'", fname.c_str ());
       return retval;
     }
   
-  // set default separator
+  // Set default separator.
   std::string sep;
   if (nargin > 1)
     {
       if (args(1).is_sq_string ())
-	sep = do_string_escapes (args(1).string_value());
+	sep = do_string_escapes (args(1).string_value ());
       else
-	sep = args(1).string_value();
+	sep = args(1).string_value ();
+
+      if (error_state)
+	return retval;
     }
   
-  unsigned long i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
-  std::string line;
-  std::string str;
-  Matrix rdata;
-  ComplexMatrix cdata;
-  bool iscmplx = false;
-  size_t pos1, pos2;
-
-  // take a subset if a range was given
+  // Take a subset if a range was given.
   unsigned long r0 = 0, c0 = 0, r1 = ULONG_MAX-1, c1 = ULONG_MAX-1;
   if (nargin > 2)
     {
       if (nargin == 3)
 	{
-	  if (! parse_range_spec(args (2), r0, c0, r1, c1))
+	  if (!parse_range_spec (args (2), r0, c0, r1, c1))
 	    error ("dlmread: error parsing range");
 	} 
       else if (nargin == 4) 
 	{
-	  r0 = args(2).ulong_value();
-	  c0 = args(3).ulong_value();
+	  r0 = args(2).ulong_value ();
+	  c0 = args(3).ulong_value ();
+
+	  if (error_state)
+	    return retval;
 	}
     }
 
   if (!error_state)
     {
+      unsigned long i = 0, j = 0, r = 1, c = 1, rmax = 0, cmax = 0;
+
+      Matrix rdata;
+      ComplexMatrix cdata;
+
+      bool iscmplx = false;
+      bool sepflag = false;
+
       unsigned long maxrows = r1 - r0;
 
-      // Skip the r0 leading lines as these might be a header
+      std::string line;
+
+      // Skip the r0 leading lines as these might be a header.
       for (unsigned long m = 0; m < r0; m++)
 	getline (file, line);
       r1 -= r0;
 
-
-      // read in the data one field at a time, growing the data matrix as needed
+      // Read in the data one field at a time, growing the data matrix
+      // as needed.
       while (getline (file, line))
 	{
-	  // skip blank lines for compatibility
+	  // Skip blank lines for compatibility.
 	  if (line.find_first_not_of (" \t") == NPOS)
 	    continue;
 
-	  //to be compatible with matlab, blank separator should correspond
-	  //to whitespace as delimter;
-	  if (! sep.length ())
+	  // To be compatible with matlab, blank separator should
+	  // correspond to whitespace as delimter.
+	  if (!sep.length ())
 	    {
 	      size_t n = line.find_first_of (",:; \t", 
-				 line.find_first_of ("0123456789"));
+					     line.find_first_of ("0123456789"));
 	      if (n == NPOS)
 		{
 		  sep = " \t";
-		  sepflag = 1;
+		  sepflag = true;
 		}
 	      else
 		{
@@ -269,7 +272,8 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 		    {
 		    case ' ':
 		    case '\t':
-		      sepflag = 1;
+		      sepflag = true;
+
 		    default:
 		      sep = ch;
 		    }
@@ -278,65 +282,70 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 
 	  r = (r > i + 1 ? r : i + 1);
 	  j = 0;
-	  pos1 = 0;
-	  do {
-	    pos2 = line.find_first_of (sep, pos1);
-	    str = line.substr (pos1, pos2 - pos1);
+	  size_t pos1 = 0;
+	  do
+	    {
+	      size_t pos2 = line.find_first_of (sep, pos1);
+	      std::string str = line.substr (pos1, pos2 - pos1);
 
-	    if (sepflag && pos2 != NPOS)
-	      // treat consecutive separators as one
-	      pos2 = line.find_first_not_of (sep, pos2) - 1;
+	      if (sepflag && pos2 != NPOS)
+		// Treat consecutive separators as one.
+		pos2 = line.find_first_not_of (sep, pos2) - 1;
 
-	    c = (c > j + 1 ? c : j + 1);
-	    if (r > rmax || c > cmax)
-	      { 
-		// use resize_and_fill for the case of not-equal length rows
-		if (iscmplx)
-		  cdata.resize_and_fill (r, c, 0);
-		else
-		  rdata.resize_and_fill (r, c, 0);
-		rmax = r;
-		cmax = c;
-	      }
-
-	    std::istringstream tmp_stream (str);
-	    double x = octave_read_double (tmp_stream);
-	    if (tmp_stream)
-	      {
-		if (tmp_stream.eof())
+	      c = (c > j + 1 ? c : j + 1);
+	      if (r > rmax || c > cmax)
+		{ 
+		  // Use resize_and_fill for the case of not-equal
+		  // length rows.
 		  if (iscmplx)
-		    cdata (i, j++) = x;
+		    cdata.resize_and_fill (r, c, 0);
 		  else
-		    rdata (i, j++) = x;
-		else
-		  {
-		    double y = octave_read_double (tmp_stream);
+		    rdata.resize_and_fill (r, c, 0);
+		  rmax = r;
+		  cmax = c;
+		}
 
-		    if (!iscmplx && y != 0.)
-		      {
-			iscmplx = true;
-			cdata = ComplexMatrix (rdata);
-		      }
-		    
+	      std::istringstream tmp_stream (str);
+	      double x = octave_read_double (tmp_stream);
+	      if (tmp_stream)
+		{
+		  if (tmp_stream.eof ())
 		    if (iscmplx)
-		      cdata (i, j++) = Complex (x, y);
+		      cdata(i,j++) = x;
 		    else
-		      rdata (i, j++) = x;
-		  }
-	      }
-	    else if (iscmplx)
-	      cdata (i, j++) = 0.;
-	    else
-	      rdata (i, j++) = 0.;
+		      rdata(i,j++) = x;
+		  else
+		    {
+		      double y = octave_read_double (tmp_stream);
 
-	    if (pos2 != NPOS)
-	      pos1 = pos2 + 1;
-	    else
-	      pos1 = NPOS;
+		      if (!iscmplx && y != 0.)
+			{
+			  iscmplx = true;
+			  cdata = ComplexMatrix (rdata);
+			}
 
-	  } while ( pos1 != NPOS );
+		      if (iscmplx)
+			cdata(i,j++) = Complex (x, y);
+		      else
+			rdata(i,j++) = x;
+		    }
+		}
+	      else if (iscmplx)
+		cdata(i,j++) = 0.;
+	      else
+		rdata(i,j++) = 0.;
+
+	      if (pos2 != NPOS)
+		pos1 = pos2 + 1;
+	      else
+		pos1 = NPOS;
+
+	    }
+	  while (pos1 != NPOS);
+
 	  if (nargin == 3 && i == maxrows)
 	    break;
+
 	  i++;
 	}
  
@@ -351,12 +360,13 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 	    }
 	  else if (nargin == 4) 
 	    {
-	      // if r1 and c1 are not given, use what was found to be the maximum
+	      // If r1 and c1 are not given, use what was found to be
+	      // the maximum.
 	      r1 = r - 1;
 	      c1 = c - 1;
 	    }
 
-	  // now take the subset of the matrix
+	  // Now take the subset of the matrix.
 	  if (iscmplx)
 	    {
 	      cdata = cdata.extract (0, c0, r1, c1);
@@ -370,9 +380,9 @@ a spreadsheet style range such as 'A2..Q15'. The lowest index value is zero.\n\
 	}
   
       if (iscmplx)
-	retval(0) = octave_value(cdata);
+	retval(0) = cdata;
       else
-	retval(0) = octave_value(rdata);
+	retval(0) = rdata;
     }
 
   return retval;

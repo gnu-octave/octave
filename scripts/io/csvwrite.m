@@ -17,14 +17,17 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {x} = csvwrite (@var{filename}, @var{x})
+## @deftypefn {Function File} {@var{x}} = csvwrite (@var{filename}, @var{x})
 ## Write the matrix @var{x} to a file.
 ##
-## This function is equivalent to dlmwrite(@var{filename},@var{x},",",...)
+## This function is equivalent to
+## @example
+## dlmwrite (@var{filename}, @var{x}, ",", @dots{})
+## @end example
 ##
 ## @seealso{dlmread, dlmwrite, csvread}
 ## @end deftypefn
 
-function csvwrite(f, m, varargin)
-  dlmwrite (f, m, ',', varargin{:});
+function csvwrite (f, m, varargin)
+  dlmwrite (f, m, ",", varargin{:});
 endfunction

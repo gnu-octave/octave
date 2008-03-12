@@ -1,3 +1,7 @@
+2008-03-11  John W. Eaton  <jwe@octave.org>
+
+	* io/csread.m, io/csvwrite.m, io/dlmwrite.m: Style fixes.
+
 2008-03-12  David Bateman  <dbateman@free.fr>
 
 	* io/dlmwrite.m, io/csvread.m, io/csvwrite.m: Files ported from

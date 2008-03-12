@@ -1,3 +1,8 @@
+2008-03-12  David Bateman  <dbateman@free.fr>
+
+	* interpreter/io.txi: Document dlmread, dlmwrite, csvread and
+	csvwrite.
+
 2008-02-25  Ben Abbott <bpabbott@mac.com>
 
 	* interpreter/geometryimages.m, interpreter/interpimages.m,

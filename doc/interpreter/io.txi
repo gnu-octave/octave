@@ -200,6 +200,17 @@ and @code{fclose}.
 
 @DOCSTRING(fdisp)
 
+Octave can also read and write matrices text files such as comma
+separated lists.
+
+@DOCSTRING(dlmwrite)
+
+@DOCSTRING(dlmread)
+
+@DOCSTRING(csvwrite)
+
+@DOCSTRING(csvread)
+
 @menu
 * Saving Data on Unexpected Exits::
 @end menu

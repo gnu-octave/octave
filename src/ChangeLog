@@ -37,6 +37,8 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.cc (Faddlistener): Rename from Fadd_listener.
+
 	* graphics.h.in (axes::properties::pixel2coord): Center Z coordinate
 	on x_zlim instead of 0.
 	(axes::properties::zoom, axes::properties::unzoom,

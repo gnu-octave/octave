@@ -3781,9 +3781,9 @@ Undocumented internal function.\n\
   return retval;
 }
 
-DEFUN (add_listener, args, ,
+DEFUN (addlistener, args, ,
    "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} add_listener (@var{h}, @var{prop}, @var{fcn})\n\
+@deftypefn {Built-in Function} {} addlistener (@var{h}, @var{prop}, @var{fcn})\n\
 Register @var{fcn} as listener for the property @var{prop} of the graphics\n\
 object @var{h}. Property listeners are executed (in order of registration)\n\
 when the property is set. The new value is already available when the\n\
@@ -3805,7 +3805,7 @@ function my_listener (h, dummy, p1)\n\
   fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
 endfunction\n\
 \n\
-add_listener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
+addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 @end example\n\
 \n\
 @end deftypefn")
@@ -3831,14 +3831,14 @@ add_listener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 		  go.add_property_listener (pname, args(2), POSTSET);
 		}
 	      else
-		error ("add_listener: invalid graphics object (= %g)",
+		error ("addlistener: invalid graphics object (= %g)",
 		       h);
 	    }
 	  else
-	    error ("add_listener: invalid property name, expected a string value");
+	    error ("addlistener: invalid property name, expected a string value");
 	}
       else
-	error ("add_listener: invalid handle");
+	error ("addlistener: invalid handle");
     }
   else
     print_usage ();

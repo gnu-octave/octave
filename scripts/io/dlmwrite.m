@@ -66,7 +66,7 @@
 ## @end example
 ##
 ## @example
-## dlmwrite ("file.tex", @var{a}, "delimiter", "&", "newline", "\\n")
+## dlmwrite ("file.tex", a, "delimiter", "&", "newline", "\\n")
 ## @end example
 ##
 ## @seealso{dlmread, csvread, csvwrite}

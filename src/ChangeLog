@@ -1,3 +1,16 @@
+2008-03-13  John W. Eaton  <jwe@octave.org>
+
+	* octave.gperf: Eliminate varargin and varargout keywords.
+	* lex.l (is_keyword_token): Eliminate varargin_kw and varargout_kw
+	from switch statement.
+	* parse.y (return_list): Eliminate special cases for VARARGOUT.
+	Call validate on tree_parameter_list object.
+	(param_list1): Likewise, for VARARGIN.
+	* pt-misc.cc (tree_parameter_list::validate): New function.
+	(tree_parameter_list::mark_varargs_only): Now private.
+	(tree_parameter_list::mark_varargs): Now private.
+	* pt-misc.h (tree_parameter_list::validate): Provide decl.
+
 2008-03-12  John W. Eaton  <jwe@octave.org>
 
 	* variables.cc (Vwhos_line_format): Omit print_dims parameter.

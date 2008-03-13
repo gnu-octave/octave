@@ -48,6 +48,12 @@ tree_parameter_list : public octave_base_list<tree_decl_elt *>
 {
 public:
 
+  enum in_or_out
+    {
+      in = 1,
+      out = 2
+    };
+
   tree_parameter_list (void)
     : marked_for_varargs (0) { }
 
@@ -58,11 +64,9 @@ public:
 
   void mark_as_formal_parameters (void);
 
-  void mark_varargs (void) { marked_for_varargs = 1; }
+  bool validate (in_or_out type);
 
   bool takes_varargs (void) const { return marked_for_varargs != 0; }
-
-  void mark_varargs_only (void) { marked_for_varargs = -1; }
 
   bool varargs_only (void) { return (marked_for_varargs < 0); }
 
@@ -84,6 +88,10 @@ public:
 private:
 
   int marked_for_varargs;
+
+  void mark_varargs (void) { marked_for_varargs = 1; }
+
+  void mark_varargs_only (void) { marked_for_varargs = -1; }
 
   // No copying!
 

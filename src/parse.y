@@ -399,7 +399,8 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN VARARGIN VARARGOUT
+%token FCN
+// %token VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
 // Nonterminals we construct.
@@ -1147,19 +1148,10 @@ param_list1	: // empty
 		| param_list2
 		  {
 		    $1->mark_as_formal_parameters ();
-		    $$ = $1;
-		  }
-		| VARARGIN
-		  {
-		    tree_parameter_list *tmp = new tree_parameter_list ();
-		    tmp->mark_varargs_only ();
-		    $$ = tmp;
-		  }
-		| param_list2 ',' VARARGIN
-		  {
-		    $1->mark_as_formal_parameters ();
-		    $1->mark_varargs ();
-		    $$ = $1;
+		    if ($1->validate (tree_parameter_list::in))
+		      $$ = $1;
+		    else
+		      ABORT_PARSE;
 		  }
 		;
 
@@ -1181,35 +1173,21 @@ return_list	: '[' ']'
 		    lexer_flags.looking_at_return_list = false;
 		    $$ = new tree_parameter_list ();
 		  }
-		| '[' VARARGOUT ']'
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    tree_parameter_list *tmp = new tree_parameter_list ();
-		    tmp->mark_varargs_only ();
-		    $$ = tmp;
-		  }
-		| VARARGOUT
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    tree_parameter_list *tmp = new tree_parameter_list ();
-		    tmp->mark_varargs_only ();
-		    $$ = tmp;
-		  }
 		| return_list1
 		  {
 		    lexer_flags.looking_at_return_list = false;
-		    $$ = $1;
+		    if ($1->validate (tree_parameter_list::out))
+		      $$ = $1;
+		    else
+		      ABORT_PARSE;
 		  }
 		| '[' return_list1 ']'
 		  {
 		    lexer_flags.looking_at_return_list = false;
-		    $$ = $2;
-		  }
-		| '[' return_list1 ',' VARARGOUT ']'
-		  {
-		    lexer_flags.looking_at_return_list = false;
-		    $2->mark_varargs ();
-		    $$ = $2;
+		    if ($2->validate (tree_parameter_list::out))
+		      $$ = $2;
+		    else
+		      ABORT_PARSE;
 		  }
 		;
 

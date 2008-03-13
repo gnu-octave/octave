@@ -59,6 +59,65 @@ tree_parameter_list::mark_as_formal_parameters (void)
     }
 }
 
+bool
+tree_parameter_list::validate (in_or_out type)
+{
+  bool retval = true;
+
+  std::set<std::string> dict;
+
+  for (iterator p = begin (); p != end (); p++)
+    {
+      tree_decl_elt *elt = *p;
+
+      tree_identifier *id = elt->ident ();
+
+      if (id)
+	{
+	  std::string name = id->name ();
+
+	  if (dict.find (name) != dict.end ())
+	    {
+	      retval = false;
+	      error ("`%s' appears more than once in parameter list",
+		     name.c_str ());
+	      break;
+	    }
+	  else
+	    dict.insert (name);
+	}
+    }
+
+  if (! error_state)
+    {
+      std::string va_type = (type == in ? "varargin" : "varargout");
+
+      size_t len = length ();
+
+      if (len > 0)
+	{
+	  tree_decl_elt *elt = back ();
+
+	  tree_identifier *id = elt->ident ();
+
+	  if (id && id->name () == va_type)
+	    {
+	      if (len == 1)
+		mark_varargs_only ();
+	      else
+		mark_varargs ();
+
+	      iterator p = end ();
+	      --p;
+	      delete *p;
+	      erase (p);
+	    }
+	}
+    }
+
+  return retval;
+}
+
 void
 tree_parameter_list::initialize_undefined_elements (const std::string& warnfor,
 						    int nargout,

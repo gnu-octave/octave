@@ -1144,18 +1144,6 @@ is_keyword_token (const std::string& s)
 	  yylval.tok_val = new token (static_cast<double> (l), "", l, c);
 	  break;
 
-	case varargin_kw:
-	  if (! lexer_flags.looking_at_parameter_list)
-	    return 0;
-	  break;
-
-	case varargout_kw:
-	  if (! (lexer_flags.looking_at_return_list
-		 || (lexer_flags.defining_func
-		     && ! lexer_flags.parsed_function_name)))
-	    return 0;
-	  break;
-
 	default:
 	  panic_impossible ();
 	}

@@ -1,5 +1,19 @@
 2008-03-12  John W. Eaton  <jwe@octave.org>
 
+	* variables.cc (Vwhos_line_format): Omit print_dims parameter.
+	Fix doc string in Vwhos_line_format DEVAR.
+	(symbol_record_name_compare): Delete unused function.
+	(whos_parameter::dimensions): Delete struct field.
+	(symbol_info_list): New class.
+	(dimensions_string_req_first_space, make_dimensions_string,
+	dimensions_string_req_total_space): Delete.
+	(parse_whos_line_format): Move functionality to new
+	symbol_info_list class.
+	(print_symbol_info_line): Move functionality to new
+	symbol_info_list::struct symbol_info::displaly_line method.
+	(do_who): Simplify with new symbol_info_list class.
+	Handle index expressions in addition to symbol names.
+
 	* DLD-FUNCTIONS/dlmread.cc (Fdlmread): Fix separator detection.
 
 2008-03-11  John W. Eaton  <jwe@octave.org>

@@ -66,7 +66,7 @@ static int Vignore_function_time_stamp = 1;
 
 // Defines layout for the whos/who -long command
 static std::string Vwhos_line_format
-  = "  %a:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lc:-1;\n";
+  = "  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\n";
 
 void
 clear_mex_functions (void)
@@ -1038,26 +1038,12 @@ set_internal_variable (std::string& var, const octave_value_list& args,
 }
 
 struct
-symbol_record_name_compare
-{
-  bool operator () (const symbol_table::symbol_record& a,
-		    const symbol_table::symbol_record& b)
-  {
-    std::string a_nm = a.name ();
-    std::string b_nm = b.name ();
-
-    return a_nm.compare (b_nm);
-  }
-};
-
-struct
 whos_parameter
 {
   char command;
   char modifier;
   int parameter_length;
   int first_parameter_length;
-  int dimensions;
   int balance;
   std::string text;
   std::string line;
@@ -1148,475 +1134,498 @@ print_descriptor (std::ostream& os, std::list<whos_parameter> params)
   os << param_buf.str ();
 }
 
-// Calculate how much space needs to be reserved for the first part of
-// the dimensions string.  For example,
-//
-//   mat is a 12x3 matrix
-//            ^^  => 2 columns
-
-static int
-dimensions_string_req_first_space (const dim_vector& dims, int print_dims)
+class
+symbol_info_list
 {
-  int first_param_space = 0;
+private:
+  struct symbol_info
+  {
+    symbol_info (const symbol_table::symbol_record& sr,
+		 const std::string& expr_str = std::string (),
+		 const octave_value& expr_val = octave_value ())
+      : name (expr_str.empty () ? sr.name () : expr_str),
+	is_automatic (sr.is_automatic ()),
+	is_formal (sr.is_formal ()),
+	is_global (sr.is_global ()),
+	is_persistent (sr.is_persistent ()),
+	varval (expr_val.is_undefined () ? sr.varval () : expr_val)
+    { }
 
-  // Calculating dimensions.
-
-  std::string dim_str = "";
-  std::stringstream ss;
-  long dim = dims.length ();
-
-  first_param_space = (first_param_space >= 1 ? first_param_space : 1);
-
-  // Preparing dimension string.
-
-  if ((dim <= print_dims || print_dims < 0) && print_dims != 0)
+    void display_line (std::ostream& os,
+		       const std::list<whos_parameter>& params) const
     {
-      // Dimensions string must be printed like this: 2x3x4x2.
+      dim_vector dims = varval.dims ();
+      std::string dims_str = dims.str ();
 
-      if (dim == 0 || dim == 1)
-	first_param_space = 1; // First parameter is 1.
-      else
-        {
-	  ss << dims (0);
-	 
-	  dim_str = ss.str ();
-	  first_param_space = dim_str.length ();
-	}
-    }
-  else
-    {
-      // Printing dimension string as: a-D.
+      std::list<whos_parameter>::const_iterator i = params.begin ();
 
-      ss << dim;
+      while (i != params.end ())
+	{
+	  whos_parameter param = *i;
 
-      dim_str = ss.str ();
-      first_param_space = dim_str.length ();
-    }
-
-  return first_param_space;
-}
-
-// Make the dimensions-string.  For example: mat is a 2x3 matrix.
-//                                                    ^^^
-//
-// FIXME -- why not just use the dim_vector::str () method?
-
-std::string
-make_dimensions_string (const dim_vector& dims, int print_dims)
-{
-  // Calculating dimensions.
-
-  std::string dim_str = "";
-  std::stringstream ss;
-  long dim = dims.length ();
-
-  // Preparing dimension string.
-
-  if ((dim <= print_dims || print_dims < 0) && print_dims != 0)
-    {
-      // Only printing the dimension string as: axbxc...
-
-      if (dim == 0)
-	ss << "1x1";
-      else
-        {
-	  for (int i = 0; i < dim; i++)
+	  if (param.command != '\0')
 	    {
-	      if (i == 0)
+	      // Do the actual printing.
+
+	      switch (param.modifier)
 		{
-		  if (dim == 1)
-		    {
-		      // Looks like this is not going to happen in
-		      // Octave, but ...
-
-		      ss << "1x" << dims (i);
-		    }
-		  else
-		    ss << dims (i);
-		}
-	      else if (i < dim && dim != 1)
-		ss << "x" << dims (i);
-	    }
-	}
-    }
-  else
-    {
-      // Printing dimension string as: a-D.
-
-      ss << dim << "-D";
-    }
-
-  dim_str = ss.str ();
-
-  return dim_str;
-}
-
-// Calculate how much space needs to be reserved for the
-// dimensions string.  For example,
-//
-//   mat is a 12x3 matrix
-//            ^^^^ => 4 columns
-//
-// FIXME -- why not just use the dim_vector::str () method?
-
-static int
-dimensions_string_req_total_space (const dim_vector& dims, int print_dims)
-{
-  std::string dim_str = "";
-  std::stringstream ss;
-
-  ss << make_dimensions_string (dims, print_dims);
-  dim_str = ss.str ();
-
-  return dim_str.length ();
-}
-
-static std::list<whos_parameter>
-parse_whos_line_format (const std::list<symbol_table::symbol_record>& symbols)
-{
-  // This method parses the string whos_line_format, and returns
-  // a parameter list, containing all information needed to print
-  // the given attributtes of the symbols
-  int idx;
-  size_t format_len = Vwhos_line_format.length ();
-  char garbage;
-  std::list<whos_parameter> params;
-
-  size_t bytes1;
-  int elements1;
-
-  std::string param_string = "abcenst";
-  Array<int> param_length (dim_vector (param_string.length (), 1));
-  Array<std::string> param_names (dim_vector (param_string.length (), 1));
-  size_t pos_a, pos_b, pos_c, pos_e, pos_n, pos_s, pos_t;
-
-  pos_a = param_string.find ('a'); // Attributes
-  pos_b = param_string.find ('b'); // Bytes
-  pos_c = param_string.find ('c'); // Class
-  pos_e = param_string.find ('e'); // Elements
-  pos_n = param_string.find ('n'); // Name
-  pos_s = param_string.find ('s'); // Size
-  pos_t = param_string.find ('t'); // Type
-
-  param_names(pos_a) = "Attr";
-  param_names(pos_b) = "Bytes";
-  param_names(pos_c) = "Class";
-  param_names(pos_e) = "Elements";
-  param_names(pos_n) = "Name";
-  param_names(pos_s) = "Size";
-  param_names(pos_t) = "Type";
-
-  for (size_t i = 0; i < param_string.length (); i++)
-    param_length(i) = param_names(i) . length ();
-
-  // Calculating necessary spacing for name column,
-  // bytes column, elements column and class column
-
-  for (std::list<symbol_table::symbol_record>::const_iterator p = symbols.begin ();
-       p != symbols.end (); p++)
-    {
-      std::stringstream ss1, ss2;
-      std::string str;
-
-      str = p->name ();
-      param_length(pos_n) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_n)))
-			     ? str.length () : param_length(pos_n));
-
-      octave_value val = p->varval ();
-
-      str = val.type_name ();
-      param_length(pos_t) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_t)))
-			     ? str.length () : param_length(pos_t));
-
-      elements1 = val.capacity ();
-      ss1 << elements1;
-      str = ss1.str ();
-      param_length(pos_e) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_e)))
-			     ? str.length () : param_length(pos_e));
-
-      bytes1 = val.byte_size ();
-      ss2 << bytes1;
-      str = ss2.str ();
-      param_length(pos_b) = ((str.length ()
-			      > static_cast<size_t> (param_length(pos_b)))
-			     ? str.length () : param_length (pos_b));
-    }
-
-  idx = 0;
-  while (static_cast<size_t> (idx) < format_len)
-    {
-      whos_parameter param;
-      param.command = '\0';
-
-      if (Vwhos_line_format[idx] == '%')
-        {
-	  bool error_encountered = false;
-	  param.modifier = 'r';
-	  param.parameter_length = 0;
-	  param.dimensions = 8;
-
-	  int a = 0, b = -1, c = 8, balance = 1;
-	  unsigned int items;
-	  size_t pos;
-	  std::string cmd;
-
-	  // Parse one command from whos_line_format
-	  cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
-	  pos = cmd.find (';');
-	  if (pos != NPOS)
-	    cmd = cmd.substr (0, pos+1);
-	  else
-	    error ("parameter without ; in whos_line_format");
-
-	  idx += cmd.length ();
-
-	  // FIXME -- use iostream functions instead of sscanf!
-
-	  if (cmd.find_first_of ("crl") != 1)
-	    items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d:%d;",
-			    &garbage, &param.command, &a, &b, &c, &balance);
-	  else
-	    items = sscanf (cmd.c_str (), "%c%c%c:%d:%d:%d:%d;",
-			    &garbage, &param.modifier, &param.command,
-			    &a, &b, &c, &balance) - 1;
-	 
-	  if (items < 2)
-	    {
-	      error ("whos_line_format: parameter structure without command in whos_line_format");
-	      error_encountered = true;
-	    }
-
-	  // Insert data into parameter
-	  param.first_parameter_length = 0;
-	  pos = param_string.find (param.command);
-	  if (pos != NPOS)
-	    {
-	      param.parameter_length = param_length(pos);
-	      param.text = param_names(pos);
-	      param.line.assign (param_names(pos).length (), '=');
-
-	      param.parameter_length = (a > param.parameter_length
-					? a : param.parameter_length);
-	      if (param.command == 's' && param.modifier == 'c' && b > 0)
-		param.first_parameter_length = b;
-	    }
-	  else
-	    {
-	      error ("whos_line_format: '%c' is not a command",
-		     param.command);
-	      error_encountered = true;
-	    }
-
-	  if (param.command == 's')
-	    {
-	      // Have to calculate space needed for printing matrix dimensions
-	      // Space needed for Size column is hard to determine in prior,
-	      // because it depends on dimensions to be shown. That is why it is
-	      // recalculated for each Size-command
-	      int first, rest = 0, total;
-	      param.dimensions = c;
-	      first = param.first_parameter_length;
-	      total = param.parameter_length;
-
-	      for (std::list<symbol_table::symbol_record>::const_iterator p = symbols.begin ();
-		   p != symbols.end (); p++)
-		{
-		  octave_value val = p->varval ();
-		  dim_vector dims = val.dims ();
-		  int first1 = dimensions_string_req_first_space (dims, param.dimensions);
-		  int total1 = dimensions_string_req_total_space (dims, param.dimensions);
-		  int rest1 = total1 - first1;
-		  rest = (rest1 > rest ? rest1 : rest);
-		  first = (first1 > first ? first1 : first);
-		  total = (total1 > total ? total1 : total);
-		}
-
-	      if (param.modifier == 'c')
-	        {
-		  if (first < balance)
-		    first += balance - first;
-		  if (rest + balance < param.parameter_length)
-		    rest += param.parameter_length - rest - balance;
-
-		  param.parameter_length = first + rest;
-		  param.first_parameter_length = first;
-		  param.balance = balance;
-		}
-	      else
-	        {
-		  param.parameter_length = total;
-		  param.first_parameter_length = 0;
-		}
-	    }
-	  else if (param.modifier == 'c')
-	    {
-	      error ("whos_line_format: modifier 'c' not available for command '%c'",
-		     param.command);
-	      error_encountered = true;
-	    }
-
-	  // What happens if whos_line_format contains negative numbers
-	  // at param_length positions?
-	  param.balance = (b < 0 ? 0 : param.balance);
-	  param.first_parameter_length = (b < 0 ? 0 :
-					  param.first_parameter_length);
-	  param.parameter_length = (a < 0
-				    ? 0
-				    : (param.parameter_length
-				       < param_length(pos_s)
-				       ? param_length(pos_s)
-				       : param.parameter_length));
-
-	  // Parameter will not be pushed into parameter list if ...
-	  if (! error_encountered)
-	    params.push_back (param);
-	}
-      else
-        {
-	  // Text string, to be printed as it is ...
-	  std::string text;
-	  size_t pos;
-	  text = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
-	  pos = text.find ('%');
-	  if (pos != NPOS)
-	    text = text.substr (0, pos);
-
-	  // Push parameter into list ...
-	  idx += text.length ();
-	  param.text=text;
-	  param.line.assign (text.length(), ' ');
-	  params.push_back (param);
-	}
-    }
-
-  return params;
-}
-
-void
-print_symbol_info_line (std::ostream& os,
-			const symbol_table::symbol_record& sr,
-			std::list<whos_parameter>& params)
-{
-  octave_value val = sr.varval ();
-  dim_vector dims = val.dims ();
-
-  std::list<whos_parameter>::iterator i = params.begin ();
-
-  while (i != params.end ())
-    {
-      whos_parameter param = *i;
-
-      if (param.command != '\0')
-        {
-	  // Do the actual printing.
-
-	  switch (param.modifier)
-	    {
-	    case 'l':
-	      os << std::setiosflags (std::ios::left)
-		 << std::setw (param.parameter_length);
-	      break;
-
-	    case 'r':
-	      os << std::setiosflags (std::ios::right)
-		 << std::setw (param.parameter_length);
-	      break;
-
-	    case 'c':
-	      if (param.command == 's')
-	        {
-		  int front = param.first_parameter_length
-		    - dimensions_string_req_first_space (dims, param.dimensions);
-		  int back = param.parameter_length
-		    - dimensions_string_req_total_space (dims, param.dimensions)
-		    - front;
-		  front = (front > 0) ? front : 0;
-		  back = (back > 0) ? back : 0;
-
-		  os << std::setiosflags (std::ios::left)
-		     << std::setw (front)
-		     << ""
-		     << std::resetiosflags (std::ios::left)
-		     << make_dimensions_string (dims, param.dimensions)
-		     << std::setiosflags (std::ios::left)
-		     << std::setw (back)
-		     << ""
-		     << std::resetiosflags (std::ios::left);
-		}
-	      else
-	        {
+		case 'l':
 		  os << std::setiosflags (std::ios::left)
 		     << std::setw (param.parameter_length);
+		  break;
+
+		case 'r':
+		  os << std::setiosflags (std::ios::right)
+		     << std::setw (param.parameter_length);
+		  break;
+
+		case 'c':
+		  if (param.command == 's')
+		    {
+		      int front = param.first_parameter_length
+			- dims_str.find ('x');
+		      int back = param.parameter_length
+			- dims_str.length ()
+			- front;
+		      front = (front > 0) ? front : 0;
+		      back = (back > 0) ? back : 0;
+
+		      os << std::setiosflags (std::ios::left)
+			 << std::setw (front)
+			 << ""
+			 << std::resetiosflags (std::ios::left)
+			 << dims_str
+			 << std::setiosflags (std::ios::left)
+			 << std::setw (back)
+			 << ""
+			 << std::resetiosflags (std::ios::left);
+		    }
+		  else
+		    {
+		      os << std::setiosflags (std::ios::left)
+			 << std::setw (param.parameter_length);
+		    }
+		  break;
+
+		default:
+		  error ("whos_line_format: modifier `%c' unknown",
+			 param.modifier);
+
+		  os << std::setiosflags (std::ios::right)
+		     << std::setw (param.parameter_length);
 		}
-	      break;
 
-	    default:
-	      error ("whos_line_format: modifier `%c' unknown",
-		     param.modifier);
+	      switch (param.command)
+		{
+		case 'a':
+		  {
+		    char tmp[5];
 
-	      os << std::setiosflags (std::ios::right)
-		 << std::setw (param.parameter_length);
-	    }
+		    tmp[0] = (is_automatic ? 'a' : ' ');
+		    tmp[1] = (is_formal ? 'f' : ' ');
+		    tmp[2] = (is_global ? 'g' : ' ');
+		    tmp[3] = (is_persistent ? 'p' : ' ');
+		    tmp[4] = 0;
 
-	  switch (param.command)
-	    {
-	    case 'a':
-	      {
-		char tmp[5];
+		    os << tmp;
+		  }
+		  break;
 
-		tmp[0] = (sr.is_automatic () ? 'a' : ' ');
-		tmp[1] = (sr.is_formal () ? 'f' : ' ');
-		tmp[2] = (sr.is_global () ? 'g' : ' ');
-		tmp[3] = (sr.is_persistent () ? 'p' : ' ');
-		tmp[4] = 0;
+		case 'b':
+		  os << varval.byte_size ();
+		  break;
 
-		os << tmp;
-	      }
-	      break;
+		case 'c':
+		  os << varval.class_name ();
+		  break;
 
-	    case 'b':
-	      os << val.byte_size ();
-	      break;
+		case 'e':
+		  os << varval.capacity ();
+		  break;
 
-	    case 'c':
-	      os << val.class_name ();
-	      break;
+		case 'n':
+		  os << name;
+		  break;
 
-	    case 'e':
-	      os << val.capacity ();
-	      break;
+		case 's':
+		  if (param.modifier != 'c')
+		    os << dims_str;
+		  break;
 
-	    case 'n':
-	      os << sr.name ();
-	      break;
-
-	    case 's':
-	      if (param.modifier != 'c')
-		os << make_dimensions_string (dims, param.dimensions);
-	      break;
-
-	    case 't':
-	      os << val.type_name ();
-	      break;
+		case 't':
+		  os << varval.type_name ();
+		  break;
 	    
-	    default:
-	      error ("whos_line_format: command `%c' unknown", param.command);
-	    }
+		default:
+		  error ("whos_line_format: command `%c' unknown",
+			 param.command);
+		}
 
-	  os << std::resetiosflags (std::ios::left)
-	     << std::resetiosflags (std::ios::right);
-	  i++;
-        }
-      else
-	{
-	  os << param.text;
-	  i++;
+	      os << std::resetiosflags (std::ios::left)
+		 << std::resetiosflags (std::ios::right);
+	      i++;
+	    }
+	  else
+	    {
+	      os << param.text;
+	      i++;
+	    }
 	}
     }
-}
+
+    std::string name;
+    bool is_automatic;
+    bool is_formal;
+    bool is_global;
+    bool is_persistent;
+    octave_value varval;
+  };
+
+public:
+  symbol_info_list (void) : lst () { }
+
+  symbol_info_list (const symbol_info_list& sil) : lst (sil.lst) { }
+
+  symbol_info_list& operator = (const symbol_info_list& sil)
+  {
+    if (this != &sil)
+      lst = sil.lst;
+
+    return *this;
+  }
+
+  ~symbol_info_list (void) { }
+
+  void append (const symbol_table::symbol_record& sr)
+  {
+    lst.push_back (symbol_info (sr));
+  }
+
+  void append (const symbol_table::symbol_record& sr,
+	       const std::string& expr_str,
+	       const octave_value& expr_val)
+  {
+    lst.push_back (symbol_info (sr, expr_str, expr_val));
+  }
+
+  size_t size (void) const { return lst.size (); }
+
+  bool empty (void) const { return lst.empty (); }
+
+  Octave_map
+  map_value (const std::string& caller_function_name, int nesting_level) const
+  {
+    size_t len = lst.size ();
+
+    Array<octave_value> name_info (len, 1);
+    Array<octave_value> size_info (len, 1);
+    Array<octave_value> bytes_info (len, 1);
+    Array<octave_value> class_info (len, 1);
+    Array<octave_value> global_info (len, 1);
+    Array<octave_value> sparse_info (len, 1);
+    Array<octave_value> complex_info (len, 1);
+    Array<octave_value> nesting_info (len, 1);
+    Array<octave_value> persistent_info (len, 1);
+
+    std::list<symbol_info>::const_iterator p = lst.begin ();
+
+    for (size_t j = 0; j < len; j++)
+      {
+	const symbol_info& si = *p++;
+
+	Octave_map ni;
+
+	ni.assign ("function", caller_function_name);
+	ni.assign ("level", nesting_level);
+
+	name_info(j) = si.name;
+	global_info(j) = si.is_global;
+	persistent_info(j) = si.is_persistent;
+
+	octave_value val = si.varval;
+
+	size_info(j) = val.size ();
+	bytes_info(j) = val.byte_size ();
+	class_info(j) = val.class_name ();
+	sparse_info(j) = val.is_sparse_type ();
+	complex_info(j) = val.is_complex_type ();
+	nesting_info(j) = ni;
+      }
+
+    Octave_map info;
+
+    info.assign ("name", name_info);
+    info.assign ("size", size_info);
+    info.assign ("bytes", bytes_info);
+    info.assign ("class", class_info);
+    info.assign ("global", global_info);
+    info.assign ("sparse", sparse_info);
+    info.assign ("complex", complex_info);
+    info.assign ("nesting", nesting_info);
+    info.assign ("persistent", persistent_info);
+
+    return info;
+  }
+
+  void display (std::ostream& os)
+  {
+    if (! lst.empty ())
+      {
+	size_t bytes = 0;
+	size_t elements = 0;
+
+	std::list<whos_parameter> params = parse_whos_line_format ();
+
+	print_descriptor (os, params);
+
+	octave_stdout << "\n";
+
+	for (std::list<symbol_info>::const_iterator p = lst.begin ();
+	     p != lst.end (); p++)
+	  {
+	    p->display_line (os, params);
+
+	    octave_value val = p->varval;
+
+	    elements += val.capacity ();
+	    bytes += val.byte_size ();
+	  }
+
+	os << "\nTotal is " << elements
+	   << (elements == 1 ? " element" : " elements")
+	   << " using " << bytes << (bytes == 1 ? " byte" : " bytes")
+	   << "\n";
+      }
+  }
+
+  // Parse the string whos_line_format, and return a parameter list,
+  // containing all information needed to print the given
+  // attributtes of the symbols.
+  std::list<whos_parameter> parse_whos_line_format (void)
+  {
+    int idx;
+    size_t format_len = Vwhos_line_format.length ();
+    char garbage;
+    std::list<whos_parameter> params;
+
+    size_t bytes1;
+    int elements1;
+
+    std::string param_string = "abcenst";
+    Array<int> param_length (dim_vector (param_string.length (), 1));
+    Array<std::string> param_names (dim_vector (param_string.length (), 1));
+    size_t pos_a, pos_b, pos_c, pos_e, pos_n, pos_s, pos_t;
+
+    pos_a = param_string.find ('a'); // Attributes
+    pos_b = param_string.find ('b'); // Bytes
+    pos_c = param_string.find ('c'); // Class
+    pos_e = param_string.find ('e'); // Elements
+    pos_n = param_string.find ('n'); // Name
+    pos_s = param_string.find ('s'); // Size
+    pos_t = param_string.find ('t'); // Type
+
+    param_names(pos_a) = "Attr";
+    param_names(pos_b) = "Bytes";
+    param_names(pos_c) = "Class";
+    param_names(pos_e) = "Elements";
+    param_names(pos_n) = "Name";
+    param_names(pos_s) = "Size";
+    param_names(pos_t) = "Type";
+
+    for (size_t i = 0; i < param_string.length (); i++)
+      param_length(i) = param_names(i) . length ();
+
+    // Calculating necessary spacing for name column,
+    // bytes column, elements column and class column
+
+    for (std::list<symbol_info>::const_iterator p = lst.begin ();
+	 p != lst.end (); p++)
+      {
+	std::stringstream ss1, ss2;
+	std::string str;
+
+	str = p->name;
+	param_length(pos_n) = ((str.length ()
+				> static_cast<size_t> (param_length(pos_n)))
+			       ? str.length () : param_length(pos_n));
+
+	octave_value val = p->varval;
+
+	str = val.type_name ();
+	param_length(pos_t) = ((str.length ()
+				> static_cast<size_t> (param_length(pos_t)))
+			       ? str.length () : param_length(pos_t));
+
+	elements1 = val.capacity ();
+	ss1 << elements1;
+	str = ss1.str ();
+	param_length(pos_e) = ((str.length ()
+				> static_cast<size_t> (param_length(pos_e)))
+			       ? str.length () : param_length(pos_e));
+
+	bytes1 = val.byte_size ();
+	ss2 << bytes1;
+	str = ss2.str ();
+	param_length(pos_b) = ((str.length ()
+				> static_cast<size_t> (param_length(pos_b)))
+			       ? str.length () : param_length (pos_b));
+      }
+
+    idx = 0;
+    while (static_cast<size_t> (idx) < format_len)
+      {
+	whos_parameter param;
+	param.command = '\0';
+
+	if (Vwhos_line_format[idx] == '%')
+	  {
+	    bool error_encountered = false;
+	    param.modifier = 'r';
+	    param.parameter_length = 0;
+
+	    int a = 0, b = -1, balance = 1;
+	    unsigned int items;
+	    size_t pos;
+	    std::string cmd;
+
+	    // Parse one command from whos_line_format
+	    cmd = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
+	    pos = cmd.find (';');
+	    if (pos != NPOS)
+	      cmd = cmd.substr (0, pos+1);
+	    else
+	      error ("parameter without ; in whos_line_format");
+
+	    idx += cmd.length ();
+
+	    // FIXME -- use iostream functions instead of sscanf!
+
+	    if (cmd.find_first_of ("crl") != 1)
+	      items = sscanf (cmd.c_str (), "%c%c:%d:%d:%d;",
+			      &garbage, &param.command, &a, &b, &balance);
+	    else
+	      items = sscanf (cmd.c_str (), "%c%c%c:%d:%d:%d;",
+			      &garbage, &param.modifier, &param.command,
+			      &a, &b, &balance) - 1;
+
+	    if (items < 2)
+	      {
+		error ("whos_line_format: parameter structure without command in whos_line_format");
+		error_encountered = true;
+	      }
+
+	    // Insert data into parameter
+	    param.first_parameter_length = 0;
+	    pos = param_string.find (param.command);
+	    if (pos != NPOS)
+	      {
+		param.parameter_length = param_length(pos);
+		param.text = param_names(pos);
+		param.line.assign (param_names(pos).length (), '=');
+
+		param.parameter_length = (a > param.parameter_length
+					  ? a : param.parameter_length);
+		if (param.command == 's' && param.modifier == 'c' && b > 0)
+		  param.first_parameter_length = b;
+	      }
+	    else
+	      {
+		error ("whos_line_format: '%c' is not a command",
+		       param.command);
+		error_encountered = true;
+	      }
+
+	    if (param.command == 's')
+	      {
+		// Have to calculate space needed for printing
+		// matrix dimensions Space needed for Size column is
+		// hard to determine in prior, because it depends on
+		// dimensions to be shown. That is why it is
+		// recalculated for each Size-command int first,
+		// rest = 0, total;
+		int rest = 0;
+		int first = param.first_parameter_length;
+		int total = param.parameter_length;
+
+		for (std::list<symbol_info>::const_iterator p = lst.begin ();
+		     p != lst.end (); p++)
+		  {
+		    octave_value val = p->varval;
+		    dim_vector dims = val.dims ();
+		    std::string dims_str = dims.str ();
+		    int first1 = dims_str.find ('x');
+		    int total1 = dims_str.length ();
+		    int rest1 = total1 - first1;
+		    rest = (rest1 > rest ? rest1 : rest);
+		    first = (first1 > first ? first1 : first);
+		    total = (total1 > total ? total1 : total);
+		  }
+
+		if (param.modifier == 'c')
+		  {
+		    if (first < balance)
+		      first += balance - first;
+		    if (rest + balance < param.parameter_length)
+		      rest += param.parameter_length - rest - balance;
+
+		    param.parameter_length = first + rest;
+		    param.first_parameter_length = first;
+		    param.balance = balance;
+		  }
+		else
+		  {
+		    param.parameter_length = total;
+		    param.first_parameter_length = 0;
+		  }
+	      }
+	    else if (param.modifier == 'c')
+	      {
+		error ("whos_line_format: modifier 'c' not available for command '%c'",
+		       param.command);
+		error_encountered = true;
+	      }
+
+	    // What happens if whos_line_format contains negative numbers
+	    // at param_length positions?
+	    param.balance = (b < 0 ? 0 : param.balance);
+	    param.first_parameter_length = (b < 0 ? 0 :
+					    param.first_parameter_length);
+	    param.parameter_length = (a < 0
+				      ? 0
+				      : (param.parameter_length
+					 < param_length(pos_s)
+					 ? param_length(pos_s)
+					 : param.parameter_length));
+
+	    // Parameter will not be pushed into parameter list if ...
+	    if (! error_encountered)
+	      params.push_back (param);
+	  }
+	else
+	  {
+	    // Text string, to be printed as it is ...
+	    std::string text;
+	    size_t pos;
+	    text = Vwhos_line_format.substr (idx, Vwhos_line_format.length ());
+	    pos = text.find ('%');
+	    if (pos != NPOS)
+	      text = text.substr (0, pos);
+
+	    // Push parameter into list ...
+	    idx += text.length ();
+	    param.text=text;
+	    param.line.assign (text.length(), ' ');
+	    params.push_back (param);
+	  }
+      }
+
+    return params;
+  }
+
+private:
+  std::list<symbol_info> lst;
+
+};
 
 static octave_value
 do_who (int argc, const string_vector& argv, bool return_list,
@@ -1648,102 +1657,95 @@ do_who (int argc, const string_vector& argv, bool return_list,
     }
 
   int npats = argc - i;
-  string_vector pats (npats > 0 ? npats : 1);
+  string_vector pats;
   if (npats > 0)
     {
+      pats.resize (npats);
       for (int j = 0; j < npats; j++)
 	pats[j] = argv[i+j];
     }
   else
-    pats[0] = "*";
+    {
+      pats.resize (++npats);
+      pats[0] = "*";
+    }
     
   symbol_table::scope_id scope = global_only
     ? symbol_table::global_scope () : symbol_table::current_scope ();
 
-  std::list<symbol_table::symbol_record> symbols
-    = symbol_table::glob_variables (pats, scope);
+  symbol_info_list symbol_stats;
+  std::list<std::string> symbol_names;
 
-  size_t symbols_len = symbols.size ();
+  for (int j = 0; j < npats; j++)
+    {
+      std::string pat = pats[j];
+
+      size_t pos = pat.find_first_of (".({");
+
+      if (pos != NPOS && pos > 0)
+        {
+	  if (verbose)
+	    {
+	      // NOTE: we can only display information for
+	      // expressions based on global values if the variable is
+	      // global in the current scope because we currently have
+	      // no way of looking up the base value in the global
+	      // scope and then evaluating the arguments in the
+	      // current scope.
+
+	      std::string base_name = pat.substr (0, pos);
+
+	      if (symbol_table::is_variable (base_name))
+		{
+		  symbol_table::symbol_record sr
+		    = symbol_table::find_symbol (base_name);
+
+		  if (! global_only || sr.is_global ())
+		    {
+		      int parse_status;
+
+		      octave_value expr_val
+			= eval_string (pat, true, parse_status);
+
+		      if (! error_state)
+			symbol_stats.append (sr, pat, expr_val);
+		      else
+			return retval;
+		    }
+		}
+	    }
+	}
+      else
+	{
+	  std::list<symbol_table::symbol_record> tmp
+	    = symbol_table::glob_variables (pats[j], scope);
+
+	  for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
+	       p != tmp.end (); p++)
+	    {
+	      if (verbose)
+		symbol_stats.append (*p);
+	      else
+		symbol_names.push_back (p->name ());
+	    }
+	}
+    }
 
   if (return_list)
     {
       if (verbose)
 	{
-	  Array<octave_value> name_info (symbols_len, 1);
-	  Array<octave_value> size_info (symbols_len, 1);
-	  Array<octave_value> bytes_info (symbols_len, 1);
-	  Array<octave_value> class_info (symbols_len, 1);
-	  Array<octave_value> global_info (symbols_len, 1);
-	  Array<octave_value> sparse_info (symbols_len, 1);
-	  Array<octave_value> complex_info (symbols_len, 1);
-	  Array<octave_value> nesting_info (symbols_len, 1);
+	  std::string caller_function_name;
+	  octave_function *caller = octave_call_stack::caller ();
+	  if (caller)
+	    caller_function_name = caller->name ();
 
-	  std::list<symbol_table::symbol_record>::const_iterator p
-	    = symbols.begin ();
-
-	  for (size_t j = 0; j < symbols_len; j++)
-	    {
-	      const symbol_table::symbol_record& sr = *p++;
-
-	      Octave_map ni;
-
-	      std::string caller_function_name;
-
-	      octave_function *caller = octave_call_stack::caller ();
-	      if (caller)
-		caller_function_name = caller->name ();
-
-	      ni.assign ("function", caller_function_name);
-	      ni.assign ("level", 1);
-
-	      name_info(j) = sr.name ();
-	      global_info(j) = sr.is_global ();
-
-	      octave_value val = sr.varval ();
-
-	      size_info(j) = val.size ();
-	      bytes_info(j) = val.byte_size ();
-	      class_info(j) = val.class_name ();
-	      sparse_info(j) = val.is_sparse_type ();
-	      complex_info(j) = val.is_complex_type ();
-	      nesting_info(j) = ni;
-	    }
-
-	  Octave_map info;
-
-	  info.assign ("name", name_info);
-	  info.assign ("size", size_info);
-	  info.assign ("bytes", bytes_info);
-	  info.assign ("class", class_info);
-	  info.assign ("global", global_info);
-	  info.assign ("sparse", sparse_info);
-	  info.assign ("complex", complex_info);
-	  info.assign ("nesting", nesting_info);
-
-	  retval = info;
+	  retval = symbol_stats.map_value (caller_function_name, 1);
 	}
       else
-	{
-	  string_vector names;
-
-	  if (symbols_len > 0)
-	    {
-	      names.resize (symbols_len);
-
-	      std::list<symbol_table::symbol_record>::const_iterator p
-		= symbols.begin ();
-
-	      for (size_t j = 0; j < symbols_len; j++)
-		{
-		  names[j] = p->name ();
-		  p++;
-		}
-	    }
-
-	  retval = Cell (names);
-	}
+	retval = Cell (string_vector (symbol_names));
     }
-  else if (symbols_len > 0)
+  else if (! (symbol_stats.empty () && symbol_names.empty ()))
     {
       if (global_only)
 	octave_stdout << "Global variables:\n\n";
@@ -1751,44 +1753,10 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	octave_stdout << "Variables in the current scope:\n\n";
 
       if (verbose)
-	{
-	  size_t bytes = 0;
-	  size_t elements = 0;
-
-	  std::list<whos_parameter> params;
-
-	  params = parse_whos_line_format (symbols);
-
-	  print_descriptor (octave_stdout, params);
-
-	  octave_stdout << "\n";
-
-	  for (std::list<symbol_table::symbol_record>::const_iterator p = symbols.begin ();
-	       p != symbols.end (); p++)
-	    {
-	      print_symbol_info_line (octave_stdout, *p, params);
-	      octave_value val = p->varval ();
-	      elements += val.capacity ();
-	      bytes += val.byte_size ();
-	    }
-
-	  octave_stdout << "\nTotal is " << elements
-			<< (elements == 1 ? " element" : " elements")
-			<< " using " << bytes
-			<< (bytes == 1 ? " byte" : " bytes") << "\n";
-	}
+	symbol_stats.display (octave_stdout);
       else
 	{
-	  string_vector names (symbols_len);
-
-	  std::list<symbol_table::symbol_record>::const_iterator p
-	    = symbols.begin ();
-
-	  for (size_t j = 0; j < symbols_len; j++)
-	    {
-	      names[j] = p->name ();
-	      p++;
-	    }
+	  string_vector names (symbol_names);
 
 	  names.list_in_columns (octave_stdout);
 	}
@@ -2468,21 +2436,17 @@ Centered (may only be applied to command %s).\n\
 A command is composed like this:\n\
 \n\
 @example\n\
-%[modifier]<command>[:size_of_parameter[:center-specific[\n\
-       :print_dims[:balance]]]];\n\
+%[modifier]<command>[:size_of_parameter[:center-specific[:balance]]];\n\
 @end example\n\
 \n\
 Command and modifier is already explained. Size_of_parameter\n\
 tells how many columns the parameter will need for printing.\n\
-print_dims tells how many dimensions to print. If number of\n\
-dimensions exceeds print_dims, dimensions will be printed like\n\
-x-D.\n\
-center-specific and print_dims may only be applied to command\n\
-%s. A negative value for print_dims will cause Octave to print all\n\
-dimensions whatsoever.\n\
-balance specifies the offset for printing of the dimensions string.\n\
+The @code{center-specific} parameter may only be applied to command\n\
+@samp{%s}.\n\
+The @code{balance} parameter specifies the offset for printing\n\
+the dimensions string.\n\
 \n\
-The default format is \"  %a:4; %ln:6; %cs:16:6:8:1;  %rb:12;  %lc:-1;\\n\".\n\
+The default format is \"  %a:4; %ln:6; %cs:16:6:1;  %rb:12;  %lc:-1;\\n\".\n\
 @end deftypefn")
 {
   return SET_INTERNAL_VARIABLE (whos_line_format);

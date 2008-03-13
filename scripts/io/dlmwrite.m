@@ -19,54 +19,54 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} dlmwrite (@var{file}, @var{a})
 ## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, @var{delim}, @var{r}, @var{c})
-## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, "attrib1", @var{value1}, "attrib2", @var{value2}, @dots{})
+## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, @var{key}, @var{val} @dots{})
 ## @deftypefnx {Function File} {} dmlwrite (@var{file}, @var{a}, "-append", @dots{})
+## Write the matrix @var{a} to the named file using delimiters.
 ##
-## Write the matrix @var{a} to the text @var{file} using delimiters.
+## The parameter @var{delim} specifies the delimiter to use to separate
+## values on a row.
 ##
-## @table @var
-## @item delim
-## the delimiter to use to separate values on a row
+## The value of @var{r} specifies the number of delimiter-only lines to
+## add to the start of the file.
 ##
-## @item r
-## the number of delimiter-only lines to add to the start of the file
+## The value of @var{c} specifies the number of delimiters to prepend to
+## each line of data.
 ##
-## @item c
-## the number of delimiters to prepend to each line of data.
+## If the argument @code{"-append"} is given, append to the end of the
+## @var{file}.
 ##
-## @item "-append"
-## append to the end of the @var{file}.
-##
-## @item "append", state
+## In addition, the following keyword value pairs may appear at the end
+## of the argument list:
+## @table @code
+## @item "append"
 ## Either @samp{"on"} or @samp{"off"}.  See @samp{"-append"} above.
 ##
-## @item "delimiter", d
+## @item "delimiter"
 ## See @var{delim} above.
 ##
-## @item "newline", os
+## @item "newline"
 ## The character(s) to use to separate each row.  Three special cases
 ## exist for this option.  @samp{"unix"} is changed into '\n',
 ## @samp{"pc"} is changed into '\r\n', and @samp{"mac"} is changed
 ## into '\r'.  Other values for this option are kept as is.
 ##
-## @item "roffset", r
+## @item "roffset"
 ## See @var{r} above.
 ##
-## @item "coffset", c
+## @item "coffset"
 ## See @var{c} above.
 ##
-## @item "precision", p
+## @item "precision"
 ## The precision to use when writing the file.  It can either be a
 ## format string (as used by fprintf) or a number of significant digits.
 ## @end table
 ##
 ## @example
-## @var{A} = reshape(1:16,4,4);
-## dlmwrite(@code{"file.csv"}, @var{A})
+## dlmwrite ("file.csv", reshape (1:16, 4, 4));
 ## @end example
 ##
 ## @example
-## dlmwrite (@code{"file.tex"}, @var{a}, "delimiter", "&", "newline", "\\n")
+## dlmwrite ("file.tex", @var{a}, "delimiter", "&", "newline", "\\n")
 ## @end example
 ##
 ## @seealso{dlmread, csvread, csvwrite}

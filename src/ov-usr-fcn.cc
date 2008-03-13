@@ -101,14 +101,12 @@ octave_user_function::octave_user_function
     lead_comm (), trail_comm (), file_name (),
     parent_name (), t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
-    system_fcn_file (false), call_depth (0), num_named_args (0),
+    system_fcn_file (false), call_depth (0),
+    num_named_args (param_list ? param_list->length () : 0),
     nested_function (false), inline_function (false),
     class_constructor (false), class_method (false), xdispatch_class (),
     args_passed (), num_args_passed (0), local_scope (sid)
-{
-  if (param_list)
-    num_named_args = param_list->length ();
-}
+{ }
 
 octave_user_function::~octave_user_function (void)
 {

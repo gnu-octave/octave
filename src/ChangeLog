@@ -1,5 +1,8 @@
 2008-03-13  John W. Eaton  <jwe@octave.org>
 
+	* ov-usr-fcn.cc (octave_user_function::octave_user_function):
+	Handle num_named_args in initialization list instead of functinon body.
+
 	* octave.gperf: Eliminate varargin and varargout keywords.
 	* lex.l (is_keyword_token): Eliminate varargin_kw and varargout_kw
 	from switch statement.

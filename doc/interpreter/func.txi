@@ -362,8 +362,9 @@ and then use the value of @code{nargin} to determine which of the input
 arguments should be considered. The problem with this approach is
 that it can only handle a limited number of input arguments.
 
-Octave supports the @code{varargin} keyword for handling a variable
-number of input arguments. Using @code{varargin} the function
+If the special parameter name @code{varargin} appears at the end of a
+function parameter list it indicates that the function takes a variable
+number of input arguments.  Using @code{varargin} the function
 looks like this
 
 @example
@@ -421,10 +422,10 @@ print_arguments (1, "two", 3);
 @cindex variable-length return lists
 It is possible to return a variable number of output arguments from a
 function using a syntax that's similar to the one used with the
-@code{varargin} keyword.  To let a function return a variable number of
-output arguments the @code{varargout} keyword is used.  As with
-@code{varargin} @code{varargout} is a cell array that will contain the
-requested output arguments.
+special @code{varargin} parameter name.  To let a function return a
+variable number of output arguments the special output parameter name
+@code{varargout} is used.  As with @code{varargin}, @code{varargout} is
+a cell array that will contain the requested output arguments.
 
 As an example the following function sets the first output argument to
 1, the second to 2, and so on.
@@ -448,6 +449,10 @@ When called this function returns values like this
      @result{} c =  3
 @end group
 @end example
+
+If @code{varargin} (@code{varargout}) does not appear as the last
+element of the input (output) parameter list, then it is not special,
+and is handled the same as any other parameter name.
 
 @DOCSTRING(deal)
 

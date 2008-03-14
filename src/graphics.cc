@@ -172,6 +172,8 @@ default_figure_position (void)
   return m;
 }
 
+
+
 static void
 xset_gcbo (const graphics_handle& h)
 {
@@ -1821,6 +1823,35 @@ figure::get_default (const caseless_str& name) const
 
 // ---------------------------------------------------------------------
 
+void 
+axes::properties::sync_positions (void)
+{
+  // FIXME -- this should take font metrics into consideration,
+  // for now we'll just make it position 90% of outerposition
+  if (activepositionproperty.is ("outerposition"))
+    {
+      Matrix outpos = outerposition.get ().matrix_value ();
+      Matrix defpos = default_axes_position ();
+      Matrix pos(outpos);
+      pos(0) = outpos(0) + defpos(0) * outpos(2);
+      pos(1) = outpos(1) + defpos(1) * outpos(3);
+      pos(2) = outpos(2) * defpos(2);
+      pos(3) = outpos(3) * defpos(3);
+      position = pos;
+    }
+  else
+    {
+      Matrix pos = position.get ().matrix_value ();
+      pos(0) -= pos(2)*0.05;
+      pos(1) -= pos(3)*0.05;
+      pos(2) *= 1.1;
+      pos(3) *= 1.1;
+      outerposition = pos;
+    }
+
+  update_transform ();
+}
+
 void
 axes::properties::set_title (const octave_value& v)
 {
@@ -1873,7 +1904,6 @@ void
 axes::properties::set_defaults (base_graphics_object& obj,
 				const std::string& mode)
 {
-  position = default_axes_position ();
   title = graphics_handle ();
   box = "on";
   key = "off";
@@ -1976,6 +2006,8 @@ axes::properties::set_defaults (base_graphics_object& obj,
       touterposition(2) = 1;
       touterposition(3) = 1;
       outerposition = touterposition;
+
+      position = default_axes_position ();
     }
 
   activepositionproperty = "outerposition";

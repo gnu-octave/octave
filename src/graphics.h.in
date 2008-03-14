@@ -2566,7 +2566,7 @@ public:
     // properties declarations.
 
     BEGIN_PROPERTIES(axes)
-      array_property position , default_axes_position ()
+      array_property position u , default_axes_position ()
       mutable handle_property title GSO , graphics_handle ()
       bool_property box , "on"
       bool_property key , "off"
@@ -2625,7 +2625,7 @@ public:
       radio_property xaxislocation , "{bottom}|top|zero"
       array_property view u , Matrix ()
       radio_property nextplot , "add|replace_children|{replace}"
-      array_property outerposition , default_axes_outerposition ()
+      array_property outerposition u , default_axes_outerposition ()
       radio_property activepositionproperty , "{outerposition}|position"
       radio_property __colorbar__ h , "{none}|north|south|east|west|northoutside|southoutside|eastoutside|westoutside"
       color_property ambientlightcolor , color_values (1, 1, 1)
@@ -2712,6 +2712,10 @@ public:
     void update_xdir (void) { update_camera (); }
     void update_ydir (void) { update_camera (); }
     void update_zdir (void) { update_camera (); }
+
+    void sync_positions (void);
+    void update_outerposition (void) { sync_positions ();}
+    void update_position (void) { sync_positions (); }
 
     double calc_tick_sep (double minval, double maxval);
     void calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto, bool is_logscale);

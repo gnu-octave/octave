@@ -1,5 +1,15 @@
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
+	* graphics.cc (axes::properties::set_defaults): Preserve position
+	if mode is replace.
+	(axes::properties::sync_positions): Use default_axes_postion for
+	consistency.
+
+	* graphics.h.in (axes::properties::sync_positions,
+	axes::properties::update_position,
+	axes::properties::update_outerposition): New functions to sync
+	outerposition and position.
+
 	* graphics.h.in (axes::properties::update_xlim,
 	axes::properties::update_ylim, axes::properties::update_zlim):
 	pass is_logscale flag to axes::properties::calc_ticks_and_lims
@@ -36,6 +46,9 @@
 	(axes::properties::update_zlim): ditto
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* graphics.cc (axes::properties::sync_positions): Update
+	transformation data.
 
 	* graphics.cc (Faddlistener): Rename from Fadd_listener.
 

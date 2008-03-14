@@ -1,3 +1,8 @@
+2008-03-14  Kai Habel  <kai.habel@gmx.de>
+
+        * plot/__go_draw_axes__.m: Expicitly set gnuplot user
+        style to default to avoid wrong mesh color in some cases.
+
 2008-03-12  David Bateman  <dbateman@free.fr>
 
 	* geometry/griddata3.m: Use griddatan and not griddata
@@ -8,15 +13,13 @@
 	* plot/__go_draw_axes__.m: Use get to access hidden properties.
 	Use strcmpi when comparing string properties.
 
+	* io/csread.m, io/csvwrite.m, io/dlmwrite.m: Style fixes.
+
 2008-03-11  Kai Habel  <kai.habel@gmx.de>
 
         * plot/__go_draw_axes__.m: Plot surfaces in front of axes.
         Allow plotting of uniform colored mesh plots with and
         w/o hidden line removal.
-
-2008-03-11  John W. Eaton  <jwe@octave.org>
-
-	* io/csread.m, io/csvwrite.m, io/dlmwrite.m: Style fixes.
 
 2008-03-11  David Bateman  <dbateman@free.fr>
 

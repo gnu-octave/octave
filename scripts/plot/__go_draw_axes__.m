@@ -881,12 +881,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 				       || (isnumeric (obj.facecolor)
 					   && all (obj.facecolor == 1)));
 	    hidden_removal = false;
-	
+            fputs (plot_stream, "set style increment default;\n");
             if (flat_interp_edge && facecolor_none_or_white)
 	      withclause{data_idx} = "with line palette";
 	      fputs (plot_stream, "unset pm3d\n");
 	      if (all (obj.facecolor == 1))
-                  hidden_removal = true;
+                hidden_removal = true;
               endif
 	    elseif (facecolor_none_or_white)
 	      edgecol = obj.edgecolor;

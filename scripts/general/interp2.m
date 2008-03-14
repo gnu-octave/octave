@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2006, 2007 Kai Habel
+## Copyright (C) 2009 Jaroslav Hajek <highegg@gmail.com>
 ##
 ## This file is part of Octave.
 ##
@@ -138,7 +139,9 @@ function ZI = interp2 (varargin)
   if (!ischar (method))
     error ("interp2 expected string 'method'"); 
   endif
-  if (!isscalar (extrapval))
+  if (ischar (extrapval) || strcmp (extrapval, "extrap"))
+    extrapval = [];
+  elseif (!isscalar (extrapval))
     error ("interp2 expected n extrapval");
   endif
 
@@ -161,15 +164,18 @@ function ZI = interp2 (varargin)
   endif
 
 
-  if (strcmp (method, "linear") || strcmp (method, "nearest"))
+  if (strcmp (method, "linear") || strcmp (method, "nearest") ...
+      || strcmp (method, "pchip"))
 
     ## If X and Y vectors produce a grid from them
     if (isvector (X) && isvector (Y))
-      [X, Y] = meshgrid (X, Y);
-    elseif (! size_equal (X, Y))
+      X = X(:); Y = Y(:);
+    elseif (size_equal (X, Y))
+      X = X(1,:)'; Y = Y(:,1);
+    else
       error ("X and Y must be matrices of same size");
     endif
-    if (! size_equal (X, Z))
+    if (columns (Z) != length (X) || rows (Z) != length (Y))
       error ("X and Y size must match Z dimensions");
     endif
 
@@ -181,12 +187,25 @@ function ZI = interp2 (varargin)
       error ("XI and YI must be matrices of same size");
     endif
 
-    shape = size (XI);
-    XI = reshape (XI, 1, prod (shape));
-    YI = reshape (YI, 1, prod (shape));
+    ## if XI, YI are vectors, X and Y should share their orientation.
+    if (rows (XI) == 1)
+      if (rows (X) != 1)
+        X = X.';
+      endif
+      if (rows (Y) != 1)
+        Y = Y.';
+      endif
+    elseif (columns (XI) == 1)
+      if (columns (X) != 1)
+        X = X.';
+      endif
+      if (columns (Y) != 1)
+        Y = Y.';
+      endif
+    endif
 
-    xidx = lookup (X(1, :), XI, "lr");
-    yidx = lookup (Y(:, 1), YI, "lr");
+    xidx = lookup (X, XI, "lr");
+    yidx = lookup (Y, YI, "lr");
 
     if (strcmp (method, "linear"))
       ## each quad satisfies the equation z(x,y)=a+b*x+c*y+d*xy
@@ -202,41 +221,98 @@ function ZI = interp2 (varargin)
       idx = sub2ind (size (a), yidx, xidx);
 
       ## scale XI, YI values to a 1-spaced grid
-      Xsc = (XI - X(1, xidx)) ./ (X(1, xidx + 1) - X(1, xidx));
-      Ysc = (YI - Y(yidx, 1)') ./ (Y(yidx + 1, 1) - Y(yidx, 1))';
+      Xsc = (XI - X(xidx)) ./ (X(xidx + 1) - X(xidx));
+      Ysc = (YI - Y(yidx)) ./ (Y(yidx + 1) - Y(yidx));
 
       ## apply plane equation
       ZI = a(idx) + b(idx).*Xsc + c(idx).*Ysc + d(idx).*Xsc.*Ysc;
 
     elseif (strcmp (method, "nearest"))
-      xtable = X(1, :);
-      ytable = Y(:, 1)';
-      ii = (XI - xtable(xidx) > xtable(xidx + 1) - XI);
-      jj = (YI - ytable(yidx) > ytable(yidx + 1) - YI);
+      ii = (XI - X(xidx) > X(xidx + 1) - XI);
+      jj = (YI - Y(yidx) > Y(yidx + 1) - YI);
       idx = sub2ind (size (Z), yidx+jj, xidx+ii);
       ZI = Z(idx);
+
+    elseif (strcmp (method, "pchip"))
+
+      if (length (X) < 2 || length (Y) < 2)
+	error ("interp2: pchip2 requires at least 2 points in each dimension")
+      endif
+
+      ## first order derivatives
+      DX = __pchip_deriv__ (X, Z, 2);
+      DY = __pchip_deriv__ (Y, Z, 1);
+      ## Compute mixed derivatives row-wise and column-wise, use the average.
+      DXY = (__pchip_deriv__ (X, DY, 2) + __pchip_deriv__ (Y, DX, 1))/2;
+      
+      ## do the bicubic interpolation
+      hx = diff (X); hx = hx(xidx);
+      hy = diff (Y); hy = hy(yidx);
+
+      tx = (XI - X(xidx)) ./ hx;
+      ty = (YI - Y(yidx)) ./ hy;
+
+      ## construct the cubic hermite base functions in x, y
+
+      ## formulas:
+      ## b{1,1} =    ( 2*t.^3 - 3*t.^2     + 1);
+      ## b{2,1} = h.*(   t.^3 - 2*t.^2 + t    );
+      ## b{1,2} =    (-2*t.^3 + 3*t.^2        );
+      ## b{2,2} = h.*(   t.^3 -   t.^2        );
+
+      ## optimized equivalents of the above:
+      t1 = tx.^2;
+      t2 = tx.*t1 - t1;
+      xb{2,2} = hx.*t2;
+      t1 = t2 - t1;
+      xb{2,1} = hx.*(t1 + tx);
+      t2 += t1;
+      xb{1,2} = -t2;
+      xb{1,1} = t2 + 1;
+
+      t1 = ty.^2;
+      t2 = ty.*t1 - t1;
+      yb{2,2} = hy.*t2;
+      t1 = t2 - t1;
+      yb{2,1} = hy.*(t1 + ty);
+      t2 += t1;
+      yb{1,2} = -t2;
+      yb{1,1} = t2 + 1;
+
+      ZI = zeros (size (XI));
+      for i = 1:2
+	for j = 1:2
+	  zidx = sub2ind (size (Z), yidx+(j-1), xidx+(i-1));
+	  ZI += xb{1,i} .* yb{1,j} .*   Z(zidx);
+	  ZI += xb{2,i} .* yb{1,j} .*  DX(zidx);
+	  ZI += xb{1,i} .* yb{2,j} .*  DY(zidx);
+	  ZI += xb{2,i} .* yb{2,j} .* DXY(zidx);
+	endfor
+      endfor
+
     endif
 
-    ## set points outside the table to 'extrapval'
-    if (X (1, 1) < X (1, end))
-      if (Y (1, 1) < Y (end, 1))
-        ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(1,1) | YI > Y(end,1)) = ...
-		extrapval;
+    if (! isempty (extrapval))
+      ## set points outside the table to 'extrapval'
+      if (X (1) < X (end))
+	if (Y (1) < Y (end))
+	  ZI (XI < X(1,1) | XI > X(end) | YI < Y(1,1) | YI > Y(end)) = ...
+		  extrapval;
+	else
+	  ZI (XI < X(1) | XI > X(end) | YI < Y(end) | YI > Y(1)) = ...
+		  extrapval;
+	endif
       else
-        ZI (XI < X(1,1) | XI > X(1,end) | YI < Y(end,1) | YI > Y(1,1)) = ...
-		extrapval;
-      endif
-    else
-      if (Y (1, 1) < Y (end, 1))
-        ZI (XI < X(1,end) | XI > X(1,1) | YI < Y(1,1) | YI > Y(end,1)) = ...
-		extrapval;
-      else
-        ZI (XI < X(1,end) | XI > X(1,1) | YI < Y(end,1) | YI > Y(1,1)) = ...
-		extrapval;
+	if (Y (1) < Y (end))
+	  ZI (XI < X(end) | XI > X(1) | YI < Y(1) | YI > Y(end)) = ...
+		  extrapval;
+	else
+	  ZI (XI < X(1,end) | XI > X(1) | YI < Y(end) | YI > Y(1)) = ...
+		  extrapval;
+	endif
       endif
     endif
 
-    ZI = reshape (ZI, shape);
   else
 
     ## If X and Y vectors produce a grid from them
@@ -285,11 +361,47 @@ endfunction
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! [x,y,A] = peaks(10);
+%! x = x(1,:)'; y = y(:,1);
+%! xi=linspace(min(x),max(x),41);
+%! yi=linspace(min(y),max(y),41)';
+%! mesh(xi,yi,interp2(x,y,A,xi,yi,'linear'));
+%! [x,y] = meshgrid(x,y); 
+%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,4]; y=[10,11,12];
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
+%! [x,y] = meshgrid(x,y); 
+%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
+%! [x,y,A] = peaks(10);
+%! x = x(1,:)'; y = y(:,1);
+%! xi=linspace(min(x),max(x),41);
+%! yi=linspace(min(y),max(y),41)';
+%! mesh(xi,yi,interp2(x,y,A,xi,yi,'nearest'));
+%! [x,y] = meshgrid(x,y); 
+%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
+%! A=[13,-1,12;5,4,3;1,6,2];
+%! x=[0,1,2]; y=[10,11,12];
+%! xi=linspace(min(x),max(x),17);
+%! yi=linspace(min(y),max(y),26)';
+%! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
+%! [x,y] = meshgrid(x,y); 
+%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
+%! [x,y,A] = peaks(10);
+%! x = x(1,:)'; y = y(:,1);
+%! xi=linspace(min(x),max(x),41);
+%! yi=linspace(min(y),max(y),41)';
+%! mesh(xi,yi,interp2(x,y,A,xi,yi,'pchip'));
 %! [x,y] = meshgrid(x,y); 
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
@@ -303,10 +415,28 @@ endfunction
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
 
 %!demo
+%! [x,y,A] = peaks(10);
+%! x = x(1,:)'; y = y(:,1);
+%! xi=linspace(min(x),max(x),41);
+%! yi=linspace(min(y),max(y),41)';
+%! mesh(xi,yi,interp2(x,y,A,xi,yi,'cubic'));
+%! [x,y] = meshgrid(x,y); 
+%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
 %! A=[13,-1,12;5,4,3;1,6,2];
 %! x=[0,1,2]; y=[10,11,12];
 %! xi=linspace(min(x),max(x),17);
 %! yi=linspace(min(y),max(y),26)';
+%! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
+%! [x,y] = meshgrid(x,y); 
+%! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;
+
+%!demo
+%! [x,y,A] = peaks(10);
+%! x = x(1,:)'; y = y(:,1);
+%! xi=linspace(min(x),max(x),41);
+%! yi=linspace(min(y),max(y),41)';
 %! mesh(xi,yi,interp2(x,y,A,xi,yi,'spline'));
 %! [x,y] = meshgrid(x,y); 
 %! hold on; plot3(x(:),y(:),A(:),"b*"); hold off;

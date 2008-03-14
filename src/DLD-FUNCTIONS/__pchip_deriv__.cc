@@ -1,6 +1,7 @@
 /* 
 
 Copyright (C) 2002, 2006, 2007 Kai Habel
+Copyright (C) 2008, 2009 Jaroslav Hajek
 
 This file is part of Octave.
 
@@ -20,6 +21,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+// Jaroslav Hajek, Feb 2008: handle row-wise derivatives,
+// use const pointers to avoid unnecessary copying.
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -34,12 +38,12 @@ along with Octave; see the file COPYING.  If not, see
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, double *x, double *f,
+  F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, const double *x, const double *f,
 			     double *d, const octave_idx_type &incfd,
 			     octave_idx_type *ierr);
 
   F77_RET_T
-  F77_FUNC (pchim, PCHIM) (const octave_idx_type& n, float *x, float *f,
+  F77_FUNC (pchim, PCHIM) (const octave_idx_type& n, const float *x, const float *f,
 			   float *d, const octave_idx_type &incfd,
 			   octave_idx_type *ierr);
 }
@@ -49,14 +53,16 @@ extern "C"
 
 DEFUN_DLD (__pchip_deriv__, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {} __pchip_deriv__ (@var{x}, @var{y})\n\
+@deftypefn {Loadable Function} {} __pchip_deriv__ (@var{x}, @var{y}, @var{dim})\n\
 Undocumented internal function.\n\
 @end deftypefn")
 {
   octave_value retval;
   const int nargin = args.length ();
 
-  if (nargin == 2)
+  bool rows = (nargin == 3 && args (2).uint_value() == 2);
+
+  if (nargin >= 2)
     {
       if (args(0).is_single_type () || args(1).is_single_type ())
 	{
@@ -67,34 +73,33 @@ Undocumented internal function.\n\
 	  octave_idx_type nyr = ymat.rows ();
 	  octave_idx_type nyc = ymat.columns ();
 
-	  if (nx != nyr)
+          if (nx != (rows ? nyc : nyr))
 	    {
-	      error ("number of rows for x and y must match");
+              error ("__pchip_deriv__: dimension mismatch");
 	      return retval;
 	    }
 
-	  FloatColumnVector dvec (nx), yvec (nx);
+          const float *yvec = ymat.data ();
 	  FloatMatrix dmat (nyr, nyc);
+          float *dvec = dmat.fortran_vec ();
 
 	  octave_idx_type ierr;
-	  const octave_idx_type incfd = 1;
-	  for (int c = 0; c < nyc; c++)
-	    {
-	      for (int r = 0; r < nx; r++)
-		yvec(r) = ymat(r,c);
+          const octave_idx_type incfd = rows ? nyr : 1;
+          const octave_idx_type inc = rows ? 1 : nyc;
 
-	      F77_FUNC (pchim, PCHIM) (nx, xvec.fortran_vec (), 
-				       yvec.fortran_vec (), 
-				       dvec.fortran_vec (), incfd, &ierr);
+          for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
+	    {
+              F77_FUNC (pchim, PCHIM) (nx, xvec.data (), 
+                                       yvec, dvec, incfd, &ierr);
+
+              yvec += inc;
+              dvec += inc;
 
 	      if (ierr < 0)
 		{
 		  error ("PCHIM error: %i\n", ierr);
 		  return retval;
 		}
-
-	      for (int r=0; r<nx; r++)
-		dmat(r,c) = dvec(r);
 	    }
 
 	  retval = dmat;
@@ -108,34 +113,33 @@ Undocumented internal function.\n\
 	  octave_idx_type nyr = ymat.rows ();
 	  octave_idx_type nyc = ymat.columns ();
 
-	  if (nx != nyr)
+          if (nx != (rows ? nyc : nyr))
 	    {
-	      error ("number of rows for x and y must match");
+              error ("__pchip_deriv__: dimension mismatch");
 	      return retval;
 	    }
 
-	  ColumnVector dvec (nx), yvec (nx);
+          const double *yvec = ymat.data ();
 	  Matrix dmat (nyr, nyc);
+          double *dvec = dmat.fortran_vec ();
 
 	  octave_idx_type ierr;
-	  const octave_idx_type incfd = 1;
-	  for (int c = 0; c < nyc; c++)
-	    {
-	      for (int r = 0; r < nx; r++)
-		yvec(r) = ymat(r,c);
+          const octave_idx_type incfd = rows ? nyr : 1;
+          const octave_idx_type inc = rows ? 1 : nyc;
 
-	      F77_FUNC (dpchim, DPCHIM) (nx, xvec.fortran_vec (), 
-					 yvec.fortran_vec (), 
-					 dvec.fortran_vec (), incfd, &ierr);
+          for (octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
+	    {
+              F77_FUNC (dpchim, DPCHIM) (nx, xvec.data (), 
+                                         yvec, dvec, incfd, &ierr);
+
+              yvec += inc;
+              dvec += inc;
 
 	      if (ierr < 0)
 		{
 		  error ("DPCHIM error: %i\n", ierr);
 		  return retval;
 		}
-
-	      for (int r=0; r<nx; r++)
-		dmat(r,c) = dvec(r);
 	    }
 
 	  retval = dmat;

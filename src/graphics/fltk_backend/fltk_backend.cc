@@ -347,7 +347,7 @@ private:
     pos(0) = _x;
     pos(1) = _y;
     pos(2) = _w;
-    pos(3) = _h;
+    pos(3) = _h - status_h;
 
     fp.set_position (pos);
   }
@@ -355,7 +355,7 @@ private:
   void draw (void)
   {
     Matrix pos = fp.get_position ().matrix_value ();
-    Fl_Window::resize (pos(0), pos(1) , pos(2), pos(3));
+    Fl_Window::resize (pos(0), pos(1) , pos(2), pos(3) + status_h);
 
     return Fl_Window::draw ();
   }

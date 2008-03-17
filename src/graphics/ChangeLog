@@ -1,3 +1,8 @@
+2008-03-17  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (plot_window::resize,
+	plot_window::draw): make canvas the size of figure.position
+
 2008-03-09  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* fltk_backend/fltk_backend.cc (plot_window::handle): add zoom

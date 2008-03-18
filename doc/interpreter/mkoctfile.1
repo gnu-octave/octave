@@ -21,11 +21,11 @@
 .\"
 .TH MKOCTFILE 1 "1 November 2002" "GNU Octave"
 .SH NAME
-mkoctfile - Compile dynamic-load modules for GNU Octave
+mkoctfile \- Compile dynamic-load modules for GNU Octave
 .SH SYNOPSIS
-.BR mkoctfile\  [-IDIR]\ [-DDEF]\ [-lLIB]\ [-LDIR]\ [-M|--depend]\ 
-[-c]\ [-o FILE|--output FILE]\ [-p VAR|--print VAR]\ [-s|\--strip]\ 
-[-v|--verbose]\ [-h|-?|--help]\ \fIfile\fP .\|.\|.  
+.BR mkoctfile\  [\-IDIR]\ [\-DDEF]\ [\-lLIB]\ [\-LDIR]\ [\-M|\-\-depend]\ 
+[\-c]\ [\-o FILE|\-\-output FILE]\ [\-p VAR|\-\-print VAR]\ [\-s|\-\-strip]\ 
+[\-v|\-\-verbose]\ [\-h|\-?|\-\-help]\ \fIfile\fP .\|.\|.  
 .SH DESCRIPTION
 .PP
 \fImkoctfile\fP is used to compile source C, C++ or Fortran source code in
@@ -55,7 +55,7 @@ Generate dependency files (.d) for C and C++ source files.
 Compile but do not link.
 .TP 8
 .B \-o FILE|\-\-output FILE
-Output file name; default extension is .oct (or .mex if --mex is
+Output file name; default extension is .oct (or .mex if \-\-mex is
 specified) unless linking a stand-alone executable.
 .TP
 .B \-p VAR|\-\-print VAR

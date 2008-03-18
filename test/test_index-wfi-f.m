@@ -418,6 +418,8 @@
 %! b9 = [1, 2, 5, 6];
 %! b10 = zeros (1, 0, 2);
 %! b11 = zeros (1, 0);
+%! b12 = [5; 7];
+%! b13 = zeros (0, 1);
 %! 
 %! assert(a(:),a1);
 %! assert(a(1:2), a2);
@@ -443,4 +445,9 @@
 %! assert(b(1,1:4), b9);
 %! assert(b(1,[],:), b10);
 %! assert(b(1,[]), b11);
+%! assert (b(:,3), b12);
+%! assert (b([1,2],3), b12);
+%! assert (b(true(2,1),3), b12);
+%! assert (b(false(2,1),3), b13)
+%! assert (b([],3), b13)
 %! warning ("wfi.state", "Octave:fortran-indexing");

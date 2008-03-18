@@ -2363,7 +2363,7 @@ Array<T>::index (Array<idx_vector>& ra_idx, int resize_ok, const T& rfv) const
   dim_vector new_dims = dims ();
   dim_vector frozen_lengths;
 
-  if (! any_orig_empty (ra_idx) && ra_idx_len < n_dims)
+  if (!ra_idx (ra_idx_len - 1).orig_empty () && ra_idx_len < n_dims)
     frozen_lengths = short_freeze (ra_idx, dimensions, resize_ok);
   else
     {

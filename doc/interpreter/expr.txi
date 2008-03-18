@@ -580,10 +580,8 @@ True if @var{x} is greater than @var{y}.
 
 @item @var{x} != @var{y}
 @itemx @var{x} ~= @var{y}
-@itemx @var{x} <> @var{y}
 @opindex !=
 @opindex ~=
-@opindex <>
 True if @var{x} is not equal to @var{y}.
 @end table
 
@@ -1116,7 +1114,7 @@ groups right to left.
 
 @item relational
 @samp{<}, @samp{<=}, @samp{==}, @samp{>=}, @samp{>}, @samp{!=},
-@samp{~=}, @samp{<>}.
+@samp{~=}.
 
 @item colon
 @samp{:}.

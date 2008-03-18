@@ -339,7 +339,7 @@ the Octave reserved words (such as all block keywords) and the text
 functions (such as @samp{cd} or @samp{who}) which are also reserved
 using @code{font-lock-keyword-face}
 @item
-the built-in operators (@samp{&&}, @samp{<>}, @dots{}) using
+the built-in operators (@samp{&&}, @samp{==}, @dots{}) using
 @code{font-lock-reference-face}
 @item
 and the function names in function declarations in

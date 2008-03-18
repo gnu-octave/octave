@@ -41,7 +41,7 @@ c               necessary, however.
       integer m,n,k,ldq,ldr
       double complex Q(ldq,*),R(ldr,*),u(*),rr
       double precision c
-      double complex s,w,w1,zdotc
+      double complex s,w,w1
       external zdotc,zlartg,zrot
       integer i,info
 c quick return if possible.
@@ -59,10 +59,10 @@ c check arguments.
         call xerbla('ZQRQHV',info)
       end if
 c form each element of w = Q'*u when necessary.
-      rr = zdotc(m,Q(1,k),1,u,1)
+      call xzdotc(m,Q(1,k),1,u,1,rr)
       do i = k-1,1,-1
         w1 = rr
-        w = zdotc(m,Q(1,i),1,u,1)
+        call xzdotc(m,Q(1,i),1,u,1,w)
         call zlartg(w,w1,c,s,rr)
 c apply rotation to rows of R if necessary        
         if (i <= n) then

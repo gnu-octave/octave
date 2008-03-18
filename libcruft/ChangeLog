@@ -1,3 +1,10 @@
+2008-03-18  John W. Eaton  <jwe@octave.org>
+
+	* qrupdate/zqrqhv.f (zqrqhv): Call xzdotc instead of zdotc.
+	* blas-xtra/xzdotu.f: Eliminate local zdotu variable.
+	* blas-xtra/xzdotc.f: New file.
+	* blas-xtra/Makefile.in (FSRC): Add it to the list.
+
 2008-03-10  John W. Eaton  <jwe@octave.org>
 
 	* blas/zdrot.f, odepack/dlsode.f, odepack/ewset.f,

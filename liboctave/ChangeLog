@@ -5,8 +5,8 @@
 
 2008-03-18  John W. Eaton  <jwe@octave.org>
 
-	* oct-inttypes.h (OCTAVE_DBL_FTR): New macro.
-	Use it to provide double specializations for octave_int_fit_to_range.
+	* oct-inttypes.h (octave_int_fit_to_range):
+	Use partial specialization for double values.
 
 2008-03-08  John W. Eaton  <jwe@octave.org>
 

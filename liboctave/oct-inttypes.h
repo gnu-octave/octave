@@ -128,26 +128,12 @@ octave_int_fit_to_range (const T1& x, const T2& mn, const T2& mx)
   return (x > mx ? mx : (x < mn ? mn : T2 (x)));
 }
 
-#define OCTAVE_DBL_FTR(T) \
-  template <> \
-  inline T \
-  octave_int_fit_to_range<double, T> (const double& x, const T& mn, \
-				      const T& mx) \
-  { \
-    return (lo_ieee_isnan (x) ? 0 : (x > mx ? mx : (x < mn ? mn : static_cast<T> (x)))); \
-  }
-
-OCTAVE_DBL_FTR (char)
-OCTAVE_DBL_FTR (short)
-OCTAVE_DBL_FTR (int)
-OCTAVE_DBL_FTR (long)
-OCTAVE_DBL_FTR (long long)
-
-OCTAVE_DBL_FTR (unsigned char)
-OCTAVE_DBL_FTR (unsigned short)
-OCTAVE_DBL_FTR (unsigned int)
-OCTAVE_DBL_FTR (unsigned long)
-OCTAVE_DBL_FTR (unsigned long long)
+template <typename T>
+inline T
+octave_int_fit_to_range (const double& x, const T& mn, const T& mx)
+{
+  return (lo_ieee_isnan (x) ? 0 : (x > mx ? mx : (x < mn ? mn : static_cast<T> (x))));
+}
 
 // If X is unsigned and the new type is signed, then we only have to
 // check the upper limit, but we should cast the maximum value of the

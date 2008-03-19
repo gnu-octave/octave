@@ -54,11 +54,14 @@ function retval = sinetone (f, r, s, a)
   endif
 
   n = length (f);
+  ns = round (r * s);
 
-  retval = zeros (r * s, n);
+  retval = zeros (ns, n);
+
   for k = 1:n
-    retval (:, k) = a(k) * sin (2 * pi * (1:r*s) / r * f(k))';
+    retval (:, k) = a(k) * sin (2 * pi * (1:ns) / r * f(k))';
   endfor
 
 endfunction
 
+%!assert (size (sinetone (18e6, 150e6, 19550/150e6, 1)), [19550, 1]);

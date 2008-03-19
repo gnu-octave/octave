@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} scatter3 (@var{x}, @var{y}, @var{s}, @var{c})
+## @deftypefn {Function File} {} scatter3 (@var{x}, @var{y}, @var{z}, @var{s}, @var{c})
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, 'filled')
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{style})
 ## @deftypefnx {Function File} {} scatter3 (@dots{}, @var{prop}, @var{val})

@@ -747,9 +747,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	     if (isfield (obj, "markersize"))
 	       if (length (mdat) == nc)
-		 m = mdat(i) / 6;
+		 m = mdat(i);
 	       else
-		 m = mdat / 6;
+		 m = mdat;
 	       endif
 	       if (! strcmpi (style, "lines"))
 		 if (have_newer_gnuplot)

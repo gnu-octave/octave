@@ -52,17 +52,10 @@ function h = __scatter__ (varargin)
   if (istart < nargin && firstnonnumeric > istart)
     s = varargin{istart};
     if (isempty (s))
-      s = 8;
+      s = 6;
     endif
   else
-    s = 8;
-  endif
-  ## Note markersize is in points^2 for 2D and points for 3D, and 
-  ## the below is an approximation, that is empircally visually correct.
-  if (nd == 2)
-    s = sqrt (s) / 2;
-  else
-    s = s / 4;
+    s = 6;
   endif
 
   if (istart < nargin && firstnonnumeric > istart + 1)

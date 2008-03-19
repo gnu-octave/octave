@@ -1,3 +1,11 @@
+2008-03-19  David Bateman  <dbateman@free.fr>
+
+	* plot/__scatter__.m: Modify for change of markersize in
+	__go_draw_axes__.m and for compatibility.
+	* plot/__go_draw_axes__.m: Don't divide the marker size by 6
+	twice.
+	* plot/scatter3.m: Doc fix.
+
 2008-03-18  Ben Abbott <bpabbott@mac.com>
 
 	* specfun/beta.m: Fix for negative inputs.

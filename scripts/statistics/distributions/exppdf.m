@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} exppdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the probability density function
-## (PDF) of the exponential distribution with parameter @var{lambda}.
+## (PDF) of the exponential distribution with mean @var{lambda}.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} exprnd (@var{lambda}, @var{r}, @var{c})
 ## @deftypefnx {Function File} {} exprnd (@var{lambda}, @var{sz})
 ## Return an @var{r} by @var{c} matrix of random samples from the
-## exponential distribution with parameter @var{lambda}, which must be a
+## exponential distribution with mean @var{lambda}, which must be a
 ## scalar or of size @var{r} by @var{c}. Or if @var{sz} is a vector, 
 ## create a matrix of size @var{sz}.
 ##

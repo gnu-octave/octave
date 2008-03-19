@@ -20,7 +20,7 @@
 ## @deftypefn {Function File} {} expcdf (@var{x}, @var{lambda})
 ## For each element of @var{x}, compute the cumulative distribution
 ## function (CDF) at @var{x} of the exponential distribution with
-## parameter @var{lambda}.
+## mean @var{lambda}.
 ##
 ## The arguments can be of common size or scalar.
 ## @end deftypefn

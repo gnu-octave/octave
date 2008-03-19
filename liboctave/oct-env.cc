@@ -299,7 +299,7 @@ octave_env::do_rooted_relative_pathname (const std::string& s) const
 std::string
 octave_env::do_base_pathname (const std::string& s) const
 {
-  if (! do_absolute_pathname (s))
+  if (! (do_absolute_pathname (s) || do_rooted_relative_pathname (s)))
     return s;
 
   size_t pos = s.find_last_of (file_ops::dir_sep_chars);

@@ -521,6 +521,61 @@ public:
   Sparse<T> sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   Sparse<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		 sortmode mode = ASCENDING) const;
+
+  template <class U, class F>
+  Sparse<U>
+  map (F fcn) const
+  {
+    Sparse<U> result;
+    U f_zero = fcn (0.);
+
+    if (f_zero != 0.)
+      {
+	octave_idx_type nr = rows ();
+	octave_idx_type nc = cols ();
+      
+	result = Sparse<U> (nr, nc, f_zero);
+
+	for (octave_idx_type j = 0; j < nc; j++)
+	  for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
+	    {
+	      OCTAVE_QUIT;
+	      /* Use data instead of elem for better performance.  */
+	      result.data (ridx (i) + j * nr) = fcn (data(i));
+	    }
+
+	result.maybe_compress (true);
+      }
+    else
+      {
+	octave_idx_type nz = nnz ();
+	octave_idx_type nr = rows ();
+	octave_idx_type nc = cols ();
+
+	result = Sparse<U> (nr, nc, nz);
+	octave_idx_type ii = 0;
+	result.cidx (ii) = 0;
+
+	for (octave_idx_type j = 0; j < nc; j++)
+	  {
+	    for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
+	      {
+		U val = fcn (data (i));
+		if (val != 0.0)
+		  {
+		    result.data (ii) = val;
+		    result.ridx (ii++) = ridx (i);
+		  }
+		OCTAVE_QUIT;
+	      }
+	    result.cidx (j+1) = ii;
+	  }
+
+	result.maybe_compress (false);
+      }
+
+    return result;
+  }
 };
 
 // NOTE: these functions should be friends of the Sparse<T> class and

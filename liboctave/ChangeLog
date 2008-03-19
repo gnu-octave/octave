@@ -1,3 +1,17 @@
+2008-03-19  David Bateman  <dbateman@free.fr>
+
+	* Sparse.h (template <class U, class F> Sparse<U> map (F fcn)
+	const): New template function.
+	* MSparse.h (template <class U, class F> MSparse<U> map (F fcn)
+	const): ditto.
+	* dSparse.cc (SparseMatrix SparseMatrix::map (dmapper) const,
+	SparseComplexMatrix SparseMatrix::map (cmapper) const,
+	SparseBoolMatrix SparseMatrix::map (bmapper) const): Rewrite in
+	terms of the new template functor.
+	* CSparse.cc (SparseMatrix SparseComplexMatrix::map (dmapper) const,
+	SparseComplexMatrix SparseComplexMatrix::map (cmapper) const,
+	SparseBoolMatrix SparseComplexMatrix::map (bmapper) const): ditto.
+	
 2008-03-18  David Bateman  <dbateman@free.fr>
 
 	* lo-specfun.cc (Complex xlgamma (const Complex&)): New function.

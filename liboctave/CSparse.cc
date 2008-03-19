@@ -39,6 +39,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "CSparse.h"
 #include "boolSparse.h"
 #include "dSparse.h"
+#include "functor.h"
 #include "oct-spparms.h"
 #include "SparseCmplxLU.h"
 #include "oct-sparse.h"
@@ -7445,164 +7446,19 @@ SparseComplexMatrix::diag (octave_idx_type k) const
 SparseMatrix
 SparseComplexMatrix::map (dmapper fcn) const
 {
-  SparseMatrix result;
-  double f_zero = fcn (0.);
-
-  if (f_zero != 0.)
-    {
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-      
-      result = SparseMatrix (nr, nc, f_zero);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	  {
-	    OCTAVE_QUIT;
-	    /* Use data instead of elem for better performance.  */
-	    result.data (ridx (i) + j * nr) = fcn (data(i));
-	  }
-
-      result.maybe_compress (true);
-    }
-  else
-    {
-      octave_idx_type nz = nnz ();
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-
-      result = SparseMatrix (nr, nc, nz);
-      octave_idx_type ii = 0;
-      result.cidx (ii) = 0;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	    {
-	      double val = fcn (data (i));
-	      if (val != 0.0)
-		{
-		  result.data (ii) = val;
-		  result.ridx (ii++) = ridx (i);
-		}
-	      OCTAVE_QUIT;
-	    }
-	  result.cidx (j+1) = ii;
-	}
-
-      result.maybe_compress (false);
-    }
-
-  return result;
+  return MSparse<Complex>::map<double> (func_ptr (fcn));
 }
 
 SparseComplexMatrix
 SparseComplexMatrix::map (cmapper fcn) const
 {
-  SparseComplexMatrix result;
-  Complex f_zero = fcn (0.);
-
-  if (f_zero != 0.)
-    {
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-      
-      result = SparseComplexMatrix (nr, nc, f_zero);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	  {
-	    OCTAVE_QUIT;
-	    /* Use data instead of elem for better performance.  */
-	    result.data (ridx (i) + j * nr) = fcn (data(i));
-	  }
-
-      result.maybe_compress (true);
-    }
-  else
-    {
-      octave_idx_type nz = nnz ();
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-
-      result = SparseComplexMatrix (nr, nc, nz);
-      Complex zero = Complex (0.0, 0.0);
-      octave_idx_type ii = 0;
-      result.cidx (ii) = 0;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	    {
-	      Complex val = fcn (data (i));
-	      if (val != zero)
-		{
-		  result.data (ii) = val;
-		  result.ridx (ii++) = ridx (i);
-		}
-	      OCTAVE_QUIT;
-	    }
-	  result.cidx (j+1) = ii;
-	}
-
-      result.maybe_compress (false);
-    }
-
-  return result;
+  return MSparse<Complex>::map<Complex> (func_ptr (fcn));
 }
 
 SparseBoolMatrix
 SparseComplexMatrix::map (bmapper fcn) const
 {
-  SparseBoolMatrix result;
-  bool f_zero = fcn (0.);
-
-  if (f_zero)
-    {
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-      
-      result = SparseBoolMatrix (nr, nc, f_zero);
-
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	  {
-	    OCTAVE_QUIT;
-	    /* Use data instead of elem for better performance.  */
-	    result.data (ridx (i) + j * nr) = fcn (data(i));
-	  }
-
-      result.maybe_compress (true);
-    }
-  else
-    {
-      octave_idx_type nz = nnz ();
-      octave_idx_type nr = rows ();
-      octave_idx_type nc = cols ();
-
-      result = SparseBoolMatrix (nr, nc, nz);
-      octave_idx_type ii = 0;
-      result.cidx (ii) = 0;
-
-      for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  for (octave_idx_type i = cidx(j); i < cidx (j+1); i++)
-	    {
-	      bool val = fcn (data (i));
-	      if (val)
-		{
-		  result.data (ii) = val;
-		  result.ridx (ii++) = ridx (i);
-		}
-	      OCTAVE_QUIT;
-	    }
-	  result.cidx (j+1) = ii;
-	}
-
-      result.maybe_compress (false);
-    }
-
-  return result;
+  return MSparse<Complex>::map<bool> (func_ptr (fcn));
 }
 
 std::ostream&

@@ -112,6 +112,12 @@ public:
     { return Sparse<T>::ipermute (vec); }
 
 
+  template <class U, class F>
+  MSparse<U> map (F fcn) const
+  {
+    return Sparse<T>::template map<U> (fcn);
+  }
+
   // Currently, the OPS functions don't need to be friends, but that
   // may change.
 

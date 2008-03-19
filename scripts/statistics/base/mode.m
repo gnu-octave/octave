@@ -60,26 +60,26 @@ function [m, f, c] = mode (x, dim)
   sz3 = ones (1, nd);
   sz3 (dim) = sz (dim);
 
+  if (issparse (x))
+    t2 = sparse (sz(1), sz(2));
+  else
+    t2 = zeros (sz);
+  endif
+
   if (dim != 1)
-    perm = [1 : nd];
-    perm(1) = dim;
-    perm(dim) = 1;
+    perm = [dim, 1:dim-1, dim+1:nd];
+    t2 = permute (t2, perm);
   endif
 
   xs = sort (x, dim);
   t = cat (dim, true (sz2), diff (xs, 1, dim) != 0);
-  if (issparse (x))
-    t2 = sparse (sz(1), sz(2));
-  else
-    t2 = zeros (size (t));
-  endif
 
   if (dim != 1)
-    t2 (permute (t != 0, perm)) = diff ([find(permute (t, perm)); prod(sz)+1]);
+    t2 (permute (t != 0, perm)) = diff ([find(permute (t, perm))(:); prod(sz)+1]);
     f = max (ipermute (t2, perm), [], dim);
     xs = permute (xs, perm);
   else
-    t2 (t) = diff ([find(t); prod(sz)+1]);
+    t2 (t) = diff ([find(t)(:); prod(sz)+1]);
     f = max (t2, [], dim);
   endif
 
@@ -112,3 +112,40 @@ endfunction
 %! assert (m, sparse (m2));
 %! assert (f, sparse (f2));
 %! assert (c, cellfun (@(x) sparse (0), c2, 'UniformOutput', false));
+
+%!assert(mode([2,3,1,2,3,4],1),[2,3,1,2,3,4])
+%!assert(mode([2,3,1,2,3,4],2),2)
+%!assert(mode([2,3,1,2,3,4]),2)
+
+%!assert(mode([2;3;1;2;3;4],1),2)
+%!assert(mode([2;3;1;2;3;4],2),[2;3;1;2;3;4])
+%!assert(mode([2;3;1;2;3;4]),2)
+
+%!shared x
+%! x(:,:,1) = toeplitz (1:3);
+%! x(:,:,2) = circshift (toeplitz (1:3), 1);
+%! x(:,:,3) = circshift (toeplitz (1:3), 2);
+%!test
+%! [m, f, c] = mode (x, 1);
+%! assert (reshape (m, [3, 3]), [1 1 1; 2 2 2; 1 1 1])
+%! assert (reshape (f, [3, 3]), [1 1 1; 2 2 2; 1 1 1])
+%! c = reshape (c, [3, 3]);
+%! assert (c{1}, [1; 2; 3])
+%! assert (c{2}, 2)
+%! assert (c{3}, [1; 2; 3])
+%!test
+%! [m, f, c] = mode (x, 2);
+%! assert (reshape (m, [3, 3]), [1 1 2; 2 1 1; 1 2 1])
+%! assert (reshape (f, [3, 3]), [1 1 2; 2 1 1; 1 2 1])
+%! c = reshape (c, [3, 3]);
+%! assert (c{1}, [1; 2; 3])
+%! assert (c{2}, 2)
+%! assert (c{3}, [1; 2; 3])
+%!test
+%! [m, f, c] = mode (x, 3);
+%! assert (reshape (m, [3, 3]), [1 2 1; 1 2 1; 1 2 1])
+%! assert (reshape (f, [3, 3]), [1 2 1; 1 2 1; 1 2 1])
+%! c = reshape (c, [3, 3]);
+%! assert (c{1}, [1; 2; 3])
+%! assert (c{2}, [1; 2; 3])
+%! assert (c{3}, [1; 2; 3])

@@ -108,7 +108,7 @@ along with Octave; see the file COPYING.  If not, see
 	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
 	      OCTAVE_QUIT; \
-	      int tmp = index.elem (i) + 1; \
+	      octave_idx_type tmp = index.elem (i) + 1; \
 	      idx.elem (i) = (tmp <= 0) \
 		? nan_val : static_cast<double> (tmp); \
 	    } \
@@ -254,7 +254,7 @@ along with Octave; see the file COPYING.  If not, see
 	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
 	      OCTAVE_QUIT; \
-	      int tmp = index.elem (i) + 1; \
+	      octave_idx_type tmp = index.elem (i) + 1; \
 	      idx.elem (i) = (tmp <= 0) \
 		? nan_val : static_cast<double> (tmp); \
 	    } \
@@ -593,6 +593,33 @@ minimum value(s). Thus,\n\
   MINMAX_BODY (min);
 }
 
+/*
+
+%% test/octave.test/arith/min-1.m
+%!assert (min ([1, 4, 2, 3]) == 1);
+%!assert (min ([1; -10; 5; -2]) == -10);
+
+%% test/octave.test/arith/min-2.m
+%!assert(all (min ([4, i; -2, 2]) == [-2, i]));
+
+%% test/octave.test/arith/min-3.m
+%!error <Invalid call to min.*> min ();
+
+%% test/octave.test/arith/min-4.m
+%!error <Invalid call to min.*> min (1, 2, 3, 4);
+
+%!test
+%! x = reshape (1:8,[2,2,2]);
+%! assert (max (x,[],1), reshape ([2, 4, 6, 8], [1,2,2]));
+%! assert (max (x,[],2), reshape ([3, 4, 7, 8], [2,1,2]));
+%! [y, i ] = max (x, [], 3);
+%! assert (y, [5, 7; 6, 8]);
+%! assert (ndims(y), 2);
+%! assert (i, [2, 2; 2, 2]);
+%! assert (ndims(i), 2);
+
+*/
+
 DEFUN_DLD (max, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} max (@var{x}, @var{y}, @var{dim})\n\
@@ -639,6 +666,34 @@ maximum value(s). Thus,\n\
 {
   MINMAX_BODY (max);
 }
+
+/* 
+
+%% test/octave.test/arith/max-1.m
+%!assert (max ([1, 4, 2, 3]) == 4);
+%!assert (max ([1; -10; 5; -2]) == 5);
+ 
+%% test/octave.test/arith/max-2.m
+%!assert(all (max ([4, i 4.999; -2, 2, 3+4i]) == [4, 2, 3+4i]));
+
+%% test/octave.test/arith/max-3.m
+%!error <Invalid call to max.*> max ();
+
+%% test/octave.test/arith/max-4.m
+%!error <Invalid call to max.*> max (1, 2, 3, 4);
+
+%!test
+%! x = reshape (1:8,[2,2,2]);
+%! assert (min (x,[],1), reshape ([1, 3, 5, 7], [1,2,2]));
+%! assert (min (x,[],2), reshape ([1, 2, 5, 6], [2,1,2]));
+%! [y, i ] = min (x, [], 3);
+%! assert (y, [1, 3; 2, 4]);
+%! assert (ndims(y), 2);
+%! assert (i, [1, 1; 1, 1]);
+%! assert (ndims(i), 2);
+
+
+*/
 
 /*
 ;;; Local Variables: ***

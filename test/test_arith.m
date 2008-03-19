@@ -135,32 +135,6 @@
 %! s.a = 1;
 %! fail("gcd (s)");
 
-%% test/octave.test/arith/max-1.m
-%!assert (max ([1, 4, 2, 3]) == 4);
-%!assert (max ([1; -10; 5; -2]) == 5);
-
-%% test/octave.test/arith/max-2.m
-%!assert(all (max ([4, i 4.999; -2, 2, 3+4i]) == [4, 2, 3+4i]));
-
-%% test/octave.test/arith/max-3.m
-%!error <Invalid call to max.*> max ();
-
-%% test/octave.test/arith/max-4.m
-%!error <Invalid call to max.*> max (1, 2, 3, 4);
-
-%% test/octave.test/arith/min-1.m
-%!assert (min ([1, 4, 2, 3]) == 1);
-%!assert (min ([1; -10; 5; -2]) == -10);
-
-%% test/octave.test/arith/min-2.m
-%!assert(all (min ([4, i; -2, 2]) == [-2, i]));
-
-%% test/octave.test/arith/min-3.m
-%!error <Invalid call to min.*> min ();
-
-%% test/octave.test/arith/min-4.m
-%!error <Invalid call to min.*> min (1, 2, 3, 4);
-
 %% test/octave.test/arith/round-1.m
 %!assert((round (1) == 1 && round (1.1) == 1 && round (5.5) == 6
 %! && round (i) == i && round (2.5+3.5i) == 3+4i && round (-2.6) == -3));

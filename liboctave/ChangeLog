@@ -1,5 +1,9 @@
 2008-03-18  David Bateman  <dbateman@free.fr>
 
+	* dNDArray.cc (NDArray::min, NDArraymax): chop trailing singletons.
+	* CNDarray.cc (ComplexNDArray::min, CompelxNDArray::max): ditto.
+	* intNDarray.cc (intNDArray<T>::min, intNDArray<T>::max): ditto.
+	
 	* Array.cc (Array<T>::index): Don't short_freeze on index with
 	fewer dimensions than the array only if the last dimension is empty.
 

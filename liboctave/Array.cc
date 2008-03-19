@@ -3283,7 +3283,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
 		  if (nelem >= 1
 		      && ((k < rhs_dims.length () && nelem == rhs_dims(k))
-			  || rhs_is_scalar))
+			  || rhs_is_scalar) || ! idx(i).is_colon())
 		    k++;
 		  else if (! (nelem == 1 || rhs_is_scalar))
 		    {

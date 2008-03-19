@@ -1,5 +1,8 @@
 2008-03-19  David Bateman  <dbateman@free.fr>
 
+	* Array.cc (assignN): If orig_empty allow assignment like
+	a(1:10,1)=1:10
+
 	* Sparse.h (template <class U, class F> Sparse<U> map (F fcn)
 	const): New template function.
 	* MSparse.h (template <class U, class F> MSparse<U> map (F fcn)

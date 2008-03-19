@@ -59,6 +59,9 @@ static double
 xlgamma (double x)
 {
   double result;
+#ifdef HAVE_LGAMMA
+  result = lgamma (x);
+#else
   double sgngam;
 
   if (lo_ieee_isnan (x))
@@ -67,7 +70,7 @@ xlgamma (double x)
     result = octave_Inf;
   else
     F77_XFCN (dlgams, DLGAMS, (&x, &result, &sgngam));
-
+#endif
   return result;
 }
 

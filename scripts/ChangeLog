@@ -1,3 +1,7 @@
+2008-03-18  Ben Abbott <bpabbott@mac.com>
+
+	* specfun/beta.m: Fix for negative inputs.
+
 2008-03-18  Michael D. Godfrey  <godfrey@isl.stanford.edu>
 
 	* plot/__go_draw_axes__.m: Use correct symbol codes.

@@ -1,5 +1,9 @@
 2008-03-18  David Bateman  <dbateman@free.fr>
 
+	* ov-re-mat.cc (lgamma): Convert to a allow negative arguments.
+	* ov-re-sparse.cc (lgamma): ditto.
+	* ov-scalar.cc (lgamma): ditto.
+
 	* DLD-FUNCTIONS/minmax.cc: 64-bit indexing fix.
 
 2008-03-13  John W. Eaton  <jwe@octave.org>

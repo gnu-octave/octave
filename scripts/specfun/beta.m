@@ -19,7 +19,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Mapping Function} {} beta (@var{a}, @var{b})
-## Return the Beta function,
+## For real inputs, return the Beta function,
 ## @iftex
 ## @tex
 ## $$
@@ -45,7 +45,15 @@ function retval = beta (a, b)
     print_usage ();
   endif
 
-  retval = exp (gammaln (a) + gammaln (b) - gammaln (a+b));
+  if (any (size (a) != size (b)) && numel (a) != 1 && numel (b) != 1)
+    error ("beta: inputs have inconsistent sizes.")
+  endif
+
+  if (! isreal (a) || ! isreal (b))
+    error ("beta: inputs must be real.")
+  endif
+
+  retval = real (exp (gammaln (a) + gammaln (b) - gammaln (a+b)));
 
 endfunction
 
@@ -61,3 +69,16 @@ endfunction
 
 %!error beta(1);
 
+%!assert (1, beta (1, 1))
+
+%!test
+%! a = 2:10;
+%! tol = 10 * max (a) * eps;
+%! assert (-a, beta (-1./a, 1), tol)
+%! assert (-a, beta (1, -1./a), tol)
+
+%!test
+%! a = 0.25 + (0:5) * 0.5;
+%! tol = 10 * max (a) * eps;
+%! assert (zeros (size (a)), beta (a, -a), tol)
+%! assert (zeros (size (a)), beta (-a, a), tol)

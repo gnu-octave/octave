@@ -196,6 +196,34 @@ xlgamma (double x)
 #endif
 }
 
+Complex
+xlgamma (const Complex& xc)
+{
+  // Can only be called with a real value of x.
+  double x = xc.real ();
+  double result;
+
+#if defined (HAVE_LGAMMA_R)
+  int sgngam;
+  result = lgamma_r (x, &sgngam);    
+#else
+  double sgngam;
+
+  if (xisnan (x))
+    result = x;
+  else if (xisinf (x))
+    result = octave_Inf;
+  else
+    F77_XFCN (dlgams, DLGAMS, (x, result, sgngam));
+
+#endif
+
+  if (sgngam < 0)
+    return result + Complex (0., M_PI);
+  else
+    return result;
+}
+
 static inline Complex
 zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 

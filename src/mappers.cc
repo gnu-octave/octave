@@ -725,8 +725,7 @@ DEFUN (lgamma, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} lgamma (@var{x})\n\
 @deftypefnx {Mapping Function} {} gammaln (@var{x})\n\
-Return the natural logarithm of the absolute value of the gamma\n\
-function of @var{x}.\n\
+Return the natural logarithm of the gamma function of @var{x}.\n\
 @seealso{gamma, gammai}\n\
 @end deftypefn")
 {

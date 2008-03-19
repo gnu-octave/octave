@@ -893,78 +893,156 @@ width 0.6pt \tabskip=0pt\cr
 \noalign{\hrule height 0.6pt}
 & Code && Sym && Code && Sym && Code && Sym &\cr
 \noalign{\hrule}
-& $\backslash$forall && $\forall$ && $\backslash$exists && $\exists$ && $\backslash$ni && $\ni$ &\cr
-& $\backslash$cong && $\cong$ && $\backslash$Delta && $\Delta$ && $\backslash$Phi && $\Phi$ &\cr
-& $\backslash$Gamma && $\Gamma$ && $\backslash$vartheta && $\vartheta$ && $\backslash$Lambda && $\Lambda$ &\cr
-& $\backslash$Pi && $\Pi$ && $\backslash$Theta && $\Theta$ && $\backslash$Sigma && $\Sigma$ &\cr
-& $\backslash$varsigma && $\varsigma$ && $\backslash$Omega && $\Omega$ && $\backslash$Xi && $\Xi$ &\cr
-& $\backslash$Psi && $\Psi$ && $\backslash$perp && $\perp$ && $\backslash$alpha && $\alpha$ &\cr
-& $\backslash$beta && $\beta$ && $\backslash$chi && $\chi$ && $\backslash$delta && $\delta$ &\cr
-& $\backslash$epsilon && $\epsilon$ && $\backslash$phi && $\phi$ && $\backslash$gamma && $\gamma$ &\cr
-& $\backslash$eta && $\eta$ && $\backslash$iota && $\iota$ && $\backslash$kappa && $\kappa$ &\cr
-& $\backslash$lambda && $\lambda$ && $\backslash$mu && $\mu$ && $\backslash$nu && $\nu$ &\cr
-& $\backslash$o && $\o$ && $\backslash$pi && $\pi$ && $\backslash$theta && $\theta$ &\cr
-& $\backslash$rho && $\rho$ && $\backslash$sigma && $\sigma$ && $\backslash$tau && $\tau$ &\cr
-& $\backslash$upsilon && $\upsilon$ && $\backslash$varpi && $\varpi$ && $\backslash$omega && $\omega$ &\cr
-& $\backslash$xi && $\xi$ && $\backslash$psi && $\psi$ && $\backslash$zeta && $\zeta$ &\cr
-& $\backslash$sim && $\sim$ && $\backslash$Upsilon && $\Upsilon$ && $\backslash$prime && $\prime$ &\cr
-& $\backslash$leq && $\leq$ && $\backslash$infty && $\infty$ && $\backslash$clubsuit && $\clubsuit$ &\cr
-& $\backslash$diamondsuit && $\diamondsuit$ && $\backslash$heartsuit && $\heartsuit$ && $\backslash$spadesuit && $\spadesuit$ &\cr
-& $\backslash$leftrightarrow && $\leftrightarrow$ && $\backslash$leftarrow && $\leftarrow$ && $\backslash$uparrow && $\uparrow$ &\cr
-& $\backslash$rightarrow && $\rightarrow$ && $\backslash$downarrow && $\downarrow$ && $\backslash$circ && $\circ$ &\cr
-& $\backslash$pm && $\pm$ && $\backslash$geq && $\geq$ && $\backslash$times && $\times$ &\cr
-& $\backslash$propto && $\propto$ && $\backslash$partial && $\partial$ && $\backslash$bullet && $\bullet$ &\cr
-& $\backslash$div && $\div$ && $\backslash$neq && $\neq$ && $\backslash$equiv && $\equiv$ &\cr
-& $\backslash$approx && $\approx$ && $\backslash$ldots && $\ldots$ && $\backslash$mid && $\mid$ &\cr
-& $\backslash$aleph && $\aleph$ && $\backslash$Im && $\Im$ && $\backslash$Re && $\Re$ &\cr
-& $\backslash$wp && $\wp$ && $\backslash$otimes && $\otimes$ && $\backslash$oplus && $\oplus$ &\cr
-& $\backslash$oslash && $\oslash$ && $\backslash$cap && $\cap$ && $\backslash$cup && $\cup$ &\cr
-& $\backslash$supset && $\supset$ && $\backslash$supseteq && $\supseteq$ && $\backslash$subset && $\subset$ &\cr
-& $\backslash$subseteq && $\subseteq$ && $\backslash$in && $\in$ && $\backslash$langle && $\langle$ &\cr
-& $\backslash$rangle && $\rangle$ && $\backslash$nabla && $\nabla$ && $\backslash$surd && $\surd$ &\cr
-& $\backslash$cdot && $\cdot$ && $\backslash$neg && $\neg$ && $\backslash$wedge && $\wedge$ &\cr
-& $\backslash$vee && $\vee$ && $\backslash$copyright && $\copyright$ && $\backslash$rfloor && $\rfloor$ &\cr
-& $\backslash$lceil && $\lceil$ && $\backslash$lfloor && $\lfloor$ && $\backslash$rceil && $\rceil$ &\cr
-& $\backslash$int && $\int$ && && && && &\cr
+& $\backslash$forall    && $\forall$ 
+&& $\backslash$exists   && $\exists$ 
+&& $\backslash$ni       && $\ni$       &\cr
+& $\backslash$cong      && $\cong$ 
+&& $\backslash$Delta    && $\Delta$ 
+&& $\backslash$Phi      && $\Phi$      &\cr
+& $\backslash$Gamma     && $\Gamma$ 
+&& $\backslash$vartheta && $\vartheta$ 
+&& $\backslash$Lambda   && $\Lambda$   &\cr
+& $\backslash$Pi        && $\Pi$ 
+&& $\backslash$Theta    && $\Theta$ 
+&& $\backslash$Sigma    && $\Sigma$    &\cr
+& $\backslash$varsigma  && $\varsigma$ 
+&& $\backslash$Omega    && $\Omega$ 
+&& $\backslash$Xi       && $\Xi$       &\cr
+& $\backslash$Psi       && $\Psi$ 
+&& $\backslash$perp     && $\perp$ 
+&& $\backslash$alpha    && $\alpha$    &\cr
+& $\backslash$beta      && $\beta$ 
+&& $\backslash$chi      && $\chi$ 
+&& $\backslash$delta    && $\delta$    &\cr
+& $\backslash$epsilon   && $\epsilon$ 
+&& $\backslash$phi      && $\phi$ 
+&& $\backslash$gamma    && $\gamma$    &\cr
+& $\backslash$eta       && $\eta$ 
+&& $\backslash$iota     && $\iota$ 
+&& $\backslash$varphi   && $\varphi$   &\cr
+& $\backslash$kappa     && $\kappa$ 
+&& $\backslash$lambda   && $\lambda$ 
+&& $\backslash$mu       && $\mu$       &\cr
+& $\backslash$nu        && $\nu$ 
+&& $\backslash$o        && $\o$ 
+&& $\backslash$pi       && $\pi$       &\cr
+& $\backslash$theta     && $\theta$ 
+&& $\backslash$rho      && $\rho$ 
+&& $\backslash$sigma    && $\sigma$    &\cr
+& $\backslash$tau       && $\tau$
+&& $\backslash$upsilon  && $\upsilon$ 
+&& $\backslash$varpi    && $\varpi$    &\cr
+& $\backslash$omega     && $\omega$ 
+&& $\backslash$xi       && $\xi$ 
+&& $\backslash$psi      && $\psi$      &\cr
+& $\backslash$zeta      && $\zeta$ 
+&& $\backslash$sim      && $\sim$ 
+&& $\backslash$Upsilon  && $\Upsilon$  &\cr
+& $\backslash$prime     && $\prime$ 
+&& $\backslash$leq      && $\leq$ 
+&& $\backslash$infty    && $\infty$    &\cr
+& $\backslash$clubsuit  && $\clubsuit$ 
+&& $\backslash$diamondsuit    && $\diamondsuit$ 
+&& $\backslash$heartsuit      && $\heartsuit$     &\cr
+& $\backslash$spadesuit       && $\spadesuit$ 
+&& $\backslash$leftrightarrow && $\leftrightarrow$ 
+&& $\backslash$leftarrow      && $\leftarrow$     &\cr
+& $\backslash$uparrow         && $\uparrow$ 
+&& $\backslash$rightarrow     && $\rightarrow$ 
+&& $\backslash$downarrow      && $\downarrow$     &\cr
+& $\backslash$circ      && $\circ$ 
+&& $\backslash$pm       && $\pm$ 
+&& $\backslash$geq      && $\geq$      &\cr
+& $\backslash$times     && $\times$ 
+&& $\backslash$propto   && $\propto$ 
+&& $\backslash$partial  && $\partial$  &\cr
+& $\backslash$bullet    && $\bullet$
+&& $\backslash$div      && $\div$ 
+&& $\backslash$neq      && $\neq$      &\cr
+& $\backslash$equiv     && $\equiv$ 
+&& $\backslash$approx   && $\approx$ 
+&& $\backslash$ldots    && $\ldots$ &\cr
+& $\backslash$mid       && $\mid$ 
+&& $\backslash$aleph    && $\aleph$ 
+&& $\backslash$Im       && $\Im$ &\cr
+& $\backslash$Re        && $\Re$ 
+&& $\backslash$wp       && $\wp$ 
+&& $\backslash$otimes   && $\otimes$ &\cr
+& $\backslash$oplus     && $\oplus$ 
+&& $\backslash$oslash   && $\oslash$ 
+&& $\backslash$cap      && $\cap$ &\cr
+& $\backslash$cup       && $\cup$ 
+&& $\backslash$supset   && $\supset$ 
+&& $\backslash$supseteq && $\supseteq$ &\cr
+& $\backslash$subset    && $\subset$ 
+&& $\backslash$subseteq && $\subseteq$ 
+&& $\backslash$in       && $\in$ &\cr
+& $\backslash$notin     && $\notin$
+&& $\backslash$angle    && $\angle$
+&& $\backslash$bigtriangledown && $\bigtriangledown$ &\cr
+& $\backslash$langle    && $\langle$ 
+&& $\backslash$rangle   && $\rangle$ 
+&& $\backslash$nabla    && $\nabla$    &\cr
+& $\backslash$prod      && $\prod$
+&& $\backslash$surd     && $\surd$ 
+&& $\backslash$cdot     && $\cdot$     &\cr
+& $\backslash$neg       && $\neg$ 
+&& $\backslash$wedge    && $\wedge$ 
+&& $\backslash$vee      && $\vee$      &\cr
+& $\backslash$Leftrightarrow && $\Leftrightarrow$
+&& $\backslash$Leftarrow     && $\Leftarrow$
+&& $\backslash$Uparrow       && $\Uparrow$           &\cr
+& $\backslash$Rightarrow     && $\Rightarrow$
+&& $\backslash$Downarrow     && $\Downarrow$
+&& $\backslash$diamond  && $\diamond$  &\cr
+& $\backslash$copyright && $\copyright$ 
+&& $\backslash$rfloor   && $\rfloor$ 
+&& $\backslash$lceil    && $\lceil$    &\cr
+& $\backslash$lfloor    && $\lfloor$ 
+&& $\backslash$rceil    && $\rceil$ 
+&& $\backslash$int      && $\int$      &\cr
 \noalign{\hrule height 0.6pt}
 }}\hfill}}
 @end tex
 @end iftex
 @ifnottex
 @multitable @columnfractions .125 .25 .25 .25 .125
-@item @tab  \forall  @tab  \exists  @tab  \ni  @tab
-@item @tab  \cong  @tab  \Delta  @tab  \Phi  @tab
-@item @tab  \Gamma  @tab  \vartheta  @tab  \Lambda  @tab
-@item @tab  \Pi  @tab  \Theta  @tab  \Sigma  @tab
-@item @tab  \varsigma  @tab  \Omega  @tab  \Xi  @tab
-@item @tab  \Psi  @tab  \perp  @tab  \alpha  @tab
-@item @tab  \beta  @tab  \chi  @tab  \delta  @tab  
-@item @tab  \epsilon  @tab  \phi  @tab  \gamma  @tab
-@item @tab  \eta  @tab  \iota  @tab  \kappa  @tab
-@item @tab  \lambda  @tab  \mu  @tab  \nu  @tab
-@item @tab  \o  @tab  \pi  @tab  \theta  @tab
-@item @tab  \rho  @tab  \sigma  @tab  \tau  @tab
-@item @tab  \upsilon  @tab  \varpi  @tab  \omega  @tab
-@item @tab  \xi  @tab  \psi  @tab  \zeta  @tab
-@item @tab  \sim  @tab  \Upsilon  @tab  \prime  @tab
-@item @tab  \leq  @tab  \infty  @tab  \clubsuit  @tab
-@item @tab  \diamondsuit  @tab  \heartsuit  @tab  \spadesuit  @tab
-@item @tab  \leftrightarrow  @tab  \leftarrow  @tab  \uparrow  @tab
-@item @tab  \rightarrow  @tab  \downarrow  @tab  \circ  @tab
-@item @tab  \pm  @tab  \geq  @tab  \times  @tab
-@item @tab  \propto  @tab  \partial  @tab  \bullet  @tab
-@item @tab  \div  @tab  \neq  @tab  \equiv  @tab
-@item @tab  \approx  @tab  \ldots  @tab  \mid  @tab
-@item @tab  \aleph  @tab  \Im  @tab  \Re  @tab
-@item @tab  \wp  @tab  \otimes  @tab  \oplus  @tab
-@item @tab  \oslash  @tab  \cap  @tab  \cup  @tab  
-@item @tab  \supset  @tab  \supseteq  @tab  \subset  @tab
-@item @tab  \subseteq  @tab  \in  @tab  \langle  @tab
-@item @tab  \rangle  @tab  \nabla  @tab  \surd  @tab
-@item @tab  \cdot  @tab  \neg  @tab  \wedge  @tab
-@item @tab  \vee  @tab  \copyright  @tab  \rfloor  @tab
-@item @tab  \lceil  @tab  \lfloor  @tab  \rceil  @tab
-@item @tab  \int  @tab  @tab  @tab
+@item @tab  \forall     @tab  \exists     @tab  \ni      @tab
+@item @tab  \cong       @tab  \Delta      @tab  \Phi     @tab
+@item @tab  \Gamma      @tab  \vartheta   @tab  \Lambda  @tab
+@item @tab  \Pi         @tab  \Theta      @tab  \Sigma   @tab
+@item @tab  \varsigma   @tab  \Omega      @tab  \Xi      @tab
+@item @tab  \Psi        @tab  \perp       @tab  \alpha   @tab
+@item @tab  \beta       @tab  \chi        @tab  \delta   @tab  
+@item @tab  \epsilon    @tab  \phi        @tab  \gamma   @tab
+@item @tab  \eta        @tab  \iota       @tab  \varphi  @tab
+@item @tab  \kappa      @tab  \lambda     @tab  \mu      @tab 
+@item @tab  \nu         @tab  \o          @tab  \pi      @tab
+@item @tab  \theta      @tab  \rho        @tab  \sigma   @tab 
+@item @tab  \tau        @tab  \upsilon    @tab  \varpi   @tab
+@item @tab  \omega      @tab  \xi         @tab  \psi     @tab 
+@item @tab  \zeta       @tab  \sim        @tab  \Upsilon @tab
+@item @tab  \prime      @tab  \leq        @tab  \infty   @tab
+@item @tab  \clubsuit   @tab  \diamondsuit    @tab  \heartsuit  @tab
+@item @tab  \spadesuit  @tab  \leftrightarrow @tab  \leftarrow  @tab 
+@item @tab  \uparrow    @tab  \rightarrow @tab  \downarrow @tab 
+@item @tab  \circ       @tab \pm          @tab  \geq     @tab 
+@item @tab  \times      @tab  \propto     @tab  \partial @tab
+@item @tab  \bullet     @tab \div         @tab  \neq     @tab 
+@item @tab  \equiv      @tab  \approx     @tab  \ldots   @tab 
+@item @tab  \mid        @tab  \aleph      @tab  \Im      @tab 
+@item @tab  \Re         @tab \wp          @tab  \otimes  @tab
+@item @tab  \oplus      @tab \oslash      @tab  \cap     @tab 
+@item @tab  \cup        @tab   \supset    @tab  \supseteq @tab 
+@item @tab  \subset     @tab \subseteq    @tab  \in      @tab 
+@item @tab  \notin      @tab \angle       @tab  \bigrightriangledown @tab
+@item @tab  \langle     @tab  \rangle     @tab  \nabla   @tab
+@item @tab  \prod       @tab \surd        @tab  \cdot    @tab 
+@item @tab  \neg        @tab  \wedge      @tab \vee      @tab 
+@item @tab  \Leftrightarrow @tab \Leftarrow @tab \Uparrow @tab
+@item @tab  \Rightarrow @tab \Downarrow   @tab \diamond  @tab
+@item @tab  \copyright  @tab  \lfloor     @tab  \lceil   @tab 
+@item @tab  \rfloor     @tab  \rceil      @tab  \int     @tab 
 @end multitable
 @end ifnottex
 @caption{Available special characters in @sc{TeX} mode}

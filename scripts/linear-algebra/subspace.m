@@ -34,6 +34,12 @@
 
 function ang = subspace (a, b)
 
+  if (nargin != 2)
+    print_usage ();
+  elseif (ndims (a) != 2 || ndims (b) != 2)
+    error ("subspace: expecting A and B to be 2-dimensional arrays");
+  endif
+
   a = orth (a);
   b = orth (b);
   c = a'*b;

@@ -67,8 +67,10 @@
 function retval = tril (x, k)
 
   if (nargin > 0)
+    if (isstruct (x))
+       error ("tril: structure arrays not supported");
+     endif 
     [nr, nc] = size (x);
-    retval = resize (resize (x, 0), nr, nc);
   endif
 
   if (nargin == 1)
@@ -81,6 +83,7 @@ function retval = tril (x, k)
     print_usage ();
   endif
 
+  retval = resize (resize (x, 0), nr, nc);
   for j = 1 : min (nc, nr+k)
     nr_limit = max (1, j-k);
     retval (nr_limit:nr, j) = x (nr_limit:nr, j);

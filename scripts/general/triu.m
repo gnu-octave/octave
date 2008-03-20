@@ -27,10 +27,11 @@
 function retval = triu (x, k)
 
   if (nargin > 0)
+    if (isstruct (x))
+       error ("tril: structure arrays not supported");
+     endif 
     [nr, nc] = size (x);
-    retval = resize (resize (x, 0), nr, nc);
   endif
-
   if (nargin == 1)
     k = 0;
   elseif (nargin == 2)
@@ -41,6 +42,7 @@ function retval = triu (x, k)
     print_usage ();
   endif
 
+  retval = resize (resize (x, 0), nr, nc);
   for j = max (1, k+1) : nc
     nr_limit = min (nr, j-k);
     retval (1:nr_limit, j) = x (1:nr_limit, j);

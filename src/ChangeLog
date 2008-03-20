@@ -1,3 +1,15 @@
+2008-03-20  David Bateman  <dbateman@free.fr>
+
+	* data.cc (static octave_value make_diag (const Cell&,
+	octave_idx_type)): New instantiation of template function.
+	(static octave_value make_diag (const octave_value&,
+	octave_idx_type)): Allow cell arrays.
+
+	* Cell.cc (Cell Cell::diag (void) const, Cell Cell::diag
+	(octave__idx_type)): New methods for diagonal matrices.
+	* Cell.h (Cell Cell::diag (void) const, Cell Cell::diag
+	(octave__idx_type)): Declare them.
+
 2008-03-18  David Bateman  <dbateman@free.fr>
 
 	* ov-re-mat.cc (lgamma): Convert to a allow negative arguments.

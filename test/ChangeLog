@@ -1,5 +1,7 @@
 2008-03-20  David Bateman  <dbateman@free.fr>
 
+	* test_func.m: Modify to test for char, cell and structure arrays.
+
 	* test_func.m: New test code that ensures that all operations
 	which work on dimensions alone (squeeze, triu, etc.) work for all
 	objects and preserve type.

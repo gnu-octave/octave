@@ -976,6 +976,9 @@ make_diag (const uint32NDArray& v, octave_idx_type k);
 
 static octave_value
 make_diag (const uint64NDArray& v, octave_idx_type k);
+
+static octave_value
+make_diag (const Cell& v, octave_idx_type k);
 #endif
 
 template <class T>
@@ -1150,6 +1153,8 @@ make_diag (const octave_value& a, octave_idx_type k)
     retval = make_diag (a.uint32_array_value (), k);
   else if (result_type == "uint64")
     retval = make_diag (a.uint64_array_value (), k);
+  else if (result_type == "cell")
+    retval = make_diag (a.cell_value (), k);
   else
     gripe_wrong_type_arg ("diag", a);
 

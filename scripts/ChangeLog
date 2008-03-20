@@ -1,5 +1,7 @@
 2008-03-20  David Bateman  <dbateman@free.fr>
 
+	* miscellaneous/cast.m: Also allow cast to "char".
+
 	* general/rotdim.m: Ensure k is an integer scale.
 
 	* general/circshift.m: If matrix is empty fast return.

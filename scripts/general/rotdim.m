@@ -58,8 +58,8 @@ function y = rotdim (x, k, plane)
   endif
 
   if (nargin > 1 && ! isempty(k))
-    if (imag (k) != 0 || fix (k) != k)
-      error ("rotdim: k must be an integer");
+    if (!isscalar (k) || imag (k) != 0 || fix (k) != k)
+      error ("rotdim: k must be an scalar integer");
     endif
   else
     k = 1;

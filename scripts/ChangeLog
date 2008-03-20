@@ -1,5 +1,7 @@
 2008-03-20  David Bateman  <dbateman@free.fr>
 
+	* general/rotdim.m: Ensure k is an integer scale.
+
 	* general/circshift.m: If matrix is empty fast return.
 
 2008-03-20  Jaroslav Hajek  <highegg@localhost.localdomain>

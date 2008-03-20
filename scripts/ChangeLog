@@ -6,8 +6,8 @@
 
 2008-03-20  Jaroslav Hajek  <highegg@localhost.localdomain>
 
-	* linear-algebra/subspace.m: Check number of arguments and number
-	of dimensions of arguments.
+	* linear-algebra/subspace.m: Check number of arguments, number
+	of dimensions of arguments and matching dimensions.
 
 2008-03-19  Jaroslav Hajek  <highegg@gmail.com>
 

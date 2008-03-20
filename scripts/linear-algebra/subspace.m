@@ -38,6 +38,8 @@ function ang = subspace (a, b)
     print_usage ();
   elseif (ndims (a) != 2 || ndims (b) != 2)
     error ("subspace: expecting A and B to be 2-dimensional arrays");
+  elseif (rows (a) != rows (b))
+    error ("subspace: column dimensions of a and b must match")
   endif
 
   a = orth (a);

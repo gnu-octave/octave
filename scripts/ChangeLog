@@ -1,3 +1,7 @@
+2008-03-19  Jaroslav Hajek  <highegg@gmail.com>
+
+	* linear-algebra/subspace.m: New function.
+
 2008-03-19  Emil Lucretiu  <emil@la.mine.nu>
 
 	* signal/sinetone.m: Ensure integral number of samples.
@@ -34,6 +38,10 @@
 2008-03-18  Michael D. Godfrey  <godfrey@isl.stanford.edu>
 
 	* plot/__go_draw_axes__.m: Use correct symbol codes.
+
+2008-03-17  Jaroslav Hajek <highegg@gmail.com>
+
+	* linear-algebra/subspace.m: New function.
 
 2008-03-14  Kai Habel  <kai.habel@gmx.de>
 

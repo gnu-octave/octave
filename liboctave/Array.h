@@ -550,6 +550,8 @@ public:
   Array<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		 sortmode mode = ASCENDING) const;
 
+  Array<T> diag (octave_idx_type k = 0) const;
+
   template <class U, class F>
   Array<U>
   map (F fcn) const

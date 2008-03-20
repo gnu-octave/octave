@@ -109,6 +109,8 @@ public:
       return retval;
     }
 
+  boolNDArray diag (octave_idx_type k = 0) const;
+
 private:
 
   boolNDArray (bool *d, dim_vector& dv) : ArrayN<bool> (d, dv) { }

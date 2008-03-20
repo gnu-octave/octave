@@ -501,14 +501,6 @@ operator * (const DiagMatrix& a, const ComplexDiagMatrix& b)
 // other operations
 
 ComplexColumnVector
-ComplexDiagMatrix::diag (void) const
-{
-  return diag (0);
-}
-
-// Could be optimized...
-
-ComplexColumnVector
 ComplexDiagMatrix::diag (octave_idx_type k) const
 {
   octave_idx_type nnr = rows ();

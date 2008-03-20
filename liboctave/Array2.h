@@ -136,6 +136,11 @@ public:
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
 
+  Array2<T> diag (octave_idx_type k) const
+  {
+    return Array<T>::diag (k);
+  }
+
   template <class U, class F>
   Array2<U> map (F fcn) const
   {

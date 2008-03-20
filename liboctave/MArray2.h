@@ -81,6 +81,11 @@ public:
 
   MArray2<T> transpose (void) const { return Array2<T>::transpose (); }
 
+  MArray2<T> diag (octave_idx_type k) const
+  {
+    return Array2<T>::diag (k);
+  }
+
   template <class U, class F>
   MArray2<U> map (F fcn) const
   {

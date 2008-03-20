@@ -115,8 +115,7 @@ public:
 
   static octave_value resize_fill_value (void) { return Matrix (); }
 
-  Cell diag (void) const;
-  Cell diag (octave_idx_type k) const;
+  Cell diag (octave_idx_type k = 0) const;
 
   Cell xisalnum (void) const { return map (&octave_value::xisalnum); }
   Cell xisalpha (void) const { return map (&octave_value::xisalpha); }

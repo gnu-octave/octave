@@ -291,8 +291,7 @@ public:
   Matrix sumsq (int dim = -1) const;
   Matrix abs (void) const;
 
-  ColumnVector diag (void) const;
-  ColumnVector diag (octave_idx_type k) const;
+  Matrix diag (octave_idx_type k = 0) const;
 
   ColumnVector row_min (void) const;
   ColumnVector row_max (void) const;

@@ -89,6 +89,8 @@ public:
 
   static char resize_fill_value (void) { return '\0'; }
 
+  charNDArray diag (octave_idx_type k = 0) const;
+
   typedef int (*mapper) (int);
   boolNDArray bmap (mapper fcn) const;
   NDArray dmap (mapper fcn) const;

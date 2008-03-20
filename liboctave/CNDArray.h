@@ -116,6 +116,8 @@ public:
   //  bool all_elements_are_real (void) const;
   //  bool all_integers (double& max_val, double& min_val) const;
 
+  ComplexNDArray diag (octave_idx_type k = 0) const;
+
   typedef double (*dmapper) (const Complex&);
   typedef Complex (*cmapper) (const Complex&);
   typedef bool (*bmapper) (const Complex&);

@@ -129,6 +129,12 @@ boolNDArray::compute_index (Array<octave_idx_type>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
+boolNDArray
+boolNDArray::diag (octave_idx_type k) const
+{
+  return ArrayN<bool>::diag (k);
+}
+
 NDND_BOOL_OPS (boolNDArray, boolNDArray, false)
 NDND_CMP_OPS (boolNDArray, , boolNDArray, )
 

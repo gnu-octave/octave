@@ -868,6 +868,9 @@ public:
 
   mxArray *as_mxArray (void) const { return rep->as_mxArray (); }
 
+  octave_value diag (octave_idx_type k = 0) const
+    { return rep->diag (k); }
+
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
     { return rep->sort (dim, mode); } 
   octave_value sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,

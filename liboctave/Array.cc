@@ -2624,6 +2624,93 @@ Array<double> Array<double>::sort (Array<octave_idx_type> &sidx,
 
 #endif
 
+template <class T>
+Array<T>
+Array<T>::diag (octave_idx_type k) const
+{
+  dim_vector dv = dims ();
+  octave_idx_type nd = dv.length ();
+  Array<T> d;
+
+  if (nd > 2)
+    (*current_liboctave_error_handler) ("Matrix must be 2-dimensional");    
+  else
+    {
+      octave_idx_type nnr = dv (0);
+      octave_idx_type nnc = dv (1);
+
+      if (nnr == 0 || nnc == 0)
+	; // do nothing
+      else if (nnr != 1 && nnc != 1)
+	{
+	  if (k > 0)
+	    nnc -= k;
+	  else if (k < 0)
+	    nnr += k;
+
+	  if (nnr > 0 && nnc > 0)
+	    {
+	      octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
+
+	      d.resize (dim_vector (ndiag, 1));
+
+	      if (k > 0)
+		{
+		  for (octave_idx_type i = 0; i < ndiag; i++)
+		    d.xelem (i) = elem (i, i+k);
+		}
+	      else if (k < 0)
+		{
+		  for (octave_idx_type i = 0; i < ndiag; i++)
+		    d.xelem (i) = elem (i-k, i);
+		}
+	      else
+		{
+		  for (octave_idx_type i = 0; i < ndiag; i++)
+		    d.xelem (i) = elem (i, i);
+		}
+	    }
+	  else
+	    (*current_liboctave_error_handler)
+	      ("diag: requested diagonal out of range");
+	}
+      else if (nnr != 0 && nnc != 0)
+	{
+	  octave_idx_type roff = 0;
+	  octave_idx_type coff = 0;
+	  if (k > 0)
+	    {
+	      roff = 0;
+	      coff = k;
+	    }
+	  else if (k < 0)
+	    {
+	      roff = -k;
+	      coff = 0;
+	    }
+
+	  if (nnr == 1)
+	    {
+	      octave_idx_type n = nnc + std::abs (k);
+	      d = Array<T> (dim_vector (n, n), resize_fill_value (T ()));
+
+	      for (octave_idx_type i = 0; i < nnc; i++)
+		d.xelem (i+roff, i+coff) = elem (0, i);
+	    }
+	  else
+	    {
+	      octave_idx_type n = nnr + std::abs (k);
+	      d = Array<T> (dim_vector (n, n), resize_fill_value (T ()));
+
+	      for (octave_idx_type i = 0; i < nnr; i++)
+		d.xelem (i+roff, i+coff) = elem (i, 0);
+	    }
+	}
+    }
+
+  return d;
+}
+
 // FIXME -- this is a mess.
 
 template <class LT, class RT>

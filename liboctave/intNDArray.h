@@ -65,8 +65,7 @@ public:
 
   bool any_element_not_one_or_zero (void) const;
 
-  intNDArray diag (void) const;
-  intNDArray diag (octave_idx_type k) const;
+  intNDArray diag (octave_idx_type k = 0) const;
 
   // FIXME -- this is not quite the right thing.
 

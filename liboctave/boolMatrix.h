@@ -64,8 +64,7 @@ public:
 
   // other operations
 
-  boolMatrix diag (void) const;
-  boolMatrix diag (octave_idx_type k) const;
+  boolMatrix diag (octave_idx_type k = 0) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

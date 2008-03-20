@@ -124,6 +124,8 @@ public:
 
   static double resize_fill_value (void) { return 0; }
 
+  NDArray diag (octave_idx_type k = 0) const;
+
   typedef double (*dmapper) (double);
   typedef Complex (*cmapper) (const Complex&);
   typedef bool (*bmapper) (double);

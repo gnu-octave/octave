@@ -5,6 +5,29 @@
 
 2008-03-20  David Bateman  <dbateman@free.fr>
 
+	* Cell.cc (Cell Cell::diag (void) const): delete.
+	(Cell Cell::diag (octave__idx_type) const):Rewrite in terms of
+	template classes function.
+	* Cell.h (Cell diag (void) const): delete.
+
+	* ov.h (octave_value diag (octave_idx_type) const): New method.
+	* ov-base.h (virtual octave_value diag (octave_idx_type) const):
+	New virtual method.
+	* ov-base.cc (octave_value octave_base_value::diag
+	(octave_idx_type) const): New default method.
+	
+	* ov-base-mat.h (octave_value diag (octave_idx_type) const): New
+	method. 
+	* ov-base-sparse.h (octave_value diag (octave_idx_type) const): New
+	method. 
+	* ov-base-scalar.h (octave_value diag (octave_idx_type) const): New
+	method. 
+	* ov-range.h (octave_value diag (octave_idx_type) const): New
+	method. 
+
+	* data.cc (make_diag, make_spdiag): Delete.
+	(Fdiag): Rewrite in terms of octave_value diag function.
+		
 	* data.cc (static octave_value make_diag (const Cell&,
 	octave_idx_type)): New instantiation of template function.
 	(static octave_value make_diag (const octave_value&,

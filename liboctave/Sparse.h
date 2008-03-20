@@ -522,6 +522,8 @@ public:
   Sparse<T> sort (Array<octave_idx_type> &sidx, octave_idx_type dim = 0,
 		 sortmode mode = ASCENDING) const;
 
+  Sparse<T> diag (octave_idx_type k = 0) const;
+
   template <class U, class F>
   Sparse<U>
   map (F fcn) const

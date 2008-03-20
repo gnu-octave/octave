@@ -347,18 +347,13 @@ operator * (const DiagMatrix& a, const DiagMatrix& b)
 // other operations
 
 ColumnVector
-DiagMatrix::diag (void) const
-{
-  return diag (0);
-}
-
-// Could be optimized...
-
-ColumnVector
 DiagMatrix::diag (octave_idx_type k) const
 {
   octave_idx_type nnr = rows ();
   octave_idx_type nnc = cols ();
+
+  if (nnr == 0  || nnc == 0)
+    
   if (k > 0)
     nnc -= k;
   else if (k < 0)

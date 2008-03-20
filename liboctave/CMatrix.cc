@@ -3316,51 +3316,10 @@ Matrix ComplexMatrix::abs (void) const
   return retval;
 }
 
-ComplexColumnVector
-ComplexMatrix::diag (void) const
-{
-  return diag (0);
-}
-
-ComplexColumnVector
+ComplexMatrix
 ComplexMatrix::diag (octave_idx_type k) const
 {
-  octave_idx_type nnr = rows ();
-  octave_idx_type nnc = cols ();
-  if (k > 0)
-    nnc -= k;
-  else if (k < 0)
-    nnr += k;
-
-  ComplexColumnVector d;
-
-  if (nnr > 0 && nnc > 0)
-    {
-      octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
-
-      d.resize (ndiag);
-
-      if (k > 0)
-	{
-	  for (octave_idx_type i = 0; i < ndiag; i++)
-	    d.elem (i) = elem (i, i+k);
-	}
-      else if (k < 0)
-	{
-	  for (octave_idx_type i = 0; i < ndiag; i++)
-	    d.elem (i) = elem (i-k, i);
-	}
-      else
-	{
-	  for (octave_idx_type i = 0; i < ndiag; i++)
-	    d.elem (i) = elem (i, i);
-	}
-    }
-  else
-    (*current_liboctave_error_handler)
-      ("diag: requested diagonal out of range");
-
-  return d;
+  return MArray2<Complex>::diag (k);
 }
 
 bool

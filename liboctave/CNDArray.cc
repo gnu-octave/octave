@@ -991,6 +991,12 @@ ComplexNDArray::compute_index (Array<octave_idx_type>& ra_idx,
   return ::compute_index (ra_idx, dimensions);
 }
 
+ComplexNDArray
+ComplexNDArray::diag (octave_idx_type k) const
+{
+  return MArrayN<Complex>::diag (k);
+}
+
 NDArray
 ComplexNDArray::map (dmapper fcn) const
 {

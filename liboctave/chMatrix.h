@@ -73,8 +73,7 @@ public:
 
   charMatrix extract (octave_idx_type r1, octave_idx_type c1, octave_idx_type r2, octave_idx_type c2) const;
 
-  charMatrix diag (void) const;
-  charMatrix diag (octave_idx_type k) const;
+  charMatrix diag (octave_idx_type k = 0) const;
 
   boolMatrix all (int dim = -1) const;
   boolMatrix any (int dim = -1) const;

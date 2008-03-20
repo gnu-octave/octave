@@ -60,66 +60,11 @@ intNDArray<T>::any_element_not_one_or_zero (void) const
   return false;
 }
 
-
-template <class T>
-intNDArray<T>
-intNDArray<T>::diag (void) const
-{
-  return diag (0);
-}
-
 template <class T>
 intNDArray<T>
 intNDArray<T>::diag (octave_idx_type k) const
 {
-  dim_vector dv = this->dims ();
-  octave_idx_type nd = dv.length ();
-
-  if (nd > 2)
-    {
-      (*current_liboctave_error_handler) ("Matrix must be 2-dimensional");    
-      return intNDArray<T>();
-    }
-  else
-    {
-      octave_idx_type nnr = dv (0);
-      octave_idx_type nnc = dv (1);
-
-      if (k > 0)
-	nnc -= k;
-      else if (k < 0)
-	nnr += k;
-
-      intNDArray<T> d;
-
-      if (nnr > 0 && nnc > 0)
-	{
-	  octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
-
-	  d.resize (dim_vector (ndiag, 1));
-
-	  if (k > 0)
-	    {
-	      for (octave_idx_type i = 0; i < ndiag; i++)
-		d.xelem (i) = this->elem (i, i+k);
-	    }
-	  else if (k < 0)
-	    {
-	      for (octave_idx_type i = 0; i < ndiag; i++)
-		d.xelem (i) = this->elem (i-k, i);
-	    }
-	  else
-	    {
-	      for (octave_idx_type i = 0; i < ndiag; i++)
-		d.xelem (i) = this->elem (i, i);
-	    }
-	}
-      else
-	(*current_liboctave_error_handler)
-	  ("diag: requested diagonal out of range");
-
-      return d;
-    }
+  return MArrayN<T>::diag (k);
 }
 
 // FIXME -- this is not quite the right thing.

@@ -458,6 +458,8 @@ public:
 
   virtual mxArray *as_mxArray (void) const;
 
+  virtual octave_value diag (octave_idx_type k = 0) const;
+
   virtual octave_value sort (octave_idx_type dim = 0, 
 			     sortmode mode = ASCENDING) const;
   virtual octave_value sort (Array<octave_idx_type> &sidx, 

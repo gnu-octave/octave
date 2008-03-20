@@ -2253,6 +2253,156 @@ Sparse<T>::sort (Array<octave_idx_type> &sidx, octave_idx_type dim,
   return m;
 }
 
+template <class T>
+Sparse<T>
+Sparse<T>::diag (octave_idx_type k) const
+{
+  octave_idx_type nnr = rows ();
+  octave_idx_type nnc = cols ();
+  Sparse<T> d;
+
+  if (nnr == 0 || nnc == 0)
+    ; // do nothing
+  else if (nnr != 1 && nnc != 1)
+    {
+      if (k > 0)
+	nnc -= k;
+      else if (k < 0)
+	nnr += k;
+
+      if (nnr > 0 && nnc > 0)
+	{
+	  octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
+
+	  // Count the number of non-zero elements
+	  octave_idx_type nel = 0;
+	  if (k > 0)
+	    {
+	      for (octave_idx_type i = 0; i < ndiag; i++)
+		if (elem (i, i+k) != 0.)
+		  nel++;
+	    }
+	  else if ( k < 0)
+	    {
+	      for (octave_idx_type i = 0; i < ndiag; i++)
+		if (elem (i-k, i) != 0.)
+		  nel++;
+	    }
+	  else
+	    {
+	      for (octave_idx_type i = 0; i < ndiag; i++)
+		if (elem (i, i) != 0.)
+		  nel++;
+	    }
+      
+	  d = Sparse<T> (ndiag, 1, nel);
+	  d.xcidx (0) = 0;
+	  d.xcidx (1) = nel;
+
+	  octave_idx_type ii = 0;
+	  if (k > 0)
+	    {
+	      for (octave_idx_type i = 0; i < ndiag; i++)
+		{
+		  T tmp = elem (i, i+k);
+		  if (tmp != 0.)
+		    {
+		      d.xdata (ii) = tmp;
+		      d.xridx (ii++) = i;
+		    }
+		}
+	    }
+	  else if ( k < 0)
+	    {
+	      for (octave_idx_type i = 0; i < ndiag; i++)
+		{
+		  T tmp = elem (i-k, i);
+		  if (tmp != 0.)
+		    {
+		      d.xdata (ii) = tmp;
+		      d.xridx (ii++) = i;
+		    }
+		}
+	    }
+	  else
+	    {
+	      for (octave_idx_type i = 0; i < ndiag; i++)
+		{
+		  T tmp = elem (i, i);
+		  if (tmp != 0.)
+		    {
+		      d.xdata (ii) = tmp;
+		      d.xridx (ii++) = i;
+		    }
+		}
+	    }
+	}
+      else
+	(*current_liboctave_error_handler) 
+	  ("diag: requested diagonal out of range");
+    }
+  else if (nnr != 0 && nnc != 0)
+    {
+      octave_idx_type roff = 0;
+      octave_idx_type coff = 0;
+      if (k > 0) 
+	{
+	  roff = 0;
+	  coff = k;
+	} 
+      else if (k < 0) 
+	{
+	  roff = -k;
+	  coff = 0;
+	}
+
+      if (nnr == 1) 
+	{
+	  octave_idx_type n = nnc + std::abs (k);
+	  octave_idx_type nz = nzmax ();
+	  d = Sparse<T> (n, n, nz);
+	  for (octave_idx_type i = 0; i < coff+1; i++)
+	    d.xcidx (i) = 0;
+	  for (octave_idx_type j = 0; j < nnc; j++)
+	    {
+	      for (octave_idx_type i = cidx(j); i < cidx(j+1); i++)
+		{
+		  d.xdata (i) = data (i);
+		  d.xridx (i) = j + roff;
+		}
+	      d.xcidx (j + coff + 1) = cidx(j+1);
+	    }
+	  for (octave_idx_type i = nnc + coff + 1; i < n + 1; i++)
+	    d.xcidx (i) = nz;
+	} 
+      else 
+	{
+	  octave_idx_type n = nnr + std::abs (k);
+	  octave_idx_type nz = nzmax ();
+	  octave_idx_type ii = 0;
+	  octave_idx_type ir = ridx(0);
+	  d = Sparse<T> (n, n, nz);
+	  for (octave_idx_type i = 0; i < coff+1; i++)
+	    d.xcidx (i) = 0;
+	  for (octave_idx_type i = 0; i < nnr; i++)
+	    {
+	      if (ir == i)
+		{
+		  d.xdata (ii) = data (ii);
+		  d.xridx (ii++) = ir + roff;
+		  if (ii != nz)
+		    ir = ridx (ii);
+		}
+	      d.xcidx (i + coff + 1) = ii;
+	    }
+	  for (octave_idx_type i = nnr + coff + 1; i < n+1; i++)
+	    d.xcidx (i) = nz;
+	}
+    }
+
+  return d;
+}
+
 // FIXME
 // Unfortunately numel can overflow for very large but very sparse matrices.
 // For now just flag an error when this happens.

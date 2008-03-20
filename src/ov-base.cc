@@ -879,6 +879,14 @@ octave_base_value::as_mxArray (void) const
 }
 
 octave_value
+octave_base_value::diag (octave_idx_type) const
+{
+  gripe_wrong_type_arg ("octave_base_value::diag ()", type_name ());
+
+  return octave_value();
+}
+
+octave_value
 octave_base_value::sort (octave_idx_type, sortmode) const
 {
   gripe_wrong_type_arg ("octave_base_value::sort ()", type_name ());

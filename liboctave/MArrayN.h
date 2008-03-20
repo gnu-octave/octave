@@ -98,6 +98,11 @@ public:
 
   MArrayN squeeze (void) const { return ArrayN<T>::squeeze (); }
 
+  MArrayN<T> diag (octave_idx_type k) const
+  {
+    return ArrayN<T>::diag (k);
+  }
+
   template <class U, class F>
   MArrayN<U> map (F fcn) const
   {

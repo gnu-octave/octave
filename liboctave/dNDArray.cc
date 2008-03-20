@@ -968,6 +968,12 @@ NDArray::compute_index (Array<octave_idx_type>& ra_idx,
 }
 
 NDArray
+NDArray::diag (octave_idx_type k) const
+{
+  return MArrayN<double>::diag (k);
+}
+
+NDArray
 NDArray::map (dmapper fcn) const
 {
   return MArrayN<double>::map<double> (func_ptr (fcn));

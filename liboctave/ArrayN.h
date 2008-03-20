@@ -149,6 +149,11 @@ public:
       return ArrayN<T> (tmp, tmp.dims ());
     }
 
+  ArrayN<T> diag (octave_idx_type k) const
+  {
+    return Array<T>::diag (k);
+  }
+
   template <class U, class F>
   ArrayN<U> map (F fcn) const
   {

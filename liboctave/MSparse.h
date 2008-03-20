@@ -112,7 +112,12 @@ public:
     { return Sparse<T>::ipermute (vec); }
 
 
-  template <class U, class F>
+  MSparse<T> diag (octave_idx_type k = 0) const
+  {
+    return Sparse<T>::diag (k);
+  }
+
+ template <class U, class F>
   MSparse<U> map (F fcn) const
   {
     return Sparse<T>::template map<U> (fcn);

@@ -178,6 +178,40 @@ Range::sort_internal (Array<octave_idx_type>& sidx, bool ascending)
 
 }
 
+Matrix 
+Range::diag (octave_idx_type k) const
+{
+  octave_idx_type nnr = 1;
+  octave_idx_type nnc = nelem ();
+  Matrix d;
+
+  if  (nnr != 0)
+    {
+      octave_idx_type roff = 0;
+      octave_idx_type coff = 0;
+      if (k > 0)
+	{
+	  roff = 0;
+	  coff = k;
+	}
+      else if (k < 0)
+	{
+	  roff = -k;
+	  coff = 0;
+	}
+
+      // Force cached matrix to be created
+      matrix_value ();
+
+      octave_idx_type n = nnc + std::abs (k);
+      d = Matrix (n, n, Matrix::resize_fill_value ());
+      for (octave_idx_type i = 0; i < nnc; i++)
+	d.xelem (i+roff, i+coff) = cache.xelem (i);
+    }
+
+  return d;
+}
+
 Range
 Range::sort (octave_idx_type dim, sortmode mode) const
 {

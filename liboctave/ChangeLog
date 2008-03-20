@@ -2,6 +2,77 @@
 
 	* oct-sparse.h: Add headers for amd.h.
 
+2008-03-20  David Bateman  <dbateman@free.fr>
+
+	* Array.cc (Array<T> Array<T>::diag (octave_idx_type) const): New
+	method for diag function.
+	* Array.h  (Array<T> diag (octave_idx_type) const): Declare it.
+	* Array2.h (Array2<T> diag (octave_idx_type) const): New method.
+	* MArray2.h (MArray2<T> diag (octave_idx_type) const): ditto.
+	* ArrayN.h (ArrayN<T> diag (octave_idx_type) const): ditto.
+	* MArrayN.h (MArrayN<T> diag (octave_idx_type) const): ditto.
+
+	* Sparse.cc (Sparse<T> Sparse<T>::diag (octave_idx_type) const):
+	New method for the diag function.
+	* Sparse.h  (Sparse<T> diag (octave_idx_type) const): Declare it.
+	* MSparse.h (MSparse<T> diag (octave_idx_type) const): New method.
+
+	* Range.cc (Matrix Range::diag (octave_idx_type) const):
+	New method for the diag function.
+	* Range.h  (Matrix diag (octave_idx_type) const): Declare it.
+	
+	* CDiagMatrix.cc (ComplexColumnVector ComplexDiagMatrix::diag
+	(void) const): delete.
+	* dDiagMatrix.cc (ColumnVector DiagMatrix::diag (void) const): delete.
+	* dDiagMatrix.h (ColumnVector diag (void) const): ditto.
+	* CMatrix.cc (ComplexColumnVector ComplexMatrix::diag (void) const):
+	delete.
+	* CMatrix.h (ComplexColumnVector diag (void) const): ditto.
+	* dMatrix.cc (ColumnVector Matrix::diag (void) const): ditto.
+	* dMatrix.h (ColumnVector diag (void) const): ditto.
+	* boolMatrix.cc (boolMatrix boolMatrix::diag (void) const): ditto.
+	* boolMatrix.h (boolMatrix diag (void) const): ditto.
+	* chMatrix.cc (charMatrix charMatrix::diag (void) const): ditto.
+	* chMatrix.h (charMatrix diag (void) const): ditto.
+	* intNDArray.cc (intNDArray<T> intNDArray<T>::diag (void) const): ditto.
+	* intNDArray.h (intNDArray<T> diag (void) const): ditto.
+	
+	* CMatrix.cc (ComplexMatrix ComplexMatrix::diag (octave_idx_type)
+	const): Rewrite in terms of template classes function.
+	* CMatrix.h (ComplexMatrix diag (octave_idx_type)const ): Change
+	return type.
+	* dMatrix.cc (Matrix Matrix::diag (octave_idx_type) const): Rewrite in
+	terms of template classes function.
+	* dMatrix.h (Matrix diag (octave_idx_type) const): Change return type.
+	* boolMatrix.cc (boolMatrix boolMatrix::diag (octave_idx_type) const):
+	Rewrite in terms of template classes function.
+	* boolMatrix.h (boolMatrix diag (octave_idx_type) const): Change
+	return type. 
+	* chMatrix.cc (charMatrix charMatrix::diag (octave_idx_type)
+	const): Rewrite in terms of template classes function.
+	
+	* dSparse.cc (SparseMatrix SparseMatrix::diag (octave_idx_type) const):
+	Rewrite in terms of template classes function.
+	* CSparse.cc (SparseComplexMatrix SparseComplexMatrix::diag
+	(octave_idx_type) const): ditto.
+	* boolSparse.cc (SparseBoolMatrix SparseBoolMatrix::diag
+	(octave_idx_type) const): ditto.
+	* intNDArray.cc (intNDArray<T> intNDArray<T>::diag
+	(octave_idx_type) const): ditto.
+
+	* CNDArray.cc (ComplexNDArray ComplexNDArray::diag
+	(octave_idx_type) const): New method.
+	* CNDArray.h (ComplexNDArray diag (octave_idx_type) const):
+	Declare it.
+	* dNDArray.cc (NDArray NDArray::diag (octave_idx_type) const): New
+	method.
+	* dNDArray.h (NDArray diag (octave_idx_type) const): Declare it.
+	* chNDArray.cc (charNDArray charNDArray::diag
+	(octave_idx_type) const): New method.
+	* chNDArray.h (charNDArray diag (octave_idx_type) const):
+	Declare it.
+
+	
 2008-03-19  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (octave_env::do_base_pathname): Also handle rooted

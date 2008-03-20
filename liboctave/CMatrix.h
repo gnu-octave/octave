@@ -334,8 +334,7 @@ public:
   ComplexMatrix sumsq (int dim = -1) const;
   Matrix abs (void) const;
 
-  ComplexColumnVector diag (void) const;
-  ComplexColumnVector diag (octave_idx_type k) const;
+  ComplexMatrix diag (octave_idx_type k = 0) const;
 
   bool row_is_real_only (octave_idx_type) const;
   bool column_is_real_only (octave_idx_type) const;

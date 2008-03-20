@@ -239,49 +239,9 @@ Cell::map (ctype_mapper fcn) const
 }
 
 Cell
-Cell::diag (void) const
-{
-  return diag (0);
-}
-
-Cell
 Cell::diag (octave_idx_type k) const
 {
-  octave_idx_type nnr = rows ();
-  octave_idx_type nnc = cols ();
-  if (k > 0)
-    nnc -= k;
-  else if (k < 0)
-    nnr += k;
-
-  Cell d;
-
-  if (nnr > 0 && nnc > 0)
-    {
-      octave_idx_type ndiag = (nnr < nnc) ? nnr : nnc;
-
-      d.resize (dim_vector (ndiag, 1));
-
-      if (k > 0)
-	{
-	  for (octave_idx_type i = 0; i < ndiag; i++)
-	    d.elem (i) = elem (i, i+k);
-	}
-      else if (k < 0)
-	{
-	  for (octave_idx_type i = 0; i < ndiag; i++)
-	    d.elem (i) = elem (i-k, i);
-	}
-      else
-	{
-	  for (octave_idx_type i = 0; i < ndiag; i++)
-	    d.elem (i) = elem (i, i);
-	}
-    }
-  else
-    error ("diag: requested diagonal out of range");
-
-  return d;
+  return ArrayN<octave_value>::diag (k);
 }
 
 /*

@@ -65,6 +65,8 @@ Range
   void sort_internal (bool ascending = true);
   void sort_internal (Array<octave_idx_type>& sidx, bool ascending = true);
 
+  Matrix diag (octave_idx_type k = 0) const;
+
   Range sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 
   Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,

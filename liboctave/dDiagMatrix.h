@@ -92,8 +92,7 @@ public:
 
   // other operations
 
-  ColumnVector diag (void) const;
-  ColumnVector diag (octave_idx_type k) const;
+  ColumnVector diag (octave_idx_type k = 0) const;
 
   // i/o
 

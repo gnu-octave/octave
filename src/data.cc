@@ -3264,7 +3264,7 @@ This function is equivalent to @code{x ./ y}.\n\
 DEFUN (power, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} power (@var{x}, @var{y})\n\
-This function is equivalent to @code{x .\\ y}.\n\
+This function is equivalent to @code{x .^ y}.\n\
 @end deftypefn")
 {
   BINARY_OP_DEFUN_BODY (op_el_pow);
@@ -3273,6 +3273,7 @@ This function is equivalent to @code{x .\\ y}.\n\
 DEFUN (ldivide, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ldivide (@var{x}, @var{y})\n\
+This function is equivalent to @code{x .\\ y}.\n\
 @end deftypefn")
 {
   BINARY_OP_DEFUN_BODY (op_el_ldiv);

@@ -1,3 +1,7 @@
+2008-03-21  David Bateman  <dbateman@free.fr>
+
+	* oct-sparse.h: Add headers for amd.h.
+
 2008-03-19  John W. Eaton  <jwe@octave.org>
 
 	* oct-env.cc (octave_env::do_base_pathname): Also handle rooted

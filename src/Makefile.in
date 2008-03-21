@@ -62,8 +62,8 @@ OPT_HANDLERS := $(addsuffix .cc, $(OPT_BASE))
 OPT_IN := $(addprefix ../liboctave/, $(addsuffix .in, $(OPT_BASE)))
 OPT_INC := $(addprefix ../liboctave/, $(addsuffix .h, $(OPT_BASE)))
 
-DLD_XSRC := balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc chol.cc \
-	ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
+DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc \
+	chol.cc ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
 	dasrt.cc dassl.cc det.cc dispatch.cc dlmread.cc dmperm.cc eig.cc \
 	expm.cc fft.cc fft2.cc fftn.cc fftw.cc filter.cc find.cc fsolve.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \

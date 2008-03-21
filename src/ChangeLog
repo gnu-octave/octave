@@ -1,3 +1,8 @@
+2008-03-21  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/amd.cc: New file.
+	* Makefile.in (DLD_XSRC): Add amd.cc.
+
 2008-03-20  David Bateman  <dbateman@free.fr>
 
 	* data.cc (static octave_value make_diag (const Cell&,

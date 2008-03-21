@@ -27,6 +27,16 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#if defined (HAVE_SUITESPARSE_AMD_H)
+#include <suitesparse/amd.h>
+#elif defined (HAVE_UFSPARSE_AMD_H)
+#include <ufsparse/amd.h>
+#elif defined (HAVE_AMD_AMD_H)
+#include <amd/amd.h>
+#elif defined (HAVE_AMD_H)
+#include <amd.h>
+#endif
+
 #if defined (HAVE_SUITESPARSE_UMFPACK_H)
 #include <suitesparse/umfpack.h>
 #elif defined (HAVE_UFSPARSE_UMFPACK_H)

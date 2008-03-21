@@ -734,7 +734,26 @@ AC_SUBST(LAPACK_DIR)
 # Check for AMD library
 AMD_LIBS=
 AC_SUBST(AMD_LIBS)
-AC_CHECK_LIB(amd, amd_postorder, [AMD_LIBS="-lamd"; with_amd=yes],[with_amd=no])
+
+AC_ARG_WITH(amd,
+  [AS_HELP_STRING([--without-amd],
+     [don't use AMD, disable some sparse functionality])],
+  with_amd=$withval, with_amd=yes)
+
+warn_amd="AMD not found. This will result in some lack of functionality for sparse matrices."
+if test "$with_amd" = yes; then
+  with_amd=no
+  AC_CHECK_HEADERS([suitesparse/amd.h ufsparse/amd.h amd/amd.h amd.h], [
+    AC_CHECK_LIB(amd, amd_postorder, [AMD_LIBS="-lamd"; with_amd=yes])
+    if test "$with_amd" = yes; then
+      AC_DEFINE(HAVE_AMD, 1, [Define if the AMD library is used.])
+      warn_amd=
+    fi
+    break])
+fi 
+if test -n "$warn_amd"; then
+  AC_MSG_WARN($warn_amd)
+fi
 
 # Check for CAMD library
 CAMD_LIBS=
@@ -1945,6 +1964,11 @@ fi
 
 if test -n "$warn_umfpack"; then
   AC_MSG_WARN($warn_umfpack)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_amd"; then
+  AC_MSG_WARN($warn_amd)
   warn_msg_printed=true
 fi
 

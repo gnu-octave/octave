@@ -1,3 +1,7 @@
+2008-03-21  David Bateman  <dbateman@free.fr>
+
+	* interpreter/sparse.txi: Document amd function.
+
 2008-03-19  Michael D. Godfrey  <godfrey@isl.stanford.edu>
 
 	* interpreter/plot.txi: Reorder symbol character table.

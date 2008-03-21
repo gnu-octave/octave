@@ -1,3 +1,8 @@
+2008-03-21  David Bateman  <dbateman@free.fr>
+
+	* specfun/reallog.m, specfun/realpow.m, specfun/realsqrt.m: New
+	functions.
+
 2008-03-20  David Bateman  <dbateman@free.fr>
 
 	* general/tril.m, general/triu.m: Fail if input is a structure.

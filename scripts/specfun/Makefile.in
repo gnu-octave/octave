@@ -35,7 +35,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = bessel.m beta.m betai.m betaln.m erfinv.m factor.m \
   factorial.m gammai.m isprime.m legendre.m log2.m nchoosek.m \
-  perms.m pow2.m primes.m
+  perms.m pow2.m primes.m reallog.m realpow.m realsqrt.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

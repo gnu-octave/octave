@@ -65,16 +65,16 @@ gripe_failed_assignment (void)
   error ("assignment to cell array failed");
 }
 
-octave_value_list
+octave_value
 octave_cell::subsref (const std::string& type,
-		      const std::list<octave_value_list>& idx, int nargout)
+		      const std::list<octave_value_list>& idx)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   switch (type[0])
     {
     case '(':
-      retval(0) = do_index_op (idx.front ());
+      retval = do_index_op (idx.front ());
       break;
 
     case '{':
@@ -86,7 +86,7 @@ octave_cell::subsref (const std::string& type,
 	    Cell tcell = tmp.cell_value ();
 
 	    if (tcell.length () == 1)
-	      retval(0) = tcell(0,0);
+	      retval = tcell(0,0);
 	    else
 	      {
 		octave_idx_type n = tcell.numel ();
@@ -99,7 +99,7 @@ octave_cell::subsref (const std::string& type,
 		    lst(i) = tcell(i);
 		  }
 
-		retval(0) = octave_value (lst, true);
+		retval = octave_value (lst, true);
 	      }
 	  }
       }
@@ -121,7 +121,7 @@ octave_cell::subsref (const std::string& type,
   // octave_user_function::subsref.
 
   if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx);
+    retval = retval.next_subsref (type, idx);
 
   return retval;
 }

@@ -71,15 +71,14 @@ public:
 #endif
 
   octave_value subsref (const std::string&,
-			const std::list<octave_value_list>&)
+			const std::list<octave_value_list>&);
+
+  octave_value_list subsref (const std::string&,
+			     const std::list<octave_value_list>&, int)
     {
       panic_impossible ();
       return octave_value_list ();
     }
-
-  octave_value_list subsref (const std::string& type,
-			     const std::list<octave_value_list>& idx,
-			     int nargout);
 
   octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,
@@ -93,7 +92,7 @@ public:
 
   bool is_defined (void) const { return true; }
 
-  bool is_constant (void) const { return false; }
+  bool is_constant (void) const { return true; }
 
   bool is_cell (void) const { return true; }
 

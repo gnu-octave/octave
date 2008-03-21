@@ -96,12 +96,11 @@ gripe_failed_assignment (void)
   error ("assignment to structure element failed");
 }
 
-octave_value_list
+octave_value
 octave_struct::subsref (const std::string& type,
-			const std::list<octave_value_list>& idx,
-			int nargout)
+			const std::list<octave_value_list>& idx)
 {
-  octave_value_list retval;
+  octave_value retval;
 
   int skip = 1;
 
@@ -120,7 +119,7 @@ octave_struct::subsref (const std::string& type,
 	      {
 		Cell t = tmp.index (idx.front (), true);
 
-		retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+		retval = (t.length () == 1) ? t(0) : octave_value (t, true);
 
 		// We handled two index elements, so tell
 		// next_subsref to skip both of them.
@@ -129,7 +128,7 @@ octave_struct::subsref (const std::string& type,
 	      }
 	  }
 	else
-	  retval(0) = map.index (idx.front (), true);
+	  retval = map.index (idx.front (), true);
       }
       break;
 
@@ -139,7 +138,7 @@ octave_struct::subsref (const std::string& type,
 	  {
 	    Cell t = dotref (idx.front ());
 
-	    retval(0) = (t.length () == 1) ? t(0) : octave_value (t, true);
+	    retval = (t.length () == 1) ? t(0) : octave_value (t, true);
 	  }
       }
       break;
@@ -157,7 +156,7 @@ octave_struct::subsref (const std::string& type,
   // octave_user_function::subsref.
 
   if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx, skip);
+    retval = retval.next_subsref (type, idx, skip);
 
   return retval;
 }

@@ -1,3 +1,17 @@
+2008-03-21  John W. Eaton  <jwe@octave.org>
+
+	* ov-cell.h (octave_cell::is_constant): Return true.
+	* ov-cell.h, ov-cell.cc (octave_cell::subsref (const std::string&,
+	const std::list<octave_value_list>&)): Define.
+	(octave_cell::subsref (const std::string&,
+	const std::list<octave_value_list>&, int)): Call panic_impossible.
+
+	* ov-struct.h (octave_struct::is_constant): New function.
+	* ov-struct.h, ov-struct.cc (octave_struct::subsref (const std::string&,
+	const std::list<octave_value_list>&)): Define.
+	(octave_struct::subsref (const std::string&,
+	const std::list<octave_value_list>&, int)): Call panic_impossible.
+
 2008-03-21  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/amd.cc: New file.

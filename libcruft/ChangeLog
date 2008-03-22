@@ -1,3 +1,7 @@
+2008-03-22  David Bateman  <dbateman@free.fr>
+
+	* qrupdate/dch1up.f: Remove unused external reference to dlartv.
+
 2008-03-18  John W. Eaton  <jwe@octave.org>
 
 	* qrupdate/zqrqhv.f (zqrqhv): Call xzdotc instead of zdotc.

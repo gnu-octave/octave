@@ -37,7 +37,7 @@ c
       integer n
       double precision R(n,n),u(n)
       double precision w(n)
-      external dlartg,dlartv
+      external dlartg
       double precision rr,ui,t
       integer i,j
       

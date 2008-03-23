@@ -1,3 +1,8 @@
+2008-03-23  David Bateman  <dbateman@free.fr>
+
+	* mx-ops: Definite binary operators for mixed integer array +
+	array case, except for 64bit cases.
+	
 2008-03-21  David Bateman  <dbateman@free.fr>
 
 	* oct-sparse.h: Add headers for amd.h.

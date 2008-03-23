@@ -1,3 +1,10 @@
+2008-03-23  David Bateman  <dbateman@free.fr>
+
+	* OPERATORS/op-int.h: Add el_div and el_ldiv operators to the
+	binops that were missing them. Added elem_pow functions for mixed
+	integer floating point cases. Initialize the mixed integer
+	floating point cases.
+
 2008-03-21  John W. Eaton  <jwe@octave.org>
 
 	* ov-cell.h (octave_cell::is_constant): Return true.

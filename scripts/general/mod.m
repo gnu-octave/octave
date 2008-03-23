@@ -127,4 +127,3 @@ endfunction
 %!assert (mod(uint8(5),4),uint8(1))
 %!assert (mod(5,uint8(4)),uint8(1))
 %!assert (mod(uint8([1:5]),4),uint8([1,2,3,0,1]))
-%!error (mod([1:5],uint8(4)))

@@ -1508,11 +1508,9 @@ base_properties::override_defaults (base_graphics_object& obj)
 void
 base_properties::update_axis_limits (const std::string& axis_type) const
 {
-  graphics_handle h = (get_type () == "axes") ? __myhandle__ : get_parent ();
+  graphics_object obj = gh_manager::get_object (__myhandle__);
 
-  graphics_object obj = gh_manager::get_object (h);
-
-  if (obj.isa ("axes"))
+  if (obj)
     obj.update_axis_limits (axis_type);
 }
 
@@ -1640,6 +1638,22 @@ graphics_backend::default_backend (void)
 }
 
 std::map<std::string, graphics_backend> graphics_backend::available_backends;
+
+// ---------------------------------------------------------------------
+
+void
+base_graphics_object::update_axis_limits (const std::string& axis_type)
+{
+  if (valid_object ())
+    {
+      graphics_object parent_obj = gh_manager::get_object (get_parent ());
+
+      if (parent_obj)
+	parent_obj.update_axis_limits (axis_type);
+    }
+  else
+    error ("base_graphics_object::update_axis_limits: invalid graphics object");
+}
 
 // ---------------------------------------------------------------------
 
@@ -2558,7 +2572,9 @@ axes::get_default (const caseless_str& name) const
   return retval;
 }
 
+// FIXME: Remove
 // FIXME: Maybe this should go into array_property class?
+/*
 static void
 check_limit_vals (double& min_val, double& max_val, double& min_pos,
 		  const array_property& data)
@@ -2572,6 +2588,34 @@ check_limit_vals (double& min_val, double& max_val, double& min_pos,
   val = data.min_pos ();
   if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
     min_pos = val;
+}
+*/
+
+static void
+check_limit_vals (double& min_val, double& max_val, double& min_pos,
+		  const octave_value& data)
+{
+  if (data.is_matrix_type ())
+    {
+      Matrix m = data.matrix_value ();
+
+      if (! error_state && m.numel () == 3)
+	{
+	  double val;
+
+	  val = m(0);
+	  if (! (xisinf (val) || xisnan (val)) && val < min_val)
+	    min_val = val;
+
+	  val = m(1);
+	  if (! (xisinf (val) || xisnan (val)) && val > max_val)
+	    max_val = val;
+
+	  val = m(2);
+	  if (! (xisinf (val) || xisnan (val)) && val > 0 && val < min_pos)
+	    min_pos = val;
+	}
+    }
 }
 
 // magform(x) Returns (a, b), where x = a * 10^b, a >= 1., and b is
@@ -2766,6 +2810,89 @@ axes::properties::calc_ticks_and_lims (array_property& lims, array_property& tic
   ticks = tmp_ticks;
 }
 
+static void
+get_children_limits (double& min_val, double& max_val, double& min_pos,
+		     const Matrix& kids, char limit_type)
+{
+  octave_idx_type n = kids.numel ();
+
+  switch (limit_type)
+    {
+    case 'x':
+      for (octave_idx_type i = 0; i < n; i++)
+	{
+	  graphics_object obj = gh_manager::get_object (kids(i));
+
+	  if (obj.is_xliminclude ())
+	    {
+	      octave_value lim = obj.get_xlim ();
+
+	      check_limit_vals (min_val, max_val, min_pos, lim);
+	    }
+	}
+      break;
+
+    case 'y':
+      for (octave_idx_type i = 0; i < n; i++)
+	{
+	  graphics_object obj = gh_manager::get_object (kids(i));
+
+	  if (obj.is_yliminclude ())
+	    {
+	      octave_value lim = obj.get_ylim ();
+
+	      check_limit_vals (min_val, max_val, min_pos, lim);
+	    }
+	}
+      break;
+    
+    case 'z':
+      for (octave_idx_type i = 0; i < n; i++)
+	{
+	  graphics_object obj = gh_manager::get_object (kids(i));
+
+	  if (obj.is_zliminclude ())
+	    {
+	      octave_value lim = obj.get_zlim ();
+
+	      check_limit_vals (min_val, max_val, min_pos, lim);
+	    }
+	}
+      break;
+    
+    case 'c':
+      for (octave_idx_type i = 0; i < n; i++)
+	{
+	  graphics_object obj = gh_manager::get_object (kids(i));
+
+	  if (obj.is_climinclude ())
+	    {
+	      octave_value lim = obj.get_clim ();
+
+	      check_limit_vals (min_val, max_val, min_pos, lim);
+	    }
+	}
+      break;
+    
+    case 'a':
+      for (octave_idx_type i = 0; i < n; i++)
+	{
+	  graphics_object obj = gh_manager::get_object (kids(i));
+
+	  if (obj.is_aliminclude ())
+	    {
+	      octave_value lim = obj.get_alim ();
+
+	      check_limit_vals (min_val, max_val, min_pos, lim);
+	    }
+	}
+      break;
+
+    default:
+      break;
+    }
+}
+
 static bool updating_axis_limits = false;
 
 void
@@ -2788,32 +2915,13 @@ axes::update_axis_limits (const std::string& axis_type)
 
   if (axis_type == "xdata" || axis_type == "xscale"
       || axis_type == "xldata" || axis_type == "xudata"
-      || axis_type == "xlimmode")
+      || axis_type == "xlimmode" || axis_type == "xliminclude"
+      || axis_type == "xlim")
     {
       if (xproperties.xlimmode_is ("auto"))
 	{
-	  for (octave_idx_type i = 0; i < n; i++)
-	    {
-	      graphics_object obj = gh_manager::get_object (kids(i));
-
-	      if (obj.isa ("line") || obj.isa ("image")
-		  || obj.isa ("patch") || obj.isa ("surface"))
-		{
-		  array_property xdata = obj.get_xdata_property ();
-
-		  check_limit_vals (min_val, max_val, min_pos, xdata);
-
-		  if (obj.isa ("line"))
-		    {
-		      array_property xldata = obj.get_xldata_property ();
-		      array_property xudata = obj.get_xudata_property ();
-
-		      check_limit_vals (min_val, max_val, min_pos, xldata);
-		      check_limit_vals (min_val, max_val, min_pos, xudata);
-		    }
-		}
-	    }
-
+	  get_children_limits (min_val, max_val, min_pos, kids, 'x');
+	  
 	  limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
 						xproperties.xscale_is ("log"));
 
@@ -2822,31 +2930,12 @@ axes::update_axis_limits (const std::string& axis_type)
     }
   else if (axis_type == "ydata" || axis_type == "yscale"
 	   || axis_type == "ldata" || axis_type == "udata"
-	   || axis_type == "ylimmode")
+	   || axis_type == "ylimmode" || axis_type == "yliminclude"
+	   || axis_type == "ylim")
     {
       if (xproperties.ylimmode_is ("auto"))
 	{
-	    for (octave_idx_type i = 0; i < n; i++)
-	    {
-	      graphics_object obj = gh_manager::get_object (kids(i));
-
-	      if (obj.isa ("line") || obj.isa ("image")
-		|| obj.isa ("patch") || obj.isa ("surface"))
-		{
-		  array_property ydata = obj.get_ydata_property ();
-
-		  check_limit_vals (min_val, max_val, min_pos, ydata);
-
-		  if (obj.isa ("line"))
-		    {
-		      array_property ldata = obj.get_ldata_property ();
-		      array_property udata = obj.get_udata_property ();
-
-		      check_limit_vals (min_val, max_val, min_pos, ldata);
-		      check_limit_vals (min_val, max_val, min_pos, udata);
-		    }
-		}
-	    }
+	  get_children_limits (min_val, max_val, min_pos, kids, 'y');
 
 	  limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
 						xproperties.yscale_is ("log"));
@@ -2855,21 +2944,12 @@ axes::update_axis_limits (const std::string& axis_type)
 	}
     }
   else if (axis_type == "zdata" || axis_type == "zscale"
-	   || axis_type == "zlimmode")
+	   || axis_type == "zlimmode" || axis_type == "zliminclude"
+	   || axis_type == "zlim")
     {
       if (xproperties.zlimmode_is ("auto"))
 	{
-	  for (octave_idx_type i = 0; i < n; i++)
-	    {
-	      graphics_object obj = gh_manager::get_object (kids(i));
-
-	      if (obj.isa ("line") || obj.isa ("patch") || obj.isa ("surface"))
-		{
-		  array_property zdata = obj.get_zdata_property ();
-
-		  check_limit_vals (min_val, max_val, min_pos, zdata);
-		}
-	    }
+	  get_children_limits (min_val, max_val, min_pos, kids, 'z');
 
 	  limits = xproperties.get_axis_limits (min_val, max_val, min_pos,
 						xproperties.zscale_is ("log"));
@@ -2877,23 +2957,20 @@ axes::update_axis_limits (const std::string& axis_type)
 	  update_type = 'z';
 	}
     }
-  else if (axis_type == "cdata" || axis_type == "climmode")
+  else if (axis_type == "cdata" || axis_type == "climmode"
+	   || axis_type == "cdatamapping" || axis_type == "climinclude"
+	   || axis_type == "clim")
     {
       if (xproperties.climmode_is ("auto"))
 	{
-	  for (octave_idx_type i = 0; i < n; i++)
+	  get_children_limits (min_val, max_val, min_pos, kids, 'c');
+
+	  if (min_val > max_val)
 	    {
-	      graphics_object obj = gh_manager::get_object (kids(i));
-
-	      if (obj.isa ("image") || obj.isa ("patch") || obj.isa ("surface"))
-		{
-		  array_property cdata = obj.get_cdata_property ();
-
-		  check_limit_vals (min_val, max_val, min_pos, cdata);
-		}
+	      min_val = min_pos = 0;
+	      max_val = 1;
 	    }
-
-	  if (min_val == max_val)
+	  else if (min_val == max_val)
 	    max_val = min_val + 1;
 
 	  limits.resize (1, 2);
@@ -2902,6 +2979,31 @@ axes::update_axis_limits (const std::string& axis_type)
 	  limits(1) = max_val;
 
 	  update_type = 'c';
+	}
+
+    }
+  else if (axis_type == "alphadata" || axis_type == "alimmode"
+	   || axis_type == "alphadatamapping" || axis_type == "aliminclude"
+	   || axis_type == "alim")
+    {
+      if (xproperties.alimmode_is ("auto"))
+	{
+	  get_children_limits (min_val, max_val, min_pos, kids, 'a');
+
+	  if (min_val > max_val)
+	    {
+	      min_val = min_pos = 0;
+	      max_val = 1;
+	    }
+	  else if (min_val == max_val)
+	    max_val = min_val + 1;
+
+	  limits.resize (1, 2);
+
+	  limits(0) = min_val;
+	  limits(1) = max_val;
+
+	  update_type = 'a';
 	}
 
     }
@@ -2932,6 +3034,11 @@ axes::update_axis_limits (const std::string& axis_type)
     case 'c':
       xproperties.set_clim (limits);
       xproperties.set_climmode ("auto");
+      break;
+
+    case 'a':
+      xproperties.set_alim (limits);
+      xproperties.set_alimmode ("auto");
       break;
 
     default:
@@ -2992,7 +3099,29 @@ axes::properties::clear_zoom_stack (void)
 
 // ---------------------------------------------------------------------
 
-// Note: "line" code is entirely auto-generated
+Matrix
+line::properties::compute_xlim (void) const
+{
+  Matrix m (1, 3);
+
+  m(0) = xmin (xdata.min_val (), xmin (xldata.min_val (), xudata.min_val ()));
+  m(1) = xmax (xdata.max_val (), xmax (xldata.max_val (), xudata.max_val ()));
+  m(2) = xmin (xdata.min_pos (), xmin (xldata.min_pos (), xudata.min_pos ()));
+
+  return m;
+}
+
+Matrix
+line::properties::compute_ylim (void) const
+{
+  Matrix m (1, 3);
+
+  m(0) = xmin (ydata.min_val (), xmin (ldata.min_val (), udata.min_val ()));
+  m(1) = xmax (ydata.max_val (), xmax (ldata.max_val (), udata.max_val ()));
+  m(2) = xmin (ydata.min_pos (), xmin (ldata.min_pos (), udata.min_pos ()));
+
+  return m;
+}
 
 // ---------------------------------------------------------------------
 

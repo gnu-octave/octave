@@ -47,6 +47,144 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* genprops.awk (emit_get_array): Don't produce get_xxx_property
+	accessors.
+	* graphics.h.in (array_property::get_limits): New method to return the
+	array limits.
+	(base_properties::get_xdata_property,
+	base_properties::get_ydata_property,
+	base_properties::get_zdata_property,
+	base_properties::get_ldata_property,
+	base_properties::get_udata_property,
+	base_properties::get_xldata_property,
+	base_properties::get_xudata_property,
+	base_properties::get_cdata_property): Remove methods, replaced with
+	limit-based equivalent.
+	(base_graphics_object::get_xdata_property,
+	base_graphics_object::get_ydata_property,
+	base_graphics_object::get_zdata_property,
+	base_graphics_object::get_ldata_property,
+	base_graphics_object::get_udata_property,
+	base_graphics_object::get_xldata_property,
+	base_graphics_object::get_xudata_property,
+	base_graphics_object::get_cdata_property): Likewise.
+	(graphics_object::get_xdata_property,
+	graphics_object::get_ydata_property,
+	graphics_object::get_zdata_property,
+	graphics_object::get_ldata_property,
+	graphics_object::get_udata_property,
+	graphics_object::get_xldata_property,
+	graphics_object::get_xudata_property,
+	graphics_object::get_cdata_property): Likewise.
+	(base_properties::get_xlim, base_properties::get_ylim,
+	base_properties::get_zlim, base_properties::get_clim,
+	base_properties::get_alim, base_properties::is_xliminclude,
+	base_properties::is_yliminclude, base_properties::is_zliminclude,
+	base_properties::is_climinclude, base_properties::is_aliminclude):
+	New methods.
+	(base_graphics_object::get_xlim, base_graphics_object::get_ylim,
+	base_graphics_object::get_zlim, base_graphics_object::get_clim,
+	base_graphics_object::get_alim, base_graphics_object::is_xliminclude,
+	base_graphics_object::is_yliminclude,
+	base_graphics_object::is_zliminclude,
+	base_graphics_object::is_climinclude,
+	base_graphics_object::is_aliminclude): Likewise.
+	(graphics_object::get_xlim, graphics_object::get_ylim,
+	graphics_object::get_zlim, graphics_object::get_clim,
+	graphics_object::get_alim, graphics_object::is_xliminclude,
+	graphics_object::is_yliminclude, graphics_object::is_zliminclude,
+	graphics_object::is_climinclude, graphics_object::is_aliminclude):
+	Likewise.
+	(base_graphics_object::update_axis_limits): Provide default behavior
+	by passing the call to the parent object.
+	(line::properties::xdata, line::properties::ydata,
+	line::properties::zdata, line::properties::ldata,
+	line::properties::udata, line::properties::xldata,
+	line::properties::xudata): Replace 'l' modifier with 'u'.
+	(line::properties::xlim, line::properties::ylim,
+	line::properties::zlim, line::properties::xliminclude,
+	line::properties::yliminclude, line::properties::zliminclude): New
+	hidden properties.
+	(line::properties::update_xdata, line::properties::update_ydata,
+	line::properties::update_zdata, line::properties::update_xldata,
+	line::properties::update_xudata, line::properties::update_ldata,
+	line::properties::update_udata): New updaters that update limit
+	properties.
+	(line::properties::compute_xlim, line::properties::compute_ylim): New
+	method to compute actual limits taking into account x/y data and
+	upper/lower bounds.
+	(text::properties::position): Add 'u' modifier.
+	(text::properties::xlim, text::properties::ylim,
+	text::properties::zlim, text::properties::xliminclude,
+	text::properties::yliminclude, text::properties::zliminclude): New
+	hidden properties.
+	(text::properties::update_position): New updater that updates limit
+	properties.
+	(image::properties::xdata, image::properties::ydata,
+	image::properties::cdata): Replace 'l' modifier with 'u'.
+	(image::properties::cdatamapping): Add 'l' modifier.
+	(image::properties::xlim, image::properties::ylim,
+	image::properties::clim, image::properties::xliminclude,
+	image::properties::yliminclude, image::properties::climinclude): New
+	hidden properties.
+	(image::properties::get_climinclude,
+	image::properties::is_climinclude): Provide specialized inline
+	accessors.
+	(image::properties::update_xdata, image::properties::update_ydata,
+	image::properties::update_cdata): New updaters that update limit
+	properties.
+	(patch::properties::xdata, patch::properties::ydata,
+	patch::properties::zdata, patch::properties::cdata): Replace 'l'
+	modifier with 'u'.
+	(patch::properties::cdatamapping): Add 'l' modifier.
+	(patch::properties::alphadatamapping): New property.
+	(patch::properties::xlim, patch::properties::ylim,
+	patch::properties::zlim, patch::properties::clim,
+	patch::properties::alim, patch::properties::xliminclude,
+	patch::properties::yliminclude, patch::properties::zliminclude,
+	patch::properties::climinclude, patch::properties::aliminclude: New
+	hidden properties.
+	(patch::properties::get_climinclude,
+	patch::properties::is_climinclude, patch::properties::get_aliminclude,
+	patch::properties::is_aliminclude): Provide specialized inline
+	accessors.
+	(patch::properties::update_xdata, patch::properties::update_ydata,
+	patch::properties::update_zdata, patch::properties::update_cdata): New
+	updaters that update limit properties.
+	(surface::properties::xdata, surface::properties::ydata,
+	surface::properties::zdata, surface::properties::cdata,
+	surface::properties::alphadata): Replace 'l' modifier with 'u'.
+	(surface::properties::cdatamapping,
+	surface::properties::alphadatamapping): Add 'l' modifier.
+	(surface::properties::xlim, surface::properties::ylim,
+	surface::properties::zlim, surface::properties::clim,
+	surface::properties::alim, surface::properties::xliminclude,
+	surface::properties::yliminclude, surface::properties::zliminclude,
+	surface::properties::climinclude, surface::properties::aliminclude: New
+	hidden properties.
+	(surface::properties::get_climinclude,
+	surface::properties::is_climinclude,
+	surface::properties::get_aliminclude,
+	surface::properties::is_aliminclude): Provide specialized inline
+	accessors.
+	(surface::properties::update_xdata, surface::properties::update_ydata,
+	surface::properties::update_zdata): Update limit properties.
+	(surface::properties::update_cdata,
+	surface::properties::update_alphadata): New updaters that update limit
+	properties.
+	* graphics.cc (base_properties::update_axis_limits): Simply call
+	update_axis_limits in owning graphics_object.
+	(base_graphics_object::update_axis_limits): Provide default behavior
+	by passing the call to the parent object.
+	(check_limits_vals(double&,double&,double&,const octave_value&)): New
+	static method to work with new limit properties in graphics objects.
+	(get_children_limits): New static method to compute the raw limits of
+	a set of children, based on the new limit properties.
+	(axes::update_axis_limits): Simplify and call get_children_limits. Add
+	handling of alpha limits.
+	(line::properties::compute_xlim, line::properties::compute_ylim): New
+	methods to compute line limits taking into account upper/lower bounds.
+
 	* graphics.cc (axes::properties::sync_positions): Update
 	transformation data.
 

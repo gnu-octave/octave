@@ -229,9 +229,6 @@ function emit_get_callback (i)
 function emit_get_array (i)
 {
   emit_get_accessor(i, "octave_value", "get");
-
-  printf ("  array_property get_%s_property (void) const { return %s; }\n",
-          name[i], name[i]);
 }
 
 ## common section

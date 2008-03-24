@@ -1,4 +1,10 @@
-2008-03-08  Primozz Peterlin  <primozz.peterlin@gmail.com>
+2008-03-24  David Bateman  <dbateman@free.fr>
+
+	* data.cc (map_s_s): Fix for sparse/sparse mappers that resulted
+	in an empty sparse matrix being returned.
+	(Fhypot): New function based on the libm hypot function.
+
+2008-03-24  Primozz Peterlin  <primozz.peterlin@gmail.com>
 
 	* variables.cc (Fexist): Doc fix.
 

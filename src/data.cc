@@ -353,7 +353,7 @@ map_s_s (d_dd_fcn f, const SparseMatrix& x, const SparseMatrix& y)
     }
   else
     {
-      octave_idx_type nz = y.nnz ();
+      octave_idx_type nz = x.nnz () + y.nnz ();
       retval = SparseMatrix (nr, nc, nz);
       octave_idx_type ii = 0;
       retval.cidx (ii) = 0;
@@ -403,6 +403,7 @@ map_s_s (d_dd_fcn f, const SparseMatrix& x, const SparseMatrix& y)
 		  retval.ridx (ii++) = r;
 		}
 	    }
+	  retval.cidx (j + 1) = ii;
 	}
 
       retval.maybe_compress (false);
@@ -533,6 +534,156 @@ and @var{x}.  The result is in range -pi to pi.\n\
 %! assert (size (atan2 (rand (2, 3, 4), 1), [2, 3, 4])
 %! assert (size (atan2 (1, rand (2, 3, 4)), [2, 3, 4])
 %! assert (size (atan2 (1, 2), [1, 1])
+*/
+
+DEFUN (hypot, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} hypot (@var{x}, @var{y})\n\
+Compute square-root of the squares of @var{x} and @var{y}\n\
+element-by-element. This equivalent to @code{sqrt (@var{x}.^ 2 + @var{y}\n\
+.^ 2)}, but calculated in a manner that avoids overflows for large\n\
+values of @var{x} or @var{y}.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 2 && args(0).is_defined () && args(1).is_defined ())
+    {
+      if (args(0).is_integer_type () || args(1).is_integer_type ())
+	error ("hypot: not defined for integer types");
+      else
+	{
+	  octave_value arg_x = args(0);
+	  octave_value arg_y = args(1);
+
+	  dim_vector x_dims = arg_x.dims ();
+	  dim_vector y_dims = arg_y.dims ();
+
+	  bool x_is_scalar = x_dims.all_ones ();
+	  bool y_is_scalar = y_dims.all_ones ();
+
+	  if (y_is_scalar && x_is_scalar)
+	    {
+	      double x;
+	      if (arg_x.is_complex_type ())
+		x = abs (arg_x.complex_value ());
+	      else
+		x = arg_x.double_value ();
+
+	      if (! error_state)
+		{
+		  double y;
+		  if (arg_y.is_complex_type ())
+		    y = abs (arg_y.complex_value ());
+		  else
+		    y = arg_y.double_value ();
+
+		  if (! error_state)
+		    retval = hypot (x, y);
+		}
+	    }
+	  else if (y_is_scalar)
+	    {
+	      NDArray x;
+	      if (arg_x.is_complex_type ())
+		x = arg_x.complex_array_value ().abs ();
+	      else
+		x = arg_x.array_value ();
+
+	      if (! error_state)
+		{
+		  double y;
+		  if (arg_y.is_complex_type ())
+		    y = abs (arg_y.complex_value ());
+		  else
+		    y = arg_y.double_value ();
+
+		  if (! error_state)
+		    retval = map_m_d (hypot, x, y);
+		}
+	    }
+	  else if (x_is_scalar)
+	    {
+	      double x;
+	      if (arg_x.is_complex_type ())
+		x = abs (arg_x.complex_value ());
+	      else
+		x = arg_x.double_value ();
+
+	      if (! error_state)
+		{
+		  NDArray y;
+		  if (arg_y.is_complex_type ())
+		    y = arg_y.complex_array_value ().abs ();
+		  else
+		    y = arg_y.array_value ();
+
+		  if (! error_state)
+		    retval = map_d_m (hypot, x, y);
+		}
+	    }
+	  else if (y_dims == x_dims)
+	    {
+	      if (arg_x.is_sparse_type () && arg_y.is_sparse_type ())
+		{
+		  SparseMatrix x;
+		  if (arg_x.is_complex_type ())
+		    x = arg_x.sparse_complex_matrix_value ().abs ();
+		  else
+		    x = arg_x.sparse_matrix_value ();
+
+		  if (! error_state)
+		    {
+		      SparseMatrix y;
+		      if (arg_y.is_complex_type ())
+			y = arg_y.sparse_complex_matrix_value ().abs ();
+		      else
+			y = arg_y.sparse_matrix_value ();
+
+		      if (! error_state)
+			retval = map_s_s (hypot, x, y);
+		    }
+		}
+	      else
+		{
+		  NDArray x;
+		  if (arg_x.is_complex_type ())
+		    x = arg_x.complex_array_value ().abs ();
+		  else
+		    x = arg_x.array_value ();
+
+		  if (! error_state)
+		    {
+		      NDArray y;
+		      if (arg_y.is_complex_type ())
+			y = arg_y.complex_array_value ().abs ();
+		      else
+			y = arg_y.array_value ();
+
+		      if (! error_state)
+			retval = map_m_m (hypot, x, y);
+		    }
+		}
+	    }
+	  else
+	    error ("hypot: nonconformant matrices");
+	}
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%! assert (size (hypot (zeros (0, 2), zeros (0, 2))), [0, 2])
+%! assert (size (hypot (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%! assert (size (hypot (rand (2, 3, 4), 1), [2, 3, 4])
+%! assert (size (hypot (1, rand (2, 3, 4)), [2, 3, 4])
+%! assert (size (hypot (1, 2), [1, 1])
+%! assert (hypot (1:10,1:10), sqrt(2) * [1:10]);
 */
 
 DEFUN (fmod, args, ,

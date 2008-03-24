@@ -599,45 +599,54 @@ function install (files, handle_deps, autoload, prefix, archprefix, verbose,
 	if (length (dirlist) > 3)
 	  error ("bundles of packages are not allowed")
 	endif
+      endif
 
+      ## The filename pointed to an uncompressed package to begin with
+      if (exist (tgz, "dir"))
+	dirlist = {".", "..", tgz};
+      endif
+
+      if (exist (tgz, "file") || exist (tgz, "dir"))
 	## the two first entries of dirlist are "." and ".."
-	for k = 3:length (dirlist)
-	  packdir = fullfile (tmpdir, dirlist{k});
-	  packdirs{end+1} = packdir;
-
-	  ## Make sure the package contains necessary files
-	  verify_directory (packdir);
-
-	  ## Read the DESCRIPTION file
-	  filename = fullfile (packdir, "DESCRIPTION");
-	  desc = get_description (filename);
-
-	  ## Verify that package name corresponds with filename
-	  [dummy, nm] = fileparts (tgz); 
-	  if ((length (nm) >= length (desc.name))
-	      && ! strcmp (desc.name, nm(1:length(desc.name))))
-	    error ("package name '%s' doesn't correspond to its filename '%s'", 
-		   desc.name, nm);
+	if (exist (tgz, "file"))
+	  packdir = fullfile (tmpdir, dirlist{3});
+	else
+	  packdir = fullfile (pwd(), dirlist{3});
+	endif
+	packdirs{end+1} = packdir;
+	
+	## Make sure the package contains necessary files
+	verify_directory (packdir);
+	
+	## Read the DESCRIPTION file
+	filename = fullfile (packdir, "DESCRIPTION");
+	desc = get_description (filename);
+	
+	## Verify that package name corresponds with filename
+	[dummy, nm] = fileparts (tgz); 
+	if ((length (nm) >= length (desc.name))
+	    && ! strcmp (desc.name, nm(1:length(desc.name))))
+	  error ("package name '%s' doesn't correspond to its filename '%s'", 
+		 desc.name, nm);
+	endif
+	
+	## Set default installation directory
+	desc.dir = fullfile (prefix, cstrcat (desc.name, "-", desc.version));
+	
+	## Set default architectire dependent installation directory
+	desc.archprefix = fullfile (archprefix, cstrcat (desc.name, "-",
+							 desc.version));
+	
+	## Save desc
+	descriptions{end+1} = desc;
+	
+	## Are any of the new packages already installed?
+	## If so we'll remove the old version.
+	for j = 1:length (packages)
+	  if (strcmp (packages{j}.name, desc.name))
+	    packages_to_uninstall(end+1) = j;
 	  endif
-
-	  ## Set default installation directory
-	  desc.dir = fullfile (prefix, cstrcat (desc.name, "-", desc.version));
-
-	  ## Set default architectire dependent installation directory
-	  desc.archprefix = fullfile (archprefix, cstrcat (desc.name, "-",
-							  desc.version));
-
-	  ## Save desc
-	  descriptions{end+1} = desc;
-
-	  ## Are any of the new packages already installed?
-	  ## If so we'll remove the old version.
-	  for j = 1:length (packages)
-	    if (strcmp (packages{j}.name, desc.name))
-	      packages_to_uninstall(end+1) = j;
-	    endif
-	  endfor
-	endfor        
+	endfor
       endif
     endfor
   catch

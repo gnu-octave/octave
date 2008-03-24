@@ -1,3 +1,7 @@
+2008-03-24  David Bateman  <dbateman@free.fr>
+
+	* general/idivide.m: New function.
+
 2008-03-21  David Bateman  <dbateman@free.fr>
 
 	* specfun/reallog.m, specfun/realpow.m, specfun/realsqrt.m: New

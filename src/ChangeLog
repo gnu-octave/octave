@@ -1,3 +1,7 @@
+2008-03-08  Primozz Peterlin  <primozz.peterlin@gmail.com>
+
+	* variables.cc (Fexist): Doc fix.
+
 2008-03-23  David Bateman  <dbateman@free.fr>
 
 	* OPERATORS/op-int.h: Add el_div and el_ldiv operators to the

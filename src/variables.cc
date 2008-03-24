@@ -788,8 +788,9 @@ unique_symbol_name (const std::string& basename)
 DEFUN (exist, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} exist (@var{name}, @var{type})\n\
-Return 1 if the name exists as a variable, 2 if the name (after\n\
-appending @samp{.m}) is a function file in Octave's @code{path}, 3 if the\n\
+Return 1 if the name exists as a variable, 2 if the name is an\n\
+absolute file name, an ordinary file in Octave's @code{path}, or (after\n\
+appending @samp{.m}) a function file in Octave's @code{path}, 3 if the\n\
 name is a @samp{.oct} or @samp{.mex} file in Octave's @code{path},\n\
 5 if the name is a built-in function, 7 if the name is a directory, or 103\n\
 if the name is a function not associated with a file (entered on\n\

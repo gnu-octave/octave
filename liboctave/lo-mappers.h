@@ -32,7 +32,9 @@ extern OCTAVE_API double fix (double x);
 extern OCTAVE_API double imag (double x);
 extern OCTAVE_API double real (double x);
 extern OCTAVE_API double xround (double x);
+extern OCTAVE_API double xroundb (double x);
 extern OCTAVE_API double signum (double x);
+extern OCTAVE_API double xtrunc (double x);
 extern OCTAVE_API double xlog2 (double x); 
 extern OCTAVE_API double xexp2 (double x);
 
@@ -57,6 +59,7 @@ extern OCTAVE_API Complex ceil (const Complex& x);
 extern OCTAVE_API Complex fix (const Complex& x);
 extern OCTAVE_API Complex floor (const Complex& x);
 extern OCTAVE_API Complex xround (const Complex& x);
+extern OCTAVE_API Complex xroundb (const Complex& x);
 extern OCTAVE_API Complex signum (const Complex& x);
 
 extern OCTAVE_API bool xisnan (const Complex& x);

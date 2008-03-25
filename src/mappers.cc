@@ -804,6 +804,24 @@ Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
   return retval;
 }
 
+DEFUN (roundb, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} roundb (@var{x})\n\
+Return the integer nearest to @var{x}. If there are two nearest\n\
+integers, return the even one (banker's rounding). If @var{x} is complex,\n\
+return @code{roundb (real (@var{x})) + roundb (imag (@var{x})) * I}.\n\
+@seealso{rem}\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).roundb ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUN (sign, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sign (@var{x})\n\

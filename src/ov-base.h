@@ -501,6 +501,7 @@ public:
   virtual octave_value log10 (void) const;
   virtual octave_value real (void) const;
   virtual octave_value round (void) const;
+  virtual octave_value roundb (void) const;
   virtual octave_value signum (void) const;
   virtual octave_value sin (void) const;
   virtual octave_value sinh (void) const;

@@ -915,6 +915,7 @@ public:
   MAPPER_FORWARD (log10)
   MAPPER_FORWARD (real)
   MAPPER_FORWARD (round)
+  MAPPER_FORWARD (roundb)
   MAPPER_FORWARD (signum)
   MAPPER_FORWARD (sin)
   MAPPER_FORWARD (sinh)

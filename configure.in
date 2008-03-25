@@ -1321,7 +1321,7 @@ AC_CHECK_FUNCS(atexit basename bcopy bzero canonicalize_file_name chmod \
   raise readlink realpath rename resolvepath rindex rmdir round select \
   setgrent setlocale setpwent setvbuf sigaction siglongjmp sigpending \
   sigprocmask sigsuspend snprintf stat strcasecmp strdup strerror stricmp \
-  strncasecmp strnicmp strptime strsignal symlink tempnam tgamma umask \
+  strncasecmp strnicmp strptime strsignal symlink tempnam tgamma trunc umask \
   uname unlink usleep utime vfprintf vsprintf vsnprintf waitpid \
   _chmod _snprintf x_utime _utime32)
 

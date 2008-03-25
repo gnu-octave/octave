@@ -178,6 +178,7 @@ public:
   octave_value log10 (void) const;
   octave_value real (void) const;
   octave_value round (void) const;
+  octave_value roundb (void) const;
   octave_value signum (void) const;
   octave_value sin (void) const;
   octave_value sinh (void) const;

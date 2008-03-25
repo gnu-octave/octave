@@ -252,6 +252,7 @@ public:
   NO_OP_MAPPER (floor)
   NO_OP_MAPPER (real)
   NO_OP_MAPPER (round)
+  NO_OP_MAPPER (roundb)
 
 #undef NO_OP_MAPPER
 
@@ -506,6 +507,7 @@ public:
   NO_OP_MAPPER (floor)
   NO_OP_MAPPER (real)
   NO_OP_MAPPER (round)
+  NO_OP_MAPPER (roundb)
 
 #undef NO_OP_MAPPER
 

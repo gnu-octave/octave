@@ -1,3 +1,13 @@
+2008-03-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* mappers.cc (Froundb): New function.
+	* ov-base.cc, ov-base.h, ov-bool-mat.h, ov-bool-sparse.h,
+	ov-bool.h, ov-complex.cc, ov-complex.h, ov-cx-mat.cc, ov-cx-mat.h,
+	ov-cx-sparse.cc, ov-cx-sparse.h, ov-intx.h, ov-range.h,
+	ov-re-mat.cc, ov-re-mat.h, ov-re-sparse.cc, ov-re-sparse.h,
+	ov-scalar.cc, ov-scalar.h, ov.h:
+ 	Provide roundb mapper function.
+
 2008-03-25  Jaroslav Hajek <highegg@gmail.com>
 
 	* load-save.cc (save_vars): Handle -struct modifier.

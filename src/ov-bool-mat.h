@@ -221,6 +221,7 @@ public:
   BOOL_MAT_MAPPER (log10)
   BOOL_MAT_MAPPER (real)
   BOOL_MAT_MAPPER (round)
+  BOOL_MAT_MAPPER (roundb)
   BOOL_MAT_MAPPER (signum)
   BOOL_MAT_MAPPER (sin)
   BOOL_MAT_MAPPER (sinh)

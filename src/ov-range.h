@@ -304,6 +304,7 @@ public:
   RANGE_MAPPER (log10)
   RANGE_MAPPER (real)
   RANGE_MAPPER (round)
+  RANGE_MAPPER (roundb)
   RANGE_MAPPER (signum)
   RANGE_MAPPER (sin)
   RANGE_MAPPER (sinh)

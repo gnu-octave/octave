@@ -80,6 +80,27 @@ xround (double x)
 }
 
 double
+xtrunc (double x)
+{
+#if defined (HAVE_TRUNC)
+  return trunc (x);
+#else
+  return x > 0 ? floor (x) : ceil (x);
+#endif
+}
+
+double 
+xroundb (double x)
+{
+  double t = xround (x);
+
+  if (fabs (x - t) == 0.5)
+    t = 2 * xtrunc (0.5 * t);
+
+  return t;
+}
+
+double
 signum (double x)
 {
   double tmp = 0.0;
@@ -264,6 +285,12 @@ Complex
 xround (const Complex& x)
 {
   return Complex (xround (real (x)), xround (imag (x)));
+}
+
+Complex
+xroundb (const Complex& x)
+{
+  return Complex (xroundb (real (x)), xroundb (imag (x)));
 }
 
 Complex

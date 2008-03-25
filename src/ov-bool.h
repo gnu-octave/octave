@@ -229,6 +229,7 @@ public:
   BOOL_MAPPER (log10)
   BOOL_MAPPER (real)
   BOOL_MAPPER (round)
+  BOOL_MAPPER (roundb)
   BOOL_MAPPER (signum)
   BOOL_MAPPER (sin)
   BOOL_MAPPER (sinh)

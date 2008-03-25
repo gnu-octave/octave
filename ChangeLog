@@ -1,3 +1,7 @@
+2008-03-25  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Check for trunc.
+
 2008-03-21  David Bateman  <dbateman@free.fr>
 
 	* configure.in (HAVE_AMD): Complete test for presence of amd.

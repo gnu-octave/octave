@@ -929,10 +929,16 @@ decl1		: decl2
 		  }
 		;
 
+decl_param_init : // empty
+		{ lexer_flags.looking_at_initializer_expression = true; }
+
 decl2		: identifier
 		  { $$ = new tree_decl_elt ($1); }
-		| identifier '=' expression
-		  { $$ = new tree_decl_elt ($1, $3); }
+		| identifier '=' decl_param_init expression
+		  {
+		    lexer_flags.looking_at_initializer_expression = false;
+		    $$ = new tree_decl_elt ($1, $4);
+		  }
 		;
 
 // ====================

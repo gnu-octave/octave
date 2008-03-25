@@ -2286,7 +2286,8 @@ handle_identifier (void)
     {
       if (next_tok_is_eq
 	  || lexer_flags.looking_at_return_list
-	  || lexer_flags.looking_at_parameter_list
+	  || (lexer_flags.looking_at_parameter_list
+	      && ! lexer_flags.looking_at_initializer_expression)
 	  || lexer_flags.looking_at_matrix_or_assign_lhs)
 	{
 	  force_local_variable (tok);
@@ -2311,11 +2312,6 @@ handle_identifier (void)
 
   yylval.tok_val = new token (&(symbol_table::insert (tok)),
 			      input_line_number, current_input_column);
-
-  // FIXME -- this forces a link for tok in the chain of variables for
-  // the current scope.  Probably this step should be done
-  // differently, maybe in symbol_table::insert?
-  symbol_table::varref (tok);
 
   token_stack.push (yylval.tok_val);
 
@@ -2363,6 +2359,9 @@ lexical_feedback::init (void)
   // Not parsing a function return or parameter list.
   looking_at_return_list = false;
   looking_at_parameter_list = false;
+
+  // Not looking at an argument list initializer expression.
+  looking_at_initializer_expression = false;
 
   // Not parsing a matrix or the left hand side of multi-value
   // assignment statement.

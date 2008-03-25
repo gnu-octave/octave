@@ -92,6 +92,10 @@ public:
   // TRUE means we're parsing the parameter list for a function.
   bool looking_at_parameter_list;
 
+  // TRUE means we are looking at the initializer expression for a
+  // parameter list element.
+  bool looking_at_initializer_expression;
+
   // TRUE means we're parsing a matrix or the left hand side of
   // multi-value assignment statement.
   bool looking_at_matrix_or_assign_lhs;

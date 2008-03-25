@@ -1,3 +1,15 @@
+2008-03-25  John W. Eaton  <jwe@octave.org>
+
+	* lex.h (lexical_feedback::looking_at_initializer_expression):
+	New data member.
+	* lex.l (lexical_feedback::init): Initialize it.
+	(handle_identifier): Don't unconditionally force identifiers to be
+	variables in the current scope.  Don't call force_local_variable
+	for symbols that appear in parameter initializer expressions.
+	* parse.y (decl_param_init): New parser "subroutine".
+	(decl2): Use it.  Set lexer_flags.looking_at_initializer_expression
+	to false after parsing initializer.
+
 2008-03-24  David Bateman  <dbateman@free.fr>
 
 	* data.cc (map_s_s): Fix for sparse/sparse mappers that resulted

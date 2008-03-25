@@ -51,8 +51,8 @@ protected:
 			  const bool natural) : count (1)
       { info = init (a, natural); }
 
-    ~sparse_base_chol_rep (void) 
-      { CHOLMOD_NAME(free_sparse) (&Lsparse, &Common); }
+    ~sparse_base_chol_rep (void)
+      { if (is_pd) CHOLMOD_NAME(free_sparse) (&Lsparse, &Common); }
 
     cholmod_sparse * L (void) const { return Lsparse; }
 

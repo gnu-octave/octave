@@ -165,45 +165,53 @@ sparse_base_chol<chol_type, chol_elt, p_type>::sparse_base_chol_rep::init
   BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
   Lfactor = CHOLMOD_NAME(analyze) (ac, cm);
   CHOLMOD_NAME(factorize) (ac, Lfactor, cm);
-  cond = CHOLMOD_NAME(rcond) (Lfactor, cm);
   END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 
-  minor_p = Lfactor->minor;
   is_pd = cm->status == CHOLMOD_OK;
   info = (is_pd ? 0 : cm->status);
 
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-  Lsparse = CHOLMOD_NAME(factor_to_sparse) (Lfactor, cm);
-  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-
-  if (minor_p > 0 && minor_p < a_nr)
+  if (is_pd)
     {
-      size_t n1 = a_nr + 1;
-      Lsparse->p = CHOLMOD_NAME(realloc) (minor_p+1, sizeof(octave_idx_type),
-				    Lsparse->p, &n1, cm);
       BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      CHOLMOD_NAME(reallocate_sparse) 
-	(static_cast<octave_idx_type *>(Lsparse->p)[minor_p], Lsparse, cm);
+      cond = CHOLMOD_NAME(rcond) (Lfactor, cm);
       END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-      Lsparse->ncol = minor_p;
+
+      minor_p = Lfactor->minor;
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      Lsparse = CHOLMOD_NAME(factor_to_sparse) (Lfactor, cm);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+
+      if (minor_p > 0 && minor_p < a_nr)
+	{
+	  size_t n1 = a_nr + 1;
+	  Lsparse->p = CHOLMOD_NAME(realloc) (minor_p+1,
+					      sizeof(octave_idx_type),
+					      Lsparse->p, &n1, cm);
+	  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	  CHOLMOD_NAME(reallocate_sparse) 
+	    (static_cast<octave_idx_type *>(Lsparse->p)[minor_p], Lsparse, cm);
+	  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+	  Lsparse->ncol = minor_p;
+	}
+
+      drop_zeros (Lsparse);
+
+      if (! natural)
+	{
+	  perms.resize (a_nr);
+	  for (octave_idx_type i = 0; i < a_nr; i++)
+	    perms(i) = static_cast<octave_idx_type *>(Lfactor->Perm)[i];
+	}
+
+      static char tmp[] = " ";
+
+      BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
+      CHOLMOD_NAME(free_factor) (&Lfactor, cm);
+      CHOLMOD_NAME(finish) (cm);
+      CHOLMOD_NAME(print_common) (tmp, cm);
+      END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
     }
-
-  drop_zeros (Lsparse);
-
-  if (! natural)
-    {
-      perms.resize (a_nr);
-      for (octave_idx_type i = 0; i < a_nr; i++)
-	perms(i) = static_cast<octave_idx_type *>(Lfactor->Perm)[i];
-    }
-
-  static char tmp[] = " ";
-
-  BEGIN_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
-  CHOLMOD_NAME(free_factor) (&Lfactor, cm);
-  CHOLMOD_NAME(finish) (cm);
-  CHOLMOD_NAME(print_common) (tmp, cm);
-  END_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE;
 #else
   (*current_liboctave_error_handler) 
     ("Missing CHOLMOD. Sparse cholesky factorization disabled");

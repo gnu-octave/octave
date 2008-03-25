@@ -1,3 +1,11 @@
+2008-03-25  David Bateman  <dbateman@free.fr>
+
+	* sparse-base-chol.h (sparse_base_chol_rep::~sparse_base_chol_rep
+	(void)): Only free the factorization if it was created
+	* spase-base-chol.cc (sparse_base_chol_rep::init): Don't attempt
+	to factorize a matrix that has been flagged as not being positive
+	definite.
+
 2008-03-25  John W. Eaton  <jwe@octave.org>
 
 	* lo-mappers.cc (xtrunc): New function.

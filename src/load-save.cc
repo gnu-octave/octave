@@ -965,6 +965,34 @@ do_save (std::ostream& os, const symbol_table::symbol_record& sr,
     }
 }
 
+// save fields of a scalar structure STR matching PATTERN on stream OS
+// in the format specified by FMT.
+
+static size_t
+save_fields (std::ostream& os, const Octave_map& m,
+	     const std::string& pattern,
+	     load_save_format fmt, bool save_as_floats)
+{
+  glob_match pat (pattern);
+  
+  size_t saved = 0;
+
+  for (Octave_map::const_iterator p = m.begin (); p != m.end (); p++)
+    {
+      std::string empty_str;
+
+      if (pat.match(p->first))
+        {
+          do_save (os, p->second(0), p->first, empty_str,
+		   0, fmt, save_as_floats);
+
+          saved++;
+        }
+    }
+
+  return saved;
+}
+
 // Save variables with names matching PATTERN on stream OS in the
 // format specified by FMT.
 
@@ -1183,14 +1211,55 @@ save_vars (const string_vector& argv, int argv_idx, int argc,
     {
       save_vars (os, "*", fmt, save_as_floats);
     }
+  else if (argv[argv_idx] == "-struct")
+    {
+      if (++argv_idx >= argc) 
+        {
+          error ("save: missing struct name");
+          return;
+        }
+
+      std::string struct_name = argv[argv_idx];
+
+      if (! symbol_table::is_variable (struct_name))
+        {
+          error ("save: no such variable: `%s'", struct_name.c_str ());
+          return;
+        }
+
+      octave_value struct_var = symbol_table::varref (struct_name);
+
+      if (! struct_var.is_map () || struct_var.numel () != 1) 
+        {
+          error ("save: `%s' is not a scalar structure",
+		 struct_name.c_str ());
+          return;
+        }
+      Octave_map struct_var_map = struct_var.map_value ();
+
+      ++argv_idx;
+
+      if (argv_idx < argc) 
+        {
+          for (int i = argv_idx; i < argc; i++)
+            {
+              if (! save_fields (os, struct_var_map, argv[i], fmt,
+				 save_as_floats))
+                {
+                  warning ("save: no such field `%s.%s'", 
+			   struct_name.c_str (), argv[i].c_str ());
+                }
+            }
+        }
+      else
+	save_fields (os, struct_var_map, "*", fmt, save_as_floats);
+    }
   else
     {
       for (int i = argv_idx; i < argc; i++)
 	{
 	  if (! save_vars (os, argv[i], fmt, save_as_floats))
-	    {
-	      warning ("save: no such variable `%s'", argv[i].c_str ());
-	    }
+	    warning ("save: no such variable `%s'", argv[i].c_str ());
 	}
     }
 }
@@ -1338,12 +1407,16 @@ the zlib library."
 DEFCMD (save, args, ,
   "-*- texinfo -*-\n\
 @deffn {Command} save options file @var{v1} @var{v2} @dots{}\n\
+@deffnx {Command} save options file -struct @var{STR} @var{f1} @var{f2} @dots{}\n\
 Save the named variables @var{v1}, @var{v2}, @dots{}, in the file\n\
-@var{file}.  The special filename @samp{-} can be used to write the\n\
+@var{file}.  The special filename @samp{-} may be used to write the\n\
 output to your terminal.  If no variable names are listed, Octave saves\n\
-all the variables in the current scope.  Valid options for the\n\
-@code{save} command are listed in the following table.  Options that\n\
-modify the output format override the format specified by\n\
+all the variables in the current scope.\n\
+If the @code{-struct} modifier is used, fields @var{f1} @var{f2} @dots{}\n\
+of the scalar structure @var{STR} are saved as if they were variables\n\
+with corresponding names.\n\
+Valid options for the @code{save} command are listed in the following table.\n\
+Options that modify the output format override the format specified by \n\
 @code{default_save_options}.\n\
 \n\
 If save is invoked using the functional form\n\
@@ -1427,6 +1500,9 @@ Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
 match all lower and upper case alphabetic characters. \n\
+\n\      
+Wildcards may also be used in the field names specifications when using\n\
+the @code{-struct} modifier (but not in the struct name itself).\n\
 \n\
 @item -text\n\
 Save the data in Octave's text data format.\n\

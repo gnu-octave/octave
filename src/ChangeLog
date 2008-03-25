@@ -1,3 +1,9 @@
+2008-03-25  Jaroslav Hajek <highegg@gmail.com>
+
+	* load-save.cc (save_vars): Handle -struct modifier.
+	(save_fields): New function.
+	(Fsave): Document new feature.
+
 2008-03-25  John W. Eaton  <jwe@octave.org>
 
 	* lex.h (lexical_feedback::looking_at_initializer_expression):

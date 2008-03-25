@@ -1,3 +1,7 @@
+2008-03-25  Jaroslav Hajek  <highegg@gmail.com>
+
+	* test_io.m: Add test for save with -struct modifier.
+
 2008-03-20  David Bateman  <dbateman@free.fr>
 
 	* test_func.m: Modify to test for char, cell and structure arrays.

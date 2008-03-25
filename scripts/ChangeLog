@@ -1,3 +1,7 @@
+2008-03-25  David Bateman  <dbateman@free.fr>
+
+	* image/contrast.m: New function.
+
 2008-03-24  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* pkg/pkg.m: Allow installation of already extracted packages.

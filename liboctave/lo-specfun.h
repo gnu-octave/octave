@@ -57,6 +57,16 @@ extern OCTAVE_API double erf (double);
 extern OCTAVE_API double erfc (double);
 #endif
 
+#if !defined (HAVE_EXPM1)
+extern OCTAVE_API double expm1 (double x);
+#endif
+extern OCTAVE_API Complex expm1 (const Complex& x);
+
+#if !defined (HAVE_LOG1P)
+extern OCTAVE_API double log1p (double x);
+#endif
+extern OCTAVE_API Complex log1p (const Complex& x);
+
 extern OCTAVE_API double xgamma (double x);
 extern OCTAVE_API double xlgamma (double x);
 extern OCTAVE_API Complex xlgamma (const Complex& x);

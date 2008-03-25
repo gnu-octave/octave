@@ -122,11 +122,19 @@ flag a non-Hermitian matrix.
 
 @DOCSTRING(chol2inv)
 
+@DOCSTRING(cholupdate)
+
 @DOCSTRING(hess)
 
 @DOCSTRING(lu)
 
 @DOCSTRING(qr)
+
+@DOCSTRING(qrupdate)
+
+@DOCSTRING(qrinsert)
+
+@DOCSTRING(qrdelete)
 
 @DOCSTRING(qz)
 

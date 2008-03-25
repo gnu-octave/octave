@@ -664,6 +664,8 @@ After this the directory @samp{~/Octave} will be searched for functions.
 
 @DOCSTRING(file_in_loadpath)
 
+@DOCSTRING(restoredefaultpath)
+
 @node Subfunctions
 @subsection Subfunctions
 

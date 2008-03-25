@@ -633,6 +633,8 @@ variable.
 
 @DOCSTRING(isreal)
 
+@DOCSTRING(isfloat)
+
 @DOCSTRING(iscomplex)
 
 @DOCSTRING(ismatrix)

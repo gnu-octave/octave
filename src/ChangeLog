@@ -1,6 +1,14 @@
 2008-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
-	* mappers.cc (Froundb): New function.
+	* mappers.cc (Fexpm1, Flog1p): New functions.
+	* ov-base.cc, ov-base.h, ov-bool-mat.h, ov-bool-sparse.h,
+	ov-bool.h, ov-complex.cc, ov-complex.h, ov-cx-mat.cc, ov-cx-mat.h,
+	ov-cx-sparse.cc, ov-cx-sparse.h, ov-range.h, ov-re-mat.cc,
+	ov-re-mat.h, ov-re-sparse.cc, ov-re-sparse.h, ov-scalar.cc,
+	ov-scalar.h, ov.h:
+	Provide expm1 and log1p functions.
+
+	* mappers.cc (Froundb): New functions
 	* ov-base.cc, ov-base.h, ov-bool-mat.h, ov-bool-sparse.h,
 	ov-bool.h, ov-complex.cc, ov-complex.h, ov-cx-mat.cc, ov-cx-mat.h,
 	ov-cx-sparse.cc, ov-cx-sparse.h, ov-intx.h, ov-range.h,
@@ -735,7 +743,7 @@
 	
 	* Makefile.in (DLD_XSRC): Remove sort.cc
 	* DLD-FUNCTIONS/sort.cc: Remove
-	* data.cc (Fdata): New function using octave_value sort methods
+	* data.cc (Fsort): New function using octave_value sort methods
 	for the sorting. Add tests.
 
 2008-01-30  Thomas Weber  <thomas.weber.mail@gmail.com>

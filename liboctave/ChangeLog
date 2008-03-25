@@ -13,6 +13,9 @@
 
 2008-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
+	* lo-specfun.cc (expm1, log1p): New functions.
+	* lo-specfun.h: Provide decls.
+
 	* lo-mappers.cc (xroundb): New function.
 	* lo-mappers.h: Provide decl.
 

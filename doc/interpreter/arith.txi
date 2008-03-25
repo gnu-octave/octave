@@ -48,6 +48,8 @@ each element of the matrix.
 
 @DOCSTRING(exp)
 
+@DOCSTRING(expm1)
+
 @DOCSTRING(factor)
 
 @DOCSTRING(factorial)
@@ -62,9 +64,13 @@ each element of the matrix.
 
 @DOCSTRING(gradient)
 
+@DOCSTRING(hypot)
+
 @DOCSTRING(lcm)
 
 @DOCSTRING(log)
+
+@DOCSTRING(log1p)
 
 @DOCSTRING(log10)
 
@@ -87,6 +93,8 @@ each element of the matrix.
 @DOCSTRING(rem)
 
 @DOCSTRING(round)
+
+@DOCSTRING(roundb)
 
 @DOCSTRING(sign)
 

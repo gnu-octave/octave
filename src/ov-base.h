@@ -488,6 +488,7 @@ public:
   virtual octave_value erf (void) const;
   virtual octave_value erfc (void) const;
   virtual octave_value exp (void) const;
+  virtual octave_value expm1 (void) const;
   virtual octave_value finite (void) const;
   virtual octave_value fix (void) const;
   virtual octave_value floor (void) const;
@@ -499,6 +500,7 @@ public:
   virtual octave_value lgamma (void) const;
   virtual octave_value log (void) const;
   virtual octave_value log10 (void) const;
+  virtual octave_value log1p (void) const;
   virtual octave_value real (void) const;
   virtual octave_value round (void) const;
   virtual octave_value roundb (void) const;

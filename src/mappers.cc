@@ -363,6 +363,21 @@ see @ref{Linear Algebra}.\n\
   return retval;
 }
 
+DEFUN (expm1, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} expm1 (@var{x})\n\
+Compute exp (@var{x}) - 1 accurately in neighbourhood of zero.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).expm1 ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
 DEFUN (finite, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} finite (@var{x})\n\
@@ -765,6 +780,21 @@ Compute the base-10 logarithm for each element of @var{x}.\n\
   octave_value retval;
   if (args.length () == 1)
     retval = args(0).log10 ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (log1p, args, ,
+    "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} log1p (@var{x})\n\
+Compute log (1 + @var{x}) accurately in neighbourhood of zero.\n\
+@end deftypefn")
+{
+  octave_value retval;
+  if (args.length () == 1)
+    retval = args(0).log1p ();
   else
     print_usage ();
 

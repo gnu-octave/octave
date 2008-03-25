@@ -224,6 +224,104 @@ xlgamma (const Complex& xc)
     return result;
 }
 
+#if !defined (HAVE_EXPM1)
+double
+expm1 (double x)
+{
+  double retval;
+
+  double ax = fabs (x);
+
+  if (ax < 0.1)
+    {
+      ax /= 16;
+
+      // use Taylor series to calculate exp(x)-1.
+      double t = ax;
+      double s = 0; 
+      for (int i = 2; i < 7; i++)
+        s += (t *= ax/i);
+      s += ax;
+
+      // use the identity (a+1)^2-1 = a*(a+2)
+      double e = s;
+      for (int i = 0; i < 4; i++)
+        {
+          s *= e + 2;
+          e *= e + 2;
+        }
+
+      retval = (x > 0) ? s : -s / (1+s);
+    }
+  else
+    retval = exp (x) - 1;
+
+  return retval;
+}
+#endif
+
+Complex 
+expm1(const Complex& x)
+{
+  Complex retval;
+
+  if (std:: abs (x) < 1)
+    {
+      double im = x.imag();
+      double u = expm1 (x.real ());
+      double v = sin (im/2);
+      v = -2*v*v;
+      retval = Complex (u*v + u + v, (u+1) * sin (im));
+    }
+  else
+    retval = std::exp (x) - Complex (1);
+
+  return retval;
+}
+
+#if !defined (HAVE_LOG1P)
+double
+log1p (double x)
+{
+  double retval;
+
+  double ax = fabs (x);
+
+  if (ax < 0.2)
+    {
+      // use approximation log (1+x) ~ 2*sum ((x/(2+x)).^ii ./ ii), ii = 1:2:2n+1
+      double u = x / (2 + x), t = 1, s = 0;
+      for (int i = 2; i < 12; i += 2)
+        s += (t *= u*u) / (i+1);
+
+      retval = 2 * (s + 1) * u;
+    }
+  else
+    retval = log (1 + x);
+
+  return retval;
+}
+#endif
+
+Complex 
+log1p (const Complex& x)
+{
+  Complex retval;
+
+  double r = x.real (), i = x.imag();
+
+  if (fabs (r) < 0.5 && fabs (i) < 0.5)
+    {
+      double u = 2*r + r*r + i*i;
+      retval = Complex (log1p (u / (1+sqrt (u+1))),
+			atan2 (1 + r, i));
+    }
+  else
+    retval = std::log (Complex(1) + x);
+
+  return retval;
+}
+
 static inline Complex
 zbesj (const Complex& z, double alpha, int kode, octave_idx_type& ierr);
 

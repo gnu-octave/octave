@@ -1,3 +1,7 @@
+2008-03-25  Jaroslav Hajek <highegg@gmail.com>
+
+	* configure.in: Check for expm1 and log1p functions.
+
 2008-03-25  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Check for trunc.

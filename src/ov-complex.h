@@ -164,11 +164,13 @@ public:
   octave_value cos (void) const;
   octave_value cosh (void) const;
   octave_value exp (void) const;
+  octave_value expm1 (void) const;
   octave_value fix (void) const;
   octave_value floor (void) const;
   octave_value imag (void) const;
   octave_value log (void) const;
   octave_value log10 (void) const;
+  octave_value log1p (void) const;
   octave_value real (void) const;
   octave_value round (void) const;
   octave_value roundb (void) const;

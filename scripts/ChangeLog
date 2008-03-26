@@ -1,3 +1,7 @@
+2008-03-26  Jaroslav Hajek <highegg@gmail.com>
+
+	* linear-algebra/dmult.m: Handle scaling along arbitrary dimension.
+
 2008-03-26  Soren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/convn.m: New tests.

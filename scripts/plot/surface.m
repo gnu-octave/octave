@@ -24,7 +24,7 @@
 ## @deftypefnx {Function File} {} surface (@var{z})
 ## @deftypefnx {Function File} {} surface (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} surface (@var{h}, @dots{})
-## @deftypefnx {Function File} {@var{h} = } surface (@dots{})
+## @deftypefnx {Function File} {@var{h} =} surface (@dots{})
 ## Plot a surface graphic object given matrices @var{x}, and @var{y} from 
 ## @code{meshgrid} and a matrix @var{z} corresponding to the @var{x} and 
 ## @var{y} coordinates of the surface.  If @var{x} and @var{y} are vectors,

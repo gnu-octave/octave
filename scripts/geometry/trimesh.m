@@ -18,7 +18,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} trimesh (@var{tri}, @var{x}, @var{y}, @var{z})
-## @deftypefnx {Function File} {@var{h} = } trimesh (@dots{})
+## @deftypefnx {Function File} {@var{h} =} trimesh (@dots{})
 ## Plot a triangular mesh in 3D. The variable @var{tri} is the triangular
 ## meshing of the points @code{(@var{x}, @var{y})} which is returned 
 ## from @code{delaunay}. The variable @var{z} is value at the point 

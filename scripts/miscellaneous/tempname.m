@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {filename = } tempname ()
+## @deftypefn {Function File} {filename =} tempname ()
 ## This function is an alias for @code{tmpnam}.
 ## @end deftypefn
 

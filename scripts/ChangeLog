@@ -1,3 +1,13 @@
+2008-03-26  John W. Eaton  <jwe@octave.org>
+
+	* control/hinf/h2syn.m, general/__splinen__.m, general/gradient.m,
+	geometry/inpolygon.m, geometry/trimesh.m, geometry/triplot.m,
+	image/imagesc.m, io/csvread.m, io/csvwrite.m,
+	miscellaneous/edit.m, miscellaneous/tempname.m, plot/fill.m,
+	plot/patch.m, plot/ribbon.m, plot/surface.m, polynomial/mkpp.m,
+	polynomial/pchip.m, polynomial/spline.m, set/unique.m:
+	Texinfo fixes.
+
 2008-03-26  Jaroslav Hajek <highegg@gmail.com>
 
 	* linear-algebra/dmult.m: Handle scaling along arbitrary dimension.

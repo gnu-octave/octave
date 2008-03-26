@@ -18,7 +18,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{K}, @var{gain}, @var{kc}, @var{kf}, @var{pc}, @var{pf}] = } h2syn (@var{asys}, @var{nu}, @var{ny}, @var{tol})
+## @deftypefn {Function File} {[@var{K}, @var{gain}, @var{kc}, @var{kf}, @var{pc}, @var{pf}] =} h2syn (@var{asys}, @var{nu}, @var{ny}, @var{tol})
 ## Design 
 ## @iftex
 ## @tex

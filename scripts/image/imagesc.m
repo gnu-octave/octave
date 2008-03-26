@@ -22,7 +22,7 @@
 ## @deftypefnx {Function File} {} imagesc (@var{x}, @var{y}, @var{a})
 ## @deftypefnx {Function File} {} imagesc (@dots{}, @var{limits})
 ## @deftypefnx {Function File} {} imagesc (@var{h}, @dots{})
-## @deftypefnx {Function File} { @var{h} = } imagesc (@dots{})
+## @deftypefnx {Function File} {@var{h} =} imagesc (@dots{})
 ## Display a scaled version of the matrix @var{a} as a color image.  The
 ## colormap is scaled so that the entries of the matrix occupy the entire
 ## colormap.  If @var{limits} = [@var{lo}, @var{hi}] are given, then that

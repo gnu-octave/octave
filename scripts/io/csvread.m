@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x}} = csvread (@var{filename})
+## @deftypefn {Function File} {@var{x} =} csvread (@var{filename})
 ## Read the matrix @var{x} from a file.
 ##
 ## This function is equivalent to

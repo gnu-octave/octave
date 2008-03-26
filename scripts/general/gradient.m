@@ -17,10 +17,10 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{x} = } gradient (@var{M})
-## @deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] = } gradient (@var{M})
-## @deftypefnx {Function File} {[@dots{}] = } gradient (@var{M}, @var{s})
-## @deftypefnx {Function File} {[@dots{}] = } gradient (@var{M}, @var{dx}, @var{dy}, @dots{})
+## @deftypefn {Function File} {@var{x} =} gradient (@var{M})
+## @deftypefnx {Function File} {[@var{x}, @var{y}, @dots{}] =} gradient (@var{M})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{M}, @var{s})
+## @deftypefnx {Function File} {[@dots{}] =} gradient (@var{M}, @var{dx}, @var{dy}, @dots{})
 ##
 ## Calculates the gradient. @code{@var{x} = gradient (@var{M})}
 ## calculates the one dimensional gradient if @var{M} is a vector. If

@@ -46,11 +46,11 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (chol, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{r}} = chol (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{r}, @var{p}]} = chol (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{r}, @var{p}, @var{q}]} = chol (@var{s})\n\
-@deftypefnx {Loadable Function} {[@var{r}, @var{p}, @var{q}]} = chol (@var{s}, 'vector')\n\
-@deftypefnx {Loadable Function} {[@var{l}, @dots{}]} = chol (@dots{}, 'lower')\n\
+@deftypefn {Loadable Function} {@var{r} =} chol (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{r}, @var{p}] =} chol (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{r}, @var{p}, @var{q}] =} chol (@var{s})\n\
+@deftypefnx {Loadable Function} {[@var{r}, @var{p}, @var{q}] =} chol (@var{s}, 'vector')\n\
+@deftypefnx {Loadable Function} {[@var{l}, @dots{}] =} chol (@dots{}, 'lower')\n\
 @cindex Cholesky factorization\n\
 Compute the Cholesky factor, @var{r}, of the symmetric positive definite\n\
 matrix @var{a}, where\n\
@@ -447,7 +447,7 @@ using @code{inv}.\n\
 
 DEFUN_DLD (cholupdate, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{R1}, @var{info}]} = cholupdate (@var{R}, @var{u}, @var{op})\n\
+@deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholupdate (@var{R}, @var{u}, @var{op})\n\
 Update or downdate a Cholesky factorization.  Given an upper triangular\n\
 matrix @var{R} and a column vector @var{u}, attempt to determine another\n\
 upper triangular matrix @var{R1} such that\n\

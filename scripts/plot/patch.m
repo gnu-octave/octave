@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} patch ('Faces', @var{f}, 'Vertices', @var{v}, @dots{})
 ## @deftypefnx {Function File} {} patch (@dots{}, @var{prop}, @var{val})
 ## @deftypefnx {Function File} {} patch (@var{h}, @dots{})
-## @deftypefnx {Function File} {@var{h} = } patch (@dots{})
+## @deftypefnx {Function File} {@var{h} =} patch (@dots{})
 ## Create patch object from @var{x} and @var{y} with color @var{c} and
 ## insert in the current axes object.  Return handle to patch object.
 ##

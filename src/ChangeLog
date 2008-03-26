@@ -1,3 +1,10 @@
+2008-03-26  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/det.cc,
+	DLD-FUNCTIONS/getpwent.cc, DLD-FUNCTIONS/inv.cc,
+	DLD-FUNCTIONS/qr.cc, DLD-FUNCTIONS/symrcm.cc, file-io.cc):
+	Texinfo fixes.
+
 2008-03-26  Soren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__convn__.cc (Fconvn):

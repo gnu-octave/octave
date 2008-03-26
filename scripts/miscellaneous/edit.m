@@ -19,7 +19,7 @@
 ## -*- texinfo -*-
 ## @deftypefn {Command} edit @var{name}
 ## @deftypefnx {Command} edit @var{field} @var{value}
-## @deftypefnx {Command} @var{value} = edit get @var{field}
+## @deftypefnx {Command} {@var{value} =} edit get @var{field}
 ## Edit the named function, or change editor settings.
 ##
 ## If @code{edit} is called with the name of a file or function as

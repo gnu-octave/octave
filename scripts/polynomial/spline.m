@@ -18,8 +18,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pp} = } spline (@var{x}, @var{y})
-## @deftypefnx {Function File} {@var{yi} = } spline (@var{x}, @var{y}, @var{xi})
+## @deftypefn {Function File} {@var{pp} =} spline (@var{x}, @var{y})
+## @deftypefnx {Function File} {@var{yi} =} spline (@var{x}, @var{y}, @var{xi})
 ##
 ## Returns the cubic spline interpolation of @var{y} at the point
 ## @var{x}. Called with two arguments the piece-wise polynomial @var{pp}

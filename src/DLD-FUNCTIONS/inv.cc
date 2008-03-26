@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 
 DEFUN_DLD (inv, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{x}, @var{rcond}] = } inv (@var{a})\n\
-@deftypefnx {Loadable Function} {[@var{x}, @var{rcond}] = } inverse (@var{a})\n\
+@deftypefn {Loadable Function} {[@var{x}, @var{rcond}] =} inv (@var{a})\n\
+@deftypefnx {Loadable Function} {[@var{x}, @var{rcond}] =} inverse (@var{a})\n\
 Compute the inverse of the square matrix @var{a}.  Return an estimate\n\
 of the reciprocal condition number if requested, otherwise warn of an\n\
 ill-conditioned matrix if the reciprocal condition number is small.\n\

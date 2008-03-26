@@ -27,7 +27,7 @@
 ##
 ## Return the unique rows of @var{A}, sorted in ascending order.
 ##
-## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] = } unique (@var{x})
+## @deftypefnx {Function File} {[@var{y}, @var{i}, @var{j}] =} unique (@var{x})
 ##
 ## Return index vectors @var{i} and @var{j} such that @code{x(i)==y} and
 ## @code{y(j)==x}.

@@ -1026,7 +1026,7 @@ converted.\n\
 DEFUN (fscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{val}, @var{count}] =} fscanf (@var{fid}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] = } fscanf (@var{fid}, @var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} fscanf (@var{fid}, @var{template}, \"C\")\n\
 In the first form, read from @var{fid} according to @var{template},\n\
 returning the result in the matrix @var{val}.\n\
 \n\
@@ -1131,7 +1131,7 @@ complete description of the syntax of the template string.\n\
 DEFUN (sscanf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{val}, @var{count}] =} sscanf (@var{string}, @var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] = } sscanf (@var{string}, @var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}] =} sscanf (@var{string}, @var{template}, \"C\")\n\
 This is like @code{fscanf}, except that the characters are taken from the\n\
 string @var{string} instead of from a stream.  Reaching the end of the\n\
 string is treated as an end-of-file condition.\n\
@@ -1223,7 +1223,7 @@ string is treated as an end-of-file condition.\n\
 DEFUN (scanf, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {[@var{val}, @var{count}] =} scanf (@var{template}, @var{size})\n\
-@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}]] = } scanf (@var{template}, \"C\")\n\
+@deftypefnx {Built-in Function} {[@var{v1}, @var{v2}, @dots{}, @var{count}]] =} scanf (@var{template}, \"C\")\n\
 This is equivalent to calling @code{fscanf} with @var{fid} = @code{stdin}.\n\
 \n\
 It is currently not useful to call @code{scanf} in interactive\n\

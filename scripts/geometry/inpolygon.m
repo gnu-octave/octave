@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{in}, @var{on}] = } inpolygon (@var{x}, @var{y}, @var{xv}, @var{xy})
+## @deftypefn {Function File} {[@var{in}, @var{on}] =} inpolygon (@var{x}, @var{y}, @var{xv}, @var{xy})
 ##
 ## For a polygon defined by @code{(@var{xv}, @var{yv})} points, determine
 ## if the points @code{(@var{x}, @var{y})} are inside or outside the polygon.

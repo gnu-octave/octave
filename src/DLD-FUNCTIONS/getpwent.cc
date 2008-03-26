@@ -70,7 +70,7 @@ mk_pw_map (const octave_passwd& pw)
 
 DEFUN_DLD (getpwent, args, ,
  "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{pw_struct} = } getpwent ()\n\
+@deftypefn {Loadable Function} {@var{pw_struct} =} getpwent ()\n\
 Return a structure containing an entry from the password database,\n\
 opening it if necessary. Once the end of the data has been reached,\n\
 @code{getpwent} returns 0.\n\
@@ -98,7 +98,7 @@ opening it if necessary. Once the end of the data has been reached,\n\
 
 DEFUN_DLD (getpwuid, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{pw_struct} = } getpwuid (@var{uid}).\n\
+@deftypefn {Loadable Function} {@var{pw_struct} =} getpwuid (@var{uid}).\n\
 Return a structure containing the first entry from the password database\n\
 with the user ID @var{uid}.  If the user ID does not exist in the\n\
 database, @code{getpwuid} returns 0.\n\
@@ -138,7 +138,7 @@ database, @code{getpwuid} returns 0.\n\
 
 DEFUN_DLD (getpwnam, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {@var{pw_struct} = } getpwnam (@var{name})\n\
+@deftypefn {Loadable Function} {@var{pw_struct} =} getpwnam (@var{name})\n\
 Return a structure containing the first entry from the password database\n\
 with the user name @var{name}.  If the user name does not exist in the\n\
 database, @code{getpwname} returns 0.\n\

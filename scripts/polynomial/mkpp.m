@@ -17,8 +17,8 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{pp} = } mkpp (@var{x}, @var{p})
-## @deftypefnx {Function File} {@var{pp} = } mkpp (@var{x}, @var{p}, @var{d})
+## @deftypefn {Function File} {@var{pp} =} mkpp (@var{x}, @var{p})
+## @deftypefnx {Function File} {@var{pp} =} mkpp (@var{x}, @var{p}, @var{d})
 ## 
 ## Construct a piece-wise polynomial structure from sample points
 ## @var{x} and coefficients @var{p}.  The ith row of @var{p},

@@ -3351,35 +3351,94 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 
       if (orig_empty)
 	{
-	  int k = 0;
-	  for (int i = 0; i < n_idx; i++)
+	  if (rhs_is_scalar)
 	    {
-	      // If index is a colon, resizing to RHS dimensions is
-	      // allowed because we started out empty.
-
-	      if (idx(i).is_colon ())
+	      for (int i = 0; i < n_idx; i++)
 		{
-		  if (k < rhs_dims.length ())
-		    new_dims(i) = rhs_dims(k++);
-		  else
+		  if (idx(i).is_colon ())
 		    new_dims(i) = 1;
+		  else
+		    new_dims(i) = idx(i).orig_empty () ? 0 : idx(i).max () + 1;
+		}
+	    }
+	  else if (is_vector (rhs_dims))
+	    {
+	      int ncolon = 0;
+	      int fcolon = 0;
+	      int lcolon = 0;
+	      for (int i = 0; i < n_idx; i++)
+		if (idx(i).is_colon ())
+		  {
+		    ncolon ++;
+		    if (ncolon == 1)
+		      fcolon = i;
+		    lcolon = i;
+		    new_dims (i) = 1;
+		  } 
+		else
+		  new_dims (i) = idx(i).capacity ();
+
+	      if (ncolon == n_idx)
+		{
+		  new_dims = rhs_dims;
+		  new_dims.resize (n_idx);
+		  for (int i = rhs_dims_len; i < n_idx; i++)
+		    new_dims (i) = 1;
 		}
 	      else
 		{
-		  octave_idx_type nelem = idx(i).capacity ();
+		  octave_idx_type new_dims_numel = new_dims.numel ();
+		  octave_idx_type rhs_dims_numel = rhs_dims.numel ();
+		  bool is_vec = is_vector (new_dims);
+	      	      
+		  for (int i = 0; i < n_idx; i++)
+		    new_dims(i) = idx(i).orig_empty () ? 0 : idx(i).max () + 1;
 
-		  if (nelem >= 1
-		      && ((k < rhs_dims.length () && nelem == rhs_dims(k))
-			  || rhs_is_scalar) || ! idx(i).is_colon())
-		    k++;
-		  else if (! (nelem == 1 || rhs_is_scalar))
+		  if (new_dims_numel != rhs_dims_numel && 
+		      ncolon > 0 && new_dims_numel == 1)
+		    {
+		      if (ncolon == 2 && rhs_dims_len == 2 && 
+			  rhs_dims(0) == 1)
+			new_dims (lcolon) = rhs_dims_numel;
+		      else
+			new_dims (fcolon) = rhs_dims_numel;
+		    }
+		  else if (new_dims_numel != rhs_dims_numel || !is_vec)
 		    {
 		      (*current_liboctave_error_handler)
 			("A(IDX-LIST) = RHS: mismatched index and RHS dimension");
 		      return retval;
 		    }
+		}
+	    }
+	  else
+	    {
+	      int k = 0;
+	      for (int i = 0; i < n_idx; i++)
+		{
+		  if (idx(i).is_colon ())
+		    {
+		      if (k < rhs_dims_len)
+			new_dims(i) = rhs_dims(k++);
+		      else
+			new_dims(i) = 1;
+		    }
+		  else
+		    {
+		      octave_idx_type nelem = idx(i).capacity ();
 
-		  new_dims(i) = idx(i).orig_empty () ? 0 : idx(i).max () + 1;
+		      if (nelem >= 1 
+			  && (k < rhs_dims_len && nelem == rhs_dims(k)))
+			k++;
+		      else if (nelem != 1)
+			{
+			  (*current_liboctave_error_handler)
+			    ("A(IDX-LIST) = RHS: mismatched index and RHS dimension");
+			  return retval;
+			}
+		      new_dims(i) = idx(i).orig_empty () ? 0 : 
+			idx(i).max () + 1;
+		    }
 		}
 	    }
 	}

@@ -135,6 +135,26 @@ is_scalar (const dim_vector& dim)
 }
 
 bool
+is_vector (const dim_vector& dim)
+{
+  int m = 0;
+  int n = dim.length ();
+  bool retval = true;
+
+  if (n == 0)
+    m = 2;
+  else
+    {
+      for (int i = 0; i < n; i ++)
+	if (dim (i) > 1)
+	  m++;
+	else if (dim(i) < 1)
+	  m += 2;
+    }
+  return (m < 2);
+}
+
+bool
 any_ones (const Array<octave_idx_type>& arr)
 {
   bool retval = false;

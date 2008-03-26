@@ -1,3 +1,11 @@
+2008-03-25  David Bateman  <dbateman@feee.fr>
+
+	* Array.cc (assignN): refactor calculation of new dimensions when
+	original matrix is empty.
+	* Array-util.cc (bool is_vector (const dim_vector&)): New
+	function.
+	* Array-util.h (bool is_vector (const dim_vector&)): declare it.
+
 2008-03-25  David Bateman  <dbateman@free.fr>
 
 	* sparse-base-chol.h (sparse_base_chol_rep::~sparse_base_chol_rep

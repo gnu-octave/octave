@@ -43,6 +43,8 @@ extern OCTAVE_API octave_idx_type num_ones (const Array<octave_idx_type>& ra_idx
 
 extern OCTAVE_API bool is_scalar (const dim_vector& dim);
 
+extern OCTAVE_API bool is_vector (const dim_vector& dim);
+
 extern OCTAVE_API bool any_ones (const Array<octave_idx_type>& arr);
 
 extern OCTAVE_API octave_idx_type compute_index (const Array<octave_idx_type>& ra_idx, const dim_vector& dims);

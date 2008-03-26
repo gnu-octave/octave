@@ -1,4 +1,4 @@
-## Copyright (C) 2008 SÃ?ren Hauberg
+## Copyright (C) 2008 Soren Hauberg
 ## 
 ## This file is part of Octave.
 ##
@@ -87,3 +87,42 @@ function a = pad (a, left, right)
     a = cat (dim, zeros (l, cl), a, zeros (r, cl));
   endfor
 endfunction
+
+%!test
+%! ## Compare to conv2
+%! a = rand (100); 
+%! b = ones (3);
+%! c2 = conv2 (a, b, "full");
+%! cn = convn (a, b, "full");
+%! assert (max (abs (cn(:)-c2(:))), 0, 100*eps);
+
+%!test
+%! ## Compare to conv2
+%! a = rand (100); 
+%! b = ones (3);
+%! c2 = conv2 (a, b, "same");
+%! cn = convn (a, b, "same");
+%! assert (max (abs (cn(:)-c2(:))), 0, 100*eps);
+
+%!test
+%! ## Compare to conv2
+%! a = rand (100); 
+%! b = ones (3);
+%! c2 = conv2 (a, b, "valid");
+%! cn = convn (a, b, "valid");
+%! assert (max (abs (cn(:)-c2(:))), 0, 100*eps);
+
+%!test
+%! ## Real data
+%! a = ones (10,10,10); 
+%! b = ones (3,3,3);
+%! c = convn (a, b, "valid");
+%! assert (all (c == numel (b)));
+
+%!test
+%! ## Complex data
+%! a = complex( ones (10,10,10), ones(10,10,10) ); 
+%! b = complex( ones (3,3,3), ones(3,3,3) );
+%! c = convn (a, b, "valid");
+%! assert (all (c == 2*i*numel (b)));
+

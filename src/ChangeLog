@@ -1,3 +1,8 @@
+2008-03-26  Soren Hauberg  <hauberg@gmail.com>
+
+	* DLD-FUNCTIONS/__convn__.cc (Fconvn):
+	Call complex_array_value to extract N-d array.
+
 2008-03-26  John W. Eaton  <jwe@octave.org>
 
 	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw):

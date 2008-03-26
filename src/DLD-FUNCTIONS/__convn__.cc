@@ -118,8 +118,8 @@ Undocumented internal function.\n\
         }
       else if (args(0).is_complex_type () && args(1).is_complex_type ())
         {
-          const ComplexNDArray a = args (0).complex_matrix_value ();
-          const ComplexNDArray b = args (1).complex_matrix_value ();
+          const ComplexNDArray a = args (0).complex_array_value ();
+          const ComplexNDArray b = args (1).complex_array_value ();
 
 	  if (! error_state)
 	    retval = convn<ComplexNDArray, Complex> (a, b);

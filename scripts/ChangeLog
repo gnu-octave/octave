@@ -1,3 +1,11 @@
+2008-03-20  Ben Abbott <bpabbott@mac.com>
+
+	* statistics/base/statistics.m: Calculate median and quantiles in
+	a manner consistent with method #7 used by GNU R.
+	* statistics/base/__quantile__.m, statistics/base/quantile.m,
+	statistics/base/prctile.m: New functions.
+	* statistics/base/Makefile.in (SOURCES): Add them to the list.
+ 
 2008-03-25  Soren Hauberg  <hauberg@gmail.com>
 
 	* polynomial/convn.m: New function.

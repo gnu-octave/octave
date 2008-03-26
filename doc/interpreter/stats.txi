@@ -61,6 +61,10 @@ Octave can compute various statistics such as the moments of a data set.
 
 @DOCSTRING(median)
 
+@DOCSTRING(quantile)
+
+@DOCSTRING(prctile)
+
 @DOCSTRING(meansq)
 
 @DOCSTRING(std)

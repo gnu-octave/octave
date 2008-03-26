@@ -23,7 +23,8 @@
 ## quartile, median, third quartile, maximum, mean, standard deviation,
 ## skewness and kurtosis of the columns of @var{x} as its rows.
 ##
-## If @var{x} is a vector, treat it as a column vector.
+## If @var{x} is a vector, calculate the statistics along the 
+## non-singleton dimension.
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
@@ -59,25 +60,16 @@ function S = statistics (X, dim)
     error ("statistics: invalid argument");
   endif    
 
-  ## This code is a bit heavy, but is needed until empirical_inv 
-  ## takes other than vector arguments.
-  c = sz(dim);
-  stride = prod (sz(1:dim-1));
-  sz(dim) = 3;
-  emp_inv = zeros (sz);
-  for i = 1 : nel / c;
-    offset = i;
-    offset2 = 0;
-    while (offset > stride)
-      offset -= stride;
-      offset2++;
-    endwhile
-    rng = [0 : c-1] * stride + offset + offset2 * stride * c;
-    rng2 = [0 : 2] * stride + offset + offset2 * stride * 3;
-    emp_inv(rng2) = empirical_inv ([0.25; 0.5; 0.75], X(rng));
-  endfor
+  emp_inv = quantile (X, [0.25; 0.5; 0.75], dim, 7);
 
   S = cat (dim, min (X, [], dim), emp_inv, max (X, [], dim), mean (X, dim),
 	   std (X, [], dim), skewness (X, dim), kurtosis (X, dim));
 
 endfunction
+
+%!test
+%! x = rand(7,5);
+%! s = statistics (x);
+%! m = median (x);
+%! assert (m, s(3,:), eps);
+

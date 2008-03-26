@@ -32,11 +32,11 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = center.m cloglog.m cor.m corrcoef.m cov.m cut.m gls.m \
-  iqr.m kendall.m kurtosis.m logit.m mahalanobis.m mean.m meansq.m \
-  median.m mode.m moment.m ols.m ppplot.m probit.m qqplot.m range.m \
-  ranks.m run_count.m skewness.m spearman.m statistics.m std.m \
-  studentize.m table.m values.m var.m
+SOURCES = __quantile__.m center.m cloglog.m cor.m corrcoef.m cov.m \
+  cut.m gls.m iqr.m kendall.m kurtosis.m logit.m mahalanobis.m mean.m \
+  meansq.m median.m mode.m moment.m ols.m ppplot.m prctile.m probit.m \
+  qqplot.m quantile.m range.m ranks.m run_count.m skewness.m spearman.m \
+  statistics.m std.m studentize.m table.m values.m var.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

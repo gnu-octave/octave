@@ -1,3 +1,7 @@
+2008-03-25  David Bateman  <dbateman@free.fr>
+
+	* interpreter/strings.txi: Document hex2num, num2hex.
+	
 2008-03-21  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Document amd function.

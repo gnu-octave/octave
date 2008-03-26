@@ -297,6 +297,10 @@ hex2dec ("FF")
 
 @DOCSTRING(base2dec)
 
+@DOCSTRING(num2hex)
+
+@DOCSTRING(hex2num)
+
 @DOCSTRING(str2double)
 
 @DOCSTRING(strjust)

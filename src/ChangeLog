@@ -1,3 +1,8 @@
+2008-03-25  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/hex2num.cc: New function
+	* Makefile.in (DLD_XSRC): Add hex2num.cc.
+
 2008-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* mappers.cc (Fexpm1, Flog1p): New functions.

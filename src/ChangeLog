@@ -1,3 +1,8 @@
+2008-03-26  John W. Eaton  <jwe@octave.org>
+
+	* ov-base-sparse.cc (octave_base_sparse<T>::print_raw):
+	Also display percentage of elements that are nonzero.
+
 2008-03-25  Soren Hauberg  <hauberg@gmail.com>
 
 	* DLD-FUNCTIONS/__convn__.cc: New file.

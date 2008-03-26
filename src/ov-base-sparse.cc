@@ -25,6 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <iomanip>
 #include <iostream>
 
 #include "oct-obj.h"
@@ -265,7 +266,14 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
 
   os << "Compressed Column Sparse (rows = " << nr
      << ", cols = " << nc
-     << ", nnz = " << nz << ")\n";
+     << ", nnz = " << nz;
+
+  double dnel = matrix.numel ();
+
+  if (dnel > 0)
+    os << " [" << std::setprecision (2) << (nz / dnel * 100) << "%])\n";
+
+  os << ")\n";
 
   // add one to the printed indices to go from
   //  zero-based to one-based arrays

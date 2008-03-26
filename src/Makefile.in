@@ -74,7 +74,7 @@ DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc \
 	time.cc tsearch.cc typecast.cc \
 	urlwrite.cc __contourc__.cc __delaunayn__.cc __dsearchn__.cc \
 	__glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc \
-	__qp__.cc __voronoi__.cc
+	__qp__.cc __voronoi__.cc __convn__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
 

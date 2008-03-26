@@ -1,7 +1,12 @@
+2008-03-25  Soren Hauberg  <hauberg@gmail.com>
+
+	* polynomial/convn.m: New function.
+	* polynomial/Makefile.in (SOURCES): Add it to the list.
+
 2008-03-25  David Bateman  <dbateman@free.fr>
 
 	* image/contrast.m: New function.
-
+	
 2008-03-24  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* pkg/pkg.m: Allow installation of already extracted packages.

@@ -1,3 +1,8 @@
+2008-03-25  Soren Hauberg  <hauberg@gmail.com>
+
+	* DLD-FUNCTIONS/__convn__.cc: New file.
+	* Makefile.in: Add __convn__.cc
+
 2008-03-25  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/hex2num.cc: New function

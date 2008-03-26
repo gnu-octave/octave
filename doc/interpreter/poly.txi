@@ -90,6 +90,8 @@ for a definition), and then finding its eigenvalues.
 
 @DOCSTRING(conv)
 
+@DOCSTRING(convn)
+
 @DOCSTRING(deconv)
 
 @DOCSTRING(conv2)

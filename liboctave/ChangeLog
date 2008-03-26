@@ -159,7 +159,7 @@
 	set one_zero to 0 and orig_dims to size of resulting index vector.
 	(IDX_VEC_REP::freeze): Don't call maybe_convert_one_zero_to_idx here.
 
-2008-03-05  Jaroslav Hajek <highegg@gmail.com>
+2008-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* dbleQR.cc (QR::insert_col, QR::insert_row, 
 	QR::delete_col, QR::delete_row): Use 0-based indexing.
@@ -456,7 +456,7 @@
 	* Makefile.in: Unconditionally include $(MAKEDEPS).
 	Mark $(MAKEDEPS) as .PHONY targets if omit_deps is true.
 
-2008-02-03  Michael Goffioul <michael.goffioul@gmail.com>
+2008-02-03  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Array.cc (ascending_compare, descending_compare,
 	Array<T>::sort): Declare explicit specialization for T=double to
@@ -747,7 +747,7 @@
 	correction to half-integer values.  From Eric Chassande-Mottin
 	<echassandemottin@gmail.com>.
 
-2007-11-07  Michael Goffioul <michael.goffioul@gmail.com>
+2007-11-07  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* dMatrix.cc, CMatrix.cc: Help MSVC compiler to resolve
 	ambiguities related to math functions (in C++ mode).
@@ -1183,7 +1183,7 @@
 	Simplify.
 	(Sparse<T>::reshape): Warn about reshaping to N-d array.
 
-2007-08-10  Michael Goffioul <michael.goffioul@gmail.com>
+2007-08-10  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* file-stat.cc (file_stat::update_internal) [__WIN32__]:
 	Remove trailing dir separator when stat'ing directory except for
@@ -1398,7 +1398,7 @@
 	* Makefile.in (DISTDIRS): Delete variable.
 	(dist): Delete action for DISTDIRS.  Use ln instead of $(LN_S).
 
-2007-03-26  David Bateman <dbateman@free.fr>
+2007-03-26  David Bateman  <dbateman@free.fr>
 
 	* MatrixType.cc: Replace all uses of the method
 	octave_sparse_params::get_key ("bandden") with 
@@ -1820,7 +1820,7 @@
 
 	* Makefile.in: Adapt rules to use $(LIBPRE).
 
-2006-10-03  David Bateman <dbateman@free.fr>
+2006-10-03  David Bateman  <dbateman@free.fr>
 
 	* MatrixType.cc (MatrixType::MatrixType): Avoid crash if np == 0
 	or p == 0.
@@ -1830,7 +1830,7 @@
 	* dbleDET.cc (DET::initialize2): Ensure arg to log10 is double.
 	* CmplxDET.cc (ComplexDET::initialize2): Likewise.
 
-2006-09-22  David Bateman <dbateman@free.fr>
+2006-09-22  David Bateman  <dbateman@free.fr>
 
 	* MatrixType.h (MatrixType::MatrixType(const SparseComplexMatrix&)): 
 	Remove spurious warning. 
@@ -2684,13 +2684,13 @@
 	based on current code in Bash.  Handle a few more escape
 	sequences.  Do a better job of decoding \W.
 
-2005-09-04  David Bateman <dbateman@free.fr>
+2005-09-04  David Bateman  <dbateman@free.fr>
 
 	* COLAMD: Update version of colamd to v2.4.
 	* COLAMD.files: Add colamd_global.c to COLAMD_SRC and second build of 
 	colamd.c for long version.
 
-2005-08-25  David Bateman <dbateman@free.fr>
+2005-08-25  David Bateman  <dbateman@free.fr>
 
 	* Sparse-op-defs.h (FULL_SPARSE_MUL, SPARSE_FULL_MUL): Macro for
 	mixed sparse/full multiply.
@@ -2759,7 +2759,7 @@
 	* dSparse.h: Change UMFPACK_LONG_IDX to IDX_TYPE_LONG.
 	* CSparse.h: ditto.
 
-2005-05-10  David Bateman <dbateman@free.fr>
+2005-05-10  David Bateman  <dbateman@free.fr>
 
 	* dSparse.cc (determinant): Free numeric factorization after
 	sucessful calculation.
@@ -3262,7 +3262,7 @@
 
 	* Array-util.cc (freeze): Improve error message.
 
-2005-01-26  David Bateman <dbateman@free.fr>
+2005-01-26  David Bateman  <dbateman@free.fr>
 
 	* Array.cc (Array<T>::insert): Handle generic case, not just
 	special case for fast concatenation.
@@ -3275,7 +3275,7 @@
 	* dNDArray.cc (NDArray::any): NaN does not count as a nonzero value.
 	* CNDArray.cc (ComplexNDArray::any): Likewise.
 
-2005-01-18  David Bateman <dbateman@free.fr>
+2005-01-18  David Bateman  <dbateman@free.fr>
 
 	* Array.cc (Array<T>::insert (const Array<T>&, const Array<int>&)):
 	Modify calculation of number elements to skip between copied blocks.

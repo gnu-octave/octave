@@ -6,6 +6,7 @@
 2008-03-25  David Bateman  <dbateman@free.fr>
 
 	* image/contrast.m: New function.
+	* image/Makefile.in (SOURCES): Add it to the list.
 	
 2008-03-24  Thomas Weber  <thomas.weber.mail@gmail.com>
 
@@ -14,15 +15,19 @@
 2008-03-24  David Bateman  <dbateman@free.fr>
 
 	* general/idivide.m: New function.
+	* general/Makefile.in (SOURCES): Add it to the list.
 
 	* miscellaneous/namelengthmax.m: New function.
+	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
 
 	* strings/regexptranslate.m: New function.
+	* strings/Makefile.in (SOURCES): Add it to the list.
 
 2008-03-21  David Bateman  <dbateman@free.fr>
 
-	* specfun/reallog.m, specfun/realpow.m, specfun/realsqrt.m: New
-	functions.
+	* specfun/reallog.m, specfun/realpow.m, specfun/realsqrt.m:
+	New functions.
+	* specfun/Makefile.in (SOURCES): Add them to the list.
 
 2008-03-20  David Bateman  <dbateman@free.fr>
 
@@ -42,6 +47,7 @@
 2008-03-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* linear-algebra/subspace.m: New function.
+	* linear-algebra/subspace.m: New function.
 
 2008-03-19  Emil Lucretiu  <emil@la.mine.nu>
 
@@ -55,7 +61,7 @@
 	
 	* statistics/base/mode.m: Add NDArray tests.
 
-2008-03-19  Jaroslav Hajek <highegg@gmail.com>
+2008-03-19  Jaroslav Hajek  <highegg@gmail.com>
 
 	* statistics/distributions/exppdf.m,
 	statistics/distributions/expcdf.m,
@@ -72,17 +78,13 @@
 	twice.
 	* plot/scatter3.m: Doc fix.
 
-2008-03-18  Ben Abbott <bpabbott@mac.com>
+2008-03-18  Ben Abbott  <bpabbott@mac.com>
 
 	* specfun/beta.m: Fix for negative inputs.
 
 2008-03-18  Michael D. Godfrey  <godfrey@isl.stanford.edu>
 
 	* plot/__go_draw_axes__.m: Use correct symbol codes.
-
-2008-03-17  Jaroslav Hajek <highegg@gmail.com>
-
-	* linear-algebra/subspace.m: New function.
 
 2008-03-14  Kai Habel  <kai.habel@gmx.de>
 
@@ -152,7 +154,7 @@
 	* geometry/rectint.m: New function.
 	* geometry/Makefile.in (SOURCES): Add it to the list.
 
-2008-03-04  Michael Goffioul <michael.goffioul@gmail.com>
+2008-03-04  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* pkg/pkg.m (pkg:configure_make): Make it work with recent changes in
 	isspace handling with cell arrays of strings.
@@ -177,7 +179,7 @@
 	* plot/__go_draw_axes__.m: If facecolor property of a surface is
 	"none", don't use pm3d mode and set linestyle correctly. 
 
-2008-02-25  Ben Abbott <bpabbott@mac.com>
+2008-02-25  Ben Abbott  <bpabbott@mac.com>
 
 	* control/system/zpout.m, finance/irr.m, general/int2str.m,
 	general/num2str.m, miscellaneous/bug_report.m,
@@ -236,7 +238,7 @@
 	* plot/__go_draw_axes__.m: Improve handling of line style for
 	errorbar plots.
 
-2008-02-20  Marco Caliari <marco.caliari@univr.it>
+2008-02-20  Marco Caliari  <marco.caliari@univr.it>
 
 	* specfun/legendre.m: Accept normalization options ("sch", "norm"),
 	and improve stability for higher orders.
@@ -269,7 +271,7 @@
 
 	* pkg/pkg.m: Style fixes.
 
-2008-02-19 Carlo de Falco <carlo.defalco@gmail.com>
+2008-02-19  Carlo de Falco  <carlo.defalco@gmail.com>
 
 	* pkg/pkg.m: Handle 'describe' command.
 	(parse_pkg_idx, print_package_description): New subfunctions.
@@ -606,7 +608,7 @@
 
 	* image/imshow.m: Accept empty value for display_range.
 
-2007-12-20  Michael Goffioul <michael.goffioul@gmail.com>
+2007-12-20  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* pkg/pkg.m: Add .lib as architecture-dependent suffix.
 
@@ -625,7 +627,7 @@
 	* miscellaneous/edit.m: New function.
 	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
 
-2007-12-19  Michael Goffioul <michael.goffioul@gmail.com>
+2007-12-19  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/__bar__.m: Handle "basevalue" option.
 	* plot/__bars__.m: New arg, base_value.
@@ -740,7 +742,7 @@
 
 	* finance/rate.m: Don't request info from fsolve.
 
-2007-12-10  Michael Goffioul <michael.goffioul@gmail.com>
+2007-12-10  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/__line__.m: Pass initial property/value pairs to __go_line__.
 	* plot/surface.m: Pass initial property/value pairs to __go_surface__.
@@ -888,7 +890,7 @@
 
 	* plot/__go_draw_axes__.m (get_data_limits): Delete unused arg TX.
 
-2007-11-28  Michael Goffioul <michael.goffioul@gmail.com>
+2007-11-28  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/drawnow.m: Fix typo.
 
@@ -1027,7 +1029,7 @@
 	there are none.
 	* plot/Makefile.in (SOURCES): Include __bars__.m
 	
-2007-11-19  Michael Goffioul <michael.goffioul@gmail.com>
+2007-11-19  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/__bar__.m: put bar creation code into separate function
 	to allow easy hook up from other graphic backends
@@ -1579,7 +1581,7 @@
 	* general/interp2.m: Relax test for values outside the grid to
 	allow monotonically decreasing abscissa as well.
 
-2007-10-08  Ben Abbott <bpabbott@mac.com>
+2007-10-08  Ben Abbott  <bpabbott@mac.com>
 
 	* polynomial/residue.m: Doc fix.  Add tests.  Restore multiplicity
 	as output parameter.
@@ -2003,7 +2005,7 @@
 	* plot/__go_draw_axes__.m: Set the palette for the surfaces if
 	using gnuplot 4.2 or greater.
 	
-2007-07-23  Claudio Belotti <c.belotti@imperial.ac.uk>
+2007-07-23  Claudio Belotti  <c.belotti@imperial.ac.uk>
 
 	* general/cart2sph.m: Fix unbalanced paranthesis.
 
@@ -2140,7 +2142,7 @@
 	* strings/substr.m: Use offset consistently in code and doc string.
 	From Rafael Laboissiere <rafael@debian.org>.
 
-2007-06-25  Pete Gustafson <petegus@umich.edu>
+2007-06-25  Pete Gustafson  <petegus@umich.edu>
 
 	* plot/__go_draw_axes__.m: Handle units for text objects.
 
@@ -2451,7 +2453,7 @@
 
 	* pkg/pkg.m: Mark loaded packages with "*".
 
-2007-05-13  Søren Hauberg <soren@hauberg.org>
+2007-05-13  Søren Hauberg  <soren@hauberg.org>
 
 	* miscellaneous/single.m: Doc fix.
 	Convert to double instead of returning argument unchanged.
@@ -2537,7 +2539,7 @@
 2007-04-24  John W. Eaton  <jwe@octave.org>
 
 	* io/beep.m: Fix cut and paste error.
-	From Søren Hauberg <soren@hauberg.org>.
+	From Søren Hauberg  <soren@hauberg.org>.
 
 2007-04-23  John W. Eaton  <jwe@octave.org>
 
@@ -3023,7 +3025,7 @@
 	* optimization/sqp.m: Defer first call to obj_hess until after
 	calling obj_fun.
 
-2007-03-02  Bob Weigel <rweigel@gmu.edu>
+2007-03-02  Bob Weigel  <rweigel@gmu.edu>
 
 	* specfun/nchoosek.m: Fix nargin check.
 
@@ -3618,7 +3620,7 @@
 
 	* strings/strncmp.m: Delete (we now have a built-in version).
 
-2007-01-22  Bob Weigel <rweigel@gmu.edu>
+2007-01-22  Bob Weigel  <rweigel@gmu.edu>
 
 	* testfun/test.m: Check for all files in path, use first found.
 
@@ -4287,7 +4289,7 @@
 	* plot3.m: Error checking, setting of parametric state and
 	formation of matrix to plot moved from old __plt3__.
 
-2006-09-22  Michael Creel <michael.creel@uab.es>
+2006-09-22  Michael Creel  <michael.creel@uab.es>
 
 	* deprecated/chisquare_pdf.m: Typo in documentation. 
 
@@ -4295,11 +4297,11 @@
 
 	* signal/filter2.m: Correct texinfo doc.
 
-2006-09-22  David Bateman <dbateman@free.fr>
+2006-09-22  David Bateman  <dbateman@free.fr>
 
 	* miscellaneous/parseparams.m: Correct texinfo doc.
 	
-2006-09-15  David Bateman <dbateman@free.fr>
+2006-09-15  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (prepare_installation): Don't create package
 	installation directory here.
@@ -4310,7 +4312,7 @@
 
 	* general/blkdiag.m: Adjust to new cellfun rules.
 
-2006-08-30  David Bateman <dbateman@free.fr>
+2006-08-30  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (install): Disallow bundles of packages. More verbose
 	error message for archive name not matching package name.
@@ -4340,12 +4342,12 @@
 	* miscellaneous/doc.m: Swap order of --file and --directory
 	options for info program invocation.
 
-2006-08-30  David Bateman <dbateman@free.fr>
+2006-08-30  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (create_pkgadddel): Resolve variable name-clash from
 	previous change.
 
-2006-08-26  David Bateman <dbateman@free.fr>
+2006-08-26  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (install, uninstall, installed_packages): Allow for
 	absence of trailing "/" in OCTAVE_HOME.
@@ -4354,7 +4356,7 @@
 
 	* time/datenum.m: Allow arg to be character string.
 
-2006-08-25  David Bateman <dbateman@free.fr>
+2006-08-25  David Bateman  <dbateman@free.fr>
 
 	* pkg/pkg.m (install): Verify that package name correponds to the
 	archive name. Treat both PKG_ADD and PKG_DEL and remove them if
@@ -4493,7 +4495,7 @@
 
 	* time/datevec.m: Attempt to account for precision of datenum format.
 
-2006-06-01  Quentin H. Spencer <qspencer@ieee.org>
+2006-06-01  Quentin H. Spencer  <qspencer@ieee.org>
 
 	* audio/wavread.m: Fix file range error and add read support for
 	24-bit WAV files.
@@ -4598,7 +4600,7 @@
 	* path/rmpath.m, path/addpath.m, miscellaneous/path.m: Replace all
 	explicit uses of a path seperation character with pathsep().
 
-2006-05-03  Bob Weigel <rweigel@gmu.edu>
+2006-05-03  Bob Weigel  <rweigel@gmu.edu>
 
 	* set/setdiff.m: New arg, byrows.  New tests.
 
@@ -4883,7 +4885,7 @@
  	* miscellaneous/toc.m: Display "Elapsed time is X seconds" if user
 	does not assign output of toc to a variable.
 
-2006-02-16  Bill Denney <denney@seas.upenn.edu>
+2006-02-16  Bill Denney  <denney@seas.upenn.edu>
 
  	* axis.m: Catch limits that are the same and return an error.
 
@@ -4981,7 +4983,7 @@
 
 	* cell/cell2mat.m: New file, from octave-forge.
 
-2005-12-13  Ivana Varekova <varekova@redhat.com>
+2005-12-13  Ivana Varekova  <varekova@redhat.com>
 
 	* sparse/treeplot.m, sparse/etreeplot.m, sparse/gplot.m:
 	New graph theory functions.
@@ -5189,7 +5191,7 @@
 	/control/base/dgram.m: Doc string fixes.
 	From Jorge Barros de Abreu <ficmatin01@solar.com.br>.
 
-2005-09-12  Stefan van der Walt <stefan@sun.ac.za>
+2005-09-12  Stefan van der Walt  <stefan@sun.ac.za>
 
 	* saveimage.m: Do not ignore most significant bit when writing
 	black and white images to file.
@@ -5244,7 +5246,7 @@
 	control/system/is_controllable.m, set/ismember.m: Doc fixes.
 	From Jorge Barros de Abreu <ficmatin01@solar.com.br>.
 
-2005-08-29  Bill Denney <denney@seas.upenn.edu>
+2005-08-29  Bill Denney  <denney@seas.upenn.edu>
 
 	* image/saveimage.m: Open output file in binary mode.
 

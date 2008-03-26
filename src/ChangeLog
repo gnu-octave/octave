@@ -26,7 +26,7 @@
 	ov-scalar.cc, ov-scalar.h, ov.h:
  	Provide roundb mapper function.
 
-2008-03-25  Jaroslav Hajek <highegg@gmail.com>
+2008-03-25  Jaroslav Hajek  <highegg@gmail.com>
 
 	* load-save.cc (save_vars): Handle -struct modifier.
 	(save_fields): New function.
@@ -217,7 +217,7 @@
 	* DLD-FUNCTIONS/__lin_interpn__.cc (lookup):
 	Handle decreasing coordinate values.
 
-2008-03-05  Jaroslav Hajek <highegg@gmail.com>
+2008-03-05  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/chol.cc (Fcholupdate): Adjust code to meet 
 	Octave's coding guidelines.
@@ -229,7 +229,7 @@
 	* DLD-FUNCTIONS/qr.cc (Fqrinsert, Fqrdelete): Modify to use
 	0-based indexing in liboctave's QR classes.
 
-2008-03-04  Jaroslav Hajek <highegg@gmail.com>
+2008-03-04  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/chol.cc (Fcholupdate): New function.
 
@@ -760,7 +760,7 @@
 
 	* pager.cc (Fmore): Doc fix.
 
-2008-01-28  Michael Goffioul <michael.goffioul@gmail.com>
+2008-01-28  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* genprops.awk: Add update ('u') modifier and document the
 	readonly ('r') modifier.
@@ -918,7 +918,7 @@
 
 	* ov-fcn-inline.cc: Add tests for Finline.
 
-2008-01-17  Ben Abbott <bpabbott@mac.com>
+2008-01-17  Ben Abbott  <bpabbott@mac.com>
 
 	* load-path.cc (F__pathorig__): Rename from Fpathdef.
 	(Frestoredefaultpath): New function.
@@ -3028,7 +3028,7 @@
 	text::text_properties::set, text::text_properties::get, 
 	text::text_properties::factory_defaults): Handle rotation property.
 
-2007-06-14  Kai Habel <kai.habel@gmx.de>
+2007-06-14  Kai Habel  <kai.habel@gmx.de>
 
 	* graphics.cc (color_values::c2rgb): Also accept 'k' for black.
 
@@ -3095,7 +3095,7 @@
 	* sysdep.cc (same_file_internal) [OCTAVE_USE_WINDOWS_API]:
 	Avoid leaking file handles.
 
-2007-05-08 Michael Weitzel <michael.weitzel@uni-siegen.de>
+2007-05-08 Michael Weitzel  <michael.weitzel@uni-siegen.de>
 
 	* DLD-FUNCTIONS/symrcm.cc: Fix for queuing error that might cause
 	an infinite loop.
@@ -3329,7 +3329,7 @@
 	* variables.cc (symbol_out_of_date):
 	Always check for files that have gone missing.
 
-2007-05-08 Michael Weitzel <michael.weitzel@uni-siegen.de>
+2007-05-08 Michael Weitzel  <michael.weitzel@uni-siegen.de>
 
 	* DLD-FUNCTIONS/symrcm.cc: New function for Reverse Cuthill-McKee
 	permutation.
@@ -3497,13 +3497,13 @@
 
 	* octave.cc (execute_command_line_file): 
 
-2007-04-05  David Bateman <dbateman@free.fr>
+2007-04-05  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/regexp.cc (Fregexprep): Correct iteration over 
 	cell arrays so that the source and pattern are iterated seperately 
 	in the same manner as matlab.
 
-2007-04-05  Laurent Mazet <laurent.mazet@motorola.com>
+2007-04-05  Laurent Mazet  <laurent.mazet@motorola.com>
 
 	* mex.cc (mxArray_octave_value::get_string): Copy nel elements,
 	not buflen elements.
@@ -4844,7 +4844,7 @@
 	* DLD-FUNCTIONS/cellfun.cc: Improve error message for uniform
 	output case when results are not scalars.  Avoid shadow decls.
 
-2006-09-13  David Bateman <dbateman@free.fr>
+2006-09-13  David Bateman  <dbateman@free.fr>
 
 	* ov-scalar.h (octave_scalar::sparse_matrix_value,
 	octave_scalar::sparse_complex_matrix_value): New extractor functions.
@@ -7275,7 +7275,7 @@
 
 	* Makefile.in: Include regexp when needed with appropriate libraries.
 
-2005-12-13  David Bateman <dbateman@free.fr>
+2005-12-13  David Bateman  <dbateman@free.fr>
 
 	* Makefile.in: Change references to gplot.l to __gnuplot_raw__.l.
 	* DLD-FUNCTIONS/__gnuplot_raw__.l: Rename from DLD-FUNCTIONS/gplot.l.
@@ -8550,7 +8550,7 @@
 	(Fgshow): Recommend __gnuplot_show__, not __gnuplot__show__.
 	Don't add "mark_as_rawcommand ("replot")" to PKG_ADD file.
 
-2005-03-26  John W. Eaton <jwe@octave.org>
+2005-03-26  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (gnu_readline): Don't wrap call to command_editor::readline
 	with {BEGIN,END}_INTERRUPT_IMMEDIATELY_IN_FOREIGN_CODE.

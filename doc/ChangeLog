@@ -1,3 +1,7 @@
+2008-03-26  Rafael Laboissiere  <rafael@debian.org>
+
+	* interpreter/mkoctfile.1: Remove spurious whitespace before macros
+
 2008-03-25  David Bateman  <dbateman@free.fr>
 
 	* interpreter/strings.txi: Document hex2num, num2hex.

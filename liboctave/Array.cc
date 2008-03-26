@@ -3365,18 +3365,22 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 	    {
 	      int ncolon = 0;
 	      int fcolon = 0;
-	      int lcolon = 0;
+	      octave_idx_type new_dims_numel = 1;
+	      int new_dims_vec = 0;
 	      for (int i = 0; i < n_idx; i++)
 		if (idx(i).is_colon ())
 		  {
 		    ncolon ++;
 		    if (ncolon == 1)
 		      fcolon = i;
-		    lcolon = i;
-		    new_dims (i) = 1;
 		  } 
 		else
-		  new_dims (i) = idx(i).capacity ();
+		  {
+		    octave_idx_type cap = idx(i).capacity ();
+		    new_dims_numel *= cap;
+		    if (cap != 1)
+		      new_dims_vec ++;
+		  }
 
 	      if (ncolon == n_idx)
 		{
@@ -3387,9 +3391,7 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		}
 	      else
 		{
-		  octave_idx_type new_dims_numel = new_dims.numel ();
 		  octave_idx_type rhs_dims_numel = rhs_dims.numel ();
-		  bool is_vec = is_vector (new_dims);
 	      	      
 		  for (int i = 0; i < n_idx; i++)
 		    new_dims(i) = idx(i).orig_empty () ? 0 : idx(i).max () + 1;
@@ -3397,13 +3399,17 @@ assignN (Array<LT>& lhs, const Array<RT>& rhs, const LT& rfv)
 		  if (new_dims_numel != rhs_dims_numel && 
 		      ncolon > 0 && new_dims_numel == 1)
 		    {
-		      if (ncolon == 2 && rhs_dims_len == 2 && 
-			  rhs_dims(0) == 1)
-			new_dims (lcolon) = rhs_dims_numel;
+		      if (ncolon == rhs_dims_len)
+			{
+			  int k = 0;
+			  for (int i = 0; i < n_idx; i++)
+			    if (idx(i).is_colon ())
+			      new_dims (i) = rhs_dims (k++);
+			}
 		      else
 			new_dims (fcolon) = rhs_dims_numel;
 		    }
-		  else if (new_dims_numel != rhs_dims_numel || !is_vec)
+		  else if (new_dims_numel != rhs_dims_numel || new_dims_vec > 1)
 		    {
 		      (*current_liboctave_error_handler)
 			("A(IDX-LIST) = RHS: mismatched index and RHS dimension");

@@ -1,3 +1,7 @@
+2008-03-26  David Bateman  <dbateman@feee.fr>
+
+	* Array.cc (assignN): Additional fix for vector assignments.
+
 2008-03-25  David Bateman  <dbateman@feee.fr>
 
 	* Array.cc (assignN): refactor calculation of new dimensions when

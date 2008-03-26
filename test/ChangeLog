@@ -1,3 +1,7 @@
+2008-03-26  David Bateman  <dbateman@free.fr>
+
+	* test_index-wfi-f.m: Split large block of tests.  New tests.
+
 2008-03-26  John W. Eaton  <jwe@octave.org>
 
 	* fntests.m (report_files_with_no_tests): New function.

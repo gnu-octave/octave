@@ -164,6 +164,23 @@ function ret = prog_output_assert (str)
   _assert_printf = "";
 endfunction
 
+function n = num_elts_matching_pattern (lst, pat)
+  n = 0;
+  for i = 1:length (lst)
+    if (! isempty (regexp (lst{i}, pat)))
+      n++;
+    endif
+  endfor
+endfunction
+
+function report_files_with_no_tests (with, without, typ)
+  pat = cstrcat ("\\", typ, "$");
+  n_with = num_elts_matching_pattern (with, pat);
+  n_without = num_elts_matching_pattern (without, pat);
+  n_tot = n_with + n_without;
+  printf ("\n%d (of %d) %s files have no tests.\n", n_without, n_tot, typ);
+endfunction
+
 pso = page_screen_output ();
 warn_state = warning ("query", "quiet");
 warning ("on", "quiet");
@@ -214,14 +231,16 @@ try
     printf ("was built\n");
   endif
 
-  n_files_with_no_tests = length (files_with_no_tests);
-  n_files = n_files_with_no_tests + length (files_with_tests);
-  printf ("\n%d (of %d) files have no tests.  Please help improve Octave by\n",
-	  n_files_with_no_tests, n_files);
-  printf ("contributing tests for these files (see the list in the file fntests.log).\n");
+  report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
+  report_files_with_no_tests (files_with_tests, files_with_no_tests, ".cc");
+
+  printf ("\nPlease help improve Octave by  contributing tests for");
+  printf ("these files (see the list in the file fntests.log).\n");
+
   fprintf (fid, "\nFiles with no tests:\n\n%s",
 	  list_in_columns (files_with_no_tests, 80));
   fclose (fid);
+
   page_screen_output (pso);
   warning (warn_state.state, "quiet");
 catch

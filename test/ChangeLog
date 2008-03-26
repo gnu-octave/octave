@@ -1,3 +1,8 @@
+2008-03-26  John W. Eaton  <jwe@octave.org>
+
+	* fntests.m (report_files_with_no_tests): New function.
+	Use it to report number of .m and .cc files without tests separately.
+
 2008-03-25  John W. Eaton  <jwe@octave.org>
 
 	* test_index-wfi-f.m: New tests.

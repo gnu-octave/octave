@@ -1,3 +1,13 @@
+2008-03-27  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__convn__.cc (convn): Use traits class and
+	typedefs to allow all types to be deduced from argument types.
+
+2008-03-27  Soren Hauberg  <hauberg@gmail.com>
+
+	* DLD-FUNCTIONS/__convn__.cc (Fconvn): Allow convolving real data with
+	complex data.
+
 2008-03-26  John W. Eaton  <jwe@octave.org>
 
 	* ov-range.h (octave_range::subsref (const std::string&,

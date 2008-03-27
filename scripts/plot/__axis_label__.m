@@ -38,7 +38,7 @@ function retval = __axis_label__ (caller, txt, varargin)
       retval = h;
     endif
   else
-    error ("%s: expecting first argument to be character string");
+    error ("%s: expecting first argument to be character string", caller);
   endif
 
 endfunction

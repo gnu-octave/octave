@@ -1,3 +1,7 @@
+2008-03-27  John W. Eaton  <jwe@octave.org>
+
+	* plot/__axis_label__.m: Use name of caller in error message.
+
 2008-03-27  David Bateman  <dbateman@free.fr>
 
 	* linear-algebra/planerot.m: Givens rotation function.

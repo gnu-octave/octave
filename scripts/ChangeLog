@@ -1,5 +1,10 @@
 2008-03-26  John W. Eaton  <jwe@octave.org>
 
+	* set/ismember.m: Set size of idx output correctly for empty args.
+	New tests.
+
+	* general/logical.m: Correctly handle empty args.  New tests.
+
 	* control/hinf/h2syn.m, general/__splinen__.m, general/gradient.m,
 	geometry/inpolygon.m, geometry/trimesh.m, geometry/triplot.m,
 	image/imagesc.m, io/csvread.m, io/csvwrite.m,

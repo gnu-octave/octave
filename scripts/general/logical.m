@@ -37,8 +37,10 @@
 function y = logical (x)
 
   if (nargin == 1)
-    if (islogical (x) || isempty (x))
+    if (islogical (x))
       y = x;
+    elseif (isempty (x))
+      y = zeros (size (x), "logical");
     elseif (isnumeric (x))
       y = x != 0;
     else
@@ -49,3 +51,12 @@ function y = logical (x)
   endif
 
 endfunction
+
+%!assert (logical ([]), zeros ([0, 0], "logical"));
+%!assert (logical (zeros (2, 0)), zeros ([2, 0], "logical"));
+%!assert (logical (0), false);
+%!assert (logical (13), true);
+%!assert (logical (-13), true);
+%!assert (logical (int8 (13)), true);
+%!assert (logical (int8 (-13)), true);
+%!assert (logical ([-1, 0, 1, NaN, Inf]), [-1, 0, 1, NaN, Inf] != 0);

@@ -119,7 +119,7 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
         ## Do the actual work.
         if (isempty (a) || isempty (s))
           tf = zeros (size (a), "logical");
-          a_idx = []; 
+          a_idx = zeros (size (a)); 
         elseif (numel (s) == 1) 
           tf = (a == s);
           a_idx = double (tf);
@@ -165,12 +165,12 @@ function [tf, a_idx] = ismember (a, s, rows_opt)
           [v, p] = sort ([s(2:lt)(:); a(:)]); 
           idx(p) = cumsum (p <= lt-1) + 1; 
           idx = idx(lt:end); 
-          tf = (a == reshape (s (idx), size (a))); 
-          a_idx = zeros (size(tf)); 
+          tf = (a == reshape (s(idx), size (a))); 
+          a_idx = zeros (size (tf)); 
           a_idx(tf) = sidx(idx(tf));
         endif
         ## Resize result to the original size of 'a' 
-        size_a = size(a);
+        size_a = size (a);
         tf = reshape (tf, size_a); 
         a_idx = reshape (a_idx, size_a);
       endif
@@ -200,7 +200,7 @@ function [tf, a_idx] = cell_ismember (a, s)
       ## Do the actual work
       if (isempty (a) || isempty (s))
         tf = zeros (size (a), "logical");
-        a_idx = []; 
+        a_idx = zeros (size (a)); 
       elseif (numel (s) == 1) 
         tf = strcmp (a, s);
         a_idx = double (tf);
@@ -255,6 +255,36 @@ endfunction
 %!assert (ismember ({'foo', 'bar'}, {'foobar', 'bar'}), logical ([0, 1]));
 %!assert (ismember ({'xfb', 'f', 'b'}, {'fb', 'b'}), logical ([0, 0, 1]));
 %!assert (ismember ("1", "0123456789."), true);
+
+%!test
+%! [result, a_idx] = ismember ([1, 2], []);
+%! assert (result, logical ([0, 0]))
+%! assert (a_idx, [0, 0]);
+
+%!test
+%! [result, a_idx] = ismember ([], [1, 2]);
+%! assert (result, logical ([]))
+%! assert (a_idx, []);
+
+%!test
+%! [result, a_idx] = ismember ({'a', 'b'}, '');
+%! assert (result, logical ([0, 0]))
+%! assert (a_idx, [0, 0]);
+
+%!test
+%! [result, a_idx] = ismember ({'a', 'b'}, {});
+%! assert (result, logical ([0, 0]))
+%! assert (a_idx, [0, 0]);
+
+%!test
+%! [result, a_idx] = ismember ('', {'a', 'b'});
+%! assert (result, false)
+%! assert (a_idx, 0);
+
+%!test
+%! [result, a_idx] = ismember ({}, {'a', 'b'});
+%! assert (result, logical ([]))
+%! assert (a_idx, []);
 
 %!test
 %! [result, a_idx] = ismember([1 2 3 4 5], [3]);

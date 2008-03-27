@@ -1,5 +1,11 @@
 2008-03-27  Bill Denney  <bill@denney.ws>
 
+	* strings/validatestring.m: New function.
+	* strings/Makefile.in (SOURCES): Add it to the list.
+
+	* general/nargoutchk.m: New function.
+	* general/Makefile.in (SOURCES): Add it to the list.
+
 	* general/genvarname.m: New function.
 	* general/Makefile.in (SOURCES): Add it to the list.
 

@@ -1,6 +1,6 @@
 # Makefile for octave's scripts/strings directory
 #
-# Copyright (C) 1994, 1995, 1996, 1997, 2002, 2005, 2006, 2007
+# Copyright (C) 1994, 1995, 1996, 1997, 2002, 2005, 2006, 2007, 2008
 #               John W. Eaton
 #
 # This file is part of Octave.
@@ -38,7 +38,7 @@ SOURCES = base2dec.m bin2dec.m blanks.m deblank.m dec2base.m \
   lower.m mat2str.m regexptranslate.m rindex.m split.m str2double.m str2mat.m \
   str2num.m strcat.m cstrcat.m strcmpi.m strfind.m strjust.m strmatch.m \
   strncmpi.m strrep.m strtok.m strtrim.m strtrunc.m strvcat.m \
-  substr.m upper.m
+  substr.m upper.m validatestring.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

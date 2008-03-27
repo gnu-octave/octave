@@ -25,6 +25,7 @@
 ##
 ## This is useful for checking to see that the number of arguments supplied
 ## to a function is within an acceptable range.
+## @seealso{nargoutchk, error, nargin, nargout}
 ## @end deftypefn
 
 ## Author: jwe
@@ -36,7 +37,7 @@ function retval = nargchk (nargin_min, nargin_max, n)
   endif
 
   if (nargin_min > nargin_max)
-    error  ("nargchk: nargin_min > nargin_max");
+    error ("nargchk: nargin_min > nargin_max");
   endif
 
   if (n < nargin_min)

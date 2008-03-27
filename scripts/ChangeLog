@@ -1,5 +1,7 @@
 2008-03-27  Bill Denney  <bill@denney.ws>
 
+	* time/addtodate.m: New function.
+
 	* geometry/rectint.m: Vectorize and add more tests.
 
 2008-03-27  John W. Eaton  <jwe@octave.org>

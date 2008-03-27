@@ -1,6 +1,10 @@
 2008-03-27  Bill Denney  <bill@denney.ws>
 
+	* general/genvarname.m: New function.
+	* general/Makefile.in (SOURCES): Add it to the list.
+
 	* time/addtodate.m: New function.
+	* time/Makefile.in (SOURCES): Add it to the list.
 
 	* geometry/rectint.m: Vectorize and add more tests.
 

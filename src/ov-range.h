@@ -91,12 +91,9 @@ public:
   octave_value subsref (const std::string& type,
 			const std::list<octave_value_list>& idx);
 
-  octave_value_list subsref (const std::string&,
-			     const std::list<octave_value_list>&, int)
-    {
-      panic_impossible ();
-      return octave_value_list ();
-    }
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx, int)
+    { return subsref (type, idx); }
 
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false);

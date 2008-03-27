@@ -926,7 +926,7 @@ octave_value_list
 octave_value::subsref (const std::string& type,
 		       const std::list<octave_value_list>& idx, int nargout)
 {
-  if (is_constant ())
+  if (nargout == 1)
     return rep->subsref (type, idx);
   else
     return rep->subsref (type, idx, nargout);
@@ -1014,15 +1014,7 @@ octave_value::assign (assign_op op, const std::string& type,
       // a specific function to call to handle the op= operation for
       // the types we have.
 
-      octave_value t;
-      if (is_constant ())
-	t = subsref (type, idx);
-      else
-	{
-	  octave_value_list tl = subsref (type, idx, 1);
-	  if (tl.length () > 0)
-	    t = tl(0);
-	}
+      octave_value t = subsref (type, idx);
 
       if (! error_state)
 	{

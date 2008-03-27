@@ -70,15 +70,15 @@ public:
   octave_base_value *try_narrowing_conversion (void);
 #endif
 
-  octave_value subsref (const std::string&,
-			const std::list<octave_value_list>&);
-
-  octave_value_list subsref (const std::string&,
-			     const std::list<octave_value_list>&, int)
+  octave_value subsref (const std::string& type,
+			const std::list<octave_value_list>& idx)
     {
-      panic_impossible ();
-      return octave_value_list ();
+      octave_value_list tmp = subsref (type, idx, 1);
+      return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
+
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx, int);
 
   octave_value subsasgn (const std::string& type,
 			 const std::list<octave_value_list>& idx,

@@ -65,16 +65,15 @@ public:
 
   Cell dotref (const octave_value_list& idx);
 
-  octave_value subsref (const std::string&,
-			const std::list<octave_value_list>&);
-
-  octave_value_list subsref (const std::string&,
-			     const std::list<octave_value_list>&, int)
+  octave_value subsref (const std::string& type,
+			const std::list<octave_value_list>& idx)
     {
-      panic_impossible ();
-      return octave_value_list ();
+      octave_value_list tmp = subsref (type, idx, 1);
+      return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
+  octave_value_list subsref (const std::string&,
+			     const std::list<octave_value_list>&, int);
 
   static octave_value numeric_conv (const Cell& val,
 				    const std::string& type);

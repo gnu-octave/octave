@@ -63,11 +63,11 @@ public:
   octave_base_value *clone (void) const { return new octave_list (*this); }
   octave_base_value *empty_clone (void) const { return new octave_list (); }
 
-  octave_value subsref (const std::string&,
-			const std::list<octave_value_list>&)
+  octave_value subsref (const std::string& type,
+			const std::list<octave_value_list>& idx)
     {
-      panic_impossible ();
-      return octave_value_list ();
+      octave_value_list tmp = subsref (type, idx, 1);
+      return tmp.length () > 0 ? tmp(0) : octave_value ();
     }
 
   octave_value_list subsref (const std::string& type,

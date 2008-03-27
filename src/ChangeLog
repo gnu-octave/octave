@@ -1,5 +1,43 @@
 2008-03-26  John W. Eaton  <jwe@octave.org>
 
+	* ov-range.h (octave_range::subsref (const std::string&,
+	const std::list<octave_value_list>&, int)):
+	Forward to simple subsref.
+	* ov-base-sparse.h (octave_base_sparse<T>::subsref (const std::string&,
+	const std::list<octave_value_list>&, int)): Likewise.
+	* ov-base-scalar.h (octave_base_sparse<T>::subsref (const std::string&,
+	const std::list<octave_value_list>&, int)): Likewise.
+	* ov-base-matrix.h (octave_base_matrix<T>::subsref (const std::string&,
+	const std::list<octave_value_list>&, int)): Likewise.
+
+	* ov-struct.cc, ov-cell.h (octave_cell::subsref (const
+	std::string&, const std::list<octave_value_list>&, int)):
+	Define nargout version of subsref instead of simple version.
+	* ov-struct.cc, ov-struct.h (octave_struct::subsref (const
+	std::string&, const std::list<octave_value_list>&, int)):
+	Define nargout version of subsref instead of simple version.
+
+	* ov-builtin.h (octave_builtin::subsref (const std::string&,
+	const std::list<octave_value_list>&): Forward to nargout subsref.
+	* ov-cell.h (octave_cell::subsref (const std::string&,
+	const std::list<octave_value_list>&)):
+	* ov-class.h (octave_class::subsref (const std::string&,
+	const std::list<octave_value_list>&): Likewise.
+	* ov-fcn-handle.h (octave_fcn_handle::subsref (const std::string&,
+	const std::list<octave_value_list>&): Likewise.
+	* ov-list.h (octave_list::subsref (const std::string&,
+	const std::list<octave_value_list>&): Likewise.
+	* ov-mex-fcn.h (octave_mex_function::subsref (const std::string&,
+	const std::list<octave_value_list>&): Likewise.
+	* ov-struct.h (octave_struct::subsref (const std::string&,
+	const std::list<octave_value_list>&)):
+	* ov-usr-fcn.h (octave_user_function::subsref (const std::string&,
+	const std::list<octave_value_list>&): Likewise.
+
+	* ov.cc (octave_value::subsref): Use value of nargout instead of
+	is_constant method to decide which type of subsref method to call.
+	(octave_value::assign): Always call simple subref method here.
+
 	* DLD-FUNCTIONS/chol.cc, DLD-FUNCTIONS/det.cc,
 	DLD-FUNCTIONS/getpwent.cc, DLD-FUNCTIONS/inv.cc,
 	DLD-FUNCTIONS/qr.cc, DLD-FUNCTIONS/symrcm.cc, file-io.cc):

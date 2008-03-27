@@ -43,49 +43,89 @@ function area = rectint (a, b)
     error ("rectint: a must have 4 columns");
   elseif (columns (b) != 4)
     error ("rectint: b must have 4 columns");
+  elseif any ([a(:,3:4);b(:,3:4)](:) < 0)
+    error ("rectint: all widths and heights must be > 0")
+  endif
+
+  ## This runs faster if the number of rows of a is greater than the
+  ## number of rows of b.  Swap them and transpose to make it run
+  ## faster.
+  swapinputs = false ();
+  if (rows (a) > rows (b))
+    tmp = a;
+    a = b;
+    b = tmp;
+    swapinputs = true ();
   endif
 
   area = zeros (rows (a), rows (b));
-  for i = 1:rows (area)
-    r1 = a(i,:);
-    for j = 1:columns (area)
-      r2 = b(j,:);
-      area(i,j) = (overlap (r1([1, 3]), r2([1, 3]))
-		   * overlap (r1([2, 4]), r2([2, 4])));
-    endfor
+  r1 = [a(:,1:2) a(:,1:2)+a(:,3:4)];
+  r2 = [b(:,1:2) b(:,1:2)+b(:,3:4)];
+  for i = 1:columns (area)
+    ## Find the location of each point relative to the other points.
+    r1x1small = r1(:,1) < r2(i,1);
+    r1x1large = r1(:,1) > r2(i,3);
+    r1x1mid = (r1(:,1) >= r2(i,1)) & (r1(:,1) <= r2(i,3));
+    r1x2small = r1(:,3) < r2(i,1);
+    r1x2large = r1(:,3) > r2(i,3);
+    r1x2mid = (r1(:,3) >= r2(i,1)) & (r1(:,3) <= r2(i,3));
+
+    r1y1small = r1(:,2) < r2(i,2);
+    r1y1large = r1(:,2) > r2(i,4);
+    r1y1mid = (r1(:,2) >= r2(i,2)) & (r1(:,2) <= r2(i,4));
+    r1y2small = r1(:,4) < r2(i,2);
+    r1y2large = r1(:,4) > r2(i,4);
+    r1y2mid = (r1(:,4) >= r2(i,2)) & (r1(:,4) <= r2(i,4));
+
+    ## determine the width of the rectangle
+    ## r1 completely encloses r2
+    area(r1x1small & r1x2large,i) = r2(i,3) - r2(i,1);
+    ## the range goes from r2x min to r1x max
+    mask = r1x1small & r1x2mid;
+    area(mask,i) = r1(mask,3) - r2(i,1);
+    ## the range goes from r1x min to r2x max
+    mask = r1x1mid & r1x2large;
+    area(mask,i) = r2(i,3) - r1(mask,1);
+    ## the range goes from r1x min to r1x max
+    mask = r1x1mid & r1x2mid;
+    area(mask,i) = r1(mask,3) - r1(mask,1);
+
+    ## determine the height of the rectangle
+    ## r1 completely encloses r2
+    area(r1y1small & r1y2large,i) .*= r2(i,4) - r2(i,2);
+    ## the range goes from r2y min to r1y max
+    mask = r1y1small & r1y2mid;
+    area(mask,i) .*= r1(mask,4) - r2(i,2);
+    ## the range goes from r1y min to r2y max
+    mask = r1y1mid & r1y2large;
+    area(mask,i) .*= r2(i,4) - r1(mask,2);
+    ## the range goes from r1x min to r1x max
+    mask = r1y1mid & r1y2mid;
+    area(mask,i) .*= r1(mask,4) - r1(mask,2);
+
   endfor
 
-endfunction
-
-function amt = overlap (r1, r2)
-
-  ## Determine whether two ranges overlap.  Ranges are given as [value
-  ## offset]
-  amt = 0;
-
-  ## Make sure that the values are in order.
-  r1 = sort ([r1(1), r1(1)+r1(2)]);
-  r2 = sort ([r2(1), r2(1)+r2(2)]);
-
-  ## Is the first point in range 1 in the middle of range 2?
-  p1 = sum (r1(1) <= r2) == 1;
-  ## is the second?
-  p2 = sum (r1(2) <= r2) == 1;
-  if (p1)
-    if (p2)
-      amt = r1(2) - r1(1);
-    else
-      amt = r2(2) - r1(1);
-    endif
-  elseif (sum (r1(2) < r2) == 1)
-    amt = r1(2) - r2(1);
+  if swapinputs
+    area = area';
   endif
 
 endfunction
 
 ## Tests
+## Exactly overlapping
+%!assert(rectint([0 0 1 1], [0 0 1 1]), 1)
+## rect2 completely enclosed by rect1
+%!assert(rectint([-1 -1 3 3], [0 0 1 1]), 1)
+## rect1 completely enclosed by rect2
+%!assert(rectint([0 0 1 1], [-1 -1 3 3]), 1)
+## rect1 right and top in rect2
+%!assert(rectint([-1 -1 1.5 1.5], [0 0 1 1]), 0.25)
+## rect2 right and top in rect1
+%!assert(rectint([0 0 1 1], [-1 -1 1.5 1.5]), 0.25)
+## no overlap - shared corner
 %!assert(rectint([0 0 1 1], [1 1 2 2]), 0)
-%!assert(rectint([0 0 1 1], [0.5 0.5 2 2]), 0.25)
-%!assert(rectint([0 0 1 1;0.5 0.5 1 1], [1 1 2 2]), [0;0.25])
-%!assert(rectint([1 1 2 2], [0 0 1 1;0.5 0.5 1 1]), [0 0.25])
-
+## no overlap - shared edge
+%!assert(rectint([0 0 1 1], [0 1 2 2]), 0)
+## Correct orientation of output
+%!assert(rectint([0 0 1 1;0.5 0.5 1 1;-1 -1 2 2], [1 1 2 2]), [0;0.25;0])
+%!assert(rectint([1 1 2 2], [0 0 1 1;0.5 0.5 1 1;-1 -1 2 2]), [0 0.25 0])

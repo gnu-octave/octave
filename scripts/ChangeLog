@@ -1,5 +1,7 @@
 2008-03-27  Bill Denney  <bill@denney.ws>
 
+	* time/datenum.m: Allow vector inputs in any orientation.
+
 	* strings/validatestring.m: New function.
 	* strings/Makefile.in (SOURCES): Add it to the list.
 

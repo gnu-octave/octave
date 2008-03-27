@@ -1,4 +1,4 @@
-## Copyright (C) 2006, 2007 Paul Kienzle
+## Copyright (C) 2006, 2007, 2008 Paul Kienzle
 ##
 ## This file is part of Octave.
 ##
@@ -99,7 +99,7 @@ function [days, secs] = datenum (Y, M, D, h, m, s)
   Y += fix ((M-14)/12);
 
   ## Lookup number of days since start of the current year.
-  D += monthstart (mod (M-1,12) + 1) + 60;
+  D += reshape (monthstart (mod (M-1,12) + 1), size (D)) + 60;
 
   ## Add number of days to the start of the current year. Correct
   ## for leap year every 4 years except centuries not divisible by 400.
@@ -120,7 +120,13 @@ endfunction
 %!assert(datenum([2001,5,19;1417,6,12]), [730990;517712])
 %!assert(datenum(2001,5,19,12,21,3.5), 730990+part, eps)
 %!assert(datenum([1417,6,12,12,21,3.5]), 517712+part, eps)
+## Test vector inputs
 %!test
 %! t = [2001,5,19,12,21,3.5; 1417,6,12,12,21,3.5];
 %! n = [730990; 517712] + part;
 %! assert(datenum(t), n, 2*eps);
+## Make sure that the vectors can have either orientation
+%!test
+%! t = [2001,5,19,12,21,3.5; 1417,6,12,12,21,3.5]';
+%! n = [730990 517712] + part;
+%! assert(datenum(t(1,:), t(2,:), t(3,:), t(4,:), t(5,:), t(6,:)), n, 2*eps);

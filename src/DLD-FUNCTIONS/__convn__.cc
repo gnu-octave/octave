@@ -174,7 +174,8 @@ Undocumented internal function.\n\
 	  else
 	    error ("__convn__: invalid call");
 	}
-      error ("__convn__: invalid call");
+      else
+	error ("__convn__: invalid call");
     }
   else
     print_usage ();

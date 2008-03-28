@@ -1,3 +1,7 @@
+2008-03-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/del2.m: Missing semicolon.
+
 2008-03-28  Julian Schnidder  <j.schnidder@gmx.de>
 
 	* miscellaneous/info.m: New function.

@@ -72,7 +72,7 @@ function D = del2 (M, varargin)
     if (nargin == 1)
       h = 1;
     else
-      h = varargin{1}
+      h = varargin{1};
     endif
     for i = 1 : nd
       if (isscalar (h))

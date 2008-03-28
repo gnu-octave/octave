@@ -55,7 +55,37 @@
 
 function [Ax, H1, H2] = plotyy (varargin)
 
-  [ax, varargin] = __plt_get_axis_arg__ ("plotyy", varargin{:});
+  ## Don't use __plt_get_axis_arg__ here as ax is a two vector for plotyy
+  if (nargin > 1 && length (varargin{1}) == 2 && ishandle(varargin{1}(1)) 
+      &&  ishandle(varargin{1}(2)) && 
+      all (floor (varargin{1}) != varargin{1}))
+    obj1 = get (varargin{1}(1));
+    obj2 = get (varargin{1}(2));
+    if (strcmp (obj1.type, "axes") || strcmp (obj2.type, "axes"))
+      ax = [obj1, obj2];
+      varargin(1) = [];
+      if (isempty (varargin))
+	varargin = {};
+      endif
+    else
+      error ("plotyy: expecting first argument to be axes handle");
+    endif
+  else
+    f = get (0, "currentfigure");
+    if (isempty (f))
+      ax(1) = axes ();
+      ax(2) = axes ();
+    else
+      ax = get (f, "children");
+      for i = 3 : length (ax)
+	delete (ax (i));
+      endfor
+      ax = ax(1:2);
+    endif
+    if (nargin < 2)
+      varargin = {};
+    endif
+  endif 
 
   if (nargin < 4)
     print_usage ();
@@ -63,8 +93,6 @@ function [Ax, H1, H2] = plotyy (varargin)
 
   oldh = gca ();
   unwind_protect
-    axes (ax);
-    newplot ();
     [ax, h1, h2] = __plotyy__ (ax, varargin{:});
   unwind_protect_cleanup
     axes (oldh);
@@ -92,6 +120,8 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   xlim = [min([x1(:); x2(:)]), max([x1(:); x2(:)])];
 
+  axes (ax(1));
+  newplot ();
   h1 = feval (fun1, x1, y1);
 
   set (ax(1), "ycolor", getcolor (h1(1)));
@@ -101,7 +131,9 @@ function [ax, h1, h2] = __plotyy__ (ax, x1, y1, x2, y2, varargin)
 
   cf = gcf ();
   set (cf, "nextplot", "add");
-  ax(2) = axes ();
+  axes (ax(2));
+  newplot ();
+
   colors = get (ax(1), "colororder");
   set (ax(2), "colororder", [colors(2:end,:); colors(1,:)]);
 

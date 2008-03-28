@@ -1,3 +1,7 @@
+2008-03-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* oct-lookup.h: New file.
+
 2008-03-26  David Bateman  <dbateman@feee.fr>
 
 	* Array.cc (assignN): Additional fix for vector assignments.

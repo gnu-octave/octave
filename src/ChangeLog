@@ -1,3 +1,8 @@
+2008-03-28  Jaroslav Hajek  <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/lookup.cc: New file.
+	* Makefile.in (DLD_XSRC): Add it to the list.
+
 2008-03-28  David Bateman  <dbateman@free.fr>
 
 	* ov-complex.cc (SCALAR_MAPPER, CD_SCALAR_MAPPER): New macro for

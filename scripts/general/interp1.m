@@ -200,9 +200,7 @@ function yi = interp1 (x, y, varargin)
       yi = mkpp (x, [dy./dx, y(1:end-1)], szy(2:end));
     else
       ## find the interval containing the test point
-      idx = lookup (x(2:nx-1), xi)+1;
-				# 2:n-1 so that anything beyond the ends
-				# gets dumped into an interval
+      idx = lookup (x, xi, "lr");
       ## use the endpoints of the interval to define a line
       s = (xi - x(idx))./dx(idx);
       yi(range,:) = s(:,ones(1,nc)).*dy(idx,:) + y(idx,:);
@@ -243,7 +241,7 @@ function yi = interp1 (x, y, varargin)
     if (nx < 4 || ny < 4)
       error ("interp1: table too short");
     endif
-    idx = lookup (x(3:nx-2), xi) + 1;
+    idx = lookup (x(2:nx-1), xi, "lr");
 
     ## Construct cubic equations for each interval using divided
     ## differences (computation of c and d don't use divided differences
@@ -570,3 +568,5 @@ endfunction
 %!assert (interp1(1:2:8,1:2:8,1.4,"*cubic"),1.4);
 %!error interp1(1:2,1:2,1, "*spline");
 %!assert (interp1(1:2:6,1:2:6,1.4,"*spline"),1.4);
+
+%!assert (interp1([3,2,1],[3,2,2],2.5),2.5)

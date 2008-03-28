@@ -144,7 +144,7 @@ function vi = interpn (varargin)
     yidx = cell (1, nd);
     for i = 1 : nd
       y{i} = y{i}(:);
-      yidx{i} = lookup (x{i}(2:end-1), y{i}) + 1;
+      yidx{i} = lookup (x{i}, y{i}, "lr");
     endfor
     idx = cell (1,nd);
     for i = 1 : nd

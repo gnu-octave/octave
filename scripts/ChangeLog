@@ -1,3 +1,11 @@
+2008-03-27  Jaroslav Hajek  <highegg@gmail.com>
+
+	* general/lookup.m: Remove (lookup moved to DLD-FUNCTIONS).
+	* general/Makefile.in (SOURCES): Delete lookup.m from the list.
+	* general/interp1.m, general/interp2.m, general/interpn.m,
+	polynomial/ppval.m: Fix buggy lookup calls.
+	* general/interp1.m: New test.
+
 2008-03-28  Thomas Weber  <thomas.weber.mail@gmail.com>
 
 	* miscellaneous/tempdir.m: Use correct function name in texinfo

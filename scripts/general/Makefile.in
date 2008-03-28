@@ -41,7 +41,7 @@ SOURCES = __isequal__.m __splinen__.m accumarray.m arrayfun.m \
   interp1.m interp2.m interp3.m interpn.m interpft.m \
   is_duplicate_entry.m isa.m isdefinite.m isdir.m isequal.m \
   isequalwithequalnans.m isscalar.m issquare.m issymmetric.m \
-  isvector.m logical.m logspace.m lookup.m mod.m nargchk.m \
+  isvector.m logical.m logspace.m mod.m nargchk.m \
   nargoutchk.m nextpow2.m nthroot.m num2str.m perror.m pol2cart.m \
   polyarea.m postpad.m prepad.m quadl.m randperm.m rat.m rem.m \
   repmat.m rot90.m rotdim.m shift.m shiftdim.m sortrows.m \

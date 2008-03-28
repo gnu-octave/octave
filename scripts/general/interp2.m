@@ -185,8 +185,8 @@ function ZI = interp2 (varargin)
     XI = reshape (XI, 1, prod (shape));
     YI = reshape (YI, 1, prod (shape));
 
-    xidx = lookup (X(1, 2:end-1), XI) + 1;
-    yidx = lookup (Y(2:end-1, 1), YI) + 1;
+    xidx = lookup (X(1, :), XI, "lr");
+    yidx = lookup (Y(:, 1), YI, "lr");
 
     if (strcmp (method, "linear"))
       ## each quad satisfies the equation z(x,y)=a+b*x+c*y+d*xy

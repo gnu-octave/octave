@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} zlim (@var{m})
 ## @deftypefnx {Function File} {} zlim (@var{h}, @dots{})
 ## Get or set the limits of the z axis of the current plot. Called without
-## argumenst @code{zlim] returns the z axis limits of the current plot.
+## arguments @code{zlim} returns the z axis limits of the current plot.
 ## If passed a two element vector @var{xl}, the limits of the z axis are set
 ## to this value.
 ##

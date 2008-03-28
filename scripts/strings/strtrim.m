@@ -17,9 +17,9 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} deblank (@var{s})
+## @deftypefn {Function File} {} strtrim (@var{s})
 ## Remove leading and trailing blanks and nulls from @var{s}.  If
-## @var{s} is a matrix, @var{deblank} trims each row to the length of
+## @var{s} is a matrix, @var{strtrim} trims each row to the length of
 ## longest string.  If @var{s} is a cell array, operate recursively on
 ## each element of the cell array. 
 ## @end deftypefn

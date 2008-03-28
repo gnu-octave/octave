@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} ylim (@var{m})
 ## @deftypefnx {Function File} {} ylim (@var{h}, @dots{})
 ## Get or set the limits of the y axis of the current plot. Called without
-## argumenst @code{ylim] returns the y axis limits of the current plot.
+## arguments @code{ylim} returns the y axis limits of the current plot.
 ## If passed a two element vector @var{xl}, the limits of the y axis are set
 ## to this value.
 ##

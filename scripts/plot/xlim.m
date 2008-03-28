@@ -23,7 +23,7 @@
 ## @deftypefnx {Function File} {} xlim (@var{m})
 ## @deftypefnx {Function File} {} xlim (@var{h}, @dots{})
 ## Get or set the limits of the x axis of the current plot. Called without
-## argumenst @code{xlim] returns the x axis limits of the current plot.
+## arguments @code{xlim} returns the x axis limits of the current plot.
 ## If passed a two element vector @var{xl}, the limits of the x axis are set
 ## to this value.
 ##

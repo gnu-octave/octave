@@ -1,3 +1,8 @@
+2008-03-28  Julian Schnidder  <j.schnidder@gmx.de>
+
+	* miscellaneous/info.m: New function.
+	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
+
 2008-03-27  Soren Hauberg  <hauberg@gmail.com>
 
 	* plot/xlim.m, plot/ylim.m, plot/zlim.m, strings/strtrim.m:

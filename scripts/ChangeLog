@@ -1,3 +1,8 @@
+2008-03-27  David Bateman  <dbateman@free.fr>
+
+	* plot/__plt2__.m: Test if args are empty first so that
+	plot(zeros(1,0),zeros(1,0)) works as expected.
+
 2008-03-27  Bill Denney  <bill@denney.ws>
 
 	* time/datenum.m: Allow vector inputs in any orientation.

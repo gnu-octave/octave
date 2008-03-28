@@ -48,7 +48,9 @@ function retval = __plt2__ (h, x1, x2, options, properties)
   endif
 
   h_set = false;
-  if (isscalar (x1))
+  if (isempty (x1) && isempty (x2))
+    retval = zeros (0, 1);
+  elseif (isscalar (x1))
     if (isscalar (x2))
       retval = __plt2ss__ (h, x1, x2, options, properties);
     elseif (isvector (x2))
@@ -74,8 +76,6 @@ function retval = __plt2__ (h, x1, x2, options, properties)
     else
       error ("__plt2__: invalid data for plotting");
     endif
-  elseif (isempty (x1) && isempty (x2))
-    retval = zeros (0, 1);
   else
     error ("__plt2__: invalid data for plotting");
   endif

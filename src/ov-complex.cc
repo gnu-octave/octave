@@ -358,6 +358,42 @@ xreal (const Complex& x)
     return octave_value (FCN (scalar)); \
   }
 
+#define SCALAR_MAPPER(MAP, FCN)	\
+  octave_value \
+  octave_complex::MAP (void) const \
+  { \
+    if (scalar.imag () == 0) \
+      return octave_value (FCN (scalar.real ())); \
+    else \
+      { \
+        error ("%s: not defined for complex arguments", #MAP); \
+        return octave_value (); \
+      } \
+  }
+
+#define CD_SCALAR_MAPPER(MAP, RFCN, CFCN, L1, L2) \
+  octave_value \
+  octave_complex::MAP (void) const \
+  { \
+    if (scalar.imag () == 0) \
+      { \
+	double re = scalar.real (); \
+	return (re < L1 || re > L2 \
+            ? octave_value (CFCN (scalar)) \
+	    : octave_value (RFCN (re))); \
+      } \
+    else \
+      { \
+        error ("%s: not defined for complex arguments", #MAP); \
+        return octave_value (); \
+      } \
+  }
+
+SCALAR_MAPPER (erf, ::erf)
+SCALAR_MAPPER (erfc, ::erfc)
+SCALAR_MAPPER (gamma, xgamma)
+CD_SCALAR_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
+
 COMPLEX_MAPPER (abs, xabs)
 COMPLEX_MAPPER (acos, ::acos)
 COMPLEX_MAPPER (acosh, ::acosh)

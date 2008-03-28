@@ -153,6 +153,10 @@ public:
 
   mxArray *as_mxArray (void) const;
 
+  octave_value erf (void) const;
+  octave_value erfc (void) const;
+  octave_value gamma (void) const;
+  octave_value lgamma (void) const;
   octave_value abs (void) const;
   octave_value acos (void) const;
   octave_value acosh (void) const;

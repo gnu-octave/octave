@@ -670,6 +670,40 @@ xreal (const Complex& x)
   return x.real ();
 }
 
+static bool
+any_element_less_than (const NDArray& a, double val)
+{
+  octave_idx_type len = a.length ();
+  const double *m = a.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (m[i] < val)
+	return true;
+    }
+
+  return false;
+}
+
+static bool
+any_element_greater_than (const NDArray& a, double val)
+{
+  octave_idx_type len = a.length ();
+  const double *m = a.fortran_vec ();
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (m[i] > val)
+	return true;
+    }
+
+  return false;
+}
+
 #define ARRAY_MAPPER(MAP, AMAP, FCN) \
   octave_value \
   octave_complex_matrix::MAP (void) const \
@@ -677,6 +711,56 @@ xreal (const Complex& x)
     static AMAP cmap = FCN; \
     return matrix.map (cmap); \
   }
+
+#define DARRAY_MAPPER(MAP, AMAP, FCN) \
+  octave_value \
+  octave_complex_matrix::MAP (void) const \
+  { \
+    static ComplexNDArray::dmapper dmap = ximag; \
+    NDArray m = matrix.map (dmap); \
+    if (m.all_elements_are_zero ()) \
+      { \
+	dmap = xreal; \
+	m = matrix.map (dmap); \
+        static AMAP cmap = FCN; \
+        return m.map (cmap); \
+      } \
+    else \
+      { \
+        error ("%s: not defined for complex arguments", #MAP); \
+        return octave_value (); \
+      } \
+  }
+
+#define CD_ARRAY_MAPPER(MAP, RFCN, CFCN, L1, L2) \
+  octave_value \
+  octave_complex_matrix::MAP (void) const \
+  { \
+    static ComplexNDArray::dmapper idmap = ximag; \
+    NDArray m = matrix.map (idmap); \
+    if (m.all_elements_are_zero ()) \
+      { \
+	static ComplexNDArray::dmapper rdmap = xreal; \
+	m = matrix.map (rdmap); \
+        static NDArray::dmapper dmap = RFCN; \
+        static NDArray::cmapper cmap = CFCN; \
+        return (any_element_less_than (m, L1) \
+                ? octave_value (m.map (cmap)) \
+	        : (any_element_greater_than (m, L2) \
+	           ? octave_value (m.map (cmap)) \
+	           : octave_value (m.map (dmap)))); \
+      } \
+    else \
+      { \
+        /*error ("%s: not defined for complex arguments", #MAP); */	\
+        return octave_value (m); \
+      } \
+  }
+
+DARRAY_MAPPER (erf, NDArray::dmapper, ::erf)
+DARRAY_MAPPER (erfc, NDArray::dmapper, ::erfc)
+DARRAY_MAPPER (gamma, NDArray::dmapper, xgamma)
+CD_ARRAY_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
 
 ARRAY_MAPPER (abs, ComplexNDArray::dmapper, xabs)
 ARRAY_MAPPER (acos, ComplexNDArray::cmapper, ::acos)

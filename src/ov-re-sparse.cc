@@ -886,8 +886,8 @@ any_element_greater_than (const SparseMatrix& a, double val)
   octave_value \
   octave_sparse_matrix::MAP (void) const \
   { \
-    static NDArray::dmapper dmap = RFCN; \
-    static NDArray::cmapper cmap = CFCN; \
+    static SparseMatrix::dmapper dmap = RFCN; \
+    static SparseMatrix::cmapper cmap = CFCN; \
  \
     return (any_element_less_than (matrix, L1) \
             ? octave_value (matrix.map (cmap)) \

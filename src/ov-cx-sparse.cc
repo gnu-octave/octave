@@ -839,6 +839,44 @@ xreal (const Complex& x)
   return x.real ();
 }
 
+static bool
+any_element_less_than (const SparseMatrix& a, double val)
+{
+  octave_idx_type len = a.nnz ();
+
+  if (val > 0. && len != a.numel ())
+    return true;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (a.data(i) < val)
+	return true;
+    }
+
+  return false;
+}
+
+static bool
+any_element_greater_than (const SparseMatrix& a, double val)
+{
+  octave_idx_type len = a.nnz ();
+
+  if (val < 0. && len != a.numel ())
+    return true;
+
+  for (octave_idx_type i = 0; i < len; i++)
+    {
+      OCTAVE_QUIT;
+
+      if (a.data(i) > val)
+	return true;
+    }
+
+  return false;
+}
+
 #define SPARSE_MAPPER(MAP, AMAP, FCN) \
   octave_value \
   octave_sparse_complex_matrix::MAP (void) const \
@@ -846,6 +884,56 @@ xreal (const Complex& x)
     static AMAP cmap = FCN; \
     return matrix.map (cmap); \
   }
+
+#define DSPARSE_MAPPER(MAP, AMAP, FCN) \
+  octave_value \
+  octave_sparse_complex_matrix::MAP (void) const \
+  { \
+    static SparseComplexMatrix::dmapper dmap = ximag; \
+    SparseMatrix m = matrix.map (dmap); \
+    if (m.all_elements_are_zero ()) \
+      { \
+	dmap = xreal; \
+	m = matrix.map (dmap); \
+        static AMAP cmap = FCN; \
+        return m.map (cmap); \
+      } \
+    else \
+      { \
+        error ("%s: not defined for complex arguments", #MAP); \
+        return octave_value (); \
+      } \
+  }
+
+#define CD_SPARSE_MAPPER(MAP, RFCN, CFCN, L1, L2) \
+  octave_value \
+  octave_sparse_complex_matrix::MAP (void) const \
+  { \
+    static SparseComplexMatrix::dmapper idmap = ximag; \
+    SparseMatrix m = matrix.map (idmap); \
+    if (m.all_elements_are_zero ()) \
+      { \
+        static SparseComplexMatrix::dmapper rdmap = xreal; \
+	m = matrix.map (rdmap); \
+        static SparseMatrix::dmapper dmap = RFCN; \
+        static SparseMatrix::cmapper cmap = CFCN; \
+        return (any_element_less_than (m, L1) \
+                ? octave_value (m.map (cmap)) \
+	        : (any_element_greater_than (m, L2) \
+	           ? octave_value (m.map (cmap)) \
+	           : octave_value (m.map (dmap)))); \
+      } \
+    else \
+      { \
+        error ("%s: not defined for complex arguments", #MAP); \
+        return octave_value (); \
+      } \
+  }
+
+DSPARSE_MAPPER (erf, SparseMatrix::dmapper, ::erf)
+DSPARSE_MAPPER (erfc, SparseMatrix::dmapper, ::erfc)
+DSPARSE_MAPPER (gamma, SparseMatrix::dmapper, xgamma)
+CD_SPARSE_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
 
 SPARSE_MAPPER (abs, SparseComplexMatrix::dmapper, xabs)
 SPARSE_MAPPER (acos, SparseComplexMatrix::cmapper, ::acos)

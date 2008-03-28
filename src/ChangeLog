@@ -1,3 +1,27 @@
+2008-03-28  David Bateman  <dbateman@free.fr>
+
+	* ov-complex.cc (SCALAR_MAPPER, CD_SCALAR_MAPPER): New macro for
+	complex values with zero imaginary part.
+	(erf, erfc, gamma, lgamma): Use the new mappers to define these
+	mapper functions.
+	* ov-complex.h (erf, erfc, gamma, lgamma): Declare them.
+	* ov-cx-mat.cc (any_element_less_than, any_element_greater_than):
+	New static functions
+	(DARRAY_MAPPER, CD_ARRAY_MAPPER): New macro for complex values
+	with zero imaginary part.
+	(erf, erfc, gamma, lgamma): Use the new mappers to define these
+	mapper functions.
+	* ov-cx-mat.h (erf, erfc, gamma, lgamma): Declare them.
+	* ov-cx-sparse.cc (any_element_less_than, any_element_greater_than):
+	New static functions
+	(DSPARSE_MAPPER, CD_SPARSE_MAPPER): New macro for complex values
+	with zero imaginary part.
+	(erf, erfc, gamma, lgamma): Use the new mappers to define these
+	mapper functions.
+	* ov-cx-sparse.h (erf, erfc, gamma, lgamma): Declare them.
+	* ov-re-sparse.cc (CD_SPARSE_MAPPER): Use correct mapper functors.
+	* mapper.cc: Add tests for the above cases.
+
 2008-03-27  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/max.cc: Rename from minmax.cc.

@@ -323,6 +323,14 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
   return retval;
 }
 
+/*
+
+%!test
+%! a = -1i*sqrt(-1/(6.4187*6.4187));
+%! assert (erf(a), erf(real(a)));
+
+*/
+
 DEFUN (erfc, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} erfc (@var{z})\n\
@@ -346,6 +354,14 @@ $1 - {\\rm erf} (z)$.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! a = -1i*sqrt(-1/(6.4187*6.4187));
+%! assert (erfc(a), erfc(real(a)));
+
+*/
 
 DEFUN (exp, args, ,
     "-*- texinfo -*-\n\
@@ -466,6 +482,14 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! a = -1i*sqrt(-1/(6.4187*6.4187));
+%! assert (gamma(a), gamma(real(a)));
+
+*/
 
 DEFUN (imag, args, ,
     "-*- texinfo -*-\n\
@@ -752,6 +776,14 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! a = -1i*sqrt(-1/(6.4187*6.4187));
+%! assert (lgamma(a), lgamma(real(a)));
+
+*/
 
 DEFUN (log, args, ,
     "-*- texinfo -*-\n\

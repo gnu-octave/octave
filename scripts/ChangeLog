@@ -1,3 +1,8 @@
+2008-03-28  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* miscellaneous/tempdir.m: Use correct function name in texinfo
+	documentation.
+
 2008-03-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/del2.m: Missing semicolon.

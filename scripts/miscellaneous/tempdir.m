@@ -17,7 +17,7 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {@var{dir} =} fullfile ()
+## @deftypefn {Function File} {@var{dir} =} tempdir ()
 ## Return the name of the system's directory for temporary files.
 ## @end deftypefn
 

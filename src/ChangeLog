@@ -1,5 +1,8 @@
 2008-03-27  John W. Eaton  <jwe@octave.org>
 
+	* max.cc: Rename from minmax.cc.
+	* Makefile.in (DLD_XSRC): Rename minmax.cc to max.cc.
+
 	* DLD-FUNCTIONS/__convn__.cc (convn): Use traits class and
 	typedefs to allow all types to be deduced from argument types.
 

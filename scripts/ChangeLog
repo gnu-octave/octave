@@ -1,3 +1,7 @@
+2008-03-31  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
+
+	* miscellaneous/run.m: Fix check for existence of file.
+
 2008-03-27  Jaroslav Hajek  <highegg@gmail.com>
 
 	* general/lookup.m: Remove (lookup moved to DLD-FUNCTIONS).

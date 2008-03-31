@@ -40,7 +40,7 @@ function run (s)
       wd = pwd ();
       unwind_protect
 	cd (d);
-	if (! exist (s, "file") ||  ! strcmp (ext, ".m"))
+	if (! exist (f, "file") || ! strcmp (ext, ".m"))
 	  error ("run: file must exist and be a valid Octave script file");
 	endif
 	evalin ("caller", [f, ";"], "rethrow (lasterror ())");

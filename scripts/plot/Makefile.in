@@ -47,6 +47,7 @@ SOURCES = \
   __go_close_all__.m \
   __go_draw_axes__.m \
   __go_draw_figure__.m \
+  __gnuplot_ginput__.m \
   __gnuplot_version__.m \
   __line__.m \
   __next_line_color__.m \
@@ -107,6 +108,7 @@ SOURCES = \
   fplot.m \
   gca.m \
   gcf.m \
+  ginput.m \
   grid.m \
   hidden.m \
   hist.m \

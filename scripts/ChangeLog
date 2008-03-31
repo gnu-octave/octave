@@ -1,3 +1,10 @@
+2008-03-31  David Bateman  <dbateman@free.fr>
+
+	* plot/ginput.m: New function.
+	* plot/__gnuplot_ginput__.m: New function based on a version of
+	ginput.m from Petr Mikulik <mikulik@physics.muni.cz>.
+	* plot/Makefile.in (SOURCES): Add them to the list.
+
 2008-03-31  Dmitri A. Sergatskov  <dasergatskov@gmail.com>
 
 	* miscellaneous/run.m: Fix check for existence of file.

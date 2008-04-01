@@ -1,3 +1,9 @@
+2008-04-01  John W. Eaton  <jwe@octave.org>
+
+	* pt-id.h (do_lookup (bool&, bool)): Delete.
+	(do_lookup (tree_argument_list *, const string_vector&,
+	octave_value_list&, bool&)): Call MAYBE_DO_BREAKPOINT here.
+
 2008-03-28  Jaroslav Hajek  <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/lookup.cc: New file.

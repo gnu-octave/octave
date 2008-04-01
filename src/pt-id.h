@@ -33,6 +33,7 @@ class octave_function;
 
 class tree_walker;
 
+#include "pt-bp.h"
 #include "pt-exp.h"
 #include "symtab.h"
 
@@ -79,18 +80,11 @@ public:
   //     then .mex files, then .m files.
 
   octave_value
-  do_lookup (bool& script_file_executed, bool exec_script = true)
-  {
-    // FIXME -- SYMTAB: what about executing script files?
-    octave_value_list evaluated_args;
-    bool args_evaluated;
-    return sym.find (0, string_vector (), evaluated_args, args_evaluated);
-  }
-
-  octave_value
   do_lookup (tree_argument_list *args, const string_vector& arg_names,
 	     octave_value_list& evaluated_args, bool& args_evaluated)
   {
+    MAYBE_DO_BREAKPOINT;
+
     return sym.find (args, arg_names, evaluated_args, args_evaluated);
   }
 

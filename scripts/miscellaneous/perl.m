@@ -1,0 +1,40 @@
+## Copyright (C) 2008 Julian Schnidder
+##
+## This file is part of Octave.
+##
+## Octave is free software; you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## Octave is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with Octave; see the file COPYING.  If not, see
+## <http://www.gnu.org/licenses/>.
+
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile})
+## @deftypefnx {Function File} {[@var{output}, @var{status}] =} perl (@var{scriptfile}, @var{argument1}, @var{argument2}, ...)
+## Invoke perl script @var{scriptfile} with possibly a list of
+## command line arguments.
+## Returns output in @var{output} and status
+## in @var{status}.
+## @seealso{system}
+## @end deftypefn
+
+function [output, status] = perl (script = "-e ''", varargin = {})
+
+  if (ischar (script)
+      && ((nargin != 1 && iscellstr (varargin))
+	  || (nargin == 1 && ! isempty (script))))
+    [status, output] = system (cstrcat ("perl ", script,
+					sprintf (" %s", varargin{:})));
+  else
+    error ("perl: invalid arguments");
+  endif
+
+endfunction

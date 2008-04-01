@@ -1,3 +1,8 @@
+2008-04-01  Julian Schnidder  <j.schnidder@gmx.de>
+
+	* miscellaneous/perl.m: New function.
+	* miscellaneous/Makefile.in (SOURCES): Add it to the list.
+
 2008-03-31  David Bateman  <dbateman@free.fr>
 
 	* plot/gtext.m: New function to place text on a plot.

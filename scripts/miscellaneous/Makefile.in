@@ -39,7 +39,7 @@ SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m cast.m comma.m \
   fileattrib.m fileparts.m flops.m fullfile.m getfield.m gunzip.m gzip.m \
   info.m inputname.m ismac.m ispc.m isunix.m license.m list_primes.m ls.m \
   ls_command.m menu.m mex.m mexext.m mkoctfile.m movefile.m \
-  namelengthmax.m news.m orderfields.m pack.m paren.m parseparams.m \
+  namelengthmax.m news.m orderfields.m pack.m paren.m parseparams.m perl.m\
   run.m semicolon.m setfield.m single.m substruct.m swapbytes.m tar.m \
   tempdir.m tempname.m texas_lotto.m unix.m unpack.m untar.m \
   unzip.m ver.m version.m warning_ids.m what.m xor.m zip.m

@@ -1,4 +1,4 @@
-## Copyright (C) 2008 David Bateman
+## Copyright (C) 2004, 2006, 2008 Petr Mikulik
 ##
 ## This file is part of Octave.
 ##
@@ -17,28 +17,31 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} ginput (@var{n})
-## Return which mouse buttons were pressed and keys were hit on the current
-## figure. If @var{n} is defined, then wait for @var{n} mouse clicks
-## before returning. If @var{n} is not defined, then @code{ginput} will
-## loop until the return key is pressed.
+## @deftypefn {Function File} {@var{b} =} waitforbuttonpress ()
+## Wait for button or mouse press.over a figure window. The value of
+## @var{b} returns 0 if a mouse button was pressed or 1 is a key was
+## pressed.
+## @seealso{ginput}
 ## @end deftypefn
 
-function varargout = ginput (n)
+## The original version of this code bore the copyright
+## Author: Petr Mikulik
+## License: public domain
 
-  if (nargin > 1)
+function a = waitforbuttonpress ()
+
+  if (nargin != 0 || nargout > 1)
     print_usage ();
   endif
 
-  f = gcf ();
-  drawnow ();
-  backend = (get (f, "__backend__"));
+  [x, y, k] = ginput (1);
 
-  varargout = cell (1, nargout);
-  if (nargin == 0)
-    [varargout{:}] = feval (strcat ("__", backend, "_ginput__"), f);
-  else
-    [varargout{:}] = feval (strcat ("__", backend, "_ginput__"), f, n);
+  if (nargout == 1)
+    if (k <= 5) 
+      a = 0;
+    else 
+      a = 1;
+    endif
   endif
 
 endfunction

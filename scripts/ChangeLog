@@ -1,5 +1,12 @@
 2008-03-31  David Bateman  <dbateman@free.fr>
 
+	* plot/gtext.m: New function to place text on a plot.
+	* plot/waitforbuttonpress.m: New function.
+	* plot/Makefile.in (SOURCES): Add them to the list.
+	* plot/__gnuplot_ginput__.m: Bug fix for nargin==1. Workaround for
+	missing mkfifo under Windows.
+	* plot/ginput.m: Eliminate setting of n.
+	
 	* plot/ginput.m: New function.
 	* plot/__gnuplot_ginput__.m: New function based on a version of
 	ginput.m from Petr Mikulik <mikulik@physics.muni.cz>.

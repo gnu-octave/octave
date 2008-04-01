@@ -16,6 +16,11 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
+## -*- texinfo -*-
+## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} __gnuplot_ginput__ (@var{f}, @var{n})
+## Undocumented internal function.
+## @end deftypefn
+
 ## This is ginput.m implementation for gnuplot and X11.
 ## It requires gnuplot 4.1 and later.
 
@@ -24,12 +29,9 @@
 ## History: June 2006; August 2005; June 2004; April 2004
 ## License: public domain
 
-## -*- texinfo -*-
-## @deftypefn {Function File} {[@var{x}, @var{y}, @var{buttons}] =} __gnuplot_ginput__ (@var{f}, @var{n})
-## Undocumented internal function.
-## @end deftypefn
-
 function [x, y, button] = __gnuplot_ginput__ (f, n)
+
+  persistent have_mkfifo = ! ispc ();
 
   stream = get (f, "__plot_stream__");
 
@@ -37,10 +39,10 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
     error ("ginput: version %s of gnuplot not supported", gnuplot_version ());
   endif
 
-  if (nargin == 0)
-    x = zeros (n, 1);
-    y = zeros (n, 1);
-    button = zeros (n, 1);
+  if (nargin == 1)
+    x = zeros (100, 1);
+    y = zeros (100, 1);
+    button = zeros (100, 1);
   else
     x = zeros (n, 1);
     y = zeros (n, 1);
@@ -49,11 +51,14 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
 
   gpin_name = tmpnam ();
 
-  ## 6*8*8 ==  0600
-  [err, msg] = mkfifo (gpin_name, 6*8*8);
-  if (err != 0)
-    error ("ginput: Can not open fifo (%s)", msg);
-  endif    
+  if (have_mkfifo)
+    ## Use pipes if not on Windows. Mode: 6*8*8 ==  0600
+    [err, msg] = mkfifo(gpin_name, 6*8*8);
+
+    if (err != 0)
+      error ("ginput: Can not open fifo (%s)", msg);
+    endif
+  endif
 
   unwind_protect
 
@@ -62,7 +67,12 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
       k++;
       fprintf (stream, "set print \"%s\";\n", gpin_name);
       fflush (stream);
-      gpin = fopen (gpin_name, "r");
+      if (have_mkfifo)
+	[gpin, err] = fopen (gpin_name, "r");
+	if (err != 0)
+	  error ("ginput: Can not open fifo (%s)", msg);
+	endif
+      endif
       fputs (stream, "pause mouse any;\n\n");
 
       ## Notes: MOUSE_* can be undefined if user closes gnuplot by "q"
@@ -74,8 +84,27 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
       fputs (stream, "set print;\n");
       fflush (stream);
 
-      ## Now read from fifo.
-      [x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
+      if (! have_mkfifo)
+	while (exist (gpin_name, "file") == 0)
+	endwhile
+	[gpin, msg] = fopen (gpin_name, "r");
+
+	if (gpin < 0)
+	  error ("ginput: Can not open file (%s)", msg);
+	endif
+
+	## Now read from file
+	count = 0;
+	while (count == 0)
+	  [xk, yk, buttonk, count] = fscanf (gpin, "%f %f %d", "C");
+	endwhile
+	x(k) = xk;
+	y(k) = yk;
+	button (k) = buttonk;
+      else
+	## Now read from fifo.
+	[x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
+      endif
       fclose (gpin);
 
       if ([x(k), y(k), button(k)] == [0, 0, -1])
@@ -83,7 +112,7 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
 	break;
       endif
 
-      if (nargin > 0)
+      if (nargin > 1)
 	## Input argument n was given => stop when k == n.
 	if (k == n) 
 	  break; 

@@ -110,6 +110,7 @@ SOURCES = \
   gcf.m \
   ginput.m \
   grid.m \
+  gtext.m \
   hidden.m \
   hist.m \
   hold.m \
@@ -165,6 +166,7 @@ SOURCES = \
   text.m \
   title.m \
   view.m \
+  waitforbuttonpress.m \
   xlabel.m \
   xlim.m \
   ylabel.m \

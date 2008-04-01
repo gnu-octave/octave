@@ -32,7 +32,14 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
-SOURCES = __fsolve_defopts__.m glpk.m glpkmex.m optimset.m qp.m sqp.m
+SOURCES = \
+  __fsolve_defopts__.m \
+  glpk.m \
+  glpkmex.m \
+  lsqnonneg.m \
+  optimset.m \
+  qp.m \
+  sqp.m
 
 EXTRAS = glpktest1 glpktest2
 

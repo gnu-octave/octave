@@ -5,6 +5,10 @@
 
 2008-03-31  David Bateman  <dbateman@free.fr>
 
+	* plot/__go_draw_axes__.m: Set the tick direction in the main call
+	the set tics rather than separately to avoid issues with multiple
+	ticks in plotyy.
+	
 	* plot/gtext.m: New function to place text on a plot.
 	* plot/waitforbuttonpress.m: New function.
 	* plot/Makefile.in (SOURCES): Add them to the list.

@@ -20,18 +20,30 @@
 ## @deftypefn {Function File} {} sortrows (@var{a}, @var{c})
 ## Sort the rows of the matrix @var{a} according to the order of the
 ## columns specified in @var{c}.  If @var{c} is omitted, a
-## lexicographical sort is used.
+## lexicographical sort is used. By default ascending order is used 
+## however if elements of @var{c} are negative then the corrosponding 
+## column is sorted in descending order.
 ## @end deftypefn
 
 ## Author: Daniel Calvelo, Paul Kienzle
 ## Adapted-by: jwe
 
 function [s, i] = sortrows (m, c)
-  
+
+  default_mode = "ascend";
+  other_mode = "descend";
   if (nargin < 2)
     indices = [1:size(m,2)]';
+    mode{1:size(m,2)} = default_mode;
   else
-    indices = c(:);
+    for ii = 1:length (c);
+      if (c(ii) < 0)
+        mode{ii} = other_mode;
+      else
+        mode{ii} = default_mode;
+      endif
+    endfor
+    indices = abs(c(:));
   endif
 
   if (ischar (m))
@@ -45,9 +57,10 @@ function [s, i] = sortrows (m, c)
   ## will make sure that identical elements in index i are subsorted by
   ## index j.
   indices = flipud (indices);
+  mode = flipud (mode');
   i = [1:size(m,1)]';
   for ii = 1:length (indices);
-    [trash, idx] = sort (s(:,indices(ii)));
+    [trash, idx] = sort (s(:,indices(ii)), mode{ii});
     s = s(idx,:);
     i = i(idx);
   endfor
@@ -57,3 +70,8 @@ function [s, i] = sortrows (m, c)
   endif
 
 endfunction
+
+%!shared x, idx
+%! [x, idx] = sortrows ([1, 1; 1, 2; 3, 6; 2, 7], [1, -2]);
+%!assert (x, [1, 2; 1, 1; 2, 7; 3, 6]);
+%!assert (idx, [2; 1; 4; 3]);

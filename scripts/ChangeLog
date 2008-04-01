@@ -1,3 +1,7 @@
+2008-04-01  Richard Bovey  <Richard.Bovey@baesystems.com>
+
+	* general/sortrows.m: Handle negative column arguments.
+
 2008-04-01  Julian Schnidder  <j.schnidder@gmx.de>
 
 	* miscellaneous/perl.m: New function.

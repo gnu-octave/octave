@@ -1,3 +1,7 @@
+2008-04-02  David Bateman  <dbateman@free.fr>
+
+	* interpreter/sparse.txi: Document spaugment.
+
 2008-03-26  Rafael Laboissiere  <rafael@debian.org>
 
 	* interpreter/mkoctfile.1: Remove spurious whitespace before macros

@@ -474,7 +474,7 @@ used.
 
 @item Linear algebra:
   @dfn{matrix_type}, @dfn{normest}, @dfn{condest}, @dfn{sprank}
-@c @dfn{spaugment}
+  @dfn{spaugment}
 @c @dfn{eigs}, @dfn{svds} but these are in octave-forge for now
 
 @item Iterative techniques:
@@ -824,6 +824,11 @@ used with care.
 @DOCSTRING(sprank)
 
 @DOCSTRING(symbfact)
+
+For non square matrices, the user can also utilize the @code{spaugment}
+function to find a least squares solution to a linear equation.
+
+@DOCSTRING(spaugment)
 
 @node Iterative Techniques, Real Life Example, Sparse Linear Algebra, Sparse Matrices
 @section Iterative Techniques applied to sparse matrices

@@ -1,5 +1,8 @@
 2008-04-02  David Bateman  <dbateman@free.fr>
 
+	* sparse/spaugment.m: New function
+	* sparse/Makefile.in (SOURCES): Add it here.
+	
 	* plot/__gnuplot_ginput__.m: Use the gnuplot stream itself for
 	communication rather than a chat file if mkfifo is not available.
 	* plot/gnuplot_drawnow.m: Open stream with popen2 to allow two way

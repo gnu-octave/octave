@@ -1,3 +1,9 @@
+2008-04-02  Jaroslav Hajek <highegg@gmail.com>
+
+	* blas-xtra/xzdotu.f: Turn into simple wrapper for zdotu.
+	* blas-xtra/xzdotc.f: Turn into simple wrapper for zdotc.
+	* qrupdate/zqrqhv.f: Undo previous change.
+
 2008-03-22  David Bateman  <dbateman@free.fr>
 
 	* qrupdate/dch1up.f: Remove unused external reference to dlartv.

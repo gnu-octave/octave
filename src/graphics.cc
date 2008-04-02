@@ -1291,12 +1291,22 @@ public:
       if (! pstream.is_empty())
 	{
 	  octave_value_list args;
-	  args(1) = "\nquit;\n";
-	  args(0) = pstream;
-	  feval ("fputs", args);
-	  args.resize (1);
-	  feval ("fflush", args);
-	  feval ("pclose", args);
+	  Matrix fids = pstream.matrix_value ();
+
+	  if (! error_state)
+	    {
+	      args(1) = "\nquit;\n";
+	      args(0) = octave_value (fids (0));
+	      feval ("fputs", args);
+	      args.resize (1);
+	      feval ("fflush", args);
+	      feval ("pclose", args);
+	      if (fids.numel () > 1)
+		{
+		  args(0) = octave_value (fids (1));
+		  feval ("pclose", args);
+		}
+	    }
 	}
     }
 

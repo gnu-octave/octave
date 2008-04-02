@@ -1,3 +1,10 @@
+2008-04-02  David Bateman  <dbateman@free.fr>
+
+	* plot/__gnuplot_ginput__.m: Use the gnuplot stream itself for
+	communication rather than a chat file if mkfifo is not available.
+	* plot/gnuplot_drawnow.m: Open stream with popen2 to allow two way
+	communication with the gnuplot process.
+
 2008-04-01  Richard Bovey  <Richard.Bovey@baesystems.com>
 
 	* general/sortrows.m: Handle negative column arguments.

@@ -31,9 +31,20 @@
 
 function [x, y, button] = __gnuplot_ginput__ (f, n)
 
-  persistent have_mkfifo = ! ispc ();
-
-  stream = get (f, "__plot_stream__");
+  ostream = get (f, "__plot_stream__");
+  if (numel (ostream) < 1)
+    error ("ginput: stream to gnuplot not open");
+  elseif (ispc ())
+    if (numel (ostream) == 1)
+      error ("ginput: Need mkfifo that is not implemented under Windows");
+    endif
+    use_mkfifo = false;
+    istream = ostream(2);
+    ostream = ostream(1);
+  else
+    use_mkfifo = true;
+    ostream = ostream(1);
+  endif
 
   if (compare_versions (__gnuplot_version__ (), "4.0", "<="))
     error ("ginput: version %s of gnuplot not supported", gnuplot_version ());
@@ -49,11 +60,11 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
     button = zeros (n, 1);
   endif
 
-  gpin_name = tmpnam ();
+  if (use_mkfifo)
+    gpin_name = tmpnam ();
 
-  if (have_mkfifo)
-    ## Use pipes if not on Windows. Mode: 6*8*8 ==  0600
-    [err, msg] = mkfifo(gpin_name, 6*8*8);
+    ##Mode: 6*8*8 ==  0600
+    [err, msg] = mkfifo (gpin_name, 6*8*8);
 
     if (err != 0)
       error ("ginput: Can not open fifo (%s)", msg);
@@ -65,47 +76,47 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
     k = 0;
     while (true)
       k++;
-      fprintf (stream, "set print \"%s\";\n", gpin_name);
-      fflush (stream);
-      if (have_mkfifo)
-	[gpin, err] = fopen (gpin_name, "r");
-	if (err != 0)
-	  error ("ginput: Can not open fifo (%s)", msg);
-	endif
-      endif
-      fputs (stream, "pause mouse any;\n\n");
 
       ## Notes: MOUSE_* can be undefined if user closes gnuplot by "q"
       ## or Alt-F4. Further, this abrupt close also requires the leading
       ## "\n" on the next line.
-      fputs (stream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
-
-      ## Close output file, otherwise all blocks (why?!).
-      fputs (stream, "set print;\n");
-      fflush (stream);
-
-      if (! have_mkfifo)
-	while (exist (gpin_name, "file") == 0)
-	endwhile
-	[gpin, msg] = fopen (gpin_name, "r");
-
-	if (gpin < 0)
-	  error ("ginput: Can not open file (%s)", msg);
+      if (use_mkfifo)
+	fprintf (ostream, "set print \"%s\";\n", gpin_name);
+	fflush (ostream);
+	[gpin, err] = fopen (gpin_name, "r");
+	if (err != 0)
+	  error ("ginput: Can not open fifo (%s)", msg);
 	endif
+	fputs (ostream, "pause mouse any;\n\n");
+	fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
 
-	## Now read from file
-	count = 0;
-	while (count == 0)
-	  [xk, yk, buttonk, count] = fscanf (gpin, "%f %f %d", "C");
-	endwhile
-	x(k) = xk;
-	y(k) = yk;
-	button (k) = buttonk;
-      else
+	## Close output file, to force it to be flushed
+	fputs (ostream, "set print;\n");
+	fflush (ostream);
+
 	## Now read from fifo.
 	[x(k), y(k), button(k), count] = fscanf (gpin, "%f %f %d", "C");
+	fclose (gpin);
+      else
+	fprintf (ostream, "set print \"-\";\n");
+	fflush (ostream);
+	fputs (ostream, "pause mouse any;\n\n");
+	fputs (ostream, "\nif (exists(\"MOUSE_KEY\") && exists(\"MOUSE_X\")) print \"OCTAVE: \", MOUSE_X, MOUSE_Y, MOUSE_KEY; else print \"0 0 -1\"\n");
+
+	## Close output file, to force it to be flushed
+	fputs (ostream, "set print;\n");
+	fflush (ostream);
+
+	str = {};
+	while (isempty (str))
+	  str = char (fread (istream)');
+	  if (! isempty (str))
+	    str = regexp (str, 'OCTAVE:\s+[\d.\+-]+\s+[\d.\+-]+\s+\d*', 'match');
+	  endif
+	  fclear (istream);
+	endwhile
+        [x(k), y(k), button(k), count] = sscanf (str{end}(8:end), "%f %f %d", "C");
       endif
-      fclose (gpin);
 
       if ([x(k), y(k), button(k)] == [0, 0, -1])
 	## Mousing not active (no plot yet).
@@ -132,7 +143,9 @@ function [x, y, button] = __gnuplot_ginput__ (f, n)
     endwhile
 
   unwind_protect_cleanup
-    unlink (gpin_name);
+    if (use_mkfifo)
+      unlink (gpin_name);
+    endif
   end_unwind_protect
 
 endfunction

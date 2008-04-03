@@ -94,4 +94,4 @@ endfunction
 %! [L, U, P, Q] = lu (s);
 %! x1 = Q * (U \ (L \ (P  * [ones(m,1); zeros(n,1)])));
 %! x1 = x1(end - n + 1 : end);
-%! assert (x1, x0, 1e-10)
+%! assert (x1, x0, 1e-6)

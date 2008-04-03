@@ -1,3 +1,7 @@
+2008-04-03  Ben Abbott  <bpabbott@mac.com>
+
+	* sparse/spaugment.m: Increase test script tolerance.
+
 2008-04-02  John W. Eaton  <jwe@octave.org>
 
 	* deprecated/Makefile.in (SOURCES): Add spkron.m to the list.

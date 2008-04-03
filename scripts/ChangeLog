@@ -1,3 +1,8 @@
+2008-04-04  Bill Denney  <bill@denney.ws>
+
+	* optimization/lsqnonneg.m: Use optimset, correctly index
+	Z and P in main loop.
+
 2008-04-04  David Bateman  <dbateman@free.fr>
 
 	* deprecated/beta_cdf.m deprecated/beta_inv.m

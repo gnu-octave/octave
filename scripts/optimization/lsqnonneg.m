@@ -56,65 +56,75 @@
 ## @seealso{optimset}
 ## @end deftypefn
 
-## This is implemented from Lawson and Hanson's 1973 algorithm on page 
+## This is implemented from Lawson and Hanson's 1973 algorithm on page
+## 161 of Solving Least Squares Problems.
 
 function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x = [], options = [])
 
+  ## Lawson-Hanson Step 1 (LH1): initialize the variables.
   if (isempty (x))
-    ## initial guess is 0s
+    ## Initial guess is 0s.
     x = zeros (columns (c), 1);
   endif
 
   if (isempty (options))
-    ## FIXME: Optimset should be updated
-    ## options = optimset ();
-    options = struct ("maxiter", 1e5, "tolx", 1e-8);
+    ## FIXME: what are the correct defaults?
+    options = optimset ("maxiter", 1e5, "tolx", 1e-8);
   endif
 
-  ## Initialize the values
+  ## Initialize the values.
   p = [];
   z = 1:numel (x);
-  ## compute the gradient
+  ## LH2: compute the gradient.
   w = c'*(d - c*x);
 
   iter = 0;
-  while (! isempty (z) && any (w(z) > 0) && iter < options.maxiter)
+  ## LH3: test for completion.
+  while (! isempty (z) && any (w(z) > 0) && iter < options.MaxIter)
+    ## LH4: find the maximum gradient.
     idx = find (w == max (w));
     if (numel (idx) > 1)
       warning ("lsqnonneg:nonunique",
                "A non-unique solution may be returned due to equal gradients.");
       idx = idx(1);
     endif
-    p(end+1) = z(idx);
-    z(idx) = [];
+    ## LH5: move the index from Z to P.
+    z(z == idx) = [];
+    p(end+1) = idx;
 
     newx = false;
-    while (! newx && iter < options.maxiter)
+    while (! newx && iter < options.MaxIter)
       iter++;
 
+      ## LH6: compute the positive matrix and find the min norm solution
+      ## of the positive problem.
       cpos = c;
       cpos(:,z) = 0;
-      ## find min norm solution to the positive matrix
+      ## Find min norm solution to the positive matrix.
       [cpos_q, cpos_r] = qr (cpos, 0);
       xtmp = (cpos_r\cpos_q')*d;
       xtmp(z) = 0;
       if (all (xtmp >= 0))
-        ## complete the inner loop
+        ## LH7: tmp solution found, iterate.
         newx = true;
         x = xtmp;
       else
+        ## LH8, LH9: find the scaling factor and adjust X.
         mask = (xtmp < 0);
-        alpha = min(x(mask)./(x(mask) - xtmp(mask)));
+        alpha = min (x(mask)./(x(mask) - xtmp(mask)));
+        ## LH10: adjust X.
         x = x + alpha*(xtmp - x);
+        ## LH11: move from P to Z all X == 0.
         idx = find (x == 0);
-        p(ismember (p, x)) = [];
+        p(ismember (p, idx)) = [];
         z = [z idx];
       endif
     endwhile
     w = c'*(d - c*x);
   endwhile
+  ## LH12: complete.
 
-  ## generate the additional output arguments
+  ## Generate the additional output arguments.
   if (nargout > 1)
     resnorm = norm (C*x-d) ^ 2;
   endif
@@ -122,7 +132,7 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x =
     residual = d-C*x;
   endif
   exitflag = iter;
-  if (nargout > 3 && iter >= options.maxiter)
+  if (nargout > 3 && iter >= options.MaxIter)
     exitflag = 0;
   endif
   if (nargout > 4)

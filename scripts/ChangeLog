@@ -1,5 +1,7 @@
 2008-04-02  John W. Eaton  <jwe@octave.org>
 
+	* deprecated/Makefile.in (SOURCES): Add spkron.m to the list.
+
 	* general/Makefile.in (SOURCES): Add runlength.m to the list.
 
 2008-04-02  Bill Denney  <bill@denney.ws>

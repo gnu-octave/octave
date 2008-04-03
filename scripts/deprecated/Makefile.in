@@ -47,7 +47,7 @@ SOURCES = beta_cdf.m beta_inv.m beta_pdf.m beta_rnd.m \
   normal_inv.m normal_pdf.m normal_rnd.m pascal_cdf.m \
   pascal_inv.m pascal_pdf.m pascal_rnd.m poisson_cdf.m \
   poisson_inv.m poisson_pdf.m poisson_rnd.m polyinteg.m setstr.m \
-  struct_contains.m struct_elements.m t_cdf.m t_inv.m t_pdf.m \
+  spkron.m struct_contains.m struct_elements.m t_cdf.m t_inv.m t_pdf.m \
   t_rnd.m uniform_cdf.m uniform_inv.m uniform_pdf.m uniform_rnd.m \
   weibcdf.m weibinv.m weibpdf.m weibrnd.m weibull_cdf.m \
   weibull_inv.m weibull_pdf.m weibull_rnd.m wiener_rnd.m

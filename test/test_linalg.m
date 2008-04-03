@@ -218,7 +218,7 @@
 
 %% test/octave.test/linalg/qr-7.m
 %!function retval = testqr (q, r, a, p)
-%!  tol = 10*eps;
+%!  tol = 100*eps;
 %!  retval = 0;
 %!  if (nargin == 3)
 %!    n1 = norm (q*r-a);

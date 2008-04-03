@@ -1,5 +1,7 @@
 2008-04-03  John W. Eaton  <jwe@octave.org>
 
+	* parse.y (make_constant): Also stash original text for strings.
+
 	* ov-fcn-handle.cc (octave_fcn_handle::subsref):
 	Don't call next_subsref here.
 

@@ -13,6 +13,17 @@
 	* optimization/lsqnonneg.m: New function.
 	* optimization/Makefile.in (SOURCES): Add it to the list.
 
+2008-04-03  David Bateman  <dbateman@free.fr>
+
+	* deprecated/splchol.m deprecated/lchol.m deprecated/spfind.m
+	deprecated/spchol.m deprecated/spmin.m deprecated/spmax.m
+	deprecated/spdet.m deprecated/splu.m deprecated/spqr.m
+	deprecated/spatan2.m deprecated/spchol2inv.m
+	deprecated/spcholinv.m deprecated/spcumprod.m deprecated/spdiag.m
+	deprecated/spinv.m deprecated/spcumsum.m deprecated/spprod.m
+	deprecated/spsum.m deprecated/spsumsq.m: New files
+	* deprecated/Makefile.in (SOURCES): Add them here.
+
 2008-04-02  David Bateman  <dbateman@free.fr>
 
 	* sparse/spaugment.m: New function

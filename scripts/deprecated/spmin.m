@@ -1,4 +1,4 @@
-## Copyright (C) 2008 John W. Eaton
+## Copyright (C) 2008 David Bateman
 ##
 ## This file is part of Octave.
 ##
@@ -17,21 +17,21 @@
 ## <http://www.gnu.org/licenses/>.
 
 ## -*- texinfo -*-
-## @deftypefn {Function File} {} spkron (@var{a}, @var{b})
-## This function has been deprecated.  Use @code{kron} instead.
+## @deftypefn {Mapping Function} {} spmin (@var{x}, @var{y}, @var{dim})
+## @deftypefnx {Mapping Function} {[@var{w}, @var{iw}] =} spmin (@var{x})
+## This function has been deprecated.  Use @code{min} instead.
 ## @end deftypefn
 
-## Author: jwe
-
-function retval = spkron (varargin)
+function varargout = spmin (varargin)
   persistent warned = false;
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     ["spkron is obsolete and will be removed from a future\n",
-	      "version of Octave, please use kron instead"]);
+	     ["spmin is obsolete and will be removed from a future\n",
+	      "version of Octave, please use min instead"]);
   endif
 
-  retval = kron (varargin{:});
+  varargout = cell (nargout, 1);
+  [ varargout{:} ] = min (varargin{:});
 
 endfunction

@@ -104,12 +104,8 @@ octave_fcn_handle::subsref (const std::string& type,
       panic_impossible ();
     }
 
-  // FIXME -- perhaps there should be an
-  // octave_value_list::next_subsref member function?  See also
-  // octave_builtin::subsref.
-
-  if (idx.size () > 1)
-    retval = retval(0).next_subsref (nargout, type, idx);
+  // There's no need to call next_subsref here --
+  // octave_function::subsref will handle that for us.
 
   return retval;
 }

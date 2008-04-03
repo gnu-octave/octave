@@ -1,3 +1,8 @@
+2008-04-03  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-handle.cc (octave_fcn_handle::subsref):
+	Don't call next_subsref here.
+
 2008-04-01  John W. Eaton  <jwe@octave.org>
 
 	* pt-id.h (do_lookup (bool&, bool)): Delete.

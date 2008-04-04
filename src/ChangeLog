@@ -1,3 +1,7 @@
+2008-04-04  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (make_constant): Handle escape sequences in dq-strings.
+
 2008-04-03  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (make_constant): Also stash original text for strings.

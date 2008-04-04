@@ -1697,12 +1697,19 @@ make_constant (int op, token *tok_val)
     case DQ_STRING:
     case SQ_STRING:
       {
+	std::string txt = tok_val->text ();
+
 	char delim = op == DQ_STRING ? '"' : '\'';
-	octave_value tmp (tok_val->text (), delim);
+
+	octave_value tmp (txt, delim);
 	retval = new tree_constant (tmp, l, c);
+
+	if (op == DQ_STRING)
+	  txt = undo_string_escapes (txt);
+
 	// FIXME -- maybe this should also be handled by
 	// tok_val->text_rep () for character strings?
-	retval->stash_original_text (delim + tok_val->text () + delim);
+	retval->stash_original_text (delim + txt + delim);
       }
       break;
 

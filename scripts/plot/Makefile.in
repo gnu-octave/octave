@@ -224,3 +224,7 @@ dist:
 
 $(GEN_M): %.m : %.in $(TOPDIR)/Makeconf
 	@$(do-subst-config-vals)
+
+check-m-sources:
+	@$(do-check-m-sources)
+.PHONY: check-m-sources

@@ -93,3 +93,7 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/image
 .PHONY: dist
+
+check-m-sources:
+	@$(do-check-m-sources)
+.PHONY: check-m-sources

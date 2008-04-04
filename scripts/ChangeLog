@@ -1,3 +1,28 @@
+2008-04-04  John W. Eaton  <jwe@octave.org>
+
+	* strings/Makefile.in (SOURCES): Add isstrprop.m to the list.
+
+	* Makefile.in, audio/Makefile.in, control/Makefile.in,
+	* Makefile.incontrol/base/Makefile.in, control/hinf/Makefile.in,
+	* Makefile.incontrol/obsolete/Makefile.in,
+	* Makefile.incontrol/system/Makefile.in, control/util/Makefile.in,
+	* Makefile.indeprecated/Makefile.in, elfun/Makefile.in,
+	* Makefile.infinance/Makefile.in, general/Makefile.in,
+	* Makefile.ingeometry/Makefile.in, image/Makefile.in,
+	* Makefile.inio/Makefile.in, linear-algebra/Makefile.in,
+	* Makefile.inmiscellaneous/Makefile.in, optimization/Makefile.in,
+	* Makefile.inpath/Makefile.in, pkg/Makefile.in, plot/Makefile.in,
+	* Makefile.inpolynomial/Makefile.in, quaternion/Makefile.in,
+	* Makefile.inset/Makefile.in, signal/Makefile.in,
+	* Makefile.insparse/Makefile.in, specfun/Makefile.in,
+	* Makefile.inspecial-matrix/Makefile.in, startup/Makefile.in,
+	* Makefile.instatistics/Makefile.in, statistics/base/Makefile.in,
+	* Makefile.instatistics/distributions/Makefile.in,
+	* Makefile.instatistics/models/Makefile.in,
+	* Makefile.instatistics/tests/Makefile.in, strings/Makefile.in,
+	* Makefile.intestfun/Makefile.in, time/Makefile.in
+	* Makefile.in(check-m-sources): New target.
+
 2008-04-04  Bill Denney  <bill@denney.ws>
 
 	* optimization/lsqnonneg.m: Use optimset, correctly index

@@ -81,3 +81,7 @@ maintainer-clean: distclean
 dist:
 	ln $(DISTFILES) ../../../`cat ../../../.fname`/scripts/$(script_sub_dir)
 .PHONY: dist
+
+check-m-sources:
+	@$(do-check-m-sources)
+.PHONY: check-m-sources

@@ -51,7 +51,7 @@ install install-strip uninstall clean mostlyclean distclean maintainer-clean::
 .PHONY: clean mostlyclean distclean maintainer-clean
 
 tags TAGS:
-	$(SUBDIR_FOR_COMMAND)
+	$(subdir-for-command)
 
 distclean::
 	rm -f Makefile
@@ -63,3 +63,8 @@ dist:
 	ln $(DISTFILES) ../../`cat ../../.fname`/scripts/control
 	for dir in $(DISTSUBDIRS); do mkdir ../../`cat ../../.fname`/scripts/control/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist
+
+check-m-sources:
+	@$(do-check-m-sources)
+	@$(subdir-for-command)
+.PHONY: check-m-sources

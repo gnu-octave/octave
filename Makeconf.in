@@ -641,3 +641,20 @@ done
 rm -f $(DESTDIR)$(fcnfiledir)/$(script_sub_dir)/PKG_ADD
 -rmdir $(addprefix $(DESTDIR), $(fcnfiledir)/$(script_sub_dir))
 endef
+
+define do-check-m-sources
+for f in $(notdir $(wildcard $(srcdir)/*.m)); do \
+  found=false; \
+  for m in $(SOURCES); do \
+    if [ "$$f" = "$$m" ]; then \
+      found=true; \
+      break; \
+    fi; \
+  done; \
+  if $$found; then \
+    true; \
+  else \
+    echo "$(script_sub_dir)/$$f: not listed in SOURCES"; \
+  fi; \
+done
+endef

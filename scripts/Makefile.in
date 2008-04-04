@@ -79,7 +79,7 @@ uninstall::
 	rm -f $(DESTDIR)$(datadir)/octave/ls-R $(DESTDIR)$(libexecdir)/octave/ls-R
 
 tags TAGS:: $(SOURCES)
-	$(SUBDIR_FOR_COMMAND)
+	$(subdir-for-command)
 
 tags::
 	ctags $(SOURCES)
@@ -101,3 +101,7 @@ dist:
 	ln $(DISTFILES) ../`cat ../.fname`/scripts
 	for dir in $(DISTSUBDIRS); do mkdir ../`cat ../.fname`/scripts/$$dir; $(MAKE) -C $$dir $@; done
 .PHONY: dist
+
+check-m-sources:
+	@$(subdir-for-command)
+.PHONY: check-m-sources

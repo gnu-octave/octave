@@ -1,3 +1,7 @@
+2008-04-04  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (do-check-m-sources): New macro.
+
 2008-04-03  Tatsuro MATSUOKA  <tmacchant@yahoo.co.jp>
 
 	* README.Cygwin: Update.

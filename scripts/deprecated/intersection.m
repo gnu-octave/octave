@@ -27,6 +27,14 @@
 
 function y = intersection (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["intersection is obsolete and will be removed from a future\n",
+	       "version of Octave, please use intersect instead"]);
+  endif
+
   y = intersect (varargin{:});
 
 endfunction

@@ -33,6 +33,14 @@
 
 function cdf = pascal_cdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["pascal_cdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use nbincdf instead"]);
+  endif
+
   cdf = nbincdf(varargin{:});
 
 endfunction

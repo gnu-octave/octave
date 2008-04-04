@@ -27,6 +27,14 @@
 
 function retval = is_vector (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["is_vector is obsolete and will be removed from a future\n",
+	       "version of Octave, please use isvector instead"]);
+  endif
+
   retval = isvector (varargin{:});
 
 endfunction

@@ -32,6 +32,14 @@
 
 function cdf = normal_cdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["normal_cdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use normcdf instead"]);
+  endif
+
  if (nargin > 2)
    varargin{3} = sqrt (varargin{3});
  endif

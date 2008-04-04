@@ -30,6 +30,14 @@
 
 function pdf = gamma_pdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["gamma_pdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use gampdf instead"]);
+  endif
+
  if (nargin > 2)
    varargin{3} = 1 ./ varargin{3};
  endif

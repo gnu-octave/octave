@@ -35,6 +35,14 @@
 
 function rnd = exponential_rnd (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["exponential_rnd is obsolete and will be removed from a future\n",
+	       "version of Octave, please use exprnd instead"]);
+  endif
+
  if (nargin > 0)
    varargin{1} = 1 ./ varargin{1};
  endif

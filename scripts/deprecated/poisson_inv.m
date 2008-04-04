@@ -30,6 +30,14 @@
 
 function inv = poisson_inv (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["poisson_inv is obsolete and will be removed from a future\n",
+	       "version of Octave, please use poissinv instead"]);
+  endif
+
  inv =  poissinv (varargin{:});
 
 endfunction

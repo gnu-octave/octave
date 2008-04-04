@@ -29,6 +29,14 @@
 
 function cdf = binomial_cdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["binomial_cdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use binocdf instead"]);
+  endif
+
  cdf =  binocdf (varargin{:});
 
 endfunction

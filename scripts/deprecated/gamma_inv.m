@@ -30,6 +30,14 @@
 
 function inv = gamma_inv (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["gamma_inv is obsolete and will be removed from a future\n",
+	       "version of Octave, please use gaminv instead"]);
+  endif
+
  if (nargin > 2)
    varargin{3} = 1 ./ varargin{3};
  endif

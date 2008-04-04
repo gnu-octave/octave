@@ -34,6 +34,14 @@
 
 function rnd = chisquare_rnd (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["chisquare_rnd is obsolete and will be removed from a future\n",
+	       "version of Octave, please use chi2rnd instead"]);
+  endif
+
  rnd =  chi2rnd (varargin{:});
 
 endfunction

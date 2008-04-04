@@ -27,6 +27,14 @@
 
 function clearplot ()
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["function clearplot () is obsolete and will be removed from a future\n",
+	       "version of Octave, please use clf instead"]);
+  endif
+
   clf ();
 
 endfunction

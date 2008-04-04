@@ -27,6 +27,14 @@
 
 function retval = is_struct (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["is_struct is obsolete and will be removed from a future\n",
+	       "version of Octave, please use isstruct instead"]);
+  endif
+
   retval = isstruct (varargin{:});
 
 endfunction

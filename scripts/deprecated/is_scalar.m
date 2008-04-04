@@ -27,6 +27,14 @@
 
 function retval = is_scalar (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["is_scalar is obsolete and will be removed from a future\n",
+	       "version of Octave, please use isscalar instead"]);
+  endif
+
   retval = isscalar (varargin{:});
 
 endfunction

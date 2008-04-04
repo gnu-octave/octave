@@ -27,6 +27,14 @@
 
 function retval = is_list (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["is_list is obsolete and will be removed from a future\n",
+	       "version of Octave, please use islist instead"]);
+  endif
+
   retval = islist (varargin{:});
 
 endfunction

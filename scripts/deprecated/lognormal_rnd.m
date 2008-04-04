@@ -35,6 +35,14 @@
 
 function rnd = lognormal_rnd (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["lognormal_rnd is obsolete and will be removed from a future\n",
+	       "version of Octave, please use lognrnd instead"]);
+  endif
+
   if (nargin > 1)
     a = varargin{2};
     idx = a >= 0;

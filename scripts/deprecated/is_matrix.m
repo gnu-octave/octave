@@ -27,6 +27,14 @@
 
 function retval = is_matrix (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["is_matrix is obsolete and will be removed from a future\n",
+	       "version of Octave, please use ismatrix instead"]);
+  endif
+
   retval = ismatrix (varargin{:});
 
 endfunction

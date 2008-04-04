@@ -34,6 +34,14 @@
 
 function cdf = weibull_cdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["weibull_cdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use wblcdf instead"]);
+  endif
+
   if (nargin == 2)
     varargin{3} = varargin{2};
     varargin{2} = 1;

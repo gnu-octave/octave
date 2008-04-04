@@ -35,6 +35,14 @@
 
 function rnd = beta_rnd (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["beta_rnd is obsolete and will be removed from a future\n",
+	       "version of Octave, please use betarnd instead"]);
+  endif
+
  rnd =  betarnd (varargin{:});
 
 endfunction

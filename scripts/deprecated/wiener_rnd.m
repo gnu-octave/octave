@@ -35,6 +35,14 @@
 
 function retval = wiener_rnd (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["wiener_rnd is obsolete and will be removed from a future\n",
+	       "version of Octave, please use wienrnd instead"]);
+  endif
+
  retval =  wienrnd (varargin{:});
 
 endfunction

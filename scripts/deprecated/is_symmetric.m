@@ -27,6 +27,14 @@
 
 function retval = is_symmetric (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["is_symmetric is obsolete and will be removed from a future\n",
+	       "version of Octave, please use issymmetric instead"]);
+  endif
+
   retval = issymmetric (varargin{:});
 
 endfunction

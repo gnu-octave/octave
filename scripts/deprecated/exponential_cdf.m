@@ -32,6 +32,14 @@
 
 function cdf = exponential_cdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["exponential_cdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use expcdf instead"]);
+  endif
+
  if (nargin > 1)
    varargin{2} = 1 ./ varargin{2};
  endif

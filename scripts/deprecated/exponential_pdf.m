@@ -29,6 +29,14 @@
 
 function pdf = exponential_pdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["exponential_pdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use exppdf instead"]);
+  endif
+
  if (nargin > 1)
    varargin{2} = 1 ./ varargin{2};
  endif

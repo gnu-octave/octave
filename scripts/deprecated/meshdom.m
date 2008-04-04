@@ -27,6 +27,14 @@
 
 function [xx, yy] = meshdom (x, y)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["meshdom is obsolete and will be removed from a future\n",
+	       "version of Octave, please use meshgrid instead"]);
+  endif
+
   if (nargin == 2)
     if (isvector (x) && isvector (y))
       xx = ones (length (y), 1) * x(:).';

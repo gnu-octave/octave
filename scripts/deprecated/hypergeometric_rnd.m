@@ -31,6 +31,14 @@
 
 function rnd = hypergeometric_rnd (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["hypergeometric_rnd is obsolete and will be removed from a future\n",
+	       "version of Octave, please use hygernd instead"]);
+  endif
+
   rnd = hygernd (varargin{:});
 
 endfunction

@@ -29,6 +29,14 @@
 
 function cdf = geometric_cdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["geometric_cdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use geocdf instead"]);
+  endif
+
  cdf =  geocdf (varargin{:});
 
 endfunction

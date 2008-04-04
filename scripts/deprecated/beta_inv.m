@@ -30,6 +30,14 @@
 
 function inv = beta_inv (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["beta_inv is obsolete and will be removed from a future\n",
+	       "version of Octave, please use betainv instead"]);
+  endif
+
  inv =  betainv (varargin{:});
 
 endfunction

@@ -33,6 +33,14 @@
 
 function inv = hypergeometric_inv (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["hypergeometric_inv is obsolete and will be removed from a future\n",
+	       "version of Octave, please use hygeinv instead"]);
+  endif
+
  inv =  hygeinv (varargin{:});
 
 endfunction

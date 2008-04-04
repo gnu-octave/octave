@@ -30,6 +30,14 @@
 
 function pdf = f_pdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["f_pdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use fpdf instead"]);
+  endif
+
  pdf =  fpdf (varargin{:});
 
 endfunction

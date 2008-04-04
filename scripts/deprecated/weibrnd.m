@@ -32,6 +32,14 @@
 
 function rnd = weibrnd (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["weibrnd is obsolete and will be removed from a future\n",
+	       "version of Octave, please use wblrnd instead"]);
+  endif
+
   rnd = wblrnd (varargin{:});
 
 endfunction

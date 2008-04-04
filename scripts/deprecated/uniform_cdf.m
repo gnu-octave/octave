@@ -31,6 +31,14 @@
 
 function cdf = uniform_cdf (varargin)
 
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+        ["uniform_cdf is obsolete and will be removed from a future\n",
+	       "version of Octave, please use unifcdf instead"]);
+  endif
+
  cdf =  unifcdf (varargin{:});
 
 endfunction

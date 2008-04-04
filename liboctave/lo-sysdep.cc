@@ -39,6 +39,10 @@ along with Octave; see the file COPYING.  If not, see
 #include <fcntl.h>
 #endif
 
+#if defined (__WIN32__) && ! defined (__CYGWIN__)
+#include <windows.h>
+#endif
+
 #include "file-ops.h"
 #include "lo-error.h"
 #include "pathlen.h"
@@ -173,8 +177,6 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
 // opendir, readdir, and closedir from Emacs as they appear to be more
 // complete implementations (do the functions below work for network
 // paths, for example)?  We can probably get along without rewinddir.
-
-#include <windows.h>
 
 struct __DIR
 {

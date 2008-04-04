@@ -31,6 +31,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the normal distribution
 
+## Deprecated in version 3.0
+
 function rnd = normal_rnd (varargin)
 
  if (nargin > 1)

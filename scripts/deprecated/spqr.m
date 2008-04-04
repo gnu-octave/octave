@@ -24,6 +24,8 @@
 ## This function has been deprecated.  Use @code{qr} instead.
 ## @end deftypefn
 
+## Deprecated in version 3.1
+
 function varargout = spqr (varargin)
   persistent warned = false;
   if (! warned)

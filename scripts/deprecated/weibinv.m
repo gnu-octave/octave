@@ -23,6 +23,8 @@
 ## parameter @var{shape}.
 ## @end deftypefn
 
+## Deprecated in version 3.0
+
 function inv = weibinv (varargin)
 
   inv = wblinv (varargin{:});

@@ -31,6 +31,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Gamma distribution
 
+## Deprecated in version 3.0
+
 function rnd = gamma_rnd (varargin)
 
  if (nargin > 1)

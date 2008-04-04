@@ -22,6 +22,8 @@
 ## This function has been deprecated.  Use @code{min} instead.
 ## @end deftypefn
 
+## Deprecated in version 3.1
+
 function varargout = spmin (varargin)
   persistent warned = false;
   if (! warned)

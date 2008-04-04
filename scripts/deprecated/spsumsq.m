@@ -21,6 +21,8 @@
 ## This function has been deprecated.  Use @code{sumsq} instead.
 ## @end deftypefn
 
+## Deprecated in version 3.1
+
 function retval = spsumsq (varargin)
   persistent warned = false;
   if (! warned)

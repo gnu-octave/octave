@@ -30,6 +30,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the log normal distribution
 
+## Deprecated in version 3.0
+
 function cdf = lognormal_cdf (varargin)
 
   if (nargin > 1)

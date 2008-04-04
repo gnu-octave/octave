@@ -25,6 +25,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the Beta distribution
 
+## Deprecated in version 3.0
+
 function pdf = beta_pdf (varargin)
 
  pdf =  betapdf (varargin{:});

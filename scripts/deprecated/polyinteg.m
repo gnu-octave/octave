@@ -30,6 +30,8 @@
 ## Created: June 1994
 ## Adapted-By: jwe
 
+## Deprecated in version 3.0
+
 function y = polyinteg (p)
 
   y = polyint (p);

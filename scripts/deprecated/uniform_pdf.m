@@ -27,6 +27,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the uniform distribution
 
+## Deprecated in version 3.0
+
 function pdf = uniform_pdf (varargin)
 
  pdf =  unifpdf (varargin{:});

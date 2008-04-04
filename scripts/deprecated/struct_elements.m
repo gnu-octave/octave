@@ -23,6 +23,8 @@
 
 ## Author: jwe
 
+## Deprecated in version 3.0
+
 function retval = struct_elements (varargin)
 
   retval = char (fieldnames (varargin{:}));

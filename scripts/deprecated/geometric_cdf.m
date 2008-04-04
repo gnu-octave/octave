@@ -25,6 +25,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the geometric distribution
 
+## Deprecated in version 3.0
+
 function cdf = geometric_cdf (varargin)
 
  cdf =  geocdf (varargin{:});

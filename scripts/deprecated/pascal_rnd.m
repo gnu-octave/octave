@@ -31,6 +31,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Pascal distribution
 
+## Deprecated in version 3.0
+
 function rnd = pascal_rnd (varargin)
 
   rnd = nbinrnd (varargin{:});

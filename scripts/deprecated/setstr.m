@@ -23,6 +23,8 @@
 
 ## Author: jwe
 
+## Deprecated in version 3.0
+
 function retval = setstr (varargin)
 
   retval = char (varargin{:});

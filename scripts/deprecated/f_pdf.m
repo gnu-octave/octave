@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the F distribution
 
+## Deprecated in version 3.0
+
 function pdf = f_pdf (varargin)
 
  pdf =  fpdf (varargin{:});

@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the F distribution
 
+## Deprecated in version 3.0
+
 function cdf = f_cdf (varargin)
 
  cdf =  fcdf (varargin{:});

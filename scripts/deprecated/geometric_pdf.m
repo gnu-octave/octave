@@ -25,6 +25,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the geometric distribution
 
+## Deprecated in version 3.0
+
 function pdf = geometric_pdf (varargin)
 
  pdf =  geopdf (varargin{:});

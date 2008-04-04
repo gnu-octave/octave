@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Beta distribution
 
+## Deprecated in version 3.0
+
 function inv = beta_inv (varargin)
 
  inv =  betainv (varargin{:});

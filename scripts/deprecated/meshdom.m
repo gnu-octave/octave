@@ -23,6 +23,8 @@
 
 ## Author: jwe
 
+## Deprecated in version 3.0
+
 function [xx, yy] = meshdom (x, y)
 
   if (nargin == 2)

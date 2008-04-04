@@ -29,6 +29,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Pascal (negative binomial) distribution
 
+## Deprecated in version 3.0
+
 function cdf = pascal_cdf (varargin)
 
   cdf = nbincdf(varargin{:});

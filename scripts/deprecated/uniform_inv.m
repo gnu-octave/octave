@@ -27,6 +27,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the uniform distribution
 
+## Deprecated in version 3.0
+
 function inv = uniform_inv (varargin)
 
  inv =  unifinv (varargin{:});

@@ -28,6 +28,8 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: PDF of the normal distribution
 
+## Deprecated in version 3.0
+
 function pdf = normal_pdf (varargin)
 
  if (nargin > 2)

@@ -29,6 +29,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the hypergeometric distribution
 
+## Deprecated in version 3.0
+
 function inv = hypergeometric_inv (varargin)
 
  inv =  hygeinv (varargin{:});

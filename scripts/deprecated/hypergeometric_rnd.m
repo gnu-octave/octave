@@ -27,6 +27,8 @@
 ## with @var{m} and @var{n} not greater than @var{t}.
 ## @end deftypefn
 
+## Deprecated in version 3.0
+
 function rnd = hypergeometric_rnd (varargin)
 
   rnd = hygernd (varargin{:});

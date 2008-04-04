@@ -31,6 +31,8 @@
 ## Author: FL <Friedrich.Leisch@ci.tuwien.ac.at>
 ## Description: Simulate a Wiener process
 
+## Deprecated in version 3.0
+
 function retval = wiener_rnd (varargin)
 
  retval =  wienrnd (varargin{:});

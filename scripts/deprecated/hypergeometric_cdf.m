@@ -32,6 +32,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the hypergeometric distribution
 
+## Deprecated in version 3.0
+
 function cdf = hypergeometric_cdf (varargin)
 
  cdf =  hygecdf (varargin{:});

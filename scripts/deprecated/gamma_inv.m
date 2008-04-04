@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Gamma distribution
 
+## Deprecated in version 3.0
+
 function inv = gamma_inv (varargin)
 
  if (nargin > 2)

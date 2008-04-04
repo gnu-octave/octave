@@ -30,6 +30,8 @@
 ## for @var{x} >= 0.
 ## @end deftypefn
 
+## Deprecated in version 3.0
+
 function cdf = weibull_cdf (varargin)
 
   if (nargin == 2)

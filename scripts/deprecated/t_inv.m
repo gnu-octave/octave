@@ -30,6 +30,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the t distribution
 
+## Deprecated in version 3.0
+
 function inv = t_inv (varargin)
 
  inv =  tinv (varargin{:});

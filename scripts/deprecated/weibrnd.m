@@ -28,6 +28,8 @@
 ## the common size of @var{alpha} and @var{sigma}.
 ## @end deftypefn
 
+## Deprecated in version 3.0
+
 function rnd = weibrnd (varargin)
 
   rnd = wblrnd (varargin{:});

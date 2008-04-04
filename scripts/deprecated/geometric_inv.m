@@ -25,6 +25,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the geometric distribution
 
+## Deprecated in version 3.0
+
 function inv = geometric_inv (varargin)
 
  inv =  geoinv (varargin{:});

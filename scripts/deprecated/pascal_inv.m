@@ -30,6 +30,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Pascal distribution
 
+## Deprecated in version 3.0
+
 function inv = pascal_inv (varargin)
 
   inv = nbininv(varargin{:});

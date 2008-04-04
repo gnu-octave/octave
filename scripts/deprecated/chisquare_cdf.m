@@ -26,6 +26,8 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: CDF of the chi-square distribution
 
+## Deprecated in version 3.0
+
 function cdf = chisquare_cdf (varargin)
 
  cdf =  chi2cdf (varargin{:});

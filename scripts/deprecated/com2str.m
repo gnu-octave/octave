@@ -33,6 +33,8 @@
 ## @end table
 ## @end deftypefn
 
+## Deprecated in version 3.0
+
 function retval = com2str (zz, flg)
 
   if (nargin < 1 || nargin > 2)

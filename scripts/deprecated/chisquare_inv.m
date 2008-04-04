@@ -26,6 +26,8 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: Quantile function of the chi-square distribution
 
+## Deprecated in version 3.0
+
 function inv = chisquare_inv (varargin)
 
  inv =  chi2inv (varargin{:});

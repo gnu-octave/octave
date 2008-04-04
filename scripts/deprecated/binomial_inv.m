@@ -25,6 +25,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the binomial distribution
 
+## Deprecated in version 3.0
+
 function inv = binomial_inv (varargin)
 
  inv =  binoinv (varargin{:});

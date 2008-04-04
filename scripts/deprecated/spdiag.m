@@ -21,6 +21,8 @@
 ## This function has been deprecated.  Use @code{diag} instead.
 ## @end deftypefn
 
+## Deprecated in version 3.1
+
 function retval = spdiag (varargin)
   persistent warned = false;
   if (! warned)

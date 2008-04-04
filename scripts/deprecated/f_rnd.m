@@ -32,6 +32,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the F distribution
 
+## Deprecated in version 3.0
+
 function rnd = f_rnd (varargin)
 
  rnd =  frnd (varargin{:});

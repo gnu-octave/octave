@@ -26,6 +26,8 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: PDF of the chi-sqaure distribution
 
+## Deprecated in version 3.0
+
 function pdf = chisquare_pdf (varargin)
 
  pdf =  chi2pdf (varargin{:});

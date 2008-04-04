@@ -22,6 +22,8 @@
 ## This function has been deprecated.  Use @code{max} instead.
 ## @end deftypefn
 
+## Deprecated in version 3.1
+
 function varargout = spmax (varargin)
   persistent warned = false;
   if (! warned)

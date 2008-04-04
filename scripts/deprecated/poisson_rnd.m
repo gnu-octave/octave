@@ -29,6 +29,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the Poisson distribution
 
+## Deprecated in version 3.0
+
 function rnd = poisson_rnd (varargin)
 
  rnd =  poissrnd (varargin{:});

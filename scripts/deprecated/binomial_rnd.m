@@ -31,6 +31,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the binomial distribution
 
+## Deprecated in version 3.0
+
 function rnd = binomial_rnd (varargin)
 
  rnd =  binornd (varargin{:});

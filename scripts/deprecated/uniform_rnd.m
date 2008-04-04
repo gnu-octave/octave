@@ -30,6 +30,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the uniform distribution
 
+## Deprecated in version 3.0
+
 function rnd = uniform_rnd (varargin)
 
  rnd =  unifrnd (varargin{:});

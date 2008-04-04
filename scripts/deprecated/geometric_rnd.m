@@ -31,6 +31,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the geometric distribution
 
+## Deprecated in version 3.0
+
 function rnd = geometric_rnd (varargin)
 
  rnd =  geornd (varargin{:});

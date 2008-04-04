@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the Poisson distribution
 
+## Deprecated in version 3.0
+
 function inv = poisson_inv (varargin)
 
  inv =  poissinv (varargin{:});

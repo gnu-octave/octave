@@ -31,6 +31,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the t distribution
 
+## Deprecated in version 3.0
+
 function rnd = t_rnd (varargin)
 
  rnd =  trnd (varargin{:});

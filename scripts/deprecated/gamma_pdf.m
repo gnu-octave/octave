@@ -26,6 +26,8 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: PDF of the Gamma distribution
 
+## Deprecated in version 3.0
+
 function pdf = gamma_pdf (varargin)
 
  if (nargin > 2)

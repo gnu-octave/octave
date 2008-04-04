@@ -25,6 +25,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the binomial distribution
 
+## Deprecated in version 3.0
+
 function cdf = binomial_cdf (varargin)
 
  cdf =  binocdf (varargin{:});

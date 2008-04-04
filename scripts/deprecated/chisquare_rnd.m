@@ -30,6 +30,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Random deviates from the chi-square distribution
 
+## Deprecated in version 3.0
+
 function rnd = chisquare_rnd (varargin)
 
  rnd =  chi2rnd (varargin{:});

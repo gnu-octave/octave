@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Beta distribution
 
+## Deprecated in version 3.0
+
 function cdf = beta_cdf (varargin)
 
  cdf =  betacdf (varargin{:});

@@ -28,6 +28,8 @@
 ## Author: TT <Teresa.Twaroch@ci.tuwien.ac.at>
 ## Description: CDF of the normal distribution
 
+## Deprecated in version 3.0
+
 function cdf = normal_cdf (varargin)
 
  if (nargin > 2)

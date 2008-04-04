@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the t distribution
 
+## Deprecated in version 3.0
+
 function cdf = t_cdf (varargin)
 
  cdf =  tcdf (varargin{:});

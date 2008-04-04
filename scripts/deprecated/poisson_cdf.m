@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the Poisson distribution
 
+## Deprecated in version 3.0
+
 function cdf = poisson_cdf (varargin)
 
  cdf =  poisscdf (varargin{:});

@@ -27,6 +27,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: CDF of the uniform distribution
 
+## Deprecated in version 3.0
+
 function cdf = uniform_cdf (varargin)
 
  cdf =  unifcdf (varargin{:});

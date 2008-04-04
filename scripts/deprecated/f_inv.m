@@ -26,6 +26,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: Quantile function of the F distribution
 
+## Deprecated in version 3.0
+
 function inv = f_inv (varargin)
 
  inv =  finv (varargin{:});

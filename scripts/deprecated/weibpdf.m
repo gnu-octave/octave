@@ -30,6 +30,8 @@
 ## for @var{x} > 0.
 ## @end deftypefn
 
+## Deprecated in version 3.0
+
 function pdf = weibpdf (varargin)
 
   pdf = wblpdf (varargin{:});

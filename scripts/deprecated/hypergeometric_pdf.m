@@ -30,6 +30,8 @@
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>
 ## Description: PDF of the hypergeometric distribution
 
+## Deprecated in version 3.0
+
 function pdf = hypergeometric_pdf (varargin)
 
  pdf =  hygepdf (varargin{:});

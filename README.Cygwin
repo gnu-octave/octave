@@ -12,10 +12,47 @@ If you would like to see this problem corrected, please search the
 Cygwin mailing lists for threads related to "sjlj exception handling"
 (or similar).
 
+There are also two "unofficial" Octave distributions for Cygwin:
+
+ 1. http://www.geocities.jp/tmacchant
+
+    The binaries here are built using gcc-3.4.4-3 configured with
+    --disable-sjlj-exceptions.  Performance is improved by using DWARF
+    exception handling instead of setjump/longjump exception
+    handling.  However, to build dynamically loaded .oct files that
+    will work with this version of Octave, you must use the same
+    specially configured version of GCC that was used to build Octave
+    itself and not the version of GCC that is distributed with
+    Cygwin.
+
+    This binary is maintained by Tatsuro Matsuroka.
+
+
+ 2. http://matzeri.altervista.org
+
+    The binaries here aim to be an officail cygwin distribution of
+    Octave-3.0.x and are built using the version of GCC distributed
+    with Cygwin.  Performance of linear algebra functions is fine, but
+    the performance of the scripting language interpreter suffers
+    because of the setjump/longjump exception handling model used in
+    the version of GCC distributed with Cygwin.  The advantage is that
+    you don't need a special version of GCC.
+
+    This binary is maintained by Marco Atzeri
+
+We hope that Cygwin will eventually have a version of GCC that does
+not suffer from the performance problem related to setjump/longjump
+exception handling.
+
 
 John W. Eaton
 jwe@bevo.che.wisc.edu
 University of Wisconsin-Madison
 Department of Chemical & Biological Engineering
 
-Last updated: Wed, 31 Oct 2007 16:21:43 EDT
+Tatsuro MATSUOKA 
+tmacchant@yahoo.co.jp
+Department of Molecular Design and Engineering, 
+Gradudate School of Engineering, Nagoya University.
+
+Last updated: Thu, 03 Apr 2008 22:01:48 EDT

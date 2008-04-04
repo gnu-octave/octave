@@ -64,7 +64,6 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       fputs (plot_stream, "set size noratio;\n");
     endif
 
-    fputs (plot_stream, "set pm3d implicit;\n");
     fputs (plot_stream, "unset label;\n");
 
     if (! isempty (axis_obj.title))
@@ -999,6 +998,14 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
       endswitch
 
     endfor
+
+    ## This is need to prevent warnings for rotations in 3D plots, while
+    ## allowing colorbars with contours..
+    if (nd == 2 || data_idx > 1)
+      fputs (plot_stream, "set pm3d implicit;\n");
+    else
+      fputs (plot_stream, "set pm3d explicit;\n");
+    endif
 
     if (isnan(hidden_removal) || hidden_removal)
       fputs (plot_stream, "set hidden3d;\n");

@@ -640,12 +640,38 @@ fi
 
 ## libraries needed for graphics
 
+warn_graphics=""
+
 GRAPHICS_OPENGL=
 OCTAVE_OPENGL
 if test "x$OPENGL_LIBS" != "x"; then
   GRAPHICS_OPENGL="opengl"
-fi
 
+## ftgl (needs freetype 2)
+  AC_CHECK_FT2([9.0.3],[],
+    [warn_graphics="FreeType library not found. Native renderer will not have on-screen text"])
+  if test "x$warn_graphics" = "x" ; then
+    AC_LANG_PUSH(C++)
+      AC_CHECK_HEADERS([FTGL/FTGL.h], [
+	AC_MSG_CHECKING([for FTGLTextureFont in -lftgl])
+        save_LIBS="$LIBS"
+	save_CXXFLAGS="$CXXFLAGS"
+	LIBS="$LIBS $OPENGL_LIBS $FT2_LIBS -lftgl"
+	CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
+        AC_TRY_LINK([
+#include <FTGL/FTGLTextureFont.h>], [
+FTGLTextureFont font("");], [
+          OPENGL_LIBS="$OPENGL_LIBS $FT2_LIBS -lftgl"
+	  LIBS="$save_LIBS"
+          AC_DEFINE(HAVE_FTGL, 1, [Define to 1 if FTGL is present])
+	  AC_MSG_RESULT(yes)],[
+	  LIBS="$save_LIBS"
+	  CXXFLAGS="$save_CXXFLAGS"
+	  AC_MSG_RESULT(no)])],[
+          warn_graphics="FTGL library not found. Native renderer will not have on-screen text"])
+    AC_LANG_POP(C++)
+  fi
+fi
 
 GRAPHICS_LIBS=
 GRAPHICS_CFLAGS=
@@ -676,7 +702,6 @@ fi
 
 AC_PATH_PROG(FLTK_CONFIG, fltk-config, no)
 
-warn_graphics=""
 if test "$FLTK_CONFIG" = "no" ; then
   warn_graphics="fltk library (www.fltk.org) not found.  Native graphics will be disabled."
 else
@@ -693,13 +718,9 @@ EOF
 
   if test "x$warn_graphics" = "x" ; then
     AC_MSG_RESULT(yes)
-    ## FTGL flags
-    AC_CHECK_FT2([9.0.3],[],
-             [warn_graphics="FreeType library not found. Native graphics will be disabled."])
-
-    GRAPHICS_CFLAGS="$FLTK_CFLAGS $FT2_CFLAGS"
-    GRAPHICS_LIBS="$FLTK_LDFLAGS $FT2_LIBS"
-    GRAPHICS_OPENGL="$GRAPHICS_OPENGL fltk_backend" 
+    GRAPHICS_CFLAGS="$FLTK_CFLAGS"
+    GRAPHICS_LIBS="$FLTK_LDFLAGS"
+    GRAPHICS_OPENGL="$GRAPHICS_OPENGL fltk_backend"
   else
     AC_MSG_RESULT(no)
   fi
@@ -1979,10 +2000,11 @@ Octave is now configured for $canonical_host_type
   CURL libraries:       $CURL_LIBS
   REGEX libraries:      $REGEX_LIBS
   QHULL libraries:	$QHULL_LIBS
-  GRAPHICS libraries    $GRAPHICS_LIBS
   LIBS:                 $LIBS
   Default pager:        $DEFAULT_PAGER
   gnuplot:              $GNUPLOT
+  OPENGL libraries:     $OPENGL_LIBS
+  fltk backend libs:    $GRAPHICS_LIBS
 
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Build static libraries:             $STATIC_LIBS

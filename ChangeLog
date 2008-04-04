@@ -1,5 +1,12 @@
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
+	* configure.in: Use AC_TRY_LINK in FTGL test.
+	Include FT_CFLAGS in CXXFLAGS.
+
+	* aclocal.m4 (OCTAVE_OPENGL): Note FIXME for apple.
+
+	* configure.in: Check for FTGL library.
+
 	* configure.in: Remove check for Fl/glu.h header.
 
 	* aclocal.m4 (AC_CHECK_FT2): New macro to check for freetype2.

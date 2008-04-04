@@ -1056,6 +1056,8 @@ fi
 dnl
 dnl Check for OpenGL. If found, define OPENGL_LIBS
 dnl
+dnl FIXME -- add tests for apple
+dnl
 AC_DEFUN([OCTAVE_OPENGL], [
 OPENGL_LIBS=
 case $canonical_host_type in

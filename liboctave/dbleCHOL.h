@@ -68,6 +68,12 @@ public:
 
   octave_idx_type downdate (const Matrix& u);
 
+  octave_idx_type insert_sym (const Matrix& u, octave_idx_type j);
+
+  void delete_sym (octave_idx_type j);
+
+  void shift_sym (octave_idx_type i, octave_idx_type j);
+
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const CHOL& a);
 
 private:

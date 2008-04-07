@@ -1,3 +1,10 @@
+2008-04-07  Jaroslav Hajek <highegg@gmail.com>
+
+	* qrupdate/dqrqhu.f, qrupdate/zqrqhu.f,
+	* qrupdate/dqrshc.f, qrupdate/zqrshc.f,
+	* qrupdate/dchinx.f, qrupdate/zchinx.f,
+	* qrupdate/dchdex.f, qrupdate/zchdex.f: New files.
+
 2008-04-02  Jaroslav Hajek <highegg@gmail.com>
 
 	* blas-xtra/xzdotu.f: Turn into simple wrapper for zdotu.

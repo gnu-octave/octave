@@ -31,8 +31,12 @@ FSRC = dqr1up.f zqr1up.f \
        dqrdec.f zqrdec.f \
        dqrinr.f zqrinr.f \
        dqrder.f zqrder.f \
+       dqrshc.f zqrshc.f \
        dch1up.f zch1up.f \
        dch1dn.f zch1dn.f \
+       dchinx.f zchinx.f \
+       dchdex.f zchdex.f \
+       dqrqhu.f zqrqhu.f \
        dqrqhv.f zqrqhv.f \
        dqhqr.f zqhqr.f 
 

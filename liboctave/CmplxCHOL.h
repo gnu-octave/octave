@@ -71,6 +71,12 @@ public:
 
   octave_idx_type downdate (const ComplexMatrix& u);
 
+  octave_idx_type insert_sym (const ComplexMatrix& u, octave_idx_type j);
+
+  void delete_sym (octave_idx_type j);
+
+  void shift_sym (octave_idx_type i, octave_idx_type j);
+
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const ComplexCHOL& a);
 
 private:

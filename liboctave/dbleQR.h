@@ -81,6 +81,8 @@ public:
 
   void delete_row (octave_idx_type j);
 
+  void shift_cols (octave_idx_type i, octave_idx_type j);
+
   void economize (void);
 
   friend std::ostream&  operator << (std::ostream&, const QR&);

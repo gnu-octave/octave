@@ -57,6 +57,17 @@ extern "C"
   F77_RET_T
   F77_FUNC (dch1dn, DCH1DN) (const octave_idx_type&, double*, double*, double*, 
                              octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (dqrshc, DQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+                             double*, double*, const octave_idx_type&, const octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (dchinx, DCHINX) (const octave_idx_type&, const double*, double*, const octave_idx_type&,
+                             const double*, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (dchdex, DCHDEX) (const octave_idx_type&, const double*, double*, const octave_idx_type&);
 }
 
 octave_idx_type
@@ -212,6 +223,59 @@ CHOL::downdate (const Matrix& u)
     (*current_liboctave_error_handler) ("CHOL downdate dimension mismatch");
 
   return info;
+}
+
+octave_idx_type
+CHOL::insert_sym (const Matrix& u, octave_idx_type j)
+{
+  octave_idx_type info = -1;
+
+  octave_idx_type n = chol_mat.rows ();
+  
+  if (u.length () != n+1)
+    (*current_liboctave_error_handler) ("CHOL insert dimension mismatch");
+  else if (j < 0 || j > n)
+    (*current_liboctave_error_handler) ("CHOL insert index out of range");
+  else
+    {
+      Matrix chol_mat1 (n+1, n+1);
+
+      F77_XFCN (dchinx, DCHINX, (n, chol_mat.data (), chol_mat1.fortran_vec (), 
+                                 j+1, u.data (), info));
+
+      chol_mat = chol_mat1;
+    }
+
+  return info;
+}
+
+void
+CHOL::delete_sym (octave_idx_type j)
+{
+  octave_idx_type n = chol_mat.rows ();
+  
+  if (j < 0 || j > n-1)
+    (*current_liboctave_error_handler) ("CHOL insert index out of range");
+  else
+    {
+      Matrix chol_mat1 (n-1, n-1);
+
+      F77_XFCN (dchdex, DCHDEX, (n, chol_mat.data (), chol_mat1.fortran_vec (), j+1));
+
+      chol_mat = chol_mat1;
+    }
+}
+
+void
+CHOL::shift_sym (octave_idx_type i, octave_idx_type j)
+{
+  octave_idx_type n = chol_mat.rows ();
+  double dummy;
+  
+  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+    (*current_liboctave_error_handler) ("CHOL shift index out of range");
+  else
+    F77_XFCN (dqrshc, DQRSHC, (0, n, n, &dummy, chol_mat.fortran_vec (), i+1, j+1));
 }
 
 Matrix

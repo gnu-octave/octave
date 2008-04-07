@@ -20,7 +20,7 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// The qrupdate, qrinsert, and qrdelete functions were written by
+// The qrupdate, qrinsert, qrdelete and qrshift functions were written by
 // Jaroslav Hajek <highegg@gmail.com>, Copyright (C) 2008  VZLU
 // Prague, a.s., Czech Republic.
 
@@ -911,6 +911,132 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
 %! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [A(1:2,:);A(4:5,:)]),Inf) < norm(A)*1e1*eps)
+*/
+
+DEFUN_DLD (qrshift, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{Q1}, @var{R1}] =} qrshift (@var{Q}, @var{R}, @var{i}, @var{j})\n\
+Given a QR@tie{}factorization of a real or complex matrix\n\
+@w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and\n\
+@var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization\n\
+of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
+@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*\n\
+ or @*\n\
+@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}. @*\n\
+\n\
+@seealso{qr, qrinsert, qrdelete}\n\
+@end deftypefn")
+{
+  octave_idx_type nargin = args.length ();
+  octave_value_list retval;
+
+  if (nargin != 4)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  octave_value argq = args(0);
+  octave_value argr = args(1);
+  octave_value argi = args(2);
+  octave_value argj = args(3);
+
+  if (argq.is_matrix_type () && argr.is_matrix_type () 
+      && argi.is_real_scalar () && argj.is_real_scalar ())
+    {
+      octave_idx_type m = argq.rows ();
+      octave_idx_type n = argr.columns ();
+      octave_idx_type k = argq.columns ();
+
+      if (argr.rows () == k)
+        {
+          octave_idx_type i = argi.scalar_value ();
+          octave_idx_type j = argj.scalar_value ();
+          if (i > 1 && i <= n && j > 1 && j <= n)
+            {
+              if (argq.is_real_matrix () 
+                  && argr.is_real_matrix ())
+                {
+                  // all real case
+                  Matrix Q = argq.matrix_value ();
+                  Matrix R = argr.matrix_value ();
+
+                  QR fact (Q, R);
+                  fact.shift_cols (i-1, j-1);
+
+                  retval(1) = fact.R ();
+                  retval(0) = fact.Q ();
+                }
+              else
+                {
+                  // complex case
+                  ComplexMatrix Q = argq.complex_matrix_value ();
+                  ComplexMatrix R = argr.complex_matrix_value ();
+
+                  ComplexQR fact (Q, R);
+                  fact.shift_cols (i-1, j-1);
+                  
+                  retval(1) = fact.R ();
+                  retval(0) = fact.Q ();
+                }
+            }
+          else
+            error ("qrshift: index out of range");
+        }
+      else
+	error ("qrshift: dimensions mismatch");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+/*
+%!test
+%! A = [0.091364  0.613038  0.999083;
+%!      0.594638  0.425302  0.603537;
+%!      0.383594  0.291238  0.085574;
+%!      0.265712  0.268003  0.238409;
+%!      0.669966  0.743851  0.445057 ].';
+%!
+%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
+%! 
+%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
+%! 
+%!test
+%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
+%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
+%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
+%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
+%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ].';
+%!
+%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
+%! 
+%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%!
+%! [Q,R] = qr(A);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
 */
 
 /*

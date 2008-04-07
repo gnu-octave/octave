@@ -68,6 +68,10 @@ extern "C"
   F77_FUNC (zqrder, ZQRDER) (const octave_idx_type&, const octave_idx_type&, 
                              const Complex*, Complex*, const Complex*, Complex *, 
                              const octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (zqrshc, ZQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+                             Complex*, Complex*, const octave_idx_type&, const octave_idx_type&);
 }
 
 ComplexQR::ComplexQR (const ComplexMatrix& a, QR::type qr_type)
@@ -269,6 +273,19 @@ ComplexQR::delete_row (octave_idx_type j)
       q = q1;
       r = r1;
     }
+}
+
+void
+ComplexQR::shift_cols (octave_idx_type i, octave_idx_type j)
+{
+  octave_idx_type m = q.rows ();
+  octave_idx_type k = r.rows ();
+  octave_idx_type n = r.columns ();
+
+  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+    (*current_liboctave_error_handler) ("QR shift index out of range");
+  else
+    F77_XFCN (zqrshc, ZQRSHC, (m, n, k, q.fortran_vec (), r.fortran_vec (), i+1, j+1));
 }
 
 void

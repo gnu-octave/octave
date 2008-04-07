@@ -21,9 +21,9 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-// The cholupdate function was written by Jaroslav Hajek
-// <highegg@gmail.com>, Copyright (C) 2008  VZLU Prague, a.s., Czech
-// Republic.
+// The cholupdate, cholinsert, choldelete and cholshift functions were
+//  written by Jaroslav Hajek <highegg@gmail.com>, Copyright (C) 2008  
+//  VZLU Prague, a.s., Czech Republic.
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -598,6 +598,350 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1 - R,Inf) < 1e1*eps)
+*/
+
+DEFUN_DLD (cholinsert, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{R1}, @var{info}] =} cholinsert (@var{R}, @var{j}, @var{u})\n\
+Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper triangular,\n\
+return the QR@tie{}factorization of\n\
+@var{A1}, where @w{A1(p,p) = A}, @w{A1(:,j) = A1(j,:)' = u} and\n\
+@w{p = [1:j-1,j+1:n+1]}. @w{u(j)} should be positive.\n\
+On return, @var{info} is set to\n\
+@itemize\n\
+@item 0 if the insertion was successful,\n\
+@item 1 if @var{A1} is not positive definite,\n\
+@item 2 if @var{R} is singular.\n\
+@end itemize\n\
+\n\
+If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
+@seealso{chol, cholupdate, choldelete}\n\
+@end deftypefn")
+{
+  octave_idx_type nargin = args.length ();
+
+  octave_value_list retval;
+
+  if (nargin != 3)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  octave_value argr = args(0);
+  octave_value argj = args(1);
+  octave_value argu = args(2);
+
+  if (argr.is_matrix_type () && argu.is_matrix_type ()
+      && argj.is_real_scalar ())
+    {
+      octave_idx_type n = argr.rows ();
+      octave_idx_type j = argj.scalar_value ();
+
+      if (argr.columns () == n && argu.rows () == n+1 && argu.columns () == 1)
+        {
+          if (j > 0 && j <= n+1)
+            {
+              if (argr.is_real_matrix () && argu.is_real_matrix ())
+                {
+                  // real case
+                  Matrix R = argr.matrix_value ();
+                  Matrix u = argu.matrix_value ();
+
+                  CHOL fact;
+                  fact.set (R);
+                  int err = fact.insert_sym (u, j-1);
+
+                  if (nargout > 1)
+                    retval(1) = err;
+                  else if (err)
+                    error ("cholinsert: insertion violates positiveness");
+
+                  retval(0) = fact.chol_matrix ();
+                }
+              else
+                {
+                  // complex case
+                  ComplexMatrix R = argr.complex_matrix_value ();
+                  ComplexMatrix u = argu.complex_matrix_value ();
+
+                  ComplexCHOL fact;
+                  fact.set (R);
+                  int err = fact.insert_sym (u, j-1);
+
+                  if (nargout > 1)
+                    retval(1) = err;
+                  else if (err)
+                    error ("cholinsert: insertion violates positiveness");
+
+                  retval(0) = fact.chol_matrix ();
+                }
+            }
+          else
+            error ("cholinsert: index out of range");
+        }
+      else
+        error ("cholinsert: dimension mismatch");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!test
+%! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
+%!       -0.131721   0.738529   0.019851  -0.140295 ;
+%!        0.124120   0.019851   0.354879  -0.059472 ;
+%!       -0.061673  -0.140295  -0.059472   0.600939 ];
+%! 
+%! u = [  0.35080 ;
+%!        0.63930 ;
+%!        3.31057 ;
+%!       -0.13825 ;
+%!        0.45266 ];
+%!
+%! R = chol(A);
+%! 
+%! j = 3; p = [1:j-1, j+1:5];
+%! R1 = cholinsert(R,j,u); A1 = R1'*R1;
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(A1(p,p) - A,Inf) < 1e1*eps)
+%! 
+%!test
+%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
+%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
+%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
+%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
+%! 
+%! u = [  0.35080  + 0.04298i;
+%!        0.63930  + 0.23778i;
+%!        3.31057  + 0.00000i;
+%!       -0.13825  + 0.19879i;
+%!        0.45266  + 0.50020i];
+%!
+%! R = chol(A);
+%! 
+%! j = 3; p = [1:j-1, j+1:5];
+%! R1 = cholinsert(R,j,u); A1 = R1'*R1;
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(A1(p,p) - A,Inf) < 1e1*eps)
+%! 
+*/
+
+DEFUN_DLD (choldelete, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
+Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper triangular,\n\
+return the QR@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+1]}.\n\
+@seealso{chol, cholupdate, cholinsert}\n\
+@end deftypefn")
+{
+  octave_idx_type nargin = args.length ();
+
+  octave_value_list retval;
+
+  if (nargin != 2)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  octave_value argr = args(0);
+  octave_value argj = args(1);
+
+  if (argr.is_matrix_type () && argj.is_real_scalar ())
+    {
+      octave_idx_type n = argr.rows ();
+      octave_idx_type j = argj.scalar_value ();
+
+      if (argr.columns () == n)
+        {
+          if (j > 0 && j <= n)
+            {
+              if (argr.is_real_matrix ())
+                {
+                  // real case
+                  Matrix R = argr.matrix_value ();
+
+                  CHOL fact;
+                  fact.set (R);
+                  fact.delete_sym (j-1);
+
+                  retval(0) = fact.chol_matrix ();
+                }
+              else
+                {
+                  // complex case
+                  ComplexMatrix R = argr.complex_matrix_value ();
+
+                  ComplexCHOL fact;
+                  fact.set (R);
+                  fact.delete_sym (j-1);
+
+                  retval(0) = fact.chol_matrix ();
+                }
+            }
+          else
+            error ("choldelete: index out of range");
+        }
+      else
+        error ("choldelete: dimension mismatch");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!test
+%! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
+%!       -0.131721   0.738529   0.019851  -0.140295 ;
+%!        0.124120   0.019851   0.354879  -0.059472 ;
+%!       -0.061673  -0.140295  -0.059472   0.600939 ];
+%! 
+%! R = chol(A);
+%! 
+%! j = 3; p = [1:j-1,j+1:4];
+%! R1 = choldelete(R,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+%! 
+%!test
+%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
+%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
+%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
+%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
+%! 
+%! R = chol(A);
+%! 
+%! j = 3; p = [1:j-1,j+1:4];
+%! R1 = choldelete(R,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+*/
+
+DEFUN_DLD (cholshift, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
+Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
+positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper triangular,\n\
+return the QR@tie{}factorization of\n\
+@w{@var{A}(p,p)}, where @w{p} is the permutation @*\n\
+@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*\n\
+ or @*\n\
+@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}. @*\n\
+\n\
+@seealso{chol, cholinsert, choldelete}\n\
+@end deftypefn")
+{
+  octave_idx_type nargin = args.length ();
+
+  octave_value_list retval;
+
+  if (nargin != 3)
+    {
+      print_usage ();
+      return retval;
+    }
+
+  octave_value argr = args(0);
+  octave_value argi = args(1);
+  octave_value argj = args(2);
+
+  if (argr.is_matrix_type () && argi.is_real_scalar () && argj.is_real_scalar ())
+    {
+      octave_idx_type n = argr.rows ();
+      octave_idx_type i = argi.scalar_value ();
+      octave_idx_type j = argj.scalar_value ();
+
+      if (argr.columns () == n)
+        {
+          if (j > 0 && j <= n+1 && i > 0 && i <= n+1)
+            {
+              if (argr.is_real_matrix ())
+                {
+                  // real case
+                  Matrix R = argr.matrix_value ();
+
+                  CHOL fact;
+                  fact.set (R);
+                  fact.shift_sym (i-1, j-1);
+
+                  retval(0) = fact.chol_matrix ();
+                }
+              else
+                {
+                  // complex case
+                  ComplexMatrix R = argr.complex_matrix_value ();
+
+                  ComplexCHOL fact;
+                  fact.set (R);
+                  fact.shift_sym (i-1, j-1);
+
+                  retval(0) = fact.chol_matrix ();
+                }
+            }
+          else
+            error ("cholshift: index out of range");
+        }
+      else
+        error ("cholshift: dimension mismatch");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%!test
+%! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
+%!       -0.131721   0.738529   0.019851  -0.140295 ;
+%!        0.124120   0.019851   0.354879  -0.059472 ;
+%!       -0.061673  -0.140295  -0.059472   0.600939 ];
+%! 
+%! R = chol(A);
+%! 
+%! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+%! 
+%! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+%! 
+%!test
+%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
+%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
+%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
+%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
+%! 
+%! R = chol(A);
+%! 
+%! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+%! 
+%! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
 */
 
 /*

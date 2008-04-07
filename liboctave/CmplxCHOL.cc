@@ -57,6 +57,17 @@ extern "C"
   F77_RET_T
   F77_FUNC (zch1dn, ZCH1DN) (const octave_idx_type&, Complex*, Complex*, double*, 
                              octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (zqrshc, ZQRSHC) (const octave_idx_type&, const octave_idx_type&, const octave_idx_type&,
+                             Complex*, Complex*, const octave_idx_type&, const octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (zchinx, ZCHINX) (const octave_idx_type&, const Complex*, Complex*, const octave_idx_type&,
+                             const Complex*, octave_idx_type&);
+
+  F77_RET_T
+  F77_FUNC (zchdex, ZCHDEX) (const octave_idx_type&, const Complex*, Complex*, const octave_idx_type&);
 }
 
 octave_idx_type
@@ -208,6 +219,59 @@ ComplexCHOL::downdate (const ComplexMatrix& u)
     (*current_liboctave_error_handler) ("CHOL downdate dimension mismatch");
 
   return info;
+}
+
+octave_idx_type
+ComplexCHOL::insert_sym (const ComplexMatrix& u, octave_idx_type j)
+{
+  octave_idx_type info = -1;
+
+  octave_idx_type n = chol_mat.rows ();
+  
+  if (u.length () != n+1)
+    (*current_liboctave_error_handler) ("CHOL insert dimension mismatch");
+  else if (j < 0 || j > n)
+    (*current_liboctave_error_handler) ("CHOL insert index out of range");
+  else
+    {
+      ComplexMatrix chol_mat1 (n+1, n+1);
+
+      F77_XFCN (zchinx, ZCHINX, (n, chol_mat.data (), chol_mat1.fortran_vec (), 
+                                 j+1, u.data (), info));
+
+      chol_mat = chol_mat1;
+    }
+
+  return info;
+}
+
+void
+ComplexCHOL::delete_sym (octave_idx_type j)
+{
+  octave_idx_type n = chol_mat.rows ();
+  
+  if (j < 0 || j > n-1)
+    (*current_liboctave_error_handler) ("CHOL insert index out of range");
+  else
+    {
+      ComplexMatrix chol_mat1 (n-1, n-1);
+
+      F77_XFCN (zchdex, ZCHDEX, (n, chol_mat.data (), chol_mat1.fortran_vec (), j+1));
+
+      chol_mat = chol_mat1;
+    }
+}
+
+void
+ComplexCHOL::shift_sym (octave_idx_type i, octave_idx_type j)
+{
+  octave_idx_type n = chol_mat.rows ();
+  Complex dummy;
+  
+  if (i < 0 || i > n-1 || j < 0 || j > n-1) 
+    (*current_liboctave_error_handler) ("CHOL shift index out of range");
+  else
+    F77_XFCN (zqrshc, ZQRSHC, (0, n, n, &dummy, chol_mat.fortran_vec (), i+1, j+1));
 }
 
 ComplexMatrix

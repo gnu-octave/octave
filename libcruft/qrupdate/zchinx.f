@@ -42,11 +42,11 @@ c               definiteness.
 
 c quick return if possible
       if (n == 0) then
-        if (real(u(1)) <= 0) then
+        if (dble(u(1)) <= 0) then
           info = 1
           return
         else
-          R(1,1) = sqrt(real(u(1)))
+          R(1,1) = sqrt(dble(u(1)))
         end if
       end if
 

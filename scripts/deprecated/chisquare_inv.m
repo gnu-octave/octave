@@ -34,8 +34,7 @@ function inv = chisquare_inv (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["chisquare_inv is obsolete and will be removed from a future\n",
-	       "version of Octave, please use chi2inv instead"]);
+             "chisquare_inv is obsolete and will be removed from a future version of Octave; please use chi2inv instead");
   endif
 
  inv =  chi2inv (varargin{:});

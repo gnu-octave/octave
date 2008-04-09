@@ -33,8 +33,7 @@ function inv = geometric_inv (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["geometric_inv is obsolete and will be removed from a future\n",
-	       "version of Octave, please use geoinv instead"]);
+             "geometric_inv is obsolete and will be removed from a future version of Octave; please use geoinv instead");
   endif
 
  inv =  geoinv (varargin{:});

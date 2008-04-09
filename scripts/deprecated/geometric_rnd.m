@@ -39,8 +39,7 @@ function rnd = geometric_rnd (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["geometric_rnd is obsolete and will be removed from a future\n",
-	       "version of Octave, please use geornd instead"]);
+             "geometric_rnd is obsolete and will be removed from a future version of Octave; please use geornd instead");
   endif
 
  rnd =  geornd (varargin{:});

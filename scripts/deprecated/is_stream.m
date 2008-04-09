@@ -31,8 +31,7 @@ function retval = is_stream (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["is_stream is obsolete and will be removed from a future\n",
-	       "version of Octave, please use isstream instead"]);
+             "is_stream is obsolete and will be removed from a future version of Octave; please use isstream instead");
   endif
 
   retval = isstream(varargin{:});

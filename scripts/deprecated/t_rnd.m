@@ -39,8 +39,7 @@ function rnd = t_rnd (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["t_rnd is obsolete and will be removed from a future\n",
-	       "version of Octave, please use trnd instead"]);
+             "t_rnd is obsolete and will be removed from a future version of Octave; please use trnd instead");
   endif
 
  rnd =  trnd (varargin{:});

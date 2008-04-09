@@ -38,8 +38,7 @@ function y = polyinteg (p)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["polyinteg is obsolete and will be removed from a future\n",
-	       "version of Octave, please use polyint instead"]);
+             "polyinteg is obsolete and will be removed from a future version of Octave; please use polyint instead");
   endif
 
   y = polyint (p);

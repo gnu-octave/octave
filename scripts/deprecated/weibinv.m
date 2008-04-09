@@ -31,8 +31,7 @@ function inv = weibinv (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["weibinv is obsolete and will be removed from a future\n",
-	       "version of Octave, please use wblinv instead"]);
+             "weibinv is obsolete and will be removed from a future version of Octave; please use wblinv instead");
   endif
 
   inv = wblinv (varargin{:});

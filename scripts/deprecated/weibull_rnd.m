@@ -36,8 +36,7 @@ function rnd = weibull_rnd (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["weibull_rnd is obsolete and will be removed from a future\n",
-	       "version of Octave, please use wblrnd instead"]);
+             "weibull_rnd is obsolete and will be removed from a future version of Octave; please use wblrnd instead");
   endif
 
   if (nargin > 1)

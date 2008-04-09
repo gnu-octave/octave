@@ -38,8 +38,7 @@ function rnd = uniform_rnd (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["uniform_rnd is obsolete and will be removed from a future\n",
-	       "version of Octave, please use unifrnd instead"]);
+             "uniform_rnd is obsolete and will be removed from a future version of Octave; please use unifrnd instead");
   endif
 
  rnd =  unifrnd (varargin{:});

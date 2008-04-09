@@ -41,8 +41,7 @@ function retval = com2str (zz, flg)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["com2str is obsolete and will be removed from a future\n",
-	       "version of Octave, please use num2str instead"]);
+             "com2str is obsolete and will be removed from a future version of Octave; please use num2str instead");
   endif
 
   if (nargin < 1 || nargin > 2)

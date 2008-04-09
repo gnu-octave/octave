@@ -34,8 +34,7 @@ function cdf = chisquare_cdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["chisquare_cdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use chi2cdf instead"]);
+             "chisquare_cdf is obsolete and will be removed from a future version of Octave; please use chi2cdf instead");
   endif
 
  cdf =  chi2cdf (varargin{:});

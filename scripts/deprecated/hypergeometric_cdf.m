@@ -40,8 +40,7 @@ function cdf = hypergeometric_cdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["hypergeometric_cdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use hygecdf instead"]);
+             "hypergeometric_cdf is obsolete and will be removed from a future version of Octave; please use hygecdf instead");
   endif
 
  cdf =  hygecdf (varargin{:});

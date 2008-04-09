@@ -38,8 +38,7 @@ function pdf = lognormal_pdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["lognormal_pdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use lognpdf instead"]);
+             "lognormal_pdf is obsolete and will be removed from a future version of Octave; please use lognpdf instead");
   endif
 
   if (nargin > 1)

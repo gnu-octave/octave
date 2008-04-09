@@ -38,8 +38,7 @@ function cdf = weibcdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["weibcdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use wblcdf instead"]);
+             "weibcdf is obsolete and will be removed from a future version of Octave; please use wblcdf instead");
   endif
 
   cdf = wblcdf (varargin{:});

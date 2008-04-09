@@ -38,8 +38,7 @@ function inv = lognormal_inv (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["lognormal_inv is obsolete and will be removed from a future\n",
-	       "version of Octave, please use logninv instead"]);
+             "lognormal_inv is obsolete and will be removed from a future version of Octave; please use logninv instead");
   endif
 
   if (nargin > 1)

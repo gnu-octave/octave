@@ -31,8 +31,7 @@ function retval = struct_contains (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["struct_contains is obsolete and will be removed from a future\n",
-	       "version of Octave, please use isfield instead"]);
+             "struct_contains is obsolete and will be removed from a future version of Octave; please use isfield instead");
   endif
 
   retval = isfield (varargin{:});

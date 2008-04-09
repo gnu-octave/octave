@@ -31,8 +31,7 @@ function [xx, yy] = meshdom (x, y)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["meshdom is obsolete and will be removed from a future\n",
-	       "version of Octave, please use meshgrid instead"]);
+             "meshdom is obsolete and will be removed from a future version of Octave; please use meshgrid instead");
   endif
 
   if (nargin == 2)

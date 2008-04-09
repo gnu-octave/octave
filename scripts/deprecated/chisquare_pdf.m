@@ -34,8 +34,7 @@ function pdf = chisquare_pdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["chisquare_pdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use chi2pdf instead"]);
+             "chisquare_pdf is obsolete and will be removed from a future version of Octave; please use chi2pdf instead");
   endif
 
  pdf =  chi2pdf (varargin{:});

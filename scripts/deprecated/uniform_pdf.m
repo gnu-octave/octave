@@ -35,8 +35,7 @@ function pdf = uniform_pdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["uniform_pdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use unifpdf instead"]);
+             "uniform_pdf is obsolete and will be removed from a future version of Octave; please use unifpdf instead");
   endif
 
  pdf =  unifpdf (varargin{:});

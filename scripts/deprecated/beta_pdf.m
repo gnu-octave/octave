@@ -33,8 +33,7 @@ function pdf = beta_pdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["beta_pdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use betapdf instead"]);
+             "beta_pdf is obsolete and will be removed from a future version of Octave; please use betapdf instead");
   endif
 
  pdf =  betapdf (varargin{:});

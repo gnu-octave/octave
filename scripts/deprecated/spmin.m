@@ -29,8 +29,7 @@ function varargout = spmin (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-	     ["spmin is obsolete and will be removed from a future\n",
-	      "version of Octave, please use min instead"]);
+	     "spmin is obsolete and will be removed from a future version of Octave; please use min instead");
   endif
 
   varargout = cell (nargout, 1);

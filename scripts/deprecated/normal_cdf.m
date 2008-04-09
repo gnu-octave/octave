@@ -36,8 +36,7 @@ function cdf = normal_cdf (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["normal_cdf is obsolete and will be removed from a future\n",
-	       "version of Octave, please use normcdf instead"]);
+             "normal_cdf is obsolete and will be removed from a future version of Octave; please use normcdf instead");
   endif
 
  if (nargin > 2)

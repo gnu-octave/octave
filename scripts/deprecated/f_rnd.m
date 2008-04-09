@@ -40,8 +40,7 @@ function rnd = f_rnd (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["f_rnd is obsolete and will be removed from a future\n",
-	       "version of Octave, please use frnd instead"]);
+             "f_rnd is obsolete and will be removed from a future version of Octave; please use frnd instead");
   endif
 
  rnd =  frnd (varargin{:});

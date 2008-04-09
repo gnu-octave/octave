@@ -39,8 +39,7 @@ function rnd = gamma_rnd (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["gamma_rnd is obsolete and will be removed from a future\n",
-	       "version of Octave, please use gamrnd instead"]);
+             "gamma_rnd is obsolete and will be removed from a future version of Octave; please use gamrnd instead");
   endif
 
  if (nargin > 1)

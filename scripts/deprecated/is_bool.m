@@ -31,8 +31,7 @@ function retval = is_bool (varargin)
   if (! warned)
     warned = true;
     warning ("Octave:deprecated-function",
-        ["is_bool is obsolete and will be removed from a future\n",
-	       "version of Octave, please use isbool instead"]);
+             "is_bool is obsolete and will be removed from a future version of Octave; please use isbool instead");
   endif
 
   retval = isbool (varargin{:});

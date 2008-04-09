@@ -1,3 +1,8 @@
+2008-04-09  Rafael Laboissiere  <rafael@debian.org>
+
+	* example/octave.desktop.in: Drop the Encoding key, which is
+	deprecated by the FreeDesktop standard.
+
 2008-04-04  John W. Eaton  <jwe@octave.org>
 
 	* Makeconf.in (do-check-m-sources): New macro.

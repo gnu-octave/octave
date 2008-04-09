@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=GNU Octave
 Comment=Scientific Computing using GNU Octave
 TryExec=%OCTAVE_PREFIX%/bin/octave

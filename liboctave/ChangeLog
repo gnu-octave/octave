@@ -1,4 +1,7 @@
-2008-04-09  Michael Goffioul <michael.goffioul@gmail.com>
+2008-04-09  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* lo-mappers.cc (xround): Avoid floating-point overflow when input
+	value is equal to bitmax implementation taken from gnulib).
 
 	* file-stat.cc (file_stat::update_internal): Do not strip trailing
 	file separator when path length is equal to 1 (handle case '\') under

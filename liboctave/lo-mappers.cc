@@ -75,7 +75,24 @@ xround (double x)
 #if defined (HAVE_ROUND)
   return round (x);
 #else
-  return x > 0 ? floor (x + 0.5) : ceil (x - 0.5);
+  if (x >= 0)
+    {
+      double y = floor (x);
+
+      if ((x - y) >= 0.5)
+	y += 1.0;
+
+      return y;
+    }
+  else
+    {
+      double y = ceil (x);
+
+      if ((y - x) >= 0.5)
+	y -= 1.0;
+
+      return y;
+    }
 #endif
 }
 

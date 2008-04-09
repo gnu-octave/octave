@@ -23,6 +23,13 @@
 	which work on dimensions alone (squeeze, triu, etc.) work for all
 	objects and preserve type.
 
+2008-04-09  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* test_string.m: Fix isprint test under Win32, where
+	isprint(setstr(9)) is true.
+	* test_system.m: Add condition for various syscall tests. Make cd test
+	able to deal with drive-letter-only pathnames (e.g. C:\) under Win32.
+
 2008-03-07  John W. Eaton  <jwe@octave.org>
 
 	* test_logical-wfi-t.m, test_logical-wfi-f.m: Update tests for

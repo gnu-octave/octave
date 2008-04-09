@@ -230,13 +230,21 @@ for @var{f}.\n\
 FIXME I would rather not create dispatch_x/dispatch_y
 in the current directory!  I don't want them installed accidentally.
 
+%!function echo_to_file (str, name)
+%!  fid = fopen (name, 'w');
+%!  if (fid != -1)
+%!    fprintf (fid, str);
+%!    fprintf (fid, '\n');
+%!    fclose (fid);
+%!  endif
+
 %!test # replace base m-file
-%! system("echo 'function a=dispatch_x(a)'>dispatch_x.m");
+%! echo_to_file ('function a=dispatch_x(a)', "dispatch_x.m");
 %! dispatch('dispatch_x','length','string')
 %! assert(dispatch_x(3),3)
 %! assert(dispatch_x("a"),1)
 %! sleep (2);
-%! system("echo 'function a=dispatch_x(a),++a;'>dispatch_x.m");
+%! echo_to_file ('function a=dispatch_x(a),++a;', "dispatch_x.m");
 %! rehash();
 %! assert(dispatch_x(3),4)
 %! assert(dispatch_x("a"),1)
@@ -244,11 +252,11 @@ in the current directory!  I don't want them installed accidentally.
 %! unlink("dispatch_x.m");
 
 %!test # replace dispatch m-file
-%! system("echo 'function a=dispatch_y(a)'>dispatch_y.m");
+%! echo_to_file ('function a=dispatch_y(a)', "dispatch_y.m");
 %! dispatch('hello','dispatch_y','complex scalar')
 %! assert(hello(3i),3i)
 %! sleep (2);
-%! system("echo 'function a=dispatch_y(a),++a;'>dispatch_y.m");
+%! echo_to_file ('function a=dispatch_y(a),++a;', "dispatch_y.m");
 %! rehash();
 %! assert(hello(3i),1+3i)
 %!test 

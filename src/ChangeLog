@@ -1,3 +1,8 @@
+2008-04-09  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* DLD-FUNCTIONS/dispatch.cc: Replace system("echo '...'>...") calls
+	with real file writing.
+
 2008-04-07  Jaroslav Hajek <highegg@gmail.com>
 
 	* DLD-FUNCTIONS/qr.cc (Fqrshift): New function.

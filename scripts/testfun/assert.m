@@ -77,19 +77,6 @@ function assert (cond, expected, tol)
       error ("assert %s failed", in); # say which elements failed?
     endif
   
-  elseif (is_list (cond))
-    if (! is_list (expected) || length (cond) != length (expected))
-      iserror = 1;
-    else
-      try
-	for i = 1:length (cond)
-	  assert (nth (cond, i), nth (expected, i));
-	endfor
-      catch
-	iserror = 1;
-      end_try_catch
-    endif
-
   elseif (ischar (expected))
     iserror = (! ischar (cond) || ! strcmp (cond, expected));
 

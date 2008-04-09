@@ -1,3 +1,7 @@
+2008-04-09  David Bateman  <dbateman@free.fr>
+
+	* testfun/assert.m: Don't allow cond and expected to be lists.
+
 2008-04-04  John W. Eaton  <jwe@octave.org>
 
 	* strings/Makefile.in (SOURCES): Add isstrprop.m to the list.

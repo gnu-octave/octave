@@ -1496,7 +1496,7 @@ values read is returned in @code{count}\n\
 
 	  int idx = 1;
 
-	  if (nargin > 1 && ! args(idx).is_string ())
+	  if (nargin > idx && ! args(idx).is_string ())
 	    size = args(idx++);
 
 	  if (nargin > idx)
@@ -1507,6 +1507,11 @@ values read is returned in @code{count}\n\
 
 	  if (nargin > idx)
 	    arch = args(idx++);
+	  else if (skip.is_string ())
+	    {
+	      arch = skip;
+	      skip = 0;
+	    }
 
 	  octave_idx_type count = -1;
 
@@ -1598,16 +1603,27 @@ are too large to fit in the specified precision.\n\
 
       if (! error_state)
 	{
-	  octave_value data = args(1);
+	  octave_value prec = "uchar";
+	  octave_value skip = 0;
+	  octave_value arch = "unknown";
 
-	  octave_value prec = (nargin > 2)
-	    ? args(2) : octave_value ("uchar");
+	  int idx = 1;
 
-	  octave_value skip = (nargin > 3)
-	    ? args(3) : octave_value (0.0);
+	  octave_value data = args(idx++);
 
-	  octave_value arch = (nargin > 4)
-	    ? args(4) : octave_value ("unknown");
+	  if (nargin > idx)
+	    prec = args(idx++);
+
+	  if (nargin > idx)
+	    skip = args(idx++);
+
+	  if (nargin > idx)
+	    arch = args(idx++);
+	  else if (skip.is_string ())
+	    {
+	      arch = skip;
+	      skip = 0;
+	    }
 
 	  double status = do_fwrite (os, data, prec, skip, arch);
 

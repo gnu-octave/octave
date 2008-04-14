@@ -20,7 +20,8 @@
 ## @deftypefn {Loadable Function} {@var{l} =} splchol (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{p}] =} splchol (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{p}, @var{q}] =} splchol (@var{a})
-## This function has been deprecated.  Use @code{chol (@dots,'lower')} instead.
+## This function has been deprecated.  Use @code{chol (@dots{},'lower')}
+## instead.
 ## @end deftypefn
 
 ## Deprecated in version 3.1

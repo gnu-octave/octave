@@ -19,7 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Loadable Function} {@var{l} =} lchol (@var{a})
 ## @deftypefnx {Loadable Function} {[@var{l}, @var{p}] =} lchol (@var{a})
-## This function has been deprecated.  Use @code{chol (@dots,'lower')} instead.
+## This function has been deprecated.  Use @code{chol (@dots{},'lower')}
+## instead.
 ## @end deftypefn
 
 ## Deprecated in version 3.1

@@ -19,8 +19,8 @@
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} rose (@var{th}, @var{r})
 ## @deftypefnx {Function File} {} rose (@var{h}, @dots{})
-## @deftypefnx {Function File} {@var{h} =} compass (@dots{})
-## @deftypefnx {Function File} {[@var{r}, @var{th}] =} compass (@dots{})
+## @deftypefnx {Function File} {@var{h} =} rose (@dots{})
+## @deftypefnx {Function File} {[@var{r}, @var{th}] =} rose (@dots{})
 ##
 ## Plot an angular histogram. With one vector argument @var{th}, plots the
 ## histogram with 20 angular bins. If @var{th} is a matrix, then each column
@@ -36,7 +36,7 @@
 ## If two output arguments are requested, then rather than plotting the 
 ## histogram, the polar vectors necessary to plot the histogram are 
 ## returned.
-#
+##
 ## @example
 ## [r, t] = rose ([2*randn(1e5,1), pi + 2 * randn(1e5,1)]);
 ## polar (r, t);

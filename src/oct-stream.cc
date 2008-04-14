@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include <cassert>
+#include <cctype>
 #include <cstring>
 
 #include <iomanip>
@@ -1066,14 +1067,18 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt, T* valptr)
 	  {
 	    if (c1 == '0')
 	      {
-		int c2 = is.get ();
+		int c2 = is.peek ();
 
 		if (c2 == 'x' || c2 == 'X')
-		  is >> std::hex >> ref >> std::dec;
+                  {
+                    is.ignore ();
+                    if (std::isxdigit (is.peek ()))
+                      is >> std::hex >> ref >> std::dec;
+                    else
+                      ref = 0;
+                  }
 		else
 		  {
-		    is.putback (c2);
-
 		    if (c2 == '0' || c2 == '1' || c2 == '2'
 			|| c2 == '3' || c2 == '4' || c2 == '5'
 			|| c2 == '6' || c2 == '7')

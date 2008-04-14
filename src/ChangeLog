@@ -1,3 +1,8 @@
+2008-04-14  Jaroslav Hajek <highegg@gmail.com>
+
+	* oct-stream.cc (octave_scan_1): Ensure digit following X is hex
+	digit before reading number as hex.
+
 2008-04-14  John W. Eaton  <jwe@octave.org>
 
 	* file-io.cc (Ffread): Allow SKIP arg to be omitted.

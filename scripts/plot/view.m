@@ -28,7 +28,11 @@
 function [azimuth, elevation] = view (x, y, z)
 
   if (nargin < 4)
-    if (nargin == 1)
+    if (nargin == 0)
+      tmp = get (gca (), "view");
+      az = tmp(1);
+      el = tmp(2);
+    elseif (nargin == 1)
       if (x == 2)
 	az = 0;
 	el = 90;

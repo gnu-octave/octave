@@ -1,3 +1,7 @@
+2008-04-15  John W. Eaton  <jwe@octave.org>
+
+	* plot/view.m: Get values from current axes if nargin == 0.
+
 2008-04-015  David Bateman  <dbateman@free.fr>
 
 	* plot/__patch__.m: Fix for NaN values in faces of patches.

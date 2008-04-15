@@ -1,3 +1,7 @@
+2008-04-015  David Bateman  <dbateman@free.fr>
+
+	* plot/__patch__.m: Fix for NaN values in faces of patches.
+	
 2008-04-14  David Bateman  <dbateman@free.fr>
 
 	* plot/rose.m: Add missing comment mark that causes issues with

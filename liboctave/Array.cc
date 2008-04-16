@@ -63,6 +63,28 @@ Array<T>::~Array (void)
 }
 
 template <class T>
+Array<T>&
+Array<T>::operator = (const Array<T>& a)
+{
+  if (this != &a)
+    {
+      if (--rep->count <= 0)
+	delete rep;
+
+      rep = a.rep;
+      rep->count++;
+
+      dimensions = a.dimensions;
+
+      delete [] idx;
+      idx_count = 0;
+      idx = 0;
+    }
+
+  return *this;
+}
+
+template <class T>
 Array<T>
 Array<T>::squeeze (void) const
 {

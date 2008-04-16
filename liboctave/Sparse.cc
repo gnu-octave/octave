@@ -615,6 +615,28 @@ Sparse<T>::~Sparse (void)
 }
 
 template <class T>
+Sparse<T>&
+Sparse<T>::operator = (const Sparse<T>& a)
+{
+  if (this != &a)
+    {
+      if (--rep->count <= 0)
+	delete rep;
+
+      rep = a.rep;
+      rep->count++;
+
+      dimensions = a.dimensions;
+
+      delete [] idx;
+      idx_count = 0;
+      idx = 0;
+    }
+
+  return *this;
+}
+
+template <class T>
 octave_idx_type
 Sparse<T>::compute_index (const Array<octave_idx_type>& ra_idx) const
 {

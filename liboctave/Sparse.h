@@ -222,24 +222,7 @@ public:
 
   virtual ~Sparse (void);
 
-  Sparse<T>& operator = (const Sparse<T>& a)
-    {
-      if (this != &a)
-	{
-	  if (--rep->count <= 0)
-	    delete rep;
-
-	  rep = a.rep;
-	  rep->count++;
-
-	  dimensions = a.dimensions;
-	}
-
-      idx_count = 0;
-      idx = 0;
-
-      return *this;
-    }
+  Sparse<T>& operator = (const Sparse<T>& a);
 
   // Note that nzmax and capacity are the amount of storage for
   // non-zero elements, while nnz is the actual number of non-zero

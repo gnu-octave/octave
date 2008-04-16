@@ -1,3 +1,83 @@
+2008-04-16  John W. Eaton  <jwe@octave.org>
+
+	* pt-walk.h (tree_walker::visit_function_def): New function.
+	* pt-pr-code.cc (tree_print_code::visit_function_def): New function.
+	* pt-pr-code.h: Provide decl.
+	* pt-bp.cc (tree_breakpoint::visit_function_def): New function.
+	* pt-bp.h: Provide decl.
+	* pt-check.cc (tree_checker::visit_function_def): New function.
+	* pt-check.h: Provide decl.
+
+	* parse.y (finish_function): Return ptr to tree_function_def object
+	if curr_fcn_ptr is not defined.  Avoid dereferencing invalid pointers.
+	(frob_function): Set curr_fcn_ptr only when reading a function file.
+	(function): Call finish function in both cases to generate value
+	of production.
+
+	* pt-cmd.h, pt-cmd.cc (tree_function_def): New class.
+
+	* parse.y (parse_and_execute): Delete.
+	* parse.h: Delete decl.
+
+	* pt-pb.cc (tree_breakpoint::visit_octave_user_script): New function.
+	* pt-pb.h: Provide decl.
+	* pt-check.cc (tree_checker::visit_octave_user_script): New function.
+	* pt-check.h: Provide decl.
+	* pt-pr-code.cc (tree_print_code::visit_octave_user_script):
+	New function.
+	* pt-pr-code.h: Provide decl.
+	* pt-walk.h (visit_octave_user_script): New pure virtual function.
+
+	* parse.y (make_script, process_leading_comments,
+	looking_at_function_keyword): New static functions.
+	(SCRIPT): New token.
+	(script): New non-terminal.
+	(command): Handle script here.
+	(parse_fcn_file): Eliminate EXEC_SCRIPT argument.  Change all
+	callers.  Parse scripts and return an octave_user_script rather
+	than executing them here.
+	(load_fcn_from_file): Handle script and function files the same.
+	(source_file): Call d_multi_index_op on object returned by
+	parse_fcn_file.
+	(is_function_file): Delete.
+	(gobble_leading_white_space): Don't recurse.  Simplify.  Eliminate
+	SKIP_CODE, IN_PARTS, and SAVE_COPYRIGHT arguments.  Change all
+	callers.
+	(octave_function_ptr): Delete unused typedef.
+	(get_help_from_file): If help text isn't found by
+	gobble_leading_whitespace, parse file to find it.
+
+	* lex.l (SCRIPT_FILE_BEGIN): New exclusive start state.
+	(prep_lexer_for_script): New function.
+	(grab_help_text): New arg, EOF.
+	(process_comment): New function.
+	({CCHAR}): Use it.
+	* lex.h (prep_lexer_for_script): Provide decl.
+
+	* lex.h, lex.cc, parse.y (lexical_feedback::beginning_of_function):
+	Delete data member and all uses.
+
+	* ov-usr-fcn.cc (octave_user_script::~octave_user_script):
+	Move destructor here from ov-usr-fcn.h.  Delete cmd_list.
+	(octave_user_script::subsref, octave_user_script::accept,
+	octave_user_script::traceback_error): New functions.
+	(octave_user_script::do_multi_index_op):
+	Execute cmd_list instead of calling source_file.
+	* ov-usr-fcn.h (octave_usr_script::cmd_list,
+	octave_usr_script::t_parsed, octave_usr_script::t_checked,
+	octave_usr_script::call_depth): New data members.
+	(octave_usr_script::octave_usr_script): Initialize all data members.
+	(octave_usr_script::octave_usr_script (const std::string&, const
+	std::string&, tree_statement_list *, const std::string&)):
+	New constructor.
+	(octave_usr_script::function_value,
+	octave_usr_script::user_script_value, mark_fcn_file_up_to_date,
+	octave_usr_script::stash_fcn_file_time,
+	octave_usr_script::time_parsed, octave_usr_script::time_checked,
+	octave_usr_script::subsref, octave_usr_script::body): New functions.
+	(octave_user_script::subsref, octave_user_script::accept,
+	octave_user_script::traceback_error): Provide decls.
+
 2008-04-14  Jaroslav Hajek <highegg@gmail.com>
 
 	* oct-stream.cc (octave_scan_1): Ensure digit following X is hex

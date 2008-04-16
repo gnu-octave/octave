@@ -449,7 +449,7 @@ do_edit_history (int argc, const string_vector& argv)
 
   octave_set_interrupt_handler (old_interrupt_handler);
 
-  // Write the commands to the history file since parse_and_execute
+  // Write the commands to the history file since source_file
   // disables command line history while it executes.
 
   std::fstream file (name.c_str (), std::ios::in);
@@ -488,7 +488,7 @@ do_edit_history (int argc, const string_vector& argv)
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
-  parse_and_execute (name);
+  source_file (name);
 
   unwind_protect::run_frame ("do_edit_history");
 
@@ -517,7 +517,7 @@ do_run_history (int argc, const string_vector& argv)
   Vecho_executing_commands = ECHO_CMD_LINE;
   input_from_tmp_history_file = true;
 
-  parse_and_execute (name);
+  source_file (name);
 
   unwind_protect::run_frame ("do_run_history");
 

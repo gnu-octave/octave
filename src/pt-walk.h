@@ -35,7 +35,9 @@ class tree_decl_elt;
 class tree_decl_init_list;
 class tree_simple_for_command;
 class tree_complex_for_command;
+class octave_user_script;
 class octave_user_function;
+class tree_function_def;
 class tree_identifier;
 class tree_if_clause;
 class tree_if_command;
@@ -102,7 +104,13 @@ public:
   visit_complex_for_command (tree_complex_for_command&) = 0;
 
   virtual void
+  visit_octave_user_script (octave_user_script&) = 0;
+
+  virtual void
   visit_octave_user_function (octave_user_function&) = 0;
+
+  virtual void
+  visit_function_def (tree_function_def&) = 0;
 
   virtual void
   visit_identifier (tree_identifier&) = 0;

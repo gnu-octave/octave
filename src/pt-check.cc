@@ -181,12 +181,30 @@ tree_checker::visit_complex_for_command (tree_complex_for_command& cmd)
 }
 
 void
+tree_checker::visit_octave_user_script (octave_user_script& fcn)
+{
+  tree_statement_list *cmd_list = fcn.body ();
+
+  if (cmd_list)
+    cmd_list->accept (*this);
+}
+
+void
 tree_checker::visit_octave_user_function (octave_user_function& fcn)
 {
   tree_statement_list *cmd_list = fcn.body ();
 
   if (cmd_list)
     cmd_list->accept (*this);
+}
+
+void
+tree_checker::visit_function_def (tree_function_def& fdef)
+{
+  octave_function *fcn = fdef.function ();
+
+  if (fcn)
+    fcn->accept (*this);
 }
 
 void

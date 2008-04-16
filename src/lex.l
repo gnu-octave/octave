@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 %s COMMAND_START
 %s MATRIX_START
 
+%x SCRIPT_FILE_BEGIN
+
 %x NESTED_FUNCTION_END
 %x NESTED_FUNCTION_BEGIN
 
@@ -242,7 +244,8 @@ static void do_comma_insert_check (void);
 static int is_keyword_token (const std::string& s);
 static void prep_for_function (void);
 static void prep_for_nested_function (void);
-static std::string grab_help_text (void);
+static std::string grab_help_text (bool& eof);
+static int process_comment (char cchar, bool& eof);
 static bool match_any (char c, const char *s);
 static bool next_token_is_sep_op (void);
 static bool next_token_is_bin_op (bool spc_prev);
@@ -284,6 +287,12 @@ IDENT	([_$a-zA-Z][_$a-zA-Z0-9]*)
 EXPON	([DdEe][+-]?{D}+)
 NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %%
+
+<SCRIPT_FILE_BEGIN>. {
+    BEGIN (INITIAL);
+    yyunput (yytext[0], yytext);
+    COUNT_TOK_AND_RETURN (SCRIPT);
+  }
 
 <NESTED_FUNCTION_END>. {
     BEGIN (NESTED_FUNCTION_BEGIN);
@@ -621,60 +630,12 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %} 
 
 {CCHAR} {
-    std::string help_txt;
-
-    if (! help_buf.empty ())
-      help_txt = help_buf.top ();
-
-    if (help_txt.empty ()
-	&& lexer_flags.beginning_of_function
-	&& nesting_level.none ())
-      {
-	lexer_flags.beginning_of_function = false;
-
-	std::string txt = grab_help_text ();
-
-	if (! help_buf.empty ())
-	  help_buf.pop ();
-
-	help_buf.push (txt);
-
-	octave_comment_buffer::append (txt);
-      }
-    else
-      {
-	std::string buf;
-
-	bool begin_comment = true;
-
-	int c;
-	while ((c = yyinput ()) != EOF && c != '\n')
-	  {
-	    if (begin_comment && (c == '#' || c == '%'))
-	      ; /* Skip leading comment characters. */
-	    else
-	      buf += static_cast<char> (c);
-	  }
-
-	octave_comment_buffer::append (buf);
-      }
-
-    current_input_column = 1;
-    lexer_flags.quote_is_transpose = false;
-    lexer_flags.convert_spaces_to_comma = true;
-
-    maybe_gripe_matlab_incompatible_comment (yytext[0]);
-
-    if (YY_START == COMMAND_START)
-      BEGIN (INITIAL);
-
-    if (nesting_level.none ())
-      {
-	lexer_flags.doing_rawcommand = false;
-	COUNT_TOK_AND_RETURN ('\n');
-      }
-    else if (nesting_level.is_bracket_or_brace ())
-      COUNT_TOK_AND_RETURN (';');
+    bool eof = false;
+    int tok = process_comment (yytext[0], eof);
+    if (eof)
+      TOK_RETURN (END_OF_INPUT);
+    else if (tok > 0)
+      COUNT_TOK_AND_RETURN (tok);
   }
 
 %{
@@ -964,7 +925,6 @@ prep_for_function (void)
 
   lexer_flags.defining_func = true;
   lexer_flags.parsed_function_name = false;
-  lexer_flags.beginning_of_function = true;
 
   if (! (reading_fcn_file || reading_script_file))
     input_line_number = 1;
@@ -1180,7 +1140,7 @@ force_local_variable (const std::string& name)
 // duplicates some of this code!
 
 static std::string
-grab_help_text (void)
+grab_help_text (bool& eof)
 {
   std::string buf;
 
@@ -1238,10 +1198,75 @@ grab_help_text (void)
 
  done:
 
-  if (c)
+  if (c == EOF)
+    eof = true;
+
+  if (c && ! eof)
     yyunput (c, yytext);
 
   return buf;
+}
+
+static int
+process_comment (char cchar, bool& eof)
+{
+  eof = false;
+
+  std::string help_txt;
+
+  if (! help_buf.empty ())
+    help_txt = help_buf.top ();
+
+  if (help_txt.empty () && nesting_level.none ())
+    {
+      std::string txt = grab_help_text (eof);
+
+      if (! help_buf.empty ())
+	help_buf.pop ();
+
+      help_buf.push (txt);
+
+      octave_comment_buffer::append (txt);
+    }
+  else
+    {
+      std::string buf;
+
+      bool begin_comment = true;
+
+      int c;
+      while ((c = yyinput ()) != EOF && c != '\n')
+	{
+	  if (begin_comment && (c == '#' || c == '%'))
+	    ; /* Skip leading comment characters. */
+	  else
+	    buf += static_cast<char> (c);
+	}
+
+      octave_comment_buffer::append (buf);
+
+      if (c == EOF)
+	eof = true;
+    }
+
+  current_input_column = 1;
+  lexer_flags.quote_is_transpose = false;
+  lexer_flags.convert_spaces_to_comma = true;
+
+  maybe_gripe_matlab_incompatible_comment (cchar);
+
+  if (YY_START == COMMAND_START)
+    BEGIN (INITIAL);
+
+  if (nesting_level.none ())
+    {
+      lexer_flags.doing_rawcommand = false;
+      return '\n';
+    }
+  else if (nesting_level.is_bracket_or_brace ())
+    return ';';
+  else
+    return 0;
 }
 
 // Return 1 if the given character matches any character in the given
@@ -2347,7 +2372,6 @@ lexical_feedback::init (void)
   looping = 0;
 
   // Not initially defining a function.
-  beginning_of_function = false;
   defining_func = false;
   parsed_function_name = false;
   parsing_nested_function = 0;
@@ -2426,6 +2450,11 @@ is omitted, return a list of keywords.\n\
   return retval;
 }
 
+void
+prep_lexer_for_script (void)
+{
+  BEGIN (SCRIPT_FILE_BEGIN);
+}
 
 static void
 maybe_warn_separator_insert (char sep)

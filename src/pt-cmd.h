@@ -28,6 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 
 class tree_walker;
 
+#include "ov-fcn.h"
 #include "pt.h"
 #include "pt-bp.h"
 #include "symtab.h"
@@ -86,6 +87,40 @@ private:
   tree_no_op_command (const tree_no_op_command&);
 
   tree_no_op_command& operator = (const tree_no_op_command&);
+};
+
+// Function definition.
+
+class
+tree_function_def : public tree_command
+{
+public:
+
+  tree_function_def (octave_function *f, int l = -1, int c = -1)
+    : tree_command (l, c), fcn (f) { }
+
+  ~tree_function_def (void) { }
+
+  void eval (void);
+
+  tree_command *dup (symbol_table::scope_id scope);
+
+  void accept (tree_walker& tw);
+
+  octave_function *function (void) { return fcn.function_value (); }
+
+private:
+
+  octave_value fcn;
+
+  tree_function_def (const octave_value& v, int l = -1, int c = -1)
+    : tree_command (l, c), fcn (v) { }
+
+  // No copying!
+
+  tree_function_def (const tree_function_def&);
+
+  tree_function_def& operator = (const tree_function_def&);
 };
 
 #endif

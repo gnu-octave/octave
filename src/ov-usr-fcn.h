@@ -50,13 +50,23 @@ octave_user_script : public octave_function
 {
 public:
 
-  octave_user_script (void) { }
+  octave_user_script (void)
+    : octave_function (), cmd_list (0), file_name () { }
+
+  octave_user_script (const std::string& fnm, const std::string& nm,
+		      tree_statement_list *cmds,
+		      const std::string& ds = std::string ())
+    : octave_function (nm, ds), cmd_list (cmds), file_name (fnm) { }
 
   octave_user_script (const std::string& fnm, const std::string& nm,
 		      const std::string& ds = std::string ())
-    : octave_function (nm, ds), file_name (fnm) { }
+    : octave_function (nm, ds), cmd_list (0), file_name (fnm) { }
 
-  ~octave_user_script (void) { }
+  ~octave_user_script (void);
+
+  octave_function *function_value (bool = false) { return this; }
+
+  octave_user_script *user_script_value (bool = false) { return this; }
 
   // Scripts and user functions are both considered "scripts" because
   // they are written in Octave's scripting language.
@@ -65,15 +75,57 @@ public:
 
   void stash_fcn_file_name (const std::string& nm) { file_name = nm; }
 
+  void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
+
+  void stash_fcn_file_time (const octave_time& t)
+    {
+      t_parsed = t;
+      mark_fcn_file_up_to_date (t);
+    }
+
   std::string fcn_file_name (void) const { return file_name; }
+
+  octave_time time_parsed (void) const { return t_parsed; }
+
+  octave_time time_checked (void) const { return t_checked; }
+
+  octave_value subsref (const std::string& type,
+			const std::list<octave_value_list>& idx)
+    {
+      octave_value_list tmp = subsref (type, idx, 1);
+      return tmp.length () > 0 ? tmp(0) : octave_value ();
+    }
+
+  octave_value_list subsref (const std::string& type,
+			     const std::list<octave_value_list>& idx,
+			     int nargout);
 
   octave_value_list
   do_multi_index_op (int nargout, const octave_value_list& args);
 
+  tree_statement_list *body (void) { return cmd_list; }
+
+  void traceback_error (void) const;
+
+  void accept (tree_walker& tw);
+
 private:
 
-  // The name of the file to parse.
+  // The list of commands that make up the body of this function.
+  tree_statement_list *cmd_list;
+
+  // The name of the file we parsed.
   std::string file_name;
+
+  // The time the file was parsed.
+  octave_time t_parsed;
+
+  // The time the file was last checked to see if it needs to be
+  // parsed again.
+  octave_time t_checked;
+
+  // Used to keep track of recursion depth.
+  int call_depth;
 
   // No copying!
 

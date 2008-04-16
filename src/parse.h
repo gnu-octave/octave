@@ -81,13 +81,6 @@ extern std::string current_class_name;
 // Keep a count of how many END tokens we expect.
 extern int end_tokens_expected;
 
-extern OCTINTERP_API void
-parse_and_execute (FILE *f);
-
-extern OCTINTERP_API void
-parse_and_execute (const std::string& s, bool verbose = false,
-		   const char *warn_for = 0);
-
 extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found,
 		    std::string& file);
@@ -110,7 +103,9 @@ load_fcn_from_file (const std::string& file_name,
 
 extern OCTINTERP_API void
 source_file (const std::string& file_name,
-	     const std::string& context = std::string ());
+	     const std::string& context = std::string (),
+	     bool verbose = false, bool require_file = true,
+	     const std::string& warn_for = std::string ());
 
 extern OCTINTERP_API octave_value_list
 feval (const std::string& name,

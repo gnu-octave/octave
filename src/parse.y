@@ -259,6 +259,10 @@ static tree_expression *
 make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
 		tree_expression *rhs);
 
+// Define a script.
+static void
+make_script (tree_statement_list *cmds);
+
 // Begin defining a function.
 static octave_user_function *
 start_function (tree_parameter_list *param_list, tree_statement_list *body);
@@ -268,7 +272,7 @@ static octave_user_function *
 frob_function (const std::string& fname, octave_user_function *fcn);
 
 // Finish defining a function.
-static void
+static tree_function_def *
 finish_function (tree_parameter_list *ret_list,
 		 octave_user_function *fcn, octave_comment_list *lc);
 
@@ -399,7 +403,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 
 // Other tokens.
 %token END_OF_INPUT LEXICAL_ERROR
-%token FCN
+%token FCN SCRIPT
 // %token VARARGIN VARARGOUT
 %token CLOSE_BRACE
 
@@ -424,7 +428,7 @@ set_stmt_print_flag (tree_statement_list *, char, bool);
 %type <tree_parameter_list_type> param_list param_list1 param_list2
 %type <tree_parameter_list_type> return_list return_list1
 %type <tree_command_type> command select_command loop_command
-%type <tree_command_type> jump_command except_command function
+%type <tree_command_type> jump_command except_command function script
 %type <tree_if_command_type> if_command
 %type <tree_if_clause_type> elseif_clause else_clause
 %type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
@@ -521,10 +525,7 @@ list		: list1 opt_sep
 		;
 
 list1		: statement
-		  {
-		    lexer_flags.beginning_of_function = false;
-		    $$ = new tree_statement_list ($1);
-		  }
+		  { $$ = new tree_statement_list ($1); }
 		| list1 sep statement
 		  {
 		    set_stmt_print_flag ($1, $2, true);
@@ -908,6 +909,8 @@ command		: declaration
 		  { $$ = $1; }
 		| function
 		  { $$ = $1; }
+		| script
+		  { $$ = $1; }
 		;
 
 // =====================
@@ -1206,6 +1209,17 @@ return_list1	: identifier
 		  }
 		;
 
+// ===========
+// Script file
+// ===========
+
+script		: SCRIPT opt_list END_OF_INPUT
+		  {
+		    make_script ($2);
+		    $$ = 0;
+		  }
+		;
+
 // ===================
 // Function definition
 // ===================
@@ -1216,15 +1230,13 @@ function_beg	: push_fcn_symtab FCN stash_comment
 
 function	: function_beg function1
 		  {
-		    $2->stash_leading_comment ($1);
+		    $$ = finish_function (0, $2, $1);
 		    recover_from_parsing_function ();
-		    $$ = 0;
 		  }
 		| function_beg return_list '=' function1
 		  {
-		    finish_function ($2, $4, $1);
+		    $$ = finish_function ($2, $4, $1);
 		    recover_from_parsing_function ();
-		    $$ = 0;
 		  }
 		;
 
@@ -2386,6 +2398,30 @@ make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
   return retval;
 }
 
+// Define a function.
+
+static void
+make_script (tree_statement_list *cmds)
+{
+  std::string doc_string;
+
+  if (! help_buf.empty ())
+    {
+      doc_string = help_buf.top ();
+      help_buf.pop ();
+    }
+
+  octave_user_script *script
+    = new octave_user_script (curr_fcn_file_full_name, curr_fcn_file_name,
+			      cmds, doc_string);
+
+  octave_time now;
+
+  script->stash_fcn_file_time (now);
+
+  curr_fcn_ptr = script;
+}
+
 // Begin defining a function.
 
 static octave_user_function *
@@ -2511,34 +2547,35 @@ frob_function (const std::string& fname, octave_user_function *fcn)
 	  symbol_table::reset_parent_scope ();
 	}
     }
-  else if (! reading_fcn_file)
-    {
-      std::string nm = fcn->name ();
-
-      symbol_table::install_cmdline_function (nm, octave_value (fcn));
-
-      // Make sure that any variable with the same name as the new
-      // function is cleared.
-
-      symbol_table::varref (nm) = octave_value ();
-    }
-  else
+  else if (reading_fcn_file)
     curr_fcn_ptr = fcn;
+  else
+    curr_fcn_ptr = 0;
 
   return fcn;
 }
 
-// Finish defining a function.
-
-static void
+static tree_function_def *
 finish_function (tree_parameter_list *ret_list,
 		 octave_user_function *fcn, octave_comment_list *lc)
 {
-  ret_list->mark_as_formal_parameters ();
+  tree_function_def *retval = 0;
 
-  fcn->stash_leading_comment (lc);
+  if (ret_list)
+    ret_list->mark_as_formal_parameters ();
 
-  fcn->define_ret_list (ret_list);
+  if (fcn)
+    {
+      if (lc)
+	fcn->stash_leading_comment (lc);
+
+      fcn->define_ret_list (ret_list);
+    }
+
+  if (! curr_fcn_ptr)
+    retval = new tree_function_def (fcn);
+
+  return retval;
 }
 
 static void
@@ -2551,7 +2588,6 @@ recover_from_parsing_function (void)
   symtab_context.pop ();
 
   lexer_flags.defining_func = false;
-  lexer_flags.beginning_of_function = false;
   lexer_flags.parsed_function_name = false;
   lexer_flags.looking_at_return_list = false;
   lexer_flags.looking_at_parameter_list = false;
@@ -2767,77 +2803,6 @@ set_stmt_print_flag (tree_statement_list *list, char sep,
     }
 }
 
-void
-parse_and_execute (FILE *f)
-{
-  unwind_protect::begin_frame ("parse_and_execute");
-
-  unwind_protect_ptr (global_command);
-
-  YY_BUFFER_STATE old_buf = current_buffer ();
-  YY_BUFFER_STATE new_buf = create_buffer (f);
-
-  unwind_protect::add (restore_input_buffer, old_buf);
-  unwind_protect::add (delete_input_buffer, new_buf);
-
-  switch_to_buffer (new_buf);
-
-  unwind_protect_bool (line_editing);
-  unwind_protect_bool (get_input_from_eval_string);
-  unwind_protect_bool (parser_end_of_input);
-
-  line_editing = false;
-  get_input_from_eval_string = false;
-  parser_end_of_input = false;
-
-  int retval;
-  do
-    {
-      reset_parser ();
-
-      retval = yyparse ();
-
-      if (retval == 0)
-        {
-          if (global_command)
-	    {
-	      global_command->eval ();
-
-	      delete global_command;
-
-	      global_command = 0;
-
-	      OCTAVE_QUIT;
-
-	      bool quit = (tree_return_command::returning
-			   || tree_break_command::breaking);
-
-	      if (tree_return_command::returning)
-		tree_return_command::returning = 0;
-
-	      if (tree_break_command::breaking)
-		tree_break_command::breaking--;
-
-	      if (error_state)
-		{
-		  error ("near line %d of file `%s'", input_line_number,
-			 curr_fcn_file_full_name.c_str ());
-
-		  break;
-		}
-
-	      if (quit)
-		break;
-	    }
-	  else if (parser_end_of_input)
-	    break;
-        }
-    }
-  while (retval == 0);
-
-  unwind_protect::run_frame ("parse_and_execute");
-}
-
 static void
 safe_fclose (void *f)
 {
@@ -2852,51 +2817,6 @@ safe_fclose (void *f)
 
   if (f)
     fclose (static_cast<FILE *> (f));
-}
-
-void
-parse_and_execute (const std::string& s, bool verbose, const char *warn_for)
-{
-  unwind_protect::begin_frame ("parse_and_execute_2");
-
-  unwind_protect_bool (reading_script_file);
-  unwind_protect_str (curr_fcn_file_full_name);
-
-  reading_script_file = true;
-  curr_fcn_file_full_name = s;
-
-  FILE *f = get_input_from_file (s, 0);
-
-  if (f)
-    {
-      unwind_protect::add (safe_fclose, f);
-
-      octave_user_script *script = new octave_user_script (s, s, "");
-      octave_call_stack::push (script);
-      unwind_protect::add (octave_call_stack::unwind_pop_script, 0);
-
-      unwind_protect_int (input_line_number);
-      unwind_protect_int (current_input_column);
-
-      input_line_number = 0;
-      current_input_column = 1;
-
-      if (verbose)
-	{
-	  std::cout << "reading commands from " << s << " ... ";
-	  reading_startup_message_printed = true;
-	  std::cout.flush ();
-	}
-
-      parse_and_execute (f);
-
-      if (verbose)
-	std::cout << "done." << std::endl;
-    }
-  else if (warn_for)
-    error ("%s: unable to open file `%s'", warn_for, s.c_str ());
-
-  unwind_protect::run_frame ("parse_and_execute_2");
 }
 
 static bool
@@ -2930,33 +2850,13 @@ text_getc (FILE *f)
 }
 
 // Eat whitespace and comments from FFILE, returning the text of the
-// comments read if it doesn't look like a copyright notice.  If
-// IN_PARTS, consider each block of comments separately; otherwise,
-// grab them all at once.  If UPDATE_POS is TRUE, line and column
-// number information is updated.  If SAVE_COPYRIGHT is TRUE, then
-// comments that are recognized as a copyright notice are saved in the
-// comment buffer.  If SKIP_CODE is TRUE, then ignore code, otherwise
-// stop at the first non-whitespace character that is not part of a
+// comments read if it doesn't look like a copyright notice.  The
+// parser line and column number information is updated.  Processing
+// stops at the first non-whitespace character that is not part of a
 // comment.
 
-// FIXME -- skipping code will fail for something like this:
-//
-//   function foo (x)
-//     fprintf ('%d\n', x);
-//
-//   % This is the help for foo.
-//
-// because we recognize the '%' in the fprintf format as a comment
-// character.  Fixing this will probably require actually parsing the
-// file properly.
-
-// FIXME -- grab_help_text() in lex.l duplicates some of this
-// code!
-
 static std::string
-gobble_leading_white_space (FILE *ffile, bool in_parts,
-			    bool update_pos, bool save_copyright,
-			    bool skip_code)
+gobble_leading_white_space (FILE *ffile)
 {
   std::string help_txt;
 
@@ -2980,8 +2880,7 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 
   while ((c = text_getc (ffile)) != EOF)
     {
-      if (update_pos)
-	current_input_column++;
+      current_input_column++;
 
       if (begin_comment)
 	{
@@ -3006,38 +2905,32 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 
 	  if (c == '\n')
 	    {
-	      if (update_pos)
-		{
-		  input_line_number++;
-		  current_input_column = 0;
-		}
+	      input_line_number++;
+	      current_input_column = 0;
 
 	      in_comment = false;
 	      discard_space = true;
-
-	      if (in_parts)
-		{
-		  if ((c = text_getc (ffile)) != EOF)
-		    {
-		      if (update_pos)
-			current_input_column--;
-		      ungetc (c, ffile);
-		      if (c == '\n')
-			break;
-		    }
-		  else
-		    break;
-		}
 	    }
 	}
       else
 	{
 	  switch (c)
 	    {
+	    case '\n':
+	      input_line_number++;
+	      current_input_column = 0;
+	      // fall through...
+
 	    case ' ':
 	    case '\t':
-	      if (first_comments_seen)
-		have_help_text = true;
+	      if (first_comments_seen && ! have_help_text)
+		{
+		  if (looks_like_copyright (help_txt))
+		    help_txt.resize (0);
+
+		  if (! help_txt.empty ())
+		    have_help_text = true;
+		}
 	      break;
 
 	    case '%':
@@ -3046,120 +2939,46 @@ gobble_leading_white_space (FILE *ffile, bool in_parts,
 	      in_comment = true;
 	      break;
 
-	    case '\n':
-	      if (first_comments_seen)
-		have_help_text = true;
-	      if (update_pos)
-		{
-		  input_line_number++;
-		  current_input_column = 0;
-		}
-	      continue;
-
 	    default:
-	      if (skip_code)
-		continue;
-	      else
-		{
-		  if (update_pos)
-		    current_input_column--;
-		  ungetc (c, ffile);
-		  goto done;
-		}
+	      current_input_column--;
+	      ungetc (c, ffile);
+	      goto done;
 	    }
 	}
     }
 
  done:
 
-  if (! help_txt.empty ())
-    {
-      if (looks_like_copyright (help_txt))
-	{
-	  if (save_copyright)
-	    octave_comment_buffer::append (help_txt);
-
-	  help_txt.resize (0);
-	}
-
-      if (in_parts && help_txt.empty ())
-	help_txt = gobble_leading_white_space (ffile, in_parts, update_pos,
-					       false, skip_code);
-    }
-
   return help_txt;
 }
 
-std::string
-get_help_from_file (const std::string& nm, bool& symbol_found,
-		    std::string& file)
+static void
+process_leading_comments (FILE *fptr)
 {
-  std::string retval;
+  std::string txt = gobble_leading_white_space (fptr);
 
-  file = fcn_file_in_path (nm);
+  help_buf.push (txt);
 
-  if (! file.empty ())
-    {
-      symbol_found = true;
-
-      FILE *fptr = fopen (file.c_str (), "r");
-
-      if (fptr)
-	{
-	  unwind_protect::add (safe_fclose, fptr);
-
-	  retval = gobble_leading_white_space (fptr, true, true, false, true);
-
-	  unwind_protect::run ();
-	}
-    }
-
-  return retval;
+  octave_comment_buffer::append (txt);
 }
 
-std::string
-get_help_from_file (const std::string& nm, bool& symbol_found)
+static bool
+looking_at_function_keyword (FILE *ffile)
 {
-  std::string file;
-  return get_help_from_file (nm, symbol_found, file);
-}
-
-static int
-is_function_file (FILE *ffile)
-{
-  int status = 0;
+  bool status = false;
 
   long pos = ftell (ffile);
 
-  gobble_leading_white_space (ffile, false, false, false, false);
-
   char buf [10];
   fgets (buf, 10, ffile);
-  int len = strlen (buf);
+  size_t len = strlen (buf);
   if (len > 8 && strncmp (buf, "function", 8) == 0
       && ! (isalnum (buf[8]) || buf[8] == '_'))
-    status = 1;
+    status = true;
 
   fseek (ffile, pos, SEEK_SET);
 
   return status;
-}
-
-static int
-is_function_file (const std::string& fname)
-{
-  int retval = 0;
-
-  FILE *fid = fopen (fname.c_str (), "r");
-
-  if (fid)
-    {
-      retval = is_function_file (fid);
-
-      fclose (fid);
-    }
-
-  return retval;
 }
 
 static void
@@ -3174,11 +2993,10 @@ restore_input_stream (void *f)
   command_editor::set_input_stream (static_cast<FILE *> (f));
 }
 
-typedef octave_function * octave_function_ptr;
-
 static octave_function *
 parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
-		bool exec_script, bool force_script = false)
+		bool force_script = false, bool require_file = true,
+		const std::string& warn_for = std::string ())
 {
   unwind_protect::begin_frame ("parse_fcn_file");
 
@@ -3210,100 +3028,139 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
   parent_function_name = "";
   current_class_name = dispatch_type;
 
+  // The next four lines must be in this order.
+  unwind_protect::add (restore_command_history, 0);
+
+  // FIXME -- we shouldn't need both the
+  // command_history object and the
+  // Vsaving_history variable...
+  command_history::ignore_entries ();
+
+  unwind_protect_bool (Vsaving_history);
+
+  Vsaving_history = false;
+
   FILE *ffile = get_input_from_file (ff, 0);
 
   unwind_protect::add (safe_fclose, ffile);
 
   if (ffile)
     {
-      // Check to see if this file defines a function or is just a
-      // list of commands.
+      process_leading_comments (ffile);
 
-      if (! force_script && is_function_file (ffile))
+      std::string file_type;
+
+      bool parsing_script = false;
+
+      if (! force_script && looking_at_function_keyword (ffile))
 	{
-	  // FIXME -- we shouldn't need both the
-	  // command_history object and the
-	  // Vsaving_history variable...
-	  command_history::ignore_entries ();
-
-	  unwind_protect::add (restore_command_history, 0);
+	  file_type = "function";
 
 	  unwind_protect_int (Vecho_executing_commands);
-	  unwind_protect_bool (Vsaving_history);
 	  unwind_protect_bool (reading_fcn_file);
 	  unwind_protect_bool (get_input_from_eval_string);
 	  unwind_protect_bool (parser_end_of_input);
 
 	  Vecho_executing_commands = ECHO_OFF;
-	  Vsaving_history = false;
 	  reading_fcn_file = true;
 	  get_input_from_eval_string = false;
 	  parser_end_of_input = false;
-
-	  YY_BUFFER_STATE old_buf = current_buffer ();
-	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
-
-	  unwind_protect::add (restore_input_buffer, old_buf);
-	  unwind_protect::add (delete_input_buffer, new_buf);
-
-	  switch_to_buffer (new_buf);
-
-	  unwind_protect_ptr (curr_fcn_ptr);
-	  curr_fcn_ptr = 0;
-
-	  reset_parser ();
-
-	  std::string txt
-	    = gobble_leading_white_space (ffile, true, true, true, false);
-
-	  help_buf.push (txt);
-
-	  octave_comment_buffer::append (txt);
-
-	  // FIXME -- this should not be necessary.
-	  gobble_leading_white_space (ffile, false, true, false, false);
-
-	  lexer_flags.parsing_class_method = ! dispatch_type.empty ();
-
-	  int status = yyparse ();
-
-	  fcn_ptr = curr_fcn_ptr;
-
-	  if (status != 0)
-	    error ("parse error while reading function file %s", ff.c_str ());
 	}
-      else if (exec_script)
+      else
 	{
+	  file_type = "script";
+
 	  // The value of `reading_fcn_file' will be restored to the
 	  // proper value when we unwind from this frame.
 	  reading_fcn_file = old_reading_fcn_file_state;
 
-	  // FIXME -- we shouldn't need both the
-	  // command_history object and the
-	  // Vsaving_history variable...
-	  command_history::ignore_entries ();
-
-	  unwind_protect::add (restore_command_history, 0);
-
-	  unwind_protect_bool (Vsaving_history);
 	  unwind_protect_bool (reading_script_file);
 
-	  Vsaving_history = false;
 	  reading_script_file = true;
 
-	  octave_user_script *script = new octave_user_script (ff, ff, "");
-	  octave_call_stack::push (script);
-	  unwind_protect::add (octave_call_stack::unwind_pop_script, 0);
-
-	  parse_and_execute (ffile);
+	  parsing_script = true;
 	}
+
+      YY_BUFFER_STATE old_buf = current_buffer ();
+      YY_BUFFER_STATE new_buf = create_buffer (ffile);
+
+      unwind_protect::add (restore_input_buffer, old_buf);
+      unwind_protect::add (delete_input_buffer, new_buf);
+
+      switch_to_buffer (new_buf);
+
+      unwind_protect_ptr (curr_fcn_ptr);
+      curr_fcn_ptr = 0;
+
+      reset_parser ();
+
+      if (parsing_script)
+	prep_lexer_for_script ();
+
+      lexer_flags.parsing_class_method = ! dispatch_type.empty ();
+
+      int status = yyparse ();
+
+      fcn_ptr = curr_fcn_ptr;
+
+      if (status != 0)
+	error ("parse error while reading %s file %s",
+	       file_type.c_str(), ff.c_str ());
     }
-  else
+  else if (require_file)
     error ("no such file, `%s'", ff.c_str ());
+  else if (! warn_for.empty ())
+    error ("%s: unable to open file `%s'", warn_for.c_str (), ff.c_str ());    
 
   unwind_protect::run_frame ("parse_fcn_file");
 
   return fcn_ptr;
+}
+
+std::string
+get_help_from_file (const std::string& nm, bool& symbol_found,
+		    std::string& file)
+{
+  std::string retval;
+
+  file = fcn_file_in_path (nm);
+
+  if (! file.empty ())
+    {
+      symbol_found = true;
+
+      FILE *fptr = fopen (file.c_str (), "r");
+
+      if (fptr)
+	{
+	  unwind_protect::add (safe_fclose, fptr);
+
+	  retval = gobble_leading_white_space (fptr);
+
+	  if (retval.empty ())
+	    {
+	      octave_function *fcn = parse_fcn_file (file, "");
+
+	      if (fcn)
+		{
+		  retval = fcn->doc_string ();
+
+		  delete fcn;
+		}
+	    }
+
+	  unwind_protect::run ();
+	}
+    }
+
+  return retval;
+}
+
+std::string
+get_help_from_file (const std::string& nm, bool& symbol_found)
+{
+  std::string file;
+  return get_help_from_file (nm, symbol_found, file);
 }
 
 std::string
@@ -3402,20 +3259,15 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
     retval = octave_dynamic_loader::load_mex (nm, file, fcn_file_from_relative_lookup);
   else if (len > 2)
     {
-      if (is_function_file (file))
-	{
-	  // These are needed by yyparse.
+      // These are needed by yyparse.
 
-	  unwind_protect_str (curr_fcn_file_name);
-	  unwind_protect_str (curr_fcn_file_full_name);
+      unwind_protect_str (curr_fcn_file_name);
+      unwind_protect_str (curr_fcn_file_full_name);
 
-	  curr_fcn_file_name = nm;
-	  curr_fcn_file_full_name = file;
+      curr_fcn_file_name = nm;
+      curr_fcn_file_full_name = file;
 
-	  retval = parse_fcn_file (file, dispatch_type, false, autoloading);
-	}
-      else
-	retval = new octave_user_script (file, fcn_name);
+      retval = parse_fcn_file (file, dispatch_type, autoloading);
     }
 
   if (retval)
@@ -3530,7 +3382,8 @@ With no arguments, return a structure containing the current autoload map.\n\
 }
 
 void
-source_file (const std::string& file_name, const std::string& context)
+source_file (const std::string& file_name, const std::string& context,
+	     bool verbose, bool require_file, const std::string& warn_for)
 {
   std::string file_full_name = file_ops::tilde_expand (file_name);
 
@@ -3557,9 +3410,31 @@ source_file (const std::string& file_name, const std::string& context)
 
   if (! error_state)
     {
-      parse_fcn_file (file_full_name, "", true, true);
+      octave_function *fcn = parse_fcn_file (file_full_name, "", true,
+					     require_file, warn_for);
 
-      if (error_state)
+      if (! error_state)
+	{
+	  if (fcn && fcn->is_user_script ())
+	    {
+	      octave_value_list args;
+
+	      if (verbose)
+		{
+		  std::cout << "executing commands from " << file_full_name << " ... ";
+		  reading_startup_message_printed = true;
+		  std::cout.flush ();
+		}
+
+	      fcn->do_multi_index_op (0, args);
+
+	      if (verbose)
+		std::cout << "done." << std::endl;
+
+	      delete fcn;
+	    }
+	}
+      else
 	error ("source: error sourcing file `%s'",
 	       file_full_name.c_str ());
     }

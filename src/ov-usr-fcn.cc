@@ -51,7 +51,29 @@ along with Octave; see the file COPYING.  If not, see
 // Maximum nesting level for functions called recursively.
 static int Vmax_recursion_depth = 256;
 
-// Scripts.
+// User defined scripts.
+
+DEFINE_OCTAVE_ALLOCATOR (octave_user_script);
+
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
+				     "user-defined script",
+				     "user-defined script");
+
+octave_user_script::~octave_user_script (void)
+{
+  delete cmd_list;
+}
+
+octave_value_list
+octave_user_script::subsref (const std::string&,
+			     const std::list<octave_value_list>&, int)
+{
+  octave_value_list retval;
+
+  ::error ("invalid use of script in index expression");
+
+  return retval;
+}
 
 octave_value_list
 octave_user_script::do_multi_index_op (int nargout,
@@ -61,19 +83,75 @@ octave_user_script::do_multi_index_op (int nargout,
 
   if (! error_state)
     {
-      if (args.length () == 0)
+      if (args.length () == 0 && nargout == 0)
 	{
-	  // FIXME -- I think we need a way to protect against
-	  // recursion, but we can't use the same method as we use for
-	  // functions.
+	  if (cmd_list)
+	    {
+	      unwind_protect::begin_frame ("user_script_eval");
 
-	  source_file (file_name);
+	      unwind_protect_int (call_depth);
+	      call_depth++;
+
+	      if (call_depth <= Vmax_recursion_depth)
+		{
+		  octave_call_stack::push (this);
+
+		  unwind_protect::add (octave_call_stack::unwind_pop, 0);
+
+		  cmd_list->eval ();
+
+		  if (tree_return_command::returning)
+		    tree_return_command::returning = 0;
+
+		  if (tree_break_command::breaking)
+		    tree_break_command::breaking--;
+
+		  if (error_state)
+		    traceback_error ();
+		}
+	      else
+		::error ("max_recursion_limit exceeded");
+
+	      unwind_protect::run_frame ("user_script_eval");
+    	    }
 	}
       else
 	error ("invalid call to script");
     }
 
   return retval;
+}
+
+void
+octave_user_script::accept (tree_walker& tw)
+{
+  tw.visit_octave_user_script (*this);
+}
+
+// FIXME -- this function is exactly the same as
+// octave_user_function::traceback_error.
+
+void
+octave_user_script::traceback_error (void) const
+{
+  if (error_state >= 0)
+    error_state = -1;
+
+  if (my_name.empty ())
+    {
+      if (file_name.empty ())
+	::error ("called from `?unknown?'");
+      else
+	::error ("called from file `%s'", file_name.c_str ());
+    }
+  else
+    {
+      if (file_name.empty ())
+	::error ("called from `%s'", my_name.c_str ());
+      else 
+	::error ("called from `%s' in file `%s'",
+		 my_name.c_str (), file_name.c_str ());
+    }
 }
 
 // User defined functions.
@@ -83,12 +161,6 @@ DEFINE_OCTAVE_ALLOCATOR (octave_user_function);
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_function,
 				     "user-defined function",
 				     "user-defined function");
-
-DEFINE_OCTAVE_ALLOCATOR (octave_user_script);
-
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
-				     "user-defined script",
-				     "user-defined script");
 
 // Ugh.  This really needs to be simplified (code/data?
 // extrinsic/intrinsic state?).

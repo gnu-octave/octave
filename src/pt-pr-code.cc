@@ -284,6 +284,17 @@ tree_print_code::visit_complex_for_command (tree_complex_for_command& cmd)
 }
 
 void
+tree_print_code::visit_octave_user_script (octave_user_script& fcn)
+{
+  reset ();
+
+  tree_statement_list *cmd_list = fcn.body ();
+
+  if (cmd_list)
+    cmd_list->accept (*this);
+}
+
+void
 tree_print_code::visit_octave_user_function (octave_user_function& fcn)
 {
   reset ();
@@ -404,6 +415,17 @@ tree_print_code::visit_octave_user_function_trailer (octave_user_function& fcn)
   os << "endfunction";
 
   newline ();
+}
+
+void
+tree_print_code::visit_function_def (tree_function_def& fdef)
+{
+  indent ();
+
+  octave_function *fcn = fdef.function ();
+
+  if (fcn)
+    fcn->accept (*this);
 }
 
 void

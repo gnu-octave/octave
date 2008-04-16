@@ -289,7 +289,11 @@ execute_startup_files (void)
 
   input_from_startup_file = true;
 
-  int verbose = (verbose_flag && ! inhibit_startup_message);
+  std::string context;
+
+  bool verbose = (verbose_flag && ! inhibit_startup_message);
+
+  bool require_file = false;
 
   if (read_site_files)
     {
@@ -298,9 +302,9 @@ execute_startup_files (void)
       // (if it exists), then from the file
       // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
 
-      parse_and_execute (Vlocal_site_defaults_file, verbose);
+      source_file (Vlocal_site_defaults_file, context, verbose, require_file);
 
-      parse_and_execute (Vsite_defaults_file, verbose);
+      source_file (Vsite_defaults_file, context, verbose, require_file);
     }
 
   if (read_init_files)
@@ -324,7 +328,7 @@ execute_startup_files (void)
 
       if (! home_rc.empty ())
 	{
-	  parse_and_execute (home_rc, verbose);
+	  source_file (home_rc, context, verbose, require_file);
 
 	  // Names alone are not enough.
 
@@ -352,7 +356,7 @@ execute_startup_files (void)
 	      local_rc = octave_env::make_absolute (initfile, curr_dir);
 	    }
 
-	  parse_and_execute (local_rc, verbose);
+	  source_file (local_rc, context, verbose, require_file);
 	}
     }
 
@@ -447,7 +451,11 @@ execute_command_line_file (const std::string& fname)
 
   try
     {
-      parse_and_execute (fname, false, "octave");
+      std::string context;
+      bool verbose = false;
+      bool require_file = true;
+
+      source_file (fname, context, verbose, require_file, "octave");
     }
   catch (octave_interrupt_exception)
     {

@@ -50,6 +50,8 @@ extern void delete_input_buffer (void *buf);
 // Is the given string a keyword?
 extern bool is_keyword (const std::string& s);
 
+extern void prep_lexer_for_script (void);
+
 // For communication between the lexer and parser.
 
 class
@@ -71,10 +73,6 @@ public:
 
   // TRUE means we're in the middle of defining a loop.
   int looping;
-
-  // TRUE means we think we are looking at the beginning of a
-  // function definition.
-  bool beginning_of_function;
 
   // TRUE means that we should convert spaces to a comma inside a
   // matrix definition.

@@ -58,7 +58,11 @@ public:
 
   void visit_complex_for_command (tree_complex_for_command&);
 
+  void visit_octave_user_script (octave_user_script&);
+
   void visit_octave_user_function (octave_user_function&);
+
+  void visit_function_def (tree_function_def&);
 
   void visit_identifier (tree_identifier&);
 

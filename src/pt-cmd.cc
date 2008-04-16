@@ -42,6 +42,38 @@ tree_no_op_command::accept (tree_walker& tw)
   tw.visit_no_op_command (*this);
 }
 
+// Function definition.
+
+void
+tree_function_def::eval (void)
+{
+  octave_function *f = function ();
+
+  if (f)
+    {
+      std::string nm = f->name ();
+
+      symbol_table::install_cmdline_function (nm, fcn);
+
+      // Make sure that any variable with the same name as the new
+      // function is cleared.
+
+      symbol_table::varref (nm) = octave_value ();
+    }
+}
+
+tree_command *
+tree_function_def::dup (symbol_table::scope_id)
+{
+  return new tree_function_def (fcn, line (), column ());
+}
+
+void
+tree_function_def::accept (tree_walker& tw)
+{
+  tw.visit_function_def (*this);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

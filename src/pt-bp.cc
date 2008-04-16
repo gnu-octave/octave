@@ -270,6 +270,12 @@ tree_breakpoint::visit_complex_for_command (tree_complex_for_command& cmd)
 }
 
 void 
+tree_breakpoint::visit_octave_user_script (octave_user_script&)
+{
+  // FIXME -- should anything happen here?
+}
+
+void 
 tree_breakpoint::visit_octave_user_function (octave_user_function&)
 {
   // We should not visit octave user functions because the function we
@@ -287,6 +293,18 @@ void
 tree_breakpoint::visit_octave_user_function_trailer (octave_user_function&)
 {
   // Do nothing.
+}
+
+void
+tree_breakpoint::visit_function_def (tree_function_def& fdef)
+{
+  if (found)
+    return;
+
+  octave_function *fcn = fdef.function ();
+
+  if (fcn)
+    fcn->accept (*this);
 }
 
 void 

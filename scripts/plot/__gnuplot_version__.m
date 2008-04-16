@@ -28,6 +28,9 @@ function version = __gnuplot_version__ ()
 
   if (isempty (__version__))
     [status, output] = system (sprintf ("%s --version", gnuplot_binary ()));
+    if (status != 0)
+      error ("you must have gnuplot installed to display graphics; if you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function");
+    endif
     pattern = "^[^\\s]*\\s*([0-9]+\\.[0-9]+)\\s*[^\\s]*\\s*([^\\s]*)";
     [d1, d2, d3, d4, matches] = regexp (output, pattern);
     if (iscell (matches) && numel (matches) > 0 && iscellstr (matches{1}))

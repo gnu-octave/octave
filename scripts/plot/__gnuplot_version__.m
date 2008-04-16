@@ -29,7 +29,11 @@ function version = __gnuplot_version__ ()
   if (isempty (__version__))
     [status, output] = system (sprintf ("%s --version", gnuplot_binary ()));
     if (status != 0)
-      error ("you must have gnuplot installed to display graphics; if you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function");
+      ## This message ends in a newline so that the traceback messages
+      ## are skipped and people might actually see the message, read it,
+      ## comprehend it, actually take the advice it gives, and stop
+      ## asking us why plotting fails when gnuplot is not found.
+      error ("you must have gnuplot installed to display graphics; if you have gnuplot installed in a non-standard location, see the 'gnuplot_binary' function\n");
     endif
     pattern = "^[^\\s]*\\s*([0-9]+\\.[0-9]+)\\s*[^\\s]*\\s*([^\\s]*)";
     [d1, d2, d3, d4, matches] = regexp (output, pattern);

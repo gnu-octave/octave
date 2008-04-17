@@ -133,18 +133,18 @@ octave_call_stack::do_caller_user_function (void)
   return retval;
 }
 
-octave_function *
-octave_call_stack::do_caller_user_script_or_function (void)
+octave_user_code *
+octave_call_stack::do_caller_user_code (void)
 {
-  octave_function *retval = 0;
+  octave_user_code *retval = 0;
 
   for (iterator p = cs.begin (); p != cs.end (); p++)
     {
       octave_function *f = *p;
 
-      if (f && (f->is_user_script () || f->is_user_function ()))
+      if (f && f->is_user_code ())
 	{
-	  retval = f;
+	  retval = dynamic_cast<octave_user_code *> (f);
 	  break;
 	}
     }

@@ -3347,19 +3347,21 @@ With no arguments, return a structure containing the current autoload map.\n\
 
 	  if (! octave_env::absolute_pathname (nm))
 	    {
-	      octave_function *fcn = 
-		octave_call_stack::caller_user_script_or_function ();
+	      octave_user_code *fcn = octave_call_stack::caller_user_code ();
+
 	      bool found = false;
+
 	      if (fcn)
 		{
 		  std::string fname = fcn->fcn_file_name ();
+
 		  if (! fname.empty ())
 		    {
-		      fname = octave_env::make_absolute (fname,
-			octave_env::getcwd ());
-		      fname = fname.substr (0, 
-			fname.find_last_of (file_ops::dir_sep_str) + 1);
+		      fname = octave_env::make_absolute (fname, octave_env::getcwd ());
+		      fname = fname.substr (0, fname.find_last_of (file_ops::dir_sep_str) + 1);
+
 		      file_stat fs (fname + nm);
+
 		      if (fs.exists ())
 			{
 			  nm = fname + nm;
@@ -3479,7 +3481,7 @@ of the file name and the extension.\n\
 
   std::string fname;
 
-  octave_function *fcn = octave_call_stack::caller_user_script_or_function ();
+  octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
   if (fcn)
     {

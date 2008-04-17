@@ -62,10 +62,10 @@ bp_table *bp_table::instance = 0;
 // empty, search backward for the first user-defined function in the
 // current call stack.
 
-static octave_user_function *
-get_user_function (const std::string& fname = std::string ())
+static octave_user_code *
+get_user_code (const std::string& fname = std::string ())
 {
-  octave_user_function *dbg_fcn = 0;
+  octave_user_code *dbg_fcn = 0;
 
   if (fname.empty ())
     dbg_fcn = octave_call_stack::caller_user_function ();
@@ -74,7 +74,7 @@ get_user_function (const std::string& fname = std::string ())
       octave_value fcn = symbol_table::find_function (fname);
 
       if (fcn.is_defined ())
-	dbg_fcn = fcn.user_function_value ();
+	dbg_fcn = fcn.user_code_value ();
     }
 
   return dbg_fcn;
@@ -94,10 +94,10 @@ parse_dbfunction_params (const char *who, const octave_value_list& args,
     return;
 
   // If we are already in a debugging function.
-  if (octave_call_stack::caller_user_function ())
+  if (octave_call_stack::caller_user_code ())
     {
       idx = 0;
-      symbol_name = get_user_function ()->name ();
+      symbol_name = get_user_code ()->name ();
     }
   else if (args(0).is_map ())
     {
@@ -154,24 +154,27 @@ bp_table::do_add_breakpoint (const std::string& fname,
 
   octave_idx_type len = line.size ();
 
-  octave_user_function *dbg_fcn = get_user_function (fname);
+  octave_user_code *dbg_fcn = get_user_code (fname);
 
   if (dbg_fcn)
     {
       tree_statement_list *cmds = dbg_fcn->body ();
 
-      for (int i = 0; i < len; i++)
+      if (cmds)
 	{
-	  const_intmap_iterator p = line.find (i);
-
-	  if (p != line.end ())
+	  for (int i = 0; i < len; i++)
 	    {
-	      int lineno = p->second;
+	      const_intmap_iterator p = line.find (i);
 
-	      retval[i] = cmds->set_breakpoint (lineno);
+	      if (p != line.end ())
+		{
+		  int lineno = p->second;
 
-	      if (retval[i] != 0)
-		bp_map[fname] = dbg_fcn;
+		  retval[i] = cmds->set_breakpoint (lineno);
+
+		  if (retval[i] != 0)
+		    bp_map[fname] = dbg_fcn;
+		}
 	    }
 	}
     }
@@ -197,28 +200,36 @@ bp_table::do_remove_breakpoint (const std::string& fname,
     }
   else
     {
-      octave_user_function *dbg_fcn = get_user_function (fname);
+      octave_user_code *dbg_fcn = get_user_code (fname);
+
       if (dbg_fcn)
 	{
 	  tree_statement_list *cmds = dbg_fcn->body ();
-	  octave_value_list results = cmds->list_breakpoints ();
-	  if (results.length () > 0)
+
+	  if (cmds)
 	    {
-	      for (int i = 0; i < len; i++)
+	      octave_value_list results = cmds->list_breakpoints ();
+
+	      if (results.length () > 0)
 		{
-		  const_intmap_iterator p = line.find (i);
-		  
-		  if (p != line.end ())
-		    cmds->delete_breakpoint (p->second);
+		  for (int i = 0; i < len; i++)
+		    {
+		      const_intmap_iterator p = line.find (i);
+
+		      if (p != line.end ())
+			cmds->delete_breakpoint (p->second);
+		    }
+
+		  results = cmds->list_breakpoints ();
+
+		  breakpoint_map_iterator it = bp_map.find (fname);
+
+		  if (results.length () == 0 && it != bp_map.end ())
+		    bp_map.erase (it);
 		}
-	      results = cmds->list_breakpoints ();
 
-	      breakpoint_map_iterator it = bp_map.find (fname);
-	      if (results.length () == 0 && it != bp_map.end ())
-		bp_map.erase (it);
+	      retval = results.length ();
 	    }
-
-	  retval = results.length ();
 	}
       else
 	error ("remove_breakpoint: unable to find the function requested\n");
@@ -232,24 +243,28 @@ bp_table::do_remove_all_breakpoints_in_file (const std::string& fname)
 {
   intmap retval;
 
-  octave_user_function *dbg_fcn = get_user_function (fname);
+  octave_user_code *dbg_fcn = get_user_code (fname);
   
   if (dbg_fcn)
     {
       tree_statement_list *cmds = dbg_fcn->body ();
 
-      octave_value_list bkpts = cmds->list_breakpoints ();
-
-      for (int i = 0; i < bkpts.length (); i++)
+      if (cmds)
 	{
-	  int lineno = static_cast<int> (bkpts(i).int_value ());
-	  cmds->delete_breakpoint (lineno);
-	  retval[i] = lineno;
+	  octave_value_list bkpts = cmds->list_breakpoints ();
+
+	  for (int i = 0; i < bkpts.length (); i++)
+	    {
+	      int lineno = static_cast<int> (bkpts(i).int_value ());
+	      cmds->delete_breakpoint (lineno);
+	      retval[i] = lineno;
+	    }
+
+	  breakpoint_map_iterator it = bp_map.find (fname);
+
+	  if (it != bp_map.end ())
+	    bp_map.erase (it);
 	}
-      
-      breakpoint_map_iterator it = bp_map.find (fname);
-      if (it != bp_map.end ())
-	bp_map.erase (it);
     }
   else
     error ("remove_all_breakpoint_in_file: "
@@ -297,16 +312,23 @@ bp_table::do_get_breakpoint_list (const octave_value_list& fname_list)
       if (fname_list.length () == 0
 	  || do_find_bkpt_list (fname_list, it->first) != "")
 	{
-	  octave_value_list bkpts = it->second->body ()->list_breakpoints ();
+	  octave_user_code *f = it->second;
 
-	  octave_idx_type len = bkpts.length (); 
+	  tree_statement_list *cmds = f->body ();
 
-	  bp_table::intmap bkpts_vec;
+	  if (cmds)
+	    {
+	      octave_value_list bkpts = cmds->list_breakpoints ();
 
-	  for (int i = 0; i < len; i++)
-	    bkpts_vec[i] = bkpts (i).double_value ();
+	      octave_idx_type len = bkpts.length (); 
 
-	  retval[it->first] = bkpts_vec;
+	      bp_table::intmap bkpts_vec;
+
+	      for (int i = 0; i < len; i++)
+		bkpts_vec[i] = bkpts (i).double_value ();
+
+	      retval[it->first] = bkpts_vec;
+	    }
 	}
     }
 
@@ -432,7 +454,7 @@ mode this should be left out.\n\
     }
   else
     {
-       octave_user_function *dbg_fcn = get_user_function ();
+       octave_user_code *dbg_fcn = get_user_code ();
        if (dbg_fcn)
 	 {
 	   symbol_name = dbg_fcn->name ();
@@ -498,7 +520,7 @@ Show where we are in the code\n\
 {
   octave_value retval;
 
-  octave_user_function *dbg_fcn = get_user_function ();
+  octave_user_code *dbg_fcn = get_user_code ();
 
   if (dbg_fcn)
     {
@@ -573,7 +595,7 @@ List script file with line numbers.\n\
 @end deftypefn")
 {
   octave_value retval;
-  octave_user_function *dbg_fcn;
+  octave_user_code *dbg_fcn;
 
   int nargin = args.length ();
   string_vector argv = args.make_argv ("dbtype");
@@ -583,7 +605,7 @@ List script file with line numbers.\n\
       switch (nargin)
 	{
 	case 0: // dbtype
-	  dbg_fcn = get_user_function ();
+	  dbg_fcn = get_user_code ();
 
 	  if (dbg_fcn)
 	    do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
@@ -592,13 +614,13 @@ List script file with line numbers.\n\
 	  break;
 
 	case 1: // (dbtype func) || (dbtype start:end)
-	  dbg_fcn = get_user_function (argv[1]);
+	  dbg_fcn = get_user_code (argv[1]);
 
 	  if (dbg_fcn)
 	    do_dbtype (octave_stdout, dbg_fcn->name (), 0, INT_MAX);
 	  else
 	    {
-	      dbg_fcn = get_user_function ();
+	      dbg_fcn = get_user_code ();
 
 	      if (dbg_fcn)
 		{
@@ -629,7 +651,7 @@ List script file with line numbers.\n\
 	  break;
 
 	case 2: // (dbtype func start:end) , (dbtype func start)
-	  dbg_fcn = get_user_function (argv[1]);
+	  dbg_fcn = get_user_code (argv[1]);
 
 	  if (dbg_fcn)
 	    {

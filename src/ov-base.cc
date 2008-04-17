@@ -782,6 +782,28 @@ octave_base_value::user_function_value (bool silent)
   return retval;
 }
 
+octave_user_script *
+octave_base_value::user_script_value (bool silent)
+{
+  octave_user_script *retval = 0;
+
+  if (! silent)
+    gripe_wrong_type_arg ("octave_base_value::user_script_value()",
+			  type_name ());
+  return retval;
+}
+
+octave_user_code *
+octave_base_value::user_code_value (bool silent)
+{
+  octave_user_code *retval = 0;
+
+  if (! silent)
+    gripe_wrong_type_arg ("octave_base_value::user_code_value()",
+			  type_name ());
+  return retval;
+}
+
 octave_fcn_handle *
 octave_base_value::fcn_handle_value (bool silent)
 {

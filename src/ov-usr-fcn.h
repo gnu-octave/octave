@@ -43,30 +43,60 @@ class tree_statement_list;
 class tree_va_return_list;
 class tree_walker;
 
+class 
+octave_user_code : public octave_function
+{
+public:
+  octave_user_code (void)
+    : octave_function () { }
+
+  ~octave_user_code (void) { }
+
+  bool is_user_code (void) const { return true; }
+
+  virtual tree_statement_list *body (void) = 0;
+
+protected:
+
+  octave_user_code (const std::string& nm,
+		    const std::string& ds = std::string ())
+    : octave_function (nm, ds) { }
+
+private:
+
+  // No copying!
+
+  octave_user_code (const octave_user_code& f);
+
+  octave_user_code& operator = (const octave_user_code& f);
+};
+
 // Scripts.
 
 class
-octave_user_script : public octave_function
+octave_user_script : public octave_user_code
 {
 public:
 
   octave_user_script (void)
-    : octave_function (), cmd_list (0), file_name () { }
+    : octave_user_code (), cmd_list (0), file_name () { }
 
   octave_user_script (const std::string& fnm, const std::string& nm,
 		      tree_statement_list *cmds,
 		      const std::string& ds = std::string ())
-    : octave_function (nm, ds), cmd_list (cmds), file_name (fnm) { }
+    : octave_user_code (nm, ds), cmd_list (cmds), file_name (fnm) { }
 
   octave_user_script (const std::string& fnm, const std::string& nm,
 		      const std::string& ds = std::string ())
-    : octave_function (nm, ds), cmd_list (0), file_name (fnm) { }
+    : octave_user_code (nm, ds), cmd_list (0), file_name (fnm) { }
 
   ~octave_user_script (void);
 
   octave_function *function_value (bool = false) { return this; }
 
   octave_user_script *user_script_value (bool = false) { return this; }
+
+  octave_user_code *user_code_value (bool = false) { return this; }
 
   // Scripts and user functions are both considered "scripts" because
   // they are written in Octave's scripting language.
@@ -141,7 +171,7 @@ private:
 // User-defined functions.
 
 class
-octave_user_function : public octave_function
+octave_user_function : public octave_user_code
 {
 public:
 
@@ -155,6 +185,8 @@ public:
   octave_function *function_value (bool = false) { return this; }
 
   octave_user_function *user_function_value (bool = false) { return this; }
+
+  octave_user_code *user_code_value (bool = false) { return this; }
 
   octave_user_function *define_param_list (tree_parameter_list *t);
 

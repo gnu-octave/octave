@@ -28,7 +28,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "dRowVector.h"
 
 class octave_value_list;
-class octave_user_function;
+class octave_user_code;
 
 // Interface to breakpoints,.
 
@@ -111,7 +111,7 @@ private:
 
   // Map from function names to function objects for functions
   // containing at least one breakpoint.
-  typedef std::map<std::string, octave_user_function *> breakpoint_map;
+  typedef std::map<std::string, octave_user_code *> breakpoint_map;
 
   typedef breakpoint_map::const_iterator const_breakpoint_map_iterator;
   typedef breakpoint_map::iterator breakpoint_map_iterator;

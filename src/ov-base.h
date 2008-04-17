@@ -51,6 +51,8 @@ class octave_stream;
 class octave_streamoff;
 class octave_function;
 class octave_user_function;
+class octave_user_script;
+class octave_user_code;
 class octave_fcn_handle;
 class octave_fcn_inline;
 class octave_value_list;
@@ -296,6 +298,8 @@ public:
 
   virtual bool is_user_function (void) const { return false; }
 
+  virtual bool is_user_code (void) const { return false; }
+
   virtual bool is_builtin_function (void) const { return false; }
 
   virtual bool is_dld_function (void) const { return false; }
@@ -398,6 +402,10 @@ public:
   virtual octave_function *function_value (bool silent = false);
 
   virtual octave_user_function *user_function_value (bool silent = false);
+
+  virtual octave_user_script *user_script_value (bool silent = false);
+
+  virtual octave_user_code *user_code_value (bool silent = false);
 
   virtual octave_fcn_handle *fcn_handle_value (bool silent = false);
 

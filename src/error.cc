@@ -234,8 +234,7 @@ verror (bool save_last_error, std::ostream& os,
 
       if (tree_statement_stack::current ())
 	{
-	  octave_function *fcn
-	    = octave_call_stack::caller_user_script_or_function ();
+	  octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
 	  if (fcn)
 	    {
@@ -429,8 +428,7 @@ pr_where (const char *name, bool print_code = true)
       int l = -1;
       int c = -1;
 
-      octave_function *fcn
-	= octave_call_stack::caller_user_script_or_function ();
+      octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
       if (fcn)
 	{
@@ -494,7 +492,7 @@ error_2 (const char *id, const char *fmt, va_list args)
 
   if ((interactive || forced_interactive)
       && Vdebug_on_error && init_state == 0
-      && octave_call_stack::caller_user_script_or_function ())
+      && octave_call_stack::caller_user_code ())
     {
       unwind_protect_bool (Vdebug_on_error);
       Vdebug_on_error = false;
@@ -655,7 +653,7 @@ warning_1 (const char *id, const char *fmt, va_list args)
 
       if ((interactive || forced_interactive)
 	  && Vdebug_on_warning
-	  && octave_call_stack::caller_user_script_or_function ())
+	  && octave_call_stack::caller_user_code ())
 	{
 	  unwind_protect_bool (Vdebug_on_warning);
 	  Vdebug_on_warning = false;

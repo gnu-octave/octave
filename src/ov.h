@@ -571,6 +571,9 @@ public:
   bool is_user_function (void) const
     { return rep->is_user_function (); }
 
+  bool is_user_code (void) const
+    { return rep->is_user_code (); }
+
   bool is_builtin_function (void) const
     { return rep->is_builtin_function (); }
 
@@ -738,6 +741,10 @@ public:
   octave_function *function_value (bool silent = false);
 
   octave_user_function *user_function_value (bool silent = false);
+
+  octave_user_script *user_script_value (bool silent = false);
+
+  octave_user_code *user_code_value (bool silent = false);
 
   octave_fcn_handle *fcn_handle_value (bool silent = false);
 

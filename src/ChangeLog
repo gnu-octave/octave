@@ -1,5 +1,45 @@
 2008-04-16  John W. Eaton  <jwe@octave.org>
 
+	* parse.y (Fautoload, Fmfilename): Call
+	octave_call_stack::caller_user_code, not
+	octave_call_stack::caller_user_script_or_function.
+	* toplev.cc, toplev.h (octave_call_stack::caller_user_code):
+	Rename from octave_call_stack::caller_user_script_or_function.
+	(octave_call_stack::do_caller_user_code): Rename from
+	octave_call_stack::do_caller_user_script_or_function.
+	* ov-usr-fcn.h (class octave_user_code): New class, derived from
+	octave_fucntion.
+	(class octave_user_function, class octave_user_script): Derive
+	from octave_user_code, not octave_function.
+	(octave_user_script::user_code_value,
+	octave_user_function::user_code_value): New functions.
+	* ov.cc (octave_value::user_script_value,
+	octave_value::user_code_value): New functions.
+	* ov.h: Provide decls.
+	(octave_value::is_user_code, octave_value::is_user_script):
+	New functions.
+	* ov-base.cc (octave_base_value::user_script_value,
+	octave_base_value::user_code_value): New virutal functions.
+	* ov-base.h: Provide decls.
+	(octave_base_value::is_user_script, octave_base_value::is_user_code):
+	New virtual functions.
+	* error.cc (verror, pr_where, error_2, warning_1):
+	Call octave_call_stack::caller_user_code instead of
+	octave_call_stack::caller_user_script_or_function
+	* input.cc (get_user_input): Likewise.
+	* debug.h (bp_table::breakpoint_map): Use pointer to
+	octave_user_code instead of octave_user_function.
+	* debug.cc (get_user_code): Rename from get_user_function.
+	Return pointer to octave_user_code instead of octave_user_function.
+	Change all uses.
+	(bp_table::do_add_breakpoint, bp_table::do_remove_breakpoint,
+	bp_table::do_remove_all_breakpoints_in_file,
+	bp_table::do_get_breakpoint_list):
+	Avoid dereferencing invalid pointers.
+	(parse_dbfunction_params): Call
+	octave_call_stack::caller_user_code, not
+	octave_call_stack::caller_user_script_or_function. 
+
 	* load-save.cc (Fsave): Fix continuation character in doc string.
 
 	* pt-walk.h (tree_walker::visit_function_def): New function.

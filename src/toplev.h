@@ -122,9 +122,9 @@ public:
   }
 
   // First user-defined function on the stack.
-  static octave_function *caller_user_script_or_function (void)
+  static octave_user_code *caller_user_code (void)
   {
-    return instance_ok () ? instance->do_caller_user_script_or_function () : 0;
+    return instance_ok () ? instance->do_caller_user_code () : 0;
   }
 
   static void push (octave_function *f)
@@ -171,7 +171,7 @@ private:
 
   octave_user_function *do_caller_user_function (void);
 
-  octave_function *do_caller_user_script_or_function (void);
+  octave_user_code *do_caller_user_code (void);
 
   void do_push (octave_function *f) { cs.push_front (f); }
 

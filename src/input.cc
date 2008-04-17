@@ -598,8 +598,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
   if (debug)
     {
-      octave_function *caller
-	= octave_call_stack::caller_user_script_or_function ();
+      octave_user_code *caller = octave_call_stack::caller_user_code ();
 
       if (caller)
 	{

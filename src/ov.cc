@@ -1151,6 +1151,18 @@ octave_value::user_function_value (bool silent)
   return rep->user_function_value (silent);
 }
 
+octave_user_script *
+octave_value::user_script_value (bool silent)
+{
+  return rep->user_script_value (silent);
+}
+
+octave_user_code *
+octave_value::user_code_value (bool silent)
+{
+  return rep->user_code_value (silent);
+}
+
 octave_fcn_handle *
 octave_value::fcn_handle_value (bool silent)
 {

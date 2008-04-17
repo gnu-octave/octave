@@ -244,8 +244,7 @@ static void do_comma_insert_check (void);
 static int is_keyword_token (const std::string& s);
 static void prep_for_function (void);
 static void prep_for_nested_function (void);
-static std::string grab_help_text (bool& eof);
-static int process_comment (char cchar, bool& eof);
+static int process_comment (bool& eof);
 static bool match_any (char c, const char *s);
 static bool next_token_is_sep_op (void);
 static bool next_token_is_bin_op (bool spc_prev);
@@ -631,7 +630,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 {CCHAR} {
     bool eof = false;
-    int tok = process_comment (yytext[0], eof);
+    yyunput (yytext[0], yytext);
+    int tok = process_comment (eof);
     if (eof)
       TOK_RETURN (END_OF_INPUT);
     else if (tok > 0)
@@ -1134,33 +1134,29 @@ force_local_variable (const std::string& name)
     val = Matrix ();
 }
 
-// Grab the help text from an function file.
-
-// FIXME -- gobble_leading_white_space() in parse.y
-// duplicates some of this code!
-
-static std::string
-grab_help_text (bool& eof)
+std::string
+grab_comment_block (stream_reader& reader, bool& eof)
 {
   std::string buf;
 
-  bool begin_comment = true;
-  bool in_comment = true;
-  bool discard_space = true;
+  // TRUE means we are at the beginning of a comment block.
+  bool begin_comment = false;
+
+  // TRUE means we are currently reading a comment block.
+  bool in_comment = false;
+
+  bool warned_incompatible = false;
 
   int c = 0;
 
-  while ((c = yyinput ()) != EOF)
+  while ((c = reader.getc ()) != EOF)
     {
+      current_input_column++;
+
       if (begin_comment)
 	{
 	  if (c == '%' || c == '#')
 	    continue;
-	  else if (discard_space && c == ' ')
-	    {
-	      discard_space = false;
-	      continue;
-	    }
 	  else
 	    begin_comment = false;
 	}	
@@ -1171,26 +1167,36 @@ grab_help_text (bool& eof)
 
 	  if (c == '\n')
 	    {
+	      input_line_number++;
+	      current_input_column = 0;
+
 	      in_comment = false;
-	      discard_space = true;
 	    }
 	}
       else
 	{
 	  switch (c)
 	    {
-	    case '#':
-	    case '%':
-	      maybe_gripe_matlab_incompatible_comment (yytext[0]);
-	      in_comment = true;
-	      begin_comment = true;
-	      break;
-
 	    case ' ':
 	    case '\t':
 	      break;
 
+	    case '#':
+	      if (! warned_incompatible)
+		{
+		  warned_incompatible = true;
+		  maybe_gripe_matlab_incompatible_comment (c);
+		}
+	      // fall through...
+
+	    case '%':
+	      in_comment = true;
+	      begin_comment = true;
+	      break;
+
 	    default:
+	      current_input_column--;
+	      reader.ungetc (c);
 	      goto done;
 	    }
 	}
@@ -1201,14 +1207,24 @@ grab_help_text (bool& eof)
   if (c == EOF)
     eof = true;
 
-  if (c && ! eof)
-    yyunput (c, yytext);
-
   return buf;
 }
 
+class
+flex_stream_reader : public stream_reader
+{
+public:
+  flex_stream_reader (char *buf_arg) : stream_reader (), buf (buf_arg) { }
+
+  int getc (void) { return ::yyinput (); }
+  int ungetc (int c) { ::yyunput (c, buf); return 0; }
+  
+private:
+  char *buf;
+};
+
 static int
-process_comment (char cchar, bool& eof)
+process_comment (bool& eof)
 {
   eof = false;
 
@@ -1217,43 +1233,23 @@ process_comment (char cchar, bool& eof)
   if (! help_buf.empty ())
     help_txt = help_buf.top ();
 
+  flex_stream_reader flex_reader (yytext);
+
+  std::string txt = grab_comment_block (flex_reader, eof);
+
   if (help_txt.empty () && nesting_level.none ())
     {
-      std::string txt = grab_help_text (eof);
-
       if (! help_buf.empty ())
 	help_buf.pop ();
 
       help_buf.push (txt);
-
-      octave_comment_buffer::append (txt);
     }
-  else
-    {
-      std::string buf;
 
-      bool begin_comment = true;
-
-      int c;
-      while ((c = yyinput ()) != EOF && c != '\n')
-	{
-	  if (begin_comment && (c == '#' || c == '%'))
-	    ; /* Skip leading comment characters. */
-	  else
-	    buf += static_cast<char> (c);
-	}
-
-      octave_comment_buffer::append (buf);
-
-      if (c == EOF)
-	eof = true;
-    }
+  octave_comment_buffer::append (txt);
 
   current_input_column = 1;
   lexer_flags.quote_is_transpose = false;
   lexer_flags.convert_spaces_to_comma = true;
-
-  maybe_gripe_matlab_incompatible_comment (cchar);
 
   if (YY_START == COMMAND_START)
     BEGIN (INITIAL);

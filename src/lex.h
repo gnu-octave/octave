@@ -134,6 +134,26 @@ private:
   lexical_feedback& operator = (const lexical_feedback&);
 };
 
+class
+stream_reader
+{
+public:
+  virtual int getc (void) = 0;
+  virtual int ungetc (int c) = 0;
+
+protected:
+  stream_reader (void) { }
+  ~stream_reader (void) { }
+
+private:
+
+  // No copying!
+  stream_reader (const stream_reader&);
+  stream_reader& operator = (const stream_reader&);
+};
+
+extern std::string grab_comment_block (stream_reader& reader, bool& eof);
+
 // TRUE means that we have encountered EOF on the input stream.
 extern bool parser_end_of_input;
 

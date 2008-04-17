@@ -2822,10 +2822,16 @@ safe_fclose (void *f)
 static bool
 looks_like_copyright (const std::string& s)
 {
-  // Perhaps someday we will want to do more here, so leave this as a
-  // separate function.
+  bool retval = false;
 
-  return (s.substr (0, 9) == "Copyright");
+  if (! s.empty ())
+    {
+      size_t offset = s.find_first_not_of (" \t");
+  
+      retval = (s.substr (offset, 9) == "Copyright");
+    }
+
+  return retval;
 }
 
 static int
@@ -2849,117 +2855,89 @@ text_getc (FILE *f)
   return c;
 }
 
-// Eat whitespace and comments from FFILE, returning the text of the
-// comments read if it doesn't look like a copyright notice.  The
-// parser line and column number information is updated.  Processing
-// stops at the first non-whitespace character that is not part of a
-// comment.
-
-static std::string
-gobble_leading_white_space (FILE *ffile)
+class
+stdio_stream_reader : public stream_reader
 {
-  std::string help_txt;
+public:
+  stdio_stream_reader (FILE *f_arg) : stream_reader (), f (f_arg) { }
 
-  // TRUE means we have already seen the first block of comments.
-  bool first_comments_seen = false;
+  int getc (void) { return ::text_getc (f); }
+  int ungetc (int c) { return ::ungetc (c, f); }
+  
+private:
+  FILE *f;
+};
 
-  // TRUE means we are at the beginning of a comment block.
-  bool begin_comment = false;
+static bool
+skip_white_space (stream_reader& reader)
+{
+  int c = 0;
 
-  // TRUE means we have already cached the help text.
-  bool have_help_text = false;
-
-  // TRUE means we are currently reading a comment block.
-  bool in_comment = false;
-
-  // TRUE means we should discard the first space from the input
-  // (used to strip leading spaces from the help text).
-  bool discard_space = true;
-
-  int c;
-
-  while ((c = text_getc (ffile)) != EOF)
+  while ((c = reader.getc ()) != EOF)
     {
-      current_input_column++;
-
-      if (begin_comment)
+      switch (c)
 	{
-	  if (c == '%' || c == '#')
-	    continue;
-	  else if (discard_space && c == ' ')
-	    {
-	      discard_space = false;
-	      continue;
-	    }
-	  else
-	    begin_comment = false;
-	}
+	case ' ':
+	case '\t':
+	  current_input_column++;
+	  break;
 
-      if (in_comment)
-	{
-	  if (! have_help_text)
-	    {
-	      first_comments_seen = true;
-	      help_txt += static_cast<char> (c);
-	    }
+	case '\n':
+	  input_line_number++;
+	  current_input_column = 0;
+	  break;
 
-	  if (c == '\n')
-	    {
-	      input_line_number++;
-	      current_input_column = 0;
-
-	      in_comment = false;
-	      discard_space = true;
-	    }
-	}
-      else
-	{
-	  switch (c)
-	    {
-	    case '\n':
-	      input_line_number++;
-	      current_input_column = 0;
-	      // fall through...
-
-	    case ' ':
-	    case '\t':
-	      if (first_comments_seen && ! have_help_text)
-		{
-		  if (looks_like_copyright (help_txt))
-		    help_txt.resize (0);
-
-		  if (! help_txt.empty ())
-		    have_help_text = true;
-		}
-	      break;
-
-	    case '%':
-	    case '#':
-	      begin_comment = true;
-	      in_comment = true;
-	      break;
-
-	    default:
-	      current_input_column--;
-	      ungetc (c, ffile);
-	      goto done;
-	    }
+	default:
+	  current_input_column--;
+	  reader.ungetc (c);
+	  goto done;
 	}
     }
 
  done:
 
-  return help_txt;
+  return (c == EOF);
 }
 
-static void
-process_leading_comments (FILE *fptr)
+static std::string
+gobble_leading_white_space (FILE *ffile, bool& eof)
 {
-  std::string txt = gobble_leading_white_space (fptr);
+  std::string help_txt;
 
-  help_buf.push (txt);
+  eof = false;
 
-  octave_comment_buffer::append (txt);
+  // TRUE means we have already cached the help text.
+  bool have_help_text = false;
+
+  std::string txt;
+
+  stdio_stream_reader stdio_reader (ffile);
+
+  while (true)
+    {
+      eof = skip_white_space (stdio_reader);
+
+      if (eof)
+	break;
+
+      txt = grab_comment_block (stdio_reader, eof);
+
+      if (txt.empty ())
+	break;
+
+      if (! (have_help_text || looks_like_copyright (txt)))
+	{
+	  help_txt = txt;
+	  have_help_text = true;
+	}
+
+      octave_comment_buffer::append (txt);
+
+      if (eof)
+	break;
+    }
+
+  return help_txt;
 }
 
 static bool
@@ -3046,66 +3024,74 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
   if (ffile)
     {
-      process_leading_comments (ffile);
+      bool eof;
 
-      std::string file_type;
+      std::string help_txt = gobble_leading_white_space (ffile, eof);
 
-      bool parsing_script = false;
+      if (! help_txt.empty ())
+	help_buf.push (help_txt);
 
-      if (! force_script && looking_at_function_keyword (ffile))
+      if (! eof)
 	{
-	  file_type = "function";
+	  std::string file_type;
 
-	  unwind_protect_int (Vecho_executing_commands);
-	  unwind_protect_bool (reading_fcn_file);
-	  unwind_protect_bool (get_input_from_eval_string);
-	  unwind_protect_bool (parser_end_of_input);
+	  bool parsing_script = false;
 
-	  Vecho_executing_commands = ECHO_OFF;
-	  reading_fcn_file = true;
-	  get_input_from_eval_string = false;
-	  parser_end_of_input = false;
+	  if (! force_script && looking_at_function_keyword (ffile))
+	    {
+	      file_type = "function";
+
+	      unwind_protect_int (Vecho_executing_commands);
+	      unwind_protect_bool (reading_fcn_file);
+	      unwind_protect_bool (get_input_from_eval_string);
+	      unwind_protect_bool (parser_end_of_input);
+
+	      Vecho_executing_commands = ECHO_OFF;
+	      reading_fcn_file = true;
+	      get_input_from_eval_string = false;
+	      parser_end_of_input = false;
+	    }
+	  else
+	    {
+	      file_type = "script";
+
+	      // The value of `reading_fcn_file' will be restored to the
+	      // proper value when we unwind from this frame.
+	      reading_fcn_file = old_reading_fcn_file_state;
+
+	      unwind_protect_bool (reading_script_file);
+
+	      reading_script_file = true;
+
+	      parsing_script = true;
+	    }
+
+	  YY_BUFFER_STATE old_buf = current_buffer ();
+	  YY_BUFFER_STATE new_buf = create_buffer (ffile);
+
+	  unwind_protect::add (restore_input_buffer, old_buf);
+	  unwind_protect::add (delete_input_buffer, new_buf);
+
+	  switch_to_buffer (new_buf);
+
+	  unwind_protect_ptr (curr_fcn_ptr);
+	  curr_fcn_ptr = 0;
+
+	  reset_parser ();
+
+	  if (parsing_script)
+	    prep_lexer_for_script ();
+
+	  lexer_flags.parsing_class_method = ! dispatch_type.empty ();
+
+	  int status = yyparse ();
+
+	  fcn_ptr = curr_fcn_ptr;
+
+	  if (status != 0)
+	    error ("parse error while reading %s file %s",
+		   file_type.c_str(), ff.c_str ());
 	}
-      else
-	{
-	  file_type = "script";
-
-	  // The value of `reading_fcn_file' will be restored to the
-	  // proper value when we unwind from this frame.
-	  reading_fcn_file = old_reading_fcn_file_state;
-
-	  unwind_protect_bool (reading_script_file);
-
-	  reading_script_file = true;
-
-	  parsing_script = true;
-	}
-
-      YY_BUFFER_STATE old_buf = current_buffer ();
-      YY_BUFFER_STATE new_buf = create_buffer (ffile);
-
-      unwind_protect::add (restore_input_buffer, old_buf);
-      unwind_protect::add (delete_input_buffer, new_buf);
-
-      switch_to_buffer (new_buf);
-
-      unwind_protect_ptr (curr_fcn_ptr);
-      curr_fcn_ptr = 0;
-
-      reset_parser ();
-
-      if (parsing_script)
-	prep_lexer_for_script ();
-
-      lexer_flags.parsing_class_method = ! dispatch_type.empty ();
-
-      int status = yyparse ();
-
-      fcn_ptr = curr_fcn_ptr;
-
-      if (status != 0)
-	error ("parse error while reading %s file %s",
-	       file_type.c_str(), ff.c_str ());
     }
   else if (require_file)
     error ("no such file, `%s'", ff.c_str ());
@@ -3135,7 +3121,8 @@ get_help_from_file (const std::string& nm, bool& symbol_found,
 	{
 	  unwind_protect::add (safe_fclose, fptr);
 
-	  retval = gobble_leading_white_space (fptr);
+	  bool eof;
+	  retval = gobble_leading_white_space (fptr, eof);
 
 	  if (retval.empty ())
 	    {

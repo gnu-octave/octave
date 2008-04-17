@@ -1,3 +1,29 @@
+2008-04-17  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (looks_like_copyright): Handle leading whitespace.
+	(class stdio_stream_reader): New class.
+	(skip_white_space): New function.
+	(gobble_leading_white_space): New arg, EOF.  Change all uses.
+	Use skip_white_space and grab_comment_block to process comments.
+	(process_leading_comments): Delete.
+	(parse_fcn_file): Call gobble_leading_white_space instead of
+	process_leading_comments.
+	Skip parsing if gobble_leading_white_space detects EOF.
+	* lex.l (process_comment): Delete CCHAR arg.  Change all uses.
+	({CCHAR}): Unput comment character before calling process_comment.
+	(grab_comment_block): Rename from grab_help_text.  Don't discard
+	spaces from comment text.  Update input_line_number and
+	current_input_column as characters are read.  Warn only once about
+	incompatible comment characters in a given block of comments.
+	Use stream_reader class instead of accessing yyinput and yyunput
+	directly.
+	(class flex_stream_reader): New class.
+	(process_comment): Use grab_comment_block to handle all comments.
+	Don't call maybe_gripe_matlab_incompatible_comment.
+	Always store comment text returned by grab_comment_block.
+	* lex.h (grab_comment_block): Provide decl.
+	(class stream_reader): New class.
+
 2008-04-16  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (Fautoload, Fmfilename): Call

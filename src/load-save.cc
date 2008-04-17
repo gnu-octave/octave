@@ -1500,7 +1500,7 @@ Match the list of characters specified by @var{list}.  If the first\n\
 character is @code{!} or @code{^}, match all characters except those\n\
 specified by @var{list}.  For example, the pattern @samp{[a-zA-Z]} will\n\
 match all lower and upper case alphabetic characters. \n\
-\n\      
+\n\
 Wildcards may also be used in the field names specifications when using\n\
 the @code{-struct} modifier (but not in the struct name itself).\n\
 \n\

@@ -1,5 +1,7 @@
 2008-04-16  John W. Eaton  <jwe@octave.org>
 
+	* load-save.cc (Fsave): Fix continuation character in doc string.
+
 	* pt-walk.h (tree_walker::visit_function_def): New function.
 	* pt-pr-code.cc (tree_print_code::visit_function_def): New function.
 	* pt-pr-code.h: Provide decl.

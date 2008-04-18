@@ -2807,9 +2807,10 @@ returns the formatted output in a string.\n\
 	args(0).print (octave_stdout);
       else
 	{
+	  octave_value arg = args(0);
 	  std::ostringstream buf;
-	  args(0).print (buf);
-	  retval = buf.str ();
+	  arg.print (buf);
+	  retval = octave_value (buf.str (), arg.is_dq_string () ? '"' : '\'');
 	}
     }
   else

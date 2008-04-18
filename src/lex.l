@@ -111,11 +111,21 @@ along with Octave; see the file COPYING.  If not, see
     } \
   while (0)
 
+#define DISPLAY_TOK_AND_RETURN(tok) \
+  do \
+    { \
+      int tok_val = tok; \
+      if (Vdisplay_tokens) \
+        display_token (tok_val); \
+      return tok_val; \
+    } \
+  while (0)
+
 #define COUNT_TOK_AND_RETURN(tok) \
   do \
     { \
       Vtoken_count++; \
-      return tok; \
+      DISPLAY_TOK_AND_RETURN (tok); \
     } \
   while (0)
 
@@ -234,6 +244,8 @@ const int bracket_brace_paren_nesting_level::PAREN = 3;
 
 static bracket_brace_paren_nesting_level nesting_level;
 
+static bool Vdisplay_tokens = false;
+
 static unsigned int Vtoken_count = 0;
 
 // Forward declarations for functions defined at the bottom of this
@@ -265,6 +277,7 @@ static void gripe_matlab_incompatible (const std::string& msg);
 static void maybe_gripe_matlab_incompatible_comment (char c);
 static void gripe_matlab_incompatible_continuation (void);
 static void gripe_matlab_incompatible_operator (const std::string& op);
+static void display_token (int tok);
 
 %}
 
@@ -335,7 +348,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 <COMMAND_START>[\"\'] {
     current_input_column++;
-    COUNT_TOK_AND_RETURN (handle_string (yytext[0], true));
+    int tok = handle_string (yytext[0], true);
+    COUNT_TOK_AND_RETURN (tok);
   }
 
 <COMMAND_START>[^#% \t\r\n\;\,\"\'][^ \t\r\n\;\,]*{S}* {
@@ -611,7 +625,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 	COUNT_TOK_AND_RETURN (QUOTE);
       }
     else
-      COUNT_TOK_AND_RETURN (handle_string ('\''));
+      {
+	int tok = handle_string ('\'');
+	COUNT_TOK_AND_RETURN (tok);
+      }
   }
 
 %{
@@ -620,7 +637,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
 \" {
     current_input_column++;
-    COUNT_TOK_AND_RETURN (handle_string ('"'));
+    int tok = handle_string ('"');
+    COUNT_TOK_AND_RETURN (tok);
 }
 
 %{
@@ -2260,19 +2278,33 @@ handle_identifier (void)
 	  return LEXICAL_ERROR;
 	}
       else
-	TOK_PUSH_AND_RETURN (tok, FCN_HANDLE);
+	{
+	  yylval.tok_val = new token (tok, input_line_number,
+				      current_input_column);
+
+	  token_stack.push (yylval.tok_val);
+
+	  current_input_column += yyleng;
+	  lexer_flags.quote_is_transpose = false;
+	  lexer_flags.convert_spaces_to_comma = true;
+
+	  return FCN_HANDLE;
+	}
     }
 
   // If we have a regular keyword, return it.
-  // Keywords can be followed by identifiers (TOK_RETURN handles
-  // that).
+  // Keywords can be followed by identifiers.
 
   if (kw_token)
     {
-      if (kw_token < 0)
-	return kw_token;
-      else
-	TOK_RETURN (kw_token);
+      if (kw_token >= 0)
+	{
+	  current_input_column += yyleng;
+	  lexer_flags.quote_is_transpose = false;
+	  lexer_flags.convert_spaces_to_comma = true;
+	}
+
+      return kw_token;
     }
 
   // See if we have a plot keyword (title, using, with, or clear).
@@ -2511,6 +2543,111 @@ gripe_matlab_incompatible_operator (const std::string& op)
   if (t[n-1] == '\n')
     t.resize (n-1);
   gripe_matlab_incompatible (t + " used as operator");
+}
+
+static void
+display_token (int tok)
+{
+  switch (tok)
+    {
+    case '=': std::cerr << "'='\n"; break;
+    case ':': std::cerr << "':'\n"; break;
+    case '-': std::cerr << "'-'\n"; break;
+    case '+': std::cerr << "'+'\n"; break;
+    case '*': std::cerr << "'*'\n"; break;
+    case '/': std::cerr << "'/'\n"; break;
+    case ADD_EQ: std::cerr << "ADD_EQ\n"; break;
+    case SUB_EQ: std::cerr << "SUB_EQ\n"; break;
+    case MUL_EQ: std::cerr << "MUL_EQ\n"; break;
+    case DIV_EQ: std::cerr << "DIV_EQ\n"; break;
+    case LEFTDIV_EQ: std::cerr << "LEFTDIV_EQ\n"; break;
+    case POW_EQ: std::cerr << "POW_EQ\n"; break;
+    case EMUL_EQ: std::cerr << "EMUL_EQ\n"; break;
+    case EDIV_EQ: std::cerr << "EDIV_EQ\n"; break;
+    case ELEFTDIV_EQ: std::cerr << "ELEFTDIV_EQ\n"; break;
+    case EPOW_EQ: std::cerr << "EPOW_EQ\n"; break;
+    case AND_EQ: std::cerr << "AND_EQ\n"; break;
+    case OR_EQ: std::cerr << "OR_EQ\n"; break;
+    case LSHIFT_EQ: std::cerr << "LSHIFT_EQ\n"; break;
+    case RSHIFT_EQ: std::cerr << "RSHIFT_EQ\n"; break;
+    case LSHIFT: std::cerr << "LSHIFT\n"; break;
+    case RSHIFT: std::cerr << "RSHIFT\n"; break;
+    case EXPR_AND_AND: std::cerr << "EXPR_AND_AND\n"; break;
+    case EXPR_OR_OR: std::cerr << "EXPR_OR_OR\n"; break;
+    case EXPR_AND: std::cerr << "EXPR_AND\n"; break;
+    case EXPR_OR: std::cerr << "EXPR_OR\n"; break;
+    case EXPR_NOT: std::cerr << "EXPR_NOT\n"; break;
+    case EXPR_LT: std::cerr << "EXPR_LT\n"; break;
+    case EXPR_LE: std::cerr << "EXPR_LE\n"; break;
+    case EXPR_EQ: std::cerr << "EXPR_EQ\n"; break;
+    case EXPR_NE: std::cerr << "EXPR_NE\n"; break;
+    case EXPR_GE: std::cerr << "EXPR_GE\n"; break;
+    case EXPR_GT: std::cerr << "EXPR_GT\n"; break;
+    case LEFTDIV: std::cerr << "LEFTDIV\n"; break;
+    case EMUL: std::cerr << "EMUL\n"; break;
+    case EDIV: std::cerr << "EDIV\n"; break;
+    case ELEFTDIV: std::cerr << "ELEFTDIV\n"; break;
+    case EPLUS: std::cerr << "EPLUS\n"; break;
+    case EMINUS: std::cerr << "EMINUS\n"; break;
+    case QUOTE: std::cerr << "QUOTE\n"; break;
+    case TRANSPOSE: std::cerr << "TRANSPOSE\n"; break;
+    case PLUS_PLUS: std::cerr << "PLUS_PLUS\n"; break;
+    case MINUS_MINUS: std::cerr << "MINUS_MINUS\n"; break;
+    case POW: std::cerr << "POW\n"; break;
+    case EPOW: std::cerr << "EPOW\n"; break;
+    case NUM: std::cerr << "NUM\n"; break;
+    case IMAG_NUM: std::cerr << "IMAG_NUM\n"; break;
+    case STRUCT_ELT: std::cerr << "STRUCT_ELT\n"; break;
+    case NAME: std::cerr << "NAME\n"; break;
+    case END: std::cerr << "END\n"; break;
+    case DQ_STRING: std::cerr << "DQ_STRING\n"; break;
+    case SQ_STRING: std::cerr << "SQ_STRING\n"; break;
+    case FOR: std::cerr << "FOR\n"; break;
+    case WHILE: std::cerr << "WHILE\n"; break;
+    case DO: std::cerr << "DO\n"; break;
+    case UNTIL: std::cerr << "UNTIL\n"; break;
+    case IF: std::cerr << "IF\n"; break;
+    case ELSEIF: std::cerr << "ELSEIF\n"; break;
+    case ELSE: std::cerr << "ELSE\n"; break;
+    case SWITCH: std::cerr << "SWITCH\n"; break;
+    case CASE: std::cerr << "CASE\n"; break;
+    case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
+    case BREAK: std::cerr << "BREAK\n"; break;
+    case CONTINUE: std::cerr << "CONTINUE\n"; break;
+    case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
+    case UNWIND: std::cerr << "UNWIND\n"; break;
+    case CLEANUP: std::cerr << "CLEANUP\n"; break;
+    case TRY: std::cerr << "TRY\n"; break;
+    case CATCH: std::cerr << "CATCH\n"; break;
+    case GLOBAL: std::cerr << "GLOBAL\n"; break;
+    case STATIC: std::cerr << "STATIC\n"; break;
+    case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
+    case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
+    case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
+    case FCN: std::cerr << "FCN\n"; break;
+    case CLOSE_BRACE: std::cerr << "CLOSE_BRACE\n"; break;
+    case '\n': std::cerr << "\\n\n"; break;
+    case '\r': std::cerr << "\\r\n"; break;
+    case '\t': std::cerr << "TAB\n"; break;
+    default:
+      {
+        if (tok < 256)
+	  std::cerr << static_cast<char> (tok) << "\n";
+	else
+	  std::cerr << "UNKNOWN(" << tok << ")\n";
+      }
+      break;
+    }
+}
+
+DEFUN (__display_tokens__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __display_tokens__\n\
+Query or set the internal variable that determines whether Octave's\n\
+lexer displays tokens as they are read.\n\
+@end deftypefn")
+{
+  return SET_INTERNAL_VARIABLE (display_tokens);
 }
 
 DEFUN (__token_count__, , ,

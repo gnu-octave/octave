@@ -1,5 +1,14 @@
 2008-04-18  John W. Eaton  <jwe@octave.org>
 
+	* lex.l (Vdisplay_tokens): New static variable.
+	(F__display_tokens__): New function.
+	(display_token): New function.
+	(DISPLAY_TOK_AND_RETURN): New macro.
+	(COUNT_TOK_AND_RETURN): Use DISPLAY_TOK_AND_RETURN.
+	(<COMMAND_START>[\"\'], "'", \"): Move handle_string outside of
+	COUNT_TOK_AND_RETURN macro parameter list.
+	(handle_identifier): Don't use macros to return token values here.
+
 	* pr-output.cc (Fdisp): If nargout > 0, produce an sq-string
 	unless arg is a dq-string.
 

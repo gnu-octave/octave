@@ -2845,12 +2845,16 @@ text_getc (FILE *f)
     {
       c = getc (f);
 
-      if (c != '\n')
+      if (c == '\n')
+        input_line_number++;
+      else
 	{
 	  ungetc (c, f);
 	  c = '\r';
 	}
     }
+  else if (c == '\n')
+    input_line_number++;
 
   return c;
 }
@@ -2883,7 +2887,6 @@ skip_white_space (stream_reader& reader)
 	  break;
 
 	case '\n':
-	  input_line_number++;
 	  current_input_column = 0;
 	  break;
 
@@ -2920,7 +2923,7 @@ gobble_leading_white_space (FILE *ffile, bool& eof)
       if (eof)
 	break;
 
-      txt = grab_comment_block (stdio_reader, eof);
+      txt = grab_comment_block (stdio_reader, true, eof);
 
       if (txt.empty ())
 	break;
@@ -3028,9 +3031,6 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
       std::string help_txt = gobble_leading_white_space (ffile, eof);
 
-      if (! help_txt.empty ())
-	help_buf.push (help_txt);
-
       if (! eof)
 	{
 	  std::string file_type;
@@ -3078,6 +3078,9 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 	  curr_fcn_ptr = 0;
 
 	  reset_parser ();
+
+	  if (! help_txt.empty ())
+	    help_buf.push (help_txt);
 
 	  if (parsing_script)
 	    prep_lexer_for_script ();

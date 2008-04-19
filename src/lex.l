@@ -248,6 +248,10 @@ static bool Vdisplay_tokens = false;
 
 static unsigned int Vtoken_count = 0;
 
+// The start state that was in effect when the beginning of a block
+// comment was noticed.
+static int block_comment_nesting_level = 0;
+
 // Forward declarations for functions defined at the bottom of this
 // file.
 
@@ -256,7 +260,7 @@ static void do_comma_insert_check (void);
 static int is_keyword_token (const std::string& s);
 static void prep_for_function (void);
 static void prep_for_nested_function (void);
-static int process_comment (bool& eof);
+static int process_comment (bool start_in_block, bool& eof);
 static bool match_any (char c, const char *s);
 static bool next_token_is_sep_op (void);
 static bool next_token_is_bin_op (bool spc_prev);
@@ -367,6 +371,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 //
 // It's also a pain in the ass to decide whether to insert a comma
 // after seeing a ']' character...
+
+// FIXME -- we need to handle block comments here.
 %}
 
 <MATRIX_START>{SNLCMT}*\]{S}* {
@@ -380,6 +386,10 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
       yyunput (' ', yytext);
     COUNT_TOK_AND_RETURN (tok_to_return);
   }
+
+%{
+// FIXME -- we need to handle block comments here.
+%}
 
 <MATRIX_START>{SNLCMT}*\}{S}* {
     scan_for_comments (yytext);
@@ -455,6 +465,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // Semicolons are handled as row seprators in matrix constants.  If we
 // don't eat whitespace here we can end up inserting too many
 // semicolons.
+
+// FIXME -- we need to handle block comments here.
 %}
 
 <MATRIX_START>{SNLCMT}*;{SNLCMT}* {
@@ -470,6 +482,8 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 // In some cases, new lines can also become row separators.  If we
 // don't eat whitespace here we can end up inserting too many
 // semicolons.
+
+// FIXME -- we need to handle block comments here.
 %}
 
 <MATRIX_START>{S}*{COMMENT}{SNLCMT}* |
@@ -565,6 +579,16 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %}
 
 <<EOF>> {
+    if (block_comment_nesting_level != 0)
+      {
+	warning ("block comment open at end of input");
+
+	if ((reading_fcn_file || reading_script_file)
+	    && ! curr_fcn_file_name.empty ())
+	  warning ("near line %d of file `%s.m'",
+		   input_line_number, curr_fcn_file_name.c_str ());
+      }
+
     TOK_RETURN (END_OF_INPUT);
   }
 
@@ -647,13 +671,27 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 %} 
 
 {CCHAR} {
-    bool eof = false;
     yyunput (yytext[0], yytext);
-    int tok = process_comment (eof);
+
+    bool eof = false;
+    int tok = process_comment (false, eof);
+
     if (eof)
       TOK_RETURN (END_OF_INPUT);
     else if (tok > 0)
       COUNT_TOK_AND_RETURN (tok);
+  }
+
+%{
+// Block comments.
+%}
+
+^{S}*{CCHAR}\{{S}*{NL} {
+    current_input_column = 1;
+    block_comment_nesting_level++;
+    promptflag--;
+    bool eof = false;
+    process_comment (true, eof);
   }
 
 %{
@@ -826,6 +864,9 @@ reset_parser (void)
 
   // We do want a prompt by default.
   promptflag = 1;
+
+  // We are not in a block comment.
+  block_comment_nesting_level = 0;
 
   // Error may have occurred inside some brackets, braces, or parentheses.
   nesting_level.clear ();
@@ -1152,8 +1193,115 @@ force_local_variable (const std::string& name)
     val = Matrix ();
 }
 
+static std::string
+grab_block_comment (stream_reader& reader, bool& eof)
+{
+  std::string buf;
+
+  bool at_bol = true;
+  bool look_for_marker = false;
+
+  bool warned_incompatible = false;
+
+  int c = 0;
+
+  while ((c = reader.getc ()) != EOF)
+    {
+      current_input_column++;
+
+      if (look_for_marker)
+	{
+	  at_bol = false;
+	  look_for_marker = false;
+
+	  if (c == '{' || c == '}')
+	    {
+	      std::string tmp_buf (1, static_cast<char> (c));
+
+	      int type = c;
+
+	      bool done = false;
+
+	      while ((c = reader.getc ()) != EOF && ! done)
+		{
+		  current_input_column++;
+
+		  switch (c)
+		    {
+		    case ' ':
+		    case '\t':
+		      tmp_buf += static_cast<char> (c);
+		      break;
+
+		    case '\n':
+		      {
+			current_input_column = 0;
+			at_bol = true;
+			done = true;
+
+			if (type == '{')
+			  {
+			    block_comment_nesting_level++;
+			    promptflag--;
+			  }
+			else
+			  {
+			    block_comment_nesting_level--;
+			    promptflag++;
+
+			    if (block_comment_nesting_level == 0)
+			      {
+				buf += grab_comment_block (reader, true, eof);
+
+				return buf;
+			      }
+			  }
+		      }
+		      break;
+
+		    default:
+		      at_bol = false;
+		      tmp_buf += static_cast<char> (c);
+		      buf += tmp_buf;
+		      done = true;
+		      break;
+		    }
+		}
+	    }
+	}
+
+      if (at_bol && c == '%' || c == '#')
+        {
+          if (c == '#' && ! warned_incompatible)
+	    {
+	      warned_incompatible = true;
+	      maybe_gripe_matlab_incompatible_comment (c);
+	    }
+
+	  at_bol = false;
+	  look_for_marker = true;
+	}
+      else
+	{
+	  buf += static_cast<char> (c);
+
+	  if (c == '\n')
+	    {
+	      current_input_column = 0;
+	      at_bol = true;
+	    }
+	}
+    }
+
+  if (c == EOF)
+    eof = true;
+
+  return buf;
+}
+
 std::string
-grab_comment_block (stream_reader& reader, bool& eof)
+grab_comment_block (stream_reader& reader, bool at_bol,
+		    bool& eof)
 {
   std::string buf;
 
@@ -1174,9 +1322,59 @@ grab_comment_block (stream_reader& reader, bool& eof)
       if (begin_comment)
 	{
 	  if (c == '%' || c == '#')
-	    continue;
+	    {
+	      at_bol = false;
+	      continue;
+	    }
+	  else if (at_bol && c == '{')
+	    {
+	      std::string tmp_buf (1, static_cast<char> (c));
+
+	      bool done = false;
+
+	      while ((c = reader.getc ()) != EOF && ! done)
+		{
+		  current_input_column++;
+
+		  switch (c)
+		    {
+		    case ' ':
+		    case '\t':
+		      tmp_buf += static_cast<char> (c);
+		      break;
+
+		    case '\n':
+		      {
+			current_input_column = 0;
+			at_bol = true;
+			done = true;
+
+			block_comment_nesting_level++;
+			promptflag--;
+
+			buf += grab_block_comment (reader, eof);
+
+			in_comment = false;
+
+			if (eof)
+			  goto done;
+		      }
+		      break;
+
+		    default:
+		      at_bol = false;
+		      tmp_buf += static_cast<char> (c);
+		      buf += tmp_buf;
+		      done = true;
+		      break;
+		    }
+		}
+	    }
 	  else
-	    begin_comment = false;
+	    {
+	      at_bol = false;
+	      begin_comment = false;
+	    }
 	}	
 
       if (in_comment)
@@ -1185,9 +1383,8 @@ grab_comment_block (stream_reader& reader, bool& eof)
 
 	  if (c == '\n')
 	    {
-	      input_line_number++;
+	      at_bol = true;
 	      current_input_column = 0;
-
 	      in_comment = false;
 	    }
 	}
@@ -1242,7 +1439,7 @@ private:
 };
 
 static int
-process_comment (bool& eof)
+process_comment (bool start_in_block, bool& eof)
 {
   eof = false;
 
@@ -1253,7 +1450,12 @@ process_comment (bool& eof)
 
   flex_stream_reader flex_reader (yytext);
 
-  std::string txt = grab_comment_block (flex_reader, eof);
+  // process_comment is only supposed to be called when we are not
+  // initially looking at a block comment.
+
+  std::string txt = start_in_block
+    ? grab_block_comment (flex_reader, eof)
+    : grab_comment_block (flex_reader, false, eof);
 
   if (help_txt.empty () && nesting_level.none ())
     {
@@ -1509,6 +1711,8 @@ strip_trailing_whitespace (char *s)
   return retval;
 }
 
+// FIXME -- we need to handle block comments here.
+
 static void
 scan_for_comments (const char *text)
 {
@@ -1592,6 +1796,8 @@ scan_for_comments (const char *text)
 //  ATE_NOTHING      : no spaces to eat
 //  ATE_SPACE_OR_TAB : space or tab in input
 //  ATE_NEWLINE      : bare new line in input
+
+// FIXME -- we need to handle block comments here.
 
 static yum_yum
 eat_whitespace (void)
@@ -1781,6 +1987,8 @@ handle_number (void)
 // Once a comment character is found, discard all input until newline.
 // If non-whitespace characters are found before comment
 // characters, return 0.  Otherwise, return 1.
+
+// FIXME -- we need to handle block comments here.
 
 static bool
 have_continuation (bool trailing_comments_ok)

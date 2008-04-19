@@ -1,5 +1,20 @@
 2008-04-18  John W. Eaton  <jwe@octave.org>
 
+	* lex.l, lex.h (process_comment): New arg, start_in_block.  Call
+	grab_block_comment if start_in_block is true.  Change all uses.
+	* lex.l (grab_block_comment): New function.
+	(grab_comment_block): New arg, at_bol.  Change all uses.
+	Call grab_block_comment if we find the start of a block comment.
+	(block_comment_nesting_level): New static variable.
+	(^{S}*{CCHAR}\{{S}*{NL}): New rule.
+	(<<EOF>>): Warn about open block comments.
+	(reset_parser): Set block_comment_nesting_level to zero.
+	* parse.y (parse_fcn_file): Stash help text from
+	gobble_leading_white_space after calling reset_parser.
+	(text_getc): Keep track of input_line_number here.
+	(skip_white_sapce): Don't increment input_line_number here.
+	* lex.l (grab_comment_block): Or here.
+
 	* lex.l (Vdisplay_tokens): New static variable.
 	(F__display_tokens__): New function.
 	(display_token): New function.
@@ -8,7 +23,9 @@
 	(<COMMAND_START>[\"\'], "'", \"): Move handle_string outside of
 	COUNT_TOK_AND_RETURN macro parameter list.
 	(handle_identifier): Don't use macros to return token values here.
-
+	(<MATRIX_START>{S}*{COMMENT}{SNLCMT}*|<MATRIX_START>{S}*{NL}{SNLCMT}*):
+	Recognize block comments here.
+	
 	* pr-output.cc (Fdisp): If nargout > 0, produce an sq-string
 	unless arg is a dq-string.
 

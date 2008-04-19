@@ -152,7 +152,8 @@ private:
   stream_reader& operator = (const stream_reader&);
 };
 
-extern std::string grab_comment_block (stream_reader& reader, bool& eof);
+extern std::string
+grab_comment_block (stream_reader& reader, bool at_bol, bool& eof);
 
 // TRUE means that we have encountered EOF on the input stream.
 extern bool parser_end_of_input;

@@ -1,3 +1,8 @@
+2008-04-20  John W. Eaton  <jwe@octave.org>
+
+	* oct-stream.cc (octave_stream::read): Allow single data type
+	specification but return double.
+
 2008-04-18  John W. Eaton  <jwe@octave.org>
 
 	* lex.l, lex.h (process_comment): New arg, start_in_block.  Call

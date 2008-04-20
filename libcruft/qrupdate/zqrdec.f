@@ -39,7 +39,7 @@ c               1 <= j <= n.
 c
       integer m,n,k,j
       double complex Q(m,k),R(k,n),R1(k,n-1)
-      external zcopy,zqhqr
+      external xerbla,zcopy,zqhqr
       integer info
 c quick return if possible      
       if (m <= 0 .or. k <= 0 .or. n == 1) return
@@ -51,7 +51,7 @@ c check arguments
         info = 7
       end if
       if (info /= 0) then
-        call xerbla('DQRDEC',info)
+        call xerbla('ZQRDEC',info)
       end if
 c copy leading portion
       call zcopy(k*(j-1),R,1,R1,1)

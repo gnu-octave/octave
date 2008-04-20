@@ -248,7 +248,7 @@ QR::delete_row (octave_idx_type j)
   octave_idx_type n = r.columns ();
 
   if (! q.is_square ())
-    (*current_liboctave_error_handler) ("QR insert dimensions mismatch");
+    (*current_liboctave_error_handler) ("QR delete dimensions mismatch");
   else if (j < 0 || j > m-1) 
     (*current_liboctave_error_handler) ("QR delete index out of range");
   else

@@ -251,7 +251,7 @@ ComplexCHOL::delete_sym (octave_idx_type j)
   octave_idx_type n = chol_mat.rows ();
   
   if (j < 0 || j > n-1)
-    (*current_liboctave_error_handler) ("CHOL insert index out of range");
+    (*current_liboctave_error_handler) ("CHOL delete index out of range");
   else
     {
       ComplexMatrix chol_mat1 (n-1, n-1);

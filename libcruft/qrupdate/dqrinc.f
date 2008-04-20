@@ -22,8 +22,8 @@ c               column.
 c               i.e., given an m-by-k orthogonal matrix Q, an m-by-n
 c               upper trapezoidal matrix R and index j in the range 
 c               1:n+1, this subroutine updates the matrix Q -> Q1 and 
-c               forms an m-by-(n+1) matrix R1 so that Q1 is again unitary,
-c               R1 upper trapezoidal, and 
+c               forms an m-by-(n+1) matrix R1 so that Q1 is again
+c               orthogonal, R1 upper trapezoidal, and 
 c               Q1*R1 = [A(:,1:j-1); Q*Q'*x; A(:,j:n-1)], where A = Q*R.
 c               (real version)
 c arguments:
@@ -52,7 +52,7 @@ c check arguments
         info = 6
       end if
       if (info /= 0) then
-        call xerbla('DQRDER',info)
+        call xerbla('DQRINC',info)
       end if
 c copy leading portion of R 
       call dcopy(k*(j-1),R,1,R1,1)

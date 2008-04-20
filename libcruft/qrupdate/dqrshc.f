@@ -22,8 +22,8 @@ c               columns.
 c               i.e., given an m-by-k orthogonal matrix Q, an k-by-n
 c               upper trapezoidal matrix R and index j in the range 
 c               1:n+1, this subroutine updates the matrix Q -> Q1 and 
-c               R -> R1 so that Q1 is again unitary, R1 upper trapezoidal, 
-c               and 
+c               R -> R1 so that Q1 is again orthogonal, R1 upper 
+c               trapezoidal, and 
 c               Q1*R1 = A(:,p), where A = Q*R and p is the permutation
 c               [1:i-1,shift(i:j,-1),j+1:n] if i < j  or
 c               [1:j-1,shift(j:i,+1),i+1:n] if j > i.
@@ -42,7 +42,7 @@ c j (in)        the second index determining the range (see above)
 c
       integer m,n,k,i,j
       double precision Q(m,k),R(k,n)
-      external dswap,dqhqr
+      external xerbla,dswap,dqhqr,dqrqhu
       double precision w
       integer l,jj,kk,info
 

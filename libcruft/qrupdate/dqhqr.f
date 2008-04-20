@@ -38,7 +38,7 @@ c
       double precision Q(ldq,*),R(ldr,*)
       double precision c
       double precision s,rr
-      external dlartg,drot
+      external xerbla,dlartg,drot
       integer info,i
 c quick return if possible.
       if (n <= 0 .or. k <= 1) return

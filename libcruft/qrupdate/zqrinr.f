@@ -29,7 +29,7 @@ c               (complex version)
 c arguments:
 c m (in)        number of rows of the matrix R. 
 c n (in)        number of columns of the matrix R
-c Q (in)        the orthogonal matrix Q
+c Q (in)        the unitary matrix Q
 c Q1 (out)      the updated matrix Q1
 c R (in)        the upper trapezoidal matrix R
 c R1 (out)      the updated matrix R1
@@ -38,7 +38,7 @@ c x (in)        the row being added
 c
       integer m,n,j
       double complex Q(m,m),Q1(m+1,m+1),R(m,n),R1(m+1,n),x(n)
-      external xerbla,zlacpy,dcopy,dqhqr
+      external xerbla,zlacpy,zcopy,zqhqr
       integer i
 c check arguments      
       info = 0

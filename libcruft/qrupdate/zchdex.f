@@ -22,7 +22,7 @@ c purpose:      given an upper triangular matrix R that is a Cholesky
 c               factor of a symmetric positive definite matrix A, i.e.
 c               A = R'*R, this subroutine updates R -> R1 so that
 c               R1'*R1 = A(jj,jj), where jj = [1:j-1,j+1:n+1].
-c               (real version)
+c               (complex version)
 c arguments:
 c n (in)        the order of matrix R
 c R (in)        the original upper trapezoidal matrix R
@@ -32,7 +32,7 @@ c j (in)        the position of the deleted row/column
       double complex R(n,n),R1(n-1,n-1)
       double precision c
       double complex Qdum,s,rr
-      external zlacpy,zqhqr,zlartg
+      external xerbla,zlacpy,zqhqr,zlartg
 
 c quick return if possible
       if (n == 1) return
@@ -45,7 +45,7 @@ c check arguments
         info = 4
       end if
       if (info /= 0) then
-        call xerbla('ZQRDEX',info)
+        call xerbla('ZCHDEX',info)
       end if
 
 c setup the new matrix R1

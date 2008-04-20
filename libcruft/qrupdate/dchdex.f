@@ -31,7 +31,7 @@ c j (in)        the position of the deleted row/column
       integer n,j,info
       double precision R(n,n),R1(n-1,n-1)
       double precision Qdum,c,s,rr
-      external dlacpy,dqhqr,dlartg
+      external xerbla,dlacpy,dqhqr,dlartg
 
 c quick return if possible
       if (n == 1) return
@@ -44,7 +44,7 @@ c check arguments
         info = 4
       end if
       if (info /= 0) then
-        call xerbla('DQRDEX',info)
+        call xerbla('DCHDEX',info)
       end if
 
 c setup the new matrix R1

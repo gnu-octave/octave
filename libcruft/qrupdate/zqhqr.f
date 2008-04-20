@@ -38,7 +38,7 @@ c
       double complex Q(ldq,*),R(ldr,*)
       double precision c
       double complex s,rr
-      external zlartg,zrot
+      external xerbla,zlartg,zrot
       integer info,i
 c quick return if possible.
       if (n <= 0 .or. k <= 1) return

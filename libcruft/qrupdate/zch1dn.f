@@ -36,7 +36,7 @@ c
       integer n,info
       double complex R(n,n),u(n)
       double precision w(n)
-      external ztrsv,zcopy,zlartg,dznrm2
+      external ztrsv,zlartg,dznrm2
       double precision rho,dznrm2
       double complex crho,rr,ui,t
       integer i,j

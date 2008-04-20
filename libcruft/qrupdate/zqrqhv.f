@@ -27,7 +27,7 @@ c arguments:
 c m (in)        number of rows of the matrix Q.
 c n (in)        number of columns of the matrix R.
 c k (in)        number of columns of Q and rows of R. k <= m.
-c Q (io)        on entry, the orthogonal matrix Q.
+c Q (io)        on entry, the unitary matrix Q.
 c               on exit, the updated matrix Q1.
 c ldq (in)      leading dimension of Q.
 c R (io)        on entry, the upper triangular matrix R.
@@ -36,13 +36,13 @@ c ldr (in)      leading dimension of R.
 c u (in)        the m-vector u.
 c rr (out)      the first element of Q1'*u on exit.
 c
-c               if Q is orthogonal, so is Q1. It is not strictly
+c               if Q is unitary, so is Q1. It is not strictly
 c               necessary, however.
       integer m,n,k,ldq,ldr
       double complex Q(ldq,*),R(ldr,*),u(*),rr
       double precision c
       double complex s,w,w1,zdotc
-      external zdotc,zlartg,zrot
+      external xerbla,zdotc,zlartg,zrot
       integer i,info
 c quick return if possible.
       if (k <= 0) return

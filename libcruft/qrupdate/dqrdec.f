@@ -39,7 +39,7 @@ c               1 <= j <= n.
 c
       integer m,n,k,j
       double precision Q(m,k),R(k,n),R1(k,n-1)
-      external dcopy,dqhqr
+      external xerbla,dcopy,dqhqr
       integer info
 c quick return if possible      
       if (m <= 0 .or. k <= 0 .or. n == 1) return

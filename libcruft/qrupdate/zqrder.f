@@ -39,7 +39,7 @@ c
       double complex Q(m,m),Q1(m-1,m-1),R(m,n),R1(m-1,n)
       double precision c
       double complex s,rr,w
-      external xerbla,zlacpy,zcopy,zlartg,zrot,zdscal,zaxpy
+      external xerbla,zlacpy,zlartg,zrot,zdscal,zaxpy
       integer i
 c quick return if possible      
       if (m == 1) return

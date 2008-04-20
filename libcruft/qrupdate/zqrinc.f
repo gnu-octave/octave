@@ -52,7 +52,7 @@ c check arguments
         info = 6
       end if
       if (info /= 0) then
-        call xerbla('ZQRDER',info)
+        call xerbla('ZQRINC',info)
       end if
 c copy leading portion of R 
       call zcopy(k*(j-1),R,1,R1,1)

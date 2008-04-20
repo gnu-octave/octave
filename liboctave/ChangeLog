@@ -1,3 +1,7 @@
+2008-04-19  Jaroslav Hajek <highegg@gmail.com>
+
+	* CmplxCHOL.cc, CmplxQR.cc, dbleCHOL.cc, dbleQR.cc: Fix calls to error()
+
 2008-04-16  David Bateman  <dbateman@free.fr>
 
 	* Sparse.h (Sparse<T>& operator = (Sparse<T>&)): Move definition

@@ -1,3 +1,14 @@
+2008-04-20  Jaroslav Hajek <highegg@gmail.com>
+
+	* qrupdate/dch1dn.f, qrupdate/dchdex.f, qrupdate/dchinx.f,
+	qrupdate/dqhqr.f, qrupdate/dqrdec.f, qrupdate/dqrinc.f,
+	qrupdate/dqrqhu.f, qrupdate/dqrqhv.f, qrupdate/dqrshc.f,
+	qrupdate/zch1dn.f, qrupdate/zchdex.f, qrupdate/zchinx.f,
+	qrupdate/zqhqr.f, qrupdate/zqrdec.f, qrupdate/zqrder.f,
+	qrupdate/zqrinc.f, qrupdate/zqrinr.f, qrupdate/zqrqhu.f,
+	qrupdate/zqrqhv.f, qrupdate/zqrshc.f:
+	Fix external declarations, XERBLA calls, and docs.
+
 2008-04-07  Jaroslav Hajek <highegg@gmail.com>
 
 	* qrupdate/dqrqhu.f, qrupdate/zqrqhu.f,

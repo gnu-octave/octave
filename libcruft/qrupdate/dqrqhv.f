@@ -42,7 +42,7 @@ c               necessary, however.
       double precision Q(ldq,*),R(ldr,*),u(*),rr
       double precision c
       double precision s,w,w1,ddot
-      external ddot,dlartg,drot
+      external xerbla,ddot,dlartg,drot
       integer i,info
 c quick return if possible.
       if (k <= 0) return

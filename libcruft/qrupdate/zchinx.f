@@ -37,7 +37,7 @@ c               definiteness.
       double complex R(n,n),R1(n+1,n+1),u(n+1)
       double precision rho,dznrm2
       double complex Qdum,w
-      external zcopy,zlacpy,ztrsv,dznrm2
+      external xerbla,zcopy,zlacpy,ztrsv,dznrm2,zqrqhu
       integer jj
 
 c quick return if possible
@@ -58,7 +58,7 @@ c check arguments
         info = 4
       end if
       if (info /= 0) then
-        call xerbla('ZQRINX',info)
+        call xerbla('ZCHINX',info)
       end if
 
 c copy shifted vector

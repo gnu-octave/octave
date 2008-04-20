@@ -36,7 +36,7 @@ c               definiteness.
       integer n,j,info
       double precision R(n,n),R1(n+1,n+1),u(n+1)
       double precision rho,Qdum,w,dnrm2
-      external dcopy,dlacpy,dtrsv,dnrm2
+      external xerbla,dcopy,dlacpy,dtrsv,dnrm2,dqrqhu
       integer jj
 
 c quick return if possible
@@ -57,7 +57,7 @@ c check arguments
         info = 4
       end if
       if (info /= 0) then
-        call xerbla('DQRINX',info)
+        call xerbla('DCHINX',info)
       end if
 
 c copy shifted vector

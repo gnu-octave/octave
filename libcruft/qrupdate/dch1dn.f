@@ -36,7 +36,7 @@ c
       integer n,info
       double precision R(n,n),u(n)
       double precision w(n)
-      external dtrsv,dcopy,dlartg,dnrm2
+      external dtrsv,dlartg,dnrm2
       double precision rho,dnrm2
       double precision rr,ui,t
       integer i,j

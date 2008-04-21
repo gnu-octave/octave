@@ -281,7 +281,7 @@ IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
 
       octave_idx_type ntot = bnda.length ();
 
-      for (octave_idx_type i = 0, k = 0; i < ntot; i++, k < len)
+      for (octave_idx_type i = 0, k = 0; i < ntot && k < len; i++)
 	if (bnda.elem (i))
 	  data[k++] = i;
 

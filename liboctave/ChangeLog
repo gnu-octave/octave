@@ -1,3 +1,8 @@
+2008-04-21  John W. Eaton  <jwe@octave.org>
+
+	* idx-vector.cc (IDX_VEC_REP::idx_vector_rep (const boolNDArray&)):
+	Fix for-loop condition.
+
 2008-04-19  Jaroslav Hajek <highegg@gmail.com>
 
 	* CmplxCHOL.cc, CmplxQR.cc, dbleCHOL.cc, dbleQR.cc: Fix calls to error()

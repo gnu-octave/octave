@@ -148,3 +148,92 @@ endfunction
 %! imagesc(x)
 %! colorbar("southoutside");
 
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(1,2,1)
+%! imagesc(x)
+%! axis square;
+%! colorbar();
+%! subplot(1,2,2)
+%! imagesc(x)
+%! axis square;
+%! colorbar("westoutside");
+
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(1,2,1)
+%! imagesc(x)
+%! axis square;
+%! colorbar("northoutside");
+%! subplot(1,2,2)
+%! imagesc(x)
+%! axis square;
+%! colorbar("southoutside");
+
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(2,1,1)
+%! imagesc(x)
+%! axis square;
+%! colorbar();
+%! subplot(2,1,2)
+%! imagesc(x)
+%! axis square;
+%! colorbar("westoutside");
+
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(2,1,1)
+%! imagesc(x)
+%! axis square;
+%! colorbar("northoutside");
+%! subplot(2,1,2)
+%! imagesc(x)
+%! axis square;
+%! colorbar("southoutside");
+
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(1,2,1)
+%! imagesc(x)
+%! colorbar();
+%! subplot(1,2,2)
+%! imagesc(x)
+%! colorbar("westoutside");
+
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(1,2,1)
+%! imagesc(x)
+%! colorbar("northoutside");
+%! subplot(1,2,2)
+%! imagesc(x)
+%! colorbar("southoutside");
+
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(2,1,1)
+%! imagesc(x)
+%! colorbar();
+%! subplot(2,1,2)
+%! imagesc(x)
+%! colorbar("westoutside");
+
+%!demo
+%! hold off;
+%! n = 64; x = kron (1:n,ones(n,1)); x = abs(x - x.'); 
+%! subplot(2,1,1)
+%! imagesc(x)
+%! colorbar("northoutside");
+%! subplot(2,1,2)
+%! imagesc(x)
+%! colorbar("southoutside");
+
+

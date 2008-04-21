@@ -51,7 +51,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     if (! strcmpi (get (h, "__colorbar__"), "none"))
       [pos, cbox_orient, cbox_size, cbox_origin, cbox_mirror] = ...
-	  gnuplot_postion_colorbox (pos, get (h, "__colorbar__"));
+	  gnuplot_position_colorbox (pos, get (h, "__colorbar__"), axis_obj);
     endif
 
     fprintf (plot_stream, "set origin %.15g, %.15g;\n", pos(1), pos(2));
@@ -1965,8 +1965,9 @@ function sym = __setup_sym_table__ ()
   sym.int = '{/Symbol \362}';
 endfunction
 
-function [pos, orient, sz, origin, mirr] = gnuplot_postion_colorbox (pos, cbox)
-  ## This is an emprically derived function that 
+function [pos, orient, sz, origin, mirr] = gnuplot_position_colorbox (pos, cbox, obj)
+  ## This is an emprically derived function that attempts to find a good
+  ## size for the colorbox even for subplots and strange aspect ratios.
 
   if (strncmp (cbox, "north", 5) || strncmp (cbox, "south", 5))
     scl = pos([2,4]);
@@ -1981,45 +1982,74 @@ function [pos, orient, sz, origin, mirr] = gnuplot_postion_colorbox (pos, cbox)
     endif
   endif
 
+  if (strcmpi (obj.dataaspectratiomode, "manual"))
+    sz = min(pos(3:4))([1,1]);
+    r = obj.dataaspectratio;
+    if (pos(3) > pos(4))
+      switch (cbox)
+	case {"north", "northoutside"}
+	  off = 4 / 3 * [(pos(3) - pos(4)) ./ (r(2)/r(1)), pos(4) / pos(3) / 2];
+	  sz = 2 * sz / 3;
+	case {"south", "southoutside"}
+	  off = 4 / 3 * [(pos(3) - pos(4)) ./ (r(2)/r(1)), 0];
+	  sz = 2 * sz / 3;
+	otherwise
+	  off = [(pos(3) - pos(4)) ./ (r(2)/r(1)), 0];	  
+      endswitch
+    else
+      switch (cbox)
+	case {"north", "northoutside"}
+	  off = 1.5 * [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
+	case {"south", "southoutside"}
+	  off = 0.5 * [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
+	otherwise
+	  off = [0, (pos(4) - pos(3)) ./ (r(1) / r(2))];
+      endswitch
+    endif
+    off = off / 2;
+  else
+    sz = pos(3:4);
+    off = 0;
+  endif
   switch (cbox)
     case "northoutside"
-      sz = pos(3:4) - 0.08;
-      origin = [0.05, 0.06] + [0.00, 0.88] .* sz + pos(1:2);
+      sz = sz - 0.08;
+      origin = [0.05, 0.06] + [0.00, 0.88] .* sz + pos(1:2) + off;
       mirr = true;
       orient = "horizontal";
     case "north"
-      sz = pos(3:4) - 0.16;
-      origin = [0.09, 0.09] + [0.00, 0.94] .* sz + pos(1:2);
+      sz = sz - 0.16;
+      origin = [0.09, 0.09] + [0.00, 0.94] .* sz + pos(1:2) + off;
       mirr = false;
       orient = "horizontal";
     case "southoutside"
-      sz = pos(3:4) - 0.08;
-      origin = [0.05, 0.06] + [0.00, 0.00] .* sz + pos(1:2);
+      sz = sz - 0.08;
+      origin = [0.05, 0.06] + [0.00, 0.00] .* sz + pos(1:2) + off;
       mirr = false;
       orient = "horizontal";
     case "south"
-      sz = pos(3:4) - 0.16;
-      origin = [0.08, 0.09] + [0.03, 0.05] .* sz + pos(1:2);
+      sz = sz - 0.16;
+      origin = [0.08, 0.09] + [0.03, 0.05] .* sz + pos(1:2) + off;
       mirr = true;
       orient = "horizontal";
     case "eastoutside"
-      sz = pos(3:4) - 0.08;
-      origin = [0.00, 0.06] + [0.94, 0.00] .* sz + pos(1:2);
+      sz = sz - 0.08;
+      origin = [0.00, 0.06] + [0.94, 0.00] .* sz + pos(1:2) + off;
       mirr = false;
       orient = "vertical";
     case "east"
-      sz = pos(3:4) - 0.16;
-      origin = [0.09, 0.10] + [0.91, 0.01] .* sz + pos(1:2);
+      sz = sz - 0.16;
+      origin = [0.09, 0.10] + [0.91, 0.01] .* sz + pos(1:2) + off;
       mirr = true;
       orient = "vertical";
     case "westoutside"
-      sz = pos(3:4) - 0.08;
-      origin = [0.00, 0.06] + [0.06, 0.00] .* sz + pos(1:2);
+      sz = sz - 0.08;
+      origin = [0.00, 0.06] + [0.06, 0.00] .* sz + pos(1:2) + off;
       mirr = true;
       orient = "vertical";
     case "west"
-      sz = pos(3:4) - 0.16;
-      origin = [0.06, 0.09] + [0.04, 0.03] .* sz + pos(1:2);
+      sz = sz - 0.16;
+      origin = [0.06, 0.09] + [0.04, 0.03] .* sz + pos(1:2) + off;
       mirr = false;
       orient = "vertical";
   endswitch

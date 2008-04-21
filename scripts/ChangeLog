@@ -1,3 +1,9 @@
+2008-04-21  David Bateman  <dbateman@free.fr>
+
+	* plot/__go_draw_axes__.m (gnuplot_position_colorbox): New arg, obj.
+	Change caller.  Improve sizing and position of colorbox for subplots.
+	* plot/colorbar.m: New demos.
+
 2008-04-16  Soren Hauberg  <hauberg@gmail.com>
 
 	* plot/__gnuplot_version__.m: Display error if gnuplot is not found.

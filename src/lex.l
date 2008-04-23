@@ -255,6 +255,7 @@ static int block_comment_nesting_level = 0;
 // Forward declarations for functions defined at the bottom of this
 // file.
 
+static int text_yyinput (void);
 static void fixup_column_count (char *s);
 static void do_comma_insert_check (void);
 static int is_keyword_token (const std::string& s);
@@ -806,7 +807,7 @@ NUMBER	(({D}+\.?{D}*{EXPON}?)|(\.{D}+{EXPON}?)|(0[xX][0-9a-fA-F]+))
 
     yyunput (yytext[0], yytext);
 
-    int c = yyinput ();
+    int c = text_yyinput ();
 
     if (c != EOF)
       {
@@ -834,7 +835,7 @@ do_comma_insert_check (void)
 {
   int spc_gobbled = eat_continuation ();
 
-  int c = yyinput ();
+  int c = text_yyinput ();
 
   yyunput (c, yytext);
 
@@ -901,6 +902,27 @@ reset_parser (void)
 
   // Reset other flags.
   lexer_flags.init ();
+}
+
+static int
+text_yyinput (void)
+{
+  int c = yyinput ();
+
+  // Convert CRLF into just LF and single CR into LF.
+
+  if (c == '\r')
+    {
+      c = yyinput ();
+
+      if (c != '\n')
+	{
+	  yyunput (c, yytext);
+	  c = '\n';
+	}
+    }
+
+  return c;
 }
 
 // If we read some newlines, we need figure out what column we're
@@ -1431,7 +1453,7 @@ flex_stream_reader : public stream_reader
 public:
   flex_stream_reader (char *buf_arg) : stream_reader (), buf (buf_arg) { }
 
-  int getc (void) { return ::yyinput (); }
+  int getc (void) { return ::text_yyinput (); }
   int ungetc (int c) { ::yyunput (c, buf); return 0; }
   
 private:
@@ -1524,25 +1546,11 @@ next_token_is_sep_op (void)
 {
   bool retval = false;
 
-  int c1 = yyinput ();
+  int c = text_yyinput ();
 
-  if (c1 == '\r')
-    {
-      int c2 = yyinput ();
+  retval = match_any (c, ",;\n]");
 
-      if (c2 == '\n')
-	{
-	  c1 = '\n';
-
-	  retval = true;
-	}
-      else
-	yyunput (c2, yytext);
-    }
-  else
-    retval = match_any (c1, ",;\n]");
-
-  yyunput (c1, yytext);
+  yyunput (c, yytext);
 
   return retval;
 }
@@ -1555,7 +1563,7 @@ next_token_is_postfix_unary_op (bool spc_prev)
 {
   bool un_op = false;
 
-  int c0 = yyinput ();
+  int c0 = text_yyinput ();
 
   if (c0 == '\'' && ! spc_prev)
     {
@@ -1563,19 +1571,19 @@ next_token_is_postfix_unary_op (bool spc_prev)
     }
   else if (c0 == '.')
     {
-      int c1 = yyinput ();
+      int c1 = text_yyinput ();
       un_op = (c1 == '\'');
       yyunput (c1, yytext);
     }
   else if (c0 == '+')
     {
-      int c1 = yyinput ();
+      int c1 = text_yyinput ();
       un_op = (c1 == '+');
       yyunput (c1, yytext);
     }
   else if (c0 == '-')
     {
-      int c1 = yyinput ();
+      int c1 = text_yyinput ();
       un_op = (c1 == '-');
       yyunput (c1, yytext);
     }
@@ -1602,14 +1610,14 @@ next_token_is_bin_op (bool spc_prev)
 {
   bool bin_op = false;
 
-  int c0 = yyinput ();
+  int c0 = text_yyinput ();
 
   switch (c0)
     {
     case '+':
     case '-':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 
 	switch (c1)
 	  {
@@ -1644,7 +1652,7 @@ next_token_is_bin_op (bool spc_prev)
     // .+ .- ./ .\ .^ .* .**
     case '.':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 
 	if (match_any (c1, "+-/\\^*"))
 	  // Always a binary op (may also include .+=, .-=, ./=, ...).
@@ -1677,7 +1685,7 @@ next_token_is_bin_op (bool spc_prev)
     case '~':
     case '!':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 
 	// ~ and ! can be unary ops, so require following =.
 	if (c1 == '=')
@@ -1756,25 +1764,6 @@ scan_for_comments (const char *text)
 	    }
 	  break;
 
-	case '\r':
-	  if (in_comment)
-	    comment_buf += static_cast<char> (c);
-	  if (i < len)
-	    {
-	      c = text[i++];
-
-	      if (c == '\n')
-		{
-		  if (in_comment)
-		    {
-		      comment_buf += static_cast<char> (c);
-		      octave_comment_buffer::append (comment_buf);
-		      in_comment = false;
-		      beginning_of_comment = false;
-		    }
-		}
-	    }
-
 	default:
 	  if (in_comment)
 	    {
@@ -1811,7 +1800,7 @@ eat_whitespace (void)
 
   int c = 0;
 
-  while ((c = yyinput ()) != EOF)
+  while ((c = text_yyinput ()) != EOF)
     {
       current_input_column++;
 
@@ -1884,28 +1873,6 @@ eat_whitespace (void)
 	      else
 		goto done;
 	    }
-
-	case '\r':
-	  if (in_comment)
-	    comment_buf += static_cast<char> (c);
-	  c = yyinput ();
-	  if (c == EOF)
-	    break;
-	  else if (c == '\n')
-	    {
-	      retval |= ATE_NEWLINE;
-	      if (in_comment)
-		{
-		  comment_buf += static_cast<char> (c);
-		  octave_comment_buffer::append (comment_buf);
-		  in_comment = false;
-		  beginning_of_comment = false;
-		}
-	      current_input_column = 0;
-	      break;
-	    }
-
-	  // Fall through...
 
 	default:
 	  if (in_comment)
@@ -2002,7 +1969,7 @@ have_continuation (bool trailing_comments_ok)
 
   int c = 0;
 
-  while ((c = yyinput ()) != EOF)
+  while ((c = text_yyinput ()) != EOF)
     {
       buf << static_cast<char> (c);
 
@@ -2048,27 +2015,6 @@ have_continuation (bool trailing_comments_ok)
 	  gripe_matlab_incompatible_continuation ();
 	  return true;
 
-	case '\r':
-	  if (in_comment)
-	    comment_buf += static_cast<char> (c);
-	  c = yyinput ();
-	  if (c == EOF)
-	    break;
-	  else if (c == '\n')
-	    {
-	      if (in_comment)
-		{
-		  comment_buf += static_cast<char> (c);
-		  octave_comment_buffer::append (comment_buf);
-		}
-	      current_input_column = 0;
-	      promptflag--;
-	      gripe_matlab_incompatible_continuation ();
-	      return true;
-	    }
-
-	  // Fall through...
-
 	default:
 	  if (in_comment)
 	    {
@@ -2102,10 +2048,10 @@ cleanup:
 static bool
 have_ellipsis_continuation (bool trailing_comments_ok)
 {
-  char c1 = yyinput ();
+  char c1 = text_yyinput ();
   if (c1 == '.')
     {
-      char c2 = yyinput ();
+      char c2 = text_yyinput ();
       if (c2 == '.' && have_continuation (trailing_comments_ok))
 	return true;
       else
@@ -2130,7 +2076,7 @@ eat_continuation (void)
 {
   int retval = ATE_NOTHING;
 
-  int c = yyinput ();
+  int c = text_yyinput ();
 
   if ((c == '.' && have_ellipsis_continuation ())
       || (c == '\\' && have_continuation ()))
@@ -2152,7 +2098,7 @@ handle_string (char delim, int text_style)
   int c;
   int escape_pending = 0;
 
-  while ((c = yyinput ()) != EOF)
+  while ((c = text_yyinput ()) != EOF)
     {
       current_input_column++;
 
@@ -2191,7 +2137,7 @@ handle_string (char delim, int text_style)
 	    buf << static_cast<char> (c);
 	  else
 	    {
-	      c = yyinput ();
+	      c = text_yyinput ();
 	      if (c == delim)
 		{
 		  buf << static_cast<char> (c);		    
@@ -2244,13 +2190,13 @@ next_token_is_assign_op (void)
 {
   bool retval = false;
 
-  int c0 = yyinput ();
+  int c0 = text_yyinput ();
 
   switch (c0)
     {
     case '=':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 	yyunput (c1, yytext);
 	if (c1 != '=')
 	  retval = true;
@@ -2265,7 +2211,7 @@ next_token_is_assign_op (void)
     case '&':
     case '|':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 	yyunput (c1, yytext);
 	if (c1 == '=')
 	  retval = true;
@@ -2274,10 +2220,10 @@ next_token_is_assign_op (void)
 
     case '.':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 	if (match_any (c1, "+-*/\\"))
 	  {
-	    int c2 = yyinput ();
+	    int c2 = text_yyinput ();
 	    yyunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
@@ -2288,10 +2234,10 @@ next_token_is_assign_op (void)
 
     case '>':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 	if (c1 == '>')
 	  {
-	    int c2 = yyinput ();
+	    int c2 = text_yyinput ();
 	    yyunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
@@ -2302,10 +2248,10 @@ next_token_is_assign_op (void)
 
     case '<':
       {
-	int c1 = yyinput ();
+	int c1 = text_yyinput ();
 	if (c1 == '<')
 	  {
-	    int c2 = yyinput ();
+	    int c2 = text_yyinput ();
 	    yyunput (c2, yytext);
 	    if (c2 == '=')
 	      retval = true;
@@ -2326,7 +2272,7 @@ next_token_is_assign_op (void)
 static bool
 next_token_is_index_op (void)
 {
-  int c = yyinput ();
+  int c = text_yyinput ();
   yyunput (c, yytext);
   return c == '(' || c == '{';
 }
@@ -2408,8 +2354,8 @@ maybe_unput_comma (int spc_gobbled)
 
       int postfix_un_op = next_token_is_postfix_unary_op (spc_gobbled);
 
-      int c1 = yyinput ();
-      int c2 = yyinput ();
+      int c1 = text_yyinput ();
+      int c2 = text_yyinput ();
 
       yyunput (c2, yytext);
       yyunput (c1, yytext);
@@ -2517,14 +2463,14 @@ handle_identifier (void)
 
   // See if we have a plot keyword (title, using, with, or clear).
 
-  int c1 = yyinput ();
+  int c1 = text_yyinput ();
 
   bool next_tok_is_paren = (c1 == '(');
 
   bool next_tok_is_eq = false;
   if (c1 == '=')
     {
-      int c2 = yyinput ();
+      int c2 = text_yyinput ();
       yyunput (c2, yytext);
 
       if (c2 != '=')

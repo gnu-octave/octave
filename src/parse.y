@@ -2839,7 +2839,7 @@ text_getc (FILE *f)
 {
   int c = getc (f);
 
-  // Convert CRLF into just LF.
+  // Convert CRLF into just LF and single CR into LF.
 
   if (c == '\r')
     {
@@ -2850,7 +2850,7 @@ text_getc (FILE *f)
       else
 	{
 	  ungetc (c, f);
-	  c = '\r';
+	  c = '\n';
 	}
     }
   else if (c == '\n')

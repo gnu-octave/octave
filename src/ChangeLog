@@ -1,5 +1,8 @@
 2008-04-23  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/__qp__.cc (qp): Avoid bounds error when removing
+	constraint from active set.
+
 	* lex.l (text_yyinput): New function.  Use it in place of yyinput.
 	(next_token_is_sep_op, scan_for_comments, eat_whitespace,
 	have_continuation): No need to check for CR or CRLF.

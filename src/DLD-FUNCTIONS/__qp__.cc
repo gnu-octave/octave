@@ -357,6 +357,7 @@ qp (const Matrix& H, const ColumnVector& q,
 		  // At least one multiplier is negative, we
 		  // remove it from the set.
 
+		  n_act--;
 		  for (octave_idx_type i = which_eig; i < n_act - n_eq; i++)
 		    {
 		      Wact(i) = Wact(i+1);
@@ -364,7 +365,6 @@ qp (const Matrix& H, const ColumnVector& q,
 			Aact(n_eq+i,j) = Aact(n_eq+i+1,j);
 		      bact(n_eq+i) = bact(n_eq+i+1);
 		    }
-		  n_act--;
 
 		  // Resizing the active set.
 		  Wact.resize (n_act-n_eq);

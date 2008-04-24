@@ -59,6 +59,32 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
 				     "user-defined script",
 				     "user-defined script");
 
+octave_user_script::octave_user_script (void)
+  : octave_user_code (), cmd_list (0), file_name (),
+    t_parsed (static_cast<time_t> (0)),
+    t_checked (static_cast<time_t> (0)),
+    call_depth (0)
+{ }
+
+octave_user_script::octave_user_script (const std::string& fnm,
+					const std::string& nm,
+					tree_statement_list *cmds,
+					const std::string& ds)
+  : octave_user_code (nm, ds), cmd_list (cmds), file_name (fnm),
+    t_parsed (static_cast<time_t> (0)),
+    t_checked (static_cast<time_t> (0)),
+    call_depth (0)
+{ }
+
+octave_user_script::octave_user_script (const std::string& fnm,
+					const std::string& nm,
+					const std::string& ds)
+  : octave_user_code (nm, ds), cmd_list (0), file_name (fnm), 
+    t_parsed (static_cast<time_t> (0)),
+    t_checked (static_cast<time_t> (0)),
+    call_depth (0)
+{ }
+
 octave_user_script::~octave_user_script (void)
 {
   delete cmd_list;

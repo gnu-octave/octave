@@ -1,5 +1,16 @@
 2008-04-24  John W. Eaton  <jwe@octave.org>
 
+	* ov-usr-fcn.cc: Move constructor definitions here, from ov-usr-fcn.h.
+	* ov-usr-fcn.h (octave_user_script::octave_user_script): 
+	Also Initialize t_parsed and t_checked.
+
+2008-04-24  Jaroslav Hajek <highegg@gmail.com>
+
+	* ov-usr-fcn.h (octave_user_script::octave_user_script): 
+	Initialize call_depth.
+
+2008-04-24  John W. Eaton  <jwe@octave.org>
+
 	* file-io.cc (do_stream_open): Return -1 for directories.
 
 2008-04-23  John W. Eaton  <jwe@octave.org>

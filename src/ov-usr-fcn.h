@@ -78,17 +78,14 @@ octave_user_script : public octave_user_code
 {
 public:
 
-  octave_user_script (void)
-    : octave_user_code (), cmd_list (0), file_name () { }
+  octave_user_script (void);
 
   octave_user_script (const std::string& fnm, const std::string& nm,
 		      tree_statement_list *cmds,
-		      const std::string& ds = std::string ())
-    : octave_user_code (nm, ds), cmd_list (cmds), file_name (fnm) { }
+		      const std::string& ds = std::string ());
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-		      const std::string& ds = std::string ())
-    : octave_user_code (nm, ds), cmd_list (0), file_name (fnm) { }
+		      const std::string& ds = std::string ());
 
   ~octave_user_script (void);
 

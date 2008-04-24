@@ -141,7 +141,6 @@ octave_popen2 (const std::string& cmd, const string_vector& args, bool sync_mode
     {
       pipeMode = PIPE_NOWAIT;
       SetNamedPipeHandleState (parentRead, &pipeMode, 0, 0);
-      SetNamedPipeHandleState (parentWrite, &pipeMode, 0, 0);
     }
   fildes[1] = _open_osfhandle (reinterpret_cast<long> (parentRead), _O_RDONLY | _O_BINARY);
   fildes[0] = _open_osfhandle (reinterpret_cast<long> (parentWrite), _O_WRONLY | _O_BINARY);

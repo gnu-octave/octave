@@ -47,6 +47,29 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* graphics.h.in (base_property::clone, string_property::clone,
+	radio_property::clone, color_property::clone, double_property::clone,
+	double_radio_property::clone, array_property::clone,
+	row_vector_property::clone, bool_property::clone,
+	handle_property::clone, callback_property::clone, any_property::clone,
+	property::clone): New virtual method.
+	(property::create): New static method to create dynamic properties.
+	(base_properties::has_property): New method to check the existence of
+	a property.
+	(any_property::any_property, row_vector_property::row_vector_property,
+	double_radio_property::double_radio_property): New copy constructors.
+	* graphics.cc (lookup_object_name): New static utility function.
+	(make_graphics_object_from_type): Likewise.
+	(gh_manager::do_make_graphics_handle): Use it.
+	(dprop_obj_map): New static map used for chaching purpose in dynamic
+	property creation.
+	(property::create): New static method to create dynamic properties.
+	(base_properties::has_property): New method to check the existence of
+	a property.
+	(base_properties::override_defaults): Check parent validity.
+	(Faddlistener): Documentation fix.
+	(Faddproperty): New function to create dynamic properties.
+
 	* genprops.awk (emit_get_array): Don't produce get_xxx_property
 	accessors.
 	* graphics.h.in (array_property::get_limits): New method to return the

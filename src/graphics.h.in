@@ -399,6 +399,9 @@ public:
 
   OCTINTERP_API void run_listeners (listener_mode mode = POSTSET);
 
+  virtual base_property* clone (void) const
+    { return new base_property (*this); }
+
 protected:
   virtual void do_set (const octave_value&)
     { error ("set: invalid property \"%s\"", name.c_str ()); }
@@ -438,6 +441,8 @@ public:
       set (val);
       return *this;
     }
+
+  base_property* clone (void) const { return new string_property (*this); }
 
 protected:
   void do_set (const octave_value& val)
@@ -533,6 +538,8 @@ public:
       set (val);
       return *this;
     }
+
+  base_property* clone (void) const { return new radio_property (*this); }
 
 protected:
   void do_set (const octave_value& newval) 
@@ -694,6 +701,8 @@ public:
 
   operator octave_value (void) const { return get (); }
 
+  base_property* clone (void) const { return new color_property (*this); }
+
 protected:
   OCTINTERP_API void do_set (const octave_value& newval);
 
@@ -726,6 +735,8 @@ public:
       set (val);
       return *this;
     }
+
+  base_property* clone (void) const { return new double_property (*this); }
 
 protected:
   void do_set (const octave_value& v)
@@ -766,6 +777,11 @@ public:
 	radio_val (v.radio_val), current_val (v.current_val)
   { }
 
+  double_radio_property (const double_radio_property& p)
+    : base_property (p), current_type (p.current_type),
+      dval (p.dval), radio_val (p.radio_val),
+      current_val (p.current_val) { }
+
   octave_value get (void) const
   {
     if (current_type == double_t)
@@ -804,6 +820,9 @@ public:
     }
 
   operator octave_value (void) const { return get (); }
+
+  base_property* clone (void) const
+    { return new double_radio_property (*this); }
 
 protected:
   OCTINTERP_API void do_set (const octave_value& v);
@@ -869,6 +888,16 @@ public:
       return *this;
     }
 
+  base_property* clone (void) const
+    {
+      array_property *p = new array_property (*this);
+
+      p->type_constraints = type_constraints;
+      p->size_constraints = size_constraints;
+      
+      return p;
+    }
+
 protected:
   void do_set (const octave_value& v)
     {
@@ -908,6 +937,13 @@ public:
     add_constraint (dim_vector (1, -1));
   }
 
+  row_vector_property (const row_vector_property& p)
+    : array_property (p)
+  {
+    add_constraint (dim_vector (-1, 1));
+    add_constraint (dim_vector (1, -1));
+  }
+
   void add_constraint (const std::string& type)
   {
     array_property::add_constraint (type);
@@ -932,6 +968,16 @@ public:
     set (val);
     return *this;
   }
+
+  base_property* clone (void) const
+    {
+      row_vector_property *p = new row_vector_property (*this);
+
+      p->type_constraints = type_constraints;
+      p->size_constraints = size_constraints;
+
+      return p;
+    }
 
 protected:
   void do_set (const octave_value& v)
@@ -983,6 +1029,8 @@ public:
       return *this;
     }
 
+  base_property* clone (void) const { return new bool_property (*this); }
+
 protected:
   void do_set (const octave_value& val)
     {
@@ -1022,6 +1070,8 @@ public:
       return *this;
     }
 
+  base_property* clone (void) const { return new handle_property (*this); }
+
 protected:
   OCTINTERP_API void do_set (const octave_value& v);
 
@@ -1038,6 +1088,9 @@ public:
                   const octave_value& m = Matrix ())
     : base_property (nm, h), data (m) { }
 
+  any_property (const any_property& p)
+    : base_property (p), data (p.data) { }
+
   octave_value get (void) const { return data; }
 
   any_property& operator = (const octave_value& val)
@@ -1045,6 +1098,8 @@ public:
       set (val);
       return *this;
     }
+
+  base_property* clone (void) const { return new any_property (*this); }
 
 protected:
   void do_set (const octave_value& v) { data = v; }
@@ -1062,6 +1117,9 @@ public:
                      const octave_value& m)
     : base_property (nm, h), callback (m) { }
 
+  callback_property (const callback_property& p)
+    : base_property (p), callback (p.callback) { }
+
   octave_value get (void) const { return callback; }
 
   OCTINTERP_API void execute (const octave_value& data = octave_value ()) const;
@@ -1076,6 +1134,8 @@ public:
       set (val);
       return *this;
     }
+
+  base_property* clone (void) const { return new callback_property (*this); }
 
 protected:
   void do_set (const octave_value& v)
@@ -1166,6 +1226,14 @@ public:
 
   void run_listeners (listener_mode mode = POSTSET)
     { rep->run_listeners (mode); }
+
+  OCTINTERP_API static
+      property create (const std::string& name, const graphics_handle& parent,
+		       const caseless_str& type,
+		       const octave_value_list& args);
+
+  property clone (void) const
+    { return property (rep->clone ()); }
 
   /*
   const string_property& as_string_property (void) const
@@ -1466,6 +1534,8 @@ public:
   virtual octave_value get (bool all = false) const;
 
   virtual property get_property (const caseless_str&);
+
+  bool has_property (const caseless_str&);
 
   std::string get_tag (void) const { return tag.string_value (); }
 

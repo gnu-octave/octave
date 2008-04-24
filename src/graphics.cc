@@ -456,6 +456,79 @@ get_array_limits (const Array<T>& m, double& emin, double& emax,
     }
 }
 
+static bool
+lookup_object_name (const caseless_str& name, caseless_str& go_name,
+		    caseless_str& rest)
+{
+  int len = name.length ();
+  int offset = 0;
+  bool result = false;
+
+  if (len >= 4)
+    {
+      caseless_str pfx = name.substr (0, 4);
+
+      if (pfx.compare ("axes") || pfx.compare ("line")
+	  || pfx.compare ("text"))
+	offset = 4;
+      else if (len >= 5)
+	{
+	  pfx = name.substr (0, 5);
+
+	  if (pfx.compare ("image") || pfx.compare ("patch"))
+	    offset = 5;
+	  else if (len >= 6)
+	    {
+	      pfx = name.substr (0, 6);
+
+	      if (pfx.compare ("figure"))
+		offset = 6;
+	      else if (len >= 7)
+		{
+		  pfx = name.substr (0, 7);
+
+		  if (pfx.compare ("surface"))
+		    offset = 7;
+		}
+	    }
+	}
+
+      if (offset > 0)
+	{
+	  go_name = pfx;
+	  rest = name.substr (offset);
+	  result = true;
+	}
+    }
+
+  return result;
+}
+
+static base_graphics_object*
+make_graphics_object_from_type (const caseless_str& type,
+				const graphics_handle& h = graphics_handle (),
+				const graphics_handle& p = graphics_handle ())
+{
+  base_graphics_object *go = 0;
+
+  if (type.compare ("figure"))
+    go = new figure (h, p);
+  else if (type.compare ("axes"))
+    go = new axes (h, p);
+  else if (type.compare ("line"))
+    go = new line (h, p);
+  else if (type.compare ("text"))
+    go = new text (h, p);
+  else if (type.compare ("image"))
+    go = new image (h, p);
+  else if (type.compare ("patch"))
+    go = new patch (h, p);
+  else if (type.compare ("surface"))
+    go = new surface (h, p);
+
+  return go;
+}
+
 // ---------------------------------------------------------------------
 
 void
@@ -762,6 +835,161 @@ callback_property::execute (const octave_value& cb, const graphics_handle& h,
 {
   if (cb.is_defined () && ! cb.is_empty ())
     execute_callback (cb, h, data);
+}
+
+// Used to cache dummy graphics objects from which dynamic
+// properties can be cloned.
+static std::map<caseless_str, graphics_object> dprop_obj_map;
+
+property
+property::create (const std::string& name, const graphics_handle& h,
+		  const caseless_str& type, const octave_value_list& args)
+{
+  property retval;
+
+  if (type.compare ("string"))
+    {
+      std::string val = (args.length () > 0 ? args(0).string_value () : "");
+
+      if (! error_state)
+	retval = property (new string_property (name, h, val));
+    }
+  else if (type.compare ("any"))
+    {
+      octave_value val =
+	  (args.length () > 0 ? args(0) : octave_value (Matrix ()));
+
+      retval = property (new any_property (name, h, val));
+    }
+  else if (type.compare ("radio"))
+    {
+      if (args.length () > 0)
+	{
+	  std::string vals = args(0).string_value ();
+
+	  if (! error_state)
+	    {
+	      retval = property (new radio_property (name, h, vals));
+
+	      if (args.length () > 1)
+		retval.set (args(1));
+	    }
+	  else
+	    error ("addproperty: invalid argument for radio property, expected a string value");
+	}
+      else
+	error ("addproperty: missing possible values for radio property");
+    }
+  else if (type.compare ("double"))
+    {
+      double d = (args.length () > 0 ? args(0).double_value () : 0);
+
+      if (! error_state)
+	retval = property (new double_property (name, h, d));
+    }
+  else if (type.compare ("handle"))
+    {
+      double hh = (args.length () > 0 ? args(0).double_value () : octave_NaN);
+
+      if (! error_state)
+	{
+	  graphics_handle gh (hh);
+
+	  retval = property (new handle_property (name, h, gh));
+	}
+    }
+  else if (type.compare ("boolean"))
+    {
+      retval = property (new bool_property (name, h, false));
+
+      if (args.length () > 0)
+	retval.set (args(0));
+    }
+  else if (type.compare ("data"))
+    {
+      retval = property (new array_property (name, h, Matrix ()));
+
+      if (args.length () > 0)
+	{
+	  retval.set (args(0));
+
+	  // FIXME: additional argument could define constraints
+	  //        but is this really useful...?
+	}
+    }
+  else if (type.compare ("color"))
+    {
+      color_values cv (0, 0, 0);
+      radio_values rv;
+
+      if (args.length () > 1)
+	rv = radio_values (args(1).string_value ());
+
+      if (! error_state)
+	{
+	  retval = property (new color_property (name, h, cv, rv));
+
+	  if (! error_state)
+	    {
+	      if (args.length () > 0
+		  && ! args(0).is_empty ())
+		retval.set (args(0));
+	      else
+		retval.set (rv.default_value ());
+	    }
+	}
+    }
+  else
+    {
+      caseless_str go_name, go_rest;
+
+      if (lookup_object_name (type, go_name, go_rest))
+	{
+	  graphics_object go;
+
+	  std::map<caseless_str, graphics_object>::const_iterator it =
+	      dprop_obj_map.find (go_name);
+
+	  if (it == dprop_obj_map.end ())
+	    {
+	      base_graphics_object *bgo =
+		  make_graphics_object_from_type (go_name);
+
+	      if (bgo)
+		{
+		  go = graphics_object (bgo);
+
+		  dprop_obj_map[go_name] = go;
+		}
+	    }
+	  else
+	    go = it->second;
+
+	  if (go.valid_object ())
+	    {
+	      property prop = go.get_properties ().get_property (go_rest);
+
+	      if (! error_state)
+		{
+		  retval = prop.clone ();
+
+		  retval.set_parent (h);
+		  retval.set_name (name);
+
+		  if (args.length () > 0)
+		    retval.set (args(0));
+		}
+	    }
+	  else
+	    error ("addproperty: invalid object type (= %s)",
+		   go_name.c_str ());
+	}
+      else
+	error ("addproperty: unsupported type for dynamic property (= %s)",
+	       type.c_str ());
+    }
+  
+  return retval;
 }
 
 // ---------------------------------------------------------------------
@@ -1433,6 +1661,25 @@ base_properties::get_property (const caseless_str& name)
     }
 }
 
+bool
+base_properties::has_property (const caseless_str& name)
+{
+  property p;
+
+  unwind_protect::begin_frame("base_properties::has_property");
+
+  unwind_protect_bool (discard_error_messages);
+  unwind_protect_int (error_state);
+
+  discard_error_messages = true;
+
+  p = get_property (name);
+
+  unwind_protect::run_frame ("base_properties::has_property");
+
+  return (p.ok ());
+}
+
 void
 base_properties::remove_child (const graphics_handle& h)
 {
@@ -1502,7 +1749,9 @@ void
 base_properties::override_defaults (base_graphics_object& obj)
 {
   graphics_object parent_obj = gh_manager::get_object (get_parent ());
-  parent_obj.override_defaults (obj);
+
+  if (parent_obj)
+    parent_obj.override_defaults (obj);
 }
 
 void
@@ -3266,20 +3515,8 @@ gh_manager::do_make_graphics_handle (const std::string& go_name,
 
   base_graphics_object *go = 0;
 
-  if (go_name == "figure")
-    go = new figure (h, p);
-  else if (go_name == "axes")
-    go = new axes (h, p);
-  else if (go_name == "line")
-    go = new line (h, p);
-  else if (go_name == "text")
-    go = new text (h, p);
-  else if (go_name == "image")
-    go = new image (h, p);
-  else if (go_name == "patch")
-    go = new patch (h, p);
-  else if (go_name == "surface")
-    go = new surface (h, p);
+  go = make_graphics_object_from_type (go_name, h, p);
+  
   if (go)
     {
       handle_map[h] = graphics_object (go);
@@ -3961,6 +4198,8 @@ array, the first element must be a function handle with the same signature\n\
 as described above. The next elements of the cell array are passed\n\
 as additional arguments to the function.\n\
 \n\
+Example:\n\
+\n\
 @example\n\
 function my_listener (h, dummy, p1)\n\
   fprintf (\"my_listener called with p1=%s\\n\", p1);\n\
@@ -4000,6 +4239,118 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 	}
       else
 	error ("addlistener: invalid handle");
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (addproperty, args, ,
+   "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, [@var{arg}, ...])\n\
+Create a new property named @var{name} in graphics object @var{h}.\n\
+@var{type} determines the type of the property to create. @var{args}\n\
+usually contains the default value of the property, but additional\n\
+arguments might be given, depending on the type of the property.\n\
+\n\
+The supported property types are:\n\
+\n\
+@table @code\n\
+@item string\n\
+A string property. @var{arg} contains the default string value.\n\
+@item any\n\
+An un-typed property. This kind of property can hold any octave\n\
+value. @var{args} contains the default value.\n\
+@item radio\n\
+A string property with a limited set of accepted values. The first\n\
+argument must be a string with all accepted values separated by\n\
+a vertical bar ('|'). The default value can be marked by enclosing\n\
+it with a '@{' '@}' pair. The default value may also be given as\n\
+an optional second string argument.\n\
+@item boolean\n\
+A boolean property. This property type is equivalent to a radio\n\
+property with \"on|off\" as accepted values. @var{arg} contains\n\
+the default property value.\n\
+@item double\n\
+A scalar double property. @var{arg} contains the default value.\n\
+@item handle\n\
+A handle property. This kind of property holds the handle of a\n\
+graphics object. @var{arg} contains the default handle value.\n\
+When no default value is given, the property is initialized to\n\
+the empty matrix.\n\
+@item data\n\
+A data (matrix) property. @var{arg} contains the default data\n\
+value. When no default value is given, the data is initialized to\n\
+the empty matrix.\n\
+@item color\n\
+A color property. @var{arg} contains the default color value.\n\
+When no default color is given, the property is set to black.\n\
+An optional second string argument may be given to specify an\n\
+additional set of accepted string values (like a radio property).\n\
+@end table\n\
+\n\
+@var{type} may also be the concatenation of a core object type and\n\
+a valid property name for that object type. The property created\n\
+then has the same characteristics as the referenced property (type,\n\
+possible values, hidden state...). This allows to clone an existing\n\
+property into the graphics object @var{h}.\n\
+\n\
+Examples:\n\
+\n\
+@example\n\
+addproperty (\"my_property\", gcf, \"string\", \"a string value\");\n\
+addproperty (\"my_radio\", gcf, \"radio\", \"val_1|val_2|@{val_3@}\");\n\
+addproperty (\"my_style\", gcf, \"linelinestyle\", \"--\");\n\
+@end example\n\
+\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  if (args.length () >= 3)
+    {
+      std::string name = args(0).string_value ();
+
+      if (! error_state)
+	{
+	  double h = args(1).double_value ();
+
+	  if (! error_state)
+	    {
+	      graphics_handle gh = gh_manager::lookup (h);
+
+	      if (gh.ok ())
+		{
+		  graphics_object go = gh_manager::get_object (gh);
+
+		  std::string type = args(2).string_value ();
+
+		  if (! error_state)
+		    {
+		      if (! go.get_properties ().has_property (name))
+			{
+			  property p = property::create (name, gh, type,
+							 args.splice (0, 3));
+
+			  if (! error_state)
+			    go.get_properties ().insert_property (name, p);
+			}
+		      else
+			error ("addproperty: a `%s' property already exists in the graphics object",
+			       name.c_str ());
+		    }
+		  else
+		    error ("addproperty: invalid property type, expected a string value");
+		}
+	      else
+		error ("addproperty: invalid graphics object (= %g)", h);
+	    }
+	  else
+	    error ("addproperty: invalid handle value");
+	}
+      else
+	error ("addproperty: invalid property name, expected a string value");
     }
   else
     print_usage ();

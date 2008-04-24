@@ -148,10 +148,6 @@ public:
   // for use as an unwind_protect handler.
   static void unwind_pop (void *) { pop (); }
 
-  // A function for popping an octave_user_script from the top of the
-  // call stack that is suitable for use as an unwind_protect handler.
-  static void unwind_pop_script (void *);
-
   static void clear (void)
   {
     if (instance_ok ())

@@ -153,15 +153,6 @@ octave_call_stack::do_caller_user_code (void)
 }
 
 void
-octave_call_stack::unwind_pop_script (void *)
-{
-  octave_function *f = top ();
-  pop ();
-  assert (f && f->is_user_script ());
-  delete f;
-}
-
-void
 recover_from_exception (void)
 {
   can_interrupt = true;

@@ -1,5 +1,8 @@
 2008-04-24  John W. Eaton  <jwe@octave.org>
 
+	* toplev.h, toplev.cc (octave_call_stack::unwind_pop_script):
+	Delete unused function.
+
 	* ov-usr-fcn.cc: Move constructor definitions here, from ov-usr-fcn.h.
 	* ov-usr-fcn.h (octave_user_script::octave_user_script): 
 	Also Initialize t_parsed and t_checked.

@@ -1,3 +1,7 @@
+2008-04-24  John W. Eaton  <jwe@octave.org>
+
+	* file-io.cc (do_stream_open): Return -1 for directories.
+
 2008-04-23  John W. Eaton  <jwe@octave.org>
 
 	* DLD-FUNCTIONS/__qp__.cc (qp): Avoid bounds error when removing

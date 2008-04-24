@@ -415,12 +415,12 @@ do_stream_open (const std::string& name, const std::string& mode,
 	{
 	  std::string fname = file_ops::tilde_expand (name);
 
+	  file_stat fs (fname);
+
 	  if (! (md & std::ios::out
 		 || octave_env::absolute_pathname (fname)
 		 || octave_env::rooted_relative_pathname (fname)))
 	    {
-	      file_stat fs (fname);
-
 	      if (! fs.exists ())
 		{
 		  std::string tmp = octave_env::make_absolute
@@ -434,49 +434,52 @@ do_stream_open (const std::string& name, const std::string& mode,
 		    }
 		}
 	    }
+	  
+	  if (! fs.is_dir ())
+	    {
+	      std::string tmode = mode;
 
-	  std::string tmode = mode;
+	      // Use binary mode if 't' is not specified, but don't add
+	      // 'b' if it is already present.
 
-	  // Use binary mode if 't' is not specified, but don't add
-	  // 'b' if it is already present.
+	      size_t bpos = tmode.find ('b');
+	      size_t tpos = tmode.find ('t');
 
-	  size_t bpos = tmode.find ('b');
-	  size_t tpos = tmode.find ('t');
-
-	  if (bpos == NPOS && tpos == NPOS)
-	    tmode += 'b';
+	      if (bpos == NPOS && tpos == NPOS)
+		tmode += 'b';
 
 #if defined (HAVE_ZLIB)
-	  size_t pos = tmode.find ('z');
+	      size_t pos = tmode.find ('z');
 
-	  if (pos != NPOS)
-	    {
-	      tmode.erase (pos, 1);
+	      if (pos != NPOS)
+		{
+		  tmode.erase (pos, 1);
 
-	      gzFile fptr = ::gzopen (fname.c_str (), tmode.c_str ());
+		  gzFile fptr = ::gzopen (fname.c_str (), tmode.c_str ());
 
-	      if (fptr)
-		retval = octave_zstdiostream::create (fname, fptr, md, flt_fmt);
+		  if (fptr)
+		    retval = octave_zstdiostream::create (fname, fptr, md, flt_fmt);
+		  else
+		    {
+		      using namespace std;
+		      retval.error (::strerror (errno));
+		    }
+		}
 	      else
-		{
-		  using namespace std;
-		  retval.error (::strerror (errno));
-		}
-	    }
-	  else
 #endif
-	    {
-	      FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
-
-	      retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
-
-	      if (! fptr)
 		{
-		  using namespace std;
-		  retval.error (::strerror (errno));
-		}
-	    }
+		  FILE *fptr = ::fopen (fname.c_str (), tmode.c_str ());
 
+		  retval = octave_stdiostream::create (fname, fptr, md, flt_fmt);
+
+		  if (! fptr)
+		    {
+		      using namespace std;
+		      retval.error (::strerror (errno));
+		    }
+		}
+
+	    }
 	}
     }
 

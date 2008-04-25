@@ -487,7 +487,7 @@ lookup_object_name (const caseless_str& name, caseless_str& go_name,
 		{
 		  pfx = name.substr (0, 7);
 
-		  if (pfx.compare ("surface"))
+		  if (pfx.compare ("surface") || pfx.compare ("hggroup"))
 		    offset = 7;
 		}
 	    }
@@ -525,6 +525,8 @@ make_graphics_object_from_type (const caseless_str& type,
     go = new patch (h, p);
   else if (type.compare ("surface"))
     go = new surface (h, p);
+  else if (type.compare ("hggroup"))
+    go = new hggroup (h, p);
 
   return go;
 }
@@ -1024,7 +1026,7 @@ property_list::set (const caseless_str& name, const octave_value& val)
 		{
 		  pfx = name.substr (0, 7);
 
-		  if (pfx.compare ("surface"))
+		  if (pfx.compare ("surface") || pfx.compare ("hggroup"))
 		    offset = 7;
 		}
 	    }
@@ -1097,7 +1099,7 @@ property_list::lookup (const caseless_str& name) const
 		{
 		  pfx = name.substr (0, 7);
 
-		  if (pfx.compare ("surface"))
+		  if (pfx.compare ("surface") || pfx.compare ("hggroup"))
 		    offset = 7;
 		}
 	    }
@@ -3478,6 +3480,88 @@ surface::properties::update_normals (void)
 
 // ---------------------------------------------------------------------
 
+void
+hggroup::update_axis_limits (const std::string& axis_type)
+{
+  Matrix kids = xproperties.get_children ();
+
+  octave_idx_type n = kids.numel ();
+
+  double min_val = octave_Inf;
+  double max_val = -octave_Inf;
+  double min_pos = octave_Inf;
+
+  char update_type = 0;
+
+  if (axis_type == "xlim")
+    {
+      get_children_limits (min_val, max_val, min_pos, kids, 'x');
+      
+      update_type = 'x';
+    }
+  else if (axis_type == "ylim")
+    {
+      get_children_limits (min_val, max_val, min_pos, kids, 'y');
+
+      update_type = 'y';
+    }
+  else if (axis_type == "zlim")
+    {
+      get_children_limits (min_val, max_val, min_pos, kids, 'z');
+
+      update_type = 'z';
+    }
+  else if (axis_type == "clim")
+    {
+      get_children_limits (min_val, max_val, min_pos, kids, 'c');
+
+      update_type = 'c';
+
+    }
+  else if (axis_type == "alim")
+    {
+      get_children_limits (min_val, max_val, min_pos, kids, 'a');
+
+      update_type = 'a';
+    }
+
+  Matrix limits (1, 3, 0.0);
+
+  limits(0) = min_val;
+  limits(1) = max_val;
+  limits(2) = min_pos;
+
+  switch (update_type)
+    {
+    case 'x':
+      xproperties.set_xlim (limits);
+      break;
+
+    case 'y':
+      xproperties.set_ylim (limits);
+      break;
+
+    case 'z':
+      xproperties.set_zlim (limits);
+      break;
+
+    case 'c':
+      xproperties.set_clim (limits);
+      break;
+
+    case 'a':
+      xproperties.set_alim (limits);
+      break;
+
+    default:
+      break;
+    }
+
+  base_graphics_object::update_axis_limits (axis_type);
+}
+
+// ---------------------------------------------------------------------
+
 octave_value
 base_graphics_object::get_default (const caseless_str& name) const
 {
@@ -3575,6 +3659,7 @@ root_figure::init_factory_properties (void)
   plist_map["image"] = image::properties::factory_defaults ();
   plist_map["patch"] = patch::properties::factory_defaults ();
   plist_map["surface"] = surface::properties::factory_defaults ();
+  plist_map["hggroup"] = hggroup::properties::factory_defaults ();
 
   return plist_map;
 }
@@ -3777,7 +3862,33 @@ make_graphics_object (const std::string& go_name,
 {
   octave_value retval;
 
-  double val = args(0).double_value ();
+  double val = octave_NaN;
+
+  octave_value_list xargs = args.splice (0, 1);
+
+  caseless_str p ("parent");
+
+  for (int i = 0; i < xargs.length (); i++)
+    if (xargs(i).is_string ()
+	&& p.compare (xargs(i).string_value ()))
+      {
+	if (i < (xargs.length () - 1))
+	  {
+	    val = xargs(i+1).double_value ();
+
+	    if (! error_state)
+	      {
+		xargs = xargs.splice (i, 2);
+		break;
+	      }
+	  }
+	else
+	  error ("__go_%s__: missing value for parent property",
+		 go_name.c_str ());
+      }
+
+  if (! error_state && xisnan (val))
+    val = args(0).double_value ();
 
   if (! error_state)
     {
@@ -3792,7 +3903,7 @@ make_graphics_object (const std::string& go_name,
 	    {
 	      adopt (parent, h);
 
-	      xset (h, args.splice (0, 1));
+	      xset (h, xargs);
 	      xcreatefcn (h);
 
 	      retval = h.value ();
@@ -3932,6 +4043,15 @@ Undocumented internal function.\n\
   GO_BODY (patch);
 }
 
+DEFUN (__go_hggroup__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __go_hggroup__ (@var{parent})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  GO_BODY (hggroup);
+}
+
 DEFUN (__go_delete__, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} __go_delete__ (@var{h})\n\
@@ -3965,6 +4085,8 @@ Undocumented internal function.\n\
 	      gh_manager::free (h);
 
 	      parent_obj.remove_child (h);
+
+	      Vdrawnow_requested = true;
 	    }
 	  else
 	    error ("delete: invalid graphics object (= %g)", val);

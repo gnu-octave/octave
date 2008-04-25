@@ -391,11 +391,16 @@ function emit_source ()
     printf ("void\n%s::properties::set (const caseless_str& pname, const octave_value& val)\n{\n",
             class_name) >> filename;
 
+    first = 1;
+
     for (i = 1; i <= idx; i++)
     {
       if (! readonly[i])
+      {
         printf ("  %sif (pname.compare (\"%s\"))\n    set_%s (val);\n",
-                (i > 1 ? "else " : ""), name[i], name[i]) >> filename;
+                (first == 0 ? "else " : ""), name[i], name[i]) >> filename;
+        first = 0;
+      }
     }
 
     printf ("  else\n    base_properties::set (pname, val);\n}\n\n") >> filename;

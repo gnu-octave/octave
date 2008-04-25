@@ -111,6 +111,7 @@ SOURCES = \
   ginput.m \
   grid.m \
   gtext.m \
+  hggroup.m \
   hidden.m \
   hist.m \
   hold.m \

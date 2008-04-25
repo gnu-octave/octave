@@ -47,6 +47,20 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* genprops.awk (emit_source): Fix if-then-else statement generation
+	when the first property is hidden.
+	* graphics.h.in (base_properties::adopt): Call mark_modified.
+	(class hggroup): New graphics object class.
+	* graphics.cc (lookup_object_name, make_graphics_object_from_type,
+	property_list::lookup, property_list::set,
+	root_figure::init_factory_properties): Support hggroup as possible
+	object type.
+	(hggroup::update_axis_limits): New graphics object class.
+	(make_graphics_object): Look for "parent" property in the arguments
+	and use it as actual parent for the created object.
+	(F__go_hggroup__): New function.
+	(F__go_delete__): Set Vdrawnow_requested to true.
+
 	* graphics.h.in (base_property::clone, string_property::clone,
 	radio_property::clone, color_property::clone, double_property::clone,
 	double_radio_property::clone, array_property::clone,

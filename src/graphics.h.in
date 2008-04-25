@@ -1591,6 +1591,7 @@ public:
     octave_idx_type n = children.numel ();
     children.resize (1, n+1);
     children(n) = h.value ();
+    mark_modified ();
   }
 
   virtual graphics_backend get_backend (void) const;
@@ -3392,6 +3393,81 @@ public:
 
   bool valid_object (void) const { return true; }
 };
+
+// ---------------------------------------------------------------------
+
+class OCTINTERP_API hggroup : public base_graphics_object
+{
+public:
+  class OCTINTERP_API properties : public base_properties
+  {
+  public:
+    void remove_child (const graphics_handle& h)
+      {
+	base_properties::remove_child (h);
+	update_limits ();
+      }
+
+    void adopt (const graphics_handle& h)
+      {
+	base_properties::adopt (h);
+	update_limits ();
+      }
+
+    // See the genprops.awk script for an explanation of the
+    // properties declarations.
+
+    BEGIN_PROPERTIES(hggroup)
+      // hidden properties for limit computation
+      row_vector_property xlim hr , Matrix()
+      row_vector_property ylim hr , Matrix()
+      row_vector_property zlim hr , Matrix()
+      row_vector_property clim hr , Matrix()
+      row_vector_property alim hr , Matrix()
+      bool_property xliminclude h , "on"
+      bool_property yliminclude h , "on"
+      bool_property zliminclude h , "on"
+      bool_property climinclude h , "on"
+      bool_property aliminclude h , "on"
+    END_PROPERTIES
+
+  private:
+    void update_limits (void)
+      {
+	update_axis_limits ("xlim");
+	update_axis_limits ("ylim");
+	update_axis_limits ("zlim");
+	update_axis_limits ("clim");
+	update_axis_limits ("alim");
+      }
+
+  protected:
+    void init (void)
+      { }
+  };
+
+private:
+  properties xproperties;
+
+public:
+  hggroup (const graphics_handle& mh, const graphics_handle& p)
+    : base_graphics_object (), xproperties (mh, p)
+  {
+    xproperties.override_defaults (*this);
+  }
+
+  ~hggroup (void) { xproperties.delete_children (); }
+
+  base_properties& get_properties (void) { return xproperties; }
+
+  const base_properties& get_properties (void) const { return xproperties; }
+
+  bool valid_object (void) const { return true; }
+  
+  void update_axis_limits (const std::string& axis_type);
+};
+
+// ---------------------------------------------------------------------
 
 octave_value
 get_property_from_handle (double handle, const std::string &property,

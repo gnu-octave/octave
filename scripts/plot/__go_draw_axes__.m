@@ -325,9 +325,10 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     ximg_data = {};
     ximg_data_idx = 0;
 
-    for i = 1:length (kids)
+    while (! isempty (kids))
 
-      obj = get (kids(i));
+      obj = get (kids(1));
+      kids = kids(2:end);
 
       switch (obj.type)
 	case "image"
@@ -992,12 +993,16 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 		     __do_enhanced_option__ (enhanced, obj), colorspec);
 	  endif
 
+        case "hggroup"
+          # push group children into the kid list
+          kids = [obj.children kids];
+
 	otherwise
 	  error ("__go_draw_axes__: unknown object class, %s",
 		 obj.type);
       endswitch
 
-    endfor
+    endwhile
 
     ## This is need to prevent warnings for rotations in 3D plots, while
     ## allowing colorbars with contours..
@@ -1421,6 +1426,11 @@ function nd = __calc_dimensions__ (obj)
 	endif
       case "surface"
 	nd = 3;
+      case "hggroup"
+        obj_nd = __calc_dimensions__ (obj);
+        if (obj_nd == 3)
+          nd = 3;
+        endif
     endswitch
   endfor
 endfunction

@@ -132,7 +132,8 @@ seq_lookup (const T *table, octave_idx_type offset, octave_idx_type size,
                                  bind2nd (comp, *(cur-1)));
 
           // store index of the current interval.
-          idx = std::fill_n (idx, vnew - vcur, cur - table);
+          std::fill_n (idx, vnew - vcur, cur - table);
+	  idx += (vnew - vcur);
           vcur = vnew;
 
         }

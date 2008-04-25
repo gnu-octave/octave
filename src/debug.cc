@@ -29,7 +29,6 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 #include <set>
 
-
 #include "defun.h"
 #include "error.h"
 #include "help.h"
@@ -57,6 +56,9 @@ along with Octave; see the file COPYING.  If not, see
 
 // Initialize the singleton object
 bp_table *bp_table::instance = 0;
+
+// FIXME --  dbup and dbdown will need to modify this variable.
+static int current_stack_frame = 1;
 
 // Return a pointer to the user-defined function FNAME.  If FNAME is
 // empty, search backward for the first user-defined function in the
@@ -688,6 +690,30 @@ List script file with line numbers.\n\
 	default:
 	  error ("dbtype: expecting zero, one, or two arguments\n");
 	}
+    }
+
+  return retval;
+}
+
+DEFUN (__dbstack__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} __dbstack__ (@var{n})\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  int n = 0;
+
+  if (args.length () == 1)
+    n = args(0).int_value ();
+
+  if (! error_state)
+    {
+      retval(1) = current_stack_frame;
+
+      // Add one here to skip the __dbstack__ stack frame.
+      retval(0) = octave_call_stack::backtrace (n+1);
     }
 
   return retval;

@@ -1,3 +1,8 @@
+2008-04-25  John W. Eaton  <jwe@octave.org>
+
+	* miscellaneous/dbstack.m: New function.
+	* miscellaneous/Makefile.in: Add it to the list.
+
 2008-04-21  David Bateman  <dbateman@free.fr>
 
 	* plot/__go_draw_axes__.m (gnuplot_position_colorbox): New arg, obj.

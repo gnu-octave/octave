@@ -178,9 +178,9 @@ public:
       instance->do_set_statement (s);
   }
 
-  static Octave_map backtrace (void)
+  static Octave_map backtrace (int n = 0)
   {
-    return instance_ok () ? instance->do_backtrace () : Octave_map ();
+    return instance_ok () ? instance->do_backtrace (n) : Octave_map ();
   }
 
   static void pop (void)
@@ -269,7 +269,7 @@ private:
       }
   }
 
-  Octave_map do_backtrace (void) const;
+  Octave_map do_backtrace (int n) const;
 
   void do_pop (void)
   {

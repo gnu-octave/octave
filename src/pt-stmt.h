@@ -71,7 +71,8 @@ public:
 
   tree_command *command (void) { return cmd; }
 
-  octave_value_list eval (bool silent, int nargout, bool in_function_body);
+  octave_value_list eval (bool silent, int nargout,
+			  bool in_function_or_script_body);
 
   tree_expression *expression (void) { return expr; }
 
@@ -119,10 +120,10 @@ tree_statement_list : public octave_base_list<tree_statement *>
 public:
 
   tree_statement_list (void)
-    : function_body (false) { }
+    : function_body (false), script_body (false) { }
 
   tree_statement_list (tree_statement *s)
-    : function_body (false) { append (s); }
+    : function_body (false), script_body (false) { append (s); }
 
   ~tree_statement_list (void)
     {
@@ -135,6 +136,8 @@ public:
     }
 
   void mark_as_function_body (void) { function_body = true; }
+
+  void mark_as_script_body (void) { script_body = true; }
 
   octave_value_list eval (bool silent = false, int nargout = 0);
 
@@ -152,6 +155,9 @@ private:
 
   // Does this list of statements make up the body of a function?
   bool function_body;
+
+  // Does this list of statements make up the body of a script?
+  bool script_body;
 
   // No copying!
 

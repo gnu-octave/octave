@@ -1,5 +1,28 @@
 2008-04-25  John W. Eaton  <jwe@octave.org>
 
+	* pt-stmt.h (tree_statement_list::function_body): New data member.
+	(tree_statement_list::tree_statement_list): Initialize it.
+	(tree_statement_list::mark_as_script_body): New function.
+	(tree_statement::maybe_echo_code, tree_statement::eval):
+	Rename in_function_body argument to in_function_or_script_body.
+	* pt-stmt.cc (tree_statement::eval): Only set statement in call
+	stack if in_function_or_script_body is true.
+
+	* pt-stmt.cc (tree_statement_list::eval): Call elt->eval with
+	function_body || script_body.
+	* ov-usr-fcn.cc (octave_user_script::octave_user_script):
+	command list as script body here.
+	(octave_user_function::octave_user_function):
+	Mark command list as function body here.
+	* parse.y (start_function, make_anon_fcn_handle): Not here.
+
+	* toplev.h, toplev.cc (octave_call_stack::backtrace,
+	octave_call_stack::do_backtrace): New arg, N.  Skip innermost N
+	stack frames.
+
+	* debug.cc (F__dbstack__): New function.
+	(current_stack_frame): New static variable.
+
 	* error.cc (verror, pr_where): Use octave_call_stack instead of
 	tree_statement stack to get line and column information.
 	(pr_where): Use octave_call_stack instead of tree_statement stack

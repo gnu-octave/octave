@@ -67,9 +67,9 @@ tree_statement::column (void)
 }
 
 void
-tree_statement::maybe_echo_code (bool in_function_body)
+tree_statement::maybe_echo_code (bool in_function_or_script_body)
 {
-  if (in_function_body
+  if (in_function_or_script_body
       && (Vecho_executing_commands & ECHO_FUNCTIONS))
     {
       tree_print_code tpc (octave_stdout, VPS4);
@@ -79,7 +79,8 @@ tree_statement::maybe_echo_code (bool in_function_body)
 }
 
 octave_value_list
-tree_statement::eval (bool silent, int nargout, bool in_function_body)
+tree_statement::eval (bool silent, int nargout,
+		      bool in_function_or_script_body)
 {
   octave_value_list retval;
 
@@ -87,9 +88,10 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 
   if (cmd || expr)
     {
-      octave_call_stack::set_statement (this);
+      if (in_function_or_script_body)
+	octave_call_stack::set_statement (this);
 
-      maybe_echo_code (in_function_body);
+      maybe_echo_code (in_function_or_script_body);
 
       try
 	{
@@ -179,7 +181,8 @@ tree_statement_list::eval (bool silent, int nargout)
 	    {
 	      OCTAVE_QUIT;
 
-	      retval = elt->eval (silent, nargout, function_body);
+	      retval = elt->eval (silent, nargout,
+				  function_body || script_body);
 
 	      if (error_state)
 		break;

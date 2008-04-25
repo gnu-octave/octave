@@ -35,7 +35,7 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = ans.m bincoeff.m bug_report.m bunzip2.m cast.m comma.m \
   compare_versions.m computer.m copyfile.m \
-  delete.m dir.m doc.m dos.m dump_prefs.m edit.m \
+  dbstack.m delete.m dir.m doc.m dos.m dump_prefs.m edit.m \
   fileattrib.m fileparts.m flops.m fullfile.m getfield.m gunzip.m gzip.m \
   info.m inputname.m ismac.m ispc.m isunix.m license.m list_primes.m ls.m \
   ls_command.m menu.m mex.m mexext.m mkoctfile.m movefile.m \

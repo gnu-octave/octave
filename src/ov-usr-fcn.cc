@@ -74,7 +74,10 @@ octave_user_script::octave_user_script (const std::string& fnm,
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
     call_depth (0)
-{ }
+{
+  if (cmd_list)
+    cmd_list->mark_as_script_body ();
+}
 
 octave_user_script::octave_user_script (const std::string& fnm,
 					const std::string& nm,
@@ -204,7 +207,10 @@ octave_user_function::octave_user_function
     nested_function (false), inline_function (false),
     class_constructor (false), class_method (false), xdispatch_class (),
     args_passed (), num_args_passed (0), local_scope (sid)
-{ }
+{
+  if (cmd_list)
+    cmd_list->mark_as_function_body ();
+}
 
 octave_user_function::~octave_user_function (void)
 {

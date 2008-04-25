@@ -175,72 +175,68 @@ octave_call_stack::do_caller_user_code (void) const
 }
 
 Octave_map
-octave_call_stack::do_backtrace (void) const
+octave_call_stack::do_backtrace (int n) const
 {
   Octave_map retval;
 
-  size_t nframes = cs.size () - 1;
+  int nframes = cs.size () - n;
 
-  Cell keys (4, 1);
-
-  keys(0) = "file";
-  keys(1) = "name";
-  keys(2) = "line";
-  keys(3) = "column";
-
-  Cell file (nframes, 1);
-  Cell name (nframes, 1);
-  Cell line (nframes, 1);
-  Cell column (nframes, 1);
-
-  const_iterator p = cs.begin ();
-  
-  // Skip innermost function as it will be the dbstatus function
-  // itself.  FIXME -- Is it best to do this here?
-  p++;
-
-  octave_idx_type k = 0;
-
-  while (p != cs.end ())
+  if (nframes > 0)
     {
-      const call_stack_elt& elt = *p;
+      Cell keys (4, 1);
 
-      octave_function *f = elt.fcn;
+      keys(0) = "file";
+      keys(1) = "name";
+      keys(2) = "line";
+      keys(3) = "column";
 
-      if (f)
+      Cell file (nframes, 1);
+      Cell name (nframes, 1);
+      Cell line (nframes, 1);
+      Cell column (nframes, 1);
+
+      octave_idx_type k = 0;
+
+      for (const_iterator p = cs.begin () + n; p != cs.end (); p++)
 	{
-	  file(k) = f->fcn_file_name ();
-	  name(k) = f->name ();
+	  const call_stack_elt& elt = *p;
 
-	  tree_statement *stmt = elt.stmt;
+	  octave_function *f = elt.fcn;
 
-	  if (stmt)
+	  if (f)
 	    {
-	      line(k) = stmt->line ();
-	      column(k) = stmt->column ();
+	      file(k) = f->fcn_file_name ();
+	      name(k) = f->name ();
+
+	      tree_statement *stmt = elt.stmt;
+
+	      if (stmt)
+		{
+		  line(k) = stmt->line ();
+		  column(k) = stmt->column ();
+		}
+	      else
+		{
+		  line(k) = -1;
+		  column(k) = -1;
+		}
 	    }
 	  else
 	    {
+	      file(k) = "<unknown>";
+	      name(k) = "<unknown>";
 	      line(k) = -1;
 	      column(k) = -1;
 	    }
-	}
-      else
-	{
-	  file(k) = "<unknown>";
-	  name(k) = "<unknown>";
-	  line(k) = -1;
-	  column(k) = -1;
+
+	  k++;
 	}
 
-      k++;
-      p++;
+      retval.assign ("file", file);
+      retval.assign ("name", name);
+      retval.assign ("line", line);
+      retval.assign ("column", column);
     }
-
-  retval.assign ("file", file);
-  retval.assign ("name", name);
-  retval.assign ("line", line);
-  retval.assign ("column", column);
 
   return retval;
 }

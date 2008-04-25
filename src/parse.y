@@ -1771,8 +1771,6 @@ make_anon_fcn_handle (tree_parameter_list *param_list, tree_statement *stmt)
 
   tree_statement_list *body = new tree_statement_list (stmt);
 
-  body->mark_as_function_body ();
-
   tree_anon_fcn_handle *retval
     = new tree_anon_fcn_handle (param_list, ret_list, body, fcn_scope, l, c);
 
@@ -2427,8 +2425,6 @@ make_script (tree_statement_list *cmds)
 static octave_user_function *
 start_function (tree_parameter_list *param_list, tree_statement_list *body)
 {
-  body->mark_as_function_body ();
-
   // We'll fill in the return list later.
 
   octave_user_function *fcn

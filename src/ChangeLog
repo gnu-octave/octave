@@ -1,3 +1,31 @@
+2008-04-25  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (verror, pr_where): Use octave_call_stack instead of
+	tree_statement stack to get line and column information.
+	(pr_where): Use octave_call_stack instead of tree_statement stack
+	to get current statement.
+	* input.cc (get_user_input): Extract current line number from
+	octave_call_stack instead of tree_statement_stack.
+	* pt-stmt.cc (tree_statement::eval): Put current statement on
+	octave_call_stack instead of tree_statement_stack.
+	* pt-stmt.h, pt-stmt.cc (class tree_statement_stack): Delete.
+
+	* toplev.h, toplev.cc (octave_call_stack::call_stack_elt):
+	New nested struct.
+	(octave_call_stack::cs): Now a deque of call_stack_elts.
+	Change all uses.
+	(octave_call_stack::current_statement,
+	octave_call_stack::current_line,
+	octave_call_stack::current_column,
+	octave_call_stack::top_statement,
+	octave_call_stack::set_statement, octave_call_stack::backtrace):
+	New static functions.
+	(octave_call_stack::do_current_line,
+	octave_call_stack::do_current_column,
+	octave_call_stack::do_top_statement,
+	octave_call_stack::do_set_statement,
+	octave_call_stack::do_backtrace): New member functions.
+
 2008-04-24  John W. Eaton  <jwe@octave.org>
 
 	* toplev.h, toplev.cc (octave_call_stack::unwind_pop_script):

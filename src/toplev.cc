@@ -95,14 +95,32 @@ octave_function *curr_parent_function = 0;
 
 octave_call_stack *octave_call_stack::instance = 0;
 
+int
+octave_call_stack::do_current_line (void) const
+{
+  tree_statement *stmt = do_top_statement ();
+
+  return stmt ? stmt->line () : -1;
+}
+
+int
+octave_call_stack::do_current_column (void) const
+{
+  tree_statement *stmt = do_top_statement ();
+
+  return stmt ? stmt->column () : -1;
+}
+
 octave_user_script *
-octave_call_stack::do_caller_user_script (void)
+octave_call_stack::do_caller_user_script (void) const
 {
   octave_user_script *retval = 0;
 
-  for (iterator p = cs.begin (); p != cs.end (); p++)
+  for (const_iterator p = cs.begin (); p != cs.end (); p++)
     {
-      octave_function *f = *p;
+      const call_stack_elt& elt = *p;
+
+      octave_function *f = elt.fcn;
 
       if (f && f->is_user_script ())
 	{
@@ -115,13 +133,15 @@ octave_call_stack::do_caller_user_script (void)
 }
 
 octave_user_function *
-octave_call_stack::do_caller_user_function (void)
+octave_call_stack::do_caller_user_function (void) const
 {
   octave_user_function *retval = 0;
 
-  for (iterator p = cs.begin (); p != cs.end (); p++)
+  for (const_iterator p = cs.begin (); p != cs.end (); p++)
     {
-      octave_function *f = *p;
+      const call_stack_elt& elt = *p;
+
+      octave_function *f = elt.fcn;
 
       if (f && f->is_user_function ())
 	{
@@ -134,13 +154,15 @@ octave_call_stack::do_caller_user_function (void)
 }
 
 octave_user_code *
-octave_call_stack::do_caller_user_code (void)
+octave_call_stack::do_caller_user_code (void) const
 {
   octave_user_code *retval = 0;
 
-  for (iterator p = cs.begin (); p != cs.end (); p++)
+  for (const_iterator p = cs.begin (); p != cs.end (); p++)
     {
-      octave_function *f = *p;
+      const call_stack_elt& elt = *p;
+
+      octave_function *f = elt.fcn;
 
       if (f && f->is_user_code ())
 	{
@@ -148,6 +170,77 @@ octave_call_stack::do_caller_user_code (void)
 	  break;
 	}
     }
+
+  return retval;
+}
+
+Octave_map
+octave_call_stack::do_backtrace (void) const
+{
+  Octave_map retval;
+
+  size_t nframes = cs.size () - 1;
+
+  Cell keys (4, 1);
+
+  keys(0) = "file";
+  keys(1) = "name";
+  keys(2) = "line";
+  keys(3) = "column";
+
+  Cell file (nframes, 1);
+  Cell name (nframes, 1);
+  Cell line (nframes, 1);
+  Cell column (nframes, 1);
+
+  const_iterator p = cs.begin ();
+  
+  // Skip innermost function as it will be the dbstatus function
+  // itself.  FIXME -- Is it best to do this here?
+  p++;
+
+  octave_idx_type k = 0;
+
+  while (p != cs.end ())
+    {
+      const call_stack_elt& elt = *p;
+
+      octave_function *f = elt.fcn;
+
+      if (f)
+	{
+	  file(k) = f->fcn_file_name ();
+	  name(k) = f->name ();
+
+	  tree_statement *stmt = elt.stmt;
+
+	  if (stmt)
+	    {
+	      line(k) = stmt->line ();
+	      column(k) = stmt->column ();
+	    }
+	  else
+	    {
+	      line(k) = -1;
+	      column(k) = -1;
+	    }
+	}
+      else
+	{
+	  file(k) = "<unknown>";
+	  name(k) = "<unknown>";
+	  line(k) = -1;
+	  column(k) = -1;
+	}
+
+      k++;
+      p++;
+    }
+
+  retval.assign ("file", file);
+  retval.assign ("name", name);
+  retval.assign ("line", line);
+  retval.assign ("column", column);
 
   return retval;
 }

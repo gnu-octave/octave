@@ -87,8 +87,7 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 
   if (cmd || expr)
     {
-      unwind_protect::add (tree_statement_stack::unwind_pop, 0);
-      tree_statement_stack::push (this);
+      octave_call_stack::set_statement (this);
 
       maybe_echo_code (in_function_body);
 
@@ -131,8 +130,6 @@ tree_statement::eval (bool silent, int nargout, bool in_function_body)
 	  octave_exception_state = octave_no_exception;
 	  error ("caught execution error in library function");
 	}
-
-      unwind_protect::run ();
     }
 
   return retval;
@@ -284,8 +281,6 @@ tree_statement_list::accept (tree_walker& tw)
 {
   tw.visit_statement_list (*this);
 }
-
-tree_statement_stack *tree_statement_stack::instance = 0;
 
 /*
 ;;; Local Variables: ***

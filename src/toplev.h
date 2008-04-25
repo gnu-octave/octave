@@ -33,8 +33,11 @@ class octave_value;
 class octave_value_list;
 class octave_function;
 class octave_user_script;
+class tree_statement;
 class tree_statement_list;
 class charMatrix;
+
+#include "oct-map.h"
 
 extern OCTINTERP_API void
 clean_up_and_exit (int) GCC_ATTR_NORETURN;
@@ -68,13 +71,24 @@ extern OCTINTERP_API bool octave_initialized;
 class
 octave_call_stack
 {
+private:
+
+  struct call_stack_elt
+  {
+    call_stack_elt (octave_function *f) : fcn (f), stmt (0) { }
+
+    octave_function *fcn;
+    tree_statement *stmt;
+  };
+
 protected:
 
   octave_call_stack (void) : cs () { }
 
 public:
 
-  typedef std::deque<octave_function *>::iterator iterator ;
+  typedef std::deque<call_stack_elt>::iterator iterator;
+  typedef std::deque<call_stack_elt>::const_iterator const_iterator;
 
   static bool instance_ok (void)
   {
@@ -95,6 +109,21 @@ public:
 
   // Current function (top of stack).
   static octave_function *current (void) { return top (); }
+
+  // Current statement (top of stack).
+  static tree_statement *current_statement (void) { return top_statement (); }
+
+  // Current line in current function.
+  static int current_line (void)
+  {
+    return instance_ok () ? instance->do_current_line () : 0;
+  }
+
+  // Current column in current function.
+  static int current_column (void)
+  {
+    return instance_ok () ? instance->do_current_column () : 0;
+  }
 
   // Caller function, may be built-in.
   static octave_function *caller (void)
@@ -138,6 +167,22 @@ public:
     return instance_ok () ? instance->do_top (): 0;
   }
 
+  static tree_statement *top_statement (void)
+  {
+    return instance_ok () ? instance->do_top_statement (): 0;
+  }
+
+  static void set_statement (tree_statement *s)
+  {
+    if (instance_ok ())
+      instance->do_set_statement (s);
+  }
+
+  static Octave_map backtrace (void)
+  {
+    return instance_ok () ? instance->do_backtrace () : Octave_map ();
+  }
+
   static void pop (void)
   {
     if (instance_ok ())
@@ -157,21 +202,74 @@ public:
 private:
 
   // The current call stack.
-  std::deque<octave_function *> cs;
+  std::deque<call_stack_elt> cs;
 
   static octave_call_stack *instance;
 
-  octave_function *do_element (size_t n) { return cs.size () > n ? cs[n] : 0; }
+  int do_current_line (void) const;
 
-  octave_user_script *do_caller_user_script (void);
+  int do_current_column (void) const;
 
-  octave_user_function *do_caller_user_function (void);
+  octave_function *do_element (size_t n)
+  {
+    octave_function *retval = 0;
 
-  octave_user_code *do_caller_user_code (void);
+    if (cs.size () > n)
+      {
+	call_stack_elt& elt = cs[n];
+	retval = elt.fcn;
+      }
 
-  void do_push (octave_function *f) { cs.push_front (f); }
+    return retval;
+  }
 
-  octave_function *do_top (void) { return cs.empty () ? 0 : cs.front (); }
+  octave_user_script *do_caller_user_script (void) const;
+
+  octave_user_function *do_caller_user_function (void) const;
+
+  octave_user_code *do_caller_user_code (void) const;
+
+  void do_push (octave_function *f)
+  {
+    cs.push_front (call_stack_elt (f));
+  }
+
+  octave_function *do_top (void) const
+  {
+    octave_function *retval = 0;
+
+    if (! cs.empty ())
+      {
+	const call_stack_elt& elt = cs.front ();
+	retval = elt.fcn;
+      }
+
+    return retval;
+  }
+
+  tree_statement *do_top_statement (void) const
+  {
+    tree_statement *retval = 0;
+
+    if (! cs.empty ())
+      {
+	const call_stack_elt& elt = cs.front ();
+	retval = elt.stmt;
+      }
+
+    return retval;
+  }
+
+  void do_set_statement (tree_statement *s)
+  {
+    if (! cs.empty ())
+      {
+	call_stack_elt& elt = cs.front ();
+	elt.stmt = s;
+      }
+  }
+
+  Octave_map do_backtrace (void) const;
 
   void do_pop (void)
   {

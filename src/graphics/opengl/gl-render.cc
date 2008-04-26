@@ -528,6 +528,8 @@ opengl_renderer::draw (const graphics_object& go)
     draw (dynamic_cast<const surface::properties&> (props));
   else if (go.isa ("patch"))
     draw (dynamic_cast<const patch::properties&> (props));
+  else if (go.isa ("hggroup"))
+    draw (dynamic_cast<const hggroup::properties&> (props));
   else
     warning ("opengl_renderer: cannot render object of type `%s'",
 	     props.graphics_object_name ().c_str ());
@@ -2482,6 +2484,12 @@ opengl_renderer::draw (const patch::properties &props)
 
       end_marker ();
     }
+}
+
+void
+opengl_renderer::draw (const hggroup::properties &props)
+{
+  draw (props.get_children ());
 }
 
 void

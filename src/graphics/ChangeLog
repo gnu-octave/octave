@@ -1,3 +1,9 @@
+2008-04-26  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h (opengl_renderer::draw(hggroup)): New method.
+	* opengl/gl-render.cc (opengl_renderer::draw(hggroup)): Likewise.
+	(opengl_renderer::draw(graphics_object)): Call it.
+
 2008-03-17  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* fltk_backend/fltk_backend.cc (plot_window::resize,

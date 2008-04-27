@@ -1003,16 +1003,8 @@ operator * (const M& m, const DM& dm) \
  \
 	  for (int j = 0; j < len; j++) \
 	    { \
-	      if (dm.elem(j, j) == 1.0) \
-		{ \
-		  for (int i = 0; i < m_nr; i++) \
-		    r.elem(i, j) = m.elem(i, j); \
-		} \
-	      else \
-		{ \
-		  for (int i = 0; i < m_nr; i++) \
-		    r.elem(i, j) = dm.elem(j, j) * m.elem(i, j); \
-		} \
+	      for (int i = 0; i < m_nr; i++) \
+	      r.elem(i, j) = dm.elem(j, j) * m.elem(i, j); \
 	    } \
 	} \
     } \
@@ -1091,16 +1083,8 @@ operator * (const DM& dm, const M& m) \
  \
 	  for (int i = 0; i < len; i++) \
 	    { \
-	      if (dm.elem(i, i) == 1.0) \
-		{ \
-		  for (int j = 0; j < m_nc; j++) \
-		    r.elem(i, j) = m.elem(i, j); \
-		} \
-	      else \
-		{ \
-		  for (int j = 0; j < m_nc; j++) \
-		    r.elem(i, j) = dm.elem(i, i) * m.elem(i, j); \
-		} \
+	      for (int j = 0; j < m_nc; j++) \
+	        r.elem(i, j) = dm.elem(i, i) * m.elem(i, j); \
 	    } \
 	} \
     } \

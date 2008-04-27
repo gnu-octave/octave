@@ -106,8 +106,86 @@ private:
   bool rsimd_align;
 };
 
+class
+OCTAVE_API
+octave_float_fftw_planner
+{
+public:
+
+  octave_float_fftw_planner (void);
+
+  fftwf_plan create_plan (int dir, const int rank, const dim_vector dims, 
+			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
+			 const FloatComplex *in, FloatComplex *out);
+
+  fftwf_plan create_plan (const int rank, const dim_vector dims, 
+			 octave_idx_type howmany, octave_idx_type stride, octave_idx_type dist, 
+			 const float *in, FloatComplex *out);
+
+  enum FftwMethod {
+    UNKNOWN = -1,
+    ESTIMATE,
+    MEASURE,
+    PATIENT,
+    EXHAUSTIVE,
+    HYBRID
+  };
+
+  FftwMethod method (void);
+
+  FftwMethod method (FftwMethod _meth);
+
+private:
+
+  FftwMethod meth;
+
+  // FIXME -- perhaps this should be split into two classes?
+
+  // Plan for fft and ifft of complex values
+  fftwf_plan plan[2];
+
+  // dist
+  octave_idx_type d[2];
+
+  // stride
+  octave_idx_type s[2];
+
+  // rank
+  int r[2];
+
+  // howmany
+  octave_idx_type h[2];
+
+  // dims
+  dim_vector n[2];
+
+  bool simd_align[2];
+  bool inplace[2];
+
+  // Plan for fft of real values
+  fftwf_plan rplan;
+
+  // dist
+  octave_idx_type rd;
+
+  // stride
+  octave_idx_type rs;
+
+  // rank
+  int rr;
+
+  // howmany
+  octave_idx_type rh;
+
+  // dims
+  dim_vector rn;
+
+  bool rsimd_align;
+};
+
 // FIXME -- maybe octave_fftw_planner should be a singleton object?
 extern OCTAVE_API octave_fftw_planner fftw_planner;
+extern OCTAVE_API octave_float_fftw_planner float_fftw_planner;
 
 class
 OCTAVE_API
@@ -125,6 +203,19 @@ public:
   static int fftNd (const Complex*, Complex*, const int, 
 		    const dim_vector &);
   static int ifftNd (const Complex*, Complex*, const int, 
+		     const dim_vector &);
+
+  static int fft (const float *in, FloatComplex *out, size_t npts, 
+		  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+  static int fft (const FloatComplex *in, FloatComplex *out, size_t npts, 
+		  size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+  static int ifft (const FloatComplex *in, FloatComplex *out, size_t npts,
+		   size_t nsamples = 1, octave_idx_type stride = 1, octave_idx_type dist = -1);
+
+  static int fftNd (const float*, FloatComplex*, const int, const dim_vector &);
+  static int fftNd (const FloatComplex*, FloatComplex*, const int, 
+		    const dim_vector &);
+  static int ifftNd (const FloatComplex*, FloatComplex*, const int, 
 		     const dim_vector &);
 
 private:

@@ -1,5 +1,124 @@
 2008-05-20  David Bateman  <dbateman@free.fr>
 
+	* Array.cc (Array<T> Array<T>::transpose () const): Modify for tiled
+	transpose to limit the number of cache misses.
+	(Array<T> Array<T>::hermitian (T (*)(const&)) const): New method
+	for matrix conjugate transpose.
+	* Array.h (Array<T> hermitian (T (*)(const&)) const): Declare it.
+
+	* DiagArray2.cc (DiagArray2<T> DiagArray2<T>::transpose () const):
+	Specialization for diagonal arrays.
+	(DiagArray2<T> DiagArray2<T>::transpose (T (*) (const&)) const):
+	Ditto.
+	
+	* MArray.h (MArray<T> hermitian <T (*) (const&)) const): New method.
+	(MArray<T> transpose () const): Ditto.
+	* MArray2.h (MArray2<T> hermitian <T (*) (const&)) const): Ditto.
+	* Array2.h (Array2<T> hermitian <T (*) (const&)) const): Ditto.
+	* ArrayN.h (ArrayN<T> hermitian <T (*) (const&)) const): Ditto.
+	* MDiagArray2.h (MDiagArray2<T> transpose () const): Ditto.
+	(MDiagArray<T> hermitian <T (*) (const&)) const): Ditto.
+
+	* CColVector.cc (transpose, hermitian): Define in terms of base class.
+	* CRowVector.cc (transpose, hermitian): Ditto.
+	* dColVector.cc (transpose): Ditto.
+	* dRowVector.cc (transpose): Ditto.
+	* CDiagMatrix.h (transpose, hermitian): Ditto.
+	* dDiagMatrix.h (transpose): Ditto.
+
+	* fCColVector.cc (transpose, hermitian): Define in terms of base class.
+	* fCRowVector.cc (transpose, hermitian): Ditto.
+	* fColVector.cc (transpose): Ditto.
+	* fRowVector.cc (transpose): Ditto.
+	* fCDiagMatrix.h (transpose, hermitian): Ditto.
+	* fDiagMatrix.h (transpose): Ditto.
+
+	* CDiagMatrix.cc (ComplexDiagMatrix::transpose,
+	ComplexDiagMatrix::hermitian): Delete.
+	* dDiagMatrix.cc (DiagMatrix::transpose): Ditto.
+	* CMatrix.cc (ComplexMatrix::hermitian): Ditto.
+
+	* fCDiagMatrix.cc (FloatComplexDiagMatrix::transpose,
+	FloatComplexDiagMatrix::hermitian): Delete.
+	* fDiagMatrix.cc (FloatDiagMatrix::transpose): Ditto.
+	* fCMatrix.cc (FloatComplexMatrix::hermitian): Ditto.
+
+	* lo-mappers.cc (FloatComplex xlog2(const FloatComplex&), float
+	xlog2 (flot, int&), FloatComplex xlog2(const FloatComplex&, int&)):
+	New mapper functions for single precion values.
+	* lo-mappers.h (FloatComplex xlog2(const FloatComplex&), float
+	xlog2 (flot, int&), FloatComplex xlog2(const FloatComplex&, int&)):
+	Declare them.
+	
+	* CmplxGEBAL.cc (ComplexGEPBALANCE), dbleGEPBAL.cc (GEPBALANCE),
+	fCmplxGEPBAL.cc (FloatComplexGEPBALANCE), floatGEPBAL.cc
+	(FloatGEPBALANCE): New class for generalized eigenvalue balancing.
+	* CmplxGEBAL.h (ComplexGEPBALANCE), dbleGEPBAL.h (GEPBALANCE),
+	fCmplxGEPBAL.h (FloatComplexGEPBALANCE), floatGEPBAL.h
+	(FloatGEPBALANCE): Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+	
+	* floatAEPBAL.cc (FloatAEPBALANCE), fCmplxAEPBAL.cc
+	(FloatComplexAEPBALANCE): New classes for single precision 
+	Algebraic eignvalue balancing.
+	* floatAEPBAL.h (FloatAEPBALANCE), fCmplxAEPBAL.h
+	(FloatComplexAEPBALANCE): Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* floatHESS.cc (FloatHESS), fCmplxHESS.cc (FloatComplexHESS):  New
+	classes for single precision Hessenberg decomposition.
+	* floatHESS.h (FloatHESS), fCmplxHESS.h (FloatComplexHESS):
+	Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* floatQR.cc (FloatQR), fCmplxQR.cc (FloatComplexQR):  New
+	classes for single precision QR decomposition.
+	* floatQR.h (FloatQR), fCmplxQR.h (FloatComplexQR):
+	Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* floatQRP.cc (FloatQRP), fCmplxQRP.cc (FloatComplexQRP):  New
+	classes for single precision permuted QR decomposition.
+	* floatQRP.h (FloatQRP), fCmplxQRP.h (FloatComplexQRP):
+	Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* mx-defs (FloatAEPBALANCE, FloatComplexAEPBALANCE,
+	ComplexGEPBALANCE, FloatGEPBALANCE,FloatComplexGEPBALANCE,
+	FloatHESS, FloatComplexHESS, FloatQR, FloatComplexQR, QRP,
+	ComplexQRP, FloatQRP, FloatComplexQRP):	Declare classes.
+	
+	* Array-f.cc, Array-fC.cc, MArray-f.cc, MArray-fC.cc,
+	fCColVector.cc, fCColVector.h, fCDiagMatrix.cc, fCDiagMatrix.h,
+	fCMatrix.cc, fCMatrix.h, fCNDArray.cc, fCNDArray.h,
+	fCRowVector.cc, fCRowVector.h, fCmplxCHOL.cc, fCmplxCHOL.h,
+	fCmplxDET.cc, fCmplxDET.h, fCmplxLU.cc, fCmplxLU.h,
+	fCmplxSCHUR.cc, fCmplxSCHUR.h, fCmplxSVD.cc, fCmplxSVD.h,
+	fColVector.cc, fColVector.h, fDiagMatrix.cc, fDiagMatrix.h,
+	fEIG.cc, fEIG.h, fMatrix.cc, fMatrix.h, fNDArray.cc, fNDArray.h,
+	fRowVector.cc, fRowVector.h, floatCHOL.cc, floatCHOL.h,
+	floatDET.cc, floatDET.h, floatLU.cc, floatLU.h, floatSCHUR.cc,
+	floatSCHUR.h, floatSVD.cc, floatSVD.h: New files.
+	* Makefile.in (MATRIC_INC, TI_SRC, MATRIX_SRC): Add them.
+
+	* CMatrix.cc, CMatrix.h, CNDArray.cc, CNDArray.h, CmplxDET.cc,
+	MArray-C.cc, MArray-d.cc, MArray-defs.h, MArray.cc, MArray.h,
+	MatrixType.cc, MatrixType.h, SparseCmplxQR.cc, SparseCmplxQR.h,
+	SparseQR.cc, SparseQR.h, dMatrix.cc, dMatrix.h, dNDArray.cc,
+	dNDArray.h, data-conv.cc, data-conv.h, dbleDET.cc, dbleSVD.cc,
+	lo-cieee.c, lo-ieee.cc, lo-ieee.h, lo-mappers.cc, lo-mappers.h,
+	lo-specfun.cc, lo-specfun.h, lo-utils.cc, lo-utils.h, mx-base.h,
+	mx-defs.h, mx-ext.h, mx-inlines.cc, mx-op-defs.h, mx-ops,
+	oct-cmplx.h, oct-fftw.cc, oct-fftw.h, oct-inttypes.h, vx-ops:
+	Allow single precision types.
+	
+2008-05-20  David Bateman  <dbateman@free.fr>
+
 	* CMatrix.cc (double rcond): Replace with double rcon everywhere
 	to avoid shadowed variable warning
 	(double ComplexMatrix::rcond (void) const): New method for

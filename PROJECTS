@@ -117,7 +117,6 @@ Sparse Matrices:
       - minres
       - qmr
       - symmlq 
-      - spaugment
 
 -------
 Strings:
@@ -142,6 +141,9 @@ Other Data Types:
 ----------------
 
   * Template functions for mixed-type ops.
+
+  * Convert other functions for use with the floating point type
+  including quad, dasrt, daspk, etc.
 
 ------------
 Input/Output:

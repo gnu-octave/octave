@@ -32,6 +32,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "CmplxQRP.h"
 #include "dbleQR.h"
 #include "dbleQRP.h"
+#include "fCmplxQR.h"
+#include "fCmplxQRP.h"
+#include "floatQR.h"
+#include "floatQRP.h"
 #include "SparseQR.h"
 #include "SparseCmplxQR.h"
 
@@ -275,78 +279,154 @@ as\n\
       QR::type type = (nargout == 0 || nargout == 1) ? QR::raw
 	: (nargin == 2 ? QR::economy : QR::std);
 
-      if (arg.is_real_type ())
+      if (arg.is_single_type ())
 	{
-	  Matrix m = arg.matrix_value ();
-
-	  if (! error_state)
+	  if (arg.is_real_type ())
 	    {
-	      switch (nargout)
+	      FloatMatrix m = arg.float_matrix_value ();
+
+	      if (! error_state)
 		{
-		case 0:
-		case 1:
-		  {
-		    QR fact (m, type);
-		    retval(0) = fact.R ();
-		  }
-		  break;
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      {
+			FloatQR fact (m, type);
+			retval(0) = fact.R ();
+		      }
+		      break;
 
-		case 2:
-		  {
-		    QR fact (m, type);
-		    retval(1) = fact.R ();
-		    retval(0) = fact.Q ();
-		  }
-		  break;
+		    case 2:
+		      {
+			FloatQR fact (m, type);
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
 
-		default:
-		  {
-		    QRP fact (m, type);
-		    retval(2) = fact.P ();
-		    retval(1) = fact.R ();
-		    retval(0) = fact.Q ();
-		  }
-		  break;
+		    default:
+		      {
+			FloatQRP fact (m, type);
+			retval(2) = fact.P ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
+		    }
 		}
 	    }
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ComplexMatrix m = arg.complex_matrix_value ();
-
-	  if (! error_state)
+	  else if (arg.is_complex_type ())
 	    {
-	      switch (nargout)
+	      FloatComplexMatrix m = arg.float_complex_matrix_value ();
+
+	      if (! error_state)
 		{
-		case 0:
-		case 1:
-		  {
-		    ComplexQR fact (m, type);
-		    retval(0) = fact.R ();
-		  }
-		  break;
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      {
+			FloatComplexQR fact (m, type);
+			retval(0) = fact.R ();
+		      }
+		      break;
 
-		case 2:
-		  {
-		    ComplexQR fact (m, type);
-		    retval(1) = fact.R ();
-		    retval(0) = fact.Q ();
-		  }
-		  break;
+		    case 2:
+		      {
+			FloatComplexQR fact (m, type);
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
 
-		default:
-		  {
-		    ComplexQRP fact (m, type);
-		    retval(2) = fact.P ();
-		    retval(1) = fact.R ();
-		    retval(0) = fact.Q ();
-		  }
-		  break;
+		    default:
+		      {
+			FloatComplexQRP fact (m, type);
+			retval(2) = fact.P ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
+		    }
 		}
 	    }
 	}
       else
-	gripe_wrong_type_arg ("qr", arg);
+	{
+	  if (arg.is_real_type ())
+	    {
+	      Matrix m = arg.matrix_value ();
+
+	      if (! error_state)
+		{
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      {
+			QR fact (m, type);
+			retval(0) = fact.R ();
+		      }
+		      break;
+
+		    case 2:
+		      {
+			QR fact (m, type);
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
+
+		    default:
+		      {
+			QRP fact (m, type);
+			retval(2) = fact.P ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
+		    }
+		}
+	    }
+	  else if (arg.is_complex_type ())
+	    {
+	      ComplexMatrix m = arg.complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      {
+			ComplexQR fact (m, type);
+			retval(0) = fact.R ();
+		      }
+		      break;
+
+		    case 2:
+		      {
+			ComplexQR fact (m, type);
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
+
+		    default:
+		      {
+			ComplexQRP fact (m, type);
+			retval(2) = fact.P ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		      break;
+		    }
+		}
+	    }
+	  else
+	    gripe_wrong_type_arg ("qr", arg);
+	}
     }
 
   return retval;

@@ -116,6 +116,43 @@ int_arrayN_to_array (const ArrayN<octave_idx_type>& a)
   return retval;
 }
 
+static inline FloatMatrix
+int_array2_to_float_matrix (const Array2<octave_idx_type>& a)
+{
+  octave_idx_type nr = a.rows ();
+  octave_idx_type nc = a.cols ();
+
+  FloatMatrix retval (nr, nc);
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+	OCTAVE_QUIT;
+
+	retval(i,j) = static_cast<float> (a(i,j));
+      }
+
+  return retval;
+}
+
+static inline FloatNDArray
+int_arrayN_to_float_array (const ArrayN<octave_idx_type>& a)
+{
+  dim_vector dv = a.dims ();
+  int nel = dv.numel ();
+
+  FloatNDArray retval (dv);
+
+  for (int i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      
+      retval(i) = static_cast<float> (a(i));
+    }
+
+  return retval;
+}
+
 static void
 gripe_bessel_arg (const char *fn, const char *arg)
 {
@@ -137,98 +174,36 @@ do_bessel (enum bessel_type type, const char *fn,
       octave_value alpha_arg = args(0);
       octave_value x_arg = args(1);
 
-      if (alpha_arg.is_scalar_type ())
+      if (alpha_arg.is_single_type () || x_arg.is_single_type ())
 	{
-	  double alpha = args(0).double_value ();
-
-	  if (! error_state)
+	  if (alpha_arg.is_scalar_type ())
 	    {
-	      if (x_arg.is_scalar_type ())
-		{
-		  Complex x = x_arg.complex_value ();
-
-		  if (! error_state)
-		    {
-		      octave_idx_type ierr;
-		      octave_value result;
-
-		      DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-		      if (nargout > 1)
-			retval(1) = static_cast<double> (ierr);
-
-		      retval(0) = result;
-		    }
-		  else
-		    gripe_bessel_arg (fn, "second");
-		}
-	      else
-		{
-		  ComplexNDArray x = x_arg.complex_array_value ();
-
-		  if (! error_state)
-		    {
-		      ArrayN<octave_idx_type> ierr;
-		      octave_value result;
-
-		      DO_BESSEL (type, alpha, x, scaled, ierr, result);
-
-		      if (nargout > 1)
-			retval(1) = int_arrayN_to_array (ierr);
-
-		      retval(0) = result;
-		    }
-		  else
-		    gripe_bessel_arg (fn, "second");
-		}
-	    }
-	  else
-	    gripe_bessel_arg (fn, "first");
-	}
-      else
-	{
-	  dim_vector dv0 = args(0).dims ();
-	  dim_vector dv1 = args(1).dims ();
-	  
-	  bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
-	  bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
-
-	  if (args0_is_row_vector && args1_is_col_vector)
-	    {
-	      RowVector ralpha = args(0).row_vector_value ();
-
-	      if (! error_state)
-		{
-		  ComplexColumnVector cx = 
-		    x_arg.complex_column_vector_value ();
-
-		  if (! error_state)
-		    {
-		      Array2<octave_idx_type> ierr;
-		      octave_value result;
-
-		      DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
-		      
-		      if (nargout > 1)
-			retval(1) = int_array2_to_matrix (ierr);
-
-		      retval(0) = result;
-		    }
-		  else
-		    gripe_bessel_arg (fn, "second");
-		}
-	      else
-		gripe_bessel_arg (fn, "first");
-	    }
-	  else
-	    {
-	      NDArray alpha = args(0).array_value ();
+	      float alpha = args(0).float_value ();
 
 	      if (! error_state)
 		{
 		  if (x_arg.is_scalar_type ())
 		    {
-		      Complex x = x_arg.complex_value ();
+		      FloatComplex x = x_arg.float_complex_value ();
+
+		      if (! error_state)
+			{
+			  octave_idx_type ierr;
+			  octave_value result;
+
+			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+			  if (nargout > 1)
+			    retval(1) = static_cast<float> (ierr);
+
+			  retval(0) = result;
+			}
+		      else
+			gripe_bessel_arg (fn, "second");
+		    }
+		  else
+		    {
+		      FloatComplexNDArray x = x_arg.float_complex_array_value ();
 
 		      if (! error_state)
 			{
@@ -238,7 +213,123 @@ do_bessel (enum bessel_type type, const char *fn,
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 			  if (nargout > 1)
-			    retval(1) = int_arrayN_to_array (ierr);
+			    retval(1) = int_arrayN_to_float_array (ierr);
+
+			  retval(0) = result;
+			}
+		      else
+			gripe_bessel_arg (fn, "second");
+		    }
+		}
+	      else
+		gripe_bessel_arg (fn, "first");
+	    }
+	  else
+	    {
+	      dim_vector dv0 = args(0).dims ();
+	      dim_vector dv1 = args(1).dims ();
+
+	      bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
+	      bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
+
+	      if (args0_is_row_vector && args1_is_col_vector)
+		{
+		  FloatRowVector ralpha = args(0).float_row_vector_value ();
+
+		  if (! error_state)
+		    {
+		      FloatComplexColumnVector cx = 
+			x_arg.float_complex_column_vector_value ();
+
+		      if (! error_state)
+			{
+			  Array2<octave_idx_type> ierr;
+			  octave_value result;
+
+			  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+
+			  if (nargout > 1)
+			    retval(1) = int_array2_to_float_matrix (ierr);
+
+			  retval(0) = result;
+			}
+		      else
+			gripe_bessel_arg (fn, "second");
+		    }
+		  else
+		    gripe_bessel_arg (fn, "first");
+		}
+	      else
+		{
+		  FloatNDArray alpha = args(0).float_array_value ();
+
+		  if (! error_state)
+		    {
+		      if (x_arg.is_scalar_type ())
+			{
+			  FloatComplex x = x_arg.float_complex_value ();
+
+			  if (! error_state)
+			    {
+			      ArrayN<octave_idx_type> ierr;
+			      octave_value result;
+
+			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+			      if (nargout > 1)
+				retval(1) = int_arrayN_to_float_array (ierr);
+
+			      retval(0) = result;
+			    }
+			  else
+			    gripe_bessel_arg (fn, "second");
+			}
+		      else
+			{
+			  FloatComplexNDArray x = x_arg.float_complex_array_value ();
+
+			  if (! error_state)
+			    {
+			      ArrayN<octave_idx_type> ierr;
+			      octave_value result;
+			  
+			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
+			  
+			      if (nargout > 1)
+				retval(1) = int_arrayN_to_float_array (ierr);
+
+			      retval(0) = result;
+			    }
+			  else
+			    gripe_bessel_arg (fn, "second");
+			}
+		    }
+		  else
+		    gripe_bessel_arg (fn, "first");
+		}
+	    }
+	}
+      else
+	{
+	  if (alpha_arg.is_scalar_type ())
+	    {
+	      double alpha = args(0).double_value ();
+
+	      if (! error_state)
+		{
+		  if (x_arg.is_scalar_type ())
+		    {
+		      Complex x = x_arg.complex_value ();
+
+		      if (! error_state)
+			{
+			  octave_idx_type ierr;
+			  octave_value result;
+
+			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+			  if (nargout > 1)
+			    retval(1) = static_cast<double> (ierr);
 
 			  retval(0) = result;
 			}
@@ -253,12 +344,12 @@ do_bessel (enum bessel_type type, const char *fn,
 			{
 			  ArrayN<octave_idx_type> ierr;
 			  octave_value result;
-			  
+
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
-			  
+
 			  if (nargout > 1)
 			    retval(1) = int_arrayN_to_array (ierr);
-			  
+
 			  retval(0) = result;
 			}
 		      else
@@ -267,6 +358,90 @@ do_bessel (enum bessel_type type, const char *fn,
 		}
 	      else
 		gripe_bessel_arg (fn, "first");
+	    }
+	  else
+	    {
+	      dim_vector dv0 = args(0).dims ();
+	      dim_vector dv1 = args(1).dims ();
+
+	      bool args0_is_row_vector = (dv0 (1) == dv0.numel ());
+	      bool args1_is_col_vector = (dv1 (0) == dv1.numel ());
+
+	      if (args0_is_row_vector && args1_is_col_vector)
+		{
+		  RowVector ralpha = args(0).row_vector_value ();
+
+		  if (! error_state)
+		    {
+		      ComplexColumnVector cx = 
+			x_arg.complex_column_vector_value ();
+
+		      if (! error_state)
+			{
+			  Array2<octave_idx_type> ierr;
+			  octave_value result;
+
+			  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
+
+			  if (nargout > 1)
+			    retval(1) = int_array2_to_matrix (ierr);
+
+			  retval(0) = result;
+			}
+		      else
+			gripe_bessel_arg (fn, "second");
+		    }
+		  else
+		    gripe_bessel_arg (fn, "first");
+		}
+	      else
+		{
+		  NDArray alpha = args(0).array_value ();
+
+		  if (! error_state)
+		    {
+		      if (x_arg.is_scalar_type ())
+			{
+			  Complex x = x_arg.complex_value ();
+
+			  if (! error_state)
+			    {
+			      ArrayN<octave_idx_type> ierr;
+			      octave_value result;
+
+			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
+
+			      if (nargout > 1)
+				retval(1) = int_arrayN_to_array (ierr);
+
+			      retval(0) = result;
+			    }
+			  else
+			    gripe_bessel_arg (fn, "second");
+			}
+		      else
+			{
+			  ComplexNDArray x = x_arg.complex_array_value ();
+
+			  if (! error_state)
+			    {
+			      ArrayN<octave_idx_type> ierr;
+			      octave_value result;
+			  
+			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
+			  
+			      if (nargout > 1)
+				retval(1) = int_arrayN_to_array (ierr);
+
+			      retval(0) = result;
+			    }
+			  else
+			    gripe_bessel_arg (fn, "second");
+			}
+		    }
+		  else
+		    gripe_bessel_arg (fn, "first");
+		}
 	    }
 	}
     }
@@ -459,8 +634,6 @@ return @code{NaN}.\n\
 
       int kind = 0;
 
-      ComplexNDArray z;
-
       if (nargin > 1)
 	{
 	  kind = args(0).int_value ();
@@ -476,25 +649,52 @@ return @code{NaN}.\n\
 
       if (! error_state)
 	{
-	  z = args(nargin == 1 ? 0 : 1).complex_array_value ();
+	  int idx = nargin == 1 ? 0 : 1;
 
-	  if (! error_state)
+	  if (args (idx).is_single_type ())
 	    {
-	      ArrayN<octave_idx_type> ierr;
-	      octave_value result;
+	      FloatComplexNDArray z = args(idx).float_complex_array_value ();
 
-	      if (kind > 1)
-		result = biry (z, kind == 3, scale, ierr);
+	      if (! error_state)
+		{
+		  ArrayN<octave_idx_type> ierr;
+		  octave_value result;
+
+		  if (kind > 1)
+		    result = biry (z, kind == 3, scale, ierr);
+		  else
+		    result = airy (z, kind == 1, scale, ierr);
+
+		  if (nargout > 1)
+		    retval(1) = int_arrayN_to_float_array (ierr);
+
+		  retval(0) = result;
+		}
 	      else
-		result = airy (z, kind == 1, scale, ierr);
-
-	      if (nargout > 1)
-		retval(1) = int_arrayN_to_array (ierr);
-
-	      retval(0) = result;
+		error ("airy: expecting complex matrix for Z");
 	    }
 	  else
-	    error ("airy: expecting complex matrix for Z");
+	    {
+	      ComplexNDArray z = args(idx).complex_array_value ();
+
+	      if (! error_state)
+		{
+		  ArrayN<octave_idx_type> ierr;
+		  octave_value result;
+
+		  if (kind > 1)
+		    result = biry (z, kind == 3, scale, ierr);
+		  else
+		    result = airy (z, kind == 1, scale, ierr);
+
+		  if (nargout > 1)
+		    retval(1) = int_arrayN_to_array (ierr);
+
+		  retval(0) = result;
+		}
+	      else
+		error ("airy: expecting complex matrix for Z");
+	    }
 	}
     }
   else

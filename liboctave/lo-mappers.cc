@@ -396,6 +396,366 @@ xmax (const Complex& x, const Complex& y)
   return abs (x) >= abs (y) ? x : (xisnan (x) ? x : y);
 }
 
+
+// float -> float mappers.
+
+float
+arg (float x)
+{
+  return atan2 (0.0, x);
+}
+
+float
+conj (float x)
+{
+  return x;
+}
+
+float
+fix (float x)
+{
+  return x > 0 ? floor (x) : ceil (x);
+}
+
+float
+imag (float)
+{
+  return 0.0;
+}
+
+float
+real (float x)
+{
+  return x;
+}
+
+float
+xround (float x)
+{
+#if defined (HAVE_ROUND)
+  return round (x);
+#else
+  if (x >= 0)
+    {
+      float y = floor (x);
+
+      if ((x - y) >= 0.5)
+	y += 1.0;
+
+      return y;
+    }
+  else
+    {
+      float y = ceil (x);
+
+      if ((y - x) >= 0.5)
+	y -= 1.0;
+
+      return y;
+    }
+#endif
+}
+
+float
+xtrunc (float x)
+{
+#if defined (HAVE_TRUNC)
+  return trunc (x);
+#else
+  return x > 0 ? floor (x) : ceil (x);
+#endif
+}
+
+float 
+xroundb (float x)
+{
+  float t = xround (x);
+
+  if (fabs (x - t) == 0.5)
+    t = 2 * xtrunc (0.5 * t);
+
+  return t;
+}
+
+float
+signum (float x)
+{
+  float tmp = 0.0;
+
+  if (x < 0.0)
+    tmp = -1.0;
+  else if (x > 0.0)
+    tmp = 1.0;
+
+  return xisnan (x) ? octave_Float_NaN : tmp;
+}
+
+float
+xlog2 (float x)
+{
+#if defined (HAVE_LOG2)
+  return log2 (x);
+#else
+#if defined (M_LN2)
+  static float ln2 = M_LN2;
+#else
+  static float ln2 = log2 (2);
+#endif
+
+  return log (x) / ln2;
+#endif
+}
+
+FloatComplex
+xlog2 (const FloatComplex& x)
+{
+#if defined (M_LN2)
+  static float ln2 = M_LN2;
+#else
+  static float ln2 = log (2);
+#endif
+
+  return std::log (x) / ln2;
+}
+
+float
+xexp2 (float x)
+{
+#if defined (HAVE_EXP2)
+  return exp2 (x);
+#else
+#if defined (M_LN2)
+  static float ln2 = M_LN2;
+#else
+  static float ln2 = log2 (2);
+#endif
+
+  return exp (x * ln2);
+#endif
+}
+
+float
+xlog2 (float x, int& exp)
+{
+  return frexpf (x, &exp);
+}
+
+FloatComplex
+xlog2 (const FloatComplex& x, int& exp)
+{
+  float ax = std::abs (x);
+  float lax = xlog2 (ax, exp);
+  return (exp == 0) ? x : (x / ax) * lax;
+}
+
+// float -> bool mappers.
+
+bool
+xisnan (float x)
+{
+  return lo_ieee_isnan (x);
+}
+
+bool
+xfinite (float x)
+{
+  return lo_ieee_finite (x);
+}
+
+bool
+xisinf (float x)
+{
+  return lo_ieee_isinf (x);
+}
+
+bool
+octave_is_NA (float x)
+{
+  return lo_ieee_is_NA (x);
+}
+
+bool
+octave_is_NaN_or_NA (float x)
+{
+  return lo_ieee_isnan (x);
+}
+
+// (float, float) -> float mappers.
+
+// FIXME -- need to handle NA too?
+
+float
+xmin (float x, float y)
+{
+  if (x < y)
+    return x;
+
+  if (y <= x)
+    return y;
+
+  if (xisnan (x) && ! xisnan (y))
+    return y;
+  else if (xisnan (y) && ! xisnan (x))
+    return x;
+  else if (octave_is_NA (x) || octave_is_NA (y))
+    return octave_Float_NA;
+  else
+    return octave_Float_NaN;
+}
+
+float
+xmax (float x, float y)
+{
+  if (x > y)
+    return x;
+
+  if (y >= x)
+    return y;
+
+  if (xisnan (x) && ! xisnan (y))
+    return y;
+  else if (xisnan (y) && ! xisnan (x))
+    return x;
+  else if (octave_is_NA (x) || octave_is_NA (y))
+    return octave_Float_NA;
+  else
+    return octave_Float_NaN;
+}
+
+// complex -> complex mappers.
+
+FloatComplex
+acos (const FloatComplex& x)
+{
+  static FloatComplex i (0, 1);
+
+  return -i * (log (x + i * (sqrt (static_cast<float>(1.0) - x*x))));
+}
+
+FloatComplex
+acosh (const FloatComplex& x)
+{
+  return log (x + sqrt (x*x - static_cast<float>(1.0)));
+}
+
+FloatComplex
+asin (const FloatComplex& x)
+{
+  static FloatComplex i (0, 1);
+
+  return -i * log (i*x + sqrt (static_cast<float>(1.0) - x*x));
+}
+
+FloatComplex
+asinh (const FloatComplex& x)
+{
+  return log (x + sqrt (x*x + static_cast<float>(1.0)));
+}
+
+FloatComplex
+atan (const FloatComplex& x)
+{
+  static FloatComplex i (0, 1);
+
+  return i * log ((i + x) / (i - x)) / static_cast<float>(2.0);
+}
+
+FloatComplex
+atanh (const FloatComplex& x)
+{
+  return log ((static_cast<float>(1.0) + x) / (static_cast<float>(1.0) - x)) / static_cast<float>(2.0);
+}
+
+FloatComplex
+ceil (const FloatComplex& x)
+{
+  return FloatComplex (ceil (real (x)), ceil (imag (x)));
+}
+
+FloatComplex
+fix (const FloatComplex& x)
+{
+  return FloatComplex (fix (real (x)), fix (imag (x)));
+}
+
+FloatComplex
+floor (const FloatComplex& x)
+{
+  return FloatComplex (floor (real (x)), floor (imag (x)));
+}
+
+FloatComplex
+xround (const FloatComplex& x)
+{
+  return FloatComplex (xround (real (x)), xround (imag (x)));
+}
+
+FloatComplex
+xroundb (const FloatComplex& x)
+{
+  return FloatComplex (xroundb (real (x)), xroundb (imag (x)));
+}
+
+FloatComplex
+signum (const FloatComplex& x)
+{
+  float tmp = abs (x);
+
+  return tmp == 0 ? 0.0 : x / tmp;
+}
+
+// complex -> bool mappers.
+
+bool
+xisnan (const FloatComplex& x)
+{
+  return (xisnan (real (x)) || xisnan (imag (x)));
+}
+
+bool
+xfinite (const FloatComplex& x)
+{
+  float rx = real (x);
+  float ix = imag (x);
+
+  return (xfinite (rx) && ! xisnan (rx)
+	  && xfinite (ix) && ! xisnan (ix));
+}
+
+bool
+xisinf (const FloatComplex& x)
+{
+  return (xisinf (real (x)) || xisinf (imag (x)));
+}
+
+bool
+octave_is_NA (const FloatComplex& x)
+{
+  return (octave_is_NA (real (x)) || octave_is_NA (imag (x)));
+}
+
+bool
+octave_is_NaN_or_NA (const FloatComplex& x)
+{
+  return (xisnan (real (x)) || xisnan (imag (x)));
+}
+
+// (complex, complex) -> complex mappers.
+
+// FIXME -- need to handle NA too?
+
+FloatComplex
+xmin (const FloatComplex& x, const FloatComplex& y)
+{
+  return abs (x) <= abs (y) ? x : (xisnan (x) ? x : y);
+}
+
+FloatComplex
+xmax (const FloatComplex& x, const FloatComplex& y)
+{
+  return abs (x) >= abs (y) ? x : (xisnan (x) ? x : y);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

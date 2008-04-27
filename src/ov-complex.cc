@@ -35,6 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-complex.h"
+#include "ov-flt-complex.h"
 #include "ov-base.h"
 #include "ov-base-scalar.h"
 #include "ov-base-scalar.cc"
@@ -42,6 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "gripes.h"
 #include "pr-output.h"
+#include "ops.h"
 
 #include "ls-oct-ascii.h"
 #include "ls-hdf5.h"
@@ -52,6 +54,20 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
 				     "complex scalar", "double");
+
+static octave_base_value *
+default_numeric_demotion_function (const octave_base_value& a)
+{
+  CAST_CONV_ARG (const octave_complex&);
+
+  return new octave_float_complex (v.float_complex_value ());
+}
+
+octave_base_value::type_conv_fcn
+octave_complex::numeric_demotion_function (void) const
+{
+  return default_numeric_demotion_function;
+}
 
 octave_base_value *
 octave_complex::try_narrowing_conversion (void)
@@ -107,6 +123,20 @@ octave_complex::double_value (bool force_conversion) const
   return retval;
 }
 
+float
+octave_complex::float_value (bool force_conversion) const
+{
+  float retval = lo_ieee_float_nan_value ();
+
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex scalar", "real scalar");
+
+  retval = std::real (scalar);
+
+  return retval;
+}
+
 Matrix
 octave_complex::matrix_value (bool force_conversion) const
 {
@@ -117,6 +147,20 @@ octave_complex::matrix_value (bool force_conversion) const
 			       "complex scalar", "real matrix");
 
   retval = Matrix (1, 1, std::real (scalar));
+
+  return retval;
+}
+
+FloatMatrix
+octave_complex::float_matrix_value (bool force_conversion) const
+{
+  FloatMatrix retval;
+
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex scalar", "real matrix");
+
+  retval = FloatMatrix (1, 1, std::real (scalar));
 
   return retval;
 }
@@ -135,12 +179,31 @@ octave_complex::array_value (bool force_conversion) const
   return retval;
 }
 
+FloatNDArray
+octave_complex::float_array_value (bool force_conversion) const
+{
+  FloatNDArray retval;
+
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex scalar", "real matrix");
+
+  retval = FloatNDArray (dim_vector (1, 1), std::real (scalar));
+
+  return retval;
+}
+
 Complex
 octave_complex::complex_value (bool) const
 {
   return scalar;
 }
 
+FloatComplex
+octave_complex::float_complex_value (bool) const
+{
+  return static_cast<FloatComplex> (scalar);
+}
 
 ComplexMatrix
 octave_complex::complex_matrix_value (bool) const
@@ -148,10 +211,22 @@ octave_complex::complex_matrix_value (bool) const
   return ComplexMatrix (1, 1, scalar);
 }
 
+FloatComplexMatrix
+octave_complex::float_complex_matrix_value (bool) const
+{
+  return FloatComplexMatrix (1, 1, static_cast<FloatComplex> (scalar));
+}
+
 ComplexNDArray
 octave_complex::complex_array_value (bool /* force_conversion */) const
 {
   return ComplexNDArray (dim_vector (1, 1), scalar);
+}
+
+FloatComplexNDArray
+octave_complex::float_complex_array_value (bool /* force_conversion */) const
+{
+  return FloatComplexNDArray (dim_vector (1, 1), static_cast<FloatComplex> (scalar));
 }
 
 octave_value 

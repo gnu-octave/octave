@@ -132,7 +132,7 @@ template <typename T>
 inline T
 octave_int_fit_to_range (const double& x, const T& mn, const T& mx)
 {
-  return (lo_ieee_isnan (x) ? 0 : (x > mx ? mx : (x < mn ? mn : static_cast<T> (x))));
+  return (__lo_ieee_isnan (x) ? 0 : (x > mx ? mx : (x < mn ? mn : static_cast<T> (x))));
 }
 
 // If X is unsigned and the new type is signed, then we only have to
@@ -450,7 +450,7 @@ pow (double a, const octave_int<T>& b)
 {
   double tb = static_cast<double> (b.value ());
   double r = pow (a, tb);
-  r = lo_ieee_isnan (r) ? 0 : xround (r);
+  r = __lo_ieee_isnan (r) ? 0 : xround (r);
   return OCTAVE_INT_FIT_TO_RANGE (r, T);
 }
 
@@ -460,7 +460,7 @@ pow (const octave_int<T>& a, double b)
 {
   double ta = static_cast<double> (a.value ());
   double r = pow (ta, b);
-  r = lo_ieee_isnan (r) ? 0 : xround (r);
+  r = __lo_ieee_isnan (r) ? 0 : xround (r);
   return OCTAVE_INT_FIT_TO_RANGE (r, T);
 }
 
@@ -524,7 +524,7 @@ operator / (const octave_int<T1>& x, const octave_int<T2>& y)
   { \
     double tx = static_cast<double> (x.value ()); \
     double r = xround (tx OP y); \
-    r = lo_ieee_isnan (r) ? 0 : xround (r); \
+    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 
@@ -540,7 +540,7 @@ OCTAVE_INT_DOUBLE_BIN_OP(/)
   { \
     double ty = static_cast<double> (y.value ()); \
     double r = x OP ty; \
-    r = lo_ieee_isnan (r) ? 0 : xround (r); \
+    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
     return OCTAVE_INT_FIT_TO_RANGE (r, T); \
   }
 
@@ -580,6 +580,70 @@ OCTAVE_DOUBLE_INT_CMP_OP (>=)
 OCTAVE_DOUBLE_INT_CMP_OP (>)
 OCTAVE_DOUBLE_INT_CMP_OP (==)
 OCTAVE_DOUBLE_INT_CMP_OP (!=)
+
+#define OCTAVE_INT_FLOAT_BIN_OP(OP) \
+  template <class T> \
+  octave_int<T> \
+  operator OP (const octave_int<T>& x, float y) \
+  { \
+    double tx = static_cast<double> (x.value ()); \
+    double r = xround (tx OP y); \
+    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
+    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
+  }
+
+OCTAVE_INT_FLOAT_BIN_OP(+)
+OCTAVE_INT_FLOAT_BIN_OP(-)
+OCTAVE_INT_FLOAT_BIN_OP(*)
+OCTAVE_INT_FLOAT_BIN_OP(/)
+
+#define OCTAVE_FLOAT_INT_BIN_OP(OP) \
+  template <class T> \
+  octave_int<T> \
+  operator OP (float x, const octave_int<T>& y) \
+  { \
+    double ty = static_cast<double> (y.value ()); \
+    double r = x OP ty; \
+    r = __lo_ieee_isnan (r) ? 0 : xround (r); \
+    return OCTAVE_INT_FIT_TO_RANGE (r, T); \
+  }
+
+OCTAVE_FLOAT_INT_BIN_OP(+)
+OCTAVE_FLOAT_INT_BIN_OP(-)
+OCTAVE_FLOAT_INT_BIN_OP(*)
+OCTAVE_FLOAT_INT_BIN_OP(/)
+
+#define OCTAVE_INT_FLOAT_CMP_OP(OP) \
+  template <class T> \
+  bool \
+  operator OP (const octave_int<T>& x, const float& y) \
+  { \
+    double tx = static_cast<double> (x.value ()); \
+    return tx OP y; \
+  }
+
+OCTAVE_INT_FLOAT_CMP_OP (<)
+OCTAVE_INT_FLOAT_CMP_OP (<=)
+OCTAVE_INT_FLOAT_CMP_OP (>=)
+OCTAVE_INT_FLOAT_CMP_OP (>)
+OCTAVE_INT_FLOAT_CMP_OP (==)
+OCTAVE_INT_FLOAT_CMP_OP (!=)
+
+#define OCTAVE_FLOAT_INT_CMP_OP(OP) \
+  template <class T> \
+  bool \
+  operator OP (const float& x, const octave_int<T>& y) \
+  { \
+    double ty = static_cast<double> (y.value ()); \
+    return x OP ty; \
+  }
+
+OCTAVE_FLOAT_INT_CMP_OP (<)
+OCTAVE_FLOAT_INT_CMP_OP (<=)
+OCTAVE_FLOAT_INT_CMP_OP (>=)
+OCTAVE_FLOAT_INT_CMP_OP (>)
+OCTAVE_FLOAT_INT_CMP_OP (==)
+OCTAVE_FLOAT_INT_CMP_OP (!=)
 
 #define OCTAVE_INT_BITCMP_OP(OP) \
   template <class T> \

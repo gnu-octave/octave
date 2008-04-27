@@ -217,6 +217,183 @@ along with Octave; see the file COPYING.  If not, see
     } \
 }
 
+#define MINMAX_SINGLE_BODY(FCN) \
+{ \
+  bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
+ \
+  if (single_arg && (nargout == 1 || nargout == 0)) \
+    { \
+      if (arg1.is_real_type ()) \
+	{ \
+	  FloatNDArray m = arg1.float_array_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      FloatNDArray n = m. FCN (dim); \
+	      retval(0) = n; \
+	    } \
+	} \
+      else if (arg1.is_complex_type ()) \
+	{ \
+	  FloatComplexNDArray m = arg1.float_complex_array_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      FloatComplexNDArray n = m. FCN (dim); \
+	      retval(0) = n; \
+	    } \
+	} \
+      else \
+	gripe_wrong_type_arg (#FCN, arg1); \
+    } \
+  else if (single_arg && nargout == 2) \
+    { \
+      ArrayN<octave_idx_type> index; \
+ \
+      if (arg1.is_real_type ()) \
+	{ \
+	  FloatNDArray m = arg1.float_array_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      FloatNDArray n = m. FCN (index, dim);	\
+	      retval(0) = n; \
+	    } \
+	} \
+      else if (arg1.is_complex_type ()) \
+	{ \
+	  FloatComplexNDArray m = arg1.float_complex_array_value (); \
+ \
+	  if (! error_state) \
+	    { \
+	      FloatComplexNDArray n = m. FCN (index, dim);	\
+	      retval(0) = n; \
+	    } \
+	} \
+      else \
+	gripe_wrong_type_arg (#FCN, arg1); \
+ \
+      octave_idx_type len = index.numel (); \
+ \
+      if (len > 0) \
+	{ \
+	  float nan_val = lo_ieee_nan_value (); \
+ \
+	  FloatNDArray idx (index.dims ()); \
+ \
+	  for (octave_idx_type i = 0; i < len; i++) \
+	    { \
+	      OCTAVE_QUIT; \
+	      octave_idx_type tmp = index.elem (i) + 1; \
+	      idx.elem (i) = (tmp <= 0) \
+		? nan_val : static_cast<float> (tmp); \
+	    } \
+ \
+	  retval(1) = idx; \
+	} \
+      else \
+	retval(1) = FloatNDArray (); \
+    } \
+  else \
+    { \
+      int arg1_is_scalar = arg1.is_scalar_type (); \
+      int arg2_is_scalar = arg2.is_scalar_type (); \
+ \
+      int arg1_is_complex = arg1.is_complex_type (); \
+      int arg2_is_complex = arg2.is_complex_type (); \
+ \
+      if (arg1_is_scalar) \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      FloatComplex c1 = arg1.float_complex_value (); \
+	      FloatComplexNDArray m2 = arg2.float_complex_array_value (); \
+	      if (! error_state) \
+		{ \
+		  FloatComplexNDArray result = FCN (c1, m2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	  else \
+	    { \
+	      float d1 = arg1.float_value (); \
+	      FloatNDArray m2 = arg2.float_array_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  FloatNDArray result = FCN (d1, m2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	} \
+      else if (arg2_is_scalar) \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      FloatComplexNDArray m1 = arg1.float_complex_array_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  FloatComplex c2 = arg2.float_complex_value (); \
+		  FloatComplexNDArray result = FCN (m1, c2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	  else \
+	    { \
+	      FloatNDArray m1 = arg1.float_array_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  float d2 = arg2.float_value (); \
+		  FloatNDArray result = FCN (m1, d2); \
+		  if (! error_state) \
+		    retval(0) = result; \
+		} \
+	    } \
+	} \
+      else \
+	{ \
+	  if (arg1_is_complex || arg2_is_complex) \
+	    { \
+	      FloatComplexNDArray m1 = arg1.float_complex_array_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  FloatComplexNDArray m2 = arg2.float_complex_array_value (); \
+ \
+		  if (! error_state) \
+		    { \
+		      FloatComplexNDArray result = FCN (m1, m2); \
+		      if (! error_state) \
+			retval(0) = result; \
+		    } \
+		} \
+	    } \
+	  else \
+	    { \
+	      FloatNDArray m1 = arg1.float_array_value (); \
+ \
+	      if (! error_state) \
+		{ \
+		  FloatNDArray m2 = arg2.float_array_value (); \
+ \
+		  if (! error_state) \
+		    { \
+		      FloatNDArray result = FCN (m1, m2); \
+		      if (! error_state) \
+			retval(0) = result; \
+		    } \
+		} \
+	    } \
+	} \
+    } \
+}
+
+
 #define MINMAX_INT_BODY(FCN, TYP) \
  { \
   bool single_arg = (nargin == 1) || (arg2.is_empty() && nargin == 3);	\
@@ -541,6 +718,8 @@ along with Octave; see the file COPYING.  If not, see
     } \
   else if (arg1.is_sparse_type ()) \
     MINMAX_SPARSE_BODY (FCN) \
+  else if (arg1.is_single_type ()) \
+    MINMAX_SINGLE_BODY (FCN) \
   else \
     MINMAX_DOUBLE_BODY (FCN) \
  \

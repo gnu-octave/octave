@@ -126,6 +126,10 @@ public:
   numeric_conversion_function (void) const
     { return static_cast<type_conv_fcn> (0); }
 
+  virtual type_conv_fcn
+  numeric_demotion_function (void) const
+    { return static_cast<type_conv_fcn> (0); }
+
   virtual octave_value squeeze (void) const;
 
   virtual octave_base_value *try_narrowing_conversion (void) { return 0; }
@@ -322,20 +326,35 @@ public:
 
   virtual double double_value (bool = false) const;
 
+  virtual float float_value (bool = false) const;
+
   virtual double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
+
+  virtual float float_scalar_value (bool frc_str_conv = false) const
+    { return float_value (frc_str_conv); }
 
   virtual Cell cell_value (void) const;
 
   virtual Matrix matrix_value (bool = false) const;
 
+  virtual FloatMatrix float_matrix_value (bool = false) const;
+
   virtual NDArray array_value (bool = false) const;
+
+  virtual FloatNDArray float_array_value (bool = false) const;
 
   virtual Complex complex_value (bool = false) const;
 
+  virtual FloatComplex float_complex_value (bool = false) const;
+
   virtual ComplexMatrix complex_matrix_value (bool = false) const;
 
+  virtual FloatComplexMatrix float_complex_matrix_value (bool = false) const;
+
   virtual ComplexNDArray complex_array_value (bool = false) const;
+
+  virtual FloatComplexNDArray float_complex_array_value (bool = false) const;
 
   virtual bool bool_value (bool = false) const;
 

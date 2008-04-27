@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -176,6 +177,13 @@ DEFBINOP (el_or, complex, complex)
 
 DEFNDCATOP_FN (cs_cs, complex, complex, complex_array, complex_array, concat)
 
+CONVDECL (complex_to_float_complex)
+{
+  CAST_CONV_ARG (const octave_complex&);
+
+  return new octave_float_complex_matrix (FloatComplexMatrix (1, 1, static_cast<FloatComplex>(v.complex_value ())));
+}
+
 void
 install_cs_cs_ops (void)
 {
@@ -210,6 +218,9 @@ install_cs_cs_ops (void)
   INSTALL_CATOP (octave_complex, octave_complex, cs_cs);
 
   INSTALL_ASSIGNCONV (octave_complex, octave_complex, octave_complex_matrix);
+
+  INSTALL_CONVOP (octave_complex, octave_float_complex_matrix, 
+		  complex_to_float_complex);
 }
 
 /*

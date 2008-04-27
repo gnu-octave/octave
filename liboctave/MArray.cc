@@ -43,6 +43,16 @@ MArray<T>::norm (double) const
   return 0;
 }
 
+template <class T>
+float
+MArray<T>::norm (float) const
+{
+  (*current_liboctave_error_handler)
+    ("norm: only implemented for double and complex values");
+
+  return 0;
+}
+
 // Element by element MArray by scalar ops.
 
 template <class T>

@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "oct-cmplx.h"
 
+// Double Precision 
 extern OCTAVE_API double arg (double x);
 extern OCTAVE_API double conj (double x);
 extern OCTAVE_API double fix (double x);
@@ -74,6 +75,56 @@ extern OCTAVE_API bool octave_is_NaN_or_NA (const Complex& x);
 
 extern OCTAVE_API Complex xmin (const Complex& x, const Complex& y);
 extern OCTAVE_API Complex xmax (const Complex& x, const Complex& y);
+
+// Single Precision 
+extern OCTAVE_API float arg (float x);
+extern OCTAVE_API float conj (float x);
+extern OCTAVE_API float fix (float x);
+extern OCTAVE_API float imag (float x);
+extern OCTAVE_API float real (float x);
+extern OCTAVE_API float xround (float x);
+extern OCTAVE_API float xroundb (float x);
+extern OCTAVE_API float signum (float x);
+extern OCTAVE_API float xtrunc (float x);
+extern OCTAVE_API float xlog2 (float x); 
+extern OCTAVE_API FloatComplex xlog2 (const FloatComplex& x); 
+extern OCTAVE_API float xlog2 (float x, int& exp);
+extern OCTAVE_API FloatComplex xlog2 (const FloatComplex& x, int& exp);
+extern OCTAVE_API float xexp2 (float x);
+
+extern OCTAVE_API bool xisnan (float x);
+extern OCTAVE_API bool xfinite (float x);
+extern OCTAVE_API bool xisinf (float x);
+
+extern OCTAVE_API bool octave_is_NA (float x);
+extern OCTAVE_API bool octave_is_NaN_or_NA (float x) GCC_ATTR_DEPRECATED;
+
+extern OCTAVE_API float xmin (float x, float y);
+extern OCTAVE_API float xmax (float x, float y);
+
+extern OCTAVE_API FloatComplex acos (const FloatComplex& x);
+extern OCTAVE_API FloatComplex acosh (const FloatComplex& x);
+extern OCTAVE_API FloatComplex asin (const FloatComplex& x);
+extern OCTAVE_API FloatComplex asinh (const FloatComplex& x);
+extern OCTAVE_API FloatComplex atan (const FloatComplex& x);
+extern OCTAVE_API FloatComplex atanh (const FloatComplex& x);
+
+extern OCTAVE_API FloatComplex ceil (const FloatComplex& x);
+extern OCTAVE_API FloatComplex fix (const FloatComplex& x);
+extern OCTAVE_API FloatComplex floor (const FloatComplex& x);
+extern OCTAVE_API FloatComplex xround (const FloatComplex& x);
+extern OCTAVE_API FloatComplex xroundb (const FloatComplex& x);
+extern OCTAVE_API FloatComplex signum (const FloatComplex& x);
+
+extern OCTAVE_API bool xisnan (const FloatComplex& x);
+extern OCTAVE_API bool xfinite (const FloatComplex& x);
+extern OCTAVE_API bool xisinf (const FloatComplex& x);
+
+extern OCTAVE_API bool octave_is_NA (const FloatComplex& x);
+extern OCTAVE_API bool octave_is_NaN_or_NA (const FloatComplex& x);
+
+extern OCTAVE_API FloatComplex xmin (const FloatComplex& x, const FloatComplex& y);
+extern OCTAVE_API FloatComplex xmax (const FloatComplex& x, const FloatComplex& y);
 
 #endif
 

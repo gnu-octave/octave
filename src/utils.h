@@ -93,6 +93,9 @@ get_dimensions (const octave_value& a,const char *warn_for,
 extern OCTINTERP_API Matrix
 identity_matrix (octave_idx_type nr, octave_idx_type nc);
 
+extern OCTINTERP_API FloatMatrix
+float_identity_matrix (octave_idx_type nr, octave_idx_type nc);
+
 extern OCTINTERP_API int
 octave_format (std::ostream& os, const char *fmt, ...);
 

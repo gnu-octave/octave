@@ -143,27 +143,42 @@ the wisdom is lost.\n\
 				      arg1.begin (), tolower);
 		      octave_fftw_planner::FftwMethod meth
 			= octave_fftw_planner::UNKNOWN;
+		      octave_float_fftw_planner::FftwMethod methf
+			= octave_float_fftw_planner::UNKNOWN;
 
 		      if (arg1 == "estimate")
-			meth = fftw_planner.method
-			  (octave_fftw_planner::ESTIMATE);
+			{
+			  meth = octave_fftw_planner::ESTIMATE;
+			  methf = octave_float_fftw_planner::ESTIMATE;
+			}
 		      else if (arg1 == "measure")
-			meth = fftw_planner.method 
-			  (octave_fftw_planner::MEASURE);
+			{
+			  meth = octave_fftw_planner::MEASURE;
+			  methf = octave_float_fftw_planner::MEASURE;
+			}
 		      else if (arg1 == "patient")
-			meth = fftw_planner.method 
-			  (octave_fftw_planner::PATIENT);
+			{
+			  meth = octave_fftw_planner::PATIENT;
+			  methf = octave_float_fftw_planner::PATIENT;
+			}
 		      else if (arg1 == "exhaustive")
-			meth = fftw_planner.method 
-			  (octave_fftw_planner::EXHAUSTIVE);
+			{
+			  meth = octave_fftw_planner::EXHAUSTIVE;
+			  methf = octave_float_fftw_planner::EXHAUSTIVE;
+			}
 		      else if (arg1 == "hybrid")
-			meth = fftw_planner.method 
-			  (octave_fftw_planner::HYBRID);
+			{
+			  meth = octave_fftw_planner::HYBRID;
+			  methf = octave_float_fftw_planner::HYBRID;
+			}
 		      else
 			error ("unrecognized planner method");
 
 		      if (!error_state)
 			{
+			  meth = fftw_planner.method (meth);
+			  float_fftw_planner.method (methf);
+
 			  if (meth == octave_fftw_planner::MEASURE)
 			    retval = octave_value ("measure");
 			  else if (meth == octave_fftw_planner::PATIENT)
@@ -191,7 +206,19 @@ the wisdom is lost.\n\
 		      free (str);
 		    }
 		  else if (arg0 == "swisdom")
-		    error ("single precision wisdom is not supported");
+		    {
+		      char *str = fftwf_export_wisdom_to_string ();
+
+		      if (arg1.length() < 1)
+			fftwf_forget_wisdom ();
+		      else if (! fftwf_import_wisdom_from_string (arg1.c_str()))
+			error ("could not import supplied wisdom");
+
+		      if (!error_state)
+			retval = octave_value (std::string (str));
+
+		      free (str);
+		    }
 		  else
 		    error ("unrecognized argument");
 		}
@@ -221,7 +248,11 @@ the wisdom is lost.\n\
 		  free (str);
 		}
 	      else if (arg0 == "swisdom")
-		error ("single precision wisdom is not supported");
+		{
+		  char *str = fftwf_export_wisdom_to_string ();
+		  retval = octave_value (std::string (str));
+		  free (str);
+		}
 	      else
 		error ("unrecognized argument");
 	    }

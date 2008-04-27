@@ -42,7 +42,7 @@ template <>
 OCTAVE_API double
 MArray<double>::norm (double p) const
 {
-  MARRAY_NORM_BODY (double, xdnrm2, XDNRM2);
+  MARRAY_NORM_BODY (double, double, xdnrm2, XDNRM2, octave_NaN);
 }
 
 template class OCTAVE_API MArray<double>;

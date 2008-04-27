@@ -59,6 +59,39 @@ extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const Matrix& b,
 extern ComplexMatrix xleftdiv (const ComplexMatrix& a, const ComplexMatrix& b,
 			       MatrixType &typ);
 
+class FloatMatrix;
+class FloatComplexMatrix;
+
+class FloatNDArray;
+class FloatComplexNDArray;
+
+extern FloatMatrix xdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ);
+extern FloatComplexMatrix xdiv (const FloatMatrix& a, const FloatComplexMatrix& b,
+			   MatrixType &typ);
+extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, const FloatMatrix& b,
+			   MatrixType &typ);
+extern FloatComplexMatrix xdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+			   MatrixType &typ);
+
+extern FloatMatrix x_el_div (float a, const FloatMatrix& b);
+extern FloatComplexMatrix x_el_div (float a, const FloatComplexMatrix& b);
+extern FloatComplexMatrix x_el_div (const FloatComplex a, const FloatMatrix& b);
+extern FloatComplexMatrix x_el_div (const FloatComplex a, const FloatComplexMatrix& b);
+
+extern FloatNDArray x_el_div (float a, const FloatNDArray& b);
+extern FloatComplexNDArray x_el_div (float a, const FloatComplexNDArray& b);
+extern FloatComplexNDArray x_el_div (const FloatComplex a, const FloatNDArray& b);
+extern FloatComplexNDArray x_el_div (const FloatComplex a, const FloatComplexNDArray& b);
+
+extern FloatMatrix xleftdiv (const FloatMatrix& a, const FloatMatrix& b, MatrixType &typ);
+extern FloatComplexMatrix xleftdiv (const FloatMatrix& a, const FloatComplexMatrix& b,
+			       MatrixType &typ);
+extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a, const FloatMatrix& b,
+			       MatrixType &typ);
+extern FloatComplexMatrix xleftdiv (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
+			       MatrixType &typ);
+
+
 #endif
 
 /*

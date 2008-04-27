@@ -144,7 +144,7 @@ RowVector::append (const RowVector& a) const
 ColumnVector
 RowVector::transpose (void) const
 {
-  return ColumnVector (*this);
+  return MArray<double>::transpose();
 }
 
 RowVector

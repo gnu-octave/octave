@@ -1,5 +1,4 @@
       subroutine passf2 (ido,l1,cc,ch,wa1)
-      implicit double precision (a-h,o-z)
       dimension       cc(ido,2,l1)           ,ch(ido,l1,2)           ,
      1                wa1(1)
       if (ido .gt. 2) go to 102

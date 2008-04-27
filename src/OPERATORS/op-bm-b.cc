@@ -30,7 +30,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-str-mat.h"
 #include "ov-int8.h"
 #include "ov-int16.h"
@@ -53,6 +55,8 @@ DEFNDBINOP_FN (el_or, bool_matrix, bool, bool_array, bool, mx_el_or)
 DEFNDCATOP_FN (bm_b, bool_matrix, bool, bool_array, bool_array, concat)
 DEFNDCATOP_FN (bm_s, bool_matrix, scalar, array, array, concat)
 DEFNDCATOP_FN (m_b, matrix, bool, array, array, concat)
+DEFNDCATOP_FN (bm_f, bool_matrix, float_scalar, float_array, float_array, concat)
+DEFNDCATOP_FN (fm_b, float_matrix, bool, float_array, float_array, concat)
 
 DEFNDASSIGNOP_FN (assign, bool_matrix, bool, bool_array, assign)
 
@@ -83,6 +87,8 @@ install_bm_b_ops (void)
   INSTALL_CATOP (octave_bool_matrix, octave_bool, bm_b);
   INSTALL_CATOP (octave_bool_matrix, octave_scalar, bm_s);
   INSTALL_CATOP (octave_matrix, octave_bool, m_b);
+  INSTALL_CATOP (octave_bool_matrix, octave_float_scalar, bm_f);
+  INSTALL_CATOP (octave_float_matrix, octave_bool, fm_b);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_bool_matrix, octave_bool, assign);
 

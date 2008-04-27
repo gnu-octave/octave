@@ -51,8 +51,12 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-map.h"
 #include "oct-obj.h"
 #include "ov.h"
+#include "ov-float.h"
 #include "ov-complex.h"
+#include "ov-flt-complex.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
+#include "ov-cx-sparse.h"
 #include "parse.h"
 #include "pt-mat.h"
 #include "utils.h"
@@ -129,6 +133,7 @@ any (eye (2, 4), 2)\n\
 // These mapping functions may also be useful in other places, eh?
 
 typedef double (*d_dd_fcn) (double, double);
+typedef float (*f_ff_fcn) (float, float);
 
 static NDArray
 map_d_m (d_dd_fcn f, double x, const NDArray& y)
@@ -137,6 +142,25 @@ map_d_m (d_dd_fcn f, double x, const NDArray& y)
   double *r_data = retval.fortran_vec ();
 
   const double *y_data = y.data ();
+
+  octave_idx_type nel = y.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      r_data[i] = f (x, y_data[i]);
+    }
+
+  return retval;
+}
+
+static FloatNDArray
+map_f_fm (f_ff_fcn f, float x, const FloatNDArray& y)
+{
+  FloatNDArray retval (y.dims ());
+  float *r_data = retval.fortran_vec ();
+
+  const float *y_data = y.data ();
 
   octave_idx_type nel = y.numel ();
 
@@ -168,6 +192,25 @@ map_m_d (d_dd_fcn f, const NDArray& x, double y)
   return retval;
 }
 
+static FloatNDArray
+map_fm_f (f_ff_fcn f, const FloatNDArray& x, float y)
+{
+  FloatNDArray retval (x.dims ());
+  float *r_data = retval.fortran_vec ();
+
+  const float *x_data = x.data ();
+
+  octave_idx_type nel = x.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      r_data[i] = f (x_data[i], y);
+    }
+
+  return retval;
+}
+
 static NDArray
 map_m_m (d_dd_fcn f, const NDArray& x, const NDArray& y)
 {
@@ -178,6 +221,28 @@ map_m_m (d_dd_fcn f, const NDArray& x, const NDArray& y)
 
   const double *x_data = x.data ();
   const double *y_data = y.data ();
+
+  octave_idx_type nel = x.numel ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      OCTAVE_QUIT;
+      r_data[i] = f (x_data[i], y_data[i]);
+    }
+
+  return retval;
+}
+
+static FloatNDArray
+map_fm_fm (f_ff_fcn f, const FloatNDArray& x, const FloatNDArray& y)
+{
+  assert (x.dims () == y.dims ());
+
+  FloatNDArray retval (x.dims ());
+  float *r_data = retval.fortran_vec ();
+
+  const float *x_data = x.data ();
+  const float *y_data = y.data ();
 
   octave_idx_type nel = x.numel ();
 
@@ -438,29 +503,62 @@ and @var{x}.  The result is in range -pi to pi.\n\
 	  bool y_is_scalar = y_dims.all_ones ();
 	  bool x_is_scalar = x_dims.all_ones ();
 
+	  bool is_float = arg_y.is_single_type () || arg_x.is_single_type ();
+
 	  if (y_is_scalar && x_is_scalar)
 	    {
-	      double y = arg_y.double_value ();
-
-	      if (! error_state)
+	      if (is_float)
 		{
-		  double x = arg_x.double_value ();
+		  float y = arg_y.float_value ();
 
 		  if (! error_state)
-		    retval = atan2 (y, x);
+		    {
+		      float x = arg_x.float_value ();
+
+		      if (! error_state)
+			retval = atan2f (y, x);
+		    }
+		}
+	      else
+		{
+		  double y = arg_y.double_value ();
+
+		  if (! error_state)
+		    {
+		      double x = arg_x.double_value ();
+
+		      if (! error_state)
+			retval = atan2 (y, x);
+		    }
 		}
 	    }
 	  else if (y_is_scalar)
 	    {
-	      double y = arg_y.double_value ();
-
-	      if (! error_state)
+	      if (is_float)
 		{
-		  // Even if x is sparse return a full matrix here
-		  NDArray x = arg_x.array_value ();
+		  float y = arg_y.float_value ();
 
 		  if (! error_state)
-		    retval = map_d_m (atan2, y, x);
+		    {
+		      // Even if x is sparse return a full matrix here
+		      FloatNDArray x = arg_x.float_array_value ();
+
+		      if (! error_state)
+			retval = map_f_fm (atan2f, y, x);
+		    }
+		}
+	      else
+		{
+		  double y = arg_y.double_value ();
+
+		  if (! error_state)
+		    {
+		      // Even if x is sparse return a full matrix here
+		      NDArray x = arg_x.array_value ();
+
+		      if (! error_state)
+			retval = map_d_m (atan2, y, x);
+		    }
 		}
 	    }
 	  else if (x_is_scalar)
@@ -475,6 +573,18 @@ and @var{x}.  The result is in range -pi to pi.\n\
 		      
 		      if (! error_state)
 			retval = map_s_d (atan2, y, x);
+		    }
+		}
+	      else if (is_float)
+		{
+		  FloatNDArray y = arg_y.float_array_value ();
+		  
+		  if (! error_state)
+		    {
+		      float x = arg_x.float_value ();
+
+		      if (! error_state)
+			retval = map_fm_f (atan2f, y, x);
 		    }
 		}
 	      else
@@ -503,6 +613,18 @@ and @var{x}.  The result is in range -pi to pi.\n\
 
 		      if (! error_state)
 			retval = map_s_s (atan2, y, x);
+		    }
+		}
+	      else if (is_float)
+		{
+		  FloatNDArray y = arg_y.array_value ();
+
+		  if (! error_state)
+		    {
+		      FloatNDArray x = arg_x.array_value ();
+
+		      if (! error_state)
+			retval = map_fm_fm (atan2f, y, x);
 		    }
 		}
 	      else
@@ -564,64 +686,135 @@ values of @var{x} or @var{y}.\n\
 	  bool x_is_scalar = x_dims.all_ones ();
 	  bool y_is_scalar = y_dims.all_ones ();
 
+	  bool is_float = arg_y.is_single_type () || arg_x.is_single_type ();
+
 	  if (y_is_scalar && x_is_scalar)
 	    {
-	      double x;
-	      if (arg_x.is_complex_type ())
-		x = abs (arg_x.complex_value ());
-	      else
-		x = arg_x.double_value ();
-
-	      if (! error_state)
+	      if (is_float)
 		{
-		  double y;
-		  if (arg_y.is_complex_type ())
-		    y = abs (arg_y.complex_value ());
+		  float x;
+		  if (arg_x.is_complex_type ())
+		    x = abs (arg_x.float_complex_value ());
 		  else
-		    y = arg_y.double_value ();
+		    x = arg_x.float_value ();
 
 		  if (! error_state)
-		    retval = hypot (x, y);
+		    {
+		      float y;
+		      if (arg_y.is_complex_type ())
+			y = abs (arg_y.float_complex_value ());
+		      else
+			y = arg_y.float_value ();
+
+		      if (! error_state)
+			retval = hypotf (x, y);
+		    }
+		}
+	      else
+		{
+		  double x;
+		  if (arg_x.is_complex_type ())
+		    x = abs (arg_x.complex_value ());
+		  else
+		    x = arg_x.double_value ();
+
+		  if (! error_state)
+		    {
+		      double y;
+		      if (arg_y.is_complex_type ())
+			y = abs (arg_y.complex_value ());
+		      else
+			y = arg_y.double_value ();
+
+		      if (! error_state)
+			retval = hypot (x, y);
+		    }
 		}
 	    }
 	  else if (y_is_scalar)
 	    {
-	      NDArray x;
-	      if (arg_x.is_complex_type ())
-		x = arg_x.complex_array_value ().abs ();
-	      else
-		x = arg_x.array_value ();
-
-	      if (! error_state)
+	      if (is_float)
 		{
-		  double y;
-		  if (arg_y.is_complex_type ())
-		    y = abs (arg_y.complex_value ());
+		  FloatNDArray x;
+		  if (arg_x.is_complex_type ())
+		    x = arg_x.float_complex_array_value ().abs ();
 		  else
-		    y = arg_y.double_value ();
+		    x = arg_x.float_array_value ();
 
 		  if (! error_state)
-		    retval = map_m_d (hypot, x, y);
+		    {
+		      float y;
+		      if (arg_y.is_complex_type ())
+			y = abs (arg_y.float_complex_value ());
+		      else
+			y = arg_y.float_value ();
+
+		      if (! error_state)
+			retval = map_fm_f (hypotf, x, y);
+		    }
+		}
+	      else
+		{
+		  NDArray x;
+		  if (arg_x.is_complex_type ())
+		    x = arg_x.complex_array_value ().abs ();
+		  else
+		    x = arg_x.array_value ();
+
+		  if (! error_state)
+		    {
+		      double y;
+		      if (arg_y.is_complex_type ())
+			y = abs (arg_y.complex_value ());
+		      else
+			y = arg_y.double_value ();
+
+		      if (! error_state)
+			retval = map_m_d (hypot, x, y);
+		    }
 		}
 	    }
 	  else if (x_is_scalar)
 	    {
-	      double x;
-	      if (arg_x.is_complex_type ())
-		x = abs (arg_x.complex_value ());
-	      else
-		x = arg_x.double_value ();
-
-	      if (! error_state)
+	      if (is_float)
 		{
-		  NDArray y;
-		  if (arg_y.is_complex_type ())
-		    y = arg_y.complex_array_value ().abs ();
+		  float x;
+		  if (arg_x.is_complex_type ())
+		    x = abs (arg_x.float_complex_value ());
 		  else
-		    y = arg_y.array_value ();
+		    x = arg_x.float_value ();
 
 		  if (! error_state)
-		    retval = map_d_m (hypot, x, y);
+		    {
+		      FloatNDArray y;
+		      if (arg_y.is_complex_type ())
+			y = arg_y.float_complex_array_value ().abs ();
+		      else
+			y = arg_y.float_array_value ();
+
+		      if (! error_state)
+			retval = map_f_fm (hypotf, x, y);
+		    }
+		}
+	      else
+		{
+		  double x;
+		  if (arg_x.is_complex_type ())
+		    x = abs (arg_x.complex_value ());
+		  else
+		    x = arg_x.double_value ();
+
+		  if (! error_state)
+		    {
+		      NDArray y;
+		      if (arg_y.is_complex_type ())
+			y = arg_y.complex_array_value ().abs ();
+		      else
+			y = arg_y.array_value ();
+
+		      if (! error_state)
+			retval = map_d_m (hypot, x, y);
+		    }
 		}
 	    }
 	  else if (y_dims == x_dims)
@@ -644,6 +837,26 @@ values of @var{x} or @var{y}.\n\
 
 		      if (! error_state)
 			retval = map_s_s (hypot, x, y);
+		    }
+		}
+	      else if (is_float)
+		{
+		  FloatNDArray x;
+		  if (arg_x.is_complex_type ())
+		    x = arg_x.float_complex_array_value ().abs ();
+		  else
+		    x = arg_x.float_array_value ();
+
+		  if (! error_state)
+		    {
+		      FloatNDArray y;
+		      if (arg_y.is_complex_type ())
+			y = arg_y.float_complex_array_value ().abs ();
+		      else
+			y = arg_y.float_array_value ();
+
+		      if (! error_state)
+			retval = map_fm_fm (hypotf, x, y);
 		    }
 		}
 	      else
@@ -684,6 +897,7 @@ values of @var{x} or @var{y}.\n\
 %!assert (size (hypot (1, rand (2, 3, 4))), [2, 3, 4])
 %!assert (size (hypot (1, 2)), [1, 1])
 %!assert (hypot (1:10, 1:10), sqrt(2) * [1:10], 16*eps)
+%!assert (hypot (single(1:10), single(1:10)), single(sqrt(2) * [1:10]));
 */
 
 template<typename T, typename ET>
@@ -717,6 +931,29 @@ binary mantissa and exponent so that @code{1/2 <= abs(f) < 1} and\n\
     {
       if (nargout < 2)
         retval(0) = args(0).log2 ();
+      else if (args(0).is_single_type ())
+	{
+	  if (args(0).is_real_type ())
+	    {
+	      FloatNDArray f;
+	      FloatNDArray x = args(0).float_array_value ();
+	      // FIXME -- should E be an int value?
+	      FloatMatrix e;
+	      map_2_xlog2 (x, f, e);
+	      retval (1) = e;
+	      retval (0) = f;
+	    }
+	  else if (args(0).is_complex_type ())
+	    {
+	      FloatComplexNDArray f;
+	      FloatComplexNDArray x = args(0).float_complex_array_value ();
+	      // FIXME -- should E be an int value?
+	      FloatNDArray e;
+	      map_2_xlog2 (x, f, e);
+	      retval (1) = e;
+	      retval (0) = f;
+	    }
+	}
       else if (args(0).is_real_type ())
         {
           NDArray f;
@@ -787,37 +1024,69 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
       bool y_is_scalar = y_dims.all_ones ();
       bool x_is_scalar = x_dims.all_ones ();
 
+      bool is_float = arg_y.is_single_type () || arg_x.is_single_type ();
+
       if (y_is_scalar && x_is_scalar)
 	{
-	  double y = arg_y.double_value ();
-
-	  if (! error_state)
+	  if (is_float)
 	    {
-	      double x = arg_x.double_value ();
+	      float y = arg_y.float_value ();
 
 	      if (! error_state)
-		retval = fmod (x, y);
+		{
+		  float x = arg_x.float_value ();
+
+		  if (! error_state)
+		    retval = fmod (x, y);
+		}
+	    }
+	  else
+	    {
+	      double y = arg_y.double_value ();
+
+	      if (! error_state)
+		{
+		  double x = arg_x.double_value ();
+
+		  if (! error_state)
+		    retval = fmod (x, y);
+		}
 	    }
 	}
       else if (y_is_scalar)
 	{
-	  double y = arg_y.double_value ();
-
-	  if (! error_state)
+	  if (is_float)
 	    {
-	      if (arg_x.is_sparse_type ())
+	      float y = arg_y.float_value ();
+
+	      if (! error_state)
 		{
-		  SparseMatrix x = arg_x.sparse_matrix_value ();
+		  FloatNDArray x = arg_x.float_array_value ();
 
 		  if (! error_state)
-		    retval = map_s_d (fmod, x, y);
+		    retval = map_fm_f (fmodf, x, y);
 		}
-	      else
-		{
-		  NDArray x = arg_x.array_value ();
+	    }
+	  else
+	    {
+	      double y = arg_y.double_value ();
 
-		  if (! error_state)
-		    retval = map_m_d (fmod, x, y);
+	      if (! error_state)
+		{
+		  if (arg_x.is_sparse_type ())
+		    {
+		      SparseMatrix x = arg_x.sparse_matrix_value ();
+
+		      if (! error_state)
+			retval = map_s_d (fmod, x, y);
+		    }
+		  else
+		    {
+		      NDArray x = arg_x.array_value ();
+
+		      if (! error_state)
+			retval = map_m_d (fmod, x, y);
+		    }
 		}
 	    }
 	}
@@ -833,6 +1102,18 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 
 		  if (! error_state)
 		    retval = map_d_s (fmod, x, y);
+		}
+	    }
+	  else if (is_float)
+	    {
+	      FloatNDArray y = arg_y.float_array_value ();
+
+	      if (! error_state)
+		{
+		  float x = arg_x.float_value ();
+
+		  if (! error_state)
+		    retval = map_f_fm (fmodf, x, y);
 		}
 	    }
 	  else
@@ -860,6 +1141,18 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 
 		  if (! error_state)
 		    retval = map_s_s (fmod, x, y);
+		}
+	    }
+	  else if (is_float)
+	    {
+	      FloatNDArray y = arg_y.float_array_value ();
+
+	      if (! error_state)
+		{
+		  FloatNDArray x = arg_x.float_array_value ();
+
+		  if (! error_state)
+		    retval = map_fm_fm (fmodf, x, y);
 		}
 	    }
 	  else
@@ -891,6 +1184,8 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 %!assert (size (fmod (1, rand (2, 3, 4))), [2, 3, 4])
 %!assert (size (fmod (1, 2)), [1, 1])
 */
+
+// FIXME Need to convert the reduction functions of this file for single precision
 
 #define NATIVE_REDUCTION_1(FCN, TYPE, DIM) \
   (arg.is_ ## TYPE ## _type ()) \
@@ -967,6 +1262,24 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
                         { \
 			  error (#FCN, ": invalid char type"); \
 			} \
+		      else if (arg.is_single_type ()) \
+                        { \
+	                  if (arg.is_complex_type ()) \
+		            { \
+		              FloatComplexNDArray tmp = \
+				arg.float_complex_array_value (); \
+                              \
+		              if (! error_state) \
+		                retval = tmp.FCN (dim); \
+		            } \
+	                  else if (arg.is_real_type ()) \
+		            { \
+		              FloatNDArray tmp = arg.float_array_value (); \
+                              \
+		              if (! error_state) \
+		                retval = tmp.FCN (dim); \
+		            } \
+			} \
 	              else if (arg.is_complex_type ()) \
 		        { \
 		          ComplexNDArray tmp = arg.complex_array_value (); \
@@ -987,6 +1300,24 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 		          return retval; \
 		        } \
                     } \
+		  else if (arg.is_single_type ()) \
+		    { \
+	              if (arg.is_real_type ()) \
+		        { \
+		          FloatNDArray tmp = arg.float_array_value (); \
+                          \
+		          if (! error_state) \
+		            retval = tmp.FCN (dim); \
+		        } \
+	              else if (arg.is_complex_type ()) \
+		        { \
+		          FloatComplexNDArray tmp = \
+			    arg.float_complex_array_value (); \
+                          \
+		          if (! error_state) \
+		            retval = tmp.FCN (dim); \
+		        } \
+		    } \
 	          else if (arg.is_real_type ()) \
 		    { \
 		      NDArray tmp = arg.array_value (); \
@@ -1043,6 +1374,13 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 		      if (! error_state) \
 			retval = tmp.FCN (dim); \
 		    } \
+		  else if (arg.is_single_type ()) \
+		    { \
+		      FloatNDArray tmp = arg.float_array_value (); \
+ \
+		      if (! error_state) \
+			retval = tmp.FCN (dim); \
+		    } \
 		  else \
 		    { \
 		      NDArray tmp = arg.array_value (); \
@@ -1056,6 +1394,13 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 		  if (arg.is_sparse_type ()) \
 		    { \
 		      SparseComplexMatrix tmp = arg.sparse_complex_matrix_value (); \
+ \
+		      if (! error_state) \
+			retval = tmp.FCN (dim); \
+		    } \
+		  else if (arg.is_single_type ()) \
+		    { \
+		      FloatComplexNDArray tmp = arg.float_complex_array_value (); \
  \
 		      if (! error_state) \
 			retval = tmp.FCN (dim); \
@@ -1850,19 +2195,46 @@ Convert @var{x} to a complex value.\n\
 	retval = arg;
       else
 	{
-	  if (arg.numel () == 1)
+	  if (arg.is_sparse_type ())
 	    {
-	      Complex val = arg.complex_value ();
+	      SparseComplexMatrix val = arg.sparse_complex_matrix_value ();
 
 	      if (! error_state)
-		retval = octave_value (new octave_complex (val));
+		retval = octave_value (new octave_sparse_complex_matrix (val));
+	    }
+	  else if (arg.is_single_type ())
+	    {
+	      if (arg.numel () == 1)
+		{
+		  FloatComplex val = arg.float_complex_value ();
+
+		  if (! error_state)
+		    retval = octave_value (new octave_float_complex (val));
+		}
+	      else
+		{
+		  FloatComplexNDArray val = arg.float_complex_array_value ();
+
+		  if (! error_state)
+		    retval = octave_value (new octave_float_complex_matrix (val));
+		}
 	    }
 	  else
 	    {
-	      ComplexNDArray val = arg.complex_array_value ();
+	      if (arg.numel () == 1)
+		{
+		  Complex val = arg.complex_value ();
 
-	      if (! error_state)
-		retval = octave_value (new octave_complex_matrix (val));
+		  if (! error_state)
+		    retval = octave_value (new octave_complex (val));
+		}
+	      else
+		{
+		  ComplexNDArray val = arg.complex_array_value ();
+
+		  if (! error_state)
+		    retval = octave_value (new octave_complex_matrix (val));
+		}
 	    }
 
 	  if (error_state)
@@ -1874,7 +2246,140 @@ Convert @var{x} to a complex value.\n\
       octave_value re = args(0);
       octave_value im = args(1);
 
-      if (re.numel () == 1)
+      if (re.is_sparse_type () && im.is_sparse_type ())
+	{
+	  const SparseMatrix re_val = re.sparse_matrix_value ();
+	  const SparseMatrix im_val = im.sparse_matrix_value ();
+
+	  if (!error_state)
+	    {
+	      if (re.numel () == 1)
+		{
+		  SparseComplexMatrix result;
+		  if (re_val.nnz () == 0)
+		    result = Complex(0, 1) * SparseComplexMatrix (im_val);
+		  else
+		    {
+		      result = SparseComplexMatrix (im_val.dims (), re_val (0));
+		      octave_idx_type nr = im_val.rows ();
+		      octave_idx_type nc = im_val.cols ();
+
+		      for (octave_idx_type j = 0; j < nc; j++)
+			{
+			  octave_idx_type off = j * nr;
+			  for (octave_idx_type i = im_val.cidx(j); 
+			       i < im_val.cidx(j + 1); i++)
+			    result.data (im_val.ridx(i) + off) =  
+			      result.data (im_val.ridx(i) + off) + 
+			      Complex (0, im_val.data (i));
+			}
+		    }
+		  retval = octave_value (new octave_sparse_complex_matrix (result));
+		}
+	      else if (im.numel () == 1)
+		{
+		  SparseComplexMatrix result;
+		  if (im_val.nnz () == 0)
+		    result = SparseComplexMatrix (re_val);
+		  else
+		    {
+		      result = SparseComplexMatrix (re_val.rows(), re_val.cols(), Complex(0, im_val (0)));
+		      octave_idx_type nr = re_val.rows ();
+		      octave_idx_type nc = re_val.cols ();
+
+		      for (octave_idx_type j = 0; j < nc; j++)
+			{
+			  octave_idx_type off = j * nr;
+			  for (octave_idx_type i = re_val.cidx(j); 
+			       i < re_val.cidx(j + 1); i++)
+			    result.data (re_val.ridx(i) + off) =  
+			      result.data (re_val.ridx(i) + off) + 
+			      re_val.data (i);
+			}
+		    }
+		  retval = octave_value (new octave_sparse_complex_matrix (result));
+		}
+	      else
+		{
+		  if (re_val.dims () == im_val.dims ())
+		    {
+		      SparseComplexMatrix result = SparseComplexMatrix(re_val) 
+			+ Complex(0, 1) * SparseComplexMatrix (im_val);
+		      retval = octave_value (new octave_sparse_complex_matrix (result));
+		    }
+		  else
+		    error ("complex: dimension mismatch");
+		}
+	    }
+	}
+      else if (re.is_single_type () || im.is_single_type ())
+	{
+	  if (re.numel () == 1)
+	    {
+	      float re_val = re.float_value ();
+
+	      if (im.numel () == 1)
+		{
+		  float im_val = im.double_value ();
+
+		  if (! error_state)
+		    retval = octave_value (new octave_float_complex (FloatComplex (re_val, im_val)));
+		}
+	      else
+		{
+		  const FloatNDArray im_val = im.float_array_value ();
+
+		  if (! error_state)
+		    {
+		      FloatComplexNDArray result (im_val.dims (), FloatComplex ());
+
+		      for (octave_idx_type i = 0; i < im_val.numel (); i++)
+			result.xelem (i) = FloatComplex (re_val, im_val(i));
+
+		      retval = octave_value (new octave_float_complex_matrix (result));
+		    }
+		}
+	    }
+	  else
+	    {
+	      const FloatNDArray re_val = re.float_array_value ();
+
+	      if (im.numel () == 1)
+		{
+		  float im_val = im.float_value ();
+
+		  if (! error_state)
+		    {
+		      FloatComplexNDArray result (re_val.dims (), FloatComplex ());
+
+		      for (octave_idx_type i = 0; i < re_val.numel (); i++)
+			result.xelem (i) = FloatComplex (re_val(i), im_val);
+
+		      retval = octave_value (new octave_float_complex_matrix (result));
+		    }
+		}
+	      else
+		{
+		  const FloatNDArray im_val = im.float_array_value ();
+
+		  if (! error_state)
+		    {
+		      if (re_val.dims () == im_val.dims ())
+			{
+			  FloatComplexNDArray result (re_val.dims (), FloatComplex ());
+
+			  for (octave_idx_type i = 0; i < re_val.numel (); i++)
+			    result.xelem (i) = FloatComplex (re_val(i), im_val(i));
+
+			  retval = octave_value (new octave_float_complex_matrix (result));
+			}
+		      else
+			error ("complex: dimension mismatch");
+		    }
+		}
+	    }
+	}
+      else if (re.numel () == 1)
 	{
 	  double re_val = re.double_value ();
 
@@ -2134,7 +2639,10 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 	      retval = uint64NDArray (dims, val);
 	      break;
 
-	    case oct_data_conv::dt_single: // FIXME
+	    case oct_data_conv::dt_single:
+	      retval = FloatNDArray (dims, val);
+	      break;
+
 	    case oct_data_conv::dt_double:
 	      retval = NDArray (dims, val);
 	      break;
@@ -2215,7 +2723,10 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 	{
 	  switch (dt)
 	    {
-	    case oct_data_conv::dt_single: // FIXME
+	    case oct_data_conv::dt_single:
+	      retval = FloatNDArray (dims, val);
+	      break;
+
 	    case oct_data_conv::dt_double:
 	      retval = NDArray (dims, val);
 	      break;
@@ -2293,7 +2804,10 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 	{
 	  switch (dt)
 	    {
-	    case oct_data_conv::dt_single: // FIXME
+	    case oct_data_conv::dt_single:
+	      retval = FloatComplexNDArray (dims, static_cast <FloatComplex> (val));
+	      break;
+
 	    case oct_data_conv::dt_double:
 	      retval = ComplexNDArray (dims, val);
 	      break;
@@ -2692,6 +3206,7 @@ INSTANTIATE_EYE (int32NDArray);
 INSTANTIATE_EYE (uint32NDArray);
 INSTANTIATE_EYE (int64NDArray);
 INSTANTIATE_EYE (uint64NDArray);
+INSTANTIATE_EYE (FloatNDArray);
 INSTANTIATE_EYE (NDArray);
 INSTANTIATE_EYE (boolNDArray);
 
@@ -2740,7 +3255,10 @@ identity_matrix (int nr, int nc, oct_data_conv::data_type dt)
 	  retval = identity_matrix<uint64NDArray> (nr, nc);
 	  break;
 
-	case oct_data_conv::dt_single: // FIXME
+	case oct_data_conv::dt_single:
+	  retval = identity_matrix<FloatNDArray> (nr, nc);
+	  break;
+
 	case oct_data_conv::dt_double:
 	  retval = identity_matrix<NDArray> (nr, nc);
 	  break;
@@ -2894,30 +3412,62 @@ fewer than two values are requested.\n\
       octave_value arg_1 = args(0);
       octave_value arg_2 = args(1);
 
-      if (arg_1.is_complex_type () || arg_2.is_complex_type ())
+      if (arg_1.is_single_type () || arg_2.is_single_type ())
 	{
-	  Complex x1 = arg_1.complex_value ();
-	  Complex x2 = arg_2.complex_value ();
-
-	  if (! error_state)
+	  if (arg_1.is_complex_type () || arg_2.is_complex_type ())
 	    {
-	      ComplexRowVector rv = linspace (x1, x2, npoints);
+	      FloatComplex x1 = arg_1.float_complex_value ();
+	      FloatComplex x2 = arg_2.float_complex_value ();
 
 	      if (! error_state)
-		retval = rv;
+		{
+		  FloatComplexRowVector rv = linspace (x1, x2, npoints);
+
+		  if (! error_state)
+		    retval = rv;
+		}
+	    }
+	  else
+	    {
+	      float x1 = arg_1.float_value ();
+	      float x2 = arg_2.float_value ();
+
+	      if (! error_state)
+		{
+		  FloatRowVector rv = linspace (x1, x2, npoints);
+
+		  if (! error_state)
+		    retval = rv;
+		}
 	    }
 	}
       else
 	{
-	  double x1 = arg_1.double_value ();
-	  double x2 = arg_2.double_value ();
-
-	  if (! error_state)
+	  if (arg_1.is_complex_type () || arg_2.is_complex_type ())
 	    {
-	      RowVector rv = linspace (x1, x2, npoints);
+	      Complex x1 = arg_1.complex_value ();
+	      Complex x2 = arg_2.complex_value ();
 
 	      if (! error_state)
-		retval = rv;
+		{
+		  ComplexRowVector rv = linspace (x1, x2, npoints);
+
+		  if (! error_state)
+		    retval = rv;
+		}
+	    }
+	  else
+	    {
+	      double x1 = arg_1.double_value ();
+	      double x2 = arg_2.double_value ();
+
+	      if (! error_state)
+		{
+		  RowVector rv = linspace (x1, x2, npoints);
+
+		  if (! error_state)
+		    retval = rv;
+		}
 	    }
 	}
     }

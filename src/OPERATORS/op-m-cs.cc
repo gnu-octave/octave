@@ -34,7 +34,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ov-complex.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -135,6 +137,7 @@ install_m_cs_ops (void)
   INSTALL_CATOP (octave_matrix, octave_complex, m_cs);
 
   INSTALL_ASSIGNCONV (octave_matrix, octave_complex, octave_complex_matrix);
+  INSTALL_ASSIGNCONV (octave_float_matrix, octave_complex, octave_float_complex_matrix);
 }
 
 /*

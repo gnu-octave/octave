@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -68,6 +69,8 @@ DEFBINOP_OP (el_or, bool, bool, ||)
 DEFNDCATOP_FN (b_b, bool, bool, bool_array, bool_array, concat)
 DEFNDCATOP_FN (b_s, bool, scalar, array, array, concat)
 DEFNDCATOP_FN (s_b, scalar, bool, array, array, concat)
+DEFNDCATOP_FN (b_f, bool, float_scalar, float_array, float_array, concat)
+DEFNDCATOP_FN (f_b, float_scalar, bool, float_array, float_array, concat)
 
 void
 install_b_b_ops (void)
@@ -86,6 +89,8 @@ install_b_b_ops (void)
   INSTALL_CATOP (octave_bool, octave_bool, b_b);
   INSTALL_CATOP (octave_bool, octave_scalar, b_s);
   INSTALL_CATOP (octave_scalar, octave_bool, s_b);
+  INSTALL_CATOP (octave_bool, octave_float_scalar, b_f);
+  INSTALL_CATOP (octave_float_scalar, octave_bool, f_b);
 
   INSTALL_ASSIGNCONV (octave_bool, octave_bool, octave_bool_matrix);
 }

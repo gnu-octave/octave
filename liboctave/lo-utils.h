@@ -34,8 +34,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "syswait.h"
 
 extern OCTAVE_API octave_idx_type NINTbig (double x);
+extern OCTAVE_API octave_idx_type NINTbig (float x);
 extern OCTAVE_API int NINT (double x);
+extern OCTAVE_API int NINT (float x);
 extern OCTAVE_API double D_NINT (double x);
+extern OCTAVE_API float F_NINT (float x);
 
 extern OCTAVE_API char *strsave (const char *);
 
@@ -64,6 +67,12 @@ extern OCTAVE_API Complex octave_read_complex (std::istream& is);
 
 extern OCTAVE_API void octave_write_double (std::ostream& os, double dval);
 extern OCTAVE_API void octave_write_complex (std::ostream& os, const Complex& cval);
+
+extern OCTAVE_API float octave_read_float (std::istream& is);
+extern OCTAVE_API FloatComplex octave_read_float_complex (std::istream& is);
+
+extern OCTAVE_API void octave_write_float (std::ostream& os, float dval);
+extern OCTAVE_API void octave_write_float_complex (std::ostream& os, const FloatComplex& cval);
 
 #ifdef HAVE_LOADLIBRARY_API
 #include <windows.h>

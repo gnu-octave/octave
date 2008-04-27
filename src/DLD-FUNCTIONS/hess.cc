@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "CmplxHESS.h"
 #include "dbleHESS.h"
+#include "fCmplxHESS.h"
+#include "floatHESS.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -89,51 +91,63 @@ is upper Hessenberg (@code{i >= j+1 => h (i, j) = 0}).\n\
       return retval;
     }
 
-  if (arg.is_real_type ())
+  if (arg.is_single_type ())
     {
-      Matrix tmp = arg.matrix_value ();
-
-      if (! error_state)
+      if (arg.is_real_type ())
 	{
-	  HESS result (tmp);
+	 FloatMatrix tmp = arg.float_matrix_value ();
 
-	  if (nargout == 0 || nargout == 1)
+	  if (! error_state)
 	    {
-	      retval.resize (1);
-	      retval(0) = result.hess_matrix ();
-	    }
-	  else
-	    {
-	      retval.resize (2);
-	      retval(0) = result.unitary_hess_matrix ();
+	      FloatHESS result (tmp);
+
 	      retval(1) = result.hess_matrix ();
+	      retval(0) = result.unitary_hess_matrix ();
 	    }
 	}
-    }
-  else if (arg.is_complex_type ())
-    {
-      ComplexMatrix ctmp = arg.complex_matrix_value ();
-
-      if (! error_state)
+      else if (arg.is_complex_type ())
 	{
-	  ComplexHESS result (ctmp);
+	  FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
 
-	  if (nargout == 0 || nargout == 1)
+	  if (! error_state)
 	    {
-	      retval.resize (1);
-	      retval(0) = result.hess_matrix ();
-	    }
-	  else
-	    {
-	      retval.resize (2);
-	      retval(0) = result.unitary_hess_matrix ();
+	      FloatComplexHESS result (ctmp);
+
 	      retval(1) = result.hess_matrix ();
+	      retval(0) = result.unitary_hess_matrix ();
 	    }
 	}
     }
   else
     {
-      gripe_wrong_type_arg ("hess", arg);
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    {
+	      HESS result (tmp);
+
+	      retval(1) = result.hess_matrix ();
+	      retval(0) = result.unitary_hess_matrix ();
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix ctmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    {
+	      ComplexHESS result (ctmp);
+
+	      retval(1) = result.hess_matrix ();
+	      retval(0) = result.unitary_hess_matrix ();
+	    }
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("hess", arg);
+	}
     }
 
   return retval;

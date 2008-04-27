@@ -1,8 +1,7 @@
       subroutine passb3 (ido,l1,cc,ch,wa1,wa2)
-      implicit double precision (a-h,o-z)
       dimension       cc(ido,3,l1)           ,ch(ido,l1,3)           ,
      1                wa1(1)     ,wa2(1)
-      data taur,taui /-.5,.866025403784439d0/
+      data taur,taui /-.5,.866025403784439/
       if (ido .ne. 2) go to 102
       do 101 k=1,l1
          tr2 = cc(1,2,k)+cc(1,3,k)

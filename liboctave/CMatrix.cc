@@ -191,13 +191,13 @@ extern "C"
   // each subroutine.
 
   F77_RET_T
-  F77_FUNC (cffti, CFFTI) (const octave_idx_type&, Complex*);
+  F77_FUNC (zffti, ZFFTI) (const octave_idx_type&, Complex*);
 
   F77_RET_T
-  F77_FUNC (cfftf, CFFTF) (const octave_idx_type&, Complex*, Complex*);
+  F77_FUNC (zfftf, ZFFTF) (const octave_idx_type&, Complex*, Complex*);
 
   F77_RET_T
-  F77_FUNC (cfftb, CFFTB) (const octave_idx_type&, Complex*, Complex*);
+  F77_FUNC (zfftb, ZFFTB) (const octave_idx_type&, Complex*, Complex*);
 
   F77_RET_T
   F77_FUNC (zlartg, ZLARTG) (const Complex&, const Complex&,
@@ -885,22 +885,6 @@ ComplexMatrix::stack (const ComplexDiagMatrix& a) const
 }
 
 ComplexMatrix
-ComplexMatrix::hermitian (void) const
-{
-  octave_idx_type nr = rows ();
-  octave_idx_type nc = cols ();
-  ComplexMatrix result;
-  if (length () > 0)
-    {
-      result.resize (nc, nr);
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  result.elem (j, i) = conj (elem (i, j));
-    }
-  return result;
-}
-
-ComplexMatrix
 conj (const ComplexMatrix& a)
 {
   octave_idx_type a_len = a.length ();
@@ -1356,13 +1340,13 @@ ComplexMatrix::fourier (void) const
   retval = *this;
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (zffti, ZFFTI) (npts, pwsave);
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
-      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (zfftf, ZFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
 
   return retval;
@@ -1397,13 +1381,13 @@ ComplexMatrix::ifourier (void) const
   retval = *this;
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (zffti, ZFFTI) (npts, pwsave);
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
-      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (zfftb, ZFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -1441,13 +1425,13 @@ ComplexMatrix::fourier2d (void) const
   retval = *this;
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (zffti, ZFFTI) (npts, pwsave);
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
-      F77_FUNC (cfftf, CFFTF) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (zfftf, ZFFTF) (npts, &tmp_data[npts*j], pwsave);
     }
 
   npts = nc;
@@ -1460,7 +1444,7 @@ ComplexMatrix::fourier2d (void) const
   Array<Complex> tmp (npts);
   Complex *prow = tmp.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (zffti, ZFFTI) (npts, pwsave);
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
@@ -1469,7 +1453,7 @@ ComplexMatrix::fourier2d (void) const
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
-      F77_FUNC (cfftf, CFFTF) (npts, prow, pwsave);
+      F77_FUNC (zfftf, ZFFTF) (npts, prow, pwsave);
 
       for (octave_idx_type i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = prow[i];
@@ -1507,13 +1491,13 @@ ComplexMatrix::ifourier2d (void) const
   retval = *this;
   Complex *tmp_data = retval.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (zffti, ZFFTI) (npts, pwsave);
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
       OCTAVE_QUIT;
 
-      F77_FUNC (cfftb, CFFTB) (npts, &tmp_data[npts*j], pwsave);
+      F77_FUNC (zfftb, ZFFTB) (npts, &tmp_data[npts*j], pwsave);
     }
 
   for (octave_idx_type j = 0; j < npts*nsamples; j++)
@@ -1529,7 +1513,7 @@ ComplexMatrix::ifourier2d (void) const
   Array<Complex> tmp (npts);
   Complex *prow = tmp.fortran_vec ();
 
-  F77_FUNC (cffti, CFFTI) (npts, pwsave);
+  F77_FUNC (zffti, ZFFTI) (npts, pwsave);
 
   for (octave_idx_type j = 0; j < nsamples; j++)
     {
@@ -1538,7 +1522,7 @@ ComplexMatrix::ifourier2d (void) const
       for (octave_idx_type i = 0; i < npts; i++)
 	prow[i] = tmp_data[i*nr + j];
 
-      F77_FUNC (cfftb, CFFTB) (npts, prow, pwsave);
+      F77_FUNC (zfftb, ZFFTB) (npts, prow, pwsave);
 
       for (octave_idx_type i = 0; i < npts; i++)
 	tmp_data[i*nr + j] = prow[i] / static_cast<double> (npts);

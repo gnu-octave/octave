@@ -26,6 +26,8 @@ along with Octave; see the file COPYING.  If not, see
 
 class Matrix;
 class ComplexMatrix;
+class FloatMatrix;
+class FloatComplexMatrix;
 class SparseMatrix;
 class SparseComplexMatrix;
 
@@ -59,6 +61,10 @@ public:
 
   MatrixType (const ComplexMatrix &a);
 
+  MatrixType (const FloatMatrix &a);
+
+  MatrixType (const FloatComplexMatrix &a);
+
   MatrixType (const SparseMatrix &a);
 
   MatrixType (const SparseComplexMatrix &a);
@@ -80,6 +86,10 @@ public:
   int type (const Matrix &a);
 
   int type (const ComplexMatrix &a);
+
+  int type (const FloatMatrix &a);
+
+  int type (const FloatComplexMatrix &a);
 
   int type (const SparseMatrix &a);
 

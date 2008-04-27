@@ -27,13 +27,15 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
-FSRC = d1mach.f i1mach.f
+FSRC = d1mach.f r1mach.f i1mach.f
 
 CSRC = machar.c f77-fcn.c lo-error.c cquit.c
 
 CXXSRC = f77-extern.cc quit.cc
 
-MAKEDEPS := $(patsubst %.c, %.d, $(CSRC)) $(patsubst %.cc, %.d, $(CXXSRC))
+CEXTRA = smachar.c
+
+MAKEDEPS := $(patsubst %.c, %.d, $(CSRC) $(CEXTRA)) $(patsubst %.cc, %.d, $(CXXSRC))
 
 INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
 
@@ -66,8 +68,14 @@ XALL_CFLAGS = $(patsubst -O%, , $(ALL_CFLAGS))
 machar.o: $(srcdir)/machar.c
 	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DDP $< -o $@
 
+smachar.o: $(srcdir)/machar.c
+	$(XCC) -c $(CPPFLAGS) $(XALL_CFLAGS) -DSP $< -o $@
+
 pic/machar.o: $(srcdir)/machar.c
 	$(XCC) -c $(CPPFLAGS) $(CPICFLAG) $(XALL_CFLAGS) -DDP $< -o $@
+
+pic/smachar.o: $(srcdir)/machar.c
+	$(XCC) -c $(CPPFLAGS) $(CPICFLAG) $(XALL_CFLAGS) -DSP $< -o $@
 
 ifdef omit_deps
 .PHONY: $(MAKEDEPS)

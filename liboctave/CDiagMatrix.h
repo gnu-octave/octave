@@ -87,8 +87,8 @@ public:
   ComplexDiagMatrix& fill (const RowVector& a, octave_idx_type beg);
   ComplexDiagMatrix& fill (const ComplexRowVector& a, octave_idx_type beg);
 
-  ComplexDiagMatrix hermitian (void) const;  // complex conjugate transpose
-  ComplexDiagMatrix transpose (void) const;
+  ComplexDiagMatrix hermitian (void) const { return MDiagArray2<Complex>::hermitian (std::conj); }
+  ComplexDiagMatrix transpose (void) const { return MDiagArray2<Complex>::transpose(); }
 
   friend ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 

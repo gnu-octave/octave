@@ -37,6 +37,15 @@ extern OCTAVE_API double octave_NA;
 /* Octave's idea of not a number.  */
 extern OCTAVE_API double octave_NaN;
 
+/*  Octave's idea of infinity.  */
+extern OCTAVE_API float octave_Float_Inf;
+
+/* Octave's idea of a missing value.  */
+extern OCTAVE_API float octave_Float_NA;
+
+/* Octave's idea of not a number.  */
+extern OCTAVE_API float octave_Float_NaN;
+
 /* FIXME -- this code assumes that a double has twice the
    number of bits as an int */
 
@@ -49,32 +58,73 @@ typedef union
   unsigned int word[2];
 } lo_ieee_double;
 
+typedef union
+{
+  double value;
+  unsigned int word;
+} lo_ieee_float;
+
 #define LO_IEEE_NA_HW 0x7ff00000
 #define LO_IEEE_NA_LW 1954
+#define LO_IEEE_NA_FLOAT 0x7ff007a2
+#define LO_IEEE_NA_FLOAT_LW 0x07a2
 
 extern OCTAVE_API void octave_ieee_init (void);
 
 #if defined (SCO)
-extern int isnan (double);
-extern int isinf (double);
+extern int __isnan (double);
+extern int __isinf (double);
+extern int __isnanf (float);
+extern int __isinff (float);
+
+#define isnan(x) (sizeof (x) == sizeof (float) ? __isnanf (x) : __isnan (x))
+#define isinf(x) (sizeof (x) == sizeof (float) ? __isinff (x) : __isinf (x))
 #endif
 
-extern OCTAVE_API int lo_ieee_isnan (double x);
-extern OCTAVE_API int lo_ieee_finite (double x);
-extern OCTAVE_API int lo_ieee_isinf (double x);
+extern OCTAVE_API int __lo_ieee_isnan (double x);
+extern OCTAVE_API int __lo_ieee_finite (double x);
+extern OCTAVE_API int __lo_ieee_isinf (double x);
 
-extern OCTAVE_API int lo_ieee_is_NA (double);
-extern OCTAVE_API int lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
+extern OCTAVE_API int __lo_ieee_is_NA (double);
+extern OCTAVE_API int __lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
 
 extern OCTAVE_API double lo_ieee_inf_value (void);
 extern OCTAVE_API double lo_ieee_na_value (void);
 extern OCTAVE_API double lo_ieee_nan_value (void);
 
-extern OCTAVE_API int lo_ieee_signbit (double);
+extern OCTAVE_API int __lo_ieee_signbit (double);
+
+extern OCTAVE_API int __lo_ieee_float_isnan (float x);
+extern OCTAVE_API int __lo_ieee_float_finite (float x);
+extern OCTAVE_API int __lo_ieee_float_isinf (float x);
+
+extern OCTAVE_API int __lo_ieee_float_is_NA (float);
+extern OCTAVE_API int __lo_ieee_float_is_NaN_or_NA (float) GCC_ATTR_DEPRECATED;
+
+extern OCTAVE_API float lo_ieee_float_inf_value (void);
+extern OCTAVE_API float lo_ieee_float_na_value (void);
+extern OCTAVE_API float lo_ieee_float_nan_value (void);
+
+extern OCTAVE_API int __lo_ieee_float_signbit (float);
 
 #ifdef	__cplusplus
 }
 #endif
+
+#define lo_ieee_isnan(x) (sizeof (x) == sizeof (float) ? \
+			 __lo_ieee_float_isnan (x) : __lo_ieee_isnan (x))
+#define lo_ieee_finite(x) (sizeof (x) == sizeof (float) ? \
+			   __lo_ieee_float_finite (x) : __lo_ieee_finite (x))
+#define lo_ieee_isinf(x) (sizeof (x) == sizeof (float) ? \
+			  __lo_ieee_float_isinf (x) : __lo_ieee_isinf (x))
+
+
+#define lo_ieee_is_NA(x) (sizeof (x) == sizeof (float) ? \
+			  __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
+#define lo_ieee_is_NaN_or_NA(x) (sizeof (x) == sizeof (float) ? \
+			  __lo_ieee_float_is_NaN_or_NA (x) : __lo_ieee_is_NaN_or_NA (x))
+#define lo_ieee_signbit(x) (sizeof (x) == sizeof (float) ? \
+			  __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
 
 #endif
 

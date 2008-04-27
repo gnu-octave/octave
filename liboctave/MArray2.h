@@ -80,6 +80,7 @@ public:
   }
 
   MArray2<T> transpose (void) const { return Array2<T>::transpose (); }
+  MArray2<T> hermitian (T (*fcn) (const T&) = 0) const { return Array2<T>::hermitian (fcn); }
 
   MArray2<T> diag (octave_idx_type k) const
   {

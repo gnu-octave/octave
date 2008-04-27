@@ -47,7 +47,11 @@ public:
 
   NDArray (const Matrix& a) : MArrayN<double> (a) { }
 
-  NDArray (const MArrayN<double>& a) : MArrayN<double> (a) { }
+  template <class U>
+  NDArray (const MArrayN<U>& a) : MArrayN<double> (a) { }
+
+  template <class U>
+  NDArray (const ArrayN<U>& a) : MArrayN<double> (a) { }
 
   template <class U>
   explicit NDArray (const intNDArray<U>& a) : MArrayN<double> (a) { }

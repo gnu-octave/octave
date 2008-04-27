@@ -806,9 +806,14 @@ tree_matrix::rvalue (void)
 		DO_SINGLE_TYPE_CONCAT (ComplexNDArray, complex_array_value);
 	    }
 	}
-#if 0
       else if (result_type == "single")
-#endif
+	{
+	  if (all_real_p)
+	    DO_SINGLE_TYPE_CONCAT (FloatNDArray, float_array_value);
+	  else
+	    DO_SINGLE_TYPE_CONCAT (FloatComplexNDArray, 
+				   float_complex_array_value);
+	}
       else if (result_type == "char")
 	{
 	  char type = all_dq_strings_p ? '"' : '\'';

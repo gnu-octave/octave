@@ -426,6 +426,14 @@ octave_base_value::double_value (bool) const
   return retval;
 }
 
+float
+octave_base_value::float_value (bool) const
+{
+  float retval = lo_ieee_float_nan_value ();
+  gripe_wrong_type_arg ("octave_base_value::float_value ()", type_name ());
+  return retval;
+}
+
 Cell
 octave_base_value::cell_value () const
 {
@@ -442,11 +450,27 @@ octave_base_value::matrix_value (bool) const
   return retval;
 }
 
+FloatMatrix
+octave_base_value::float_matrix_value (bool) const
+{
+  FloatMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::float_matrix_value()", type_name ());
+  return retval;
+}
+
 NDArray
 octave_base_value::array_value (bool) const
 {
-  NDArray retval;
+  FloatNDArray retval;
   gripe_wrong_type_arg ("octave_base_value::array_value()", type_name ());
+  return retval;
+}
+
+FloatNDArray
+octave_base_value::float_array_value (bool) const
+{
+  FloatNDArray retval;
+  gripe_wrong_type_arg ("octave_base_value::float_array_value()", type_name ());
   return retval;
 }
 
@@ -459,6 +483,15 @@ octave_base_value::complex_value (bool) const
   return retval;
 }
 
+FloatComplex
+octave_base_value::float_complex_value (bool) const
+{
+  float tmp = lo_ieee_float_nan_value ();
+  FloatComplex retval (tmp, tmp);
+  gripe_wrong_type_arg ("octave_base_value::float_complex_value()", type_name ());
+  return retval;
+}
+
 ComplexMatrix
 octave_base_value::complex_matrix_value (bool) const
 {
@@ -468,11 +501,29 @@ octave_base_value::complex_matrix_value (bool) const
   return retval;
 }
 
+FloatComplexMatrix
+octave_base_value::float_complex_matrix_value (bool) const
+{
+  FloatComplexMatrix retval;
+  gripe_wrong_type_arg ("octave_base_value::float_complex_matrix_value()",
+			type_name ());
+  return retval;
+}
+
 ComplexNDArray
 octave_base_value::complex_array_value (bool) const
 {
   ComplexNDArray retval;
   gripe_wrong_type_arg ("octave_base_value::complex_array_value()",
+			type_name ());
+  return retval;
+}
+
+FloatComplexNDArray
+octave_base_value::float_complex_array_value (bool) const
+{
+  FloatComplexNDArray retval;
+  gripe_wrong_type_arg ("octave_base_value::float_complex_array_value()",
 			type_name ());
   return retval;
 }

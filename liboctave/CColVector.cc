@@ -221,17 +221,16 @@ ComplexColumnVector::stack (const ComplexColumnVector& a) const
   return retval;
 }
 
-ComplexRowVector
+ComplexRowVector 
 ComplexColumnVector::hermitian (void) const
-{
-  octave_idx_type len = length ();
-  return ComplexRowVector (mx_inline_conj_dup (data (), len), len);
+{ 
+  return MArray<Complex>::hermitian (std::conj);
 }
 
 ComplexRowVector
 ComplexColumnVector::transpose (void) const
 {
-  return ComplexRowVector (*this);
+  return MArray<Complex>::transpose ();
 }
 
 ComplexColumnVector

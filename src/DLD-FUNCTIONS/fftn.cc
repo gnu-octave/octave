@@ -90,29 +90,55 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
   if (dims.all_zero ())
     return octave_value (Matrix ());
 
-  if (arg.is_real_type ())
+  if (arg.is_single_type ())
     {
-      NDArray nda = arg.array_value ();
-
-      if (! error_state)
+      if (arg.is_real_type ())
 	{
-	  nda.resize (dims, 0.0);
-	  retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
+	  FloatNDArray nda = arg.float_array_value ();
+
+	  if (! error_state)
+	    {
+	      nda.resize (dims, 0.0);
+	      retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
+	    }
 	}
-    }
-  else if (arg.is_complex_type ())
-    {
-      ComplexNDArray cnda = arg.complex_array_value ();
-
-      if (! error_state)
+      else
 	{
-	  cnda.resize (dims, 0.0);
-	  retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
+	  FloatComplexNDArray cnda = arg.float_complex_array_value ();
+
+	  if (! error_state)
+	    {
+	      cnda.resize (dims, 0.0);
+	      retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
+	    }
 	}
     }
   else
     {
-      gripe_wrong_type_arg (fcn, arg);
+      if (arg.is_real_type ())
+	{
+	  NDArray nda = arg.array_value ();
+
+	  if (! error_state)
+	    {
+	      nda.resize (dims, 0.0);
+	      retval = (type != 0 ? nda.ifourierNd () : nda.fourierNd ());
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexNDArray cnda = arg.complex_array_value ();
+
+	  if (! error_state)
+	    {
+	      cnda.resize (dims, 0.0);
+	      retval = (type != 0 ? cnda.ifourierNd () : cnda.fourierNd ());
+	    }
+	}
+      else
+	{
+	  gripe_wrong_type_arg (fcn, arg);
+	}
     }
 
   return retval;

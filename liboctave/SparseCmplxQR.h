@@ -149,12 +149,20 @@ protected:
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, const Matrix &b,
 			      octave_idx_type &info);
 
+extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
+			      const MArray2<double> &b, 
+			      octave_idx_type &info);
+
 extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 
 				    const SparseMatrix &b,
 				    octave_idx_type &info);
 
 extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
 			      const ComplexMatrix &b,
+			      octave_idx_type &info);
+
+extern ComplexMatrix qrsolve (const SparseComplexMatrix &a, 
+			      const MArray2<Complex> &b, 
 			      octave_idx_type &info);
 
 extern SparseComplexMatrix qrsolve (const SparseComplexMatrix &a, 

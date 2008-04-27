@@ -46,19 +46,25 @@ MATRIX_INC := Array.h Array2.h Array3.h ArrayN.h DiagArray2.h \
 	base-lu.h dim-vector.h mx-base.h mx-op-defs.h \
 	mx-defs.h mx-ext.h CColVector.h CDiagMatrix.h CMatrix.h \
 	CNDArray.h CRowVector.h CmplxAEPBAL.h CmplxCHOL.h \
-	CmplxDET.h CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h \
-	CmplxSCHUR.h CmplxSVD.h EIG.h boolMatrix.h boolNDArray.h \
+	CmplxDET.h CmplxGEPBAL.h CmplxHESS.h CmplxLU.h CmplxQR.h CmplxQRP.h \
+	CmplxSCHUR.h CmplxSVD.h EIG.h fEIG.h boolMatrix.h boolNDArray.h \
 	chMatrix.h chNDArray.h dColVector.h dDiagMatrix.h dMatrix.h \
 	dNDArray.h dRowVector.h dbleAEPBAL.h dbleCHOL.h dbleDET.h \
-	dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h dbleSVD.h \
-	boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
+	dbleGEPBAL.h dbleHESS.h dbleLU.h dbleQR.h dbleQRP.h dbleSCHUR.h \
+	dbleSVD.h boolSparse.h CSparse.h dSparse.h MSparse-defs.h MSparse.h \
 	Sparse.h sparse-base-lu.h SparseCmplxLU.h SparsedbleLU.h \
 	sparse-base-chol.h SparseCmplxCHOL.h \
 	SparsedbleCHOL.h SparseCmplxQR.h SparseQR.h Sparse-op-defs.h \
 	MatrixType.h \
 	int8NDArray.h uint8NDArray.h int16NDArray.h uint16NDArray.h \
 	int32NDArray.h uint32NDArray.h int64NDArray.h uint64NDArray.h \
-	intNDArray.h
+	intNDArray.h \
+	fCColVector.h fCRowVector.h fCDiagMatrix.h fCMatrix.h fCNDArray.h \
+	fColVector.h fRowVector.h fDiagMatrix.h fMatrix.h fNDArray.h \
+	fCmplxGEPBAL.h fCmplxHESS.h fCmplxCHOL.h fCmplxDET.h fCmplxLU.h \
+	fCmplxSCHUR.h fCmplxSVD.h fCmplxQR.h fCmplxQRP.h \
+	floatCHOL.h floatDET.h floatGEPBAL.h floatHESS.h floatLU.h \
+	floatSCHUR.h floatSVD.h floatQR.h floatQRP.h
 
 MX_OP_INC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_h_files=1 $(srcdir)/mx-ops)
 
@@ -102,25 +108,31 @@ TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
 	sparse-dmsolve.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
-	Array-s.cc Array-so.cc Array-str.cc Array-idx-vec.cc \
-	MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc MArray-s.cc \
-	MSparse-C.cc MSparse-d.cc Sparse-C.cc Sparse-b.cc Sparse-d.cc \
-	oct-inttypes.cc
+	Array-f.cc Array-fC.cc Array-s.cc Array-so.cc Array-str.cc \
+	Array-idx-vec.cc MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc \
+	MArray-f.cc MArray-fC.cc MArray-s.cc MSparse-C.cc MSparse-d.cc \
+	Sparse-C.cc Sparse-b.cc Sparse-d.cc oct-inttypes.cc
 
 MATRIX_SRC := Array-util.cc CColVector.cc \
 	CDiagMatrix.cc CMatrix.cc CNDArray.cc CRowVector.cc \
-	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxHESS.cc \
+	CmplxAEPBAL.cc CmplxCHOL.cc CmplxDET.cc CmplxGEPBAL.cc CmplxHESS.cc \
 	CmplxLU.cc CmplxQR.cc CmplxQRP.cc CmplxSCHUR.cc CmplxSVD.cc \
-	EIG.cc boolMatrix.cc boolNDArray.cc chMatrix.cc \
+	EIG.cc fEIG.cc boolMatrix.cc boolNDArray.cc chMatrix.cc \
 	chNDArray.cc dColVector.cc dDiagMatrix.cc dMatrix.cc \
 	dNDArray.cc dRowVector.cc dbleAEPBAL.cc dbleCHOL.cc \
-	dbleDET.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
+	dbleDET.cc dbleGEPBAL.cc dbleHESS.cc dbleLU.cc dbleQR.cc dbleQRP.cc \
 	dbleSCHUR.cc dbleSVD.cc boolSparse.cc CSparse.cc dSparse.cc \
 	MSparse.cc Sparse.cc SparseCmplxLU.cc SparsedbleLU.cc \
 	SparseCmplxCHOL.cc SparsedbleCHOL.cc \
 	SparseCmplxQR.cc SparseQR.cc MatrixType.cc \
 	int8NDArray.cc uint8NDArray.cc int16NDArray.cc uint16NDArray.cc \
-	int32NDArray.cc uint32NDArray.cc int64NDArray.cc uint64NDArray.cc 
+	int32NDArray.cc uint32NDArray.cc int64NDArray.cc uint64NDArray.cc \
+	fCColVector.cc fCRowVector.cc fCDiagMatrix.cc fCMatrix.cc fCNDArray.cc \
+	fColVector.cc fRowVector.cc fDiagMatrix.cc fMatrix.cc fNDArray.cc \
+	fCmplxCHOL.cc fCmplxDET.cc fCmplxGEPBAL.cc fCmplxHESS.cc fCmplxLU.cc \
+	fCmplxSCHUR.cc fCmplxSVD.cc fCmplxQR.cc fCmplxQRP.cc \
+	floatCHOL.cc floatDET.cc floatGEPBAL.cc floatHESS.cc floatLU.cc \
+	floatSCHUR.cc floatSVD.cc floatQR.cc floatQRP.cc
 
 MX_OP_SRC := $(shell $(AWK) -f $(srcdir)/mk-ops.awk prefix=mx list_cc_files=1 $(srcdir)/mx-ops)
 

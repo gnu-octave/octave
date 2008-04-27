@@ -142,7 +142,7 @@ ColumnVector::stack (const ColumnVector& a) const
 RowVector
 ColumnVector::transpose (void) const
 {
-  return RowVector (*this);
+  return MArray<double>::transpose();
 }
 
 ColumnVector

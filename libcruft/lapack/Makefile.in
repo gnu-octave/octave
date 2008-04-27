@@ -26,7 +26,25 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
-FSRC = dbdsqr.f dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f \
+FSRC = cbdsqr.f csrscl.f cgbcon.f cgbtf2.f cgbtrf.f cgbtrs.f \
+  cgebak.f cgebal.f cgebd2.f cgebrd.f cgecon.f cgeesx.f cgeev.f \
+  cgehd2.f cgehrd.f cgelq2.f cgelqf.f cgelsd.f cgelss.f cgelsy.f \
+  cgeqp3.f cgeqpf.f cgeqr2.f cgeqrf.f cgesv.f cgesvd.f cgetf2.f \
+  cgetrf.f cgetri.f cgetrs.f cggbal.f cgtsv.f cgttrf.f cgttrs.f \
+  cgtts2.f cheev.f chetd2.f chetrd.f chseqr.f clabrd.f clacgv.f \
+  clacn2.f clacon.f clacpy.f cladiv.f clahqr.f clahr2.f clahrd.f \
+  claic1.f clals0.f clalsa.f clalsd.f clange.f clanhe.f clanhs.f \
+  clantr.f claqp2.f claqps.f claqr0.f claqr1.f claqr2.f claqr3.f \
+  claqr4.f claqr5.f clarf.f clarfb.f clarfg.f clarft.f clarfx.f \
+  clartg.f clarz.f clarzb.f clarzt.f clascl.f claset.f clasr.f \
+  classq.f claswp.f clatbs.f clatrd.f clatrs.f clatrz.f clauu2.f \
+  clauum.f cpbcon.f cpbtf2.f cpbtrf.f cpbtrs.f cpocon.f cpotf2.f \
+  cpotrf.f cpotri.f cpotrs.f cptsv.f cpttrf.f cpttrs.f cptts2.f crot.f \
+  csteqr.f ctrcon.f ctrevc.f ctrexc.f ctrsen.f ctrsyl.f ctrti2.f \
+  ctrtri.f ctrtrs.f ctzrzf.f cung2l.f cung2r.f cungbr.f cunghr.f \
+  cungl2.f cunglq.f cungql.f cungqr.f cungtr.f cunm2r.f cunmbr.f \
+  cunml2.f cunmlq.f cunmqr.f cunmr3.f cunmrz.f \
+  dbdsqr.f dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f \
   dgebd2.f dgebrd.f dgecon.f dgeesx.f dgeev.f dgehd2.f dgehrd.f \
   dgelq2.f dgelqf.f dgelsd.f dgelss.f dgelsy.f dgeqp3.f dgeqpf.f \
   dgeqr2.f dgeqrf.f dgesv.f dgesvd.f dgetf2.f dgetrf.f dgetri.f \
@@ -50,8 +68,32 @@ FSRC = dbdsqr.f dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f \
   dpotri.f dpotrs.f dptsv.f dpttrf.f dpttrs.f dptts2.f drscl.f \
   dsteqr.f dsterf.f dsyev.f dsytd2.f dsytrd.f dtgevc.f dtrcon.f \
   dtrevc.f dtrexc.f dtrsen.f dtrsyl.f dtrti2.f dtrtri.f dtrtrs.f \
-  dtzrzf.f dzsum1.f ieeeck.f ilaenv.f iparmq.f izmax1.f spotf2.f \
-  spotrf.f zbdsqr.f zdrscl.f zgbcon.f zgbtf2.f zgbtrf.f zgbtrs.f \
+  dtzrzf.f dzsum1.f ieeeck.f ilaenv.f iparmq.f izmax1.f \
+  sbdsqr.f sgbcon.f sgbtf2.f sgbtrf.f sgbtrs.f sgebak.f sgebal.f \
+  sgebd2.f sgebrd.f sgecon.f sgeesx.f sgeev.f sgehd2.f sgehrd.f \
+  sgelq2.f sgelqf.f sgelsd.f sgelss.f sgelsy.f sgeqp3.f sgeqpf.f \
+  sgeqr2.f sgeqrf.f sgesv.f sgesvd.f sgetf2.f sgetrf.f sgetri.f \
+  sgetrs.f sggbak.f sggbal.f sgghrd.f sgtsv.f sgttrf.f sgttrs.f \
+  sgtts2.f shgeqz.f shseqr.f slabad.f slabrd.f slacn2.f slacon.f \
+  slacpy.f sladiv.f slae2.f slaed6.f slaev2.f slaexc.f slag2.f \
+  slahqr.f slahr2.f slahrd.f slaic1.f slaln2.f slals0.f slalsa.f \
+  slalsd.f slamc1.f slamc2.f slamc3.f slamc4.f slamc5.f slamch.f \
+  slamrg.f slange.f slanhs.f slanst.f slansy.f slantr.f slanv2.f \
+  slapy2.f slapy3.f slaqp2.f slaqps.f slaqr0.f slaqr1.f slaqr2.f \
+  slaqr3.f slaqr4.f slaqr5.f slarf.f slarfb.f slarfg.f slarft.f \
+  slarfx.f slartg.f slarz.f slarzb.f slarzt.f slas2.f slascl.f \
+  slasd0.f slasd1.f slasd2.f slasd3.f slasd4.f slasd5.f slasd6.f \
+  slasd7.f slasd8.f slasda.f slasdq.f slasdt.f slaset.f slasq1.f \
+  slasq2.f slasq3.f slasq4.f slasq5.f slasq6.f slasr.f slasrt.f \
+  slassq.f slasv2.f slaswp.f slasy2.f slatbs.f slatrd.f slatrs.f \
+  slatrz.f slauu2.f slauum.f slazq3.f slazq4.f sorg2l.f sorg2r.f \
+  sorgbr.f sorghr.f sorgl2.f sorglq.f sorgql.f sorgqr.f sorgtr.f \
+  sorm2r.f sormbr.f sorml2.f sormlq.f sormqr.f sormr3.f sormrz.f \
+  spbcon.f spbtf2.f spbtrf.f spbtrs.f spocon.f spotf2.f spotrf.f \
+  spotri.f spotrs.f sptsv.f spttrf.f spttrs.f sptts2.f srscl.f \
+  ssteqr.f ssterf.f ssyev.f ssytd2.f ssytrd.f stgevc.f strcon.f \
+  strevc.f strexc.f strsen.f strsyl.f strti2.f strtri.f strtrs.f \
+  stzrzf.f scsum1.f zbdsqr.f zdrscl.f zgbcon.f zgbtf2.f zgbtrf.f zgbtrs.f \
   zgebak.f zgebal.f zgebd2.f zgebrd.f zgecon.f zgeesx.f zgeev.f \
   zgehd2.f zgehrd.f zgelq2.f zgelqf.f zgelsd.f zgelss.f zgelsy.f \
   zgeqp3.f zgeqpf.f zgeqr2.f zgeqrf.f zgesv.f zgesvd.f zgetf2.f \
@@ -73,6 +115,7 @@ FSRC = dbdsqr.f dgbcon.f dgbtf2.f dgbtrf.f dgbtrs.f dgebak.f dgebal.f \
 include $(TOPDIR)/Makeconf
 
 dlamc1.o pic/dlamc1.o: FFLAGS += $(F77_FLOAT_STORE_FLAG)
+slamc1.o pic/slamc1.o: FFLAGS += $(F77_FLOAT_STORE_FLAG)
 
 include ../Makerules
 

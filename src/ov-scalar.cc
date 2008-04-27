@@ -37,6 +37,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "oct-stream.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ov-base.h"
 #include "ov-base-scalar.h"
 #include "ov-base-scalar.cc"
@@ -45,6 +46,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pr-output.h"
 #include "xdiv.h"
 #include "xpow.h"
+#include "ops.h"
 
 #include "ls-oct-ascii.h"
 #include "ls-hdf5.h"
@@ -54,6 +56,20 @@ template class octave_base_scalar<double>;
 DEFINE_OCTAVE_ALLOCATOR (octave_scalar);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_scalar, "scalar", "double");
+
+static octave_base_value *
+default_numeric_demotion_function (const octave_base_value& a)
+{
+  CAST_CONV_ARG (const octave_scalar&);
+
+  return new octave_float_scalar (v.float_value ());
+}
+
+octave_base_value::type_conv_fcn
+octave_scalar::numeric_demotion_function (void) const
+{
+  return default_numeric_demotion_function;
+}
 
 octave_value
 octave_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)

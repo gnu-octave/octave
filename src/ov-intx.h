@@ -111,7 +111,28 @@ public:
       
     }
 
+  float
+  float_value (bool = false) const
+    {
+      float retval = lo_ieee_float_nan_value ();
+
+      if (numel () > 0)
+	{
+	  gripe_implicit_conversion ("Octave:array-as-scalar",
+				     type_name (), "real scalar");
+
+	  retval = matrix(0).float_value ();
+	}
+      else
+	gripe_invalid_conversion (type_name (), "real scalar");
+
+      return retval;
+      
+    }
+
   double scalar_value (bool = false) const { return double_value (); }
+
+  float float_scalar_value (bool = false) const { return float_value (); }
 
   Matrix
   matrix_value (bool = false) const
@@ -127,6 +148,24 @@ public:
 	  octave_idx_type nel = matrix.numel ();
 	  for (octave_idx_type i = 0; i < nel; i++)
 	    vec[i] = matrix(i).double_value ();
+	}
+      return retval;
+    }
+
+  FloatMatrix
+  float_matrix_value (bool = false) const
+    {
+      FloatMatrix retval;
+      dim_vector dv = dims ();
+      if (dv.length () > 2)
+	error ("invalid conversion of %s to FloatMatrix", type_name().c_str ());
+      else
+	{
+	  retval = FloatMatrix (dv(0), dv(1));
+	  float *vec = retval.fortran_vec ();
+	  octave_idx_type nel = matrix.numel ();
+	  for (octave_idx_type i = 0; i < nel; i++)
+	    vec[i] = matrix(i).float_value ();
 	}
       return retval;
     }
@@ -149,6 +188,24 @@ public:
       return retval;
     }
 
+  FloatComplexMatrix
+  float_complex_matrix_value (bool = false) const
+    {
+      FloatComplexMatrix retval;
+      dim_vector dv = dims();
+      if (dv.length () > 2)
+	error ("invalid conversion of %s to FloatMatrix", type_name().c_str ());
+      else
+	{
+	  retval = FloatComplexMatrix (dv(0), dv(1));
+	  FloatComplex *vec = retval.fortran_vec ();
+	  octave_idx_type nel = matrix.numel ();
+	  for (octave_idx_type i = 0; i < nel; i++)
+	    vec[i] = FloatComplex (matrix(i).float_value ());
+	}
+      return retval;
+    }
+
   NDArray
   array_value (bool = false) const
     { 
@@ -160,6 +217,17 @@ public:
       return retval;
     }
 
+  FloatNDArray
+  float_array_value (bool = false) const
+    { 
+      FloatNDArray retval (matrix.dims ()); 
+      float *vec = retval.fortran_vec ();
+      octave_idx_type nel = matrix.numel ();
+      for (octave_idx_type i = 0; i < nel; i++)
+        vec[i] = matrix(i).float_value ();
+      return retval;
+    }
+
   ComplexNDArray
   complex_array_value (bool = false) const
     { 
@@ -168,6 +236,17 @@ public:
       octave_idx_type nel = matrix.numel ();
       for (octave_idx_type i = 0; i < nel; i++)
         vec[i] = Complex (matrix(i).double_value ());
+      return retval;
+    }
+
+  FloatComplexNDArray
+  float_complex_array_value (bool = false) const
+    { 
+      FloatComplexNDArray retval (matrix.dims ()); 
+      FloatComplex *vec = retval.fortran_vec ();
+      octave_idx_type nel = matrix.numel ();
+      for (octave_idx_type i = 0; i < nel; i++)
+        vec[i] = FloatComplex (matrix(i).float_value ());
       return retval;
     }
 
@@ -403,13 +482,25 @@ public:
 
   double double_value (bool = false) const { return scalar.double_value (); }
 
+  float float_value (bool = false) const { return scalar.float_value (); }
+
   double scalar_value (bool = false) const { return scalar.double_value (); }
+
+  float float_scalar_value (bool = false) const { return scalar.float_value (); }
 
   Matrix
   matrix_value (bool = false) const
     {
       Matrix retval (1, 1);
       retval(0,0) = scalar.double_value ();
+      return retval;
+    }
+
+  FloatMatrix
+  float_matrix_value (bool = false) const
+    {
+      FloatMatrix retval (1, 1);
+      retval(0,0) = scalar.float_value ();
       return retval;
     }
 
@@ -421,6 +512,13 @@ public:
       return retval;
     }
 
+  FloatComplexMatrix
+  float_complex_matrix_value (bool = false) const
+    {
+      FloatComplexMatrix retval (1, 1);
+      retval(0,0) = FloatComplex (scalar.float_value ());
+      return retval;
+    }
 
   NDArray
   array_value (bool = false) const
@@ -430,11 +528,27 @@ public:
       return retval;
     }
 
+  FloatNDArray
+  float_array_value (bool = false) const
+    { 
+      FloatNDArray retval (dim_vector (1, 1)); 
+      retval(0) = scalar.float_value ();
+      return retval;
+    }
+
   ComplexNDArray
   complex_array_value (bool = false) const
     { 
       ComplexNDArray retval (dim_vector (1, 1));
-      retval(0) = Complex (scalar.double_value ());
+      retval(0) = FloatComplex (scalar.double_value ());
+      return retval;
+    }
+
+  FloatComplexNDArray
+  float_complex_array_value (bool = false) const
+    { 
+      FloatComplexNDArray retval (dim_vector (1, 1));
+      retval(0) = FloatComplex (scalar.float_value ());
       return retval;
     }
 

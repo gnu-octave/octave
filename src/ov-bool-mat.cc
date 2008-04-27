@@ -112,12 +112,50 @@ octave_bool_matrix::double_value (bool) const
   return retval;
 }
 
+float
+octave_bool_matrix::float_value (bool) const
+{
+  float retval = lo_ieee_float_nan_value ();
+
+  if (rows () > 0 && columns () > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "bool matrix", "real scalar");
+
+      retval = matrix (0, 0);
+    }
+  else
+    gripe_invalid_conversion ("bool matrix", "real scalar");
+
+  return retval;
+}
+
 Complex
 octave_bool_matrix::complex_value (bool) const
 {
   double tmp = lo_ieee_nan_value ();
 
   Complex retval (tmp, tmp);
+
+  if (rows () > 0 && columns () > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "bool matrix", "complex scalar");
+
+      retval = matrix (0, 0);
+    }
+  else
+    gripe_invalid_conversion ("bool matrix", "complex scalar");
+
+  return retval;
+}
+
+FloatComplex
+octave_bool_matrix::float_complex_value (bool) const
+{
+  float tmp = lo_ieee_float_nan_value ();
+
+  FloatComplex retval (tmp, tmp);
 
   if (rows () > 0 && columns () > 0)
     {

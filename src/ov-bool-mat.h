@@ -113,22 +113,38 @@ public:
 
   double double_value (bool = false) const;
 
+  float float_value (bool = false) const;
+
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
     { return Matrix (matrix.matrix_value ()); }
 
+  FloatMatrix float_matrix_value (bool = false) const
+    { return FloatMatrix (matrix.matrix_value ()); }
+
   NDArray array_value (bool = false) const
     { return NDArray (matrix); }
 
+  FloatNDArray float_array_value (bool = false) const
+    { return FloatNDArray (matrix); }
+
   Complex complex_value (bool = false) const;
+
+  FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (matrix.matrix_value ( )); }
 
+  FloatComplexMatrix float_complex_matrix_value (bool = false) const
+    { return FloatComplexMatrix (matrix.matrix_value ( )); }
+
   ComplexNDArray complex_array_value (bool = false) const
     { return ComplexNDArray (matrix); }
+
+  FloatComplexNDArray float_complex_array_value (bool = false) const
+    { return FloatComplexNDArray (matrix); }
 
   charNDArray
   char_array_value (bool = false) const

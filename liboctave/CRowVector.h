@@ -70,7 +70,7 @@ public:
   ComplexRowVector append (const RowVector& a) const;
   ComplexRowVector append (const ComplexRowVector& a) const;
 
-  ComplexColumnVector hermitian (void) const;  // complex conjugate transpose.
+  ComplexColumnVector hermitian (void) const;
   ComplexColumnVector transpose (void) const;
 
   friend ComplexRowVector conj (const ComplexRowVector& a);

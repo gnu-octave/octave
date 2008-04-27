@@ -1,5 +1,4 @@
       subroutine cffti (n,wsave)
-      implicit double precision (a-h,o-z)
       dimension       wsave(*)
       if (n .eq. 1) return
       iw1 = n+n+1

@@ -167,21 +167,35 @@ public:
 
   octave_value (octave_time t);
   octave_value (double d);
+  octave_value (float d);
   octave_value (const ArrayN<octave_value>& a, bool is_cs_list = false);
   octave_value (const Cell& c, bool is_cs_list = false);
   octave_value (const Matrix& m, const MatrixType& t = MatrixType());
+  octave_value (const FloatMatrix& m, const MatrixType& t = MatrixType());
   octave_value (const NDArray& nda);
+  octave_value (const FloatNDArray& nda);
   octave_value (const ArrayN<double>& m);
+  octave_value (const ArrayN<float>& m);
   octave_value (const DiagMatrix& d);
+  octave_value (const FloatDiagMatrix& d);
   octave_value (const RowVector& v);
+  octave_value (const FloatRowVector& v);
   octave_value (const ColumnVector& v);
+  octave_value (const FloatColumnVector& v);
   octave_value (const Complex& C);
+  octave_value (const FloatComplex& C);
   octave_value (const ComplexMatrix& m, const MatrixType& t = MatrixType());
+  octave_value (const FloatComplexMatrix& m, const MatrixType& t = MatrixType());
   octave_value (const ComplexNDArray& cnda);
+  octave_value (const FloatComplexNDArray& cnda);
   octave_value (const ArrayN<Complex>& m);
+  octave_value (const ArrayN<FloatComplex>& m);
   octave_value (const ComplexDiagMatrix& d);
+  octave_value (const FloatComplexDiagMatrix& d);
   octave_value (const ComplexRowVector& v);
+  octave_value (const FloatComplexRowVector& v);
   octave_value (const ComplexColumnVector& v);
+  octave_value (const FloatComplexColumnVector& v);
   octave_value (bool b);
   octave_value (const boolMatrix& bm, const MatrixType& t = MatrixType());
   octave_value (const boolNDArray& bnda);
@@ -294,6 +308,9 @@ public:
 
   octave_base_value::type_conv_fcn numeric_conversion_function (void) const
     { return rep->numeric_conversion_function (); }
+
+  octave_base_value::type_conv_fcn numeric_demotion_function (void) const
+    { return rep->numeric_demotion_function (); }
 
   void maybe_mutate (void);
 
@@ -628,25 +645,46 @@ public:
   double double_value (bool frc_str_conv = false) const
     { return rep->double_value (frc_str_conv); }
 
+  float float_value (bool frc_str_conv = false) const
+    { return rep->float_value (frc_str_conv); }
+
   double scalar_value (bool frc_str_conv = false) const
     { return rep->scalar_value (frc_str_conv); }
+
+  float float_scalar_value (bool frc_str_conv = false) const
+    { return rep->float_scalar_value (frc_str_conv); }
 
   Cell cell_value (void) const;
 
   Matrix matrix_value (bool frc_str_conv = false) const
     { return rep->matrix_value (frc_str_conv); }
 
+  FloatMatrix float_matrix_value (bool frc_str_conv = false) const
+    { return rep->float_matrix_value (frc_str_conv); }
+
   NDArray array_value (bool frc_str_conv = false) const
     { return rep->array_value (frc_str_conv); }
+
+  FloatNDArray float_array_value (bool frc_str_conv = false) const
+    { return rep->float_array_value (frc_str_conv); }
 
   Complex complex_value (bool frc_str_conv = false) const
     { return rep->complex_value (frc_str_conv); }
 
+  FloatComplex float_complex_value (bool frc_str_conv = false) const
+    { return rep->float_complex_value (frc_str_conv); }
+
   ComplexMatrix complex_matrix_value (bool frc_str_conv = false) const
     { return rep->complex_matrix_value (frc_str_conv); }
 
+  FloatComplexMatrix float_complex_matrix_value (bool frc_str_conv = false) const
+    { return rep->float_complex_matrix_value (frc_str_conv); }
+
   ComplexNDArray complex_array_value (bool frc_str_conv = false) const
     { return rep->complex_array_value (frc_str_conv); }
+
+  FloatComplexNDArray float_complex_array_value (bool frc_str_conv = false) const
+    { return rep->float_complex_array_value (frc_str_conv); }
 
   bool bool_value (bool warn = false) const
     { return rep->bool_value (warn); }
@@ -768,6 +806,24 @@ public:
   complex_row_vector_value (bool frc_str_conv = false,
 			    bool frc_vec_conv = false) const;
 
+
+  FloatColumnVector float_column_vector_value (bool frc_str_conv = false,
+			     bool frc_vec_conv = false) const;
+
+  FloatComplexColumnVector
+  float_complex_column_vector_value (bool frc_str_conv = false,
+			bool frc_vec_conv = false) const;
+
+  FloatRowVector float_row_vector_value (bool frc_str_conv = false,
+			      bool frc_vec_conv = false) const;
+
+  FloatComplexRowVector
+  float_complex_row_vector_value (bool frc_str_conv = false,
+			    bool frc_vec_conv = false) const;
+
+
+
+
   Array<int> int_vector_value (bool req_int = false,
 			       bool frc_str_conv = false,
 			       bool frc_vec_conv = false) const;
@@ -776,6 +832,12 @@ public:
 			      bool frc_vec_conv = false) const;
 
   Array<Complex> complex_vector_value (bool frc_str_conv = false,
+				       bool frc_vec_conv = false) const;
+
+  Array<float> float_vector_value (bool frc_str_conv = false,
+			      bool frc_vec_conv = false) const;
+
+  Array<FloatComplex> float_complex_vector_value (bool frc_str_conv = false,
 				       bool frc_vec_conv = false) const;
 
   // Conversions.  These should probably be private.  If a user of this
@@ -1112,6 +1174,7 @@ OCTAVE_ARRAY_TYPE_TRAIT (uint32NDArray, octave_uint32);
 OCTAVE_ARRAY_TYPE_TRAIT (int64NDArray, octave_int64);
 OCTAVE_ARRAY_TYPE_TRAIT (uint64NDArray, octave_uint64);
 OCTAVE_ARRAY_TYPE_TRAIT (NDArray, double);
+OCTAVE_ARRAY_TYPE_TRAIT (FloatNDArray, float);
 
 // This will eventually go away, but for now it can be used to
 // simplify the transition to the new octave_value class hierarchy,

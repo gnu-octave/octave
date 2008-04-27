@@ -321,11 +321,23 @@ classification of the matrix.\n\
 
 		  if (mattyp.is_unknown ())
 		    {
-		      ComplexMatrix m = args(0).complex_matrix_value ();
-		      if (!error_state)
+		      if (args(0).is_single_type ())
 			{
-			  mattyp = MatrixType (m);
-			  args(0).matrix_type (mattyp);
+			  FloatComplexMatrix m = args(0).float_complex_matrix_value ();
+			  if (!error_state)
+			    {
+			      mattyp = MatrixType (m);
+			      args(0).matrix_type (mattyp);
+			    }
+			}
+		      else
+			{
+			  ComplexMatrix m = args(0).complex_matrix_value ();
+			  if (!error_state)
+			    {
+			      mattyp = MatrixType (m);
+			      args(0).matrix_type (mattyp);
+			    }
 			}
 		    }
 		}
@@ -335,11 +347,23 @@ classification of the matrix.\n\
 
 		  if (mattyp.is_unknown ())
 		    {
-		      Matrix m = args(0).matrix_value ();
-		      if (!error_state)
+		      if (args(0).is_single_type ())
 			{
-			  mattyp = MatrixType (m);
-			  args(0).matrix_type (mattyp);
+			  FloatMatrix m = args(0).float_matrix_value ();
+			  if (!error_state)
+			    {
+			      mattyp = MatrixType (m);
+			      args(0).matrix_type (mattyp);
+			    }
+			}
+		      else
+			{
+			  Matrix m = args(0).matrix_value ();
+			  if (!error_state)
+			    {
+			      mattyp = MatrixType (m);
+			      args(0).matrix_type (mattyp);
+			    }
 			}
 		    }
 		}
@@ -440,13 +464,28 @@ classification of the matrix.\n\
 		      if (! error_state)
 			{
 			  // Set the matrix type
-			  if (args(0).is_complex_type())
-			    retval = 
-			      octave_value (args(0).complex_matrix_value (), 
-					    mattyp);
+			  if (args(0).is_single_type ())
+			    {
+			      if (args(0).is_complex_type())
+				retval = octave_value 
+				  (args(0).float_complex_matrix_value (), 
+				   mattyp);
+			      else
+				retval = octave_value 
+				  (args(0).float_matrix_value (), 
+				   mattyp);
+			    }
 			  else
-			    retval = octave_value (args(0).matrix_value (), 
-						   mattyp);
+			    {
+			      if (args(0).is_complex_type())
+				retval = octave_value 
+				  (args(0).complex_matrix_value (), 
+				   mattyp);
+			      else
+				retval = octave_value 
+				  (args(0).matrix_value (), 
+				   mattyp);
+			    }
 			}
 		    }
 		}
@@ -461,7 +500,7 @@ classification of the matrix.\n\
 
 ## FIXME
 ## Disable tests for lower under-determined and upper over-determined 
-## matrices and this detection is disabled in MatrixType due to issues
+## matrices as this detection is disabled in MatrixType due to issues
 ## of non minimum norm solution being found.
  
 %!assert(matrix_type(speye(10,10)),"Diagonal");

@@ -33,11 +33,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dbleDET.h"
 #include "CmplxDET.h"
+#include "floatDET.h"
+#include "fCmplxDET.h"
 
 // Result of a Cholesky Factorization
 
 #include "dbleCHOL.h"
 #include "CmplxCHOL.h"
+#include "floatCHOL.h"
+#include "fCmplxCHOL.h"
 
 // Result of a Hessenberg Decomposition
 
@@ -48,11 +52,15 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dbleSCHUR.h"
 #include "CmplxSCHUR.h"
+#include "floatSCHUR.h"
+#include "fCmplxSCHUR.h"
 
 // Result of a Singular Value Decomposition.
 
 #include "dbleSVD.h"
 #include "CmplxSVD.h"
+#include "floatSVD.h"
+#include "fCmplxSVD.h"
 
 // Result of an Eigenvalue computation.
 
@@ -62,6 +70,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "dbleLU.h"
 #include "CmplxLU.h"
+#include "floatLU.h"
+#include "fCmplxLU.h"
 
 // Result of a QR decomposition.
 

@@ -87,6 +87,8 @@ public:
   octave_base_value *clone (void) const { return new octave_matrix (*this); }
   octave_base_value *empty_clone (void) const { return new octave_matrix (); }
 
+  type_conv_fcn numeric_demotion_function (void) const;
+
   octave_base_value *try_narrowing_conversion (void);
 
   idx_vector index_vector (void) const { return idx_vector (matrix); }
@@ -127,22 +129,34 @@ public:
 
   double double_value (bool = false) const;
 
+  float float_value (bool = false) const;
+
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const;
 
+  FloatMatrix float_matrix_value (bool = false) const;
+
   Complex complex_value (bool = false) const;
+
+  FloatComplex float_complex_value (bool = false) const;
 
   ComplexMatrix complex_matrix_value (bool = false) const;
 
+  FloatComplexMatrix float_complex_matrix_value (bool = false) const;
+
   ComplexNDArray complex_array_value (bool = false) const;
+   
+  FloatComplexNDArray float_complex_array_value (bool = false) const;
    
   boolNDArray bool_array_value (bool warn = false) const;
 
   charNDArray char_array_value (bool = false) const;
   
   NDArray array_value (bool = false) const { return matrix; }
+
+  FloatNDArray float_array_value (bool = false) const { return matrix; }
 
   SparseMatrix sparse_matrix_value (bool = false) const;
 

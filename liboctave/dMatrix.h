@@ -51,7 +51,11 @@ public:
 
   Matrix (const Matrix& a) : MArray2<double> (a) { }
 
-  Matrix (const MArray2<double>& a) : MArray2<double> (a) { }
+  template <class U>
+  Matrix (const MArray2<U>& a) : MArray2<double> (a) { }
+
+  template <class U>
+  Matrix (const Array2<U>& a) : MArray2<double> (a) { }
 
   explicit Matrix (const RowVector& rv);
 

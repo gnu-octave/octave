@@ -1972,6 +1972,55 @@ octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
 }
 
 void
+octave_print_internal (std::ostream& os, bool d, bool pr_as_read_syntax)
+{ 
+  octave_print_internal (os, double (d), pr_as_read_syntax); 
+}
+
+// FIXME: Write single precision versions of the printing functions
+
+void
+octave_print_internal (std::ostream& os, float d, bool pr_as_read_syntax)
+{ 
+  octave_print_internal (os, double (d), pr_as_read_syntax); 
+}
+
+void
+octave_print_internal (std::ostream& os, const FloatMatrix& m,
+		       bool pr_as_read_syntax, int extra_indent)
+{ 
+  octave_print_internal (os, Matrix (m), pr_as_read_syntax, extra_indent); 
+}
+
+void
+octave_print_internal (std::ostream& os, const FloatNDArray& nda,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_print_internal (os, NDArray (nda), pr_as_read_syntax, extra_indent); 
+}
+
+void
+octave_print_internal (std::ostream& os, const FloatComplex& c,
+		       bool pr_as_read_syntax)
+{
+  octave_print_internal (os, Complex (c), pr_as_read_syntax); 
+}
+
+void
+octave_print_internal (std::ostream& os, const FloatComplexMatrix& cm,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_print_internal (os, ComplexMatrix (cm), pr_as_read_syntax, extra_indent);
+}
+
+void
+octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
+		       bool pr_as_read_syntax, int extra_indent)
+{
+  octave_print_internal (os, ComplexNDArray (nda), pr_as_read_syntax, extra_indent);
+}
+
+void
 octave_print_internal (std::ostream& os, const Range& r,
 		       bool pr_as_read_syntax, int extra_indent)
 {

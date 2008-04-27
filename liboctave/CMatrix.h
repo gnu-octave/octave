@@ -54,7 +54,11 @@ public:
 
   ComplexMatrix (const ComplexMatrix& a) : MArray2<Complex> (a) { }
 
-  ComplexMatrix (const MArray2<Complex>& a) : MArray2<Complex> (a) { }
+  template <class U>
+  ComplexMatrix (const MArray2<U>& a) : MArray2<Complex> (a) { }
+
+  template <class U>
+  ComplexMatrix (const Array2<U>& a) : MArray2<Complex> (a) { }
 
   explicit ComplexMatrix (const Matrix& a);
 
@@ -122,7 +126,8 @@ public:
   ComplexMatrix stack (const ComplexColumnVector& a) const;
   ComplexMatrix stack (const ComplexDiagMatrix& a) const;
 
-  ComplexMatrix hermitian (void) const;  // complex conjugate transpose
+  ComplexMatrix hermitian (void) const
+    { return MArray2<Complex>::hermitian (std::conj); }
   ComplexMatrix transpose (void) const
     { return MArray2<Complex>::transpose (); }
 

@@ -39,7 +39,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-str-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -65,6 +67,26 @@ DEFCONVFN (matrix_to_uint8, matrix, uint8)
 DEFCONVFN (matrix_to_uint16, matrix, uint16)
 DEFCONVFN (matrix_to_uint32, matrix, uint32)
 DEFCONVFN (matrix_to_uint64, matrix, uint64)
+
+DEFCONVFN (float_scalar_to_int8, float_scalar, int8)
+DEFCONVFN (float_scalar_to_int16, float_scalar, int16)
+DEFCONVFN (float_scalar_to_int32, float_scalar, int32)
+DEFCONVFN (float_scalar_to_int64, float_scalar, int64)
+
+DEFCONVFN (float_scalar_to_uint8, float_scalar, uint8)
+DEFCONVFN (float_scalar_to_uint16, float_scalar, uint16)
+DEFCONVFN (float_scalar_to_uint32, float_scalar, uint32)
+DEFCONVFN (float_scalar_to_uint64, float_scalar, uint64)
+
+DEFCONVFN (float_matrix_to_int8, float_matrix, int8)
+DEFCONVFN (float_matrix_to_int16, float_matrix, int16)
+DEFCONVFN (float_matrix_to_int32, float_matrix, int32)
+DEFCONVFN (float_matrix_to_int64, float_matrix, int64)
+
+DEFCONVFN (float_matrix_to_uint8, float_matrix, uint8)
+DEFCONVFN (float_matrix_to_uint16, float_matrix, uint16)
+DEFCONVFN (float_matrix_to_uint32, float_matrix, uint32)
+DEFCONVFN (float_matrix_to_uint64, float_matrix, uint64)
 
 DEFCONVFN (bool_to_int8, bool, int8)
 DEFCONVFN (bool_to_int16, bool, int16)
@@ -184,6 +206,8 @@ install_int_conv_ops (void)
 {
   INSTALL_CONVOPS (scalar)
   INSTALL_CONVOPS (matrix)
+  INSTALL_CONVOPS (float_scalar)
+  INSTALL_CONVOPS (float_matrix)
   INSTALL_CONVOPS (bool)
   INSTALL_CONVOPS (bool_matrix)
   INSTALL_CONVOPS (range)

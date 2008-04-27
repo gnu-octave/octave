@@ -74,47 +74,98 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
       octave_value x_arg = args(0);
       octave_value a_arg = args(1);
 
-      if (x_arg.is_scalar_type ())
+      // FIXME Can we make a template version of the duplicated code below
+      if (x_arg.is_single_type () || a_arg.is_single_type ())
 	{
-	  double x = x_arg.double_value ();
-
-	  if (! error_state)
+	  if (x_arg.is_scalar_type ())
 	    {
-	      if (a_arg.is_scalar_type ())
-		{
-		  double a = a_arg.double_value ();
+	      float x = x_arg.float_value ();
 
-		  if (! error_state)
-		    retval = gammainc (x, a);
+	      if (! error_state)
+		{
+		  if (a_arg.is_scalar_type ())
+		    {
+		      float a = a_arg.float_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
+		  else
+		    {
+		      FloatNDArray a = a_arg.float_array_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
 		}
-	      else
-		{
-		  NDArray a = a_arg.array_value ();
+	    }
+	  else
+	    {
+	      FloatNDArray x = x_arg.float_array_value ();
 
-		  if (! error_state)
-		    retval = gammainc (x, a);
+	      if (! error_state)
+		{
+		  if (a_arg.is_scalar_type ())
+		    {
+		      float a = a_arg.float_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
+		  else
+		    {
+		      FloatNDArray a = a_arg.float_array_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
 		}
 	    }
 	}
       else
 	{
-	  NDArray x = x_arg.array_value ();
-
-	  if (! error_state)
+	  if (x_arg.is_scalar_type ())
 	    {
-	      if (a_arg.is_scalar_type ())
-		{
-		  double a = a_arg.double_value ();
+	      double x = x_arg.double_value ();
 
-		  if (! error_state)
-		    retval = gammainc (x, a);
+	      if (! error_state)
+		{
+		  if (a_arg.is_scalar_type ())
+		    {
+		      double a = a_arg.double_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
+		  else
+		    {
+		      NDArray a = a_arg.array_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
 		}
-	      else
-		{
-		  NDArray a = a_arg.array_value ();
+	    }
+	  else
+	    {
+	      NDArray x = x_arg.array_value ();
 
-		  if (! error_state)
-		    retval = gammainc (x, a);
+	      if (! error_state)
+		{
+		  if (a_arg.is_scalar_type ())
+		    {
+		      double a = a_arg.double_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
+		  else
+		    {
+		      NDArray a = a_arg.array_value ();
+
+		      if (! error_state)
+			retval = gammainc (x, a);
+		    }
 		}
 	    }
 	}

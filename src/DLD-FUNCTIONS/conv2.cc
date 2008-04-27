@@ -40,6 +40,12 @@ conv2 (MArray<double>&, MArray<double>&, MArray2<double>&, Shape);
 
 extern MArray2<Complex>
 conv2 (MArray<Complex>&, MArray<Complex>&, MArray2<Complex>&, Shape);
+
+extern MArray2<float>
+conv2 (MArray<float>&, MArray<float>&, MArray2<float>&, Shape);
+
+extern MArray2<FloatComplex>
+conv2 (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray2<FloatComplex>&, Shape);
 #endif
 
 template <class T>
@@ -142,6 +148,12 @@ conv2 (MArray2<double>&, MArray2<double>&, Shape);
 
 extern MArray2<Complex>
 conv2 (MArray2<Complex>&, MArray2<Complex>&, Shape);
+
+extern MArray2<float>
+conv2 (MArray2<float>&, MArray2<float>&, Shape);
+
+extern MArray2<FloatComplex>
+conv2 (MArray2<FloatComplex>&, MArray2<FloatComplex>&, Shape);
 #endif
 
 template <class T>
@@ -304,46 +316,98 @@ in the column direction and by vector @var{v2} in the row direction\n\
 	   return retval;
          }
 
-       if (args(0).is_complex_type ()
-	   || args(1).is_complex_type ()
-	   || args(2).is_complex_type ())
-         {
-           ComplexColumnVector v1 (args(0).complex_vector_value ());
-           ComplexColumnVector v2 (args(1).complex_vector_value ());
-           ComplexMatrix a (args(2).complex_matrix_value ());
-           ComplexMatrix c (conv2 (v1, v2, a, ishape));
-	   if (! error_state)
-	     retval = c;
-         }
+       if (args(0).is_single_type () || 
+	   args(1).is_single_type () || 
+	   args(2).is_single_type ())
+	 {
+	   if (args(0).is_complex_type ()
+	       || args(1).is_complex_type ()
+	       || args(2).is_complex_type ())
+	     {
+	       FloatComplexColumnVector v1 (args(0).float_complex_vector_value ());
+	       FloatComplexColumnVector v2 (args(1).float_complex_vector_value ());
+	       FloatComplexMatrix a (args(2).float_complex_matrix_value ());
+	       FloatComplexMatrix c (conv2 (v1, v2, a, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	   else
+	     {
+	       FloatColumnVector v1 (args(0).float_vector_value ());
+	       FloatColumnVector v2 (args(1).float_vector_value ());
+	       FloatMatrix a (args(2).float_matrix_value ());
+	       FloatMatrix c (conv2 (v1, v2, a, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	 }
        else
-         {
-           ColumnVector v1 (args(0).vector_value ());
-           ColumnVector v2 (args(1).vector_value ());
-           Matrix a (args(2).matrix_value ());
-           Matrix c (conv2 (v1, v2, a, ishape));
-	   if (! error_state)
-	     retval = c;
-         }
+	 {
+	   if (args(0).is_complex_type ()
+	       || args(1).is_complex_type ()
+	       || args(2).is_complex_type ())
+	     {
+	       ComplexColumnVector v1 (args(0).complex_vector_value ());
+	       ComplexColumnVector v2 (args(1).complex_vector_value ());
+	       ComplexMatrix a (args(2).complex_matrix_value ());
+	       ComplexMatrix c (conv2 (v1, v2, a, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	   else
+	     {
+	       ColumnVector v1 (args(0).vector_value ());
+	       ColumnVector v2 (args(1).vector_value ());
+	       Matrix a (args(2).matrix_value ());
+	       Matrix c (conv2 (v1, v2, a, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	 }
      } // if (separable)
    else
      {
-       if (args(0).is_complex_type ()
-	   || args(1).is_complex_type ())
-         {
-           ComplexMatrix a (args(0).complex_matrix_value ());
-           ComplexMatrix b (args(1).complex_matrix_value ());
-           ComplexMatrix c (conv2 (a, b, ishape));
-	   if (! error_state)
-	     retval = c;
-         }
+       if (args(0).is_single_type () || 
+	   args(1).is_single_type ())
+	 {
+	   if (args(0).is_complex_type ()
+	       || args(1).is_complex_type ())
+	     {
+	       FloatComplexMatrix a (args(0).float_complex_matrix_value ());
+	       FloatComplexMatrix b (args(1).float_complex_matrix_value ());
+	       FloatComplexMatrix c (conv2 (a, b, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	   else
+	     {
+	       FloatMatrix a (args(0).float_matrix_value ());
+	       FloatMatrix b (args(1).float_matrix_value ());
+	       FloatMatrix c (conv2 (a, b, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	 }
        else
-         {
-           Matrix a (args(0).matrix_value ());
-           Matrix b (args(1).matrix_value ());
-           Matrix c (conv2 (a, b, ishape));
-	   if (! error_state)
-	     retval = c;
-         }
+	 {
+	   if (args(0).is_complex_type ()
+	       || args(1).is_complex_type ())
+	     {
+	       ComplexMatrix a (args(0).complex_matrix_value ());
+	       ComplexMatrix b (args(1).complex_matrix_value ());
+	       ComplexMatrix c (conv2 (a, b, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	   else
+	     {
+	       Matrix a (args(0).matrix_value ());
+	       Matrix b (args(1).matrix_value ());
+	       Matrix c (conv2 (a, b, ishape));
+	       if (! error_state)
+		 retval = c;
+	     }
+	 }
 
      } // if (separable)
 

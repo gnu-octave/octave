@@ -33,7 +33,13 @@ FSRC = dasum.f daxpy.f dcabs1.f dcopy.f ddot.f dgemm.f dgemv.f \
   sgemv.f sscal.f ssyrk.f strsm.f zaxpy.f zcopy.f zdotc.f zdotu.f \
   zdrot.f zdscal.f zgemm.f zgemv.f zgerc.f zgeru.f zhemv.f zher.f \
   zher2.f zher2k.f zherk.f zscal.f zswap.f ztbsv.f ztrmm.f ztrmv.f \
-  ztrsm.f ztrsv.f
+  ztrsm.f ztrsv.f sasum.f saxpy.f scabs1.f scopy.f \
+  sger.f smach.f snrm2.f srot.f sswap.f ssymv.f ssyr.f \
+  ssyr2.f ssyr2k.f stbsv.f strmm.f strmv.f strsv.f \
+  scasum.f scnrm2.f caxpy.f ccopy.f cdotc.f cdotu.f \
+  csrot.f csscal.f cgemm.f cgemv.f cgerc.f cgeru.f chemv.f cher.f \
+  cher2.f cher2k.f cherk.f cscal.f cswap.f ctbsv.f ctrmm.f ctrmv.f \
+  ctrsm.f ctrsv.f
 
 include $(TOPDIR)/Makeconf
 

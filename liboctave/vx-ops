@@ -23,6 +23,12 @@ cs Complex S oct-cmplx.h NO 0.0
 cv ColumnVector V dColVector.h YES 0.0
 rv RowVector V dRowVector.h YES 0.0
 s double S NONE NO 0.0
+fccv FloatComplexColumnVector V fCColVector.h YES 0.0
+fcrv FloatComplexRowVector V fCRowVector.h YES 0.0
+fcs FloatComplex S oct-cmplx.h NO 0.0
+fcv FloatColumnVector V fColVector.h YES 0.0
+frv FloatRowVector V fRowVector.h YES 0.0
+fs float S NONE NO 0.0
 # ops
 ccv ccv cv B
 ccv ccv s B
@@ -36,3 +42,15 @@ crv rv crv B
 crv rv cs B
 ccv s ccv B
 crv s crv B
+fccv fccv fcv B
+fccv fccv fs B
+fcrv fcrv frv B
+fcrv fcrv fs B
+fccv fcs fcv B
+fcrv fcs frv B
+fccv fcv fccv B
+fccv fcv fcs B
+fcrv frv fcrv B
+fcrv frv fcs B
+fccv fs fccv B
+fcrv fs fcrv B

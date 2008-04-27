@@ -1,9 +1,8 @@
       subroutine passf5 (ido,l1,cc,ch,wa1,wa2,wa3,wa4)
-      implicit double precision (a-h,o-z)
       dimension       cc(ido,5,l1)           ,ch(ido,l1,5)           ,
      1                wa1(1)     ,wa2(1)     ,wa3(1)     ,wa4(1)
-      data tr11,ti11,tr12,ti12 /.309016994374947d0,-.951056516295154d0,
-     1-.809016994374947d0,-.587785252292473d0/
+      data tr11,ti11,tr12,ti12 /.309016994374947,-.951056516295154,
+     1-.809016994374947,-.587785252292473/
       if (ido .ne. 2) go to 102
       do 101 k=1,l1
          ti5 = cc(2,2,k)-cc(2,5,k)

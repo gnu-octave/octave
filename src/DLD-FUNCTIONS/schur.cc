@@ -29,6 +29,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "CmplxSCHUR.h"
 #include "dbleSCHUR.h"
+#include "fCmplxSCHUR.h"
+#include "floatSCHUR.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -295,48 +297,93 @@ $S$.\n\
       return retval;
     }
 
-  if (arg.is_real_type ())
+  if (arg.is_single_type ())
     {
-      Matrix tmp = arg.matrix_value ();
-
-      if (! error_state)
+      if (arg.is_real_type ())
 	{
-	  if (nargout == 0 || nargout == 1)
+	  FloatMatrix tmp = arg.float_matrix_value ();
+
+	  if (! error_state)
 	    {
-	      SCHUR result (tmp, ord, false);
-	      retval(0) = result.schur_matrix ();
+	      if (nargout == 0 || nargout == 1)
+		{
+		  FloatSCHUR result (tmp, ord, false);
+		  retval(0) = result.schur_matrix ();
+		}
+	      else
+		{
+		  FloatSCHUR result (tmp, ord, true);
+		  retval(1) = result.schur_matrix ();
+		  retval(0) = result.unitary_matrix ();
+		}
 	    }
-	  else
+	}
+      else if (arg.is_complex_type ())
+	{
+	  FloatComplexMatrix ctmp = arg.float_complex_matrix_value ();
+
+	  if (! error_state)
 	    {
-	      SCHUR result (tmp, ord, true);
-	      retval(1) = result.schur_matrix ();
-	      retval(0) = result.unitary_matrix ();
+ 
+	      if (nargout == 0 || nargout == 1)
+		{
+		  FloatComplexSCHUR result (ctmp, ord, false);
+		  retval(0) = result.schur_matrix ();
+		}
+	      else
+		{
+		  FloatComplexSCHUR result (ctmp, ord, true);
+		  retval(1) = result.schur_matrix ();
+		  retval(0) = result.unitary_matrix ();
+		}
 	    }
 	}
     }
-  else if (arg.is_complex_type ())
-    {
-      ComplexMatrix ctmp = arg.complex_matrix_value ();
-
-      if (! error_state)
-	{
- 
-	  if (nargout == 0 || nargout == 1)
-	    {
-	      ComplexSCHUR result (ctmp, ord, false);
-	      retval(0) = result.schur_matrix ();
-	    }
-	  else
-	    {
-	      ComplexSCHUR result (ctmp, ord, true);
-	      retval(1) = result.schur_matrix ();
-	      retval(0) = result.unitary_matrix ();
-	    }
-	}
-    }    
   else
     {
-      gripe_wrong_type_arg ("schur", arg);
+      if (arg.is_real_type ())
+	{
+	  Matrix tmp = arg.matrix_value ();
+
+	  if (! error_state)
+	    {
+	      if (nargout == 0 || nargout == 1)
+		{
+		  SCHUR result (tmp, ord, false);
+		  retval(0) = result.schur_matrix ();
+		}
+	      else
+		{
+		  SCHUR result (tmp, ord, true);
+		  retval(1) = result.schur_matrix ();
+		  retval(0) = result.unitary_matrix ();
+		}
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix ctmp = arg.complex_matrix_value ();
+
+	  if (! error_state)
+	    {
+ 
+	      if (nargout == 0 || nargout == 1)
+		{
+		  ComplexSCHUR result (ctmp, ord, false);
+		  retval(0) = result.schur_matrix ();
+		}
+	      else
+		{
+		  ComplexSCHUR result (ctmp, ord, true);
+		  retval(1) = result.schur_matrix ();
+		  retval(0) = result.unitary_matrix ();
+		}
+	    }
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("schur", arg);
+	}
     }
  
   return retval; 

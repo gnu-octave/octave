@@ -1,5 +1,4 @@
       subroutine cffti1 (n,wa,ifac)
-      implicit double precision (a-h,o-z)
       dimension       wa(*)      ,ifac(*)    ,ntryh(4)
       data ntryh(1),ntryh(2),ntryh(3),ntryh(4)/3,4,2,5/
       nl = n
@@ -26,7 +25,7 @@
   107 if (nl .ne. 1) go to 104
       ifac(1) = n
       ifac(2) = nf
-      tpi = 6.28318530717959d0
+      tpi = 6.28318530717959
       argh = tpi/dble(n)
       i = 2
       l1 = 1

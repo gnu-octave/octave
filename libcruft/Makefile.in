@@ -75,7 +75,7 @@ $(SUBDIRS): mkf77def
 # FIXME -- this should build the shared library directly from
 # a normal archive file (created from PIC code, though).
 
-MISC_OBJ := misc/machar.o misc/f77-extern.o \
+MISC_OBJ := misc/machar.o misc/smachar.o misc/f77-extern.o \
 	misc/f77-fcn.o misc/lo-error.o misc/quit.o misc/cquit.o
 
 CRUFT_FSRC := $(foreach dir, $(SUBDIRS), $(wildcard $(srcdir)/$(dir)/*.f))

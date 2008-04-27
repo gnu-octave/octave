@@ -29,7 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -129,6 +131,7 @@ install_s_m_ops (void)
   INSTALL_CATOP (octave_scalar, octave_matrix, s_m);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_matrix, octave_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_matrix, octave_float_matrix);
 
   INSTALL_WIDENOP (octave_scalar, octave_matrix, matrix_conv);
 }

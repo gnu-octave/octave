@@ -180,33 +180,64 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
 
       // in the case of a complex array, absolute values will be used for compatibility
       // (though it's not too meaningful).
+      ArrayN<octave_idx_type> idx;
 
-      NDArray table = (argtable.is_complex_type ()) 
-        ? argtable.complex_array_value ().abs ()
-        : argtable.array_value ();
+      if (argtable.is_single_type () || argy.is_single_type ())
+	{
+	  FloatNDArray table = (argtable.is_complex_type ()) 
+	    ? argtable.float_complex_array_value ().abs ()
+	    : argtable.float_array_value ();
 
-      NDArray y = (argy.is_complex_type ()) 
-        ? argy.complex_array_value ().abs ()
-        : argy.array_value ();
+	  FloatNDArray y = (argy.is_complex_type ()) 
+	    ? argy.float_complex_array_value ().abs ()
+	    : argy.float_array_value ();
 
-      ArrayN<octave_idx_type> idx (y.dims ());
+	  idx = ArrayN<octave_idx_type> (y.dims ());
 
-      // determine whether the array is descending. 
-      bool desc = is_descending (table.data (), table.length ());
-      octave_idx_type offset = left_inf ? 1 : 0;
-      octave_idx_type size = table.length () - offset - (right_inf ? 1 : 0);
-      if (size < 0) 
-        size = 0;
+	  // determine whether the array is descending. 
+	  bool desc = is_descending (table.data (), table.length ());
+	  octave_idx_type offset = left_inf ? 1 : 0;
+	  octave_idx_type size = table.length () - offset - (right_inf ? 1 : 0);
+	  if (size < 0) 
+	    size = 0;
 
-      if (desc)
-        seq_lookup (table.data (), offset, size, 
-                    y.data (), y.length (), idx.fortran_vec (),
-                    std::greater<double> ());
+	  if (desc)
+	    seq_lookup (table.data (), offset, size, 
+			y.data (), y.length (), idx.fortran_vec (),
+			std::greater<float> ());
+	  else
+	    seq_lookup (table.data (), offset, size, 
+			y.data (), y.length (), idx.fortran_vec (),
+			std::less<float> ());
+	}
       else
-        seq_lookup (table.data (), offset, size, 
-                    y.data (), y.length (), idx.fortran_vec (),
-                    std::less<double> ());
+	{
+	  NDArray table = (argtable.is_complex_type ()) 
+	    ? argtable.complex_array_value ().abs ()
+	    : argtable.array_value ();
 
+	  NDArray y = (argy.is_complex_type ()) 
+	    ? argy.complex_array_value ().abs ()
+	    : argy.array_value ();
+
+	  idx = ArrayN<octave_idx_type> (y.dims ());
+
+	  // determine whether the array is descending. 
+	  bool desc = is_descending (table.data (), table.length ());
+	  octave_idx_type offset = left_inf ? 1 : 0;
+	  octave_idx_type size = table.length () - offset - (right_inf ? 1 : 0);
+	  if (size < 0) 
+	    size = 0;
+
+	  if (desc)
+	    seq_lookup (table.data (), offset, size, 
+			y.data (), y.length (), idx.fortran_vec (),
+			std::greater<double> ());
+	  else
+	    seq_lookup (table.data (), offset, size, 
+			y.data (), y.length (), idx.fortran_vec (),
+			std::less<double> ());
+	}
 
       //retval(0) = idx;
       assign (retval(0), idx);

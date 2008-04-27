@@ -34,6 +34,27 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-error.h"
 
+template <class T>
+DiagArray2<T>
+DiagArray2<T>::transpose (void) const
+{
+  DiagArray2<T> retval (*this);
+  retval.dimensions = dim_vector (this->dim2 (), this->dim1 ());
+  return retval;
+}
+
+template <class T>
+DiagArray2<T>
+DiagArray2<T>::hermitian (T (* fcn) (const T&)) const
+{
+  DiagArray2<T> retval (this->dim2 (), this->dim1 ());
+  const T *p = this->data ();
+  T *q = retval.fortran_vec ();
+  for (octave_idx_type i = 0; i < this->length (); i++)
+    q [i] = fcn (p [i]);
+  return retval;
+}
+
 // A two-dimensional array with diagonal elements only.
 
 template <class T>

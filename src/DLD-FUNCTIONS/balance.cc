@@ -30,9 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "CmplxAEPBAL.h"
-#include "CmplxAEPBAL.h"
+#include "fCmplxAEPBAL.h"
 #include "dbleAEPBAL.h"
-#include "dbleAEPBAL.h"
+#include "floatAEPBAL.h"
+#include "CmplxGEPBAL.h"
+#include "fCmplxGEPBAL.h"
+#include "dbleGEPBAL.h"
+#include "floatGEPBAL.h"
 #include "quit.h"
 
 #include "defun-dld.h"
@@ -41,35 +45,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "gripes.h"
 #include "oct-obj.h"
 #include "utils.h"
-
-extern "C"
-{
-  F77_RET_T
-  F77_FUNC (dggbal, DGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
-			     double* A, const octave_idx_type& LDA, double* B,
-			     const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
-			     double* LSCALE, double* RSCALE,
-			     double* WORK, octave_idx_type& INFO
-			     F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (dggbak, DGGBAK) (F77_CONST_CHAR_ARG_DECL,
-			     F77_CONST_CHAR_ARG_DECL,
-			     const octave_idx_type& N, const octave_idx_type& ILO,
-			     const octave_idx_type& IHI, const double* LSCALE,
-			     const double* RSCALE, octave_idx_type& M, double* V,
-			     const octave_idx_type& LDV, octave_idx_type& INFO
-			     F77_CHAR_ARG_LEN_DECL
-			     F77_CHAR_ARG_LEN_DECL);
-
-  F77_RET_T
-  F77_FUNC (zggbal, ZGGBAL) (F77_CONST_CHAR_ARG_DECL, const octave_idx_type& N,
-			     Complex* A, const octave_idx_type& LDA, Complex* B,
-			     const octave_idx_type& LDB, octave_idx_type& ILO, octave_idx_type& IHI,
-			     double* LSCALE, double* RSCALE,
-			     double* WORK, octave_idx_type& INFO
-			     F77_CHAR_ARG_LEN_DECL);
-}
 
 DEFUN_DLD (balance, args, nargout,
   "-*- texinfo -*-\n\
@@ -145,14 +120,32 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
       return retval;
     }
 
+  bool isfloat = args(0).is_single_type () || 
+    (! AEPcase && args(1).is_single_type()); 
+
+  bool complex_case = (args(0).is_complex_type () || 
+		       (! AEPcase && args(1).is_complex_type ()));
+
   // Extract argument 1 parameter for both AEP and GEP.
   Matrix aa;
   ComplexMatrix caa;
+  FloatMatrix faa;
+  FloatComplexMatrix fcaa;
 
-  if (args(0).is_complex_type ())
-    caa = args(0).complex_matrix_value ();
+  if (isfloat)
+    {
+      if (complex_case)
+	fcaa = args(0).float_complex_matrix_value ();
+      else
+	faa = args(0).float_matrix_value ();
+    }
   else
-    aa = args(0).matrix_value ();
+    {
+      if (complex_case)
+	caa = args(0).complex_matrix_value ();
+      else
+	aa = args(0).matrix_value ();
+    }
 
   if (error_state)
     return retval;
@@ -173,33 +166,66 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 	}
 
       // balance the AEP
-      if (args(0).is_complex_type ())
+      if (isfloat)
 	{
-	  ComplexAEPBALANCE result (caa, bal_job);
+	  if (complex_case)
+	    {
+	      FloatComplexAEPBALANCE result (fcaa, bal_job);
 
-	  if (nargout == 0 || nargout == 1)
-	    retval(0) = result.balanced_matrix ();
+	      if (nargout == 0 || nargout == 1)
+		retval(0) = result.balanced_matrix ();
+	      else
+		{
+		  retval(1) = result.balanced_matrix ();
+		  retval(0) = result.balancing_matrix ();
+		}
+	    }
 	  else
 	    {
-	      retval(1) = result.balanced_matrix ();
-	      retval(0) = result.balancing_matrix ();
+	      FloatAEPBALANCE result (faa, bal_job);
+
+	      if (nargout == 0 || nargout == 1)
+		retval(0) = result.balanced_matrix ();
+	      else
+		{
+		  retval(1) = result.balanced_matrix ();
+		  retval(0) = result.balancing_matrix ();
+		}
 	    }
 	}
       else
 	{
-	  AEPBALANCE result (aa, bal_job);
+	  if (complex_case)
+	    {
+	      ComplexAEPBALANCE result (caa, bal_job);
 
-	  if (nargout == 0 || nargout == 1)
-	    retval(0) = result.balanced_matrix ();
+	      if (nargout == 0 || nargout == 1)
+		retval(0) = result.balanced_matrix ();
+	      else
+		{
+		  retval(1) = result.balanced_matrix ();
+		  retval(0) = result.balancing_matrix ();
+		}
+	    }
 	  else
 	    {
-	      retval(1) = result.balanced_matrix ();
-	      retval(0) = result.balancing_matrix ();
+	      AEPBALANCE result (aa, bal_job);
+
+	      if (nargout == 0 || nargout == 1)
+		retval(0) = result.balanced_matrix ();
+	      else
+		{
+		  retval(1) = result.balanced_matrix ();
+		  retval(0) = result.balancing_matrix ();
+		}
 	    }
 	}
     }
   else
     {
+      if (nargout == 1)
+	warning ("balance: used GEP, should have two output arguments");
+
       // Generalized eigenvalue problem.
       if (nargin == 2)
 	bal_job = "B";
@@ -219,126 +245,130 @@ Generalized eigenvalue problem balancing uses Ward's algorithm\n\
 
       Matrix bb;
       ComplexMatrix cbb;
+      FloatMatrix fbb;
+      FloatComplexMatrix fcbb;
 
-      if (args(1).is_complex_type ())
-	cbb = args(1).complex_matrix_value ();
-      else
-	bb = args(1).matrix_value ();
-
-      if (error_state)
-	return retval;
-
-      // Both matrices loaded, now let's check what kind of arithmetic:
-      // first, declare variables used in both the real and complex case
-
-      octave_idx_type ilo, ihi, info;
-      RowVector lscale(nn), rscale(nn), work(6*nn);
-      char job = bal_job[0];
-
-      static octave_idx_type complex_case
-	= (args(0).is_complex_type () || args(1).is_complex_type ());
-
-      // now balance
-      if (complex_case)
+      if (isfloat)
 	{
-	  if (args(0).is_real_type ())
-	    caa = ComplexMatrix (aa);
-
-	  if (args(1).is_real_type ())
-	    cbb = ComplexMatrix (bb);
-  
-	  F77_XFCN (zggbal, ZGGBAL,
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nn, caa.fortran_vec (), nn, cbb.fortran_vec (),
-		     nn, ilo, ihi, lscale.fortran_vec (),
-		     rscale.fortran_vec (), work.fortran_vec (), info
-		     F77_CHAR_ARG_LEN (1)));
+	  if (complex_case)
+	    fcbb = args(1).float_complex_matrix_value ();
+	  else
+	    fbb = args(1).float_matrix_value ();
 	}
       else
 	{
-	  // real matrices case
-
-	  F77_XFCN (dggbal, DGGBAL,
-		    (F77_CONST_CHAR_ARG2 (&job, 1),
-		     nn, aa.fortran_vec (), nn, bb.fortran_vec (),
-		     nn, ilo, ihi, lscale.fortran_vec (),
-		     rscale.fortran_vec (), work.fortran_vec (), info
-		     F77_CHAR_ARG_LEN  (1)));
+	  if (complex_case)
+	    cbb = args(1).complex_matrix_value ();
+	  else
+	    bb = args(1).matrix_value ();
 	}
-      
-      // Since we just want the balancing matrices, we can use dggbal
-      // for both the real and complex cases.
 
-      Matrix Pl(nn,nn), Pr(nn,nn);
-
-      for (octave_idx_type ii = 0; ii < nn; ii++)
-	for (octave_idx_type jj = 0; jj < nn; jj++)
-	  {
-	    OCTAVE_QUIT;
-
-	    Pl(ii,jj) = Pr(ii,jj) = (ii == jj ? 1.0 : 0.0);
-	  }
-  
-      // left first
-      F77_XFCN (dggbak, DGGBAK,
-		(F77_CONST_CHAR_ARG2 (&job, 1),
-		 F77_CONST_CHAR_ARG2 ("L", 1),
-		 nn, ilo, ihi, lscale.data (), rscale.data (),
-		 nn, Pl.fortran_vec (), nn, info
-		 F77_CHAR_ARG_LEN (1)
-		 F77_CHAR_ARG_LEN (1)));
-      
-      // then right
-      F77_XFCN (dggbak, DGGBAK,
-		(F77_CONST_CHAR_ARG2 (&job, 1),
-		 F77_CONST_CHAR_ARG2 ("R", 1),
-		 nn, ilo, ihi, lscale.data (), rscale.data (),
-		 nn, Pr.fortran_vec (), nn, info
-		 F77_CHAR_ARG_LEN (1)
-		 F77_CHAR_ARG_LEN (1)));
-
-      switch (nargout)
+      // balance the GEP
+      if (isfloat)
 	{
-	case 0:
-	case 1:
-	  warning ("balance: used GEP, should have two output arguments");
 	  if (complex_case)
-	    retval(0) = caa;
-	  else
-	    retval(0) = aa;
-	  break;
+	    {
+	      FloatComplexGEPBALANCE result (fcaa, fcbb, bal_job);
 
-	case 2:
-	  if (complex_case)
-	    {
-	      retval(1) = cbb;
-	      retval(0) = caa;
-	    }
-	  else
-	    {
-	      retval(1) = bb;
-	      retval(0) = aa;
-	    }
-	  break;
-
-	case 4:
-	  if (complex_case)
-	    {
-	      retval(3) = cbb;
-	      retval(2) = caa;
+	      switch (nargout)
+		{
+		case 4:
+		  retval(3) = result.balanced_matrix2 ();
+		  // fall through
+		case 3:
+		  retval(2) = result.balanced_matrix ();
+		  retval(1) = result.balancing_matrix2 ();
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		case 2:
+		  retval(1) = result.balancing_matrix2 ();
+		  // fall through
+		case 1:
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		default:
+		  error ("balance: invalid number of output arguments");
+		  break;
+		}
 	    }
 	  else
 	    {
-	      retval(3) = bb;
-	      retval(2) = aa;
-	    }
-	  retval(1) = Pr;
-	  retval(0) = Pl.transpose ();  // so that aa_bal = cc*aa*dd, etc.
-	  break;
+	      FloatGEPBALANCE result (faa, fbb, bal_job);
 
-	default:
-	  error ("balance: invalid number of output arguments");
-	  break;
+	      switch (nargout)
+		{
+		case 4:
+		  retval(3) = result.balanced_matrix2 ();
+		  // fall through
+		case 3:
+		  retval(2) = result.balanced_matrix ();
+		  retval(1) = result.balancing_matrix2 ();
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		case 2:
+		  retval(1) = result.balancing_matrix2 ();
+		  // fall through
+		case 1:
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		default:
+		  error ("balance: invalid number of output arguments");
+		  break;
+		}
+	    }
+	}
+      else
+	{
+	  if (complex_case)
+	    {
+	      ComplexGEPBALANCE result (caa, cbb, bal_job);
+
+	      switch (nargout)
+		{
+		case 4:
+		  retval(3) = result.balanced_matrix2 ();
+		  // fall through
+		case 3:
+		  retval(2) = result.balanced_matrix ();
+		  retval(1) = result.balancing_matrix2 ();
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		case 2:
+		  retval(1) = result.balancing_matrix2 ();
+		  // fall through
+		case 1:
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		default:
+		  error ("balance: invalid number of output arguments");
+		  break;
+		}
+	    }
+	  else
+	    {
+	      GEPBALANCE result (aa, bb, bal_job);
+
+	      switch (nargout)
+		{
+		case 4:
+		  retval(3) = result.balanced_matrix2 ();
+		  // fall through
+		case 3:
+		  retval(2) = result.balanced_matrix ();
+		  retval(1) = result.balancing_matrix2 ();
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		case 2:
+		  retval(1) = result.balancing_matrix2 ();
+		  // fall through
+		case 1:
+		  retval(0) = result.balancing_matrix ();
+		  break;
+		default:
+		  error ("balance: invalid number of output arguments");
+		  break;
+		}
+	    }
 	}
     }
 

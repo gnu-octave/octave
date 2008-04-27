@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "CmplxLU.h"
 #include "dbleLU.h"
+#include "fCmplxLU.h"
+#include "floatLU.h"
 #include "SparseCmplxLU.h"
 #include "SparsedbleLU.h"
 
@@ -337,77 +339,159 @@ information.\n\
 
       if (arg.is_real_type ())
 	{
-	  Matrix m = arg.matrix_value ();
-
-	  if (! error_state)
+	  if (arg.is_single_type ())
 	    {
-	      LU fact (m);
+	      FloatMatrix m = arg.float_matrix_value ();
 
-	      switch (nargout)
+	      if (! error_state)
 		{
-		case 0:
-		case 1:
-		  retval(0) = fact.Y ();
-		  break;
+		  FloatLU fact (m);
 
-		case 2:
-		  {
-		    Matrix P = fact.P ();
-		    Matrix L = P.transpose () * fact.L ();
-		    retval(1) = fact.U ();
-		    retval(0) = L;
-		  }
-		  break;
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      retval(0) = fact.Y ();
+		      break;
 
-		case 3:
-		default:
-		  {
-		    if (vecout)
-		      retval(2) = fact.P_vec ();
-		    else
-		      retval(2) = fact.P ();
-		    retval(1) = fact.U ();
-		    retval(0) = fact.L ();
-		  }
-		  break;
+		    case 2:
+		      {
+			FloatMatrix P = fact.P ();
+			FloatMatrix L = P.transpose () * fact.L ();
+			retval(1) = fact.U ();
+			retval(0) = L;
+		      }
+		      break;
+
+		    case 3:
+		    default:
+		      {
+			if (vecout)
+			  retval(2) = fact.P_vec ();
+			else
+			  retval(2) = fact.P ();
+			retval(1) = fact.U ();
+			retval(0) = fact.L ();
+		      }
+		      break;
+		    }
+		}
+	    }
+	  else
+	    {
+	      Matrix m = arg.matrix_value ();
+
+	      if (! error_state)
+		{
+		  LU fact (m);
+
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      retval(0) = fact.Y ();
+		      break;
+
+		    case 2:
+		      {
+			Matrix P = fact.P ();
+			Matrix L = P.transpose () * fact.L ();
+			retval(1) = fact.U ();
+			retval(0) = L;
+		      }
+		      break;
+
+		    case 3:
+		    default:
+		      {
+			if (vecout)
+			  retval(2) = fact.P_vec ();
+			else
+			  retval(2) = fact.P ();
+			retval(1) = fact.U ();
+			retval(0) = fact.L ();
+		      }
+		      break;
+		    }
 		}
 	    }
 	}
       else if (arg.is_complex_type ())
 	{
-	  ComplexMatrix m = arg.complex_matrix_value ();
-
-	  if (! error_state)
+	  if (arg.is_single_type ())
 	    {
-	      ComplexLU fact (m);
+	      FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-	      switch (nargout)
+	      if (! error_state)
 		{
-		case 0:
-		case 1:
-		  retval(0) = fact.Y ();
-		  break;
+		  FloatComplexLU fact (m);
 
-		case 2:
-		  {
-		    Matrix P = fact.P ();
-		    ComplexMatrix L = P.transpose () * fact.L ();
-		    retval(1) = fact.U ();
-		    retval(0) = L;
-		  }
-		  break;
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      retval(0) = fact.Y ();
+		      break;
 
-		case 3:
-		default:
-		  {
-		    if (vecout)
-		      retval(2) = fact.P_vec ();
-		    else
-		      retval(2) = fact.P ();
-		    retval(1) = fact.U ();
-		    retval(0) = fact.L ();
-		  }
-		  break;
+		    case 2:
+		      {
+			FloatMatrix P = fact.P ();
+			FloatComplexMatrix L = P.transpose () * fact.L ();
+			retval(1) = fact.U ();
+			retval(0) = L;
+		      }
+		      break;
+
+		    case 3:
+		    default:
+		      {
+			if (vecout)
+			  retval(2) = fact.P_vec ();
+			else
+			  retval(2) = fact.P ();
+			retval(1) = fact.U ();
+			retval(0) = fact.L ();
+		      }
+		      break;
+		    }
+		}
+	    }
+	  else
+	    {
+	      ComplexMatrix m = arg.complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  ComplexLU fact (m);
+
+		  switch (nargout)
+		    {
+		    case 0:
+		    case 1:
+		      retval(0) = fact.Y ();
+		      break;
+
+		    case 2:
+		      {
+			Matrix P = fact.P ();
+			ComplexMatrix L = P.transpose () * fact.L ();
+			retval(1) = fact.U ();
+			retval(0) = L;
+		      }
+		      break;
+
+		    case 3:
+		    default:
+		      {
+			if (vecout)
+			  retval(2) = fact.P_vec ();
+			else
+			  retval(2) = fact.P ();
+			retval(1) = fact.U ();
+			retval(0) = fact.L ();
+		      }
+		      break;
+		    }
 		}
 	    }
 	}

@@ -31,6 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "CmplxCHOL.h"
 #include "dbleCHOL.h"
+#include "fCmplxCHOL.h"
+#include "floatCHOL.h"
 #include "SparseCmplxCHOL.h"
 #include "SparsedbleCHOL.h"
 #include "oct-spparms.h"
@@ -218,6 +220,51 @@ sparse matrices.\n\
 			retval(0) = fact.L();
 		      else
 			retval(0) = fact.R();
+		    }
+		  else
+		    error ("chol: matrix not positive definite");
+		}
+	    }
+	  else
+	    gripe_wrong_type_arg ("chol", arg);
+	}
+      else if (arg.is_single_type ())
+	{
+	  if (arg.is_real_type ())
+	    {
+	      FloatMatrix m = arg.float_matrix_value ();
+
+	      if (! error_state)
+		{
+		  octave_idx_type info;
+		  FloatCHOL fact (m, info);
+		  if (nargout == 2 || info == 0)
+		    {
+		      retval(1) = static_cast<float> (info);
+		      if (LLt)
+			retval(0) = fact.chol_matrix ().transpose ();
+		      else
+			retval(0) = fact.chol_matrix ();
+		    }
+		  else
+		    error ("chol: matrix not positive definite");
+		}
+	    }
+	  else if (arg.is_complex_type ())
+	    {
+	      FloatComplexMatrix m = arg.float_complex_matrix_value ();
+
+	      if (! error_state)
+		{
+		  octave_idx_type info;
+		  FloatComplexCHOL fact (m, info);
+		  if (nargout == 2 || info == 0)
+		    {
+		      retval(1) = static_cast<float> (info);
+		      if (LLt)
+			retval(0) = fact.chol_matrix ().hermitian ();
+		      else
+			retval(0) = fact.chol_matrix ();
 		    }
 		  else
 		    error ("chol: matrix not positive definite");

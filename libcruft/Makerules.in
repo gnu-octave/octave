@@ -29,7 +29,7 @@ DLL_CDEFS = @CRUFT_DLL_DEFS@
 DLL_CXXDEFS = @CRUFT_DLL_DEFS@
 
 CRUFT_FSRC = $(addprefix $(srcdir)/, $(FSRC))
-CRUFT_CSRC = $(addprefix $(srcdir)/, $(CSRC))
+CRUFT_CSRC = $(addprefix $(srcdir)/, $(CSRC) $(CEXTRA))
 CRUFT_CXXSRC = $(addprefix $(srcdir)/, $(CXXSRC))
 
 CRUFT_SRC = $(CRUFT_FSRC) $(CRUFT_CSRC) $(CRUFT_CXXSRC)
@@ -61,9 +61,9 @@ ifeq ($(SHARED_LIBS), true)
     CRUFT_FPICOBJ := $(CRUFT_FOBJ)
   endif
   ifdef CPICFLAG
-    CRUFT_CPICOBJ := $(addprefix pic/, $(CRUFT_COBJ))
+    CRUFT_CPICOBJ := $(addprefix pic/, $(CRUFT_COBJ) $(CEXTRA))
   else
-    CRUFT_CPICOBJ := $(CRUFT_COBJ)
+    CRUFT_CPICOBJ := $(CRUFT_COBJ) $(CEXTRA)
   endif
   ifdef CXXPICFLAG
     CRUFT_CXXPICOBJ := $(addprefix pic/, $(CRUFT_CXXOBJ))

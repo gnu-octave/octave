@@ -112,6 +112,12 @@ typecast (const T& x, std::string type)
       typecast (x, y);
       retval = octave_value (y);
     }
+  else if (type == "single")
+    {
+      FloatNDArray y;
+      typecast (x, y);
+      retval = octave_value (y);
+    }
   else
     {
       NDArray y;
@@ -155,9 +161,7 @@ typecast (@var{x}, 'uint8')\n\
 	{
 	  std::transform (type.begin (), type.end (), type.begin (), tolower);
 
-	  if (type == "single")
-	    error ("typecast: type 'single' is not supported");
-	  else if (type != "uint8" && type != "uint16"
+	  if (type != "uint8" && type != "uint16"
 		   && type != "uint32" && type != "uint64"
 		   && type != "int8" && type != "int16"
 		   && type != "int32" && type != "int64"
@@ -200,6 +204,8 @@ typecast (@var{x}, 'uint8')\n\
 		    retval = typecast (args(0).int32_array_value (), type); 
 		  else if (args(0).is_int64_type ())
 		    retval = typecast (args(0).int64_array_value (), type); 
+		  else if (args(0).is_single_type ())
+		    retval = typecast (args(0).float_array_value (), type);
 		  else
 		    retval = typecast (args(0).array_value (), type);
 		}

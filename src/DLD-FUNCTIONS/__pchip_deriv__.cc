@@ -37,6 +37,11 @@ extern "C"
   F77_FUNC (dpchim, DPCHIM) (const octave_idx_type& n, double *x, double *f,
 			     double *d, const octave_idx_type &incfd,
 			     octave_idx_type *ierr);
+
+  F77_RET_T
+  F77_FUNC (pchim, PCHIM) (const octave_idx_type& n, float *x, float *f,
+			   float *d, const octave_idx_type &incfd,
+			   octave_idx_type *ierr);
 }
 
 // Wrapper for SLATEC/PCHIP function DPCHIM to calculate the derivates
@@ -53,44 +58,88 @@ Undocumented internal function.\n\
 
   if (nargin == 2)
     {
-      ColumnVector xvec (args(0).vector_value ());
-      Matrix ymat (args(1).matrix_value ());
+      if (args(0).is_single_type () || args(1).is_single_type ())
+	{
+	  FloatColumnVector xvec (args(0).float_vector_value ());
+	  FloatMatrix ymat (args(1).float_matrix_value ());
 
-      octave_idx_type nx = xvec.length ();
-      octave_idx_type nyr = ymat.rows ();
-      octave_idx_type nyc = ymat.columns ();
+	  octave_idx_type nx = xvec.length ();
+	  octave_idx_type nyr = ymat.rows ();
+	  octave_idx_type nyc = ymat.columns ();
 
-      if (nx != nyr)
-        {
-          error ("number of rows for x and y must match");
-          return retval;
-        }
+	  if (nx != nyr)
+	    {
+	      error ("number of rows for x and y must match");
+	      return retval;
+	    }
 
-      ColumnVector dvec (nx), yvec (nx);
-      Matrix dmat (nyr, nyc);
+	  FloatColumnVector dvec (nx), yvec (nx);
+	  FloatMatrix dmat (nyr, nyc);
 
-      octave_idx_type ierr;
-      const octave_idx_type incfd = 1;
-      for (int c = 0; c < nyc; c++)
-        {
-          for (int r = 0; r < nx; r++)
-	    yvec(r) = ymat(r,c);
+	  octave_idx_type ierr;
+	  const octave_idx_type incfd = 1;
+	  for (int c = 0; c < nyc; c++)
+	    {
+	      for (int r = 0; r < nx; r++)
+		yvec(r) = ymat(r,c);
 
-          F77_FUNC (dpchim, DPCHIM) (nx, xvec.fortran_vec (), 
-				     yvec.fortran_vec (), 
-				     dvec.fortran_vec (), incfd, &ierr);
+	      F77_FUNC (pchim, PCHIM) (nx, xvec.fortran_vec (), 
+				       yvec.fortran_vec (), 
+				       dvec.fortran_vec (), incfd, &ierr);
 
-	  if (ierr < 0)
-            {
-	      error ("DPCHIM error: %i\n", ierr);
-              return retval;
-            }
+	      if (ierr < 0)
+		{
+		  error ("PCHIM error: %i\n", ierr);
+		  return retval;
+		}
 
-          for (int r=0; r<nx; r++)
-	    dmat(r,c) = dvec(r);
-        }
+	      for (int r=0; r<nx; r++)
+		dmat(r,c) = dvec(r);
+	    }
 
-      retval = dmat;
+	  retval = dmat;
+	}
+      else
+	{
+	  ColumnVector xvec (args(0).vector_value ());
+	  Matrix ymat (args(1).matrix_value ());
+
+	  octave_idx_type nx = xvec.length ();
+	  octave_idx_type nyr = ymat.rows ();
+	  octave_idx_type nyc = ymat.columns ();
+
+	  if (nx != nyr)
+	    {
+	      error ("number of rows for x and y must match");
+	      return retval;
+	    }
+
+	  ColumnVector dvec (nx), yvec (nx);
+	  Matrix dmat (nyr, nyc);
+
+	  octave_idx_type ierr;
+	  const octave_idx_type incfd = 1;
+	  for (int c = 0; c < nyc; c++)
+	    {
+	      for (int r = 0; r < nx; r++)
+		yvec(r) = ymat(r,c);
+
+	      F77_FUNC (dpchim, DPCHIM) (nx, xvec.fortran_vec (), 
+					 yvec.fortran_vec (), 
+					 dvec.fortran_vec (), incfd, &ierr);
+
+	      if (ierr < 0)
+		{
+		  error ("DPCHIM error: %i\n", ierr);
+		  return retval;
+		}
+
+	      for (int r=0; r<nx; r++)
+		dmat(r,c) = dvec(r);
+	    }
+
+	  retval = dmat;
+	}
     }
 
   return retval;

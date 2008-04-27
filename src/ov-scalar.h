@@ -76,6 +76,8 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
 			    bool resize_ok = false);
 
+  type_conv_fcn numeric_demotion_function (void) const;
+
   idx_vector index_vector (void) const { return idx_vector (scalar); }
 
   octave_value any (int = 0) const
@@ -137,13 +139,23 @@ public:
 
   double double_value (bool = false) const { return scalar; }
 
+  float float_value (bool = false) const { return static_cast<float> (scalar); }
+
   double scalar_value (bool = false) const { return scalar; }
+
+  float float_scalar_value (bool = false) const { return static_cast<float> (scalar); }
 
   Matrix matrix_value (bool = false) const
     { return Matrix (1, 1, scalar); }
 
+  FloatMatrix float_matrix_value (bool = false) const
+    { return FloatMatrix (1, 1, scalar); }
+
   NDArray array_value (bool = false) const
     { return NDArray (dim_vector (1, 1), scalar); }
+
+  FloatNDArray float_array_value (bool = false) const
+    { return FloatNDArray (dim_vector (1, 1), scalar); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
     { return SparseMatrix (Matrix (1, 1, scalar)); }
@@ -156,11 +168,19 @@ public:
 
   Complex complex_value (bool = false) const { return scalar; }
 
+  FloatComplex float_complex_value (bool = false) const { return scalar; }
+
   ComplexMatrix complex_matrix_value (bool = false) const
     { return  ComplexMatrix (1, 1, Complex (scalar)); }
 
+  FloatComplexMatrix float_complex_matrix_value (bool = false) const
+    { return  FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
+
   ComplexNDArray complex_array_value (bool = false) const
     { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
+
+  FloatComplexNDArray float_complex_array_value (bool = false) const
+    { return FloatComplexNDArray (dim_vector (1, 1), FloatComplex (scalar)); }
 
   charNDArray
   char_array_value (bool = false) const

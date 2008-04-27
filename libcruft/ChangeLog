@@ -1,3 +1,191 @@
+2008-05-20  Jaroslav Hajek <highegg@gmail.com>
+
+	* qrupdate/cch1dn.f, qrupdate/cchinx.f, qrupdate/cqhqr.f, 
+	qrupdate/cqrinc.f, qrupdate/cqrinr.f, qrupdate/cqrqhu.f, 
+	qrupdate/cqrqhv.f, qrupdate/sch1dn.f, qrupdate/schinx.f, 
+	qrupdate/sqhqr.f, qrupdate/sqrinc.f, qrupdate/sqrinr.f, 
+	qrupdate/sqrqhu.f: Convert DOUBLE PRECISION constants to REAL.
+	* qrupdate/cqrinr.f, qrupdate/sqrinr.f: Correct EXTERNAL
+	declarations.
+	* qrupdate/sqrinr.f: Convert DOUBLE PRECISION calls to
+	REAL counterparts.
+
+2008-05-20  David Bateman  <dbateman@free.fr>
+
+	* Makefile.in (MISC_OBJ): Add misc/smachar.o
+	* Makerules.in (CRUFT_CSRC, CRUFT_CPICOBJ): Add CEXTRA, allowing
+	objects files with no corresponding source file in the
+	distribution.
+
+	* amos/cacai.f, amos/cacon.f, amos/cbesh.f, amos/cbesi.f,
+	amos/cbesj.f, amos/cbesk.f, amos/cbesy.f, amos/cbinu.f,
+	amos/cbuni.f, amos/cbunk.f, amos/cunk1.f amos/cunk2.f,
+	amos/crati.f, amos/cshch.f, amos/cuni1.f, amos/cuoik.f,
+	amos/cairy.f, amos/cbiry.f, amos/ckscl.f, amos/cs1s2.f,
+	amos/cuchk.f, amos/cuni2.f, amos/cwrsk.f, amos/casyi.f,
+	amos/cbknu.f, amos/cmlri.f, amos/cseri.f, amos/cunhj.f,
+	amos/cunik.f: New files.
+	* amos/Makefile.in (FSRC): Add them.
+
+	* blas-xtra/xsdot.f, blas-xtra/xsnrm2.f, blas-xtra/xscnrm2.f,
+	blas-xtra/xcdotc.f, blas-xtra/xcdotu.f: New files
+	* blas-xtra/Makefile.in (FSRC): Add them.
+
+	* blas/sasum.f, blas/saxpy.f, blas/scabs1.f, blas/scopy.f,
+	blas/sger.f, blas/smach.f, blas/snrm2.f, blas/srot.f,
+	blas/sswap.f, blas/ssymv.f, blas/ssyr.f, blas/ssyr2.f,
+	blas/ssyr2k.f, blas/stbsv.f, blas/strmm.f, blas/strmv.f,
+	blas/strsv.f, blas/scasum.f, blas/scnrm2.f, blas/caxpy.f,
+	blas/ccopy.f, blas/cdotc.f, blas/cdotu.f, blas/, blas/csrot.f,
+	blas/csscal.f, blas/cgemm.f, blas/cgemv.f, blas/cgerc.f,
+	blas/cgeru.f, blas/chemv.f, blas/cher.f, blas/cher2.f,
+	blas/cher2k.f, blas/cherk.f, blas/cscal.f, blas/cswap.f,
+	blas/ctbsv.f, blas/ctrmm.f, blas/ctrmv.f, blas/, blas/ctrsm.f,
+	blas/ctrsv.f: New files
+	* blas/Makefile.in (FSRC): Add them.
+
+	* fftpack/zfftb.f, zfftb1.f, fftpack/zfftf.f, fftpack/zfftf1.f,
+	fftpack/zffti.f, fftpack/zffti1.f, fftpack/zpassb.f,
+	fftpack/zpassb2.f, fftpack/zpassb3.f, fftpack/zpassb4.f,
+	fftpack/zpassb5.f, fftpack/zpassf.f, fftpack/zpassf2.f,
+	fftpack/zpassf3.f, fftpack/zpassf4.f, fftpack/zpassf5.f: Rename
+	function (c -> z | add z).
+	* fftpack/cfftb.f, cfftb1.f, fftpack/cfftf.f, fftpack/cfftf1.f,
+	fftpack/cffti.f, fftpack/cffti1.f, fftpack/passb.f,
+	fftpack/passb2.f, fftpack/passb3.f, fftpack/passb4.f,
+	fftpack/passb5.f, fftpack/passf.f, fftpack/passf2.f,
+	fftpack/passf3.f, fftpack/passf4.f, fftpack/passf5.f: New files
+	for single precision.
+	* fftpack/Makefile.in (FSRC): Add new files.
+
+	* lapack-xtra/xclange.f, lapack-xtra/xslamch.f,
+	lapack-xtra/xslange.f: New files.
+	* lapack-xtra/Makefile.in (FSRC): Add them.
+
+	* lapack/cbdsqr.f, lapack/csrscl.f, lapack/cgbcon.f,
+	lapack/cgbtf2.f, lapack/cgbtrf.f, lapack/cgbtrs.f,
+	lapack/cgebak.f, lapack/cgebal.f, lapack/cgebd2.f,
+	lapack/cgebrd.f, lapack/cgecon.f, lapack/cgeesx.f, lapack/cgeev.f,
+	lapack/cgehd2.f, lapack/cgehrd.f, lapack/cgelq2.f,
+	lapack/cgelqf.f, lapack/cgelsd.f, lapack/cgelss.f,
+	lapack/cgelsy.f, lapack/cgeqp3.f, lapack/cgeqpf.f,
+	lapack/cgeqr2.f, lapack/cgeqrf.f, lapack/cgesv.f, lapack/cgesvd.f,
+	lapack/cgetf2.f, lapack/cgetrf.f, lapack/cgetri.f,
+	lapack/cgetrs.f, lapack/cggbal.f, lapack/cgtsv.f, lapack/cgttrf.f,
+	lapack/cgttrs.f, lapack/cgtts2.f, lapack/cheev.f, lapack/chetd2.f,
+	lapack/chetrd.f, lapack/chseqr.f, lapack/clabrd.f,
+	lapack/clacgv.f, lapack/clacn2.f, lapack/clacon.f,
+	lapack/clacpy.f, lapack/cladiv.f, lapack/clahqr.f,
+	lapack/clahr2.f, lapack/clahrd.f, lapack/claic1.f,
+	lapack/clals0.f, lapack/clalsa.f, lapack/clalsd.f,
+	lapack/clange.f, lapack/clanhe.f, lapack/clanhs.f,
+	lapack/clantr.f, lapack/claqp2.f, lapack/claqps.f,
+	lapack/claqr0.f, lapack/claqr1.f, lapack/claqr2.f,
+	lapack/claqr3.f, lapack/claqr4.f, lapack/claqr5.f, lapack/clarf.f,
+	lapack/clarfb.f, lapack/clarfg.f, lapack/clarft.f,
+	lapack/clarfx.f, lapack/clartg.f, lapack/clarz.f, lapack/clarzb.f,
+	lapack/clarzt.f, lapack/clascl.f, lapack/claset.f, lapack/clasr.f,
+	lapack/classq.f, lapack/claswp.f, lapack/clatbs.f,
+	lapack/clatrd.f, lapack/clatrs.f, lapack/clatrz.f,
+	lapack/clauu2.f, lapack/clauum.f, lapack/cpbcon.f,
+	lapack/cpbtf2.f, lapack/cpbtrf.f, lapack/cpbtrs.f,
+	lapack/cpocon.f, lapack/cpotf2.f, lapack/cpotrf.f,
+	lapack/cpotri.f, lapack/cpotrs.f, lapack/cptsv.f, lapack/cpttrf.f,
+	lapack/cpttrs.f, lapack/cptts2.f, lapack/crot.f, lapack/csteqr.f,
+	lapack/ctrcon.f, lapack/ctrevc.f, lapack/ctrexc.f,
+	lapack/ctrsen.f, lapack/ctrsyl.f, lapack/ctrti2.f,
+	lapack/ctrtri.f, lapack/ctrtrs.f, lapack/ctzrzf.f,
+	lapack/cung2l.f, lapack/cung2r.f, lapack/cungbr.f,
+	lapack/cunghr.f, lapack/cungl2.f, lapack/cunglq.f,
+	lapack/cungql.f, lapack/cungqr.f, lapack/cungtr.f,
+	lapack/cunm2r.f, lapack/cunmbr.f, lapack/cunml2.f,
+	lapack/cunmlq.f, lapack/cunmqr.f, lapack/cunmr3.f,
+	lapack/cunmrz.f, lapack/sbdsqr.f, lapack/sgbcon.f,
+	lapack/sgbtf2.f, lapack/sgbtrf.f, lapack/sgbtrs.f,
+	lapack/sgebak.f, lapack/sgebal.f, lapack/sgebd2.f,
+	lapack/sgebrd.f, lapack/sgecon.f, lapack/sgeesx.f, lapack/sgeev.f,
+	lapack/sgehd2.f, lapack/sgehrd.f, lapack/sgelq2.f,
+	lapack/sgelqf.f, lapack/sgelsd.f, lapack/sgelss.f,
+	lapack/sgelsy.f, lapack/sgeqp3.f, lapack/sgeqpf.f,
+	lapack/sgeqr2.f, lapack/sgeqrf.f, lapack/sgesv.f, lapack/sgesvd.f,
+	lapack/sgetf2.f, lapack/sgetrf.f, lapack/sgetri.f,
+	lapack/sgetrs.f, lapack/sggbak.f, lapack/sggbal.f,
+	lapack/sgghrd.f, lapack/sgtsv.f, lapack/sgttrf.f, lapack/sgttrs.f,
+	lapack/sgtts2.f, lapack/shgeqz.f, lapack/shseqr.f,
+	lapack/slabad.f, lapack/slabrd.f, lapack/slacn2.f,
+	lapack/slacon.f, lapack/slacpy.f, lapack/sladiv.f, lapack/slae2.f,
+	lapack/slaed6.f, lapack/slaev2.f, lapack/slaexc.f, lapack/slag2.f,
+	lapack/slahqr.f, lapack/slahr2.f, lapack/slahrd.f,
+	lapack/slaic1.f, lapack/slaln2.f, lapack/slals0.f,
+	lapack/slalsa.f, lapack/slalsd.f, lapack/slamc1.f,
+	lapack/slamc2.f, lapack/slamc3.f, lapack/slamc4.f,
+	lapack/slamc5.f, lapack/slamch.f, lapack/slamrg.f,
+	lapack/slange.f, lapack/slanhs.f, lapack/slanst.f,
+	lapack/slansy.f, lapack/slantr.f, lapack/slanv2.f,
+	lapack/slapy2.f, lapack/slapy3.f, lapack/slaqp2.f,
+	lapack/slaqps.f, lapack/slaqr0.f, lapack/slaqr1.f,
+	lapack/slaqr2.f, lapack/slaqr3.f, lapack/slaqr4.f,
+	lapack/slaqr5.f, lapack/slarf.f, lapack/slarfb.f, lapack/slarfg.f,
+	lapack/slarft.f, lapack/slarfx.f, lapack/slartg.f, lapack/slarz.f,
+	lapack/slarzb.f, lapack/slarzt.f, lapack/slas2.f, lapack/slascl.f,
+	lapack/slasd0.f, lapack/slasd1.f, lapack/slasd2.f,
+	lapack/slasd3.f, lapack/slasd4.f, lapack/slasd5.f,
+	lapack/slasd6.f, lapack/slasd7.f, lapack/slasd8.f,
+	lapack/slasda.f, lapack/slasdq.f, lapack/slasdt.f,
+	lapack/slaset.f, lapack/slasq1.f, lapack/slasq2.f,
+	lapack/slasq3.f, lapack/slasq4.f, lapack/slasq5.f,
+	lapack/slasq6.f, lapack/slasr.f, lapack/slasrt.f, lapack/slassq.f,
+	lapack/slasv2.f, lapack/slaswp.f, lapack/slasy2.f,
+	lapack/slatbs.f, lapack/slatrd.f, lapack/slatrs.f,
+	lapack/slatrz.f, lapack/slauu2.f, lapack/slauum.f,
+	lapack/slazq3.f, lapack/slazq4.f, lapack/sorg2l.f,
+	lapack/sorg2r.f, lapack/sorgbr.f, lapack/sorghr.f,
+	lapack/sorgl2.f, lapack/sorglq.f, lapack/sorgql.f,
+	lapack/sorgqr.f, lapack/sorgtr.f, lapack/sorm2r.f,
+	lapack/sormbr.f, lapack/sorml2.f, lapack/sormlq.f,
+	lapack/sormqr.f, lapack/sormr3.f, lapack/sormrz.f,
+	lapack/spbcon.f, lapack/spbtf2.f, lapack/spbtrf.f,
+	lapack/spbtrs.f, lapack/spocon.f, lapack/spotri.f,
+	lapack/spotrs.f, lapack/sptsv.f, lapack/spttrf.f, lapack/spttrs.f,
+	lapack/sptts2.f, lapack/srscl.f, lapack/ssteqr.f, lapack/ssterf.f,
+	lapack/ssyev.f, lapack/ssytd2.f, lapack/ssytrd.f, lapack/stgevc.f,
+	lapack/strcon.f, lapack/strevc.f, lapack/strexc.f,
+	lapack/strsen.f, lapack/strsyl.f, lapack/strti2.f,
+	lapack/strtri.f, lapack/strtrs.f, lapack/stzrzf.f,
+	lapack/scsum1.f: New files
+	* lapack/Makefile.in (FSRC): Add them.
+
+	* misc/r1mach.f: New file
+	* misc/machar.cc: Modify to allow to be build twice, once for
+	double precision and once for single precision.
+	* misc/Makefile.in (FSRC): Add it.
+	(CEXTRA): Add smachar.c, and target for smachar.o
+	(MAKEDEPS): Include CEXTRA.
+
+	* qrupdate/sch1up.f, qrupdate/cch1up.f, qrupdate/sqrinc.f,
+	qrupdate/cqrinc.f, qrupdate/sqrdec.f, qrupdate/cqrdec.f,
+	qrupdate/sqrinr.f, qrupdate/cqrinr.f, qrupdate/sqrder.f,
+	qrupdate/cqrder.f, qrupdate/sqrshc.f, qrupdate/cqrshc.f,
+	qrupdate/sqr1up.f, qrupdate/cqr1up.f, qrupdate/sch1dn.f,
+	qrupdate/cch1dn.f, qrupdate/schinx.f, qrupdate/cchinx.f,
+	qrupdate/schdex.f, qrupdate/cchdex.f, qrupdate/sqrqhu.f,
+	qrupdate/cqrqhu.f, qrupdate/sqrqhv.f, qrupdate/cqrqhv.f,
+	qrupdate/sqhqr.f, qrupdate/cqhqr.f: New files.
+	* qrupdate/Makefile.in (FSRC): Add them.
+
+	* slatec-fn/acosh.f, slatec-fn/albeta.f, slatec-fn/algams.f,
+	slatec-fn/alngam.f, slatec-fn/alnrel.f, slatec-fn/asinh.f,
+	slatec-fn/atanh.f, slatec-fn/betai.f, slatec-fn/csevl.f,
+	slatec-fn/erf.f, slatec-fn/erfc.f, slatec-fn/gami.f,
+	slatec-fn/gamit.f, slatec-fn/gamlim.f, slatec-fn/gamma.f,
+	slatec-fn/gamr.f, slatec-fn/inits.f, slatec-fn/pchim.f,
+	slatec-fn/pchst.f, slatec-fn/r9gmit.f, slatec-fn/r9lgic.f,
+	slatec-fn/r9lgit.f, slatec-fn/r9lgmc.f, slatec-fn/xacosh.f,
+	slatec-fn/xasinh.f, slatec-fn/xatanh.f, slatec-fn/xbetai.f,
+	slatec-fn/xerf.f, slatec-fn/xerfc.f, slatec-fn/xgamma.f,
+	slatec-fn/xsgmainc.f: New files.
+	* slatec-fn/Makefile.in (FSRC): Add them.	
+
 2008-04-20  Jaroslav Hajek <highegg@gmail.com>
 
 	* qrupdate/dch1dn.f, qrupdate/dchdex.f, qrupdate/dchinx.f,

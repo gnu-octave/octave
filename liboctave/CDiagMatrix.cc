@@ -233,20 +233,6 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a, octave_idx_type beg)
 }
 
 ComplexDiagMatrix
-ComplexDiagMatrix::hermitian (void) const
-{
-  return ComplexDiagMatrix (mx_inline_conj_dup (data (), length ()),
-			    cols (), rows ());
-}
-
-ComplexDiagMatrix
-ComplexDiagMatrix::transpose (void) const
-{
-  return ComplexDiagMatrix (mx_inline_dup (data (), length ()),
-			    cols (), rows ());
-}
-
-ComplexDiagMatrix
 conj (const ComplexDiagMatrix& a)
 {
   ComplexDiagMatrix retval;

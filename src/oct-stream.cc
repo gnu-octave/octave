@@ -3219,7 +3219,7 @@ INSTANTIATE_DO_READ (int32NDArray);
 INSTANTIATE_DO_READ (uint32NDArray);
 INSTANTIATE_DO_READ (int64NDArray);
 INSTANTIATE_DO_READ (uint64NDArray);
-// INSTANTIATE_DO_READ (floatNDArray);
+INSTANTIATE_DO_READ (FloatNDArray);
 INSTANTIATE_DO_READ (NDArray);
 INSTANTIATE_DO_READ (charNDArray);
 INSTANTIATE_DO_READ (boolNDArray);
@@ -3270,10 +3270,7 @@ octave_stream::read (const Array<double>& size, octave_idx_type block_size,
       FILL_TABLE_ROW (oct_data_conv::dt_uint32, uint32NDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_int64, int64NDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_uint64, uint64NDArray);
-      // FIXME -- the following line allows things like int8=>single
-      // to work, but they will actually return a double value.  We
-      // need a floatNDArray for this to work properly.
-      FILL_TABLE_ROW (oct_data_conv::dt_single, NDArray);
+      FILL_TABLE_ROW (oct_data_conv::dt_single, FloatNDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_double, NDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_char, charNDArray);
       FILL_TABLE_ROW (oct_data_conv::dt_schar, charNDArray);
@@ -3606,6 +3603,11 @@ octave_stream::write (const Array<bool>&, octave_idx_type,
 
 template octave_idx_type
 octave_stream::write (const Array<double>&, octave_idx_type,
+		      oct_data_conv::data_type,
+		      octave_idx_type, oct_mach_info::float_format);
+
+template octave_idx_type
+octave_stream::write (const Array<float>&, octave_idx_type,
 		      oct_data_conv::data_type,
 		      octave_idx_type, oct_mach_info::float_format);
 

@@ -147,6 +147,26 @@ octave_range::double_value (bool) const
   return retval;
 }
 
+float
+octave_range::float_value (bool) const
+{
+  float retval = lo_ieee_float_nan_value ();
+
+  octave_idx_type nel = range.nelem ();
+
+  if (nel > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "range", "real scalar");
+
+      retval = range.base ();
+    }
+  else
+    gripe_invalid_conversion ("range", "real scalar");
+
+  return retval;
+}
+
 octave_value
 octave_range::all (int dim) const
 {
@@ -190,6 +210,28 @@ octave_range::complex_value (bool) const
   double tmp = lo_ieee_nan_value ();
 
   Complex retval (tmp, tmp);
+
+  octave_idx_type nel = range.nelem ();
+
+  if (nel > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "range", "complex scalar");
+
+      retval = range.base ();
+    }
+  else
+    gripe_invalid_conversion ("range", "complex scalar");
+
+  return retval;
+}
+
+FloatComplex
+octave_range::float_complex_value (bool) const
+{
+  float tmp = lo_ieee_float_nan_value ();
+
+  FloatComplex retval (tmp, tmp);
 
   octave_idx_type nel = range.nelem ();
 

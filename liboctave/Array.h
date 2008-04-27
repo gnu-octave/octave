@@ -461,6 +461,7 @@ public:
   bool is_empty (void) const { return numel () == 0; }
 
   Array<T> transpose (void) const;
+  Array<T> hermitian (T (*fcn) (const T&) = 0) const;
 
   const T *data (void) const { return rep->data; }
 

@@ -46,7 +46,11 @@ public:
 
   ComplexNDArray (const ComplexMatrix& a) : MArrayN<Complex> (a) { }
 
-  ComplexNDArray (const MArrayN<Complex>& a) : MArrayN<Complex> (a) { }
+  template <class U>
+  ComplexNDArray (const MArrayN<U>& a) : MArrayN<Complex> (a) { }
+
+  template <class U>
+  ComplexNDArray (const ArrayN<U>& a) : MArrayN<Complex> (a) { }
 
   ComplexNDArray& operator = (const ComplexNDArray& a)
     {

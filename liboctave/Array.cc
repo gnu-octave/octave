@@ -1203,7 +1203,48 @@ Array<T>::transpose (void) const
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
 
-  if (nr > 1 && nc > 1)
+  if (nr >= 8 && nc >= 8)
+    {
+      Array<T> result (dim_vector (nc, nr));
+
+      // Blocked transpose to attempt to avoid cache misses.
+
+      // Don't use OCTAVE_LOCAL_BUFFER here as it doesn't work with bool
+      // on some compilers.
+      T buf[64];
+
+      octave_idx_type ii = 0, jj;
+      for (jj = 0; jj < (nc - 8 + 1); jj += 8)
+	{
+	  for (ii = 0; ii < (nr - 8 + 1); ii += 8)
+	    {
+	      // Copy to buffer
+	      for (octave_idx_type j = jj, k = 0, idxj = jj * nr; 
+		   j < jj + 8; j++, idxj += nr)
+		for (octave_idx_type i = ii; i < ii + 8; i++)
+		  buf[k++] = xelem (i + idxj);
+
+	      // Copy from buffer
+	      for (octave_idx_type i = ii, idxi = ii * nc; i < ii + 8; 
+		   i++, idxi += nc)
+		for (octave_idx_type j = jj, k = i - ii; j < jj + 8; 
+		     j++, k+=8)
+		  result.xelem (j + idxi) = buf[k];
+	    }
+
+	  if (ii < nr)
+	    for (octave_idx_type j = jj; j < jj + 8; j++)
+	      for (octave_idx_type i = ii; i < nr; i++)
+		result.xelem (j, i) = xelem (i, j);
+	} 
+
+      for (octave_idx_type j = jj; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
+	  result.xelem (j, i) = xelem (i, j);
+
+      return result;
+    }
+  else if (nr > 1 && nc > 1)
     {
       Array<T> result (dim_vector (nc, nr));
 
@@ -1219,6 +1260,103 @@ Array<T>::transpose (void) const
       return Array<T> (*this, dim_vector (nc, nr));
     }
 }
+
+template <class T>
+Array<T>
+Array<T>::hermitian (T (*fcn) (const T&)) const
+{
+  assert (ndims () == 2);
+
+  octave_idx_type nr = dim1 ();
+  octave_idx_type nc = dim2 ();
+
+  if (nr >= 8 && nc >= 8)
+    {
+      Array<T> result (dim_vector (nc, nr));
+
+      // Blocked transpose to attempt to avoid cache misses.
+
+      // Don't use OCTAVE_LOCAL_BUFFER here as it doesn't work with bool
+      // on some compilers.
+      T buf[64];
+
+      octave_idx_type ii = 0, jj;
+      for (jj = 0; jj < (nc - 8 + 1); jj += 8)
+	{
+	  for (ii = 0; ii < (nr - 8 + 1); ii += 8)
+	    {
+	      // Copy to buffer
+	      for (octave_idx_type j = jj, k = 0, idxj = jj * nr; 
+		   j < jj + 8; j++, idxj += nr)
+		for (octave_idx_type i = ii; i < ii + 8; i++)
+		  buf[k++] = xelem (i + idxj);
+
+	      // Copy from buffer
+	      for (octave_idx_type i = ii, idxi = ii * nc; i < ii + 8; 
+		   i++, idxi += nc)
+		for (octave_idx_type j = jj, k = i - ii; j < jj + 8; 
+		     j++, k+=8)
+		  result.xelem (j + idxi) = fcn (buf[k]);
+	    }
+
+	  if (ii < nr)
+	    for (octave_idx_type j = jj; j < jj + 8; j++)
+	      for (octave_idx_type i = ii; i < nr; i++)
+		result.xelem (j, i) = fcn (xelem (i, j));
+	} 
+
+      for (octave_idx_type j = jj; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
+	  result.xelem (j, i) = fcn (xelem (i, j));
+
+      return result;
+    }
+  else
+    {
+      Array<T> result (dim_vector (nc, nr));
+
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
+	  result.xelem (j, i) = fcn (xelem (i, j));
+
+      return result;
+    }
+}
+
+/*
+
+%% Tranpose tests for matrices of the tile size and plus or minus a row
+%% and with four tiles.
+
+%!shared m7, mt7, m8, mt8, m9, mt9
+%! m7 = reshape (1 : 7*8, 8, 7);
+%! mt7 = [1:7; 1:7, 1:7, 1:7, 1:7; 1:7, 1:7, 1:7];
+%! m8 = reshape (1 : 8*8, 8, 8);
+%! mt8 = [1:8; 1:8, 1:8, 1:8, 1:8; 1:8, 1:8, 1:8];
+%! m9 = reshape (1 : 9*8, 8, 9);
+%! mt9 = [1:9; 1:9, 1:9, 1:9, 1:9; 1:9, 1:9, 1:9];
+
+%!assert (m7', mt7)
+%!assert ((1i*m7).', 1i * mt7)
+%!assert ((1i*m7)', conj (1i * mt7))
+%!assert (m8', mt8)
+%!assert ((1i*m8).', 1i * mt8)
+%!assert ((1i*m8)', conj (1i * mt8))
+%!assert (m9', mt9)
+%!assert ((1i*m9).', 1i * mt9)
+%!assert ((1i*m9)', conj (1i * mt9))
+
+%!assert ([m7, m7; m8, m8]', [mt7, mt8; mt7, mt8])
+%!assert ((1i*[m7, m7; m8, m8]).', 1i * [mt7, mt8; mt7, mt8])
+%!assert ((1i*[m7, m7; m8, m8])', conj (1i * [mt7, mt8; mt7, mt8]))
+%!assert ([m8, m8; m8, m8]', [mt8, mt8; mt8, mt8])
+%!assert ((1i*[m8, m8; m8, m8]).', 1i * [mt8, mt8; mt8, mt8])
+%!assert ((1i*[m8, m8; m8, m8])', conj (1i * [mt8, mt8; mt8, mt8]))
+%!assert ([m9, m9; m8, m8]', [mt9, mt8; mt9, mt8])
+%!assert ((1i*[m9, m9; m8, m8]).', 1i * [mt9, mt8; mt9, mt8])
+%!assert ((1i*[m9, m9; m8, m8])', conj (1i * [mt9, mt8; mt9, mt8]))
+
+*/
 
 template <class T>
 T *

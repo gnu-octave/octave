@@ -29,7 +29,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -118,6 +120,13 @@ DEFBINOP_OP (el_or, scalar, scalar, ||)
 
 DEFNDCATOP_FN (s_s, scalar, scalar, array, array, concat)
 
+CONVDECL (scalar_to_float)
+{
+  CAST_CONV_ARG (const octave_scalar&);
+
+  return new octave_float_matrix (FloatMatrix (1, 1, static_cast<float>(v.double_value ())));
+}
+
 void
 install_s_s_ops (void)
 {
@@ -152,6 +161,9 @@ install_s_s_ops (void)
   INSTALL_CATOP (octave_scalar, octave_scalar, s_s);
 
   INSTALL_ASSIGNCONV (octave_scalar, octave_scalar, octave_matrix);
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_scalar, octave_float_matrix);
+
+  INSTALL_CONVOP (octave_scalar, octave_float_matrix, scalar_to_float);
 }
 
 /*

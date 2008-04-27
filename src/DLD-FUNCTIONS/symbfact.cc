@@ -163,7 +163,7 @@ factorization as determined by @var{typ}.\n\
 	A->x = a.data();
     }
   else
-    gripe_wrong_type_arg ("symbfact", arg(0));
+    gripe_wrong_type_arg ("symbfact", args(0));
 
   octave_idx_type coletree = false;
   octave_idx_type n = A->nrow;

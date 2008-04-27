@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-scalar.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
@@ -105,6 +106,7 @@ DEFNDBINOP_FN (el_or, matrix, scalar, array, scalar, mx_el_or)
 DEFNDCATOP_FN (m_s, matrix, scalar, array, array, concat)
 
 DEFNDASSIGNOP_FN (assign, matrix, scalar, array, assign)
+DEFNDASSIGNOP_FN (sgl_assign, float_matrix, scalar, float_array, assign)
 
 void
 install_m_s_ops (void)
@@ -137,6 +139,7 @@ install_m_s_ops (void)
   INSTALL_CATOP (octave_matrix, octave_scalar, m_s);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_scalar, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_scalar, sgl_assign);
 }
 
 /*

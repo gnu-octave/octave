@@ -62,7 +62,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
     {
       OCTAVE_QUIT;
 
-      if (nda(k) != 0.0)
+      if (nda(k) != static_cast<T> (0.0))
 	{
 	  end_el = k;
 	  if (start_el == -1)
@@ -125,7 +125,7 @@ find_nonzero_elem_idx (const Array<T>& nda, int nargout,
 	{
 	  OCTAVE_QUIT;
 
-	  if (nda(k) != 0.0)
+	  if (nda(k) != static_cast<T> (0.0))
 	    {
 	      idx(count) = k + 1;
 
@@ -177,6 +177,12 @@ template octave_value_list find_nonzero_elem_idx (const Array<double>&, int,
 
 template octave_value_list find_nonzero_elem_idx (const Array<Complex>&, int,
 						  octave_idx_type, int);
+
+template octave_value_list find_nonzero_elem_idx (const Array<float>&, int,
+						  octave_idx_type, int);
+
+template octave_value_list find_nonzero_elem_idx (const Array<FloatComplex>&,
+						  int, octave_idx_type, int);
 
 template <typename T>
 octave_value_list
@@ -458,33 +464,55 @@ b = sparse(i, j, v, sz(1), sz(2));\n\
     }
   else
     {
-      if (arg.is_real_type ())
+      if (arg.is_single_type ())
 	{
-	  NDArray nda = arg.array_value ();
+	  if (arg.is_real_type ())
+	    {
+	      FloatNDArray nda = arg.float_array_value ();
 
-	  if (! error_state)
-	    retval = find_nonzero_elem_idx (nda, nargout, 
-					   n_to_find, direction);
-	}
-      else if (arg.is_complex_type ())
-	{
-	  ComplexNDArray cnda = arg.complex_array_value ();
+	      if (! error_state)
+		retval = find_nonzero_elem_idx (nda, nargout, 
+						n_to_find, direction);
+	    }
+	  else if (arg.is_complex_type ())
+	    {
+	      FloatComplexNDArray cnda = arg.float_complex_array_value ();
 
-	  if (! error_state)
-	    retval = find_nonzero_elem_idx (cnda, nargout, 
-					   n_to_find, direction);
-	}
-      else if (arg.is_string ())
-	{
-	  charNDArray cnda = arg.char_array_value ();
-
-	  if (! error_state)
-	    retval = find_nonzero_elem_idx (cnda, nargout, 
-					   n_to_find, direction);
+	      if (! error_state)
+		retval = find_nonzero_elem_idx (cnda, nargout, 
+						n_to_find, direction);
+	    }
 	}
       else
 	{
-	  gripe_wrong_type_arg ("find", arg);
+	  if (arg.is_real_type ())
+	    {
+	      NDArray nda = arg.array_value ();
+
+	      if (! error_state)
+		retval = find_nonzero_elem_idx (nda, nargout, 
+						n_to_find, direction);
+	    }
+	  else if (arg.is_complex_type ())
+	    {
+	      ComplexNDArray cnda = arg.complex_array_value ();
+
+	      if (! error_state)
+		retval = find_nonzero_elem_idx (cnda, nargout, 
+						n_to_find, direction);
+	    }
+	  else if (arg.is_string ())
+	    {
+	      charNDArray cnda = arg.char_array_value ();
+
+	      if (! error_state)
+		retval = find_nonzero_elem_idx (cnda, nargout, 
+						n_to_find, direction);
+	    }
+	  else
+	    {
+	      gripe_wrong_type_arg ("find", arg);
+	    }
 	}
     }
 

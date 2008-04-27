@@ -1,3 +1,8 @@
+2008-05-20  David Bateman  <dbateman@free.fr>
+
+	* configure.in (AC_CHECK_FUNCS): Add expm1, lgammaf, lgammaf_r,
+	log1pf and tgammaf. Also check for libfftw3f.
+
 2008-04-09  Rafael Laboissiere  <rafael@debian.org>
 
 	* example/octave.desktop.in: Drop the Encoding key, which is

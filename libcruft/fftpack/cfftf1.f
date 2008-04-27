@@ -1,5 +1,4 @@
       subroutine cfftf1 (n,c,ch,wa,ifac)
-      implicit double precision (a-h,o-z)
       dimension       ch(*)      ,c(*)       ,wa(*)      ,ifac(*)
       nf = ifac(2)
       na = 0

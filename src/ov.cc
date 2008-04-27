@@ -37,7 +37,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-bool-mat.h"
 #include "ov-cell.h"
 #include "ov-scalar.h"
+#include "ov-float.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-bool-sparse.h"
 #include "ov-cx-sparse.h"
 #include "ov-re-sparse.h"
@@ -50,7 +52,9 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-uint32.h"
 #include "ov-uint64.h"
 #include "ov-complex.h"
+#include "ov-flt-complex.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ov-ch-mat.h"
 #include "ov-str-mat.h"
 #include "ov-range.h"
@@ -478,6 +482,11 @@ octave_value::octave_value (double d)
 {
 }
 
+octave_value::octave_value (float d)
+  : rep (new octave_float_scalar (d))
+{
+}
+
 octave_value::octave_value (const Cell& c, bool is_csl)
   : rep (is_csl
 	 ? dynamic_cast<octave_base_value *> (new octave_cs_list (c))
@@ -498,8 +507,20 @@ octave_value::octave_value (const Matrix& m, const MatrixType& t)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const FloatMatrix& m, const MatrixType& t)
+  : rep (new octave_float_matrix (m, t))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const NDArray& a)
   : rep (new octave_matrix (a))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const FloatNDArray& a)
+  : rep (new octave_float_matrix (a))
 {
   maybe_mutate ();
 }
@@ -510,8 +531,20 @@ octave_value::octave_value (const ArrayN<double>& a)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<float>& a)
+  : rep (new octave_float_matrix (a))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const DiagMatrix& d)
   : rep (new octave_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const FloatDiagMatrix& d)
+  : rep (new octave_float_matrix (d))
 {
   maybe_mutate ();
 }
@@ -522,8 +555,20 @@ octave_value::octave_value (const RowVector& v)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const FloatRowVector& v)
+  : rep (new octave_float_matrix (v))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const ColumnVector& v)
   : rep (new octave_matrix (v))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const FloatColumnVector& v)
+  : rep (new octave_float_matrix (v))
 {
   maybe_mutate ();
 }
@@ -534,8 +579,20 @@ octave_value::octave_value (const Complex& C)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const FloatComplex& C)
+  : rep (new octave_float_complex (C))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const ComplexMatrix& m, const MatrixType& t)
   : rep (new octave_complex_matrix (m, t))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const FloatComplexMatrix& m, const MatrixType& t)
+  : rep (new octave_float_complex_matrix (m, t))
 {
   maybe_mutate ();
 }
@@ -546,13 +603,31 @@ octave_value::octave_value (const ComplexNDArray& a)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const FloatComplexNDArray& a)
+  : rep (new octave_float_complex_matrix (a))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const ArrayN<Complex>& a)
   : rep (new octave_complex_matrix (a))
 {
   maybe_mutate ();
 }
 
+octave_value::octave_value (const ArrayN<FloatComplex>& a)
+  : rep (new octave_float_complex_matrix (a))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const ComplexDiagMatrix& d)
+  : rep (new octave_complex_matrix (d))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const FloatComplexDiagMatrix& d)
   : rep (new octave_complex_matrix (d))
 {
   maybe_mutate ();
@@ -564,8 +639,20 @@ octave_value::octave_value (const ComplexRowVector& v)
   maybe_mutate ();
 }
 
+octave_value::octave_value (const FloatComplexRowVector& v)
+  : rep (new octave_float_complex_matrix (v))
+{
+  maybe_mutate ();
+}
+
 octave_value::octave_value (const ComplexColumnVector& v)
   : rep (new octave_complex_matrix (v))
+{
+  maybe_mutate ();
+}
+
+octave_value::octave_value (const FloatComplexColumnVector& v)
+  : rep (new octave_float_complex_matrix (v))
 {
   maybe_mutate ();
 }
@@ -1497,6 +1584,231 @@ octave_value::complex_vector_value (bool force_string_conv,
   return retval;
 }
 
+FloatColumnVector
+octave_value::float_column_vector_value (bool force_string_conv,
+				   bool /* frc_vec_conv */) const
+{
+  FloatColumnVector retval;
+
+  FloatMatrix m = float_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nc == 1)
+    {
+      retval.resize (nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+	retval (i) = m (i, 0);
+    }
+  else
+    {
+      std::string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "real column vector");
+    }
+
+  return retval;
+}
+
+FloatComplexColumnVector
+octave_value::float_complex_column_vector_value (bool force_string_conv,
+					   bool /* frc_vec_conv */) const
+{
+  FloatComplexColumnVector retval;
+
+  FloatComplexMatrix m = float_complex_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nc == 1)
+    {
+      retval.resize (nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+	retval (i) = m (i, 0);
+    }
+  else
+    {
+      std::string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "complex column vector");
+    }
+
+  return retval;
+}
+
+FloatRowVector
+octave_value::float_row_vector_value (bool force_string_conv,
+				bool /* frc_vec_conv */) const
+{
+  FloatRowVector retval;
+
+  FloatMatrix m = float_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nr == 1)
+    {
+      retval.resize (nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+	retval (i) = m (0, i);
+    }
+  else
+    {
+      std::string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "real row vector");
+    }
+
+  return retval;
+}
+
+FloatComplexRowVector
+octave_value::float_complex_row_vector_value (bool force_string_conv,
+					bool /* frc_vec_conv */) const
+{
+  FloatComplexRowVector retval;
+
+  FloatComplexMatrix m = float_complex_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nr == 1)
+    {
+      retval.resize (nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+	retval (i) = m (0, i);
+    }
+  else
+    {
+      std::string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "complex row vector");
+    }
+
+  return retval;
+}
+
+// Sloppy...
+
+Array<float>
+octave_value::float_vector_value (bool force_string_conv,
+			    bool force_vector_conversion) const
+{
+  Array<float> retval;
+
+  FloatMatrix m = float_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nr == 1)
+    {
+      retval.resize (nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+	retval (i) = m (0, i);
+    }
+  else if (nc == 1)
+    {
+      retval.resize (nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+	retval (i) = m (i, 0);
+    }
+  else if (nr > 0 && nc > 0)
+    {
+      if (! force_vector_conversion)
+	gripe_implicit_conversion ("Octave:array-as-vector",
+				   type_name (), "real vector");
+
+      retval.resize (nr * nc);
+      octave_idx_type k = 0;
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
+	  {
+	    OCTAVE_QUIT;
+
+	    retval (k++) = m (i, j);
+	  }
+    }
+  else
+    {
+      std::string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "real vector");
+    }
+
+  return retval;
+}
+
+Array<FloatComplex>
+octave_value::float_complex_vector_value (bool force_string_conv,
+				    bool force_vector_conversion) const
+{
+  Array<FloatComplex> retval;
+
+  FloatComplexMatrix m = float_complex_matrix_value (force_string_conv);
+
+  if (error_state)
+    return retval;
+
+  octave_idx_type nr = m.rows ();
+  octave_idx_type nc = m.columns ();
+
+  if (nr == 1)
+    {
+      retval.resize (nc);
+      for (octave_idx_type i = 0; i < nc; i++)
+	{
+	  OCTAVE_QUIT;
+	  retval (i) = m (0, i);
+	}
+    }
+  else if (nc == 1)
+    {
+      retval.resize (nr);
+      for (octave_idx_type i = 0; i < nr; i++)
+	{
+	  OCTAVE_QUIT;
+	  retval (i) = m (i, 0);
+	}
+    }
+  else if (nr > 0 && nc > 0)
+    {
+      if (! force_vector_conversion)
+	gripe_implicit_conversion ("Octave:array-as-vector",
+				   type_name (), "complex vector");
+
+      retval.resize (nr * nc);
+      octave_idx_type k = 0;
+      for (octave_idx_type j = 0; j < nc; j++)
+	for (octave_idx_type i = 0; i < nr; i++)
+	  {
+	    OCTAVE_QUIT;
+	    retval (k++) = m (i, j);
+	  }
+    }
+  else
+    {
+      std::string tn = type_name ();
+      gripe_invalid_conversion (tn.c_str (), "complex vector");
+    }
+
+  return retval;
+}
+
 int
 octave_value::write (octave_stream& os, int block_size,
 		     oct_data_conv::data_type output_type, int skip,
@@ -1631,12 +1943,132 @@ do_binary_op (octave_value::binary_op op,
 		    }
 		}
 	      else
+		{
+		  //demote double -> single and try again
+		  cf1 = tv1.numeric_demotion_function ();
+
+		  if (cf1)
+		    {
+		      octave_base_value *tmp = cf1 (*tv1.rep);
+
+		      if (tmp)
+			{
+			  tv1 = octave_value (tmp);
+			  t1 = tv1.type_id ();
+			}
+		      else
+			{
+			  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+			  return retval;
+			}
+		    }
+
+		  cf2 = tv2.numeric_demotion_function ();
+
+		  if (cf2)
+		    {
+		      octave_base_value *tmp = cf2 (*tv2.rep);
+
+		      if (tmp)
+			{
+			  tv2 = octave_value (tmp);
+			  t2 = tv2.type_id ();
+			}
+		      else
+			{
+			  gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+			  return retval;
+			}
+		    }
+
+		  if (cf1 || cf2)
+		    {
+		      f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+
+		      if (f)
+			{
+			  try
+			    {
+			      retval = f (*tv1.rep, *tv2.rep);
+			    }
+			  catch (octave_execution_exception)
+			    {
+			      octave_exception_state = octave_no_exception;
+			      error ("caught execution error in library function");
+			    }
+			}
+		      else
+			gripe_binary_op (octave_value::binary_op_as_string (op),
+					 v1.type_name (), v2.type_name ());
+		    }
+		  else
+		    gripe_binary_op (octave_value::binary_op_as_string (op),
+				     v1.type_name (), v2.type_name ());
+		}
+	    }
+	  else
+	    {
+	      //demote double -> single and try again
+	      cf1 = tv1.numeric_demotion_function ();
+
+	      if (cf1)
+		{
+		  octave_base_value *tmp = cf1 (*tv1.rep);
+
+		  if (tmp)
+		    {
+		      tv1 = octave_value (tmp);
+		      t1 = tv1.type_id ();
+		    }
+		  else
+		    {
+		      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+		      return retval;
+		    }
+		}
+
+	      cf2 = tv2.numeric_demotion_function ();
+
+	      if (cf2)
+		{
+		  octave_base_value *tmp = cf2 (*tv2.rep);
+
+		  if (tmp)
+		    {
+		      tv2 = octave_value (tmp);
+		      t2 = tv2.type_id ();
+		    }
+		  else
+		    {
+		      gripe_binary_op_conv (octave_value::binary_op_as_string (op));
+		      return retval;
+		    }
+		}
+
+	      if (cf1 || cf2)
+		{
+		  f = octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+
+		  if (f)
+		    {
+		      try
+			{
+			  retval = f (*tv1.rep, *tv2.rep);
+			}
+		      catch (octave_execution_exception)
+			{
+			  octave_exception_state = octave_no_exception;
+			  error ("caught execution error in library function");
+			}
+		    }
+		  else
+		    gripe_binary_op (octave_value::binary_op_as_string (op),
+				     v1.type_name (), v2.type_name ());
+		}
+	      else
 		gripe_binary_op (octave_value::binary_op_as_string (op),
 				 v1.type_name (), v2.type_name ());
 	    }
-	  else
-	    gripe_binary_op (octave_value::binary_op_as_string (op),
-			     v1.type_name (), v2.type_name ());
 	}
     }
 
@@ -2183,6 +2615,10 @@ install_types (void)
   octave_fcn_handle::register_type ();
   octave_fcn_inline::register_type ();
   octave_streamoff::register_type ();
+  octave_float_scalar::register_type ();
+  octave_float_complex::register_type ();
+  octave_float_matrix::register_type ();
+  octave_float_complex_matrix::register_type ();
 }
 
 #if 0

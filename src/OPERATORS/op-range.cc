@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-ch-mat.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-bool.h"
@@ -74,6 +75,13 @@ DEFNDCATOP_FN (b_r, bool, range, array, array, concat)
 DEFNDCATOP_FN (bm_r, bool_matrix, range, array, array, concat)
 DEFNDCATOP_FN (chm_r, char_matrix, range, char_array, array, concat)
 
+CONVDECL (range_to_float_matrix)
+{
+  CAST_CONV_ARG (const octave_range&);
+
+  return new octave_float_matrix (FloatNDArray (v.array_value ()));
+}
+
 void
 install_range_ops (void)
 {
@@ -98,6 +106,8 @@ install_range_ops (void)
   INSTALL_CATOP (octave_bool, octave_range, b_r);
   INSTALL_CATOP (octave_bool_matrix, octave_range, bm_r);
   INSTALL_CATOP (octave_char_matrix, octave_range, chm_r);
+
+  INSTALL_CONVOP (octave_range, octave_float_matrix, range_to_float_matrix);
 }
 
 /*

@@ -87,8 +87,14 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
   int arg_b_is_empty = empty_arg ("syl", b_nr, b_nc);
   int arg_c_is_empty = empty_arg ("syl", c_nr, c_nc);
 
+  bool isfloat = arg_a.is_single_type () || arg_b.is_single_type () ||
+    arg_c.is_single_type ();
+
   if (arg_a_is_empty > 0 && arg_b_is_empty > 0 && arg_c_is_empty > 0)
-    return octave_value (Matrix ());
+    if (isfloat)
+      return octave_value (FloatMatrix ());
+    else
+      return octave_value (Matrix ());
   else if (arg_a_is_empty || arg_b_is_empty || arg_c_is_empty)
     return retval;
 
@@ -106,51 +112,100 @@ syl ([1, 2; 3, 4], [5, 6; 7, 8], [9, 10; 11, 12])\n\
     }
   
   // Dimensions look o.k., let's solve the problem.
+  if (isfloat)
+    {
+      if (arg_a.is_complex_type ()
+	  || arg_b.is_complex_type ()
+	  || arg_c.is_complex_type ())
+	{
+	  // Do everything in complex arithmetic;
 
-    if (arg_a.is_complex_type ()
-	|| arg_b.is_complex_type ()
-	|| arg_c.is_complex_type ())
-      {
-	// Do everything in complex arithmetic;
+	  FloatComplexMatrix ca = arg_a.float_complex_matrix_value ();
 
-	ComplexMatrix ca = arg_a.complex_matrix_value ();
+	  if (error_state)
+	    return retval;
 
-	if (error_state)
-	  return retval;
+	  FloatComplexMatrix cb = arg_b.float_complex_matrix_value ();
 
-	ComplexMatrix cb = arg_b.complex_matrix_value ();
+	  if (error_state)
+	    return retval;
 
-	if (error_state)
-	  return retval;
+	  FloatComplexMatrix cc = arg_c.float_complex_matrix_value ();
 
-	ComplexMatrix cc = arg_c.complex_matrix_value ();
+	  if (error_state)
+	    return retval;
 
-	if (error_state)
-	  return retval;
+	  retval = Sylvester (ca, cb, cc);
+	}
+      else
+	{
+	  // Do everything in real arithmetic.
 
-	retval = Sylvester (ca, cb, cc);
-      }
-    else
-      {
-	// Do everything in real arithmetic.
+	  FloatMatrix ca = arg_a.float_matrix_value ();
 
-	Matrix ca = arg_a.matrix_value ();
+	  if (error_state)
+	    return retval;
 
-	if (error_state)
-	  return retval;
+	  FloatMatrix cb = arg_b.float_matrix_value ();
 
-	Matrix cb = arg_b.matrix_value ();
+	  if (error_state)
+	    return retval;
 
-	if (error_state)
-	  return retval;
+	  FloatMatrix cc = arg_c.float_matrix_value ();
 
-	Matrix cc = arg_c.matrix_value ();
+	  if (error_state)
+	    return retval;
 
-	if (error_state)
-	  return retval;
+	  retval = Sylvester (ca, cb, cc);
+	}
+    }
+  else
+    {
+      if (arg_a.is_complex_type ()
+	  || arg_b.is_complex_type ()
+	  || arg_c.is_complex_type ())
+	{
+	  // Do everything in complex arithmetic;
 
-	retval = Sylvester (ca, cb, cc);
-      }
+	  ComplexMatrix ca = arg_a.complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  ComplexMatrix cb = arg_b.complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  ComplexMatrix cc = arg_c.complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  retval = Sylvester (ca, cb, cc);
+	}
+      else
+	{
+	  // Do everything in real arithmetic.
+
+	  Matrix ca = arg_a.matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  Matrix cb = arg_b.matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  Matrix cc = arg_c.matrix_value ();
+
+	  if (error_state)
+	    return retval;
+
+	  retval = Sylvester (ca, cb, cc);
+	}
+    }
 
   return retval;
 }

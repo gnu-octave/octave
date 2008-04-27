@@ -109,6 +109,12 @@ public:
       return Array2<T> (tmp, tmp.rows (), tmp.columns ());
     }
 
+  Array2<T> hermitian (T (*fcn) (const T&) = 0) const
+    {
+      Array<T> tmp = Array<T>::hermitian (fcn);
+      return Array2<T> (tmp, tmp.rows (), tmp.columns ());
+    }
+
   Array2<T> index (idx_vector& i, int resize_ok = 0,
 		   const T& rfv = resize_fill_value (T ())) const
     {

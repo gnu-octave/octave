@@ -63,6 +63,9 @@ public:
       return *this;
     }
 
+  MArray<T> transpose (void) const { return Array<T>::transpose (); }
+  MArray<T> hermitian (T (*fcn) (const T&) = 0) const { return Array<T>::hermitian (fcn); }
+
   octave_idx_type nnz (void) const
     {
       octave_idx_type retval = 0;
@@ -81,6 +84,7 @@ public:
     }
 
   double norm (double p) const;
+  float norm (float p) const;
 
   template <class U, class F>
   MArray<U> map (F fcn) const

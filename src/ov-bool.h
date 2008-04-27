@@ -121,21 +121,39 @@ public:
 
   double double_value (bool = false) const { return scalar; }
 
+  float float_value (bool = false) const { return scalar; }
+
   double scalar_value (bool = false) const { return scalar; }
+
+  float float_scalar_value (bool = false) const { return scalar; }
 
   Matrix matrix_value (bool = false) const
     { return Matrix (1, 1, scalar); }
 
+  FloatMatrix float_matrix_value (bool = false) const
+    { return FloatMatrix (1, 1, scalar); }
+
   NDArray array_value (bool = false) const
     { return NDArray (dim_vector (1, 1), scalar); }
 
+  FloatNDArray float_array_value (bool = false) const
+    { return FloatNDArray (dim_vector (1, 1), scalar); }
+
   Complex complex_value (bool = false) const { return scalar; }
 
+  FloatComplex float_complex_value (bool = false) const { return scalar; }
+
   ComplexMatrix complex_matrix_value (bool = false) const
-    { return  ComplexMatrix (1, 1, Complex (scalar)); }
+    { return ComplexMatrix (1, 1, Complex (scalar)); }
+
+  FloatComplexMatrix float_complex_matrix_value (bool = false) const
+    { return FloatComplexMatrix (1, 1, FloatComplex (scalar)); }
 
   ComplexNDArray complex_array_value (bool = false) const
     { return ComplexNDArray (dim_vector (1, 1), Complex (scalar)); }
+
+  FloatComplexNDArray float_complex_array_value (bool = false) const
+    { return FloatComplexNDArray (dim_vector (1, 1), FloatComplex (scalar)); }
 
   SparseMatrix sparse_matrix_value (bool = false) const
     { return SparseMatrix (Matrix (1, 1, scalar)); }

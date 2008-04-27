@@ -37,7 +37,7 @@ August 3, 1988.
 
 #define ABS(xxx) ((xxx>ZERO)?(xxx):(-xxx))
 
-void
+static void
 rmachar(int *ibeta, int *it, int *irnd, int *ngrd, int *machep,
 	int *negep, int *iexp, int *minexp, int *maxexp, REAL *eps,
 	REAL *epsneg, REAL *xmin, REAL *xmax)
@@ -368,10 +368,18 @@ rmachar(int *ibeta, int *it, int *irnd, int *ngrd, int *machep,
 
 #ifndef TEST
 
+#ifdef SP
+F77_RET_T
+F77_FUNC (smachar, SMACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg,
+			   REAL *eps, REAL *log10_ibeta)
+{
+#else
 F77_RET_T
 F77_FUNC (machar, MACHAR) (REAL *xmin, REAL *xmax, REAL *epsneg,
 			   REAL *eps, REAL *log10_ibeta)
 {
+#endif
+
 #if defined (_CRAY)
 
   // FIXME -- make machar work for the Cray too.

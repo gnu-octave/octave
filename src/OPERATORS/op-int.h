@@ -58,6 +58,30 @@ along with Octave; see the file COPYING.  If not, see
   INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_scalar, TYPE ## _ ## double ## _m_s) \
   INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_matrix, TYPE ## _ ## double ## _m_m)
 
+#define OCTAVE_FLOAT_INT_CONCAT_FN(TYPE) \
+  DEFNDCATOP_FN2 (float ## _ ## TYPE ## _s_s, float_scalar, TYPE ## _scalar, TYPE ## NDArray, , float_array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN2 (float ## _ ## TYPE ## _s_m, float_scalar, TYPE ## _matrix, TYPE ## NDArray, , float_array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN2 (float ## _ ## TYPE ## _m_s, float_matrix, TYPE ## _scalar, TYPE ## NDArray, , float_array, TYPE ## _array, concat) \
+  DEFNDCATOP_FN2 (float ## _ ## TYPE ## _m_m, float_matrix, TYPE ## _matrix, TYPE ## NDArray, , float_array, TYPE ## _array, concat)
+
+#define OCTAVE_INSTALL_FLOAT_INT_CONCAT_FN(TYPE) \
+  INSTALL_CATOP (octave_float_scalar, octave_ ## TYPE ## _scalar, float ## _ ## TYPE ## _s_s) \
+  INSTALL_CATOP (octave_float_scalar, octave_ ## TYPE ## _matrix, float ## _ ## TYPE ## _s_m) \
+  INSTALL_CATOP (octave_float_matrix, octave_ ## TYPE ## _scalar, float ## _ ## TYPE ## _m_s) \
+  INSTALL_CATOP (octave_float_matrix, octave_ ## TYPE ## _matrix, float ## _ ## TYPE ## _m_m)
+
+#define OCTAVE_INT_FLOAT_CONCAT_FN(TYPE) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## float ## _s_s, TYPE ## _scalar, float_scalar, , TYPE ## NDArray, TYPE ## _array, float_array, concat) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## float ## _s_m, TYPE ## _scalar, float_matrix, , TYPE ## NDArray, TYPE ## _array, float_array, concat) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## float ## _m_s, TYPE ## _matrix, float_scalar, , TYPE ## NDArray, TYPE ## _array, float_array, concat) \
+  DEFNDCATOP_FN2 (TYPE ## _ ## float ## _m_m, TYPE ## _matrix, float_matrix, , TYPE ## NDArray, TYPE ## _array, float_array, concat)
+
+#define OCTAVE_INSTALL_INT_FLOAT_CONCAT_FN(TYPE) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_float_scalar, TYPE ## _ ## float ## _s_s) \
+  INSTALL_CATOP (octave_ ## TYPE ## _scalar, octave_float_matrix, TYPE ## _ ## float ## _s_m) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_float_scalar, TYPE ## _ ## float ## _m_s) \
+  INSTALL_CATOP (octave_ ## TYPE ## _matrix, octave_float_matrix, TYPE ## _ ## float ## _m_m)
+
 // For compatibility, concatenation with a character always returns a
 // character.
 
@@ -198,6 +222,18 @@ along with Octave; see the file COPYING.  If not, see
   xpow (double a, const octave_ ## T1& b) \
   { \
     return pow (a, b); \
+  } \
+ \
+  octave_value \
+  xpow (const octave_ ## T1& a, float b) \
+  { \
+    return pow (a, b); \
+  } \
+ \
+  octave_value \
+  xpow (float a, const octave_ ## T1& b) \
+  { \
+    return pow (a, b); \
   }
 
 #define OCTAVE_SS_INT_OPS(TYPE) \
@@ -206,12 +242,18 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_SS_INT_ARITH_OPS (ss, TYPE ## _, TYPE ## _) \
   OCTAVE_SS_INT_ARITH_OPS (ssx, TYPE ## _, ) \
   OCTAVE_SS_INT_ARITH_OPS (sxs, , TYPE ## _) \
+  OCTAVE_SS_INT_ARITH_OPS (ssfx, TYPE ## _, float_) \
+  OCTAVE_SS_INT_ARITH_OPS (sfxs, float_, TYPE ## _) \
   OCTAVE_SS_INT_CMP_OPS (ss, TYPE ## _, TYPE ## _) \
   OCTAVE_SS_INT_CMP_OPS (sx, TYPE ## _, ) \
   OCTAVE_SS_INT_CMP_OPS (xs, , TYPE ## _) \
+  OCTAVE_SS_INT_CMP_OPS (sfx, TYPE ## _, float_) \
+  OCTAVE_SS_INT_CMP_OPS (fxs, float_, TYPE ## _) \
   OCTAVE_SS_INT_BOOL_OPS (ss, TYPE ## _, TYPE ## _, octave_ ## TYPE (0), octave_ ## TYPE (0)) \
   OCTAVE_SS_INT_BOOL_OPS (sx, TYPE ## _, , octave_ ## TYPE (0), 0) \
-  OCTAVE_SS_INT_BOOL_OPS (xs, , TYPE ## _, 0, octave_ ## TYPE (0))
+  OCTAVE_SS_INT_BOOL_OPS (xs, , TYPE ## _, 0, octave_ ## TYPE (0)) \
+  OCTAVE_SS_INT_BOOL_OPS (sfx, TYPE ## _, float_, octave_ ## TYPE (0), 0) \
+  OCTAVE_SS_INT_BOOL_OPS (fxs, float_, TYPE ## _, 0, octave_ ## TYPE (0))
 
 #define OCTAVE_SM_INT_ARITH_OPS(PFX, TS, TM) \
   /* scalar by matrix ops. */ \
@@ -309,6 +351,30 @@ along with Octave; see the file COPYING.  If not, see
 	result (i) = pow (a, b(i)); \
       } \
     return octave_value (result); \
+  } \
+\
+  octave_value \
+  elem_xpow (const octave_ ## T1& a, const FloatNDArray& b) \
+  { \
+    T1 ## NDArray result (b.dims ()); \
+    for (int i = 0; i < b.length (); i++) \
+      { \
+	OCTAVE_QUIT; \
+	result (i) = pow (a, b(i)); \
+      } \
+    return octave_value (result); \
+  } \
+ \
+  octave_value \
+  elem_xpow (float a, const T2 ## NDArray& b) \
+  { \
+    T2 ## NDArray result (b.dims ()); \
+    for (int i = 0; i < b.length (); i++) \
+      { \
+	OCTAVE_QUIT; \
+	result (i) = pow (a, b(i)); \
+      } \
+    return octave_value (result); \
   }
 
 
@@ -325,14 +391,21 @@ along with Octave; see the file COPYING.  If not, see
   OCTAVE_SM_INT_ARITH_OPS (sm, TYPE ## _, TYPE ## _) \
   OCTAVE_SM_INT_ARITH_OPS (smx, TYPE ## _, )	     \
   OCTAVE_SM_INT_ARITH_OPS (sxm, , TYPE ## _) \
+  OCTAVE_SM_INT_ARITH_OPS (smfx, TYPE ## _, float_)	     \
+  OCTAVE_SM_INT_ARITH_OPS (sfxm, float_, TYPE ## _) \
   OCTAVE_SM_INT_CMP_OPS (sm, TYPE ## _, TYPE ## _) \
   OCTAVE_SM_INT_CMP_OPS (xm, , TYPE ## _) \
   OCTAVE_SM_INT_CMP_OPS (smx, TYPE ## _, ) \
+  OCTAVE_SM_INT_CMP_OPS (fxm, float_, TYPE ## _) \
+  OCTAVE_SM_INT_CMP_OPS (smfx, TYPE ## _, float_) \
   OCTAVE_SM_INT_BOOL_OPS (sm, TYPE ## _, TYPE ## _) \
   OCTAVE_SM_INT_BOOL_OPS (xm, , TYPE ## _) \
   OCTAVE_SM_INT_BOOL_OPS (smx, TYPE ## _, ) \
+  OCTAVE_SM_INT_BOOL_OPS (fxm, float_, TYPE ## _) \
+  OCTAVE_SM_INT_BOOL_OPS (smfx, TYPE ## _, float_) \
   OCTAVE_SM_CONV (TYPE ## _, TYPE ## _) \
-  OCTAVE_SM_CONV (TYPE ## _, complex_)
+  OCTAVE_SM_CONV (TYPE ## _, complex_) \
+  OCTAVE_SM_CONV (TYPE ## _, float_complex_)
 
 #define OCTAVE_MS_INT_ARITH_OPS(PFX, TM, TS) \
   /* matrix by scalar ops. */ \
@@ -431,6 +504,28 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
       result (i) = pow (a(i), b);		\
     } \
   return octave_value (result); \
+} \
+\
+octave_value elem_xpow (T1 ## NDArray a, float  b) \
+{ \
+  T1 ## NDArray result (a.dims ()); \
+  for (int i = 0; i < a.length (); i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = pow (a(i), b);		\
+    } \
+  return octave_value (result); \
+} \
+\
+octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
+{ \
+  T2 ## NDArray result (a.dims ()); \
+  for (int i = 0; i < a.length (); i++) \
+    { \
+      OCTAVE_QUIT; \
+      result (i) = pow (a(i), b);		\
+    } \
+  return octave_value (result); \
 }
 
 
@@ -439,14 +534,21 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_MS_INT_ARITH_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_MS_INT_ARITH_OPS (msx, TYPE ## _, ) \
   OCTAVE_MS_INT_ARITH_OPS (mxs, , TYPE ## _)	   \
+  OCTAVE_MS_INT_ARITH_OPS (msfx, TYPE ## _, float_) \
+  OCTAVE_MS_INT_ARITH_OPS (mfxs, float_, TYPE ## _)	   \
   OCTAVE_MS_INT_CMP_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_MS_INT_CMP_OPS (mx, TYPE ## _, ) \
   OCTAVE_MS_INT_CMP_OPS (mxs, , TYPE ## _) \
+  OCTAVE_MS_INT_CMP_OPS (mfx, TYPE ## _, float_) \
+  OCTAVE_MS_INT_CMP_OPS (mfxs, float_, TYPE ## _) \
   OCTAVE_MS_INT_BOOL_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_MS_INT_BOOL_OPS (mx, TYPE ## _, ) \
   OCTAVE_MS_INT_BOOL_OPS (mxs, , TYPE ## _) \
+  OCTAVE_MS_INT_BOOL_OPS (mfx, TYPE ## _, float_) \
+  OCTAVE_MS_INT_BOOL_OPS (mfxs, float_, TYPE ## _) \
   OCTAVE_MS_INT_ASSIGN_OPS (ms, TYPE ## _, TYPE ## _, TYPE ## _) \
-  OCTAVE_MS_INT_ASSIGN_OPS (mx, TYPE ## _, , )
+  OCTAVE_MS_INT_ASSIGN_OPS (mx, TYPE ## _, , ) \
+  OCTAVE_MS_INT_ASSIGN_OPS (mfx, TYPE ## _, float_, float_)
 
 #define OCTAVE_M_INT_UNOPS(TYPE) \
   /* matrix unary ops. */ \
@@ -572,6 +674,44 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
 	result (i) = pow (a(i), b(i)); \
       } \
     return octave_value (result); \
+  } \
+\
+  octave_value \
+  elem_xpow (const T1 ## NDArray& a, const FloatNDArray& b) \
+  { \
+    dim_vector a_dims = a.dims (); \
+    dim_vector b_dims = b.dims (); \
+    if (a_dims != b_dims) \
+      { \
+	gripe_nonconformant ("operator .^", a_dims, b_dims); \
+	return octave_value (); \
+      } \
+    T1 ## NDArray result (a_dims); \
+    for (int i = 0; i < a.length (); i++) \
+      { \
+	OCTAVE_QUIT; \
+	result (i) = pow (a(i), b(i)); \
+      } \
+    return octave_value (result); \
+  } \
+\
+  octave_value \
+  elem_xpow (const FloatNDArray& a, const T2 ## NDArray& b) \
+  { \
+    dim_vector a_dims = a.dims (); \
+    dim_vector b_dims = b.dims (); \
+    if (a_dims != b_dims) \
+      { \
+	gripe_nonconformant ("operator .^", a_dims, b_dims); \
+	return octave_value (); \
+      } \
+    T2 ## NDArray result (a_dims); \
+    for (int i = 0; i < a.length (); i++) \
+      { \
+	OCTAVE_QUIT; \
+	result (i) = pow (a(i), b(i)); \
+      } \
+    return octave_value (result); \
   }
 
 
@@ -589,23 +729,39 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_MM_INT_ARITH_OPS (mm, TYPE ## _, TYPE ## _)	\
   OCTAVE_MM_INT_ARITH_OPS (mmx, TYPE ## _, )	\
   OCTAVE_MM_INT_ARITH_OPS (mxm, , TYPE ## _)	   \
+  OCTAVE_MM_INT_ARITH_OPS (mmfx, TYPE ## _, float_)	\
+  OCTAVE_MM_INT_ARITH_OPS (mfxm, float_, TYPE ## _)	   \
   OCTAVE_MM_INT_CMP_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_MM_INT_CMP_OPS (mmx, TYPE ## _, ) \
+  OCTAVE_MM_INT_CMP_OPS (mfxm, float_, TYPE ## _) \
+  OCTAVE_MM_INT_CMP_OPS (mmfx, TYPE ## _, float_) \
   OCTAVE_MM_INT_CMP_OPS (mxm, , TYPE ## _) \
   OCTAVE_MM_INT_BOOL_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_MM_INT_BOOL_OPS (mmx, TYPE ## _, ) \
   OCTAVE_MM_INT_BOOL_OPS (mxm, , TYPE ## _) \
+  OCTAVE_MM_INT_BOOL_OPS (mmfx, TYPE ## _, float_) \
+  OCTAVE_MM_INT_BOOL_OPS (mfxm, float_, TYPE ## _) \
   OCTAVE_MM_INT_ASSIGN_OPS (mm, TYPE ## _, TYPE ## _, TYPE ## _) \
   OCTAVE_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, , ) \
-  OCTAVE_MM_CONV(TYPE ## _, complex_)
+  OCTAVE_MM_INT_ASSIGN_OPS (mmfx, TYPE ## _, float_, float_) \
+  OCTAVE_MM_CONV(TYPE ## _, complex_) \
+  OCTAVE_MM_CONV(TYPE ## _, float_complex_)
 
 #define OCTAVE_RE_INT_ASSIGN_OPS(TYPE) \
   DEFNDASSIGNOP_FN (TYPE ## ms_assign, matrix, TYPE ## _scalar, array, assign) \
   DEFNDASSIGNOP_FN (TYPE ## mm_assign, matrix, TYPE ## _matrix, array, assign)
 
+#define OCTAVE_FLT_RE_INT_ASSIGN_OPS(TYPE) \
+  DEFNDASSIGNOP_FN (TYPE ## fms_assign, float_matrix, TYPE ## _scalar, float_array, assign) \
+  DEFNDASSIGNOP_FN (TYPE ## fmm_assign, float_matrix, TYPE ## _matrix, float_array, assign)
+
 #define OCTAVE_CX_INT_ASSIGN_OPS(TYPE) \
   DEFNDASSIGNOP_FN (TYPE ## cms_assign, complex_matrix, TYPE ## _scalar, complex_array, assign) \
   DEFNDASSIGNOP_FN (TYPE ## cmm_assign, complex_matrix, TYPE ## _matrix, complex_array, assign)
+
+#define OCTAVE_FLT_CX_INT_ASSIGN_OPS(TYPE) \
+  DEFNDASSIGNOP_FN (TYPE ## fcms_assign, float_complex_matrix, TYPE ## _scalar, float_complex_array, assign) \
+  DEFNDASSIGNOP_FN (TYPE ## fcmm_assign, float_complex_matrix, TYPE ## _matrix, float_complex_array, assign)
 
 #define OCTAVE_INT_OPS(TYPE) \
   OCTAVE_SS_INT_OPS (TYPE) \
@@ -614,7 +770,9 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_MM_INT_OPS (TYPE) \
   OCTAVE_CONCAT_FN (TYPE) \
   OCTAVE_RE_INT_ASSIGN_OPS (TYPE) \
-  OCTAVE_CX_INT_ASSIGN_OPS (TYPE)
+  OCTAVE_FLT_RE_INT_ASSIGN_OPS (TYPE) \
+  OCTAVE_CX_INT_ASSIGN_OPS (TYPE) \
+  OCTAVE_FLT_CX_INT_ASSIGN_OPS (TYPE)
 
 #define OCTAVE_INSTALL_S_INT_UNOPS(TYPE) \
   INSTALL_UNOP (op_not, octave_ ## TYPE ## _scalar, s_not); \
@@ -655,15 +813,23 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_SS_INT_ARITH_OPS (ss, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SS_INT_ARITH_OPS (ssx, TYPE ## _, )	     \
   OCTAVE_INSTALL_SS_INT_ARITH_OPS (sxs,  , TYPE ## _)	     \
+  OCTAVE_INSTALL_SS_INT_ARITH_OPS (ssfx, TYPE ## _, float_)	     \
+  OCTAVE_INSTALL_SS_INT_ARITH_OPS (sfxs,  float_, TYPE ## _)	     \
   OCTAVE_INSTALL_SS_INT_CMP_OPS (ss, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SS_INT_CMP_OPS (sx, TYPE ## _, ) \
   OCTAVE_INSTALL_SS_INT_CMP_OPS (xs, , TYPE ## _) \
+  OCTAVE_INSTALL_SS_INT_CMP_OPS (sfx, TYPE ## _, float_) \
+  OCTAVE_INSTALL_SS_INT_CMP_OPS (fxs, float_, TYPE ## _) \
   OCTAVE_INSTALL_SS_INT_BOOL_OPS (ss, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SS_INT_BOOL_OPS (sx, TYPE ## _, ) \
   OCTAVE_INSTALL_SS_INT_BOOL_OPS (xs, , TYPE ## _) \
+  OCTAVE_INSTALL_SS_INT_BOOL_OPS (sfx, TYPE ## _, float_) \
+  OCTAVE_INSTALL_SS_INT_BOOL_OPS (fxs, float_, TYPE ## _) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_scalar, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_scalar, octave_complex_matrix)
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_scalar, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_scalar, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_complex_scalar, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_SM_INT_ARITH_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_add, octave_ ## T1 ## scalar, octave_ ## T2 ## matrix, PFX ## _add); \
@@ -693,17 +859,26 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_SM_INT_ARITH_OPS (sm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SM_INT_ARITH_OPS (smx, TYPE ## _, )	     \
   OCTAVE_INSTALL_SM_INT_ARITH_OPS (sxm, , TYPE ## _)	     \
+  OCTAVE_INSTALL_SM_INT_ARITH_OPS (smfx, TYPE ## _, float_)	     \
+  OCTAVE_INSTALL_SM_INT_ARITH_OPS (sfxm, float_, TYPE ## _)	     \
   OCTAVE_INSTALL_SM_INT_CMP_OPS (sm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SM_INT_CMP_OPS (xm, , TYPE ## _) \
   OCTAVE_INSTALL_SM_INT_CMP_OPS (smx, TYPE ## _, ) \
+  OCTAVE_INSTALL_SM_INT_CMP_OPS (fxm, float_, TYPE ## _) \
+  OCTAVE_INSTALL_SM_INT_CMP_OPS (smfx, TYPE ## _, float_) \
   OCTAVE_INSTALL_SM_INT_BOOL_OPS (sm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_SM_INT_BOOL_OPS (xm, , TYPE ## _) \
   OCTAVE_INSTALL_SM_INT_BOOL_OPS (smx, TYPE ## _, ) \
+  OCTAVE_INSTALL_SM_INT_BOOL_OPS (fxm, float_, TYPE ## _) \
+  OCTAVE_INSTALL_SM_INT_BOOL_OPS (smfx, TYPE ## _, float_) \
   INSTALL_WIDENOP (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, TYPE ## _s_ ## TYPE ## _m_conv) \
   INSTALL_WIDENOP (octave_ ## TYPE ## _scalar, octave_complex_matrix, TYPE ## _s_complex_m_conv) \
+  INSTALL_WIDENOP (octave_ ## TYPE ## _scalar, octave_float_complex_matrix, TYPE ## _s_float_complex_m_conv) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_ ## TYPE ## _matrix, octave_ ## TYPE ## _matrix) \
   INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_matrix, octave_ ## TYPE ## _matrix) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_matrix, octave_complex_matrix)
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_matrix, octave_ ## TYPE ## _matrix) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_complex_matrix, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _scalar, octave_float_complex_matrix, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_MS_INT_ARITH_OPS(PFX, T1, T2) \
   INSTALL_BINOP (op_add, octave_ ## T1 ## matrix, octave_ ## T2 ## scalar, PFX ## _add); \
@@ -737,15 +912,23 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (msx, TYPE ## _, ) \
   OCTAVE_INSTALL_MS_INT_ARITH_OPS (mxs, , TYPE ## _)	   \
+  OCTAVE_INSTALL_MS_INT_ARITH_OPS (msfx, TYPE ## _, float_) \
+  OCTAVE_INSTALL_MS_INT_ARITH_OPS (mfxs, float_, TYPE ## _)	   \
   OCTAVE_INSTALL_MS_INT_CMP_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_CMP_OPS (mx, TYPE ## _, ) \
   OCTAVE_INSTALL_MS_INT_CMP_OPS (mxs, , TYPE ## _) \
+  OCTAVE_INSTALL_MS_INT_CMP_OPS (mfx, TYPE ## _, float_) \
+  OCTAVE_INSTALL_MS_INT_CMP_OPS (mfxs, float_, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_BOOL_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_BOOL_OPS (mx, TYPE ## _, ) \
   OCTAVE_INSTALL_MS_INT_BOOL_OPS (mxs, , TYPE ## _) \
+  OCTAVE_INSTALL_MS_INT_BOOL_OPS (mfx, TYPE ## _, float_) \
+  OCTAVE_INSTALL_MS_INT_BOOL_OPS (mfxs, float_, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (ms, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mx, TYPE ## _, ) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_scalar, octave_complex_matrix)
+  OCTAVE_INSTALL_MS_INT_ASSIGN_OPS (mfx, TYPE ## _, float_) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_scalar, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_float_complex_scalar, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_M_INT_UNOPS(TYPE) \
   INSTALL_UNOP (op_not, octave_ ## TYPE ## _matrix, m_not); \
@@ -789,16 +972,25 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (mm, TYPE ##_, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (mmx, TYPE ##_, ) \
   OCTAVE_INSTALL_MM_INT_ARITH_OPS (mxm, , TYPE ##_)	   \
+  OCTAVE_INSTALL_MM_INT_ARITH_OPS (mmfx, TYPE ##_, float_) \
+  OCTAVE_INSTALL_MM_INT_ARITH_OPS (mfxm, float_, TYPE ##_)	   \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mmx, TYPE ## _, ) \
   OCTAVE_INSTALL_MM_INT_CMP_OPS (mxm, , TYPE ## _) \
+  OCTAVE_INSTALL_MM_INT_CMP_OPS (mmfx, TYPE ## _, float_) \
+  OCTAVE_INSTALL_MM_INT_CMP_OPS (mfxm, float_, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mmx, TYPE ## _, ) \
   OCTAVE_INSTALL_MM_INT_BOOL_OPS (mxm, , TYPE ## _) \
+  OCTAVE_INSTALL_MM_INT_BOOL_OPS (mmfx, TYPE ## _, float_) \
+  OCTAVE_INSTALL_MM_INT_BOOL_OPS (mfxm, float_, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mm, TYPE ## _, TYPE ## _) \
   OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmx, TYPE ## _, ) \
+  OCTAVE_INSTALL_MM_INT_ASSIGN_OPS (mmfx, TYPE ## _, float_) \
   INSTALL_WIDENOP (octave_ ## TYPE ## _matrix, octave_complex_matrix, TYPE ## _m_complex_m_conv) \
-  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_matrix, octave_complex_matrix)
+  INSTALL_WIDENOP (octave_ ## TYPE ## _matrix, octave_float_complex_matrix, TYPE ## _m_float_complex_m_conv) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_complex_matrix, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV (octave_ ## TYPE ## _matrix, octave_float_complex_matrix, octave_float_complex_matrix)
 
 #define OCTAVE_INSTALL_RE_INT_ASSIGN_OPS(TYPE) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_ ## TYPE ## _scalar, TYPE ## ms_assign) \
@@ -806,11 +998,23 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   INSTALL_ASSIGNCONV (octave_scalar, octave_ ## TYPE ## _scalar, octave_matrix) \
   INSTALL_ASSIGNCONV (octave_matrix, octave_ ## TYPE ## _matrix, octave_matrix)
 
+#define OCTAVE_INSTALL_FLT_RE_INT_ASSIGN_OPS(TYPE) \
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_ ## TYPE ## _scalar, TYPE ## fms_assign) \
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_ ## TYPE ## _matrix, TYPE ## fmm_assign) \
+  INSTALL_ASSIGNCONV (octave_float_scalar, octave_ ## TYPE ## _scalar, octave_float_matrix) \
+  INSTALL_ASSIGNCONV (octave_float_matrix, octave_ ## TYPE ## _matrix, octave_float_matrix)
+
 #define OCTAVE_INSTALL_CX_INT_ASSIGN_OPS(TYPE) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_ ## TYPE ## _scalar, TYPE ## cms_assign) \
   INSTALL_ASSIGNOP (op_asn_eq, octave_complex_matrix, octave_ ## TYPE ## _matrix, TYPE ## cmm_assign) \
   INSTALL_ASSIGNCONV (octave_complex_scalar, octave_ ## TYPE ## _scalar, octave_complex_matrix) \
   INSTALL_ASSIGNCONV (octave_complex_matrix, octave_ ## TYPE ## _matrix, octave_complex_matrix)
+
+#define OCTAVE_INSTALL_FLT_CX_INT_ASSIGN_OPS(TYPE) \
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, octave_ ## TYPE ## _scalar, TYPE ## fcms_assign) \
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, octave_ ## TYPE ## _matrix, TYPE ## fcmm_assign) \
+  INSTALL_ASSIGNCONV (octave_float_complex_scalar, octave_ ## TYPE ## _scalar, octave_complex_matrix) \
+  INSTALL_ASSIGNCONV (octave_float_complex_matrix, octave_ ## TYPE ## _matrix, octave_complex_matrix)
 
 #define OCTAVE_INSTALL_INT_OPS(TYPE) \
   OCTAVE_INSTALL_SS_INT_OPS (TYPE) \
@@ -819,7 +1023,9 @@ octave_value elem_xpow (NDArray a, octave_ ## T2  b) \
   OCTAVE_INSTALL_MM_INT_OPS (TYPE) \
   OCTAVE_INSTALL_CONCAT_FN (TYPE) \
   OCTAVE_INSTALL_RE_INT_ASSIGN_OPS (TYPE) \
-  OCTAVE_INSTALL_CX_INT_ASSIGN_OPS (TYPE)
+  OCTAVE_INSTALL_FLT_RE_INT_ASSIGN_OPS (TYPE) \
+  OCTAVE_INSTALL_CX_INT_ASSIGN_OPS (TYPE) \
+  OCTAVE_INSTALL_FLT_CX_INT_ASSIGN_OPS (TYPE)
 
 #define OCTAVE_INSTALL_SM_INT_ASSIGNCONV(TLHS, TRHS) \
   INSTALL_ASSIGNCONV (octave_ ## TLHS ## _scalar, octave_ ## TRHS ## _scalar, octave_ ## TLHS ## _matrix) \

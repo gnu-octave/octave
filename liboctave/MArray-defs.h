@@ -343,9 +343,9 @@ along with Octave; see the file COPYING.  If not, see
   MDIAGARRAY2_DADA_BINOP_FWD_DEFS \
     (R, T, dynamic_cast<const B<T>&>, R, dynamic_cast<const B<T>&>, R)
 
-#define MARRAY_NORM_BODY(TYPE, blas_norm, BLAS_NORM)	\
+#define MARRAY_NORM_BODY(TYPE, RTYPE, blas_norm, BLAS_NORM, NAN_VALUE)	\
  \
-  double retval = octave_NaN; \
+  RTYPE retval = NAN_VALUE; \
  \
   octave_idx_type len = length (); \
  \
@@ -359,20 +359,20 @@ along with Octave; see the file COPYING.  If not, see
 	  retval = 0; \
  \
           /* precondition */ \
-          double inf_norm = 0.; \
+          RTYPE inf_norm = 0.; \
 	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
-              double d_abs = std::abs (d[i]); \
+              RTYPE d_abs = std::abs (d[i]); \
               if (d_abs > inf_norm) \
                 inf_norm = d_abs; \
             } \
           inf_norm = (inf_norm == octave_Inf || inf_norm == 0. ? 1.0 : \
 		      inf_norm); \
-          double scale = 1. / inf_norm; \
+          RTYPE scale = 1. / inf_norm; \
 \
 	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
-	      double d_abs = std::abs (d[i]) * scale; \
+	      RTYPE d_abs = std::abs (d[i]) * scale; \
 	      retval += d_abs * d_abs; \
 	    } \
  \
@@ -394,7 +394,7 @@ along with Octave; see the file COPYING.  If not, see
 	    { \
 	      while (i < len) \
 		{ \
-		  double d_abs = std::abs (d[i++]); \
+		  RTYPE d_abs = std::abs (d[i++]); \
  \
 		  if (d_abs > retval) \
 		    retval = d_abs; \
@@ -404,7 +404,7 @@ along with Octave; see the file COPYING.  If not, see
 	    { \
 	      while (i < len) \
 		{ \
-		  double d_abs = std::abs (d[i++]); \
+		  RTYPE d_abs = std::abs (d[i++]); \
  \
 		  if (d_abs < retval) \
 		    retval = d_abs; \
@@ -417,7 +417,7 @@ along with Octave; see the file COPYING.  If not, see
  \
 	  for (octave_idx_type i = 0; i < len; i++) \
 	    { \
-	      double d_abs = std::abs (d[i]); \
+	      RTYPE d_abs = std::abs (d[i]); \
 	      retval += pow (d_abs, p); \
 	    } \
  \

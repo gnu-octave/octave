@@ -77,62 +77,91 @@ be avoided. It is significantly more accurate and faster to do\n\
   octave_value result;
   octave_idx_type info;
   double rcond = 0.0;
-  if (arg.is_real_type ())
-    {
-      if (arg.is_sparse_type ())
-	{
-	  SparseMatrix m = arg.sparse_matrix_value ();
-	  if (! error_state)
-	    {
-	      MatrixType mattyp = args(0).matrix_type ();
-	      result = m.inverse (mattyp, info, rcond, 1);
-	      args(0).matrix_type (mattyp);
-	    }
-	}
-      else
-	{
-	  Matrix m = arg.matrix_value ();
-	  if (! error_state)
-	    {
-	      MatrixType mattyp = args(0).matrix_type ();
-	      result = m.inverse (mattyp, info, rcond, 1);
-	      args(0).matrix_type (mattyp);
-	    }
-	}
-    }
-  else if (arg.is_complex_type ())
-    {
-      if (arg.is_sparse_type ())
-	{
-	  SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
-	  if (! error_state)
-	    {
-	      MatrixType mattyp = args(0).matrix_type ();
-	      result = m.inverse (mattyp, info, rcond, 1);
-	      args(0).matrix_type (mattyp);
-	    }
-	}
-      else
-	{
-	  ComplexMatrix m = arg.complex_matrix_value ();
-	  if (! error_state)
-	    {
-	      MatrixType mattyp = args(0).matrix_type ();
-	      result = m.inverse (mattyp, info, rcond, 1);
-	      args(0).matrix_type (mattyp);
-	    }
-	}
+  float frcond = 0.0;
+  bool isfloat = arg.is_single_type ();
 
-
+  if (isfloat)
+    {
+      if (arg.is_real_type ())
+	{
+	  FloatMatrix m = arg.float_matrix_value ();
+	  if (! error_state)
+	    {
+	      MatrixType mattyp = args(0).matrix_type ();
+	      result = m.inverse (mattyp, info, frcond, 1);
+	      args(0).matrix_type (mattyp);
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  FloatComplexMatrix m = arg.float_complex_matrix_value ();
+	  if (! error_state)
+	    {
+	      MatrixType mattyp = args(0).matrix_type ();
+	      result = m.inverse (mattyp, info, frcond, 1);
+	      args(0).matrix_type (mattyp);
+	    }
+	}
     }
   else
-    gripe_wrong_type_arg ("inv", arg);
-
+    {
+      if (arg.is_real_type ())
+	{
+	  if (arg.is_sparse_type ())
+	    {
+	      SparseMatrix m = arg.sparse_matrix_value ();
+	      if (! error_state)
+		{
+		  MatrixType mattyp = args(0).matrix_type ();
+		  result = m.inverse (mattyp, info, rcond, 1);
+		  args(0).matrix_type (mattyp);
+		}
+	    }
+	  else
+	    {
+	      Matrix m = arg.matrix_value ();
+	      if (! error_state)
+		{
+		  MatrixType mattyp = args(0).matrix_type ();
+		  result = m.inverse (mattyp, info, rcond, 1);
+		  args(0).matrix_type (mattyp);
+		}
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  if (arg.is_sparse_type ())
+	    {
+	      SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+	      if (! error_state)
+		{
+		  MatrixType mattyp = args(0).matrix_type ();
+		  result = m.inverse (mattyp, info, rcond, 1);
+		  args(0).matrix_type (mattyp);
+		}
+	    }
+	  else
+	    {
+	      ComplexMatrix m = arg.complex_matrix_value ();
+	      if (! error_state)
+		{
+		  MatrixType mattyp = args(0).matrix_type ();
+		  result = m.inverse (mattyp, info, rcond, 1);
+		  args(0).matrix_type (mattyp);
+		}
+	    }
+	}
+      else
+	gripe_wrong_type_arg ("inv", arg);
+    }
 
   if (! error_state)
     {
       if (nargout > 1)
-	retval(1) = rcond;
+	if (isfloat)
+	  retval(1) = frcond;
+	else
+	  retval(1) = rcond;
 
       retval(0) = result;
 

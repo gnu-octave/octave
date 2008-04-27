@@ -38,7 +38,20 @@ FSRC = dqr1up.f zqr1up.f \
        dchdex.f zchdex.f \
        dqrqhu.f zqrqhu.f \
        dqrqhv.f zqrqhv.f \
-       dqhqr.f zqhqr.f 
+       dqhqr.f zqhqr.f \
+       sch1up.f cch1up.f \
+       sqrinc.f cqrinc.f \
+       sqrdec.f cqrdec.f \
+       sqrinr.f cqrinr.f \
+       sqrder.f cqrder.f \
+       sqrshc.f cqrshc.f \
+       sqr1up.f cqr1up.f \
+       sch1dn.f cch1dn.f \
+       schinx.f cchinx.f \
+       schdex.f cchdex.f \
+       sqrqhu.f cqrqhu.f \
+       sqrqhv.f cqrqhv.f \
+       sqhqr.f cqhqr.f
 
 include $(TOPDIR)/Makeconf
 

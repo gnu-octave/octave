@@ -52,7 +52,7 @@ DET::initialize10 (void)
 {
   if (c2 != 0.0)
     {
-      double etmp = e2 / xlog2 (10);
+      double etmp = e2 / xlog2 (static_cast<double>(10));
       e10 = static_cast<int> (xround (etmp));
       etmp -= e10;
       c10 = c2 * pow (10.0, etmp);
@@ -74,7 +74,7 @@ DET::initialize2 (void)
 double
 DET::value (void) const
 {
-  return base2 ? c2 * xexp2 (e2) : c10 * pow (10.0, e10);
+  return base2 ? c2 * xexp2 (static_cast<double>(e2)) : c10 * pow (10.0, e10);
 }
 
 /*

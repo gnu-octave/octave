@@ -134,12 +134,16 @@ is ill-conditioned.\n\
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
 
+  bool isfloat = arg.is_single_type ();
   int arg_is_empty = empty_arg ("expm", nr, nc);
 
   if (arg_is_empty < 0)
     return retval;
   if (arg_is_empty > 0)
-    return octave_value (Matrix ());
+    if (isfloat)
+      return octave_value (FloatMatrix ());
+    else
+      return octave_value (Matrix ());
 
   if (nr != nc)
     {
@@ -147,27 +151,51 @@ is ill-conditioned.\n\
       return retval;
     }
 
-  if (arg.is_real_type ())
+  if (isfloat)
     {
-      Matrix m = arg.matrix_value ();
+      if (arg.is_real_type ())
+	{
+	  FloatMatrix m = arg.float_matrix_value ();
 
-      if (error_state)
-	return retval;
-      else
-	retval = m.expm ();
-    }
-  else if (arg.is_complex_type ())
-    {
-      ComplexMatrix m = arg.complex_matrix_value ();
+	  if (error_state)
+	    return retval;
+	  else
+	    retval = m.expm ();
+	}
+      else if (arg.is_complex_type ())
+	{
+	  FloatComplexMatrix m = arg.float_complex_matrix_value ();
 
-      if (error_state)
-	return retval;
-      else
-	retval = m.expm ();
+	  if (error_state)
+	    return retval;
+	  else
+	    retval = m.expm ();
+	}
     }
   else
     {
-      gripe_wrong_type_arg ("expm", arg);
+      if (arg.is_real_type ())
+	{
+	  Matrix m = arg.matrix_value ();
+
+	  if (error_state)
+	    return retval;
+	  else
+	    retval = m.expm ();
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ComplexMatrix m = arg.complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+	  else
+	    retval = m.expm ();
+	}
+      else
+	{
+	  gripe_wrong_type_arg ("expm", arg);
+	}
     }
 
   return retval;

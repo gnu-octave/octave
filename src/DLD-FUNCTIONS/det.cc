@@ -27,6 +27,8 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "CmplxDET.h"
 #include "dbleDET.h"
+#include "fCmplxDET.h"
+#include "floatDET.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -75,74 +77,114 @@ if requested.\n\
       return retval;
     }
 
-  if (arg.is_real_type ())
-    {
-      octave_idx_type info;
-      double rcond = 0.0;
-      // Always compute rcond, so we can detect numerically
-      // singular matrices.
-      if (arg.is_sparse_type ())
-	{
-	  SparseMatrix m = arg.sparse_matrix_value ();
-	  if (! error_state)
-	    {
-	      DET det = m.determinant (info, rcond);
-	      retval(1) = rcond;
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
-	    }
-	}
-      else
-	{
-	  Matrix m = arg.matrix_value ();
-	  if (! error_state)
-	    {
-	      DET det = m.determinant (info, rcond);
-	      retval(1) = rcond;
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
-	    }
-	}
-    }
-  else if (arg.is_complex_type ())
-    {
-      octave_idx_type info;
-      double rcond = 0.0;
-      // Always compute rcond, so we can detect numerically
-      // singular matrices.
-      if (arg.is_sparse_type ())
-	{
-	  SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
-	  if (! error_state)
-	    {
-	      ComplexDET det = m.determinant (info, rcond);
-	      retval(1) = rcond;
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0) 
-			   ? Complex (0.0) : det.value ());
-	    }
-	}
-      else
-	{
-	  ComplexMatrix m = arg.complex_matrix_value ();
-	  if (! error_state)
-	    {
-	      ComplexDET det = m.determinant (info, rcond);
-	      retval(1) = rcond;
-	      volatile double xrcond = rcond;
-	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0) 
-			   ? Complex (0.0) : det.value ());
 
+  if (arg.is_single_type ())
+    {
+      if (arg.is_real_type ())
+	{
+	  octave_idx_type info;
+	  float rcond = 0.0;
+	  // Always compute rcond, so we can detect numerically
+	  // singular matrices.
+	  FloatMatrix m = arg.float_matrix_value ();
+	  if (! error_state)
+	    {
+	      FloatDET det = m.determinant (info, rcond);
+	      retval(1) = rcond;
+	      volatile float xrcond = rcond;
+	      xrcond += 1.0;
+	      retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  octave_idx_type info;
+	  float rcond = 0.0;
+	  // Always compute rcond, so we can detect numerically
+	  // singular matrices.
+	  FloatComplexMatrix m = arg.float_complex_matrix_value ();
+	  if (! error_state)
+	    {
+	      FloatComplexDET det = m.determinant (info, rcond);
+	      retval(1) = rcond;
+	      volatile float xrcond = rcond;
+	      xrcond += 1.0;
+	      retval(0) = ((info == -1 || xrcond == 1.0) 
+			   ? Complex (0.0) : det.value ());
+	      
 	    }
 	}
     }
   else
-    gripe_wrong_type_arg ("det", arg);
+    {
+      if (arg.is_real_type ())
+	{
+	  octave_idx_type info;
+	  double rcond = 0.0;
+	  // Always compute rcond, so we can detect numerically
+	  // singular matrices.
+	  if (arg.is_sparse_type ())
+	    {
+	      SparseMatrix m = arg.sparse_matrix_value ();
+	      if (! error_state)
+		{
+		  DET det = m.determinant (info, rcond);
+		  retval(1) = rcond;
+		  volatile double xrcond = rcond;
+		  xrcond += 1.0;
+		  retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+		}
+	    }
+	  else
+	    {
+	      Matrix m = arg.matrix_value ();
+	      if (! error_state)
+		{
+		  DET det = m.determinant (info, rcond);
+		  retval(1) = rcond;
+		  volatile double xrcond = rcond;
+		  xrcond += 1.0;
+		  retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+		}
+	    }
+	}
+      else if (arg.is_complex_type ())
+	{
+	  octave_idx_type info;
+	  double rcond = 0.0;
+	  // Always compute rcond, so we can detect numerically
+	  // singular matrices.
+	  if (arg.is_sparse_type ())
+	    {
+	      SparseComplexMatrix m = arg.sparse_complex_matrix_value ();
+	      if (! error_state)
+		{
+		  ComplexDET det = m.determinant (info, rcond);
+		  retval(1) = rcond;
+		  volatile double xrcond = rcond;
+		  xrcond += 1.0;
+		  retval(0) = ((info == -1 || xrcond == 1.0) 
+			       ? Complex (0.0) : det.value ());
+		}
+	    }
+	  else
+	    {
+	      ComplexMatrix m = arg.complex_matrix_value ();
+	      if (! error_state)
+		{
+		  ComplexDET det = m.determinant (info, rcond);
+		  retval(1) = rcond;
+		  volatile double xrcond = rcond;
+		  xrcond += 1.0;
+		  retval(0) = ((info == -1 || xrcond == 1.0) 
+			       ? Complex (0.0) : det.value ());
 
+		}
+	    }
+	}
+      else
+	gripe_wrong_type_arg ("det", arg);
+    }
   return retval;
 }
 

@@ -68,6 +68,11 @@ VS_OPS (Complex, double,  Complex)
 VS_OPS (Complex, Complex, double)
 VS_OPS (Complex, Complex, Complex)
 
+VS_OPS (float,  float,  float)
+VS_OPS (FloatComplex, float,  FloatComplex)
+VS_OPS (FloatComplex, FloatComplex, float)
+VS_OPS (FloatComplex, FloatComplex, FloatComplex)
+
 #define SV_OP_FCN(F, OP) \
   template <class R, class S, class V> \
   inline void \
@@ -105,6 +110,11 @@ SV_OPS (double,  double,  double)
 SV_OPS (Complex, double,  Complex)
 SV_OPS (Complex, Complex, double)
 SV_OPS (Complex, Complex, Complex)
+
+SV_OPS (float,  float,  float)
+SV_OPS (FloatComplex, float,  FloatComplex)
+SV_OPS (FloatComplex, FloatComplex, float)
+SV_OPS (FloatComplex, FloatComplex, FloatComplex)
 
 #define VV_OP_FCN(F, OP) \
   template <class R, class T1, class T2> \
@@ -144,6 +154,11 @@ VV_OPS (Complex, double,  Complex)
 VV_OPS (Complex, Complex, double)
 VV_OPS (Complex, Complex, Complex)
 
+VV_OPS (float,  float,  float)
+VV_OPS (FloatComplex, float,  FloatComplex)
+VV_OPS (FloatComplex, FloatComplex, float)
+VV_OPS (FloatComplex, FloatComplex, FloatComplex)
+
 #define VS_OP2(F, OP, V, S) \
   static inline V * \
   F (V *v, size_t n, S s) \
@@ -163,6 +178,10 @@ VV_OPS (Complex, Complex, Complex)
 VS_OP2S (double,  double)
 VS_OP2S (Complex, double)
 VS_OP2S (Complex, Complex)
+
+VS_OP2S (float,  float)
+VS_OP2S (FloatComplex, float)
+VS_OP2S (FloatComplex, FloatComplex)
 
 #define VV_OP2(F, OP, T1, T2) \
   static inline T1 * \
@@ -184,6 +203,10 @@ VV_OP2S (double,  double)
 VV_OP2S (Complex, double)
 VV_OP2S (Complex, Complex)
 
+VV_OP2S (float,  float)
+VV_OP2S (FloatComplex, float)
+VV_OP2S (FloatComplex, FloatComplex)
+
 #define OP_EQ_FCN(T1, T2) \
   static inline bool \
   mx_inline_equal (const T1 *x, const T2 *y, size_t n) \
@@ -198,6 +221,8 @@ OP_EQ_FCN (bool,    bool)
 OP_EQ_FCN (char,    char)
 OP_EQ_FCN (double,  double)
 OP_EQ_FCN (Complex, Complex)
+OP_EQ_FCN (float,  float)
+OP_EQ_FCN (FloatComplex, FloatComplex)
 
 #define OP_DUP_FCN(OP, F, R, T) \
   static inline R * \
@@ -215,6 +240,8 @@ OP_EQ_FCN (Complex, Complex)
 
 OP_DUP_FCN (, mx_inline_dup, double,  double)
 OP_DUP_FCN (, mx_inline_dup, Complex, Complex)
+OP_DUP_FCN (, mx_inline_dup, float, float)
+OP_DUP_FCN (, mx_inline_dup, FloatComplex, FloatComplex)
 
 // These should really return a bool *.  Also, they should probably be
 // in with a collection of other element-by-element boolean ops.
@@ -229,6 +256,18 @@ OP_DUP_FCN (-, mx_inline_change_sign, Complex, Complex)
 OP_DUP_FCN (real, mx_inline_real_dup, double,  Complex)
 OP_DUP_FCN (imag, mx_inline_imag_dup, double,  Complex)
 OP_DUP_FCN (conj, mx_inline_conj_dup, Complex, Complex)
+
+OP_DUP_FCN (0.0 ==, mx_inline_not, float, float)
+OP_DUP_FCN (static_cast<float>(0.0) ==, mx_inline_not, float, FloatComplex)
+
+OP_DUP_FCN (, mx_inline_make_complex, FloatComplex, float)
+
+OP_DUP_FCN (-, mx_inline_change_sign, float,  float)
+OP_DUP_FCN (-, mx_inline_change_sign, FloatComplex, FloatComplex)
+
+OP_DUP_FCN (real, mx_inline_real_dup, float,  FloatComplex)
+OP_DUP_FCN (imag, mx_inline_imag_dup, float,  FloatComplex)
+OP_DUP_FCN (conj, mx_inline_conj_dup, FloatComplex, FloatComplex)
 
 // Avoid some code duplication.  Maybe we should use templates.
 

@@ -1059,6 +1059,57 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
 }
 
 void
+read_floats (std::istream& is, float *data, save_type type, int len,
+	      bool swap, oct_mach_info::float_format fmt)
+{
+  switch (type)
+    {
+    case LS_U_CHAR:
+      LS_DO_READ (uint8_t, swap, data, 1, len, is);
+      break;
+
+    case LS_U_SHORT:
+      LS_DO_READ (uint16_t, swap, data, 2, len, is);
+      break;
+
+    case LS_U_INT:
+      LS_DO_READ (uint32_t, swap, data, 4, len, is);
+      break;
+
+    case LS_CHAR:
+      LS_DO_READ (int8_t, swap, data, 1, len, is);
+      break;
+
+    case LS_SHORT:
+      LS_DO_READ (int16_t, swap, data, 2, len, is);
+      break;
+
+    case LS_INT:
+      LS_DO_READ (int32_t, swap, data, 4, len, is);
+      break;
+
+    case LS_FLOAT: // No conversion necessary.
+      is.read (reinterpret_cast<char *> (data), 4 * len);
+      do_float_format_conversion (data, len, fmt);
+      break;
+
+    case LS_DOUBLE:
+      {
+	OCTAVE_LOCAL_BUFFER (double, ptr, len);
+	is.read (reinterpret_cast<char *> (ptr), 8 * len);
+	do_double_format_conversion (ptr, len, fmt);
+	for (int i = 0; i < len; i++)
+	  data[i] = ptr[i];
+      }
+      break;
+
+    default:
+      is.clear (std::ios::failbit|is.rdstate ());
+      break;
+    }
+}
+
+void
 write_doubles (std::ostream& os, const double *data, save_type type, int len)
 {
   switch (type)
@@ -1097,6 +1148,54 @@ write_doubles (std::ostream& os, const double *data, save_type type, int len)
 	os.write (&tmp_type, 1);
 	os.write (reinterpret_cast <const char *> (data), 8 * len);
       }
+      break;
+
+    default:
+      (*current_liboctave_error_handler)
+	("unrecognized data format requested");
+      break;
+    }
+}
+
+void
+write_floats (std::ostream& os, const float *data, save_type type, int len)
+{
+  switch (type)
+    {
+    case LS_U_CHAR:
+      LS_DO_WRITE (uint8_t, data, 1, len, os);
+      break;
+
+    case LS_U_SHORT:
+      LS_DO_WRITE (uint16_t, data, 2, len, os);
+      break;
+
+    case LS_U_INT:
+      LS_DO_WRITE (uint32_t, data, 4, len, os);
+      break;
+
+    case LS_CHAR:
+      LS_DO_WRITE (int8_t, data, 1, len, os);
+      break;
+
+    case LS_SHORT:
+      LS_DO_WRITE (int16_t, data, 2, len, os);
+      break;
+
+    case LS_INT:
+      LS_DO_WRITE (int32_t, data, 4, len, os);
+      break;
+
+    case LS_FLOAT: // No conversion necessary.
+      {
+	char tmp_type = static_cast<char> (type);
+	os.write (&tmp_type, 1);
+	os.write (reinterpret_cast <const char *> (data), 4 * len);
+      }
+      break;
+
+    case LS_DOUBLE:
+      LS_DO_WRITE (double, data, 8, len, os);
       break;
 
     default:

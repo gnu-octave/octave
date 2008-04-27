@@ -72,7 +72,7 @@ public:
   ComplexColumnVector stack (const ColumnVector& a) const;
   ComplexColumnVector stack (const ComplexColumnVector& a) const;
 
-  ComplexRowVector hermitian (void) const;  // complex conjugate transpose.
+  ComplexRowVector hermitian (void) const;
   ComplexRowVector transpose (void) const;
 
   friend ComplexColumnVector conj (const ComplexColumnVector& a);

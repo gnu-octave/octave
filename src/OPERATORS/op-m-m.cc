@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-obj.h"
 #include "ov.h"
 #include "ov-re-mat.h"
+#include "ov-flt-re-mat.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -115,6 +116,14 @@ DEFNDBINOP_FN (el_or,  matrix, matrix, array, array, mx_el_or)
 DEFNDCATOP_FN (m_m, matrix, matrix, array, array, concat)
 
 DEFNDASSIGNOP_FN (assign, matrix, matrix, array, assign)
+DEFNDASSIGNOP_FN (sgl_assign, float_matrix, matrix, float_array, assign)
+
+CONVDECL (matrix_to_float_matrix)
+{
+  CAST_CONV_ARG (const octave_matrix&);
+
+  return new octave_float_matrix (FloatNDArray (v.array_value ()));
+}
 
 void
 install_m_m_ops (void)
@@ -150,6 +159,9 @@ install_m_m_ops (void)
   INSTALL_CATOP (octave_matrix, octave_matrix, m_m);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_matrix, assign);
+  INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_matrix, sgl_assign);
+
+  INSTALL_CONVOP (octave_matrix, octave_float_matrix, matrix_to_float_matrix);
 }
 
 /*

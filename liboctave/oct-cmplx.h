@@ -27,6 +27,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <complex>
 
 typedef std::complex<double> Complex;
+typedef std::complex<float> FloatComplex;
 
 #endif
 

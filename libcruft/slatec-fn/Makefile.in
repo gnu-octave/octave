@@ -28,10 +28,13 @@ EXTERNAL_DISTFILES = $(DISTFILES)
 
 include $(TOPDIR)/Makeconf
 
-FSRC = d9gmit.f d9lgic.f d9lgit.f d9lgmc.f dacosh.f dasinh.f datanh.f \
+FSRC = albeta.f alngam.f alnrel.f algams.f acosh.f asinh.f atanh.f betai.f \
+  csevl.f d9gmit.f d9lgic.f d9lgit.f d9lgmc.f dacosh.f dasinh.f datanh.f \
   dbetai.f dcsevl.f derf.f derfc.f dgami.f dgamit.f dgamlm.f dgamma.f \
-  dgamr.f dlbeta.f dlgams.f dlngam.f dlnrel.f dpchim.f dpchst.f \
-  initds.f xdacosh.f xdasinh.f xdatanh.f xdbetai.f xderf.f xderfc.f \
-  xdgami.f xdgamit.f xdgamma.f xgmainc.f
+  dgamr.f dlbeta.f dlgams.f dlngam.f dlnrel.f dpchim.f dpchst.f erf.f erfc.f \
+  gami.f gamit.f gamlim.f gamma.f gamr.f initds.f inits.f pchim.f pchst.f \
+  r9lgmc.f r9lgit.f r9gmit.f r9lgic.f xdacosh.f xdasinh.f xdatanh.f \
+  xdbetai.f xderf.f xderfc.f xdgami.f xdgamit.f xdgamma.f xgmainc.f xacosh.f \
+  xasinh.f xatanh.f xerf.f xerfc.f xsgmainc.f xgamma.f xbetai.f
 
 include ../Makerules

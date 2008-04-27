@@ -69,12 +69,15 @@ along with Octave; see the file COPYING.  If not, see
 
 /* Octave's idea of infinity.  */
 double octave_Inf;
+float octave_Float_Inf;
 
 /* Octave's idea of a missing value.  */
 double octave_NA;
+float octave_Float_NA;
 
 /* Octave's idea of not a number.  */
 double octave_NaN;
+float octave_Float_NaN;
 
 int lo_ieee_hw;
 int lo_ieee_lw;
@@ -82,13 +85,25 @@ int lo_ieee_lw;
 #if defined (SCO)
 
 int
-isnan (double x)
+__isnan (double x)
 {
   return (IsNANorINF (x) && NaN (x) && ! IsINF (x)) ? 1 : 0;
 }
 
 int
-isinf (double x)
+__isinf (double x)
+{
+  return (IsNANorINF (x) && IsINF (x)) ? 1 : 0;
+}
+
+int
+__isnanf (float x)
+{
+  return (IsNANorINF (x) && NaN (x) && ! IsINF (x)) ? 1 : 0;
+}
+
+int
+__isinff (float x)
 {
   return (IsNANorINF (x) && IsINF (x)) ? 1 : 0;
 }
@@ -96,7 +111,7 @@ isinf (double x)
 #endif
 
 int
-lo_ieee_isnan (double x)
+__lo_ieee_isnan (double x)
 {
 #if defined (HAVE_ISNAN)
   return isnan (x);
@@ -106,31 +121,31 @@ lo_ieee_isnan (double x)
 }
 
 int
-lo_ieee_finite (double x)
+__lo_ieee_finite (double x)
 {
 #if defined (HAVE_FINITE)
-  return finite (x) != 0 && ! lo_ieee_isnan (x);
+  return finite (x) != 0 && ! __lo_ieee_isnan (x);
 #elif defined (HAVE_ISINF)
-  return (! isinf (x) && ! lo_ieee_isnan (x));
+  return (! isinf (x) && ! __lo_ieee_isnan (x));
 #else
-  return ! lo_ieee_isnan (x);
+  return ! __lo_ieee_isnan (x);
 #endif
 }
 
 int
-lo_ieee_isinf (double x)
+__lo_ieee_isinf (double x)
 {
 #if defined (HAVE_ISINF)
   return isinf (x);
 #elif defined (HAVE_FINITE)
-  return (! (finite (x) || lo_ieee_isnan (x)));
+  return (! (finite (x) || __lo_ieee_isnan (x)));
 #else
   return 0;
 #endif
 }
 
 int
-lo_ieee_is_NA (double x)
+__lo_ieee_is_NA (double x)
 {
 #if defined (HAVE_ISNAN)
   lo_ieee_double t;
@@ -142,9 +157,9 @@ lo_ieee_is_NA (double x)
 }
 
 int
-lo_ieee_is_NaN_or_NA (double x)
+__lo_ieee_is_NaN_or_NA (double x)
 {
-  return lo_ieee_isnan (x);
+  return __lo_ieee_isnan (x);
 }
 
 double
@@ -170,7 +185,101 @@ extern int signbit (double);
 #endif
 
 int
-lo_ieee_signbit (double x)
+__lo_ieee_signbit (double x)
+{
+/* In the following definitions, only check x < 0 explicitly to avoid
+   a function call when it looks like signbit or copysign are actually
+   functions.  */
+
+#if defined (signbit)
+  return signbit (x);
+#elif defined (HAVE_SIGNBIT)
+  return (x < 0 || signbit (x));
+#elif defined (copysign)
+  return (copysign (1.0, x) < 0);
+#elif defined (HAVE_COPYSIGN)
+  return (x < 0 || copysign (1.0, x) < 0);
+#else
+  return x < 0;
+#endif
+}
+
+int
+__lo_ieee_float_isnan (float x)
+{
+#if defined (HAVE_ISNAN)
+  return isnan (x);
+#else
+  return 0;
+#endif
+}
+
+int
+__lo_ieee_float_finite (float x)
+{
+#if defined (HAVE_FINITE)
+  return finite (x) != 0 && ! __lo_ieee_float_isnan (x);
+#elif defined (HAVE_ISINF)
+  return (! isinf (x) && ! __lo_ieee_float_isnan (x));
+#else
+  return ! __lo_ieee_float_isnan (x);
+#endif
+}
+
+int
+__lo_ieee_float_isinf (float x)
+{
+#if defined (HAVE_ISINF)
+  return isinf (x);
+#elif defined (HAVE_FINITE)
+  return (! (finite (x) || __lo_ieee_float_isnan (x)));
+#else
+  return 0;
+#endif
+}
+
+int
+__lo_ieee_float_is_NA (float x)
+{
+#if defined (HAVE_ISNAN)
+  lo_ieee_float t;
+  t.value = x;
+  return (isnan (x) && (t.word & 0xFFFF) == LO_IEEE_NA_FLOAT_LW) ? 1 : 0;
+#else
+  return 0;
+#endif
+}
+
+int
+__lo_ieee_float_is_NaN_or_NA (float x)
+{
+  return __lo_ieee_float_isnan (x);
+}
+
+float
+lo_ieee_float_inf_value (void)
+{
+  return octave_Inf;
+}
+
+float
+lo_ieee_float_na_value (void)
+{
+  return octave_NA;
+}
+
+float
+lo_ieee_float_nan_value (void)
+{
+  return octave_NaN;
+}
+
+#if ! (defined (signbit) || defined (HAVE_DECL_SIGNBIT)) && defined (HAVE_SIGNBIT)
+extern int signbit (float);
+#endif
+
+int
+__lo_ieee_float_signbit (float x)
 {
 /* In the following definitions, only check x < 0 explicitly to avoid
    a function call when it looks like signbit or copysign are actually

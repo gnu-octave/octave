@@ -228,6 +228,8 @@ dimensionality as the other matrix.\n\
 
 		  BSXDEF(NDArray);
 		  BSXDEF(ComplexNDArray);
+		  BSXDEF(FloatNDArray);
+		  BSXDEF(FloatComplexNDArray);
 		  BSXDEF(boolNDArray);
 		  BSXDEF(int8NDArray);
 		  BSXDEF(int16NDArray);
@@ -290,6 +292,22 @@ dimensionality as the other matrix.\n\
 				      result_ComplexNDArray.resize (dvc);
 				    }
 				}
+			      else if (result_type == "single")
+				{
+				  if (tmp(0).is_real_type ())
+				    {
+				      have_FloatNDArray = true;
+				      result_FloatNDArray = tmp(0).float_array_value ();
+				      result_FloatNDArray.resize (dvc);
+				    }
+				  else
+				    {
+				      have_ComplexNDArray = true;
+				      result_ComplexNDArray = 
+					tmp(0).complex_array_value ();
+				      result_ComplexNDArray.resize (dvc);
+				    }
+				}
 			      else if BSXINIT(boolNDArray, "logical", bool)
 			      else if BSXINIT(int8NDArray, "int8", int8)
 			      else if BSXINIT(int16NDArray, "int16", int16)
@@ -310,9 +328,61 @@ dimensionality as the other matrix.\n\
 			{
 			  update_index (ra_idx, dvc, i);
 			  
-			  if (have_NDArray)
+			  if (have_FloatNDArray ||
+			      have_FloatComplexNDArray)
 			    {
-			      if (tmp(0).class_name () != "double")
+			      if (! tmp(0).is_float_type ())
+				{
+				  if (have_FloatNDArray)
+				    {
+				      have_FloatNDArray = false;
+				      C = result_FloatNDArray;
+				    }
+				  else
+				    {
+				      have_FloatComplexNDArray = false;
+				      C = result_FloatComplexNDArray;
+				    }
+				  C = do_cat_op (C, tmp(0), ra_idx);
+				}
+			      else if (tmp(0).is_double_type ())
+				{
+				  if (tmp(0).is_complex_type () && 
+				      have_FloatNDArray)
+				    {
+				      result_ComplexNDArray = 
+					ComplexNDArray (result_FloatNDArray);
+				      result_ComplexNDArray.insert 
+					(tmp(0).complex_array_value(), ra_idx);
+				      have_FloatComplexNDArray = false;
+				      have_ComplexNDArray = true;
+				    }
+				  else
+				    {
+				      result_NDArray = 
+					NDArray (result_FloatNDArray);
+				      result_NDArray.insert 
+					(tmp(0).array_value(), ra_idx);
+				      have_FloatNDArray = false;
+				      have_NDArray = true;
+				    }
+				}
+			      else if (tmp(0).is_real_type ())
+				result_FloatNDArray.insert 
+				  (tmp(0).float_array_value(), ra_idx);
+			      else
+				{
+				  result_FloatComplexNDArray = 
+				    FloatComplexNDArray (result_FloatNDArray);
+				  result_FloatComplexNDArray.insert 
+				    (tmp(0).float_complex_array_value(), ra_idx);
+				  have_FloatNDArray = false;
+				  have_FloatComplexNDArray = true;
+				}
+			    }
+			  else if (have_NDArray)
+			    {
+			      if (! tmp(0).is_float_type ())
 				{
 				  have_NDArray = false;
 				  C = result_NDArray;
@@ -368,6 +438,8 @@ dimensionality as the other matrix.\n\
 
 		  if BSXEND(NDArray)
 		  else if BSXEND(ComplexNDArray)
+		  else if BSXEND(FloatNDArray)
+		  else if BSXEND(FloatComplexNDArray)
 		  else if BSXEND(boolNDArray)
 		  else if BSXEND(int8NDArray)
 		  else if BSXEND(int16NDArray)

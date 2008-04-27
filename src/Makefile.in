@@ -103,6 +103,7 @@ OV_INCLUDES := ov-re-mat.h ov-cx-mat.h ov-ch-mat.h ov-cs-list.h ov-list.h \
 	ov-cell.h ov.h ov-fcn.h ov-builtin.h ov-dld-fcn.h \
 	ov-mex-fcn.h ov-usr-fcn.h ov-fcn-handle.h \
 	ov-fcn-inline.h ov-class.h ov-typeinfo.h ov-type-conv.h \
+	ov-flt-re-mat.h ov-flt-cx-mat.h ov-float.h ov-flt-complex.h \
 	$(OV_INTTYPE_INC)
 
 OV_SPARSE_INCLUDES := \
@@ -146,14 +147,22 @@ SPARSE_OP_XSRC := op-bm-sbm.cc op-b-sbm.cc op-cm-scm.cc op-cm-sm.cc \
 	op-sm-cs.cc op-sm-m.cc op-sm-s.cc op-sm-scm.cc op-sm-sm.cc \
 	op-s-scm.cc op-s-sm.cc
 
-OP_XSRC := op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
-	op-chm.cc op-class.cc op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
+DOUBLE_OP_XSRC := op-cm-cm.cc op-cm-cs.cc op-cm-m.cc \
 	op-cm-s.cc op-cs-cm.cc op-cs-cs.cc op-cs-m.cc \
-	op-cs-s.cc op-list.cc op-m-cm.cc \
-	op-m-cs.cc op-m-m.cc op-m-s.cc op-range.cc op-s-cm.cc \
-	op-s-cs.cc op-s-m.cc op-s-s.cc op-str-m.cc \
+	op-cs-s.cc op-m-cm.cc \
+	op-m-cs.cc op-m-m.cc op-m-s.cc op-s-cm.cc \
+	op-s-cs.cc op-s-m.cc op-s-s.cc 
+
+FLOAT_OP_XSRC := op-fcm-fcm.cc op-fcm-fcs.cc op-fcm-fm.cc \
+	op-fcm-fs.cc op-fcs-fcm.cc op-fcs-fcs.cc op-fcs-fm.cc \
+	op-fcs-fs.cc op-fm-fcm.cc \
+	op-fm-fcs.cc op-fm-fm.cc op-fm-fs.cc op-fs-fcm.cc \
+	op-fs-fcs.cc op-fs-fm.cc op-fs-fs.cc 
+
+OP_XSRC :=  op-b-b.cc op-b-bm.cc op-bm-b.cc op-bm-bm.cc op-cell.cc \
+	op-chm.cc op-class.cc op-list.cc op-range.cc op-str-m.cc \
 	op-str-s.cc op-str-str.cc op-streamoff.cc op-struct.cc \
-	$(INTTYPE_OP_XSRC) \
+	$(DOUBLE_OP_XSRC) $(FLOAT_OP_XSRC) $(INTTYPE_OP_XSRC) \
 	$(SPARSE_OP_XSRC)
 
 OP_SRC := $(addprefix OPERATORS/, $(OP_XSRC))
@@ -175,6 +184,7 @@ OV_SRC := ov-base.cc ov-ch-mat.cc \
 	ov.cc ov-fcn.cc ov-builtin.cc ov-dld-fcn.cc \
 	ov-mex-fcn.cc ov-usr-fcn.cc ov-fcn-handle.cc ov-fcn-inline.cc \
 	ov-class.cc ov-typeinfo.cc \
+	ov-flt-re-mat.cc ov-flt-cx-mat.cc ov-float.cc ov-flt-complex.cc \
 	$(OV_INTTYPE_SRC) \
 	$(OV_SPARSE_SRC)
 

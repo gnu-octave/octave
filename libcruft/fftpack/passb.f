@@ -1,5 +1,4 @@
       subroutine passb (nac,ido,ip,l1,idl1,cc,c1,c2,ch,ch2,wa)
-      implicit double precision (a-h,o-z)
       dimension       ch(ido,l1,ip)          ,cc(ido,ip,l1)          ,
      1                c1(ido,l1,ip)          ,wa(1)      ,c2(idl1,ip),
      2                ch2(idl1,ip)

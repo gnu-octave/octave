@@ -59,6 +59,7 @@ octave_ieee_init (void)
   // correctly.
 
   octave_Inf = octave_NaN = octave_NA = DBL_MAX;
+  octave_Float_Inf = octave_Float_NaN = octave_Float_NA = FLT_MAX;
 
   oct_mach_info::float_format ff = oct_mach_info::native_float_format ();
 
@@ -116,6 +117,27 @@ octave_ieee_init (void)
 	t.word[lo_ieee_lw] = LO_IEEE_NA_LW;
 
 	octave_NA = t.value;
+
+	volatile float float_tmp_inf;
+
+#if defined (SCO)
+	volatile float float_tmp = 1.0;
+	float_tmp_inf = 1.0 / (float_tmp - float_tmp);
+#else
+	float float_tmp = 1e+10;
+	float_tmp_inf = float_tmp;
+	for (;;)
+	  {
+	    float_tmp_inf *= 1e+10;
+	    if (float_tmp_inf == float_tmp)
+	      break;
+	    float_tmp = float_tmp_inf;
+	  }
+#endif
+
+	octave_Float_NaN = float_tmp_inf / float_tmp_inf;
+	octave_Float_Inf = float_tmp_inf;
+	octave_Float_NA = LO_IEEE_NA_FLOAT;
       }
       break;
 

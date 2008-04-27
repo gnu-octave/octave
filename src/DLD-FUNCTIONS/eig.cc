@@ -26,6 +26,7 @@ along with Octave; see the file COPYING.  If not, see
 #endif
 
 #include "EIG.h"
+#include "fEIG.h"
 
 #include "defun-dld.h"
 #include "error.h"
@@ -75,46 +76,92 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 
   Matrix tmp;
   ComplexMatrix ctmp;
-  EIG result;
+  FloatMatrix ftmp;
+  FloatComplexMatrix fctmp;
 
-  if (arg.is_real_type ())
+  if (arg.is_single_type ())
     {
-      tmp = arg.matrix_value ();
+      FloatEIG result;
 
-      if (error_state)
-	return retval;
-      else
-	result = EIG (tmp, nargout > 1);
-    }
-  else if (arg.is_complex_type ())
-    {
-      ctmp = arg.complex_matrix_value ();
+      if (arg.is_real_type ())
+	{
+	  ftmp = arg.float_matrix_value ();
 
-      if (error_state)
-	return retval;
-      else
-	result = EIG (ctmp, nargout > 1);
+	  if (error_state)
+	    return retval;
+	  else
+	    result = FloatEIG (ftmp, nargout > 1);
+	}
+      else if (arg.is_complex_type ())
+	{
+	  fctmp = arg.float_complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+	  else
+	    result = FloatEIG (fctmp, nargout > 1);
+	}
+
+      if (! error_state)
+	{
+	  if (nargout == 0 || nargout == 1)
+	    {
+	      retval(0) = result.eigenvalues ();
+	    }
+	  else
+	    {
+	      // Blame it on Matlab.
+
+	      FloatComplexDiagMatrix d (result.eigenvalues ());
+
+	      retval(1) = d;
+	      retval(0) = result.eigenvectors ();
+	    }
+	}
     }
   else
     {
-      gripe_wrong_type_arg ("eig", tmp);
-      return retval;
-    }
+      EIG result;
 
-  if (! error_state)
-    {
-      if (nargout == 0 || nargout == 1)
+      if (arg.is_real_type ())
 	{
-	  retval(0) = result.eigenvalues ();
+	  tmp = arg.matrix_value ();
+
+	  if (error_state)
+	    return retval;
+	  else
+	    result = EIG (tmp, nargout > 1);
+	}
+      else if (arg.is_complex_type ())
+	{
+	  ctmp = arg.complex_matrix_value ();
+
+	  if (error_state)
+	    return retval;
+	  else
+	    result = EIG (ctmp, nargout > 1);
 	}
       else
 	{
-	  // Blame it on Matlab.
+	  gripe_wrong_type_arg ("eig", tmp);
+	  return retval;
+	}
 
-	  ComplexDiagMatrix d (result.eigenvalues ());
+      if (! error_state)
+	{
+	  if (nargout == 0 || nargout == 1)
+	    {
+	      retval(0) = result.eigenvalues ();
+	    }
+	  else
+	    {
+	      // Blame it on Matlab.
 
-	  retval(1) = d;
-	  retval(0) = result.eigenvectors ();
+	      ComplexDiagMatrix d (result.eigenvalues ());
+
+	      retval(1) = d;
+	      retval(0) = result.eigenvectors ();
+	    }
 	}
     }
 

@@ -34,21 +34,29 @@ along with Octave; see the file COPYING.  If not, see
 #include "chMatrix.h"
 #include "dMatrix.h"
 #include "CMatrix.h"
+#include "fMatrix.h"
+#include "fCMatrix.h"
 
 // Column Vector classes.
 
 #include "dColVector.h"
 #include "CColVector.h"
+#include "fColVector.h"
+#include "fCColVector.h"
 
 // Row Vector classes.
 
 #include "dRowVector.h"
 #include "CRowVector.h"
+#include "fRowVector.h"
+#include "fCRowVector.h"
 
 // Diagonal Matrix classes.
 
 #include "dDiagMatrix.h"
 #include "CDiagMatrix.h"
+#include "fDiagMatrix.h"
+#include "fCDiagMatrix.h"
 
 // Sparse Matrix classes.
 
@@ -62,6 +70,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "chNDArray.h"
 #include "dNDArray.h"
 #include "CNDArray.h"
+#include "fNDArray.h"
+#include "fCNDArray.h"
 
 #include "int8NDArray.h"
 #include "int16NDArray.h"

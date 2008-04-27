@@ -880,6 +880,20 @@ qrsolve(const SparseComplexMatrix&a, const SparseComplexMatrix &b, octave_idx_ty
 #endif
 }
 
+ComplexMatrix 
+qrsolve (const SparseComplexMatrix &a, const MArray2<double> &b, 
+	 octave_idx_type &info)
+{
+  return qrsolve (a, Matrix (b), info);
+}
+
+ComplexMatrix 
+qrsolve (const SparseComplexMatrix &a, const MArray2<Complex> &b, 
+	 octave_idx_type &info)
+{
+  return qrsolve (a, ComplexMatrix (b), info);
+}
+
 /*
 ;;; Local Variables: ***
 ;;; mode: C++ ***

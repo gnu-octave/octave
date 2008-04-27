@@ -899,6 +899,22 @@ identity_matrix (octave_idx_type nr, octave_idx_type nc)
   return m;
 }
 
+FloatMatrix
+float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
+{
+  FloatMatrix m (nr, nc, 0.0);
+
+  if (nr > 0 && nc > 0)
+    {
+      octave_idx_type n = std::min (nr, nc);
+
+      for (octave_idx_type i = 0; i < n; i++)
+	m (i, i) = 1.0;
+    }
+
+  return m;
+}
+
 extern int
 octave_format (std::ostream& os, const char *fmt, ...)
 {

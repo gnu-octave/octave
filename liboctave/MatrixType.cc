@@ -175,6 +175,127 @@ MatrixType::MatrixType (const ComplexMatrix &a)
     typ = MatrixType::Rectangular;
 }
 
+
+MatrixType::MatrixType (const FloatMatrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (true), nperm (0), perm (0)
+{
+  octave_idx_type nrows = a.rows ();
+  octave_idx_type ncols = a.cols ();
+ 
+  if (ncols == nrows)
+    {
+      bool upper = true;
+      bool lower = true;
+      bool hermitian = true;
+
+      for (octave_idx_type j = 0; j < ncols; j++)
+	{
+	  if (j < nrows)
+	    {
+	      if (a.elem (j,j) == 0.)
+		{
+		  upper = false;
+		  lower = false;
+		  hermitian = false;
+		  break;
+		}
+	      if (a.elem (j,j) < 0.)
+		hermitian = false;
+	    }      
+	  for (octave_idx_type i = 0; i < j; i++)
+	    if (lower && a.elem (i,j) != 0.)
+	      {
+		lower = false;
+		break;
+	      }
+	  for (octave_idx_type i = j+1; i < nrows; i++)
+	    {
+	      if (hermitian && a.elem (i, j) != a.elem (j, i))
+		hermitian = false;
+	      if (upper && a.elem (i,j) != 0)
+		upper = false;
+	    }
+	  if (!upper && !lower && !hermitian)
+	    break;
+	}
+
+      if (upper)
+	typ = MatrixType::Upper;
+      else if (lower)
+	typ = MatrixType::Lower;
+      else if (hermitian)
+	typ = MatrixType::Hermitian;
+      else if (ncols == nrows)
+	typ = MatrixType::Full;
+    }
+  else
+    typ = MatrixType::Rectangular;
+}
+
+MatrixType::MatrixType (const FloatComplexMatrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (true), nperm (0), perm (0)
+{
+  octave_idx_type nrows = a.rows ();
+  octave_idx_type ncols = a.cols ();
+
+  if (ncols == nrows)
+    {
+      bool upper = true;
+      bool lower = true;
+      bool hermitian = true;
+
+      for (octave_idx_type j = 0; j < ncols; j++)
+	{
+	  if (j < ncols)
+	    {
+	      if (imag(a.elem (j,j)) == 0. && 
+		  real(a.elem (j,j)) == 0.)
+		{
+		  upper = false;
+		  lower = false;
+		  hermitian = false;
+		  break;
+		}
+
+	      if (imag(a.elem (j,j)) != 0. || 
+		  real(a.elem (j,j)) < 0.)
+		    hermitian = false;
+	    }
+	  for (octave_idx_type i = 0; i < j; i++)
+	    if (lower && (real(a.elem (i,j)) != 0 || imag(a.elem (i,j)) != 0))
+	      {
+		lower = false;
+		break;
+	      }
+	  for (octave_idx_type i = j+1; i < nrows; i++)
+	    {
+	      if (hermitian && a.elem (i, j) != conj(a.elem (j, i)))
+		hermitian = false;
+	      if (upper && (real(a.elem (i,j)) != 0 || 
+			    imag(a.elem (i,j)) != 0))
+		upper = false;
+	    }
+	  if (!upper && !lower && !hermitian)
+	    break;
+	}
+
+      if (upper)
+	typ = MatrixType::Upper;
+      else if (lower)
+	typ = MatrixType::Lower;
+      else if (hermitian)
+	typ = MatrixType::Hermitian;
+      else if (ncols == nrows)
+	typ = MatrixType::Full;
+    }
+  else
+    typ = MatrixType::Rectangular;
+}
+
 MatrixType::MatrixType (const SparseMatrix &a)
   : typ (MatrixType::Unknown),
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
@@ -1000,6 +1121,7 @@ MatrixType::type (const SparseComplexMatrix &a)
 
   return typ;
 }
+
 int
 MatrixType::type (const Matrix &a)
 {
@@ -1029,6 +1151,60 @@ MatrixType::type (const Matrix &a)
 
 int
 MatrixType::type (const ComplexMatrix &a)
+{
+  if (typ != MatrixType::Unknown)
+    {
+      if (octave_sparse_params::get_key ("spumoni") != 0.)
+  	(*current_liboctave_warning_handler) 
+  	  ("Using Cached Matrix Type");
+      
+      return typ;
+    }
+
+  MatrixType tmp_typ (a);
+  typ = tmp_typ.typ;
+  full = tmp_typ.full; 
+  nperm = tmp_typ.nperm;
+
+  if (nperm != 0)
+    {
+      perm = new octave_idx_type [nperm];
+      for (octave_idx_type i = 0; i < nperm; i++)
+	perm[i] = tmp_typ.perm[i];
+    }
+
+  return typ;
+}
+
+int
+MatrixType::type (const FloatMatrix &a)
+{
+  if (typ != MatrixType::Unknown)
+    {
+      if (octave_sparse_params::get_key ("spumoni") != 0.)
+  	(*current_liboctave_warning_handler) 
+  	  ("Using Cached Matrix Type");
+      
+      return typ;
+    }
+
+  MatrixType tmp_typ (a);
+  typ = tmp_typ.typ;
+  full = tmp_typ.full;
+  nperm = tmp_typ.nperm;
+
+  if (nperm != 0)
+    {
+      perm = new octave_idx_type [nperm];
+      for (octave_idx_type i = 0; i < nperm; i++)
+	perm[i] = tmp_typ.perm[i];
+    }
+
+  return typ;
+}
+
+int
+MatrixType::type (const FloatComplexMatrix &a)
 {
   if (typ != MatrixType::Unknown)
     {

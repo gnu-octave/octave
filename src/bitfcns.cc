@@ -309,6 +309,21 @@ bitshift (double a, int n, int64_t mask)
     return static_cast<int64_t> (a) & mask;
 }
 
+static int64_t
+bitshift (float a, int n, int64_t mask)
+{
+  // In the name of bug-for-bug compatibility.
+  if (a < 0)
+    return -bitshift (-a, n, mask);
+
+  if (n > 0)
+    return (static_cast<int64_t> (a) << n) & mask;
+  else if (n < 0)
+    return (static_cast<int64_t> (a) >> -n) & mask;
+  else
+    return static_cast<int64_t> (a) & mask;
+}
+
 // Note that the bitshift operators are undefined if shifted by more
 // bits than in the type, so we need to test for the size of the
 // shift.

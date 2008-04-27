@@ -30,9 +30,13 @@ along with Octave; see the file COPYING.  If not, see
 
 template <typename T> class ArrayN;
 class ComplexMatrix;
+class FloatComplexMatrix;
 class ComplexNDArray;
+class FloatComplexNDArray;
 class Matrix;
+class FloatMatrix;
 class NDArray;
+class FloatNDArray;
 class Range;
 class boolMatrix;
 class boolNDArray;
@@ -43,12 +47,26 @@ class Cell;
 #include "intNDArray.h"
 #include "oct-inttypes.h"
 
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, bool d,
+		       bool pr_as_read_syntax = false);
+
 extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, double d,
 		       bool pr_as_read_syntax = false);
 
 extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, float d,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Matrix& m,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const FloatMatrix& m,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 
@@ -58,7 +76,16 @@ octave_print_internal (std::ostream& os, const NDArray& nda,
 		       int extra_indent = 0);
 
 extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const FloatNDArray& nda,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const Complex& c,
+		       bool pr_as_read_syntax = false);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const FloatComplex& c,
 		       bool pr_as_read_syntax = false);
 
 extern OCTINTERP_API void
@@ -67,7 +94,17 @@ octave_print_internal (std::ostream& os, const ComplexMatrix& cm,
 		       int extra_indent = 0);
 
 extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const FloatComplexMatrix& cm,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
 octave_print_internal (std::ostream& os, const ComplexNDArray& nda,
+		       bool pr_as_read_syntax = false,
+		       int extra_indent = 0);
+
+extern OCTINTERP_API void
+octave_print_internal (std::ostream& os, const FloatComplexNDArray& nda,
 		       bool pr_as_read_syntax = false,
 		       int extra_indent = 0);
 

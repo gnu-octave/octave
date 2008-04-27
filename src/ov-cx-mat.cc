@@ -44,6 +44,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-base-mat.cc"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
+#include "ov-flt-cx-mat.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "pr-output.h"
@@ -59,6 +60,20 @@ DEFINE_OCTAVE_ALLOCATOR (octave_complex_matrix);
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix,
 				     "complex matrix", "double");
+
+static octave_base_value *
+default_numeric_demotion_function (const octave_base_value& a)
+{
+  CAST_CONV_ARG (const octave_complex_matrix&);
+
+  return new octave_float_complex_matrix (v.float_complex_matrix_value ());
+}
+
+octave_base_value::type_conv_fcn
+octave_complex_matrix::numeric_demotion_function (void) const
+{
+  return default_numeric_demotion_function;
+}
 
 octave_base_value *
 octave_complex_matrix::try_narrowing_conversion (void)
@@ -142,10 +157,46 @@ octave_complex_matrix::double_value (bool force_conversion) const
   return retval;
 }
 
+float
+octave_complex_matrix::float_value (bool force_conversion) const
+{
+  float retval = lo_ieee_float_nan_value ();
+
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex matrix", "real scalar");
+
+  if (rows () > 0 && columns () > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "complex matrix", "real scalar");
+
+      retval = std::real (matrix (0, 0));
+    }
+  else
+    gripe_invalid_conversion ("complex matrix", "real scalar");
+
+  return retval;
+}
+
 Matrix
 octave_complex_matrix::matrix_value (bool force_conversion) const
 {
   Matrix retval;
+
+  if (! force_conversion)
+    gripe_implicit_conversion ("Octave:imag-to-real",
+			       "complex matrix", "real matrix");
+
+  retval = ::real (matrix.matrix_value ());
+
+  return retval;
+}
+
+FloatMatrix
+octave_complex_matrix::float_matrix_value (bool force_conversion) const
+{
+  FloatMatrix retval;
 
   if (! force_conversion)
     gripe_implicit_conversion ("Octave:imag-to-real",
@@ -176,10 +227,36 @@ octave_complex_matrix::complex_value (bool) const
   return retval;
 }
 
+FloatComplex
+octave_complex_matrix::float_complex_value (bool) const
+{
+  float tmp = lo_ieee_float_nan_value ();
+
+  FloatComplex retval (tmp, tmp);
+
+  if (rows () > 0 && columns () > 0)
+    {
+      gripe_implicit_conversion ("Octave:array-as-scalar",
+				 "complex matrix", "complex scalar");
+
+      retval = matrix (0, 0);
+    }
+  else
+    gripe_invalid_conversion ("complex matrix", "complex scalar");
+
+  return retval;
+}
+
 ComplexMatrix
 octave_complex_matrix::complex_matrix_value (bool) const
 {
   return matrix.matrix_value ();
+}
+
+FloatComplexMatrix
+octave_complex_matrix::float_complex_matrix_value (bool) const
+{
+  return FloatComplexMatrix (matrix.matrix_value ());
 }
 
 charNDArray
@@ -201,6 +278,12 @@ octave_complex_matrix::char_array_value (bool frc_str_conv) const
 
   return retval;
 }  
+
+FloatComplexNDArray 
+octave_complex_matrix::float_complex_array_value (bool) const 
+{ 
+  return FloatComplexNDArray (matrix);
+}
 
 SparseMatrix
 octave_complex_matrix::sparse_matrix_value (bool force_conversion) const

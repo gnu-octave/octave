@@ -40,6 +40,13 @@ kron (const Array2<double>&, const Array2<double>&, Array2<double>&);
 
 extern void
 kron (const Array2<Complex>&, const Array2<Complex>&, Array2<Complex>&);
+
+extern void
+kron (const Array2<float>&, const Array2<float>&, Array2<float>&);
+
+extern void
+kron (const Array2<FlaotComplex>&, const Array2<FloatComplex>&, 
+      Array2<FloatComplex>&);
 #endif
 
 template <class T>
@@ -69,6 +76,12 @@ kron (const Array2<double>&, const Array2<double>&, Array2<double>&);
 template void
 kron (const Array2<Complex>&, const Array2<Complex>&, Array2<Complex>&);
 
+template void
+kron (const Array2<float>&, const Array2<float>&, Array2<float>&);
+
+template void
+kron (const Array2<FloatComplex>&, const Array2<FloatComplex>&, 
+      Array2<FloatComplex>&);
 
 #if !defined (CXX_NEW_FRIEND_TEMPLATE_DECL)
 extern void
@@ -171,28 +184,58 @@ kron (1:4, ones (3, 1))\n\
     }
   else 
     {
-      if (args(0).is_complex_type () || args(1).is_complex_type ())
+      if (args(0).is_single_type () || args(1).is_single_type ())
 	{
-	  ComplexMatrix a (args(0).complex_matrix_value());
-	  ComplexMatrix b (args(1).complex_matrix_value());
-
-	  if (! error_state)
+	  if (args(0).is_complex_type () || args(1).is_complex_type ())
 	    {
-	      ComplexMatrix c;
-	      kron (a, b, c);
-	      retval(0) = c;
+	      FloatComplexMatrix a (args(0).float_complex_matrix_value());
+	      FloatComplexMatrix b (args(1).float_complex_matrix_value());
+
+	      if (! error_state)
+		{
+		  FloatComplexMatrix c;
+		  kron (a, b, c);
+		  retval(0) = c;
+		}
+	    }
+	  else
+	    {
+	      FloatMatrix a (args(0).float_matrix_value ());
+	      FloatMatrix b (args(1).float_matrix_value ());
+
+	      if (! error_state)
+		{
+		  FloatMatrix c;
+		  kron (a, b, c);
+		  retval (0) = c;
+		}
 	    }
 	}
       else
 	{
-	  Matrix a (args(0).matrix_value ());
-	  Matrix b (args(1).matrix_value ());
-
-	  if (! error_state)
+	  if (args(0).is_complex_type () || args(1).is_complex_type ())
 	    {
-	      Matrix c;
-	      kron (a, b, c);
-	      retval (0) = c;
+	      ComplexMatrix a (args(0).complex_matrix_value());
+	      ComplexMatrix b (args(1).complex_matrix_value());
+
+	      if (! error_state)
+		{
+		  ComplexMatrix c;
+		  kron (a, b, c);
+		  retval(0) = c;
+		}
+	    }
+	  else
+	    {
+	      Matrix a (args(0).matrix_value ());
+	      Matrix b (args(1).matrix_value ());
+
+	      if (! error_state)
+		{
+		  Matrix c;
+		  kron (a, b, c);
+		  retval (0) = c;
+		}
 	    }
 	}
     }

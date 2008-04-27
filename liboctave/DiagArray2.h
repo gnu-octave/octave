@@ -180,6 +180,9 @@ public:
   void resize (octave_idx_type n, octave_idx_type m, const T& val);
 
   void maybe_delete_elements (idx_vector& i, idx_vector& j);
+
+  DiagArray2<T> transpose (void) const;
+  DiagArray2<T> hermitian (T (*fcn) (const T&) = 0) const;
 };
 
 #endif

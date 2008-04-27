@@ -49,7 +49,7 @@ SVD::left_singular_matrix (void) const
   if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("ComplexSVD: U not computed because type == SVD::sigma_only");
+	("SVD: U not computed because type == SVD::sigma_only");
       return Matrix ();
     }
   else
@@ -62,7 +62,7 @@ SVD::right_singular_matrix (void) const
   if (type_computed == SVD::sigma_only)
     {
       (*current_liboctave_error_handler)
-	("ComplexSVD: V not computed because type == SVD::sigma_only");
+	("SVD: V not computed because type == SVD::sigma_only");
       return Matrix ();
     }
   else

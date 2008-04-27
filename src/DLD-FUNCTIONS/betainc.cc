@@ -69,100 +69,206 @@ compatible dimensions.\n\
       octave_value a_arg = args(1);
       octave_value b_arg = args(2);
 
-      if (x_arg.is_scalar_type ())
+      // FIXME Can we make a template version of the duplicated code below
+      if (x_arg.is_single_type () || a_arg.is_single_type () ||
+	  b_arg.is_single_type ())
 	{
-	  double x = x_arg.double_value ();
-
-	  if (a_arg.is_scalar_type ())
+	  if (x_arg.is_scalar_type ())
 	    {
-	      double a = a_arg.double_value ();
+	      float x = x_arg.float_value ();
 
-	      if (! error_state)
+	      if (a_arg.is_scalar_type ())
 		{
-		  if (b_arg.is_scalar_type ())
-		    {
-		      double b = b_arg.double_value ();
+		  float a = a_arg.float_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  float b = b_arg.float_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  FloatNDArray b = b_arg.float_array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
-		  else
-		    {
-		      NDArray b = b_arg.array_value ();
+		}
+	      else
+		{
+		  FloatNDArray a = a_arg.float_array_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  float b = b_arg.float_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  FloatNDArray b = b_arg.float_array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
 		}
 	    }
 	  else
 	    {
-	      NDArray a = a_arg.array_value ();
+	      FloatNDArray x = x_arg.float_array_value ();
 
-	      if (! error_state)
+	      if (a_arg.is_scalar_type ())
 		{
-		  if (b_arg.is_scalar_type ())
-		    {
-		      double b = b_arg.double_value ();
+		  float a = a_arg.float_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  float b = b_arg.float_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  FloatNDArray b = b_arg.float_array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
-		  else
-		    {
-		      NDArray b = b_arg.array_value ();
+		}
+	      else
+		{
+		  FloatNDArray a = a_arg.float_array_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  float b = b_arg.float_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  FloatNDArray b = b_arg.float_array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
 		}
 	    }
 	}
       else
 	{
-	  NDArray x = x_arg.array_value ();
-
-	  if (a_arg.is_scalar_type ())
+	  if (x_arg.is_scalar_type ())
 	    {
-	      double a = a_arg.double_value ();
+	      double x = x_arg.double_value ();
 
-	      if (! error_state)
+	      if (a_arg.is_scalar_type ())
 		{
-		  if (b_arg.is_scalar_type ())
-		    {
-		      double b = b_arg.double_value ();
+		  double a = a_arg.double_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  double b = b_arg.double_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  NDArray b = b_arg.array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
-		  else
-		    {
-		      NDArray b = b_arg.array_value ();
+		}
+	      else
+		{
+		  NDArray a = a_arg.array_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  double b = b_arg.double_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  NDArray b = b_arg.array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
 		}
 	    }
 	  else
 	    {
-	      NDArray a = a_arg.array_value ();
+	      NDArray x = x_arg.array_value ();
 
-	      if (! error_state)
+	      if (a_arg.is_scalar_type ())
 		{
-		  if (b_arg.is_scalar_type ())
-		    {
-		      double b = b_arg.double_value ();
+		  double a = a_arg.double_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  double b = b_arg.double_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  NDArray b = b_arg.array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
-		  else
-		    {
-		      NDArray b = b_arg.array_value ();
+		}
+	      else
+		{
+		  NDArray a = a_arg.array_value ();
 
-		      if (! error_state)
-			retval = betainc (x, a, b);
+		  if (! error_state)
+		    {
+		      if (b_arg.is_scalar_type ())
+			{
+			  double b = b_arg.double_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
+		      else
+			{
+			  NDArray b = b_arg.array_value ();
+
+			  if (! error_state)
+			    retval = betainc (x, a, b);
+			}
 		    }
 		}
 	    }

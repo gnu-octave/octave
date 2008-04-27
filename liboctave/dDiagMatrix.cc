@@ -139,12 +139,6 @@ DiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 }
 
 DiagMatrix
-DiagMatrix::transpose (void) const
-{
-  return DiagMatrix (mx_inline_dup (data (), length ()), cols (), rows ());
-}
-
-DiagMatrix
 real (const ComplexDiagMatrix& a)
 {
   DiagMatrix retval;

@@ -102,6 +102,7 @@ public:
   ArrayN<T> squeeze (void) const { return Array<T>::squeeze (); }
 
   ArrayN<T> transpose (void) const { return Array<T>::transpose (); }
+  ArrayN<T> hermitian (T (*fcn) (const T&) = 0) const { return Array<T>::hermitian (fcn); }
 
   ArrayN<T>& insert (const ArrayN<T>& a, const dim_vector& dv)
     {

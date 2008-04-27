@@ -165,14 +165,25 @@ public:
 
   double double_value (bool = false) const;
 
+  float float_value (bool = false) const;
+
   double scalar_value (bool frc_str_conv = false) const
     { return double_value (frc_str_conv); }
+
+  float float_scalar_value (bool frc_str_conv = false) const
+    { return float_value (frc_str_conv); }
 
   Matrix matrix_value (bool = false) const
     { return range.matrix_value (); }
 
+  FloatMatrix float_matrix_value (bool = false) const
+    { return range.matrix_value (); }
+
   NDArray array_value (bool = false) const
     { return range.matrix_value (); }
+
+  FloatNDArray float_array_value (bool = false) const
+    { return FloatMatrix (range.matrix_value ()); }
 
   // FIXME -- it would be better to have Range::intXNDArray_value
   // functions to avoid the intermediate conversion to a matrix
@@ -210,6 +221,8 @@ public:
 
   Complex complex_value (bool = false) const;
 
+  FloatComplex float_complex_value (bool = false) const;
+
   boolNDArray bool_array_value (bool warn = false) const
   {
     Matrix m = range.matrix_value ();
@@ -223,8 +236,14 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
     { return ComplexMatrix (range.matrix_value ()); }
 
+  FloatComplexMatrix float_complex_matrix_value (bool = false) const
+    { return FloatComplexMatrix (range.matrix_value ()); }
+
   ComplexNDArray complex_array_value (bool = false) const
     { return ComplexMatrix (range.matrix_value ()); }
+
+  FloatComplexNDArray float_complex_array_value (bool = false) const
+    { return FloatComplexMatrix (range.matrix_value ()); }
 
   Range range_value (void) const { return range; }
 

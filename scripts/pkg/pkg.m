@@ -248,11 +248,14 @@ function [local_packages, global_packages] = pkg (varargin)
 	global_install = false;
 	if (! user_prefix)
 	  prefix = tilde_expand (fullfile ("~", "octave"));
+	  archprefix = prefix;
 	endif
       case "-global"
 	global_install = true;
 	if (! user_prefix)
 	  prefix = fullfile (OCTAVE_HOME (), "share", "octave", "packages");
+	  archprefix = fullfile (octave_config_info ("libexecdir"),
+				 "octave", "packages");
 	endif
       case available_actions
 	if (strcmp (action, "none"))

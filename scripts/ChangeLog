@@ -1,3 +1,7 @@
+2008-04-29  David Bateman  <dbateman@free.fr>
+
+	pkg/pkg.m: Also set archprefix with the -local and -global options.
+
 2008-04-29  Jonathan Stickel  <jjstickel@vcn.com>
 
 	* statistics/distributions/tcdf.m, statistics/distributions/tinv.m:

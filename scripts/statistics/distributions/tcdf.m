@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} tcdf (@var{x}, @var{n})
-## For each element of @var{x}, compute the CDF at @var{x} of the
-## t (Student) distribution with @var{n} degrees of freedom, i.e.,
-## PROB (t(@var{n}) <= @var{x}).
+## For each element of @var{x}, compute the cumulative distribution
+## function (CDF) at @var{x} of the t (Student) distribution with
+## @var{n} degrees of freedom, i.e., PROB (t(@var{n}) <= @var{x}).
 ## @end deftypefn
 
 ## Author: KH <Kurt.Hornik@wu-wien.ac.at>

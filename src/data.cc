@@ -529,11 +529,11 @@ and @var{x}.  The result is in range -pi to pi.\n\
 }
 
 /*
-%! assert (size (atan2 (zeros (0, 2), zeros (0, 2))), [0, 2])
-%! assert (size (atan2 (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
-%! assert (size (atan2 (rand (2, 3, 4), 1), [2, 3, 4])
-%! assert (size (atan2 (1, rand (2, 3, 4)), [2, 3, 4])
-%! assert (size (atan2 (1, 2), [1, 1])
+%!assert (size (atan2 (zeros (0, 2), zeros (0, 2))), [0, 2])
+%!assert (size (atan2 (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%!assert (size (atan2 (rand (2, 3, 4), 1)), [2, 3, 4])
+%!assert (size (atan2 (1, rand (2, 3, 4))), [2, 3, 4])
+%!assert (size (atan2 (1, 2)), [1, 1])
 */
 
 DEFUN (hypot, args, ,
@@ -678,12 +678,12 @@ values of @var{x} or @var{y}.\n\
 }
 
 /*
-%! assert (size (hypot (zeros (0, 2), zeros (0, 2))), [0, 2])
-%! assert (size (hypot (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
-%! assert (size (hypot (rand (2, 3, 4), 1), [2, 3, 4])
-%! assert (size (hypot (1, rand (2, 3, 4)), [2, 3, 4])
-%! assert (size (hypot (1, 2), [1, 1])
-%! assert (hypot (1:10,1:10), sqrt(2) * [1:10]);
+%!assert (size (hypot (zeros (0, 2), zeros (0, 2))), [0, 2])
+%!assert (size (hypot (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%!assert (size (hypot (rand (2, 3, 4), 1)), [2, 3, 4])
+%!assert (size (hypot (1, rand (2, 3, 4))), [2, 3, 4])
+%!assert (size (hypot (1, 2)), [1, 1])
+%!assert (hypot (1:10, 1:10), sqrt(2) * [1:10], 16*eps)
 */
 
 template<typename T, typename ET>
@@ -747,15 +747,17 @@ binary mantissa and exponent so that @code{1/2 <= abs(f) < 1} and\n\
 }
 
 /*
-%! assert(log2 ([1/4, 1/2, 1, 2, 4]), [-2, -1, 0, 1, 2]);
-%! assert(log2(Inf), Inf);
-%! assert(isnan(log2(NaN)));
-%! assert(log2(4*i), 2 + log2(1*i));
-%! assert(log2(complex(0,Inf)), Inf + log2(i));
+%!assert(log2 ([1/4, 1/2, 1, 2, 4]), [-2, -1, 0, 1, 2]);
+%!assert(log2(Inf), Inf);
+%!assert(isnan(log2(NaN)));
+%!assert(log2(4*i), 2 + log2(1*i));
+%!assert(log2(complex(0,Inf)), Inf + log2(i));
+
 %!test
 %! [f, e] = log2 ([0,-1; 2,-4; Inf,-Inf]);
 %! assert (f, [0,-0.5; 0.5,-0.5; Inf,-Inf]);
 %! assert (e, [0,1;2,3;0,0])
+
 %!test
 %! [f, e] = log2 (complex (zeros (3, 2), [0,-1; 2,-4; Inf,-Inf]));
 %! assert (f, complex (zeros (3, 2), [0,-0.5; 0.5,-0.5; Inf,-Inf]));
@@ -883,11 +885,11 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 }
 
 /*
-%! assert (size (fmod (zeros (0, 2), zeros (0, 2))), [0, 2])
-%! assert (size (fmod (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
-%! assert (size (fmod (rand (2, 3, 4), 1), [2, 3, 4])
-%! assert (size (fmod (1, rand (2, 3, 4)), [2, 3, 4])
-%! assert (size (fmod (1, 2), [1, 1])
+%!assert (size (fmod (zeros (0, 2), zeros (0, 2))), [0, 2])
+%!assert (size (fmod (rand (2, 3, 4), zeros (2, 3, 4))), [2, 3, 4])
+%!assert (size (fmod (rand (2, 3, 4), 1), [2, 3, 4])
+%!assert (size (fmod (1, rand (2, 3, 4)), [2, 3, 4])
+%!assert (size (fmod (1, 2), [1, 1])
 */
 
 #define NATIVE_REDUCTION_1(FCN, TYPE, DIM) \

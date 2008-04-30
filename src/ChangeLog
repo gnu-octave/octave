@@ -1,5 +1,8 @@
 2008-04-30  John W. Eaton  <jwe@octave.org>
 
+	* data.cc: Fix tests.  Use "%!assert", not "%! assert" for
+	individual assert tests.
+
 	* ov-fcn-handle.cc: Create handle pointing to flops instead of log2.
 
 2008-04-30  Jaroslav Hajek <highegg@gmail.com>

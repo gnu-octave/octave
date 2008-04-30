@@ -1,5 +1,15 @@
 2008-04-30  John W. Eaton  <jwe@octave.org>
 
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct):
+	If function already exists, reload it anyway.  Clear existing
+	oct_file only if reloading a function from the same file.
+	(octave_shlib_list::display): New static function.
+	(octave_shlib_list::do_display): New function.
+
+	* symtab.cc (out_of_date_check_internal): Better handling for
+	functions found in files by relative file names.
+	(load_out_of_date_fcn): New function.
+
 	* ls-oct-ascii.cc (extract_keyword): Return early if first char is
 	not a comment character.
 	(read_ascii_data): Accept .nargin. and .nargout. as valid identifiers.

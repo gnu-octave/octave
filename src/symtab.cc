@@ -103,6 +103,26 @@ symbol_table::symbol_record::find (tree_argument_list *args,
 // would not check for it when finding symbol definitions.
 
 static inline bool
+load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
+		      octave_value& function)
+{
+  bool retval = false;
+
+  octave_function *fcn = load_fcn_from_file (ff, dir_name);
+
+  if (fcn)
+    {
+      retval = true;
+
+      function = octave_value (fcn);
+    }
+  else
+    function = octave_value ();
+
+  return retval;
+}
+
+static inline bool
 out_of_date_check_internal (octave_value& function)
 {
   bool retval = false;
@@ -126,9 +146,6 @@ out_of_date_check_internal (octave_value& function)
 	      if (tc < Vlast_prompt_time
 		  || (relative && tc < Vlast_chdir_time))
 		{
-		  octave_time ottp = fcn->time_parsed ();
-		  time_t tp = ottp.unix_time ();
-
 		  std::string nm = fcn->name ();
 
 		  int nm_len = nm.length ();
@@ -142,10 +159,16 @@ out_of_date_check_internal (octave_value& function)
 			  || (nm_len > 2 && nm.substr (nm_len-4) == ".m")))
 		    file = nm;
 		  else
-		    // FIXME -- this lookup is not right since it doesn't
-		    // account for dispatch type.
-		    file = octave_env::make_absolute (load_path::find_fcn (nm, dir_name),
-						      octave_env::getcwd ());
+		    {
+		      // FIXME -- this lookup is not right since it doesn't
+		      // account for dispatch type.
+
+		      // We don't want to make this an absolute name,
+		      // because load_fcn_file looks at the name to
+		      // decide whether it came from a relative lookup.
+
+		      file = load_path::find_fcn (nm, dir_name);
+		    }
 
 		  if (file.empty ())
 		    {
@@ -156,6 +179,11 @@ out_of_date_check_internal (octave_value& function)
 		    }
 		  else if (same_file (file, ff))
 		    {
+		      // Same file.  If it is out of date, then reload it.
+
+		      octave_time ottp = fcn->time_parsed ();
+		      time_t tp = ottp.unix_time ();
+
 		      fcn->mark_fcn_file_up_to_date (octave_time ());
 
 		      if (! (Vignore_function_time_stamp == 2
@@ -167,22 +195,19 @@ out_of_date_check_internal (octave_value& function)
 			  if (fs)
 			    {
 			      if (fs.is_newer (tp))
-				{
-				  fcn = load_fcn_from_file (ff, dir_name);
-
-				  if (fcn)
-				    {
-				      retval = true;
-
-				      function = octave_value (fcn);
-				    }
-				  else
-				    function = octave_value ();
-				}				
+				retval = load_out_of_date_fcn (ff, dir_name,
+							       function);
 			    }
 			  else
 			    function = octave_value ();
 			}
+		    }
+		  else
+		    {
+		      // Not the same file, so load the new file in
+		      // place of the old.
+
+		      retval = load_out_of_date_fcn (file, dir_name, function);
 		    }
 		}
 	    }

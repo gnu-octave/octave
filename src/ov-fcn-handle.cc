@@ -116,10 +116,10 @@ octave_fcn_handle::set_fcn (const std::string &octaveroot,
 {
   bool success = true;
 
-  if (octaveroot.length () != 0 && 
-      fpath.length () >= octaveroot.length () &&
-      fpath.substr (0, octaveroot.length ()) == octaveroot &&
-      OCTAVE_EXEC_PREFIX != octaveroot)
+  if (octaveroot.length () != 0
+      && fpath.length () >= octaveroot.length ()
+      && fpath.substr (0, octaveroot.length ()) == octaveroot
+      && OCTAVE_EXEC_PREFIX != octaveroot)
     {
       // First check if just replacing matlabroot is enough
       std::string str = OCTAVE_EXEC_PREFIX + 
@@ -1077,7 +1077,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
 %! hm = @flops;
-%! hdld = @time;
+%! hdld = @svd;
 %! hbi = @log2;
 %! f2 = f;
 %! g2 = g;

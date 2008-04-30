@@ -139,11 +139,23 @@ xlog2 (double x)
 #if defined (M_LN2)
   static double ln2 = M_LN2;
 #else
-  static double ln2 = log2 (2);
+  static double ln2 = log (2);
 #endif
 
   return log (x) / ln2;
 #endif
+}
+
+Complex
+xlog2 (const Complex& x)
+{
+#if defined (M_LN2)
+  static double ln2 = M_LN2;
+#else
+  static double ln2 = log (2);
+#endif
+
+  return std::log (x) / ln2;
 }
 
 double
@@ -155,11 +167,25 @@ xexp2 (double x)
 #if defined (M_LN2)
   static double ln2 = M_LN2;
 #else
-  static double ln2 = log2 (2);
+  static double ln2 = log (2);
 #endif
 
   return exp (x * ln2);
 #endif
+}
+
+double
+xlog2 (double x, int& exp)
+{
+  return frexp (x, &exp);
+}
+
+Complex
+xlog2 (const Complex& x, int& exp)
+{
+  double ax = std::abs (x);
+  double lax = xlog2 (ax, exp);
+  return (exp == 0) ? x : (x / ax) * lax;
 }
 
 // double -> bool mappers.

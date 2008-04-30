@@ -1,3 +1,8 @@
+2008-04-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* specfun/log2.m: Delete. 
+	* specfun/Makefile.in (SOURCES): Delete it from the list.
+
 2008-04-29  David Bateman  <dbateman@free.fr>
 
 	pkg/pkg.m: Also set archprefix with the -local and -global options.

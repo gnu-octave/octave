@@ -36,6 +36,9 @@ extern OCTAVE_API double xroundb (double x);
 extern OCTAVE_API double signum (double x);
 extern OCTAVE_API double xtrunc (double x);
 extern OCTAVE_API double xlog2 (double x); 
+extern OCTAVE_API Complex xlog2 (const Complex& x); 
+extern OCTAVE_API double xlog2 (double x, int& exp);
+extern OCTAVE_API Complex xlog2 (const Complex& x, int& exp);
 extern OCTAVE_API double xexp2 (double x);
 
 extern OCTAVE_API bool xisnan (double x);

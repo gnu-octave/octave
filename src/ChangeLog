@@ -1,3 +1,17 @@
+2008-04-30  John W. Eaton  <jwe@octave.org>
+
+	* ov-fcn-handle.cc: Create handle pointing to flops instead of log2.
+
+2008-04-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* ov-base.cc, ov-base.h, ov-bool-mat.h, ov-bool-sparse.h,
+	ov-bool.h, ov-complex.cc, ov-complex.h, ov-cx-mat.cc, ov-cx-mat.h,
+	ov-cx-sparse.cc, ov-cx-sparse.h, ov-intx.h, ov-range.h,
+	ov-re-mat.cc, ov-re-mat.h, ov-re-sparse.cc, ov-re-sparse.h,
+	ov-scalar.cc, ov-scalar.h, ov.h:
+ 	Provide log2 mapper function.
+	* data.cc (Flog2): New function.
+
 2008-04-25  John W. Eaton  <jwe@octave.org>
 
 	* pt-stmt.h (tree_statement_list::function_body): New data member.

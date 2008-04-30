@@ -686,6 +686,82 @@ values of @var{x} or @var{y}.\n\
 %! assert (hypot (1:10,1:10), sqrt(2) * [1:10]);
 */
 
+template<typename T, typename ET>
+void 
+map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
+{
+  f = Array<T>(x.dims ());
+  e = Array<ET>(x.dims ());
+  for (octave_idx_type i = 0; i < x.numel (); i++)
+    {
+      int exp;
+      f.xelem (i) = xlog2 (x(i), exp);
+      e.xelem (i) = exp;
+    }
+}
+
+DEFUN (log2, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Mapping Function} {} log2 (@var{x})\n\
+@deftypefnx {Mapping Function} {[@var{f}, @var{e}] = } log2 (@var{x})\n\
+Compute the base-2 logarithm for each element of @var{x}.\n\
+If called with two output arguments, split @var{x} to\n\
+binary mantissa and exponent so that @code{1/2 <= abs(f) < 1} and\n\
+@var{e} is an integer. If @code{x = 0}, @code{f = e = 0}.\n\
+@seealso{log, log10, log2, exp}\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 1)
+    {
+      if (nargout < 2)
+        retval(0) = args(0).log2 ();
+      else if (args(0).is_real_type ())
+        {
+          NDArray f;
+          NDArray x = args(0).array_value ();
+          // FIXME -- should E be an int value?
+          Matrix e;
+          map_2_xlog2 (x, f, e);
+          retval (1) = e;
+          retval (0) = f;
+        }
+      else if (args(0).is_complex_type ())
+        {
+          ComplexNDArray f;
+          ComplexNDArray x = args(0).complex_array_value ();
+          // FIXME -- should E be an int value?
+          NDArray e;
+          map_2_xlog2 (x, f, e);
+          retval (1) = e;
+          retval (0) = f;
+        }
+      else
+        gripe_wrong_type_arg ("log2", args(0));
+    }
+  else
+    print_usage ();
+
+  return retval;
+}
+
+/*
+%! assert(log2 ([1/4, 1/2, 1, 2, 4]), [-2, -1, 0, 1, 2]);
+%! assert(log2(Inf), Inf);
+%! assert(isnan(log2(NaN)));
+%! assert(log2(4*i), 2 + log2(1*i));
+%! assert(log2(complex(0,Inf)), Inf + log2(i));
+%!test
+%! [f, e] = log2 ([0,-1; 2,-4; Inf,-Inf]);
+%! assert (f, [0,-0.5; 0.5,-0.5; Inf,-Inf]);
+%! assert (e, [0,1;2,3;0,0])
+%!test
+%! [f, e] = log2 (complex (zeros (3, 2), [0,-1; 2,-4; Inf,-Inf]));
+%! assert (f, complex (zeros (3, 2), [0,-0.5; 0.5,-0.5; Inf,-Inf]));
+%! assert (e, [0,1; 2,3; 0,0]);
+*/
+
 DEFUN (fmod, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fmod (@var{x}, @var{y})\n\

@@ -203,6 +203,7 @@ public:
   octave_value floor (void) const;
   octave_value imag (void) const;
   octave_value log (void) const;
+  octave_value log2 (void) const;
   octave_value log10 (void) const;
   octave_value log1p (void) const;
   octave_value real (void) const;

@@ -507,6 +507,7 @@ public:
   virtual octave_value isnan (void) const;
   virtual octave_value lgamma (void) const;
   virtual octave_value log (void) const;
+  virtual octave_value log2 (void) const;
   virtual octave_value log10 (void) const;
   virtual octave_value log1p (void) const;
   virtual octave_value real (void) const;

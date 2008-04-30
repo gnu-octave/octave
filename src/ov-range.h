@@ -299,6 +299,7 @@ public:
   RANGE_MAPPER (isnan)
   RANGE_MAPPER (lgamma)
   RANGE_MAPPER (log)
+  RANGE_MAPPER (log2)
   RANGE_MAPPER (log10)
   RANGE_MAPPER (log1p)
   RANGE_MAPPER (real)

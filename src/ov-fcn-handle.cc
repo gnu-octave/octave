@@ -381,7 +381,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
-%! h = @log2;
+%! h = @flops;
 %! f2 = f;
 %! g2 = g;
 %! h2 = h;
@@ -578,7 +578,7 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 %! a = 2;
 %! f = @(x) a + x;
 %! g = @(x) 2 * x;
-%! h = @log2;
+%! h = @flops;
 %! f2 = f;
 %! g2 = g;
 %! h2 = h;
@@ -1119,7 +1119,7 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 %!   a = 2;
 %!   f = @(x) a + x;
 %!   g = @(x) 2 * x;
-%!   h = @log2;
+%!   h = @flops;
 %!   f2 = f;
 %!   g2 = g;
 %!   h2 = h;

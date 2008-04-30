@@ -227,6 +227,7 @@ public:
   BOOL_MAPPER (isnan)
   BOOL_MAPPER (lgamma)
   BOOL_MAPPER (log)
+  BOOL_MAPPER (log2)
   BOOL_MAPPER (log10)
   BOOL_MAPPER (log1p)
   BOOL_MAPPER (real)

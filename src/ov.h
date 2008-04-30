@@ -920,6 +920,7 @@ public:
   MAPPER_FORWARD (isnan)
   MAPPER_FORWARD (lgamma)
   MAPPER_FORWARD (log)
+  MAPPER_FORWARD (log2)
   MAPPER_FORWARD (log10)
   MAPPER_FORWARD (log1p)
   MAPPER_FORWARD (real)

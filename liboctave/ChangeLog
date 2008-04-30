@@ -1,3 +1,10 @@
+2008-04-30  Jaroslav Hajek <highegg@gmail.com>
+
+	* lo-mappers.cc (xlog2 (double)): Compute log (2), not log2 (2).
+	(xlog2 (Complex), xlog2 (double, int&), xlog2 (Complex, int&)):
+	New functions.
+	* lo-mappers.h: Provide decls.
+
 2008-04-25  Michael Goffioul <michael.goffioul@gmail.com>
 
 	* oct-lookup.h (seq_lookup): Do not use output value of fill_n (MSVC

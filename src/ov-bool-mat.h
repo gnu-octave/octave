@@ -219,6 +219,7 @@ public:
   BOOL_MAT_MAPPER (isnan)
   BOOL_MAT_MAPPER (lgamma)
   BOOL_MAT_MAPPER (log)
+  BOOL_MAT_MAPPER (log2)
   BOOL_MAT_MAPPER (log10)
   BOOL_MAT_MAPPER (log1p)
   BOOL_MAT_MAPPER (real)

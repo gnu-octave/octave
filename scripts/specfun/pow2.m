@@ -66,8 +66,7 @@ endfunction
 %! x = [3, 0, -3, 4, 0, -4, 5, 0, -5];
 %! y = [-2, -2, -2, 1, 1, 1, 3, 3, 3];
 %! z = x .* (2 .^ y);
-%! assert(all (abs (pow2 (x,y) - z) < sqrt (eps))
-%! );
+%! assert(all (abs (pow2 (x,y) - z) < sqrt (eps)));
 
 %!error pow2();
 

@@ -1,3 +1,8 @@
+2008-04-30  John W. Eaton  <jwe@octave.org>
+
+	* elfun/acot.m, elfun/acsc.m, elfun/acsch.m, elfun/asec.m,
+	elfun/asech.m, specfun/pow2.m: Fix tests.
+
 2008-04-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* specfun/log2.m: Delete. 

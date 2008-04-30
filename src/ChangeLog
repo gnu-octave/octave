@@ -1,9 +1,17 @@
 2008-04-30  John W. Eaton  <jwe@octave.org>
 
+	* ls-oct-ascii.cc (extract_keyword): Return early if first char is
+	not a comment character.
+	(read_ascii_data): Accept .nargin. and .nargout. as valid identifiers.
+
+	* ov-fcn-handle.cc: Combine tests.  Test saving and loading
+	handles for built-in, .oct, and .m functions.
+	(octave_fcn_handle::save_ascii, octave_fcn_handle::save_binary,
+	octave_fcn_handle::save_hdf5, octave_fcn_handle::print):
+	Avoid dereferencing invalid pointer.
+
 	* data.cc: Fix tests.  Use "%!assert", not "%! assert" for
 	individual assert tests.
-
-	* ov-fcn-handle.cc: Create handle pointing to flops instead of log2.
 
 2008-04-30  Jaroslav Hajek <highegg@gmail.com>
 

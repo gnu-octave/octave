@@ -81,6 +81,10 @@ extract_keyword (std::istream& is, const char *keyword, const bool next_only)
 {
   std::string retval;
 
+  int ch = is.peek ();
+  if (next_only && ch != '%' && ch != '#')
+    return retval;
+
   char c;
   while (is.get (c))
     {
@@ -255,11 +259,8 @@ read_ascii_data (std::istream& is, const std::string& filename, bool& global,
       return std::string ();
     }
 
-  if (name == CELL_ELT_TAG)
-    {
-      // This is OK -- name won't be used.
-    }
-  else if (! valid_identifier (name))
+  if (! (name == ".nargin." || name == ".nargout."
+	 || name == CELL_ELT_TAG || valid_identifier (name)))
     {
       error ("load: bogus identifier `%s' found in file `%s'",
 	     name.c_str (), filename.c_str ());

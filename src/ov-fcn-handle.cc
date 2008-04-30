@@ -250,8 +250,12 @@ octave_fcn_handle::save_ascii (std::ostream& os)
     }
   else
     {
+      octave_function *f = function_value ();
+      std::string fnm = f ? f->fcn_file_name () : std::string ();
+
       os << "# octaveroot: " << OCTAVE_EXEC_PREFIX << "\n";
-      os << "# path: " << user_function_value ()-> fcn_file_name () << "\n";
+      if (! fnm.empty ())
+	os << "# path: " << fnm << "\n";
       os << nm << "\n";
     }
 
@@ -375,32 +379,6 @@ octave_fcn_handle::load_ascii (std::istream& is)
   return success;
 }
 
-/* 
-
-%!test
-%! a = 2;
-%! f = @(x) a + x;
-%! g = @(x) 2 * x;
-%! h = @flops;
-%! f2 = f;
-%! g2 = g;
-%! h2 = h;
-%! nm = tmpnam();
-%! unwind_protect
-%!   save ("-text", nm, "f2", "g2", "h2");
-%!   clear f2 g2 h2
-%!   load (nm);
-%!   assert (f(2),f2(2));
-%!   assert (g(2),g2(2));
-%!   assert (g(3),g2(3));
-%!   unlink (nm);
-%!   save ("-text", nm, "f2", "g2", "h2");
-%! unwind_protect_cleanup
-%!   unlink (nm);
-%! end_unwind_protect
-
-*/
-
 bool
 octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
 {
@@ -450,8 +428,10 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
     {
       std::ostringstream nmbuf;
 
-      nmbuf << nm << "\n" << OCTAVE_EXEC_PREFIX << "\n" 
-	    << user_function_value ()-> fcn_file_name () ;
+      octave_function *f = function_value ();
+      std::string fnm = f ? f->fcn_file_name () : std::string ();
+
+      nmbuf << nm << "\n" << OCTAVE_EXEC_PREFIX << "\n" << fnm;
 
       std::string buf_str = nmbuf.str ();
       int32_t tmp = buf_str.length ();
@@ -571,32 +551,6 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
  
  return success;
 }
-
-/* 
-
-%!test
-%! a = 2;
-%! f = @(x) a + x;
-%! g = @(x) 2 * x;
-%! h = @flops;
-%! f2 = f;
-%! g2 = g;
-%! h2 = h;
-%! nm = tmpnam();
-%! unwind_protect
-%!   save ("-binary", nm, "f2", "g2", "h2");
-%!   clear f2 g2 h2
-%!   load (nm);
-%!   assert (f(2),f2(2));
-%!   assert (g(2),g2(2));
-%!   assert (g(3),g2(3));
-%!   unlink (nm);
-%!   save ("-binary", nm, "f2", "g2", "h2");
-%! unwind_protect_cleanup
-%!   unlink (nm);
-%! end_unwind_protect
-
-*/
 
 #if defined (HAVE_HDF5)
 bool
@@ -723,7 +677,9 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
   else
     {
       std::string octaveroot = OCTAVE_EXEC_PREFIX;
-      std::string fpath = user_function_value ()-> fcn_file_name ();
+
+      octave_function *f = function_value ();
+      std::string fpath = f ? f->fcn_file_name () : std::string ();
 
       H5Sclose (space_hid);
       hdims[0] = 1;
@@ -1112,34 +1068,44 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
   return success;
 }
 
+#endif
+
 /* 
 
 %!test
+%! a = 2;
+%! f = @(x) a + x;
+%! g = @(x) 2 * x;
+%! hm = @flops;
+%! hdld = @time;
+%! hbi = @log2;
+%! f2 = f;
+%! g2 = g;
+%! hm2 = hm;
+%! hdld2 = hdld;
+%! hbi2 = hbi;
+%! modes = {"-text", "-binary"};
 %! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_HDF5")))
-%!   a = 2;
-%!   f = @(x) a + x;
-%!   g = @(x) 2 * x;
-%!   h = @flops;
-%!   f2 = f;
-%!   g2 = g;
-%!   h2 = h;
+%!   modes(end+1) = "-hdf5";
+%! endif
+%! for i = modes
+%!   mode = modes{1};
 %!   nm = tmpnam();
 %!   unwind_protect
-%!     save ("-hdf5", nm, "f2", "g2", "h2");
-%!     clear f2 g2 h2
+%!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
+%!     clear f2 g2 hm2 hdld2 hbi2
 %!     load (nm);
 %!     assert (f(2),f2(2));
 %!     assert (g(2),g2(2));
 %!     assert (g(3),g2(3));
 %!     unlink (nm);
-%!     save ("-hdf5", nm, "f2", "g2", "h2");
+%!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");
 %!   unwind_protect_cleanup
 %!     unlink (nm);
 %!   end_unwind_protect
-%! endif
+%! endfor
 
 */
-#endif
 
 void
 octave_fcn_handle::print (std::ostream& os, bool pr_as_read_syntax) const
@@ -1242,7 +1208,7 @@ Return a struct containing information about the function handle\n\
 
       if (! error_state)
 	{
-	  octave_function *fcn = fh ? fh->function_value (true) : 0;
+	  octave_function *fcn = fh ? fh->function_value () : 0;
 
 	  if (fcn)
 	    {
@@ -1301,9 +1267,9 @@ Return a struct containing information about the function handle\n\
 			  m.assign ("workspace", ws);
 			}
 		    }
-		  else if (fcn->is_user_function ())
+		  else if (fcn->is_user_function () || fcn->is_user_script ())
 		    {
-		      octave_user_function *fu = fh->user_function_value ();
+		      octave_function *fu = fh->function_value ();
 		      m.assign ("file", fu->fcn_file_name ());
 		    }
 		  else

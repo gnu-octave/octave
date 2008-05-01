@@ -51,6 +51,9 @@ octave_shlib_list
 {
 public:
 
+  typedef std::list<octave_shlib>::iterator iterator;
+  typedef std::list<octave_shlib>::const_iterator const_iterator;
+
   static void append (const octave_shlib& shl);
 
   static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
@@ -101,9 +104,7 @@ void
 octave_shlib_list::do_remove (octave_shlib& shl,
 			      octave_shlib::close_hook cl_hook)
 {
-  for (std::list<octave_shlib>::iterator p = lib_list.begin ();
-       p != lib_list.end ();
-       p++)
+  for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
       if (*p == shl)
 	{
@@ -124,9 +125,7 @@ octave_shlib_list::do_search (const std::string& fcn_name, octave_shlib& shl,
 
   shl = octave_shlib ();
 
-  for (std::list<octave_shlib>::iterator p = lib_list.begin ();
-       p != lib_list.end ();
-       p++)
+  for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
       function = p->search (fcn_name, mangler);
 
@@ -145,8 +144,7 @@ void
 octave_shlib_list::do_display (void) const
 {
   std::cerr << "current shared libraries:" << std::endl;
-  for (std::list<octave_shlib>::const_iterator p = lib_list.begin ();
-       p != lib_list.end (); p++)
+  for (const_iterator p = lib_list.begin (); p != lib_list.end (); p++)
     std::cerr << "  " << p->file_name () << std::endl;
 }
 
@@ -202,6 +200,9 @@ octave_mex_file_list
 {
 public:
 
+  typedef std::list<octave_shlib>::iterator iterator;
+  typedef std::list<octave_shlib>::const_iterator const_iterator;
+
   static void append (const octave_shlib& shl);
 
   static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
@@ -242,10 +243,7 @@ void
 octave_mex_file_list::do_remove (octave_shlib& shl,
 				 octave_shlib::close_hook cl_hook)
 {
-  
-  for (std::list<octave_shlib>::iterator p = file_list.begin ();
-       p != file_list.end ();
-       p++)
+  for (iterator p = file_list.begin (); p != file_list.end (); p++)
     {
       if (*p == shl)
 	{
@@ -374,45 +372,22 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
       if (! reloading)
 	oct_file = octave_shlib ();
 
-      std::string oct_file_name = file_name;
+      oct_file.open (file_name);
 
-      if (oct_file_name.empty ())
+      if (! error_state)
 	{
-	  oct_file_name = oct_file_in_path (fcn_name);
-
-	  if (! oct_file_name.empty ())
-	    relative = ! octave_env::absolute_pathname (oct_file_name);
-	}
-
-      if (oct_file_name.empty ())
-	{
-	  if (oct_file.is_relative ())
+	  if (oct_file)
 	    {
-	      // Can't see this function from current
-	      // directory, so we should clear it.
-	      clear (oct_file);
-	      function = 0;
+	      if (relative)
+		oct_file.mark_relative ();
+
+	      octave_shlib_list::append (oct_file);
+
+	      function = oct_file.search (fcn_name, xmangle_name);
 	    }
-	}
-      else
-	{
-	  oct_file.open (oct_file_name);
-
-	  if (! error_state)
-	    {
-	      if (oct_file)
-		{
-		  if (relative)
-		    oct_file.mark_relative ();
-
-		  octave_shlib_list::append (oct_file);
-
-		  function = oct_file.search (fcn_name, xmangle_name);
-		}
-	      else
-		::error ("%s is not a valid shared library",
-			 oct_file_name.c_str ());
-	    }
+	  else
+	    ::error ("%s is not a valid shared library",
+		     file_name.c_str ());
 	}
     }
 

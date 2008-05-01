@@ -1,3 +1,15 @@
+2008-05-01  John W. Eaton  <jwe@octave.org>
+
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct): No need to
+	do load_path lookups here.
+	(octave_shlib_list::iterator, octave_shlib_list::const_iterator):
+	New typedefs.
+	(octave_shlib_list::do_remove, octave_shlib_list::do_search,
+	octave_shlib_list::do_display): Use them.
+	(octave_mex_file_list::iterator, octave_mex_file_list::const_iterator):
+	New typedefs.
+	(octave_mex_file_list::do_remove): Use them.
+
 2008-04-30  John W. Eaton  <jwe@octave.org>
 
 	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct):

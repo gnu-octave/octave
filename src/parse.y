@@ -3225,12 +3225,9 @@ load_fcn_from_file (const std::string& file_name, const std::string& dir_name,
       autoloading = true;
     }
 
-  if (! file.empty ())
-    {
-      fcn_file_from_relative_lookup = ! octave_env::absolute_pathname (file);
+  fcn_file_from_relative_lookup = ! octave_env::absolute_pathname (file);
 
-      file = octave_env::make_absolute (file, octave_env::getcwd ());
-    }
+  file = octave_env::make_absolute (file, octave_env::getcwd ());
 
   int len = file.length ();
 

@@ -1,3 +1,16 @@
+2008-05-01  John W. Eaton  <jwe@octave.org>
+
+	* oct-shlib.h (octave_shlib::number_of_functions_loaded):
+	Return size_t instead of int value.
+	* oct-shlib.cc (octave_base_shlib::number_of_functions_loaded):
+	Likewise.
+	(octave_base_shlib::fcn_names): Now a std::map object.
+	Adjust all uses.
+	(octave_base_shlib::fcn_names_iterator,
+	octave_base_shlib::fcn_names_const_iterator): New typedefs.
+	(octave_base_shlib::add_to_fcn_names, octave_base_shlib::remove):
+	Perform reference counting for functions accessed.
+
 2008-04-30  Jaroslav Hajek <highegg@gmail.com>
 
 	* lo-mappers.cc (xlog2 (double)): Compute log (2), not log2 (2).

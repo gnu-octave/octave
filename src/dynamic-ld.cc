@@ -58,8 +58,7 @@ public:
 
   static void remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
 
-  static void *search (const std::string& fcn_name, octave_shlib& shl,
-		       octave_shlib::name_mangler mangler = 0);
+  static octave_shlib find_file (const std::string& file_name);
 
   static void display (void);
 
@@ -73,8 +72,7 @@ private:
 
   void do_remove (octave_shlib& shl, octave_shlib::close_hook cl_hook = 0);
 
-  void *do_search (const std::string& fcn_name, octave_shlib& shl,
-		   octave_shlib::name_mangler mangler = 0);
+  octave_shlib do_find_file (const std::string& file_name) const;
 
   void do_display (void) const;
 
@@ -117,27 +115,21 @@ octave_shlib_list::do_remove (octave_shlib& shl,
     }
 }
 
-void *
-octave_shlib_list::do_search (const std::string& fcn_name, octave_shlib& shl,
-			      octave_shlib::name_mangler mangler)
+octave_shlib
+octave_shlib_list::do_find_file (const std::string& file_name) const
 {
-  void *function = 0;
+  octave_shlib retval;
 
-  shl = octave_shlib ();
-
-  for (iterator p = lib_list.begin (); p != lib_list.end (); p++)
+  for (const_iterator p = lib_list.begin (); p != lib_list.end (); p++)
     {
-      function = p->search (fcn_name, mangler);
-
-      if (function)
+      if (p->file_name () == file_name)
 	{
-	  shl = *p;
-
+	  retval = *p;
 	  break;
 	}
     }
 
-  return function;
+  return retval;
 }
 
 void
@@ -181,11 +173,11 @@ octave_shlib_list::remove (octave_shlib& shl,
     instance->do_remove (shl, cl_hook);
 }
 
-void *
-octave_shlib_list::search (const std::string& fcn_name, octave_shlib& shl,
-			   octave_shlib::name_mangler mangler)
+octave_shlib
+octave_shlib_list::find_file (const std::string& file_name)
 {
-  return (instance_ok ()) ? instance->do_search (fcn_name, shl, mangler) : 0;
+  return (instance_ok ())
+    ? instance->do_find_file (file_name) : octave_shlib ();
 }
 
 void
@@ -337,70 +329,51 @@ octave_dynamic_loader::do_load_oct (const std::string& fcn_name,
 {
   octave_function *retval = 0;
 
-  octave_shlib oct_file;
-
   unwind_protect::begin_frame ("octave_dynamic_loader::do_load");
 
   unwind_protect_bool (octave_dynamic_loader::doing_load);
 
   doing_load = true;
 
-  void *function
-    = octave_shlib_list::search (fcn_name, oct_file, xmangle_name);
+  octave_shlib oct_file = octave_shlib_list::find_file (file_name);
 
-  if (! error_state)
+  if (oct_file && oct_file.is_out_of_date ())
+    clear (oct_file);
+
+  if (! oct_file)
     {
-      bool reloading = false;
-
-      if (function)
-	{
-	  // If there is already a function by this name installed
-	  // from the same file, clear the file so we can reload it.
-
-	  // If there is already a function by this name installed
-	  // from a different file, leave the other file alone and
-	  // load the function from the new file.
-
-	  reloading = same_file (file_name, oct_file.file_name ());
-
-	  if (reloading)
-	    clear (oct_file);
-
-	  function = 0;
-	}
-
-      if (! reloading)
-	oct_file = octave_shlib ();
-
       oct_file.open (file_name);
 
-      if (! error_state)
+      if (! error_state && oct_file)
 	{
-	  if (oct_file)
-	    {
-	      if (relative)
-		oct_file.mark_relative ();
+	  octave_shlib_list::append (oct_file);
 
-	      octave_shlib_list::append (oct_file);
-
-	      function = oct_file.search (fcn_name, xmangle_name);
-	    }
-	  else
-	    ::error ("%s is not a valid shared library",
-		     file_name.c_str ());
+	  if (relative)
+	    oct_file.mark_relative ();
 	}
     }
 
-  if (function)
+  if (! error_state)
     {
-      octave_dld_fcn_getter f
-	= FCN_PTR_CAST (octave_dld_fcn_getter, function);
+      if (oct_file)
+	{
+	  void *function = oct_file.search (fcn_name, xmangle_name);
 
-      retval = f (oct_file, relative);
+	  if (function)
+	    {
+	      octave_dld_fcn_getter f
+		= FCN_PTR_CAST (octave_dld_fcn_getter, function);
 
-      if (! retval)
-	::error ("failed to install .oct file function `%s'",
-		 fcn_name.c_str ());
+	      retval = f (oct_file, relative);
+
+	      if (! retval)
+		::error ("failed to install .oct file function `%s'",
+			 fcn_name.c_str ());
+	    }
+	}
+      else
+	::error ("%s is not a valid shared library",
+		 file_name.c_str ());
     }
   
   unwind_protect::run_frame ("octave_dynamic_loader::do_load");

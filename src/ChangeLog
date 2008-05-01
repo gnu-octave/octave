@@ -1,5 +1,13 @@
 2008-05-01  John W. Eaton  <jwe@octave.org>
 
+	* parse.y (load_fcn_from_file): Expect
+	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct):
+	Search currently loaded .oct files by file name.  Don't search
+	currently loaded files for functions.
+	(octave_shlib_list::find_file, octave_shlib_list::do_find_file):
+	New functions.
+	(octave_shlib_list::search, octave_shlib_list::do_search): Delete.
+
 	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct): No need to
 	do load_path lookups here.
 	(octave_shlib_list::iterator, octave_shlib_list::const_iterator):

@@ -24,6 +24,8 @@ along with Octave; see the file COPYING.  If not, see
 #include <config.h>
 #endif
 
+#include <map>
+
 #if defined (HAVE_SHL_LOAD_API)
 #include <cerrno>
 #include <cstring>
@@ -77,6 +79,14 @@ public:
 
   void open (const std::string&) { }
 
+  // FIXME -- instead of returning a direct pointer to a function,
+  // perhaps this should return an object containing the pointer.
+  // Then we could do the reference counting without relying on users
+  // of this class to call remove at the appropriate time.  However,
+  // when users accessed the internal pointer, they would still need
+  // to know that the pointer is only valid while the container is
+  // valid (similar to the std::string::c_str method).
+
   void *search (const std::string&, name_mangler = 0) { return 0; }
 
   void close (octave_shlib::close_hook = 0) { }
@@ -87,7 +97,7 @@ public:
 
   bool is_out_of_date (void) const;
 
-  int number_of_functions_loaded (void) const { return fcn_names.length (); }
+  size_t number_of_functions_loaded (void) const { return fcn_names.size (); }
 
   std::string file_name (void) const { return file; }
 
@@ -95,9 +105,12 @@ public:
 
 protected:
 
+  typedef std::map<std::string, size_t>::iterator fcn_names_iterator;
+  typedef std::map<std::string, size_t>::const_iterator fcn_names_const_iterator;
+
   std::string file;
 
-  string_vector fcn_names;
+  std::map<std::string, size_t> fcn_names;
 
   octave_time tm_loaded;
 
@@ -121,23 +134,13 @@ octave_base_shlib::remove (const std::string& fcn_name)
 {
   bool retval = false;
 
-  int n = number_of_functions_loaded ();
+  fcn_names_iterator p = fcn_names.find (fcn_name);
 
-  string_vector new_fcn_names (n);
-
-  int k = 0;
-
-  for (int i = 0; i < n; i++)
+  if (--(p->second) == 0)
     {
-      if (fcn_names(i) == fcn_name)
-	retval = true;
-      else
-	new_fcn_names(k++) = fcn_names(i);
+      fcn_names.erase (fcn_name);
+      retval = true;
     }
-
-  new_fcn_names.resize (k);
-
-  fcn_names = new_fcn_names;
 
   return retval;
 }
@@ -166,24 +169,19 @@ octave_base_shlib::stamp_time (void)
 void
 octave_base_shlib::add_to_fcn_names (const std::string& name)
 {
-  int n = number_of_functions_loaded ();
+  fcn_names_iterator p = fcn_names.find (name);
 
-  for (int i = 0; i < n; i++)
-    if (fcn_names(i) == name)
-      return;
-
-  fcn_names.resize (n+1);
-
-  fcn_names(n) = name;
+  if (p == fcn_names.end ())
+    fcn_names[name] = 1;
+  else
+    ++(p->second);
 }
 
 void
 octave_base_shlib::do_close_hook (octave_shlib::close_hook cl_hook)
 {
-  int n = number_of_functions_loaded ();
-
-  for (int i = 0; i < n; i++)
-    cl_hook (fcn_names(i));
+  for (fcn_names_iterator p = fcn_names.begin (); p != fcn_names.end (); p++)
+    cl_hook (p->first);
 }
 
 void
@@ -191,7 +189,7 @@ octave_base_shlib::tabula_rasa (void)
 {
   file = "";
 
-  fcn_names.resize (0);
+  fcn_names.clear ();
 
   tm_loaded = static_cast<time_t> (0);
 }

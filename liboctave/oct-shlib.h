@@ -89,7 +89,7 @@ public:
   operator bool () const { return is_open (); }
 
   virtual void open (const std::string& f) { rep->open (f); }
-  
+
   virtual void *search (const std::string& nm, name_mangler mangler = 0)
     { return rep->search (nm, mangler); }
 
@@ -106,7 +106,7 @@ public:
 
   bool is_relative (void) const { return relative; }
 
-  virtual int number_of_functions_loaded (void) const
+  virtual size_t number_of_functions_loaded (void) const
     { return rep->number_of_functions_loaded (); }
 
   virtual std::string file_name (void) const

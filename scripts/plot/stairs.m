@@ -19,6 +19,10 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} stairs (@var{x}, @var{y})
+## @deftypefnx {Function File} {} stairs (@dots{}, @var{style})
+## @deftypefnx {Function File} {} stairs (@dots{}, @var{prop}, @var{val})
+## @deftypefnx {Function File} {} stairs (@var{h}, @dots{})
+## @deftypefnx {Function File} {@var{h} =} stairs (@dots{})
 ## Produce a stairstep plot.  The arguments may be vectors or matrices.
 ##
 ## If only one argument is given, it is taken as a vector of y-values
@@ -49,20 +53,46 @@
 
 ## Author: jwe
 
-function [xs, ys] = stairs (x, y)
+function [xs, ys] = stairs (varargin)
 
-  if (nargin < 1 || nargin > 2)
+  [ax, varargin, nargin] = __plt_get_axis_arg__ ("stairs", varargin{:});
+
+  if (nargin < 1)
     print_usage ();
+  else
+    if (nargout > 1)
+      [h, xs, ys] = __stairs__ (false, varargin{:});
+    else
+      oldax = gca ();
+      unwind_protect
+	axes (ax);
+	newplot ();
+	[h, xxs, yys] = __stairs__ (true, varargin{:});
+      unwind_protect_cleanup
+	axes (oldax);
+      end_unwind_protect
+    endif
+    if (nargout == 1)
+      xs = h;
+    endif
   endif
+endfunction
 
-  if (nargin == 1)
-    if (ismatrix (x))
-      if (isvector (x))
-	x = x(:);
+function [h, xs, ys] = __stairs__ (doplot, varargin)
+
+  if (nargin == 1 || ischar (varargin{2}))
+    idx = 1;
+    y = varargin {1};
+    if (ismatrix (y))
+      if (isvector (y))
+	y = y(:);
       endif
-      y = x;
       x = 1:rows (y);
     endif
+  else
+    idx = 2;
+    x = varargin{1};
+    y = varargin{2};
   endif
 
   if (ndims (x) > 2 || ndims (y) > 2)
@@ -93,25 +123,24 @@ function [xs, ys] = stairs (x, y)
 
   len = 2*nr - 1;
 
-  tmp_xs = tmp_ys = zeros (len, nc);
+  xs = ys = zeros (len, nc);
 
-  tmp_xs(1,:) = x(1,:);
-  tmp_ys(1,:) = y(1,:);
+  xs(1,:) = x(1,:);
+  ys(1,:) = y(1,:);
 
-  tmp_x = x(2:nr,:);
+  x = x(2:nr,:);
   ridx = 2:2:len-1;
-  tmp_xs(ridx,:) = tmp_x;
-  tmp_ys(ridx,:) = y(1:nr-1,:);
+  xs(ridx,:) = x;
+  ys(ridx,:) = y(1:nr-1,:);
 
   ridx = 3:2:len;
-  tmp_xs(ridx,:) = tmp_x;
-  tmp_ys(ridx,:) = y(2:nr,:);
+  xs(ridx,:) = x;
+  ys(ridx,:) = y(2:nr,:);
 
-  if (nargout == 0)
-    plot (tmp_xs, tmp_ys);
+  if (doplot)
+    h = plot (xs, ys, varargin{idx+1:end});
   else
-    xs = tmp_xs;
-    ys = tmp_ys;
+    h = 0;
   endif
 
 endfunction

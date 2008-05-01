@@ -109,9 +109,6 @@
 ## @item ^
 ## Set impulses plot style.
 ##
-## @item L
-## Set steps plot style.
-##
 ## @item @var{n}
 ## Interpreted as the plot color if @var{n} is an integer in the range 1 to
 ## 6.

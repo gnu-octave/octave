@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 // Function handles.
 
 class
+OCTINTERP_API
 octave_fcn_handle : public octave_base_value
 {
 public:

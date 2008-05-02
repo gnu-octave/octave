@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 // Inline functions.
 
 class
+OCTINTERP_API
 octave_fcn_inline : public octave_fcn_handle
 {
 public:

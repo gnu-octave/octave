@@ -23,12 +23,12 @@ along with Octave; see the file COPYING.  If not, see
 #if !defined (octave_ls_oct_binary_h)
 #define octave_ls_oct_binary_h 1
 
-extern bool
+extern OCTINTERP_API bool
 save_binary_data (std::ostream& os, const octave_value& tc,
 		  const std::string& name, const std::string& doc,
 		  bool mark_as_global, bool save_as_floats);
 
-extern std::string
+extern OCTINTERP_API std::string
 read_binary_data (std::istream& is, bool swap,
 		  oct_mach_info::float_format fmt,
 		  const std::string& filename, bool& global,

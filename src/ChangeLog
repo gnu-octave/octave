@@ -47,6 +47,10 @@
 
 2008-06-04  Michael Goffioul <michael.goffioul@gmail.com>
 
+	* ov-fcn-inline.h (class octave_fcn_inline): Mark with OCTINTERP_API.
+	* ov-fcn-handle.h (class Octave_fcn_handle): Likewise.
+	* ls-oct-binary.h (save_binary_data, read_binary_data): Likewise.
+
 	* genprops.awk (emit_source): Fix if-then-else statement generation
 	when the first property is hidden.
 	* graphics.h.in (base_properties::adopt): Call mark_modified.

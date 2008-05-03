@@ -28,7 +28,7 @@ function news ()
 
   if (exist (newsfile, "file"))
     f = fopen (newsfile, "r");
-    while (isstr (line = fgets (f)))
+    while (ischar (line = fgets (f)))
       printf (line);
     endwhile
   else

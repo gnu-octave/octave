@@ -1,3 +1,7 @@
+2008-05-09  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* miscellaneous/news.m: Replace deprecated isstr call.
+
 2008-05-06  David Bateman  <dbateman@free.fr>
 
 	* miscellaneous/symvar.m: New function.

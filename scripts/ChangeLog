@@ -8,6 +8,13 @@
 	* miscellaneous/dbstack.m: Delete.
 	* miscellaneous/Makefile.in (SOURCES): Remove it from the list.
 
+2008-05-03  Rafael Laboissiere <rafael@debian.org>
+
+	* linear-algebra/cond.m, miscellaneous/version.m,
+	miscellaneous/version.m, plot/feather.m, plot/__bar__.m,
+	plot/compass.m, plot/__quiver__.m, plot/__scatter__.m: Use ischar
+	instead of deprecated isstr.
+
 2008-05-01  David Bateman  <dbateman@free.fr>
 
 	* plot/plot.m: Remove documentation of 'L' option.

@@ -348,6 +348,11 @@
 	New typedefs.
 	(octave_mex_file_list::do_remove): Use them.
 
+2008-05-03  Rafael Laboissiere <rafael@debian.org>
+
+	* DLD-FUNCTIONS/time.cc, file_io.cc: Use ischar instead of
+	deprecated isstr.
+
 2008-04-30  John W. Eaton  <jwe@octave.org>
 
 	* dynamic-ld.cc (octave_dynamic_loader::do_load_oct):

@@ -40,7 +40,7 @@ function retval = cond (a, p)
       p = 2;
     endif
 
-    if (! isstr (p) && p == 2)
+    if (! ischar (p) && p == 2)
       [nr, nc] = size (a);
       if (nr == 0 || nc == 0)
         retval = 0.0;

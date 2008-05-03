@@ -1734,7 +1734,7 @@ For example,\n\
 @example\n\
 @group\n\
 fid = popen (\"ls -ltr / | tail -3\", \"r\");\n\
-while (isstr (s = fgets (fid)))\n\
+while (ischar (s = fgets (fid)))\n\
   fputs (stdout, s);\n\
 endwhile\n\
      @print{} drwxr-xr-x  33 root  root  3072 Feb 15 13:28 etc\n\

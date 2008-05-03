@@ -210,7 +210,7 @@ Here is an example:
 ##  [in, out, pid] = popen2 ("sort", "-nr");
 ##  fputs (in, "these\nare\nsome\nstrings\n");
 ##  fclose (in);
-##  while (isstr (s = fgets (out)))
+##  while (ischar (s = fgets (out)))
 ##    fputs (stdout, s);
 ##  endwhile
 ##  fclose (out);

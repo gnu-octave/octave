@@ -240,8 +240,8 @@
 %! [v2, c2, m2] = sscanf ("1 2 bar 3 4 5 6", "%d");
 %! 
 %! assert((a == 1.2 && b == 3 && c == "foo"
-%! && v1 == [1; 2; 3; 4; 5; 6] && c1 == 6 && isstr (m1)
-%! && v2 == [1; 2] && c2 == 2 && isstr (m2)));
+%! && v1 == [1; 2; 3; 4; 5; 6] && c1 == 6 && ischar (m1)
+%! && v2 == [1; 2] && c2 == 2 && ischar (m2)));
 
 %% test/octave.test/io/sscanf-2.m
 %!error <Invalid call to sscanf.*> sscanf ();
@@ -281,7 +281,7 @@
 %!test
 %! [s, msg, status] = sprintf ("%s: %d\n", "test", 1);
 %! 
-%! assert(s == "test: 1\n" && isstr (msg) && status == 8);
+%! assert(s == "test: 1\n" && ischar (msg) && status == 8);
 
 %% test/octave.test/io/sprintf-2.m
 %!error sprintf (1);
@@ -370,7 +370,7 @@
 %!error <Invalid call to fclose.*> fclose (1, 2);
 
 %% test/octave.test/io/tmpnam-1.m
-%!assert(isstr (tmpnam ()));
+%!assert(ischar (tmpnam ()));
 
 %% test/octave.test/io/tmpnam-2.m
 %!warning tmpnam (1);

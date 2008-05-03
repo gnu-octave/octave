@@ -185,7 +185,7 @@
 %! && struct_contains (s, "atime")
 %! && struct_contains (s, "mtime")
 %! && struct_contains (s, "ctime")
-%! && isstr (msg)));
+%! && ischar (msg)));
 
 %% test/octave.test/system/stat-2.m
 %!error <Invalid call to stat.*> stat ();
@@ -208,7 +208,7 @@
 %! && struct_contains (s, "atime")
 %! && struct_contains (s, "mtime")
 %! && struct_contains (s, "ctime")
-%! && isstr (msg)));
+%! && ischar (msg)));
 
 %% test/octave.test/system/lstat-2.m
 %!error <Invalid call to lstat.*> lstat ();
@@ -241,7 +241,7 @@
 %!error <Invalid call to fnmatch.*> fnmatch ("foo", "bar", 3);
 
 %% test/octave.test/system/file_in_path-1.m
-%!assert(isstr (file_in_path (path (), "date.m")));
+%!assert(ischar (file_in_path (path (), "date.m")));
 
 %% test/octave.test/system/file_in_path-2.m
 %!error <invalid option> file_in_path ("foo", "bar", 1);
@@ -363,7 +363,7 @@
 %!error cd (1);
 
 %% test/octave.test/system/pwd-1.m
-%!assert(isstr (pwd ()));
+%!assert(ischar (pwd ()));
 
 %% test/octave.test/system/getpwent-1.m
 %!testif HAVE_GETPWENT

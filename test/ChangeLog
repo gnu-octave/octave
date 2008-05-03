@@ -3,6 +3,10 @@
 	* fntests.m: Use puts instead of printf where appropriate.
 	Fix missing newline in message.
 
+2008-05-03  Rafael Laboissiere <rafael@debian.org>
+
+	* test_io.m, test_system.m: Use ischar instead of deprecated isstr.
+
 2008-03-26  David Bateman  <dbateman@free.fr>
 
 	* test_index-wfi-f.m: Split large block of tests.  New tests.

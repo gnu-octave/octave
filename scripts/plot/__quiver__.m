@@ -79,7 +79,7 @@ function hlist = __quiver__ (varargin)
     arg = varargin{ioff++};
     if (ischar (arg) && strncmp (tolower (arg), "filled", 6))
       have_filled = true;
-    elseif ((isstr (arg) || iscell (arg))
+    elseif ((ischar (arg) || iscell (arg))
 	    && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("quiver", arg, false);
       if (valid)

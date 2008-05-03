@@ -79,7 +79,7 @@ function h = __scatter__ (varargin)
     arg = varargin{iarg++};
     if (ischar (arg) && strncmp (tolower (arg), "filled", 6))
       filled = true;
-    elseif ((isstr (arg) || iscell (arg)) && ! have_marker)
+    elseif ((ischar (arg) || iscell (arg)) && ! have_marker)
       [linespec, valid] = __pltopt__ ("scatter", arg, false);
       if (valid)
 	have_marker = true;

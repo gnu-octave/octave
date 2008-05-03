@@ -1,3 +1,8 @@
+2008-05-03  Rafael Laboissiere <rafael@debian.org>
+
+	* interpreter/expr.txi, interpreter/tips.txi: Use ischar instead of
+	deprecated isstr.
+
 2008-04-02  David Bateman  <dbateman@free.fr>
 
 	* interpreter/sparse.txi: Document spaugment.

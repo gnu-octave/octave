@@ -71,7 +71,7 @@ function retval = compass (varargin)
   line_spec = "b-";
   while (ioff <= nargin)
     arg = varargin{ioff++};
-    if ((isstr (arg) || iscell (arg)) && ! have_line_spec)
+    if ((ischar (arg) || iscell (arg)) && ! have_line_spec)
       [linespec, valid] = __pltopt__ ("compass", arg, false);
       if (valid)
 	line_spec = arg;

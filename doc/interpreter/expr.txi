@@ -747,7 +747,7 @@ is possible write
 @example
 @group
 function f (a, b, c)
-  if (nargin > 2 && isstr (c))
+  if (nargin > 2 && ischar (c))
     @dots{}
 @end group
 @end example
@@ -761,7 +761,7 @@ short-circuit feature, it would be necessary to write
 @group
 function f (a, b, c)
   if (nargin > 2)
-    if (isstr (c))
+    if (ischar (c))
       @dots{}
 @end group
 @end example
@@ -772,7 +772,7 @@ Writing
 @example
 @group
 function f (a, b, c)
-  if (nargin > 2 & isstr (c))
+  if (nargin > 2 & ischar (c))
     @dots{}
 @end group
 @end example

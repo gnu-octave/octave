@@ -1,3 +1,8 @@
+2008-05-03  John W. Eaton  <jwe@octave.org>
+
+	* parse.y (parse_fcn_file): Also temporarily set parser_end_of_input
+	and get_input_from_eval_string to false while reading script files.
+
 2008-05-01  John W. Eaton  <jwe@octave.org>
 
 	* parse.y (load_fcn_from_file): Expect

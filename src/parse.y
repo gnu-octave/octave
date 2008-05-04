@@ -3033,19 +3033,21 @@ parse_fcn_file (const std::string& ff, const std::string& dispatch_type,
 
 	  bool parsing_script = false;
 
+	  unwind_protect_bool (get_input_from_eval_string);
+	  unwind_protect_bool (parser_end_of_input);
+
+	  get_input_from_eval_string = false;
+	  parser_end_of_input = false;
+
 	  if (! force_script && looking_at_function_keyword (ffile))
 	    {
 	      file_type = "function";
 
 	      unwind_protect_int (Vecho_executing_commands);
 	      unwind_protect_bool (reading_fcn_file);
-	      unwind_protect_bool (get_input_from_eval_string);
-	      unwind_protect_bool (parser_end_of_input);
 
 	      Vecho_executing_commands = ECHO_OFF;
 	      reading_fcn_file = true;
-	      get_input_from_eval_string = false;
-	      parser_end_of_input = false;
 	    }
 	  else
 	    {

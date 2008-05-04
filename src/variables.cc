@@ -670,7 +670,7 @@ symbol_exist (const std::string& name, const std::string& type)
   // symbol table.
 
   octave_value_list evaluated_args;
-  bool args_evaluated;
+  bool args_evaluated = false;
 
   octave_value val = symbol_table::find (symbol_name, 0, string_vector (),
 					 evaluated_args, args_evaluated);

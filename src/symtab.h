@@ -401,7 +401,7 @@ public:
       {
 	string_vector arg_names;
 	octave_value_list evaluated_args = args;
-	bool args_evaluated;
+	bool args_evaluated = false;
 
 	return find (0, arg_names, evaluated_args, args_evaluated);
       }

@@ -52,10 +52,7 @@ public:
   tree_identifier (const symbol_table::symbol_record& s,
 		   int l = -1, int c = -1,
 		   symbol_table::scope_id sc = symbol_table::current_scope ())
-    : tree_expression (l, c), sym (s), scope (sc)
-  {
-    symbol_table::scope_id curr_scope = symbol_table::current_scope ();
-  }
+    : tree_expression (l, c), sym (s), scope (sc) { }
 
   ~tree_identifier (void) { }
 

@@ -1,5 +1,12 @@
 2008-05-04  John W. Eaton  <jwe@octave.org>
 
+	* symtab.h (symbol_table::fcn_info::fcn_info_rep::find_function):
+	Initialize args_evaluated.
+	* pt-id.cc (tree_identifier::rvalue): Likewise.
+	* variables.cc (symbol_exist): Likewise.
+
+	* pt-id.h (tree_identifier::tree_identifer): Delete useless statement.
+
 	* variables.cc (get_global_value): Use symbol_table::global_varval
 	instead of passing scope to symbol_table::varval.
 	(set_global_value): Use symbol_table::global_varref

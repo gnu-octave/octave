@@ -63,7 +63,7 @@ tree_identifier::rvalue (int nargout)
     return retval;
 
   octave_value_list evaluated_args;
-  bool args_evaluated;
+  bool args_evaluated = false;
 
   octave_value val = xsym().find (0, string_vector (), evaluated_args,
 				  args_evaluated);

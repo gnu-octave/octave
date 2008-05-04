@@ -94,6 +94,7 @@ tree_argument_list::all_elements_are_constant (void) const
 
 static const octave_value *indexed_object = 0;
 static int index_position = 0;
+static int num_indices = 0;
 
 DEFCONSTFUN (__end__, , ,
   "internal function")
@@ -103,34 +104,30 @@ DEFCONSTFUN (__end__, , ,
   if (indexed_object)
     {
       dim_vector dv = indexed_object->dims ();
+      int ndims = dv.length ();
 
-      switch (index_position)
+      if (num_indices < ndims)
 	{
-	case -1:
-	  {
-	    octave_idx_type numel = dv.numel ();
+	  for (int i = num_indices; i < ndims; i++)
+	    dv(num_indices-1) *= dv(i);
 
-	    if (numel < 0)
-	      {
-		std::string dv_str = dv.str ();
-		::error ("invalid use of end: (index 1, dims %s)",
-			 dv_str.c_str ());
-	      }
-	    else
-	      retval = numel;
-	  }
-	  break;
-
-	default:
-	  {
-
-	    if (index_position < dv.length ())
-	      retval = dv(index_position);
-	    else
-	      retval = 1;
-	  }
-	  break;
+	  if (num_indices == 1)
+	    {
+	      ndims = 2;
+	      dv.resize (ndims);
+	      dv(1) = 1;
+	    }
+	  else
+	    {
+	      ndims = num_indices;
+	      dv.resize (ndims);
+	    }
 	}
+
+      if (index_position < ndims)
+	retval = dv(index_position);
+      else
+	retval = 1;
     }
   else
     ::error ("invalid use of end");
@@ -171,8 +168,10 @@ tree_argument_list::convert_to_const_vector (const octave_value *object)
       if (stash_object)
 	{
 	  unwind_protect_int (index_position);
+	  unwind_protect_int (num_indices);
 
-	  index_position = (len == 1) ? -1 : k;
+	  index_position = k;
+	  num_indices = len;
 	}
 
       tree_expression *elt = *p++;

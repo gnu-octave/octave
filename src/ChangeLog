@@ -1,5 +1,10 @@
 2008-05-03  John W. Eaton  <jwe@octave.org>
 
+	* pt-arg-list.cc (F__end__): If there are more dimensions than
+	indices, smash extra dimensions first.
+	(num_indices): New static variable.
+	(tree_argument_list::convert_to_const_vector): Save and set it.
+
 	* parse.y (parse_fcn_file): Also temporarily set parser_end_of_input
 	and get_input_from_eval_string to false while reading script files.
 

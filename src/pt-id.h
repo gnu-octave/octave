@@ -47,10 +47,15 @@ tree_identifier : public tree_expression
 public:
 
   tree_identifier (int l = -1, int c = -1)
-    : tree_expression (l, c), sym () { }
+    : tree_expression (l, c), sym (), scope (-1) { }
 
-  tree_identifier (const symbol_table::symbol_record& s, int l = -1, int c = -1)
-    : tree_expression (l, c), sym (s) { }
+  tree_identifier (const symbol_table::symbol_record& s,
+		   int l = -1, int c = -1,
+		   symbol_table::scope_id sc = symbol_table::current_scope ())
+    : tree_expression (l, c), sym (s), scope (sc)
+  {
+    symbol_table::scope_id curr_scope = symbol_table::current_scope ();
+  }
 
   ~tree_identifier (void) { }
 
@@ -58,11 +63,13 @@ public:
 
   bool is_identifier (void) const { return true; }
 
+  // The name doesn't change with scope, so use sym instead of
+  // accessing it through sym so that this function may remain const.
   std::string name (void) const { return sym.name (); }
 
-  bool is_defined (void) { return sym.is_defined (); }
+  bool is_defined (void) { return xsym().is_defined (); }
 
-  bool is_variable (void) { return sym.is_variable (); }
+  bool is_variable (void) { return xsym().is_variable (); }
 
   // Try to find a definition for an identifier.  Here's how:
   //
@@ -85,14 +92,14 @@ public:
   {
     MAYBE_DO_BREAKPOINT;
 
-    return sym.find (args, arg_names, evaluated_args, args_evaluated);
+    return xsym().find (args, arg_names, evaluated_args, args_evaluated);
   }
 
-  void mark_global (void) { sym.mark_global (); }
+  void mark_global (void) { xsym().mark_global (); }
 
-  void mark_as_static (void) { sym.init_persistent (); }
+  void mark_as_static (void) { xsym().init_persistent (); }
 
-  void mark_as_formal_parameter (void) { sym.mark_formal (); }
+  void mark_as_formal_parameter (void) { xsym().mark_formal (); }
 
   // We really need to know whether this symbol referst to a variable
   // or a function, but we may not know that yet.
@@ -115,6 +122,24 @@ private:
 
   // The symbol record that this identifier references.
   symbol_table::symbol_record sym;
+
+  symbol_table::scope_id scope;
+
+  // A script may be executed in multiple scopes.  If the last one was
+  // different from the one we are in now, update sym to be from the
+  // new scope.
+  symbol_table::symbol_record& xsym (void)
+  {
+    symbol_table::scope_id curr_scope = symbol_table::current_scope ();
+
+    if (scope != curr_scope)
+      {
+	scope = curr_scope;
+	sym = symbol_table::insert (sym.name ());
+      }
+
+    return sym;
+  }
 
   // No copying!
 

@@ -1,3 +1,158 @@
+2008-05-04  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (get_global_value): Use symbol_table::global_varval
+	instead of passing scope to symbol_table::varval.
+	(set_global_value): Use symbol_table::global_varref
+	instead of passing scope to symbol_table::varref.
+	(do_who): Use symbol_table::glob_global_variables
+	instead of passing scope to symbol_table::glob_variables.
+	(do_clear_globals):
+	Use symbol_table::global_variable_names and
+	symbol_table::clear_global instead of passing scope to
+	symbol_table::clear_variables.
+	Use symbol_table::global_variable_names instead of passing scope
+	to symbol_table::variable_names.
+
+	* unwind-prot.cc (unwind_protect::save_size_t): New function.
+	(saved_variable::restore_value): Handle size_t values.
+	(saved_variable::saved_variable): New size_t constructor.
+	(saved_variable::size_type): New var_type enum value.
+	(saved_variable::ptr_to_size_t, saved_variable::size_t_value):
+	New union elements.
+	* unwind-prot.h (unwind_protect::save_size_t): Provide decl
+	(unwind_protect_size_t): New macro.
+
+	* toplev.cc (octave_call_stack::do_goto_frame,
+	octave_call_stack::do_goto_frame_relative): New functions.
+	(octave_call_stack::do_backtrace): Also return scope and context ids.
+	* toplev.h 	(octave_call_stack::do_goto_frame,
+	octave_call_stack::do_goto_frame_relative): Provide decls.
+	(octave_call_stack::curr_frame): New data member.
+	(octave_call_stack::octave_call_stack): Initialize it.
+	(octave_call_stack::call_stack_elt::scope,
+	(octave_call_stack::call_stack_elt::context): New data members.,
+	(octave_call_stack::current_frame,
+	(octave_call_stack::do_current_frame
+	octave_call_stack::do_goto_frame,
+	octave_call_stack::do_goto_frame_relative): New functions.
+	(octave_call_stack::push, octave_call_stack::do_push):
+	New args, scope and context.
+	(octave_call_stack::do_push, octave_call_stack::do_pop): Update
+	curr_frame if debugging.
+
+	* symtab.cc (symbol_table::global_table): New map for global values.
+	(symbol_table::xcurrent_context): New variable for context info.
+	* symtab.h: Provide decls.
+	(symbol_table::global_varref, symbol_table::global_varval,
+	symbol_table::current_context,
+	symbol_table::set_scope_and_context,
+	symbol_table::glob_global_variables,
+	symbol_table::global_variable_names,
+	symbol_table::top_leve_variable_names):
+	New functions.
+	(symbol_table::context_id, const_global_table_iterator,
+	global_table_iterator): New typedefs.
+	(symbol_table::xcurrent_context_this_table): New variable.
+	(symbol_table::symbol_table): Initialize it.
+	(symbol_table::set_scope): Use it.
+	(symbol_table::symbol_record::find, symbol_table::do_find):
+	Use symbol_table::global_varref instead of passing scope to
+	symbol_table::varref.
+	(symbol_table::symbol_record::symbol_record_rep::value_stack):
+	Now a std::deque instead of a std::stack.
+	(symbol_table::symbol_record::symbol_record_rep::push_context,
+	symbol_table::symbol_record::symbol_record_rep::pop_context):
+	Don't push or pop persistent of global variables.
+	(symbol_table::symbol_record::symbol_record_rep::varval,
+	Handle context here.  Call symbol_table::global_varval instead of
+	passing scope to symbol_table::varval.
+	(symbol_table::symbol_record::symbol_record_rep::varref):
+	Handle context here.  Call symbol_table::global_varref instead of
+	passing scope to symbol_table::varref.
+	(symbol_table::symbol_record::varref,
+	symbol_table::symbol_record::varval): No need to handle global
+	values specially here.
+	(symbol_table::symbol_record::push_context
+	symbol_table::symbol_record::pop_context: No need to handle global
+	or persistent values specially here.
+	(symbol_table::get_instance): Don't return global scope.
+	(symbol_table::do_push_context, symbol_table::do_pop_context):
+	Increment/decrement xcurrent_context.
+	(symbol_table::do_clear_global, symbol_table::do_clear_global_pattern):
+	Use global_table instead of separate scope.	
+
+	* symtab.h, symtab.cc (symbol_table::fcn_info::fcn_info_rep::find,
+	symbol_table::fcn_info::fcn_info_rep::find_function,
+	symbol_table::fcn_info::find, symbol_table::fcn_info::find_function,
+	symbol_table::find, symbol_table::find_function,
+	symbol_table::do_find, symbol_table::insert, symbol_table::varref,
+	symbol_table::varval, symbol_table::persistent_varref,
+	symbol_table::persistent_varval, symbol_table::erase_persistent,
+	symbol_table::is_variable, symbol_table::clear,
+	symbol_table::clear_variables, symbol_table::clear_global,
+	symbol_table::clear_variable, symbol_table::clear_global_pattern,
+	symbol_table::clear_variable_pattern, symbol_table::push_context,
+	symbol_table::pop_context, symbol_table::mark_hidden,
+	symbol_table::mark_global, symbol_table::glob,
+	symbol_table::glob_variables, symbol_table::variable_names,
+	symbol_table::is_local_variable, symbol_table::is_global):
+	Eliminate scope arg.  Change all uses.
+	(symbol_table::erase_scope, symbol_table::dup_scope):
+	Require scope arg.
+
+	* pt-stmt.cc (tree_statement::eval): Don't update statement info
+	in octave_call_stack if debugging.
+
+	* pt-id.h (tree_identifier::xsym): New function.
+	(tree_identifier::rvalue, tree_identifier::lvalue,
+	tree_identifier::dup, tree_identifier::is_defined,
+	tree_identifier::is_variable, tree_identifier::mark_global,
+	tree_identifier::mark_as_static, tree_identifier::do_lookup,
+	tree_identifier::mark_as_formal_parameter):
+	Use xsym to access symbol.
+	(tree_identifier::scope): New data member.
+	(tree_identifier::tree_identifier): Initialize it.
+
+	* ov-usr-fcn.cc (octave_user_script::octave_user_script,
+	octave_user_function::octave_user_function):
+	Initialize call_depth to -1.
+	(octave_user_script::do_multi_index_op): Fix comparison of
+	call_depth with Vmax_recursion_depth.
+	(octave_user_function::do_multi_index_op):
+	Compare call depth > 0, instead of > 1.
+	* ov-usr-fcn.h (octave_user_function::save_args_passed):
+	Compare call depth > 0, instead of > 1.
+
+	* input.cc (Vdebugging): New variable.
+	(get_user_input): Eliminate DEBUG argument.  Use global Vdebugging
+	variable instead.  Change all callers.
+	(saved_frame): New static variable.
+	(restore_frame): New function.
+	(do_keyboard): Unwind-protect Vdebugging here and set it to TRUE.
+	Save current frame.  Use unwind_protect to restore it.
+	(Fkeyboard): Save current frame.  Use unwind_protect to restore it.
+	Move up the call stack one frame before calling do_keyboard.  
+	* input.h (Vdebugging): Provide decl.
+
+	* mex.cc (mexGetVariable): Handle global vars with get_global_value.
+	(mexPutVariable): Likewise, with set_global_value.
+
+	* octave.cc (intern_argv): Assert that we are at the top level.
+	Don't pass scope to symbol_table::varref or symbol_table::mark_hidden.
+
+	* load-save.cc (install_loaded_variable): Use
+	symbol_table::global_varref instead of passing global scope to
+	symbol_table::varref.
+
+	* help.cc (make_name_list): Call symbol_table::global_variable_names
+	and symbol_table::top_level_variable_names instead of passing
+	scope to symbol_table::variable_names.
+
+	* debug.cc (do_dbupdown, Fdbup, Fdbdown): New functions.
+	(current_stack_frame): Delete static variable.
+	(Fdbstack): Rename from F__dbstack__.  Implement all of dbstack
+	here instead of partially in dbstack.m.
+
 2008-05-03  John W. Eaton  <jwe@octave.org>
 
 	* pt-arg-list.cc (F__end__): If there are more dimensions than

@@ -65,8 +65,8 @@ tree_identifier::rvalue (int nargout)
   octave_value_list evaluated_args;
   bool args_evaluated;
 
-  octave_value val = sym.find (0, string_vector (), evaluated_args,
-			       args_evaluated);
+  octave_value val = xsym().find (0, string_vector (), evaluated_args,
+				  args_evaluated);
 
   if (val.is_defined ())
     {
@@ -119,7 +119,7 @@ tree_identifier::lvalue (void)
 {
   MAYBE_DO_BREAKPOINT;
 
-  return octave_lvalue (&(sym.varref ()));
+  return octave_lvalue (&(xsym().varref ()));
 }
 
 tree_identifier *
@@ -130,7 +130,7 @@ tree_identifier::dup (symbol_table::scope_id scope)
 
   // FIXME -- is this the best way?
   symbol_table::symbol_record new_sym
-    = symbol_table::find_symbol (sym.name (), scope);
+    = symbol_table::find_symbol (xsym().name (), scope);
 
   tree_identifier *new_id
     = new tree_identifier (new_sym, line (), column ());

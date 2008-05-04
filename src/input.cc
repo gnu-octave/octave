@@ -67,6 +67,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-stmt.h"
 #include "sighandlers.h"
 #include "sysdep.h"
+#include "toplev.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -142,6 +143,9 @@ bool octave_completion_matches_called = false;
 // TRUE if the plotting system has requested a call to drawnow at
 // the next user prompt.
 bool Vdrawnow_requested = false;
+
+// TRUE if we are in debugging mode.
+bool Vdebugging = false;
 
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
@@ -582,7 +586,7 @@ match_sans_spaces_semi (const std::string& standard, const std::string& test)
 // If the user simply hits return, this will produce an empty matrix.
 
 static octave_value_list
-get_user_input (const octave_value_list& args, bool debug, int nargout)
+get_user_input (const octave_value_list& args, int nargout)
 {
   octave_value_list retval;
 
@@ -596,7 +600,7 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
   std::string nm;
   int line = -1;
 
-  if (debug)
+  if (Vdebugging)
     {
       octave_user_code *caller = octave_call_stack::caller_user_code ();
 
@@ -670,13 +674,13 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 
       if (len < 1)
 	{
-	  if (debug)
+	  if (Vdebugging)
 	    goto again;
 	  else
 	    return read_as_string ? octave_value ("") : octave_value (Matrix ());
 	}
 
-      if (debug)
+      if (Vdebugging)
 	{
 	  if (match_sans_spaces_semi ("exit", input_buf)
 	      || match_sans_spaces_semi ("quit", input_buf)
@@ -719,18 +723,18 @@ get_user_input (const octave_value_list& args, bool debug, int nargout)
 	{
 	  int parse_status = 0;
 
-	  bool silent = ! debug;
+	  bool silent = ! Vdebugging;
 
 	  retval = eval_string (input_buf, silent, parse_status, nargout);
 
-	  if (! debug && retval.length () == 0)
+	  if (! Vdebugging && retval.length () == 0)
 	    retval(0) = Matrix ();
 	}
     }
   else
     error ("input: reading user-input failed!");
 
-  if (debug)
+  if (Vdebugging)
     {
       // Clear error_state so that if errors were encountered while
       // evaluating user input, extra error messages will not be
@@ -787,7 +791,7 @@ the screen before your prompt.  @xref{Input and Output}.\n\
   int nargin = args.length ();
 
   if (nargin == 1 || nargin == 2)
-    retval = get_user_input (args, false, nargout);
+    retval = get_user_input (args, nargout);
   else
     print_usage ();
 
@@ -855,6 +859,14 @@ restore_command_history (void *)
   command_history::ignore_entries (! Vsaving_history);
 }
 
+static size_t saved_frame = 0;
+
+static void
+restore_frame (void *)
+{
+  octave_call_stack::goto_frame (saved_frame);
+}
+
 octave_value
 do_keyboard (const octave_value_list& args)
 {
@@ -874,10 +886,16 @@ do_keyboard (const octave_value_list& args)
   unwind_protect::add (restore_command_history, 0);
 
   unwind_protect_bool (Vsaving_history);
+  unwind_protect_bool (Vdebugging);
+
+  saved_frame = octave_call_stack::current_frame ();
+  unwind_protect::add (restore_frame);
+  unwind_protect_size_t (saved_frame);
 
   Vsaving_history = true;
+  Vdebugging = true;
 
-  octave_value_list tmp = get_user_input (args, true, 0);
+  octave_value_list tmp = get_user_input (args, 0);
 
   retval = tmp(0);
 
@@ -906,7 +924,18 @@ If @code{keyboard} is invoked without any arguments, a default prompt of\n\
   int nargin = args.length ();
 
   if (nargin == 0 || nargin == 1)
-    do_keyboard (args);
+    {
+      saved_frame = octave_call_stack::current_frame ();
+      unwind_protect::add (restore_frame);
+      unwind_protect_size_t (saved_frame);
+
+      // Skip the frame assigned to the keyboard function.
+      octave_call_stack::goto_frame (1);
+
+      do_keyboard (args);
+
+      unwind_protect::run ();
+    }
   else
     print_usage ();
 

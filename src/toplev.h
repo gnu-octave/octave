@@ -37,6 +37,7 @@ class tree_statement;
 class tree_statement_list;
 class charMatrix;
 
+#include "input.h"
 #include "oct-map.h"
 
 extern OCTINTERP_API void
@@ -75,15 +76,19 @@ private:
 
   struct call_stack_elt
   {
-    call_stack_elt (octave_function *f) : fcn (f), stmt (0) { }
+    call_stack_elt (octave_function *f, symbol_table::scope_id s,
+		    symbol_table::context_id c)
+      : fcn (f), stmt (0), scope (s), context (c) { }
 
     octave_function *fcn;
     tree_statement *stmt;
+    symbol_table::scope_id scope;
+    symbol_table::context_id context;
   };
 
 protected:
 
-  octave_call_stack (void) : cs () { }
+  octave_call_stack (void) : cs (), curr_frame (0) { }
 
 public:
 
@@ -131,6 +136,11 @@ public:
     return element (1);
   }
 
+  static size_t current_frame (void)
+  {
+    return instance_ok () ? instance->do_current_frame () : 0;
+  }
+
   // Function at location N on the call stack (N == 0 is current), may
   // be built-in.
   static octave_function *element (size_t n)
@@ -156,10 +166,13 @@ public:
     return instance_ok () ? instance->do_caller_user_code () : 0;
   }
 
-  static void push (octave_function *f)
+  static void
+  push (octave_function *f,
+	symbol_table::scope_id scope = symbol_table::current_scope (),
+	symbol_table::context_id context = 0)
   {
     if (instance_ok ())
-      instance->do_push (f);
+      instance->do_push (f, scope, context);
   }
 
   static octave_function *top (void)
@@ -176,6 +189,17 @@ public:
   {
     if (instance_ok ())
       instance->do_set_statement (s);
+  }
+
+  static bool goto_frame (size_t n = 0, bool verbose = false)
+  {
+    return instance_ok () ? instance->do_goto_frame (n, verbose) : false;
+  }
+
+  static bool goto_frame_relative (int n, bool verbose = false)
+  {
+    return instance_ok ()
+      ? instance->do_goto_frame_relative (n, verbose) : false;
   }
 
   static Octave_map backtrace (int n = 0)
@@ -204,11 +228,15 @@ private:
   // The current call stack.
   std::deque<call_stack_elt> cs;
 
+  size_t curr_frame;
+
   static octave_call_stack *instance;
 
   int do_current_line (void) const;
 
   int do_current_column (void) const;
+
+  size_t do_current_frame (void) { return curr_frame; }
 
   octave_function *do_element (size_t n)
   {
@@ -229,9 +257,13 @@ private:
 
   octave_user_code *do_caller_user_code (void) const;
 
-  void do_push (octave_function *f)
+  void do_push (octave_function *f, symbol_table::scope_id scope,
+		symbol_table::context_id context)
   {
-    cs.push_front (call_stack_elt (f));
+    if (Vdebugging)
+      curr_frame++;
+
+    cs.push_front (call_stack_elt (f, scope, context));
   }
 
   octave_function *do_top (void) const
@@ -271,10 +303,19 @@ private:
 
   Octave_map do_backtrace (int n) const;
 
+  bool do_goto_frame (size_t n, bool verbose);
+
+  bool do_goto_frame_relative (int n, bool verbose);
+
   void do_pop (void)
   {
     if (! cs.empty ())
-      cs.pop_front ();
+      {
+	if (Vdebugging)
+	  curr_frame--;
+
+	cs.pop_front ();
+      }
   }
 
   void do_clear (void) { cs.clear (); }

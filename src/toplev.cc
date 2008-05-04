@@ -181,25 +181,32 @@ octave_call_stack::do_backtrace (int n) const
 
   int nframes = cs.size () - n;
 
-  if (nframes > 0)
+  if (n >= 0 && nframes > 0)
     {
-      Cell keys (4, 1);
+      Cell keys (6, 1);
 
       keys(0) = "file";
       keys(1) = "name";
       keys(2) = "line";
       keys(3) = "column";
+      keys(4) = "scope";
+      keys(5) = "context";
 
       Cell file (nframes, 1);
       Cell name (nframes, 1);
       Cell line (nframes, 1);
       Cell column (nframes, 1);
+      Cell scope (nframes, 1);
+      Cell context (nframes, 1);
 
       octave_idx_type k = 0;
 
       for (const_iterator p = cs.begin () + n; p != cs.end (); p++)
 	{
 	  const call_stack_elt& elt = *p;
+
+	  scope(k) = elt.scope;
+	  context(k) = elt.context;
 
 	  octave_function *f = elt.fcn;
 
@@ -236,7 +243,64 @@ octave_call_stack::do_backtrace (int n) const
       retval.assign ("name", name);
       retval.assign ("line", line);
       retval.assign ("column", column);
+      retval.assign ("scope", scope);
+      retval.assign ("context", context);
     }
+
+  return retval;
+}
+
+bool
+octave_call_stack::do_goto_frame (size_t n, bool verbose)
+{
+  bool retval = false;
+
+  if (n < cs.size ())
+    {
+      retval = true;
+
+      curr_frame = n;
+
+      const call_stack_elt& elt = cs[n];
+
+      symbol_table::set_scope_and_context (elt.scope, elt.context);
+
+      if (verbose)
+	{
+	  octave_function *f = elt.fcn;
+	  std::string nm = f ? f->name () : std::string ("<unknown>");
+
+	  tree_statement *s = elt.stmt;
+	  int l = -1;
+	  int c = -1;
+	  if (s)
+	    {
+	      l = s->line ();
+	      c = s->column ();
+	    }
+
+	  octave_stdout << "stopped in " << nm
+			<< " at line " << l << " column " << c
+			<< " (" << elt.scope << "[" << elt.context << "])"
+			<< std::endl;
+	}
+    }
+
+  return retval;
+}
+
+bool
+octave_call_stack::do_goto_frame_relative (int n, bool verbose)
+{
+  bool retval = false;
+
+  size_t sz = cs.size ();
+
+  if (n == 0)
+    retval = true;
+  else if ((n > 0 && static_cast<size_t> (n) < sz - curr_frame)
+	   || (n < 0 && static_cast<size_t> (-n) < curr_frame))
+    retval = goto_frame (curr_frame + n, verbose);
 
   return retval;
 }

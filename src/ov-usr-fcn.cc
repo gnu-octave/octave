@@ -63,7 +63,7 @@ octave_user_script::octave_user_script (void)
   : octave_user_code (), cmd_list (0), file_name (),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
-    call_depth (0)
+    call_depth (-1)
 { }
 
 octave_user_script::octave_user_script (const std::string& fnm,
@@ -73,7 +73,7 @@ octave_user_script::octave_user_script (const std::string& fnm,
   : octave_user_code (nm, ds), cmd_list (cmds), file_name (fnm),
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
-    call_depth (0)
+    call_depth (-1)
 {
   if (cmd_list)
     cmd_list->mark_as_script_body ();
@@ -85,7 +85,7 @@ octave_user_script::octave_user_script (const std::string& fnm,
   : octave_user_code (nm, ds), cmd_list (0), file_name (fnm), 
     t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
-    call_depth (0)
+    call_depth (-1)
 { }
 
 octave_user_script::~octave_user_script (void)
@@ -121,7 +121,7 @@ octave_user_script::do_multi_index_op (int nargout,
 	      unwind_protect_int (call_depth);
 	      call_depth++;
 
-	      if (call_depth <= Vmax_recursion_depth)
+	      if (call_depth < Vmax_recursion_depth)
 		{
 		  octave_call_stack::push (this);
 
@@ -202,7 +202,7 @@ octave_user_function::octave_user_function
     lead_comm (), trail_comm (), file_name (),
     parent_name (), t_parsed (static_cast<time_t> (0)),
     t_checked (static_cast<time_t> (0)),
-    system_fcn_file (false), call_depth (0),
+    system_fcn_file (false), call_depth (-1),
     num_named_args (param_list ? param_list->length () : 0),
     nested_function (false), inline_function (false),
     class_constructor (false), class_method (false), xdispatch_class (),
@@ -367,7 +367,7 @@ octave_user_function::do_multi_index_op (int nargout,
   unwind_protect_int (call_depth);
   call_depth++;
 
-  if (call_depth > Vmax_recursion_depth)
+  if (call_depth >= Vmax_recursion_depth)
     {
       ::error ("max_recursion_limit exceeded");
       unwind_protect::run_frame ("user_func_eval");
@@ -377,10 +377,12 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
+  octave_call_stack::push (this, local_scope, call_depth);
+
   symbol_table::push_scope (local_scope);
   unwind_protect::add (symbol_table::pop_scope);
 
-  if (call_depth > 1)
+  if (call_depth > 0)
     {
       symbol_table::push_context ();
 
@@ -391,8 +393,6 @@ octave_user_function::do_multi_index_op (int nargout,
       // Force symbols to be undefined again when this function exits.
       unwind_protect::add (symbol_table::clear_variables);
     }
-
-  octave_call_stack::push (this);
 
   unwind_protect::add (octave_call_stack::unwind_pop, 0);
 

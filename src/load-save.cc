@@ -144,7 +144,7 @@ install_loaded_variable (const std::string& name,
     {
       symbol_table::clear (name);
       symbol_table::mark_global (name);
-      symbol_table::varref (name, symbol_table::global_scope ()) = val;
+      symbol_table::global_varref (name) = val;
     }
   else
     symbol_table::varref (name) = val;

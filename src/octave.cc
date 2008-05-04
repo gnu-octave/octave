@@ -189,9 +189,11 @@ long_options long_opts[] =
 static void
 intern_argv (int argc, char **argv)
 {
-  symbol_table::varref (".nargin.", symbol_table::top_scope ()) = argc - 1;
+  assert (symbol_table::at_top_level ());
 
-  symbol_table::mark_hidden (".nargin.", symbol_table::top_scope ());
+  symbol_table::varref (".nargin.") = argc - 1;
+
+  symbol_table::mark_hidden (".nargin.");
 
   if (argc > 1)
     {

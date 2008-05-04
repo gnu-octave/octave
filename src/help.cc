@@ -567,12 +567,12 @@ make_name_list (void)
   string_vector bif = symbol_table::built_in_function_names ();
   int bif_len = bif.length ();
 
-  string_vector glb
-    = symbol_table::variable_names (symbol_table::global_scope ());
+  // FIXME -- is this really necessary here?
+  string_vector glb = symbol_table::global_variable_names ();
   int glb_len = glb.length ();
 
-  string_vector top
-    = symbol_table::variable_names (symbol_table::top_scope ());
+  // FIXME -- is this really necessary here?
+  string_vector top = symbol_table::top_level_variable_names ();
   int top_len = top.length ();
 
   string_vector lcl;

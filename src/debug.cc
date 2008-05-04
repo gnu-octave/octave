@@ -57,9 +57,6 @@ along with Octave; see the file COPYING.  If not, see
 // Initialize the singleton object
 bp_table *bp_table::instance = 0;
 
-// FIXME --  dbup and dbdown will need to modify this variable.
-static int current_stack_frame = 1;
-
 // Return a pointer to the user-defined function FNAME.  If FNAME is
 // empty, search backward for the first user-defined function in the
 // current call stack.
@@ -362,7 +359,7 @@ intmap_to_ov (const bp_table::intmap& line)
 
 DEFCMD (dbstop, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {rline =} dbstop (@var{func}, @var{line}, @dots{})\n\
+@deftypefn {Loadable Function} {@var{rline} =} dbstop (@var{func}, @var{line}, @dots{})\n\
 Set a breakpoint in a function\n\
 @table @code\n\
 @item func\n\
@@ -695,10 +692,12 @@ List script file with line numbers.\n\
   return retval;
 }
 
-DEFUN (__dbstack__, args, ,
+DEFCMD (dbstack, args, nargout,
   "-*- texinfo -*-\n\
-@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} __dbstack__ (@var{n})\n\
-Undocumented internal function.\n\
+@deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
+Print or return current stack information.  With optional argument\n\
+@var{n}, omit the @var{n} innermost stack frames.\n\
+@seealso{dbclear, dbstatus, dbstop}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -706,15 +705,130 @@ Undocumented internal function.\n\
   int n = 0;
 
   if (args.length () == 1)
-    n = args(0).int_value ();
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_string ())
+	{
+	  std::string s_arg = arg.string_value ();
+
+	  n = atoi (s_arg.c_str ());
+	}
+      else
+	n = args(0).int_value ();
+    }
 
   if (! error_state)
     {
-      retval(1) = current_stack_frame;
+      if (n >= 0)
+	{
+	  size_t curr_frame = octave_call_stack::current_frame ();
 
-      // Add one here to skip the __dbstack__ stack frame.
-      retval(0) = octave_call_stack::backtrace (n+1);
+	  // Skip dbstack stack frame.
+	  if (! Vdebugging)
+	    curr_frame++;
+
+	  // Adjust so that this is the index of where we are in the array
+	  // that is returned in retval(0).
+	  size_t idx = curr_frame - n;
+
+	  // Add one here to skip the __dbstack__ stack frame.
+	  Octave_map stk = octave_call_stack::backtrace (curr_frame + n);
+
+	  if (nargout == 0)
+	    {
+	      octave_idx_type nframes = stk.numel ();
+
+	      if (nframes > 0)
+		{
+		  octave_stdout << "Stopped in:\n\n";
+
+		  Cell names = stk.contents ("name");
+		  Cell lines = stk.contents ("line");
+		  Cell columns = stk.contents ("column");
+
+		  for (octave_idx_type i = 0; i < nframes; i++)
+		    {
+		      octave_value name = names(i);
+		      octave_value line = lines(i);
+		      octave_value column = columns(i);
+
+		      octave_stdout << (i == idx - 1 ? "--> " : "    ")
+				    << name.string_value ()
+				    << " at line " << line.int_value ()
+				    << " column " << column.int_value ()
+				    << std::endl;
+		    }
+		}
+	    }
+	  else
+	    {
+	      retval(1) = idx;
+	      retval(0) = stk;
+	    }
+	}
+      else
+	error ("dbstack: expecting N to be a nonnegative integer");
     }
+
+  return retval;
+}
+
+static void
+do_dbupdown (const octave_value_list& args, const std::string& who)
+{
+  int n = 1;
+
+  if (args.length () == 1)
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_string ())
+	{
+	  std::string s_arg = arg.string_value ();
+
+	  n = atoi (s_arg.c_str ());
+	}
+      else
+	n = args(0).int_value ();
+    }
+
+  if (! error_state)
+    {
+      if (who == "dbdown")
+	n = -n;
+
+      if (! octave_call_stack::goto_frame_relative (n, true))
+	error ("%s: invalid stack frame", who.c_str ());
+    }
+}
+
+DEFCMD (dbup, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} dbup (@var{n})\n\
+In debugging mode, move up the execution stack @var{n} frames.\n\
+If @var{n} is omitted, move up one frame.\n\
+@seealso{dbstack}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  do_dbupdown (args, "dbup");
+
+  return retval;
+}
+
+DEFCMD (dbdown, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Loadable Function} {} dbdown (@var{n})\n\
+In debugging mode, move down the execution stack @var{n} frames.\n\
+If @var{n} is omitted, move down one frame.\n\
+@seealso{dbstack}\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  do_dbupdown (args, "dbdown");
 
   return retval;
 }

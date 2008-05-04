@@ -47,6 +47,8 @@ symbol_table *symbol_table::instance = 0;
 
 std::map<symbol_table::scope_id, symbol_table*> symbol_table::all_instances;
 
+std::map<std::string, octave_value> symbol_table::global_table;
+
 std::map<std::string, symbol_table::fcn_info> symbol_table::fcn_table;
 
 const symbol_table::scope_id symbol_table::xglobal_scope = 0;
@@ -63,6 +65,8 @@ symbol_table::scope_id symbol_table::next_available_scope = 2;
 std::set<symbol_table::scope_id> symbol_table::scope_ids_in_use;
 std::set<symbol_table::scope_id> symbol_table::scope_ids_free_list;
 
+symbol_table::context_id symbol_table::xcurrent_context = 0;
+
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
@@ -76,7 +80,7 @@ symbol_table::symbol_record::find (tree_argument_list *args,
   octave_value retval;
 
   if (is_global ())
-    return symbol_table::varref (name (), symbol_table::xglobal_scope);
+    return symbol_table::global_varref (name ());
   else
     {
       octave_value val = varval ();
@@ -366,8 +370,7 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
 octave_value
 symbol_table::fcn_info::fcn_info_rep::find
   (tree_argument_list *args, const string_vector& arg_names,
-   octave_value_list& evaluated_args, bool& args_evaluated,
-   scope_id scope)
+   octave_value_list& evaluated_args, bool& args_evaluated)
 {
   static bool deja_vu = false;
 
@@ -375,7 +378,7 @@ symbol_table::fcn_info::fcn_info_rep::find
   // subfunctions if we are currently executing a function defined
   // from a .m file.
 
-  scope_val_iterator r = subfunctions.find (scope);
+  scope_val_iterator r = subfunctions.find (xcurrent_scope);
 
   if (r != subfunctions.end ())
     {
@@ -525,7 +528,7 @@ symbol_table::fcn_info::fcn_info_rep::find
 	  fname = p->second;
 
 	  octave_value fcn
-	    = symbol_table::find_function (fname, evaluated_args, scope);
+	    = symbol_table::find_function (fname, evaluated_args);
 
 	  if (fcn.is_defined ())
 	    return fcn;
@@ -568,7 +571,7 @@ symbol_table::fcn_info::fcn_info_rep::find
 
       deja_vu = true;
 
-      retval = find (args, arg_names, evaluated_args, args_evaluated, scope);
+      retval = find (args, arg_names, evaluated_args, args_evaluated);
     }
 
   deja_vu = false;
@@ -672,22 +675,22 @@ octave_value
 symbol_table::fcn_info::find (tree_argument_list *args,
 			      const string_vector& arg_names,
 			      octave_value_list& evaluated_args,
-			      bool& args_evaluated, scope_id scope)
+			      bool& args_evaluated)
 {
-  return rep->find (args, arg_names, evaluated_args, args_evaluated, scope);
+  return rep->find (args, arg_names, evaluated_args, args_evaluated);
 }
 
 octave_value
 symbol_table::find (const std::string& name, tree_argument_list *args,
 		    const string_vector& arg_names,
 		    octave_value_list& evaluated_args, bool& args_evaluated,
-		    symbol_table::scope_id scope, bool skip_variables)
+		    bool skip_variables)
 {
-  symbol_table *inst = get_instance (scope);
+  symbol_table *inst = get_instance (xcurrent_scope);
 
   return inst
     ? inst->do_find (name, args, arg_names, evaluated_args,
-		       args_evaluated, scope, skip_variables)
+		     args_evaluated, skip_variables)
     : octave_value ();
 }
 
@@ -695,18 +698,16 @@ octave_value
 symbol_table::find_function (const std::string& name, tree_argument_list *args,
 			     const string_vector& arg_names,
 			     octave_value_list& evaluated_args,
-			     bool& args_evaluated, scope_id scope)
+			     bool& args_evaluated)
 {
-  return find (name, args, arg_names, evaluated_args, args_evaluated,
-	       scope, true);
+  return find (name, args, arg_names, evaluated_args, args_evaluated, true);
 }
 
 octave_value
 symbol_table::do_find (const std::string& name, tree_argument_list *args,
 		       const string_vector& arg_names,
 		       octave_value_list& evaluated_args,
-		       bool& args_evaluated, scope_id scope,
-		       bool skip_variables)
+		       bool& args_evaluated, bool skip_variables)
 {
   octave_value retval;
 
@@ -723,7 +724,7 @@ symbol_table::do_find (const std::string& name, tree_argument_list *args,
 	  // FIXME -- should we be using something other than varref here?
 
 	  if (sr.is_global ())
-	    return symbol_table::varref (name, xglobal_scope);
+	    return symbol_table::global_varref (name);
 	  else
 	    {
 	      octave_value& val = sr.varref ();
@@ -741,15 +742,14 @@ symbol_table::do_find (const std::string& name, tree_argument_list *args,
       evaluated_args = octave_value_list ();
       args_evaluated = false;
 
-      return p->second.find (args, arg_names, evaluated_args, args_evaluated,
-			     scope);
+      return p->second.find (args, arg_names, evaluated_args, args_evaluated);
     }
   else
     {
       fcn_info finfo (name);
 
       octave_value fcn = finfo.find (args, arg_names, evaluated_args,
-				     args_evaluated, scope);
+				     args_evaluated);
 
       if (fcn.is_defined ())
 	fcn_table[name] = finfo;

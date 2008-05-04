@@ -45,6 +45,7 @@ public:
   {
     boolean,
     integer,
+    size_type,
     string_type,
     generic_ptr,
     generic
@@ -55,6 +56,8 @@ public:
   saved_variable (bool *p, bool v);
 
   saved_variable (int *p, int v);
+
+  saved_variable (size_t *p, size_t v);
 
   saved_variable (std::string *p, const std::string& v);
 
@@ -72,6 +75,7 @@ private:
     {
       bool *ptr_to_bool;
       int *ptr_to_int;
+      size_t *ptr_to_size_t;
       void *gen_ptr;
       void **ptr_to_gen_ptr;
     };
@@ -80,6 +84,7 @@ private:
     {
       bool bool_value;
       int int_value;
+      size_t size_t_value;
       std::string *str_value;
       void *gen_ptr_value;
     };
@@ -111,6 +116,14 @@ saved_variable::saved_variable (int *p, int v)
   ptr_to_int = p;
   int_value = v;
   size = sizeof (int);  // Is this necessary?
+}
+
+saved_variable::saved_variable (size_t *p, size_t v)
+{
+  type_tag = size_type;
+  ptr_to_size_t = p;
+  size_t_value = v;
+  size = sizeof (size_t);  // Is this necessary?
 }
 
 saved_variable::saved_variable (std::string *p, const std::string& v)
@@ -158,6 +171,10 @@ saved_variable::restore_value (void)
 
     case integer:
       *ptr_to_int = int_value;
+      break;
+
+    case size_type:
+      *ptr_to_size_t = size_t_value;
       break;
 
     case string_type:
@@ -284,6 +301,13 @@ unwind_protect::save_bool (bool *ptr, bool value)
 
 void
 unwind_protect::save_int (int *ptr, int value)
+{
+  saved_variable *s = new saved_variable (ptr, value);
+  add (saved_variable::restore, s);
+}
+
+void
+unwind_protect::save_size_t (size_t *ptr, size_t value)
 {
   saved_variable *s = new saved_variable (ptr, value);
   add (saved_variable::restore, s);

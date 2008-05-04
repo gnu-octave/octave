@@ -3262,18 +3262,23 @@ mexGetVariable (const char *space, const char *name)
 
   // FIXME -- should this be in variables.cc?
 
-  symbol_table::scope_id scope = -1;
+  octave_value val;
 
   if (! strcmp (space, "global"))
-    scope = symbol_table::global_scope ();
-  else if (! strcmp (space, "caller"))
-    scope = symbol_table::current_caller_scope ();
-  else if (! strcmp (space, "base"))
-    scope = symbol_table::top_scope ();
+    val = get_global_value (name);
   else
-    mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
+    {
+      symbol_table::scope_id scope = -1;
 
-  octave_value val = symbol_table::varval (name, scope);
+      if (! strcmp (space, "caller"))
+	scope = symbol_table::current_caller_scope ();
+      else if (! strcmp (space, "base"))
+	scope = symbol_table::top_scope ();
+      else
+	mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
+
+      val = symbol_table::varval (name, scope);
+    }
 
   if (val.is_defined ())
     {
@@ -3314,9 +3319,7 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
 
       symbol_table::scope_id scope = -1;
 
-      if (! strcmp (space, "global"))
-	scope = symbol_table::global_scope ();
-      else if (! strcmp (space, "caller"))
+      if (! strcmp (space, "caller"))
 	scope = symbol_table::current_caller_scope ();
       else if (! strcmp (space, "base"))
 	scope = symbol_table::top_scope ();

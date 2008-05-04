@@ -103,6 +103,8 @@ public:
 
   static void save_int (int *ptr, int value);
 
+  static void save_size_t (size_t *ptr, size_t value);
+
   static void save_str (std::string *ptr, const std::string& value);
 
   static void save_ptr (void **ptr, void *value);
@@ -119,6 +121,9 @@ public:
 
 #define unwind_protect_int(i) \
   unwind_protect::save_int (&(i), (i))
+
+#define unwind_protect_size_t(i) \
+  unwind_protect::save_size_t (&(i), (i))
 
 #define unwind_protect_str(s) \
   unwind_protect::save_str (&(s), (s))

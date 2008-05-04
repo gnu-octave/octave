@@ -856,7 +856,7 @@ lookup_function_handle (const std::string& nm)
 octave_value
 get_global_value (const std::string& nm, bool silent)
 {
-  octave_value val = symbol_table::varval (nm, symbol_table::global_scope ());
+  octave_value val = symbol_table::global_varval (nm);
 
   if (val.is_undefined () && ! silent)
     error ("get_global_by_name: undefined symbol `%s'", nm.c_str ());
@@ -867,7 +867,7 @@ get_global_value (const std::string& nm, bool silent)
 void
 set_global_value (const std::string& nm, const octave_value& val)
 {
-  symbol_table::varref (nm, symbol_table::global_scope ()) = val;
+  symbol_table::global_varref (nm) = val;
 }
 
 // Variable values.
@@ -1671,9 +1671,6 @@ do_who (int argc, const string_vector& argv, bool return_list,
       pats[0] = "*";
     }
     
-  symbol_table::scope_id scope = global_only
-    ? symbol_table::global_scope () : symbol_table::current_scope ();
-
   symbol_info_list symbol_stats;
   std::list<std::string> symbol_names;
 
@@ -1718,8 +1715,9 @@ do_who (int argc, const string_vector& argv, bool return_list,
 	}
       else
 	{
-	  std::list<symbol_table::symbol_record> tmp
-	    = symbol_table::glob_variables (pats[j], scope);
+	  std::list<symbol_table::symbol_record> tmp = global_only
+	    ? symbol_table::glob_global_variables (pats[j])
+	    : symbol_table::glob_variables (pats[j]);
 
 	  for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
 	       p != tmp.end (); p++)
@@ -2080,13 +2078,19 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
 		  bool exclusive = false)
 {
   if (idx == argc)
-    symbol_table::clear_variables(symbol_table::global_scope ());
+    {
+      string_vector gvars = symbol_table::global_variable_names ();
+
+      int gcount = gvars.length ();
+
+      for (int i = 0; i < gcount; i++)
+	symbol_table::clear_global (gvars[i]);
+    }
   else
     {
       if (exclusive)
 	{
-	  string_vector gvars
-	    = symbol_table::variable_names (symbol_table::global_scope ());
+	  string_vector gvars = symbol_table::global_variable_names ();
 
 	  int gcount = gvars.length ();
 

@@ -251,7 +251,7 @@ public:
 
   void save_args_passed (const octave_value_list& args)
     {
-      if (call_depth > 1)
+      if (call_depth > 0)
 	saved_args.push (args_passed);
 
       args_passed = args;

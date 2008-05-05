@@ -194,10 +194,7 @@ octave_rl_get_output_stream (void)
 void
 octave_rl_read_init_file (const char *f)
 {
-  if (f && *f)
-    rl_read_init_file (f);
-  else
-    rl_re_read_init_file (0, 0);
+  rl_read_init_file (f);
 }
 
 int

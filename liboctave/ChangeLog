@@ -1,3 +1,7 @@
+2008-05-05  Rafael Laboissiere  <rafael@debian.org>
+
+	* oct-rl-edit.c (octave_read_init_file): Simply call rl_read_init_file.
+
 2008-05-01  John W. Eaton  <jwe@octave.org>
 
 	* oct-shlib.h (octave_shlib::number_of_functions_loaded):

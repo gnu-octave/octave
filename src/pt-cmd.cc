@@ -47,21 +47,18 @@ tree_no_op_command::accept (tree_walker& tw)
 void
 tree_function_def::eval (void)
 {
-  if (symbol_table::at_top_level ())
+  octave_function *f = function ();
+
+  if (f)
     {
-      octave_function *f = function ();
+      std::string nm = f->name ();
 
-      if (f)
-	{
-	  std::string nm = f->name ();
+      symbol_table::install_cmdline_function (nm, fcn);
 
-	  symbol_table::install_cmdline_function (nm, fcn);
+      // Make sure that any variable with the same name as the new
+      // function is cleared.
 
-	  // Make sure that any variable with the same name as the new
-	  // function is cleared.
-
-	  symbol_table::varref (nm) = octave_value ();
-	}
+      symbol_table::varref (nm) = octave_value ();
     }
 }
 

@@ -2529,21 +2529,7 @@ frob_function (const std::string& fname, octave_user_function *fcn)
       help_buf.pop ();
     }
 
-  if (lexer_flags.parsing_nested_function)
-    {
-      std::string nm = fcn->name ();
-
-      fcn->mark_as_nested_function ();
-
-      symbol_table::install_subfunction (nm, octave_value (fcn));
-
-      if (lexer_flags.parsing_nested_function < 0)
-	{
-	  lexer_flags.parsing_nested_function = 0;
-	  symbol_table::reset_parent_scope ();
-	}
-    }
-  else if (reading_fcn_file)
+  if (reading_fcn_file && ! lexer_flags.parsing_nested_function)
     curr_fcn_ptr = fcn;
   else
     curr_fcn_ptr = 0;
@@ -2566,10 +2552,30 @@ finish_function (tree_parameter_list *ret_list,
 	fcn->stash_leading_comment (lc);
 
       fcn->define_ret_list (ret_list);
-    }
 
-  if (! curr_fcn_ptr)
-    retval = new tree_function_def (fcn);
+      if (lexer_flags.parsing_nested_function)
+	{
+	  std::string nm = fcn->name ();
+
+	  fcn->mark_as_nested_function ();
+
+	  symbol_table::install_subfunction (nm, octave_value (fcn));
+
+	  if (lexer_flags.parsing_nested_function < 0)
+	    {
+	      lexer_flags.parsing_nested_function = 0;
+	      symbol_table::reset_parent_scope ();
+	    }
+	}
+      else if (! curr_fcn_ptr)
+	{
+	  // FIXME -- there should be a better way to indicate that we
+	  // should create a tree_function_def object other than
+	  // looking at curr_fcn_ptr...
+
+	  retval = new tree_function_def (fcn);
+	}
+    }
 
   return retval;
 }

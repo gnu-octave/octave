@@ -1,7 +1,8 @@
 2008-05-04  John W. Eaton  <jwe@octave.org>
 
-	* pt-cmd.cc (tree_function_def::eval): Only define command-line
-	function if we are executing in the top-level scope.
+	* parse.y (frob_function): Don't install subfunctions here.
+	(finish_function): Handle subfunctions here.
+	Conditionally define tree_function_def object here.
 
 	* symtab.h (symbol_table::fcn_info::fcn_info_rep::find_function):
 	Initialize args_evaluated.

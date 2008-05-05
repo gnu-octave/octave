@@ -1,3 +1,12 @@
+2008-05-05  John W. Eaton  <jwe@octave.org>
+
+	* cmd-edit.cc (command_editor::re_read_init_file,
+	gnu_readline::do_re_read_init_file): New functions.
+	* cmd-edit.h (command_editor::re_read_init_file): Provide decl.
+	(command_editor::do_re_read_init_file): New function.
+	* oct-rl-edit.c (octave_rl_re_read_init_file): New function.
+	* oct-rl-edit.h: Provide decl.
+
 2008-05-05  Rafael Laboissiere  <rafael@debian.org>
 
 	* oct-rl-edit.c (octave_read_init_file): Simply call rl_read_init_file.

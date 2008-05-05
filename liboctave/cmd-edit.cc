@@ -156,6 +156,8 @@ public:
 
   void do_read_init_file (const std::string& file);
 
+  void do_re_read_init_file (void);
+
   bool do_filename_completion_desired (bool);
 
   bool do_filename_quoting_desired (bool);
@@ -558,6 +560,12 @@ void
 gnu_readline::do_read_init_file (const std::string& file)
 {
   ::octave_rl_read_init_file (file.c_str ());
+}
+
+void
+gnu_readline::do_re_read_init_file (void)
+{
+  ::octave_rl_re_read_init_file ();
 }
 
 bool
@@ -1184,6 +1192,13 @@ command_editor::read_init_file (const std::string& file_arg)
 
       instance->do_read_init_file (file);
     }
+}
+
+void
+command_editor::re_read_init_file (void)
+{
+  if (instance_ok ())
+    instance->do_re_read_init_file ();
 }
 
 bool

@@ -1,3 +1,7 @@
+2008-05-05  John W. Eaton  <jwe@octave.org>
+
+	* input.cc (Fre_read_readline_init_file): New function.
+
 2008-05-04  John W. Eaton  <jwe@octave.org>
 
 	* ov-fcn-handle.cc (Ffunctions): Pass octave_value object instead

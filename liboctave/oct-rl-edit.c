@@ -197,6 +197,12 @@ octave_rl_read_init_file (const char *f)
   rl_read_init_file (f);
 }
 
+void
+octave_rl_re_read_init_file (void)
+{
+  rl_re_read_init_file (0, 0);
+}
+
 int
 octave_rl_filename_completion_desired (int arg)
 {

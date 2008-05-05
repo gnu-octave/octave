@@ -1133,6 +1133,24 @@ for details.\n\
   return retval;
 }
 
+DEFUN (re_read_readline_init_file, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} re_read_readline_init_file ()\n\
+Re-read the last readline library initialization file that was read.\n\
+@xref{Readline Init File, , , readline, GNU Readline Library},\n\
+for details.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  if (args.length () == 0)
+    command_editor::re_read_init_file ();
+  else
+    print_usage ();
+
+  return retval;
+}
+
 static std::string hook_fcn;
 static octave_value user_data;
 

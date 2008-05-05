@@ -138,6 +138,8 @@ public:
 
   static void read_init_file (const std::string& file = std::string ());
 
+  static void re_read_init_file (void);
+
   static bool filename_completion_desired (bool);
 
   static bool filename_quoting_desired (bool);
@@ -269,6 +271,8 @@ protected:
   virtual void restore_event_hook (void) { }
 
   virtual void do_read_init_file (const std::string&) { }
+
+  virtual void do_re_read_init_file (void) { }
 
   virtual bool do_filename_completion_desired (bool) { return false; }
 

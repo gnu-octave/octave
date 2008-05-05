@@ -84,6 +84,8 @@ extern FILE *octave_rl_get_output_stream (void);
 
 extern void octave_rl_read_init_file (const char *);
 
+extern void octave_rl_re_read_init_file (void);
+
 extern int octave_rl_filename_completion_desired (int);
 
 extern int octave_rl_filename_quoting_desired (int);

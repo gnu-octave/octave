@@ -1,3 +1,7 @@
+2008-05-05  David Bateman  <dbateman@free.fr>
+
+	* sysdep.cc (Fputenv): Allow single arg. Alias to setenv.
+
 2008-05-05  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (Fre_read_readline_init_file): New function.

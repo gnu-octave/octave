@@ -623,6 +623,7 @@ returns a string containing the value of your path.\n\
 DEFUN (putenv, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} putenv (@var{var}, @var{value})\n\
+@deftypefnx {Built-in Function} {} setenv (@var{var}, @var{value})\n\
 Set the value of the environment variable @var{var} to @var{value}.\n\
 @end deftypefn")
 {
@@ -630,13 +631,14 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
   int nargin = args.length ();
 
-  if (nargin == 2)
+  if (nargin == 2 || nargin == 1)
     {
       std::string var = args(0).string_value (); 
 
       if (! error_state)
 	{
-	  std::string val = args(1).string_value (); 
+	  std::string val = (nargin == 2
+			     ? args(1).string_value () : std::string ()); 
 
 	  if (! error_state)
 	    octave_env::putenv (var, val);
@@ -651,6 +653,7 @@ Set the value of the environment variable @var{var} to @var{value}.\n\
 
   return retval;
 }
+DEFALIAS (setenv, putenv);
 
 // FIXME -- perhaps kbhit should also be able to print a prompt?
 

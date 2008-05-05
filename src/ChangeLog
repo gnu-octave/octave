@@ -1,5 +1,8 @@
 2008-05-04  John W. Eaton  <jwe@octave.org>
 
+	* ov-fcn-handle.cc (Ffunctions): Pass octave_value object instead
+	of Cell in structure field assignment.
+
 	* parse.y (frob_function): Don't install subfunctions here.
 	(finish_function): Handle subfunctions here.
 	Conditionally define tree_function_def object here.

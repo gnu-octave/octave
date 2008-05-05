@@ -1234,7 +1234,7 @@ Return a struct containing information about the function handle\n\
 		      Cell parentage (dim_vector (1, 2));
 		      parentage.elem(0) = fh_nm;
 		      parentage.elem(1) = fcn->parent_fcn_name ();
-		      m.assign ("parentage", parentage); 
+		      m.assign ("parentage", octave_value (parentage)); 
 		    }
 		  else
 		    m.assign ("type", "simple");

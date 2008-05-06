@@ -63,6 +63,8 @@ public:
 
   octave_function *function_value (bool = false) { return this; }
 
+  const octave_function *function_value (bool = false) const { return this; }
+
   void mark_fcn_file_up_to_date (const octave_time& t) { t_checked = t; }
 
   std::string fcn_file_name (void) const;

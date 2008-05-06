@@ -88,11 +88,23 @@ public:
 
   void stash_dir_name (const std::string& dir) { my_dir_name = dir; }
 
-  void lock (void) { locked = true; }
+  void lock (void)
+  {
+    this->lock_subfunctions ();
+    locked = true;
+  }
 
-  void unlock (void) { locked = false; }
+  void unlock (void)
+  {
+    this->unlock_subfunctions ();
+    locked = false;
+  }
 
   bool islocked (void) const { return locked; }
+
+  virtual void lock_subfunctions (void) { }
+
+  virtual void unlock_subfunctions (void) { }
 
   void mark_relative (void) { relative = true; }
 

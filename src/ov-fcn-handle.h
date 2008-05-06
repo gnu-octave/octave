@@ -45,8 +45,7 @@ public:
   octave_fcn_handle (const std::string& n)
     : warn_reload (true), fcn (), nm (n) { }
 
-  octave_fcn_handle (const octave_value& f,  const std::string& n)
-    : warn_reload (true), fcn (f), nm (n) { }
+  octave_fcn_handle (const octave_value& f,  const std::string& n);
 
   octave_fcn_handle (const octave_fcn_handle& fh)
     : octave_base_value (fh), warn_reload (fh.warn_reload),
@@ -75,6 +74,9 @@ public:
   dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
 
   octave_function *function_value (bool = false)
+    { return fcn.function_value (); }
+
+  const octave_function *function_value (bool = false) const
     { return fcn.function_value (); }
 
   octave_user_function *user_function_value (bool = false)

@@ -1145,6 +1145,12 @@ octave_value::function_value (bool silent)
   return rep->function_value (silent);
 }
 
+const octave_function *
+octave_value::function_value (bool silent) const
+{
+  return rep->function_value (silent);
+}
+
 octave_user_function *
 octave_value::user_function_value (bool silent)
 {

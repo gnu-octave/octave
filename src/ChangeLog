@@ -1,5 +1,74 @@
 2008-05-06  John W. Eaton  <jwe@octave.org>
 
+	* symtab.h (symbol_table::scope_id_cache): New class.  Use it to
+	replace scope_ids_in_use and scope_ids_free_list.
+	(symbol_table::erase_scope): Call free_scope.
+	(symbol_table::free_scope): Call scope_id_cache::free.
+
+	* ov-fcn.h (octave_function::lock_subfunctions,
+	octave_function::unlock_subfunctions): New virtual functions.
+	(octave_function::lock_subfunctions): Call lock_subfunctions here.
+	(octave_function::unlock_subfunctions): Call unlock_subfunctions here.
+	* ov-usr-fcn.h (octave_user_function::lock_subfunctions,
+	octave_user_function::unlock_subfunctions): New functions.
+
+	* symtab.h (symbol_table::lock_subfunctions,
+	symbol_table::lock_subfunctions,
+	symbol_table::fcn_info::lock_subfunction,
+	symbol_table::fcn_info::unlock_subfunction,
+	symbol_table::fcn_info::fcn_info_rep::lock_subfunction, 
+	symbol_table::fcn_info::fcn_info_rep::unlock_subfunction):	
+	New functions.
+
+	* symtab.h (symbol_table::set_scope, symbol_table::get_instance):
+	Don't set instance unless allocation succeeds.
+	(symbol_table::print_scope, symbol_table::do_print_scope): Delete.
+	(symbol_table::free_scope): Avoid using invalid iterator.
+	(symbol_table::erase_scope): Call free_scope here.
+
+	* ov-fcn-handle.cc (octave_fcn_handle::load_ascii,
+	octave_fcn_handle::load_binary, octave_fcn_handle::load_hdf5):
+	Cache anonymous name here.
+	(octave_fcn_handle::octave_fcn_handle): Move here from
+	ov-fcn-handle.h.  Cache name if function is user-defined.
+
+	* pt-id.cc (tree_identifier::dup): Avoid shadow warning.
+
+	* symtab.h (symbol_table::cache_name, symbol_table::do_cache_name):
+	New functions.
+	(symbol_table::get_instance): Cache top-level name here.
+	* parse.y (finish_function): Call symbol_table::cache_name here.
+
+	* symtab.cc (F__dump_symtab_info__): New function.
+	
+	* symtab.cc (symbol_table::dump, symbol_table::dump_global,
+	symbol_table::dump_functions, symbol_table::do_dump,
+	symbol_table::symbol_record::symbol_record_rep::dump,
+	symobl_table::fcn_info::fcn_info_rep::dump): New functions.
+	* symtab.h: Provide decls.
+	(symtab::scopes, symbol_table::symbol_record::dump,
+	symbol_table::fcn_info::dump): New functions.
+	(symtab::get_instance): New arg, create; if false throw error if
+	instance for given scope is not found.
+
+	* ov-base.cc (octave_base_value::dump): New virtual function.
+	* ov-base.h: Proivde decl.
+	* ov.h (octave_value::dump): New function.
+
+	* ov.h, ov.c (octave_value::function_value): New const version.
+	* ov-base.h, ov-base.cc (octave_base_value::function_value): Likewise.
+	* ov-builtin.h (octave_builtin::function_value): Likewise.
+	* ov-fcn-handle.h (octave_fcn_handle::function_value): Likewise.
+	* ov-mex-fcn.h (octave_mex_function::function_value): Likewise.
+	* ov-usr-fcn.h (octave_user_script::function_value,
+	octave_user_function): Likewise.
+	
+	* symtab.h, symtab.cc: Use consistent naming scheme for iterator
+	typedefs.  Change all uses.
+
+	* variables.cc (F__print_symtab_info__, F__print_symbol_info__):
+	Delete.
+
 	* ov-cell.cc (Fstruct2cell): Handle structure arrays properly.
 
 2008-05-05  David Bateman  <dbateman@free.fr>

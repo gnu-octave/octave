@@ -91,6 +91,8 @@ public:
 
   octave_function *function_value (bool = false) { return this; }
 
+  const octave_function *function_value (bool = false) const { return this; }
+
   octave_user_script *user_script_value (bool = false) { return this; }
 
   octave_user_code *user_code_value (bool = false) { return this; }
@@ -181,6 +183,8 @@ public:
 
   octave_function *function_value (bool = false) { return this; }
 
+  const octave_function *function_value (bool = false) const { return this; }
+
   octave_user_function *user_function_value (bool = false) { return this; }
 
   octave_user_code *user_code_value (bool = false) { return this; }
@@ -224,6 +228,10 @@ public:
   bool takes_varargs (void) const;
 
   bool takes_var_return (void) const;
+
+  void lock_subfunctions (void);
+
+  void unlock_subfunctions (void);
 
   octave_value_list octave_all_va_args (void);
 

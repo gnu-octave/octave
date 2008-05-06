@@ -892,8 +892,9 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 	      {
 		octave_fcn_handle *fh = 
 		  anon_fcn_handle.fcn_handle_value ();
+
 		if (fh)
-		  tc = new octave_fcn_handle (fh->fcn_val(), "@<anonymous>");
+		  tc = new octave_fcn_handle (fh->fcn_val (), "@<anonymous>");
 		else
 		  {
 		    error ("load: failed to load anonymous function handle");

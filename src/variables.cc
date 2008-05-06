@@ -2375,34 +2375,6 @@ without the dash as well.\n\
   return retval;
 }
 
-DEFUN (__print_symtab_info__, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __print_symtab_info__ ()\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  // FIXME -- what should this function do now?  Print a summary for
-  // each scope?  Print the entire symbol table?  Accept a scope
-  // argument?
-
-  return retval;
-}
-
-DEFUN (__print_symbol_info__, args, ,
-  "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} __dump_symbol_info__ (@var{name})\n\
-Undocumented internal function.\n\
-@end deftypefn")
-{
-  octave_value_list retval;
-
-  // FIXME -- what should this function do now?
-
-  return retval;
-}
-
 DEFUN (whos_line_format, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {@var{val} =} whos_line_format ()\n\

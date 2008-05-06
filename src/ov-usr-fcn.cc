@@ -272,6 +272,18 @@ octave_user_function::takes_var_return (void) const
   return (ret_list && ret_list->takes_varargs ());
 }
 
+void
+octave_user_function::lock_subfunctions (void)
+{
+  symbol_table::lock_subfunctions (local_scope);
+}
+
+void
+octave_user_function::unlock_subfunctions (void)
+{
+  symbol_table::unlock_subfunctions (local_scope);
+}
+
 octave_value_list
 octave_user_function::octave_all_va_args (void)
 {

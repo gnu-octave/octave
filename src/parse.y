@@ -2548,6 +2548,15 @@ finish_function (tree_parameter_list *ret_list,
 
   if (fcn)
     {
+      std::string nm = fcn->name ();
+      std::string file = fcn->fcn_file_name ();
+
+      std::string tmp = nm;
+      if (! file.empty ())
+	tmp += ": " + file;
+
+      symbol_table::cache_name (fcn->scope (), tmp);
+
       if (lc)
 	fcn->stash_leading_comment (lc);
 
@@ -2555,8 +2564,6 @@ finish_function (tree_parameter_list *ret_list,
 
       if (lexer_flags.parsing_nested_function)
 	{
-	  std::string nm = fcn->name ();
-
 	  fcn->mark_as_nested_function ();
 
 	  symbol_table::install_subfunction (nm, octave_value (fcn));

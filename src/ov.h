@@ -740,6 +740,8 @@ public:
 
   octave_function *function_value (bool silent = false);
 
+  const octave_function *function_value (bool silent = false) const;
+
   octave_user_function *user_function_value (bool silent = false);
 
   octave_user_script *user_script_value (bool silent = false);
@@ -889,6 +891,8 @@ public:
   void unlock (void) { rep->unlock (); }
 
   bool islocked (void) const { return rep->islocked (); }
+
+  void dump (std::ostream& os) const { rep->dump (os); }
 
 #define MAPPER_FORWARD(F) \
   octave_value F (void) const { return rep->F (); }

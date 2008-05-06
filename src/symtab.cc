@@ -45,6 +45,8 @@ along with Octave; see the file COPYING.  If not, see
 
 symbol_table *symbol_table::instance = 0;
 
+symbol_table::scope_id_cache *symbol_table::scope_id_cache::instance = 0;
+
 std::map<symbol_table::scope_id, symbol_table*> symbol_table::all_instances;
 
 std::map<std::string, octave_value> symbol_table::global_table;
@@ -61,15 +63,36 @@ symbol_table::scope_id symbol_table::xparent_scope = -1;
 
 std::deque<symbol_table::scope_id> symbol_table::scope_stack;
 
-symbol_table::scope_id symbol_table::next_available_scope = 2;
-std::set<symbol_table::scope_id> symbol_table::scope_ids_in_use;
-std::set<symbol_table::scope_id> symbol_table::scope_ids_free_list;
-
 symbol_table::context_id symbol_table::xcurrent_context = 0;
 
 // Should Octave always check to see if function files have changed
 // since they were last compiled?
 static int Vignore_function_time_stamp = 1;
+
+void
+symbol_table::symbol_record::symbol_record_rep::dump
+  (std::ostream& os, const std::string& prefix) const
+{
+  octave_value val = varval ();
+
+  os << prefix << name;
+
+  if (val.is_defined ())
+    {
+      os << " ["
+	 << (is_local () ? "l" : "")
+	 << (is_automatic () ? "a" : "")
+	 << (is_formal () ? "f" : "")
+	 << (is_hidden () ? "h" : "")
+	 << (is_inherited () ? "i" : "")
+	 << (is_global () ? "g" : "")
+	 << (is_persistent () ? "p" : "")
+	 << "] ";
+      val.dump (os);
+    }
+
+  os << "\n";
+}
 
 octave_value
 symbol_table::symbol_record::find (tree_argument_list *args,
@@ -309,7 +332,7 @@ symbol_table::fcn_info::fcn_info_rep::print_dispatch (std::ostream& os) const
     {
       os << "Overloaded function " << name << ":\n\n";
 
-      for (const_dispatch_map_iterator p = dispatch_map.begin ();
+      for (dispatch_map_const_iterator p = dispatch_map.begin ();
 	   p != dispatch_map.end (); p++)
 	os << "  " << name << " (" << p->first << ", ...) -> " 
 	   << p->second << " (" << p->first << ", ...)\n";
@@ -327,7 +350,7 @@ symbol_table::fcn_info::fcn_info_rep::help_for_dispatch (void) const
     {
       retval = "Overloaded function:\n\n";
 
-      for (const_dispatch_map_iterator p = dispatch_map.begin ();
+      for (dispatch_map_const_iterator p = dispatch_map.begin ();
 	   p != dispatch_map.end (); p++)
 	retval += "  " + p->second + " (" + p->first + ", ...)\n\n";
     }
@@ -671,6 +694,75 @@ symbol_table::fcn_info::fcn_info_rep::find_user_function (void)
   return function_on_path;
 }
 
+static std::string
+fcn_file_name (const octave_value& fcn)
+{
+  const octave_function *f = fcn.function_value ();
+
+  return f ? f->fcn_file_name () : std::string ();
+}
+
+void
+symbol_table::fcn_info::fcn_info_rep::dump
+  (std::ostream& os, const std::string& prefix) const
+{
+  os << prefix << name
+     << " ["
+     << (cmdline_function.is_defined () ? "c" : "")
+     << (built_in_function.is_defined () ? "b" : "")
+     << "]\n";
+
+  std::string tprefix = prefix + "  ";
+
+  if (autoload_function.is_defined ())
+    os << tprefix << "autoload: "
+       << fcn_file_name (autoload_function) << "\n";
+
+  if (function_on_path.is_defined ())
+    os << tprefix << "function from path: "
+       << fcn_file_name (function_on_path) << "\n";
+
+  if (! subfunctions.empty ())
+    {
+      for (scope_val_const_iterator p = subfunctions.begin ();
+	   p != subfunctions.end (); p++)
+	os << tprefix << "subfunction: " << fcn_file_name (p->second)
+	   << " [" << p->first << "]\n";
+    }
+
+  if (! private_functions.empty ())
+    {
+      for (str_val_const_iterator p = private_functions.begin ();
+	   p != private_functions.end (); p++)
+	os << tprefix << "private: " << fcn_file_name (p->second)
+	   << " [" << p->first << "]\n";
+    }
+
+  if (! class_constructors.empty ())
+    {
+      for (str_val_const_iterator p = class_constructors.begin ();
+	   p != class_constructors.end (); p++)
+	os << tprefix << "constructor: " << fcn_file_name (p->second)
+	   << " [" << p->first << "]\n";
+    }
+
+  if (! class_methods.empty ())
+    {
+      for (str_val_const_iterator p = class_methods.begin ();
+	   p != class_methods.end (); p++)
+	os << tprefix << "method: " << fcn_file_name (p->second)
+	   << " [" << p->first << "]\n";
+    }
+
+  if (! dispatch_map.empty ())
+    {
+      for (dispatch_map_const_iterator p = dispatch_map.begin ();
+	   p != dispatch_map.end (); p++)
+	os << tprefix << "dispatch: " << fcn_file_name (p->second)
+	   << " [" << p->first << "]\n";
+    }
+}
+
 octave_value
 symbol_table::fcn_info::find (tree_argument_list *args,
 			      const string_vector& arg_names,
@@ -703,6 +795,76 @@ symbol_table::find_function (const std::string& name, tree_argument_list *args,
   return find (name, args, arg_names, evaluated_args, args_evaluated, true);
 }
 
+void
+symbol_table::dump (std::ostream& os, scope_id scope)
+{
+  if (scope == xglobal_scope)
+    dump_global (os);
+  else
+    {
+      symbol_table *inst = get_instance (scope, false);
+
+      if (inst)
+	{
+	  os << "*** dumping symbol table scope " << scope
+	     << " (" << inst->table_name << ")\n\n";
+
+	  std::map<std::string, octave_value> sfuns
+	    = symbol_table::subfunctions_defined_in_scope (scope);
+
+	  if (! sfuns.empty ())
+	    {
+	      os << "  subfunctions defined in this scope:\n";
+
+	      for (std::map<std::string, octave_value>::const_iterator p = sfuns.begin ();
+		   p != sfuns.end (); p++)
+		os << "    " << p->first << "\n";
+
+	      os << "\n";
+	    }
+
+
+	  inst->do_dump (os);
+	}
+    }
+}
+
+void
+symbol_table::dump_global (std::ostream& os)
+{
+  if (! global_table.empty ())
+    {
+      os << "*** dumping global symbol table\n\n";
+
+      for (global_table_const_iterator p = global_table.begin ();
+	   p != global_table.end (); p++)
+	{
+	  std::string nm = p->first;
+	  octave_value val = p->second;
+
+	  os << "  " << nm << " ";
+	  val.dump (os);
+	  os << "\n";
+	}
+    }
+}
+
+void
+symbol_table::dump_functions (std::ostream& os)
+{
+  if (! fcn_table.empty ())
+    {
+      os << "*** dumping globally visible functions from symbol table\n"
+	 << "    (c=commandline, b=built-in)\n\n";
+
+      for (fcn_table_const_iterator p = fcn_table.begin ();
+	   p != fcn_table.end (); p++)
+	p->second.dump (os, "  ");
+
+      os << "\n";
+    }
+}
+
 octave_value
 symbol_table::do_find (const std::string& name, tree_argument_list *args,
 		       const string_vector& arg_names,
@@ -719,7 +881,7 @@ symbol_table::do_find (const std::string& name, tree_argument_list *args,
 
       if (p != table.end ())
 	{
-	  symbol_record& sr = p->second;
+	  symbol_record sr = p->second;
 
 	  // FIXME -- should we be using something other than varref here?
 
@@ -758,6 +920,39 @@ symbol_table::do_find (const std::string& name, tree_argument_list *args,
     }
 
   return retval;
+}
+
+void
+symbol_table::do_dump (std::ostream& os)
+{
+  if (! persistent_table.empty ())
+    {
+      os << "  persistent variables in this scope:\n\n";
+
+      for (persistent_table_const_iterator p = persistent_table.begin ();
+	   p != persistent_table.end (); p++)
+	{
+	  std::string nm = p->first;
+	  octave_value val = p->second;
+
+	  os << "    " << nm << " ";
+	  val.dump (os);
+	  os << "\n";
+	}
+
+      os << "\n";
+    }
+
+  if (! table.empty ())
+    {
+      os << "  other symbols in this scope (l=local; a=auto; f=formal\n"
+	 << "    h=hidden; i=inherited; g=global; p=persistent)\n\n";
+
+      for (table_const_iterator p = table.begin (); p != table.end (); p++)
+	p->second.dump (os, "    ");
+
+      os << "\n";
+    }
 }
 
 DEFUN (ignore_function_time_stamp, args, nargout,
@@ -818,6 +1013,90 @@ need to recompiled.\n\
 	error ("ignore_function_time_stamp: expecting argument to be character string");
     }
   else if (nargin > 1)
+    print_usage ();
+
+  return retval;
+}
+
+DEFUN (__current_scope__, , ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {[@var{scope}, @var{context}]} __dump_symtab_info__ ()\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value_list retval;
+
+  retval(1) = symbol_table::current_context ();
+  retval(0) = symbol_table::current_scope ();
+
+  return retval;
+}
+
+DEFUN (__dump_symtab_info__, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} __dump_symtab_info__ ()\n\
+@deftypefnx {Built-in Function} {} __dump_symtab_info__ (@var{scope})\n\
+@deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"scopes\")\n\
+@deftypefnx {Built-in Function} {} __dump_symtab_info__ (\"functions\")\n\
+Undocumented internal function.\n\
+@end deftypefn")
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  if (nargin == 0)
+    {
+      symbol_table::dump_functions (octave_stdout);
+
+      symbol_table::dump_global (octave_stdout);
+
+      std::list<symbol_table::scope_id> lst = symbol_table::scopes ();
+
+      for (std::list<symbol_table::scope_id>::const_iterator p = lst.begin ();
+	   p != lst.end (); p++)
+	symbol_table::dump (octave_stdout, *p);
+    }
+  else if (nargin == 1)
+    {
+      octave_value arg = args(0);
+
+      if (arg.is_string ())
+	{
+	  std::string s_arg = arg.string_value ();
+
+	  if (s_arg == "scopes")
+	    {
+	      std::list<symbol_table::scope_id> lst = symbol_table::scopes ();
+
+	      RowVector v (lst.size ());
+
+	      octave_idx_type k = 0;
+
+	      for (std::list<symbol_table::scope_id>::const_iterator p = lst.begin ();
+		   p != lst.end (); p++)
+		v.xelem (k++) = *p;
+
+	      retval = v;
+	    }
+	  else if (s_arg == "functions")
+	    {
+	      symbol_table::dump_functions (octave_stdout);
+	    }
+	  else
+	    error ("__dump_symtab_info__: expecting \"functions\" or \"scopes\"");
+	}
+      else
+	{
+	  int s = arg.int_value ();
+
+	  if (! error_state)
+	    symbol_table::dump (octave_stdout, s);
+	  else
+	    error ("__dump_symtab_info__: expecting string or scope id");
+	}
+    }
+  else
     print_usage ();
 
   return retval;

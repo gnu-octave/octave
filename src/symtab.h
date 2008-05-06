@@ -47,6 +47,114 @@ public:
   typedef size_t context_id;
 
   class
+  scope_id_cache
+  {
+  protected:
+
+    typedef std::set<scope_id>::iterator set_iterator;
+    typedef std::set<scope_id>::const_iterator set_const_iterator;
+
+    // We start with 2 because we allocate 0 for the global symbols
+    // and 1 for the top-level workspace.
+
+    scope_id_cache (void) : next_available (2), in_use (), free_list () { }
+
+  public:
+
+    ~scope_id_cache (void) { }
+
+    static scope_id alloc (void)
+    {
+      return instance_ok () ? instance->do_alloc () : -1;
+    }
+
+    static void free (scope_id scope)
+    {
+      if (instance_ok ())
+	return instance->do_free (scope);
+    }
+
+    static std::list<scope_id> scopes (void)
+    {
+      return instance_ok () ? instance->do_scopes () : std::list<scope_id> ();
+    }
+
+    static bool instance_ok (void)
+    {
+      bool retval = true;
+
+      if (! instance)
+	instance = new scope_id_cache ();
+
+      if (! instance)
+	{
+	  ::error ("unable to create scope_id_cache object!");
+
+	  retval = false;
+	}
+
+      return retval;
+    }
+
+  private:
+
+    static scope_id_cache *instance;
+
+    // The next available scope not in the free list.
+    scope_id next_available;
+
+    // The set of scope IDs that are currently allocated.
+    std::set<scope_id> in_use;
+
+    // The set of scope IDs that are currently available.
+    std::set<scope_id> free_list;
+
+    scope_id do_alloc (void)
+    {
+      scope_id retval;
+
+      set_iterator p = free_list.begin ();
+
+      if (p != free_list.end ())
+	{
+	  retval = *p;
+	  free_list.erase (p);
+	}
+      else
+	retval = next_available++;
+
+      in_use.insert (retval);
+
+      return retval;
+    }
+
+    void do_free (scope_id scope)
+    {
+      set_iterator p = in_use.find (scope);
+
+      if (p != in_use.end ())
+	{
+	  in_use.erase (p);
+	  free_list.insert (scope);
+	}
+      else
+	error ("free_scope: scope %d not found!", scope);
+    }
+
+    std::list<scope_id> do_scopes (void) const
+    {
+      std::list<scope_id> retval;
+
+      for (set_const_iterator p = in_use.begin (); p != in_use.end (); p++)
+	retval.push_back (*p);
+
+      retval.sort ();
+
+      return retval;
+    }
+  };
+
+  class
   symbol_record
   {
   public:
@@ -235,6 +343,8 @@ public:
 	return new symbol_record_rep (name, varval (), storage_class);
       }
 
+      void dump (std::ostream& os, const std::string& prefix) const;
+
       std::string name;
 
       std::deque<octave_value> value_stack;
@@ -333,6 +443,12 @@ public:
 
     unsigned int xstorage_class (void) const { return rep->storage_class; }
 
+    void
+    dump (std::ostream& os, const std::string& prefix = std::string ()) const
+    {
+      rep->dump (os, prefix);
+    }
+
   private:
 
     symbol_record_rep *rep;
@@ -347,13 +463,13 @@ public:
 
     typedef std::map<std::string, std::string> dispatch_map_type;
 
-    typedef std::map<scope_id, octave_value>::const_iterator const_scope_val_iterator;
+    typedef std::map<scope_id, octave_value>::const_iterator scope_val_const_iterator;
     typedef std::map<scope_id, octave_value>::iterator scope_val_iterator;
 
-    typedef std::map<std::string, octave_value>::const_iterator const_str_val_iterator;
+    typedef std::map<std::string, octave_value>::const_iterator str_val_const_iterator;
     typedef std::map<std::string, octave_value>::iterator str_val_iterator;
 
-    typedef dispatch_map_type::const_iterator const_dispatch_map_iterator;
+    typedef dispatch_map_type::const_iterator dispatch_map_const_iterator;
     typedef dispatch_map_type::iterator dispatch_map_iterator;
 
   private:
@@ -405,6 +521,32 @@ public:
 
 	return find (0, arg_names, evaluated_args, args_evaluated);
       }
+
+      void lock_subfunction (scope_id scope)
+      {
+	scope_val_iterator p = subfunctions.find (scope);
+
+	if (p != subfunctions.end ())
+	  p->second.lock ();
+      }
+
+      void unlock_subfunction (scope_id scope)
+      {
+	scope_val_iterator p = subfunctions.find (scope);
+
+	if (p != subfunctions.end ())
+	  p->second.unlock ();
+      }
+
+      std::pair<std::string, octave_value>
+      subfunction_defined_in_scope (scope_id scope) const
+      {
+	scope_val_const_iterator p = subfunctions.find (scope);
+
+	return p == subfunctions.end ()
+	  ? std::pair<std::string, octave_value> ()
+	  : std::pair<std::string, octave_value> (name, p->second);
+      }	     
 
       void install_cmdline_function (const octave_value& f)
       {
@@ -496,6 +638,8 @@ public:
       std::string help_for_dispatch (void) const;
 
       dispatch_map_type get_dispatch (void) const { return dispatch_map; }
+
+      void dump (std::ostream& os, const std::string& prefix) const;
 
       std::string name;
 
@@ -599,6 +743,22 @@ public:
       return rep->find_function (args);
     }
 
+    void lock_subfunction (scope_id scope)
+    {
+      rep->lock_subfunction (scope);
+    }
+
+    void unlock_subfunction (scope_id scope)
+    {
+      rep->unlock_subfunction (scope);
+    }
+
+    std::pair<std::string, octave_value>
+    subfunction_defined_in_scope (scope_id scope = xcurrent_scope) const
+    {
+      return rep->subfunction_defined_in_scope (scope);
+    }	     
+
     void install_cmdline_function (const octave_value& f)
     {
       rep->install_cmdline_function (f);
@@ -647,6 +807,12 @@ public:
       return rep->get_dispatch ();
     }
 
+    void
+    dump (std::ostream& os, const std::string& prefix = std::string ()) const
+    {
+      rep->dump (os, prefix);
+    }
+
   private:
 
     fcn_info_rep *rep;
@@ -663,24 +829,7 @@ public:
   // We use parent_scope to handle parsing subfunctions.
   static scope_id parent_scope (void) { return xparent_scope; }
 
-  static scope_id alloc_scope (void)
-  {
-    scope_id retval;
-
-    scope_ids_free_list_iterator p = scope_ids_free_list.begin ();
-
-    if (p != scope_ids_free_list.end ())
-      {
-	retval = *p;
-	scope_ids_free_list.erase (p);
-      }
-    else
-      retval = next_available_scope++;
-
-    scope_ids_in_use.insert (retval);
-
-    return retval;
-  }
+  static scope_id alloc_scope (void) { return scope_id_cache::alloc (); }
 
   static void set_scope (scope_id scope)
   {
@@ -692,9 +841,10 @@ public:
 
 	if (p == all_instances.end ())
 	  {
-	    instance = new symbol_table ();
+	    symbol_table *inst = new symbol_table ();
 
-	    all_instances[scope] = instance;
+	    if (inst)
+	      all_instances[scope] = instance = inst;
 	  }
 	else
 	  instance = p->second;
@@ -780,9 +930,13 @@ public:
     all_instances_iterator p = all_instances.find (scope);
 
     if (p != all_instances.end ())
-      all_instances.erase (p);
+      {
+	delete p->second;
 
-    // free_scope (scope);
+	all_instances.erase (p);
+
+	free_scope (scope);
+      }
   }
 
   static scope_id dup_scope (scope_id scope)
@@ -810,30 +964,10 @@ public:
     return retval;
   }
 
-#if 0
-  static void print_scope (const std::string& tag)
+  static std::list<scope_id> scopes (void)
   {
-    symbol_table *inst = get_instance (xcurrent_scope);
-
-    if (inst)
-      inst->do_print_scope (std::cerr);
+    return scope_id_cache::scopes ();
   }
-
-  void do_print_scope (std::ostream& os) const
-  {
-    for (const_table_iterator p = table.begin (); p != table.end (); p++)
-      {
-	symbol_record sr = p->second;
-
-	octave_value val = sr.varval ();
-
-	if (val.is_defined ())
-	  sr.varval ().print_with_name (os, sr.name ());
-	else
-	  os << sr.name () << " is not defined" << std::endl;
-      }
-  }
-#endif
 
   static symbol_record
   find_symbol (const std::string& name, scope_id scope = xcurrent_scope)
@@ -899,7 +1033,7 @@ public:
   static octave_value
   global_varval (const std::string& name)
   {
-    const_global_table_iterator p = global_table.find (name);
+    global_table_const_iterator p = global_table.find (name);
 
     return (p != global_table.end ()) ? p->second : octave_value ();
   }
@@ -946,7 +1080,7 @@ public:
   static octave_value
   find_method (const std::string& name, const std::string& dispatch_type)
   {
-    const_fcn_table_iterator p = fcn_table.find (name);
+    fcn_table_const_iterator p = fcn_table.find (name);
 
     if (p != fcn_table.end ())
       return p->second.find_method (dispatch_type);
@@ -966,7 +1100,7 @@ public:
   static octave_value
   find_built_in_function (const std::string& name)
   {
-    const_fcn_table_iterator p = fcn_table.find (name);
+    fcn_table_const_iterator p = fcn_table.find (name);
 
     return (p != fcn_table.end ())
       ? p->second.find_built_in_function () : octave_value ();
@@ -1383,7 +1517,7 @@ public:
 
     glob_match pat (pattern);
 
-    for (const_global_table_iterator p = global_table.begin ();
+    for (global_table_const_iterator p = global_table.begin ();
 	 p != global_table.end (); p++)
       {
 	// We generate a list of symbol_record objects so that
@@ -1435,7 +1569,7 @@ public:
   {
     std::list<std::string> retval;
 
-    for (const_global_table_iterator p = global_table.begin ();
+    for (global_table_const_iterator p = global_table.begin ();
 	 p != global_table.end (); p++)
       retval.push_back (p->first);
 
@@ -1462,7 +1596,7 @@ public:
   {
     std::list<std::string> retval;
 
-    for (const_fcn_table_iterator p = fcn_table.begin ();
+    for (fcn_table_const_iterator p = fcn_table.begin ();
 	 p != fcn_table.end (); p++)
       {
 	octave_value fcn = p->second.find_built_in_function ();
@@ -1501,28 +1635,62 @@ public:
       }
   }
 
+  static void dump (std::ostream& os, scope_id scope = xcurrent_scope);
+
+  static void dump_global (std::ostream& os);
+
+  static void dump_functions (std::ostream& os);
+
+  static void cache_name (scope_id scope, const std::string& name)
+  {
+    symbol_table *inst = get_instance (scope, false);
+
+    if (inst)
+      inst->do_cache_name (name);
+  }
+
+  static void lock_subfunctions (scope_id scope = xcurrent_scope)
+  {
+    for (fcn_table_iterator p = fcn_table.begin ();
+	 p != fcn_table.end (); p++)
+      p->second.lock_subfunction (scope);
+  }    
+
+  static void unlock_subfunctions (scope_id scope = xcurrent_scope)
+  {
+    for (fcn_table_iterator p = fcn_table.begin ();
+	 p != fcn_table.end (); p++)
+      p->second.unlock_subfunction (scope);
+  }    
+
+  static void free_scope (scope_id scope)
+  {
+    if (scope == xglobal_scope || scope == xtop_scope)
+      error ("can't free global or top-level scopes!");
+    else
+      symbol_table::scope_id_cache::free (scope);
+  }
+
 private:
 
-  typedef std::map<std::string, symbol_record>::const_iterator const_table_iterator;
+  typedef std::map<std::string, symbol_record>::const_iterator table_const_iterator;
   typedef std::map<std::string, symbol_record>::iterator table_iterator;
 
-  typedef std::map<std::string, octave_value>::const_iterator const_global_table_iterator;
+  typedef std::map<std::string, octave_value>::const_iterator global_table_const_iterator;
   typedef std::map<std::string, octave_value>::iterator global_table_iterator;
 
-  typedef std::map<std::string, octave_value>::const_iterator const_persistent_table_iterator;
+  typedef std::map<std::string, octave_value>::const_iterator persistent_table_const_iterator;
   typedef std::map<std::string, octave_value>::iterator persistent_table_iterator;
 
   typedef std::map<scope_id, symbol_table*>::const_iterator all_instances_const_iterator;
   typedef std::map<scope_id, symbol_table*>::iterator all_instances_iterator;
 
-  typedef std::map<std::string, fcn_info>::const_iterator const_fcn_table_iterator;
+  typedef std::map<std::string, fcn_info>::const_iterator fcn_table_const_iterator;
   typedef std::map<std::string, fcn_info>::iterator fcn_table_iterator;
 
-  typedef std::set<scope_id>::const_iterator scope_ids_free_list_const_iterator;
-  typedef std::set<scope_id>::iterator scope_ids_free_list_iterator;
-
-  typedef std::set<scope_id>::const_iterator scope_ids_in_use_const_iterator;
-  typedef std::set<scope_id>::iterator scope_ids_in_use_iterator;
+  // Name for this table (usually the file name of the function
+  // corresponding to the scope);
+  std::string table_name;
 
   // Map from symbol names to symbol info.
   std::map<std::string, symbol_record> table;
@@ -1558,54 +1726,36 @@ private:
 
   static std::deque<scope_id> scope_stack;
 
-  // The next available scope ID.
-  static scope_id next_available_scope;
-
-  // The set of scope IDs that are currently allocated.
-  static std::set<scope_id> scope_ids_in_use;
-
-  // The set of scope IDs that are currently available.
-  static std::set<scope_id> scope_ids_free_list;
-
-  symbol_table (void) : table (), xcurrent_context_this_table () { }
+  symbol_table (void)
+    : table_name (), table (), xcurrent_context_this_table () { }
 
   ~symbol_table (void) { }
 
-  static void free_scope (scope_id scope)
-  {
-    if (scope == xglobal_scope || scope == xtop_scope)
-      error ("can't free global or top-level scopes!");
-    else
-      {
-	scope_ids_in_use_iterator p = scope_ids_in_use.find (scope);
-
-	if (p != scope_ids_in_use.end ())
-	  {
-	    scope_ids_in_use.erase (p);
-	    scope_ids_free_list.insert (*p);
-	  }
-	else
-	  error ("scope id = %ld not found!", scope);
-      }
-  }
-
-  static symbol_table *get_instance (scope_id scope)
+  static symbol_table *get_instance (scope_id scope, bool create = true)
   {
     symbol_table *retval = 0;
+
+    bool ok = true;
 
     if (scope != xglobal_scope)
       {
 	if (scope == xcurrent_scope)
 	  {
-	    if (! instance)
+	    if (! instance && create)
 	      {
-		instance = new symbol_table ();
+		symbol_table *inst = new symbol_table ();
 
-		all_instances[scope] = instance;
+		if (inst)
+		  {
+		    all_instances[scope] = instance = inst;
+
+		    if (scope == xtop_scope)
+		      instance->do_cache_name ("top-level");
+		  }
 	      }
 
 	    if (! instance)
-	      error ("unable to create symbol_table object!");
+	      ok = false;
 
 	    retval = instance;
 	  }
@@ -1615,14 +1765,26 @@ private:
 
 	    if (p == all_instances.end ())
 	      {
-		retval = new symbol_table ();
+		if (create)
+		  {
+		    retval = new symbol_table ();
 
-		all_instances[scope] = retval;
+		    if (retval)
+		      all_instances[scope] = retval;
+		    else
+		      ok = false;
+		  }
+		else
+		  ok = false;
 	      }
 	    else
 	      retval = p->second;
 	  }
       }
+
+    if (! ok)
+      error ("unable to %s symbol_table object for scope %d!",
+	     create ? "create" : "find", scope);
 
     return retval;
   }
@@ -1635,7 +1797,7 @@ private:
   void
   do_dup_scope (symbol_table& new_symbol_table) const
   {
-    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+    for (table_const_iterator p = table.begin (); p != table.end (); p++)
       new_symbol_table.insert_symbol_record (p->second.dup ());
   }
 
@@ -1701,7 +1863,7 @@ private:
 
   octave_value do_varval (const std::string& name) const
   {
-    const_table_iterator p = table.find (name);
+    table_const_iterator p = table.find (name);
 
     return (p != table.end ()) ? p->second.varval () : octave_value ();
   }
@@ -1716,7 +1878,7 @@ private:
 
   octave_value do_persistent_varval (const std::string& name)
   {
-    const_persistent_table_iterator p = persistent_table.find (name);
+    persistent_table_const_iterator p = persistent_table.find (name);
 
     return (p != persistent_table.end ()) ? p->second : octave_value ();
   }
@@ -1733,7 +1895,7 @@ private:
   {
     bool retval = false;
 
-    const_table_iterator p = table.find (name);
+    table_const_iterator p = table.find (name);
 
     if (p != table.end ())
       {
@@ -1859,7 +2021,7 @@ private:
   {
     std::list<symbol_record> retval;
 
-    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+    for (table_const_iterator p = table.begin (); p != table.end (); p++)
       {
 	const symbol_record& sr = p->second;
 
@@ -1879,7 +2041,7 @@ private:
 
     glob_match pat (pattern);
 
-    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+    for (table_const_iterator p = table.begin (); p != table.end (); p++)
       {
 	if (pat.match (p->first))
 	  {
@@ -1899,7 +2061,7 @@ private:
   {
     std::list<std::string> retval;
 
-    for (const_table_iterator p = table.begin (); p != table.end (); p++)
+    for (table_const_iterator p = table.begin (); p != table.end (); p++)
       retval.push_back (p->first);
 
     retval.sort ();
@@ -1907,9 +2069,29 @@ private:
     return retval;
   }
 
+  static std::map<std::string, octave_value>
+  subfunctions_defined_in_scope (scope_id scope = xcurrent_scope)
+  {
+    std::map<std::string, octave_value> retval;
+
+    for (fcn_table_const_iterator p = fcn_table.begin ();
+	 p != fcn_table.end (); p++)
+      {
+	std::pair<std::string, octave_value> tmp
+	  = p->second.subfunction_defined_in_scope (scope);
+
+	std::string nm = tmp.first;
+
+	if (! nm.empty ())
+	  retval[nm] = tmp.second;
+      }
+
+    return retval;
+  }
+
   bool do_is_local_variable (const std::string& name) const
   {
-    const_table_iterator p = table.find (name);
+    table_const_iterator p = table.find (name);
 
     return (p != table.end ()
 	    && ! p->second.is_global ()
@@ -1918,10 +2100,14 @@ private:
 
   bool do_is_global (const std::string& name) const
   {
-    const_table_iterator p = table.find (name);
+    table_const_iterator p = table.find (name);
 
     return p != table.end () && p->second.is_global ();
   }
+
+  void do_dump (std::ostream& os);
+
+  void do_cache_name (const std::string& name) { table_name = name; }
 };
 
 extern bool out_of_date_check (octave_value& function);

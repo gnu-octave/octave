@@ -401,6 +401,8 @@ public:
 
   virtual octave_function *function_value (bool silent = false);
 
+  virtual const octave_function *function_value (bool silent = false) const;
+
   virtual octave_user_function *user_function_value (bool silent = false);
 
   virtual octave_user_script *user_script_value (bool silent = false);
@@ -479,6 +481,8 @@ public:
   virtual void unlock (void);
 
   virtual bool islocked (void) const { return false; }
+
+  virtual void dump (std::ostream& os) const;
 
   virtual octave_value abs (void) const;
   virtual octave_value acos (void) const;

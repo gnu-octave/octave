@@ -65,6 +65,16 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_fcn_handle,
 				     "function handle",
 				     "function_handle");
 
+octave_fcn_handle::octave_fcn_handle (const octave_value& f,
+				      const std::string& n)
+  : warn_reload (true), fcn (f), nm (n)
+{
+  octave_user_function *uf = fcn.user_function_value (true);
+
+  if (uf)
+    symbol_table::cache_name (uf->scope (), nm);
+}
+
 octave_value_list
 octave_fcn_handle::subsref (const std::string& type,
 			    const std::list<octave_value_list>& idx,
@@ -358,8 +368,16 @@ octave_fcn_handle::load_ascii (std::istream& is)
 	    {
 	      octave_fcn_handle *fh = 
 		anon_fcn_handle.fcn_handle_value ();
+
 	      if (fh)
-		fcn = fh->fcn;
+		{
+		  fcn = fh->fcn;
+
+		  octave_user_function *uf = fcn.user_function_value (true);
+
+		  if (uf)
+		    symbol_table::cache_name (uf->scope (), nm);
+		}
 	      else
 		success = false;
 	    }
@@ -519,8 +537,16 @@ octave_fcn_handle::load_binary (std::istream& is, bool swap,
 	  if (parse_status == 0)
 	    {
 	      octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+
 	      if (fh)
-		fcn = fh->fcn;
+		{
+		  fcn = fh->fcn;
+
+		  octave_user_function *uf = fcn.user_function_value (true);
+
+		  if (uf)
+		    symbol_table::cache_name (uf->scope (), nm);
+		}
 	      else
 		success = false;
 	    }
@@ -968,8 +994,16 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 	  if (parse_status == 0)
 	    {
 	      octave_fcn_handle *fh = anon_fcn_handle.fcn_handle_value ();
+
 	      if (fh)
-		fcn = fh->fcn;
+		{
+		  fcn = fh->fcn;
+
+		  octave_user_function *uf = fcn.user_function_value (true);
+
+		  if (uf)
+		    symbol_table::cache_name (uf->scope (), nm);
+		}
 	      else
 		success = false;
 	    }

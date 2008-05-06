@@ -1,3 +1,8 @@
+2008-05-06  John W. Eaton  <jwe@octave.org>
+
+	* fntests.m: Use puts instead of printf where appropriate.
+	Fix missing newline in message.
+
 2008-03-26  David Bateman  <dbateman@free.fr>
 
 	* test_index-wfi-f.m: Split large block of tests.  New tests.

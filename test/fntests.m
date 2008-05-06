@@ -65,7 +65,7 @@ function print_pass_fail (n, p)
       printf (" FAIL %d", nfail);
     endif
   endif
-  printf ("\n");
+  puts ("\n");
 endfunction
 
 function y = hastests (f)
@@ -192,7 +192,7 @@ try
   endif
   test ("", "explain", fid);
   dp = dn = dxf = dsk = 0;
-  printf ("\nIntegrated test scripts:\n\n");
+  puts ("\nIntegrated test scripts:\n\n");
   for i = 1:length (fundirs)
     [p, n, xf, sk] = run_test_script (fid, fundirs{i});
     dp += p;
@@ -200,7 +200,7 @@ try
     dxf += xf;
     dsk += sk;
   endfor
-  printf ("\nFixed test scripts:\n\n");
+  puts ("\nFixed test scripts:\n\n");
   for i = 1:length (testdirs)
     [p, n, xf, sk] = run_test_dir (fid, testdirs{i});
     dp += p;
@@ -221,21 +221,21 @@ try
     endif
     printf ("\nThere %s %d expected %s (see fntests.log for details).\n",
 	    t1, dxf, t2);
-    printf ("\nExpected failures are known bugs. Please help improve\n");
-    printf ("Octave by contributing fixes for them.\n");
+    puts ("\nExpected failures are known bugs.  Please help improve\n");
+    puts ("Octave by contributing fixes for them.\n");
   endif
   if (dsk > 0)
     printf ("\nThere were %d skipped tests (see fntest.log for details).\n", dsk);
-    printf ("Skipped tests are features that are disabled in this version\n");
-    printf ("of Octave as the needed libraries were not present when Octave\n");
-    printf ("was built\n");
+    puts ("Skipped tests are features that are disabled in this version\n");
+    puts ("of Octave as the needed libraries were not present when Octave\n");
+    puts ("was built\n");
   endif
 
   report_files_with_no_tests (files_with_tests, files_with_no_tests, ".m");
   report_files_with_no_tests (files_with_tests, files_with_no_tests, ".cc");
 
-  printf ("\nPlease help improve Octave by  contributing tests for");
-  printf ("these files (see the list in the file fntests.log).\n");
+  puts ("\nPlease help improve Octave by  contributing tests for\n");
+  puts ("these files (see the list in the file fntests.log).\n");
 
   fprintf (fid, "\nFiles with no tests:\n\n%s",
 	  list_in_columns (files_with_no_tests, 80));

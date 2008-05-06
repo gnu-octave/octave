@@ -1115,7 +1115,7 @@ cell array will have a dimension vector corresponding to\n\
 
 	  string_vector keys = m.keys ();
 
-	  octave_idx_type fields_numel = keys.length ();
+	  octave_idx_type num_fields = keys.length ();
 
 	  // The resulting dim_vector should have dimensions:
 	  // [numel(fields) size(struct)]
@@ -1123,44 +1123,26 @@ cell array will have a dimension vector corresponding to\n\
 	  dim_vector result_dv;
 	  result_dv.resize (m_dv.length () + 1); // Add 1 for the fields.
 
-	  result_dv(0) = fields_numel;
+	  result_dv(0) = num_fields;
 
 	  for (int i = 1; i < result_dv.length (); i++)
 	    result_dv(i) = m_dv(i-1);
 
-	  // Squeeze to be sure that a (3,1) vector doesn't get turned
-	  // into a (3,3,1) vector.
-
-	  result_dv = result_dv.squeeze ();
-
 	  Cell c (result_dv);
 
-	  // Use ra_idx both for counting and for assignments, so
-	  // ra_idx(0) will both contain fields_numel for each call to
-	  // increment_index and j for each assignment.
+	  octave_idx_type n_elts = m.numel ();
 
-	  Array<octave_idx_type> ra_idx (result_dv.length (), 0);
-	  ra_idx(0) = fields_numel;
-
-	  for (octave_idx_type i = 0; i < m_dv.numel (); i++)
+	  for (octave_idx_type j = 0; j < num_fields; j++)
 	    {
-	      for (octave_idx_type j = 0; j < fields_numel; j++)
+	      octave_idx_type k = j;
+
+	      const Cell vals = m.contents (keys(j));
+
+	      for (octave_idx_type i = 0; i < n_elts; i++)
 		{
-		  ra_idx(0) = j;
-
-		  Cell c_tmp = m.contents (keys(j));
-
-		  if (c_tmp.length () > 1) // Is a cell.
-		    c(ra_idx) = c_tmp;
-		  else if (c_tmp.length () == 1) // Get octave_value.
-		    c(ra_idx) = c_tmp(0);
-		  else
-		    c(ra_idx) = Cell ();
-
-		  ra_idx(0) = fields_numel;
+		  c(k) = vals(i);
+		  k += num_fields;
 		}
-
-	      increment_index (ra_idx, result_dv);
 	    }
 
 	  retval = c;

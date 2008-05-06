@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-int8.h"
 #include "ov-scalar.h"
 #include "ov-re-mat.h"
+#include "ov-bool.h"
 
 // FIXME -- could probably eliminate some code duplication by
 // clever use of templates.
@@ -87,12 +88,18 @@ along with Octave; see the file COPYING.  If not, see
   if (nargin == 2) \
     { \
       if ((args(0).class_name () == octave_scalar::static_class_name ()) \
-	  || (args(1).class_name () == octave_scalar::static_class_name ())) \
+	  || (args(0).class_name () == octave_bool::static_class_name ()) \
+	  || (args(1).class_name () == octave_scalar::static_class_name ()) \
+	  || (args(1).class_name () == octave_bool::static_class_name ())) \
 	{ \
 	  bool arg0_is_int = (args(0).class_name () !=	\
-			      octave_scalar::static_class_name ()); \
+			      octave_scalar::static_class_name () && \
+			      args(0).class_name () != \
+			      octave_bool::static_class_name ()); \
 	  bool arg1_is_int = (args(1).class_name () !=	\
-			      octave_scalar::static_class_name ()); \
+			      octave_scalar::static_class_name () && \
+			      args(1).class_name () != \
+			      octave_bool::static_class_name ()); \
 	  \
 	  if (! (arg0_is_int || arg1_is_int))	\
 	    { \

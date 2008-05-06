@@ -1,3 +1,7 @@
+2008-05-06  David Bateman  <dbateman@free.fr>
+
+	* bitfcns.cc (BITOP): Treat octave_bool types and octave_scalar.
+
 2008-05-06  John W. Eaton  <jwe@octave.org>
 
 	* symtab.h (symbol_table::scope_id_cache): New class.  Use it to

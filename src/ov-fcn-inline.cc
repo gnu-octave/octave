@@ -673,7 +673,11 @@ If the second argument is an integer @var{n}, the arguments are\n\
 			    break;
 			  }
 			  
-		      if (! have_arg && tmp_arg != "i" && tmp_arg != "j")
+		      if (! have_arg && tmp_arg != "i" && tmp_arg != "j" &&
+			  tmp_arg != "NaN" && tmp_arg != "nan" && 
+			  tmp_arg != "Inf" && tmp_arg != "inf" && 
+			  tmp_arg != "NA" && tmp_arg != "pi" &&
+			  tmp_arg != "eps")
 			fargs.append (tmp_arg);
 
 		      tmp_arg = std::string ();

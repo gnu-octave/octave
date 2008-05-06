@@ -1,5 +1,7 @@
 2008-05-06  David Bateman  <dbateman@free.fr>
 
+	* ov-fcn-inline.cc (Finline): Also ignore NaN, Inf, pi, NA and eps.
+
 	* bitfcns.cc (BITOP): Treat octave_bool types and octave_scalar.
 
 2008-05-06  John W. Eaton  <jwe@octave.org>

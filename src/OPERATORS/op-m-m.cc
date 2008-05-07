@@ -92,6 +92,18 @@ DEFBINOP (ldiv, matrix, matrix)
   return ret;
 }
 
+DEFBINOP (trans_mul, matrix, matrix)
+{
+  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+  return octave_value(xgemm (true, v1.matrix_value (), false, v2.matrix_value ()));
+}
+
+DEFBINOP (mul_trans, matrix, matrix)
+{
+  CAST_BINOP_ARGS (const octave_matrix&, const octave_matrix&);
+  return octave_value(xgemm (false, v1.matrix_value (), true, v2.matrix_value ()));
+}
+
 DEFNDBINOP_FN (lt, matrix, matrix, array, array, mx_el_lt)
 DEFNDBINOP_FN (le, matrix, matrix, array, array, mx_el_le)
 DEFNDBINOP_FN (eq, matrix, matrix, array, array, mx_el_eq)
@@ -155,6 +167,10 @@ install_m_m_ops (void)
   INSTALL_BINOP (op_el_ldiv, octave_matrix, octave_matrix, el_ldiv);
   INSTALL_BINOP (op_el_and, octave_matrix, octave_matrix, el_and);
   INSTALL_BINOP (op_el_or, octave_matrix, octave_matrix, el_or);
+  INSTALL_BINOP (op_trans_mul, octave_matrix, octave_matrix, trans_mul);
+  INSTALL_BINOP (op_mul_trans, octave_matrix, octave_matrix, mul_trans);
+  INSTALL_BINOP (op_herm_mul, octave_matrix, octave_matrix, trans_mul);
+  INSTALL_BINOP (op_mul_herm, octave_matrix, octave_matrix, mul_trans);
 
   INSTALL_CATOP (octave_matrix, octave_matrix, m_m);
 

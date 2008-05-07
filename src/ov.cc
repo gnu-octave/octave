@@ -350,6 +350,36 @@ octave_value::binary_op_fcn_name (binary_op op)
 }
 
 std::string
+octave_value::binary_op_fcn_name (compound_binary_op op)
+{
+  std::string retval;
+
+  switch (op)
+    {
+    case op_trans_mul:
+      retval = "transtimes";
+      break;
+
+    case op_mul_trans:
+      retval = "timestrans";
+      break;
+
+    case op_herm_mul:
+      retval = "hermtimes";
+      break;
+
+    case op_mul_herm:
+      retval = "timesherm";
+      break;
+
+    default:
+      break;
+    }
+
+  return retval;
+}
+
+std::string
 octave_value::assign_op_as_string (assign_op op)
 {
   std::string retval;
@@ -2070,6 +2100,96 @@ do_binary_op (octave_value::binary_op op,
 				 v1.type_name (), v2.type_name ());
 	    }
 	}
+    }
+
+  return retval;
+}
+
+static octave_value
+decompose_binary_op (octave_value::compound_binary_op op,
+                     const octave_value& v1, const octave_value& v2)
+{
+  octave_value retval;
+
+  switch (op)
+    {
+    case octave_value::op_trans_mul:
+      retval = do_binary_op (octave_value::op_mul,
+                             do_unary_op (octave_value::op_transpose, v1),
+                             v2);
+      break;
+    case octave_value::op_mul_trans:
+      retval = do_binary_op (octave_value::op_mul,
+                             v1,
+                             do_unary_op (octave_value::op_transpose, v2));
+      break;
+    case octave_value::op_herm_mul:
+      retval = do_binary_op (octave_value::op_mul,
+                             do_unary_op (octave_value::op_hermitian, v1),
+                             v2);
+      break;
+    case octave_value::op_mul_herm:
+      retval = do_binary_op (octave_value::op_mul,
+                             v1,
+                             do_unary_op (octave_value::op_hermitian, v2));
+      break;
+    default:
+      error ("invalid compound operator");
+      break;
+    }
+
+  return retval;
+}
+
+octave_value
+do_binary_op (octave_value::compound_binary_op op,
+              const octave_value& v1, const octave_value& v2)
+{
+  octave_value retval;
+
+  int t1 = v1.type_id ();
+  int t2 = v2.type_id ();
+
+  if (t1 == octave_class::static_type_id ()
+      || t2 == octave_class::static_type_id ())
+    {
+      octave_value_typeinfo::binary_class_op_fcn f
+	= octave_value_typeinfo::lookup_binary_class_op (op);
+
+      if (f)
+	{
+	  try
+	    {
+	      retval = f (v1, v2);
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      octave_exception_state = octave_no_exception;
+	      error ("caught execution error in library function");
+	    }
+	}	    
+      else
+        retval = decompose_binary_op (op, v1, v2);
+    }
+  else
+    {
+      octave_value_typeinfo::binary_op_fcn f
+	= octave_value_typeinfo::lookup_binary_op (op, t1, t2);
+
+      if (f)
+	{
+	  try
+	    {
+	      retval = f (*v1.rep, *v2.rep);
+	    }
+	  catch (octave_execution_exception)
+	    {
+	      octave_exception_state = octave_no_exception;
+	      error ("caught execution error in library function");
+	    }
+	}
+      else
+        retval = decompose_binary_op (op, v1, v2);
     }
 
   return retval;

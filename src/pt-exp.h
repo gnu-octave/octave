@@ -62,6 +62,8 @@ public:
 
   virtual bool is_prefix_expression (void) const { return false; }
 
+  virtual bool is_unary_expression (void) const { return false; }
+
   virtual bool is_binary_expression (void) const { return false; }
 
   virtual bool is_boolean_expression (void) const { return false; }

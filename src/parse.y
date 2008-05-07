@@ -1910,7 +1910,7 @@ make_binary_op (int op, tree_expression *op1, token *tok_val,
   int c = tok_val->column ();
 
   tree_binary_expression *e
-    = new tree_binary_expression (op1, op2, l, c, t);
+    = maybe_compound_binary_expression (op1, op2, l, c, t);
 
   return fold (e);
 }

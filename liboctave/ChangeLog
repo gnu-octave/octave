@@ -1,5 +1,14 @@
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
+	* dMatrix.h (xgemm): Provide decl.
+	* dMatrix.cc (xgemm): New function.
+	(operator * (const Matrix&, const Matrix&)): Simplify.
+	(get_blas_trans_arg): New function.
+	* CMatrix.h (xgemm): Provide decl.
+	* CMatrix.cc (xgemm): New function.
+	(operator * (const ComplexMatrix&, const ComplexMatrix&)): Simplify.
+	(get_blas_trans_arg): New function.
+
 	* MatrixType.cc (matrix_real_probe, matrix_complex_probe):
 	New template functions.
 	(MatrixType::MatrixType (const Matrix&),

@@ -54,6 +54,8 @@ public:
 
   ~tree_unary_expression (void) { delete op; }
 
+  bool is_unary_expression (void) const { return true; }
+
   bool has_magic_end (void) const { return (op && op->has_magic_end ()); }
 
   tree_expression *operand (void) { return op; }

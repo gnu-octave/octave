@@ -80,6 +80,12 @@ public:
   static bool register_binary_op (octave_value::binary_op, int, int,
 				  binary_op_fcn);
 
+  static bool register_binary_class_op (octave_value::compound_binary_op,
+					binary_class_op_fcn);
+
+  static bool register_binary_op (octave_value::compound_binary_op, int, int,
+				  binary_op_fcn);
+
   static bool register_cat_op (int, int, cat_op_fcn);
 
   static bool register_assign_op (octave_value::assign_op, int, int,
@@ -128,6 +134,18 @@ public:
 
   static binary_op_fcn
   lookup_binary_op (octave_value::binary_op op, int t1, int t2)
+  {
+    return instance->do_lookup_binary_op (op, t1, t2);
+  }
+
+  static binary_class_op_fcn
+  lookup_binary_class_op (octave_value::compound_binary_op op)
+  {
+    return instance->do_lookup_binary_class_op (op);
+  }
+
+  static binary_op_fcn
+  lookup_binary_op (octave_value::compound_binary_op op, int t1, int t2)
   {
     return instance->do_lookup_binary_op (op, t1, t2);
   }
@@ -212,6 +230,10 @@ private:
 
   Array3<binary_op_fcn> binary_ops;
 
+  Array<binary_class_op_fcn> compound_binary_class_ops;
+
+  Array3<binary_op_fcn> compound_binary_ops;
+
   Array2<cat_op_fcn> cat_ops;
 
   Array3<assign_op_fcn> assign_ops;
@@ -240,6 +262,12 @@ private:
   bool do_register_binary_op (octave_value::binary_op, int, int,
 			      binary_op_fcn);
 
+  bool do_register_binary_class_op (octave_value::compound_binary_op,
+				    binary_class_op_fcn);
+
+  bool do_register_binary_op (octave_value::compound_binary_op, int, int,
+			      binary_op_fcn);
+
   bool do_register_cat_op (int, int, cat_op_fcn);
 
   bool do_register_assign_op (octave_value::assign_op, int, int,
@@ -266,6 +294,10 @@ private:
   binary_class_op_fcn do_lookup_binary_class_op (octave_value::binary_op);
 
   binary_op_fcn do_lookup_binary_op (octave_value::binary_op, int, int);
+
+  binary_class_op_fcn do_lookup_binary_class_op (octave_value::compound_binary_op);
+
+  binary_op_fcn do_lookup_binary_op (octave_value::compound_binary_op, int, int);
 
   cat_op_fcn do_lookup_cat_op (int, int);
 

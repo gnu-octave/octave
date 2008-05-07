@@ -142,6 +142,23 @@ octave_value_typeinfo::register_binary_op (octave_value::binary_op op,
 }
 
 bool
+octave_value_typeinfo::register_binary_class_op (octave_value::compound_binary_op op,
+						 octave_value_typeinfo::binary_class_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_binary_class_op (op, f) : false;
+}
+
+bool
+octave_value_typeinfo::register_binary_op (octave_value::compound_binary_op op,
+					   int t1, int t2,
+					   octave_value_typeinfo::binary_op_fcn f)
+{
+  return (instance_ok ())
+    ? instance->do_register_binary_op (op, t1, t2, f) : false;
+}
+
+bool
 octave_value_typeinfo::register_cat_op (int t1, int t2, octave_value_typeinfo::cat_op_fcn f)
 {
   return (instance_ok ())
@@ -222,6 +239,9 @@ octave_value_typeinfo::do_register_type (const std::string& t_name,
 
       binary_ops.resize (static_cast<int> (octave_value::num_binary_ops),
 			 len, len, static_cast<octave_value_typeinfo::binary_op_fcn> (0));
+
+      compound_binary_ops.resize (static_cast<int> (octave_value::num_compound_binary_ops),
+                                  len, len, static_cast<octave_value_typeinfo::binary_op_fcn> (0));
 
       cat_ops.resize (len, len, static_cast<octave_value_typeinfo::cat_op_fcn> (0));
 
@@ -333,6 +353,43 @@ octave_value_typeinfo::do_register_binary_op (octave_value::binary_op op,
     }
 
   binary_ops.checkelem (static_cast<int> (op), t1, t2) = f;
+
+  return false;
+}
+
+bool
+octave_value_typeinfo::do_register_binary_class_op (octave_value::compound_binary_op op,
+						    octave_value_typeinfo::binary_class_op_fcn f)
+{
+  if (lookup_binary_class_op (op))
+    {
+      std::string op_name = octave_value::binary_op_fcn_name (op);
+
+      warning ("duplicate compound binary operator `%s' for class dispatch",
+	       op_name.c_str ());
+    }
+
+  compound_binary_class_ops.checkelem (static_cast<int> (op)) = f;
+
+  return false;
+}
+
+bool
+octave_value_typeinfo::do_register_binary_op (octave_value::compound_binary_op op,
+					      int t1, int t2,
+					      octave_value_typeinfo::binary_op_fcn f)
+{
+  if (lookup_binary_op (op, t1, t2))
+    {
+      std::string op_name = octave_value::binary_op_fcn_name (op);
+      std::string t1_name = types(t1);
+      std::string t2_name = types(t2);
+
+      warning ("duplicate compound binary operator `%s' for types `%s' and `%s'",
+	       op_name.c_str (), t1_name.c_str (), t1_name.c_str ());
+    }
+
+  compound_binary_ops.checkelem (static_cast<int> (op), t1, t2) = f;
 
   return false;
 }
@@ -494,6 +551,19 @@ octave_value_typeinfo::do_lookup_binary_op (octave_value::binary_op op,
 					    int t1, int t2)
 {
   return binary_ops.checkelem (static_cast<int> (op), t1, t2);
+}
+
+octave_value_typeinfo::binary_class_op_fcn
+octave_value_typeinfo::do_lookup_binary_class_op (octave_value::compound_binary_op op)
+{
+  return compound_binary_class_ops.checkelem (static_cast<int> (op));
+}
+
+octave_value_typeinfo::binary_op_fcn
+octave_value_typeinfo::do_lookup_binary_op (octave_value::compound_binary_op op,
+					    int t1, int t2)
+{
+  return compound_binary_ops.checkelem (static_cast<int> (op), t1, t2);
 }
 
 octave_value_typeinfo::cat_op_fcn

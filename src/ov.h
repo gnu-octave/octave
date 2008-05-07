@@ -110,6 +110,17 @@ public:
     unknown_binary_op
   };
 
+  enum compound_binary_op
+  {
+    // ** compound operations **
+    op_trans_mul,      
+    op_mul_trans,
+    op_herm_mul,      
+    op_mul_herm,
+    num_compound_binary_ops,
+    unknown_compound_binary_op
+  };
+
   enum assign_op
   {
     op_asn_eq,
@@ -136,6 +147,8 @@ public:
 
   static std::string binary_op_as_string (binary_op);
   static std::string binary_op_fcn_name (binary_op);
+
+  static std::string binary_op_fcn_name (compound_binary_op);
 
   static std::string assign_op_as_string (assign_op);
 
@@ -894,6 +907,10 @@ public:
 				    const octave_value& a,
 				    const octave_value& b);
 
+  friend OCTINTERP_API octave_value do_binary_op (compound_binary_op op,
+                                                  const octave_value& a,
+                                                  const octave_value& b);
+
   friend OCTINTERP_API octave_value do_cat_op (const octave_value& a,
 				 const octave_value& b,
 				 const Array<octave_idx_type>& ra_idx);
@@ -1043,6 +1060,10 @@ extern OCTINTERP_API octave_value
 do_binary_op (octave_value::binary_op op,
 	      const octave_value& a, const octave_value& b);
 
+extern OCTINTERP_API octave_value
+do_binary_op (octave_value::compound_binary_op op,
+              const octave_value& a, const octave_value& b);
+
 #define OV_UNOP_FN(name) \
   inline octave_value \
   name (const octave_value& a) \
@@ -1116,6 +1137,18 @@ OV_BINOP_FN (op_el_and)
 OV_BINOP_FN (op_el_or)
 
 OV_BINOP_FN (op_struct_ref)
+
+#define OV_COMP_BINOP_FN(name) \
+  inline octave_value \
+  name (const octave_value& a1, const octave_value& a2) \
+  { \
+    return do_binary_op (octave_value::name, a1, a2); \
+  }
+
+OV_COMP_BINOP_FN (op_trans_mul)
+OV_COMP_BINOP_FN (op_mul_trans)
+OV_COMP_BINOP_FN (op_herm_mul)
+OV_COMP_BINOP_FN (op_mul_herm)
 
 extern OCTINTERP_API void install_types (void);
 

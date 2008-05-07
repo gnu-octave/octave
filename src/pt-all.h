@@ -29,6 +29,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt-assign.h"
 #include "pt-bp.h"
 #include "pt-binop.h"
+#include "pt-cbinop.h"
 #include "pt-check.h"
 #include "pt-cmd.h"
 #include "pt-colon.h"

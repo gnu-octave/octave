@@ -3362,50 +3362,69 @@ Sylvester (const Matrix& a, const Matrix& b, const Matrix& c)
 %!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
 */
 
+static const char *
+get_blas_trans_arg (bool trans)
+{
+  static char blas_notrans = 'N', blas_trans = 'T';
+  return (trans) ? &blas_trans : &blas_notrans;
+}
 
-Matrix
-operator * (const Matrix& m, const Matrix& a)
+// the general GEMM operation
+
+Matrix 
+xgemm (bool transa, const Matrix& a, bool transb, const Matrix& b)
 {
   Matrix retval;
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  octave_idx_type a_nr = transa ? a.cols () : a.rows ();
+  octave_idx_type a_nc = transa ? a.rows () : a.cols ();
 
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
+  octave_idx_type b_nr = transb ? b.cols () : b.rows ();
+  octave_idx_type b_nc = transb ? b.rows () : b.cols ();
 
-  if (nc != a_nr)
-    gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
+  if (a_nc != b_nr)
+    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
   else
     {
-      if (nr == 0 || nc == 0 || a_nc == 0)
-	retval.resize (nr, a_nc, 0.0);
+      if (a_nr == 0 || a_nc == 0 || b_nc == 0)
+	retval.resize (a_nr, b_nc, 0.0);
       else
 	{
-	  octave_idx_type ld  = nr;
-	  octave_idx_type lda = a_nr;
+	  octave_idx_type lda = a.rows (), tda = a.cols ();
+	  octave_idx_type ldb = b.rows (), tdb = b.cols ();
 
-	  retval.resize (nr, a_nc);
+	  retval.resize (a_nr, b_nc);
 	  double *c = retval.fortran_vec ();
 
-	  if (a_nc == 1)
+	  if (b_nc == 1)
 	    {
-	      if (nr == 1)
-		F77_FUNC (xddot, XDDOT) (nc, m.data (), 1, a.data (), 1, *c);
+	      if (a_nr == 1)
+		F77_FUNC (xddot, XDDOT) (a_nc, a.data (), 1, b.data (), 1, *c);
 	      else
 		{
-		  F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-					   nr, nc, 1.0,  m.data (), ld,
-					   a.data (), 1, 0.0, c, 1
+                  const char *ctransa = get_blas_trans_arg (transa);
+		  F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 (ctransa, 1),
+					   lda, tda, 1.0,  a.data (), lda,
+					   b.data (), 1, 0.0, c, 1
 					   F77_CHAR_ARG_LEN (1)));
 		}
             }
+          else if (a_nr == 1)
+            {
+              const char *crevtransb = get_blas_trans_arg (! transb);
+              F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 (crevtransb, 1),
+                                       ldb, tdb, 1.0,  b.data (), ldb,
+                                       a.data (), 1, 0.0, c, 1
+                                       F77_CHAR_ARG_LEN (1)));
+            }
 	  else
 	    {
-	      F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
-				       F77_CONST_CHAR_ARG2 ("N", 1),
-				       nr, a_nc, nc, 1.0, m.data (),
-				       ld, a.data (), lda, 0.0, c, nr
+              const char *ctransa = get_blas_trans_arg (transa);
+              const char *ctransb = get_blas_trans_arg (transb);
+	      F77_XFCN (dgemm, DGEMM, (F77_CONST_CHAR_ARG2 (ctransa, 1),
+				       F77_CONST_CHAR_ARG2 (ctransb, 1),
+				       a_nr, b_nc, a_nc, 1.0, a.data (),
+				       lda, b.data (), ldb, 0.0, c, a_nr
 				       F77_CHAR_ARG_LEN (1)
 				       F77_CHAR_ARG_LEN (1)));
 	    }
@@ -3413,6 +3432,12 @@ operator * (const Matrix& m, const Matrix& a)
     }
 
   return retval;
+}
+
+Matrix
+operator * (const Matrix& a, const Matrix& b)
+{
+  return xgemm (false, a, false, b);
 }
 
 // FIXME -- it would be nice to share code among the min/max

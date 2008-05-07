@@ -1,4 +1,66 @@
+2008-05-21  John W. Eaton  <jwe@octave.org>
+
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
+
+	* ov.h (octave_value::compound_binary_op): New enum.
+	(do_binary_op (octave_value::compound_binary_op, ...), 
+	octave_value::binary_op_fcn_name (compound_binary_op),
+	octave_value::do_binary_op (compound_binary_op, ...)):
+	New declarations.
+	(OV_COMP_BINOP_FN): New macro (+ several expansions).
+	* ov.cc (octave_value::binary_op_fcn_name (compound_binary_op),
+	decompose_binary_op, do_binary_op (compound_binary_op, ...)): 
+	New functions.
+	* ov-typeinfo.h (octave_value_typeinfo::register_binary_class_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::register_binary_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::do_register_binary_class_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::do_register_binary_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::do_lookup_binary_class_op 
+	(octave_value::compound_binary_op),
+	octave_value_typeinfo::do_lookup_binary_op 
+	(octave_value::compound_binary_op, ...)):
+	New declarations.
+	(octave_value_typeinfo::lookup_binary_class_op
+	(octave_value::compound_binary_op),
+	(octave_value_typeinfo::lookup_binary_op
+	(octave_value::compound_binary_op, ...)):
+	New functions.
+	(octave_value_typeinfo::compound_binary_class_ops,
+	octave_value_typeinfo::compound_binary_ops): 
+	New fields.
+	* ov-typeinfo.cc (octave_value_typeinfo::register_binary_class_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::register_binary_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::do_register_binary_class_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::do_register_binary_op 
+	(octave_value::compound_binary_op, ...),
+	octave_value_typeinfo::do_lookup_binary_class_op 
+	(octave_value::compound_binary_op),
+	octave_value_typeinfo::do_lookup_binary_op 
+	(octave_value::compound_binary_op, ...)):
+	New functions.
+	(octave_value::do_register_type): Resize also compound_binary_ops
+	field.
+	* pt-exp.h (tree_expression::is_unary_expression): New virtual
+	function.
+	* pt-unop.h (tree_unary_expression::is_unary_expression): New virtual
+	override.
+	* pt-cbinop.h, pt-cbinop.cc: New files (implement
+	tree_compound_binary_expression class).
+	* pt-all.h: Include pt-cbinop.h.
+	* Makefile.in (PT_INCLUDES, PT_SRC): Include them in the lists.
+	* parse.y (make_binary_op): Call maybe_compound_binary_expression.
+	* OPERATORS/op-m-m.cc (trans_mul, mul_trans): New operator handlers.
+	(install_m_m_ops): Register them.
+	* OPERATORS/op-cm-cm.cc (trans_mul, mul_trans, herm_mul, mul_herm): 
+	New operator handlers.
+	(install_cm_cm_ops): Register them.
 
 	* DLD-FUNCTIONS/matrix_type.cc: Fix tests relying on the
 	older more optimistic hermitian check.

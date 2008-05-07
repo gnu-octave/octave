@@ -49,7 +49,8 @@ tree_break_command::eval (void)
 }
 
 tree_command *
-tree_break_command::dup (symbol_table::scope_id)
+tree_break_command::dup (symbol_table::scope_id,
+			 symbol_table::context_id context)
 {
   return new tree_break_command (line (), column ());
 }
@@ -75,7 +76,8 @@ tree_continue_command::eval (void)
 }
 
 tree_command *
-tree_continue_command::dup (symbol_table::scope_id)
+tree_continue_command::dup (symbol_table::scope_id,
+			    symbol_table::context_id context)
 {
   return new tree_continue_command (line (), column ());
 }
@@ -101,7 +103,8 @@ tree_return_command::eval (void)
 }
 
 tree_command *
-tree_return_command::dup (symbol_table::scope_id)
+tree_return_command::dup (symbol_table::scope_id,
+			  symbol_table::context_id context)
 {
   return new tree_return_command (line (), column ());
 }

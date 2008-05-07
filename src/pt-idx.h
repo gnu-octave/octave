@@ -90,7 +90,8 @@ public:
 
   void eval_error (void) const;
 
-  tree_index_expression *dup (symbol_table::scope_id scope);
+  tree_index_expression *dup (symbol_table::scope_id scope,
+			      symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

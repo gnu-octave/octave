@@ -126,10 +126,11 @@ tree_while_command::eval_error (void)
 }
 
 tree_command *
-tree_while_command::dup (symbol_table::scope_id scope)
+tree_while_command::dup (symbol_table::scope_id scope,
+			 symbol_table::context_id context)
 {
-  return new tree_while_command (expr ? expr->dup (scope) : 0,
-				 list ? list->dup (scope) : 0,
+  return new tree_while_command (expr ? expr->dup (scope, context) : 0,
+				 list ? list->dup (scope, context) : 0,
 				 lead_comm ? lead_comm->dup () : 0,
 				 trail_comm ? trail_comm->dup (): 0,
 				 line (), column ());
@@ -189,10 +190,11 @@ tree_do_until_command::eval_error (void)
 }
 
 tree_command *
-tree_do_until_command::dup (symbol_table::scope_id scope)
+tree_do_until_command::dup (symbol_table::scope_id scope,
+			    symbol_table::context_id context)
 {
-  return new tree_do_until_command (expr ? expr->dup (scope) : 0,
-				    list ? list->dup (scope) : 0,
+  return new tree_do_until_command (expr ? expr->dup (scope, context) : 0,
+				    list ? list->dup (scope, context) : 0,
 				    lead_comm ? lead_comm->dup () : 0,
 				    trail_comm ? trail_comm->dup (): 0,
 				    line (), column ());
@@ -495,11 +497,12 @@ tree_simple_for_command::eval_error (void)
 }
 
 tree_command *
-tree_simple_for_command::dup (symbol_table::scope_id scope)
+tree_simple_for_command::dup (symbol_table::scope_id scope,
+			      symbol_table::context_id context)
 {
-  return new tree_simple_for_command (lhs ? lhs->dup (scope) : 0,
-				      expr ? expr->dup (scope) : 0,
-				      list ? list->dup (scope) : 0,
+  return new tree_simple_for_command (lhs ? lhs->dup (scope, context) : 0,
+				      expr ? expr->dup (scope, context) : 0,
+				      list ? list->dup (scope, context) : 0,
 				      lead_comm ? lead_comm->dup () : 0,
 				      trail_comm ? trail_comm->dup () : 0,
 				      line (), column ());
@@ -616,14 +619,15 @@ tree_complex_for_command::eval_error (void)
 }
 
 tree_command *
-tree_complex_for_command::dup (symbol_table::scope_id scope)
+tree_complex_for_command::dup (symbol_table::scope_id scope,
+			       symbol_table::context_id context)
 {
-  return new tree_complex_for_command (lhs ? lhs->dup (scope) : 0,
-				      expr ? expr->dup (scope) : 0,
-				      list ? list->dup (scope) : 0,
-				      lead_comm ? lead_comm->dup () : 0,
-				      trail_comm ? trail_comm->dup () : 0,
-				      line (), column ());
+  return new tree_complex_for_command (lhs ? lhs->dup (scope, context) : 0,
+				       expr ? expr->dup (scope, context) : 0,
+				       list ? list->dup (scope, context) : 0,
+				       lead_comm ? lead_comm->dup () : 0,
+				       trail_comm ? trail_comm->dup () : 0,
+				       line (), column ());
 }
 
 void

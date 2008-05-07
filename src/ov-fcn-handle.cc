@@ -242,7 +242,7 @@ octave_fcn_handle::save_ascii (std::ostream& os)
       octave_user_function *f = fcn.user_function_value ();
 
       std::list<symbol_table::symbol_record> vars
-	= symbol_table::all_variables (f->scope ());
+	= symbol_table::all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
@@ -410,7 +410,7 @@ octave_fcn_handle::save_binary (std::ostream& os, bool& save_as_floats)
       octave_user_function *f = fcn.user_function_value ();
 
       std::list<symbol_table::symbol_record> vars
-	= symbol_table::all_variables (f->scope ());
+	= symbol_table::all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
@@ -654,7 +654,7 @@ octave_fcn_handle::save_hdf5 (hid_t loc_id, const char *name,
       octave_user_function *f = fcn.user_function_value ();
 
       std::list<symbol_table::symbol_record> vars
-	= symbol_table::all_variables (f->scope ());
+	= symbol_table::all_variables (f->scope (), 0);
 
       size_t varlen = vars.size ();
 
@@ -1276,41 +1276,36 @@ Return a struct containing information about the function handle\n\
 
 	      std::string nm = fcn->fcn_file_name ();
 
-	      if (nm.empty ())
+	      if (fh_nm == "@<anonymous>")
 		{
-		  if (fh_nm == "@<anonymous>")
+		  m.assign ("file", nm);
+
+		  octave_user_function *fu = fh->user_function_value ();
+
+		  std::list<symbol_table::symbol_record> vars
+		    = symbol_table::all_variables (fu->scope (), 0);
+
+		  size_t varlen = vars.size ();
+
+		  if (varlen > 0)
 		    {
-		      m.assign ("file", "");
-
-		      octave_user_function *fu = fh->user_function_value ();
-
-		      std::list<symbol_table::symbol_record> vars
-			= symbol_table::all_variables (fu->scope ());
-
-		      size_t varlen = vars.size ();
-
-		      if (varlen > 0)
+		      Octave_map ws;
+		      for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
+			   p != vars.end (); p++)
 			{
-			  Octave_map ws;
-			  for (std::list<symbol_table::symbol_record>::const_iterator p = vars.begin ();
-			       p != vars.end (); p++)
-			    {
-			      ws.assign (p->name (), p->varval ());
-			    }
-
-			  m.assign ("workspace", ws);
+			  ws.assign (p->name (), p->varval (0));
 			}
+
+		      m.assign ("workspace", ws);
 		    }
-		  else if (fcn->is_user_function () || fcn->is_user_script ())
-		    {
-		      octave_function *fu = fh->function_value ();
-		      m.assign ("file", fu->fcn_file_name ());
-		    }
-		  else
-		    m.assign ("file", "");
+		}
+	      else if (fcn->is_user_function () || fcn->is_user_script ())
+		{
+		  octave_function *fu = fh->function_value ();
+		  m.assign ("file", fu->fcn_file_name ());
 		}
 	      else
-		m.assign ("file", nm);
+		m.assign ("file", "");
 
 	      retval = m;
 	    }
@@ -1385,6 +1380,21 @@ Return a function handle constructed from the string @var{fcn_name}.\n\
 
   return retval;
 }
+
+/*
+%!function y = testrecursionfunc (f, x, n)
+%!  if (nargin < 3)
+%!    n = 0;
+%!  endif
+%!  if (n > 2)
+%!    y = f (x);
+%!  else
+%!    n++;
+%!    y = testrecursionfunc (@(x) f(2*x), x, n);
+%!  endif
+%!test
+%! assert (testrecursionfunc (@(x) x, 1), 8);
+*/
 
 /*
 ;;; Local Variables: ***

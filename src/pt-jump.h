@@ -42,7 +42,8 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table::scope_id scope);
+  tree_command *dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -71,7 +72,8 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table::scope_id scope);
+  tree_command *dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -100,7 +102,8 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table::scope_id scope);
+  tree_command *dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

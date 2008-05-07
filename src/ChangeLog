@@ -1,3 +1,67 @@
+2008-05-07  John W. Eaton  <jwe@octave.org>
+
+	* pt-arg-list.cc, pt-arg-list.h (tree_argument_list::dup):
+	New arg, context.
+	* pt-assign.cc, pt-assign.h (tree_simple_assignment::dup,
+	tree_multi_assignment::dup): Likewise.
+	* pt-binop.cc, pt-binop.h (tree_binary_expression::dup,
+	tree_boolean_expression::dup): Likewise.
+	* pt-cell.cc, pt-cell.h (tree_cell::dup): Likewise.
+	* pt-cmd.cc, pt-cmd.h (tree_no_op_command::dup,
+	tree_function_def::dup): Likewise.
+	* pt-colon.cc, pt-colon.h (tree_colon_expression::dup): Likewise.
+	* pt-const.cc, pt-const.h (tree_constant::dup): Likewise.
+	* pt-decl.cc, pt-decl.h (tree_decl_elt::dup, tree_decl_init_list::dup,
+	tree_global_command::dup, tree_static_command::dup): Likewise.
+	* pt-except.cc, pt-except.h (tree_try_catch_command::dup,
+	tree_unwind_protect_command::dup): Likewise.
+	* pt-exp.h (tree_expression:dup): Likewise.
+	* pt-fcn-handle.cc, pt-exp.h (tree_expression:dup): Likewise.
+	* pt-fcn-handle.h (tree_fcn_handle::dup,
+	tree_anon_fcn_handle::dup): Likewise.
+	* pt-id.cc, pt-id.h (tree_identifier::dup): Likewise.
+	* pt-idx.cc, pt-idx.h (tree_index_expression::dup): Likewise.
+	* pt-jump.cc, pt-jump.h (tree_break_command::dup,
+	tree_continue_command::dup, tree_return_command::dup): Likewise.
+	* pt-loop.cc, pt-loop.h (tree_while_command::dup,
+	tree_do_until_command::dup, tree_simple_for_command::dup,
+	tree_complex_for_command::dup): Likewise.
+	* pt-mat.cc, pt-mat.h (tree_matrix::dup): Likewise.
+	* pt-misc.cc, pt-misc.h (tree_parameter_list::dup,
+	tree_return_list::dup): Likewise.
+	* pt-select.cc, pt-select.h (tree_if_clause::dup,
+	tree_if_command_list::dup, tree_if_command::dup,
+	tree_switch_case::dup, tree_switch_case_list::dup,
+	tree_switch_command::dup, tree_statement::dup,
+	tree_statement_list::dup, tree_prefix_expression::dup,
+	tree_postfix_expression::dup): Likewise.
+
+	* ov-fcn-handle.cc (octave_fcn_handle::save_ascii,
+	octave_fcn_handle::save_binary, octave_fcn_handle::save_hdf5):
+ 	Pass context to symbol_table::all_variables.
+	* load-save.cc (dump_octave_core): Likewise.
+	* ov-fcn-handle.cc (Ffunctions): Don't skip anonymous functions
+	with the name set to the text of the function body.
+ 	Pass context to symbol_table::all_variables and
+	symbol_table::symbol_record::varval.
+
+	* symtab.h (symbol_table::varref, symbol_table::do_varref,
+	symbol_table::varval, symbol_table::do_varval,
+	symbol_table::all_variables, symbol_table::do_all_variables, 
+	symbol_table::symbol_record::varref,
+	symbol_table::symbol_record::varval,
+	symbol_table::symbol_record::is_defined,
+	symbol_table::symbol_record::is_variable,
+	symbol_table::symbol_record::symbol_record_rep::varref,
+	symbol_table::symbol_record::symbol_record_rep::varval,
+	symbol_table::symbol_record::symbol_record_rep::is_defined,
+	symbol_table::symbol_record::symbol_record_rep::is_variable,
+	):
+	* symtab.h (symbol_table::do_inherit): New arg, donor_context.
+	Look for value in donor_contxt.  Set value in base context.
+	* symtab.cc (symbol_table::symbol_record::symbol_record_rep::dump):
+	Pass xcurrent_context to varval.
+
 2008-05-06  David Bateman  <dbateman@free.fr>
 
 	* ov-fcn-inline.cc (Finline): Also ignore NaN, Inf, pi, NA and eps.

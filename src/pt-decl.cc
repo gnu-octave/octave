@@ -69,10 +69,11 @@ tree_decl_elt::eval (void)
 }
 
 tree_decl_elt *
-tree_decl_elt::dup (symbol_table::scope_id scope)
+tree_decl_elt::dup (symbol_table::scope_id scope,
+		    symbol_table::context_id context)
 {
-  return new tree_decl_elt (id ? id->dup (scope) : 0,
-			    expr ? expr->dup (scope) : 0);
+  return new tree_decl_elt (id ? id->dup (scope, context) : 0,
+			    expr ? expr->dup (scope, context) : 0);
 }
 
 void
@@ -98,7 +99,8 @@ tree_decl_init_list::eval (tree_decl_elt::eval_fcn f)
 }
 
 tree_decl_init_list *
-tree_decl_init_list::dup (symbol_table::scope_id scope)
+tree_decl_init_list::dup (symbol_table::scope_id scope,
+			  symbol_table::context_id context)
 {
   tree_decl_init_list *new_dil = new tree_decl_init_list ();
 
@@ -106,7 +108,7 @@ tree_decl_init_list::dup (symbol_table::scope_id scope)
     {
       tree_decl_elt *elt = *p;
 
-      new_dil->append (elt ? elt->dup (scope) : 0);
+      new_dil->append (elt ? elt->dup (scope, context) : 0);
     }
   
   return new_dil;
@@ -177,10 +179,12 @@ tree_global_command::eval (void)
 }
 
 tree_command *
-tree_global_command::dup (symbol_table::scope_id scope)
+tree_global_command::dup (symbol_table::scope_id scope,
+			  symbol_table::context_id context)
 {
-  return new tree_global_command (init_list ? init_list->dup (scope) : 0,
-				  line (), column ());
+  return
+    new tree_global_command (init_list ? init_list->dup (scope, context) : 0,
+			     line (), column ());
 }
 
 // Static.
@@ -228,10 +232,12 @@ tree_static_command::eval (void)
 }
 
 tree_command *
-tree_static_command::dup (symbol_table::scope_id scope)
+tree_static_command::dup (symbol_table::scope_id scope,
+			  symbol_table::context_id context)
 {
-  return new tree_static_command (init_list ? init_list->dup (scope) : 0,
-				  line (), column ());
+  return
+    new tree_static_command (init_list ? init_list->dup (scope, context) : 0,
+			     line (), column ());
 }
 
 /*

@@ -121,10 +121,11 @@ tree_prefix_expression::eval_error (void)
 }
 
 tree_expression *
-tree_prefix_expression::dup (symbol_table::scope_id scope)
+tree_prefix_expression::dup (symbol_table::scope_id scope,
+			     symbol_table::context_id context)
 {
   tree_prefix_expression *new_pe
-    = new tree_prefix_expression (op ? op->dup (scope) : 0,
+    = new tree_prefix_expression (op ? op->dup (scope, context) : 0,
 				  line (), column (), etype);
 
   new_pe->copy_base (*this);
@@ -218,10 +219,11 @@ tree_postfix_expression::eval_error (void)
 }
 
 tree_expression *
-tree_postfix_expression::dup (symbol_table::scope_id scope)
+tree_postfix_expression::dup (symbol_table::scope_id scope,
+			      symbol_table::context_id context)
 {
   tree_postfix_expression *new_pe
-    = new tree_postfix_expression (op ? op->dup (scope) : 0,
+    = new tree_postfix_expression (op ? op->dup (scope, context) : 0,
 				   line (), column (), etype);
 
   new_pe->copy_base (*this);

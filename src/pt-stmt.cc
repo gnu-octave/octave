@@ -138,13 +138,14 @@ tree_statement::eval (bool silent, int nargout,
 }
 
 tree_statement *
-tree_statement::dup (symbol_table::scope_id scope)
+tree_statement::dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context)
 {
   tree_statement *new_stmt = new tree_statement ();
 
-  new_stmt->cmd = cmd ? cmd->dup (scope) : 0;
+  new_stmt->cmd = cmd ? cmd->dup (scope, context) : 0;
 
-  new_stmt->expr = expr ? expr->dup (scope) : 0;
+  new_stmt->expr = expr ? expr->dup (scope, context) : 0;
 
   new_stmt->comm = comm ? comm->dup () : 0;
 
@@ -263,7 +264,8 @@ tree_statement_list::list_breakpoints (void)
 }
 
 tree_statement_list *
-tree_statement_list::dup (symbol_table::scope_id scope)
+tree_statement_list::dup (symbol_table::scope_id scope,
+			  symbol_table::context_id context)
 {
   tree_statement_list *new_list = new tree_statement_list ();
 
@@ -273,7 +275,7 @@ tree_statement_list::dup (symbol_table::scope_id scope)
     {
       tree_statement *elt = *p;
 
-      new_list->append (elt ? elt->dup (scope) : 0);
+      new_list->append (elt ? elt->dup (scope, context) : 0);
     }
 
   return new_list;

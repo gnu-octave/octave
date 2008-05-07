@@ -47,7 +47,8 @@ public:
 
   virtual void eval (void) = 0;
 
-  virtual tree_command *dup (symbol_table::scope_id) = 0;
+  virtual tree_command *dup (symbol_table::scope_id,
+			     symbol_table::context_id context) = 0;
 
 private:
 
@@ -72,7 +73,8 @@ public:
 
   void eval (void) { MAYBE_DO_BREAKPOINT; }
 
-  tree_command *dup (symbol_table::scope_id scope);
+  tree_command *dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -103,7 +105,8 @@ public:
 
   void eval (void);
 
-  tree_command *dup (symbol_table::scope_id scope);
+  tree_command *dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

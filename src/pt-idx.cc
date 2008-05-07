@@ -689,12 +689,13 @@ tree_index_expression::eval_error (void) const
 }
 
 tree_index_expression *
-tree_index_expression::dup (symbol_table::scope_id scope)
+tree_index_expression::dup (symbol_table::scope_id scope,
+			    symbol_table::context_id context)
 {
   tree_index_expression *new_idx_expr
     = new tree_index_expression (line (), column ());
 
-  new_idx_expr->expr = expr ? expr->dup (scope) : 0;
+  new_idx_expr->expr = expr ? expr->dup (scope, context) : 0;
 
   std::list<tree_argument_list *> new_args;
 
@@ -704,7 +705,7 @@ tree_index_expression::dup (symbol_table::scope_id scope)
     {
       tree_argument_list *elt = *p;
 
-      new_args.push_back (elt ? elt->dup (scope) : 0);
+      new_args.push_back (elt ? elt->dup (scope, context) : 0);
     }
 
   new_idx_expr->args = new_args;
@@ -721,7 +722,7 @@ tree_index_expression::dup (symbol_table::scope_id scope)
     {
       tree_expression *elt = *p;
 
-      new_dyn_field.push_back (elt ? elt->dup (scope) : 0);
+      new_dyn_field.push_back (elt ? elt->dup (scope, context) : 0);
     }
 
   new_idx_expr->dyn_field = new_dyn_field;

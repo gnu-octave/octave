@@ -102,7 +102,8 @@ tree_cell::rvalue (int nargout)
 }
 
 tree_expression *
-tree_cell::dup (symbol_table::scope_id scope)
+tree_cell::dup (symbol_table::scope_id scope,
+		symbol_table::context_id context)
 {
   tree_cell *new_cell = new tree_cell (0, line (), column ());
 
@@ -110,7 +111,7 @@ tree_cell::dup (symbol_table::scope_id scope)
     {
       tree_argument_list *elt = *p;
 
-      new_cell->append (elt ? elt->dup (scope) : 0);
+      new_cell->append (elt ? elt->dup (scope, context) : 0);
     }
 
   new_cell->copy_base (*this);

@@ -31,7 +31,8 @@ along with Octave; see the file COPYING.  If not, see
 // No-op.
 
 tree_command *
-tree_no_op_command::dup (symbol_table::scope_id)
+tree_no_op_command::dup (symbol_table::scope_id,
+			 symbol_table::context_id context)
 {
   return new tree_no_op_command (orig_cmd, line (), column ());
 }
@@ -63,7 +64,8 @@ tree_function_def::eval (void)
 }
 
 tree_command *
-tree_function_def::dup (symbol_table::scope_id)
+tree_function_def::dup (symbol_table::scope_id,
+			symbol_table::context_id context)
 {
   return new tree_function_def (fcn, line (), column ());
 }

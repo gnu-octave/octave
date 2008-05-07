@@ -53,7 +53,8 @@ public:
 
   octave_value_list rvalue (int);
 
-  tree_expression *dup (symbol_table::scope_id scope);
+  tree_expression *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

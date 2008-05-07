@@ -1270,7 +1270,8 @@ dump_octave_core (std::ostream& os, const char *fname, load_save_format fmt,
 {
   write_header (os, fmt);
 
-  std::list<symbol_table::symbol_record> vars = symbol_table::all_variables ();
+  std::list<symbol_table::symbol_record> vars
+    = symbol_table::all_variables (symbol_table::top_scope (), 0);
 
   double save_mem_size = 0;
 

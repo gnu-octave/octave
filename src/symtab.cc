@@ -73,7 +73,7 @@ void
 symbol_table::symbol_record::symbol_record_rep::dump
   (std::ostream& os, const std::string& prefix) const
 {
-  octave_value val = varval ();
+  octave_value val = varval (xcurrent_context);
 
   os << prefix << name;
 

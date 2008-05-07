@@ -81,7 +81,8 @@ public:
 
   octave_value_list convert_to_const_vector (const Cell& varargout);
 
-  tree_parameter_list *dup (symbol_table::scope_id scope);
+  tree_parameter_list *dup (symbol_table::scope_id scope,
+			    symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -114,7 +115,8 @@ public:
 
   ~tree_return_list (void);
 
-  tree_return_list *dup (symbol_table::scope_id scope);
+  tree_return_list *dup (symbol_table::scope_id scope,
+			 symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

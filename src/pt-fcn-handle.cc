@@ -71,7 +71,8 @@ tree_fcn_handle::rvalue (int nargout)
 }
 
 tree_expression *
-tree_fcn_handle::dup (symbol_table::scope_id)
+tree_fcn_handle::dup (symbol_table::scope_id,
+		      symbol_table::context_id)
 {
   tree_fcn_handle *new_fh = new tree_fcn_handle (nm, line (), column ());
 
@@ -99,13 +100,14 @@ tree_anon_fcn_handle::rvalue (void)
   symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
 
   if (new_scope > 0)
-    symbol_table::inherit (new_scope, symbol_table::current_scope ());
+    symbol_table::inherit (new_scope, symbol_table::current_scope (),
+			   symbol_table::current_context ());
 
   octave_user_function *uf
     = new octave_user_function (new_scope,
-				param_list ? param_list->dup (new_scope) : 0,
-				ret_list ? ret_list->dup (new_scope) : 0,
-				cmd_list ? cmd_list->dup (new_scope) : 0);
+				param_list ? param_list->dup (new_scope, 0) : 0,
+				ret_list ? ret_list->dup (new_scope, 0) : 0,
+				cmd_list ? cmd_list->dup (new_scope, 0) : 0);
 
   octave_function *curr_fcn = octave_call_stack::current ();
 
@@ -135,7 +137,8 @@ tree_anon_fcn_handle::rvalue (int nargout)
 }
 
 tree_expression *
-tree_anon_fcn_handle::dup (symbol_table::scope_id parent_scope)
+tree_anon_fcn_handle::dup (symbol_table::scope_id parent_scope,
+			   symbol_table::context_id parent_context)
 {
   tree_parameter_list *param_list = parameter_list ();
   tree_parameter_list *ret_list = return_list ();
@@ -145,13 +148,13 @@ tree_anon_fcn_handle::dup (symbol_table::scope_id parent_scope)
   symbol_table::scope_id new_scope = symbol_table::dup_scope (this_scope);
 
   if (new_scope > 0)
-    symbol_table::inherit (new_scope, parent_scope);
+    symbol_table::inherit (new_scope, parent_scope, parent_context);
 
-  tree_anon_fcn_handle *new_afh
-    = new tree_anon_fcn_handle (param_list ? param_list->dup (new_scope) : 0,
-				ret_list ? ret_list->dup (new_scope) : 0,
-				cmd_list ? cmd_list->dup (new_scope) : 0,
-				new_scope, line (), column ());
+  tree_anon_fcn_handle *new_afh = new
+    tree_anon_fcn_handle (param_list ? param_list->dup (new_scope, 0) : 0,
+			  ret_list ? ret_list->dup (new_scope, 0) : 0,
+			  cmd_list ? cmd_list->dup (new_scope, 0) : 0,
+			  new_scope, line (), column ());
 
   new_afh->copy_base (*this);
 

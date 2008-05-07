@@ -69,7 +69,8 @@ public:
 
   octave_value_list rvalue (int nargout);
 
-  tree_expression *dup (symbol_table::scope_id scope);
+  tree_expression *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -123,7 +124,8 @@ public:
 
   symbol_table::scope_id scope (void) { return fcn ? fcn->scope () : -1; }
 
-  tree_expression *dup (symbol_table::scope_id scope);
+  tree_expression *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

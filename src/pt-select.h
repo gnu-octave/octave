@@ -64,7 +64,8 @@ public:
 
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
-  tree_if_clause *dup (symbol_table::scope_id scope);
+  tree_if_clause *dup (symbol_table::scope_id scope,
+		       symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -107,7 +108,8 @@ public:
 
   void eval (void);
 
-  tree_if_command_list *dup (symbol_table::scope_id scope);
+  tree_if_command_list *dup (symbol_table::scope_id scope,
+			     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -142,7 +144,8 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  tree_command *dup (symbol_table::scope_id scope);
+  tree_command *dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -197,7 +200,8 @@ public:
 
   octave_comment_list *leading_comment (void) { return lead_comm; }
 
-  tree_switch_case *dup (symbol_table::scope_id scope);
+  tree_switch_case *dup (symbol_table::scope_id scope,
+			 symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -240,7 +244,8 @@ public:
 
   void eval (const octave_value& val);
 
-  tree_switch_case_list *dup (symbol_table::scope_id scope);
+  tree_switch_case_list *dup (symbol_table::scope_id scope,
+			      symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -282,7 +287,8 @@ public:
 
   octave_comment_list *trailing_comment (void) { return trail_comm; }
 
-  tree_command *dup (symbol_table::scope_id scope);
+  tree_command *dup (symbol_table::scope_id scope,
+		     symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

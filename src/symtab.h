@@ -195,7 +195,7 @@ public:
 	value_stack.push_back (v);
       }
 
-      octave_value& varref (void)
+      octave_value& varref (context_id context)
       {
 	if (is_global ())
 	  return symbol_table::global_varref (name);
@@ -204,14 +204,14 @@ public:
 	else
 	  {
 	    context_id n = value_stack.size ();
-	    while (n++ <= symbol_table::xcurrent_context)
+	    while (n++ <= context)
 	      value_stack.push_back (octave_value ());
 
-	    return value_stack[symbol_table::xcurrent_context];
+	    return value_stack[context];
 	  }
       }
 
-      octave_value varval (void) const
+      octave_value varval (context_id context) const
       {
 	if (is_global ())
 	  return symbol_table::global_varval (name);
@@ -219,8 +219,8 @@ public:
 	  return symbol_table::persistent_varval (name);
 	else
 	  {
-	    if (symbol_table::xcurrent_context < value_stack.size ())
-	      return value_stack[symbol_table::xcurrent_context];
+	    if (context < value_stack.size ())
+	      return value_stack[context];
 	    else
 	      return octave_value ();
 	  }
@@ -268,19 +268,24 @@ public:
 
 	    if (is_persistent ())
 	      {
-		symbol_table::persistent_varref (name) = varval ();
+		symbol_table::persistent_varref (name)
+		  = varval (xcurrent_context);
+
 		unmark_persistent ();
 	      }
 
-	    varref () = octave_value ();
+	    varref (xcurrent_context) = octave_value ();
 	  }
       }
 
-      bool is_defined (void) const { return varval ().is_defined (); }
-
-      bool is_variable (void) const
+      bool is_defined (context_id context) const
       {
-	return (storage_class != local || is_defined ());
+	return varval (context).is_defined ();
+      }
+
+      bool is_variable (context_id context) const
+      {
+	return (storage_class != local || is_defined (context));
       }
 
       bool is_local (void) const { return storage_class & local; }
@@ -321,11 +326,11 @@ public:
 
       void init_persistent (void)
       {
-	if (! is_defined ())
+	if (! is_defined (xcurrent_context))
 	  {
 	    mark_persistent ();
 
-	    varref () = symbol_table::persistent_varval (name);
+	    varref (xcurrent_context) = symbol_table::persistent_varval (name);
 	  }
 	// FIXME -- this causes trouble with recursive calls.
 	// else
@@ -340,7 +345,8 @@ public:
 
       symbol_record_rep *dup (void)
       {
-	return new symbol_record_rep (name, varval (), storage_class);
+	return new symbol_record_rep (name, varval (xcurrent_context),
+				      storage_class);
       }
 
       void dump (std::ostream& os, const std::string& prefix) const;
@@ -400,9 +406,15 @@ public:
     find (tree_argument_list *args, const string_vector& arg_names,
 	  octave_value_list& evaluated_args, bool& args_evaluated) const;
 
-    octave_value& varref (void) { return rep->varref (); }
+    octave_value& varref (context_id context = xcurrent_context)
+    {
+      return rep->varref (context);
+    }
 
-    octave_value varval (void) const { return rep->varval (); }
+    octave_value varval (context_id context = xcurrent_context) const
+    {
+      return rep->varval (context);
+    }
 
     void push_context (void) { rep->push_context (); }
 
@@ -410,8 +422,15 @@ public:
 
     void clear (void) { rep->clear (); }
 
-    bool is_defined (void) const { return rep->is_defined (); }
-    bool is_variable (void) const { return rep->is_variable (); }
+    bool is_defined (context_id context = xcurrent_context) const
+    {
+      return rep->is_defined (context);
+    }
+
+    bool is_variable (context_id context = xcurrent_context) const
+    {
+      return rep->is_variable (context);
+    }
 
     bool is_local (void) const { return rep->is_local (); }
     bool is_automatic (void) const { return rep->is_automatic (); }
@@ -977,12 +996,13 @@ public:
     return inst ? inst->do_find_symbol (name) : symbol_record ();
   }
 
-  static void inherit (scope_id scope, scope_id donor_scope)
+  static void
+  inherit (scope_id scope, scope_id donor_scope, context_id donor_context)
   {
     symbol_table *inst = get_instance (scope);
 
     if (inst)
-      inst->do_inherit (donor_scope);
+      inst->do_inherit (donor_scope, donor_context);
   }
 
   static bool at_top_level (void) { return xcurrent_scope == xtop_scope; }
@@ -1005,21 +1025,23 @@ public:
   }
 
   static octave_value& varref (const std::string& name,
-			       scope_id scope = xcurrent_scope)
+			       scope_id scope = xcurrent_scope,
+			       context_id context = xcurrent_context)
   {
     static octave_value foobar;
 
     symbol_table *inst = get_instance (scope);
 
-    return inst ? inst->do_varref (name) : foobar;
+    return inst ? inst->do_varref (name, context) : foobar;
   }
 
   static octave_value varval (const std::string& name,
-			      scope_id scope = xcurrent_scope)
+			      scope_id scope = xcurrent_scope,
+			      context_id context = xcurrent_context)
   {
     symbol_table *inst = get_instance (scope);
 
-    return inst ? inst->do_varval (name) : octave_value ();
+    return inst ? inst->do_varval (name, context) : octave_value ();
   }
 
   static octave_value&
@@ -1488,12 +1510,14 @@ public:
   }
 
   static std::list<symbol_record>
-  all_variables (scope_id scope = xcurrent_scope, bool defined_only = true)
+  all_variables (scope_id scope = xcurrent_scope,
+		 context_id context = xcurrent_context,
+		 bool defined_only = true)
   {
     symbol_table *inst = get_instance (scope);
 
     return inst
-      ? inst->do_all_variables (defined_only) : std::list<symbol_record> ();
+      ? inst->do_all_variables (context, defined_only) : std::list<symbol_record> ();
   }
 
   static std::list<symbol_record> glob (const std::string& pattern)
@@ -1811,7 +1835,7 @@ private:
       return p->second;
   }
 
-  void do_inherit (scope_id donor_scope)
+  void do_inherit (scope_id donor_scope, context_id donor_context)
   {
     for (table_iterator p = table.begin (); p != table.end (); p++)
       {
@@ -1821,11 +1845,17 @@ private:
 
 	if (! (sr.is_automatic () || sr.is_formal () || nm == "__retval__"))
 	  {
-	    octave_value val = symbol_table::varval (nm, donor_scope);
+	    octave_value val
+	      = symbol_table::varval (nm, donor_scope, donor_context);
 
 	    if (val.is_defined ())
 	      {
-		sr.varref () = val;
+		// Currently, inherit is always called when creating a
+		// new table, so it only makes sense to copy values into
+		// the base context (== 0), but maybe the context
+		// should be passed in as a parameter instead?
+
+		sr.varref (0) = val;
 
 		sr.mark_inherited ();
 	      }
@@ -1847,7 +1877,7 @@ private:
       ? (table[name] = symbol_record (name)) : p->second;
   }
 
-  octave_value& do_varref (const std::string& name)
+  octave_value& do_varref (const std::string& name, context_id context)
   {
     table_iterator p = table.find (name);
 
@@ -1855,17 +1885,17 @@ private:
       {
 	symbol_record& sr = do_insert (name);
 
-	return sr.varref ();
+	return sr.varref (context);
       }
     else
-      return p->second.varref ();
+      return p->second.varref (context);
   }
 
-  octave_value do_varval (const std::string& name) const
+  octave_value do_varval (const std::string& name, context_id context) const
   {
     table_const_iterator p = table.find (name);
 
-    return (p != table.end ()) ? p->second.varval () : octave_value ();
+    return (p != table.end ()) ? p->second.varval (context) : octave_value ();
   }
 
   octave_value& do_persistent_varref (const std::string& name)
@@ -2017,7 +2047,8 @@ private:
       p->second.mark_global ();
   }
 
-  std::list<symbol_record> do_all_variables (bool defined_only) const
+  std::list<symbol_record>
+  do_all_variables (context_id context, bool defined_only) const
   {
     std::list<symbol_record> retval;
 
@@ -2025,7 +2056,7 @@ private:
       {
 	const symbol_record& sr = p->second;
 
-	if (defined_only && ! sr.is_defined ())
+	if (defined_only && ! sr.is_defined (context))
 	  continue;
 
 	retval.push_back (sr);

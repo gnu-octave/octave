@@ -104,7 +104,8 @@ public:
 
   void eval_error (void);
 
-  tree_expression *dup (symbol_table::scope_id scope);
+  tree_expression *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -142,7 +143,8 @@ public:
 
   void eval_error (void);
 
-  tree_expression *dup (symbol_table::scope_id scope);
+  tree_expression *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

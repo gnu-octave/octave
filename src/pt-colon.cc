@@ -210,13 +210,14 @@ tree_colon_expression::column (void) const
 }
 
 tree_expression *
-tree_colon_expression::dup (symbol_table::scope_id scope)
+tree_colon_expression::dup (symbol_table::scope_id scope,
+			    symbol_table::context_id context)
 {
-  tree_colon_expression *new_ce
-    = new tree_colon_expression (op_base ? op_base->dup (scope) : 0,
-				 op_limit ? op_limit->dup (scope) : 0,
-				 op_increment ? op_increment->dup (scope) : 0,
-				 line (), column ());
+  tree_colon_expression *new_ce = new
+    tree_colon_expression (op_base ? op_base->dup (scope, context) : 0,
+			   op_limit ? op_limit->dup (scope, context) : 0,
+			   op_increment ? op_increment->dup (scope, context) : 0,
+			   line (), column ());
 
   new_ce->copy_base (*new_ce);
 

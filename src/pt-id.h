@@ -111,7 +111,8 @@ public:
 
   void eval_undefined_error (void);
 
-  tree_identifier *dup (symbol_table::scope_id scope);
+  tree_identifier *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 

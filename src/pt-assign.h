@@ -73,7 +73,8 @@ public:
 
   tree_expression *right_hand_side (void) { return rhs; }
 
-  tree_expression *dup (symbol_table::scope_id scope);
+  tree_expression *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
 
@@ -143,7 +144,8 @@ public:
 
   tree_expression *right_hand_side (void) { return rhs; }
 
-  tree_expression *dup (symbol_table::scope_id scope);
+  tree_expression *dup (symbol_table::scope_id scope,
+			symbol_table::context_id context);
 
   void accept (tree_walker& tw);
   

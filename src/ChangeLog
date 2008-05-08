@@ -1,6 +1,9 @@
-2008-05-21  John W. Eaton  <jwe@octave.org>
-
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
+
+	* dMatrix.cc: Declare DSYRK.
+	(xgemm): Call DSYRK if symmetric case detected.
+	* CMatrix.cc: Declare ZSYRK, ZHERK.
+	(xgemm): Call ZSYRK/ZHERK if symmetric/hermitian case detected.
 
 	* ov.h (octave_value::compound_binary_op): New enum.
 	(do_binary_op (octave_value::compound_binary_op, ...), 

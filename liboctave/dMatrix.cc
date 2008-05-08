@@ -106,6 +106,15 @@ extern "C"
 			   const double*, const octave_idx_type&, double&);
 
   F77_RET_T
+  F77_FUNC (dsyrk, DSYRK) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const octave_idx_type&, const octave_idx_type&, 
+			   const double&, const double*, const octave_idx_type&,
+			   const double&, double*, const octave_idx_type&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
   F77_FUNC (dgetrf, DGETRF) (const octave_idx_type&, const octave_idx_type&, double*, const octave_idx_type&,
 		      octave_idx_type*, octave_idx_type&);
 
@@ -3388,6 +3397,25 @@ xgemm (bool transa, const Matrix& a, bool transb, const Matrix& b)
     {
       if (a_nr == 0 || a_nc == 0 || b_nc == 0)
 	retval.resize (a_nr, b_nc, 0.0);
+      else if (a.data () == b.data () && a_nr == b_nc && transa != transb)
+        {
+	  octave_idx_type lda = a.rows ();
+
+          retval.resize (a_nr, b_nc);
+	  double *c = retval.fortran_vec ();
+
+          const char *ctransa = get_blas_trans_arg (transa);
+          F77_XFCN (dsyrk, DSYRK, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                   F77_CONST_CHAR_ARG2 (ctransa, 1),
+                                   a_nr, a_nc, 1.0,
+                                   a.data (), lda, 0.0, c, a_nr
+                                   F77_CHAR_ARG_LEN (1)
+                                   F77_CHAR_ARG_LEN (1)));
+          for (int j = 0; j < a_nr; j++)
+            for (int i = 0; i < j; i++)
+              retval.xelem (j,i) = retval.xelem (i,j);
+
+        }
       else
 	{
 	  octave_idx_type lda = a.rows (), tda = a.cols ();

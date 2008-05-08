@@ -112,6 +112,24 @@ extern "C"
 			     const Complex*, const octave_idx_type&, Complex&);
 
   F77_RET_T
+  F77_FUNC (zsyrk, ZSYRK) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const octave_idx_type&, const octave_idx_type&, 
+			   const Complex&, const Complex*, const octave_idx_type&,
+			   const Complex&, Complex*, const octave_idx_type&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (zherk, ZHERK) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const octave_idx_type&, const octave_idx_type&, 
+			   const Complex&, const Complex*, const octave_idx_type&,
+			   const Complex&, Complex*, const octave_idx_type&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
   F77_FUNC (zgetrf, ZGETRF) (const octave_idx_type&, const octave_idx_type&, Complex*, const octave_idx_type&,
 			     octave_idx_type*, octave_idx_type&);
 
@@ -3985,6 +4003,41 @@ xgemm (bool transa, bool conja, const ComplexMatrix& a,
     {
       if (a_nr == 0 || a_nc == 0 || b_nc == 0)
 	retval.resize (a_nr, b_nc, 0.0);
+      else if (a.data () == b.data () && a_nr == b_nc && transa != transb)
+        {
+	  octave_idx_type lda = a.rows ();
+
+          retval.resize (a_nr, b_nc);
+	  Complex *c = retval.fortran_vec ();
+
+          const char *ctransa = get_blas_trans_arg (transa, conja);
+          if (conja || conjb)
+            {
+              F77_XFCN (zherk, ZHERK, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                       F77_CONST_CHAR_ARG2 (ctransa, 1),
+                                       a_nr, a_nc, 1.0,
+                                       a.data (), lda, 0.0, c, a_nr
+                                       F77_CHAR_ARG_LEN (1)
+                                       F77_CHAR_ARG_LEN (1)));
+              for (int j = 0; j < a_nr; j++)
+                for (int i = 0; i < j; i++)
+                  retval.xelem (j,i) = std::conj (retval.xelem (i,j));
+            }
+          else
+            {
+              F77_XFCN (zsyrk, ZSYRK, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                       F77_CONST_CHAR_ARG2 (ctransa, 1),
+                                       a_nr, a_nc, 1.0,
+                                       a.data (), lda, 0.0, c, a_nr
+                                       F77_CHAR_ARG_LEN (1)
+                                       F77_CHAR_ARG_LEN (1)));
+              for (int j = 0; j < a_nr; j++)
+                for (int i = 0; i < j; i++)
+                  retval.xelem (j,i) = retval.xelem (i,j);
+
+            }
+
+        }
       else
 	{
 	  octave_idx_type lda = a.rows (), tda = a.cols ();

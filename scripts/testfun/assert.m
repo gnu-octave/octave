@@ -18,6 +18,8 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} assert (@var{cond})
+## @deftypefnx {Function File} {} assert (@var{cond}, @var{errmsg}, @dots{})
+## @deftypefnx {Function File} {} assert (@var{cond}, @{var{msg_id}, @var{errmsg}, @dots{})
 ## @deftypefnx {Function File} {} assert (@var{observed},@var{expected})
 ## @deftypefnx {Function File} {} assert (@var{observed},@var{expected},@var{tol})
 ##
@@ -26,8 +28,12 @@
 ##
 ## @table @code
 ## @item assert (@var{cond})
+## @itemx assert (@var{cond}, @var{errmsg}, @dots{})
+## @itemx assert (@var{cond}, @var{msg_id}, @var{errmsg}, @dots{})
 ## Called with a single argument @var{cond}, @code{assert} produces an
-## error if @var{cond} is zero.
+## error if @var{cond} is zero. If called with a single argument a
+## generic error message. With more than one argument, the additional
+## arguments are passed to the @code{error} function.
 ##
 ## @item assert (@var{observed}, @var{expected})
 ## Produce an error if observed is not the same as expected. Note that 
@@ -50,19 +56,7 @@
 ## TODO: say what the first different element is, etc.  To do this, make
 ## TODO: the message generation type specific.
 
-function assert (cond, expected, tol)
-
-  if (nargin < 1 || nargin > 3)
-    print_usage ();
-  endif
-
-  if (nargin < 3)
-    tol = 0;
-  endif
-
-  if (exist ("argn") == 0)
-    argn = " ";
-  endif
+function assert (cond, varargin)
 
   in = deblank (argn(1,:));
   for i = 2:rows (argn)
@@ -70,128 +64,150 @@ function assert (cond, expected, tol)
   endfor
   in = cstrcat ("(", in, ")");
 
-  coda = "";
-  iserror = 0;
-  if (nargin == 1)
+  if (nargin == 1 || (nargin > 1 && islogical (cond) && ischar (varargin{1})))
     if (! isnumeric (cond) || ! all (cond(:)))
-      error ("assert %s failed", in); # say which elements failed?
+      if (nargin == 1)
+	error ("assert %s failed", in); # say which elements failed?
+      else
+	error (varargin{:});
+      endif
+    endif  
+  else
+    if (nargin < 2 || nargin > 3)
+      print_usage ();
     endif
-  
-  elseif (ischar (expected))
-    iserror = (! ischar (cond) || ! strcmp (cond, expected));
 
-  elseif (iscell (expected))
-    if (! iscell (cond) || any (size (cond) != size (expected)))
-      iserror = 1;
+    expected = varargin {1};
+    if (nargin < 3)
+      tol = 0;
     else
-      try
-	for i = 1:length (expected(:))
-	  assert (cond{i}, expected{i}, tol);
-	endfor
-      catch
-	iserror = 1;
-      end_try_catch
+      tol = varargin {2};
     endif
 
-  elseif (isstruct (expected))
-    if (! isstruct (cond) || any (size (cond) != size (expected))
-	|| rows(struct_elements (cond)) != rows (struct_elements (expected)))
-      iserror = 1;
-    else
-      try
-	empty = numel (cond) == 0;
-	normal = numel (cond) == 1;
-	for [v, k] = cond
-	  if (! struct_contains (expected, k))
-	    error ();
-	  endif
-	  if (empty)
-	    v = cell (1, 0);
-	  endif
-	  if (normal)
-	    v = {v};
-	  else
-	    v = v(:)';
-	  endif
-	  assert (v, {expected.(k)}, tol);
-	endfor
-      catch
-	iserror = 1;
-      end_try_catch
+    if (exist ("argn") == 0)
+      argn = " ";
     endif
 
-  elseif (ndims (cond) != ndims (expected)
-	  || any (size (cond) != size (expected)))
-    iserror = 1;
-    coda = "Dimensions don't match";
+    coda = "";
+    iserror = 0;
 
-  elseif (tol == 0 && ! strcmp (typeinfo (cond), typeinfo (expected)))
-    iserror = 1;
-    coda = cstrcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
 
-  else # numeric
-    A = cond(:);
-    B = expected(:);
-    ## Check exceptional values
-    if (any (isna (A) != isna (B)))
+    if (ischar (expected))
+      iserror = (! ischar (cond) || ! strcmp (cond, expected));
+
+    elseif (iscell (expected))
+      if (! iscell (cond) || any (size (cond) != size (expected)))
+	iserror = 1;
+      else
+	try
+	  for i = 1:length (expected(:))
+	    assert (cond{i}, expected{i}, tol);
+	  endfor
+	catch
+	  iserror = 1;
+	end_try_catch
+      endif
+
+    elseif (isstruct (expected))
+      if (! isstruct (cond) || any (size (cond) != size (expected))
+	  || rows(struct_elements (cond)) != rows (struct_elements (expected)))
+	iserror = 1;
+      else
+	try
+	  empty = numel (cond) == 0;
+	  normal = numel (cond) == 1;
+	  for [v, k] = cond
+	    if (! struct_contains (expected, k))
+	      error ();
+	    endif
+	    if (empty)
+	      v = cell (1, 0);
+	    endif
+	    if (normal)
+	      v = {v};
+	    else
+	      v = v(:)';
+	    endif
+	    assert (v, {expected.(k)}, tol);
+	  endfor
+	catch
+	  iserror = 1;
+	end_try_catch
+      endif
+
+    elseif (ndims (cond) != ndims (expected)
+	    || any (size (cond) != size (expected)))
       iserror = 1;
-      coda = "NAs don't match";
-    elseif (any (isnan (A) != isnan (B)))
+      coda = "Dimensions don't match";
+
+    elseif (tol == 0 && ! strcmp (typeinfo (cond), typeinfo (expected)))
       iserror = 1;
-      coda = "NaNs don't match";
+      coda = cstrcat ("Type ", typeinfo (cond), " != ", typeinfo (expected));
+
+    else # numeric
+      A = cond(:);
+      B = expected(:);
+      ## Check exceptional values
+      if (any (isna (A) != isna (B)))
+	iserror = 1;
+	coda = "NAs don't match";
+      elseif (any (isnan (A) != isnan (B)))
+	iserror = 1;
+	coda = "NaNs don't match";
 ### Try to avoid problems comparing strange values like Inf+NaNi.
-    elseif (any (isinf (A) != isinf (B))
-	    || any (A(isinf (A) & ! isnan (A)) != B(isinf (B) & ! isnan (B))))
-      iserror = 1;
-      coda = "Infs don't match";
-    else
-      ## Check normal values
-      A = A(finite (A));
-      B = B(finite (B));
-      if (tol == 0)
-        err = any (A != B);
-	errtype = "values do not match";
-      elseif (tol >= 0)
-	err = max (abs (A - B));
-	errtype = "maximum absolute error %g exceeds tolerance %g";
-      else 
-	abserr = max (abs (A(B == 0)));
-	A = A(B != 0);
-	B = B(B != 0);
-	relerr = max (abs (A - B) ./ abs (B));
-	err = max ([abserr; relerr]);
-	errtype = "maximum relative error %g exceeds tolerance %g";
-      endif
-      if (err > abs (tol))
+      elseif (any (isinf (A) != isinf (B))
+	      || any (A(isinf (A) & ! isnan (A)) != B(isinf (B) & ! isnan (B))))
 	iserror = 1;
-	coda = sprintf (errtype, err, abs (tol));
+	coda = "Infs don't match";
+      else
+	## Check normal values
+	A = A(finite (A));
+	B = B(finite (B));
+	if (tol == 0)
+          err = any (A != B);
+	  errtype = "values do not match";
+	elseif (tol >= 0)
+	  err = max (abs (A - B));
+	  errtype = "maximum absolute error %g exceeds tolerance %g";
+	else 
+	  abserr = max (abs (A(B == 0)));
+	  A = A(B != 0);
+	  B = B(B != 0);
+	  relerr = max (abs (A - B) ./ abs (B));
+	  err = max ([abserr; relerr]);
+	  errtype = "maximum relative error %g exceeds tolerance %g";
+	endif
+	if (err > abs (tol))
+	  iserror = 1;
+	  coda = sprintf (errtype, err, abs (tol));
+	endif
       endif
     endif
-  endif
 
-  if (! iserror)
-    return;
-  endif
+    if (! iserror)
+      return;
+    endif
 
-  ## pretty print the "expected but got" info,
-  ## trimming leading and trailing "\n"
-  str = disp (expected);
-  idx = find (str != "\n");
-  if (! isempty (idx))
-    str = str(idx(1):idx(end));
+    ## pretty print the "expected but got" info,
+    ## trimming leading and trailing "\n"
+    str = disp (expected);
+    idx = find (str != "\n");
+    if (! isempty (idx))
+      str = str(idx(1):idx(end));
+    endif
+    str2 = disp (cond);
+    idx = find (str2 != "\n");
+    if (! isempty (idx))
+      str2 = str2 (idx(1):idx(end));
+    endif
+    msg = cstrcat ("assert ", in, " expected\n", str, "\nbut got\n", str2);
+    if (! isempty (coda))
+      msg = cstrcat (msg, "\n", coda);
+    endif
+    error ("%s", msg);
+    ## disp (msg);
+    ## error ("assertion failed");
   endif
-  str2 = disp (cond);
-  idx = find (str2 != "\n");
-  if (! isempty (idx))
-    str2 = str2 (idx(1):idx(end));
-  endif
-  msg = cstrcat ("assert ", in, " expected\n", str, "\nbut got\n", str2);
-  if (! isempty (coda))
-    msg = cstrcat (msg, "\n", coda);
-  endif
-  error ("%s", msg);
-  ## disp (msg);
-  ## error ("assertion failed");
 endfunction
 
 ## empty

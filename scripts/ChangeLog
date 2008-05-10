@@ -1,5 +1,8 @@
 2008-05-12  David Bateman  <dbateman@free.fr>
 
+	* general/dblquad.m, general/quadgk.m, general/quadv.m,
+	general/triplequad.m: New functions.
+
 	* testfun/assert.m: Allow assert(cond, errmsg, ...) and
 	assert(cond, msgid, errmsg, ...) syntax for compatibility.
 

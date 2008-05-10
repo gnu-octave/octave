@@ -36,16 +36,16 @@ INSTALL_DATA = @INSTALL_DATA@
 SOURCES = __isequal__.m __splinen__.m accumarray.m arrayfun.m \
   bicubic.m bitcmp.m bitget.m bitset.m blkdiag.m cart2pol.m \
   cart2sph.m cell2mat.m celldisp.m circshift.m common_size.m \
-  cplxpair.m cumtrapz.m deal.m del2.m diff.m flipdim.m fliplr.m \
+  cplxpair.m cumtrapz.m dblquad.m deal.m del2.m diff.m flipdim.m fliplr.m \
   flipud.m genvarname.m gradient.m idivide.m ind2sub.m int2str.m \
   interp1.m interp2.m interp3.m interpn.m interpft.m \
   is_duplicate_entry.m isa.m isdefinite.m isdir.m isequal.m \
   isequalwithequalnans.m isscalar.m issquare.m issymmetric.m \
   isvector.m logical.m logspace.m mod.m nargchk.m \
   nargoutchk.m nextpow2.m nthroot.m num2str.m perror.m pol2cart.m \
-  polyarea.m postpad.m prepad.m quadl.m randperm.m rat.m rem.m \
-  repmat.m rot90.m rotdim.m runlength.m shift.m shiftdim.m sortrows.m \
-  sph2cart.m strerror.m structfun.m sub2ind.m trapz.m tril.m triu.m
+  polyarea.m postpad.m prepad.m quadgk.m quadl.m quadv.m randperm.m rat.m \
+  rem.m repmat.m rot90.m rotdim.m runlength.m shift.m shiftdim.m sortrows.m \
+  sph2cart.m strerror.m structfun.m sub2ind.m triplequad.m trapz.m tril.m triu.m
 
 DISTFILES = $(addprefix $(srcdir)/, Makefile.in $(SOURCES))
 

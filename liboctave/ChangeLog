@@ -1,3 +1,48 @@
+2008-05-21  David Bateman  <dbateman@free.fr>
+
+	* CmplxGEBAL.cc (ComplexGEPBALANCE), dbleGEPBAL.cc (GEPBALANCE),
+	fCmplxGEPBAL.cc (FloatComplexGEPBALANCE), floatGEPBAL.cc
+	(FloatGEPBALANCE): New class for generalized eigenvalue balancing.
+	* CmplxGEBAL.h (ComplexGEPBALANCE), dbleGEPBAL.h (GEPBALANCE),
+	fCmplxGEPBAL.h (FloatComplexGEPBALANCE), floatGEPBAL.h
+	(FloatGEPBALANCE): Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+	
+	* floatAEPBAL.cc (FloatAEPBALANCE), fCmplxAEPBAL.cc
+	(FloatComplexAEPBALANCE): New classes for single precision 
+	Algebraic eignvalue balancing.
+	* floatAEPBAL.h (FloatAEPBALANCE), fCmplxAEPBAL.h
+	(FloatComplexAEPBALANCE): Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* floatHESS.cc (FloatHESS), fCmplxHESS.cc (FloatComplexHESS):  New
+	classes for single precision Hessenberg decomposition.
+	* floatHESS.h (FloatHESS), fCmplxHESS.h (FloatComplexHESS):
+	Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* floatQR.cc (FloatQR), fCmplxQR.cc (FloatComplexQR):  New
+	classes for single precision QR decomposition.
+	* floatQR.h (FloatQR), fCmplxQR.h (FloatComplexQR):
+	Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* floatQRP.cc (FloatQRP), fCmplxQRP.cc (FloatComplexQRP):  New
+	classes for single precision permuted QR decomposition.
+	* floatQRP.h (FloatQRP), fCmplxQRP.h (FloatComplexQRP):
+	Declare them.
+	* Makefile.in (MATRIX_INC): Include them here.
+	(MATRIX_SRC): and here.
+
+	* mx-defs (FloatAEPBALANCE, FloatComplexAEPBALANCE,
+	ComplexGEPBALANCE, FloatGEPBALANCE,FloatComplexGEPBALANCE,
+	FloatHESS, FloatComplexHESS, FloatQR, FloatComplexQR, QRP,
+	ComplexQRP, FloatQRP, FloatComplexQRP):	Declare classes.
+	
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* Array.cc (Array<T> Array<T>::transpose () const): Modify for tiled

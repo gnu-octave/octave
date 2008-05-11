@@ -27,7 +27,8 @@ VPATH = @srcdir@
 EXTERNAL_DISTFILES = $(DISTFILES)
 
 FSRC = dqagi.f dqagie.f dqagp.f dqagpe.f dqelg.f dqk15i.f \
-  dqk21.f dqpsrt.f xerror.f
+  dqk21.f dqpsrt.f qagie.f qagi.f qagpe.f qagp.f qelg.f \
+  qk15i.f qk21.f qpsrt.f xerror.f
 
 include $(TOPDIR)/Makeconf
 

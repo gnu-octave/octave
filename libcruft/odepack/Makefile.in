@@ -26,7 +26,8 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
-FSRC = cfode.f dlsode.f ewset.f intdy.f prepj.f solsy.f stode.f vnorm.f
+FSRC = cfode.f dlsode.f ewset.f intdy.f prepj.f solsy.f stode.f vnorm.f \
+  scfode.f sewset.f sintdy.f slsode.f sprepj.f ssolsy.f sstode.f svnorm.f
 
 include $(TOPDIR)/Makeconf
 

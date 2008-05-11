@@ -26,7 +26,7 @@ VPATH = @srcdir@
 
 EXTERNAL_DISTFILES = $(DISTFILES)
 
-FSRC = dsubsp.f exchqz.f
+FSRC = dsubsp.f exchqz.f ssubsp.f sexchqz.f
 
 include $(TOPDIR)/Makeconf
 

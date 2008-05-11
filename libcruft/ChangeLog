@@ -1,3 +1,17 @@
+2008-05-21  David Bateman  <dbateman@free.fr>
+
+	* odepack/scfode.f, odepack/sewset.f, odepack/sintdy.f,
+	odepack/slsode.f, odepack/sprepj.f, odepack/ssolsy.f,
+	odepack/sstode.f, odepack/svnorm.f: New files.
+	* odepack/Makefile.in (FSRC): Add them.
+
+	* ordered-qz/sexchqz.f, ordered-qz/ssubsp.f: New files.
+	* ordered-qz/Makefile.in (FSRC): Add them.
+	* quadpack/qagi.f, quadpack/qagie.f, quadpack/qagp.f,
+	quadpack/qagpe.f, quadpack/qelg.f, quadpack/qk15i.f,
+	quadpack/qk21.f, quadpack/qpsrt.f: New files.
+	* quadpack/Makefile.in (FSRC): Add them.
+
 2008-05-20  Jaroslav Hajek <highegg@gmail.com>
 
 	* qrupdate/cch1dn.f, qrupdate/cchinx.f, qrupdate/cqhqr.f, 

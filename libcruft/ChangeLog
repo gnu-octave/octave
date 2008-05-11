@@ -1,5 +1,8 @@
 2008-05-21  David Bateman  <dbateman@free.fr>
 
+	* odepack/slsode.f, odepack/sintdy.f: Replace the use of xerrwv
+	with xerrwd and rumach with d1mach(4).
+
 	* odepack/scfode.f, odepack/sewset.f, odepack/sintdy.f,
 	odepack/slsode.f, odepack/sprepj.f, odepack/ssolsy.f,
 	odepack/sstode.f, odepack/svnorm.f: New files.

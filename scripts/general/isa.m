@@ -30,6 +30,15 @@ function retval = isa (x, cname)
     print_usage ();
   endif
 
-  retval = strcmp (class (x), cname);
-
+  if (strcmp (cname, "float"))
+    retval = (strcmp (class (x), "double") || strcmp (class (x), "single"));
+  elseif (strcmp (cname, "fnumeric"))
+    retval = (strcmp (class (x), "double") || strcmp (class (x), "single") ||
+    strcmp (class (x), "uint8") || strcmp (class (x), "uint16") ||
+    strcmp (class (x), "uint32") || strcmp (class (x), "uint64") ||
+    strcmp (class (x), "int8") || strcmp (class (x), "int16") ||
+    strcmp (class (x), "int32") || strcmp (class (x), "int64"));
+  else
+    retval = strcmp (class (x), cname);
+  endif
 endfunction

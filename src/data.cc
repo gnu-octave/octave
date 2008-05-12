@@ -2662,6 +2662,87 @@ fill_matrix (const octave_value_list& args, int val, const char *fcn)
 }
 
 static octave_value
+fill_matrix (const octave_value_list& args, double val, float fval, 
+	     const char *fcn)
+{
+  octave_value retval;
+
+  int nargin = args.length ();
+
+  oct_data_conv::data_type dt = oct_data_conv::dt_double;
+
+  dim_vector dims (1, 1);
+  
+  if (nargin > 0 && args(nargin-1).is_string ())
+    {
+      std::string nm = args(nargin-1).string_value ();
+      nargin--;
+
+      dt = oct_data_conv::string_to_data_type (nm);
+
+      if (error_state)
+	return retval;
+    }
+
+  switch (nargin)
+    {
+    case 0:
+      break;
+
+    case 1:
+      get_dimensions (args(0), fcn, dims);
+      break;
+
+    default:
+      {
+	dims.resize (nargin);
+
+	for (int i = 0; i < nargin; i++)
+	  {
+	    dims(i) = args(i).is_empty () ? 0 : args(i).idx_type_value ();
+
+	    if (error_state)
+	      {
+		error ("%s: expecting scalar integer arguments", fcn);
+		break;
+	      }
+	  }
+      }
+      break;
+    }
+
+  if (! error_state)
+    {
+      dims.chop_trailing_singletons ();
+
+      check_dimensions (dims, fcn);
+
+      // Note that automatic narrowing will handle conversion from
+      // NDArray to scalar.
+
+      if (! error_state)
+	{
+	  switch (dt)
+	    {
+	    case oct_data_conv::dt_single:
+	      retval = FloatNDArray (dims, fval);
+	      break;
+
+	    case oct_data_conv::dt_double:
+	      retval = NDArray (dims, val);
+	      break;
+
+	    default:
+	      error ("%s: invalid class name", fcn);
+	      break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+static octave_value
 fill_matrix (const octave_value_list& args, double val, const char *fcn)
 {
   octave_value retval;
@@ -2724,7 +2805,7 @@ fill_matrix (const octave_value_list& args, double val, const char *fcn)
 	  switch (dt)
 	    {
 	    case oct_data_conv::dt_single:
-	      retval = FloatNDArray (dims, val);
+	      retval = FloatNDArray (dims, static_cast <float> (val));
 	      break;
 
 	    case oct_data_conv::dt_double:
@@ -2805,7 +2886,7 @@ fill_matrix (const octave_value_list& args, const Complex& val,
 	  switch (dt)
 	    {
 	    case oct_data_conv::dt_single:
-	      retval = FloatComplexNDArray (dims, static_cast <FloatComplex> (val));
+	      retval = FloatComplexNDArray (dims, static_cast<FloatComplex> (val));
 	      break;
 
 	    case oct_data_conv::dt_double:
@@ -2933,7 +3014,8 @@ The optional argument @var{class} may be either @samp{\"single\"} or\n\
 @samp{\"double\"}.  The default is @samp{\"double\"}.\n\
 @end deftypefn")
 {
-  return fill_matrix (args, lo_ieee_inf_value (), "Inf");
+  return fill_matrix (args, lo_ieee_inf_value (), 
+		      lo_ieee_float_inf_value (), "Inf");
 }
 
 DEFALIAS (inf, Inf);
@@ -2965,7 +3047,8 @@ The optional argument @var{class} may be either @samp{\"single\"} or\n\
 @samp{\"double\"}.  The default is @samp{\"double\"}.\n\
 @end deftypefn")
 {
-  return fill_matrix (args, lo_ieee_nan_value (), "NaN");
+  return fill_matrix (args, lo_ieee_nan_value (), 
+		      lo_ieee_float_nan_value (), "NaN");
 }
 
 DEFALIAS (nan, NaN);
@@ -3026,10 +3109,104 @@ is approximately\n\
  $2.2204\\times10^{-16}$.\n\
 @end tex\n\
 @end iftex\n\
+for double precision and\n\
+@ifinfo\n\
+ 1.1921e-07.\n\
+@end ifinfo\n\
+@iftex\n\
+@tex\n\
+ $1.1921\\times10^{-7}$.\n\
+@end tex\n\
+@end iftex\n\
+for single precision. Given a single argument @var{x}, return the\n\
+distance between @var{x} and the next largest value.\n\
 @end deftypefn")
 {
-  return fill_matrix (args, DBL_EPSILON, "eps");
+  int nargin = args.length ();
+  octave_value retval;
+
+  if (nargin == 1 && ! args(0).is_string ())
+    {
+      if (args(0).is_single_type ())
+	{
+	  float val = args(0).float_value ();
+
+	  if (! error_state)
+	    {
+	      val  = ::fabsf(val);
+	      if (xisnan (val) || xisinf (val))
+		retval = fill_matrix (octave_value ("single"), 
+				      lo_ieee_nan_value (), 
+				      lo_ieee_float_nan_value (), "eps");
+	      else if (val < FLT_MIN)
+		retval = fill_matrix (octave_value ("single"), 0e0, 
+				      powf (2.0, -149e0), "eps");
+	      else
+		{
+		  int expon;
+		  frexpf (val, &expon);
+		  val = std::pow (static_cast <float> (2.0), 
+				  static_cast <float> (expon - 24));
+		  retval = fill_matrix (octave_value ("single"), DBL_EPSILON, 
+					val, "eps");
+		}
+	    }
+	}
+      else
+	{
+	  double val = args(0).double_value ();
+
+	  if (! error_state)
+	    {
+	      val  = ::fabs(val);
+	      if (xisnan (val) || xisinf (val))
+		retval = fill_matrix (octave_value_list (), 
+				      lo_ieee_nan_value (), 
+				      lo_ieee_float_nan_value (), "eps");
+	      else if (val < DBL_MIN)
+		retval = fill_matrix (octave_value_list (),
+				      pow (2.0, -1074e0), 0e0, "eps");
+	      else
+		{
+		  int expon;
+		  frexp (val, &expon);
+		  val = std::pow (static_cast <double> (2.0), 
+				  static_cast <double> (expon - 53));
+		  retval = fill_matrix (octave_value_list (), val, 
+					FLT_EPSILON, "eps");
+		}
+	    }
+	}
+    }
+  else
+    retval = fill_matrix (args, DBL_EPSILON, FLT_EPSILON, "eps");
+
+  return retval;
 }
+
+/*
+
+%!assert(eps(1/2),2^(-53))
+%!assert(eps(1),2^(-52))
+%!assert(eps(2),2^(-51))
+%!assert(eps(realmax),2^971)
+%!assert(eps(0),2^(-1074))
+%!assert(eps(realmin/2),2^(-1074))
+%!assert(eps(realmin/16),2^(-1074))
+%!assert(eps(Inf),NaN)
+%!assert(eps(NaN),NaN)
+%!assert(eps(single(1/2)),single(2^(-24)))
+%!assert(eps(single(1)),single(2^(-23)))
+%!assert(eps(single(2)),single(2^(-22)))
+%!assert(eps(realmax('single')),single(2^104))
+%!assert(eps(single(0)),single(2^(-149)))
+%!assert(eps(realmin('single')/2),single(2^(-149)))
+%!assert(eps(realmin('single')/16),single(2^(-149)))
+%!assert(eps(single(Inf)),single(NaN))
+%!assert(eps(single(NaN)),single(NaN))
+
+*/
+
 
 DEFUN (pi, args, ,
   "-*- texinfo -*-\n\
@@ -3072,7 +3249,7 @@ floating point arithmetic, @code{realmax} is approximately\n\
 @seealso{realmin}\n\
 @end deftypefn")
 {
-  return fill_matrix (args, DBL_MAX, "realmax");
+  return fill_matrix (args, DBL_MAX, FLT_MAX, "realmax");
 }
 
 DEFUN (realmin, args, ,
@@ -3096,7 +3273,7 @@ The actual value is system-dependent.  On machines that support\n\
 @seealso{realmax}\n\
 @end deftypefn")
 {
-  return fill_matrix (args, DBL_MIN, "realmin");
+  return fill_matrix (args, DBL_MIN, FLT_MIN, "realmin");
 }
 
 DEFUN (I, args, ,
@@ -3136,7 +3313,8 @@ Return a matrix or N-dimensional array whose elements are all equal\n\
 to the special constant used to designate missing values.\n\
 @end deftypefn")
 {
-  return fill_matrix (args, lo_ieee_na_value (), "NA");
+  return fill_matrix (args, lo_ieee_na_value (), 
+		      lo_ieee_float_na_value (), "NA");
 }
 
 DEFUN (false, args, ,

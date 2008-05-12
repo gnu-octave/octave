@@ -219,7 +219,11 @@ function [r, p, k, e] = residue (b, a, varargin)
   ## Determine if the poles are (effectively) zero.
 
   small = max (abs (p));
-  small = max ([small, 1]) * eps*1e4 * (1 + numel (p))^2;
+  if (isa (a, "single") || isa (b, "single"))
+    small = max ([small, 1]) * eps ("single") * 1e4 * (1 + numel (p))^2;
+  else
+    small = max ([small, 1]) * eps * 1e4 * (1 + numel (p))^2;
+  endif
   p(abs (p) < small) = 0;
 
   ## Determine if the poles are (effectively) real, or imaginary.
@@ -334,8 +338,11 @@ function [pnum, pden, e] = rresidue (r, p, k, toler, e)
   endif
 
   ## Check for leading zeros and trim the polynomial coefficients.
-
-  small = max ([max(abs(pden)), max(abs(pnum)), 1]) * eps;
+  if (isa (r, "single") || isa (p, "single") || isa (k, "single"))
+    small = max ([max(abs(pden)), max(abs(pnum)), 1]) * eps ("single");
+  else
+    small = max ([max(abs(pden)), max(abs(pnum)), 1]) * eps;
+  endif
 
   pnum(abs (pnum) < small) = 0;
   pden(abs (pden) < small) = 0;

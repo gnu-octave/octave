@@ -24,6 +24,26 @@
 
 2008-05-12  David Bateman  <dbateman@free.fr>
 
+	* control/base/__stepimp__.m, control/base/bode_bounds.m,
+	control/base/damp.m, control/base/dlqr.m, control/base/lsim.m,
+	control/base/tzero.m, control/hinf/hinfsyn.m,
+	control/hinf/is_dgkf.m, control/system/d2c.m,
+	control/system/is_controllable.m, control/system/is_detectable.m,
+	control/system/is_stabilizable.m, control/system/is_stable.m,
+	control/system/sysconnect.m, general/bicubic.m,
+	general/cplxpair.m, general/isdefinite.m, general/issymmetric.m,
+	general/quadgk.m, general/quadl.m, general/quadv.m,
+	geometry/delaunayn.m, linear-algebra/krylov.m,
+	linear-algebra/null.m, linear-algebra/onenormest.m,
+	linear-algebra/orth.m, linear-algebra/rank.m,
+	linear-algebra/rref.m, optimization/qp.m, optimization/sqp.m,
+	polynomial/polygcd.m, polynomial/residue.m, sparse/normest.m,
+	specfun/erfinv.m, statistics/distributions/betainv.m,
+	statistics/distributions/gaminv.m,
+	statistics/distributions/kolmogorov_smirnov_cdf.m,
+	statistics/tests/manova.m: Modify calls to eps to allow for single
+	precision types.
+
 	* general/isa.m: Also treat "float: and "numeric" as the class
 	argument.
 

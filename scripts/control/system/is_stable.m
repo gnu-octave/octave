@@ -69,7 +69,11 @@ function retval = is_stable (a, tol, disc)
   endif
 
   if (nargin < 2)
-    tol = 200*eps;
+    if (isa (a, "single"))
+      tol = 200 * eps("single");
+    else
+      tol = 200 * eps;
+    endif
   elseif (! isscalar (tol))
     error ("is_stable: tol(%dx%d) must be a scalar", rows (tol),
 	   columns (tol));

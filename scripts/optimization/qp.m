@@ -188,7 +188,12 @@ function [x, obj, INFO, lambda] = qp (x0, H, q, A, b, lb, ub, A_lb, A_in, A_ub)
     n_in = length (bin);
 
     ## Check if the initial guess is feasible.
-    rtol = sqrt (eps);
+    if (isa (x0, "single") || isa (H, "single") || isa (q, "single") || isa (A, "single")
+	|| isa (b, "single"))
+      rtol = sqrt (eps ("single"));
+    else
+      rtol = sqrt (eps);
+    endif
 
     eq_infeasible = (n_eq > 0 && norm (A*x0-b) > rtol*(1+norm (b)));
     in_infeasible = (n_in > 0 && any (Ain*x0-bin < -rtol*(1+norm (bin))));

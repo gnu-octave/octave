@@ -66,7 +66,8 @@ function [y, t] = __stepimp__ (sitype, sys, inp, tstop, n)
   DIGITAL = is_digital (sys);
   if (DIGITAL)
     NSTATES = ndstates;
-    if (TSAMPLE < eps)
+    if (isa (TSAMPLE, "single") && TSAMPLE < eps ("single") ||
+	!isa (TSAMPLE, "single") && TSAMPLE < eps)
       error ("__stepimp__: sampling time of discrete system too small")
     endif
   else

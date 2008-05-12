@@ -45,7 +45,11 @@ function x = polygcd (b, a, tol)
 
   if (nargin == 2 || nargin == 3)
     if (nargin == 2)
-      tol = sqrt (eps);
+      if (isa (a, "single") || isa (b, "single"))
+	tol = sqrt (eps ("single"));
+      else
+	tol = sqrt (eps);
+      endif
     endif
     if (length (a) == 1 || length (b) == 1)
       if (a == 0)

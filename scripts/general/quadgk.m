@@ -291,12 +291,18 @@ function [q, err] = quadgk (f, a, b, varargin)
       q0 = sum (q_subs);
       err0 = sum (q_errs);
     
+      if (isa (a, "single") || isa (b, "single") || isa (waypoints, "single"))
+	myeps = eps ("single");
+      else
+	myeps = eps;
+      endif
+
       first = true;
       while (true)
 	## Check for sub-intervals that are too small. Test must be
 	## performed in untransformed sub-intervals. What is a good
 	## value for this test. Shampine suggests 100*eps
-	if (any (diff (trans (subs), [], 2) / (b - a) < 100 * eps))
+	if (any (diff (trans (subs), [], 2) / (b - a) < 100 * myeps))
 	  q = q0;
 	  err = err0;
 	  break;

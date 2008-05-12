@@ -136,7 +136,12 @@ function [K, g, GW, Xinf, Yinf] = hinfsyn (Asys, nu, ny, gmin, gmax, gtol, ptol,
   endif
   ## set default arguments
   if (nargin < 8)
-    tol = 200*eps;
+    if (isa (Asys.a, "single") || isa (Asys.b, "single") || isa (Asys.c, "single") ||
+	isa (Asys.d, "single"))
+      tol = 200*eps("single");
+    else
+      tol = 200*eps;
+    endif
   elseif (! is_sample (tol))
     error ("tol must be a positive scalar.")
   endif

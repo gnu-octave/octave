@@ -62,29 +62,36 @@ function inv = betainv (x, a, b)
       y = a / (a + b) * ones (size (k));
     endif
     x = x (k);
-    l = find (y < eps);
-    if (any (l))
-      y(l) = sqrt (eps) * ones (length (l), 1);
+
+    if (isa (y, "single"))
+      myeps = eps ("single");
+    else
+      myeps = eps;
     endif
-    l = find (y > 1 - eps);
+
+    l = find (y < myeps);
     if (any (l))
-      y(l) = 1 - sqrt (eps) * ones (length (l), 1);
+      y(l) = sqrt (myeps) * ones (length (l), 1);
+    endif
+    l = find (y > 1 - myeps);
+    if (any (l))
+      y(l) = 1 - sqrt (myeps) * ones (length (l), 1);
     endif
 
     y_old = y;
     for i = 1 : 10000
       h     = (betacdf (y_old, a, b) - x) ./ betapdf (y_old, a, b);
       y_new = y_old - h;
-      ind   = find (y_new <= eps);
+      ind   = find (y_new <= myeps);
       if (any (ind))
         y_new (ind) = y_old (ind) / 10;
       endif
-      ind = find (y_new >= 1 - eps);
+      ind = find (y_new >= 1 - myeps);
       if (any (ind))
         y_new (ind) = 1 - (1 - y_old (ind)) / 10;
       endif
       h = y_old - y_new;
-      if (max (abs (h)) < sqrt (eps))
+      if (max (abs (h)) < sqrt (myeps))
         break;
       endif
       y_old = y_new;

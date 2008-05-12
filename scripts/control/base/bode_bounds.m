@@ -48,11 +48,17 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
     zer = reshape (zer, 1, length (zer));
   endif
 
+  if (isa (zer, "single") || isa (pol, "single"))
+    myeps = eps ("single");
+  else
+    myeps = eps;
+  endif
+
   ## check for natural frequencies away from omega = 0
   if (DIGITAL)
     ## The 2nd conditions prevents log(0) in the next log command
-    iiz = find (abs(zer-1) > norm(zer)*eps && abs(zer) > norm(zer)*eps);
-    iip = find (abs(pol-1) > norm(pol)*eps && abs(pol) > norm(pol)*eps);
+    iiz = find (abs(zer-1) > norm(zer)*myeps && abs(zer) > norm(zer)*myeps);
+    iip = find (abs(pol-1) > norm(pol)*myeps && abs(pol) > norm(pol)*myeps);
 
     ## avoid dividing empty matrices, it would work but looks nasty
     if (! isempty (iiz))
@@ -68,8 +74,8 @@ function [wmin, wmax] = bode_bounds (zer, pol, DIGITAL, tsam)
     endif
   else
     ## continuous
-    iip = find (abs(pol) > norm(pol)*eps);
-    iiz = find (abs(zer) > norm(zer)*eps);
+    iip = find (abs(pol) > norm(pol)*myeps);
+    iiz = find (abs(zer) > norm(zer)*myeps);
 
     if (! isempty (zer))
       czer = zer(iiz);

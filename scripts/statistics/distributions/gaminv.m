@@ -63,21 +63,28 @@ function inv = gaminv (x, a, b)
       y = a * b * ones (size (k));
     endif
     x = x (k);
-    l = find (x < eps);
+
+    if (isa (x, "single"))
+      myeps = eps ("single");
+    else
+      myeps = eps;
+    endif
+
+    l = find (x < myeps);
     if (any (l))
-      y(l) = sqrt (eps) * ones (length (l), 1);
+      y(l) = sqrt (myeps) * ones (length (l), 1);
     endif
 
     y_old = y;
     for i = 1 : 100
       h     = (gamcdf (y_old, a, b) - x) ./ gampdf (y_old, a, b);
       y_new = y_old - h;
-      ind   = find (y_new <= eps);
+      ind   = find (y_new <= myeps);
       if (any (ind))
         y_new (ind) = y_old (ind) / 10;
         h = y_old - y_new;
       endif
-      if (max (abs (h)) < sqrt (eps))
+      if (max (abs (h)) < sqrt (myeps))
         break;
       endif
       y_old = y_new;

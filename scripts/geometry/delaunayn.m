@@ -54,6 +54,12 @@ function t = delaunayn (x, varargin)
 
   t = __delaunayn__ (x, varargin{:});
 
+  if (isa (x, "single"))
+    myeps = eps ("single");
+  else
+    myeps = eps;
+  endif
+
   ## Try to remove the zero volume simplices. The volume of the i-th simplex is
   ## given by abs(det(x(t(i,1:end-1),:)-x(t(i,2:end),:)))/prod(1:n) 
   ## (reference http://en.wikipedia.org/wiki/Simplex). Any simplex with a 
@@ -67,7 +73,7 @@ function t = delaunayn (x, varargin)
   [nt, n] = size (t);
   for i = 1:nt
     X = x(t(i,1:end-1),:) - x(t(i,2:end),:);
-    if (abs (det (X)) /  sqrt (sum (X .^ 2, 2)) < 1e3 * eps)
+    if (abs (det (X)) /  sqrt (sum (X .^ 2, 2)) < 1e3 * myeps)
      idx = [idx, i];
     endif
   endfor

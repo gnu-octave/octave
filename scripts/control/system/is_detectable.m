@@ -59,7 +59,11 @@ function [retval, U] = is_detectable (a, c, tol, dflg)
   endif
 
   if (! exist ("tol"))
-    tol = 200*eps;
+    if (isa (a, "single") || isa (c, "single"))
+      tol = 200 * eps("single");
+    else
+      tol = 200 * eps;
+    endif
   endif
 
   retval = is_stabilizable (a', c', tol, dflg);

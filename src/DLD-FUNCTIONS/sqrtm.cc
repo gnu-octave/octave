@@ -270,7 +270,7 @@ Manchester, England, January 1999.\n\
 		    normX = getmax (normX, abs (X(i,j)));
 		  }
 
-	      if (imagX < normX * 100 * DBL_EPSILON)
+	      if (imagX < normX * 100 * FLT_EPSILON)
 		retval(0) = real (X);
 	      else
 		retval(0) = X;
@@ -321,11 +321,11 @@ Manchester, England, January 1999.\n\
 
 	  if (nargout < 2)
 	    {
-	      if (err > 100*(minT+DBL_EPSILON)*n)
+	      if (err > 100*(minT+FLT_EPSILON)*n)
 		{
 		  if (minT == 0.0)
 		    error ("sqrtm: A is singular, sqrt may not exist");
-		  else if (minT <= sqrt (DBL_MIN))
+		  else if (minT <= sqrt (FLT_MIN))
 		    error ("sqrtm: A is nearly singular, failed to find sqrt");
 		  else
 		    error ("sqrtm: failed to find sqrt");

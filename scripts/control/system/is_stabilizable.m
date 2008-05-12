@@ -70,9 +70,12 @@ function retval = is_stabilizable (a, b, tol, dflg)
   endif
 
   if (! exist ("tol"))
-    tol = 200*eps;
+    if (isa (a, "single") || isa (b, "single"))
+      tol = 200 * eps("single");
+    else
+      tol = 200 * eps;
+    endif
   endif
-
 
   ## Checking dimensions
   n = is_square (a);

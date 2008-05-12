@@ -32,8 +32,14 @@ function [e1, c] = normest (A, tol)
   if (nargin < 2)
     tol = 1e-6;
   endif
-  if (tol < eps)
-    tol = eps
+  if (isa (A, "single"))
+    if (tol < eps ("single"))
+      tol = eps ("single");
+    endif
+  else
+    if (tol < eps)
+      tol = eps
+    endif
   endif
   if (ndims(A) != 2)
     error ("normest: A must be a matrix");

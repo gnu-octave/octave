@@ -130,7 +130,11 @@ function [k, p, e] = dlqr (a, b, q, r, s)
 
   ## Checking stabilizability and detectability (dimensions are checked
   ## inside these calls).
-  tol = 200*eps;
+  if (isa (a, "single") || isa (b, "single") || isa (q, "single") || isa (r, "single"))
+    tol = 200 * eps ("single");
+  else
+    tol = 200 * eps;
+  endif
   if (is_stabilizable (ao, b, tol, 1) == 0)
     error ("dlqr: (a,b) not stabilizable");
   endif

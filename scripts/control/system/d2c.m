@@ -89,6 +89,13 @@ function csys = d2c (sys, opt)
   endif
   T = sysgettsam (sys);
 
+  if (isa (sys.a, "single") || isa (sys.b, "single") || isa (sys.c, "single") ||
+      isa (sys.d, "single"))
+    myeps = eps ("single");
+  else
+    myeps = eps;
+  endif
+
   if (strcmp (opt, "bi"))
     ## bilinear transform
     ## convert with bilinear transform
@@ -98,7 +105,7 @@ function csys = d2c (sys, opt)
     [a, b, c, d, tsam, n, nz, stname, inname, outname, yd] = sys2ss (sys);
 
     poles = eig (a);
-    if (find (abs (poles-1) < 200*(n+nz)*eps))
+    if (find (abs (poles-1) < 200*(n+nz)*myeps))
       warning ("d2c: some poles very close to one.  May get bad results.");
     endif
 
@@ -136,10 +143,10 @@ function csys = d2c (sys, opt)
     endif
 
     poles = eig (a);
-    if (find (abs (poles) < 200*(n+nz)*eps))
+    if (find (abs (poles) < 200*(n+nz)*myeps))
       warning ("d2c: some poles very close to zero.  logm not performed");
       Mtop = zeros (ma, na+nb);
-    elseif (find (abs (poles-1) < 200*(n+nz)*eps))
+    elseif (find (abs (poles-1) < 200*(n+nz)*myeps))
       warning ("d2c: some poles very close to one.  May get bad results.");
       logmat = real (logm (Amat) / T);
       Mtop = logmat(1:na,:);

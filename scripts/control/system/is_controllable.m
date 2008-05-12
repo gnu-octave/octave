@@ -90,7 +90,11 @@ function [retval, U] = is_controllable (a, b, tol)
 
   ## check for default tolerance
   if (deftol)
-    tol = 1000*eps;
+    if (isa (a, "single") || isa (b, "single"))
+      tol = 1000 * eps("single");
+    else
+      tol = 1000*eps;
+    endif
   endif
 
   ## check tol dimensions

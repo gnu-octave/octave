@@ -38,7 +38,11 @@ function retval = issymmetric (x, tol)
     retval = issquare (x);
     if (retval != 0)
       if (nargin == 1)
-        tol = eps;
+	if (isa (x, "single"))
+	  tol = eps("single");
+	else
+	  tol = eps; 
+	endif
       endif
       norm_x = norm (x, inf);
       if (norm_x != 0 && norm (x - x', inf) / norm_x > tol)

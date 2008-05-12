@@ -59,7 +59,11 @@
 
 function [Uret, H, nu] = krylov (A, V, k, eps1, pflg);
 
-  defeps = 1e-12;
+  if (isa (A, "single") || isa (V, "single"))
+    defeps = 1e-6
+  else
+    defeps = 1e-12;
+  endif
 
   if (nargin < 3 || nargin > 5)
     print_usage ();

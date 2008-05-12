@@ -48,6 +48,13 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     extrapval = NaN;
   endif
 
+  if (isa (X, "single") || isa (Y, "single") || isa (Z, "single") || 
+      isa (XI, "single") || isa (YI, "single"))
+    myeps = eps("single");
+  else
+    myeps = eps;
+  endif
+
   if (nargin <= 2)
     ## bicubic (Z) or bicubic (Z, 2)
     if (nargin == 1) 
@@ -94,9 +101,9 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
 
 
     X = reshape (X, 1, cz);
-    X(cz) *= 1 + sign (X(cz))*eps;
+    X(cz) *= 1 + sign (X(cz))*myeps;
     if (X(cz) == 0) 
-      X(cz) = eps;
+      X(cz) = myeps;
     endif; 
     XI = reshape (XI, 1, length (XI));
     [m, i] = sort ([X, XI]);
@@ -104,9 +111,9 @@ function F = bicubic (X, Y, Z, XI, YI, extrapval, spline_alpha)
     xidx = o(find (i > cz));
     
     Y = reshape (Y, rz, 1);
-    Y(rz) *= 1 + sign (Y(rz))*eps;
+    Y(rz) *= 1 + sign (Y(rz))*myeps;
     if (Y(rz) == 0) 
-      Y(rz) = eps;
+      Y(rz) = myeps;
     endif; 
     YI = reshape (YI, length (YI), 1);
     [m, i] = sort ([Y; YI]);

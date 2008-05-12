@@ -60,7 +60,11 @@ function y = cplxpair (z, tol, dim)
   endif
 
   if (nargin < 2 || isempty (tol))
-    tol = 100*eps; 
+    if (isa (z, "single"))
+      tol = 100 * eps("single");
+    else
+      tol = 100*eps; 
+    endif
   endif
 
   nd = ndims (z);
@@ -95,7 +99,11 @@ function y = cplxpair (z, tol, dim)
   z = z(idx + n * ones (n, 1) * [0:m-1]);
 
   ## Put the purely real values at the end of the returned list
-  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin) < tol );
+  cls = "double";
+  if (isa (z, "single"))
+    cls = "single";
+  endif
+  [idxi, idxj] = find (abs (imag (z)) ./ (abs (z) + realmin(cls)) < tol );
   q = sparse (idxi, idxj, 1, n, m);
   nr = sum (q, 1);
   [q, idx] = sort (q, 1);

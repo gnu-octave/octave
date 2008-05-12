@@ -281,7 +281,11 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 	if (isvector (lb))
 	  __sqp_lb__ = lb;
 	elseif (isempty (lb))
-	  __sqp_lb__ = -realmax;
+	  if (isa (x, "single"))
+	    __sqp_lb__ = -realmax ("single");
+	  else
+	    __sqp_lb__ = -realmax;
+	  endif
 	else
 	  error ("sqp: invalid lower bound");
 	endif
@@ -290,7 +294,11 @@ function [x, obj, info, iter, nf, lambda] = sqp (x, objf, cef, cif, lb, ub, maxi
 	if (isvector (ub))
 	  __sqp_ub__ = ub;
 	elseif (isempty (lb))
-	  __sqp_ub__ = realmax;
+	  if (isa (x, "single"))
+	    __sqp_ub__ = realmax ("single");
+	  else
+	    __sqp_ub__ = realmax;
+	  endif
 	else
 	  error ("sqp: invalid upper bound");
 	endif

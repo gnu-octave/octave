@@ -83,7 +83,12 @@ function manova (Y, g)
   n_w = n - k;
 
   l = real (eig (SSB / SSW));
-  l (l < eps) = 0;
+
+  if (isa (l, "single"))
+    l (l < eps ("single")) = 0;
+  else
+    l (l < eps) = 0;
+  endif
 
   ## Wilks' Lambda
   ## =============

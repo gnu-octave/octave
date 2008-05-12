@@ -76,7 +76,8 @@ function damp (p, tsam)
     endif
     d0 = -cos (atan2 (imag (cpole), real (cpole)));
     f0 = 0.5 / pi * abs (cpole);
-    if (abs (imag (cpole)) < eps)
+    if (isa (cpole, "single") && abs(imag (cpole)) < eps ("single") || 
+	! isa (cpole, "single") && abs (imag (cpole)) < eps)
       printf ("%12f         ---  %12f  %10f  %12f\n",
              real (pole), abs (pole), d0, f0);
     else

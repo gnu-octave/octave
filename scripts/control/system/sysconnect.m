@@ -86,12 +86,19 @@ function sys = sysconnect (sys, output_list, input_list, order, tol)
     error ("sysconnect: order must be either 0 or 1")
   endif
 
+  if (isa (sys.a, "single") || isa (sys.b, "single") || isa (sys.c, "single") ||
+      isa (sys.d, "single"))
+    myeps = eps ("single");
+  else
+    myeps = eps;
+  endif
+
   if (nargin < 5)
-    tol = 200*eps;
+    tol = 200*myeps;
   elseif (! is_sample (tol))
     error ("sysconnect: tol must be a positive scalar");
-  elseif (tol > 1e2*sqrt(eps))
-    warning ("sysconnect: tol set to large value=%g, eps=%g", tol, eps);
+  elseif (tol > 1e2*sqrt(myeps))
+    warning ("sysconnect: tol set to large value=%g, eps=%g", tol, myeps);
   endif
 
   ## convert signal names to indices

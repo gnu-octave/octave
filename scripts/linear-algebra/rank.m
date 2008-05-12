@@ -42,7 +42,11 @@ function retval = rank (A, tol)
     if (isempty (sigma))
       tolerance = 0;
     else
-      tolerance = max (size (A)) * sigma (1) * eps;
+      if (isa (A, "single"))
+	tolerance = max (size (A)) * sigma (1) * eps ("single");
+      else
+	tolerance = max (size (A)) * sigma (1) * eps;
+      endif
     endif
   elseif (nargin == 2)
     sigma = svd (A);

@@ -33,7 +33,11 @@ function retval = isdefinite (x, tol)
 
   if (nargin == 1 || nargin == 2)
     if (nargin == 1)
-      tol = 100*eps;
+      if (isa (x, "single"))
+	tol = 100 * eps("single");
+      else
+	tol = 100*eps; 
+      endif
     endif
     sym = issymmetric (x, tol);
     if (sym > 0)

@@ -1,3 +1,15 @@
+2008-05-21  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/sqrt.m: Replace DBL_* with FLT_* for single
+	precision types.
+	* data.cc (static octave_value fill_matrix (const
+	octave_value_list&, double, float, const char *)): Add function
+	with additional argument to allow for different valid for double
+	and single precision.
+	(Finf, FNaN, FNA, Frealmax, Frealmin): Use it here.
+	(Feps): Modify behavior for a single numerical argument to give
+	difference to next largest value in the class of the type passed.
+
 2008-05-21  John W. Eaton  <jwe@octave.org>
 
 	* pt-idx.h (tree_index_expression::tree_index_expression (int, int)): 

@@ -52,6 +52,11 @@ function [Q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   if (nargin < 5)
     trace = []; 
   endif
+  if (isa (a, "single") || isa (b, "single"))
+    myeps = eps ("single");
+  else
+    myeps = eps;
+  endif
   if (isempty (tol))
     tol = 1e-6; 
   endif
@@ -69,10 +74,10 @@ function [Q, fcnt] = quadv (f, a, b, tol, trace, varargin)
   ## If have edge singularities, move edge point by eps*(b-a) as
   ## discussed in Shampine paper used to implement quadgk
   if (isinf (fa))
-    fa = feval (f, a + eps * (b-a), varargin{:});
+    fa = feval (f, a + myeps * (b-a), varargin{:});
   endif
   if (isinf (fb))
-    fb = feval (f, b - eps * (b-a), varargin{:});
+    fb = feval (f, b - myeps * (b-a), varargin{:});
   endif
 
   h = (b - a) / 2;
@@ -85,7 +90,7 @@ function [Q, fcnt] = quadv (f, a, b, tol, trace, varargin)
     warning("Maximum iteration count reached");
   elseif (isnan(Q) || isinf (Q))
     warning ("Infinite or NaN function evaluations were returned");
-  elseif (hmin < (b - a) * eps)
+  elseif (hmin < (b - a) * myeps)
     warning ("Minimum step size reached. Possibly singular integral");
   endif
 endfunction

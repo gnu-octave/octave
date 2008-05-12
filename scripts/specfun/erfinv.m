@@ -35,7 +35,11 @@ function [y, iterations] = erfinv (x)
   endif
 
   maxit = 100;
-  tol = eps;
+  if (isa (x, "single"))
+    tol = eps ("single");
+  else
+    tol = eps;
+  endif
 
   iterations = 0;
 

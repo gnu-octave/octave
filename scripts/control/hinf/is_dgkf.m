@@ -139,8 +139,13 @@ function [retval, dgkf_struct] = is_dgkf (Asys, nu, ny, tol)
     error ("Argument 1 must be a system data structure");
   endif
   if (nargin < 4)
-    tol = 200*eps;
-  elseif (! is_sample (tol))
+    if (isa (Asys.a, "single") || isa (Asys.b, "single") || isa (Asys.c, "single") ||
+	isa (Asys.d, "single"))
+      tol = 200*eps("single");
+    else
+      tol = 200*eps;
+    endif
+      elseif (! is_sample (tol))
     error ("is_dgkf: tol must be a positive scalar")
   endif
 

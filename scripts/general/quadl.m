@@ -63,14 +63,19 @@ function Q = quadl (f, a, b, tol, trace, varargin)
   if (nargin < 5)
     trace = []; 
   endif
+  if (isa (a, "single") || isa (b, "single"))
+    myeps = eps ("single");
+  else
+    myeps = eps;
+  endif
   if (isempty (tol))
-    tol = eps; 
+    tol = myeps; 
   endif
   if (isempty (trace))
     trace = 0; 
   endif
-  if (tol < eps)
-    tol = eps;
+  if (tol < myeps)
+    tol = myeps;
   endif
 
   m = (a+b)/2; 
@@ -119,7 +124,7 @@ function Q = quadl (f, a, b, tol, trace, varargin)
   if (R > 0 && R < 1)
     tol = tol/R; 
   endif
-  is = s*abs(is)*tol/eps;
+  is = s*abs(is)*tol/myeps;
   if (is == 0)
     is = b-a;
   endif

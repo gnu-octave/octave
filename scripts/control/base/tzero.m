@@ -98,7 +98,11 @@ function [zer, gain] = tzero (A, B, C, D)
   ## balance coefficients
   Asys = __zgpbal__ (Asys);
   [A, B, C, D] = sys2ss (Asys);
-  meps = 2*eps*norm ([A, B; C, D], "fro");
+  if (isa ([A, B; C, D], "single"))
+    meps = 2*eps("single")*norm ([A, B; C, D], "fro");
+  else
+    meps = 2*eps*norm ([A, B; C, D], "fro");
+  endif
   ## ENVD algorithm
   Asys = zgreduce (Asys, meps);
   [A, B, C, D] = sys2ss (Asys);

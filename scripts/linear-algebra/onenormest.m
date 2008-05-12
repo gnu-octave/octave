@@ -111,6 +111,7 @@ function [est, v, w, iter] = onenormest (varargin)
     else
       t = min (n, default_t);
     endif
+    issing = isa (varargin {1}, "single");
   else
     if (size (varargin, 2) < 3)
       print_usage();
@@ -123,6 +124,7 @@ function [est, v, w, iter] = onenormest (varargin)
     else
       t = default_t;
     endif
+    issing = isa (varargin {3}, "single");
   endif
 
   ## Initial test vectors X.
@@ -132,6 +134,13 @@ function [est, v, w, iter] = onenormest (varargin)
   been_there = zeros (n, 1); # Track if a vertex has been visited.
   est_old = 0; # To check if the estimate has increased.
   S = zeros (n, t); # Normalized vector of signs.  The normalization is 
+
+  if (issing)
+    myeps = eps ("single");
+    X = single (X);
+  else
+    myeps = eps;
+  endif
 
   for iter = 1 : itmax + 1
     Y = feval (apply, X);

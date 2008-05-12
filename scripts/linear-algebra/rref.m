@@ -44,7 +44,11 @@ function [A, k] = rref (A, tolerance)
   [rows, cols] = size (A);
 
   if (nargin < 2)
-    tolerance = eps * max (rows, cols) * norm (A, inf);
+    if (isa (A, "single"))
+      tolerance = eps ("single") * max (rows, cols) * norm (A, inf ("single"));
+    else
+      tolerance = eps * max (rows, cols) * norm (A, inf);
+    endif
   endif
 
   used = zeros (1, cols);

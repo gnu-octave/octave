@@ -270,11 +270,13 @@ IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
     range(0), initialized (0), frozen (0),
     colon_equiv_checked (0), colon_equiv (0), orig_dims ()
 {
+  dim_vector dv = bnda.dims ();
+
+  orig_dims = ((dv.length () == 2 && dv(0) == 1)
+	       ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
+
   if (len == 0)
-    {
-      orig_dims = dim_vector (0, 0);
-      initialized = 1;
-    }
+    initialized = 1;
   else
     {
       data = new octave_idx_type [len];
@@ -284,11 +286,6 @@ IDX_VEC_REP::idx_vector_rep (const boolNDArray& bnda)
       for (octave_idx_type i = 0, k = 0; i < ntot && k < len; i++)
 	if (bnda.elem (i))
 	  data[k++] = i;
-
-      dim_vector dv = bnda.dims ();
-
-      orig_dims = ((dv.length () == 2 && dv(0) == 1)
-		   ? dim_vector (1, len) : orig_dims = dim_vector (len, 1));
 
       init_state ();
     }

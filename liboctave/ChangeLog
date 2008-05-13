@@ -1,3 +1,9 @@
+2008-05-13  David Bateman  <dbateman@free.fr>
+
+	* idx-vector.cc (IDX_VEC_REP::idx_vector_rep (const boolNDArray&)):
+	If len is zero size the index vector in the same manner as if len
+	is not zero.
+
 2008-05-05  John W. Eaton  <jwe@octave.org>
 
 	* cmd-edit.cc (command_editor::re_read_init_file,

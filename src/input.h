@@ -91,6 +91,9 @@ extern OCTINTERP_API bool Vdrawnow_requested;
 // TRUE if we are in debugging mode.
 extern bool Vdebugging;
 
+// The current line that we are debugging
+extern int Vdebugging_current_line;
+
 extern std::string gnu_readline (const std::string& s, bool force_readline = false);
 
 extern void initialize_command_input (void);

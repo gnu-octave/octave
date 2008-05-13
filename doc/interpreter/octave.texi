@@ -353,8 +353,10 @@ Errors and Warnings
 Debugging
 
 * Entering Debug Mode::
+* Leaving Debug Mode::
 * Breakpoints::
 * Debug Mode::
+* Call Stack::
 
 Input and Output
 

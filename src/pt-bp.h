@@ -166,31 +166,40 @@ extern bool octave_debug_on_interrupt_state;
       octave_function *xfcn = octave_call_stack::current (); \
  \
       if (octave_debug_on_interrupt_state \
-	  || (tree::break_next && tree::last_line == 0) \
-	  || (tree::break_next \
+	  || (tree::break_next >= 0 && tree::last_line == 0) \
+	  || (tree::break_next >= 0 \
 	      && xfcn == tree::break_function \
 	      && tree::last_line != line ()) \
 	  || is_breakpoint ()) \
         { \
-          octave_debug_on_interrupt_state = false; \
+	  if (!octave_debug_on_interrupt_state && tree::break_next > 0) \
+	    { \
+	      tree::break_next--; \
+	      if (tree::last_line > 0) \
+		tree::last_line = line(); \
+	    } \
+	  else \
+	    { \
+              octave_debug_on_interrupt_state = false; \
  \
-          tree::break_next = false; \
+              tree::break_next = -1; \
  \
-          if (xfcn) \
-            octave_stdout << xfcn->name () << ": ";  \
+              if (xfcn) \
+                octave_stdout << xfcn->name () << ": ";  \
  \
-          octave_stdout << "line " << line () << ", " \
-			<< "column " << column () \
-			<< std::endl; \
+              octave_stdout << "line " << line () << ", " \
+			    << "column " << column () \
+			    << std::endl; \
  \
-          tree_print_code tpc (octave_stdout); \
-          this->accept (tpc); \
+              tree_print_code tpc (octave_stdout); \
+              this->accept (tpc); \
  \
-          octave_stdout << std::endl; \
+              octave_stdout << std::endl; \
  \
-          tree::break_statement = this; \
+              tree::break_statement = this; \
  \
-          do_keyboard (); \
+              do_keyboard (); \
+	    } \
         } \
     } \
   while (0)

@@ -147,6 +147,9 @@ bool Vdrawnow_requested = false;
 // TRUE if we are in debugging mode.
 bool Vdebugging = false;
 
+// The current line that we are debugging
+int Vdebugging_current_line = -1;
+
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
 
@@ -566,21 +569,78 @@ initialize_command_input (void)
   command_editor::set_quoting_function (quoting_filename);
 }
 
-static bool
-match_sans_spaces_semi (const std::string& standard, const std::string& test)
+static void
+get_debug_input (const std::string& prompt)
 {
-  size_t beg = test.find_first_not_of (" \t");
+  octave_user_code *caller = octave_call_stack::caller_user_code ();
+  std::string nm;
 
-  if (beg != NPOS)
+  if (caller)
     {
-      size_t end = test.find_last_not_of ("; \t");
+      nm = caller->fcn_file_name ();
 
-      size_t len = end == NPOS ? NPOS : end - beg + 1;
+      if (nm.empty ())
+	nm = caller->name ();
 
-      return (test.substr (beg, len) == standard);
+      Vdebugging_current_line = octave_call_stack::current_line ();
+    }
+  else
+    Vdebugging_current_line = -1;
+
+  std::ostringstream buf;
+
+  if (! nm.empty ())
+    {
+      if (Vgud_mode)
+	{
+	  static char ctrl_z = 'Z' & 0x1f;
+
+	  buf << ctrl_z << ctrl_z << nm << ":" << Vdebugging_current_line;
+	}
+      else
+	{
+	  buf << "stopped in " << nm;
+
+	  if (Vdebugging_current_line > 0)
+	    buf << " at line " << Vdebugging_current_line;
+	}
     }
 
-  return false;
+  std::string msg = buf.str ();
+
+  if (! msg.empty ())
+    message (Vgud_mode ? 0 : "keyboard", msg.c_str ());
+
+  unwind_protect::begin_frame ("get_debug_input");
+
+  unwind_protect_str (VPS1);
+  VPS1 = prompt;
+
+  while (Vdebugging)
+    {
+      reset_error_handler ();
+
+      reset_parser ();
+
+      // This is the same as yyparse in parse.y.
+      int retval = octave_parse ();
+
+      if (retval == 0 && global_command)
+	{
+	  global_command->eval ();
+
+	  delete global_command;
+
+	  global_command = 0;
+
+	  OCTAVE_QUIT;
+
+	  if (octave_completion_matches_called)
+	    octave_completion_matches_called = false;	    
+	}
+    }
+
+  unwind_protect::run_frame ("get_debug_input");
 }
 
 // If the user simply hits return, this will produce an empty matrix.
@@ -597,62 +657,13 @@ get_user_input (const octave_value_list& args, int nargout)
   if (nargin == 2)
     read_as_string++;
 
-  std::string nm;
-  int line = -1;
+  std::string prompt = args(0).string_value ();
 
-  if (Vdebugging)
+  if (error_state)
     {
-      octave_user_code *caller = octave_call_stack::caller_user_code ();
-
-      if (caller)
-	{
-	  nm = caller->fcn_file_name ();
-
-	  if (nm.empty ())
-	    nm = caller->name ();
-
-	  line = octave_call_stack::current_line ();
-	}
+      error ("input: unrecognized argument");
+      return retval;
     }
-
-  std::ostringstream buf;
-
-  if (! nm.empty ())
-    {
-      if (Vgud_mode)
-	{
-	  static char ctrl_z = 'Z' & 0x1f;
-
-	  buf << ctrl_z << ctrl_z << nm << ":" << line;
-	}
-      else
-	{
-	  buf << "stopped in " << nm;
-
-	  if (line > 0)
-	    buf << " at line " << line;
-	}
-    }
-
-  std::string msg = buf.str ();
-
-  if (! msg.empty ())
-    message (Vgud_mode ? 0 : "keyboard", msg.c_str ());
-
-  std::string prompt = "debug> ";
-
-  if (nargin > 0)
-    {
-      prompt = args(0).string_value ();
-
-      if (error_state)
-	{
-	  error ("input: unrecognized argument");
-	  return retval;
-	}
-    }
-
- again:
 
   flush_octave_stdout ();
 
@@ -673,43 +684,7 @@ get_user_input (const octave_value_list& args, int nargout)
 	octave_diary << "\n";
 
       if (len < 1)
-	{
-	  if (Vdebugging)
-	    goto again;
-	  else
-	    return read_as_string ? octave_value ("") : octave_value (Matrix ());
-	}
-
-      if (Vdebugging)
-	{
-	  if (match_sans_spaces_semi ("exit", input_buf)
-	      || match_sans_spaces_semi ("quit", input_buf)
-	      || match_sans_spaces_semi ("return", input_buf)
-	      || match_sans_spaces_semi ("dbcont", input_buf))
-	    {
-	      return retval;
-	    }
-	  else if (match_sans_spaces_semi ("dbstep", input_buf))
-	    {
-	      tree::break_next = true;
-
-	      tree::last_line = 0;
-
-	      tree::break_function = octave_call_stack::current ();
-
-	      return retval;
-	    }
-	  else if (match_sans_spaces_semi ("dbnext", input_buf))
-	    {
-	      tree::break_next = true;
-
-	      tree::last_line = octave_call_stack::current_line ();
-
-	      tree::break_function = octave_call_stack::current ();
-
-	      return retval;
-	    }
-	}
+	return read_as_string ? octave_value ("") : octave_value (Matrix ());
 
       if (read_as_string)
 	{
@@ -723,9 +698,7 @@ get_user_input (const octave_value_list& args, int nargout)
 	{
 	  int parse_status = 0;
 
-	  bool silent = ! Vdebugging;
-
-	  retval = eval_string (input_buf, silent, parse_status, nargout);
+	  retval = eval_string (input_buf, true, parse_status, nargout);
 
 	  if (! Vdebugging && retval.length () == 0)
 	    retval(0) = Matrix ();
@@ -733,19 +706,6 @@ get_user_input (const octave_value_list& args, int nargout)
     }
   else
     error ("input: reading user-input failed!");
-
-  if (Vdebugging)
-    {
-      // Clear error_state so that if errors were encountered while
-      // evaluating user input, extra error messages will not be
-      // printed after we return.
-
-      reset_error_handler ();
-
-      retval = octave_value_list ();
-
-      goto again;
-    }
 
   return retval;
 }
@@ -895,9 +855,12 @@ do_keyboard (const octave_value_list& args)
   Vsaving_history = true;
   Vdebugging = true;
 
-  octave_value_list tmp = get_user_input (args, 0);
+  std::string prompt = "debug> ";
+  if (nargin > 0)
+    prompt = args(0).string_value ();
 
-  retval = tmp(0);
+  if (! error_state)
+    get_debug_input (prompt);
 
   unwind_protect::run_frame ("do_keyboard");
 

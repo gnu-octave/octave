@@ -27,25 +27,14 @@ where execution has stopped can be examined and modified to check for
 errors.
 
 The normal commandline editing and history functions are available in
-debug mode. However, one limitation on the debug mode is that
-commands entered at the debug prompt are evaluated as strings, rather
-than being handled by the Octave parser. This means that all commands in
-debug mode must be contained on a single line. That is, it is alright to
-write
-
-@example
-debug> for i = 1:n, foo(i); endfor
-@end example
-
-@noindent
-in debug mode. However, writing the above in three lines will not be
-correctly evaluated. To leave the debug mode, you should simply type
-either @code{quit}, @code{exit}, @code{return} or @code{dbcont}.
+debug mode.
 
 @menu
 * Entering Debug Mode::
+* Leaving Debug Mode::
 * Breakpoints::
 * Debug Mode::
+* Call Stack::
 @end menu
 
 @node Entering Debug Mode
@@ -64,6 +53,22 @@ the functions @code{debug_on_interrupt}, @code{debug_on_warning} and
 @DOCSTRING(debug_on_warning)
 
 @DOCSTRING(debug_on_error)
+
+@node Leaving Debug Mode
+@section Leavinging Debug Mode
+
+To leave the debug mode, you should simply type either @code{dbcont} 
+or @code{return}.
+
+@DOCSTRING(dbcont}
+
+To quit debug mode and return directly to the prompt @code{dbquit}
+should be used instead
+
+@DOCSTRING(dbquit)
+
+Finally, typing @code{exit} or @code{quit} at the debug prompt will
+result in Octave terminating normally.
 
 @node Breakpoints
 @section Breakpoints
@@ -132,8 +137,17 @@ Octave entered debug mode.
 @DOCSTRING(dbtype)
 
 Debug mode equally allows single line stepping through a function using
-the commands @code{dbstep} and @code{dbnext}.  These differ slightly in
-the way they treat the next executable line if the next line itself is a
-function defined in an m-file.  The @code{dbnext} command will execute
-the next line, while staying in the existing function being debugged.
-The @code{dbstep} command will step in to the new function.
+the commands @code{dbstep}.
+
+@c leave dbnext undocumented
+
+@DOCSTRING(dbstep)
+
+@node Call Stack
+@section Call Stack
+
+@DOCSTRING(dbstack)
+
+@DOCSTRING(dbup)
+
+@DOCSTRING(dbdown)

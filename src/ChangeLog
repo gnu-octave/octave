@@ -1,3 +1,46 @@
+2008-05-20  David Bateman  <dbateman@free.fr>
+
+	* debug.cc (Fdbstop): If no line specified assume line 1.
+	(Fdbstep, Fdbcont, Fdbnext): Move debugging functions 
+	to normal commands.
+	(Fdbquit): New command to quit debugging mode and return to the 
+	prompt.
+	(Fdbstep): Modify the dbstep command for compatibility.
+	* input.cc (Vdebugging_current_line): Store current line being
+	debugged for use in DEFCMD versions of debug commands.
+	(match_sans_spaces_semi): Delete.
+	(static void get_debug_input (const std;string&)): New function to
+	parse input in debug mode using standard Octave parser.
+	(static octave_value_list get_user_input (const
+	octave_value_list&, int)): Remove debugging specialization.
+	* input.h (Vdebugging_current_line): Store current line being
+	debugged for use in DEFCMD versions of debug commands.
+	* parse.y (make_return_command): Special handling in debug mode.
+	* pt-bp.h (MAYBE_DO_BREAKPOINT): Support break in n lines needed
+	to support "dbstep N". 
+	* pt.cc (tree::break_next): Convert to a down counter to support
+	break in N lines. Breakpoint occure when tree::break_next is zero.
+	* toplev.cc (octave_user_script *
+	octave_call_stack::do_caller_user_script (difference_type) const):
+	Support skipping the first N functions to support "dbstep out".
+	(octave_user_function * octave_call_stack::do_caller_user_function
+	(difference_type) const): Ditto.
+	(octave_user_code * octave_call_stack::do_caller_user_code
+	(difference_type) const): Ditto.
+	* toplev.h (octave_user_script *
+	octave_call_stack::do_caller_user_script (difference_type) const):
+	Add difference_type argument.
+	(octave_user_function * octave_call_stack::do_caller_user_function
+	(difference_type) const): Ditto.
+	(octave_user_code * octave_call_stack::do_caller_user_code
+	(difference_type) const): Ditto.
+	(static octave_user_script *caller_script (difference_type)):
+	Ditto.
+	(static octave_user_function *caller_user_function
+	(difference_type q)): Ditto.
+	(static octave_user_code *caller_user_code (difference_type q)):
+	Ditto.
+
 2008-05-20  Kim Hansen  <kimhanse@gmail.com>
 
 	* load-path.cc (load_path::do_initialize):

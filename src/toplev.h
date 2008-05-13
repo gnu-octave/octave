@@ -94,6 +94,7 @@ public:
 
   typedef std::deque<call_stack_elt>::iterator iterator;
   typedef std::deque<call_stack_elt>::const_iterator const_iterator;
+  typedef std::deque<call_stack_elt>::difference_type difference_type;
 
   static bool instance_ok (void)
   {
@@ -149,21 +150,21 @@ public:
   }
   
   // First script on the stack.
-  static octave_user_script *caller_script (void)
+  static octave_user_script *caller_script (difference_type q = 0)
   {
-    return instance_ok () ? instance->do_caller_user_script () : 0;
+    return instance_ok () ? instance->do_caller_user_script (q) : 0;
   }
 
   // First user-defined function on the stack.
-  static octave_user_function *caller_user_function (void)
+  static octave_user_function *caller_user_function (difference_type q = 0)
   {
-    return instance_ok () ? instance->do_caller_user_function () : 0;
+    return instance_ok () ? instance->do_caller_user_function (q) : 0;
   }
 
   // First user-defined function on the stack.
-  static octave_user_code *caller_user_code (void)
+  static octave_user_code *caller_user_code (difference_type q = 0)
   {
-    return instance_ok () ? instance->do_caller_user_code () : 0;
+    return instance_ok () ? instance->do_caller_user_code (q) : 0;
   }
 
   static void
@@ -251,11 +252,11 @@ private:
     return retval;
   }
 
-  octave_user_script *do_caller_user_script (void) const;
+  octave_user_script *do_caller_user_script (difference_type q = 0) const;
 
-  octave_user_function *do_caller_user_function (void) const;
+  octave_user_function *do_caller_user_function (difference_type q = 0) const;
 
-  octave_user_code *do_caller_user_code (void) const;
+  octave_user_code *do_caller_user_code (difference_type q = 0) const; 
 
   void do_push (octave_function *f, symbol_table::scope_id scope,
 		symbol_table::context_id context)

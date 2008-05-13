@@ -1,3 +1,10 @@
+2008-05-20  David Bateman  <dbateman@free.fr>
+
+	* interpreter/debug.txi: Uodate documentation for multiline
+	input. Add documentation for dbcont, dbquit, dbstep, dbstqck, dbup
+	and dbdown functions.
+	* interpreter/octave.texi: Upodate index for debugging functions.
+
 2008-05-03  Rafael Laboissiere <rafael@debian.org>
 
 	* interpreter/expr.txi, interpreter/tips.txi: Use ischar instead of

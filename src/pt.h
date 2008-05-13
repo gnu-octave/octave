@@ -66,7 +66,7 @@ public:
     { return break_point; }
 
   // If true, stop executing at the next possible point.
-  static bool break_next;
+  static int break_next;
   
   // The line where dbnext was executed.
   static int last_line; 

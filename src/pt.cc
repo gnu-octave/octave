@@ -33,8 +33,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "pt.h"
 #include "pt-pr-code.h"
 
-// If true, stop executing at the next possible point.
-bool tree::break_next = false;
+// If zero, stop executing at the next possible point.
+int tree::break_next = -1;
 
 // The line where dbnext was executed.
 int tree::last_line = 0;

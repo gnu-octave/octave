@@ -112,11 +112,11 @@ octave_call_stack::do_current_column (void) const
 }
 
 octave_user_script *
-octave_call_stack::do_caller_user_script (void) const
+octave_call_stack::do_caller_user_script (difference_type q) const
 {
   octave_user_script *retval = 0;
 
-  for (const_iterator p = cs.begin (); p != cs.end (); p++)
+  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
     {
       const call_stack_elt& elt = *p;
 
@@ -133,11 +133,11 @@ octave_call_stack::do_caller_user_script (void) const
 }
 
 octave_user_function *
-octave_call_stack::do_caller_user_function (void) const
+octave_call_stack::do_caller_user_function (difference_type q) const
 {
   octave_user_function *retval = 0;
 
-  for (const_iterator p = cs.begin (); p != cs.end (); p++)
+  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
     {
       const call_stack_elt& elt = *p;
 
@@ -154,11 +154,11 @@ octave_call_stack::do_caller_user_function (void) const
 }
 
 octave_user_code *
-octave_call_stack::do_caller_user_code (void) const
+octave_call_stack::do_caller_user_code (difference_type q) const
 {
   octave_user_code *retval = 0;
 
-  for (const_iterator p = cs.begin (); p != cs.end (); p++)
+  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
     {
       const call_stack_elt& elt = *p;
 

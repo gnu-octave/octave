@@ -174,15 +174,6 @@ Interpreter:
 
   * Allow customization of the debug prompt.
 
-  * For the keyboard function, parse return (or quit) more
-    intelligently so that something like
-
-      debug> x = 1; return
-
-    will work as expected.
-
-  * Handle multi-line input at the keyboard/debug prompt correctly.
-
   * Fix the parser so that
 
       if (expr) 'this is a string' end

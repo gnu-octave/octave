@@ -380,6 +380,9 @@ The rline returned is the real line that the breakpoint was set at.\n\
 
   parse_dbfunction_params ("dbstop", args, symbol_name, lines);
 
+  if (lines.size () == 0)
+    lines[0] = 1;
+
   if (! error_state)
     retval = bp_table::add_breakpoint (symbol_name, lines);
 
@@ -832,6 +835,155 @@ If @var{n} is omitted, move down one frame.\n\
 
   return retval;
 }
+
+DEFCMD (dbstep, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Command} {} dbstep @var{n}\n\
+@deftypefnx {Command} {} dbstep in\n\
+@deftypefnx {Command} {} dbstep out\n\
+In debugging mode, execute the next @var{n} lines of code. If @var{n} is\n\
+omitted execute the next line of code. If the next line of code is itself\n\
+defined in terms of an m-file remain in the existing function.\n\
+\n\
+Using @code{dbstep in} will cause execution of the next line to step into\n\
+any m-files defined on the next line. Using @code{dbstep out} with cause\n\
+execution to continue until the current function returns.\n\
+@seealso{dbcont, dbquit}\n\
+@end deftypefn")
+{
+  if (Vdebugging)
+    {
+      int nargin = args.length ();
+      
+      if (nargin > 1)
+	print_usage ();
+      else if (nargin == 1 && args(0).is_string ())
+	{
+	  std::string arg = args(0).string_value ();
+
+	  if (! error_state)
+	    {
+	      if (arg == "in")
+		{
+		  Vdebugging = false;
+
+		  tree::break_next = 0;
+
+		  tree::last_line = 0;
+
+		  tree::break_function = octave_call_stack::caller_user_code ();
+		}
+	      else if (arg == "out")
+		{
+		  Vdebugging = false;
+
+		  tree::break_next = 0;
+
+		  tree::last_line = -1;
+
+		  // Next to skip 2 here. One for the oct-file dbstep and 
+		  // another for the function we actually want to step out of.
+		  tree::break_function = octave_call_stack::caller_user_code (2);
+		}
+	      else
+		{
+		  int n = atoi (arg.c_str ());
+
+		  Vdebugging = false;
+
+		  if (n < 0)
+		    tree::break_next = 0;
+		  else
+		    tree::break_next = n;
+
+		  tree::last_line = Vdebugging_current_line;
+		  
+		  tree::break_function = octave_call_stack::caller_user_code ();
+		}
+	    }
+	}
+      else
+	{
+	  Vdebugging = false;
+
+	  tree::break_next = 0;
+
+	  tree::last_line = Vdebugging_current_line;
+		  
+	  tree::break_function = octave_call_stack::caller_user_code ();
+	}
+    }
+  else
+    error ("dbstep: can only be called in debug mode");
+
+  return octave_value_list ();
+}
+
+DEFCMD (dbcont, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Command} {} dbcont ()\n\
+In debugging mode, quit debugging mode and continue execution.\n\
+@seealso{dbstep, dbstep}\n\
+@end deftypefn")
+{
+  if (Vdebugging)
+    if (args.length() == 0)
+      Vdebugging = false;
+    else
+      print_usage ();
+  else
+    error ("dbcont: can only be called in debug mode");
+
+  return octave_value_list ();
+}
+
+DEFCMD (dbquit, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Command} {} dbquit ()\n\
+In debugging mode, quit debugging mode and return to the top level.\n\
+@seealso{dbstep, dbcont}\n\
+@end deftypefn")
+{
+  if (Vdebugging)
+    if (args.length() == 0)
+      octave_throw_interrupt_exception ();
+    else
+      print_usage ();
+  else
+    error ("dbquit: can only be called in debug mode");
+
+  return octave_value_list ();
+}
+
+DEFCMD (dbnext, args, ,
+  "-*- texinfo -*-\n\
+@deftypefn {Command} {} dbquit ()\n\
+In debugging mode, execute the next line of code without stepping in to\n\
+functions. This is synonymous with @code{dbstep}.\n\
+@seealso{dbstep, dbcont, dbquit}\n\
+@end deftypefn")
+{
+  if (Vdebugging)
+    {
+    if (args.length() == 0)
+      {
+	Vdebugging = false;
+
+	tree::break_next = 0;
+
+	tree::last_line = Vdebugging_current_line;
+		  
+	tree::break_function = octave_call_stack::caller_user_code ();
+      }
+    else
+      print_usage ();
+    }
+  else
+    error ("dbnext: can only be called in debug mode");
+
+  return octave_value_list ();
+}
+
 
 /*
 ;;; Local Variables: ***

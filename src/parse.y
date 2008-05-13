@@ -2216,11 +2216,20 @@ make_return_command (token *return_tok)
   int l = return_tok->line ();
   int c = return_tok->column ();
 
-  if (lexer_flags.defining_func || reading_script_file
-      || evaluating_function_body)
-    retval = new tree_return_command (l, c);
+  if (Vdebugging)
+    {
+      Vdebugging = false;
+
+      retval = new tree_no_op_command ("return", l, c);
+    }
   else
-    retval = new tree_no_op_command ("return", l, c);
+    {
+      if (lexer_flags.defining_func || reading_script_file
+          || evaluating_function_body)
+        retval = new tree_return_command (l, c);
+      else
+        retval = new tree_no_op_command ("return", l, c);
+    }
 
   return retval;
 }

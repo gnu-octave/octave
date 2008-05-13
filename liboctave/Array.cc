@@ -1330,31 +1330,30 @@ Array<T>::hermitian (T (*fcn) (const T&)) const
 
 %!shared m7, mt7, m8, mt8, m9, mt9
 %! m7 = reshape (1 : 7*8, 8, 7);
-%! mt7 = [1:7; 1:7, 1:7, 1:7, 1:7; 1:7, 1:7, 1:7];
+%! mt7 = [1:8; 9:16; 17:24; 25:32; 33:40; 41:48; 49:56];
 %! m8 = reshape (1 : 8*8, 8, 8);
-%! mt8 = [1:8; 1:8, 1:8, 1:8, 1:8; 1:8, 1:8, 1:8];
+%! mt8 = mt8 = [mt7; 57:64];
 %! m9 = reshape (1 : 9*8, 8, 9);
-%! mt9 = [1:9; 1:9, 1:9, 1:9, 1:9; 1:9, 1:9, 1:9];
+%! mt9 = [mt8; 65:72];
 
-%!assert (m7', mt7)
-%!assert ((1i*m7).', 1i * mt7)
-%!assert ((1i*m7)', conj (1i * mt7))
-%!assert (m8', mt8)
-%!assert ((1i*m8).', 1i * mt8)
-%!assert ((1i*m8)', conj (1i * mt8))
-%!assert (m9', mt9)
-%!assert ((1i*m9).', 1i * mt9)
-%!assert ((1i*m9)', conj (1i * mt9))
-
-%!assert ([m7, m7; m8, m8]', [mt7, mt8; mt7, mt8])
-%!assert ((1i*[m7, m7; m8, m8]).', 1i * [mt7, mt8; mt7, mt8])
-%!assert ((1i*[m7, m7; m8, m8])', conj (1i * [mt7, mt8; mt7, mt8]))
-%!assert ([m8, m8; m8, m8]', [mt8, mt8; mt8, mt8])
-%!assert ((1i*[m8, m8; m8, m8]).', 1i * [mt8, mt8; mt8, mt8])
-%!assert ((1i*[m8, m8; m8, m8])', conj (1i * [mt8, mt8; mt8, mt8]))
-%!assert ([m9, m9; m8, m8]', [mt9, mt8; mt9, mt8])
-%!assert ((1i*[m9, m9; m8, m8]).', 1i * [mt9, mt8; mt9, mt8])
-%!assert ((1i*[m9, m9; m8, m8])', conj (1i * [mt9, mt8; mt9, mt8]))
+%!assert(m7', mt7)
+%!assert((1i*m7).', 1i * mt7)
+%!assert((1i*m7)', conj (1i * mt7))
+%!assert(m8', mt8)
+%!assert((1i*m8).', 1i * mt8)
+%!assert((1i*m8)', conj (1i * mt8))
+%!assert(m9', mt9)
+%!assert((1i*m9).', 1i * mt9)
+%!assert((1i*m9)', conj (1i * mt9))
+%!assert([m7, m8; m7, m8]', [mt7, mt7; mt8, mt8])
+%!assert((1i*[m7, m8; m7, m8]).', 1i * [mt7, mt7; mt8, mt8])
+%!assert((1i*[m7, m8; m7, m8])', conj (1i * [mt7, mt7; mt8, mt8]))
+%!assert([m8, m8; m8, m8]', [mt8, mt8; mt8, mt8])
+%!assert((1i*[m8, m8; m8, m8]).', 1i * [mt8, mt8; mt8, mt8])
+%!assert((1i*[m8, m8; m8, m8])', conj (1i * [mt8, mt8; mt8, mt8]))
+%!assert([m9, m8; m9, m8]', [mt9, mt9; mt8, mt8])
+%!assert((1i*[m9, m8; m9, m8]).', 1i * [mt9, mt9; mt8, mt8])
+%!assert((1i*[m9, m8; m9, m8])', conj (1i * [mt9, mt9; mt8, mt8]))
 
 */
 

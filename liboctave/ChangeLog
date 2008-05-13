@@ -1,5 +1,7 @@
 2008-05-21  David Bateman  <dbateman@free.fr>
 
+	* Array.cc: Fix transpose tests.
+
 	* CmplxGEBAL.cc (ComplexGEPBALANCE), dbleGEPBAL.cc (GEPBALANCE),
 	fCmplxGEPBAL.cc (FloatComplexGEPBALANCE), floatGEPBAL.cc
 	(FloatGEPBALANCE): New class for generalized eigenvalue balancing.

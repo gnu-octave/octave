@@ -1,5 +1,26 @@
 2008-05-21  David Bateman  <dbateman@free.fr>
 
+	* fCMatrix.cc (float rcond): Replace with float rcon everywhere
+	to avoid shadowed variable warning
+	(float ComplexMatrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(float ComplexMatrix::rcond (MatrixType &mattype) const): ditto.
+	* fCMatrix.h (float rcond):  Replace with float rcon everywhere
+	to avoid shadowed variable warning
+	(float ComplexMatrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(float ComplexMatrix::rcond (MatrixType &mattype) const): ditto.
+	* fMatrix.cc (float rcond): Replace with float rcon everywhere
+	to avoid shadowed variable warning
+	(float Matrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(float Matrix::rcond (MatrixType &mattype) const): ditto.
+	* fMatrix.h (float rcond):  Replace with float rcon everywhere
+	to avoid shadowed variable warning
+	(float Matrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(float Matrix::rcond (MatrixType &mattype) const): ditto.
+
 	* Array.cc: Fix transpose tests.
 
 	* CmplxGEBAL.cc (ComplexGEPBALANCE), dbleGEPBAL.cc (GEPBALANCE),

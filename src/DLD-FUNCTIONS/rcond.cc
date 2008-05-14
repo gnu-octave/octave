@@ -51,6 +51,23 @@ instead.\n\
     print_usage ();
   else if (args(0).is_sparse_type ())
     error ("rcond: for sparse matrices use 'rcond (full (a))' or 'condest (a)' instead");
+  else if (args(0).is_single_type ())
+    {
+      if (args(0).is_complex_type ())
+	{
+	  FloatComplexMatrix m = args(0).float_complex_matrix_value ();
+	  MatrixType mattyp;
+	  retval = m.rcond (mattyp);
+	  args(0).matrix_type (mattyp);
+	}
+      else
+	{
+	  FloatMatrix m = args(0).float_matrix_value ();
+	  MatrixType mattyp;
+	  retval = m.rcond (mattyp);
+	  args(0).matrix_type (mattyp);
+	}
+    }
   else if (args(0).is_complex_type ())
     {
       ComplexMatrix m = args(0).complex_matrix_value ();

@@ -1,5 +1,7 @@
 2008-05-21  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/rcond.cc (Frcond): Add support for single precision.
+
 	* DLD-FUNCTIONS/sqrt.m: Replace DBL_* with FLT_* for single
 	precision types.
 	* data.cc (static octave_value fill_matrix (const

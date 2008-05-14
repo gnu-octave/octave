@@ -983,45 +983,45 @@ ComplexMatrix
 ComplexMatrix::inverse (void) const
 {
   octave_idx_type info;
-  double rcond;
+  double rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcond, 0, 0);
+  return inverse (mattype, info, rcon, 0, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::inverse (octave_idx_type& info) const
 {
-  double rcond;
+  double rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcond, 0, 0);
+  return inverse (mattype, info, rcon, 0, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (octave_idx_type& info, double& rcond, int force,
+ComplexMatrix::inverse (octave_idx_type& info, double& rcon, int force,
 			int calc_cond) const
 {
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcond, force, calc_cond);
+  return inverse (mattype, info, rcon, force, calc_cond);
 }
 
 ComplexMatrix
 ComplexMatrix::inverse (MatrixType &mattype) const
 {
   octave_idx_type info;
-  double rcond;
-  return inverse (mattype, info, rcond, 0, 0);
+  double rcon;
+  return inverse (mattype, info, rcon, 0, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info) const
 {
-  double rcond;
-  return inverse (mattype, info, rcond, 0, 0);
+  double rcon;
+  return inverse (mattype, info, rcon, 0, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
-			 double& rcond, int force, int calc_cond) const
+			 double& rcon, int force, int calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1045,7 +1045,7 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 				 F77_CHAR_ARG_LEN (1)));
 
       // Throw-away extra info LAPACK gives so as to not change output.
-      rcond = 0.0;
+      rcon = 0.0;
       if (info != 0) 
 	info = -1;
       else if (calc_cond) 
@@ -1059,7 +1059,7 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 	  F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&job, 1),
 				     F77_CONST_CHAR_ARG2 (&uplo, 1),
 				     F77_CONST_CHAR_ARG2 (&udiag, 1),
-				     nr, tmp_data, nr, rcond, 
+				     nr, tmp_data, nr, rcon, 
 				     cwork, rwork, ztrcon_info 
 				     F77_CHAR_ARG_LEN (1)
 				     F77_CHAR_ARG_LEN (1)
@@ -1078,7 +1078,7 @@ ComplexMatrix::tinverse (MatrixType &mattype, octave_idx_type& info,
 
 ComplexMatrix
 ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
-			 double& rcond, int force, int calc_cond) const
+			 double& rcon, int force, int calc_cond) const
 {
   ComplexMatrix retval;
 
@@ -1118,7 +1118,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
       F77_XFCN (zgetrf, ZGETRF, (nc, nc, tmp_data, nr, pipvt, info));
 
       // Throw-away extra info LAPACK gives so as to not change output.
-      rcond = 0.0;
+      rcon = 0.0;
       if (info != 0) 
 	info = -1;
       else if (calc_cond) 
@@ -1130,7 +1130,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 	  double *prz = rz.fortran_vec ();
 	  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
 				     nc, tmp_data, nr, anorm, 
-				     rcond, pz, prz, zgecon_info
+				     rcon, pz, prz, zgecon_info
 				     F77_CHAR_ARG_LEN (1)));
 
 	  if (zgecon_info != 0) 
@@ -1159,7 +1159,7 @@ ComplexMatrix::finverse (MatrixType &mattype, octave_idx_type& info,
 
 ComplexMatrix
 ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
-			double& rcond, int force, int calc_cond) const
+			double& rcon, int force, int calc_cond) const
 {
   int typ = mattype.type (false);
   ComplexMatrix ret;
@@ -1168,7 +1168,7 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
     typ = mattype.type (*this);
 
   if (typ == MatrixType::Upper || typ == MatrixType::Lower)
-    ret = tinverse (mattype, info, rcond, force, calc_cond);
+    ret = tinverse (mattype, info, rcon, force, calc_cond);
   else
     {
       if (mattype.is_hermitian ())
@@ -1177,9 +1177,9 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
 	  if (info == 0)
 	    {
 	      if (calc_cond)
-		rcond = chol.rcond();
+		rcon = chol.rcond();
 	      else
-		rcond = 1.0;
+		rcon = 1.0;
 	      ret = chol.inverse ();
 	    }
 	  else
@@ -1187,9 +1187,9 @@ ComplexMatrix::inverse (MatrixType &mattype, octave_idx_type& info,
 	}
 
       if (!mattype.is_hermitian ())
-	ret = finverse(mattype, info, rcond, force, calc_cond);
+	ret = finverse(mattype, info, rcon, force, calc_cond);
 
-      if ((mattype.is_hermitian () || calc_cond) && rcond == 0.)
+      if ((mattype.is_hermitian () || calc_cond) && rcon == 0.)
 	ret = ComplexMatrix (rows (), columns (), Complex (octave_Inf, 0.));
     }
 
@@ -1553,19 +1553,19 @@ ComplexDET
 ComplexMatrix::determinant (void) const
 {
   octave_idx_type info;
-  double rcond;
-  return determinant (info, rcond, 0);
+  double rcon;
+  return determinant (info, rcon, 0);
 }
 
 ComplexDET
 ComplexMatrix::determinant (octave_idx_type& info) const
 {
-  double rcond;
-  return determinant (info, rcond, 0);
+  double rcon;
+  return determinant (info, rcon, 0);
 }
 
 ComplexDET
-ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond) const
+ComplexMatrix::determinant (octave_idx_type& info, double& rcon, int calc_cond) const
 {
   ComplexDET retval;
 
@@ -1594,7 +1594,7 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
       F77_XFCN (zgetrf, ZGETRF, (nr, nc, tmp_data, nr, pipvt, info));
 
       // Throw-away extra info LAPACK gives so as to not change output.
-      rcond = 0.0;
+      rcon = 0.0;
       if (info != 0) 
 	{
 	  info = -1;
@@ -1613,7 +1613,7 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
 
 	      F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
 					 nc, tmp_data, nr, anorm, 
-					 rcond, pz, prz, info
+					 rcon, pz, prz, info
 					 F77_CHAR_ARG_LEN (1)));
 	    }
 
@@ -1658,9 +1658,176 @@ ComplexMatrix::determinant (octave_idx_type& info, double& rcond, int calc_cond)
   return retval;
 }
 
+double
+ComplexMatrix::rcond (void) const
+{
+  MatrixType mattype (*this);
+  return rcond (mattype);
+}
+
+double
+ComplexMatrix::rcond (MatrixType &mattype) const
+{
+  double rcon;
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  if (nr != nc)
+    (*current_liboctave_error_handler) ("matrix must be square");
+  else if (nr == 0 || nc == 0)
+    rcon = octave_Inf;
+  else
+    {
+      int typ = mattype.type ();
+
+      if (typ == MatrixType::Unknown)
+	typ = mattype.type (*this);
+
+      // Only calculate the condition number for LU/Cholesky
+      if (typ == MatrixType::Upper)
+	{
+	  const Complex *tmp_data = fortran_vec ();
+	  octave_idx_type info = 0;
+	  char norm = '1';
+	  char uplo = 'U';
+	  char dia = 'N';
+
+	  Array<Complex> z (2 * nc);
+	  Complex *pz = z.fortran_vec ();
+	  Array<double> rz (nc);
+	  double *prz = rz.fortran_vec ();
+
+	  F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
+				     F77_CONST_CHAR_ARG2 (&uplo, 1), 
+				     F77_CONST_CHAR_ARG2 (&dia, 1), 
+				     nr, tmp_data, nr, rcon,
+				     pz, prz, info
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (info != 0) 
+	    rcon = 0;
+	}
+      else if  (typ == MatrixType::Permuted_Upper)
+	(*current_liboctave_error_handler)
+	  ("permuted triangular matrix not implemented");
+      else if (typ == MatrixType::Lower)
+	{
+	  const Complex *tmp_data = fortran_vec ();
+	  octave_idx_type info = 0;
+	  char norm = '1';
+	  char uplo = 'L';
+	  char dia = 'N';
+
+	  Array<Complex> z (2 * nc);
+	  Complex *pz = z.fortran_vec ();
+	  Array<double> rz (nc);
+	  double *prz = rz.fortran_vec ();
+
+	  F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
+				     F77_CONST_CHAR_ARG2 (&uplo, 1), 
+				     F77_CONST_CHAR_ARG2 (&dia, 1), 
+				     nr, tmp_data, nr, rcon,
+				     pz, prz, info
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)
+				     F77_CHAR_ARG_LEN (1)));
+
+	  if (info != 0) 
+	    rcon = 0.0;
+	}
+      else if (typ == MatrixType::Permuted_Lower)
+	(*current_liboctave_error_handler)
+	  ("permuted triangular matrix not implemented");
+      else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
+	{
+	  double anorm = -1.0;
+	  ComplexMatrix atmp = *this;
+	  Complex *tmp_data = atmp.fortran_vec ();
+
+	  if (typ == MatrixType::Hermitian)
+	    {
+	      octave_idx_type info = 0;
+	      char job = 'L';
+	      anorm = atmp.abs().sum().
+		row(static_cast<octave_idx_type>(0)).max();
+
+	      F77_XFCN (zpotrf, ZPOTRF, (F77_CONST_CHAR_ARG2 (&job, 1), nr, 
+					 tmp_data, nr, info
+					 F77_CHAR_ARG_LEN (1)));
+
+	      if (info != 0) 
+		{
+		  rcon = 0.0;
+
+		  mattype.mark_as_unsymmetric ();
+		  typ = MatrixType::Full;
+		}
+	      else 
+		{
+		  Array<Complex> z (2 * nc);
+		  Complex *pz = z.fortran_vec ();
+		  Array<double> rz (nc);
+		  double *prz = rz.fortran_vec ();
+
+		  F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nr, tmp_data, nr, anorm,
+					     rcon, pz, prz, info
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (info != 0) 
+		    rcon = 0.0;
+		}
+	    }
+
+
+	  if (typ == MatrixType::Full)
+	    {
+	      octave_idx_type info = 0;
+
+	      Array<octave_idx_type> ipvt (nr);
+	      octave_idx_type *pipvt = ipvt.fortran_vec ();
+
+	      if(anorm < 0.)
+		anorm = atmp.abs().sum().
+		  row(static_cast<octave_idx_type>(0)).max();
+
+	      Array<Complex> z (2 * nc);
+	      Complex *pz = z.fortran_vec ();
+	      Array<double> rz (2 * nc);
+	      double *prz = rz.fortran_vec ();
+
+	      F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
+
+	      if (info != 0) 
+		{ 
+		  rcon = 0.0;
+		  mattype.mark_as_rectangular ();
+		} 
+	      else 
+		{
+		  char job = '1';
+		  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
+					     nc, tmp_data, nr, anorm, 
+					     rcon, pz, prz, info
+					     F77_CHAR_ARG_LEN (1)));
+
+		  if (info != 0) 
+		    rcon = 0.0;
+		}
+	    }
+	}
+      else
+	rcon = 0.0;
+    }
+
+  return rcon;
+}
+
 ComplexMatrix
 ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b, 
-			octave_idx_type& info, double& rcond, 
+			octave_idx_type& info, double& rcon, 
 			solve_singularity_handler sing_handler,
 			bool calc_cond) const
 {
@@ -1682,7 +1849,7 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  typ == MatrixType::Upper)
 	{
 	  octave_idx_type b_nc = b.cols ();
-	  rcond = 1.;
+	  rcon = 1.;
 	  info = 0;
 
 	  if (typ == MatrixType::Permuted_Upper)
@@ -1708,7 +1875,7 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
 					     F77_CONST_CHAR_ARG2 (&uplo, 1), 
 					     F77_CONST_CHAR_ARG2 (&dia, 1), 
-					     nr, tmp_data, nr, rcond,
+					     nr, tmp_data, nr, rcon,
 					     pz, prz, info
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)
@@ -1717,18 +1884,18 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  if (info != 0) 
 		    info = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+		  volatile double rcond_plus_one = rcon + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		  if (rcond_plus_one == 1.0 || xisnan (rcon))
 		    {
 		      info = -2;
 
 		      if (sing_handler)
-			sing_handler (rcond);
+			sing_handler (rcon);
 		      else
 			(*current_liboctave_error_handler)
 			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
+			   rcon);
 		    }
 		}
 
@@ -1761,7 +1928,7 @@ ComplexMatrix::utsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 ComplexMatrix
 ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b, 
-			octave_idx_type& info, double& rcond, 
+			octave_idx_type& info, double& rcon, 
 			solve_singularity_handler sing_handler,
 			bool calc_cond) const
 {
@@ -1783,7 +1950,7 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  typ == MatrixType::Lower)
 	{
 	  octave_idx_type b_nc = b.cols ();
-	  rcond = 1.;
+	  rcon = 1.;
 	  info = 0;
 
 	  if (typ == MatrixType::Permuted_Lower)
@@ -1809,7 +1976,7 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  F77_XFCN (ztrcon, ZTRCON, (F77_CONST_CHAR_ARG2 (&norm, 1), 
 					     F77_CONST_CHAR_ARG2 (&uplo, 1), 
 					     F77_CONST_CHAR_ARG2 (&dia, 1), 
-					     nr, tmp_data, nr, rcond,
+					     nr, tmp_data, nr, rcon,
 					     pz, prz, info
 					     F77_CHAR_ARG_LEN (1)
 					     F77_CHAR_ARG_LEN (1)
@@ -1818,18 +1985,18 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  if (info != 0) 
 		    info = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+		  volatile double rcond_plus_one = rcon + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		  if (rcond_plus_one == 1.0 || xisnan (rcon))
 		    {
 		      info = -2;
 
 		      if (sing_handler)
-			sing_handler (rcond);
+			sing_handler (rcon);
 		      else
 			(*current_liboctave_error_handler)
 			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
+			   rcon);
 		    }
 		}
 
@@ -1862,7 +2029,7 @@ ComplexMatrix::ltsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 ComplexMatrix
 ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b, 
-		       octave_idx_type& info, double& rcond,
+		       octave_idx_type& info, double& rcon,
 		       solve_singularity_handler sing_handler,
 		       bool calc_cond) const
 {
@@ -1897,7 +2064,7 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 				     F77_CHAR_ARG_LEN (1)));
 
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
+	  rcon = 0.0;
 	  if (info != 0) 
 	    {
 	      info = -2;
@@ -1916,24 +2083,24 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 
 		  F77_XFCN (zpocon, ZPOCON, (F77_CONST_CHAR_ARG2 (&job, 1),
 					     nr, tmp_data, nr, anorm,
-					     rcond, pz, prz, info
+					     rcon, pz, prz, info
 					     F77_CHAR_ARG_LEN (1)));
 
 		  if (info != 0) 
 		    info = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+		  volatile double rcond_plus_one = rcon + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		  if (rcond_plus_one == 1.0 || xisnan (rcon))
 		    {
 		      info = -2;
 
 		      if (sing_handler)
-			sing_handler (rcond);
+			sing_handler (rcon);
 		      else
 			(*current_liboctave_error_handler)
 			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
+			   rcon);
 		    }
 		}
 
@@ -1979,13 +2146,13 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 	  F77_XFCN (zgetrf, ZGETRF, (nr, nr, tmp_data, nr, pipvt, info));
 
 	  // Throw-away extra info LAPACK gives so as to not change output.
-	  rcond = 0.0;
+	  rcon = 0.0;
 	  if (info != 0) 
 	    { 
 	      info = -2;
 
 	      if (sing_handler)
-		sing_handler (rcond);
+		sing_handler (rcon);
 	      else
 		(*current_liboctave_error_handler)
 		  ("matrix singular to machine precision");
@@ -2001,24 +2168,24 @@ ComplexMatrix::fsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  char job = '1';
 		  F77_XFCN (zgecon, ZGECON, (F77_CONST_CHAR_ARG2 (&job, 1),
 					     nc, tmp_data, nr, anorm, 
-					     rcond, pz, prz, info
+					     rcon, pz, prz, info
 					     F77_CHAR_ARG_LEN (1)));
 
 		  if (info != 0) 
 		    info = -2;
 
-		  volatile double rcond_plus_one = rcond + 1.0;
+		  volatile double rcond_plus_one = rcon + 1.0;
 
-		  if (rcond_plus_one == 1.0 || xisnan (rcond))
+		  if (rcond_plus_one == 1.0 || xisnan (rcon))
 		    {
 		      info = -2;
 
 		      if (sing_handler)
-			sing_handler (rcond);
+			sing_handler (rcon);
 		      else
 			(*current_liboctave_error_handler)
 			  ("matrix singular to machine precision, rcond = %g",
-			   rcond);
+			   rcon);
 		    }
 		}
 
@@ -2048,60 +2215,60 @@ ComplexMatrix
 ComplexMatrix::solve (MatrixType &typ, const Matrix& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (typ, b, info, rcond, 0);
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType &typ, const Matrix& b, 
 		      octave_idx_type& info) const
 {
-  double rcond;
-  return solve (typ, b, info, rcond, 0);
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info,
-		      double& rcond) const
+		      double& rcon) const
 {
-  return solve (typ, b, info, rcond, 0);
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType &typ, const Matrix& b, octave_idx_type& info, 
-		      double& rcond, solve_singularity_handler sing_handler,
+		      double& rcon, solve_singularity_handler sing_handler,
 		      bool singular_fallback) const
 {
   ComplexMatrix tmp (b);
-  return solve (typ, tmp, info, rcond, sing_handler, singular_fallback);
+  return solve (typ, tmp, info, rcon, sing_handler, singular_fallback);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType &typ, const ComplexMatrix& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (typ, b, info, rcond, 0);
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType &typ, const ComplexMatrix& b, 
 		      octave_idx_type& info) const
 {
-  double rcond;
-  return solve (typ, b, info, rcond, 0);
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType &typ, const ComplexMatrix& b, 
-		      octave_idx_type& info, double& rcond) const
+		      octave_idx_type& info, double& rcon) const
 {
-  return solve (typ, b, info, rcond, 0);
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b, 
-		      octave_idx_type& info, double& rcond,
+		      octave_idx_type& info, double& rcon,
 		      solve_singularity_handler sing_handler,
 		      bool singular_fallback) const
 {
@@ -2113,11 +2280,11 @@ ComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
 
   // Only calculate the condition number for LU/Cholesky
   if (typ == MatrixType::Upper || typ == MatrixType::Permuted_Upper)
-    retval = utsolve (mattype, b, info, rcond, sing_handler, false);
+    retval = utsolve (mattype, b, info, rcon, sing_handler, false);
   else if (typ == MatrixType::Lower || typ == MatrixType::Permuted_Lower)
-    retval = ltsolve (mattype, b, info, rcond, sing_handler, false);
+    retval = ltsolve (mattype, b, info, rcon, sing_handler, false);
   else if (typ == MatrixType::Full || typ == MatrixType::Hermitian)
-    retval = fsolve (mattype, b, info, rcond, sing_handler, true);
+    retval = fsolve (mattype, b, info, rcon, sing_handler, true);
   else if (typ != MatrixType::Rectangular)
     {
       (*current_liboctave_error_handler) ("unknown matrix type");
@@ -2128,7 +2295,7 @@ ComplexMatrix::solve (MatrixType &mattype, const ComplexMatrix& b,
   if (singular_fallback && mattype.type () == MatrixType::Rectangular)
     {
       octave_idx_type rank;
-      retval = lssolve (b, info, rank, rcond);
+      retval = lssolve (b, info, rank, rcon);
     }
 
   return retval;
@@ -2138,183 +2305,183 @@ ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ColumnVector& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (typ, ComplexColumnVector (b), info, rcond, 0);
+  double rcon;
+  return solve (typ, ComplexColumnVector (b), info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ColumnVector& b, 
 		      octave_idx_type& info) const
 {
-  double rcond;
-  return solve (typ, ComplexColumnVector (b), info, rcond, 0);
+  double rcon;
+  return solve (typ, ComplexColumnVector (b), info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ColumnVector& b, 
-		      octave_idx_type& info, double& rcond) const
+		      octave_idx_type& info, double& rcon) const
 {
-  return solve (typ, ComplexColumnVector (b), info, rcond, 0);
+  return solve (typ, ComplexColumnVector (b), info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ColumnVector& b, 
-		      octave_idx_type& info, double& rcond,
+		      octave_idx_type& info, double& rcon,
 		      solve_singularity_handler sing_handler) const
 {
-  return solve (typ, ComplexColumnVector (b), info, rcond, sing_handler);
+  return solve (typ, ComplexColumnVector (b), info, rcon, sing_handler);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (typ, b, info, rcond, 0);
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b, 
 		      octave_idx_type& info) const
 {
-  double rcond;
-  return solve (typ, b, info, rcond, 0);
+  double rcon;
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b,
-		      octave_idx_type& info, double& rcond) const
+		      octave_idx_type& info, double& rcon) const
 {
-  return solve (typ, b, info, rcond, 0);
+  return solve (typ, b, info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (MatrixType &typ, const ComplexColumnVector& b,
-		      octave_idx_type& info, double& rcond,
+		      octave_idx_type& info, double& rcon,
 		      solve_singularity_handler sing_handler) const
 {
 
   ComplexMatrix tmp (b);
-  return solve (typ, tmp, info, rcond, sing_handler).column(static_cast<octave_idx_type> (0));
+  return solve (typ, tmp, info, rcon, sing_handler).column(static_cast<octave_idx_type> (0));
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const Matrix& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (b, info, rcond, 0);
+  double rcon;
+  return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const Matrix& b, octave_idx_type& info) const
 {
-  double rcond;
-  return solve (b, info, rcond, 0);
+  double rcon;
+  return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::solve (const Matrix& b, octave_idx_type& info, double& rcond) const
+ComplexMatrix::solve (const Matrix& b, octave_idx_type& info, double& rcon) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::solve (const Matrix& b, octave_idx_type& info, double& rcond,
+ComplexMatrix::solve (const Matrix& b, octave_idx_type& info, double& rcon,
 		      solve_singularity_handler sing_handler) const
 {
   ComplexMatrix tmp (b);
-  return solve (tmp, info, rcond, sing_handler);
+  return solve (tmp, info, rcon, sing_handler);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const ComplexMatrix& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (b, info, rcond, 0);
+  double rcon;
+  return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
 ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info) const
 {
-  double rcond;
-  return solve (b, info, rcond, 0);
+  double rcon;
+  return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcond) const
+ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcon, 0);
 }
 
 ComplexMatrix
-ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcond,
+ComplexMatrix::solve (const ComplexMatrix& b, octave_idx_type& info, double& rcon,
 		      solve_singularity_handler sing_handler) const
 {
   MatrixType mattype (*this);
-  return solve (mattype, b, info, rcond, sing_handler);
+  return solve (mattype, b, info, rcon, sing_handler);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ColumnVector& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (ComplexColumnVector (b), info, rcond, 0);
+  double rcon;
+  return solve (ComplexColumnVector (b), info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info) const
 {
-  double rcond;
-  return solve (ComplexColumnVector (b), info, rcond, 0);
+  double rcon;
+  return solve (ComplexColumnVector (b), info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info, 
-		      double& rcond) const
+		      double& rcon) const
 {
-  return solve (ComplexColumnVector (b), info, rcond, 0);
+  return solve (ComplexColumnVector (b), info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ColumnVector& b, octave_idx_type& info, 
-		      double& rcond, 
+		      double& rcon, 
 		      solve_singularity_handler sing_handler) const
 {
-  return solve (ComplexColumnVector (b), info, rcond, sing_handler);
+  return solve (ComplexColumnVector (b), info, rcon, sing_handler);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b) const
 {
   octave_idx_type info;
-  double rcond;
-  return solve (b, info, rcond, 0);
+  double rcon;
+  return solve (b, info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
-  double rcond;
-  return solve (b, info, rcond, 0);
+  double rcon;
+  return solve (b, info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
-		      double& rcond) const
+		      double& rcon) const
 {
-  return solve (b, info, rcond, 0);
+  return solve (b, info, rcon, 0);
 }
 
 ComplexColumnVector
 ComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
-		      double& rcond,
+		      double& rcon,
 		      solve_singularity_handler sing_handler) const
 {
   MatrixType mattype (*this);
-  return solve (mattype, b, info, rcond, sing_handler);
+  return solve (mattype, b, info, rcon, sing_handler);
 }
 
 ComplexMatrix
@@ -2322,31 +2489,31 @@ ComplexMatrix::lssolve (const Matrix& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  double rcond;
-  return lssolve (ComplexMatrix (b), info, rank, rcond);
+  double rcon;
+  return lssolve (ComplexMatrix (b), info, rank, rcon);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const Matrix& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  double rcond;
-  return lssolve (ComplexMatrix (b), info, rank, rcond);
+  double rcon;
+  return lssolve (ComplexMatrix (b), info, rank, rcon);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const Matrix& b, octave_idx_type& info,
 			octave_idx_type& rank) const
 {
-  double rcond;
-  return lssolve (ComplexMatrix (b), info, rank, rcond);
+  double rcon;
+  return lssolve (ComplexMatrix (b), info, rank, rcon);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const Matrix& b, octave_idx_type& info,
-			octave_idx_type& rank, double& rcond) const
+			octave_idx_type& rank, double& rcon) const
 {
-  return lssolve (ComplexMatrix (b), info, rank, rcond);
+  return lssolve (ComplexMatrix (b), info, rank, rcon);
 }
 
 ComplexMatrix
@@ -2354,29 +2521,29 @@ ComplexMatrix::lssolve (const ComplexMatrix& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  double rcond;
-  return lssolve (b, info, rank, rcond);
+  double rcon;
+  return lssolve (b, info, rank, rcon);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  double rcond;
-  return lssolve (b, info, rank, rcond);
+  double rcon;
+  return lssolve (b, info, rank, rcon);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
 			octave_idx_type& rank) const
 {
-  double rcond;
-  return lssolve (b, info, rank, rcond);
+  double rcon;
+  return lssolve (b, info, rank, rcon);
 }
 
 ComplexMatrix
 ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info, 
-			octave_idx_type& rank, double& rcond) const
+			octave_idx_type& rank, double& rcon) const
 {
   ComplexMatrix retval;
 
@@ -2394,7 +2561,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
     {
       volatile octave_idx_type minmn = (m < n ? m : n);
       octave_idx_type maxmn = m > n ? m : n;
-      rcond = -1.0;
+      rcon = -1.0;
 
       if (m != n)
 	{
@@ -2461,7 +2628,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
-				 ps, rcond, rank, work.fortran_vec (),
+				 ps, rcon, rank, work.fortran_vec (),
 				 lwork, prwork, piwork, info));
 
       // The workspace query is broken in at least LAPACK 3.0.0
@@ -2498,19 +2665,19 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
       work.resize (lwork);
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
-				 maxmn, ps, rcond, rank,
+				 maxmn, ps, rcon, rank,
 				 work.fortran_vec (), lwork, 
 				 prwork, piwork, info));
 
       if (rank < minmn)
 	(*current_liboctave_warning_handler) 
 	  ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-	   m, n, rank, rcond);
+	   m, n, rank, rcon);
 
       if (s.elem (0) == 0.0)
-	rcond = 0.0;
+	rcon = 0.0;
       else
-	rcond = s.elem (minmn - 1) / s.elem (0);
+	rcon = s.elem (minmn - 1) / s.elem (0);
 
       retval.resize (n, nrhs);
     }
@@ -2523,31 +2690,31 @@ ComplexMatrix::lssolve (const ColumnVector& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  double rcond;
-  return lssolve (ComplexColumnVector (b), info, rank, rcond);
+  double rcon;
+  return lssolve (ComplexColumnVector (b), info, rank, rcon);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ColumnVector& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  double rcond;
-  return lssolve (ComplexColumnVector (b), info, rank, rcond);
+  double rcon;
+  return lssolve (ComplexColumnVector (b), info, rank, rcon);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ColumnVector& b, octave_idx_type& info, 
 			octave_idx_type& rank) const
 {
-  double rcond;
-  return lssolve (ComplexColumnVector (b), info, rank, rcond);
+  double rcon;
+  return lssolve (ComplexColumnVector (b), info, rank, rcon);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ColumnVector& b, octave_idx_type& info, 
-			octave_idx_type& rank, double& rcond) const
+			octave_idx_type& rank, double& rcon) const
 {
-  return lssolve (ComplexColumnVector (b), info, rank, rcond);
+  return lssolve (ComplexColumnVector (b), info, rank, rcon);
 }
 
 ComplexColumnVector
@@ -2555,30 +2722,30 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b) const
 {
   octave_idx_type info;
   octave_idx_type rank;
-  double rcond;
-  return lssolve (b, info, rank, rcond);
+  double rcon;
+  return lssolve (b, info, rank, rcon);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info) const
 {
   octave_idx_type rank;
-  double rcond;
-  return lssolve (b, info, rank, rcond);
+  double rcon;
+  return lssolve (b, info, rank, rcon);
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 			octave_idx_type& rank) const
 {
-  double rcond;
-  return lssolve (b, info, rank, rcond);
+  double rcon;
+  return lssolve (b, info, rank, rcon);
 
 }
 
 ComplexColumnVector
 ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
-			octave_idx_type& rank, double& rcond) const
+			octave_idx_type& rank, double& rcon) const
 {
   ComplexColumnVector retval;
 
@@ -2596,7 +2763,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
     {
       volatile octave_idx_type minmn = (m < n ? m : n);
       octave_idx_type maxmn = m > n ? m : n;
-      rcond = -1.0;
+      rcon = -1.0;
 
       if (m != n)
 	{
@@ -2655,7 +2822,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       octave_idx_type* piwork = iwork.fortran_vec ();
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval, maxmn,
-				 ps, rcond, rank, work.fortran_vec (),
+				 ps, rcon, rank, work.fortran_vec (),
 				 lwork, prwork, piwork, info));
 
       lwork = static_cast<octave_idx_type> (std::real (work(0)));
@@ -2664,7 +2831,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
       iwork.resize (iwork(0));
 
       F77_XFCN (zgelsd, ZGELSD, (m, n, nrhs, tmp_data, m, pretval,
-				 maxmn, ps, rcond, rank,
+				 maxmn, ps, rcon, rank,
 				 work.fortran_vec (), lwork, 
 				 prwork, piwork, info));
 
@@ -2673,12 +2840,12 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
 	  if (rank < minmn)
 	    (*current_liboctave_warning_handler) 
 	      ("zgelsd: rank deficient %dx%d matrix, rank = %d, tol = %e",
-	       m, n, rank, rcond);
+	       m, n, rank, rcon);
 
 	  if (s.elem (0) == 0.0)
-	    rcond = 0.0;
+	    rcon = 0.0;
 	  else
-	    rcond = s.elem (minmn - 1) / s.elem (0);
+	    rcon = s.elem (minmn - 1) / s.elem (0);
 
 	  retval.resize (n, nrhs);
 	}
@@ -2702,11 +2869,11 @@ static double padec [] =
 };
 
 static void
-solve_singularity_warning (double rcond)
+solve_singularity_warning (double rcon)
 {
   (*current_liboctave_warning_handler) 
     ("singular matrix encountered in expm calculation, rcond = %g",
-     rcond);
+     rcon);
 }
 
 ComplexMatrix
@@ -2833,8 +3000,8 @@ ComplexMatrix::expm (void) const
 
   // Compute pade approximation = inverse (dpp) * npp.
 
-  double rcond;
-  retval = dpp.solve (npp, info, rcond, solve_singularity_warning);
+  double rcon;
+  retval = dpp.solve (npp, info, rcon, solve_singularity_warning);
 
   if (info < 0)
     return retval;

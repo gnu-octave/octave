@@ -1,5 +1,8 @@
 2008-05-20  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/rcond.cc: New function.
+	* Makefile.in (DLD_XSRC): Add it here.
+
 	* debug.cc (Fdbstop): If no line specified assume line 1.
 	(Fdbstep, Fdbcont, Fdbnext): Move debugging functions 
 	to normal commands.

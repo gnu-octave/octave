@@ -1,5 +1,26 @@
 2008-05-20  David Bateman  <dbateman@free.fr>
 
+	* CMatrix.cc (double rcond): Replace with double rcon everywhere
+	to avoid shadowed variable warning
+	(double ComplexMatrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(double ComplexMatrix::rcond (MatrixType &mattype) const): ditto.
+	* CMatrix.h (double rcond):  Replace with double rcon everywhere
+	to avoid shadowed variable warning
+	(double ComplexMatrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(double ComplexMatrix::rcond (MatrixType &mattype) const): ditto.
+	* dMatrix.cc (double rcond): Replace with double rcon everywhere
+	to avoid shadowed variable warning
+	(double Matrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(double Matrix::rcond (MatrixType &mattype) const): ditto.
+	* dMatrix.h (double rcond):  Replace with double rcon everywhere
+	to avoid shadowed variable warning
+	(double Matrix::rcond (void) const): New method for
+	reciprocal condition number calculation.
+	(double Matrix::rcond (MatrixType &mattype) const): ditto.
+
 	* regex-match.cc, regex-match.h: New class for simple regular
 	expression matching
 	* Makefile.in (INCLUDES): Add regex-match.h here, and

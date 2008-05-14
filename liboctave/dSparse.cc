@@ -4457,7 +4457,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const Matrix& b,
 		  Array<octave_idx_type> iz (nr);
 		  octave_idx_type *piz = iz.fortran_vec ();
 
-		  F77_XFCN (dpbcon, DGBCON, 
+		  F77_XFCN (dpbcon, DPBCON, 
 		    (F77_CONST_CHAR_ARG2 (&job, 1),
 		     nr, n_lower, tmp_data, ldm,
 		     anorm, rcond, pz, piz, err
@@ -4705,7 +4705,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseMatrix& b,
 		  Array<octave_idx_type> iz (nr);
 		  octave_idx_type *piz = iz.fortran_vec ();
 
-		  F77_XFCN (dpbcon, DGBCON, 
+		  F77_XFCN (dpbcon, DPBCON, 
 		    (F77_CONST_CHAR_ARG2 (&job, 1),
 		     nr, n_lower, tmp_data, ldm,
 		     anorm, rcond, pz, piz, err
@@ -5025,7 +5025,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  Array<octave_idx_type> iz (nr);
 		  octave_idx_type *piz = iz.fortran_vec ();
 
-		  F77_XFCN (dpbcon, DGBCON, 
+		  F77_XFCN (dpbcon, DPBCON, 
 		    (F77_CONST_CHAR_ARG2 (&job, 1),
 		     nr, n_lower, tmp_data, ldm,
 		     anorm, rcond, pz, piz, err
@@ -5176,7 +5176,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const ComplexMatrix& b,
 		  Array<octave_idx_type> iz (nr);
 		  octave_idx_type *piz = iz.fortran_vec ();
 
-		  F77_XFCN (dpbcon, DGBCON, 
+		  F77_XFCN (dpbcon, DPBCON, 
 		    (F77_CONST_CHAR_ARG2 (&job, 1),
 		     nr, n_lower, tmp_data, ldm,
 		     anorm, rcond, pz, piz, err
@@ -5325,7 +5325,7 @@ SparseMatrix::bsolve (MatrixType &mattype, const SparseComplexMatrix& b,
 		  Array<octave_idx_type> iz (nr);
 		  octave_idx_type *piz = iz.fortran_vec ();
 
-		  F77_XFCN (dpbcon, DGBCON, 
+		  F77_XFCN (dpbcon, DPBCON, 
 		    (F77_CONST_CHAR_ARG2 (&job, 1),
 		     nr, n_lower, tmp_data, ldm,
 		     anorm, rcond, pz, piz, err

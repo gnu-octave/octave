@@ -1,3 +1,8 @@
+2008-05-19  David Bateman  <dbateman@free.fr>
+
+	* dSparse.cc: Replace some DGBCON with GPBCON where they are
+	incorrectly used.
+
 2008-05-13  David Bateman  <dbateman@free.fr>
 
 	* idx-vector.cc (IDX_VEC_REP::idx_vector_rep (const boolNDArray&)):

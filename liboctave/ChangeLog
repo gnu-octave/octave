@@ -1,5 +1,16 @@
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
+	* Sparse-op-defs.h (SPARSE_FULL_MUL): Simplify scalar*matrix case.
+	Correct indenting. 
+	(SPARSE_FULL_TRANS_MUL): New macro.
+	(FULL_SPARSE_MUL): Simplify scalar*matrix case. Correct indenting.
+	Move OCTAVE_QUIT one level up.
+	(FULL_SPARSE_MUL_TRANS): New macro.
+	* dSparse.h (mul_trans, trans_mul): Provide decl.
+	* dSparse.cc (mul_trans, trans_mul): New functions.
+	* CSparse.h (mul_trans, trans_mul, mul_herm, herm_mul): Provide decl.
+	* CSparse.cc (mul_trans, trans_mul, mul_herm, herm_mul): New functions.
+
 	* dMatrix.h (xgemm): Provide decl.
 	* dMatrix.cc (xgemm): New function.
 	(operator * (const Matrix&, const Matrix&)): Simplify.

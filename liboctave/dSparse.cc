@@ -7597,9 +7597,21 @@ operator * (const Matrix& m, const SparseMatrix& a)
 }
 
 Matrix
+mul_trans (const Matrix& m, const SparseMatrix& a)
+{
+  FULL_SPARSE_MUL_TRANS (Matrix, double, 0., );
+}
+
+Matrix
 operator * (const SparseMatrix& m, const Matrix& a)
 {
   SPARSE_FULL_MUL (Matrix, double, 0.);
+}
+
+Matrix
+trans_mul (const SparseMatrix& m, const Matrix& a)
+{
+  SPARSE_FULL_TRANS_MUL (Matrix, double, 0., );
 }
 
 // FIXME -- it would be nice to share code among the min/max

@@ -7485,6 +7485,18 @@ operator * (const ComplexMatrix& m, const SparseComplexMatrix& a)
 }
 
 ComplexMatrix
+mul_trans (const ComplexMatrix& m, const SparseComplexMatrix& a)
+{
+  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, Complex (0.,0.), );
+}
+
+ComplexMatrix
+mul_herm (const ComplexMatrix& m, const SparseComplexMatrix& a)
+{
+  FULL_SPARSE_MUL_TRANS (ComplexMatrix, Complex, Complex (0.,0.), conj);
+}
+
+ComplexMatrix
 operator * (const SparseComplexMatrix& m, const Matrix& a)
 {
   SPARSE_FULL_MUL (ComplexMatrix, double, Complex (0.,0.));
@@ -7500,6 +7512,18 @@ ComplexMatrix
 operator * (const SparseComplexMatrix& m, const ComplexMatrix& a)
 {
   SPARSE_FULL_MUL (ComplexMatrix, Complex, Complex (0.,0.));
+}
+
+ComplexMatrix
+trans_mul (const SparseComplexMatrix& m, const ComplexMatrix& a)
+{
+  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, Complex (0.,0.), );
+}
+
+ComplexMatrix
+herm_mul (const SparseComplexMatrix& m, const ComplexMatrix& a)
+{
+  SPARSE_FULL_TRANS_MUL (ComplexMatrix, Complex, Complex (0.,0.), conj);
 }
 
 // FIXME -- it would be nice to share code among the min/max

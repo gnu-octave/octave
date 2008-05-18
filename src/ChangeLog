@@ -1,5 +1,14 @@
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
+	* OPERATORS/op-sm-m.cc (trans_mul): New function.
+	(install_sm_m_ops): Register it.
+	* OPERATORS/op-m-sm.cc (mul_trans): New function.
+	(install_m_sm_ops): Register it.
+	* OPERATORS/op-scm-cm.cc (trans_mul, herm_mul): New function.
+	(install_scm_cm_ops): Register it.
+	* OPERATORS/op-cm-scm.cc (mul_trans, mul_herm): New function.
+	(install_cm_scm_ops): Register it.
+
 	* dMatrix.cc: Declare DSYRK.
 	(xgemm): Call DSYRK if symmetric case detected.
 	* CMatrix.cc: Declare ZSYRK, ZHERK.

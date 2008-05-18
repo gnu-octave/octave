@@ -91,6 +91,9 @@ DEFBINOP (ldiv, complex_matrix, sparse_complex_matrix)
   return ret;
 }
 
+DEFBINOP_FN (mul_trans, complex_matrix, sparse_complex_matrix, mul_trans);
+DEFBINOP_FN (mul_herm, complex_matrix, sparse_complex_matrix, mul_herm);
+
 DEFBINOP_FN (lt, complex_matrix, sparse_complex_matrix, mx_el_lt)
 DEFBINOP_FN (le, complex_matrix, sparse_complex_matrix, mx_el_le)
 DEFBINOP_FN (eq, complex_matrix, sparse_complex_matrix, mx_el_eq)
@@ -158,6 +161,10 @@ install_cm_scm_ops (void)
 		 octave_sparse_complex_matrix, pow);
   INSTALL_BINOP (op_ldiv, octave_complex_matrix, 
 		 octave_sparse_complex_matrix, ldiv);
+  INSTALL_BINOP (op_mul_trans, octave_complex_matrix, 
+                 octave_sparse_complex_matrix, mul_trans);
+  INSTALL_BINOP (op_mul_herm, octave_complex_matrix, 
+                 octave_sparse_complex_matrix, mul_herm);
   INSTALL_BINOP (op_lt, octave_complex_matrix, 
 		 octave_sparse_complex_matrix, lt);
   INSTALL_BINOP (op_le, octave_complex_matrix, 

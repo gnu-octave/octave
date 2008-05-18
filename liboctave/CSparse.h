@@ -448,12 +448,20 @@ extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&,
 				       const SparseMatrix&);
 extern OCTAVE_API ComplexMatrix operator * (const ComplexMatrix&, 
 				       const SparseComplexMatrix&);
+extern OCTAVE_API ComplexMatrix mul_trans (const ComplexMatrix&, 
+				       const SparseComplexMatrix&);
+extern OCTAVE_API ComplexMatrix mul_herm (const ComplexMatrix&, 
+				       const SparseComplexMatrix&);
 
 extern OCTAVE_API ComplexMatrix operator * (const SparseMatrix&,        
 				       const ComplexMatrix&);
 extern OCTAVE_API ComplexMatrix operator * (const SparseComplexMatrix&, 
 				       const Matrix&);
 extern OCTAVE_API ComplexMatrix operator * (const SparseComplexMatrix&, 
+				       const ComplexMatrix&);
+extern OCTAVE_API ComplexMatrix trans_mul (const SparseComplexMatrix&, 
+				       const ComplexMatrix&);
+extern OCTAVE_API ComplexMatrix herm_mul (const SparseComplexMatrix&, 
 				       const ComplexMatrix&);
 
 extern OCTAVE_API SparseComplexMatrix min (const Complex& c, 

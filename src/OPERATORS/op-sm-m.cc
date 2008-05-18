@@ -88,6 +88,8 @@ DEFBINOP (ldiv, sparse_matrix, matrix)
     }
 }
 
+DEFBINOP_FN (trans_mul, sparse_matrix, matrix, trans_mul);
+
 DEFBINOP_FN (lt, sparse_matrix, matrix, mx_el_lt)
 DEFBINOP_FN (le, sparse_matrix, matrix, mx_el_le)
 DEFBINOP_FN (eq, sparse_matrix, matrix, mx_el_eq)
@@ -142,6 +144,8 @@ install_sm_m_ops (void)
   INSTALL_BINOP (op_div, octave_sparse_matrix, octave_matrix, div);
   INSTALL_BINOP (op_pow, octave_sparse_matrix, octave_matrix, pow);
   INSTALL_BINOP (op_ldiv, octave_sparse_matrix, octave_matrix, ldiv);
+  INSTALL_BINOP (op_trans_mul, octave_sparse_matrix, octave_matrix, trans_mul);
+  INSTALL_BINOP (op_herm_mul, octave_sparse_matrix, octave_matrix, trans_mul);
   INSTALL_BINOP (op_lt, octave_sparse_matrix, octave_matrix, lt);
   INSTALL_BINOP (op_le, octave_sparse_matrix, octave_matrix, le);
   INSTALL_BINOP (op_eq, octave_sparse_matrix, octave_matrix, eq);

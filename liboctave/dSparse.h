@@ -432,7 +432,11 @@ extern OCTAVE_API SparseMatrix operator * (const SparseMatrix& a,
 				const SparseMatrix& b);
 extern OCTAVE_API Matrix operator * (const Matrix& a, 
 				const SparseMatrix& b);
+extern OCTAVE_API Matrix mul_trans (const Matrix& a, 
+				const SparseMatrix& b);
 extern OCTAVE_API Matrix operator * (const SparseMatrix& a, 
+				const Matrix& b);
+extern OCTAVE_API Matrix trans_mul (const SparseMatrix& a, 
 				const Matrix& b);
 
 extern OCTAVE_API SparseMatrix min (double d, const SparseMatrix& m);

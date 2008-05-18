@@ -2,6 +2,11 @@
 
 	* general/isa.m: Fix tests.
 
+2008-05-17  Bill Denney  <bill@denney.ws>
+
+	* time/datenum.m: Allow mixed scalar and vector/matrix input.
+	New tests.
+
 2008-05-13  Bill Denney  <bill@denney.ws>
 
 	* general/isa.m: Use persistent cell arrays to hold class names

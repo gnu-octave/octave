@@ -99,7 +99,16 @@ function [days, secs] = datenum (Y, M, D, h, m, s)
   Y += fix ((M-14)/12);
 
   ## Lookup number of days since start of the current year.
-  D += reshape (monthstart (mod (M-1,12) + 1), size (D)) + 60;
+  if (numel (M) == 1 || numel (D) == 1)
+    ## Allow M or D to be scalar while other values may be vectors or
+    ## matrices.
+    D += monthstart (mod (M-1,12) + 1) + 60;
+    if (numel (M) > 1)
+      D = reshape (D, size (M));
+    endif
+  else
+    D += reshape (monthstart (mod (M-1,12) + 1), size (D)) + 60;
+  endif
 
   ## Add number of days to the start of the current year. Correct
   ## for leap year every 4 years except centuries not divisible by 400.
@@ -130,3 +139,18 @@ endfunction
 %! t = [2001,5,19,12,21,3.5; 1417,6,12,12,21,3.5]';
 %! n = [730990 517712] + part;
 %! assert(datenum(t(1,:), t(2,:), t(3,:), t(4,:), t(5,:), t(6,:)), n, 2*eps);
+
+## Test mixed vectors and scalars
+%!assert (datenum([2008;2009], 1, 1), [datenum(2008, 1, 1);datenum(2009, 1, 1)]);
+%!assert (datenum(2008, [1;2], 1), [datenum(2008, 1, 1);datenum(2008, 2, 1)]);
+%!assert (datenum(2008, 1, [1;2]), [datenum(2008, 1, 1);datenum(2008, 1, 2)]);
+%!assert (datenum([2008;2009], [1;2], 1), [datenum(2008, 1, 1);datenum(2009, 2, 1)]);
+%!assert (datenum([2008;2009], 1, [1;2]), [datenum(2008, 1, 1);datenum(2009, 1, 2)]);
+%!assert (datenum(2008, [1;2], [1;2]), [datenum(2008, 1, 1);datenum(2008, 2, 2)]);
+## And the other orientation
+%!assert (datenum([2008 2009], 1, 1), [datenum(2008, 1, 1) datenum(2009, 1, 1)]);
+%!assert (datenum(2008, [1 2], 1), [datenum(2008, 1, 1) datenum(2008, 2, 1)]);
+%!assert (datenum(2008, 1, [1 2]), [datenum(2008, 1, 1) datenum(2008, 1, 2)]);
+%!assert (datenum([2008 2009], [1 2], 1), [datenum(2008, 1, 1) datenum(2009, 2, 1)]);
+%!assert (datenum([2008 2009], 1, [1 2]), [datenum(2008, 1, 1) datenum(2009, 1, 2)]);
+%!assert (datenum(2008, [1 2], [1 2]), [datenum(2008, 1, 1) datenum(2008, 2, 2)]);

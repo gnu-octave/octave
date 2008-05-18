@@ -359,7 +359,7 @@ If @var{len} is omitted, @code{fgets} reads until the next newline\n\
 character.\n\
 \n\
 If there are no more characters to read, @code{fgets} returns @minus{}1.\n\
-@seealso{fread, fscanf}\n\
+@seealso{fputs, fopen, fread, fscanf}\n\
 @end deftypefn")
 {
   static std::string who = "fgets";
@@ -617,7 +617,7 @@ Cray floating format.\n\
 @noindent\n\
 however, conversions are currently only supported for @samp{native}\n\
 @samp{ieee-be}, and @samp{ieee-le} formats.\n\
-@seealso{fclose, fread, fseek}\n\
+@seealso{fclose, fgets, fputs, fread, fseek, ferror, fprintf, fscanf, ftell, fwrite}\n\
 @end deftypefn")
 {
   octave_value_list retval;
@@ -925,6 +925,7 @@ DEFUN (fputs, args, ,
 Write a string to a file with no formatting.\n\
 \n\
 Return a non-negative number on success and EOF on error.\n\
+@seealso{scanf, sscanf, fread, fprintf, fgets, fscanf}\n\
 @end deftypefn")
 {
   static std::string who = "fputs";
@@ -1072,7 +1073,7 @@ conversions is returned in @var{count}\n\
 See the Formatted Input section of the GNU Octave manual for a\n\
 complete description of the syntax of the template string.\n\
 @end ifclear\n\
-@seealso{scanf, sscanf, fread, fprintf}\n\
+@seealso{scanf, sscanf, fread, fprintf, fgets, fputs}\n\
 @end deftypefn")
 {
   static std::string who = "fscanf";

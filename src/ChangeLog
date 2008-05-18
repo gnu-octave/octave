@@ -1,6 +1,10 @@
+2008-05-20  Bill Denney  <bill@denney.ws>
+
+	* file-io.cc (Ffgets, Fgets, Ffputs, Ffscanf): Doc fix (seealso).
+
 2008-05-20  Thomas Weber  <thomas.weber.mail@gmail.com>
 
-	* DLD-FUNCTIONS/rand.cc: Doc fix.
+	* DLD-FUNCTIONS/rand.cc (Frandn): Doc fix.
 
 2008-05-20  David Bateman  <dbateman@free.fr>
 

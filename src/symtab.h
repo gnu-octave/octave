@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <string>
 
 #include "glob-match.h"
+#include "regex-match.h"
 
 class tree_argument_list;
 
@@ -1337,6 +1338,14 @@ public:
       inst->do_clear_variable_pattern (pat);
   }
 
+  static void clear_variable_regexp (const std::string& pat)
+  {
+    symbol_table *inst = get_instance (xcurrent_scope);
+
+    if (inst)
+      inst->do_clear_variable_regexp (pat);
+  }
+
   static void clear_symbol_pattern (const std::string& pat)
   {
     // FIXME -- are we supposed to do both here?
@@ -1527,11 +1536,25 @@ public:
     return inst ? inst->do_glob (pattern) : std::list<symbol_record> ();
   }
 
+  static std::list<symbol_record> regexp (const std::string& pattern)
+  {
+    symbol_table *inst = get_instance (xcurrent_scope);
+
+    return inst ? inst->do_regexp (pattern) : std::list<symbol_record> ();
+  }
+
   static std::list<symbol_record> glob_variables (const std::string& pattern)
   {
     symbol_table *inst = get_instance (xcurrent_scope);
 
     return inst ? inst->do_glob (pattern, true) : std::list<symbol_record> ();
+  }
+
+  static std::list<symbol_record> regexp_variables (const std::string& pattern)
+  {
+    symbol_table *inst = get_instance (xcurrent_scope);
+
+    return inst ? inst->do_regexp (pattern, true) : std::list<symbol_record> ();
   }
 
   static std::list<symbol_record>
@@ -1556,6 +1579,28 @@ public:
     return retval;
   }
 
+  static std::list<symbol_record>
+  regexp_global_variables (const std::string& pattern)
+  {
+    std::list<symbol_record> retval;
+
+    regex_match pat (pattern);
+
+    for (global_table_const_iterator p = global_table.begin ();
+	 p != global_table.end (); p++)
+      {
+	// We generate a list of symbol_record objects so that
+	// the results from regexp_variables and regexp_global_variables
+	// may be handled the same way.
+
+	if (pat.match (p->first))
+	  retval.push_back (symbol_record (p->first, p->second,
+					   symbol_record::global));
+      }
+
+    return retval;
+  }
+
   static std::list<symbol_record> glob_variables (const string_vector& patterns)
   {
     std::list<symbol_record> retval;
@@ -1565,6 +1610,23 @@ public:
     for (size_t i = 0; i < len; i++)
       {
 	std::list<symbol_record> tmp = glob_variables (patterns[i]);
+
+	retval.insert (retval.begin (), tmp.begin (), tmp.end ());
+      }
+
+    return retval;
+  }
+
+  static std::list<symbol_record> regexp_variables 
+    (const string_vector& patterns)
+  {
+    std::list<symbol_record> retval;
+
+    size_t len = patterns.length ();
+
+    for (size_t i = 0; i < len; i++)
+      {
+	std::list<symbol_record> tmp = regexp_variables (patterns[i]);
 
 	retval.insert (retval.begin (), tmp.begin (), tmp.end ());
       }
@@ -2031,6 +2093,22 @@ private:
       }
   }
 
+  void do_clear_variable_regexp (const std::string& pat)
+  {
+    regex_match pattern (pat);
+
+    for (table_iterator p = table.begin (); p != table.end (); p++)
+      {
+	symbol_record& sr = p->second;
+
+	if (sr.is_defined () || sr.is_global ())
+	  {
+	    if (pattern.match (sr.name ()))
+	      sr.clear ();
+	  }
+      }
+  }
+
   void do_mark_hidden (const std::string& name)
   {
     table_iterator p = table.find (name);
@@ -2071,6 +2149,29 @@ private:
     std::list<symbol_record> retval;
 
     glob_match pat (pattern);
+
+    for (table_const_iterator p = table.begin (); p != table.end (); p++)
+      {
+	if (pat.match (p->first))
+	  {
+	    const symbol_record& sr = p->second;
+
+	    if (vars_only && ! sr.is_variable ())
+	      continue;
+
+	    retval.push_back (sr);
+	  }
+      }
+
+    return retval;
+  }
+
+  std::list<symbol_record> do_regexp (const std::string& pattern,
+				      bool vars_only = false) const
+  {
+    std::list<symbol_record> retval;
+
+    regex_match pat (pattern);
 
     for (table_const_iterator p = table.begin (); p != table.end (); p++)
       {

@@ -1,3 +1,28 @@
+2008-05-20  David Bateman  <dbateman@free.fr>
+
+	* load-save.cc (do_load): Treat non verbose list_only output in
+	the same manner as Fwho.
+	* symtab.h (static void clear_variable_regexp (const
+	std::string&): New method.
+	(static std::list<symbol_record> regexp (const std::string&)): Ditto.
+	(static std::list<symbol_record> regexp_variables (const
+	std::string&)): Ditto.
+	(static std::list<symbol_record> regexp_global_variables (const
+	std::string&)): Ditto,
+	(static std::list<symbol_record> regexp_variables (const
+	string_vector&)): Ditto.
+	(void do_clear_variable_regexp (const std::string&)): Ditto.
+	(std::list<symbol_record> do_regexp (const std::string&, bool)
+	const): Ditto.
+	(do_who): Accept the "-regexp" option. Use regexp versions of
+	symbol table functions.
+	(static inline bool name_match_any_pattern (const string_vector&,
+	int, int, bool): Add regexp argument, and use regexp matching if
+	true.
+	(do_clear_variables): Add regexp option and pass to
+	name_match_any_pattern.
+	(Fclear): Accept the -regexp option.
+
 2008-05-07  John W. Eaton  <jwe@octave.org>
 
 	* pt-arg-list.cc, pt-arg-list.h (tree_argument_list::dup):

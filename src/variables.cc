@@ -36,6 +36,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-env.h"
 #include "file-ops.h"
 #include "glob-match.h"
+#include "regex-match.h"
 #include "str-vec.h"
 
 #include <defaults.h>
@@ -1637,17 +1638,15 @@ do_who (int argc, const string_vector& argv, bool return_list,
   std::string my_name = argv[0];
 
   bool global_only = false;
+  bool have_regexp = false;
 
   int i;
   for (i = 1; i < argc; i++)
     {
-      if (argv[i] == "-regexp" || argv[i] == "-file")
-	{
-	  error ("%s: `%s' option not implemented", my_name.c_str (),
-		 argv[i].c_str ());
-
-	  return retval;
-	}
+      if (argv[i] == "-file")
+	error ("%s: `-file' option not implemented", my_name.c_str ());
+      else if (argv[i] == "-regexp")
+	have_regexp = true;
       else if (argv[i] == "global")
 	global_only = true;
       else if (argv[i][0] == '-')
@@ -1678,46 +1677,11 @@ do_who (int argc, const string_vector& argv, bool return_list,
     {
       std::string pat = pats[j];
 
-      size_t pos = pat.find_first_of (".({");
-
-      if (pos != NPOS && pos > 0)
-        {
-	  if (verbose)
-	    {
-	      // NOTE: we can only display information for
-	      // expressions based on global values if the variable is
-	      // global in the current scope because we currently have
-	      // no way of looking up the base value in the global
-	      // scope and then evaluating the arguments in the
-	      // current scope.
-
-	      std::string base_name = pat.substr (0, pos);
-
-	      if (symbol_table::is_variable (base_name))
-		{
-		  symbol_table::symbol_record sr
-		    = symbol_table::find_symbol (base_name);
-
-		  if (! global_only || sr.is_global ())
-		    {
-		      int parse_status;
-
-		      octave_value expr_val
-			= eval_string (pat, true, parse_status);
-
-		      if (! error_state)
-			symbol_stats.append (sr, pat, expr_val);
-		      else
-			return retval;
-		    }
-		}
-	    }
-	}
-      else
+      if (have_regexp)
 	{
 	  std::list<symbol_table::symbol_record> tmp = global_only
-	    ? symbol_table::glob_global_variables (pats[j])
-	    : symbol_table::glob_variables (pats[j]);
+	    ? symbol_table::regexp_global_variables (pat)
+	    : symbol_table::regexp_variables (pat);
 
 	  for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
 	       p != tmp.end (); p++)
@@ -1726,6 +1690,59 @@ do_who (int argc, const string_vector& argv, bool return_list,
 		symbol_stats.append (*p);
 	      else
 		symbol_names.push_back (p->name ());
+	    }
+	}
+      else
+	{
+	  size_t pos = pat.find_first_of (".({");
+
+	  if (pos != NPOS && pos > 0)
+	    {
+	      if (verbose)
+		{
+		  // NOTE: we can only display information for
+		  // expressions based on global values if the variable is
+		  // global in the current scope because we currently have
+		  // no way of looking up the base value in the global
+		  // scope and then evaluating the arguments in the
+		  // current scope.
+
+		  std::string base_name = pat.substr (0, pos);
+
+		  if (symbol_table::is_variable (base_name))
+		    {
+		      symbol_table::symbol_record sr
+			= symbol_table::find_symbol (base_name);
+
+		      if (! global_only || sr.is_global ())
+			{
+			  int parse_status;
+
+			  octave_value expr_val
+			    = eval_string (pat, true, parse_status);
+
+			  if (! error_state)
+			    symbol_stats.append (sr, pat, expr_val);
+			  else
+			    return retval;
+			}
+		    }
+		}
+	    }
+	  else
+	    {
+	      std::list<symbol_table::symbol_record> tmp = global_only
+		? symbol_table::glob_global_variables (pat)
+		: symbol_table::glob_variables (pat);
+
+	      for (std::list<symbol_table::symbol_record>::const_iterator p = tmp.begin ();
+		   p != tmp.end (); p++)
+		{
+		  if (verbose)
+		    symbol_stats.append (*p);
+		  else
+		    symbol_names.push_back (p->name ());
+		}
 	    }
 	}
     }
@@ -1775,25 +1792,12 @@ following are valid options.  They may be shortened to one character but\n\
 may not be combined.\n\
 \n\
 @table @code\n\
-@item -all\n\
-List all currently defined symbols.\n\
-\n\
-@item -builtins\n\
-List built-in functions.  This includes all currently\n\
-compiled function files, but does not include all function files that\n\
-are in the search path.\n\
-\n\
-@item -functions\n\
-List user-defined functions.\n\
-\n\
-@item -long\n\
-Print a long listing including the type and dimensions of any symbols.\n\
-The symbols in the first column of output indicate whether it is\n\
-possible to redefine the symbol, and whether it is possible for it to be\n\
-cleared.\n\
-\n\
-@item -variables\n\
-List user-defined variables.\n\
+@item global\n\
+List the variables in the global scope rather than the current scope.\n\
+@item -regexp\n\
+The patterns are considered as regular expressions and will be used\n\
+for matching the variables to display. The same pattern syntax as for\n\
+the @code{regexp} function is used.\n\
 @end table\n\
 \n\
 Valid patterns are the same as described for the @code{clear} command\n\
@@ -1802,6 +1806,7 @@ are listed.  By default, only user defined functions and variables\n\
 visible in the local scope are displayed.\n\
 \n\
 The command @kbd{whos} is equivalent to @kbd{who -long}.\n\
+@seealso{regexp}\n\
 @end deffn")
 {
   octave_value retval;
@@ -2012,23 +2017,35 @@ then return true if the current function is locked.\n\
 // Deleting names from the symbol tables.
 
 static inline bool
-name_matches_any_pattern (const std::string& nm,
-			  const string_vector& argv, int argc, int idx)
+name_matches_any_pattern (const std::string& nm, const string_vector& argv, 
+			  int argc, int idx, bool have_regexp = false)
 {
   bool retval = false;
 
   for (int k = idx; k < argc; k++)
     {
       std::string patstr = argv[k];
-
       if (! patstr.empty ())
 	{
-	  glob_match pattern (patstr);
-
-	  if (pattern.match (nm))
+	  if (have_regexp)
 	    {
-	      retval = true;
-	      break;
+	      regex_match pattern (patstr);
+
+	      if (pattern.match (nm))
+		{
+		  retval = true;
+		  break;
+		}
+	    }
+	  else
+	    {
+	      glob_match pattern (patstr);
+
+	      if (pattern.match (nm))
+		{
+		  retval = true;
+		  break;
+		}
 	    }
 	}
     }
@@ -2112,7 +2129,7 @@ do_clear_globals (const string_vector& argv, int argc, int idx,
 
 static void
 do_clear_variables (const string_vector& argv, int argc, int idx,
-		    bool exclusive = false)
+		    bool exclusive = false, bool have_regexp = false)
 {
   if (idx == argc)
     symbol_table::clear_variables ();
@@ -2128,14 +2145,18 @@ do_clear_variables (const string_vector& argv, int argc, int idx,
 	    {
 	      std::string nm = lvars[i];
 
-	      if (! name_matches_any_pattern (nm, argv, argc, idx))
+	      if (! name_matches_any_pattern (nm, argv, argc, idx, have_regexp))
 		symbol_table::clear_variable (nm);
 	    }
 	}
       else
 	{
-	  while (idx < argc)
-	    symbol_table::clear_variable_pattern (argv[idx++]);
+	  if (have_regexp)
+	    while (idx < argc)
+	      symbol_table::clear_variable_regexp (argv[idx++]);
+	  else
+	    while (idx < argc)
+	      symbol_table::clear_variable_pattern (argv[idx++]);
 	}
     }
 }
@@ -2266,6 +2287,9 @@ Clears the function names and the built-in symbols names.\n\
 Clears the global symbol names.\n\
 @item -variables, -v\n\
 Clears the local variable names.\n\
+@item -regexp, -r\n\
+The arguments are treated as regular expressions as any variables that\n\
+match will be cleared.\n\
 @end table\n\
 With the execption of @code{exclusive}, all long options can be used \n\
 without the dash as well.\n\
@@ -2292,6 +2316,7 @@ without the dash as well.\n\
 	  bool clear_globals = false;
 	  bool clear_variables = false;
 	  bool exclusive = false;
+	  bool have_regexp = false;
 	  bool have_dash_option = false;
 
 	  while (++idx < argc)
@@ -2329,6 +2354,13 @@ without the dash as well.\n\
 		  have_dash_option = true;
 		  clear_variables = true;
 		}
+	      else if (argv[idx] == "-regexp" || argv[idx] == "-r")
+		{
+		  CLEAR_OPTION_ERROR (have_dash_option && ! exclusive);
+
+		  have_dash_option = true;
+		  have_regexp = true;
+		}
 	      else
 		break;
 	    }
@@ -2350,6 +2382,10 @@ without the dash as well.\n\
 			  ("clear: ignoring extra arguments after -all");
 
 		      symbol_table::clear_all ();
+		    }
+		  else if (have_regexp)
+		    {
+		      do_clear_variables (argv, argc, idx, exclusive, true);
 		    }
 		  else if (clear_functions)
 		    {

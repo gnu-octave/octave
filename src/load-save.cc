@@ -334,6 +334,7 @@ do_load (std::istream& stream, const std::string& orig_fname,
   Octave_map retstruct;
 
   std::ostringstream output_buf;
+  std::list<std::string> symbol_names;
 
   octave_idx_type count = 0;
 
@@ -411,9 +412,10 @@ do_load (std::istream& stream, const std::string& orig_fname,
 			    << std::setiosflags (std::ios::right)
 			    << std::setw (7) << tc.rows ()
 			    << std::setw (7) << tc.columns ()
-			    << "   ";
+			    << "   " << name << "\n";
 			}
-		      output_buf << name << "\n";
+		      else
+			symbol_names.push_back (name);
 		    }
 		  else
 		    {
@@ -449,12 +451,28 @@ do_load (std::istream& stream, const std::string& orig_fname,
 
   if (list_only && count)
     {
-      std::string msg = output_buf.str ();
+      if (verbose)
+	{
+	  std::string msg = output_buf.str ();
 
-      if (nargout > 0)
-	retval = msg;
+	  if (nargout > 0)
+	    retval = msg;
+	  else
+	    octave_stdout << msg;
+	}
       else
-	octave_stdout << msg;
+	{
+	  if (nargout  > 0)
+	    retval = Cell (string_vector (symbol_names));
+	  else
+	    {
+	      string_vector names (symbol_names);
+
+	      names.list_in_columns (octave_stdout);
+
+	      octave_stdout << "\n";
+	    }
+	}
     }
   else if (retstruct.nfields () != 0)
     retval = retstruct;

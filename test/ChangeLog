@@ -1,3 +1,8 @@
+2008-05-19  Bill Denney  <bill@denney.ws>
+
+	* test_args.m: Update format to allow running "test test_args" 
+	and add default argument tests.
+
 2008-05-09  Rafael Laboissiere <rafael@debian.org>
 
 	* test_io.m, test_system.m: Use ischar instead of deprecated isstr.

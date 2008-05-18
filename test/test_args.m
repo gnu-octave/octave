@@ -1,4 +1,4 @@
-## Copyright (C) 2006, 2007 John W. Eaton
+## Copyright (C) 2006, 2007, 2008 John W. Eaton
 ##
 ## This file is part of Octave.
 ##
@@ -16,83 +16,190 @@
 ## along with Octave; see the file COPYING.  If not, see
 ## <http://www.gnu.org/licenses/>.
 
-%% Automatically generated from DejaGNU files
+########################################
+## No inputs or no outputs
 
-%% test/octave.test/args/args-1.m
+## no input or output arguments
 %!function f ()
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 0);
+%!  assert (nargout, 0);
 %!test
 %! f;
-%! assert(prog_output_assert("nargin: 0, nargout: 0"));
 
-%% test/octave.test/args/args-2.m
+## one input with two possible inputs
 %!function f (x, y)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 1);
+%!  assert (nargout, 0);
 %!test
 %! f (1);
-%! assert(prog_output_assert("nargin: 1, nargout: 0"));
 
-%% test/octave.test/args/args-3.m
+## no inputs, one of multiple outputs
 %!function [x, y] = f ()
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 0);
+%!  assert (nargout, 1);
 %!  x = 2;
 %!test
-%! x = f ();
-%! assert(prog_output_assert("nargin: 0, nargout: 1"));
+%! assert (f (), 2);
 
-%% test/octave.test/args/args-4.m
+## one of multiple inputs, one of multiple outputs
 %!function [x, y] = f (a, b)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 1);
+%!  assert (nargout, 1);
 %!  x = a;
 %!test
-%! z = f (1);
-%! assert(prog_output_assert("nargin: 1, nargout: 1"));
+%! assert (f (1), 1);
 
-%% test/octave.test/args/args-5.m
+########################################
+## Varargin, varargout
+
+## varargin and varargout with no inputs or outputs
 %!function [varargout] = f (varargin)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 0);
+%!  assert (nargout, 0);
 %!test
 %! f;
-%! assert(prog_output_assert("nargin: 0, nargout: 0"));
 
-%% test/octave.test/args/args-6.m
+## varargin and varargout with one input
 %!function [varargout] = f (x, varargin)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 1);
+%!  assert (nargout, 0);
 %!test
 %! f (1);
-%! assert(prog_output_assert("nargin: 1, nargout: 0"));
 
-%% test/octave.test/args/args-7.m
+## varargin and varargout with one output
 %!function [x, varargout] = f (varargin)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 0);
+%!  assert (nargout, 1);
 %!  x = 2;
 %!test
-%! x = f ();
-%! assert(prog_output_assert("nargin: 0, nargout: 1"));
+%! assert (f (), 2);
 
-%% test/octave.test/args/args-8.m
+## varargin and varargout with one input and output
 %!function [varargout] = f (varargin)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
-%!  varargout{1} = (varargin{1});
+%!  assert (nargin, 1);
+%!  assert (nargout, 1);
+%!  varargout{1} = varargin{1};
 %!test
-%! z = f (1);
-%! assert(prog_output_assert("nargin: 1, nargout: 1"));
+%! assert (f (1), 1);
 
-%% test/octave.test/args/args-9.m
+## multiple inputs, multiple outputs, but not all of either
+## WARNING: The original test did not assign the outputs, it just
+## requested them, and I think that is supposed to be an error.  It also
+## still has a non-assigned output argument.
 %!function [x, y, z] = f (a, b, c, d, e)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
+%!  assert (nargin, 4);
+%!  assert (nargout, 2);
+%!  x = a;
+%!  y = b;
 %!test
 %! [s, t] = f (1, 2, 3, 4);
-%! assert(prog_output_assert("nargin: 4, nargout: 2"));
+%! assert([s t], [1 2]);
 
-%% test/octave.test/args/args-10.m
+## Fully used varargin and varargout
 %!function [varargout] = f (varargin)
-%!  printf_assert ("nargin: %d, nargout: %d\n", nargin, nargout);
-%!  varargout{1} = 1;
-%!  varargout{2} = 2;
-%!  varargout{3} = 3;
+%!  assert (nargin, 3);
+%!  assert (nargout, 4);
+%!  varargout{1} = varargin{1};
+%!  varargout{2} = varargin{2};
+%!  varargout{3} = varargin{3};
 %!  varargout{4} = 4;
 %!test
 %! [s, t, u, v] = f (1, 2, 3);
-%! assert(prog_output_assert("nargin: 3, nargout: 4"));
+%! assert([s t u v], [1 2 3 4]);
 
+## Test default arguments
+## numeric
+%!function f (x = 0)
+%!  assert (x, 0)
+%!test
+%!  f()
+
+## numeric vector (spaces)
+%!function f (x = [0 1 2])
+%!  assert (x, [0 1 2])
+%!test
+%!  f()
+
+## numeric vector (range)
+%!function f (x = 1:3)
+%!  assert (x, 1:3)
+%!test
+%!  f()
+
+## numeric vector (commas)
+%!function f (x = [0,1,2])
+%!  assert (x, [0 1 2])
+%!test
+%!  f()
+
+## numeric vector (commas and spaces)
+%!function f (x = [0, 1, 2])
+%!  assert (x, [0 1 2])
+%!test
+%!  f()
+
+## numeric matrix
+%!function f (x = [0, 1, 2;3, 4, 5])
+%!  assert (x, [0 1 2;3 4 5])
+%!test
+%!  f()
+
+## empty cell
+%!function f (x = {})
+%!  assert (x, {})
+%!test
+%!  f()
+
+## full cell
+%!function f (x = {1})
+%!  assert (x, {1})
+%!test
+%!  f()
+
+## many cells
+%!function f (x = {1 'a' "b" 2.0 struct("a", 3)})
+%!  assert (x, {1 'a' "b" 2.0 struct("a", 3)})
+%!test
+%!  f()
+
+## struct
+%!function f (x = struct("a", 3))
+%!  assert (x, struct ("a", 3))
+%!test
+%!  f()
+
+## char (double quotes)
+%!function f (x = "a")
+%!  assert (x, "a")
+%!test
+%!  f()
+
+## char (single quotes)
+%!function f (x = 'a')
+%!  assert (x, "a")
+%!test
+%!  f()
+
+## char (string, double quotes)
+%!function f (x = "abc123")
+%!  assert (x, "abc123")
+%!test
+%!  f()
+
+## char (string, double quotes, punctuation)
+%!function f (x = "abc123`1234567890-=~!@#$%^&*()_+[]{}|;':\",./<>?\\")
+%!  assert (x, "abc123`1234567890-=~!@#$%^&*()_+[]{}|;':\",./<>?\\")
+%!test
+%!  f()
+
+## Function handle (builtin)
+%!function f (x = @sin)
+%!  assert (x, @sin)
+%!xtest
+%!  f()
+
+## Function handle (anonymous)
+%!function f (x = @(x) x.^2)
+%!  assert (x, @(x) x.^2)
+%!xtest
+%!  f()

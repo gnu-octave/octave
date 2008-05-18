@@ -1,3 +1,7 @@
+2008-05-20  Thomas Weber  <thomas.weber.mail@gmail.com>
+
+	* DLD-FUNCTIONS/rand.cc: Doc fix.
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* load-save.cc (do_load): Treat non verbose list_only output in

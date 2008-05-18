@@ -471,8 +471,9 @@ DEFUN_DLD (randn, args, ,
 @deftypefnx {Loadable Function} {} randn (@var{n}, @var{m})\n\
 @deftypefnx {Loadable Function} {} randn (\"state\", @var{x})\n\
 @deftypefnx {Loadable Function} {} randn (\"seed\", @var{x})\n\
-Return a matrix with normally distributed random elements. The\n\
-arguments are handled the same as the arguments for @code{rand}.\n\
+Return a matrix with normally distributed pseudo-random\n\
+elements having zero mean and variance one. The arguments are\n\
+handled the same as the arguments for @code{rand}.\n\
 \n\
 By default, @code{randn} uses a Marsaglia and Tsang Ziggurat technique to\n\
 transform from a uniform to a normal distribution. (G. Marsaglia and\n\

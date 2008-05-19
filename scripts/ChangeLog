@@ -1,3 +1,7 @@
+2008-05-19  John W. Eaton  <jwe@octave.org>
+
+	* general/isa.m: Fix tests.
+
 2008-05-13  Bill Denney  <bill@denney.ws>
 
 	* general/isa.m: Use persistent cell arrays to hold class names

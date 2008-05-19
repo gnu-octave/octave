@@ -1,3 +1,9 @@
+2008-05-21  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/quad.cc (quad_float_user_function): New function.
+	(Fquad): Handle float type.
+	New tests.
+
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
 	* OPERATORS/op-fcm-fcm.cc (trans_mul, mul_trans, herm_mul, mul_herm):

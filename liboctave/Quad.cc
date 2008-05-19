@@ -32,6 +32,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "sun-utils.h"
 
 static integrand_fcn user_fcn;
+static float_integrand_fcn float_user_fcn;
 
 // FIXME -- would be nice to not have to have this global
 // variable.
@@ -40,6 +41,7 @@ static integrand_fcn user_fcn;
 int quad_integration_error = 0;
 
 typedef octave_idx_type (*quad_fcn_ptr) (double*, int&, double*);
+typedef octave_idx_type (*quad_float_fcn_ptr) (float*, int&, float*);
 			      
 extern "C"
 {
@@ -55,6 +57,19 @@ extern "C"
 			   const double&, const double&, double&,
 			   double&, octave_idx_type&, octave_idx_type&, const octave_idx_type&,
 			   const octave_idx_type&, octave_idx_type&, octave_idx_type*, double*); 
+
+  F77_RET_T
+  F77_FUNC (qagp, QAGP) (quad_float_fcn_ptr, const float&, const float&,
+			 const octave_idx_type&, const float*, const float&,
+			 const float&, float&, float&, octave_idx_type&,
+			 octave_idx_type&, const octave_idx_type&, const octave_idx_type&, octave_idx_type&, octave_idx_type*,
+			 float*);
+
+  F77_RET_T
+  F77_FUNC (qagi, QAGI) (quad_float_fcn_ptr, const float&, const octave_idx_type&,
+			 const float&, const float&, float&,
+			 float&, octave_idx_type&, octave_idx_type&, const octave_idx_type&,
+			 const octave_idx_type&, octave_idx_type&, octave_idx_type*, float*); 
 }
 
 static octave_idx_type
@@ -74,6 +89,35 @@ user_function (double *x, int& ierr, double *result)
 
 #if defined (sun) && defined (__GNUC__)
   assign_double (result, xresult);
+#else
+  *result = xresult;
+#endif
+
+  if (quad_integration_error)
+    ierr = -1;
+
+  END_INTERRUPT_WITH_EXCEPTIONS;
+
+  return 0;
+}
+
+static octave_idx_type
+float_user_function (float *x, int& ierr, float *result)
+{
+  BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
+#if defined (sun) && defined (__GNUC__)
+  float xx = access_float (x);
+#else
+  float xx = *x;
+#endif
+
+  quad_integration_error = 0;
+
+  float xresult = (*float_user_fcn) (xx);
+
+#if defined (sun) && defined (__GNUC__)
+  assign_float (result, xresult);
 #else
   *result = xresult;
 #endif
@@ -113,6 +157,13 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abs
 			   piwork, pwork));
 
   return result;
+}
+
+float
+DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+{
+  (*current_liboctave_error_handler) ("incorrect integration function called");
+  return 0.0;
 }
 
 double
@@ -157,6 +208,102 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& a
   F77_XFCN (dqagi, DQAGI, (user_function, bound, inf, abs_tol, rel_tol,
 			   result, abserr, neval, ier, leniw, lenw,
 			   last, piwork, pwork));
+
+  return result;
+}
+
+float
+IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+{
+  (*current_liboctave_error_handler) ("incorrect integration function called");
+  return 0.0;
+}
+
+double
+FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
+{
+  (*current_liboctave_error_handler) ("incorrect integration function called");
+  return 0.0;
+}
+
+float
+FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+{
+  octave_idx_type npts = singularities.capacity () + 2;
+  float *points = singularities.fortran_vec ();
+  float result = 0.0;
+
+  octave_idx_type leniw = 183*npts - 122;
+  Array<octave_idx_type> iwork (leniw);
+  octave_idx_type *piwork = iwork.fortran_vec ();
+
+  octave_idx_type lenw = 2*leniw - npts;
+  Array<float> work (lenw);
+  float *pwork = work.fortran_vec ();
+
+  float_user_fcn = ff;
+  octave_idx_type last;
+
+  float abs_tol = single_precision_absolute_tolerance ();
+  float rel_tol = single_precision_relative_tolerance ();
+
+  F77_XFCN (qagp, QAGP, (float_user_function, lower_limit, upper_limit,
+			 npts, points, abs_tol, rel_tol, result,
+			 abserr, neval, ier, leniw, lenw, last,
+			 piwork, pwork));
+
+  return result;
+}
+
+double
+FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
+{
+  (*current_liboctave_error_handler) ("incorrect integration function called");
+  return 0.0;
+}
+
+float
+FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+{
+  float result = 0.0;
+
+  octave_idx_type leniw = 128;
+  Array<octave_idx_type> iwork (leniw);
+  octave_idx_type *piwork = iwork.fortran_vec ();
+
+  octave_idx_type lenw = 8*leniw;
+  Array<float> work (lenw);
+  float *pwork = work.fortran_vec ();
+
+  float_user_fcn = ff;
+  octave_idx_type last;
+
+  octave_idx_type inf;
+  switch (type)
+    {
+    case bound_to_inf:
+      inf = 1;
+      break;
+
+    case neg_inf_to_bound:
+      inf = -1;
+      break;
+
+    case doubly_infinite:
+      inf = 2;
+      break;
+
+    default:
+      assert (0);
+      break;
+    }
+
+  float abs_tol = single_precision_absolute_tolerance ();
+  float rel_tol = single_precision_relative_tolerance ();
+
+  F77_XFCN (qagi, QAGI, (float_user_function, bound, inf, abs_tol, rel_tol,
+			 result, abserr, neval, ier, leniw, lenw,
+			 last, piwork, pwork));
 
   return result;
 }

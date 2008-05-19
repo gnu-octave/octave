@@ -1,3 +1,16 @@
+2008-05-21  David Bateman  <dbateman@free.fr>
+
+	* Quad-opts.in: Handle single precision tolerances.
+	* Quad.cc (float_user_fcn): New static variable.
+	(quad_float_fcn_ptr): New typedef.
+	(qagp, quagi): New QUADPACK decls.
+	(float_user_function): New function.
+	(DefQuad::do_integrate, IndefQuad::do_integrate): Float versions.
+	(FloatDefQuad::do_integrate, FloatIndefQuad::do_integrate):
+	New functions.
+	* Quad.h (class Quad): Handle float type.
+	(class FloatDefQuad, class FloatIndefQuad): New classes.
+
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
 	* fCMatrix.h (xgemm): Provide decl.

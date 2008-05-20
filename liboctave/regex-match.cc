@@ -93,21 +93,24 @@ regex_match::init (void)
   compiled = new regex_t [npat];
 
   for (i = 0; i < npat; i++)
-    if (err = regcomp (compiled + i, pat(i).c_str (), 
-		       (REG_NOSUB | REG_EXTENDED |
-			(case_insen ? REG_ICASE : 0))))
-      break;
+    {
+      err = regcomp (compiled + i, pat(i).c_str (), 
+		     (REG_NOSUB | REG_EXTENDED |
+		      (case_insen ? REG_ICASE : 0)));
+      if (err)
+	break;
+    }
   
   if (err)
     {
-      int len = regerror(err, compiled + i, 0, 0);
+      int len = regerror (err, compiled + i, 0, 0);
       OCTAVE_LOCAL_BUFFER (char, errmsg, len);
       regerror(err, compiled + i, errmsg, len);
       (*current_liboctave_error_handler) ("%s in pattern (%s)", errmsg, 
 					  pat(i).c_str());
 
       for (int j = 0; j < i + 1; j++)
-	regfree(compiled + j);
+	regfree (compiled + j);
     }
 #else
   (*current_liboctave_error_handler) 
@@ -124,7 +127,7 @@ regex_match::match (const std::string& s)
   const char *str = s.c_str ();
 
   for (int i = 0; i < npat; i++)
-    if (regexec(compiled + i, str, 0, 0, 0) == 0) 
+    if (regexec (compiled + i, str, 0, 0, 0) == 0) 
       return true;
 #endif
 

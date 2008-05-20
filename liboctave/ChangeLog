@@ -1,5 +1,7 @@
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
+	* dMatrix.cc, CMatrix.cc, Sparse-op-defs.h: Add missing copyright.
+
 	* Sparse-op-defs.h (SPARSE_FULL_MUL): Simplify scalar*matrix case.
 	Correct indenting. 
 	(SPARSE_FULL_TRANS_MUL): New macro.

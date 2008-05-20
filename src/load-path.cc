@@ -444,7 +444,7 @@ load_path::do_initialize (bool set_initial_path)
     xpath += dir_path::path_sep_str + tpath;
 
   if (! sys_path.empty ())
-    xpath += sys_path;
+    xpath += dir_path::path_sep_str + sys_path;
 
   do_set (xpath, false);
 }

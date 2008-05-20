@@ -45,10 +45,10 @@ regex_match
 public:
 
   regex_match (const std::string& p, bool insen = false) 
-    : pat (p), case_insen (insen){ init (); }
+    : pat (p), case_insen (insen) { init (); }
 
   regex_match (const string_vector& p = string_vector (), bool insen = false) 
-    : pat (p), case_insen (insen)  { init (); }
+    : pat (p), case_insen (insen) { init (); }
 
   regex_match (const regex_match& gm) 
     : pat (gm.pat), case_insen (gm.case_insen) { init (); }

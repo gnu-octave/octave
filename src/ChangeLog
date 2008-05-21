@@ -1,3 +1,8 @@
+2008-05-21  Jaroslav Hajek <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/matrix_type.cc: Fix tests relying on the
+	older more optimistic hermitian check.
+
 2008-05-21  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/rcond.cc (Frcond): Add support for single precision.
@@ -11,11 +16,6 @@
 	(Finf, FNaN, FNA, Frealmax, Frealmin): Use it here.
 	(Feps): Modify behavior for a single numerical argument to give
 	difference to next largest value in the class of the type passed.
-
-2008-05-21  Jaroslav Hajek <highegg@gmail.com>
-
-	* DLD-FUNCTIONS/matrix_type.cc: Fix tests relying on the
-	older more optimistic hermitian check.
 
 2008-05-21  John W. Eaton  <jwe@octave.org>
 

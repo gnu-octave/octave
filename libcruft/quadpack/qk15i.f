@@ -169,12 +169,12 @@ c
         if(inf.eq.2) then
            call f(-tabsc1,ierr,fvalt)
            if (ierr.lt.0) return
-           fval1 = fval1 + fvalt;
+           fval1 = fval1 + fvalt
         endif
         if(inf.eq.2) then
            call f(-tabsc2,ierr,fvalt)
            if (ierr.lt.0) return
-           fval2 = fval2 + fvalt;
+           fval2 = fval2 + fvalt
         endif
         fval1 = (fval1/absc1)/absc1
         fval2 = (fval2/absc2)/absc2

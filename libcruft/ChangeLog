@@ -1,3 +1,7 @@
+2008-05-30  Thomas Treichl  <Thomas.Treichl@gmx.net>
+
+	* quadpack/qk15i.f: Delete extraneous semicolons.
+
 2008-05-21  David Bateman  <dbateman@free.fr>
 
 	* odepack/slsode.f, odepack/sintdy.f: Replace the use of xerrwv

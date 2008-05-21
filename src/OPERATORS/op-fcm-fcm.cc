@@ -111,6 +111,34 @@ DEFBINOP (ldiv, float_complex_matrix, float_complex_matrix)
   return ret;
 }
 
+DEFBINOP (trans_mul, float_complex_matrix, float_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
+  return octave_value(xgemm (true, false, v1.float_complex_matrix_value (), 
+                             false, false, v2.float_complex_matrix_value ()));
+}
+
+DEFBINOP (mul_trans, float_complex_matrix, float_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
+  return octave_value(xgemm (false, false, v1.float_complex_matrix_value (), 
+                             true, false, v2.float_complex_matrix_value ()));
+}
+
+DEFBINOP (herm_mul, float_complex_matrix, float_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
+  return octave_value(xgemm (true, true, v1.float_complex_matrix_value (), 
+                             false, false, v2.float_complex_matrix_value ()));
+}
+
+DEFBINOP (mul_herm, float_complex_matrix, float_complex_matrix)
+{
+  CAST_BINOP_ARGS (const octave_float_complex_matrix&, const octave_float_complex_matrix&);
+  return octave_value(xgemm (false, false, v1.float_complex_matrix_value (), 
+                             true, true, v2.float_complex_matrix_value ()));
+}
+
 DEFNDBINOP_FN (lt, float_complex_matrix, float_complex_matrix, 
 	       float_complex_array, float_complex_array, mx_el_lt)
 DEFNDBINOP_FN (le, float_complex_matrix, float_complex_matrix, 
@@ -183,6 +211,14 @@ install_fcm_fcm_ops (void)
 		 octave_float_complex_matrix, pow);
   INSTALL_BINOP (op_ldiv, octave_float_complex_matrix, 
 		 octave_float_complex_matrix, ldiv);
+  INSTALL_BINOP (op_trans_mul, octave_float_complex_matrix, 
+                 octave_float_complex_matrix, trans_mul);
+  INSTALL_BINOP (op_mul_trans, octave_float_complex_matrix, 
+                 octave_float_complex_matrix, mul_trans);
+  INSTALL_BINOP (op_herm_mul, octave_float_complex_matrix, 
+                 octave_float_complex_matrix, herm_mul);
+  INSTALL_BINOP (op_mul_herm, octave_float_complex_matrix, 
+                 octave_float_complex_matrix, mul_herm);
   INSTALL_BINOP (op_lt, octave_float_complex_matrix, 
 		 octave_float_complex_matrix, lt);
   INSTALL_BINOP (op_le, octave_float_complex_matrix, 

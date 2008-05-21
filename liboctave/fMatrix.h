@@ -339,6 +339,8 @@ extern OCTAVE_API FloatMatrix Givens (float, float);
 
 extern OCTAVE_API FloatMatrix Sylvester (const FloatMatrix&, const FloatMatrix&, const FloatMatrix&);
 
+extern OCTAVE_API FloatMatrix xgemm (bool transa, const FloatMatrix& a, bool transb, const FloatMatrix& b);
+
 extern OCTAVE_API FloatMatrix operator * (const FloatMatrix& a, const FloatMatrix& b);
 
 extern OCTAVE_API FloatMatrix min (float d, const FloatMatrix& m);

@@ -1,5 +1,17 @@
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
+	* fCMatrix.h (xgemm): Provide decl.
+	(xcdotc, csyrk, cherk): New F77 decls.
+	* fMatrix.cc (xgemm): New function.
+	(operator * (const FloatMatrix&, const FloatMatrix&)): Simplify.
+	(get_blas_trans_arg): New function.
+	* fCMatrix.h (xgemm): Provide decl.
+	(ssyrk): New F77 decl.
+	* fCMatrix.cc (xgemm): New function.
+	(operator * (const FloatComplexMatrix&, const
+	FloatComplexMatrix&)): Simplify.
+	(get_blas_trans_arg): New function.
+
 	* dMatrix.cc, CMatrix.cc, Sparse-op-defs.h: Add missing copyright.
 
 	* Sparse-op-defs.h (SPARSE_FULL_MUL): Simplify scalar*matrix case.

@@ -107,6 +107,28 @@ extern "C"
 			     const FloatComplex*, const octave_idx_type&, FloatComplex&);
 
   F77_RET_T
+  F77_FUNC (xcdotc, XCDOTC) (const octave_idx_type&, const FloatComplex*, const octave_idx_type&,
+			     const FloatComplex*, const octave_idx_type&, FloatComplex&);
+
+  F77_RET_T
+  F77_FUNC (csyrk, CSYRK) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const octave_idx_type&, const octave_idx_type&, 
+			   const FloatComplex&, const FloatComplex*, const octave_idx_type&,
+			   const FloatComplex&, FloatComplex*, const octave_idx_type&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
+  F77_FUNC (cherk, CHERK) (F77_CONST_CHAR_ARG_DECL,
+			   F77_CONST_CHAR_ARG_DECL,
+			   const octave_idx_type&, const octave_idx_type&, 
+			   const FloatComplex&, const FloatComplex*, const octave_idx_type&,
+			   const FloatComplex&, FloatComplex*, const octave_idx_type&
+			   F77_CHAR_ARG_LEN_DECL
+			   F77_CHAR_ARG_LEN_DECL);
+
+  F77_RET_T
   F77_FUNC (cgetrf, CGETRF) (const octave_idx_type&, const octave_idx_type&, FloatComplex*, const octave_idx_type&,
 			     octave_idx_type*, octave_idx_type&);
 
@@ -3984,49 +4006,116 @@ operator * (const FloatMatrix& m, const FloatComplexMatrix& a)
 %!assert(2*rv*cv,[rv,rv]*[cv;cv],1e-14)
 */
 
+static const char *
+get_blas_trans_arg (bool trans, bool conj)
+{
+  static char blas_notrans = 'N', blas_trans = 'T', blas_conj_trans = 'C';
+  return trans ? (conj ? &blas_conj_trans : &blas_trans) : &blas_notrans;
+}
+
+// the general GEMM operation
+
 FloatComplexMatrix
-operator * (const FloatComplexMatrix& m, const FloatComplexMatrix& a)
+xgemm (bool transa, bool conja, const FloatComplexMatrix& a, 
+       bool transb, bool conjb, const FloatComplexMatrix& b)
 {
   FloatComplexMatrix retval;
 
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.cols ();
+  // conjugacy is ignored if no transpose
+  conja = conja && transa;
+  conjb = conjb && transb;
 
-  octave_idx_type a_nr = a.rows ();
-  octave_idx_type a_nc = a.cols ();
+  octave_idx_type a_nr = transa ? a.cols () : a.rows ();
+  octave_idx_type a_nc = transa ? a.rows () : a.cols ();
 
-  if (nc != a_nr)
-    gripe_nonconformant ("operator *", nr, nc, a_nr, a_nc);
+  octave_idx_type b_nr = transb ? b.cols () : b.rows ();
+  octave_idx_type b_nc = transb ? b.rows () : b.cols ();
+
+  if (a_nc != b_nr)
+    gripe_nonconformant ("operator *", a_nr, a_nc, b_nr, b_nc);
   else
     {
-      if (nr == 0 || nc == 0 || a_nc == 0)
-	retval.resize (nr, a_nc, 0.0);
-      else
-	{
-	  octave_idx_type ld  = nr;
+      if (a_nr == 0 || a_nc == 0 || b_nc == 0)
+	retval.resize (a_nr, b_nc, 0.0);
+      else if (a.data () == b.data () && a_nr == b_nc && transa != transb)
+        {
 	  octave_idx_type lda = a.rows ();
 
-	  retval.resize (nr, a_nc);
+          retval.resize (a_nr, b_nc);
 	  FloatComplex *c = retval.fortran_vec ();
 
-	  if (a_nc == 1)
+          const char *ctransa = get_blas_trans_arg (transa, conja);
+          if (conja || conjb)
+            {
+              F77_XFCN (cherk, CHERK, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                       F77_CONST_CHAR_ARG2 (ctransa, 1),
+                                       a_nr, a_nc, 1.0,
+                                       a.data (), lda, 0.0, c, a_nr
+                                       F77_CHAR_ARG_LEN (1)
+                                       F77_CHAR_ARG_LEN (1)));
+              for (int j = 0; j < a_nr; j++)
+                for (int i = 0; i < j; i++)
+                  retval.xelem (j,i) = std::conj (retval.xelem (i,j));
+            }
+          else
+            {
+              F77_XFCN (csyrk, CSYRK, (F77_CONST_CHAR_ARG2 ("U", 1),
+                                       F77_CONST_CHAR_ARG2 (ctransa, 1),
+                                       a_nr, a_nc, 1.0,
+                                       a.data (), lda, 0.0, c, a_nr
+                                       F77_CHAR_ARG_LEN (1)
+                                       F77_CHAR_ARG_LEN (1)));
+              for (int j = 0; j < a_nr; j++)
+                for (int i = 0; i < j; i++)
+                  retval.xelem (j,i) = retval.xelem (i,j);
+
+            }
+
+        }
+      else
+	{
+	  octave_idx_type lda = a.rows (), tda = a.cols ();
+	  octave_idx_type ldb = b.rows (), tdb = b.cols ();
+
+	  retval.resize (a_nr, b_nc);
+	  FloatComplex *c = retval.fortran_vec ();
+
+	  if (b_nc == 1 && a_nr == 1)
 	    {
-	      if (nr == 1)
-		F77_FUNC (xcdotu, XCDOTU) (nc, m.data (), 1, a.data (), 1, *c);
-	      else
-		{
-		  F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
-					   nr, nc, 1.0,  m.data (), ld,
-					   a.data (), 1, 0.0, c, 1
-					   F77_CHAR_ARG_LEN (1)));
-		}
-	    }
+              if (conja == conjb)
+                {
+                  F77_FUNC (xcdotu, XCDOTU) (a_nc, a.data (), 1, b.data (), 1, *c);
+                  if (conja) *c = std::conj (*c);
+                }
+              else if (conjb)
+                  F77_FUNC (xcdotc, XCDOTC) (a_nc, a.data (), 1, b.data (), 1, *c);
+              else
+                  F77_FUNC (xcdotc, XCDOTC) (a_nc, b.data (), 1, a.data (), 1, *c);
+            }
+          else if (b_nc == 1 && ! conjb)
+            {
+              const char *ctransa = get_blas_trans_arg (transa, conja);
+              F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (ctransa, 1),
+                                       lda, tda, 1.0,  a.data (), lda,
+                                       b.data (), 1, 0.0, c, 1
+                                       F77_CHAR_ARG_LEN (1)));
+            }
+          else if (a_nr == 1 && ! conja)
+            {
+              const char *crevtransb = get_blas_trans_arg (! transb, conjb);
+              F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 (crevtransb, 1),
+                                       ldb, tdb, 1.0,  b.data (), ldb,
+                                       a.data (), 1, 0.0, c, 1
+                                       F77_CHAR_ARG_LEN (1)));
+            }
 	  else
 	    {
-	      F77_XFCN (cgemm, CGEMM, (F77_CONST_CHAR_ARG2 ("N", 1),
-				       F77_CONST_CHAR_ARG2 ("N", 1),
-				       nr, a_nc, nc, 1.0, m.data (),
-				       ld, a.data (), lda, 0.0, c, nr
+              const char *ctransa = get_blas_trans_arg (transa, conja);
+              const char *ctransb = get_blas_trans_arg (transb, conjb);
+	      F77_XFCN (cgemm, CGEMM, (F77_CONST_CHAR_ARG2 (ctransa, 1),
+				       F77_CONST_CHAR_ARG2 (ctransb, 1),
+				       a_nr, b_nc, a_nc, 1.0, a.data (),
+				       lda, b.data (), ldb, 0.0, c, a_nr
 				       F77_CHAR_ARG_LEN (1)
 				       F77_CHAR_ARG_LEN (1)));
 	    }
@@ -4034,6 +4123,12 @@ operator * (const FloatComplexMatrix& m, const FloatComplexMatrix& a)
     }
 
   return retval;
+}
+
+FloatComplexMatrix
+operator * (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
+{
+  return xgemm (false, false, a, false, false, b);
 }
 
 // FIXME -- it would be nice to share code among the min/max

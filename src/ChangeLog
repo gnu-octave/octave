@@ -1,5 +1,11 @@
 2008-05-21  Jaroslav Hajek <highegg@gmail.com>
 
+	* OPERATORS/op-fcm-fcm.cc (trans_mul, mul_trans, herm_mul, mul_herm):
+	New functions.
+	(install_fcm_fcm_ops): Install them.
+	* OPERATORS/op-fm-fm.cc (trans_mul, mul_trans): New functions.
+	(install_fm_fm_ops): Install them.
+
 	* OPERATORS/op-sm-m.cc (trans_mul): New function.
 	(install_sm_m_ops): Register it.
 	* OPERATORS/op-m-sm.cc (mul_trans): New function.

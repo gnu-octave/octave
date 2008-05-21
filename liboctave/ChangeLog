@@ -66,6 +66,20 @@
 	FloatHESS, FloatComplexHESS, FloatQR, FloatComplexQR, QRP,
 	ComplexQRP, FloatQRP, FloatComplexQRP):	Declare classes.
 	
+2008-05-21  Jaroslav Hajek <highegg@gmail.com>
+
+	* MatrixType.cc (matrix_real_probe, matrix_complex_probe):
+	New template functions.
+	(MatrixType::MatrixType (const Matrix&),
+	MatrixType::MatrixType (const FloatMatrix&)):
+	just call matrix_real_probe.
+	(MatrixType::MatrixType (const ComplexMatrix&),
+	MatrixType::MatrixType (const FloatComplexMatrix&)):
+	just call matrix_complex_probe.
+
+	* MatrixType.cc (MatrixType::MatrixType (matrix_type, bool)):
+	add missing test for Unknown.
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* Array.cc (Array<T> Array<T>::transpose () const): Modify for tiled

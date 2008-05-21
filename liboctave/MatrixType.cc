@@ -55,13 +55,15 @@ MatrixType::MatrixType (const MatrixType &a)
     }
 }
 
-MatrixType::MatrixType (const Matrix &a)
-  : typ (MatrixType::Unknown),
-    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+template<class T> 
+MatrixType::matrix_type 
+matrix_real_probe (const MArray2<T>& a)
 {
+  MatrixType::matrix_type typ;
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
+
+  const T zero = 0;
  
   if (ncols == nrows)
     {
@@ -69,35 +71,30 @@ MatrixType::MatrixType (const Matrix &a)
       bool lower = true;
       bool hermitian = true;
 
-      for (octave_idx_type j = 0; j < ncols; j++)
+      // do the checks for lower/upper/hermitian all in one pass.
+      ColumnVector diag(ncols);
+
+      for (octave_idx_type j = 0; 
+           j < ncols && upper; j++)
 	{
-	  if (j < nrows)
-	    {
-	      if (a.elem (j,j) == 0.)
-		{
-		  upper = false;
-		  lower = false;
-		  hermitian = false;
-		  break;
-		}
-	      if (a.elem (j,j) < 0.)
-		hermitian = false;
-	    }      
-	  for (octave_idx_type i = 0; i < j; i++)
-	    if (lower && a.elem (i,j) != 0.)
-	      {
-		lower = false;
-		break;
-	      }
-	  for (octave_idx_type i = j+1; i < nrows; i++)
-	    {
-	      if (hermitian && a.elem (i, j) != a.elem (j, i))
-		hermitian = false;
-	      if (upper && a.elem (i,j) != 0)
-		upper = false;
-	    }
-	  if (!upper && !lower && !hermitian)
-	    break;
+          T d = a.elem (j,j);
+          upper = upper && (d != zero);
+          lower = lower && (d != zero);
+          hermitian = hermitian && (d > zero);
+          diag(j) = d;
+        }
+
+      for (octave_idx_type j = 0; 
+           j < ncols && (upper || lower || hermitian); j++)
+	{
+          for (octave_idx_type i = 0; i < j; i++)
+            {
+              double aij = a.elem (i,j), aji = a.elem (j,i);
+              lower = lower && (aij == zero);
+              upper = upper && (aji == zero);
+              hermitian = hermitian && (aij == aji 
+                                        && aij*aij < diag(i)*diag(j));
+            }
 	}
 
       if (upper)
@@ -106,20 +103,24 @@ MatrixType::MatrixType (const Matrix &a)
 	typ = MatrixType::Lower;
       else if (hermitian)
 	typ = MatrixType::Hermitian;
-      else if (ncols == nrows)
+      else 
 	typ = MatrixType::Full;
     }
   else
     typ = MatrixType::Rectangular;
+
+  return typ;
 }
 
-MatrixType::MatrixType (const ComplexMatrix &a)
-  : typ (MatrixType::Unknown),
-    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
-    dense (false), full (true), nperm (0), perm (0)
+template<class T> 
+MatrixType::matrix_type 
+matrix_complex_probe (const MArray2<T>& a)
 {
+  MatrixType::matrix_type typ;
   octave_idx_type nrows = a.rows ();
   octave_idx_type ncols = a.cols ();
+
+  const typename T::value_type zero = 0;
 
   if (ncols == nrows)
     {
@@ -127,40 +128,32 @@ MatrixType::MatrixType (const ComplexMatrix &a)
       bool lower = true;
       bool hermitian = true;
 
-      for (octave_idx_type j = 0; j < ncols; j++)
-	{
-	  if (j < ncols)
-	    {
-	      if (imag(a.elem (j,j)) == 0. && 
-		  real(a.elem (j,j)) == 0.)
-		{
-		  upper = false;
-		  lower = false;
-		  hermitian = false;
-		  break;
-		}
+      // do the checks for lower/upper/hermitian all in one pass.
+      ColumnVector diag(ncols);
 
-	      if (imag(a.elem (j,j)) != 0. || 
-		  real(a.elem (j,j)) < 0.)
-		    hermitian = false;
-	    }
-	  for (octave_idx_type i = 0; i < j; i++)
-	    if (lower && (real(a.elem (i,j)) != 0 || imag(a.elem (i,j)) != 0))
-	      {
-		lower = false;
-		break;
-	      }
-	  for (octave_idx_type i = j+1; i < nrows; i++)
-	    {
-	      if (hermitian && a.elem (i, j) != conj(a.elem (j, i)))
-		hermitian = false;
-	      if (upper && (real(a.elem (i,j)) != 0 || 
-			    imag(a.elem (i,j)) != 0))
-		upper = false;
-	    }
-	  if (!upper && !lower && !hermitian)
-	    break;
+      for (octave_idx_type j = 0; 
+           j < ncols && upper; j++)
+	{
+          T d = a.elem (j,j);
+          upper = upper && (d != zero);
+          lower = lower && (d != zero);
+          hermitian = hermitian && (d.real() > zero && d.imag() == zero);
+          diag (j) = d.real();
+        }
+
+      for (octave_idx_type j = 0; 
+           j < ncols && (upper || lower || hermitian); j++)
+	{
+          for (octave_idx_type i = 0; i < j; i++)
+            {
+              T aij = a.elem (i,j), aji = a.elem (j,i);
+              lower = lower && (aij == zero);
+              upper = upper && (aji == zero);
+              hermitian = hermitian && (aij == std::conj (aji)
+                                        && std::norm (aij) < diag(i)*diag(j));
+            }
 	}
+
 
       if (upper)
 	typ = MatrixType::Upper;
@@ -173,6 +166,24 @@ MatrixType::MatrixType (const ComplexMatrix &a)
     }
   else
     typ = MatrixType::Rectangular;
+
+  return typ;
+}
+
+MatrixType::MatrixType (const Matrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (true), nperm (0), perm (0)
+{
+  typ = matrix_real_probe (a);
+}
+
+MatrixType::MatrixType (const ComplexMatrix &a)
+  : typ (MatrixType::Unknown),
+    sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
+    dense (false), full (true), nperm (0), perm (0)
+{
+  typ = matrix_complex_probe (a);
 }
 
 
@@ -181,57 +192,7 @@ MatrixType::MatrixType (const FloatMatrix &a)
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
     dense (false), full (true), nperm (0), perm (0)
 {
-  octave_idx_type nrows = a.rows ();
-  octave_idx_type ncols = a.cols ();
- 
-  if (ncols == nrows)
-    {
-      bool upper = true;
-      bool lower = true;
-      bool hermitian = true;
-
-      for (octave_idx_type j = 0; j < ncols; j++)
-	{
-	  if (j < nrows)
-	    {
-	      if (a.elem (j,j) == 0.)
-		{
-		  upper = false;
-		  lower = false;
-		  hermitian = false;
-		  break;
-		}
-	      if (a.elem (j,j) < 0.)
-		hermitian = false;
-	    }      
-	  for (octave_idx_type i = 0; i < j; i++)
-	    if (lower && a.elem (i,j) != 0.)
-	      {
-		lower = false;
-		break;
-	      }
-	  for (octave_idx_type i = j+1; i < nrows; i++)
-	    {
-	      if (hermitian && a.elem (i, j) != a.elem (j, i))
-		hermitian = false;
-	      if (upper && a.elem (i,j) != 0)
-		upper = false;
-	    }
-	  if (!upper && !lower && !hermitian)
-	    break;
-	}
-
-      if (upper)
-	typ = MatrixType::Upper;
-      else if (lower)
-	typ = MatrixType::Lower;
-      else if (hermitian)
-	typ = MatrixType::Hermitian;
-      else if (ncols == nrows)
-	typ = MatrixType::Full;
-    }
-  else
-    typ = MatrixType::Rectangular;
+  typ = matrix_real_probe (a);
 }
 
 MatrixType::MatrixType (const FloatComplexMatrix &a)
@@ -239,61 +200,7 @@ MatrixType::MatrixType (const FloatComplexMatrix &a)
     sp_bandden (0), bandden (0), upper_band (0), lower_band (0),
     dense (false), full (true), nperm (0), perm (0)
 {
-  octave_idx_type nrows = a.rows ();
-  octave_idx_type ncols = a.cols ();
-
-  if (ncols == nrows)
-    {
-      bool upper = true;
-      bool lower = true;
-      bool hermitian = true;
-
-      for (octave_idx_type j = 0; j < ncols; j++)
-	{
-	  if (j < ncols)
-	    {
-	      if (imag(a.elem (j,j)) == 0. && 
-		  real(a.elem (j,j)) == 0.)
-		{
-		  upper = false;
-		  lower = false;
-		  hermitian = false;
-		  break;
-		}
-
-	      if (imag(a.elem (j,j)) != 0. || 
-		  real(a.elem (j,j)) < 0.)
-		    hermitian = false;
-	    }
-	  for (octave_idx_type i = 0; i < j; i++)
-	    if (lower && (real(a.elem (i,j)) != 0 || imag(a.elem (i,j)) != 0))
-	      {
-		lower = false;
-		break;
-	      }
-	  for (octave_idx_type i = j+1; i < nrows; i++)
-	    {
-	      if (hermitian && a.elem (i, j) != conj(a.elem (j, i)))
-		hermitian = false;
-	      if (upper && (real(a.elem (i,j)) != 0 || 
-			    imag(a.elem (i,j)) != 0))
-		upper = false;
-	    }
-	  if (!upper && !lower && !hermitian)
-	    break;
-	}
-
-      if (upper)
-	typ = MatrixType::Upper;
-      else if (lower)
-	typ = MatrixType::Lower;
-      else if (hermitian)
-	typ = MatrixType::Hermitian;
-      else if (ncols == nrows)
-	typ = MatrixType::Full;
-    }
-  else
-    typ = MatrixType::Rectangular;
+  typ = matrix_complex_probe (a);
 }
 
 MatrixType::MatrixType (const SparseMatrix &a)
@@ -560,54 +467,49 @@ MatrixType::MatrixType (const SparseMatrix &a)
 			      typ == MatrixType::Tridiagonal || 
 			      typ == MatrixType::Banded))
 	{
-	  // Check for symmetry, with positive real diagonal, which
-	  // has a very good chance of being symmetric positive
-	  // definite..
 	  bool is_herm = true;
 
-	  for (octave_idx_type j = 0; j < ncols; j++)
-	    {
-	      bool diag_positive = false;
+          // first, check whether the diagonal is positive & extract it
+          ColumnVector diag (ncols);
 
-	      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
-		{
-		  octave_idx_type ri = a.ridx(i);
+	  for (octave_idx_type j = 0; is_herm && j < ncols; j++)
+            {
+              is_herm = false;
+              for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+                {
+                  if (a.ridx(i) == j)
+                    {
+                      double d = a.data(i);
+                      is_herm = d > 0.;
+                      diag(j) = d;
+                      break;
+                    }
+                }
+            }
 
-		  if (ri == j)
-		    {
-		      if (a.data(i) == std::abs(a.data(i)))
-			diag_positive = true;
-		      else
-			break;
-		    }
-		  else
-		    {
-		      bool found = false;
 
-		      for (octave_idx_type k = a.cidx(ri); k < a.cidx(ri+1); k++)
-			{
-			  if (a.ridx(k) == j)
-			    {
-			      if (a.data(i) == a.data(k))
-				found = true;
-			      break;
-			    }
-			}
+          // next, check symmetry and 2x2 positiveness
 
-		      if (! found)
-			{
-			  is_herm = false;
-			  break;
-			}
-		    }
-		}
-
-	      if (! diag_positive || ! is_herm)
-		{
-		  is_herm = false;
-		  break;
-		} 
-	    }
+          for (octave_idx_type j = 0; is_herm && j < ncols; j++)
+            for (octave_idx_type i = a.cidx(j); is_herm && i < a.cidx(j+1); i++)
+              {
+                octave_idx_type k = a.ridx(i);
+                is_herm = k == j;
+                if (is_herm) 
+                  continue;
+                double d = a.data(i);
+                if (d*d < diag(j)*diag(k))
+                  {
+                    for (octave_idx_type l = a.cidx(k); l < a.cidx(k+1); l++)
+                      {
+                        if (a.ridx(l) == j)
+                          {
+                            is_herm = a.data(l) == d;
+                            break;
+                          }
+                      }
+                  }
+              }
 
 	  if (is_herm)
 	    {
@@ -886,54 +788,50 @@ MatrixType::MatrixType (const SparseComplexMatrix &a)
 			      typ == MatrixType::Tridiagonal || 
 			      typ == MatrixType::Banded))
 	{
-	  // Check for symmetry, with positive real diagonal, which
-	  // has a very good chance of being symmetric positive
-	  // definite..
 	  bool is_herm = true;
 
-	  for (octave_idx_type j = 0; j < ncols; j++)
-	    {
-	      bool diag_positive = false;
+          // first, check whether the diagonal is positive & extract it
+          ColumnVector diag (ncols);
 
-	      for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
-		{
-		  octave_idx_type ri = a.ridx(i);
+	  for (octave_idx_type j = 0; is_herm && j < ncols; j++)
+            {
+              is_herm = false;
+              for (octave_idx_type i = a.cidx(j); i < a.cidx(j+1); i++)
+                {
+                  if (a.ridx(i) == j)
+                    {
+                      Complex d = a.data(i);
+                      is_herm = d.real() > 0. && d.imag() == 0.;
+                      diag(j) = d.real();
+                      break;
+                    }
+                }
+            }
 
-		  if (ri == j)
-		    {
-		      if (a.data(i) == std::abs(a.data(i)))
-			diag_positive = true;
-		      else
-			break;
-		    }
-		  else
-		    {
-		      bool found = false;
+          // next, check symmetry and 2x2 positiveness
 
-		      for (octave_idx_type k = a.cidx(ri); k < a.cidx(ri+1); k++)
-			{
-			  if (a.ridx(k) == j)
-			    {
-			      if (a.data(i) == conj(a.data(k)))
-				found = true;
-			      break;
-			    }
-			}
+          for (octave_idx_type j = 0; is_herm && j < ncols; j++)
+            for (octave_idx_type i = a.cidx(j); is_herm && i < a.cidx(j+1); i++)
+              {
+                octave_idx_type k = a.ridx(i);
+                is_herm = k == j;
+                if (is_herm) 
+                  continue;
+                Complex d = a.data(i);
+                if (std::norm (d) < diag(j)*diag(k))
+                  {
+                    d = std::conj (d);
+                    for (octave_idx_type l = a.cidx(k); l < a.cidx(k+1); l++)
+                      {
+                        if (a.ridx(l) == j)
+                          {
+                            is_herm = a.data(l) == d;
+                            break;
+                          }
+                      }
+                  }
+              }
 
-		      if (! found)
-			{
-			  is_herm = false;
-			  break;
-			}
-		    }
-		}
-
-	      if (! diag_positive || ! is_herm)
-		{
-		  is_herm = false;
-		  break;
-		} 
-	    }
 
 	  if (is_herm)
 	    {
@@ -953,10 +851,11 @@ MatrixType::MatrixType (const matrix_type t, bool _full)
     bandden (0), upper_band (0), lower_band (0),
     dense (false), full (_full), nperm (0), perm (0)
 {
-  if (t == MatrixType::Full || t == MatrixType::Diagonal ||
-      t == MatrixType::Permuted_Diagonal || t == MatrixType::Upper ||
-      t == MatrixType::Lower || t == MatrixType::Tridiagonal ||
-      t == MatrixType::Tridiagonal_Hermitian || t == MatrixType::Rectangular)
+  if (t == MatrixType::Unknown || t == MatrixType::Full 
+      || t == MatrixType::Diagonal || t == MatrixType::Permuted_Diagonal 
+      || t == MatrixType::Upper || t == MatrixType::Lower 
+      || t == MatrixType::Tridiagonal || t == MatrixType::Tridiagonal_Hermitian
+      || t == MatrixType::Rectangular)
     typ = t;
   else
     (*current_liboctave_warning_handler) ("Invalid matrix type");

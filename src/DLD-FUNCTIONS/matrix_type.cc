@@ -512,9 +512,9 @@ classification of the matrix.\n\
 %!test
 %! bnd=spparms("bandden");
 %! spparms("bandden",0.5);
-%! a = spdiags(randn(10,3),[-1,0,1],10,10);
+%! a = spdiags(rand(10,3)-0.5,[-1,0,1],10,10);
 %! assert(matrix_type(a),"Tridiagonal");
-%! assert(matrix_type(abs(a')+abs(a)),"Tridiagonal Positive Definite");
+%! assert(matrix_type(a'+a+2*speye(10)),"Tridiagonal Positive Definite");
 %! spparms("bandden",bnd);
 %!test
 %! bnd=spparms("bandden");
@@ -551,14 +551,14 @@ classification of the matrix.\n\
 %! bnd=spparms("bandden");
 %! spparms("bandden",0.5);
 %! assert(matrix_type(spdiags(1i*randn(10,3),[-1,0,1],10,10)),"Tridiagonal");
-%! a = 1i*randn(9,1);a=[[a;0],ones(10,1),[0;-a]];
+%! a = 1i*(rand(9,1)-0.5);a=[[a;0],ones(10,1),[0;-a]];
 %! assert(matrix_type(spdiags(a,[-1,0,1],10,10)),"Tridiagonal Positive Definite");
 %! spparms("bandden",bnd);
 %!test
 %! bnd=spparms("bandden");
 %! spparms("bandden",0.5);
 %! assert(matrix_type(spdiags(1i*randn(10,4),[-2:1],10,10)),"Banded");
-%! a = 1i*randn(9,2);a=[[a;[0,0]],ones(10,1),[[0;-a(:,2)],[0;0;-a(1:8,1)]]];
+%! a = 1i*(rand(9,2)-0.5);a=[[a;[0,0]],ones(10,1),[[0;-a(:,2)],[0;0;-a(1:8,1)]]];
 %! assert(matrix_type(spdiags(a,[-2:2],10,10)),"Banded Positive Definite");
 %! spparms("bandden",bnd);
 %!test

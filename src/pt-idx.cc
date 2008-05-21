@@ -43,13 +43,13 @@ along with Octave; see the file COPYING.  If not, see
 // Index expressions.
 
 tree_index_expression::tree_index_expression (int l, int c)
-  : tree_expression (l, c), expr (0), args (), type (),
+  : tree_expression (l, c), expr (0), args (0), type (),
     arg_nm (), dyn_field () { }
 
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      tree_argument_list *lst,
 					      int l, int c, char t)
-  : tree_expression (l, c), expr (e), args (), type (),
+  : tree_expression (l, c), expr (e), args (0), type (),
     arg_nm (), dyn_field ()
 {
   append (lst, t);
@@ -58,7 +58,7 @@ tree_index_expression::tree_index_expression (tree_expression *e,
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      const std::string& n,
 					      int l, int c)
-  : tree_expression (l, c), expr (e), args (), type (),
+  : tree_expression (l, c), expr (e), args (0), type (),
     arg_nm (), dyn_field ()
 {
   append (n);
@@ -67,7 +67,7 @@ tree_index_expression::tree_index_expression (tree_expression *e,
 tree_index_expression::tree_index_expression (tree_expression *e,
 					      tree_expression *df,
 					      int l, int c)
-  : tree_expression (l, c), expr (e), args (), type (),
+  : tree_expression (l, c), expr (e), args (0), type (),
     arg_nm (), dyn_field ()
 {
   append (df);

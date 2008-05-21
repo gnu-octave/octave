@@ -1,3 +1,8 @@
+2008-06-02  Kim Hansen  <kimhanse@gmail.com>
+
+	* strings/mat2str.m: Change is_complex to iscomplex, add tests, add
+	missing ;
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* miscellaneous/single.m: Remove.

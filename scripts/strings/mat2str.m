@@ -74,9 +74,9 @@ function s = mat2str (x, n, cls)
     error ("mat2str: X must be two dimensional");
   endif
 
-  x_is_complex = is_complex (x);
+  x_iscomplex = iscomplex (x);
 
-  if (! x_is_complex)
+  if (! x_iscomplex)
     fmt = sprintf ("%%.%dg", n(1));
   else
     if (length (n) == 1 )
@@ -92,7 +92,7 @@ function s = mat2str (x, n, cls)
     s = "[]";
   elseif (nel == 1)
     ## Scalar X, don't print brackets
-    if (! x_is_complex)
+    if (! x_iscomplex)
       s = sprintf (fmt, x);
     else
       s = sprintf (fmt, real (x), imag (x));
@@ -100,11 +100,11 @@ function s = mat2str (x, n, cls)
   else
     ## Non-scalar X, print brackets
     fmt = [fmt, ","];
-    if (! x_is_complex)
+    if (! x_iscomplex)
       s = sprintf (fmt, x.');
     else
-      x = x.';
-      s = sprintf (fmt, [real(x(:))'; imag(x(:))']);
+      t = x.';
+      s = sprintf (fmt, [real(t(:))'; imag(t(:))']);
     endif
 
     s = ["[", s];
@@ -115,6 +115,11 @@ function s = mat2str (x, n, cls)
   endif
 
   if (strcmp ("class", cls))
-    s = [class(x), "(", s, ")"]
+    s = [class(x), "(", s, ")"];
   endif
 endfunction
+
+%!assert (mat2str ([-1/3 + i/7; 1/3 - i/7], [4 2]), "[-0.3333+0.14i;0.3333-0.14i]")
+%!assert (mat2str ([-1/3 +i/7; 1/3 -i/7], [4 2]), "[-0.3333+0i,0+0.14i;0.3333+0i,-0-0.14i]")
+%!assert (mat2str (int16 ([1 -1]), 'class'), "int16([1,-1])")
+

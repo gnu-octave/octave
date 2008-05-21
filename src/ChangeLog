@@ -1,3 +1,8 @@
+2008-05-21  John W. Eaton  <jwe@octave.org>
+
+	* pt-idx.h (tree_index_expression::tree_index_expression (int, int)): 
+	Delete default argument values.
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* data.cc (Flog2): Handle single precision.

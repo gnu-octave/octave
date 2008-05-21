@@ -43,7 +43,7 @@ along with Octave; see the file COPYING.  If not, see
 // Index expressions.
 
 tree_index_expression::tree_index_expression (int l, int c)
-  : tree_expression (l, c), expr (), args (), type (),
+  : tree_expression (l, c), expr (0), args (), type (),
     arg_nm (), dyn_field () { }
 
 tree_index_expression::tree_index_expression (tree_expression *e,

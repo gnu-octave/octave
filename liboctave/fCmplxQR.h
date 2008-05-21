@@ -1,0 +1,96 @@
+/*
+
+Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
+              2007 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
+*/
+
+// updating/downdating by Jaroslav Hajek 2008
+
+#if !defined (octave_FloatComplexQR_h)
+#define octave_FloatComplexQR_h 1
+
+#include <iostream>
+
+#include "fCMatrix.h"
+#include "fCColVector.h"
+#include "fCRowVector.h"
+#include "dbleQR.h"
+
+class
+OCTAVE_API
+FloatComplexQR
+{
+public:
+
+  FloatComplexQR (void) : q (), r () { }
+
+  FloatComplexQR (const FloatComplexMatrix&, QR::type = QR::std);
+
+  FloatComplexQR (const FloatComplexMatrix& q, const FloatComplexMatrix& r);
+
+  FloatComplexQR (const FloatComplexQR& a) : q (a.q), r (a.r) { }
+
+  FloatComplexQR& operator = (const FloatComplexQR& a)
+    {
+      if (this != &a)
+	{
+	  q = a.q;
+	  r = a.r;
+	}
+      return *this;
+    }
+
+  ~FloatComplexQR (void) { }
+
+  void init (const FloatComplexMatrix&, QR::type = QR::std);
+
+  FloatComplexMatrix Q (void) const { return q; }
+
+  FloatComplexMatrix R (void) const { return r; }
+
+  void update (const FloatComplexMatrix& u, const FloatComplexMatrix& v);
+
+  void insert_col (const FloatComplexMatrix& u, octave_idx_type j);
+
+  void delete_col (octave_idx_type j);
+
+  void insert_row (const FloatComplexMatrix& u, octave_idx_type j);
+
+  void delete_row (octave_idx_type j);
+
+  void shift_cols (octave_idx_type i, octave_idx_type j);
+
+  void economize();
+
+  friend std::ostream&  operator << (std::ostream&, const FloatComplexQR&);
+
+protected:
+
+  FloatComplexMatrix q;
+  FloatComplexMatrix r;
+};
+
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

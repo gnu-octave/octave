@@ -1,0 +1,80 @@
+/*
+
+Copyright (C) 1994, 1995, 1996, 1997, 2000, 2002, 2004, 2005, 2006,
+              2007 John W. Eaton
+
+This file is part of Octave.
+
+Octave is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
+
+Octave is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<http://www.gnu.org/licenses/>.
+
+*/
+
+#if !defined (octave_FloatComplexAEPBALANCE_h)
+#define octave_FloatComplexAEPBALANCE_h 1
+
+#include <iostream>
+#include <string>
+
+#include "fCMatrix.h"
+
+class
+OCTAVE_API
+FloatComplexAEPBALANCE
+{
+public:
+
+  FloatComplexAEPBALANCE (void) : balanced_mat (), balancing_mat () { }
+
+  FloatComplexAEPBALANCE (const FloatComplexMatrix& a, const std::string& balance_job)
+    {
+      init (a, balance_job); 
+    }
+
+  FloatComplexAEPBALANCE (const FloatComplexAEPBALANCE& a)
+    : balanced_mat (a.balanced_mat), balancing_mat (a.balancing_mat) { }
+
+  FloatComplexAEPBALANCE& operator = (const FloatComplexAEPBALANCE& a)
+    {
+      if (this != &a)
+	{
+	  balanced_mat = a.balanced_mat;
+	  balancing_mat = a.balancing_mat;
+	}
+      return *this;
+    }
+
+  ~FloatComplexAEPBALANCE (void) { }
+
+  FloatComplexMatrix balanced_matrix (void) const { return balanced_mat; }
+
+  FloatComplexMatrix balancing_matrix (void) const { return balancing_mat; }
+
+  friend std::ostream& operator << (std::ostream& os, const FloatComplexAEPBALANCE& a);
+
+private:
+
+  FloatComplexMatrix balanced_mat;
+  FloatComplexMatrix balancing_mat;
+
+  octave_idx_type init (const FloatComplexMatrix& a, const std::string& balance_job);
+};
+
+#endif
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

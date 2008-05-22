@@ -1,3 +1,8 @@
+2008-05-22  Jaroslav Hajek <highegg@gmail.com>
+
+	* mk-opts.pl (emit_print_function, emit_set_function,
+	emit_show_function): Support float type.
+
 2008-05-20  David Bateman  <dbateman@free.fr>
 
 	* configure.in (AC_CHECK_FUNCS): Add expm1, lgammaf, lgammaf_r,

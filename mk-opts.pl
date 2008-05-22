@@ -638,6 +638,11 @@ print_${class_name} (std::ostream& os)
           print "    double val = $static_object_name.$opt[$i] ();\n\n";
           print "    os << val << \"\\n\";\n";
         }
+      elsif ($type[$i] eq "float")
+        {
+          print "    float val = $static_object_name.$opt[$i] ();\n\n";
+          print "    os << val << \"\\n\";\n";
+        }
       elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
         {
           print "    int val = $static_object_name.$opt[$i] ();\n\n";
@@ -688,6 +693,21 @@ print_${class_name} (std::ostream& os)
         os << \"\\n\\n\";
       }\n";
         }
+      elsif ($type[$i] eq "Array<float>")
+        {
+          print "    Array<float> val = $static_object_name.$opt[$i] ();\n\n";
+          print "    if (val.length () == 1)
+      {
+        os << val(0) << \"\\n\";
+      }
+    else
+      {
+        os << \"\\n\\n\";
+        FloatMatrix tmp = FloatMatrix (FloatColumnVector (val));
+        octave_print_internal (os, tmp, false, 2);
+        os << \"\\n\\n\";
+      }\n";
+        }
       else
         {
           die ("unknown type $type[$i]");
@@ -722,6 +742,12 @@ set_${class_name} (const std::string& keyword, const octave_value& val)
           print "      if (! error_state)
         $static_object_name.set_$opt[$i] (tmp);\n";
         }
+      elsif ($type[$i] eq "float")
+        {
+          print "      float tmp = val.float_value ();\n\n";
+          print "      if (! error_state)
+        $static_object_name.set_$opt[$i] (tmp);\n";
+        }
       elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
         {
           print "      int tmp = val.int_value ();\n\n";
@@ -743,6 +769,12 @@ set_${class_name} (const std::string& keyword, const octave_value& val)
       elsif ($type[$i] eq "Array<double>")
         {
           print "      Array<double> tmp = val.vector_value ();\n\n";
+          print "      if (! error_state)
+        $static_object_name.set_$opt[$i] (tmp);\n";
+        }
+      elsif ($type[$i] eq "Array<float>")
+        {
+          print "      Array<float> tmp = val.float_vector_value ();\n\n";
           print "      if (! error_state)
         $static_object_name.set_$opt[$i] (tmp);\n";
         }
@@ -785,6 +817,11 @@ show_${class_name} (const std::string& keyword)
       if ($type[$i] eq "double")
         {
           print "      double val = $static_object_name.$opt[$i] ();\n\n";
+          print "      retval = val;\n";
+        }
+      elsif ($type[$i] eq "float")
+        {
+          print "      float val = $static_object_name.$opt[$i] ();\n\n";
           print "      retval = val;\n";
         }
       elsif ($type[$i] eq "int" || $type[$i] eq "octave_idx_type")
@@ -830,6 +867,18 @@ show_${class_name} (const std::string& keyword)
       else
         {
           retval = ColumnVector (val);
+        }\n";
+        }
+      elsif ($type[$i] eq "Array<float>")
+        {
+          print "      Array<float> val = $static_object_name.$opt[$i] ();\n\n";
+          print "      if (val.length () == 1)
+        {
+          retval = val(0);
+        }
+      else
+        {
+          retval = FloatColumnVector (val);
         }\n";
         }
       else

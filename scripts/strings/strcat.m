@@ -94,6 +94,8 @@ endfunction
 %!assert(strcat({"ab "}, "ab "), {"ab ab"})
 %!assert(strcat("ab ", {"ab "}), {"abab "})
 %!assert(strcat({"ab "}, {"ab "}), {"ab ab "})
+%!assert(strcat("", "ab"), "ab")
+%!assert(strcat("", {"ab"}, {""}), {"ab"})
 ## 2d
 %!assert(strcat(["ab ";"cde"], ["ab ";"cde"]), ["abab  ";"cdecde"])
 

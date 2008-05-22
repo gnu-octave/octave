@@ -1080,7 +1080,9 @@ array @var{string}.\n\
 	  string_vector s = args(0).all_strings ();
 
 	  if (! error_state)
-	    retval = Cell (s, true);
+	    retval = (s.is_empty ()
+                      ? Cell (octave_value (std::string ()))
+                      : Cell (s, true));
 	  else
 	    error ("cellstr: expecting argument to be a 2-d character array");
 	}

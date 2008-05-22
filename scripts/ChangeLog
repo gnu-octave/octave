@@ -1,3 +1,7 @@
+2008-06-02  Jaroslav Hajek <highegg@gmail.com>
+
+	* strings/strcat.m: Add tests.
+
 2008-06-02  Kim Hansen  <kimhanse@gmail.com>
 
 	* strings/mat2str.m: Change is_complex to iscomplex, add tests, add

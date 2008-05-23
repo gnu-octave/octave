@@ -1,3 +1,9 @@
+2008-06-02  David Bateman  <dbateman@free.fr>
+
+	* floatAEPBAL.cc (octave_idx_type FloatAEPBALANCE::init (const
+	FloatMatrix&, const std::string&)): Use FloatMatrix to initialize
+	balancing_mat.
+
 2008-05-21  David Bateman  <dbateman@free.fr>
 
 	* Quad-opts.in: Handle single precision tolerances.

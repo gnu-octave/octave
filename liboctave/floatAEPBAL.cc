@@ -74,7 +74,7 @@ FloatAEPBALANCE::init (const FloatMatrix& a, const std::string& balance_job)
 			     n, p_balanced_mat, n, ilo, ihi, pscale, info
 			     F77_CHAR_ARG_LEN (1)));
 
-  balancing_mat = Matrix (n, n, 0.0);
+  balancing_mat = FloatMatrix (n, n, 0.0);
   for (octave_idx_type i = 0; i < n; i++)
     balancing_mat.elem (i ,i) = 1.0;
 

@@ -4,6 +4,9 @@
 	FloatMatrix&, const std::string&)): Use FloatMatrix to initialize
 	balancing_mat.
 
+	* Makefile.in (MATRIX_INC): Add fCmplxAEPBAL.h and floatAEPBAL.h.
+	(MATRIX_SRC): Add fCmplxAEPBAL.cc and floatAEPBAL.cc.
+
 2008-05-21  David Bateman  <dbateman@free.fr>
 
 	* Quad-opts.in: Handle single precision tolerances.

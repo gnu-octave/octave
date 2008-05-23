@@ -25,24 +25,25 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_FloatLU_h 1
 
 #include "base-lu.h"
+#include "dMatrix.h"
 #include "fMatrix.h"
 
 class
 OCTAVE_API
-FloatLU : public base_lu <FloatMatrix, float, FloatMatrix, float>
+FloatLU : public base_lu <FloatMatrix, float, Matrix, double>
 {
 public:
 
-  FloatLU (void) : base_lu <FloatMatrix, float, FloatMatrix, float> () { }
+  FloatLU (void) : base_lu <FloatMatrix, float, Matrix, double> () { }
 
   FloatLU (const FloatMatrix& a);
 
-  FloatLU (const FloatLU& a) : base_lu <FloatMatrix, float, FloatMatrix, float> (a) { }
+  FloatLU (const FloatLU& a) : base_lu <FloatMatrix, float, Matrix, double> (a) { }
 
   FloatLU& operator = (const FloatLU& a)
     {
       if (this != &a)
-	base_lu <FloatMatrix, float, FloatMatrix, float> :: operator = (a);
+	base_lu <FloatMatrix, float, Matrix, double> :: operator = (a);
 
       return *this;
     }

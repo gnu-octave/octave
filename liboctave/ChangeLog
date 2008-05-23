@@ -1,5 +1,9 @@
 2008-06-02  David Bateman  <dbateman@free.fr>
 
+	* fCmplxLU.cc (class FloatComplexLU): Correct error in instantiation.
+	* floatLU.cc (class FloatLU): ditto.
+	* floatLU.h (class FloatLU): ditto.
+	
 	* floatAEPBAL.cc (octave_idx_type FloatAEPBALANCE::init (const
 	FloatMatrix&, const std::string&)): Use FloatMatrix to initialize
 	balancing_mat.

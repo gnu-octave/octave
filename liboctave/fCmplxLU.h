@@ -25,7 +25,7 @@ along with Octave; see the file COPYING.  If not, see
 #define octave_FloatComplex_LU_h 1
 
 #include "base-lu.h"
-#include "fMatrix.h"
+#include "dMatrix.h"
 #include "fCMatrix.h"
 
 class

@@ -435,7 +435,14 @@ fcn_file_in_path (const std::string& name)
       else if (len > 2 && name [len - 2] == '.' && name [len - 1] == 'm')
 	retval = load_path::find_fcn_file (name.substr (0, len-2));
       else
-	retval = load_path::find_fcn_file (name);
+	{
+	  std::string fname = name;
+	  size_t pos = name.find_first_of (Vfilemarker);
+	  if (pos != NPOS)
+	    fname = name.substr (0, pos);
+
+	  retval = load_path::find_fcn_file (fname);
+	}
     }
 
   return retval;

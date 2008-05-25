@@ -104,6 +104,8 @@ extern octave_value do_keyboard (const octave_value_list& args = octave_value_li
 
 extern std::string VPS4;
 
+extern char Vfilemarker;
+
 enum echo_state
 {
   ECHO_OFF = 0,

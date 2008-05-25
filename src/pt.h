@@ -72,6 +72,9 @@ public:
   static int last_line; 
 
   // The function where the last breakpoint occurred.
+  static const octave_function *last_break_function;
+
+  // The function where the next breakpoint is request.
   static const octave_function *break_function;
 
   // The statement where the last breakpoint occurred.

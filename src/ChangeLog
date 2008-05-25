@@ -1,5 +1,29 @@
 2008-06-02  David Bateman  <dbateman@free.fr>
 
+	* pt.cc (tree:last_break_function): Next pointer to last function
+	with a breakpoint.
+	* pt.h (tree:last_break_function): ditto.
+	* debug.cc (Fdbstep): Use tree::break_function value of zero to
+	signal to step into the next function. Set tree::last_break_function
+	to indicate position of last breakpoint.
+	(Fdbnext):  Set tree::last_break_function to indicate position of
+	last breakpoint.
+	* pt-bp.h (MAYBE_DO_BREAKPOINT): Check tree::break_function value
+	of zero as well. Only check tree::last_line if we are in teh same
+	function as the last breakpoint.
+	* input.cc (char Vfilemarker): New global variable.
+	(Ffilemarker): New function to query and set Vfilemarker.
+	* input.h (extern char Vfilemarker): Make Vfilemarker available.
+	* util.cc (fcn_file_in_path): If the input argument contains
+	Vfilemarker, strip the trailing part of string from this point
+	when looking for function file.
+	* toplev.cc (octave_call_stack::fo_backtrace): Mark subfunctions
+	with the name of the parent function and Vfilemarker.
+	* symtab.cc (symbol_table::find_function (const std::string&,
+	tree_argument_list *, const string_vector&, octave_value_list*,
+	bool&): If function name contains Vfilemarker, check in scope of
+	specified parent function.
+
 	* DLD-FUNCTIONS/betainc.cc: Move test code here. Add test code for
 	single precision type.
 	* DLD-FUNCTIONS/gammainc.cc: Ditto.

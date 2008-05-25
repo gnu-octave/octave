@@ -792,7 +792,32 @@ symbol_table::find_function (const std::string& name, tree_argument_list *args,
 			     octave_value_list& evaluated_args,
 			     bool& args_evaluated)
 {
-  return find (name, args, arg_names, evaluated_args, args_evaluated, true);
+  octave_value retval;
+  size_t pos = name.find_first_of (Vfilemarker);
+
+  if (pos == NPOS)
+    retval = find (name, args, arg_names, evaluated_args, args_evaluated, true);
+  else
+    {
+      std::string fcn_scope = name.substr(0, pos);
+      scope_id stored_scope = xcurrent_scope;
+      xcurrent_scope = xtop_scope;
+      octave_value parent = find_function (name.substr(0, pos));
+      if (parent.is_defined ())
+	{
+	  octave_function *parent_fcn = parent.function_value ();
+	  if (parent_fcn)
+	    {
+	      xcurrent_scope = parent_fcn->scope ();
+	      if (xcurrent_scope > 1)
+		retval = find_function (name.substr (pos + 1), args, arg_names, 
+					evaluated_args, args_evaluated);
+	    }
+	}
+      xcurrent_scope = stored_scope;
+    }
+
+  return retval;
 }
 
 void

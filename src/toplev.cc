@@ -213,7 +213,11 @@ octave_call_stack::do_backtrace (int n) const
 	  if (f)
 	    {
 	      file(k) = f->fcn_file_name ();
-	      name(k) = f->name ();
+	      std::string parent_fcn_name = f->parent_fcn_name ();
+	      if (parent_fcn_name == std::string ())
+		name(k) = f->name ();
+	      else
+		name(k) = f->parent_fcn_name () + Vfilemarker + f->name ();
 
 	      tree_statement *stmt = elt.stmt;
 

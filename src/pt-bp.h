@@ -166,10 +166,9 @@ extern bool octave_debug_on_interrupt_state;
       octave_function *xfcn = octave_call_stack::current (); \
  \
       if (octave_debug_on_interrupt_state \
-	  || (tree::break_next >= 0 && tree::last_line == 0) \
 	  || (tree::break_next >= 0 \
-	      && xfcn == tree::break_function \
-	      && tree::last_line != line ()) \
+	      && (tree::break_function == 0 || tree::break_function == xfcn) \
+	      && (tree::last_break_function != xfcn || tree::last_line != line ())) \
 	  || is_breakpoint ()) \
         { \
 	  if (!octave_debug_on_interrupt_state && tree::break_next > 0) \

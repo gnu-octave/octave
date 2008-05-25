@@ -40,6 +40,9 @@ int tree::break_next = -1;
 int tree::last_line = 0;
 
 // The function where the last breakpoint occurred.
+const octave_function *tree::last_break_function = 0;
+
+// The function where the next breakpoint is request.
 const octave_function *tree::break_function = 0;
 
 // The statement where the last breakpoint occurred.

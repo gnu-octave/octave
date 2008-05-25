@@ -153,6 +153,9 @@ int Vdebugging_current_line = -1;
 // TRUE if we are running in the Emacs GUD mode.
 static bool Vgud_mode = false;
 
+// The filemarker used to separate filenames from subfunction names
+char Vfilemarker = '>';
+
 static void
 do_input_echo (const std::string& input_string)
 {
@@ -1329,6 +1332,44 @@ Undocumented internal function.\n\
     Vgud_mode = args(0).bool_value ();
   else
     print_usage ();
+
+  return retval;
+}
+
+DEFUN (filemarker, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} filemarker ()\n\
+Returns or sets the character used to separate filename from the\n\
+the subfunction names contained within the file. This can be used in\n\
+a generic manner to interact with subfunctions. For example\n\
+\n\
+@example\n\
+help ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
+@end example\n\
+\n\
+@noindent\n\
+returns the help string associated with the sub-function @code{mysubfunc}\n\
+of the function @code{myfunc}. Another use of @code{filemarker} is when\n\
+debugging it allows easier placement of breakpoints within sub-functions.\n\
+For example\n\
+\n\
+@example\n\
+dbstop ([\"myfunc\", filemarker, \"mysubfunc\"])\n\
+@end example\n\
+\n\
+@noindent\n\
+will set a breakpoint at the first line of the subfunction @code{mysubfunc}.\n\
+@end deftypefn")
+{
+  char tmp = Vfilemarker;
+  octave_value retval = SET_INTERNAL_VARIABLE (filemarker);
+
+  // The character passed must not be a legal character for a function name
+  if (! error_state && (::isalnum (Vfilemarker) || Vfilemarker == '_'))
+    {
+      Vfilemarker = tmp;
+      error ("filemarker: character can not be a valid character for a function name");
+    }
 
   return retval;
 }

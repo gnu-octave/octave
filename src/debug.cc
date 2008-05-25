@@ -869,9 +869,12 @@ execution to continue until the current function returns.\n\
 
 		  tree::break_next = 0;
 
-		  tree::last_line = 0;
+		  tree::last_line = Vdebugging_current_line;
 
-		  tree::break_function = octave_call_stack::caller_user_code ();
+		  tree::break_function = 0;
+
+		  tree::last_break_function = 
+		    octave_call_stack::caller_user_code ();
 		}
 	      else if (arg == "out")
 		{
@@ -883,7 +886,11 @@ execution to continue until the current function returns.\n\
 
 		  // Next to skip 2 here. One for the oct-file dbstep and 
 		  // another for the function we actually want to step out of.
-		  tree::break_function = octave_call_stack::caller_user_code (2);
+		  tree::break_function = 
+		    octave_call_stack::caller_user_code (2);
+
+		  tree::last_break_function = 
+		    octave_call_stack::caller_user_code ();
 		}
 	      else
 		{
@@ -899,6 +906,9 @@ execution to continue until the current function returns.\n\
 		  tree::last_line = Vdebugging_current_line;
 		  
 		  tree::break_function = octave_call_stack::caller_user_code ();
+
+		  tree::last_break_function = 
+		    octave_call_stack::caller_user_code ();
 		}
 	    }
 	}
@@ -911,6 +921,9 @@ execution to continue until the current function returns.\n\
 	  tree::last_line = Vdebugging_current_line;
 		  
 	  tree::break_function = octave_call_stack::caller_user_code ();
+
+	  tree::last_break_function = 
+	    octave_call_stack::caller_user_code ();
 	}
     }
   else
@@ -974,6 +987,8 @@ functions. This is synonymous with @code{dbstep}.\n\
 	tree::last_line = Vdebugging_current_line;
 		  
 	tree::break_function = octave_call_stack::caller_user_code ();
+
+	tree::last_break_function = octave_call_stack::caller_user_code ();
       }
     else
       print_usage ();

@@ -1,3 +1,17 @@
+2008-06-20  Jaroslav Hajek <highegg@gmail.com>
+
+	* ov.cc (make_vector_dims): New function.
+	(vector_value, complex_vector_value, float_vector_value,
+	float_complex_vector_value): Query N-d array values and simplify,
+	avoid copying.
+	(column_vector_value, complex_column_vector_value,
+	float_column_vector_value, float_complex_column_vector_value,
+	row_vector_value, complex_row_vector_value,
+	float_row_vector_value, float_complex_row_vector_value): 
+	Simplify to trivial wrappers.
+	(int_vector_value): Avoid conversions if integer type, query N-d array
+	value, simplify.
+
 2008-06-17  John W. Eaton  <jwe@octave.org>
 
 	* toplev.h, toplev.cc (class octave_call_stack):
@@ -871,6 +885,14 @@
 
 	* ov-cell.cc (Fcellstr): For compatibility with Matlab, return {''}
 	when given ''.
+
+2008-05-26  Jaroslav Hajek <highegg@gmail.com>
+
+	* DLD-FUNCTIONS/fsolve.cc (fsolve_user_function,
+	fsolve_user_jacobian): Reshape argument to original dims before
+	passing. 
+	(Ffsolve): Save original dimensions of the starting guess and reshape
+	on return. Fix tests.
 
 2008-05-21  David Bateman  <dbateman@free.fr>
 

@@ -1281,173 +1281,69 @@ octave_value::list_value (void) const
   return rep->list_value ();
 }
 
-ColumnVector
-octave_value::column_vector_value (bool force_string_conv,
-				   bool /* frc_vec_conv */) const
+static dim_vector
+make_vector_dims (const dim_vector& dv, bool force_vector_conversion,
+                  const std::string& my_type, const std::string& wanted_type)
 {
-  ColumnVector retval;
+  dim_vector retval (dv);
+  retval.chop_trailing_singletons ();
+  octave_idx_type nel = dv.numel ();
 
-  Matrix m = matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nc == 1)
+  if (retval.length () > 2 || (retval(0) != 1 && retval(1) != 1))
     {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	retval (i) = m (i, 0);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "real column vector");
+      if (!force_vector_conversion)
+        gripe_implicit_conversion ("Octave:array-as-vector",
+                                   my_type.c_str (), wanted_type.c_str ());
+      retval = dim_vector (nel);
     }
 
   return retval;
+}
+
+ColumnVector
+octave_value::column_vector_value (bool force_string_conv,
+                                   bool frc_vec_conv) const
+{
+  return ColumnVector (vector_value (force_string_conv, 
+                                     frc_vec_conv));
 }
 
 ComplexColumnVector
 octave_value::complex_column_vector_value (bool force_string_conv,
-					   bool /* frc_vec_conv */) const
+                                           bool frc_vec_conv) const
 {
-  ComplexColumnVector retval;
-
-  ComplexMatrix m = complex_matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	retval (i) = m (i, 0);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "complex column vector");
-    }
-
-  return retval;
+  return ComplexColumnVector (complex_vector_value (force_string_conv, 
+                                                    frc_vec_conv));
 }
 
 RowVector
 octave_value::row_vector_value (bool force_string_conv,
-				bool /* frc_vec_conv */) const
+                                bool frc_vec_conv) const
 {
-  RowVector retval;
-
-  Matrix m = matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	retval (i) = m (0, i);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "real row vector");
-    }
-
-  return retval;
+  return RowVector (vector_value (force_string_conv, 
+                                  frc_vec_conv));
 }
 
 ComplexRowVector
 octave_value::complex_row_vector_value (bool force_string_conv,
-					bool /* frc_vec_conv */) const
+                                        bool frc_vec_conv) const
 {
-  ComplexRowVector retval;
-
-  ComplexMatrix m = complex_matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	retval (i) = m (0, i);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "complex row vector");
-    }
-
-  return retval;
+  return ComplexRowVector (complex_vector_value (force_string_conv, 
+                                                 frc_vec_conv));
 }
-
-// Sloppy...
 
 Array<double>
 octave_value::vector_value (bool force_string_conv,
 			    bool force_vector_conversion) const
 {
-  Array<double> retval;
-
-  Matrix m = matrix_value (force_string_conv);
+  Array<double> retval = array_value (force_string_conv);
 
   if (error_state)
     return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	retval (i) = m (0, i);
-    }
-  else if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	retval (i) = m (i, 0);
-    }
-  else if (nr > 0 && nc > 0)
-    {
-      if (! force_vector_conversion)
-	gripe_implicit_conversion ("Octave:array-as-vector",
-				   type_name (), "real vector");
-
-      retval.resize (nr * nc);
-      octave_idx_type k = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  {
-	    OCTAVE_QUIT;
-
-	    retval (k++) = m (i, j);
-	  }
-    }
   else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "real vector");
-    }
-
-  return retval;
+    return retval.reshape (make_vector_dims (retval.dims (),
+                                             force_vector_conversion,
+                                             type_name (), "real vector"));
 }
 
 Array<int>
@@ -1456,364 +1352,124 @@ octave_value::int_vector_value (bool force_string_conv, bool require_int,
 {
   Array<int> retval;
 
-  Matrix m = matrix_value (force_string_conv);
+  if (is_integer_type ())
+    {
+      // query for the first type that is wide enough
+#if SIZEOF_INT == 2
+      retval = int16_array_value ();
+#elif SIZEOF_INT == 4
+      retval = int32_array_value ();
+#else
+      retval = int64_array_value ();
+#endif
+    }
+  else 
+    {
+      const NDArray a = array_value (force_string_conv);
+      if (! error_state)
+        {
+          if (require_int)
+            {
+              retval.resize (a.dims ());
+              for (octave_idx_type i = 0; i < a.numel (); i++)
+                {
+                  double ai = a.elem (i);
+                  int v = static_cast<int> (ai);
+                  if (ai == v)
+                    retval.xelem (i) = v;
+                  else
+                    {
+                      error ("conversion to integer value failed");
+                      break;
+                    }
+                }
+            }
+          else
+            retval = Array<int> (a);
+        }
+    }
+
 
   if (error_state)
     return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	{
-	  OCTAVE_QUIT;
-
-	  double d = m (0, i);
-
-	  if (require_int && D_NINT (d) != d)
-	    {
-	      error ("conversion to integer value failed");
-	      return retval;
-	    }
-
-	  retval (i) = static_cast<int> (d);
-	}
-    }
-  else if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	{
-	  OCTAVE_QUIT;
-
-	  double d = m (i, 0);
-
-	  if (require_int && D_NINT (d) != d)
-	    {
-	      error ("conversion to integer value failed");
-	      return retval;
-	    }
-
-	  retval (i) = static_cast<int> (d);
-	}
-    }
-  else if (nr > 0 && nc > 0)
-    {
-      if (! force_vector_conversion)
-	gripe_implicit_conversion ("Octave:array-as-vector",
-				   type_name (), "real vector");
-
-      retval.resize (nr * nc);
-      octave_idx_type k = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-	{
-	  for (octave_idx_type i = 0; i < nr; i++)
-	    {
-	      OCTAVE_QUIT;
-
-	      double d = m (i, j);
-
-	      if (require_int && D_NINT (d) != d)
-		{
-		  error ("conversion to integer value failed");
-		  return retval;
-		}
-
-	      retval (k++) = static_cast<int> (d);
-	    }
-	}
-    }
   else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "real vector");
-    }
-
-  return retval;
+    return retval.reshape (make_vector_dims (retval.dims (),
+                                             force_vector_conversion,
+                                             type_name (), "integer vector"));
 }
 
 Array<Complex>
 octave_value::complex_vector_value (bool force_string_conv,
-				    bool force_vector_conversion) const
+                                    bool force_vector_conversion) const
 {
-  Array<Complex> retval;
-
-  ComplexMatrix m = complex_matrix_value (force_string_conv);
+  Array<Complex> retval = complex_array_value (force_string_conv);
 
   if (error_state)
     return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	{
-	  OCTAVE_QUIT;
-	  retval (i) = m (0, i);
-	}
-    }
-  else if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	{
-	  OCTAVE_QUIT;
-	  retval (i) = m (i, 0);
-	}
-    }
-  else if (nr > 0 && nc > 0)
-    {
-      if (! force_vector_conversion)
-	gripe_implicit_conversion ("Octave:array-as-vector",
-				   type_name (), "complex vector");
-
-      retval.resize (nr * nc);
-      octave_idx_type k = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  {
-	    OCTAVE_QUIT;
-	    retval (k++) = m (i, j);
-	  }
-    }
   else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "complex vector");
-    }
-
-  return retval;
+    return retval.reshape (make_vector_dims (retval.dims (),
+                                             force_vector_conversion,
+                                             type_name (), "complex vector"));
 }
 
 FloatColumnVector
 octave_value::float_column_vector_value (bool force_string_conv,
-				   bool /* frc_vec_conv */) const
+                                         bool frc_vec_conv) const
 {
-  FloatColumnVector retval;
-
-  FloatMatrix m = float_matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	retval (i) = m (i, 0);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "real column vector");
-    }
-
-  return retval;
+  return FloatColumnVector (float_vector_value (force_string_conv, 
+                                                frc_vec_conv));
 }
 
 FloatComplexColumnVector
 octave_value::float_complex_column_vector_value (bool force_string_conv,
-					   bool /* frc_vec_conv */) const
+                                                 bool frc_vec_conv) const
 {
-  FloatComplexColumnVector retval;
-
-  FloatComplexMatrix m = float_complex_matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	retval (i) = m (i, 0);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "complex column vector");
-    }
-
-  return retval;
+  return FloatComplexColumnVector (float_complex_vector_value (force_string_conv, 
+                                                               frc_vec_conv));
 }
 
 FloatRowVector
 octave_value::float_row_vector_value (bool force_string_conv,
-				bool /* frc_vec_conv */) const
+                                      bool frc_vec_conv) const
 {
-  FloatRowVector retval;
-
-  FloatMatrix m = float_matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	retval (i) = m (0, i);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "real row vector");
-    }
-
-  return retval;
+  return FloatRowVector (float_vector_value (force_string_conv, 
+                                             frc_vec_conv));
 }
 
 FloatComplexRowVector
 octave_value::float_complex_row_vector_value (bool force_string_conv,
-					bool /* frc_vec_conv */) const
+                                              bool frc_vec_conv) const
 {
-  FloatComplexRowVector retval;
-
-  FloatComplexMatrix m = float_complex_matrix_value (force_string_conv);
-
-  if (error_state)
-    return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	retval (i) = m (0, i);
-    }
-  else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "complex row vector");
-    }
-
-  return retval;
+  return FloatComplexRowVector (float_complex_vector_value (force_string_conv, 
+                                                           frc_vec_conv));
 }
-
-// Sloppy...
 
 Array<float>
 octave_value::float_vector_value (bool force_string_conv,
-			    bool force_vector_conversion) const
+                                  bool force_vector_conversion) const
 {
-  Array<float> retval;
-
-  FloatMatrix m = float_matrix_value (force_string_conv);
+  Array<float> retval = float_array_value (force_string_conv);
 
   if (error_state)
     return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	retval (i) = m (0, i);
-    }
-  else if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	retval (i) = m (i, 0);
-    }
-  else if (nr > 0 && nc > 0)
-    {
-      if (! force_vector_conversion)
-	gripe_implicit_conversion ("Octave:array-as-vector",
-				   type_name (), "real vector");
-
-      retval.resize (nr * nc);
-      octave_idx_type k = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  {
-	    OCTAVE_QUIT;
-
-	    retval (k++) = m (i, j);
-	  }
-    }
   else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "real vector");
-    }
-
-  return retval;
+    return retval.reshape (make_vector_dims (retval.dims (),
+                                             force_vector_conversion,
+                                             type_name (), "real vector"));
 }
 
 Array<FloatComplex>
 octave_value::float_complex_vector_value (bool force_string_conv,
-				    bool force_vector_conversion) const
+                                          bool force_vector_conversion) const
 {
-  Array<FloatComplex> retval;
-
-  FloatComplexMatrix m = float_complex_matrix_value (force_string_conv);
+  Array<FloatComplex> retval = float_complex_array_value (force_string_conv);
 
   if (error_state)
     return retval;
-
-  octave_idx_type nr = m.rows ();
-  octave_idx_type nc = m.columns ();
-
-  if (nr == 1)
-    {
-      retval.resize (nc);
-      for (octave_idx_type i = 0; i < nc; i++)
-	{
-	  OCTAVE_QUIT;
-	  retval (i) = m (0, i);
-	}
-    }
-  else if (nc == 1)
-    {
-      retval.resize (nr);
-      for (octave_idx_type i = 0; i < nr; i++)
-	{
-	  OCTAVE_QUIT;
-	  retval (i) = m (i, 0);
-	}
-    }
-  else if (nr > 0 && nc > 0)
-    {
-      if (! force_vector_conversion)
-	gripe_implicit_conversion ("Octave:array-as-vector",
-				   type_name (), "complex vector");
-
-      retval.resize (nr * nc);
-      octave_idx_type k = 0;
-      for (octave_idx_type j = 0; j < nc; j++)
-	for (octave_idx_type i = 0; i < nr; i++)
-	  {
-	    OCTAVE_QUIT;
-	    retval (k++) = m (i, j);
-	  }
-    }
   else
-    {
-      std::string tn = type_name ();
-      gripe_invalid_conversion (tn.c_str (), "complex vector");
-    }
-
-  return retval;
+    return retval.reshape (make_vector_dims (retval.dims (),
+                                             force_vector_conversion,
+                                             type_name (), "complex vector"));
 }
 
 int

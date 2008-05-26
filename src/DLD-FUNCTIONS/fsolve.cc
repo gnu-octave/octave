@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include <iostream>
 #include <sstream>
 
+#include "dNDArray.h"
 #include "NLEqn.h"
 
 #include "defun-dld.h"
@@ -51,6 +52,9 @@ static octave_function *fsolve_fcn;
 
 // Global pointer for optional user defined jacobian function.
 static octave_function *fsolve_jac;
+
+// Original dimensions of X0.
+static dim_vector x_dims;
 
 // Have we warned about imaginary values returned from user function?
 static bool warned_fcn_imaginary = false;
@@ -110,9 +114,7 @@ fsolve_user_function (const ColumnVector& x)
 
   if (n > 1)
     {
-      Matrix m (n, 1);
-      for (octave_idx_type i = 0; i < n; i++)
-	m (i, 0) = x (i);
+      NDArray m (ArrayN<double> (x, x_dims));
       octave_value vars (m);
       args(0) = vars;
     }
@@ -135,7 +137,7 @@ fsolve_user_function (const ColumnVector& x)
 	      warned_fcn_imaginary = true;
 	    }
 
-	  retval = ColumnVector (tmp(0).vector_value ());
+	  retval = ColumnVector (tmp(0).vector_value (false, true));
 
 	  if (error_state || retval.length () <= 0)
 	    gripe_user_supplied_eval ("fsolve");
@@ -161,9 +163,7 @@ fsolve_user_jacobian (const ColumnVector& x)
 
   if (n > 1)
     {
-      Matrix m (n, 1);
-      for (octave_idx_type i = 0; i < n; i++)
-	m(i,0) = x(i);
+      NDArray m (ArrayN<double> (x, x_dims));
       octave_value vars (m);
       args(0) = vars;
     }
@@ -399,7 +399,9 @@ parameters for @code{fsolve}.\n\
       if (error_state || ! fsolve_fcn)
 	FSOLVE_ABORT ();
 
-      ColumnVector x (args(1).vector_value ());
+      NDArray xa = args(1).array_value ();
+      x_dims = xa.dims ();
+      ColumnVector x (xa);
 
       if (error_state)
 	FSOLVE_ABORT1 ("expecting vector as second argument");
@@ -429,7 +431,7 @@ parameters for @code{fsolve}.\n\
 	{
 	  retval(2) = static_cast<double> (hybrd_info_to_fsolve_info (info));
 	  retval(1) = nleqn.function_value ();
-	  retval(0) = soln;
+	  retval(0) = NDArray (ArrayN<double> (soln.reshape (x_dims)));
 
 	  if (! nleqn.solution_ok () && nargout < 2)
 	    {
@@ -460,7 +462,7 @@ parameters for @code{fsolve}.\n\
 %! 2.395931;
 %! 2.005014 ];
 %! tol = 1.0e-5;
-%! [x, fval, info] = fsolve ("f", [ 0.5, 2.0, 2.5 ]);
+%! [x, fval, info] = fsolve ("f", [ 0.5; 2.0; 2.5 ]);
 %! info_bad = (info != 1);
 %! solution_bad = sum (abs (x - x_opt) > tol);
 %! value_bad = sum (abs (fval) > tol);
@@ -492,10 +494,7 @@ parameters for @code{fsolve}.\n\
 %!  retval(3) = x^4 - 4*y^2 + 6*z - 8*w - 20;
 %!  retval(4) = x^2 + 2*y^3 + z - w - 4;
 %!test
-%! x_opt = [ -0.767297326653401;
-%! 0.590671081117440;
-%! 1.47190018629642;
-%! -1.52719341133957 ];
+%! x_opt = [ -0.767297326653401, 0.590671081117440, 1.47190018629642, -1.52719341133957 ];
 %! tol = 1.0e-5;
 %! [x, fval, info] = fsolve ("f", [-1, 1, 2, -1]);
 %! info_bad = (info != 1);

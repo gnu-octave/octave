@@ -177,6 +177,24 @@ If neither @var{x} nor @var{a} is scalar, the sizes of @var{x} and\n\
 }
 
 /*
+
+%!test
+%! a = [.5 .5 .5 .5 .5];
+%! x = [0 1 2 3 4];
+%! v1 = sqrt(pi)*erf(x)./gamma(a);
+%! v3 = gammainc(x.*x,a);
+%! assert(v1, v3, sqrt(eps));
+
+%!test
+%! a = single ([.5 .5 .5 .5 .5]);
+%! x = single([0 1 2 3 4]);
+%! v1 = sqrt(pi('single'))*erf(x)./gamma(a);
+%! v3 = gammainc(x.*x,a);
+%! assert(v1, v3, sqrt(eps('single')));
+
+*/
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

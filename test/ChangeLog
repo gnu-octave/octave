@@ -1,5 +1,9 @@
 2008-06-02  David Bateman  <dbateman@free.fr>
 
+	* test_arith.m: Delete and move tests close to function
+	definitions.
+	* test_func.m: Also test for single precision return values.
+
 	* test_infnan.m, test_linalg.m, test_matrix.m, test_number.m):
 	Delet and move tests close to function definitions.
 	* test_range.m: Also test single precision examples.

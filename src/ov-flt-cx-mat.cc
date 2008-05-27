@@ -768,7 +768,7 @@ any_element_greater_than (const FloatNDArray& a, float val)
   octave_float_complex_matrix::MAP (void) const \
   { \
     static FloatComplexNDArray::dmapper dmap = ximag; \
-    NDArray m = matrix.map (dmap); \
+    FloatNDArray m = matrix.map (dmap); \
     if (m.all_elements_are_zero ()) \
       { \
 	dmap = xreal; \
@@ -808,9 +808,9 @@ any_element_greater_than (const FloatNDArray& a, float val)
       } \
   }
 
-DARRAY_MAPPER (erf, NDArray::dmapper, ::erf)
-DARRAY_MAPPER (erfc, NDArray::dmapper, ::erfc)
-DARRAY_MAPPER (gamma, NDArray::dmapper, xgamma)
+DARRAY_MAPPER (erf, FloatNDArray::dmapper, ::erff)
+DARRAY_MAPPER (erfc, FloatNDArray::dmapper, ::erfcf)
+DARRAY_MAPPER (gamma, FloatNDArray::dmapper, xgamma)
 CD_ARRAY_MAPPER (lgamma, xlgamma, xlgamma, 0.0, octave_Inf)
 
 ARRAY_MAPPER (abs, FloatComplexNDArray::dmapper, xabs)

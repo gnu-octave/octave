@@ -1,3 +1,7 @@
+2008-06-02  David Bateman  <dbateman@free.fr>
+
+	* libcruft/xsgmainc.f: Replace DLGAMS with ALGAMS.
+
 2008-05-30  Thomas Treichl  <Thomas.Treichl@gmx.net>
 
 	* quadpack/qk15i.f: Delete extraneous semicolons.

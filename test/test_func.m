@@ -25,9 +25,10 @@
 %!function __fntestfunc__ (fn, mn, varargin)
 %!  typ = {'double', 'complex', 'logical', 'sparse', 'complex sparse', ...
 %!         'logical sparse', 'int8', 'int16', 'int32', 'int64', 'uint8', ...
-%!         'uint16', 'uint32', 'uint64', 'char', 'cell', 'struct'};
+%!         'uint16', 'uint32', 'uint64', 'char', 'cell', 'struct', ...
+%!         'single', 'single complex'};
 %!
-%!  cmplx = [2, 5];
+%!  cmplx = [2, 5, 18];
 %!  nlogical = [3, 6];
 %!  ninteger = [7, 8, 9, 10, 11, 12, 13, 14];
 %!  nsparse = [4, 5, 6];

@@ -53,18 +53,20 @@ function yi = interp1q (x, y, xi)
   s = (xi - x (idx)) ./ dx (idx);
   yi (range, :) = s (:, ones (1, nc)) .* dy (idx, :) + y (idx, :);
   if (length (szx) == 2 && any (szx == 1))
-    yi = reshape (yi, [max (szx), szy (2 : end)]);
+    yi = reshape (yi, [max(szx), szy(2:end)]);
   else
     yi = reshape (yi, [szx, szy(2:end)]);
   endif
 endfunction
 
-%!shared xp, yp, xi
+%!shared xp, yp, xi, yi
 %! xp=[0:2:10].';      yp = sin(2*pi*xp/5);
 %! xi = [-1; 0; 2.2; 4; 6.6; 10; 11];
-%!assert (interp1(xp, yp, [min(xp)-1; max(xp)+1]), [NA; NA]);
-%!assert (interp1(xp,yp,xp), yp, 100*eps);
-%!assert (isempty(interp1(xp,yp,[])));
-%!assert (interp1(xp,[yp,yp],xi), [interp1(xp,yp,xi),interp1(xp,yp,xi)]);
-%!assert (interp1(xp,yp,[xi,xi]), [interp1(xp,yp,xi),interp1(xp,yp,xi)]);
-%!assert (interp1(xp,[yp,yp],[xi,xi]), [interp1(xp,yp,xi),interp1(xp,yp,xi)]);
+%! yi = interp1 (xp,yp,xi);
+%!assert (interp1q(xp, yp, [min(xp)-1; max(xp)+1]), [NA; NA]);
+%!assert (interp1q(xp,yp,xp), yp, 100*eps);
+%!assert (isempty(interp1q(xp,yp,[])));
+%!assert (interp1q(xp,yp,xi), yi);
+%!assert (interp1q(xp,[yp,yp],xi), [yi, yi]);
+%!assert (interp1q(xp,yp,[xi,xi]), [yi, yi]);
+%!assert (interp1q(xp,[yp,yp],[xi,xi]), cat (3, [yi, yi], [yi, yi]));

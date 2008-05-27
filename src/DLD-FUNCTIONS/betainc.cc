@@ -281,6 +281,55 @@ compatible dimensions.\n\
 }
 
 /*
+
+%% test/octave.test/arith/betainc-1.m
+%!test
+%! a=[1, 1.5, 2, 3];
+%! b=[4, 3, 2, 1];
+%! v1=betainc(1,a,b);
+%! v2=[1,1,1,1];
+%! x = [.2, .4, .6, .8];
+%! v3=betainc(x, a, b);
+%! v4 = 1-betainc(1.-x, b, a);
+%! assert(v1, v2, sqrt(eps));
+%! assert(v3, v4, sqrt(eps));
+
+%% Single precision
+%!test
+%! a=single ([1, 1.5, 2, 3]);
+%! b=single ([4, 3, 2, 1]);
+%! v1=betainc(1,a,b);
+%! v2=single ([1,1,1,1]);
+%! x = single ([.2, .4, .6, .8]);
+%! v3=betainc(x, a, b);
+%! v4 = 1-betainc(1.-x, b, a);
+%! assert(v1, v2, sqrt(eps ('single')));
+%! assert(v3, v4, sqrt(eps ('single')));
+
+%% Mixed double/single precision
+%!test
+%! a=single ([1, 1.5, 2, 3]);
+%! b=[4, 3, 2, 1];
+%! v1=betainc(1,a,b);
+%! v2=single ([1,1,1,1]);
+%! x = [.2, .4, .6, .8];
+%! v3=betainc(x, a, b);
+%! v4 = 1-betainc(1.-x, b, a);
+%! assert(v1, v2, sqrt(eps ('single')));
+%! assert(v3, v4, sqrt(eps ('single')));
+
+%% test/octave.test/arith/betainc-2.m
+%!error <Invalid call to betainc.*> betainc();
+
+%% test/octave.test/arith/betainc-3.m
+%!error <Invalid call to betainc.*> betainc(1);
+
+%% test/octave.test/arith/betainc-4.m
+%!error <Invalid call to betainc.*> betainc(1,2);
+
+*/
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

@@ -68,6 +68,25 @@ abs (3 + 4i)\n\
   return retval;
 }
 
+/*
+
+%!assert(abs (1), 1);
+%!assert(abs (-3.5), 3.5);
+%!assert(abs (3+4i), 5);
+%!assert(abs (3-4i), 5);
+%!assert(abs ([1.1, 3i; 3+4i, -3-4i]), [1.1, 3; 5, 5]);
+
+%!assert(abs (single(1)), single(1));
+%!assert(abs (single(-3.5)), single(3.5));
+%!assert(abs (single(3+4i)), single(5));
+%!assert(abs (single(3-4i)), single(5));
+%!assert(abs (single([1.1, 3i; 3+4i, -3-4i])), single([1.1, 3; 5, 5]));
+
+%!error abs ();
+%!error abs (1, 2);
+
+ */
+
 DEFUN (acos, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} acos (@var{x})\n\
@@ -83,6 +102,26 @@ Compute the inverse cosine of each element of @var{x}.\n\
   return retval;
 }
 
+/*
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! v = [0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi];
+%! x = [1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1];
+%! assert(acos (x), v, sqrt(eps));
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! v = single ([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! x = single ([1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1]);
+%! assert(acos (x), v, sqrt(eps('single')));
+
+%!error acos ();
+%!error acos (1, 2);
+
+*/
 
 DEFUN (acosh, args, ,
     "-*- texinfo -*-\n\
@@ -98,6 +137,23 @@ Compute the inverse hyperbolic cosine of each element of @var{x}.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! v = [0, pi/2*i, pi*i, pi/2*i];
+%! x = [1, 0, -1, 0];
+%! assert(acosh (x), v, sqrt(eps));
+
+%!test
+%! v = single([0, pi/2*i, pi*i, pi/2*i]);
+%! x = single([1, 0, -1, 0]);
+%! assert(acosh (x), v, sqrt (eps('single')));
+
+%!error acosh ();
+%!error acosh (1, 2);
+
+*/
 
 DEFUN (angle, args, ,
     "-*- texinfo -*-\n\
@@ -149,6 +205,25 @@ arg (3 + 4i)\n\
   return retval;
 }
 
+/*
+
+%!assert(arg (1), 0);
+%!assert(arg (i), pi/2);
+%!assert(arg (-1), pi);
+%!assert(arg (-i), -pi/2);
+%!assert(arg ([1, i; -1, -i]), [0, pi/2; pi, -pi/2]);
+
+%!assert(arg (single(1)), single(0));
+%!assert(arg (single(i)), single(pi/2));
+%!assert(arg (single(-1)), single(pi));
+%!assert(arg (single(-i)), single(-pi/2));
+%!assert(arg (single([1, i; -1, -i])), single([0, pi/2; pi, -pi/2]));
+
+%!error arg ();
+%!error arg (1, 2);
+
+*/
+
 DEFUN (asin, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} asin (@var{x})\n\
@@ -190,6 +265,23 @@ Compute the inverse hyperbolic sine of each element of @var{x}.\n\
   return retval;
 }
 
+/*
+
+%!test
+%! v = [0, pi/2*i, 0, -pi/2*i];
+%! x = [0, i, 0, -i];
+%! assert(asinh (x), v,  sqrt (eps));
+
+%!test
+%! v = single([0, pi/2*i, 0, -pi/2*i]);
+%! x = single([0, i, 0, -i]);
+%! assert(asinh (x), v,  sqrt (eps('single')));
+
+%!error asinh ();
+%!error asinh (1, 2);
+
+*/
+
 DEFUN (atan, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} atan (@var{x})\n\
@@ -204,6 +296,27 @@ Compute the inverse tangent of each element of @var{x}.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! v = [0, pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6, 0];
+%! x = [0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0];
+%! assert(atan (x), v, sqrt (eps));
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! v = single([0, pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6, 0]);
+%! x = single([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
+%! assert(atan (x), v, sqrt (eps('single')));
+
+%!error atan ();
+%!error atan (1, 2);
+
+ */
 
 DEFUN (atanh, args, ,
     "-*- texinfo -*-\n\
@@ -220,6 +333,23 @@ Compute the inverse hyperbolic tangent of each element of @var{x}.\n\
   return retval;
 }
 
+/*
+
+%!test
+%! v = [0, 0];
+%! x = [0, 0];
+%! assert(atanh (x), v, sqrt (eps));
+
+%!test
+%! v = single([0, 0]);
+%! x = single([0, 0]);
+%! assert(atanh (x), v, sqrt (eps('single')));
+
+%!error atanh ();
+%!error atanh (1, 2);
+
+*/
+
 DEFUN (ceil, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} ceil (@var{x})\n\
@@ -235,6 +365,25 @@ complex, return @code{ceil (real (@var{x})) + ceil (imag (@var{x})) * I}.\n\
 
   return retval;
 }
+
+/*
+
+%% double precision
+%!assert(ceil ([2, 1.1, -1.1, -1]), [2, 2, -1, -1]);
+
+%% compelx double precison 
+%!assert(ceil ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 2+2i, -1-i, -1-i]);
+
+%% single precision
+%!assert(ceil (single([2, 1.1, -1.1, -1])), single([2, 2, -1, -1]));
+
+%% compelx single preci
+%!assert(ceil (single ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single([2+2i, 2+2i, -1-i, -1-i]));
+
+%!error ceil ();
+%!error ceil (1, 2);
+
+*/
 
 DEFUN (conj, args, ,
     "-*- texinfo -*-\n\
@@ -260,6 +409,25 @@ $\\bar{z} = x - iy$.\n\
   return retval;
 }
 
+/*
+
+%!assert(conj (1), 1);
+%!assert(conj (i), -i)
+%!assert(conj (1+i), 1-i)
+%!assert(conj (1-i), 1+i)
+%!assert(conj ([-1, -i; -1+i, -1-i]), [-1, i; -1-i, -1+i]);
+
+%!assert(conj (single(1)), single(1));
+%!assert(conj (single(i)), single(-i))
+%!assert(conj (single(1+i)), single(1-i))
+%!assert(conj (single(1-i)), single(1+i))
+%!assert(conj (single([-1, -i; -1+i, -1-i])), single([-1, i; -1-i, -1+i]));
+
+%!error conj ();
+%!error conj (1, 2);
+
+*/
+
 DEFUN (cos, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cos (@var{x})\n\
@@ -275,6 +443,27 @@ Compute the cosine of each element of @var{x}.\n\
   return retval;
 }
 
+/*
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! x = [0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi];
+%! v = [1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1];
+%! assert(cos (x), v, sqrt (eps));
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! x = single([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! v = single([1, rt3/2, rt2/2, 1/2, 0, -1/2, -rt2/2, -rt3/2, -1]);
+%! assert(cos (x), v, sqrt (eps('single')));
+
+%!error cos ();
+%!error cos (1, 2);
+
+ */
+
 DEFUN (cosh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} cosh (@var{x})\n\
@@ -289,6 +478,23 @@ Compute the hyperbolic cosine of each element of @var{x}.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! x = [0, pi/2*i, pi*i, 3*pi/2*i];
+%! v = [1, 0, -1, 0];
+%! assert(cosh (x), v, sqrt (eps));
+
+%!test
+%! x = single([0, pi/2*i, pi*i, 3*pi/2*i]);
+%! v = single([1, 0, -1, 0]);
+%! assert(cosh (x), v, sqrt (eps ('single')));
+
+%!error cosh ();
+%!error cosh (1, 2);
+
+*/
 
 DEFUN (erf, args, ,
     "-*- texinfo -*-\n\
@@ -328,6 +534,28 @@ erf (z) = (2/sqrt (pi)) | e^(-t^2) dt\n\
 %!test
 %! a = -1i*sqrt(-1/(6.4187*6.4187));
 %! assert (erf(a), erf(real(a)));
+
+%!test
+%! x=[0,.5,1];
+%! v=[0, .520499877813047, .842700792949715];
+%! assert(all(abs(erf(x)-v)<1.e-10) &&  all(abs(erf(-x)+v)<1.e-10) && all(abs(erfc(x)+v-1)<1.e-10) && all(abs(erfinv(v)-x)<1.e-10));
+
+%!test
+%! a = -1i*sqrt(single (-1/(6.4187*6.4187)));
+%! assert (erf(a), erf(real(a)));
+
+%!test
+%! x=single ([0,.5,1]);
+%! v=single ([0, .520499877813047, .842700792949715]);
+%! assert(all(abs(erf(x)-v)<1.e-6) &&  all(abs(erf(-x)+v)<1.e-6) && all(abs(erfc(x)+v-1)<1.e-6) && all(abs(erfinv(v)-x)<1.e-6));
+
+%% test/octave.test/arith/erf-2.m
+%!error erf();
+
+%% test/octave.test/arith/erf-3.m
+%!error erf(1,2);
+
+
 
 */
 
@@ -378,6 +606,21 @@ see @ref{Linear Algebra}.\n\
 
   return retval;
 }
+
+/*
+
+%!assert(exp ([0, 1, -1, -1000]), [1, e, 1/e, 0], sqrt (eps));
+%!assert(exp (1+i), e * (cos (1) + sin (1) * i), sqrt (eps));
+%!assert(exp (single([0, 1, -1, -1000])), single([1, e, 1/e, 0]), sqrt (eps('single')));
+%!assert(exp (single(1+i)), single (e * (cos (1) + sin (1) * i)), sqrt (eps('single')));
+
+%!error exp ();
+%!error exp (1, 2);
+
+%!assert(exp (Inf) == Inf && exp (-Inf) == 0 && isnan (exp (NaN)));
+%!assert(exp (Inf ('single')) == Inf('single') && exp (-Inf('single')) == 0 && isnan (exp (NaN('single'))));
+
+*/
 
 DEFUN (expm1, args, ,
     "-*- texinfo -*-\n\
@@ -445,6 +688,17 @@ Truncate @var{x} toward zero.  If @var{x} is complex, return\n\
   return retval;
 }
 
+/*
+
+%!assert(fix ([1.1, 1, -1.1, -1]), [1, 1, -1, -1]);
+%!assert(fix ([1.1+1.1i, 1+i, -1.1-1.1i, -1-i]), [1+i, 1+i, -1-i, -1-i]);
+%!assert(fix (single([1.1, 1, -1.1, -1])), single([1, 1, -1, -1]));
+%!assert(fix (single([1.1+1.1i, 1+i, -1.1-1.1i, -1-i])), single([1+i, 1+i, -1-i, -1-i]));
+
+%!error fix ();
+%!error fix (1, 2);
+
+*/
 
 DEFUN (floor, args, ,
     "-*- texinfo -*-\n\
@@ -461,6 +715,18 @@ complex, return @code{floor (real (@var{x})) + floor (imag (@var{x})) * I}.\n\
 
   return retval;
 }
+
+/*
+
+%!assert(floor ([2, 1.1, -1.1, -1]), [2, 1, -2, -1]);
+%!assert(floor ([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i]), [2+2i, 1+i, -2-2i, -1-i]);
+%!assert(floor (single ([2, 1.1, -1.1, -1])), single ([2, 1, -2, -1]));
+%!assert(floor (single([2+2i, 1.1+1.1i, -1.1-1.1i, -1-i])), single([2+2i, 1+i, -2-2i, -1-i]));
+
+%!error floor ();
+%!error floor (1, 2);
+
+*/
 
 DEFUN (gamma, args, ,
     "-*- texinfo -*-\n\
@@ -501,6 +767,23 @@ gamma (z) = | t^(z-1) exp (-t) dt.\n\
 %! a = -1i*sqrt(-1/(6.4187*6.4187));
 %! assert (gamma(a), gamma(real(a)));
 
+%!test
+%! x = [.5, 1, 1.5, 2, 3, 4, 5];
+%! v = [sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24];
+%! assert(gamma(x), v, sqrt(eps))
+
+%!test
+%! a = single(-1i*sqrt(-1/(6.4187*6.4187)));
+%! assert (gamma(a), gamma(real(a)));
+
+%!test
+%! x = single([.5, 1, 1.5, 2, 3, 4, 5]);
+%! v = single([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
+%! assert(gamma(x), v, sqrt(eps('single')))
+
+%!error gamma();
+%!error gamma(1,2);
+
 */
 
 DEFUN (imag, args, ,
@@ -518,6 +801,23 @@ Return the imaginary part of @var{z} as a real number.\n\
 
   return retval;
 }
+
+/*
+
+%!assert(imag (1), 0);
+%!assert(imag (i), 1);
+%!assert(imag (1+i), 1);
+%!assert(imag ([i, 1; 1, i]), eye (2));
+
+%!assert(imag (single(1)), single(0));
+%!assert(imag (single(i)), single(1));
+%!assert(imag (single(1+i)), single(1));
+%!assert(imag (single([i, 1; 1, i])), eye (2,'single'));
+
+%!error imag ();
+%!error imag (1, 2);
+
+ */
 
 DEFUNX ("isalnum", Fisalnum, args, ,
     "-*- texinfo -*-\n\
@@ -843,6 +1143,23 @@ Return the natural logarithm of the gamma function of @var{x}.\n\
 %! a = -1i*sqrt(-1/(6.4187*6.4187));
 %! assert (lgamma(a), lgamma(real(a)));
 
+%!test
+%! x = [.5, 1, 1.5, 2, 3, 4, 5];
+%! v = [sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24];
+%! assert(lgamma(x), log(v), sqrt(eps))
+
+%!test
+%! a = single(-1i*sqrt(-1/(6.4187*6.4187)));
+%! assert (lgamma(a), lgamma(real(a)));
+
+%!test
+%! x = single([.5, 1, 1.5, 2, 3, 4, 5]);
+%! v = single([sqrt(pi), 1, .5*sqrt(pi), 1, 2, 6, 24]);
+%! assert(lgamma(x), log(v), sqrt(eps ('single')))
+
+%!error lgamma();
+%!error lgamma(1,2);
+
 */
 
 DEFUN (log, args, ,
@@ -862,6 +1179,19 @@ matrix logarithm, see @ref{Linear Algebra}.\n\
   return retval;
 }
 
+/*
+
+%!assert(log ([1, e, e^2]), [0, 1, 2], sqrt (eps));
+%!assert(log ([-0.5, -1.5, -2.5]), log([0.5, 1.5, 2.5]) + pi*1i, sqrt (eps));
+
+%!assert(log (single([1, e, e^2])), single([0, 1, 2]), sqrt (eps));
+%!assert(log (single([-0.5, -1.5, -2.5])), single(log([0.5, 1.5, 2.5]) + pi*1i), sqrt (eps));
+
+%!error log ();
+%!error log (1, 2);
+
+ */
+
 DEFUN (log10, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} log10 (@var{x})\n\
@@ -877,6 +1207,16 @@ Compute the base-10 logarithm for each element of @var{x}.\n\
 
   return retval;
 }
+
+/*
+
+%!assert(log10 ([0.01, 0.1, 1, 10, 100]), [-2, -1, 0, 1, 2], sqrt (eps));
+%!assert(log10 (single([0.01, 0.1, 1, 10, 100])), single([-2, -1, 0, 1, 2]), sqrt (eps ('single')));
+
+%!error log10 ();
+%!error log10 (1, 2);
+
+*/
 
 DEFUN (log1p, args, ,
     "-*- texinfo -*-\n\
@@ -909,6 +1249,23 @@ Return the real part of @var{z}.\n\
   return retval;
 }
 
+/*
+
+%!assert(real (1), 1);
+%!assert(real (i), 0);
+%!assert(real (1+i), 1);
+%!assert(real ([1, i; i, 1]), eye (2));
+
+%!assert(real (single(1)), single(1));
+%!assert(real (single(i)), single(0));
+%!assert(real (single(1+i)), single(1));
+%!assert(real (single([1, i; i, 1])), eye (2,'single'));
+
+%!error real ();
+%!error real (1, 2);
+
+*/
+
 DEFUN (round, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} round (@var{x})\n\
@@ -925,6 +1282,29 @@ Return the integer nearest to @var{x}.  If @var{x} is complex, return\n\
 
   return retval;
 }
+
+/*
+
+%!assert(round (1), 1);
+%!assert(round (1.1), 1);
+%!assert(round (5.5), 6);
+%!assert(round (i), i);
+%!assert(round (2.5+3.5i), 3+4i);
+%!assert(round (-2.6), -3);
+%!assert(round ([1.1, -2.4; -3.7, 7.1]), [1, -2; -4, 7]);
+
+%!assert(round (single(1)), single(1));
+%!assert(round (single(1.1)), single(1));
+%!assert(round (single(5.5)), single(6));
+%!assert(round (single(i)), single(i));
+%!assert(round (single(2.5+3.5i)), single(3+4i));
+%!assert(round (single(-2.6)), single(-3));
+%!assert(round (single([1.1, -2.4; -3.7, 7.1])), single([1, -2; -4, 7]));
+
+%!error round ();
+%!error round (1, 2);
+
+*/
 
 DEFUN (roundb, args, ,
     "-*- texinfo -*-\n\
@@ -976,6 +1356,23 @@ For complex arguments, @code{sign} returns @code{x ./ abs (@var{x})}.\n\
   return retval;
 }
 
+/*
+
+%!assert(sign (-2) , -1);
+%!assert(sign (3), 1);
+%!assert(sign (0), 0);
+%!assert(sign ([1, -pi; e, 0]), [1, -1; 1, 0]);
+
+%!assert(sign (single(-2)) , single(-1));
+%!assert(sign (single(3)), single(1));
+%!assert(sign (single(0)), single(0));
+%!assert(sign (single([1, -pi; e, 0])), single([1, -1; 1, 0]));
+
+%!error sign ();
+%!error sign (1, 2);
+
+*/
+
 DEFUN (sin, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sin (@var{x})\n\
@@ -991,6 +1388,27 @@ Compute the sine of each element of @var{x}.\n\
   return retval;
 }
 
+/*
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! x = [0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi];
+%! v = [0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0];
+%! assert(sin (x), v, sqrt (eps));
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! x = single([0, pi/6, pi/4, pi/3, pi/2, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! v = single([0, 1/2, rt2/2, rt3/2, 1, rt3/2, rt2/2, 1/2, 0]);
+%! assert(sin (x), v, sqrt (eps('single')));
+
+%!error sin ();
+%!error sin (1, 2);
+
+*/
+
 DEFUN (sinh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} sinh (@var{x})\n\
@@ -1005,6 +1423,23 @@ Compute the hyperbolic sine of each element of @var{x}.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! x = [0, pi/2*i, pi*i, 3*pi/2*i];
+%! v = [0, i, 0, -i];
+%! assert(sinh (x), v, sqrt (eps));
+
+%!test
+%! x = single([0, pi/2*i, pi*i, 3*pi/2*i]);
+%! v = single([0, i, 0, -i]);
+%! assert(sinh (x), v, sqrt (eps('single')));
+
+%!error sinh ();
+%!error sinh (1, 2);
+
+ */
 
 DEFUN (sqrt, args, ,
     "-*- texinfo -*-\n\
@@ -1023,6 +1458,23 @@ result is returned.  To compute the matrix square root, see\n\
   return retval;
 }
 
+/*
+
+%!assert(sqrt (4), 2)
+%!assert(sqrt (-1), i)
+%!assert(sqrt (1+i), exp (0.5 * log (1+i)), sqrt (eps));
+%!assert(sqrt([4, -4; i, 1-i]), [2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))], sqrt(eps));
+
+%!assert(sqrt (single(4)), single(2))
+%!assert(sqrt (single(-1)), single(i))
+%!assert(sqrt (single(1+i)), single(exp (0.5 * log (1+i))), sqrt (eps('single')));
+%!assert(sqrt(single([4, -4; i, 1-i])), single([2, 2i; exp(0.5 * log (i)), exp(0.5 * log (1-i))]), sqrt(eps('single')));
+
+%!error sqrt ();
+%!error sqrt (1, 2);
+
+*/
+
 DEFUN (tan, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tan (@var{z})\n\
@@ -1038,6 +1490,27 @@ Compute tangent of each element of @var{x}.\n\
   return retval;
 }
 
+/*
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! x = [0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi];
+%! v = [0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0];
+%! assert(tan (x), v,  sqrt (eps));
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! x = single([0, pi/6, pi/4, pi/3, 2*pi/3, 3*pi/4, 5*pi/6, pi]);
+%! v = single([0, rt3/3, 1, rt3, -rt3, -1, -rt3/3, 0]);
+%! assert(tan (x), v,  sqrt (eps('single')));
+
+%!error tan ();
+%!error tan (1, 2);
+
+*/
+
 DEFUN (tanh, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} tanh (@var{x})\n\
@@ -1052,6 +1525,23 @@ Compute hyperbolic tangent of each element of @var{x}.\n\
 
   return retval;
 }
+
+/*
+
+%!test
+%! x = [0, pi*i];
+%! v = [0, 0];
+%! assert(tanh (x), v, sqrt (eps));
+
+%!test
+%! x = single([0, pi*i]);
+%! v = single([0, 0]);
+%! assert(tanh (x), v, sqrt (eps('single')));
+
+%!error tanh ();
+%!error tanh (1, 2);
+
+*/
 
 DEFUNX ("toascii", Ftoascii, args, ,
     "-*- texinfo -*-\n\

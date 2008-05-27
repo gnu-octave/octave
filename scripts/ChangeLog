@@ -1,3 +1,8 @@
+2008-06-02  David Bateman  <dbateman@free.fr>
+
+	* general/interp1q.m: Remove spaces between functions and args in
+	[]. Fix test code to actually test interp1q.
+
 2008-06-02  Jaroslav Hajek <highegg@gmail.com>
 
 	* strings/strcat.m: Add tests.

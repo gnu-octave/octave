@@ -702,7 +702,29 @@ and @var{x}.  The result is in range -pi to pi.\n\
 %!assert (size (atan2 (rand (2, 3, 4), 1)), [2, 3, 4])
 %!assert (size (atan2 (1, rand (2, 3, 4))), [2, 3, 4])
 %!assert (size (atan2 (1, 2)), [1, 1])
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! v = [0, pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6, 0];
+%! y = [0, rt3, 1, rt3, -rt3, -1, -rt3, 0];
+%! x = [1, 3, 1, 1, 1, 1, 3, 1];
+%! assert(atan2 (y, x), v, sqrt (eps));
+
+%!test
+%! rt2 = sqrt (2);
+%! rt3 = sqrt (3);
+%! v = single([0, pi/6, pi/4, pi/3, -pi/3, -pi/4, -pi/6, 0]);
+%! y = single([0, rt3, 1, rt3, -rt3, -1, -rt3, 0]);
+%! x = single([1, 3, 1, 1, 1, 1, 3, 1]);
+%! assert(atan2 (y, x), v, sqrt (eps('single')));
+
+%!error <Invalid call to atan2.*> atan2 ();
+%!error <Invalid call to atan2.*> atan2 (1, 2, 3);
+
 */
+
+
 
 DEFUN (hypot, args, ,
   "-*- texinfo -*-\n\
@@ -1249,6 +1271,7 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
   int nargin = args.length (); \
  \
   bool isnative = false; \
+  bool isdouble = false; \
   \
   if (nargin > 1 && args(nargin - 1).is_string ()) \
     { \
@@ -1258,7 +1281,9 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 	{ \
 	  if (str == "native") \
 	    isnative = true; \
-	  else if (str != "double") /* Ignore double as no single type */ \
+	  else if (str == "double") \
+            isdouble = true; \
+          else \
 	    error ("sum: unrecognized string argument"); \
           nargin --; \
 	} \
@@ -1308,7 +1333,7 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
                         { \
 			  error (#FCN, ": invalid char type"); \
 			} \
-		      else if (arg.is_single_type ()) \
+		      else if (!isdouble && arg.is_single_type ()) \
                         { \
 	                  if (arg.is_complex_type ()) \
 		            { \
@@ -1346,7 +1371,7 @@ sign as @var{x}.  If @var{y} is zero, the result is implementation-defined.\n\
 		          return retval; \
 		        } \
                     } \
-		  else if (arg.is_single_type ()) \
+		  else if (!isdouble && arg.is_single_type ()) \
 		    { \
 	              if (arg.is_real_type ()) \
 		        { \
@@ -1489,6 +1514,28 @@ same orientation as @var{x}.\n\
   DATA_REDUCTION (cumprod);
 }
 
+/*
+
+%!assert (cumprod ([1, 2, 3]), [1, 2, 6]);
+%!assert (cumprod ([-1; -2; -3]), [-1; 2; -6]);
+%!assert (cumprod ([i, 2+i, -3+2i, 4]), [i, -1+2i, -1-8i, -4-32i]);
+%!assert (cumprod ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), [1, 2, 3; i, 4i, 9i; -1+i, -8+8i, -27+27i]);
+
+%!assert (cumprod (single([1, 2, 3])), single([1, 2, 6]));
+%!assert (cumprod (single([-1; -2; -3])), single([-1; 2; -6]));
+%!assert (cumprod (single([i, 2+i, -3+2i, 4])), single([i, -1+2i, -1-8i, -4-32i]));
+%!assert (cumprod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; i, 4i, 9i; -1+i, -8+8i, -27+27i]));
+
+%!error <Invalid call to cumprod.*> cumprod ();
+
+%!assert (cumprod ([2, 3; 4, 5], 1), [2, 3; 8, 15]);
+%!assert (cumprod ([2, 3; 4, 5], 2), [2, 6; 4, 20]);
+
+%!assert (cumprod (single([2, 3; 4, 5]), 1), single([2, 3; 8, 15]));
+%!assert (cumprod (single([2, 3; 4, 5]), 2), single([2, 6; 4, 20]));
+
+ */
+
 DEFUN (cumsum, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} cumsum (@var{x}, @var{dim})\n\
@@ -1502,6 +1549,28 @@ same orientation as @var{x}.\n\
 {
   DATA_REDUCTION (cumsum);
 }
+
+/*
+
+%!assert (cumsum ([1, 2, 3]), [1, 3, 6]);
+%!assert (cumsum ([-1; -2; -3]), [-1; -3; -6]);
+%!assert (cumsum ([i, 2+i, -3+2i, 4]), [i, 2+2i, -1+4i, 3+4i]);
+%!assert (cumsum ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), [1, 2, 3; 1+i, 2+2i, 3+3i; 2+2i, 4+4i, 6+6i]);
+
+%!assert (cumsum (single([1, 2, 3])), single([1, 3, 6]));
+%!assert (cumsum (single([-1; -2; -3])), single([-1; -3; -6]));
+%!assert (cumsum (single([i, 2+i, -3+2i, 4])), single([i, 2+2i, -1+4i, 3+4i]));
+%!assert (cumsum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([1, 2, 3; 1+i, 2+2i, 3+3i; 2+2i, 4+4i, 6+6i]));
+
+%!error <Invalid call to cumsum.*> cumsum ();
+
+%!assert (cumsum ([1, 2; 3, 4], 1), [1, 2; 4, 6]);
+%!assert (cumsum ([1, 2; 3, 4], 2), [1, 3; 3, 7]);
+
+%!assert (cumsum (single([1, 2; 3, 4]), 1), single([1, 2; 4, 6]));
+%!assert (cumsum (single([1, 2; 3, 4]), 2), single([1, 3; 3, 7]));
+
+ */
 
 DEFUN (diag, args, ,
   "-*- texinfo -*-\n\
@@ -1597,6 +1666,52 @@ return the product of the elements.\n\
 {
   DATA_REDUCTION (prod);
 }
+
+/*
+
+%!assert (prod ([1, 2, 3]), 6);
+%!assert (prod ([-1; -2; -3]), -6);
+%!assert (prod ([i, 2+i, -3+2i, 4]), -4 - 32i);
+%!assert (prod ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), [-1+i, -8+8i, -27+27i]);
+
+%!assert (prod (single([1, 2, 3])), single(6));
+%!assert (prod (single([-1; -2; -3])), single(-6));
+%!assert (prod (single([i, 2+i, -3+2i, 4])), single(-4 - 32i));
+%!assert (prod (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([-1+i, -8+8i, -27+27i]));
+
+%!error <Invalid call to prod.*> prod ();
+
+%!assert (prod ([1, 2; 3, 4], 1), [3, 8]);
+%!assert (prod ([1, 2; 3, 4], 2), [2; 12]);
+%!assert (prod (zeros (1, 0)), 1);
+%!assert (prod (zeros (1, 0), 1), zeros (1, 0));
+%!assert (prod (zeros (1, 0), 2), 1);
+%!assert (prod (zeros (0, 1)), 1);
+%!assert (prod (zeros (0, 1), 1), 1);
+%!assert (prod (zeros (0, 1), 2), zeros (0, 1));
+%!assert (prod (zeros (2, 0)), zeros (1, 0));
+%!assert (prod (zeros (2, 0), 1), zeros (1, 0));
+%!assert (prod (zeros (2, 0), 2), [1; 1]);
+%!assert (prod (zeros (0, 2)), [1, 1]);
+%!assert (prod (zeros (0, 2), 1), [1, 1]);
+%!assert (prod (zeros (0, 2), 2), zeros(0, 1));
+
+%!assert (prod (single([1, 2; 3, 4]), 1), single([3, 8]));
+%!assert (prod (single([1, 2; 3, 4]), 2), single([2; 12]));
+%!assert (prod (zeros (1, 0, 'single')), single(1));
+%!assert (prod (zeros (1, 0, 'single'), 1), zeros (1, 0, 'single'));
+%!assert (prod (zeros (1, 0, 'single'), 2), single(1));
+%!assert (prod (zeros (0, 1, 'single')), single(1));
+%!assert (prod (zeros (0, 1, 'single'), 1), single(1));
+%!assert (prod (zeros (0, 1, 'single'), 2), zeros (0, 1, 'single'));
+%!assert (prod (zeros (2, 0, 'single')), zeros (1, 0, 'single'));
+%!assert (prod (zeros (2, 0, 'single'), 1), zeros (1, 0, 'single'));
+%!assert (prod (zeros (2, 0, 'single'), 2), single([1; 1]));
+%!assert (prod (zeros (0, 2, 'single')), single([1, 1]));
+%!assert (prod (zeros (0, 2, 'single'), 1), single([1, 1]));
+%!assert (prod (zeros (0, 2, 'single'), 2), zeros(0, 1, 'single'));
+
+ */
 
 static octave_value
 do_cat (const octave_value_list& args, std::string fname)
@@ -2280,6 +2395,58 @@ sum ([true, true], 'native')\n\
 %!assert (sum(int8([127,10,-20])), 117);
 %!assert (sum(int8([127,10,-20]),'native'), int8(107));
 
+%!assert(sum ([1, 2, 3]), 6)
+%!assert(sum ([-1; -2; -3]), -6);
+%!assert(sum ([i, 2+i, -3+2i, 4]), 3+4i);
+%!assert(sum ([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i]), [2+2i, 4+4i, 6+6i]);
+
+%!assert(sum (single([1, 2, 3])), single(6))
+%!assert(sum (single([-1; -2; -3])), single(-6));
+%!assert(sum (single([i, 2+i, -3+2i, 4])), single(3+4i));
+%!assert(sum (single([1, 2, 3; i, 2i, 3i; 1+i, 2+2i, 3+3i])), single([2+2i, 4+4i, 6+6i]));
+
+%!error <Invalid call to sum.*> sum ();
+
+%!assert (sum ([1, 2; 3, 4], 1), [4, 6]);
+%!assert (sum ([1, 2; 3, 4], 2), [3; 7]);
+%!assert (sum (zeros (1, 0)), 0);
+%!assert (sum (zeros (1, 0), 1), zeros(1, 0));
+%!assert (sum (zeros (1, 0), 2), 0);
+%!assert (sum (zeros (0, 1)), 0);
+%!assert (sum (zeros (0, 1), 1), 0);
+%!assert (sum (zeros (0, 1), 2), zeros(0, 1));
+%!assert (sum (zeros (2, 0)),  zeros(1, 0));
+%!assert (sum (zeros (2, 0), 1), zeros(1, 0));
+%!assert (sum (zeros (2, 0), 2),  [0; 0]);
+%!assert (sum (zeros (0, 2)), [0, 0]);
+%!assert (sum (zeros (0, 2), 1), [0, 0]);
+%!assert (sum (zeros (0, 2), 2), zeros(0, 1));
+%!assert (sum (zeros (2, 2, 0, 3)), zeros(1, 2, 0, 3));
+%!assert (sum (zeros (2, 2, 0, 3), 2), zeros(2, 1, 0, 3));
+%!assert (sum (zeros (2, 2, 0, 3), 3), zeros(2, 2, 1, 3));
+%!assert (sum (zeros (2, 2, 0, 3), 4), zeros(2, 2, 0));
+%!assert (sum (zeros (2, 2, 0, 3), 7), zeros(2, 2, 0, 3));
+
+%!assert (sum (single([1, 2; 3, 4]), 1), single([4, 6]));
+%!assert (sum (single([1, 2; 3, 4]), 2), single([3; 7]));
+%!assert (sum (zeros (1, 0, 'single')), single(0));
+%!assert (sum (zeros (1, 0, 'single'), 1), zeros(1, 0, 'single'));
+%!assert (sum (zeros (1, 0, 'single'), 2), single(0));
+%!assert (sum (zeros (0, 1, 'single')), single(0));
+%!assert (sum (zeros (0, 1, 'single'), 1), single(0));
+%!assert (sum (zeros (0, 1, 'single'), 2), zeros(0, 1, 'single'));
+%!assert (sum (zeros (2, 0, 'single')),  zeros(1, 0, 'single'));
+%!assert (sum (zeros (2, 0, 'single'), 1), zeros(1, 0, 'single'));
+%!assert (sum (zeros (2, 0, 'single'), 2),  single([0; 0]));
+%!assert (sum (zeros (0, 2, 'single')), single([0, 0]));
+%!assert (sum (zeros (0, 2, 'single'), 1), single([0, 0]));
+%!assert (sum (zeros (0, 2, 'single'), 2), zeros(0, 1, 'single'));
+%!assert (sum (zeros (2, 2, 0, 3, 'single')), zeros(1, 2, 0, 3, 'single'));
+%!assert (sum (zeros (2, 2, 0, 3, 'single'), 2), zeros(2, 1, 0, 3, 'single'));
+%!assert (sum (zeros (2, 2, 0, 3, 'single'), 3), zeros(2, 2, 1, 3, 'single'));
+%!assert (sum (zeros (2, 2, 0, 3, 'single'), 4), zeros(2, 2, 0, 'single'));
+%!assert (sum (zeros (2, 2, 0, 3, 'single'), 7), zeros(2, 2, 0, 3, 'single'));
+
 */
 
 DEFUN (sumsq, args, ,
@@ -2301,6 +2468,26 @@ but it uses less memory and avoids calling conj if @var{x} is real.\n\
   DATA_REDUCTION (sumsq);
 }
 
+/*
+
+%!assert(sumsq ([1, 2, 3]), 14)
+%!assert(sumsq ([-1; -2; 4i]), 21);
+%!assert(sumsq ([1, 2, 3; 2, 3, 4; 4i, 6i, 2]), [21, 49, 29]);
+
+%!assert(sumsq (single([1, 2, 3])), single(14))
+%!assert(sumsq (single([-1; -2; 4i])), single(21));
+%!assert(sumsq (single([1, 2, 3; 2, 3, 4; 4i, 6i, 2])), single([21, 49, 29]));
+
+%!error <Invalid call to sumsq.*> sumsq ();
+
+%!assert (sumsq ([1, 2; 3, 4], 1), [10, 20]);
+%!assert (sumsq ([1, 2; 3, 4], 2), [5; 25]);
+
+%!assert (sumsq (single([1, 2; 3, 4]), 1), single([10, 20]));
+%!assert (sumsq (single([1, 2; 3, 4]), 2), single([5; 25]));
+
+ */
+
 DEFUN (islogical, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} islogical (@var{x})\n\
@@ -2318,6 +2505,20 @@ Return true if @var{x} is a logical object.\n\
 }
 
 DEFALIAS (isbool, islogical);
+
+/*
+
+%!assert (islogical(true), true)
+%!assert (islogical(false), true)
+%!assert (islogical([true, false]), true)
+%!assert (islogical(1), false)
+%!assert (islogical(1i), false)
+%!assert (islogical([1,1]), false)
+%!assert (islogical(single(1)), false)
+%!assert (islogical(single(1i)), false)
+%!assert (islogical(single([1,1])), false)
+
+ */
 
 DEFUN (isinteger, args, ,
   "-*- texinfo -*-\n\

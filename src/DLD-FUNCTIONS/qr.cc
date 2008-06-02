@@ -434,8 +434,226 @@ as\n\
 
 /*
 
-The deactivated tests below can't be tested till rectangular back-subs is
-implemented for sparse matrices.
+%!test
+%! a = [0, 2, 1; 2, 1, 2];
+%! 
+%! [q, r] = qr (a);
+%! 
+%! [qe, re] = qr (a, 0);
+%! 
+%! assert (q * r, a, sqrt (eps));
+%! assert (qe * re, a, sqrt (eps));
+
+%!test
+%! a = [0, 2, 1; 2, 1, 2];
+%! 
+%! [q, r, p] = qr (a);  # not giving right dimensions. FIXME
+%! 
+%! [qe, re, pe] = qr (a, 0);
+%! 
+%! assert (q * r, a * p, sqrt (eps));
+%! assert (qe * re, a(:, pe), sqrt (eps));
+
+%!test
+%! a = [0, 2; 2, 1; 1, 2];
+%! 
+%! [q, r] = qr (a);
+%! 
+%! [qe, re] = qr (a, 0);
+%! 
+%! assert (q * r, a, sqrt (eps));
+%! assert (qe * re, a, sqrt (eps));
+
+%!test
+%! a = [0, 2; 2, 1; 1, 2];
+%! 
+%! [q, r, p] = qr (a);
+%! 
+%! [qe, re, pe] = qr (a, 0);
+%! 
+%! assert (q * r, a * p, sqrt (eps));
+%! assert (qe * re, a(:, pe), sqrt (eps));
+
+%!error <Invalid call to qr.*> qr ();
+%!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
+
+%!function retval = testqr (q, r, a, p)
+%!  tol = 100*eps (class(q));
+%!  retval = 0;
+%!  if (nargin == 3)
+%!    n1 = norm (q*r-a);
+%!    n2 = norm (q'*q-eye(columns(q)));
+%!    retval = (n1 < tol && n2 < tol);
+%!  else
+%!    n1 = norm (q'*q-eye(columns(q)));
+%!    retval = (n1 < tol);
+%!    if (isvector (p))
+%!      n2 = norm (q*r-a(:,p));
+%!      retval = (retval && n2 < tol);
+%!    else
+%!      n2 = norm (q*r - a*p);
+%!      retval = (retval && n2 < tol);
+%!    endif
+%!  endif
+%!test
+%! 
+%! t = ones (24, 1);
+%! j = 1;
+%! 
+%! if false # eliminate big matrix tests
+%!   a = rand(5000,20);
+%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! 
+%!   a = a+1i*eps;
+%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! endif
+%! 
+%! a = [ ones(1,15); sqrt(eps)*eye(15) ];
+%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = a+1i*eps;
+%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = [ ones(1,15); sqrt(eps)*eye(15) ];
+%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = a+1i*eps;
+%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = [
+%! 611   196  -192   407    -8   -52   -49    29
+%! 196   899   113  -192   -71   -43    -8   -44
+%! -192   113   899   196    61    49     8    52
+%! 407  -192   196   611     8    44    59   -23
+%! -8   -71    61     8   411  -599   208   208
+%! -52   -43    49    44  -599   411   208   208
+%! -49    -8     8    59   208   208    99  -911
+%! 29   -44    52   -23   208   208  -911    99
+%! ];
+%! [q,r] = qr(a);
+%! 
+%! assert(all (t) && norm(q*r-a) < 5000*eps);
+
+%!test
+%! a = single ([0, 2, 1; 2, 1, 2]);
+%! 
+%! [q, r] = qr (a);
+%! 
+%! [qe, re] = qr (a, 0);
+%! 
+%! assert (q * r, a, sqrt (eps ('single')));
+%! assert (qe * re, a, sqrt (eps ('single')));
+
+%!test
+%! a = single([0, 2, 1; 2, 1, 2]);
+%! 
+%! [q, r, p] = qr (a);  # not giving right dimensions. FIXME
+%! 
+%! [qe, re, pe] = qr (a, 0);
+%! 
+%! assert (q * r, a * p, sqrt (eps('single')));
+%! assert (qe * re, a(:, pe), sqrt (eps('single')));
+
+%!test
+%! a = single([0, 2; 2, 1; 1, 2]);
+%! 
+%! [q, r] = qr (a);
+%! 
+%! [qe, re] = qr (a, 0);
+%! 
+%! assert (q * r, a, sqrt (eps('single')));
+%! assert (qe * re, a, sqrt (eps('single')));
+
+%!test
+%! a = single([0, 2; 2, 1; 1, 2]);
+%! 
+%! [q, r, p] = qr (a);
+%! 
+%! [qe, re, pe] = qr (a, 0);
+%! 
+%! assert (q * r, a * p, sqrt (eps('single')));
+%! assert (qe * re, a(:, pe), sqrt (eps('single')));
+
+%!error <Invalid call to qr.*> qr ();
+%!error <Invalid call to qr.*> qr ([1, 2; 3, 4], 0, 2);
+
+%!test
+%! 
+%! t = ones (24, 1);
+%! j = 1;
+%! 
+%! if false # eliminate big matrix tests
+%!   a = rand(5000,20);
+%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! 
+%!   a = a+1i*eps('single');
+%!   [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%!   [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%!   [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%!   [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! endif
+%! 
+%! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
+%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = a+1i*eps('single');
+%! [q,r]=qr(a); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a'); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a'); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = [ ones(1,15); sqrt(eps('single'))*eye(15) ];
+%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = a+1i*eps('single');
+%! [q,r]=qr(a,0); t(j++) = testqr(q,r,a);
+%! [q,r]=qr(a',0); t(j++) = testqr(q,r,a');
+%! [q,r,p]=qr(a,0); t(j++) = testqr(q,r,a,p);
+%! [q,r,p]=qr(a',0); t(j++) = testqr(q,r,a',p);
+%! 
+%! a = [
+%! 611   196  -192   407    -8   -52   -49    29
+%! 196   899   113  -192   -71   -43    -8   -44
+%! -192   113   899   196    61    49     8    52
+%! 407  -192   196   611     8    44    59   -23
+%! -8   -71    61     8   411  -599   208   208
+%! -52   -43    49    44  -599   411   208   208
+%! -49    -8     8    59   208   208    99  -911
+%! 29   -44    52   -23   208   208  -911    99
+%! ];
+%! [q,r] = qr(a);
+%! 
+%! assert(all (t) && norm(q*r-a) < 5000*eps('single'));
+
+%% The deactivated tests below can't be tested till rectangular back-subs is
+%% implemented for sparse matrices.
 
 %!testif HAVE_CXSPARSE
 %! n = 20; d= 0.2;

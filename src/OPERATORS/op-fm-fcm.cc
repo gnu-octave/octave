@@ -119,6 +119,12 @@ DEFNDBINOP_FN (el_or,  float_matrix, float_complex_matrix, float_array,
 DEFNDCATOP_FN (fm_fcm, float_matrix, float_complex_matrix, float_array, 
 	       float_complex_array, concat)
 
+DEFNDCATOP_FN (m_fcm, matrix, float_complex_matrix, float_array, 
+	       float_complex_array, concat)
+
+DEFNDCATOP_FN (fm_cm, float_matrix, complex_matrix, float_array, 
+	       float_complex_array, concat)
+
 DEFCONV (float_complex_matrix_conv, float_matrix, float_complex_matrix)
 {
   CAST_CONV_ARG (const octave_float_matrix&);
@@ -156,6 +162,8 @@ install_fm_fcm_ops (void)
 		 octave_float_complex_matrix, el_or);
 
   INSTALL_CATOP (octave_float_matrix, octave_float_complex_matrix, fm_fcm);
+  INSTALL_CATOP (octave_matrix, octave_float_complex_matrix, m_fcm);
+  INSTALL_CATOP (octave_float_matrix, octave_complex_matrix, fm_cm);
 
   INSTALL_ASSIGNCONV (octave_float_matrix, octave_float_complex_matrix, 
 		      octave_float_complex_matrix);

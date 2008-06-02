@@ -115,7 +115,7 @@ octave_float_scalar::resize (const dim_vector& dv, bool fill) const
 {
   if (fill)
     {
-      NDArray retval (dv, NDArray::resize_fill_value());
+      FloatNDArray retval (dv, NDArray::resize_fill_value());
 
       if (dv.numel ())
 	retval(0) = scalar;
@@ -124,7 +124,7 @@ octave_float_scalar::resize (const dim_vector& dv, bool fill) const
     }
   else
     {
-      NDArray retval (dv);
+      FloatNDArray retval (dv);
 
       if (dv.numel ())
 	retval(0) = scalar;

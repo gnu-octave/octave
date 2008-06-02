@@ -106,7 +106,10 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
     dims (1) = n_cols;
 
   if (dims.all_zero () || n_rows == 0 || n_cols == 0)
-    return octave_value (Matrix ());
+    if (arg.is_single_type ())
+      return octave_value (FloatMatrix ());
+    else
+      return octave_value (Matrix ());
 
   if (arg.is_single_type ())
     {
@@ -198,6 +201,93 @@ of @var{a} is treated separately\n\
 {
   return do_fft2 (args, "ifft2", 1);
 }
+
+/*
+
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! M=16;
+%! N=8;
+%! 
+%! m=5;
+%! n=3;
+%! 
+%! x = 2*pi*(0:1:M-1)/M;
+%! y = 2*pi*(0:1:N-1)/N;
+%! sx = cos(m*x);
+%! sy = sin(n*y);
+%! s=kron(sx',sy);
+%! S = fft2(s);
+%! answer = kron(fft(sx)',fft(sy));
+%! assert(S, answer, 4*M*N*eps);
+
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! M=12;
+%! N=7;
+%! 
+%! m=3;
+%! n=2;
+%! 
+%! x = 2*pi*(0:1:M-1)/M;
+%! y = 2*pi*(0:1:N-1)/N;
+%! 
+%! sx = cos(m*x);
+%! sy = cos(n*y);
+%! 
+%! S = kron(fft(sx)',fft(sy));
+%! answer=kron(sx',sy);
+%! s = ifft2(S);
+%! 
+%! assert(s, answer, 30*eps);
+
+
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! M=16;
+%! N=8;
+%! 
+%! m=5;
+%! n=3;
+%! 
+%! x = 2*pi*(0:1:M-1)/M;
+%! y = 2*pi*(0:1:N-1)/N;
+%! sx = single(cos(m*x));
+%! sy = single(sin(n*y));
+%! s=kron(sx',sy);
+%! S = fft2(s);
+%! answer = kron(fft(sx)',fft(sy));
+%! assert(S, answer, 4*M*N*eps('single'));
+
+%% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
+%%         Comalco Research and Technology
+%%         02 May 2000
+%!test
+%! M=12;
+%! N=7;
+%! 
+%! m=3;
+%! n=2;
+%! 
+%! x = single(2*pi*(0:1:M-1)/M);
+%! y = single(2*pi*(0:1:N-1)/N);
+%! 
+%! sx = cos(m*x);
+%! sy = cos(n*y);
+%! 
+%! S = kron(fft(sx)',fft(sy));
+%! answer=kron(sx',sy);
+%! s = ifft2(S);
+%! 
+%! assert(s, answer, 30*eps('single'));
+
+*/
 
 /*
 ;;; Local Variables: ***

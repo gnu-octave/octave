@@ -1,3 +1,54 @@
+2008-06-02  David Bateman  <dbateman@free.fr>
+
+	* chol.cc (Fcholinv, Fchol2inv, Fcholupdate, Fcholinsert,
+	Fcholdelete, Fcholshift): Allow single precision arguments.
+	(Fchol): Move test code here. Add test code for single precision.
+	(Fcholupdate, Fcholinsert, Fcholdelete, Fcholshift): Add test code
+	for single precision.
+	* conv2.cc (Fconv2): Add single precision test code.
+	* det.cc (Fdet): For single values or empty matrices, return
+	single precision arg for single precion input. Move test code
+	here. Add single precision test code.
+	* fft.cc (do_fft): For empty single precision arguments return a
+	single precision value. Add single precision test code. Remove
+	fft2 test code.
+	* fft2.cc (do_fft2): For empty single precision arguments return a
+	single precision value. Add single precision test code. Move fft2
+	test code here.
+	* fftn.cc (do_fftn): For empty single precision arguments return a
+	single precision value.
+	* eig.cc (Feig):  Move test code here. Add single precision test
+	code.
+	* expm.cc (Fexpm): Ditto.
+	* find.cc (Ffind): Ditto.
+	* hess.cc (Fhess): Ditto.
+	* inv.cc (Finc): Ditto.
+	* lu.cc (Flu): Ditto.
+	* qr.cc (Fqr): Ditto.
+	* schur.cc (Fschur): Ditto.
+	* svd.cc (Fsvd): Ditto.
+	* syl.cc (Fsyl): Ditto.
+	
+	* op-fcm-fcm.cc, op-fcm-fcs.cc, op-fcm-fm.cc, op-fcm-fs.cc, 
+	op-fcs-fcm.cc, op-fcs-fcs.cc, op-fcs-fm.cc, op-fcs-fs.cc, 
+	op-fm-fcm.cc, op-fm-fcs.cc, op-fm-fm.cc, op-fm-fs.cc, 
+	op-fs-fcm.cc, op-fs-fcs.cc, op-fs-fm.cc, op-fs-fs.cc: Add mixed
+	double, single precision concatenation operators.
+
+	* data.cc (Fall, Fany, Fdiag, Fcat, Fismatrix, Fones, Fzeros,
+	Finf, FNaN, FNA, Feye, Flinspace, Freshape, Ftranspose,
+	Fctranspose, Fsort). Move tests here. Add single precision tests.
+	* mappers.cc (Ffinite, Fisinf, Fisna, Fisnan): Ditto.
+	* ov-float.cc (octave_float_scalar:resize): single precision
+	return value.
+	* ov.cc (octave_value::octave_value (const
+	FloatComplexDiagMatrix&)): Ditto.
+	* data.cc (Fnorm): Add single precision.
+	(do_cat): Disable fast return and skipping empty matrices, as they
+	play a part in determining the return type.
+	* ov.cc (octave_value do_cat_op (const octave_value&, const
+	octave_value&, const Array<octave_idx_type>&)): ditto.
+
 2008-06-02  Jaroslav Hajek <highegg@gmail.com>
 
 	* ov-cell.cc (Fcellstr): For compatibility with Matlab, return {''}

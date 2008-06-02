@@ -244,7 +244,7 @@ __lo_ieee_float_is_NA (float x)
 #if defined (HAVE_ISNAN)
   lo_ieee_float t;
   t.value = x;
-  return (isnan (x) && (t.word & 0xFFFF) == LO_IEEE_NA_FLOAT_LW) ? 1 : 0;
+  return (isnan (x) && (t.word == LO_IEEE_NA_FLOAT)) ? 1 : 0;
 #else
   return 0;
 #endif
@@ -259,19 +259,19 @@ __lo_ieee_float_is_NaN_or_NA (float x)
 float
 lo_ieee_float_inf_value (void)
 {
-  return octave_Inf;
+  return octave_Float_Inf;
 }
 
 float
 lo_ieee_float_na_value (void)
 {
-  return octave_NA;
+  return octave_Float_NA;
 }
 
 float
 lo_ieee_float_nan_value (void)
 {
-  return octave_NaN;
+  return octave_Float_NaN;
 }
 
 #if ! (defined (signbit) || defined (HAVE_DECL_SIGNBIT)) && defined (HAVE_SIGNBIT)

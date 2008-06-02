@@ -88,7 +88,10 @@ do_fftn (const octave_value_list &args, const char *fcn, int type)
     return retval;
 
   if (dims.all_zero ())
-    return octave_value (Matrix ());
+    if (arg.is_single_type ())
+      return octave_value (FloatMatrix ());
+    else
+      return octave_value (Matrix ());
 
   if (arg.is_single_type ())
     {

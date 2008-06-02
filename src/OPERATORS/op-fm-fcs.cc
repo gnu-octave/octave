@@ -38,6 +38,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-cx-mat.h"
 #include "ov-flt-cx-mat.h"
 #include "ov-flt-complex.h"
+#include "ov-complex.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -123,6 +124,12 @@ DEFNDBINOP_FN (el_or, float_matrix, float_complex, float_array,
 DEFNDCATOP_FN (fm_fcs, float_matrix, float_complex, float_array, 
 	       float_complex_array, concat)
 
+DEFNDCATOP_FN (m_fcs, matrix, float_complex, float_array, 
+	       float_complex_array, concat)
+
+DEFNDCATOP_FN (fm_cs, float_matrix, complex, float_array, 
+	       float_complex_array, concat)
+
 void
 install_fm_fcs_ops (void)
 {
@@ -146,6 +153,8 @@ install_fm_fcs_ops (void)
   INSTALL_BINOP (op_el_or, octave_float_matrix, octave_float_complex, el_or);
 
   INSTALL_CATOP (octave_float_matrix, octave_float_complex, fm_fcs);
+  INSTALL_CATOP (octave_matrix, octave_float_complex, m_fcs);
+  INSTALL_CATOP (octave_float_matrix, octave_complex, fm_cs);
 
   INSTALL_ASSIGNCONV (octave_float_matrix, octave_float_complex, 
 		      octave_float_complex_matrix);

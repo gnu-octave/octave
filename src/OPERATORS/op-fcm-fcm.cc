@@ -175,6 +175,12 @@ DEFNDBINOP_FN (el_or,  float_complex_matrix, float_complex_matrix,
 DEFNDCATOP_FN (fcm_fcm, float_complex_matrix, float_complex_matrix, 
 	       float_complex_array, float_complex_array, concat)
 
+DEFNDCATOP_FN (cm_fcm, complex_matrix, float_complex_matrix, 
+	       float_complex_array, float_complex_array, concat)
+
+DEFNDCATOP_FN (fcm_cm, float_complex_matrix, complex_matrix, 
+	       float_complex_array, float_complex_array, concat)
+
 DEFNDASSIGNOP_FN (assign, float_complex_matrix, float_complex_matrix, 
 		  float_complex_array, assign)
 DEFNDASSIGNOP_FN (dbl_assign, complex_matrix, float_complex_matrix, 
@@ -246,6 +252,10 @@ install_fcm_fcm_ops (void)
 
   INSTALL_CATOP (octave_float_complex_matrix, 
 		 octave_float_complex_matrix, fcm_fcm);
+  INSTALL_CATOP (octave_complex_matrix, 
+		 octave_float_complex_matrix, cm_fcm);
+  INSTALL_CATOP (octave_float_complex_matrix, 
+		 octave_complex_matrix, fcm_cm);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_complex_matrix, 
 		    octave_float_complex_matrix, assign);

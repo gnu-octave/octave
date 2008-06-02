@@ -115,7 +115,10 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
     dims (dim) = n_points;
 
   if (dims.any_zero () || n_points == 0)
-    return octave_value (NDArray (dims));
+    if (arg.is_single_type ())
+      return octave_value (FloatNDArray (dims));
+    else
+      return octave_value (NDArray (dims));
 
   if (arg.is_single_type ())
     {
@@ -179,9 +182,16 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
 %!assert(fft(zeros(0,10)), zeros(0,10))
 %!assert(fft(0), 0)
 %!assert(fft(1), 1)
-%!assert(fft(1), 1)
 %!assert(fft(ones(2,2)), [2,2; 0,0])
 %!assert(fft(eye(2,2)), [1,1; 1,-1])
+
+%!assert(fft(single([])), single([]))
+%!assert(fft(zeros(10,0,'single')), zeros(10,0,'single'))
+%!assert(fft(zeros(0,10,'single')), zeros(0,10,'single'))
+%!assert(fft(single(0)), single(0))
+%!assert(fft(single(1)), single(1))
+%!assert(fft(ones(2,2,'single')), single([2,2; 0,0]))
+%!assert(fft(eye(2,2,'single')), single([1,1; 1,-1]))
 
 */
 
@@ -239,8 +249,6 @@ dimension of the matrix along which the inverse FFT is performed\n\
 
 /*
 
-%% fft-1.m
-%%
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
@@ -251,14 +259,12 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! s = cos(n*t);
 %! S = fft(s);
 %! 
-%! answer = 0*t;
+%! answer = zeros (size(t));
 %! answer(n+1) = N/2;
 %! answer(N-n+1) = N/2;
 %! 
-%! assert(all( abs(S-answer) < 4*N*eps ));
+%! assert(S, answer, 4*N*eps);
 
-%% ifft-1.m
-%%
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
@@ -268,56 +274,42 @@ dimension of the matrix along which the inverse FFT is performed\n\
 %! t = 2*pi*(0:1:N-1)/N;
 %! s = cos(n*t);
 %! 
-%! S = 0*t;
+%! S = zeros (size(t));
 %! S(n+1) = N/2;
 %! S(N-n+1) = N/2;
 %! 
-%! assert(all( abs(ifft(S)-s) < 4*N*eps ));
+%! assert(ifft(S), s, 4*N*eps);
 
-%% fft2-1.m
-%%
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
 %!test
-%! M=16;
-%! N=8;
+%! N=64;
+%! n=4;
+%! t = single (2*pi*(0:1:N-1)/N);
+%! s = cos(n*t);
+%! S = fft(s);
 %! 
-%! m=5;
-%! n=3;
+%! answer = zeros (size(t),'single');
+%! answer(n+1) = N/2;
+%! answer(N-n+1) = N/2;
 %! 
-%! x = 2*pi*(0:1:M-1)/M;
-%! y = 2*pi*(0:1:N-1)/N;
-%! sx = cos(m*x);
-%! sy = sin(n*y);
-%! s=kron(sx',sy);
-%! S = fft2(s);
-%! answer = kron(fft(sx)',fft(sy));
-%! assert(all( all( abs(S-answer) < 4*M*N*eps ) ));
+%! assert(S, answer, 4*N*eps('single'));
 
-%% ifft2-1.m
-%%
 %% Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 %%         Comalco Research and Technology
 %%         02 May 2000
 %!test
-%! M=12;
-%! N=7;
+%! N=64;
+%! n=7;
+%! t = 2*pi*(0:1:N-1)/N;
+%! s = cos(n*t);
 %! 
-%! m=3;
-%! n=2;
+%! S = zeros (size(t),'single');
+%! S(n+1) = N/2;
+%! S(N-n+1) = N/2;
 %! 
-%! x = 2*pi*(0:1:M-1)/M;
-%! y = 2*pi*(0:1:N-1)/N;
-%! 
-%! sx = cos(m*x);
-%! sy = cos(n*y);
-%! 
-%! S = kron(fft(sx)',fft(sy));
-%! answer=kron(sx',sy);
-%! s = ifft2(S);
-%! 
-%! assert(all( all( abs(s-answer) < 30*eps ) ));
+%! assert(ifft(S), s, 4*N*eps('single'));
 
 */
 

@@ -35,16 +35,16 @@ bool
 FloatDET::value_will_overflow (void) const
 {
   return base2
-    ? (e2 + 1 > xlog2 (DBL_MAX) ? 1 : 0)
-    : (e10 + 1 > log10 (DBL_MAX) ? 1 : 0);
+    ? (e2 + 1 > xlog2 (FLT_MAX) ? 1 : 0)
+    : (e10 + 1 > log10 (FLT_MAX) ? 1 : 0);
 }
 
 bool
 FloatDET::value_will_underflow (void) const
 {
   return base2
-    ? (e2 - 1 < xlog2 (DBL_MIN) ? 1 : 0)
-    : (e10 - 1 < log10 (DBL_MIN) ? 1 : 0);
+    ? (e2 - 1 < xlog2 (FLT_MIN) ? 1 : 0)
+    : (e10 - 1 < log10 (FLT_MIN) ? 1 : 0);
 }
 
 void
@@ -55,7 +55,7 @@ FloatDET::initialize10 (void)
       float etmp = e2 / xlog2 (static_cast<float>(10));
       e10 = static_cast<int> (xround (etmp));
       etmp -= e10;
-      c10 = c2 * pow (10.0, etmp);
+      c10 = c2 * powf (10.0, etmp);
     }
 }
 
@@ -74,7 +74,7 @@ FloatDET::initialize2 (void)
 float
 FloatDET::value (void) const
 {
-  return base2 ? c2 * xexp2 (static_cast<float>(e2)) : c10 * pow (10.0, e10);
+  return base2 ? c2 * xexp2 (static_cast<float>(e2)) : c10 * powf (10.0, e10);
 }
 
 /*

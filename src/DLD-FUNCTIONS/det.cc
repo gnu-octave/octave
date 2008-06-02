@@ -93,7 +93,7 @@ if requested.\n\
 	      retval(1) = rcond;
 	      volatile float xrcond = rcond;
 	      xrcond += 1.0;
-	      retval(0) = ((info == -1 || xrcond == 1.0) ? 0.0 : det.value ());
+	      retval(0) = ((info == -1 || xrcond == 1.0) ? static_cast<float>(0.0) : det.value ());
 	    }
 	}
       else if (arg.is_complex_type ())
@@ -110,7 +110,7 @@ if requested.\n\
 	      volatile float xrcond = rcond;
 	      xrcond += 1.0;
 	      retval(0) = ((info == -1 || xrcond == 1.0) 
-			   ? Complex (0.0) : det.value ());
+			   ? FloatComplex (0.0) : det.value ());
 	      
 	    }
 	}
@@ -187,6 +187,16 @@ if requested.\n\
     }
   return retval;
 }
+
+/*
+
+%!assert(det ([1, 2; 3, 4]), -2, 10 * eps);
+%!assert(det (single([1, 2; 3, 4])), single(-2), 10 * eps ('single'));
+%!error <Invalid call to det.*> det ();
+%!error <Invalid call to det.*> det (1, 2);
+%!error det ([1, 2; 3, 4; 5, 6]);
+
+*/
 
 /*
 ;;; Local Variables: ***

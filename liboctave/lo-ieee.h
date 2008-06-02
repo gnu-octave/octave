@@ -60,14 +60,13 @@ typedef union
 
 typedef union
 {
-  double value;
+  float value;
   unsigned int word;
 } lo_ieee_float;
 
 #define LO_IEEE_NA_HW 0x7ff00000
 #define LO_IEEE_NA_LW 1954
-#define LO_IEEE_NA_FLOAT 0x7ff007a2
-#define LO_IEEE_NA_FLOAT_LW 0x07a2
+#define LO_IEEE_NA_FLOAT   0x7f8207a2
 
 extern OCTAVE_API void octave_ieee_init (void);
 

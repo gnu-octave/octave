@@ -417,6 +417,18 @@ finite ([13, Inf, NA, NaN])\n\
   return retval;
 }
 
+/*
+
+%!assert(!(finite (Inf)));
+%!assert(!(finite (NaN)));
+%!assert(finite (rand(1,10)));
+
+%!assert(!(finite (single(Inf))));
+%!assert(!(finite (single(NaN))));
+%!assert(finite (single(rand(1,10))));
+
+ */
+
 DEFUN (fix, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} fix (@var{x})\n\
@@ -608,6 +620,22 @@ isinf ([13, Inf, NA, NaN])\n\
   return retval;
 }
 
+/*
+
+%!assert(isinf (Inf));
+%!assert(!isinf (NaN));
+%!assert(!(isinf (NA)));
+%!assert(isinf (rand(1,10)), false(1,10));
+%!assert(isinf([NaN -Inf -1 0 1 Inf NA]), [false, true, false, false, false, true, false]);
+
+%!assert(isinf (single(Inf)));
+%!assert(!(isinf (single(NaN))));
+%!assert(!(isinf (single(NA))));
+%!assert(isinf (single(rand(1,10))), false(1,10));
+%!assert(isinf(single([NaN -Inf -1 0 1 Inf NA])), [false, true, false, false, false, true, false]);
+
+ */
+
 DEFUNX ("isgraph", Fisgraph, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isgraph (@var{s})\n\
@@ -661,6 +689,22 @@ isna ([13, Inf, NA, NaN])\n\
   return retval;
 }
 
+/*
+
+%!assert(!(isna (Inf)));
+%!assert(!isna (NaN));
+%!assert(isna (NA));
+%!assert(isna (rand(1,10)), false(1,10));
+%!assert(isna([NaN -Inf -1 0 1 Inf NA]), [false, false, false, false, false, false, true]);
+
+%!assert(!(isna (single(Inf))));
+%!assert(!isna (single(NaN)));
+%!assert(isna (single(NA)));
+%!assert(isna (single(rand(1,10))), false(1,10));
+%!assert(isna(single([NaN -Inf -1 0 1 Inf NA])), [false, false, false, false, false, false, true]);
+
+ */
+
 DEFUN (isnan, args, ,
     "-*- texinfo -*-\n\
 @deftypefn {Mapping Function} {} isnan (@var{x})\n\
@@ -683,6 +727,22 @@ isnan ([13, Inf, NA, NaN])\n\
 
   return retval;
 }
+
+/*
+
+%!assert(!(isnan (Inf)));
+%!assert(isnan (NaN));
+%!assert(isnan (NA));
+%!assert(isnan (rand(1,10)), false(1,10));
+%!assert(isnan([NaN -Inf -1 0 1 Inf NA]), [true, false, false, false, false, false, true]);
+
+%!assert(!(isnan (single(Inf))));
+%!assert(isnan (single(NaN)));
+%!assert(isnan (single(NA)));
+%!assert(isnan (single(rand(1,10))), false(1,10));
+%!assert(isnan(single([NaN -Inf -1 0 1 Inf NA])), [true, false, false, false, false, false, true]);
+
+ */
 
 DEFUNX ("isprint", Fisprint, args, ,
     "-*- texinfo -*-\n\

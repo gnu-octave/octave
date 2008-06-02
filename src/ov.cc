@@ -658,7 +658,7 @@ octave_value::octave_value (const ComplexDiagMatrix& d)
 }
 
 octave_value::octave_value (const FloatComplexDiagMatrix& d)
-  : rep (new octave_complex_matrix (d))
+  : rep (new octave_float_complex_matrix (d))
 {
   maybe_mutate ();
 }
@@ -2214,12 +2214,8 @@ do_cat_op (const octave_value& v1, const octave_value& v2,
 {
   octave_value retval;
 
-  // Rapid return for concatenation with an empty object. Dimension
-  // checking handled elsewhere.
-  if (v1.all_zero_dims ())
-    return v2;
-  if (v2.all_zero_dims ())
-    return v1;
+  // Can't rapid return for concatenation with an empty object here as
+  // something like cat(1,[],single([]) must return the correct type.
 
   int t1 = v1.type_id ();
   int t2 = v2.type_id ();

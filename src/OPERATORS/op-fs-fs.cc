@@ -118,6 +118,8 @@ DEFBINOP_OP (el_and, float_scalar, float_scalar, &&)
 DEFBINOP_OP (el_or, float_scalar, float_scalar, ||)
 
 DEFNDCATOP_FN (fs_fs, float_scalar, float_scalar, float_array, float_array, concat)
+DEFNDCATOP_FN (s_fs, scalar, float_scalar, float_array, float_array, concat)
+DEFNDCATOP_FN (fs_s, float_scalar, scalar, float_array, float_array, concat)
 
 CONVDECL (float_to_scalar)
 {
@@ -158,6 +160,8 @@ install_fs_fs_ops (void)
   INSTALL_BINOP (op_el_or, octave_float_scalar, octave_float_scalar, el_or);
 
   INSTALL_CATOP (octave_float_scalar, octave_float_scalar, fs_fs);
+  INSTALL_CATOP (octave_scalar, octave_float_scalar, s_fs);
+  INSTALL_CATOP (octave_float_scalar, octave_scalar, fs_s);
 
   INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_scalar, octave_float_matrix);
   INSTALL_ASSIGNCONV (octave_scalar, octave_float_scalar, octave_matrix);

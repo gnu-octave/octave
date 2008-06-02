@@ -390,6 +390,27 @@ $S$.\n\
 }
 
 /*
+
+%!test
+%! a = [1, 2, 3; 4, 5, 9; 7, 8, 6];
+%! [u, s] = schur (a);
+%! assert(u' * a * u, s, sqrt (eps));
+
+%!test
+%! a = single([1, 2, 3; 4, 5, 9; 7, 8, 6]);
+%! [u, s] = schur (a);
+%! assert(u' * a * u, s, sqrt (eps('single')));
+
+%!test
+%! fail("schur ([1, 2; 3, 4], 2)","warning");
+
+%!error <Invalid call to schur.*> schur ();
+%!error schur ([1, 2, 3; 4, 5, 6]);
+
+ */
+
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

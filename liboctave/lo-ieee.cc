@@ -137,7 +137,10 @@ octave_ieee_init (void)
 
 	octave_Float_NaN = float_tmp_inf / float_tmp_inf;
 	octave_Float_Inf = float_tmp_inf;
-	octave_Float_NA = LO_IEEE_NA_FLOAT;
+
+	lo_ieee_float tf;
+	tf.word = LO_IEEE_NA_FLOAT;
+	octave_Float_NA = tf.value;
       }
       break;
 

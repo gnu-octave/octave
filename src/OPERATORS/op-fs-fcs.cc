@@ -31,6 +31,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-scalar.h"
 #include "ov-float.h"
 #include "ov-flt-complex.h"
+#include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-flt-cx-mat.h"
 #include "ov-typeinfo.h"
@@ -157,6 +158,12 @@ DEFBINOP (el_or, float_scalar, float_complex)
 DEFNDCATOP_FN (fs_fcs, float_scalar, float_complex, float_array, 
 	       float_complex_array, concat)
 
+DEFNDCATOP_FN (s_fcs, scalar, float_complex, float_array, 
+	       float_complex_array, concat)
+
+DEFNDCATOP_FN (fs_cs, float_scalar, complex, float_array, 
+	       float_complex_array, concat)
+
 void
 install_fs_fcs_ops (void)
 {
@@ -180,6 +187,8 @@ install_fs_fcs_ops (void)
   INSTALL_BINOP (op_el_or, octave_float_scalar, octave_float_complex, el_or);
 
   INSTALL_CATOP (octave_float_scalar, octave_float_complex, fs_fcs);
+  INSTALL_CATOP (octave_scalar, octave_float_complex, s_fcs);
+  INSTALL_CATOP (octave_float_scalar, octave_complex, fs_cs);
 
   INSTALL_ASSIGNCONV (octave_float_scalar, octave_float_complex, 
 		      octave_float_complex_matrix);

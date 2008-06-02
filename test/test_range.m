@@ -34,6 +34,7 @@
 %! r = 1:9;
 
 %!assert([ r ; z                  ], expect)
+%!assert([ r ; single(z)          ], single (expect))
 %!assert([ r ; logical(z)         ], expect)
 %!assert([ r ; sparse(z)          ], sparse (expect))
 %!assert([ r ; sparse(logical(z)) ], sparse (expect))
@@ -57,6 +58,7 @@
 %! r = 1:0.4:3;
 
 %!assert([ r ; z                  ], expect)
+%!assert([ r ; single(z)          ], single (expect))
 %!assert([ r ; logical(z)         ], expect)
 %!assert([ r ; sparse(z)          ], sparse (expect))
 %!assert([ r ; sparse(logical(z)) ], sparse (expect))

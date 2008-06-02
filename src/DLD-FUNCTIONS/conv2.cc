@@ -243,6 +243,10 @@ conv2 (MArray2<T>&A, MArray2<T>&B, Shape ishape)
 %!test
 %! b = [0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18];
 %! assert(conv2([0,1;1,2],[1,2,3;4,5,6;7,8,9]),b);
+
+%!test
+%! b = single([0,1,2,3;1,8,12,12;4,20,24,21;7,22,25,18]);
+%! assert(conv2(single([0,1;1,2]),single([1,2,3;4,5,6;7,8,9])),b);
 */
 
 DEFUN_DLD (conv2, args, ,

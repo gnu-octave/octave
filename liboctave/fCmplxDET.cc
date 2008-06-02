@@ -37,16 +37,16 @@ bool
 FloatComplexDET::value_will_overflow (void) const
 {
   return base2
-    ? (e2 + 1 > xlog2 (DBL_MAX) ? 1 : 0)
-    : (e10 + 1 > log10 (DBL_MAX) ? 1 : 0);
+    ? (e2 + 1 > xlog2 (FLT_MAX) ? 1 : 0)
+    : (e10 + 1 > log10 (FLT_MAX) ? 1 : 0);
 }
 
 bool
 FloatComplexDET::value_will_underflow (void) const
 {
   return base2
-    ? (e2 - 1 < xlog2 (DBL_MIN) ? 1 : 0)
-    : (e10 - 1 < log10 (DBL_MIN) ? 1 : 0);
+    ? (e2 - 1 < xlog2 (FLT_MIN) ? 1 : 0)
+    : (e10 - 1 < log10 (FLT_MIN) ? 1 : 0);
 }
 
 void

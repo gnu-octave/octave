@@ -169,6 +169,30 @@ The eigenvalues returned by @code{eig} are not ordered.\n\
 }
 
 /*
+
+%!assert(eig ([1, 2; 2, 1]), [-1; 3], sqrt (eps));
+
+%!test
+%! [v, d] = eig ([1, 2; 2, 1]);
+%! x = 1 / sqrt (2);
+%! assert(d, [-1, 0; 0, 3], sqrt (eps));
+%! assert(v, [-x, x; x, x], sqrt (eps));
+
+%!assert(eig (single ([1, 2; 2, 1])), single([-1; 3]), sqrt (eps('single')));
+
+%!test
+%! [v, d] = eig (single([1, 2; 2, 1]));
+%! x = single(1 / sqrt (2));
+%! assert(d, single([-1, 0; 0, 3]), sqrt (eps('single')));
+%! assert(v, [-x, x; x, x], sqrt (eps('single')));
+
+%!error <Invalid call to eig.*> eig ();
+%!error <Invalid call to eig.*> eig ([1, 2; 3, 4], 2);
+%!error eig ([1, 2; 3, 4; 5, 6]);
+
+ */
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

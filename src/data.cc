@@ -99,6 +99,29 @@ elements along dimension @var{dim} of a matrix, are nonzero.\n\
   ANY_ALL (all);
 }
 
+/*
+
+%!test
+%! x = ones (3);
+%! x(1,1) = 0;
+%! assert((all (all (rand (3) + 1) == [1, 1, 1]) == 1
+%! && all (all (x) == [0, 1, 1]) == 1
+%! && all (x, 1) == [0, 1, 1]
+%! && all (x, 2) == [0; 1; 1]));
+
+%!test
+%! x = ones (3, 'single');
+%! x(1,1) = 0;
+%! assert((all (all (single (rand (3) + 1)) == [1, 1, 1]) == 1
+%! && all (all (x) == [0, 1, 1]) == 1
+%! && all (x, 1) == [0, 1, 1]
+%! && all (x, 2) == [0; 1; 1]));
+
+%!error <Invalid call to all.*> all ();
+%!error <Invalid call to all.*> all (1, 2, 3);
+
+ */
+
 DEFUN (any, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} any (@var{x}, @var{dim})\n\
@@ -129,6 +152,29 @@ any (eye (2, 4), 2)\n\
 {
   ANY_ALL (any);
 }
+
+/*
+
+%!test
+%! x = zeros (3);
+%! x(3,3) = 1;
+%! assert((all (any (x) == [0, 0, 1]) == 1
+%! && all (any (ones (3)) == [1, 1, 1]) == 1
+%! && any (x, 1) == [0, 0, 1]
+%! && any (x, 2) == [0; 0; 1]));
+
+%!test
+%! x = zeros (3,'single');
+%! x(3,3) = 1;
+%! assert((all (any (x) == [0, 0, 1]) == 1
+%! && all (any (ones (3, 'single')) == [1, 1, 1]) == 1
+%! && any (x, 1) == [0, 0, 1]
+%! && any (x, 2) == [0; 0; 1]));
+
+%!error <Invalid call to any.*> any ();
+%!error <Invalid call to any.*> any (1, 2, 3);
+
+ */
 
 // These mapping functions may also be useful in other places, eh?
 
@@ -1502,6 +1548,43 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the\n\
   return retval;
 }
 
+/*
+
+%!assert(diag ([1; 2; 3]), [1, 0, 0; 0, 2, 0; 0, 0, 3]);
+%!assert(diag ([1; 2; 3], 1), [0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]);
+%!assert(diag ([1; 2; 3], 2), [0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]);
+%!assert(diag ([1; 2; 3],-1), [0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]);
+%!assert(diag ([1; 2; 3],-2), [0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0]);
+
+%!assert(diag ([1, 0, 0; 0, 2, 0; 0, 0, 3]), [1; 2; 3]);
+%!assert(diag ([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0], 1), [1; 2; 3]);
+%!assert(diag ([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0], -1), [1; 2; 3]);
+
+%!assert(diag (single([1; 2; 3])), single([1, 0, 0; 0, 2, 0; 0, 0, 3]));
+%!assert(diag (single([1; 2; 3]), 1), single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]));
+%!assert(diag (single([1; 2; 3]), 2), single([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]));
+%!assert(diag (single([1; 2; 3]),-1), single([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]));
+%!assert(diag (single([1; 2; 3]),-2), single([0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0]));
+
+%!assert(diag (single([1, 0, 0; 0, 2, 0; 0, 0, 3])), single([1; 2; 3]));
+%!assert(diag (single([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), single([1; 2; 3]));
+%!assert(diag (single([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), single([1; 2; 3]));
+
+%!assert(diag (int8([1; 2; 3])), int8([1, 0, 0; 0, 2, 0; 0, 0, 3]));
+%!assert(diag (int8([1; 2; 3]), 1), int8([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]));
+%!assert(diag (int8([1; 2; 3]), 2), int8([0, 0, 1, 0, 0; 0, 0, 0, 2, 0; 0, 0, 0, 0, 3; 0, 0, 0, 0, 0; 0, 0, 0, 0, 0]));
+%!assert(diag (int8([1; 2; 3]),-1), int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]));
+%!assert(diag (int8([1; 2; 3]),-2), int8([0, 0, 0, 0, 0; 0, 0, 0, 0, 0; 1, 0, 0, 0, 0; 0, 2, 0, 0, 0; 0, 0, 3, 0, 0]));
+
+%!assert(diag (int8([1, 0, 0; 0, 2, 0; 0, 0, 3])), int8([1; 2; 3]));
+%!assert(diag (int8([0, 1, 0, 0; 0, 0, 2, 0; 0, 0, 0, 3; 0, 0, 0, 0]), 1), int8([1; 2; 3]));
+%!assert(diag (int8([0, 0, 0, 0; 1, 0, 0, 0; 0, 2, 0, 0; 0, 0, 3, 0]), -1), int8([1; 2; 3]));
+
+%!error <Invalid call to diag.*> diag ();
+%!error <Invalid call to diag.*> diag (1, 2, 3);
+
+ */
+
 DEFUN (prod, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} prod (@var{x}, @var{dim})\n\
@@ -1567,55 +1650,39 @@ do_cat (const octave_value_list& args, std::string fname)
 	  // and then directly resize. However, for some types there might be
 	  // some additional setup needed, and so this should be avoided.
 
-	  octave_value tmp;
+	  octave_value tmp = args (1);
+	  tmp = tmp.resize (dim_vector (0,0)).resize (dv);
 
-	  int i;
-          for (i = 1; i < n_args; i++)
-	    {
-	      if (! args (i).all_zero_dims ())
-		{
-		  tmp = args (i);
-		  break;
-		}
-	    }
+	  if (error_state)
+	    return retval;
 
-	  if (i == n_args)
-	    retval = Matrix ();
-	  else
+	  int dv_len = dv.length ();
+	  Array<octave_idx_type> ra_idx (dv_len, 0);
+
+	  for (int j = 1; j < n_args; j++)
 	    {
-	      tmp = tmp.resize (dim_vector (0,0)).resize (dv);
+	      // Can't fast return here to skip empty matrices as something
+	      // like cat(1,[],single([])) must return an empty matrix of
+	      // the right type.
+	      tmp = do_cat_op (tmp, args (j), ra_idx);
 
 	      if (error_state)
 		return retval;
 
-	      int dv_len = dv.length ();
-	      Array<octave_idx_type> ra_idx (dv_len, 0);
+	      dim_vector dv_tmp = args (j).dims ();
 
-	      for (int j = i; j < n_args; j++)
+	      if (dim >= dv_len)
 		{
-		  if (args (j). dims (). any_zero ())
-		    continue;
-
-		  tmp = do_cat_op (tmp, args (j), ra_idx);
-
-		  if (error_state)
-		    return retval;
-
-		  dim_vector dv_tmp = args (j).dims ();
-
-		  if (dim >= dv_len)
-		    {
-		      if (j > i)
-			error ("%s: indexing error", fname.c_str ());
-		      break;
-		    }
-		  else
-		    ra_idx (dim) += (dim < dv_tmp.length () ? 
-				     dv_tmp (dim) : 1);
+		  if (j > 1)
+		    error ("%s: indexing error", fname.c_str ());
+		  break;
 		}
-
-	      retval = tmp;
+	      else
+		ra_idx (dim) += (dim < dv_tmp.length () ? 
+				 dv_tmp (dim) : 1);
 	    }
+
+	  retval = tmp;
 	}
       else
 	error ("%s: invalid dimension argument", fname.c_str ());
@@ -1625,6 +1692,7 @@ do_cat (const octave_value_list& args, std::string fname)
  
   return retval;
 }
+
 
 DEFUN (horzcat, args, ,
        "-*- texinfo -*-\n\
@@ -1714,6 +1782,135 @@ cat (4, ones(2, 2), zeros (2, 2))\n\
 {
   return do_cat (args, "cat");
 }
+
+/*
+
+%!function ret = testcat (t1, t2, tr, cmplx)
+%! assert (cat (1, cast ([], t1), cast([], t2)), cast ([], tr));
+%!
+%! assert (cat (1, cast (1, t1), cast (2, t2)), cast ([1; 2], tr));
+%! assert (cat (1, cast (1, t1), cast ([2; 3], t2)), cast ([1; 2; 3], tr));
+%! assert (cat (1, cast ([1; 2], t1), cast (3, t2)), cast ([1; 2; 3], tr));
+%! assert (cat (1, cast ([1; 2], t1), cast ([3; 4], t2)), cast ([1; 2; 3; 4], tr));
+%! assert (cat (2, cast (1, t1), cast (2, t2)), cast ([1, 2], tr));
+%! assert (cat (2, cast (1, t1), cast ([2, 3], t2)), cast ([1, 2, 3], tr));
+%! assert (cat (2, cast ([1, 2], t1), cast (3, t2)), cast ([1, 2, 3], tr));
+%! assert (cat (2, cast ([1, 2], t1), cast ([3, 4], t2)), cast ([1, 2, 3, 4], tr));
+%! 
+%! assert ([cast(1, t1); cast(2, t2)], cast ([1; 2], tr));
+%! assert ([cast(1, t1); cast([2; 3], t2)], cast ([1; 2; 3], tr));
+%! assert ([cast([1; 2], t1); cast(3, t2)], cast ([1; 2; 3], tr));
+%! assert ([cast([1; 2], t1); cast([3; 4], t2)], cast ([1; 2; 3; 4], tr));
+%! assert ([cast(1, t1), cast(2, t2)], cast ([1, 2], tr));
+%! assert ([cast(1, t1), cast([2, 3], t2)], cast ([1, 2, 3], tr));
+%! assert ([cast([1, 2], t1), cast(3, t2)], cast ([1, 2, 3], tr));
+%! assert ([cast([1, 2], t1), cast([3, 4], t2)], cast ([1, 2, 3, 4], tr));
+%!
+%! if (nargin == 3 || cmplx)
+%!   assert (cat (1, cast (1i, t1), cast (2, t2)), cast ([1i; 2], tr));
+%!   assert (cat (1, cast (1i, t1), cast ([2; 3], t2)), cast ([1i; 2; 3], tr));
+%!   assert (cat (1, cast ([1i; 2], t1), cast (3, t2)), cast ([1i; 2; 3], tr));
+%!   assert (cat (1, cast ([1i; 2], t1), cast ([3; 4], t2)), cast ([1i; 2; 3; 4], tr));
+%!   assert (cat (2, cast (1i, t1), cast (2, t2)), cast ([1i, 2], tr));
+%!   assert (cat (2, cast (1i, t1), cast ([2, 3], t2)), cast ([1i, 2, 3], tr));
+%!   assert (cat (2, cast ([1i, 2], t1), cast (3, t2)), cast ([1i, 2, 3], tr));
+%!   assert (cat (2, cast ([1i, 2], t1), cast ([3, 4], t2)), cast ([1i, 2, 3, 4], tr));
+%! 
+%!   assert ([cast(1i, t1); cast(2, t2)], cast ([1i; 2], tr));
+%!   assert ([cast(1i, t1); cast([2; 3], t2)], cast ([1i; 2; 3], tr));
+%!   assert ([cast([1i; 2], t1); cast(3, t2)], cast ([1i; 2; 3], tr));
+%!   assert ([cast([1i; 2], t1); cast([3; 4], t2)], cast ([1i; 2; 3; 4], tr));
+%!   assert ([cast(1i, t1), cast(2, t2)], cast ([1i, 2], tr));
+%!   assert ([cast(1i, t1), cast([2, 3], t2)], cast ([1i, 2, 3], tr));
+%!   assert ([cast([1i, 2], t1), cast(3, t2)], cast ([1i, 2, 3], tr));
+%!   assert ([cast([1i, 2], t1), cast([3, 4], t2)], cast ([1i, 2, 3, 4], tr));
+%!
+%!   assert (cat (1, cast (1, t1), cast (2i, t2)), cast ([1; 2i], tr));
+%!   assert (cat (1, cast (1, t1), cast ([2i; 3], t2)), cast ([1; 2i; 3], tr));
+%!   assert (cat (1, cast ([1; 2], t1), cast (3i, t2)), cast ([1; 2; 3i], tr));
+%!   assert (cat (1, cast ([1; 2], t1), cast ([3i; 4], t2)), cast ([1; 2; 3i; 4], tr));
+%!   assert (cat (2, cast (1, t1), cast (2i, t2)), cast ([1, 2i], tr));
+%!   assert (cat (2, cast (1, t1), cast ([2i, 3], t2)), cast ([1, 2i, 3], tr));
+%!   assert (cat (2, cast ([1, 2], t1), cast (3i, t2)), cast ([1, 2, 3i], tr));
+%!   assert (cat (2, cast ([1, 2], t1), cast ([3i, 4], t2)), cast ([1, 2, 3i, 4], tr));
+%! 
+%!   assert ([cast(1, t1); cast(2i, t2)], cast ([1; 2i], tr));
+%!   assert ([cast(1, t1); cast([2i; 3], t2)], cast ([1; 2i; 3], tr));
+%!   assert ([cast([1; 2], t1); cast(3i, t2)], cast ([1; 2; 3i], tr));
+%!   assert ([cast([1; 2], t1); cast([3i; 4], t2)], cast ([1; 2; 3i; 4], tr));
+%!   assert ([cast(1, t1), cast(2i, t2)], cast ([1, 2i], tr));
+%!   assert ([cast(1, t1), cast([2i, 3], t2)], cast ([1, 2i, 3], tr));
+%!   assert ([cast([1, 2], t1), cast(3i, t2)], cast ([1, 2, 3i], tr));
+%!   assert ([cast([1, 2], t1), cast([3i, 4], t2)], cast ([1, 2, 3i, 4], tr));
+%!
+%!   assert (cat (1, cast (1i, t1), cast (2i, t2)), cast ([1i; 2i], tr));
+%!   assert (cat (1, cast (1i, t1), cast ([2i; 3], t2)), cast ([1i; 2i; 3], tr));
+%!   assert (cat (1, cast ([1i; 2], t1), cast (3i, t2)), cast ([1i; 2; 3i], tr));
+%!   assert (cat (1, cast ([1i; 2], t1), cast ([3i; 4], t2)), cast ([1i; 2; 3i; 4], tr));
+%!   assert (cat (2, cast (1i, t1), cast (2i, t2)), cast ([1i, 2i], tr));
+%!   assert (cat (2, cast (1i, t1), cast ([2i, 3], t2)), cast ([1i, 2i, 3], tr));
+%!   assert (cat (2, cast ([1i, 2], t1), cast (3i, t2)), cast ([1i, 2, 3i], tr));
+%!   assert (cat (2, cast ([1i, 2], t1), cast ([3i, 4], t2)), cast ([1i, 2, 3i, 4], tr));
+%! 
+%!   assert ([cast(1i, t1); cast(2i, t2)], cast ([1i; 2i], tr));
+%!   assert ([cast(1i, t1); cast([2i; 3], t2)], cast ([1i; 2i; 3], tr));
+%!   assert ([cast([1i; 2], t1); cast(3i, t2)], cast ([1i; 2; 3i], tr));
+%!   assert ([cast([1i; 2], t1); cast([3i; 4], t2)], cast ([1i; 2; 3i; 4], tr));
+%!   assert ([cast(1i, t1), cast(2i, t2)], cast ([1i, 2i], tr));
+%!   assert ([cast(1i, t1), cast([2i, 3], t2)], cast ([1i, 2i, 3], tr));
+%!   assert ([cast([1i, 2], t1), cast(3i, t2)], cast ([1i, 2, 3i], tr));
+%!   assert ([cast([1i, 2], t1), cast([3i, 4], t2)], cast ([1i, 2, 3i, 4], tr));
+%! endif
+%! ret = true;
+
+%!assert (testcat('double', 'double', 'double'));
+%!assert (testcat('single', 'double', 'single'));
+%!assert (testcat('double', 'single', 'single'));
+%!assert (testcat('single', 'single', 'single'));
+
+%!assert (testcat('double', 'int8', 'int8', false));
+%!assert (testcat('int8', 'double', 'int8', false));
+%!assert (testcat('single', 'int8', 'int8', false));
+%!assert (testcat('int8', 'single', 'int8', false));
+%!assert (testcat('int8', 'int8', 'int8', false));
+%!assert (testcat('double', 'int16', 'int16', false));
+%!assert (testcat('int16', 'double', 'int16', false));
+%!assert (testcat('single', 'int16', 'int16', false));
+%!assert (testcat('int16', 'single', 'int16', false));
+%!assert (testcat('int16', 'int16', 'int16', false));
+%!assert (testcat('double', 'int32', 'int32', false));
+%!assert (testcat('int32', 'double', 'int32', false));
+%!assert (testcat('single', 'int32', 'int32', false));
+%!assert (testcat('int32', 'single', 'int32', false));
+%!assert (testcat('int32', 'int32', 'int32', false));
+%!assert (testcat('double', 'int64', 'int64', false));
+%!assert (testcat('int64', 'double', 'int64', false));
+%!assert (testcat('single', 'int64', 'int64', false));
+%!assert (testcat('int64', 'single', 'int64', false));
+%!assert (testcat('int64', 'int64', 'int64', false));
+
+%!assert (testcat('double', 'uint8', 'uint8', false));
+%!assert (testcat('uint8', 'double', 'uint8', false));
+%!assert (testcat('single', 'uint8', 'uint8', false));
+%!assert (testcat('uint8', 'single', 'uint8', false));
+%!assert (testcat('uint8', 'uint8', 'uint8', false));
+%!assert (testcat('double', 'uint16', 'uint16', false));
+%!assert (testcat('uint16', 'double', 'uint16', false));
+%!assert (testcat('single', 'uint16', 'uint16', false));
+%!assert (testcat('uint16', 'single', 'uint16', false));
+%!assert (testcat('uint16', 'uint16', 'uint16', false));
+%!assert (testcat('double', 'uint32', 'uint32', false));
+%!assert (testcat('uint32', 'double', 'uint32', false));
+%!assert (testcat('single', 'uint32', 'uint32', false));
+%!assert (testcat('uint32', 'single', 'uint32', false));
+%!assert (testcat('uint32', 'uint32', 'uint32', false));
+%!assert (testcat('double', 'uint64', 'uint64', false));
+%!assert (testcat('uint64', 'double', 'uint64', false));
+%!assert (testcat('single', 'uint64', 'uint64', false));
+%!assert (testcat('uint64', 'single', 'uint64', false));
+%!assert (testcat('uint64', 'uint64', 'uint64', false));
+
+*/
 
 static octave_value
 do_permute (const octave_value_list& args, bool inv)
@@ -2541,6 +2738,35 @@ Return 1 if @var{a} is a matrix.  Otherwise, return 0.\n\
   return retval;
 }
 
+/*
+
+%!assert(ismatrix (1));
+%!assert(ismatrix ([1, 2, 3]));
+%!assert(ismatrix ([1, 2; 3, 4]));
+
+%% Yes, this is right, ismatrix() checks for non-empty matrices.
+%!assert(ismatrix ([]), false);
+
+%!assert(ismatrix (single(1)));
+%!assert(ismatrix (single([1, 2, 3])));
+%!assert(ismatrix (single([1, 2; 3, 4])));
+
+%% Yes, this is right, ismatrix() checks for non-empty matrices.
+%!assert(ismatrix (single([])), false);
+
+%!assert(ismatrix ("t"), false);
+%!assert(ismatrix ("test"), false);
+%!assert(ismatrix (["test"; "ing"]), false);
+
+%!test
+%! s.a = 1;
+%! assert(ismatrix (s), false);
+
+%!error <Invalid call to ismatrix.*> ismatrix ();
+%!error <Invalid call to ismatrix.*> ismatrix ([1, 2; 3, 4], 2);
+
+ */
+
 static octave_value
 fill_matrix (const octave_value_list& args, int val, const char *fcn)
 {
@@ -2982,6 +3208,25 @@ val = ones (n,m, \"uint8\")\n\
   return fill_matrix (args, 1, "ones");
 }
 
+/*
+
+%!assert(ones (3), [1, 1, 1; 1, 1, 1; 1, 1, 1]);
+%!assert(ones (2, 3), [1, 1, 1; 1, 1, 1]);
+%!assert(ones (3, 2), [1, 1; 1, 1; 1, 1]);
+%!assert(size (ones (3, 4, 5)),  [3, 4, 5]);
+
+%!assert(ones (3,'single'), single([1, 1, 1; 1, 1, 1; 1, 1, 1]));
+%!assert(ones (2, 3,'single'), single([1, 1, 1; 1, 1, 1]));
+%!assert(ones (3, 2,'single'), single([1, 1; 1, 1; 1, 1]));
+%!assert(size (ones (3, 4, 5, 'single')),  [3, 4, 5]);
+
+%!assert(ones (3,'int8'), int8([1, 1, 1; 1, 1, 1; 1, 1, 1]));
+%!assert(ones (2, 3,'int8'), int8([1, 1, 1; 1, 1, 1]));
+%!assert(ones (3, 2,'int8'), int8([1, 1; 1, 1; 1, 1]));
+%!assert(size (ones (3, 4, 5, 'int8')),  [3, 4, 5]);
+
+ */
+
 DEFUN (zeros, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} zeros (@var{x})\n\
@@ -3002,6 +3247,25 @@ val = zeros (n,m, \"uint8\")\n\
   return fill_matrix (args, 0, "zeros");
 }
 
+/*
+
+%!assert(zeros (3), [0, 0, 0; 0, 0, 0; 0, 0, 0]);
+%!assert(zeros (2, 3), [0, 0, 0; 0, 0, 0]);
+%!assert(zeros (3, 2), [0, 0; 0, 0; 0, 0]);
+%!assert(size (zeros (3, 4, 5)),  [3, 4, 5]);
+
+%!assert(zeros (3,'single'), single([0, 0, 0; 0, 0, 0; 0, 0, 0]));
+%!assert(zeros (2, 3,'single'), single([0, 0, 0; 0, 0, 0]));
+%!assert(zeros (3, 2,'single'), single([0, 0; 0, 0; 0, 0]));
+%!assert(size (zeros (3, 4, 5, 'single')),  [3, 4, 5]);
+
+%!assert(zeros (3,'int8'), int8([0, 0, 0; 0, 0, 0; 0, 0, 0]));
+%!assert(zeros (2, 3,'int8'), int8([0, 0, 0; 0, 0, 0]));
+%!assert(zeros (3, 2,'int8'), int8([0, 0; 0, 0; 0, 0]));
+%!assert(size (zeros (3, 4, 5, 'int8')),  [3, 4, 5]);
+
+ */
+
 DEFUN (Inf, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} Inf (@var{x})\n\
@@ -3019,6 +3283,25 @@ The optional argument @var{class} may be either @samp{\"single\"} or\n\
 }
 
 DEFALIAS (inf, Inf);
+
+/*
+
+%!assert(inf (3), [Inf, Inf, Inf; Inf, Inf, Inf; Inf, Inf, Inf]);
+%!assert(inf (2, 3), [Inf, Inf, Inf; Inf, Inf, Inf]);
+%!assert(inf (3, 2), [Inf, Inf; Inf, Inf; Inf, Inf]);
+%!assert(size (inf (3, 4, 5)),  [3, 4, 5]);
+
+%!assert(inf (3,'single'), single([Inf, Inf, Inf; Inf, Inf, Inf; Inf, Inf, Inf]));
+%!assert(inf (2, 3,'single'), single([Inf, Inf, Inf; Inf, Inf, Inf]));
+%!assert(inf (3, 2,'single'), single([Inf, Inf; Inf, Inf; Inf, Inf]));
+%!assert(size (inf (3, 4, 5, 'single')),  [3, 4, 5]);
+
+%!error(inf (3,'int8'));
+%!error(inf (2, 3,'int8'));
+%!error(inf (3, 2,'int8'));
+%!error(inf (3, 4, 5, 'int8'));
+
+ */
 
 DEFUN (NaN, args, ,
   "-*- texinfo -*-\n\
@@ -3052,6 +3335,24 @@ The optional argument @var{class} may be either @samp{\"single\"} or\n\
 }
 
 DEFALIAS (nan, NaN);
+
+/* 
+%!assert(NaN (3), [NaN, NaN, NaN; NaN, NaN, NaN; NaN, NaN, NaN]);
+%!assert(NaN (2, 3), [NaN, NaN, NaN; NaN, NaN, NaN]);
+%!assert(NaN (3, 2), [NaN, NaN; NaN, NaN; NaN, NaN]);
+%!assert(size (NaN (3, 4, 5)),  [3, 4, 5]);
+
+%!assert(NaN (3,'single'), single([NaN, NaN, NaN; NaN, NaN, NaN; NaN, NaN, NaN]));
+%!assert(NaN (2, 3,'single'), single([NaN, NaN, NaN; NaN, NaN, NaN]));
+%!assert(NaN (3, 2,'single'), single([NaN, NaN; NaN, NaN; NaN, NaN]));
+%!assert(size (NaN (3, 4, 5, 'single')),  [3, 4, 5]);
+
+%!error(NaN (3,'int8'));
+%!error(NaN (2, 3,'int8'));
+%!error(NaN (3, 2,'int8'));
+%!error(NaN (3, 4, 5, 'int8'));
+
+ */
 
 DEFUN (e, args, ,
   "-*- texinfo -*-\n\
@@ -3554,6 +3855,22 @@ with @sc{Matlab}.\n\
   return retval;
 }
 
+
+/*
+
+%!assert (eye(3), [1, 0, 0; 0, 1, 0; 0, 0, 1]);
+%!assert (eye(2, 3), [1, 0, 0; 0, 1, 0]);
+
+%!assert (eye(3,'single'), single([1, 0, 0; 0, 1, 0; 0, 0, 1]));
+%!assert (eye(2, 3,'single'), single([1, 0, 0; 0, 1, 0]));
+
+%!assert (eye(3,'int8'), int8([1, 0, 0; 0, 1, 0; 0, 0, 1]));
+%!assert (eye(2, 3,'int8'), int8([1, 0, 0; 0, 1, 0]));
+
+%!error <Invalid call to eye.*> eye (1, 2, 3);
+
+ */
+
 DEFUN (linspace, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} linspace (@var{base}, @var{limit}, @var{n})\n\
@@ -3654,6 +3971,28 @@ fewer than two values are requested.\n\
 
   return retval;
 }
+
+
+/*
+
+%!test
+%! x1 = linspace (1, 2);
+%! x2 = linspace (1, 2, 10);
+%! x3 = linspace (1, -2, 10);
+%! assert((size (x1) == [1, 100] && x1(1) == 1 && x1(100) == 2
+%! && size (x2) == [1, 10] && x2(1) == 1 && x2(10) == 2
+%! && size (x3) == [1, 10] && x3(1) == 1 && x3(10) == -2));
+
+
+% assert(linspace ([1, 2; 3, 4], 5, 6), linspace (1, 5, 6));
+
+%!error <Invalid call to linspace.*> linspace ();
+%!error <Invalid call to linspace.*> linspace (1, 2, 3, 4);
+
+%!test
+%! fail("linspace ([1, 2; 3, 4], 5, 6)","warning");
+
+*/
 
 // FIXME -- should accept dimensions as separate args for N-d
 // arrays as well as 1-d and 2-d arrays.
@@ -3847,6 +4186,27 @@ by an empty argument.\n\
   return retval;
 }
 
+/*
+
+%!assert(size (reshape (ones (4, 4), 2, 8)), [2, 8])
+%!assert(size (reshape (ones (4, 4), 8, 2)), [8, 2])
+%!assert(size (reshape (ones (15, 4), 1, 60)), [1, 60])
+%!assert(size (reshape (ones (15, 4), 60, 1)), [60, 1])
+
+%!assert(size (reshape (ones (4, 4, 'single'), 2, 8)), [2, 8])
+%!assert(size (reshape (ones (4, 4, 'single'), 8, 2)), [8, 2])
+%!assert(size (reshape (ones (15, 4, 'single'), 1, 60)), [1, 60])
+%!assert(size (reshape (ones (15, 4, 'single'), 60, 1)), [60, 1])
+
+%!test
+%! s.a = 1;
+%! fail("reshape (s, 2, 3)");
+
+%!error <Invalid call to reshape.*> reshape ();
+%!error reshape (1, 2, 3, 4);
+
+ */
+
 DEFUN (squeeze, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} squeeze (@var{x})\n\
@@ -3864,33 +4224,6 @@ a minimum of two dimensions and row vectors are left unchanged.\n\
 
   return retval;
 }
-
-/*
-%!shared x
-%! x = [1, -3, 4, 5, -7];
-%!assert(norm(x,1), 20);
-%!assert(norm(x,2), 10);
-%!assert(norm(x,3), 8.24257059961711, -4*eps);
-%!assert(norm(x,Inf), 7);
-%!assert(norm(x,-Inf), 1);
-%!assert(norm(x,"inf"), 7);
-%!assert(norm(x,"fro"), 10, -eps);
-%!assert(norm(x), 10);
-%!assert(norm([1e200, 1]), 1e200);
-%!assert(norm([3+4i, 3-4i, sqrt(31)]), 9, -4*eps);
-%!shared m
-%! m = magic (4);
-%!assert(norm(m,1), 34);
-%!assert(norm(m,2), 34, -eps);
-%!assert(norm(m,Inf), 34);
-%!assert(norm(m,"inf"), 34);
-%!shared m2, flo, fhi
-%! m2 = [1,2;3,4];
-%! flo = 1e-300;
-%! fhi = 1e+300;
-%!assert (norm(flo*m2,"fro"), sqrt(30)*flo, -eps)
-%!assert (norm(fhi*m2,"fro"), sqrt(30)*fhi, -eps)
-*/
 
 // Compute various norms of the vector X.
 
@@ -3948,7 +4281,12 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
       octave_value x_arg = args(0);
 
       if (x_arg.is_empty ())
-	retval(0) = 0.0;
+	{
+	  if (x_arg.is_single_type ())
+	    retval(0) = static_cast<float>(0.0);
+	  else
+	    retval(0) = 0.0;
+	}
       else if (x_arg.ndims () == 2)
 	{
 	  if ((x_arg.rows () == 1 || x_arg.columns () == 1)
@@ -3980,25 +4318,52 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
 		    }
 		}
 
-	      if (! error_state)
+	      if (x_arg.is_single_type ())
 		{
-		  if (x_arg.is_real_type ())
+		  if (! error_state)
 		    {
-		      MArray<double> x (x_arg.array_value ());
+		      if (x_arg.is_real_type ())
+			{
+			  MArray<float> x (x_arg.float_array_value ());
 
-		      if (! error_state)
-			retval(0) = x.norm (p_val);
+			  if (! error_state)
+			    retval(0) = x.norm (static_cast<float>(p_val));
+			  else
+			    error ("norm: expecting real vector");
+			}
 		      else
-			error ("norm: expecting real vector");
+			{
+			  MArray<FloatComplex> x (x_arg.float_complex_array_value ());
+
+			  if (! error_state)
+			    retval(0) = x.norm (static_cast<float>(p_val));
+			  else
+			    error ("norm: expecting complex vector");
+			}
 		    }
-		  else
+		}
+	      else
+		{
+		  if (! error_state)
 		    {
-		      MArray<Complex> x (x_arg.complex_array_value ());
+		      if (x_arg.is_real_type ())
+			{
+			  MArray<double> x (x_arg.array_value ());
 
-		      if (! error_state)
-			retval(0) = x.norm (p_val);
+			  if (! error_state)
+			    retval(0) = x.norm (p_val);
+			  else
+			    error ("norm: expecting real vector");
+			}
 		      else
-			error ("norm: expecting complex vector");
+			{
+			  MArray<Complex> x (x_arg.complex_array_value ());
+
+			  if (! error_state)
+			    retval(0) = x.norm (p_val);
+			  else
+			    error ("norm: expecting complex vector");
+			}
 		    }
 		}
 	    }
@@ -4024,6 +4389,58 @@ p-norm of @var{a}, @code{(sum (abs (@var{a}) .^ @var{p})) ^ (1/@var{p})}.\n\
 
   return retval;
 }
+
+/*
+%!shared x
+%! x = [1, -3, 4, 5, -7];
+%!assert(norm(x,1), 20);
+%!assert(norm(x,2), 10);
+%!assert(norm(x,3), 8.24257059961711, -4*eps);
+%!assert(norm(x,Inf), 7);
+%!assert(norm(x,-Inf), 1);
+%!assert(norm(x,"inf"), 7);
+%!assert(norm(x,"fro"), 10, -eps);
+%!assert(norm(x), 10);
+%!assert(norm([1e200, 1]), 1e200);
+%!assert(norm([3+4i, 3-4i, sqrt(31)]), 9, -4*eps);
+%!shared m
+%! m = magic (4);
+%!assert(norm(m,1), 34);
+%!assert(norm(m,2), 34, -eps);
+%!assert(norm(m,Inf), 34);
+%!assert(norm(m,"inf"), 34);
+%!shared m2, flo, fhi
+%! m2 = [1,2;3,4];
+%! flo = 1e-300;
+%! fhi = 1e+300;
+%!assert (norm(flo*m2,"fro"), sqrt(30)*flo, -eps)
+%!assert (norm(fhi*m2,"fro"), sqrt(30)*fhi, -eps)
+
+%!shared x
+%! x = single([1, -3, 4, 5, -7]);
+%!assert(norm(x,1), single(20));
+%!assert(norm(x,2), single(10));
+%!assert(norm(x,3), single(8.24257059961711), -4*eps('single'));
+%!assert(norm(x,Inf), single(7));
+%!assert(norm(x,-Inf), single(1));
+%!assert(norm(x,"inf"), single(7));
+%!assert(norm(x,"fro"), single(10), -eps('single'));
+%!assert(norm(x), single(10));
+%!assert(norm(single([1e200, 1])), single(1e200));
+%!assert(norm(single([3+4i, 3-4i, sqrt(31)])), single(9), -4*eps('single'));
+%!shared m
+%! m = single(magic (4));
+%!assert(norm(m,1), single(34));
+%!assert(norm(m,2), single(34), -eps('single'));
+%!assert(norm(m,Inf), single(34));
+%!assert(norm(m,"inf"), single(34));
+%!shared m2, flo, fhi
+%! m2 = single([1,2;3,4]);
+%! flo = single(1e-300);
+%! fhi = single(1e+300);
+%!assert (norm(flo*m2,"fro"), single(sqrt(30)*flo), -eps('single'))
+%!assert (norm(fhi*m2,"fro"), single(sqrt(30)*fhi), -eps('single'))
+*/
 
 #define UNARY_OP_DEFUN_BODY(F) \
  \
@@ -4072,6 +4489,28 @@ This function is equivalent to @code{x.'}.\n\
   UNARY_OP_DEFUN_BODY (op_transpose);
 }
 
+/*
+
+%!assert (2.', 2);
+%!assert (2i.',2i);
+%!assert ([1:4].',[1;2;3;4]);
+%!assert ([1;2;3;4].',[1:4]);
+%!assert ([1,2;3,4].',[1,3;2,4]);
+%!assert ([1,2i;3,4].',[1,3;2i,4]);
+
+%!assert (transpose ([1,2;3,4]),[1,3;2,4]);
+
+%!assert (single(2).', single(2));
+%!assert (single(2i).',single(2i));
+%!assert (single([1:4]).',single([1;2;3;4]));
+%!assert (single([1;2;3;4]).',single([1:4]));
+%!assert (single([1,2;3,4]).',single([1,3;2,4]));
+%!assert (single([1,2i;3,4]).',single([1,3;2i,4]));
+
+%!assert (transpose (single([1,2;3,4])),single([1,3;2,4]));
+
+*/
+
 DEFUN (ctranspose, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} ctranspose (@var{x})\n\
@@ -4080,6 +4519,28 @@ This function is equivalent to @code{x'}.\n\
 {
   UNARY_OP_DEFUN_BODY (op_hermitian);
 }
+
+/*
+
+%!assert (2', 2);
+%!assert (2i',-2i);
+%!assert ([1:4]',[1;2;3;4]);
+%!assert ([1;2;3;4]',[1:4]);
+%!assert ([1,2;3,4]',[1,3;2,4]);
+%!assert ([1,2i;3,4]',[1,3;-2i,4]);
+
+%!assert (ctranspose ([1,2i;3,4]),[1,3;-2i,4]);
+
+%!assert (single(2)', single(2));
+%!assert (single(2i)',single(-2i));
+%!assert (single([1:4])',single([1;2;3;4]));
+%!assert (single([1;2;3;4])',single([1:4]));
+%!assert (single([1,2;3,4])',single([1,3;2,4]));
+%!assert (single([1,2i;3,4])',single([1,3;-2i,4]));
+
+%!assert (ctranspose (single([1,2i;3,4])),single([1,3;-2i,4]));
+
+*/
 
 #define BINARY_OP_DEFUN_BODY(F) \
  \
@@ -4638,6 +5099,44 @@ ordered lists.\n\
 %! assert (v, [1, 1i, 1i, -1, Inf, NaN])
 %! assert (i, [5, 2, 6, 3, 4, 1])
 
+%% Single
+%!assert (sort (single([NaN, 1, -1, 2, Inf])), single([-1, 1, 2, Inf, NaN]))
+%!assert (sort (single([NaN, 1, -1, 2, Inf]), 1), single([NaN, 1, -1, 2, Inf]))
+%!assert (sort (single([NaN, 1, -1, 2, Inf]), 2), single([-1, 1, 2, Inf, NaN]))
+%!error (sort (single([NaN, 1, -1, 2, Inf]), 3))
+%!assert (sort (single([NaN, 1, -1, 2, Inf]), "ascend"), single([-1, 1, 2, Inf, NaN]))
+%!assert (sort (single([NaN, 1, -1, 2, Inf]), 2, "ascend"), single([-1, 1, 2, Inf, NaN]))
+%!assert (sort (single([NaN, 1, -1, 2, Inf]), "descend"), single([NaN, Inf, 2, 1, -1]))
+%!assert (sort (single([NaN, 1, -1, 2, Inf]), 2, "descend"), single([NaN, Inf, 2, 1, -1]))
+%!assert (sort (single([3, 1, 7, 5; 8, 2, 6, 4])), single([3, 1, 6, 4; 8, 2, 7, 5]))
+%!assert (sort (single([3, 1, 7, 5; 8, 2, 6, 4]), 1), single([3, 1, 6, 4; 8, 2, 7, 5]))
+%!assert (sort (single([3, 1, 7, 5; 8, 2, 6, 4]), 2), single([1, 3, 5, 7; 2, 4, 6, 8]))
+%!assert (sort (single(1)), single(1))
+
+%!test
+%! [v, i] = sort (single([NaN, 1, -1, Inf, 1]));
+%! assert (v, single([-1, 1, 1, Inf, NaN]))
+%! assert (i, [3, 2, 5, 4, 1])
+
+%% Single Complex
+%!assert (sort (single([NaN, 1i, -1, 2, Inf])), single([1i, -1, 2, Inf, NaN]))
+%!assert (sort (single([NaN, 1i, -1, 2, Inf]), 1), single([NaN, 1i, -1, 2, Inf]))
+%!assert (sort (single([NaN, 1i, -1, 2, Inf]), 2), single([1i, -1, 2, Inf, NaN]))
+%!error (sort (single([NaN, 1i, -1, 2, Inf]), 3))
+%!assert (sort (single([NaN, 1i, -1, 2, Inf]), "ascend"), single([1i, -1, 2, Inf, NaN]))
+%!assert (sort (single([NaN, 1i, -1, 2, Inf]), 2, "ascend"), single([1i, -1, 2, Inf, NaN]))
+%!assert (sort (single([NaN, 1i, -1, 2, Inf]), "descend"), single([NaN, Inf, 2, -1, 1i]))
+%!assert (sort (single([NaN, 1i, -1, 2, Inf]), 2, "descend"), single([NaN, Inf, 2, -1, 1i]))
+%!assert (sort (single([3, 1i, 7, 5; 8, 2, 6, 4])), single([3, 1i, 6, 4; 8, 2, 7, 5]))
+%!assert (sort (single([3, 1i, 7, 5; 8, 2, 6, 4]), 1), single([3, 1i, 6, 4; 8, 2, 7, 5]))
+%!assert (sort (single([3, 1i, 7, 5; 8, 2, 6, 4]), 2), single([1i, 3, 5, 7; 2, 4, 6, 8]))
+%!assert (sort (single(1i)),single( 1i))
+
+%!test
+%! [v, i] = sort (single([NaN, 1i, -1, Inf, 1, 1i]));
+%! assert (v, single([1, 1i, 1i, -1, Inf, NaN]))
+%! assert (i, [5, 2, 6, 3, 4, 1])
+
 %% Bool
 %!assert (sort ([true, false, true, false]), [false, false, true, true])
 %!assert (sort ([true, false, true, false], 1), [true, false, true, false])
@@ -4731,6 +5230,9 @@ ordered lists.\n\
 %!test
 %! [v, i] = sort (a);
 %! assert (i, [1, 4, 2, 5, 3])
+
+%!error <Invalid call to sort.*> sort ();
+%!error <Invalid call to sort.*> sort (1, 2, 3, 4);
 
 */
 

@@ -503,6 +503,63 @@ information.\n\
 }
 
 /*
+
+%!assert(lu ([1, 2; 3, 4]), [3, 4; 1/3, 2/3], eps);
+
+%!test
+%! [l, u] = lu ([1, 2; 3, 4]);
+%! assert(l, [1/3, 1; 1, 0], sqrt (eps));
+%! assert(u, [3, 4; 0, 2/3], sqrt (eps));
+
+%!test
+%! [l, u, p] = lu ([1, 2; 3, 4]);
+%! assert(l, [1, 0; 1/3, 1], sqrt (eps));
+%! assert(u, [3, 4; 0, 2/3], sqrt (eps));
+%! assert(p, [0, 1; 1, 0], sqrt (eps));
+
+%!test
+%! [l, u, p] = lu ([1, 2; 3, 4],'vector');
+%! assert(l, [1, 0; 1/3, 1], sqrt (eps));
+%! assert(u, [3, 4; 0, 2/3], sqrt (eps));
+%! assert(p, [2;1], sqrt (eps));
+
+%!test
+%! [l u p] = lu ([1, 2; 3, 4; 5, 6]);
+%! assert(l, [1, 0; 1/5, 1; 3/5, 1/2], sqrt (eps));
+%! assert(u, [5, 6; 0, 4/5], sqrt (eps));
+%! assert(p, [0, 0, 1; 1, 0, 0; 0 1 0], sqrt (eps));
+
+%!assert(lu (single([1, 2; 3, 4])), single([3, 4; 1/3, 2/3]), eps('single'));
+
+%!test
+%! [l, u] = lu (single([1, 2; 3, 4]));
+%! assert(l, single([1/3, 1; 1, 0]), sqrt (eps('single')));
+%! assert(u, single([3, 4; 0, 2/3]), sqrt (eps('single')));
+
+%!test
+%! [l, u, p] = lu (single([1, 2; 3, 4]));
+%! assert(l, single([1, 0; 1/3, 1]), sqrt (eps('single')));
+%! assert(u, single([3, 4; 0, 2/3]), sqrt (eps('single')));
+%! assert(p, single([0, 1; 1, 0]), sqrt (eps('single')));
+
+%!test
+%! [l, u, p] = lu (single([1, 2; 3, 4]),'vector');
+%! assert(l, single([1, 0; 1/3, 1]), sqrt (eps('single')));
+%! assert(u, single([3, 4; 0, 2/3]), sqrt (eps('single')));
+%! assert(p, single([2;1]), sqrt (eps('single')));
+
+%!test
+%! [l u p] = lu (single([1, 2; 3, 4; 5, 6]));
+%! assert(l, single([1, 0; 1/5, 1; 3/5, 1/2]), sqrt (eps('single')));
+%! assert(u, single([5, 6; 0, 4/5]), sqrt (eps('single')));
+%! assert(p, single([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps('single')));
+
+%!error <Invalid call to lu.*> lu ();
+%!error lu ([1, 2; 3, 4], 2);
+
+ */
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

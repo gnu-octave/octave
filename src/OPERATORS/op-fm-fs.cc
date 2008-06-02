@@ -30,6 +30,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov.h"
 #include "ov-flt-re-mat.h"
 #include "ov-float.h"
+#include "ov-scalar.h"
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "xdiv.h"
@@ -114,6 +115,10 @@ DEFNDBINOP_FN (el_or, float_matrix, float_scalar, float_array,
 DEFNDCATOP_FN (fm_fs, float_matrix, float_scalar, float_array, 
 	       float_array, concat)
 
+DEFNDCATOP_FN (m_fs, matrix, float_scalar, float_array, float_array, concat)
+
+DEFNDCATOP_FN (fm_s, float_matrix, scalar, float_array, float_array, concat)
+
 DEFNDASSIGNOP_FN (assign, float_matrix, float_scalar, float_array, assign)
 DEFNDASSIGNOP_FN (dbl_assign, matrix, float_scalar, array, assign)
 
@@ -140,6 +145,8 @@ install_fm_fs_ops (void)
   INSTALL_BINOP (op_el_or, octave_float_matrix, octave_float_scalar, el_or);
 
   INSTALL_CATOP (octave_float_matrix, octave_float_scalar, fm_fs);
+  INSTALL_CATOP (octave_matrix, octave_float_scalar, m_fs);
+  INSTALL_CATOP (octave_float_matrix, octave_scalar, fm_s);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, octave_float_scalar, assign);
   INSTALL_ASSIGNOP (op_asn_eq, octave_matrix, octave_float_scalar, dbl_assign);

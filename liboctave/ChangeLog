@@ -1,5 +1,22 @@
 2008-06-02  David Bateman  <dbateman@free.fr>
 
+	* fCmplxDET.cc (FloatComplexDET::value_will_overflow,
+	FloatComplexDET:value_will_underflow): Replace DBL_MIN and DBL_MAX
+	with FLT_MIN and FLT_MAX.
+	* floatDET.cc ((FloatDET::value_will_overflow,
+	FloatDET:value_will_underflow): Ditto.
+	* lo-cieee.c (__lo_ieee_float_is_NA): Check only a sngle word for
+	float NA value.
+	(lo_ieee_float_inf_value): Return correct float Infinity value.
+	(lo_ieee_float_NA_value): Return correct float NA value.
+	(lo_ieee_float_NaN_value): Return correct float NaN value.
+	* lo-ieee.cc (octave_ieee_init): Set float NA value correctly.
+	* lo-ieee.h (lo_ieee_float): value of union is of type float.
+	(LO_IEEE_NA_FLOAT): Make NA value a valid float NaN.
+	(LO_IEEE_NA_FLOAT_LW): Delete.
+
+2008-06-02  David Bateman  <dbateman@free.fr>
+
 	* fCmplxLU.cc (class FloatComplexLU): Correct error in instantiation.
 	* floatLU.cc (class FloatLU): ditto.
 	* floatLU.h (class FloatLU): ditto.

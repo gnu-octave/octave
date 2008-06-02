@@ -296,6 +296,72 @@ decomposition, eliminating the unnecessary rows or columns of @var{u} or\n\
 }
 
 /*
+
+%!assert(svd ([1, 2; 2, 1]), [3; 1], sqrt (eps));
+
+%!test
+%! [u, s, v] = svd ([1, 2; 2, 1]);
+%! x = 1 / sqrt (2);
+%! assert (u, [-x, -x; -x, x], sqrt (eps));
+%! assert (s, [3, 0; 0, 1], sqrt (eps));
+%! assert (v, [-x, x; -x, -x], sqrt (eps));
+
+%!test
+%! a = [1, 2, 3; 4, 5, 6];
+%! [u, s, v] = svd (a);
+%! assert (u * s * v', a, sqrt (eps));
+
+%!test
+%! a = [1, 2; 3, 4; 5, 6];
+%! [u, s, v] = svd (a);
+%! assert (u * s * v', a, sqrt (eps));
+
+%!test
+%! a = [1, 2, 3; 4, 5, 6];
+%! [u, s, v] = svd (a, 1);
+%! assert (u * s * v', a, sqrt (eps));
+
+%!test
+%! a = [1, 2; 3, 4; 5, 6];
+%! [u, s, v] = svd (a, 1);
+%! assert (u * s * v', a, sqrt (eps));
+
+%!assert(svd (single([1, 2; 2, 1])), single([3; 1]), sqrt (eps('single')));
+
+%!test
+%! [u, s, v] = svd (single([1, 2; 2, 1]));
+%! x = single (1 / sqrt (2));
+%! assert (u, [-x, -x; -x, x], sqrt (eps('single')));
+%! assert (s, single([3, 0; 0, 1]), sqrt (eps('single')));
+%! assert (v, [-x, x; -x, -x], sqrt (eps('single')));
+
+%!test
+%! a = single([1, 2, 3; 4, 5, 6]);
+%! [u, s, v] = svd (a);
+%! assert (u * s * v', a, sqrt (eps('single')));
+
+%!test
+%! a = single([1, 2; 3, 4; 5, 6]);
+%! [u, s, v] = svd (a);
+%! assert (u * s * v', a, sqrt (eps('single')));
+
+%!test
+%! a = single([1, 2, 3; 4, 5, 6]);
+%! [u, s, v] = svd (a, 1);
+%! assert (u * s * v', a, sqrt (eps('single')));
+
+%!test
+%! a = single([1, 2; 3, 4; 5, 6]);
+%! [u, s, v] = svd (a, 1);
+%! assert (u * s * v', a, sqrt (eps('single')));
+
+%!error <Invalid call to svd.*> svd ();
+%!error <Invalid call to svd.*> svd ([1, 2; 4, 5], 2, 3);
+%!error <Invalid call to svd.*> [u, v] = svd ([1, 2; 3, 4]);
+
+ */
+
+/*
 ;;; Local Variables: ***
 ;;; mode: C++ ***
 ;;; End: ***

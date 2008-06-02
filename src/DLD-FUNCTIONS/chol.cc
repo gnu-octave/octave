@@ -323,6 +323,18 @@ sparse matrices.\n\
   return retval;
 }
 
+/*
+
+%!assert(chol ([2, 1; 1, 1]), [sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)], sqrt (eps));
+%!assert(chol (single([2, 1; 1, 1])), single([sqrt(2), 1/sqrt(2); 0, 1/sqrt(2)]), sqrt (eps('single')));
+
+%!error chol ([1, 2; 3, 4]);
+%!error chol ([1, 2; 3, 4; 5, 6]);
+%!error <Invalid call to chol.*> chol ();
+%!error <unexpected second or third input.*> chol (1, 2);
+
+ */
+
 DEFUN_DLD (cholinv, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {} cholinv (@var{a})\n\
@@ -378,6 +390,39 @@ symmetric positive definite matrix @var{a}.\n\
 		}
 	      else
 		gripe_wrong_type_arg ("cholinv", arg);
+	    }
+	  else if (arg.is_single_type ())
+	    {
+	      if (arg.is_real_type ())
+		{
+		  FloatMatrix m = arg.float_matrix_value ();
+
+		  if (! error_state)
+		    {
+		      octave_idx_type info;
+		      FloatCHOL chol (m, info);
+		      if (info == 0)
+			retval = chol.inverse ();
+		      else
+			error ("cholinv: matrix not positive definite");
+		    }
+		}
+	      else if (arg.is_complex_type ())
+		{
+		  FloatComplexMatrix m = arg.float_complex_matrix_value ();
+
+		  if (! error_state)
+		    {
+		      octave_idx_type info;
+		      FloatComplexCHOL chol (m, info);
+		      if (info == 0)
+			retval = chol.inverse ();
+		      else
+			error ("cholinv: matrix not positive definite");
+		    }
+		}
+	      else
+		gripe_wrong_type_arg ("chol", arg);
 	    }
 	  else
 	    {
@@ -465,6 +510,26 @@ using @code{inv}.\n\
 	      else
 		gripe_wrong_type_arg ("chol2inv", arg);
 	    }
+	  else if (arg.is_single_type ())
+	    {
+	      if (arg.is_real_type ())
+		{
+		  FloatMatrix r = arg.float_matrix_value ();
+
+		  if (! error_state)
+		    retval = chol2inv (r);
+		}
+	      else if (arg.is_complex_type ())
+		{
+		  FloatComplexMatrix r = arg.float_complex_matrix_value ();
+
+		  if (! error_state)
+		    retval = chol2inv (r);
+		}
+	      else
+		gripe_wrong_type_arg ("chol2inv", arg);
+
+	    }
 	  else
 	    {
 	      if (arg.is_real_type ())
@@ -543,50 +608,100 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
       if (down || op == "+")
         if (argr.columns () == n && argu.rows () == n && argu.columns () == 1)
           {
-            if (argr.is_real_matrix () && argu.is_real_matrix ())
-              {
-                // real case
-                Matrix R = argr.matrix_value ();
-                Matrix u = argu.matrix_value ();
+	    if (argr.is_single_type () || argu.is_single_type ())
+	      {
+		if (argr.is_real_matrix () && argu.is_real_matrix ())
+		  {
+		    // real case
+		    FloatMatrix R = argr.float_matrix_value ();
+		    FloatMatrix u = argu.float_matrix_value ();
 
-                CHOL fact;
-                fact.set (R);
-                int err = 0;
+		    FloatCHOL fact;
+		    fact.set (R);
+		    int err = 0;
 
-                if (down)
-                  err = fact.downdate (u);
-                else
-                  fact.update (u);
+		    if (down)
+		      err = fact.downdate (u);
+		    else
+		      fact.update (u);
 
-                if (nargout > 1)
-                  retval(1) = err;
-                else if (err)
-                  error ("cholupdate: downdate violates positiveness");
+		    if (nargout > 1)
+		      retval(1) = err;
+		    else if (err)
+		      error ("cholupdate: downdate violates positiveness");
 
-                retval(0) = fact.chol_matrix ();
-              }
-            else
-              {
-                // complex case
-                ComplexMatrix R = argr.complex_matrix_value ();
-                ComplexMatrix u = argu.complex_matrix_value ();
+		    retval(0) = fact.chol_matrix ();
+		  }
+		else
+		  {
+		    // complex case
+		    FloatComplexMatrix R = argr.float_complex_matrix_value ();
+		    FloatComplexMatrix u = argu.float_complex_matrix_value ();
 
-                ComplexCHOL fact;
-                fact.set (R);
-                int err = 0;
+		    FloatComplexCHOL fact;
+		    fact.set (R);
+		    int err = 0;
 
-                if (down)
-                  err = fact.downdate (u);
-                else
-                  fact.update (u);
+		    if (down)
+		      err = fact.downdate (u);
+		    else
+		      fact.update (u);
 
-                if (nargout > 1)
-                  retval(1) = err;
-                else if (err)
-                  error ("cholupdate: downdate violates positiveness");
+		    if (nargout > 1)
+		      retval(1) = err;
+		    else if (err)
+		      error ("cholupdate: downdate violates positiveness");
 
-                retval(0) = fact.chol_matrix ();
-              }
+		    retval(0) = fact.chol_matrix ();
+		  }
+	      }
+	    else
+	      {
+		if (argr.is_real_matrix () && argu.is_real_matrix ())
+		  {
+		    // real case
+		    Matrix R = argr.matrix_value ();
+		    Matrix u = argu.matrix_value ();
+
+		    CHOL fact;
+		    fact.set (R);
+		    int err = 0;
+
+		    if (down)
+		      err = fact.downdate (u);
+		    else
+		      fact.update (u);
+
+		    if (nargout > 1)
+		      retval(1) = err;
+		    else if (err)
+		      error ("cholupdate: downdate violates positiveness");
+
+		    retval(0) = fact.chol_matrix ();
+		  }
+		else
+		  {
+		    // complex case
+		    ComplexMatrix R = argr.complex_matrix_value ();
+		    ComplexMatrix u = argu.complex_matrix_value ();
+
+		    ComplexCHOL fact;
+		    fact.set (R);
+		    int err = 0;
+
+		    if (down)
+		      err = fact.downdate (u);
+		    else
+		      fact.update (u);
+
+		    if (nargout > 1)
+		      retval(1) = err;
+		    else if (err)
+		      error ("cholupdate: downdate violates positiveness");
+
+		    retval(0) = fact.chol_matrix ();
+		  }
+	      }
           }
         else
           error ("cholupdate: dimension mismatch");
@@ -600,7 +715,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 }
 
 /*
-%!test
+%!shared A, u, Ac, uc
 %! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
 %!       -0.131721   0.738529   0.019851  -0.140295 ;
 %!        0.124120   0.019851   0.354879  -0.059472 ;
@@ -610,7 +725,19 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %!        0.39844 ;
 %!        0.63484 ;
 %!        0.13351 ];
+%! Ac = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
+%!        -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
+%!         0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
+%!        -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
 %! 
+%! uc = [ 0.54267 + 0.91519i ;
+%!        0.99647 + 0.43141i ;
+%!        0.83760 + 0.68977i ;
+%!        0.39160 + 0.90378i ];
+
+
+
+%!test
 %! R = chol(A);
 %! 
 %! R1 = cholupdate(R,u);
@@ -624,27 +751,43 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! assert(norm(R1 - R,Inf) < 1e1*eps)
 %! 
 %!test
-%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
-%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
-%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
-%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
+%! R = chol(Ac);
 %! 
-%! u = [ 0.54267 + 0.91519i ;
-%!       0.99647 + 0.43141i ;
-%!       0.83760 + 0.68977i ;
-%!       0.39160 + 0.90378i ];
-%! 
-%! R = chol(A);
-%! 
-%! R1 = cholupdate(R,u);
+%! R1 = cholupdate(R,uc);
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(R1'*R1 - R'*R - u*u',Inf) < 1e1*eps)
+%! assert(norm(R1'*R1 - R'*R - uc*uc',Inf) < 1e1*eps)
 %! 
-%! R1 = cholupdate(R1,u,"-");
+%! R1 = cholupdate(R1,uc,"-");
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(R1 - R,Inf) < 1e1*eps)
+
+%!test
+%! R = chol(single(A));
+%! 
+%! R1 = cholupdate(R,single(u));
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - R'*R - single(u*u'),Inf) < 1e1*eps('single'))
+%! 
+%! R1 = cholupdate(R1,single(u),"-");
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1 - R,Inf) < 1e1*eps('single'))
+%! 
+%!test
+%! R = chol(single(Ac));
+%! 
+%! R1 = cholupdate(R,single(uc));
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - R'*R - single(uc*uc'),Inf) < 1e1*eps('single'))
+%! 
+%! R1 = cholupdate(R1,single(uc),"-");
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1 - R,Inf) < 1e1*eps('single'))
 */
 
 DEFUN_DLD (cholinsert, args, nargout,
@@ -690,40 +833,80 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
         {
           if (j > 0 && j <= n+1)
             {
-              if (argr.is_real_matrix () && argu.is_real_matrix ())
-                {
-                  // real case
-                  Matrix R = argr.matrix_value ();
-                  Matrix u = argu.matrix_value ();
+	      if (argr.is_single_type () || argu.is_single_type ())
+		{
+		  if (argr.is_real_matrix () && argu.is_real_matrix ())
+		    {
+		      // real case
+		      FloatMatrix R = argr.float_matrix_value ();
+		      FloatMatrix u = argu.float_matrix_value ();
 
-                  CHOL fact;
-                  fact.set (R);
-                  int err = fact.insert_sym (u, j-1);
+		      FloatCHOL fact;
+		      fact.set (R);
+		      int err = fact.insert_sym (u, j-1);
 
-                  if (nargout > 1)
-                    retval(1) = err;
-                  else if (err)
-                    error ("cholinsert: insertion violates positiveness");
+		      if (nargout > 1)
+			retval(1) = err;
+		      else if (err)
+			error ("cholinsert: insertion violates positiveness");
 
-                  retval(0) = fact.chol_matrix ();
-                }
-              else
-                {
-                  // complex case
-                  ComplexMatrix R = argr.complex_matrix_value ();
-                  ComplexMatrix u = argu.complex_matrix_value ();
+		      retval(0) = fact.chol_matrix ();
+		    }
+		  else
+		    {
+		      // complex case
+		      FloatComplexMatrix R = argr.float_complex_matrix_value ();
+		      FloatComplexMatrix u = argu.float_complex_matrix_value ();
 
-                  ComplexCHOL fact;
-                  fact.set (R);
-                  int err = fact.insert_sym (u, j-1);
+		      FloatComplexCHOL fact;
+		      fact.set (R);
+		      int err = fact.insert_sym (u, j-1);
 
-                  if (nargout > 1)
-                    retval(1) = err;
-                  else if (err)
-                    error ("cholinsert: insertion violates positiveness");
+		      if (nargout > 1)
+			retval(1) = err;
+		      else if (err)
+			error ("cholinsert: insertion violates positiveness");
 
-                  retval(0) = fact.chol_matrix ();
-                }
+		      retval(0) = fact.chol_matrix ();
+		    }
+		}
+	      else
+		{
+		  if (argr.is_real_matrix () && argu.is_real_matrix ())
+		    {
+		      // real case
+		      Matrix R = argr.matrix_value ();
+		      Matrix u = argu.matrix_value ();
+
+		      CHOL fact;
+		      fact.set (R);
+		      int err = fact.insert_sym (u, j-1);
+
+		      if (nargout > 1)
+			retval(1) = err;
+		      else if (err)
+			error ("cholinsert: insertion violates positiveness");
+
+		      retval(0) = fact.chol_matrix ();
+		    }
+		  else
+		    {
+		      // complex case
+		      ComplexMatrix R = argr.complex_matrix_value ();
+		      ComplexMatrix u = argu.complex_matrix_value ();
+
+		      ComplexCHOL fact;
+		      fact.set (R);
+		      int err = fact.insert_sym (u, j-1);
+
+		      if (nargout > 1)
+			retval(1) = err;
+		      else if (err)
+			error ("cholinsert: insertion violates positiveness");
+
+		      retval(0) = fact.chol_matrix ();
+		    }
+		}
             }
           else
             error ("cholinsert: index out of range");
@@ -739,44 +922,65 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 
 /*
 %!test
-%! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
-%!       -0.131721   0.738529   0.019851  -0.140295 ;
-%!        0.124120   0.019851   0.354879  -0.059472 ;
-%!       -0.061673  -0.140295  -0.059472   0.600939 ];
-%! 
-%! u = [  0.35080 ;
-%!        0.63930 ;
-%!        3.31057 ;
-%!       -0.13825 ;
-%!        0.45266 ];
+%! u2 = [  0.35080 ;
+%!         0.63930 ;
+%!         3.31057 ;
+%!        -0.13825 ;
+%!         0.45266 ];
 %!
 %! R = chol(A);
 %! 
 %! j = 3; p = [1:j-1, j+1:5];
-%! R1 = cholinsert(R,j,u); A1 = R1'*R1;
+%! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
 %! assert(norm(A1(p,p) - A,Inf) < 1e1*eps)
 %! 
 %!test
-%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
-%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
-%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
-%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
-%! 
-%! u = [  0.35080  + 0.04298i;
-%!        0.63930  + 0.23778i;
-%!        3.31057  + 0.00000i;
-%!       -0.13825  + 0.19879i;
-%!        0.45266  + 0.50020i];
+%! u2 = [  0.35080  + 0.04298i;
+%!         0.63930  + 0.23778i;
+%!         3.31057  + 0.00000i;
+%!        -0.13825  + 0.19879i;
+%!         0.45266  + 0.50020i];
 %!
-%! R = chol(A);
+%! R = chol(Ac);
 %! 
 %! j = 3; p = [1:j-1, j+1:5];
-%! R1 = cholinsert(R,j,u); A1 = R1'*R1;
+%! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(A1(p,p) - A,Inf) < 1e1*eps)
+%! assert(norm(A1(p,p) - Ac,Inf) < 1e1*eps)
+%! 
+
+%!test
+%! u2 = single ([  0.35080 ;
+%!                 0.63930 ;
+%!                 3.31057 ;
+%!                -0.13825 ;
+%!                 0.45266 ]);
+%!
+%! R = chol(single(A));
+%! 
+%! j = 3; p = [1:j-1, j+1:5];
+%! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(A1(p,p) - A,Inf) < 1e1*eps('single'))
+%! 
+%!test
+%! u2 = single ([  0.35080  + 0.04298i;
+%!                 0.63930  + 0.23778i;
+%!                 3.31057  + 0.00000i;
+%!                -0.13825  + 0.19879i;
+%!                 0.45266  + 0.50020i]);
+%!
+%! R = chol(single(Ac));
+%! 
+%! j = 3; p = [1:j-1, j+1:5];
+%! R1 = cholinsert(R,j,u2); A1 = R1'*R1;
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(A1(p,p) - single(Ac),Inf) < 1e1*eps('single'))
 %! 
 */
 
@@ -811,28 +1015,56 @@ return the QR@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+1]}.\n
         {
           if (j > 0 && j <= n)
             {
-              if (argr.is_real_matrix ())
-                {
-                  // real case
-                  Matrix R = argr.matrix_value ();
+	      if (argr.is_single_type ())
+		{
+		  if (argr.is_real_matrix ())
+		    {
+		      // real case
+		      FloatMatrix R = argr.float_matrix_value ();
 
-                  CHOL fact;
-                  fact.set (R);
-                  fact.delete_sym (j-1);
+		      FloatCHOL fact;
+		      fact.set (R);
+		      fact.delete_sym (j-1);
 
-                  retval(0) = fact.chol_matrix ();
-                }
-              else
-                {
-                  // complex case
-                  ComplexMatrix R = argr.complex_matrix_value ();
+		      retval(0) = fact.chol_matrix ();
+		    }
+		  else
+		    {
+		      // complex case
+		      FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-                  ComplexCHOL fact;
-                  fact.set (R);
-                  fact.delete_sym (j-1);
+		      FloatComplexCHOL fact;
+		      fact.set (R);
+		      fact.delete_sym (j-1);
 
-                  retval(0) = fact.chol_matrix ();
-                }
+		      retval(0) = fact.chol_matrix ();
+		    }
+		}
+	      else
+		{
+		  if (argr.is_real_matrix ())
+		    {
+		      // real case
+		      Matrix R = argr.matrix_value ();
+
+		      CHOL fact;
+		      fact.set (R);
+		      fact.delete_sym (j-1);
+
+		      retval(0) = fact.chol_matrix ();
+		    }
+		  else
+		    {
+		      // complex case
+		      ComplexMatrix R = argr.complex_matrix_value ();
+
+		      ComplexCHOL fact;
+		      fact.set (R);
+		      fact.delete_sym (j-1);
+
+		      retval(0) = fact.chol_matrix ();
+		    }
+		}
             }
           else
             error ("choldelete: index out of range");
@@ -848,11 +1080,6 @@ return the QR@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+1]}.\n
 
 /*
 %!test
-%! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
-%!       -0.131721   0.738529   0.019851  -0.140295 ;
-%!        0.124120   0.019851   0.354879  -0.059472 ;
-%!       -0.061673  -0.140295  -0.059472   0.600939 ];
-%! 
 %! R = chol(A);
 %! 
 %! j = 3; p = [1:j-1,j+1:4];
@@ -862,18 +1089,31 @@ return the QR@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+1]}.\n
 %! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
 %! 
 %!test
-%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
-%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
-%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
-%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
-%! 
-%! R = chol(A);
+%! R = chol(Ac);
 %! 
 %! j = 3; p = [1:j-1,j+1:4];
 %! R1 = choldelete(R,j);
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+%! assert(norm(R1'*R1 - Ac(p,p),Inf) < 1e1*eps)
+
+%!test
+%! R = chol(single(A));
+%! 
+%! j = 3; p = [1:j-1,j+1:4];
+%! R1 = choldelete(R,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - single(A(p,p)),Inf) < 1e1*eps('single'))
+%! 
+%!test
+%! R = chol(single(Ac));
+%! 
+%! j = 3; p = [1:j-1,j+1:4];
+%! R1 = choldelete(R,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
 */
 
 DEFUN_DLD (cholshift, args, nargout,
@@ -914,28 +1154,58 @@ return the QR@tie{}factorization of\n\
         {
           if (j > 0 && j <= n+1 && i > 0 && i <= n+1)
             {
-              if (argr.is_real_matrix ())
-                {
-                  // real case
-                  Matrix R = argr.matrix_value ();
 
-                  CHOL fact;
-                  fact.set (R);
-                  fact.shift_sym (i-1, j-1);
+	      if (argr.is_single_type () && argi.is_single_type () && 
+		  argj.is_single_type ())
+		{
+		  if (argr.is_real_matrix ())
+		    {
+		      // real case
+		      FloatMatrix R = argr.float_matrix_value ();
 
-                  retval(0) = fact.chol_matrix ();
-                }
-              else
-                {
-                  // complex case
-                  ComplexMatrix R = argr.complex_matrix_value ();
+		      FloatCHOL fact;
+		      fact.set (R);
+		      fact.shift_sym (i-1, j-1);
 
-                  ComplexCHOL fact;
-                  fact.set (R);
-                  fact.shift_sym (i-1, j-1);
+		      retval(0) = fact.chol_matrix ();
+		    }
+		  else
+		    {
+		      // complex case
+		      FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-                  retval(0) = fact.chol_matrix ();
-                }
+		      FloatComplexCHOL fact;
+		      fact.set (R);
+		      fact.shift_sym (i-1, j-1);
+
+		      retval(0) = fact.chol_matrix ();
+		    }
+		}
+	      else
+		{
+		  if (argr.is_real_matrix ())
+		    {
+		      // real case
+		      Matrix R = argr.matrix_value ();
+
+		      CHOL fact;
+		      fact.set (R);
+		      fact.shift_sym (i-1, j-1);
+
+		      retval(0) = fact.chol_matrix ();
+		    }
+		  else
+		    {
+		      // complex case
+		      ComplexMatrix R = argr.complex_matrix_value ();
+
+		      ComplexCHOL fact;
+		      fact.set (R);
+		      fact.shift_sym (i-1, j-1);
+
+		      retval(0) = fact.chol_matrix ();
+		    }
+		}
             }
           else
             error ("cholshift: index out of range");
@@ -951,11 +1221,6 @@ return the QR@tie{}factorization of\n\
 
 /*
 %!test
-%! A = [  0.436997  -0.131721   0.124120  -0.061673 ;
-%!       -0.131721   0.738529   0.019851  -0.140295 ;
-%!        0.124120   0.019851   0.354879  -0.059472 ;
-%!       -0.061673  -0.140295  -0.059472   0.600939 ];
-%! 
 %! R = chol(A);
 %! 
 %! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
@@ -971,24 +1236,49 @@ return the QR@tie{}factorization of\n\
 %! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
 %! 
 %!test
-%! A = [  0.5585528 + 0.0000000i  -0.1662088 - 0.0315341i   0.0107873 + 0.0236411i  -0.0276775 - 0.0186073i ;
-%!       -0.1662088 + 0.0315341i   0.6760061 + 0.0000000i   0.0011452 - 0.0475528i   0.0145967 + 0.0247641i ;
-%!        0.0107873 - 0.0236411i   0.0011452 + 0.0475528i   0.6263149 - 0.0000000i  -0.1585837 - 0.0719763i ;
-%!       -0.0276775 + 0.0186073i   0.0145967 - 0.0247641i  -0.1585837 + 0.0719763i   0.6034234 - 0.0000000i ];
-%! 
-%! R = chol(A);
+%! R = chol(Ac);
 %! 
 %! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
 %! R1 = cholshift(R,i,j);
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+%! assert(norm(R1'*R1 - Ac(p,p),Inf) < 1e1*eps)
 %! 
 %! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift(R,i,j);
 %! 
 %! assert(norm(triu(R1)-R1,Inf) == 0)
-%! assert(norm(R1'*R1 - A(p,p),Inf) < 1e1*eps)
+%! assert(norm(R1'*R1 - Ac(p,p),Inf) < 1e1*eps)
+
+%!test
+%! R = chol(single(A));
+%! 
+%! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - single(A(p,p)),Inf) < 1e1*eps('single'))
+%! 
+%! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - single(A(p,p)),Inf) < 1e1*eps('single'))
+%! 
+%!test
+%! R = chol(single(Ac));
+%! 
+%! i = 1; j = 3; p = [1:i-1, shift(i:j,-1), j+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
+%! 
+%! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
+%! R1 = cholshift(R,i,j);
+%! 
+%! assert(norm(triu(R1)-R1,Inf) == 0)
+%! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
 */
 
 /*

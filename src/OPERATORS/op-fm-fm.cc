@@ -144,6 +144,10 @@ DEFNDBINOP_FN (el_or,  float_matrix, float_matrix, float_array,
 DEFNDCATOP_FN (fm_fm, float_matrix, float_matrix, float_array, 
 	       float_array, concat)
 
+DEFNDCATOP_FN (m_fm, matrix, float_matrix, float_array, float_array, concat)
+
+DEFNDCATOP_FN (fm_m, float_matrix, matrix, float_array, float_array, concat)
+
 DEFNDASSIGNOP_FN (assign, float_matrix, float_matrix, float_array, assign)
 
 DEFNDASSIGNOP_FN (dbl_assign, matrix, float_matrix, array, assign)
@@ -191,6 +195,8 @@ install_fm_fm_ops (void)
   INSTALL_BINOP (op_mul_herm, octave_float_matrix, octave_float_matrix, mul_trans);
 
   INSTALL_CATOP (octave_float_matrix, octave_float_matrix, fm_fm);
+  INSTALL_CATOP (octave_matrix, octave_float_matrix, m_fm);
+  INSTALL_CATOP (octave_float_matrix, octave_matrix, fm_m);
 
   INSTALL_ASSIGNOP (op_asn_eq, octave_float_matrix, 
 		    octave_float_matrix, assign);

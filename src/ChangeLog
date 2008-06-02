@@ -1,5 +1,32 @@
 2008-06-02  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/betainc.cc: Move test code here. Add test code for
+	single precision type.
+	* DLD-FUNCTIONS/gammainc.cc: Ditto.
+	* DLD-FUNCTIONS/gcd.cc (Fgcd): Support single precision. Move test
+	code here. Add test code for single precision type.
+	* data.cc: Move test code here and add tests for single precision
+	type. Add tests for Fislogical.
+	(NATIVE_REDUCTION): Support the 'double' argument.
+	* mapper.cc: Move test code here and add tests for single precision
+	type.
+	* ov-float.cc (CD_SCALAR_MAPPER): Replace Complex with
+	FloatComplex.
+	(erf, erfc, abs, acos, asin, asinh, atan, atanh, ceil, cos, cosh,
+	exp, expm1, floor, log10, log1p, sin, sinh, sqrt, tan, tanh): Use
+	float version of base functions (ie. ::sinf and not ::sin)
+	(lgamma, acosh, log, log2, log10, log1p): Use single precision
+	infinity value.
+	* ov-flt-complex.cc (erf, erfc, expm1, log1p): Use the float
+	version of base functions.
+	* ov-flt-cx-mat.cc (DARRY_MAPPER): Replace NDArray with FloatNDArray.
+	(erf, erdc, gamma): Use FloatNDArray::dmapper and not
+	NDArray::dmapper.
+	* ov-flt-cx-mat.h (is_double_type): Delete.
+	(is_single_type): New method.
+	* ov-flt-re-mat.cc (lgamma,  acosh, log, log2, log10, log1p,
+	sqrt): Use single precision infinity value.
+	
 	* chol.cc (Fcholinv, Fchol2inv, Fcholupdate, Fcholinsert,
 	Fcholdelete, Fcholshift): Allow single precision arguments.
 	(Fchol): Move test code here. Add test code for single precision.

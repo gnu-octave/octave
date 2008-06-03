@@ -689,7 +689,7 @@ Force Octave to assume the file is in Octave's text format.\n\
 	{
 	  format = LS_MAT5_BINARY;
 	}
-      else if (argv[i] == "7" || argv[i] == "-v7")
+      else if (argv[i] == "-7" || argv[i] == "-v7")
 	{
 	  format = LS_MAT7_BINARY;
 	}

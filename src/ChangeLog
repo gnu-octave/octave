@@ -1,3 +1,7 @@
+2008-06-03  Jaroslav Hajek <highegg@gmail.com>
+
+	* load-save.cc (Fload): Fix "-7" option.
+
 2008-06-02  David Bateman  <dbateman@free.fr>
 
 	* pt.cc (tree:last_break_function): Next pointer to last function

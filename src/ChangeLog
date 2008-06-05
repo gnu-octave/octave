@@ -1,8 +1,6 @@
 2008-06-05  John W. Eaton  <jwe@octave.org>
 
-	* graphics.cc (properties::update_normals):
-	Eliminate unnecessary use of references.
-	Style fixes.
+	* graphics.cc (properties::update_normals): Style fixes.
 	* graphics.h.in: Style fixes.
 
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>

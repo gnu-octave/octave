@@ -1,3 +1,8 @@
+2008-06-05  John W. Eaton  <jwe@octave.org>
+
+	* oct-shlib.cc (octave_base_shlib::remove): Only dereference
+	counter if iterator is valid.
+
 2008-06-02  David Bateman  <dbateman@free.fr>
 
 	* fCmplxDET.cc (FloatComplexDET::value_will_overflow,

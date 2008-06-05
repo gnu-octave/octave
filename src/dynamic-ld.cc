@@ -420,18 +420,19 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 	    {
 	      octave_mex_file_list::append (mex_file);
 
-	      function = mex_file.search ("mexFunction");
+	      function = mex_file.search (fcn_name, mex_mangler);
 
 	      if (! function)
 		{
 		  // FIXME -- can we determine this C mangling scheme
 		  // automatically at run time or configure time?
 
-		  function = mex_file.search ("_mexFunction");
+		  function = mex_file.search (fcn_name, mex_uscore_mangler);
 
 		  if (! function)
 		    {
-		      function = mex_file.search (STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION)));
+		      function = mex_file.search (fcn_name, mex_f77_mangler);
+
 		      if (function)
 			have_fmex = true;
 		    }
@@ -454,7 +455,8 @@ octave_dynamic_loader::do_load_mex (const std::string& fcn_name,
 }
 
 bool
-octave_dynamic_loader::do_remove (const std::string& fcn_name, octave_shlib& shl)
+octave_dynamic_loader::do_remove_oct (const std::string& fcn_name,
+				      octave_shlib& shl)
 {
   bool retval = false;
 
@@ -467,6 +469,26 @@ octave_dynamic_loader::do_remove (const std::string& fcn_name, octave_shlib& shl
 
       if (shl.number_of_functions_loaded () == 0)
 	octave_shlib_list::remove (shl);
+    }
+
+  return retval;
+}
+
+bool
+octave_dynamic_loader::do_remove_mex (const std::string& fcn_name,
+				      octave_shlib& shl)
+{
+  bool retval = false;
+
+  // We don't need to do anything if this is called because we are in
+  // the process of reloading a .oct file that has changed.
+
+  if (! doing_load)
+    {
+      retval = shl.remove (fcn_name);
+
+      if (shl.number_of_functions_loaded () == 0)
+	octave_mex_file_list::remove (shl);
     }
 
   return retval;
@@ -491,9 +513,17 @@ octave_dynamic_loader::load_mex (const std::string& fcn_name,
 }
 
 bool
-octave_dynamic_loader::remove (const std::string& fcn_name, octave_shlib& shl)
+octave_dynamic_loader::remove_oct (const std::string& fcn_name,
+				   octave_shlib& shl)
 {
-  return (instance_ok ()) ? instance->do_remove (fcn_name, shl) : false;
+  return (instance_ok ()) ? instance->do_remove_oct (fcn_name, shl) : false;
+}
+
+bool
+octave_dynamic_loader::remove_mex (const std::string& fcn_name,
+				   octave_shlib& shl)
+{
+  return (instance_ok ()) ? instance->do_remove_mex (fcn_name, shl) : false;
 }
 
 std::string
@@ -522,6 +552,24 @@ octave_dynamic_loader::xmangle_name (const std::string& name)
   retval.append ("_");
   retval.append (STRINGIFY (CXX_ABI));
   return retval;
+}
+
+std::string
+octave_dynamic_loader::mex_mangler (const std::string&)
+{
+  return "mexFunction";
+}
+
+std::string
+octave_dynamic_loader::mex_uscore_mangler (const std::string&)
+{
+  return "_mexFunction";
+}
+
+std::string
+octave_dynamic_loader::mex_f77_mangler (const std::string&)
+{
+  return STRINGIFY (F77_FUNC (mexfunction, MEXFUNCTION));
 }
 
 /*

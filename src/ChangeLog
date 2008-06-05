@@ -1,5 +1,14 @@
 2008-06-05  John W. Eaton  <jwe@octave.org>
 
+	* dynamic-ld.cc (octave_dynamic_loader::mex_mangler,
+	octave_dynamic_loader::mex_uscore_mangler,
+	octave_dynamic_loader::mex_f77_mangler): New functions.
+	(octave_dynamic_loader::do_load_mex): Use them.
+	(octave_dynamic_loader::do_remove_oct): Rename from
+	octave_dynamic_loader::do_remove.
+	(octave_dynamic_loader::do_remove_mex): New function.
+	* dynamic-ld.h: Provide/fix decls.
+
 	* graphics.cc (properties::update_normals): Style fixes.
 	* graphics.h.in: Style fixes.
 

@@ -51,7 +51,9 @@ public:
 	     const std::string& file_name = std::string (),
 	     bool relative = false);
 
-  static bool remove (const std::string& fcn_name, octave_shlib& shl);
+  static bool remove_oct (const std::string& fcn_name, octave_shlib& shl);
+
+  static bool remove_mex (const std::string& fcn_name, octave_shlib& shl);
 
 private:
 
@@ -75,7 +77,9 @@ private:
 		const std::string& file_name = std::string (),
 		bool relative = false);
 
-  bool do_remove (const std::string& fcn_name, octave_shlib& shl);
+  bool do_remove_oct (const std::string& fcn_name, octave_shlib& shl);
+
+  bool do_remove_mex (const std::string& fcn_name, octave_shlib& shl);
 
   static bool doing_load;
 
@@ -84,6 +88,12 @@ protected:
   static std::string mangle_name (const std::string& name);
 
   static std::string xmangle_name (const std::string& name);
+
+  static std::string mex_mangler (const std::string& name);
+
+  static std::string mex_uscore_mangler (const std::string& name);
+
+  static std::string mex_f77_mangler (const std::string& name);
 };
 
 #endif

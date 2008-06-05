@@ -57,7 +57,7 @@ octave_dld_function::octave_dld_function
 
 octave_dld_function::~octave_dld_function (void)
 {
-  octave_dynamic_loader::remove (my_name, sh_lib);
+  octave_dynamic_loader::remove_oct (my_name, sh_lib);
 }
 
 std::string

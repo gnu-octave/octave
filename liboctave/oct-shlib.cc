@@ -136,7 +136,7 @@ octave_base_shlib::remove (const std::string& fcn_name)
 
   fcn_names_iterator p = fcn_names.find (fcn_name);
 
-  if (--(p->second) == 0)
+  if (p != fcn_names.end () && --(p->second) == 0)
     {
       fcn_names.erase (fcn_name);
       retval = true;

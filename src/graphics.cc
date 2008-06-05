@@ -172,8 +172,6 @@ default_figure_position (void)
   return m;
 }
 
-
-
 static void
 xset_gcbo (const graphics_handle& h)
 {
@@ -349,7 +347,8 @@ xget_ancestor (graphics_object go, const std::string& type)
 	}
       else
 	return graphics_object ();
-    } while (true);
+    }
+ while (true);
 }
 
 static octave_value
@@ -591,8 +590,8 @@ color_values::str2rgb (std::string str)
 
   if (str.compare(0, len, "blue", 0, len) == 0)
     tmp_rgb[2] = 1;
-  else if (str.compare(0, len, "black", 0, len) == 0 || 
-	   str.compare(0, len, "k", 0, len) == 0)
+  else if (str.compare(0, len, "black", 0, len) == 0
+	   || str.compare(0, len, "k", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 0;
   else if (str.compare(0, len, "red", 0, len) == 0)
     tmp_rgb[0] = 1;
@@ -604,8 +603,8 @@ color_values::str2rgb (std::string str)
     tmp_rgb[0] = tmp_rgb[2] = 1;
   else if (str.compare(0, len, "cyan", 0, len) == 0)
     tmp_rgb[1] = tmp_rgb[2] = 1;
-  else if (str.compare(0, len, "white", 0, len) == 0 ||
-	   str.compare(0, len, "w", 0, len) == 0)
+  else if (str.compare(0, len, "white", 0, len) == 0
+	   || str.compare(0, len, "w", 0, len) == 0)
     tmp_rgb[0] = tmp_rgb[1] = tmp_rgb[2] = 1;
   else	
     retval = false;
@@ -793,11 +792,11 @@ handle_property::do_set (const octave_value& v)
         current_val = gh;
       else
         error ("set: invalid graphics handle (= %g) for property \"%s\"",
-            dv, get_name ().c_str ());
+	       dv, get_name ().c_str ());
     }
   else
     error ("set: invalid graphics handle for property \"%s\"",
-        get_name ().c_str ());
+	   get_name ().c_str ());
 }
 
 bool
@@ -933,8 +932,7 @@ property::create (const std::string& name, const graphics_handle& h,
 
 	  if (! error_state)
 	    {
-	      if (args.length () > 0
-		  && ! args(0).is_empty ())
+	      if (args.length () > 0 && ! args(0).is_empty ())
 		retval.set (args(0));
 	      else
 		retval.set (rv.default_value ());
@@ -2771,11 +2769,15 @@ axes::properties::get_boundingbox (bool internal) const
 
 ColumnVector
 graphics_xform::xform_vector (double x, double y, double z)
-{ return ::xform_vector (x, y, z); }
+{
+  return ::xform_vector (x, y, z);
+}
 
 Matrix
 graphics_xform::xform_eye (void)
-{ return ::xform_matrix (); }
+{
+  return ::xform_matrix ();
+}
 
 ColumnVector
 graphics_xform::transform (double x, double y, double z,
@@ -2872,7 +2874,8 @@ check_limit_vals (double& min_val, double& max_val, double& min_pos,
 // magform(x) Returns (a, b), where x = a * 10^b, a >= 1., and b is
 // integral.
 
-static void magform (double x, double& a, int& b)
+static void
+magform (double x, double& a, int& b)
 {
   if (x == 0)
     {
@@ -2937,7 +2940,8 @@ axes::properties::calc_tick_sep (double lo, double hi)
 // value.
 
 Matrix
-axes::properties::get_axis_limits (double xmin, double xmax, double min_pos, bool logscale)
+axes::properties::get_axis_limits (double xmin, double xmax,
+				   double min_pos, bool logscale)
 {
   Matrix retval;
 
@@ -2997,7 +3001,9 @@ axes::properties::get_axis_limits (double xmin, double xmax, double min_pos, boo
 }
 
 void 
-axes::properties::calc_ticks_and_lims (array_property& lims, array_property& ticks, bool limmode_is_auto, bool is_logscale)
+axes::properties::calc_ticks_and_lims (array_property& lims,
+				       array_property& ticks,
+				       bool limmode_is_auto, bool is_logscale)
 {
 
   // FIXME -- add log ticks and lims
@@ -3055,8 +3061,6 @@ axes::properties::calc_ticks_and_lims (array_property& lims, array_property& tic
       if (is_logscale)
 	tmp_ticks (i) = std::pow (10., tmp_ticks (i));
     }
-	
-  
 
   ticks = tmp_ticks;
 }
@@ -4369,8 +4373,8 @@ addlistener (gcf, \"position\", @{@@my_listener, \"my string\"@})\n\
 }
 
 DEFUN (addproperty, args, ,
-   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, [@var{arg}, ...])\n\
+  "-*- texinfo -*-\n\
+@deftypefn {Built-in Function} {} addproperty (@var{name}, @var{h}, @var{type}, [@var{arg}, @dots{}])\n\
 Create a new property named @var{name} in graphics object @var{h}.\n\
 @var{type} determines the type of the property to create. @var{args}\n\
 usually contains the default value of the property, but additional\n\
@@ -4415,7 +4419,7 @@ additional set of accepted string values (like a radio property).\n\
 @var{type} may also be the concatenation of a core object type and\n\
 a valid property name for that object type. The property created\n\
 then has the same characteristics as the referenced property (type,\n\
-possible values, hidden state...). This allows to clone an existing\n\
+possible values, hidden state@dots{}). This allows to clone an existing\n\
 property into the graphics object @var{h}.\n\
 \n\
 Examples:\n\

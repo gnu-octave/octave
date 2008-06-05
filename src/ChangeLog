@@ -2,6 +2,8 @@
 
 	* graphics.cc (properties::update_normals):
 	Eliminate unnecessary use of references.
+	Style fixes.
+	* graphics.h.in: Style fixes.
 
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 

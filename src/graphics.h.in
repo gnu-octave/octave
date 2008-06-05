@@ -2294,7 +2294,7 @@ public:
 	      graphics_backend b = graphics_backend::find_backend (nm);
 	      if (b.get_name () != nm)
 		{
-		  error ("figure::__backend__ : illegal backend");
+		  error ("set___backend__: invalid backend");
 		}
 	      else
 		{
@@ -2303,7 +2303,7 @@ public:
 		}
 	    }
 	  else
-	    error ("__backend__ must be a string");
+	    error ("set___backend__ must be a string");
 	}
     }
 

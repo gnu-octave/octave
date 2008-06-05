@@ -111,19 +111,24 @@ private:
 				 bool filled) const;
 
 private:
-  /* the backend associated with the figure being rendered */
+  // the backend associated with the figure being rendered
   graphics_backend backend;
-  /* axes transformation data */
+
+  // axes transformation data
   graphics_xform xform;
-  /* axis limits in model scaled coordinate */
+
+  // axis limits in model scaled coordinate
   double xmin, xmax;
   double ymin, ymax;
   double zmin, zmax;
-  /* Z projection limits in windows coordinate */
+
+  // Z projection limits in windows coordinate
   double xZ1, xZ2;
-  /* call lists identifiers for markers */
+
+  // call lists identifiers for markers
   unsigned int marker_id, filled_marker_id;
-  /* camera information for primitive sorting */
+
+  // camera information for primitive sorting
   ColumnVector camera_pos, camera_dir;
 
 private:

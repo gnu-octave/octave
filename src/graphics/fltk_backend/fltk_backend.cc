@@ -57,21 +57,21 @@ right click - unzoom\n\
 double click - copy coordinates to clipboard\
 ";
 
-class OpenGL_fltk : public Fl_Gl_Window {
+class OpenGL_fltk : public Fl_Gl_Window
+{
 public:
-  OpenGL_fltk (int x, int y, int w, int h, double num) :
-    Fl_Gl_Window (x, y, w, h, 0),
-    number (num),
-    in_zoom (false)
+  OpenGL_fltk (int xx, int yy, int ww, int hh, double num)
+    : Fl_Gl_Window (xx, yy, ww, hh, 0), number (num), in_zoom (false)
   {
     // ask for double buffering and a depth buffer
-    mode(FL_DEPTH | FL_DOUBLE );
-  };
-  ~OpenGL_fltk () {};
+    mode (FL_DEPTH | FL_DOUBLE);
+  }
 
-  void zoom (bool z) {in_zoom = z;}
-  bool zoom () {return in_zoom;}
-  void set_zoom_box (Matrix zb) {zoom_box = zb;}
+  ~OpenGL_fltk (void) { }
+
+  void zoom (bool z) { in_zoom = z; }
+  bool zoom (void) { return in_zoom; }
+  void set_zoom_box (const Matrix& zb) { zoom_box = zb; }
 
 private:
   double number;
@@ -81,35 +81,41 @@ private:
   // (x1,y1,x2,y2)
   Matrix zoom_box;
 
-  void setup_viewport (int _w, int _h) {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+  void setup_viewport (int _w, int _h)
+  {
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
     glViewport (0, 0, _w, _h);
-  }    
+  }
 
-  void draw () {
-    if (!valid ()) {
-      valid (1);
-      setup_viewport (w (), h ());
-    }
+  void draw (void)
+  {
+    if (!valid ())
+      {
+	valid (1);
+	setup_viewport (w (), h ());
+      }
 
     renderer.draw (gh_manager::lookup (number));
-  };
+  }
 
-  void resize (int _x,int _y,int _w,int _h) {
+  void resize (int _x,int _y,int _w,int _h)
+  {
     Fl_Gl_Window::resize (_x, _y, _w, _h);
     setup_viewport (_w, _h);
     redraw ();
-  };
+  }
 
-  void draw_overlay(void)
+  void draw_overlay (void)
   {
-    if(!in_zoom) return;
- 
-    if(!valid()) {
-      valid(1);
-      setup_viewport (w (), h ());
-    }
+    if (!in_zoom)
+      return;
+
+    if (!valid())
+      {
+	valid(1);
+	setup_viewport (w (), h ());
+      }
 
     glPushMatrix ();
 
@@ -126,11 +132,11 @@ private:
     glLineWidth (1);
     glBegin (GL_LINE_STRIP);
     gl_color(0);
-    glVertex2d ( zoom_box(0), h () - zoom_box(1) );
-    glVertex2d ( zoom_box(0), h () - zoom_box(3) );
-    glVertex2d ( zoom_box(2), h () - zoom_box(3) );
-    glVertex2d ( zoom_box(2), h () - zoom_box(1) );
-    glVertex2d ( zoom_box(0), h () - zoom_box(1) );
+    glVertex2d (zoom_box(0), h () - zoom_box(1));
+    glVertex2d (zoom_box(0), h () - zoom_box(3));
+    glVertex2d (zoom_box(2), h () - zoom_box(3));
+    glVertex2d (zoom_box(2), h () - zoom_box(1));
+    glVertex2d (zoom_box(0), h () - zoom_box(1));
     glEnd ();
 
     glPopAttrib ();
@@ -146,60 +152,59 @@ private:
       case FL_ENTER:
 	window ()->cursor (FL_CURSOR_CROSS);
 	return 1;
-      
+
       case FL_LEAVE:
 	window ()->cursor (FL_CURSOR_DEFAULT);
 	return 1;
       }
 
     return retval;
-  };
-
+  }
 };
 
-class plot_window : public Fl_Window {
+class plot_window : public Fl_Window
+{
 public:
-  plot_window (int _x, int _y, int _w, int _h, figure::properties& _fp) :
-    Fl_Window (_x, _y, _w, _h, "octave"), 
-    fp (_fp)
+  plot_window (int _x, int _y, int _w, int _h, figure::properties& _fp)
+    : Fl_Window (_x, _y, _w, _h, "octave"), fp (_fp)
   {
     callback (window_close, static_cast<void*> (this));
 
-    begin();
+    begin ();
     {
-      canvas = new 
+      canvas = new
 	OpenGL_fltk (0, 0, _w , _h - status_h, number ());
 
       autoscale = new
-	Fl_Button (0, 
-		   _h - status_h, 
+	Fl_Button (0,
+		   _h - status_h,
 		   status_h,
 		   status_h,
 		   "A");
       autoscale->callback (button_callback, static_cast<void*> (this));
 
       togglegrid = new
-	Fl_Button (status_h, 
-		   _h - status_h, 
+	Fl_Button (status_h,
+		   _h - status_h,
 		   status_h,
 		   status_h,
 		   "G");
       togglegrid->callback (button_callback, static_cast<void*> (this));
 
       help = new
-	Fl_Button (2*status_h, 
-		   _h - status_h, 
+	Fl_Button (2*status_h,
+		   _h - status_h,
 		   status_h,
 		   status_h,
 		   "H");
       help->callback (button_callback, static_cast<void*> (this));
 
-      status = new 
-	Fl_Output (3*status_h, 
-		   _h - status_h, 
-		   _w > 2*status_h ? _w - status_h : 0, 
+      status = new
+	Fl_Output (3*status_h,
+		   _h - status_h,
+		   _w > 2*status_h ? _w - status_h : 0,
 		   status_h, "");
-      
+
       status->textcolor (FL_BLACK);
       status->color (FL_GRAY);
       status->textfont (FL_COURIER);
@@ -226,21 +231,22 @@ public:
     label (name.str ().c_str ());
   }
 
-  ~plot_window () {
-    canvas->hide();
-    status->hide();
-    this->hide();
+  ~plot_window (void)
+  {
+    canvas->hide ();
+    status->hide ();
+    this->hide ();
     delete canvas;
     delete status;
-  };
+  }
 
   // FIXME -- this could change
-  double number () { return fp.get___myhandle__ ().value ();};
-  
-  void mark_modified () 
-  { 
-    damage (FL_DAMAGE_ALL); 
-    canvas->damage (FL_DAMAGE_ALL); 
+  double number (void) { return fp.get___myhandle__ ().value (); }
+
+  void mark_modified (void)
+  {
+    damage (FL_DAMAGE_ALL);
+    canvas->damage (FL_DAMAGE_ALL);
   }
 
 private:
@@ -249,82 +255,94 @@ private:
 
   // status area height
   static const int status_h = 20;
-  
+
   // window callback
-  static void window_close (Fl_Widget* w, void* data)
+  static void window_close (Fl_Widget*, void* data)
   {
-    octave_value_list args;    
-    args(0) = static_cast<plot_window*> (data)-> number (); 
-    feval("close",args);
+    octave_value_list args;
+    args(0) = static_cast<plot_window*> (data)->number ();
+    feval ("close", args);
   }
 
   // button callbacks
-  static void button_callback (Fl_Widget* w, void* data) {
-    static_cast<plot_window*> (data)-> button_press (w);
-  };
-
-  void button_press (Fl_Widget* widg) {
-    if (widg == autoscale) axis_auto ();
-    if (widg == togglegrid) toggle_grid ();
-    if (widg == help) fl_message (help_text);
-  }
-
-  OpenGL_fltk*   canvas;
-  Fl_Button*	 autoscale;
-  Fl_Button*	 togglegrid;
-  Fl_Button*	 help;
-  Fl_Output*     status;
-
-  void axis_auto () 
+  static void button_callback (Fl_Widget* ww, void* data)
   {
-    octave_value_list args;    
+    static_cast<plot_window*> (data)->button_press (ww);
+  }
+
+  void button_press (Fl_Widget* widg)
+  {
+    if (widg == autoscale)
+      axis_auto ();
+
+    if (widg == togglegrid)
+      toggle_grid ();
+
+    if (widg == help)
+      fl_message (help_text);
+  }
+
+  OpenGL_fltk* canvas;
+  Fl_Button* autoscale;
+  Fl_Button* togglegrid;
+  Fl_Button* help;
+  Fl_Output* status;
+
+  void axis_auto (void)
+  {
+    octave_value_list args;
     args(0) = "auto";
-    feval("axis",args);
+    feval ("axis",args);
     mark_modified ();
   }
 
-  void toggle_grid () 
-  { 
-    feval ("grid"); 
+  void toggle_grid (void)
+  {
+    feval ("grid");
     mark_modified ();
   }
 
-  void pixel2pos (int px, int py, double& x, double& y) const {
+  void pixel2pos (int px, int py, double& xx, double& yy) const
+  {
     graphics_object ax = gh_manager::get_object (fp.get_currentaxes ());
-    if (ax && ax.isa ("axes")) 
+
+    if (ax && ax.isa ("axes"))
       {
-	axes::properties& ap = 
+	axes::properties& ap =
 	  dynamic_cast<axes::properties&> (ax.get_properties ());
 	ColumnVector pp = ap.pixel2coord (px, py);
-	x = pp(0);
-	y = pp(1);
+	xx = pp(0);
+	yy = pp(1);
       }
-  }    
+  }
 
-  graphics_handle pixel2axes (int px, int py) {
-    double x,y;
+  graphics_handle pixel2axes (int /* px */, int /* py */)
+  {
+    Matrix kids = fp.get_children ();
 
-    Matrix children =  fp.get_children ();
-    for (octave_idx_type n = 0; n < children.numel (); n++) 
+    for (octave_idx_type n = 0; n < kids.numel (); n++)
       {
-	graphics_object ax = gh_manager::get_object (children (n));
-	if (ax && ax.isa ("axes")) 
+	graphics_object ax = gh_manager::get_object (kids (n));
+	if (ax && ax.isa ("axes"))
 	  {
-	    axes::properties& ap = 
-	      dynamic_cast<axes::properties&> (ax.get_properties ());
+#if 0
+	     axes::properties& ap =
+	       dynamic_cast<axes::properties&> (ax.get_properties ());
 
-// 	    std::cout << "\npixpos="<<pixpos<<"(px,py)=("<<px<<","<<py<<")\n";
-// 	    if (px >= pixpos(0) && px <= pixpos(2)
-// 		&&
-// 		py >= pixpos(1) && py <= pixpos(3))
-// 	      return ap.get___myhandle__ ();
+	     // std::cout << "\npixpos="<<pixpos<<"(px,py)=("<<px<<","<<py<<")\n";
+	     if (px >= pixpos(0) && px <= pixpos(2)
+		 && py >= pixpos(1) && py <= pixpos(3))
+	       return ap.get___myhandle__ ();
+#endif
 	  }
       }
+
     return graphics_handle ();
   }
 
-  void pixel2status (int px0, int py0, int px1 = -1, int py1 = -1) {
-    double x0,y0,x1,y1;
+  void pixel2status (int px0, int py0, int px1 = -1, int py1 = -1)
+  {
+    double x0, y0, x1, y1;
     std::stringstream cbuf;
 
     pixel2pos (px0, py0, x0, y0);
@@ -337,9 +355,9 @@ private:
 
     status->value (cbuf.str ().c_str ());
     status->redraw ();
-  }    
+  }
 
-  void resize (int _x,int _y,int _w,int _h) 
+  void resize (int _x,int _y,int _w,int _h)
   {
     Fl_Window::resize (_x, _y, _w, _h);
 
@@ -359,8 +377,9 @@ private:
 
     return Fl_Window::draw ();
   }
- 
-  int handle (int event) {
+
+  int handle (int event)
+  {
     static int px0,py0;
     static graphics_handle h0 = graphics_handle ();
 
@@ -373,12 +392,13 @@ private:
     switch (event)
       {
       case FL_KEYDOWN:
-	switch(Fl::event_key ()) 
+	switch(Fl::event_key ())
 	  {
 	  case 'a':
 	  case 'A':
 	    axis_auto ();
 	    break;
+
 	  case 'g':
 	  case 'G':
 	    toggle_grid ();
@@ -389,7 +409,7 @@ private:
       case FL_MOVE:
 	pixel2status (Fl::event_x (), Fl::event_y ());
 	break;
-      
+
       case FL_PUSH:
 	if (Fl::event_button () == 1)
 	  {
@@ -424,11 +444,11 @@ private:
 	      {
 		canvas->zoom (false);
 		double x0,y0,x1,y1;
-		graphics_object ax = 
+		graphics_object ax =
 		  gh_manager::get_object (fp.get_currentaxes ());
-		if (ax && ax.isa ("axes")) 
+		if (ax && ax.isa ("axes"))
 		  {
-		    axes::properties& ap = 
+		    axes::properties& ap =
 		      dynamic_cast<axes::properties&> (ax.get_properties ());
 		    pixel2pos (px0, py0, x0, y0);
 		    pixel2pos (Fl::event_x (), Fl::event_y (), x1, y1);
@@ -444,6 +464,7 @@ private:
 			xl(0) = x1;
 			xl(1) = x0;
 		      }
+
 		    if (y0 < y1)
 		      {
 			yl(0) = y0;
@@ -469,11 +490,11 @@ private:
 	  }
 	else if (Fl::event_button () == 3)
 	  {
-	    graphics_object ax = 
+	    graphics_object ax =
 	      gh_manager::get_object (fp.get_currentaxes ());
-	    if (ax && ax.isa ("axes")) 
+	    if (ax && ax.isa ("axes"))
 	      {
-		axes::properties& ap = 
+		axes::properties& ap =
 		  dynamic_cast<axes::properties&> (ax.get_properties ());
 		ap.unzoom ();
 		mark_modified ();
@@ -484,30 +505,34 @@ private:
 
     return retval;
   }
-
 };
 
-class figure_manager {
+class figure_manager
+{
 public:
 
-  static figure_manager& Instance () {
+  static figure_manager& Instance (void)
+  {
     static figure_manager fm;
     return fm;
   }
 
-  ~figure_manager () {
+  ~figure_manager (void)
+  {
     close_all ();
   }
 
-  void close_all () {
+  void close_all (void)
+  {
     wm_iterator win;
     for (win = windows.begin (); win != windows.end (); win++)
       delete (*win).second;
     windows.clear ();
   }
 
-  void new_window (figure::properties& fp) {
-    int x,y,w,h;
+  void new_window (figure::properties& fp)
+  {
+    int x, y, w, h;
 
     int idx = figprops2idx (fp);
     if (idx >= 0 && windows.find (idx) == windows.end ())
@@ -516,52 +541,60 @@ public:
 	idx2figprops (curr_index , fp);
 	windows[curr_index++] = new plot_window (x, y, w, h, fp);
       }
-  };
+  }
 
-  void delete_window (int idx) {
+  void delete_window (int idx)
+  {
     wm_iterator win;
-    if ( (win=windows.find (idx)) != windows.end ())
+    if ((win = windows.find (idx)) != windows.end ())
       {
 	delete (*win).second;
 	windows.erase (win);
       }
-  };
+  }
 
   void delete_window (std::string idx_str)
-  { delete_window (str2idx (idx_str)); }
+  {
+    delete_window (str2idx (idx_str));
+  }
 
-  void mark_modified (int idx) {
+  void mark_modified (int idx)
+  {
     wm_iterator win;
-    if ( (win=windows.find (idx)) != windows.end ())
+    if ((win=windows.find (idx)) != windows.end ())
       {
 	(*win).second->mark_modified ();
       }
-  };
+  }
 
-  void mark_modified (const graphics_handle& gh) 
-  { mark_modified (hnd2idx(gh)); }
+  void mark_modified (const graphics_handle& gh)
+  {
+    mark_modified (hnd2idx (gh));
+  }
 
   Matrix get_size (int idx)
   {
     Matrix sz (1, 2, 0.0);
 
     wm_iterator win;
-    if ( (win=windows.find (idx)) != windows.end ())
+    if ((win = windows.find (idx)) != windows.end ())
       {
 	sz(0) = (*win).second->w ();
 	sz(1) = (*win).second->h ();
       }
-    
+
     return sz;
   }
 
-  Matrix get_size (const graphics_handle& gh) 
-  { return get_size (hnd2idx (gh)); }
+  Matrix get_size (const graphics_handle& gh)
+  {
+    return get_size (hnd2idx (gh));
+  }
 
 private:
-  figure_manager () {};
-  figure_manager (const figure_manager& ) {};
-  figure_manager& operator = (const figure_manager&) {return *this;};
+  figure_manager (void) { }
+  figure_manager (const figure_manager&) { }
+  figure_manager& operator = (const figure_manager&) { return *this; }
   // singelton -- hide all of the above
 
   static int curr_index;
@@ -571,7 +604,8 @@ private:
 
   static std::string fltk_idx_header;
 
-  void default_size (int& x, int& y, int& w, int& h) {
+  void default_size (int& x, int& y, int& w, int& h)
+  {
     x = 10;
     y = 10;
     w = 400;
@@ -584,7 +618,7 @@ private:
     if (clstr.find (fltk_idx_header,0) == 0)
       {
 	std::istringstream istr (clstr.substr (fltk_idx_header.size ()));
-	if (istr >> ind )
+	if (istr >> ind)
 	  return ind;
       }
     error ("fltk_backend: could not recognize fltk index");
@@ -613,21 +647,22 @@ private:
   }
 
   int hnd2idx (const graphics_handle& fh)
-  { return hnd2idx (fh.value ()); }
+  {
+    return hnd2idx (fh.value ());
+  }
 
   int hnd2idx (const double h)
   {
     graphics_object fobj = gh_manager::get_object (h);
-    if (fobj &&  fobj.isa ("figure")) 
+    if (fobj &&  fobj.isa ("figure"))
       {
-	figure::properties& fp = 
+	figure::properties& fp =
 	  dynamic_cast<figure::properties&> (fobj.get_properties ());
 	return figprops2idx (fp);
       }
     error ("fltk_backend:: not a figure");
     return -1;
   }
-
 };
 
 std::string figure_manager::fltk_idx_header="fltk index=";
@@ -637,43 +672,42 @@ class fltk_backend : public base_graphics_backend
 {
 public:
   fltk_backend (void)
-      : base_graphics_backend (FLTK_BACKEND_NAME) { }
+    : base_graphics_backend (FLTK_BACKEND_NAME) { }
 
   ~fltk_backend (void) { }
 
   bool is_valid (void) const { return true; }
- 
+
   void close_figure (const octave_value& ov) const
-    {
-      if (ov.is_string ())
-	figure_manager::Instance ().delete_window (ov.string_value ());
-    }
+  {
+    if (ov.is_string ())
+      figure_manager::Instance ().delete_window (ov.string_value ());
+  }
 
   void redraw_figure (const graphics_handle& fh) const
-    {
-      figure_manager::Instance ().mark_modified (fh);
-    }
+  {
+    figure_manager::Instance ().mark_modified (fh);
+  }
 
-  void print_figure (const graphics_handle& fh, const std::string& term,
-		     const std::string& file, bool mono,
-		     const std::string& debug_file) const
-    {
-    }
+  void print_figure (const graphics_handle& /*fh*/,
+		     const std::string& /*term*/,
+		     const std::string& /*file*/, bool /*mono*/,
+		     const std::string& /*debug_file*/) const { }
 
   Matrix get_canvas_size (const graphics_handle& fh) const
-    {
-      return figure_manager::Instance ().get_size (fh);
-    }
+  {
+    return figure_manager::Instance ().get_size (fh);
+  }
 
   double get_screen_resolution (void) const
-    { 
-      // FLTK doesn't give this info
-      return 72.0; 
-    }
+  {
+    // FLTK doesn't give this info
+    return 72.0;
+  }
 
   Matrix get_screen_size (void) const
-  { 
-    Matrix sz (1, 2, 0.0); 
+  {
+    Matrix sz (1, 2, 0.0);
     sz(0) = Fl::w ();
     sz(1) = Fl::h ();
     return sz;
@@ -682,24 +716,24 @@ public:
 
 static bool backend_registered = false;
 // call this to init the fltk backend
-DEFUN_DLD (__init_fltk__, args, nargout,"")
+DEFUN_DLD (__init_fltk__, , , "")
 {
   graphics_backend::register_backend (new fltk_backend);
   backend_registered = true;
 
   octave_value retval;
-  return retval;	
+  return retval;
 }
 
 
 // call this to delete the fltk backend
-DEFUN_DLD (__remove_fltk__, args, nargout,"")
+DEFUN_DLD (__remove_fltk__, , , "")
 {
   figure_manager::Instance ().close_all ();
   graphics_backend::unregister_backend (FLTK_BACKEND_NAME);
   backend_registered = false;
 
-
+  // FIXME ???
   // give FLTK 10 seconds to wrap it up
   Fl::wait(10);	
   octave_value retval;
@@ -710,24 +744,24 @@ DEFUN_DLD (__remove_fltk__, args, nargout,"")
 static double fltk_maxtime = 1e-2;
 
 // call this to delete the fltk backend
-DEFUN_DLD (__fltk_maxtime__, args, nargout,"")
+DEFUN_DLD (__fltk_maxtime__, args, ,"")
 {
-  octave_value retval=fltk_maxtime;  
+  octave_value retval = fltk_maxtime;
 
-  if (args.length () == 1 ) 
+  if (args.length () == 1)
     {
       if (args(0).is_real_scalar ())
       fltk_maxtime = args(0).double_value ();
     else
-      error("argument must be a real scalar");
+      error ("argument must be a real scalar");
     }
 
   return retval;
 }
 
 // call this from the idle_callback to refresh windows
-DEFUN_DLD (__fltk_redraw__, args, nargout,\
-	   "internal function for the fltk backend")
+DEFUN_DLD (__fltk_redraw__, , ,
+  "internal function for the fltk backend")
 {
   octave_value retval;
 
@@ -741,21 +775,20 @@ DEFUN_DLD (__fltk_redraw__, args, nargout,\
       base_properties& props = obj.get_properties ();
       Matrix children = props.get_children ();
 
-      for (octave_idx_type n = 0; n < children.numel (); n++) 
+      for (octave_idx_type n = 0; n < children.numel (); n++)
         {
           graphics_object fobj = gh_manager::get_object (children (n));
-          if (fobj)
-	    if (fobj.isa ("figure")) 
-	      {
-		figure::properties& fp = 
-		  dynamic_cast<figure::properties&> (fobj.get_properties ());
-		if (fp.get___backend__ () == FLTK_BACKEND_NAME)
-		  figure_manager::Instance ().new_window (fp);
-	      }
+          if (fobj && fobj.isa ("figure"))
+	    {
+	      figure::properties& fp =
+		dynamic_cast<figure::properties&> (fobj.get_properties ());
+	      if (fp.get___backend__ () == FLTK_BACKEND_NAME)
+		figure_manager::Instance ().new_window (fp);
+	    }
         }
     }
 
-  Fl::wait(fltk_maxtime);	
+  Fl::wait (fltk_maxtime);	
 
   return retval;	
 }

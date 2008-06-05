@@ -3449,9 +3449,9 @@ surface::properties::update_normals (void)
 		  j3 = j+1;
 		}
 
-	      double& nx = n(j, i, 0);
-	      double& ny = n(j, i, 1);
-	      double& nz = n(j, i, 2);
+	      double nx = n(j,i,0);
+	      double ny = n(j,i,1);
+	      double nz = n(j,i,2);
 
 	      cross_product (x(j3,i)-x(j2,i), y(j+1,i2)-y(j,i2), z(j+1,i)-z(j,i),
 			     x(j2,i+1)-x(j2,i), y(j,i3)-y(j,i2), z(j,i+1)-z(i,j),

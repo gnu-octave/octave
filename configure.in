@@ -664,11 +664,12 @@ FTGLTextureFont font("");], [
           OPENGL_LIBS="$OPENGL_LIBS $FT2_LIBS -lftgl"
 	  LIBS="$save_LIBS"
           AC_DEFINE(HAVE_FTGL, 1, [Define to 1 if FTGL is present])
-	  AC_MSG_RESULT(yes)],[
-	  LIBS="$save_LIBS"
-	  CXXFLAGS="$save_CXXFLAGS"
+	  AC_MSG_RESULT(yes)
+	  XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],[
 	  AC_MSG_RESULT(no)])],[
           warn_graphics="FTGL library not found. Native renderer will not have on-screen text"])
+	  LIBS="$save_LIBS"
+	  CXXFLAGS="$save_CXXFLAGS"
     AC_LANG_POP(C++)
   fi
 fi
@@ -1961,9 +1962,7 @@ AC_CONFIG_FILES([Makefile octMakefile Makeconf test/Makefile
   libcruft/qrupdate/Makefile
   libcruft/ranlib/Makefile libcruft/slatec-fn/Makefile
   libcruft/slatec-err/Makefile libcruft/villad/Makefile
-  libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile
-  src/graphics/Makefile src/graphics/Makerules
-  src/graphics/opengl/Makefile src/graphics/fltk_backend/Makefile])
+  libcruft/blas-xtra/Makefile libcruft/lapack-xtra/Makefile])
 AC_OUTPUT
 
 AC_CONFIG_COMMANDS([default-1],[[chmod +x install-octave]],[[]])

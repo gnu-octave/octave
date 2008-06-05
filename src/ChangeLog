@@ -1,5 +1,21 @@
 2008-06-05  John W. Eaton  <jwe@octave.org>
 
+	* gl-render.cc (opengl_renderer::draw): Correctly avoid shadow
+	warnings from gcc for xmin, xmax, ymin, ymax, zmin, and zmax.
+
+	* graphics/ChangeLog, graphics/Makefile.in, graphics/Makerules.in,
+	graphics/fltk_backend/Makefile.in, graphics/opengl/Makefile.in:
+	Delete.
+
+	* gl-render.cc, gl-render.h: Move here from src/graphics/opengl.
+	* Makefile.in: Add them to the appropriate lists.
+	(octave$(EXEEXT)): Also link with $(OPENGL_LIBS)
+
+	* fltk_backend.cc: Move here from src/graphics/fltk_backend.
+	* Makefile.in (DLD_XSRC): Add it to the list
+	(fltk_backend.oct): Include special rules for linking with
+	$(GRAPHICS_LIBS) and $(FT2_LIBS).
+
 	* dynamic-ld.cc (octave_dynamic_loader::mex_mangler,
 	octave_dynamic_loader::mex_uscore_mangler,
 	octave_dynamic_loader::mex_f77_mangler): New functions.
@@ -11,6 +27,192 @@
 
 	* graphics.cc (properties::update_normals): Style fixes.
 	* graphics.h.in: Style fixes.
+
+	ChangeLog entries for gl-render.h, gl-render.cc, and
+	fltk_backend.cc before the move:
+
+	2008-06-05  John W. Eaton  <jwe@octave.org>
+
+	* opengl/gl-render.cc (xmin): New static function.
+
+	* opengl/gl-render.h (opengl_renderer): Style fixes.
+	* fltk_backend/fltk_backend.cc: Style fixes.
+
+	2008-04-26  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h (opengl_renderer::draw(hggroup)): New method.
+	* opengl/gl-render.cc (opengl_renderer::draw(hggroup)): Likewise.
+	(opengl_renderer::draw(graphics_object)): Call it.
+
+	2008-03-17  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (plot_window::resize,
+	plot_window::draw): make canvas the size of figure.position
+
+	2008-03-09  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (plot_window::handle): add zoom
+	stack
+
+	2008-03-06  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (plot_window::handle): Add handling
+	of the 'a' and 'g' keys
+	(plot_window: toggle_grid): New helper function
+	(plot_window): Add new togglegrid button
+
+	2008-03-01  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (OpenGL_fltk::draw_overlay,
+	OpenGL_fltk::zoom, OpenGL_fltk::set_zoom_box): Added to support
+	zoom box
+	(plot_window::handle): Added zoom box code, B-3 now does autoscale
+	(plot_window::axis_auto): New utility function to call axis("auto")
+	(plot_window::button_press): "A" button now does autoscale
+
+	* opengl/gl-render.cc (make_marker_list): Add the "+x*.^v><"
+	markers
+
+	2008-02-27  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_renderer::draw(patch),
+	opengl_renderer::draw(surface)): Adapt to type change of facealpha and
+	edgealpha, using double_radio_property class.
+
+	2008-02-26  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h: Make sure windows.h is included before OpenGL
+	headers.
+	* fltk_backend/Makefile.in (FLTK_EXTRA_CXXFLAGS): Use $(srcdir) for
+	includesion of OpenGL renderer headers.
+	(Makeconf): Move inclusion of Makeconf later on, to avoid freezing
+	MinGW make.
+
+	* fltk_backend/Makefile.in (GRAPHICS_CFLAGS): New substituted
+	variable.
+
+	2008-02-25  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (class plot_window): Many changes
+	to use figure::properties instead of figure handle to reference
+	the figure
+	(class figure_manager): ditto
+	(__fltk_redraw__): moved most of functionality into the
+	figure_manager class
+	(plot_window::pixel2pos): Modified to use axes::pixel2coord
+	(plot_window::pixel2staus): Modified to use pixel2pos
+	(plot_window::handle): Added zoom with mouse 
+
+	2008-02-24  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (OpenGL_fltk::Draw): removed double
+	buffer switch
+	(OpenGL_fltk::setup_viewport): removed call to glOrtho --
+	gl-render takes care of all the transformations
+
+	2008-02-23  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/fltk_backend.cc (plot_window::mark_modifed): mark
+	the whole window as damaged (otherwise changing figure.postion
+	does not have immediate effect)
+	(plot_window::draw): New function, checks for window size 
+	(__fltk_maxtime__): New DEFUN to allow tweaking of fltk timeout
+	(__fltk_redraw__): Use fltk_maxtime as timeout
+
+	2008-02-21  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_renderer::patch_tesselator::combine):
+	Protect against NULL vertex data.
+
+	* opengl/gl-render.cc (opengl_renderer::draw(patch)): Add marker
+	rendering of patch objects.
+
+	2008-02-21  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* opengl/gl-render.cc: remove OpenGL includes
+	* opengl/gl-render.h: add OpenGL includes
+	* fltk_backend/fltk_backend.cc: remove OpenGL includes
+	(__fltk_redraw__): put figure handle into the figure's
+	__plot_stream__ property for later
+	(fltk_backend::close_figure): use argument as figure handle to
+	close
+
+	2008-02-20  Shai Ayal  <shaiay@users.sourceforge.net>
+
+	* fltk_backend/Makefile.in: initial import
+
+	* fltk_backend/fltk_backend.cc: initial import
+	
+
+	2008-02-20  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h (opengl_renderer::draw(patch)): New method to
+	render patch objects.
+	(class opengl_renderer::patch_tesselator): Forward declaration.
+	* opengl/gl-render.cc (opengl_texture::create): Use RGB data format
+	instead of RGBA.
+	(class opengl_tesselator): New classes to abstract GLU tessellation
+	process.
+	(class opengl_renderer::patch_tesselator): New class to render opaque
+	patch objects.
+	(class vertex_data): New class to hold vertex data during tessellation
+	of patch objects.
+	(opengl_renderer::draw(patch)): New method to render patch objects (no
+	transparency, no border, no marker yet).
+	(opengl_renderer::draw(graphics_object)): Dispatch to it.
+
+	* opengl/gl-render.cc (opengl_renderer::draw(patch)): Use patch color
+	data and support face/vertex single color specification.
+
+	* opengl/gl-render.cc (opengl_tesselator::begin_polygon): Set
+	tessellation property also for non-filled polygons.
+	(opengl_renderer::patch_tesselator::vertex): Protect against empty
+	color matrices.
+	(opengl_renderer::draw(patch)): Render patch border (no transparency
+	yet).
+
+	2008-02-19  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_texture::texture_rep::tex_coord,
+	opengl_texture::tex_coord): New wrapper around glTexCoord2d.
+	(opengl_renderer::draw(surface)): Use it for texturemap
+	implementation.
+	(opengl_renderer::draw(surface)): Fix indexing bug when creating clip
+	matrix.
+	(opengl_texture::operator=): Add assignment operator.
+	(opengl_texture::create): New static opengl_texture creator.
+	(opengl_texture::is_valid): New accessor.
+
+	2008-02-18  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (class opengl_texture): New class to wrap
+	texture operations in OpenGL.
+
+	2008-02-17  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_renderer::draw(surface)): Set material
+	color when rendering surface facets.
+
+	* opengl/gl-render.cc (opengl_renderer::draw(surface)): Add rendering
+	of mesh and markers.
+
+	2008-02-16  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.cc (opengl_renderer::draw(figure)): Initialize the
+	OpenGL context correctly.
+	(opengl_renderer::draw(surface)): Add missing glEnd call.
+
+	2008-02-14  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* opengl/gl-render.h opengl/gl-render.cc: Add rendering
+	interface for surface objects (actual implement still
+	missing).
+
+	2008-02-14  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Makefile.in Makerules.in: Initial import
+	* opengl/Makefile.in: Likewise.
+	* opengl/gl-render.h opengl/gl-render.cc: Likewise.
 
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 

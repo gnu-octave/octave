@@ -1010,7 +1010,7 @@ opengl_renderer::draw (const axes::properties& props)
 	  xlabel_props.set_verticalalignment (xstate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
 
           double angle = 0;
-          ColumnVector p = graphics_xform::xform_vector ((xmin+xmax)/2, yPlaneN, zPlane);
+          ColumnVector p = graphics_xform::xform_vector ((x_min+x_max)/2, yPlaneN, zPlane);
 
           if (tick_along_z)
             p(2) += (signum(zPlane-zPlaneN)*fz*xtickoffset);
@@ -1197,7 +1197,7 @@ opengl_renderer::draw (const axes::properties& props)
 	  ylabel_props.set_verticalalignment (ystate == AXE_VERT_DIR ? "bottom" : (zd*zv(2) <= 0 ? "top" : "bottom"));
 
           double angle = 0;
-          ColumnVector p = graphics_xform::xform_vector (xPlaneN, (ymin+ymax)/2, zPlane);
+          ColumnVector p = graphics_xform::xform_vector (xPlaneN, (y_min+y_max)/2, zPlane);
 
           if (tick_along_z)
             p(2) += (signum(zPlane-zPlaneN)*fz*ytickoffset);
@@ -1447,7 +1447,7 @@ opengl_renderer::draw (const axes::properties& props)
 
           if (xySym)
             {
-              p = graphics_xform::xform_vector (xPlaneN, yPlane, (zmin+zmax)/2);
+              p = graphics_xform::xform_vector (xPlaneN, yPlane, (z_min+z_max)/2);
               if (xisinf (fy))
                 p(0) += (signum(xPlaneN-xPlane)*fx*ztickoffset);
               else
@@ -1455,7 +1455,7 @@ opengl_renderer::draw (const axes::properties& props)
             }
           else
             {
-              p = graphics_xform::xform_vector (xPlane, yPlaneN, (zmin+zmax)/2);
+              p = graphics_xform::xform_vector (xPlane, yPlaneN, (z_min+z_max)/2);
               if (xisinf (fx))
                 p(1) += (signum(yPlaneN-yPlane)*fy*ztickoffset);
               else
@@ -1506,7 +1506,7 @@ opengl_renderer::draw (const axes::properties& props)
       title_props.set_position (p.extract_n(0, 3).transpose ());
     }
 
-  set_clipbox (xmin, xmax, ymin, ymax, zmin, zmax);
+  set_clipbox (x_min, x_max, y_min, y_max, z_min, z_max);
 
   // Children
 
@@ -2775,3 +2775,9 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
   return ID;
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

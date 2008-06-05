@@ -1,3 +1,12 @@
+2008-06-05  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Add FT2_CFLAGS to XTRA_CXXFLAGS, not CXXFLAGS.
+	Don't add FT2_LIBS to LIBS.
+	Don't generate src/graphics/Makefile, src/graphics/Makerules,
+	src/graphics/opengl/Makefile, or src/graphics/fltk_backend/Makefile.
+
+	* Makeconf.in (FT2_LIBS, GRAPHICS_LIBS): Substitute here.
+
 2008-06-04  Shai Ayal  <shaiay@users.sourceforge.net>
 
 	* configure.in: Use AC_TRY_LINK in FTGL test.

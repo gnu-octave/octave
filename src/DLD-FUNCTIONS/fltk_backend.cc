@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2007 Shai Ayal
+Copyright (C) 2007, 2008 Shai Ayal
 
 This file is part of Octave.
 
@@ -20,14 +20,25 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
-#include <map>
-#include <set>
-#include <sstream>
-#include <iostream>
+/*
+
+To initialize:
+
+  input_event_hook ("__fltk_redraw__");
+  __init_fltk__ ();
+  set (gcf (), "__backend__", "fltk");
+  plot (randn (1e3, 1));
+
+*/
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include <map>
+#include <set>
+#include <sstream>
+#include <iostream>
 
 #include "gl-render.h"
 
@@ -793,15 +804,8 @@ DEFUN_DLD (__fltk_redraw__, , ,
   return retval;	
 }
 
-/* to init
-autoload("__init_fltk__",[pwd(),"/fltk_backend.oct"])
-autoload("__remove_fltk__",[pwd(),"/fltk_backend.oct"])
-autoload("__fltk_redraw__",[pwd(),"/fltk_backend.oct"])
-autoload("__fltk_maxtime__",[pwd(),"/fltk_backend.oct"])
-input_event_hook ("__fltk_redraw__");
-__init_fltk__ ();
-set(gcf(),"__backend__","fltk")
-plot(randn(1e3,1));
-
-
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
 */

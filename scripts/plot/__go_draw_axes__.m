@@ -1075,27 +1075,27 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 	fputs (plot_stream, "set border 895;\n");
       else
 	if (strcmpi (axis_obj.yaxislocation, "right"))
-	  fputs (plot_stream, "unset ytics; set y2tics %s nomirror\n",
-		 axis_obj.tickdir);
+	  fprintf (plot_stream, "unset ytics; set y2tics %s nomirror\n",
+		   axis_obj.tickdir);
 	  if (strcmpi (axis_obj.xaxislocation, "top"))
-	    fputs (plot_stream, "unset xtics; set x2tics %s nomirror\n",
-		 axis_obj.tickdir);
+	    fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
+		     axis_obj.tickdir);
 	    fputs (plot_stream, "set border 12;\n");
 	  else
-	    fputs (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-		 axis_obj.tickdir);
+	    fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
+		     axis_obj.tickdir);
 	    fputs (plot_stream, "set border 9;\n");
 	  endif
 	else
-	  fputs (plot_stream, "unset y2tics; set ytics %s nomirror\n",
-		 axis_obj.tickdir);
-	  if (strcmpi (axis_obj.xaxislocation, "top"))
-	    fputs (plot_stream, "unset xtics; set x2tics %s nomirror\n",
+	  fprintf (plot_stream, "unset y2tics; set ytics %s nomirror\n",
 		   axis_obj.tickdir);
+	  if (strcmpi (axis_obj.xaxislocation, "top"))
+	    fprintf (plot_stream, "unset xtics; set x2tics %s nomirror\n",
+		     axis_obj.tickdir);
 	    fputs (plot_stream, "set border 6;\n");
 	  else
-	    fputs (plot_stream, "unset x2tics; set xtics %s nomirror\n",
-		   axis_obj.tickdir);
+	    fprintf (plot_stream, "unset x2tics; set xtics %s nomirror\n",
+		     axis_obj.tickdir);
 	    fputs (plot_stream, "set border 3;\n");
 	  endif
 	endif

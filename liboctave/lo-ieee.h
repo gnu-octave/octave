@@ -64,9 +64,12 @@ typedef union
   unsigned int word;
 } lo_ieee_float;
 
-#define LO_IEEE_NA_HW 0x7ff00000
-#define LO_IEEE_NA_LW 1954
-#define LO_IEEE_NA_FLOAT   0x7f8207a2
+#define LO_IEEE_NA_HW_OLD 0x7ff00000
+#define LO_IEEE_NA_LW_OLD 1954
+#define LO_IEEE_NA_HW 0x7FF840F4
+#define LO_IEEE_NA_LW 0x40000000
+#define LO_IEEE_NA_FLOAT   0x7FC207A2
+ 
 
 extern OCTAVE_API void octave_ieee_init (void);
 
@@ -85,7 +88,9 @@ extern OCTAVE_API int __lo_ieee_finite (double x);
 extern OCTAVE_API int __lo_ieee_isinf (double x);
 
 extern OCTAVE_API int __lo_ieee_is_NA (double);
+extern OCTAVE_API int __lo_ieee_is_old_NA (double);
 extern OCTAVE_API int __lo_ieee_is_NaN_or_NA (double) GCC_ATTR_DEPRECATED;
+extern OCTAVE_API double __lo_ieee_replace_old_NA (double);
 
 extern OCTAVE_API double lo_ieee_inf_value (void);
 extern OCTAVE_API double lo_ieee_na_value (void);

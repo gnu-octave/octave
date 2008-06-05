@@ -34,6 +34,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "byte-swap.h"
 #include "data-conv.h"
 #include "lo-error.h"
+#include "lo-ieee.h"
 
 template void swap_bytes<2> (volatile void *, int);
 template void swap_bytes<4> (volatile void *, int);
@@ -1048,8 +1049,13 @@ read_doubles (std::istream& is, double *data, save_type type, int len,
       break;
 
     case LS_DOUBLE: // No conversion necessary.
-      is.read (reinterpret_cast<char *> (data), 8 * len);
-      do_double_format_conversion (data, len, fmt);
+      {
+	is.read (reinterpret_cast<char *> (data), 8 * len);
+	do_double_format_conversion (data, len, fmt);
+
+	for (int i = 0; i < len; i++)
+	  data[i] = __lo_ieee_replace_old_NA (data[i]);
+      }
       break;
 
     default:

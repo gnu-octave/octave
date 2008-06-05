@@ -3824,6 +3824,13 @@ to the special constant used to designate missing values.\n\
 		      lo_ieee_float_na_value (), "NA");
 }
 
+/*
+
+%!assert(single(NA('double')),NA('single'))
+%!assert(double(NA('single')),NA('double'))
+
+ */
+
 DEFUN (false, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} false (@var{x})\n\

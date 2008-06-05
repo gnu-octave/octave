@@ -150,10 +150,33 @@ __lo_ieee_is_NA (double x)
 #if defined (HAVE_ISNAN)
   lo_ieee_double t;
   t.value = x;
-  return (isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
+  return (isnan (x) && t.word[lo_ieee_hw] == LO_IEEE_NA_HW 
+	  && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
 #else
   return 0;
 #endif
+}
+
+int
+__lo_ieee_is_old_NA (double x)
+{
+#if defined (HAVE_ISNAN)
+  lo_ieee_double t;
+  t.value = x;
+  return (isnan (x) && t.word[lo_ieee_lw] == LO_IEEE_NA_LW_OLD 
+	  && t.word[lo_ieee_hw] == LO_IEEE_NA_HW_OLD) ? 1 : 0;
+#else
+  return 0;
+#endif
+}
+
+double
+__lo_ieee_replace_old_NA (double x)
+{
+  if (__lo_ieee_is_old_NA (x))
+    return lo_ieee_na_value ();
+  else
+    return x;
 }
 
 int

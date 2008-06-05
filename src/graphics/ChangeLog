@@ -1,5 +1,7 @@
 2008-06-05  John W. Eaton  <jwe@octave.org>
 
+	* opengl/gl-render.cc (xmin): New static function.
+
 	* opengl/gl-render.h (opengl_renderer): Style fixes.
 	* fltk_backend/fltk_backend.cc: Style fixes.
 

@@ -43,6 +43,12 @@ enum {
   AXE_VERT_DIR  = 3
 };
 
+static octave_idx_type
+xmin (octave_idx_type x, octave_idx_type y)
+{
+  return x < y ? x : y;
+}
+
 class
 opengl_texture
 {
@@ -242,16 +248,16 @@ public:
     { gluTessVertex (glu_tess, loc, data); }
 
 protected:
-  virtual void begin (GLenum type) { }
+  virtual void begin (GLenum /*type*/) { }
 
   virtual void end (void) { }
 
-  virtual void vertex (void *data) { }
+  virtual void vertex (void */*data*/) { }
 
-  virtual void combine (GLdouble c[3], void *data[4],
-			GLfloat w[4], void **out_data) { }
+  virtual void combine (GLdouble /*c*/[3], void */*data*/[4],
+			GLfloat /*w*/[4], void **/*out_data*/) { }
 
-  virtual void edge_flag (GLboolean flag) { }
+  virtual void edge_flag (GLboolean /*flag*/) { }
 
   virtual void error (GLenum err)
     { ::error ("OpenGL tesselation error (%d)", err); }
@@ -598,9 +604,9 @@ opengl_renderer::draw (const axes::properties& props)
   Matrix xlim = xform.xscale (props.get_xlim ().matrix_value ());
   Matrix ylim = xform.yscale (props.get_ylim ().matrix_value ());
   Matrix zlim = xform.zscale (props.get_zlim ().matrix_value ());
-  double xmin = xlim(0), xmax = xlim(1);
-  double ymin = ylim(0), ymax = ylim(1);
-  double zmin = zlim(0), zmax = zlim(1);
+  double x_min = xlim(0), x_max = xlim(1);
+  double y_min = ylim(0), y_max = ylim(1);
+  double z_min = zlim(0), z_max = zlim(1);
   
   double xd = (props.xdir_is ("normal") ? 1 : -1);
   double yd = (props.ydir_is ("normal") ? 1 : -1);
@@ -611,8 +617,8 @@ opengl_renderer::draw (const axes::properties& props)
 
   xstate = ystate = zstate = AXE_ANY_DIR;
 
-  p1 = xform.transform (xmin, (ymin+ymax)/2, (zmin+zmax)/2, false);
-  p2 = xform.transform (xmax, (ymin+ymax)/2, (zmin+zmax)/2, false);
+  p1 = xform.transform (x_min, (y_min+y_max)/2, (z_min+z_max)/2, false);
+  p2 = xform.transform (x_max, (y_min+y_max)/2, (z_min+z_max)/2, false);
   xv(0) = xround (p2(0)-p1(0));
   xv(1) = xround (p2(1)-p1(1));
   xv(2) = (p2(2)-p1(2));
@@ -628,16 +634,16 @@ opengl_renderer::draw (const axes::properties& props)
   double xPlane;
   if (xv(2) == 0)
     if (xv(1) == 0)
-      xPlane = (xv(0) > 0 ? xmax : xmin);
+      xPlane = (xv(0) > 0 ? x_max : x_min);
     else
-      xPlane = (xv(1) < 0 ? xmax : xmin);
+      xPlane = (xv(1) < 0 ? x_max : x_min);
   else
-    xPlane = (xv(2) < 0 ? xmin : xmax);
-  double xPlaneN = (xPlane == xmin ? xmax : xmin);
-  double fx = (xmax-xmin)/sqrt(xv(0)*xv(0)+xv(1)*xv(1));
+    xPlane = (xv(2) < 0 ? x_min : x_max);
+  double xPlaneN = (xPlane == x_min ? x_max : x_min);
+  double fx = (x_max-x_min)/sqrt(xv(0)*xv(0)+xv(1)*xv(1));
 
-  p1 = xform.transform ((xmin+xmax)/2, ymin, (zmin+zmax)/2, false);
-  p2 = xform.transform ((xmin+xmax)/2, ymax, (zmin+zmax)/2, false);
+  p1 = xform.transform ((x_min+x_max)/2, y_min, (z_min+z_max)/2, false);
+  p2 = xform.transform ((x_min+x_max)/2, y_max, (z_min+z_max)/2, false);
   yv(0) = xround (p2(0)-p1(0));
   yv(1) = xround (p2(1)-p1(1));
   yv(2) = (p2(2)-p1(2));
@@ -653,16 +659,16 @@ opengl_renderer::draw (const axes::properties& props)
   double yPlane;
   if (yv(2) == 0)
     if (yv(1) == 0)
-      yPlane = (yv(0) > 0 ? ymax : ymin);
+      yPlane = (yv(0) > 0 ? y_max : y_min);
     else
-      yPlane = (yv(1) < 0 ? ymax : ymin);
+      yPlane = (yv(1) < 0 ? y_max : y_min);
   else
-    yPlane = (yv(2) < 0 ? ymin : ymax);
-  double yPlaneN = (yPlane == ymin ? ymax : ymin);
-  double fy = (ymax-ymin)/sqrt(yv(0)*yv(0)+yv(1)*yv(1));
+    yPlane = (yv(2) < 0 ? y_min : y_max);
+  double yPlaneN = (yPlane == y_min ? y_max : y_min);
+  double fy = (y_max-y_min)/sqrt(yv(0)*yv(0)+yv(1)*yv(1));
 
-  p1 = xform.transform((xmin+xmax)/2, (ymin+ymax)/2, zmin, false);
-  p2 = xform.transform((xmin+xmax)/2, (ymin+ymax)/2, zmax, false);
+  p1 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_min, false);
+  p2 = xform.transform((x_min+x_max)/2, (y_min+y_max)/2, z_max, false);
   zv(0) = xround(p2(0)-p1(0));
   zv(1) = xround (p2(1)-p1(1));
   zv(2) = (p2(2)-p1(2));
@@ -678,13 +684,13 @@ opengl_renderer::draw (const axes::properties& props)
   double zPlane;
   if (zv(2) == 0)
     if (zv(1) == 0)
-      zPlane = (zv(0) > 0 ? zmin : zmax);
+      zPlane = (zv(0) > 0 ? z_min : z_max);
     else
-      zPlane = (zv(1) < 0 ? zmin : zmax);
+      zPlane = (zv(1) < 0 ? z_min : z_max);
   else
-    zPlane = (zv(2) < 0 ? zmin : zmax);
-  double zPlaneN = (zPlane == zmin ? zmax : zmin);
-  double fz = (zmax-zmin)/sqrt(zv(0)*zv(0)+zv(1)*zv(1));
+    zPlane = (zv(2) < 0 ? z_min : z_max);
+  double zPlaneN = (zPlane == z_min ? z_max : z_min);
+  double fz = (z_max-z_min)/sqrt(zv(0)*zv(0)+zv(1)*zv(1));
 
   bool mode2d = (((xstate > AXE_DEPTH_DIR ? 1 : 0) +
         (ystate > AXE_DEPTH_DIR ? 1 : 0) +
@@ -749,22 +755,22 @@ opengl_renderer::draw (const axes::properties& props)
       glBegin (GL_QUADS);
 
       // X plane
-      glVertex3d (xPlane, ymin, zmin);
-      glVertex3d (xPlane, ymax, zmin);
-      glVertex3d (xPlane, ymax, zmax);
-      glVertex3d (xPlane, ymin, zmax);
+      glVertex3d (xPlane, y_min, z_min);
+      glVertex3d (xPlane, y_max, z_min);
+      glVertex3d (xPlane, y_max, z_max);
+      glVertex3d (xPlane, y_min, z_max);
 
       // Y plane
-      glVertex3d (xmin, yPlane, zmin);
-      glVertex3d (xmax, yPlane, zmin);
-      glVertex3d (xmax, yPlane, zmax);
-      glVertex3d (xmin, yPlane, zmax);
+      glVertex3d (x_min, yPlane, z_min);
+      glVertex3d (x_max, yPlane, z_min);
+      glVertex3d (x_max, yPlane, z_max);
+      glVertex3d (x_min, yPlane, z_max);
 
       // Z plane
-      glVertex3d (xmin, ymin, zPlane);
-      glVertex3d (xmax, ymin, zPlane);
-      glVertex3d (xmax, ymax, zPlane);
-      glVertex3d (xmin, ymax, zPlane);
+      glVertex3d (x_min, y_min, zPlane);
+      glVertex3d (x_max, y_min, zPlane);
+      glVertex3d (x_max, y_max, zPlane);
+      glVertex3d (x_min, y_max, zPlane);
 
       glEnd ();
 
@@ -2190,8 +2196,10 @@ opengl_renderer::draw (const patch::properties &props)
   Matrix n = props.get_vertexnormals ().matrix_value ();
   Matrix a;
 
-  int nv = v.rows (), vmax = v.columns ();
-  int nf = f.rows (), fcmax = f.columns ();
+  int nv = v.rows ();
+  // int vmax = v.columns ();
+  int nf = f.rows ();
+  int fcmax = f.columns ();
 
   bool has_z = (v.columns () > 2);
   bool has_facecolor = false;

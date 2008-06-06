@@ -1930,7 +1930,7 @@ mislocked (const std::string& nm)
 
 DEFCMD (mlock, args, ,
   "-*- texinfo -*-\n\
-@deftypefn {Built-in Function} {} mlock (@var{name})\n\
+@deftypefn {Built-in Function} {} mlock ()\n\
 Lock the current function into memory so that it can't be cleared.\n\
 @seealso{munlock, mislocked, persistent}\n\
 @end deftypefn")

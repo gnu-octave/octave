@@ -1,3 +1,7 @@
+2008-06-06  John W. Eaton  <jwe@octave.org>
+
+	* variables.cc (Fmlock): Doc fix.
+
 2008-06-05  John W. Eaton  <jwe@octave.org>
 
 	* gl-render.cc (opengl_renderer::draw): Correctly avoid shadow

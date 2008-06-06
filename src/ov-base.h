@@ -310,6 +310,8 @@ public:
 
   virtual bool is_mex_function (void) const { return false; }
 
+  virtual void erase_subfunctions (void) { }
+
   virtual short int short_value (bool = false, bool = false) const;
 
   virtual unsigned short int ushort_value (bool = false, bool = false) const;

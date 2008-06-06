@@ -568,6 +568,14 @@ public:
 	  : std::pair<std::string, octave_value> (name, p->second);
       }	     
 
+      void erase_subfunction (scope_id scope)
+      {
+	scope_val_iterator p = subfunctions.find (scope);
+
+	if (p != subfunctions.end ())
+	  subfunctions.erase (p);
+      }
+
       void install_cmdline_function (const octave_value& f)
       {
 	cmdline_function = f;
@@ -620,7 +628,11 @@ public:
       void clear_user_function (void)
       {
 	if (! function_on_path.islocked ())
-	  function_on_path = octave_value ();
+	  {
+	    function_on_path.erase_subfunctions ();
+
+	    function_on_path = octave_value ();
+	  }
       }
 
       void clear_mex_function (void)
@@ -778,6 +790,11 @@ public:
     {
       return rep->subfunction_defined_in_scope (scope);
     }	     
+
+    void erase_subfunction (scope_id scope)
+    {
+      rep->erase_subfunction (scope);
+    }
 
     void install_cmdline_function (const octave_value& f)
     {
@@ -957,6 +974,13 @@ public:
 
 	free_scope (scope);
       }
+  }
+
+  static void erase_subfunctions_in_scope (scope_id scope)
+  {
+    for (fcn_table_iterator q = fcn_table.begin ();
+	 q != fcn_table.end (); q++)
+      q->second.erase_subfunction (scope);
   }
 
   static scope_id dup_scope (scope_id scope)

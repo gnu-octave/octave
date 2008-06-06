@@ -225,6 +225,11 @@ public:
 
   bool is_user_function (void) const { return true; }
 
+  void erase_subfunctions (void)
+    {
+      symbol_table::erase_subfunctions_in_scope (local_scope);
+    }
+
   bool takes_varargs (void) const;
 
   bool takes_var_return (void) const;

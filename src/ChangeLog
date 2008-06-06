@@ -1,5 +1,18 @@
 2008-06-06  John W. Eaton  <jwe@octave.org>
 
+	* ov.h (octave_value::erase_subfunctions):
+	New function.
+	* ov-base.h (octave_base_value::erase_subfunctions):
+	New virtual function.
+	* ov-usr-fcn.h (octave_user_function::erase_subfunctions):
+	New function.
+	* symtab.h (symbol_table::fcn_info::::erase_subfunction,
+	symbol_table::fcn_info::fcn_info_rep::erase_subfunction,
+	symbol_table::erase_subfunctions_in_scope):
+	New functions.
+	(symbol_table::fcn_info::fcn_info_rep::clear_user_function):
+	Erase subfunctions here.
+
 	* variables.cc (Fmlock): Doc fix.
 
 2008-06-05  John W. Eaton  <jwe@octave.org>

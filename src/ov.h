@@ -613,6 +613,8 @@ public:
   bool is_mex_function (void) const
     { return rep->is_mex_function (); }
 
+  void erase_subfunctions (void) { rep->erase_subfunctions (); }
+
   // Values.
 
   octave_value eval (void) { return *this; }

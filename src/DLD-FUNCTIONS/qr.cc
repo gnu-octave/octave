@@ -773,31 +773,69 @@ Q*Q'*u*v' instead of u*v'.\n\
 	      && argu.is_real_matrix () 
 	      && argv.is_real_matrix ())
             {
-              // all real case
-              Matrix Q = argq.matrix_value ();
-              Matrix R = argr.matrix_value ();
-              Matrix u = argu.matrix_value ();
-              Matrix v = argv.matrix_value ();
+	      // all real case
+	      if (argq.is_single_type () 
+		  || argr.is_single_type () 
+		  || argu.is_single_type () 
+		  || argv.is_single_type ())
+		{
+		  FloatMatrix Q = argq.float_matrix_value ();
+		  FloatMatrix R = argr.float_matrix_value ();
+		  FloatMatrix u = argu.float_matrix_value ();
+		  FloatMatrix v = argv.float_matrix_value ();
 
-              QR fact (Q, R);
-              fact.update (u, v);
+		  FloatQR fact (Q, R);
+		  fact.update (u, v);
 
-              retval(1) = fact.R ();
-              retval(0) = fact.Q ();
+		  retval(1) = fact.R ();
+		  retval(0) = fact.Q ();
+		}
+	      else
+		{
+		  Matrix Q = argq.matrix_value ();
+		  Matrix R = argr.matrix_value ();
+		  Matrix u = argu.matrix_value ();
+		  Matrix v = argv.matrix_value ();
+
+		  QR fact (Q, R);
+		  fact.update (u, v);
+
+		  retval(1) = fact.R ();
+		  retval(0) = fact.Q ();
+		}
             }
           else
             {
               // complex case
-              ComplexMatrix Q = argq.complex_matrix_value ();
-              ComplexMatrix R = argr.complex_matrix_value ();
-              ComplexMatrix u = argu.complex_matrix_value ();
-              ComplexMatrix v = argv.complex_matrix_value ();
+	      if (argq.is_single_type () 
+		  || argr.is_single_type () 
+		  || argu.is_single_type () 
+		  || argv.is_single_type ())
+		{
+		  FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+		  FloatComplexMatrix R = argr.float_complex_matrix_value ();
+		  FloatComplexMatrix u = argu.float_complex_matrix_value ();
+		  FloatComplexMatrix v = argv.float_complex_matrix_value ();
 
-              ComplexQR fact (Q, R);
-              fact.update (u, v);
+		  FloatComplexQR fact (Q, R);
+		  fact.update (u, v);
               
-              retval(1) = fact.R ();
-              retval(0) = fact.Q ();
+		  retval(1) = fact.R ();
+		  retval(0) = fact.Q ();
+		}
+	      else
+		{
+		  ComplexMatrix Q = argq.complex_matrix_value ();
+		  ComplexMatrix R = argr.complex_matrix_value ();
+		  ComplexMatrix u = argu.complex_matrix_value ();
+		  ComplexMatrix v = argv.complex_matrix_value ();
+
+		  ComplexQR fact (Q, R);
+		  fact.update (u, v);
+              
+		  retval(1) = fact.R ();
+		  retval(0) = fact.Q ();
+		}
             }
         }
       else
@@ -809,7 +847,7 @@ Q*Q'*u*v' instead of u*v'.\n\
   return retval;
 }
 /*
-%!test
+%!shared A, u, v, Ac, uc, vc
 %! A = [0.091364  0.613038  0.999083;
 %!      0.594638  0.425302  0.603537;
 %!      0.383594  0.291238  0.085574;
@@ -826,6 +864,24 @@ Q*Q'*u*v' instead of u*v'.\n\
 %!      0.24295;
 %!      0.43167 ];
 %!
+%! Ac = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
+%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
+%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
+%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
+%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
+%!
+%! uc = [0.20351 + 0.05401i;
+%!      0.13141 + 0.43708i;
+%!      0.29808 + 0.08789i;
+%!      0.69821 + 0.38844i;
+%!      0.74871 + 0.25821i ];
+%!
+%! vc = [0.85839 + 0.29468i;
+%!      0.20820 + 0.93090i;
+%!      0.86184 + 0.34689i ];
+%!
+
+%!test
 %! [Q,R] = qr(A);
 %! [Q,R] = qrupdate(Q,R,u,v);
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
@@ -833,27 +889,25 @@ Q*Q'*u*v' instead of u*v'.\n\
 %! assert(norm(vec(Q*R - A - u*v'),Inf) < norm(A)*1e1*eps)
 %! 
 %!test
-%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
-%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
-%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
-%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
-%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
-%!
-%! u = [0.20351 + 0.05401i;
-%!      0.13141 + 0.43708i;
-%!      0.29808 + 0.08789i;
-%!      0.69821 + 0.38844i;
-%!      0.74871 + 0.25821i ];
-%!
-%! v = [0.85839 + 0.29468i;
-%!      0.20820 + 0.93090i;
-%!      0.86184 + 0.34689i ];
-%!
-%! [Q,R] = qr(A);
-%! [Q,R] = qrupdate(Q,R,u,v);
+%! [Q,R] = qr(Ac);
+%! [Q,R] = qrupdate(Q,R,uc,vc);
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - A - u*v'),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - Ac - uc*vc'),Inf) < norm(Ac)*1e1*eps)
+
+%!test
+%! [Q,R] = qr(single(A));
+%! [Q,R] = qrupdate(Q,R,single(u),single(v));
+%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - single(A) - single(u)*single(v)'),Inf) < norm(single(A))*1e1*eps('single'))
+%! 
+%!test
+%! [Q,R] = qr(single(Ac));
+%! [Q,R] = qrupdate(Q,R,single(uc),single(vc));
+%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - single(Ac) - single(uc)*single(vc)'),Inf) < norm(single(Ac))*1e1*eps('single'))
 */
 
 DEFUN_DLD (qrinsert, args, ,
@@ -910,7 +964,7 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
             && argx.rows () == (row ? 1 : m)
             && argx.columns () == (row ? n : 1))
           {
-            octave_idx_type j = argj.int_value ();
+            octave_idx_type j = argj.idx_type_value ();
 
             if (j >= 1 && j <= (row ? n : m)+1)
               {
@@ -919,36 +973,80 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
 		    && argx.is_real_matrix ())
                   {
                     // real case
-                    Matrix Q = argq.matrix_value ();
-                    Matrix R = argr.matrix_value ();
-                    Matrix x = argx.matrix_value ();
+		    if (argq.is_single_type () 
+			|| argr.is_single_type () 
+			|| argx.is_single_type ())
+		      {
+			FloatMatrix Q = argq.float_matrix_value ();
+			FloatMatrix R = argr.float_matrix_value ();
+			FloatMatrix x = argx.float_matrix_value ();
 
-                    QR fact (Q, R);
+			FloatQR fact (Q, R);
 
-                    if (row) 
-                      fact.insert_row (x, j-1);
-                    else 
-                      fact.insert_col (x, j-1);
+			if (row) 
+			  fact.insert_row (x, j-1);
+			else 
+			  fact.insert_col (x, j-1);
 
-                    retval(1) = fact.R ();
-                    retval(0) = fact.Q ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+
+		      }
+		    else
+		      {
+			Matrix Q = argq.matrix_value ();
+			Matrix R = argr.matrix_value ();
+			Matrix x = argx.matrix_value ();
+
+			QR fact (Q, R);
+
+			if (row) 
+			  fact.insert_row (x, j-1);
+			else 
+			  fact.insert_col (x, j-1);
+
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+
+		      }
                   }
                 else
                   {
                     // complex case
-                    ComplexMatrix Q = argq.complex_matrix_value ();
-                    ComplexMatrix R = argr.complex_matrix_value ();
-                    ComplexMatrix x = argx.complex_matrix_value ();
+		    if (argq.is_single_type () 
+			|| argr.is_single_type () 
+			|| argx.is_single_type ())
+		      {
+			FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+			FloatComplexMatrix R = argr.float_complex_matrix_value ();
+			FloatComplexMatrix x = argx.float_complex_matrix_value ();
 
-                    ComplexQR fact (Q, R);
+			FloatComplexQR fact (Q, R);
 
-                    if (row) 
-                      fact.insert_row (x, j-1);
-                    else 
-                      fact.insert_col (x, j-1);
+			if (row) 
+			  fact.insert_row (x, j-1);
+			else 
+			  fact.insert_col (x, j-1);
 
-                    retval(1) = fact.R ();
-                    retval(0) = fact.Q ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		    else
+		      {
+			ComplexMatrix Q = argq.complex_matrix_value ();
+			ComplexMatrix R = argr.complex_matrix_value ();
+			ComplexMatrix x = argx.complex_matrix_value ();
+
+			ComplexQR fact (Q, R);
+
+			if (row) 
+			  fact.insert_row (x, j-1);
+			else 
+			  fact.insert_col (x, j-1);
+
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
                   }
 
               }
@@ -969,50 +1067,18 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
 
 /*
 %!test
-%! A = [0.091364  0.613038  0.999083;
-%!      0.594638  0.425302  0.603537;
-%!      0.383594  0.291238  0.085574;
-%!      0.265712  0.268003  0.238409;
-%!      0.669966  0.743851  0.445057 ];
-%!
-%! x = [0.85082;  
-%!      0.76426;  
-%!      0.42883;  
-%!      0.53010;  
-%!      0.80683 ];
-%!
 %! [Q,R] = qr(A);
-%! [Q,R] = qrinsert(Q,R,3,x);
+%! [Q,R] = qrinsert(Q,R,3,u);
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(:,1:2) x A(:,3)]),Inf) < norm(A)*1e1*eps)
-%! 
+%! assert(norm(vec(Q*R - [A(:,1:2) u A(:,3)]),Inf) < norm(A)*1e1*eps)
 %!test
-%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
-%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
-%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
-%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
-%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
-%!
-%! x = [0.20351 + 0.05401i;
-%!      0.13141 + 0.43708i;
-%!      0.29808 + 0.08789i;
-%!      0.69821 + 0.38844i;
-%!      0.74871 + 0.25821i ];
-%!
-%! [Q,R] = qr(A);
-%! [Q,R] = qrinsert(Q,R,3,x);
+%! [Q,R] = qr(Ac);
+%! [Q,R] = qrinsert(Q,R,3,uc);
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(:,1:2) x A(:,3)]),Inf) < norm(A)*1e1*eps)
-%!
+%! assert(norm(vec(Q*R - [Ac(:,1:2) uc Ac(:,3)]),Inf) < norm(Ac)*1e1*eps)
 %!test
-%! A = [0.091364  0.613038  0.999083;
-%!      0.594638  0.425302  0.603537;
-%!      0.383594  0.291238  0.085574;
-%!      0.265712  0.268003  0.238409;
-%!      0.669966  0.743851  0.445057 ];
-%!
 %! x = [0.85082  0.76426  0.42883 ];
 %!
 %! [Q,R] = qr(A);
@@ -1020,21 +1086,43 @@ If @var{orient} is @code{\"row\"}, @var{Q} must be square.\n\
 %! assert(norm(vec(Q'*Q - eye(6)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
 %! assert(norm(vec(Q*R - [A(1:2,:);x;A(3:5,:)]),Inf) < norm(A)*1e1*eps)
-%! 
 %!test
-%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
-%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
-%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
-%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
-%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ];
-%!
 %! x = [0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ];
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(Ac);
 %! [Q,R] = qrinsert(Q,R,3,x,'row');
 %! assert(norm(vec(Q'*Q - eye(6)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(1:2,:);x;A(3:5,:)]),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - [Ac(1:2,:);x;Ac(3:5,:)]),Inf) < norm(Ac)*1e1*eps)
+
+%!test
+%! [Q,R] = qr(single(A));
+%! [Q,R] = qrinsert(Q,R,3,single(u));
+%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - single([A(:,1:2) u A(:,3)])),Inf) < norm(single(A))*1e1*eps('single'))
+%!test
+%! [Q,R] = qr(single(Ac));
+%! [Q,R] = qrinsert(Q,R,3,single(uc));
+%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - single([Ac(:,1:2) uc Ac(:,3)])),Inf) < norm(single(Ac))*1e1*eps('single'))
+%!test
+%! x = single([0.85082  0.76426  0.42883 ]);
+%!
+%! [Q,R] = qr(single(A));
+%! [Q,R] = qrinsert(Q,R,3,x,'row');
+%! assert(norm(vec(Q'*Q - eye(6,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - single([A(1:2,:);x;A(3:5,:)])),Inf) < norm(single(A))*1e1*eps('single'))
+%!test
+%! x = single([0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ]);
+%!
+%! [Q,R] = qr(single(Ac));
+%! [Q,R] = qrinsert(Q,R,3,x,'row');
+%! assert(norm(vec(Q'*Q - eye(6,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - single([Ac(1:2,:);x;Ac(3:5,:)])),Inf) < norm(single(Ac))*1e1*eps('single'))
 */
 
 DEFUN_DLD (qrdelete, args, ,
@@ -1101,46 +1189,93 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
 		    && argr.is_real_matrix ())
                   {
                     // real case
-                    Matrix Q = argq.matrix_value ();
-                    Matrix R = argr.matrix_value ();
+		    if (argq.is_single_type ()
+			|| argr.is_single_type ())
+		      {
+			FloatMatrix Q = argq.float_matrix_value ();
+			FloatMatrix R = argr.float_matrix_value ();
 
-                    QR fact (Q, R);
+			FloatQR fact (Q, R);
 
-                    if (row) 
-                      fact.delete_row (j-1);
-                    else 
-                      {
-                        fact.delete_col (j-1);
+			if (row) 
+			  fact.delete_row (j-1);
+			else 
+			  {
+			    fact.delete_col (j-1);
 
-                        if (! colp && k < m)
-                          fact.economize ();
-                      }
+			    if (! colp && k < m)
+			      fact.economize ();
+			  }
 
-                    retval(1) = fact.R ();
-                    retval(0) = fact.Q ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		    else
+		      {
+			Matrix Q = argq.matrix_value ();
+			Matrix R = argr.matrix_value ();
+
+			QR fact (Q, R);
+
+			if (row) 
+			  fact.delete_row (j-1);
+			else 
+			  {
+			    fact.delete_col (j-1);
+
+			    if (! colp && k < m)
+			      fact.economize ();
+			  }
+
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
                   }
                 else
                   {
                     // complex case
-                    ComplexMatrix Q = argq.complex_matrix_value ();
-                    ComplexMatrix R = argr.complex_matrix_value ();
+		    if (argq.is_single_type ()
+			|| argr.is_single_type ())
+		      {
+			FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+			FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-                    ComplexQR fact (Q, R);
+			FloatComplexQR fact (Q, R);
 
-                    if (row) 
-                      fact.delete_row (j-1);
-                    else 
-                      {
-                        fact.delete_col (j-1);
+			if (row) 
+			  fact.delete_row (j-1);
+			else 
+			  {
+			    fact.delete_col (j-1);
 
-                        if (! colp && k < m)
-                          fact.economize ();
-                      }
+			    if (! colp && k < m)
+			      fact.economize ();
+			  }
 
-                    retval(1) = fact.R ();
-                    retval(0) = fact.Q ();
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
+		    else
+		      {
+			ComplexMatrix Q = argq.complex_matrix_value ();
+			ComplexMatrix R = argr.complex_matrix_value ();
+
+			ComplexQR fact (Q, R);
+
+			if (row) 
+			  fact.delete_row (j-1);
+			else 
+			  {
+			    fact.delete_col (j-1);
+
+			    if (! colp && k < m)
+			      fact.economize ();
+			  }
+
+			retval(1) = fact.R ();
+			retval(0) = fact.Q ();
+		      }
                   }
-
               }
             else
               error ("qrdelete: index j out of range");
@@ -1159,56 +1294,108 @@ If @var{orient} is \"row\", @var{Q} must be square.\n\
  
 /*
 %!test
-%! A = [0.091364  0.613038  0.027504  0.999083;
-%!      0.594638  0.425302  0.562834  0.603537;
-%!      0.383594  0.291238  0.742073  0.085574;
-%!      0.265712  0.268003  0.783553  0.238409;
-%!      0.669966  0.743851  0.457255  0.445057 ];
+%! AA = [0.091364  0.613038  0.027504  0.999083;
+%!       0.594638  0.425302  0.562834  0.603537;
+%!       0.383594  0.291238  0.742073  0.085574;
+%!       0.265712  0.268003  0.783553  0.238409;
+%!       0.669966  0.743851  0.457255  0.445057 ];
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrdelete(Q,R,3);
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(:,1:2) A(:,4)]),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps)
 %! 
 %!test
-%! A = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
-%!      0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
-%!      0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
-%!      0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
-%!      0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
+%! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%!       0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
+%!       0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
+%!       0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
+%!       0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrdelete(Q,R,3);
 %! assert(norm(vec(Q'*Q - eye(5)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(:,1:2) A(:,4)]),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps)
 %!
 %!test
-%! A = [0.091364  0.613038  0.027504  0.999083;
-%!      0.594638  0.425302  0.562834  0.603537;
-%!      0.383594  0.291238  0.742073  0.085574;
-%!      0.265712  0.268003  0.783553  0.238409;
-%!      0.669966  0.743851  0.457255  0.445057 ];
+%! AA = [0.091364  0.613038  0.027504  0.999083;
+%!       0.594638  0.425302  0.562834  0.603537;
+%!       0.383594  0.291238  0.742073  0.085574;
+%!       0.265712  0.268003  0.783553  0.238409;
+%!       0.669966  0.743851  0.457255  0.445057 ];
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrdelete(Q,R,3,'row');
 %! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(1:2,:);A(4:5,:)]),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps)
 %! 
 %!test
-%! A = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
-%!      0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
-%!      0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
-%!      0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
-%!      0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
+%! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%!       0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
+%!       0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
+%!       0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
+%!       0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ] * I;
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrdelete(Q,R,3,'row');
 %! assert(norm(vec(Q'*Q - eye(4)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - [A(1:2,:);A(4:5,:)]),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps)
+
+%!test
+%! AA = single([0.091364  0.613038  0.027504  0.999083;
+%!              0.594638  0.425302  0.562834  0.603537;
+%!              0.383594  0.291238  0.742073  0.085574;
+%!              0.265712  0.268003  0.783553  0.238409;
+%!              0.669966  0.743851  0.457255  0.445057 ]);
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrdelete(Q,R,3);
+%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps('single'))
+%! 
+%!test
+%! AA = single([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%!              0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
+%!              0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
+%!              0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
+%!              0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ]) * I;
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrdelete(Q,R,3);
+%! assert(norm(vec(Q'*Q - eye(5,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [AA(:,1:2) AA(:,4)]),Inf) < norm(AA)*1e1*eps('single'))
+%!
+%!test
+%! AA = single([0.091364  0.613038  0.027504  0.999083;
+%!              0.594638  0.425302  0.562834  0.603537;
+%!              0.383594  0.291238  0.742073  0.085574;
+%!              0.265712  0.268003  0.783553  0.238409;
+%!              0.669966  0.743851  0.457255  0.445057 ]);
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrdelete(Q,R,3,'row');
+%! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))
+%! 
+%!test
+%! AA = single([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
+%!              0.049600 + 0.242783i  0.448946 + 0.484022i  0.141155 + 0.074420i  0.446746 + 0.392706i;
+%!              0.581922 + 0.657416i  0.581460 + 0.030016i  0.219909 + 0.447288i  0.201144 + 0.069132i;
+%!              0.694986 + 0.000571i  0.682327 + 0.841712i  0.807537 + 0.166086i  0.192767 + 0.358098i;
+%!              0.945002 + 0.066788i  0.350492 + 0.642638i  0.579629 + 0.048102i  0.600170 + 0.636938i ]) * I;
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrdelete(Q,R,3,'row');
+%! assert(norm(vec(Q'*Q - eye(4,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - [AA(1:2,:);AA(4:5,:)]),Inf) < norm(AA)*1e1*eps('single'))
 */
 
 DEFUN_DLD (qrshift, args, ,
@@ -1256,26 +1443,56 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
                   && argr.is_real_matrix ())
                 {
                   // all real case
-                  Matrix Q = argq.matrix_value ();
-                  Matrix R = argr.matrix_value ();
+		  if (argq.is_single_type () 
+		      && argr.is_single_type ())
+		    {
+		      FloatMatrix Q = argq.float_matrix_value ();
+		      FloatMatrix R = argr.float_matrix_value ();
 
-                  QR fact (Q, R);
-                  fact.shift_cols (i-1, j-1);
+		      FloatQR fact (Q, R);
+		      fact.shift_cols (i-1, j-1);
 
-                  retval(1) = fact.R ();
-                  retval(0) = fact.Q ();
+		      retval(1) = fact.R ();
+		      retval(0) = fact.Q ();
+		    }
+		  else
+		    {
+		      Matrix Q = argq.matrix_value ();
+		      Matrix R = argr.matrix_value ();
+
+		      QR fact (Q, R);
+		      fact.shift_cols (i-1, j-1);
+
+		      retval(1) = fact.R ();
+		      retval(0) = fact.Q ();
+		    }
                 }
               else
                 {
                   // complex case
-                  ComplexMatrix Q = argq.complex_matrix_value ();
-                  ComplexMatrix R = argr.complex_matrix_value ();
+		  if (argq.is_single_type () 
+		      && argr.is_single_type ())
+		    {
+		      FloatComplexMatrix Q = argq.float_complex_matrix_value ();
+		      FloatComplexMatrix R = argr.float_complex_matrix_value ();
 
-                  ComplexQR fact (Q, R);
-                  fact.shift_cols (i-1, j-1);
+		      FloatComplexQR fact (Q, R);
+		      fact.shift_cols (i-1, j-1);
                   
-                  retval(1) = fact.R ();
-                  retval(0) = fact.Q ();
+		      retval(1) = fact.R ();
+		      retval(0) = fact.Q ();
+		    }
+		  else
+		    {
+		      ComplexMatrix Q = argq.complex_matrix_value ();
+		      ComplexMatrix R = argr.complex_matrix_value ();
+
+		      ComplexQR fact (Q, R);
+		      fact.shift_cols (i-1, j-1);
+                  
+		      retval(1) = fact.R ();
+		      retval(0) = fact.Q ();
+		    }
                 }
             }
           else
@@ -1291,50 +1508,77 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
 }
 /*
 %!test
-%! A = [0.091364  0.613038  0.999083;
-%!      0.594638  0.425302  0.603537;
-%!      0.383594  0.291238  0.085574;
-%!      0.265712  0.268003  0.238409;
-%!      0.669966  0.743851  0.445057 ].';
-%!
+%! AA = A.';
 %! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrshift(Q,R,i,j);
 %! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
 %! 
 %! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrshift(Q,R,i,j);
 %! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
 %! 
 %!test
-%! A = [0.620405 + 0.956953i  0.480013 + 0.048806i  0.402627 + 0.338171i;
-%!      0.589077 + 0.658457i  0.013205 + 0.279323i  0.229284 + 0.721929i;
-%!      0.092758 + 0.345687i  0.928679 + 0.241052i  0.764536 + 0.832406i;
-%!      0.912098 + 0.721024i  0.049018 + 0.269452i  0.730029 + 0.796517i;
-%!      0.112849 + 0.603871i  0.486352 + 0.142337i  0.355646 + 0.151496i ].';
-%!
+%! AA = Ac.';
 %! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrshift(Q,R,i,j);
 %! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
 %! 
 %! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
-%! [Q,R] = qr(A);
+%! [Q,R] = qr(AA);
 %! [Q,R] = qrshift(Q,R,i,j);
 %! assert(norm(vec(Q'*Q - eye(3)),Inf) < 1e1*eps)
 %! assert(norm(vec(triu(R)-R),Inf) == 0)
-%! assert(norm(vec(Q*R - A(:,p)),Inf) < norm(A)*1e1*eps)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps)
+
+
+%!test
+%! AA = single (A).';
+%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
+%! 
+%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
+%! 
+%!test
+%! AA = single(Ac).';
+%! i = 2; j = 4; p = [1:i-1, shift(i:j,-1), j+1:5];
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
+%! 
+%! j = 2; i = 4; p = [1:j-1, shift(j:i,+1), i+1:5];
+%!
+%! [Q,R] = qr(AA);
+%! [Q,R] = qrshift(Q,R,i,j);
+%! assert(norm(vec(Q'*Q - eye(3,'single')),Inf) < 1e1*eps('single'))
+%! assert(norm(vec(triu(R)-R),Inf) == 0)
+%! assert(norm(vec(Q*R - AA(:,p)),Inf) < norm(AA)*1e1*eps('single'))
 */
 
 /*

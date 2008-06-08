@@ -1,3 +1,8 @@
+2008-06-12  David Bateman  <dbateman@free.fr>
+
+	* DLD-FUNCTIONS/qr.cc (Fqrupdate, Fqrinsert, Fqrshift, Fqrdelete):
+	Allow single precision arguments, add tests for single precision.
+
 2008-06-11  John W. Eaton  <jwe@octave.org>
 
 	* ov-base.cc (octave_base_value::streamoff_value,

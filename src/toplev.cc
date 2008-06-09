@@ -111,6 +111,58 @@ octave_call_stack::do_current_column (void) const
   return stmt ? stmt->column () : -1;
 }
 
+int
+octave_call_stack::do_caller_user_code_line (difference_type q) const
+{
+  int retval = -1;
+
+  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
+    {
+      const call_stack_elt& elt = *p;
+
+      octave_function *f = elt.fcn;
+
+      if (f && f->is_user_code ())
+	{
+	  tree_statement *stmt = elt.stmt;
+
+	  if (stmt)
+	    {
+	      retval = stmt->line ();
+	      break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
+int
+octave_call_stack::do_caller_user_code_column (difference_type q) const
+{
+  int retval = -1;
+
+  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
+    {
+      const call_stack_elt& elt = *p;
+
+      octave_function *f = elt.fcn;
+
+      if (f && f->is_user_code ())
+	{
+	  tree_statement *stmt = elt.stmt;
+
+	  if (stmt)
+	    {
+	      retval = stmt->column ();
+	      break;
+	    }
+	}
+    }
+
+  return retval;
+}
+
 octave_user_script *
 octave_call_stack::do_caller_user_script (difference_type q) const
 {

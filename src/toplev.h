@@ -122,13 +122,25 @@ public:
   // Current line in current function.
   static int current_line (void)
   {
-    return instance_ok () ? instance->do_current_line () : 0;
+    return instance_ok () ? instance->do_current_line () : -1;
   }
 
   // Current column in current function.
   static int current_column (void)
   {
-    return instance_ok () ? instance->do_current_column () : 0;
+    return instance_ok () ? instance->do_current_column () : -1;
+  }
+
+  // Line in user code caller.
+  static int caller_user_code_line (difference_type q = 0)
+  {
+    return instance_ok () ? instance->do_caller_user_code_line (q) : -1;
+  }
+
+  // Column in user code caller.
+  static int caller_user_code_column (difference_type q = 0)
+  {
+    return instance_ok () ? instance->do_caller_user_code_column (q) : -1;
   }
 
   // Caller function, may be built-in.
@@ -236,6 +248,10 @@ private:
   int do_current_line (void) const;
 
   int do_current_column (void) const;
+
+  int do_caller_user_code_line (difference_type q = 0) const;
+
+  int do_caller_user_code_column (difference_type q = 0) const;
 
   size_t do_current_frame (void) { return curr_frame; }
 

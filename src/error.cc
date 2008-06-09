@@ -200,49 +200,48 @@ verror (bool save_last_error, std::ostream& os,
   if (! buffer_error_messages)
     flush_octave_stdout ();
 
-  bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
-
-  std::ostringstream output_buf;
-
-  if (to_beep_or_not_to_beep_p)
-    output_buf << "\a";
-
-  if (name)
-    output_buf << name << ": ";
-
-  octave_vformat (output_buf, fmt, args);
-
-  output_buf << std::endl;
-
   // FIXME -- we really want to capture the message before it
   // has all the formatting goop attached to it.  We probably also
   // want just the message, not the traceback information.
 
-  std::string msg_string = output_buf.str ();
+  std::ostringstream output_buf;
+
+  octave_vformat (output_buf, fmt, args);
+
+  std::string base_msg = output_buf.str ();
+
+  bool to_beep_or_not_to_beep_p = Vbeep_on_error && ! error_state;
+
+  std::string msg_string;
+
+  if (to_beep_or_not_to_beep_p)
+    msg_string = "\a";
+
+  if (name)
+    msg_string += std::string (name) + ": ";
+
+  msg_string += base_msg;
 
   if (! error_state && save_last_error)
     {
       // This is the first error in a possible series.
 
       Vlast_error_id = id;
-      Vlast_error_message = msg_string;
+      Vlast_error_message = base_msg;
 
       Vlast_error_line = -1;
       Vlast_error_column = -1;
       Vlast_error_name = std::string ();
       Vlast_error_file = std::string ();
 
-      if (octave_call_stack::current_statement ())
-	{
-	  octave_user_code *fcn = octave_call_stack::caller_user_code ();
+      octave_user_code *fcn = octave_call_stack::caller_user_code ();
 
-	  if (fcn)
-	    {
-	      Vlast_error_file = fcn->fcn_file_name ();
-	      Vlast_error_name = fcn->name();
-	      Vlast_error_line = octave_call_stack::current_line ();
-	      Vlast_error_column = octave_call_stack::current_column ();
-	    }
+      if (fcn)
+	{
+	  Vlast_error_file = fcn->fcn_file_name ();
+	  Vlast_error_name = fcn->name ();
+	  Vlast_error_line = octave_call_stack::caller_user_code_line ();
+	  Vlast_error_column = octave_call_stack::caller_user_code_column ();
 	}
     }
 

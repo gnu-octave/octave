@@ -1,3 +1,15 @@
+2008-06-09  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (verror): Omit "name: " and "\a" from Vlast_error_msg.
+	Save line and column information from user code.
+	* toplev.cc (octave_call_stack::do_caller_user_code_line,
+	octave_call_stack::do_caller_user_code_column): New functions.
+	* toplev.h: Provide decls.
+	(octave_call_stack::caller_user_code_line,
+	octave_call_stack::caller_user_code_column): New functions.
+	(octave_call_stack::current_line, octave_call_stack::current_column): 
+	Default return value is -1, not 0.
+
 2008-06-06  John W. Eaton  <jwe@octave.org>
 
 	* ov.h (octave_value::erase_subfunctions):

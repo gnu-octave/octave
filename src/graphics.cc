@@ -188,12 +188,8 @@ xreset_gcbo (void *)
   xset_gcbo (graphics_handle ());
 }
 
-// NOTE: "cb" is passed by value, because "function_value" method
-//       is non-const; passing "cb" by const-reference is not
-//       possible
-
 static void
-execute_callback (octave_value cb, const graphics_handle& h,
+execute_callback (const octave_value& cb_arg, const graphics_handle& h,
                   const octave_value& data)
 {
   octave_value_list args;
@@ -211,6 +207,10 @@ execute_callback (octave_value cb, const graphics_handle& h,
   xset_gcbo (h);
 
   BEGIN_INTERRUPT_WITH_EXCEPTIONS;
+
+  // Copy CB because "function_value" method is non-const.
+
+  octave_value cb = cb_arg;
 
   if (cb.is_function_handle ())
     fcn = cb.function_value ();
@@ -334,8 +334,10 @@ convert_position (const Matrix& pos, const caseless_str& from_units,
 }
 
 static graphics_object
-xget_ancestor (graphics_object go, const std::string& type)
+xget_ancestor (const graphics_object& go_arg, const std::string& type)
 {
+  graphics_object go = go_arg;
+
   do
     {
       if (go.valid_object ())

@@ -1,5 +1,9 @@
 2008-06-09  John W. Eaton  <jwe@octave.org>
 
+	* graphics.cc (execute_callback): Pass CB by const reference and
+	explicitly make a copy.
+	(xget_ancestor): Pass GO by const reference and explicitly make a copy.
+
 	* error.cc (verror): Omit "name: " and "\a" from Vlast_error_msg.
 	Save line and column information from user code.
 	* toplev.cc (octave_call_stack::do_caller_user_code_line,

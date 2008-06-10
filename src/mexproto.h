@@ -116,7 +116,7 @@ extern OCTINTERP_API mxArray *mxCreateDoubleMatrix (mwSize nr, mwSize nc, mxComp
 extern OCTINTERP_API mxArray *mxCreateDoubleScalar (double val);
 extern OCTINTERP_API mxArray *mxCreateLogicalArray (mwSize ndims, const mwSize *dims);
 extern OCTINTERP_API mxArray *mxCreateLogicalMatrix (mwSize m, mwSize n);
-extern OCTINTERP_API mxArray *mxCreateLogicalScalar (int val);
+extern OCTINTERP_API mxArray *mxCreateLogicalScalar (mxLogical val);
 extern OCTINTERP_API mxArray *mxCreateNumericArray (mwSize ndims, const mwSize *dims, mxClassID class_id, mxComplexity flag);
 extern OCTINTERP_API mxArray *mxCreateNumericMatrix (mwSize m, mwSize n, mxClassID class_id, mxComplexity flag);
 extern OCTINTERP_API mxArray *mxCreateSparse (mwSize m, mwSize n, mwSize nzmax, mxComplexity flag);

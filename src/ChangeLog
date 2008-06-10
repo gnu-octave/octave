@@ -1,3 +1,7 @@
+2008-06-10  John W. Eaton  <jwe@octave.org>
+
+	* mexproto.h (mxCreateLogicalScalar): Declar arg as mxLogical, not int.
+
 2008-06-09  John W. Eaton  <jwe@octave.org>
 
 	* graphics.cc (execute_callback): Pass CB by const reference and

@@ -68,14 +68,14 @@
 %! usage ("foo");
 %!function f () 
 %! g (); 
-%!error <usage:> f ();
+%!error <foo> f ();
 
 %% test/octave.test/error/usage-2.m
 %!function g () 
 %! usage ("foo");
 %!function f () 
 %! g 
-%!error <usage:> f ();
+%!error <foo> f ();
 
 %% test/octave.test/error/usage-3.m
 %!error usage ();

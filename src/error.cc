@@ -247,7 +247,9 @@ verror (bool save_last_error, std::ostream& os,
 
   if (buffer_error_messages)
     {
-      if (! error_message_buffer)
+      if (error_message_buffer)
+	msg_string = "error: " + msg_string;
+      else
 	error_message_buffer = new std::ostringstream ();
 
       *error_message_buffer << msg_string;

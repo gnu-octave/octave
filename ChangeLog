@@ -1,3 +1,8 @@
+2008-06-12  Jaroslav Hajek <highegg@gmail.com>
+
+	* configure.in: Move LIBS and CXXFLAGS restoration into
+	the proper block.
+
 2008-06-05  John W. Eaton  <jwe@octave.org>
 
 	* configure.in: Add FT2_CFLAGS to XTRA_CXXFLAGS, not CXXFLAGS.

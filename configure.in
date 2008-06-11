@@ -666,10 +666,11 @@ FTGLTextureFont font("");], [
           AC_DEFINE(HAVE_FTGL, 1, [Define to 1 if FTGL is present])
 	  AC_MSG_RESULT(yes)
 	  XTRA_CXXFLAGS="$XTRA_CXXFLAGS $FT2_CFLAGS"],[
-	  AC_MSG_RESULT(no)])],[
+	  AC_MSG_RESULT(no)])
+	LIBS="$save_LIBS"
+	CXXFLAGS="$save_CXXFLAGS"
+	],[
           warn_graphics="FTGL library not found. Native renderer will not have on-screen text"])
-	  LIBS="$save_LIBS"
-	  CXXFLAGS="$save_CXXFLAGS"
     AC_LANG_POP(C++)
   fi
 fi

@@ -64,8 +64,13 @@ function [n,d] = rat(x,tol)
   ## grab new factors until all continued fractions converge
   while (1)
     ## determine which fractions have not yet converged
-    idx = find (abs(y-n./d) >= tol);
-    if (isempty(idx)) break; endif
+    idx = find(abs (y-n./d) >= tol);
+    if (isempty(idx))
+      if (isempty (steps))
+	steps = NaN .* ones (nsz, 1);
+      endif
+      break;
+    endif
 
     ## grab the next step in the continued fraction
     flip = 1./frac(idx);
@@ -128,6 +133,13 @@ function [n,d] = rat(x,tol)
         endif
       endwhile
       s = [s, repmat(")", 1, j-2)];
+      n_nc = columns (n);
+      s_nc = columns (s);
+      if (n_nc > s_nc)
+	s(:,s_nc+1:n_nc) = " "
+      elseif (s_nc > n_nc)
+	n(:,n_nc+1:s_nc) = " ";
+      endif
       n = cat (1, n, s);
     endfor
   endif

@@ -1,3 +1,9 @@
+2008-06-11  John W. Eaton  <jwe@octave.org>
+
+	* general/rat.m: Properly initialize steps when all elements of
+	input array are integers.  Append spaces as necessary when
+	building  character array.
+
 2008-06-05  Jaroslav Hajek <highegg@gmail.com>
 
 	* plot/__go_draw_axes__.m: Use fprintf for formatted output.

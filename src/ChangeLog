@@ -1,3 +1,8 @@
+2008-06-11  John W. Eaton  <jwe@octave.org>
+
+	* error.cc (verror): Restore newline in msg_string.  Stripping
+	"error: " prefix when buffering error messages is no longer neeed.
+
 2008-06-10  John W. Eaton  <jwe@octave.org>
 
 	* mexproto.h (mxCreateLogicalScalar): Declar arg as mxLogical, not int.

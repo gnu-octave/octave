@@ -220,7 +220,7 @@ verror (bool save_last_error, std::ostream& os,
   if (name)
     msg_string += std::string (name) + ": ";
 
-  msg_string += base_msg;
+  msg_string += base_msg + "\n";
 
   if (! error_state && save_last_error)
     {
@@ -247,26 +247,10 @@ verror (bool save_last_error, std::ostream& os,
 
   if (buffer_error_messages)
     {
-      std::string tmp = msg_string;
-
       if (! error_message_buffer)
-	{
-	  error_message_buffer = new std::ostringstream ();
+	error_message_buffer = new std::ostringstream ();
 
-	  // FIXME -- this is ugly, but it prevents
-	  //
-	  //   eval ("error (\"msg\")", "error (lasterr ())");
-	  //
-	  // from printing `error: ' twice.  Assumes that the NAME we
-	  // have been given doesn't contain `:'.
-
-	  size_t pos = msg_string.find (':');
-
-	  if (pos != NPOS && pos < Vlast_error_message.length () - 2)
-	    tmp = msg_string.substr (pos+2);
-	}
-
-      *error_message_buffer << tmp;
+      *error_message_buffer << msg_string;
     }
   else
     {

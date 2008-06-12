@@ -206,10 +206,6 @@ public:
     return boolNDArray (dim_vector (1, 1), scalar);
   }
 
-  std::streamoff streamoff_value (void) const;
-
-  streamoff_array streamoff_array_value (void) const;
-
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
   void increment (void) { ++scalar; }

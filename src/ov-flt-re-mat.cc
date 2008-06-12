@@ -252,29 +252,6 @@ octave_float_matrix::sparse_complex_matrix_value (bool) const
   return SparseComplexMatrix (sparse_matrix_value ());
 }
 
-streamoff_array
-octave_float_matrix::streamoff_array_value (void) const
-{
-  streamoff_array retval (dims ());
-
-  octave_idx_type nel = numel ();
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    {
-      float d = matrix(i);
-
-      if (F_NINT (d) == d)
-	retval(i) = std::streamoff (static_cast<long> (d));
-      else
-	{
-	  error ("conversion to streamoff_array value failed");
-	  break;
-	}
-    }
-
-  return retval;
-}
-
 octave_value
 octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 {

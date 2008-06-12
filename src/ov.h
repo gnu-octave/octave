@@ -47,10 +47,8 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-sort.h"
 
 class Cell;
-class streamoff_array;
 class Octave_map;
 class octave_stream;
-class octave_streamoff;
 class octave_function;
 class octave_user_function;
 class octave_fcn_handle;
@@ -259,8 +257,6 @@ public:
   octave_value (const Range& r);
   octave_value (const Octave_map& m);
   octave_value (const Octave_map& m, const std::string& id);
-  octave_value (const streamoff_array& off);
-  octave_value (const ArrayN<std::streamoff>& inda);
   octave_value (const octave_value_list& m, bool is_cs_list = false);
   octave_value (octave_value::magic_colon);
 
@@ -483,9 +479,6 @@ public:
 
   bool is_object (void) const
     { return rep->is_object (); }
-
-  bool is_streamoff (void) const
-    { return rep->is_streamoff (); }
 
   bool is_cs_list (void) const
     { return rep->is_cs_list (); }
@@ -786,10 +779,6 @@ public:
 
   string_vector map_keys (void) const
     { return rep->map_keys (); }
-
-  std::streamoff streamoff_value (void) const;
-
-  streamoff_array streamoff_array_value (void) const;
 
   octave_function *function_value (bool silent = false);
 

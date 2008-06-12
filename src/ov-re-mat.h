@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-base.h"
 #include "oct-alloc.h"
-#include "so-array.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -161,8 +160,6 @@ public:
   SparseMatrix sparse_matrix_value (bool = false) const;
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
-
-  streamoff_array streamoff_array_value (void) const;
 
   void increment (void) { matrix += 1.0; }
 

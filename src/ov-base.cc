@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "lo-ieee.h"
 #include "lo-mappers.h"
-#include "so-array.h"
 
 #include "defun.h"
 #include "gripes.h"
@@ -791,23 +790,6 @@ octave_base_value::map_keys (void) const
 {
   string_vector retval;
   gripe_wrong_type_arg ("octave_base_value::map_keys()", type_name ());
-  return retval;
-}
-
-std::streamoff
-octave_base_value::streamoff_value (void) const
-{
-  std::streamoff retval (-1);
-  gripe_wrong_type_arg ("octave_base_value::streamoff_value()", type_name ());
-  return retval;
-}
-
-streamoff_array
-octave_base_value::streamoff_array_value (void) const
-{
-  streamoff_array retval;
-  gripe_wrong_type_arg ("octave_base_value::streamoff_array_value()",
-			type_name ());
   return retval;
 }
 

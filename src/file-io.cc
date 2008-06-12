@@ -75,7 +75,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "oct-stream.h"
 #include "oct-strstrm.h"
 #include "pager.h"
-#include "so-array.h"
 #include "sysdep.h"
 #include "utils.h"
 #include "variables.h"

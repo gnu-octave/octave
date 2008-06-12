@@ -31,7 +31,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-base.h"
 #include "oct-alloc.h"
-#include "so-array.h"
 #include "str-vec.h"
 
 #include "error.h"
@@ -128,8 +127,6 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const
     { return SparseComplexMatrix (matrix); }
-
-  streamoff_array streamoff_array_value (void) const;
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 

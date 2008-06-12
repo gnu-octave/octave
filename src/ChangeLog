@@ -1,5 +1,31 @@
 2008-06-11  John W. Eaton  <jwe@octave.org>
 
+	* ov-base.cc (octave_base_value::streamoff_value,
+	octave_base_value::streamoff_array_value): Delete.
+	* ov-base.h: Delete decls.
+	(octave_base_value::is_streamoff): Delete.
+	* ov-float.cc (octave_float_scalar::streamoff_value,
+	octave_float_scalar::streamoff_array_value): Delete.
+	* ov-float.h: Delete decls.
+	* ov-flt-re-mat.cc (octave_float_matrix::streamoff_array_value): Delete.
+	* ov-flt-re-mat.h: Delete decl.
+	* ov-re-mat.cc (octave_matrix::streamoff_array_value): Delete.
+	* ov-re-mat.h: Delete decl.
+	* ov-re-sparse.cc (octave_sparse_matrix::streamoff_array_value): Delete.
+	* ov-re-sparse.h: Delete decl.
+	* ov-scalar.cc (octave_scalar::streamoff_value,
+	octave_scalar::streamoff_array_value): Delete.
+	* ov-scalar.h: Delete decls.
+	* ov.cc (octave_value::octave_value (const streamoff_array&),
+	octave_value::octave_value (const ArrayN<std::streamoff>&),
+	octave_value::streamoff_value (void) const,
+	octave_value::streamoff_array_value (void) const): Delete.
+	* ov.h: Delete decls.
+	(octave_value::is_streamoff): Delete.
+	* ov.cc (install_types): Don't register streamoff type.
+	* ov-streamoff.h, ov-streamoff.cc, OPERATORS/op-streamoff.cc: Delete.
+	* Makefile.in: Delete them from the lists.
+
 	* error.cc (verror): Restore newline in msg_string.  Stripping
 	"error: " prefix when buffering error messages is no longer neeed.
 

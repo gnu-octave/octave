@@ -43,12 +43,10 @@ along with Octave; see the file COPYING.  If not, see
 #include "error.h"
 
 class Cell;
-class streamoff_array;
 class Octave_map;
 class octave_value;
 class octave_value_list;
 class octave_stream;
-class octave_streamoff;
 class octave_function;
 class octave_user_function;
 class octave_user_script;
@@ -229,8 +227,6 @@ public:
   virtual bool is_map (void) const { return false; }
 
   virtual bool is_object (void) const { return false; }
-
-  virtual bool is_streamoff (void) const { return false; }
 
   virtual bool is_cs_list (void) const { return false; }
 
@@ -415,10 +411,6 @@ public:
   virtual Octave_map map_value (void) const;
 
   virtual string_vector map_keys (void) const;
-
-  virtual std::streamoff streamoff_value (void) const;
-
-  virtual streamoff_array streamoff_array_value (void) const;
 
   virtual octave_function *function_value (bool silent = false);
 

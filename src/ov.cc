@@ -60,7 +60,6 @@ along with Octave; see the file COPYING.  If not, see
 #include "ov-range.h"
 #include "ov-struct.h"
 #include "ov-class.h"
-#include "ov-streamoff.h"
 #include "ov-list.h"
 #include "ov-cs-list.h"
 #include "ov-colon.h"
@@ -974,16 +973,6 @@ octave_value::octave_value (const Octave_map& m, const std::string& id)
 {
 }
 
-octave_value::octave_value (const streamoff_array& off)
-  : rep (new octave_streamoff (off))
-{
-}
-
-octave_value::octave_value (const ArrayN<std::streamoff>& inda)
-  : rep (new octave_streamoff (inda))
-{
-}
-
 octave_value::octave_value (const octave_value_list& l, bool is_csl)
   : rep (is_csl
 	 ? dynamic_cast<octave_base_value *> (new octave_cs_list (l))
@@ -1242,18 +1231,6 @@ Octave_map
 octave_value::map_value (void) const
 {
   return rep->map_value ();
-}
-
-std::streamoff
-octave_value::streamoff_value (void) const
-{
-  return rep->streamoff_value ();
-}
-
-streamoff_array
-octave_value::streamoff_array_value (void) const
-{
-  return rep->streamoff_array_value ();
 }
 
 octave_function *
@@ -2730,7 +2707,6 @@ install_types (void)
   octave_dld_function::register_type ();
   octave_fcn_handle::register_type ();
   octave_fcn_inline::register_type ();
-  octave_streamoff::register_type ();
   octave_float_scalar::register_type ();
   octave_float_complex::register_type ();
   octave_float_matrix::register_type ();

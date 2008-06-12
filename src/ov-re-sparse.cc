@@ -188,33 +188,6 @@ octave_sparse_matrix::array_value (bool) const
   return NDArray (matrix.matrix_value ());
 }
 
-streamoff_array
-octave_sparse_matrix::streamoff_array_value (void) const
-{
-  streamoff_array retval (dims ());
-  octave_idx_type nc = matrix.cols ();
-  octave_idx_type nr = matrix.rows ();
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = matrix.cidx(j); i < matrix.cidx(j+1); i++)
-      {
-	double d = matrix.data(i);
-
-	if (D_NINT (d) == d)
-	  {
-	    retval(matrix.ridx(i) + nr * j) = 
-	      std::streamoff (static_cast<long> (d));
-	  }
-	else
-	  {
-	    error ("conversion to streamoff_array value failed");
-	    break;
-	  }
-      }
-
-  return retval;
-}
-
 octave_value
 octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 {

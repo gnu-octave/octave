@@ -84,32 +84,6 @@ octave_float_scalar::do_index_op (const octave_value_list& idx, bool resize_ok)
   return retval;
 }
 
-std::streamoff
-octave_float_scalar::streamoff_value (void) const
-{
-  std::streamoff retval (-1);
-
-  if (D_NINT (scalar) == scalar)
-    retval = std::streamoff (static_cast<long> (scalar));
-  else
-    error ("conversion to streamoff value failed");
-
-  return retval;
-}
-
-streamoff_array
-octave_float_scalar::streamoff_array_value (void) const
-{
-  streamoff_array retval;
-
-  std::streamoff soff = streamoff_value ();
-
-  if (! error_state)
-    retval = streamoff_array (dim_vector (1, 1), soff);
-
-  return retval;
-}
-
 octave_value 
 octave_float_scalar::resize (const dim_vector& dv, bool fill) const
 {

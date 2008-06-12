@@ -30,7 +30,6 @@ along with Octave; see the file COPYING.  If not, see
 
 #include "mx-base.h"
 #include "oct-alloc.h"
-#include "so-array.h"
 #include "str-vec.h"
 
 #include "error.h"

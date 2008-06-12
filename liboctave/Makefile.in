@@ -93,7 +93,7 @@ INCLUDES := Bounds.h CollocWt.h DAE.h DAEFunc.h DAERT.h \
 	oct-sparse.h oct-time.h oct-uname.h \
 	pathlen.h pathsearch.h prog-args.h \
 	randgamma.h randmtzig.h randpoisson.h regex-match.h \
-	so-array.h sparse-sort.h statdefs.h str-vec.h \
+	sparse-sort.h statdefs.h str-vec.h \
 	sparse-util.h sun-utils.h sysdir.h systime.h syswait.h \
 	$(MATRIX_INC)
 
@@ -109,7 +109,7 @@ TEMPLATE_SRC := Array.cc ArrayN.cc DiagArray2.cc \
 	sparse-dmsolve.cc
 
 TI_SRC := Array-C.cc Array-b.cc Array-ch.cc Array-i.cc Array-d.cc \
-	Array-f.cc Array-fC.cc Array-s.cc Array-so.cc Array-str.cc \
+	Array-f.cc Array-fC.cc Array-s.cc Array-str.cc \
 	Array-idx-vec.cc MArray-C.cc MArray-ch.cc MArray-i.cc MArray-d.cc \
 	MArray-f.cc MArray-fC.cc MArray-s.cc MSparse-C.cc MSparse-d.cc \
 	Sparse-C.cc Sparse-b.cc Sparse-d.cc oct-inttypes.cc
@@ -151,7 +151,7 @@ LIBOCTAVE_CXX_SOURCES := Bounds.cc CollocWt.cc DASPK.cc DASRT.cc \
 	oct-fftw.cc oct-group.cc oct-md5.cc oct-passwd.cc oct-rand.cc \
 	oct-shlib.cc oct-spparms.cc oct-syscalls.cc oct-time.cc oct-uname.cc \
 	prog-args.cc regex-match.cc \
-	so-array.cc sparse-sort.cc sparse-util.cc str-vec.cc \
+	sparse-sort.cc sparse-util.cc str-vec.cc \
 	$(TEMPLATE_SRC) \
 	$(TI_SRC) \
 	$(MATRIX_SRC)

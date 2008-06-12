@@ -35,7 +35,7 @@ CXXSRC = f77-extern.cc quit.cc
 
 CEXTRA = smachar.c
 
-MAKEDEPS := $(patsubst %.c, %.d, $(CSRC) $(CEXTRA)) $(patsubst %.cc, %.d, $(CXXSRC))
+MAKEDEPS := $(patsubst %.c, %.d, $(CSRC)) $(patsubst %.cc, %.d, $(CXXSRC))
 
 INCLUDES := f77-fcn.h lo-error.h oct-dlldefs.h quit.h
 

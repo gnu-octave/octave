@@ -402,7 +402,7 @@ xmax (const Complex& x, const Complex& y)
 float
 arg (float x)
 {
-  return atan2 (0.0, x);
+  return atan2 (0.0f, x);
 }
 
 float

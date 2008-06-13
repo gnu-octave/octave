@@ -57,7 +57,7 @@ FloatComplexDET::initialize10 (void)
       float etmp = e2 / xlog2 (static_cast<float>(10));
       e10 = static_cast<int> (xround (etmp));
       etmp -= e10;
-      c10 = c2 * static_cast<float> (pow (10.0, etmp));
+      c10 = c2 * static_cast<float> (pow (10.0f, etmp));
     }
 }
 

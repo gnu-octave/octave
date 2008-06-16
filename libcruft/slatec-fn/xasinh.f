@@ -1,6 +1,6 @@
       subroutine xasinh (x, result)
       external asinh
-      real x, result, dasinh
+      real x, result, asinh
       result = asinh (x)
       return
       end

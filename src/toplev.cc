@@ -116,9 +116,11 @@ octave_call_stack::do_caller_user_code_line (difference_type q) const
 {
   int retval = -1;
 
-  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *p;
+      const call_stack_elt& elt = *(--p);
 
       octave_function *f = elt.fcn;
 
@@ -142,9 +144,11 @@ octave_call_stack::do_caller_user_code_column (difference_type q) const
 {
   int retval = -1;
 
-  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *p;
+      const call_stack_elt& elt = *(--p);
 
       octave_function *f = elt.fcn;
 
@@ -168,9 +172,11 @@ octave_call_stack::do_caller_user_script (difference_type q) const
 {
   octave_user_script *retval = 0;
 
-  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *p;
+      const call_stack_elt& elt = *(--p);
 
       octave_function *f = elt.fcn;
 
@@ -189,9 +195,11 @@ octave_call_stack::do_caller_user_function (difference_type q) const
 {
   octave_user_function *retval = 0;
 
-  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *p;
+      const call_stack_elt& elt = *(--p);
 
       octave_function *f = elt.fcn;
 
@@ -210,9 +218,11 @@ octave_call_stack::do_caller_user_code (difference_type q) const
 {
   octave_user_code *retval = 0;
 
-  for (const_iterator p = cs.begin () + q; p != cs.end (); p++)
+  const_iterator p = cs.end ();
+
+  while (p != cs.begin ())
     {
-      const call_stack_elt& elt = *p;
+      const call_stack_elt& elt = *(--p);
 
       octave_function *f = elt.fcn;
 
@@ -227,13 +237,11 @@ octave_call_stack::do_caller_user_code (difference_type q) const
 }
 
 Octave_map
-octave_call_stack::do_backtrace (int n) const
+octave_call_stack::do_backtrace (int nframes) const
 {
   Octave_map retval;
 
-  int nframes = cs.size () - n;
-
-  if (n >= 0 && nframes > 0)
+  if (nframes > 0 && nframes <= cs.size ())
     {
       Cell keys (6, 1);
 
@@ -251,11 +259,13 @@ octave_call_stack::do_backtrace (int n) const
       Cell scope (nframes, 1);
       Cell context (nframes, 1);
 
-      octave_idx_type k = 0;
+      octave_idx_type k = nframes - 1;
 
-      for (const_iterator p = cs.begin () + n; p != cs.end (); p++)
+      const_iterator p = cs.begin ();
+
+      while (k >= 0)
 	{
-	  const call_stack_elt& elt = *p;
+	  const call_stack_elt& elt = *p++;
 
 	  scope(k) = elt.scope;
 	  context(k) = elt.context;
@@ -292,7 +302,7 @@ octave_call_stack::do_backtrace (int n) const
 	      column(k) = -1;
 	    }
 
-	  k++;
+	  k--;
 	}
 
       retval.assign ("file", file);
@@ -354,9 +364,13 @@ octave_call_stack::do_goto_frame_relative (int n, bool verbose)
 
   if (n == 0)
     retval = true;
-  else if ((n > 0 && static_cast<size_t> (n) < sz - curr_frame)
-	   || (n < 0 && static_cast<size_t> (-n) < curr_frame))
-    retval = goto_frame (curr_frame + n, verbose);
+  else
+    {
+      size_t frame = static_cast<size_t> (n) + curr_frame;
+
+      if ((n > 0 && frame < sz) || (n < 0 && frame >= 0))
+	retval = goto_frame (frame, verbose);
+    }
 
   return retval;
 }

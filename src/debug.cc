@@ -695,6 +695,12 @@ List script file with line numbers.\n\
   return retval;
 }
 
+void
+push_dummy_call_stack_elt (void *)
+{
+  octave_call_stack::push (static_cast<octave_function *> (0));
+}
+
 DEFCMD (dbstack, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
@@ -705,10 +711,25 @@ Print or return current stack information.  With optional argument\n\
 {
   octave_value_list retval;
 
-  int n = 0;
+  unwind_protect::begin_frame ("Fdbstack");
+
+  // Debugging functions should not be included in the call stack, so
+  // we pop the dbstack function from the stack and then set up to
+  // restore a stack element when we exit this function (or when it is
+  // cleaned up).
+
+  octave_call_stack::pop ();
+
+  unwind_protect::add (push_dummy_call_stack_elt, 0);
+
+  size_t total_frames = octave_call_stack::size ();
+
+  size_t nframes = total_frames;
 
   if (args.length () == 1)
     {
+      int n = 0;
+
       octave_value arg = args(0);
 
       if (arg.is_string ())
@@ -719,60 +740,55 @@ Print or return current stack information.  With optional argument\n\
 	}
       else
 	n = args(0).int_value ();
+
+      if (n > 0)
+	nframes = n;
+      else
+	error ("dbstack: expecting N to be a nonnegative integer");
     }
 
   if (! error_state)
     {
-      if (n >= 0)
+      size_t curr_frame = octave_call_stack::current_frame ();
+
+      Octave_map stk = octave_call_stack::backtrace (nframes);
+
+      octave_idx_type idx = total_frames - curr_frame;
+
+      if (nargout == 0)
 	{
-	  size_t curr_frame = octave_call_stack::current_frame ();
+	  octave_idx_type nframes = stk.numel ();
 
-	  // Skip dbstack stack frame.
-	  if (! Vdebugging)
-	    curr_frame++;
-
-	  // Adjust so that this is the index of where we are in the array
-	  // that is returned in retval(0).
-	  size_t idx = curr_frame - n;
-
-	  // Add one here to skip the __dbstack__ stack frame.
-	  Octave_map stk = octave_call_stack::backtrace (curr_frame + n);
-
-	  if (nargout == 0)
+	  if (nframes > 0)
 	    {
-	      octave_idx_type nframes = stk.numel ();
+	      octave_stdout << "Stopped in:\n\n";
 
-	      if (nframes > 0)
+	      Cell names = stk.contents ("name");
+	      Cell lines = stk.contents ("line");
+	      Cell columns = stk.contents ("column");
+
+	      for (octave_idx_type i = 0; i < nframes; i++)
 		{
-		  octave_stdout << "Stopped in:\n\n";
+		  octave_value name = names(i);
+		  octave_value line = lines(i);
+		  octave_value column = columns(i);
 
-		  Cell names = stk.contents ("name");
-		  Cell lines = stk.contents ("line");
-		  Cell columns = stk.contents ("column");
-
-		  for (octave_idx_type i = 0; i < nframes; i++)
-		    {
-		      octave_value name = names(i);
-		      octave_value line = lines(i);
-		      octave_value column = columns(i);
-
-		      octave_stdout << (i == idx - 1 ? "--> " : "    ")
-				    << name.string_value ()
-				    << " at line " << line.int_value ()
-				    << " column " << column.int_value ()
-				    << std::endl;
-		    }
+		  octave_stdout << (i == idx ? "--> " : "    ")
+				<< name.string_value ()
+				<< " at line " << line.int_value ()
+				<< " column " << column.int_value ()
+				<< std::endl;
 		}
-	    }
-	  else
-	    {
-	      retval(1) = idx;
-	      retval(0) = stk;
 	    }
 	}
       else
-	error ("dbstack: expecting N to be a nonnegative integer");
+	{
+	  retval(1) = idx < 0 ? 1 : idx + 1;
+	  retval(0) = stk;
+	}
     }
+
+  unwind_protect::run_frame ("Fdbstack");
 
   return retval;
 }
@@ -798,7 +814,7 @@ do_dbupdown (const octave_value_list& args, const std::string& who)
 
   if (! error_state)
     {
-      if (who == "dbdown")
+      if (who == "dbup")
 	n = -n;
 
       if (! octave_call_stack::goto_frame_relative (n, true))

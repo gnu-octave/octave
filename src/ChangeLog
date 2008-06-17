@@ -1,3 +1,16 @@
+2008-06-17  John W. Eaton  <jwe@octave.org>
+
+	* toplev.h, toplev.cc (class octave_call_stack):
+	Push elements on and pop from back of queue.
+	(octave_call_stack::do_push, octave_call_stack::do_pop):
+	Always adjust curr_frame.
+	(octave_call_stack::size, octave_call_stack::do_size): New functions.
+	* pt-stmt.cc (tree_statement::eval):
+	Also call octave_call_stack::set_statement when debugging.
+	* debug.cc (push_dummy_call_stack_elt): New function.
+	(Fdbstack): Omit dbstack from call stack by popping element rather
+	than adjusting frame number.  Correctly handle arg.
+
 2008-06-12  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/qr.cc (Fqrupdate, Fqrinsert, Fqrshift, Fqrdelete):

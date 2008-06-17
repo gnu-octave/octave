@@ -154,6 +154,11 @@ public:
     return instance_ok () ? instance->do_current_frame () : 0;
   }
 
+  static size_t size (void)
+  {
+    return instance_ok () ? instance->do_size () : 0;
+  }
+
   // Function at location N on the call stack (N == 0 is current), may
   // be built-in.
   static octave_function *element (size_t n)
@@ -255,6 +260,8 @@ private:
 
   size_t do_current_frame (void) { return curr_frame; }
 
+  size_t do_size (void) { return cs.size (); }
+
   octave_function *do_element (size_t n)
   {
     octave_function *retval = 0;
@@ -277,10 +284,9 @@ private:
   void do_push (octave_function *f, symbol_table::scope_id scope,
 		symbol_table::context_id context)
   {
-    if (Vdebugging)
-      curr_frame++;
+    curr_frame++;
 
-    cs.push_front (call_stack_elt (f, scope, context));
+    cs.push_back (call_stack_elt (f, scope, context));
   }
 
   octave_function *do_top (void) const
@@ -289,7 +295,7 @@ private:
 
     if (! cs.empty ())
       {
-	const call_stack_elt& elt = cs.front ();
+	const call_stack_elt& elt = cs.back ();
 	retval = elt.fcn;
       }
 
@@ -302,7 +308,7 @@ private:
 
     if (! cs.empty ())
       {
-	const call_stack_elt& elt = cs.front ();
+	const call_stack_elt& elt = cs.back ();
 	retval = elt.stmt;
       }
 
@@ -313,7 +319,8 @@ private:
   {
     if (! cs.empty ())
       {
-	call_stack_elt& elt = cs.front ();
+	call_stack_elt& elt = cs.back ();
+
 	elt.stmt = s;
       }
   }
@@ -328,10 +335,9 @@ private:
   {
     if (! cs.empty ())
       {
-	if (Vdebugging)
-	  curr_frame--;
+	curr_frame--;
 
-	cs.pop_front ();
+	cs.pop_back ();
       }
   }
 

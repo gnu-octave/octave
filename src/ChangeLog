@@ -1,5 +1,9 @@
 2008-06-20  Jaroslav Hajek <highegg@gmail.com>
 
+	* DLD-FUNCTIONS/regexp.cc (octregexp_list): Make "once" an output
+	argument.
+	(octregexp): Do not use cell arrays when "once" is requested.
+
 	* ov.cc (make_vector_dims): New function.
 	(vector_value, complex_vector_value, float_vector_value,
 	float_complex_vector_value): Query N-d array values and simplify,

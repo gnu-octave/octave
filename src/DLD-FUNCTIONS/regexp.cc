@@ -83,17 +83,17 @@ typedef std::list<regexp_elem>::const_iterator const_iterator;
 static int
 octregexp_list (const octave_value_list &args, const std::string &nm, 
 		bool case_insensitive, std::list<regexp_elem> &lst, 
-		string_vector &named, int &nopts)
+		string_vector &named, int &nopts, bool &once)
 {
   int sz = 0;
 #if defined (HAVE_REGEX) || defined (HAVE_PCRE) 
   int nargin = args.length();
-  bool once = false;
   bool lineanchors = false;
   bool dotexceptnewline = false;
   bool freespacing = false;
 
   nopts = nargin - 2;
+  once = false;
 
   std::string buffer = args(0).string_value ();
   if (error_state)
@@ -451,7 +451,8 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
   std::list<regexp_elem> lst;
   string_vector named;
   int nopts;
-  int sz = octregexp_list (args, nm, case_insensitive, lst, named, nopts);
+  bool once;
+  int sz = octregexp_list (args, nm, case_insensitive, lst, named, nopts, once);
 
   if (! error_state)
     {
@@ -482,36 +483,70 @@ octregexp (const octave_value_list &args, int nargout, const std::string &nm,
       retval(5) = Octave_map();
 #endif
 
-      Cell t (dim_vector(1, sz));
-      i = 0;
-      for (const_iterator p = lst.begin(); p != lst.end(); p++)
-	t(i++) = p->t;
-      retval(4) = t;
+      if (once)
+        retval(4) = sz ? lst.front ().t : Cell();
+      else
+        {
+          Cell t (dim_vector(1, sz));
+          i = 0;
+          for (const_iterator p = lst.begin(); p != lst.end(); p++)
+            t(i++) = p->t;
+          retval(4) = t;
+        }
 
-      Cell m (dim_vector(1, sz));
-      i = 0;
-      for (const_iterator p = lst.begin(); p != lst.end(); p++)
-	m(i++) = p->m;
-      retval(3) = m;
+      if (once)
+        retval(3) = sz ? lst.front ().m : std::string();
+      else
+        {
+          Cell m (dim_vector(1, sz));
+          i = 0;
+          for (const_iterator p = lst.begin(); p != lst.end(); p++)
+            m(i++) = p->m;
+          retval(3) = m;
+        }
 
+      if (once)
+        retval(2) = sz ? lst.front ().te : Matrix();
+      else
+        {
+          Cell te (dim_vector(1, sz));
+          i = 0;
+          for (const_iterator p = lst.begin(); p != lst.end(); p++)
+            te(i++) = p->te;
+          retval(2) = te;
+        }
 
-      Cell te (dim_vector(1, sz));
-      i = 0;
-      for (const_iterator p = lst.begin(); p != lst.end(); p++)
-	te(i++) = p->te;
-      retval(2) = te;
+      if (once)
+        {
+          if (sz)
+            retval(1) = lst.front ().e;
+          else
+            retval(1) = Matrix();
+        }
+      else
+        {
+          NDArray e (dim_vector(1, sz));
+          i = 0;
+          for (const_iterator p = lst.begin(); p != lst.end(); p++)
+            e(i++) = p->e;
+          retval(1) = e;
+        }
 
-      NDArray e (dim_vector(1, sz));
-      i = 0;
-      for (const_iterator p = lst.begin(); p != lst.end(); p++)
-	e(i++) = p->e;
-      retval(1) = e;
-
+      if (once)
+        {
+          if (sz)
+            retval(0) = lst.front ().s;
+          else
+            retval(0) = Matrix();
+        }
+      else
+        {
       NDArray s (dim_vector(1, sz));
       i = 0;
       for (const_iterator p = lst.begin(); p != lst.end(); p++)
 	s(i++) = p->s;
       retval(0) = s;
+        }
 
       // Alter the order of the output arguments
       if (nopts > 0)
@@ -911,21 +946,17 @@ The pattern is taken literally.\n\
 %! [s, e, te, m, t] = regexp('short test string','\w*r\w*','once');
 %! assert (s,1)
 %! assert (e,5)
-%! assert (size(te), [1,1])
-%! assert (isempty(te{1}))
-%! assert (m{1},'short')
-%! ## Matlab gives [1,0] here but that seems wrong.
-%! assert (size(t), [1,1])
+%! assert (isempty(te))
+%! assert (m,'short')
+%! assert (isempty(t))
 
 %!test
 %! [m, te, e, s, t] = regexp('short test string','\w*r\w*','once', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %! assert (s,1)
 %! assert (e,5)
-%! assert (size(te), [1,1])
-%! assert (isempty(te{1}))
-%! assert (m{1},'short')
-%! ## Matlab gives [1,0] here but that seems wrong.
-%! assert (size(t), [1,1])
+%! assert (isempty(te))
+%! assert (m,'short')
+%! assert (isempty(t))
 
 %!testif HAVE_PCRE
 %! ## This test is expected to fail if PCRE is not installed
@@ -1087,21 +1118,17 @@ if there are none. See @code{regexp} for more details\n\
 %! [s, e, te, m, t] = regexpi('ShoRt Test String','\w*r\w*','once');
 %! assert (s,1)
 %! assert (e,5)
-%! assert (size(te), [1,1])
-%! assert (isempty(te{1}))
-%! assert (m{1},'ShoRt')
-%! ## Matlab gives [1,0] here but that seems wrong.
-%! assert (size(t), [1,1])
+%! assert (isempty(te))
+%! assert (m,'ShoRt')
+%! assert (isempty(t))
 
 %!test
 %! [m, te, e, s, t] = regexpi('ShoRt Test String','\w*r\w*','once', 'match', 'tokenExtents', 'end', 'start', 'tokens');
 %! assert (s,1)
 %! assert (e,5)
-%! assert (size(te), [1,1])
-%! assert (isempty(te{1}))
-%! assert (m{1},'ShoRt')
-%! ## Matlab gives [1,0] here but that seems wrong.
-%! assert (size(t), [1,1])
+%! assert (isempty(te))
+%! assert (m,'ShoRt')
+%! assert (isempty(t))
 
 %!testif HAVE_PCRE
 %! ## This test is expected to fail if PCRE is not installed
@@ -1237,7 +1264,8 @@ octregexprep (const octave_value_list &args, const std::string &nm)
       std::list<regexp_elem> lst;
       string_vector named;
       int nopts;
-      int sz = octregexp_list (regexpargs, nm , false, lst, named, nopts);
+      bool once;
+      int sz = octregexp_list (regexpargs, nm , false, lst, named, nopts, once);
 
       if (error_state)
 	return retval;
@@ -1323,7 +1351,8 @@ octregexprep (const octave_value_list &args, const std::string &nm)
       std::list<regexp_elem> lst;
       string_vector named;
       int nopts;
-      int sz = octregexp_list (regexpargs, nm, false, lst, named,nopts);
+      bool once;
+      int sz = octregexp_list (regexpargs, nm, false, lst, named, nopts, once);
 
       if (error_state)
 	return retval;

@@ -465,9 +465,16 @@ function emit_source ()
     {
       dval = defval[i];
       if (type[i] == "radio_property" || type[i] == "color_property")
-        dval = gensub (/^.*\{(.*)\}.*$/, "\"\\1\"", "g", dval);
-      if (! dval)
-        dval = "octave_value ()";
+	{
+	  k = index (dval, "{");
+	  dval = substr (dval, k+1);
+	  l = index (dval, "}");
+	  if (k > 0 && l > 0)
+	    dval = "\"" + substr (dval, 1, l-1) +  "\"";
+	  else
+	    dval = "octave_value ()";
+	}
+
       printf ("  m[\"%s\"] = %s%s;\n", name[i], dval,
 		 (type[i] == "handle_property" ? ".as_octave_value ()" : "")) >> filename;
     }
@@ -490,7 +497,11 @@ BEGIN {
 /BEGIN_PROPERTIES\(.*\)/ {
   gather = 1;
   idx = 0;
-  class_name = gensub (/^.*BEGIN_PROPERTIES\((.*)\)/, "\\1", "g");
+  str = $0;
+  k = index (str, "BEGIN_PROPERTIES(");
+  str = substr (str, k + 17);
+  l = index (str, ")");
+  class_name = substr (str, 1, l-1);
   next;
 }
 

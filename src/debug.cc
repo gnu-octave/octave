@@ -757,9 +757,9 @@ Print or return current stack information.  With optional argument\n\
 
       if (nargout == 0)
 	{
-	  octave_idx_type nframes = stk.numel ();
+	  octave_idx_type nframes_to_display = stk.numel ();
 
-	  if (nframes > 0)
+	  if (nframes_to_display > 0)
 	    {
 	      octave_stdout << "Stopped in:\n\n";
 
@@ -767,7 +767,7 @@ Print or return current stack information.  With optional argument\n\
 	      Cell lines = stk.contents ("line");
 	      Cell columns = stk.contents ("column");
 
-	      for (octave_idx_type i = 0; i < nframes; i++)
+	      for (octave_idx_type i = 0; i < nframes_to_display; i++)
 		{
 		  octave_value name = names(i);
 		  octave_value line = lines(i);

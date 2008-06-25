@@ -1,4 +1,5 @@
 ## Copyright (C) 2000, 2001, 2005, 2006, 2007 Paul Kienzle
+## Copyright (C) 2008 Jaroslav Hajek
 ##
 ## This file is part of Octave.
 ##
@@ -31,19 +32,45 @@
 ##
 ## Return index vectors @var{i} and @var{j} such that @code{x(i)==y} and
 ## @code{y(j)==x}.
+## 
+## Additionally, one of 'first' or 'last' can be given as an argument.
+## 'last' (default) specifies that the highest possible indices are returned
+## in @var{i}, while 'first' means the lowest.
 ## @seealso{union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
-function [y, i, j] = unique (x, r)
+function [y, i, j] = unique (x, varargin)
 
-  if (nargin < 1 || nargin > 2 || (nargin == 2 && ! strcmp (r, "rows")))
+  if (nargin < 1)
     print_usage ();
   endif
 
-  if (nargin == 1)
-    n = numel (x);
+  ## parse options
+  if (iscellstr (varargin))
+    optfirst = strmatch ('first', varargin) > 0;
+    optlast = strmatch ('last', varargin) > 0;
+    optrows = strmatch ('rows', varargin) > 0 && size (x, 2) > 1;
+    if (optfirst && optlast)
+      error ("unique: cannot specify both 'last' and 'first'.");
+    elseif (optfirst + optlast + optrows != nargin-1)
+      error ("unique: invalid option.");
+    endif
+    optlast = ! optfirst;
   else
+    error ("unique: options must be strings");
+  endif
+
+  if (iscell (x))
+    if (optrows)
+      warning ("unique: 'rows' is ignored for cell arrays");
+      optrows = false;
+    endif
+  endif
+
+  if (optrows)
     n = size (x, 1);
+  else
+    n = numel (x);
   endif
 
   y = x;
@@ -55,20 +82,9 @@ function [y, i, j] = unique (x, r)
     return;
   endif
 
-  if (ischar (x))
-    y = toascii (y);
-  endif
-
-  if (nargin == 2 && size (y, 2) > 1)
+  if (optrows)
     [y, i] = sortrows (y);
-    if (iscell (y))
-      match = cellfun ("size", y(1:n-1,:), 1) == cellfun ("size", y(2:n,:), 1);
-      idx = find (match);
-      match(idx) = all (char (y(idx)) == char (y(idx+1)), 2);
-      match = all (match');
-    else
-      match = all ([y(1:n-1,:) == y(2:n,:)]');
-    endif
+    match = all (y(1:n-1,:) == y(2:n,:), 2);
     idx = find (match);
     y(idx,:) = [];
   else
@@ -77,11 +93,9 @@ function [y, i, j] = unique (x, r)
     endif
     [y, i] = sort (y);
     if (iscell (y))
-      match = cellfun ("length", y(1:n-1)) == cellfun ("length", y(2:n));
-      idx = find(match);
-      match(idx) = all (char (y(idx)) == char (y(idx+1)), 2);
+      match = strcmp (y(1:n-1), y(2:n));
     else
-      match = [y(1:n-1) == y(2:n)];
+      match = (y(1:n-1) == y(2:n));
     endif
     idx = find (match);
     y(idx) = [];
@@ -93,11 +107,12 @@ function [y, i, j] = unique (x, r)
     j = i;
     j(i) = cumsum (prepad (! match, n, 1));
   endif
-  i(idx) = [];
-
-  if (ischar (x))
-    y = char (y);
+  if (optfirst)
+    i(idx+1) = [];
+  else
+    i(idx) = [];
   endif
+
 
 endfunction
 
@@ -110,3 +125,15 @@ endfunction
 %!assert(unique([1,NaN,Inf,NaN,Inf]),[1,Inf,NaN,NaN])
 %!assert(unique({'Foo','Bar','Foo'}),{'Bar','Foo'})
 %!assert(unique({'Foo','Bar','FooBar'}),{'Bar','Foo','FooBar'})
+
+%!test
+%! [a,i,j] = unique([1,1,2,3,3,3,4]);
+%! assert(a,[1,2,3,4])
+%! assert(i,[2,3,6,7])
+%! assert(j,[1,1,2,3,3,3,4])
+%!
+%!test
+%! [a,i,j] = unique([1,1,2,3,3,3,4],'first');
+%! assert(a,[1,2,3,4])
+%! assert(i,[1,3,4,7])
+%! assert(j,[1,1,2,3,3,3,4])

@@ -2766,18 +2766,20 @@ representing the elements of @var{x}. By default @var{len} is 9.\n\
 
   int nargin = args.length ();
 
-  unwind_protect::begin_frame ("Frats");
-
-  unwind_protect_int (rat_string_len);
-
-  rat_string_len = 9;
-
-  if (nargin == 2)
-    rat_string_len = args(1).nint_value ();
-
-  if (! error_state)
+  if (nargin < 1 || nargin > 2 || nargout > 1)
+    print_usage ();
+  else
     {
-      if (nargin < 3 && nargout < 2)
+      unwind_protect::begin_frame ("Frats");
+
+      unwind_protect_int (rat_string_len);
+
+      rat_string_len = 9;
+
+      if (nargin == 2)
+	rat_string_len = args(1).nint_value ();
+
+      if (! error_state)
 	{
 	  octave_value arg = args(0);
 
@@ -2817,11 +2819,9 @@ representing the elements of @var{x}. By default @var{len} is 9.\n\
 	  else
 	    error ("rats: expecting numeric input");
 	}
-      else
-	print_usage ();
-    }
 
-  unwind_protect::run_frame ("Frats");
+      unwind_protect::run_frame ("Frats");
+    }
 
   return retval;
 }

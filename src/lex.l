@@ -1292,7 +1292,7 @@ grab_block_comment (stream_reader& reader, bool& eof)
 	    }
 	}
 
-      if (at_bol && c == '%' || c == '#')
+      if (at_bol && (c == '%' || c == '#'))
         {
           if (c == '#' && ! warned_incompatible)
 	    {

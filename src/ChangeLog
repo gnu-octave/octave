@@ -1,3 +1,10 @@
+2008-06-26  John W. Eaton  <jwe@octave.org>
+
+	* token.h: Omit "class symbol_table::symbol_record" decl;
+
+	* lex.l (grab_block_comment): Use parens around || expression
+	within && expression.
+
 2008-06-23  John W. Eaton  <jwe@octave.org>
 
 	* debug.cc (Fdbstack): Avoid shadowed variable warning.

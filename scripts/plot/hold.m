@@ -18,9 +18,9 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {Function File} {} hold @var{args}
-## Tell Octave to `hold' the current data on the plot when executing
+## Tell Octave to `hold' the current data on the graph when executing
 ## subsequent plotting commands.  This allows you to execute a series of
-## plot commands and have all the lines end up on the same figure.  The
+## plot commands and have all the lines end up on the same graph.  The
 ## default is for each new plot command to clear the plot device first.
 ## For example, the command
 ##
@@ -32,6 +32,12 @@
 ## turns the hold state on.  An argument of @code{"off"} turns the hold
 ## state off, and @code{hold} with no arguments toggles the current hold
 ## state.
+##
+## @deftypefnx {Function File} {} hold (@var{h}, @dots{})
+## 
+## Applies to a specific axis or axes, associated with the handle(s), 
+## @var{h}.
+## 
 ## @end deftypefn
 
 ## PKG_ADD: mark_as_command hold

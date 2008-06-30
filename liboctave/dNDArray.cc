@@ -41,6 +41,48 @@ along with Octave; see the file COPYING.  If not, see
 #if defined (HAVE_FFTW3)
 #include "oct-fftw.h"
 
+NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
+		  bool negative_to_nan)
+{
+  const octave_idx_type *pa = a.fortran_vec ();
+  resize (a.dims ());
+  double *ptmp = fortran_vec ();
+  if (negative_to_nan)
+    {
+      double nan_val = lo_ieee_nan_value ();
+
+      if (zero_based)
+	for (octave_idx_type i = 0; i < a.numel (); i++)
+	  {
+	    double val = static_cast<double> 
+	      (pa[i] + static_cast<octave_idx_type> (1));
+	    if (val <= 0)
+	      ptmp[i] = nan_val;
+	    else
+	      ptmp[i] = val;
+	  }
+      else
+	for (octave_idx_type i = 0; i < a.numel (); i++)
+	  {
+	    double val = static_cast<double> (pa[i]);
+	    if (val <= 0)
+	      ptmp[i] = nan_val;
+	    else
+	      ptmp[i] = val;
+	  }
+    }
+  else
+    {
+      if (zero_based)
+	for (octave_idx_type i = 0; i < a.numel (); i++)
+	  ptmp[i] = static_cast<double> 
+	    (pa[i] + static_cast<octave_idx_type> (1));
+      else
+	for (octave_idx_type i = 0; i < a.numel (); i++)
+	  ptmp[i] = static_cast<double> (pa[i]);
+    }
+}
+
 ComplexNDArray
 NDArray::fourier (int dim) const
 {

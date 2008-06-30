@@ -5248,16 +5248,7 @@ ordered lists.\n\
       Array<octave_idx_type> sidx;
 
       retval (0) = arg.sort (sidx, dim, smode);
-
-      octave_idx_type *ps = sidx.fortran_vec ();
-      NDArray midx (sidx.dims ());
-      double *pm = midx.fortran_vec ();
-
-      for (octave_idx_type i = 0; i < sidx.numel (); i++)
-	pm [i] = static_cast<double> 
-	  (ps [i] + static_cast<octave_idx_type> (1));
-
-      retval (1) = midx;
+      retval (1) = NDArray (sidx, true);
     }
   else
     retval(0) = arg.sort (dim, smode);

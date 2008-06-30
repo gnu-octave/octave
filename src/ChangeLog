@@ -1,5 +1,19 @@
 2008-07-10  David Bateman  <dbateman@free.fr>
 
+	* DLD-FUNCTIONS/lookup.cc (assign): Delete.
+	(Flookup): Use new NDArray constructors rather than assign.
+	* data.cc (Fsort): Use new NDArray constructors rather than 
+	directly assigning.
+	* besselj.cc (int_array2_to_matrix, int_arrayn_to_array,
+	int_array2_to_float_matrix, int_arrayn_to_float_array): Delete.
+	(do-bessel): Use new NDArray constructors.
+	* max.cc (MINMAX_SPARSE_BODY, MINMAX_INT_BODY, MINMAX_SINGLE_BODY,
+	MINMAX_DOUBLE_BODY): Use new NDArray constructors. 
+	* ov-bool.h (array_value, float_array_value): Explictly cast
+	boolean scalar to double before the assignment to avoid ambiguity.
+
+2008-07-10  David Bateman  <dbateman@free.fr>
+
 	* ls-mat4.cc (read_mat_binary_data, save_mat_binary_data): Add
 	loading and saving of sparse matrices.
 	

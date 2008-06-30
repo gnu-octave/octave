@@ -134,10 +134,10 @@ public:
     { return FloatMatrix (1, 1, scalar); }
 
   NDArray array_value (bool = false) const
-    { return NDArray (dim_vector (1, 1), scalar); }
+    { return NDArray (dim_vector (1, 1), static_cast<double> (scalar)); }
 
   FloatNDArray float_array_value (bool = false) const
-    { return FloatNDArray (dim_vector (1, 1), scalar); }
+    { return FloatNDArray (dim_vector (1, 1), static_cast<double> (scalar)); }
 
   Complex complex_value (bool = false) const { return scalar; }
 

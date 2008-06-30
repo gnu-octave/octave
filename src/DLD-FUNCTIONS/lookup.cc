@@ -49,25 +49,6 @@ contains_char (const std::string& str, char c)
 	  || str.find (std::toupper (c)) != std::string::npos);
 }
 
-// FIXME -- remove these one once octave_value supports octave_idx_type.
-static octave_value&
-assign (octave_value& ov, octave_idx_type idx)
-{
-  double tmp = idx;
-  ov = tmp;
-  return ov;
-}
-
-static octave_value&
-assign (octave_value& ov, const ArrayN<octave_idx_type>& ida)
-{
-  NDArray tmp (ida.dims ());
-  for (int i = 0; i < ida.numel (); i++)
-    tmp(i) = ida(i);
-  ov = tmp;
-  return ov;
-}
-
 // normal ascending comparator
 static bool
 ov_str_less (const octave_value& a, const octave_value& b)
@@ -239,8 +220,7 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
 			std::less<double> ());
 	}
 
-      //retval(0) = idx;
-      assign (retval(0), idx);
+      retval(0) = NDArray (idx);
     }
   else if (str_case)
     {
@@ -288,8 +268,7 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
                   idx(i) = bin_lookup (table.data (), table.length (), y(i), 
                                        std::ptr_fun (ov_str_comp));
 
-              //retval(0) = idx;
-              assign (retval(0), idx);
+              retval(0) = NDArray (idx);
             }
           else
             {
@@ -298,8 +277,7 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
               idx = bin_lookup (table.data (), table.length (), argy, 
                                 std::ptr_fun (ov_str_comp));
 
-              //retval(0) = idx;
-              assign (retval(0), idx);
+              retval(0) = static_cast<double> (idx);
             }
         }
       else

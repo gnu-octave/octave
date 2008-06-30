@@ -100,21 +100,7 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	{ \
-	  double nan_val = lo_ieee_nan_value (); \
- \
-	  NDArray idx (index.dims ()); \
- \
-	  for (octave_idx_type i = 0; i < len; i++) \
-	    { \
-	      OCTAVE_QUIT; \
-	      octave_idx_type tmp = index.elem (i) + 1; \
-	      idx.elem (i) = (tmp <= 0) \
-		? nan_val : static_cast<double> (tmp); \
-	    } \
- \
-	  retval(1) = idx; \
-	} \
+	retval(1) = NDArray (index, true, true);	\
       else \
 	retval(1) = NDArray (); \
     } \
@@ -276,23 +262,9 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	{ \
-	  float nan_val = lo_ieee_nan_value (); \
- \
-	  FloatNDArray idx (index.dims ()); \
- \
-	  for (octave_idx_type i = 0; i < len; i++) \
-	    { \
-	      OCTAVE_QUIT; \
-	      octave_idx_type tmp = index.elem (i) + 1; \
-	      idx.elem (i) = (tmp <= 0) \
-		? nan_val : static_cast<float> (tmp); \
-	    } \
- \
-	  retval(1) = idx; \
-	} \
+	retval(1) = NDArray (index, true, true);	\
       else \
-	retval(1) = FloatNDArray (); \
+	retval(1) = NDArray (); \
     } \
   else \
     { \
@@ -423,21 +395,7 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	{ \
-	  double nan_val = lo_ieee_nan_value (); \
- \
-	  NDArray idx (index.dims ()); \
- \
-	  for (octave_idx_type i = 0; i < len; i++) \
-	    { \
-	      OCTAVE_QUIT; \
-	      octave_idx_type tmp = index.elem (i) + 1; \
-	      idx.elem (i) = (tmp <= 0) \
-		? nan_val : static_cast<double> (tmp); \
-	    } \
- \
-	  retval(1) = idx; \
-	} \
+	retval(1) = NDArray (index, true, true);	\
       else \
 	retval(1) = NDArray (); \
     } \
@@ -518,21 +476,7 @@ along with Octave; see the file COPYING.  If not, see
       octave_idx_type len = index.numel (); \
  \
       if (len > 0) \
-	{ \
-	  double nan_val = lo_ieee_nan_value (); \
- \
-	  NDArray idx (index.dims ()); \
- \
-	  for (octave_idx_type i = 0; i < len; i++) \
-	    { \
-	      OCTAVE_QUIT; \
-	      octave_idx_type tmp = index.elem (i) + 1; \
-	      idx.elem (i) = (tmp <= 0) \
-		? nan_val : static_cast<double> (tmp); \
-	    } \
- \
-	  retval(1) = idx; \
-	} \
+	retval(1) = NDArray (index, true, true);	\
       else \
 	retval(1) = NDArray (); \
     } \

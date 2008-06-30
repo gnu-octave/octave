@@ -79,80 +79,6 @@ enum bessel_type
     } \
   while (0)
 
-static inline Matrix
-int_array2_to_matrix (const Array2<octave_idx_type>& a)
-{
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  Matrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-	OCTAVE_QUIT;
-
-	retval(i,j) = static_cast<double> (a(i,j));
-      }
-
-  return retval;
-}
-
-static inline NDArray
-int_arrayN_to_array (const ArrayN<octave_idx_type>& a)
-{
-  dim_vector dv = a.dims ();
-  int nel = dv.numel ();
-
-  NDArray retval (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      OCTAVE_QUIT;
-      
-      retval(i) = static_cast<double> (a(i));
-    }
-
-  return retval;
-}
-
-static inline FloatMatrix
-int_array2_to_float_matrix (const Array2<octave_idx_type>& a)
-{
-  octave_idx_type nr = a.rows ();
-  octave_idx_type nc = a.cols ();
-
-  FloatMatrix retval (nr, nc);
-
-  for (octave_idx_type j = 0; j < nc; j++)
-    for (octave_idx_type i = 0; i < nr; i++)
-      {
-	OCTAVE_QUIT;
-
-	retval(i,j) = static_cast<float> (a(i,j));
-      }
-
-  return retval;
-}
-
-static inline FloatNDArray
-int_arrayN_to_float_array (const ArrayN<octave_idx_type>& a)
-{
-  dim_vector dv = a.dims ();
-  int nel = dv.numel ();
-
-  FloatNDArray retval (dv);
-
-  for (int i = 0; i < nel; i++)
-    {
-      OCTAVE_QUIT;
-      
-      retval(i) = static_cast<float> (a(i));
-    }
-
-  return retval;
-}
-
 static void
 gripe_bessel_arg (const char *fn, const char *arg)
 {
@@ -213,7 +139,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 			  if (nargout > 1)
-			    retval(1) = int_arrayN_to_float_array (ierr);
+			    retval(1) = NDArray (ierr);
 
 			  retval(0) = result;
 			}
@@ -249,7 +175,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
 
 			  if (nargout > 1)
-			    retval(1) = int_array2_to_float_matrix (ierr);
+			    retval(1) = NDArray (ierr);
 
 			  retval(0) = result;
 			}
@@ -277,7 +203,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 			      if (nargout > 1)
-				retval(1) = int_arrayN_to_float_array (ierr);
+				retval(1) = NDArray (ierr);
 
 			      retval(0) = result;
 			    }
@@ -296,7 +222,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 			  
 			      if (nargout > 1)
-				retval(1) = int_arrayN_to_float_array (ierr);
+				retval(1) = NDArray (ierr);
 
 			      retval(0) = result;
 			    }
@@ -348,7 +274,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			  DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 			  if (nargout > 1)
-			    retval(1) = int_arrayN_to_array (ierr);
+			    retval(1) = NDArray (ierr);
 
 			  retval(0) = result;
 			}
@@ -384,7 +310,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			  DO_BESSEL (type, ralpha, cx, scaled, ierr, result);
 
 			  if (nargout > 1)
-			    retval(1) = int_array2_to_matrix (ierr);
+			    retval(1) = NDArray (ierr);
 
 			  retval(0) = result;
 			}
@@ -412,7 +338,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 
 			      if (nargout > 1)
-				retval(1) = int_arrayN_to_array (ierr);
+				retval(1) = NDArray (ierr);
 
 			      retval(0) = result;
 			    }
@@ -431,7 +357,7 @@ do_bessel (enum bessel_type type, const char *fn,
 			      DO_BESSEL (type, alpha, x, scaled, ierr, result);
 			  
 			      if (nargout > 1)
-				retval(1) = int_arrayN_to_array (ierr);
+				retval(1) = NDArray (ierr);
 
 			      retval(0) = result;
 			    }
@@ -666,7 +592,7 @@ return @code{NaN}.\n\
 		    result = airy (z, kind == 1, scale, ierr);
 
 		  if (nargout > 1)
-		    retval(1) = int_arrayN_to_float_array (ierr);
+		    retval(1) = NDArray (ierr);
 
 		  retval(0) = result;
 		}
@@ -688,7 +614,7 @@ return @code{NaN}.\n\
 		    result = airy (z, kind == 1, scale, ierr);
 
 		  if (nargout > 1)
-		    retval(1) = int_arrayN_to_array (ierr);
+		    retval(1) = NDArray (ierr);
 
 		  retval(0) = result;
 		}

@@ -695,12 +695,6 @@ List script file with line numbers.\n\
   return retval;
 }
 
-void
-push_dummy_call_stack_elt (void *)
-{
-  octave_call_stack::push (static_cast<octave_function *> (0));
-}
-
 DEFCMD (dbstack, args, nargout,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {[@var{stack}, @var{idx}]} dbstack (@var{n})\n\
@@ -713,18 +707,9 @@ Print or return current stack information.  With optional argument\n\
 
   unwind_protect::begin_frame ("Fdbstack");
 
-  // Debugging functions should not be included in the call stack, so
-  // we pop the dbstack function from the stack and then set up to
-  // restore a stack element when we exit this function (or when it is
-  // cleaned up).
+  octave_idx_type curr_frame = -1;
 
-  octave_call_stack::pop ();
-
-  unwind_protect::add (push_dummy_call_stack_elt, 0);
-
-  size_t total_frames = octave_call_stack::size ();
-
-  size_t nframes = total_frames;
+  size_t nskip = 0;
 
   if (args.length () == 1)
     {
@@ -742,18 +727,14 @@ Print or return current stack information.  With optional argument\n\
 	n = args(0).int_value ();
 
       if (n > 0)
-	nframes = n;
+	nskip = n;
       else
 	error ("dbstack: expecting N to be a nonnegative integer");
     }
 
   if (! error_state)
     {
-      size_t curr_frame = octave_call_stack::current_frame ();
-
-      Octave_map stk = octave_call_stack::backtrace (nframes);
-
-      octave_idx_type idx = total_frames - curr_frame;
+      Octave_map stk = octave_call_stack::backtrace (nskip, curr_frame);
 
       if (nargout == 0)
 	{
@@ -773,7 +754,7 @@ Print or return current stack information.  With optional argument\n\
 		  octave_value line = lines(i);
 		  octave_value column = columns(i);
 
-		  octave_stdout << (i == idx ? "--> " : "    ")
+		  octave_stdout << (i == curr_frame ? "--> " : "    ")
 				<< name.string_value ()
 				<< " at line " << line.int_value ()
 				<< " column " << column.int_value ()
@@ -783,7 +764,7 @@ Print or return current stack information.  With optional argument\n\
 	}
       else
 	{
-	  retval(1) = idx < 0 ? 1 : idx + 1;
+	  retval(1) = curr_frame < 0 ? 1 : curr_frame + 1;
 	  retval(0) = stk;
 	}
     }

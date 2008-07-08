@@ -859,7 +859,6 @@ public:
   static scope_id top_scope (void) { return xtop_scope; }
 
   static scope_id current_scope (void) { return xcurrent_scope; }
-  static scope_id current_caller_scope (void) { return xcurrent_caller_scope; }
 
   static context_id current_context (void) { return xcurrent_context; }
 
@@ -887,7 +886,7 @@ public:
 	  instance = p->second;
 
 	xcurrent_scope = scope;
-	xcurrent_context = instance->xcurrent_context_this_table;
+	xcurrent_context = 0;
       }
   }
 
@@ -921,8 +920,6 @@ public:
     if (scope_stack.empty ())
       scope_stack.push_front (xtop_scope);
 
-    xcurrent_caller_scope = xcurrent_scope;
-
     set_scope (scope);
 
     scope_stack.push_front (scope);
@@ -933,8 +930,6 @@ public:
     scope_stack.pop_front ();
 
     set_scope (scope_stack[0]);
-
-    xcurrent_caller_scope = scope_stack.size () > 1 ? scope_stack[1] : -1;
   }
 
   static void pop_scope (void *) { pop_scope (); }
@@ -946,8 +941,6 @@ public:
     scope_stack.push_front (xtop_scope);
 
     set_scope (xtop_scope);
-
-    xcurrent_caller_scope = -1;
   }
 
   static void set_parent_scope (scope_id scope)
@@ -1825,19 +1818,16 @@ private:
   static const scope_id xtop_scope;
 
   static scope_id xcurrent_scope;
-  static scope_id xcurrent_caller_scope;
 
   // We use parent_scope to handle parsing subfunctions.
   static scope_id xparent_scope;
 
-  // Used to handle recursive calls.
-  context_id xcurrent_context_this_table;
   static context_id xcurrent_context;
 
   static std::deque<scope_id> scope_stack;
 
   symbol_table (void)
-    : table_name (), table (), xcurrent_context_this_table () { }
+    : table_name (), table () { }
 
   ~symbol_table (void) { }
 
@@ -2025,16 +2015,12 @@ private:
 
   void do_push_context (void)
   {
-    xcurrent_context = ++xcurrent_context_this_table;
-
     for (table_iterator p = table.begin (); p != table.end (); p++)
       p->second.push_context ();
   }
 
   void do_pop_context (void)
   {
-    xcurrent_context = --xcurrent_context_this_table;
-
     for (table_iterator p = table.begin (); p != table.end (); )
       {
 	if (p->second.pop_context () == 0)

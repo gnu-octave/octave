@@ -342,7 +342,7 @@ octave_fcn_handle::load_ascii (std::istream& is)
 		      break;
 		    }
 
-		  symbol_table::varref (name, local_scope) = t2;
+		  symbol_table::varref (name, local_scope, 0) = t2;
 		}
 	    }
 	}
@@ -1122,8 +1122,8 @@ octave_fcn_handle::load_hdf5 (hid_t loc_id, const char *name,
 %! if (!isempty(findstr(octave_config_info ("DEFS"),"HAVE_HDF5")))
 %!   modes(end+1) = "-hdf5";
 %! endif
-%! for i = modes
-%!   mode = modes{1};
+%! for i = 1:numel (modes)
+%!   mode = modes{i};
 %!   nm = tmpnam();
 %!   unwind_protect
 %!     save (mode, nm, "f2", "g2", "hm2", "hdld2", "hbi2");

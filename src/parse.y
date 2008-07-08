@@ -3407,14 +3407,14 @@ source_file (const std::string& file_name, const std::string& context,
   if (! context.empty ())
     {
       if (context == "caller")
-	symbol_table::push_scope (symbol_table::current_caller_scope ());
+	octave_call_stack::goto_caller_frame ();
       else if (context == "base")
-	symbol_table::push_scope (symbol_table::top_scope ());
+	octave_call_stack::goto_base_frame ();
       else
 	error ("source: context must be \"caller\" or \"base\"");
 
       if (! error_state)
-	unwind_protect::add (symbol_table::pop_scope);
+	unwind_protect::add (octave_call_stack::unwind_pop);
     }      
 
   if (! error_state)
@@ -3965,22 +3965,16 @@ may be either @code{\"base\"} or @code{\"caller\"}.\n\
 	  symbol_table::scope_id scope = -1;
 
 	  if (context == "caller")
-	    {
-	      if (symbol_table::current_scope () == symbol_table::current_caller_scope ())
-		{
-		  error ("assignin: assignment in caller not implemented yet for direct recursion");
-		  return retval;
-		}
-	      else
-		scope = symbol_table::current_caller_scope ();
-	    }
+	    octave_call_stack::goto_caller_frame ();
 	  else if (context == "base")
-	    scope = symbol_table::top_scope ();
+	    octave_call_stack::goto_base_frame ();
 	  else
 	    error ("assignin: context must be \"caller\" or \"base\"");
 
 	  if (! error_state)
 	    {
+	      unwind_protect::add (octave_call_stack::unwind_pop);
+
 	      std::string nm = args(1).string_value ();
 
 	      if (! error_state)
@@ -4024,23 +4018,15 @@ context @var{context}, which may be either @code{\"caller\"} or\n\
 	  unwind_protect::begin_frame ("Fevalin");
 
 	  if (context == "caller")
-	    {
-	      if (symbol_table::current_scope () == symbol_table::current_caller_scope ())
-		{
-		  error ("evalin: evaluation in caller not implemented yet for direct recursion");
-		  return retval;
-		}
-	      else
-		symbol_table::push_scope (symbol_table::current_caller_scope ());
-	    }
+	    octave_call_stack::goto_caller_frame ();
 	  else if (context == "base")
-	    symbol_table::push_scope (symbol_table::top_scope ());
+	    octave_call_stack::goto_base_frame ();
 	  else
 	    error ("evalin: context must be \"caller\" or \"base\"");
 
 	  if (! error_state)
 	    {
-	      unwind_protect::add (symbol_table::pop_scope);
+	      unwind_protect::add (octave_call_stack::unwind_pop);
 
 	      if (nargin > 2)
 	        {

@@ -389,10 +389,11 @@ octave_user_function::do_multi_index_op (int nargout,
   // Save old and set current symbol table context, for
   // eval_undefined_error().
 
-  octave_call_stack::push (this, local_scope, call_depth);
-
   symbol_table::push_scope (local_scope);
   unwind_protect::add (symbol_table::pop_scope);
+
+  octave_call_stack::push (this, local_scope, call_depth);
+  unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
   if (call_depth > 0)
     {
@@ -405,8 +406,6 @@ octave_user_function::do_multi_index_op (int nargout,
       // Force symbols to be undefined again when this function exits.
       unwind_protect::add (symbol_table::clear_variables);
     }
-
-  unwind_protect::add (octave_call_stack::unwind_pop, 0);
 
   if (! (is_nested_function () || is_inline_function ()))
     {

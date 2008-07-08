@@ -57,7 +57,6 @@ const symbol_table::scope_id symbol_table::xglobal_scope = 0;
 const symbol_table::scope_id symbol_table::xtop_scope = 1;
 
 symbol_table::scope_id symbol_table::xcurrent_scope = 1;
-symbol_table::scope_id symbol_table::xcurrent_caller_scope = -1;
 
 symbol_table::scope_id symbol_table::xparent_scope = -1;
 

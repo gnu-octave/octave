@@ -1,3 +1,60 @@
+2008-06-28  John W. Eaton  <jwe@octave.org>
+
+	* debug.cc (push_dummy_call_stack_elt): Delete.
+	(Fdbstack): Don't push dummy stack elt.  Use nskip instead of
+	nframes, and curr_frame instead of idx.  Pass curr_frame to
+	octave_call_stack::backtrace.
+
+	* ls-mat5.cc (read_mat5_binary_element): Explicitly pass 0 for
+	current_context in call to symbol_table::varref.
+	* ov-fcn-handle.cc (octave_fcn_handle::load_ascii): Likewise.
+	Fix test.
+
+	* mex.cc (mexGetVariable, mexPutVariable): Use octave_call_stack
+	methods to manipulate scope and context.
+	* parse.y (source_file, Fassignin, Fevalin): Likewise.
+
+	* ov-usr-fcn.cc (octave_user_function::do_multi_index_op):
+	Call octave_call_stack::push after call to symbol_table::push_scope.
+	Call unwind_protect::add with octave_call_stack::unwind_pop
+	immediately after call to octave_call_stack::push.
+
+	* symtab.cc (symbol_table::xcurrent_caller_scope): Delete definition.
+	* symtab.h (symbol_table::xcurrent_caller_scope): Delete decl.
+	Delete all uses.
+	(xcurrent_context_this_table): Delete.  Delete all uses.
+	(symbol_table::current_caller_scope): Delete.
+
+	* toplev.cc (octave_call_stack::do_num_user_code_frames):
+	New function.
+	(octave_call_stack::do_backtrace): New arg, curr_user_frame.	
+	Rename nframes arg to nskip.  Correctly handle curr_frame not at
+	end of stack.
+	(octave_call_stack::do_goto_frame_relative): Rename n arg to nskip.
+	Correctly handle curr_frame not at end of stack.
+	(octave_call_stack::do_goto_caller_frame): New function.
+	(octave_call_stack::do_goto_base_frame): New function.
+	* toplev.h: Provide decls for new functions.
+	(octave_call_stack::call_stack_elt::prev): New data member.
+	Initialize it in constructor.
+	(octave_call_stack::const_reverse_iterator,
+	octave_call_stack::reverse_iterator): New typedefs.
+	(octave_call_stack::symbol_table::scope_id current_scope,
+	octave_call_stack::symbol_table::context_id current_context,
+	octave_call_stack::num_user_code_frames,
+	octave_call_stack::goto_caller_frame,
+	octave_call_stack::goto_base_frame,
+	octave_call_stack::do_num_user_code_frames,
+	octave_call_stack::do_current_scope,
+	octave_call_stack::do_current_context): New functions.
+
+	(octave_call_stack::push): Default value for context arg is
+	symbol_table::current_context, not 0.
+	(octave_call_stack::do_push): Save previous frame.  Always push
+	new frame on back of stack.  Call symbol_table::set_scope_and_context.
+	(octave_call_stack::do_pop): Restore previous frame.  Always pop
+	frame from back of stack.  Call symbol_table::set_scope_and_context.
+
 2008-06-26  John W. Eaton  <jwe@octave.org>
 
 	* token.h: Omit "class symbol_table::symbol_record" decl;

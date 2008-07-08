@@ -3268,16 +3268,22 @@ mexGetVariable (const char *space, const char *name)
     val = get_global_value (name);
   else
     {
-      symbol_table::scope_id scope = -1;
+      bool caller = ! strcmp (space, "caller");
+      bool base = ! strcmp (space, "base");
 
-      if (! strcmp (space, "caller"))
-	scope = symbol_table::current_caller_scope ();
-      else if (! strcmp (space, "base"))
-	scope = symbol_table::top_scope ();
+      if (caller || base)
+	{
+	  if (caller)
+	    octave_call_stack::goto_caller_frame ();
+	  else
+	    octave_call_stack::goto_base_frame ();
+
+	  val = symbol_table::varval (name);
+
+	  octave_call_stack::pop ();
+	}
       else
 	mexErrMsgTxt ("mexGetVariable: symbol table does not exist");
-
-      val = symbol_table::varval (name, scope);
     }
 
   if (val.is_defined ())
@@ -3317,16 +3323,22 @@ mexPutVariable (const char *space, const char *name, mxArray *ptr)
     {
       // FIXME -- should this be in variables.cc?
 
-      symbol_table::scope_id scope = -1;
+      bool caller = ! strcmp (space, "caller");
+      bool base = ! strcmp (space, "base");
 
-      if (! strcmp (space, "caller"))
-	scope = symbol_table::current_caller_scope ();
-      else if (! strcmp (space, "base"))
-	scope = symbol_table::top_scope ();
+      if (caller || base)
+	{
+	  if (caller)
+	    octave_call_stack::goto_caller_frame ();
+	  else
+	    octave_call_stack::goto_base_frame ();
+
+	  symbol_table::varref (name) = mxArray::as_octave_value (ptr);
+
+	  octave_call_stack::pop ();
+	}
       else
 	mexErrMsgTxt ("mexPutVariable: symbol table does not exist");
-
-      symbol_table::varref (name, scope) = mxArray::as_octave_value (ptr);
     }
 
   return 0;

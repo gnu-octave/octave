@@ -77,13 +77,18 @@ private:
   struct call_stack_elt
   {
     call_stack_elt (octave_function *f, symbol_table::scope_id s,
-		    symbol_table::context_id c)
-      : fcn (f), stmt (0), scope (s), context (c) { }
+		    symbol_table::context_id c, size_t p = 0)
+      : fcn (f), stmt (0), scope (s), context (c), prev (p) { }
+
+    call_stack_elt (const call_stack_elt& elt)
+      : fcn (elt.fcn), stmt (elt.stmt), scope (elt.scope),
+	context (elt.context), prev (elt.prev) { }
 
     octave_function *fcn;
     tree_statement *stmt;
     symbol_table::scope_id scope;
     symbol_table::context_id context;
+    size_t prev;
   };
 
 protected:
@@ -94,6 +99,10 @@ public:
 
   typedef std::deque<call_stack_elt>::iterator iterator;
   typedef std::deque<call_stack_elt>::const_iterator const_iterator;
+
+  typedef std::deque<call_stack_elt>::reverse_iterator reverse_iterator;
+  typedef std::deque<call_stack_elt>::const_reverse_iterator const_reverse_iterator;
+
   typedef std::deque<call_stack_elt>::difference_type difference_type;
 
   static bool instance_ok (void)
@@ -159,6 +168,22 @@ public:
     return instance_ok () ? instance->do_size () : 0;
   }
 
+  static size_t num_user_code_frames (octave_idx_type& curr_user_frame)
+  {
+    return instance_ok ()
+      ? instance->do_num_user_code_frames (curr_user_frame) : 0;
+  }
+
+  static symbol_table::scope_id current_scope (void)
+  {
+    return instance_ok () ? instance->do_current_scope () : 0;
+  }
+
+  static symbol_table::context_id current_context (void)
+  {
+    return instance_ok () ? instance->do_current_context () : 0;
+  }
+
   // Function at location N on the call stack (N == 0 is current), may
   // be built-in.
   static octave_function *element (size_t n)
@@ -187,7 +212,7 @@ public:
   static void
   push (octave_function *f,
 	symbol_table::scope_id scope = symbol_table::current_scope (),
-	symbol_table::context_id context = 0)
+	symbol_table::context_id context = symbol_table::current_context ())
   {
     if (instance_ok ())
       instance->do_push (f, scope, context);
@@ -220,9 +245,22 @@ public:
       ? instance->do_goto_frame_relative (n, verbose) : false;
   }
 
-  static Octave_map backtrace (int n = 0)
+  static void goto_caller_frame (void)
   {
-    return instance_ok () ? instance->do_backtrace (n) : Octave_map ();
+    if (instance_ok ())
+      instance->do_goto_caller_frame ();
+  }
+
+  static void goto_base_frame (void)
+  {
+    if (instance_ok ())
+      instance->do_goto_base_frame ();
+  }
+
+  static Octave_map backtrace (size_t nskip, octave_idx_type& curr_user_frame)
+  {
+    return instance_ok ()
+      ? instance->do_backtrace (nskip, curr_user_frame) : Octave_map ();
   }
 
   static void pop (void)
@@ -262,6 +300,20 @@ private:
 
   size_t do_size (void) { return cs.size (); }
 
+  size_t do_num_user_code_frames (octave_idx_type& curr_user_frame) const;
+
+  symbol_table::scope_id do_current_scope (void) const
+  {
+    return curr_frame > 0 && curr_frame < cs.size ()
+      ? cs[curr_frame].scope : 0;
+  }
+
+  symbol_table::context_id do_current_context (void) const
+  {
+    return curr_frame > 0 && curr_frame < cs.size ()
+      ? cs[curr_frame].context : 0;
+  }
+
   octave_function *do_element (size_t n)
   {
     octave_function *retval = 0;
@@ -284,9 +336,10 @@ private:
   void do_push (octave_function *f, symbol_table::scope_id scope,
 		symbol_table::context_id context)
   {
-    curr_frame++;
-
-    cs.push_back (call_stack_elt (f, scope, context));
+    size_t prev_frame = curr_frame;
+    curr_frame = cs.size ();
+    cs.push_back (call_stack_elt (f, scope, context, prev_frame));
+    symbol_table::set_scope_and_context (scope, context);
   }
 
   octave_function *do_top (void) const
@@ -320,24 +373,30 @@ private:
     if (! cs.empty ())
       {
 	call_stack_elt& elt = cs.back ();
-
 	elt.stmt = s;
       }
   }
 
-  Octave_map do_backtrace (int n) const;
+  Octave_map do_backtrace (size_t nskip,
+			   octave_idx_type& curr_user_frame) const;
 
   bool do_goto_frame (size_t n, bool verbose);
 
   bool do_goto_frame_relative (int n, bool verbose);
 
+  void do_goto_caller_frame (void);
+
+  void do_goto_base_frame (void);
+
   void do_pop (void)
   {
-    if (! cs.empty ())
+    if (cs.size () > 1)
       {
-	curr_frame--;
-
+	const call_stack_elt& elt = cs.back ();
+	curr_frame = elt.prev;
 	cs.pop_back ();
+	const call_stack_elt& new_elt = cs[curr_frame];
+	symbol_table::set_scope_and_context (new_elt.scope, new_elt.context);
       }
   }
 

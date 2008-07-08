@@ -1,3 +1,8 @@
+2008-07-08  John W. Eaton  <jwe@octave.org>
+
+	* graphics.h.in (axes::properties::keypos): Declare as
+	any_property instead of double_property.
+
 2008-06-28  John W. Eaton  <jwe@octave.org>
 
 	* debug.cc (push_dummy_call_stack_elt): Delete.

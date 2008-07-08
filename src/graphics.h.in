@@ -2598,7 +2598,7 @@ public:
       bool_property box , "on"
       bool_property key , "off"
       bool_property keybox , "off"
-      double_property keypos , 1
+      any_property keypos , 1
       array_property colororder , default_colororder ()
       array_property dataaspectratio m , Matrix (1, 3, 1.0)
       radio_property dataaspectratiomode , "{auto}|manual"

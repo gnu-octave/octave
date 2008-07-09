@@ -1,3 +1,8 @@
+2008-07-10  David Bateman  <dbateman@free.fr>
+
+	* ls-mat4.cc (read_mat_binary_data, save_mat_binary_data): Add
+	loading and saving of sparse matrices.
+	
 2008-07-10  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* Makefile.in: Add OPENGL_LIBS to liboctinterp link command. Add

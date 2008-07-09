@@ -61,6 +61,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "version.h"
 #include "dMatrix.h"
+#include "dSparse.h"
 
 #include "ls-mat4.h"
 
@@ -301,12 +302,6 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
       return retval;
     }
 
-  if (type != 0 && type != 1)
-    {
-      error ("load: can't read sparse matrices");
-      return retval;
-    }
-
   if (imag && type == 1)
     {
       error ("load: encountered complex matrix with string flag set!");
@@ -335,42 +330,101 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
 	nc = tmp;
       }
 
-      re.resize (nr, nc);
+    if (type == 2)
+      {
+	if (nc == 4)
+	  {
+	    octave_idx_type nr_new, nc_new;
+	    Array<Complex> data (dim_vector (1, nr - 1));
+	    Array<octave_idx_type> c (dim_vector (1, nr - 1));
+	    Array<octave_idx_type> r (dim_vector (1, nr - 1));
+	    OCTAVE_LOCAL_BUFFER (double, dtmp, nr);
+	    OCTAVE_LOCAL_BUFFER (double, ctmp, nr);
 
-      read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
+	    read_mat_binary_data (is, dtmp, prec, nr, swap, flt_fmt);
+	    for (octave_idx_type i = 0; i < nr - 1; i++)
+	      r.xelem(i) = dtmp[i] - 1;
+	    nr_new = dtmp[nr - 1];
+	    read_mat_binary_data (is, dtmp, prec, nr, swap, flt_fmt);
+	    for (octave_idx_type i = 0; i < nr - 1; i++)
+	      c.xelem(i) = dtmp[i] - 1;
+	    nc_new = dtmp[nr - 1];
+	    read_mat_binary_data (is, dtmp, prec, nr - 1, swap, flt_fmt);
+	    read_mat_binary_data (is, ctmp, prec, 1, swap, flt_fmt);
+	    read_mat_binary_data (is, ctmp, prec, nr - 1, swap, flt_fmt);
 
-      if (! is || error_state)
-	{
-	  error ("load: reading matrix data for `%s'", name);
-	  goto data_read_error;
-	}
+	    for (octave_idx_type i = 0; i < nr - 1; i++)
+	      data.xelem(i) = Complex (dtmp[i], ctmp[i]);
+	    read_mat_binary_data (is, ctmp, prec, 1, swap, flt_fmt);
 
-      if (imag)
-	{
-	  Matrix im (nr, nc);
+	    SparseComplexMatrix smc = SparseComplexMatrix (data, r, c, 
+							   nr_new, nc_new);
 
-	  read_mat_binary_data (is, im.fortran_vec (), prec, dlen, swap,
-				flt_fmt);
+	    tc = order ? smc.transpose () : smc;
+	  }
+	else
+	  {
+	    octave_idx_type nr_new, nc_new;
+	    Array<double> data (dim_vector (1, nr - 1));
+	    Array<octave_idx_type> c (dim_vector (1, nr - 1));
+	    Array<octave_idx_type> r (dim_vector (1, nr - 1));
+	    OCTAVE_LOCAL_BUFFER (double, dtmp, nr);
 
-	  if (! is || error_state)
-	    {
-	      error ("load: reading imaginary matrix data for `%s'", name);
-	      goto data_read_error;
-	    }
+	    read_mat_binary_data (is, dtmp, prec, nr, swap, flt_fmt);
+	    for (octave_idx_type i = 0; i < nr - 1; i++)
+	      r.xelem(i) = dtmp[i] - 1;
+	    nr_new = dtmp[nr - 1];
+	    read_mat_binary_data (is, dtmp, prec, nr, swap, flt_fmt);
+	    for (octave_idx_type i = 0; i < nr - 1; i++)
+	      c.xelem(i) = dtmp[i] - 1;
+	    nc_new = dtmp[nr - 1];
+	    read_mat_binary_data (is, data.fortran_vec (), prec, nr - 1, swap, flt_fmt);
+	    read_mat_binary_data (is, dtmp, prec, 1, swap, flt_fmt);
 
-	  ComplexMatrix ctmp (nr, nc);
+	    SparseMatrix sm = SparseMatrix (data, r, c, nr_new, nc_new);
 
-	  for (octave_idx_type j = 0; j < nc; j++)
-	    for (octave_idx_type i = 0; i < nr; i++)
-	      ctmp (i, j) = Complex (re (i, j), im (i, j));
+	    tc = order ? sm.transpose () : sm;
+	  }
+      }
+    else
+      {
+	re.resize (nr, nc);
 
-	  tc = order ? ctmp.transpose () : ctmp;
-	}
-      else
-	tc = order ? re.transpose () : re;
+	read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
 
-      if (type == 1)
-	tc = tc.convert_to_str (false, true, '\'');
+	if (! is || error_state)
+	  {
+	    error ("load: reading matrix data for `%s'", name);
+	    goto data_read_error;
+	  }
+
+	if (imag)
+	  {
+	    Matrix im (nr, nc);
+
+	    read_mat_binary_data (is, im.fortran_vec (), prec, dlen, swap,
+				  flt_fmt);
+
+	    if (! is || error_state)
+	      {
+		error ("load: reading imaginary matrix data for `%s'", name);
+		goto data_read_error;
+	      }
+
+	    ComplexMatrix ctmp (nr, nc);
+
+	    for (octave_idx_type j = 0; j < nc; j++)
+	      for (octave_idx_type i = 0; i < nr; i++)
+		ctmp (i, j) = Complex (re (i, j), im (i, j));
+
+	    tc = order ? ctmp.transpose () : ctmp;
+	  }
+	else
+	  tc = order ? re.transpose () : re;
+
+	if (type == 1)
+	  tc = tc.convert_to_str (false, true, '\'');
+      }
 
       return retval;
     }
@@ -389,7 +443,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 {
   int32_t mopt = 0;
 
-  mopt += tc.is_string () ? 1 : 0;
+  mopt += tc.is_sparse_type () ? 2 : tc.is_string () ? 1 : 0;
 
   oct_mach_info::float_format flt_fmt =
     oct_mach_info::native_float_format ();;
@@ -398,16 +452,34 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
 
   os.write (reinterpret_cast<char *> (&mopt), 4);
   
+  octave_idx_type len;
   int32_t nr = tc.rows ();
-  os.write (reinterpret_cast<char *> (&nr), 4);
 
   int32_t nc = tc.columns ();
-  os.write (reinterpret_cast<char *> (&nc), 4);
 
-  octave_idx_type len = nr * nc;
+  if (tc.is_sparse_type ())
+    {
+      len = tc.nnz ();
+      uint32_t nnz = len + 1;
+      os.write (reinterpret_cast<char *> (&nnz), 4);
 
-  int32_t imag = tc.is_complex_type () ? 1 : 0;
-  os.write (reinterpret_cast<char *> (&imag), 4);
+      uint32_t iscmplx = tc.is_complex_type () ? 4 : 3;
+      os.write (reinterpret_cast<char *> (&iscmplx), 4);
+
+      uint32_t tmp = 0;
+      os.write (reinterpret_cast<char *> (&tmp), 4);
+    }
+  else
+    {
+      os.write (reinterpret_cast<char *> (&nr), 4);
+      os.write (reinterpret_cast<char *> (&nc), 4);
+
+      int32_t imag = tc.is_complex_type () ? 1 : 0;
+      os.write (reinterpret_cast<char *> (&imag), 4);
+
+      len = nr * nc;
+    }
+
 
   // LEN includes the terminating character, and the file is also
   // supposed to include it.
@@ -456,6 +528,62 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
     {
       double tmp = tc.double_value ();
       os.write (reinterpret_cast<char *> (&tmp), 8);
+    }
+  else if (tc.is_sparse_type ())
+    {
+      double ds;
+      OCTAVE_LOCAL_BUFFER (double, dtmp, len);
+      if (tc.is_complex_matrix ())
+	{
+	  SparseComplexMatrix m = tc.sparse_complex_matrix_value ();
+
+	  for (octave_idx_type i = 0; i < len; i++)
+	    dtmp [i] = m.ridx(i) + 1;
+	  os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+	  ds = nr;
+	  os.write (reinterpret_cast<const char *> (&ds), 8);
+
+	  octave_idx_type ii = 0;
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
+	      dtmp[ii++] = j + 1;
+	  os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+	  ds = nc;
+	  os.write (reinterpret_cast<const char *> (&ds), 8);
+
+	  for (octave_idx_type i = 0; i < len; i++)
+	    dtmp [i] = std::real (m.data(i));
+	  os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+	  ds = 0.;
+	  os.write (reinterpret_cast<const char *> (&ds), 8);
+
+	  for (octave_idx_type i = 0; i < len; i++)
+	    dtmp [i] = std::imag (m.data(i));
+	  os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+	  os.write (reinterpret_cast<const char *> (&ds), 8);
+	}
+      else
+	{
+	  SparseMatrix m = tc.sparse_matrix_value ();
+
+	  for (octave_idx_type i = 0; i < len; i++)
+	    dtmp [i] = m.ridx(i) + 1;
+	  os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+	  ds = nr;
+	  os.write (reinterpret_cast<const char *> (&ds), 8);
+
+	  octave_idx_type ii = 0;
+	  for (octave_idx_type j = 0; j < nc; j++)
+	    for (octave_idx_type i = m.cidx(j); i < m.cidx(j+1); i++)
+	      dtmp[ii++] = j + 1;
+	  os.write (reinterpret_cast<const char *> (dtmp), 8 * len);
+	  ds = nc;
+	  os.write (reinterpret_cast<const char *> (&ds), 8);
+
+	  os.write (reinterpret_cast<const char *> (m.data ()), 8 * len);
+	  ds = 0.;
+	  os.write (reinterpret_cast<const char *> (&ds), 8);
+	}
     }
   else if (tc.is_real_matrix ())
     {

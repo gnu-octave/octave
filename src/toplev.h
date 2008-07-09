@@ -110,13 +110,17 @@ public:
     bool retval = true;
 
     if (! instance)
-      instance = new octave_call_stack ();
-
-    if (! instance)
       {
-	::error ("unable to create call stack object!");
+	instance = new octave_call_stack ();
 
-	retval = false;
+	if (instance)
+	  instance->do_push (0, symbol_table::top_scope (), 0);
+	else
+	  {
+	    ::error ("unable to create call stack object!");
+
+	    retval = false;
+	  }
       }
 
     return retval;

@@ -631,24 +631,28 @@ get_debug_input (const std::string& prompt)
       // This is the same as yyparse in parse.y.
       int retval = octave_parse ();
 
-      tree_statement_list *command = global_command;
-
-      // Restore previous value of global_command.
-      unwind_protect::run ();
-
-      if (retval == 0 && command)
+      if (retval == 0 && global_command)
 	{
-	  command->eval ();
+	  global_command->eval ();
 
-	  delete command;
-
-	  command = 0;
-
-	  OCTAVE_QUIT;
+	  // FIXME -- To avoid a memory leak, global_command should be
+	  // deleted, I think.  But doing that here causes trouble if
+	  // an error occurs while executing a debugging command
+	  // (dbstep, for example). It's not clear to me why that
+	  // happens.
+	  //
+	  // delete global_command;
+	  //
+	  // global_command = 0;
 
 	  if (octave_completion_matches_called)
 	    octave_completion_matches_called = false;	    
 	}
+
+      // Restore previous value of global_command.
+      unwind_protect::run ();
+
+      OCTAVE_QUIT;
     }
 
   unwind_protect::run_frame ("get_debug_input");

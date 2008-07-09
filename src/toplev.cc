@@ -543,8 +543,6 @@ main_loop (void)
 
   octave_initialized = true;
 
-  unwind_protect::begin_frame ("main_loop");
-
   // The big loop.
 
   int retval = 0;
@@ -558,26 +556,18 @@ main_loop (void)
 
 	  reset_parser ();
 
-	  // Save current value of global_command.
-	  unwind_protect_ptr (global_command);
-
 	  // This is the same as yyparse in parse.y.
 	  retval = octave_parse ();
 
-	  tree_statement_list *command = global_command;
-
-	  // Restore previous value of global_command.
-	  unwind_protect::run ();
-
 	  if (retval == 0)
 	    {
-	      if (command)
+	      if (global_command)
 		{
-		  command->eval ();
+		  global_command->eval ();
 
-		  delete command;
+		  delete global_command;
 
-		  command = 0;
+		  global_command = 0;
 
 		  OCTAVE_QUIT;
 
@@ -631,8 +621,6 @@ main_loop (void)
 	}
     }
   while (retval == 0);
-
-  unwind_protect::run_frame ("main_loop");
 
   return retval;
 }

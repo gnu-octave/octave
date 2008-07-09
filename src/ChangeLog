@@ -1,5 +1,8 @@
 2008-07-09  John W. Eaton  <jwe@octave.org>
 
+	* input.cc (get_debug_input): Don't delete global_command here.
+	* toplev.cc (main_loop): Undo previous change.
+
 	* toplev.h (octave_call_stack::instance_ok): Push top scope when
 	creating instance.
 

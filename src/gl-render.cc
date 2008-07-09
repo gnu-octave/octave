@@ -2518,9 +2518,13 @@ opengl_renderer::set_polygon_offset (bool on, double offset)
     {
       glPolygonOffset (offset, offset);
       glEnable (GL_POLYGON_OFFSET_FILL);
+      glEnable (GL_POLYGON_OFFSET_LINE);
     }
   else
-    glDisable (GL_POLYGON_OFFSET_FILL);
+    {
+      glDisable (GL_POLYGON_OFFSET_FILL);
+      glDisable (GL_POLYGON_OFFSET_LINE);
+    }
 }
 
 void
@@ -2648,9 +2652,19 @@ opengl_renderer::draw_marker (double x, double y, double z,
   if (fc.numel () > 0)
     {
       glColor3dv (fc.data ());
-      set_polygon_offset (true, 1.0);
+      set_polygon_offset (true, -1.0);
       glCallList (filled_marker_id);
+      if (lc.numel () > 0)
+	{
+	  glColor3dv (lc.data ());
+	  glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+	  glEdgeFlag (GL_TRUE);
+	  set_polygon_offset (true, -2.0);
+	  glCallList (filled_marker_id);
+	  glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+	}
       set_polygon_offset (false);
+      return;
     }
 
   if (lc.numel () > 0)
@@ -2764,6 +2778,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
       glVertex2f (sz/2  ,-sz/2);
       glVertex2f (sz/2  ,sz/2 );
       glEnd ();
+      break;
     default:
       warning ("opengl_renderer: unsupported marker `%s'",
 	       marker.c_str ());

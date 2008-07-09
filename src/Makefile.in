@@ -34,6 +34,9 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
 
+GL_RENDER_SRC = @GL_RENDER_SRC@
+FLTK_BACKEND_SRC = @FLTK_BACKEND_SRC@
+
 PT_FLAGS = -fexternal-templates -fno-implicit-templates
 CXXFLAGS_NO_PT_FLAGS = $(filter-out $(PT_FLAGS), $(ALL_CXXFLAGS))
 
@@ -66,7 +69,7 @@ DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc \
 	chol.cc ccolamd.cc colamd.cc colloc.cc conv2.cc convhulln.cc daspk.cc \
 	dasrt.cc dassl.cc det.cc dispatch.cc dlmread.cc dmperm.cc eig.cc \
 	expm.cc fft.cc fft2.cc fftn.cc fftw.cc filter.cc find.cc \
-	fltk_backend.cc fsolve.cc \
+	$(FLTK_BACKEND_SRC) fsolve.cc \
 	gammainc.cc gcd.cc getgrent.cc getpwent.cc getrusage.cc \
 	givens.cc hess.cc hex2num.cc inv.cc kron.cc lookup.cc lsode.cc \
 	lu.cc luinc.cc matrix_type.cc max.cc md5sum.cc pinv.cc qr.cc \
@@ -197,7 +200,7 @@ PT_SRC := pt.cc pt-arg-list.cc pt-assign.cc pt-bp.cc pt-binop.cc \
 
 DIST_SRC := Cell.cc bitfcns.cc c-file-ptr-stream.cc comment-list.cc \
 	cutils.c data.cc debug.cc defaults.cc defun.cc dirfns.cc \
-	dynamic-ld.cc error.cc file-io.cc gl-render.cc graphics.cc \
+	dynamic-ld.cc error.cc file-io.cc $(GL_RENDER_SRC) graphics.cc \
 	gripes.cc help.cc input.cc lex.l load-path.cc load-save.cc \
 	ls-hdf5.cc ls-mat-ascii.cc ls-mat4.cc ls-mat5.cc ls-oct-ascii.cc \
 	ls-oct-binary.cc ls-utils.cc main.c mappers.cc matherr.c \

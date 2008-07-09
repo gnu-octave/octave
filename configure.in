@@ -642,10 +642,12 @@ fi
 
 warn_graphics=""
 
+GL_RENDER_SRC=
 GRAPHICS_OPENGL=
 OCTAVE_OPENGL
 if test "x$OPENGL_LIBS" != "x"; then
   GRAPHICS_OPENGL="opengl"
+  GL_RENDER_SRC="gl-render.cc"
 
 ## ftgl (needs freetype 2)
   AC_CHECK_FT2([9.0.3],[],
@@ -677,6 +679,7 @@ fi
 
 GRAPHICS_LIBS=
 GRAPHICS_CFLAGS=
+FLTK_BACKEND_SRC=
 
 ## fltk (www.fltk.org)
 AC_ARG_WITH(fltk-prefix,
@@ -723,6 +726,7 @@ EOF
     GRAPHICS_CFLAGS="$FLTK_CFLAGS"
     GRAPHICS_LIBS="$FLTK_LDFLAGS"
     GRAPHICS_OPENGL="$GRAPHICS_OPENGL fltk_backend"
+    FLTK_BACKEND_SRC="fltk_backend.cc"
   else
     AC_MSG_RESULT(no)
   fi
@@ -731,6 +735,8 @@ fi
 AC_SUBST(GRAPHICS_CFLAGS)
 AC_SUBST(GRAPHICS_LIBS)
 AC_SUBST(GRAPHICS_OPENGL)
+AC_SUBST(GL_RENDER_SRC)
+AC_SUBST(FLTK_BACKEND_SRC)
 
 OCTAVE_IEEE754_DATA_FORMAT
 

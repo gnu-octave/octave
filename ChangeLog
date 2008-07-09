@@ -1,3 +1,8 @@
+2008-07-09  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* configure.in: new substituted variables GL_RENDER_SRC and
+	FLTK_BACKEND_SRC.
+
 2008-06-12  Jaroslav Hajek <highegg@gmail.com>
 
 	* configure.in: Move LIBS and CXXFLAGS restoration into

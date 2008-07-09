@@ -142,7 +142,8 @@ octave_fcn_inline::load_ascii (std::istream& is)
       std::ostringstream buf;
 
       // Skip preceeding newline(s)
-      while (is.get (c) && c == '\n');
+      while (is.get (c) && c == '\n')
+	/* do nothing */;
 
       if (is)
 	{

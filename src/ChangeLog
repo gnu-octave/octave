@@ -1,5 +1,7 @@
 2008-07-09  John W. Eaton  <jwe@octave.org>
 
+	* DLD-FUNCTIONS/expm.cc (expm): Avoid GCC warning.
+
 	* ov-fcn-inline.cc (octave_fcn_inline::load_ascii): Avoid GCC warning.
 
 2008-07-09  Michael Goffioul  <michael.goffioul@gmail.com>

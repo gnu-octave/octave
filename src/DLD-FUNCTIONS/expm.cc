@@ -139,11 +139,9 @@ is ill-conditioned.\n\
 
   if (arg_is_empty < 0)
     return retval;
+
   if (arg_is_empty > 0)
-    if (isfloat)
-      return octave_value (FloatMatrix ());
-    else
-      return octave_value (Matrix ());
+    return isfloat ? octave_value (FloatMatrix ()) : octave_value (Matrix ());
 
   if (nr != nc)
     {

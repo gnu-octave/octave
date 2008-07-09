@@ -57,8 +57,6 @@ tree_identifier::rvalue (int nargout)
 {
   octave_value_list retval;
 
-  MAYBE_DO_BREAKPOINT;
-
   if (error_state)
     return retval;
 
@@ -117,8 +115,6 @@ tree_identifier::rvalue (void)
 octave_lvalue
 tree_identifier::lvalue (void)
 {
-  MAYBE_DO_BREAKPOINT;
-
   return octave_lvalue (&(xsym().varref ()));
 }
 

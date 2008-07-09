@@ -1,3 +1,8 @@
+2008-07-09  John W. Eaton  <jwe@octave.org>
+
+	* toplev.cc (main_loop): Unwind-protect global_command.
+	* input.cc (get_debug_input): Likewise.
+
 2008-07-08  John W. Eaton  <jwe@octave.org>
 
 	* graphics.h.in (axes::properties::keypos): Declare as

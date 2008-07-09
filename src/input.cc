@@ -625,16 +625,24 @@ get_debug_input (const std::string& prompt)
 
       reset_parser ();
 
+      // Save current value of global_command.
+      unwind_protect_ptr (global_command);
+
       // This is the same as yyparse in parse.y.
       int retval = octave_parse ();
 
-      if (retval == 0 && global_command)
+      tree_statement_list *command = global_command;
+
+      // Restore previous value of global_command.
+      unwind_protect::run ();
+
+      if (retval == 0 && command)
 	{
-	  global_command->eval ();
+	  command->eval ();
 
-	  delete global_command;
+	  delete command;
 
-	  global_command = 0;
+	  command = 0;
 
 	  OCTAVE_QUIT;
 

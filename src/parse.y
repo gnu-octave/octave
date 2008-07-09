@@ -3719,8 +3719,6 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
 
   current_eval_string = s;
 
-  unwind_protect_ptr (global_command);
-
   YY_BUFFER_STATE old_buf = current_buffer ();
   YY_BUFFER_STATE new_buf = create_buffer (0);
 
@@ -3733,9 +3731,14 @@ eval_string (const std::string& s, bool silent, int& parse_status, int nargout)
     {
       reset_parser ();
 
+      unwind_protect_ptr (global_command);
+
       parse_status = yyparse ();
 
       tree_statement_list *command = global_command;
+
+      // Restore previous value of global_command.
+      unwind_protect::run ();
 
       if (parse_status == 0)
         {

@@ -326,7 +326,7 @@ public:
     // reference counter
     int count;
 
-    vertex_data_rep (void) { }
+    vertex_data_rep (void) : count (1) { }
 
     vertex_data_rep (const Matrix& c, const Matrix& col, const Matrix& n,
 		     double a, float as, float ds, float ss, float se)
@@ -346,7 +346,8 @@ private:
     }
 
 public:
-  vertex_data (void) : rep (nil_rep ()) { }
+  vertex_data (void) : rep (nil_rep ())
+    { rep->count++; }
 
   vertex_data (const vertex_data& v) : rep (v.rep)
     { rep->count++; }
@@ -354,9 +355,7 @@ public:
   vertex_data (const Matrix& c, const Matrix& col, const Matrix& n,
 	       double a, float as, float ds, float ss, float se)
       : rep (new vertex_data_rep (c, col, n, a, as, ds, ss, se))
-    {
-      rep->count++;
-    }
+    { }
 
   vertex_data (vertex_data_rep *new_rep)
       : rep (new_rep) { }

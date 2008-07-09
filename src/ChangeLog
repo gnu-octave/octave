@@ -1,3 +1,9 @@
+2008-07-09  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* gl-render.cc (vertex_data::vertex_data_rep::vertex_data(void),
+	vertex_data::vertex_data(void), vertex_data::vertex_data(...)):
+	initialize reference counting correctly.
+
 2008-07-09  John W. Eaton  <jwe@octave.org>
 
 	* toplev.cc (main_loop): Unwind-protect global_command.

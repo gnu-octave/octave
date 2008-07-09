@@ -1,5 +1,13 @@
 2008-07-09  Michael Goffioul  <michael.goffioul@gmail.com>
 
+	* gl-render.cc (opengl_renderer::draw(figure)): Enable line smoothing
+	according to __enhanced__ property.
+	(opengl_renderer::draw_marker): Only draw markers with valid call
+	lists ID.
+	(opengl_renderer::make_marker_list): Do not produce filled marker call
+	list for non-fillable markers.
+	(opengl_renderer::draw(axes)): Do not antialias axes system.
+
 	* gl-render.cc (opengl_renderer::set_polygon_offset): Also enable
 	polygon offseting in GL_LINE mode.
 	(opengl_renderer::draw_marker): Offset markers foward instead of

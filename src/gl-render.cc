@@ -552,6 +552,17 @@ opengl_renderer::draw (const figure::properties& props)
   glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable (GL_NORMALIZE);
 
+  if (props.is___enhanced__ ())
+    {
+      glEnable (GL_BLEND);
+      glEnable (GL_LINE_SMOOTH);
+    }
+  else
+    {
+      glDisable (GL_BLEND);
+      glDisable (GL_LINE_SMOOTH);
+    }
+
   // Clear background
 
   Matrix c = props.get_color_rgb ();
@@ -599,6 +610,10 @@ opengl_renderer::draw (const axes::properties& props)
   xform = props.get_transform ();
   
   // draw axes object
+
+  GLboolean antialias;
+  glGetBooleanv (GL_LINE_SMOOTH, &antialias);
+  glDisable (GL_LINE_SMOOTH);
   
   Matrix xlim = xform.xscale (props.get_xlim ().matrix_value ());
   Matrix ylim = xform.yscale (props.get_ylim ().matrix_value ());
@@ -1509,6 +1524,9 @@ opengl_renderer::draw (const axes::properties& props)
 
   // Children
 
+  if (antialias == GL_TRUE)
+    glEnable (GL_LINE_SMOOTH);
+
   Matrix children = props.get_children ();
   std::list<graphics_object> obj_list;
   std::list<graphics_object>::iterator it;
@@ -1678,7 +1696,7 @@ opengl_renderer::draw (const line::properties& props)
 
       end_marker ();
     }
-
+  
   set_clipping (props.is_clipping ());
 }
 
@@ -2649,7 +2667,7 @@ opengl_renderer::draw_marker (double x, double y, double z,
   glLoadIdentity ();
   glTranslated (tmp(0), tmp(1), -tmp(2));
 
-  if (fc.numel () > 0)
+  if (filled_marker_id > 0 && fc.numel () > 0)
     {
       glColor3dv (fc.data ());
       set_polygon_offset (true, -1.0);
@@ -2664,10 +2682,8 @@ opengl_renderer::draw_marker (double x, double y, double z,
 	  glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 	}
       set_polygon_offset (false);
-      return;
     }
-
-  if (lc.numel () > 0)
+  else if (marker_id > 0 && lc.numel () > 0)
     {
       glColor3dv (lc.data ());
       glCallList (marker_id);
@@ -2678,6 +2694,11 @@ unsigned int
 opengl_renderer::make_marker_list (const std::string& marker, double size,
 				   bool filled) const
 {
+  char c = marker[0];
+
+  if (filled && (c == '+' || c == 'x' || c == '*' || c == '.'))
+    return 0;
+
   unsigned int ID = glGenLists (1);
   double sz = size * backend.get_screen_resolution () / 72.0;
 

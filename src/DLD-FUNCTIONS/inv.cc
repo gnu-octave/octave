@@ -158,10 +158,7 @@ be avoided. It is significantly more accurate and faster to do\n\
   if (! error_state)
     {
       if (nargout > 1)
-	if (isfloat)
-	  retval(1) = frcond;
-	else
-	  retval(1) = rcond;
+	retval(1) = isfloat ? octave_value (frcond) : octave_value (rcond);
 
       retval(0) = result;
 

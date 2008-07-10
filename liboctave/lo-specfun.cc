@@ -224,6 +224,16 @@ atanh (double x)
 }
 #endif
 
+#if !defined (HAVE_ATANHF)
+float
+atanhf (float x)
+{
+  float retval;
+  F77_XFCN (xatanh, XATANH, (x, retval));
+  return retval;
+}
+#endif
+
 #if !defined (HAVE_ERF)
 double
 erf (double x)
@@ -236,7 +246,7 @@ erf (double x)
 
 #if !defined (HAVE_ERFF)
 float
-erf (float x)
+erff (float x)
 {
   float retval;
   F77_XFCN (xerf, XERF, (x, retval));
@@ -256,7 +266,7 @@ erfc (double x)
 
 #if !defined (HAVE_ERFCF)
 float
-erfc (float x)
+erfcf (float x)
 {
   float retval;
   F77_XFCN (xerfc, XERFC, (x, retval));

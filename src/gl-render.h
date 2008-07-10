@@ -35,7 +35,7 @@ along with Octave; see the file COPYING.  If not, see
 #include "graphics.h"
 
 class
-OCTGRAPHICS_API
+OCTINTERP_API
 opengl_renderer
 {
 public:

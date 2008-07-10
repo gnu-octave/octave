@@ -227,13 +227,13 @@ along with Octave; see the file COPYING.  If not, see
   octave_value \
   xpow (const octave_ ## T1& a, float b) \
   { \
-    return pow (a, b); \
+    return powf (a, b); \
   } \
  \
   octave_value \
   xpow (float a, const octave_ ## T1& b) \
   { \
-    return pow (a, b); \
+    return powf (a, b); \
   }
 
 #define OCTAVE_SS_INT_OPS(TYPE) \
@@ -360,7 +360,7 @@ along with Octave; see the file COPYING.  If not, see
     for (int i = 0; i < b.length (); i++) \
       { \
 	OCTAVE_QUIT; \
-	result (i) = pow (a, b(i)); \
+	result (i) = powf (a, b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -372,7 +372,7 @@ along with Octave; see the file COPYING.  If not, see
     for (int i = 0; i < b.length (); i++) \
       { \
 	OCTAVE_QUIT; \
-	result (i) = pow (a, b(i)); \
+	result (i) = powf (a, b(i)); \
       } \
     return octave_value (result); \
   }
@@ -512,7 +512,7 @@ octave_value elem_xpow (T1 ## NDArray a, float  b) \
   for (int i = 0; i < a.length (); i++) \
     { \
       OCTAVE_QUIT; \
-      result (i) = pow (a(i), b);		\
+      result (i) = powf (a(i), b);		\
     } \
   return octave_value (result); \
 } \
@@ -523,7 +523,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
   for (int i = 0; i < a.length (); i++) \
     { \
       OCTAVE_QUIT; \
-      result (i) = pow (a(i), b);		\
+      result (i) = powf (a(i), b);		\
     } \
   return octave_value (result); \
 }
@@ -690,7 +690,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     for (int i = 0; i < a.length (); i++) \
       { \
 	OCTAVE_QUIT; \
-	result (i) = pow (a(i), b(i)); \
+	result (i) = powf (a(i), b(i)); \
       } \
     return octave_value (result); \
   } \
@@ -709,7 +709,7 @@ octave_value elem_xpow (FloatNDArray a, octave_ ## T2  b) \
     for (int i = 0; i < a.length (); i++) \
       { \
 	OCTAVE_QUIT; \
-	result (i) = pow (a(i), b(i)); \
+	result (i) = powf (a(i), b(i)); \
       } \
     return octave_value (result); \
   }

@@ -63,6 +63,11 @@ along with Octave; see the file COPYING.  If not, see
 #include "variables.h"
 #include "pager.h"
 
+#if ! defined (HAVE_HYPOTF) && defined (HAVE__HYPOTF)
+#define hypotf _hypotf
+#define HAVE_HYPOTF 1
+#endif
+
 #define ANY_ALL(FCN) \
  \
   octave_value retval; \

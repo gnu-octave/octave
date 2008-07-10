@@ -1,3 +1,13 @@
+2008-07-10  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* Makefile.in: Add OPENGL_LIBS to liboctinterp link command. Add
+	GRAPHICS_CFLAGS to fltk_backend.cc compilation command.
+	* data.cc: Define hypotf to _hypotf when not present.
+	* gl-render.h: Replace OCTGRAPHICS_API with OCTINTERP_API.
+	* gl-render.cc: Get rid of Array2<vertex_data>.
+	* OPERATORS/op-int.h: Use powf instead of pow when invoked
+	with float arguments.
+
 2008-07-09  John W. Eaton  <jwe@octave.org>
 
 	* input.cc (get_debug_input): Don't delete global_command here.

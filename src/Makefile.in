@@ -278,7 +278,8 @@ else
 endif
 
 OCTINTERP_LINK_DEPS = \
-  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS)
+  -L../liboctave $(LIBOCTAVE) -L../libcruft $(LIBCRUFT) $(LIBS) $(FLIBS) \
+  $(OPENGL_LIBS)
 
 OCT_LINK_DEPS = \
   -L../libcruft $(LIBCRUFT) -L../liboctave $(LIBOCTAVE) \
@@ -305,6 +306,9 @@ lex.o parse.o pic/lex.o pic/parse.o: \
 
 $(DLD_PICOBJ): \
 	ALL_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(ALL_CXXFLAGS))
+
+fltk_backend.o pic/fltk_backend.o: \
+	ALL_CXXFLAGS := $(filter-out $(DLL_CXXDEFS), $(ALL_CXXFLAGS) $(GRAPHICS_CFLAGS))
 
 XERBLA = ../libcruft/blas-xtra/xerbla.o
 ifdef FPICFLAG

@@ -380,8 +380,6 @@ public:
   vertex_data_rep *get_rep (void) const { return rep; }
 };
 
-#include <Array.cc>
-
 class
 opengl_renderer::patch_tesselator : public opengl_tesselator
 {
@@ -2300,7 +2298,8 @@ opengl_renderer::draw (const patch::properties &props)
       has_facealpha = ((a.numel () > 0) && (a.rows () == f.rows ()));
     }
 
-  Array2<vertex_data> vdata (f.dims ());
+  octave_idx_type fr = f.rows (), fc = f.columns ();
+  std::vector<vertex_data> vdata (f.numel ());
 
   for (int i = 0; i < nf; i++)
     for (int j = 0; j < count_f(i); j++)
@@ -2333,7 +2332,7 @@ opengl_renderer::draw (const patch::properties &props)
 	      aa = a(idx);
 	  }
 
-	vdata(i,j) =
+	vdata[i+j*fr] =
 	    vertex_data (vv, cc, nn, aa, as, ds, ss, se);
       }
 
@@ -2383,7 +2382,7 @@ opengl_renderer::draw (const patch::properties &props)
 
 	      for (int j = 0; j < count_f(i); j++)
 		{
-		  vertex_data::vertex_data_rep *vv = vdata(i,j).get_rep ();
+		  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
 	
 		  tess.add_vertex (vv->coords.fortran_vec (), vv);
 		}
@@ -2443,7 +2442,7 @@ opengl_renderer::draw (const patch::properties &props)
 
 	      for (int j = 0; j < count_f(i); j++)
 		{
-		  vertex_data::vertex_data_rep *vv = vdata(i,j).get_rep ();
+		  vertex_data::vertex_data_rep *vv = vdata[i+j*fr].get_rep ();
 	
 		  tess.add_vertex (vv->coords.fortran_vec (), vv);
 		}
@@ -2498,10 +2497,10 @@ opengl_renderer::draw (const patch::properties &props)
 	      continue;
 
 	    Matrix lc = (do_edge ? (mecolor.numel () == 0 ?
-				    vdata(i,j).get_rep ()->color : mecolor)
+				    vdata[i+j*fr].get_rep ()->color : mecolor)
 			 : Matrix ());
 	    Matrix fc = (do_face ? (mfcolor.numel () == 0 ?
-				    vdata(i,j).get_rep ()->color : mfcolor)
+				    vdata[i+j*fr].get_rep ()->color : mfcolor)
 			 : Matrix ());
 
 	    draw_marker (v(idx,0), v(idx,1), (has_z ? v(idx,2) : 0), lc, fc);

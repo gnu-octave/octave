@@ -171,6 +171,8 @@ ifeq ($(INCLUDE_DEPS),false)
   omit_deps = true;
 endif
 
+GRAPHICS_CFLAGS = @GRAPHICS_CFLAGS@
+
 CXX = @CXX@
 CXX_VERSION = @CXX_VERSION@
 CXXCPP = @CXXCPP@

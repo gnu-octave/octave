@@ -1,7 +1,12 @@
-2008-07-09  Michael Goffioul  <michael.goffioul@gmail.com>
+2008-07-10  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* configure.in: new substituted variables GL_RENDER_SRC and
 	FLTK_BACKEND_SRC.
+
+2008-06-20  Michael Goffioul <michael.goffioul@gmail.com>
+
+	* Makeconf.in: Add GRAPHICS_CFLAGS substitution.
+	* configure.in: Add checks for hypotf and _hypotf.
 
 2008-06-12  Jaroslav Hajek <highegg@gmail.com>
 

@@ -76,11 +76,11 @@ extern OCTAVE_API float atanhf (float);
 #endif
 
 #if !defined (HAVE_ERFF)
-extern OCTAVE_API float erf (float);
+extern OCTAVE_API float erff (float);
 #endif
 
 #if !defined (HAVE_ERFCF)
-extern OCTAVE_API float erfc (float);
+extern OCTAVE_API float erfcf (float);
 #endif
 
 #if !defined (HAVE_EXPM1)

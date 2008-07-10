@@ -665,7 +665,7 @@ if test "x$OPENGL_LIBS" != "x"; then
 #include <FTGL/ftgl.h>
 #elif HAVE_FTGL_H
 #include <ftgl.h>
-#fi], [
+#endif], [
 FTGLTextureFont font("");], [
           OPENGL_LIBS="$OPENGL_LIBS $FT2_LIBS -lftgl"
 	  LIBS="$save_LIBS"

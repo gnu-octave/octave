@@ -1,5 +1,11 @@
 2008-07-10  John W. Eaton  <jwe@octave.org>
 
+	* octMakefile.in (DIRS_TO_MAKE): Delete $(localfcnfilepath) and
+	$(localoctfilepath) from the list.  Include $(datadir)
+	$(localfcnfiledir) $(localapifcnfiledir) $(localverfcnfiledir)
+	$(localoctfiledir) $(localapioctfiledir) $(localveroctfiledir)
+	$(imagedir) and $(localapiarchlibdir) in the list.
+
 	* configure.in: Look for FTGL/ftgl.h instead of FTGL/FTGL.h.  Also
 	look for ftgl.h.
 

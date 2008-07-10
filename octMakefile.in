@@ -64,8 +64,11 @@ DISTSUBDIRS = $(sort $(SUBDIRS) test emacs)
 # Subdirectories in which to run clean targets.
 CLEANSUBDIRS = $(DISTSUBDIRS)
 
-DIRS_TO_MAKE = $(bindir) $(libdir) $(octincludedir)/octave $(fcnfiledir) \
-  $(octfiledir) $(archlibdir) $(localarchlibdir) $(localverarchlibdir) \
+DIRS_TO_MAKE = $(bindir) $(datadir) $(libdir) $(octincludedir)/octave \
+  $(fcnfiledir) $(localfcnfiledir) $(localapifcnfiledir) \
+  $(localverfcnfiledir) $(octfiledir) $(localoctfiledir) \
+  $(localapioctfiledir) $(localveroctfiledir) $(archlibdir) \
+  $(localarchlibdir) $(localverarchlibdir) \
   $(shell echo $(localfcnfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}') \
   $(shell echo $(localoctfilepath) | awk -F: '{for (i=1; i<=NF; i++) print $$i}')
 

@@ -654,14 +654,18 @@ if test "x$OPENGL_LIBS" != "x"; then
     [warn_graphics="FreeType library not found. Native renderer will not have on-screen text"])
   if test "x$warn_graphics" = "x" ; then
     AC_LANG_PUSH(C++)
-      AC_CHECK_HEADERS([FTGL/FTGL.h], [
+      AC_CHECK_HEADERS([FTGL/ftgl.h ftgl.h], [
 	AC_MSG_CHECKING([for FTGLTextureFont in -lftgl])
         save_LIBS="$LIBS"
 	save_CXXFLAGS="$CXXFLAGS"
 	LIBS="$LIBS $OPENGL_LIBS $FT2_LIBS -lftgl"
 	CXXFLAGS="$CXXFLAGS $FT2_CFLAGS"
         AC_TRY_LINK([
-#include <FTGL/FTGLTextureFont.h>], [
+#ifdef HAVE_FTGL_FTGL_H
+#include <FTGL/ftgl.h>
+#elif HAVE_FTGL_H
+#include <ftgl.h>
+#fi], [
 FTGLTextureFont font("");], [
           OPENGL_LIBS="$OPENGL_LIBS $FT2_LIBS -lftgl"
 	  LIBS="$save_LIBS"

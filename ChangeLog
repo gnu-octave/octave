@@ -1,3 +1,8 @@
+2008-07-10  John W. Eaton  <jwe@octave.org>
+
+	* configure.in: Look for FTGL/ftgl.h instead of FTGL/FTGL.h.  Also
+	look for ftgl.h.
+
 2008-07-10  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* configure.in: new substituted variables GL_RENDER_SRC and

@@ -160,7 +160,7 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abs
 }
 
 float
-DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+DefQuad::do_integrate (octave_idx_type&, octave_idx_type&, float&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
   return 0.0;
@@ -213,14 +213,14 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& a
 }
 
 float
-IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float& abserr)
+IndefQuad::do_integrate (octave_idx_type&, octave_idx_type&, float&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
   return 0.0;
 }
 
 double
-FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
+FloatDefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
   return 0.0;
@@ -256,7 +256,7 @@ FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, float&
 }
 
 double
-FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval, double& abserr)
+FloatIndefQuad::do_integrate (octave_idx_type&, octave_idx_type&, double&)
 {
   (*current_liboctave_error_handler) ("incorrect integration function called");
   return 0.0;

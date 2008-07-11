@@ -106,10 +106,12 @@ do_fft2 (const octave_value_list &args, const char *fcn, int type)
     dims (1) = n_cols;
 
   if (dims.all_zero () || n_rows == 0 || n_cols == 0)
-    if (arg.is_single_type ())
-      return octave_value (FloatMatrix ());
-    else
-      return octave_value (Matrix ());
+    {
+      if (arg.is_single_type ())
+	return octave_value (FloatMatrix ());
+      else
+	return octave_value (Matrix ());
+    }
 
   if (arg.is_single_type ())
     {

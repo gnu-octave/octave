@@ -1429,7 +1429,6 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*\n\
   if (argq.is_matrix_type () && argr.is_matrix_type () 
       && argi.is_real_scalar () && argj.is_real_scalar ())
     {
-      octave_idx_type m = argq.rows ();
       octave_idx_type n = argr.columns ();
       octave_idx_type k = argq.columns ();
 

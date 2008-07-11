@@ -2298,7 +2298,7 @@ opengl_renderer::draw (const patch::properties &props)
       has_facealpha = ((a.numel () > 0) && (a.rows () == f.rows ()));
     }
 
-  octave_idx_type fr = f.rows (), fc = f.columns ();
+  octave_idx_type fr = f.rows ();
   std::vector<vertex_data> vdata (f.numel ());
 
   for (int i = 0; i < nf; i++)

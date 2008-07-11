@@ -1,5 +1,24 @@
 2008-07-11  John W. Eaton  <jwe@octave.org>
 
+	* dDiagMatrix.cc (DiagMatrix::diag): Return empty ColumnVector if
+	number of rows or columns is 0.
+	* fDiagMatrix.cc (FloatDiagMatrix::diag): Likewise.
+
+	* Array-util.cc (is_vector): Avoid GCC warning.
+	* Array-f.cc (Array<float>::sort): Likewise.
+	* Array-d.cc (Array<double>::sort): Likewise.
+	* dbleQR.cc (QR::QR (const Matrix&, const Matrix&)): Likewise.
+	* CmplxQR.cc (ComplexQR::ComplexQR (const ComplexMatrix&, const
+	ComplexMatrix&)): Likewise.
+	* floatQR.cc (FloatQR::FloatQR (const FloatMatrix&, const
+	FloatMatrix&)): Likewise.
+	* fCmplxQR.cc (FloatComplexQR::FloatComplexQR (const
+	FloatComplexMatrix&, const FloatComplexMatrix&)): Likewise.
+	* Quad.cc (IndefQuad::do_integrate (octave_idx_type&,
+	octave_idx_type&, float&), FloatIndefQuad::do_integrate,
+	DefQuad::do_integrate octave_idx_type&, octave_idx_type&, float&,
+	FloatIndefQuad::do_integrate): Likewise.
+
 	* mx-op-defs.h (MS_BOOL_OP, SM_BOOL_OP, MM_BOOL_OP, NDS_BOOL_OP,
 	SND_BOOL_OP, NDND_BOOL_OP): Detect NaN values.
 	* Array-util.cc (gripe_nan_to_logical_conversion): New function.

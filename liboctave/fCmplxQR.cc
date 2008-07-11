@@ -159,16 +159,16 @@ FloatComplexQR::init (const FloatComplexMatrix& a, QR::type qr_type)
     }
 }
 
-FloatComplexQR::FloatComplexQR (const FloatComplexMatrix &q, const FloatComplexMatrix& r)
+FloatComplexQR::FloatComplexQR (const FloatComplexMatrix& q_arg, const FloatComplexMatrix& r_arg)
 {
-  if (q.columns () != r.rows ()) 
+  if (q_arg.columns () != r_arg.rows ()) 
     {
       (*current_liboctave_error_handler) ("QR dimensions mismatch");
       return;
     }
 
-  this->q = q;
-  this->r = r;
+  this->q = q_arg;
+  this->r = r_arg;
 }
 
 void

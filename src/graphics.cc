@@ -3160,8 +3160,6 @@ axes::update_axis_limits (const std::string& axis_type)
 
   Matrix kids = xproperties.get_children ();
 
-  octave_idx_type n = kids.numel ();
-
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
   double min_pos = octave_Inf;
@@ -3490,8 +3488,6 @@ void
 hggroup::update_axis_limits (const std::string& axis_type)
 {
   Matrix kids = xproperties.get_children ();
-
-  octave_idx_type n = kids.numel ();
 
   double min_val = octave_Inf;
   double max_val = -octave_Inf;
@@ -4172,7 +4168,7 @@ Undocumented internal function.\n\
   return octave_value (gh_manager::figure_handle_list ());
 }
 
-DEFUN (available_backends, args, ,
+DEFUN (available_backends, , ,
    "-*- texinfo -*-\n\
 @deftypefn {Built-in Function} {} available_backends ()\n\
 Returns resgistered graphics backends.\n\

@@ -148,16 +148,16 @@ FloatQR::init (const FloatMatrix& a, QR::type qr_type)
     }
 }
 
-FloatQR::FloatQR (const FloatMatrix& q, const FloatMatrix& r)
+FloatQR::FloatQR (const FloatMatrix& q_arg, const FloatMatrix& r_arg)
 {
-  if (q.columns () != r.rows ()) 
+  if (q_arg.columns () != r_arg.rows ()) 
     {
       (*current_liboctave_error_handler) ("QR dimensions mismatch");
       return;
     }
 
-  this->q = q;
-  this->r = r;
+  this->q = q_arg;
+  this->r = r_arg;
 }
 
 void

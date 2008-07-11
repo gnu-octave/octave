@@ -120,7 +120,7 @@ tree_identifier::lvalue (void)
 
 tree_identifier *
 tree_identifier::dup (symbol_table::scope_id sc,
-		      symbol_table::context_id context)
+		      symbol_table::context_id /*context*/)
 {
   // The new tree_identifier object contains a symbol_record
   // entry from the duplicated scope.

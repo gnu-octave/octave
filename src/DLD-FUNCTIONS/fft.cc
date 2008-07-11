@@ -115,10 +115,12 @@ do_fft (const octave_value_list &args, const char *fcn, int type)
     dims (dim) = n_points;
 
   if (dims.any_zero () || n_points == 0)
-    if (arg.is_single_type ())
-      return octave_value (FloatNDArray (dims));
-    else
-      return octave_value (NDArray (dims));
+    {
+      if (arg.is_single_type ())
+	return octave_value (FloatNDArray (dims));
+      else
+	return octave_value (NDArray (dims));
+    }
 
   if (arg.is_single_type ())
     {

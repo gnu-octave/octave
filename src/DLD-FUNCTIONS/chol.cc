@@ -181,10 +181,12 @@ sparse matrices.\n\
 		  octave_idx_type info;
 		  SparseCHOL fact (m, info, natural);
 		  if (nargout == 3)
-		    if (vecout)
-		      retval(2) = fact.perm ();
-		    else
-		      retval(2) = fact.Q();
+		    {
+		      if (vecout)
+			retval(2) = fact.perm ();
+		      else
+			retval(2) = fact.Q();
+		    }
 
 		  if (nargout > 1 || info == 0)
 		    {
@@ -208,10 +210,12 @@ sparse matrices.\n\
 		  SparseComplexCHOL fact (m, info, natural);
 
 		  if (nargout == 3)
-		    if (vecout)
-		      retval(2) = fact.perm ();
-		    else
-		      retval(2) = fact.Q();
+		    {
+		      if (vecout)
+			retval(2) = fact.perm ();
+		      else
+			retval(2) = fact.Q();
+		    }
 	  
 		  if (nargout > 1 || info == 0)
 		    {
@@ -984,7 +988,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.\n\
 %! 
 */
 
-DEFUN_DLD (choldelete, args, nargout,
+DEFUN_DLD (choldelete, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{R1} =} choldelete (@var{R}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\
@@ -1116,7 +1120,7 @@ return the QR@tie{}factorization of @w{A(p,p)}, where @w{p = [1:j-1,j+1:n+1]}.\n
 %! assert(norm(R1'*R1 - single(Ac(p,p)),Inf) < 1e1*eps('single'))
 */
 
-DEFUN_DLD (cholshift, args, nargout,
+DEFUN_DLD (cholshift, args, ,
   "-*- texinfo -*-\n\
 @deftypefn {Loadable Function} {@var{R1} =} cholshift (@var{R}, @var{i}, @var{j})\n\
 Given a Cholesky@tie{}factorization of a real symmetric or complex hermitian\n\

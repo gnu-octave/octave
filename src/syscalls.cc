@@ -1596,7 +1596,7 @@ Return the canonical name of file @var{name}.\n\
 }
 
 static octave_value
-const_value (const char *nm, const octave_value_list& args, int val)
+const_value (const octave_value_list& args, int val)
 {
   octave_value retval;
 
@@ -1623,7 +1623,7 @@ duplicate file descriptor.\n\
 @seealso{fcntl, F_GETFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
-  return const_value ("F_DUPFD", args, F_DUPFD);
+  return const_value (args, F_DUPFD);
 }
 #endif
 
@@ -1636,7 +1636,7 @@ file descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFL, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
-  return const_value ("F_GETFD", args, F_GETFD);
+  return const_value (args, F_GETFD);
 }
 #endif
 
@@ -1649,7 +1649,7 @@ file status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_SETFD, F_SETFL}\n\
 @end deftypefn")
 {
-  return const_value ("F_GETFL", args, F_GETFL);
+  return const_value (args, F_GETFL);
 }
 #endif
 
@@ -1662,7 +1662,7 @@ descriptor flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFL}\n\
 @end deftypefn")
 {
-  return const_value ("F_SETFD", args, F_SETFD);
+  return const_value (args, F_SETFD);
 }
 #endif
 
@@ -1675,7 +1675,7 @@ status flags.\n\
 @seealso{fcntl, F_DUPFD, F_GETFD, F_GETFL, F_SETFD}\n\
 @end deftypefn")
 {
-  return const_value ("F_SETFL", args, F_SETFL);
+  return const_value (args, F_SETFL);
 }
 #endif
 
@@ -1689,7 +1689,7 @@ or that may be passed to @code{fcntl} to set the write mode to append.\
 @seealso{fcntl, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_APPEND", args, O_APPEND);
+  return const_value (args, O_APPEND);
 }
 #endif
 
@@ -1702,7 +1702,7 @@ returned by @code{fcntl} to indicate asynchronous I/O.\n\
 @seealso{fcntl, O_APPEND, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_ASYNC", args, O_ASYNC);
+  return const_value (args, O_ASYNC);
 }
 #endif
 
@@ -1716,7 +1716,7 @@ created if it does not exist.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_CREAT", args, O_CREAT);
+  return const_value (args, O_CREAT);
 }
 #endif
 
@@ -1729,7 +1729,7 @@ returned by @code{fcntl} to indicate that file locking is used.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_EXCL", args, O_EXCL);
+  return const_value (args, O_EXCL);
 }
 #endif
 
@@ -1743,7 +1743,7 @@ or that may be passsed to @code{fcntl} to set non-blocking I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_NONBLOCK", args, O_NONBLOCK);
+  return const_value (args, O_NONBLOCK);
 }
 #endif
 
@@ -1757,7 +1757,7 @@ reading only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDWR, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_RDONLY", args, O_RDONLY);
+  return const_value (args, O_RDONLY);
 }
 #endif
 
@@ -1771,7 +1771,7 @@ reading and writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_SYNC, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_RDWR", args, O_RDWR);
+  return const_value (args, O_RDWR);
 }
 #endif
 
@@ -1785,7 +1785,7 @@ synchronous I/O.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_TRUNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_SYNC", args, O_SYNC);
+  return const_value (args, O_SYNC);
 }
 #endif
 
@@ -1799,7 +1799,7 @@ be truncated when writing.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_WRONLY}\n\
 @end deftypefn")
 {
-  return const_value ("O_TRUNC", args, O_TRUNC);
+  return const_value (args, O_TRUNC);
 }
 #endif
 
@@ -1813,7 +1813,7 @@ writing only.\n\
 @seealso{fcntl, O_APPEND, O_ASYNC, O_CREAT, O_EXCL, O_NONBLOCK, O_RDONLY, O_RDWR, O_SYNC, O_TRUNC}\n\
 @end deftypefn")
 {
-  return const_value ("O_WRONLY", args, O_WRONLY);
+  return const_value (args, O_WRONLY);
 }
 #endif
 
@@ -1830,7 +1830,7 @@ status immediately instead of waiting for a process to exit.\n\
 @seealso{waitpid, WUNTRACED, WCONTINUE}\n\
 @end deftypefn")
 {
-  return const_value ("WNOHANG", args, WNOHANG);
+  return const_value (args, WNOHANG);
 }
 
 #if !defined (WUNTRACED)
@@ -1847,7 +1847,7 @@ if the child process has stopped but is not traced via the\n\
 @seealso{waitpid, WNOHANG, WCONTINUE}\n\
 @end deftypefn")
 {
-  return const_value ("WUNTRACED", args, WUNTRACED);
+  return const_value (args, WUNTRACED);
 }
 
 #if !defined (WCONTINUE)
@@ -1864,7 +1864,7 @@ signal.\n\
 @seealso{waitpid, WNOHANG, WUNTRACED}\n\
 @end deftypefn")
 {
-  return const_value ("WCONTINUE", args, WCONTINUE);
+  return const_value (args, WCONTINUE);
 }
 
 /*

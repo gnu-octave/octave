@@ -1,5 +1,30 @@
 2008-07-11  John W. Eaton  <jwe@octave.org>
 
+	* syscalls.cc (const_value): Delete arg NM.  Change all uses.
+
+	* DLD-FUNCTIONS/fft.cc (do_fft): Avoid GCC warning.
+	* DLD-FUNCTIONS/fft2.cc (do_fft2): Likewise.
+	* DLD-FUNCTIONS/fftn.cc (do_fftn): Likewise.
+	* DLD-FUNCTIONS/qr.cc (Fqrshift): Likewise.
+	* DLD-FUNCTIONS/lookup.cc (Flookup): Likewise.
+	* gl-render.cc (opengl_renderer::draw): Likewise.
+	* graphics.cc (axes::update_axis_limits,
+	hggroup::update_axis_limits, Favailable_backends):
+	Likewise.
+	* pt-cmd.cc (tree_no_op_command::dup, tree_function_def::dup):
+	Likewise.
+	* pt-const.cc (tree_constant::dup): Likewise.
+	* pt-id.cc (tree_identifier::dup): Likewise.
+	* pt-jump.cc (tree_break_command::dup, tree_continue_command::dup,
+	tree_return_command::dup): Likewise.
+
+	* DLD-FUNCTIONS/colamd.cc: Style fixes.
+	(tree_postorder): Rename from TreePostorder.
+	(tree_postorder, coletree): Avoid GCC warnings.
+
+	* DLD-FUNCTIONS/chol.cc (Fchol): Avoid GCC warnings.
+	(Fcholdelete, Fcholshift): Delete unused arg nargout.
+
 	* toplev.cc, toplev.h (octave_call_stack::caller_user_function,
 	octave_call_stack::caller_user_script,
 	octave_call_stack::do_caller_user_function,

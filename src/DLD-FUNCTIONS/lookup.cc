@@ -228,7 +228,7 @@ For string lookup, 'i' indicates case-insensitive comparison.\n\
       
       bool (*ov_str_comp) (const octave_value&, const octave_value&);
 
-      bool icase = false, desc;
+      bool icase = false;
 
       // check for case-insensitive option
       if (nargin == 3)

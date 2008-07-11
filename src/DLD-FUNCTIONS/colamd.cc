@@ -53,9 +53,9 @@ along with Octave; see the file COPYING.  If not, see
 
 // The symmetric column elimination tree code take from the Davis LDL code. 
 // Copyright given elsewhere in this file.
-static 
-void symetree (const octave_idx_type *ridx, const octave_idx_type *cidx, 
-	       octave_idx_type *Parent, octave_idx_type *P, octave_idx_type n)
+static void
+symetree (const octave_idx_type *ridx, const octave_idx_type *cidx, 
+	  octave_idx_type *Parent, octave_idx_type *P, octave_idx_type n)
 {
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Flag, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, Pinv, (P ? n : 0));
@@ -91,58 +91,64 @@ void symetree (const octave_idx_type *ridx, const octave_idx_type *cidx,
 }
 
 // The elimination tree post-ordering code below is taken from SuperLU
-static inline
-octave_idx_type make_set (octave_idx_type i, octave_idx_type *pp)
+static inline octave_idx_type
+make_set (octave_idx_type i, octave_idx_type *pp)
 {
   pp[i] = i;
   return i;
 }
 
-static inline
-octave_idx_type link (octave_idx_type s, octave_idx_type t, octave_idx_type *pp)
+static inline octave_idx_type
+link (octave_idx_type s, octave_idx_type t, octave_idx_type *pp)
 {
   pp[s] = t;
   return t;
 }
 
-static inline
-octave_idx_type find (octave_idx_type i, octave_idx_type *pp)
+static inline octave_idx_type
+find (octave_idx_type i, octave_idx_type *pp)
 {
   register octave_idx_type p, gp;
     
   p = pp[i];
   gp = pp[p];
-  while (gp != p) {
-    pp[i] = gp;
-    i = gp;
-    p = pp[i];
-    gp = pp[p];
-  }
-  return (p);
+
+  while (gp != p)
+    {
+      pp[i] = gp;
+      i = gp;
+      p = pp[i];
+      gp = pp[p];
+    }
+
+  return p;
 }
 
-static
-octave_idx_type etdfs (octave_idx_type v, octave_idx_type *first_kid, 
-		       octave_idx_type *next_kid, octave_idx_type *post, 
-		       octave_idx_type postnum)
+static octave_idx_type
+etdfs (octave_idx_type v, octave_idx_type *first_kid, 
+       octave_idx_type *next_kid, octave_idx_type *post, 
+       octave_idx_type postnum)
 {
-  for (octave_idx_type w = first_kid[v]; w != -1; w = next_kid[w]) {
+  for (octave_idx_type w = first_kid[v]; w != -1; w = next_kid[w])
     postnum = etdfs (w, first_kid, next_kid, post, postnum);
-  }
+
   post[postnum++] = v;
 
   return postnum;
 }
 
-static
-void TreePostorder(octave_idx_type n, octave_idx_type *parent, octave_idx_type *post)
+static void
+tree_postorder (octave_idx_type n, octave_idx_type *parent,
+		octave_idx_type *post)
 {
   // Allocate storage for working arrays and results
   OCTAVE_LOCAL_BUFFER (octave_idx_type, first_kid, n+1);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, next_kid, n+1);
 
   // Set up structure describing children
-  for (octave_idx_type v = 0; v <= n; first_kid[v++] = -1);
+  for (octave_idx_type v = 0; v <= n; first_kid[v++] = -1)
+    /* do nothing */;
+
   for (octave_idx_type v = n-1; v >= 0; v--) 
     {
       octave_idx_type dad = parent[v];
@@ -154,17 +160,19 @@ void TreePostorder(octave_idx_type n, octave_idx_type *parent, octave_idx_type *
   etdfs (n, first_kid, next_kid, post, 0);
 }
 
-static 
-void coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
-	       octave_idx_type *colend, octave_idx_type *parent, 
-	       octave_idx_type nr, octave_idx_type nc)
+static void
+coletree (const octave_idx_type *ridx, const octave_idx_type *colbeg,
+	  octave_idx_type *colend, octave_idx_type *parent, 
+	  octave_idx_type nr, octave_idx_type nc)
 {
   OCTAVE_LOCAL_BUFFER (octave_idx_type, root, nc);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, pp, nc);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, firstcol, nr);
 
   // Compute firstcol[row] = first nonzero column in row
-  for (octave_idx_type row = 0; row < nr; firstcol[row++] = nc);
+  for (octave_idx_type row = 0; row < nr; firstcol[row++] = nc)
+    /* do nothing */;
+
   for (octave_idx_type col = 0; col < nc; col++) 
     for (octave_idx_type p = colbeg[col]; p < colend[col]; p++) 
       {
@@ -400,14 +408,14 @@ Ng, Oak Ridge National Laboratory. (see\n\
       coletree (ridx, colbeg, colend, etree, n_row, n_col);
 
       // Calculate the tree post-ordering
-      TreePostorder (n_col, etree, colbeg);
+      tree_postorder (n_col, etree, colbeg);
 
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
 	out_perm(i) = p [colbeg [i]] + 1;
 
-      retval (0) = out_perm;
+      retval(0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
@@ -597,14 +605,14 @@ Ng, Oak Ridge National Laboratory. (see\n\
 
       // Calculate the tree post-ordering
       OCTAVE_LOCAL_BUFFER (octave_idx_type, post, n_col + 1);
-      TreePostorder (n_col, etree, post);
+      tree_postorder (n_col, etree, post);
 
       // return the permutation vector
       NDArray out_perm (dim_vector (1, n_col));
       for (octave_idx_type i = 0; i < n_col; i++)
 	out_perm(i) = perm [post [i]] + 1;
 
-      retval (0) = out_perm;
+      retval(0) = out_perm;
 
       // print stats if spumoni > 0
       if (spumoni > 0)
@@ -707,9 +715,9 @@ permutations on the tree.\n\
 	      return retval;
 	    }
 	}
+
       // column elimination tree post-ordering (reuse variables)
       OCTAVE_LOCAL_BUFFER (octave_idx_type, etree, n_col + 1);
-      
 
       if (is_sym)
 	{
@@ -718,6 +726,7 @@ permutations on the tree.\n\
 	      error ("etree: matrix is marked as symmetric, but not square");
 	      return retval;
 	    }
+
 	  symetree (ridx, cidx, etree, 0, n_col);
 	}
       else
@@ -739,23 +748,23 @@ permutations on the tree.\n\
 	// We flag a root with n_col while Matlab does it with zero
 	// Convert for matlab compatiable output
 	if (etree[i] == n_col)
-	  tree (i) = 0;
+	  tree(i) = 0;
 	else
-	  tree (i) = etree[i] + 1;
+	  tree(i) = etree[i] + 1;
 
-      retval (0) = tree;
+      retval(0) = tree;
 
       if (nargout == 2)
 	{
 	  // Calculate the tree post-ordering
 	  OCTAVE_LOCAL_BUFFER (octave_idx_type, post, n_col + 1);
-	  TreePostorder (n_col, etree, post);
+	  tree_postorder (n_col, etree, post);
 
 	  NDArray postorder (dim_vector (1, n_col));
 	  for (octave_idx_type i = 0; i < n_col; i++)
-	    postorder (i) = post[i] + 1;
+	    postorder(i) = post[i] + 1;
 
-	  retval (1) = postorder;
+	  retval(1) = postorder;
 	}
     }
 

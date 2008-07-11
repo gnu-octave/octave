@@ -343,17 +343,18 @@ operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b)
 FloatColumnVector
 FloatDiagMatrix::diag (octave_idx_type k) const
 {
+  FloatColumnVector d;
+
   octave_idx_type nnr = rows ();
   octave_idx_type nnc = cols ();
 
   if (nnr == 0  || nnc == 0)
+    return d;
     
   if (k > 0)
     nnc -= k;
   else if (k < 0)
     nnr += k;
-
-  FloatColumnVector d;
 
   if (nnr > 0 && nnc > 0)
     {

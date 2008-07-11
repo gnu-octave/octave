@@ -139,7 +139,6 @@ is_vector (const dim_vector& dim)
 {
   int m = 0;
   int n = dim.length ();
-  bool retval = true;
 
   if (n == 0)
     m = 2;
@@ -151,6 +150,7 @@ is_vector (const dim_vector& dim)
 	else if (dim(i) < 1)
 	  m += 2;
     }
+
   return (m < 2);
 }
 

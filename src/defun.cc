@@ -105,7 +105,7 @@ user-defined function.\n\
   octave_value retval;
 
   if (args.length () == 0)
-    print_usage (octave_call_stack::caller_user_function ());
+    print_usage (octave_call_stack::caller_user_code ());
   else
     print_usage ();
 

@@ -112,7 +112,7 @@ octave_call_stack::do_current_column (void) const
 }
 
 int
-octave_call_stack::do_caller_user_code_line (difference_type q) const
+octave_call_stack::do_caller_user_code_line (void) const
 {
   int retval = -1;
 
@@ -140,7 +140,7 @@ octave_call_stack::do_caller_user_code_line (difference_type q) const
 }
 
 int
-octave_call_stack::do_caller_user_code_column (difference_type q) const
+octave_call_stack::do_caller_user_code_column (void) const
 {
   int retval = -1;
 
@@ -204,54 +204,8 @@ octave_call_stack::do_num_user_code_frames (octave_idx_type& curr_user_frame) co
   return retval;
 }
 
-octave_user_script *
-octave_call_stack::do_caller_user_script (difference_type q) const
-{
-  octave_user_script *retval = 0;
-
-  const_iterator p = cs.end ();
-
-  while (p != cs.begin ())
-    {
-      const call_stack_elt& elt = *(--p);
-
-      octave_function *f = elt.fcn;
-
-      if (f && f->is_user_script ())
-	{
-	  retval = dynamic_cast<octave_user_script *> (f);
-	  break;
-	}
-    }
-
-  return retval;
-}
-
-octave_user_function *
-octave_call_stack::do_caller_user_function (difference_type q) const
-{
-  octave_user_function *retval = 0;
-
-  const_iterator p = cs.end ();
-
-  while (p != cs.begin ())
-    {
-      const call_stack_elt& elt = *(--p);
-
-      octave_function *f = elt.fcn;
-
-      if (f && f->is_user_function ())
-	{
-	  retval = dynamic_cast<octave_user_function *> (f);
-	  break;
-	}
-    }
-
-  return retval;
-}
-
 octave_user_code *
-octave_call_stack::do_caller_user_code (difference_type q) const
+octave_call_stack::do_caller_user_code (size_t nskip) const
 {
   octave_user_code *retval = 0;
 
@@ -265,8 +219,13 @@ octave_call_stack::do_caller_user_code (difference_type q) const
 
       if (f && f->is_user_code ())
 	{
-	  retval = dynamic_cast<octave_user_code *> (f);
-	  break;
+	  if (nskip > 0)
+	    nskip--;
+	  else
+	    {
+	      retval = dynamic_cast<octave_user_code *> (f);
+	      break;
+	    }
 	}
     }
 

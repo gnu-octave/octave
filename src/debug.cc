@@ -67,7 +67,7 @@ get_user_code (const std::string& fname = std::string ())
   octave_user_code *dbg_fcn = 0;
 
   if (fname.empty ())
-    dbg_fcn = octave_call_stack::caller_user_function ();
+    dbg_fcn = octave_call_stack::caller_user_code ();
   else
     {
       octave_value fcn = symbol_table::find_function (fname);
@@ -881,10 +881,8 @@ execution to continue until the current function returns.\n\
 
 		  tree::last_line = -1;
 
-		  // Next to skip 2 here. One for the oct-file dbstep and 
-		  // another for the function we actually want to step out of.
 		  tree::break_function = 
-		    octave_call_stack::caller_user_code (2);
+		    octave_call_stack::caller_user_code (1);
 
 		  tree::last_break_function = 
 		    octave_call_stack::caller_user_code ();

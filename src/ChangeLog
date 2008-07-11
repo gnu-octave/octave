@@ -1,5 +1,28 @@
 2008-07-11  John W. Eaton  <jwe@octave.org>
 
+	* toplev.cc, toplev.h (octave_call_stack::caller_user_function,
+	octave_call_stack::caller_user_script,
+	octave_call_stack::do_caller_user_function,
+	octave_call_stack::do_caller_user_script):
+	Delete functions and decls. 
+
+	* defun.cc (print_usage): Call octave_call_stack::caller_user_code,
+	not octave_call_stack::caller_user_function.
+	* debug.cc (get_user_code): Likewise.
+
+	* toplev.h (octave_call_stack::difference_type): Delete typedef.
+	* toplev.cc, toplev.h (octave_call_stack::caller_user_code_line,
+	octave_call_stack::do_caller_user_code_line, 
+	octave_call_stack::caller_user_code_column,
+	octave_call_stack::do_caller_user_code_column,
+	octave_call_stack::caller_script,
+	octave_call_stack::do_caller_script,
+	octave_call_stack::caller_user_function,
+	octave_call_stack::do_caller_user_function,
+	octave_call_stack::caller_user_code,
+	octave_call_stack::do_caller_user_code):
+	Delete unused difference_type arg.
+
 	* ov-float.h, ov-flt-re-mat.cc, ov-range.h, ov-re-mat.h,
 	ov-re-sparse.cc, ov-scalar.h: Check for NaN in bool_value and
 	bool_array_value member functions to bool.

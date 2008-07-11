@@ -103,8 +103,6 @@ public:
   typedef std::deque<call_stack_elt>::reverse_iterator reverse_iterator;
   typedef std::deque<call_stack_elt>::const_reverse_iterator const_reverse_iterator;
 
-  typedef std::deque<call_stack_elt>::difference_type difference_type;
-
   static bool instance_ok (void)
   {
     bool retval = true;
@@ -145,15 +143,15 @@ public:
   }
 
   // Line in user code caller.
-  static int caller_user_code_line (difference_type q = 0)
+  static int caller_user_code_line (void)
   {
-    return instance_ok () ? instance->do_caller_user_code_line (q) : -1;
+    return instance_ok () ? instance->do_caller_user_code_line () : -1;
   }
 
   // Column in user code caller.
-  static int caller_user_code_column (difference_type q = 0)
+  static int caller_user_code_column (void)
   {
-    return instance_ok () ? instance->do_caller_user_code_column (q) : -1;
+    return instance_ok () ? instance->do_caller_user_code_column () : -1;
   }
 
   // Caller function, may be built-in.
@@ -195,22 +193,10 @@ public:
     return instance_ok () ? instance->do_element (n) : 0;
   }
   
-  // First script on the stack.
-  static octave_user_script *caller_script (difference_type q = 0)
-  {
-    return instance_ok () ? instance->do_caller_user_script (q) : 0;
-  }
-
   // First user-defined function on the stack.
-  static octave_user_function *caller_user_function (difference_type q = 0)
+  static octave_user_code *caller_user_code (size_t nskip = 0)
   {
-    return instance_ok () ? instance->do_caller_user_function (q) : 0;
-  }
-
-  // First user-defined function on the stack.
-  static octave_user_code *caller_user_code (difference_type q = 0)
-  {
-    return instance_ok () ? instance->do_caller_user_code (q) : 0;
+    return instance_ok () ? instance->do_caller_user_code (nskip) : 0;
   }
 
   static void
@@ -296,9 +282,9 @@ private:
 
   int do_current_column (void) const;
 
-  int do_caller_user_code_line (difference_type q = 0) const;
+  int do_caller_user_code_line (void) const;
 
-  int do_caller_user_code_column (difference_type q = 0) const;
+  int do_caller_user_code_column (void) const;
 
   size_t do_current_frame (void) { return curr_frame; }
 
@@ -331,11 +317,7 @@ private:
     return retval;
   }
 
-  octave_user_script *do_caller_user_script (difference_type q = 0) const;
-
-  octave_user_function *do_caller_user_function (difference_type q = 0) const;
-
-  octave_user_code *do_caller_user_code (difference_type q = 0) const; 
+  octave_user_code *do_caller_user_code (size_t nskip) const; 
 
   void do_push (octave_function *f, symbol_table::scope_id scope,
 		symbol_table::context_id context)

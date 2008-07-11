@@ -408,6 +408,13 @@ private:
 };
 
 template <class T>
+bool
+xisnan (const octave_int<T>&)
+{
+  return false;
+}
+
+template <class T>
 octave_int<T>
 pow (const octave_int<T>& a, const octave_int<T>& b)
 {

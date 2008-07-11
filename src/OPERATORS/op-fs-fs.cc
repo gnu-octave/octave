@@ -114,8 +114,8 @@ DEFBINOP (el_ldiv, float_scalar, float_scalar)
   return octave_value (v2.float_value () / d);
 }
 
-DEFBINOP_OP (el_and, float_scalar, float_scalar, &&)
-DEFBINOP_OP (el_or, float_scalar, float_scalar, ||)
+DEFSCALARBOOLOP_OP (el_and, float_scalar, float_scalar, &&)
+DEFSCALARBOOLOP_OP (el_or, float_scalar, float_scalar, ||)
 
 DEFNDCATOP_FN (fs_fs, float_scalar, float_scalar, float_array, float_array, concat)
 DEFNDCATOP_FN (s_fs, scalar, float_scalar, float_array, float_array, concat)

@@ -89,6 +89,8 @@ permute_vector
 
 extern int OCTAVE_API permute_vector_compare (const void *a, const void *b);
 
+extern void OCTAVE_API gripe_nan_to_logical_conversion (void);
+
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_len, int op2_len);
 
 extern void OCTAVE_API gripe_nonconformant (const char *op, int op1_nr, int op1_nc,

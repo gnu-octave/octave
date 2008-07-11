@@ -327,6 +327,7 @@ public:
   FloatComplexMatrix map (cmapper fcn) const;
   boolMatrix map (bmapper fcn) const;
 
+  bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;
   bool all_elements_are_real (void) const;
   bool all_integers (float& max_val, float& min_val) const;

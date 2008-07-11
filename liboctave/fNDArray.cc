@@ -514,6 +514,20 @@ FloatNDArray::any_element_is_negative (bool neg_zero) const
   return false;
 }
 
+bool
+FloatNDArray::any_element_is_nan (void) const
+{
+  octave_idx_type nel = nelem ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      float val = elem (i);
+      if (xisnan (val))
+	return true;
+    }
+
+  return false;
+}
 
 bool
 FloatNDArray::any_element_is_inf_or_nan (void) const

@@ -191,7 +191,9 @@ public:
 
   bool bool_value (bool warn = false) const
   {
-    if (warn && scalar != 0 && scalar != 1)
+    if (xisnan (scalar))
+      error ("invalid conversion from NaN to logical");
+    else if (warn && scalar != 0 && scalar != 1)
       gripe_logical_conversion ();
 
     return scalar;
@@ -199,7 +201,9 @@ public:
 
   boolNDArray bool_array_value (bool warn = false) const
   {
-    if (warn && scalar != 0 && scalar != 1)
+    if (xisnan (scalar))
+      error ("invalid conversion from NaN to logical");
+    else if (warn && scalar != 0 && scalar != 1)
       gripe_logical_conversion ();
 
     return boolNDArray (dim_vector (1, 1), scalar);

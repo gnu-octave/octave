@@ -293,6 +293,20 @@ extern void install_ops (void);
       (v1.t1 ## _value () op v2.t2 ## _value ()); \
   }
 
+#define DEFSCALARBOOLOP_OP(name, t1, t2, op) \
+  BINOPDECL (name, a1, a2) \
+  { \
+    CAST_BINOP_ARGS (const octave_ ## t1&, const octave_ ## t2&); \
+    if (xisnan (v1.t1 ## _value ()) || xisnan (v2.t2 ## _value ())) \
+      { \
+        error ("invalid conversion from NaN to logical"); \
+        return octave_value (); \
+      } \
+    else \
+      return octave_value \
+        (v1.t1 ## _value () op v2.t2 ## _value ()); \
+  }
+
 #define DEFNDBINOP_OP(name, t1, t2, e1, e2, op) \
   BINOPDECL (name, a1, a2) \
   { \

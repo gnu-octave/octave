@@ -42,7 +42,11 @@ function y = logical (x)
     elseif (isempty (x))
       y = zeros (size (x), "logical");
     elseif (isnumeric (x))
-      y = x != 0;
+      if (any (isnan (x(:))))
+	error ("invalid conversion from NaN to logical");
+      else
+	y = x != 0;
+      endif
     else
       error ("logical not defined for type `%s'", typeinfo (x));
     endif
@@ -59,4 +63,6 @@ endfunction
 %!assert (logical (-13), true);
 %!assert (logical (int8 (13)), true);
 %!assert (logical (int8 (-13)), true);
-%!assert (logical ([-1, 0, 1, NaN, Inf]), [-1, 0, 1, NaN, Inf] != 0);
+%!assert (logical ([-1, 0, 1, Inf]), [-1, 0, 1, Inf] != 0);
+%!error (logical ([-1, 0, 1, NaN, Inf]))
+%!error (logical (NaN))

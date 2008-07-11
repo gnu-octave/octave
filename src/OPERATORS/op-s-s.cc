@@ -115,8 +115,8 @@ DEFBINOP (el_ldiv, scalar, scalar)
   return octave_value (v2.double_value () / d);
 }
 
-DEFBINOP_OP (el_and, scalar, scalar, &&)
-DEFBINOP_OP (el_or, scalar, scalar, ||)
+DEFSCALARBOOLOP_OP (el_and, scalar, scalar, &&)
+DEFSCALARBOOLOP_OP (el_or, scalar, scalar, ||)
 
 DEFNDCATOP_FN (s_s, scalar, scalar, array, array, concat)
 

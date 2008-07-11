@@ -227,7 +227,9 @@ public:
   {
     Matrix m = range.matrix_value ();
 
-    if (warn && m.any_element_not_one_or_zero ())
+    if (m.any_element_is_nan ())
+      error ("invalid conversion from NaN to logical");
+    else if (warn && m.any_element_not_one_or_zero ())
       gripe_logical_conversion ();
 
     return boolNDArray (m);

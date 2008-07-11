@@ -67,6 +67,7 @@ public:
   boolNDArray operator ! (void) const;
 
   bool any_element_is_negative (bool = false) const;
+  bool any_element_is_nan (void) const;
   bool any_element_is_inf_or_nan (void) const;
   bool any_element_not_one_or_zero (void) const;
   bool all_elements_are_zero (void) const;

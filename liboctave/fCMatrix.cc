@@ -3295,6 +3295,23 @@ FloatComplexMatrix::map (bmapper fcn) const
 }
 
 bool
+FloatComplexMatrix::any_element_is_nan (void) const
+{
+  octave_idx_type nr = rows ();
+  octave_idx_type nc = cols ();
+
+  for (octave_idx_type j = 0; j < nc; j++)
+    for (octave_idx_type i = 0; i < nr; i++)
+      {
+	FloatComplex val = elem (i, j);
+	if (xisnan (val))
+	  return true;
+      }
+
+  return false;
+}
+
+bool
 FloatComplexMatrix::any_element_is_inf_or_nan (void) const
 {
   octave_idx_type nr = rows ();

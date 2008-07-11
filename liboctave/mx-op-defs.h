@@ -228,9 +228,21 @@ class boolNDArray;
       { \
         r.resize (nr, nc); \
  \
-        for (int j = 0; j < nc; j++) \
-          for (int i = 0; i < nr; i++) \
-	    r.elem(i, j) = (m.elem(i, j) != LHS_ZERO) OP (s != RHS_ZERO); \
+	if (xisnan (s)) \
+	  gripe_nan_to_logical_conversion (); \
+	else \
+	  { \
+ \
+	    for (int j = 0; j < nc; j++) \
+	      for (int i = 0; i < nr; i++) \
+		if (xisnan (m.elem(i, j))) \
+		  { \
+		    gripe_nan_to_logical_conversion (); \
+		    return r; \
+		  } \
+		else \
+		  r.elem(i, j) = (m.elem(i, j) != LHS_ZERO) OP (s != RHS_ZERO); \
+	    } \
       } \
  \
     return r; \
@@ -331,9 +343,20 @@ class boolNDArray;
       { \
         r.resize (nr, nc); \
  \
-        for (int j = 0; j < nc; j++) \
-          for (int i = 0; i < nr; i++) \
-	    r.elem(i, j) = (s != LHS_ZERO) OP (m.elem(i, j) != RHS_ZERO); \
+	if (xisnan (s)) \
+	  gripe_nan_to_logical_conversion (); \
+	else \
+	  { \
+	    for (int j = 0; j < nc; j++) \
+	      for (int i = 0; i < nr; i++) \
+		if (xisnan (m.elem(i, j))) \
+		  { \
+		    gripe_nan_to_logical_conversion (); \
+		    return r; \
+		  } \
+		else \
+		  r.elem(i, j) = (s != LHS_ZERO) OP (m.elem(i, j) != RHS_ZERO); \
+	  } \
       } \
  \
     return r; \
@@ -456,8 +479,14 @@ class boolNDArray;
  \
 	    for (int j = 0; j < m1_nc; j++) \
 	      for (int i = 0; i < m1_nr; i++) \
-		r.elem(i, j) = (m1.elem(i, j) != LHS_ZERO) \
-                                OP (m2.elem(i, j) != RHS_ZERO); \
+		if (xisnan (m1.elem(i, j)) || xisnan (m2.elem(i, j))) \
+		  { \
+		    gripe_nan_to_logical_conversion (); \
+		    return r; \
+		  } \
+		else \
+		  r.elem(i, j) = (m1.elem(i, j) != LHS_ZERO) \
+		    OP (m2.elem(i, j) != RHS_ZERO); \
 	  } \
       } \
     else \
@@ -605,8 +634,19 @@ class boolNDArray;
       { \
         r.resize (m.dims ()); \
  \
-        for (int i = 0; i < len; i++) \
-	  r.elem(i) = (m.elem(i) != LHS_ZERO) OP (s != RHS_ZERO); \
+	if (xisnan (s)) \
+	  gripe_nan_to_logical_conversion (); \
+	else \
+	  { \
+	    for (int i = 0; i < len; i++) \
+	      if (xisnan (m.elem(i))) \
+		{ \
+		  gripe_nan_to_logical_conversion (); \
+		  return r; \
+		} \
+	      else \
+		r.elem(i) = (m.elem(i) != LHS_ZERO) OP (s != RHS_ZERO); \
+	  } \
       } \
  \
     return r; \
@@ -748,8 +788,19 @@ class boolNDArray;
       { \
         r.resize (m.dims ()); \
  \
-        for (int i = 0; i < len; i++) \
-	    r.elem(i) = (s != LHS_ZERO) OP (m.elem(i) != RHS_ZERO); \
+	if (xisnan (s)) \
+	  gripe_nan_to_logical_conversion (); \
+	else \
+	  { \
+	    for (int i = 0; i < len; i++) \
+	      if (xisnan (m.elem(i))) \
+		{ \
+	          gripe_nan_to_logical_conversion (); \
+		  return r; \
+		} \
+	      else \
+		r.elem(i) = (s != LHS_ZERO) OP (m.elem(i) != RHS_ZERO); \
+	    } \
       } \
  \
     return r; \
@@ -863,7 +914,13 @@ class boolNDArray;
 	    r.resize (m1_dims); \
  \
 	    for (int i = 0; i < m1.length (); i++) \
-	      r.elem(i) = (m1.elem(i) != LHS_ZERO) OP (m2.elem(i) != RHS_ZERO); \
+	      if (xisnan (m1.elem(i)) || xisnan (m2.elem(i))) \
+		{ \
+	          gripe_nan_to_logical_conversion (); \
+		  return r; \
+		} \
+	      else \
+		r.elem(i) = (m1.elem(i) != LHS_ZERO) OP (m2.elem(i) != RHS_ZERO); \
 	  } \
       } \
     else \

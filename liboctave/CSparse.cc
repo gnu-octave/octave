@@ -7179,6 +7179,21 @@ SparseComplexMatrix::ipermute (const Array<octave_idx_type>& vec) const
 // other operations
 
 bool
+SparseComplexMatrix::any_element_is_nan (void) const
+{
+  octave_idx_type nel = nnz ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      Complex val = data (i);
+      if (xisnan (val))
+	return true;
+    }
+
+  return false;
+}
+
+bool
 SparseComplexMatrix::any_element_is_inf_or_nan (void) const
 {
   octave_idx_type nel = nnz ();

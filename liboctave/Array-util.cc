@@ -480,6 +480,11 @@ permute_vector_compare (const void *a, const void *b)
   return pva->pidx > pvb->pidx;
 }
 
+void
+gripe_nan_to_logical_conversion (void)
+{
+  (*current_liboctave_error_handler) ("invalid conversion of NaN to logical");
+}
 
 void
 gripe_nonconformant (const char *op, int op1_len, int op2_len)

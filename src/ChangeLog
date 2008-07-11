@@ -1,3 +1,13 @@
+2008-07-11  John W. Eaton  <jwe@octave.org>
+
+	* ov-float.h, ov-flt-re-mat.cc, ov-range.h, ov-re-mat.h,
+	ov-re-sparse.cc, ov-scalar.h: Check for NaN in bool_value and
+	bool_array_value member functions to bool.
+
+	* ops.h (DEFSCALARBOOLOP_OP): New macro.
+	* OPERATORS/op-s-s.cc, OPERATORS/op-fs-fs.cc: Use it to define
+	el_and and el_or ops.
+
 2008-07-10  David Bateman  <dbateman@free.fr>
 
 	* DLD-FUNCTIONS/lookup.cc (assign): Delete.

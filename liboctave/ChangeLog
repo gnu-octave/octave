@@ -1,3 +1,19 @@
+2008-07-11  John W. Eaton  <jwe@octave.org>
+
+	* mx-op-defs.h (MS_BOOL_OP, SM_BOOL_OP, MM_BOOL_OP, NDS_BOOL_OP,
+	SND_BOOL_OP, NDND_BOOL_OP): Detect NaN values.
+	* Array-util.cc (gripe_nan_to_logical_conversion): New function.
+	* Array-util.h: Provide decl.
+	* oct-inttypes.h (xisnan (octave_int<T>)): New function.
+	* lo-mappers.h (xisnan (bool), xisnan (char)): New inline functions.
+
+	* CMatrix.cc, CNDArray.cc, CSparse.cc, dMatrix.cc, dNDArray.cc,
+	dSparse.cc, fCMatrix.cc, fCNDArray.cc, fMatrix.cc, fNDArray.cc:
+	New member function, any_element_is_nan.
+	* CMatrix.h, CNDArray.h, CSparse.h, dMatrix.h, dNDArray.h,
+	dSparse.h, fCMatrix.h, fCNDArray.h, fMatrix.h, fNDArray.h:
+	Provide decl.
+
 2008-07-10  David Bateman  <dbateman@free.fr>
 
 	* dNDArray.cc (NDArray::NDArray (const Array<octave_idx_type>&,

@@ -42,6 +42,10 @@ extern OCTAVE_API double xlog2 (double x, int& exp);
 extern OCTAVE_API Complex xlog2 (const Complex& x, int& exp);
 extern OCTAVE_API double xexp2 (double x);
 
+// These are used by the BOOL_OP macros in mx-op-defs.h.
+inline bool xisnan (bool) { return false; }
+inline bool xisnan (char) { return false; }
+
 extern OCTAVE_API bool xisnan (double x);
 extern OCTAVE_API bool xfinite (double x);
 extern OCTAVE_API bool xisinf (double x);

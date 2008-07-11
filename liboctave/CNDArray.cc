@@ -497,6 +497,20 @@ ComplexNDArray::operator ! (void) const
 // FIXME -- this is not quite the right thing.
 
 bool
+ComplexNDArray::any_element_is_nan (void) const
+{
+  octave_idx_type nel = nelem ();
+
+  for (octave_idx_type i = 0; i < nel; i++)
+    {
+      Complex val = elem (i);
+      if (xisnan (val))
+	return true;
+    }
+  return false;
+}
+
+bool
 ComplexNDArray::any_element_is_inf_or_nan (void) const
 {
   octave_idx_type nel = nelem ();

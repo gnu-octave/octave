@@ -1,3 +1,7 @@
+2008-07-14  Thomas L. Scofield  <scofield@calvin.edu>
+
+	* DLD-FUNCTIONS/__magick_read__.cc: New file from Octave Forge.
+
 2008-07-11  John W. Eaton  <jwe@octave.org>
 
 	* syscalls.cc (const_value): Delete arg NM.  Change all uses.

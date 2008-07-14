@@ -1,3 +1,12 @@
+2008-07-14  John W. Eaton  <jwe@octave.org>
+
+	* Makeconf.in (MAGICK_CONFIG): Substitute here.
+	(MAGICK_INCFLAGS, MAGICK_LIBS): Define using GraphicsMagick++
+	config script.
+	(do-subst-config-vals): Include MAGICK_LIBS and MAGICK_INCFLAGS in
+	list of substitutions.
+	* configure.in: Check for GraphicsMagick++ config script.
+
 2008-07-10  John W. Eaton  <jwe@octave.org>
 
 	* octMakefile.in (DIRS_TO_MAKE): Delete $(localfcnfilepath) and

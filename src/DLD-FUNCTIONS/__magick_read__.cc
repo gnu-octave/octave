@@ -21,40 +21,45 @@ along with Octave; see the file COPYING.  If not, see
 
 */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
-#include <octave/oct.h>
+#include "defun-dld.h"
+#include "error.h"
+
 #include <GraphicsMagick/Magick++.h>
-#include <iostream>
-using namespace std;
-using namespace Magick;
 
 unsigned int
-scaleQuantumToDepth (const Quantum &_quantum, unsigned int depth)
+scale_quantum_to_depth (const Magick::Quantum& quantum, unsigned int depth)
 {
-  return (static_cast<unsigned int> (static_cast<double>(_quantum) / 
-                                     MaxRGB * ((1 << depth) - 1)));
+  return (static_cast<unsigned int> (static_cast<double> (quantum)
+				     / MaxRGB * ((1 << depth) - 1)));
 }
 
 octave_value_list
-read_indexed_images( vector<Image> imvec, Array<int> frameidx, bool wantalpha )
+read_indexed_images (std::vector<Magick::Image>& imvec,
+		     const Array<int>& frameidx, bool wantalpha)
 {
   octave_value_list output;
+
   int rows = imvec[0].baseRows ();
   int columns = imvec[0].baseColumns ();
   int nframes = frameidx.length ();
-  ImageType type = imvec[0].type ();
-    
+
+  Magick::ImageType type = imvec[0].type ();
+
   unsigned int mapsize = imvec[0].colorMapSize ();
   int i = mapsize;
   unsigned int depth = 0;
-  while (i >>= 1) depth++;
+  while (i >>= 1)
+    depth++;
   i = 0;
   depth--;
-  while (depth >>= 1) i++;
+  while (depth >>= 1)
+    i++;
   depth = 1 << i;
 
-  int x, y, frame;
-  const IndexPacket *pix;
   switch (depth)
     {
     case 1:
@@ -62,303 +67,339 @@ read_indexed_images( vector<Image> imvec, Array<int> frameidx, bool wantalpha )
     case 4:
     case 8:
       {
-      uint8NDArray im = uint8NDArray(dim_vector ( rows, columns, nframes ));
-      for (frame=0; frame < nframes; frame++)
-        {
-        imvec[frameidx(frame)].getConstPixels ( 0, 0, columns, rows );
-        pix = imvec[frameidx(frame)].getConstIndexes ();
-        i = 0;      
-        for ( y=0; y < rows; y++ )
-          for ( x=0; x < columns; x++ )
-            im(y, x, frame) = static_cast<octave_uint8>(pix[i++]);
-        }
+	uint8NDArray im = uint8NDArray (dim_vector (rows, columns, nframes));
+
+	for (int frame = 0; frame < nframes; frame++)
+	  {
+	    imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+	    const Magick::IndexPacket *pix
+	      = imvec[frameidx(frame)].getConstIndexes ();
+	    i = 0;
+	    for (int y = 0; y < rows; y++)
+	      for (int x = 0; x < columns; x++)
+		im(y,x,frame) = static_cast<octave_uint8> (pix[i++]);
+	  }
       im.chop_trailing_singletons ();
       output(0) = octave_value (im);
       }
       break;
+
     case 16:
       {
-      uint16NDArray im = uint16NDArray(dim_vector( rows, columns, nframes ));
-      for (frame=0; frame < nframes; frame++)
-        {
-        imvec[frameidx(frame)].getConstPixels ( 0, 0, columns, rows );
-        pix = imvec[frameidx(frame)].getConstIndexes ();        
-        i = 0;      
-        for ( y=0; y < rows; y++ )
-          for ( x=0; x < columns; x++ )
-            im(y, x, frame) = static_cast<octave_uint16>(pix[i++]);
-        }
+	uint16NDArray im = uint16NDArray (dim_vector(rows, columns, nframes));
+	for (int frame = 0; frame < nframes; frame++)
+	  {
+	    imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+	    const Magick::IndexPacket *pix
+	      = imvec[frameidx(frame)].getConstIndexes ();
+	    i = 0;
+	    for (int y = 0; y < rows; y++)
+	      for (int x = 0; x < columns; x++)
+		im(y,x,frame) = static_cast<octave_uint16> (pix[i++]);
+	  }
         im.chop_trailing_singletons ();
         output(0) = octave_value (im);
       }
       break;
+
     default:
-      error ("Index depths bigger than 16-bit not supported");
+      error ("__magic_read__: index depths bigger than 16-bit not supported");
       return octave_value_list ();
     }
 
-  ColorRGB c;
-  Matrix map = Matrix ( mapsize, 3 );
+  Matrix map = Matrix (mapsize, 3);
   Matrix alpha;
+
   switch (type)
     {
-    case PaletteMatteType:
-/*    warning ("palettematte");
-      map = Matrix ( mapsize, 3 );
-      alpha = Matrix ( mapsize, 1 );
-      for ( i = 0; i < mapsize; i++ )
+    case Magick::PaletteMatteType:
+#if 0
+      warning ("palettematte");
+      Matrix map (mapsize, 3);
+      Matrix alpha (mapsize, 1);
+      for (i = 0; i < mapsize; i++)
         {
-        warning ( "%d", i );
-        c = imvec[0].colorMap (i);
-        map(i, 0) = c.red ();
-        map(i, 1) = c.green ();
-        map(i, 2) = c.blue ();
-        alpha(i, 1) = c.alpha ();                
+	  warning ("%d", i);
+	  Magick::ColorRGB c = imvec[0].colorMap (i);
+	  map(i,0) = c.red ();
+	  map(i,1) = c.green ();
+	  map(i,2) = c.blue ();
+	  alpha(i,1) = c.alpha ();
         }
-      break;        */
-    case PaletteType:
-      alpha = Matrix ( 0, 0 );
-      for ( i = 0; i < mapsize; i++ )
+      break;
+#endif
+
+    case Magick::PaletteType:
+      alpha = Matrix (0, 0);
+      for (i = 0; i < mapsize; i++)
         {
-        c = imvec[0].colorMap (i);
-        map(i, 0) = c.red ();
-        map(i, 1) = c.green ();
-        map(i, 2) = c.blue ();        
+	  Magick::ColorRGB c = imvec[0].colorMap (i);
+	  map(i,0) = c.red ();
+	  map(i,1) = c.green ();
+	  map(i,2) = c.blue ();
         }
-      break;        
+      break;
+
     default:
-      error ("Unsupported indexed image type");
+      error ("__magick_read__: unsupported indexed image type");
       return octave_value_list ();
     }
 
-  output(1) = octave_value (map);
   if (wantalpha)
-    output(2) = octave_value (alpha);
+    output(2) = alpha;
+
+  output(1) = map;
+
   return output;
 }
 
 template <class T>
-octave_value_list read_images( vector<Image> imvec, Array<int> frameidx,
-                               unsigned int depth )
+octave_value_list
+read_images (const std::vector<Magick::Image>& imvec,
+	     const Array<int>& frameidx, unsigned int depth)
 {
-  int i;
-  T im;  
+  octave_value_list retval (3, Matrix ());
+
+  T im;
+
   int rows = imvec[0].baseRows ();
   int columns = imvec[0].baseColumns ();
   int nframes = frameidx.length ();
-  ImageType type = imvec[0].type ();
-  int x, y, frame;
-  const PixelPacket *pix;
+
   dim_vector idim = dim_vector ();
   idim.resize (4);
   idim(0) = rows;
   idim(1) = columns;
   idim(2) = 1;
   idim(3) = nframes;
+
   Array<int> idx (dim_vector (4));
+
+  Magick::ImageType type = imvec[0].type ();
+
   switch (type)
     {
-    case BilevelType:
-    //    break;
-    case GrayscaleType:
-      im = T(dim_vector ( rows, columns, nframes ));
-      for ( frame=0; frame < nframes; frame++ )
+    case Magick::BilevelType:
+    case Magick::GrayscaleType:
+      im = T(dim_vector (rows, columns, nframes));
+      for (int frame = 0; frame < nframes; frame++)
         {
-        pix = imvec[frameidx(frame)].getConstPixels ( 0, 0, columns, rows );
-        i = 0;      
-        for ( y=0; y < rows; y++ )
-          for ( x=0; x < columns; x++ )
-            im(y, x, frame) = scaleQuantumToDepth ( pix[i++].red, depth );
+	  const Magick::PixelPacket *pix
+	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+
+	  int i = 0;
+
+	  for (int y = 0; y < rows; y++)
+	    for (int x = 0; x < columns; x++)
+	      im(y, x, frame) = scale_quantum_to_depth (pix[i++].red, depth);
         }
       break;
-    case GrayscaleMatteType:
+
+    case Magick::GrayscaleMatteType:
       idim(2) = 2;
-      im = T(idim);
-      for ( frame=0; frame < nframes; frame++ )
+      im = T (idim);
+      for (int frame = 0; frame < nframes; frame++)
         {
-        idx(3) = frame;
-        i = 0;
-        pix = imvec[frameidx(frame)].getConstPixels ( 0, 0, columns, rows );
-        for ( y=0; y < rows; y++ )
-          {
-          idx(0) = y;
-          for ( x=0; x < columns; x++ )
-            {
-            idx(1) = x;
-            idx(2) = 0;
-            im(idx) = scaleQuantumToDepth ( pix[i].red, depth );
-            idx(2) = 1;
-            im(idx) = scaleQuantumToDepth ( pix[i].opacity, depth );
-            i++;
-            }
-          }
-        }    
+	  const Magick::PixelPacket *pix
+	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+
+	  int i = 0;
+	  idx(3) = frame;
+
+	  for (int y = 0; y < rows; y++)
+	    {
+	      idx(0) = y;
+	      for (int x = 0; x < columns; x++)
+		{
+		  idx(1) = x;
+		  idx(2) = 0;
+		  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
+		  idx(2) = 1;
+		  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
+		  i++;
+		}
+	    }
+        }
       break;
-    case PaletteType:
-    case TrueColorType:
+
+    case Magick::PaletteType:
+    case Magick::TrueColorType:
       idim(2) = 3;
-      im = T(idim);      
-      for ( frame=0; frame < nframes; frame++ )
+      im = T (idim);
+      for (int frame=0; frame < nframes; frame++)
         {
-        idx(3) = frame;
-        i = 0;
-        pix = imvec[frameidx(frame)].getConstPixels ( 0, 0, columns, rows );
-        for ( y=0; y < rows; y++ )
-          {
-          idx(0) = y;
-          for ( x=0; x < columns; x++ )
-            {
-            idx(1) = x;
-            idx(2) = 0;
-            im(idx) = scaleQuantumToDepth ( pix[i].red, depth );
-            idx(2) = 1;
-            im(idx) = scaleQuantumToDepth ( pix[i].green, depth );
-            idx(2) = 2;
-            im(idx) = scaleQuantumToDepth ( pix[i].blue, depth );
-            i++;
-            }
-          }
-        }      
+	  const Magick::PixelPacket *pix
+	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+
+	  int i = 0;
+	  idx(3) = frame;
+
+	  for (int y = 0; y < rows; y++)
+	    {
+	      idx(0) = y;
+	      for (int x = 0; x < columns; x++)
+		{
+		  idx(1) = x;
+		  idx(2) = 0;
+		  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
+		  idx(2) = 1;
+		  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
+		  idx(2) = 2;
+		  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
+		  i++;
+		}
+	    }
+        }
       break;
-    case PaletteMatteType:
-    case TrueColorMatteType:
-    case ColorSeparationType:
+
+    case Magick::PaletteMatteType:
+    case Magick::TrueColorMatteType:
+    case Magick::ColorSeparationType:
       idim(2) = 4;
-      im = T(idim);            
-      for ( frame=0; frame < nframes; frame++ )
+      im = T (idim);
+      for (int frame=0; frame < nframes; frame++)
         {
-        idx(3) = frame;
-        i = 0;
-        pix = imvec[frameidx(frame)].getConstPixels ( 0, 0, columns, rows );
-        for ( y=0; y < rows; y++ )
-          {
-          idx(0) = y;
-          for ( x=0; x < columns; x++ )
-            {
-            idx(1) = x;
-            idx(2) = 0;
-            im(idx) = scaleQuantumToDepth ( pix[i].red, depth );
-            idx(2) = 1;
-            im(idx) = scaleQuantumToDepth ( pix[i].green, depth );
-            idx(2) = 2;
-            im(idx) = scaleQuantumToDepth ( pix[i].blue, depth );
-            idx(2) = 3;
-            im(idx) = scaleQuantumToDepth ( pix[i].opacity, depth );
-            i++;
-            }
-          }
-        }      
+	  const Magick::PixelPacket *pix
+	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+
+	  int i = 0;
+	  idx(3) = frame;
+
+	  for (int y = 0; y < rows; y++)
+	    {
+	      idx(0) = y;
+	      for (int x = 0; x < columns; x++)
+		{
+		  idx(1) = x;
+		  idx(2) = 0;
+		  im(idx) = scale_quantum_to_depth (pix[i].red, depth);
+		  idx(2) = 1;
+		  im(idx) = scale_quantum_to_depth (pix[i].green, depth);
+		  idx(2) = 2;
+		  im(idx) = scale_quantum_to_depth (pix[i].blue, depth);
+		  idx(2) = 3;
+		  im(idx) = scale_quantum_to_depth (pix[i].opacity, depth);
+		  i++;
+		}
+	    }
+        }
       break;
+
     default:
-      error ("Undefined Imagemagick image type");
-      return octave_value_list ();
+      error ("__magick_read__: undefined ImageMagick image type");
+      return retval;
     }
 
   im.chop_trailing_singletons ();
-  return octave_value_list (octave_value (im));
+
+  retval(0) = im;
+
+  return retval;
 }
 
-// instantiate templates
-template octave_value_list
-read_images<boolNDArray> ( vector<Image>, Array<int>, unsigned int depth );
-template octave_value_list
-read_images<uint8NDArray> ( vector<Image>, Array<int>, unsigned int depth );
-template octave_value_list
-read_images<uint16NDArray> ( vector<Image>, Array<int>, unsigned int depth );
-
-DEFUN_DLD ( __magick_read__, args, nargout, "\
--*- texinfo -*-\n\
-@deftypefn {Function File} {@var{m} =} __imagemagick_read__(@var{fname}, @var{index})\n\
-@deftypefnx{Function File} {[@var{m}, @var{colormap}] =} __imagemagick_read__(@var{fname}, @var{index})\n\
-@deftypefnx{Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __imagemagick_read__(@var{fname}, @var{index})\n\
+DEFUN_DLD (__magick_read__, args, nargout,
+  "-*- texinfo -*-\n\
+@deftypefn {Function File} {@var{m} =} __magick_read__(@var{fname}, @var{index})\n\
+@deftypefnx{Function File} {[@var{m}, @var{colormap}] =} __magick_read__(@var{fname}, @var{index})\n\
+@deftypefnx{Function File} {[@var{m}, @var{colormap}, @var{alpha}] =} __magick_read__(@var{fname}, @var{index})\n\
 Read images with ImageMagick++. In general you should not be using this function.\n\
 Instead you should use @code{imread}.\n\
 @seealso{imread}\n\
-@end deftypefn\n\
-" )
+@end deftypefn")
 {
   octave_value_list output;
-  int i;    
-  if( args.length() > 2 || args.length() < 1 || !args(0).is_string() \
-            || nargout > 3 )
+
+  if (args.length() > 2 || args.length() < 1 || ! args(0).is_string ()
+      || nargout > 3)
     {
       print_usage ();
-      return octave_value_list ();
+      return output;
     }
+
   Array<int> frameidx;
-  if ( args.length() == 2 && args(1).is_real_type() )
+
+  if (args.length() == 2 && args(1).is_real_type())
     frameidx = args(1).int_vector_value();
   else
     {
-    frameidx = Array<int> (1);
-    frameidx(0) = 1;
+      frameidx = Array<int> (1);
+      frameidx(0) = 1;
     }
 
-  vector<Image> imvec;
+  std::vector<Magick::Image> imvec;
+
   try
     {
-    // Read a file into vector of image objects
-    readImages(&imvec, args(0).string_value ());
+      // Read a file into vector of image objects
+      Magick::readImages (&imvec, args(0).string_value ());
     }
-  catch (Warning &warning_)
-    { warning ( "Magick++ warning: %s", warning_.what () ); }
-  catch (ErrorCoder &error_)
-    { warning ( "Magick++ coder error: %s", error_.what () ); }
-  catch (Exception &error_)
+  catch (Magick::Warning& w)
     {
-    error ( "Magick++ exception: %s", error_.what () );
-    imvec.clear ();
-    return octave_value_list ();
+      warning ("Magick++ warning: %s", w.what ());
+    }
+  catch (Magick::ErrorCoder& e)
+    {
+      warning ("Magick++ coder error: %s", e.what ());
+    }
+  catch (Magick::Exception& e)
+    {
+      error ("Magick++ exception: %s", e.what ());
+      return output;
     }
 
-  int nframes = imvec.size ();
-  for ( i = 0; i < frameidx.length(); i++ )
+  for (int i = 0; i < frameidx.length(); i++)
     {
-    frameidx(i) = frameidx(i) - 1;
-    if ( frameidx(i) >= nframes || frameidx(i) < 0 )
-      {
-      error ("Invalid index vector");
-      imvec.clear ();
-      return output;
-      }
+      frameidx(i) = frameidx(i) - 1;
+
+      int nframes = imvec.size ();
+
+      if (frameidx(i) >= nframes || frameidx(i) < 0)
+	{
+	  error ("__magick_read__: invalid index vector");
+	  return output;
+	}
     }
-    
-  ClassType klass = imvec[0].classType ();
-  if ( klass == PseudoClass && nargout > 1 )
-    output = read_indexed_images( imvec, frameidx, (nargout == 3) );
+
+  Magick::ClassType klass = imvec[0].classType ();
+
+  if (klass == Magick::PseudoClass && nargout > 1)
+    output = read_indexed_images (imvec, frameidx, (nargout == 3));
   else
     {
-    unsigned int depth = imvec[0].modulusDepth ();
-    i = 0;
-    while (depth >>= 1) i++;
-    depth = 1 << i;
-    
-    switch (depth)
-      {
-      case 1:
-        output = read_images<boolNDArray> ( imvec, frameidx, depth );
-        break;
-      case 2:
-      case 4:
-      case 8:
-        output = read_images<uint8NDArray> ( imvec, frameidx, depth) ;
-        break;
-      case 16:
-        output = read_images<uint16NDArray> ( imvec, frameidx, depth );
-        break;
-      case 32:
-      case 64:
+      unsigned int depth = imvec[0].modulusDepth ();
+      int i = 0;
+      while (depth >>= 1)
+	i++;
+      depth = 1 << i;
+
+      switch (depth)
+	{
+	case 1:
+	  output = read_images<boolNDArray> (imvec, frameidx, depth);
+	  break;
+
+	case 2:
+	case 4:
+	case 8:
+	  output = read_images<uint8NDArray> (imvec, frameidx, depth) ;
+	  break;
+
+	case 16:
+	  output = read_images<uint16NDArray> (imvec, frameidx, depth);
+	  break;
+
+	case 32:
+	case 64:
         default:
-        error ("Image depths bigger than 16-bit not supported");
-      }
-    if (nargout > 1)
-      {
-      output(1) = Matrix ( 0, 0 );
-      if (nargout > 2)
-        output(2) = Matrix ( 0, 0 );
-      }
+	  error ("__magick_read__: image depths bigger than 16-bit not supported");
+	}
     }
-  imvec.clear ();
 
   return output;
 }
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; End: ***
+*/

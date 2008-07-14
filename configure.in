@@ -635,6 +635,13 @@ if test "$curl_missing" = yes; then
   warn_curl="cURL library not found.  The urlread and urlwrite functions will be disabled."
 fi
 
+# GraphicsMagick++
+
+warn_magick=
+AC_CHECK_PROGS(MAGICK_CONFIG, [GraphicsMagick++-config GraphicsMagick-config])
+if test -z "$MAGICK_CONFIG"; then
+  warn_magick="GraphicsMagick++ config script not found.  Assuming GraphicsMagic++ library and header files are missing, so imread will not be fully functional"
+fi
 
 # ---------------------------------------------------------------------
 
@@ -2016,6 +2023,7 @@ Octave is now configured for $canonical_host_type
   gnuplot:              $GNUPLOT
   OPENGL libraries:     $OPENGL_LIBS
   fltk backend libs:    $GRAPHICS_LIBS
+  Magick config:        $MAGICK_CONFIG
 
   Do internal array bounds checking:  $BOUNDS_CHECKING
   Build static libraries:             $STATIC_LIBS
@@ -2129,6 +2137,11 @@ fi
 
 if test -n "$warn_glpk"; then
   AC_MSG_WARN($warn_glpk)
+  warn_msg_printed=true
+fi
+
+if test -n "$warn_magick"; then
+  AC_MSG_WARN($warn_magick)
   warn_msg_printed=true
 fi
 

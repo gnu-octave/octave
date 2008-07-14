@@ -146,6 +146,10 @@ else
 endif
 INCFLAGS = $(TMP_IF_1) $(TMP_IF_2)
 
+MAGICK_CONFIG = @MAGICK_CONFIG@
+MAGICK_INCFLAGS = $(shell $(MAGICK_CONFIG) --cppflags)
+MAGICK_LIBS = $(shell $(MAGICK_CONFIG) --ldflags --libs)
+
 LIBFLAGS = -L$(TOPDIR)
 
 DEFS = @DEFS@
@@ -504,6 +508,8 @@ $(SED) < $< \
   -e "s|%OCTAVE_CONF_LIBREADLINE%|\"${LIBREADLINE}\"|" \
   -e "s|%OCTAVE_CONF_LIBS%|\"${LIBS}\"|" \
   -e "s|%OCTAVE_CONF_LN_S%|\"${LN_S}\"|" \
+  -e "s|%OCTAVE_CONF_MAGICK_INCFLAGS%|\"${MAGICK_INCFLAGS}\"|" \
+  -e "s|%OCTAVE_CONF_MAGICK_LIBS%|\"${MAGICK_LIBS}\"|" \
   -e 's|%OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS%|\"@MKOCTFILE_DL_LDFLAGS@\"|' \
   -e "s|%OCTAVE_CONF_OCTINCLUDEDIR%|\"${octincludedir}\"|" \
   -e "s|%OCTAVE_CONF_OCTLIBDIR%|\"${octlibdir}\"|" \

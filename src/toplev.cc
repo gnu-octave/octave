@@ -1149,6 +1149,8 @@ specified option.\n\
       { false, "LIBREADLINE", OCTAVE_CONF_LIBREADLINE },
       { false, "LIBS", OCTAVE_CONF_LIBS },
       { false, "LN_S", OCTAVE_CONF_LN_S },
+      { false, "MAGICK_INCFLAGS", OCTAVE_CONF_MAGICK_INCFLAGS },
+      { false, "MAGICK_LIBS", OCTAVE_CONF_MAGICK_LIBS },
       { false, "MKOCTFILE_DL_LDFLAGS", OCTAVE_CONF_MKOCTFILE_DL_LDFLAGS },
       { false, "RANLIB", OCTAVE_CONF_RANLIB },
       { false, "RDYNAMIC_FLAG", OCTAVE_CONF_RDYNAMIC_FLAG },

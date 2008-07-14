@@ -35,9 +35,9 @@ INSTALL_DATA = @INSTALL_DATA@
 
 SOURCES = __img__.m __img_via_file__.m autumn.m bone.m brighten.m colormap.m \
   contrast.m cool.m copper.m flag.m gmap40.m gray.m gray2ind.m hot.m hsv.m \
-  hsv2rgb.m image.m image_viewer.m imagesc.m imshow.m ind2gray.m ind2rgb.m \
-  jet.m loadimage.m ntsc2rgb.m ocean.m pink.m prism.m rainbow.m rgb2hsv.m \
-  rgb2ind.m rgb2ntsc.m saveimage.m spring.m summer.m white.m winter.m
+  hsv2rgb.m image.m image_viewer.m imagesc.m imread.m imshow.m ind2gray.m \
+  ind2rgb.m jet.m loadimage.m ntsc2rgb.m ocean.m pink.m prism.m rainbow.m \
+  rgb2hsv.m rgb2ind.m rgb2ntsc.m saveimage.m spring.m summer.m white.m winter.m
 
 IMAGES = default.img
 

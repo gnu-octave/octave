@@ -77,7 +77,7 @@ DLD_XSRC := amd.cc balance.cc besselj.cc betainc.cc bsxfun.cc cellfun.cc \
 	spparms.cc sqrtm.cc svd.cc syl.cc symrcm.cc symbfact.cc \
 	time.cc tsearch.cc typecast.cc \
 	urlwrite.cc __contourc__.cc __delaunayn__.cc __dsearchn__.cc \
-	__glpk__.cc __lin_interpn__.cc __pchip_deriv__.cc \
+	__glpk__.cc __lin_interpn__.cc __magick_read__.cc __pchip_deriv__.cc \
 	__qp__.cc __voronoi__.cc __convn__.cc
 
 DLD_SRC := $(addprefix DLD-FUNCTIONS/, $(DLD_XSRC))
@@ -273,7 +273,7 @@ ifeq ($(ENABLE_DYNAMIC_LINKING), true)
     $(LIBPLPLOT) $(LIBGLOB)
 else
   OCTAVE_LIBS = $(LIBOCTINTERP) $(LIBOCTAVE) $(QHULL_LIBS) \
-    $(GLPK_LIBS) $(REGEX_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
+    $(GLPK_LIBS) $(MAGICK_LIBS) $(REGEX_LIBS) $(SPECIAL_MATH_LIB) $(LIBCRUFT) \
     $(LIBPLPLOT) $(LIBGLOB)
 endif
 
@@ -624,6 +624,10 @@ oct-gperf.h: octave.gperf
 	  $(SED) 's,lookup\[,gperf_lookup[,' > $@-t \
 	  || (rm -f $@-t; exit 1)
 	@mv $@-t $@
+
+__magick_read__.d: CPPFLAGS += $(MAGICK_INCFLAGS)
+__magick_read__.o pic/__magick_read__.o: CPPFLAGS += $(MAGICK_INCFLAGS)
+__magick_read__.oct: DL_LDFLAGS += $(MAGICK_LIBS)
 
 # How to make a .oct file from a .o file:
 

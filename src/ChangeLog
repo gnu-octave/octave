@@ -1,3 +1,18 @@
+2008-07-14  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__magick_read__.cc: Delete "using namespace std"
+	and "using namespace Magick" directives.  Style fixes.
+
+	* oct-conf.h.in (OCTAVE_CONF_MAGICK_INCFLAGS,
+	OCTAVE_CONF_MAGICK_LIBS): Substitute here.
+	* toplev.cc (octave_config_info): Include MAGICK_INCFLAGS and
+	MAGICK_LIBS in the struct.
+	* Makefile.in (DLD_XSRC): Add __magick_read__.cc to the list.
+	(OCTAVE_LIBS): Add $(MAGICK_LIBS) to the list for static linking case.
+	(__magick_read__.d, __magick_read__.o, pic/__magick_read__.o):
+	Append MAGICK_INCFLAGS to CPPFLAGS.
+	(__magick_read__.oct): Append MAGICK_LIBS to LDFLAGS.
+
 2008-07-14  Thomas L. Scofield  <scofield@calvin.edu>
 
 	* DLD-FUNCTIONS/__magick_read__.cc: New file from Octave Forge.

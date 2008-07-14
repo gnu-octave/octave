@@ -1,3 +1,7 @@
+2008-07-14  John W. Eaton  <jwe@octave.org>
+
+	* image/Makefile.in (SOURCES): Add imread.m to the list.
+
 2008-07-14  Thomas L. Scofield  <scofield@calvin.edu>
 
 	* image/imread.m: New file from Octave Forge.

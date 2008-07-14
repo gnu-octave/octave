@@ -629,41 +629,13 @@ __magick_read__.d: CPPFLAGS += $(MAGICK_INCFLAGS)
 __magick_read__.o pic/__magick_read__.o: CPPFLAGS += $(MAGICK_INCFLAGS)
 __magick_read__.oct: DL_LDFLAGS += $(MAGICK_LIBS)
 
-# How to make a .oct file from a .o file:
-
-ifeq ($(ENABLE_DYNAMIC_LINKING), true)
-  ifdef CXXPICFLAG
-    convhulln.oct : pic/convhulln.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
-    __delaunayn__.oct : pic/__delaunayn__.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
-    __voronoi__.oct : pic/__voronoi__.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
-    regexp.oct : pic/regexp.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
-    urlwrite.oct : pic/urlwrite.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(CURL_LIBS)
-    __glpk__.oct : pic/__glpk__.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
-    fltk_backend.oct : pic/fltk_backend.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GRAPHICS_LIBS) $(FT2_LIBS)
-  else
-    convhulln.oct : convhulln.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
-    __delaunayn__.oct : __delaunayn__.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
-    __voronoi__.oct : __voronoi__.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(QHULL_LIBS)
-    regexp.oct : regexp.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(REGEX_LIBS)
-    urlwrite.oct : urlwrite.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(CURL_LIBS)
-    __glpk__.oct : __glpk__.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GLPK_LIBS)
-    fltk_backend.oct : fltk_backend.o octave$(EXEEXT)
-	  $(DL_LD) $(DL_LDFLAGS) -o $@ $< $(OCT_LINK_DEPS) $(GRAPHICS_LIBS) $(FT2_LIBS)
-  endif
-endif
+convhulln.oct: DL_LDFLAGS += $(QHULL_LIBS)
+__delaunayn__.oct: DL_LDFLAGS += $(QHULL_LIBS)
+__voronoi__.oct: DL_LDFLAGS += $(QHULL_LIBS)
+regexp.oct: DL_LDFLAGS += $(REGEX_LIBS)
+urlwrite.oct: DL_LDFLAGS += $(CURL_LIBS)
+__glpk__.oct: DL_LDFLAGS += $(GLPK_LIBS)
+fltk_backend.oct: DL_LDFLAGS += $(GRAPHICS_LIBS) $(FT2_LIBS)
 
 check: all
 .PHONY: check

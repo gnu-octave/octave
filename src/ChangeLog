@@ -1,5 +1,9 @@
 2008-07-14  John W. Eaton  <jwe@octave.org>
 
+	* Makefile.in (convhulln.oct, __delaunayn__.oct, __voronoi__.oct, 
+	regexp.oct, urlwrite.oct, __glpk__.oct, fltk_backend.oct):
+	Simplify with target-specific settings for DL_LDFLAGS.
+
 	* DLD-FUNCTIONS/__magick_read__.cc: Delete "using namespace std"
 	and "using namespace Magick" directives.  Style fixes.
 

@@ -164,7 +164,7 @@ private:
   
   void binarysort (T *lo, T *hi, T *start);
     
-  octave_idx_type count_run (T *lo, T *hi, octave_idx_type *descending);
+  octave_idx_type count_run (T *lo, T *hi, bool& descending);
 
   octave_idx_type gallop_left (T key, T *a, octave_idx_type n, octave_idx_type hint);
 

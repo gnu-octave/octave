@@ -180,7 +180,7 @@ or the longest descending sequence, with
 
     lo[0] > lo[1] > lo[2] > ...
 
-Boolean *descending is set to 0 in the former case, or to 1 in the latter.
+DESCENDING is set to false in the former case, or to true in the latter.
 For its intended use in a stable mergesort, the strictness of the defn of
 "descending" is needed so that the caller can safely reverse a descending
 sequence without violating stability (strict > ensures there are no equal
@@ -190,11 +190,11 @@ Returns -1 in case of error.
 */
 template <class T>
 octave_idx_type
-octave_sort<T>::count_run (T *lo, T *hi, int *descending)
+octave_sort<T>::count_run (T *lo, T *hi, bool& descending)
 {
   octave_idx_type n;
 
-  *descending = 0;
+  descending = false;
   ++lo;
   if (lo == hi)
     return 1;
@@ -203,7 +203,7 @@ octave_sort<T>::count_run (T *lo, T *hi, int *descending)
 
   IFLT (*lo, *(lo-1))
     {
-      *descending = 1;
+      descending = true;
       for (lo = lo+1; lo < hi; ++lo, ++n) 
 	{
 	  IFLT (*lo, *(lo-1))
@@ -943,11 +943,11 @@ octave_sort<T>::sort (T *v, octave_idx_type elements)
       octave_idx_type minrun = merge_compute_minrun (nremaining);
       do 
 	{
-	  int descending;
+	  bool descending;
 	  octave_idx_type n;
 
 	  /* Identify next run. */
-	  n = count_run (lo, hi, &descending);
+	  n = count_run (lo, hi, descending);
 	  if (n < 0)
 	    goto fail;
 	  if (descending)

@@ -1,3 +1,8 @@
+2008-07-15  John W. Eaton  <jwe@octave.org>
+
+	* DLD-FUNCTIONS/__convn__.cc (convn): Cast second arg to
+	octave_idx_type in call to std::max.
+
 2008-07-14  John W. Eaton  <jwe@octave.org>
 
 	* Makefile.in (convhulln.oct, __delaunayn__.oct, __voronoi__.oct, 

@@ -81,7 +81,8 @@ convn (const MTa& a, const MTb& b)
   // Allocate output
   dim_vector out_size (a_size);
   for (octave_idx_type n = 0; n < ndims; n++)
-    out_size(n) = std::max (a_size(n) - b_size(n) + 1, 0);
+    out_size(n) = std::max (a_size(n) - b_size(n) + 1,
+			    static_cast<octave_idx_type> (0));
 
   typedef typename octave_convn_traits<MTa, MTb>::TR MTout;
 

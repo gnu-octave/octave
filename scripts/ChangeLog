@@ -1,5 +1,13 @@
 2008-07-16  John W. Eaton  <jwe@octave.org>
 
+	* deprecated/loadimage.m: New file.
+	* deprecated/Makefile.in (SOURCES): Add it to the list.
+	* image/loadimage.m: Delete.	
+	* image/Makefile.in (SOURCES): Remove it from the list.
+	* image/imread.m: Incorporate loadimage functionality here.
+	Simplify.
+	* image/imshow.m: Call imread, not loadimage.
+
 	* image/__img__.m: Set clim for true-color integer data.
 
 	* image/imshow.m: Don't convert integer true-color data to double.

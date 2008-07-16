@@ -65,7 +65,7 @@ function h = imshow (im, varargin)
   ## Get the image.
   if (ischar (im))
     ## Eventually, this should be imread.
-    [im, map] = loadimage (im);
+    [im, map] = imread (im);
     indexed = true;
     colormap (map);
   endif

@@ -42,10 +42,10 @@ SOURCES = beta_cdf.m beta_inv.m beta_pdf.m beta_rnd.m \
   hypergeometric_cdf.m hypergeometric_inv.m hypergeometric_pdf.m \
   hypergeometric_rnd.m intersection.m is_bool.m is_complex.m \
   is_list.m is_matrix.m is_scalar.m is_square.m is_stream.m \
-  is_struct.m is_symmetric.m is_vector.m isstr.m lchol.m lognormal_cdf.m \
-  lognormal_inv.m lognormal_pdf.m lognormal_rnd.m meshdom.m normal_cdf.m \
-  normal_inv.m normal_pdf.m normal_rnd.m pascal_cdf.m \
-  pascal_inv.m pascal_pdf.m pascal_rnd.m poisson_cdf.m \
+  is_struct.m is_symmetric.m is_vector.m isstr.m lchol.m loadimage.m \
+  lognormal_cdf.m lognormal_inv.m lognormal_pdf.m lognormal_rnd.m \
+  meshdom.m normal_cdf.m normal_inv.m normal_pdf.m normal_rnd.m \
+  pascal_cdf.m pascal_inv.m pascal_pdf.m pascal_rnd.m poisson_cdf.m \
   poisson_inv.m poisson_pdf.m poisson_rnd.m polyinteg.m setstr.m \
   spatan2.m spchol2inv.m spcholinv.m spcumprod.m spcumsum.m \
   spchol.m spdet.m spdiag.m spfind.m spinv.m spkron.m splchol.m \

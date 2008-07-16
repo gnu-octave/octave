@@ -28,36 +28,15 @@
 ## Created: July 1994
 ## Adapted-By: jwe
 
-function [img_retval, map_retval] = loadimage (filename)
+function [img_retval, map_retval] = loadimage (varargin)
 
-  if (nargin != 1)
-    print_usage ();
-  elseif (! ischar (filename))
-    error ("loadimage: expecting filename as a string");
+  persistent warned = false;
+  if (! warned)
+    warned = true;
+    warning ("Octave:deprecated-function",
+             "loadimage is obsolete and will be removed from a future version of Octave; please use imread instead");
   endif
 
-  file = file_in_path (IMAGE_PATH, filename);
-
-  if (isempty (file))
-    error ("loadimage: unable to find image file");
-  endif
-
-  ## The file is assumed to have variables img and map, or X and map.
-
-  vars = load (file);
-
-  if (isfield (vars, "img"))
-    img_retval = vars.img;
-  elseif (isfield (vars, "X"))
-    img_retval = vars.X;
-  else
-    error ("loadimage: invalid image file found");
-  endif
-
-  if (isfield (vars, "map"))
-    map_retval = vars.map;
-  else
-    error ("loadimage: invalid image file found");
-  endif
+  [img_retval, map_retval] = imread (varargin{:});
 
 endfunction

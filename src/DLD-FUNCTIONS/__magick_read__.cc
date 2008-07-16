@@ -309,7 +309,7 @@ Instead you should use @code{imread}.\n\
 {
   octave_value_list output;
 
-  if (args.length() > 2 || args.length() < 1 || ! args(0).is_string ()
+  if (args.length () > 2 || args.length () < 1 || ! args(0).is_string ()
       || nargout > 3)
     {
       print_usage ();
@@ -318,7 +318,7 @@ Instead you should use @code{imread}.\n\
 
   Array<int> frameidx;
 
-  if (args.length() == 2 && args(1).is_real_type())
+  if (args.length () == 2 && args(1).is_real_type ())
     frameidx = args(1).int_vector_value();
   else
     {

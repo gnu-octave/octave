@@ -72,9 +72,12 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
 	for (int frame = 0; frame < nframes; frame++)
 	  {
 	    imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+
 	    const Magick::IndexPacket *pix
 	      = imvec[frameidx(frame)].getConstIndexes ();
+
 	    i = 0;
+
 	    for (int y = 0; y < rows; y++)
 	      for (int x = 0; x < columns; x++)
 		im(y,x,frame) = static_cast<octave_uint8> (pix[i++]);
@@ -87,12 +90,16 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
     case 16:
       {
 	uint16NDArray im = uint16NDArray (dim_vector(rows, columns, nframes));
+
 	for (int frame = 0; frame < nframes; frame++)
 	  {
 	    imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
+
 	    const Magick::IndexPacket *pix
 	      = imvec[frameidx(frame)].getConstIndexes ();
+
 	    i = 0;
+
 	    for (int y = 0; y < rows; y++)
 	      for (int x = 0; x < columns; x++)
 		im(y,x,frame) = static_cast<octave_uint16> (pix[i++]);

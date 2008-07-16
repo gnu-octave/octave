@@ -1,7 +1,7 @@
 /*
 
 Copyright (C) 2002 Andy Adler
-              2008 Thomas L. Scofield
+Copyright (C) 2008 Thomas L. Scofield
 
 This file is part of Octave.
 
@@ -79,8 +79,8 @@ read_indexed_images (std::vector<Magick::Image>& imvec,
 	      for (int x = 0; x < columns; x++)
 		im(y,x,frame) = static_cast<octave_uint8> (pix[i++]);
 	  }
-      im.chop_trailing_singletons ();
-      output(0) = octave_value (im);
+	im.chop_trailing_singletons ();
+	output(0) = octave_value (im);
       }
       break;
 
@@ -181,7 +181,7 @@ read_images (const std::vector<Magick::Image>& imvec,
     {
     case Magick::BilevelType:
     case Magick::GrayscaleType:
-      im = T(dim_vector (rows, columns, nframes));
+      im = T (dim_vector (rows, columns, nframes));
       for (int frame = 0; frame < nframes; frame++)
         {
 	  const Magick::PixelPacket *pix
@@ -226,7 +226,7 @@ read_images (const std::vector<Magick::Image>& imvec,
     case Magick::TrueColorType:
       idim(2) = 3;
       im = T (idim);
-      for (int frame=0; frame < nframes; frame++)
+      for (int frame = 0; frame < nframes; frame++)
         {
 	  const Magick::PixelPacket *pix
 	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);
@@ -257,7 +257,7 @@ read_images (const std::vector<Magick::Image>& imvec,
     case Magick::ColorSeparationType:
       idim(2) = 4;
       im = T (idim);
-      for (int frame=0; frame < nframes; frame++)
+      for (int frame = 0; frame < nframes; frame++)
         {
 	  const Magick::PixelPacket *pix
 	    = imvec[frameidx(frame)].getConstPixels (0, 0, columns, rows);

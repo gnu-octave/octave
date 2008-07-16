@@ -291,6 +291,7 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
     zautoscale = strcmpi (axis_obj.zlimmode, "auto");
     cautoscale = strcmpi (axis_obj.climmode, "auto");
     cdatadirect = false;
+    truecolor = false;
 
     kids = axis_obj.children;
 
@@ -338,7 +339,9 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
 	  if (use_gnuplot_for_images)
 
-	    if (strcmpi (obj.cdatamapping, "direct"))
+	    if (ndims (img_data) == 3)
+	      truecolor = true;
+	    elseif (strcmpi (obj.cdatamapping, "direct"))
 	      cdatadirect = true;
 	    endif
 	    fputs (plot_stream, "set border front;\n");
@@ -1056,11 +1059,12 @@ function __go_draw_axes__ (h, plot_stream, enhanced, mono)
 
     cmap = parent_figure_obj.colormap;    
     cmap_sz = rows(cmap);
+
     if (! any (isinf (clim)))
-      if (cdatadirect)
-	fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz);
-      else
+      if (truecolor || ! cdatadirect)
 	fprintf (plot_stream, "set cbrange [%g:%g];\n", clim);
+      else
+	fprintf (plot_stream, "set cbrange [1:%d];\n", cmap_sz);
       endif
     endif
 

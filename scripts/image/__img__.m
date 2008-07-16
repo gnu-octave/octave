@@ -56,6 +56,15 @@ function h = __img__ (x, y, img, varargin)
   tmp = __go_image__ (ca, "cdata", img, "xdata", xlim, "ydata", ylim, 
 		      "cdatamapping", "direct", varargin {:});
 
+  if (ndims (img) == 3)
+    if (isinteger (img))
+      c = class (img);
+      mn = intmin (c);
+      mx = intmax (c);
+      set (ca, "clim", double ([mn, mx]));
+    endif
+  endif
+
   set (ca, "view", [0, 90]);
 
   if (strcmp (get (ca, "nextplot"), "replace"))

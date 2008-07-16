@@ -147,7 +147,7 @@ function h = imshow (im, varargin)
   endif
 
   ## This is for compatibility.
-  if (! indexed || islogical (im))
+  if (! (indexed || (true_color && isinteger (im))) || islogical (im))
     im = double (im);
   endif
 

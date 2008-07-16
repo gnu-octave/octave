@@ -1,3 +1,11 @@
+2008-07-16  John W. Eaton  <jwe@octave.org>
+
+	* image/__img__.m: Set clim for true-color integer data.
+
+	* image/imshow.m: Don't convert integer true-color data to double.
+
+	* plot/__go_draw_axes__.m: Recognize 3-d cdata as a true-color image.
+
 2008-07-14  John W. Eaton  <jwe@octave.org>
 
 	* image/Makefile.in (SOURCES): Add imread.m to the list.

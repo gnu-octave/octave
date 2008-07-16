@@ -1,3 +1,8 @@
+2008-07-15  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* oct-mutex.h, oct-mutex.cc: New files.
+	* Makefile.in: Add them to appropriate lists.
+
 2008-07-15  John W. Eaton  <jwe@octave.org>
 
 	* oct-sort.cc, oct-sort.h (octave_sort<T>::count_run): Declare

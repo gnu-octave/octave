@@ -1,3 +1,8 @@
+2008-07-16  Michael Goffioul  <michael.goffioul@gmail.com>
+
+	* plot/gcbo.m, plot/gcbf.m: New functions.
+	* plot/Makefile.in (SOURCES): Add them to the list.
+
 2008-07-16  John W. Eaton  <jwe@octave.org>
 
 	* deprecated/loadimage.m: New file.

@@ -107,6 +107,8 @@ SOURCES = \
   findobj.m \
   fplot.m \
   gca.m \
+  gcbf.m \
+  gcbo.m \
   gcf.m \
   ginput.m \
   grid.m \

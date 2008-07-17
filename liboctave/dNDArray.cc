@@ -40,6 +40,7 @@ along with Octave; see the file COPYING.  If not, see
 
 #if defined (HAVE_FFTW3)
 #include "oct-fftw.h"
+#endif
 
 NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
 		  bool negative_to_nan)
@@ -82,6 +83,8 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
 	  ptmp[i] = static_cast<double> (pa[i]);
     }
 }
+
+#if defined (HAVE_FFTW3)
 
 ComplexNDArray
 NDArray::fourier (int dim) const

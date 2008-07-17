@@ -1,3 +1,8 @@
+2008-07-17  John W. Eaton  <jwe@octave.org>
+
+	* general/fliplr.m: Fix usage test.
+	* testfun/test.m: Fix usage tests.
+
 2008-07-17  Jaroslav Hajek <highegg@gmail.com>
 
 	* statistics/base/cov.m: Fix test that should no longer work.

@@ -689,8 +689,8 @@ endfunction
 %!fail ('test("test", "bogus")','unknown flag')      # incorrect args
 %!fail ('garbage','garbage.*undefined')  # usage on nonexistent function should be
 
-%!error <usage.*test> test                     # no args, generates usage()
-%!error <usage.*test> test(1,2,3,4)            # too many args, generates usage()
+%!error test                     # no args, generates usage()
+%!error test(1,2,3,4)            # too many args, generates usage()
 %!error <unknown flag> test("test", 'bogus');  # incorrect args, generates error()
 %!error <garbage' undefined> garbage           # usage on nonexistent function should be
 

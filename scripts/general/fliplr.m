@@ -56,7 +56,7 @@ endfunction
 %! && fliplr ([1, 2; 3, 4; 5, 6]) == [2, 1; 4, 3; 6, 5]
 %! && fliplr ([1, 2, 3; 4, 5, 6]) == [3, 2, 1; 6, 5, 4]));
 
-%!error <usage.*fliplr> fliplr();
+%!error fliplr();
 
 %!error fliplr (1, 2);
 

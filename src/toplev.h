@@ -157,7 +157,7 @@ public:
   // Caller function, may be built-in.
   static octave_function *caller (void)
   {
-    return element (1);
+    return instance_ok () ? instance->do_caller () : 0;
   }
 
   static size_t current_frame (void)
@@ -285,6 +285,11 @@ private:
   int do_caller_user_code_line (void) const;
 
   int do_caller_user_code_column (void) const;
+
+  octave_function *do_caller (void) const
+  {
+    return curr_frame > 1 ? cs[curr_frame-1].fcn : cs[0].fcn;
+  }
 
   size_t do_current_frame (void) { return curr_frame; }
 

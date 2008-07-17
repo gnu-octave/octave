@@ -149,7 +149,8 @@ load_out_of_date_fcn (const std::string& ff, const std::string& dir_name,
 }
 
 static inline bool
-out_of_date_check_internal (octave_value& function)
+out_of_date_check_internal (octave_value& function,
+			    const std::string& dispatch_type = std::string ())
 {
   bool retval = false;
 
@@ -186,14 +187,15 @@ out_of_date_check_internal (octave_value& function)
 		    file = nm;
 		  else
 		    {
-		      // FIXME -- this lookup is not right since it doesn't
-		      // account for dispatch type.
-
 		      // We don't want to make this an absolute name,
 		      // because load_fcn_file looks at the name to
 		      // decide whether it came from a relative lookup.
 
-		      file = load_path::find_fcn (nm, dir_name);
+		      if (dispatch_type.empty ())
+			file = load_path::find_fcn (nm, dir_name);
+		      else
+			file = load_path::find_method (nm, dispatch_type,
+						       dir_name);
 		    }
 
 		  if (file.empty ())
@@ -477,7 +479,7 @@ symbol_table::fcn_info::fcn_info_rep::find
       octave_value& fval = q->second;
 
       if (fval.is_defined ())
-	out_of_date_check_internal (fval);
+	out_of_date_check_internal (fval, name);
 
       if (fval.is_defined ())
 	return fval;
@@ -620,7 +622,7 @@ symbol_table::fcn_info::fcn_info_rep::find_method (const std::string& dispatch_t
       octave_value& fval = q->second;
 
       if (fval.is_defined ())
-	out_of_date_check_internal (fval);
+	out_of_date_check_internal (fval, dispatch_type);
 
       if (fval.is_defined ())
 	return fval;

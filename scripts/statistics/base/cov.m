@@ -71,7 +71,7 @@ endfunction
 %! x = rand (10);
 %! cx1 = cov (x);
 %! cx2 = cov (x, x);
-%! assert(size (cx1) == [10, 10] && size (cx2) == [10, 10] && cx1 == cx2);
+%! assert(size (cx1) == [10, 10] && size (cx2) == [10, 10] && norm(cx1-cx2) < 1e1*eps);
 
 %!error cov ();
 

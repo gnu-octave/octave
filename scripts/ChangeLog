@@ -1,3 +1,7 @@
+2008-07-17  Jaroslav Hajek <highegg@gmail.com>
+
+	* statistics/base/cov.m: Fix test that should no longer work.
+
 2008-07-16  Michael Goffioul  <michael.goffioul@gmail.com>
 
 	* plot/gcbo.m, plot/gcbf.m: New functions.
